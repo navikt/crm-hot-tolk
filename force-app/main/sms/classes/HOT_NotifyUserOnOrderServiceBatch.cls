@@ -86,7 +86,13 @@ public without sharing class HOT_NotifyUserOnOrderServiceBatch implements Databa
                 }
                 HOT_DatabaseOperations.updateRecords(pushNotifications);
                 //inserting notifications
-                HOT_NotificationCentreController.createNotification(notificationList);
+                try {
+                    HOT_NotificationCentreController.createNotification(notificationList);
+                } catch (Exception e) {
+                    LoggerUtility logger = new LoggerUtility();
+                    logger.exception(e, CRM_ApplicationDomain.Domain.HOT);
+                    logger.publish();
+                }
             }
         } catch (Exception e) {
             LoggerUtility logger = new LoggerUtility();

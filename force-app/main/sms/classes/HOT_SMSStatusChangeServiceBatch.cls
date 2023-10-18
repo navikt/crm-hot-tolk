@@ -70,7 +70,7 @@ public without sharing class HOT_SMSStatusChangeServiceBatch implements Database
                         notification.HOT_Account__c = wo.HOT_Request__r.Orderer__c;
                         notification.HOT_NotificationChannel__c = 'Push-varsel i appen';
                         notification.HOT_Subject__c = 'Status på din bestilling er endret';
-                        String message;
+                        String message = '';
                         if (wo.Status == 'Dispatched') {
                             message = 'Du har fått tolk. Tolk er ' + wo.HOT_Interpreters__c;
                         }
@@ -98,7 +98,13 @@ public without sharing class HOT_SMSStatusChangeServiceBatch implements Database
                 }
                 HOT_DatabaseOperations.updateRecords(workorderListPush);
                 //inserting notifications
-                HOT_NotificationCentreController.createNotification(notificationList);
+                try {
+                    HOT_NotificationCentreController.createNotification(notificationList);
+                } catch (Exception e) {
+                    LoggerUtility logger = new LoggerUtility();
+                    logger.exception(e, CRM_ApplicationDomain.Domain.HOT);
+                    logger.publish();
+                }
             }
         } catch (Exception e) {
             LoggerUtility logger = new LoggerUtility();

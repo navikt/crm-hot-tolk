@@ -37,7 +37,13 @@ public without sharing class HOT_ReminderSMSService {
         HOT_DatabaseOperations.insertRecords(smsList);
         HOT_DatabaseOperations.updateRecords(workOrders.values());
         //inserting notifications
-        HOT_NotificationCentreController.createNotification(notificationList);
+        try {
+            HOT_NotificationCentreController.createNotification(notificationList);
+        } catch (Exception e) {
+            LoggerUtility logger = new LoggerUtility();
+            logger.exception(e, CRM_ApplicationDomain.Domain.HOT);
+            logger.publish();
+        }
     }
 
     public static void notifyUserOnOrderSMS(List<HOT_Request__c> requestList) {
@@ -82,7 +88,13 @@ public without sharing class HOT_ReminderSMSService {
         HOT_DatabaseOperations.insertRecords(smsList);
         HOT_DatabaseOperations.updateRecords(requests.values());
         //inserting notifications
-        HOT_NotificationCentreController.createNotification(notificationList);
+        try {
+            HOT_NotificationCentreController.createNotification(notificationList);
+        } catch (Exception e) {
+            LoggerUtility logger = new LoggerUtility();
+            logger.exception(e, CRM_ApplicationDomain.Domain.HOT);
+            logger.publish();
+        }
     }
 
     private static Map<Id, List<ServiceAppointment>> dispatchedServiceAppointmentsByWorkOrderId(
@@ -194,7 +206,13 @@ public without sharing class HOT_ReminderSMSService {
         HOT_DatabaseOperations.insertRecords(smsList);
         HOT_DatabaseOperations.updateRecords(workOrderList);
         //inserting notifications
-        HOT_NotificationCentreController.createNotification(notificationList);
+        try {
+            HOT_NotificationCentreController.createNotification(notificationList);
+        } catch (Exception e) {
+            LoggerUtility logger = new LoggerUtility();
+            logger.exception(e, CRM_ApplicationDomain.Domain.HOT);
+            logger.publish();
+        }
     }
 
     @Future
@@ -291,7 +309,13 @@ public without sharing class HOT_ReminderSMSService {
         try {
             HOT_DatabaseOperations.insertRecords(smsList);
             //inserting notifications
-            HOT_NotificationCentreController.createNotification(notificationList);
+            try {
+                HOT_NotificationCentreController.createNotification(notificationList);
+            } catch (Exception e) {
+                LoggerUtility logger = new LoggerUtility();
+                logger.exception(e, CRM_ApplicationDomain.Domain.HOT);
+                logger.publish();
+            }
         } catch (Exception e) {
             LoggerUtility logger = new LoggerUtility();
             logger.exception(e, CRM_ApplicationDomain.Domain.HOT);
@@ -387,7 +411,13 @@ public without sharing class HOT_ReminderSMSService {
         try {
             HOT_DatabaseOperations.insertRecords(smsList);
             //inserting notifications
-            HOT_NotificationCentreController.createNotification(notificationList);
+            try {
+                HOT_NotificationCentreController.createNotification(notificationList);
+            } catch (Exception e) {
+                LoggerUtility logger = new LoggerUtility();
+                logger.exception(e, CRM_ApplicationDomain.Domain.HOT);
+                logger.publish();
+            }
         } catch (Exception e) {
             LoggerUtility logger = new LoggerUtility();
             logger.exception(e, CRM_ApplicationDomain.Domain.HOT);

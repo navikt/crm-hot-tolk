@@ -149,7 +149,13 @@ public without sharing class HOT_ServiceAppointmentNotification {
             }
         }
         //inserting notifications
-        HOT_NotificationCentreController.createNotification(notificationList);
+        try {
+            HOT_NotificationCentreController.createNotification(notificationList);
+        } catch (Exception e) {
+            LoggerUtility logger = new LoggerUtility();
+            logger.exception(e, CRM_ApplicationDomain.Domain.HOT);
+            logger.publish();
+        }
     }
 
     public static void dispatcherServiceAppointmentChanged(
@@ -520,7 +526,13 @@ public without sharing class HOT_ServiceAppointmentNotification {
                     }
                 }
                 //inserting notifications
-                HOT_NotificationCentreController.createNotification(notificationList);
+                try {
+                    HOT_NotificationCentreController.createNotification(notificationList);
+                } catch (Exception e) {
+                    LoggerUtility logger = new LoggerUtility();
+                    logger.exception(e, CRM_ApplicationDomain.Domain.HOT);
+                    logger.publish();
+                }
             }
         }
     }

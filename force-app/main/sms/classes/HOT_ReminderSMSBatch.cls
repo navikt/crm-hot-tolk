@@ -91,7 +91,13 @@ public without sharing class HOT_ReminderSMSBatch implements Database.Batchable<
             logger.publish();
         }
         //inserting notifications
-        HOT_NotificationCentreController.createNotification(notificationList);
+        try {
+            HOT_NotificationCentreController.createNotification(notificationList);
+        } catch (Exception e) {
+            LoggerUtility logger = new LoggerUtility();
+            logger.exception(e, CRM_ApplicationDomain.Domain.HOT);
+            logger.publish();
+        }
     }
 
     public void finish(Database.BatchableContext bc) {
