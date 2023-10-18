@@ -599,7 +599,7 @@ public without sharing class HOT_ReminderSMSService {
             FROM ServiceResource
             WHERE RelatedRecordId = :userId
         ];
-        return sr.HOT_MobilePhone__c;
+        return sr?.HOT_MobilePhone__c;
     }
 
     public static String constructStatusChangedMessage(WorkOrder workOrder, String interpreterNames) {
