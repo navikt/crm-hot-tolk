@@ -49,9 +49,11 @@ private class HOT_ServiceAppointmentNotificationTest {
 
         WorkType workType = HOT_TestDataFactory.createWorkType();
         insert WorkType;
+        Account acc = HOT_TestDataFactory.createAccount(true);
+        insert acc;
         HOT_Request__c request = HOT_TestDataFactory.createRequest('subject', workType);
         request.PreferredResource1__c = resource.Id;
-        request.Orderer__c = HOT_TestDataFactory.createAccount(true);
+        request.Orderer__c = acc.Id;
         request.NumberOfInterpreters__c = 3;
         insert request;
 
