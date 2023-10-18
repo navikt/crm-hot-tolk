@@ -1192,6 +1192,11 @@
         <readable>true</readable>
     </fieldPermissions>
     <fieldPermissions>
+        <editable>false</editable>
+        <field>SMS__c.ServiceAppointment__c</field>
+        <readable>true</readable>
+    </fieldPermissions>
+    <fieldPermissions>
         <editable>true</editable>
         <field>SMS__c.Status__c</field>
         <readable>true</readable>
@@ -1729,6 +1734,11 @@
     <fieldPermissions>
         <editable>false</editable>
         <field>ServiceResource.HOT_MobilePhone__c</field>
+        <readable>true</readable>
+    </fieldPermissions>
+    <fieldPermissions>
+        <editable>true</editable>
+        <field>ServiceResource.HOT_NotificationChannel__c</field>
         <readable>true</readable>
     </fieldPermissions>
     <fieldPermissions>

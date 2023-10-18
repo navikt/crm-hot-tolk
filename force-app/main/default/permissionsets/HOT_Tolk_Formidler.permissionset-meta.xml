@@ -993,6 +993,11 @@
     </fieldPermissions>
     <fieldPermissions>
         <editable>false</editable>
+        <field>SMS__c.ServiceAppointment__c</field>
+        <readable>true</readable>
+    </fieldPermissions>
+    <fieldPermissions>
+        <editable>false</editable>
         <field>SMS__c.Status__c</field>
         <readable>true</readable>
     </fieldPermissions>
@@ -1454,6 +1459,11 @@
     <fieldPermissions>
         <editable>true</editable>
         <field>ServiceResource.HOT_MoreInformation__c</field>
+        <readable>true</readable>
+    </fieldPermissions>
+    <fieldPermissions>
+        <editable>true</editable>
+        <field>ServiceResource.HOT_NotificationChannel__c</field>
         <readable>true</readable>
     </fieldPermissions>
     <fieldPermissions>
