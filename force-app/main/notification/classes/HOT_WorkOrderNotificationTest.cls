@@ -62,12 +62,7 @@ private class HOT_WorkOrderNotificationTest {
     private static void canceledByUserTest() {
         Set<String> recipients = new Set<String>{ UserInfo.getUserId() };
 
-        WorkOrder wo = [
-            SELECT Id, AppointmentNumber, EarliestStartTime
-            FROM ServiceAppointment
-            WHERE Subject = 'subject'
-            LIMIT 1
-        ];
+        WorkOrder wo = [SELECT Id, WorkOrderNumber, StartDate FROM WorkOrder LIMIT 1];
 
         CustomNotificationType notificationType = [
             SELECT Id, DeveloperName
