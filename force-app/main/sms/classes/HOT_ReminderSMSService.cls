@@ -27,9 +27,7 @@ public without sharing class HOT_ReminderSMSService {
                     formatTimePeriod(workOrder.StartDate, workOrder.EndDate) +
                     '\n' +
                     'Tolk er: ' +
-                    interpreterNames.get(workOrder.Id) +
-                    '\n\nFor mer informasjon, se tolkebestilling.nav.no. Du kan ikke svare på denne meldingen.' +
-                    '\nMvh tolketjenesten i NAV';
+                    interpreterNames.get(workOrder.Id);
                 notification.HOT_RelatedObject__c = workOrder.Id;
                 notification.HOT_RelatedObjectType__c = 'workOrder';
 
@@ -69,8 +67,6 @@ public without sharing class HOT_ReminderSMSService {
                 } else {
                     message += ':\nDato: ' + formatTimePeriod(request.StartTime__c, request.EndTime__c);
                 }
-                message += '\n\nFor mer informasjon, se tolkebestilling.nav.no. Du kan ikke svare på denne meldingen.';
-                message += '\nMvh tolketjenesten i NAV';
                 notification.HOT_NotificationText__c = message;
                 if (request.IsSerieoppdrag__c) {
                     notification.HOT_RelatedObject__c = request.Id;
@@ -187,8 +183,6 @@ public without sharing class HOT_ReminderSMSService {
                     message += 'Ikke ledig tolk';
                 }
                 message += '\nDato: ' + formatTimePeriod(workOrder.StartDate, workOrder.EndDate);
-                message += '\n\nFor mer informasjon, se tolkebestilling.nav.no. Du kan ikke svare på denne meldingen.';
-                message += '\nMvh tolketjenesten i NAV';
                 notification.HOT_NotificationText__c = message;
                 notification.HOT_RelatedObject__c = workOrder.Id;
                 notification.HOT_RelatedObjectType__c = 'workOrder';
@@ -382,8 +376,6 @@ public without sharing class HOT_ReminderSMSService {
                 message += 'Tolk er: ';
                 message += wo.HOT_Interpreters__c;
                 message += '\nDato: ' + formatTimePeriod(wo.StartDate, wo.EndDate);
-                message += '\n\nFor mer informasjon, se tolkebestilling.nav.no. Du kan ikke svare på denne meldingen.';
-                message += '\nMvh tolketjenesten i NAV';
                 notification.HOT_NotificationText__c = message;
                 notification.HOT_RelatedObject__c = wo.Id;
                 notification.HOT_RelatedObjectType__c = 'workOrder';

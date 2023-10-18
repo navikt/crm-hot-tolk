@@ -17,9 +17,25 @@ private class HOT_ReminderSMSServiceTest {
         request.IsOrdererWantStatusUpdateOnSMS__c = true;
         request.Orderer__c = account.Id;
         insert request;
+
         // To create child records
         request.Status__c = 'Godkjent';
         update request;
+
+        HOT_Request__c request2 = HOT_TestDataFactory.createRequest('TEST', workType);
+        request2.Account__c = account.Id;
+        request2.StartTime__c = request2.StartTime__c.addDays(3);
+        request2.EndTime__c = request2.EndTime__c.addDays(3);
+        request2.OrdererPhone__c = '00000000';
+        request2.IsOrdererWantStatusUpdateOnSMS__c = true;
+        request2.Orderer__c = account.Id;
+        request2.NumberOfInterpreters__c = 3;
+        insert request2;
+
+        // To create child records
+        request2.Status__c = 'Godkjent';
+        update request2;
+
         WorkOrder workOrder = [
             SELECT
                 Id,
@@ -30,6 +46,7 @@ private class HOT_ReminderSMSServiceTest {
                 EndDate,
                 HOT_Request__r.IsNotNotifyAccount__c
             FROM WorkOrder
+            WHERE HOT_Request__c = :request.Id
         ];
         workOrder.Status = 'Dispatched';
         workOrder.StartDate = workOrder.StartDate.addDays(-2);
@@ -51,7 +68,7 @@ private class HOT_ReminderSMSServiceTest {
         ];
         HOT_ReminderSMSService.reminderSMS(workOrders);
         List<SMS__c> smsList = [SELECT Id FROM SMS__c];
-        System.assertEquals(1, smsList.size(), 'Could not create sms-record');
+        System.assertEquals(2, smsList.size(), 'Could not create sms-record');
     }
 
     @isTest
@@ -70,7 +87,7 @@ private class HOT_ReminderSMSServiceTest {
         ];
         HOT_ReminderSMSService.notifyUserOnOrderSMS(requests);
         List<SMS__c> smsList = [SELECT Id FROM SMS__c];
-        System.assertEquals(1, smsList.size(), 'Could not create sms-record');
+        System.assertEquals(2, smsList.size(), 'Could not create sms-record');
     }
 
     @isTest
@@ -107,7 +124,7 @@ private class HOT_ReminderSMSServiceTest {
         Test.stopTest();
 
         List<SMS__c> smsList = [SELECT Id, Message__c FROM SMS__c];
-        System.assertEquals(1, smsList.size(), 'Could not create sms-record');
+        System.assertEquals(2, smsList.size(), 'Could not create sms-record');
     }
 
     @isTest
@@ -132,7 +149,7 @@ private class HOT_ReminderSMSServiceTest {
         update workOrders;
         HOT_ReminderSMSService.sendSMSToOrdererOnStatusUpdate(workOrders);
         List<SMS__c> smsList = [SELECT Id FROM SMS__c];
-        System.assertEquals(1, smsList.size(), 'Could not create sms-record');
+        System.assertEquals(2, smsList.size(), 'Could not create sms-record');
     }
 
     @isTest
