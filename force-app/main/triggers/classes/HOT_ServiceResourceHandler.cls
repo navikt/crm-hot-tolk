@@ -22,8 +22,71 @@ public without sharing class HOT_ServiceResourceHandler {
     //Kjøres fra User trigger onInsert
     @Future
     public static void createServiceResourceFuture(List<Id> userIds) {
-        List<User> users = [SELECT Id, Name, FirstName, MiddleName, LastName, ProfileId, Department FROM User WHERE Id IN :userIds];
+        List<User> users = [
+            SELECT Id, Name, FirstName, MiddleName, LastName, ProfileId, Department
+            FROM User
+            WHERE Id IN :userIds
+        ];
         createServiceResource(users, true, 'AUTO');
+    }
+
+    public class ServiceResourceRequest {
+        @InvocableVariable(
+            label='User Id'
+            description='The user Id for the user we are creating the serivce resource for.'
+        )
+        public Id UserId;
+
+        @InvocableVariable(
+            label='Service Territory (Developer Name)'
+            description='The name of the territory the user will operate in.'
+        )
+        public String ServiceTerritory;
+    }
+
+    public class ServiceResourceResponse {
+        @InvocableVariable(
+            label='Success'
+            description='Will return boolean "True" if successful and boolean "False" if not successful.'
+        )
+        public Boolean Success = false;
+        @InvocableVariable(label='Error Message' description='Will contain the error message if request failed.')
+        public String ErrorMessage;
+    }
+
+    @InvocableMethod(
+        label='Create Service Resource Invocable'
+        description='Creates a service resource for freelance interpreters'
+        category='HOT Tolketjeneste'
+        iconName='slds:standard:service_resource'
+    )
+    public static List<ServiceResourceResponse> createServiceResourceInvocable(
+        List<ServiceResourceRequest> serviceResourceRequest
+    ) {
+        ServiceResourceResponse serviceResourceResponse = new ServiceResourceResponse();
+        List<ServiceResourceResponse> serviceResourceResponses = new List<ServiceResourceResponse>();
+        Id userId = ServiceResourceRequest[0].UserId;
+        String serviceTerritoryDeveloperName = serviceResourceRequest[0].ServiceTerritory;
+        List<User> users = [
+            SELECT Id, Name, FirstName, MiddleName, LastName, ProfileId, Department
+            FROM User
+            WHERE Id = :userId
+        ];
+
+        try {
+            createServiceResource(users, true, serviceTerritoryDeveloperName);
+            serviceResourceResponse.Success = true;
+        } catch (Exception ex) {
+            serviceResourceResponse.ErrorMessage =
+                serviceResourceRequest[0].UserId +
+                ' - ' +
+                serviceResourceRequest[0].ServiceTerritory +
+                ' - ' +
+                ex.getMessage();
+            serviceResourceResponses.add(serviceResourceResponse);
+        }
+
+        return serviceResourceResponses;
     }
 
     //Hovedmetode som oppretter Tjenesteressurser
@@ -44,7 +107,9 @@ public without sharing class HOT_ServiceResourceHandler {
             Boolean isFreelance = user.ProfileId == freelanceProfileId;
             ServiceResource serviceResource = new ServiceResource();
             serviceResource.RelatedRecordId = Test.isRunningTest() ? UserInfo.getUserId() : user.Id;
-            serviceResource.Name = user.MiddleName != null ? (user.Firstname + ' ' + user.MiddleName + ' ' + user.LastName) : (user.Firstname + ' ' + user.LastName);
+            serviceResource.Name = user.MiddleName != null
+                ? (user.Firstname + ' ' + user.MiddleName + ' ' + user.LastName)
+                : (user.Firstname + ' ' + user.LastName);
             serviceResource.ResourceType = 'T';
             serviceResource.IsActive = true;
             serviceResource.HOT_IsEmployedInterpreter__c = !isFreelance;
