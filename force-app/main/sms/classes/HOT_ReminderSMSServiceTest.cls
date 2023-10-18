@@ -150,20 +150,6 @@ private class HOT_ReminderSMSServiceTest {
     }
 
     @isTest
-    static void sendSMSOnNewMessageInterpreterTest() {
-        Thread__c thread = HOT_TestDataFactory.createThread('HOT_TOLK-FORMIDLER');
-        insert thread;
-
-        thread = [SELECT Id FROM Thread__c LIMIT 1];
-
-        String userId = UserInfo.getUserId();
-
-        Test.startTest();
-        HOT_ReminderSMSService.sendSMSOnNewMessageInterpreter(userId, thread.Id);
-        Test.stopTest();
-    }
-
-    @isTest
     static void sendSMSOnInterpreterChangeTest() {
         List<WorkOrder> workOrders = [SELECT Id FROM WorkOrder];
 
