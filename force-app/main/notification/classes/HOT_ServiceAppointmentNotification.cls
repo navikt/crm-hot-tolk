@@ -3,8 +3,6 @@ public without sharing class HOT_ServiceAppointmentNotification {
         List<ServiceAppointment> serviceAppointments,
         Map<Id, sObject> triggerOldMap
     ) {
-        //Set<Id> saIdsToSendSMSOnResourceAddedOrChanged = new Set<Id>();
-        //Map<Id, Account> srAccountIdToAccount = new Map<Id, Account>();
         CustomNotificationType notificationType = [
             SELECT Id, DeveloperName
             FROM CustomNotificationType

@@ -51,6 +51,7 @@ private class HOT_ServiceAppointmentNotificationTest {
         insert WorkType;
         HOT_Request__c request = HOT_TestDataFactory.createRequest('subject', workType);
         request.PreferredResource1__c = resource.Id;
+        request.Orderer__c = HOT_TestDataFactory.createAccount(true);
         request.NumberOfInterpreters__c = 3;
         insert request;
 
@@ -166,6 +167,20 @@ private class HOT_ServiceAppointmentNotificationTest {
         ];
         Test.startTest();
         HOT_ServiceAppointmentNotification.resourceCanceled(notificationType, serviceAppointment, recipients);
+        Test.stopTest();
+    }
+
+    @isTest
+    private static void notifyUserOnChangedResourceTest() {
+        ServiceAppointment serviceAppointment = [
+            SELECT Id, AppointmentNumber, EarliestStartTime
+            FROM ServiceAppointment
+            WHERE Subject = 'subject'
+            LIMIT 1
+        ];
+
+        Test.startTest();
+        HOT_ServiceAppointmentNotification.notifyUserOnChangedResource(serviceAppointment);
         Test.stopTest();
     }
 
