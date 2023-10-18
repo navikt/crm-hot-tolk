@@ -98,7 +98,7 @@ private class HOT_ReminderSMSServiceTest {
         Set<Id> saIds = (new Map<Id, ServiceAppointment>([SELECT Id FROM ServiceAppointment LIMIT 1])).keySet();
 
         Test.startTest();
-        HOT_ReminderSMSService.sendSMSToInterpreterOnScreenInterpretation(new Set<Id>(saIds));
+        HOT_ReminderSMSService.sendSMSToInterpreterOnScreenInterpretation(saIds);
         Test.stopTest();
     }
     @isTest
@@ -106,7 +106,7 @@ private class HOT_ReminderSMSServiceTest {
         Set<Id> saIds = (new Map<Id, ServiceAppointment>([SELECT Id FROM ServiceAppointment LIMIT 1])).keySet();
 
         Test.startTest();
-        HOT_ReminderSMSService.sendSMSToInterpreterOnTimeChanged(new Set<Id>(saIds));
+        HOT_ReminderSMSService.sendSMSToInterpreterOnTimeChanged(saIds);
         Test.stopTest();
     }
     @isTest
@@ -114,7 +114,7 @@ private class HOT_ReminderSMSServiceTest {
         Set<Id> saIds = (new Map<Id, ServiceAppointment>([SELECT Id FROM ServiceAppointment LIMIT 1])).keySet();
 
         Test.startTest();
-        HOT_ReminderSMSService.sendSMSToInterpreterOnAddressChanged(new Set<Id>(saIds));
+        HOT_ReminderSMSService.sendSMSToInterpreterOnAddressChanged(saIds);
         Test.stopTest();
     }
     @isTest
@@ -122,7 +122,7 @@ private class HOT_ReminderSMSServiceTest {
         Set<Id> saIds = (new Map<Id, ServiceAppointment>([SELECT Id FROM ServiceAppointment LIMIT 1])).keySet();
 
         Test.startTest();
-        HOT_ReminderSMSService.sendSMSToInterpreterOnAddedOrChanged(new Set<Id>(saIds));
+        HOT_ReminderSMSService.sendSMSToInterpreterOnAddedOrChanged(saIds);
         Test.stopTest();
     }
     @isTest
@@ -130,7 +130,7 @@ private class HOT_ReminderSMSServiceTest {
         Set<Id> saIds = (new Map<Id, ServiceAppointment>([SELECT Id FROM ServiceAppointment LIMIT 1])).keySet();
 
         Test.startTest();
-        HOT_ReminderSMSService.sendSMSToInterpreterOnResourceChanged(new Set<Id>(saIds));
+        HOT_ReminderSMSService.sendSMSToInterpreterOnResourceChanged(saIds);
         Test.stopTest();
     }
 
