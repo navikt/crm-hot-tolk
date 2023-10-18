@@ -151,7 +151,7 @@ private class HOT_ReminderSMSServiceTest {
 
     @isTest
     static void sendSMSOnNewMessageInterpreterTest() {
-        HOT_Request__c request = [SELECT Id, OwnerId, Subject__c FROM HOT_Request__c];
+        HOT_Request__c request = [SELECT Id, OwnerId, Subject__c FROM HOT_Request__c LIMIT 1];
         Thread__c thread = HOT_TestDataFactory.createThread('HOT_TOLK-FORMIDLER');
         thread.CRM_Related_Object__c = request.Id;
         insert thread;
