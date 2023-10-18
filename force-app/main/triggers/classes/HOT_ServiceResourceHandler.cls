@@ -73,14 +73,18 @@ public without sharing class HOT_ServiceResourceHandler {
             WHERE Id = :userId
         ];
 
-        //serviceResourceResponse.Success = false;
-        createServiceResource(users, true, serviceTerritoryDeveloperName);
-
-        serviceResourceResponse.ErrorMessage =
-            serviceResourceRequest[0].UserId +
-            ' - ' +
-            serviceResourceRequest[0].ServiceTerritory;
-        serviceResourceResponses.add(serviceResourceResponse);
+        try {
+            createServiceResource(users, true, serviceTerritoryDeveloperName);
+            serviceResourceResponse.Success = true;
+        } catch (Exception ex) {
+            serviceResourceResponse.ErrorMessage =
+                serviceResourceRequest[0].UserId +
+                ' - ' +
+                serviceResourceRequest[0].ServiceTerritory +
+                ' - ' +
+                ex.getMessage();
+            serviceResourceResponses.add(serviceResourceResponse);
+        }
 
         return serviceResourceResponses;
     }
