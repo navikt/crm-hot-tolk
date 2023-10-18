@@ -186,16 +186,17 @@ public without sharing class HOT_ReminderSMSService {
                 notification.HOT_Account__c = workOrder.HOT_Request__r.Orderer__c;
                 notification.HOT_NotificationChannel__c = 'SMS';
                 notification.HOT_Subject__c = 'INFO\nStatus på din bestilling er:\n';
-                String message = '';
                 if (workOrder.Status == 'Dispatched') {
-                    message += 'Du har fått tolk. ';
-                    message += 'Tolk er: ';
-                    message += interpreterNames;
+                    notification.HOT_NotificationText__c =
+                        'Du har fått tolk. Tolk er: ' +
+                        interpreterNames.get(workOrder.Id) +
+                        formatTimePeriod(workOrder.StartDate, workOrder.EndDate);
                 } else if (workOrder.Status == 'Cannot Complete') {
-                    message += 'Ikke ledig tolk';
+                    notification.HOT_NotificationText__c =
+                        'Ikke ledig tolk' +
+                        '\nDato: ' +
+                        formatTimePeriod(workOrder.StartDate, workOrder.EndDate);
                 }
-                message += '\nDato: ' + formatTimePeriod(workOrder.StartDate, workOrder.EndDate);
-                notification.HOT_NotificationText__c = message;
                 notification.HOT_RelatedObject__c = workOrder.Id;
                 notification.HOT_RelatedObjectType__c = 'workOrder';
 
