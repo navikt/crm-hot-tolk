@@ -257,4 +257,41 @@ private class HOT_ReminderSMSServiceTest {
 
         System.assertEquals(orderPhoneNumber, smsPhoneNumber, 'SMS was not sent to the user');
     }
+    @isTest
+    public static void testSendSMSOnNewMessage() {
+        Person__c person = HOT_TestDataFactory.createPerson();
+        person.Name = '12015678999';
+        insert person;
+        Account personAccount = HOT_TestDataFactory.createAccount(true);
+        personAccount.INT_PersonIdent__c = '12015678999';
+        personAccount.CRM_Person__c = person.Id;
+        insert personAccount;
+        WorkType workType = HOT_TestDataFactory.createWorkType();
+        insert workType;
+        HOT_Request__c request = HOT_TestDataFactory.createRequest('TEST', workType);
+        request.Account__c = personAccount.Id;
+        request.StartTime__c = request.StartTime__c.addDays(3);
+        request.EndTime__c = request.EndTime__c.addDays(3);
+        request.Orderer__c = personAccount.Id;
+        insert request;
+        Test.startTest();
+        Thread__c thread1 = new Thread__c(
+            CRM_Account__c = personAccount.Id,
+            CRM_Thread_Type__c = 'HOT_TOLK-RESSURSKONTOR'
+        );
+        insert thread1;
+
+        Thread__c thread2 = new Thread__c(
+            CRM_Account__c = personAccount.Id,
+            CRM_Thread_Type__c = 'HOT_TOLK-RESSURSKONTOR'
+        );
+        insert thread2;
+
+        Set<Id> threadIds = new Set<Id>{ thread1.Id, thread2.Id };
+
+        HOT_ReminderSMSService.sendSMSOnNewMessage(threadIds);
+        List<SMS__c> smsList = [SELECT Id FROM SMS__c];
+        Test.stopTest();
+        System.assertEquals(0, smsList.size(), 'Should not created SMS');
+    }
 }
