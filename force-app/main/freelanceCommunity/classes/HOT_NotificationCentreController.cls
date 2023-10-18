@@ -33,4 +33,29 @@ public without sharing class HOT_NotificationCentreController {
         ];
         return notification;
     }
+    @AuraEnabled
+    public static String getTargetPage(Id workOrderId) {
+        String target = '';
+        User user = [SELECT Id, AccountId FROM User WHERE Id = :UserInfo.getUserId() LIMIT 1];
+        WorkOrder wo = [
+            SELECT
+                Id,
+                HOT_Request__c,
+                HOT_Request__r.IsAccountEqualOrderer__c,
+                HOT_Request__r.Orderer__c,
+                HOT_Request__r.Account__c
+            FROM WorkOrder
+            WHERE Id = :workOrderId
+        ];
+        if (
+            wo.HOT_Request__r.IsAccountEqualOrderer__c == true ||
+            (wo.HOT_Request__r.IsAccountEqualOrderer__c == false &&
+            wo.HOT_Request__r.Account__c == user.AccountId)
+        ) {
+            target = 'mine-bestillinger';
+        } else {
+            target = 'mine-bestillinger-andre';
+        }
+        return target;
+    }
 }

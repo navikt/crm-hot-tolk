@@ -2,6 +2,8 @@ import { LightningElement, track, wire } from 'lwc';
 import { NavigationMixin } from 'lightning/navigation';
 import getMyNotifications from '@salesforce/apex/HOT_NotificationCentreController.getMyNotifications';
 import getNotificationType from '@salesforce/apex/HOT_NotificationCentreController.getNotificationType';
+import getTargetPage from '@salesforce/apex/HOT_NotificationCentreController.getTargetPage';
+
 import { refreshApex } from '@salesforce/apex';
 export default class Hot_notificationList extends NavigationMixin(LightningElement) {
     @track isMobile;
@@ -94,15 +96,32 @@ export default class Hot_notificationList extends NavigationMixin(LightningEleme
                     });
                 }
                 if (result.HOT_RelatedObjectType__c == 'workOrder') {
-                    this[NavigationMixin.Navigate]({
-                        type: 'comm__namedPage',
-                        attributes: {
-                            pageName: 'mine-bestillinger'
-                        },
-                        state: {
-                            id: result.HOT_RelatedObject__c,
-                            level: 'WO',
-                            from: 'mine-varsler'
+                    var relatedId = result.HOT_RelatedObject__c;
+                    getTargetPage({ workOrderId: result.HOT_RelatedObject__c }).then((result) => {
+                        if (result == 'mine-bestillinger-andre') {
+                            this[NavigationMixin.Navigate]({
+                                type: 'comm__namedPage',
+                                attributes: {
+                                    pageName: 'mine-bestillinger-andre'
+                                },
+                                state: {
+                                    id: relatedId,
+                                    level: 'WO',
+                                    from: 'mine-varsler'
+                                }
+                            });
+                        } else {
+                            this[NavigationMixin.Navigate]({
+                                type: 'comm__namedPage',
+                                attributes: {
+                                    pageName: 'mine-bestillinger'
+                                },
+                                state: {
+                                    id: relatedId,
+                                    level: 'WO',
+                                    from: 'mine-varsler'
+                                }
+                            });
                         }
                     });
                 }

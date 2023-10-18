@@ -70,26 +70,29 @@ public without sharing class HOT_SMSStatusChangeServiceBatch implements Database
                         notification.HOT_Account__c = wo.HOT_Request__r.Orderer__c;
                         notification.HOT_NotificationChannel__c = 'Push-varsel i appen';
                         notification.HOT_Subject__c = 'Status på din bestilling er endret';
-                        String message = '';
                         if (wo.Status == 'Dispatched') {
-                            message = 'Du har fått tolk. Tolk er ' + wo.HOT_Interpreters__c;
+                            notification.HOT_NotificationText__c =
+                                'Du har fått tolk. Tolk er ' +
+                                wo.HOT_Interpreters__c +
+                                '\nDato: ' +
+                                wo.StartDate?.format('dd.MM.yyyy', 'Europe/Oslo') +
+                                ', kl: ' +
+                                wo.StartDate?.format('HH:mm', 'Europe/Oslo') +
+                                ' - ' +
+                                wo.EndDate?.format('HH:mm', 'Europe/Oslo') +
+                                '.';
                         }
                         if (wo.Status == 'Cannot Complete') {
-                            message = 'Ikke ledig tolk.';
+                            notification.HOT_NotificationText__c =
+                                'Ikke ledig tolk.' +
+                                '\nDato: ' +
+                                wo.StartDate?.format('dd.MM.yyyy', 'Europe/Oslo') +
+                                ', kl: ' +
+                                wo.StartDate?.format('HH:mm', 'Europe/Oslo') +
+                                ' - ' +
+                                wo.EndDate?.format('HH:mm', 'Europe/Oslo') +
+                                '.';
                         }
-                        message +=
-                            '\nDato: ' +
-                            wo.StartDate?.format('dd.MM.yyyy', 'Europe/Oslo') +
-                            ', kl: ' +
-                            wo.StartDate?.format('HH:mm', 'Europe/Oslo') +
-                            ' - ' +
-                            wo.EndDate?.format('HH:mm', 'Europe/Oslo') +
-                            '.';
-                        if (message.length() > 255) {
-                            message = message.substring(0, 250);
-                            message += '...';
-                        }
-                        notification.HOT_NotificationText__c = message;
                         notification.HOT_RelatedObject__c = wo.Id;
                         notification.HOT_RelatedObjectType__c = 'workOrder';
 
