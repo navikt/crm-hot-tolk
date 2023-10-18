@@ -50,7 +50,7 @@
         <storeOutputAutomatically>true</storeOutputAutomatically>
         <versionSegment>1</versionSegment>
     </actionCalls>
-    <apiVersion>49.0</apiVersion>
+    <apiVersion>59.0</apiVersion>
     <choices>
         <name>Agder</name>
         <choiceText>Agder</choiceText>
