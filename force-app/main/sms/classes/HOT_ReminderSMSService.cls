@@ -282,7 +282,7 @@ public without sharing class HOT_ReminderSMSService {
             notification.HOT_Account__c = ir.ServiceResource__r.Account.Id;
             notification.HOT_NotificationChannel__c = 'SMS';
             notification.HOT_Subject__c = 'Du er ønsket til et oppdrag';
-            notification.HOT_NotificationText__c = constructOnNewWantedSR();
+            notification.HOT_NotificationText__c = 'INFO\nDu er ønsket til et oppdrag.\n\n';
             notification.HOT_RelatedObject__c = ir.Id;
             notification.HOT_RelatedObjectType__c = 'wanted';
 
