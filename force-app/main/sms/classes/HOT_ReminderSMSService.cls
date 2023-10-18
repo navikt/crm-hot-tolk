@@ -314,9 +314,9 @@ public without sharing class HOT_ReminderSMSService {
             SMS__c sms = new SMS__c();
             sms.Domain__c = 'HOT';
             sms.Type__c = 'Interpreter';
-            sms.Account__c = sa.HOT_ServiceResource__r.AccountId;
+            sms.Account__c = sa.HOT_ServiceResource__r?.AccountId;
             sms.ServiceAppointment__c = sa.Id;
-            sms.Recipient__c = sa.HOT_ServiceResource__r.HOT_MobilePhone__c;
+            sms.Recipient__c = sa.HOT_ServiceResource__r?.HOT_MobilePhone__c;
             sms.Message__c = constructMessageToInterpreter(sa, 'Screen');
             if (SMS.Recipient__c != null) {
                 smsList.add(sms);
@@ -349,9 +349,9 @@ public without sharing class HOT_ReminderSMSService {
             SMS__c sms = new SMS__c();
             sms.Domain__c = 'HOT';
             sms.Type__c = 'Interpreter';
-            sms.Account__c = sa.HOT_ServiceResource__r.AccountId;
+            sms.Account__c = sa.HOT_ServiceResource__r?.AccountId;
             sms.ServiceAppointment__c = sa.Id;
-            sms.Recipient__c = sa.HOT_ServiceResource__r.HOT_MobilePhone__c;
+            sms.Recipient__c = sa.HOT_ServiceResource__r?.HOT_MobilePhone__c;
             sms.Message__c = constructMessageToInterpreter(sa, 'Time');
             if (SMS.Recipient__c != null) {
                 smsList.add(sms);
@@ -380,9 +380,9 @@ public without sharing class HOT_ReminderSMSService {
             SMS__c sms = new SMS__c();
             sms.Domain__c = 'HOT';
             sms.Type__c = 'Interpreter';
-            sms.Account__c = srList[0].AccountId;
+            sms.Account__c = srList[0]?.AccountId;
             sms.ServiceAppointment__c = sa.Id;
-            sms.Recipient__c = srList[0].HOT_MobilePhone__c;
+            sms.Recipient__c = srList[0]?.HOT_MobilePhone__c;
             sms.Message__c = constructMessageToInterpreter(sa, 'CancelledByUser');
             if (SMS.Recipient__c != null) {
                 smsList.add(sms);
@@ -415,9 +415,9 @@ public without sharing class HOT_ReminderSMSService {
             SMS__c sms = new SMS__c();
             sms.Domain__c = 'HOT';
             sms.Type__c = 'Interpreter';
-            sms.Account__c = sa.HOT_ServiceResource__r.AccountId;
+            sms.Account__c = sa.HOT_ServiceResource__r?.AccountId;
             sms.ServiceAppointment__c = sa.Id;
-            sms.Recipient__c = sa.HOT_ServiceResource__r.HOT_MobilePhone__c;
+            sms.Recipient__c = sa.HOT_ServiceResource__r?.HOT_MobilePhone__c;
             sms.Message__c = constructMessageToInterpreter(sa, 'Address');
             if (SMS.Recipient__c != null) {
                 smsList.add(sms);
@@ -450,9 +450,9 @@ public without sharing class HOT_ReminderSMSService {
             SMS__c sms = new SMS__c();
             sms.Domain__c = 'HOT';
             sms.Type__c = 'Interpreter';
-            sms.Account__c = sa.HOT_ServiceResource__r.AccountId;
+            sms.Account__c = sa.HOT_ServiceResource__r?.AccountId;
             sms.ServiceAppointment__c = sa.Id;
-            sms.Recipient__c = sa.HOT_ServiceResource__r.HOT_MobilePhone__c;
+            sms.Recipient__c = sa.HOT_ServiceResource__r?.HOT_MobilePhone__c;
             sms.Message__c = constructMessageToInterpreter(sa, 'Dispatched');
             if (SMS.Recipient__c != null) {
                 smsList.add(sms);
@@ -485,9 +485,9 @@ public without sharing class HOT_ReminderSMSService {
             SMS__c sms = new SMS__c();
             sms.Domain__c = 'HOT';
             sms.Type__c = 'Interpreter';
-            sms.Account__c = sa.HOT_ServiceResource__r.AccountId;
+            sms.Account__c = sa.HOT_ServiceResource__r?.AccountId;
             sms.ServiceAppointment__c = sa.Id;
-            sms.Recipient__c = sa.HOT_ServiceResource__r.HOT_MobilePhone__c;
+            sms.Recipient__c = sa.HOT_ServiceResource__r?.HOT_MobilePhone__c;
             sms.Message__c = constructMessageToInterpreter(sa, 'Removed');
             if (SMS.Recipient__c != null) {
                 smsList.add(sms);

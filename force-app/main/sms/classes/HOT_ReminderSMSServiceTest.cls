@@ -94,6 +94,47 @@ private class HOT_ReminderSMSServiceTest {
     }
 
     @isTest
+    static void sendSMSToInterpreterOnScreenInterpretationTest() {
+        Set<Id> saIds = (new Map<Id, ServiceAppointment>([SELECT Id FROM ServiceAppointment LIMIT 1])).keySet();
+
+        Test.startTest();
+        HOT_ReminderSMSService.sendSMSToInterpreterOnScreenInterpretation(new Set<Id>(saIds));
+        Test.stopTest();
+    }
+    @isTest
+    static void sendSMSToInterpreterOnTimeChangedTest() {
+        Set<Id> saIds = (new Map<Id, ServiceAppointment>([SELECT Id FROM ServiceAppointment LIMIT 1])).keySet();
+
+        Test.startTest();
+        HOT_ReminderSMSService.sendSMSToInterpreterOnTimeChanged(new Set<Id>(saIds));
+        Test.stopTest();
+    }
+    @isTest
+    static void sendSMSToInterpreterOnAddressChangedTest() {
+        Set<Id> saIds = (new Map<Id, ServiceAppointment>([SELECT Id FROM ServiceAppointment LIMIT 1])).keySet();
+
+        Test.startTest();
+        HOT_ReminderSMSService.sendSMSToInterpreterOnAddressChanged(new Set<Id>(saIds));
+        Test.stopTest();
+    }
+    @isTest
+    static void sendSMSToInterpreterOnAddedOrChangedTest() {
+        Set<Id> saIds = (new Map<Id, ServiceAppointment>([SELECT Id FROM ServiceAppointment LIMIT 1])).keySet();
+
+        Test.startTest();
+        HOT_ReminderSMSService.sendSMSToInterpreterOnAddedOrChanged(new Set<Id>(saIds));
+        Test.stopTest();
+    }
+    @isTest
+    static void sendSMSToInterpreterOnResourceChangedTest() {
+        Set<Id> saIds = (new Map<Id, ServiceAppointment>([SELECT Id FROM ServiceAppointment LIMIT 1])).keySet();
+
+        Test.startTest();
+        HOT_ReminderSMSService.sendSMSToInterpreterOnResourceChanged(new Set<Id>(saIds));
+        Test.stopTest();
+    }
+
+    @isTest
     static void sendSMSOnInterpreterChangeTest() {
         List<WorkOrder> workOrders = [SELECT Id FROM WorkOrder];
 
