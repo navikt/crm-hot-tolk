@@ -126,6 +126,7 @@ public class HOT_UserNotificationServiceTest {
         );
         Test.stopTest();
     }
+
     @isTest
     private static void newMessageNotificationTest() {
         WorkType workType = HOT_TestDataFactory.createWorkType();
@@ -146,6 +147,21 @@ public class HOT_UserNotificationServiceTest {
 
         Test.startTest();
         HOT_UserNotificationService.newMessageNotification(notificationType, t, false, recipients);
+        Test.stopTest();
+    }
+
+    @isTest
+    private static void newWantedSRNotificationTest() {
+        CustomNotificationType notificationType = [
+            SELECT Id, DeveloperName
+            FROM CustomNotificationType
+            WHERE DeveloperName = 'HOT_NotifyUser'
+        ];
+
+        Set<String> recipients = new Set<String>{ UserInfo.getUserId() };
+
+        Test.startTest();
+        HOT_UserNotificationService.newWantedSRNotification(notificationType, recipients);
         Test.stopTest();
     }
 }
