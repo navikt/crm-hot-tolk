@@ -372,11 +372,12 @@ public without sharing class HOT_ReminderSMSService {
                 notification.HOT_Account__c = wo.HOT_Request__r.Orderer__c;
                 notification.HOT_NotificationChannel__c = 'SMS';
                 notification.HOT_Subject__c = 'INFO\nTolk på din bestilling er endret:\n';
-                String message = 'INFO\nTolk på din bestilling er endret:\n';
-                message += 'Tolk er: ';
-                message += wo.HOT_Interpreters__c;
-                message += '\nDato: ' + formatTimePeriod(wo.StartDate, wo.EndDate);
-                notification.HOT_NotificationText__c = message;
+                notification.HOT_NotificationText__c =
+                    'INFO\nTolk på din bestilling er endret:\n' +
+                    'Tolk er: ' +
+                    wo.HOT_Interpreters__c +
+                    '\nDato: ' +
+                    formatTimePeriod(wo.StartDate, wo.EndDate);
                 notification.HOT_RelatedObject__c = wo.Id;
                 notification.HOT_RelatedObjectType__c = 'workOrder';
 

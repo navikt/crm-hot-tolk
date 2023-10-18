@@ -85,6 +85,10 @@ public without sharing class HOT_SMSStatusChangeServiceBatch implements Database
                             ' - ' +
                             wo.EndDate?.format('HH:mm', 'Europe/Oslo') +
                             '.';
+                        if (message.length() > 255) {
+                            message = message.substring(0, 250);
+                            message += '...';
+                        }
                         notification.HOT_NotificationText__c = message;
                         notification.HOT_RelatedObject__c = wo.Id;
                         notification.HOT_RelatedObjectType__c = 'workOrder';
