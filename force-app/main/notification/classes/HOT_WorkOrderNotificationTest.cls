@@ -1,5 +1,5 @@
 @isTest
-private class HOT_ServiceAppointmentNotificationTest {
+private class HOT_WorkOrderNotificationTest {
     @testSetup
     static void setup() {
         OperatingHours operatingHours = HOT_TestDataFactory.createOperatingHours();
