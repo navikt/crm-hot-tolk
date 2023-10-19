@@ -11,8 +11,8 @@ private class HOT_MessagesNotificationTest {
 
         Person__c person = new Person__c();
         person.INT_Confidential__c = 'UGRADERT';
-        person.Name = '01010100001';
-        person.INT_LastName__c = 'Test';
+        person.Name = '01010100111';
+        person.INT_LastName__c = 'SMS';
         person.INT_FirstName__c = 'User';
         person.INT_KrrMobilePhone__c = '12345678';
         person.HOT_NotificationChannel__c = 'SMS';
@@ -21,10 +21,10 @@ private class HOT_MessagesNotificationTest {
 
         Person__c personPush = new Person__c();
         personPush.INT_Confidential__c = 'UGRADERT';
-        personPush.Name = '01010100001';
-        personPush.INT_LastName__c = 'Test';
+        personPush.Name = '01010100331';
+        personPush.INT_LastName__c = 'Pusher';
         personPush.INT_FirstName__c = 'User';
-        personPush.INT_KrrMobilePhone__c = '12345678';
+        personPush.INT_KrrMobilePhone__c = '32145678';
         personPush.HOT_NotificationChannel__c = 'Push-varsel i appen';
         personPush.HOT_IsReservationAgainstNotifications__c = false;
         insert personPush;
@@ -54,8 +54,14 @@ private class HOT_MessagesNotificationTest {
         message.CRM_Message_Text__c = 'Dette er en testmelding';
         insert message;
 
+        List<Id> threadIds = new List<Id>();
+        List<Thread__c> threads = [SELECT Id FROM Thread__c];
+        for (Thread__c thread : threads) {
+            threadIds.add(thread.Id);
+        }
+
         test.startTest();
-        HOT_MessagesNotification.NotifyDispatcher(thread.Id);
+        HOT_MessagesNotification.NotifyUser(threadIds);
         test.stopTest();
     }
 
