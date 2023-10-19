@@ -97,7 +97,7 @@
             <sortOrder>4</sortOrder>
         </platformActionListItems>
         <platformActionListItems>
-            <actionName>Account.Oppgrader_bruker_til_frilanstolk</actionName>
+            <actionName>Account.HOT_UpgradeUserToFreelance</actionName>
             <actionType>QuickAction</actionType>
             <sortOrder>5</sortOrder>
         </platformActionListItems>
