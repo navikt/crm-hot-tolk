@@ -56,8 +56,8 @@ private class HOT_MessagesNotificationTest {
 
         List<Id> threadIds = new List<Id>();
         List<Thread__c> threads = [SELECT Id FROM Thread__c];
-        for (Thread__c thread : threads) {
-            threadIds.add(thread.Id);
+        for (Thread__c t : threads) {
+            threadIds.add(t.Id);
         }
 
         test.startTest();
@@ -87,8 +87,8 @@ private class HOT_MessagesNotificationTest {
 
         List<Id> threadIds = new List<Id>();
         List<Thread__c> threads = [SELECT Id FROM Thread__c];
-        for (Thread__c thread : threads) {
-            threadIds.add(thread.Id);
+        for (Thread__c t : threads) {
+            threadIds.add(t.Id);
         }
 
         test.startTest();
@@ -113,8 +113,8 @@ private class HOT_MessagesNotificationTest {
 
         List<Id> threadIds = new List<Id>();
         List<Thread__c> threads = [SELECT Id FROM Thread__c];
-        for (Thread__c thread : threads) {
-            threadIds.add(thread.Id);
+        for (Thread__c t : threads) {
+            threadIds.add(t.Id);
         }
 
         test.startTest();
