@@ -173,7 +173,7 @@
         <dataType>String</dataType>
         <expression>{!$User.Id}</expression>
     </formulas>
-    <interviewLabel>Create Freelance User {!$Flow.CurrentDateTime}</interviewLabel>
+    <interviewLabel>HOT_CreateFreelanceUser {!$Flow.CurrentDateTime}</interviewLabel>
     <label>Create Freelance User</label>
     <processMetadataValues>
         <name>BuilderType</name>
@@ -395,6 +395,7 @@
         </inputAssignments>
         <object>ServiceResource</object>
     </recordUpdates>
+    <runInMode>SystemModeWithoutSharing</runInMode>
     <screens>
         <name>Already_added_as_user_screen</name>
         <label>Already added as user</label>
