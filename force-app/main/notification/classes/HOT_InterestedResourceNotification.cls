@@ -1,13 +1,13 @@
 public without sharing class HOT_InterestedResourceNotification {
     public static void newWantedServiceResource(List<Id> wantedIrIds) {
         List<HOT_InterestedResource__c> interestedResources = [
-            SELECT 
-            ServiceResource__r.AccountId, 
-            ServiceResource__r.Account.INT_KrrMobilePhone__c, 
-            ServiceResource__r.Account.CRM_Person__r.HOT_NotificationChannel__c 
+            SELECT
+                ServiceResource__r.AccountId,
+                ServiceResource__r.HOT_MobilePhone__c,
+                ServiceResource__r.HOT_NotificationChannel__c
             FROM HOT_InterestedResource__c
-            WHERE
-                Id IN :wantedIrIds];
+            WHERE Id IN :wantedIrIds
+        ];
 
         if (!interestedResources.isEmpty()) {
             List<Id> accountIds = new List<Id>();
@@ -25,18 +25,20 @@ public without sharing class HOT_InterestedResourceNotification {
 
             for (HOT_InterestedResource__c wantedIr : interestedResources) {
                 Set<String> recipients = new Set<String>();
-                if (userIdByAccountId.get(wantedIr.ServiceResource__r.AccountId)!= null) {
+                if (userIdByAccountId.get(wantedIr.ServiceResource__r.AccountId) != null) {
                     recipients.add(userIdByAccountId.get(wantedIr.ServiceResource__r.AccountId));
                 }
-                if (recipients.size() != 0 && wantedIr.ServiceResource__r.Account.CRM_Person__r.HOT_NotificationChannel__c.contains('Push')){
-                    HOT_UserNotificationService.newWantedSRNotification(getCustomNotificationType('HOT_NotifyUser'), recipients);
-                }
-                else {
+                if (recipients.size() != 0 && wantedIr.ServiceResource__r.HOT_NotificationChannel__c.contains('Push')) {
+                    HOT_UserNotificationService.newWantedSRNotification(
+                        getCustomNotificationType('HOT_NotifyUser'),
+                        recipients
+                    );
+                } else {
                     Set<Id> wantedIRList = new Set<Id>();
                     wantedIRList.add(wantedIr.Id);
                     HOT_ReminderSMSService.sendSMSOnNewWantedSR(wantedIRList);
                 }
-                }
+            }
         }
     }
 
@@ -45,7 +47,7 @@ public without sharing class HOT_InterestedResourceNotification {
             SELECT Id, DeveloperName
             FROM CustomNotificationType
             WHERE DeveloperName = :devName
-            ];
+        ];
         return notificationType;
     }
 }
