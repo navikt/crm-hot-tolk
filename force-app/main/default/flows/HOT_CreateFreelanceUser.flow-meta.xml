@@ -173,8 +173,8 @@
         <dataType>String</dataType>
         <expression>{!$User.Id}</expression>
     </formulas>
-    <interviewLabel>Create Community Plus User {!$Flow.CurrentDateTime}</interviewLabel>
-    <label>Create Community Plus User</label>
+    <interviewLabel>Create Freelance User {!$Flow.CurrentDateTime}</interviewLabel>
+    <label>Create Freelance User</label>
     <processMetadataValues>
         <name>BuilderType</name>
         <value>
