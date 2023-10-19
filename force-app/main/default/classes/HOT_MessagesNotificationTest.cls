@@ -98,7 +98,7 @@ private class HOT_MessagesNotificationTest {
 
     @isTest
     static void NotifyDispatcherTest() {
-        Account account = [SELECT Id, PersonContactId FROM Account];
+        Account account = [SELECT Id, PersonContactId FROM Account LIMIT 1];
         Thread__c thread = HOT_TestDataFactory.createThread();
         thread.CRM_Related_Object__c = account.PersonContactId;
         thread.CRM_Account__c = account.Id;
