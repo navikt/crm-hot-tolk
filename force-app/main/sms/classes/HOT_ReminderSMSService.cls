@@ -278,7 +278,7 @@ public without sharing class HOT_ReminderSMSService {
     public static void sendSMSOnNewWantedSR(Set<Id> wantedIRIds) {
         List<SMS__c> smsList = new List<SMS__c>();
         List<HOT_InterestedResource__c> wantedIRList = [
-            SELECT ServiceResource__r.Account.Id, ServiceResource__r.HOT_MobilePhone__c
+            SELECT Id, ServiceResource__r.Account.Id, ServiceResource__r.Account.CRM_Person__r.INT_KrrMobilePhone__c
             FROM HOT_InterestedResource__c
             WHERE Id IN :wantedIRIds
         ];
@@ -290,7 +290,7 @@ public without sharing class HOT_ReminderSMSService {
             sms.Domain__c = 'HOT';
             sms.Type__c = 'Message';
             sms.Account__c = ir.ServiceResource__r.Account.Id;
-            sms.Recipient__c = ir.ServiceResource__r.HOT_MobilePhone__c;
+            sms.Recipient__c = ir.ServiceResource__r.Account.CRM_Person__r.INT_KrrMobilePhone__c;
             sms.Message__c = constructOnNewWantedSR();
             if (SMS.Recipient__c != null) {
                 smsList.add(sms);
@@ -425,244 +425,9 @@ public without sharing class HOT_ReminderSMSService {
             logger.publishSynch();
         }
     }
-
-    @Future
-    public static void sendSMSToInterpreterOnScreenInterpretation(Set<Id> saIds) {
-        List<ServiceAppointment> saList = [
-            SELECT
-                Status,
-                AppointmentNumber,
-                HOT_ServiceResource__c,
-                EarliestStartTime,
-                DueDate,
-                HOT_ServiceResource__r.AccountId,
-                HOT_ServiceResource__r.HOT_MobilePhone__c
-            FROM ServiceAppointment
-            WHERE Id IN :saIds
-        ];
-        List<SMS__c> smsList = new List<SMS__c>();
-
-        for (ServiceAppointment sa : saList) {
-            SMS__c sms = new SMS__c();
-            sms.Domain__c = 'HOT';
-            sms.Type__c = 'Interpreter';
-            sms.Account__c = sa.HOT_ServiceResource__r?.AccountId;
-            sms.ServiceAppointment__c = sa.Id;
-            sms.Recipient__c = sa.HOT_ServiceResource__r?.HOT_MobilePhone__c;
-            sms.Message__c = constructMessageToInterpreter(sa, 'Screen');
-            if (SMS.Recipient__c != null) {
-                smsList.add(sms);
-            }
-        }
-        try {
-            HOT_DatabaseOperations.insertRecords(smsList);
-        } catch (Exception e) {
-            LoggerUtility logger = new LoggerUtility();
-            logger.exception(e, CRM_ApplicationDomain.Domain.HOT);
-            logger.publishSynch();
-        }
-    }
-
-    @Future
-    public static void sendSMSToInterpreterOnTimeChanged(Set<Id> saIds) {
-        List<ServiceAppointment> saList = [
-            SELECT
-                Status,
-                AppointmentNumber,
-                HOT_ServiceResource__c,
-                HOT_ServiceResource__r.AccountId,
-                HOT_ServiceResource__r.HOT_MobilePhone__c
-            FROM ServiceAppointment
-            WHERE Id IN :saIds
-        ];
-        List<SMS__c> smsList = new List<SMS__c>();
-
-        for (ServiceAppointment sa : saList) {
-            SMS__c sms = new SMS__c();
-            sms.Domain__c = 'HOT';
-            sms.Type__c = 'Interpreter';
-            sms.Account__c = sa.HOT_ServiceResource__r?.AccountId;
-            sms.ServiceAppointment__c = sa.Id;
-            sms.Recipient__c = sa.HOT_ServiceResource__r?.HOT_MobilePhone__c;
-            sms.Message__c = constructMessageToInterpreter(sa, 'Time');
-            if (SMS.Recipient__c != null) {
-                smsList.add(sms);
-            }
-        }
-        try {
-            HOT_DatabaseOperations.insertRecords(smsList);
-        } catch (Exception e) {
-            LoggerUtility logger = new LoggerUtility();
-            logger.exception(e, CRM_ApplicationDomain.Domain.HOT);
-            logger.publishSynch();
-        }
-    }
-
-    @Future
-    public static void sendSMSToInterpreterOnCanceledByUser(Set<Id> saIds, Set<Id> srIds) {
-        List<ServiceAppointment> saList = [
-            SELECT Status, AppointmentNumber, EarliestStartTime, DueDate
-            FROM ServiceAppointment
-            WHERE Id IN :saIds
-        ];
-        List<ServiceResource> srList = [SELECT AccountId, HOT_MobilePhone__c FROM ServiceResource WHERE Id IN :srIds];
-        List<SMS__c> smsList = new List<SMS__c>();
-
-        for (ServiceAppointment sa : saList) {
-            SMS__c sms = new SMS__c();
-            sms.Domain__c = 'HOT';
-            sms.Type__c = 'Interpreter';
-            sms.Account__c = srList[0]?.AccountId;
-            sms.ServiceAppointment__c = sa.Id;
-            sms.Recipient__c = srList[0]?.HOT_MobilePhone__c;
-            sms.Message__c = constructMessageToInterpreter(sa, 'CancelledByUser');
-            if (SMS.Recipient__c != null) {
-                smsList.add(sms);
-            }
-        }
-        try {
-            HOT_DatabaseOperations.insertRecords(smsList);
-        } catch (Exception e) {
-            LoggerUtility logger = new LoggerUtility();
-            logger.exception(e, CRM_ApplicationDomain.Domain.HOT);
-            logger.publishSynch();
-        }
-    }
-
-    @Future
-    public static void sendSMSToInterpreterOnAddressChanged(Set<Id> saIds) {
-        List<ServiceAppointment> saList = [
-            SELECT
-                Status,
-                AppointmentNumber,
-                HOT_ServiceResource__c,
-                HOT_ServiceResource__r.AccountId,
-                HOT_ServiceResource__r.HOT_MobilePhone__c
-            FROM ServiceAppointment
-            WHERE Id IN :saIds
-        ];
-        List<SMS__c> smsList = new List<SMS__c>();
-
-        for (ServiceAppointment sa : saList) {
-            SMS__c sms = new SMS__c();
-            sms.Domain__c = 'HOT';
-            sms.Type__c = 'Interpreter';
-            sms.Account__c = sa.HOT_ServiceResource__r?.AccountId;
-            sms.ServiceAppointment__c = sa.Id;
-            sms.Recipient__c = sa.HOT_ServiceResource__r?.HOT_MobilePhone__c;
-            sms.Message__c = constructMessageToInterpreter(sa, 'Address');
-            if (SMS.Recipient__c != null) {
-                smsList.add(sms);
-            }
-        }
-        try {
-            HOT_DatabaseOperations.insertRecords(smsList);
-        } catch (Exception e) {
-            LoggerUtility logger = new LoggerUtility();
-            logger.exception(e, CRM_ApplicationDomain.Domain.HOT);
-            logger.publishSynch();
-        }
-    }
-
-    @Future
-    public static void sendSMSToInterpreterOnAddedOrChanged(Set<Id> saIds) {
-        List<ServiceAppointment> saList = [
-            SELECT
-                Status,
-                AppointmentNumber,
-                HOT_ServiceResource__c,
-                HOT_ServiceResource__r.AccountId,
-                HOT_ServiceResource__r.HOT_MobilePhone__c
-            FROM ServiceAppointment
-            WHERE Id IN :saIds
-        ];
-        List<SMS__c> smsList = new List<SMS__c>();
-
-        for (ServiceAppointment sa : saList) {
-            SMS__c sms = new SMS__c();
-            sms.Domain__c = 'HOT';
-            sms.Type__c = 'Interpreter';
-            sms.Account__c = sa.HOT_ServiceResource__r?.AccountId;
-            sms.ServiceAppointment__c = sa.Id;
-            sms.Recipient__c = sa.HOT_ServiceResource__r?.HOT_MobilePhone__c;
-            sms.Message__c = constructMessageToInterpreter(sa, 'Dispatched');
-            if (SMS.Recipient__c != null) {
-                smsList.add(sms);
-            }
-        }
-        try {
-            HOT_DatabaseOperations.insertRecords(smsList);
-        } catch (Exception e) {
-            LoggerUtility logger = new LoggerUtility();
-            logger.exception(e, CRM_ApplicationDomain.Domain.HOT);
-            logger.publishSynch();
-        }
-    }
-
-    @Future
-    public static void sendSMSToInterpreterOnResourceChanged(Set<Id> saIds) {
-        List<ServiceAppointment> saList = [
-            SELECT
-                Status,
-                AppointmentNumber,
-                HOT_ServiceResource__c,
-                HOT_ServiceResource__r.AccountId,
-                HOT_ServiceResource__r.HOT_MobilePhone__c
-            FROM ServiceAppointment
-            WHERE Id IN :saIds
-        ];
-        List<SMS__c> smsList = new List<SMS__c>();
-
-        for (ServiceAppointment sa : saList) {
-            SMS__c sms = new SMS__c();
-            sms.Domain__c = 'HOT';
-            sms.Type__c = 'Interpreter';
-            sms.Account__c = sa.HOT_ServiceResource__r?.AccountId;
-            sms.ServiceAppointment__c = sa.Id;
-            sms.Recipient__c = sa.HOT_ServiceResource__r?.HOT_MobilePhone__c;
-            sms.Message__c = constructMessageToInterpreter(sa, 'Removed');
-            if (SMS.Recipient__c != null) {
-                smsList.add(sms);
-            }
-        }
-        try {
-            HOT_DatabaseOperations.insertRecords(smsList);
-        } catch (Exception e) {
-            LoggerUtility logger = new LoggerUtility();
-            logger.exception(e, CRM_ApplicationDomain.Domain.HOT);
-            logger.publishSynch();
-        }
-    }
     public static String constructOnNewWantedSR() {
         String message = 'INFO\nDu er ønsket til et oppdrag.\n\n';
         message += 'For mer informasjon, se tolkebestilling.nav.no.\n';
-        message += 'Du kan ikke svare på denne meldingen.\n';
-        message += 'Mvh tolketjenesten i NAV';
-        return message;
-    }
-
-    public static String constructMessageToInterpreter(ServiceAppointment sa, String saEvent) {
-        String message = 'INFO\n';
-        if (saEvent == 'Dispatched') {
-            message += sa.Status == 'Dispatched' ? 'Du er tildelt oppdraget ' : 'Du er tatt av oppdraget ';
-        }
-        if (saEvent == 'Removed') {
-            message += 'Du er tatt av oppdraget ';
-        }
-        message += sa.AppointmentNumber;
-        if (saEvent == 'Address') {
-            message += ' har endret adresse';
-        }
-        if (saEvent == 'Time') {
-            message += ' har endret tidspunkt';
-        }
-        if (saEvent == 'CanceledByUser') {
-            message += ' ' + formatTimePeriod(sa.EarliestStartTime, sa.DueDate) + ' er avlyst';
-        }
-        if (saEvent == 'Screen') {
-            message += ' ' + formatTimePeriod(sa.EarliestStartTime, sa.DueDate) + ' er endret';
-        }
-        message += '.\n\nFor mer informasjon, se tolkebestilling.nav.no.\n';
         message += 'Du kan ikke svare på denne meldingen.\n';
         message += 'Mvh tolketjenesten i NAV';
         return message;
@@ -731,7 +496,7 @@ public without sharing class HOT_ReminderSMSService {
             FROM ServiceResource
             WHERE RelatedRecordId = :userId
         ];
-        return sr?.HOT_MobilePhone__c;
+        return sr.HOT_MobilePhone__c;
     }
 
     public static String constructStatusChangedMessage(WorkOrder workOrder, String interpreterNames) {

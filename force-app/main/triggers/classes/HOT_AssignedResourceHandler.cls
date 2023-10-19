@@ -498,7 +498,7 @@ public without sharing class HOT_AssignedResourceHandler extends MyTriggers {
             if (serviceAppointments.get(assignedResource.ServiceAppointmentId).Status != 'Scheduled') {
                 HOT_ServiceAppointmentNotification.resourceChanged(
                     notificationType,
-                    new Set<Id>{ serviceAppointments.get(assignedResource.ServiceAppointmentId).Id },
+                    serviceAppointments.get(assignedResource.ServiceAppointmentId),
                     new Set<String>{ serviceResources.get(assignedResource.ServiceResourceId).RelatedRecordId }
                 );
             }

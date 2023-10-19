@@ -23,7 +23,6 @@ public without sharing class HOT_ServiceAppointmentNotification {
                 serviceAppointment.Status == 'Cannot Complete')
             ) {
                 Set<String> interpreterRecipients = new Set<String>{ serviceAppointment.HOT_AssignedResourceId__c };
-                Set<Id> saIds = new Set<Id>{ serviceAppointment.Id };
                 if (serviceAppointment.HOT_AssignedResourceId__c != null) {
                     resourceAdded(notificationType, serviceAppointment, interpreterRecipients);
                     //creating notification object
@@ -44,9 +43,6 @@ public without sharing class HOT_ServiceAppointmentNotification {
 
                         notificationList.add(notification);
                     }
-
-                    //resourceAdded(notificationType, serviceAppointment, interpreterRecipients);
-                    resourceAdded(notificationType, saIds, interpreterRecipients);
                 }
             }
 
@@ -58,10 +54,7 @@ public without sharing class HOT_ServiceAppointmentNotification {
                 serviceAppointment.Status == 'Dispatched'
             ) {
                 Set<String> interpreterRecipients = new Set<String>{ serviceAppointment.HOT_AssignedResourceId__c };
-                Set<Id> saIds = new Set<Id>{ serviceAppointment.Id };
-                //resourceAdded(notificationType, serviceAppointment, interpreterRecipients);
-                //resourceAdded(notificationType, serviceAppointment, interpreterRecipients);
-                resourceAdded(notificationType, saIds, interpreterRecipients);
+                resourceAdded(notificationType, serviceAppointment, interpreterRecipients);
 
                 notifyUserOnChangedResource(serviceAppointment);
             }
@@ -79,8 +72,7 @@ public without sharing class HOT_ServiceAppointmentNotification {
                     !recipients.contains(serviceAppointment.LastModifiedById) &&
                     serviceAppointment.HOT_CancelComment__c == null
                 ) {
-                    Set<Id> srIds = new Set<Id>{ oldServiceAppointment.HOT_ServiceResource__c };
-                    canceledByUser(notificationType, serviceAppointment, srIds, recipients);
+                    canceledByUser(notificationType, serviceAppointment, recipients);
                 }
 
                 // Varsel ved endring av tidspunkt
@@ -92,8 +84,7 @@ public without sharing class HOT_ServiceAppointmentNotification {
                     serviceAppointment.EarliestStartTime != null &&
                     oldServiceAppointment.DueDate != null
                 ) {
-                    Set<Id> saIds = new Set<Id>{ serviceAppointment.Id };
-                    timeChanged(notificationType, saIds, recipients);
+                    timeChanged(notificationType, serviceAppointment, recipients);
                 }
 
                 // Varsel ved endring av adresse
@@ -102,8 +93,7 @@ public without sharing class HOT_ServiceAppointmentNotification {
                     serviceAppointment.HOT_ServiceResource__c == oldServiceAppointment.HOT_ServiceResource__c &&
                     serviceAppointment.Status != 'Scheduled'
                 ) {
-                    Set<Id> saIds = new Set<Id>{ serviceAppointment.Id };
-                    addressChanged(notificationType, saIds, recipients);
+                    addressChanged(notificationType, serviceAppointment, recipients);
                 }
 
                 // Varsel ved fjerning av tolk
@@ -138,9 +128,6 @@ public without sharing class HOT_ServiceAppointmentNotification {
 
                         notificationList.add(notification);
                     }
-                    Set<Id> saIds = new Set<Id>{ serviceAppointment.Id };
-                    resourceChanged(notificationType, saIds, recipients);
-
                 }
 
                 // Varsel ved endring av skjermtolk/oppmøtetolk
@@ -149,11 +136,15 @@ public without sharing class HOT_ServiceAppointmentNotification {
                     oldServiceAppointment.HOT_IsScreenInterpreterNew__c &&
                     serviceAppointment.Status != 'Scheduled'
                 ) {
-                    Set<Id> saIds = new Set<Id>{ serviceAppointment.Id };
                     String isScreenInterpreterString = serviceAppointment.HOT_IsScreenInterpreterNew__c
                         ? 'skjermtolk'
                         : 'oppmøtetolk';
-                    screenInterpreterChanged(notificationType, saIds, recipients, isScreenInterpreterString);
+                    screenInterpreterChanged(
+                        notificationType,
+                        serviceAppointment,
+                        recipients,
+                        isScreenInterpreterString
+                    );
                 }
             }
         }
@@ -203,8 +194,7 @@ public without sharing class HOT_ServiceAppointmentNotification {
 
             // Varsel ved avlyst på vegne av bruker
             if (serviceAppointment.Status == 'Canceled' && oldServiceAppointment.Status != 'Canceled') {
-                Set<Id> srIds = new Set<Id>{ oldServiceAppointment.HOT_ServiceResource__c };
-                canceledByUser(notificationType, serviceAppointment, srIds, recipients);
+                canceledByUser(notificationType, serviceAppointment, recipients);
             }
         }
     }
@@ -233,34 +223,18 @@ public without sharing class HOT_ServiceAppointmentNotification {
     public static void canceledByUser(
         CustomNotificationType notificationType,
         ServiceAppointment serviceAppointment,
-        Set<Id> srIds,
         Set<String> recipients
     ) {
         Messaging.CustomNotification notification = new Messaging.CustomNotification();
         notification.setTitle(
             serviceAppointment.AppointmentNumber +
-
-        ServiceResource serviceResource = [
-            SELECT HOT_NotificationChannel__c
-            FROM ServiceResource
-            WHERE Id IN :srIds AND HOT_NotificationChannel__c != NULL
-            LIMIT 1
-        ];
-        Set<Id> saSMS = new Set<Id>();
-        if (
-            serviceResource.HOT_NotificationChannel__c.contains('Push') ||
-            serviceAppointment.HOT_IsEmployedInterpreter__c
-        ) {
-            Messaging.CustomNotification notification = new Messaging.CustomNotification();
-            notification.setTitle(
-                serviceAppointment.AppointmentNumber +
                 ' - ' +
                 serviceAppointment.EarliestStartTime?.format('d.M.yyyy') +
                 ' - ' +
                 ' Avlyst'
-            );
-            notification.setBody(
-                'Oppdraget ' +
+        );
+        notification.setBody(
+            'Oppdraget ' +
                 serviceAppointment.AppointmentNumber +
                 ' som skulle vært gjennomført ' +
                 serviceAppointment.EarliestStartTime?.format('d.M.yyyy HH:mm') +
@@ -298,58 +272,9 @@ public without sharing class HOT_ServiceAppointmentNotification {
         //String targetPageRef = getTargetPageRefInterpreter('interested', getHARs(serviceAppointment.Id));
         notification.setNotificationTypeId(notificationType.Id);
         notification.setTargetId(serviceAppointment.Id);
-            );
-            notification.setNotificationTypeId(notificationType.Id);
-            notification.setTargetId(serviceAppointment.Id);
 
-            HOT_NotificationHandler.sendNotification(notification, recipients, (SObject) serviceAppointment);
-        } else {
-            saSMS.add(serviceAppointment.Id);
-        }
-        if (saSMS.size() > 0) {
-            HOT_ReminderSMSService.sendSMSToInterpreterOnCanceledByUser(saSMS, srIds);
-        }
+        HOT_NotificationHandler.sendNotification(notification, recipients, (SObject) serviceAppointment);
     }
-
-    public static void timeChanged(CustomNotificationType notificationType, Set<Id> saIds, Set<String> recipients) {
-        Set<Id> saSMS = new Set<Id>();
-        List<ServiceAppointment> saList = [
-            SELECT
-                AppointmentNumber,
-                EarliestStartTime,
-                DueDate,
-                HOT_IsEmployedInterpreter__c,
-                HOT_ServiceResource__r.HOT_NotificationChannel__c
-            FROM ServiceAppointment
-            WHERE Id IN :saIds AND HOT_ServiceResource__r.HOT_NotificationChannel__c != NULL
-        ];
-        for (ServiceAppointment serviceAppointment : saList) {
-            if (
-                serviceAppointment.HOT_ServiceResource__r.HOT_NotificationChannel__c.contains('Push') ||
-                serviceAppointment.HOT_IsEmployedInterpreter__c
-            ) {
-                Messaging.CustomNotification notification = new Messaging.CustomNotification();
-                notification.setTitle(
-                    serviceAppointment.AppointmentNumber +
-                    ' - ' +
-                    serviceAppointment.EarliestStartTime?.format('d.M.yyyy') +
-                    ' - ' +
-                    'endret tidspunkt'
-                );
-                notification.setBody(
-                    'Nytt tidspunkt er ' +
-                    serviceAppointment.EarliestStartTime?.format('d.M.yyyy HH:mm') +
-                    ' - ' +
-                    serviceAppointment.DueDate?.format('HH:mm')
-                );
-                if (!serviceAppointment.HOT_IsEmployedInterpreter__c) {
-                    String targetPageRef = getTargetPageRefInterpreter('my', serviceAppointment.Id);
-                    notification.setTargetPageRef(targetPageRef);
-                }
-                //String targetPageRef = getTargetPageRefInterpreter('interested', getHARs(serviceAppointment.Id));
-                notification.setNotificationTypeId(notificationType.Id);
-                notification.setTargetId(serviceAppointment.Id);
-
 
     public static void addressChanged(
         CustomNotificationType notificationType,
@@ -368,14 +293,12 @@ public without sharing class HOT_ServiceAppointmentNotification {
         if (!serviceAppointment.HOT_IsEmployedInterpreter__c) {
             String targetPageRef = getTargetPageRefInterpreter('my', serviceAppointment.Id);
             notification.setTargetPageRef(targetPageRef);
-                HOT_NotificationHandler.sendNotification(notification, recipients, (SObject) serviceAppointment);
-            } else {
-                saSMS.add(serviceAppointment.Id);
-            }
         }
-        if (saSMS.size() > 0) {
-            HOT_ReminderSMSService.sendSMSToInterpreterOnTimeChanged(saSMS);
-        }
+        //String targetPageRef = getTargetPageRefInterpreter('interested', getHARs(serviceAppointment.Id));
+        notification.setNotificationTypeId(notificationType.Id);
+        notification.setTargetId(serviceAppointment.Id);
+
+        HOT_NotificationHandler.sendNotification(notification, recipients, (SObject) serviceAppointment);
     }
 
     public static void resourceAdded(
@@ -399,53 +322,9 @@ public without sharing class HOT_ServiceAppointmentNotification {
         //String targetPageRef = getTargetPageRefInterpreter('interested', getHARs(serviceAppointment.Id));
         notification.setNotificationTypeId(notificationType.Id);
         notification.setTargetId(serviceAppointment.Id);
+
+        HOT_NotificationHandler.sendNotification(notification, recipients, (SObject) serviceAppointment);
     }
-      
-    public static void addressChanged(CustomNotificationType notificationType, Set<Id> saIds, Set<String> recipients) {
-        Set<Id> saSMS = new Set<Id>();
-        List<ServiceAppointment> saList = [
-            SELECT
-                AppointmentNumber,
-                EarliestStartTime,
-                HOT_AddressFormated__c,
-                HOT_IsEmployedInterpreter__c,
-                HOT_ServiceResource__r.HOT_NotificationChannel__c
-            FROM ServiceAppointment
-            WHERE Id IN :saIds AND HOT_ServiceResource__r.HOT_NotificationChannel__c != NULL
-        ];
-
-        for (ServiceAppointment serviceAppointment : saList) {
-            if (
-                serviceAppointment.HOT_ServiceResource__r.HOT_NotificationChannel__c.contains('Push') ||
-                serviceAppointment.HOT_IsEmployedInterpreter__c
-            ) {
-                Messaging.CustomNotification notification = new Messaging.CustomNotification();
-                notification.setTitle(
-                    serviceAppointment.AppointmentNumber +
-                    ' - ' +
-                    serviceAppointment.EarliestStartTime?.format('d.M.yyyy HH:mm') +
-                    ' - ' +
-                    'endret adresse'
-                );
-                notification.setBody('Ny adresse er ' + serviceAppointment.HOT_AddressFormated__c);
-                if (!serviceAppointment.HOT_IsEmployedInterpreter__c) {
-                    String targetPageRef = getTargetPageRefInterpreter('my', serviceAppointment.Id);
-                    notification.setTargetPageRef(targetPageRef);
-                }
-                //String targetPageRef = getTargetPageRefInterpreter('interested', getHARs(serviceAppointment.Id));
-                notification.setNotificationTypeId(notificationType.Id);
-                notification.setTargetId(serviceAppointment.Id);
-
-                HOT_NotificationHandler.sendNotification(notification, recipients, (SObject) serviceAppointment);
-            } else {
-                saSMS.add(serviceAppointment.Id);
-            }
-        }
-        if (saSMS.size() > 0) {
-            HOT_ReminderSMSService.sendSMSToInterpreterOnAddressChanged(saSMS);
-        }
-    }
-
 
     public static void resourceChanged(
         CustomNotificationType notificationType,
@@ -469,104 +348,17 @@ public without sharing class HOT_ServiceAppointmentNotification {
         if (!serviceAppointment.HOT_IsEmployedInterpreter__c) {
             String targetPageRef = getTargetPageRefInterpreter('interested', serviceAppointment.Id);
             notification.setTargetPageRef(targetPageRef);
-          
-    public static void resourceAdded(CustomNotificationType notificationType, Set<Id> saIds, Set<String> recipients) {
-        Set<Id> saSMS = new Set<Id>();
-        List<ServiceAppointment> saList = [
-            SELECT
-                AppointmentNumber,
-                HOT_IsEmployedInterpreter__c,
-                EarliestStartTime,
-                DueDate,
-                HOT_ServiceResource__r.HOT_NotificationChannel__c
-            FROM ServiceAppointment
-            WHERE Id IN :saIds AND HOT_ServiceResource__r.HOT_NotificationChannel__c != NULL
-        ];
-
-        for (ServiceAppointment serviceAppointment : saList) {
-            if (
-                serviceAppointment.HOT_ServiceResource__r.HOT_NotificationChannel__c.contains('Push') ||
-                serviceAppointment.HOT_IsEmployedInterpreter__c
-            ) {
-                Messaging.CustomNotification notification = new Messaging.CustomNotification();
-                notification.setTitle('Du er tildelt oppdraget ' + serviceAppointment.AppointmentNumber);
-                notification.setBody(
-                    'Tidspunkt for oppdraget er ' +
-                    serviceAppointment.EarliestStartTime?.format('d.M.yyyy HH:mm') +
-                    ' - ' +
-                    serviceAppointment.DueDate?.format('HH:mm') +
-                    '.'
-                );
-                if (!serviceAppointment.HOT_IsEmployedInterpreter__c) {
-                    String targetPageRef = getTargetPageRefInterpreter('my', serviceAppointment.Id);
-                    notification.setTargetPageRef(targetPageRef);
-                }
-                //String targetPageRef = getTargetPageRefInterpreter('interested', getHARs(serviceAppointment.Id));
-                notification.setNotificationTypeId(notificationType.Id);
-                notification.setTargetId(serviceAppointment.Id);
-
-                HOT_NotificationHandler.sendNotification(notification, recipients, (SObject) serviceAppointment);
-            } else {
-                saSMS.add(serviceAppointment.Id);
-            }
         }
-        if (saSMS.size() > 0) {
-            HOT_ReminderSMSService.sendSMSToInterpreterOnAddedOrChanged(saSMS);
-        }
-    }
+        //String targetPageRef = getTargetPageRefInterpreter('interested', getHARs(serviceAppointment.Id));
+        notification.setNotificationTypeId(notificationType.Id);
+        notification.setTargetId(serviceAppointment.Id);
 
-    public static void resourceChanged(CustomNotificationType notificationType, Set<Id> saIds, Set<String> recipients) {
-        Set<Id> saSMS = new Set<Id>();
-        List<ServiceAppointment> saList = [
-            SELECT
-                AppointmentNumber,
-                HOT_IsEmployedInterpreter__c,
-                EarliestStartTime,
-                HOT_ServiceResource__r.HOT_NotificationChannel__c
-            FROM ServiceAppointment
-            WHERE Id IN :saIds AND HOT_ServiceResource__r.HOT_NotificationChannel__c != NULL
-        ];
-
-        for (ServiceAppointment serviceAppointment : saList) {
-            if (
-                serviceAppointment.HOT_ServiceResource__r.HOT_NotificationChannel__c.contains('Push') ||
-                serviceAppointment.HOT_IsEmployedInterpreter__c
-            ) {
-                Messaging.CustomNotification notification = new Messaging.CustomNotification();
-                notification.setTitle(
-                    serviceAppointment.AppointmentNumber +
-                    ' - ' +
-                    serviceAppointment.EarliestStartTime?.format('d.M.yyyy') +
-                    ' - ' +
-                    'Tatt av oppdraget'
-                );
-                notification.setBody(
-                    'Du er tatt av oppdraget ' +
-                    serviceAppointment.AppointmentNumber +
-                    ' som skulle starte ' +
-                    serviceAppointment.EarliestStartTime?.format('d.M.yyyy HH:mm')
-                );
-                if (!serviceAppointment.HOT_IsEmployedInterpreter__c) {
-                    String targetPageRef = getTargetPageRefInterpreter('interested', serviceAppointment.Id);
-                    notification.setTargetPageRef(targetPageRef);
-                }
-                //String targetPageRef = getTargetPageRefInterpreter('interested', getHARs(serviceAppointment.Id));
-                notification.setNotificationTypeId(notificationType.Id);
-                notification.setTargetId(serviceAppointment.Id);
-
-                HOT_NotificationHandler.sendNotification(notification, recipients, (SObject) serviceAppointment);
-            } else {
-                saSMS.add(serviceAppointment.Id);
-            }
-        }
-        if (saSMS.size() > 0) {
-            HOT_ReminderSMSService.sendSMSToInterpreterOnResourceChanged(saSMS);
-        }
+        HOT_NotificationHandler.sendNotification(notification, recipients, (SObject) serviceAppointment);
     }
 
     public static void screenInterpreterChanged(
         CustomNotificationType notificationType,
-        Set<Id> saIds,
+        ServiceAppointment serviceAppointment,
         Set<String> recipients,
         String isScreenInterpreterString
     ) {
@@ -591,53 +383,8 @@ public without sharing class HOT_ServiceAppointmentNotification {
         );
         notification.setNotificationTypeId(notificationType.Id);
         notification.setTargetId(serviceAppointment.Id);
-        Set<Id> saSMS = new Set<Id>();
-        List<ServiceAppointment> saList = [
-            SELECT
-                AppointmentNumber,
-                EarliestStartTime,
-                DueDate,
-                HOT_IsEmployedInterpreter__c,
-                HOT_ServiceResource__r.HOT_NotificationChannel__c
-            FROM ServiceAppointment
-            WHERE Id IN :saIds AND HOT_ServiceResource__r.HOT_NotificationChannel__c != NULL
-        ];
 
-        for (ServiceAppointment serviceAppointment : saList) {
-            if (
-                serviceAppointment.HOT_ServiceResource__r.HOT_NotificationChannel__c.contains('Push') ||
-                serviceAppointment.HOT_IsEmployedInterpreter__c
-            ) {
-                Messaging.CustomNotification notification = new Messaging.CustomNotification();
-                notification.setTitle(
-                    serviceAppointment.AppointmentNumber +
-                    ' - ' +
-                    serviceAppointment.EarliestStartTime?.format('d.M.yyyy HH:mm') +
-                    ' - ' +
-                    'endret til ' +
-                    isScreenInterpreterString
-                );
-                notification.setBody(
-                    'Oppdraget ' +
-                    serviceAppointment.AppointmentNumber +
-                    ', ' +
-                    serviceAppointment.EarliestStartTime?.format('d.M.yyyy HH:mm') +
-                    ' - ' +
-                    serviceAppointment.DueDate?.format('HH:mm') +
-                    ' ble endret til ' +
-                    isScreenInterpreterString
-                );
-                notification.setNotificationTypeId(notificationType.Id);
-                notification.setTargetId(serviceAppointment.Id);
-
-                HOT_NotificationHandler.sendNotification(notification, recipients, (SObject) serviceAppointment);
-            } else {
-                saSMS.add(serviceAppointment.Id);
-            }
-        }
-        if (saSMS.size() > 0) {
-            HOT_ReminderSMSService.sendSMSToInterpreterOnScreenInterpretation(saSMS);
-        }
+        HOT_NotificationHandler.sendNotification(notification, recipients, (SObject) serviceAppointment);
     }
 
     public static void notiyUserOnStatusChange(ServiceAppointment sa) {

@@ -81,7 +81,6 @@ public class HOT_TestDataFactory {
         serviceResource.IsActive = true;
         serviceResource.ResourceType = 'T';
         serviceResource.HOT_MobilePhoneOverride__c = '12345678';
-        serviceResource.HOT_NotificationChannel__c = 'Push-varsel i appen';
         return serviceResource;
     }
 
