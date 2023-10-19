@@ -112,6 +112,62 @@ private class HOT_ReminderSMSServiceTest {
     }
 
     @isTest
+    static void sendSMSToInterpreterOnScreenInterpretationTest() {
+        Set<Id> saIds = (new Map<Id, ServiceAppointment>([SELECT Id FROM ServiceAppointment LIMIT 1])).keySet();
+
+        Test.startTest();
+        HOT_ReminderSMSService.sendSMSToInterpreterOnScreenInterpretation(saIds);
+        Test.stopTest();
+    }
+    @isTest
+    static void sendSMSToInterpreterOnTimeChangedTest() {
+        Set<Id> saIds = (new Map<Id, ServiceAppointment>([SELECT Id FROM ServiceAppointment LIMIT 1])).keySet();
+
+        Test.startTest();
+        HOT_ReminderSMSService.sendSMSToInterpreterOnTimeChanged(saIds);
+        Test.stopTest();
+    }
+    @isTest
+    static void sendSMSToInterpreterOnAddressChangedTest() {
+        Set<Id> saIds = (new Map<Id, ServiceAppointment>([SELECT Id FROM ServiceAppointment LIMIT 1])).keySet();
+
+        Test.startTest();
+        HOT_ReminderSMSService.sendSMSToInterpreterOnAddressChanged(saIds);
+        Test.stopTest();
+    }
+    @isTest
+    static void sendSMSToInterpreterOnAddedOrChangedTest() {
+        Set<Id> saIds = (new Map<Id, ServiceAppointment>([SELECT Id FROM ServiceAppointment LIMIT 1])).keySet();
+
+        Test.startTest();
+        HOT_ReminderSMSService.sendSMSToInterpreterOnAddedOrChanged(saIds);
+        Test.stopTest();
+    }
+    @isTest
+    static void sendSMSToInterpreterOnResourceChangedTest() {
+        Set<Id> saIds = (new Map<Id, ServiceAppointment>([SELECT Id FROM ServiceAppointment LIMIT 1])).keySet();
+
+        Test.startTest();
+        HOT_ReminderSMSService.sendSMSToInterpreterOnResourceChanged(saIds);
+        Test.stopTest();
+    }
+
+    @isTest
+    static void sendSMSOnNewWantedSRTest() {
+        ServiceAppointment sa = [SELECT Id FROM ServiceAppointment WHERE Subject = 'TEST' LIMIT 1];
+        ServiceResource sr = [SELECT Id FROM ServiceResource LIMIT 1];
+        HOT_InterestedResource__c ir = HOT_TestDataFactory.createInterestedResource(sa.Id, sr.Id);
+        insert ir;
+
+        Set<Id> irIds = (new Map<Id, HOT_InterestedResource__c>([SELECT Id FROM HOT_InterestedResource__c LIMIT 1]))
+            .keySet();
+
+        Test.startTest();
+        HOT_ReminderSMSService.sendSMSOnNewWantedSR(irIds);
+        Test.stopTest();
+    }
+
+    @isTest
     static void sendSMSOnInterpreterChangeTest() {
         List<WorkOrder> workOrders = [SELECT Id FROM WorkOrder];
 
