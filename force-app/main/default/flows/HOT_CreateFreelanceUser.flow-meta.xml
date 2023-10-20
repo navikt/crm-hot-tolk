@@ -50,7 +50,7 @@
         <storeOutputAutomatically>true</storeOutputAutomatically>
         <versionSegment>1</versionSegment>
     </actionCalls>
-    <apiVersion>49.0</apiVersion>
+    <apiVersion>59.0</apiVersion>
     <decisions>
         <name>Access</name>
         <label>Access?</label>
@@ -173,8 +173,8 @@
         <dataType>String</dataType>
         <expression>{!$User.Id}</expression>
     </formulas>
-    <interviewLabel>Create Community Plus User {!$Flow.CurrentDateTime}</interviewLabel>
-    <label>Create Community Plus User</label>
+    <interviewLabel>HOT_CreateFreelanceUser {!$Flow.CurrentDateTime}</interviewLabel>
+    <label>Create Freelance User</label>
     <processMetadataValues>
         <name>BuilderType</name>
         <value>
@@ -395,6 +395,7 @@
         </inputAssignments>
         <object>ServiceResource</object>
     </recordUpdates>
+    <runInMode>SystemModeWithoutSharing</runInMode>
     <screens>
         <name>Already_added_as_user_screen</name>
         <label>Already added as user</label>

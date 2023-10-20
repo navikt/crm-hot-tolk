@@ -1,6 +1,7 @@
 {
   "appPageId" : "e1a097ff-c5e1-47c6-b293-9a8b7a2b049f",
   "componentName" : "siteforce:sldsOneColLayout",
+  "dataProviders" : [ ],
   "id" : "496132da-81dc-4288-85ee-a0efb60501df",
   "label" : "Mine Samtaler",
   "regions" : [ {

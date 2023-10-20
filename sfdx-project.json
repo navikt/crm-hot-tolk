@@ -8,7 +8,7 @@
             "default": true,
             "package": "crm-hot",
             "versionName": "ver 0.1",
-            "versionNumber": "1.240.0.NEXT",
+            "versionNumber": "1.241.0.NEXT",
             "dependencies": [
                 {
                     "package": "crm-platform-base",
@@ -28,7 +28,7 @@
                 },
                 {
                     "package": "crm-community-base",
-                    "versionNumber": "0.86.0.LATEST"
+                    "versionNumber": "0.93.0.LATEST"
                 },
                 {
                     "package": "crm-platform-reporting",
@@ -60,7 +60,7 @@
                 },
                 {
                     "package": "crm-community-base",
-                    "versionNumber": "0.86.0.LATEST"
+                    "versionNumber": "0.93.0.LATEST"
                 },
                 {
                     "package": "crm-platform-reporting",

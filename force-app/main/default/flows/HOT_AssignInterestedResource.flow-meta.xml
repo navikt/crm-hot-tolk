@@ -1,10 +1,11 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <Flow xmlns="http://soap.sforce.com/2006/04/metadata">
+    <apiVersion>49.0</apiVersion>
     <assignments>
         <name>AssignResource</name>
         <label>AssignResource</label>
-        <locationX>391</locationX>
-        <locationY>83</locationY>
+        <locationX>50</locationX>
+        <locationY>458</locationY>
         <assignmentItems>
             <assignToReference>AssignedResource.ServiceResourceId</assignToReference>
             <operator>Assign</operator>
@@ -23,12 +24,44 @@
             <targetReference>createAssignedResource</targetReference>
         </connector>
     </assignments>
+    <decisions>
+        <name>checkIfAlreadyAssigned</name>
+        <label>checkIfAlreadyAssigned</label>
+        <locationX>314</locationX>
+        <locationY>350</locationY>
+        <defaultConnector>
+            <targetReference>AlreadyAssignedScreen</targetReference>
+        </defaultConnector>
+        <defaultConnectorLabel>Already assigned</defaultConnectorLabel>
+        <rules>
+            <name>Not_Assigned</name>
+            <conditionLogic>and</conditionLogic>
+            <conditions>
+                <leftValueReference>getServiceAppointment.HOT_AssignedResourceId__c</leftValueReference>
+                <operator>IsNull</operator>
+                <rightValue>
+                    <booleanValue>true</booleanValue>
+                </rightValue>
+            </conditions>
+            <connector>
+                <targetReference>AssignResource</targetReference>
+            </connector>
+            <label>Not Assigned</label>
+        </rules>
+    </decisions>
+    <environments>Default</environments>
     <interviewLabel>HOT_AssignInterestedResource {!$Flow.CurrentDateTime}</interviewLabel>
     <label>HOT_AssignInterestedResource</label>
     <processMetadataValues>
         <name>BuilderType</name>
         <value>
             <stringValue>LightningFlowBuilder</stringValue>
+        </value>
+    </processMetadataValues>
+    <processMetadataValues>
+        <name>CanvasMode</name>
+        <value>
+            <stringValue>AUTO_LAYOUT_CANVAS</stringValue>
         </value>
     </processMetadataValues>
     <processMetadataValues>
@@ -41,8 +74,8 @@
     <recordCreates>
         <name>createAssignedResource</name>
         <label>createAssignedResource</label>
-        <locationX>510</locationX>
-        <locationY>82</locationY>
+        <locationX>50</locationX>
+        <locationY>566</locationY>
         <connector>
             <targetReference>Success</targetReference>
         </connector>
@@ -54,12 +87,13 @@
     <recordLookups>
         <name>getInterestedResource</name>
         <label>getInterestedResource</label>
-        <locationX>227</locationX>
-        <locationY>80</locationY>
+        <locationX>314</locationX>
+        <locationY>134</locationY>
         <assignNullValuesIfNoRecordsFound>false</assignNullValuesIfNoRecordsFound>
         <connector>
-            <targetReference>AssignResource</targetReference>
+            <targetReference>getServiceAppointment</targetReference>
         </connector>
+        <filterLogic>and</filterLogic>
         <filters>
             <field>Id</field>
             <operator>EqualTo</operator>
@@ -71,11 +105,49 @@
         <object>HOT_InterestedResource__c</object>
         <storeOutputAutomatically>true</storeOutputAutomatically>
     </recordLookups>
+    <recordLookups>
+        <name>getServiceAppointment</name>
+        <label>getServiceAppointment</label>
+        <locationX>314</locationX>
+        <locationY>242</locationY>
+        <assignNullValuesIfNoRecordsFound>false</assignNullValuesIfNoRecordsFound>
+        <connector>
+            <targetReference>checkIfAlreadyAssigned</targetReference>
+        </connector>
+        <filterLogic>and</filterLogic>
+        <filters>
+            <field>Id</field>
+            <operator>EqualTo</operator>
+            <value>
+                <elementReference>getInterestedResource.ServiceAppointment__c</elementReference>
+            </value>
+        </filters>
+        <getFirstRecordOnly>true</getFirstRecordOnly>
+        <object>ServiceAppointment</object>
+        <storeOutputAutomatically>true</storeOutputAutomatically>
+    </recordLookups>
+    <screens>
+        <name>AlreadyAssignedScreen</name>
+        <label>AlreadyAssignedScreen</label>
+        <locationX>578</locationX>
+        <locationY>458</locationY>
+        <allowBack>false</allowBack>
+        <allowFinish>true</allowFinish>
+        <allowPause>false</allowPause>
+        <fields>
+            <name>alreadyAssignedText</name>
+            <fieldText
+            >&lt;p&gt;&lt;span style=&quot;background-color: rgb(255, 255, 255); font-size: 16px; font-family: Calibri; color: rgb(0, 0, 0);&quot;&gt;Du kan ikke sette opp flere ressurser på et oppdrag.&lt;/span&gt;&lt;/p&gt;</fieldText>
+            <fieldType>DisplayText</fieldType>
+        </fields>
+        <showFooter>true</showFooter>
+        <showHeader>false</showHeader>
+    </screens>
     <screens>
         <name>Error</name>
         <label>Error</label>
-        <locationX>511</locationX>
-        <locationY>288</locationY>
+        <locationX>314</locationX>
+        <locationY>674</locationY>
         <allowBack>false</allowBack>
         <allowFinish>true</allowFinish>
         <allowPause>false</allowPause>
@@ -91,8 +163,8 @@
     <screens>
         <name>Success</name>
         <label>Success</label>
-        <locationX>676</locationX>
-        <locationY>77</locationY>
+        <locationX>50</locationX>
+        <locationY>674</locationY>
         <allowBack>false</allowBack>
         <allowFinish>true</allowFinish>
         <allowPause>false</allowPause>
@@ -105,8 +177,8 @@
         <showHeader>false</showHeader>
     </screens>
     <start>
-        <locationX>50</locationX>
-        <locationY>50</locationY>
+        <locationX>188</locationX>
+        <locationY>0</locationY>
         <connector>
             <targetReference>getInterestedResource</targetReference>
         </connector>
