@@ -112,12 +112,12 @@ public without sharing class HOT_MessagesNotification {
                 }
             }
             List<ServiceResource> employeeServiceresource = [
-                SELECT Id, RelatedRecordId
+                SELECT Id, RelatedRecordId, HOT_NotificationChannel__c
                 FROM ServiceResource
                 WHERE RelatedRecordId IN :participantIdsSet AND HOT_IsEmployedInterpreter__c = TRUE
             ];
             List<ServiceResource> freelanceServiceresource = [
-                SELECT Id, AccountId
+                SELECT Id, AccountId, HOT_NotificationChannel__c
                 FROM ServiceResource
                 WHERE RelatedRecordId IN :participantIdsSet AND HOT_IsFreelanceInterpreter__c = TRUE
             ];
@@ -129,7 +129,11 @@ public without sharing class HOT_MessagesNotification {
                     employeeUserIds.add(sr.RelatedRecordId);
                 }
 
-                List<User> users = [SELECT Id, AccountId FROM User WHERE Id IN :employeeUserIds];
+                List<User> users = [
+                    SELECT Id, AccountId, (SELECT Id, HOT_NotificationChannel__c FROM ServiceResources)
+                    FROM User
+                    WHERE Id IN :employeeUserIds
+                ];
 
                 Map<User, Thread__c> userIdToThreadMap = new Map<User, Thread__c>();
                 for (Id participantId : interpretersOnThreadMap.keySet()) {
@@ -141,15 +145,24 @@ public without sharing class HOT_MessagesNotification {
                     }
                 }
                 for (User user : userIdToThreadMap.keySet()) {
-                    Set<String> recipients = new Set<String>();
-                    recipients.add(user.Id);
+                    String notificationChannel = user.ServiceResources[0].HOT_NotificationChannel__c;
                     Thread__c thread = userIdToThreadMap.get(user);
-                    Messaging.CustomNotification notification = new Messaging.CustomNotification();
-                    notification.setTitle('Ny melding');
-                    notification.setBody(thread.HOT_Subject__c); // send med parameter for denne
-                    notification.setNotificationTypeId(getCustomNotificationType('HOT_Service_Appointment_Changed').Id); // send med parameter for denne
-                    notification.setTargetId(thread.Id); // send med parameter for denne
-                    HOT_NotificationHandler.sendNotification(notification, recipients, (SObject) thread); // send med parameter for denne
+                    if (notificationChannel.contains('Push')) {
+                        Set<String> recipients = new Set<String>();
+                        recipients.add(user.Id);
+                        Messaging.CustomNotification notification = new Messaging.CustomNotification();
+                        notification.setTitle('Ny melding');
+                        notification.setBody(thread.HOT_Subject__c); // send med parameter for denne
+                        notification.setNotificationTypeId(
+                            getCustomNotificationType('HOT_Service_Appointment_Changed').Id
+                        ); // send med parameter for denne
+                        notification.setTargetId(thread.Id); // send med parameter for denne
+                        HOT_NotificationHandler.sendNotification(notification, recipients, (SObject) thread); // send med parameter for denne
+                    } else {
+                        Set<Id> threadList = new Set<Id>();
+                        threadList.add(thread.Id);
+                        HOT_ReminderSMSService.sendSMSOnNewMessageInterpreter(user.Id, thread.Id);
+                    }
                 }
             }
 
@@ -161,7 +174,7 @@ public without sharing class HOT_MessagesNotification {
                 }
 
                 List<User> users = [
-                    SELECT Id, AccountId, Account.CRM_Person__r.HOT_NotificationChannel__c, ContactId
+                    SELECT Id, AccountId, (SELECT Id, HOT_NotificationChannel__c FROM ServiceResources)
                     FROM User
                     WHERE AccountId IN :freelanceAccountIds
                 ];
@@ -177,7 +190,7 @@ public without sharing class HOT_MessagesNotification {
                 }
                 for (User user : userIdToThreadMap.keySet()) {
                     Set<String> recipients = new Set<String>();
-                    String notificationChannel = user.Account.CRM_Person__r.HOT_NotificationChannel__c;
+                    String notificationChannel = user.ServiceResources[0].HOT_NotificationChannel__c;
                     Thread__c thread = userIdToThreadMap.get(user);
                     if (thread.HOT_Last_message_from__r.AccountId != user.AccountId) {
                         recipients.add(user.Id);
