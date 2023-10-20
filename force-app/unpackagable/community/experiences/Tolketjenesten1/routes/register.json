@@ -2,6 +2,7 @@
   "activeViewId" : "010a6da1-688e-49c7-9ab0-f304da4cfd5b",
   "appPageId" : "3ec9486e-fee6-4674-8f6b-ab5d31175d26",
   "configurationTags" : [ ],
+  "devName" : "Register",
   "id" : "b240920c-f9f7-426a-a957-3764868a481c",
   "label" : "Register",
   "routeType" : "self-register",

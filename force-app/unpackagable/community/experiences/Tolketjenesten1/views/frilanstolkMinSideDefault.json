@@ -1,6 +1,7 @@
 {
   "appPageId" : "e1a097ff-c5e1-47c6-b293-9a8b7a2b049f",
   "componentName" : "siteforce:dynamicLayout",
+  "dataProviders" : [ ],
   "id" : "74937890-fe61-4b93-9a10-012b3a83c2af",
   "label" : "frilanstolk min side default",
   "regions" : [ {

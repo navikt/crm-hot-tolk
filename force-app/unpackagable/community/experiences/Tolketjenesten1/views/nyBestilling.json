@@ -1,6 +1,7 @@
 {
   "appPageId" : "e1a097ff-c5e1-47c6-b293-9a8b7a2b049f",
   "componentName" : "siteforce:dynamicLayout",
+  "dataProviders" : [ ],
   "id" : "3b7c9dcb-e380-4622-ba40-bf1ab4a3ad5b",
   "label" : "Ny Bestilling",
   "regions" : [ {

@@ -2,6 +2,7 @@
   "activeViewId" : "539432c8-f05f-4b4e-bc9c-fb19d474f4f2",
   "appPageId" : "e1a097ff-c5e1-47c6-b293-9a8b7a2b049f",
   "configurationTags" : [ ],
+  "devName" : "Calendar__c",
   "id" : "3633990b-8c6f-471d-9530-a082503772f9",
   "label" : "Calendar",
   "pageAccess" : "UseParent",

@@ -2,6 +2,7 @@
   "activeViewId" : "7ed5cb27-7067-4b7e-84a5-646d087bb46c",
   "appPageId" : "e1a097ff-c5e1-47c6-b293-9a8b7a2b049f",
   "configurationTags" : [ ],
+  "devName" : "Work_Order_Related_List__c",
   "id" : "674ba98e-f486-4c6d-b589-a8af61e748ff",
   "label" : "Work Order Related List",
   "routeType" : "relatedlist-0WO",
