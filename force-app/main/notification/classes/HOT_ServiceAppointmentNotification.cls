@@ -812,7 +812,7 @@ public without sharing class HOT_ServiceAppointmentNotification {
             logger.publish();
         }
     }
-    private static String formatTimePeriod(Datetime startDate, Datetime endDate) {
+    public static String formatTimePeriod(Datetime startDate, Datetime endDate) {
         String timePeriod =
             startDate.date().format() +
             '\nKlokkeslett: ' +

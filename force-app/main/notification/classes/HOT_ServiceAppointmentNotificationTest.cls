@@ -256,4 +256,15 @@ private class HOT_ServiceAppointmentNotificationTest {
         HOT_ServiceAppointmentNotification.timeChanged(notificationType, saIds, recipients);
         Test.stopTest();
     }
+    @isTest
+    private static void testFormatTimePeriod() {
+        Datetime startDate = Datetime.newInstance(2023, 10, 20, 9, 0, 0);
+        Datetime endDate = Datetime.newInstance(2023, 10, 20, 15, 30, 0);
+
+        String result = HOT_ServiceAppointmentNotification.formatTimePeriod(startDate, endDate);
+
+        String expected = '20.10.2023\nKlokkeslett: 09.00 - 15.30';
+
+        System.assertEquals(expected, result, 'The formatted time period is incorrect.');
+    }
 }
