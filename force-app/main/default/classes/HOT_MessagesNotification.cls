@@ -112,7 +112,10 @@ public without sharing class HOT_MessagesNotification {
                             notification.HOT_Account__c = thread.CRM_Account__c;
                             notification.HOT_NotificationChannel__c = 'SMS';
                             notification.HOT_Subject__c = 'Ny melding fra Tolketjenesten';
-                            notification.HOT_NotificationText__c = 'INFO Du har fått en melding fra tolketjenesten.  For mer informasjon, se tolkebestilling.nav.no. Du kan ikke svare på denne meldingen. Mvh tolketjenesten i NAV';
+                            notification.HOT_NotificationText__c =
+                                'INFO Du har fått en melding fra tolketjenesten.\nFor mer informasjon, se tolkebestilling.nav.no.\n' +
+                                'Du kan ikke svare på denne meldingen.\n' +
+                                'Mvh tolketjenesten i NAV';
                             notification.HOT_RelatedObject__c = thread.Id;
                             notification.HOT_RelatedObjectType__c = 'threadInterpreter';
 
@@ -123,7 +126,10 @@ public without sharing class HOT_MessagesNotification {
                             notification.HOT_Account__c = thread.CRM_Account__c;
                             notification.HOT_NotificationChannel__c = 'SMS';
                             notification.HOT_Subject__c = 'Ny melding fra Tolketjenesten';
-                            notification.HOT_NotificationText__c = 'INFO Du har fått en melding fra tolketjenesten.  For mer informasjon, se tolkebestilling.nav.no. Du kan ikke svare på denne meldingen. Mvh tolketjenesten i NAV';
+                            notification.HOT_NotificationText__c =
+                                'INFO Du har fått en melding fra tolketjenesten.\nFor mer informasjon, se tolkebestilling.nav.no.\n' +
+                                'Du kan ikke svare på denne meldingen.\n' +
+                                'Mvh tolketjenesten i NAV';
                             notification.HOT_RelatedObject__c = thread.Id;
                             notification.HOT_RelatedObjectType__c = 'threadUser';
 
@@ -276,7 +282,10 @@ public without sharing class HOT_MessagesNotification {
                             notification.HOT_Account__c = user.AccountId;
                             notification.HOT_NotificationChannel__c = 'SMS';
                             notification.HOT_Subject__c = 'Ny melding fra Tolketjenesten';
-                            notification.HOT_NotificationText__c = 'INFO Du har fått en melding fra tolketjenesten.  For mer informasjon, se tolkebestilling.nav.no. Du kan ikke svare på denne meldingen. Mvh tolketjenesten i NAV';
+                            notification.HOT_NotificationText__c =
+                                'INFO Du har fått en melding fra tolketjenesten. \nFor mer informasjon, se tolkebestilling.nav.no.\n' +
+                                'Du kan ikke svare på denne meldingen.\n' +
+                                'Mvh tolketjenesten i NAV';
                             notification.HOT_RelatedObject__c = thread.Id;
                             notification.HOT_RelatedObjectType__c = 'threadInterpreter';
 

@@ -14,7 +14,7 @@ public without sharing class HOT_NotificationCentreController {
                 HOT_RelatedObjectType__c,
                 CreatedDate
             FROM HOT_Notification__c
-            WHERE HOT_Account__c = :currentUser.AccountId
+            WHERE HOT_Account__c = :currentUser.AccountId AND CreatedDate = LAST_N_DAYS:30
         ];
         return notifications;
     }

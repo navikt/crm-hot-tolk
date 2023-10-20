@@ -27,7 +27,10 @@ public without sharing class HOT_ReminderSMSService {
                     formatTimePeriod(workOrder.StartDate, workOrder.EndDate) +
                     '\n' +
                     'Tolk er: ' +
-                    interpreterNames.get(workOrder.Id);
+                    interpreterNames.get(workOrder.Id) +
+                    '\nFor mer informasjon, se tolkebestilling.nav.no.\n' +
+                    'Du kan ikke svare på denne meldingen.\n' +
+                    'Mvh tolketjenesten i NAV';
                 notification.HOT_RelatedObject__c = workOrder.Id;
                 notification.HOT_RelatedObjectType__c = 'workOrder';
 
@@ -73,7 +76,11 @@ public without sharing class HOT_ReminderSMSService {
                 } else {
                     message += ':\nDato: ' + formatTimePeriod(request.StartTime__c, request.EndTime__c);
                 }
-                notification.HOT_NotificationText__c = message;
+                notification.HOT_NotificationText__c =
+                    message +
+                    '\nFor mer informasjon, se tolkebestilling.nav.no.\n' +
+                    'Du kan ikke svare på denne meldingen.\n' +
+                    'Mvh tolketjenesten i NAV';
                 if (request.IsSerieoppdrag__c) {
                     notification.HOT_RelatedObject__c = request.Id;
                     notification.HOT_RelatedObjectType__c = HOT_WorkOrderHandler.getWorkOrder(request).Id;
@@ -190,12 +197,18 @@ public without sharing class HOT_ReminderSMSService {
                     notification.HOT_NotificationText__c =
                         'Du har fått tolk. Tolk er: ' +
                         interpreterNames.get(workOrder.Id) +
-                        formatTimePeriod(workOrder.StartDate, workOrder.EndDate);
+                        formatTimePeriod(workOrder.StartDate, workOrder.EndDate) +
+                        '\nFor mer informasjon, se tolkebestilling.nav.no.\n' +
+                        'Du kan ikke svare på denne meldingen.\n' +
+                        'Mvh tolketjenesten i NAV';
                 } else if (workOrder.Status == 'Cannot Complete') {
                     notification.HOT_NotificationText__c =
                         'Ikke ledig tolk' +
                         '\nDato: ' +
-                        formatTimePeriod(workOrder.StartDate, workOrder.EndDate);
+                        formatTimePeriod(workOrder.StartDate, workOrder.EndDate) +
+                        '\nFor mer informasjon, se tolkebestilling.nav.no.\n' +
+                        'Du kan ikke svare på denne meldingen.\n' +
+                        'Mvh tolketjenesten i NAV';
                 }
                 notification.HOT_RelatedObject__c = workOrder.Id;
                 notification.HOT_RelatedObjectType__c = 'workOrder';
@@ -301,7 +314,10 @@ public without sharing class HOT_ReminderSMSService {
             notification.HOT_Account__c = ir.ServiceResource__r.Account.Id;
             notification.HOT_NotificationChannel__c = 'SMS';
             notification.HOT_Subject__c = 'Du er ønsket til et oppdrag';
-            notification.HOT_NotificationText__c = 'INFO\nDu er ønsket til et oppdrag.\n\n';
+            notification.HOT_NotificationText__c =
+                'INFO\nDu er ønsket til et oppdrag.\n\nFor mer informasjon, se tolkebestilling.nav.no.\n' +
+                'Du kan ikke svare på denne meldingen.\n' +
+                'Mvh tolketjenesten i NAV';
             notification.HOT_RelatedObject__c = ir.Id;
             notification.HOT_RelatedObjectType__c = 'wanted';
 
@@ -365,7 +381,10 @@ public without sharing class HOT_ReminderSMSService {
                     'Tolk er: ' +
                     wo.HOT_Interpreters__c +
                     '\nDato: ' +
-                    formatTimePeriod(wo.StartDate, wo.EndDate);
+                    formatTimePeriod(wo.StartDate, wo.EndDate) +
+                    '\nFor mer informasjon, se tolkebestilling.nav.no.\n' +
+                    'Du kan ikke svare på denne meldingen.\n' +
+                    'Mvh tolketjenesten i NAV';
                 notification.HOT_RelatedObject__c = wo.Id;
                 notification.HOT_RelatedObjectType__c = 'workOrder';
 
