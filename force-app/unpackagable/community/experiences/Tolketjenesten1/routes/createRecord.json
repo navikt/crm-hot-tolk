@@ -2,6 +2,7 @@
   "activeViewId" : null,
   "appPageId" : "e1a097ff-c5e1-47c6-b293-9a8b7a2b049f",
   "configurationTags" : [ ],
+  "devName" : "Create_Record",
   "id" : "ed2ffdbc-d9e0-41c2-bc60-1c69a5b29134",
   "label" : "Create Record",
   "routeType" : "createrecord",

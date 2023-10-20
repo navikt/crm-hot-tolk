@@ -2,6 +2,7 @@
   "activeViewId" : "8c86d6db-08f8-4fe5-b020-9e8171ede842",
   "appPageId" : "e1a097ff-c5e1-47c6-b293-9a8b7a2b049f",
   "configurationTags" : [ ],
+  "devName" : "MyRequests__c",
   "id" : "dbb7feb8-2826-43a3-9f08-def24ba223b3",
   "label" : "Mine Bestillinger",
   "pageAccess" : "UseParent",

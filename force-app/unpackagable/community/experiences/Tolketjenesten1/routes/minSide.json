@@ -2,6 +2,7 @@
   "activeViewId" : "1cf33995-56a7-412e-9b98-58b3d246a829",
   "appPageId" : "e1a097ff-c5e1-47c6-b293-9a8b7a2b049f",
   "configurationTags" : [ ],
+  "devName" : "Min_Side__c",
   "id" : "ae396dbf-d538-475a-b26f-c61ff8f4de13",
   "label" : "Min Side",
   "pageAccess" : "UseParent",

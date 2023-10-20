@@ -2,7 +2,7 @@
   "appPageId" : "e1a097ff-c5e1-47c6-b293-9a8b7a2b049f",
   "componentName" : "siteforce:sldsOneColLayout",
   "dataProviders" : [ ],
-  "id" : "23a96844-2ef2-48ae-837c-22964f4c48d8",
+  "id" : "857e6a3e-ee41-4710-aec2-ea4d9589d70a",
   "label" : "Mine samtaler frilanstolk",
   "regions" : [ {
     "components" : [ {
@@ -11,46 +11,46 @@
         "navareapicklist" : "Privatperson"
       },
       "componentName" : "c:globalCommunityHeader",
-      "id" : "21f25e08-abe4-49e9-801d-f47964bf3999",
+      "id" : "62cc284d-8373-4122-a233-496a786d2745",
       "renderPriority" : "NEUTRAL",
       "renditionMap" : { },
       "type" : "component"
     } ],
-    "id" : "16b8eeff-793b-441f-b689-26f4561ceded",
+    "id" : "431d18c9-4a3b-4e78-93b3-77c5a1642c71",
     "regionName" : "header",
     "type" : "region"
   }, {
     "components" : [ {
       "componentAttributes" : { },
       "componentName" : "c:hot_tolketjenestenHovedBanner",
-      "id" : "3176b577-dbdd-4621-bc83-ee56c8640d48",
-      "renderPriority" : "NEUTRAL",
-      "renditionMap" : { },
-      "type" : "component"
-    }, {
-      "componentAttributes" : { },
-      "componentName" : "c:hot_frilanstolkThreadList",
-      "id" : "6d107b00-d8fc-4cb0-846a-a0b5868bd563",
+      "id" : "6b18af07-1023-4fd3-ae0b-7b22f64ea0a9",
       "renderPriority" : "NEUTRAL",
       "renditionMap" : { },
       "type" : "component"
     } ],
-    "id" : "60425f9a-fbd7-444d-82e0-7b963aa360d4",
+    "id" : "4ed7dfd5-fd5c-4560-9621-8f21edfde29a",
     "regionName" : "content",
     "type" : "region"
   }, {
     "components" : [ {
+      "componentAttributes" : { },
+      "componentName" : "c:hot_frilanstolkThreadList",
+      "id" : "3202fad1-b666-41c4-9f1c-ac13f7bfaad6",
+      "renderPriority" : "NEUTRAL",
+      "renditionMap" : { },
+      "type" : "component"
+    }, {
       "componentAttributes" : {
         "NAVarea" : "Privatperson",
         "navareapicklist" : "Privatperson"
       },
       "componentName" : "c:globalCommunityFooter",
-      "id" : "6a4b74c9-3e04-4b8d-ab04-9862c99d562a",
+      "id" : "2b9dd63e-e5a4-4a6f-b93e-161b82106040",
       "renderPriority" : "NEUTRAL",
       "renditionMap" : { },
       "type" : "component"
     } ],
-    "id" : "d05b6d4f-d02b-473e-b6ec-4437e44c4cd8",
+    "id" : "f7d0cd65-73c0-4957-9e08-32a1f518d36e",
     "regionName" : "footer",
     "type" : "region"
   }, {
@@ -61,11 +61,11 @@
         "title" : "Mine samtaler frilanstolk"
       },
       "componentName" : "forceCommunity:seoAssistant",
-      "id" : "4ec94d0b-0324-4104-99ba-1b2646afa9f4",
+      "id" : "ef40839d-86c1-46c4-99c4-e6c5e70975d9",
       "renditionMap" : { },
       "type" : "component"
     } ],
-    "id" : "65c88aa1-895c-46a3-bdc0-5a55f51a695d",
+    "id" : "51794db6-d8c9-4e41-9ce9-c4a1636589eb",
     "regionName" : "sfdcHiddenRegion",
     "type" : "region"
   } ],

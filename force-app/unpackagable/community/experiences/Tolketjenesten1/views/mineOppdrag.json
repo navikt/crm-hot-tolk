@@ -1,6 +1,7 @@
 {
   "appPageId" : "e1a097ff-c5e1-47c6-b293-9a8b7a2b049f",
   "componentName" : "siteforce:dynamicLayout",
+  "dataProviders" : [ ],
   "id" : "8d6c51e4-b778-4519-8c17-a20a9f3bdcf5",
   "label" : "Mine Oppdrag",
   "regions" : [ {

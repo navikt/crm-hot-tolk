@@ -2,6 +2,7 @@
   "activeViewId" : "3b7c9dcb-e380-4622-ba40-bf1ab4a3ad5b",
   "appPageId" : "e1a097ff-c5e1-47c6-b293-9a8b7a2b049f",
   "configurationTags" : [ ],
+  "devName" : "NewRequest__c",
   "id" : "e68fff3e-0f2d-44dd-9022-f860843aae55",
   "label" : "Ny Bestilling",
   "pageAccess" : "UseParent",
