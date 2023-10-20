@@ -69,10 +69,6 @@
 **/aura/selfRegister
 **/aura/setExpId
 **/aura/
-**/components/SiteFooter.component
-**/components/SiteHeader.component
-**/components/SiteLogin.component
-**/components/SitePoweredBy.component
 **/navigationMenus/*
 
 # Workflows

@@ -2,6 +2,7 @@
   "activeViewId" : "8edd02cd-ea74-4940-b71a-1c6391d6d494",
   "appPageId" : "e1a097ff-c5e1-47c6-b293-9a8b7a2b049f",
   "configurationTags" : [ ],
+  "devName" : "Thread_Related_List__c",
   "id" : "29aa524c-3a2e-4ea0-b3a4-c81ebeeae347",
   "label" : "Thread Related List",
   "objectApiName" : "Thread__c",
