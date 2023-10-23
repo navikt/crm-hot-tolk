@@ -224,42 +224,46 @@ public without sharing class HOT_ServiceAppointmentNotification {
 
             HOT_NotificationHandler.sendNotification(notification, recipients, (SObject) serviceAppointment);
             //creating notification object
-            User user = [SELECT Id, AccountId FROM User WHERE Id IN :recipientList LIMIT 1];
-            HOT_Notification__c newnotification = new HOT_Notification__c();
-            newnotification.HOT_Account__c = user.AccountId;
-            newnotification.HOT_NotificationChannel__c = 'Push-varsel i appen';
-            newnotification.HOT_Subject__c =
-                serviceAppointment.AppointmentNumber +
-                ' - ' +
-                serviceAppointment.EarliestStartTime?.format('d.M.yyyy') +
-                ' - ' +
-                ' Avlyst';
-            newnotification.HOT_NotificationText__c =
-                'Oppdraget ' +
-                serviceAppointment.AppointmentNumber +
-                ' som skulle vært gjennomført ' +
-                serviceAppointment.EarliestStartTime?.format('d.M.yyyy HH:mm') +
-                ' er avlyst.';
-            newnotification.HOT_RelatedObject__c = serviceAppointment.Id;
-            newnotification.HOT_RelatedObjectType__c = 'noServiceAppointment';
+            List<User> user = [SELECT Id, AccountId FROM User WHERE Id IN :recipientList LIMIT 1];
+            if (user.size() != 0) {
+                HOT_Notification__c newnotification = new HOT_Notification__c();
+                newnotification.HOT_Account__c = user[0].AccountId;
+                newnotification.HOT_NotificationChannel__c = 'Push-varsel i appen';
+                newnotification.HOT_Subject__c =
+                    serviceAppointment.AppointmentNumber +
+                    ' - ' +
+                    serviceAppointment.EarliestStartTime?.format('d.M.yyyy') +
+                    ' - ' +
+                    ' Avlyst';
+                newnotification.HOT_NotificationText__c =
+                    'Oppdraget ' +
+                    serviceAppointment.AppointmentNumber +
+                    ' som skulle vært gjennomført ' +
+                    serviceAppointment.EarliestStartTime?.format('d.M.yyyy HH:mm') +
+                    ' er avlyst.';
+                newnotification.HOT_RelatedObject__c = serviceAppointment.Id;
+                newnotification.HOT_RelatedObjectType__c = 'noServiceAppointment';
 
-            notificationList.add(newnotification);
+                notificationList.add(newnotification);
+            }
         } else {
             saSMS.add(serviceAppointment.Id);
             //creating notification object
-            User user = [SELECT Id, AccountId FROM User WHERE Id IN :recipientList LIMIT 1];
-            HOT_Notification__c newnotification = new HOT_Notification__c();
-            newnotification.HOT_Account__c = user.AccountId;
-            newnotification.HOT_NotificationChannel__c = 'SMS';
-            newnotification.HOT_Subject__c = 'INFO ' + serviceAppointment.AppointmentNumber + ' er avlyst.';
-            newnotification.HOT_NotificationText__c =
-                'For mer informasjon, se tolkebestilling.nav.no.\n' +
-                'Du kan ikke svare på denne meldingen.\n' +
-                'Mvh tolketjenesten i NAV';
-            newnotification.HOT_RelatedObject__c = serviceAppointment.Id;
-            newnotification.HOT_RelatedObjectType__c = 'noServiceAppointment';
+            List<User> user = [SELECT Id, AccountId FROM User WHERE Id IN :recipientList LIMIT 1];
+            if (user.size() != 0) {
+                HOT_Notification__c newnotification = new HOT_Notification__c();
+                newnotification.HOT_Account__c = user[0].AccountId;
+                newnotification.HOT_NotificationChannel__c = 'SMS';
+                newnotification.HOT_Subject__c = 'INFO ' + serviceAppointment.AppointmentNumber + ' er avlyst.';
+                newnotification.HOT_NotificationText__c =
+                    'For mer informasjon, se tolkebestilling.nav.no.\n' +
+                    'Du kan ikke svare på denne meldingen.\n' +
+                    'Mvh tolketjenesten i NAV';
+                newnotification.HOT_RelatedObject__c = serviceAppointment.Id;
+                newnotification.HOT_RelatedObjectType__c = 'noServiceAppointment';
 
-            notificationList.add(newnotification);
+                notificationList.add(newnotification);
+            }
         }
         if (saSMS.size() > 0) {
             HOT_ReminderSMSService.sendSMSToInterpreterOnCanceledByUser(saSMS, srIds);
