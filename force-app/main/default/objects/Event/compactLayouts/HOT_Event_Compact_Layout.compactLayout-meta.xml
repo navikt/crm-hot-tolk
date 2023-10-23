@@ -1,11 +1,10 @@
-<?xml version="1.0" encoding="UTF-8"?>
+<?xml version="1.0" encoding="UTF-8" ?>
 <CompactLayout xmlns="http://soap.sforce.com/2006/04/metadata">
     <fullName>HOT_Event_Compact_Layout</fullName>
     <fields>Subject</fields>
     <fields>StartDateTime</fields>
     <fields>EndDateTime</fields>
+    <fields>WhatId</fields>
     <fields>Location</fields>
-    <fields>ShowAs</fields>
-    <fields>IsRecurrence2</fields>
     <label>HOT Event Compact Layout</label>
 </CompactLayout>
