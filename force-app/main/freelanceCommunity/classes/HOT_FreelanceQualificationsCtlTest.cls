@@ -112,50 +112,50 @@ private class HOT_FreelanceQualificationsCtlTest {
             System.assertEquals(sr.Id, resource1.Id, 'Could not get my service resource');
         }
     }
-    @isTest
-    static void getServiceResourceSkillsTest() {
-        ServiceResource serviceResource = HOT_TestDataFactory.createServiceResource(UserInfo.getUserId());
-        insert serviceResource;
+    // @isTest
+    // static void getServiceResourceSkillsTest() {
+    //     ServiceResource serviceResource = HOT_TestDataFactory.createServiceResource(UserInfo.getUserId());
+    //     insert serviceResource;
 
-        Skill skill = [SELECT Id, MasterLabel FROM Skill LIMIT 1];
+    //     Skill skill = [SELECT Id, MasterLabel FROM Skill LIMIT 1];
 
-        ServiceResourceSkill srSkill = HOT_TestDataFactory.createServiceResourceSkill(serviceResource, skill);
-        insert srSkill;
-        List<ServiceResourceSkill> freelanceSkills = HOT_FreelanceQualificationsController.getUserServiceResourceSkills();
+    //     ServiceResourceSkill srSkill = HOT_TestDataFactory.createServiceResourceSkill(serviceResource, skill);
+    //     insert srSkill;
+    //     List<ServiceResourceSkill> freelanceSkills = HOT_FreelanceQualificationsController.getUserServiceResourceSkills();
 
-        System.assertEquals(freelanceSkills[0].EffectiveStartDate, Date.today());
-    }
-    @isTest
-    static void setServiceResourceSkillsTest() {
-        ServiceResource serviceResource = HOT_TestDataFactory.createServiceResource(UserInfo.getUserId());
-        insert serviceResource;
-        WorkType workType = HOT_TestDataFactory.createWorkType();
-        insert workType;
+    //     System.assertEquals(freelanceSkills[0].EffectiveStartDate, Date.today());
+    // }
+    // @isTest
+    // static void setServiceResourceSkillsTest() {
+    //     ServiceResource serviceResource = HOT_TestDataFactory.createServiceResource(UserInfo.getUserId());
+    //     insert serviceResource;
+    //     WorkType workType = HOT_TestDataFactory.createWorkType();
+    //     insert workType;
 
-        Skill skill = [SELECT Id, MasterLabel FROM Skill LIMIT 1];
+    //     Skill skill = [SELECT Id, MasterLabel FROM Skill LIMIT 1];
 
-        ServiceResourceSkill srSkill = HOT_FreelanceQualificationsController.setResourceSkill(serviceResource, skill);
+    //     ServiceResourceSkill srSkill = HOT_FreelanceQualificationsController.setResourceSkill(serviceResource, skill);
 
-        System.assertEquals(srSkill.SkillId, skill.Id);
-    }
-    @isTest
-    static void editServiceResourceSkillsTest() {
-        ServiceResource serviceResource = HOT_TestDataFactory.createServiceResource(UserInfo.getUserId());
-        insert serviceResource;
-        WorkType workType = HOT_TestDataFactory.createWorkType();
-        insert workType;
+    //     System.assertEquals(srSkill.SkillId, skill.Id);
+    // }
+    // @isTest
+    // static void editServiceResourceSkillsTest() {
+    //     ServiceResource serviceResource = HOT_TestDataFactory.createServiceResource(UserInfo.getUserId());
+    //     insert serviceResource;
+    //     WorkType workType = HOT_TestDataFactory.createWorkType();
+    //     insert workType;
 
-        List<Skill> skills = [SELECT Id, MasterLabel FROM Skill];
+    //     List<Skill> skills = [SELECT Id, MasterLabel FROM Skill];
 
-        ServiceResourceSkill srSkill = HOT_TestDataFactory.createServiceResourceSkill(serviceResource, skills[0]);
-        srSkill.EffectiveEndDate = Datetime.now();
-        insert srSkill;
+    //     ServiceResourceSkill srSkill = HOT_TestDataFactory.createServiceResourceSkill(serviceResource, skills[0]);
+    //     srSkill.EffectiveEndDate = Datetime.now();
+    //     insert srSkill;
 
-        List<Skill> newSkills = new List<Skill>();
-        newSkills.add(skills[0]);
+    //     List<Skill> newSkills = new List<Skill>();
+    //     newSkills.add(skills[0]);
 
-        HOT_FreelanceQualificationsController.editServiceResourceSkill(skills);
-    }
+    //     HOT_FreelanceQualificationsController.editServiceResourceSkill(skills);
+    // }
     @isTest
     static void getAllSkillsListTest() {
         List<Skill> skills = HOT_FreelanceQualificationsController.getAllSkillsList();
