@@ -206,4 +206,76 @@ public without sharing class HOT_ThreadDetailControllerTest {
             System.assertEquals(null, thread, 'Should not have access to this thread');
         }
     }
+    @isTest
+    public static void checkFreelanceAccessHasAccessIR() {
+        Profile communityProfile = [SELECT Id FROM Profile WHERE Name = 'System Administrator' LIMIT 1];
+        User admin = [SELECT Id, UserRoleId FROM User WHERE Id = :UserInfo.getUserId() LIMIT 1];
+
+        ServiceResource serviceResource = HOT_TestDataFactory.createServiceResource(admin.Id);
+        insert serviceResource;
+
+        WorkType workType = HOT_TestDataFactory.createWorkType();
+        insert workType;
+        HOT_Request__c request = HOT_TestDataFactory.createRequest('TEST', workType);
+        insert request;
+        WorkOrder workOrder = HOT_TestDataFactory.createWorkOrder(request, workType);
+        insert workOrder;
+        WorkOrderLineItem woli = HOT_TestDataFactory.createWorkOrderLineItem(workOrder, workType);
+        insert woli;
+        ServiceAppointment sa = HOT_TestDataFactory.createServiceAppointment(woli);
+        sa.Subject = 'TEST';
+        insert sa;
+
+        HOT_InterestedResource__c interestedResource = HOT_TestDataFactory.createInterestedResource(
+            sa.Id,
+            serviceResource.Id
+        );
+        insert interestedResource;
+
+        Thread__c t = new Thread__c();
+        t.CRM_Related_Object__c = interestedResource.Id;
+        insert t;
+        System.runAs(admin) {
+            boolean access = HOT_ThreadDetailController.checkAccess(t.Id);
+            boolean check = true;
+            System.assertEquals(check, access, 'Should have access to this thread');
+        }
+    }
+    @isTest
+    public static void checkFreelanceAccessHasAccessSA() {
+        Profile communityProfile = [SELECT Id FROM Profile WHERE Name = 'System Administrator' LIMIT 1];
+        User admin = [SELECT Id, UserRoleId FROM User WHERE Id = :UserInfo.getUserId() LIMIT 1];
+
+        ServiceResource serviceResource = HOT_TestDataFactory.createServiceResource(admin.Id);
+        insert serviceResource;
+
+        WorkType workType = HOT_TestDataFactory.createWorkType();
+        insert workType;
+        HOT_Request__c request = HOT_TestDataFactory.createRequest('TEST', workType);
+        insert request;
+        WorkOrder workOrder = HOT_TestDataFactory.createWorkOrder(request, workType);
+        insert workOrder;
+        WorkOrderLineItem woli = HOT_TestDataFactory.createWorkOrderLineItem(workOrder, workType);
+        insert woli;
+        ServiceAppointment sa = HOT_TestDataFactory.createServiceAppointment(woli);
+        sa.Subject = 'TEST';
+        insert sa;
+
+        HOT_InterestedResource__c interestedResource = HOT_TestDataFactory.createInterestedResource(
+            sa.Id,
+            serviceResource.Id
+        );
+        insert interestedResource;
+        AssignedResource ar = HOT_TestDataFactory.createAssignedResource(sa.Id, serviceResource.Id);
+        insert ar;
+
+        Thread__c t = new Thread__c();
+        t.CRM_Related_Object__c = sa.Id;
+        insert t;
+        System.runAs(admin) {
+            boolean access = HOT_ThreadDetailController.checkAccess(t.Id);
+            boolean check = true;
+            System.assertEquals(check, access, 'Should have access to this thread');
+        }
+    }
 }
