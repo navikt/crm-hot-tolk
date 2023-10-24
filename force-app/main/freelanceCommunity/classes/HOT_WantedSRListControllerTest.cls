@@ -367,4 +367,113 @@ private class HOT_WantedSRListControllerTest {
         }
         Test.stopTest();
     }
+    @isTest
+    static void hasOverlapTestExisting() {
+        Profile profile = [SELECT Id FROM Profile WHERE Name = 'System Administrator'];
+        User user1 = new User(
+            alias = 'TestUser',
+            email = 'HOT_testaccount@nav.hot.no',
+            emailencodingkey = 'UTF-8',
+            lastname = 'Testing',
+            languagelocalekey = 'en_US',
+            localesidkey = 'en_US',
+            profileid = profile.Id,
+            country = 'Norway',
+            IsActive = true,
+            timezonesidkey = 'Europe/Paris',
+            username = 'HOT_testaccount@nav.hot.no'
+        );
+        insert user1;
+        ServiceResource resource1 = HOT_TestDataFactory.createServiceResource(user1.Id);
+        insert resource1;
+
+        WorkType workType = HOT_TestDataFactory.createWorkType();
+        insert workType;
+
+        HOT_Request__c request = HOT_TestDataFactory.createRequest('TEST', workType);
+        insert request;
+        Test.startTest();
+        WorkOrder workOrder = HOT_TestDataFactory.createWorkOrder(request, workType);
+        insert workOrder;
+        WorkOrderLineItem WorkOrderLineItem = HOT_TestDataFactory.createWorkOrderLineItem(workOrder, workType);
+        insert WorkOrderLineItem;
+        ServiceAppointment ServiceAppointment = HOT_TestDataFactory.createServiceAppointment(WorkOrderLineItem);
+        ServiceAppointment.EarliestStartTime = Datetime.now().addDays(52);
+        ServiceAppointment.DueDate = ServiceAppointment.EarliestStartTime.addHours(2);
+        ServiceAppointment.SchedStartTime = Datetime.now().addDays(52);
+        ServiceAppointment.SchedEndTime = ServiceAppointment.SchedStartTime.addHours(2);
+        insert ServiceAppointment;
+
+        HOT_InterestedResource__c interestedResource = HOT_TestDataFactory.createInterestedResource(
+            ServiceAppointment.Id,
+            resource1.Id
+        );
+        interestedResource.Status__c = 'Assigned';
+        insert interestedResource;
+        AssignedResource assignedResource = HOT_TestDataFactory.createAssignedResource(
+            ServiceAppointment.Id,
+            resource1.Id
+        );
+        insert assignedResource;
+
+        HOT_wantedSRListController.Request req = new HOT_wantedSRListController.Request();
+        req.saID = ServiceAppointment.Id;
+        req.srID = resource1.Id;
+
+        List<String> result = HOT_wantedSRListController.checkForOverlapOrExisting(
+            new List<HOT_wantedSRListController.Request>{ req }
+        );
+        System.assertEquals('existing', result[0]);
+    }
+    @isTest
+    static void hasOverlapTestNoOverlap() {
+        Profile profile = [SELECT Id FROM Profile WHERE Name = 'System Administrator'];
+        User user1 = new User(
+            alias = 'TestUser',
+            email = 'HOT_testaccount@nav.hot.no',
+            emailencodingkey = 'UTF-8',
+            lastname = 'Testing',
+            languagelocalekey = 'en_US',
+            localesidkey = 'en_US',
+            profileid = profile.Id,
+            country = 'Norway',
+            IsActive = true,
+            timezonesidkey = 'Europe/Paris',
+            username = 'HOT_testaccount@nav.hot.no'
+        );
+        insert user1;
+        ServiceResource resource1 = HOT_TestDataFactory.createServiceResource(user1.Id);
+        insert resource1;
+
+        WorkType workType = HOT_TestDataFactory.createWorkType();
+        insert workType;
+
+        HOT_Request__c request = HOT_TestDataFactory.createRequest('TEST', workType);
+        insert request;
+        Test.startTest();
+        WorkOrder workOrder = HOT_TestDataFactory.createWorkOrder(request, workType);
+        insert workOrder;
+        WorkOrderLineItem WorkOrderLineItem = HOT_TestDataFactory.createWorkOrderLineItem(workOrder, workType);
+        insert WorkOrderLineItem;
+        ServiceAppointment ServiceAppointment = HOT_TestDataFactory.createServiceAppointment(WorkOrderLineItem);
+        ServiceAppointment.EarliestStartTime = Datetime.now().addDays(52);
+        ServiceAppointment.DueDate = ServiceAppointment.EarliestStartTime.addHours(2);
+        ServiceAppointment.SchedStartTime = Datetime.now().addDays(52);
+        ServiceAppointment.SchedEndTime = ServiceAppointment.SchedStartTime.addHours(2);
+        insert ServiceAppointment;
+
+        HOT_InterestedResource__c interestedResource = HOT_TestDataFactory.createInterestedResource(
+            ServiceAppointment.Id,
+            resource1.Id
+        );
+
+        HOT_wantedSRListController.Request req = new HOT_wantedSRListController.Request();
+        req.saID = ServiceAppointment.Id;
+        req.srID = resource1.Id;
+
+        List<String> result = HOT_wantedSRListController.checkForOverlapOrExisting(
+            new List<HOT_wantedSRListController.Request>{ req }
+        );
+        System.assertEquals('no overlap', result[0]);
+    }
 }
