@@ -167,4 +167,31 @@ private class HOT_IRListControllerTest {
 
         System.assertNotEquals(null, thread, 'Thread was not made');
     }
+    @isTest
+    static void getIRDetails() {
+        ServiceResource serviceResource = [
+            SELECT Id
+            FROM ServiceResource
+            WHERE RelatedRecordId = :UserInfo.getUserId()
+        ];
+
+        HOT_InterestedResource__c interestedResource = [
+            SELECT Id, Status__c, AppointmentNumber__c, ServiceResource__c, ServiceAppointment__c
+            FROM HOT_InterestedResource__c
+        ];
+        interestedResource.ServiceResource__c = serviceResource.Id;
+        update interestedResource;
+        Test.startTest();
+
+        HOT_InterestedResource__c irResult = HOT_InterestedResourcesListController.getInterestedResourceDetails(
+            interestedResource.ServiceAppointment__c
+        );
+        System.assertEquals(
+            irResult.AppointmentNumber__c,
+            interestedResource.AppointmentNumber__c,
+            'Did not get the correct IR details'
+        );
+
+        Test.stopTest();
+    }
 }
