@@ -1,15 +1,15 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <CompactLayout xmlns="http://soap.sforce.com/2006/04/metadata">
     <fullName>HOT_ServiceAppointment_Compact_Layout</fullName>
-    <fields>AppointmentNumber</fields>
     <fields>AccountId</fields>
     <fields>Status</fields>
     <fields>WorkTypeId</fields>
-    <fields>HOT_ServiceResource__c</fields>
     <fields>HOT_IsScreenInterpreterNew__c</fields>
     <fields>EarliestStartTime</fields>
-    <fields>CreatedDate</fields>
-    <fields>HOT_IsReleasedToFreelance__c</fields>
-    <fields>HOT_IsEmployedInterpreter__c</fields>
+    <fields>DueDate</fields>
+    <fields>Subject</fields>
+    <fields>Address</fields>
+    <fields>HOT_WorkOrder__c</fields>
+    <fields>HOT_ServiceResource__c</fields>
     <label>Service Appointment Compact Layout</label>
 </CompactLayout>
