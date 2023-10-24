@@ -44,6 +44,34 @@ private class HOT_WantedSRListControllerTest {
         );
         interestedResource.Status__c = 'Wanted';
         insert interestedResource;
+
+        //flertolk
+        HOT_Request__c request2 = HOT_TestDataFactory.createRequest('Flertolk', workType);
+        request2.ServiceTerritory__c = serviceTerritory.Id;
+        request2.NumberOfInterpreters__c = 3;
+        insert request2;
+        request2.Status__c = 'Godkjent';
+        update request2;
+
+        List<ServiceAppointment> serviceAppointments = [
+            SELECT Id, HOT_IsReleasedToFreelance__c, Status
+            FROM ServiceAppointment
+            WHERE HOT_Request__c = :request2.Id
+        ];
+        for (ServiceAppointment sa : serviceAppointments) {
+            sa.HOT_IsReleasedToFreelance__c = true;
+            sa.Status = 'Released To Freelance';
+            sa.HOT_DeadlineDate__c = Date.today().addDays(3);
+        }
+
+        update serviceAppointments;
+
+        HOT_InterestedResource__c interestedResource2 = HOT_TestDataFactory.createInterestedResource(
+            serviceAppointments[0].Id,
+            serviceResource.Id
+        );
+        interestedResource2.Status__c = 'Wanted';
+        insert interestedResource2;
     }
     @isTest
     static void getWantedSTListTest() {
@@ -65,7 +93,7 @@ private class HOT_WantedSRListControllerTest {
             insert user1;
 
             List<ServiceAppointment> serviceAppointments = HOT_WantedSRListController.getWantedServiceAppointments();
-            System.assertEquals(1, serviceAppointments.size(), 'Could not get the wanted appointments');
+            System.assertEquals(2, serviceAppointments.size(), 'Could not get the wanted appointments');
         }
     }
     @isTest
@@ -86,6 +114,58 @@ private class HOT_WantedSRListControllerTest {
         ];
 
         System.assertEquals('Interested', irToCheck.Status__c = 'Interested', 'Could not change the ir status');
+    }
+    @isTest
+    static void updateIRTestExistingIROnWo() {
+        ServiceAppointment sa = [
+            SELECT Id, HOT_WorkOrderLineItem__r.WorkOrderId
+            FROM ServiceAppointment
+            WHERE Subject = 'Flertolk'
+            LIMIT 1
+        ];
+
+        ServiceResource sr = [
+            SELECT Id, RelatedRecordId
+            FROM ServiceResource
+            WHERE RelatedRecordId = :UserInfo.getUserId()
+        ];
+        HOT_WantedSRListController.updateInterestedResource(sa.Id, sr.Id);
+
+        List<HOT_InterestedResource__c> irToCheck = [
+            SELECT Id, Status__c
+            FROM HOT_InterestedResource__c
+            WHERE ServiceAppointment__r.HOT_WorkOrderLineItem__r.WorkOrderId = :sa.HOT_WorkOrderLineItem__r.WorkOrderId
+        ];
+        for (HOT_InterestedResource__c ir : irToCheck) {
+            System.assertEquals('Interested', ir.Status__c = 'Interested', 'Could not change the ir status');
+        }
+    }
+    @isTest
+    static void updateIRTestExistingIROnWoChecked() {
+        ServiceAppointment sa = [
+            SELECT Id, HOT_WorkOrderLineItem__r.WorkOrderId
+            FROM ServiceAppointment
+            WHERE Subject = 'Flertolk'
+            LIMIT 1
+        ];
+        List<Id> saIds = new List<Id>();
+        saIds.add(sa.Id);
+
+        ServiceResource sr = [
+            SELECT Id, RelatedRecordId
+            FROM ServiceResource
+            WHERE RelatedRecordId = :UserInfo.getUserId()
+        ];
+        HOT_WantedSRListController.updateInterestedResourceChecked(saIds, sr.Id);
+
+        List<HOT_InterestedResource__c> irToCheck = [
+            SELECT Id, Status__c
+            FROM HOT_InterestedResource__c
+            WHERE ServiceAppointment__r.HOT_WorkOrderLineItem__r.WorkOrderId = :sa.HOT_WorkOrderLineItem__r.WorkOrderId
+        ];
+        for (HOT_InterestedResource__c ir : irToCheck) {
+            System.assertEquals('Interested', ir.Status__c = 'Interested', 'Could not change the ir status');
+        }
     }
     @isTest
     static void updateIRCheckedTest() {
@@ -245,7 +325,7 @@ private class HOT_WantedSRListControllerTest {
 
         HOT_Request__c request = HOT_TestDataFactory.createRequest('TEST', workType);
         insert request;
-
+        Test.startTest();
         WorkOrder workOrder = HOT_TestDataFactory.createWorkOrder(request, workType);
         insert workOrder;
         WorkOrderLineItem WorkOrderLineItem = HOT_TestDataFactory.createWorkOrderLineItem(workOrder, workType);
@@ -256,7 +336,7 @@ private class HOT_WantedSRListControllerTest {
         ServiceAppointment.SchedStartTime = Datetime.now().addDays(52);
         ServiceAppointment.SchedEndTime = ServiceAppointment.SchedStartTime.addHours(2);
         insert ServiceAppointment;
-        Test.startTest();
+
         HOT_InterestedResource__c interestedResource = HOT_TestDataFactory.createInterestedResource(
             ServiceAppointment.Id,
             resource1.Id
@@ -284,7 +364,7 @@ private class HOT_WantedSRListControllerTest {
         System.runAs(user1) {
             List<ServiceAppointment> availableSA = HOT_wantedSRListController.checkForOverlap(saToCheck);
             System.assertEquals(0, availableSA.size(), 'Should return 0 because no available sa');
-            Test.stopTest();
         }
+        Test.stopTest();
     }
 }
