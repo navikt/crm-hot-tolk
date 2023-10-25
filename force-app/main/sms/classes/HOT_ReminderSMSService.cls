@@ -3,7 +3,8 @@ public without sharing class HOT_ReminderSMSService {
         Map<Id, WorkOrder> workOrders = new Map<Id, WorkOrder>(workOrderList);
         Map<Id, String> interpreterNames = interpreterNamesByWorkOrderIds(workOrderList);
         List<SMS__c> smsList = new List<SMS__c>();
-
+        //creating notification object list
+        List<HOT_Notification__c> notificationList = new List<HOT_Notification__c>();
         for (WorkOrder workOrder : workOrders.values()) {
             SMS__c sms = new SMS__c();
             sms.Domain__c = 'HOT';
@@ -15,13 +16,42 @@ public without sharing class HOT_ReminderSMSService {
             if (SMS.Recipient__c != null) {
                 smsList.add(sms);
                 workOrder.HOT_IsReminderSMSSendt__c = true;
+                //creating notification object
+                HOT_Notification__c notification = new HOT_Notification__c();
+                notification.HOT_Account__c = workOrder.AccountId;
+                notification.HOT_NotificationChannel__c = 'SMS';
+                notification.HOT_Subject__c = 'Påminnelse om tolkebestilling';
+                notification.HOT_NotificationText__c =
+                    'PÅMINNELSE\nVi minner om tolkebestilling:\n' +
+                    'Dato: ' +
+                    formatTimePeriod(workOrder.StartDate, workOrder.EndDate) +
+                    '\n' +
+                    'Tolk er: ' +
+                    interpreterNames.get(workOrder.Id) +
+                    '\nFor mer informasjon, se tolkebestilling.nav.no.\n' +
+                    'Du kan ikke svare på denne meldingen.\n' +
+                    'Mvh tolketjenesten i NAV';
+                notification.HOT_RelatedObject__c = workOrder.Id;
+                notification.HOT_RelatedObjectType__c = 'workOrder';
+
+                notificationList.add(notification);
             }
         }
         HOT_DatabaseOperations.insertRecords(smsList);
         HOT_DatabaseOperations.updateRecords(workOrders.values());
+        //inserting notifications
+        try {
+            HOT_NotificationCentreController.createNotification(notificationList);
+        } catch (Exception e) {
+            LoggerUtility logger = new LoggerUtility();
+            logger.exception(e, CRM_ApplicationDomain.Domain.HOT);
+            logger.publish();
+        }
     }
 
     public static void notifyUserOnOrderSMS(List<HOT_Request__c> requestList) {
+        //creating notification object list
+        List<HOT_Notification__c> notificationList = new List<HOT_Notification__c>();
         Map<Id, HOT_Request__c> requests = new Map<Id, HOT_Request__c>(requestList);
         List<SMS__c> smsList = new List<SMS__c>();
 
@@ -35,10 +65,43 @@ public without sharing class HOT_ReminderSMSService {
             if (SMS.Recipient__c != null) {
                 smsList.add(sms);
                 request.IsNotifyUserOnOrder__c = false;
+                //creating notification object
+                HOT_Notification__c notification = new HOT_Notification__c();
+                notification.HOT_Account__c = request.Account__c;
+                notification.HOT_NotificationChannel__c = 'SMS';
+                notification.HOT_Subject__c = 'INFO\nDet er bestilt tolk til deg';
+                String message = '';
+                if (request.IsSerieoppdrag__c) {
+                    message += ' i perioden: ' + request.SeriesPeriod__c;
+                } else {
+                    message += ':\nDato: ' + formatTimePeriod(request.StartTime__c, request.EndTime__c);
+                }
+                notification.HOT_NotificationText__c =
+                    message +
+                    '\nFor mer informasjon, se tolkebestilling.nav.no.\n' +
+                    'Du kan ikke svare på denne meldingen.\n' +
+                    'Mvh tolketjenesten i NAV';
+                if (request.IsSerieoppdrag__c) {
+                    notification.HOT_RelatedObject__c = request.Id;
+                    notification.HOT_RelatedObjectType__c = HOT_WorkOrderHandler.getWorkOrder(request).Id;
+                } else {
+                    notification.HOT_RelatedObject__c = HOT_WorkOrderHandler.getWorkOrder(request).Id;
+                    notification.HOT_RelatedObjectType__c = 'workOrder';
+                }
+
+                notificationList.add(notification);
             }
         }
         HOT_DatabaseOperations.insertRecords(smsList);
         HOT_DatabaseOperations.updateRecords(requests.values());
+        //inserting notifications
+        try {
+            HOT_NotificationCentreController.createNotification(notificationList);
+        } catch (Exception e) {
+            LoggerUtility logger = new LoggerUtility();
+            logger.exception(e, CRM_ApplicationDomain.Domain.HOT);
+            logger.publish();
+        }
     }
 
     private static Map<Id, List<ServiceAppointment>> dispatchedServiceAppointmentsByWorkOrderId(
@@ -106,6 +169,8 @@ public without sharing class HOT_ReminderSMSService {
     public static void sendSMSToOrdererOnStatusUpdate(List<WorkOrder> workOrderList) {
         Map<Id, String> interpreterNames = interpreterNamesByWorkOrderIds(workOrderList);
         List<SMS__c> smsList = new List<SMS__c>();
+        //creating notification object list
+        List<HOT_Notification__c> notificationList = new List<HOT_Notification__c>();
         for (WorkOrder workOrder : workOrderList) {
             String phoneNumber = getRecipient(workOrder);
             if (
@@ -123,11 +188,45 @@ public without sharing class HOT_ReminderSMSService {
                 sms.Recipient__c = phoneNumber;
                 sms.Message__c = constructStatusChangedMessage(workOrder, interpreterNames.get(workOrder.Id));
                 smsList.add(sms);
+                //creating notification object
+                HOT_Notification__c notification = new HOT_Notification__c();
+                notification.HOT_Account__c = workOrder.HOT_Request__r.Orderer__c;
+                notification.HOT_NotificationChannel__c = 'SMS';
+                notification.HOT_Subject__c = 'INFO\nStatus på din bestilling er:\n';
+                if (workOrder.Status == 'Dispatched') {
+                    notification.HOT_NotificationText__c =
+                        'Du har fått tolk. Tolk er: ' +
+                        interpreterNames.get(workOrder.Id) +
+                        formatTimePeriod(workOrder.StartDate, workOrder.EndDate) +
+                        '\nFor mer informasjon, se tolkebestilling.nav.no.\n' +
+                        'Du kan ikke svare på denne meldingen.\n' +
+                        'Mvh tolketjenesten i NAV';
+                } else if (workOrder.Status == 'Cannot Complete') {
+                    notification.HOT_NotificationText__c =
+                        'Ikke ledig tolk' +
+                        '\nDato: ' +
+                        formatTimePeriod(workOrder.StartDate, workOrder.EndDate) +
+                        '\nFor mer informasjon, se tolkebestilling.nav.no.\n' +
+                        'Du kan ikke svare på denne meldingen.\n' +
+                        'Mvh tolketjenesten i NAV';
+                }
+                notification.HOT_RelatedObject__c = workOrder.Id;
+                notification.HOT_RelatedObjectType__c = 'workOrder';
+
+                notificationList.add(notification);
             }
             workOrder.HOT_SendSMSNotificationOnStatusChanged__c = false;
         }
         HOT_DatabaseOperations.insertRecords(smsList);
         HOT_DatabaseOperations.updateRecords(workOrderList);
+        //inserting notifications
+        try {
+            HOT_NotificationCentreController.createNotification(notificationList);
+        } catch (Exception e) {
+            LoggerUtility logger = new LoggerUtility();
+            logger.exception(e, CRM_ApplicationDomain.Domain.HOT);
+            logger.publish();
+        }
     }
 
     @Future
@@ -196,6 +295,8 @@ public without sharing class HOT_ReminderSMSService {
             FROM HOT_InterestedResource__c
             WHERE Id IN :wantedIRIds
         ];
+        //creating notification object list
+        List<HOT_Notification__c> notificationList = new List<HOT_Notification__c>();
 
         for (HOT_InterestedResource__c ir : wantedIRList) {
             SMS__c sms = new SMS__c();
@@ -207,52 +308,37 @@ public without sharing class HOT_ReminderSMSService {
             if (SMS.Recipient__c != null) {
                 smsList.add(sms);
             }
+
+            //creating notification object
+            HOT_Notification__c notification = new HOT_Notification__c();
+            notification.HOT_Account__c = ir.ServiceResource__r.Account.Id;
+            notification.HOT_NotificationChannel__c = 'SMS';
+            notification.HOT_Subject__c = 'Du er ønsket til et oppdrag';
+            notification.HOT_NotificationText__c =
+                'INFO\nDu er ønsket til et oppdrag.\n\nFor mer informasjon, se tolkebestilling.nav.no.\n' +
+                'Du kan ikke svare på denne meldingen.\n' +
+                'Mvh tolketjenesten i NAV';
+            notification.HOT_RelatedObject__c = ir.Id;
+            notification.HOT_RelatedObjectType__c = 'wanted';
+
+            notificationList.add(notification);
         }
         try {
             HOT_DatabaseOperations.insertRecords(smsList);
+            //inserting notifications
+            try {
+                HOT_NotificationCentreController.createNotification(notificationList);
+            } catch (Exception e) {
+                LoggerUtility logger = new LoggerUtility();
+                logger.exception(e, CRM_ApplicationDomain.Domain.HOT);
+                logger.publish();
+            }
         } catch (Exception e) {
             LoggerUtility logger = new LoggerUtility();
             logger.exception(e, CRM_ApplicationDomain.Domain.HOT);
             logger.publishSynch();
         }
     }
-
-    // @Future
-    // public static void sendSMSOnOrderer(Set<Id> workOrderIds) {
-    //     List<WorkOrder> workOrderList = [
-    //         SELECT
-    //             Id,
-    //             AccountId,
-    //             Status,
-    //             StartDate,
-    //             EndDate,
-    //             HOT_Request__c,
-    //             Account.CRM_Person__r.INT_KrrMobilePhone__c
-    //         FROM WorkOrder
-    //         WHERE Id IN :workOrderIds
-    //     ];
-    //     List<SMS__c> smsList = new List<SMS__c>();
-
-    //     for (WorkOrder wo : workOrderList) {
-    //         SMS__c sms = new SMS__c();
-    //         sms.Domain__c = 'HOT';
-    //         sms.Type__c = 'Orderer On Status Update';
-    //         sms.Account__c = wo.AccountId;
-    //         sms.WorkOrder__c = wo.Id;
-    //         sms.Recipient__c = wo.Account.CRM_Person__r.INT_KrrMobilePhone__c;
-    //         sms.Message__c = constructOnOrdererMessage(wo);
-    //         if (SMS.Recipient__c != null) {
-    //             smsList.add(sms);
-    //             }
-    //     }
-    //     try {
-    //         HOT_DatabaseOperations.insertRecords(smsList);
-    //     } catch (Exception e) {
-    //         LoggerUtility logger = new LoggerUtility();
-    //         logger.exception(e, CRM_ApplicationDomain.Domain.HOT);
-    //         logger.publishSynch();
-    //     }
-    // }
 
     @Future
     public static void sendSMSOnInterpreterChange(Set<Id> workOrderIds, String interpreterName) {
@@ -264,6 +350,7 @@ public without sharing class HOT_ReminderSMSService {
                 StartDate,
                 EndDate,
                 HOT_Request__c,
+                HOT_Interpreters__c,
                 HOT_Request__r.Type__c,
                 HOT_Request__r.Orderer__c,
                 HOT_Request__r.OrdererPhone__c,
@@ -272,7 +359,8 @@ public without sharing class HOT_ReminderSMSService {
             WHERE Id IN :workOrderIds
         ];
         List<SMS__c> smsList = new List<SMS__c>();
-
+        //creating notification object list
+        List<HOT_Notification__c> notificationList = new List<HOT_Notification__c>();
         for (WorkOrder wo : workOrderList) {
             SMS__c sms = new SMS__c();
             sms.Domain__c = 'HOT';
@@ -283,10 +371,36 @@ public without sharing class HOT_ReminderSMSService {
             sms.Message__c = constructInterpreterChangedMessage(wo, interpreterName);
             if (SMS.Recipient__c != null) {
                 smsList.add(sms);
+                //creating notification object
+                HOT_Notification__c notification = new HOT_Notification__c();
+                notification.HOT_Account__c = wo.HOT_Request__r.Orderer__c;
+                notification.HOT_NotificationChannel__c = 'SMS';
+                notification.HOT_Subject__c = 'INFO\nTolk på din bestilling er endret:\n';
+                notification.HOT_NotificationText__c =
+                    'INFO\nTolk på din bestilling er endret:\n' +
+                    'Tolk er: ' +
+                    wo.HOT_Interpreters__c +
+                    '\nDato: ' +
+                    formatTimePeriod(wo.StartDate, wo.EndDate) +
+                    '\nFor mer informasjon, se tolkebestilling.nav.no.\n' +
+                    'Du kan ikke svare på denne meldingen.\n' +
+                    'Mvh tolketjenesten i NAV';
+                notification.HOT_RelatedObject__c = wo.Id;
+                notification.HOT_RelatedObjectType__c = 'workOrder';
+
+                notificationList.add(notification);
             }
         }
         try {
             HOT_DatabaseOperations.insertRecords(smsList);
+            //inserting notifications
+            try {
+                HOT_NotificationCentreController.createNotification(notificationList);
+            } catch (Exception e) {
+                LoggerUtility logger = new LoggerUtility();
+                logger.exception(e, CRM_ApplicationDomain.Domain.HOT);
+                logger.publish();
+            }
         } catch (Exception e) {
             LoggerUtility logger = new LoggerUtility();
             logger.exception(e, CRM_ApplicationDomain.Domain.HOT);

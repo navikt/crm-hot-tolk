@@ -21,7 +21,7 @@ public without sharing class HOT_ReminderSMSBatch implements Database.Batchable<
         query += 'AND (Account.CRM_Person__r.HOT_NotificationChannel__c = \'SMS\' ';
         query += 'OR Account.CRM_Person__r.HOT_NotificationChannel__c = \'Push-varsel i appen\') ';
         query += 'AND HOT_Request__r.IsReminderSMS__c = TRUE '; //Should consider renaming field to IsReminderNotification__c
-        query += 'AND HOT_Request__r.IsNotNotifyAccount__c = FALSE ';  //In some cases (See TOLK-2234) we absolutely do not want to send notification to whomever the order concerns
+        query += 'AND HOT_Request__r.IsNotNotifyAccount__c = FALSE '; //In some cases (See TOLK-2234) we absolutely do not want to send notification to whomever the order concerns
         query += 'AND HOT_IsReminderSMSSendt__c = FALSE'; //Should consider renaming HOT_IsReminderNotificiationSent__c
 
         return Database.getQueryLocator(query);
@@ -52,7 +52,8 @@ public without sharing class HOT_ReminderSMSBatch implements Database.Batchable<
         for (User user : users) {
             userIdByAccountId.put(user.AccountId, user.Id);
         }
-
+        //creating notification object list
+        List<HOT_Notification__c> notificationList = new List<HOT_Notification__c>();
         try {
             if (!workorderListSMS.isEmpty()) {
                 HOT_ReminderSMSService.reminderSMS(records);
@@ -65,10 +66,33 @@ public without sharing class HOT_ReminderSMSBatch implements Database.Batchable<
                         recipients.add(userIdByAccountId.get(wo.AccountId));
                         HOT_UserNotificationService.reminderNotification(notificationTypePush, wo, recipients);
                         wo.HOT_IsReminderSMSSendt__c = true;
+                        //creating notification object
+                        HOT_Notification__c notification = new HOT_Notification__c();
+                        notification.HOT_Account__c = wo.AccountId;
+                        notification.HOT_NotificationChannel__c = 'Push-varsel i appen';
+                        notification.HOT_Subject__c = 'Påminnelse om tolkebestilling';
+                        notification.HOT_NotificationText__c =
+                            'Dato: ' +
+                            wo.StartDate?.format('dd.MM.yyyy HH:mm', 'Europe/Oslo') +
+                            ' - ' +
+                            wo.EndDate?.format('HH:mm', 'Europe/Oslo') +
+                            '.';
+                        notification.HOT_RelatedObject__c = wo.Id;
+                        notification.HOT_RelatedObjectType__c = 'workOrder';
+
+                        notificationList.add(notification);
                     }
                 }
                 HOT_DatabaseOperations.updateRecords(workorderListPush);
             }
+        } catch (Exception e) {
+            LoggerUtility logger = new LoggerUtility();
+            logger.exception(e, CRM_ApplicationDomain.Domain.HOT);
+            logger.publish();
+        }
+        //inserting notifications
+        try {
+            HOT_NotificationCentreController.createNotification(notificationList);
         } catch (Exception e) {
             LoggerUtility logger = new LoggerUtility();
             logger.exception(e, CRM_ApplicationDomain.Domain.HOT);

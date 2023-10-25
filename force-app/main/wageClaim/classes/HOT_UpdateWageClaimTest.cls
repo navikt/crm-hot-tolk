@@ -376,12 +376,14 @@ private class HOT_UpdateWageClaimTest {
 
     @isTest
     static void updateWageClaimsFutureTest_TimeChanged() {
+        Test.startTest();
         ServiceResource serviceResource = [SELECT Id FROM ServiceResource LIMIT 1];
         ServiceAppointment serviceAppointment = [
             SELECT Id, SchedStartTime, SchedEndTime, Status
             FROM ServiceAppointment
             LIMIT 1
         ];
+
         HOT_WageClaim__c wageClaim = HOT_TestDataFactory.createWageClaim(serviceResource);
         wageClaim.StartTime__c = serviceAppointment.SchedStartTime.addHours(1);
         wageClaim.EndTime__c = serviceAppointment.SchedEndTime.addHours(1);
@@ -389,7 +391,7 @@ private class HOT_UpdateWageClaimTest {
 
         serviceAppointment.Status = 'Dispatched';
         update serviceAppointment;
-        Test.startTest();
+
         List<HOT_WageClaim__c> wageClaimsBefore = [SELECT Id, Status__c FROM HOT_WageClaim__c];
 
         serviceAppointment.SchedStartTime = serviceAppointment.SchedStartTime.addHours(1);

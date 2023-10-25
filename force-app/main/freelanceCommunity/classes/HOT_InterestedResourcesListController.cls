@@ -45,7 +45,26 @@ public without sharing class HOT_InterestedResourcesListController {
         ];
         return interestedResources;
     }
-
+    @AuraEnabled(cacheable=true)
+    public static Boolean checkAccessToSA(String saId) {
+        Boolean hasAccess = false;
+        ServiceResource serviceResource = [
+            SELECT Id
+            FROM ServiceResource
+            WHERE RelatedRecordId = :UserInfo.getUserId()
+        ];
+        if (serviceResource.Id != null) {
+            List<HOT_InterestedResource__c> ir = [
+                SELECT Id
+                FROM HOT_InterestedResource__c
+                WHERE ServiceAppointment__c = :saId AND ServiceResource__c = :serviceResource.Id
+            ];
+            if (ir.size() > 0) {
+                hasAccess = true;
+            }
+        }
+        return hasAccess;
+    }
     @AuraEnabled
     public static void retractInterest(String interestedResourceId) {
         HOT_InterestedResource__c interestedResources = [
@@ -211,6 +230,9 @@ public without sharing class HOT_InterestedResourcesListController {
                 WorkTypeName__c,
                 AssignmentType__c,
                 Status__c,
+                ServiceAppointment__r.HOT_ReleaseDate__c,
+                ServiceAppointment__r.HOT_ReleasedBy__c,
+                ServiceAppointment__r.HOT_Request__r.OwnerName__c,
                 NumberOfInterestedResources__c,
                 AppointmentDeadlineDate__c,
                 AppointmentServiceTerritory__c,

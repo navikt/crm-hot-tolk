@@ -22,6 +22,8 @@ public without sharing class HOT_InterestedResourceNotification {
             for (User user : users) {
                 userIdByAccountId.put(user.AccountId, user.Id);
             }
+            //creating notification object list
+            List<HOT_Notification__c> notificationList = new List<HOT_Notification__c>();
 
             for (HOT_InterestedResource__c wantedIr : interestedResources) {
                 Set<String> recipients = new Set<String>();
@@ -33,11 +35,30 @@ public without sharing class HOT_InterestedResourceNotification {
                         getCustomNotificationType('HOT_NotifyUser'),
                         recipients
                     );
+
+                    //creating notification object
+                    HOT_Notification__c notification = new HOT_Notification__c();
+                    notification.HOT_Account__c = wantedIr.ServiceResource__r.AccountId;
+                    notification.HOT_NotificationChannel__c = 'Push-varsel i appen';
+                    notification.HOT_Subject__c = 'Du er ønsket til et oppdrag';
+                    notification.HOT_NotificationText__c = 'Du kan melde interesse for oppdraget eller avslå.';
+                    notification.HOT_RelatedObject__c = wantedIr.Id;
+                    notification.HOT_RelatedObjectType__c = 'wanted';
+
+                    notificationList.add(notification);
                 } else {
                     Set<Id> wantedIRList = new Set<Id>();
                     wantedIRList.add(wantedIr.Id);
                     HOT_ReminderSMSService.sendSMSOnNewWantedSR(wantedIRList);
                 }
+            }
+            //inserting notifications
+            try {
+                HOT_NotificationCentreController.createNotification(notificationList);
+            } catch (Exception e) {
+                LoggerUtility logger = new LoggerUtility();
+                logger.exception(e, CRM_ApplicationDomain.Domain.HOT);
+                logger.publish();
             }
         }
     }

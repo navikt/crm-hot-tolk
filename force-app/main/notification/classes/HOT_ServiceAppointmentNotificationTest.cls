@@ -215,6 +215,36 @@ private class HOT_ServiceAppointmentNotificationTest {
         Set<String> recipients = new Set<String>{ UserInfo.getUserId() };
 
         //Set<Id> saIds = new Set<Id>([SELECT Id FROM ServiceAppointment WHERE Subject = 'subject' LIMIT 1]);
+        List<ServiceAppointment> saList = [SELECT Id FROM ServiceAppointment WHERE Subject = 'subject'];
+        DateTime now = DateTime.now();
+        DateTime newTime = now.addDays(2);
+        DateTime newTime2 = newTime.addHours(2);
+        for (ServiceAppointment sa : saList) {
+            sa.EarliestStartTime = newTime;
+            sa.DueDate = newTime2;
+        }
+        update saList;
+        List<ServiceResource> testResources = [
+            SELECT Id, HOT_IsEmployedInterpreter__c
+            FROM ServiceResource
+            WHERE HOT_IsEmployedInterpreter__c = TRUE
+        ];
+
+        Test.startTest();
+
+        //AR på SA
+        ServiceAppointment serviceAppointment = [
+            SELECT Id, HOT_ServiceResource__c, HOT_AssignedResourceId__c
+            FROM ServiceAppointment
+            WHERE Id = :saList[0].Id
+            LIMIT 1
+        ];
+
+        AssignedResource assignedResource = HOT_TestDataFactory.createAssignedResource(
+            serviceAppointment.Id,
+            testResources[0].Id
+        );
+        insert assignedResource;
         Set<Id> saIds = (new Map<Id, ServiceAppointment>(
                 [SELECT Id FROM ServiceAppointment WHERE Subject = 'subject' LIMIT 1]
             ))
@@ -225,7 +255,6 @@ private class HOT_ServiceAppointmentNotificationTest {
             FROM CustomNotificationType
             WHERE DeveloperName = 'HOT_NotifyUser'
         ];
-        Test.startTest();
         HOT_ServiceAppointmentNotification.timeChanged(notificationType, saIds, recipients);
         Test.stopTest();
     }
@@ -243,6 +272,28 @@ private class HOT_ServiceAppointmentNotificationTest {
         serviceAppointment.HOT_InterpretationStreet__c = 'Tolkeveien 123';
         update serviceAppointment;
 
+        List<ServiceResource> testResources = [
+            SELECT Id, HOT_IsEmployedInterpreter__c
+            FROM ServiceResource
+            WHERE HOT_IsEmployedInterpreter__c = TRUE
+        ];
+
+        Test.startTest();
+
+        //AR på SA
+        serviceAppointment = [
+            SELECT Id, HOT_ServiceResource__c, HOT_AssignedResourceId__c
+            FROM ServiceAppointment
+            WHERE Id = :serviceAppointment.Id
+            LIMIT 1
+        ];
+
+        AssignedResource assignedResource = HOT_TestDataFactory.createAssignedResource(
+            serviceAppointment.Id,
+            testResources[0].Id
+        );
+        insert assignedResource;
+
         Set<Id> saIds = (new Map<Id, ServiceAppointment>(
                 [SELECT HOT_InterpretationStreet__c FROM ServiceAppointment WHERE Subject = 'subject' LIMIT 1]
             ))
@@ -252,8 +303,18 @@ private class HOT_ServiceAppointmentNotificationTest {
             FROM CustomNotificationType
             WHERE DeveloperName = 'HOT_NotifyUser'
         ];
-        Test.startTest();
         HOT_ServiceAppointmentNotification.timeChanged(notificationType, saIds, recipients);
         Test.stopTest();
+    }
+    @isTest
+    private static void testFormatTimePeriod() {
+        Datetime startDate = Datetime.newInstance(2023, 10, 20, 9, 0, 0);
+        Datetime endDate = Datetime.newInstance(2023, 10, 20, 15, 30, 0);
+
+        String result = HOT_ServiceAppointmentNotification.formatTimePeriod(startDate, endDate);
+
+        String expected = '20.10.2023\nKlokkeslett: 09.00 - 15.30';
+
+        System.assertEquals(expected, result, 'The formatted time period is incorrect.');
     }
 }

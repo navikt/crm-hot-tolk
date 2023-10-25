@@ -283,6 +283,14 @@ export default class hot_messagingCommunityThreadViewer extends NavigationMixin(
                     id: this.navigationId
                 }
             });
+        } else if ((this.navigationBaseUrl = 'mine-varsler')) {
+            this[NavigationMixin.Navigate]({
+                type: 'comm__namedPage',
+                attributes: {
+                    pageName: 'mine-varsler'
+                },
+                state: {}
+            });
         } else {
             this[NavigationMixin.Navigate]({
                 type: 'comm__namedPage',
@@ -497,6 +505,9 @@ export default class hot_messagingCommunityThreadViewer extends NavigationMixin(
             }
         } else if (parsed_params.from == 'mine-samtaler-frilanstolk') {
             this.navigationBaseUrl = 'mine-samtaler-frilanstolk';
+            this.isFreelance = true;
+        } else if (parsed_params.from == 'mine-varsler') {
+            this.navigationBaseUrl = 'mine-varsler';
             this.isFreelance = true;
         } else if (parsed_params.list !== undefined) {
             this.navigationBaseUrl = parsed_params.from;

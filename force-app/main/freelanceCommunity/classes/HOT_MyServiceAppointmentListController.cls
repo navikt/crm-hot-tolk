@@ -19,17 +19,38 @@ public without sharing class HOT_MyServiceAppointmentListController {
     }
     @AuraEnabled(cacheable=true)
     public static ServiceAppointment getServiceAppointment(String recordId) {
-        ServiceAppointment sa= [
+        ServiceAppointment sa = [
             SELECT Status, HOT_CanceledByInterpreter__c
             FROM ServiceAppointment
             WHERE Id = :recordId
         ];
         return sa;
     }
+    @AuraEnabled(cacheable=true)
+    public static Boolean checkAccessToSA(String saId) {
+        Boolean hasAccess = false;
+        ServiceResource serviceResource = [
+            SELECT Id
+            FROM ServiceResource
+            WHERE RelatedRecordId = :UserInfo.getUserId()
+        ];
+        if (serviceResource.Id != null) {
+            List<AssignedResource> ar = [
+                SELECT Id
+                FROM AssignedResource
+                WHERE ServiceAppointmentId = :saId AND ServiceResourceId = :serviceResource.Id
+            ];
+            if (ar.size() > 0) {
+                hasAccess = true;
+            }
+        }
+        return hasAccess;
+    }
     @AuraEnabled
     public static ServiceAppointment getServiceAppointmentDetails(String recordId) {
-      ServiceAppointment serviceAppointment= [
-            SELECT  AppointmentNumber,
+        ServiceAppointment serviceAppointment = [
+            SELECT
+                AppointmentNumber,
                 ActualEndTime,
                 ActualStartTime,
                 Description,
@@ -51,6 +72,7 @@ public without sharing class HOT_MyServiceAppointmentListController {
                 HOT_Request__r.Account__r.Name,
                 HOT_Request__r.Orderer__r.CRM_Person__r.INT_KrrMobilePhone__c,
                 HOT_Request__r.OwnerName__c,
+                HOT_Request__r.IsNotNotifyAccount__c,
                 HOT_RequestNumber__c,
                 HOT_ServiceTerritoryDeveloperName__c,
                 HOT_ServiceTerritoryName__c,
@@ -59,9 +81,10 @@ public without sharing class HOT_MyServiceAppointmentListController {
                 SchedEndTime,
                 SchedStartTime,
                 Status,
-                Subject
+                Subject,
+                HOT_TotalNumberOfInterpreters__c
             FROM ServiceAppointment
-            WHERE Id=:recordId
+            WHERE Id = :recordId
         ];
         return serviceAppointment;
     }
@@ -134,90 +157,122 @@ public without sharing class HOT_MyServiceAppointmentListController {
     }
     @AuraEnabled
     public static String getThreadFreelanceId(String serviceAppointmentId) {
-         String Id='';
-        ServiceAppointment serviceAppointment=[SELECT HOT_WorkOrderLineItem__r.WorkOrderId FROM ServiceAppointment WHERE Id=:serviceAppointmentId];
-        try{
+        String Id = '';
+        ServiceAppointment serviceAppointment = [
+            SELECT HOT_WorkOrderLineItem__r.WorkOrderId
+            FROM ServiceAppointment
+            WHERE Id = :serviceAppointmentId
+        ];
+        try {
+            Thread__c thread = [
+                SELECT Id
+                FROM Thread__c
+                WHERE
+                    CRM_Related_Object__c = :serviceAppointment.HOT_WorkOrderLineItem__r.WorkOrderId
+                    AND CRM_Thread_Type__c = 'HOT_BRUKER-TOLK'
+                LIMIT 1
+            ];
+            if (thread.Id != null) {
+                Id = thread.Id;
+                return Id;
+            }
 
-            Thread__c thread = [SELECT Id FROM Thread__c WHERE CRM_Related_Object__c=:serviceAppointment.HOT_WorkOrderLineItem__r.WorkOrderId AND CRM_Thread_Type__c='HOT_BRUKER-TOLK' LIMIT 1];
-             if (thread.Id != null) {
-               Id=thread.Id;
-               return Id;
-             }
-             
             return Id;
-        }catch(Exception E){
-
+        } catch (Exception E) {
         }
         return Id;
     }
-     @AuraEnabled
+    @AuraEnabled
     public static String getThreadServiceAppointmentId(String serviceAppointmentId) {
-         String Id='';
-        try{
+        String Id = '';
+        try {
+            Thread__c thread = [SELECT Id FROM Thread__c WHERE CRM_Related_Object__c = :serviceAppointmentId LIMIT 1];
+            if (thread.Id != null) {
+                Id = thread.Id;
+                return Id;
+            }
 
-            Thread__c thread = [SELECT Id FROM Thread__c WHERE CRM_Related_Object__c=:serviceAppointmentId LIMIT 1];
-             if (thread.Id != null) {
-               Id=thread.Id;
-               return Id;
-             }
-             
             return Id;
-        }catch(Exception E){
-
+        } catch (Exception E) {
         }
         return Id;
     }
     @AuraEnabled
-    public static String getOrdererInformation(String serviceAppointmentId){
-        String phonenumber='';
-        ServiceAppointment sa=[SELECT HOT_Request__r.Orderer__r.CRM_Person__r.INT_KrrMobilePhone__c FROM ServiceAppointment WHERE Id=:serviceAppointmentId];
-        if(sa.HOT_Request__r.Orderer__r.CRM_Person__r.INT_KrrMobilePhone__c!=null){
-            phonenumber=sa.HOT_Request__r.Orderer__r.CRM_Person__r.INT_KrrMobilePhone__c;
+    public static String getOrdererInformation(String serviceAppointmentId) {
+        String phonenumber = '';
+        ServiceAppointment sa = [
+            SELECT HOT_Request__r.Orderer__r.CRM_Person__r.INT_KrrMobilePhone__c
+            FROM ServiceAppointment
+            WHERE Id = :serviceAppointmentId
+        ];
+        if (sa.HOT_Request__r.Orderer__r.CRM_Person__r.INT_KrrMobilePhone__c != null) {
+            phonenumber = sa.HOT_Request__r.Orderer__r.CRM_Person__r.INT_KrrMobilePhone__c;
         }
         return phoneNumber;
     }
     @AuraEnabled
-    public static String getAccountPhonenumber(String serviceAppointmentId){
-        String phonenumber='';
-        ServiceAppointment sa=[SELECT HOT_Request__r.Account__r.Name, HOT_Request__r.Account__r.CRM_Person__r.INT_KrrMobilePhone__c FROM ServiceAppointment WHERE Id=:serviceAppointmentId];
-        if(sa.HOT_Request__r.Account__r.CRM_Person__r.INT_KrrMobilePhone__c!=null){
-            phonenumber=sa.HOT_Request__r.Account__r.CRM_Person__r.INT_KrrMobilePhone__c;
+    public static String getAccountPhonenumber(String serviceAppointmentId) {
+        String phonenumber = '';
+        ServiceAppointment sa = [
+            SELECT HOT_Request__r.Account__r.Name, HOT_Request__r.Account__r.CRM_Person__r.INT_KrrMobilePhone__c
+            FROM ServiceAppointment
+            WHERE Id = :serviceAppointmentId
+        ];
+        if (sa.HOT_Request__r.Account__r.CRM_Person__r.INT_KrrMobilePhone__c != null) {
+            phonenumber = sa.HOT_Request__r.Account__r.CRM_Person__r.INT_KrrMobilePhone__c;
         }
         return phoneNumber;
     }
     @AuraEnabled
-    public static String getOwnerName(String serviceAppointmentId){
+    public static String getOwnerName(String serviceAppointmentId) {
         String ownerName = '';
-        ServiceAppointment sa=[SELECT HOT_Request__r.OwnerName__c FROM ServiceAppointment WHERE Id=:serviceAppointmentId];
-        if(sa.HOT_Request__r.OwnerName__c!=null){
-            ownerName=sa.HOT_Request__r.OwnerName__c;
+        ServiceAppointment sa = [
+            SELECT HOT_Request__r.OwnerName__c
+            FROM ServiceAppointment
+            WHERE Id = :serviceAppointmentId
+        ];
+        if (sa.HOT_Request__r.OwnerName__c != null) {
+            ownerName = sa.HOT_Request__r.OwnerName__c;
         }
         return ownerName;
     }
     @AuraEnabled
-    public static String getAccountName(String serviceAppointmentId){
+    public static String getAccountName(String serviceAppointmentId) {
         String name = '';
-        ServiceAppointment sa=[SELECT HOT_Request__r.Account__r.Name FROM ServiceAppointment WHERE Id=:serviceAppointmentId];
-        if(sa.HOT_Request__r.Account__c!=null){
-            Name=sa.HOT_Request__r.Account__r.Name;
+        ServiceAppointment sa = [
+            SELECT HOT_Request__r.Account__r.Name
+            FROM ServiceAppointment
+            WHERE Id = :serviceAppointmentId
+        ];
+        if (sa.HOT_Request__r.Account__c != null) {
+            Name = sa.HOT_Request__r.Account__r.Name;
         }
         return Name;
     }
-     @AuraEnabled
+    @AuraEnabled
     public static String getThreadInterpretersId(String serviceAppointmentId) {
-         String Id='';
-        ServiceAppointment serviceAppointment=[SELECT HOT_WorkOrderLineItem__r.WorkOrderId FROM ServiceAppointment WHERE Id=:serviceAppointmentId];
-        try{
+        String Id = '';
+        ServiceAppointment serviceAppointment = [
+            SELECT HOT_WorkOrderLineItem__r.WorkOrderId
+            FROM ServiceAppointment
+            WHERE Id = :serviceAppointmentId
+        ];
+        try {
+            Thread__c thread = [
+                SELECT Id
+                FROM Thread__c
+                WHERE
+                    CRM_Related_Object__c = :serviceAppointment.HOT_WorkOrderLineItem__r.WorkOrderId
+                    AND CRM_Thread_Type__c = 'HOT_TOLK-TOLK'
+                LIMIT 1
+            ];
+            if (thread.Id != null) {
+                Id = thread.Id;
+                return Id;
+            }
 
-            Thread__c thread = [SELECT Id FROM Thread__c WHERE CRM_Related_Object__c=:serviceAppointment.HOT_WorkOrderLineItem__r.WorkOrderId AND CRM_Thread_Type__c='HOT_TOLK-TOLK' LIMIT 1];
-             if (thread.Id != null) {
-               Id=thread.Id;
-               return Id;
-             }
-             
             return Id;
-        }catch(Exception E){
-
+        } catch (Exception E) {
         }
         return Id;
     }

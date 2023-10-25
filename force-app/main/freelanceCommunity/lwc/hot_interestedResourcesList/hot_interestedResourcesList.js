@@ -4,6 +4,9 @@ import retractInterest from '@salesforce/apex/HOT_InterestedResourcesListControl
 import getThreadDispatcherId from '@salesforce/apex/HOT_InterestedResourcesListController.getThreadDispatcherId';
 import getThreadDispatcherIdSA from '@salesforce/apex/HOT_InterestedResourcesListController.getThreadDispatcherIdSA';
 import getMyThreads from '@salesforce/apex/HOT_ThreadListController.getMyThreadsIR';
+import getInterestedResourceDetails from '@salesforce/apex/HOT_InterestedResourcesListController.getInterestedResourceDetails';
+import checkAccessToSA from '@salesforce/apex/HOT_InterestedResourcesListController.checkAccessToSA';
+
 import getContactId from '@salesforce/apex/HOT_MessageHelper.getUserContactId';
 import getServiceResource from '@salesforce/apex/HOT_Utility.getServiceResource';
 import { refreshApex } from '@salesforce/apex';
@@ -20,6 +23,7 @@ export default class Hot_interestedResourcesList extends NavigationMixin(Lightni
     @track iconByValue = iconByValue;
     @track isGoToThreadButtonDisabled = false;
     @track isMobile;
+    @track hasAccess = true;
     setColumns() {
         if (window.screen.width > 576) {
             this.columns = columns;
@@ -65,7 +69,14 @@ export default class Hot_interestedResourcesList extends NavigationMixin(Lightni
     connectedCallback() {
         this.setColumns();
         refreshApex(this.wiredInterestedResourcesResult);
+        this.getParams();
         this.updateURL();
+    }
+    getParams() {
+        let parsed_params = getParametersFromURL() ?? '';
+        if (parsed_params.from == 'mine-varsler' && parsed_params.id != '') {
+            this.goToRecordDetailsFromNotification(parsed_params.id);
+        }
     }
     getDayOfWeek(date) {
         var jsDate = new Date(date);
@@ -259,6 +270,50 @@ export default class Hot_interestedResourcesList extends NavigationMixin(Lightni
 
         this.isNotRetractable = this.interestedResource?.Status__c !== 'Påmeldt';
         this.updateURL();
+    }
+    goToRecordDetailsFromNotification(saId) {
+        checkAccessToSA({ saId: saId }).then((result) => {
+            if (result != false) {
+                getInterestedResourceDetails({ recordId: saId }).then((result) => {
+                    this.interestedResource = result;
+                    this.isDetails = true;
+                    this.isNotRetractable = this.interestedResource?.Status__c !== 'Påmeldt';
+                    this.interestedResource.weekday = this.getDayOfWeek(
+                        this.interestedResource.ServiceAppointmentStartTime__c
+                    );
+                    let startTimeFormatted = new Date(result.ServiceAppointmentStartTime__c);
+                    let endTimeFormatted = new Date(result.ServiceAppointmentEndTime__c);
+                    this.interestedResource.StartAndEndDate =
+                        startTimeFormatted.getDate() +
+                        '.' +
+                        (startTimeFormatted.getMonth() + 1) +
+                        '.' +
+                        startTimeFormatted.getFullYear() +
+                        ', ' +
+                        ('0' + startTimeFormatted.getHours()).substr(-2) +
+                        ':' +
+                        ('0' + startTimeFormatted.getMinutes()).substr(-2) +
+                        ' - ' +
+                        ('0' + endTimeFormatted.getHours()).substr(-2) +
+                        ':' +
+                        ('0' + endTimeFormatted.getMinutes()).substr(-2);
+                    let DeadlineDateTimeFormatted = new Date(this.interestedResource.AppointmentDeadlineDate__c);
+                    this.interestedResource.AppointmentDeadlineDate__c =
+                        DeadlineDateTimeFormatted.getDate() +
+                        '.' +
+                        (DeadlineDateTimeFormatted.getMonth() + 1) +
+                        '.' +
+                        DeadlineDateTimeFormatted.getFullYear();
+                    if (this.interestedResource.AppointmentDeadlineDate__c.includes('NaN')) {
+                        this.interestedResource.AppointmentDeadlineDate__c = '';
+                    }
+                    this.template.querySelector('.serviceAppointmentDetails').classList.remove('hidden');
+                    this.template.querySelector('.serviceAppointmentDetails').focus();
+                });
+            } else {
+                this.hasAccess = false;
+            }
+        });
     }
 
     @api recordId;

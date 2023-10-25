@@ -58,4 +58,48 @@ private class HOT_MessagehandlerTest {
         List<Message__c> messages = [SELECT Id FROM Message__c];
         System.assertEquals(1, messages.size(), 'Could not create message');
     }
+    @isTest
+    static void messageTolkRessurskontor() {
+        Account account = [SELECT Id, PersonContactId FROM Account];
+        Thread__c thread = HOT_TestDataFactory.createThread();
+        thread.CRM_Related_Object__c = account.PersonContactId;
+        thread.CRM_Thread_Type__c = 'HOT_TOLK-RESSURSKONTOR';
+        thread.CRM_Account__c = account.Id;
+        thread.HOT_Dispatcher__c = UserInfo.getUserId();
+
+        insert thread;
+        Message__c message = new Message__c();
+        message.CRM_Thread__c = thread.Id;
+        message.CRM_From_Contact__c = account.PersonContactId;
+        message.CRM_Message_Text__c = 'Dette er en testmelding';
+
+        test.startTest();
+        insert message;
+        test.stopTest();
+
+        List<Message__c> messages = [SELECT Id FROM Message__c];
+        System.assertEquals(1, messages.size(), 'Could not create message');
+    }
+    @isTest
+    static void messageTolkFormidler() {
+        Account account = [SELECT Id, PersonContactId FROM Account];
+        Thread__c thread = HOT_TestDataFactory.createThread();
+        thread.CRM_Related_Object__c = account.PersonContactId;
+        thread.CRM_Thread_Type__c = 'HOT_TOLK-FORMIDLER';
+        thread.CRM_Account__c = account.Id;
+        thread.HOT_Dispatcher__c = UserInfo.getUserId();
+
+        insert thread;
+        Message__c message = new Message__c();
+        message.CRM_Thread__c = thread.Id;
+        message.CRM_From_Contact__c = account.PersonContactId;
+        message.CRM_Message_Text__c = 'Dette er en testmelding';
+
+        test.startTest();
+        insert message;
+        test.stopTest();
+
+        List<Message__c> messages = [SELECT Id FROM Message__c];
+        System.assertEquals(1, messages.size(), 'Could not create message');
+    }
 }

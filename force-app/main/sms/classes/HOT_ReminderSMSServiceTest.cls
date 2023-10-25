@@ -15,10 +15,27 @@ private class HOT_ReminderSMSServiceTest {
         request.EndTime__c = request.EndTime__c.addDays(3);
         request.OrdererPhone__c = '00000000';
         request.IsOrdererWantStatusUpdateOnSMS__c = true;
+        request.Orderer__c = account.Id;
         insert request;
+
         // To create child records
         request.Status__c = 'Godkjent';
         update request;
+
+        HOT_Request__c request2 = HOT_TestDataFactory.createRequest('TEST', workType);
+        request2.Account__c = account.Id;
+        request2.StartTime__c = request2.StartTime__c.addDays(3);
+        request2.EndTime__c = request2.EndTime__c.addDays(3);
+        request2.OrdererPhone__c = '00000000';
+        request2.IsOrdererWantStatusUpdateOnSMS__c = true;
+        request2.Orderer__c = account.Id;
+        request2.NumberOfInterpreters__c = 3;
+        insert request2;
+
+        // To create child records
+        request2.Status__c = 'Godkjent';
+        update request2;
+
         WorkOrder workOrder = [
             SELECT
                 Id,
@@ -29,6 +46,7 @@ private class HOT_ReminderSMSServiceTest {
                 EndDate,
                 HOT_Request__r.IsNotNotifyAccount__c
             FROM WorkOrder
+            WHERE HOT_Request__c = :request.Id
         ];
         workOrder.Status = 'Dispatched';
         workOrder.StartDate = workOrder.StartDate.addDays(-2);
@@ -50,7 +68,7 @@ private class HOT_ReminderSMSServiceTest {
         ];
         HOT_ReminderSMSService.reminderSMS(workOrders);
         List<SMS__c> smsList = [SELECT Id FROM SMS__c];
-        System.assertEquals(1, smsList.size(), 'Could not create sms-record');
+        System.assertEquals(2, smsList.size(), 'Could not create sms-record');
     }
 
     @isTest
@@ -69,7 +87,7 @@ private class HOT_ReminderSMSServiceTest {
         ];
         HOT_ReminderSMSService.notifyUserOnOrderSMS(requests);
         List<SMS__c> smsList = [SELECT Id FROM SMS__c];
-        System.assertEquals(1, smsList.size(), 'Could not create sms-record');
+        System.assertEquals(2, smsList.size(), 'Could not create sms-record');
     }
 
     @isTest
@@ -162,7 +180,7 @@ private class HOT_ReminderSMSServiceTest {
         Test.stopTest();
 
         List<SMS__c> smsList = [SELECT Id, Message__c FROM SMS__c];
-        System.assertEquals(1, smsList.size(), 'Could not create sms-record');
+        System.assertEquals(2, smsList.size(), 'Could not create sms-record');
     }
 
     @isTest
@@ -187,7 +205,7 @@ private class HOT_ReminderSMSServiceTest {
         update workOrders;
         HOT_ReminderSMSService.sendSMSToOrdererOnStatusUpdate(workOrders);
         List<SMS__c> smsList = [SELECT Id FROM SMS__c];
-        System.assertEquals(1, smsList.size(), 'Could not create sms-record');
+        System.assertEquals(2, smsList.size(), 'Could not create sms-record');
     }
 
     @isTest
@@ -234,8 +252,11 @@ private class HOT_ReminderSMSServiceTest {
 
     @isTest
     static void sendSMSToOrdererOnStatusUpdateSMSToAccountTest() {
+        Account account = HOT_TestDataFactory.createAccount(true);
+        insert account;
         HOT_Request__c request = [SELECT Id, Type__c FROM HOT_Request__c][0];
         request.Type__c = 'Me';
+        request.Orderer__c = account.Id;
         update request;
         List<WorkOrder> workOrders = [
             SELECT
@@ -263,7 +284,10 @@ private class HOT_ReminderSMSServiceTest {
 
     @isTest
     static void sendSMSToOrdererOnStatusUpdateSMSToOtherOrdererTest() {
+        Account account = HOT_TestDataFactory.createAccount(true);
+        insert account;
         HOT_Request__c request = [SELECT Id, Type__c FROM HOT_Request__c][0];
+        request.Orderer__c = account.Id;
         update request;
         List<WorkOrder> workOrders = [
             SELECT
@@ -288,5 +312,42 @@ private class HOT_ReminderSMSServiceTest {
         String smsPhoneNumber = [SELECT Id, Recipient__c FROM SMS__c LIMIT 1].Recipient__c;
 
         System.assertEquals(orderPhoneNumber, smsPhoneNumber, 'SMS was not sent to the user');
+    }
+    @isTest
+    public static void testSendSMSOnNewMessage() {
+        Person__c person = HOT_TestDataFactory.createPerson();
+        person.Name = '12015678999';
+        insert person;
+        Account personAccount = HOT_TestDataFactory.createAccount(true);
+        personAccount.INT_PersonIdent__c = '12015678999';
+        personAccount.CRM_Person__c = person.Id;
+        insert personAccount;
+        WorkType workType = HOT_TestDataFactory.createWorkType();
+        insert workType;
+        HOT_Request__c request = HOT_TestDataFactory.createRequest('TEST', workType);
+        request.Account__c = personAccount.Id;
+        request.StartTime__c = request.StartTime__c.addDays(3);
+        request.EndTime__c = request.EndTime__c.addDays(3);
+        request.Orderer__c = personAccount.Id;
+        insert request;
+        Test.startTest();
+        Thread__c thread1 = new Thread__c(
+            CRM_Account__c = personAccount.Id,
+            CRM_Thread_Type__c = 'HOT_TOLK-RESSURSKONTOR'
+        );
+        insert thread1;
+
+        Thread__c thread2 = new Thread__c(
+            CRM_Account__c = personAccount.Id,
+            CRM_Thread_Type__c = 'HOT_TOLK-RESSURSKONTOR'
+        );
+        insert thread2;
+
+        Set<Id> threadIds = new Set<Id>{ thread1.Id, thread2.Id };
+
+        HOT_ReminderSMSService.sendSMSOnNewMessage(threadIds);
+        List<SMS__c> smsList = [SELECT Id FROM SMS__c];
+        Test.stopTest();
+        System.assertEquals(0, smsList.size(), 'Should not created SMS');
     }
 }
