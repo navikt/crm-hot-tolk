@@ -283,6 +283,22 @@ export default class hot_messagingCommunityThreadViewer extends NavigationMixin(
                     id: this.navigationId
                 }
             });
+        } else if (this.navigationBaseUrl == 'mine-samtaler-frilanstolk') {
+            this[NavigationMixin.Navigate]({
+                type: 'comm__namedPage',
+                attributes: {
+                    pageName: 'mine-samtaler-frilanstolk'
+                },
+                state: {}
+            });
+        } else if (this.navigationBaseUrl == 'mine-samtaler') {
+            this[NavigationMixin.Navigate]({
+                type: 'comm__namedPage',
+                attributes: {
+                    pageName: 'mine-samtaler'
+                },
+                state: {}
+            });
         } else if ((this.navigationBaseUrl = 'mine-varsler')) {
             this[NavigationMixin.Navigate]({
                 type: 'comm__namedPage',
