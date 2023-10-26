@@ -147,7 +147,7 @@ export default class Hot_notificationList extends NavigationMixin(LightningEleme
                             actionName: 'view'
                         },
                         state: {
-                            from: 'mine-samtaler'
+                            from: 'mine-varsler-tolkebruker'
                         }
                     });
                 }
