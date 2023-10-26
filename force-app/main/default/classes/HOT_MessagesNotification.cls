@@ -223,9 +223,7 @@ public without sharing class HOT_MessagesNotification {
                         Messaging.CustomNotification notification = new Messaging.CustomNotification();
                         notification.setTitle('Ny melding');
                         notification.setBody(thread.HOT_Subject__c); // send med parameter for denne
-                        notification.setNotificationTypeId(
-                            getCustomNotificationType('HOT_Service_Appointment_Changed').Id
-                        ); // send med parameter for denne
+                        notification.setNotificationTypeId(getCustomNotificationType('HOT_NotifyInterpreter').Id); // send med parameter for denne
                         notification.setTargetId(thread.Id); // send med parameter for denne
                         HOT_NotificationHandler.sendNotification(notification, recipients, (SObject) thread); // send med parameter for denne
                     } else {
