@@ -567,7 +567,8 @@ public without sharing class HOT_ServiceAppointmentNotification {
                     Id account = userIdToAccountMap.get(serviceAppointment.HOT_AssignedResourceId__c);
                     newnotification.HOT_Account__c = account;
                     newnotification.HOT_NotificationChannel__c = 'SMS';
-                    newnotification.HOT_Subject__c = 'INFO\n Du er tildelt oppdraget';
+                    newnotification.HOT_Subject__c =
+                        'INFO\n Du er tildelt oppdraget ' + serviceAppointment.AppointmentNumber;
                     newnotification.HOT_NotificationText__c =
                         '\nFor mer informasjon, se tolkebestilling.nav.no.\n' +
                         'Du kan ikke svare på denne meldingen.\n' +

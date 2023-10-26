@@ -283,7 +283,31 @@ export default class hot_messagingCommunityThreadViewer extends NavigationMixin(
                     id: this.navigationId
                 }
             });
+        } else if (this.navigationBaseUrl == 'mine-samtaler-frilanstolk') {
+            this[NavigationMixin.Navigate]({
+                type: 'comm__namedPage',
+                attributes: {
+                    pageName: 'mine-samtaler-frilanstolk'
+                },
+                state: {}
+            });
+        } else if (this.navigationBaseUrl == 'mine-samtaler') {
+            this[NavigationMixin.Navigate]({
+                type: 'comm__namedPage',
+                attributes: {
+                    pageName: 'mine-samtaler'
+                },
+                state: {}
+            });
         } else if ((this.navigationBaseUrl = 'mine-varsler')) {
+            this[NavigationMixin.Navigate]({
+                type: 'comm__namedPage',
+                attributes: {
+                    pageName: 'mine-varsler'
+                },
+                state: {}
+            });
+        } else if ((this.navigationBaseUrl = 'mine-varsler-tolkebruker')) {
             this[NavigationMixin.Navigate]({
                 type: 'comm__namedPage',
                 attributes: {
@@ -481,7 +505,8 @@ export default class hot_messagingCommunityThreadViewer extends NavigationMixin(
         if (
             parsed_params.from != 'mine-bestillinger' &&
             parsed_params.from != 'mine-bestillinger-andre' &&
-            parsed_params.from != 'mine-samtaler'
+            parsed_params.from != 'mine-samtaler' &&
+            parsed_params.from != 'mine-varsler-tolkebruker'
         ) {
             this.recordId = parsed_params.recordId;
         }
@@ -509,6 +534,8 @@ export default class hot_messagingCommunityThreadViewer extends NavigationMixin(
         } else if (parsed_params.from == 'mine-varsler') {
             this.navigationBaseUrl = 'mine-varsler';
             this.isFreelance = true;
+        } else if (parsed_params.from == 'mine-varsler-tolkebruker') {
+            this.navigationBaseUrl = 'mine-varsler-tolkebruker';
         } else if (parsed_params.list !== undefined) {
             this.navigationBaseUrl = parsed_params.from;
             this.navigationId = parsed_params.recordId;
