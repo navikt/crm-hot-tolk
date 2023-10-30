@@ -519,6 +519,25 @@ private class HOT_MessageHelperTest {
         System.assertEquals(true, isEmpty);
     }
     @isTest
+    static void setLastMessageFromUser() {
+        List<Thread__c> tList = [SELECT Id FROM Thread__c ORDER BY CRM_Number_of_External_Messages__c DESC];
+        User currentUser = [SELECT Id, AccountId, Account.CRM_Person__c FROM User WHERE Id = :UserInfo.getUserId()];
+
+        Test.startTest();
+        Contact contact = new Contact(
+            FirstName = 'Joe',
+            LastName = 'Smith',
+            Phone = '95410816',
+            AccountId = currentUser.AccountId
+        );
+        insert contact;
+        HOT_MessageHelper.setLastMessageFrom(tList.get(0).Id, contact.Id);
+        Test.stopTest();
+
+        List<Thread__c> tList2 = [SELECT Id, HOT_Last_message_from__c FROM Thread__c WHERE Id = :tList.get(0).Id];
+        System.assertEquals(tList2[0].HOT_Last_message_from__c, contact.Id);
+    }
+    @isTest
     static void markAsReadByNavTest() {
         List<Thread__c> tList = [SELECT Id FROM Thread__c ORDER BY CRM_Number_of_External_Messages__c DESC];
         Test.startTest();
