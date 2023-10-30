@@ -862,4 +862,44 @@ private class HOT_MessageHelperTest {
             System.assertEquals('HOT_BESTILLER-FORMIDLER', t.CRM_Thread_Type__c, 'Did not create the thread');
         }
     }
+    @isTest
+    static void createThreadInterpreterDispatcher() {
+        WorkType workType = HOT_TestDataFactory.createWorkType();
+        workType.Name = 'Work Type Name';
+        insert workType;
+        HOT_Request__c request = HOT_TestDataFactory.createRequest('Subject', workType);
+        insert request;
+        WorkOrder workOrder = HOT_TestDataFactory.createWorkOrder(request, workType);
+        insert workOrder;
+        WorkOrderLineItem workOrderLineItem = HOT_TestDataFactory.createWorkOrderLineItem(workOrder, workType);
+        insert workOrderLineItem;
+        ServiceAppointment sa = HOT_TestDataFactory.createServiceAppointment(workOrderLineItem);
+        sa.HOT_Request__c = request.Id;
+        sa.Status = 'Dispatched';
+        sa.Subject = 'Hei';
+        insert sa;
+
+        Profile profile = [SELECT Id FROM Profile WHERE Name = 'Standard User' OR Name = 'Standardbruker' LIMIT 1];
+        User user = HOT_TestDataFactory.createUser('user', profile);
+        insert user;
+        Account acc = new Account();
+        acc.Name = 'Newly created account';
+        insert acc;
+        ServiceResource resource = HOT_TestDataFactory.createServiceResource(user.Id);
+        resource.AccountId = acc.Id;
+        insert resource;
+        HOT_InterestedResource__c interestedResource = HOT_TestDataFactory.createInterestedResource(sa.Id, resource.Id);
+        interestedResource.Status__c = 'Assigned';
+        insert interestedResource;
+        Test.startTest();
+        AssignedResource ar = HOT_TestDataFactory.createAssignedResource(sa.Id, resource.Id);
+        insert ar;
+
+        sa.Status = 'Dispatched';
+        update sa;
+
+        Thread__c thread = HOT_MessageHelper.createThreadDispatcher(sa.Id, acc.Id, 'HOT_TOLK-FORMIDLER');
+        Test.stopTest();
+        System.assertEquals('HOT_TOLK-FORMIDLER', thread.CRM_Thread_Type__c);
+    }
 }
