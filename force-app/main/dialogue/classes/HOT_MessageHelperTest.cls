@@ -108,6 +108,14 @@ private class HOT_MessageHelperTest {
         System.assertEquals(result, '0', 'Did not find correct number of interpreters');
     }
     @isTest
+    static void getThreadsCollectionThread() {
+        Thread__c t = [SELECT Id FROM Thread__c WHERE CRM_Type__c = 'HOT_BRUKER-FORMIDLER' LIMIT 1];
+        Test.startTest();
+        List<Thread__c> resList = HOT_MessageHelper.getThreadsCollection(t.Id, true, 'HOT_BRUKER-FORMIDLER');
+        Test.stopTest();
+        System.assertEquals(1, resList.size());
+    }
+    @isTest
     static void getThreadsCollectionSingleTest() {
         List<Account> accList = [SELECT Id FROM Account];
         Test.startTest();
