@@ -817,51 +817,6 @@ private class HOT_MessageHelperTest {
         ];
         System.assertNotEquals(null, tList);
     }
-    // @isTest
-    // public static void createThreadOrdererDispatcher() {
-    //     WorkType workType = HOT_TestDataFactory.createWorkType();
-    //     insert workType;
-    //     Person__c person = HOT_TestDataFactory.createPerson();
-    //     person.Name = '12015678999';
-    //     insert person;
-    //     Account personAccount = HOT_TestDataFactory.createAccount(true);
-    //     personAccount.INT_PersonIdent__c = '12015678999';
-    //     personAccount.CRM_Person__c = person.Id;
-    //     insert personAccount;
-
-    //     Profile communityProfile = [SELECT Id FROM Profile WHERE Name = 'Customer Community Login User' LIMIT 1];
-
-    //     Person__c person2 = HOT_TestDataFactory.createPerson();
-    //     person2.INT_KrrEmail__c = 'getPersonTest@nav.no';
-    //     person2.HOT_WorkplaceInterpreter__c = true;
-    //     person2.INT_Confidential__c = 'Ugradert';
-    //     person2.INT_FirstName__c = 'Tolk';
-    //     person2.INT_LastName__c = 'Bruker';
-    //     insert person2;
-
-    //     Account account = [
-    //         SELECT Id, OwnerId, PersonContactId, FirstName, LastName, PersonEmail, CRM_Person__c
-    //         FROM Account
-    //         WHERE LastName = :'Bruker'
-    //     ];
-
-    //     User user = HOT_TestDataFactory.createUser(communityProfile, account);
-    //     user.Alias = 'userTest';
-    //     user.Username = 'HOT_testuser1@nav.hot.no';
-    //     user.CommunityNickname = 'userTest';
-    //     insert user;
-
-    //     HOT_Request__c request = HOT_TestDataFactory.createRequest('TEST', workType);
-    //     request.Account__c = personAccount.Id;
-    //     request.Orderer__c = account.Id;
-    //     insert request;
-    //     WorkOrder workOrder = HOT_TestDataFactory.createWorkOrder(request, workType);
-    //     insert workOrder;
-    //     System.runAs(user) {
-    //         Thread__c t = HOT_MessageHelper.createThread(request.Id, account.Id);
-    //         System.assertEquals('HOT_BESTILLER-FORMIDLER', t.CRM_Thread_Type__c, 'Did not create the thread');
-    //     }
-    // }
     @isTest
     static void createThreadInterpreterDispatcher() {
         WorkType workType = HOT_TestDataFactory.createWorkType();
@@ -901,5 +856,24 @@ private class HOT_MessageHelperTest {
         Thread__c thread = HOT_MessageHelper.createThreadDispatcher(sa.Id, acc.Id, 'HOT_TOLK-FORMIDLER');
         Test.stopTest();
         System.assertEquals('HOT_TOLK-FORMIDLER', thread.CRM_Thread_Type__c);
+    }
+    @isTest
+    public static void createThreadOrdererDispatcher() {
+        WorkType workType = HOT_TestDataFactory.createWorkType();
+        insert workType;
+        Account account = HOT_TestDataFactory.createAccount(true);
+        insert account;
+        User currentUser = [SELECT Id, AccountId, Account.CRM_Person__c FROM User WHERE Id = :UserInfo.getUserId()];
+
+        HOT_Request__c request = HOT_TestDataFactory.createRequest('TEST', workType);
+        request.Account__c = account.Id;
+        request.Orderer__c = currentUser.AccountId;
+        insert request;
+        WorkOrder workOrder = HOT_TestDataFactory.createWorkOrder(request, workType);
+        insert workOrder;
+        System.runAs(currentUser) {
+            Thread__c t = HOT_MessageHelper.createThread(request.Id, account.Id);
+            System.assertEquals('HOT_BESTILLER-FORMIDLER', t.CRM_Thread_Type__c, 'Did not create the thread');
+        }
     }
 }

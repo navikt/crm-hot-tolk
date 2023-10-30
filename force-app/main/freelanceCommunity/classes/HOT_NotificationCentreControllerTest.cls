@@ -70,49 +70,24 @@ private class HOT_NotificationCentreControllerTest {
         String result = HOT_NotificationCentreController.getTargetPage(workOrder.Id);
         System.assertEquals('mine-bestillinger', result, 'Could not get correct page');
     }
-    // @isTest
-    // public static void getPageRefOtherOrderer() {
-    //     WorkType workType = HOT_TestDataFactory.createWorkType();
-    //     insert workType;
-    //     Person__c person = HOT_TestDataFactory.createPerson();
-    //     person.Name = '12015678999';
-    //     insert person;
-    //     Account personAccount = HOT_TestDataFactory.createAccount(true);
-    //     personAccount.INT_PersonIdent__c = '12015678999';
-    //     personAccount.CRM_Person__c = person.Id;
-    //     insert personAccount;
+    @isTest
+    public static void getPageRefOtherOrderer() {
+        WorkType workType = HOT_TestDataFactory.createWorkType();
+        insert workType;
 
-    //     Profile communityProfile = [SELECT Id FROM Profile WHERE Name = 'Customer Community Login User' LIMIT 1];
+        Account account = HOT_TestDataFactory.createAccount(true);
+        insert account;
+        User currentUser = [SELECT Id, AccountId, Account.CRM_Person__c FROM User WHERE Id = :UserInfo.getUserId()];
 
-    //     Person__c person2 = HOT_TestDataFactory.createPerson();
-    //     person2.INT_KrrEmail__c = 'getPersonTest@nav.no';
-    //     person2.HOT_WorkplaceInterpreter__c = true;
-    //     person2.INT_Confidential__c = 'Ugradert';
-    //     person2.INT_FirstName__c = 'Tolk';
-    //     person2.INT_LastName__c = 'Bruker';
-    //     insert person2;
-
-    //     Account account = [
-    //         SELECT Id, OwnerId, PersonContactId, FirstName, LastName, PersonEmail, CRM_Person__c
-    //         FROM Account
-    //         WHERE LastName = :'Bruker'
-    //     ];
-
-    //     User user = HOT_TestDataFactory.createUser(communityProfile, account);
-    //     user.Alias = 'userTest';
-    //     user.Username = 'HOT_testuser1@nav.hot.no';
-    //     user.CommunityNickname = 'userTest';
-    //     insert user;
-
-    //     HOT_Request__c request = HOT_TestDataFactory.createRequest('TEST', workType);
-    //     request.Account__c = personAccount.Id;
-    //     request.Orderer__c = account.Id;
-    //     insert request;
-    //     WorkOrder workOrder = HOT_TestDataFactory.createWorkOrder(request, workType);
-    //     insert workOrder;
-    //     System.runAs(user) {
-    //         String result = HOT_NotificationCentreController.getTargetPage(workOrder.Id);
-    //         System.assertEquals('mine-bestillinger-andre', result, 'Could not get correct page');
-    //     }
-    // }
+        HOT_Request__c request = HOT_TestDataFactory.createRequest('TEST', workType);
+        request.Account__c = account.Id;
+        request.Orderer__c = currentUser.accountId;
+        insert request;
+        WorkOrder workOrder = HOT_TestDataFactory.createWorkOrder(request, workType);
+        insert workOrder;
+        System.runAs(currentUser) {
+            String result = HOT_NotificationCentreController.getTargetPage(workOrder.Id);
+            System.assertEquals('mine-bestillinger-andre', result, 'Could not get correct page');
+        }
+    }
 }
