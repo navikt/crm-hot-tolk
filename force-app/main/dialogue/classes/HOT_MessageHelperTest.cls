@@ -998,4 +998,27 @@ private class HOT_MessageHelperTest {
         Test.stopTest();
         System.assertEquals(navigationhelp2, navigationhelp);
     }
+    @isTest
+    static void getRelatedObjectDetailsNoSA() {
+        WorkType workType = HOT_TestDataFactory.createWorkType();
+        insert workType;
+        HOT_Request__c request = HOT_TestDataFactory.createRequest('TEST', workType);
+        insert request;
+        WorkOrder workOrder = HOT_TestDataFactory.createWorkOrder(request, workType);
+        insert workOrder;
+
+        User currentUser = [SELECT Id, AccountId, Account.CRM_Person__c FROM User WHERE Id = :UserInfo.getUserId()];
+
+        ServiceResource resource = HOT_TestDataFactory.createServiceResource(currentUser.Id);
+        resource.AccountId = currentUser.AccountId;
+        insert resource;
+
+        Test.startTest();
+        Map<String, String> navigationhelp2 = new Map<String, String>();
+        navigationhelp2.put(workOrder.Id, 'WO');
+        Map<String, String> navigationhelp = new Map<String, String>();
+        navigationhelp = HOT_MessageHelper.getRelatedObjectDetails(workOrder.Id);
+        Test.stopTest();
+        System.assertEquals(navigationhelp2, navigationhelp);
+    }
 }
