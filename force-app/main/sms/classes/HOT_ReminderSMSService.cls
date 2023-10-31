@@ -74,7 +74,7 @@ public without sharing class HOT_ReminderSMSService {
                 if (request.IsSerieoppdrag__c) {
                     message += ' i perioden: ' + request.SeriesPeriod__c;
                 } else {
-                    message += ':\nDato: ' + formatTimePeriod(request.StartTime__c, request.EndTime__c);
+                    message += '\nDato: ' + formatTimePeriod(request.StartTime__c, request.EndTime__c);
                 }
                 notification.HOT_NotificationText__c =
                     message +
