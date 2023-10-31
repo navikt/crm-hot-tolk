@@ -33,7 +33,7 @@
             </layoutItems>
             <layoutItems>
                 <behavior>Edit</behavior>
-                <field>INT_KrrMobilePhone__c</field>
+                <field>PersonMobilePhone</field>
             </layoutItems>
             <layoutItems>
                 <behavior>Edit</behavior>
@@ -44,12 +44,7 @@
                 <field>CRM_NavEmployeeName__c</field>
             </layoutItems>
         </layoutColumns>
-        <layoutColumns>
-            <layoutItems>
-                <behavior>Edit</behavior>
-                <field>INT_PersonIdent__c</field>
-            </layoutItems>
-        </layoutColumns>
+        <layoutColumns />
         <style>TwoColumnsTopToBottom</style>
     </layoutSections>
     <layoutSections>
