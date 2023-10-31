@@ -64,107 +64,111 @@ export default class Hot_notificationList extends NavigationMixin(LightningEleme
     }
     goToNotification(event) {
         const clickedButton = event.target;
-        const notificationId = clickedButton.getAttribute('data-id');
+        const notificationElement = clickedButton.closest('[data-id]');
 
-        getNotificationType({ notificationId: notificationId })
-            .then((result) => {
-                if (result.HOT_RelatedObjectType__c == 'wanted') {
-                    this[NavigationMixin.Navigate]({
-                        type: 'comm__namedPage',
-                        attributes: {
-                            pageName: 'mine-oppdrag'
-                        },
-                        state: { list: 'wanted', from: 'mine-varsler' }
-                    });
-                }
-                if (result.HOT_RelatedObjectType__c == 'serviceAppointment') {
-                    this[NavigationMixin.Navigate]({
-                        type: 'comm__namedPage',
-                        attributes: {
-                            pageName: 'mine-oppdrag'
-                        },
-                        state: { list: 'my', from: 'mine-varsler', id: result.HOT_RelatedObject__c }
-                    });
-                }
-                if (result.HOT_RelatedObjectType__c == 'noServiceAppointment') {
-                    this[NavigationMixin.Navigate]({
-                        type: 'comm__namedPage',
-                        attributes: {
-                            pageName: 'mine-oppdrag'
-                        },
-                        state: { list: 'interested', from: 'mine-varsler', id: result.HOT_RelatedObject__c }
-                    });
-                }
-                if (result.HOT_RelatedObjectType__c == 'workOrder') {
-                    var relatedId = result.HOT_RelatedObject__c;
-                    getTargetPage({ workOrderId: result.HOT_RelatedObject__c }).then((result) => {
-                        if (result == 'mine-bestillinger-andre') {
-                            this[NavigationMixin.Navigate]({
-                                type: 'comm__namedPage',
-                                attributes: {
-                                    pageName: 'mine-bestillinger-andre'
-                                },
-                                state: {
-                                    id: relatedId,
-                                    level: 'WO',
-                                    from: 'mine-varsler'
-                                }
-                            });
-                        } else {
-                            this[NavigationMixin.Navigate]({
-                                type: 'comm__namedPage',
-                                attributes: {
-                                    pageName: 'mine-bestillinger'
-                                },
-                                state: {
-                                    id: relatedId,
-                                    level: 'WO',
-                                    from: 'mine-varsler'
-                                }
-                            });
-                        }
-                    });
-                }
-                if (result.HOT_RelatedObjectType__c == 'request') {
-                    this[NavigationMixin.Navigate]({
-                        type: 'comm__namedPage',
-                        attributes: {
-                            pageName: 'mine-bestillinger'
-                        },
-                        state: {
-                            id: result.HOT_RelatedObject__c,
-                            level: 'R',
-                            from: 'mine-varsler'
-                        }
-                    });
-                }
-                if (result.HOT_RelatedObjectType__c == 'threadUser') {
-                    this[NavigationMixin.Navigate]({
-                        type: 'standard__recordPage',
-                        attributes: {
-                            recordId: result.HOT_RelatedObject__c,
-                            objectApiName: 'Thread__c',
-                            actionName: 'view'
-                        },
-                        state: {
-                            from: 'mine-varsler-tolkebruker'
-                        }
-                    });
-                }
-                if (result.HOT_RelatedObjectType__c == 'threadInterpreter') {
-                    const baseUrl = '/samtale-frilans';
-                    const attributes = `recordId=${result.HOT_RelatedObject__c}&from=mine-varsler`;
-                    const url = `${baseUrl}?${attributes}`;
+        if (notificationElement) {
+            const notificationId = notificationElement.getAttribute('data-id');
+            getNotificationType({ notificationId: notificationId })
+                .then((result) => {
+                    if (result.HOT_RelatedObjectType__c == 'wanted') {
+                        this[NavigationMixin.Navigate]({
+                            type: 'comm__namedPage',
+                            attributes: {
+                                pageName: 'mine-oppdrag'
+                            },
+                            state: { list: 'wanted', from: 'mine-varsler' }
+                        });
+                    }
+                    if (result.HOT_RelatedObjectType__c == 'serviceAppointment') {
+                        this[NavigationMixin.Navigate]({
+                            type: 'comm__namedPage',
+                            attributes: {
+                                pageName: 'mine-oppdrag'
+                            },
+                            state: { list: 'my', from: 'mine-varsler', id: result.HOT_RelatedObject__c }
+                        });
+                    }
+                    if (result.HOT_RelatedObjectType__c == 'noServiceAppointment') {
+                        this[NavigationMixin.Navigate]({
+                            type: 'comm__namedPage',
+                            attributes: {
+                                pageName: 'mine-oppdrag'
+                            },
+                            state: { list: 'interested', from: 'mine-varsler', id: result.HOT_RelatedObject__c }
+                        });
+                    }
+                    if (result.HOT_RelatedObjectType__c == 'workOrder') {
+                        console.log('trigges');
+                        var relatedId = result.HOT_RelatedObject__c;
+                        getTargetPage({ workOrderId: result.HOT_RelatedObject__c }).then((result) => {
+                            if (result == 'mine-bestillinger-andre') {
+                                this[NavigationMixin.Navigate]({
+                                    type: 'comm__namedPage',
+                                    attributes: {
+                                        pageName: 'mine-bestillinger-andre'
+                                    },
+                                    state: {
+                                        id: relatedId,
+                                        level: 'WO',
+                                        from: 'mine-varsler'
+                                    }
+                                });
+                            } else {
+                                this[NavigationMixin.Navigate]({
+                                    type: 'comm__namedPage',
+                                    attributes: {
+                                        pageName: 'mine-bestillinger'
+                                    },
+                                    state: {
+                                        id: relatedId,
+                                        level: 'WO',
+                                        from: 'mine-varsler'
+                                    }
+                                });
+                            }
+                        });
+                    }
+                    if (result.HOT_RelatedObjectType__c == 'request') {
+                        this[NavigationMixin.Navigate]({
+                            type: 'comm__namedPage',
+                            attributes: {
+                                pageName: 'mine-bestillinger'
+                            },
+                            state: {
+                                id: result.HOT_RelatedObject__c,
+                                level: 'R',
+                                from: 'mine-varsler'
+                            }
+                        });
+                    }
+                    if (result.HOT_RelatedObjectType__c == 'threadUser') {
+                        this[NavigationMixin.Navigate]({
+                            type: 'standard__recordPage',
+                            attributes: {
+                                recordId: result.HOT_RelatedObject__c,
+                                objectApiName: 'Thread__c',
+                                actionName: 'view'
+                            },
+                            state: {
+                                from: 'mine-varsler-tolkebruker'
+                            }
+                        });
+                    }
+                    if (result.HOT_RelatedObjectType__c == 'threadInterpreter') {
+                        const baseUrl = '/samtale-frilans';
+                        const attributes = `recordId=${result.HOT_RelatedObject__c}&from=mine-varsler`;
+                        const url = `${baseUrl}?${attributes}`;
 
-                    this[NavigationMixin.Navigate]({
-                        type: 'standard__webPage',
-                        attributes: {
-                            url: url
-                        }
-                    });
-                }
-            })
-            .catch((error) => {});
+                        this[NavigationMixin.Navigate]({
+                            type: 'standard__webPage',
+                            attributes: {
+                                url: url
+                            }
+                        });
+                    }
+                })
+                .catch((error) => {});
+        }
     }
     goBack() {
         this[NavigationMixin.Navigate]({
