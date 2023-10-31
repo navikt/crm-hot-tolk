@@ -70,4 +70,24 @@ private class HOT_NotificationCentreControllerTest {
         String result = HOT_NotificationCentreController.getTargetPage(workOrder.Id);
         System.assertEquals('mine-bestillinger', result, 'Could not get correct page');
     }
+    @isTest
+    public static void getPageRefOtherOrderer() {
+        WorkType workType = HOT_TestDataFactory.createWorkType();
+        insert workType;
+
+        Account account = HOT_TestDataFactory.createAccount(true);
+        insert account;
+        User currentUser = [SELECT Id, AccountId, Account.CRM_Person__c FROM User WHERE Id = :UserInfo.getUserId()];
+
+        HOT_Request__c request = HOT_TestDataFactory.createRequest('TEST', workType);
+        request.Account__c = account.Id;
+        request.Orderer__c = currentUser.accountId;
+        insert request;
+        WorkOrder workOrder = HOT_TestDataFactory.createWorkOrder(request, workType);
+        insert workOrder;
+        System.runAs(currentUser) {
+            String result = HOT_NotificationCentreController.getTargetPage(workOrder.Id);
+            System.assertEquals('mine-bestillinger-andre', result, 'Could not get correct page');
+        }
+    }
 }
