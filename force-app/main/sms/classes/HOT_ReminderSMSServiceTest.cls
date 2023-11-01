@@ -219,8 +219,17 @@ private class HOT_ReminderSMSServiceTest {
     @isTest
     static void sendSMSToInterpreterOnScreenInterpretationTest() {
         Set<Id> saIds = (new Map<Id, ServiceAppointment>([SELECT Id FROM ServiceAppointment LIMIT 1])).keySet();
-
         Test.startTest();
+        User currentUser = [SELECT Id, AccountId FROM User WHERE Id = :UserInfo.getUserId()];
+
+        ServiceResource resource = HOT_TestDataFactory.createServiceResource(currentUser.Id);
+        resource.HOT_MobilePhoneOverride__c = '12345678';
+        insert resource;
+
+        ServiceAppointment sa = [SELECT Id FROM ServiceAppointment LIMIT 1];
+        AssignedResource assignedResource = HOT_TestDataFactory.createAssignedResource(sa.Id, resource.Id);
+        insert assignedResource;
+
         HOT_ReminderSMSService.sendSMSToInterpreterOnScreenInterpretation(saIds);
         Test.stopTest();
     }
@@ -246,6 +255,15 @@ private class HOT_ReminderSMSServiceTest {
         Set<Id> saIds = (new Map<Id, ServiceAppointment>([SELECT Id FROM ServiceAppointment LIMIT 1])).keySet();
 
         Test.startTest();
+        User currentUser = [SELECT Id, AccountId FROM User WHERE Id = :UserInfo.getUserId()];
+
+        ServiceResource resource = HOT_TestDataFactory.createServiceResource(currentUser.Id);
+        resource.HOT_MobilePhoneOverride__c = '12345678';
+        insert resource;
+
+        ServiceAppointment sa = [SELECT Id FROM ServiceAppointment LIMIT 1];
+        AssignedResource assignedResource = HOT_TestDataFactory.createAssignedResource(sa.Id, resource.Id);
+        insert assignedResource;
         HOT_ReminderSMSService.sendSMSToInterpreterOnAddressChanged(saIds);
         Test.stopTest();
     }
@@ -254,6 +272,15 @@ private class HOT_ReminderSMSServiceTest {
         Set<Id> saIds = (new Map<Id, ServiceAppointment>([SELECT Id FROM ServiceAppointment LIMIT 1])).keySet();
 
         Test.startTest();
+        User currentUser = [SELECT Id, AccountId FROM User WHERE Id = :UserInfo.getUserId()];
+
+        ServiceResource resource = HOT_TestDataFactory.createServiceResource(currentUser.Id);
+        resource.HOT_MobilePhoneOverride__c = '12345678';
+        insert resource;
+
+        ServiceAppointment sa = [SELECT Id FROM ServiceAppointment LIMIT 1];
+        AssignedResource assignedResource = HOT_TestDataFactory.createAssignedResource(sa.Id, resource.Id);
+        insert assignedResource;
         HOT_ReminderSMSService.sendSMSToInterpreterOnAddedOrChanged(saIds);
         Test.stopTest();
     }
