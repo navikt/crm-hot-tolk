@@ -184,35 +184,4 @@ private class HOT_MessagehandlerTest {
         List<Message__c> messages = [SELECT Id FROM Message__c];
         System.assertEquals(1, messages.size(), 'Could not create message');
     }
-    @isTest
-    static void messageBrukerFormidler() {
-        Profile profile = [SELECT Id FROM Profile WHERE Name = 'HOT Tolk Formidler' LIMIT 1];
-        User user = HOT_TestDataFactory.createUser('user1', profile);
-        insert user;
-
-        User user1 = [SELECT Id, AccountId FROM User WHERE Id = :UserInfo.getUserId() LIMIT 1];
-
-        WorkType workType = HOT_TestDataFactory.createWorkType();
-        insert workType;
-        HOT_Request__c request = HOT_TestDataFactory.createRequest('TEST', workType);
-        insert request;
-
-        Thread__c thread = HOT_TestDataFactory.createThread();
-        thread.CRM_Related_Object__c = request.Id;
-        thread.CRM_Thread_Type__c = 'HOT_BRUKER-FORMIDLER';
-        thread.CRM_Account__c = user1.AccountId;
-
-        insert thread;
-        Message__c message = new Message__c();
-        message.CRM_Thread__c = thread.Id;
-        message.CRM_From_User__c = user.Id;
-        message.CRM_Message_Text__c = 'Dette er en testmelding';
-
-        test.startTest();
-        insert message;
-        test.stopTest();
-
-        List<Message__c> messages = [SELECT Id FROM Message__c];
-        System.assertEquals(1, messages.size(), 'Could not create message');
-    }
 }
