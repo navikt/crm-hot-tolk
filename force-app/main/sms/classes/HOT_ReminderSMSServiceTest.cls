@@ -289,6 +289,115 @@ private class HOT_ReminderSMSServiceTest {
         HOT_ReminderSMSService.sendSMSOnNewWantedSR(irIds);
         Test.stopTest();
     }
+    @isTest
+    static void cancelledByUserConstructMessage() {
+        ServiceAppointment sa = [
+            SELECT Id, Status, AppointmentNumber, EarliestStartTime, DueDate
+            FROM ServiceAppointment
+            WHERE Subject = 'TEST'
+            LIMIT 1
+        ];
+
+        Test.startTest();
+        String res = HOT_ReminderSMSService.constructMessageToInterpreter(sa, 'CanceledByUser');
+        Boolean result = res.contains('avlyst');
+        System.assertEquals(true, result, 'Did not create the correct message');
+
+        Test.stopTest();
+    }
+    @isTest
+    static void getRecipientOnThreadTest() {
+        User currentUser = [SELECT Id, AccountId FROM User WHERE Id = :UserInfo.getUserId()];
+        Test.startTest();
+        WorkType workType = HOT_TestDataFactory.createWorkType();
+        insert workType;
+        HOT_Request__c request = HOT_TestDataFactory.createRequest('TEST', workType);
+        insert request;
+        WorkOrder workOrder = HOT_TestDataFactory.createWorkOrder(request, workType);
+        insert workOrder;
+        WorkOrderLineItem workOrderLineItem = HOT_TestDataFactory.createWorkOrderLineItem(workOrder, workType);
+        insert workOrderLineItem;
+        ServiceAppointment serviceAppointment = HOT_TestDataFactory.createServiceAppointment(workOrderLineItem);
+        serviceAppointment.HOT_Request__c = request.Id;
+        insert serviceAppointment;
+
+        ServiceResource resource = [SELECT Id FROM ServiceResource LIMIT 1];
+        resource.HOT_MobilePhoneOverride__c = '12345678';
+        update resource;
+
+        AssignedResource assignedResource = HOT_TestDataFactory.createAssignedResource(
+            serviceAppointment.Id,
+            resource.Id
+        );
+        insert assignedResource;
+
+        Thread__c thread = HOT_TestDataFactory.createThread();
+        thread.CRM_Account__c = currentUser.AccountId;
+        thread.CRM_Related_Object__c = request.Id;
+        thread.CRM_Thread_Type__c = 'HOT_TOLK-FORMIDLER';
+        insert thread;
+
+        String result = HOT_ReminderSMSService.getRecipientOnThread(thread);
+        System.assertEquals('12345678', result, 'Did not get correct recipient');
+
+        Test.stopTest();
+    }
+    @isTest
+    static void getRecipientOnThreadUserTest() {
+        User currentUser = [SELECT Id, AccountId FROM User WHERE Id = :UserInfo.getUserId()];
+        Test.startTest();
+        Person__c person = HOT_TestDataFactory.createPerson();
+        person.HOT_NotificationChannel__c = 'SMS';
+        insert person;
+        Account account = [SELECT Id FROM Account LIMIT 1];
+        WorkType workType = HOT_TestDataFactory.createWorkType();
+        insert workType;
+
+        HOT_Request__c request = HOT_TestDataFactory.createRequest('TEST', workType);
+        request.Orderer__c = account.Id;
+        request.Account__c = account.Id;
+        request.NumberOfWorkOrders__c = 2;
+        insert request;
+
+        Thread__c thread = HOT_TestDataFactory.createThread();
+        thread.CRM_Account__c = currentUser.AccountId;
+        thread.CRM_Related_Object__c = request.Id;
+        thread.CRM_Thread_Type__c = 'HOT_BRUKER-FORMIDLER';
+        insert thread;
+
+        String result = HOT_ReminderSMSService.getRecipientOnThread(thread);
+        System.assertEquals(null, result, 'Did not get correct recipient');
+
+        Test.stopTest();
+    }
+    @isTest
+    static void getRecipientOnThreadOrdererTest() {
+        User currentUser = [SELECT Id, AccountId FROM User WHERE Id = :UserInfo.getUserId()];
+        Test.startTest();
+        Person__c person = HOT_TestDataFactory.createPerson();
+        person.HOT_NotificationChannel__c = 'SMS';
+        insert person;
+        Account account = [SELECT Id FROM Account LIMIT 1];
+        WorkType workType = HOT_TestDataFactory.createWorkType();
+        insert workType;
+
+        HOT_Request__c request = HOT_TestDataFactory.createRequest('TEST', workType);
+        request.Orderer__c = account.Id;
+        request.Account__c = account.Id;
+        request.NumberOfWorkOrders__c = 2;
+        insert request;
+
+        Thread__c thread = HOT_TestDataFactory.createThread();
+        thread.CRM_Account__c = currentUser.AccountId;
+        thread.CRM_Related_Object__c = request.Id;
+        thread.CRM_Thread_Type__c = 'HOT_BESTILLER-FORMIDLER';
+        insert thread;
+
+        String result = HOT_ReminderSMSService.getRecipientOnThread(thread);
+        System.assertEquals(null, result, 'Did not get correct recipient');
+
+        Test.stopTest();
+    }
 
     @isTest
     static void sendSMSOnInterpreterChangeTest() {
