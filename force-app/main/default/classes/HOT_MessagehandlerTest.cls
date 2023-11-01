@@ -102,4 +102,86 @@ private class HOT_MessagehandlerTest {
         List<Message__c> messages = [SELECT Id FROM Message__c];
         System.assertEquals(1, messages.size(), 'Could not create message');
     }
+    @isTest
+    static void messageTolkTolk() {
+        User user = [SELECT Id, AccountId FROM User WHERE Id = :UserInfo.getUserId() LIMIT 1];
+        ServiceResource serviceResource = HOT_TestDataFactory.createServiceResource(user.Id);
+        insert serviceResource;
+
+        WorkType workType = HOT_TestDataFactory.createWorkType();
+        insert workType;
+        HOT_Request__c request = HOT_TestDataFactory.createRequest('TEST', workType);
+        insert request;
+        WorkOrder workOrder = HOT_TestDataFactory.createWorkOrder(request, workType);
+        insert workOrder;
+        WorkOrderLineItem workOrderLineItem = HOT_TestDataFactory.createWorkOrderLineItem(workOrder, workType);
+        insert workOrderLineItem;
+        ServiceAppointment serviceAppointment = HOT_TestDataFactory.createServiceAppointment(workOrderLineItem);
+        serviceAppointment.HOT_Request__c = request.Id;
+        insert serviceAppointment;
+
+        AssignedResource assignedResource = HOT_TestDataFactory.createAssignedResource(
+            serviceAppointment.Id,
+            serviceResource.Id
+        );
+        insert assignedResource;
+
+        Thread__c thread = HOT_TestDataFactory.createThread();
+        thread.CRM_Related_Object__c = workOrder.Id;
+        thread.CRM_Thread_Type__c = 'HOT_TOLK-TOLK';
+
+        insert thread;
+        Message__c message = new Message__c();
+        message.CRM_Thread__c = thread.Id;
+        message.CRM_From_Contact__c = user.AccountId;
+        message.CRM_Message_Text__c = 'Dette er en testmelding';
+
+        test.startTest();
+        insert message;
+        test.stopTest();
+
+        List<Message__c> messages = [SELECT Id FROM Message__c];
+        System.assertEquals(1, messages.size(), 'Could not create message');
+    }
+    @isTest
+    static void messageBrukerTolk() {
+        User user = [SELECT Id, AccountId FROM User WHERE Id = :UserInfo.getUserId() LIMIT 1];
+        ServiceResource serviceResource = HOT_TestDataFactory.createServiceResource(user.Id);
+        insert serviceResource;
+
+        WorkType workType = HOT_TestDataFactory.createWorkType();
+        insert workType;
+        HOT_Request__c request = HOT_TestDataFactory.createRequest('TEST', workType);
+        insert request;
+        WorkOrder workOrder = HOT_TestDataFactory.createWorkOrder(request, workType);
+        insert workOrder;
+        WorkOrderLineItem workOrderLineItem = HOT_TestDataFactory.createWorkOrderLineItem(workOrder, workType);
+        insert workOrderLineItem;
+        ServiceAppointment serviceAppointment = HOT_TestDataFactory.createServiceAppointment(workOrderLineItem);
+        serviceAppointment.HOT_Request__c = request.Id;
+        insert serviceAppointment;
+
+        AssignedResource assignedResource = HOT_TestDataFactory.createAssignedResource(
+            serviceAppointment.Id,
+            serviceResource.Id
+        );
+        insert assignedResource;
+
+        Thread__c thread = HOT_TestDataFactory.createThread();
+        thread.CRM_Related_Object__c = workOrder.Id;
+        thread.CRM_Thread_Type__c = 'HOT_BRUKER-TOLK';
+
+        insert thread;
+        Message__c message = new Message__c();
+        message.CRM_Thread__c = thread.Id;
+        message.CRM_From_Contact__c = user.AccountId;
+        message.CRM_Message_Text__c = 'Dette er en testmelding';
+
+        test.startTest();
+        insert message;
+        test.stopTest();
+
+        List<Message__c> messages = [SELECT Id FROM Message__c];
+        System.assertEquals(1, messages.size(), 'Could not create message');
+    }
 }
