@@ -425,31 +425,11 @@
             <fieldText
             >&lt;p&gt;Bruker er nå lagt til som frilanstolk og tjenesteressurs er opprettet. &lt;/p&gt;</fieldText>
             <fieldType>DisplayText</fieldType>
-            <visibilityRule>
-                <conditionLogic>and</conditionLogic>
-                <conditions>
-                    <leftValueReference>HOT_Create_Service_Resource_Invocable.Success</leftValueReference>
-                    <operator>EqualTo</operator>
-                    <rightValue>
-                        <booleanValue>true</booleanValue>
-                    </rightValue>
-                </conditions>
-            </visibilityRule>
         </fields>
         <fields>
             <name>HOT_Fail_Message</name>
             <fieldText>&lt;p&gt;{!HOT_Create_Service_Resource_Invocable.ErrorMessage}&lt;/p&gt;</fieldText>
             <fieldType>DisplayText</fieldType>
-            <visibilityRule>
-                <conditionLogic>and</conditionLogic>
-                <conditions>
-                    <leftValueReference>HOT_Create_Service_Resource_Invocable.Success</leftValueReference>
-                    <operator>EqualTo</operator>
-                    <rightValue>
-                        <booleanValue>false</booleanValue>
-                    </rightValue>
-                </conditions>
-            </visibilityRule>
         </fields>
         <showFooter>true</showFooter>
         <showHeader>true</showHeader>
