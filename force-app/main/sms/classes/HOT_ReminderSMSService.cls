@@ -680,14 +680,14 @@ public without sharing class HOT_ReminderSMSService {
         return message;
     }
 
-    private static String getRecipient(WorkOrder workOrder) {
+    public static String getRecipient(WorkOrder workOrder) {
         if (workOrder.HOT_Request__r.Type__c != 'Me') {
             return workOrder.HOT_Request__r.OrdererPhone__c;
         }
         return workOrder.Account.CRM_Person__r.INT_KrrMobilePhone__c;
     }
 
-    private static String getRecipientOnThread(Thread__c thread) {
+    public static String getRecipientOnThread(Thread__c thread) {
         if (thread.CRM_Thread_Type__c == 'HOT_BRUKER-FORMIDLER' || thread.CRM_Thread_Type__c == 'HOT_BRUKER-TOLK') {
             return thread?.CRM_Account__r.CRM_Person__r.INT_KrrMobilePhone__c;
         } else if (thread.CRM_Thread_Type__c == 'HOT_TOLK-FORMIDLER') {
