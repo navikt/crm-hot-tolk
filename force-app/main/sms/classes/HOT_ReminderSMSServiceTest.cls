@@ -152,6 +152,34 @@ private class HOT_ReminderSMSServiceTest {
         List<SMS__c> smsList = [SELECT Id, Message__c FROM SMS__c];
         System.assertEquals(1, smsList.size(), 'Could not create sms-record');
     }
+    @isTest
+    static void sendSMSOnNewMessageInterpreterTest() {
+        User currentUser = [SELECT Id, AccountId FROM User WHERE Id = :UserInfo.getUserId()];
+        WorkType workType = HOT_TestDataFactory.createWorkType();
+        insert workType;
+        HOT_Request__c request = HOT_TestDataFactory.createRequest('TEST', workType);
+        insert request;
+
+        Thread__c thread = HOT_TestDataFactory.createThread();
+        thread.CRM_Account__c = currentUser.AccountId;
+        thread.CRM_Related_Object__c = request.Id;
+        insert thread;
+
+        ServiceResource resource = HOT_TestDataFactory.createServiceResource(currentUser.Id);
+        resource.HOT_MobilePhoneOverride__c = '12345678';
+        insert resource;
+
+        ServiceResource sr = [
+            SELECT RelatedRecordId, HOT_MobilePhone__c
+            FROM ServiceResource
+            WHERE RelatedRecordId = :currentUser.Id
+        ];
+        Test.startTest();
+        HOT_ReminderSMSService.sendSMSOnNewMessageInterpreter(currentUser.Id, thread.Id);
+        Test.stopTest();
+        List<SMS__c> smsList = [SELECT Id, Message__c FROM SMS__c];
+        System.assertEquals(1, smsList.size(), 'Could not create sms-record');
+    }
 
     @isTest
     static void sendSMSToInterpreterOnScreenInterpretationTest() {
