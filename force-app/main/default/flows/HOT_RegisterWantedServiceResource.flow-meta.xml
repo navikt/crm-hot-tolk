@@ -66,6 +66,13 @@
                     <booleanValue>true</booleanValue>
                 </rightValue>
             </conditions>
+            <conditions>
+                <leftValueReference>check_if_freelance.IsActive</leftValueReference>
+                <operator>EqualTo</operator>
+                <rightValue>
+                    <booleanValue>true</booleanValue>
+                </rightValue>
+            </conditions>
             <connector>
                 <targetReference>check_for_overlap_and_interested_ir</targetReference>
             </connector>
@@ -315,7 +322,7 @@
         <fields>
             <name>NoFreelanceMessage</name>
             <fieldText
-            >&lt;p&gt;Ønsket tolk &lt;strong&gt;må&lt;/strong&gt; være en frilanstolk. Trykk på tilbake og velg en annen&lt;/p&gt;</fieldText>
+            >&lt;p&gt;Ønsket tolk &lt;strong&gt;må&lt;/strong&gt; være en frilanstolk og ha en aktiv tjenesteressurs. Trykk på tilbake og velg en annen&lt;/p&gt;</fieldText>
             <fieldType>DisplayText</fieldType>
         </fields>
         <showFooter>true</showFooter>
