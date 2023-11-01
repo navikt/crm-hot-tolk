@@ -89,6 +89,48 @@ private class HOT_ReminderSMSServiceTest {
         List<SMS__c> smsList = [SELECT Id FROM SMS__c];
         System.assertEquals(2, smsList.size(), 'Could not create sms-record');
     }
+    @isTest
+    static void notifyUserOnOrderSeriesSMSTest() {
+        Test.startTest();
+        Person__c person = HOT_TestDataFactory.createPerson();
+        person.INT_KrrMobilePhone__c = '00000000';
+        person.HOT_NotificationChannel__c = 'SMS';
+        insert person;
+        Account account = [SELECT Id FROM Account LIMIT 1];
+        WorkType workType = HOT_TestDataFactory.createWorkType();
+        insert workType;
+
+        HOT_Request__c request = HOT_TestDataFactory.createRequest('TEST', workType);
+        request.Orderer__c = account.Id;
+        request.Account__c = account.Id;
+        request.NumberOfWorkOrders__c = 2;
+        insert request;
+        WorkOrder workOrder = HOT_TestDataFactory.createWorkOrder(request, workType);
+        insert workOrder;
+        WorkOrder workOrder2 = HOT_TestDataFactory.createWorkOrder(request, workType);
+        insert workOrder2;
+        // To create child records
+        request.Status__c = 'Godkjent';
+        update request;
+
+        List<HOT_Request__c> requests = [
+            SELECT
+                Id,
+                Account__c,
+                IsSerieoppdrag__c,
+                SeriesPeriod__c,
+                Account__r.CRM_Person__r.INT_KrrMobilePhone__c,
+                IsNotifyUserOnOrder__c,
+                StartTime__c,
+                EndTime__c
+            FROM HOT_Request__c
+            WHERE Id = :request.Id AND IsSerieoppdrag__c = TRUE
+        ];
+        HOT_ReminderSMSService.notifyUserOnOrderSMS(requests);
+        List<SMS__c> smsList = [SELECT Id FROM SMS__c];
+        Test.stopTest();
+        System.assertEquals(1, smsList.size(), 'Could not create sms-record');
+    }
 
     @isTest
     static void sendSMSToOrdererOnStatusUpdateTest() {
@@ -110,20 +152,101 @@ private class HOT_ReminderSMSServiceTest {
         List<SMS__c> smsList = [SELECT Id, Message__c FROM SMS__c];
         System.assertEquals(1, smsList.size(), 'Could not create sms-record');
     }
+    @isTest
+    static void sendSMSOnNewMessageInterpreterTest() {
+        User currentUser = [SELECT Id, AccountId FROM User WHERE Id = :UserInfo.getUserId()];
+        WorkType workType = HOT_TestDataFactory.createWorkType();
+        insert workType;
+        HOT_Request__c request = HOT_TestDataFactory.createRequest('TEST', workType);
+        insert request;
+
+        Thread__c thread = HOT_TestDataFactory.createThread();
+        thread.CRM_Account__c = currentUser.AccountId;
+        thread.CRM_Related_Object__c = request.Id;
+        insert thread;
+
+        ServiceResource resource = HOT_TestDataFactory.createServiceResource(currentUser.Id);
+        resource.HOT_MobilePhoneOverride__c = '12345678';
+        insert resource;
+
+        ServiceResource sr = [
+            SELECT RelatedRecordId, HOT_MobilePhone__c
+            FROM ServiceResource
+            WHERE RelatedRecordId = :currentUser.Id
+        ];
+        Test.startTest();
+        HOT_ReminderSMSService.sendSMSOnNewMessageInterpreter(currentUser.Id, thread.Id);
+        Test.stopTest();
+        List<SMS__c> smsList = [SELECT Id, Message__c FROM SMS__c];
+        System.assertEquals(1, smsList.size(), 'Could not create sms-record');
+    }
+    @isTest
+    static void sendSMSToInterpreterCancelledByUserTest() {
+        Test.startTest();
+        User currentUser = [SELECT Id, AccountId FROM User WHERE Id = :UserInfo.getUserId()];
+        WorkType workType = HOT_TestDataFactory.createWorkType();
+        insert workType;
+        HOT_Request__c request = HOT_TestDataFactory.createRequest('TEST', workType);
+        insert request;
+        WorkOrder workOrder = HOT_TestDataFactory.createWorkOrder(request, workType);
+        insert workOrder;
+        WorkOrderLineItem workOrderLineItem = HOT_TestDataFactory.createWorkOrderLineItem(workOrder, workType);
+        insert workOrderLineItem;
+        ServiceAppointment serviceAppointment = HOT_TestDataFactory.createServiceAppointment(workOrderLineItem);
+        serviceAppointment.HOT_Request__c = request.Id;
+        insert serviceAppointment;
+
+        ServiceResource resource = HOT_TestDataFactory.createServiceResource(currentUser.Id);
+        resource.HOT_MobilePhoneOverride__c = '12345678';
+        insert resource;
+
+        ServiceResource sr = [
+            SELECT RelatedRecordId, HOT_MobilePhone__c
+            FROM ServiceResource
+            WHERE RelatedRecordId = :currentUser.Id
+        ];
+        Set<Id> srIds = new Set<Id>();
+        srIds.add(resource.Id);
+        Set<Id> saIds = new Set<Id>();
+        saIds.add(serviceAppointment.Id);
+
+        HOT_ReminderSMSService.sendSMSToInterpreterOnCanceledByUser(saIds, srIds);
+        Test.stopTest();
+        List<SMS__c> smsList = [SELECT Id, Message__c FROM SMS__c];
+        System.assertEquals(1, smsList.size(), 'Could not create sms-record');
+    }
 
     @isTest
     static void sendSMSToInterpreterOnScreenInterpretationTest() {
         Set<Id> saIds = (new Map<Id, ServiceAppointment>([SELECT Id FROM ServiceAppointment LIMIT 1])).keySet();
-
         Test.startTest();
+        User currentUser = [SELECT Id, AccountId FROM User WHERE Id = :UserInfo.getUserId()];
+
+        ServiceResource resource = HOT_TestDataFactory.createServiceResource(currentUser.Id);
+        resource.HOT_MobilePhoneOverride__c = '12345678';
+        insert resource;
+
+        ServiceAppointment sa = [SELECT Id FROM ServiceAppointment LIMIT 1];
+        AssignedResource assignedResource = HOT_TestDataFactory.createAssignedResource(sa.Id, resource.Id);
+        insert assignedResource;
+
         HOT_ReminderSMSService.sendSMSToInterpreterOnScreenInterpretation(saIds);
         Test.stopTest();
     }
     @isTest
     static void sendSMSToInterpreterOnTimeChangedTest() {
         Set<Id> saIds = (new Map<Id, ServiceAppointment>([SELECT Id FROM ServiceAppointment LIMIT 1])).keySet();
-
         Test.startTest();
+        User currentUser = [SELECT Id, AccountId FROM User WHERE Id = :UserInfo.getUserId()];
+
+        ServiceResource resource = HOT_TestDataFactory.createServiceResource(currentUser.Id);
+        resource.HOT_MobilePhoneOverride__c = '12345678';
+        insert resource;
+
+        ServiceAppointment sa = [SELECT Id FROM ServiceAppointment LIMIT 1];
+        AssignedResource assignedResource = HOT_TestDataFactory.createAssignedResource(sa.Id, resource.Id);
+        insert assignedResource;
+
         HOT_ReminderSMSService.sendSMSToInterpreterOnTimeChanged(saIds);
         Test.stopTest();
     }
@@ -132,6 +255,15 @@ private class HOT_ReminderSMSServiceTest {
         Set<Id> saIds = (new Map<Id, ServiceAppointment>([SELECT Id FROM ServiceAppointment LIMIT 1])).keySet();
 
         Test.startTest();
+        User currentUser = [SELECT Id, AccountId FROM User WHERE Id = :UserInfo.getUserId()];
+
+        ServiceResource resource = HOT_TestDataFactory.createServiceResource(currentUser.Id);
+        resource.HOT_MobilePhoneOverride__c = '12345678';
+        insert resource;
+
+        ServiceAppointment sa = [SELECT Id FROM ServiceAppointment LIMIT 1];
+        AssignedResource assignedResource = HOT_TestDataFactory.createAssignedResource(sa.Id, resource.Id);
+        insert assignedResource;
         HOT_ReminderSMSService.sendSMSToInterpreterOnAddressChanged(saIds);
         Test.stopTest();
     }
@@ -140,6 +272,15 @@ private class HOT_ReminderSMSServiceTest {
         Set<Id> saIds = (new Map<Id, ServiceAppointment>([SELECT Id FROM ServiceAppointment LIMIT 1])).keySet();
 
         Test.startTest();
+        User currentUser = [SELECT Id, AccountId FROM User WHERE Id = :UserInfo.getUserId()];
+
+        ServiceResource resource = HOT_TestDataFactory.createServiceResource(currentUser.Id);
+        resource.HOT_MobilePhoneOverride__c = '12345678';
+        insert resource;
+
+        ServiceAppointment sa = [SELECT Id FROM ServiceAppointment LIMIT 1];
+        AssignedResource assignedResource = HOT_TestDataFactory.createAssignedResource(sa.Id, resource.Id);
+        insert assignedResource;
         HOT_ReminderSMSService.sendSMSToInterpreterOnAddedOrChanged(saIds);
         Test.stopTest();
     }
@@ -148,6 +289,15 @@ private class HOT_ReminderSMSServiceTest {
         Set<Id> saIds = (new Map<Id, ServiceAppointment>([SELECT Id FROM ServiceAppointment LIMIT 1])).keySet();
 
         Test.startTest();
+        User currentUser = [SELECT Id, AccountId FROM User WHERE Id = :UserInfo.getUserId()];
+
+        ServiceResource resource = HOT_TestDataFactory.createServiceResource(currentUser.Id);
+        resource.HOT_MobilePhoneOverride__c = '12345678';
+        insert resource;
+
+        ServiceAppointment sa = [SELECT Id FROM ServiceAppointment LIMIT 1];
+        AssignedResource assignedResource = HOT_TestDataFactory.createAssignedResource(sa.Id, resource.Id);
+        insert assignedResource;
         HOT_ReminderSMSService.sendSMSToInterpreterOnResourceChanged(saIds);
         Test.stopTest();
     }
@@ -164,6 +314,115 @@ private class HOT_ReminderSMSServiceTest {
 
         Test.startTest();
         HOT_ReminderSMSService.sendSMSOnNewWantedSR(irIds);
+        Test.stopTest();
+    }
+    @isTest
+    static void cancelledByUserConstructMessage() {
+        ServiceAppointment sa = [
+            SELECT Id, Status, AppointmentNumber, EarliestStartTime, DueDate
+            FROM ServiceAppointment
+            WHERE Subject = 'TEST'
+            LIMIT 1
+        ];
+
+        Test.startTest();
+        String res = HOT_ReminderSMSService.constructMessageToInterpreter(sa, 'CanceledByUser');
+        Boolean result = res.contains('avlyst');
+        System.assertEquals(true, result, 'Did not create the correct message');
+
+        Test.stopTest();
+    }
+    @isTest
+    static void getRecipientOnThreadTest() {
+        User currentUser = [SELECT Id, AccountId FROM User WHERE Id = :UserInfo.getUserId()];
+        Test.startTest();
+        WorkType workType = HOT_TestDataFactory.createWorkType();
+        insert workType;
+        HOT_Request__c request = HOT_TestDataFactory.createRequest('TEST', workType);
+        insert request;
+        WorkOrder workOrder = HOT_TestDataFactory.createWorkOrder(request, workType);
+        insert workOrder;
+        WorkOrderLineItem workOrderLineItem = HOT_TestDataFactory.createWorkOrderLineItem(workOrder, workType);
+        insert workOrderLineItem;
+        ServiceAppointment serviceAppointment = HOT_TestDataFactory.createServiceAppointment(workOrderLineItem);
+        serviceAppointment.HOT_Request__c = request.Id;
+        insert serviceAppointment;
+
+        ServiceResource resource = [SELECT Id FROM ServiceResource LIMIT 1];
+        resource.HOT_MobilePhoneOverride__c = '12345678';
+        update resource;
+
+        AssignedResource assignedResource = HOT_TestDataFactory.createAssignedResource(
+            serviceAppointment.Id,
+            resource.Id
+        );
+        insert assignedResource;
+
+        Thread__c thread = HOT_TestDataFactory.createThread();
+        thread.CRM_Account__c = currentUser.AccountId;
+        thread.CRM_Related_Object__c = request.Id;
+        thread.CRM_Thread_Type__c = 'HOT_TOLK-FORMIDLER';
+        insert thread;
+
+        String result = HOT_ReminderSMSService.getRecipientOnThread(thread);
+        System.assertEquals('12345678', result, 'Did not get correct recipient');
+
+        Test.stopTest();
+    }
+    @isTest
+    static void getRecipientOnThreadUserTest() {
+        User currentUser = [SELECT Id, AccountId FROM User WHERE Id = :UserInfo.getUserId()];
+        Test.startTest();
+        Person__c person = HOT_TestDataFactory.createPerson();
+        person.HOT_NotificationChannel__c = 'SMS';
+        insert person;
+        Account account = [SELECT Id FROM Account LIMIT 1];
+        WorkType workType = HOT_TestDataFactory.createWorkType();
+        insert workType;
+
+        HOT_Request__c request = HOT_TestDataFactory.createRequest('TEST', workType);
+        request.Orderer__c = account.Id;
+        request.Account__c = account.Id;
+        request.NumberOfWorkOrders__c = 2;
+        insert request;
+
+        Thread__c thread = HOT_TestDataFactory.createThread();
+        thread.CRM_Account__c = currentUser.AccountId;
+        thread.CRM_Related_Object__c = request.Id;
+        thread.CRM_Thread_Type__c = 'HOT_BRUKER-FORMIDLER';
+        insert thread;
+
+        String result = HOT_ReminderSMSService.getRecipientOnThread(thread);
+        System.assertEquals(null, result, 'Did not get correct recipient');
+
+        Test.stopTest();
+    }
+    @isTest
+    static void getRecipientOnThreadOrdererTest() {
+        User currentUser = [SELECT Id, AccountId FROM User WHERE Id = :UserInfo.getUserId()];
+        Test.startTest();
+        Person__c person = HOT_TestDataFactory.createPerson();
+        person.HOT_NotificationChannel__c = 'SMS';
+        insert person;
+        Account account = [SELECT Id FROM Account LIMIT 1];
+        WorkType workType = HOT_TestDataFactory.createWorkType();
+        insert workType;
+
+        HOT_Request__c request = HOT_TestDataFactory.createRequest('TEST', workType);
+        request.Orderer__c = account.Id;
+        request.Account__c = account.Id;
+        request.NumberOfWorkOrders__c = 2;
+        insert request;
+
+        Thread__c thread = HOT_TestDataFactory.createThread();
+        thread.CRM_Account__c = currentUser.AccountId;
+        thread.CRM_Related_Object__c = request.Id;
+        thread.CRM_Thread_Type__c = 'HOT_BESTILLER-FORMIDLER';
+        insert thread;
+
+        String result = HOT_ReminderSMSService.getRecipientOnThread(thread);
+        System.assertEquals(null, result, 'Did not get correct recipient');
+
         Test.stopTest();
     }
 
