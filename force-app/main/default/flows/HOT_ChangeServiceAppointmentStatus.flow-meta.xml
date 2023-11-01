@@ -61,6 +61,7 @@
             <operator>Assign</operator>
             <value>
                 <stringValue />
+                <stringValue />
             </value>
         </assignmentItems>
         <assignmentItems>
