@@ -4,5 +4,6 @@
     <label>HOT_Tolk_Frilans_Gruppe</label>
     <permissionSets>HOT_Tolk_Bruker_Plus</permissionSets>
     <permissionSets>HOT_Tolk_Frilans</permissionSets>
+    <permissionSets>HOT_Tolk_Mobil_App</permissionSets>
     <status>Updated</status>
 </PermissionSetGroup>
