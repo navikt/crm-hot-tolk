@@ -54,4 +54,29 @@ private class HOT_NotificationHandlerTest {
         update serviceAppointment;
         Test.stopTest();
     }
+    @isTest
+    private static void prepareNotificationTest() {
+        WorkType workType = HOT_TestDataFactory.createWorkType();
+        insert WorkType;
+        HOT_Request__c request = HOT_TestDataFactory.createRequest('Test', workType);
+        insert request;
+
+        // Arrange
+        String title = 'Test Title';
+        String body = 'Test Body';
+        CustomNotificationType notificationType = [
+            SELECT Id, DeveloperName
+            FROM CustomNotificationType
+            WHERE DeveloperName = 'HOT_NotifyUser'
+        ];
+        Id targetId = request.Id; // Replace with a valid Id
+
+        // Act
+        Messaging.CustomNotification notification = HOT_NotificationHandler.prepareNotification(
+            title,
+            body,
+            notificationType.Id,
+            targetId
+        );
+    }
 }
