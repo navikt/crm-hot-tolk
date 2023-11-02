@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <ListView xmlns="http://soap.sforce.com/2006/04/metadata">
-    <fullName>Mine_Samtaler</fullName>
+    <fullName>Mine_Samtaler1</fullName>
     <columns>NAME</columns>
     <columns>CRM_Account__c</columns>
     <columns>HOT_Request__c</columns>
