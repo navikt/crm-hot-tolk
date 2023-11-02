@@ -33,7 +33,7 @@
                     <criteria>
                         <leftValue>{!$User.Profile.Name}</leftValue>
                         <operator>CONTAINS</operator>
-                        <rightValue>Tolk</rightValue>
+                        <rightValue>Tolk Ansatt</rightValue>
                     </criteria>
                 </visibilityRule>
             </componentInstance>
@@ -70,7 +70,7 @@
                     <criteria>
                         <leftValue>{!$User.Profile.Name}</leftValue>
                         <operator>CONTAINS</operator>
-                        <rightValue>Tolk</rightValue>
+                        <rightValue>Tolk Ansatt</rightValue>
                     </criteria>
                 </visibilityRule>
             </componentInstance>
@@ -107,7 +107,7 @@
                     <criteria>
                         <leftValue>{!$User.Profile.Name}</leftValue>
                         <operator>CONTAINS</operator>
-                        <rightValue>Tolk</rightValue>
+                        <rightValue>Tolk Ansatt</rightValue>
                     </criteria>
                 </visibilityRule>
             </componentInstance>
