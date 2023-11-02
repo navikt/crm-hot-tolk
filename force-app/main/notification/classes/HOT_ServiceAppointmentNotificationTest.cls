@@ -180,6 +180,22 @@ private class HOT_ServiceAppointmentNotificationTest {
             WHERE Subject = 'subject'
             LIMIT 1
         ];
+        User user = [SELECT Id, AccountId FROM User WHERE Id = :UserInfo.getUserId() LIMIT 1];
+        ServiceResource serviceResource = HOT_TestDataFactory.createServiceResource(user.Id);
+        insert serviceResource;
+
+        AssignedResource assignedResource = HOT_TestDataFactory.createAssignedResource(
+            serviceAppointment.Id,
+            serviceResource.Id
+        );
+        insert assignedResource;
+
+        ServiceResource serviceResourceNew = [SELECT Id FROM ServiceResource WHERE Id != :serviceResource.Id LIMIT 1];
+        assignedResource.ServiceResource = serviceResourceNew;
+        update assignedResource;
+
+        serviceAppointment.Status = 'Dispatched';
+        update serviceAppointment;
 
         Test.startTest();
         HOT_ServiceAppointmentNotification.notifyUserOnChangedResource(serviceAppointment);
@@ -316,5 +332,25 @@ private class HOT_ServiceAppointmentNotificationTest {
         String expected = '20.10.2023\nKlokkeslett: 09.00 - 15.30';
 
         System.assertEquals(expected, result, 'The formatted time period is incorrect.');
+    }
+    @isTest
+    private static void cannotCompleteTest() {
+        Set<String> recipients = new Set<String>{ UserInfo.getUserId() };
+        Test.startTest();
+        WorkType workType = HOT_TestDataFactory.createWorkType();
+        insert workType;
+        HOT_Request__c request = HOT_TestDataFactory.createRequest('TEST', workType);
+        insert request;
+        WorkOrder workOrder = HOT_TestDataFactory.createWorkOrder(request, workType);
+        insert workOrder;
+        WorkOrderLineItem workOrderLineItem = HOT_TestDataFactory.createWorkOrderLineItem(workOrder, workType);
+        insert workOrderLineItem;
+        ServiceAppointment serviceAppointment = HOT_TestDataFactory.createServiceAppointment(workOrderLineItem);
+        serviceAppointment.HOT_Request__c = request.Id;
+        insert serviceAppointment;
+
+        serviceAppointment.Status = 'Cannot Complete';
+        update serviceAppointment;
+        Test.stopTest();
     }
 }
