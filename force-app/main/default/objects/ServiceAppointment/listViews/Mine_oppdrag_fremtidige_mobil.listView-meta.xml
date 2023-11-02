@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<ListView xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>Mine_oppdrag_fremtidige_mobil</fullName>
+    <columns>Name</columns>
+    <columns>Account</columns>
+    <columns>Subject</columns>
+    <columns>HOT_AddressFormated__c</columns>
+    <columns>EarliestStartTime</columns>
+    <filterScope>Everything</filterScope>
+    <filters>
+        <field>HOT_AssignedServiceAppointmentFilter__c</field>
+        <operation>equals</operation>
+        <value>1</value>
+    </filters>
+    <filters>
+        <field>EarliestStartTime</field>
+        <operation>greaterOrEqual</operation>
+        <value>TODAY</value>
+    </filters>
+    <label>Mine fremtidige oppdrag</label>
+</ListView>
