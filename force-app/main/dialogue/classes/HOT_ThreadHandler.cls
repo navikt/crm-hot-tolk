@@ -203,7 +203,7 @@ public without sharing class HOT_ThreadHandler extends MyTriggers {
         thread.HOT_Participants__c = '';
         thread = appendInterpreterName(thread, serviceAppointment);
         try {
-            HOT_DatabaseOperations.updateRecords(threads);
+            HOT_DatabaseOperations.updateRecords(thread);
         } catch (Exception e) {
             LoggerUtility logger = new LoggerUtility();
             logger.exception(e, CRM_ApplicationDomain.Domain.HOT);
