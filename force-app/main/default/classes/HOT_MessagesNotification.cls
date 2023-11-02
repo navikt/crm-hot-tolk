@@ -72,7 +72,7 @@ public without sharing class HOT_MessagesNotification {
         if (!threads.isEmpty()) {
             for (Thread__c thread : threads) {
                 Boolean isInterpreter = (thread.CRM_Thread_Type__c == 'HOT_TOLK-RESSURSKONTOR' ||
-                    (thread.CRM_Thread_Type__c == 'HOT_TOLK-FORMIDLER' && thread.HOT_IsEmployeeThread__c))
+                    (thread.CRM_Thread_Type__c == 'HOT_TOLK-FORMIDLER' && !thread.HOT_IsEmployeeThread__c))
                     ? true
                     : false;
                 Set<String> recipients = new Set<String>();
