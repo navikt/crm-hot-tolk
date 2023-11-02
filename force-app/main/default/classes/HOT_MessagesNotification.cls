@@ -169,7 +169,7 @@ public without sharing class HOT_MessagesNotification {
             }
         }
     }
-
+    @Future
     public static void NotifyInterpreter(List<Id> threadIds) {
         List<Thread__c> threads = [
             SELECT

@@ -21,14 +21,27 @@ public without sharing class HOT_ThreadHandler extends MyTriggers {
     }
     public override void onAfterInsert() {
         Set<Id> workOrderIds = new Set<Id>();
+        Set<Id> threadIds = new Set<Id>();
         for (Thread__c t : [
             SELECT Id, CRM_Related_Object__c
             FROM Thread__c
-            WHERE Id IN :records AND (CRM_Thread_Type__c = 'HOT_BRUKER-TOLK' OR CRM_Thread_Type__c = 'HOT_TOLK-TOLK')
+            WHERE
+                Id IN :records
+                AND (CRM_Thread_Type__c = 'HOT_BRUKER-TOLK'
+                OR CRM_Thread_Type__c = 'HOT_TOLK-TOLK'
+                OR CRM_Thread_Type__c = 'HOT_TOLK-FORMIDLER')
         ]) {
             workOrderIds.add(t.CRM_Related_Object__c);
+            threadIds.add(t.Id);
         }
-        setInterpreterThread(workOrderIds);
+
+        if (workOrderIds.size() > 0) {
+            setInterpreterThread(workOrderIds);
+        }
+
+        if (threadIds.size() > 0) {
+            setInterpreterOnThreadBySA(threadIds);
+        }
     }
 
     public static String threadSubjectMaker(String subject) {
@@ -45,7 +58,6 @@ public without sharing class HOT_ThreadHandler extends MyTriggers {
         Map<Id, Thread__c> threadByWageClaimId = new Map<Id, Thread__c>();
 
         for (Id threadId : threadById.keySet()) {
-            Set<Id> threadIds;
             Thread__c thread = threadById.get(threadId);
             if (threadId.getSObjectType() == HOT_Request__c.SObjectType) {
                 threadByRequestId.put(threadId, thread);
@@ -57,9 +69,7 @@ public without sharing class HOT_ThreadHandler extends MyTriggers {
                 threadByInterestedResourceId.put(threadId, thread);
             }
             if (threadId.getSObjectType() == ServiceAppointment.SObjectType) {
-                threadIds.add(threadId);
                 threadByServiceAppointmentId.put(threadId, thread);
-                setInterpreterOnThreadBySA(threadIds);
             }
             if (threadId.getSObjectType() == HOT_WageClaim__c.SObjectType) {
                 threadByWageClaimId.put(threadId, thread);
