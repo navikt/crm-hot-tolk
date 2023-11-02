@@ -180,6 +180,22 @@ private class HOT_ServiceAppointmentNotificationTest {
             WHERE Subject = 'subject'
             LIMIT 1
         ];
+        User user = [SELECT Id, AccountId FROM User WHERE Id = :UserInfo.getUserId() LIMIT 1];
+        ServiceResource serviceResource = HOT_TestDataFactory.createServiceResource(user.Id);
+        insert serviceResource;
+
+        AssignedResource assignedResource = HOT_TestDataFactory.createAssignedResource(
+            serviceAppointment.Id,
+            serviceResource.Id
+        );
+        insert assignedResource;
+
+        ServiceResource serviceResourceNew = [SELECT Id FROM ServiceResource WHERE Id != :serviceResource.Id LIMIT 1];
+        assignedResource.ServiceResource = serviceResourceNew;
+        update assignedResource;
+
+        serviceAppointment.Status = 'Dispatched';
+        update serviceAppointment;
 
         Test.startTest();
         HOT_ServiceAppointmentNotification.notifyUserOnChangedResource(serviceAppointment);
@@ -209,13 +225,68 @@ private class HOT_ServiceAppointmentNotificationTest {
         HOT_ServiceAppointmentNotification.canceledByUser(notificationType, serviceAppointment, srIds, recipients);
         Test.stopTest();
     }
+    @isTest
+    private static void canceledByUserSMSTest() {
+        Set<String> recipients = new Set<String>{ UserInfo.getUserId() };
+        Test.startTest();
+        ServiceAppointment serviceAppointment = [
+            SELECT Id, AppointmentNumber, EarliestStartTime, HOT_IsEmployedInterpreter__c
+            FROM ServiceAppointment
+            WHERE Subject = 'subject'
+            LIMIT 1
+        ];
+        serviceAppointment.HOT_IsEmployedInterpreter__c = false;
+        update serviceAppointment;
+
+        User user = [SELECT Id, AccountId FROM User WHERE Id = :UserInfo.getUserId() LIMIT 1];
+        ServiceResource serviceResource = HOT_TestDataFactory.createServiceResource(user.Id);
+        serviceResource.HOT_NotificationChannel__c = 'SMS';
+        insert serviceResource;
+
+        AssignedResource assignedResource = HOT_TestDataFactory.createAssignedResource(
+            serviceAppointment.Id,
+            serviceResource.Id
+        );
+        insert assignedResource;
+
+        serviceAppointment.Status = 'Canceled';
+        update serviceAppointment;
+        Set<Id> srIds = new Set<Id>();
+        srIds.add(serviceResource.Id);
+
+        CustomNotificationType notificationType = [
+            SELECT Id, DeveloperName
+            FROM CustomNotificationType
+            WHERE DeveloperName = 'HOT_NotifyUser'
+        ];
+        HOT_ServiceAppointmentNotification.canceledByUser(notificationType, serviceAppointment, srIds, recipients);
+
+        Test.stopTest();
+    }
 
     @isTest
     private static void timeChangedTest() {
         Set<String> recipients = new Set<String>{ UserInfo.getUserId() };
 
         //Set<Id> saIds = new Set<Id>([SELECT Id FROM ServiceAppointment WHERE Subject = 'subject' LIMIT 1]);
-        List<ServiceAppointment> saList = [SELECT Id FROM ServiceAppointment WHERE Subject = 'subject'];
+        List<ServiceAppointment> saList = [SELECT Id FROM ServiceAppointment WHERE Subject = 'subject' LIMIT 1];
+        Person__c person = HOT_TestDataFactory.createPerson();
+        person.Name = '12015678999';
+        insert person;
+        Account personAccount = HOT_TestDataFactory.createAccount(true);
+        personAccount.INT_PersonIdent__c = '12015678999';
+        personAccount.CRM_Person__c = person.Id;
+        insert personAccount;
+        User user = [SELECT Id, AccountId FROM User WHERE Id = :UserInfo.getUserId() LIMIT 1];
+        ServiceResource serviceResource = HOT_TestDataFactory.createServiceResource(user.Id);
+        insert serviceResource;
+
+        AssignedResource assignedResource = HOT_TestDataFactory.createAssignedResource(
+            saList[0].Id,
+            serviceResource.Id
+        );
+        insert assignedResource;
+
         DateTime now = DateTime.now();
         DateTime newTime = now.addDays(2);
         DateTime newTime2 = newTime.addHours(2);
@@ -232,19 +303,56 @@ private class HOT_ServiceAppointmentNotificationTest {
 
         Test.startTest();
 
-        //AR på SA
-        ServiceAppointment serviceAppointment = [
-            SELECT Id, HOT_ServiceResource__c, HOT_AssignedResourceId__c
-            FROM ServiceAppointment
-            WHERE Id = :saList[0].Id
-            LIMIT 1
+        Set<Id> saIds = (new Map<Id, ServiceAppointment>(
+                [SELECT Id FROM ServiceAppointment WHERE Subject = 'subject' LIMIT 1]
+            ))
+            .keySet();
+
+        CustomNotificationType notificationType = [
+            SELECT Id, DeveloperName
+            FROM CustomNotificationType
+            WHERE DeveloperName = 'HOT_NotifyUser'
         ];
+        HOT_ServiceAppointmentNotification.timeChanged(notificationType, saIds, recipients);
+        Test.stopTest();
+    }
+    @isTest
+    private static void timeChangedSMSTest() {
+        Set<String> recipients = new Set<String>{ UserInfo.getUserId() };
+
+        //Set<Id> saIds = new Set<Id>([SELECT Id FROM ServiceAppointment WHERE Subject = 'subject' LIMIT 1]);
+        List<ServiceAppointment> saList = [SELECT Id FROM ServiceAppointment WHERE Subject = 'subject' LIMIT 1];
+
+        User user = [SELECT Id, AccountId FROM User WHERE Id = :UserInfo.getUserId() LIMIT 1];
+        Person__c person = HOT_TestDataFactory.createPerson();
+        person.Name = '12015678999';
+        insert person;
+        Account personAccount = HOT_TestDataFactory.createAccount(true);
+        personAccount.INT_PersonIdent__c = '12015678999';
+        personAccount.CRM_Person__c = person.Id;
+        insert personAccount;
+        ServiceResource serviceResource = HOT_TestDataFactory.createServiceResource(user.Id);
+        serviceResource.HOT_NotificationChannel__c = 'SMS';
+        insert serviceResource;
 
         AssignedResource assignedResource = HOT_TestDataFactory.createAssignedResource(
-            serviceAppointment.Id,
-            testResources[0].Id
+            saList[0].Id,
+            serviceResource.Id
         );
         insert assignedResource;
+
+        DateTime now = DateTime.now();
+        DateTime newTime = now.addDays(2);
+        DateTime newTime2 = newTime.addHours(2);
+        for (ServiceAppointment sa : saList) {
+            sa.EarliestStartTime = newTime;
+            sa.DueDate = newTime2;
+            sa.HOT_IsEmployedInterpreter__c = false;
+        }
+        update saList;
+
+        Test.startTest();
+
         Set<Id> saIds = (new Map<Id, ServiceAppointment>(
                 [SELECT Id FROM ServiceAppointment WHERE Subject = 'subject' LIMIT 1]
             ))
@@ -263,39 +371,36 @@ private class HOT_ServiceAppointmentNotificationTest {
     private static void addressChangedTest() {
         Set<String> recipients = new Set<String>{ UserInfo.getUserId() };
 
-        ServiceAppointment serviceAppointment = [
-            SELECT Id, HOT_InterpretationStreet__c
-            FROM ServiceAppointment
-            WHERE Subject = 'subject'
-            LIMIT 1
-        ];
-        serviceAppointment.HOT_InterpretationStreet__c = 'Tolkeveien 123';
-        update serviceAppointment;
-
-        List<ServiceResource> testResources = [
-            SELECT Id, HOT_IsEmployedInterpreter__c
-            FROM ServiceResource
-            WHERE HOT_IsEmployedInterpreter__c = TRUE
-        ];
-
+        User user = [SELECT Id, AccountId FROM User WHERE Id = :UserInfo.getUserId() LIMIT 1];
+        ServiceResource serviceResource = HOT_TestDataFactory.createServiceResource(user.Id);
+        insert serviceResource;
         Test.startTest();
-
-        //AR på SA
-        serviceAppointment = [
-            SELECT Id, HOT_ServiceResource__c, HOT_AssignedResourceId__c
-            FROM ServiceAppointment
-            WHERE Id = :serviceAppointment.Id
-            LIMIT 1
-        ];
-
+        WorkType workType = HOT_TestDataFactory.createWorkType();
+        insert workType;
+        HOT_Request__c request = HOT_TestDataFactory.createRequest('TEST', workType);
+        insert request;
+        WorkOrder workOrder = HOT_TestDataFactory.createWorkOrder(request, workType);
+        insert workOrder;
+        WorkOrderLineItem workOrderLineItem = HOT_TestDataFactory.createWorkOrderLineItem(workOrder, workType);
+        insert workOrderLineItem;
+        ServiceAppointment serviceAppointment = HOT_TestDataFactory.createServiceAppointment(workOrderLineItem);
+        serviceAppointment.HOT_Request__c = request.Id;
+        serviceAppointment.Subject = 'Test';
+        insert serviceAppointment;
         AssignedResource assignedResource = HOT_TestDataFactory.createAssignedResource(
             serviceAppointment.Id,
-            testResources[0].Id
+            serviceResource.Id
         );
         insert assignedResource;
 
+        serviceAppointment.Status = 'Dispatched';
+        update serviceAppointment;
+
+        serviceAppointment.HOT_InterpretationStreet__c = 'Tolkeveien 123';
+        update serviceAppointment;
+
         Set<Id> saIds = (new Map<Id, ServiceAppointment>(
-                [SELECT HOT_InterpretationStreet__c FROM ServiceAppointment WHERE Subject = 'subject' LIMIT 1]
+                [SELECT HOT_InterpretationStreet__c FROM ServiceAppointment WHERE Subject = 'Test' LIMIT 1]
             ))
             .keySet();
         CustomNotificationType notificationType = [
@@ -303,7 +408,7 @@ private class HOT_ServiceAppointmentNotificationTest {
             FROM CustomNotificationType
             WHERE DeveloperName = 'HOT_NotifyUser'
         ];
-        HOT_ServiceAppointmentNotification.timeChanged(notificationType, saIds, recipients);
+        HOT_ServiceAppointmentNotification.addressChanged(notificationType, saIds, recipients);
         Test.stopTest();
     }
     @isTest
@@ -316,5 +421,25 @@ private class HOT_ServiceAppointmentNotificationTest {
         String expected = '20.10.2023\nKlokkeslett: 09.00 - 15.30';
 
         System.assertEquals(expected, result, 'The formatted time period is incorrect.');
+    }
+    @isTest
+    private static void cannotCompleteTest() {
+        Set<String> recipients = new Set<String>{ UserInfo.getUserId() };
+        Test.startTest();
+        WorkType workType = HOT_TestDataFactory.createWorkType();
+        insert workType;
+        HOT_Request__c request = HOT_TestDataFactory.createRequest('TEST', workType);
+        insert request;
+        WorkOrder workOrder = HOT_TestDataFactory.createWorkOrder(request, workType);
+        insert workOrder;
+        WorkOrderLineItem workOrderLineItem = HOT_TestDataFactory.createWorkOrderLineItem(workOrder, workType);
+        insert workOrderLineItem;
+        ServiceAppointment serviceAppointment = HOT_TestDataFactory.createServiceAppointment(workOrderLineItem);
+        serviceAppointment.HOT_Request__c = request.Id;
+        insert serviceAppointment;
+
+        serviceAppointment.Status = 'Cannot Complete';
+        update serviceAppointment;
+        Test.stopTest();
     }
 }
