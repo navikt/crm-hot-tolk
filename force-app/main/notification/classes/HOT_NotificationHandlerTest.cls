@@ -61,7 +61,6 @@ private class HOT_NotificationHandlerTest {
         HOT_Request__c request = HOT_TestDataFactory.createRequest('Test', workType);
         insert request;
 
-        // Arrange
         String title = 'Test Title';
         String body = 'Test Body';
         CustomNotificationType notificationType = [
@@ -69,9 +68,8 @@ private class HOT_NotificationHandlerTest {
             FROM CustomNotificationType
             WHERE DeveloperName = 'HOT_NotifyUser'
         ];
-        Id targetId = request.Id; // Replace with a valid Id
+        Id targetId = request.Id;
 
-        // Act
         Messaging.CustomNotification notification = HOT_NotificationHandler.prepareNotification(
             title,
             body,
