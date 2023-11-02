@@ -45,6 +45,7 @@ public without sharing class HOT_ThreadHandler extends MyTriggers {
         Map<Id, Thread__c> threadByWageClaimId = new Map<Id, Thread__c>();
 
         for (Id threadId : threadById.keySet()) {
+            Set<Id> threadIds;
             Thread__c thread = threadById.get(threadId);
             if (threadId.getSObjectType() == HOT_Request__c.SObjectType) {
                 threadByRequestId.put(threadId, thread);
@@ -56,7 +57,9 @@ public without sharing class HOT_ThreadHandler extends MyTriggers {
                 threadByInterestedResourceId.put(threadId, thread);
             }
             if (threadId.getSObjectType() == ServiceAppointment.SObjectType) {
+                threadIds.add(threadId);
                 threadByServiceAppointmentId.put(threadId, thread);
+                setInterpreterOnThreadBySA(threadIds);
             }
             if (threadId.getSObjectType() == HOT_WageClaim__c.SObjectType) {
                 threadByWageClaimId.put(threadId, thread);
@@ -177,6 +180,37 @@ public without sharing class HOT_ThreadHandler extends MyTriggers {
         }
         HOT_DatabaseOperations.updateRecords(threads);
     }
+
+    @Future
+    public static void setInterpreterOnThreadBySA(Set<Id> threadIds) {
+        Thread__c thread = [
+            SELECT Id, HOT_Participants__c, CRM_Related_Object__c
+            FROM Thread__c
+            WHERE Id IN :threadIds
+            LIMIT 1
+        ];
+
+        Set<Id> threadRelatedObjectId = new Set<Id>();
+        threadRelatedObjectId.add(thread.CRM_Related_Object__c);
+
+        ServiceAppointment serviceAppointment = [
+            SELECT Id, HOT_ServiceResource__r.RelatedRecordId
+            FROM ServiceAppointment
+            WHERE Id IN :threadRelatedObjectId
+            LIMIT 1
+        ];
+
+        thread.HOT_Participants__c = '';
+        thread = appendInterpreterName(thread, serviceAppointment);
+        try {
+            HOT_DatabaseOperations.updateRecords(threads);
+        } catch (Exception e) {
+            LoggerUtility logger = new LoggerUtility();
+            logger.exception(e, CRM_ApplicationDomain.Domain.HOT);
+            logger.publishSynch();
+        }
+    }
+
     private static Map<Id, List<ServiceAppointment>> getServiceAppointmentsByWorkOrderId(Set<Id> workOrderIds) {
         Map<Id, List<ServiceAppointment>> serviceAppointmentsByWorkOrderId = new Map<Id, List<ServiceAppointment>>();
         List<ServiceAppointment> serviceAppointments = [
