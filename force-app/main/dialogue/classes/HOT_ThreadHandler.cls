@@ -203,21 +203,23 @@ public without sharing class HOT_ThreadHandler extends MyTriggers {
         Set<Id> threadRelatedObjectId = new Set<Id>();
         threadRelatedObjectId.add(thread.CRM_Related_Object__c);
 
-        ServiceAppointment serviceAppointment = [
-            SELECT Id, HOT_ServiceResource__r.RelatedRecordId
-            FROM ServiceAppointment
-            WHERE Id IN :threadRelatedObjectId
-            LIMIT 1
-        ];
+        if (threadRelatedObjectId.size() > 0) {
+            ServiceAppointment serviceAppointment = [
+                SELECT Id, HOT_ServiceResource__r.RelatedRecordId
+                FROM ServiceAppointment
+                WHERE Id IN :threadRelatedObjectId
+                LIMIT 1
+            ];
 
-        thread.HOT_Participants__c = '';
-        thread = appendInterpreterName(thread, serviceAppointment);
-        try {
-            HOT_DatabaseOperations.updateRecords(thread);
-        } catch (Exception e) {
-            LoggerUtility logger = new LoggerUtility();
-            logger.exception(e, CRM_ApplicationDomain.Domain.HOT);
-            logger.publishSynch();
+            thread.HOT_Participants__c = '';
+            thread = appendInterpreterName(thread, serviceAppointment);
+            try {
+                HOT_DatabaseOperations.updateRecords(thread);
+            } catch (Exception e) {
+                LoggerUtility logger = new LoggerUtility();
+                logger.exception(e, CRM_ApplicationDomain.Domain.HOT);
+                logger.publishSynch();
+            }
         }
     }
 
