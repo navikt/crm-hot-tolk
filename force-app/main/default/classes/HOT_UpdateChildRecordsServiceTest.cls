@@ -2,11 +2,20 @@
 public with sharing class HOT_UpdateChildRecordsServiceTest {
     @IsTest
     static void updateChildRecordsServiceFlowTest() {
+        Person__c person = HOT_TestDataFactory.createPerson();
+        person.Name = '12015678999';
+        insert person;
+        Account personAccount = HOT_TestDataFactory.createAccount(true);
+        personAccount.INT_PersonIdent__c = '12015678999';
+        personAccount.CRM_Person__c = person.Id;
+        insert personAccount;
+
         WorkType workType = HOT_TestDataFactory.createWorkType();
         insert workType;
         HOT_Request__c request = HOT_TestDataFactory.createRequest('Old Subject', workType);
         request.InterpretationPostalCode__c = '0000';
         request.MeetingPostalCode__c = '0000';
+        request.Account__c = personAccount.Id;
         insert request;
         request.Status__c = 'Godkjent';
         update request;
@@ -27,8 +36,10 @@ public with sharing class HOT_UpdateChildRecordsServiceTest {
                 UserPersonNumber__c,
                 UserName__c,
                 Description__c,
+                HOT_PersonContactId__c,
                 IsScreenInterpreter__c,
-                Dispatcher__c
+                Dispatcher__c,
+                InterpretationMethod__c
             FROM HOT_Request__c
             WHERE Id = :request.Id
         ];
@@ -42,15 +53,18 @@ public with sharing class HOT_UpdateChildRecordsServiceTest {
         request.Subject__c = 'New subject';
         request.Description__c = 'New description';
         request.IsScreenInterpreter__c = true;
+        request.Account__c = personAccount.Id;
+        request.InterpretationMethod__c = workType.Id;
 
         input.request = request;
 
-        input.isAccountChoice = false;
+        input.isAccountChoice = true;
         input.isAddressChoice = true;
         input.isSubjectChoice = true;
         input.isDescriptionChoice = true;
         input.isScreenInterpreterChoice = true;
         input.isDispatcherChoice = true;
+        input.isInterpreterMethodChoice = true;
 
         Test.startTest();
         HOT_UpdateChildRecordsService.updateChildRecordsFromRequest(new List<HOT_UpdateChildRecordsService>{ input });
@@ -135,6 +149,10 @@ public with sharing class HOT_UpdateChildRecordsServiceTest {
             serviceAppointments.values()[0].Subject,
             'Could not update Subject on ServiceAppointment'
         );
-        System.assertEquals(request.Dispatcher__c, serviceAppointments.values()[0].HOT_DispatcherNew__c, 'Could not update Dispatcher on Request');
+        System.assertEquals(
+            request.Dispatcher__c,
+            serviceAppointments.values()[0].HOT_DispatcherNew__c,
+            'Could not update Dispatcher on Request'
+        );
     }
 }
