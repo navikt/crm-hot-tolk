@@ -203,16 +203,16 @@ public without sharing class HOT_ThreadHandler extends MyTriggers {
         Set<Id> threadRelatedObjectId = new Set<Id>();
         threadRelatedObjectId.add(thread.CRM_Related_Object__c);
 
-        if (threadRelatedObjectId.size() > 0) {
-            ServiceAppointment serviceAppointment = [
-                SELECT Id, HOT_ServiceResource__r.RelatedRecordId
-                FROM ServiceAppointment
-                WHERE Id IN :threadRelatedObjectId
-                LIMIT 1
-            ];
+        List<ServiceAppointment> saList = [
+            SELECT Id, HOT_ServiceResource__r.RelatedRecordId
+            FROM ServiceAppointment
+            WHERE Id IN :threadRelatedObjectId
+            LIMIT 1
+        ];
 
+        if (saList.size() > 0) {
             thread.HOT_Participants__c = '';
-            thread = appendInterpreterName(thread, serviceAppointment);
+            thread = appendInterpreterName(thread, saList[0]);
             try {
                 HOT_DatabaseOperations.updateRecords(thread);
             } catch (Exception e) {
