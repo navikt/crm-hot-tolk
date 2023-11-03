@@ -21,14 +21,27 @@ public without sharing class HOT_ThreadHandler extends MyTriggers {
     }
     public override void onAfterInsert() {
         Set<Id> workOrderIds = new Set<Id>();
+        Set<Id> threadIds = new Set<Id>();
         for (Thread__c t : [
             SELECT Id, CRM_Related_Object__c
             FROM Thread__c
-            WHERE Id IN :records AND (CRM_Thread_Type__c = 'HOT_BRUKER-TOLK' OR CRM_Thread_Type__c = 'HOT_TOLK-TOLK')
+            WHERE
+                Id IN :records
+                AND (CRM_Thread_Type__c = 'HOT_BRUKER-TOLK'
+                OR CRM_Thread_Type__c = 'HOT_TOLK-TOLK'
+                OR CRM_Thread_Type__c = 'HOT_TOLK-FORMIDLER')
         ]) {
             workOrderIds.add(t.CRM_Related_Object__c);
+            threadIds.add(t.Id);
         }
-        setInterpreterThread(workOrderIds);
+
+        if (workOrderIds.size() > 0) {
+            setInterpreterThread(workOrderIds);
+        }
+
+        if (threadIds.size() > 0) {
+            setInterpreterOnThreadBySA(threadIds);
+        }
     }
 
     public static String threadSubjectMaker(String subject) {
@@ -177,6 +190,39 @@ public without sharing class HOT_ThreadHandler extends MyTriggers {
         }
         HOT_DatabaseOperations.updateRecords(threads);
     }
+
+    @Future
+    public static void setInterpreterOnThreadBySA(Set<Id> threadIds) {
+        Thread__c thread = [
+            SELECT Id, HOT_Participants__c, CRM_Related_Object__c
+            FROM Thread__c
+            WHERE Id IN :threadIds
+            LIMIT 1
+        ];
+
+        Set<Id> threadRelatedObjectId = new Set<Id>();
+        threadRelatedObjectId.add(thread.CRM_Related_Object__c);
+
+        List<ServiceAppointment> saList = [
+            SELECT Id, HOT_ServiceResource__r.RelatedRecordId
+            FROM ServiceAppointment
+            WHERE Id IN :threadRelatedObjectId
+            LIMIT 1
+        ];
+
+        if (saList.size() > 0) {
+            thread.HOT_Participants__c = '';
+            thread = appendInterpreterName(thread, saList[0]);
+            try {
+                HOT_DatabaseOperations.updateRecords(thread);
+            } catch (Exception e) {
+                LoggerUtility logger = new LoggerUtility();
+                logger.exception(e, CRM_ApplicationDomain.Domain.HOT);
+                logger.publishSynch();
+            }
+        }
+    }
+
     private static Map<Id, List<ServiceAppointment>> getServiceAppointmentsByWorkOrderId(Set<Id> workOrderIds) {
         Map<Id, List<ServiceAppointment>> serviceAppointmentsByWorkOrderId = new Map<Id, List<ServiceAppointment>>();
         List<ServiceAppointment> serviceAppointments = [
