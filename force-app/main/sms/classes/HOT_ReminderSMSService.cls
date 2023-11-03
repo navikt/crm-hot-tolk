@@ -21,22 +21,30 @@ public without sharing class HOT_ReminderSMSService {
                 notification.HOT_Account__c = workOrder.AccountId;
                 notification.HOT_NotificationChannel__c = 'SMS';
                 notification.HOT_Subject__c = 'Påminnelse om tolkebestilling';
-                notification.HOT_NotificationText__c =
+                String text =
                     'PÅMINNELSE\nVi minner om tolkebestilling:\n' +
                     'Dato: ' +
                     formatTimePeriod(workOrder.StartDate, workOrder.EndDate) +
                     '\n' +
                     'Tolk er: ' +
-                    interpreterNames.get(workOrder.Id) +
-                    '\nFor mer informasjon, se tolkebestilling.nav.no.\n' +
-                    'Du kan ikke svare på denne meldingen.\n' +
-                    'Mvh tolketjenesten i NAV';
+                    interpreterNames.get(workOrder.Id);
+                if (text.length() > 135) {
+                    notification.HOT_NotificationText__c = text.substring(0, 135) + ' ...';
+                    notification.HOT_NotificationText__c +=
+                        '\nFor mer informasjon, se tolkebestilling.nav.no.\n' +
+                        'Du kan ikke svare på denne meldingen.\n' +
+                        'Mvh tolketjenesten i NAV';
+                } else {
+                    notification.HOT_NotificationText__c = text;
+                    notification.HOT_NotificationText__c +=
+                        '\nFor mer informasjon, se tolkebestilling.nav.no.\n' +
+                        'Du kan ikke svare på denne meldingen.\n' +
+                        'Mvh tolketjenesten i NAV';
+                }
                 notification.HOT_RelatedObject__c = workOrder.Id;
                 notification.HOT_RelatedObjectType__c = 'workOrder';
 
-                if (notification.HOT_NotificationText__c.length() <= 255) {
-                    notificationList.add(notification);
-                }
+                notificationList.add(notification);
             }
         }
         HOT_DatabaseOperations.insertRecords(smsList);
