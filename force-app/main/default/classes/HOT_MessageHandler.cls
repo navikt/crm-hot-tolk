@@ -15,6 +15,9 @@ public without sharing class HOT_MessageHandler extends MyTriggers {
                     threadIdsToNotifyDispatcherOnNewMessage.add(message.CRM_Thread__c);
                 } else {
                     threadIdsToNotifyUserOnNewMessage.add(message.CRM_Thread__c);
+                    if (message.CRM_Thread_Type__c == 'HOT_TOLK-FORMIDLER') {
+                        threadIdsToNotifyInterpretersOnNewMessage.add(message.CRM_Thread__c);
+                    }
                 }
             }
             if (message.CRM_Thread_Type__c == 'HOT_TOLK-TOLK') {

@@ -33,6 +33,7 @@ public without sharing class HOT_MessagesNotification {
             SELECT
                 CRM_Account__c,
                 CRM_Thread_Type__c,
+                HOT_Participants__c,
                 HOT_IsEmployeeThread__c,
                 CRM_Account__r.INT_KrrMobilePhone__c,
                 CRM_Account__r.CRM_Person__r.HOT_NotificationChannel__c,
@@ -49,7 +50,17 @@ public without sharing class HOT_MessagesNotification {
             accountIds.add(thread.CRM_Account__c);
         }
 
-        List<User> users = [SELECT Id, AccountId FROM User WHERE AccountId IN :accountIds];
+        List<User> users = [
+            SELECT Id, AccountId, (SELECT Id, HOT_NotificationChannel__c FROM ServiceResources)
+            FROM User
+            WHERE AccountId IN :accountIds
+        ];
+        Map<Id, ServiceResource> userToServiceResource = new Map<Id, ServiceResource>();
+        for (User user : users) {
+            if (user.ServiceResources.size() > 0) {
+                userToServiceResource.put(user.Id, user.ServiceResources[0]);
+            }
+        }
 
         Map<Id, Id> userIdByAccountId = new Map<Id, Id>();
         for (User user : users) {
@@ -60,13 +71,21 @@ public without sharing class HOT_MessagesNotification {
 
         if (!threads.isEmpty()) {
             for (Thread__c thread : threads) {
-                Boolean isInterpreter = thread.CRM_Thread_Type__c == 'HOT_TOLK-RESSURSKONTOR' ? true : false;
+                Boolean isInterpreter = (thread.CRM_Thread_Type__c == 'HOT_TOLK-RESSURSKONTOR' ||
+                    (thread.CRM_Thread_Type__c == 'HOT_TOLK-FORMIDLER' && !thread.HOT_IsEmployeeThread__c))
+                    ? true
+                    : false;
                 Set<String> recipients = new Set<String>();
                 if (userIdByAccountId.get(thread.CRM_Account__c) != null) {
                     recipients.add(userIdByAccountId.get(thread.CRM_Account__c));
                 }
                 if (recipients.size() > 0) {
-                    if (thread.CRM_Account__r.CRM_Person__r.HOT_NotificationChannel__c.contains('Push')) {
+                    if (
+                        (thread.CRM_Thread_Type__c == 'HOT_TOLK-FORMIDLER' &&
+                        userToServiceResource.get(userIdByAccountId.get(thread.CRM_Account__c))
+                            .HOT_NotificationChannel__c.contains('Push')) ||
+                        thread.CRM_Account__r.CRM_Person__r.HOT_NotificationChannel__c.contains('Push')
+                    ) {
                         if (
                             thread.CRM_Thread_Type__c == 'HOT_TOLK-RESSURSKONTOR' ||
                             thread.CRM_Thread_Type__c == 'HOT_TOLK-FORMIDLER'
@@ -150,7 +169,7 @@ public without sharing class HOT_MessagesNotification {
             }
         }
     }
-
+    @Future
     public static void NotifyInterpreter(List<Id> threadIds) {
         List<Thread__c> threads = [
             SELECT

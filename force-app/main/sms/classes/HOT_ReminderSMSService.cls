@@ -34,7 +34,9 @@ public without sharing class HOT_ReminderSMSService {
                 notification.HOT_RelatedObject__c = workOrder.Id;
                 notification.HOT_RelatedObjectType__c = 'workOrder';
 
-                notificationList.add(notification);
+                if (notification.HOT_NotificationText__c.length() <= 255) {
+                    notificationList.add(notification);
+                }
             }
         }
         HOT_DatabaseOperations.insertRecords(smsList);
