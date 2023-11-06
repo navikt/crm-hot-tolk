@@ -9,8 +9,7 @@
     ISPICKVAL(Status, &quot;Scheduled&quot;)
   ),
   ISBLANK(HOT_ServiceResource__c),
-  NOT($Permission.Validation_Override),
-  $Profile.Name &lt;&gt; &apos;System Administrator&apos;
+  NOT(OR($Permission.Validation_Override, $Profile.Name = &apos;System Administrator&apos;))
 )</errorConditionFormula>
     <errorMessage>Kan ikke sette status til Reservert/Tildelt uten at en tjenesteressurs er satt opp.</errorMessage>
 </ValidationRule>
