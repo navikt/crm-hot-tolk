@@ -507,7 +507,7 @@ public without sharing class HOT_ReminderSMSService {
             sms.Account__c = srList[0]?.AccountId;
             sms.ServiceAppointment__c = sa.Id;
             sms.Recipient__c = srList[0]?.HOT_MobilePhone__c;
-            sms.Message__c = constructMessageToInterpreter(sa, 'CancelledByUser');
+            sms.Message__c = constructMessageToInterpreter(sa, 'CanceledByUser');
             if (SMS.Recipient__c != null) {
                 smsList.add(sms);
             }
