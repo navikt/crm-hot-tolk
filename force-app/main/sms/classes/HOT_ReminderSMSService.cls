@@ -92,8 +92,8 @@ public without sharing class HOT_ReminderSMSService {
                     'Du kan ikke svare på denne meldingen.\n' +
                     'Mvh tolketjenesten i NAV';
                 if (request.IsSerieoppdrag__c) {
-                    notification.HOT_RelatedObject__c = request.Id;
-                    notification.HOT_RelatedObjectType__c = HOT_WorkOrderHandler.getWorkOrder(request).Id;
+                    notification.HOT_RelatedObject__c = HOT_WorkOrderHandler.getWorkOrder(request).Id;
+                    notification.HOT_RelatedObjectType__c = 'request';
                 } else {
                     notification.HOT_RelatedObject__c = HOT_WorkOrderHandler.getWorkOrder(request).Id;
                     notification.HOT_RelatedObjectType__c = 'workOrder';
