@@ -2,14 +2,9 @@
 <ValidationRule xmlns="http://soap.sforce.com/2006/04/metadata">
     <fullName>Restrict_Dispatched_Status</fullName>
     <active>true</active>
-    <errorConditionFormula>AND(
-  ISCHANGED(Status),
-  OR(
-    ISPICKVAL(Status, &quot;Dispatched&quot;),
-    ISPICKVAL(Status, &quot;Scheduled&quot;)
-  ),
+    <errorConditionFormula>AND(ISCHANGED(Status), ISPICKVAL(Status, &quot;Dispatched&quot;),
   ISBLANK(HOT_ServiceResource__c),
   NOT(OR($Permission.Validation_Override, $Profile.Name = &apos;System Administrator&apos;))
 )</errorConditionFormula>
-    <errorMessage>Kan ikke sette status til Reservert/Tildelt uten at en tjenesteressurs er satt opp.</errorMessage>
+    <errorMessage>Kan ikke sette status til Tildelt uten at en tjenesteressurs er satt opp.</errorMessage>
 </ValidationRule>
