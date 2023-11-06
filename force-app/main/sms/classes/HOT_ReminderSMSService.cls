@@ -93,7 +93,7 @@ public without sharing class HOT_ReminderSMSService {
                     'Mvh tolketjenesten i NAV';
                 if (request.IsSerieoppdrag__c) {
                     notification.HOT_RelatedObject__c = request.Id;
-                    notification.HOT_RelatedObjectType__c = 'request';
+                    notification.HOT_RelatedObjectType__c = 'workOrder';
                 } else {
                     notification.HOT_RelatedObject__c = HOT_WorkOrderHandler.getWorkOrder(request).Id;
                     notification.HOT_RelatedObjectType__c = 'workOrder';
