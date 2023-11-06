@@ -175,6 +175,7 @@ public without sharing class HOT_MessagesNotification {
             SELECT
                 Id,
                 HOT_Participants__c,
+                HOT_IsEmployeeThread__c,
                 HOT_Last_message_from__c,
                 HOT_Last_message_from__r.AccountId,
                 HOT_Subject__c,
