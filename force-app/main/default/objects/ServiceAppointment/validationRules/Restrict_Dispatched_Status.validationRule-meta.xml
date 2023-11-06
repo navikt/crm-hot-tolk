@@ -6,5 +6,5 @@
   ISBLANK(HOT_ServiceResource__c),
   NOT(OR($Permission.Validation_Override, $Profile.Name = &apos;System Administrator&apos;))
 )</errorConditionFormula>
-    <errorMessage>Kan ikke sette status til Reservert/Tildelt uten at en tjenesteressurs er satt opp.</errorMessage>
+    <errorMessage>Kan ikke sette status til Tildelt uten at en tjenesteressurs er satt opp.</errorMessage>
 </ValidationRule>
