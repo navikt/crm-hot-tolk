@@ -700,7 +700,10 @@ public without sharing class HOT_ReminderSMSService {
     public static String getRecipientOnThread(Thread__c thread) {
         if (thread.CRM_Thread_Type__c == 'HOT_BRUKER-FORMIDLER' || thread.CRM_Thread_Type__c == 'HOT_BRUKER-TOLK') {
             return thread?.CRM_Account__r.CRM_Person__r.INT_KrrMobilePhone__c;
-        } else if (thread.CRM_Thread_Type__c == 'HOT_TOLK-FORMIDLER') {
+        } else if (
+            thread.CRM_Thread_Type__c == 'HOT_TOLK-FORMIDLER' ||
+            thread.CRM_Thread_Type__c == 'HOT_TOLK-RESSURSKONTOR'
+        ) {
             ServiceResource sr = [
                 SELECT AccountId, HOT_MobilePhone__c
                 FROM ServiceResource
