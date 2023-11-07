@@ -42,11 +42,15 @@ private class HOT_NotificationHandlerTest {
 
     @isTest
     static void testGetGroupIdByQueueId() {
+        List<Group> groupList = new List<Group>();
         Group queue1 = new Group(DeveloperName = 'HOT_group_1111_formidler');
+        groupList.add(queue1);
         Group queue2 = new Group(DeveloperName = 'HOT_Tolk_Akuttvakt');
+        groupList.add(queue2);
         Group queue3 = new Group(DeveloperName = 'HOT_group_1111_formidler');
+        groupList.add(queue3);
 
-        insert new List<Group>{ queue1, queue2, queue3 };
+        insert groupList;
 
         List<Id> queueIdsToTest = new List<Id>{ queue1.Id, queue2.Id, queue3.Id };
 

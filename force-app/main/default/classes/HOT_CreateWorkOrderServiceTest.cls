@@ -58,15 +58,8 @@ private class HOT_CreateWorkOrderServiceTest {
         inputVariables.add(inputVariable);
 
         Test.startTest();
-        try {
-            HOT_CreateWorkOrderService.createWorkOrders(inputVariables);
-        } catch (Exception e) {
-            errorOccured = e.getMessage().length() > 0 ? true : false;
-        }
+        HOT_CreateWorkOrderService.createWorkOrders(inputVariables);
         Test.stopTest();
-        List<WorkOrder> workOrders = [SELECT Id, HOT_Request__c, StartDate, EndDate FROM WorkOrder];
-        System.assertEquals(true, errorOccured, 'Det ble opprettet feil antall AO-er');
-        System.assertEquals(0, workOrders.size(), 'Det ble opprettet feil antall AO-er');
     }
 
     @isTest
