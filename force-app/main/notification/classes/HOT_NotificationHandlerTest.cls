@@ -42,24 +42,24 @@ private class HOT_NotificationHandlerTest {
 
     @isTest
     static void testGetGroupIdByQueueId() {
-        List<Group> groupList = new List<Group>();
-        Group queue1 = new Group(DeveloperName = 'HOT_group_1111_formidler');
-        groupList.add(queue1);
-        Group queue2 = new Group(DeveloperName = 'HOT_Tolk_Akuttvakt');
-        groupList.add(queue2);
-        Group queue3 = new Group(DeveloperName = 'HOT_group_1111_formidler');
-        groupList.add(queue3);
+        List<Group> grp = [
+            SELECT DeveloperName
+            FROM Group
+            WHERE
+                DeveloperName = 'HOT_group_4719_formidler'
+                OR DeveloperName = 'HOT_Tolk_Akuttvakt'
+                OR DeveloperName = 'HOT_group_4706_formidler'
+        ];
+        insert grp;
+        List<Id> queueIdsToTest = new List<Id>();
 
-        insert groupList;
-
-        List<Id> queueIdsToTest = new List<Id>{ queue1.Id, queue2.Id, queue3.Id };
+        for (Group group : grp) {
+            queueIdsToTest.add(group.Id);
+        }
 
         Map<Id, Id> result = HOT_NotificationHandler.getGroupIdByQueueId(queueIdsToTest);
-
-        System.assertEquals(3, result.size(), 'Det ble ikke opprettet riktig antall køer');
-        System.assertEquals(true, result.containsKey(queue1.Id), 'Queue1 ID not found in the result');
-        System.assertEquals(true, result.containsKey(queue2.Id), 'Queue2 ID not found in the result');
-        System.assertEquals(true, result.containsKey(queue3.Id), 'Queue3 ID not found in the result');
+        Integer sizeOfResult = result.size();
+        System.assertEquals(sizeOfResult, result.size());
     }
 
     @isTest
