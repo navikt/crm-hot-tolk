@@ -66,14 +66,19 @@ public without sharing class HOT_NotifyUserOnOrderServiceBatch implements Databa
                         notification.HOT_Account__c = request.Account__c;
                         notification.HOT_NotificationChannel__c = 'Push-varsel i appen';
                         notification.HOT_Subject__c = 'Andre har lagt inn en bestilling for deg';
-                        notification.HOT_NotificationText__c =
-                            'Det er bestilt tolk til deg. Dato: ' +
-                            request.StartTime__c?.format('dd.MM.yyyy', 'Europe/Oslo') +
-                            ', kl: ' +
-                            request.StartTime__c?.format('HH:mm', 'Europe/Oslo') +
-                            ' - ' +
-                            request.EndTime__c?.format('HH:mm', 'Europe/Oslo') +
-                            '.';
+                        if (request.IsSerieoppdrag__c) {
+                            notification.HOT_NotificationText__c =
+                                'Det er bestilt tolk til deg i perioden ' + request.SeriesPeriod__c;
+                        } else {
+                            notification.HOT_NotificationText__c =
+                                'Det er bestilt tolk til deg. Dato: ' +
+                                request.StartTime__c?.format('dd.MM.yyyy', 'Europe/Oslo') +
+                                ', kl: ' +
+                                request.StartTime__c?.format('HH:mm', 'Europe/Oslo') +
+                                ' - ' +
+                                request.EndTime__c?.format('HH:mm', 'Europe/Oslo') +
+                                '.';
+                        }
                         if (request.IsSerieoppdrag__c) {
                             notification.HOT_RelatedObject__c = HOT_WorkOrderHandler.getWorkOrder(request).Id;
                             notification.HOT_RelatedObjectType__c = 'request';
