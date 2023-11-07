@@ -57,6 +57,7 @@ private class HOT_ReminderSMSServiceTest {
         insert user;
         ServiceResource serviceResource = HOT_TestDataFactory.createServiceResource(user.Id);
         serviceResource.HOT_IsFreelanceInterpreter__c = true;
+        serviceResource.HOT_MobilePhoneOverride__c = '12345678';
         insert serviceResource;
     }
 
@@ -580,7 +581,7 @@ private class HOT_ReminderSMSServiceTest {
         Account personAccount = HOT_TestDataFactory.createAccount(true);
         personAccount.INT_PersonIdent__c = '12015678999';
         personAccount.CRM_Person__c = person.Id;
-        insert personAccount;
+        ServiceResouce serviceResource = [SELECT Id, AccountId, HOT_MobilePhone__c FROM ServiceResource LIMIT 1];
         WorkType workType = HOT_TestDataFactory.createWorkType();
         insert workType;
         HOT_Request__c request = HOT_TestDataFactory.createRequest('TEST', workType);
@@ -591,13 +592,13 @@ private class HOT_ReminderSMSServiceTest {
         insert request;
         Test.startTest();
         Thread__c thread1 = new Thread__c(
-            CRM_Account__c = personAccount.Id,
+            CRM_Account__c = serviceResource.AccountId,
             CRM_Thread_Type__c = 'HOT_TOLK-RESSURSKONTOR'
         );
         insert thread1;
 
         Thread__c thread2 = new Thread__c(
-            CRM_Account__c = personAccount.Id,
+            CRM_Account__c = serviceResource.AccountId,
             CRM_Thread_Type__c = 'HOT_TOLK-RESSURSKONTOR'
         );
         insert thread2;
