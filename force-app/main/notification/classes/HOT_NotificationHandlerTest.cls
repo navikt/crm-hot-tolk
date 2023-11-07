@@ -42,7 +42,7 @@ private class HOT_NotificationHandlerTest {
 
     @isTest
     static void testGetGroupIdByQueueId() {
-        List<Group> grp = [
+        List<Group> grpList = [
             SELECT DeveloperName
             FROM Group
             WHERE
@@ -50,11 +50,11 @@ private class HOT_NotificationHandlerTest {
                 OR DeveloperName = 'HOT_Tolk_Akuttvakt'
                 OR DeveloperName = 'HOT_group_4706_formidler'
         ];
-        insert grp;
+        insert grpList;
         List<Id> queueIdsToTest = new List<Id>();
 
-        for (Group group : grp) {
-            queueIdsToTest.add(group.Id);
+        for (Group grp : grpList) {
+            queueIdsToTest.add(grp.Id);
         }
 
         Map<Id, Id> result = HOT_NotificationHandler.getGroupIdByQueueId(queueIdsToTest);
