@@ -160,7 +160,7 @@ public without sharing class HOT_RequestHandler extends MyTriggers {
         if (saList.size() > 0) {
             for (ServiceAppointment sa : saList) {
                 for (HOT_Request__c request : requestsWithNewCompany) {
-                    if (sa.HOT_Request__c == request.Id) {
+                    if (sa.HOT_Request__c == request.Id && request.Company__c != null) {
                         sa.HOT_Company__c = request.Company__c;
                     }
                 }

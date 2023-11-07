@@ -1003,7 +1003,7 @@ public without sharing class HOT_ServiceAppointmentHandler extends MyTriggers {
         List<HOT_Request__c> requestList = [SELECT Id, Company__c FROM HOT_Request__c WHERE Id IN :requestIds];
         for (ServiceAppointment sa : serviceAppointments) {
             for (HOT_Request__c request : requestList) {
-                if (sa.HOT_Request__c == request.Id) {
+                if (sa.HOT_Request__c == request.Id && request.Company__c != null) {
                     sa.HOT_Company__c = request.Company__c;
                 }
             }
