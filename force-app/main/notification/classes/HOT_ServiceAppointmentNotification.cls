@@ -41,6 +41,7 @@ public without sharing class HOT_ServiceAppointmentNotification {
                 resourceAdded(notificationType, saIds, interpreterRecipients);
 
                 notifyUserOnChangedResource(serviceAppointment);
+                notifyInterpretersOnChangedResource(serviceAppointment);
             }
 
             if (oldServiceAppointment.HOT_AssignedResourceId__c != null) {
@@ -889,7 +890,6 @@ public without sharing class HOT_ServiceAppointmentNotification {
             }
         }
     }
-
     public static void notifyUserOnChangedResource(ServiceAppointment sa) {
         List<Id> accountIds = new List<Id>();
 
@@ -979,6 +979,58 @@ public without sharing class HOT_ServiceAppointmentNotification {
                     logger.publish();
                 }
             }
+        }
+    }
+    public static void notifyInterpretersOnChangedResource(ServiceAppointment sa) {
+        List<Id> employeeAccountIds = new List<Id>();
+        List<Id> freelanceAccountIds = new List<Id>();
+
+        WorkOrder wo = [
+            SELECT Id, StartDate, EndDate
+            FROM WorkOrder
+            WHERE Id = :sa.HOT_WorkOrderLineItem__r.WorkOrderId
+        ];
+
+        List<ServiceAppointment> updatedSA = [
+            SELECT
+                HOT_WorkOrderLineItem__r.WorkOrderId,
+                HOT_ServiceResource__r.AccountId,
+                HOT_ServiceResource__r.HOT_IsFreelanceInterpreter__c,
+                HOT_ServiceResource__r.HOT_IsEmployedInterpreter__c,
+                HOT_ServiceResource__r.HOT_NotificationChannel__c,
+                HOT_ServiceResource__r.RelatedRecordId
+            FROM ServiceAppointment
+            WHERE HOT_WorkOrderLineItem__r.WorkOrderId = :sa.HOT_WorkOrderLineItem__r.WorkOrderId
+        ];
+
+        Set<String> recipients = new Set<String>();
+        Set<Id> serviceresourcesIds = new Set<Id>();
+        for (ServiceAppointment serviceAppointment : updatedSA) {
+            if (
+                serviceAppointment.HOT_ServiceResource__r.HOT_NotificationChannel__c.contains('Push') ||
+                serviceAppointment.HOT_ServiceResource__r.HOT_IsEmployedInterpreter__c == true
+            ) {
+                recipients.add(serviceAppointment.HOT_ServiceResource__r.RelatedRecordId);
+            } else {
+                serviceresourcesIds.add(serviceAppointment.HOT_ServiceResource__r.Id);
+            }
+        }
+        if (!recipients.isEmpty()) {
+            HOT_UserNotificationService.coInterpreterChangeNotification(
+                getCustomNotificationType('HOT_NotifyUser'),
+                wo,
+                sa.HOT_ServiceResource__r.Name,
+                recipients
+            );
+            //LAG VARSLER TIL NOTIFIKASJONSSENTER
+        }
+        if (!serviceresourcesIds.isEmpty()) {
+            String startEndString = HOT_ReminderSMSService.formatTimePeriod(wo.StartDate, wo.EndDate);
+            HOT_ReminderSMSService.sendSMSOnCoInterpreterChange(
+                serviceresourcesIds,
+                startEndString,
+                sa.HOT_ServiceResource__r.Name
+            );
         }
     }
 

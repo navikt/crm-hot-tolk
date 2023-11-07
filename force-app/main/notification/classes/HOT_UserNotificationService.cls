@@ -182,6 +182,40 @@ public without sharing class HOT_UserNotificationService {
             logger.publishSynch();
         }
     }
+    public static void coInterpreterChangeNotification(
+        CustomNotificationType notificationType,
+        WorkOrder workOrder,
+        String interpreters,
+        Set<String> recipients
+    ) {
+        String title = 'Endring av tolk';
+        String body =
+            'Medtolk på et oppdrag du er tildelt er blitt endret. \nNy tolk er: ' +
+            interpreters +
+            '\nDato: ' +
+            workOrder.StartDate?.format('dd.MM.yyyy', 'Europe/Oslo') +
+            ', kl: ' +
+            workOrder.StartDate?.format('HH:mm', 'Europe/Oslo') +
+            ' - ' +
+            workOrder.EndDate?.format('HH:mm', 'Europe/Oslo') +
+            '.';
+
+        Id notificationTypeId = notificationType.Id;
+        String targetPageRef = getTargetPageRefSA();
+        Messaging.CustomNotification notification = new Messaging.CustomNotification();
+        notification.setTitle(title);
+        notification.setBody(body);
+        notification.setNotificationTypeId(notificationTypeId);
+        notification.setTargetPageRef(targetPageRef);
+
+        try {
+            notification.send(recipients);
+        } catch (Exception e) {
+            LoggerUtility logger = new LoggerUtility();
+            logger.exception(e, CRM_ApplicationDomain.Domain.HOT);
+            logger.publishSynch();
+        }
+    }
 
     public static void newMessageNotification(
         CustomNotificationType notificationType,
@@ -275,6 +309,13 @@ public without sharing class HOT_UserNotificationService {
         String pageRef =
             '{type: "comm__namedPage",attributes: {pageName: "mine-oppdrag"}, state: {list: "' +
             'wanted' +
+            '"}}';
+        return pageRef;
+    }
+    private static String getTargetPageRefSA() {
+        String pageRef =
+            '{type: "comm__namedPage",attributes: {pageName: "mine-oppdrag"}, state: {list: "' +
+            'my' +
             '"}}';
         return pageRef;
     }
