@@ -56,18 +56,17 @@ private class HOT_CreateWageClaimTest {
 
     @isTest
     static void dontCreateWageClaimIfAgreement() {
+        Test.startTest();
         AssignedResource assignedResource = [SELECT Id, ServiceAppointmentId, ServiceResourceId FROM AssignedResource];
         update new ServiceResource(Id = assignedResource.ServiceResourceId, HOT_AgreementFreelance__c = true);
         HOT_Request__c request = [SELECT Id, ServiceResourceWithAgreement1__c FROM HOT_Request__c];
         request.ServiceResourceWithAgreement1__c = assignedResource.ServiceResourceId;
         update request;
 
-        Test.startTest();
         update new ServiceAppointment(Id = assignedResource.ServiceAppointmentId, Status = 'None');
-        Test.stopTest();
 
         List<HOT_WageClaim__c> wageClaims = [SELECT Id, ServiceResource__c FROM HOT_WageClaim__c LIMIT 1];
-
+        Test.stopTest();
         System.assertEquals(0, wageClaims.size(), 'WageClaim was wrongly created for Agreement Interpreter');
     }
 
