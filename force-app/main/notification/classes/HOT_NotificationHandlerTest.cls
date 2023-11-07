@@ -42,21 +42,16 @@ private class HOT_NotificationHandlerTest {
 
     @isTest
     static void testGetGroupIdByQueueId() {
-        // Create sample queue data
-        Group queue1 = new Group(Type = 'Queue', DeveloperName = 'HOT_group_1111_formidler');
-        Group queue2 = new Group(Type = 'Queue', DeveloperName = 'HOT_Tolk_Akuttvakt');
-        Group queue3 = new Group(Type = 'Queue', DeveloperName = 'HOT_group_1111_formidler');
+        Group queue1 = new Group(DeveloperName = 'HOT_group_1111_formidler');
+        Group queue2 = new Group(DeveloperName = 'HOT_Tolk_Akuttvakt');
+        Group queue3 = new Group(DeveloperName = 'HOT_group_1111_formidler');
 
-        // Insert the sample queues
         insert new List<Group>{ queue1, queue2, queue3 };
 
-        // Define the queue IDs you want to test
         List<Id> queueIdsToTest = new List<Id>{ queue1.Id, queue2.Id, queue3.Id };
 
-        // Call the method to get the result
         Map<Id, Id> result = HOT_NotificationHandler.getGroupIdByQueueId(queueIdsToTest);
 
-        // Assert the results
         System.assertEquals(3, result.size(), 'Det ble ikke opprettet riktig antall køer');
         System.assertEquals(true, result.containsKey(queue1.Id), 'Queue1 ID not found in the result');
         System.assertEquals(true, result.containsKey(queue2.Id), 'Queue2 ID not found in the result');
