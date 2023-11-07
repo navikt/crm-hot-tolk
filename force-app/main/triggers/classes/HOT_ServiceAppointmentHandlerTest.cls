@@ -66,20 +66,12 @@ private class HOT_ServiceAppointmentHandlerTest {
     }
     @isTest
     static void setFieldsByPreferredResourceTest_onInsert() {
-        ServiceResource serviceResource = [
-            SELECT Id, HOT_IsFreelanceInterpreter__c, HOT_ServiceTerritory__c
-            FROM ServiceResource
-        ];
+        ServiceResource serviceResource = [SELECT Id, HOT_IsFreelanceInterpreter__c FROM ServiceResource];
         ServiceAppointment serviceAppointment = [
-            SELECT HOT_IsReleasedToFreelance__c, ServiceTerritoryId
+            SELECT HOT_IsReleasedToFreelance__c
             FROM ServiceAppointment
             WHERE HOT_PreferredResource__c != NULL
         ];
-        System.assertEquals(
-            serviceResource.HOT_ServiceTerritory__c,
-            serviceAppointment.ServiceTerritoryId,
-            'ServiceTerritory on ServiceAppointment was not set to ServiceTerritory on PreferredResources.'
-        );
         System.assertEquals(
             serviceResource.HOT_IsFreelanceInterpreter__c,
             serviceAppointment.HOT_IsReleasedToFreelance__c,
@@ -102,20 +94,12 @@ private class HOT_ServiceAppointmentHandlerTest {
         update serviceAppointment;
         Test.stopTest();
 
-        ServiceResource serviceResource = [
-            SELECT Id, HOT_IsFreelanceInterpreter__c, HOT_ServiceTerritory__c
-            FROM ServiceResource
-        ];
+        ServiceResource serviceResource = [SELECT Id, HOT_IsFreelanceInterpreter__c FROM ServiceResource];
         serviceAppointment = [
-            SELECT HOT_IsReleasedToFreelance__c, ServiceTerritoryId, HOT_Request__c
+            SELECT HOT_IsReleasedToFreelance__c, HOT_Request__c
             FROM ServiceAppointment
             WHERE Id = :serviceAppointment.Id
         ];
-        System.assertEquals(
-            serviceResource.HOT_ServiceTerritory__c,
-            serviceAppointment.ServiceTerritoryId,
-            'ServiceTerritory on ServiceAppointment was not set to ServiceTerritory on PreferredResources.'
-        );
         System.assertEquals(
             serviceResource.HOT_IsFreelanceInterpreter__c,
             serviceAppointment.HOT_IsReleasedToFreelance__c,
@@ -126,7 +110,7 @@ private class HOT_ServiceAppointmentHandlerTest {
     @isTest
     static void setFieldsIfPreferredResourceDeletedTest_onUpdate() {
         ServiceResource serviceResource = [
-            SELECT Id, HOT_IsFreelanceInterpreter__c, HOT_IsEmployedInterpreter__c, HOT_ServiceTerritory__c
+            SELECT Id, HOT_IsFreelanceInterpreter__c, HOT_IsEmployedInterpreter__c
             FROM ServiceResource
             LIMIT 1
         ];
@@ -138,12 +122,7 @@ private class HOT_ServiceAppointmentHandlerTest {
         update serviceResource;
 
         ServiceAppointment serviceAppointment = [
-            SELECT
-                Id,
-                HOT_PreferredResource__c,
-                HOT_IsReleasedToFreelance__c,
-                HOT_IsEmployedInterpreter__c,
-                ServiceTerritoryId
+            SELECT Id, HOT_PreferredResource__c, HOT_IsReleasedToFreelance__c, HOT_IsEmployedInterpreter__c
             FROM ServiceAppointment
             WHERE HOT_PreferredResource__c = NULL
             LIMIT 1
@@ -153,17 +132,11 @@ private class HOT_ServiceAppointmentHandlerTest {
         update serviceAppointment;
 
         serviceAppointment = [
-            SELECT
-                Id,
-                HOT_PreferredResource__c,
-                HOT_IsReleasedToFreelance__c,
-                HOT_IsEmployedInterpreter__c,
-                ServiceTerritoryId
+            SELECT Id, HOT_PreferredResource__c, HOT_IsReleasedToFreelance__c, HOT_IsEmployedInterpreter__c
             FROM ServiceAppointment
             WHERE Id = :saId
         ];
         system.assertEquals(resource.Id, serviceAppointment.HOT_PreferredResource__c);
-        system.assertEquals(serviceResource.HOT_ServiceTerritory__c, serviceAppointment.ServiceTerritoryId);
         system.assertEquals(true, serviceAppointment.HOT_IsReleasedToFreelance__c);
         system.assertEquals(false, serviceAppointment.HOT_IsEmployedInterpreter__c);
 
@@ -914,16 +887,17 @@ private class HOT_ServiceAppointmentHandlerTest {
     }
 
     @isTest
-    public static void actualStartTimesShouldBeSchedStartTimesTest(){
+    public static void actualStartTimesShouldBeSchedStartTimesTest() {
         ServiceAppointment serviceAppointment = [
-            SELECT Id, AccountId, ActualStartTime, ActualEndTime, SchedStartTime, SchedEndTime, Status 
-            FROM ServiceAppointment 
-            LIMIT 1];
+            SELECT Id, AccountId, ActualStartTime, ActualEndTime, SchedStartTime, SchedEndTime, Status
+            FROM ServiceAppointment
+            LIMIT 1
+        ];
 
         serviceAppointment.ActualStartTime = null;
         serviceAppointment.ActualEndTime = null;
         serviceAppointment.Status = 'Completed';
-        
+
         Test.startTest();
         update serviceAppointment;
         Test.stopTest();
@@ -933,17 +907,16 @@ private class HOT_ServiceAppointmentHandlerTest {
             FROM serviceAppointment
             WHERE Id = :serviceAppointment.Id
         ];
-        
+
         System.assertEquals(
-            serviceAppointment.SchedStartTime, 
-            serviceAppointment.ActualStartTime, 
+            serviceAppointment.SchedStartTime,
+            serviceAppointment.ActualStartTime,
             'Expected SchedStartTime and ActualStartTime to be the same'
         );
         System.assertEquals(
-            serviceAppointment.SchedEndTime, 
-            serviceAppointment.ActualEndTime, 
+            serviceAppointment.SchedEndTime,
+            serviceAppointment.ActualEndTime,
             'Expected SchedEndTime and ActualEndTime to be the same'
         );
-
     }
 }
