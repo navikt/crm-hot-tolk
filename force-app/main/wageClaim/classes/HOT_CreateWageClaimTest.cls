@@ -84,6 +84,7 @@ private class HOT_CreateWageClaimTest {
     }
     @isTest
     static void createWageClaimTest_arChanged() {
+        Test.startTest();
         AssignedResource assignedResource = [SELECT Id, ServiceAppointmentId, ServiceResourceId FROM AssignedResource];
         Id oldServiceResourceId = assignedResource.ServiceResourceId;
 
@@ -91,9 +92,7 @@ private class HOT_CreateWageClaimTest {
 
         assignedResource.ServiceResourceId = serviceResource2.Id;
 
-        Test.startTest();
         update assignedResource;
-        Test.stopTest();
 
         List<HOT_WageClaim__c> wageClaims = [
             SELECT Id, ServiceResource__c
@@ -101,6 +100,7 @@ private class HOT_CreateWageClaimTest {
             WHERE ServiceResource__c = :oldServiceResourceId
             LIMIT 1
         ];
+        Test.stopTest();
         System.assertEquals(1, wageClaims.size(), 'Could not create Wage Claims when AR Changed');
     }
 
