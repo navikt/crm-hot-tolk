@@ -581,7 +581,7 @@ private class HOT_ReminderSMSServiceTest {
         Account personAccount = HOT_TestDataFactory.createAccount(true);
         personAccount.INT_PersonIdent__c = '12015678999';
         personAccount.CRM_Person__c = person.Id;
-        ServiceResouce serviceResource = [SELECT Id, AccountId, HOT_MobilePhone__c FROM ServiceResource LIMIT 1];
+        ServiceResource serviceResource = [SELECT Id, AccountId, HOT_MobilePhone__c FROM ServiceResource LIMIT 1];
         WorkType workType = HOT_TestDataFactory.createWorkType();
         insert workType;
         HOT_Request__c request = HOT_TestDataFactory.createRequest('TEST', workType);
