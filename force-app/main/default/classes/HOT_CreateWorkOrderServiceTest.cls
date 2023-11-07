@@ -40,6 +40,36 @@ private class HOT_CreateWorkOrderServiceTest {
     }
 
     @isTest
+    private static void createOver200WorkOrdersToFail() {
+        Boolean errorOccured = false;
+        WorkType workType = HOT_TestDataFactory.createWorkType();
+        insert workType;
+        HOT_Request__c request = HOT_TestDataFactory.createRequest('TEST', workType);
+        insert request;
+
+        HOT_CreateWorkOrderService inputVariable = new HOT_CreateWorkOrderService();
+        inputVariable.requestId = request.Id;
+        inputVariable.startDate = Datetime.now();
+        inputVariable.endDate = Datetime.now().addHours(1);
+        inputVariable.recurringType = 'Daily';
+        inputVariable.recurringEndDate = Date.today().addDays(201);
+
+        List<HOT_CreateWorkOrderService> inputVariables = new List<HOT_CreateWorkOrderService>();
+        inputVariables.add(inputVariable);
+
+        Test.startTest();
+        try {
+            HOT_CreateWorkOrderService.createWorkOrders(inputVariables);
+        } catch (Exception e) {
+            errorOccured = e.getMessage().length() > 0 ? true : false;
+        }
+        Test.stopTest();
+        List<WorkOrder> workOrders = [SELECT Id, HOT_Request__c, StartDate, EndDate FROM WorkOrder];
+        System.assertEquals(true, errorOccured, 'Det ble opprettet feil antall AO-er');
+        System.assertEquals(0, workOrders.size(), 'Det ble opprettet feil antall AO-er');
+    }
+
+    @isTest
     private static void createWorkOrdersDaily() {
         WorkType workType = HOT_TestDataFactory.createWorkType();
         insert workType;
