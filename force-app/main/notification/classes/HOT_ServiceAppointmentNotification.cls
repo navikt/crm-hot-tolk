@@ -1014,12 +1014,13 @@ public without sharing class HOT_ServiceAppointmentNotification {
                 serviceAppointment.HOT_ServiceResource__r.HOT_IsEmployedInterpreter__c
             ) {
                 recipients.add(serviceAppointment.HOT_ServiceResource__r.RelatedRecordId);
-                //creating notification object
-                HOT_Notification__c newnotification = new HOT_Notification__c();
+
                 if (
                     serviceAppointment.HOT_ServiceResource__r.AccountId != null &&
                     !serviceAppointment.HOT_ServiceResource__r.HOT_IsEmployedInterpreter__c
                 ) {
+                    //creating notification object
+                    HOT_Notification__c newnotification = new HOT_Notification__c();
                     newnotification.HOT_Account__c = serviceAppointment.HOT_ServiceResource__r.AccountId;
                     newnotification.HOT_NotificationChannel__c = 'Push-varsel i appen';
                     newnotification.HOT_Subject__c = 'Endring av medtolk';
