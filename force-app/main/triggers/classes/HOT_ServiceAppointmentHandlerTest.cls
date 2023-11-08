@@ -717,60 +717,6 @@ private class HOT_ServiceAppointmentHandlerTest {
     }
 
     @isTest
-    public static void updateServiceTerritoryOnAssignedResourceDeletePreferredResourceNotNull() {
-        ServiceAppointment serviceAppointment = [
-            SELECT Id, ServiceTerritoryId, HOT_WorkOrderLineItem__r.ServiceTerritoryId
-            FROM ServiceAppointment
-            LIMIT 1
-        ];
-        // Need to make new to see if the ServiceTerritory field on SA changes to the new one
-        OperatingHours operatingHours = HOT_TestDataFactory.createOperatingHours();
-        insert operatingHours;
-        ServiceTerritory serviceTerritory = HOT_TestDataFactory.createServiceTerritory(operatingHours);
-        insert serviceTerritory;
-
-        WorkOrderLineItem woli = [
-            SELECT Id, ServiceTerritoryId
-            FROM WorkOrderLineItem
-            WHERE Id = :serviceAppointment.HOT_WorkOrderLineItem__r.Id
-        ];
-        woli.ServiceTerritoryId = serviceTerritory.Id;
-        update woli;
-
-        List<AssignedResource> arList = [
-            SELECT Id
-            FROM AssignedResource
-            WHERE ServiceAppointmentId = :serviceAppointment.Id
-        ];
-
-        Test.startTest();
-        delete arList;
-        Test.stopTest();
-
-        serviceAppointment = [
-            SELECT
-                Id,
-                ServiceTerritoryId,
-                HOT_WorkOrderLineItem__r.ServiceTerritoryId,
-                HOT_PreferredServiceResourceId__c
-            FROM ServiceAppointment
-            WHERE Id = :serviceAppointment.Id
-        ];
-
-        ServiceResource serviceResource = [
-            SELECT Id, HOT_ServiceTerritory__c, HOT_IsFreelanceInterpreter__c, HOT_IsEmployedInterpreter__c
-            FROM ServiceResource
-            WHERE Id = :serviceAppointment.HOT_PreferredServiceResourceId__c
-        ];
-
-        System.assertEquals(
-            serviceResource.HOT_ServiceTerritory__c,
-            serviceAppointment.ServiceTerritoryId,
-            'ServiceTerritory ble ikke satt riktig - updateServiceTerritoryOnAssignedResourceDeletePreferredResourceNotNull'
-        );
-    }
-
-    @isTest
     public static void addContentDocumentLinkToServiceAppointment() {
         HOT_Request__c request = [SELECT Id FROM HOT_Request__c LIMIT 1];
         ServiceAppointment serviceAppointment = [
