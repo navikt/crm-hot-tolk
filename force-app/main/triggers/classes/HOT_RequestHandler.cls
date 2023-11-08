@@ -91,8 +91,8 @@ public without sharing class HOT_RequestHandler extends MyTriggers {
             // Notify user on order
             if (
                 triggerOldMap.get(request.Id).get('Status__c') == 'Åpen' &&
-                triggerOldMap.get(request.Id).get('Status__c') !==
-                request.Status__c && request.Status__c == 'Godkjent' && 
+                triggerOldMap.get(request.Id).get('Status__c') !== request.Status__c &&
+                request.Status__c == 'Godkjent' &&
                 !request.IsAccountEqualOrderer__c
             ) {
                 ordererRequestsToNotifyUsers.add(request);
@@ -120,7 +120,7 @@ public without sharing class HOT_RequestHandler extends MyTriggers {
         List<HOT_Request__c> godkjentRequests = new List<HOT_Request__c>();
         List<Hot_Request__c> requestsWithNewSubject = new List<Hot_Request__c>();
         List<Hot_Request__c> requestsWithUpdatedDispatcher = new List<Hot_Request__c>();
-
+        List<Hot_Request__c> requestsWithUpdatedCompany = new List<Hot_Request__c>();
 
         for (HOT_Request__c request : (List<HOT_Request__c>) records) {
             // Filter for Godkjent requests
@@ -131,7 +131,10 @@ public without sharing class HOT_RequestHandler extends MyTriggers {
                 requestsWithNewSubject.add(request);
             }
             if (triggerOldMap.get(request.Id).get('Dispatcher__c') !== request.Dispatcher__c) {
-            requestsWithUpdatedDispatcher.add(request);
+                requestsWithUpdatedDispatcher.add(request);
+            }
+            if (triggerOldMap.get(request.Id).get('Company__c') !== request.Company__c) {
+                requestsWithUpdatedCompany.add(request);
             }
         }
         if (godkjentRequests.size() > 0) {
@@ -141,44 +144,84 @@ public without sharing class HOT_RequestHandler extends MyTriggers {
             updateWorkOrderSubject(requestsWithNewSubject);
         }
         if (requestsWithUpdatedDispatcher.size() > 0) {
-             updateDispatcherOnThread(requestsWithUpdatedDispatcher);
+            updateDispatcherOnThread(requestsWithUpdatedDispatcher);
+        }
+        if (requestsWithUpdatedCompany.size() > 0) {
+            updateCompany(requestsWithUpdatedCompany);
         }
     }
-    public static void updateDispatcherOnThread(List<HOT_Request__c>  requestsList){
-        Set<Id> requestIds=new Set<Id>();
-        for(HOT_Request__c r:requestsList ){
+    private static void updateCompany(List<HOT_Request__c> requestsWithNewCompany) {
+        List<ServiceAppointment> saList = [
+            SELECT Id, HOT_Company__c, HOT_Request__c
+            FROM ServiceAppointment
+            WHERE HOT_Request__c IN :requestsWithNewCompany
+        ];
+
+        if (saList.size() > 0) {
+            for (ServiceAppointment sa : saList) {
+                for (HOT_Request__c request : requestsWithNewCompany) {
+                    if (sa.HOT_Request__c == request.Id && request.Company__c != null) {
+                        sa.HOT_Company__c = request.Company__c;
+                    }
+                }
+            }
+            update saList;
+        }
+    }
+    public static void updateDispatcherOnThread(List<HOT_Request__c> requestsList) {
+        Set<Id> requestIds = new Set<Id>();
+        for (HOT_Request__c r : requestsList) {
             requestIds.add(r.Id);
         }
-        List<HOT_Request__c> requests=[SELECT Id, Dispatcher__c FROM HOT_Request__C WHERE Id IN :requestIds];
-        List<WorkOrder> workorders=[SELECT Id, HOT_Request__r.Dispatcher__c FROM WorkOrder WHERE HOT_Request__c IN :requestIds];
-        List<ServiceAppointment> serviceAppointments=[SELECT Id, HOT_Request__r.Dispatcher__c FROM ServiceAppointment WHERE HOT_Request__c IN :requestIds];
-        List<HOT_InterestedResource__c> interestedReources=[SELECT Id, ServiceAppointment__r.HOT_Request__r.Dispatcher__c FROM HOT_InterestedResource__c WHERE ServiceAppointment__r.HOT_Request__c IN :requestIds];
-        
-        
-     Map<Id, Id> requestMap = new Map<Id, Id>();
-     Map<Id, Id> workOrderMap = new Map<Id, Id>();
-     Map<Id, Id> serviceApppointmentMap = new Map<Id, Id>();
-     Map<Id, Id> interestedResourceMap = new Map<Id, Id>();
-        for(HOT_Request__c r: requests){
+        List<HOT_Request__c> requests = [SELECT Id, Dispatcher__c FROM HOT_Request__C WHERE Id IN :requestIds];
+        List<WorkOrder> workorders = [
+            SELECT Id, HOT_Request__r.Dispatcher__c
+            FROM WorkOrder
+            WHERE HOT_Request__c IN :requestIds
+        ];
+        List<ServiceAppointment> serviceAppointments = [
+            SELECT Id, HOT_Request__r.Dispatcher__c
+            FROM ServiceAppointment
+            WHERE HOT_Request__c IN :requestIds
+        ];
+        List<HOT_InterestedResource__c> interestedReources = [
+            SELECT Id, ServiceAppointment__r.HOT_Request__r.Dispatcher__c
+            FROM HOT_InterestedResource__c
+            WHERE ServiceAppointment__r.HOT_Request__c IN :requestIds
+        ];
+
+        Map<Id, Id> requestMap = new Map<Id, Id>();
+        Map<Id, Id> workOrderMap = new Map<Id, Id>();
+        Map<Id, Id> serviceApppointmentMap = new Map<Id, Id>();
+        Map<Id, Id> interestedResourceMap = new Map<Id, Id>();
+        for (HOT_Request__c r : requests) {
             requestMap.put(r.Id, r.Dispatcher__c);
         }
-        Set<Id> woIds=new Set<Id>();
-        for(WorkOrder wo: workorders){
+        Set<Id> woIds = new Set<Id>();
+        for (WorkOrder wo : workorders) {
             woIds.add(wo.Id);
             workOrderMap.put(wo.Id, wo.HOT_Request__r.Dispatcher__c);
         }
-        Set<Id> saIds=new Set<Id>();
-        for(ServiceAppointment sa: serviceAppointments){
+        Set<Id> saIds = new Set<Id>();
+        for (ServiceAppointment sa : serviceAppointments) {
             saIds.add(sa.Id);
             serviceApppointmentMap.put(sa.Id, sa.HOT_Request__r.Dispatcher__c);
         }
-        Set<Id> irIds=new Set<Id>();
-        for(HOT_InterestedResource__c ir: interestedReources){
+        Set<Id> irIds = new Set<Id>();
+        for (HOT_InterestedResource__c ir : interestedReources) {
             irIds.add(ir.Id);
             interestedResourceMap.put(ir.Id, ir.serviceAppointment__r.HOT_Request__r.Dispatcher__c);
         }
 
-        List<Thread__c> threadList=[SELECT Id, CRM_Related_Object__c FROM Thread__c WHERE CRM_Related_Object__c IN:requestIds OR CRM_Related_Object__c IN:woIds OR CRM_Related_Object__c IN: saIds OR CRM_Related_Object__c IN: irIds];
+        List<Thread__c> threadList = [
+            SELECT Id, CRM_Related_Object__c
+            FROM Thread__c
+            WHERE
+                CRM_Related_Object__c IN :requestIds
+                OR CRM_Related_Object__c IN :woIds
+                OR CRM_Related_Object__c IN :saIds
+                OR CRM_Related_Object__c IN :irIds
+        ];
 
         for (Thread__c thread : threadList) {
             if (requestMap.containsKey(thread.CRM_Related_Object__c)) {
@@ -192,8 +235,8 @@ public without sharing class HOT_RequestHandler extends MyTriggers {
             }
         }
         update threadList;
-    }  
-    
+    }
+
     private static void updateWorkOrderSubject(List<HOT_Request__c> requestsWithNewSubject) {
         List<WorkOrder> workOrders = [
             SELECT Id, Subject, HOT_Request__r.Subject__c
