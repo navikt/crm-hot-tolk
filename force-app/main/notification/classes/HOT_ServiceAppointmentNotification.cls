@@ -987,8 +987,8 @@ public without sharing class HOT_ServiceAppointmentNotification {
         }
     }
     public static void notifyInterpretersOnChangedResource(ServiceAppointment sa) {
-        ServiceAppointment sar = [
-            SELECT HOT_WorkOrderLineItem__r.WorkOrderId, HOT_ServiceResource__r.Name
+        ServiceAppointment getserviceAppointment = [
+            SELECT HOT_WorkOrderLineItem__r.WorkOrderId, HOT_ServiceResource__r.Name, SchedStartTime, SchedEndTime
             FROM ServiceAppointment
             WHERE Id = :sa.Id
         ];
@@ -1002,7 +1002,7 @@ public without sharing class HOT_ServiceAppointmentNotification {
                 HOT_ServiceResource__r.HOT_NotificationChannel__c,
                 HOT_ServiceResource__r.RelatedRecordId
             FROM ServiceAppointment
-            WHERE HOT_WorkOrderLineItem__r.WorkOrderId = :sar.HOT_WorkOrderLineItem__r.WorkOrderId
+            WHERE HOT_WorkOrderLineItem__r.WorkOrderId = :getserviceAppointment.HOT_WorkOrderLineItem__r.WorkOrderId
         ];
 
         Set<String> recipients = new Set<String>();
@@ -1021,17 +1021,20 @@ public without sharing class HOT_ServiceAppointmentNotification {
             HOT_UserNotificationService.coInterpreterChangeNotification(
                 getCustomNotificationType('HOT_NotifyUser'),
                 sa,
-                sar.HOT_ServiceResource__r.Name,
+                getserviceAppointment.HOT_ServiceResource__r.Name,
                 recipients
             );
             //LAG VARSLER TIL NOTIFIKASJONSSENTER
         }
         if (!serviceresourcesIds.isEmpty()) {
-            String startEndString = HOT_ReminderSMSService.formatTimePeriod(sa.SchedStartTime, sa.SchedEndTime);
+            String startEndString = HOT_ReminderSMSService.formatTimePeriod(
+                getserviceAppointment.SchedStartTime,
+                getserviceAppointment.SchedEndTime
+            );
             HOT_ReminderSMSService.sendSMSOnCoInterpreterChange(
                 serviceresourcesIds,
                 startEndString,
-                sa.HOT_ServiceResource__r.Name
+                getserviceAppointment.HOT_ServiceResource__r.Name
             );
         }
     }
