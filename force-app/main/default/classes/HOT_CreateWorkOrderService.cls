@@ -104,7 +104,7 @@ public without sharing class HOT_CreateWorkOrderService {
             Integer numberOfRecurrences = input.startDate.date().daysBetween(input.recurringEndDate);
 
             if (numberOfRecurrences > maxNumberOfRecurrences) {
-                errors.add('Kan ikke opprette mere en 200 arbeidsordre av gangen');
+                errors.add('Kan ikke opprette flere enn 200 arbeidsordre av gangen');
                 return errors;
             }
 
@@ -163,7 +163,7 @@ public without sharing class HOT_CreateWorkOrderService {
             }
 
             if (workOrders.size() > maxNumberOfRecurrences) {
-                errors.add('Kan ikke opprette mere en 200 arbeidsordre av gangen');
+                errors.add('Kan ikke opprette mer enn 200 arbeidsordre av gangen');
                 return errors;
             }
 
@@ -210,7 +210,7 @@ public without sharing class HOT_CreateWorkOrderService {
             }
 
             if (workOrders.size() > maxNumberOfRecurrences) {
-                errors.add('Kan ikke opprette mere en 200 arbeidsordre av gangen');
+                errors.add('Kan ikke opprette mer enn 200 arbeidsordre av gangen');
                 return errors;
             }
 
@@ -228,7 +228,7 @@ public without sharing class HOT_CreateWorkOrderService {
             Integer numberOfRecurrences = input.startDate.date().monthsBetween(input.recurringEndDate);
 
             if (numberOfRecurrences > maxNumberOfRecurrences) {
-                errors.add('Kan ikke opprette mere en 200 arbeidsordre av gangen');
+                errors.add('Kan ikke opprette mer enn 200 arbeidsordre av gangen');
                 return errors;
             }
 
