@@ -1009,16 +1009,20 @@ public without sharing class HOT_ServiceAppointmentNotification {
             FROM ServiceAppointment
             WHERE
                 HOT_WorkOrderLineItem__r.WorkOrderId = :getserviceAppointment.HOT_WorkOrderLineItem__r.WorkOrderId
-                AND Id != :getserviceAppointment.Id
+                AND Id != :sa.Id
         ];
         //creating notification object list
         List<HOT_Notification__c> notificationList = new List<HOT_Notification__c>();
-        Set<String> recipients = new Set<String>();
+        Set<String> freelanceInterpreterRecipients = new Set<String>();
+        Set<String> employeeInterpreterRecipients = new Set<String>();
         Set<Id> serviceresourcesIds = new Set<Id>();
         for (ServiceAppointment serviceAppointment : updatedSA) {
             if (serviceAppointment.HOT_ServiceResource__r.HOT_NotificationChannel__c.contains('Push')) {
-                recipients.add(serviceAppointment.HOT_ServiceResource__r.RelatedRecordId);
-
+                if (serviceAppointment.HOT_ServiceResource__r.HOT_IsEmployedInterpreter__c) {
+                    employeeInterpreterRecipients.add(serviceAppointment.HOT_ServiceResource__r.RelatedRecordId);
+                } else {
+                    freelanceInterpreterRecipients.add(serviceAppointment.HOT_ServiceResource__r.RelatedRecordId);
+                }
                 if (
                     serviceAppointment.HOT_ServiceResource__r.AccountId != null &&
                     !serviceAppointment.HOT_ServiceResource__r.HOT_IsEmployedInterpreter__c
@@ -1080,15 +1084,20 @@ public without sharing class HOT_ServiceAppointmentNotification {
                 }
             }
         }
-        if (!recipients.isEmpty()) {
-            CustomNotificationType notificationType = getserviceAppointment.HOT_ServiceResource__r.HOT_IsEmployedInterpreter__c
-                ? getCustomNotificationType('HOT_NotifyInterpreter')
-                : getCustomNotificationType('HOT_NotifyUser');
+        if (!employeeInterpreterRecipients.isEmpty()) {
             HOT_UserNotificationService.coInterpreterChangeNotification(
-                notificationType,
+                getCustomNotificationType('HOT_NotifyInterpreter'),
                 sa,
                 getserviceAppointment.HOT_ServiceResource__r.Name,
-                recipients
+                employeeInterpreterRecipients
+            );
+        }
+        if (!freelanceInterpreterRecipients.isEmpty()) {
+            HOT_UserNotificationService.coInterpreterChangeNotification(
+                getCustomNotificationType('HOT_NotifyUser'),
+                sa,
+                getserviceAppointment.HOT_ServiceResource__r.Name,
+                freelanceInterpreterRecipients
             );
         }
         if (!serviceresourcesIds.isEmpty()) {
