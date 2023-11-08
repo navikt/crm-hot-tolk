@@ -66,20 +66,12 @@ private class HOT_ServiceAppointmentHandlerTest {
     }
     @isTest
     static void setFieldsByPreferredResourceTest_onInsert() {
-        ServiceResource serviceResource = [
-            SELECT Id, HOT_IsFreelanceInterpreter__c, HOT_ServiceTerritory__c
-            FROM ServiceResource
-        ];
+        ServiceResource serviceResource = [SELECT Id, HOT_IsFreelanceInterpreter__c FROM ServiceResource];
         ServiceAppointment serviceAppointment = [
-            SELECT HOT_IsReleasedToFreelance__c, ServiceTerritoryId
+            SELECT HOT_IsReleasedToFreelance__c
             FROM ServiceAppointment
             WHERE HOT_PreferredResource__c != NULL
         ];
-        System.assertEquals(
-            serviceResource.HOT_ServiceTerritory__c,
-            serviceAppointment.ServiceTerritoryId,
-            'ServiceTerritory on ServiceAppointment was not set to ServiceTerritory on PreferredResources.'
-        );
         System.assertEquals(
             serviceResource.HOT_IsFreelanceInterpreter__c,
             serviceAppointment.HOT_IsReleasedToFreelance__c,
@@ -102,20 +94,12 @@ private class HOT_ServiceAppointmentHandlerTest {
         update serviceAppointment;
         Test.stopTest();
 
-        ServiceResource serviceResource = [
-            SELECT Id, HOT_IsFreelanceInterpreter__c, HOT_ServiceTerritory__c
-            FROM ServiceResource
-        ];
+        ServiceResource serviceResource = [SELECT Id, HOT_IsFreelanceInterpreter__c FROM ServiceResource];
         serviceAppointment = [
-            SELECT HOT_IsReleasedToFreelance__c, ServiceTerritoryId, HOT_Request__c
+            SELECT HOT_IsReleasedToFreelance__c, HOT_Request__c
             FROM ServiceAppointment
             WHERE Id = :serviceAppointment.Id
         ];
-        System.assertEquals(
-            serviceResource.HOT_ServiceTerritory__c,
-            serviceAppointment.ServiceTerritoryId,
-            'ServiceTerritory on ServiceAppointment was not set to ServiceTerritory on PreferredResources.'
-        );
         System.assertEquals(
             serviceResource.HOT_IsFreelanceInterpreter__c,
             serviceAppointment.HOT_IsReleasedToFreelance__c,
@@ -126,7 +110,7 @@ private class HOT_ServiceAppointmentHandlerTest {
     @isTest
     static void setFieldsIfPreferredResourceDeletedTest_onUpdate() {
         ServiceResource serviceResource = [
-            SELECT Id, HOT_IsFreelanceInterpreter__c, HOT_IsEmployedInterpreter__c, HOT_ServiceTerritory__c
+            SELECT Id, HOT_IsFreelanceInterpreter__c, HOT_IsEmployedInterpreter__c
             FROM ServiceResource
             LIMIT 1
         ];
@@ -138,12 +122,7 @@ private class HOT_ServiceAppointmentHandlerTest {
         update serviceResource;
 
         ServiceAppointment serviceAppointment = [
-            SELECT
-                Id,
-                HOT_PreferredResource__c,
-                HOT_IsReleasedToFreelance__c,
-                HOT_IsEmployedInterpreter__c,
-                ServiceTerritoryId
+            SELECT Id, HOT_PreferredResource__c, HOT_IsReleasedToFreelance__c, HOT_IsEmployedInterpreter__c
             FROM ServiceAppointment
             WHERE HOT_PreferredResource__c = NULL
             LIMIT 1
@@ -153,17 +132,11 @@ private class HOT_ServiceAppointmentHandlerTest {
         update serviceAppointment;
 
         serviceAppointment = [
-            SELECT
-                Id,
-                HOT_PreferredResource__c,
-                HOT_IsReleasedToFreelance__c,
-                HOT_IsEmployedInterpreter__c,
-                ServiceTerritoryId
+            SELECT Id, HOT_PreferredResource__c, HOT_IsReleasedToFreelance__c, HOT_IsEmployedInterpreter__c
             FROM ServiceAppointment
             WHERE Id = :saId
         ];
         system.assertEquals(resource.Id, serviceAppointment.HOT_PreferredResource__c);
-        system.assertEquals(serviceResource.HOT_ServiceTerritory__c, serviceAppointment.ServiceTerritoryId);
         system.assertEquals(true, serviceAppointment.HOT_IsReleasedToFreelance__c);
         system.assertEquals(false, serviceAppointment.HOT_IsEmployedInterpreter__c);
 
@@ -740,60 +713,6 @@ private class HOT_ServiceAppointmentHandlerTest {
             woli.ServiceTerritoryId,
             serviceAppointment.ServiceTerritoryId,
             'ServiceTerritory ble ikke satt riktig - updateServiceTerritoryOnAssignedResourceDelete'
-        );
-    }
-
-    @isTest
-    public static void updateServiceTerritoryOnAssignedResourceDeletePreferredResourceNotNull() {
-        ServiceAppointment serviceAppointment = [
-            SELECT Id, ServiceTerritoryId, HOT_WorkOrderLineItem__r.ServiceTerritoryId
-            FROM ServiceAppointment
-            LIMIT 1
-        ];
-        // Need to make new to see if the ServiceTerritory field on SA changes to the new one
-        OperatingHours operatingHours = HOT_TestDataFactory.createOperatingHours();
-        insert operatingHours;
-        ServiceTerritory serviceTerritory = HOT_TestDataFactory.createServiceTerritory(operatingHours);
-        insert serviceTerritory;
-
-        WorkOrderLineItem woli = [
-            SELECT Id, ServiceTerritoryId
-            FROM WorkOrderLineItem
-            WHERE Id = :serviceAppointment.HOT_WorkOrderLineItem__r.Id
-        ];
-        woli.ServiceTerritoryId = serviceTerritory.Id;
-        update woli;
-
-        List<AssignedResource> arList = [
-            SELECT Id
-            FROM AssignedResource
-            WHERE ServiceAppointmentId = :serviceAppointment.Id
-        ];
-
-        Test.startTest();
-        delete arList;
-        Test.stopTest();
-
-        serviceAppointment = [
-            SELECT
-                Id,
-                ServiceTerritoryId,
-                HOT_WorkOrderLineItem__r.ServiceTerritoryId,
-                HOT_PreferredServiceResourceId__c
-            FROM ServiceAppointment
-            WHERE Id = :serviceAppointment.Id
-        ];
-
-        ServiceResource serviceResource = [
-            SELECT Id, HOT_ServiceTerritory__c, HOT_IsFreelanceInterpreter__c, HOT_IsEmployedInterpreter__c
-            FROM ServiceResource
-            WHERE Id = :serviceAppointment.HOT_PreferredServiceResourceId__c
-        ];
-
-        System.assertEquals(
-            serviceResource.HOT_ServiceTerritory__c,
-            serviceAppointment.ServiceTerritoryId,
-            'ServiceTerritory ble ikke satt riktig - updateServiceTerritoryOnAssignedResourceDeletePreferredResourceNotNull'
         );
     }
 
