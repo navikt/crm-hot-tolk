@@ -750,6 +750,10 @@ private class HOT_ServiceAppointmentHandlerTest {
             FROM ServiceAppointment
             LIMIT 1
         ];
+
+        serviceTerritory serviceTerritoryOld = serviceAppointment.ServiceTerritoryId;
+        System.assertEquals(null, serviceAppointment.serviceTerritoryOld);
+
         // Need to make new to see if the ServiceTerritory field on SA changes to the new one
         OperatingHours operatingHours = HOT_TestDataFactory.createOperatingHours();
         insert operatingHours;
@@ -790,8 +794,9 @@ private class HOT_ServiceAppointmentHandlerTest {
             WHERE Id = :serviceAppointment.HOT_PreferredServiceResourceId__c
         ];
 
+        //Since we not longer set service territory equal to the preferred resource's ST, the ST should remain as it is upon creation
         System.assertEquals(
-            serviceResource.HOT_ServiceTerritory__c,
+            null,
             serviceAppointment.ServiceTerritoryId,
             'ServiceTerritory ble ikke satt riktig - updateServiceTerritoryOnAssignedResourceDeletePreferredResourceNotNull'
         );
@@ -914,16 +919,17 @@ private class HOT_ServiceAppointmentHandlerTest {
     }
 
     @isTest
-    public static void actualStartTimesShouldBeSchedStartTimesTest(){
+    public static void actualStartTimesShouldBeSchedStartTimesTest() {
         ServiceAppointment serviceAppointment = [
-            SELECT Id, AccountId, ActualStartTime, ActualEndTime, SchedStartTime, SchedEndTime, Status 
-            FROM ServiceAppointment 
-            LIMIT 1];
+            SELECT Id, AccountId, ActualStartTime, ActualEndTime, SchedStartTime, SchedEndTime, Status
+            FROM ServiceAppointment
+            LIMIT 1
+        ];
 
         serviceAppointment.ActualStartTime = null;
         serviceAppointment.ActualEndTime = null;
         serviceAppointment.Status = 'Completed';
-        
+
         Test.startTest();
         update serviceAppointment;
         Test.stopTest();
@@ -933,17 +939,16 @@ private class HOT_ServiceAppointmentHandlerTest {
             FROM serviceAppointment
             WHERE Id = :serviceAppointment.Id
         ];
-        
+
         System.assertEquals(
-            serviceAppointment.SchedStartTime, 
-            serviceAppointment.ActualStartTime, 
+            serviceAppointment.SchedStartTime,
+            serviceAppointment.ActualStartTime,
             'Expected SchedStartTime and ActualStartTime to be the same'
         );
         System.assertEquals(
-            serviceAppointment.SchedEndTime, 
-            serviceAppointment.ActualEndTime, 
+            serviceAppointment.SchedEndTime,
+            serviceAppointment.ActualEndTime,
             'Expected SchedEndTime and ActualEndTime to be the same'
         );
-
     }
 }
