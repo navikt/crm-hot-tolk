@@ -386,15 +386,20 @@ public without sharing class HOT_ReminderSMSService {
                 notification.HOT_Account__c = wo.HOT_Request__r.Orderer__c;
                 notification.HOT_NotificationChannel__c = 'SMS';
                 notification.HOT_Subject__c = 'INFO\nTolk på din bestilling er endret:\n';
-                notification.HOT_NotificationText__c =
-                    'INFO\nTolk på din bestilling er endret:\n' +
-                    'Tolk er: ' +
-                    wo.HOT_Interpreters__c +
-                    '\nDato: ' +
-                    formatTimePeriod(wo.StartDate, wo.EndDate) +
-                    '\nFor mer informasjon, se tolkebestilling.nav.no.\n' +
-                    'Du kan ikke svare på denne meldingen.\n' +
-                    'Mvh tolketjenesten i NAV';
+                String text = 'INFO\nTolk på din bestilling er endret:\n' + 'Tolk er: ' + interpreterName;
+                if (text.length() > 135) {
+                    notification.HOT_NotificationText__c = text.substring(0, 135) + ' ...';
+                    notification.HOT_NotificationText__c +=
+                        '\nFor mer informasjon, se tolkebestilling.nav.no.\n' +
+                        'Du kan ikke svare på denne meldingen.\n' +
+                        'Mvh tolketjenesten i NAV';
+                } else {
+                    notification.HOT_NotificationText__c = text;
+                    notification.HOT_NotificationText__c +=
+                        '\nFor mer informasjon, se tolkebestilling.nav.no.\n' +
+                        'Du kan ikke svare på denne meldingen.\n' +
+                        'Mvh tolketjenesten i NAV';
+                }
                 notification.HOT_RelatedObject__c = wo.Id;
                 notification.HOT_RelatedObjectType__c = 'workOrder';
 
