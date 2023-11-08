@@ -988,7 +988,7 @@ public without sharing class HOT_ServiceAppointmentNotification {
     }
     public static void notifyInterpretersOnChangedResource(ServiceAppointment sa) {
         ServiceAppointment sar = [
-            SELECT HOT_WorkOrderLineItem__r.WorkOrderId
+            SELECT HOT_WorkOrderLineItem__r.WorkOrderId, HOT_ServiceResource__r.Name
             FROM ServiceAppointment
             WHERE Id = :sa.Id
         ];
@@ -1021,7 +1021,7 @@ public without sharing class HOT_ServiceAppointmentNotification {
             HOT_UserNotificationService.coInterpreterChangeNotification(
                 getCustomNotificationType('HOT_NotifyUser'),
                 sa,
-                sa.HOT_ServiceResource__r.Name,
+                sar.HOT_ServiceResource__r.Name,
                 recipients
             );
             //LAG VARSLER TIL NOTIFIKASJONSSENTER

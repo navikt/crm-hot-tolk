@@ -188,7 +188,7 @@ public without sharing class HOT_UserNotificationService {
         String interpreters,
         Set<String> recipients
     ) {
-        String title = 'Endring av tolk';
+        String title = 'Endring av medtolk';
         String body =
             'Medtolk på et oppdrag du er tildelt er blitt endret. \nNy tolk er: ' +
             interpreters +
