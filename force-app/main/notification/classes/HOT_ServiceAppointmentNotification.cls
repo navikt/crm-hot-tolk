@@ -952,7 +952,7 @@ public without sharing class HOT_ServiceAppointmentNotification {
                         newnotification.HOT_Subject__c = 'Endring av tolk';
                         String text =
                             'Tolk på din bestilling er endret. \nTolk er: ' +
-                            wo.HOT_Interpreters__c +
+                            interpreterNames.get(wo.Id) +
                             '\nDato: ' +
                             wo.StartDate?.format('dd.MM.yyyy', 'Europe/Oslo') +
                             ', kl: ' +

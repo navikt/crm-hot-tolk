@@ -386,7 +386,7 @@ public without sharing class HOT_ReminderSMSService {
                 notification.HOT_Account__c = wo.HOT_Request__r.Orderer__c;
                 notification.HOT_NotificationChannel__c = 'SMS';
                 notification.HOT_Subject__c = 'INFO\nTolk på din bestilling er endret:\n';
-                String text = 'INFO\nTolk på din bestilling er endret:\n' + 'Tolk er: ' + wo.HOT_Interpreters__c;
+                String text = 'INFO\nTolk på din bestilling er endret:\n' + 'Tolk er: ' + interpreterName;
                 if (text.length() > 135) {
                     notification.HOT_NotificationText__c = text.substring(0, 135) + ' ...';
                     notification.HOT_NotificationText__c +=
