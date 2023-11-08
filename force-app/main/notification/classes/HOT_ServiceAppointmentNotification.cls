@@ -1007,17 +1007,16 @@ public without sharing class HOT_ServiceAppointmentNotification {
                 HOT_ServiceResource__r.HOT_NotificationChannel__c,
                 HOT_ServiceResource__r.RelatedRecordId
             FROM ServiceAppointment
-            WHERE HOT_WorkOrderLineItem__r.WorkOrderId = :getserviceAppointment.HOT_WorkOrderLineItem__r.WorkOrderId
+            WHERE
+                HOT_WorkOrderLineItem__r.WorkOrderId = :getserviceAppointment.HOT_WorkOrderLineItem__r.WorkOrderId
+                AND Id != :getserviceAppointment.Id
         ];
         //creating notification object list
         List<HOT_Notification__c> notificationList = new List<HOT_Notification__c>();
         Set<String> recipients = new Set<String>();
         Set<Id> serviceresourcesIds = new Set<Id>();
         for (ServiceAppointment serviceAppointment : updatedSA) {
-            if (
-                serviceAppointment.HOT_ServiceResource__r.HOT_NotificationChannel__c.contains('Push') ||
-                serviceAppointment.HOT_ServiceResource__r.HOT_IsEmployedInterpreter__c
-            ) {
+            if (serviceAppointment.HOT_ServiceResource__r.HOT_NotificationChannel__c.contains('Push')) {
                 recipients.add(serviceAppointment.HOT_ServiceResource__r.RelatedRecordId);
 
                 if (
