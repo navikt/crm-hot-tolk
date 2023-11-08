@@ -982,13 +982,17 @@ public without sharing class HOT_ServiceAppointmentNotification {
         }
     }
     public static void notifyInterpretersOnChangedResource(ServiceAppointment sa) {
-        List<Id> employeeAccountIds = new List<Id>();
-        List<Id> freelanceAccountIds = new List<Id>();
-
+        //test
+        ServiceAppointment sar = [
+            SELECT HOT_WorkOrderLineItem__r.WorkOrderId
+            FROM ServiceAppointment
+            WHERE Id = :sa.Id
+        ];
+        //HENT SERVICEAPPOINTMENT LIMIT 1 WORKORDER ID
         WorkOrder wo = [
             SELECT Id, StartDate, EndDate
             FROM WorkOrder
-            WHERE Id = :sa.HOT_WorkOrderLineItem__r.WorkOrderId
+            WHERE Id = :sar.HOT_WorkOrderLineItem__r.WorkOrderId
         ];
 
         List<ServiceAppointment> updatedSA = [
