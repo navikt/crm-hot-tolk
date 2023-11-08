@@ -184,7 +184,7 @@ public without sharing class HOT_UserNotificationService {
     }
     public static void coInterpreterChangeNotification(
         CustomNotificationType notificationType,
-        WorkOrder workOrder,
+        ServiceAppointment sa,
         String interpreters,
         Set<String> recipients
     ) {
@@ -193,15 +193,15 @@ public without sharing class HOT_UserNotificationService {
             'Medtolk på et oppdrag du er tildelt er blitt endret. \nNy tolk er: ' +
             interpreters +
             '\nDato: ' +
-            workOrder.StartDate?.format('dd.MM.yyyy', 'Europe/Oslo') +
+            sa.SchedStartTime?.format('dd.MM.yyyy', 'Europe/Oslo') +
             ', kl: ' +
-            workOrder.StartDate?.format('HH:mm', 'Europe/Oslo') +
+            sa.SchedStartTime?.format('HH:mm', 'Europe/Oslo') +
             ' - ' +
-            workOrder.EndDate?.format('HH:mm', 'Europe/Oslo') +
+            sa.SchedEndTime?.format('HH:mm', 'Europe/Oslo') +
             '.';
 
         Id notificationTypeId = notificationType.Id;
-        String targetPageRef = getTargetPageRefSA();
+        String targetPageRef = HOT_ServiceAppointmentNotification.getTargetPageRefInterpreter('my', sa.Id);
         Messaging.CustomNotification notification = new Messaging.CustomNotification();
         notification.setTitle(title);
         notification.setBody(body);
@@ -309,13 +309,6 @@ public without sharing class HOT_UserNotificationService {
         String pageRef =
             '{type: "comm__namedPage",attributes: {pageName: "mine-oppdrag"}, state: {list: "' +
             'wanted' +
-            '"}}';
-        return pageRef;
-    }
-    private static String getTargetPageRefSA() {
-        String pageRef =
-            '{type: "comm__namedPage",attributes: {pageName: "mine-oppdrag"}, state: {list: "' +
-            'my' +
             '"}}';
         return pageRef;
     }

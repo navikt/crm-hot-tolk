@@ -950,7 +950,7 @@ public without sharing class HOT_ServiceAppointmentNotification {
                         newnotification.HOT_Account__c = wo.HOT_Request__r.Orderer__c;
                         newnotification.HOT_NotificationChannel__c = 'Push-varsel i appen';
                         newnotification.HOT_Subject__c = 'Endring av tolk';
-                        newnotification.HOT_NotificationText__c =
+                        String text =
                             'Tolk på din bestilling er endret. \nTolk er: ' +
                             wo.HOT_Interpreters__c +
                             '\nDato: ' +
@@ -960,6 +960,11 @@ public without sharing class HOT_ServiceAppointmentNotification {
                             ' - ' +
                             wo.EndDate?.format('HH:mm', 'Europe/Oslo') +
                             '.';
+                        if (text.length() > 250) {
+                            newnotification.HOT_NotificationText__c = text.substring(0, 250) + ' ...';
+                        } else {
+                            newnotification.HOT_NotificationText__c = text;
+                        }
                         newnotification.HOT_RelatedObject__c = wo.Id;
                         newnotification.HOT_RelatedObjectType__c = 'workOrder';
 
@@ -982,17 +987,10 @@ public without sharing class HOT_ServiceAppointmentNotification {
         }
     }
     public static void notifyInterpretersOnChangedResource(ServiceAppointment sa) {
-        //test
         ServiceAppointment sar = [
             SELECT HOT_WorkOrderLineItem__r.WorkOrderId
             FROM ServiceAppointment
             WHERE Id = :sa.Id
-        ];
-        //HENT SERVICEAPPOINTMENT LIMIT 1 WORKORDER ID
-        WorkOrder wo = [
-            SELECT Id, StartDate, EndDate
-            FROM WorkOrder
-            WHERE Id = :sar.HOT_WorkOrderLineItem__r.WorkOrderId
         ];
 
         List<ServiceAppointment> updatedSA = [
@@ -1004,7 +1002,7 @@ public without sharing class HOT_ServiceAppointmentNotification {
                 HOT_ServiceResource__r.HOT_NotificationChannel__c,
                 HOT_ServiceResource__r.RelatedRecordId
             FROM ServiceAppointment
-            WHERE HOT_WorkOrderLineItem__r.WorkOrderId = :sa.HOT_WorkOrderLineItem__r.WorkOrderId
+            WHERE HOT_WorkOrderLineItem__r.WorkOrderId = :sar.HOT_WorkOrderLineItem__r.WorkOrderId
         ];
 
         Set<String> recipients = new Set<String>();
@@ -1022,14 +1020,14 @@ public without sharing class HOT_ServiceAppointmentNotification {
         if (!recipients.isEmpty()) {
             HOT_UserNotificationService.coInterpreterChangeNotification(
                 getCustomNotificationType('HOT_NotifyUser'),
-                wo,
+                sa,
                 sa.HOT_ServiceResource__r.Name,
                 recipients
             );
             //LAG VARSLER TIL NOTIFIKASJONSSENTER
         }
         if (!serviceresourcesIds.isEmpty()) {
-            String startEndString = HOT_ReminderSMSService.formatTimePeriod(wo.StartDate, wo.EndDate);
+            String startEndString = HOT_ReminderSMSService.formatTimePeriod(sa.SchedStartTime, sa.SchedEndTime);
             HOT_ReminderSMSService.sendSMSOnCoInterpreterChange(
                 serviceresourcesIds,
                 startEndString,
@@ -1047,7 +1045,7 @@ public without sharing class HOT_ServiceAppointmentNotification {
         return notificationType;
     }
 
-    private static String getTargetPageRefInterpreter(String targetList, Id targetId) {
+    public static String getTargetPageRefInterpreter(String targetList, Id targetId) {
         String pageRef =
             '{type: "comm__namedPage",attributes: {pageName: "mine-oppdrag"}, state: {list: "' +
             targetList +
