@@ -950,9 +950,9 @@ public without sharing class HOT_ServiceAppointmentNotification {
                         newnotification.HOT_Account__c = wo.HOT_Request__r.Orderer__c;
                         newnotification.HOT_NotificationChannel__c = 'Push-varsel i appen';
                         newnotification.HOT_Subject__c = 'Endring av tolk';
-                        newnotification.HOT_NotificationText__c =
+                        String text =
                             'Tolk på din bestilling er endret. \nTolk er: ' +
-                            wo.HOT_Interpreters__c +
+                            interpreterNames.get(wo.Id) +
                             '\nDato: ' +
                             wo.StartDate?.format('dd.MM.yyyy', 'Europe/Oslo') +
                             ', kl: ' +
@@ -960,6 +960,11 @@ public without sharing class HOT_ServiceAppointmentNotification {
                             ' - ' +
                             wo.EndDate?.format('HH:mm', 'Europe/Oslo') +
                             '.';
+                        if (text.length() > 250) {
+                            newnotification.HOT_NotificationText__c = text.substring(0, 250) + ' ...';
+                        } else {
+                            newnotification.HOT_NotificationText__c = text;
+                        }
                         newnotification.HOT_RelatedObject__c = wo.Id;
                         newnotification.HOT_RelatedObjectType__c = 'workOrder';
 
