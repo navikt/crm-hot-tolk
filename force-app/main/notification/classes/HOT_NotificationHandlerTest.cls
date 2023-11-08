@@ -50,7 +50,6 @@ private class HOT_NotificationHandlerTest {
                 OR DeveloperName = 'HOT_Tolk_Akuttvakt'
                 OR DeveloperName = 'HOT_group_4706_formidler'
         ];
-        insert grpList;
         List<Id> queueIdsToTest = new List<Id>();
 
         for (Group grp : grpList) {
