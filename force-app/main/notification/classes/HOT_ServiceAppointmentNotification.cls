@@ -1004,7 +1004,8 @@ public without sharing class HOT_ServiceAppointmentNotification {
             FROM ServiceAppointment
             WHERE HOT_WorkOrderLineItem__r.WorkOrderId = :getserviceAppointment.HOT_WorkOrderLineItem__r.WorkOrderId
         ];
-
+        //creating notification object list
+        List<HOT_Notification__c> notificationList = new List<HOT_Notification__c>();
         Set<String> recipients = new Set<String>();
         Set<Id> serviceresourcesIds = new Set<Id>();
         for (ServiceAppointment serviceAppointment : updatedSA) {
@@ -1013,8 +1014,58 @@ public without sharing class HOT_ServiceAppointmentNotification {
                 serviceAppointment.HOT_ServiceResource__r.HOT_IsEmployedInterpreter__c == true
             ) {
                 recipients.add(serviceAppointment.HOT_ServiceResource__r.RelatedRecordId);
+                //creating notification object
+                HOT_Notification__c newnotification = new HOT_Notification__c();
+                newnotification.HOT_Account__c = serviceAppointment.HOT_ServiceResource__r.AccountId;
+                newnotification.HOT_NotificationChannel__c = 'Push-varsel i appen';
+                newnotification.HOT_Subject__c = 'Endring av medtolk';
+                String text =
+                    'Medtolk på et oppdrag du er tildelt er blitt endret. \nNy tolk er: ' +
+                    getserviceAppointment.HOT_ServiceResource__r.Name +
+                    '\nDato: ' +
+                    getserviceAppointment.SchedStartTime?.format('dd.MM.yyyy', 'Europe/Oslo') +
+                    ', kl: ' +
+                    getserviceAppointment.SchedStartTime?.format('HH:mm', 'Europe/Oslo') +
+                    ' - ' +
+                    getserviceAppointment.SchedEndTime?.format('HH:mm', 'Europe/Oslo') +
+                    '.';
+                if (text.length() > 250) {
+                    newnotification.HOT_NotificationText__c = text.substring(0, 250) + ' ...';
+                } else {
+                    newnotification.HOT_NotificationText__c = text;
+                }
+                newnotification.HOT_RelatedObject__c = getserviceAppointment.Id;
+                newnotification.HOT_RelatedObjectType__c = 'serviceAppointment';
+
+                notificationList.add(newnotification);
             } else {
                 serviceresourcesIds.add(serviceAppointment.HOT_ServiceResource__r.Id);
+                if (serviceAppointment.HOT_ServiceResource__r.HOT_IsFreelanceInterpreter__c == true) {
+                    //creating notification object
+                    HOT_Notification__c newnotification = new HOT_Notification__c();
+                    newnotification.HOT_Account__c = serviceAppointment.HOT_ServiceResource__r.AccountId;
+                    newnotification.HOT_NotificationChannel__c = 'SMS';
+                    newnotification.HOT_Subject__c = 'Endring av medtolk';
+                    String text = 'INFO\nMedtolk på et oppdrag du er tildelt er blitt endret. \nNy tolk er:\n';
+                    text += getserviceAppointment.HOT_ServiceResource__r.Name;
+                    text +=
+                        '\nDato: ' +
+                        HOT_ReminderSMSService.formatTimePeriod(
+                            getserviceAppointment.SchedStartTime,
+                            getserviceAppointment.SchedEndTime
+                        );
+                    text += '\n\nFor mer informasjon, se tolkebestilling.nav.no. Du kan ikke svare på denne meldingen.';
+                    text += '\nMvh tolketjenesten i NAV';
+                    if (text.length() > 250) {
+                        newnotification.HOT_NotificationText__c = text.substring(0, 250) + ' ...';
+                    } else {
+                        newnotification.HOT_NotificationText__c = text;
+                    }
+                    newnotification.HOT_RelatedObject__c = getserviceAppointment.Id;
+                    newnotification.HOT_RelatedObjectType__c = 'serviceAppointment';
+
+                    notificationList.add(newnotification);
+                }
             }
         }
         if (!recipients.isEmpty()) {
@@ -1024,7 +1075,6 @@ public without sharing class HOT_ServiceAppointmentNotification {
                 getserviceAppointment.HOT_ServiceResource__r.Name,
                 recipients
             );
-            //LAG VARSLER TIL NOTIFIKASJONSSENTER
         }
         if (!serviceresourcesIds.isEmpty()) {
             String startEndString = HOT_ReminderSMSService.formatTimePeriod(
@@ -1036,6 +1086,14 @@ public without sharing class HOT_ServiceAppointmentNotification {
                 startEndString,
                 getserviceAppointment.HOT_ServiceResource__r.Name
             );
+        }
+        //inserting notifications
+        try {
+            HOT_NotificationCentreController.createNotification(notificationList);
+        } catch (Exception e) {
+            LoggerUtility logger = new LoggerUtility();
+            logger.exception(e, CRM_ApplicationDomain.Domain.HOT);
+            logger.publish();
         }
     }
 
