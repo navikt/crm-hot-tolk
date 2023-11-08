@@ -1016,55 +1016,59 @@ public without sharing class HOT_ServiceAppointmentNotification {
                 recipients.add(serviceAppointment.HOT_ServiceResource__r.RelatedRecordId);
                 //creating notification object
                 HOT_Notification__c newnotification = new HOT_Notification__c();
-                newnotification.HOT_Account__c = serviceAppointment.HOT_ServiceResource__r.AccountId;
-                newnotification.HOT_NotificationChannel__c = 'Push-varsel i appen';
-                newnotification.HOT_Subject__c = 'Endring av medtolk';
-                String text =
-                    'Medtolk på et oppdrag du er tildelt er blitt endret. \nNy tolk er: ' +
-                    getserviceAppointment.HOT_ServiceResource__r.Name +
-                    '\nDato: ' +
-                    getserviceAppointment.SchedStartTime?.format('dd.MM.yyyy', 'Europe/Oslo') +
-                    ', kl: ' +
-                    getserviceAppointment.SchedStartTime?.format('HH:mm', 'Europe/Oslo') +
-                    ' - ' +
-                    getserviceAppointment.SchedEndTime?.format('HH:mm', 'Europe/Oslo') +
-                    '.';
-                if (text.length() > 250) {
-                    newnotification.HOT_NotificationText__c = text.substring(0, 250) + ' ...';
-                } else {
-                    newnotification.HOT_NotificationText__c = text;
-                }
-                newnotification.HOT_RelatedObject__c = getserviceAppointment.Id;
-                newnotification.HOT_RelatedObjectType__c = 'serviceAppointment';
-
-                notificationList.add(newnotification);
-            } else {
-                serviceresourcesIds.add(serviceAppointment.HOT_ServiceResource__r.Id);
-                if (serviceAppointment.HOT_ServiceResource__r.HOT_IsFreelanceInterpreter__c == true) {
-                    //creating notification object
-                    HOT_Notification__c newnotification = new HOT_Notification__c();
+                if (serviceAppointment.HOT_ServiceResource__r.AccountId != null) {
                     newnotification.HOT_Account__c = serviceAppointment.HOT_ServiceResource__r.AccountId;
-                    newnotification.HOT_NotificationChannel__c = 'SMS';
+                    newnotification.HOT_NotificationChannel__c = 'Push-varsel i appen';
                     newnotification.HOT_Subject__c = 'Endring av medtolk';
-                    String text = 'INFO\nMedtolk på et oppdrag du er tildelt er blitt endret. \nNy tolk er:\n';
-                    text += getserviceAppointment.HOT_ServiceResource__r.Name;
-                    text +=
-                        '\nDato: ' +
-                        HOT_ReminderSMSService.formatTimePeriod(
-                            getserviceAppointment.SchedStartTime,
-                            getserviceAppointment.SchedEndTime
-                        );
-                    text += '\n\nFor mer informasjon, se tolkebestilling.nav.no. Du kan ikke svare på denne meldingen.';
-                    text += '\nMvh tolketjenesten i NAV';
+                    String text =
+                        'Medtolk på et oppdrag du er tildelt er blitt endret. \nNy tolk er: ' +
+                        getserviceAppointment.HOT_ServiceResource__r.Name +
+                        '.\nDato: ' +
+                        getserviceAppointment.SchedStartTime?.format('dd.MM.yyyy', 'Europe/Oslo') +
+                        ', kl: ' +
+                        getserviceAppointment.SchedStartTime?.format('HH:mm', 'Europe/Oslo') +
+                        ' - ' +
+                        getserviceAppointment.SchedEndTime?.format('HH:mm', 'Europe/Oslo') +
+                        '.';
                     if (text.length() > 250) {
                         newnotification.HOT_NotificationText__c = text.substring(0, 250) + ' ...';
                     } else {
                         newnotification.HOT_NotificationText__c = text;
                     }
-                    newnotification.HOT_RelatedObject__c = getserviceAppointment.Id;
+                    newnotification.HOT_RelatedObject__c = serviceAppointment.Id;
                     newnotification.HOT_RelatedObjectType__c = 'serviceAppointment';
 
                     notificationList.add(newnotification);
+                }
+            } else {
+                serviceresourcesIds.add(serviceAppointment.HOT_ServiceResource__r.Id);
+                if (serviceAppointment.HOT_ServiceResource__r.HOT_IsFreelanceInterpreter__c == true) {
+                    //creating notification object
+                    HOT_Notification__c newnotification = new HOT_Notification__c();
+                    if (serviceAppointment.HOT_ServiceResource__r.AccountId != null) {
+                        newnotification.HOT_Account__c = serviceAppointment.HOT_ServiceResource__r.AccountId;
+                        newnotification.HOT_NotificationChannel__c = 'SMS';
+                        newnotification.HOT_Subject__c = 'Endring av medtolk';
+                        String text = 'INFO\nMedtolk på et oppdrag du er tildelt er blitt endret. \nNy tolk er:\n';
+                        text += getserviceAppointment.HOT_ServiceResource__r.Name;
+                        text +=
+                            '.\nDato: ' +
+                            HOT_ReminderSMSService.formatTimePeriod(
+                                getserviceAppointment.SchedStartTime,
+                                getserviceAppointment.SchedEndTime
+                            );
+                        text += '\n\nFor mer informasjon, se tolkebestilling.nav.no. Du kan ikke svare på denne meldingen.';
+                        text += '\nMvh tolketjenesten i NAV';
+                        if (text.length() > 250) {
+                            newnotification.HOT_NotificationText__c = text.substring(0, 250) + ' ...';
+                        } else {
+                            newnotification.HOT_NotificationText__c = text;
+                        }
+                        newnotification.HOT_RelatedObject__c = serviceAppointment.Id;
+                        newnotification.HOT_RelatedObjectType__c = 'serviceAppointment';
+
+                        notificationList.add(newnotification);
+                    }
                 }
             }
         }
