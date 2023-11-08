@@ -386,15 +386,20 @@ public without sharing class HOT_ReminderSMSService {
                 notification.HOT_Account__c = wo.HOT_Request__r.Orderer__c;
                 notification.HOT_NotificationChannel__c = 'SMS';
                 notification.HOT_Subject__c = 'INFO\nTolk på din bestilling er endret:\n';
-                notification.HOT_NotificationText__c =
-                    'INFO\nTolk på din bestilling er endret:\n' +
-                    'Tolk er: ' +
-                    wo.HOT_Interpreters__c +
-                    '\nDato: ' +
-                    formatTimePeriod(wo.StartDate, wo.EndDate) +
-                    '\nFor mer informasjon, se tolkebestilling.nav.no.\n' +
-                    'Du kan ikke svare på denne meldingen.\n' +
-                    'Mvh tolketjenesten i NAV';
+                String text = 'INFO\nTolk på din bestilling er endret:\n' + 'Tolk er: ' + interpreterName;
+                if (text.length() > 135) {
+                    notification.HOT_NotificationText__c = text.substring(0, 135) + ' ...';
+                    notification.HOT_NotificationText__c +=
+                        '\nFor mer informasjon, se tolkebestilling.nav.no.\n' +
+                        'Du kan ikke svare på denne meldingen.\n' +
+                        'Mvh tolketjenesten i NAV';
+                } else {
+                    notification.HOT_NotificationText__c = text;
+                    notification.HOT_NotificationText__c +=
+                        '\nFor mer informasjon, se tolkebestilling.nav.no.\n' +
+                        'Du kan ikke svare på denne meldingen.\n' +
+                        'Mvh tolketjenesten i NAV';
+                }
                 notification.HOT_RelatedObject__c = wo.Id;
                 notification.HOT_RelatedObjectType__c = 'workOrder';
 
@@ -700,7 +705,10 @@ public without sharing class HOT_ReminderSMSService {
     public static String getRecipientOnThread(Thread__c thread) {
         if (thread.CRM_Thread_Type__c == 'HOT_BRUKER-FORMIDLER' || thread.CRM_Thread_Type__c == 'HOT_BRUKER-TOLK') {
             return thread?.CRM_Account__r.CRM_Person__r.INT_KrrMobilePhone__c;
-        } else if (thread.CRM_Thread_Type__c == 'HOT_TOLK-FORMIDLER') {
+        } else if (
+            thread.CRM_Thread_Type__c == 'HOT_TOLK-FORMIDLER' ||
+            thread.CRM_Thread_Type__c == 'HOT_TOLK-RESSURSKONTOR'
+        ) {
             ServiceResource sr = [
                 SELECT AccountId, HOT_MobilePhone__c
                 FROM ServiceResource
