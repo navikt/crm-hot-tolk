@@ -71,8 +71,7 @@ public without sharing class HOT_SMSStatusChangeServiceBatch implements Database
                         notification.HOT_NotificationChannel__c = 'Push-varsel i appen';
                         notification.HOT_Subject__c = 'Status på din bestilling er endret';
                         if (wo.Status == 'Dispatched') {
-                            String text = notification.HOT_NotificationText__c =
-                                'Du har fått tolk. Tolk er ' + wo.HOT_Interpreters__c;
+                            String text = 'Du har fått tolk. Tolk er ' + wo.HOT_Interpreters__c;
                             if (text.length() > 135) {
                                 notification.HOT_NotificationText__c = text.substring(0, 135) + ' ...';
                                 notification.HOT_NotificationText__c +=
