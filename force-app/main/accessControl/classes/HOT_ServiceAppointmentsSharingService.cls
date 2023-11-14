@@ -3,12 +3,14 @@ public without sharing class HOT_ServiceAppointmentsSharingService {
         Map<Id, Id> userIdyResourceId = getUserIdyResourceId(resourceByAssignment.values());
         Map<Id, Id> woBySa = getWorkOrderIds(apppointmentIdByAssignment.values());
         Map<Id, User> userByUserId = getUserById(userIdyResourceId.values());
+        Map<Id, Id> threadBySaId = getThreadBySAId(apppointmentIdByAssignment.values());
         Map<Id, Id> accountIdByServiceAppointmentId = getAccountIdByServiceAppointmentId(
             apppointmentIdByAssignment.values()
         );
         List<ServiceAppointmentShare> serviceAppointmentShares = new List<ServiceAppointmentShare>();
         List<WorkOrderShare> workOrderShares = new List<WorkOrderShare>();
         List<AccountShare> accountShares = new List<AccountShare>();
+        List<ThreadShare> threadShares = new List<ThreadShare>();
         for (Id assignmentId : apppointmentIdByAssignment.keySet()) {
             Id resourceId = resourceByAssignment.get(assignmentId);
             Id userId = userIdyResourceId.get(resourceId);
@@ -43,10 +45,19 @@ public without sharing class HOT_ServiceAppointmentsSharingService {
                     UserOrGroupId = userId
                 )
             );
+            threadShares.add(
+                new threadShare(
+                    ParentId = threadBySaId.get(serviceAppointmentId),
+                    AccessLevel = 'Edit',
+                    RowCause = 'Manual',
+                    UserOrGroupId = userId
+                )
+            );
         }
         Database.insert(serviceAppointmentShares, false);
         Database.insert(workOrderShares, false);
         Database.insert(accountShares, false);
+        Database.insert(threadShares, false);
     }
 
     @future
@@ -96,6 +107,15 @@ public without sharing class HOT_ServiceAppointmentsSharingService {
         }
 
         return userIdyResourceId;
+    }
+
+    private static Map<Id, Id> getThreadBySAId(List<Id> saIds) {
+        Map<Id, Id> threadBySAId = new Map<Id, Id>();
+        for (Thread__c thread : [SELECT Id FROM Thread__c WHERE CRM_Related_Object__c IN :saIds]) {
+            threadBySAId.put(thread.CRM_Related_Object__c, thread.Id);
+        }
+
+        return threadBySAId;
     }
 
     private static Map<Id, User> getUserById(List<Id> userIds) {
