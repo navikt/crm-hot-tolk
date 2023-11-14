@@ -71,16 +71,29 @@ public without sharing class HOT_SMSStatusChangeServiceBatch implements Database
                         notification.HOT_NotificationChannel__c = 'Push-varsel i appen';
                         notification.HOT_Subject__c = 'Status på din bestilling er endret';
                         if (wo.Status == 'Dispatched') {
-                            notification.HOT_NotificationText__c =
-                                'Du har fått tolk. Tolk er ' +
-                                wo.HOT_Interpreters__c +
-                                '\nDato: ' +
-                                wo.StartDate?.format('dd.MM.yyyy', 'Europe/Oslo') +
-                                ', kl: ' +
-                                wo.StartDate?.format('HH:mm', 'Europe/Oslo') +
-                                ' - ' +
-                                wo.EndDate?.format('HH:mm', 'Europe/Oslo') +
-                                '.';
+                            String text = 'Du har fått tolk. Tolk er ' + wo.HOT_Interpreters__c;
+                            if (text.length() > 135) {
+                                notification.HOT_NotificationText__c = text.substring(0, 135) + ' ...';
+                                notification.HOT_NotificationText__c +=
+                                    '\nDato: ' +
+                                    wo.StartDate?.format('dd.MM.yyyy', 'Europe/Oslo') +
+                                    ', kl: ' +
+                                    wo.StartDate?.format('HH:mm', 'Europe/Oslo') +
+                                    ' - ' +
+                                    wo.EndDate?.format('HH:mm', 'Europe/Oslo') +
+                                    '.';
+                            } else {
+                                notification.HOT_NotificationText__c =
+                                    'Du har fått tolk. Tolk er ' +
+                                    wo.HOT_Interpreters__c +
+                                    '\nDato: ' +
+                                    wo.StartDate?.format('dd.MM.yyyy', 'Europe/Oslo') +
+                                    ', kl: ' +
+                                    wo.StartDate?.format('HH:mm', 'Europe/Oslo') +
+                                    ' - ' +
+                                    wo.EndDate?.format('HH:mm', 'Europe/Oslo') +
+                                    '.';
+                            }
                         }
                         if (wo.Status == 'Cannot Complete') {
                             notification.HOT_NotificationText__c =

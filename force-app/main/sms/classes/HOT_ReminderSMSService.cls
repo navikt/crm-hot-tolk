@@ -204,13 +204,25 @@ public without sharing class HOT_ReminderSMSService {
                 notification.HOT_NotificationChannel__c = 'SMS';
                 notification.HOT_Subject__c = 'INFO\nStatus på din bestilling er:\n';
                 if (workOrder.Status == 'Dispatched') {
-                    notification.HOT_NotificationText__c =
+                    String text =
                         'Du har fått tolk. Tolk er: ' +
                         interpreterNames.get(workOrder.Id) +
-                        formatTimePeriod(workOrder.StartDate, workOrder.EndDate) +
-                        '\nFor mer informasjon, se tolkebestilling.nav.no.\n' +
-                        'Du kan ikke svare på denne meldingen.\n' +
-                        'Mvh tolketjenesten i NAV';
+                        formatTimePeriod(workOrder.StartDate, workOrder.EndDate);
+                    if (text.length() > 135) {
+                        notification.HOT_NotificationText__c = text.substring(0, 135) + ' ...';
+                        notification.HOT_NotificationText__c += notification.HOT_NotificationText__c =
+                            '\nFor mer informasjon, se tolkebestilling.nav.no.\n' +
+                            'Du kan ikke svare på denne meldingen.\n' +
+                            'Mvh tolketjenesten i NAV';
+                    } else {
+                        notification.HOT_NotificationText__c =
+                            'Du har fått tolk. Tolk er: ' +
+                            interpreterNames.get(workOrder.Id) +
+                            formatTimePeriod(workOrder.StartDate, workOrder.EndDate) +
+                            '\nFor mer informasjon, se tolkebestilling.nav.no.\n' +
+                            'Du kan ikke svare på denne meldingen.\n' +
+                            'Mvh tolketjenesten i NAV';
+                    }
                 } else if (workOrder.Status == 'Cannot Complete') {
                     notification.HOT_NotificationText__c =
                         'Ikke ledig tolk' +
