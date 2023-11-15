@@ -10,7 +10,7 @@ public without sharing class HOT_ServiceAppointmentsSharingService {
         List<ServiceAppointmentShare> serviceAppointmentShares = new List<ServiceAppointmentShare>();
         List<WorkOrderShare> workOrderShares = new List<WorkOrderShare>();
         List<AccountShare> accountShares = new List<AccountShare>();
-        List<ThreadShare> threadShares = new List<ThreadShare>();
+        List<Thread__Share> threadShares = new List<Thread__Share>();
         for (Id assignmentId : apppointmentIdByAssignment.keySet()) {
             Id resourceId = resourceByAssignment.get(assignmentId);
             Id userId = userIdyResourceId.get(resourceId);
@@ -46,7 +46,7 @@ public without sharing class HOT_ServiceAppointmentsSharingService {
                 )
             );
             threadShares.add(
-                new threadShare(
+                new Thread__Share(
                     ParentId = threadBySaId.get(serviceAppointmentId),
                     AccessLevel = 'Edit',
                     RowCause = 'Manual',
