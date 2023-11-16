@@ -271,7 +271,7 @@
                             <value>HOT_NotificationText__c</value>
                         </valueListItems>
                         <valueListItems>
-                            <value>HOT_RelatedObject__c</value>
+                            <value>RelatedRecordLink__c</value>
                         </valueListItems>
                     </valueList>
                 </componentInstanceProperties>
