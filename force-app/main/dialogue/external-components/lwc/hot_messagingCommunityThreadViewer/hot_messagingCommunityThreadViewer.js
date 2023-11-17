@@ -303,7 +303,6 @@ export default class hot_messagingCommunityThreadViewer extends NavigationMixin(
                 state: {}
             });
         } else if (this.navigationBaseUrl == 'mine-samtaler') {
-            console.log('blabla');
             this[NavigationMixin.Navigate]({
                 type: 'comm__namedPage',
                 attributes: {
