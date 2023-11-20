@@ -1,11 +1,69 @@
 {
-  "forgotPasswordRouteId" : "b7477360-539e-4629-8baf-5e2bdcc06ca6",
-  "isAvailableToGuests" : false,
-  "isFilteredComponentsView" : false,
-  "isProgressiveRenderingEnabled" : false,
-  "loginAppPageId" : "3ec9486e-fee6-4674-8f6b-ab5d31175d26",
-  "mainAppPageId" : "e1a097ff-c5e1-47c6-b293-9a8b7a2b049f",
-  "preferredDomain" : "none",
-  "selfRegistrationRouteId" : "b240920c-f9f7-426a-a957-3764868a481c",
-  "type" : "site"
+    "forgotPasswordRouteId": "b7477360-539e-4629-8baf-5e2bdcc06ca6",
+    "isAvailableToGuests": false,
+    "isFilteredComponentsView": false,
+    "isProgressiveRenderingEnabled": false,
+    "loginAppPageId": "3ec9486e-fee6-4674-8f6b-ab5d31175d26",
+    "mainAppPageId": "e1a097ff-c5e1-47c6-b293-9a8b7a2b049f",
+    "preferredDomain": "none",
+    "selfRegistrationRouteId": "b240920c-f9f7-426a-a957-3764868a481c",
+    "trustedSitesForScript": [
+        {
+            "id": "68399442-5bd8-4042-8c34-489f599c981d",
+            "isActive": true,
+            "trustedSiteName": "NAV",
+            "trustedSiteUrl": "https://nav.no",
+            "type": "trustedSitesForScripts"
+        },
+        {
+            "id": "823d57e8-6fbb-488e-a775-eace68baefbe",
+            "isActive": true,
+            "trustedSiteName": "Dekoratoren",
+            "trustedSiteUrl": "https://dekoratoren.ekstern.dev.nav.no",
+            "type": "trustedSitesForScripts"
+        },
+        {
+            "id": "cfca7a98-67a8-47f7-8139-c4d6d38c9ec9",
+            "isActive": true,
+            "trustedSiteName": "Google_Tag_Manager",
+            "trustedSiteUrl": "https://googletagmanager.com",
+            "type": "trustedSitesForScripts"
+        },
+        {
+            "id": "2321065d-ee62-42f1-b69f-4d07346f68b5",
+            "isActive": true,
+            "trustedSiteName": "Account_psplugin",
+            "trustedSiteUrl": "https://account.psplugin.com",
+            "type": "trustedSitesForScripts"
+        },
+        {
+            "id": "d258b3d2-2462-471b-8654-251b3fc070c2",
+            "isActive": true,
+            "trustedSiteName": "in2_taskanalytics",
+            "trustedSiteUrl": "https://in2.taskanalytics.com",
+            "type": "trustedSitesForScripts"
+        },
+        {
+            "id": "5cf13bf3-743c-4f2a-83ce-7073feb955a6",
+            "isActive": true,
+            "trustedSiteName": "Google_Analytics",
+            "trustedSiteUrl": "https://google-analytics.com",
+            "type": "trustedSitesForScripts"
+        },
+        {
+            "id": "f5ae0673-2aec-4ec6-b6db-5cd007210ebf",
+            "isActive": true,
+            "trustedSiteName": "Static_Hotjar",
+            "trustedSiteUrl": "https://static.hotjar.com",
+            "type": "trustedSitesForScripts"
+        },
+        {
+            "id": "6292d31c-3296-4b2c-9af6-e1c632aa353e",
+            "isActive": true,
+            "trustedSiteName": "Script_Hotjar",
+            "trustedSiteUrl": "https://script.hotjar.com",
+            "type": "trustedSitesForScripts"
+        }
+    ],
+    "type": "site"
 }
