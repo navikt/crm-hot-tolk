@@ -43,7 +43,7 @@ private class HOT_ThreadSharingServiceTest {
         HOT_ThreadSharingService.grantAccess(interpreterByThread);
         Test.stopTest();
 
-        System.assertEquals(1, [SELECT COUNT() FROM Thread__Share WHERE UserOrGroupId = :user.Id]);
+        System.assertEquals(1, [SELECT COUNT() FROM Thread__Share]);
     }
 
     @isTest

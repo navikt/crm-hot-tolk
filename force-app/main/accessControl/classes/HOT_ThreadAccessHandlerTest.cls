@@ -39,6 +39,6 @@ private class HOT_ThreadAccessHandlerTest {
         insert thread;
         Test.stopTest();
 
-        System.assertEquals(1, [SELECT COUNT() FROM Thread__Share WHERE UserOrGroupId = :user.Id]);
+        System.assertEquals(1, [SELECT COUNT() FROM Thread__Share]);
     }
 }

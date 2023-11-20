@@ -16,7 +16,13 @@ public without sharing class HOT_ThreadSharingService {
                 );
             }
         }
-        Database.insert(threadShares, false);
+        try {
+            Database.insert(threadShares, false);
+        } catch (Exception e) {
+            LoggerUtility logger = new LoggerUtility();
+            logger.exception(e, CRM_ApplicationDomain.Domain.HOT);
+            logger.publishSynch();
+        }
     }
 
     public static Set<Id> populateParticipantSet(String participants) {
