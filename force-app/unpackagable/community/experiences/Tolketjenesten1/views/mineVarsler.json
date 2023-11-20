@@ -9,11 +9,11 @@
             "components": [
                 {
                     "componentAttributes": {
-                        "NAVarea": "Privatperson",
-                        "navareapicklist": "Privatperson"
+                        "context": "Privatperson",
+                        "env": "Dev"
                     },
-                    "componentName": "c:globalCommunityHeader",
-                    "id": "eef81be4-eeab-4933-b69a-ab7606e957fd",
+                    "componentName": "c:decoratorHeader",
+                    "id": "3b39e0fc-c0ee-42bd-b2b0-7e7dba30223d",
                     "renderPriority": "NEUTRAL",
                     "renditionMap": {},
                     "type": "component"
@@ -49,12 +49,9 @@
         {
             "components": [
                 {
-                    "componentAttributes": {
-                        "NAVarea": "Privatperson",
-                        "navareapicklist": "Privatperson"
-                    },
-                    "componentName": "c:globalCommunityFooter",
-                    "id": "b62d4e10-6d54-4674-aeae-06ab3bf59399",
+                    "componentAttributes": {},
+                    "componentName": "c:decoratorFooter",
+                    "id": "26c8876b-d041-48f2-82bf-ea63749771b1",
                     "renderPriority": "NEUTRAL",
                     "renditionMap": {},
                     "type": "component"

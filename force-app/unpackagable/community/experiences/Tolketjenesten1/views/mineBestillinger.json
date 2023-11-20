@@ -1,98 +1,111 @@
 {
-  "appPageId" : "e1a097ff-c5e1-47c6-b293-9a8b7a2b049f",
-  "componentName" : "siteforce:dynamicLayout",
-  "dataProviders" : [ ],
-  "id" : "8c86d6db-08f8-4fe5-b020-9e8171ede842",
-  "label" : "Mine Bestillinger",
-  "regions" : [ {
-    "components" : [ {
-      "componentAttributes" : {
-        "background" : "background: rgba(0,0,0,0)",
-        "backgroundOverlay" : "rgba(0,0,0,0.5)",
-        "contentAreaWidth" : 100,
-        "sectionConfig" : {
-          "UUID" : "c7eb756b-b2cc-46c2-a5c9-fa00a042cfd4",
-          "columns" : [ {
-            "UUID" : "577fdae1-a460-4937-ad6b-5373c0406320",
-            "columnKey" : "1",
-            "columnName" : "Column 1",
-            "columnWidth" : "12",
-            "seedComponents" : [ ]
-          } ]
+    "appPageId": "e1a097ff-c5e1-47c6-b293-9a8b7a2b049f",
+    "componentName": "siteforce:dynamicLayout",
+    "dataProviders": [],
+    "id": "8c86d6db-08f8-4fe5-b020-9e8171ede842",
+    "label": "Mine Bestillinger",
+    "regions": [
+        {
+            "components": [
+                {
+                    "componentAttributes": {
+                        "background": "background: rgba(0,0,0,0)",
+                        "backgroundOverlay": "rgba(0,0,0,0.5)",
+                        "contentAreaWidth": 100,
+                        "sectionConfig": {
+                            "UUID": "c7eb756b-b2cc-46c2-a5c9-fa00a042cfd4",
+                            "columns": [
+                                {
+                                    "UUID": "577fdae1-a460-4937-ad6b-5373c0406320",
+                                    "columnKey": "1",
+                                    "columnName": "Column 1",
+                                    "columnWidth": "12",
+                                    "seedComponents": []
+                                }
+                            ]
+                        },
+                        "sectionHeight": 300
+                    },
+                    "componentName": "forceCommunity:section",
+                    "id": "c7eb756b-b2cc-46c2-a5c9-fa00a042cfd4",
+                    "regions": [
+                        {
+                            "components": [
+                                {
+                                    "componentAttributes": {
+                                        "context": "Privatperson",
+                                        "env": "Dev"
+                                    },
+                                    "componentName": "c:decoratorHeader",
+                                    "id": "99d1706e-bfe7-476a-bf72-5b8cbb347994",
+                                    "renderPriority": "NEUTRAL",
+                                    "renditionMap": {},
+                                    "type": "component"
+                                },
+                                {
+                                    "componentAttributes": {},
+                                    "componentName": "c:hot_tolketjenestenHovedBanner",
+                                    "id": "6bd37e7e-3b55-44b6-9271-b52294c48e66",
+                                    "renderPriority": "NEUTRAL",
+                                    "renditionMap": {},
+                                    "type": "component"
+                                },
+                                {
+                                    "componentAttributes": {
+                                        "header": "Mine Bestillinger ",
+                                        "isAccount": true
+                                    },
+                                    "componentName": "c:mineBestillingerWrapper",
+                                    "id": "1eb443f1-02ed-41d7-ad51-96a95cb20e26",
+                                    "renderPriority": "NEUTRAL",
+                                    "renditionMap": {},
+                                    "type": "component"
+                                },
+                                {
+                                    "componentAttributes": {},
+                                    "componentName": "c:decoratorFooter",
+                                    "id": "2e84b517-c712-41a0-a233-727d5438a301",
+                                    "renderPriority": "NEUTRAL",
+                                    "renditionMap": {},
+                                    "type": "component"
+                                }
+                            ],
+                            "id": "577fdae1-a460-4937-ad6b-5373c0406320",
+                            "regionLabel": "Column 1",
+                            "regionName": "1",
+                            "renditionMap": {},
+                            "type": "region"
+                        }
+                    ],
+                    "renderPriority": "NEUTRAL",
+                    "renditionMap": {},
+                    "type": "component"
+                }
+            ],
+            "id": "714f4153-a860-4328-ab03-6e303b392f49",
+            "regionName": "content",
+            "type": "region"
         },
-        "sectionHeight" : 300
-      },
-      "componentName" : "forceCommunity:section",
-      "id" : "c7eb756b-b2cc-46c2-a5c9-fa00a042cfd4",
-      "regions" : [ {
-        "components" : [ {
-          "componentAttributes" : {
-            "NAVarea" : "Privatperson",
-            "navareapicklist" : "Privatperson"
-          },
-          "componentName" : "c:globalCommunityHeader",
-          "id" : "b10a4531-5927-43bf-b1a4-7e4119c80a48",
-          "renderPriority" : "NEUTRAL",
-          "renditionMap" : { },
-          "type" : "component"
-        }, {
-          "componentAttributes" : { },
-          "componentName" : "c:hot_tolketjenestenHovedBanner",
-          "id" : "6bd37e7e-3b55-44b6-9271-b52294c48e66",
-          "renderPriority" : "NEUTRAL",
-          "renditionMap" : { },
-          "type" : "component"
-        }, {
-          "componentAttributes" : {
-            "header" : "Mine Bestillinger ",
-            "isAccount" : true
-          },
-          "componentName" : "c:mineBestillingerWrapper",
-          "id" : "1eb443f1-02ed-41d7-ad51-96a95cb20e26",
-          "renderPriority" : "NEUTRAL",
-          "renditionMap" : { },
-          "type" : "component"
-        }, {
-          "componentAttributes" : {
-            "NAVarea" : "Privatperson",
-            "navareapicklist" : "Privatperson"
-          },
-          "componentName" : "c:globalCommunityFooter",
-          "id" : "dcfc48bd-d023-4b3d-9116-9898d4f746fa",
-          "renderPriority" : "NEUTRAL",
-          "renditionMap" : { },
-          "type" : "component"
-        } ],
-        "id" : "577fdae1-a460-4937-ad6b-5373c0406320",
-        "regionLabel" : "Column 1",
-        "regionName" : "1",
-        "renditionMap" : { },
-        "type" : "region"
-      } ],
-      "renderPriority" : "NEUTRAL",
-      "renditionMap" : { },
-      "type" : "component"
-    } ],
-    "id" : "714f4153-a860-4328-ab03-6e303b392f49",
-    "regionName" : "content",
-    "type" : "region"
-  }, {
-    "components" : [ {
-      "componentAttributes" : {
-        "customHeadTags" : "",
-        "description" : "",
-        "title" : "Mine bestillinger"
-      },
-      "componentName" : "forceCommunity:seoAssistant",
-      "id" : "066446a0-b94a-42ec-b399-38629106b740",
-      "renditionMap" : { },
-      "type" : "component"
-    } ],
-    "id" : "320e50da-e480-4285-a564-2cf8be80f230",
-    "regionName" : "sfdcHiddenRegion",
-    "type" : "region"
-  } ],
-  "themeLayoutType" : "Inner",
-  "type" : "view",
-  "viewType" : "custom-mine-bestillinger"
+        {
+            "components": [
+                {
+                    "componentAttributes": {
+                        "customHeadTags": "",
+                        "description": "",
+                        "title": "Mine bestillinger"
+                    },
+                    "componentName": "forceCommunity:seoAssistant",
+                    "id": "066446a0-b94a-42ec-b399-38629106b740",
+                    "renditionMap": {},
+                    "type": "component"
+                }
+            ],
+            "id": "320e50da-e480-4285-a564-2cf8be80f230",
+            "regionName": "sfdcHiddenRegion",
+            "type": "region"
+        }
+    ],
+    "themeLayoutType": "Inner",
+    "type": "view",
+    "viewType": "custom-mine-bestillinger"
 }

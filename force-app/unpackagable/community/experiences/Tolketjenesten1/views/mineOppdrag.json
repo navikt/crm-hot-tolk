@@ -1,94 +1,108 @@
 {
-  "appPageId" : "e1a097ff-c5e1-47c6-b293-9a8b7a2b049f",
-  "componentName" : "siteforce:dynamicLayout",
-  "dataProviders" : [ ],
-  "id" : "8d6c51e4-b778-4519-8c17-a20a9f3bdcf5",
-  "label" : "Mine Oppdrag",
-  "regions" : [ {
-    "components" : [ {
-      "componentAttributes" : {
-        "background" : "background: rgba(0,0,0,0)",
-        "backgroundOverlay" : "rgba(0,0,0,0.5)",
-        "contentAreaWidth" : 100,
-        "sectionConfig" : {
-          "UUID" : "69d0f22d-94ba-42ac-a264-e85ae6112b4f",
-          "columns" : [ {
-            "UUID" : "394db07a-60fb-4f8d-9943-958a4bc5c82e",
-            "columnKey" : "1",
-            "columnName" : "Column 1",
-            "columnWidth" : "12",
-            "seedComponents" : [ ]
-          } ]
+    "appPageId": "e1a097ff-c5e1-47c6-b293-9a8b7a2b049f",
+    "componentName": "siteforce:dynamicLayout",
+    "dataProviders": [],
+    "id": "8d6c51e4-b778-4519-8c17-a20a9f3bdcf5",
+    "label": "Mine Oppdrag",
+    "regions": [
+        {
+            "components": [
+                {
+                    "componentAttributes": {
+                        "background": "background: rgba(0,0,0,0)",
+                        "backgroundOverlay": "rgba(0,0,0,0.5)",
+                        "contentAreaWidth": 100,
+                        "sectionConfig": {
+                            "UUID": "69d0f22d-94ba-42ac-a264-e85ae6112b4f",
+                            "columns": [
+                                {
+                                    "UUID": "394db07a-60fb-4f8d-9943-958a4bc5c82e",
+                                    "columnKey": "1",
+                                    "columnName": "Column 1",
+                                    "columnWidth": "12",
+                                    "seedComponents": []
+                                }
+                            ]
+                        },
+                        "sectionHeight": 300
+                    },
+                    "componentName": "forceCommunity:section",
+                    "id": "69d0f22d-94ba-42ac-a264-e85ae6112b4f",
+                    "regions": [
+                        {
+                            "components": [
+                                {
+                                    "componentAttributes": {
+                                        "context": "Privatperson",
+                                        "env": "Dev"
+                                    },
+                                    "componentName": "c:decoratorHeader",
+                                    "id": "4442d662-32af-43ad-8ff6-d28a7a8947ef",
+                                    "renderPriority": "NEUTRAL",
+                                    "renditionMap": {},
+                                    "type": "component"
+                                },
+                                {
+                                    "componentAttributes": {},
+                                    "componentName": "c:hot_tolketjenestenHovedBanner",
+                                    "id": "fd0e6b59-0be2-4a71-9b4e-45845057eea4",
+                                    "renderPriority": "NEUTRAL",
+                                    "renditionMap": {},
+                                    "type": "component"
+                                },
+                                {
+                                    "componentAttributes": {},
+                                    "componentName": "c:hot_frilanstolkServiceAppointmentLists",
+                                    "id": "0865233e-cfa7-4e1d-9b17-04cafd4ce2bb",
+                                    "renderPriority": "NEUTRAL",
+                                    "renditionMap": {},
+                                    "type": "component"
+                                },
+                                {
+                                    "componentAttributes": {},
+                                    "componentName": "c:decoratorFooter",
+                                    "id": "dd661d04-c02c-4e4b-9ecd-e75e86859a09",
+                                    "renderPriority": "NEUTRAL",
+                                    "renditionMap": {},
+                                    "type": "component"
+                                }
+                            ],
+                            "id": "394db07a-60fb-4f8d-9943-958a4bc5c82e",
+                            "regionLabel": "Column 1",
+                            "regionName": "1",
+                            "renditionMap": {},
+                            "type": "region"
+                        }
+                    ],
+                    "renderPriority": "NEUTRAL",
+                    "renditionMap": {},
+                    "type": "component"
+                }
+            ],
+            "id": "10727df5-ccd8-47dd-b829-12465bd379db",
+            "regionName": "content",
+            "type": "region"
         },
-        "sectionHeight" : 300
-      },
-      "componentName" : "forceCommunity:section",
-      "id" : "69d0f22d-94ba-42ac-a264-e85ae6112b4f",
-      "regions" : [ {
-        "components" : [ {
-          "componentAttributes" : {
-            "NAVarea" : "Privatperson"
-          },
-          "componentName" : "c:globalCommunityHeader",
-          "id" : "c663b8c8-a9ff-4ea4-a7e7-f32ae7af55e5",
-          "renderPriority" : "NEUTRAL",
-          "renditionMap" : { },
-          "type" : "component"
-        }, {
-          "componentAttributes" : { },
-          "componentName" : "c:hot_tolketjenestenHovedBanner",
-          "id" : "fd0e6b59-0be2-4a71-9b4e-45845057eea4",
-          "renderPriority" : "NEUTRAL",
-          "renditionMap" : { },
-          "type" : "component"
-        }, {
-          "componentAttributes" : { },
-          "componentName" : "c:hot_frilanstolkServiceAppointmentLists",
-          "id" : "0865233e-cfa7-4e1d-9b17-04cafd4ce2bb",
-          "renderPriority" : "NEUTRAL",
-          "renditionMap" : { },
-          "type" : "component"
-        }, {
-          "componentAttributes" : {
-            "NAVarea" : "",
-            "navareapicklist" : "Privatperson"
-          },
-          "componentName" : "c:globalCommunityFooter",
-          "id" : "bedf84df-5906-43ac-833f-c76f32e9857a",
-          "renderPriority" : "NEUTRAL",
-          "renditionMap" : { },
-          "type" : "component"
-        } ],
-        "id" : "394db07a-60fb-4f8d-9943-958a4bc5c82e",
-        "regionLabel" : "Column 1",
-        "regionName" : "1",
-        "renditionMap" : { },
-        "type" : "region"
-      } ],
-      "renderPriority" : "NEUTRAL",
-      "renditionMap" : { },
-      "type" : "component"
-    } ],
-    "id" : "10727df5-ccd8-47dd-b829-12465bd379db",
-    "regionName" : "content",
-    "type" : "region"
-  }, {
-    "components" : [ {
-      "componentAttributes" : {
-        "customHeadTags" : "",
-        "description" : "",
-        "title" : "Mine oppdrag"
-      },
-      "componentName" : "forceCommunity:seoAssistant",
-      "id" : "20eb0bfe-f032-418b-856e-99f54d6a3c29",
-      "renditionMap" : { },
-      "type" : "component"
-    } ],
-    "id" : "5ee0c293-e06f-4c5f-b104-49cab7b18648",
-    "regionName" : "sfdcHiddenRegion",
-    "type" : "region"
-  } ],
-  "themeLayoutType" : "Inner",
-  "type" : "view",
-  "viewType" : "custom-mine-oppdrag"
+        {
+            "components": [
+                {
+                    "componentAttributes": {
+                        "customHeadTags": "",
+                        "description": "",
+                        "title": "Mine oppdrag"
+                    },
+                    "componentName": "forceCommunity:seoAssistant",
+                    "id": "20eb0bfe-f032-418b-856e-99f54d6a3c29",
+                    "renditionMap": {},
+                    "type": "component"
+                }
+            ],
+            "id": "5ee0c293-e06f-4c5f-b104-49cab7b18648",
+            "regionName": "sfdcHiddenRegion",
+            "type": "region"
+        }
+    ],
+    "themeLayoutType": "Inner",
+    "type": "view",
+    "viewType": "custom-mine-oppdrag"
 }

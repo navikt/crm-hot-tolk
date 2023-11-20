@@ -1,98 +1,111 @@
 {
-  "appPageId" : "e1a097ff-c5e1-47c6-b293-9a8b7a2b049f",
-  "componentName" : "siteforce:dynamicLayout",
-  "dataProviders" : [ ],
-  "id" : "93bb3b00-d222-406e-9321-96f1aaefbd55",
-  "label" : "Mine Bestillinger Andre",
-  "regions" : [ {
-    "components" : [ {
-      "componentAttributes" : {
-        "background" : "background: rgba(0,0,0,0)",
-        "backgroundOverlay" : "rgba(0,0,0,0.5)",
-        "contentAreaWidth" : 100,
-        "sectionConfig" : {
-          "UUID" : "d6306bde-2ef9-4ba7-8756-744a2f53ba1d",
-          "columns" : [ {
-            "UUID" : "18026a48-5fc1-4424-baed-3b996a570bc9",
-            "columnKey" : "1",
-            "columnName" : "Column 1",
-            "columnWidth" : "12",
-            "seedComponents" : [ ]
-          } ]
+    "appPageId": "e1a097ff-c5e1-47c6-b293-9a8b7a2b049f",
+    "componentName": "siteforce:dynamicLayout",
+    "dataProviders": [],
+    "id": "93bb3b00-d222-406e-9321-96f1aaefbd55",
+    "label": "Mine Bestillinger Andre",
+    "regions": [
+        {
+            "components": [
+                {
+                    "componentAttributes": {
+                        "background": "background: rgba(0,0,0,0)",
+                        "backgroundOverlay": "rgba(0,0,0,0.5)",
+                        "contentAreaWidth": 100,
+                        "sectionConfig": {
+                            "UUID": "d6306bde-2ef9-4ba7-8756-744a2f53ba1d",
+                            "columns": [
+                                {
+                                    "UUID": "18026a48-5fc1-4424-baed-3b996a570bc9",
+                                    "columnKey": "1",
+                                    "columnName": "Column 1",
+                                    "columnWidth": "12",
+                                    "seedComponents": []
+                                }
+                            ]
+                        },
+                        "sectionHeight": 300
+                    },
+                    "componentName": "forceCommunity:section",
+                    "id": "d6306bde-2ef9-4ba7-8756-744a2f53ba1d",
+                    "regions": [
+                        {
+                            "components": [
+                                {
+                                    "componentAttributes": {
+                                        "context": "Privatperson",
+                                        "env": "Dev"
+                                    },
+                                    "componentName": "c:decoratorHeader",
+                                    "id": "47dd550b-b5a5-4084-afa5-c6584e35fe93",
+                                    "renderPriority": "NEUTRAL",
+                                    "renditionMap": {},
+                                    "type": "component"
+                                },
+                                {
+                                    "componentAttributes": {},
+                                    "componentName": "c:hot_tolketjenestenHovedBanner",
+                                    "id": "7e0d1e93-bc16-46a2-b3d7-825fed747d4b",
+                                    "renderPriority": "NEUTRAL",
+                                    "renditionMap": {},
+                                    "type": "component"
+                                },
+                                {
+                                    "componentAttributes": {
+                                        "header": "Bestillinger på vegne av andre",
+                                        "isAccount": false
+                                    },
+                                    "componentName": "c:mineBestillingerWrapper",
+                                    "id": "f734acdd-6b77-4d2d-ba38-c51130269b21",
+                                    "renderPriority": "NEUTRAL",
+                                    "renditionMap": {},
+                                    "type": "component"
+                                },
+                                {
+                                    "componentAttributes": {},
+                                    "componentName": "c:decoratorFooter",
+                                    "id": "470717d3-419a-49c2-b7f3-28a5d8593c37",
+                                    "renderPriority": "NEUTRAL",
+                                    "renditionMap": {},
+                                    "type": "component"
+                                }
+                            ],
+                            "id": "18026a48-5fc1-4424-baed-3b996a570bc9",
+                            "regionLabel": "Column 1",
+                            "regionName": "1",
+                            "renditionMap": {},
+                            "type": "region"
+                        }
+                    ],
+                    "renderPriority": "NEUTRAL",
+                    "renditionMap": {},
+                    "type": "component"
+                }
+            ],
+            "id": "8a415964-3730-4861-9ceb-cca04f117296",
+            "regionName": "content",
+            "type": "region"
         },
-        "sectionHeight" : 300
-      },
-      "componentName" : "forceCommunity:section",
-      "id" : "d6306bde-2ef9-4ba7-8756-744a2f53ba1d",
-      "regions" : [ {
-        "components" : [ {
-          "componentAttributes" : {
-            "NAVarea" : "Privatperson",
-            "navareapicklist" : "Privatperson"
-          },
-          "componentName" : "c:globalCommunityHeader",
-          "id" : "0481a0aa-6aad-4a4a-a1f3-7a5e4535df7f",
-          "renderPriority" : "NEUTRAL",
-          "renditionMap" : { },
-          "type" : "component"
-        }, {
-          "componentAttributes" : { },
-          "componentName" : "c:hot_tolketjenestenHovedBanner",
-          "id" : "7e0d1e93-bc16-46a2-b3d7-825fed747d4b",
-          "renderPriority" : "NEUTRAL",
-          "renditionMap" : { },
-          "type" : "component"
-        }, {
-          "componentAttributes" : {
-            "header" : "Bestillinger på vegne av andre",
-            "isAccount" : false
-          },
-          "componentName" : "c:mineBestillingerWrapper",
-          "id" : "f734acdd-6b77-4d2d-ba38-c51130269b21",
-          "renderPriority" : "NEUTRAL",
-          "renditionMap" : { },
-          "type" : "component"
-        }, {
-          "componentAttributes" : {
-            "NAVarea" : "Privatperson",
-            "navareapicklist" : "Privatperson"
-          },
-          "componentName" : "c:globalCommunityFooter",
-          "id" : "d2373248-94e2-4478-a477-11f0becedb49",
-          "renderPriority" : "NEUTRAL",
-          "renditionMap" : { },
-          "type" : "component"
-        } ],
-        "id" : "18026a48-5fc1-4424-baed-3b996a570bc9",
-        "regionLabel" : "Column 1",
-        "regionName" : "1",
-        "renditionMap" : { },
-        "type" : "region"
-      } ],
-      "renderPriority" : "NEUTRAL",
-      "renditionMap" : { },
-      "type" : "component"
-    } ],
-    "id" : "8a415964-3730-4861-9ceb-cca04f117296",
-    "regionName" : "content",
-    "type" : "region"
-  }, {
-    "components" : [ {
-      "componentAttributes" : {
-        "customHeadTags" : "",
-        "description" : "",
-        "title" : "Mine Bestillinger Andre"
-      },
-      "componentName" : "forceCommunity:seoAssistant",
-      "id" : "07db1e66-fb5c-4bcb-943d-9fc1e7a89451",
-      "renditionMap" : { },
-      "type" : "component"
-    } ],
-    "id" : "f661b1cc-a8d3-4b2a-8a81-5fdcebf3c642",
-    "regionName" : "sfdcHiddenRegion",
-    "type" : "region"
-  } ],
-  "themeLayoutType" : "Inner",
-  "type" : "view",
-  "viewType" : "custom-mine-bestillinger-andre"
+        {
+            "components": [
+                {
+                    "componentAttributes": {
+                        "customHeadTags": "",
+                        "description": "",
+                        "title": "Mine Bestillinger Andre"
+                    },
+                    "componentName": "forceCommunity:seoAssistant",
+                    "id": "07db1e66-fb5c-4bcb-943d-9fc1e7a89451",
+                    "renditionMap": {},
+                    "type": "component"
+                }
+            ],
+            "id": "f661b1cc-a8d3-4b2a-8a81-5fdcebf3c642",
+            "regionName": "sfdcHiddenRegion",
+            "type": "region"
+        }
+    ],
+    "themeLayoutType": "Inner",
+    "type": "view",
+    "viewType": "custom-mine-bestillinger-andre"
 }

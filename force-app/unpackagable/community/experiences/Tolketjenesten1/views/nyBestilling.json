@@ -1,95 +1,108 @@
 {
-  "appPageId" : "e1a097ff-c5e1-47c6-b293-9a8b7a2b049f",
-  "componentName" : "siteforce:dynamicLayout",
-  "dataProviders" : [ ],
-  "id" : "3b7c9dcb-e380-4622-ba40-bf1ab4a3ad5b",
-  "label" : "Ny Bestilling",
-  "regions" : [ {
-    "components" : [ {
-      "componentAttributes" : {
-        "background" : "background: rgba(0,0,0,0)",
-        "backgroundOverlay" : "rgba(0,0,0,0.5)",
-        "contentAreaWidth" : 100,
-        "sectionConfig" : {
-          "UUID" : "33a95c1d-7f7d-4292-9d64-6bec8becea96",
-          "columns" : [ {
-            "UUID" : "d2905d05-cbfa-4719-bd9f-2517e917c196",
-            "columnKey" : "1",
-            "columnName" : "Column 1",
-            "columnWidth" : "12",
-            "seedComponents" : [ ]
-          } ]
+    "appPageId": "e1a097ff-c5e1-47c6-b293-9a8b7a2b049f",
+    "componentName": "siteforce:dynamicLayout",
+    "dataProviders": [],
+    "id": "3b7c9dcb-e380-4622-ba40-bf1ab4a3ad5b",
+    "label": "Ny Bestilling",
+    "regions": [
+        {
+            "components": [
+                {
+                    "componentAttributes": {
+                        "background": "background: rgba(0,0,0,0)",
+                        "backgroundOverlay": "rgba(0,0,0,0.5)",
+                        "contentAreaWidth": 100,
+                        "sectionConfig": {
+                            "UUID": "33a95c1d-7f7d-4292-9d64-6bec8becea96",
+                            "columns": [
+                                {
+                                    "UUID": "d2905d05-cbfa-4719-bd9f-2517e917c196",
+                                    "columnKey": "1",
+                                    "columnName": "Column 1",
+                                    "columnWidth": "12",
+                                    "seedComponents": []
+                                }
+                            ]
+                        },
+                        "sectionHeight": 300
+                    },
+                    "componentName": "forceCommunity:section",
+                    "id": "33a95c1d-7f7d-4292-9d64-6bec8becea96",
+                    "regions": [
+                        {
+                            "components": [
+                                {
+                                    "componentAttributes": {
+                                        "context": "Privatperson",
+                                        "env": "Dev"
+                                    },
+                                    "componentName": "c:decoratorHeader",
+                                    "id": "0ebca093-1008-44f5-a2da-6555d2644b6b",
+                                    "renderPriority": "NEUTRAL",
+                                    "renditionMap": {},
+                                    "type": "component"
+                                },
+                                {
+                                    "componentAttributes": {},
+                                    "componentName": "c:hot_tolketjenestenHovedBanner",
+                                    "id": "dd1f31c7-9a82-4871-b6d1-dd5acbfd79c0",
+                                    "renderPriority": "NEUTRAL",
+                                    "renditionMap": {},
+                                    "type": "component"
+                                },
+                                {
+                                    "componentAttributes": {},
+                                    "componentName": "c:hot_requestFormWrapper",
+                                    "id": "9798a8f2-6799-424b-b6bc-f883d65a09c8",
+                                    "renderPriority": "NEUTRAL",
+                                    "renditionMap": {},
+                                    "type": "component"
+                                },
+                                {
+                                    "componentAttributes": {},
+                                    "componentName": "c:decoratorFooter",
+                                    "id": "5de9663c-b215-49ee-a315-3d7a0206fe31",
+                                    "renderPriority": "NEUTRAL",
+                                    "renditionMap": {},
+                                    "type": "component"
+                                }
+                            ],
+                            "id": "d2905d05-cbfa-4719-bd9f-2517e917c196",
+                            "regionLabel": "Column 1",
+                            "regionName": "1",
+                            "renditionMap": {},
+                            "type": "region"
+                        }
+                    ],
+                    "renderPriority": "NEUTRAL",
+                    "renditionMap": {},
+                    "type": "component"
+                }
+            ],
+            "id": "a44e1442-6b97-472a-a4ee-bc80356b56e1",
+            "regionName": "content",
+            "type": "region"
         },
-        "sectionHeight" : 300
-      },
-      "componentName" : "forceCommunity:section",
-      "id" : "33a95c1d-7f7d-4292-9d64-6bec8becea96",
-      "regions" : [ {
-        "components" : [ {
-          "componentAttributes" : {
-            "NAVarea" : "Privatperson",
-            "navareapicklist" : "Privatperson"
-          },
-          "componentName" : "c:globalCommunityHeader",
-          "id" : "2e25bb0e-e518-410d-8961-f1147bf963cc",
-          "renderPriority" : "NEUTRAL",
-          "renditionMap" : { },
-          "type" : "component"
-        }, {
-          "componentAttributes" : { },
-          "componentName" : "c:hot_tolketjenestenHovedBanner",
-          "id" : "dd1f31c7-9a82-4871-b6d1-dd5acbfd79c0",
-          "renderPriority" : "NEUTRAL",
-          "renditionMap" : { },
-          "type" : "component"
-        }, {
-          "componentAttributes" : { },
-          "componentName" : "c:hot_requestFormWrapper",
-          "id" : "9798a8f2-6799-424b-b6bc-f883d65a09c8",
-          "renderPriority" : "NEUTRAL",
-          "renditionMap" : { },
-          "type" : "component"
-        }, {
-          "componentAttributes" : {
-            "NAVarea" : "",
-            "navareapicklist" : "Privatperson"
-          },
-          "componentName" : "c:globalCommunityFooter",
-          "id" : "8de6a005-08ca-4204-bb3c-838021a3fce4",
-          "renderPriority" : "NEUTRAL",
-          "renditionMap" : { },
-          "type" : "component"
-        } ],
-        "id" : "d2905d05-cbfa-4719-bd9f-2517e917c196",
-        "regionLabel" : "Column 1",
-        "regionName" : "1",
-        "renditionMap" : { },
-        "type" : "region"
-      } ],
-      "renderPriority" : "NEUTRAL",
-      "renditionMap" : { },
-      "type" : "component"
-    } ],
-    "id" : "a44e1442-6b97-472a-a4ee-bc80356b56e1",
-    "regionName" : "content",
-    "type" : "region"
-  }, {
-    "components" : [ {
-      "componentAttributes" : {
-        "customHeadTags" : "",
-        "description" : "",
-        "title" : "Ny bestilling"
-      },
-      "componentName" : "forceCommunity:seoAssistant",
-      "id" : "fef4d541-5631-4fad-b1a6-ddb316342681",
-      "renditionMap" : { },
-      "type" : "component"
-    } ],
-    "id" : "1cab90d7-b4bb-4cf5-80ca-220617c8a4a6",
-    "regionName" : "sfdcHiddenRegion",
-    "type" : "region"
-  } ],
-  "themeLayoutType" : "Inner",
-  "type" : "view",
-  "viewType" : "custom-ny-bestilling"
+        {
+            "components": [
+                {
+                    "componentAttributes": {
+                        "customHeadTags": "",
+                        "description": "",
+                        "title": "Ny bestilling"
+                    },
+                    "componentName": "forceCommunity:seoAssistant",
+                    "id": "fef4d541-5631-4fad-b1a6-ddb316342681",
+                    "renditionMap": {},
+                    "type": "component"
+                }
+            ],
+            "id": "1cab90d7-b4bb-4cf5-80ca-220617c8a4a6",
+            "regionName": "sfdcHiddenRegion",
+            "type": "region"
+        }
+    ],
+    "themeLayoutType": "Inner",
+    "type": "view",
+    "viewType": "custom-ny-bestilling"
 }

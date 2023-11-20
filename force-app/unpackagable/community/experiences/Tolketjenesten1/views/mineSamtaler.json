@@ -1,75 +1,86 @@
 {
-  "appPageId" : "e1a097ff-c5e1-47c6-b293-9a8b7a2b049f",
-  "componentName" : "siteforce:sldsOneColLayout",
-  "dataProviders" : [ ],
-  "id" : "496132da-81dc-4288-85ee-a0efb60501df",
-  "label" : "Mine Samtaler",
-  "regions" : [ {
-    "components" : [ {
-      "componentAttributes" : {
-        "NAVarea" : "Privatperson",
-        "navareapicklist" : "Privatperson"
-      },
-      "componentName" : "c:globalCommunityHeader",
-      "id" : "43d0f45f-025a-461f-8259-23768d42e1be",
-      "renderPriority" : "NEUTRAL",
-      "renditionMap" : { },
-      "type" : "component"
-    } ],
-    "id" : "2aa5f9c6-2fb5-4756-9f24-d3845ada8c00",
-    "regionName" : "header",
-    "type" : "region"
-  }, {
-    "components" : [ {
-      "componentAttributes" : { },
-      "componentName" : "c:hot_tolketjenestenHovedBanner",
-      "id" : "6b208694-d94a-4bb0-a98d-d7bb33016c78",
-      "renderPriority" : "NEUTRAL",
-      "renditionMap" : { },
-      "type" : "component"
-    }, {
-      "componentAttributes" : { },
-      "componentName" : "c:hot_threadList",
-      "id" : "0559acfc-e110-4cd2-95e1-40f3e6ccd446",
-      "renderPriority" : "NEUTRAL",
-      "renditionMap" : { },
-      "type" : "component"
-    } ],
-    "id" : "557fe495-083c-4858-a2e5-5affdc6b0b66",
-    "regionName" : "content",
-    "type" : "region"
-  }, {
-    "components" : [ {
-      "componentAttributes" : {
-        "NAVarea" : "Privatperson",
-        "navareapicklist" : "Privatperson"
-      },
-      "componentName" : "c:globalCommunityFooter",
-      "id" : "920b5cfd-1508-4b29-8052-a378660a0331",
-      "renderPriority" : "NEUTRAL",
-      "renditionMap" : { },
-      "type" : "component"
-    } ],
-    "id" : "ded1241b-c854-480f-a315-9f0f8fba6348",
-    "regionName" : "footer",
-    "type" : "region"
-  }, {
-    "components" : [ {
-      "componentAttributes" : {
-        "customHeadTags" : "",
-        "description" : "",
-        "title" : "Mine Samtaler"
-      },
-      "componentName" : "forceCommunity:seoAssistant",
-      "id" : "671ece0e-0540-43d0-b442-6a445eaa5604",
-      "renditionMap" : { },
-      "type" : "component"
-    } ],
-    "id" : "d1cebcd4-d4e4-470b-a482-a71d1ff7d549",
-    "regionName" : "sfdcHiddenRegion",
-    "type" : "region"
-  } ],
-  "themeLayoutType" : "Inner",
-  "type" : "view",
-  "viewType" : "custom-mine-samtaler"
+    "appPageId": "e1a097ff-c5e1-47c6-b293-9a8b7a2b049f",
+    "componentName": "siteforce:sldsOneColLayout",
+    "dataProviders": [],
+    "id": "496132da-81dc-4288-85ee-a0efb60501df",
+    "label": "Mine Samtaler",
+    "regions": [
+        {
+            "components": [
+                {
+                    "componentAttributes": {
+                        "context": "Privatperson",
+                        "env": "Dev"
+                    },
+                    "componentName": "c:decoratorHeader",
+                    "id": "bd241e41-b9d8-47b2-8d1c-19a420ec3411",
+                    "renderPriority": "NEUTRAL",
+                    "renditionMap": {},
+                    "type": "component"
+                }
+            ],
+            "id": "2aa5f9c6-2fb5-4756-9f24-d3845ada8c00",
+            "regionName": "header",
+            "type": "region"
+        },
+        {
+            "components": [
+                {
+                    "componentAttributes": {},
+                    "componentName": "c:hot_tolketjenestenHovedBanner",
+                    "id": "6b208694-d94a-4bb0-a98d-d7bb33016c78",
+                    "renderPriority": "NEUTRAL",
+                    "renditionMap": {},
+                    "type": "component"
+                },
+                {
+                    "componentAttributes": {},
+                    "componentName": "c:hot_threadList",
+                    "id": "0559acfc-e110-4cd2-95e1-40f3e6ccd446",
+                    "renderPriority": "NEUTRAL",
+                    "renditionMap": {},
+                    "type": "component"
+                }
+            ],
+            "id": "557fe495-083c-4858-a2e5-5affdc6b0b66",
+            "regionName": "content",
+            "type": "region"
+        },
+        {
+            "components": [
+                {
+                    "componentAttributes": {},
+                    "componentName": "c:decoratorFooter",
+                    "id": "1aa08d00-4060-4de0-aad0-b13f963a1320",
+                    "renderPriority": "NEUTRAL",
+                    "renditionMap": {},
+                    "type": "component"
+                }
+            ],
+            "id": "ded1241b-c854-480f-a315-9f0f8fba6348",
+            "regionName": "footer",
+            "type": "region"
+        },
+        {
+            "components": [
+                {
+                    "componentAttributes": {
+                        "customHeadTags": "",
+                        "description": "",
+                        "title": "Mine Samtaler"
+                    },
+                    "componentName": "forceCommunity:seoAssistant",
+                    "id": "671ece0e-0540-43d0-b442-6a445eaa5604",
+                    "renditionMap": {},
+                    "type": "component"
+                }
+            ],
+            "id": "d1cebcd4-d4e4-470b-a482-a71d1ff7d549",
+            "regionName": "sfdcHiddenRegion",
+            "type": "region"
+        }
+    ],
+    "themeLayoutType": "Inner",
+    "type": "view",
+    "viewType": "custom-mine-samtaler"
 }
