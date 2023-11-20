@@ -16,6 +16,7 @@ public without sharing class HOT_ThreadSharingService {
                 );
             }
         }
+        Database.insert(threadShares, false);
     }
 
     public static Set<Id> populateParticipantSet(String participants) {
