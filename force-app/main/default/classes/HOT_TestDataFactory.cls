@@ -196,15 +196,6 @@ public class HOT_TestDataFactory {
         return user;
     }
 
-    public static User createUserWithContactId(Profile profile, Account account, Contact contact) {
-        System.debug(profile);
-        System.debug(account);
-        System.debug(contact);
-        User user = createUser('User', profile);
-        user.ContactId = contact.Id;
-        return user;
-    }
-
     public static User changeUserProfile(User user, Profile profile){
         user.ProfileId = profile.id;
         return user;
