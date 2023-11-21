@@ -24,13 +24,15 @@ public without sharing class HOT_UserHandler extends MyTriggers {
         List<Profile> ansattProfile = [SELECT Id, Name FROM Profile WHERE Name = 'HOT Tolk Ansatt'];
     
         Set<Id> usersWithChangedProfile = new Set<Id>();
+        
+        if(!formidlerProfile.isEmpty() && !ansattProfile.isEmpty()){
+            for (Id userId : oldUserMap.keySet()) {
+                User oldUser = oldUserMap.get(userId);
+                User newUser = newUserMap.get(userId);
     
-        for (Id userId : oldUserMap.keySet()) {
-            User oldUser = oldUserMap.get(userId);
-            User newUser = newUserMap.get(userId);
-    
-            if (oldUser.ProfileId == formidlerProfile[0].Id && newUser.ProfileId == ansattProfile[0].Id) {
-                usersWithChangedProfile.add(userId);
+                if (oldUser.ProfileId == formidlerProfile[0].Id && newUser.ProfileId == ansattProfile[0].Id) {
+                    usersWithChangedProfile.add(userId);
+                }
             }
         }
     
