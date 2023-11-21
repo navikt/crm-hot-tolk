@@ -283,6 +283,17 @@ export default class hot_messagingCommunityThreadViewer extends NavigationMixin(
                     id: this.navigationId
                 }
             });
+        } else if (this.navigationBaseUrl == 'mine-bestillinger') {
+            this[NavigationMixin.Navigate]({
+                type: 'comm__namedPage',
+                attributes: {
+                    pageName: 'mine-bestillinger'
+                },
+                state: {
+                    id: this.navigationId,
+                    level: this.navigationLevel
+                }
+            });
         } else if (this.navigationBaseUrl == 'mine-samtaler-frilanstolk') {
             this[NavigationMixin.Navigate]({
                 type: 'comm__namedPage',
@@ -299,7 +310,7 @@ export default class hot_messagingCommunityThreadViewer extends NavigationMixin(
                 },
                 state: {}
             });
-        } else if ((this.navigationBaseUrl = 'mine-varsler')) {
+        } else if (this.navigationBaseUrl == 'mine-varsler') {
             this[NavigationMixin.Navigate]({
                 type: 'comm__namedPage',
                 attributes: {
@@ -307,7 +318,7 @@ export default class hot_messagingCommunityThreadViewer extends NavigationMixin(
                 },
                 state: {}
             });
-        } else if ((this.navigationBaseUrl = 'mine-varsler-tolkebruker')) {
+        } else if (this.navigationBaseUrl == 'mine-varsler-tolkebruker') {
             this[NavigationMixin.Navigate]({
                 type: 'comm__namedPage',
                 attributes: {
