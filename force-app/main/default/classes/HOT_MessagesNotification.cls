@@ -287,10 +287,8 @@ public without sharing class HOT_MessagesNotification {
                     String notificationChannel = user.ServiceResources[0].HOT_NotificationChannel__c;
                     Thread__c thread = userIdToThreadMap.get(user);
 
-                    for (Id participantId : participantIdsSet) {
-                        if (user.Id != thread.LastModifiedById && participantId == user.Id) {
-                            recipients.add(user.Id);
-                        }
+                    if (user.Id != thread.LastModifiedById) {
+                        recipients.add(user.Id);
                     }
 
                     if (recipients.size() > 0) {
