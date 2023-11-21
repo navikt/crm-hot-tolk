@@ -24,7 +24,6 @@ private class HOT_UserHandlerTest {
     @isTest
     static void createAnsattTolk() {
         List<Profile> profiles = [SELECT Id FROM Profile WHERE Name = 'HOT Tolk Ansatt'];
-        System.debug(JSON.serializePretty(profiles));
         if (profiles.size() > 0) {
             Profile profileId = profiles[0];
             User user = HOT_TestDataFactory.createUser('Testing', profileId);
