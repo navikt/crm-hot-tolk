@@ -172,8 +172,6 @@ public class HOT_TestDataFactory {
     }
 
     public static User createUser(Profile profile, Account account) {
-        System.debug(profile);
-        System.debug(account);
         User user = createUser('User', profile);
         user.ContactId = account.PersonContactId;
         return user;
