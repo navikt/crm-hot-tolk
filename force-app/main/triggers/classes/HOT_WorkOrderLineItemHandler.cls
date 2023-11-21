@@ -10,19 +10,18 @@ public without sharing class HOT_WorkOrderLineItemHandler extends MyTriggers {
 
     public override void onBeforeUpdate(Map<Id, sObject> triggerOldMap) {
         List<WorkOrderLineItem> setDurationWorkOrderLineItems = new List<WorkOrderLineItem>();
-        Map<Id, WorkOrderLineItem> oldMap = (Map<Id, WorkOrderLineItem>)triggerOldMap;
+        Map<Id, WorkOrderLineItem> oldMap = (Map<Id, WorkOrderLineItem>) triggerOldMap;
 
-        for (WorkOrderLineItem workOrderLineItem : (List<WorkOrderLineItem>) records){
-            if(
-                (workOrderLineItem.StartDate != (oldMap.get(workOrderLineItem.Id).StartDate))
-                ||
+        for (WorkOrderLineItem workOrderLineItem : (List<WorkOrderLineItem>) records) {
+            if (
+                (workOrderLineItem.StartDate != (oldMap.get(workOrderLineItem.Id).StartDate)) ||
                 (workOrderLineItem.EndDate != (oldMap.get(workOrderLineItem.Id).EndDate))
-                ){
-                    setDurationWorkOrderLineItems.add(workOrderLineItem);
+            ) {
+                setDurationWorkOrderLineItems.add(workOrderLineItem);
             }
         }
 
-        if (setDurationWorkOrderLineItems.size() > 0){
+        if (setDurationWorkOrderLineItems.size() > 0) {
             setDuration(setDurationWorkOrderLineItems);
         }
     }
@@ -42,7 +41,8 @@ public without sharing class HOT_WorkOrderLineItemHandler extends MyTriggers {
                     HOT_Request__r.PreferredResource2__c,
                     HOT_Request__r.PreferredResource3__c,
                     HOT_Request__r.InterpretationMethod__c,
-                    HOT_Request__r.IsScreenInterpreter__c
+                    HOT_Request__r.IsScreenInterpreter__c,
+                    HOT_Request__r.Company__c
                 FROM WorkOrder
                 WHERE Id IN :workOrderIds
             ]
@@ -75,6 +75,8 @@ public without sharing class HOT_WorkOrderLineItemHandler extends MyTriggers {
                 serviceAppointment.HOT_WorkOrderLineItem__c = workOrderLineItem.Id;
                 serviceAppointment.HOT_IsScreenInterpreterNew__c = workOrders.get(workOrderLineItem.WorkOrderId)
                     .HOT_Request__r.IsScreenInterpreter__c;
+                serviceAppointment.HOT_Company__c = workOrders.get(workOrderLineItem.WorkOrderId)
+                    .HOT_Request__r.Company__c;
                 if (
                     workOrderLineItem.WorkTypeId ==
                     workOrders.get(workOrderLineItem.WorkOrderId).HOT_Request__r.InterpretationMethod__c
@@ -178,11 +180,12 @@ public without sharing class HOT_WorkOrderLineItemHandler extends MyTriggers {
             }
         }
     }
-    
+
     public static void setDuration(List<workOrderLineItem> workOrderLineItems) {
         for (WorkOrderLineItem workOrderLineItem : workOrderLineItems) {
             workOrderLineItem.Duration =
-                ((Double) workOrderLineItem.EndDate.getTime() - (Double) workOrderLineItem.StartDate.getTime()) / 3600000;
+                ((Double) workOrderLineItem.EndDate.getTime() - (Double) workOrderLineItem.StartDate.getTime()) /
+                3600000;
         }
     }
 }

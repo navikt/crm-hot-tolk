@@ -8,11 +8,6 @@
     <columns>CREATEDBY_USER</columns>
     <columns>LAST_UPDATE</columns>
     <columns>UPDATEDBY_USER</columns>
-    <filterScope>Everything</filterScope>
-    <filters>
-        <field>HOT_IsMyThread__c</field>
-        <operation>equals</operation>
-        <value>1</value>
-    </filters>
+    <filterScope>Mine</filterScope>
     <label>Mine Samtaler</label>
 </ListView>

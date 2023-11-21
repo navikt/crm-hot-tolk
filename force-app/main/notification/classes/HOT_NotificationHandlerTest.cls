@@ -41,6 +41,27 @@ private class HOT_NotificationHandlerTest {
     }
 
     @isTest
+    static void testGetGroupIdByQueueId() {
+        List<Group> grpList = [
+            SELECT DeveloperName
+            FROM Group
+            WHERE
+                DeveloperName = 'HOT_group_4719_formidler'
+                OR DeveloperName = 'HOT_Tolk_Akuttvakt'
+                OR DeveloperName = 'HOT_group_4706_formidler'
+        ];
+        List<Id> queueIdsToTest = new List<Id>();
+
+        for (Group grp : grpList) {
+            queueIdsToTest.add(grp.Id);
+        }
+
+        Map<Id, Id> result = HOT_NotificationHandler.getGroupIdByQueueId(queueIdsToTest);
+        Integer sizeOfResult = result.size();
+        System.assertEquals(sizeOfResult, result.size());
+    }
+
+    @isTest
     private static void testNotifyUsers() {
         Test.startTest();
         ServiceAppointment serviceAppointment = [

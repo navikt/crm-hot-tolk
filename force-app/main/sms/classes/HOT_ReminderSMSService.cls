@@ -204,13 +204,25 @@ public without sharing class HOT_ReminderSMSService {
                 notification.HOT_NotificationChannel__c = 'SMS';
                 notification.HOT_Subject__c = 'INFO\nStatus på din bestilling er:\n';
                 if (workOrder.Status == 'Dispatched') {
-                    notification.HOT_NotificationText__c =
+                    String text =
                         'Du har fått tolk. Tolk er: ' +
                         interpreterNames.get(workOrder.Id) +
-                        formatTimePeriod(workOrder.StartDate, workOrder.EndDate) +
-                        '\nFor mer informasjon, se tolkebestilling.nav.no.\n' +
-                        'Du kan ikke svare på denne meldingen.\n' +
-                        'Mvh tolketjenesten i NAV';
+                        formatTimePeriod(workOrder.StartDate, workOrder.EndDate);
+                    if (text.length() > 135) {
+                        notification.HOT_NotificationText__c = text.substring(0, 135) + ' ...';
+                        notification.HOT_NotificationText__c += notification.HOT_NotificationText__c =
+                            '\nFor mer informasjon, se tolkebestilling.nav.no.\n' +
+                            'Du kan ikke svare på denne meldingen.\n' +
+                            'Mvh tolketjenesten i NAV';
+                    } else {
+                        notification.HOT_NotificationText__c =
+                            'Du har fått tolk. Tolk er: ' +
+                            interpreterNames.get(workOrder.Id) +
+                            formatTimePeriod(workOrder.StartDate, workOrder.EndDate) +
+                            '\nFor mer informasjon, se tolkebestilling.nav.no.\n' +
+                            'Du kan ikke svare på denne meldingen.\n' +
+                            'Mvh tolketjenesten i NAV';
+                    }
                 } else if (workOrder.Status == 'Cannot Complete') {
                     notification.HOT_NotificationText__c =
                         'Ikke ledig tolk' +
@@ -386,19 +398,71 @@ public without sharing class HOT_ReminderSMSService {
                 notification.HOT_Account__c = wo.HOT_Request__r.Orderer__c;
                 notification.HOT_NotificationChannel__c = 'SMS';
                 notification.HOT_Subject__c = 'INFO\nTolk på din bestilling er endret:\n';
-                notification.HOT_NotificationText__c =
-                    'INFO\nTolk på din bestilling er endret:\n' +
-                    'Tolk er: ' +
-                    wo.HOT_Interpreters__c +
-                    '\nDato: ' +
-                    formatTimePeriod(wo.StartDate, wo.EndDate) +
-                    '\nFor mer informasjon, se tolkebestilling.nav.no.\n' +
-                    'Du kan ikke svare på denne meldingen.\n' +
-                    'Mvh tolketjenesten i NAV';
+                String text = 'INFO\nTolk på din bestilling er endret:\n' + 'Tolk er: ' + interpreterName;
+                if (text.length() > 135) {
+                    notification.HOT_NotificationText__c = text.substring(0, 135) + ' ...';
+                    notification.HOT_NotificationText__c +=
+                        '\nFor mer informasjon, se tolkebestilling.nav.no.\n' +
+                        'Du kan ikke svare på denne meldingen.\n' +
+                        'Mvh tolketjenesten i NAV';
+                } else {
+                    notification.HOT_NotificationText__c = text;
+                    notification.HOT_NotificationText__c +=
+                        '\nFor mer informasjon, se tolkebestilling.nav.no.\n' +
+                        'Du kan ikke svare på denne meldingen.\n' +
+                        'Mvh tolketjenesten i NAV';
+                }
                 notification.HOT_RelatedObject__c = wo.Id;
                 notification.HOT_RelatedObjectType__c = 'workOrder';
 
                 notificationList.add(notification);
+            }
+        }
+        try {
+            HOT_DatabaseOperations.insertRecords(smsList);
+            //inserting notifications
+            try {
+                HOT_NotificationCentreController.createNotification(notificationList);
+            } catch (Exception e) {
+                LoggerUtility logger = new LoggerUtility();
+                logger.exception(e, CRM_ApplicationDomain.Domain.HOT);
+                logger.publish();
+            }
+        } catch (Exception e) {
+            LoggerUtility logger = new LoggerUtility();
+            logger.exception(e, CRM_ApplicationDomain.Domain.HOT);
+            logger.publishSynch();
+        }
+    }
+    @Future
+    public static void sendSMSOnCoInterpreterChange(
+        Set<Id> serviceResourcesIds,
+        String schedStartEndtime,
+        String interpreterName
+    ) {
+        List<ServiceResource> serviceresourceList = [
+            SELECT Id, Name, AccountId, HOT_MobilePhone__c
+            FROM ServiceResource
+            WHERE Id = :serviceResourcesIds
+        ];
+        List<SMS__c> smsList = new List<SMS__c>();
+        //creating notification object list
+        List<HOT_Notification__c> notificationList = new List<HOT_Notification__c>();
+        for (ServiceResource sr : serviceresourceList) {
+            SMS__c sms = new SMS__c();
+            sms.Domain__c = 'HOT';
+            sms.Type__c = 'Interpreter';
+            sms.Account__c = sr.AccountId;
+            sms.Recipient__c = sr.HOT_MobilePhone__c;
+            String message = 'INFO\nMedtolk på et oppdrag du er tildelt er blitt endret. \nNy tolk er:\n';
+            message += interpreterName;
+            message += '\nDato: ' + schedStartEndtime;
+            message += '\n\nFor mer informasjon, se tolkebestilling.nav.no. Du kan ikke svare på denne meldingen.';
+            message += '\nMvh tolketjenesten i NAV';
+
+            sms.Message__c = message;
+            if (SMS.Recipient__c != null) {
+                smsList.add(sms);
             }
         }
         try {
@@ -700,7 +764,10 @@ public without sharing class HOT_ReminderSMSService {
     public static String getRecipientOnThread(Thread__c thread) {
         if (thread.CRM_Thread_Type__c == 'HOT_BRUKER-FORMIDLER' || thread.CRM_Thread_Type__c == 'HOT_BRUKER-TOLK') {
             return thread?.CRM_Account__r.CRM_Person__r.INT_KrrMobilePhone__c;
-        } else if (thread.CRM_Thread_Type__c == 'HOT_TOLK-FORMIDLER') {
+        } else if (
+            thread.CRM_Thread_Type__c == 'HOT_TOLK-FORMIDLER' ||
+            thread.CRM_Thread_Type__c == 'HOT_TOLK-RESSURSKONTOR'
+        ) {
             ServiceResource sr = [
                 SELECT AccountId, HOT_MobilePhone__c
                 FROM ServiceResource
@@ -741,7 +808,7 @@ public without sharing class HOT_ReminderSMSService {
         return message;
     }
 
-    private static String formatTimePeriod(Datetime startDate, Datetime endDate) {
+    public static String formatTimePeriod(Datetime startDate, Datetime endDate) {
         String timePeriod =
             startDate.date().format() +
             '\nKlokkeslett: ' +

@@ -2,6 +2,7 @@ public without sharing class HOT_ServiceAppointmentHandler extends MyTriggers {
     public override void onBeforeInsert() {
         setOwnerAndStatus((List<ServiceAppointment>) records);
         setDefaultFields((List<ServiceAppointment>) records);
+        setCompanyOnServiceAppointment((List<ServiceAppointment>) records);
     }
 
     public override void onAfterInsert() {
@@ -823,16 +824,6 @@ public without sharing class HOT_ServiceAppointmentHandler extends MyTriggers {
         for (ServiceAppointment serviceAppointment : serviceAppointments) {
             if (serviceAppointment.HOT_PreferredServiceResourceId__c != null) {
                 if (
-                    serviceAppointment.ServiceTerritoryId !=
-                    serviceResources.get(serviceAppointment.HOT_PreferredServiceResourceId__c).HOT_ServiceTerritory__c
-                ) {
-                    serviceAppointment.ServiceTerritoryId = serviceResources.get(
-                            serviceAppointment.HOT_PreferredServiceResourceId__c
-                        )
-                        .HOT_ServiceTerritory__c;
-                }
-
-                if (
                     serviceAppointment.HOT_IsReleasedToFreelance__c !=
                     serviceResources.get(serviceAppointment.HOT_PreferredServiceResourceId__c)
                         .HOT_IsFreelanceInterpreter__c
@@ -992,7 +983,22 @@ public without sharing class HOT_ServiceAppointmentHandler extends MyTriggers {
         returnMap.put('resource', resourceByAssignment);
         return returnMap;
     }
-
+    public static void setCompanyOnServiceAppointment(List<ServiceAppointment> serviceAppointments) {
+        Set<Id> requestIds = new Set<Id>();
+        for (ServiceAppointment sa : serviceAppointments) {
+            if (sa.isClone()) {
+                requestIds.add(sa.HOT_Request__c);
+            }
+        }
+        List<HOT_Request__c> requestList = [SELECT Id, Company__c FROM HOT_Request__c WHERE Id IN :requestIds];
+        for (ServiceAppointment sa : serviceAppointments) {
+            for (HOT_Request__c request : requestList) {
+                if (sa.HOT_Request__c == request.Id && request.Company__c != null) {
+                    sa.HOT_Company__c = request.Company__c;
+                }
+            }
+        }
+    }
     public static void createContentDocumentLinks(List<ServiceAppointment> serviceAppointments) {
         List<Id> requestIds = new List<Id>();
 
