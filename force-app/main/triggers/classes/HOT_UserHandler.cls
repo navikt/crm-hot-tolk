@@ -17,21 +17,16 @@ public without sharing class HOT_UserHandler extends MyTriggers {
     }
 
     public override void onAfterUpdate(Map<Id, sObject> triggerOldMap) {
-        Map<Id, User> oldUserMap = (Map<Id, User>)Trigger.oldMap;
-        Map<Id, User> newUserMap = (Map<Id, User>)Trigger.newMap;
     
-        List<Profile> formidlerProfile = [SELECT Id, Name FROM Profile WHERE Name = 'HOT Tolk Formidler'];
         List<Profile> ansattProfile = [SELECT Id, Name FROM Profile WHERE Name = 'HOT Tolk Ansatt'];
-    
         Set<Id> usersWithChangedProfile = new Set<Id>();
         
-        if(!formidlerProfile.isEmpty() && !ansattProfile.isEmpty()){
-            for (Id userId : oldUserMap.keySet()) {
-                User oldUser = oldUserMap.get(userId);
-                User newUser = newUserMap.get(userId);
+        if(!ansattProfile.isEmpty()){
+            for (User user : (List<User>) records) {
+                User oldUser = (User)triggerOldMap.get(user.Id);
     
-                if (oldUser.ProfileId != ansattProfile[0].Id && newUser.ProfileId == ansattProfile[0].Id) {
-                    usersWithChangedProfile.add(userId);
+                if (oldUser.ProfileId != ansattProfile[0].Id && user.ProfileId == ansattProfile[0].Id) {
+                    usersWithChangedProfile.add(user.Id);
                 }
             }
         }
