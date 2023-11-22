@@ -14,16 +14,10 @@ public without sharing class HOT_MessageHandler extends MyTriggers {
                 if (!message.HOT_UserRole__c.contains(', Formidler')) {
                     threadIdsToNotifyDispatcherOnNewMessage.add(message.CRM_Thread__c);
                 } else {
-                    if (
-                        message.CRM_Thread_Type__c != 'HOT_TOLK-FORMIDLER' ||
-                        message.CRM_Thread_Type__c != 'HOT_TOLK-RESSURSKONTOR'
-                    ) {
+                    if (message.CRM_Thread_Type__c != 'HOT_TOLK-FORMIDLER') {
                         threadIdsToNotifyUserOnNewMessage.add(message.CRM_Thread__c);
                     }
-                    if (
-                        message.CRM_Thread_Type__c == 'HOT_TOLK-FORMIDLER' ||
-                        message.CRM_Thread_Type__c == 'HOT_TOLK-RESSURSKONTOR'
-                    ) {
+                    if (message.CRM_Thread_Type__c == 'HOT_TOLK-FORMIDLER') {
                         threadIdsToNotifyInterpretersOnNewMessage.add(message.CRM_Thread__c);
                     }
                 }
