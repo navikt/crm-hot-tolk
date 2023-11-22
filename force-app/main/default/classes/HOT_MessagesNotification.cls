@@ -258,6 +258,7 @@ public without sharing class HOT_MessagesNotification {
             //FRILANSTOLKER VARSEL
             if (!freelanceServiceresource.isEmpty()) {
                 Set<Id> freelanceAccountIds = new Set<Id>();
+
                 for (ServiceResource sr : freelanceServiceresource) {
                     freelanceAccountIds.add(sr.AccountId);
                 }
@@ -271,6 +272,7 @@ public without sharing class HOT_MessagesNotification {
                 Map<User, Thread__c> userIdToThreadMap = new Map<User, Thread__c>();
                 for (Id participantId : interpretersOnThreadMap.keySet()) {
                     Thread__c threadId = interpretersOnThreadMap.get(participantId);
+
                     for (User user : users) {
                         if (participantId == user.Id) {
                             userIdToThreadMap.put(User, threadId);
@@ -284,7 +286,8 @@ public without sharing class HOT_MessagesNotification {
                     Set<String> recipients = new Set<String>();
                     String notificationChannel = user.ServiceResources[0].HOT_NotificationChannel__c;
                     Thread__c thread = userIdToThreadMap.get(user);
-                    if (thread.HOT_Last_message_from__r.AccountId != user.AccountId) {
+
+                    if (user.Id != thread.LastModifiedById) {
                         recipients.add(user.Id);
                     }
 
