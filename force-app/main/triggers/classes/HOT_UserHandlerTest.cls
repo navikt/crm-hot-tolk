@@ -32,7 +32,8 @@ private class HOT_UserHandlerTest {
             insert user;
             Test.stopTest();
 
-            List<ServiceResource> serviceResources = [SELECT Id FROM ServiceResource];
+            List<ServiceResource> serviceResources = [SELECT Id, Name, RelatedRecordId FROM ServiceResource];
+            System.debug(serviceResources);
             System.assertEquals(1, serviceResources.size());
         }
     }
@@ -43,44 +44,23 @@ private class HOT_UserHandlerTest {
         List<Profile> profileTolkFormidler = [SELECT Id, Name FROM Profile WHERE Name = 'HOT Tolk Formidler'];
         Id oldProfileId;
 
-        //System.assert(ProfileTolkFormidler.size() >= 1, 'Expected to have a profile');
         if (profileTolkFormidler.size() > 0) {
             Profile profileId = profileTolkFormidler[0];
-    
-            UserRole userRole = [SELECT Id, DeveloperName FROM UserRole WHERE DeveloperName = 'HOT' Limit 1];
-            User runningUser = [SELECT Id, UserRoleId FROM User WHERE Id=:UserInfo.getUserId() Limit 1];
-            runningUser.UserRoleId = userRole.Id;
-            update runningUser;
-            
-            System.runAs(runningUser){
-                Contact contact = new Contact(FirstName='Test', LastName='Testesen');
-                insert contact;
-                
-                Account personAccount = HOT_TestDataFactory.createAccount(true);
-                insert personAccount;
-                
-                User user = HOT_TestDataFactory.createUser('Testing', profileId);
-                
-                Test.startTest();
-                insert user;
-                
-                System.assertEquals(profileId.Id, user.ProfileId, 'Expected Ids to be the same.');
-                oldProfileId = user.ProfileId;
-            }
-    
-            User user = [SELECT Id, ProfileId FROM User WHERE ProfileId = :oldProfileId];
-    
+            User user = HOT_TestDataFactory.createUser('Testing', profileId);   
+            insert user;
+
+            oldProfileId = user.ProfileId;
             System.assert(user.ProfileId == oldProfileId);
-    
+            
+            Test.startTest();
             Profile profileTolkAnsatt = [SELECT Id, Name FROM Profile WHERE Name = 'HOT Tolk Ansatt'];
             HOT_TestDataFactory.changeUserProfile(user, profileTolkAnsatt);
             System.assert(!(user.ProfileId == oldProfileId));
-    
             update user;
+            
             Test.stopTest();
-    
-            List<ServiceResource> serviceResources = [SELECT Id FROM ServiceResource];
-            System.assertEquals(1, serviceResources.size());
+            List<ServiceResource> serviceResources = [SELECT Id, Name, RelatedRecordId FROM ServiceResource];
+            System.assertEquals(1, serviceResources.size(), serviceResources);
         }
     }
 
