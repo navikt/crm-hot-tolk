@@ -30,7 +30,7 @@ public without sharing class HOT_UserHandler extends MyTriggers {
                 User oldUser = oldUserMap.get(userId);
                 User newUser = newUserMap.get(userId);
     
-                if (oldUser.ProfileId == formidlerProfile[0].Id && newUser.ProfileId == ansattProfile[0].Id) {
+                if (oldUser.ProfileId != ansattProfile[0].Id && newUser.ProfileId == ansattProfile[0].Id) {
                     usersWithChangedProfile.add(userId);
                 }
             }
