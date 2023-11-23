@@ -99,7 +99,7 @@ public without sharing class HOT_ServiceResourceHandler {
 
         DefaultCommunityProfile__c defaultCommunityProfiles = DefaultCommunityProfile__c.getOrgDefaults();
         String profileName = defaultCommunityProfiles.DefaultCommunityPlusProfile__c;
-        Id freelanceProfileId = [SELECT Id FROM Profile WHERE Name = :profileName].Id;
+        Id freelanceProfileId = [SELECT Id FROM Profile WHERE Name = 'NAV Samhandler'].Id;
 
         Map<Id, String> departmentByUser = new Map<Id, String>();
         List<ServiceResource> serviceResources = new List<ServiceResource>();
