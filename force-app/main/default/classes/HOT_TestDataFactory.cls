@@ -174,7 +174,6 @@ public class HOT_TestDataFactory {
     public static User createUser(Profile profile, Account account) {
         User user = createUser('User', profile);
         user.ContactId = account.PersonContactId;
-
         return user;
     }
 
@@ -192,6 +191,11 @@ public class HOT_TestDataFactory {
             ProfileId = profile.id
         );
 
+        return user;
+    }
+
+    public static User changeUserProfile(User user, Profile profile){
+        user.ProfileId = profile.id;
         return user;
     }
 
