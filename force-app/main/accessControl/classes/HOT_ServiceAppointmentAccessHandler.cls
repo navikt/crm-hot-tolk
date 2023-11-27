@@ -12,11 +12,13 @@ public without sharing class HOT_ServiceAppointmentAccessHandler extends MyTrigg
         Map<Id, Id> apppointmentByAssignment = new Map<Id, Id>();
         Map<Id, Id> resourceToAddByAssignment = new Map<Id, Id>();
 
-        for (AssignedResource ar : [
+        List<AssignedResource> arList = [
             SELECT Id, ServiceAppointmentId, ServiceResourceId
             FROM AssignedResource
             WHERE ServiceAppointmentId IN :serviceAppointmentsWithUpdatedStatusDispatched
-        ]) {
+        ];
+
+        for (AssignedResource ar : arList) {
             apppointmentByAssignment.put(ar.Id, ar.ServiceAppointmentId);
             resourceToAddByAssignment.put(ar.Id, ar.ServiceResourceId);
         }
