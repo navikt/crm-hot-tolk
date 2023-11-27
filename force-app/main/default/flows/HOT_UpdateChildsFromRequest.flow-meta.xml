@@ -166,6 +166,9 @@
         <name>InterpretationMethod</name>
         <choiceText>Tolkemetode</choiceText>
         <dataType>String</dataType>
+        <value>
+            <stringValue>InterpretationMethod</stringValue>
+        </value>
     </choices>
     <choices>
         <name>ScreenInterpreter</name>
@@ -734,36 +737,63 @@
             </visibilityRule>
         </fields>
         <fields>
-            <name>InterpretationMethodLookup</name>
-            <extensionName>flowruntime:lookup</extensionName>
-            <fieldType>ComponentInstance</fieldType>
-            <inputParameters>
-                <name>objectApiName</name>
-                <value>
-                    <stringValue>HOT_Request__c</stringValue>
-                </value>
-            </inputParameters>
-            <inputParameters>
-                <name>fieldApiName</name>
-                <value>
-                    <stringValue>InterpretationMethod__c</stringValue>
-                </value>
-            </inputParameters>
-            <inputParameters>
-                <name>label</name>
-                <value>
-                    <stringValue>Tolkemetode</stringValue>
-                </value>
-            </inputParameters>
-            <inputParameters>
-                <name>recordId</name>
-                <value>
-                    <elementReference>getRequest.InterpretationMethod__c</elementReference>
-                </value>
-            </inputParameters>
-            <inputsOnNextNavToAssocScrn>UseStoredValues</inputsOnNextNavToAssocScrn>
-            <isRequired>true</isRequired>
-            <storeOutputAutomatically>true</storeOutputAutomatically>
+            <name>NewValuesScreen_Section7</name>
+            <fieldType>RegionContainer</fieldType>
+            <fields>
+                <name>NewValuesScreen_Section7_Column1</name>
+                <fieldType>Region</fieldType>
+                <fields>
+                    <name>InterpretationMethodLookup</name>
+                    <extensionName>flowruntime:lookup</extensionName>
+                    <fieldType>ComponentInstance</fieldType>
+                    <inputParameters>
+                        <name>objectApiName</name>
+                        <value>
+                            <stringValue>HOT_Request__c</stringValue>
+                        </value>
+                    </inputParameters>
+                    <inputParameters>
+                        <name>fieldApiName</name>
+                        <value>
+                            <stringValue>InterpretationMethod__c</stringValue>
+                        </value>
+                    </inputParameters>
+                    <inputParameters>
+                        <name>label</name>
+                        <value>
+                            <stringValue>Tolkemetode</stringValue>
+                        </value>
+                    </inputParameters>
+                    <inputParameters>
+                        <name>recordId</name>
+                        <value>
+                            <elementReference>getRequest.InterpretationMethod__c</elementReference>
+                        </value>
+                    </inputParameters>
+                    <inputsOnNextNavToAssocScrn>UseStoredValues</inputsOnNextNavToAssocScrn>
+                    <isRequired>true</isRequired>
+                    <storeOutputAutomatically>true</storeOutputAutomatically>
+                </fields>
+                <inputParameters>
+                    <name>width</name>
+                    <value>
+                        <stringValue>12</stringValue>
+                    </value>
+                </inputParameters>
+                <isRequired>false</isRequired>
+            </fields>
+            <isRequired>false</isRequired>
+            <regionContainerType>SectionWithoutHeader</regionContainerType>
+            <visibilityRule>
+                <conditionLogic>and</conditionLogic>
+                <conditions>
+                    <leftValueReference>ChosenFields</leftValueReference>
+                    <operator>Contains</operator>
+                    <rightValue>
+                        <elementReference>InterpretationMethod</elementReference>
+                    </rightValue>
+                </conditions>
+            </visibilityRule>
         </fields>
         <showFooter>true</showFooter>
         <showHeader>true</showHeader>
