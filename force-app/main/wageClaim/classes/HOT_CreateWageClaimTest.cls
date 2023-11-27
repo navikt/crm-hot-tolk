@@ -44,9 +44,9 @@ private class HOT_CreateWageClaimTest {
     }
     @isTest
     static void createWageClaimTest_saStatusCanceled() {
-        Test.startTest();
         AssignedResource assignedResource = [SELECT Id, ServiceAppointmentId FROM AssignedResource];
 
+        Test.startTest();
         update new ServiceAppointment(Id = assignedResource.ServiceAppointmentId, Status = 'Canceled');
         Test.stopTest();
 

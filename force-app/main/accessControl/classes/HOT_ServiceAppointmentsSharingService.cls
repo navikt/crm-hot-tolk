@@ -111,11 +111,13 @@ public without sharing class HOT_ServiceAppointmentsSharingService {
 
     private static Map<Id, Id> getThreadBySAId(List<Id> saIds) {
         Map<Id, Id> threadBySAId = new Map<Id, Id>();
-        for (Thread__c thread : [
+        List<Thread__c> threadList = [
             SELECT Id, CRM_Related_Object__c
             FROM Thread__c
             WHERE CRM_Related_Object__c IN :saIds
-        ]) {
+        ];
+
+        for (Thread__c thread : threadList) {
             threadBySAId.put(thread.CRM_Related_Object__c, thread.Id);
         }
 
