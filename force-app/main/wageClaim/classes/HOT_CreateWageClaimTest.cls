@@ -72,9 +72,9 @@ private class HOT_CreateWageClaimTest {
 
     @isTest
     static void createWageClaimTest_arDeleted() {
-        Test.startTest();
         AssignedResource assignedResource = [SELECT Id, ServiceAppointmentId FROM AssignedResource];
 
+        Test.startTest();
         delete assignedResource;
         Test.stopTest();
 
