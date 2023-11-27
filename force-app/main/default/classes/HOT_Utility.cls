@@ -115,10 +115,10 @@ public without sharing class HOT_Utility {
         Boolean isWithinTenMin = datetime_1600.getTime() - Datetime.now().getTime() < 600000;
         Boolean isFriday = now.format('EEEE') == 'Friday';
         if (isWithinTenMin) {
-            Datetime nextDay = Datetime.newInstance(now.addDays(1).date(), Time.newInstance(7, 0, 0, 0));
+            Datetime nextDay = Datetime.newInstance(now.addDays(1).date(), Time.newInstance(8, 0, 0, 0));
             minutes = (nextDay.getTime() - now.getTime()) / 60000;
             if (isFriday) {
-                Datetime monday = Datetime.newInstance(now.addDays(3).date(), Time.newInstance(7, 0, 0, 0));
+                Datetime monday = Datetime.newInstance(now.addDays(3).date(), Time.newInstance(8, 0, 0, 0));
                 minutes = (monday.getTime() - now.getTime()) / 60000;
             }
         } else if (isWithinAnHour) {
@@ -135,10 +135,10 @@ public without sharing class HOT_Utility {
         Boolean isWithinTenMin = datetime_1600.getTime() - Datetime.now().getTime() < 600000;
         Boolean isFriday = now.format('EEEE') == 'Friday';
         if (isWithinTenMin) {
-            Datetime nextDay = Datetime.newInstance(now.addDays(1).date(), Time.newInstance(7, 0, 0, 0));
+            Datetime nextDay = Datetime.newInstance(now.addDays(1).date(), Time.newInstance(8, 0, 0, 0));
             minutes = (nextDay.getTime() - now.getTime()) / 60000;
             if (isFriday) {
-                Datetime monday = Datetime.newInstance(now.addDays(3).date(), Time.newInstance(7, 0, 0, 0));
+                Datetime monday = Datetime.newInstance(now.addDays(3).date(), Time.newInstance(8, 0, 0, 0));
                 minutes = (monday.getTime() - now.getTime()) / 60000;
             }
         } else if (isWithinAnHour) {
