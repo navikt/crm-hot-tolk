@@ -265,7 +265,7 @@ public without sharing class HOT_UserNotificationService {
 
     private static String getTargetPageRef(Id targetId, String level) {
         String pageRef =
-            '{type: "comm__namedPage",attributes: {pageName: "mine-bestillinger"}, state: {id: "' +
+            '{type: "comm__namedPage",attributes: {pageName: "mine-bestillinger"}, state: {from: "mine-varsler", id: "' +
             targetId +
             '", level: "' +
             level +
@@ -276,7 +276,7 @@ public without sharing class HOT_UserNotificationService {
 
     private static String getTargetPageRefOrderer(Id targetId, String level) {
         String pageRef =
-            '{type: "comm__namedPage",attributes: {pageName: "mine-bestillinger-andre"}, state: {id: "' +
+            '{type: "comm__namedPage",attributes: {pageName: "mine-bestillinger-andre"}, state: {from: "mine-varsler", id: "' +
             targetId +
             '", level: "' +
             level +
@@ -301,7 +301,7 @@ public without sharing class HOT_UserNotificationService {
             String pageRef =
                 '{type: "comm__namedPage",attributes: {pageName: "mine-samtaler"}, state: {recordId: "' +
                 target.Id +
-                '"}}';
+                '", from: "mine-varsler-tolkebruker"}}';
             return pageRef;
         }
     }
