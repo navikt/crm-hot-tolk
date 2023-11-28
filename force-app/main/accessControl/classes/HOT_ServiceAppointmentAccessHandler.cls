@@ -9,6 +9,15 @@ public without sharing class HOT_ServiceAppointmentAccessHandler extends MyTrigg
             }
         }
 
+        if (serviceAppointmentsWithUpdatedStatusDispatched.size() > 0) {
+            recalculateManualSharingFlagOnServiceAppointment(serviceAppointmentsWithUpdatedStatusDispatched);
+        }
+    }
+
+    @Future
+    private static void recalculateManualSharingFlagOnServiceAppointment(
+        List<Id> serviceAppointmentsWithUpdatedStatusDispatched
+    ) {
         Map<Id, Id> apppointmentByAssignment = new Map<Id, Id>();
         Map<Id, Id> resourceToAddByAssignment = new Map<Id, Id>();
 
