@@ -9,6 +9,8 @@
 !**/profiles/NAV Bruker Plus.profile-meta.xml
 !**/profiles/NAV Samhandler.profile-meta.xml
 !**/profiles/NAV Administrator.profile-meta.xml
+!**/profiles/HOT Tolk Ansatt.profile-meta.xml
+!**/profiles/HOT Tolk Formidler.profile-meta.xml
 **/profilePasswordPolicies/*
 **/profileSessionSettings/*
 

@@ -1132,7 +1132,7 @@ public without sharing class HOT_ServiceAppointmentNotification {
 
     public static String getTargetPageRefInterpreter(String targetList, Id targetId) {
         String pageRef =
-            '{type: "comm__namedPage",attributes: {pageName: "mine-oppdrag"}, state: {list: "' +
+            '{type: "comm__namedPage",attributes: {pageName: "mine-oppdrag"}, state: {from: "mine-varsler", list: "' +
             targetList +
             '", id: "' +
             targetId +
