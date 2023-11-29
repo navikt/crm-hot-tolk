@@ -66,6 +66,13 @@ private class HOT_AssignedResourceAccessHandlerTest {
         sa.Status = 'Dispatched';
         update sa;
 
+        //Sleep for 5 sec
+        long startTime = Datetime.now().getTime();
+        long finishTime = Datetime.now().getTime();
+        while (startTime - finishTime < 5000) {
+            finishTime = Datetime.now().getTime();
+        }
+
         System.assertEquals(
             1,
             [
@@ -103,6 +110,13 @@ private class HOT_AssignedResourceAccessHandlerTest {
 
         sa.Status = 'Dispatched';
         update sa;
+
+        //Sleep for 5 sec
+        long startTime = Datetime.now().getTime();
+        long finishTime = Datetime.now().getTime();
+        while (startTime - finishTime < 5000) {
+            finishTime = Datetime.now().getTime();
+        }
 
         System.assertEquals(
             1,
@@ -209,6 +223,13 @@ private class HOT_AssignedResourceAccessHandlerTest {
 
         sa.Status = 'Dispatched';
         update sa;
+
+        //Sleep for 5 sec
+        long startTime = Datetime.now().getTime();
+        long finishTime = Datetime.now().getTime();
+        while (startTime - finishTime < 5000) {
+            finishTime = Datetime.now().getTime();
+        }
 
         Id serviceResourceId2 = serviceResources[1].Id;
         Id userId2 = serviceResources[1].RelatedRecordId;
