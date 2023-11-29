@@ -339,6 +339,8 @@ private class HOT_ServiceAppointmentsSharingSrvTest {
             FROM ServiceAppointmentShare
             WHERE ParentId = :serviceAppointment.Id AND RowCause = 'Manual'
         ];
+
+        Test.stopTest();
         System.assertEquals(
             true,
             serviceAppointment.HOT_IsRecalculateManualSharing__c,
@@ -349,7 +351,6 @@ private class HOT_ServiceAppointmentsSharingSrvTest {
         HOT_ServiceAppointmentsSharingService.recalculateManualSharing(
             new List<ServiceAppointment>{ serviceAppointment }
         );
-        Test.stopTest();
 
         serviceAppointmentShares = [
             SELECT Id
