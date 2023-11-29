@@ -321,6 +321,7 @@ private class HOT_ServiceAppointmentsSharingSrvTest {
         serviceAppointment.HOT_IsRecalculateManualSharing__c = true;
         serviceAppointment.HOT_ServiceResource__c = null;
         serviceAppointment.Status = 'Dispatched';
+        Test.startTest();
         update serviceAppointment;
 
         serviceAppointment = [
@@ -345,18 +346,10 @@ private class HOT_ServiceAppointmentsSharingSrvTest {
         );
         System.assertEquals(1, serviceAppointmentShares.size(), 'Could not create service appointment share');
 
-        Test.startTest();
         HOT_ServiceAppointmentsSharingService.recalculateManualSharing(
             new List<ServiceAppointment>{ serviceAppointment }
         );
         Test.stopTest();
-
-        //Sleep for 5 sec
-        long startTime = Datetime.now().getTime();
-        long finishTime = Datetime.now().getTime();
-        while (startTime - finishTime < 5000) {
-            finishTime = Datetime.now().getTime();
-        }
 
         serviceAppointmentShares = [
             SELECT Id
