@@ -57,6 +57,7 @@ private class HOT_AssignedResourceAccessHandlerTest {
         request.Status__c = 'Godkjent';
         update request;
 
+        Test.startTest();
         ServiceAppointment sa = [SELECT Id, Status FROM ServiceAppointment LIMIT 1];
         Id serviceResourceId = [SELECT Id FROM ServiceResource LIMIT 1].Id;
         Id userId = [SELECT RelatedRecordId FROM ServiceResource LIMIT 1].RelatedRecordId;
@@ -66,12 +67,7 @@ private class HOT_AssignedResourceAccessHandlerTest {
         sa.Status = 'Dispatched';
         update sa;
 
-        //Sleep for 5 sec
-        long startTime = Datetime.now().getTime();
-        long finishTime = Datetime.now().getTime();
-        while (startTime - finishTime < 5000) {
-            finishTime = Datetime.now().getTime();
-        }
+        Test.stopTest();
 
         System.assertEquals(
             1,
@@ -106,17 +102,11 @@ private class HOT_AssignedResourceAccessHandlerTest {
         Id serviceResourceId = [SELECT Id FROM ServiceResource LIMIT 1].Id;
         Id userId = [SELECT RelatedRecordId FROM ServiceResource LIMIT 1].RelatedRecordId;
         AssignedResource assignedResource = HOT_TestDataFactory.createAssignedResource(sa.Id, serviceResourceId);
+        Test.startTest();
         insert assignedResource;
 
         sa.Status = 'Dispatched';
         update sa;
-
-        //Sleep for 5 sec
-        long startTime = Datetime.now().getTime();
-        long finishTime = Datetime.now().getTime();
-        while (startTime - finishTime < 5000) {
-            finishTime = Datetime.now().getTime();
-        }
 
         System.assertEquals(
             1,
@@ -127,7 +117,6 @@ private class HOT_AssignedResourceAccessHandlerTest {
             ]
         );
 
-        Test.startTest();
         delete assignedResource;
         Test.stopTest();
 
@@ -219,17 +208,11 @@ private class HOT_AssignedResourceAccessHandlerTest {
         Id userId1 = serviceResources[0].RelatedRecordId;
 
         AssignedResource assignedResource = HOT_TestDataFactory.createAssignedResource(sa.Id, serviceResourceId1);
+        Test.startTest();
         insert assignedResource;
 
         sa.Status = 'Dispatched';
         update sa;
-
-        //Sleep for 5 sec
-        long startTime = Datetime.now().getTime();
-        long finishTime = Datetime.now().getTime();
-        while (startTime - finishTime < 5000) {
-            finishTime = Datetime.now().getTime();
-        }
 
         Id serviceResourceId2 = serviceResources[1].Id;
         Id userId2 = serviceResources[1].RelatedRecordId;
@@ -243,7 +226,6 @@ private class HOT_AssignedResourceAccessHandlerTest {
             ]
         );
 
-        Test.startTest();
         assignedResource.ServiceResourceId = serviceResourceId2;
         update assignedResource;
         Test.stopTest();
