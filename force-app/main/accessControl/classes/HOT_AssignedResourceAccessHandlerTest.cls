@@ -108,6 +108,7 @@ private class HOT_AssignedResourceAccessHandlerTest {
         sa.Status = 'Dispatched';
         update sa;
 
+        Test.stopTest();
         System.assertEquals(
             1,
             [
@@ -118,7 +119,6 @@ private class HOT_AssignedResourceAccessHandlerTest {
         );
 
         delete assignedResource;
-        Test.stopTest();
 
         ServiceAppointment serviceAppointment = [
             SELECT HOT_IsRecalculateManualSharing__c
