@@ -323,7 +323,7 @@ private class HOT_ServiceAppointmentsSharingSrvTest {
         serviceAppointment.Status = 'Dispatched';
         Test.startTest();
         update serviceAppointment;
-
+        Test.stopTest();
         serviceAppointment = [
             SELECT
                 Id,
@@ -334,13 +334,13 @@ private class HOT_ServiceAppointmentsSharingSrvTest {
             FROM ServiceAppointment
             WHERE Id = :serviceAppointment.Id
         ];
+
         List<ServiceAppointmentShare> serviceAppointmentShares = [
             SELECT Id
             FROM ServiceAppointmentShare
             WHERE ParentId = :serviceAppointment.Id AND RowCause = 'Manual'
         ];
 
-        Test.stopTest();
         System.assertEquals(
             true,
             serviceAppointment.HOT_IsRecalculateManualSharing__c,
