@@ -351,6 +351,13 @@ private class HOT_ServiceAppointmentsSharingSrvTest {
         );
         Test.stopTest();
 
+        //Sleep for 5 sec
+        long startTime = Datetime.now().getTime();
+        long finishTime = Datetime.now().getTime();
+        while (startTime - finishTime < 5000) {
+            finishTime = Datetime.now().getTime();
+        }
+
         serviceAppointmentShares = [
             SELECT Id
             FROM ServiceAppointmentShare
