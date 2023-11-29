@@ -267,6 +267,7 @@ public without sharing class HOT_ServiceAppointmentHandler extends MyTriggers {
         }
         if (serviceAppointmentsWithStatusNone.size() > 0) {
             setScheduledTimesOnStatusNone(serviceAppointmentsWithStatusNone);
+            addErrorIfUnassignedInterpreterChangeStatus(serviceAppointmentsWithStatusNone, triggerOldMap);
         }
     }
 
@@ -769,6 +770,24 @@ public without sharing class HOT_ServiceAppointmentHandler extends MyTriggers {
             }
             if (serviceAppointment.DueDate != null) {
                 serviceAppointment.SchedEndTime = serviceAppointment.DueDate;
+            }
+        }
+    }
+
+    // Used to fix a bug in FSL app, see TOLK-2300 for details.
+    private static void addErrorIfUnassignedInterpreterChangeStatus(
+        List<ServiceAppointment> records,
+        Map<Id, sObject> triggerOldMap
+    ) {
+        List<Profile> profileList = [SELECT Id FROM Profile WHERE Name = 'HOT Tolk Ansatt'];
+        for (ServiceAppointment serviceAppointment : records) {
+            ServiceAppointment oldServiceAppointment = (ServiceAppointment) triggerOldMap.get(serviceAppointment.Id);
+            if (
+                profileList.size() > 0 &&
+                UserInfo.getProfileId() == profileList[0].Id &&
+                oldServiceAppointment.HOT_ServiceResource__r.RelatedRecordId != UserInfo.getUserId()
+            ) {
+                serviceAppointment.addError('Bare en tildelt tolk kan endre status til Ingen.');
             }
         }
     }
