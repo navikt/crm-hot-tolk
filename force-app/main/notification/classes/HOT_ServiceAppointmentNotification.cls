@@ -1140,4 +1140,13 @@ public without sharing class HOT_ServiceAppointmentNotification {
             '"}}';
         return pageRef;
     }
+    public static String getTargetPageRefInterpreterOnChanged(String targetList, Id targetId) {
+        String pageRef =
+            '{type: "comm__namedPage",attributes: {pageName: "mine-oppdrag"}, state: {list: "' +
+            targetList +
+            '", id: "' +
+            targetId +
+            '"}}';
+        return pageRef;
+    }
 }
