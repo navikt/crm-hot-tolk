@@ -217,6 +217,7 @@ private class HOT_AssignedResourceAccessHandlerTest {
         Id serviceResourceId2 = serviceResources[1].Id;
         Id userId2 = serviceResources[1].RelatedRecordId;
 
+        Test.stopTest();
         System.assertEquals(
             1,
             [
@@ -228,7 +229,6 @@ private class HOT_AssignedResourceAccessHandlerTest {
 
         assignedResource.ServiceResourceId = serviceResourceId2;
         update assignedResource;
-        Test.stopTest();
 
         ServiceAppointment serviceAppointment = [
             SELECT HOT_IsRecalculateManualSharing__c
