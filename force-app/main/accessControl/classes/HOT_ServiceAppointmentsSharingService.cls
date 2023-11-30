@@ -118,7 +118,7 @@ public without sharing class HOT_ServiceAppointmentsSharingService {
                 CRM_Related_Object__c IN :saIds
                 AND (CRM_Thread_Type__c = 'HOT_TOLK-FORMIDLER'
                 OR CRM_Thread_Type__c = 'HOT_TOLK-TOLK'
-                OR CRM_Thread_Type__c = 'HOT_TOLK_BRUKER'
+                OR CRM_Thread_Type__c = 'HOT_BRUKER-TOLK'
                 OR CRM_Thread_Type__c = 'HOT_TOLK-RESSURSKONTOR')
         ];
 
