@@ -229,6 +229,7 @@ export default class MineBestillingerWrapper extends NavigationMixin(LightningEl
     isTheOrderer = true;
 
     setButtonLabels() {
+        this.isTheOrderer = true;
         if (this.urlStateParameters.level === 'R') {
             this.editButtonLabel = 'Rediger serie';
             this.copyButtonLabel = 'Kopier serie';
