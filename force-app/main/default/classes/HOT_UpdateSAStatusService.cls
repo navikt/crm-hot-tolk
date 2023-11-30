@@ -23,7 +23,7 @@ public without sharing class HOT_UpdateSAStatusService {
             oldServiceAppointment.HOT_ServiceResource__r.RelatedRecordId == UserInfo.getUserId()
         ) {
             serviceAppointmentToUpdate.Status = serviceAppointment.Status;
-            if (serviceAppointment.Status == 'Dekket') {
+            if (serviceAppointment.Status == 'Completed') {
                 serviceAppointmentToUpdate.ActualStartTime = serviceAppointment.ActualStartTime;
                 serviceAppointmentToUpdate.ActualEndTime = serviceAppointment.ActualEndTime;
                 serviceAppointmentToUpdate.HOT_DoNotCreateHAR__c = serviceAppointment.HOT_DoNotCreateHAR__c;
