@@ -201,7 +201,7 @@ public without sharing class HOT_UserNotificationService {
             '.';
 
         Id notificationTypeId = notificationType.Id;
-        String targetPageRef = HOT_ServiceAppointmentNotification.getTargetPageRefInterpreter('my', sa.Id);
+        String targetPageRef = HOT_ServiceAppointmentNotification.getTargetPageRefInterpreterOnChanged('my', sa.Id);
         Messaging.CustomNotification notification = new Messaging.CustomNotification();
         notification.setTitle(title);
         notification.setBody(body);
