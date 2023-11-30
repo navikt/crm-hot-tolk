@@ -114,7 +114,12 @@ public without sharing class HOT_ServiceAppointmentsSharingService {
         List<Thread__c> threadList = [
             SELECT Id, CRM_Related_Object__c
             FROM Thread__c
-            WHERE CRM_Related_Object__c IN :saIds
+            WHERE
+                CRM_Related_Object__c IN :saIds
+                AND (CRM_Thread_Type__c = 'HOT_TOLK-FORMIDLER'
+                OR CRM_Thread_Type__c = 'HOT_TOLK-TOLK'
+                OR CRM_Thread_Type__c = 'HOT_TOLK_BRUKER'
+                OR CRM_Thread_Type__c = 'HOT_TOLK-RESSURSKONTOR')
         ];
 
         for (Thread__c thread : threadList) {
