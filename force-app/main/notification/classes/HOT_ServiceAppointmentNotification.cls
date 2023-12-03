@@ -1010,6 +1010,7 @@ public without sharing class HOT_ServiceAppointmentNotification {
             WHERE
                 HOT_WorkOrderLineItem__r.WorkOrderId = :getServiceAppointment.HOT_WorkOrderLineItem__r.WorkOrderId
                 AND Id != :sa.Id
+                AND Status = 'Dispatched'
         ];
         //creating notification object list
         List<HOT_Notification__c> notificationList = new List<HOT_Notification__c>();
@@ -1133,6 +1134,15 @@ public without sharing class HOT_ServiceAppointmentNotification {
     public static String getTargetPageRefInterpreter(String targetList, Id targetId) {
         String pageRef =
             '{type: "comm__namedPage",attributes: {pageName: "mine-oppdrag"}, state: {from: "mine-varsler", list: "' +
+            targetList +
+            '", id: "' +
+            targetId +
+            '"}}';
+        return pageRef;
+    }
+    public static String getTargetPageRefInterpreterOnChanged(String targetList, Id targetId) {
+        String pageRef =
+            '{type: "comm__namedPage",attributes: {pageName: "mine-oppdrag"}, state: {list: "' +
             targetList +
             '", id: "' +
             targetId +
