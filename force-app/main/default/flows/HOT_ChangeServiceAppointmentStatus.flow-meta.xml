@@ -8,7 +8,7 @@
         <actionName>HOT_UpdateSAStatusService</actionName>
         <actionType>apex</actionType>
         <connector>
-            <targetReference>Assign_new_values_dekket</targetReference>
+            <targetReference>getUpdatedServiceAppointment</targetReference>
         </connector>
         <flowTransactionModel>CurrentTransaction</flowTransactionModel>
         <inputParameters>
@@ -24,7 +24,7 @@
         <name>Assign_new_values_Avlyst_Bruker</name>
         <label>Assign new values - Avlyst - Bruker</label>
         <locationX>1509</locationX>
-        <locationY>1742</locationY>
+        <locationY>1935</locationY>
         <assignmentItems>
             <assignToReference>CurrentServiceAppointment.HOT_CancelComment__c</assignToReference>
             <operator>Assign</operator>
@@ -111,8 +111,8 @@
     <assignments>
         <name>Assign_new_values_dekket</name>
         <label>Assign new values - Dekket</label>
-        <locationX>673</locationX>
-        <locationY>2198</locationY>
+        <locationX>675</locationX>
+        <locationY>2232</locationY>
         <assignmentItems>
             <assignToReference>CurrentServiceAppointment.Status</assignToReference>
             <operator>Assign</operator>
@@ -141,6 +141,9 @@
                 <booleanValue>true</booleanValue>
             </value>
         </assignmentItems>
+        <connector>
+            <targetReference>HOT_UpdateSAStatusService</targetReference>
+        </connector>
     </assignments>
     <assignments>
         <name>Set_Record_Id_0</name>
@@ -315,6 +318,52 @@
                 <targetReference>Already_Completed</targetReference>
             </connector>
             <label>Completed</label>
+        </rules>
+    </decisions>
+    <decisions>
+        <name>isUpdated</name>
+        <label>isUpdated?</label>
+        <locationX>1502</locationX>
+        <locationY>2702</locationY>
+        <defaultConnector>
+            <targetReference>errorScreen</targetReference>
+        </defaultConnector>
+        <defaultConnectorLabel>No</defaultConnectorLabel>
+        <rules>
+            <name>Yes</name>
+            <conditionLogic>(1 OR 2 OR 3) AND 4</conditionLogic>
+            <conditions>
+                <leftValueReference>updatedServiceAppointment.Status</leftValueReference>
+                <operator>EqualTo</operator>
+                <rightValue>
+                    <elementReference>Status_Avlyst</elementReference>
+                </rightValue>
+            </conditions>
+            <conditions>
+                <leftValueReference>updatedServiceAppointment.Status</leftValueReference>
+                <operator>EqualTo</operator>
+                <rightValue>
+                    <elementReference>Status_Dekket</elementReference>
+                </rightValue>
+            </conditions>
+            <conditions>
+                <leftValueReference>updatedServiceAppointment.Status</leftValueReference>
+                <operator>EqualTo</operator>
+                <rightValue>
+                    <elementReference>Status_TolkAvlyst</elementReference>
+                </rightValue>
+            </conditions>
+            <conditions>
+                <leftValueReference>updatedServiceAppointment.Status</leftValueReference>
+                <operator>EqualTo</operator>
+                <rightValue>
+                    <elementReference>CurrentServiceAppointment.Status</elementReference>
+                </rightValue>
+            </conditions>
+            <connector>
+                <targetReference>Success</targetReference>
+            </connector>
+            <label>Yes</label>
         </rules>
     </decisions>
     <decisions>
@@ -603,8 +652,8 @@
     <recordLookups>
         <name>Get_Service_Resource</name>
         <label>Get Service Resource</label>
-        <locationX>456</locationX>
-        <locationY>782</locationY>
+        <locationX>454</locationX>
+        <locationY>857</locationY>
         <assignNullValuesIfNoRecordsFound>false</assignNullValuesIfNoRecordsFound>
         <connector>
             <targetReference>My_Service_Appointment</targetReference>
@@ -682,6 +731,29 @@
         <sortField>Id</sortField>
         <sortOrder>Asc</sortOrder>
     </recordLookups>
+    <recordLookups>
+        <name>getUpdatedServiceAppointment</name>
+        <label>getUpdatedServiceAppointment</label>
+        <locationX>1511</locationX>
+        <locationY>2538</locationY>
+        <assignNullValuesIfNoRecordsFound>false</assignNullValuesIfNoRecordsFound>
+        <connector>
+            <targetReference>isUpdated</targetReference>
+        </connector>
+        <filterLogic>and</filterLogic>
+        <filters>
+            <field>Id</field>
+            <operator>EqualTo</operator>
+            <value>
+                <elementReference>recordId</elementReference>
+            </value>
+        </filters>
+        <object>ServiceAppointment</object>
+        <outputReference>updatedServiceAppointment</outputReference>
+        <queriedFields>Id</queriedFields>
+        <queriedFields>Status</queriedFields>
+        <queriedFields>HOT_ServiceAppointmentNumber__c</queriedFields>
+    </recordLookups>
     <recordUpdates>
         <name>updateInterestedResource</name>
         <label>updateInterestedResource</label>
@@ -727,6 +799,22 @@
         <showHeader>true</showHeader>
     </screens>
     <screens>
+        <name>errorScreen</name>
+        <label>errorScreen</label>
+        <locationX>1674</locationX>
+        <locationY>2700</locationY>
+        <allowBack>false</allowBack>
+        <allowFinish>true</allowFinish>
+        <allowPause>false</allowPause>
+        <fields>
+            <name>errorText</name>
+            <fieldText>&lt;p&gt;Det oppstod dessverre en uventet feil.&lt;/p&gt;</fieldText>
+            <fieldType>DisplayText</fieldType>
+        </fields>
+        <showFooter>true</showFooter>
+        <showHeader>false</showHeader>
+    </screens>
+    <screens>
         <name>NOT_your_SA</name>
         <label>NOT your SA</label>
         <locationX>196</locationX>
@@ -746,8 +834,8 @@
     <screens>
         <name>SA_Not_Started_Error</name>
         <label>SA Not Started Error</label>
-        <locationX>981</locationX>
-        <locationY>1622</locationY>
+        <locationX>983</locationX>
+        <locationY>1739</locationY>
         <allowBack>true</allowBack>
         <allowFinish>true</allowFinish>
         <allowPause>true</allowPause>
@@ -894,6 +982,23 @@
         <showFooter>true</showFooter>
         <showHeader>false</showHeader>
     </screens>
+    <screens>
+        <name>Success</name>
+        <label>Success</label>
+        <locationX>1360</locationX>
+        <locationY>2700</locationY>
+        <allowBack>false</allowBack>
+        <allowFinish>true</allowFinish>
+        <allowPause>false</allowPause>
+        <fields>
+            <name>SuccessText</name>
+            <fieldText
+            >&lt;p&gt;Status på {!updatedServiceAppointment.HOT_ServiceAppointmentNumber__c} ble endret&lt;span style=&quot;color: rgb(68, 68, 68); background-color: rgb(255, 255, 255);&quot;&gt;.&lt;/span&gt;&lt;/p&gt;</fieldText>
+            <fieldType>DisplayText</fieldType>
+        </fields>
+        <showFooter>true</showFooter>
+        <showHeader>false</showHeader>
+    </screens>
     <start>
         <locationX>342</locationX>
         <locationY>46</locationY>
@@ -953,6 +1058,14 @@
         <isCollection>false</isCollection>
         <isInput>false</isInput>
         <isOutput>false</isOutput>
+    </variables>
+    <variables>
+        <name>updatedServiceAppointment</name>
+        <dataType>SObject</dataType>
+        <isCollection>false</isCollection>
+        <isInput>false</isInput>
+        <isOutput>false</isOutput>
+        <objectType>ServiceAppointment</objectType>
     </variables>
     <variables>
         <name>UserId</name>

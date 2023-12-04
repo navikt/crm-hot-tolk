@@ -15,13 +15,7 @@ public without sharing class HOT_UpdateSAStatusService {
             WHERE Id = :serviceAppointment.Id
         ];
 
-        List<Profile> profileList = [SELECT Id FROM Profile WHERE Name = 'HOT Tolk Ansatt'];
-
-        if (
-            profileList.size() > 0 &&
-            UserInfo.getProfileId() == profileList[0].Id &&
-            oldServiceAppointment.HOT_ServiceResource__r.RelatedRecordId == UserInfo.getUserId()
-        ) {
+        if (oldServiceAppointment.HOT_ServiceResource__r.RelatedRecordId == UserInfo.getUserId()) {
             serviceAppointmentToUpdate.Status = serviceAppointment.Status;
             if (serviceAppointment.Status == 'Completed') {
                 serviceAppointmentToUpdate.ActualStartTime = serviceAppointment.ActualStartTime;
