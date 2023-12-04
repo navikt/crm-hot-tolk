@@ -2,7 +2,13 @@ public without sharing class HOT_ThreadAccessHandler extends MyTriggers {
     public override void onAfterInsert() {
         Set<Id> threadIds = new Set<Id>();
         for (Thread__c thread : (List<Thread__c>) records) {
-            threadIds.add(thread.Id);
+            if (
+                thread.CRM_Thread_Type__c == 'HOT_TOLK-FORMIDLER' ||
+                thread.CRM_Thread_Type__c == 'HOT_TOLK-TOLK' ||
+                thread.CRM_Thread_Type__c == 'HOT_BRUKER-TOLK' ||
+                thread.CRM_Thread_Type__c == 'HOT_TOLK-RESSURSKONTOR'
+            )
+                threadIds.add(thread.Id);
         }
 
         if (threadIds.size() > 0) {
