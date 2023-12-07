@@ -35,6 +35,17 @@ public without sharing class HOT_UpdateSAStatusService {
                 serviceAppointmentToUpdate.HOT_DoNotCreateHAR__c = serviceAppointment.HOT_DoNotCreateHAR__c;
                 serviceAppointmentToUpdate.HOT_IsNotifyDispatcher__c = serviceAppointment.HOT_IsNotifyDispatcher__c;
             }
+        } else {
+            LoggerUtility logger = new LoggerUtility();
+            logger.error(
+                'Update of SA failed because the assigned resource is not the same as initator of the flow:\nSR: ' +
+                oldServiceAppointment.HOT_ServiceResource__r.RelatedRecordId +
+                ' Initiator: ' +
+                UserInfo.getUserId(),
+                oldServiceAppointment,
+                CRM_ApplicationDomain.Domain.HOT
+            );
+            logger.publishSynch();
         }
         try {
             update serviceAppointmentToUpdate;
