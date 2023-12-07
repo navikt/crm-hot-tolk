@@ -122,9 +122,9 @@ private class HOT_CreateWageClaimTest {
         delete assignedResource;
 
         update new ServiceAppointment(Id = assignedResource.ServiceAppointmentId, Status = 'None');
-        Test.stopTest();
 
         List<HOT_WageClaim__c> wageClaims = [SELECT Id, ServiceResource__c FROM HOT_WageClaim__c LIMIT 1];
+        Test.stopTest();
         System.assertEquals(1, wageClaims.size(), 'Wrongly created Wage Claims');
     }
 }

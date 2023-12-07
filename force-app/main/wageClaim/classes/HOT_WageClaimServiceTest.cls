@@ -60,8 +60,8 @@ private class HOT_WageClaimServiceTest {
         serviceAppointment.ActualEndTime = serviceAppointment.SchedEndTime.addMinutes(-15);
         serviceAppointment.Status = 'Completed';
 
-        update serviceAppointment;
         Test.stopTest();
+        update serviceAppointment;
 
         List<HOT_WageClaim__c> wageClaims = [SELECT Id, StartTime__c, EndTime__c FROM HOT_WageClaim__c];
         Boolean isWageClaimTimesCorrect, isWageClaimTimesCorrect2 = false;
@@ -96,7 +96,7 @@ private class HOT_WageClaimServiceTest {
         HOT_Request__c request = [SELECT Id, ServiceResourceWithAgreement1__c FROM HOT_Request__c];
         request.ServiceResourceWithAgreement1__c = assignedResource.ServiceResourceId;
         update request;
-
+        Test.stopTest();
         ServiceAppointment serviceAppointment = [
             SELECT
                 Id,
@@ -115,7 +115,6 @@ private class HOT_WageClaimServiceTest {
         serviceAppointment.Status = 'Completed';
 
         update serviceAppointment;
-        Test.stopTest();
 
         List<HOT_WageClaim__c> wageClaims = [
             SELECT Id, StartTime__c, EndTime__c, ServiceResource__c

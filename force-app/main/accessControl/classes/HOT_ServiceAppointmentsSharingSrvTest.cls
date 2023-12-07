@@ -321,8 +321,9 @@ private class HOT_ServiceAppointmentsSharingSrvTest {
         serviceAppointment.HOT_IsRecalculateManualSharing__c = true;
         serviceAppointment.HOT_ServiceResource__c = null;
         serviceAppointment.Status = 'Dispatched';
+        Test.startTest();
         update serviceAppointment;
-
+        Test.stopTest();
         serviceAppointment = [
             SELECT
                 Id,
@@ -333,11 +334,13 @@ private class HOT_ServiceAppointmentsSharingSrvTest {
             FROM ServiceAppointment
             WHERE Id = :serviceAppointment.Id
         ];
+
         List<ServiceAppointmentShare> serviceAppointmentShares = [
             SELECT Id
             FROM ServiceAppointmentShare
             WHERE ParentId = :serviceAppointment.Id AND RowCause = 'Manual'
         ];
+
         System.assertEquals(
             true,
             serviceAppointment.HOT_IsRecalculateManualSharing__c,
@@ -345,11 +348,9 @@ private class HOT_ServiceAppointmentsSharingSrvTest {
         );
         System.assertEquals(1, serviceAppointmentShares.size(), 'Could not create service appointment share');
 
-        Test.startTest();
         HOT_ServiceAppointmentsSharingService.recalculateManualSharing(
             new List<ServiceAppointment>{ serviceAppointment }
         );
-        Test.stopTest();
 
         serviceAppointmentShares = [
             SELECT Id
