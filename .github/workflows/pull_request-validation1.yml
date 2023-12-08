@@ -6,7 +6,7 @@ on:
 jobs:
   run-pr-validation:
     name: Validate PR
-    uses: navikt/crm-workflows-base/.github/workflows/validate.yml@master
+    uses: navikt/crm-workflows-base/.github/workflows/validate.yml@main
     permissions:
       contents: read
     secrets: inherit
