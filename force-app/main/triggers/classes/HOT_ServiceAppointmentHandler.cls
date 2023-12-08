@@ -824,15 +824,6 @@ public without sharing class HOT_ServiceAppointmentHandler extends MyTriggers {
         for (ServiceAppointment serviceAppointment : serviceAppointments) {
             if (serviceAppointment.HOT_PreferredServiceResourceId__c != null) {
                 if (
-                    serviceAppointment.ServiceTerritoryId !=
-                    serviceResources.get(serviceAppointment.HOT_PreferredServiceResourceId__c).HOT_ServiceTerritory__c
-                ) {
-                    serviceAppointment.ServiceTerritoryId = serviceResources.get(
-                            serviceAppointment.HOT_PreferredServiceResourceId__c
-                        )
-                        .HOT_ServiceTerritory__c;
-                }
-                if (
                     serviceAppointment.HOT_IsReleasedToFreelance__c !=
                     serviceResources.get(serviceAppointment.HOT_PreferredServiceResourceId__c)
                         .HOT_IsFreelanceInterpreter__c
