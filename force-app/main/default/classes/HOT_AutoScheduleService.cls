@@ -34,7 +34,7 @@ public with sharing class HOT_AutoScheduleService {
             for (ServiceAppointment serviceAppointment : serviceAppointments) {
                 serviceAppointment.put('FSL__Auto_Schedule__c', true);
                 if (
-                    serviceAppointment.HOT_Request__r.PreferredResource1__c != null &&
+                    serviceAppointment.HOT_Request__r.PreferredResource1__c != null ||
                     serviceAppointment.HOT_PreferredResource__c != null
                 ) {
                     serviceAppointment.put('FSL__Scheduling_Policy_Used__c', fslPolicy.Id);
