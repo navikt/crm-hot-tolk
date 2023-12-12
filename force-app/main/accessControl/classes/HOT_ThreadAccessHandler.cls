@@ -1,5 +1,5 @@
 public without sharing class HOT_ThreadAccessHandler extends MyTriggers {
-    public override void onAfterInsert() {
+    public override void onAfterUpdate(Map<Id, sObject> triggerOldMap) {
         Set<Id> threadIds = new Set<Id>();
         for (Thread__c thread : (List<Thread__c>) records) {
             if (
@@ -7,12 +7,13 @@ public without sharing class HOT_ThreadAccessHandler extends MyTriggers {
                 thread.CRM_Thread_Type__c == 'HOT_TOLK-TOLK' ||
                 thread.CRM_Thread_Type__c == 'HOT_BRUKER-TOLK' ||
                 thread.CRM_Thread_Type__c == 'HOT_TOLK-RESSURSKONTOR'
-            )
+            ) {
                 threadIds.add(thread.Id);
-        }
+            }
 
-        if (threadIds.size() > 0) {
-            grantAccessToThreads(threadIds);
+            if (threadIds.size() > 0) {
+                // grantAccessToThreads(threadIds);
+            }
         }
     }
 
@@ -22,7 +23,16 @@ public without sharing class HOT_ThreadAccessHandler extends MyTriggers {
         List<Thread__c> threads = [SELECT HOT_Participants__c FROM Thread__c WHERE Id IN :threadIds];
 
         for (Thread__c thread : threads) {
+            LoggerUtility logger = new LoggerUtility();
+            logger.error(
+                'Kom hit i loopen med partici: ' + thread.HOT_Participants__c,
+                thread,
+                CRM_ApplicationDomain.Domain.HOT
+            );
+            logger.publishSynch();
             if (thread.HOT_Participants__c != null && thread.HOT_Participants__c.length() > 0) {
+                logger.error('Forløkken ', thread, CRM_ApplicationDomain.Domain.HOT);
+                logger.publishSynch();
                 Set<Id> participants = HOT_ThreadSharingService.populateParticipantSet(thread.HOT_Participants__c);
                 participantsByThread.put(thread.Id, participants);
             }
