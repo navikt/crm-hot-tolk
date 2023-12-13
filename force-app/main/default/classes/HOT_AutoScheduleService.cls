@@ -14,7 +14,7 @@ public with sharing class HOT_AutoScheduleService {
         Set<String> serviceAppointmentFields = Schema.SObjectType.ServiceAppointment.fields.getMap().keySet();
         List<String> statusesToInclude = new List<String>{ 'None', 'Released to Freelance' };
 
-        if (serviceAppointmentFields.contains('FSL__Auto_Schedule__c')) {
+        if (serviceAppointmentFields.contains('fsl__auto_schedule__c')) {
             if (parentRecordType == 'request') {
                 queryString = 'SELECT Id, FSL__Auto_Schedule__c, HOT_PreferredResource__c, HOT_Request__r.PreferredResource1__c FROM ServiceAppointment WHERE HOT_Request__c = :parentRecordId AND HOT_ServiceResource__c = null AND Status IN :statusesToInclude';
             }
