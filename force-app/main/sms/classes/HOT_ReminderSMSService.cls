@@ -284,7 +284,7 @@ public without sharing class HOT_ReminderSMSService {
             logger.publishSynch();
         }
     }
-    @Future
+
     public static void sendSMSOnNewMessageInterpreter(String userId, String threadId) {
         User user = [SELECT Id, AccountId FROM User WHERE Id = :userId];
         List<SMS__c> smsList = new List<SMS__c>();
