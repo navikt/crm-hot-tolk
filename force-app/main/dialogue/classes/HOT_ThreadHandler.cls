@@ -40,7 +40,7 @@ public without sharing class HOT_ThreadHandler extends MyTriggers {
         }
 
         if (threadIds.size() > 0) {
-            setInterpreterOnThreadBySA(threadIds);
+            setInterpreterOnThreadOneToOne(threadIds);
         }
     }
 
@@ -184,7 +184,7 @@ public without sharing class HOT_ThreadHandler extends MyTriggers {
                         thread.CRM_Related_Object__c
                     )
                 ) {
-                    thread = appendInterpreterName(thread, serviceAppointment);
+                    thread = appendInterpreterUserIds(thread, serviceAppointment);
                 }
             }
         }
@@ -192,29 +192,55 @@ public without sharing class HOT_ThreadHandler extends MyTriggers {
     }
 
     @Future
-    public static void setInterpreterOnThreadBySA(Set<Id> threadIds) {
-        Thread__c thread = [
+    public static void setInterpreterOnThreadOneToOne(Set<Id> threadIds) {
+        List<Thread__c> threads = [
             SELECT Id, HOT_Participants__c, CRM_Related_Object__c
             FROM Thread__c
             WHERE Id IN :threadIds
-            LIMIT 1
         ];
 
         Set<Id> threadRelatedObjectId = new Set<Id>();
-        threadRelatedObjectId.add(thread.CRM_Related_Object__c);
+        for (Thread__c thread : threads) {
+            threadRelatedObjectId.add(thread.CRM_Related_Object__c);
+        }
 
         List<ServiceAppointment> saList = [
             SELECT Id, HOT_ServiceResource__r.RelatedRecordId
             FROM ServiceAppointment
             WHERE Id IN :threadRelatedObjectId
-            LIMIT 1
+        ];
+        List<HOT_InterestedResource__c> irList = [
+            SELECT Id, ServiceResource__r.RelatedRecordId
+            FROM HOT_InterestedResource__c
+            WHERE Id IN :threadRelatedObjectId
         ];
 
         if (saList.size() > 0) {
-            thread.HOT_Participants__c = '';
-            thread = appendInterpreterName(thread, saList[0]);
+            for (Thread__c thread : threads) {
+                for (ServiceAppointment sa : saList) {
+                    if (thread.CRM_Related_Object__c == sa.Id) {
+                        thread.HOT_Participants__c = sa.HOT_ServiceResource__r.RelatedRecordId;
+                    }
+                }
+            }
             try {
-                HOT_DatabaseOperations.updateRecords(thread);
+                HOT_DatabaseOperations.updateRecords(threads);
+            } catch (Exception e) {
+                LoggerUtility logger = new LoggerUtility();
+                logger.exception(e, CRM_ApplicationDomain.Domain.HOT);
+                logger.publishSynch();
+            }
+        }
+        if (irList.size() > 0) {
+            for (Thread__c thread : threads) {
+                for (HOT_InterestedResource__c ir : irList) {
+                    if (thread.CRM_Related_Object__c == ir.Id) {
+                        thread.HOT_Participants__c = ir.ServiceResource__r.RelatedRecordId;
+                    }
+                }
+            }
+            try {
+                HOT_DatabaseOperations.updateRecords(threads);
             } catch (Exception e) {
                 LoggerUtility logger = new LoggerUtility();
                 logger.exception(e, CRM_ApplicationDomain.Domain.HOT);
@@ -248,7 +274,7 @@ public without sharing class HOT_ThreadHandler extends MyTriggers {
         }
         return serviceAppointmentsByWorkOrderId;
     }
-    public static Thread__c appendInterpreterName(Thread__c thread, ServiceAppointment serviceAppointment) {
+    public static Thread__c appendInterpreterUserIds(Thread__c thread, ServiceAppointment serviceAppointment) {
         String oldInterpreters = thread.HOT_Participants__c;
 
         if (thread.HOT_Participants__c != '') {
