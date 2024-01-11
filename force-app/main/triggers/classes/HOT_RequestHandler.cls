@@ -105,7 +105,7 @@ public without sharing class HOT_RequestHandler extends MyTriggers {
             setCancelDate(avlystRequests);
         }
         if (notifyDispatcherRequests.size() > 0) {
-            HOT_RequestNotification.notifyDispatchers_requestChanged(notifyDispatcherRequests, triggerOldMap);
+            HOT_RequestNotification.notifyDispatchers_requestChanged(notifyDispatcherRequests);
             resetNotifyDispatcher(notifyDispatcherRequests);
         }
         if (requestsToChangeOwnerToArchive.size() > 0) {
