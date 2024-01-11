@@ -1,5 +1,5 @@
 public without sharing class HOT_RequestNotification {
-    public static void notifyDispatchers_requestChanged(List<HOT_Request__c> requests, Map<Id, sObject> triggerOldMap) {
+    public static void notifyDispatchers_requestChanged(List<HOT_Request__c> requests) {
         CustomNotificationType notificationType = [
             SELECT Id, DeveloperName
             FROM CustomNotificationType
@@ -19,14 +19,11 @@ public without sharing class HOT_RequestNotification {
         ];
 
         for (HOT_Request__c request : requests) {
-            HOT_Request__c oldRequest = (HOT_Request__c) triggerOldMap.get(request.Id);
-
             Set<String> recipients = new Set<String>{ (String) groupByQueue.get(request.OwnerId) };
 
             // Varsel ved avlyst av bruker
-            if (request.Status__c == 'Avlyst') {
-                canceledByUser(notificationType, request, recipients);
-            }
+
+            canceledByUser(notificationType, request, recipients);
         }
     }
     public static void canceledByUser(
