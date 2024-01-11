@@ -1,7 +1,5 @@
 public class HOT_UpdateExistingRecords implements Database.Batchable<sObject> {
     public Database.QueryLocator start(Database.BatchableContext bc) {
-        Datetime now = Datetime.now();
-
         return Database.getQueryLocator(
             'SELECT Id, HOT_Participants__c, CRM_Related_Object__c, CRM_Thread_Type__c, CreatedDate FROM Thread__c WHERE CRM_Thread_Type__c = \'HOT_TOLK-FORMIDLER\' AND CreatedDate = \'LAST_N_DAYS:90\''
         );
