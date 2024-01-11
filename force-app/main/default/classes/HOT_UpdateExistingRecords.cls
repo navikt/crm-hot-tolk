@@ -31,7 +31,7 @@ public class HOT_UpdateExistingRecords implements Database.Batchable<sObject> {
             }
         }
         if (irList.size() > 0) {
-            for (Thread__c thread : threads) {
+            for (Thread__c thread : records) {
                 for (HOT_InterestedResource__c ir : irList) {
                     if (thread.CRM_Related_Object__c == ir.Id) {
                         thread.HOT_Participants__c = ir.ServiceResource__r.RelatedRecordId;
