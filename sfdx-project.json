@@ -7,7 +7,7 @@
             "path": "force-app",
             "default": true,
             "package": "crm-hot",
-            "versionNumber": "1.264.0.NEXT",
+            "versionNumber": "1.265.0.NEXT",
             "dependencies": [
                 {
                     "package": "crm-platform-base",
