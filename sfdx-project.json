@@ -6,40 +6,8 @@
         {
             "path": "force-app",
             "default": true,
-            "package": "crm-hot",
+            "package": "crm-hot-tolk",
             "versionNumber": "1.266.0.NEXT",
-            "dependencies": [
-                {
-                    "package": "crm-platform-base",
-                    "versionNumber": "0.198.0.LATEST"
-                },
-                {
-                    "package": "crm-henvendelse-base",
-                    "versionNumber": "0.16.0.LATEST"
-                },
-                {
-                    "package": "crm-platform-integration",
-                    "versionNumber": "0.101.0.LATEST"
-                },
-                {
-                    "package": "crm-platform-access-control",
-                    "versionNumber": "0.113.0.LATEST"
-                },
-                {
-                    "package": "crm-community-base",
-                    "versionNumber": "0.93.0.LATEST"
-                },
-                {
-                    "package": "crm-platform-reporting",
-                    "versionNumber": "0.31.0.LATEST"
-                }
-            ]
-        },
-        {
-            "path": "force-app",
-            "default": false,
-            "package": "crm-hot-dev",
-            "versionNumber": "1.174.0.NEXT",
             "dependencies": [
                 {
                     "package": "crm-platform-base",
@@ -71,9 +39,8 @@
     "packageAliases": {
         "crm-platform-base": "0Ho2o0000008ORmCAM",
         "crm-platform-access-control": "0Ho2o0000008OR3CAM",
-        "crm-hot": "0Ho2o0000008OSVCA2",
+        "crm-hot-tolk": "0Ho2o0000008OSVCA2",
         "crm-community-base": "0Ho2o0000008OSzCAM",
-        "crm-hot-dev": "0Ho2o000000KylqCAC",
         "crm-platform-reporting": "0Ho2o0000008OSfCAM",
         "crm-platform-integration": "0Ho2o0000008ORrCAM",
         "crm-henvendelse-base": "0Ho7U000000000kSAA"
