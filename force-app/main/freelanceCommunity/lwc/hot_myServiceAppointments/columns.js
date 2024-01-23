@@ -33,6 +33,11 @@ export let columns = [
 
 export let mobileColumns = [
     {
+        label: 'Oppdragsnummer',
+        name: 'AppointmentNumber',
+        type: 'String'
+    },
+    {
         label: 'Bestilt tid',
         name: 'startAndEndDateWeekday',
         type: 'String'
