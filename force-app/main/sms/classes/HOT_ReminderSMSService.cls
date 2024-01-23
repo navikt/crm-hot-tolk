@@ -627,6 +627,8 @@ public without sharing class HOT_ReminderSMSService {
                 Status,
                 AppointmentNumber,
                 HOT_ServiceResource__c,
+                EarliestStartTime,
+                DueDate,
                 HOT_ServiceResource__r.AccountId,
                 HOT_ServiceResource__r.HOT_MobilePhone__c
             FROM ServiceAppointment
@@ -662,6 +664,8 @@ public without sharing class HOT_ReminderSMSService {
                 Status,
                 AppointmentNumber,
                 HOT_ServiceResource__c,
+                EarliestStartTime,
+                DueDate,
                 HOT_ServiceResource__r.AccountId,
                 HOT_ServiceResource__r.HOT_MobilePhone__c
             FROM ServiceAppointment
@@ -717,6 +721,12 @@ public without sharing class HOT_ReminderSMSService {
         }
         if (saEvent == 'Screen') {
             message += ' ' + formatTimePeriod(sa.EarliestStartTime, sa.DueDate) + ' er endret';
+        }
+        if (saEvent == 'Dispatched') {
+            message += '\n' + formatTimePeriodExtended(sa.EarliestStartTime, sa.DueDate);
+        }
+        if (saEvent == 'Removed') {
+            message += '\n' + formatTimePeriodExtended(sa.EarliestStartTime, sa.DueDate);
         }
         message += '.\n\nFor mer informasjon, se tolkebestilling.nav.no.\n';
         message += 'Du kan ikke svare på denne meldingen.\n';
@@ -810,6 +820,21 @@ public without sharing class HOT_ReminderSMSService {
 
     public static String formatTimePeriod(Datetime startDate, Datetime endDate) {
         String timePeriod =
+            startDate.date().format() +
+            '\nKlokkeslett: ' +
+            (startDate.hour() < 10 ? '0' + String.valueOf(startDate.hour()) : String.valueOf(startDate.hour())) +
+            '.' +
+            (startDate.minute() < 10 ? '0' + String.valueOf(startDate.minute()) : String.valueOf(startDate.minute())) +
+            ' - ' +
+            (endDate.hour() < 10 ? '0' + String.valueOf(endDate.hour()) : String.valueOf(endDate.hour())) +
+            '.' +
+            (endDate.minute() < 10 ? '0' + String.valueOf(endDate.minute()) : String.valueOf(endDate.minute()));
+
+        return timePeriod;
+    }
+    public static String formatTimePeriodExtended(Datetime startDate, Datetime endDate) {
+        String timePeriod =
+            '\nDato: ' +
             startDate.date().format() +
             '\nKlokkeslett: ' +
             (startDate.hour() < 10 ? '0' + String.valueOf(startDate.hour()) : String.valueOf(startDate.hour())) +
