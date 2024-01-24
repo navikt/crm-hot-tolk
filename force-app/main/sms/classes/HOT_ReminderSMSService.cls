@@ -309,7 +309,6 @@ public without sharing class HOT_ReminderSMSService {
         }
     }
 
-    @Future
     public static void sendSMSOnNewWantedSR(Set<Id> wantedIRIds) {
         List<SMS__c> smsList = new List<SMS__c>();
         List<HOT_InterestedResource__c> wantedIRList = [
@@ -434,7 +433,6 @@ public without sharing class HOT_ReminderSMSService {
             logger.publishSynch();
         }
     }
-    @Future
     public static void sendSMSOnCoInterpreterChange(
         Set<Id> serviceResourcesIds,
         String schedStartEndtime,
@@ -482,7 +480,6 @@ public without sharing class HOT_ReminderSMSService {
         }
     }
 
-    @Future
     public static void sendSMSToInterpreterOnScreenInterpretation(Set<Id> saIds) {
         List<ServiceAppointment> saList = [
             SELECT
@@ -519,7 +516,6 @@ public without sharing class HOT_ReminderSMSService {
         }
     }
 
-    @Future
     public static void sendSMSToInterpreterOnTimeChanged(Set<Id> saIds) {
         List<ServiceAppointment> saList = [
             SELECT
@@ -554,7 +550,6 @@ public without sharing class HOT_ReminderSMSService {
         }
     }
 
-    @Future
     public static void sendSMSToInterpreterOnCanceledByUser(Set<Id> saIds, Set<Id> srIds) {
         List<ServiceAppointment> saList = [
             SELECT Status, AppointmentNumber, EarliestStartTime, DueDate
@@ -585,7 +580,6 @@ public without sharing class HOT_ReminderSMSService {
         }
     }
 
-    @Future
     public static void sendSMSToInterpreterOnAddressChanged(Set<Id> saIds) {
         List<ServiceAppointment> saList = [
             SELECT
@@ -620,7 +614,6 @@ public without sharing class HOT_ReminderSMSService {
         }
     }
 
-    @Future
     public static void sendSMSToInterpreterOnAddedOrChanged(Set<Id> saIds) {
         List<ServiceAppointment> saList = [
             SELECT
@@ -657,7 +650,6 @@ public without sharing class HOT_ReminderSMSService {
         }
     }
 
-    @Future
     public static void sendSMSToInterpreterOnResourceChanged(Set<Id> saIds) {
         List<ServiceAppointment> saList = [
             SELECT
