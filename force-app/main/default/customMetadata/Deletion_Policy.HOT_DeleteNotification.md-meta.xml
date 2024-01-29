@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomMetadata xmlns="http://soap.sforce.com/2006/04/metadata" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema">
+    <label>HOT_DeleteNotification</label>
+    <protected>false</protected>
+    <values>
+        <field>Childs_to_Delete__c</field>
+        <value xsi:nil="true"/>
+    </values>
+    <values>
+        <field>Delete_Childs__c</field>
+        <value xsi:type="xsd:boolean">false</value>
+    </values>
+    <values>
+        <field>Delete_Parents__c</field>
+        <value xsi:type="xsd:boolean">false</value>
+    </values>
+    <values>
+        <field>Delete_Related_Files__c</field>
+        <value xsi:type="xsd:boolean">false</value>
+    </values>
+    <values>
+        <field>Fields_to_Anonymize__c</field>
+        <value xsi:nil="true"/>
+    </values>
+    <values>
+        <field>Parents_to_Delete__c</field>
+        <value xsi:nil="true"/>
+    </values>
+    <values>
+        <field>Policy_Batch_Size__c</field>
+        <value xsi:type="xsd:double">200.0</value>
+    </values>
+    <values>
+        <field>Policy_Condition_Field__c</field>
+        <value xsi:type="xsd:string">DelPol_ToDeleteRecord__c</value>
+    </values>
+    <values>
+        <field>Policy_Object__c</field>
+        <value xsi:type="xsd:string">HOT_Notification__c</value>
+    </values>
+    <values>
+        <field>Policy_Success_Field__c</field>
+        <value xsi:nil="true"/>
+    </values>
+    <values>
+        <field>Policy_Type__c</field>
+        <value xsi:type="xsd:string">Record Deletion</value>
+    </values>
+</CustomMetadata>
