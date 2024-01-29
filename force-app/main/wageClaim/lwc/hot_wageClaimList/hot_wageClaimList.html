@@ -20,6 +20,17 @@
                 role="dialog"
                 aria-labelledby="comment-header-id"
             >
+                <c-alertdialog
+                    header={modalHeader}
+                    content={modalContent}
+                    desktop-style="text-align: center; white-space: pre-line; width: 50%"
+                    mobile-style="text-align: center; white-space: pre-line; width: 100%; max-width: 100%;"
+                    center-buttons="true"
+                    no-cancel-button={noCancelButton}
+                    confirm-button-label={confirmButtonLabel}
+                    onbuttonclick={handleAlertDialogClick}
+                >
+                </c-alertdialog>
                 <section>
                     <div>
                         <h2 class="typo-undertittel">Informasjon om oppdraget:</h2>
@@ -41,7 +52,7 @@
                                 button-styling="primary"
                                 button-label="Tilbaketrekk tilgjengelighet"
                                 aria-label="Tilbaketrekk tilgjengelighet"
-                                onbuttonclick={retractAvailability}
+                                onbuttonclick={showModal}
                             >
                             </c-button>
                         </div>
