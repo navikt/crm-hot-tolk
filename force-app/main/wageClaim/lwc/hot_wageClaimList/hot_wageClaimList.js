@@ -195,22 +195,29 @@ export default class Hot_wageClaimList extends NavigationMixin(LightningElement)
         this.sendDetail();
         return { id: recordIdToReturn, tab: 'wageClaim' };
     }
+    noCancelButton = false;
+    modalHeader = 'Varsel';
+    modalContent =
+        'Er du sikker på at du vil fjerne tilgjengeligheten din for dette tidspunktet? Du vil da ikke ha krav på lønn.';
+    @track confirmButtonLabel = 'Ja';
 
+    handleAlertDialogClick(event) {
+        if (event.detail === 'confirm') {
+            this.retractAvailability();
+        }
+    }
+    showModal() {
+        this.template.querySelector('c-alertdialog').showModal();
+    }
     retractAvailability() {
-        if (
-            confirm(
-                'Er du sikker på at du vil fjerne tilgjengeligheten din for dette tidspunktet? Du vil da ikke ha krav på lønn.'
-            )
-        ) {
-            try {
-                retractAvailability({ recordId: this.wageClaim.Id }).then(() => {
-                    this.isNotRetractable = true;
-                    this.Status = 'Tilbaketrukket tilgjengelighet';
-                    refreshApex(this.wiredWageClaimsResult);
-                });
-            } catch (error) {
-                alert(JSON.stringify(error));
-            }
+        try {
+            retractAvailability({ recordId: this.wageClaim.Id }).then(() => {
+                this.isNotRetractable = true;
+                this.Status = 'Tilbaketrukket tilgjengelighet';
+                refreshApex(this.wiredWageClaimsResult);
+            });
+        } catch (error) {
+            alert(JSON.stringify(error));
         }
     }
     sendFilters() {
