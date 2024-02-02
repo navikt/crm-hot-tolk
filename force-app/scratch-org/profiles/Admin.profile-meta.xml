@@ -1072,11 +1072,6 @@
         <readable>false</readable>
     </fieldPermissions>
     <fieldPermissions>
-        <editable>false</editable>
-        <field>ServiceResource.HOT_PreferredRegions__c</field>
-        <readable>false</readable>
-    </fieldPermissions>
-    <fieldPermissions>
         <editable>true</editable>
         <field>ServiceResource.HOT_ServiceTerritoryLastUpdated__c</field>
         <readable>true</readable>
