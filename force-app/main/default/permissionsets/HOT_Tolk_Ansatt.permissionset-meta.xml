@@ -16,7 +16,7 @@
         <apexClass>HOT_InterestedResourcesListController</apexClass>
         <enabled>true</enabled>
     </classAccesses>
-        <classAccesses>
+    <classAccesses>
         <apexClass>HOT_UpdateSAStatusService</apexClass>
         <enabled>true</enabled>
     </classAccesses>
@@ -1248,6 +1248,11 @@
     <fieldPermissions>
         <editable>false</editable>
         <field>WorkOrder.HOT_InterpretationStreet__c</field>
+        <readable>true</readable>
+    </fieldPermissions>
+    <fieldPermissions>
+        <editable>true</editable>
+        <field>WorkOrder.HOT_InvoiceStatus__c</field>
         <readable>true</readable>
     </fieldPermissions>
     <fieldPermissions>
