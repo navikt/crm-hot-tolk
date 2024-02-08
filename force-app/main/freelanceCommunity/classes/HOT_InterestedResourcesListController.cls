@@ -14,7 +14,6 @@ public without sharing class HOT_InterestedResourcesListController {
                 ServiceAppointmentEndTime__c,
                 ServiceAppointmentAddress__c,
                 ServiceAppointmentFreelanceSubject__c,
-                IsNewComment__c,
                 ServiceAppointment__c,
                 AppointmentNumber__c,
                 NumberOfInterestedResources__c,
@@ -101,42 +100,7 @@ public without sharing class HOT_InterestedResourcesListController {
         interestedResource.Status__c = 'Interested';
         update interestedResource;
     }
-    @AuraEnabled
-    public static void addComment(Id interestedResourceId, String newComment) {
-        Datetime now = Datetime.now();
-        String osloTimeZone = now.format('yyyy-MM-dd-HH:mm:ss', 'Europe/Oslo');
-        if (newComment != null && newComment != '') {
-            newComment =
-                UserInfo.getFirstName() +
-                ' ' +
-                UserInfo.getLastName() +
-                ', ' +
-                osloTimeZone +
-                ': ' +
-                newComment;
-            HOT_InterestedResource__c interestedResource = [
-                SELECT Id, Comments__c, IsNewComment__c, IsDispatcherNewComment__c
-                FROM HOT_InterestedResource__c
-                WHERE Id = :interestedResourceId
-            ];
-            if (interestedResource.Comments__c == null) {
-                interestedResource.Comments__c = newComment;
-            } else {
-                interestedResource.Comments__c = interestedResource.Comments__c + '\n\n' + newComment;
-            }
 
-            if (
-                Test.isRunningTest()
-                    ? true
-                    : UserInfo.getProfileId() == [SELECT Id FROM Profile WHERE Name = 'NAV Samhandler'][0].Id
-            ) {
-                interestedResource.IsDispatcherNewComment__c = true;
-            } else {
-                interestedResource.IsNewComment__c = true;
-            }
-            update interestedResource;
-        }
-    }
     @AuraEnabled
     public static Thread__c startAThreadAndAddComment(Id interestedResourceId, String newComment, Id userContactId) {
         HOT_InterestedResource__c ir = [
@@ -162,28 +126,6 @@ public without sharing class HOT_InterestedResourcesListController {
             thread.CRM_Latest_Message_Datetime__c = Datetime.now();
         }
         return thread;
-    }
-    @AuraEnabled
-    public static void dispatcherReadComment(Id recordId) {
-        HOT_InterestedResource__c interestedResource = [
-            SELECT Id, IsDispatcherNewComment__c
-            FROM HOT_InterestedResource__c
-            WHERE Id = :recordId
-        ];
-        if (interestedResource.IsDispatcherNewComment__c) {
-            interestedResource.IsDispatcherNewComment__c = false;
-            update interestedResource;
-        }
-    }
-
-    @InvocableVariable
-    public ID recordId;
-    @InvocableVariable
-    public String newComment;
-
-    @InvocableMethod
-    public static void addComment(List<HOT_InterestedResourcesListController> inputVariables) {
-        HOT_InterestedResourcesListController.addComment(inputVariables[0].recordId, inputVariables[0].newComment);
     }
 
     @AuraEnabled

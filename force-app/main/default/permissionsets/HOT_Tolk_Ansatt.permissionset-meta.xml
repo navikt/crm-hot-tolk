@@ -16,7 +16,7 @@
         <apexClass>HOT_InterestedResourcesListController</apexClass>
         <enabled>true</enabled>
     </classAccesses>
-        <classAccesses>
+    <classAccesses>
         <apexClass>HOT_UpdateSAStatusService</apexClass>
         <enabled>true</enabled>
     </classAccesses>
@@ -148,16 +148,6 @@
     <fieldPermissions>
         <editable>true</editable>
         <field>HOT_InterestedResource__c.Comments__c</field>
-        <readable>true</readable>
-    </fieldPermissions>
-    <fieldPermissions>
-        <editable>true</editable>
-        <field>HOT_InterestedResource__c.IsDispatcherNewComment__c</field>
-        <readable>true</readable>
-    </fieldPermissions>
-    <fieldPermissions>
-        <editable>true</editable>
-        <field>HOT_InterestedResource__c.IsNewComment__c</field>
         <readable>true</readable>
     </fieldPermissions>
     <fieldPermissions>
