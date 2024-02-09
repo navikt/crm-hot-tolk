@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ValidationRule xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>None_selected</fullName>
+    <active>true</active>
+    <errorConditionFormula>AND(
+        ISPICKVAL(CRM_Domain__c, &apos;HOT&apos;),
+        IsActive,
+        $Profile.Name = &apos;NAV Samhandler&apos;,
+        NOT(INCLUDES(HOT_PreferredRegions__c, &quot;Tromso&quot;)) &amp;&amp;
+        NOT(INCLUDES(HOT_PreferredRegions__c, &quot;Nordland&quot;)) &amp;&amp;
+        NOT(INCLUDES(HOT_PreferredRegions__c, &quot;Trondelag&quot;)) &amp;&amp;
+        NOT(INCLUDES(HOT_PreferredRegions__c, &quot;More_og_Romsdal&quot;)) &amp;&amp;
+        NOT(INCLUDES(HOT_PreferredRegions__c, &quot;Vestland&quot;)) &amp;&amp;
+        NOT(INCLUDES(HOT_PreferredRegions__c, &quot;Innlandet&quot;)) &amp;&amp;
+        NOT(INCLUDES(HOT_PreferredRegions__c, &quot;Vest_Viken&quot;)) &amp;&amp;
+        NOT(INCLUDES(HOT_PreferredRegions__c, &quot;Ost_Viken&quot;)) &amp;&amp;
+        NOT(INCLUDES(HOT_PreferredRegions__c, &quot;Oslo&quot;)) &amp;&amp;
+        NOT(INCLUDES(HOT_PreferredRegions__c, &quot;Vestfold_og_Telemark&quot;)) &amp;&amp;
+        NOT(INCLUDES(HOT_PreferredRegions__c, &quot;Rogaland&quot;)) &amp;&amp;
+        NOT(INCLUDES(HOT_PreferredRegions__c, &quot;Agder&quot;))
+        )</errorConditionFormula>
+    <errorDisplayField>HOT_PreferredRegions__c</errorDisplayField>
+    <errorMessage>Du må velge minst 1 region</errorMessage>
+</ValidationRule>
