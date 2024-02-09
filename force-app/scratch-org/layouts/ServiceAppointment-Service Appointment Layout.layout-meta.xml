@@ -342,7 +342,6 @@
         <fields>Status__c</fields>
         <fields>ResourceAddress__c</fields>
         <fields>ServiceTerritory__c</fields>
-        <fields>IsNewComment__c</fields>
         <relatedList>HOT_InterestedResource__c.ServiceAppointment__c</relatedList>
     </relatedLists>
     <relatedLists>
