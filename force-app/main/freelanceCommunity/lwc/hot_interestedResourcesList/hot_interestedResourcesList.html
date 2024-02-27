@@ -52,19 +52,16 @@
                                 <p>Oppdragstype: <span>{interestedResource.AssignmentType__c}</span></p>
                                 <p>Status: <span>{interestedResource.Status__c}</span></p>
                                 <p>Antall påmeldte: <span>{interestedResource.NumberOfInterestedResources__c}</span></p>
-                                <p>
-                                    Frigitt dato:
-                                    <span>{interestedResource.ServiceAppointment__r.HOT_ReleaseDate__c}</span>
-                                </p>
-
+                                <p>Frigitt dato:<span> {interestedResource.releasedate} </span></p>
                                 <p>
                                     Frigitt av:
-                                    <span>{interestedResource.ServiceAppointment__r.HOT_ReleasedBy__c}</span>
+                                    <span> {interestedResource.ServiceAppointment__r.HOT_ReleasedBy__c}</span>
                                 </p>
-                                <p>Frist dato: <span>{interestedResource.AppointmentDeadlineDate__c}</span></p>
+                                <p>Frist dato:<span> {interestedResource.AppointmentDeadlineDate__c}</span></p>
+                                <p>Region:<span> {interestedResource.AppointmentServiceTerritory__c}</span></p>
                                 <p>
                                     Eier:
-                                    <span>{interestedResource.ServiceAppointment__r.HOT_Request__r.OwnerName__c}</span>
+                                    <span> {interestedResource.ServiceAppointment__r.HOT_Request__r.OwnerName__c}</span>
                                 </p>
                                 <p if:true={interestedResource.WorkOrderCanceledDate__c}>
                                     Avlyst dato: <span>{interestedResource.WorkOrderCanceledDate__c}</span>

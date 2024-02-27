@@ -435,6 +435,18 @@ export default class hot_messagingCommunityThreadViewer extends NavigationMixin(
                         if (this.interestedResource.AppointmentDeadlineDate__c.includes('NaN')) {
                             this.interestedResource.AppointmentDeadlineDate__c = '';
                         }
+                        let relaseDateTimeFormatted = new Date(
+                            this.interestedResource.ServiceAppointment__r.HOT_ReleaseDate__c
+                        );
+                        this.interestedResource.ServiceAppointment__r.HOT_ReleaseDate__c =
+                            relaseDateTimeFormatted.getDate() +
+                            '.' +
+                            (relaseDateTimeFormatted.getMonth() + 1) +
+                            '.' +
+                            relaseDateTimeFormatted.getFullYear();
+                        if (this.interestedResource.ServiceAppointment__r.HOT_ReleaseDate__c.includes('NaN')) {
+                            this.interestedResource.ServiceAppointment__r.HOT_ReleaseDate__c = '';
+                        }
                         this.isIRDetails = true;
                         this.template.querySelector('.serviceAppointmentDetails').classList.remove('hidden');
                     });
