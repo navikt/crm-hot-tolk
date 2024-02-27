@@ -344,6 +344,7 @@ export default class hot_messagingCommunityThreadViewer extends NavigationMixin(
     }
     @track serviceAppointment;
     @track interestedResource;
+    @track address;
 
     goToDetails() {
         let i = 0;
@@ -357,6 +358,7 @@ export default class hot_messagingCommunityThreadViewer extends NavigationMixin(
                     });
                     getServiceAppointmentDetails({ recordId: key }).then((result) => {
                         this.serviceAppointment = result;
+                        this.address = this.serviceAppointment.HOT_AddressFormated__c;
                         let startTimeFormatted = new Date(result.EarliestStartTime);
                         let endTimeFormatted = new Date(result.DueDate);
                         this.serviceAppointment.StartAndEndDate =
@@ -517,6 +519,12 @@ export default class hot_messagingCommunityThreadViewer extends NavigationMixin(
                 }
             }
         });
+    }
+    openGoogleMaps() {
+        window.open('https://www.google.com/maps/search/?api=1&query=' + this.address);
+    }
+    openAppleMaps() {
+        window.open('http://maps.apple.com/?q=' + this.address);
     }
 
     navigationId = '';
