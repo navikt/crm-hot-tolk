@@ -429,4 +429,33 @@ private class HOT_AssignedResourceHandlerTest {
             'Could not set Interested Resource Status to Assigned'
         );
     }
+    @isTest
+    static void moveExistingThreadBackToIRWhenARIsDeletedTest() {
+        Hot_interestedresource__c interestedResource = [
+            SELECT Id, ServiceAppointment__c, ServiceResource__c, Status__c, ServiceResource__r.AccountId
+            FROM Hot_interestedresource__c
+        ];
+        AssignedResource assignedResource = new AssignedResource();
+        assignedResource.ServiceAppointmentId = interestedResource.ServiceAppointment__c;
+        assignedResource.ServiceResourceId = interestedResource.ServiceResource__c;
+        insert assignedResource;
+
+        Thread__c thread = HOT_TestDataFactory.createThread('HOT_TOLK-FORMIDLER');
+        thread.CRM_Account__c=interestedResource.ServiceResource__r.AccountId;
+        thread.CRM_Related_Object__c = assignedResource.ServiceAppointmentId;
+        thread.HOT_ServiceAppointment__c=assignedResource.ServiceAppointmentId;
+        thread.HOT_IsEmployeeThread__c = false;
+        insert thread;
+
+        Test.startTest();
+        delete assignedResource;
+        
+        List<Thread__c> checkThread=[SELECT Id, CRM_Related_Object__c FROM Thread__c WHERE CRM_Related_Object__c=:interestedResource.Id];
+        Test.stopTest();
+        System.assertEquals(
+            1,
+            checkThread.size(),
+            'The thread was not moved back from SA to IR.'
+        );
+    }
 }
