@@ -57,7 +57,7 @@ public without sharing class HOT_WageClaimListController {
     public static HOT_WageClaim__c getWageClaimDetails(String recordId) {
     User currentUser = [SELECT Id, AccountId, Account.CRM_Person__c FROM User WHERE Id = :UserInfo.getUserId()];
       HOT_WageClaim__c wageClaim= [
-            SELECT  Id, ServiceAppointmentName__c, StartTime__c, EndTime__c, ServiceAppointmentCity__c, Status__c, WorkTypeName__c FROM HOT_WageClaim__c
+            SELECT  Id, ServiceAppointmentName__c, StartTime__c, EndTime__c, ServiceAppointmentCity__c, Status__c, WorkTypeName__c, DegreeOfHearingAndVisualImpairment__c,ServiceAppointment__r.HOT_Request__r.OwnerName__c,AssignmentType__c FROM HOT_WageClaim__c
             WHERE Id=:recordId AND ServiceResource__r.AccountId=:currentUser.AccountId
         ];
         return wageClaim;

@@ -344,6 +344,7 @@ export default class hot_messagingCommunityThreadViewer extends NavigationMixin(
     }
     @track serviceAppointment;
     @track interestedResource;
+    @track address;
 
     goToDetails() {
         let i = 0;
@@ -357,6 +358,7 @@ export default class hot_messagingCommunityThreadViewer extends NavigationMixin(
                     });
                     getServiceAppointmentDetails({ recordId: key }).then((result) => {
                         this.serviceAppointment = result;
+                        this.address = this.serviceAppointment.HOT_AddressFormated__c;
                         let startTimeFormatted = new Date(result.EarliestStartTime);
                         let endTimeFormatted = new Date(result.DueDate);
                         this.serviceAppointment.StartAndEndDate =
@@ -435,6 +437,18 @@ export default class hot_messagingCommunityThreadViewer extends NavigationMixin(
                         if (this.interestedResource.AppointmentDeadlineDate__c.includes('NaN')) {
                             this.interestedResource.AppointmentDeadlineDate__c = '';
                         }
+                        let relaseDateTimeFormatted = new Date(
+                            this.interestedResource.ServiceAppointment__r.HOT_ReleaseDate__c
+                        );
+                        this.interestedResource.ServiceAppointment__r.HOT_ReleaseDate__c =
+                            relaseDateTimeFormatted.getDate() +
+                            '.' +
+                            (relaseDateTimeFormatted.getMonth() + 1) +
+                            '.' +
+                            relaseDateTimeFormatted.getFullYear();
+                        if (this.interestedResource.ServiceAppointment__r.HOT_ReleaseDate__c.includes('NaN')) {
+                            this.interestedResource.ServiceAppointment__r.HOT_ReleaseDate__c = '';
+                        }
                         this.isIRDetails = true;
                         this.template.querySelector('.serviceAppointmentDetails').classList.remove('hidden');
                     });
@@ -505,6 +519,12 @@ export default class hot_messagingCommunityThreadViewer extends NavigationMixin(
                 }
             }
         });
+    }
+    openGoogleMaps() {
+        window.open('https://www.google.com/maps/search/?api=1&query=' + this.address);
+    }
+    openAppleMaps() {
+        window.open('http://maps.apple.com/?q=' + this.address);
     }
 
     navigationId = '';

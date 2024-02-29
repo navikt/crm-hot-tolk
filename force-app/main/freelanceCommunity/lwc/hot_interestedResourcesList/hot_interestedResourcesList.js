@@ -244,23 +244,18 @@ export default class Hot_interestedResourcesList extends NavigationMixin(Lightni
         for (let interestedResource of this.records) {
             if (recordId === interestedResource.Id) {
                 this.interestedResource = interestedResource;
-                let DeadlineDateTimeFormatted = new Date(this.interestedResource.AppointmentDeadlineDate__c);
-                this.interestedResource.AppointmentDeadlineDate__c =
-                    DeadlineDateTimeFormatted.getDate() +
+                let relaseDateTimeFormatted = new Date(
+                    this.interestedResource.ServiceAppointment__r.HOT_ReleaseDate__c
+                );
+                this.interestedResource.releasedate =
+                    relaseDateTimeFormatted.getDate() +
                     '.' +
-                    (DeadlineDateTimeFormatted.getMonth() + 1) +
+                    (relaseDateTimeFormatted.getMonth() + 1) +
                     '.' +
-                    DeadlineDateTimeFormatted.getFullYear();
-                // if (
-                //     this.interestedResource.Status__c == 'Påmeldt' ||
-                //     this.interestedResource.Status__c == 'Tildelt' ||
-                //     this.interestedResource.Status__c == 'Assigned' ||
-                //     this.interestedResource.Status__c == 'Interested'
-                // ) {
-                //     this.isGoToThreadButtonDisabled = false;
-                // } else {
-                //     this.isGoToThreadButtonDisabled = true;
-                // }
+                    relaseDateTimeFormatted.getFullYear();
+                if (this.interestedResource.releasedate.includes('NaN')) {
+                    this.interestedResource.releasedate = '';
+                }
 
                 this.interestedResource.weekday = this.getDayOfWeek(
                     this.interestedResource.ServiceAppointmentStartTime__c
@@ -297,6 +292,18 @@ export default class Hot_interestedResourcesList extends NavigationMixin(Lightni
                         ('0' + endTimeFormatted.getHours()).substr(-2) +
                         ':' +
                         ('0' + endTimeFormatted.getMinutes()).substr(-2);
+                    let relaseDateTimeFormatted = new Date(
+                        this.interestedResource.ServiceAppointment__r.HOT_ReleaseDate__c
+                    );
+                    this.interestedResource.releasedate =
+                        relaseDateTimeFormatted.getDate() +
+                        '.' +
+                        (relaseDateTimeFormatted.getMonth() + 1) +
+                        '.' +
+                        relaseDateTimeFormatted.getFullYear();
+                    if (this.interestedResource.releasedate.includes('NaN')) {
+                        this.interestedResource.releasedate = '';
+                    }
                     let DeadlineDateTimeFormatted = new Date(this.interestedResource.AppointmentDeadlineDate__c);
                     this.interestedResource.AppointmentDeadlineDate__c =
                         DeadlineDateTimeFormatted.getDate() +
