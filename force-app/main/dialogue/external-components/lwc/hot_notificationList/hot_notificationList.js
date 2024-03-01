@@ -2,11 +2,13 @@ import { LightningElement, track, wire } from 'lwc';
 import { NavigationMixin } from 'lightning/navigation';
 import getMyNotifications from '@salesforce/apex/HOT_NotificationCentreController.getMyNotifications';
 import getNotificationType from '@salesforce/apex/HOT_NotificationCentreController.getNotificationType';
+import checkThreadAccess from '@salesforce/apex/HOT_NotificationCentreController.checkThreadAccess';
 import getTargetPage from '@salesforce/apex/HOT_NotificationCentreController.getTargetPage';
 
 import { refreshApex } from '@salesforce/apex';
 export default class Hot_notificationList extends NavigationMixin(LightningElement) {
     @track isMobile;
+    @track errorMessage;
     @track columns = [];
     showMyNotifications = true;
     noNotifications;
@@ -98,7 +100,6 @@ export default class Hot_notificationList extends NavigationMixin(LightningEleme
                         });
                     }
                     if (result.HOT_RelatedObjectType__c == 'workOrder') {
-                        console.log('trigges');
                         var relatedId = result.HOT_RelatedObject__c;
                         getTargetPage({ workOrderId: result.HOT_RelatedObject__c }).then((result) => {
                             if (result == 'mine-bestillinger-andre') {
@@ -155,20 +156,38 @@ export default class Hot_notificationList extends NavigationMixin(LightningEleme
                         });
                     }
                     if (result.HOT_RelatedObjectType__c == 'threadInterpreter') {
-                        const baseUrl = '/samtale-frilans';
-                        const attributes = `recordId=${result.HOT_RelatedObject__c}&from=mine-varsler`;
-                        const url = `${baseUrl}?${attributes}`;
+                        let threadId = result.HOT_RelatedObject__c;
+                        checkThreadAccess({ threadId: threadId }).then((result) => {
+                            if (result == false) {
+                                const baseUrl = '/samtale-frilans';
+                                const attributes = `recordId=${threadId}&from=mine-varsler`;
+                                const url = `${baseUrl}?${attributes}`;
 
-                        this[NavigationMixin.Navigate]({
-                            type: 'standard__webPage',
-                            attributes: {
-                                url: url
+                                this[NavigationMixin.Navigate]({
+                                    type: 'standard__webPage',
+                                    attributes: {
+                                        url: url
+                                    }
+                                });
+                            } else {
+                                this.errorMessage =
+                                    'Du trykket på et gammelt varsel til et oppdrag du ikke lenger er tildelt.';
+                                this.template.querySelector('.notificationDetails').classList.remove('hidden');
+                                this.template.querySelector('.notificationDetails').focus();
                             }
                         });
                     }
                 })
                 .catch((error) => {});
         }
+    }
+    closeModal() {
+        this.template.querySelector('.notificationDetails').classList.add('hidden');
+        this.recordId = undefined;
+        this.updateURL();
+        this.isGoToThreadButtonDisabled = false;
+        this.isGoToThreadServiceAppointmentButtonDisabled = false;
+        this.isGoToThreadInterpretersButtonDisabled = false;
     }
     goBack() {
         this[NavigationMixin.Navigate]({

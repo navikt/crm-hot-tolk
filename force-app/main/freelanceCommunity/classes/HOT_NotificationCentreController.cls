@@ -58,4 +58,24 @@ public without sharing class HOT_NotificationCentreController {
         }
         return target;
     }
+    @AuraEnabled
+    public static Boolean checkThreadAccess(Id threadId) {
+        Boolean hasNotAccess = false;
+        User user = [SELECT Id, AccountId FROM User WHERE Id = :UserInfo.getUserId() LIMIT 1];
+        List<Thread__c> thread = [SELECT Id, CRM_Related_Object__c FROM Thread__c WHERE Id=:threadId];
+        Id relatedObjectId = thread[0].CRM_Related_Object__c;
+        String objectType = String.valueOf(relatedObjectId.getSObjectType());
+        if (objectType == 'WorkOrder') {
+            List<ServiceResource> serviceResource = [SELECT Id FROM ServiceResource WHERE AccountId=:user.AccountId AND HOT_IsFreelanceInterpreter__c=TRUE];
+            if(serviceResource.size()!=0){
+                List<HOT_InterestedResource__c> ir=[SELECT Id, Status__c, ServiceResource__c, ServiceAppointment__r.HOT_WorkOrderLineItem__r.WorkOrderId FROM HOT_InterestedResource__c WHERE ServiceResource__c=:serviceResource[0].Id AND ServiceAppointment__r.HOT_WorkOrderLineItem__r.WorkOrderId=:thread[0].CRM_Related_Object__c];
+                if(ir.size()!=0){
+                    if(ir[0].Status__c != 'Assigned'){
+                        hasNotAccess = true;
+                    }
+                }
+            }
+        }
+        return hasNotAccess;
+    }
 }

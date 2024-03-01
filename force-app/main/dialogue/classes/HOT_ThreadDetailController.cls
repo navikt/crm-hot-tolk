@@ -5,8 +5,9 @@ public without sharing class HOT_ThreadDetailController {
         if(access==true){
             Thread__c thread= [SELECT Id, HOT_Subject__c, CRM_Is_Closed__c, CRM_Thread_Type__c, CRM_Related_Object__c FROM Thread__c WHERE Id=:recordId LIMIT 1];
             return thread;
+        }else {
+        throw new AuraHandledException('No access');
         }
-        return null;
     }
      @AuraEnabled(cacheable=false)
     public static boolean checkAccess(Id threadId) {
