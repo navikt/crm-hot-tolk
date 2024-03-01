@@ -183,11 +183,6 @@ export default class Hot_notificationList extends NavigationMixin(LightningEleme
     }
     closeModal() {
         this.template.querySelector('.notificationDetails').classList.add('hidden');
-        this.recordId = undefined;
-        this.updateURL();
-        this.isGoToThreadButtonDisabled = false;
-        this.isGoToThreadServiceAppointmentButtonDisabled = false;
-        this.isGoToThreadInterpretersButtonDisabled = false;
     }
     goBack() {
         this[NavigationMixin.Navigate]({
