@@ -2,7 +2,7 @@ import { LightningElement, track, wire } from 'lwc';
 import { NavigationMixin } from 'lightning/navigation';
 import getMyNotifications from '@salesforce/apex/HOT_NotificationCentreController.getMyNotifications';
 import getNotificationType from '@salesforce/apex/HOT_NotificationCentreController.getNotificationType';
-import checkThreadAccess from '@salesforce/apex/HOT_NotificationCentreController.checkThreadAccess';
+import checkAccess from '@salesforce/apex/HOT_ThreadDetailController.checkAccess';
 import getTargetPage from '@salesforce/apex/HOT_NotificationCentreController.getTargetPage';
 
 import { refreshApex } from '@salesforce/apex';
@@ -157,8 +157,8 @@ export default class Hot_notificationList extends NavigationMixin(LightningEleme
                     }
                     if (result.HOT_RelatedObjectType__c == 'threadInterpreter') {
                         let threadId = result.HOT_RelatedObject__c;
-                        checkThreadAccess({ threadId: threadId }).then((result) => {
-                            if (result == false) {
+                        checkAccess({ threadId: threadId }).then((result) => {
+                            if (result == true) {
                                 const baseUrl = '/samtale-frilans';
                                 const attributes = `recordId=${threadId}&from=mine-varsler`;
                                 const url = `${baseUrl}?${attributes}`;
