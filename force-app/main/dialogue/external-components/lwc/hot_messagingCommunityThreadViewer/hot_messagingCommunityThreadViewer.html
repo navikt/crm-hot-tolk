@@ -234,4 +234,11 @@
                     ></c-hot_community-alert-stripe></div
             ></template></div
     ></template>
+    <template if:true={showError}>
+        <div class="errorContent">
+            <p class="typo-sidetittel">Du har ikke tilgang til denne samtalen.</p>
+            <br />
+            <c-button button-styling="Primary" button-label="Gå til hjem" onbuttonclick={goToHome}></c-button>
+        </div>
+    </template>
 </template>

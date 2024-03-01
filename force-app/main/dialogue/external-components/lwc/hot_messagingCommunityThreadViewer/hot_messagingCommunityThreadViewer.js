@@ -34,6 +34,7 @@ export default class hot_messagingCommunityThreadViewer extends NavigationMixin(
     @track isFreelance = false;
     @track isclosed;
     @track showContent = false;
+    @track showError = false;
     @track hasAccess;
 
     @api recordId;
@@ -89,7 +90,6 @@ export default class hot_messagingCommunityThreadViewer extends NavigationMixin(
             href: 'detail'
         }
     ];
-
     @track subject;
     @track threadType;
     @wire(getThreadDetails, { recordId: '$recordId' })
@@ -101,9 +101,10 @@ export default class hot_messagingCommunityThreadViewer extends NavigationMixin(
             this.threadRelatedObjectId = this.thread.CRM_Related_Object__c;
             this.isclosed = this.thread.CRM_Is_Closed__c;
             this.showContent = true;
+        } else if (result.error) {
+            this.showError = true;
         }
     }
-
     get showopenwarning() {
         if (this.alertopen) {
             return true;
@@ -269,6 +270,14 @@ export default class hot_messagingCommunityThreadViewer extends NavigationMixin(
     handleErrorClick(event) {
         let item = this.template.querySelector(event.detail);
         item.focus();
+    }
+    goToHome() {
+        this[NavigationMixin.Navigate]({
+            type: 'comm__namedPage',
+            attributes: {
+                pageName: 'home'
+            }
+        });
     }
 
     goBack() {

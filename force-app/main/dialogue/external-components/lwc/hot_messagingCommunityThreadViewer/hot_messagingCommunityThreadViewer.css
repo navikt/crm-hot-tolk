@@ -120,3 +120,10 @@ p {
 span {
     font-weight: normal;
 }
+.errorContent {
+    padding: 3vw;
+    margin: auto;
+    width: 50%;
+    background-color: white;
+    text-align: center;
+}

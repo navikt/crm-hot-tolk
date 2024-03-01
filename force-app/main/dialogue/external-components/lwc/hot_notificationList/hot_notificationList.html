@@ -42,6 +42,30 @@
                     <br />
                     Du har ingen varsler enda. Når du får varsler vil de vises her.
                 </div>
+                <div
+                    class="ReactModal__Overlay ReactModal__Overlay--after-open modal__overlay notificationDetails hidden"
+                    style="z-index: 9999; background-color: rgba(50, 65, 79, 0.8)"
+                    tabindex="-1"
+                    aria-label="Informasjon om oppdrag"
+                >
+                    <div
+                        class="ReactModal__Content ReactModal__Content--after-open navno-dekorator comments-dialog-container"
+                        role="dialog"
+                        aria-labelledby="comment-header-id"
+                    >
+                        <section>
+                            <div>
+                                <h2 class="typo-undertittel">Du har ikke tilgang til samtalen:</h2>
+                            </div>
+                            <div>
+                                <p class="typo-normal">{errorMessage}</p>
+                            </div>
+                        </section>
+                        <button class="lukknapp lukknapp--overstHjorne modal__lukkknapp--shake" onclick={closeModal}>
+                            <span class="text-hide">Lukk</span>
+                        </button>
+                    </div>
+                </div>
             </div>
         </div>
     </main>
