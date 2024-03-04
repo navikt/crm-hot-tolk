@@ -35,6 +35,7 @@ public without sharing class HOT_MessagesNotification {
                 CRM_Thread_Type__c,
                 HOT_Participants__c,
                 HOT_IsEmployeeThread__c,
+                LastModifiedById,
                 CRM_Account__r.INT_KrrMobilePhone__c,
                 CRM_Account__r.CRM_Person__r.HOT_NotificationChannel__c,
                 CRM_Account__r.CRM_Person__r.HOT_IsReservationAgainstNotifications__c
@@ -77,7 +78,9 @@ public without sharing class HOT_MessagesNotification {
                     : false;
                 Set<String> recipients = new Set<String>();
                 if (userIdByAccountId.get(thread.CRM_Account__c) != null) {
-                    recipients.add(userIdByAccountId.get(thread.CRM_Account__c));
+                    if(userIdByAccountId.get(thread.CRM_Account__c)!=thread.LastModifiedById){
+                        recipients.add(userIdByAccountId.get(thread.CRM_Account__c));
+                    }
                 }
                 if (recipients.size() > 0) {
                     if (
