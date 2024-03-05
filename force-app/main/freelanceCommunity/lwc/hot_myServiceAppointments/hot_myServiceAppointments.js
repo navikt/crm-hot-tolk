@@ -7,6 +7,7 @@ import getOrdererInformation from '@salesforce/apex/HOT_MyServiceAppointmentList
 import getAccountPhonenumber from '@salesforce/apex/HOT_MyServiceAppointmentListController.getAccountPhonenumber';
 import getInterestedResourceDetails from '@salesforce/apex/HOT_InterestedResourcesListController.getInterestedResourceDetails';
 import getAccountName from '@salesforce/apex/HOT_MyServiceAppointmentListController.getAccountName';
+import getAccountAgeGender from '@salesforce/apex/HOT_MyServiceAppointmentListController.getAccountAgeGender';
 import getOwnerName from '@salesforce/apex/HOT_MyServiceAppointmentListController.getOwnerName';
 import getServiceResource from '@salesforce/apex/HOT_Utility.getServiceResource';
 import getThreadFreelanceId from '@salesforce/apex/HOT_MyServiceAppointmentListController.getThreadFreelanceId';
@@ -192,6 +193,7 @@ export default class Hot_myServiceAppointments extends NavigationMixin(Lightning
     @track termsOfAgreement;
     @track ordererPhoneNumber;
     @track accountPhoneNumber;
+    @track accountAgeGender;
     @track accountName;
     @track ownerName;
     @track address;
@@ -226,6 +228,13 @@ export default class Hot_myServiceAppointments extends NavigationMixin(Lightning
             })
             .catch((error) => {
                 this.accountName = '';
+            });
+        getAccountAgeGender({ serviceAppointmentId: result.detail.Id })
+            .then((accountAgeGender) => {
+                this.accountAgeGender = accountAgeGender;
+            })
+            .catch((error) => {
+                this.accountAgeGender = '';
             });
         getOwnerName({ serviceAppointmentId: result.detail.Id })
             .then((owner) => {
@@ -343,6 +352,13 @@ export default class Hot_myServiceAppointments extends NavigationMixin(Lightning
                         })
                         .catch((error) => {
                             this.accountName = '';
+                        });
+                    getAccountAgeGender({ serviceAppointmentId: result.detail.Id })
+                        .then((accountAgeGender) => {
+                            this.accountAgeGender = accountAgeGender;
+                        })
+                        .catch((error) => {
+                            this.accountAgeGender = '';
                         });
                     getOwnerName({ serviceAppointmentId: saId })
                         .then((owner) => {
