@@ -3,6 +3,7 @@ import getmessages from '@salesforce/apex/HOT_MessageHelper.getMessagesFromThrea
 import markAsReadByNav from '@salesforce/apex/HOT_MessageHelper.markAsReadByNav';
 import { subscribe, unsubscribe } from 'lightning/empApi';
 import setLastMessageFrom from '@salesforce/apex/HOT_MessageHelper.setLastMessageFrom';
+import getUserNameRole from '@salesforce/apex/HOT_MessageHelper.getUserNameRole';
 
 import userId from '@salesforce/user/Id';
 import { updateRecord, getRecord, getFieldValue } from 'lightning/uiRecordApi';
@@ -113,19 +114,22 @@ export default class messagingThreadViewer extends LightningElement {
             textInput.CRM_From_User__c = userId;
             textInput.CRM_Read_By_Nav__c = true;
             textInput.CRM_Read_By_Nav_Datetime__c = new Date().toISOString();
+            //her
             setLastMessageFrom({ threadId: this.thread.Id, fromContactId: 'tolk' });
-
-            if (textInput.CRM_Message_Text__c == null || textInput.CRM_Message_Text__c === '') {
-                const event1 = new ShowToastEvent({
-                    title: 'Message Body missing',
-                    message: 'Make sure that you fill in the message text',
-                    variant: 'error'
-                });
-                this.dispatchEvent(event1);
-                this.showspinner = false;
-            } else {
-                this.template.querySelector('lightning-record-edit-form').submit(textInput);
-            }
+            getUserNameRole().then((result) => {
+                textInput.HOT_User_Role__c = result;
+                if (textInput.CRM_Message_Text__c == null || textInput.CRM_Message_Text__c === '') {
+                    const event1 = new ShowToastEvent({
+                        title: 'Message Body missing',
+                        message: 'Make sure that you fill in the message text',
+                        variant: 'error'
+                    });
+                    this.dispatchEvent(event1);
+                    this.showspinner = false;
+                } else {
+                    this.template.querySelector('lightning-record-edit-form').submit(textInput);
+                }
+            });
         }
     }
 
