@@ -11,7 +11,7 @@ public without sharing class HOT_MessageHandler extends MyTriggers {
                 message.CRM_Thread_Type__c == 'HOT_TOLK-RESSURSKONTOR' ||
                 message.CRM_Thread_Type__c == 'HOT_TOLK-FORMIDLER'
             ) {
-                if (!message.HOT_UserRole__c.contains(', Formidler')) {
+                if (!message.HOT_User_Role__c.contains(', Formidler')) {
                     threadIdsToNotifyDispatcherOnNewMessage.add(message.CRM_Thread__c);
                 } else {
                     if (message.CRM_Thread_Type__c != 'HOT_TOLK-FORMIDLER') {
