@@ -78,6 +78,8 @@ public without sharing class HOT_MyServiceAppointmentListController {
                 HOT_ServiceTerritoryName__c,
                 HOT_TermsOfAgreement__c,
                 HOT_WorkTypeName__c,
+                HOT_Request__r.Account__r.CRM_Person__r.HOT_Gender__c, 
+                HOT_Request__r.Account__r.CRM_Person__r.CRM_AgeNumber__c,
                 SchedEndTime,
                 SchedStartTime,
                 Status,
@@ -248,6 +250,22 @@ public without sharing class HOT_MyServiceAppointmentListController {
             Name = sa.HOT_Request__r.Account__r.Name;
         }
         return Name;
+    }
+    @AuraEnabled
+    public static String getAccountAgeGender(String serviceAppointmentId) {
+        String ageGender = '';
+        ServiceAppointment sa = [
+            SELECT HOT_Request__r.Account__r.CRM_Person__r.HOT_Gender__c, HOT_Request__r.Account__r.CRM_Person__r.CRM_AgeNumber__c
+            FROM ServiceAppointment
+            WHERE Id = :serviceAppointmentId
+        ];
+        if (sa.HOT_Request__r.Account__r.CRM_Person__r.HOT_Gender__c != null) {
+            ageGender += sa.HOT_Request__r.Account__r.CRM_Person__r.HOT_Gender__c;
+        }
+        if (sa.HOT_Request__r.Account__r.CRM_Person__r.CRM_AgeNumber__c != null) {
+            ageGender += ' '+sa.HOT_Request__r.Account__r.CRM_Person__r.CRM_AgeNumber__c+' år';
+        }
+        return ageGender;
     }
     @AuraEnabled
     public static String getThreadInterpretersId(String serviceAppointmentId) {

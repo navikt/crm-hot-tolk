@@ -83,7 +83,9 @@
                                 <p if:true={serviceAppointment.ActualEndTime}>
                                     Faktisk slutt: <span>{serviceAppointment.ActualEndTime}</span>
                                 </p>
-                                <p if:true={accountName}>Navn til bruker: <span>{accountName}</span></p>
+                                <p if:true={accountName}>
+                                    Navn til bruker: <span>{accountName} ({accountAgeGender})</span>
+                                </p>
                                 <p if:true={accountPhoneNumber}>
                                     Telefonnummer til bruker: <span>{accountPhoneNumber}</span>
                                 </p>

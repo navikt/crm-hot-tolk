@@ -61,7 +61,11 @@
                         </div>
                         <p>
                             Navn til bruker:
-                            <span> {serviceAppointment.HOT_Request__r.Account__r.Name}</span>
+                            <span>
+                                {serviceAppointment.HOT_Request__r.Account__r.Name}
+                                ({serviceAppointment.HOT_Request__r.Account__r.CRM_Person__r.HOT_Gender__c}
+                                {serviceAppointment.HOT_Request__r.Account__r.CRM_Person__r.CRM_AgeNumber__c} år)</span
+                            >
                         </p>
                         <p>
                             Telefonnummer til bruker:

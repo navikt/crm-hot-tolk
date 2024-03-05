@@ -214,6 +214,12 @@ private class HOT_MySAListControllerTest {
         String name = HOT_MyServiceAppointmentListController.getAccountName(serviceAppointment.Id);
         System.assertEquals('', name, 'Did not get the correct name');
     }
+     @isTest
+    static void getAccountAgeGenderTest() {
+        ServiceAppointment serviceAppointment = [SELECT Id FROM ServiceAppointment LIMIT 1];
+        String ageGender = HOT_MyServiceAppointmentListController.getAccountAgeGender(serviceAppointment.Id);
+        System.assertEquals('', ageGender, 'Did not get the correct age and gender');
+    }
     @isTest
     static void getThreadInterpretersIdTest() {
         ServiceAppointment serviceAppointment = [
