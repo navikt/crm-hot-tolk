@@ -26,7 +26,7 @@ public without sharing class HOT_MyServiceAppointmentListController {
         ];
         return sa;
     }
-    @AuraEnabled(cacheable=true)
+    @AuraEnabled(cacheable=false)
     public static Boolean checkAccessToSA(String saId) {
         Boolean hasAccess = false;
         ServiceResource serviceResource = [
