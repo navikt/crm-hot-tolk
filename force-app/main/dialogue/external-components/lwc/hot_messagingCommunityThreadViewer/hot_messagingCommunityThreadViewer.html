@@ -60,7 +60,7 @@
                             </div>
                         </div>
                         <p>
-                            Navn til bruker:
+                            Navn til bruker:&nbsp;
                             <span>
                                 {serviceAppointment.HOT_Request__r.Account__r.Name}
                                 ({serviceAppointment.HOT_Request__r.Account__r.CRM_Person__r.HOT_Gender__c}
@@ -68,7 +68,7 @@
                             >
                         </p>
                         <p>
-                            Telefonnummer til bruker:
+                            Telefonnummer til bruker:&nbsp;
                             <span>
                                 {serviceAppointment.HOT_Request__r.Account__r.CRM_Person__r.INT_KrrMobilePhone__c}</span
                             >
@@ -93,7 +93,7 @@
                         </p>
                         <p>Tilleggsopplysninger: <span>{serviceAppointment.Description}</span></p>
                         <p if:true={serviceAppointment.HOT_Request__r.Orderer__r.CRM_Person__r.INT_KrrMobilePhone__c}>
-                            Telefonnummer til bestiller:
+                            Telefonnummer til bestiller:&nbsp;
                             <span>
                                 {serviceAppointment.HOT_Request__r.Orderer__r.CRM_Person__r.INT_KrrMobilePhone__c}</span
                             >

@@ -3,11 +3,7 @@ import getMyServiceAppointments from '@salesforce/apex/HOT_MyServiceAppointmentL
 import getServiceAppointment from '@salesforce/apex/HOT_MyServiceAppointmentListController.getServiceAppointment';
 import getServiceAppointmentDetails from '@salesforce/apex/HOT_MyServiceAppointmentListController.getServiceAppointmentDetails';
 import checkAccessToSA from '@salesforce/apex/HOT_MyServiceAppointmentListController.checkAccessToSA';
-import getOrdererInformation from '@salesforce/apex/HOT_MyServiceAppointmentListController.getOrdererInformation';
-import getAccountPhonenumber from '@salesforce/apex/HOT_MyServiceAppointmentListController.getAccountPhonenumber';
 import getInterestedResourceDetails from '@salesforce/apex/HOT_InterestedResourcesListController.getInterestedResourceDetails';
-import getAccountName from '@salesforce/apex/HOT_MyServiceAppointmentListController.getAccountName';
-import getAccountAgeGender from '@salesforce/apex/HOT_MyServiceAppointmentListController.getAccountAgeGender';
 import getOwnerName from '@salesforce/apex/HOT_MyServiceAppointmentListController.getOwnerName';
 import getServiceResource from '@salesforce/apex/HOT_Utility.getServiceResource';
 import getThreadFreelanceId from '@salesforce/apex/HOT_MyServiceAppointmentListController.getThreadFreelanceId';
@@ -203,39 +199,6 @@ export default class Hot_myServiceAppointments extends NavigationMixin(Lightning
     isSeries = false;
     showTable = true;
     goToRecordDetails(result) {
-        getOrdererInformation({ serviceAppointmentId: result.detail.Id })
-            .then((phonenumber) => {
-                this.ordererPhoneNumber = phonenumber;
-            })
-            .catch((error) => {
-                this.ordererPhoneNumber = '';
-            });
-        getAccountPhonenumber({ serviceAppointmentId: result.detail.Id })
-            .then((phonenumber) => {
-                this.accountPhoneNumber = phonenumber;
-            })
-            .catch((error) => {
-                this.accountPhoneNumber = '';
-            });
-        getAccountName({ serviceAppointmentId: result.detail.Id })
-            .then((name) => {
-                this.accountName = name;
-                if (this.accountName == null || this.accountName == '') {
-                    this.isGoToThreadButtonDisabled = true;
-                } else {
-                    this.isGoToThreadButtonDisabled = false;
-                }
-            })
-            .catch((error) => {
-                this.accountName = '';
-            });
-        getAccountAgeGender({ serviceAppointmentId: result.detail.Id })
-            .then((accountAgeGender) => {
-                this.accountAgeGender = accountAgeGender;
-            })
-            .catch((error) => {
-                this.accountAgeGender = '';
-            });
         getOwnerName({ serviceAppointmentId: result.detail.Id })
             .then((owner) => {
                 this.ownerName = owner;
@@ -261,7 +224,19 @@ export default class Hot_myServiceAppointments extends NavigationMixin(Lightning
                 this.interestedResource = serviceAppointment?.InterestedResources__r[0];
                 this.address = serviceAppointment.HOT_AddressFormated__c;
                 this.termsOfAgreement = this.interestedResource.HOT_TermsOfAgreement__c;
-
+                this.accountAgeGender =
+                    this.serviceAppointment.HOT_Request__r.Account__r.CRM_Person__r.HOT_Gender__c +
+                    ' ' +
+                    this.serviceAppointment.HOT_Request__r.Account__r.CRM_Person__r.CRM_AgeNumber__c +
+                    ' år';
+                if (
+                    this.serviceAppointment.HOT_Request__r.Account__r.Name == null ||
+                    this.serviceAppointment.HOT_Request__r.Account__r.Name == ''
+                ) {
+                    this.isGoToThreadButtonDisabled = true;
+                } else {
+                    this.isGoToThreadButtonDisabled = false;
+                }
                 let duedate = new Date(this.serviceAppointment.DueDate);
                 if (this.serviceAppointment.Status == 'Completed') {
                     this.isEditButtonDisabled = true;
@@ -327,39 +302,19 @@ export default class Hot_myServiceAppointments extends NavigationMixin(Lightning
                     if (this.serviceAppointment.ActualEndTime.includes('NaN')) {
                         this.serviceAppointment.ActualEndTime = '';
                     }
-                    getOrdererInformation({ serviceAppointmentId: saId })
-                        .then((phonenumber) => {
-                            this.ordererPhoneNumber = phonenumber;
-                        })
-                        .catch((error) => {
-                            this.ordererPhoneNumber = '';
-                        });
-                    getAccountPhonenumber({ serviceAppointmentId: saId })
-                        .then((phonenumber) => {
-                            this.accountPhoneNumber = phonenumber;
-                        })
-                        .catch((error) => {
-                            this.accountPhoneNumber = '';
-                        });
-                    getAccountName({ serviceAppointmentId: saId })
-                        .then((name) => {
-                            this.accountName = name;
-                            if (this.accountName == null || this.accountName == '') {
-                                this.isGoToThreadButtonDisabled = true;
-                            } else {
-                                this.isGoToThreadButtonDisabled = false;
-                            }
-                        })
-                        .catch((error) => {
-                            this.accountName = '';
-                        });
-                    getAccountAgeGender({ serviceAppointmentId: result.detail.Id })
-                        .then((accountAgeGender) => {
-                            this.accountAgeGender = accountAgeGender;
-                        })
-                        .catch((error) => {
-                            this.accountAgeGender = '';
-                        });
+                    this.accountAgeGender =
+                        this.serviceAppointment.HOT_Request__r.Account__r.CRM_Person__r.HOT_Gender__c +
+                        ' ' +
+                        this.serviceAppointment.HOT_Request__r.Account__r.CRM_Person__r.CRM_AgeNumber__c +
+                        ' år';
+                    if (
+                        this.serviceAppointment.HOT_Request__r.Account__r.Name == null ||
+                        this.serviceAppointment.HOT_Request__r.Account__r.Name == ''
+                    ) {
+                        this.isGoToThreadButtonDisabled = true;
+                    } else {
+                        this.isGoToThreadButtonDisabled = false;
+                    }
                     getOwnerName({ serviceAppointmentId: saId })
                         .then((owner) => {
                             this.ownerName = owner;
