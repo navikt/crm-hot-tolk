@@ -194,33 +194,6 @@ private class HOT_MySAListControllerTest {
         System.assertEquals('', threadSAId, 'Was supposed to be blank');
     }
     @isTest
-    static void getOrdererInformationTest() {
-        ServiceAppointment serviceAppointment = [SELECT Id FROM ServiceAppointment LIMIT 1];
-
-        String ordererPhoneNumber = HOT_MyServiceAppointmentListController.getOrdererInformation(serviceAppointment.Id);
-        System.assertEquals('', ordererPhoneNumber, 'Did not get the correct phone number');
-    }
-    @isTest
-    static void getAccountPhonenumberTest() {
-        ServiceAppointment serviceAppointment = [SELECT Id FROM ServiceAppointment LIMIT 1];
-
-        String accountPhoneNumber = HOT_MyServiceAppointmentListController.getAccountPhonenumber(serviceAppointment.Id);
-        System.assertEquals('', accountPhoneNumber, 'Did not get the correct phone number');
-    }
-    @isTest
-    static void getAccountNameTest() {
-        ServiceAppointment serviceAppointment = [SELECT Id FROM ServiceAppointment LIMIT 1];
-
-        String name = HOT_MyServiceAppointmentListController.getAccountName(serviceAppointment.Id);
-        System.assertEquals('', name, 'Did not get the correct name');
-    }
-     @isTest
-    static void getAccountAgeGenderTest() {
-        ServiceAppointment serviceAppointment = [SELECT Id FROM ServiceAppointment LIMIT 1];
-        String ageGender = HOT_MyServiceAppointmentListController.getAccountAgeGender(serviceAppointment.Id);
-        System.assertEquals('', ageGender, 'Did not get the correct age and gender');
-    }
-    @isTest
     static void getThreadInterpretersIdTest() {
         ServiceAppointment serviceAppointment = [
             SELECT Id, HOT_WorkOrderLineItem__r.WorkOrder.Id

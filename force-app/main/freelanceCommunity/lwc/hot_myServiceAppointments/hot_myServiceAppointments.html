@@ -83,11 +83,19 @@
                                 <p if:true={serviceAppointment.ActualEndTime}>
                                     Faktisk slutt: <span>{serviceAppointment.ActualEndTime}</span>
                                 </p>
-                                <p if:true={accountName}>
-                                    Navn til bruker: <span>{accountName} ({accountAgeGender})</span>
+                                <p if:true={serviceAppointment.HOT_Request__r.Account__r.Name}>
+                                    Navn til bruker:&nbsp;
+                                    <span>
+                                        {serviceAppointment.HOT_Request__r.Account__r.Name} ({accountAgeGender})</span
+                                    >
                                 </p>
-                                <p if:true={accountPhoneNumber}>
-                                    Telefonnummer til bruker: <span>{accountPhoneNumber}</span>
+                                <p
+                                    if:true={serviceAppointment.HOT_Request__r.Account__r.CRM_Person__r.INT_KrrMobilePhone__c}
+                                >
+                                    Telefonnummer til bruker:&nbsp;
+                                    <span
+                                        >{serviceAppointment.HOT_Request__r.Account__r.CRM_Person__r.INT_KrrMobilePhone__c}</span
+                                    >
                                 </p>
                                 <p>Tolkemetode: <span>{serviceAppointment.HOT_WorkTypeName__c}</span></p>
                                 <p>Oppdragstype: <span>{serviceAppointment.HOT_AssignmentType__c}</span></p>
@@ -110,8 +118,13 @@
                                     Tilleggsopplysninger: <span>{serviceAppointment.Description}</span>
                                 </p>
 
-                                <p if:true={ordererPhoneNumber}>
-                                    Telefonnummer til bestiller: <span>{ordererPhoneNumber}</span>
+                                <p
+                                    if:true={serviceAppointment.HOT_Request__r.Orderer__r.CRM_Person__r.INT_KrrMobilePhone__c}
+                                >
+                                    Telefonnummer til bestiller:&nbsp;
+                                    <span
+                                        >{serviceAppointment.HOT_Request__r.Orderer__r.CRM_Person__r.INT_KrrMobilePhone__c}</span
+                                    >
                                 </p>
                                 <p if:true={serviceAppointment.HOT_Dispatcher__c}>
                                     Formidler: <span>{serviceAppointment.HOT_Dispatcher__c}</span>
