@@ -44,7 +44,7 @@ public without sharing class HOT_InterestedResourcesListController {
         ];
         return interestedResources;
     }
-    @AuraEnabled(cacheable=true)
+    @AuraEnabled(cacheable=false)
     public static Boolean checkAccessToSA(String saId) {
         Boolean hasAccess = false;
         ServiceResource serviceResource = [
