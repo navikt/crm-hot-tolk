@@ -1214,4 +1214,11 @@ private class HOT_MessageHelperTest {
         Test.stopTest();
         System.assertEquals(navigationhelp2, navigationhelp);
     }
+    @isTest
+    static void getUserProfileAndNameTest() {
+        Test.startTest();
+        String result=HOT_MessageHelper.getUserProfileAndName();
+        Test.stopTest();
+        System.assertNotEquals('', result, 'Did not get Profile and Name');
+    }
 }
