@@ -950,8 +950,8 @@
         <readable>true</readable>
     </fieldPermissions>
     <fieldPermissions>
-        <editable>false</editable>
-        <field>Message__c.HOT_UserRole__c</field>
+        <editable>true</editable>
+        <field>Message__c.HOT_User_Role__c</field>
         <readable>true</readable>
     </fieldPermissions>
     <fieldPermissions>

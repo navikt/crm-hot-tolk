@@ -427,7 +427,7 @@ public without sharing class HOT_MessageHelper {
                     CRM_From_First_Name__c,
                     CRM_External_Message__c,
                     CRM_From_Label__c,
-                    HOT_UserRole__c
+                    HOT_User_Role__c
                 FROM Message__c
                 WHERE CRM_Thread__c = :threadId
                 ORDER BY CRM_Sent_date__c ASC
@@ -513,14 +513,60 @@ public without sharing class HOT_MessageHelper {
      * Used in the community components
      * @Author Lars Petter Johnsen
      */
+     @AuraEnabled
+    public static String getUserNameRole() {
+        String userNameRole='';
+        User user=[SELECT Id, FirstName, Profile.Name FROM User WHERE Id = :UserInfo.getUserId()];
+         if(user.Profile.Name=='HOT Tolk Formidler'){
+            userNameRole =user.FirstName+', Formidler';
+        }
+        else if(user.Profile.Name=='HOT Tolk Ansatt'){
+            userNameRole =user.FirstName+', Tolk';
+        }
+        else if(user.Profile.Name=='NAV Samhandler'){
+            userNameRole =user.FirstName+', Tolk';
+        }
+        else if(user.Profile.Name=='NAV Bruker'){
+            userNameRole =user.FirstName+', Tolkebruker';
+        }
+        else if(user.Profile.Name=='NAV Bruker Plus'){
+            userNameRole =user.FirstName+', Tolkebruker';
+        }
+        else{
+            userNameRole =user.FirstName+', Administrator';
+        }
+        return userNameRole;
+    }
+     @AuraEnabled
+    public static String getUserProfileAndName() {
+        User user=[SELECT Id, FirstName, Profile.Name FROM User WHERE Id = :UserInfo.getUserId()];
+        if(user.Profile.Name=='HOT Tolk Formidler'){
+            return user.FirstName+', Formidler';
+        }
+        else if(user.Profile.Name=='HOT Tolk Ansatt'){
+            return user.FirstName+', Tolk';
+        }
+        else if(user.Profile.Name=='NAV Samhandler'){
+            return user.FirstName+', Tolk';
+        }
+        else if(user.Profile.Name=='NAV Bruker'){
+            return user.FirstName+', Tolkebruker';
+        }
+        else if(user.Profile.Name=='NAV Bruker Plus'){
+            return user.FirstName+', Tolkebruker';
+        }
+        else{
+            return user.FirstName+', Administrator';
+        }
+    }
     @AuraEnabled
     public static Boolean createMessage(Id threadId, String messageText, Id fromContactId) {
         Message__c m = new Message__c();
         m.CRM_Message_Text__c = messageText;
         m.CRM_Thread__c = threadId;
         m.CRM_From_Contact__c = fromContactId;
-
         m.CRM_Read__c = false;
+        m.HOT_User_Role__c=getUserProfileAndName();
         m.CRM_Read_Datetime__c = DateTime.now();
 
         Thread__c t = [SELECT Id, CRM_isActive__c FROM Thread__c WHERE Id = :threadId LIMIT 1][0];
@@ -537,12 +583,14 @@ public without sharing class HOT_MessageHelper {
     }
     @AuraEnabled
     public static Message__c createMessages(Id threadId, String messageText, Id fromContactId) {
+        User user=[SELECT Id, FirstName, Profile.Name FROM User WHERE Id = :UserInfo.getUserId()];
         Message__c m = new Message__c();
         m.CRM_Message_Text__c = messageText;
         m.CRM_Thread__c = threadId;
         m.CRM_From_Contact__c = fromContactId;
         m.CRM_Read__c = false;
         m.CRM_Read_Datetime__c = DateTime.now();
+        m.HOT_User_Role__c=getUserProfileAndName();
 
         return m;
     }
