@@ -33,6 +33,7 @@ private class HOT_MessageHelperTest {
         Message__c m = new Message__c();
         m.CRM_Thread__c = t.Id;
         m.CRM_Message_Text__c = 'Lorem Ipsum Dolor Si Amet';
+        m.HOT_User_Role__c=HOT_MessageHelper.getUserProfileAndName();
         insert m;
     }
     @isTest
