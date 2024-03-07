@@ -427,7 +427,6 @@ public without sharing class HOT_MessageHelper {
                     CRM_From_First_Name__c,
                     CRM_External_Message__c,
                     CRM_From_Label__c,
-                    HOT_UserRole__c,
                     HOT_User_Role__c
                 FROM Message__c
                 WHERE CRM_Thread__c = :threadId
