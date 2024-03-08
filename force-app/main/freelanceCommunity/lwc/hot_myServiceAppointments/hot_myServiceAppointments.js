@@ -213,6 +213,7 @@ export default class Hot_myServiceAppointments extends NavigationMixin(Lightning
                 this.accountAgeGender = '';
                 this.accountName = '';
                 this.ordererPhoneNumber = '';
+                this.ownerName = '';
                 this.serviceAppointment = serviceAppointment;
                 this.serviceAppointment.weekday = this.getDayOfWeek(this.serviceAppointment.EarliestStartTime);
                 this.interestedResource = serviceAppointment?.InterestedResources__r[0];
@@ -247,6 +248,9 @@ export default class Hot_myServiceAppointments extends NavigationMixin(Lightning
                     this.serviceAppointment.HOT_Request__r.Account__r
                 ) {
                     this.accountName = this.serviceAppointment.HOT_Request__r.Account__r.Name;
+                }
+                if (this.serviceAppointment && this.serviceAppointment.HOT_Request__r) {
+                    this.ownerName = this.serviceAppointment.HOT_Request__r.OwnerName__c;
                 }
                 if (
                     this.serviceAppointment &&
@@ -414,6 +418,9 @@ export default class Hot_myServiceAppointments extends NavigationMixin(Lightning
                         ) {
                             this.accountPhoneNumber =
                                 this.serviceAppointment.HOT_Request__r.Account__r.CRM_Person__r.INT_KrrMobilePhone__c;
+                        }
+                        if (this.serviceAppointment && this.serviceAppointment.HOT_Request__r) {
+                            this.ownerName = this.serviceAppointment.HOT_Request__r.OwnerName__c;
                         }
                     }
                     getInterestedResourceDetails({ recordId: saId }).then((result) => {
