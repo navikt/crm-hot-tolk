@@ -199,43 +199,37 @@ export default class Hot_myServiceAppointments extends NavigationMixin(Lightning
     isSeries = false;
     showTable = true;
     goToRecordDetails(result) {
-        getOwnerName({ serviceAppointmentId: result.detail.Id })
-            .then((owner) => {
-                this.ownerName = owner;
-            })
-            .catch((error) => {
-                this.ownerName = '';
-            });
-        this.template.querySelector('.serviceAppointmentDetails').classList.remove('hidden');
-        this.template.querySelector('.serviceAppointmentDetails').focus();
         let today = new Date();
         this.serviceAppointment = undefined;
         this.interestedResource = undefined;
         let recordId = result.detail.Id;
         this.recordId = recordId;
-        this.isDetails = !!this.recordId;
         this.isEditButtonHidden = false;
         this.isCancelButtonHidden = true;
         this.isEditButtonDisabled = false;
         for (let serviceAppointment of this.records) {
             if (recordId === serviceAppointment.Id) {
+                this.accountPhoneNumber = '';
+                this.accountAgeGender = '';
+                this.accountName = '';
+                this.ordererPhoneNumber = '';
                 this.serviceAppointment = serviceAppointment;
                 this.serviceAppointment.weekday = this.getDayOfWeek(this.serviceAppointment.EarliestStartTime);
                 this.interestedResource = serviceAppointment?.InterestedResources__r[0];
                 this.address = serviceAppointment.HOT_AddressFormated__c;
                 this.termsOfAgreement = this.interestedResource.HOT_TermsOfAgreement__c;
-                this.accountAgeGender =
-                    this.serviceAppointment.HOT_Request__r.Account__r.CRM_Person__r.HOT_Gender__c +
-                    ' ' +
-                    this.serviceAppointment.HOT_Request__r.Account__r.CRM_Person__r.CRM_AgeNumber__c +
-                    ' år';
-                if (
-                    this.serviceAppointment.HOT_Request__r.Account__r.Name == null ||
-                    this.serviceAppointment.HOT_Request__r.Account__r.Name == ''
-                ) {
-                    this.isGoToThreadButtonDisabled = true;
+                this.isDetails = !!this.recordId;
+                if (this.serviceAppointment.HOT_Request__r && this.serviceAppointment.HOT_Request__r.Account__r) {
+                    if (
+                        this.serviceAppointment.HOT_Request__r.Account__r.Name == null ||
+                        this.serviceAppointment.HOT_Request__r.Account__r.Name == ''
+                    ) {
+                        this.isGoToThreadButtonDisabled = true;
+                    } else {
+                        this.isGoToThreadButtonDisabled = false;
+                    }
                 } else {
-                    this.isGoToThreadButtonDisabled = false;
+                    this.isGoToThreadButtonDisabled = true;
                 }
                 let duedate = new Date(this.serviceAppointment.DueDate);
                 if (this.serviceAppointment.Status == 'Completed') {
@@ -247,6 +241,64 @@ export default class Hot_myServiceAppointments extends NavigationMixin(Lightning
                 if (this.serviceAppointment.HOT_Request__r.IsNotNotifyAccount__c == true) {
                     this.isGoToThreadButtonDisabled = true;
                 }
+                if (
+                    this.serviceAppointment &&
+                    this.serviceAppointment.HOT_Request__r &&
+                    this.serviceAppointment.HOT_Request__r.Account__r
+                ) {
+                    this.accountName = this.serviceAppointment.HOT_Request__r.Account__r.Name;
+                }
+                if (
+                    this.serviceAppointment &&
+                    this.serviceAppointment.HOT_Request__r &&
+                    this.serviceAppointment.HOT_Request__r.Account__r &&
+                    this.serviceAppointment.HOT_Request__r.Account__r.CRM_Person__r
+                ) {
+                    if (this.serviceAppointment.HOT_Request__r.Account__r.CRM_Person__r.CRM_AgeNumber__c == undefined) {
+                        if (
+                            this.serviceAppointment.HOT_Request__r.Account__r.CRM_Person__r.HOT_Gender__c !== undefined
+                        ) {
+                            this.accountAgeGender =
+                                this.serviceAppointment.HOT_Request__r.Account__r.CRM_Person__r.HOT_Gender__c;
+                        }
+                    } else if (
+                        this.serviceAppointment.HOT_Request__r.Account__r.CRM_Person__r.HOT_Gender__c == undefined
+                    ) {
+                        if (
+                            this.serviceAppointment.HOT_Request__r.Account__r.CRM_Person__r.CRM_AgeNumber__c !==
+                            undefined
+                        ) {
+                            this.accountAgeGender =
+                                this.serviceAppointment.HOT_Request__r.Account__r.CRM_Person__r.CRM_AgeNumber__c +
+                                ' år';
+                        }
+                    } else if (
+                        this.serviceAppointment.HOT_Request__r.Account__r.CRM_Person__r.HOT_Gender__c !== undefined &&
+                        this.serviceAppointment.HOT_Request__r.Account__r.CRM_Person__r.CRM_AgeNumber__c !== undefined
+                    ) {
+                        this.accountAgeGender =
+                            this.serviceAppointment.HOT_Request__r.Account__r.CRM_Person__r.HOT_Gender__c +
+                            ' ' +
+                            this.serviceAppointment.HOT_Request__r.Account__r.CRM_Person__r.CRM_AgeNumber__c +
+                            ' år';
+                    }
+                    if (
+                        this.serviceAppointment.HOT_Request__r.Orderer__r.CRM_Person__r.INT_KrrMobilePhone__c !==
+                        undefined
+                    ) {
+                        this.ordererPhoneNumber =
+                            this.serviceAppointment.HOT_Request__r.Orderer__r.CRM_Person__r.INT_KrrMobilePhone__c;
+                    }
+                    if (
+                        this.serviceAppointment.HOT_Request__r.Account__r.CRM_Person__r.INT_KrrMobilePhone__c !==
+                        undefined
+                    ) {
+                        this.accountPhoneNumber =
+                            this.serviceAppointment.HOT_Request__r.Account__r.CRM_Person__r.INT_KrrMobilePhone__c;
+                    }
+                }
+                this.template.querySelector('.serviceAppointmentDetails').classList.remove('hidden');
+                this.template.querySelector('.serviceAppointmentDetails').focus();
             }
         }
         this.updateURL();
@@ -302,26 +354,68 @@ export default class Hot_myServiceAppointments extends NavigationMixin(Lightning
                     if (this.serviceAppointment.ActualEndTime.includes('NaN')) {
                         this.serviceAppointment.ActualEndTime = '';
                     }
-                    this.accountAgeGender =
-                        this.serviceAppointment.HOT_Request__r.Account__r.CRM_Person__r.HOT_Gender__c +
-                        ' ' +
-                        this.serviceAppointment.HOT_Request__r.Account__r.CRM_Person__r.CRM_AgeNumber__c +
-                        ' år';
                     if (
-                        this.serviceAppointment.HOT_Request__r.Account__r.Name == null ||
-                        this.serviceAppointment.HOT_Request__r.Account__r.Name == ''
+                        this.serviceAppointment &&
+                        this.serviceAppointment.HOT_Request__r &&
+                        this.serviceAppointment.HOT_Request__r.Account__r
                     ) {
-                        this.isGoToThreadButtonDisabled = true;
-                    } else {
-                        this.isGoToThreadButtonDisabled = false;
+                        this.accountName = this.serviceAppointment.HOT_Request__r.Account__r.Name;
                     }
-                    getOwnerName({ serviceAppointmentId: saId })
-                        .then((owner) => {
-                            this.ownerName = owner;
-                        })
-                        .catch((error) => {
-                            this.ownerName = '';
-                        });
+                    if (
+                        this.serviceAppointment &&
+                        this.serviceAppointment.HOT_Request__r &&
+                        this.serviceAppointment.HOT_Request__r.Account__r &&
+                        this.serviceAppointment.HOT_Request__r.Account__r.CRM_Person__r
+                    ) {
+                        if (
+                            this.serviceAppointment.HOT_Request__r.Account__r.CRM_Person__r.CRM_AgeNumber__c ==
+                            undefined
+                        ) {
+                            if (
+                                this.serviceAppointment.HOT_Request__r.Account__r.CRM_Person__r.HOT_Gender__c !==
+                                undefined
+                            ) {
+                                this.accountAgeGender =
+                                    this.serviceAppointment.HOT_Request__r.Account__r.CRM_Person__r.HOT_Gender__c;
+                            }
+                        } else if (
+                            this.serviceAppointment.HOT_Request__r.Account__r.CRM_Person__r.HOT_Gender__c == undefined
+                        ) {
+                            if (
+                                this.serviceAppointment.HOT_Request__r.Account__r.CRM_Person__r.CRM_AgeNumber__c !==
+                                undefined
+                            ) {
+                                this.accountAgeGender =
+                                    this.serviceAppointment.HOT_Request__r.Account__r.CRM_Person__r.CRM_AgeNumber__c +
+                                    ' år';
+                            }
+                        } else if (
+                            this.serviceAppointment.HOT_Request__r.Account__r.CRM_Person__r.HOT_Gender__c !==
+                                undefined &&
+                            this.serviceAppointment.HOT_Request__r.Account__r.CRM_Person__r.CRM_AgeNumber__c !==
+                                undefined
+                        ) {
+                            this.accountAgeGender =
+                                this.serviceAppointment.HOT_Request__r.Account__r.CRM_Person__r.HOT_Gender__c +
+                                ' ' +
+                                this.serviceAppointment.HOT_Request__r.Account__r.CRM_Person__r.CRM_AgeNumber__c +
+                                ' år';
+                        }
+                        if (
+                            this.serviceAppointment.HOT_Request__r.Orderer__r.CRM_Person__r.INT_KrrMobilePhone__c !==
+                            undefined
+                        ) {
+                            this.ordererPhoneNumber =
+                                this.serviceAppointment.HOT_Request__r.Orderer__r.CRM_Person__r.INT_KrrMobilePhone__c;
+                        }
+                        if (
+                            this.serviceAppointment.HOT_Request__r.Account__r.CRM_Person__r.INT_KrrMobilePhone__c !==
+                            undefined
+                        ) {
+                            this.accountPhoneNumber =
+                                this.serviceAppointment.HOT_Request__r.Account__r.CRM_Person__r.INT_KrrMobilePhone__c;
+                        }
+                    }
                     getInterestedResourceDetails({ recordId: saId }).then((result) => {
                         this.interestedResource = result;
                         this.termsOfAgreement = this.interestedResource.HOT_TermsOfAgreement__c;
