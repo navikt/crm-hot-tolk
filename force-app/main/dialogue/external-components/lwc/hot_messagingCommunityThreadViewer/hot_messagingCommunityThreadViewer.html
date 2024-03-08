@@ -59,19 +59,13 @@
                                 ></c-button>
                             </div>
                         </div>
-                        <p>
+                        <p if:true={accountName}>
                             Navn til bruker:&nbsp;
-                            <span>
-                                {serviceAppointment.HOT_Request__r.Account__r.Name}
-                                ({serviceAppointment.HOT_Request__r.Account__r.CRM_Person__r.HOT_Gender__c}
-                                {serviceAppointment.HOT_Request__r.Account__r.CRM_Person__r.CRM_AgeNumber__c} år)</span
-                            >
+                            <span> {accountName} ({accountAgeGender})</span>
                         </p>
-                        <p>
+                        <p if:true={accountPhoneNumber}>
                             Telefonnummer til bruker:&nbsp;
-                            <span>
-                                {serviceAppointment.HOT_Request__r.Account__r.CRM_Person__r.INT_KrrMobilePhone__c}</span
-                            >
+                            <span>{accountPhoneNumber}</span>
                         </p>
                         <p>Tolkemetode: <span>{serviceAppointment.HOT_WorkTypeName__c}</span></p>
                         <p>Oppdragstype: <span>{serviceAppointment.HOT_AssignmentType__c}</span></p>
@@ -92,11 +86,9 @@
                             Avtalte betingelser: <span>{interestedResource.HOT_TermsOfAgreement__c}</span>
                         </p>
                         <p>Tilleggsopplysninger: <span>{serviceAppointment.Description}</span></p>
-                        <p if:true={serviceAppointment.HOT_Request__r.Orderer__r.CRM_Person__r.INT_KrrMobilePhone__c}>
+                        <p if:true={ordererPhoneNumber}>
                             Telefonnummer til bestiller:&nbsp;
-                            <span>
-                                {serviceAppointment.HOT_Request__r.Orderer__r.CRM_Person__r.INT_KrrMobilePhone__c}</span
-                            >
+                            <span>{ordererPhoneNumber}</span>
                         </p>
                         <p if:true={serviceAppointment.HOT_Dispatcher__c}>
                             Formidler: <span>{serviceAppointment.HOT_Dispatcher__c}</span>

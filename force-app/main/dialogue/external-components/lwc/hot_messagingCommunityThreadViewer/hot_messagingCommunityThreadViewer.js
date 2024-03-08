@@ -354,6 +354,10 @@ export default class hot_messagingCommunityThreadViewer extends NavigationMixin(
     @track serviceAppointment;
     @track interestedResource;
     @track address;
+    @track ordererPhoneNumber;
+    @track accountPhoneNumber;
+    @track accountAgeGender;
+    @track accountName;
 
     goToDetails() {
         let i = 0;
@@ -361,6 +365,10 @@ export default class hot_messagingCommunityThreadViewer extends NavigationMixin(
             for (var key in result) {
                 i++;
                 if (result[key] == 'SA') {
+                    this.accountPhoneNumber = '';
+                    this.accountAgeGender = '';
+                    this.accountName = '';
+                    this.ordererPhoneNumber = '';
                     this.interestedResource = false;
                     getInterestedResourceDetails({ recordId: key }).then((result) => {
                         this.interestedResource = result;
@@ -411,6 +419,69 @@ export default class hot_messagingCommunityThreadViewer extends NavigationMixin(
                         }
                         if (this.serviceAppointment.ActualEndTime.includes('NaN')) {
                             this.serviceAppointment.ActualEndTime = '';
+                        }
+                        if (
+                            this.serviceAppointment &&
+                            this.serviceAppointment.HOT_Request__r &&
+                            this.serviceAppointment.HOT_Request__r.Account__r
+                        ) {
+                            this.accountName = this.serviceAppointment.HOT_Request__r.Account__r.Name;
+                        }
+                        if (
+                            this.serviceAppointment &&
+                            this.serviceAppointment.HOT_Request__r &&
+                            this.serviceAppointment.HOT_Request__r.Account__r &&
+                            this.serviceAppointment.HOT_Request__r.Account__r.CRM_Person__r
+                        ) {
+                            if (
+                                this.serviceAppointment.HOT_Request__r.Account__r.CRM_Person__r.CRM_AgeNumber__c ==
+                                undefined
+                            ) {
+                                if (
+                                    this.serviceAppointment.HOT_Request__r.Account__r.CRM_Person__r.HOT_Gender__c !==
+                                    undefined
+                                ) {
+                                    this.accountAgeGender =
+                                        this.serviceAppointment.HOT_Request__r.Account__r.CRM_Person__r.HOT_Gender__c;
+                                }
+                            } else if (
+                                this.serviceAppointment.HOT_Request__r.Account__r.CRM_Person__r.HOT_Gender__c ==
+                                undefined
+                            ) {
+                                if (
+                                    this.serviceAppointment.HOT_Request__r.Account__r.CRM_Person__r.CRM_AgeNumber__c !==
+                                    undefined
+                                ) {
+                                    this.accountAgeGender =
+                                        this.serviceAppointment.HOT_Request__r.Account__r.CRM_Person__r
+                                            .CRM_AgeNumber__c + ' år';
+                                }
+                            } else if (
+                                this.serviceAppointment.HOT_Request__r.Account__r.CRM_Person__r.HOT_Gender__c !==
+                                    undefined &&
+                                this.serviceAppointment.HOT_Request__r.Account__r.CRM_Person__r.CRM_AgeNumber__c !==
+                                    undefined
+                            ) {
+                                this.accountAgeGender =
+                                    this.serviceAppointment.HOT_Request__r.Account__r.CRM_Person__r.HOT_Gender__c +
+                                    ' ' +
+                                    this.serviceAppointment.HOT_Request__r.Account__r.CRM_Person__r.CRM_AgeNumber__c +
+                                    ' år';
+                            }
+                            if (
+                                this.serviceAppointment.HOT_Request__r.Orderer__r.CRM_Person__r
+                                    .INT_KrrMobilePhone__c !== undefined
+                            ) {
+                                this.ordererPhoneNumber =
+                                    this.serviceAppointment.HOT_Request__r.Orderer__r.CRM_Person__r.INT_KrrMobilePhone__c;
+                            }
+                            if (
+                                this.serviceAppointment.HOT_Request__r.Account__r.CRM_Person__r
+                                    .INT_KrrMobilePhone__c !== undefined
+                            ) {
+                                this.accountPhoneNumber =
+                                    this.serviceAppointment.HOT_Request__r.Account__r.CRM_Person__r.INT_KrrMobilePhone__c;
+                            }
                         }
                         this.isDetails = true;
                         this.template.querySelector('.serviceAppointmentDetails').classList.remove('hidden');
