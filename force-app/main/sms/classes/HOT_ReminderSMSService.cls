@@ -587,7 +587,9 @@ public without sharing class HOT_ReminderSMSService {
                 AppointmentNumber,
                 HOT_ServiceResource__c,
                 HOT_ServiceResource__r.AccountId,
-                HOT_ServiceResource__r.HOT_MobilePhone__c
+                HOT_ServiceResource__r.HOT_MobilePhone__c,
+                EarliestStartTime,
+                DueDate
             FROM ServiceAppointment
             WHERE Id IN :saIds
         ];
@@ -703,7 +705,7 @@ public without sharing class HOT_ReminderSMSService {
         }
         message += sa.AppointmentNumber;
         if (saEvent == 'Address') {
-            message += ' har endret adresse';
+            message += ' ' + formatTimePeriod(sa.EarliestStartTime, sa.DueDate) +' har endret adresse';
         }
         if (saEvent == 'Time') {
             message += ' har endret tidspunkt';
