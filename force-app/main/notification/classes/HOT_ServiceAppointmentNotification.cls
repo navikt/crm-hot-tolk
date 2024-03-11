@@ -367,7 +367,7 @@ public without sharing class HOT_ServiceAppointmentNotification {
                         'INFO '+serviceAppointment.EarliestStartTime?.format('d.M.yyyy HH:mm') +
                         ' - ' +
                         serviceAppointment.DueDate?.format('HH:mm') +
-                        ' har endret adresse.';
+                        ' har endret tidspunkt.';
                         
                     newNotification.HOT_NotificationText__c =
                         'For mer informasjon, se tolkebestilling.nav.no.\n' +
