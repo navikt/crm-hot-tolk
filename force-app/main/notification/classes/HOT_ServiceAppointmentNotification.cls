@@ -364,10 +364,10 @@ public without sharing class HOT_ServiceAppointmentNotification {
                     newNotification.HOT_Account__c = account;
                     newNotification.HOT_NotificationChannel__c = 'SMS';
                     newNotification.HOT_Subject__c =
-                        'INFO ' +
-                        serviceAppointment.AppointmentNumber +' '+serviceAppointment.EarliestStartTime?.format('d.M.yyyy HH:mm') +
+                        'INFO '+serviceAppointment.EarliestStartTime?.format('d.M.yyyy HH:mm') +
                         ' - ' +
                         serviceAppointment.DueDate?.format('HH:mm') +
+                        ' har endret adresse.';
                         
                     newNotification.HOT_NotificationText__c =
                         'For mer informasjon, se tolkebestilling.nav.no.\n' +
