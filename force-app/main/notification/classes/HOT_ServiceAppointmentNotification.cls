@@ -400,7 +400,8 @@ public without sharing class HOT_ServiceAppointmentNotification {
                 HOT_AddressFormated__c,
                 HOT_AssignedResourceId__c,
                 HOT_IsEmployedInterpreter__c,
-                HOT_ServiceResource__r.HOT_NotificationChannel__c
+                HOT_ServiceResource__r.HOT_NotificationChannel__c,
+                DueDate
             FROM ServiceAppointment
             WHERE Id IN :saIds AND HOT_ServiceResource__r.HOT_NotificationChannel__c != NULL
         ];
@@ -468,7 +469,9 @@ public without sharing class HOT_ServiceAppointmentNotification {
                     newNotification.HOT_NotificationChannel__c = 'SMS';
                     newNotification.HOT_Subject__c =
                         'INFO\n' +
-                        serviceAppointment.AppointmentNumber +
+                        serviceAppointment.AppointmentNumber +' '+serviceAppointment.EarliestStartTime?.format('d.M.yyyy HH:mm') +
+                        ' - ' +
+                        serviceAppointment.DueDate?.format('HH:mm') +
                         ' har endret adresse.';
                     newNotification.HOT_NotificationText__c =
                         'For mer informasjon, se tolkebestilling.nav.no.\n' +
