@@ -101,6 +101,10 @@
     <sobjectType>WorkOrderLineItem</sobjectType>
     <template>
         <name>flexipage:recordHomeTemplateDesktop</name>
+        <properties>
+            <name>enablePageActionConfig</name>
+            <value>true</value>
+        </properties>
     </template>
     <type>RecordPage</type>
 </FlexiPage>
