@@ -523,7 +523,9 @@ public without sharing class HOT_ReminderSMSService {
                 AppointmentNumber,
                 HOT_ServiceResource__c,
                 HOT_ServiceResource__r.AccountId,
-                HOT_ServiceResource__r.HOT_MobilePhone__c
+                HOT_ServiceResource__r.HOT_MobilePhone__c,
+                EarliestStartTime,
+                DueDate
             FROM ServiceAppointment
             WHERE Id IN :saIds
         ];
@@ -708,7 +710,7 @@ public without sharing class HOT_ReminderSMSService {
             message += ' ' + formatTimePeriod(sa.EarliestStartTime, sa.DueDate) +' har endret adresse';
         }
         if (saEvent == 'Time') {
-            message += ' har endret tidspunkt';
+            message += ' ' + formatTimePeriod(sa.EarliestStartTime, sa.DueDate) +' har endret tidspunkt';
         }
         if (saEvent == 'CanceledByUser') {
             message += ' ' + formatTimePeriod(sa.EarliestStartTime, sa.DueDate) + ' er avlyst';
