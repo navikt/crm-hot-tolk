@@ -655,7 +655,7 @@ export default class Hot_myServiceAppointments extends NavigationMixin(Lightning
                 if (data.HOT_CanceledByInterpreter__c) {
                     this.isflow = false;
                     this.isCancelButtonHidden = true;
-                    this.serviceAppointment.Status = 'Åpen';
+                    this.serviceAppointment.Status = 'Avlyst';
                 }
             });
             refreshApex(this.wiredMyServiceAppointmentsResult);
