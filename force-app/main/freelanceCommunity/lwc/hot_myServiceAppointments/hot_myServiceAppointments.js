@@ -645,12 +645,12 @@ export default class Hot_myServiceAppointments extends NavigationMixin(Lightning
                 if (data.Status == 'Completed') {
                     this.isflow = false;
                     this.isCancelButtonHidden = true;
-                    this.serviceAppointment.Status = 'Completed';
+                    this.serviceAppointment.Status = 'Dekket';
                 }
                 if (data.Status == 'Canceled') {
                     this.isflow = false;
                     this.isCancelButtonHidden = true;
-                    this.serviceAppointment.Status = 'Canceled';
+                    this.serviceAppointment.Status = 'Avlyst';
                 }
                 if (data.HOT_CanceledByInterpreter__c) {
                     this.isflow = false;
