@@ -710,7 +710,7 @@ public without sharing class HOT_ReminderSMSService {
             message += ' ' + formatTimePeriod(sa.EarliestStartTime, sa.DueDate) +' har endret adresse';
         }
         if (saEvent == 'Time') {
-            message += ' ' + formatTimePeriod(sa.EarliestStartTime, sa.DueDate) +' har endret tidspunkt';
+            message += ' har endret tidspunkt.\nNy tid er '+ formatTimePeriod(sa.EarliestStartTime, sa.DueDate);
         }
         if (saEvent == 'CanceledByUser') {
             message += ' ' + formatTimePeriod(sa.EarliestStartTime, sa.DueDate) + ' er avlyst';

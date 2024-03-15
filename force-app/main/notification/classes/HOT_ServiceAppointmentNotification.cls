@@ -366,13 +366,9 @@ public without sharing class HOT_ServiceAppointmentNotification {
                     newNotification.HOT_Account__c = account;
                     newNotification.HOT_NotificationChannel__c = 'SMS';
                     newNotification.HOT_Subject__c =
-                        'INFO '+ serviceAppointment.AppointmentNumber +' '+serviceAppointment.EarliestStartTime?.format('d.M.yyyy HH:mm') +
-                        ' - ' +
-                        serviceAppointment.DueDate?.format('HH:mm') +
-                        ' har endret tidspunkt.';
-                        
-                    newNotification.HOT_NotificationText__c =
-                        'For mer informasjon, se tolkebestilling.nav.no.\n' +
+                        'INFO '+ serviceAppointment.AppointmentNumber +' har endret tidspunkt.';
+                    newNotification.HOT_NotificationText__c ='Ny tid er: '+serviceAppointment.EarliestStartTime?.format('d.M.yyyy HH:mm')+' - '+serviceAppointment.DueDate?.format('HH:mm')+
+                        '\nFor mer informasjon, se tolkebestilling.nav.no.\n' +
                         'Du kan ikke svare på denne meldingen.\n' +
                         'Mvh tolketjenesten i NAV';
                     newNotification.HOT_RelatedObject__c = serviceAppointment.Id;
