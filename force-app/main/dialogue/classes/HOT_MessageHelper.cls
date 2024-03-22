@@ -485,6 +485,19 @@ public without sharing class HOT_MessageHelper {
             throw new AuraHandledException(e.getMessage());
         }
     }
+    @AuraEnabled
+    public static void markThreadAsReadEmployee(Id threadId, String serviceResourceId) {
+        Thread__c thread = [SELECT Id, HOT_Thread_read_by__c FROM Thread__c WHERE Id = :threadId];
+        if (thread.HOT_Thread_read_by__c.contains(serviceResourceId)) {
+        } else {
+            thread.HOT_Thread_read_by__c = thread.HOT_Thread_read_by__c + serviceResourceId + ';';
+        }
+        try {
+            update thread;
+        } catch (Exception e) {
+            throw new AuraHandledException(e.getMessage());
+        }
+    }
     /**
      * Method for marking unread messages by NAV
      * @Eirik Fladby
@@ -518,6 +531,22 @@ public without sharing class HOT_MessageHelper {
                                 throw new AuraHandledException(e.getMessage());
                             }
                 }
+            }
+            else{
+                List<Message__c> msgList = [
+                                SELECT Id, CRM_Read_By_Nav__c, CRM_Read_By_Nav_Datetime__c
+                                FROM Message__c
+                                WHERE CRM_Read_By_Nav__c = FALSE AND CRM_Thread__c = :threadId
+                            ];
+                            for (Message__c msg : msgList) {
+                                msg.CRM_Read_By_Nav__c = true;
+                                msg.CRM_Read_By_Nav_Datetime__c = DateTime.now();
+                            }
+                            try {
+                                update msgList;
+                            } catch (Exception e) {
+                                throw new AuraHandledException(e.getMessage());
+                            }
             }
             
         }
@@ -618,19 +647,19 @@ public without sharing class HOT_MessageHelper {
             FROM Thread__c
             WHERE Id = :threadId
         ];
+        User currentUser = [SELECT Id, AccountId, Account.CRM_Person__c FROM User WHERE Id = :UserInfo.getUserId()];
         if (fromContactId == 'ansatt/formidler') {
             t.HOT_Last_message_from__c = null;
-            t.HOT_Thread_read_by__c = fromContactId;
             t.CRM_Latest_Message_Datetime__c = Datetime.now();
             Id relatedObjectId= t.CRM_Related_Object__c;
-             if (relatedObjectId.getSobjectType() == ServiceAppointment.sObjectType) {
-                User currentUser = [SELECT Id, AccountId, Account.CRM_Person__c FROM User WHERE Id = :UserInfo.getUserId()];
+            if (relatedObjectId.getSobjectType() == ServiceAppointment.sObjectType) {
                 ServiceResource serviceResource =[Select Id, AccountId FROM ServiceResource WHERE AccountId=:currentUser.AccountId];
                 List<AssignedResource> ar=[SELECT ServiceAppointmentId, ServiceResourceId FROM AssignedResource WHERE ServiceAppointmentId=:t.CRM_Related_Object__c AND ServiceResourceId=:serviceResource.Id];
                 if(ar.size()!=0){
                     //Det betyr at det er en formidler sendte melding inne på samtalen. Ikke GJØR READ BY NAV
                 }
                 else{
+                    markThreadAsReadEmployee(t.Id, serviceResource.Id);
                     List<Message__c> msgList = [
                                 SELECT Id, CRM_Read_By_Nav__c, CRM_Read_By_Nav_Datetime__c
                                 FROM Message__c
