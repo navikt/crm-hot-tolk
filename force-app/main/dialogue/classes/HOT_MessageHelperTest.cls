@@ -512,7 +512,7 @@ private class HOT_MessageHelperTest {
     static void setLastMessageFromTolk() {
         List<Thread__c> tList = [SELECT Id FROM Thread__c ORDER BY CRM_Number_of_External_Messages__c DESC];
         Test.startTest();
-        HOT_MessageHelper.setLastMessageFrom(tList.get(0).Id, 'tolk');
+        HOT_MessageHelper.setLastMessageFrom(tList.get(0).Id, 'ansatt/formidler');
         Test.stopTest();
 
         List<Thread__c> tList2 = [SELECT Id, HOT_Last_message_from__c FROM Thread__c WHERE Id = :tList.get(0).Id];
