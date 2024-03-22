@@ -492,20 +492,37 @@ public without sharing class HOT_MessageHelper {
      */
     @AuraEnabled
     public static void markAsReadByNav(Id threadId) {
-        List<Message__c> msgList = [
-            SELECT Id, CRM_Read_By_Nav__c, CRM_Read_By_Nav_Datetime__c
-            FROM Message__c
-            WHERE CRM_Read_By_Nav__c = FALSE AND CRM_Thread__c = :threadId
-        ];
-        for (Message__c msg : msgList) {
-            msg.CRM_Read_By_Nav__c = true;
-            msg.CRM_Read_By_Nav_Datetime__c = DateTime.now();
+        List<Thread__c> thread=[SELECT Id, CRM_Related_Object__c FROM Thread__c WHERE Id=:threadId];
+        if(thread.size()!=0){
+            Id relatedObjectId= thread[0].CRM_Related_Object__c;
+             if (threadId.getSobjectType() == ServiceAppointment.sObjectType) {
+                User currentUser = [SELECT Id, AccountId, Account.CRM_Person__c FROM User WHERE Id = :UserInfo.getUserId()];
+                ServiceResource serviceResource =[Select Id, AccountId FROM ServiceResource WHERE AccountId=:currentUser.AccountId];
+                List<AssignedResource> ar=[SELECT ServiceAppointmentId, ServiceResourceId FROM AssignedResource WHERE ServiceAppointmentId=:thread[0].CRM_Related_Object__c AND ServiceResourceId=:serviceResource.Id];
+                if(ar.size()!=0){
+                    //Det betyr at det er en tolk inne på samtalen. Ikke GJØR READ BY NAV
+                }
+                else{
+                    List<Message__c> msgList = [
+                                SELECT Id, CRM_Read_By_Nav__c, CRM_Read_By_Nav_Datetime__c
+                                FROM Message__c
+                                WHERE CRM_Read_By_Nav__c = FALSE AND CRM_Thread__c = :threadId
+                            ];
+                            for (Message__c msg : msgList) {
+                                msg.CRM_Read_By_Nav__c = true;
+                                msg.CRM_Read_By_Nav_Datetime__c = DateTime.now();
+                            }
+                            try {
+                                update msgList;
+                            } catch (Exception e) {
+                                throw new AuraHandledException(e.getMessage());
+                            }
+                }
+            }
+            
         }
-        try {
-            update msgList;
-        } catch (Exception e) {
-            throw new AuraHandledException(e.getMessage());
-        }
+        //
+        
     }
 
     /**
@@ -597,14 +614,39 @@ public without sharing class HOT_MessageHelper {
     @AuraEnabled
     public static void setLastMessageFrom(String threadId, String fromContactId) {
         Thread__c t = [
-            SELECT Id, HOT_Last_message_from__c, HOT_Thread_read_by__c, CRM_Latest_Message_Datetime__c
+            SELECT Id, HOT_Last_message_from__c, CRM_Related_Object__c, HOT_Thread_read_by__c, CRM_Latest_Message_Datetime__c
             FROM Thread__c
             WHERE Id = :threadId
         ];
-        if (fromContactId == 'tolk') {
+        if (fromContactId == 'ansatt/formidler') {
             t.HOT_Last_message_from__c = null;
             t.HOT_Thread_read_by__c = fromContactId;
             t.CRM_Latest_Message_Datetime__c = Datetime.now();
+            Id relatedObjectId= t.CRM_Related_Object__c;
+             if (relatedObjectId.getSobjectType() == ServiceAppointment.sObjectType) {
+                User currentUser = [SELECT Id, AccountId, Account.CRM_Person__c FROM User WHERE Id = :UserInfo.getUserId()];
+                ServiceResource serviceResource =[Select Id, AccountId FROM ServiceResource WHERE AccountId=:currentUser.AccountId];
+                List<AssignedResource> ar=[SELECT ServiceAppointmentId, ServiceResourceId FROM AssignedResource WHERE ServiceAppointmentId=:t.CRM_Related_Object__c AND ServiceResourceId=:serviceResource.Id];
+                if(ar.size()!=0){
+                    //Det betyr at det er en formidler sendte melding inne på samtalen. Ikke GJØR READ BY NAV
+                }
+                else{
+                    List<Message__c> msgList = [
+                                SELECT Id, CRM_Read_By_Nav__c, CRM_Read_By_Nav_Datetime__c
+                                FROM Message__c
+                                WHERE CRM_Thread__c = :threadId ORDER BY CreatedDate DESC NULLS LAST
+                            ];
+                            for (Message__c msg : msgList) {
+                                msg.CRM_Read_By_Nav__c = false;
+                                msg.CRM_Read_By_Nav_Datetime__c = DateTime.now();
+                            }
+                            try {
+                                update msgList;
+                            } catch (Exception e) {
+                                throw new AuraHandledException(e.getMessage());
+                    }
+                }
+        }
         } else {
             t.HOT_Last_message_from__c = fromContactId;
             t.HOT_Thread_read_by__c = fromContactId + ';';
