@@ -1,7 +1,7 @@
 public class HOT_UpdateExistingRecords implements Database.Batchable<sObject> {
     public Database.QueryLocator start(Database.BatchableContext bc) {
         return Database.getQueryLocator(
-            'SELECT Id, HOT_Participants__c, CRM_Related_Object__c, CRM_Thread_Type__c, CreatedDate FROM Thread__c WHERE CRM_Thread_Type__c = \'HOT_TOLK-FORMIDLER\' AND CreatedDate = LAST_N_DAYS:90'
+            'SELECT Id, HOT_ParticipantIds__c, CRM_Related_Object__c, CRM_Thread_Type__c, CreatedDate FROM Thread__c WHERE CRM_Thread_Type__c = \'HOT_TOLK-FORMIDLER\' AND CreatedDate = LAST_N_DAYS:90'
         );
     }
 
@@ -25,7 +25,7 @@ public class HOT_UpdateExistingRecords implements Database.Batchable<sObject> {
             for (Thread__c thread : records) {
                 for (ServiceAppointment sa : saList) {
                     if (thread.CRM_Related_Object__c == sa.Id) {
-                        thread.HOT_Participants__c = sa.HOT_ServiceResource__r.RelatedRecordId;
+                        thread.HOT_ParticipantIds__c = sa.HOT_ServiceResource__r.RelatedRecordId;
                     }
                 }
             }
@@ -34,7 +34,7 @@ public class HOT_UpdateExistingRecords implements Database.Batchable<sObject> {
             for (Thread__c thread : records) {
                 for (HOT_InterestedResource__c ir : irList) {
                     if (thread.CRM_Related_Object__c == ir.Id) {
-                        thread.HOT_Participants__c = ir.ServiceResource__r.RelatedRecordId;
+                        thread.HOT_ParticipantIds__c = ir.ServiceResource__r.RelatedRecordId;
                     }
                 }
             }
