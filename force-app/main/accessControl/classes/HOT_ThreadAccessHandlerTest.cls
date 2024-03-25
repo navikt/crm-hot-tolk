@@ -31,7 +31,7 @@ private class HOT_ThreadAccessHandlerTest {
         insert serviceAppointment_1;
 
         Thread__c thread = HOT_TestDataFactory.createThread('HOT_TOLK-FORMIDLER');
-        thread.HOT_Participants__c = user.Id;
+        thread.HOT_ParticipantIds__c = user.Id;
         thread.CRM_Related_Object_Type__c = 'ServiceAppointment';
         thread.CRM_Related_Object__c = [SELECT Id FROM ServiceAppointment LIMIT 1].Id;
 
