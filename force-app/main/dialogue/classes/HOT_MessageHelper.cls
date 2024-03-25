@@ -485,6 +485,19 @@ public without sharing class HOT_MessageHelper {
             throw new AuraHandledException(e.getMessage());
         }
     }
+    @AuraEnabled
+    public static void markThreadAsReadEmployee(Id threadId, String serviceResourceId) {
+        Thread__c thread = [SELECT Id, HOT_Thread_read_by__c FROM Thread__c WHERE Id = :threadId];
+        if (thread.HOT_Thread_read_by__c.contains(serviceResourceId)) {
+        } else {
+            thread.HOT_Thread_read_by__c = thread.HOT_Thread_read_by__c + serviceResourceId + ';';
+        }
+        try {
+            update thread;
+        } catch (Exception e) {
+            throw new AuraHandledException(e.getMessage());
+        }
+    }
     /**
      * Method for marking unread messages by NAV
      * @Eirik Fladby
