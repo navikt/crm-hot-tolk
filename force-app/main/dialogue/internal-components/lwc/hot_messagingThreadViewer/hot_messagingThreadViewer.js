@@ -47,7 +47,6 @@ export default class messagingThreadViewer extends LightningElement {
         this.handleUnsubscribe();
     }
     renderedCallback() {
-        console.log('denne kjører');
         markAsReadByNav({ threadId: this.threadid });
         this.scrolltobottom();
         const test = this.template.querySelector('.cancelButton');
@@ -127,7 +126,6 @@ export default class messagingThreadViewer extends LightningElement {
                     this.showspinner = false;
                 } else {
                     this.template.querySelector('lightning-record-edit-form').submit(textInput);
-                    //setLastMessageFrom({ threadId: this.thread.Id, fromContactId: 'ansatt/formidler' });
                 }
             });
         }
