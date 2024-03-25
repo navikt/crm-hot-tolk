@@ -172,12 +172,12 @@ public without sharing class HOT_ThreadHandler extends MyTriggers {
         );
 
         List<Thread__c> threads = [
-            SELECT Id, CRM_Related_Object__c, HOT_Participants__c
+            SELECT Id, CRM_Related_Object__c, HOT_ParticipantIds__c
             FROM Thread__c
             WHERE CRM_Related_Object__c IN :workOrderIds
         ];
         for (Thread__c thread : threads) {
-            thread.HOT_Participants__c = '';
+            thread.HOT_ParticipantIds__c = '';
             if (serviceAppointmentsByWorkOrderId.get(thread.CRM_Related_Object__c) != null) {
                 for (
                     ServiceAppointment serviceAppointment : serviceAppointmentsByWorkOrderId.get(
@@ -194,7 +194,7 @@ public without sharing class HOT_ThreadHandler extends MyTriggers {
     @Future
     public static void setInterpreterOnThreadOneToOne(Set<Id> threadIds) {
         List<Thread__c> threads = [
-            SELECT Id, HOT_Participants__c, CRM_Related_Object__c
+            SELECT Id, HOT_ParticipantIds__c, CRM_Related_Object__c
             FROM Thread__c
             WHERE Id IN :threadIds
         ];
@@ -219,7 +219,7 @@ public without sharing class HOT_ThreadHandler extends MyTriggers {
             for (Thread__c thread : threads) {
                 for (ServiceAppointment sa : saList) {
                     if (thread.CRM_Related_Object__c == sa.Id) {
-                        thread.HOT_Participants__c = sa.HOT_ServiceResource__r.RelatedRecordId;
+                        thread.HOT_ParticipantIds__c = sa.HOT_ServiceResource__r.RelatedRecordId;
                     }
                 }
             }
@@ -235,7 +235,7 @@ public without sharing class HOT_ThreadHandler extends MyTriggers {
             for (Thread__c thread : threads) {
                 for (HOT_InterestedResource__c ir : irList) {
                     if (thread.CRM_Related_Object__c == ir.Id) {
-                        thread.HOT_Participants__c = ir.ServiceResource__r.RelatedRecordId;
+                        thread.HOT_ParticipantIds__c = ir.ServiceResource__r.RelatedRecordId;
                     }
                 }
             }
@@ -275,12 +275,12 @@ public without sharing class HOT_ThreadHandler extends MyTriggers {
         return serviceAppointmentsByWorkOrderId;
     }
     public static Thread__c appendInterpreterUserIds(Thread__c thread, ServiceAppointment serviceAppointment) {
-        String oldInterpreters = thread.HOT_Participants__c;
+        String oldInterpreters = thread.HOT_ParticipantIds__c;
 
-        if (thread.HOT_Participants__c != '') {
-            thread.HOT_Participants__c += ', ' + serviceAppointment.HOT_ServiceResource__r?.RelatedRecordId;
+        if (thread.HOT_ParticipantIds__c != '') {
+            thread.HOT_ParticipantIds__c += ', ' + serviceAppointment.HOT_ServiceResource__r?.RelatedRecordId;
         } else {
-            thread.HOT_Participants__c = serviceAppointment.HOT_ServiceResource__r?.RelatedRecordId;
+            thread.HOT_ParticipantIds__c = serviceAppointment.HOT_ServiceResource__r?.RelatedRecordId;
         }
         return thread;
     }

@@ -328,13 +328,13 @@ public without sharing class HOT_ThreadHandlerTest {
         Test.startTest();
 
         Thread__c t = [
-            SELECT Id, HOT_Participants__c
+            SELECT Id, HOT_ParticipantIds__c
             FROM Thread__c
             WHERE CRM_Related_Object__c = :workOrder.Id AND CRM_Thread_Type__c = 'HOT_TOLK-TOLK'
         ];
         Test.stopTest();
 
-        System.assertEquals(user.Id, t.HOT_Participants__c, 'Did not change/add correct participant to thread');
+        System.assertEquals(user.Id, t.HOT_ParticipantIds__c, 'Did not change/add correct participant to thread');
     }
     @isTest
     static void changeParticipantOnThread() {
@@ -388,7 +388,7 @@ public without sharing class HOT_ThreadHandlerTest {
         thread.CRM_Related_Object__c = workOrder.Id;
         insert thread;
         Thread__c t = [
-            SELECT Id, HOT_Participants__c
+            SELECT Id, HOT_ParticipantIds__c
             FROM Thread__c
             WHERE CRM_Related_Object__c = :workOrder.Id AND CRM_Thread_Type__c = 'HOT_TOLK-TOLK'
         ];
@@ -396,7 +396,7 @@ public without sharing class HOT_ThreadHandlerTest {
 
         System.assertEquals(
             user.Id + ', ' + user2.Id,
-            t.HOT_Participants__c,
+            t.HOT_ParticipantIds__c,
             'Did not change/add correct participant to thread'
         );
     }
