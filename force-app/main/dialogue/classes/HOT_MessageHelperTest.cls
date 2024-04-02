@@ -515,8 +515,8 @@ private class HOT_MessageHelperTest {
         HOT_MessageHelper.setLastMessageFrom(tList.get(0).Id, 'ansatt/formidler');
         Test.stopTest();
 
-        List<Thread__c> tList2 = [SELECT Id, HOT_Last_message_from__c FROM Thread__c WHERE Id = :tList.get(0).Id];
-        Boolean isEmpty = tList2.get(0).HOT_Last_message_from__c == null;
+        List<Thread__c> tList2 = [SELECT Id, HOT_Thread_read_by__c FROM Thread__c WHERE Id = :tList.get(0).Id];
+        Boolean isEmpty = tList2.get(0).HOT_Thread_read_by__c == null;
         System.assertEquals(true, isEmpty);
     }
     @isTest
@@ -535,8 +535,8 @@ private class HOT_MessageHelperTest {
         HOT_MessageHelper.setLastMessageFrom(tList.get(0).Id, contact.Id);
         Test.stopTest();
 
-        List<Thread__c> tList2 = [SELECT Id, HOT_Last_message_from__c FROM Thread__c WHERE Id = :tList.get(0).Id];
-        System.assertEquals(tList2[0].HOT_Last_message_from__c, contact.Id);
+        List<Thread__c> tList2 = [SELECT Id, HOT_Thread_read_by__c FROM Thread__c WHERE Id = :tList.get(0).Id];
+        System.assertEquals(tList2[0].HOT_Thread_read_by__c, contact.Id+';');
     }
     @isTest
     static void markAsReadByNavTest() {

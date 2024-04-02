@@ -662,15 +662,14 @@ public without sharing class HOT_MessageHelper {
     @AuraEnabled
     public static void setLastMessageFrom(String threadId, String fromContactId) {
         Thread__c t = [
-            SELECT Id, HOT_Last_message_from__c, CRM_Related_Object__c, HOT_Thread_read_by__c, CRM_Latest_Message_Datetime__c
+            SELECT Id, CRM_Related_Object__c, HOT_Thread_read_by__c, CRM_Latest_Message_Datetime__c
             FROM Thread__c
             WHERE Id = :threadId
         ];
         if (fromContactId == 'ansatt/formidler') {
-            t.HOT_Last_message_from__c = null;
+            t.HOT_Thread_read_by__c = null;
             t.CRM_Latest_Message_Datetime__c = Datetime.now();
         } else {
-            t.HOT_Last_message_from__c = fromContactId;
             t.HOT_Thread_read_by__c = fromContactId + ';';
             t.CRM_Latest_Message_Datetime__c = Datetime.now();
         }
