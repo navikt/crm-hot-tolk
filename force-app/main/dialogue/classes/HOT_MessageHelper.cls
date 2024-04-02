@@ -516,9 +516,7 @@ public without sharing class HOT_MessageHelper {
                 }else{
                     List<AssignedResource> ar=[SELECT ServiceAppointmentId, ServiceResourceId FROM AssignedResource WHERE ServiceAppointmentId=:thread[0].CRM_Related_Object__c AND ServiceResourceId=:serviceResource[0].Id];
                     if(ar.size()!=0){
-                        //Det betyr at det er en tolk inne på samtalen. Ikke GJØR READ BY NAV
-
-                        //må sette den siste meldingen til false?
+                      
                     }
                     else{
                         List<Message__c> msgList = [
