@@ -47,6 +47,7 @@ export default class messagingThreadViewer extends LightningElement {
         this.handleUnsubscribe();
     }
     renderedCallback() {
+        markAsReadByNav({ threadId: this.threadid });
         markThreadAsReadEmployee({ threadId: this.threadid });
         this.scrolltobottom();
         const test = this.template.querySelector('.cancelButton');
@@ -113,10 +114,8 @@ export default class messagingThreadViewer extends LightningElement {
             // If messagefield is empty, stop the submit
             textInput.CRM_Thread__c = this.thread.Id;
             textInput.CRM_From_User__c = userId;
-            textInput.CRM_Read_By_Nav__c = true;
-            textInput.CRM_Read_By_Nav_Datetime__c = new Date().toISOString();
             //her
-            setLastMessageFrom({ threadId: this.thread.Id, fromContactId: 'tolk' });
+            setLastMessageFrom({ threadId: this.thread.Id, fromContactId: 'ansatt/formidler' });
             getUserNameRole().then((result) => {
                 textInput.HOT_User_Role__c = result;
                 if (textInput.CRM_Message_Text__c == null || textInput.CRM_Message_Text__c === '') {

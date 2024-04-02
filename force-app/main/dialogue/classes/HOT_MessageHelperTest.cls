@@ -512,7 +512,7 @@ private class HOT_MessageHelperTest {
     static void setLastMessageFromTolk() {
         List<Thread__c> tList = [SELECT Id FROM Thread__c ORDER BY CRM_Number_of_External_Messages__c DESC];
         Test.startTest();
-        HOT_MessageHelper.setLastMessageFrom(tList.get(0).Id, 'tolk');
+        HOT_MessageHelper.setLastMessageFrom(tList.get(0).Id, 'ansatt/formidler');
         Test.stopTest();
 
         List<Thread__c> tList2 = [SELECT Id, HOT_Last_message_from__c FROM Thread__c WHERE Id = :tList.get(0).Id];
@@ -540,14 +540,60 @@ private class HOT_MessageHelperTest {
     }
     @isTest
     static void markAsReadByNavTest() {
-        List<Thread__c> tList = [SELECT Id FROM Thread__c ORDER BY CRM_Number_of_External_Messages__c DESC];
+          WorkType workType = HOT_TestDataFactory.createWorkType();
+        workType.Name = 'Work Type Name';
+        insert workType;
+        HOT_Request__c request = HOT_TestDataFactory.createRequest('Subject', workType);
+        insert request;
+        WorkOrder workOrder = HOT_TestDataFactory.createWorkOrder(request, workType);
+        insert workOrder;
+        WorkOrderLineItem workOrderLineItem = HOT_TestDataFactory.createWorkOrderLineItem(workOrder, workType);
+        insert workOrderLineItem;
+        ServiceAppointment sa = HOT_TestDataFactory.createServiceAppointment(workOrderLineItem);
+        sa.HOT_Request__c = request.Id;
+        sa.Status = 'Dispatched';
+        sa.Subject = 'Hei';
+        insert sa;
+
+        Profile profile = [SELECT Id FROM Profile WHERE Name = 'Standard User' OR Name = 'Standardbruker' LIMIT 1];
+        User user = HOT_TestDataFactory.createUser('user', profile);
+        insert user;
         Test.startTest();
-        HOT_MessageHelper.markAsReadByNav(tList.get(0).Id);
+        Account acc = new Account();
+        acc.Name = 'Newly created account';
+        insert acc;
+        ServiceResource resource = HOT_TestDataFactory.createServiceResource(user.Id);
+        resource.AccountId = acc.Id;
+        insert resource;
+        HOT_InterestedResource__c interestedResource = HOT_TestDataFactory.createInterestedResource(sa.Id, resource.Id);
+        interestedResource.Status__c = 'Assigned';
+        insert interestedResource;
+        AssignedResource ar = HOT_TestDataFactory.createAssignedResource(sa.Id, resource.Id);
+        insert ar;
+
+        sa.Status = 'Dispatched';
+        update sa;
+
+        Thread__c thread = HOT_MessageHelper.createThreadDispatcher(sa.Id, acc.Id, 'HOT_TOLK-FORMIDLER');
+        Message__c m = new Message__c();
+        m.CRM_Thread__c = thread.Id;
+        m.CRM_Message_Text__c = 'Lorem Ipsum Dolor Si Amet';
+        m.HOT_User_Role__c=HOT_MessageHelper.getUserProfileAndName();
+        insert m;
+
+        Profile profile2 = [SELECT Id FROM Profile WHERE Name='System Administrator'];
+        User user1 = new User(alias = 'TestUser', email='HOT_testaccount@nav.hot.no',
+        emailencodingkey='UTF-8', lastname='Testing', languagelocalekey='en_US',
+        localesidkey='en_US', profileid = profile2.Id , country='Norway',IsActive =true, timezonesidkey='Europe/Paris', username='HOT_testaccount@nav.hot.noo');
+        
+        HOT_MessageHelper.markAsReadByNav(thread.Id);
+        
+
         Test.stopTest();
         List<Message__c> msgList = [
             SELECT CRM_Read_By_Nav__c, CRM_Read_By_Nav_Datetime__c
             FROM Message__c
-            WHERE CRM_Thread__c = :tList.get(0).Id
+            WHERE CRM_Thread__c = :thread.Id
         ];
         System.assertEquals(true, msgList.get(0).CRM_Read_By_Nav__c, 'Could not set CRM_Read_By_Nav__c to true.');
         System.assertNotEquals(
