@@ -4,7 +4,7 @@ import markAsReadByNav from '@salesforce/apex/HOT_MessageHelper.markAsReadByNav'
 import { subscribe, unsubscribe } from 'lightning/empApi';
 import setLastMessageFrom from '@salesforce/apex/HOT_MessageHelper.setLastMessageFrom';
 import getUserNameRole from '@salesforce/apex/HOT_MessageHelper.getUserNameRole';
-
+import markThreadAsReadEmployee from '@salesforce/apex/HOT_MessageHelper.markThreadAsReadEmployee';
 import userId from '@salesforce/user/Id';
 import { updateRecord, getRecord, getFieldValue } from 'lightning/uiRecordApi';
 import ACTIVE_FIELD from '@salesforce/schema/Thread__c.CRM_isActive__c';
@@ -48,6 +48,7 @@ export default class messagingThreadViewer extends LightningElement {
     }
     renderedCallback() {
         markAsReadByNav({ threadId: this.threadid });
+        markThreadAsReadEmployee({ threadId: this.threadid });
         this.scrolltobottom();
         const test = this.template.querySelector('.cancelButton');
         if (test) {
