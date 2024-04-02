@@ -47,6 +47,7 @@ export default class messagingThreadViewer extends LightningElement {
         this.handleUnsubscribe();
     }
     renderedCallback() {
+        this.refreshMessages();
         markAsReadByNav({ threadId: this.threadid });
         markThreadAsReadEmployee({ threadId: this.threadid });
         this.scrolltobottom();
