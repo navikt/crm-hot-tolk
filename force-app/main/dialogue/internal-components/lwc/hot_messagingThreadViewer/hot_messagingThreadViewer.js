@@ -48,7 +48,6 @@ export default class messagingThreadViewer extends LightningElement {
     }
     renderedCallback() {
         this.refreshMessages();
-        markAsReadByNav({ threadId: this.threadid });
         markThreadAsReadEmployee({ threadId: this.threadid });
         this.scrolltobottom();
         const test = this.template.querySelector('.cancelButton');
