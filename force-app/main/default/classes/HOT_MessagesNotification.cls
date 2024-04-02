@@ -33,7 +33,7 @@ public without sharing class HOT_MessagesNotification {
             SELECT
                 CRM_Account__c,
                 CRM_Thread_Type__c,
-                HOT_Participants__c,
+                HOT_ParticipantIds__c,
                 HOT_IsEmployeeThread__c,
                 LastModifiedById,
                 CRM_Account__r.INT_KrrMobilePhone__c,
@@ -178,7 +178,7 @@ public without sharing class HOT_MessagesNotification {
         List<Thread__c> threads = [
             SELECT
                 Id,
-                HOT_Participants__c,
+                HOT_ParticipantIds__c,
                 HOT_IsEmployeeThread__c,
                 HOT_Last_message_from__c,
                 HOT_Last_message_from__r.AccountId,
@@ -194,7 +194,7 @@ public without sharing class HOT_MessagesNotification {
             Map<Id, Thread__c> interpretersOnThreadMap = new Map<Id, Thread__c>();
 
             for (Thread__c t : threads) {
-                String[] participantIds = t.HOT_Participants__c.split(', ');
+                String[] participantIds = t.HOT_ParticipantIds__c.split(', ');
 
                 for (String participantId : participantIds) {
                     participantId = participantId.trim();
