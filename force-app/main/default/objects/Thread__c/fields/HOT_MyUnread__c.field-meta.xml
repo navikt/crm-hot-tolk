@@ -2,10 +2,8 @@
 <CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
     <fullName>HOT_MyUnread__c</fullName>
     <externalId>false</externalId>
-    <formula>IF(
-    CONTAINS(HOT_Thread_read_by__c, $User.Id),
-    TRUE,
-    FALSE
+    <formula>NOT(
+    CONTAINS(HOT_Thread_read_by__c, $User.Id)
 )</formula>
     <formulaTreatBlanksAs>BlankAsZero</formulaTreatBlanksAs>
     <label>My unread?</label>
