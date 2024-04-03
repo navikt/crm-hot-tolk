@@ -41,14 +41,13 @@ export default class messagingThreadViewer extends LightningElement {
         this.handleSubscribe();
         this.scrolltobottom();
         markAsReadByNav({ threadId: this.threadid });
+        markThreadAsReadEmployee({ threadId: this.threadid });
     }
 
     disconnectedCallback() {
         this.handleUnsubscribe();
     }
     renderedCallback() {
-        markAsReadByNav({ threadId: this.threadid });
-        markThreadAsReadEmployee({ threadId: this.threadid });
         this.scrolltobottom();
         const test = this.template.querySelector('.cancelButton');
         if (test) {
@@ -115,7 +114,6 @@ export default class messagingThreadViewer extends LightningElement {
             textInput.CRM_Thread__c = this.thread.Id;
             textInput.CRM_From_User__c = userId;
             //her
-            setLastMessageFrom({ threadId: this.thread.Id, fromContactId: 'ansatt/formidler' });
             getUserNameRole().then((result) => {
                 textInput.HOT_User_Role__c = result;
                 if (textInput.CRM_Message_Text__c == null || textInput.CRM_Message_Text__c === '') {
@@ -128,6 +126,7 @@ export default class messagingThreadViewer extends LightningElement {
                     this.showspinner = false;
                 } else {
                     this.template.querySelector('lightning-record-edit-form').submit(textInput);
+                    setLastMessageFrom({ threadId: this.thread.Id, fromContactId: 'ansatt/formidler' });
                 }
             });
         }
