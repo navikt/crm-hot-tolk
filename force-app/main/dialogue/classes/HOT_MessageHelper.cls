@@ -489,7 +489,7 @@ public without sharing class HOT_MessageHelper {
     public static void markThreadAsReadEmployee(Id threadId) {
         User user=[SELECT Id FROM User WHERE Id = :UserInfo.getUserId()];
         Thread__c thread = [SELECT Id, HOT_Thread_read_by__c FROM Thread__c WHERE Id = :threadId];
-        if (thread.HOT_Thread_read_by__c.contains(user.Id)) {
+        if (thread.HOT_Thread_read_by__c == null || thread.HOT_Thread_read_by__c.contains(user.Id)) {
         } else {
             thread.HOT_Thread_read_by__c = thread.HOT_Thread_read_by__c + user.Id + ';';
         }
@@ -530,7 +530,6 @@ public without sharing class HOT_MessageHelper {
                 }else{
                     List<AssignedResource> ar=[SELECT ServiceAppointmentId, ServiceResourceId FROM AssignedResource WHERE ServiceAppointmentId=:thread[0].CRM_Related_Object__c AND ServiceResourceId=:serviceResource[0].Id];
                     if(ar.size()!=0){
-                      
                     }
                     else{
                         List<Message__c> msgList = [
@@ -666,11 +665,13 @@ public without sharing class HOT_MessageHelper {
             FROM Thread__c
             WHERE Id = :threadId
         ];
+        User user=[SELECT Id FROM User WHERE Id = :UserInfo.getUserId()];
         if (fromContactId == 'ansatt/formidler') {
-            t.HOT_Last_message_from__c = null;
+            t.HOT_Thread_read_by__c =null;
+            t.HOT_Thread_read_by__c = user.Id+ ';';
             t.CRM_Latest_Message_Datetime__c = Datetime.now();
         } else {
-            t.HOT_Last_message_from__c = fromContactId;
+            t.HOT_Thread_read_by__c = null;
             t.HOT_Thread_read_by__c = fromContactId + ';';
             t.CRM_Latest_Message_Datetime__c = Datetime.now();
         }
