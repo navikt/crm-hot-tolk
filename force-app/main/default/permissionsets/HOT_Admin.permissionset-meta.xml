@@ -1840,7 +1840,7 @@
         <readable>true</readable>
     </fieldPermissions>
     <fieldPermissions>
-        <editable>true</editable>
+        <editable>false</editable>
         <field>Thread__c.HOT_DelPol_ToDeleteRecord__c</field>
         <readable>true</readable>
     </fieldPermissions>
@@ -1855,8 +1855,8 @@
         <readable>true</readable>
     </fieldPermissions>
     <fieldPermissions>
-        <editable>true</editable>
-        <field>Thread__c.HOT_Last_message_from__c</field>
+        <editable>false</editable>
+        <field>Thread__c.HOT_MyUnread__c</field>
         <readable>true</readable>
     </fieldPermissions>
     <fieldPermissions>
