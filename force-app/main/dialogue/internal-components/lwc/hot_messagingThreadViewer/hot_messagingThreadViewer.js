@@ -31,6 +31,7 @@ export default class messagingThreadViewer extends LightningElement {
     @api englishTextTemplate;
     @track langBtnLock = false;
     langBtnAriaToggle = false;
+    isRemoved = false;
 
     @api textTemplate; //Support for conditional text template as input
     //Constructor, called onload
@@ -45,16 +46,17 @@ export default class messagingThreadViewer extends LightningElement {
     }
 
     disconnectedCallback() {
+        this.isRemoved = true;
         this.handleUnsubscribe();
     }
     renderedCallback() {
-        this.refreshMessages();
-        markAsReadByNav({ threadId: this.threadid });
-        markThreadAsReadEmployee({ threadId: this.threadid });
-        this.scrolltobottom();
-        const test = this.template.querySelector('.cancelButton');
-        if (test) {
-            test.focus();
+        if (!this.isRemoved) {
+            console.log('kjøøø');
+            this.refreshMessages();
+            markAsReadByNav({ threadId: this.threadid });
+            markThreadAsReadEmployee({ threadId: this.threadid });
+            this.scrolltobottom();
+            const test = this.template.querySelector('.cancelButton');
         }
     }
 
