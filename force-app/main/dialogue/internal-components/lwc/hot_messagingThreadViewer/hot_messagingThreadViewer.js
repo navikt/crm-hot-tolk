@@ -46,7 +46,6 @@ export default class messagingThreadViewer extends LightningElement {
     }
 
     disconnectedCallback() {
-        this.isRemoved = true;
         this.handleUnsubscribe();
     }
     renderedCallback() {
