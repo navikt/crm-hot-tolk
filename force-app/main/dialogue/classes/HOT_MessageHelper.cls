@@ -673,6 +673,7 @@ public without sharing class HOT_MessageHelper {
         } else {
             t.HOT_Thread_read_by__c = null;
             t.HOT_Thread_read_by__c = fromContactId + ';';
+            t.CRM_Latest_Message_Datetime__c = Datetime.now();
         }
         update t;
     }
