@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ListView xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>Mine_uleste_samtaler_ansatt</fullName>
+    <columns>NAME</columns>
+    <filterScope>Everything</filterScope>
+    <filters>
+        <field>CRM_Thread_Type__c</field>
+        <operation>equals</operation>
+        <value>HOT_BRUKER-TOLK,HOT_TOLK-FORMIDLER,HOT_TOLK-TOLK</value>
+    </filters>
+    <filters>
+        <field>HOT_IsMyThread__c</field>
+        <operation>equals</operation>
+        <value>1</value>
+    </filters>
+    <filters>
+        <field>HOT_MyUnread__c</field>
+        <operation>equals</operation>
+        <value>1</value>
+    </filters>
+    <label>Mine uleste samtaler - ansatt</label>
+</ListView>
