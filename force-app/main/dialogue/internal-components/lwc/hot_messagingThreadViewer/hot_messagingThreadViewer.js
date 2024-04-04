@@ -31,6 +31,7 @@ export default class messagingThreadViewer extends LightningElement {
     @api englishTextTemplate;
     @track langBtnLock = false;
     langBtnAriaToggle = false;
+    newMessage = false;
 
     @api textTemplate; //Support for conditional text template as input
     //Constructor, called onload
@@ -49,13 +50,13 @@ export default class messagingThreadViewer extends LightningElement {
     }
     renderedCallback() {
         this.refreshMessages();
-        markAsReadByNav({ threadId: this.threadid });
-        markThreadAsReadEmployee({ threadId: this.threadid });
+        if (this.newMessage) {
+            markAsReadByNav({ threadId: this.threadid });
+            markThreadAsReadEmployee({ threadId: this.threadid });
+            this.newMessage = false;
+        }
         this.scrolltobottom();
         const test = this.template.querySelector('.cancelButton');
-        if (test) {
-            test.focus();
-        }
     }
 
     //Handles subscription to streaming API for listening to changes to auth status
@@ -130,6 +131,7 @@ export default class messagingThreadViewer extends LightningElement {
                 } else {
                     this.template.querySelector('lightning-record-edit-form').submit(textInput);
                     setLastMessageFrom({ threadId: this.thread.Id, fromContactId: 'ansatt/formidler' });
+                    this.newMessage = true;
                 }
             });
         }
