@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<WebLink xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>Marker_samtale_som_ulest</fullName>
+    <availability>online</availability>
+    <displayType>button</displayType>
+    <encodingKey>UTF-8</encodingKey>
+    <linkType>url</linkType>
+    <masterLabel>Marker samtale som ulest</masterLabel>
+    <openType>replace</openType>
+    <protected>false</protected>
+    <url>/flow/HOT_MarkThreadAsUnread?retURL=/lightning/o/Thread__c/list?filterName=Recent&amp;nocache=1</url>
+</WebLink>
