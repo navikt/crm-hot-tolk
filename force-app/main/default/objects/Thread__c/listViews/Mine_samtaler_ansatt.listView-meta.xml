@@ -13,5 +13,10 @@
         <operation>equals</operation>
         <value>1</value>
     </filters>
+    <filters>
+        <field>CRM_Number_of_Messages__c</field>
+        <operation>greaterThan</operation>
+        <value>0</value>
+    </filters>
     <label>Mine samtaler - ansatt</label>
 </ListView>
