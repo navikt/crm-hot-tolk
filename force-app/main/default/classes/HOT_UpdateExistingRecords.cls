@@ -1,11 +1,12 @@
 public class HOT_UpdateExistingRecords implements Database.Batchable<sObject> {
     public Database.QueryLocator start(Database.BatchableContext bc) {
         return Database.getQueryLocator(
-            'SELECT Id, HOT_ParticipantIds__c, HOT_Thread_read_by__c, CRM_Thread_Type__c, CreatedDate FROM Thread__c WHERE (CRM_Thread_Type__c = \'HOT_TOLK-FORMIDLER\' OR CRM_Thread_Type__c = \'HOT_TOLK-TOLK\' OR CRM_Thread_Type__c = \'HOT_BRUKER-TOLK\' OR CRM_Thread_Type__c = \'HOT_TOLK-RESSURSKONTOR\')'
+            'SELECT Id, HOT_ParticipantIds__c, HOT_Thread_read_by__c, CRM_Thread_Type__c, CRM_Latest_Message_Datetime__c FROM Thread__c WHERE (CRM_Thread_Type__c = \'HOT_TOLK-FORMIDLER\' OR CRM_Thread_Type__c = \'HOT_TOLK-TOLK\' OR CRM_Thread_Type__c = \'HOT_BRUKER-TOLK\' OR CRM_Thread_Type__c = \'HOT_TOLK-RESSURSKONTOR\') AND (CRM_Latest_Message_Datetime__c < YESTERDAY)'
         );
     }
 
     public void execute(Database.BatchableContext bc, List<Thread__c> records) {
+        System.debug('fant '+records.size());
         for (Thread__c thread : records) {
         Set<String> participantIds = new Set<String>();
         Set<String> readByIds = new Set<String>();
