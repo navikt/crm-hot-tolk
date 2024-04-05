@@ -1,7 +1,7 @@
 public class HOT_UpdateExistingRecords implements Database.Batchable<sObject> {
     public Database.QueryLocator start(Database.BatchableContext bc) {
         return Database.getQueryLocator(
-            'SELECT Id, HOT_ParticipantIds__c, HOT_Thread_read_by__c, CRM_Thread_Type__c, CRM_Latest_Message_Datetime__c FROM Thread__c WHERE (CRM_Thread_Type__c = \'HOT_TOLK-FORMIDLER\' OR CRM_Thread_Type__c = \'HOT_TOLK-TOLK\' OR CRM_Thread_Type__c = \'HOT_BRUKER-TOLK\' OR CRM_Thread_Type__c = \'HOT_TOLK-RESSURSKONTOR\') AND (CRM_Latest_Message_Datetime__c < YESTERDAY)'
+            'SELECT Id, HOT_ParticipantIds__c, HOT_Thread_read_by__c, CRM_Thread_Type__c, CRM_Latest_Message_Datetime__c FROM Thread__c WHERE (CRM_Thread_Type__c = \'HOT_TOLK-FORMIDLER\' OR CRM_Thread_Type__c = \'HOT_TOLK-TOLK\' OR CRM_Thread_Type__c = \'HOT_BRUKER-TOLK\' OR CRM_Thread_Type__c = \'HOT_TOLK-RESSURSKONTOR\') AND (CRM_Latest_Message_Datetime__c < CRM_Latest_Message_Datetime__c < 2024-04-05T00:00:00Z)'
         );
     }
 
