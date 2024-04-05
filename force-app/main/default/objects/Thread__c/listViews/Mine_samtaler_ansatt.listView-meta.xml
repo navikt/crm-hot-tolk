@@ -2,6 +2,7 @@
 <ListView xmlns="http://soap.sforce.com/2006/04/metadata">
     <fullName>Mine_samtaler_ansatt</fullName>
     <columns>NAME</columns>
+    <columns>CRM_Latest_Message_Datetime__c</columns>
     <filterScope>Everything</filterScope>
     <filters>
         <field>CRM_Thread_Type__c</field>
@@ -12,6 +13,11 @@
         <field>HOT_IsMyThread__c</field>
         <operation>equals</operation>
         <value>1</value>
+    </filters>
+    <filters>
+        <field>CRM_Number_of_Messages__c</field>
+        <operation>greaterThan</operation>
+        <value>0</value>
     </filters>
     <label>Mine samtaler - ansatt</label>
 </ListView>
