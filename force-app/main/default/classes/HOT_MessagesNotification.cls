@@ -180,8 +180,6 @@ public without sharing class HOT_MessagesNotification {
                 Id,
                 HOT_ParticipantIds__c,
                 HOT_IsEmployeeThread__c,
-                HOT_Last_message_from__c,
-                HOT_Last_message_from__r.AccountId,
                 HOT_Subject__c,
                 CRM_Thread_Type__c,
                 LastModifiedById

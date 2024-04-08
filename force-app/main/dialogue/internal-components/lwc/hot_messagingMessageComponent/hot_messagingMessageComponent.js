@@ -266,6 +266,9 @@ export default class CrmMessagingMessageComponent extends LightningElement {
         });
         this.dispatchEvent(englishEvent);
     }
+    renderedCallback() {
+        refreshApex(this._threadsforRefresh);
+    }
     connectedCallback() {
         if (this.threads?.length > 0) {
             markAsReadByNav({ threadId: this.threads[0]?.Id });
