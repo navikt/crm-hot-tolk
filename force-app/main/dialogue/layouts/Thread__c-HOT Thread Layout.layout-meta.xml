@@ -49,8 +49,8 @@
     <platformActionList>
         <actionListContext>Record</actionListContext>
         <platformActionListItems>
-            <actionName>Marker_samtale_som_ulest</actionName>
-            <actionType>CustomButton</actionType>
+            <actionName>Thread__c.HOT_MarkThreadAsUnread</actionName>
+            <actionType>QuickAction</actionType>
             <sortOrder>0</sortOrder>
         </platformActionListItems>
     </platformActionList>
@@ -60,7 +60,7 @@
     <showRunAssignmentRulesCheckbox>false</showRunAssignmentRulesCheckbox>
     <showSubmitAndAttachButton>false</showSubmitAndAttachButton>
     <summaryLayout>
-        <masterLabel>00h7Z000002gPhe</masterLabel>
+        <masterLabel>00h1l000001cAcE</masterLabel>
         <sizeX>4</sizeX>
         <sizeY>0</sizeY>
         <summaryLayoutStyle>Default</summaryLayoutStyle>
