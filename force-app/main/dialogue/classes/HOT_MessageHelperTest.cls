@@ -516,7 +516,7 @@ private class HOT_MessageHelperTest {
         Test.stopTest();
 
         List<Thread__c> tList2 = [SELECT Id, HOT_Thread_read_by__c FROM Thread__c WHERE Id = :tList.get(0).Id];
-        Boolean isEmpty = tList2.get(0).HOT_Thread_read_by__c == null;
+        Boolean isNotEmpty = tList2.get(0).HOT_Thread_read_by__c != null;
         System.assertEquals(true, isEmpty);
     }
     @isTest
