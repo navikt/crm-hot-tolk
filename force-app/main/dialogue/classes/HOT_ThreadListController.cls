@@ -22,7 +22,6 @@ public without sharing class HOT_ThreadListController {
                 CRM_Related_Object__c,
                 CRM_Number_of_unread_Messages__c,
                 HOT_Thread_read_by__c,
-                HOT_Last_message_from__c,
                 CRM_Registered_Datetime_Formula__c,
                 CRM_Latest_Message_Datetime__c,
                 HOT_AppointmentStartTime__c
@@ -95,7 +94,6 @@ public without sharing class HOT_ThreadListController {
                 CRM_Related_Object__c,
                 CRM_Number_of_unread_Messages__c,
                 HOT_Thread_read_by__c,
-                HOT_Last_message_from__c,
                 CRM_Registered_Datetime_Formula__c
             FROM Thread__c
             WHERE
@@ -139,7 +137,6 @@ public without sharing class HOT_ThreadListController {
                 CRM_Related_Object__c,
                 CRM_Number_of_unread_Messages__c,
                 HOT_Thread_read_by__c,
-                HOT_Last_message_from__c,
                 CRM_Registered_Datetime_Formula__c,
                 CRM_Latest_Message_Datetime__c,
                 HOT_AppointmentStartTime__c
