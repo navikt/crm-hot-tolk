@@ -902,7 +902,8 @@ public without sharing class HOT_ServiceAppointmentHandler extends MyTriggers {
             WHERE ServiceAppointment__c IN :serviceAppointments
         ];
         for (HOT_InterestedResource__c interestedResource : interestedResources) {
-            if (newStatus == 'Service Appointment Retracted') {
+            if (newStatus == 'Service Appointment Retracted' && interestedResource.Status__c != 'Wanted' && 
+        interestedResource.Status__c != 'Declined') {
                 if (
                     interestedResource.ServiceAppointment__r.Status == 'None' ||
                     interestedResource.ServiceAppointment__r.Status == 'Annul' ||

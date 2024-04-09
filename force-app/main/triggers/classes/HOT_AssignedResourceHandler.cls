@@ -234,7 +234,7 @@ public without sharing class HOT_AssignedResourceHandler extends MyTriggers {
         ];
 
         for (HOT_InterestedResource__c ir : interestedResources) {
-            if (ir.ServiceResource__c == interestedresourceMap.get(ir.ServiceAppointment__c)) {
+            if (ir.ServiceResource__c == interestedresourceMap.get(ir.ServiceAppointment__c) && ir.Status__c != 'Canceled by Interpreter') {
                 ir.Status__c = 'Withdrawn';
             }
         }
