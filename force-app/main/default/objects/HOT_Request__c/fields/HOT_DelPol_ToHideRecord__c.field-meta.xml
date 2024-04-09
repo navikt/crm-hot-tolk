@@ -2,7 +2,19 @@
 <CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
     <fullName>HOT_DelPol_ToHideRecord__c</fullName>
     <externalId>false</externalId>
-    <formula>Today() &gt; DateValue(EndTime__c + 3*365)</formula>
+    <formula>IF(
+    NOT(ISBLANK(SeriesEndDate__c)),
+    TODAY() &gt; (SeriesEndDate__c + (3*365)),
+    IF(
+        NOT(ISBLANK(EndTime__c)),
+        TODAY() &gt; (DATEVALUE(EndTime__c)  + (3*365)),
+        IF(
+            TODAY() &gt; (DATEVALUE(CreatedDate) + (3*365)),
+            TRUE,
+            FALSE
+        )
+    )
+)</formula>
     <formulaTreatBlanksAs>BlankAsZero</formulaTreatBlanksAs>
     <label>HOT DelPol Hide Record Condition</label>
     <trackHistory>false</trackHistory>
