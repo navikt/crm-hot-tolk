@@ -359,7 +359,7 @@ public without sharing class HOT_AssignedResourceHandler extends MyTriggers {
                     ) {
                     } else if (
                         interestedResource.ServiceResource__c != assignedResource.ServiceResourceId &&
-                        interestedResource.Status__c != 'Not Assigned'
+                        interestedResource.Status__c != 'Not Assigned' && interestedResource.Status__c != 'Canceled by Interpreter'
                     ) {
                         interestedResource.Status__c = 'Not Assigned';
                     }
