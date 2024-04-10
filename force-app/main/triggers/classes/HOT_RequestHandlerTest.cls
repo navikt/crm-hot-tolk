@@ -702,6 +702,27 @@ private class HOT_RequestHandlerTest {
         System.AssertEquals('Ny subject', wo.Subject);
     }
     @isTest
+    public static void updateWorkOrderAccountOnRequestChange() {
+        WorkType workType = HOT_TestDataFactory.createWorkType();
+        insert workType;
+        Account account = HOT_TestDataFactory.createAccount(true);
+        insert account;
+        Account account2 = HOT_TestDataFactory.createAccount(true);
+        insert account2;
+        HOT_Request__c request = HOT_TestDataFactory.createRequest('TEST', workType);
+        request.Account__c = account.Id;
+        insert request;
+        WorkOrder workOrder = HOT_TestDataFactory.createWorkOrder(request, workType);
+        insert workOrder;
+        
+        Test.startTest();
+            request.Account__c = account2.Id;
+            update request;
+        Test.stopTest();
+        WorkOrder wo=[SELECT AccountId FROM WorkOrder WHERE Id=:workOrder.Id];
+        System.AssertEquals(account2.Id, wo.AccountId);
+    }
+    @isTest
     public static void resetNotifyDispatcher() {
         WorkType workType = HOT_TestDataFactory.createWorkType();
         insert workType;

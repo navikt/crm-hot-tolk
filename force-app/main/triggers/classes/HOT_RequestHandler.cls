@@ -119,6 +119,7 @@ public without sharing class HOT_RequestHandler extends MyTriggers {
     public override void onAfterUpdate(Map<Id, sObject> triggerOldMap) {
         List<HOT_Request__c> godkjentRequests = new List<HOT_Request__c>();
         List<Hot_Request__c> requestsWithNewSubject = new List<Hot_Request__c>();
+        List<Hot_Request__c> requestsWithNewAccount = new List<Hot_Request__c>();
         List<Hot_Request__c> requestsWithUpdatedDispatcher = new List<Hot_Request__c>();
         List<Hot_Request__c> requestsWithUpdatedCompany = new List<Hot_Request__c>();
 
@@ -129,6 +130,9 @@ public without sharing class HOT_RequestHandler extends MyTriggers {
             }
             if (triggerOldMap.get(request.Id).get('Subject__c') !== request.Subject__c) {
                 requestsWithNewSubject.add(request);
+            }
+            if (triggerOldMap.get(request.Id).get('Account__c') !== request.Account__c) {
+                requestsWithNewAccount.add(request);
             }
             if (triggerOldMap.get(request.Id).get('Dispatcher__c') !== request.Dispatcher__c) {
                 requestsWithUpdatedDispatcher.add(request);
@@ -142,6 +146,9 @@ public without sharing class HOT_RequestHandler extends MyTriggers {
         }
         if (requestsWithNewSubject.size() > 0) {
             updateWorkOrderSubject(requestsWithNewSubject);
+        }
+        if (requestsWithNewAccount.size() > 0) {
+            updateWorkOrderAccount(requestsWithNewAccount);
         }
         if (requestsWithUpdatedDispatcher.size() > 0) {
             updateDispatcherOnThread(requestsWithUpdatedDispatcher);
@@ -249,6 +256,21 @@ public without sharing class HOT_RequestHandler extends MyTriggers {
                 if (wo.HOT_Request__r.Subject__c != null) {
                     wo.Subject = wo.HOT_Request__r.Subject__c;
                 }
+            }
+            update workOrders;
+        }
+    }
+
+    private static void updateWorkOrderAccount(List<HOT_Request__c> requestsWithNewAccount) {
+        List<WorkOrder> workOrders = [
+            SELECT Id, AccountId, HOT_Request__r.Account__c
+            FROM WorkOrder
+            WHERE HOT_Request__c IN :requestsWithNewAccount
+        ];
+
+        if (workOrders.size() > 0) {
+            for (WorkOrder wo : workOrders) {
+                wo.AccountId = wo.HOT_Request__r.Account__c;
             }
             update workOrders;
         }
