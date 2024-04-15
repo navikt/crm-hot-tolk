@@ -160,7 +160,9 @@ private class HOT_ReminderSMSServiceTest {
         insert workType;
         HOT_Request__c request = HOT_TestDataFactory.createRequest('TEST', workType);
         insert request;
-
+        
+        // startTest flyttet hit på grunn av limits
+        Test.startTest();
         Thread__c thread = HOT_TestDataFactory.createThread();
         thread.CRM_Account__c = currentUser.AccountId;
         thread.CRM_Related_Object__c = request.Id;
@@ -175,7 +177,6 @@ private class HOT_ReminderSMSServiceTest {
             FROM ServiceResource
             WHERE RelatedRecordId = :currentUser.Id
         ];
-        Test.startTest();
         HOT_ReminderSMSService.sendSMSOnNewMessageInterpreter(currentUser.Id, thread.Id);
         Test.stopTest();
         List<SMS__c> smsList = [SELECT Id, Message__c FROM SMS__c];
@@ -462,8 +463,10 @@ private class HOT_ReminderSMSServiceTest {
         for (WorkOrder wo : workOrders) {
             wo.Status = 'Cannot Complete';
         }
+        Test.startTest();
         update workOrders;
         HOT_ReminderSMSService.sendSMSToOrdererOnStatusUpdate(workOrders);
+        Test.stopTest();
         List<SMS__c> smsList = [SELECT Id FROM SMS__c];
         System.assertEquals(2, smsList.size(), 'Could not create sms-record');
     }
@@ -535,9 +538,11 @@ private class HOT_ReminderSMSServiceTest {
         for (WorkOrder wo : workOrders) {
             wo.Status = 'Cannot Complete';
         }
+        Test.startTest();
         String personPhoneNumber = workOrders[0].Account.CRM_Person__r.INT_KrrMobilePhone__c;
         update workOrders;
         HOT_ReminderSMSService.sendSMSToOrdererOnStatusUpdate(workOrders);
+        Test.stopTest();
         String smsPhoneNumber = [SELECT Id, Recipient__c FROM SMS__c LIMIT 1].Recipient__c;
         System.assertEquals(personPhoneNumber, smsPhoneNumber, 'SMS was not sent to the user');
     }
@@ -566,9 +571,11 @@ private class HOT_ReminderSMSServiceTest {
         for (WorkOrder wo : workOrders) {
             wo.Status = 'Cannot Complete';
         }
+        Test.startTest();
         String orderPhoneNumber = workOrders[0].HOT_Request__r.OrdererPhone__c;
         update workOrders;
         HOT_ReminderSMSService.sendSMSToOrdererOnStatusUpdate(workOrders);
+        Test.stopTest();
         String smsPhoneNumber = [SELECT Id, Recipient__c FROM SMS__c LIMIT 1].Recipient__c;
 
         System.assertEquals(orderPhoneNumber, smsPhoneNumber, 'SMS was not sent to the user');
@@ -578,6 +585,7 @@ private class HOT_ReminderSMSServiceTest {
         Person__c person = HOT_TestDataFactory.createPerson();
         person.Name = '12015678999';
         insert person;
+        Test.startTest();
         Account personAccount = HOT_TestDataFactory.createAccount(true);
         personAccount.INT_PersonIdent__c = '12015678999';
         personAccount.CRM_Person__c = person.Id;
@@ -590,7 +598,6 @@ private class HOT_ReminderSMSServiceTest {
         request.EndTime__c = request.EndTime__c.addDays(3);
         request.Orderer__c = personAccount.Id;
         insert request;
-        Test.startTest();
         Thread__c thread1 = new Thread__c(
             CRM_Account__c = serviceResource.AccountId,
             CRM_Thread_Type__c = 'HOT_TOLK-RESSURSKONTOR'
