@@ -9,20 +9,28 @@ public without sharing class HOT_WageClaimHandler extends MyTriggers {
         }
         if (!wageClaimsWithServiceResource.isEmpty()) {
             setServiceTerritoryBasedOnServiceResource(wageClaimsWithServiceResource);
-            createShiftAndSetLookup(wageClaimsWithServiceResource.keySet());
         }
     }
     public override void onAfterInsert() {
         List<Id> wageClaimsWithParent = new List<Id>();
+        Map<HOT_WageClaim__c, Id> wageClaimsWithServiceResource = new Map<HOT_WageClaim__c, Id>();
+    
         for (HOT_WageClaim__c wageClaim : (List<HOT_WageClaim__c>) records) {
             if (wageClaim.ParentWageClaim__c != null) {
                 wageClaimsWithParent.add(wageClaim.Id);
+            } 
+            if (wageClaim.ServiceResource__c != null) {
+                // Should never be null
+                wageClaimsWithServiceResource.put(wageClaim, wageClaim.ServiceResource__c);
             }
         }
         if (wageClaimsWithParent.size() > 0) {
             setFieldsBasedOnParent(wageClaimsWithParent);
         }
-    }
+        if (!wageClaimsWithServiceResource.isEmpty()) {
+            createShiftAndSetLookup(wageClaimsWithServiceResource.keySet());
+        }
+}
     public override void onAfterUpdate(Map<Id, sObject> triggerOldMap) {
         List<HOT_WageClaim__c> retractedWageClaims = new List<HOT_WageClaim__c>();
         List<HOT_WageClaim__c> closedWageClaims = new List<HOT_WageClaim__c>();
