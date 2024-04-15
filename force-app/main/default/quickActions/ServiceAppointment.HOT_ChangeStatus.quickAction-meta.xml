@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <QuickAction xmlns="http://soap.sforce.com/2006/04/metadata">
-    <flowDefinition>HOT_ChangeServiceAppointmentStatus</flowDefinition>
+    <flowDefinition>HOT_ChangeServiceAppointmentStatus_V1</flowDefinition>
     <label>Endre Status</label>
     <optionsCreateFeedItem>false</optionsCreateFeedItem>
     <type>Flow</type>
