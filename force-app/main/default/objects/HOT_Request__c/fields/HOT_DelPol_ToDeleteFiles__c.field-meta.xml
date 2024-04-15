@@ -4,12 +4,12 @@
     <externalId>false</externalId>
     <formula>IF(
     NOT(ISBLANK(SeriesEndDate__c)),
-    TODAY() &gt; (SeriesEndDate__c + (3*365)),
+    TODAY() &gt; (SeriesEndDate__c + (365)),
     IF(
         NOT(ISBLANK(EndTime__c)),
-        TODAY() &gt; (DATEVALUE(EndTime__c)  + (3*365)),
+        TODAY() &gt; (DATEVALUE(EndTime__c)  + (365)),
         IF(
-            TODAY() &gt; (DATEVALUE(CreatedDate) + (3*365)),
+            TODAY() &gt; (DATEVALUE(CreatedDate) + (365)),
             TRUE,
             FALSE
         )
