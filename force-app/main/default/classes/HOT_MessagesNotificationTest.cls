@@ -1,4 +1,4 @@
-@isTest
+@IsTest
 private class HOT_MessagesNotificationTest {
     @TestSetup
     static void makeData() {
@@ -35,7 +35,7 @@ private class HOT_MessagesNotificationTest {
         accountPush.CRM_Person__c = personPush.Id;
     }
 
-    @isTest
+    @IsTest
     static void NotifyUserPushTestOnNewMessageFromFormidler() {
         Account account = [
             SELECT Id, PersonContactId, CRM_Person__r.HOT_NotificationChannel__c
@@ -53,7 +53,7 @@ private class HOT_MessagesNotificationTest {
         message.CRM_Thread__c = thread.Id;
         message.CRM_From_Contact__c = account.PersonContactId;
         message.CRM_Message_Text__c = 'Dette er en testmelding';
-        message.HOT_User_Role__c=HOT_MessageHelper.getUserProfileAndName();
+        message.HOT_User_Role__c = HOT_MessageHelper.getUserProfileAndName();
         insert message;
 
         List<Id> threadIds = new List<Id>();
@@ -67,7 +67,7 @@ private class HOT_MessagesNotificationTest {
         test.stopTest();
     }
 
-    @isTest
+    @IsTest
     static void NotifyUserSMSTestOnNewMessageFromFormidler() {
         Account account = [
             SELECT Id, PersonContactId, CRM_Person__r.HOT_NotificationChannel__c
@@ -85,7 +85,7 @@ private class HOT_MessagesNotificationTest {
         message.CRM_Thread__c = thread.Id;
         message.CRM_From_Contact__c = account.PersonContactId;
         message.CRM_Message_Text__c = 'Dette er en testmelding';
-        message.HOT_User_Role__c=HOT_MessageHelper.getUserProfileAndName();
+        message.HOT_User_Role__c = HOT_MessageHelper.getUserProfileAndName();
         insert message;
 
         List<Id> threadIds = new List<Id>();
@@ -99,7 +99,7 @@ private class HOT_MessagesNotificationTest {
         test.stopTest();
     }
 
-    @isTest
+    @IsTest
     static void NotifyUserPushTestOnRessurskontor() {
         Account account = [
             SELECT Id, PersonContactId, CRM_Person__r.HOT_NotificationChannel__c
@@ -116,7 +116,7 @@ private class HOT_MessagesNotificationTest {
         message.CRM_Thread__c = thread.Id;
         message.CRM_From_Contact__c = account.PersonContactId;
         message.CRM_Message_Text__c = 'Dette er en testmelding';
-        message.HOT_User_Role__c=HOT_MessageHelper.getUserProfileAndName();
+        message.HOT_User_Role__c = HOT_MessageHelper.getUserProfileAndName();
         insert message;
 
         List<Id> threadIds = new List<Id>();
@@ -130,7 +130,7 @@ private class HOT_MessagesNotificationTest {
         test.stopTest();
     }
 
-    @isTest
+    @IsTest
     static void NotifyUserSMSTestOnRessurskontor() {
         Account account = [
             SELECT Id, PersonContactId, CRM_Person__r.HOT_NotificationChannel__c
@@ -147,7 +147,7 @@ private class HOT_MessagesNotificationTest {
         message.CRM_Thread__c = thread.Id;
         message.CRM_From_Contact__c = account.PersonContactId;
         message.CRM_Message_Text__c = 'Dette er en testmelding';
-        message.HOT_User_Role__c=HOT_MessageHelper.getUserProfileAndName();
+        message.HOT_User_Role__c = HOT_MessageHelper.getUserProfileAndName();
         insert message;
 
         List<Id> threadIds = new List<Id>();
@@ -161,7 +161,7 @@ private class HOT_MessagesNotificationTest {
         test.stopTest();
     }
 
-    @isTest
+    @IsTest
     static void NotifyUserSMSTest() {
         Account account = [
             SELECT Id, PersonContactId, CRM_Person__r.HOT_NotificationChannel__c
@@ -178,7 +178,7 @@ private class HOT_MessagesNotificationTest {
         message.CRM_Thread__c = thread.Id;
         message.CRM_From_Contact__c = account.PersonContactId;
         message.CRM_Message_Text__c = 'Dette er en testmelding';
-        message.HOT_User_Role__c=HOT_MessageHelper.getUserProfileAndName();
+        message.HOT_User_Role__c = HOT_MessageHelper.getUserProfileAndName();
         insert message;
 
         List<Id> threadIds = new List<Id>();
@@ -192,7 +192,7 @@ private class HOT_MessagesNotificationTest {
         test.stopTest();
     }
 
-    @isTest
+    @IsTest
     static void NotifyUserPushTest() {
         Account account = [
             SELECT Id, PersonContactId, CRM_Person__r.HOT_NotificationChannel__c
@@ -210,7 +210,7 @@ private class HOT_MessagesNotificationTest {
         message.CRM_Thread__c = thread.Id;
         message.CRM_From_Contact__c = account.PersonContactId;
         message.CRM_Message_Text__c = 'Dette er en testmelding';
-        message.HOT_User_Role__c=HOT_MessageHelper.getUserProfileAndName();
+        message.HOT_User_Role__c = HOT_MessageHelper.getUserProfileAndName();
         insert message;
 
         List<Id> threadIds = new List<Id>();
@@ -224,7 +224,7 @@ private class HOT_MessagesNotificationTest {
         test.stopTest();
     }
 
-    @isTest
+    @IsTest
     static void NotifyDispatcherTest() {
         Account account = [SELECT Id, PersonContactId FROM Account LIMIT 1];
         Thread__c thread = HOT_TestDataFactory.createThread();
@@ -237,7 +237,7 @@ private class HOT_MessagesNotificationTest {
         message.CRM_Thread__c = thread.Id;
         message.CRM_From_Contact__c = account.PersonContactId;
         message.CRM_Message_Text__c = 'Dette er en testmelding';
-        message.HOT_User_Role__c=HOT_MessageHelper.getUserProfileAndName();
+        message.HOT_User_Role__c = HOT_MessageHelper.getUserProfileAndName();
         insert message;
 
         List<Id> threadIds = new List<Id>();

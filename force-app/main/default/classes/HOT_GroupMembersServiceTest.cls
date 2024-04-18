@@ -1,4 +1,4 @@
-@isTest
+@IsTest
 private class HOT_GroupMembersServiceTest {
     @testSetup
     static void setup() {
@@ -38,7 +38,7 @@ private class HOT_GroupMembersServiceTest {
         insert new List<PermissionSetAssignment>{ permsetAssignment1, permsetAssignment2 };
     }
 
-    @isTest
+    @IsTest
     static void addFormidler1Test() {
         Map<Id, User> users = new Map<Id, User>([SELECT Id, Department FROM User WHERE LastName IN ('User1', 'User2')]);
 
@@ -56,7 +56,7 @@ private class HOT_GroupMembersServiceTest {
         System.assertEquals(true, formidler1Member.size() > 0, 'Could not set formidler 1 as member of group.');
     }
 
-    @isTest
+    @IsTest
     static void removeFormidler2Test() {
         User formidler2 = [SELECT Id, Department FROM User WHERE LastName = 'User2' LIMIT 1];
         Map<Id, User> users = new Map<Id, User>(new List<User>{ formidler2 });
@@ -85,7 +85,7 @@ private class HOT_GroupMembersServiceTest {
         System.assertEquals(true, formidler2Member.size() == 0, 'Could not remove formidler 2 as member of group.');
     }
 
-    @isTest
+    @IsTest
     static void dontRemoveFormidler1() {
         User formidler1 = [SELECT Id, Department FROM User WHERE LastName = 'User1' LIMIT 1];
         Map<Id, User> users = new Map<Id, User>(new List<User>{ formidler1 });

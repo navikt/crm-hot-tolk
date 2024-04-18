@@ -1,4 +1,4 @@
-@isTest
+@IsTest
 private class HOT_NotificationHandlerTest {
     @testSetup
     static void setup() {
@@ -40,7 +40,7 @@ private class HOT_NotificationHandlerTest {
         update request;
     }
 
-    @isTest
+    @IsTest
     static void testGetGroupIdByQueueId() {
         List<Group> grpList = [
             SELECT DeveloperName
@@ -61,7 +61,7 @@ private class HOT_NotificationHandlerTest {
         System.assertEquals(sizeOfResult, result.size());
     }
 
-    @isTest
+    @IsTest
     private static void testNotifyUsers() {
         Test.startTest();
         ServiceAppointment serviceAppointment = [
@@ -75,7 +75,7 @@ private class HOT_NotificationHandlerTest {
         update serviceAppointment;
         Test.stopTest();
     }
-    @isTest
+    @IsTest
     private static void prepareNotificationTest() {
         WorkType workType = HOT_TestDataFactory.createWorkType();
         insert WorkType;

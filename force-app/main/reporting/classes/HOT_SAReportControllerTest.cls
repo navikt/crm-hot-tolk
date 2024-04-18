@@ -1,4 +1,4 @@
-@isTest
+@IsTest
 private class HOT_SAReportControllerTest {
     @testSetup
     static void setup() {
@@ -10,7 +10,7 @@ private class HOT_SAReportControllerTest {
         update request;
     }
 
-    @isTest
+    @IsTest
     static void upsertReportingDataTest() {
         Test.startTest();
         HOT_ServiceAppointmentReportController btch = new HOT_ServiceAppointmentReportController();

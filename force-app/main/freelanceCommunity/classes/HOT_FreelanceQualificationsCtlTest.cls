@@ -1,4 +1,4 @@
-@isTest
+@IsTest
 private class HOT_FreelanceQualificationsCtlTest {
     /*
     @TestSetup
@@ -14,7 +14,7 @@ private class HOT_FreelanceQualificationsCtlTest {
         );
         insert serviceResourceSkill;
     }
-    @isTest
+    @IsTest
     static void myServiceResourceTest() {
         ServiceResource freelanceInterpreter = HOT_FreelanceQualificationsController.myServiceResource();
         System.assertEquals(
@@ -23,12 +23,12 @@ private class HOT_FreelanceQualificationsCtlTest {
             'Could not find myServiceResource from getUserId'
         );
     }
-    @isTest
+    @IsTest
     static void getServiceResourceSkillTest() {
         List<ServiceResourceSkill> freelanceSkills = HOT_FreelanceQualificationsController.getServiceResourceSkill();
         System.assertEquals(1, freelanceSkills.size(), 'Could not fetch getServiceResourceSkill');
     }
-    @isTest
+    @IsTest
     static void setResourceSkillTest() {
         Profile profile = [SELECT Id FROM Profile WHERE Name = 'Standard User' OR Name = 'Standardbruker' LIMIT 1];
         User user3 = HOT_TestDataFactory.createUser('user3', profile);
@@ -49,7 +49,7 @@ private class HOT_FreelanceQualificationsCtlTest {
         );
     }
 
-    @isTest
+    @IsTest
     static void createServiceResourceSkillTest() {
         Skill skill = [SELECT Id, MasterLabel FROM Skill LIMIT 1];
         List<Skill> selectedSkills = new List<Skill>{ skill };
@@ -82,13 +82,13 @@ private class HOT_FreelanceQualificationsCtlTest {
         }
     }
 
-    @isTest
+    @IsTest
     static void getAllSkillsListTest() {
         List<Skill> skills = HOT_FreelanceQualificationsController.getAllSkillsList();
         System.assertEquals(8, skills.size(), 'Could not fetch allSkillsList');
     }
     */
-    @isTest
+    @IsTest
     static void getmyServiceResourceTest() {
         Profile profile = [SELECT Id FROM Profile WHERE Name = 'System Administrator'];
         User user1 = new User(
@@ -112,7 +112,7 @@ private class HOT_FreelanceQualificationsCtlTest {
             System.assertEquals(sr.Id, resource1.Id, 'Could not get my service resource');
         }
     }
-    // @isTest
+    // @IsTest
     // static void getServiceResourceSkillsTest() {
     //     ServiceResource serviceResource = HOT_TestDataFactory.createServiceResource(UserInfo.getUserId());
     //     insert serviceResource;
@@ -125,7 +125,7 @@ private class HOT_FreelanceQualificationsCtlTest {
 
     //     System.assertEquals(freelanceSkills[0].EffectiveStartDate, Date.today());
     // }
-    // @isTest
+    // @IsTest
     // static void setServiceResourceSkillsTest() {
     //     ServiceResource serviceResource = HOT_TestDataFactory.createServiceResource(UserInfo.getUserId());
     //     insert serviceResource;
@@ -138,7 +138,7 @@ private class HOT_FreelanceQualificationsCtlTest {
 
     //     System.assertEquals(srSkill.SkillId, skill.Id);
     // }
-    // @isTest
+    // @IsTest
     // static void editServiceResourceSkillsTest() {
     //     ServiceResource serviceResource = HOT_TestDataFactory.createServiceResource(UserInfo.getUserId());
     //     insert serviceResource;
@@ -156,7 +156,7 @@ private class HOT_FreelanceQualificationsCtlTest {
 
     //     HOT_FreelanceQualificationsController.editServiceResourceSkill(skills);
     // }
-    @isTest
+    @IsTest
     static void getAllSkillsListTest() {
         List<Skill> skills = HOT_FreelanceQualificationsController.getAllSkillsList();
         System.assertEquals(skills.size(), 0);

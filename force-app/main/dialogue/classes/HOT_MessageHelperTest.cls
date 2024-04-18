@@ -1,4 +1,4 @@
-@isTest
+@IsTest
 private class HOT_MessageHelperTest {
     @TestSetup
     static void makeData() {
@@ -33,10 +33,10 @@ private class HOT_MessageHelperTest {
         Message__c m = new Message__c();
         m.CRM_Thread__c = t.Id;
         m.CRM_Message_Text__c = 'Lorem Ipsum Dolor Si Amet';
-        m.HOT_User_Role__c=HOT_MessageHelper.getUserProfileAndName();
+        m.HOT_User_Role__c = HOT_MessageHelper.getUserProfileAndName();
         insert m;
     }
-    @isTest
+    @IsTest
     static void getObjectTypeFromidTest() {
         List<Account> accList = [SELECT Id FROM Account];
         Test.startTest();
@@ -44,14 +44,14 @@ private class HOT_MessageHelperTest {
         Test.stopTest();
         System.assertEquals('Account', objectType, 'Object type is not recoginzed as expected');
     }
-    @isTest
+    @IsTest
     static void getUserContactId() {
         Test.startTest();
         String contactId = HOT_MessageHelper.getUserContactId();
         Test.stopTest();
         System.assertEquals(null, contactId, 'User Contact Id was not returned correctly');
     }
-    @isTest
+    @IsTest
     static void getAccountOnWorkOrder() {
         WorkType workType = HOT_TestDataFactory.createWorkType();
         insert workType;
@@ -68,7 +68,7 @@ private class HOT_MessageHelperTest {
         Test.stopTest();
         System.assertEquals(workOrder.AccountId, accountId, 'Account Id was not correct');
     }
-    @isTest
+    @IsTest
     static void getRequestInformation() {
         Test.startTest();
         WorkType workType = HOT_TestDataFactory.createWorkType();
@@ -88,7 +88,7 @@ private class HOT_MessageHelperTest {
         Test.stopTest();
         System.assertEquals(result, true, 'Account Id was not correct');
     }
-    @isTest
+    @IsTest
     static void getWorkOrderInformation() {
         Test.startTest();
         WorkType workType = HOT_TestDataFactory.createWorkType();
@@ -108,7 +108,7 @@ private class HOT_MessageHelperTest {
         Test.stopTest();
         System.assertEquals(result, '0', 'Did not find correct number of interpreters');
     }
-    @isTest
+    @IsTest
     static void getThreadsCollectionThread() {
         Thread__c t = [SELECT Id FROM Thread__c WHERE CRM_Type__c = 'HOT_BRUKER-FORMIDLER' LIMIT 1];
         Test.startTest();
@@ -116,7 +116,7 @@ private class HOT_MessageHelperTest {
         Test.stopTest();
         System.assertEquals(1, resList.size());
     }
-    @isTest
+    @IsTest
     static void getThreadsCollectionSingleTest() {
         List<Account> accList = [SELECT Id FROM Account];
         Test.startTest();
@@ -131,7 +131,7 @@ private class HOT_MessageHelperTest {
     /**
      * TODO, has to run in a users context
      */
-    @isTest
+    @IsTest
     static void getThreadsCollectionMultiTest() {
         List<Account> accList = [SELECT Id FROM Account];
         Test.startTest();
@@ -144,7 +144,7 @@ private class HOT_MessageHelperTest {
         System.assertEquals(2, resList.size());
     }
 
-    @isTest
+    @IsTest
     static void getSingleThreadTest() {
         WorkType workType = HOT_TestDataFactory.createWorkType();
         workType.Name = 'Work Type Name';
@@ -165,7 +165,7 @@ private class HOT_MessageHelperTest {
         Test.stopTest();
         System.assertEquals(t.size(), result.size());
     }
-    @isTest
+    @IsTest
     static void getSingleThreadTest2() {
         WorkType workType = HOT_TestDataFactory.createWorkType();
         workType.Name = 'Work Type Name';
@@ -181,7 +181,7 @@ private class HOT_MessageHelperTest {
         Test.stopTest();
         System.assertEquals(t.size(), 0);
     }
-    @isTest
+    @IsTest
     static void getThreads() {
         WorkType workType = HOT_TestDataFactory.createWorkType();
         workType.Name = 'Work Type Name';
@@ -204,7 +204,7 @@ private class HOT_MessageHelperTest {
         Test.stopTest();
         System.assertEquals(t.size(), 2);
     }
-    @isTest
+    @IsTest
     static void getThreadFromIdTest() {
         Thread__c thread = new Thread__c();
         insert thread;
@@ -213,7 +213,7 @@ private class HOT_MessageHelperTest {
         Test.stopTest();
         System.assertEquals(t.size(), 1);
     }
-    @isTest
+    @IsTest
     static void createThread() {
         WorkType workType = HOT_TestDataFactory.createWorkType();
         insert workType;
@@ -250,7 +250,7 @@ private class HOT_MessageHelperTest {
         System.assertEquals(account.Id, thread.CRM_Account__c);
         System.assertEquals(thread.CRM_Type__c, 'HOT_BRUKER-FORMIDLER');
     }
-    @isTest
+    @IsTest
     static void createThreadWorkOrder() {
         Account acc = new Account();
         acc.Name = 'Newly created account';
@@ -275,7 +275,7 @@ private class HOT_MessageHelperTest {
         System.assertEquals(tList[0].CRM_Account__c, acc.Id);
         System.assertEquals(tList[0].CRM_Type__c, 'HOT_BRUKER-TOLK');
     }
-    @isTest
+    @IsTest
     static void createThreadServiceAppointment() {
         Account acc = new Account();
         acc.Name = 'Newly created account';
@@ -308,7 +308,7 @@ private class HOT_MessageHelperTest {
         System.assertEquals(tList[0].CRM_Account__c, acc.Id);
         System.assertEquals(tList[0].CRM_Type__c, 'HOT_BRUKER-TOLK');
     }
-    @isTest
+    @IsTest
     static void createThreadInterestedResource() {
         WorkType workType = HOT_TestDataFactory.createWorkType();
         insert workType;
@@ -343,7 +343,7 @@ private class HOT_MessageHelperTest {
         ];
         System.assertNotEquals(null, tList);
     }
-    @isTest
+    @IsTest
     static void createThreadDispatcherRequest() {
         Account acc = new Account();
         acc.Name = 'Newly created account';
@@ -366,7 +366,7 @@ private class HOT_MessageHelperTest {
         System.assertEquals(tList[0].CRM_Account__c, acc.Id);
         System.assertEquals(tList[0].CRM_Type__c, 'HOT_BRUKER-FORMIDLER');
     }
-    @isTest
+    @IsTest
     static void createThreadDispatcherWorkOrder() {
         Account acc = new Account();
         acc.Name = 'Newly created account';
@@ -391,7 +391,7 @@ private class HOT_MessageHelperTest {
         System.assertEquals(tList[0].CRM_Account__c, acc.Id);
         System.assertEquals(tList[0].CRM_Type__c, 'HOT_BRUKER-TOLK');
     }
-    @isTest
+    @IsTest
     static void createThreadDispatcherInterestedResource() {
         WorkType workType = HOT_TestDataFactory.createWorkType();
         insert workType;
@@ -431,7 +431,7 @@ private class HOT_MessageHelperTest {
         ];
         System.assertNotEquals(null, tList);
     }
-    @isTest
+    @IsTest
     static void createThreadInterpreterInterestedResource() {
         WorkType workType = HOT_TestDataFactory.createWorkType();
         insert workType;
@@ -466,7 +466,7 @@ private class HOT_MessageHelperTest {
         ];
         System.assertNotEquals(null, tList);
     }
-    @isTest
+    @IsTest
     static void getAccountonRequestTest() {
         WorkType workType = HOT_TestDataFactory.createWorkType();
         workType.Name = 'Work Type Name';
@@ -484,7 +484,7 @@ private class HOT_MessageHelperTest {
         System.assertEquals(accountId, personAccount.Id);
     }
 
-    @isTest
+    @IsTest
     static void getMessagesFromThreadTest() {
         List<Thread__c> tList = [SELECT Id FROM Thread__c ORDER BY CRM_Number_of_External_Messages__c DESC];
         Test.startTest();
@@ -492,14 +492,14 @@ private class HOT_MessageHelperTest {
         Test.stopTest();
         System.assertEquals(1, msgList.size());
     }
-    @isTest
+    @IsTest
     static void getUserLisenceTest() {
         Test.startTest();
         String lisenceType = HOT_MessageHelper.getUserLisenceType(UserInfo.getUserId());
         Test.stopTest();
         System.assertNotEquals(null, lisenceType);
     }
-    @isTest
+    @IsTest
     static void markasreadTest() {
         List<Thread__c> tList = [SELECT Id FROM Thread__c ORDER BY CRM_Number_of_External_Messages__c DESC];
         Test.startTest();
@@ -508,7 +508,7 @@ private class HOT_MessageHelperTest {
         List<Message__c> msgList = [SELECT CRM_Read__c FROM Message__c WHERE CRM_Thread__c = :tList.get(0).Id];
         System.assertEquals(true, msgList.get(0).CRM_Read__c);
     }
-    @isTest
+    @IsTest
     static void setLastMessageFromTolk() {
         List<Thread__c> tList = [SELECT Id FROM Thread__c ORDER BY CRM_Number_of_External_Messages__c DESC];
         Test.startTest();
@@ -519,7 +519,7 @@ private class HOT_MessageHelperTest {
         Boolean isNotEmpty = tList2.get(0).HOT_Thread_read_by__c != null;
         System.assertEquals(true, isNotEmpty);
     }
-    @isTest
+    @IsTest
     static void setLastMessageFromUser() {
         List<Thread__c> tList = [SELECT Id FROM Thread__c ORDER BY CRM_Number_of_External_Messages__c DESC];
         User currentUser = [SELECT Id, AccountId, Account.CRM_Person__c FROM User WHERE Id = :UserInfo.getUserId()];
@@ -536,11 +536,11 @@ private class HOT_MessageHelperTest {
         Test.stopTest();
 
         List<Thread__c> tList2 = [SELECT Id, HOT_Thread_read_by__c FROM Thread__c WHERE Id = :tList.get(0).Id];
-        System.assertEquals(tList2[0].HOT_Thread_read_by__c, contact.Id+';');
+        System.assertEquals(tList2[0].HOT_Thread_read_by__c, contact.Id + ';');
     }
-    @isTest
+    @IsTest
     static void markAsReadByNavTest() {
-          WorkType workType = HOT_TestDataFactory.createWorkType();
+        WorkType workType = HOT_TestDataFactory.createWorkType();
         workType.Name = 'Work Type Name';
         insert workType;
         HOT_Request__c request = HOT_TestDataFactory.createRequest('Subject', workType);
@@ -578,16 +578,25 @@ private class HOT_MessageHelperTest {
         Message__c m = new Message__c();
         m.CRM_Thread__c = thread.Id;
         m.CRM_Message_Text__c = 'Lorem Ipsum Dolor Si Amet';
-        m.HOT_User_Role__c=HOT_MessageHelper.getUserProfileAndName();
+        m.HOT_User_Role__c = HOT_MessageHelper.getUserProfileAndName();
         insert m;
 
-        Profile profile2 = [SELECT Id FROM Profile WHERE Name='System Administrator'];
-        User user1 = new User(alias = 'TestUser', email='HOT_testaccount@nav.hot.no',
-        emailencodingkey='UTF-8', lastname='Testing', languagelocalekey='en_US',
-        localesidkey='en_US', profileid = profile2.Id , country='Norway',IsActive =true, timezonesidkey='Europe/Paris', username='HOT_testaccount@nav.hot.noo');
-        
+        Profile profile2 = [SELECT Id FROM Profile WHERE Name = 'System Administrator'];
+        User user1 = new User(
+            alias = 'TestUser',
+            email = 'HOT_testaccount@nav.hot.no',
+            emailencodingkey = 'UTF-8',
+            lastname = 'Testing',
+            languagelocalekey = 'en_US',
+            localesidkey = 'en_US',
+            profileid = profile2.Id,
+            country = 'Norway',
+            IsActive = true,
+            timezonesidkey = 'Europe/Paris',
+            username = 'HOT_testaccount@nav.hot.noo'
+        );
+
         HOT_MessageHelper.markAsReadByNav(thread.Id);
-        
 
         Test.stopTest();
         List<Message__c> msgList = [
@@ -602,7 +611,7 @@ private class HOT_MessageHelperTest {
             'CRM_Read_By_Nav_Datetime__c was not set.'
         );
     }
-    @isTest
+    @IsTest
     static void createMessageTest() {
         List<Thread__c> tList = [SELECT Id FROM Thread__c ORDER BY CRM_Number_of_External_Messages__c DESC];
         Test.startTest();
@@ -611,7 +620,7 @@ private class HOT_MessageHelperTest {
         List<Message__c> msgList = [SELECT CRM_Read__c FROM Message__c WHERE CRM_Thread__c = :tList.get(0).Id];
         System.assertEquals(msgList.isEmpty(), false);
     }
-    @isTest
+    @IsTest
     static void createMessagesTest() {
         List<Thread__c> tList = [SELECT Id FROM Thread__c ORDER BY CRM_Number_of_External_Messages__c DESC];
         Test.startTest();
@@ -620,7 +629,7 @@ private class HOT_MessageHelperTest {
         List<Message__c> msgList = [SELECT CRM_Read__c FROM Message__c WHERE CRM_Thread__c = :tList.get(0).Id];
         System.assertEquals(msgList.isEmpty(), false);
     }
-    @isTest
+    @IsTest
     static void createMessageTestNotActive() {
         List<Thread__c> tList = [SELECT Id FROM Thread__c ORDER BY CRM_Number_of_External_Messages__c DESC];
         tList[0].CRM_isActive__c = false;
@@ -630,7 +639,7 @@ private class HOT_MessageHelperTest {
         Test.stopTest();
         System.assertEquals(false, result);
     }
-    @isTest
+    @IsTest
     static void markThreadAsReadTest() {
         WorkType workType = HOT_TestDataFactory.createWorkType();
         insert workType;
@@ -657,7 +666,7 @@ private class HOT_MessageHelperTest {
         Boolean test = true;
         System.assertEquals(true, isReadbyUser, 'Is not read by user');
     }
-    @isTest
+    @IsTest
     static void getRelatedObjectDetailsTestWO() {
         WorkType workType = HOT_TestDataFactory.createWorkType();
         insert workType;
@@ -680,7 +689,7 @@ private class HOT_MessageHelperTest {
         Test.stopTest();
         System.assertEquals(navigationhelp2, navigationhelp);
     }
-    @isTest
+    @IsTest
     public static void getThreadsFailTest() {
         Id recordId = null;
         test.startTest();
@@ -691,7 +700,7 @@ private class HOT_MessageHelperTest {
         }
         test.stopTest();
     }
-    @isTest
+    @IsTest
     public static void createThreadOrdererUserTest() {
         WorkType workType = HOT_TestDataFactory.createWorkType();
         insert workType;
@@ -707,7 +716,7 @@ private class HOT_MessageHelperTest {
         test.stopTest();
         System.assertEquals('HOT_BRUKER-BESTILLER', thread.CRM_Thread_Type__c);
     }
-    @isTest
+    @IsTest
     static void createThreadWageClaim() {
         WorkType workType = HOT_TestDataFactory.createWorkType();
         insert workType;
@@ -749,7 +758,7 @@ private class HOT_MessageHelperTest {
         ];
         System.assertNotEquals(null, tList);
     }
-    @isTest
+    @IsTest
     static void createThreadWageClaimDispatcher() {
         WorkType workType = HOT_TestDataFactory.createWorkType();
         insert workType;
@@ -791,7 +800,7 @@ private class HOT_MessageHelperTest {
         ];
         System.assertNotEquals(null, tList);
     }
-    @isTest
+    @IsTest
     static void getAccountOnThreadTest() {
         Profile profile = [SELECT Id FROM Profile WHERE Name = 'Standard User' OR Name = 'Standardbruker' LIMIT 1];
         User user = HOT_TestDataFactory.createUser('user', profile);
@@ -812,7 +821,7 @@ private class HOT_MessageHelperTest {
         Test.stopTest();
         System.assertEquals('Darth Vader', result);
     }
-    @isTest
+    @IsTest
     static void getAccountOnThreadWOTest() {
         WorkType workType = HOT_TestDataFactory.createWorkType();
         insert workType;
@@ -829,7 +838,7 @@ private class HOT_MessageHelperTest {
         Test.stopTest();
         System.assertEquals('Darth Vader', result);
     }
-    @isTest
+    @IsTest
     static void createThreadInterpreterInterpreters() {
         WorkType workType = HOT_TestDataFactory.createWorkType();
         workType.Name = 'Work Type Name';
@@ -855,7 +864,7 @@ private class HOT_MessageHelperTest {
         ];
         System.assertNotEquals(null, tList);
     }
-    @isTest
+    @IsTest
     static void createThreadDispatcherEmployee() {
         WorkType workType = HOT_TestDataFactory.createWorkType();
         workType.Name = 'Work Type Name';
@@ -893,7 +902,7 @@ private class HOT_MessageHelperTest {
         ];
         System.assertNotEquals(null, tList);
     }
-    @isTest
+    @IsTest
     static void createThreadInterpreterDispatcher() {
         WorkType workType = HOT_TestDataFactory.createWorkType();
         workType.Name = 'Work Type Name';
@@ -933,7 +942,7 @@ private class HOT_MessageHelperTest {
         Test.stopTest();
         System.assertEquals('HOT_TOLK-FORMIDLER', thread.CRM_Thread_Type__c);
     }
-    @isTest
+    @IsTest
     public static void createThreadOrdererDispatcher() {
         WorkType workType = HOT_TestDataFactory.createWorkType();
         insert workType;
@@ -952,7 +961,7 @@ private class HOT_MessageHelperTest {
             System.assertEquals('HOT_BESTILLER-FORMIDLER', t.CRM_Thread_Type__c, 'Did not create the thread');
         }
     }
-    @isTest
+    @IsTest
     static void createThreadInterpreterDispatcherSA() {
         WorkType workType = HOT_TestDataFactory.createWorkType();
         workType.Name = 'Work Type Name';
@@ -990,7 +999,7 @@ private class HOT_MessageHelperTest {
         Test.stopTest();
         System.assertEquals('HOT_TOLK-FORMIDLER', thread.CRM_Thread_Type__c);
     }
-    @isTest
+    @IsTest
     static void getRelatedObjectDetailsSA() {
         WorkType workType = HOT_TestDataFactory.createWorkType();
         insert workType;
@@ -1027,7 +1036,7 @@ private class HOT_MessageHelperTest {
         Test.stopTest();
         System.assertEquals(navigationhelp2, navigationhelp);
     }
-    @isTest
+    @IsTest
     static void getRelatedObjectDetailsSAIrNotFound() {
         WorkType workType = HOT_TestDataFactory.createWorkType();
         insert workType;
@@ -1055,7 +1064,7 @@ private class HOT_MessageHelperTest {
         Test.stopTest();
         System.assertEquals(navigationhelp2, navigationhelp);
     }
-    @isTest
+    @IsTest
     static void getRelatedObjectDetailsNoSA() {
         WorkType workType = HOT_TestDataFactory.createWorkType();
         insert workType;
@@ -1078,7 +1087,7 @@ private class HOT_MessageHelperTest {
         Test.stopTest();
         System.assertEquals(navigationhelp2, navigationhelp);
     }
-    @isTest
+    @IsTest
     static void getRelatedObjectDetailsOrdererRequest() {
         WorkType workType = HOT_TestDataFactory.createWorkType();
         insert workType;
@@ -1102,7 +1111,7 @@ private class HOT_MessageHelperTest {
         Test.stopTest();
         System.assertEquals(navigationhelp2, navigationhelp);
     }
-    @isTest
+    @IsTest
     static void getRelatedObjectDetailsOrdererRequestSeries() {
         WorkType workType = HOT_TestDataFactory.createWorkType();
         insert workType;
@@ -1129,7 +1138,7 @@ private class HOT_MessageHelperTest {
         Test.stopTest();
         System.assertEquals(navigationhelp2, navigationhelp);
     }
-    @isTest
+    @IsTest
     static void getRelatedObjectDetailsUserRequest() {
         WorkType workType = HOT_TestDataFactory.createWorkType();
         insert workType;
@@ -1151,7 +1160,7 @@ private class HOT_MessageHelperTest {
         Test.stopTest();
         System.assertEquals(navigationhelp2, navigationhelp);
     }
-    @isTest
+    @IsTest
     static void getRelatedObjectDetailsUserRequestSeries() {
         WorkType workType = HOT_TestDataFactory.createWorkType();
         insert workType;
@@ -1176,7 +1185,7 @@ private class HOT_MessageHelperTest {
         Test.stopTest();
         System.assertEquals(navigationhelp2, navigationhelp);
     }
-    @isTest
+    @IsTest
     static void getRelatedObjectDetailsSA2() {
         WorkType workType = HOT_TestDataFactory.createWorkType();
         insert workType;
@@ -1198,7 +1207,7 @@ private class HOT_MessageHelperTest {
         Test.stopTest();
         System.assertEquals(navigationhelp2, navigationhelp);
     }
-    @isTest
+    @IsTest
     static void getRelatedObjectDetailsIR() {
         WorkType workType = HOT_TestDataFactory.createWorkType();
         insert workType;
@@ -1227,7 +1236,7 @@ private class HOT_MessageHelperTest {
         Test.stopTest();
         System.assertNotEquals(navigationhelp2, navigationhelp);
     }
-    @isTest
+    @IsTest
     static void getRelatedObjectDetailsWC() {
         WorkType workType = HOT_TestDataFactory.createWorkType();
         insert workType;
@@ -1261,10 +1270,10 @@ private class HOT_MessageHelperTest {
         Test.stopTest();
         System.assertEquals(navigationhelp2, navigationhelp);
     }
-    @isTest
+    @IsTest
     static void getUserProfileAndNameTest() {
         Test.startTest();
-        String result=HOT_MessageHelper.getUserProfileAndName();
+        String result = HOT_MessageHelper.getUserProfileAndName();
         Test.stopTest();
         System.assertNotEquals('', result, 'Did not get Profile and Name');
     }

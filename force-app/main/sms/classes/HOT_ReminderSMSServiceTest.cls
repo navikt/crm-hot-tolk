@@ -1,4 +1,4 @@
-@isTest
+@IsTest
 private class HOT_ReminderSMSServiceTest {
     @testSetup
     static void setup() {
@@ -61,7 +61,7 @@ private class HOT_ReminderSMSServiceTest {
         insert serviceResource;
     }
 
-    @isTest
+    @IsTest
     static void reminderSMSTest() {
         List<WorkOrder> workOrders = [
             SELECT Id, AccountId, Account.CRM_Person__r.INT_KrrMobilePhone__c, StartDate, EndDate
@@ -72,7 +72,7 @@ private class HOT_ReminderSMSServiceTest {
         System.assertEquals(2, smsList.size(), 'Could not create sms-record');
     }
 
-    @isTest
+    @IsTest
     static void notifyUserOnOrderSMSTest() {
         List<HOT_Request__c> requests = [
             SELECT
@@ -90,7 +90,7 @@ private class HOT_ReminderSMSServiceTest {
         List<SMS__c> smsList = [SELECT Id FROM SMS__c];
         System.assertEquals(2, smsList.size(), 'Could not create sms-record');
     }
-    @isTest
+    @IsTest
     static void notifyUserOnOrderSeriesSMSTest() {
         Test.startTest();
         Person__c person = HOT_TestDataFactory.createPerson();
@@ -133,7 +133,7 @@ private class HOT_ReminderSMSServiceTest {
         System.assertEquals(1, smsList.size(), 'Could not create sms-record');
     }
 
-    @isTest
+    @IsTest
     static void sendSMSToOrdererOnStatusUpdateTest() {
         List<WorkOrder> workOrders = [
             SELECT
@@ -153,14 +153,14 @@ private class HOT_ReminderSMSServiceTest {
         List<SMS__c> smsList = [SELECT Id, Message__c FROM SMS__c];
         System.assertEquals(1, smsList.size(), 'Could not create sms-record');
     }
-    @isTest
+    @IsTest
     static void sendSMSOnNewMessageInterpreterTest() {
         User currentUser = [SELECT Id, AccountId FROM User WHERE Id = :UserInfo.getUserId()];
         WorkType workType = HOT_TestDataFactory.createWorkType();
         insert workType;
         HOT_Request__c request = HOT_TestDataFactory.createRequest('TEST', workType);
         insert request;
-        
+
         // startTest flyttet hit på grunn av limits
         Test.startTest();
         Thread__c thread = HOT_TestDataFactory.createThread();
@@ -182,7 +182,7 @@ private class HOT_ReminderSMSServiceTest {
         List<SMS__c> smsList = [SELECT Id, Message__c FROM SMS__c];
         System.assertEquals(1, smsList.size(), 'Could not create sms-record');
     }
-    @isTest
+    @IsTest
     static void sendSMSToInterpreterCancelledByUserTest() {
         Test.startTest();
         User currentUser = [SELECT Id, AccountId FROM User WHERE Id = :UserInfo.getUserId()];
@@ -218,7 +218,7 @@ private class HOT_ReminderSMSServiceTest {
         System.assertEquals(1, smsList.size(), 'Could not create sms-record');
     }
 
-    @isTest
+    @IsTest
     static void sendSMSToInterpreterOnScreenInterpretationTest() {
         Set<Id> saIds = (new Map<Id, ServiceAppointment>([SELECT Id FROM ServiceAppointment LIMIT 1])).keySet();
         Test.startTest();
@@ -235,7 +235,7 @@ private class HOT_ReminderSMSServiceTest {
         HOT_ReminderSMSService.sendSMSToInterpreterOnScreenInterpretation(saIds);
         Test.stopTest();
     }
-    @isTest
+    @IsTest
     static void sendSMSToInterpreterOnTimeChangedTest() {
         Set<Id> saIds = (new Map<Id, ServiceAppointment>([SELECT Id FROM ServiceAppointment LIMIT 1])).keySet();
         Test.startTest();
@@ -252,7 +252,7 @@ private class HOT_ReminderSMSServiceTest {
         HOT_ReminderSMSService.sendSMSToInterpreterOnTimeChanged(saIds);
         Test.stopTest();
     }
-    @isTest
+    @IsTest
     static void sendSMSToInterpreterOnAddressChangedTest() {
         Set<Id> saIds = (new Map<Id, ServiceAppointment>([SELECT Id FROM ServiceAppointment LIMIT 1])).keySet();
 
@@ -269,7 +269,7 @@ private class HOT_ReminderSMSServiceTest {
         HOT_ReminderSMSService.sendSMSToInterpreterOnAddressChanged(saIds);
         Test.stopTest();
     }
-    @isTest
+    @IsTest
     static void sendSMSToInterpreterOnAddedOrChangedTest() {
         Set<Id> saIds = (new Map<Id, ServiceAppointment>([SELECT Id FROM ServiceAppointment LIMIT 1])).keySet();
 
@@ -286,7 +286,7 @@ private class HOT_ReminderSMSServiceTest {
         HOT_ReminderSMSService.sendSMSToInterpreterOnAddedOrChanged(saIds);
         Test.stopTest();
     }
-    @isTest
+    @IsTest
     static void sendSMSToInterpreterOnResourceChangedTest() {
         Set<Id> saIds = (new Map<Id, ServiceAppointment>([SELECT Id FROM ServiceAppointment LIMIT 1])).keySet();
 
@@ -304,7 +304,7 @@ private class HOT_ReminderSMSServiceTest {
         Test.stopTest();
     }
 
-    @isTest
+    @IsTest
     static void sendSMSOnNewWantedSRTest() {
         ServiceAppointment sa = [SELECT Id FROM ServiceAppointment WHERE Subject = 'TEST' LIMIT 1];
         ServiceResource sr = [SELECT Id FROM ServiceResource LIMIT 1];
@@ -318,7 +318,7 @@ private class HOT_ReminderSMSServiceTest {
         HOT_ReminderSMSService.sendSMSOnNewWantedSR(irIds);
         Test.stopTest();
     }
-    @isTest
+    @IsTest
     static void cancelledByUserConstructMessage() {
         ServiceAppointment sa = [
             SELECT Id, Status, AppointmentNumber, EarliestStartTime, DueDate
@@ -334,7 +334,7 @@ private class HOT_ReminderSMSServiceTest {
 
         Test.stopTest();
     }
-    @isTest
+    @IsTest
     static void getRecipientOnThreadTest() {
         User currentUser = [SELECT Id, AccountId FROM User WHERE Id = :UserInfo.getUserId()];
         Test.startTest();
@@ -371,7 +371,7 @@ private class HOT_ReminderSMSServiceTest {
 
         Test.stopTest();
     }
-    @isTest
+    @IsTest
     static void getRecipientOnThreadUserTest() {
         User currentUser = [SELECT Id, AccountId FROM User WHERE Id = :UserInfo.getUserId()];
         Test.startTest();
@@ -399,7 +399,7 @@ private class HOT_ReminderSMSServiceTest {
 
         Test.stopTest();
     }
-    @isTest
+    @IsTest
     static void getRecipientOnThreadOrdererTest() {
         User currentUser = [SELECT Id, AccountId FROM User WHERE Id = :UserInfo.getUserId()];
         Test.startTest();
@@ -428,7 +428,7 @@ private class HOT_ReminderSMSServiceTest {
         Test.stopTest();
     }
 
-    @isTest
+    @IsTest
     static void sendSMSOnInterpreterChangeTest() {
         List<WorkOrder> workOrders = [SELECT Id FROM WorkOrder];
 
@@ -444,7 +444,7 @@ private class HOT_ReminderSMSServiceTest {
         System.assertEquals(2, smsList.size(), 'Could not create sms-record');
     }
 
-    @isTest
+    @IsTest
     static void sendSMSToOrdererOnStatusUpdateTest2() {
         List<WorkOrder> workOrders = [
             SELECT
@@ -471,7 +471,7 @@ private class HOT_ReminderSMSServiceTest {
         System.assertEquals(2, smsList.size(), 'Could not create sms-record');
     }
 
-    @isTest
+    @IsTest
     static void sendSMSToOrdererOnStatusUpdateTestInterpreterNames() {
         List<WorkOrder> workOrders = [
             SELECT
@@ -513,7 +513,7 @@ private class HOT_ReminderSMSServiceTest {
         System.assert(message.contains('InterpreterName'), 'Could not create sms-record');
     }
 
-    @isTest
+    @IsTest
     static void sendSMSToOrdererOnStatusUpdateSMSToAccountTest() {
         Account account = HOT_TestDataFactory.createAccount(true);
         insert account;
@@ -547,7 +547,7 @@ private class HOT_ReminderSMSServiceTest {
         System.assertEquals(personPhoneNumber, smsPhoneNumber, 'SMS was not sent to the user');
     }
 
-    @isTest
+    @IsTest
     static void sendSMSToOrdererOnStatusUpdateSMSToOtherOrdererTest() {
         Account account = HOT_TestDataFactory.createAccount(true);
         insert account;
@@ -580,7 +580,7 @@ private class HOT_ReminderSMSServiceTest {
 
         System.assertEquals(orderPhoneNumber, smsPhoneNumber, 'SMS was not sent to the user');
     }
-    @isTest
+    @IsTest
     public static void testSendSMSOnNewMessage() {
         Person__c person = HOT_TestDataFactory.createPerson();
         person.Name = '12015678999';

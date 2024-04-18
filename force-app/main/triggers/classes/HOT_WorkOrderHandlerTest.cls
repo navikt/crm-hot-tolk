@@ -1,6 +1,6 @@
-@isTest
+@IsTest
 private class HOT_WorkOrderHandlerTest {
-    @isTest
+    @IsTest
     private static void testSetDefaultFields() {
         OperatingHours operatingHours = HOT_TestDataFactory.createOperatingHours();
         insert operatingHours;
@@ -43,7 +43,7 @@ private class HOT_WorkOrderHandlerTest {
         System.assertEquals('New', workOrder.Status, 'Could not set Status to New');
     }
 
-    @isTest
+    @IsTest
     private static void testCreateChildRecords() {
         WorkType workType1 = HOT_TestDataFactory.createWorkType();
         insert workType1;
@@ -75,7 +75,7 @@ private class HOT_WorkOrderHandlerTest {
         );
     }
 
-    @isTest
+    @IsTest
     private static void testUpdateRequests() {
         WorkType workType = HOT_TestDataFactory.createWorkType();
         insert workType;
@@ -108,7 +108,7 @@ private class HOT_WorkOrderHandlerTest {
         );
     }
 
-    @isTest
+    @IsTest
     private static void testUpdateWorkOrders() {
         WorkType workType = HOT_TestDataFactory.createWorkType();
         insert workType;
@@ -137,7 +137,7 @@ private class HOT_WorkOrderHandlerTest {
         );
     }
 
-    @isTest
+    @IsTest
     private static void testSetCancelDate() {
         WorkType workType = HOT_TestDataFactory.createWorkType();
         insert workType;
@@ -185,7 +185,7 @@ private class HOT_WorkOrderHandlerTest {
             'Could not set CanceledDate to correct CanceledDate'
         );
     }
-    @isTest
+    @IsTest
     private static void testResetNotifyDispatcher() {
         WorkType workType = HOT_TestDataFactory.createWorkType();
         insert workType;
@@ -200,7 +200,7 @@ private class HOT_WorkOrderHandlerTest {
         );
     }
 
-    @isTest
+    @IsTest
     private static void testSeriesStartAndEndDate() {
         WorkType workType = HOT_TestDataFactory.createWorkType();
         insert workType;
@@ -253,7 +253,7 @@ private class HOT_WorkOrderHandlerTest {
         System.assertEquals(workOrder2.EndDate.date(), request.SeriesEndDate__c);
     }
 
-    @isTest
+    @IsTest
     public static void setArchiveAsOwnerTest() {
         WorkType workType = HOT_TestDataFactory.createWorkType();
         insert workType;
@@ -276,7 +276,7 @@ private class HOT_WorkOrderHandlerTest {
         );
     }
 
-    @isTest
+    @IsTest
     private static void testSetDuration() {
         OperatingHours operatingHours = HOT_TestDataFactory.createOperatingHours();
         insert operatingHours;

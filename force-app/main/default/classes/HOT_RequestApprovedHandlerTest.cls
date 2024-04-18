@@ -1,4 +1,4 @@
-@isTest
+@IsTest
 private class HOT_RequestApprovedHandlerTest {
     @testSetup
     static void setup() {
@@ -13,7 +13,7 @@ private class HOT_RequestApprovedHandlerTest {
         insert request;
     }
 
-    @isTest
+    @IsTest
     static void requestStatusApproved() {
         HOT_Request__c request = [SELECT Id, Status__c FROM HOT_Request__c LIMIT 1];
 
@@ -40,7 +40,7 @@ private class HOT_RequestApprovedHandlerTest {
         System.assertEquals(2, serviceAppointments.size());
     }
 
-    @isTest
+    @IsTest
     static void workOrder_workOrderLineItem_serviceAppointment_Test() {
         WorkType workType = [SELECT Id FROM WorkType WHERE Name = 'Work Type Name' LIMIT 1];
         HOT_Request__c request = [SELECT Id, Status__c FROM HOT_Request__c LIMIT 1];
@@ -69,7 +69,7 @@ private class HOT_RequestApprovedHandlerTest {
         System.assertEquals(request.Subject__c, serviceAppointments[0].Subject, 'Could not update fields on WorkOrder');
     }
 
-    @isTest
+    @IsTest
     static void requestApproved_newWorkOrder() {
         WorkType workType = [SELECT Id FROM WorkType LIMIT 1];
         HOT_Request__c request = [SELECT Id, Status__c FROM HOT_Request__c LIMIT 1];
@@ -96,7 +96,7 @@ private class HOT_RequestApprovedHandlerTest {
         System.assertEquals(4, serviceAppointments.size());
     }
 
-    @isTest
+    @IsTest
     static void requestApproved2Times() {
         HOT_Request__c request = [SELECT Id, Status__c FROM HOT_Request__c LIMIT 1];
 
@@ -123,7 +123,7 @@ private class HOT_RequestApprovedHandlerTest {
         System.assertEquals(2, serviceAppointments.size());
     }
 
-    @isTest
+    @IsTest
     static void multipleWorkTypeTest() {
         WorkType workType2 = [SELECT Id FROM WorkType WHERE Name = 'Work Type Name 2' LIMIT 1];
         HOT_Request__c request = [

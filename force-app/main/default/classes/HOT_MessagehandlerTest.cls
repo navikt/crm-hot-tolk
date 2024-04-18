@@ -1,4 +1,4 @@
-@isTest
+@IsTest
 private class HOT_MessagehandlerTest {
     @TestSetup
     static void makeData() {
@@ -17,7 +17,7 @@ private class HOT_MessagehandlerTest {
         insert person;
     }
 
-    @isTest
+    @IsTest
     public static void messageHandlerTestWithoutDispatcher() {
         Account account = [SELECT Id, PersonContactId FROM Account];
         Thread__c thread = HOT_TestDataFactory.createThread();
@@ -29,8 +29,7 @@ private class HOT_MessagehandlerTest {
         message.CRM_Thread__c = thread.Id;
         message.CRM_From_Contact__c = account.PersonContactId;
         message.CRM_Message_Text__c = 'Dette er en testmelding';
-        message.HOT_User_Role__c=HOT_MessageHelper.getUserProfileAndName();
-
+        message.HOT_User_Role__c = HOT_MessageHelper.getUserProfileAndName();
 
         test.startTest();
         insert message;
@@ -39,7 +38,7 @@ private class HOT_MessagehandlerTest {
         List<Message__c> messages = [SELECT Id FROM Message__c];
         System.assertEquals(1, messages.size(), 'Could not create message');
     }
-    @isTest
+    @IsTest
     static void messageHandlerTestWithDispatcher() {
         Account account = [SELECT Id, PersonContactId FROM Account];
         Thread__c thread = HOT_TestDataFactory.createThread();
@@ -52,7 +51,7 @@ private class HOT_MessagehandlerTest {
         message.CRM_Thread__c = thread.Id;
         message.CRM_From_Contact__c = account.PersonContactId;
         message.CRM_Message_Text__c = 'Dette er en testmelding';
-        message.HOT_User_Role__c=HOT_MessageHelper.getUserProfileAndName();
+        message.HOT_User_Role__c = HOT_MessageHelper.getUserProfileAndName();
 
         test.startTest();
         insert message;
@@ -61,7 +60,7 @@ private class HOT_MessagehandlerTest {
         List<Message__c> messages = [SELECT Id FROM Message__c];
         System.assertEquals(1, messages.size(), 'Could not create message');
     }
-    @isTest
+    @IsTest
     static void messageTolkRessurskontor() {
         Account account = [SELECT Id, PersonContactId FROM Account];
         Thread__c thread = HOT_TestDataFactory.createThread();
@@ -75,7 +74,7 @@ private class HOT_MessagehandlerTest {
         message.CRM_Thread__c = thread.Id;
         message.CRM_From_Contact__c = account.PersonContactId;
         message.CRM_Message_Text__c = 'Dette er en testmelding';
-        message.HOT_User_Role__c=HOT_MessageHelper.getUserProfileAndName();
+        message.HOT_User_Role__c = HOT_MessageHelper.getUserProfileAndName();
 
         test.startTest();
         insert message;
@@ -84,7 +83,7 @@ private class HOT_MessagehandlerTest {
         List<Message__c> messages = [SELECT Id FROM Message__c];
         System.assertEquals(1, messages.size(), 'Could not create message');
     }
-    @isTest
+    @IsTest
     static void messageTolkFormidler() {
         Account account = [SELECT Id, PersonContactId FROM Account];
         Thread__c thread = HOT_TestDataFactory.createThread();
@@ -98,7 +97,7 @@ private class HOT_MessagehandlerTest {
         message.CRM_Thread__c = thread.Id;
         message.CRM_From_Contact__c = account.PersonContactId;
         message.CRM_Message_Text__c = 'Dette er en testmelding';
-        message.HOT_User_Role__c=HOT_MessageHelper.getUserProfileAndName();
+        message.HOT_User_Role__c = HOT_MessageHelper.getUserProfileAndName();
 
         test.startTest();
         insert message;
@@ -107,7 +106,7 @@ private class HOT_MessagehandlerTest {
         List<Message__c> messages = [SELECT Id FROM Message__c];
         System.assertEquals(1, messages.size(), 'Could not create message');
     }
-    @isTest
+    @IsTest
     static void messageTolkTolk() {
         User user = [SELECT Id, AccountId FROM User WHERE Id = :UserInfo.getUserId() LIMIT 1];
         ServiceResource serviceResource = HOT_TestDataFactory.createServiceResource(user.Id);
@@ -148,7 +147,7 @@ private class HOT_MessagehandlerTest {
         List<Message__c> messages = [SELECT Id FROM Message__c];
         System.assertEquals(1, messages.size(), 'Could not create message');
     }
-    @isTest
+    @IsTest
     static void messageBrukerTolk() {
         User user = [SELECT Id, AccountId FROM User WHERE Id = :UserInfo.getUserId() LIMIT 1];
         ServiceResource serviceResource = HOT_TestDataFactory.createServiceResource(user.Id);

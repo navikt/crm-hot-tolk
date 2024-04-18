@@ -1,6 +1,6 @@
-@isTest
+@IsTest
 public without sharing class HOT_ThreadDetailControllerTest {
-    @isTest
+    @IsTest
     public static void getThreadDetailsTest() {
         WorkType workType = HOT_TestDataFactory.createWorkType();
         insert workType;
@@ -18,7 +18,7 @@ public without sharing class HOT_ThreadDetailControllerTest {
         Test.stopTest();
         System.assertEquals('TEST', thread.HOT_Subject__c);
     }
-    @isTest
+    @IsTest
     public static void checkFreelanceAccessWO() {
         User admin = [SELECT Id, UserRoleId FROM User WHERE Id = :UserInfo.getUserId() LIMIT 1];
 
@@ -53,7 +53,7 @@ public without sharing class HOT_ThreadDetailControllerTest {
             System.assertEquals(check, access, 'Should have access to this thread');
         }
     }
-    @isTest
+    @IsTest
     public static void checkFreelanceAccessWC() {
         User admin = [SELECT Id, UserRoleId FROM User WHERE Id = :UserInfo.getUserId() LIMIT 1];
 
@@ -86,7 +86,7 @@ public without sharing class HOT_ThreadDetailControllerTest {
             System.assertEquals(check, access, 'Should have access to this thread');
         }
     }
-    // @isTest kommentert ut test
+    // @IsTest kommentert ut test
     // public static void checkFreelanceAccessHasAccess() {
     //     Profile communityProfile = [SELECT Id FROM Profile WHERE Name = 'Customer Community Login User' LIMIT 1];
 
@@ -127,7 +127,7 @@ public without sharing class HOT_ThreadDetailControllerTest {
     //         System.assertEquals(check, access, 'Should have access to this thread');
     //     }
     // }
-    // @isTest kommentert ut test
+    // @IsTest kommentert ut test
     // public static void checkFreelanceAccessHasNoAccess() {
     //     Profile communityProfile = [SELECT Id FROM Profile WHERE Name = 'Customer Community Login User' LIMIT 1];
 
@@ -167,7 +167,7 @@ public without sharing class HOT_ThreadDetailControllerTest {
     //         System.assertEquals(check, access, 'Should not have access to this thread');
     //     }
     // }
-    // @isTest kommentert ut test
+    // @IsTest kommentert ut test
     // public static void getThreadDetailNoAccess() {
     //     Profile communityProfile = [SELECT Id FROM Profile WHERE Name = 'Customer Community Login User' LIMIT 1];
 
@@ -206,7 +206,7 @@ public without sharing class HOT_ThreadDetailControllerTest {
     //         System.assertEquals(null, thread, 'Should not have access to this thread');
     //     }
     // }
-    @isTest
+    @IsTest
     public static void checkFreelanceAccessHasAccessIR() {
         Profile communityProfile = [SELECT Id FROM Profile WHERE Name = 'System Administrator' LIMIT 1];
         User admin = [SELECT Id, UserRoleId FROM User WHERE Id = :UserInfo.getUserId() LIMIT 1];
@@ -241,7 +241,7 @@ public without sharing class HOT_ThreadDetailControllerTest {
             System.assertEquals(check, access, 'Should have access to this thread');
         }
     }
-    @isTest
+    @IsTest
     public static void checkFreelanceAccessHasAccessSA() {
         Profile communityProfile = [SELECT Id FROM Profile WHERE Name = 'System Administrator' LIMIT 1];
         User admin = [SELECT Id, UserRoleId FROM User WHERE Id = :UserInfo.getUserId() LIMIT 1];

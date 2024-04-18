@@ -1,4 +1,4 @@
-@isTest
+@IsTest
 private class HOT_WageClaimHandlerTest {
     @testSetup
     static void setup() {
@@ -25,7 +25,7 @@ private class HOT_WageClaimHandlerTest {
         insert wageClaim;
     }
 
-    @isTest
+    @IsTest
     static void retractChildWageClaims_onAfterUpdate() {
         HOT_WageClaim__c parentWageClaim = [SELECT Id, Status__c FROM HOT_WageClaim__c LIMIT 1];
         ServiceResource resource = [SELECT Id FROM ServiceResource];
@@ -45,7 +45,7 @@ private class HOT_WageClaimHandlerTest {
         System.assertEquals('Retracted Availability', childWageClaim.Status__c, 'Could not retract child wage claims');
     }
 
-    @isTest
+    @IsTest
     static void setFieldsBasedOnParentTest_onAfterInsert() {
         HOT_WageClaim__c parentWageClaim = [SELECT Id, WorkType__c FROM HOT_WageClaim__c LIMIT 1];
         ServiceResource resource = [SELECT Id FROM ServiceResource];
@@ -64,7 +64,7 @@ private class HOT_WageClaimHandlerTest {
             'Could not set fields on child wage claim based on parent wage claim'
         );
     }
-    @isTest
+    @IsTest
     static void setServiceTerritoryBasedOnServiceResource_OnBeforeInsert() {
         ServiceResource resource = [SELECT Id, HOT_ServiceTerritory__c FROM ServiceResource];
         HOT_WageClaim__c wageClaim = HOT_TestDataFactory.createWageClaim(resource);
@@ -74,7 +74,6 @@ private class HOT_WageClaimHandlerTest {
         Test.stopTest();
 
         wageClaim = [SELECT Id, ServiceTerritory__c FROM HOT_WageClaim__c LIMIT 1];
-
 
         System.assertEquals(
             resource.HOT_ServiceTerritory__c,

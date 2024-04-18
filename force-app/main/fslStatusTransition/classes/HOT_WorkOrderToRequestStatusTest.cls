@@ -1,6 +1,6 @@
-@isTest
+@IsTest
 public class HOT_WorkOrderToRequestStatusTest {
-    @isTest
+    @IsTest
     private static void test_all_new() {
         WorkType workType = HOT_TestDataFactory.createWorkType();
         insert workType;
@@ -16,7 +16,7 @@ public class HOT_WorkOrderToRequestStatusTest {
         System.assertEquals('Åpen', request.Status__c, 'Status on the request did not update to correct value');
     }
 
-    @isTest
+    @IsTest
     private static void test_all_Scheduled() {
         //Fails with old logic
         WorkType workType = HOT_TestDataFactory.createWorkType();
@@ -38,7 +38,7 @@ public class HOT_WorkOrderToRequestStatusTest {
         System.assertEquals('Godkjent', request.Status__c, 'Status on the request did not update to correct value');
     }
 
-    @isTest
+    @IsTest
     private static void test_all_Dispatched() {
         WorkType workType = HOT_TestDataFactory.createWorkType();
         insert workType;
@@ -59,7 +59,7 @@ public class HOT_WorkOrderToRequestStatusTest {
         System.assertEquals('Tildelt', request.Status__c, 'Status on the request did not update to correct value');
     }
 
-    @isTest
+    @IsTest
     private static void test_all_Completed() {
         WorkType workType = HOT_TestDataFactory.createWorkType();
         insert workType;
@@ -79,7 +79,7 @@ public class HOT_WorkOrderToRequestStatusTest {
 
         System.assertEquals('Dekket', request.Status__c, 'Status on the request did not update to correct value');
     }
-    @isTest
+    @IsTest
     private static void test_all_Canceled() {
         WorkType workType = HOT_TestDataFactory.createWorkType();
         insert workType;
@@ -99,7 +99,7 @@ public class HOT_WorkOrderToRequestStatusTest {
 
         System.assertEquals('Avlyst', request.Status__c, 'Status on the request did not update to correct value');
     }
-    @isTest
+    @IsTest
     private static void test_all_CannotComplete() {
         WorkType workType = HOT_TestDataFactory.createWorkType();
         insert workType;
@@ -119,7 +119,7 @@ public class HOT_WorkOrderToRequestStatusTest {
 
         System.assertEquals('Udekket', request.Status__c, 'Status on the request did not update to correct value');
     }
-    @isTest
+    @IsTest
     private static void test_all_PartiallyComplete() {
         WorkType workType = HOT_TestDataFactory.createWorkType();
         insert workType;
@@ -143,7 +143,7 @@ public class HOT_WorkOrderToRequestStatusTest {
             'Status on the request did not update to correct value'
         );
     }
-    @isTest
+    @IsTest
     private static void test_1Open_1Complete() {
         //Fails with old logic
         WorkType workType = HOT_TestDataFactory.createWorkType();
@@ -163,7 +163,7 @@ public class HOT_WorkOrderToRequestStatusTest {
 
         System.assertEquals('Godkjent', request.Status__c, 'Status on the request did not update to correct value');
     }
-    @isTest
+    @IsTest
     private static void test_1Open_1Canceled() {
         //Fails with old logic
         WorkType workType = HOT_TestDataFactory.createWorkType();
@@ -183,7 +183,7 @@ public class HOT_WorkOrderToRequestStatusTest {
 
         System.assertEquals('Godkjent', request.Status__c, 'Status on the request did not update to correct value');
     }
-    @isTest
+    @IsTest
     private static void test_1Scheduled_1Complete() {
         //Fails with old logic
         WorkType workType = HOT_TestDataFactory.createWorkType();
@@ -204,7 +204,7 @@ public class HOT_WorkOrderToRequestStatusTest {
 
         System.assertEquals('Godkjent', request.Status__c, 'Status on the request did not update to correct value');
     }
-    @isTest
+    @IsTest
     private static void test_1Dispatched_1Complete() {
         //Fails with old logic
         WorkType workType = HOT_TestDataFactory.createWorkType();
@@ -225,7 +225,7 @@ public class HOT_WorkOrderToRequestStatusTest {
 
         System.assertEquals('Tildelt', request.Status__c, 'Status on the request did not update to correct value');
     }
-    @isTest
+    @IsTest
     private static void test_1Canceled_1Complete() {
         //Fails with old logic
         WorkType workType = HOT_TestDataFactory.createWorkType();
@@ -247,7 +247,7 @@ public class HOT_WorkOrderToRequestStatusTest {
         System.assertEquals('Dekket', request.Status__c, 'Status on the request did not update to correct value');
     }
 
-    @isTest
+    @IsTest
     private static void test_1Complete_1CannotComplete_1PartiallyComplete() {
         //Fails with old logic
         WorkType workType = HOT_TestDataFactory.createWorkType();
@@ -275,7 +275,7 @@ public class HOT_WorkOrderToRequestStatusTest {
             'Status on the request did not update to correct value'
         );
     }
-    @isTest
+    @IsTest
     private static void test_1Complete_1CannotComplete() {
         WorkType workType = HOT_TestDataFactory.createWorkType();
         insert workType;
@@ -300,8 +300,8 @@ public class HOT_WorkOrderToRequestStatusTest {
             'Status on the request did not update to correct value'
         );
     }
-    
-    @isTest
+
+    @IsTest
     private static void test_1Complete_1CannotComplete_1Canceled() {
         WorkType workType = HOT_TestDataFactory.createWorkType();
         insert workType;

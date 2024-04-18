@@ -1,12 +1,12 @@
-@isTest
+@IsTest
 private class HOT_NotificationCentreControllerTest {
-    @isTest
+    @IsTest
     public static void getMyNotifications() {
         List<HOT_Notification__c> notifications = HOT_NotificationCentreController.getMyNotifications();
 
         System.assertEquals(0, notifications.size(), 'Got wrong notifications');
     }
-    @isTest
+    @IsTest
     public static void createNotification() {
         Person__c person = HOT_TestDataFactory.createPerson();
         person.Name = '12015678999';
@@ -30,7 +30,7 @@ private class HOT_NotificationCentreControllerTest {
         List<HOT_Notification__c> notifications = [SELECT Id FROM HOT_Notification__c];
         System.assertEquals(1, notifications.size(), 'Could not insert notifications');
     }
-    @isTest
+    @IsTest
     public static void getNotificationType() {
         Person__c person = HOT_TestDataFactory.createPerson();
         person.Name = '12015678999';
@@ -58,7 +58,7 @@ private class HOT_NotificationCentreControllerTest {
             'Could not get notificationtype'
         );
     }
-    @isTest
+    @IsTest
     public static void getPageRef() {
         WorkType workType = HOT_TestDataFactory.createWorkType();
         insert workType;
@@ -70,7 +70,7 @@ private class HOT_NotificationCentreControllerTest {
         String result = HOT_NotificationCentreController.getTargetPage(workOrder.Id);
         System.assertEquals('mine-bestillinger', result, 'Could not get correct page');
     }
-    @isTest
+    @IsTest
     public static void getPageRefOtherOrderer() {
         WorkType workType = HOT_TestDataFactory.createWorkType();
         insert workType;

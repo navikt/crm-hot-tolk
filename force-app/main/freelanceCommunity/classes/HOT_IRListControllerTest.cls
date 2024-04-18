@@ -1,4 +1,4 @@
-@isTest
+@IsTest
 private class HOT_IRListControllerTest {
     @testSetup
     static void setup() {
@@ -21,19 +21,19 @@ private class HOT_IRListControllerTest {
         insert interestedResource;
     }
 
-    @isTest
+    @IsTest
     static void getInterestedResourcesTest() {
         List<HOT_InterestedResource__c> interestedResources = HOT_InterestedResourcesListController.getInterestedResources();
         System.assertEquals(1, interestedResources.size(), 'Could not get list of interested resources');
     }
-    @isTest
+    @IsTest
     static void checkAccessToSA() {
         ServiceAppointment serviceAppointment = [SELECT Id FROM ServiceAppointment];
         Boolean access = HOT_InterestedResourcesListController.checkAccessToSA(serviceAppointment.Id);
         System.assertEquals(true, access, 'Should have access to this sa');
     }
 
-    @isTest
+    @IsTest
     static void getThreadDispatcherIdSATest() {
         ServiceAppointment serviceAppointment = [SELECT Id FROM ServiceAppointment];
         Profile profile = [SELECT Id FROM Profile WHERE Name = 'Standard User' OR Name = 'Standardbruker' LIMIT 1];
@@ -53,7 +53,7 @@ private class HOT_IRListControllerTest {
         String threadId = HOT_InterestedResourcesListController.getThreadDispatcherIdSA(serviceAppointment.Id);
         System.assertNotEquals(null, threadId, 'Could not get SA Thread');
     }
-    @isTest
+    @IsTest
     static void getThreadDispatcherIdTest() {
         HOT_InterestedResource__c ir = [SELECT Id FROM HOT_InterestedResource__c];
         Thread__c thread = HOT_TestDataFactory.createThread();
@@ -63,7 +63,7 @@ private class HOT_IRListControllerTest {
         System.assertNotEquals(null, threadId, 'Could not get SA Thread');
     }
 
-    @isTest
+    @IsTest
     static void retractInterestsTest() {
         HOT_InterestedResource__c interestedResource = [SELECT Id, Status__c FROM HOT_InterestedResource__c];
         List<Id> retractionIds = new List<Id>{ interestedResource.Id };
@@ -75,7 +75,7 @@ private class HOT_IRListControllerTest {
         ];
         System.assertEquals('Retracted Interest', updatedInterestedResource.Status__c, 'Status was not updated');
     }
-    @isTest
+    @IsTest
     static void resendInterestTest() {
         HOT_InterestedResource__c interestedResource = [SELECT Id, Status__c FROM HOT_InterestedResource__c];
         List<Id> retractionIds = new List<Id>{ interestedResource.Id };
@@ -89,7 +89,7 @@ private class HOT_IRListControllerTest {
         System.assertEquals('Interested', updatedInterestedResource.Status__c, 'Status was not updated');
     }
 
-    @isTest
+    @IsTest
     static void testRetractInterest() {
         HOT_InterestedResource__c interestedResource = [SELECT Id, Status__c FROM HOT_InterestedResource__c];
         interestedResource.Status__c = 'Interested';
@@ -104,7 +104,7 @@ private class HOT_IRListControllerTest {
         ];
         System.assertEquals(updatedInterestedResource.Status__c, 'Retracted Interest');
     }
-    @isTest
+    @IsTest
     static void startAThreadAndAddCommentTest() {
         HOT_InterestedResource__c interestedResource = [SELECT Id, Status__c FROM HOT_InterestedResource__c];
 
@@ -120,7 +120,7 @@ private class HOT_IRListControllerTest {
 
         System.assertNotEquals(null, thread, 'Thread was not made');
     }
-    @isTest
+    @IsTest
     static void getIRDetails() {
         ServiceResource serviceResource = [
             SELECT Id
