@@ -1,4 +1,4 @@
-@isTest
+@IsTest
 public class HOT_ThreadListControllerTest {
     @TestSetup
     static void makeData() {
@@ -23,19 +23,19 @@ public class HOT_ThreadListControllerTest {
         HOT_DIALOG_TestDataFactory.createRecordList(new List<Thread__c>{ t, t2, t3 });
     }
 
-    @isTest
+    @IsTest
     public static void getMyThreadsTest() {
         List<Thread__c> threadList = HOT_ThreadListController.getMyThreads();
 
         System.assertEquals(0, threadList.size(), 'Could not get my threads'); // Can't get current running user in test
     }
-    @isTest
+    @IsTest
     public static void getMyThreadsIRTest() {
         List<Thread__c> threadList = HOT_ThreadListController.getMyThreadsIR();
 
         System.assertEquals(0, threadList.size(), 'Could not get my threads'); // Can't get current running user in test
     }
-    @isTest
+    @IsTest
     public static void getMyThreadsIRServiceResourceTest() {
         User admin = [SELECT Id, AccountId, UserRoleId FROM User WHERE Id = :UserInfo.getUserId() LIMIT 1];
 
@@ -69,7 +69,7 @@ public class HOT_ThreadListControllerTest {
         Message__c message = new Message__c();
         message.CRM_Thread__c = t.Id;
         message.CRM_Message_Text__c = 'Dette er en testmelding';
-        message.HOT_User_Role__c=HOT_MessageHelper.getUserProfileAndName();
+        message.HOT_User_Role__c = HOT_MessageHelper.getUserProfileAndName();
         insert message;
         Test.stopTest();
 
@@ -77,7 +77,7 @@ public class HOT_ThreadListControllerTest {
 
         System.assertEquals(1, threadList.size(), 'Could not get my threads'); // Can't get current running user in test
     }
-    @isTest
+    @IsTest
     public static void getMyThreadsFreelanceServiceResourceTest() {
         User admin = [SELECT Id, UserRoleId FROM User WHERE Id = :UserInfo.getUserId() LIMIT 1];
 

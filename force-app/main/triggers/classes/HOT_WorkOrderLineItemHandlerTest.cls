@@ -1,6 +1,6 @@
-@isTest
+@IsTest
 private class HOT_WorkOrderLineItemHandlerTest {
-    @isTest
+    @IsTest
     private static void testCreateChildRecords() {
         OperatingHours operatingHours = HOT_TestDataFactory.createOperatingHours();
         insert operatingHours;
@@ -56,7 +56,7 @@ private class HOT_WorkOrderLineItemHandlerTest {
         System.assertEquals('None', serviceAppointments[0].Status, 'Could not set default Status');
     }
 
-    @isTest
+    @IsTest
     private static void testSetDefaultFields() {
         WorkType workType = HOT_TestDataFactory.createWorkType();
         insert workType;

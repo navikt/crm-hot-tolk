@@ -1,4 +1,4 @@
-@isTest
+@IsTest
 private class HOT_WorkOrderNotificationTest {
     @testSetup
     static void setup() {
@@ -58,7 +58,7 @@ private class HOT_WorkOrderNotificationTest {
         update request;
     }
 
-    @isTest
+    @IsTest
     private static void canceledByUserTest() {
         Set<String> recipients = new Set<String>{ UserInfo.getUserId() };
 

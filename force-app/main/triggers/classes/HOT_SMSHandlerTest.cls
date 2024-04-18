@@ -1,6 +1,6 @@
-@isTest
+@IsTest
 public with sharing class HOT_SMSHandlerTest {
-    @isTest
+    @IsTest
     static void setArchiveAsOwnerTest() {
         SMS__c sms = HOT_TestDataFactory.createSms();
         insert sms;

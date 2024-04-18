@@ -1,6 +1,6 @@
-@isTest
+@IsTest
 public with sharing class HOT_ServiceAppointmentImageStatusTest {
-    @isTest
+    @IsTest
     public static void todaysServiceAppointmentsAreSupposedtoBeChanged() {
         for (Integer i = 0; i < 3; i++) {
             WorkType workType = HOT_TestDataFactory.createWorkType('BTV - Bildetolkvakt');
@@ -49,7 +49,7 @@ public with sharing class HOT_ServiceAppointmentImageStatusTest {
             System.assertEquals('Completed', sa.Status, 'Status ikke omgjort til "Dekket"');
         }
     }
-    @isTest
+    @IsTest
     public static void futureServiceAppointmentsAreNotSupposedToBeChanged() {
         for (Integer i = 0; i < 3; i++) {
             WorkType workType = HOT_TestDataFactory.createWorkType('BTV - Bildetolkvakt');
@@ -99,7 +99,7 @@ public with sharing class HOT_ServiceAppointmentImageStatusTest {
             System.assertEquals('Dispatched', sa.Status, 'Status skulle ikke endres');
         }
     }
-    @isTest
+    @IsTest
     public static void wrongStatusButOldIsNotSupposedToChange() {
         for (Integer i = 0; i < 3; i++) {
             WorkType workType = HOT_TestDataFactory.createWorkType('BTV - Bildetolkvakt');
@@ -143,7 +143,7 @@ public with sharing class HOT_ServiceAppointmentImageStatusTest {
             System.assertEquals('Scheduled', sa.Status, 'Status skulle ikke bli omgjort');
         }
     }
-    @isTest
+    @IsTest
     static void schedulableTest() {
         String cron_exp = '0 0 0 3 9 ? 2024';
         Test.startTest();
@@ -156,4 +156,3 @@ public with sharing class HOT_ServiceAppointmentImageStatusTest {
         System.assert(jobId != null);
     }
 }
-

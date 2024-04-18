@@ -1,6 +1,6 @@
-@isTest
+@IsTest
 private class HOT_EventHandlerTest {
-    @isTest
+    @IsTest
     private static void testSetDefaultValues() {
         WorkType workType = HOT_TestDataFactory.createWorkType();
         insert workType;
@@ -55,7 +55,7 @@ private class HOT_EventHandlerTest {
         Test.stopTest();
     }
 
-    @isTest
+    @IsTest
     private static void testChangeOfAddress() {
         WorkType workType = HOT_TestDataFactory.createWorkType();
         insert workType;

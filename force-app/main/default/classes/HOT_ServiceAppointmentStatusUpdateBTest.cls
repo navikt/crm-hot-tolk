@@ -1,6 +1,6 @@
-@isTest
+@IsTest
 public without sharing class HOT_ServiceAppointmentStatusUpdateBTest {
-    @isTest
+    @IsTest
     public static void oldServiceAppointmentsAreSupposedtoBeChanged() {
         for (Integer i = 0; i < 3; i++) {
             WorkType workType = HOT_TestDataFactory.createWorkType();
@@ -39,7 +39,7 @@ public without sharing class HOT_ServiceAppointmentStatusUpdateBTest {
         }
     }
 
-    @isTest
+    @IsTest
     public static void futureServiceAppointmentsAreNotSupposedToBeChanged() {
         for (Integer i = 0; i < 3; i++) {
             WorkType workType = HOT_TestDataFactory.createWorkType();
@@ -78,7 +78,7 @@ public without sharing class HOT_ServiceAppointmentStatusUpdateBTest {
         }
     }
 
-    @isTest
+    @IsTest
     public static void oldServiceAppointmentsWithWrongStatusAreNotSupposedToBeChanged() {
         for (Integer i = 0; i < 3; i++) {
             WorkType workType = HOT_TestDataFactory.createWorkType();
@@ -117,7 +117,7 @@ public without sharing class HOT_ServiceAppointmentStatusUpdateBTest {
         }
     }
 
-    @isTest
+    @IsTest
     static void schedulableTest() {
         String cron_exp = '0 0 0 3 9 ? 2024';
 
@@ -131,4 +131,3 @@ public without sharing class HOT_ServiceAppointmentStatusUpdateBTest {
         System.assert(jobId != null);
     }
 }
-

@@ -1,4 +1,4 @@
-@isTest
+@IsTest
 public class HOT_ShiftHandlerTest {
     @TestSetup
     static void makeData() {
@@ -14,7 +14,7 @@ public class HOT_ShiftHandlerTest {
         serviceResource.CRM_Domain__c = 'HOT';
         insert serviceResource;
     }
-    @isTest
+    @IsTest
     static void createHotShiftTest() {
         ServiceResource serviceResource = [SELECT Id FROM ServiceResource LIMIT 1];
         Shift shift = HOT_TestDataFactory.createShift(serviceResource.Id);

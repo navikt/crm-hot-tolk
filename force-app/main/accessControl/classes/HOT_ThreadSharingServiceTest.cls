@@ -46,7 +46,7 @@ private class HOT_ThreadSharingServiceTest {
         System.assertEquals(1, [SELECT COUNT() FROM Thread__Share WHERE ParentId = :thread.Id]);
     }
 
-    @isTest
+    @IsTest
     private static void testPopulateParticipantSet() {
         User user = [SELECT Id FROM User LIMIT 1];
         String participants = user.Id;

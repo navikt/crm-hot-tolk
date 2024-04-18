@@ -1,4 +1,4 @@
-@isTest
+@IsTest
 private class HOT_OpenSAListControllerTest {
     @testSetup
     static void setup() {
@@ -31,13 +31,13 @@ private class HOT_OpenSAListControllerTest {
     }
 
     //As Skill is not supported by Apex Metadata API or DML operations, we cannot make a proper test for the class
-    @isTest
+    @IsTest
     static void getOpenServiceAppointmentsTest() {
         List<ServiceAppointment> serviceAppointments = HOT_OpenServiceAppointmentListController.getOpenServiceAppointments();
         System.assertEquals(2, serviceAppointments.size(), 'Could not get released ServiceAppointments');
     }
 
-    @isTest
+    @IsTest
     static void createInterestedResourcesTest() {
         List<ServiceAppointment> serviceAppointments = [SELECT Id, AppointmentNumber FROM ServiceAppointment];
         List<String> serviceAppointmentIds = new List<String>();

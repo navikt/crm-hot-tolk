@@ -1,4 +1,4 @@
-@isTest
+@IsTest
 private class HOT_FreelanceUserInfoControllerTest {
     @TestSetup
     static void setup() {
@@ -6,12 +6,12 @@ private class HOT_FreelanceUserInfoControllerTest {
         insert serviceResource;
     }
 
-    @isTest
+    @IsTest
     static void checkUserIdTest() {
         ServiceResource serviceResource = HOT_FreelanceUserInformationController.getServiceResource();
         System.assertEquals(UserInfo.getUserId(), serviceResource.RelatedRecordId);
     }
-    @isTest
+    @IsTest
     static void checkServiceResourceTest() {
         ServiceResource serviceResource = HOT_FreelanceUserInformationController.getServiceResource();
         System.assertNotEquals(null, serviceResource);

@@ -1,4 +1,4 @@
-@isTest
+@IsTest
 private class HOT_DuplicateHandlerTest {
     @TestSetup
     static void testSetup() {

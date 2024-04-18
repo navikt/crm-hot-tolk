@@ -1,4 +1,4 @@
-@isTest
+@IsTest
 public with sharing class HOT_GroupMembersServiceSchedulableTest {
     @testSetup
     public static void setup() {

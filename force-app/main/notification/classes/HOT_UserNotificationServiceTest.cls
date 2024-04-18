@@ -1,4 +1,4 @@
-@isTest
+@IsTest
 public class HOT_UserNotificationServiceTest {
     @testSetup
     static void setup() {
@@ -11,7 +11,7 @@ public class HOT_UserNotificationServiceTest {
         update request;
     }
 
-    @isTest
+    @IsTest
     private static void newRequestNotificationTest() {
         CustomNotificationType notificationType = [
             SELECT Id, DeveloperName
@@ -32,7 +32,7 @@ public class HOT_UserNotificationServiceTest {
         Test.stopTest();
     }
 
-    @isTest
+    @IsTest
     private static void reminderNotificationTest() {
         CustomNotificationType notificationType = [
             SELECT Id, DeveloperName
@@ -48,7 +48,7 @@ public class HOT_UserNotificationServiceTest {
         Test.stopTest();
     }
 
-    @isTest
+    @IsTest
     private static void sendNotificationToOrdererOnStatusUpdateTest() {
         CustomNotificationType notificationType = [
             SELECT Id, DeveloperName
@@ -74,7 +74,7 @@ public class HOT_UserNotificationServiceTest {
         Test.stopTest();
     }
 
-    @isTest
+    @IsTest
     private static void statusChangeNotificationTest() {
         CustomNotificationType notificationType = [
             SELECT Id, DeveloperName
@@ -101,7 +101,7 @@ public class HOT_UserNotificationServiceTest {
         );
         Test.stopTest();
     }
-    @isTest
+    @IsTest
     private static void interpreterChangeNotificationTest() {
         CustomNotificationType notificationType = [
             SELECT Id, DeveloperName
@@ -127,7 +127,7 @@ public class HOT_UserNotificationServiceTest {
         Test.stopTest();
     }
 
-    @isTest
+    @IsTest
     private static void newMessageNotificationTest() {
         WorkType workType = HOT_TestDataFactory.createWorkType();
         insert workType;
@@ -150,7 +150,7 @@ public class HOT_UserNotificationServiceTest {
         Test.stopTest();
     }
 
-    @isTest
+    @IsTest
     private static void newWantedSRNotificationTest() {
         CustomNotificationType notificationType = [
             SELECT Id, DeveloperName

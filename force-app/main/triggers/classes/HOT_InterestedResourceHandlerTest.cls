@@ -1,4 +1,4 @@
-@isTest
+@IsTest
 private class HOT_InterestedResourceHandlerTest {
     @testSetup
     static void setup() {
@@ -40,7 +40,7 @@ private class HOT_InterestedResourceHandlerTest {
         insert interestedResource;
     }
 
-    @isTest
+    @IsTest
     static void changeStatusOfInterestedResource() {
         ServiceAppointment serviceAppointment = [SELECT Id FROM ServiceAppointment LIMIT 1];
 
@@ -65,7 +65,7 @@ private class HOT_InterestedResourceHandlerTest {
         System.assertEquals(null, serviceAppointment.HOT_InterestedResourceNames__c);
     }
 
-    @isTest
+    @IsTest
     static void addInterestedResourceToSA() {
         ServiceAppointment serviceAppointment = [SELECT Id FROM ServiceAppointment LIMIT 1];
 
@@ -95,7 +95,7 @@ private class HOT_InterestedResourceHandlerTest {
         );
     }
 
-    @isTest
+    @IsTest
     static void add255CharsOfInterestedResources() {
         Profile profile = [SELECT Id FROM Profile WHERE Name = 'Standard User' OR Name = 'Standardbruker' LIMIT 1];
         ServiceAppointment serviceAppointment = [SELECT Id FROM ServiceAppointment LIMIT 1];
@@ -139,7 +139,7 @@ private class HOT_InterestedResourceHandlerTest {
         String names = serviceAppointment.HOT_InterestedResourceNames__c;
         System.assertEquals(names.substring(names.length() - 3, names.length()), '...');
     }
-             @isTest
+    @IsTest
     static void changeStatusOfInterestedResourceWhenAnIrIsAlreadyAssigned() {
         ServiceAppointment serviceAppointment = [SELECT Id FROM ServiceAppointment LIMIT 1];
 
@@ -153,18 +153,24 @@ private class HOT_InterestedResourceHandlerTest {
         interestedResource.Status__c = 'Assigned';
         Test.startTest();
         update interestedResource;
-        
-         User admin = [SELECT Id, UserRoleId FROM User WHERE Id = :UserInfo.getUserId() LIMIT 1];
+
+        User admin = [SELECT Id, UserRoleId FROM User WHERE Id = :UserInfo.getUserId() LIMIT 1];
 
         ServiceResource serviceResource = HOT_TestDataFactory.createServiceResource(admin.Id);
         insert serviceResource;
 
-        HOT_InterestedResource__c interestedResource2=HOT_TestDataFactory.createInterestedResource(ServiceAppointment.Id, serviceResource.Id);
+        HOT_InterestedResource__c interestedResource2 = HOT_TestDataFactory.createInterestedResource(
+            ServiceAppointment.Id,
+            serviceResource.Id
+        );
         insert interestedResource2;
         Test.stopTest();
 
-        HOT_InterestedResource__c irToCheck = [SELECT Status__c, ServiceResource__c FROM HOT_InterestedResource__c WHERE Id=:interestedResource2.Id];
-
+        HOT_InterestedResource__c irToCheck = [
+            SELECT Status__c, ServiceResource__c
+            FROM HOT_InterestedResource__c
+            WHERE Id = :interestedResource2.Id
+        ];
 
         System.assertEquals('Not Assigned', irToCheck.Status__c);
     }

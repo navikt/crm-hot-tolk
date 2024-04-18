@@ -1,4 +1,4 @@
-@isTest
+@IsTest
 private class HOT_WantedSRListControllerTest {
     @testSetup
     static void setup() {
@@ -73,7 +73,7 @@ private class HOT_WantedSRListControllerTest {
         interestedResource2.Status__c = 'Wanted';
         insert interestedResource2;
     }
-    @isTest
+    @IsTest
     static void getWantedSTListTest() {
         Profile profile = [SELECT Id FROM Profile WHERE Name = 'System Administrator'];
         User user1 = new User(
@@ -96,7 +96,7 @@ private class HOT_WantedSRListControllerTest {
             System.assertEquals(2, serviceAppointments.size(), 'Could not get the wanted appointments');
         }
     }
-    @isTest
+    @IsTest
     static void updateIRTest() {
         ServiceAppointment sa = [SELECT Id FROM ServiceAppointment WHERE Subject = 'Bestilling'];
         HOT_InterestedResource__c ir = [SELECT Id FROM HOT_InterestedResource__c WHERE ServiceAppointment__c = :sa.Id];
@@ -115,7 +115,7 @@ private class HOT_WantedSRListControllerTest {
 
         System.assertEquals('Interested', irToCheck.Status__c = 'Interested', 'Could not change the ir status');
     }
-    @isTest
+    @IsTest
     static void updateIRTestExistingIROnWo() {
         ServiceAppointment sa = [
             SELECT Id, HOT_WorkOrderLineItem__r.WorkOrderId
@@ -140,7 +140,7 @@ private class HOT_WantedSRListControllerTest {
             System.assertEquals('Interested', ir.Status__c = 'Interested', 'Could not change the ir status');
         }
     }
-    @isTest
+    @IsTest
     static void updateIRTestExistingIROnWoChecked() {
         ServiceAppointment sa = [
             SELECT Id, HOT_WorkOrderLineItem__r.WorkOrderId
@@ -167,7 +167,7 @@ private class HOT_WantedSRListControllerTest {
             System.assertEquals('Interested', ir.Status__c = 'Interested', 'Could not change the ir status');
         }
     }
-    @isTest
+    @IsTest
     static void updateIRCheckedTest() {
         ServiceAppointment sa = [SELECT Id FROM ServiceAppointment WHERE Subject = 'Bestilling'];
         HOT_InterestedResource__c ir = [SELECT Id FROM HOT_InterestedResource__c WHERE ServiceAppointment__c = :sa.Id];
@@ -190,7 +190,7 @@ private class HOT_WantedSRListControllerTest {
 
         System.assertEquals('Interested', irToCheck.Status__c = 'Interested', 'Could not change the ir status');
     }
-    @isTest
+    @IsTest
     static void declineIRTest() {
         ServiceAppointment sa = [SELECT Id FROM ServiceAppointment WHERE Subject = 'Bestilling'];
         HOT_InterestedResource__c ir = [SELECT Id FROM HOT_InterestedResource__c WHERE ServiceAppointment__c = :sa.Id];
@@ -209,7 +209,7 @@ private class HOT_WantedSRListControllerTest {
 
         System.assertEquals('Declined', irToCheck.Status__c = 'Declined', 'Could not change the ir status');
     }
-    @isTest
+    @IsTest
     static void declineIRCheckedTest() {
         ServiceAppointment sa = [SELECT Id FROM ServiceAppointment WHERE Subject = 'Bestilling'];
         HOT_InterestedResource__c ir = [SELECT Id FROM HOT_InterestedResource__c WHERE ServiceAppointment__c = :sa.Id];
@@ -231,7 +231,7 @@ private class HOT_WantedSRListControllerTest {
 
         System.assertEquals('Declined', irToCheck.Status__c = 'Declined', 'Could not change the ir status');
     }
-    @isTest
+    @IsTest
     static void noOverlapTest() {
         Profile profile = [SELECT Id FROM Profile WHERE Name = 'System Administrator'];
         User user1 = new User(
@@ -300,7 +300,7 @@ private class HOT_WantedSRListControllerTest {
         }
 
     }
-    @isTest
+    @IsTest
     static void hasOverlapTest() {
         Profile profile = [SELECT Id FROM Profile WHERE Name = 'System Administrator'];
         User user1 = new User(
@@ -367,7 +367,7 @@ private class HOT_WantedSRListControllerTest {
         }
         Test.stopTest();
     }
-    @isTest
+    @IsTest
     static void hasOverlapTestExisting() {
         Profile profile = [SELECT Id FROM Profile WHERE Name = 'System Administrator'];
         User user1 = new User(
@@ -425,7 +425,7 @@ private class HOT_WantedSRListControllerTest {
         );
         System.assertEquals('existing', result[0]);
     }
-    @isTest
+    @IsTest
     static void hasOverlapTestNoOverlap() {
         Profile profile = [SELECT Id FROM Profile WHERE Name = 'System Administrator'];
         User user1 = new User(

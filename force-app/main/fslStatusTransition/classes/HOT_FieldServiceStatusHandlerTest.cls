@@ -1,6 +1,6 @@
-@isTest
+@IsTest
 private class HOT_FieldServiceStatusHandlerTest {
-    @isTest
+    @IsTest
     private static void testStatusChangeWorkOrderToRequest() {
         WorkType workType = HOT_TestDataFactory.createWorkType();
         insert workType;
@@ -93,7 +93,7 @@ private class HOT_FieldServiceStatusHandlerTest {
         );
     }
 
-    @isTest
+    @IsTest
     private static void testStatusChangeWorkOrderLineItemToWorkOrder() {
         WorkType workType = HOT_TestDataFactory.createWorkType();
         insert workType;
@@ -189,7 +189,7 @@ private class HOT_FieldServiceStatusHandlerTest {
         System.assertEquals('Completed', workOrder.Status, 'Status on the work order did not update to correct value');
     }
 
-    @isTest
+    @IsTest
     private static void testStatusChangeServiceAppointmentToWorkOrderLineItem() {
         WorkType workType = HOT_TestDataFactory.createWorkType();
         insert workType;
@@ -304,7 +304,7 @@ private class HOT_FieldServiceStatusHandlerTest {
         );
     }
 
-    @isTest
+    @IsTest
     private static void testCanceledServiceAppointmentToInterestedResource() {
         WorkType workType = HOT_TestDataFactory.createWorkType();
         insert workType;
@@ -340,7 +340,7 @@ private class HOT_FieldServiceStatusHandlerTest {
         );
     }
 
-    @isTest
+    @IsTest
     private static void testStatusChangeToCancel() {
         WorkType workType = HOT_TestDataFactory.createWorkType();
         insert workType;
@@ -372,7 +372,7 @@ private class HOT_FieldServiceStatusHandlerTest {
         );
     }
 
-    @isTest
+    @IsTest
     private static void testStatusChangeToAnnul() {
         WorkType workType = HOT_TestDataFactory.createWorkType();
         insert workType;
@@ -404,7 +404,7 @@ private class HOT_FieldServiceStatusHandlerTest {
         );
     }
 
-    @isTest
+    @IsTest
     private static void testStatusChangeAnullServiceAppointmentToRequest() {
         WorkType workType = HOT_TestDataFactory.createWorkType();
         insert workType;
@@ -455,7 +455,7 @@ private class HOT_FieldServiceStatusHandlerTest {
         System.assertEquals('Dekket', request.Status__c, 'Status on the request did not update to correct value');
     }
 
-    @isTest
+    @IsTest
     private static void testStatusChangeWithAnullServiceAppointmentToRequest() {
         WorkType workType = HOT_TestDataFactory.createWorkType();
         insert workType;
@@ -490,7 +490,7 @@ private class HOT_FieldServiceStatusHandlerTest {
         System.assertEquals('Avlyst', request.Status__c, 'Status on the request did not update to correct value');
     }
 
-    @isTest
+    @IsTest
     private static void testStatusChangeToNone() {
         WorkType workType1 = HOT_TestDataFactory.createWorkType('workTypeName1');
         insert workType1;
@@ -528,7 +528,7 @@ private class HOT_FieldServiceStatusHandlerTest {
         System.assertEquals('Godkjent', request.Status__c, 'Status on the request did not update to correct value');
     }
 
-    @isTest
+    @IsTest
     private static void testOrdererSMSStatusChangeCheckbox_workOrderChanged() {
         WorkType workType = HOT_TestDataFactory.createWorkType();
         insert workType;
@@ -561,7 +561,7 @@ private class HOT_FieldServiceStatusHandlerTest {
         );
     }
 
-    @isTest
+    @IsTest
     private static void testOrdererSMSStatusChangeCheckbox_serviceAppointmentChanged() {
         WorkType workType = HOT_TestDataFactory.createWorkType();
         insert workType;
@@ -595,7 +595,7 @@ private class HOT_FieldServiceStatusHandlerTest {
         );
     }
 
-    @isTest
+    @IsTest
     private static void test_2tildelt_1oppdrag_none() {
         WorkType workType = HOT_TestDataFactory.createWorkType();
         insert workType;
@@ -646,7 +646,7 @@ private class HOT_FieldServiceStatusHandlerTest {
         System.assertEquals('Godkjent', request.Status__c, 'Status on the request did not update to correct value');
     }
 
-    @isTest
+    @IsTest
     private static void test_1udekket_1dekket() {
         WorkType workType = HOT_TestDataFactory.createWorkType();
         insert workType;
@@ -689,7 +689,7 @@ private class HOT_FieldServiceStatusHandlerTest {
         );
     }
 
-    @isTest
+    @IsTest
     private static void test_1udekket_1tildelt() {
         WorkType workType = HOT_TestDataFactory.createWorkType();
         insert workType;
@@ -743,7 +743,7 @@ private class HOT_FieldServiceStatusHandlerTest {
         System.assertEquals('Tildelt', request.Status__c, 'Status on the request did not update to correct value');
     }
 
-    @isTest
+    @IsTest
     private static void test_woli_2Tildelt_1oppdrag_None() {
         WorkType workType = HOT_TestDataFactory.createWorkType();
         insert workType;
@@ -813,7 +813,7 @@ private class HOT_FieldServiceStatusHandlerTest {
         System.assertEquals('Godkjent', request.Status__c, 'Status on the request did not update to correct value');
     }
 
-    @isTest
+    @IsTest
     private static void test_1dekket_1tildelt() {
         WorkType workType = HOT_TestDataFactory.createWorkType();
         insert workType;
@@ -872,7 +872,7 @@ private class HOT_FieldServiceStatusHandlerTest {
         System.assertEquals('Dekket', request.Status__c, 'Status on the request did not update to correct value');
     }
 
-    @isTest
+    @IsTest
     private static void test_woli_1tildelt_1udekket() {
         WorkType workType = HOT_TestDataFactory.createWorkType();
         insert workType;
@@ -926,7 +926,7 @@ private class HOT_FieldServiceStatusHandlerTest {
         System.assertEquals('Tildelt', request.Status__c, 'Status on the request did not update to correct value');
     }
 
-    @isTest
+    @IsTest
     private static void test_woli_1tildelt_1dekket() {
         WorkType workType = HOT_TestDataFactory.createWorkType();
         insert workType;
@@ -980,7 +980,7 @@ private class HOT_FieldServiceStatusHandlerTest {
         System.assertEquals('Dekket', request.Status__c, 'Status on the request did not update to correct value');
     }
 
-    @isTest
+    @IsTest
     private static void test_1avlyst_1tildelt() {
         WorkType workType = HOT_TestDataFactory.createWorkType();
         insert workType;

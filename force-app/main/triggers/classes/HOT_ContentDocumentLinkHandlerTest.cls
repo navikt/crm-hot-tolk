@@ -1,10 +1,10 @@
-@isTest
+@IsTest
 private class HOT_ContentDocumentLinkHandlerTest {
     @testSetup
     static void setup() {
     }
 
-    @isTest
+    @IsTest
     public static void addContentDocumentLinkToServiceAppointment() {
         Person__c person = HOT_TestDataFactory.createPerson();
         person.Name = '12015678999';
@@ -72,7 +72,7 @@ private class HOT_ContentDocumentLinkHandlerTest {
         );
     }
 
-    @isTest
+    @IsTest
     public static void addContentDocumentLinkToAccount() {
         Person__c person = HOT_TestDataFactory.createPerson();
         person.Name = '12015678999';
@@ -134,7 +134,7 @@ private class HOT_ContentDocumentLinkHandlerTest {
         );
     }
 
-    @isTest
+    @IsTest
     public static void addContentDocumentLinkToAccountNoAccountTest() {
         Person__c person = HOT_TestDataFactory.createPerson();
         person.Name = '12015678999';

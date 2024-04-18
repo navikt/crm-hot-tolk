@@ -1,4 +1,4 @@
-@isTest
+@IsTest
 private class HOT_SAReportingSchedulableTest {
     private static String CRON_EXP = '0 0 0 3 9 ? 2024';
 
@@ -12,7 +12,7 @@ private class HOT_SAReportingSchedulableTest {
         update request;
     }
 
-    @isTest
+    @IsTest
     private static void execute() {
         Test.startTest();
         String jobId = System.schedule('HOT_SAReportingSchedulable', CRON_EXP, new HOT_SAReportingSchedulable());

@@ -1,6 +1,6 @@
-@isTest
+@IsTest
 private class HOT_TestDataTest {
-    @isTest
+    @IsTest
     static void testMethod1() {
         User user = [SELECT Id, UserRoleId, Name FROM User WHERE Alias = 'UUser' LIMIT 1];
         List<Skill> skills = [SELECT Id FROM Skill WHERE DeveloperName = 'Tegnspraktolk' LIMIT 1];
