@@ -1,10 +1,10 @@
-@isTest
+@IsTest
 private class HOT_ReminderSMSBatchTest {
     @TestSetup
     static void setup() {
     }
 
-    @isTest
+    @IsTest
     static void batchableTest() {
         WorkType workType = HOT_TestDataFactory.createWorkType();
         insert workType;
@@ -28,7 +28,7 @@ private class HOT_ReminderSMSBatchTest {
         Test.stopTest();
     }
 
-    @isTest
+    @IsTest
     static void schedulableTest() {
         String cron_exp = '0 0 0 3 9 ? 2024';
         Test.startTest();

@@ -1,4 +1,4 @@
-@isTest
+@IsTest
 private class HOT_ServiceAppointmentNotificationTest {
     @testSetup
     static void setup() {
@@ -61,7 +61,7 @@ private class HOT_ServiceAppointmentNotificationTest {
         update request;
     }
 
-    @isTest
+    @IsTest
     private static void notifyResourceAndDispatcherTest() {
         ServiceAppointment serviceAppointment = [
             SELECT Id, HOT_ServiceResource__c, HOT_AssignedResourceId__c
@@ -151,7 +151,7 @@ private class HOT_ServiceAppointmentNotificationTest {
         Test.stopTest();
     }
 
-    @isTest
+    @IsTest
     private static void resourceCanceledTest() {
         Set<String> recipients = new Set<String>{ UserInfo.getUserId() };
 
@@ -172,7 +172,7 @@ private class HOT_ServiceAppointmentNotificationTest {
         Test.stopTest();
     }
 
-    @isTest
+    @IsTest
     private static void notifyUserOnChangedResourceTest() {
         ServiceAppointment serviceAppointment = [
             SELECT Id, AppointmentNumber, EarliestStartTime
@@ -202,7 +202,7 @@ private class HOT_ServiceAppointmentNotificationTest {
         Test.stopTest();
     }
 
-    @isTest
+    @IsTest
     private static void canceledByUserTest() {
         Set<String> recipients = new Set<String>{ UserInfo.getUserId() };
 
@@ -225,7 +225,7 @@ private class HOT_ServiceAppointmentNotificationTest {
         HOT_ServiceAppointmentNotification.canceledByUser(notificationType, serviceAppointment, srIds, recipients);
         Test.stopTest();
     }
-    @isTest
+    @IsTest
     private static void canceledByUserSMSTest() {
         Set<String> recipients = new Set<String>{ UserInfo.getUserId() };
         Test.startTest();
@@ -264,7 +264,7 @@ private class HOT_ServiceAppointmentNotificationTest {
         Test.stopTest();
     }
 
-    @isTest
+    @IsTest
     private static void timeChangedTest() {
         Set<String> recipients = new Set<String>{ UserInfo.getUserId() };
 
@@ -316,7 +316,7 @@ private class HOT_ServiceAppointmentNotificationTest {
         HOT_ServiceAppointmentNotification.timeChanged(notificationType, saIds, recipients);
         Test.stopTest();
     }
-    @isTest
+    @IsTest
     private static void timeChangedSMSTest() {
         Set<String> recipients = new Set<String>{ UserInfo.getUserId() };
 
@@ -367,7 +367,7 @@ private class HOT_ServiceAppointmentNotificationTest {
         Test.stopTest();
     }
 
-    @isTest
+    @IsTest
     private static void addressChangedTest() {
         Set<String> recipients = new Set<String>{ UserInfo.getUserId() };
 
@@ -411,7 +411,7 @@ private class HOT_ServiceAppointmentNotificationTest {
         HOT_ServiceAppointmentNotification.addressChanged(notificationType, saIds, recipients);
         Test.stopTest();
     }
-    @isTest
+    @IsTest
     private static void testFormatTimePeriod() {
         Datetime startDate = Datetime.newInstance(2023, 10, 20, 9, 0, 0);
         Datetime endDate = Datetime.newInstance(2023, 10, 20, 15, 30, 0);
@@ -422,7 +422,7 @@ private class HOT_ServiceAppointmentNotificationTest {
 
         System.assertEquals(expected, result, 'The formatted time period is incorrect.');
     }
-    @isTest
+    @IsTest
     private static void cannotCompleteTest() {
         Set<String> recipients = new Set<String>{ UserInfo.getUserId() };
         Test.startTest();

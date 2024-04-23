@@ -1,4 +1,4 @@
-@isTest
+@IsTest
 private class HOT_ReleaseToFreelanceFlowControllerTest {
     @testSetup
     static void setup() {
@@ -6,7 +6,7 @@ private class HOT_ReleaseToFreelanceFlowControllerTest {
         insert workType;
     }
 
-    @isTest
+    @IsTest
     static void testMethod1() {
         Worktype workType = [SELECT Id FROM WorkType];
         String workTypeId = (String) workType.Id;

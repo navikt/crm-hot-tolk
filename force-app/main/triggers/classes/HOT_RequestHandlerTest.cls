@@ -1,4 +1,4 @@
-@isTest
+@IsTest
 private class HOT_RequestHandlerTest {
     @TestSetup
     static void makeData() {
@@ -8,7 +8,7 @@ private class HOT_RequestHandlerTest {
         TestDataFactory.getQueue('HMS Nordland', 'queue_4718', 'HOT_Request__c');
     }
 
-    @isTest
+    @IsTest
     private static void testStatusChangeOnReqestToAvlyst() {
         WorkType workType = HOT_TestDataFactory.createWorkType();
         insert workType;
@@ -49,7 +49,7 @@ private class HOT_RequestHandlerTest {
         System.assertEquals(Date.today(), request.CanceledDate__c, 'Cancel data was not set correct');
     }
 
-    @isTest
+    @IsTest
     private static void testSetServiceTerritoryBasedOnOwner() {
         Person__c personTromso = HOT_TestDataFactory.createPerson();
         personTromso.INT_FirstName__c = 'Tromso';
@@ -93,7 +93,7 @@ private class HOT_RequestHandlerTest {
         );
     }
 
-    @isTest
+    @IsTest
     private static void testTriggerOfKrrIntegration() {
         Person__c person = HOT_TestDataFactory.createPerson();
         insert person;
@@ -111,7 +111,7 @@ private class HOT_RequestHandlerTest {
         System.assertEquals('Queued', person.INT_KrrIntegrationStatus__c);
     }
 
-    @isTest
+    @IsTest
     public static void createWorkOrdersFromCommunityTest() {
         WorkType workType = HOT_TestDataFactory.createWorkType();
         insert workType;
@@ -135,7 +135,7 @@ private class HOT_RequestHandlerTest {
         System.assertEquals(2, request.NumberOfWorkOrders__c, 'Could not set NumberOfWorkOrders on request');
     }
 
-    @isTest
+    @IsTest
     public static void setDefaultFieldsImageInterpreter() {
         WorkType workType = HOT_TestDataFactory.createWorkType('BTV - Bildetolkvakt');
         workType.HOT_DeveloperName__c = 'BTV';
@@ -149,7 +149,7 @@ private class HOT_RequestHandlerTest {
         System.assertEquals(workType.Id, request.InterpretationMethod__c, 'Could not set InterpretationMethod');
     }
 
-    @isTest
+    @IsTest
     public static void setSourceFieldOnClonedRequest() {
         Person__c personTromso = HOT_TestDataFactory.createPerson();
         personTromso.INT_FirstName__c = 'Tromso';
@@ -177,7 +177,7 @@ private class HOT_RequestHandlerTest {
         System.assertEquals(req.Source__c, 'Community', 'Request source is not "Community" (Formidler)');
     }
 
-    @isTest
+    @IsTest
     public static void setArchiveAsOwnerTest() {
         WorkType workType = HOT_TestDataFactory.createWorkType();
         insert workType;
@@ -200,7 +200,7 @@ private class HOT_RequestHandlerTest {
         );
     }
 
-    @isTest
+    @IsTest
     public static void setUserInterpretationField() {
         WorkType workType = HOT_TestDataFactory.createWorkType('TS - Tegnspråk');
         workType.HOT_DeveloperName__c = 'TS';
@@ -227,7 +227,7 @@ private class HOT_RequestHandlerTest {
         );
     }
 
-    @isTest
+    @IsTest
     public static void userInterpretationFieldShouldNotBeSet() {
         WorkType workType = HOT_TestDataFactory.createWorkType('TS - Tegnspråk');
         workType.HOT_DeveloperName__c = 'TS';
@@ -255,7 +255,7 @@ private class HOT_RequestHandlerTest {
         );
     }
 
-    @isTest
+    @IsTest
     public static void multipleRequestsApproved() {
         WorkType workType = HOT_TestDataFactory.createWorkType('TS - Tegnspråk');
         insert workType;
@@ -279,7 +279,7 @@ private class HOT_RequestHandlerTest {
             'Could not create the correct ampint of Service Appointments'
         );
     }
-    @isTest
+    @IsTest
     public static void setInterpretationAdressSameAsMeetingadress() {
         Person__c person = HOT_TestDataFactory.createPerson();
         insert person;
@@ -318,7 +318,7 @@ private class HOT_RequestHandlerTest {
             'Interpetration and Meeting postalcode is not the same'
         );
     }
-    @isTest
+    @IsTest
     public static void setMeetingadressSameAsInterpretationAdress() {
         Person__c person = HOT_TestDataFactory.createPerson();
         insert person;
@@ -357,7 +357,7 @@ private class HOT_RequestHandlerTest {
             'Interpetration and Meeting postalcode is not the same'
         );
     }
-    @isTest
+    @IsTest
     public static void shouldNotSetSameAdressWhenBothIsFilled() {
         Person__c person = HOT_TestDataFactory.createPerson();
         insert person;
@@ -408,7 +408,7 @@ private class HOT_RequestHandlerTest {
         System.assertNotEquals('Oslo', requester[0].MeetingPostalCity__c, 'Both adresses was changed to the same');
         System.assertNotEquals('0166', requester[0].MeetingPostalCode__c, 'Both adresses was changed to the same');
     }
-    @isTest
+    @IsTest
     public static void shouldOnlyChangeStatusToCannotCompleteIfAllSAIsReleased() {
         WorkType workType = HOT_TestDataFactory.createWorkType();
         insert workType;
@@ -441,7 +441,7 @@ private class HOT_RequestHandlerTest {
 
         System.assertEquals('Udekket', request.Status__c, 'Status on the request did not update to correct value');
     }
-    @isTest
+    @IsTest
     public static void statusIsNotSupposedToChangeBecauseSAIsNotReleasedToFreelance() {
         WorkType workType = HOT_TestDataFactory.createWorkType();
         insert workType;
@@ -482,7 +482,7 @@ private class HOT_RequestHandlerTest {
             System.AssertEquals(expectedException, true);
         }
     }
-    @isTest
+    @IsTest
     public static void statusShouldChangeWhenAllWorkOrdersAreSetToNew() {
         WorkType workType = HOT_TestDataFactory.createWorkType();
         insert workType;
@@ -515,7 +515,7 @@ private class HOT_RequestHandlerTest {
 
         System.assertEquals('Udekket', request.Status__c, 'Status on the request was supposed to be changed');
     }
-    @isTest
+    @IsTest
     public static void statusShouldNotChangeWhenAllWorkOrdersAreNotSetNew() {
         //feil i den her
         WorkType workType = HOT_TestDataFactory.createWorkType();
@@ -556,7 +556,7 @@ private class HOT_RequestHandlerTest {
             System.AssertEquals(expectedException, true);
         }
     }
-    @isTest
+    @IsTest
     public static void dispatcherOnThreadChangeRequest() {
         WorkType workType = HOT_TestDataFactory.createWorkType();
         insert workType;
@@ -571,18 +571,18 @@ private class HOT_RequestHandlerTest {
         insert admin;
 
         Thread__c thread = new Thread__c();
-        thread.CRM_Related_Object__c=request.Id;
-        thread.HOT_Request__c=request.Id;
-        insert thread; 
-           
+        thread.CRM_Related_Object__c = request.Id;
+        thread.HOT_Request__c = request.Id;
+        insert thread;
+
         Test.startTest();
-            request.Dispatcher__c=admin.Id;
-            update request;
+        request.Dispatcher__c = admin.Id;
+        update request;
         Test.stopTest();
-        Thread__c t=[SELECT HOT_Dispatcher__c FROM Thread__c WHERE Id=:thread.Id];
+        Thread__c t = [SELECT HOT_Dispatcher__c FROM Thread__c WHERE Id = :thread.Id];
         System.AssertEquals(admin.Id, t.HOT_Dispatcher__c);
     }
-    @isTest
+    @IsTest
     public static void dispatcherOnThreadChangeWorkOrder() {
         WorkType workType = HOT_TestDataFactory.createWorkType();
         insert workType;
@@ -599,18 +599,18 @@ private class HOT_RequestHandlerTest {
         insert admin;
 
         Thread__c thread = new Thread__c();
-        thread.CRM_Related_Object__c=workOrder1.Id;
-        thread.HOT_WorkOrder__c=workOrder1.Id;
-        insert thread; 
-           
+        thread.CRM_Related_Object__c = workOrder1.Id;
+        thread.HOT_WorkOrder__c = workOrder1.Id;
+        insert thread;
+
         Test.startTest();
-            request.Dispatcher__c=admin.Id;
-            update request;
+        request.Dispatcher__c = admin.Id;
+        update request;
         Test.stopTest();
-        Thread__c t=[SELECT HOT_Dispatcher__c FROM Thread__c WHERE Id=:thread.Id];
+        Thread__c t = [SELECT HOT_Dispatcher__c FROM Thread__c WHERE Id = :thread.Id];
         System.AssertEquals(admin.Id, t.HOT_Dispatcher__c);
     }
-     @isTest
+    @IsTest
     public static void dispatcherOnThreadChangeSA() {
         WorkType workType = HOT_TestDataFactory.createWorkType();
         insert workType;
@@ -632,18 +632,18 @@ private class HOT_RequestHandlerTest {
         insert admin;
 
         Thread__c thread = new Thread__c();
-        thread.CRM_Related_Object__c=sa.Id;
-        thread.HOT_ServiceAppointment__c=sa.Id;
-        insert thread; 
-           
+        thread.CRM_Related_Object__c = sa.Id;
+        thread.HOT_ServiceAppointment__c = sa.Id;
+        insert thread;
+
         Test.startTest();
-            request.Dispatcher__c=admin.Id;
-            update request;
+        request.Dispatcher__c = admin.Id;
+        update request;
         Test.stopTest();
-        Thread__c t=[SELECT HOT_Dispatcher__c FROM Thread__c WHERE Id=:thread.Id];
+        Thread__c t = [SELECT HOT_Dispatcher__c FROM Thread__c WHERE Id = :thread.Id];
         System.AssertEquals(admin.Id, t.HOT_Dispatcher__c);
     }
-     @isTest
+    @IsTest
     public static void dispatcherOnThreadChangeIR() {
         WorkType workType = HOT_TestDataFactory.createWorkType();
         insert workType;
@@ -655,14 +655,27 @@ private class HOT_RequestHandlerTest {
         insert workOrderLineItem;
         ServiceAppointment sa = HOT_TestDataFactory.createServiceAppointment(workOrderLineItem);
         insert sa;
-        Profile profile = [SELECT Id FROM Profile WHERE Name='System Administrator'];
-        User user1 = new User(alias = 'TestUser', email='HOT_testaccount@nav.hot.no',
-        emailencodingkey='UTF-8', lastname='Testing', languagelocalekey='en_US',
-        localesidkey='en_US', profileid = profile.Id , country='Norway',IsActive =true, timezonesidkey='Europe/Paris', username='HOT_testaccount@nav.hot.no');
+        Profile profile = [SELECT Id FROM Profile WHERE Name = 'System Administrator'];
+        User user1 = new User(
+            alias = 'TestUser',
+            email = 'HOT_testaccount@nav.hot.no',
+            emailencodingkey = 'UTF-8',
+            lastname = 'Testing',
+            languagelocalekey = 'en_US',
+            localesidkey = 'en_US',
+            profileid = profile.Id,
+            country = 'Norway',
+            IsActive = true,
+            timezonesidkey = 'Europe/Paris',
+            username = 'HOT_testaccount@nav.hot.no'
+        );
         insert user1;
         ServiceResource resource1 = HOT_TestDataFactory.createServiceResource(user1.Id);
         insert resource1;
-        HOT_InterestedResource__c interestedResource=HOT_TestDataFactory.createInterestedResource(sa.Id, resource1.Id);
+        HOT_InterestedResource__c interestedResource = HOT_TestDataFactory.createInterestedResource(
+            sa.Id,
+            resource1.Id
+        );
         insert interestedResource;
 
         Profile adminProfile = [
@@ -674,18 +687,18 @@ private class HOT_RequestHandlerTest {
         insert admin;
 
         Thread__c thread = new Thread__c();
-        thread.CRM_Related_Object__c=interestedResource.Id;
-        thread.HOT_InterestedResource__c=interestedResource.Id;
-        insert thread; 
-           
+        thread.CRM_Related_Object__c = interestedResource.Id;
+        thread.HOT_InterestedResource__c = interestedResource.Id;
+        insert thread;
+
         Test.startTest();
-            request.Dispatcher__c=admin.Id;
-            update request;
+        request.Dispatcher__c = admin.Id;
+        update request;
         Test.stopTest();
-        Thread__c t=[SELECT HOT_Dispatcher__c FROM Thread__c WHERE Id=:thread.Id];
+        Thread__c t = [SELECT HOT_Dispatcher__c FROM Thread__c WHERE Id = :thread.Id];
         System.AssertEquals(admin.Id, t.HOT_Dispatcher__c);
     }
-    @isTest
+    @IsTest
     public static void updateWorkOrderSubjectOnRequestChange() {
         WorkType workType = HOT_TestDataFactory.createWorkType();
         insert workType;
@@ -693,15 +706,15 @@ private class HOT_RequestHandlerTest {
         insert request;
         WorkOrder workOrder = HOT_TestDataFactory.createWorkOrder(request, workType);
         insert workOrder;
-        
+
         Test.startTest();
-            request.Subject__c='Ny subject';
-            update request;
+        request.Subject__c = 'Ny subject';
+        update request;
         Test.stopTest();
-        WorkOrder wo=[SELECT Subject FROM WorkOrder WHERE Id=:workOrder.Id];
+        WorkOrder wo = [SELECT Subject FROM WorkOrder WHERE Id = :workOrder.Id];
         System.AssertEquals('Ny subject', wo.Subject);
     }
-    @isTest
+    @IsTest
     public static void updateWorkOrderAccountOnRequestChange() {
         WorkType workType = HOT_TestDataFactory.createWorkType();
         insert workType;
@@ -714,15 +727,15 @@ private class HOT_RequestHandlerTest {
         insert request;
         WorkOrder workOrder = HOT_TestDataFactory.createWorkOrder(request, workType);
         insert workOrder;
-        
+
         Test.startTest();
-            request.Account__c = account2.Id;
-            update request;
+        request.Account__c = account2.Id;
+        update request;
         Test.stopTest();
-        WorkOrder wo=[SELECT AccountId FROM WorkOrder WHERE Id=:workOrder.Id];
+        WorkOrder wo = [SELECT AccountId FROM WorkOrder WHERE Id = :workOrder.Id];
         System.AssertEquals(account2.Id, wo.AccountId);
     }
-    @isTest
+    @IsTest
     public static void updateWorkOrderAccountRemovedOnRequestChange() {
         WorkType workType = HOT_TestDataFactory.createWorkType();
         insert workType;
@@ -733,27 +746,27 @@ private class HOT_RequestHandlerTest {
         insert request;
         WorkOrder workOrder = HOT_TestDataFactory.createWorkOrder(request, workType);
         insert workOrder;
-        
+
         Test.startTest();
-            request.Account__c = null;
-            update request;
+        request.Account__c = null;
+        update request;
         Test.stopTest();
-        WorkOrder wo=[SELECT AccountId FROM WorkOrder WHERE Id=:workOrder.Id];
+        WorkOrder wo = [SELECT AccountId FROM WorkOrder WHERE Id = :workOrder.Id];
         System.AssertEquals(null, wo.AccountId);
     }
-    @isTest
+    @IsTest
     public static void resetNotifyDispatcher() {
         WorkType workType = HOT_TestDataFactory.createWorkType();
         insert workType;
         HOT_Request__c request = HOT_TestDataFactory.createRequest('TEST', workType);
         insert request;
-        
-        request.IsNotifyDispatcher__c=true;
-        
+
+        request.IsNotifyDispatcher__c = true;
+
         Test.startTest();
-            update request;
+        update request;
         Test.stopTest();
-        HOT_Request__c requestToCheck=[SELECT IsNotifyDispatcher__c FROM HOT_Request__c WHERE Id=:request.Id];
+        HOT_Request__c requestToCheck = [SELECT IsNotifyDispatcher__c FROM HOT_Request__c WHERE Id = :request.Id];
         System.AssertEquals(false, requestToCheck.IsNotifyDispatcher__c);
     }
 }

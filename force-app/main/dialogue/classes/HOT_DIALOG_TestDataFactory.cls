@@ -1,5 +1,5 @@
 // Class for creating test data
-@isTest
+@IsTest
 public class HOT_DIALOG_TestDataFactory {
     /* This method is used for creating a record. The record is inserted before it's returned,
      * and default fields are populated.

@@ -1,4 +1,4 @@
-@istest
+@IsTest
 public class HOT_TestDataFactory {
     public static HOT_Request__c createRequest(String subject, WorkType workType) {
         return createRequest(subject, workType, 1, null, null);
@@ -194,7 +194,7 @@ public class HOT_TestDataFactory {
         return user;
     }
 
-    public static User changeUserProfile(User user, Profile profile){
+    public static User changeUserProfile(User user, Profile profile) {
         user.ProfileId = profile.id;
         return user;
     }

@@ -1,4 +1,4 @@
-@isTest
+@IsTest
 private class HOT_UpdateWageClaimTest {
     @testSetup
     static void setup() {
@@ -39,7 +39,7 @@ private class HOT_UpdateWageClaimTest {
         insert assignedResources;
     }
 
-    @isTest
+    @IsTest
     static void updateWageClaimsFutureTest_CompletelyCovered() {
         ServiceResource serviceResource = [SELECT Id FROM ServiceResource LIMIT 1];
         ServiceAppointment serviceAppointment = [
@@ -65,7 +65,7 @@ private class HOT_UpdateWageClaimTest {
             'Could not set WageClaim.Status = \'Covered\', complete cover'
         );
     }
-    @isTest
+    @IsTest
     static void updateWageClaimsFutureTest_PartiallyCovered_split() {
         ServiceResource serviceResource = [SELECT Id FROM ServiceResource LIMIT 1];
         ServiceAppointment serviceAppointment = [
@@ -133,7 +133,7 @@ private class HOT_UpdateWageClaimTest {
             'Could not set correct End Time for new WageClaim2'
         );
     }
-    @isTest
+    @IsTest
     static void updateWageClaimsFutureTest_PartiallyCovered_lower() {
         ServiceResource serviceResource = [SELECT Id FROM ServiceResource LIMIT 1];
         ServiceAppointment serviceAppointment = [
@@ -186,7 +186,7 @@ private class HOT_UpdateWageClaimTest {
             'Could not set correct End Time for new WageClaim'
         );
     }
-    @isTest
+    @IsTest
     static void updateWageClaimsFutureTest_PartiallyCovered_upper() {
         ServiceResource serviceResource = [SELECT Id FROM ServiceResource LIMIT 1];
         ServiceAppointment serviceAppointment = [
@@ -240,7 +240,7 @@ private class HOT_UpdateWageClaimTest {
         );
     }
 
-    @isTest
+    @IsTest
     static void updateWageClaimsFutureTest_CompletelyCovered_arChanged() {
         AssignedResource assignedResource = [
             SELECT Id, ServiceAppointmentId, ServiceResourceId
@@ -285,7 +285,7 @@ private class HOT_UpdateWageClaimTest {
 
     // Multiple SA Assigned at the same time
 
-    @isTest
+    @IsTest
     static void updateWageClaimsFutureTest_ConnectedSA() {
         ServiceResource serviceResource = [SELECT Id FROM ServiceResource LIMIT 1];
         List<ServiceAppointment> serviceAppointments = [
@@ -315,7 +315,7 @@ private class HOT_UpdateWageClaimTest {
         System.assertEquals(2, wageClaims.size(), 'Could not update wageClaim with multiple SA updates');
     }
 
-    @isTest
+    @IsTest
     static void updateWageClaimsFutureTest_SpaceBetweenSA() {
         ServiceResource serviceResource = [SELECT Id FROM ServiceResource LIMIT 1];
         List<ServiceAppointment> serviceAppointments = [
@@ -345,7 +345,7 @@ private class HOT_UpdateWageClaimTest {
         System.assertEquals(3, wageClaims.size(), 'Could not update wageClaim with multiple SA updates');
     }
 
-    @isTest
+    @IsTest
     static void updateWageClaimsFutureTest_SpaceAroundSA() {
         ServiceResource serviceResource = [SELECT Id FROM ServiceResource LIMIT 1];
         List<ServiceAppointment> serviceAppointments = [
@@ -374,7 +374,7 @@ private class HOT_UpdateWageClaimTest {
         System.assertEquals(2, wageClaims.size(), 'Could not update wageClaim with multiple SA updates');
     }
 
-    @isTest
+    @IsTest
     static void updateWageClaimsFutureTest_TimeChanged() {
         Test.startTest();
         ServiceResource serviceResource = [SELECT Id FROM ServiceResource LIMIT 1];

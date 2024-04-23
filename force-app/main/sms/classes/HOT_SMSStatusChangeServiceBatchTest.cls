@@ -1,10 +1,10 @@
-@isTest
+@IsTest
 private class HOT_SMSStatusChangeServiceBatchTest {
     @TestSetup
     static void setup() {
     }
 
-    @isTest
+    @IsTest
     static void batchableTest() {
         WorkType workType = HOT_TestDataFactory.createWorkType();
         insert workType;
@@ -30,7 +30,7 @@ private class HOT_SMSStatusChangeServiceBatchTest {
         System.assert(batchId != null);
     }
 
-    @isTest
+    @IsTest
     static void schedulableTest() {
         String cron_exp = '0 0 0 30 9 ? 2030';
         Test.startTest();

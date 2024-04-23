@@ -1,4 +1,4 @@
-@isTest
+@IsTest
 public without sharing class HOT_ThreadHandlerTest {
     @TestSetup
     static void makeData() {
@@ -7,7 +7,7 @@ public without sharing class HOT_ThreadHandlerTest {
         HOT_Request__c request = HOT_TestDataFactory.createRequest('TEST', workType);
         insert request;
     }
-    @isTest
+    @IsTest
     static void setThreadNameBasedOnRequestTest() {
         HOT_Request__c request = [SELECT Id, OwnerId, Subject__c FROM HOT_Request__c];
         Thread__c thread = HOT_TestDataFactory.createThread();
@@ -21,7 +21,7 @@ public without sharing class HOT_ThreadHandlerTest {
 
         System.assertEquals('SAMTALE MED BRUKER: TEST', thread.Name, 'Could not set thread Name based on request');
     }
-    @isTest
+    @IsTest
     static void setThreadNameBasedOnWorkorderTest() {
         WorkType workType = HOT_TestDataFactory.createWorkType();
         insert workType;
@@ -41,7 +41,7 @@ public without sharing class HOT_ThreadHandlerTest {
 
         System.assertEquals(thread.Id, t.Name, 'Could not set thread Name based on workOrder');
     }
-    @isTest
+    @IsTest
     static void setThreadNameBasedOnServiceAppointmentTest() {
         WorkType workType = HOT_TestDataFactory.createWorkType();
         insert workType;
@@ -77,7 +77,7 @@ public without sharing class HOT_ThreadHandlerTest {
             'Could not set thread Name based on workOrder'
         );
     }
-    @isTest
+    @IsTest
     static void setThreadNameBasedOnInterestedResourceTest() {
         WorkType workType = HOT_TestDataFactory.createWorkType();
         insert workType;
@@ -113,7 +113,7 @@ public without sharing class HOT_ThreadHandlerTest {
             'Could not set thread Name based on workOrder'
         );
     }
-    @isTest
+    @IsTest
     static void threadLongSubjectTest() {
         WorkType workType = HOT_TestDataFactory.createWorkType();
         insert workType;
@@ -137,7 +137,7 @@ public without sharing class HOT_ThreadHandlerTest {
             'Could not shorten the name'
         );
     }
-    @isTest
+    @IsTest
     static void createWageClaimThreadTest() {
         WorkType workType = HOT_TestDataFactory.createWorkType();
         insert workType;
@@ -176,7 +176,7 @@ public without sharing class HOT_ThreadHandlerTest {
 
         System.assertEquals(1, t.size(), 'Did not create a thread');
     }
-    @isTest
+    @IsTest
     static void createOrdererThreadTest() {
         Person__c person = HOT_TestDataFactory.createPerson();
         person.Name = '12015678999';
@@ -208,7 +208,7 @@ public without sharing class HOT_ThreadHandlerTest {
 
         System.assertEquals(1, t.size(), 'Did not create a thread');
     }
-    @isTest
+    @IsTest
     static void createUserOrdererThreadTest() {
         Person__c person = HOT_TestDataFactory.createPerson();
         person.Name = '12015678999';
@@ -240,7 +240,7 @@ public without sharing class HOT_ThreadHandlerTest {
 
         System.assertEquals(1, t.size(), 'Did not create a thread');
     }
-    @isTest
+    @IsTest
     static void createUserInterpreterThreadTest() {
         WorkType workType = HOT_TestDataFactory.createWorkType();
         insert workType;
@@ -265,7 +265,7 @@ public without sharing class HOT_ThreadHandlerTest {
 
         System.assertEquals(1, t.size(), 'Did not create a thread');
     }
-    @isTest
+    @IsTest
     static void createInterpreterInterpreterThreadTest() {
         WorkType workType = HOT_TestDataFactory.createWorkType();
         insert workType;
@@ -290,7 +290,7 @@ public without sharing class HOT_ThreadHandlerTest {
 
         System.assertEquals(1, t.size(), 'Did not create a thread');
     }
-    @isTest
+    @IsTest
     static void addParticipantOnNewThread() {
         Profile profile = [SELECT Id FROM Profile WHERE Name = 'Standard User' OR Name = 'Standardbruker' LIMIT 1];
         User user = HOT_TestDataFactory.createUser('user', profile);
@@ -336,7 +336,7 @@ public without sharing class HOT_ThreadHandlerTest {
 
         System.assertEquals(user.Id, t.HOT_ParticipantIds__c, 'Did not change/add correct participant to thread');
     }
-    @isTest
+    @IsTest
     static void changeParticipantOnThread() {
         Profile profile = [SELECT Id FROM Profile WHERE Name = 'Standard User' OR Name = 'Standardbruker' LIMIT 1];
         User user = HOT_TestDataFactory.createUser('user', profile);
@@ -395,7 +395,9 @@ public without sharing class HOT_ThreadHandlerTest {
         Test.stopTest();
 
         System.assertEquals(
-            user.Id + ', ' + user2.Id,
+            user.Id +
+            ', ' +
+            user2.Id,
             t.HOT_ParticipantIds__c,
             'Did not change/add correct participant to thread'
         );

@@ -1,4 +1,4 @@
-@isTest
+@IsTest
 private class HOT_UtilityTest {
     @testSetup
     static void setup() {
@@ -6,13 +6,13 @@ private class HOT_UtilityTest {
         insert serviceresource;
     }
 
-    @isTest
+    @IsTest
     static void testGetServiceResource() {
         ServiceResource serviceResource = HOT_Utility.getServiceResource();
         System.assertEquals(UserInfo.getUserId(), serviceResource.RelatedRecordId);
     }
 
-    @isTest
+    @IsTest
     static void testCheckAssignedPermissionSet() {
         PermissionSet ps = [SELECT Id FROM PermissionSet WHERE Name = 'HOT_Tolk_Ansatt'];
         PermissionSetAssignment permissionSetAssignment = new PermissionSetAssignment(
@@ -24,7 +24,7 @@ private class HOT_UtilityTest {
         Boolean hasPermissionSet = HOT_Utility.checkAssignedPermissionSet('HOT_Tolk_Ansatt');
         System.assertEquals(true, hasPermissionSet);
     }
-    @isTest
+    @IsTest
     static void testCheckAssignedPermissionSetGroup() {
         PermissionSetGroup psg = [SELECT Id FROM PermissionSetGroup WHERE DeveloperName = 'Test'];
         PermissionSetAssignment permissionSetAssignment = new PermissionSetAssignment(
@@ -37,7 +37,7 @@ private class HOT_UtilityTest {
         System.assertEquals(true, hasPermissionSet);
     }
 
-    @isTest
+    @IsTest
     static void testGetAssignedResource() {
         WorkType workType = HOT_TestDataFactory.createWorkType();
         insert workType;
@@ -69,7 +69,7 @@ private class HOT_UtilityTest {
         System.assertEquals(1, requestIdToServiceResources.get(request.Id).size(), 'Could not get assigned resources');
     }
 
-    @isTest
+    @IsTest
     static void testCheckUserHasEntitlement() {
         Person__c person = HOT_TestDataFactory.createPerson();
         insert person;
@@ -82,7 +82,7 @@ private class HOT_UtilityTest {
     }
 
     //TODO: //TODO: Oppdatere asserts til å sjekke epost og mobil på orderer, men må da kunne kjøre testen som en Community-bruker, noe som vi ikke har fått til enda
-    @isTest
+    @IsTest
     static void testGetOrdererDetails() {
         WorkType workType = HOT_TestDataFactory.createWorkType();
         insert workType;

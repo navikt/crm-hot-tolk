@@ -1,4 +1,4 @@
-@isTest
+@IsTest
 private class HOT_ServiceAppointmentHandlerTest {
     @testSetup
     static void setup() {
@@ -40,7 +40,7 @@ private class HOT_ServiceAppointmentHandlerTest {
         update request;
     }
 
-    @isTest
+    @IsTest
     static void setStatusDefaultTest() {
         ServiceAppointment serviceAppointment = [
             SELECT Status
@@ -50,7 +50,7 @@ private class HOT_ServiceAppointmentHandlerTest {
         System.assertEquals('None', serviceAppointment.Status, 'Default status was not set on ServiceAppointment.');
     }
 
-    @isTest
+    @IsTest
     static void setOwnerTest() {
         HOT_Request__c request = [SELECT OwnerId FROM HOT_Request__c];
         ServiceAppointment serviceAppointment = [
@@ -64,7 +64,7 @@ private class HOT_ServiceAppointmentHandlerTest {
             'Owner of ServiceAppointment was not set to owner of Request.'
         );
     }
-    @isTest
+    @IsTest
     static void setFieldsByPreferredResourceTest_onInsert() {
         ServiceResource serviceResource = [SELECT Id, HOT_IsFreelanceInterpreter__c FROM ServiceResource];
         ServiceAppointment serviceAppointment = [
@@ -78,7 +78,7 @@ private class HOT_ServiceAppointmentHandlerTest {
             'IsFreelanceInterpreter on ServiceAppointment was not set to IsFreelanceInterpreter on PreferredResources.'
         );
     }
-    @isTest
+    @IsTest
     static void setFieldsByPreferredResourceTest_onUpdate() {
         HOT_Resource__c resource = [SELECT Id, Name, Service_Resource__c FROM HOT_Resource__c];
 
@@ -107,7 +107,7 @@ private class HOT_ServiceAppointmentHandlerTest {
         );
     }
 
-    @isTest
+    @IsTest
     static void setFieldsIfPreferredResourceDeletedTest_onUpdate() {
         ServiceResource serviceResource = [
             SELECT Id, HOT_IsFreelanceInterpreter__c, HOT_IsEmployedInterpreter__c
@@ -158,7 +158,7 @@ private class HOT_ServiceAppointmentHandlerTest {
         system.assertEquals(true, serviceAppointment.HOT_IsEmployedInterpreter__c);
     }
 
-    @isTest
+    @IsTest
     static void cancelServiceAppointment() {
         ServiceAppointment sa = [
             SELECT Id, Status, HOT_ServiceResource__c, HOT_CanceledByInterpreter__c
@@ -196,7 +196,7 @@ private class HOT_ServiceAppointmentHandlerTest {
         System.assertEquals(false, sa.HOT_CanceledByInterpreter__c, 'Could not set CancelledByInterpreter to false');
     }
 
-    @isTest
+    @IsTest
     static void testRemoveAssignedResourceCancel() {
         Test.startTest();
         ServiceAppointment sa = [SELECT Id FROM ServiceAppointment LIMIT 1];
@@ -213,7 +213,7 @@ private class HOT_ServiceAppointmentHandlerTest {
         System.assertEquals(0, arList.size(), 'Could not delete AR');
         System.assertEquals('Canceled', sa.Status, 'Service Appointment did not retain correct status');
     }
-    @isTest
+    @IsTest
     static void testRemoveAssignedResourceNone() {
         Test.startTest();
         ServiceAppointment sa = [SELECT Id FROM ServiceAppointment LIMIT 1];
@@ -234,7 +234,7 @@ private class HOT_ServiceAppointmentHandlerTest {
         System.assertEquals('None', sa.Status, 'Service Appointment did not retain correct status');
     }
 
-    @isTest
+    @IsTest
     private static void testCreateHistoricallyAssignedResources_addResource() {
         WorkType workType = HOT_TestDataFactory.createWorkType();
         insert workType;
@@ -278,7 +278,7 @@ private class HOT_ServiceAppointmentHandlerTest {
         HOT_HistoricallyAssignedResource__c prevHAR = harList[0];
     }
 
-    @isTest
+    @IsTest
     private static void testCreateHistoricallyAssignedResources_statusChange() {
         ServiceAppointment serviceAppointment = [SELECT Id FROM ServiceAppointment LIMIT 1];
         ServiceResource resource = [SELECT Id FROM ServiceResource];
@@ -309,7 +309,7 @@ private class HOT_ServiceAppointmentHandlerTest {
         );
         System.assertEquals('Tildelt', harList[0].Status__c, 'Status har ikke blitt satt korrekt på HAR');
     }
-    @isTest
+    @IsTest
     private static void testCreateHistoricallyAssignedResources_resourceChange() {
         ServiceAppointment serviceAppointment = [SELECT Id FROM ServiceAppointment LIMIT 1];
         ServiceResource resource = [SELECT Id FROM ServiceResource];
@@ -371,7 +371,7 @@ private class HOT_ServiceAppointmentHandlerTest {
         );
     }
 
-    @isTest
+    @IsTest
     private static void testCreateHistoricallyAssignedResources_removedResource() {
         ServiceAppointment serviceAppointment = [SELECT Id FROM ServiceAppointment LIMIT 1];
         ServiceResource resource = [SELECT Id FROM ServiceResource];
@@ -406,7 +406,7 @@ private class HOT_ServiceAppointmentHandlerTest {
         );
     }
 
-    @isTest
+    @IsTest
     private static void testDoNotCreateHAR() {
         Test.startTest();
         WorkType workType = HOT_TestDataFactory.createWorkType();
@@ -450,7 +450,7 @@ private class HOT_ServiceAppointmentHandlerTest {
         System.assertEquals(1, harList.size());
         System.assertEquals(false, serviceAppointment.HOT_DoNotCreateHAR__c);
     }
-    @isTest
+    @IsTest
     private static void testGetTranslatedStatus() {
         Map<String, String> correctStatuses = new Map<String, String>();
         correctStatuses.put('', '');
@@ -467,7 +467,7 @@ private class HOT_ServiceAppointmentHandlerTest {
             System.assertEquals(correctStatuses.get(key), HOT_ServiceAppointmentHandler.getTranslatedStatus(key));
         }
     }
-    @isTest
+    @IsTest
     static void preserveScheduledTimes_onUpdate() {
         ServiceAppointment sa = [
             SELECT Id, Status, SchedEndTime, SchedStartTime, EarliestStartTime, DueDate
@@ -499,7 +499,7 @@ private class HOT_ServiceAppointmentHandlerTest {
         system.assertEquals('None', sa.Status, 'Status not set');
     }
 
-    @isTest
+    @IsTest
     static void updateScheduledTimes_onUpdate() {
         ServiceAppointment sa = [
             SELECT Id, EarliestStartTime, DueDate, SchedEndTime, SchedStartTime
@@ -519,7 +519,7 @@ private class HOT_ServiceAppointmentHandlerTest {
         system.assertEquals(sa.SchedEndTime, sa.DueDate, 'SchedEnd not set');
     }
 
-    @isTest
+    @IsTest
     private static void testReleaseToFreelance() {
         ServiceResource serviceResource = [SELECT Id FROM ServiceResource LIMIT 1];
         ServiceAppointment serviceAppointment = [
@@ -609,7 +609,7 @@ private class HOT_ServiceAppointmentHandlerTest {
         );
     }
 
-    @isTest
+    @IsTest
     public static void serviceAppointmentCompletedWithoutActualTimes() {
         ServiceAppointment serviceAppointment = [SELECT Id, Status, HOT_Request__c FROM ServiceAppointment LIMIT 1];
         HOT_Request__c request = [SELECT Id, Type__c FROM HOT_Request__c WHERE Id = :serviceAppointment.HOT_Request__c];
@@ -635,7 +635,7 @@ private class HOT_ServiceAppointmentHandlerTest {
         System.assertEquals(serviceAppointment.HOT_IsImageInterpreter__c, true, 'Could not set imgint');
     }
 
-    @isTest
+    @IsTest
     public static void startHourAndEndHourSameTimeAsScheduledDateTimes() {
         ServiceAppointment serviceAppointment = [
             SELECT Id, EarliestStartTime, DueDate, HOT_StartHour__c, HOT_EndHour__c
@@ -662,7 +662,7 @@ private class HOT_ServiceAppointmentHandlerTest {
         );
     }
 
-    @isTest
+    @IsTest
     public static void updateServiceTerritoryOnAssignedResourceDelete() {
         ServiceAppointment serviceAppointment = [
             SELECT Id, ServiceTerritoryId, HOT_WorkOrderLineItem__r.ServiceTerritoryId, ParentRecordId
@@ -716,7 +716,7 @@ private class HOT_ServiceAppointmentHandlerTest {
         );
     }
 
-    @isTest
+    @IsTest
     public static void addContentDocumentLinkToServiceAppointment() {
         HOT_Request__c request = [SELECT Id FROM HOT_Request__c LIMIT 1];
         ServiceAppointment serviceAppointment = [
@@ -764,7 +764,7 @@ private class HOT_ServiceAppointmentHandlerTest {
         );
     }
 
-    @isTest
+    @IsTest
     public static void actualTimeChanged() {
         ServiceAppointment serviceAppointment = [
             SELECT Id, ActualStartTime, ActualEndTime
@@ -793,7 +793,7 @@ private class HOT_ServiceAppointmentHandlerTest {
         );
     }
 
-    @isTest
+    @IsTest
     public static void setArchiveAsOwnerTest() {
         ServiceAppointment serviceAppointment = [SELECT Id, OwnerId FROM ServiceAppointment LIMIT 1];
 
@@ -822,7 +822,7 @@ private class HOT_ServiceAppointmentHandlerTest {
         );
     }
 
-    @isTest
+    @IsTest
     public static void checkIfHOTAccountFieldIsEqualToAccountOnInsert() {
         ServiceAppointment serviceAppointment = [SELECT Id, AccountId, HOT_Account__c FROM ServiceAppointment LIMIT 1];
         System.assertEquals(
@@ -832,7 +832,7 @@ private class HOT_ServiceAppointmentHandlerTest {
         );
     }
 
-    @isTest
+    @IsTest
     public static void actualStartTimesShouldBeSchedStartTimesTest() {
         ServiceAppointment serviceAppointment = [
             SELECT Id, AccountId, ActualStartTime, ActualEndTime, SchedStartTime, SchedEndTime, Status

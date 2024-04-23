@@ -1,6 +1,6 @@
-@isTest
+@IsTest
 private class HOT_AutoScheduleServiceTest {
-    @isTest
+    @IsTest
     private static void setAutoScheduleOnServiceAppointmentsTest() {
         WorkType workType = HOT_TestDataFactory.createWorkType();
         insert workType;

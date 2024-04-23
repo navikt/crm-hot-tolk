@@ -3,8 +3,8 @@
     <actionCalls>
         <name>Create_Community_Plus_User</name>
         <label>Create Community Plus User</label>
-        <locationX>1542</locationX>
-        <locationY>406</locationY>
+        <locationX>127</locationX>
+        <locationY>2114</locationY>
         <actionName>CommunityUsersService</actionName>
         <actionType>apex</actionType>
         <connector>
@@ -22,12 +22,33 @@
         <versionSegment>1</versionSegment>
     </actionCalls>
     <actionCalls>
+        <name>Create_Community_Plus_User2</name>
+        <label>Create Community Plus User2</label>
+        <locationX>314</locationX>
+        <locationY>1214</locationY>
+        <actionName>CommunityUsersService</actionName>
+        <actionType>apex</actionType>
+        <connector>
+            <targetReference>Update_Service_Resource</targetReference>
+        </connector>
+        <flowTransactionModel>CurrentTransaction</flowTransactionModel>
+        <inputParameters>
+            <name>personIdents</name>
+            <value>
+                <elementReference>PersonIdent</elementReference>
+            </value>
+        </inputParameters>
+        <nameSegment>CommunityUsersService</nameSegment>
+        <storeOutputAutomatically>true</storeOutputAutomatically>
+        <versionSegment>1</versionSegment>
+    </actionCalls>
+    <actionCalls>
         <description
         >Creates a service resource for the user depending on the choice from previous screen flow</description>
         <name>HOT_Create_Service_Resource_Invocable</name>
         <label>Create Service Resource Invocable</label>
-        <locationX>2054</locationX>
-        <locationY>407</locationY>
+        <locationX>127</locationX>
+        <locationY>2438</locationY>
         <actionName>HOT_ServiceResourceHandler</actionName>
         <actionType>apex</actionType>
         <connector>
@@ -54,8 +75,8 @@
     <decisions>
         <name>Access</name>
         <label>Access?</label>
-        <locationX>790</locationX>
-        <locationY>411</locationY>
+        <locationX>440</locationX>
+        <locationY>350</locationY>
         <defaultConnector>
             <targetReference>No_Access_Screen</targetReference>
         </defaultConnector>
@@ -79,8 +100,8 @@
     <decisions>
         <name>Existing_User</name>
         <label>Existing User</label>
-        <locationX>1211</locationX>
-        <locationY>411</locationY>
+        <locationX>127</locationX>
+        <locationY>674</locationY>
         <defaultConnector>
             <targetReference>HOT_Get_Service_Resource</targetReference>
         </defaultConnector>
@@ -111,8 +132,8 @@
     <decisions>
         <name>HOT_Has_Service_Resource</name>
         <label>Has Service Resource</label>
-        <locationX>1386</locationX>
-        <locationY>663</locationY>
+        <locationX>380</locationX>
+        <locationY>890</locationY>
         <defaultConnector>
             <targetReference>Get_Person_Account</targetReference>
         </defaultConnector>
@@ -136,10 +157,10 @@
     <decisions>
         <name>HOT_Is_Service_Resource_Active</name>
         <label>Is Service Resource Active?</label>
-        <locationX>1546</locationX>
-        <locationY>664</locationY>
+        <locationX>182</locationX>
+        <locationY>998</locationY>
         <defaultConnector>
-            <targetReference>HOT_Activate_Service_Resource</targetReference>
+            <targetReference>Get_Person_Account2</targetReference>
         </defaultConnector>
         <defaultConnectorLabel>No</defaultConnectorLabel>
         <rules>
@@ -184,7 +205,7 @@
     <processMetadataValues>
         <name>CanvasMode</name>
         <value>
-            <stringValue>FREE_FORM_CANVAS</stringValue>
+            <stringValue>AUTO_LAYOUT_CANVAS</stringValue>
         </value>
     </processMetadataValues>
     <processMetadataValues>
@@ -197,8 +218,8 @@
     <recordLookups>
         <name>Community_Plus_Profile</name>
         <label>Community Plus Profile</label>
-        <locationX>962</locationX>
-        <locationY>409</locationY>
+        <locationX>127</locationX>
+        <locationY>458</locationY>
         <assignNullValuesIfNoRecordsFound>false</assignNullValuesIfNoRecordsFound>
         <connector>
             <targetReference>Get_User</targetReference>
@@ -218,8 +239,8 @@
     <recordLookups>
         <name>Get_Current_User_Permission_Set_Assignment</name>
         <label>Get Current User Permission Set Assignment</label>
-        <locationX>652</locationX>
-        <locationY>409</locationY>
+        <locationX>440</locationX>
+        <locationY>242</locationY>
         <assignNullValuesIfNoRecordsFound>true</assignNullValuesIfNoRecordsFound>
         <connector>
             <targetReference>Access</targetReference>
@@ -250,8 +271,8 @@
     <recordLookups>
         <name>Get_Permission_Set</name>
         <label>Get Permission Set</label>
-        <locationX>458</locationX>
-        <locationY>409</locationY>
+        <locationX>440</locationX>
+        <locationY>134</locationY>
         <assignNullValuesIfNoRecordsFound>false</assignNullValuesIfNoRecordsFound>
         <connector>
             <targetReference>Get_Current_User_Permission_Set_Assignment</targetReference>
@@ -273,8 +294,8 @@
     <recordLookups>
         <name>Get_Person_Account</name>
         <label>Get Person Account</label>
-        <locationX>1393</locationX>
-        <locationY>406</locationY>
+        <locationX>127</locationX>
+        <locationY>2006</locationY>
         <assignNullValuesIfNoRecordsFound>true</assignNullValuesIfNoRecordsFound>
         <connector>
             <targetReference>Create_Community_Plus_User</targetReference>
@@ -296,10 +317,35 @@
         <sortOrder>Asc</sortOrder>
     </recordLookups>
     <recordLookups>
+        <name>Get_Person_Account2</name>
+        <label>Get Person Account2</label>
+        <locationX>314</locationX>
+        <locationY>1106</locationY>
+        <assignNullValuesIfNoRecordsFound>true</assignNullValuesIfNoRecordsFound>
+        <connector>
+            <targetReference>Create_Community_Plus_User2</targetReference>
+        </connector>
+        <filterLogic>and</filterLogic>
+        <filters>
+            <field>Id</field>
+            <operator>EqualTo</operator>
+            <value>
+                <elementReference>recordId</elementReference>
+            </value>
+        </filters>
+        <object>Account</object>
+        <outputAssignments>
+            <assignToReference>PersonIdent</assignToReference>
+            <field>INT_PersonIdent__c</field>
+        </outputAssignments>
+        <sortField>Id</sortField>
+        <sortOrder>Asc</sortOrder>
+    </recordLookups>
+    <recordLookups>
         <name>Get_User</name>
         <label>Get User</label>
-        <locationX>1097</locationX>
-        <locationY>409</locationY>
+        <locationX>127</locationX>
+        <locationY>566</locationY>
         <assignNullValuesIfNoRecordsFound>true</assignNullValuesIfNoRecordsFound>
         <connector>
             <targetReference>Existing_User</targetReference>
@@ -335,8 +381,8 @@
         <description>Gets available service territories from the Service Territory object</description>
         <name>HOT_Get_available_service_territories</name>
         <label>Get available service territories</label>
-        <locationX>1693</locationX>
-        <locationY>406</locationY>
+        <locationX>127</locationX>
+        <locationY>2222</locationY>
         <assignNullValuesIfNoRecordsFound>false</assignNullValuesIfNoRecordsFound>
         <connector>
             <targetReference>HOT_Service_Territory_picker</targetReference>
@@ -353,8 +399,8 @@
     <recordLookups>
         <name>HOT_Get_Service_Resource</name>
         <label>Get Service Resource</label>
-        <locationX>1220</locationX>
-        <locationY>662</locationY>
+        <locationX>380</locationX>
+        <locationY>782</locationY>
         <assignNullValuesIfNoRecordsFound>false</assignNullValuesIfNoRecordsFound>
         <connector>
             <targetReference>HOT_Has_Service_Resource</targetReference>
@@ -374,8 +420,8 @@
     <recordUpdates>
         <name>HOT_Activate_Service_Resource</name>
         <label>Activate Service Resource</label>
-        <locationX>1707</locationX>
-        <locationY>659</locationY>
+        <locationX>314</locationX>
+        <locationY>1430</locationY>
         <connector>
             <targetReference>Already_added_as_user_screen</targetReference>
         </connector>
@@ -399,8 +445,8 @@
     <screens>
         <name>Already_added_as_user_screen</name>
         <label>Already added as user</label>
-        <locationX>1849</locationX>
-        <locationY>659</locationY>
+        <locationX>314</locationX>
+        <locationY>1538</locationY>
         <allowBack>true</allowBack>
         <allowFinish>true</allowFinish>
         <allowPause>true</allowPause>
@@ -415,8 +461,8 @@
     <screens>
         <name>End_Screen</name>
         <label>End Screen</label>
-        <locationX>2313</locationX>
-        <locationY>407</locationY>
+        <locationX>127</locationX>
+        <locationY>2546</locationY>
         <allowBack>true</allowBack>
         <allowFinish>true</allowFinish>
         <allowPause>true</allowPause>
@@ -438,8 +484,8 @@
         <description>This screen wil show if the user already has a active service resource.</description>
         <name>HOT_Already_Active</name>
         <label>Already Active</label>
-        <locationX>1555</locationX>
-        <locationY>881</locationY>
+        <locationX>50</locationX>
+        <locationY>1106</locationY>
         <allowBack>true</allowBack>
         <allowFinish>true</allowFinish>
         <allowPause>true</allowPause>
@@ -456,8 +502,8 @@
         >Lets the user decide which service territory the freelance interpreter is operating in</description>
         <name>HOT_Service_Territory_picker</name>
         <label>Service Territory picker</label>
-        <locationX>1875</locationX>
-        <locationY>407</locationY>
+        <locationX>127</locationX>
+        <locationY>2330</locationY>
         <allowBack>true</allowBack>
         <allowFinish>true</allowFinish>
         <allowPause>true</allowPause>
@@ -481,8 +527,8 @@
     <screens>
         <name>No_Access_Screen</name>
         <label>No Access</label>
-        <locationX>797</locationX>
-        <locationY>580</locationY>
+        <locationX>754</locationX>
+        <locationY>458</locationY>
         <allowBack>true</allowBack>
         <allowFinish>true</allowFinish>
         <allowPause>true</allowPause>
@@ -494,9 +540,28 @@
         <showFooter>true</showFooter>
         <showHeader>true</showHeader>
     </screens>
+    <screens>
+        <name>Update_Service_Resource</name>
+        <label>Update Service Resource</label>
+        <locationX>314</locationX>
+        <locationY>1322</locationY>
+        <allowBack>false</allowBack>
+        <allowFinish>true</allowFinish>
+        <allowPause>false</allowPause>
+        <connector>
+            <targetReference>HOT_Activate_Service_Resource</targetReference>
+        </connector>
+        <fields>
+            <name>Update_SR</name>
+            <fieldText>&lt;p&gt;Trykk neste for å oppdatere Service Ressurs &lt;/p&gt;</fieldText>
+            <fieldType>DisplayText</fieldType>
+        </fields>
+        <showFooter>true</showFooter>
+        <showHeader>true</showHeader>
+    </screens>
     <start>
-        <locationX>50</locationX>
-        <locationY>152</locationY>
+        <locationX>314</locationX>
+        <locationY>0</locationY>
         <connector>
             <targetReference>Get_Permission_Set</targetReference>
         </connector>

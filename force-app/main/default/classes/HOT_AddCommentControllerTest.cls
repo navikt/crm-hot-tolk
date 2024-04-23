@@ -1,4 +1,4 @@
-@isTest
+@IsTest
 private class HOT_AddCommentControllerTest {
     @testSetup
     static void setup() {
@@ -9,7 +9,7 @@ private class HOT_AddCommentControllerTest {
     }
 
     //Endre til SOQL (tekst)
-    @isTest
+    @IsTest
     static void addCommentTest() {
         String requestSOQL = 'SELECT Id, MessageToDispatcher__c FROM HOT_Request__c WHERE Subject__c = \'Adding comment\'';
         SObject request = Database.query(requestSOQL)[0];

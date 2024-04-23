@@ -1,4 +1,4 @@
-@isTest
+@IsTest
 private class HOT_UserHandlerTest {
     @testSetup
     static void setup() {
@@ -21,7 +21,7 @@ private class HOT_UserHandlerTest {
         insert defaultCommunityProfile;
     }
 
-    @isTest
+    @IsTest
     static void createAnsattTolk() {
         List<Profile> profiles = [SELECT Id FROM Profile WHERE Name = 'HOT Tolk Ansatt'];
         if (profiles.size() > 0) {
@@ -39,32 +39,32 @@ private class HOT_UserHandlerTest {
     }
 
     //Tests if a user that was changed to HOT Ansatt Tolk has a Service Resource created.
-    @isTest
+    @IsTest
     static void changedToAnsattTolk() {
         List<Profile> profileTolkFormidler = [SELECT Id, Name FROM Profile WHERE Name = 'HOT Tolk Formidler'];
         Id oldProfileId;
 
         if (profileTolkFormidler.size() > 0) {
             Profile profileId = profileTolkFormidler[0];
-            User user = HOT_TestDataFactory.createUser('Testing', profileId);   
+            User user = HOT_TestDataFactory.createUser('Testing', profileId);
             insert user;
 
             oldProfileId = user.ProfileId;
             System.assert(user.ProfileId == oldProfileId);
-            
+
             Test.startTest();
             Profile profileTolkAnsatt = [SELECT Id, Name FROM Profile WHERE Name = 'HOT Tolk Ansatt'];
             HOT_TestDataFactory.changeUserProfile(user, profileTolkAnsatt);
             System.assert(!(user.ProfileId == oldProfileId));
             update user;
-            
+
             Test.stopTest();
             List<ServiceResource> serviceResources = [SELECT Id, Name, RelatedRecordId FROM ServiceResource];
             System.assertEquals(1, serviceResources.size(), serviceResources);
         }
     }
 
-    @isTest
+    @IsTest
     static void createAnsattTolkWithMiddleNameIncluded() {
         List<Profile> profiles = [SELECT Id FROM Profile WHERE Name = 'HOT Tolk Ansatt'];
         if (profiles.size() > 0) {

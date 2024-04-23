@@ -1,4 +1,4 @@
-@isTest
+@IsTest
 public class HOT_RequestNotificationTest {
     @testSetup
     static void setup() {
@@ -11,7 +11,7 @@ public class HOT_RequestNotificationTest {
         update request;
     }
 
-    @isTest
+    @IsTest
     private static void canceledByUserTest() {
         CustomNotificationType notificationType = [
             SELECT Id, DeveloperName

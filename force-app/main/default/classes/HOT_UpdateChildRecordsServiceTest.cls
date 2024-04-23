@@ -1,4 +1,4 @@
-@isTest
+@IsTest
 public with sharing class HOT_UpdateChildRecordsServiceTest {
     @IsTest
     static void updateChildRecordsServiceFlowTest() {

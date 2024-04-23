@@ -1,4 +1,4 @@
-@isTest
+@IsTest
 private class HOT_WageClaimServiceTest {
     @testSetup
     static void setup() {
@@ -31,7 +31,7 @@ private class HOT_WageClaimServiceTest {
         update new ServiceAppointment(Id = serviceAppointmentId, Status = 'Dispatched');
     }
 
-    @isTest
+    @IsTest
     static void getServiceAppointmentsTest() {
         Test.startTest();
         AssignedResource assignedResource = [SELECT Id, ServiceAppointmentId FROM AssignedResource];
@@ -46,7 +46,7 @@ private class HOT_WageClaimServiceTest {
         );
     }
 
-    @isTest
+    @IsTest
     static void SAWithARTimesChanged() {
         Test.startTest();
         AssignedResource assignedResource = [SELECT Id, ServiceAppointmentId, ServiceResourceId FROM AssignedResource];
@@ -88,7 +88,7 @@ private class HOT_WageClaimServiceTest {
         System.assertEquals(2, wageClaims.size(), 'Could not create WageClaim when actual time on SA was updated.');
     }
 
-    @isTest
+    @IsTest
     static void SAWithARTimesChangedAndIsAgreement() {
         AssignedResource assignedResource = [SELECT Id, ServiceAppointmentId, ServiceResourceId FROM AssignedResource];
         update new ServiceResource(Id = assignedResource.ServiceResourceId, HOT_AgreementFreelance__c = true);

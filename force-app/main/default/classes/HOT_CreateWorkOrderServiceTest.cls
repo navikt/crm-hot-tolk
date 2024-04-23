@@ -1,6 +1,6 @@
-@isTest
+@IsTest
 private class HOT_CreateWorkOrderServiceTest {
-    @isTest
+    @IsTest
     private static void createWorkOrdersNever() {
         WorkType workType = HOT_TestDataFactory.createWorkType();
         insert workType;
@@ -39,7 +39,7 @@ private class HOT_CreateWorkOrderServiceTest {
         );
     }
 
-    @isTest
+    @IsTest
     private static void createOver200WorkOrdersToFail() {
         Boolean errorOccured = false;
         WorkType workType = HOT_TestDataFactory.createWorkType();
@@ -62,7 +62,7 @@ private class HOT_CreateWorkOrderServiceTest {
         Test.stopTest();
     }
 
-    @isTest
+    @IsTest
     private static void createWorkOrdersDaily() {
         WorkType workType = HOT_TestDataFactory.createWorkType();
         insert workType;
@@ -87,7 +87,7 @@ private class HOT_CreateWorkOrderServiceTest {
         System.assertEquals(11, workOrders.size(), 'Det ble ikke opprettet korrekt antall arbeidsordre');
     }
 
-    @isTest
+    @IsTest
     private static void createWorkOrdersWeekly() {
         WorkType workType = HOT_TestDataFactory.createWorkType();
         insert workType;
@@ -119,7 +119,7 @@ private class HOT_CreateWorkOrderServiceTest {
         System.assertEquals(14, workOrders.size(), 'Det ble ikke opprettet korrekt antall arbeidsordre');
     }
 
-    @isTest
+    @IsTest
     private static void createWorkOrdersBiweekly() {
         WorkType workType = HOT_TestDataFactory.createWorkType();
         insert workType;
@@ -151,7 +151,7 @@ private class HOT_CreateWorkOrderServiceTest {
         System.assertEquals(14, workOrders.size(), 'Det ble ikke opprettet korrekt antall arbeidsordre');
     }
 
-    @isTest
+    @IsTest
     private static void createWorkOrdersMonthly_1() {
         WorkType workType = HOT_TestDataFactory.createWorkType();
         insert workType;
@@ -176,7 +176,7 @@ private class HOT_CreateWorkOrderServiceTest {
         System.assertEquals(11, workOrders.size(), 'Det ble ikke opprettet korrekt antall arbeidsordre');
     }
 
-    @isTest
+    @IsTest
     private static void createWorkOrdersMonthly_2() {
         WorkType workType = HOT_TestDataFactory.createWorkType();
         insert workType;
@@ -201,7 +201,7 @@ private class HOT_CreateWorkOrderServiceTest {
         System.assertEquals(11, workOrders.size(), 'Det ble ikke opprettet korrekt antall arbeidsordre');
     }
 
-    @isTest
+    @IsTest
     private static void Error_EndTimeBeforeStartTime() {
         WorkType workType = HOT_TestDataFactory.createWorkType();
         insert workType;
@@ -225,7 +225,7 @@ private class HOT_CreateWorkOrderServiceTest {
         System.assertEquals(0, workOrders.size(), 'Det ble feilaktig opprettet arbeidsordre');
         System.assertEquals(1, errors.size(), 'Det ble feilaktig opprettet arbeidsordre');
     }
-    @isTest
+    @IsTest
     private static void Error_recurringEndDateEqualStartDate() {
         WorkType workType = HOT_TestDataFactory.createWorkType();
         insert workType;
@@ -250,7 +250,7 @@ private class HOT_CreateWorkOrderServiceTest {
         System.assertEquals(0, workOrders.size(), 'Det ble feilaktig opprettet arbeidsordre');
         System.assertEquals(1, errors.size(), 'Det ble feilaktig opprettet arbeidsordre');
     }
-    @isTest
+    @IsTest
     private static void Error_WeeklyAllDaysFalse() {
         WorkType workType = HOT_TestDataFactory.createWorkType();
         insert workType;
@@ -282,7 +282,7 @@ private class HOT_CreateWorkOrderServiceTest {
         System.assertEquals(0, workOrders.size(), 'Det ble feilaktig opprettet arbeidsordre');
         System.assertEquals(1, errors.size(), 'Det ble feilaktig opprettet arbeidsordre');
     }
-    @isTest
+    @IsTest
     private static void Error_Daily201() {
         WorkType workType = HOT_TestDataFactory.createWorkType();
         insert workType;
@@ -307,7 +307,7 @@ private class HOT_CreateWorkOrderServiceTest {
         System.assertEquals(0, workOrders.size(), 'Det ble feilaktig opprettet arbeidsordre');
         System.assertEquals(1, errors.size(), 'Det ble feilaktig opprettet arbeidsordre');
     }
-    @isTest
+    @IsTest
     private static void Error_Weekly201() {
         WorkType workType = HOT_TestDataFactory.createWorkType();
         insert workType;
@@ -339,7 +339,7 @@ private class HOT_CreateWorkOrderServiceTest {
         System.assertEquals(0, workOrders.size(), 'Det ble feilaktig opprettet arbeidsordre');
         System.assertEquals(1, errors.size(), 'Det ble feilaktig opprettet arbeidsordre');
     }
-    @isTest
+    @IsTest
     private static void Error_Monthly201() {
         WorkType workType = HOT_TestDataFactory.createWorkType();
         insert workType;
@@ -364,7 +364,7 @@ private class HOT_CreateWorkOrderServiceTest {
         System.assertEquals(0, workOrders.size(), 'Det ble feilaktig opprettet arbeidsordre');
         System.assertEquals(1, errors.size(), 'Det ble feilaktig opprettet arbeidsordre');
     }
-    @isTest
+    @IsTest
     private static void Error_TypeNULL() {
         WorkType workType = HOT_TestDataFactory.createWorkType();
         insert workType;
@@ -387,7 +387,7 @@ private class HOT_CreateWorkOrderServiceTest {
         System.assertEquals(0, workOrders.size(), 'Det ble feilaktig opprettet arbeidsordre');
         System.assertEquals(0, errors.size(), 'Det ble feilaktig opprettet arbeidsordre');
     }
-    @isTest
+    @IsTest
     private static void Error_NeverRequestNULL() {
         WorkType workType = HOT_TestDataFactory.createWorkType();
         insert workType;
@@ -411,7 +411,7 @@ private class HOT_CreateWorkOrderServiceTest {
         System.assertEquals(0, workOrders.size(), 'Det ble feilaktig opprettet arbeidsordre');
         System.assertEquals(1, errors.size(), 'Det ble feilaktig opprettet arbeidsordre');
     }
-    @isTest
+    @IsTest
     private static void Error_DailyRequestNULL() {
         WorkType workType = HOT_TestDataFactory.createWorkType();
         insert workType;
@@ -436,7 +436,7 @@ private class HOT_CreateWorkOrderServiceTest {
         System.assertEquals(0, workOrders.size(), 'Det ble feilaktig opprettet arbeidsordre');
         System.assertEquals(1, errors.size(), 'Det ble feilaktig opprettet arbeidsordre');
     }
-    @isTest
+    @IsTest
     private static void Error_WeeklyRequestNULL() {
         WorkType workType = HOT_TestDataFactory.createWorkType();
         insert workType;
@@ -468,7 +468,7 @@ private class HOT_CreateWorkOrderServiceTest {
         System.assertEquals(0, workOrders.size(), 'Det ble feilaktig opprettet arbeidsordre');
         System.assertEquals(1, errors.size(), 'Det ble feilaktig opprettet arbeidsordre');
     }
-    @isTest
+    @IsTest
     private static void Error_MonthlyRequestNULL() {
         WorkType workType = HOT_TestDataFactory.createWorkType();
         insert workType;
@@ -494,7 +494,7 @@ private class HOT_CreateWorkOrderServiceTest {
         System.assertEquals(1, errors.size(), 'Det ble feilaktig opprettet arbeidsordre');
     }
 
-    @isTest
+    @IsTest
     private static void createWorkOrdersfromCommunity() {
         WorkType workType = HOT_TestDataFactory.createWorkType();
         insert workType;
@@ -522,7 +522,7 @@ private class HOT_CreateWorkOrderServiceTest {
         List<WorkOrder> workOrders = [SELECT Id, HOT_Request__c, StartDate, EndDate FROM WorkOrder];
         System.assertEquals(1, workOrders.size(), 'Det ble ikke opprettet korrekt antall arbeidsordre');
     }
-    @isTest
+    @IsTest
     private static void Error_TooManyWorkOrders() {
         WorkType workType = HOT_TestDataFactory.createWorkType();
         insert workType;

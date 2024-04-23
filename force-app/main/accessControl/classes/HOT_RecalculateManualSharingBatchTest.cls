@@ -1,4 +1,4 @@
-@isTest
+@IsTest
 private class HOT_RecalculateManualSharingBatchTest {
     @TestSetup
     static void setup() {
@@ -9,7 +9,7 @@ private class HOT_RecalculateManualSharingBatchTest {
         insert resource;
     }
 
-    @isTest
+    @IsTest
     static void batchableTest() {
         WorkType workType = HOT_TestDataFactory.createWorkType();
         insert workType;
@@ -46,7 +46,7 @@ private class HOT_RecalculateManualSharingBatchTest {
         Test.stopTest();
     }
 
-    @isTest
+    @IsTest
     static void schedulableTest() {
         String cron_exp = '0 0 0 3 9 ? 2024';
         Test.startTest();

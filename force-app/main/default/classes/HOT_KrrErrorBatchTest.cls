@@ -1,6 +1,6 @@
-@isTest
+@IsTest
 private with sharing class HOT_KrrErrorBatchTest {
-    @isTest
+    @IsTest
     static void batchableTest() {
         Person__c person = HOT_TestDataFactory.createPerson();
         person.Name = 'Person test';
@@ -23,7 +23,7 @@ private with sharing class HOT_KrrErrorBatchTest {
         System.assertEquals(2, personRes.HOT_KrrIntegrationErrorCounter__c);
     }
 
-    @isTest
+    @IsTest
     static void schedulableTest() {
         String cron_exp = '0 0 0 3 9 ? 2024';
         Test.startTest();
