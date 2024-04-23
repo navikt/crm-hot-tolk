@@ -264,8 +264,8 @@
             <name>No</name>
             <conditionLogic>and</conditionLogic>
             <conditions>
-                <leftValueReference>Interested_Resource</leftValueReference>
-                <operator>WasVisited</operator>
+                <leftValueReference>interestedResource</leftValueReference>
+                <operator>IsNull</operator>
                 <rightValue>
                     <booleanValue>true</booleanValue>
                 </rightValue>
