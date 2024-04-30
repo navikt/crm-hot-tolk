@@ -506,10 +506,9 @@ public without sharing class HOT_MessageHelper {
      */
     @AuraEnabled
     public static void markAsReadByNav(Id threadId) {
-        List<Thread__c> thread=[SELECT Id, CRM_Related_Object__c FROM Thread__c WHERE Id=:threadId];
+        List<Thread__c> thread=[SELECT Id, CRM_Related_Object__c, HOT_ServiceAppointment__c FROM Thread__c WHERE Id=:threadId];
         if(thread.size()!=0){
-            Id relatedObjectId= thread[0].CRM_Related_Object__c;
-             if (relatedObjectId.getSobjectType() == ServiceAppointment.sObjectType) {
+             if (thread[0].HOT_ServiceAppointment__c !=null) {
                 User currentUser = [SELECT Id FROM User WHERE Id = :UserInfo.getUserId()];
                 List<ServiceResource> serviceResource =[SELECT Id, RelatedRecordId FROM ServiceResource WHERE RelatedRecordId=:currentUser.Id];
                 if(serviceResource.size()==0){
