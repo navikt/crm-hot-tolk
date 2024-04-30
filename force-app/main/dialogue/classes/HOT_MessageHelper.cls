@@ -506,10 +506,9 @@ public without sharing class HOT_MessageHelper {
      */
     @AuraEnabled
     public static void markAsReadByNav(Id threadId) {
-        List<Thread__c> thread=[SELECT Id, CRM_Related_Object__c FROM Thread__c WHERE Id=:threadId];
+        List<Thread__c> thread=[SELECT Id, CRM_Related_Object__c, HOT_ServiceAppointment__c, HOT_ParticipantIds__c FROM Thread__c WHERE Id=:threadId];
         if(thread.size()!=0){
-            Id relatedObjectId= thread[0].CRM_Related_Object__c;
-             if (relatedObjectId.getSobjectType() == ServiceAppointment.sObjectType) {
+             if (thread[0].HOT_ServiceAppointment__c !=null) {
                 User currentUser = [SELECT Id FROM User WHERE Id = :UserInfo.getUserId()];
                 List<ServiceResource> serviceResource =[SELECT Id, RelatedRecordId FROM ServiceResource WHERE RelatedRecordId=:currentUser.Id];
                 if(serviceResource.size()==0){
@@ -532,20 +531,23 @@ public without sharing class HOT_MessageHelper {
                     if(ar.size()!=0){
                     }
                     else{
-                        List<Message__c> msgList = [
-                                    SELECT Id, CRM_Read_By_Nav__c, CRM_Read_By_Nav_Datetime__c
-                                    FROM Message__c
-                                    WHERE CRM_Read_By_Nav__c = FALSE AND CRM_Thread__c = :threadId
-                                ];
-                                for (Message__c msg : msgList) {
-                                    msg.CRM_Read_By_Nav__c = true;
-                                    msg.CRM_Read_By_Nav_Datetime__c = DateTime.now();
-                                }
-                                try {
-                                    update msgList;
-                                } catch (Exception e) {
-                                    throw new AuraHandledException(e.getMessage());
-                                }
+                        Boolean IdInParticipants=thread[0].HOT_ParticipantIds__c.contains(currentUser.Id);
+                        if(!IdInParticipants){
+                            List<Message__c> msgList = [
+                                        SELECT Id, CRM_Read_By_Nav__c, CRM_Read_By_Nav_Datetime__c
+                                        FROM Message__c
+                                        WHERE CRM_Read_By_Nav__c = FALSE AND CRM_Thread__c = :threadId
+                                    ];
+                                    for (Message__c msg : msgList) {
+                                        msg.CRM_Read_By_Nav__c = true;
+                                        msg.CRM_Read_By_Nav_Datetime__c = DateTime.now();
+                                    }
+                                    try {
+                                        update msgList;
+                                    } catch (Exception e) {
+                                        throw new AuraHandledException(e.getMessage());
+                                    }
+                        }
                     }
 
                 }
