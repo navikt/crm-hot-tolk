@@ -191,7 +191,6 @@ public without sharing class HOT_ThreadHandler extends MyTriggers {
         HOT_DatabaseOperations.updateRecords(threads);
     }
 
-    @Future
     public static void setInterpreterOnThreadOneToOne(Set<Id> threadIds) {
         List<Thread__c> threads = [
             SELECT Id, HOT_ParticipantIds__c, CRM_Related_Object__c
