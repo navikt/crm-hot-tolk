@@ -95,7 +95,7 @@ public without sharing class HOT_InterestedResourceHandler extends MyTriggers {
             FROM Thread__c
             WHERE CRM_Related_Object__c IN :potentialSAWithThreadsIds AND CRM_Thread_Type__c = 'HOT_TOLK-FORMIDLER'
         ];
-        if(exisitingThreadsToBeTransferred.size()!=null){
+        if(exisitingThreadsToBeTransferred.size()!=0){
             //Finn ir hvor accountid og serviceappointment id er samme
             Set<Id> accountIds = new Set<Id>();
             for (Thread__c thread : exisitingThreadsToBeTransferred) {
