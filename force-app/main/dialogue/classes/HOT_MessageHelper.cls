@@ -254,12 +254,6 @@ public without sharing class HOT_MessageHelper {
                     AND ServiceAppointment__r.Status = 'Dispatched'
                     AND Status__c = 'Assigned')
                     OR (ServiceAppointment__c = :recordId
-                    AND Status__c = 'Canceled')
-                    OR (ServiceAppointment__c = :recordId
-                    AND Status__c = 'Canceled by Interpreter')
-                    OR (ServiceAppointment__c = :recordId
-                    AND Status__c = 'Cannot Complete')
-                    OR (ServiceAppointment__c = :recordId
                     AND ServiceAppointment__r.Status = 'Completed'
                     AND Status__c = 'Assigned')
             ];
@@ -306,8 +300,6 @@ public without sharing class HOT_MessageHelper {
                 WHERE
                     Id = :recordId
                     AND Status__c != 'Assigned'
-                    AND Status__c != 'Canceled'
-                    AND Status__c != 'Canceled by Interpreter'
             ];
             thread.CRM_Related_Object__c = recordId;
             thread.CRM_Thread_Type__c = 'HOT_TOLK-FORMIDLER';

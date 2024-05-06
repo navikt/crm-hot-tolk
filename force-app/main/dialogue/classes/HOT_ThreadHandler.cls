@@ -202,7 +202,7 @@ public without sharing class HOT_ThreadHandler extends MyTriggers {
         for (Thread__c thread : threads) {
             threadRelatedObjectId.add(thread.CRM_Related_Object__c);
         }
-
+        
         List<ServiceAppointment> saList = [
             SELECT Id, HOT_ServiceResource__r.RelatedRecordId
             FROM ServiceAppointment
@@ -213,32 +213,11 @@ public without sharing class HOT_ThreadHandler extends MyTriggers {
             FROM HOT_InterestedResource__c
             WHERE Id IN :threadRelatedObjectId
         ];
-         List<HOT_InterestedResource__c> irListWhenNoSr = [
-                SELECT
-                    Id,
-                    Status__c,
-                    ServiceAppointment__c,
-                    ServiceResource__r.RelatedRecordId
-                FROM HOT_InterestedResource__c
-                WHERE 
-                ServiceAppointment__c IN :threadRelatedObjectId
-                    AND (
-                    Status__c = 'Canceled' OR
-                    Status__c = 'Canceled by Interpreter' OR
-                    Status__c = 'Cannot Complete')
-            ];
         if (saList.size() > 0) {
             for (Thread__c thread : threads) {
                 for (ServiceAppointment sa : saList) {
                     if (thread.CRM_Related_Object__c == sa.Id && sa.HOT_ServiceResource__r.RelatedRecordId != null) {
                         thread.HOT_ParticipantIds__c = sa.HOT_ServiceResource__r.RelatedRecordId;
-                    }
-                    else{
-                        for (HOT_InterestedResource__c ir : irListWhenNoSr) {
-                            if (thread.CRM_Related_Object__c == ir.ServiceAppointment__c) {
-                                thread.HOT_ParticipantIds__c = ir.ServiceResource__r.RelatedRecordId;
-                            }
-                        }
                     }
                 }
             }
