@@ -95,38 +95,39 @@ public without sharing class HOT_InterestedResourceHandler extends MyTriggers {
             FROM Thread__c
             WHERE CRM_Related_Object__c IN :potentialSAWithThreadsIds AND CRM_Thread_Type__c = 'HOT_TOLK-FORMIDLER'
         ];
-
-        //Finn ir hvor accountid og serviceappointment id er samme
-        Set<Id> accountIds = new Set<Id>();
-        for (Thread__c thread : exisitingThreadsToBeTransferred) {
-            accountIds.add(thread.CRM_Account__c);
-        }
-        List<HOT_InterestedResource__c> irList = [
-            SELECT Id, ServiceAppointment__c
-            FROM HOT_InterestedResource__c
-            WHERE ServiceResource__r.AccountId IN :accountIds AND ServiceAppointment__c IN :potentialSAWithThreadsIds
-        ];
-        //LOOP om threads sin related record er samme serviceappointmentId. Så sett ir sin id som related object
-        Map<Id, List<Id>> saIdToIrIdListMap = new Map<Id, List<Id>>();
-        for (HOT_InterestedResource__c ir : irList) {
-            if (!saIdToIrIdListMap.containsKey(ir.ServiceAppointment__c)) {
-                saIdToIrIdListMap.put(ir.ServiceAppointment__c, new List<Id>{ ir.Id });
-            } else {
-                saIdToIrIdListMap.get(ir.ServiceAppointment__c).add(ir.Id);
-            }
-        }
-
-        if (exisitingThreadsToBeTransferred.size() != 0) {
+        if(exisitingThreadsToBeTransferred.size()!=null){
+            //Finn ir hvor accountid og serviceappointment id er samme
+            Set<Id> accountIds = new Set<Id>();
             for (Thread__c thread : exisitingThreadsToBeTransferred) {
-                if (
-                    saIdToIrIdListMap.containsKey(thread.HOT_ServiceAppointment__c) &&
-                    thread.HOT_IsEmployeeThread__c == false
-                ) {
-                    thread.CRM_Related_Object__c = saIdToIrIdListMap.get(thread.HOT_ServiceAppointment__c)[0];
-                    thread.HOT_InterestedResource__c = saIdToIrIdListMap.get(thread.HOT_ServiceAppointment__c)[0];
+                accountIds.add(thread.CRM_Account__c);
+            }
+            List<HOT_InterestedResource__c> irList = [
+                SELECT Id, ServiceAppointment__c
+                FROM HOT_InterestedResource__c
+                WHERE ServiceResource__r.AccountId IN :accountIds AND ServiceAppointment__c IN :potentialSAWithThreadsIds
+            ];
+            //LOOP om threads sin related record er samme serviceappointmentId. Så sett ir sin id som related object
+            Map<Id, List<Id>> saIdToIrIdListMap = new Map<Id, List<Id>>();
+            for (HOT_InterestedResource__c ir : irList) {
+                if (!saIdToIrIdListMap.containsKey(ir.ServiceAppointment__c)) {
+                    saIdToIrIdListMap.put(ir.ServiceAppointment__c, new List<Id>{ ir.Id });
+                } else {
+                    saIdToIrIdListMap.get(ir.ServiceAppointment__c).add(ir.Id);
                 }
             }
-            update exisitingThreadsToBeTransferred;
+    
+            if (exisitingThreadsToBeTransferred.size() != 0) {
+                for (Thread__c thread : exisitingThreadsToBeTransferred) {
+                    if (
+                        saIdToIrIdListMap.containsKey(thread.HOT_ServiceAppointment__c) &&
+                        thread.HOT_IsEmployeeThread__c == false
+                    ) {
+                        thread.CRM_Related_Object__c = saIdToIrIdListMap.get(thread.HOT_ServiceAppointment__c)[0];
+                        thread.HOT_InterestedResource__c = saIdToIrIdListMap.get(thread.HOT_ServiceAppointment__c)[0];
+                    }
+                }
+                update exisitingThreadsToBeTransferred;
+            }
         }
 
         //
