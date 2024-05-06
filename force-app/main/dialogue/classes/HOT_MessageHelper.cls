@@ -254,22 +254,29 @@ public without sharing class HOT_MessageHelper {
                     AND ServiceAppointment__r.Status = 'Dispatched'
                     AND Status__c = 'Assigned')
                     OR (ServiceAppointment__c = :recordId
-                    AND Status__c = 'Canceled')
-                    OR (ServiceAppointment__c = :recordId
-                    AND Status__c = 'Canceled by Interpreter')
-                    OR (ServiceAppointment__c = :recordId
-                    AND Status__c = 'Cannot Complete')
-                    OR (ServiceAppointment__c = :recordId
                     AND ServiceAppointment__r.Status = 'Completed'
                     AND Status__c = 'Assigned')
             ];
             if (irList.isEmpty()) {
                 //=Ansatt-tolk
+                List<HOT_InterestedResource__c> existingIrNoEmployeeList = [
+                SELECT
+                    Id,
+                    ServiceAppointment__r.Subject,
+                    ServiceResource__c,
+                    ServiceAppointment__r.HOT_Request__r.Dispatcher__c
+                FROM HOT_InterestedResource__c WHERE ServiceAppointment__c = :recordId];
+
                 AssignedResource ar = [
                     SELECT Id, ServiceAppointmentId, ServiceResourceId
                     FROM AssignedResource
                     WHERE ServiceAppointmentId = :recordId
                 ];
+                for(HOT_InterestedResource__c ir : existingIrNoEmployeeList){
+                    if(ir.ServiceResource__c==ar.ServiceResourceId){
+                        throw new AuraHandledException('no employee');
+                    }
+                }
                 //ServiceResource sr=[SELECT Id, AccountId FROM ServiceResource WHERE Id=:ar.ServiceResourceId];
                 ServiceAppointment sa = [
                     SELECT Id, Subject, HOT_Request__r.Dispatcher__c
@@ -298,24 +305,28 @@ public without sharing class HOT_MessageHelper {
         if (objectType == 'HOT_InterestedResource__c') {
             HOT_InterestedResource__c ir = [
                 SELECT
-                    Id,
-                    ServiceAppointment__r.Subject,
-                    ServiceResource__r.AccountId,
-                    ServiceAppointment__r.HOT_Request__r.Dispatcher__c
+                Id,
+                ServiceAppointment__r.Subject,
+                ServiceResource__r.AccountId,
+                ServiceAppointment__r.HOT_Request__r.Dispatcher__c,
+                ServiceAppointment__c
                 FROM HOT_InterestedResource__c
                 WHERE
-                    Id = :recordId
-                    AND Status__c != 'Assigned'
-                    AND Status__c != 'Canceled'
-                    AND Status__c != 'Canceled by Interpreter'
-            ];
-            thread.CRM_Related_Object__c = recordId;
-            thread.CRM_Thread_Type__c = 'HOT_TOLK-FORMIDLER';
-            thread.CRM_Account__c = ir.ServiceResource__r.AccountId;
-            thread.HOT_InterestedResource__c = recordId;
-            thread.HOT_Title__c = ir.ServiceAppointment__r.Subject;
-            thread.HOT_Dispatcher__c = ir.ServiceAppointment__r.HOT_Request__r.Dispatcher__c;
-            HOT_DatabaseOperations.insertRecords(thread);
+                Id = :recordId
+                AND Status__c != 'Assigned'
+                ];
+            List<Thread__c> checkExistingThreads = [SELECT Id, CRM_Account__c, HOT_ServiceAppointment__c FROM Thread__c WHERE CRM_Account__c =:ir.ServiceResource__r.AccountId AND HOT_ServiceAppointment__c=:ir.ServiceAppointment__c];
+            if(checkExistingThreads.size()==0){
+                thread.CRM_Related_Object__c = recordId;
+                thread.CRM_Thread_Type__c = 'HOT_TOLK-FORMIDLER';
+                thread.CRM_Account__c = ir.ServiceResource__r.AccountId;
+                thread.HOT_InterestedResource__c = recordId;
+                thread.HOT_Title__c = ir.ServiceAppointment__r.Subject;
+                thread.HOT_Dispatcher__c = ir.ServiceAppointment__r.HOT_Request__r.Dispatcher__c;
+                HOT_DatabaseOperations.insertRecords(thread);  
+            }else{
+                throw new AuraHandledException('thread exist');
+            }
         }
         if (objectType == 'HOT_WageClaim__c') {
             HOT_WageClaim__c wageClaim = [
