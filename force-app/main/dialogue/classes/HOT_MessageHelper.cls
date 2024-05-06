@@ -259,11 +259,24 @@ public without sharing class HOT_MessageHelper {
             ];
             if (irList.isEmpty()) {
                 //=Ansatt-tolk
+                List<HOT_InterestedResource__c> checkIfNotEmployee = [
+                SELECT
+                    Id,
+                    ServiceAppointment__r.Subject,
+                    ServiceResource__c,
+                    ServiceAppointment__r.HOT_Request__r.Dispatcher__c
+                FROM HOT_InterestedResource__c WHERE ServiceAppointment__c = :recordId];
+
                 AssignedResource ar = [
                     SELECT Id, ServiceAppointmentId, ServiceResourceId
                     FROM AssignedResource
                     WHERE ServiceAppointmentId = :recordId
                 ];
+                for(HOT_InterestedResource__c ir : checkIfNotEmployee){
+                    if(ir.ServiceResource__c==ar.ServiceResourceId){
+                        throw new AuraHandledException('no employee');
+                    }
+                }
                 //ServiceResource sr=[SELECT Id, AccountId FROM ServiceResource WHERE Id=:ar.ServiceResourceId];
                 ServiceAppointment sa = [
                     SELECT Id, Subject, HOT_Request__r.Dispatcher__c
