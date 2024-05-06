@@ -259,7 +259,7 @@ public without sharing class HOT_MessageHelper {
             ];
             if (irList.isEmpty()) {
                 //=Ansatt-tolk
-                List<HOT_InterestedResource__c> checkIfNotEmployee = [
+                List<HOT_InterestedResource__c> existingIrNoEmployeeList = [
                 SELECT
                     Id,
                     ServiceAppointment__r.Subject,
@@ -272,7 +272,7 @@ public without sharing class HOT_MessageHelper {
                     FROM AssignedResource
                     WHERE ServiceAppointmentId = :recordId
                 ];
-                for(HOT_InterestedResource__c ir : checkIfNotEmployee){
+                for(HOT_InterestedResource__c ir : existingIrNoEmployeeList){
                     if(ir.ServiceResource__c==ar.ServiceResourceId){
                         throw new AuraHandledException('no employee');
                     }
