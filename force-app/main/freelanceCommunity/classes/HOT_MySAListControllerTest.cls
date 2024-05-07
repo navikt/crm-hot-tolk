@@ -184,7 +184,7 @@ private class HOT_MySAListControllerTest {
         insert t;
 
         String threadSAId = HOT_MyServiceAppointmentListController.getThreadServiceAppointmentId(serviceAppointment.Id);
-        System.assertEquals(null, threadSAId, 'Did not get the expected thread');
+        System.assertEquals('', threadSAId, 'Did not get the expected thread');
     }
     @IsTest
     static void getThreadServiceAppointmentIdNoThreadTest() {
