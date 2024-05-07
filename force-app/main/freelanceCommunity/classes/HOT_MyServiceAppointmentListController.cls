@@ -192,7 +192,7 @@ public without sharing class HOT_MyServiceAppointmentListController {
     }
     @AuraEnabled
     public static String getThreadServiceAppointmentId(String serviceAppointmentId) {
-        //om den er assigned så er serviceappointmentid riktig, ellers alt annet brukt IR id.
+        String Id = '';
         try {
             Id userId = UserInfo.getUserId();
             List<ServiceResource> serviceResource = [SELECT Id, Name FROM ServiceResource WHERE RelatedRecordId = :userId];
@@ -204,7 +204,7 @@ public without sharing class HOT_MyServiceAppointmentListController {
                 WHERE
                     ServiceResource__c IN :serviceResource AND ServiceAppointment__c=:serviceAppointmentId
             ];
-            String Id = '';
+            
             if(interestedResource.Status__c=='Assigned'){
                 Thread__c thread = [SELECT Id FROM Thread__c WHERE CRM_Related_Object__c = :serviceAppointmentId LIMIT 1];
                 if (thread.Id != null) {
@@ -225,7 +225,7 @@ public without sharing class HOT_MyServiceAppointmentListController {
             }
         } catch (Exception E) {
         }
-        return null;
+        return Id;
     }
     @AuraEnabled
     public static String getOwnerName(String serviceAppointmentId) {
