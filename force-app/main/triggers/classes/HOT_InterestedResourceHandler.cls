@@ -30,32 +30,6 @@ public without sharing class HOT_InterestedResourceHandler extends MyTriggers {
                 serviceAppointmentsIDs.add(interestedResource.ServiceAppointment__c);
             }
         }
-
-        // // List of all Service Appointment records to update
-        // List<ServiceAppointment> serviceAppointments = [
-        //     SELECT Id, HOT_InterestedResourceNames__c
-        //     FROM ServiceAppointment
-        //     WHERE Id IN :serviceAppointmentsIDs
-        // ];
-        // Set<Id> potentialSAWithThreadsIds = new Set<Id>();
-        //    for (HOT_InterestedResource__c interestedResource : interestedResources) {
-        //      if (triggerOldMap.get(interestedResource.Id).get('Status__c') == 'Assigned' && interestedResource.Status__c != triggerOldMap.get(interestedResource.Id).get('Status__c')) {
-        //         potentialSAWithThreadsIds.add(interestedResource.ServiceAppointment__c);
-        //      }
-        // }
-
-        // List of all Service Appointment records to update
-        // List<ServiceAppointment> potentialSAWithThreadsIdsList = [
-        //     SELECT Id, HOT_InterestedResourceNames__c
-        //     FROM ServiceAppointment
-        //     WHERE Id IN :serviceAppointmentsIDs
-        // ];
-        //transfer all threads to Ir when status er alt annet enn assigned.
-
-        
-        // for (ServiceAppointment sa : serviceAppointments) {
-        //     potentialSAWithThreadsIds.add(sa.Id);
-        // }
         List<Thread__c> exisitingThreadsToBeTransferred = [
             SELECT Id, HOT_IsEmployeeThread__c, CRM_Account__c, CRM_Related_Object__c, HOT_ServiceAppointment__c
             FROM Thread__c
