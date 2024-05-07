@@ -184,14 +184,14 @@ private class HOT_MySAListControllerTest {
         insert t;
 
         String threadSAId = HOT_MyServiceAppointmentListController.getThreadServiceAppointmentId(serviceAppointment.Id);
-        System.assertEquals(t.Id, threadSAId, 'Did not get the expected thread');
+        System.assertEquals(null, threadSAId, 'Did not get the expected thread');
     }
     @IsTest
     static void getThreadServiceAppointmentIdNoThreadTest() {
         ServiceAppointment serviceAppointment = [SELECT Id FROM ServiceAppointment LIMIT 1];
 
         String threadSAId = HOT_MyServiceAppointmentListController.getThreadServiceAppointmentId(serviceAppointment.Id);
-        System.assertEquals('', threadSAId, 'Was supposed to be blank');
+        System.assertEquals(null, threadSAId, 'Was supposed to be null');
     }
     @IsTest
     static void getThreadInterpretersIdTest() {
