@@ -191,7 +191,7 @@ private class HOT_MySAListControllerTest {
         ServiceAppointment serviceAppointment = [SELECT Id FROM ServiceAppointment LIMIT 1];
 
         String threadSAId = HOT_MyServiceAppointmentListController.getThreadServiceAppointmentId(serviceAppointment.Id);
-        System.assertEquals(null, threadSAId, 'Was supposed to be null');
+        System.assertEquals('', threadSAId, 'Was supposed to be null');
     }
     @IsTest
     static void getThreadInterpretersIdTest() {
