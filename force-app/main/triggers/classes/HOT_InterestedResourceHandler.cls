@@ -7,6 +7,68 @@ public without sharing class HOT_InterestedResourceHandler extends MyTriggers {
 
     public override void onAfterUpdate(Map<Id, sObject> triggerOldMap) {
         updateInterestedResourceNamesOnServiceAppointments(records, triggerOldMap, true);
+        updateThreads(records, triggerOldMap, true);
+    }
+     public void updateThreads(
+        List<SObject> records,
+        Map<Id, sObject> triggerOldMap,
+        Boolean isUpdate
+    ) {
+        List<HOT_InterestedResource__c> interestedResources = new List<HOT_InterestedResource__c>();
+        for (HOT_InterestedResource__c interestedResource : (List<HOT_InterestedResource__c>) records) {
+            if (isUpdate && triggerOldMap.get(interestedResource.Id).get('Status__c') == 'Assigned' && interestedResource.Status__c != triggerOldMap.get(interestedResource.Id).get('Status__c')) {
+                interestedResources.add(interestedResource);
+            }
+        }
+        if (interestedResources.size() == 0) {
+            return;
+        }
+        // Find Service Appointment IDs to update based on trigger IR's SA ID
+        List<Id> serviceAppointmentsIDs = new List<Id>();
+        for (HOT_InterestedResource__c interestedResource : interestedResources) {
+            if (!serviceAppointmentsIDs.contains(interestedResource.ServiceAppointment__c)) {
+                serviceAppointmentsIDs.add(interestedResource.ServiceAppointment__c);
+            }
+        }
+        List<Thread__c> exisitingThreadsToBeTransferred = [
+            SELECT Id, HOT_IsEmployeeThread__c, CRM_Account__c, CRM_Related_Object__c, HOT_ServiceAppointment__c
+            FROM Thread__c
+            WHERE CRM_Related_Object__c IN :serviceAppointmentsIDs AND CRM_Thread_Type__c = 'HOT_TOLK-FORMIDLER'
+        ];
+        if(exisitingThreadsToBeTransferred.size()!=0){
+            //Finn ir hvor accountid og serviceappointment id er samme
+            Set<Id> accountIds = new Set<Id>();
+            for (Thread__c thread : exisitingThreadsToBeTransferred) {
+                accountIds.add(thread.CRM_Account__c);
+            }
+            List<HOT_InterestedResource__c> irList = [
+                SELECT Id, ServiceAppointment__c
+                FROM HOT_InterestedResource__c
+                WHERE ServiceResource__r.AccountId IN :accountIds AND ServiceAppointment__c IN :serviceAppointmentsIDs
+            ];
+            //LOOP om threads sin related record er samme serviceappointmentId. Så sett ir sin id som related object
+            Map<Id, List<Id>> saIdToIrIdListMap = new Map<Id, List<Id>>();
+            for (HOT_InterestedResource__c ir : irList) {
+                if (!saIdToIrIdListMap.containsKey(ir.ServiceAppointment__c)) {
+                    saIdToIrIdListMap.put(ir.ServiceAppointment__c, new List<Id>{ ir.Id });
+                } else {
+                    saIdToIrIdListMap.get(ir.ServiceAppointment__c).add(ir.Id);
+                }
+            }
+    
+            if (exisitingThreadsToBeTransferred.size() != 0) {
+                for (Thread__c thread : exisitingThreadsToBeTransferred) {
+                    if (
+                        saIdToIrIdListMap.containsKey(thread.HOT_ServiceAppointment__c) &&
+                        thread.HOT_IsEmployeeThread__c == false
+                    ) {
+                        thread.CRM_Related_Object__c = saIdToIrIdListMap.get(thread.HOT_ServiceAppointment__c)[0];
+                        thread.HOT_InterestedResource__c = saIdToIrIdListMap.get(thread.HOT_ServiceAppointment__c)[0];
+                    }
+                }
+                update exisitingThreadsToBeTransferred;
+            }
+        }
     }
 
     public void updateInterestedResourceNamesOnServiceAppointments(
@@ -70,6 +132,8 @@ public without sharing class HOT_InterestedResourceHandler extends MyTriggers {
             serviceAppointmentsToUpdate.add(serviceAppointment);
         }
         update serviceAppointmentsToUpdate;
+
+        //
     }
     public void updateInterestedResourceStatus(List<SObject> records) {
         Set<Id> serviceAppointmentIds = new Set<Id>();

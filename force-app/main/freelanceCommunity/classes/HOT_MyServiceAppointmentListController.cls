@@ -194,13 +194,35 @@ public without sharing class HOT_MyServiceAppointmentListController {
     public static String getThreadServiceAppointmentId(String serviceAppointmentId) {
         String Id = '';
         try {
-            Thread__c thread = [SELECT Id FROM Thread__c WHERE CRM_Related_Object__c = :serviceAppointmentId LIMIT 1];
-            if (thread.Id != null) {
-                Id = thread.Id;
+            Id userId = UserInfo.getUserId();
+            List<ServiceResource> serviceResource = [SELECT Id, Name FROM ServiceResource WHERE RelatedRecordId = :userId];
+    
+            HOT_InterestedResource__c interestedResource = [
+                SELECT
+                    Id, Status__c, ServiceResource__c, ServiceAppointment__c
+                FROM HOT_InterestedResource__c
+                WHERE
+                    ServiceResource__c IN :serviceResource AND ServiceAppointment__c=:serviceAppointmentId
+            ];
+            
+            if(interestedResource.Status__c=='Assigned'){
+                Thread__c thread = [SELECT Id FROM Thread__c WHERE CRM_Related_Object__c = :serviceAppointmentId LIMIT 1];
+                if (thread.Id != null) {
+                    Id = thread.Id;
+                    return Id;
+                }
+    
                 return Id;
             }
-
-            return Id;
+            else{
+                Thread__c thread = [SELECT Id FROM Thread__c WHERE CRM_Related_Object__c = :interestedResource.Id LIMIT 1];
+                if (thread.Id != null) {
+                    Id = thread.Id;
+                    return Id;
+                }
+    
+                return Id;
+            }
         } catch (Exception E) {
         }
         return Id;

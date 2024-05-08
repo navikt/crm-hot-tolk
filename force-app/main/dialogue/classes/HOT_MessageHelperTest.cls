@@ -1277,4 +1277,92 @@ private class HOT_MessageHelperTest {
         Test.stopTest();
         System.assertNotEquals('', result, 'Did not get Profile and Name');
     }
+    @IsTest
+    static void createThreadWhenIRIsAssignedTest() {
+         WorkType workType = HOT_TestDataFactory.createWorkType();
+        workType.Name = 'Work Type Name';
+        insert workType;
+        HOT_Request__c request = HOT_TestDataFactory.createRequest('Subject', workType);
+        insert request;
+        WorkOrder workOrder = HOT_TestDataFactory.createWorkOrder(request, workType);
+        insert workOrder;
+        WorkOrderLineItem workOrderLineItem = HOT_TestDataFactory.createWorkOrderLineItem(workOrder, workType);
+        insert workOrderLineItem;
+        ServiceAppointment sa = HOT_TestDataFactory.createServiceAppointment(workOrderLineItem);
+        sa.HOT_Request__c = request.Id;
+        sa.Status = 'Dispatched';
+        sa.Subject = 'Hei';
+        insert sa;
+
+        Account account = HOT_TestDataFactory.createAccount(true);
+        insert account;
+        User currentUser = [SELECT Id, AccountId, Account.CRM_Person__c FROM User WHERE Id = :UserInfo.getUserId()];
+
+        ServiceResource resource = HOT_TestDataFactory.createServiceResource(currentUser.Id);
+        resource.AccountId = currentUser.AccountId;
+        insert resource;
+        HOT_InterestedResource__c interestedResource = HOT_TestDataFactory.createInterestedResource(sa.Id, resource.Id);
+        interestedResource.Status__c = 'Assigned';
+        insert interestedResource;
+        Test.startTest();
+        AssignedResource ar = HOT_TestDataFactory.createAssignedResource(sa.Id, resource.Id);
+        insert ar;
+
+        sa.Status = 'Dispatched';
+        update sa;
+        System.runAs(currentUser) {
+            Thread__c thread = HOT_MessageHelper.createThreadInterpreter(sa.Id);
+           
+            System.assertEquals(sa.Id, thread.CRM_Related_Object__c, 'Should have made a thread with relatedobject serviceAppointment');
+        }
+         Test.stopTest();
+    }
+     @IsTest
+    static void createThreadWhenIRIsNotAssignedTest() {
+          WorkType workType = HOT_TestDataFactory.createWorkType();
+        workType.Name = 'Work Type Name';
+        insert workType;
+        HOT_Request__c request = HOT_TestDataFactory.createRequest('Subject', workType);
+        insert request;
+        WorkOrder workOrder = HOT_TestDataFactory.createWorkOrder(request, workType);
+        insert workOrder;
+        WorkOrderLineItem workOrderLineItem = HOT_TestDataFactory.createWorkOrderLineItem(workOrder, workType);
+        insert workOrderLineItem;
+        ServiceAppointment sa = HOT_TestDataFactory.createServiceAppointment(workOrderLineItem);
+        sa.HOT_Request__c = request.Id;
+        sa.Status = 'Dispatched';
+        sa.Subject = 'Hei';
+        insert sa;
+
+        Account account = HOT_TestDataFactory.createAccount(true);
+        insert account;
+        User currentUser = [SELECT Id, AccountId, Account.CRM_Person__c FROM User WHERE Id = :UserInfo.getUserId()];
+
+        ServiceResource resource = HOT_TestDataFactory.createServiceResource(currentUser.Id);
+        resource.AccountId = currentUser.AccountId;
+        insert resource;
+        HOT_InterestedResource__c interestedResource = HOT_TestDataFactory.createInterestedResource(sa.Id, resource.Id);
+        insert interestedResource;
+        Test.startTest();
+        AssignedResource ar = HOT_TestDataFactory.createAssignedResource(sa.Id, resource.Id);
+        insert ar;
+
+        sa.Status = 'Dispatched';
+        update sa;
+        interestedResource.Status__c = 'Canceled by Interpreter';
+        update interestedResource;
+        System.runAs(currentUser) {
+            Thread__c thread = HOT_MessageHelper.createThreadInterpreter(sa.Id);
+           
+            System.assertEquals(interestedResource.Id, thread.CRM_Related_Object__c, 'Should have made a thread with relatedobject interestedresource');
+        }
+         Test.stopTest();
+    }
+       @IsTest
+    static void getUserNameRoleTest() {
+        Test.startTest();
+            String usernamerole = HOT_MessageHelper.getUserNameRole();
+            System.assertEquals('User, Administrator', usernamerole, 'Got the wrong user name and role');
+         Test.stopTest();
+    }
 }

@@ -368,18 +368,38 @@ public without sharing class HOT_MessageHelper {
         }
         if (objectType == 'ServiceAppointment') {
             User currentUser = [SELECT Id, AccountId FROM User WHERE Id = :UserInfo.getUserId()];
-            ServiceAppointment sr = [
-                SELECT Subject, HOT_Request__r.Dispatcher__c
-                FROM ServiceAppointment
-                WHERE Id = :recordId
+            List<ServiceResource> serviceResource = [SELECT Id, Name FROM ServiceResource WHERE RelatedRecordId = :currentUser.Id];
+
+            HOT_InterestedResource__c interestedResource = [
+                SELECT
+                    Id, Status__c, ServiceResource__c, ServiceAppointment__c, ServiceAppointment__r.Subject, ServiceAppointment__r.HOT_Request__r.Dispatcher__c
+                FROM HOT_InterestedResource__c
+                WHERE
+                    ServiceResource__c IN :serviceResource AND ServiceAppointment__c=:recordId
             ];
-            thread.CRM_Related_Object__c = recordId;
-            thread.CRM_Thread_Type__c = 'HOT_TOLK-FORMIDLER';
-            thread.CRM_Account__c = currentUser.AccountId;
-            thread.HOT_ServiceAppointment__c = recordId;
-            thread.HOT_Title__c = sr.Subject;
-            thread.HOT_Dispatcher__c = sr.HOT_Request__r.Dispatcher__c;
-            HOT_DatabaseOperations.insertRecords(thread);
+            if(interestedResource.Status__c == 'Assigned'){
+                ServiceAppointment sr = [
+                    SELECT Subject, HOT_Request__r.Dispatcher__c
+                    FROM ServiceAppointment
+                    WHERE Id = :recordId
+                ];
+                thread.CRM_Related_Object__c = recordId;
+                thread.CRM_Thread_Type__c = 'HOT_TOLK-FORMIDLER';
+                thread.CRM_Account__c = currentUser.AccountId;
+                thread.HOT_ServiceAppointment__c = recordId;
+                thread.HOT_Title__c = sr.Subject;
+                thread.HOT_Dispatcher__c = sr.HOT_Request__r.Dispatcher__c;
+                HOT_DatabaseOperations.insertRecords(thread);
+            }
+            else{
+                thread.CRM_Related_Object__c = interestedResource.Id;
+                thread.CRM_Thread_Type__c = 'HOT_TOLK-FORMIDLER';
+                thread.CRM_Account__c = currentUser.AccountId;
+                thread.HOT_InterestedResource__c = interestedResource.Id;
+                thread.HOT_Title__c = interestedResource.ServiceAppointment__r.Subject;
+                thread.HOT_Dispatcher__c = interestedResource.ServiceAppointment__r.HOT_Request__r.Dispatcher__c;
+                HOT_DatabaseOperations.insertRecords(thread);
+            }
         }
         return thread;
     }

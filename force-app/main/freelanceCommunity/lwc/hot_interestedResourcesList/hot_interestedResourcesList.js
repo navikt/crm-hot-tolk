@@ -143,14 +143,7 @@ export default class Hot_interestedResourcesList extends NavigationMixin(Lightni
                     });
                     this.allInterestedResourcesWired = this.allInterestedResourcesWired.map((appointment) => {
                         let threadId;
-                        if (
-                            appointment.Status__c == 'Assigned' ||
-                            appointment.Status__c == 'Tildelt' ||
-                            appointment.Status__c == 'Canceled' ||
-                            appointment.Status__c == 'Avlyst' ||
-                            appointment.Status__c == 'Canceled by Interpreter' ||
-                            appointment.Status__c == 'Avlyst av tolk'
-                        ) {
+                        if (appointment.Status__c == 'Assigned' || appointment.Status__c == 'Tildelt') {
                             threadId = appointment.ServiceAppointment__c;
                         } else {
                             threadId = appointment.Id;
@@ -395,14 +388,7 @@ export default class Hot_interestedResourcesList extends NavigationMixin(Lightni
     }
     goToInterestedResourceThread() {
         this.isGoToThreadButtonDisabled = true;
-        if (
-            this.interestedResource.Status__c != 'Assigned' &&
-            this.interestedResource.Status__c != 'Canceled' &&
-            this.interestedResource.Status__c != 'Tildelt' &&
-            this.interestedResource.Status__c != 'Avlyst' &&
-            this.interestedResource.Status__c != 'Canceled by Interpreter' &&
-            this.interestedResource.Status__c != 'Avlyst av tolk'
-        ) {
+        if (this.interestedResource.Status__c != 'Assigned' && this.interestedResource.Status__c != 'Tildelt') {
             getThreadDispatcherId({ interestedResourceId: this.interestedResource.Id }).then((result) => {
                 if (result != '') {
                     this.threadId = result;
