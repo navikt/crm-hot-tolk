@@ -1358,4 +1358,11 @@ private class HOT_MessageHelperTest {
         }
          Test.stopTest();
     }
+       @IsTest
+    static void getUserNameRoleTest() {
+        Test.startTest();
+            String usernamerole = HOT_MessageHelper.getUserNameRole();
+            System.assertEquals('User, Administrator', usernamerole, 'Got the wrong user name and role');
+         Test.stopTest();
+    }
 }
