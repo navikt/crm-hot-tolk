@@ -367,8 +367,6 @@ public without sharing class HOT_MessageHelper {
             HOT_DatabaseOperations.insertRecords(thread);
         }
         if (objectType == 'ServiceAppointment') {
-            //først sjekk om status er assigned. Om det ikke er det velg IR. 
-            
             User currentUser = [SELECT Id, AccountId FROM User WHERE Id = :UserInfo.getUserId()];
             List<ServiceResource> serviceResource = [SELECT Id, Name FROM ServiceResource WHERE RelatedRecordId = :currentUser.Id];
 
