@@ -1,37 +1,55 @@
 public class HOT_UpdateExistingRecords implements Database.Batchable<sObject> {
     public Database.QueryLocator start(Database.BatchableContext bc) {
         return Database.getQueryLocator(
-            'SELECT Id, HOT_ParticipantIds__c, HOT_Thread_read_by__c, CRM_Thread_Type__c, CRM_Latest_Message_Datetime__c FROM Thread__c WHERE (CRM_Thread_Type__c = \'HOT_TOLK-FORMIDLER\' OR CRM_Thread_Type__c = \'HOT_TOLK-TOLK\' OR CRM_Thread_Type__c = \'HOT_BRUKER-TOLK\' OR CRM_Thread_Type__c = \'HOT_TOLK-RESSURSKONTOR\') AND (CRM_Latest_Message_Datetime__c < 2024-04-05T00:00:00Z)'
+            'Select Id, CreatedDate, CRM_Related_Object__c, CRM_Account__c, HOT_ServiceAppointment__c, HOT_InterestedResource__c FROM Thread__c WHERE HOT_IsDone__c =false AND CRM_Thread_Type__c =\'HOT_TOLK-FORMIDLER\' AND HOT_ServiceAppointment__c != null AND CRM_Account__c !=null'
         );
     }
 
     public void execute(Database.BatchableContext bc, List<Thread__c> records) {
         System.debug('fant ' + records.size());
+        Set<String> serviceAppointmentIds = new Set<String>();
         for (Thread__c thread : records) {
-            Set<String> participantIds = new Set<String>();
-            Set<String> readByIds = new Set<String>();
-
-            if (String.isNotBlank(thread.HOT_ParticipantIds__c)) {
-                if (thread.HOT_ParticipantIds__c.contains(',')) {
-                    participantIds = new Set<String>(thread.HOT_ParticipantIds__c.split(', '));
-                } else {
-                    participantIds.add(thread.HOT_ParticipantIds__c);
+            if(thread.CRM_Related_Object__c != null){
+                Id relatedobject = thread.CRM_Related_Object__c;
+                String objectType = String.valueOf(relatedobject.getsobjecttype());
+                if (objectType == 'ServiceAppointment') {
+                    serviceAppointmentIds.add(thread.CRM_Related_Object__c);
                 }
             }
-            if (String.isNotBlank(thread.HOT_Thread_read_by__c)) {
-                readByIds = new Set<String>(thread.HOT_Thread_read_by__c.split(';'));
+        }
+        Map<Id, List<HOT_InterestedResource__c>> irMap = new Map<Id, List<HOT_InterestedResource__c>>();
+        if (!serviceAppointmentIds.isEmpty()) {
+            List<HOT_InterestedResource__c> irList = [
+                SELECT Id, Status__c, ServiceAppointment__c, ServiceResource__r.AccountId 
+                FROM HOT_InterestedResource__c 
+                WHERE ServiceAppointment__c IN :serviceAppointmentIds 
+                AND Status__c != 'Assigned'
+            ];
+            for (HOT_InterestedResource__c ir : irList) {
+                if (!irMap.containsKey(ir.ServiceAppointment__c)) {
+                    irMap.put(ir.ServiceAppointment__c, new List<HOT_InterestedResource__c>());
+                }
+                irMap.get(ir.ServiceAppointment__c).add(ir);
             }
-            for (String participantId : participantIds) {
-                if (!readByIds.contains(participantId)) {
-                    if (String.isNotBlank(thread.HOT_Thread_read_by__c)) {
-                        thread.HOT_Thread_read_by__c += ';' + participantId;
-                    } else {
-                        thread.HOT_Thread_read_by__c = participantId;
+        }
+         // Update the Thread__c records
+        List<Thread__c> threadsToUpdate = new List<Thread__c>();
+        for (Thread__c thread : records) {
+            if (irMap.containsKey(thread.CRM_Related_Object__c)) {
+                for (HOT_InterestedResource__c ir : irMap.get(thread.CRM_Related_Object__c)) {
+                    if (ir.ServiceResource__r.AccountId == thread.CRM_Account__c) {
+                        thread.CRM_Related_Object__c = ir.Id;
+                        thread.HOT_ServiceAppointment__c=null;
+                        thread.HOT_InterestedResource__c=ir.Id;
+                        threadsToUpdate.add(thread);
                     }
                 }
             }
         }
-        update records;
+
+        if (!threadsToUpdate.isEmpty()) {
+            update threadsToUpdate;
+        }       
     }
     public void finish(Database.BatchableContext bc) {
         // execute any post-processing operations
