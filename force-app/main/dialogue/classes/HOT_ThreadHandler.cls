@@ -278,9 +278,7 @@ public without sharing class HOT_ThreadHandler extends MyTriggers {
                 thread.HOT_ParticipantIds__c += ', ' + serviceAppointment.HOT_ServiceResource__r?.RelatedRecordId;
             }
         } else {
-            if(!thread.HOT_ParticipantIds__c.contains(serviceAppointment.HOT_ServiceResource__r.RelatedRecordId)){
                 thread.HOT_ParticipantIds__c = serviceAppointment.HOT_ServiceResource__r?.RelatedRecordId;
-            }
         }
         return thread;
     }
