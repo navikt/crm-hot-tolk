@@ -273,12 +273,12 @@ public without sharing class HOT_ThreadHandler extends MyTriggers {
         return serviceAppointmentsByWorkOrderId;
     }
     public static Thread__c appendInterpreterUserIds(Thread__c thread, ServiceAppointment serviceAppointment) {
-        String oldInterpreters = thread.HOT_ParticipantIds__c;
-
         if (thread.HOT_ParticipantIds__c != '') {
-            thread.HOT_ParticipantIds__c += ', ' + serviceAppointment.HOT_ServiceResource__r?.RelatedRecordId;
+            if(!thread.HOT_ParticipantIds__c.contains(serviceAppointment.HOT_ServiceResource__r.RelatedRecordId)){
+                thread.HOT_ParticipantIds__c += ', ' + serviceAppointment.HOT_ServiceResource__r?.RelatedRecordId;
+            }
         } else {
-            thread.HOT_ParticipantIds__c = serviceAppointment.HOT_ServiceResource__r?.RelatedRecordId;
+                thread.HOT_ParticipantIds__c = serviceAppointment.HOT_ServiceResource__r?.RelatedRecordId;
         }
         return thread;
     }
