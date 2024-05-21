@@ -71,10 +71,13 @@ public without sharing class HOT_AssignedResourceHandler extends MyTriggers {
             (List<AssignedResource>) records
         );
         insert interestedResource;
-        List<HOT_InterestedResource__c> interestedResources = updateInterestedResourceStatus(
-            (List<AssignedResource>) records
+            Set<Id> assignedResourcIds = new Set<Id>();
+        for (AssignedResource ar : (List<AssignedResource>) records) {
+            assignedResourcIds.add(ar.Id);
+        }
+        updateInterestedResourceStatus(
+            assignedResourcIds
         );
-        update interestedResources;
 
         Set<Id> potentialSAWithThreadsIds = new Set<Id>();
         for (ServiceAppointment sa : serviceAppointments) {
@@ -168,10 +171,13 @@ public without sharing class HOT_AssignedResourceHandler extends MyTriggers {
                 (List<AssignedResource>) records
             );
             insert interestedResource;
-            List<HOT_InterestedResource__c> interestedResources = updateInterestedResourceStatus(
-                (List<AssignedResource>) records
-            );
-            update interestedResources;
+            Set<Id> assignedResourcIds = new Set<Id>();
+        for (AssignedResource ar : (List<AssignedResource>) records) {
+            assignedResourcIds.add(ar.Id);
+        }
+        updateInterestedResourceStatus(
+            assignedResourcIds
+        );
 
             updateThreads((List<AssignedResource>) records);
         }
@@ -317,9 +323,12 @@ public without sharing class HOT_AssignedResourceHandler extends MyTriggers {
         return interestedResources;
     }
 
-    static public List<HOT_InterestedResource__c> updateInterestedResourceStatus(
-        List<AssignedResource> assignedResources
+    @Future
+    static public void updateInterestedResourceStatus(
+        Set<Id> assignedResourcesIds
     ) {
+            List<AssignedResource> assignedResources = [SELECT Id, ServiceAppointmentId, ServiceResourceId FROM AssignedResource WHERE Id IN :assignedResourcesIds];
+
         List<Id> serviceAppointmentIds = new List<Id>();
         for (AssignedResource assignedResource : assignedResources) {
             serviceAppointmentIds.add(assignedResource.ServiceAppointmentId);
@@ -366,7 +375,7 @@ public without sharing class HOT_AssignedResourceHandler extends MyTriggers {
                 }
             }
         }
-        return interestedResources;
+        update interestedResources;
     }
     public static void updateThreads(List<AssignedResource> assignedResources) {
         List<Id> serviceAppointmentIds = new List<Id>();
