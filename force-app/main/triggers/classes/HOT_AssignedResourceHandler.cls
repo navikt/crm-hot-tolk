@@ -71,12 +71,13 @@ public without sharing class HOT_AssignedResourceHandler extends MyTriggers {
             (List<AssignedResource>) records
         );
         insert interestedResource;
-            Set<Id> assignedResourcIds = new Set<Id>();
+
+        Set<Id> assignedResourecIds = new Set<Id>();
         for (AssignedResource ar : (List<AssignedResource>) records) {
-            assignedResourcIds.add(ar.Id);
+            assignedResourecIds.add(ar.Id);
         }
         updateInterestedResourceStatus(
-            assignedResourcIds
+            assignedResourecIds
         );
 
         Set<Id> potentialSAWithThreadsIds = new Set<Id>();
@@ -171,13 +172,13 @@ public without sharing class HOT_AssignedResourceHandler extends MyTriggers {
                 (List<AssignedResource>) records
             );
             insert interestedResource;
-            Set<Id> assignedResourcIds = new Set<Id>();
-        for (AssignedResource ar : (List<AssignedResource>) records) {
-            assignedResourcIds.add(ar.Id);
-        }
-        updateInterestedResourceStatus(
-            assignedResourcIds
-        );
+            Set<Id> assignedResourceIds = new Set<Id>();
+            for (AssignedResource ar : (List<AssignedResource>) records) {
+                assignedResourceIds.add(ar.Id);
+            }
+            updateInterestedResourceStatus(
+                assignedResourceIds
+            );
 
             updateThreads((List<AssignedResource>) records);
         }
@@ -327,7 +328,7 @@ public without sharing class HOT_AssignedResourceHandler extends MyTriggers {
     static public void updateInterestedResourceStatus(
         Set<Id> assignedResourcesIds
     ) {
-            List<AssignedResource> assignedResources = [SELECT Id, ServiceAppointmentId, ServiceResourceId FROM AssignedResource WHERE Id IN :assignedResourcesIds];
+        List<AssignedResource> assignedResources = [SELECT Id, ServiceAppointmentId, ServiceResourceId FROM AssignedResource WHERE Id IN :assignedResourcesIds];
 
         List<Id> serviceAppointmentIds = new List<Id>();
         for (AssignedResource assignedResource : assignedResources) {
