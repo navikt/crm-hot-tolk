@@ -3,11 +3,14 @@
 # Oppretter scratch org
 sf org create scratch --definition-file config/project-scratch-def.json --alias $1 --duration-days $2 --set-default --json --wait 30
 
-# Installer crm-platform-base ver. 0.198
-sf package install --package 04t7U000000LPIYQA4 --no-prompt --installation-key $3 --wait 30 --publish-wait 30
+# Installer crm-platform-base ver. 0.218
+sf package install --package 04t7U000000Y3esQAC --no-prompt --installation-key $3 --wait 30 --publish-wait 30
 
-# Installer crm-henvendelse-base ver. 0.16
-sf package install --package 04t7U0000000RX4QAM --no-prompt --installation-key $3 --wait 30 --publish-wait 30
+# Installer crm-shared-flowComponents ver. 0.4
+sf package install --package 04t7U0000008qz4QAA --no-prompt --installation-key $3 --wait 30 --publish-wait 30
+
+# Installer crm-henvendelse-base ver. 0.20
+sf package install --package 04t7U000000Y4EgQAK --no-prompt --installation-key $3 --wait 30 --publish-wait 30
 
 # Installer crm-platform-integration ver. 0.101
 sf package install --package 04t7U000000om5FQAQ --no-prompt --installation-key $3 --wait 30 --publish-wait 30
