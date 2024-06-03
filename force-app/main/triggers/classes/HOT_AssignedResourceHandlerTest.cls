@@ -53,7 +53,10 @@ private class HOT_AssignedResourceHandlerTest {
     }
 
     @IsTest
+private class MyTriggerTest {
+    @IsTest
     static void createUpdateDeleteAssignedResourceTest() {
+        // Step 1: Set up initial test data
         ServiceAppointment serviceAppointment = [
             SELECT Id, HOT_ServiceResource__c, HOT_AssignedResourceId__c
             FROM ServiceAppointment
@@ -64,21 +67,27 @@ private class HOT_AssignedResourceHandlerTest {
             SELECT Id, RelatedRecordId
             FROM ServiceResource
             WHERE RelatedRecordId != :UserInfo.getUserId()
+            LIMIT 1
         ];
         ServiceResource adminResource = [
             SELECT Id, RelatedRecordId
             FROM ServiceResource
             WHERE RelatedRecordId = :UserInfo.getUserId()
+            LIMIT 1
         ];
 
         Test.startTest();
 
-        //Testing onAfterInsert()
-        AssignedResource assignedResource = HOT_TestDataFactory.createAssignedResource(
-            serviceAppointment.Id,
-            adminResource.Id
+        // Step 2: Testing onAfterInsert()
+        AssignedResource assignedResource = new AssignedResource(
+            ServiceAppointmentId = serviceAppointment.Id,
+            ServiceResourceId = adminResource.Id
         );
         insert assignedResource;
+        
+        // Ensure future methods run before assertions
+        Test.stopTest();
+        
         serviceAppointment = [
             SELECT Id, HOT_ServiceResource__c, HOT_AssignedResourceId__c
             FROM ServiceAppointment
@@ -96,9 +105,14 @@ private class HOT_AssignedResourceHandlerTest {
             'Could not set HOT_AssignedResourceId__c onAfterInsert'
         );
 
-        //Testing onAfterUpdate()
+        // Step 3: Testing onAfterUpdate()
+        Test.startTest();
         assignedResource.ServiceResourceId = testResource.Id;
         update assignedResource;
+
+        // Ensure future methods run before assertions
+        Test.stopTest();
+
         serviceAppointment = [
             SELECT Id, HOT_ServiceResource__c, HOT_AssignedResourceId__c
             FROM ServiceAppointment
@@ -116,12 +130,13 @@ private class HOT_AssignedResourceHandlerTest {
             'Could not set HOT_AssignedResourceId__c onAfterUpdate'
         );
 
-        //Testing updates on InterestedResources
+        // Step 4: Testing updates on InterestedResources
         List<HOT_InterestedResource__c> interestedResources = [
             SELECT Id, ServiceResource__c, Status__c
             FROM HOT_InterestedResource__c
         ];
         System.assertEquals(2, interestedResources.size(), 'Could not create interested resources correctly');
+        
         Map<Id, HOT_InterestedResource__c> irBySR = new Map<Id, HOT_InterestedResource__c>();
         for (HOT_InterestedResource__c interestedResource : interestedResources) {
             irBySR.put(interestedResource.ServiceResource__c, interestedResource);
@@ -137,8 +152,11 @@ private class HOT_AssignedResourceHandlerTest {
             'Could not set correct status on InterestedResources'
         );
 
-        //Testing onAfterdelete()
+        // Step 5: Testing onAfterDelete()
+        Test.startTest();
         delete assignedResource;
+
+        // Ensure future methods run before assertions
         Test.stopTest();
 
         serviceAppointment = [
@@ -201,6 +219,8 @@ private class HOT_AssignedResourceHandlerTest {
             'Status was supposed to be changed'
         );
     }
+}
+
 
     @IsTest
     static void createInterestedResourcesTest() {

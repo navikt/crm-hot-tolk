@@ -242,8 +242,8 @@ public without sharing class HOT_UserNotificationService {
         }
     }
 
-    public static void newWantedSRNotification(CustomNotificationType notificationType, Set<String> recipients) {
-        String title = 'Du er ønsket til et oppdrag';
+    public static void newWantedSRNotification(CustomNotificationType notificationType, Set<String> recipients, String appointmentNumber) {
+        String title = 'Du er ønsket til et oppdrag '+appointmentNumber;
         String body = 'Du kan melde interesse for oppdraget eller avslå.';
 
         Id notificationTypeId = notificationType.Id;
