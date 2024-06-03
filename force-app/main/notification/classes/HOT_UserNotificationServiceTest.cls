@@ -161,7 +161,7 @@ public class HOT_UserNotificationServiceTest {
         Set<String> recipients = new Set<String>{ UserInfo.getUserId() };
 
         Test.startTest();
-        HOT_UserNotificationService.newWantedSRNotification(notificationType, recipients, 'SA-00110');
+        HOT_UserNotificationService.newWantedSRNotification(notificationType, recipients);
         Test.stopTest();
     }
 }

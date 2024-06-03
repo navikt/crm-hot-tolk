@@ -312,8 +312,7 @@ public without sharing class HOT_ReminderSMSService {
     public static void sendSMSOnNewWantedSR(Set<Id> wantedIRIds) {
         List<SMS__c> smsList = new List<SMS__c>();
         List<HOT_InterestedResource__c> wantedIRList = [
-            SELECT ServiceResource__r.Account.Id, ServiceResource__r.HOT_MobilePhone__c,
-            ServiceAppointment__r.AppointmentNumber
+            SELECT ServiceResource__r.Account.Id, ServiceResource__r.HOT_MobilePhone__c
             FROM HOT_InterestedResource__c
             WHERE Id IN :wantedIRIds
         ];
@@ -335,7 +334,7 @@ public without sharing class HOT_ReminderSMSService {
             HOT_Notification__c notification = new HOT_Notification__c();
             notification.HOT_Account__c = ir.ServiceResource__r.Account.Id;
             notification.HOT_NotificationChannel__c = 'SMS';
-            notification.HOT_Subject__c = 'Du er ønsket til et oppdrag '+ir.ServiceAppointment__r.AppointmentNumber;
+            notification.HOT_Subject__c = 'Du er ønsket til et oppdrag';
             notification.HOT_NotificationText__c =
                 'INFO\nDu er ønsket til et oppdrag.\n\nFor mer informasjon, se tolkebestilling.nav.no.\n' +
                 'Du kan ikke svare på denne meldingen.\n' +
