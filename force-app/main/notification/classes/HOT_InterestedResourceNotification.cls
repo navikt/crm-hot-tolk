@@ -4,7 +4,7 @@ public without sharing class HOT_InterestedResourceNotification {
             SELECT
                 ServiceResource__r.AccountId,
                 ServiceResource__r.HOT_MobilePhone__c,
-                ServiceResource__r.HOT_NotificationChannel__c
+                ServiceResource__r.HOT_NotificationChannel__c,
                 ServiceAppointment__r.AppointmentNumber
             FROM HOT_InterestedResource__c
             WHERE Id IN :wantedIrIds
