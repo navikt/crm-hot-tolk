@@ -10,7 +10,7 @@
                             <value>Thread__c.HOT_MarkThreadAsUnread</value>
                         </valueListItems>
                         <valueListItems>
-                            <value>Thread__c.Set_to_Redaction</value>
+                            <value>Thread__c.HOT_Thread_Set_To_Redaction</value>
                         </valueListItems>
                     </valueList>
                 </componentInstanceProperties>
