@@ -34,7 +34,7 @@ public without sharing class HOT_InterestedResourceNotification {
                 if (recipients.size() != 0 && wantedIr.ServiceResource__r.HOT_NotificationChannel__c.contains('Push')) {
                     HOT_UserNotificationService.newWantedSRNotification(
                         getCustomNotificationType('HOT_NotifyUser'),
-                        recipients, ir.ServiceAppointment__r.AppointmentNumber
+                        recipients, wantedIr.ServiceAppointment__r.AppointmentNumber
                     );
 
                     //creating notification object
