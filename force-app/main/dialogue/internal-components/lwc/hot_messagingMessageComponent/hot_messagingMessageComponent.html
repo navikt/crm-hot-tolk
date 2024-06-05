@@ -116,6 +116,21 @@
                         ></lightning-button>
                     </template>
                 </div>
+                <div if:true={showSetToRedactionBtn}>
+                    <lightning-button
+                        if:true={showSetToRedactionBtn}
+                        label="Sett til sladding"
+                        onclick={handleSetToRedactionBtnClick}
+                    ></lightning-button>
+                </div>
+                <div>
+                    <lightning-flow
+                        if:true={setToRedactionFlow}
+                        flow-api-name="HOT_Thread_Set_To_Redaction"
+                        flow-input-variables={flowVariables}
+                        onstatuschange={handleStatusChange}
+                    ></lightning-flow>
+                </div>
             </div>
             <div>
                 <div if:true={showThreads}>
