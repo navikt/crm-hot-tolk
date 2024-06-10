@@ -312,7 +312,8 @@ public without sharing class HOT_ReminderSMSService {
     public static void sendSMSOnNewWantedSR(Set<Id> wantedIRIds) {
         List<SMS__c> smsList = new List<SMS__c>();
         List<HOT_InterestedResource__c> wantedIRList = [
-            SELECT ServiceResource__r.Account.Id, ServiceResource__r.HOT_MobilePhone__c
+            SELECT ServiceResource__r.Account.Id, ServiceResource__r.HOT_MobilePhone__c,
+            ServiceAppointment__r.AppointmentNumber
             FROM HOT_InterestedResource__c
             WHERE Id IN :wantedIRIds
         ];
@@ -325,7 +326,7 @@ public without sharing class HOT_ReminderSMSService {
             sms.Type__c = 'Message';
             sms.Account__c = ir.ServiceResource__r.Account.Id;
             sms.Recipient__c = ir.ServiceResource__r.HOT_MobilePhone__c;
-            sms.Message__c = constructOnNewWantedSR();
+            sms.Message__c = constructOnNewWantedSR(ir.ServiceAppointment__r.AppointmentNumber);
             if (SMS.Recipient__c != null) {
                 smsList.add(sms);
             }
@@ -334,7 +335,7 @@ public without sharing class HOT_ReminderSMSService {
             HOT_Notification__c notification = new HOT_Notification__c();
             notification.HOT_Account__c = ir.ServiceResource__r.Account.Id;
             notification.HOT_NotificationChannel__c = 'SMS';
-            notification.HOT_Subject__c = 'Du er ønsket til et oppdrag';
+            notification.HOT_Subject__c = 'Du er ønsket til et oppdrag. '+ir.ServiceAppointment__r.AppointmentNumber;
             notification.HOT_NotificationText__c =
                 'INFO\nDu er ønsket til et oppdrag.\n\nFor mer informasjon, se tolkebestilling.nav.no.\n' +
                 'Du kan ikke svare på denne meldingen.\n' +
@@ -689,8 +690,8 @@ public without sharing class HOT_ReminderSMSService {
             logger.publishSynch();
         }
     }
-    public static String constructOnNewWantedSR() {
-        String message = 'INFO\nDu er ønsket til et oppdrag.\n\n';
+    public static String constructOnNewWantedSR(String appointmentNumber) {
+        String message = 'INFO\nDu er ønsket til et oppdrag. '+appointmentNumber+'\n\n';
         message += 'For mer informasjon, se tolkebestilling.nav.no.\n';
         message += 'Du kan ikke svare på denne meldingen.\n';
         message += 'Mvh tolketjenesten i NAV';
