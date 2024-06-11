@@ -23,6 +23,7 @@ import { updateRecord } from 'lightning/uiRecordApi';
 
 export default class MineBestillingerWrapper extends NavigationMixin(LightningElement) {
     @api header;
+    @track recordId;
     @api isAccount;
     @track filters = [];
     @track breadcrumbs = [];
@@ -35,6 +36,7 @@ export default class MineBestillingerWrapper extends NavigationMixin(LightningEl
     get buttonText() {
         return this.isMobile ? '+' : 'Ny bestilling';
     }
+
     @track userAccountId;
     @wire(getUserAccountID)
     wiredAccountId({ error, data }) {
@@ -60,6 +62,14 @@ export default class MineBestillingerWrapper extends NavigationMixin(LightningEl
     renderedCallback() {
         if (this.urlStateParameters.id === '' && this.urlStateParameters.level === '') {
             refreshApex(this.wiredgetWorkOrdersResult);
+        }
+    }
+    @track fileUploadMessage = '';
+    handleUploadFinished(event) {
+        const uploadedFiles = event.detail.files;
+        if (uploadedFiles.length > 0) {
+            this.fileUploadMessage = 'Filen(e) ble lastet opp';
+            this.template.querySelector('c-record-files-with-sharing').refreshContentDocuments();
         }
     }
 
@@ -118,8 +128,10 @@ export default class MineBestillingerWrapper extends NavigationMixin(LightningEl
         let recordId = this.urlStateParameters.id;
         for (let record of this.records) {
             if (recordId === record.Id) {
+                this.recordId = record.Id;
                 this.workOrder = record;
                 this.request = record.HOT_Request__r;
+                this.recordId = record.HOT_Request__r.Id;
 
                 getThreadInterpreterId({ workOrderId: this.workOrder.Id }).then((result) => {
                     if (result != '') {
@@ -520,6 +532,7 @@ export default class MineBestillingerWrapper extends NavigationMixin(LightningEl
     showUploadFilesComponent = false;
     isAddFiles = false;
     addFiles() {
+        this.fileUploadMessage = '';
         this.showCancelUploadButton = true;
         this.checkboxValue = false;
         this.isAddFiles = true;
