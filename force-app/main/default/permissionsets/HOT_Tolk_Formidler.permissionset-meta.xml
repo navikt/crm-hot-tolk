@@ -748,6 +748,11 @@
     </fieldPermissions>
     <fieldPermissions>
         <editable>false</editable>
+        <field>HOT_WageClaim__c.ListViewFilterCondition__c</field>
+        <readable>true</readable>
+    </fieldPermissions>
+    <fieldPermissions>
+        <editable>false</editable>
         <field>HOT_WageClaim__c.MoreThan24HoursUntilStart__c</field>
         <readable>true</readable>
     </fieldPermissions>
