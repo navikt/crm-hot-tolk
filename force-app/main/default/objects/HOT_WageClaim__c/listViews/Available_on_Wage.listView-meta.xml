@@ -14,6 +14,11 @@
         <operation>equals</operation>
         <value>1</value>
     </filters>
+    <filters>
+        <field>HOT_ServiceResourceType__c</field>
+        <operation>equals</operation>
+        <value>Ansattolk</value>
+    </filters>
     <label>Ledig på lønn</label>
     <sharedTo>
         <group>HOT_group_47000_formidler</group>
