@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="UTF-8" ?>
+<?xml version="1.0" encoding="UTF-8"?>
 <ListView xmlns="http://soap.sforce.com/2006/04/metadata">
     <fullName>Available_on_Wage</fullName>
     <columns>NAME</columns>
@@ -10,19 +10,14 @@
     <columns>AssignmentType__c</columns>
     <filterScope>Everything</filterScope>
     <filters>
-        <field>Status__c</field>
-        <operation>equals</operation>
-        <value>Open</value>
-    </filters>
-    <filters>
-        <field>StartTime__c</field>
-        <operation>greaterOrEqual</operation>
-        <value>TODAY</value>
-    </filters>
-    <filters>
-        <field>DurationLongerThanOneHour__c</field>
+        <field>ListViewFilterCondition__c</field>
         <operation>equals</operation>
         <value>1</value>
+    </filters>
+    <filters>
+        <field>HOT_ServiceResourceType__c</field>
+        <operation>equals</operation>
+        <value>Ansattolk</value>
     </filters>
     <label>Ledig på lønn</label>
     <sharedTo>
