@@ -10,10 +10,10 @@ public without sharing class HOT_ThreadAccessHandler extends MyTriggers {
             ) {
                 threadIds.add(thread.Id);
             }
+        }
 
-            if (threadIds.size() > 0) {
-                grantAccessToThreads(threadIds);
-            }
+        if (threadIds.size() > 0) {
+            grantAccessToThreads(threadIds);
         }
     }
 
