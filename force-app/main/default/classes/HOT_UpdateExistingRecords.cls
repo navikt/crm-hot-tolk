@@ -6,7 +6,7 @@ public class HOT_UpdateExistingRecords implements Database.Batchable<sObject> {
     }
 
     public void execute(Database.BatchableContext bc, List<Thread__c> records) {
-        System.debug('fant ' + records.size());
+        /* System.debug('fant ' + records.size());
         Set<String> serviceAppointmentIds = new Set<String>();
         for (Thread__c thread : records) {
             if(thread.CRM_Related_Object__c != null){
@@ -49,7 +49,8 @@ public class HOT_UpdateExistingRecords implements Database.Batchable<sObject> {
 
         if (!threadsToUpdate.isEmpty()) {
             update threadsToUpdate;
-        }       
+        }
+        */
     }
     public void finish(Database.BatchableContext bc) {
         // execute any post-processing operations

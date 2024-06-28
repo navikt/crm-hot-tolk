@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="UTF-8" ?>
+<?xml version="1.0" encoding="UTF-8"?>
 <Flow xmlns="http://soap.sforce.com/2006/04/metadata">
     <actionCalls>
         <name>HOT_Create_Notification</name>
@@ -17,8 +17,7 @@
         <inputParameters>
             <name>body</name>
             <value>
-                <stringValue
-                >Det har blitt opprettet en Forespørsel i HOT Tolk Admin køen i produksjon.</stringValue>
+                <stringValue>Det har blitt opprettet en Forespørsel i HOT Tolk Admin køen i produksjon.</stringValue>
             </value>
         </inputParameters>
         <inputParameters>
@@ -39,6 +38,8 @@
                 <elementReference>$Record.Id</elementReference>
             </value>
         </inputParameters>
+        <nameSegment>customNotificationAction</nameSegment>
+        <versionSegment>1</versionSegment>
     </actionCalls>
     <apiVersion>56.0</apiVersion>
     <assignments>
@@ -141,7 +142,7 @@
         <recordTriggerType>Create</recordTriggerType>
         <triggerType>RecordAfterSave</triggerType>
     </start>
-    <status>Draft</status>
+    <status>Active</status>
     <textTemplates>
         <description>Storing &quot;HOT_Request_Created&quot; in a String</description>
         <name>HOT_Request_Created_String</name>
