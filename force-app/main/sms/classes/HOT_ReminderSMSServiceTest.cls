@@ -506,10 +506,11 @@ private class HOT_ReminderSMSServiceTest {
 
         HOT_DatabaseOperations.updateRecords(serviceAppointments);
 
+        Test.startTest();
         HOT_ReminderSMSService.sendSMSToOrdererOnStatusUpdate(workOrders);
+        Test.stopTest();
 
         String message = [SELECT Id, Message__c FROM SMS__c LIMIT 1].Message__c;
-
         System.assert(message.contains('InterpreterName'), 'Could not create sms-record');
     }
 

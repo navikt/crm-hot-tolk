@@ -1,6 +1,6 @@
 public without sharing class HOT_ThreadAccessHandler extends MyTriggers {
     public override void onAfterUpdate(Map<Id, sObject> triggerOldMap) {
-        Set<Id> threadIds = new Set<Id>();
+        List<Thread__c> threadsToUpdate = new List<Thread__c>();
         for (Thread__c thread : (List<Thread__c>) records) {
             if (
                 thread.CRM_Thread_Type__c == 'HOT_TOLK-FORMIDLER' ||
@@ -8,18 +8,17 @@ public without sharing class HOT_ThreadAccessHandler extends MyTriggers {
                 thread.CRM_Thread_Type__c == 'HOT_BRUKER-TOLK' ||
                 thread.CRM_Thread_Type__c == 'HOT_TOLK-RESSURSKONTOR'
             ) {
-                threadIds.add(thread.Id);
+                threadsToUpdate.add(thread);
             }
+        }
 
-            if (threadIds.size() > 0) {
-                grantAccessToThreads(threadIds);
-            }
+        if (threadsToUpdate.size() > 0) {
+            grantAccessToThreads(threadsToUpdate);
         }
     }
 
-    public static void grantAccessToThreads(Set<Id> threadIds) {
+    public static void grantAccessToThreads(List<Thread__c> threads) {
         Map<Id, Set<Id>> participantsByThread = new Map<Id, Set<Id>>();
-        List<Thread__c> threads = [SELECT HOT_ParticipantIds__c FROM Thread__c WHERE Id IN :threadIds];
 
         for (Thread__c thread : threads) {
             if (thread.HOT_ParticipantIds__c != null && thread.HOT_ParticipantIds__c.length() > 0) {
