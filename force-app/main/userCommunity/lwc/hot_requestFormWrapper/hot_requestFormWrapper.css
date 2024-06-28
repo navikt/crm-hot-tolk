@@ -17,6 +17,15 @@
         transform: rotate(360deg);
     }
 }
+.fileUploader {
+    background-color: #ffe6e6;
+    justify-content: center;
+    align-items: center;
+    margin: auto;
+    width: 50%;
+    border-radius: 4px;
+    padding: 2rem;
+}
 
 .skjema-ikon-img {
     height: 70%;
@@ -59,6 +68,12 @@
 
     .back-link {
         padding-left: 1rem;
+    }
+    .fileUploader {
+        justify-content: center;
+        align-items: center;
+        margin: auto;
+        width: 100%;
     }
 }
 
