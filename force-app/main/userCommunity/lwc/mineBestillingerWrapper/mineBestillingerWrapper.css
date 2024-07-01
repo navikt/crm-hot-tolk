@@ -87,6 +87,12 @@ span {
     max-height: 75%;
     width: 50%;
 }
+.fileUploader {
+    justify-content: center;
+    align-items: center;
+    margin: auto;
+    width: 50%;
+}
 
 .loader {
     border: 16px solid #f3f3f3; /* Light grey */
@@ -118,6 +124,12 @@ span {
 }
 
 @media (max-width: 576px) {
+    .fileUploader {
+        justify-content: center;
+        align-items: center;
+        margin: auto;
+        width: 100%;
+    }
     .mine-bestillinger-wrapper {
         padding: 1rem;
     }

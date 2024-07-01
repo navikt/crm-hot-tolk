@@ -237,18 +237,22 @@
         >
             <div class="loader hidden"></div>
             <div if:true={showUploadFilesComponent}>
-                <h2 style="font-size: 1.25rem; text-align: center">Legg til filer i bestillingen</h2>
+                <h2 style="font-size: 1.25rem; text-align: center">Legg ved filer til denne bestillingen</h2>
                 <br />
-                <c-upload-files
-                    record-id={recordId}
-                    onfiledatalength={checkFileDataLength}
-                    onuploadcomplete={onUploadComplete}
-                    onuploaderror={onUploadError}
-                    ongetcheckboxvalue={getCheckboxValue}
-                    checkbox-validation="true"
-                    checkbox-text-plural="Dokumentene som er lagt ved gir mer informasjon om denne bestillingen. Jeg er klar over at dokumentene vil bli delt med tolken(e) jeg får."
-                    checkbox-text-single="Dokumentet som er lagt ved gir mer informasjon om denne bestillingen. Jeg er klar over at dokumentet vil bli delt med tolken(e) jeg får."
-                ></c-upload-files>
+                <div class="fileUploader">
+                    <lightning-file-upload
+                        record-id={recordId}
+                        name="fileUploader"
+                        class="file-selector-large"
+                        label="Ved å laste opp filer er jeg klar over at filene vil bli delt med formidler og tolken(e) jeg får. Opplastingen vil starte umiddelbart. Maks filstørelse: 2 GB."
+                        title="Maks filstørrelse: 2 GB."
+                        onuploadfinished={handleUploadFinished}
+                        multiple
+                    >
+                    </lightning-file-upload>
+                    <br />
+                    <p class="typo-undertittel">{fileUploadMessage}</p>
+                </div>
             </div>
             <br />
             <br />
@@ -265,7 +269,7 @@
                 <c-button
                     if:true={showCancelUploadButton}
                     button-styling="secondary"
-                    button-label="Avbryt"
+                    button-label="Lukk"
                     onbuttonclick={cancelUploadFiles}
                     desktop-style="width: 8rem; justify-content: center"
                     mobile-style="width: 8rem; justify-content: center"

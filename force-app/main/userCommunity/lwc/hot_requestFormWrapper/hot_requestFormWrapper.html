@@ -114,9 +114,41 @@
             >
             </lightning-icon>
             <br />
-            <h2 class="typo-undertittel h2-successMessage" id="successMessage" tabindex="-1" role="alert" aria-live="polite">
+            <h2
+                class="typo-undertittel h2-successMessage"
+                id="successMessage"
+                tabindex="-1"
+                role="alert"
+                aria-live="polite"
+            >
                 {submitSuccessMessage}
             </h2>
+            <br />
+            <div if:true={showUploadFileModule}>
+                <div class="fileUploader">
+                    <h2>Legg ved filer til denne bestillingen</h2>
+                    <lightning-file-upload
+                        record-id={recordId}
+                        name="fileUploader"
+                        class="file-selector-large"
+                        label="Ved å laste opp filer er jeg klar over at filene vil bli delt med formidler og tolken(e) jeg får. Opplastingen vil starte umiddelbart. Maks filstørelse: 2 GB."
+                        title="Maks filstørrelse: 2 GB."
+                        onuploadfinished={handleUploadFinished}
+                        multiple
+                    >
+                    </lightning-file-upload>
+                    <br />
+                    <div class="files-container">
+                        <c-record-files-with-sharing
+                            record-id={recordId}
+                            is-get-all="true"
+                            is-delete-option="true"
+                            title="Vedlegg"
+                            delete-file-on-button-click="true"
+                        ></c-record-files-with-sharing>
+                    </div>
+                </div>
+            </div>
             <br />
             <c-button
                 button-label="Gå til mine bestillinger"
@@ -129,10 +161,16 @@
     </div>
     <div class="main-content hidden submitted-loading">
         <div class="main-content dialog-boks skjema-max-width">
-            <h2 class="typo-undertittel h2-loadingMessage" id="loadingMessage" tabindex="-1" role="alert" aria-live="polite">
+            <h2
+                class="typo-undertittel h2-loadingMessage"
+                id="loadingMessage"
+                tabindex="-1"
+                role="alert"
+                aria-live="polite"
+            >
                 Sender bestilling...
             </h2>
-            <br/>
+            <br />
             <div if:true={spin} class="loader" style="display: flex; justify-content: center"></div>
             <br />
         </div>

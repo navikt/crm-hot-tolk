@@ -138,26 +138,6 @@
                 choices={componentValues.interpretationChoices}
                 onpicklistvaluechange={handleInterpretationPicklist}
             ></c-picklist>
-            <br />
-            <c-upload-files
-                record-id={recordId}
-                onfiledatalength={checkFileDataLength}
-                ongetcheckboxvalue={getFileConsent}
-                ongetfiledata={getFileData}
-                onuploadcomplete={onUploadComplete}
-                desktop-style="margin-left: unset"
-                checkbox-validation="true"
-                checkbox-text-plural="Dokumentene som er lagt ved gir mer informasjon om denne bestillingen. Jeg er klar over at dokumentene vil bli delt med tolken(e) jeg får."
-                checkbox-text-single="Dokumentet som er lagt ved gir mer informasjon om denne bestillingen. Jeg er klar over at dokumentet vil bli delt med tolken(e) jeg får."
-                validation-message="For å legge til et dokument må du gi samtykke til at formidler og tolk kan se dokumentene som lastes opp"
-            ></c-upload-files>
-            <br />
-            <c-record-files-with-sharing
-                record-id={recordId}
-                is-get-all={isGetAll}
-                is-delete-option="true"
-                title="Tidligere opplastede dokumenter"
-            ></c-record-files-with-sharing>
         </div>
 
         <lightning-messages aria-live="assertive"> </lightning-messages>
