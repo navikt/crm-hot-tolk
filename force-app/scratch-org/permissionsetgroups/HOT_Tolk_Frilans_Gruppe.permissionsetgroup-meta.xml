@@ -2,7 +2,7 @@
 <PermissionSetGroup xmlns="http://soap.sforce.com/2006/04/metadata">
     <hasActivationRequired>false</hasActivationRequired>
     <label>HOT_Tolk_Frilans_Gruppe</label>
-    <permissionSets>HOT_Tolk_Bruker_Plus</permissionSets>
+    <permissionSets>HOT_Tolk_Bruker_v2</permissionSets>
     <permissionSets>HOT_Tolk_Frilans</permissionSets>
     <permissionSets>HOT_Tolk_Mobil_App</permissionSets>
     <status>Updated</status>
