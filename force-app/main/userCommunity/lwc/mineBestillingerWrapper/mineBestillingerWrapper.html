@@ -74,14 +74,14 @@
                     <br if:true={request.Description__c} />
                     <p if:true={request.Description__c}>Tilleggsopplysninger: <span>{request.Description__c}</span></p>
                 </div>
-                <c-record-files-with-sharing
+                <c-hot_record-files-with-sharing
                     if:true={isSeries}
                     record-id={request.Id}
                     is-get-all={isGetAllFiles}
                     is-delete-option="true"
                     title="Vedlegg"
                     delete-file-on-button-click="true"
-                ></c-record-files-with-sharing>
+                ></c-hot_record-files-with-sharing>
                 <br />
             </div>
             <div if:true={isWorkOrderDetails}>
@@ -124,14 +124,14 @@
                     <br if:true={request.Description__c} />
                     <p if:true={request.Description__c}>Tilleggsopplysninger: <span>{request.Description__c}</span></p>
                 </div>
-                <c-record-files-with-sharing
-                    if:false={isSeries}
-                    record-id={request.Id}
+                <!-- Lag heller en sjekk om if WO så vises denne  -->
+                <c-hot_record-files-with-sharing
+                    record-id={workOrder.Id}
                     is-get-all={isGetAllFiles}
                     is-delete-option="true"
                     title="Vedlegg"
                     delete-file-on-button-click="true"
-                ></c-record-files-with-sharing>
+                ></c-hot_record-files-with-sharing>
                 <br />
             </div>
 

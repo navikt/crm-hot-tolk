@@ -126,7 +126,7 @@
                                     <c-record-files-with-sharing
                                         record-id={serviceAppointment.Id}
                                         is-get-all="true"
-                                        is-delete-option="false"
+                                        is-delete-option="true"
                                         title="Vedlegg"
                                         delete-file-on-button-click="false"
                                     ></c-record-files-with-sharing>
@@ -195,6 +195,31 @@
                                     disabled={isGoToThreadServiceAppointmentButtonDisabled}
                                 >
                                 </c-button>
+                            </div>
+                            <div class="fileUploadContainer">
+                                <h2>Legg ved filer til bruker</h2>
+                                <lightning-file-upload
+                                    record-id={recordId}
+                                    name="fileUploader"
+                                    class="file-selector-large"
+                                    label="Ved å laste opp filer er jeg klar over at filene vil bli delt med tolkebruker. Opplastingen vil starte umiddelbart. Maks filstørelse: 2 GB."
+                                    title="Maks filstørrelse: 2 GB."
+                                    onuploadfinished={handleUploadFinished}
+                                    multiple
+                                >
+                                </lightning-file-upload>
+                                <br />
+                                <p class="typo-undertittel">{fileUploadMessage}</p>
+                                <br />
+                                <!-- <div class="files-container">
+                                    <c-record-files-with-sharing
+                                        record-id={recordId}
+                                        is-get-all="true"
+                                        is-delete-option="true"
+                                        title="Vedlegg"
+                                        delete-file-on-button-click="true"
+                                    ></c-record-files-with-sharing>
+                                </div> -->
                             </div>
                         </div>
                     </div>

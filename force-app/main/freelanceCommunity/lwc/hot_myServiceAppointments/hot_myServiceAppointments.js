@@ -524,6 +524,16 @@ export default class Hot_myServiceAppointments extends NavigationMixin(Lightning
         }
         return this.filteredRecordsLength;
     }
+    @track fileUploadMessage;
+    handleUploadFinished(event) {
+        const uploadedFiles = event.detail.files;
+        if (uploadedFiles.length > 0) {
+            this.fileUploadMessage = 'Filen(e) ble lastet opp. Se filen i listen over vedlegg ovenfor';
+            this.template.querySelector('c-record-files-with-sharing').refreshContentDocuments();
+        } else {
+            this.fileUploadMessage = '';
+        }
+    }
     changeStatus() {
         this.isflow = true;
         this.isEditButtonDisabled = true;
