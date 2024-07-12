@@ -21,7 +21,7 @@ public with sharing class HOT_RecordFilesControllerWithSharing {
         }
 
         if (!isGetAll) {
-            contentDocumentIds = getOnlyMyContentDocuments(contentDocumentIds);
+            contentDocumentIds = RecordFilesControllerWithSharing.getOnlyMyContentDocuments(contentDocumentIds);
         }
 
         List<ContentDocument> contentDocuments = [
@@ -30,40 +30,5 @@ public with sharing class HOT_RecordFilesControllerWithSharing {
             WHERE Id IN :contentDocumentIds AND ContentAssetId = NULL
         ];
         return contentDocuments;
-    }
-    
-    @AuraEnabled
-    public static List<Id> getOnlyMyContentDocuments(List<Id> contentDocumentIds) {
-        List<ContentDocumentLink> contentDocumentLinks = [
-            SELECT ContentDocumentId
-            FROM ContentDocumentLink
-            WHERE LinkedEntityId = :UserInfo.getUserId() AND ContentDocumentId IN :contentDocumentIds
-        ];
-        List<Id> filteredContentDocumentIds = new List<Id>();
-        for (ContentDocumentLink contentDocumentLink : contentDocumentLinks) {
-            filteredContentDocumentIds.add(contentDocumentLink.ContentDocumentId);
-        }
-        return filteredContentDocumentIds;
-    }
-
-    @AuraEnabled(cacheable=true)
-    public static String getBaseDownloadUrl() {
-        return URL.getSalesforceBaseUrl().toExternalForm() + '/sfc/servlet.shepherd/document/download/';
-    }
-
-    @AuraEnabled
-    public static void deleteFilesOnRecord(List<String> files) {
-        List<ContentDocument> contentDocuments = [SELECT Id FROM ContentDocument WHERE Id IN :files];
-        deleteFiles(contentDocuments);
-    }
-
-    private static void deleteFiles(List<ContentDocument> contentDocuments) {
-        try {
-            delete contentDocuments;
-        } catch (DMLException e) {
-            LoggerUtility logger = new LoggerUtility();
-            logger.exception(e, CRM_ApplicationDomain.Domain.HOT);
-            logger.publishSynch();
-        }
     }
 }

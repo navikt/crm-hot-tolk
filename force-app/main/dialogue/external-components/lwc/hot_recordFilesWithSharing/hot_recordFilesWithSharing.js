@@ -1,8 +1,8 @@
 import { LightningElement, api, wire, track } from 'lwc';
 import getContentDocuments from '@salesforce/apex/HOT_RecordFilesControllerWithSharing.getContentDocuments';
-import getBaseDownloadUrl from '@salesforce/apex/HOT_RecordFilesControllerWithSharing.getBaseDownloadUrl';
-import deleteFilesOnRecord from '@salesforce/apex/HOT_RecordFilesControllerWithSharing.deleteFilesOnRecord';
-import getOnlyMyContentDocuments from '@salesforce/apex/HOT_RecordFilesControllerWithSharing.getOnlyMyContentDocuments';
+import getBaseDownloadUrl from '@salesforce/apex/RecordFilesControllerWithSharing.getBaseDownloadUrl';
+import deleteFilesOnRecord from '@salesforce/apex/RecordFilesControllerWithSharing.deleteFilesOnRecord';
+import getOnlyMyContentDocuments from '@salesforce/apex/RecordFilesControllerWithSharing.getOnlyMyContentDocuments';
 import { setDefaultValue, convertStringToBoolean } from 'c/componentHelperClass';
 import { refreshApex } from '@salesforce/apex';
 export default class hot_recordFilesWithSharing extends LightningElement {

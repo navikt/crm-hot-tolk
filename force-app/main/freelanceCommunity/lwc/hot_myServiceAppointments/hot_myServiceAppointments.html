@@ -208,18 +208,9 @@
                                     multiple
                                 >
                                 </lightning-file-upload>
+                                <br if:true={fileUploadMessage} />
+                                <p if:true={fileUploadMessage} class="typo-normal">{fileUploadMessage}</p>
                                 <br />
-                                <p class="typo-undertittel">{fileUploadMessage}</p>
-                                <br />
-                                <!-- <div class="files-container">
-                                    <c-record-files-with-sharing
-                                        record-id={recordId}
-                                        is-get-all="true"
-                                        is-delete-option="true"
-                                        title="Vedlegg"
-                                        delete-file-on-button-click="true"
-                                    ></c-record-files-with-sharing>
-                                </div> -->
                             </div>
                         </div>
                     </div>
