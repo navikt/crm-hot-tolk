@@ -9,7 +9,7 @@
                 <div if:false={isMobile} class="back-link-div">
                     <a class="back-link" onclick={goBack}>
                         <c-icon icon="Back"></c-icon>
-                        <p style="margin-left: 0.25rem">Tilbake</p>
+                        <p class="backBtn" style="margin-left: 0.25rem">Tilbake</p>
                     </a>
                 </div>
                 <h2 class="header" tabindex="-1" autofocus>{headerToShow}</h2>
@@ -29,7 +29,7 @@
                     <div if:true={isMobile} class="back-link-div">
                         <a class="back-link" onclick={goBack}>
                             <c-icon icon="Back"></c-icon>
-                            <p style="margin-left: 0.25rem">Tilbake</p>
+                            <p class="backBtn" style="margin-left: 0.25rem">Tilbake</p>
                         </a>
                     </div>
                     <c-list-filters-button
@@ -211,7 +211,7 @@
             </div>
             <div if:true={noWorkOrders} style="text-align: center">
                 <br />
-                Du har ingen bestillinger. Når du sender inn en ny bestilling vil den vises her.
+                <p>Du har ingen bestillinger. Når du sender inn en ny bestilling vil den vises her.</p>
             </div>
         </div>
     </main>

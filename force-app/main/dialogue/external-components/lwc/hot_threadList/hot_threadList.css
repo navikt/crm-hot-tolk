@@ -1,5 +1,9 @@
 .mainContent {
     margin-bottom: 3.5rem;
+    font-size: 18px;
+}
+.backBtn {
+    font-weight: bold;
 }
 
 .thread-wrapper {
@@ -33,10 +37,6 @@
 }
 .back-link:hover {
     text-decoration: underline;
-}
-
-p {
-    font-weight: bold;
 }
 
 span {

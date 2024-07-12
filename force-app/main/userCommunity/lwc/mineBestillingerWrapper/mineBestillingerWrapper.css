@@ -6,6 +6,9 @@
     max-width: 1200px;
     padding: 2rem;
 }
+.backBtn {
+    font-weight: bold;
+}
 
 .back-link {
     display: flex;
@@ -49,16 +52,13 @@
     max-width: 1200px;
 }
 
-p {
-    font-weight: bold;
-}
-
 span {
     font-weight: normal;
 }
 
 .mainContent {
     margin-bottom: 3.5rem;
+    font-size: 18px;
 }
 
 .buttonRow {

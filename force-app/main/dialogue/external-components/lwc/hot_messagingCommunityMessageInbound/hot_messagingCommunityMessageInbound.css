@@ -11,6 +11,8 @@
     display: block;
     max-width: 80%;
     min-width: fit-content;
+    background-color: white;
+    padding: 1rem;
 }
 .ikon {
     display: block;

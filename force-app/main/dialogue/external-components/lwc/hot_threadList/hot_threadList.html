@@ -8,14 +8,14 @@
                 <div if:false={isMobile} class="back-link-div">
                     <a class="back-link" onclick={goBack}>
                         <c-icon icon="Back"></c-icon>
-                        <p style="margin-left: 0.25rem">Tilbake</p>
+                        <p class="backBtn" style="margin-left: 0.25rem">Tilbake</p>
                     </a>
                 </div>
                 <h2 class="header">Mine samtaler</h2>
                 <div if:true={isMobile} class="back-link-div">
                     <a class="back-link" onclick={goBack}>
                         <c-icon icon="Back"></c-icon>
-                        <p style="margin-left: 0.25rem">Tilbake</p>
+                        <p class="backBtn" style="margin-left: 0.25rem">Tilbake</p>
                     </a>
                 </div>
                 <div class="empty"></div>
@@ -23,7 +23,8 @@
             <div class="tabset">
                 <template for:each={tabs} for:item="tab">
                     <button key={tab.name} class="tab tab-button" data-id={tab.name} onclick={setActiveTab}>
-                        {tab.label} <c-icon if:true={tab.hasUnread} icon="Information"></c-icon>
+                        {tab.label}
+                        <c-icon if:true={tab.hasUnread} icon="Information"></c-icon>
                     </button>
                 </template>
             </div>
@@ -46,7 +47,7 @@
                 </div>
                 <div if:true={noThreads} style="text-align: center">
                     <br />
-                    Du har ingen samtaler. Når du starter en ny samtale vil den vises her.
+                    <p>Du har ingen samtaler. Når du starter en ny samtale vil den vises her.</p>
                 </div>
             </div>
             <div if:true={showInterpreterthreads}>
@@ -68,7 +69,7 @@
                 </div>
                 <div if:true={noInterpreterThreads} style="text-align: center">
                     <br />
-                    Du har ingen samtaler. Når du starter en ny samtale vil den vises her.
+                    <p>Du har ingen samtaler. Når du starter en ny samtale vil den vises her.</p>
                 </div>
             </div>
             <div if:true={showOrderthreads}>
@@ -90,7 +91,7 @@
                 </div>
                 <div if:true={noOrderThreads} style="text-align: center">
                     <br />
-                    Du har ingen samtaler. Når du starter en ny samtale vil den vises her.
+                    <p>Du har ingen samtaler. Når du starter en ny samtale vil den vises her.</p>
                 </div>
             </div>
             <div if:true={showOrdererUserThreads}>
@@ -112,7 +113,7 @@
                 </div>
                 <div if:true={noOrdererUserThreads} style="text-align: center">
                     <br />
-                    Du har ingen samtaler. Når du starter en ny samtale vil den vises her.
+                    <p>Du har ingen samtaler. Når du starter en ny samtale vil den vises her.</p>
                 </div>
             </div>
         </div>

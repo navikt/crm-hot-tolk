@@ -9,7 +9,7 @@
         <div class="back-link-div">
             <a class="back-link" onclick={goBack}>
                 <c-icon icon="Back"></c-icon>
-                <p style="margin-left: 0.25rem">Tilbake</p>
+                <p class="backBtn" style="margin-left: 0.25rem">Tilbake</p>
             </a>
             <a class="goToWO-link" onclick={goToDetails}>
                 <p>Gå til bestilling</p>
@@ -189,16 +189,13 @@
                                             class="inputTextbox slds-var-m-bottom_medium"
                                             ontextchanged={handleTextChange}
                                         ></c-hot_community-textarea>
-                                        <button
+                                        <c-button
                                             disabled={buttonisdisabled}
-                                            type="submit"
-                                            class="knapp knapp--hoved .slds-float_right"
-                                            name="submit"
-                                            label="Send"
-                                            onclick={handleSendButtonClick}
-                                        >
-                                            Send
-                                        </button>
+                                            class="knapp .slds-float_right"
+                                            button-styling="primary"
+                                            button-label="Send"
+                                            onbuttonclick={handleSendButtonClick}
+                                        ></c-button>
                                     </div>
                                 </div>
                                 <template if:true={showopenwarning}>
