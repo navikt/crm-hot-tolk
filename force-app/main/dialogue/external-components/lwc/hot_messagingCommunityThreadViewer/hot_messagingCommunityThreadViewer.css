@@ -1,5 +1,12 @@
 .decorator-wrapper {
 }
+.typo-sidetittel {
+    font-size: 32px;
+    margin: auto;
+}
+.backBtn {
+    font-weight: bold;
+}
 .body-wrapper {
     padding: 1rem;
 }

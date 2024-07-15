@@ -1,5 +1,7 @@
 .tekstboks {
     overflow-y: hidden;
+    font-size: 18px;
+    font-family: 'Source Sans Pro', Arial, sans-serif;
 }
 
 .mirror {
@@ -22,4 +24,41 @@
 
 .minRow {
     min-height: 12rem;
+}
+.navds-textarea__input {
+    height: var(--__ac-textarea-height);
+    appearance: none;
+    padding: var(--a-spacing-2);
+    background-color: var(--ac-textarea-bg, var(--__ac-textarea-bg, var(--a-surface-default)));
+    border-radius: var(--a-border-radius-medium);
+    border: 1px solid var(--ac-textarea-border, var(--__ac-textarea-border, var(--a-border-default)));
+    resize: none;
+    width: 100%;
+    display: block;
+    color: var(--ac-textarea-text, var(--__ac-textarea-text, var(--a-text-default)));
+}
+
+.navds-textarea__input::placeholder {
+    color: var(--ac-textarea-placeholder, var(--__ac-textarea-placeholder, var(--a-text-subtle)));
+}
+
+.navds-textarea__input:hover {
+    border-color: var(--ac-textarea-hover-border, var(--__ac-textarea-hover-border, var(--a-border-action-hover)));
+}
+
+.navds-textarea__input:focus-visible {
+    outline: 2px solid transparent;
+    outline-offset: 2px;
+    box-shadow: var(--a-shadow-focus);
+    border-color: var(--ac-textarea-active-border, var(--a-border-action-selected));
+}
+.errorMessage {
+    padding: 0.5rem;
+    color: var(--ac-textarea-error-border, var(--__ac-textarea-error-border, var(--a-border-danger)));
+    font-size: 18px;
+    font-weight: bold;
+}
+.navds-textarea--error .navds-textarea__input:not(:hover):not(:focus-visible):not(:disabled) {
+    box-shadow: 0 0 0 1px var(--ac-textarea-error-border, var(--__ac-textarea-error-border, var(--a-border-danger)));
+    border-color: var(--ac-textarea-error-border, var(--__ac-textarea-error-border, var(--a-border-danger)));
 }

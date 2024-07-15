@@ -4,6 +4,9 @@
     flex-direction: column !important;
     justify-content: center !important;
 }
+.backBtn {
+    font-weight: bold;
+}
 
 .user-info-tile {
     background-color: #fff;

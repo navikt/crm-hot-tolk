@@ -5,6 +5,10 @@
     width: 100%;
     max-width: 1200px;
     padding: 2rem;
+    font-family: 'Source Sans Pro', Arial, sans-serif;
+}
+.backBtn {
+    font-weight: bold;
 }
 
 .back-link {
@@ -49,16 +53,13 @@
     max-width: 1200px;
 }
 
-p {
-    font-weight: bold;
-}
-
 span {
     font-weight: normal;
 }
 
 .mainContent {
     margin-bottom: 3.5rem;
+    font-size: 18px;
 }
 
 .buttonRow {
