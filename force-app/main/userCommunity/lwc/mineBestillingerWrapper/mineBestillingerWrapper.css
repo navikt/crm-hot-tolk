@@ -5,6 +5,7 @@
     width: 100%;
     max-width: 1200px;
     padding: 2rem;
+    font-family: 'Source Sans Pro', Arial, sans-serif;
 }
 .backBtn {
     font-weight: bold;
