@@ -26,7 +26,6 @@
     min-height: 12rem;
 }
 .navds-textarea__input {
-    /* stylelint-disable-next-line csstools/value-no-unknown-custom-properties */
     height: var(--__ac-textarea-height);
     appearance: none;
     padding: var(--a-spacing-2);
