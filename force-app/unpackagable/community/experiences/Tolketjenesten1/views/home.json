@@ -7,11 +7,11 @@
   "regions" : [ {
     "components" : [ {
       "componentAttributes" : {
-        "NAVarea" : "Privatperson",
-        "navareapicklist" : "Privatperson"
+        "context" : "Privatperson",
+        "env" : "Dev"
       },
-      "componentName" : "c:globalCommunityHeader",
-      "id" : "6aba83c4-87cb-41ca-89a6-0807c9f3c63e",
+      "componentName" : "c:decoratorHeader",
+      "id" : "78d44ef3-b94e-450e-a7fd-a6a66a52d54a",
       "renderPriority" : "NEUTRAL",
       "renditionMap" : { },
       "type" : "component"
@@ -36,6 +36,13 @@
       "type" : "component"
     }, {
       "componentAttributes" : { },
+      "componentName" : "c:hot_notificationCentreLink",
+      "id" : "f3939e28-3e77-40b4-8a5c-9752b03dfba9",
+      "renderPriority" : "NEUTRAL",
+      "renditionMap" : { },
+      "type" : "component"
+    }, {
+      "componentAttributes" : { },
       "componentName" : "c:hot_freelanceHome",
       "id" : "a4b18819-dbd6-47d0-8620-fab423577c32",
       "renderPriority" : "NEUTRAL",
@@ -54,12 +61,9 @@
     "type" : "region"
   }, {
     "components" : [ {
-      "componentAttributes" : {
-        "NAVarea" : "",
-        "navareapicklist" : "Privatperson"
-      },
-      "componentName" : "c:globalCommunityFooter",
-      "id" : "40efbd18-d9a5-4487-8d4e-2e4b9ba0fc67",
+      "componentAttributes" : { },
+      "componentName" : "c:decoratorFooter",
+      "id" : "e259bc9c-b75c-40e2-baf1-7622a150cc79",
       "renderPriority" : "NEUTRAL",
       "renditionMap" : { },
       "type" : "component"
