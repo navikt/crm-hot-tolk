@@ -52,3 +52,13 @@
     box-shadow: var(--a-shadow-focus);
     border-color: var(--ac-textarea-active-border, var(--a-border-action-selected));
 }
+.errorMessage {
+    padding: 0.5rem;
+    color: var(--ac-textarea-error-border, var(--__ac-textarea-error-border, var(--a-border-danger)));
+    font-size: 18px;
+    font-weight: bold;
+}
+.navds-textarea--error .navds-textarea__input:not(:hover):not(:focus-visible):not(:disabled) {
+    box-shadow: 0 0 0 1px var(--ac-textarea-error-border, var(--__ac-textarea-error-border, var(--a-border-danger)));
+    border-color: var(--ac-textarea-error-border, var(--__ac-textarea-error-border, var(--a-border-danger)));
+}

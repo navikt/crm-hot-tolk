@@ -1,6 +1,6 @@
 <template>
     <template if:true={showWarnings}>
-        <div class="navds-error-summary navds-error-summary--medium" tabindex="-1" role="region">
+        <div class="content" tabindex="-1" role="region">
             <h2 class="navds-error-summary__heading navds-heading navds-heading--small" tabindex="-1">{title}</h2>
             <ul class="navds-error-summary__list navds-body-short">
                 <template for:each={errorList.errors} for:item="error">
