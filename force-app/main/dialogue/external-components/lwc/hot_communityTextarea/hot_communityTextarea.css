@@ -1,6 +1,7 @@
 .tekstboks {
     overflow-y: hidden;
     font-size: 18px;
+    font-family: 'Source Sans Pro', Arial, sans-serif;
 }
 
 .mirror {
