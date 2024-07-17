@@ -7,11 +7,11 @@
   "regions" : [ {
     "components" : [ {
       "componentAttributes" : {
-        "NAVarea" : "Privatperson",
-        "navareapicklist" : "Privatperson"
+        "context" : "Privatperson",
+        "env" : "Dev"
       },
-      "componentName" : "c:globalCommunityHeader",
-      "id" : "62cc284d-8373-4122-a233-496a786d2745",
+      "componentName" : "c:decoratorHeader",
+      "id" : "186b54be-c5d5-49cb-ba68-e1e2bb2fb5aa",
       "renderPriority" : "NEUTRAL",
       "renditionMap" : { },
       "type" : "component"
@@ -40,12 +40,9 @@
       "renditionMap" : { },
       "type" : "component"
     }, {
-      "componentAttributes" : {
-        "NAVarea" : "Privatperson",
-        "navareapicklist" : "Privatperson"
-      },
-      "componentName" : "c:globalCommunityFooter",
-      "id" : "2b9dd63e-e5a4-4a6f-b93e-161b82106040",
+      "componentAttributes" : { },
+      "componentName" : "c:decoratorFooter",
+      "id" : "54cea4c9-f0d6-4f99-9e89-77bd27414f21",
       "renderPriority" : "NEUTRAL",
       "renditionMap" : { },
       "type" : "component"

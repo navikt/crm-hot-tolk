@@ -1,5 +1,10 @@
 .mainContent {
     margin-bottom: 3.5rem;
+    font-size: 18px;
+    font-family: 'Source Sans Pro', Arial, sans-serif;
+}
+.backBtn {
+    font-weight: bold;
 }
 .notificationlist {
     margin-top: 1rem;
@@ -61,10 +66,6 @@
 }
 .back-link:hover {
     text-decoration: underline;
-}
-
-p {
-    font-weight: bold;
 }
 
 span {
