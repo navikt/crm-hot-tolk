@@ -19,6 +19,8 @@ tr.row:last-child {
 td,
 th {
     /* width: 15%; */
+    white-space: normal;
+    word-wrap: break-word;
 }
 
 @media (max-width: 576px) {
