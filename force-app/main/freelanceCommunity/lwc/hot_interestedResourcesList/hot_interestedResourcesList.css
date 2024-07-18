@@ -61,9 +61,6 @@ span {
         max-height: 75%;
         width: 100%;
     }
-    .main-content {
-        max-width: 100vw;
-    }
 }
 .hidden {
     display: none;
