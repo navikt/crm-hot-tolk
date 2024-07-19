@@ -49,6 +49,7 @@
 @media (max-width: 576px) {
     .liste {
         padding: 1rem;
+        max-width: 100vw;
     }
 }
 
