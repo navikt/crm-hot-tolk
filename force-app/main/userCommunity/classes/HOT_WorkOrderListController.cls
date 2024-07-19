@@ -201,4 +201,9 @@ public without sharing class HOT_WorkOrderListController {
     }
     return Id;
 }
+@AuraEnabled(cacheable=true)
+   public static List<ServiceAppointment> getServiceAppointmentsIds(String workOrderId) {
+    List<ServiceAppointment> saIds = [SELECT Id FROM ServiceAppointment WHERE HOT_WorkOrderLineItem__r.WorkOrderId=:workOrderId];
+    return saIds;
+}
 }

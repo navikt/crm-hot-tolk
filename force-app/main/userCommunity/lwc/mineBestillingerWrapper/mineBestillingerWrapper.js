@@ -69,7 +69,7 @@ export default class MineBestillingerWrapper extends NavigationMixin(LightningEl
         const uploadedFiles = event.detail.files;
         if (uploadedFiles.length > 0) {
             this.fileUploadMessage = 'Filen(e) ble lastet opp';
-            this.template.querySelector('c-record-files-with-sharing').refreshContentDocuments();
+            this.template.querySelector('c-hot_record-files-with-sharing').refreshContentDocuments();
         }
     }
 
@@ -347,6 +347,7 @@ export default class MineBestillingerWrapper extends NavigationMixin(LightningEl
         this.isWorkOrderDetails = this.urlStateParameters.level === 'WO';
         this.isRequestOrWorkOrderDetails = this.isWorkOrderDetails || this.isRequestDetails;
         this.isSeries = this.workOrder?.HOT_Request__r?.IsSerieoppdrag__c;
+        console.log('serie? ' + this.isSeries);
         this.interpreter = this.workOrder?.HOT_Interpreters__c?.length > 1 ? 'Tolker' : 'Tolk';
         this.isOrdererWantStatusUpdateOnSMS = this.request.IsOrdererWantStatusUpdateOnSMS__c ? 'Ja' : 'Nei';
         this.IsNotNotifyAccount = this.request.IsNotNotifyAccount__c ? 'Nei' : 'Ja';
@@ -567,8 +568,8 @@ export default class MineBestillingerWrapper extends NavigationMixin(LightningEl
     }
 
     onUploadComplete() {
-        if (this.template.querySelector('c-record-files-with-sharing') !== null) {
-            this.template.querySelector('c-record-files-with-sharing').refreshContentDocuments();
+        if (this.template.querySelector('c-hot_record-files-with-sharing') !== null) {
+            this.template.querySelector('c-hot_record-files-with-sharing').refreshContentDocuments();
         }
         this.template.querySelector('.loader').classList.add('hidden');
         this.modalHeader = 'Suksess!';
@@ -643,7 +644,7 @@ export default class MineBestillingerWrapper extends NavigationMixin(LightningEl
     }
 
     deleteMarkedFiles() {
-        this.template.querySelector('c-record-files-with-sharing').deleteMarkedFiles();
+        this.template.querySelector('c-hot_record-files-with-sharing').deleteMarkedFiles();
     }
 
     navigateToThread(recordId) {
