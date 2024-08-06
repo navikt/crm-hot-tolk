@@ -647,8 +647,7 @@
         <readable>true</readable>
     </fieldPermissions>
     <hasActivationRequired>false</hasActivationRequired>
-    <label>HOT Tolk Bruker</label>
-    <license>Customer Community Login</license>
+    <label>HOT Tolk Bruker v2</label>
     <objectPermissions>
         <allowCreate>false</allowCreate>
         <allowDelete>false</allowDelete>

@@ -207,7 +207,8 @@ export default class Hot_requestFormWrapper extends NavigationMixin(LightningEle
         this.editNotAllowed = true;
         this.noCancelButton = true;
         this.confirmButtonStyle = 'width: 15rem;';
-        this.modalContent = 'En formidler har nettopp begynt å jobbe med bestillingen din, og den kan derfor ikke redigeres.';
+        this.modalContent =
+            'En formidler har nettopp begynt å jobbe med bestillingen din, og den kan derfor ikke redigeres.';
         this.modalHeader = 'Kunne ikke redigere bestilling';
         this.template.querySelector('c-alertdialog').showModal();
     }
@@ -263,16 +264,24 @@ export default class Hot_requestFormWrapper extends NavigationMixin(LightningEle
             }
         }
     }
+    handleUploadFinished(event) {
+        const uploadedFiles = event.detail.files;
+        if (uploadedFiles.length > 0) {
+            this.template.querySelector('c-record-files-with-sharing').refreshContentDocuments();
+        }
+    }
 
     submitButtonLabel = 'Send inn';
     submitSuccessMessage = 'Bestilling mottatt';
     isEditOrCopyMode = false;
+    showUploadFileModule = true;
     isEditModeAndTypeMe = false;
     handleEditOrCopyModeRequestType(parsed_params) {
         if (parsed_params.edit != null) {
             this.breadcrumbs.push({ label: 'Rediger bestilling' });
             this.submitButtonLabel = 'Lagre';
             this.submitSuccessMessage = 'Dine endringer er lagret';
+            this.showUploadFileModule = false;
         }
         if (parsed_params.copy != null) {
             this.breadcrumbs.push({ label: 'Kopier bestilling' });

@@ -7,5 +7,54 @@
   "mainAppPageId" : "e1a097ff-c5e1-47c6-b293-9a8b7a2b049f",
   "preferredDomain" : "none",
   "selfRegistrationRouteId" : "b240920c-f9f7-426a-a957-3764868a481c",
+  "trustedSitesForScript" : [ {
+    "id" : "c3b21eec-8e2f-44f3-9e75-08a29d512420",
+    "isActive" : true,
+    "trustedSiteName" : "NAV",
+    "trustedSiteUrl" : "https://www.nav.no",
+    "type" : "trustedSitesForScripts"
+  }, {
+    "id" : "424de587-0ddc-4b19-b042-fc0498e75db4",
+    "isActive" : true,
+    "trustedSiteName" : "Dekoratoren",
+    "trustedSiteUrl" : "https://dekoratoren.ekstern.dev.nav.no",
+    "type" : "trustedSitesForScripts"
+  }, {
+    "id" : "8b3aafd0-8a0a-46ff-8b50-2c90f8c1ede1",
+    "isActive" : true,
+    "trustedSiteName" : "Google_Tag_Manager",
+    "trustedSiteUrl" : "https://googletagmanager.com",
+    "type" : "trustedSitesForScripts"
+  }, {
+    "id" : "3fd0bd80-2533-484c-a9cf-4beef5ea82f5",
+    "isActive" : true,
+    "trustedSiteName" : "Account_psplugin",
+    "trustedSiteUrl" : "https://account.psplugin.com",
+    "type" : "trustedSitesForScripts"
+  }, {
+    "id" : "f99e5bbc-bec8-4725-b805-5af22da32de3",
+    "isActive" : true,
+    "trustedSiteName" : "in2_taskanalytics",
+    "trustedSiteUrl" : "https://in2.taskanalytics.com",
+    "type" : "trustedSitesForScripts"
+  }, {
+    "id" : "1d016684-89f0-4665-841d-83cf1017ba90",
+    "isActive" : true,
+    "trustedSiteName" : "Google_Analytics",
+    "trustedSiteUrl" : "https://google-analytics.com",
+    "type" : "trustedSitesForScripts"
+  }, {
+    "id" : "96e44e6c-e64a-44fe-88a1-3f6c36c9160f",
+    "isActive" : true,
+    "trustedSiteName" : "Static_Hotjar",
+    "trustedSiteUrl" : "https://static.hotjar.com/",
+    "type" : "trustedSitesForScripts"
+  }, {
+    "id" : "10d0758a-b0ed-4c35-a454-cd35ae4892ab",
+    "isActive" : true,
+    "trustedSiteName" : "Script_Hotjar",
+    "trustedSiteUrl" : "https://script.hotjar.com",
+    "type" : "trustedSitesForScripts"
+  } ],
   "type" : "site"
 }

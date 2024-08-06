@@ -21,7 +21,7 @@
         <name>setUserProfile</name>
         <label>setUserProfile</label>
         <locationX>842</locationX>
-        <locationY>1214</locationY>
+        <locationY>1106</locationY>
         <assignmentItems>
             <assignToReference>getUser.ProfileId</assignToReference>
             <operator>Assign</operator>
@@ -140,7 +140,7 @@
         <expression>{!$User.Id}</expression>
     </formulas>
     <interviewLabel>Deactivate Freelance Interpreter {!$Flow.CurrentDateTime}</interviewLabel>
-    <label>Deaktiver frilanstolk</label>
+    <label>Deactivate Freelance Interpreter</label>
     <processMetadataValues>
         <name>BuilderType</name>
         <value>
@@ -160,34 +160,11 @@
         </value>
     </processMetadataValues>
     <processType>Flow</processType>
-    <recordCreates>
-        <name>assignPermissionSet</name>
-        <label>assignPermissionSet</label>
-        <locationX>842</locationX>
-        <locationY>1646</locationY>
-        <connector>
-            <targetReference>getFieldServiceMobilePsl</targetReference>
-        </connector>
-        <inputAssignments>
-            <field>AssigneeId</field>
-            <value>
-                <elementReference>getUser.Id</elementReference>
-            </value>
-        </inputAssignments>
-        <inputAssignments>
-            <field>PermissionSetId</field>
-            <value>
-                <elementReference>getPermissonSet.Id</elementReference>
-            </value>
-        </inputAssignments>
-        <object>PermissionSetAssignment</object>
-        <storeOutputAutomatically>true</storeOutputAutomatically>
-    </recordCreates>
     <recordDeletes>
         <name>deleteLicense</name>
         <label>deleteLicense</label>
         <locationX>842</locationX>
-        <locationY>1970</locationY>
+        <locationY>1754</locationY>
         <connector>
             <targetReference>SuccessScreen</targetReference>
         </connector>
@@ -246,7 +223,7 @@
         <name>getFieldServiceMobilePsl</name>
         <label>getFieldServiceMobilePsl</label>
         <locationX>842</locationX>
-        <locationY>1754</locationY>
+        <locationY>1538</locationY>
         <assignNullValuesIfNoRecordsFound>false</assignNullValuesIfNoRecordsFound>
         <connector>
             <targetReference>getFieldServiceSchedulingPsl</targetReference>
@@ -269,7 +246,7 @@
         <name>getFieldServiceSchedulingPsl</name>
         <label>getFieldServiceSchedulingPsl</label>
         <locationX>842</locationX>
-        <locationY>1862</locationY>
+        <locationY>1646</locationY>
         <assignNullValuesIfNoRecordsFound>false</assignNullValuesIfNoRecordsFound>
         <connector>
             <targetReference>deleteLicense</targetReference>
@@ -289,34 +266,13 @@
         <storeOutputAutomatically>true</storeOutputAutomatically>
     </recordLookups>
     <recordLookups>
-        <name>getPermissonSet</name>
-        <label>getPermissonSet</label>
-        <locationX>842</locationX>
-        <locationY>1106</locationY>
-        <assignNullValuesIfNoRecordsFound>false</assignNullValuesIfNoRecordsFound>
-        <connector>
-            <targetReference>setUserProfile</targetReference>
-        </connector>
-        <filterLogic>and</filterLogic>
-        <filters>
-            <field>Name</field>
-            <operator>EqualTo</operator>
-            <value>
-                <stringValue>HOT_Tolk_Bruker_Plus</stringValue>
-            </value>
-        </filters>
-        <getFirstRecordOnly>true</getFirstRecordOnly>
-        <object>PermissionSet</object>
-        <storeOutputAutomatically>true</storeOutputAutomatically>
-    </recordLookups>
-    <recordLookups>
         <name>getProfile</name>
         <label>getProfile</label>
         <locationX>842</locationX>
         <locationY>998</locationY>
         <assignNullValuesIfNoRecordsFound>false</assignNullValuesIfNoRecordsFound>
         <connector>
-            <targetReference>getPermissonSet</targetReference>
+            <targetReference>setUserProfile</targetReference>
         </connector>
         <filterLogic>and</filterLogic>
         <filters>
@@ -355,7 +311,7 @@
         <name>updateResource</name>
         <label>updateResource</label>
         <locationX>842</locationX>
-        <locationY>1322</locationY>
+        <locationY>1214</locationY>
         <connector>
             <targetReference>breakTrans</targetReference>
         </connector>
@@ -365,9 +321,9 @@
         <name>updateUser</name>
         <label>updateUser</label>
         <locationX>842</locationX>
-        <locationY>1538</locationY>
+        <locationY>1430</locationY>
         <connector>
-            <targetReference>assignPermissionSet</targetReference>
+            <targetReference>getFieldServiceMobilePsl</targetReference>
         </connector>
         <inputReference>getUser</inputReference>
     </recordUpdates>
@@ -376,7 +332,7 @@
         <name>breakTrans</name>
         <label>breakTrans</label>
         <locationX>842</locationX>
-        <locationY>1430</locationY>
+        <locationY>1322</locationY>
         <allowBack>false</allowBack>
         <allowFinish>true</allowFinish>
         <allowPause>false</allowPause>
@@ -478,7 +434,7 @@
         <name>SuccessScreen</name>
         <label>SuccessScreen</label>
         <locationX>842</locationX>
-        <locationY>2078</locationY>
+        <locationY>1862</locationY>
         <allowBack>false</allowBack>
         <allowFinish>true</allowFinish>
         <allowPause>false</allowPause>

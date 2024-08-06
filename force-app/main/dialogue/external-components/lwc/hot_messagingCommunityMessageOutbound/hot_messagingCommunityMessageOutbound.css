@@ -2,7 +2,8 @@
     float: none;
 }
 .message-text {
-    font-size: 16px;
+    font-size: 18px;
+    font-family: 'Source Sans Pro', Arial, sans-serif;
 }
 .snakkeboble {
 }
@@ -15,6 +16,7 @@
     float: right;
     background-color: #cce1ff !important;
     min-width: fit-content;
+    padding: 1rem;
 }
 .Person-Icon {
     height: 3em;
