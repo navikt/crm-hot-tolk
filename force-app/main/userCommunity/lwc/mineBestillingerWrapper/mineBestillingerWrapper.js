@@ -218,7 +218,6 @@ export default class MineBestillingerWrapper extends NavigationMixin(LightningEl
         }
         this.workOrders = workOrders;
     }
-
     goToRecordDetails(result) {
         window.scrollTo(0, 0);
         let record = result.detail;
@@ -340,11 +339,13 @@ export default class MineBestillingerWrapper extends NavigationMixin(LightningEl
     isOrdererWantStatusUpdateOnSMS = 'Ja';
     isSeries = false;
     isUserAccount = false;
+    @track isWOLevel = false;
     updateView() {
         this.isUserAccount = this.request.Account__c === this.userRecord.AccountId;
         this.isAccountEqualOrderer = this.request.IsAccountEqualOrderer__c;
         this.isRequestDetails = this.urlStateParameters.level === 'R';
         this.isWorkOrderDetails = this.urlStateParameters.level === 'WO';
+        this.isWOLevel = this.isRequestDetails ? false : true;
         this.isRequestOrWorkOrderDetails = this.isWorkOrderDetails || this.isRequestDetails;
         this.isSeries = this.workOrder?.HOT_Request__r?.IsSerieoppdrag__c;
         console.log('serie? ' + this.isSeries);

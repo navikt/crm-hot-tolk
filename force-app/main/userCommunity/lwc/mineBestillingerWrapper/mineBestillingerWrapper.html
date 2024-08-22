@@ -89,8 +89,9 @@
                         <strong>Tilleggsopplysninger: </strong><span>{request.Description__c}</span>
                     </p>
                 </div>
+                <p if:false={isWOLevel}>er ikke wo. request id: {request.Id}</p>
                 <c-hot_record-files-with-sharing
-                    if:true={isSeries}
+                    if:false={isWOLevel}
                     record-id={request.Id}
                     is-get-all={isGetAllFiles}
                     is-delete-option="true"
@@ -154,14 +155,15 @@
                         <strong>Tilleggsopplysninger: </strong><span>{request.Description__c}</span>
                     </p>
                 </div>
-                <!-- Lag heller en sjekk om if WO så vises denne  -->
                 <c-hot_record-files-with-sharing
+                    if:true={isWOLevel}
                     record-id={workOrder.Id}
                     is-get-all={isGetAllFiles}
                     is-delete-option="true"
                     title="Vedlegg"
                     delete-file-on-button-click="true"
                 ></c-hot_record-files-with-sharing>
+                <p if:true={isWOLevel}>er wo her</p>
                 <br />
             </div>
 
