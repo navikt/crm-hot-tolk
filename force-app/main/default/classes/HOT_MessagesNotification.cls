@@ -56,17 +56,20 @@ public without sharing class HOT_MessagesNotification {
             FROM User
             WHERE AccountId IN :accountIds
         ];
+        System.debug('mathias users >>' + users);
         Map<Id, ServiceResource> userToServiceResource = new Map<Id, ServiceResource>();
         for (User user : users) {
             if (user.ServiceResources.size() > 0) {
                 userToServiceResource.put(user.Id, user.ServiceResources[0]);
             }
         }
+        System.debug('mathias usersToServiceResource >>' + userToServiceResource);
 
         Map<Id, Id> userIdByAccountId = new Map<Id, Id>();
         for (User user : users) {
             userIdByAccountId.put(user.AccountId, user.Id);
         }
+        System.debug('mathias UserIdByAccountId>>' + userIdByAccountId);
         //creating notification object list
         List<HOT_Notification__c> notificationList = new List<HOT_Notification__c>();
 
@@ -78,7 +81,7 @@ public without sharing class HOT_MessagesNotification {
                     : false;
                 Set<String> recipients = new Set<String>();
                 if (userIdByAccountId.get(thread.CRM_Account__c) != null) {
-                    if(userIdByAccountId.get(thread.CRM_Account__c)!=thread.LastModifiedById){
+                    if (userIdByAccountId.get(thread.CRM_Account__c) != thread.LastModifiedById) {
                         recipients.add(userIdByAccountId.get(thread.CRM_Account__c));
                     }
                 }

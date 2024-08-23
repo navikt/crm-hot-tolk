@@ -326,7 +326,8 @@ public class HOT_TestDataFactory {
         Profile communityProfile = [
             SELECT Name
             FROM Profile
-            WHERE Name = :profileName OR Name = 'Trial Customer Portal User'
+            //WHERE Name = :profileName OR Name = 'Trial Customer Portal User'
+            WHERE Name = 'Customer Community Plus User'
             LIMIT 1
         ];
 

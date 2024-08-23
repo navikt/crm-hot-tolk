@@ -2,7 +2,57 @@
 private class HOT_MessagesNotificationTest {
     @TestSetup
     static void makeData() {
-        String personAccountRecordTypeId = Schema.getGlobalDescribe()
+        User navEmployee = HOT_TestDataFactory.getUsers(1, 'System Administrator', true, true)[0];
+        System.runAs(navEmployee) {
+            List<Account> personAccounts = HOT_TestDataFactory.getPersonAccounts(2);
+            Map<String, Account> accountByLastName = new Map<String, Account>();
+            for (Account acc : personAccounts) {
+                accountByLastName.put(acc.LastName, acc);
+            }
+
+            Set<Id> personAccountIds = new Set<Id>();
+            List<Person__c> persons = [SELECT INT_LastName__c, CRM_Account__c FROM Person__c];
+
+            Boolean isNotficationChannelSMS = true;
+            for (Person__c person : persons) {
+                person.CRM_Account__c = accountByLastName.get(person.INT_LastName__c).Id;
+                person.INT_KrrMobilePhone__c = '123456789';
+                person.HOT_IsReservationAgainstNotifications__c = false;
+                if (isNotficationChannelSMS) {
+                    person.HOT_NotificationChannel__c = 'SMS';
+                } else {
+                    person.HOT_NotificationChannel__c = 'Push-varsel i appen';
+                }
+                isNotficationChannelSMS = !isNotficationChannelSMS;
+                personAccountIds.add(person.CRM_Account__c);
+            }
+            update persons;
+            List<User> users = HOT_TestDataFactory.getEmployerCommunityUser(
+                personAccountIds,
+                'Customer Community Plus User',
+                true
+            );
+
+            PermissionSet permissionSet = [SELECT Id FROM PermissionSet WHERE Name = 'ServiceResourceTest' LIMIT 1];
+            System.debug('mathias >>' + users);
+            System.debug('mathias profile >>' + users[0].Profile.Name);
+            insert new PermissionSetAssignment(AssigneeId = users[0].id, PermissionSetId = permissionSet.Id);
+            insert new PermissionSetAssignment(AssigneeId = users[1].id, PermissionSetId = permissionSet.Id);
+
+            insert new ServiceResource(
+                AccountId = personAccounts[0].Id,
+                Name = 'Test Service Resource',
+                RelatedRecordId = users[0].Id,
+                IsActive = true
+            );
+            insert new ServiceResource(
+                AccountId = personAccounts[1].Id,
+                Name = 'Test Service Resource',
+                RelatedRecordId = users[1].Id,
+                IsActive = true
+            );
+        }
+        /* String personAccountRecordTypeId = Schema.getGlobalDescribe()
             .get('Account')
             .getDescribe()
             .getRecordTypeInfosByDeveloperName()
@@ -32,7 +82,7 @@ private class HOT_MessagesNotificationTest {
         Account accountSMS = HOT_TestDataFactory.createAccount(true);
         accountSMS.CRM_Person__c = person.Id;
         Account accountPush = HOT_TestDataFactory.createAccount(true);
-        accountPush.CRM_Person__c = personPush.Id;
+        accountPush.CRM_Person__c = personPush.Id; */
     }
 
     @IsTest
@@ -47,8 +97,8 @@ private class HOT_MessagesNotificationTest {
         thread.CRM_Account__c = account.Id;
         thread.HOT_IsEmployeeThread__c = true;
         thread.HOT_Dispatcher__c = UserInfo.getUserId();
-
         insert thread;
+
         Message__c message = new Message__c();
         message.CRM_Thread__c = thread.Id;
         message.CRM_From_Contact__c = account.PersonContactId;
@@ -73,14 +123,16 @@ private class HOT_MessagesNotificationTest {
             SELECT Id, PersonContactId, CRM_Person__r.HOT_NotificationChannel__c
             FROM Account
             WHERE CRM_Person__r.HOT_NotificationChannel__c = 'SMS'
+            LIMIT 1
         ];
+
         Thread__c thread = HOT_TestDataFactory.createThread('HOT_TOLK-FORMIDLER');
         thread.CRM_Related_Object__c = account.PersonContactId;
         thread.CRM_Account__c = account.Id;
         thread.HOT_IsEmployeeThread__c = true;
         thread.HOT_Dispatcher__c = UserInfo.getUserId();
-
         insert thread;
+
         Message__c message = new Message__c();
         message.CRM_Thread__c = thread.Id;
         message.CRM_From_Contact__c = account.PersonContactId;
@@ -105,10 +157,12 @@ private class HOT_MessagesNotificationTest {
             SELECT Id, PersonContactId, CRM_Person__r.HOT_NotificationChannel__c
             FROM Account
             WHERE CRM_Person__r.HOT_NotificationChannel__c = 'Push-varsel i appen'
+            LIMIT 1
         ];
         Thread__c thread = HOT_TestDataFactory.createThread('HOT_TOLK-RESSURSKONTOR');
         thread.CRM_Related_Object__c = account.PersonContactId;
         thread.CRM_Account__c = account.Id;
+        thread.HOT_IsEmployeeThread__c = false;
         thread.HOT_Dispatcher__c = UserInfo.getUserId();
 
         insert thread;
@@ -124,7 +178,6 @@ private class HOT_MessagesNotificationTest {
         for (Thread__c t : threads) {
             threadIds.add(t.Id);
         }
-
         test.startTest();
         HOT_MessagesNotification.NotifyUser(threadIds);
         test.stopTest();
