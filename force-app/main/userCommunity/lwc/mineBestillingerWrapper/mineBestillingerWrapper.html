@@ -89,7 +89,6 @@
                         <strong>Tilleggsopplysninger: </strong><span>{request.Description__c}</span>
                     </p>
                 </div>
-                <p if:false={isWOLevel}>er ikke wo. request id: {request.Id}</p>
                 <c-hot_record-files-with-sharing
                     if:false={isWOLevel}
                     record-id={request.Id}
@@ -163,7 +162,6 @@
                     title="Vedlegg"
                     delete-file-on-button-click="true"
                 ></c-hot_record-files-with-sharing>
-                <p if:true={isWOLevel}>er wo her</p>
                 <br />
             </div>
 
