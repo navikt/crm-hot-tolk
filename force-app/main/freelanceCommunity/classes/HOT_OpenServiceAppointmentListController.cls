@@ -16,7 +16,7 @@ public without sharing class HOT_OpenServiceAppointmentListController {
             mySkillIds.add(SRSkill.SkillId);
         }
 
-        //List<Skill> mySkills = [SELECT Id, MasterLabel FROM Skill WHERE Id IN: mySkillIds];
+        List<Skill> mySkills = [SELECT Id, MasterLabel FROM Skill WHERE Id IN :mySkillIds];
 
         //Getting ServiceAppointments of interest
         List<HOT_InterestedResource__c> interestedResources = [
@@ -92,21 +92,12 @@ public without sharing class HOT_OpenServiceAppointmentListController {
             WHERE RelatedRecordId IN :workTypeIds
         ];
 
-        List<Id> neededSkillIds = new List<Id>();
-        for (SkillRequirement req : neededSkillRequirements) {
-            neededSkillIds.add(req.SkillId);
-        }
-
-        List<Skill> neededSkills = [SELECT Id FROM Skill WHERE Id IN :neededSkillIds];
-
         //Removing the ServiceAppointments with needed skills the ServiceResource does not have
         List<ServiceAppointment> serviceAppointmentsFiltered = new List<ServiceAppointment>();
         for (ServiceAppointment sa : serviceAppointments) {
-            List<Id> subNeededSkillIds = new List<Id>();
             Integer n = 0;
             for (SkillRequirement sreq : neededSkillRequirements) {
                 if (sreq.RelatedRecordId == sa.WorkType.Id) {
-                    subNeededSkillIds.add(sreq.SkillId);
                     if (!mySkillIds.contains(sreq.SkillId)) {
                         n++;
                     }
