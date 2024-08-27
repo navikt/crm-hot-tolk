@@ -34,8 +34,6 @@ private class HOT_MessagesNotificationTest {
             );
 
             PermissionSet permissionSet = [SELECT Id FROM PermissionSet WHERE Name = 'ServiceResourceTest' LIMIT 1];
-            System.debug('mathias >>' + users);
-            System.debug('mathias profile >>' + users[0].Profile.Name);
             insert new PermissionSetAssignment(AssigneeId = users[0].id, PermissionSetId = permissionSet.Id);
             insert new PermissionSetAssignment(AssigneeId = users[1].id, PermissionSetId = permissionSet.Id);
 
@@ -52,37 +50,6 @@ private class HOT_MessagesNotificationTest {
                 IsActive = true
             );
         }
-        /* String personAccountRecordTypeId = Schema.getGlobalDescribe()
-            .get('Account')
-            .getDescribe()
-            .getRecordTypeInfosByDeveloperName()
-            .get('PersonAccount')
-            .getRecordTypeId();
-
-        Person__c person = new Person__c();
-        person.INT_Confidential__c = 'UGRADERT';
-        person.Name = '01010100111';
-        person.INT_LastName__c = 'SMS';
-        person.INT_FirstName__c = 'User';
-        person.INT_KrrMobilePhone__c = '12345678';
-        person.HOT_NotificationChannel__c = 'SMS';
-        person.HOT_IsReservationAgainstNotifications__c = false;
-        insert person;
-
-        Person__c personPush = new Person__c();
-        personPush.INT_Confidential__c = 'UGRADERT';
-        personPush.Name = '01010100331';
-        personPush.INT_LastName__c = 'Pusher';
-        personPush.INT_FirstName__c = 'User';
-        personPush.INT_KrrMobilePhone__c = '32145678';
-        personPush.HOT_NotificationChannel__c = 'Push-varsel i appen';
-        personPush.HOT_IsReservationAgainstNotifications__c = false;
-        insert personPush;
-
-        Account accountSMS = HOT_TestDataFactory.createAccount(true);
-        accountSMS.CRM_Person__c = person.Id;
-        Account accountPush = HOT_TestDataFactory.createAccount(true);
-        accountPush.CRM_Person__c = personPush.Id; */
     }
 
     @IsTest
