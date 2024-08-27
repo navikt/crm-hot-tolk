@@ -8,7 +8,7 @@ public without sharing class HOT_OpenServiceAppointmentListController {
         List<ServiceResourceSkill> serviceResourceSkills = [
             SELECT SkillId
             FROM ServiceResourceSkill
-            WHERE ServiceResourceId IN :serviceResource
+            WHERE ServiceResourceId IN :serviceResource AND (EffectiveEndDate = NULL OR EffectiveEndDate > TODAY)
         ];
 
         List<Id> mySkillIds = new List<Id>();
