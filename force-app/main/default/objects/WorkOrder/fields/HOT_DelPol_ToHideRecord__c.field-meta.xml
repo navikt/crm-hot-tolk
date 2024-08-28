@@ -2,10 +2,13 @@
 <CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
     <fullName>HOT_DelPol_ToHideRecord__c</fullName>
     <externalId>false</externalId>
-    <formula>Today() &gt; DateValue(EndDate + 3*365)</formula>
+    <formula>AND
+(
+Today() &gt; DateValue(EndDate + 3*365),
+ HOT_DelPol_IsHideRecord__c = FALSE
+)</formula>
     <formulaTreatBlanksAs>BlankAsZero</formulaTreatBlanksAs>
     <label>HOT DelPol Hide Record Condition</label>
     <trackHistory>false</trackHistory>
-    <trackTrending>false</trackTrending>
     <type>Checkbox</type>
 </CustomField>
