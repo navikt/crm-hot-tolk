@@ -915,7 +915,10 @@ public without sharing class HOT_ServiceAppointmentHandler extends MyTriggers {
             if (
                 newStatus == 'Service Appointment Retracted' &&
                 interestedResource.Status__c != 'Wanted' &&
-                interestedResource.Status__c != 'Declined'
+                interestedResource.Status__c != 'Declined' &&
+                interestedResource.Status__c != 'Retracted Interest' &&
+                interestedResource.Status__c != 'Canceled by Interpreter'
+
             ) {
                 if (
                     interestedResource.ServiceAppointment__r.Status == 'None' ||
