@@ -273,6 +273,7 @@ public without sharing class HOT_ServiceAppointmentHandler extends MyTriggers {
     public override void onAfterUpdate(Map<Id, sObject> triggerOldMap) {
         List<ServiceAppointment> serviceAppointmentsToRemoveAssignedResource = new List<ServiceAppointment>();
         List<ServiceAppointment> releasedServiceAppointments = new List<ServiceAppointment>();
+        List<ServiceAppointment> dispatchedServiceAppointments = new List<ServiceAppointment>();
         List<ServiceAppointment> retractedServiceAppointments = new List<ServiceAppointment>();
         List<ServiceAppointment> serviceAppointmentsWithChangedAddress = new List<ServiceAppointment>();
         List<ServiceAppointment> SAnotifyResource = new List<ServiceAppointment>();
@@ -303,6 +304,12 @@ public without sharing class HOT_ServiceAppointmentHandler extends MyTriggers {
                 serviceAppointment.Status == 'Released to Freelance'
             ) {
                 releasedServiceAppointments.add(serviceAppointment);
+            }
+            if (
+                serviceAppointment.Status != triggerOldMap.get(serviceAppointment.Id).get('Status') &&
+                serviceAppointment.Status == 'Dispatched'
+            ) {
+                dispatchedServiceAppointments.add(serviceAppointment);
             }
             if (
                 serviceAppointment.Status != triggerOldMap.get(serviceAppointment.Id).get('Status') &&
@@ -362,6 +369,9 @@ public without sharing class HOT_ServiceAppointmentHandler extends MyTriggers {
         }
         if (releasedServiceAppointments.size() > 0) {
             updateStatusOnInterestedResources(releasedServiceAppointments, 'Interested');
+        }
+        if (dispatchedServiceAppointments.size() > 0) {
+            updateStatusOnInterestedResources(dispatchedServiceAppointments, 'Assigned');
         }
         if (retractedServiceAppointments.size() > 0) {
             updateStatusOnInterestedResources(retractedServiceAppointments, 'Service Appointment Retracted');
@@ -897,13 +907,16 @@ public without sharing class HOT_ServiceAppointmentHandler extends MyTriggers {
         String newStatus
     ) {
         List<HOT_InterestedResource__c> interestedResources = [
-            SELECT Status__c, ServiceAppointment__r.Status
+            SELECT Status__c, ServiceAppointment__r.Status, ServiceResource__c
             FROM HOT_InterestedResource__c
             WHERE ServiceAppointment__c IN :serviceAppointments
         ];
         for (HOT_InterestedResource__c interestedResource : interestedResources) {
-            if (newStatus == 'Service Appointment Retracted' && interestedResource.Status__c != 'Wanted' && 
-        interestedResource.Status__c != 'Declined') {
+            if (
+                newStatus == 'Service Appointment Retracted' &&
+                interestedResource.Status__c != 'Wanted' &&
+                interestedResource.Status__c != 'Declined'
+            ) {
                 if (
                     interestedResource.ServiceAppointment__r.Status == 'None' ||
                     interestedResource.ServiceAppointment__r.Status == 'Annul' ||
@@ -920,6 +933,19 @@ public without sharing class HOT_ServiceAppointmentHandler extends MyTriggers {
                     interestedResource.Status__c == 'Not Assigned')
                 ) {
                     interestedResource.Status__c = newStatus;
+                }
+            }
+            if (newStatus == 'Assigned') {
+                if (
+                    interestedResource.ServiceAppointment__r.Status == 'Dispatched' &&
+                    interestedResource.Status__c == 'Reserved'
+                ) {
+                    for (ServiceAppointment serviceAppointment : serviceAppointments) {
+                        if (serviceAppointment.HOT_ServiceResource__c == interestedResource.ServiceResource__c) {
+                            interestedResource.Status__c = newStatus;
+                            break;
+                        }
+                    }
                 }
             }
         }
