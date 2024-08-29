@@ -18,9 +18,9 @@ public without sharing class HOT_AssignedResourceHandler extends MyTriggers {
     public override void onBeforeDelete() {
         Set<Id> potentialSAWithThreadsIds = new Set<Id>();
         for (AssignedResource ar : (List<AssignedResource>) records) {
-             potentialSAWithThreadsIds.add(ar.ServiceAppointmentId);
+            potentialSAWithThreadsIds.add(ar.ServiceAppointmentId);
         }
-         List<Thread__c> exisitingThreadsToBeTransferred = [
+        List<Thread__c> exisitingThreadsToBeTransferred = [
             SELECT Id, HOT_IsEmployeeThread__c, CRM_Account__c, CRM_Related_Object__c, HOT_ServiceAppointment__c
             FROM Thread__c
             WHERE CRM_Related_Object__c IN :potentialSAWithThreadsIds AND CRM_Thread_Type__c = 'HOT_TOLK-FORMIDLER'
@@ -234,7 +234,10 @@ public without sharing class HOT_AssignedResourceHandler extends MyTriggers {
         ];
 
         for (HOT_InterestedResource__c ir : interestedResources) {
-            if (ir.ServiceResource__c == interestedresourceMap.get(ir.ServiceAppointment__c) && ir.Status__c != 'Canceled by Interpreter') {
+            if (
+                ir.ServiceResource__c == interestedresourceMap.get(ir.ServiceAppointment__c) &&
+                ir.Status__c != 'Canceled by Interpreter'
+            ) {
                 ir.Status__c = 'Withdrawn';
             }
         }
@@ -351,7 +354,9 @@ public without sharing class HOT_AssignedResourceHandler extends MyTriggers {
                     ) {
                     } else if (
                         interestedResource.ServiceResource__c != assignedResource.ServiceResourceId &&
-                        interestedResource.Status__c == 'Declined'
+                        (interestedResource.Status__c == 'Declined' ||
+                        interestedResource.Status__c == 'Retracted Interest' ||
+                        interestedResource.Status__c != 'Canceled by Interpreter')
                     ) {
                     } else if (
                         interestedResource.ServiceResource__c != assignedResource.ServiceResourceId &&
@@ -359,7 +364,8 @@ public without sharing class HOT_AssignedResourceHandler extends MyTriggers {
                     ) {
                     } else if (
                         interestedResource.ServiceResource__c != assignedResource.ServiceResourceId &&
-                        interestedResource.Status__c != 'Not Assigned' && interestedResource.Status__c != 'Canceled by Interpreter'
+                        interestedResource.Status__c != 'Not Assigned' &&
+                        interestedResource.Status__c != 'Canceled by Interpreter'
                     ) {
                         interestedResource.Status__c = 'Not Assigned';
                     }
