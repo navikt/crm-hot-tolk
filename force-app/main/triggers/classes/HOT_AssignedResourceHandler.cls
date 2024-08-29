@@ -356,7 +356,7 @@ public without sharing class HOT_AssignedResourceHandler extends MyTriggers {
                         interestedResource.ServiceResource__c != assignedResource.ServiceResourceId &&
                         (interestedResource.Status__c == 'Declined' ||
                         interestedResource.Status__c == 'Retracted Interest' ||
-                        interestedResource.Status__c != 'Canceled by Interpreter')
+                        interestedResource.Status__c == 'Canceled by Interpreter')
                     ) {
                     } else if (
                         interestedResource.ServiceResource__c != assignedResource.ServiceResourceId &&
