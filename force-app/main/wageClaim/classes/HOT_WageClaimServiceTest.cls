@@ -96,7 +96,6 @@ private class HOT_WageClaimServiceTest {
         HOT_Request__c request = [SELECT Id, ServiceResourceWithAgreement1__c FROM HOT_Request__c];
         request.ServiceResourceWithAgreement1__c = assignedResource.ServiceResourceId;
         update request;
-        Test.stopTest();
         ServiceAppointment serviceAppointment = [
             SELECT
                 Id,
@@ -121,6 +120,7 @@ private class HOT_WageClaimServiceTest {
             FROM HOT_WageClaim__c
             WHERE ServiceResource__c = :serviceAppointment.HOT_ServiceResource__c
         ];
+        Test.stopTest();
         System.assertEquals(0, wageClaims.size(), 'Wage Claim was incorrectly created when SR is on agreement.');
     }
 }
