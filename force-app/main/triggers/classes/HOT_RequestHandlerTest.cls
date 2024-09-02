@@ -789,7 +789,7 @@ private class HOT_RequestHandlerTest {
         System.AssertEquals('0166', workorder.PostalCode, 'Postalcode did not get updated');
     }
     @IsTest
-    public static void updateMeetingAdressTest() {
+    public static void updateInterpretationAdressTest() {
         WorkType workType = HOT_TestDataFactory.createWorkType();
         insert workType;
         HOT_Request__c request = HOT_TestDataFactory.createRequest('TEST', workType);
