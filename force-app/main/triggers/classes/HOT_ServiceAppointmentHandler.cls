@@ -922,7 +922,8 @@ public without sharing class HOT_ServiceAppointmentHandler extends MyTriggers {
                 if (
                     interestedResource.ServiceAppointment__r.Status == 'Released to Freelance' &&
                     (interestedResource.Status__c == 'Service Appointment Retracted' ||
-                    interestedResource.Status__c == 'Not Assigned')
+                    interestedResource.Status__c == 'Not Assigned' ||
+                    interestedResource.Status__c == 'Withdrawn')
                 ) {
                     interestedResource.Status__c = newStatus;
                 }
