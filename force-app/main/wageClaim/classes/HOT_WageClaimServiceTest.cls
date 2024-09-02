@@ -60,11 +60,11 @@ private class HOT_WageClaimServiceTest {
         serviceAppointment.ActualEndTime = serviceAppointment.SchedEndTime.addMinutes(-15);
         serviceAppointment.Status = 'Completed';
 
-        Test.stopTest();
         update serviceAppointment;
 
         List<HOT_WageClaim__c> wageClaims = [SELECT Id, StartTime__c, EndTime__c FROM HOT_WageClaim__c];
         Boolean isWageClaimTimesCorrect, isWageClaimTimesCorrect2 = false;
+        Test.stopTest();
         for (HOT_WageClaim__c wageClaim : wageClaims) {
             if (
                 wageClaim.StartTime__c == serviceAppointment.SchedStartTime &&
