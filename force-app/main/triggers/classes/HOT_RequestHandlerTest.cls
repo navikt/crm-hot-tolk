@@ -780,8 +780,8 @@ private class HOT_RequestHandlerTest {
         insert workOrder;
 
         request.MeetingStreet__c = 'Fyrstikkaleen 1';
-        request.MeetingPostalCity__c = '0166';
-        request.MeetingPostalCode__c = 'Oslo';
+        request.MeetingPostalCity__c = 'Oslo';
+        request.MeetingPostalCode__c = '0166';
         update request;
 
         WorkOrder workorderResult = [
