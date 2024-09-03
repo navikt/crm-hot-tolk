@@ -784,11 +784,11 @@ private class HOT_RequestHandlerTest {
         request.MeetingPostalCode__c = 'Oslo';
         update request;
 
-        WorkOrder workorder = [SELECT Address FROM WorkOrder WHERE HOT_Request__c = :request.Id];
+        WorkOrder workorderResult = [SELECT Address FROM WorkOrder WHERE HOT_Request__c = :request.Id];
         Test.stopTest();
-        System.AssertEquals('Fyrstikkaleen 1', workorder.Street, 'Street did not get updated');
-        System.AssertEquals('Oslo', workorder.City, 'City did not get updated');
-        System.AssertEquals('0166', workorder.PostalCode, 'Postalcode did not get updated');
+        System.AssertEquals('Fyrstikkaleen 1', workorderResult.Street, 'Street did not get updated');
+        System.AssertEquals('Oslo', workorderResult.City, 'City did not get updated');
+        System.AssertEquals('0166', workorderResult.PostalCode, 'Postalcode did not get updated');
     }
     @IsTest
     public static void updateInterpretationAdressTest() {
@@ -805,17 +805,25 @@ private class HOT_RequestHandlerTest {
         request.InterpretationStreet__c = 'Fyrstikkaleen 1';
         update request;
 
-        WorkOrder workorder = [
+        WorkOrder workorderResult = [
             SELECT HOT_InterpretationPostalCode__c, HOT_InterpretationPostalCity__c, HOT_InterpretationStreet__c
             FROM WorkOrder
             WHERE HOT_Request__c = :request.Id
         ];
         Test.stopTest();
-        System.AssertEquals('Fyrstikkaleen 1', workorder.HOT_InterpretationStreet__c, 'Street did not get updated');
-        System.AssertEquals('Fyrstikkaleen 1', workorder.HOT_InterpretationPostalCity__c, 'City did not get updated');
         System.AssertEquals(
             'Fyrstikkaleen 1',
-            workorder.HOT_InterpretationPostalCode__c,
+            workorderResult.HOT_InterpretationStreet__c,
+            'Street did not get updated'
+        );
+        System.AssertEquals(
+            'Fyrstikkaleen 1',
+            workorderResult.HOT_InterpretationPostalCity__c,
+            'City did not get updated'
+        );
+        System.AssertEquals(
+            'Fyrstikkaleen 1',
+            workorderResult.HOT_InterpretationPostalCode__c,
             'Postalcode did not get updated'
         );
     }
