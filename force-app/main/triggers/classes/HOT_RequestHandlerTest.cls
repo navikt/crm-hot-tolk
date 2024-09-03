@@ -771,42 +771,42 @@ private class HOT_RequestHandlerTest {
     }
     @IsTest
     public static void updateMeetingAdressTest() {
+        Test.startTest();
         WorkType workType = HOT_TestDataFactory.createWorkType();
         insert workType;
         HOT_Request__c request = HOT_TestDataFactory.createRequest('TEST', workType);
         insert request;
 
-        Test.startTest();
         request.MeetingStreet__c = 'Fyrstikkaleen 1';
         request.MeetingPostalCity__c = '0166';
         request.MeetingPostalCode__c = 'Oslo';
         update request;
 
-        Test.stopTest();
         WorkOrder workorder = [SELECT Address FROM WorkOrder WHERE HOT_Request__c = :request.Id];
+        Test.stopTest();
         System.AssertEquals('Fyrstikkaleen 1', workorder.Street, 'Street did not get updated');
         System.AssertEquals('Oslo', workorder.City, 'City did not get updated');
         System.AssertEquals('0166', workorder.PostalCode, 'Postalcode did not get updated');
     }
     @IsTest
     public static void updateInterpretationAdressTest() {
+        Test.startTest();
         WorkType workType = HOT_TestDataFactory.createWorkType();
         insert workType;
         HOT_Request__c request = HOT_TestDataFactory.createRequest('TEST', workType);
         insert request;
 
-        Test.startTest();
         request.InterpretationPostalCode__c = '0166';
         request.InterpretationPostalCity__c = 'Oslo';
         request.InterpretationStreet__c = 'Fyrstikkaleen 1';
         update request;
 
-        Test.stopTest();
         WorkOrder workorder = [
             SELECT HOT_InterpretationPostalCode__c, HOT_InterpretationPostalCity__c, HOT_InterpretationStreet__c
             FROM WorkOrder
             WHERE HOT_Request__c = :request.Id
         ];
+        Test.stopTest();
         System.AssertEquals('Fyrstikkaleen 1', workorder.HOT_InterpretationStreet__c, 'Street did not get updated');
         System.AssertEquals('Fyrstikkaleen 1', workorder.HOT_InterpretationPostalCity__c, 'City did not get updated');
         System.AssertEquals(
