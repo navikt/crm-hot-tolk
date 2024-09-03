@@ -784,7 +784,11 @@ private class HOT_RequestHandlerTest {
         request.MeetingPostalCode__c = 'Oslo';
         update request;
 
-        WorkOrder workorderResult = [SELECT Address FROM WorkOrder WHERE HOT_Request__c = :request.Id];
+        WorkOrder workorderResult = [
+            SELECT Address, Street, City, PostalCode
+            FROM WorkOrder
+            WHERE HOT_Request__c = :request.Id
+        ];
         Test.stopTest();
         System.AssertEquals('Fyrstikkaleen 1', workorderResult.Street, 'Street did not get updated');
         System.AssertEquals('Oslo', workorderResult.City, 'City did not get updated');
@@ -816,15 +820,7 @@ private class HOT_RequestHandlerTest {
             workorderResult.HOT_InterpretationStreet__c,
             'Street did not get updated'
         );
-        System.AssertEquals(
-            'Fyrstikkaleen 1',
-            workorderResult.HOT_InterpretationPostalCity__c,
-            'City did not get updated'
-        );
-        System.AssertEquals(
-            'Fyrstikkaleen 1',
-            workorderResult.HOT_InterpretationPostalCode__c,
-            'Postalcode did not get updated'
-        );
+        System.AssertEquals('Oslo', workorderResult.HOT_InterpretationPostalCity__c, 'City did not get updated');
+        System.AssertEquals('0166', workorderResult.HOT_InterpretationPostalCode__c, 'Postalcode did not get updated');
     }
 }
