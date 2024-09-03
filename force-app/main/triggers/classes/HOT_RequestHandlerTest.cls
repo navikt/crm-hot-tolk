@@ -776,6 +776,8 @@ private class HOT_RequestHandlerTest {
         insert workType;
         HOT_Request__c request = HOT_TestDataFactory.createRequest('TEST', workType);
         insert request;
+        WorkOrder workOrder = HOT_TestDataFactory.createWorkOrder(request, workType);
+        insert workOrder;
 
         request.MeetingStreet__c = 'Fyrstikkaleen 1';
         request.MeetingPostalCity__c = '0166';
@@ -795,6 +797,8 @@ private class HOT_RequestHandlerTest {
         insert workType;
         HOT_Request__c request = HOT_TestDataFactory.createRequest('TEST', workType);
         insert request;
+        WorkOrder workOrder = HOT_TestDataFactory.createWorkOrder(request, workType);
+        insert workOrder;
 
         request.InterpretationPostalCode__c = '0166';
         request.InterpretationPostalCity__c = 'Oslo';
