@@ -185,13 +185,13 @@ public without sharing class HOT_UserNotificationService {
     public static void coInterpreterChangeNotification(
         CustomNotificationType notificationType,
         ServiceAppointment sa,
-        String interpreters,
+        String newInterpreter,
         Set<String> recipients
     ) {
         String title = 'Endring av medtolk';
         String body =
             'Medtolk på et oppdrag du er tildelt er blitt endret. \nNy tolk er: ' +
-            interpreters +
+            newInterpreter +
             '\nDato: ' +
             sa.SchedStartTime?.format('dd.MM.yyyy', 'Europe/Oslo') +
             ', kl: ' +
