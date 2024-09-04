@@ -127,7 +127,7 @@ private class HOT_AssignedResourceHandlerTest {
             irBySR.put(interestedResource.ServiceResource__c, interestedResource);
         }
         System.assertEquals(
-            'Assigned',
+            'Reserved',
             irBySR.get(testResource.Id).Status__c,
             'Could not set correct status on InterestedResources'
         );
@@ -424,7 +424,7 @@ private class HOT_AssignedResourceHandlerTest {
         interestedResource = [SELECT Id, Status__c FROM Hot_interestedresource__c];
 
         System.assertEquals(
-            'Assigned',
+            'Reserved',
             interestedResource.Status__c,
             'Could not set Interested Resource Status to Assigned'
         );
