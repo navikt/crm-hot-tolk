@@ -231,7 +231,7 @@
                 <componentName>force:relatedListSingleContainer</componentName>
                 <identifier>force_relatedListSingleContainer4</identifier>
                 <visibilityRule>
-                    <booleanFilter>1 OR 2</booleanFilter>
+                    <booleanFilter>(1 OR 2) AND 3</booleanFilter>
                     <criteria>
                         <leftValue>{!Record.HOT_AssignedServiceAppointmentFilter__c}</leftValue>
                         <operator>EQUAL</operator>
@@ -241,6 +241,11 @@
                         <leftValue>{!$Permission.CustomPermission.HOT_DeleteFiles}</leftValue>
                         <operator>EQUAL</operator>
                         <rightValue>true</rightValue>
+                    </criteria>
+                    <criteria>
+                        <leftValue>{!Record.HOT_DelPol_IsDeleteFiles__c}</leftValue>
+                        <operator>EQUAL</operator>
+                        <rightValue>false</rightValue>
                     </criteria>
                 </visibilityRule>
             </componentInstance>

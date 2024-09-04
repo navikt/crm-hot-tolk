@@ -902,8 +902,13 @@ public without sharing class HOT_ServiceAppointmentHandler extends MyTriggers {
             WHERE ServiceAppointment__c IN :serviceAppointments
         ];
         for (HOT_InterestedResource__c interestedResource : interestedResources) {
-            if (newStatus == 'Service Appointment Retracted' && interestedResource.Status__c != 'Wanted' && 
-        interestedResource.Status__c != 'Declined') {
+            if (
+                newStatus == 'Service Appointment Retracted' &&
+                interestedResource.Status__c != 'Wanted' &&
+                interestedResource.Status__c != 'Declined' &&
+                interestedResource.Status__c != 'Retracted Interest' &&
+                interestedResource.Status__c != 'Canceled by Interpreter'
+            ) {
                 if (
                     interestedResource.ServiceAppointment__r.Status == 'None' ||
                     interestedResource.ServiceAppointment__r.Status == 'Annul' ||
@@ -917,7 +922,8 @@ public without sharing class HOT_ServiceAppointmentHandler extends MyTriggers {
                 if (
                     interestedResource.ServiceAppointment__r.Status == 'Released to Freelance' &&
                     (interestedResource.Status__c == 'Service Appointment Retracted' ||
-                    interestedResource.Status__c == 'Not Assigned')
+                    interestedResource.Status__c == 'Not Assigned' ||
+                    interestedResource.Status__c == 'Withdrawn')
                 ) {
                     interestedResource.Status__c = newStatus;
                 }
