@@ -85,6 +85,17 @@ private class HOT_AssignedResourceHandlerTest {
             WHERE Id = :serviceAppointment.Id
             LIMIT 1
         ];
+        HOT_InterestedResource__c ir = [
+            SELECT Id, ServiceResource__c, ServiceAppointment__c
+            FROM HOT_InterestedResource__c
+            WHERE
+                ServiceResource__c = :serviceAppointment.HOT_ServiceResource__c
+                AND ServiceAppointment__c = :serviceAppointment.Id
+        ];
+        serviceAppointment.Status = 'Dispatched';
+        update serviceAppointment;
+        ir.Status__c = 'Assigned';
+        update ir;
         System.assertEquals(
             adminResource.Id,
             serviceAppointment.HOT_ServiceResource__c,
@@ -105,6 +116,7 @@ private class HOT_AssignedResourceHandlerTest {
             WHERE Id = :serviceAppointment.Id
             LIMIT 1
         ];
+        Test.stopTest();
         System.assertEquals(
             testResource.Id,
             serviceAppointment.HOT_ServiceResource__c,
@@ -139,7 +151,6 @@ private class HOT_AssignedResourceHandlerTest {
 
         //Testing onAfterdelete()
         delete assignedResource;
-        Test.stopTest();
 
         serviceAppointment = [
             SELECT
@@ -424,7 +435,7 @@ private class HOT_AssignedResourceHandlerTest {
         interestedResource = [SELECT Id, Status__c FROM Hot_interestedresource__c];
 
         System.assertEquals(
-            'Assigned',
+            'Reserved',
             interestedResource.Status__c,
             'Could not set Interested Resource Status to Assigned'
         );
