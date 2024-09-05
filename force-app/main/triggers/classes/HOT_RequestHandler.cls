@@ -122,7 +122,8 @@ public without sharing class HOT_RequestHandler extends MyTriggers {
         List<Hot_Request__c> requestsWithNewAccount = new List<Hot_Request__c>();
         List<Hot_Request__c> requestsWithUpdatedDispatcher = new List<Hot_Request__c>();
         List<Hot_Request__c> requestsWithUpdatedCompany = new List<Hot_Request__c>();
-
+        List<Hot_Request__c> requestsWithUpdatedMeetingAddress = new List<Hot_Request__c>();
+        List<Hot_Request__c> requestsWithUpdatedInterpretationAddress = new List<Hot_Request__c>();
         for (HOT_Request__c request : (List<HOT_Request__c>) records) {
             // Filter for Godkjent requests
             if (triggerOldMap.get(request.Id).get('Status__c') == 'Åpen' && request.Status__c == 'Godkjent') {
@@ -140,6 +141,21 @@ public without sharing class HOT_RequestHandler extends MyTriggers {
             if (triggerOldMap.get(request.Id).get('Company__c') !== request.Company__c) {
                 requestsWithUpdatedCompany.add(request);
             }
+            if (
+                triggerOldMap.get(request.Id).get('MeetingStreet__c') !== request.MeetingStreet__c ||
+                triggerOldMap.get(request.Id).get('MeetingPostalCode__c') !== request.MeetingPostalCode__c ||
+                triggerOldMap.get(request.Id).get('MeetingPostalCity__c') !== request.MeetingPostalCity__c
+            ) {
+                requestsWithUpdatedMeetingAddress.add(request);
+            }
+            if (
+                triggerOldMap.get(request.Id).get('InterpretationStreet__c') !== request.InterpretationStreet__c ||
+                triggerOldMap.get(request.Id).get('InterpretationPostalCode__c') !==
+                request.InterpretationPostalCode__c ||
+                triggerOldMap.get(request.Id).get('InterpretationPostalCity__c') !== request.InterpretationPostalCity__c
+            ) {
+                requestsWithUpdatedInterpretationAddress.add(request);
+            }
         }
         if (godkjentRequests.size() > 0) {
             createWOLI_SA(godkjentRequests);
@@ -156,6 +172,50 @@ public without sharing class HOT_RequestHandler extends MyTriggers {
         if (requestsWithUpdatedCompany.size() > 0) {
             updateCompany(requestsWithUpdatedCompany);
         }
+        if (requestsWithUpdatedMeetingAddress.size() > 0) {
+            updateMeetingAddress(requestsWithUpdatedMeetingAddress);
+        }
+        if (requestsWithUpdatedInterpretationAddress.size() > 0) {
+            updateInterpretationAddress(requestsWithUpdatedInterpretationAddress);
+        }
+    }
+    private static void updateMeetingAddress(List<HOT_Request__c> requestsWithNewAddress) {
+        List<WorkOrder> WorkOrders = [
+            SELECT Address, HOT_Request__c
+            FROM WorkOrder
+            WHERE HOT_Request__c IN :requestsWithNewAddress
+        ];
+        for (WorkOrder wo : WorkOrders) {
+            for (HOT_Request__c request : requestsWithNewAddress) {
+                if (wo.HOT_Request__c == request.Id) {
+                    wo.Street = request.MeetingStreet__c;
+                    wo.City = request.MeetingPostalCity__c;
+                    wo.PostalCode = request.MeetingPostalCode__c;
+                }
+            }
+        }
+        update WorkOrders;
+    }
+    private static void updateInterpretationAddress(List<HOT_Request__c> requestsWithNewAddress) {
+        List<WorkOrder> WorkOrders = [
+            SELECT
+                HOT_InterpretationPostalCode__c,
+                HOT_InterpretationPostalCity__c,
+                HOT_InterpretationStreet__c,
+                HOT_Request__c
+            FROM WorkOrder
+            WHERE HOT_Request__c IN :requestsWithNewAddress
+        ];
+        for (WorkOrder wo : WorkOrders) {
+            for (HOT_Request__c request : requestsWithNewAddress) {
+                if (wo.HOT_Request__c == request.Id) {
+                    wo.HOT_InterpretationPostalCode__c = request.InterpretationPostalCode__c;
+                    wo.HOT_InterpretationPostalCity__c = request.InterpretationPostalCity__c;
+                    wo.HOT_InterpretationStreet__c = request.InterpretationStreet__c;
+                }
+            }
+        }
+        update WorkOrders;
     }
     private static void updateCompany(List<HOT_Request__c> requestsWithNewCompany) {
         List<ServiceAppointment> saList = [
