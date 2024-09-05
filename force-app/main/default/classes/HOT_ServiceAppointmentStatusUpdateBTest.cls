@@ -119,7 +119,7 @@ public without sharing class HOT_ServiceAppointmentStatusUpdateBTest {
 
     @IsTest
     static void schedulableTest() {
-        String cron_exp = '0 0 0 3 9 ? 2024';
+        String cron_exp = '0 0 0 3 9 ? 2099';
 
         Test.startTest();
         String jobId = System.schedule(

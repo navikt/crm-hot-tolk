@@ -1,6 +1,6 @@
 @IsTest
 private class HOT_SAReportingSchedulableTest {
-    private static String CRON_EXP = '0 0 0 3 9 ? 2024';
+    private static String CRON_EXP = '0 0 0 3 9 ? 2099';
 
     @testSetup
     static void setup() {
