@@ -341,13 +341,17 @@ private class HOT_WantedSRListControllerTest {
             ServiceAppointment.Id,
             resource1.Id
         );
-        interestedResource.Status__c = 'Assigned';
         insert interestedResource;
         AssignedResource assignedResource = HOT_TestDataFactory.createAssignedResource(
             ServiceAppointment.Id,
             resource1.Id
         );
         insert assignedResource;
+        interestedResource.Status__c = 'Assigned';
+        update interestedResource;
+
+        ServiceAppointment.Status = 'Dispatched';
+        update ServiceAppointment;
 
         //
 

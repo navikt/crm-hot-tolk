@@ -268,6 +268,8 @@ public without sharing class HOT_ThreadDetailControllerTest {
         insert interestedResource;
         AssignedResource ar = HOT_TestDataFactory.createAssignedResource(sa.Id, serviceResource.Id);
         insert ar;
+        interestedResource.Status__c = 'Reserved';
+        update interestedResource;
 
         Thread__c t = new Thread__c();
         t.CRM_Related_Object__c = sa.Id;

@@ -312,7 +312,6 @@ public without sharing class HOT_AssignedResourceHandler extends MyTriggers {
                     HOT_InterestedResource__c interestedResource = new HOT_InterestedResource__c();
                     interestedResource.ServiceAppointment__c = assignedResource.ServiceAppointmentId;
                     interestedResource.ServiceResource__c = assignedResource.ServiceResourceId;
-                    interestedResource.Status__c = 'Assigned';
                     interestedResources.add(interestedResource);
                 }
             }
@@ -335,11 +334,12 @@ public without sharing class HOT_AssignedResourceHandler extends MyTriggers {
         for (AssignedResource assignedResource : assignedResources) {
             for (HOT_InterestedResource__c interestedResource : interestedResources) {
                 if (assignedResource.ServiceAppointmentId == interestedResource.ServiceAppointment__c) {
-                    if (
-                        interestedResource.ServiceResource__c == assignedResource.ServiceResourceId &&
-                        interestedResource.Status__c != 'Assigned'
-                    ) {
-                        interestedResource.Status__c = 'Assigned';
+                    if (interestedResource.ServiceResource__c == assignedResource.ServiceResourceId) {
+                        if (interestedResource.ServiceAppointment__r.Status == 'Dispatched') {
+                            interestedResource.Status__c = 'Assigned';
+                        } else {
+                            interestedResource.Status__c = 'Reserved';
+                        }
                     }
                     if (
                         interestedResource.ServiceResource__c != assignedResource.ServiceResourceId &&
