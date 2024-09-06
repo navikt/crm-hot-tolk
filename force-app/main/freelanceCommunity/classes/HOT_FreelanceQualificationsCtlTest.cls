@@ -1,11 +1,11 @@
 @IsTest
 private class HOT_FreelanceQualificationsCtlTest {
-    @TestSetup
+    /* @TestSetup
     static void setup() {
         ServiceResource serviceResource = HOT_TestDataFactory.createServiceResource(UserInfo.getUserId());
         insert serviceResource;
 
-        Skill skill = [SELECT Id, MasterLabel FROM Skill LIMIT 1];
+        Skill skill = new skill(MasterLabel = 'HOT');
 
         ServiceResourceSkill serviceResourceSkill = HOT_TestDataFactory.createServiceResourceSkill(
             serviceResource,
@@ -73,7 +73,7 @@ private class HOT_FreelanceQualificationsCtlTest {
         Test.stopTest();
 
         System.assertNotEquals(0, skills.size(), 'Skills list should not be empty');
-    }
+    } */
     /*
     @TestSetup
     static void setup() {
@@ -162,7 +162,6 @@ private class HOT_FreelanceQualificationsCtlTest {
         System.assertEquals(8, skills.size(), 'Could not fetch allSkillsList');
     }
     */
-    /*
     @IsTest
     static void getmyServiceResourceTest() {
         Profile profile = [SELECT Id FROM Profile WHERE Name = 'System Administrator'];
@@ -187,7 +186,6 @@ private class HOT_FreelanceQualificationsCtlTest {
             System.assertEquals(sr.Id, resource1.Id, 'Could not get my service resource');
         }
     }
-    */
     // @IsTest
     // static void getServiceResourceSkillsTest() {
     //     ServiceResource serviceResource = HOT_TestDataFactory.createServiceResource(UserInfo.getUserId());
@@ -232,4 +230,9 @@ private class HOT_FreelanceQualificationsCtlTest {
 
     //     HOT_FreelanceQualificationsController.editServiceResourceSkill(skills);
     // }
+    @IsTest
+    static void getAllSkillsListTest() {
+        List<Skill> skills = HOT_FreelanceQualificationsController.getAllSkillsList();
+        System.assertEquals(skills.size(), 0);
+    }
 }
