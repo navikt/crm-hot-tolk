@@ -33,22 +33,28 @@ private class HOT_MessagesNotificationTest {
                 true
             );
 
-            PermissionSet permissionSet = [SELECT Id FROM PermissionSet WHERE Name = 'ServiceResourceTest' LIMIT 1];
-            insert new PermissionSetAssignment(AssigneeId = users[0].id, PermissionSetId = permissionSet.Id);
-            insert new PermissionSetAssignment(AssigneeId = users[1].id, PermissionSetId = permissionSet.Id);
+            PermissionSet permSet = [
+                SELECT Id
+                FROM PermissionSet
+                WHERE Name = 'FieldServiceMobileStandardPermSet'
+                LIMIT 1
+            ];
 
-            insert new ServiceResource(
-                AccountId = personAccounts[0].Id,
-                Name = 'Test Service Resource',
-                RelatedRecordId = users[0].Id,
-                IsActive = true
+            PermissionSetAssignment psa = new PermissionSetAssignment(
+                AssigneeId = users[0].Id,
+                PermissionSetId = permSet.Id
             );
-            insert new ServiceResource(
-                AccountId = personAccounts[1].Id,
-                Name = 'Test Service Resource',
-                RelatedRecordId = users[1].Id,
-                IsActive = true
+            insert psa;
+            PermissionSetAssignment psa2 = new PermissionSetAssignment(
+                AssigneeId = users[1].Id,
+                PermissionSetId = permSet.Id
             );
+            insert psa2;
+
+            ServiceResource serviceResource = HOT_TestDataFactory.createServiceResource(users[0].Id);
+            insert serviceResource;
+            ServiceResource serviceResource2 = HOT_TestDataFactory.createServiceResource(users[1].Id);
+            insert serviceResource2;
         }
     }
 
