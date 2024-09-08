@@ -16,7 +16,7 @@ public with sharing class HOT_IncomingSMSNotification {
             WHERE CRM_Account__c IN :senderAccountIdToSms.keySet()
         ];
 
-        List<Id> queueIds = getGroupIdsFromSenders(senders);
+        List<Id> queueIds = getQueueIdsFromSenders(senders);
         Map<Id, Id> groupByQueue = HOT_NotificationHandler.getGroupIdByQueueId(queueIds);    
 
         CustomNotificationType notificationType = [
@@ -52,7 +52,7 @@ public with sharing class HOT_IncomingSMSNotification {
 
     
     @TestVisible
-    private static List<Id> getGroupIdsFromSenders(List<Person__c> senders) {
+    private static List<Id> getQueueIdsFromSenders(List<Person__c> senders) {
 
         List<SobjectWrapper> wrappers = new List<SobjectWrapper>();
         Integer senderIndex = 0;
@@ -73,15 +73,17 @@ public with sharing class HOT_IncomingSMSNotification {
             'Person__c'
         );
 
-        System.assert(indexToSharingRule.size() != 0, indexToSharingRule.size() + ' records i indexToSharingRuleMap should not be empty');
-
         senderIndex = 0;
         List<Id> queueIds = new List<Id>();
 
+        Group adminGroup = [SELECT Id FROM Group WHERE Type = 'Queue' AND DeveloperName = 'HOT_Tolk_Admin' LIMIT 1];
         for(Person__c sender : senders) {
             ApexSharingRuleWrapper rule = indexToSharingRule.get(senderIndex);
-            //TODO: Tar ikke hensyn til manglende funn i RecordOwnerService
-            queueIds.add(rule.queueId);
+            if(rule != null) {
+                queueIds.add(rule.queueId);
+            } else {
+                queueIds.add(adminGroup.Id);
+            }
             senderIndex++;
         }
 

@@ -1,63 +1,76 @@
 @isTest
 private class HOT_IncomingSMSNotificationTest {
+    static List<String> userNames = new List<String>{'A_User', 'B_User', 'C_User'};
+    static List<String> userMunicipalities = new List<String>{'3216', '5001', '3407'};
+    static List<String> userRegionNumbers = new List<String>{'03','50','34'};
+
     @TestSetup
     static void makeData(){
-        Account acc = new Account();
-        acc.Name = 'Gunnar Gunn Gundersen';
-        insert acc;
+        myTriggers.disable(PersonHandler.class);
+        myTriggers.disable(PersonAccessHandler.class);
+        myTriggers.disable(CommunityUserUpdateHandler.class);
+        User navEmployee = TestDataFactory_Community.getUsers(1, 'System Administrator', true, true)[0];
+        System.runAs(navEmployee) {
+            Account account = new Account();
+            account.Name = 'Gunnar Gunn Gundersen';
+            insert account;
+
+            TestDataFactory.getPublicGroup('HMS Oslo', 'group_4703');
+            TestDataFactory.getQueue('HMS Oslo', 'queue_4703', 'Person__c');
+            TestDataFactory.getPublicGroup('HMS Trøndelag', 'group_4716');
+            TestDataFactory.getQueue('HMS Trøndelag', 'queue_4716', 'Person__c');
+            TestDataFactory.getPublicGroup('HMS Innlandet', 'group_47003');
+            TestDataFactory.getQueue('HMS Innlandet', 'queue_47003', 'Person__c');
+
+            List<Account> personAccounts = TestDataFactory_Community.getPersonAccounts(userNames.size());
+            Map<String,Account> accountByLastName=new Map<String,Account>();
+            for(Account acc:personAccounts){
+                accountByLastName.put(acc.LastName,acc);
+            }
+
+            Set<Id> personAccountIds=new Set<Id>();
+            List<Person__c> persons=[SELECT INT_LastName__c, CRM_Account__c FROM Person__c]; 
+            Integer index = 0;
+            for (Person__c person : persons) {
+                person.CRM_Account__c=accountByLastName.get(person.INT_LastName__c).Id;
+                person.Name = userNames[index];
+                person.INT_MunicipalityNumber__c = userMunicipalities[index];
+                person.INT_RegionNumber__c = userRegionNumbers[index];
+                index++;
+                personAccountIds.add(person.CRM_Account__c);
+
+            }
+            update persons;
+            List<User> users = TestDataFactory_Community.getEmployerCommunityUser(
+                personAccountIds, 
+                'Trial Customer Portal User', 
+                true
+                );
+        }
     }
 
     @isTest
-    static void getGroupIdsFromSendersTest() {
-        List<Account> accounts = TestDataFactory_Community.getPersonAccounts(3);
-        List<Person__c> persons = new List<Person__c>();
+    static void getQueueIdsFromSendersTest() {
 
-        for( Account acc : accounts ) {
-            Person__c person = [
-                SELECT 
-                    Id, 
-                    CRM_Account__c, 
-                    INT_MunicipalityNumber__c, 
-                    INT_RegionNumber__c 
-                FROM Person__c 
-                WHERE CRM_Account__c = :acc.Id];
-            persons.add(person);
-        }
-
-
-        persons[0].INT_MunicipalityNumber__c = String.valueOf(3216); //Vestby
-        persons[0].INT_RegionNumber__c = '0' + String.valueOf(2); //Akershus
-
-        persons[1].INT_MunicipalityNumber__c = String.valueOf(5001); //Trondheim 
-        persons[1].INT_RegionNumber__c = String.valueOf(50); //Trøndelag
-
-        persons[2].INT_MunicipalityNumber__c = String.valueOf(3407); //Gjøvik 
-        persons[2].INT_RegionNumber__c = String.valueOf(34); // Innlandet
-
-        ApexSharingRule__mdt regionOslo = [
-            SELECT Id, DeveloperName FROM ApexSharingRule__mdt
-            WHERE DeveloperName = 'HOT_Person_03_Municipality'
+        List<Person__c> persons = [
+            SELECT Id, Name, CRM_Account__c, INT_MunicipalityNumber__c, INT_RegionNumber__c
+            FROM Person__c 
+            WHERE Name IN :userNames
+            ORDER BY Name
         ];
-
-        ApexSharingRule__mdt regionTrondelag = [
-            SELECT Id, DeveloperName FROM ApexSharingRule__mdt
-            WHERE DeveloperName = 'HOT_Person_50' 
-        ];
-
-        ApexSharingRule__mdt regionInnlandet = [
-            SELECT Id, DeveloperName FROM ApexSharingRule__mdt
-            WHERE DeveloperName = 'HOT_Person_34_Region'
-        ];
-
-
 
         Test.startTest();
-        List<Id> groupIds = HOT_IncomingSMSNotification.getGroupIdsFromSenders(persons);
+        List<Id> groupIds = HOT_IncomingSMSNotification.getQueueIdsFromSenders(persons);
         Test.stopTest();
 
-        System.assertEquals(regionOslo.Id, groupIds[0], 'Person 0 should belong to Oslo region');
-        System.assertEquals(regionTrondelag.Id, groupIds[1], 'Person 1 should belong to trondelag region');
-        System.assertEquals(regionInnlandet.Id, groupIds[2], 'Person 2 should belong to Innlandet region');
+        Id osloQueueId = [SELECT Id FROM Group WHERE DeveloperName = 'queue_4703' LIMIT 1].Id;
+        System.assertEquals(osloQueueId, groupIds[0], 'Person 0 should belong to Oslo region');
+
+        Id trondelagQueueId = [SELECT Id FROM Group WHERE DeveloperName = 'queue_4716' LIMIT 1].Id;
+        System.assertEquals(trondelagQueueId, groupIds[1], 'Person 1 should belong to trondelag region');
+
+        Id innlandetQueueId = [SELECT Id FROM Group WHERE DeveloperName = 'queue_47003' LIMIT 1].Id;
+        System.assertEquals(innlandetQueueId, groupIds[2], 'Person 2 should belong to Innlandet region');
     }
 
     @isTest
