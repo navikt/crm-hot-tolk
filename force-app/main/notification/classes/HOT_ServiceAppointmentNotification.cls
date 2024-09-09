@@ -1149,9 +1149,9 @@ public without sharing class HOT_ServiceAppointmentNotification {
                 ServiceAppointment relatedAppointment = appointmentByFreelanceInterpreter.get(serviceResourceId);
 
                 HOT_UserNotificationService.coInterpreterChangeNotification(
-                    getCustomNotificationType('HOT_NotifyInterpreter'),
+                    getCustomNotificationType('HOT_NotifyUser'),
                     relatedAppointment,
-                    updatedSAWithNewInterpreterupdatedSAWithNewInterpreter.HOT_ServiceResource__r.Name,
+                    updatedSAWithNewInterpreter.HOT_ServiceResource__r.Name,
                     freelanceInterpreterRecipients
                 );
             }
