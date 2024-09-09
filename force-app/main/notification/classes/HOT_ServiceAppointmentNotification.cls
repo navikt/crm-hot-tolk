@@ -1133,11 +1133,26 @@ public without sharing class HOT_ServiceAppointmentNotification {
                 employeeInterpreterRecipients.add(serviceResourceId);
                 ServiceAppointment relatedAppointment = appointmentByEmployeeInterpreter.get(serviceResourceId);
 
-                HOT_UserNotificationService.coInterpreterChangeNotification(
-                    getCustomNotificationType('HOT_NotifyInterpreter'),
-                    relatedAppointment,
-                    updatedSAWithNewInterpreter.HOT_ServiceResource__r.Name,
-                    employeeInterpreterRecipients
+                Messaging.CustomNotification notification = new Messaging.CustomNotification();
+                notification.setTitle('Endring av medtolk');
+                notification.setBody(
+                    'Medtolk på et oppdrag du er tildelt er blitt endret. \nNy tolk er: ' +
+                        updatedSAWithNewInterpreter.HOT_ServiceResource__r.Name +
+                        '\nDato: ' +
+                        relatedAppointment.SchedStartTime?.format('dd.MM.yyyy', 'Europe/Oslo') +
+                        ', kl: ' +
+                        relatedAppointment.SchedStartTime?.format('HH:mm', 'Europe/Oslo') +
+                        ' - ' +
+                        relatedAppointment.SchedEndTime?.format('HH:mm', 'Europe/Oslo') +
+                        '.'
+                );
+                notification.setNotificationTypeId(getCustomNotificationType('HOT_NotifyInterpreter').Id);
+                notification.setTargetId(relatedAppointment.Id);
+
+                HOT_NotificationHandler.sendNotification(
+                    notification,
+                    employeeInterpreterRecipients,
+                    (SObject) relatedAppointment
                 );
             }
         }
