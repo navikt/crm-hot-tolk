@@ -36,7 +36,6 @@ public with sharing class HOT_IncomingSMSNotification {
             String body = sms.Message__c.length() > MAX_NOTIFICATION_BODY_CHARACTERS ? 
                 sms.Message__c.substring(0, MAX_NOTIFICATION_BODY_CHARACTERS-3) + '...'
                 : sms.Message__c;
-            body += ' - ' + sender.CRM_FullName__c;
 
             Messaging.CustomNotification notification = HOT_NotificationHandler.prepareNotification(
                 title,
