@@ -1166,30 +1166,31 @@ public without sharing class HOT_ServiceAppointmentNotification {
                 HOT_UserNotificationService.coInterpreterChangeNotification(
                     getCustomNotificationType('HOT_NotifyUser'),
                     relatedAppointment,
+                    getTargetPageRefInterpreter('my', relatedAppointment.Id),
                     updatedSAWithNewInterpreter.HOT_ServiceResource__r.Name,
                     freelanceInterpreterRecipients
                 );
             }
-        }
 
-        if (!serviceResourcesIds.isEmpty()) {
-            String startEndString = HOT_ReminderSMSService.formatTimePeriod(
-                updatedSAWithNewInterpreter.SchedStartTime,
-                updatedSAWithNewInterpreter.SchedEndTime
-            );
-            HOT_ReminderSMSService.sendSMSOnCoInterpreterChange(
-                serviceResourcesIds,
-                startEndString,
-                updatedSAWithNewInterpreter.HOT_ServiceResource__r.Name
-            );
-        }
-        //inserting notifications
-        try {
-            HOT_NotificationCentreController.createNotification(notificationList);
-        } catch (Exception e) {
-            LoggerUtility logger = new LoggerUtility();
-            logger.exception(e, CRM_ApplicationDomain.Domain.HOT);
-            logger.publish();
+            if (!serviceResourcesIds.isEmpty()) {
+                String startEndString = HOT_ReminderSMSService.formatTimePeriod(
+                    updatedSAWithNewInterpreter.SchedStartTime,
+                    updatedSAWithNewInterpreter.SchedEndTime
+                );
+                HOT_ReminderSMSService.sendSMSOnCoInterpreterChange(
+                    serviceResourcesIds,
+                    startEndString,
+                    updatedSAWithNewInterpreter.HOT_ServiceResource__r.Name
+                );
+            }
+            //inserting notifications
+            try {
+                HOT_NotificationCentreController.createNotification(notificationList);
+            } catch (Exception e) {
+                LoggerUtility logger = new LoggerUtility();
+                logger.exception(e, CRM_ApplicationDomain.Domain.HOT);
+                logger.publish();
+            }
         }
     }
 

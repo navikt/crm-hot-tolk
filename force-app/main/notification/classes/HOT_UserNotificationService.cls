@@ -185,6 +185,7 @@ public without sharing class HOT_UserNotificationService {
     public static void coInterpreterChangeNotification(
         CustomNotificationType notificationType,
         ServiceAppointment sa,
+        String targetPageRef,
         String newInterpreter,
         Set<String> recipients
     ) {
@@ -201,7 +202,6 @@ public without sharing class HOT_UserNotificationService {
             '.';
 
         Id notificationTypeId = notificationType.Id;
-        String targetPageRef = HOT_ServiceAppointmentNotification.getTargetPageRefInterpreterOnChanged('my', sa.Id);
         Messaging.CustomNotification notification = new Messaging.CustomNotification();
         notification.setTitle(title);
         notification.setBody(body);
