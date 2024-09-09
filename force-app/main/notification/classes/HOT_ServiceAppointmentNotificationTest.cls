@@ -496,7 +496,7 @@ private class HOT_ServiceAppointmentNotificationTest {
             serviceAppointment.Id,
             serviceResourceFreelance.Id
         );
-        insert assignedResource2;
+        insert assignedResource3;
 
         //Freelance notification
         HOT_ServiceAppointmentNotification.notifyInterpretersOnChangedResource(serviceAppointment2);
