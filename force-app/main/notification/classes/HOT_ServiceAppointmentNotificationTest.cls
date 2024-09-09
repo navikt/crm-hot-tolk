@@ -448,7 +448,6 @@ private class HOT_ServiceAppointmentNotificationTest {
             LIMIT 1
         ];
 
-        Test.startTest();
         WorkType workType = HOT_TestDataFactory.createWorkType();
         insert workType;
 
@@ -489,14 +488,21 @@ private class HOT_ServiceAppointmentNotificationTest {
         serviceAppointment2.Status = 'Dispatched';
         update serviceAppointment2;
 
+        Test.startTest();
         //Employee notification
         HOT_ServiceAppointmentNotification.notifyInterpretersOnChangedResource(serviceAppointment);
+
+        serviceAppointment.Status = 'None';
+        update serviceAppointment;
 
         AssignedResource assignedResource3 = HOT_TestDataFactory.createAssignedResource(
             serviceAppointment.Id,
             serviceResourceFreelance.Id
         );
         insert assignedResource3;
+
+        serviceAppointment.Status = 'Dispatched';
+        update serviceAppointment;
 
         //Freelance notification
         HOT_ServiceAppointmentNotification.notifyInterpretersOnChangedResource(serviceAppointment2);
