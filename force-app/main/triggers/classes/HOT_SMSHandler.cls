@@ -14,4 +14,9 @@ public without sharing class HOT_SMSHandler extends MyTriggers {
             HOT_Utility.setArchiveAsOwner(SMSToChangeOwnerToArchive);
         }
     }
+
+
+    public override void onAfterInsert() {
+        HOT_IncomingSMSNotification.notifyDispatchersOnIncomingSMS((List<SMS__c>) records);
+    }
 }
