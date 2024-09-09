@@ -1,5 +1,8 @@
 public with sharing class HOT_IncomingSMSNotification {
-    public static String DISPATCH_INCOMING_NUMBER = '41716090';
+    private static final Integer MAX_NOTIFICATION_BODY_CHARACTERS = 320; 
+    public static final String DISPATCH_INCOMING_NUMBER = '41716090';
+
+
 
     public static void notifyDispatchersOnIncomingSMS(List<SMS__c> messages) {
 
@@ -12,7 +15,7 @@ public with sharing class HOT_IncomingSMSNotification {
         }
 
         List<Person__c> senders = [
-            SELECT Id, CRM_Account__c, INT_RegionNumber__c, INT_MunicipalityNumber__c FROM Person__c 
+            SELECT Id, CRM_Account__c, INT_RegionNumber__c, INT_MunicipalityNumber__c, CRM_FullName__c FROM Person__c 
             WHERE CRM_Account__c IN :senderAccountIdToSms.keySet()
         ];
 
@@ -29,8 +32,11 @@ public with sharing class HOT_IncomingSMSNotification {
 
         for(Person__c sender : senders) {
             SMS__c sms = senderAccountIdToSms.get(sender.CRM_Account__c);
-            String title = 'Melding fra ' + sender.Name;
-            String body = sms.Message__c;
+            String title = 'Melding fra ' + sender.CRM_FullName__c;
+            String body = sms.Message__c.length() > MAX_NOTIFICATION_BODY_CHARACTERS ? 
+                sms.Message__c.substring(0, MAX_NOTIFICATION_BODY_CHARACTERS-3) + '...'
+                : sms.Message__c;
+            body += ' - ' + sender.CRM_FullName__c;
 
             Messaging.CustomNotification notification = HOT_NotificationHandler.prepareNotification(
                 title,

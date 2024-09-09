@@ -29,7 +29,7 @@ private class HOT_IncomingSMSNotificationTest {
             }
 
             Set<Id> personAccountIds=new Set<Id>();
-            List<Person__c> persons=[SELECT INT_LastName__c, CRM_Account__c FROM Person__c]; 
+            List<Person__c> persons=[SELECT INT_LastName__c, CRM_Account__c, Name FROM Person__c]; 
             Integer index = 0;
             for (Person__c person : persons) {
                 person.CRM_Account__c=accountByLastName.get(person.INT_LastName__c).Id;
@@ -73,6 +73,8 @@ private class HOT_IncomingSMSNotificationTest {
         System.assertEquals(innlandetQueueId, groupIds[2], 'Person 2 should belong to Innlandet region');
     }
 
+
+
     @isTest
     static void shouldNotifyDispatchersAboutSMSTest() {
         Account acc = [SELECT Id, Name FROM Account WHERE Name = 'Gunnar Gunn Gundersen'];
@@ -88,5 +90,24 @@ private class HOT_IncomingSMSNotificationTest {
         Test.stopTest();
 
         System.assertEquals(true, shouldNotify, 'SMS should trigger notification of dispatchers');
+    }
+    
+
+
+    @isTest
+    static void notifyDispatchersOnIncomingSMSTest() {
+        Person__c sender = [SELECT Id, CRM_Account__c, Name FROM Person__c WHERE Name = :userNames[0]];
+        SMS__c testSMS = new SMS__c();
+        testSMS.Domain__c = 'HOT';
+        testSMS.Message__c = 'Dette er en testmelding';
+        testSMS.Type__c = 'Incoming SMS';
+        testSMS.Recipient__c = HOT_IncomingSMSNotification.DISPATCH_INCOMING_NUMBER;
+        testSMS.Account__c = sender.CRM_Account__c;
+
+        
+
+        Test.startTest();
+        HOT_IncomingSMSNotification.notifyDispatchersOnIncomingSMS(new List<SMS__c>{testSMS});
+        Test.stopTest();
     }
 }
