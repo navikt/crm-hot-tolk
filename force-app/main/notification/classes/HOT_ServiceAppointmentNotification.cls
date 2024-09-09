@@ -1048,13 +1048,10 @@ public without sharing class HOT_ServiceAppointmentNotification {
         Map<String, ServiceAppointment> appointmentByFreelanceInterpreter = new Map<String, ServiceAppointment>();
         //creating notification object list
         List<HOT_Notification__c> notificationList = new List<HOT_Notification__c>();
-        // Set<String> freelanceInterpreterRecipients = new Set<String>();
-        // Set<String> employeeInterpreterRecipients = new Set<String>();
         Set<Id> serviceResourcesIds = new Set<Id>();
         for (ServiceAppointment serviceAppointment : relatedServiceAppointments) {
             if (serviceAppointment.HOT_ServiceResource__r.HOT_NotificationChannel__c.contains('Push')) {
                 if (serviceAppointment.HOT_ServiceResource__r.HOT_IsEmployedInterpreter__c) {
-                    //employeeInterpreterRecipients.add(serviceAppointment.HOT_ServiceResource__r.RelatedRecordId);
                     appointmentByEmployeeInterpreter.put(
                         serviceAppointment.HOT_ServiceResource__r.RelatedRecordId,
                         serviceAppointment
@@ -1064,7 +1061,6 @@ public without sharing class HOT_ServiceAppointmentNotification {
                         serviceAppointment.HOT_ServiceResource__r.RelatedRecordId,
                         serviceAppointment
                     );
-                    //freelanceInterpreterRecipients.add(serviceAppointment.HOT_ServiceResource__r.RelatedRecordId);
                 }
                 if (
                     serviceAppointment.HOT_ServiceResource__r.AccountId != null &&
@@ -1139,11 +1135,11 @@ public without sharing class HOT_ServiceAppointmentNotification {
                     'Medtolk på et oppdrag du er tildelt er blitt endret. \nNy tolk er: ' +
                         updatedSAWithNewInterpreter.HOT_ServiceResource__r.Name +
                         '\nDato: ' +
-                        relatedAppointment.SchedStartTime?.format('dd.MM.yyyy', 'Europe/Oslo') +
+                        updatedSAWithNewInterpreter.SchedStartTime?.format('dd.MM.yyyy', 'Europe/Oslo') +
                         ', kl: ' +
-                        relatedAppointment.SchedStartTime?.format('HH:mm', 'Europe/Oslo') +
+                        updatedSAWithNewInterpreter.SchedStartTime?.format('HH:mm', 'Europe/Oslo') +
                         ' - ' +
-                        relatedAppointment.SchedEndTime?.format('HH:mm', 'Europe/Oslo') +
+                        updatedSAWithNewInterpreter.SchedEndTime?.format('HH:mm', 'Europe/Oslo') +
                         '.'
                 );
                 notification.setNotificationTypeId(getCustomNotificationType('HOT_NotifyInterpreter').Id);
@@ -1165,7 +1161,7 @@ public without sharing class HOT_ServiceAppointmentNotification {
 
                 HOT_UserNotificationService.coInterpreterChangeNotification(
                     getCustomNotificationType('HOT_NotifyUser'),
-                    relatedAppointment,
+                    updatedSAWithNewInterpreter,
                     getTargetPageRefInterpreter('my', relatedAppointment.Id),
                     updatedSAWithNewInterpreter.HOT_ServiceResource__r.Name,
                     freelanceInterpreterRecipients
