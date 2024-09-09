@@ -1033,7 +1033,6 @@ public without sharing class HOT_ServiceAppointmentNotification {
                 SchedStartTime,
                 SchedEndTime,
                 HOT_ServiceResource__r.AccountId,
-                HOT_Interpreters__c,
                 HOT_ServiceResource__r.HOT_IsFreelanceInterpreter__c,
                 HOT_ServiceResource__r.HOT_IsEmployedInterpreter__c,
                 HOT_ServiceResource__r.HOT_NotificationChannel__c,
