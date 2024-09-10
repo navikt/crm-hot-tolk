@@ -78,21 +78,23 @@ public without sharing class HOT_ThreadDetailController {
         }
         if (objectType == 'ServiceAppointment') {
             User user = [SELECT Id, AccountId FROM User WHERE Id = :UserInfo.getUserId()];
-            ServiceResource serviceResource = [SELECT Id FROM ServiceResource WHERE AccountId = :user.AccountId];
-            List<HOT_InterestedResource__c> irList = [
-                SELECT Id
-                FROM HOT_InterestedResource__c
-                WHERE
-                    ServiceAppointment__c = :thread.CRM_Related_Object__c
-                    AND ServiceResource__c = :serviceResource.Id
-                    AND (Status__c = 'Assigned'
-                    OR Status__c = 'Canceled'
-                    OR Status__c = 'Canceled by Interpreter')
-            ];
-            if (irList.size() != 0) {
-                grantAccess = true;
-            } else {
-                grantAccess = false;
+            if (user.AccountId != null) {
+                ServiceResource serviceResource = [SELECT Id FROM ServiceResource WHERE AccountId = :user.AccountId];
+                List<HOT_InterestedResource__c> irList = [
+                    SELECT Id
+                    FROM HOT_InterestedResource__c
+                    WHERE
+                        ServiceAppointment__c = :thread.CRM_Related_Object__c
+                        AND ServiceResource__c = :serviceResource.Id
+                        AND (Status__c = 'Assigned'
+                        OR Status__c = 'Canceled'
+                        OR Status__c = 'Canceled by Interpreter')
+                ];
+                if (irList.size() != 0) {
+                    grantAccess = true;
+                } else {
+                    grantAccess = false;
+                }
             }
         }
         if (objectType == 'HOT_Request__c') {

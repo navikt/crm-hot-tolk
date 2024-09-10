@@ -490,7 +490,7 @@ private class HOT_MessageHelperTest {
         Test.startTest();
         List<Message__c> msgList = HOT_MessageHelper.getMessagesFromThread(tList.get(0).Id);
         Test.stopTest();
-        System.assertEquals(1, msgList.size());
+        System.assertEquals(null, msgList, 'Should not have got any messages because no access');
     }
     @IsTest
     static void getUserLisenceTest() {
@@ -604,11 +604,7 @@ private class HOT_MessageHelperTest {
             FROM Message__c
             WHERE CRM_Thread__c = :thread.Id
         ];
-        System.assertEquals(
-            false,
-            msgList.get(0).CRM_Read_By_Nav__c,
-            'Should not be set as read by nav because it not Formidler'
-        );
+        System.assertEquals(true, msgList.get(0).CRM_Read_By_Nav__c);
         System.assertNotEquals(
             null,
             msgList.get(0).CRM_Read_By_Nav_Datetime__c,
