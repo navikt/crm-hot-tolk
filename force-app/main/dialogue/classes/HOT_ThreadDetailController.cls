@@ -109,7 +109,7 @@ public without sharing class HOT_ThreadDetailController {
             }
         }
         User user = [SELECT Id, FirstName, Profile.Name FROM User WHERE Id = :UserInfo.getUserId()];
-        if (user.Profile.Name == 'HOT Tolk Formidler' && thread.CRM_Thread_Type__c.contains('HOT')) {
+        if (user.Profile.Name == 'HOT Tolk Formidler' && thread.CRM_Thread_Type__c.startsWith('HOT_')) {
             grantAccess = true;
         }
         return grantAccess;
