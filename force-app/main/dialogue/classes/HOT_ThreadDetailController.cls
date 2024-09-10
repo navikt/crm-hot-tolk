@@ -82,6 +82,7 @@ public without sharing class HOT_ThreadDetailController {
                     FROM ServiceResource
                     WHERE RelatedRecordId = :user.Id
                 ];
+
                 List<HOT_InterestedResource__c> irList = [
                     SELECT Id
                     FROM HOT_InterestedResource__c
@@ -104,6 +105,7 @@ public without sharing class HOT_ThreadDetailController {
                 }
             }
         }
+
         if (objectType == 'HOT_Request__c') {
             HOT_Request__c request = [
                 SELECT Id, Orderer__c, Account__c
