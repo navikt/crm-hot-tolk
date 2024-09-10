@@ -74,21 +74,15 @@ public without sharing class HOT_ThreadDetailController {
             }
         }
         if (objectType == 'ServiceAppointment') {
-            //User user = [SELECT Id FROM User WHERE Id = :UserInfo.getUserId()];
-            User user = [SELECT Id, AccountId, Profile.Name FROM User WHERE Id = :UserInfo.getUserId()];
-            if (user.Profile.Name != 'HOT Tolk Formidler') {
-                List<ServiceResource> serviceResources = [
-                    SELECT Id
-                    FROM ServiceResource
-                    WHERE RelatedRecordId = :user.Id
-                ];
-
+            User user = [SELECT Id FROM User WHERE Id = :UserInfo.getUserId()];
+            ServiceResource sr = [SELECT Id FROM ServiceResource WHERE RelatedRecordId = :user.Id];
+            if (sr.Id != null) {
                 List<HOT_InterestedResource__c> irList = [
                     SELECT Id
                     FROM HOT_InterestedResource__c
                     WHERE
                         ServiceAppointment__c = :thread.CRM_Related_Object__c
-                        AND ServiceResource__c = :serviceResources[0].Id
+                        AND ServiceResource__c = :sr.Id
                         AND (Status__c = 'Assigned'
                         OR Status__c = 'Canceled'
                         OR Status__c = 'Canceled by Interpreter')
@@ -96,9 +90,7 @@ public without sharing class HOT_ThreadDetailController {
                 List<AssignedResource> arList = [
                     SELECT Id
                     FROM AssignedResource
-                    WHERE
-                        ServiceResourceId = :serviceResources[0].Id
-                        AND ServiceAppointmentId = :thread.CRM_Related_Object__c
+                    WHERE ServiceResourceId = :sr.Id AND ServiceAppointmentId = :thread.CRM_Related_Object__c
                 ];
                 if (irList.size() != 0 || arList.size() != 0) {
                     grantAccess = true;
