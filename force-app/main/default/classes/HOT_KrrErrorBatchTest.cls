@@ -25,7 +25,7 @@ private with sharing class HOT_KrrErrorBatchTest {
 
     @IsTest
     static void schedulableTest() {
-        String cron_exp = '0 0 0 3 9 ? 2024';
+        String cron_exp = '0 0 0 3 9 ? 2099';
         Test.startTest();
         String jobId = System.schedule('HOT_KrrErrorBatch', cron_exp, new HOT_KrrErrorBatch());
         Test.stopTest();
