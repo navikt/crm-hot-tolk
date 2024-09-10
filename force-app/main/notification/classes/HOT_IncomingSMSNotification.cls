@@ -2,23 +2,52 @@ public with sharing class HOT_IncomingSMSNotification {
     private static final Integer MAX_NOTIFICATION_BODY_CHARACTERS = 320; 
     public static final String DISPATCH_INCOMING_NUMBER = '41716090';
 
+    @TestVisible
+    private class NotificationContext {
+        public SMS__c sms;
+        public Set<String> recipients;
+        public Messaging.CustomNotification notification;
+    }
 
 
-    public static void notifyDispatchersOnIncomingSMS(List<SMS__c> messages) {
 
-        Map<Id, SMS__c> senderAccountIdToSms = new Map<Id, SMS__c>();
+    public static Integer notifyDispatchersOnIncomingSMS(List<SMS__c> messages) {
 
+        List<NotificationContext> contexts = prepareContextsForValidSMS(messages);
+
+        for(NotificationContext context : contexts) {
+            HOT_NotificationHandler.sendNotification(
+                context.notification,
+                context.recipients,
+                (SObject) context.sms
+            );
+        }
+        return contexts.size();
+    }
+
+
+
+    @TestVisible
+    private static List<NotificationContext> prepareContextsForValidSMS(List<SMS__c> messages) {
+
+        Map<Id, List<NotificationContext>> accountIdToContexts = new Map<Id, List<NotificationContext>>();
         for(SMS__c sms : messages) {
             if(shouldNotifyDispatchersAboutSMS(sms)) {
-                senderAccountIdToSms.put(sms.Account__c, sms);
+                NotificationContext context = new NotificationContext();
+                context.sms = sms;
+                List<NotificationContext> contexts = accountIdToContexts.get(sms.Account__c);
+                if(contexts == null) {
+                    contexts = new List<NotificationContext>();
+                } 
+                contexts.add(context);
+                accountIdToContexts.put(sms.Account__c, contexts);
             }
         }
 
         List<Person__c> senders = [
             SELECT Id, CRM_Account__c, INT_RegionNumber__c, INT_MunicipalityNumber__c, CRM_FullName__c FROM Person__c 
-            WHERE CRM_Account__c IN :senderAccountIdToSms.keySet()
+            WHERE CRM_Account__c IN :accountIdToContexts.keySet()
         ];
-
         List<Id> queueIds = getQueueIdsFromSenders(senders);
         Map<Id, Id> groupByQueue = HOT_NotificationHandler.getGroupIdByQueueId(queueIds);    
 
@@ -27,33 +56,28 @@ public with sharing class HOT_IncomingSMSNotification {
             FROM CustomNotificationType
             WHERE DeveloperName = 'HOT_NotifyDispatcher'
         ];
+        
+        List<NotificationContext> contextList = new List<NotificationContext>();
 
         Integer index = 0;
-
         for(Person__c sender : senders) {
-            SMS__c sms = senderAccountIdToSms.get(sender.CRM_Account__c);
-            String title = 'Melding fra ' + sender.CRM_FullName__c;
-            String body = sms.Message__c.length() > MAX_NOTIFICATION_BODY_CHARACTERS ? 
-                sms.Message__c.substring(0, MAX_NOTIFICATION_BODY_CHARACTERS-3) + '...'
-                : sms.Message__c;
+            List<NotificationContext> contexts = accountIdToContexts.get(sender.CRM_Account__c);
+            for(NotificationContext context : contexts) {
+                context.recipients = new Set<String>{(String)groupByQueue.get(queueIds[index])};
 
-            Messaging.CustomNotification notification = HOT_NotificationHandler.prepareNotification(
-                title,
-                body,
-                notificationType.Id,
-                sms.Id
-            );
-
-            HOT_NotificationHandler.sendNotification(
-                notification,
-                new Set<String>{(String) groupByQueue.get(queueIds[index])},
-                (SObject) sms
-            );
+                String title = 'Melding fra ' + sender.CRM_FullName__c;
+                String body = context.sms.Message__c.length() > MAX_NOTIFICATION_BODY_CHARACTERS ? 
+                    context.sms.Message__c.substring(0, MAX_NOTIFICATION_BODY_CHARACTERS-3) + '...'
+                    : context.sms.Message__c;
+                
+                context.notification = HOT_NotificationHandler.prepareNotification(title, body, notificationType.Id, context.sms.Id);
+                contextList.add(context);
+            }
             index++;
         }
-    }
 
-    
+        return contextList;
+    }
 
     
     @TestVisible

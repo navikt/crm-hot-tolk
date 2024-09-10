@@ -75,6 +75,8 @@ private class HOT_IncomingSMSNotificationTest {
 
 
 
+
+
     @isTest
     static void shouldNotifyDispatchersAboutSMSTest() {
         Account acc = [SELECT Id, Name FROM Account WHERE Name = 'Gunnar Gunn Gundersen'];
@@ -104,10 +106,56 @@ private class HOT_IncomingSMSNotificationTest {
         testSMS.Recipient__c = HOT_IncomingSMSNotification.DISPATCH_INCOMING_NUMBER;
         testSMS.Account__c = sender.CRM_Account__c;
 
-        
+        SMS__c invalidSMS = new SMS__c();
+        invalidSMS.Domain__c = 'HOT';
+        invalidSMS.Type__c = 'Incoming SMS';
+        invalidSMS.Recipient__c = '2345';
+        invalidSMS.Account__c = null;
+
 
         Test.startTest();
-        HOT_IncomingSMSNotification.notifyDispatchersOnIncomingSMS(new List<SMS__c>{testSMS});
+        Integer notificationsSent = HOT_IncomingSMSNotification.notifyDispatchersOnIncomingSMS(new List<SMS__c>{testSMS});
         Test.stopTest();
+
+        System.assertEquals(1, notificationsSent, 'should send only one notification');
+    }
+
+    @isTest
+    static void prepareContextsForValidSMSTest() {
+        Person__c sender = [SELECT Id, CRM_Account__c, Name FROM Person__c WHERE Name = :userNames[0]];
+        SMS__c testSMS = new SMS__c();
+        testSMS.Domain__c = 'HOT';
+        testSMS.Message__c = 'Dette er en testmelding';
+        testSMS.Type__c = 'Incoming SMS';
+        testSMS.Recipient__c = HOT_IncomingSMSNotification.DISPATCH_INCOMING_NUMBER;
+        testSMS.Account__c = sender.CRM_Account__c;
+
+        SMS__c secondSMS = new SMS__c();
+        secondSMS.Domain__c = 'HOT';
+        secondSMS.Message__c = 'En annen melding fra sammes ender';
+        secondSMS.Type__c = 'Incoming SMS';
+        secondSMS.Recipient__c = HOT_IncomingSMSNotification.DISPATCH_INCOMING_NUMBER;
+        secondSMS.Account__c = sender.CRM_Account__c;
+
+        SMS__c invalidSMS = new SMS__c();
+        invalidSMS.Domain__c = 'HOT';
+        invalidSMS.Type__c = 'Incoming SMS';
+        invalidSMS.Recipient__c = '2345';
+        invalidSMS.Account__c = null;
+
+        List<SMS__c> incomingSMS = new List<SMS__c>{testSMS, secondSMS, invalidSMS};
+
+        Test.startTest();
+        List<HOT_IncomingSMSNotification.NotificationContext> contexts = 
+            HOT_IncomingSMSNotification.prepareContextsForValidSMS(incomingSMS);
+        Test.stopTest();
+
+        System.assertEquals(2, contexts.size(), 
+            'should only return contects for valid sms messages, and should return contexts for both sms from same sender');
+        System.assert(
+            contexts[0].sms == testSMS && contexts[1].sms == secondSMS,
+            'Contexts should contain notificationContext with valid properties'
+        );
+
     }
 }
