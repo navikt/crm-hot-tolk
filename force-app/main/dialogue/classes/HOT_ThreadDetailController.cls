@@ -16,7 +16,7 @@ public without sharing class HOT_ThreadDetailController {
     }
     @AuraEnabled(cacheable=false)
     public static boolean checkAccess(Id threadId) {
-        Boolean grantAccess = true;
+        Boolean grantAccess = false;
         Thread__c thread = [SELECT Id, CRM_Related_Object__c, CRM_Thread_Type__c FROM Thread__c WHERE Id = :threadId];
         Id relatedObjectId = thread.CRM_Related_Object__c;
         String objectType = String.valueOf(relatedObjectId.getsobjecttype());
@@ -64,16 +64,18 @@ public without sharing class HOT_ThreadDetailController {
         }
         if (objectType == 'HOT_InterestedResource__c') {
             User user = [SELECT Id, AccountId FROM User WHERE Id = :UserInfo.getUserId()];
-            ServiceResource serviceResource = [SELECT Id FROM ServiceResource WHERE AccountId = :user.AccountId];
-            List<HOT_InterestedResource__c> irList = [
-                SELECT Id
-                FROM HOT_InterestedResource__c
-                WHERE Id = :thread.CRM_Related_Object__c AND ServiceResource__c = :serviceResource.Id
-            ];
-            if (irList.size() != 0) {
-                grantAccess = true;
-            } else {
-                grantAccess = false;
+            if (user.AccountId != null) {
+                ServiceResource serviceResource = [SELECT Id FROM ServiceResource WHERE AccountId = :user.AccountId];
+                List<HOT_InterestedResource__c> irList = [
+                    SELECT Id
+                    FROM HOT_InterestedResource__c
+                    WHERE Id = :thread.CRM_Related_Object__c AND ServiceResource__c = :serviceResource.Id
+                ];
+                if (irList.size() != 0) {
+                    grantAccess = true;
+                } else {
+                    grantAccess = false;
+                }
             }
         }
         if (objectType == 'ServiceAppointment') {
