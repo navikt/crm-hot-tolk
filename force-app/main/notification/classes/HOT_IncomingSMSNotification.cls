@@ -29,6 +29,8 @@ public with sharing class HOT_IncomingSMSNotification {
 
     @TestVisible
     private static List<NotificationContext> prepareContextsForValidSMS(List<SMS__c> messages) {
+        
+        List<NotificationContext> contextList = new List<NotificationContext>();
 
         Map<Id, List<NotificationContext>> accountIdToContexts = new Map<Id, List<NotificationContext>>();
         for(SMS__c sms : messages) {
@@ -44,6 +46,10 @@ public with sharing class HOT_IncomingSMSNotification {
             }
         }
 
+        if(accountIdToContexts.isEmpty()) {
+            return contextList;
+        }
+
         List<Person__c> senders = [
             SELECT Id, CRM_Account__c, INT_RegionNumber__c, INT_MunicipalityNumber__c, CRM_FullName__c FROM Person__c 
             WHERE CRM_Account__c IN :accountIdToContexts.keySet()
@@ -57,7 +63,6 @@ public with sharing class HOT_IncomingSMSNotification {
             WHERE DeveloperName = 'HOT_NotifyDispatcher'
         ];
         
-        List<NotificationContext> contextList = new List<NotificationContext>();
 
         Integer index = 0;
         for(Person__c sender : senders) {
