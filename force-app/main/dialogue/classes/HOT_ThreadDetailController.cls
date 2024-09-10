@@ -109,7 +109,6 @@ public without sharing class HOT_ThreadDetailController {
             }
         }
         User user = [SELECT Id, FirstName, Profile.Name FROM User WHERE Id = :UserInfo.getUserId()];
-        //legg til type tråd HOT
         if (user.Profile.Name == 'HOT Tolk Formidler' && thread.CRM_Thread_Type__c.contains('HOT')) {
             grantAccess = true;
         }
