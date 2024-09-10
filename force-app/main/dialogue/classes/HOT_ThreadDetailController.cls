@@ -17,7 +17,7 @@ public without sharing class HOT_ThreadDetailController {
     @AuraEnabled(cacheable=false)
     public static boolean checkAccess(Id threadId) {
         Boolean grantAccess = true;
-        Thread__c thread = [SELECT Id, CRM_Related_Object__c FROM Thread__c WHERE Id = :threadId];
+        Thread__c thread = [SELECT Id, CRM_Related_Object__c, CRM_Thread_Type__c FROM Thread__c WHERE Id = :threadId];
         Id relatedObjectId = thread.CRM_Related_Object__c;
         String objectType = String.valueOf(relatedObjectId.getsobjecttype());
         if (objectType == 'WorkOrder') {
@@ -109,7 +109,8 @@ public without sharing class HOT_ThreadDetailController {
             }
         }
         User user = [SELECT Id, FirstName, Profile.Name FROM User WHERE Id = :UserInfo.getUserId()];
-        if (user.Profile.Name == 'HOT Tolk Formidler' || user.Profile.Name == 'Systemadministrator') {
+        //legg til type tråd HOT
+        if (user.Profile.Name == 'HOT Tolk Formidler' && thread.CRM_Thread_Type__c.contains('HOT')) {
             grantAccess = true;
         }
         return grantAccess;
