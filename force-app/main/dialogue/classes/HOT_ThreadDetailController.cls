@@ -27,39 +27,36 @@ public without sharing class HOT_ThreadDetailController {
                 FROM WorkOrder
                 WHERE Id = :thread.CRM_Related_Object__c
             ];
-            List<ServiceResource> serviceResource = [SELECT Id FROM ServiceResource WHERE AccountId = :user.AccountId];
+            List<ServiceResource> serviceResource = [
+                SELECT Id, HOT_IsEmployedInterpreter__c
+                FROM ServiceResource
+                WHERE RelatedRecordId = :user.Id
+            ];
             if (!serviceResource.isEmpty()) {
-                List<HOT_InterestedResource__c> irList = [
-                    SELECT Id
-                    FROM HOT_InterestedResource__c
+                List<AssignedResource> arList = [
+                    SELECT ServiceResourceId
+                    FROM AssignedResource
                     WHERE
-                        ServiceAppointment__r.HOT_WorkOrderLineItem__r.WorkOrderId = :thread.CRM_Related_Object__c
-                        AND Status__c = 'Assigned'
-                        AND ServiceResource__c = :serviceResource[0].Id
+                        ServiceAppointment.HOT_WorkOrderLineItem__r.WorkOrderId = :thread.CRM_Related_Object__c
+                        AND ServiceResourceId = :serviceResource[0].Id
                 ];
-                if (irList.size() != 0 || wo.HOT_Request__r.Account__c == user.AccountId) {
+                if (arList.size() != 0) {
                     grantAccess = true;
-                } else {
-                    grantAccess = false;
                 }
             } else if (wo.HOT_Request__r.Account__c == user.AccountId) {
                 grantAccess = true;
-            } else {
-                grantAccess = false;
             }
         }
         if (objectType == 'HOT_WageClaim__c') {
             User user = [SELECT Id, AccountId FROM User WHERE Id = :UserInfo.getUserId()];
-            ServiceResource serviceResource = [SELECT Id FROM ServiceResource WHERE AccountId = :user.AccountId];
+            List<ServiceResource> serviceResource = [SELECT Id FROM ServiceResource WHERE AccountId = :user.AccountId];
             HOT_WageClaim__c wc = [
                 SELECT Id, ServiceResource__c
                 FROM HOT_WageClaim__c
                 WHERE Id = :thread.CRM_Related_Object__c
             ];
-            if (wc.ServiceResource__c == serviceResource.Id) {
+            if (serviceResource.size() != 0 || wc.ServiceResource__c == serviceResource[0].Id) {
                 grantAccess = true;
-            } else {
-                grantAccess = false;
             }
         }
         if (objectType == 'HOT_InterestedResource__c') {
@@ -73,30 +70,29 @@ public without sharing class HOT_ThreadDetailController {
                 ];
                 if (irList.size() != 0) {
                     grantAccess = true;
-                } else {
-                    grantAccess = false;
                 }
             }
         }
         if (objectType == 'ServiceAppointment') {
-            User user = [SELECT Id, AccountId FROM User WHERE Id = :UserInfo.getUserId()];
-            if (user.AccountId != null) {
-                ServiceResource serviceResource = [SELECT Id FROM ServiceResource WHERE AccountId = :user.AccountId];
-                List<HOT_InterestedResource__c> irList = [
-                    SELECT Id
-                    FROM HOT_InterestedResource__c
-                    WHERE
-                        ServiceAppointment__c = :thread.CRM_Related_Object__c
-                        AND ServiceResource__c = :serviceResource.Id
-                        AND (Status__c = 'Assigned'
-                        OR Status__c = 'Canceled'
-                        OR Status__c = 'Canceled by Interpreter')
-                ];
-                if (irList.size() != 0) {
-                    grantAccess = true;
-                } else {
-                    grantAccess = false;
-                }
+            User user = [SELECT Id FROM User WHERE Id = :UserInfo.getUserId()];
+            ServiceResource serviceResource = [SELECT Id FROM ServiceResource WHERE RelatedRecordId = :user.Id];
+            List<HOT_InterestedResource__c> irList = [
+                SELECT Id
+                FROM HOT_InterestedResource__c
+                WHERE
+                    ServiceAppointment__c = :thread.CRM_Related_Object__c
+                    AND ServiceResource__c = :serviceResource.Id
+                    AND (Status__c = 'Assigned'
+                    OR Status__c = 'Canceled'
+                    OR Status__c = 'Canceled by Interpreter')
+            ];
+            List<AssignedResource> arList = [
+                SELECT Id
+                FROM AssignedResource
+                WHERE ServiceResourceId = :serviceResource.Id AND ServiceAppointmentId = :thread.CRM_Related_Object__c
+            ];
+            if (irList.size() != 0 || arList.size() != 0) {
+                grantAccess = true;
             }
         }
         if (objectType == 'HOT_Request__c') {
@@ -108,8 +104,6 @@ public without sharing class HOT_ThreadDetailController {
             User user = [SELECT Id, AccountId FROM User WHERE Id = :UserInfo.getUserId()];
             if (request.Account__c == user.AccountId || request.Orderer__c == user.AccountId) {
                 grantAccess = true;
-            } else {
-                grantAccess = false;
             }
         }
         User user = [SELECT Id, FirstName, Profile.Name FROM User WHERE Id = :UserInfo.getUserId()];
