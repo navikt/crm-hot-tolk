@@ -11,7 +11,8 @@ private class HOT_ServiceAppointmentNotificationTest {
         User user = HOT_TestDataFactory.createUser('user', profile);
         insert user;
         ServiceResource serviceResource = HOT_TestDataFactory.createServiceResource(user.Id);
-        serviceResource.HOT_IsEmployedInterpreter__c = true;
+        serviceResource.HOT_IsEmployedInterpreter__c = false;
+        serviceResource.HOT_IsFreelanceInterpreter__c = true;
         insert serviceResource;
         ServiceTerritoryMember serviceTerritoryMember = HOT_TestDataFactory.createServiceTerritoryMember(
             serviceResource,
@@ -46,24 +47,6 @@ private class HOT_ServiceAppointmentNotificationTest {
         resourceMember2.Resource__c = resource2.Id;
         resourceMember2.Service_Resource__c = serviceResource2.Id;
         insert resourceMember2;
-
-        User user3 = HOT_TestDataFactory.createUser('user3', profile);
-        insert user3;
-        ServiceResource serviceResource3 = HOT_TestDataFactory.createServiceResource(user3.Id);
-        serviceResource3.HOT_IsFreelanceInterpreter__c = true;
-        insert serviceResource3;
-        serviceTerritoryMember = HOT_TestDataFactory.createServiceTerritoryMember(serviceResource3, serviceTerritory);
-        insert serviceTerritoryMember;
-
-        HOT_Resource__c resource3 = new HOT_Resource__c();
-        resource3.Name = 'Test3';
-        resource3.Service_Resource__c = serviceResource3.Id;
-        insert resource3;
-
-        HOT_ResourceMember__c resourceMemeber3 = new HOT_ResourceMember__c();
-        resourceMemeber3.Resource__c = resource3.Id;
-        resourceMemeber3.Service_Resource__c = serviceResource3.Id;
-        insert resourceMemeber3;
 
         WorkType workType = HOT_TestDataFactory.createWorkType();
         insert WorkType;
@@ -434,12 +417,12 @@ private class HOT_ServiceAppointmentNotificationTest {
     private static void notifyInterpretersOnChangedResourceTest() {
         Set<String> recipients = new Set<String>{ UserInfo.getUserId() };
 
-        List<User> users = [SELECT Id, AccountId FROM User WHERE Id = :UserInfo.getUserId() LIMIT 3];
-        List<ServiceResource> serviceResources = [
+        //List<User> users = [SELECT Id, AccountId FROM User WHERE Id = :UserInfo.getUserId() LIMIT 2];
+        ServiceResource serviceResource = [
             SELECT Id
             FROM ServiceResource
             WHERE HOT_IsEmployedInterpreter__c = TRUE
-            LIMIT 2
+            LIMIT 1
         ];
         ServiceResource serviceResourceFreelance = [
             SELECT Id
@@ -472,13 +455,13 @@ private class HOT_ServiceAppointmentNotificationTest {
 
         AssignedResource assignedResource = HOT_TestDataFactory.createAssignedResource(
             serviceAppointment.Id,
-            serviceResources[0].Id
+            serviceResource.Id
         );
         insert assignedResource;
 
         AssignedResource assignedResource2 = HOT_TestDataFactory.createAssignedResource(
             serviceAppointment2.Id,
-            serviceResources[1].Id
+            serviceResourceFreelance.Id
         );
         insert assignedResource2;
 
@@ -489,24 +472,10 @@ private class HOT_ServiceAppointmentNotificationTest {
         update serviceAppointment2;
 
         Test.startTest();
-        //Employee notification
-        HOT_ServiceAppointmentNotification.notifyInterpretersOnChangedResource(serviceAppointment);
-
-        serviceAppointment.Status = 'None';
-        update serviceAppointment;
-
-        AssignedResource assignedResource3 = HOT_TestDataFactory.createAssignedResource(
-            serviceAppointment.Id,
-            serviceResourceFreelance.Id
-        );
-        insert assignedResource3;
-
-        serviceAppointment.Status = 'Dispatched';
-        update serviceAppointment;
-
         //Freelance notification
         HOT_ServiceAppointmentNotification.notifyInterpretersOnChangedResource(serviceAppointment2);
-
+        //Employee notification
+        HOT_ServiceAppointmentNotification.notifyInterpretersOnChangedResource(serviceAppointment);
         Test.stopTest();
     }
 
