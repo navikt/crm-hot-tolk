@@ -14,6 +14,10 @@ export let filterArray = [
                 label: 'Tildelt'
             },
             {
+                name: 'Reservert',
+                label: 'Reservert'
+            },
+            {
                 name: 'Avslått',
                 label: 'Avslått'
             },
