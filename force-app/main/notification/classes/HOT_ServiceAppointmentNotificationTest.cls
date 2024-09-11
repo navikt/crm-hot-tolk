@@ -468,12 +468,12 @@ private class HOT_ServiceAppointmentNotificationTest {
         serviceAppointment.Status = 'Dispatched';
         update serviceAppointment;
 
+        Test.startTest();
         serviceAppointment2.Status = 'Dispatched';
         update serviceAppointment2;
 
         //Freelance notification
         HOT_ServiceAppointmentNotification.notifyInterpretersOnChangedResource(serviceAppointment2);
-        Test.startTest();
         //Employee notification
         HOT_ServiceAppointmentNotification.notifyInterpretersOnChangedResource(serviceAppointment);
         Test.stopTest();
