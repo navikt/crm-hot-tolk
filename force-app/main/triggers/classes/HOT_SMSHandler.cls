@@ -15,7 +15,6 @@ public without sharing class HOT_SMSHandler extends MyTriggers {
         }
     }
 
-
     public override void onAfterInsert() {
         HOT_IncomingSMSNotification.notifyDispatchersOnIncomingSMS((List<SMS__c>) records);
     }
