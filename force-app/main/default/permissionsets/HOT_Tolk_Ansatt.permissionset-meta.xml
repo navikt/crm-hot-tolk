@@ -20,6 +20,10 @@
         <apexClass>HOT_UpdateSAStatusService</apexClass>
         <enabled>true</enabled>
     </classAccesses>
+    <!-- <customPermissions>
+        <enabled>true</enabled>
+        <name>HOT_DeleteFiles</name>
+    </customPermissions> -->
     <fieldPermissions>
         <editable>false</editable>
         <field>Account.CRM_Person__c</field>
@@ -823,6 +827,16 @@
     <fieldPermissions>
         <editable>false</editable>
         <field>ServiceAppointment.HOT_DegreeOfHearingAndVisualImpairment__c</field>
+        <readable>true</readable>
+    </fieldPermissions>
+    <fieldPermissions>
+        <editable>false</editable>
+        <field>ServiceAppointment.HOT_DelPol_IsDeleteFiles__c</field>
+        <readable>true</readable>
+    </fieldPermissions>
+    <fieldPermissions>
+        <editable>false</editable>
+        <field>ServiceAppointment.HOT_DelPol_ToDeleteFiles__c</field>
         <readable>true</readable>
     </fieldPermissions>
     <fieldPermissions>
