@@ -38,7 +38,7 @@ public without sharing class HOT_ThreadDetailController {
                     FROM AssignedResource
                     WHERE
                         ServiceAppointment.HOT_WorkOrderLineItem__r.WorkOrderId = :thread.CRM_Related_Object__c
-                        AND ServiceResourceId = :serviceResource[0].Id
+                        AND ServiceResourceId IN :serviceResource
                 ];
                 if (arList.size() != 0) {
                     grantAccess = true;
@@ -82,7 +82,7 @@ public without sharing class HOT_ThreadDetailController {
                     FROM HOT_InterestedResource__c
                     WHERE
                         ServiceAppointment__c = :thread.CRM_Related_Object__c
-                        AND ServiceResource__c = :srList[0].Id
+                        AND ServiceResource__c IN :srList
                         AND (Status__c = 'Assigned'
                         OR Status__c = 'Canceled'
                         OR Status__c = 'Canceled by Interpreter')
@@ -90,7 +90,7 @@ public without sharing class HOT_ThreadDetailController {
                 List<AssignedResource> arList = [
                     SELECT Id
                     FROM AssignedResource
-                    WHERE ServiceResourceId = :srList[0].Id AND ServiceAppointmentId = :thread.CRM_Related_Object__c
+                    WHERE ServiceResourceId IN :srList AND ServiceAppointmentId = :thread.CRM_Related_Object__c
                 ];
                 if (irList.size() != 0 || arList.size() != 0) {
                     grantAccess = true;
@@ -112,7 +112,10 @@ public without sharing class HOT_ThreadDetailController {
             }
         }
         User user = [SELECT Id, FirstName, Profile.Name FROM User WHERE Id = :UserInfo.getUserId()];
-        if (user.Profile.Name == 'HOT Tolk Formidler' && thread.CRM_Thread_Type__c.startsWith('HOT_')) {
+        if (
+            (user.Profile.Name == 'HOT Tolk Formidler' || user.Profile.Name == 'Systemadministrator') &&
+            thread.CRM_Thread_Type__c.startsWith('HOT_')
+        ) {
             grantAccess = true;
         }
         return grantAccess;
