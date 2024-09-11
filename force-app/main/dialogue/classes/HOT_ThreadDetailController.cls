@@ -85,7 +85,8 @@ public without sharing class HOT_ThreadDetailController {
                         AND ServiceResource__c IN :srList
                         AND (Status__c = 'Assigned'
                         OR Status__c = 'Canceled'
-                        OR Status__c = 'Canceled by Interpreter')
+                        OR Status__c = 'Canceled by Interpreter'
+                        OR Status__c = 'Reserved')
                 ];
                 List<AssignedResource> arList = [
                     SELECT Id

@@ -118,7 +118,10 @@ public without sharing class HOT_ThreadListController {
                     Id IN (
                         SELECT ServiceAppointment__c
                         FROM HOT_InterestedResource__c
-                        WHERE ServiceResource__c = :serviceResources[0].Id AND Status__c = 'Assigned'
+                        WHERE
+                            ServiceResource__c = :serviceResources[0].Id
+                            AND (Status__c = 'Assigned'
+                            OR Status__c = 'Reserved')
                     )
             ];
 

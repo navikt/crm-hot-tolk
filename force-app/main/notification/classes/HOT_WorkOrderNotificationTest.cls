@@ -56,6 +56,12 @@ private class HOT_WorkOrderNotificationTest {
 
         request.Status__c = 'Godkjent';
         update request;
+
+        WorkOrder workOrder = HOT_TestDataFactory.createWorkOrder(request, worktype);
+        insert workOrder;
+
+        WorkOrder workOrder2 = HOT_TestDataFactory.createWorkOrder(request, workType);
+        insert workOrder2;
     }
 
     @IsTest
@@ -71,6 +77,39 @@ private class HOT_WorkOrderNotificationTest {
         ];
         Test.startTest();
         HOT_WorkOrderNotification.canceledByUser(notificationType, wo, recipients);
+        Test.stopTest();
+    }
+    @IsTest
+    private static void testNotifyDispatchers_workOrderChanged() {
+        List<WorkOrder> workOrders = [
+            SELECT Id, WorkOrderNumber, StartDate, EndDate, OwnerId, Status, HOT_Request__c
+            FROM WorkOrder
+        ];
+        Map<Id, WorkOrder> triggerOldMap = new Map<Id, WorkOrder>();
+
+        for (WorkOrder wo : workOrders) {
+            WorkOrder oldWorkOrder = wo.clone(false, true, false, false);
+            if (wo.Status == 'New') {
+                oldWorkOrder.Status = 'In Progress';
+            } else {
+                oldWorkOrder.Status = 'Scheduled';
+            }
+            triggerOldMap.put(wo.Id, oldWorkOrder);
+        }
+
+        workOrders[0].Status = 'Canceled';
+
+        Test.startTest();
+        HOT_WorkOrderNotification.notifyDispatchers_workOrderChanged(workOrders, triggerOldMap);
+        Test.stopTest();
+    }
+
+    @IsTest
+    private static void testCheckServiceAppointments() {
+        List<WorkOrder> workOrders = [SELECT Id FROM WorkOrder];
+
+        Test.startTest();
+        List<WorkOrder> filteredWorkOrders = HOT_WorkOrderNotification.checkServiceAppointments(workOrders);
         Test.stopTest();
     }
 }
