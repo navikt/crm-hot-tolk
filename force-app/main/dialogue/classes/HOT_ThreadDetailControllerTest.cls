@@ -13,10 +13,11 @@ public without sharing class HOT_ThreadDetailControllerTest {
         t.HOT_Request__c = request.Id;
         insert t;
 
-        Test.startTest();
-        Thread__c thread = HOT_ThreadDetailController.getThreadDetails(t.Id);
-        Test.stopTest();
-        System.assertEquals('TEST', thread.HOT_Subject__c);
+        try {
+            Thread__c thread = HOT_ThreadDetailController.getThreadDetails(t.Id);
+            Assert.fail();
+        } catch (Exception e) {
+        }
     }
     @IsTest
     public static void checkFreelanceAccessWO() {
