@@ -105,8 +105,10 @@ public without sharing class HOT_ThreadDetailController {
                 WHERE Id = :thread.CRM_Related_Object__c
             ];
             User user = [SELECT Id, AccountId FROM User WHERE Id = :UserInfo.getUserId()];
-            if (request.Account__c == user.AccountId || request.Orderer__c == user.AccountId) {
-                grantAccess = true;
+            if (user.AccountId != null) {
+                if (request.Account__c == user.AccountId || request.Orderer__c == user.AccountId) {
+                    grantAccess = true;
+                }
             }
         }
         User user = [SELECT Id, FirstName, Profile.Name FROM User WHERE Id = :UserInfo.getUserId()];
