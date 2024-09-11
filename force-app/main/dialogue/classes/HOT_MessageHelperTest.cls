@@ -604,12 +604,7 @@ private class HOT_MessageHelperTest {
             FROM Message__c
             WHERE CRM_Thread__c = :thread.Id
         ];
-        System.assertEquals(true, msgList.get(0).CRM_Read_By_Nav__c);
-        System.assertNotEquals(
-            null,
-            msgList.get(0).CRM_Read_By_Nav_Datetime__c,
-            'CRM_Read_By_Nav_Datetime__c was not set.'
-        );
+        System.assertEquals(false, msgList.get(0).CRM_Read_By_Nav__c, 'Should not have permission to set read by nav');
     }
     @IsTest
     static void createMessageTest() {
