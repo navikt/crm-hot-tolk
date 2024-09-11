@@ -836,7 +836,7 @@ private class HOT_MessageHelperTest {
         Test.startTest();
         String result = HOT_MessageHelper.getAccountOnThread(t.Id);
         Test.stopTest();
-        System.assertEquals(null, result, 'Does not have access to account name');
+        System.assertEquals('Darth Vader', result, 'Did not get correct name');
     }
     @IsTest
     static void createThreadInterpreterInterpreters() {
