@@ -453,6 +453,8 @@ private class HOT_ServiceAppointmentNotificationTest {
         serviceAppointment2.Subject = 'Flertolksoppdrag med endring av medtolk';
         insert serviceAppointment2;
 
+        Test.startTest();
+
         AssignedResource assignedResource = HOT_TestDataFactory.createAssignedResource(
             serviceAppointment.Id,
             serviceResource.Id
@@ -468,7 +470,6 @@ private class HOT_ServiceAppointmentNotificationTest {
         serviceAppointment.Status = 'Dispatched';
         update serviceAppointment;
 
-        Test.startTest();
         serviceAppointment2.Status = 'Dispatched';
         update serviceAppointment2;
 
