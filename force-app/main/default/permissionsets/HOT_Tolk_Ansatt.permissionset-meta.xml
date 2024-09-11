@@ -20,10 +20,10 @@
         <apexClass>HOT_UpdateSAStatusService</apexClass>
         <enabled>true</enabled>
     </classAccesses>
-    <!-- <customPermissions>
+    <customPermissions>
         <enabled>true</enabled>
         <name>HOT_DeleteFiles</name>
-    </customPermissions> -->
+    </customPermissions>
     <fieldPermissions>
         <editable>false</editable>
         <field>Account.CRM_Person__c</field>
