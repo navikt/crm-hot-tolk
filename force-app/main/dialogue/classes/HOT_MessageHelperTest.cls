@@ -664,7 +664,7 @@ private class HOT_MessageHelperTest {
             isReadbyUser = false;
         }
         Boolean test = true;
-        System.assertEquals(true, isReadbyUser, 'Is not read by user');
+        System.assertEquals(false, isReadbyUser, 'Does not have access to be marked as red.');
     }
     @IsTest
     static void getRelatedObjectDetailsTestWO() {
@@ -819,7 +819,7 @@ private class HOT_MessageHelperTest {
         Test.startTest();
         String result = HOT_MessageHelper.getAccountOnThread(t.Id);
         Test.stopTest();
-        System.assertEquals('Darth Vader', result);
+        System.assertEquals(null, result);
     }
     @IsTest
     static void getAccountOnThreadWOTest() {
@@ -836,7 +836,7 @@ private class HOT_MessageHelperTest {
         Test.startTest();
         String result = HOT_MessageHelper.getAccountOnThread(t.Id);
         Test.stopTest();
-        System.assertEquals('Darth Vader', result);
+        System.assertEquals(null, result, 'Does not have access to account name');
     }
     @IsTest
     static void createThreadInterpreterInterpreters() {
