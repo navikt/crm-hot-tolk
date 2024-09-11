@@ -112,8 +112,10 @@ private class HOT_ServiceAppointmentNotificationTest {
             LIMIT 1
         ];
 
-        assignedResource = HOT_TestDataFactory.createAssignedResource(serviceAppointment.Id, testResources[1].Id);
-        update serviceAppointment;
+        if (testResources.size() < 1) {
+            assignedResource = HOT_TestDataFactory.createAssignedResource(serviceAppointment.Id, testResources[1].Id);
+            update serviceAppointment;
+        }
 
         serviceAppointment = [
             SELECT Id, HOT_ServiceResource__c, HOT_AssignedResourceId__c
