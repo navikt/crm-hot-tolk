@@ -388,7 +388,12 @@ export default class Hot_interestedResourcesList extends NavigationMixin(Lightni
     }
     goToInterestedResourceThread() {
         this.isGoToThreadButtonDisabled = true;
-        if (this.interestedResource.Status__c != 'Assigned' && this.interestedResource.Status__c != 'Tildelt') {
+        if (
+            this.interestedResource.Status__c != 'Assigned' &&
+            this.interestedResource.Status__c != 'Tildelt' &&
+            this.interestedResource.Status__c != 'Reserved' &&
+            this.interestedResource.Status__c != 'Reservert'
+        ) {
             getThreadDispatcherId({ interestedResourceId: this.interestedResource.Id }).then((result) => {
                 if (result != '') {
                     this.threadId = result;
