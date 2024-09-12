@@ -296,7 +296,7 @@ public without sharing class HOT_MessageHelper {
                     ServiceAppointment__r.HOT_Request__r.Dispatcher__c,
                     ServiceAppointment__c
                 FROM HOT_InterestedResource__c
-                WHERE Id = :recordId AND Status__c != 'Assigned'
+                WHERE Id = :recordId AND Status__c != 'Assigned' AND Status__c != 'Reserved'
             ];
             List<Thread__c> checkExistingThreads = [
                 SELECT Id, CRM_Account__c, HOT_ServiceAppointment__c
