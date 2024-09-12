@@ -78,7 +78,7 @@ public without sharing class HOT_MessagesNotification {
                     : false;
                 Set<String> recipients = new Set<String>();
                 if (userIdByAccountId.get(thread.CRM_Account__c) != null) {
-                    if(userIdByAccountId.get(thread.CRM_Account__c)!=thread.LastModifiedById){
+                    if (userIdByAccountId.get(thread.CRM_Account__c) != thread.LastModifiedById) {
                         recipients.add(userIdByAccountId.get(thread.CRM_Account__c));
                     }
                 }

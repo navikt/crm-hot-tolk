@@ -769,4 +769,58 @@ private class HOT_RequestHandlerTest {
         HOT_Request__c requestToCheck = [SELECT IsNotifyDispatcher__c FROM HOT_Request__c WHERE Id = :request.Id];
         System.AssertEquals(false, requestToCheck.IsNotifyDispatcher__c);
     }
+    @IsTest
+    public static void updateMeetingAdressTest() {
+        Test.startTest();
+        WorkType workType = HOT_TestDataFactory.createWorkType();
+        insert workType;
+        HOT_Request__c request = HOT_TestDataFactory.createRequest('TEST', workType);
+        insert request;
+        WorkOrder workOrder = HOT_TestDataFactory.createWorkOrder(request, workType);
+        insert workOrder;
+
+        request.MeetingStreet__c = 'Fyrstikkaleen 1';
+        request.MeetingPostalCity__c = 'Oslo';
+        request.MeetingPostalCode__c = '0166';
+        update request;
+
+        WorkOrder workorderResult = [
+            SELECT Address, Street, City, PostalCode
+            FROM WorkOrder
+            WHERE HOT_Request__c = :request.Id
+        ];
+        Test.stopTest();
+        System.AssertEquals('Fyrstikkaleen 1', workorderResult.Street, 'Street did not get updated');
+        System.AssertEquals('Oslo', workorderResult.City, 'City did not get updated');
+        System.AssertEquals('0166', workorderResult.PostalCode, 'Postalcode did not get updated');
+    }
+    @IsTest
+    public static void updateInterpretationAdressTest() {
+        Test.startTest();
+        WorkType workType = HOT_TestDataFactory.createWorkType();
+        insert workType;
+        HOT_Request__c request = HOT_TestDataFactory.createRequest('TEST', workType);
+        insert request;
+        WorkOrder workOrder = HOT_TestDataFactory.createWorkOrder(request, workType);
+        insert workOrder;
+
+        request.InterpretationPostalCode__c = '0166';
+        request.InterpretationPostalCity__c = 'Oslo';
+        request.InterpretationStreet__c = 'Fyrstikkaleen 1';
+        update request;
+
+        WorkOrder workorderResult = [
+            SELECT HOT_InterpretationPostalCode__c, HOT_InterpretationPostalCity__c, HOT_InterpretationStreet__c
+            FROM WorkOrder
+            WHERE HOT_Request__c = :request.Id
+        ];
+        Test.stopTest();
+        System.AssertEquals(
+            'Fyrstikkaleen 1',
+            workorderResult.HOT_InterpretationStreet__c,
+            'Street did not get updated'
+        );
+        System.AssertEquals('Oslo', workorderResult.HOT_InterpretationPostalCity__c, 'City did not get updated');
+        System.AssertEquals('0166', workorderResult.HOT_InterpretationPostalCode__c, 'Postalcode did not get updated');
+    }
 }
