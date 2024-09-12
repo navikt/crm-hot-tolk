@@ -185,13 +185,14 @@ public without sharing class HOT_UserNotificationService {
     public static void coInterpreterChangeNotification(
         CustomNotificationType notificationType,
         ServiceAppointment sa,
-        String interpreters,
+        String targetPageRef,
+        String newInterpreter,
         Set<String> recipients
     ) {
         String title = 'Endring av medtolk';
         String body =
             'Medtolk på et oppdrag du er tildelt er blitt endret. \nNy tolk er: ' +
-            interpreters +
+            newInterpreter +
             '\nDato: ' +
             sa.SchedStartTime?.format('dd.MM.yyyy', 'Europe/Oslo') +
             ', kl: ' +
@@ -201,7 +202,6 @@ public without sharing class HOT_UserNotificationService {
             '.';
 
         Id notificationTypeId = notificationType.Id;
-        String targetPageRef = HOT_ServiceAppointmentNotification.getTargetPageRefInterpreterOnChanged('my', sa.Id);
         Messaging.CustomNotification notification = new Messaging.CustomNotification();
         notification.setTitle(title);
         notification.setBody(body);
@@ -242,8 +242,12 @@ public without sharing class HOT_UserNotificationService {
         }
     }
 
-    public static void newWantedSRNotification(CustomNotificationType notificationType, Set<String> recipients, String appointmentNumber) {
-        String title = 'Du er ønsket til et oppdrag. '+appointmentNumber;
+    public static void newWantedSRNotification(
+        CustomNotificationType notificationType,
+        Set<String> recipients,
+        String appointmentNumber
+    ) {
+        String title = 'Du er ønsket til et oppdrag. ' + appointmentNumber;
         String body = 'Du kan melde interesse for oppdraget eller avslå.';
 
         Id notificationTypeId = notificationType.Id;
