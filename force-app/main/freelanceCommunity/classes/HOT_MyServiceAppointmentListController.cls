@@ -78,12 +78,13 @@ public without sharing class HOT_MyServiceAppointmentListController {
                 HOT_ServiceTerritoryName__c,
                 HOT_TermsOfAgreement__c,
                 HOT_WorkTypeName__c,
-                HOT_Request__r.Account__r.CRM_Person__r.HOT_Gender__c, 
+                HOT_Request__r.Account__r.CRM_Person__r.HOT_Gender__c,
                 HOT_Request__r.Account__r.CRM_Person__r.CRM_AgeNumber__c,
                 SchedEndTime,
                 SchedStartTime,
                 Status,
                 Subject,
+                HOT_Interpreters__c,
                 HOT_TotalNumberOfInterpreters__c
             FROM ServiceAppointment
             WHERE Id = :recordId
@@ -195,32 +196,43 @@ public without sharing class HOT_MyServiceAppointmentListController {
         String Id = '';
         try {
             Id userId = UserInfo.getUserId();
-            List<ServiceResource> serviceResource = [SELECT Id, Name FROM ServiceResource WHERE RelatedRecordId = :userId];
-    
-            HOT_InterestedResource__c interestedResource = [
-                SELECT
-                    Id, Status__c, ServiceResource__c, ServiceAppointment__c
-                FROM HOT_InterestedResource__c
-                WHERE
-                    ServiceResource__c IN :serviceResource AND ServiceAppointment__c=:serviceAppointmentId
+            List<ServiceResource> serviceResource = [
+                SELECT Id, Name
+                FROM ServiceResource
+                WHERE RelatedRecordId = :userId
             ];
-            
-            if(interestedResource.Status__c=='Assigned'){
-                Thread__c thread = [SELECT Id FROM Thread__c WHERE CRM_Related_Object__c = :serviceAppointmentId LIMIT 1];
+
+            HOT_InterestedResource__c interestedResource = [
+                SELECT Id, Status__c, ServiceResource__c, ServiceAppointment__c
+                FROM HOT_InterestedResource__c
+                WHERE ServiceResource__c IN :serviceResource AND ServiceAppointment__c = :serviceAppointmentId
+            ];
+
+            if (interestedResource.Status__c == 'Assigned') {
+                Thread__c thread = [
+                    SELECT Id
+                    FROM Thread__c
+                    WHERE CRM_Related_Object__c = :serviceAppointmentId
+                    LIMIT 1
+                ];
                 if (thread.Id != null) {
                     Id = thread.Id;
                     return Id;
                 }
-    
+
                 return Id;
-            }
-            else{
-                Thread__c thread = [SELECT Id FROM Thread__c WHERE CRM_Related_Object__c = :interestedResource.Id LIMIT 1];
+            } else {
+                Thread__c thread = [
+                    SELECT Id
+                    FROM Thread__c
+                    WHERE CRM_Related_Object__c = :interestedResource.Id
+                    LIMIT 1
+                ];
                 if (thread.Id != null) {
                     Id = thread.Id;
                     return Id;
                 }
-    
+
                 return Id;
             }
         } catch (Exception E) {
