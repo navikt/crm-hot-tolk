@@ -124,7 +124,10 @@ public without sharing class HOT_AssignedResourceHandler extends MyTriggers {
         List<HOT_InterestedResource__c> potentialIRWithThreads = [
             SELECT Id, ServiceAppointment__c
             FROM HOT_InterestedResource__c
-            WHERE Status__c = 'Assigned' AND ServiceAppointment__c IN :potentialSAWithThreadsIds
+            WHERE
+                (Status__c = 'Reserved'
+                OR Status__c = 'Assigned')
+                AND ServiceAppointment__c IN :potentialSAWithThreadsIds
         ];
         if (potentialIRWithThreads.size() != 0) {
             Map<Id, HOT_InterestedResource__c> threadMap = new Map<Id, HOT_InterestedResource__c>();
