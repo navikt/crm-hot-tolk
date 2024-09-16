@@ -39,8 +39,8 @@ export default class LibsFullCalendar extends LightningElement {
 
                 // Map result to FullCalendar events format
                 this.events = result.map((event) => ({
-                    title: event.title,
-                    start: event.start,
+                    title: event.Subject,
+                    start: event.SchedStartTime,
                     duration: event.duration // Now you have the duration for each event
                 }));
 
