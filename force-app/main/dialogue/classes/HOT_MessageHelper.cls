@@ -101,11 +101,7 @@ public without sharing class HOT_MessageHelper {
                 WHERE CRM_Related_Object__c = :recordId AND CRM_Type__c = :type
                 LIMIT 1
             ];
-            if (HOT_ThreadDetailController.checkAccess(t[0].Id)) {
-                return t;
-            } else {
-                return null;
-            }
+            return t;
         } catch (Exception e) {
             return null;
         }
@@ -113,20 +109,16 @@ public without sharing class HOT_MessageHelper {
 
     @AuraEnabled(cacheable=true)
     public static List<Thread__c> getThreadFromThreadId(Id recordId) {
-        if (HOT_ThreadDetailController.checkAccess(recordId)) {
-            try {
-                List<Thread__c> t = [
-                    SELECT Id, CRM_Number_of_External_Messages__c, CRM_Related_Object__c, CRM_isActive__c
-                    FROM Thread__c
-                    WHERE Id = :recordId
-                    LIMIT 1
-                ];
+        try {
+            List<Thread__c> t = [
+                SELECT Id, CRM_Number_of_External_Messages__c, CRM_Related_Object__c, CRM_isActive__c
+                FROM Thread__c
+                WHERE Id = :recordId
+                LIMIT 1
+            ];
 
-                return t;
-            } catch (Exception e) {
-                return null;
-            }
-        } else {
+            return t;
+        } catch (Exception e) {
             return null;
         }
     }

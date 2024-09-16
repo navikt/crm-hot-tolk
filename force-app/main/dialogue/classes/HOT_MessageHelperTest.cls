@@ -149,7 +149,14 @@ private class HOT_MessageHelperTest {
         WorkType workType = HOT_TestDataFactory.createWorkType();
         workType.Name = 'Work Type Name';
         insert workType;
-        HOT_Request__c request = HOT_TestDataFactory.createRequest('Subject', workType);
+        Account account = HOT_TestDataFactory.createAccount(true);
+        insert account;
+
+        account = [SELECT Id FROM Account WHERE FirstName = 'Test' LIMIT 1];
+
+        HOT_Request__c request = HOT_TestDataFactory.createRequest('BRUKER-FORMIDLER', workType);
+        request.Account__c = account.Id;
+        request.Orderer__c = account.Id;
         insert request;
         Thread__c thread = new Thread__c();
         thread.CRM_Type__c = 'HOT_BRUKER-TOLK';
