@@ -697,19 +697,15 @@ public without sharing class HOT_MessageHelper {
     }
     @AuraEnabled
     public static Message__c createMessages(Id threadId, String messageText, Id fromContactId) {
-        if (HOT_ThreadDetailController.checkAccess(threadId)) {
-            Message__c m = new Message__c();
-            m.CRM_Message_Text__c = messageText;
-            m.CRM_Thread__c = threadId;
-            m.CRM_From_Contact__c = fromContactId;
-            m.CRM_Read__c = false;
-            m.CRM_Read_Datetime__c = DateTime.now();
-            m.HOT_User_Role__c = getUserProfileAndName();
+        Message__c m = new Message__c();
+        m.CRM_Message_Text__c = messageText;
+        m.CRM_Thread__c = threadId;
+        m.CRM_From_Contact__c = fromContactId;
+        m.CRM_Read__c = false;
+        m.CRM_Read_Datetime__c = DateTime.now();
+        m.HOT_User_Role__c = getUserProfileAndName();
 
-            return m;
-        } else {
-            return null;
-        }
+        return m;
     }
     @AuraEnabled
     public static void setLastMessageFrom(String threadId, String fromContactId) {
