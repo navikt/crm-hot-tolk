@@ -695,7 +695,6 @@ public without sharing class HOT_MessageHelper {
             return false;
         }
     }
-    @AuraEnabled
     public static Message__c createMessages(Id threadId, String messageText, Id fromContactId) {
         Message__c m = new Message__c();
         m.CRM_Message_Text__c = messageText;
@@ -704,7 +703,6 @@ public without sharing class HOT_MessageHelper {
         m.CRM_Read__c = false;
         m.CRM_Read_Datetime__c = DateTime.now();
         m.HOT_User_Role__c = getUserProfileAndName();
-
         return m;
     }
     @AuraEnabled
