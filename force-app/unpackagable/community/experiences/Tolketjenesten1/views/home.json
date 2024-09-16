@@ -1,93 +1,118 @@
 {
-  "appPageId" : "e1a097ff-c5e1-47c6-b293-9a8b7a2b049f",
-  "componentName" : "siteforce:sldsOneColLayout",
-  "dataProviders" : [ ],
-  "id" : "10f3ecb5-0a9b-46e7-a735-11aa674ce61e",
-  "label" : "Home",
-  "regions" : [ {
-    "components" : [ {
-      "componentAttributes" : {
-        "context" : "Privatperson",
-        "env" : "Dev"
-      },
-      "componentName" : "c:decoratorHeader",
-      "id" : "78d44ef3-b94e-450e-a7fd-a6a66a52d54a",
-      "renderPriority" : "NEUTRAL",
-      "renditionMap" : { },
-      "type" : "component"
-    } ],
-    "id" : "cf0d62f9-2201-48c4-81d3-d43b062cca9d",
-    "regionName" : "header",
-    "type" : "region"
-  }, {
-    "components" : [ {
-      "componentAttributes" : { },
-      "componentName" : "c:hot_tolketjenestenHovedBanner",
-      "id" : "685600bb-3cfd-4c31-ae0e-4c5ce27ab8c9",
-      "renderPriority" : "NEUTRAL",
-      "renditionMap" : { },
-      "type" : "component"
-    }, {
-      "componentAttributes" : { },
-      "componentName" : "c:hot_welcomeMessage",
-      "id" : "1d858104-592d-4e15-bc98-f6acc2526a33",
-      "renderPriority" : "NEUTRAL",
-      "renditionMap" : { },
-      "type" : "component"
-    }, {
-      "componentAttributes" : { },
-      "componentName" : "c:hot_notificationCentreLink",
-      "id" : "f3939e28-3e77-40b4-8a5c-9752b03dfba9",
-      "renderPriority" : "NEUTRAL",
-      "renditionMap" : { },
-      "type" : "component"
-    }, {
-      "componentAttributes" : { },
-      "componentName" : "c:hot_freelanceHome",
-      "id" : "a4b18819-dbd6-47d0-8620-fab423577c32",
-      "renderPriority" : "NEUTRAL",
-      "renditionMap" : { },
-      "type" : "component"
-    }, {
-      "componentAttributes" : { },
-      "componentName" : "c:hot_home",
-      "id" : "d19e8491-9698-4c04-a35c-71721b105397",
-      "renderPriority" : "NEUTRAL",
-      "renditionMap" : { },
-      "type" : "component"
-    } ],
-    "id" : "c5a95738-5c4f-4724-8966-c247481dd786",
-    "regionName" : "content",
-    "type" : "region"
-  }, {
-    "components" : [ {
-      "componentAttributes" : { },
-      "componentName" : "c:decoratorFooter",
-      "id" : "e259bc9c-b75c-40e2-baf1-7622a150cc79",
-      "renderPriority" : "NEUTRAL",
-      "renditionMap" : { },
-      "type" : "component"
-    } ],
-    "id" : "c5b68662-2ff9-4c8d-83fd-9322e73d5a4e",
-    "regionName" : "footer",
-    "type" : "region"
-  }, {
-    "components" : [ {
-      "componentAttributes" : {
-        "customHeadTags" : "",
-        "description" : "",
-        "title" : "Tolketjenesten"
-      },
-      "componentName" : "forceCommunity:seoAssistant",
-      "id" : "ba1c40fb-b763-4197-8d2b-b2fd9b1273c1",
-      "renditionMap" : { },
-      "type" : "component"
-    } ],
-    "id" : "986e8bab-b14d-49c2-99bf-bbb11682626a",
-    "regionName" : "sfdcHiddenRegion",
-    "type" : "region"
-  } ],
-  "themeLayoutType" : "Inner",
-  "type" : "view",
-  "viewType" : "home"
+    "appPageId": "e1a097ff-c5e1-47c6-b293-9a8b7a2b049f",
+    "componentName": "siteforce:sldsOneColLayout",
+    "dataProviders": [],
+    "id": "10f3ecb5-0a9b-46e7-a735-11aa674ce61e",
+    "label": "Home",
+    "regions": [
+        {
+            "components": [
+                {
+                    "componentAttributes": {
+                        "context": "Privatperson",
+                        "env": "Dev"
+                    },
+                    "componentName": "c:decoratorHeader",
+                    "id": "78d44ef3-b94e-450e-a7fd-a6a66a52d54a",
+                    "renderPriority": "NEUTRAL",
+                    "renditionMap": {},
+                    "type": "component"
+                }
+            ],
+            "id": "cf0d62f9-2201-48c4-81d3-d43b062cca9d",
+            "regionName": "header",
+            "type": "region"
+        },
+        {
+            "components": [
+                {
+                    "componentAttributes": {},
+                    "componentName": "c:hot_tolketjenestenHovedBanner",
+                    "id": "685600bb-3cfd-4c31-ae0e-4c5ce27ab8c9",
+                    "renderPriority": "NEUTRAL",
+                    "renditionMap": {},
+                    "type": "component"
+                },
+                {
+                    "componentAttributes": {},
+                    "componentName": "c:hot_welcomeMessage",
+                    "id": "1d858104-592d-4e15-bc98-f6acc2526a33",
+                    "renderPriority": "NEUTRAL",
+                    "renditionMap": {},
+                    "type": "component"
+                },
+                {
+                    "componentAttributes": {},
+                    "componentName": "c:hot_notificationCentreLink",
+                    "id": "f3939e28-3e77-40b4-8a5c-9752b03dfba9",
+                    "renderPriority": "NEUTRAL",
+                    "renditionMap": {},
+                    "type": "component"
+                },
+                {
+                    "componentAttributes": {},
+                    "componentName": "c:hot_freelanceHome",
+                    "id": "a4b18819-dbd6-47d0-8620-fab423577c32",
+                    "renderPriority": "NEUTRAL",
+                    "renditionMap": {},
+                    "type": "component"
+                },
+                {
+                    "componentAttributes": {},
+                    "componentName": "c:hot_calendar",
+                    "id": "241efd4b-9f7d-4552-978f-cf59338d2c0f",
+                    "renderPriority": "NEUTRAL",
+                    "renditionMap": {},
+                    "type": "component"
+                },
+                {
+                    "componentAttributes": {},
+                    "componentName": "c:hot_home",
+                    "id": "d19e8491-9698-4c04-a35c-71721b105397",
+                    "renderPriority": "NEUTRAL",
+                    "renditionMap": {},
+                    "type": "component"
+                }
+            ],
+            "id": "c5a95738-5c4f-4724-8966-c247481dd786",
+            "regionName": "content",
+            "type": "region"
+        },
+        {
+            "components": [
+                {
+                    "componentAttributes": {},
+                    "componentName": "c:decoratorFooter",
+                    "id": "e259bc9c-b75c-40e2-baf1-7622a150cc79",
+                    "renderPriority": "NEUTRAL",
+                    "renditionMap": {},
+                    "type": "component"
+                }
+            ],
+            "id": "c5b68662-2ff9-4c8d-83fd-9322e73d5a4e",
+            "regionName": "footer",
+            "type": "region"
+        },
+        {
+            "components": [
+                {
+                    "componentAttributes": {
+                        "customHeadTags": "",
+                        "description": "",
+                        "title": "Tolketjenesten"
+                    },
+                    "componentName": "forceCommunity:seoAssistant",
+                    "id": "ba1c40fb-b763-4197-8d2b-b2fd9b1273c1",
+                    "renditionMap": {},
+                    "type": "component"
+                }
+            ],
+            "id": "986e8bab-b14d-49c2-99bf-bbb11682626a",
+            "regionName": "sfdcHiddenRegion",
+            "type": "region"
+        }
+    ],
+    "themeLayoutType": "Inner",
+    "type": "view",
+    "viewType": "home"
 }

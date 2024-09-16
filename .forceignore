@@ -286,3 +286,7 @@ force-app/main/default/objects/Event/fields/WhatId.field-meta.xml
 force-app/main/default/objects/Event/fields/WhoId.field-meta.xml
 force-app/main/default/audience/Default_Tolketjenesten.audience-meta.xml
 **sfdcInternalInt__sfdc_scrt2.permissionset-meta.xml
+
+**/tsconfig.json
+
+**/*.ts
