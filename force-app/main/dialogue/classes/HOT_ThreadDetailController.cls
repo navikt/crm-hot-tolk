@@ -55,7 +55,11 @@ public without sharing class HOT_ThreadDetailController {
                 FROM HOT_WageClaim__c
                 WHERE Id = :thread.CRM_Related_Object__c
             ];
-            if (serviceResource.size() != 0 || wc.ServiceResource__c == serviceResource[0].Id) {
+            Set<Id> serviceResourceIds = new Set<Id>();
+            for (ServiceResource sr : serviceResource) {
+                serviceResourceIds.add(sr.Id);
+            }
+            if (serviceResourceIds.contains(wc.ServiceResource__c)) {
                 grantAccess = true;
             }
         }
