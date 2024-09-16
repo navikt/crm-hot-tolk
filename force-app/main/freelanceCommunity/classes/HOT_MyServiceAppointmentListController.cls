@@ -48,48 +48,63 @@ public without sharing class HOT_MyServiceAppointmentListController {
     }
     @AuraEnabled
     public static ServiceAppointment getServiceAppointmentDetails(String recordId) {
-        ServiceAppointment serviceAppointment = [
-            SELECT
-                AppointmentNumber,
-                ActualEndTime,
-                ActualStartTime,
-                Description,
-                DueDate,
-                EarliestStartTime,
-                HOT_AddressFormated__c,
-                HOT_AssignmentType__c,
-                HOT_DegreeOfHearingAndVisualImpairment__c,
-                HOT_DelPol_IsHideFilesFromFreelance__c,
-                HOT_DelPol_ToHideRecord__c,
-                HOT_Dispatcher__c,
-                HOT_Escort__c,
-                HOT_FreelanceSubject__c,
-                HOT_HapticCommunication__c,
-                HOT_IsSerieoppdrag__c,
-                HOT_ReleaseDate__c,
-                HOT_ReleasedBy__c,
-                HOT_Request__r.Account__r.CRM_Person__r.INT_KrrMobilePhone__c,
-                HOT_Request__r.Account__r.Name,
-                HOT_Request__r.Orderer__r.CRM_Person__r.INT_KrrMobilePhone__c,
-                HOT_Request__r.OwnerName__c,
-                HOT_Request__r.IsNotNotifyAccount__c,
-                HOT_RequestNumber__c,
-                HOT_ServiceTerritoryDeveloperName__c,
-                HOT_ServiceTerritoryName__c,
-                HOT_TermsOfAgreement__c,
-                HOT_WorkTypeName__c,
-                HOT_Request__r.Account__r.CRM_Person__r.HOT_Gender__c,
-                HOT_Request__r.Account__r.CRM_Person__r.CRM_AgeNumber__c,
-                SchedEndTime,
-                SchedStartTime,
-                Status,
-                Subject,
-                HOT_Interpreters__c,
-                HOT_TotalNumberOfInterpreters__c
-            FROM ServiceAppointment
-            WHERE Id = :recordId
+        User currentUser = [SELECT Id FROM User WHERE Id = :UserInfo.getUserId()];
+        List<ServiceResource> serviceResource = [
+            SELECT Id, Name
+            FROM ServiceResource
+            WHERE RelatedRecordId = :currentUser.Id
         ];
-        return serviceAppointment;
+        List<HOT_InterestedResource__c> ir = [
+            SELECT Id
+            FROM HOT_InterestedResource__c
+            WHERE ServiceAppointment__c = :recordId AND ServiceResource__c IN :serviceResource
+        ];
+        if (ir.size() != 0) {
+            ServiceAppointment serviceAppointment = [
+                SELECT
+                    AppointmentNumber,
+                    ActualEndTime,
+                    ActualStartTime,
+                    Description,
+                    DueDate,
+                    EarliestStartTime,
+                    HOT_AddressFormated__c,
+                    HOT_AssignmentType__c,
+                    HOT_DegreeOfHearingAndVisualImpairment__c,
+                    HOT_DelPol_IsHideFilesFromFreelance__c,
+                    HOT_DelPol_ToHideRecord__c,
+                    HOT_Dispatcher__c,
+                    HOT_Escort__c,
+                    HOT_FreelanceSubject__c,
+                    HOT_HapticCommunication__c,
+                    HOT_IsSerieoppdrag__c,
+                    HOT_ReleaseDate__c,
+                    HOT_ReleasedBy__c,
+                    HOT_Request__r.Account__r.CRM_Person__r.INT_KrrMobilePhone__c,
+                    HOT_Request__r.Account__r.Name,
+                    HOT_Request__r.Orderer__r.CRM_Person__r.INT_KrrMobilePhone__c,
+                    HOT_Request__r.OwnerName__c,
+                    HOT_Request__r.IsNotNotifyAccount__c,
+                    HOT_RequestNumber__c,
+                    HOT_ServiceTerritoryDeveloperName__c,
+                    HOT_ServiceTerritoryName__c,
+                    HOT_TermsOfAgreement__c,
+                    HOT_WorkTypeName__c,
+                    HOT_Request__r.Account__r.CRM_Person__r.HOT_Gender__c,
+                    HOT_Request__r.Account__r.CRM_Person__r.CRM_AgeNumber__c,
+                    SchedEndTime,
+                    SchedStartTime,
+                    Status,
+                    Subject,
+                    HOT_Interpreters__c,
+                    HOT_TotalNumberOfInterpreters__c
+                FROM ServiceAppointment
+                WHERE Id = :recordId
+            ];
+            return serviceAppointment;
+        } else {
+            return null;
+        }
     }
 
     @AuraEnabled(cacheable=true)
