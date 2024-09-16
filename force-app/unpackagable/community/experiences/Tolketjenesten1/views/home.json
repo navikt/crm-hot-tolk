@@ -59,14 +59,6 @@
                 },
                 {
                     "componentAttributes": {},
-                    "componentName": "c:hot_calendar",
-                    "id": "241efd4b-9f7d-4552-978f-cf59338d2c0f",
-                    "renderPriority": "NEUTRAL",
-                    "renditionMap": {},
-                    "type": "component"
-                },
-                {
-                    "componentAttributes": {},
                     "componentName": "c:hot_home",
                     "id": "d19e8491-9698-4c04-a35c-71721b105397",
                     "renderPriority": "NEUTRAL",
