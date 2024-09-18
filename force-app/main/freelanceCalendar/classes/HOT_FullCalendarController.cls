@@ -1,11 +1,10 @@
 public with sharing class HOT_FullCalendarController {
-
     public enum EventType {
         COMPLETED_SERVICE_APPOINTMENT,
         SERVICE_APPOINTMENT,
         OPEN_WAGE_CLAIM
     }
-    
+
     public class CalendarEvent {
         @AuraEnabled
         public Id id;
@@ -13,7 +12,7 @@ public with sharing class HOT_FullCalendarController {
         public String type;
         @AuraEnabled
         public String title;
-        @AuraEnabled 
+        @AuraEnabled
         public DateTime startTime;
         @AuraEnabled
         public DateTime endTime;
@@ -35,9 +34,7 @@ public with sharing class HOT_FullCalendarController {
 
     private static Id getUserServiceResourceId() {
         Id currentUserId = UserInfo.getUserId();
-        List<ServiceResource> resource = [
-            SELECT Id FROM ServiceResource WHERE RelatedRecordId = :currentUserId
-        ];
+        List<ServiceResource> resource = [SELECT Id FROM ServiceResource WHERE RelatedRecordId = :currentUserId];
         return (resource.isEmpty()) ? null : resource[0].Id;
     }
 
@@ -48,34 +45,33 @@ public with sharing class HOT_FullCalendarController {
             FROM HOT_WageClaim__c
             WHERE ServiceResource__r.Id = :resourceId
         ];
-    } 
+    }
 
     @AuraEnabled(cacheable=true)
     public static List<CalendarEvent> getCalendarEvents() {
-
         List<CalendarEvent> events = new List<CalendarEvent>();
 
         List<ServiceAppointment> appointments = getUserServiceAppointments();
         List<HOT_WageClaim__c> wageClaims = getUserWageClaims();
 
-        for(ServiceAppointment appointment : appointments) {
+        for (ServiceAppointment appointment : appointments) {
             CalendarEvent event = new CalendarEvent();
             event.id = appointment.Id;
             event.type = EventType.SERVICE_APPOINTMENT.toString();
             event.startTime = appointment.SchedStartTime;
             event.endTime = appointment.SchedEndTime;
-            event.title = appointment.Subject; 
+            event.title = appointment.Subject;
             events.add(event);
         }
 
-        for(HOT_WageClaim__c claim : wageClaims) {
-            if(claim.Status__c == 'Open') {
+        for (HOT_WageClaim__c claim : wageClaims) {
+            if (claim.Status__c == 'Open') {
                 CalendarEvent event = new CalendarEvent();
                 event.id = claim.Id;
                 event.type = EventType.OPEN_WAGE_CLAIM.toString();
                 event.startTime = claim.StartTime__c;
                 event.endTime = claim.EndTime__c;
-                event.title = 'Ledig på lønn'; 
+                event.title = 'Ledig på lønn';
                 events.add(event);
             }
         }
