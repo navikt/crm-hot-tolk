@@ -64,7 +64,36 @@ export default class LibsFullCalendar extends LightningElement {
         }
         // Initialiserer kalender
         this.calendar = new FullCalendar.Calendar(calendarEl, {
-            events: this.events
+            events: this.events,
+            headerToolbar: {
+                start: 'title', // will normally be on the left. if RTL, will be on the right
+                center: 'dayGridMonth', // will normally be on the bottom. if RTL, will be on the top
+                end: 'today prev,next' // will normally be on the right. if RTL, will be on the left
+            },
+            display: 'background',
+            hour: '2-digit',
+            minute: '2-digit',
+            hour12: false,
+            views: {
+                dayGrid: {
+                    // options apply to dayGridMonth, dayGridWeek, and dayGridDay views
+                },
+                timeGrid: {
+                    // options apply to timeGridWeek and timeGridDay views
+                },
+                week: {
+                    // options apply to dayGridWeek and timeGridWeek views
+                },
+                day: {
+                    // options apply to dayGridDay and timeGridDay views
+                }
+            },
+            eventClick: (info) => {
+                this.calendar.changeView('timeGridDay', new Date(info.event.start));
+                console.log('Trykk');
+                console.log(info);
+                console.log(info.event.start);
+            }
         });
 
         console.log('Rendrer FullCalendar med events:', this.events);

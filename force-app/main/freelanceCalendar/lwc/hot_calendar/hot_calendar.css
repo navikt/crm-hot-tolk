@@ -1,0 +1,37 @@
+/* Create a light blue border box with round corners */
+.fc-daygrid-day-frame {
+    border: 0.2rem solid #e8edf0;
+    border-radius: 0.5rem;
+    background-color: #ffffff;
+    height: 10vw;
+}
+.fc .fc-daygrid-day-number {
+    position: relative;
+    z-index: 4;
+    height: 100%;
+    width: 5vw;
+    border-radius: 0.5rem;
+    border-top-right-radius: 0;
+    font-size: 4vw;
+    text-decoration: none;
+    font-family: auto;
+    background-color: #ffffff;
+    justify-content: center;
+    color: black;
+    display: flex;
+    align-items: center;
+}
+.calendarWrapper {
+    background-color: transparent;
+    align-items: center;
+    height: 100%;
+}
+.fc .fc-daygrid-day-events {
+    margin-top: 1px;
+    margin: 0.4vw;
+    background-color: #c2c2c2;
+    z-index: 1;
+    border-radius: 10px;
+    height: 8vw;
+    transform: translateY(-6vw);
+}
