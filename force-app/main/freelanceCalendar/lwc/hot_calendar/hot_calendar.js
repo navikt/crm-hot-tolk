@@ -1,13 +1,31 @@
-import { LightningElement, track } from 'lwc';
+import { LightningElement, track, wire } from 'lwc';
 import FULL_CALENDAR from '@salesforce/resourceUrl/FullCalendar';
 import { loadScript, loadStyle } from 'lightning/platformResourceLoader';
-import getUserServiceAppointments from '@salesforce/apex/HOT_FullCalendarController.getUserServiceAppointments';
+import getCalendarEvents from '@salesforce/apex/HOT_FullCalendarController.getCalendarEvents';
+
+
+
 
 export default class LibsFullCalendar extends LightningElement {
     isCalInitialized = false;
     error;
     calendar;
     @track events = []; //Brukt for å lagre data fra service appointments
+
+    @wire(getCalendarEvents)
+    wiredEvents({ error, data }) {
+        if (data) {
+            console.log('Service appointments fetched successfully:', data);
+
+            this.events = data.map(event => new CalendarEvent(event));
+            console.log('Mapped events for FullCalendar:', this.events);
+            this.initializeCalendar();
+        } else if (error) {
+            console.error('Error fetching service appointments from Apex:', error);
+            this.error = error;
+        }
+    }
+
 
     async renderedCallback() {
         if (this.isCalInitialized) {
@@ -23,34 +41,10 @@ export default class LibsFullCalendar extends LightningElement {
             ]);
 
             console.log('FullCalendar scripts and styles loaded. Fetching service appointments...');
-            // Hent service appointments og initialisere kalender
-            this.loadServiceAppointments();
         } catch (error) {
             console.error('Error loading FullCalendar or fetching service appointments:', error);
             this.error = error;
         }
-    }
-
-    loadServiceAppointments() {
-        console.log('Calling Apex method getUserServiceAppointments...');
-        getUserServiceAppointments()
-            .then((result) => {
-                console.log('Service appointments fetched successfully:', result);
-
-                // Map result to FullCalendar events format
-                this.events = result.map((event) => ({
-                    title: event.Subject,
-                    start: event.SchedStartTime,
-                    duration: event.duration // Now you have the duration for each event
-                }));
-
-                console.log('Mapped events for FullCalendar:', this.events);
-                this.initializeCalendar();
-            })
-            .catch((error) => {
-                console.error('Error fetching service appointments from Apex:', error);
-                this.error = error;
-            });
     }
 
     initializeCalendar() {
@@ -98,5 +92,42 @@ export default class LibsFullCalendar extends LightningElement {
 
         console.log('Rendrer FullCalendar med events:', this.events);
         this.calendar.render();
+    }
+}
+
+class CalendarEvent {
+    static EventTypeProperties = new Map([
+        ['SERVICE_APPOINTMENT', { upcomingColor: '#90cce8', pastColor: '#90cce8' }],
+        ['COMPLETED_SERVICE_APPOINTMENT', { upcomingColor: '#90cce8', pastColor: '#90cce8' }],
+        ['OPEN_WAGE_CLAIM', { upcomingColor: '#57ff6c', pastColor: '#b8a798' }],
+    ]);
+
+    id;
+    type;
+    title;
+    start;
+    end;
+    isPast;
+    color;
+
+    constructor(data) {
+        this.id = data.id ?? '';
+        this.title = data.title ?? ''; 
+        this.start = new Date(data.startTime) ?? new Date();
+        this.end = new Date(data.endTime) ?? new Date();
+        this.type = data.type;
+        this.isPast = this.end <= new Date();
+        this.color = this.colorFromType(data.type);
+    }
+
+    colorFromType(eventType) {
+        const properties = CalendarEvent.EventTypeProperties.get(eventType) ?? 
+            { upcomingColor: '#90cce8', pastColor: '#90cce8' };
+        return this.isPast ? properties.pastColor : properties.upcomingColor;
+    }
+
+    getEventProperties(eventType) {
+        return CalendarEvent.EventTypeProperties.get(eventType) ?? 
+            { upcomingColor: '#90cce8', pastColor: '#90cce8' };
     }
 }
