@@ -3,9 +3,6 @@ import FULL_CALENDAR from '@salesforce/resourceUrl/FullCalendar';
 import { loadScript, loadStyle } from 'lightning/platformResourceLoader';
 import getCalendarEvents from '@salesforce/apex/HOT_FullCalendarController.getCalendarEvents';
 
-
-
-
 export default class LibsFullCalendar extends LightningElement {
     isCalInitialized = false;
     error;
@@ -17,7 +14,7 @@ export default class LibsFullCalendar extends LightningElement {
         if (data) {
             console.log('Service appointments fetched successfully:', data);
 
-            this.events = data.map(event => new CalendarEvent(event));
+            this.events = data.map((event) => new CalendarEvent(event));
             console.log('Mapped events for FullCalendar:', this.events);
             this.initializeCalendar();
         } else if (error) {
@@ -25,7 +22,6 @@ export default class LibsFullCalendar extends LightningElement {
             this.error = error;
         }
     }
-
 
     async renderedCallback() {
         if (this.isCalInitialized) {
@@ -96,10 +92,10 @@ export default class LibsFullCalendar extends LightningElement {
 }
 
 class CalendarEvent {
-    static EventTypeProperties = new Map([
-        ['SERVICE_APPOINTMENT', { upcomingColor: '#90cce8', pastColor: '#90cce8' }],
+    static eventTypeProperties = new Map([
+        ['SERVICE_APPOINTMENT', { upcomingColor: '#90cce8', pastColor: '#ff9a4d' }],
         ['COMPLETED_SERVICE_APPOINTMENT', { upcomingColor: '#90cce8', pastColor: '#90cce8' }],
-        ['OPEN_WAGE_CLAIM', { upcomingColor: '#57ff6c', pastColor: '#b8a798' }],
+        ['OPEN_WAGE_CLAIM', { upcomingColor: '#57ff6c', pastColor: '#b8a798' }]
     ]);
 
     id;
@@ -110,24 +106,29 @@ class CalendarEvent {
     isPast;
     color;
 
+    /**
+     *
+     * @param {*} data - Forventer data i form av fra HOT_FullCalendarController.CalendarEvent
+     */
     constructor(data) {
-        this.id = data.id ?? '';
-        this.title = data.title ?? ''; 
-        this.start = new Date(data.startTime) ?? new Date();
-        this.end = new Date(data.endTime) ?? new Date();
+        this.id = data.id;
+        this.title = data.title;
+        this.start = new Date(data.startTime);
+        this.end = new Date(data.endTime);
         this.type = data.type;
         this.isPast = this.end <= new Date();
         this.color = this.colorFromType(data.type);
     }
 
     colorFromType(eventType) {
-        const properties = CalendarEvent.EventTypeProperties.get(eventType) ?? 
-            { upcomingColor: '#90cce8', pastColor: '#90cce8' };
+        const properties = this.getEventProperties(eventType) ?? {
+            upcomingColor: '#90cce8',
+            pastColor: '#90cce8'
+        };
         return this.isPast ? properties.pastColor : properties.upcomingColor;
     }
 
     getEventProperties(eventType) {
-        return CalendarEvent.EventTypeProperties.get(eventType) ?? 
-            { upcomingColor: '#90cce8', pastColor: '#90cce8' };
+        return CalendarEvent.eventTypeProperties.get(eventType);
     }
 }
