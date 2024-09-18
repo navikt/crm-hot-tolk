@@ -19,35 +19,6 @@ public with sharing class HOT_FullCalendarController {
     }
 
     @AuraEnabled(cacheable=true)
-    public static List<ServiceAppointment> getUserServiceAppointments() {
-        Id currentUserId = UserInfo.getUserId();
-
-        List<ServiceAppointment> appointments = [
-            SELECT Id, Subject, AppointmentNumber, SchedStartTime, SchedEndTime
-            FROM ServiceAppointment
-            WHERE HOT_AssignedResourceId__c = :currentUserId
-            ORDER BY SchedStartTime ASC
-        ];
-
-        return appointments;
-    }
-
-    private static Id getUserServiceResourceId() {
-        Id currentUserId = UserInfo.getUserId();
-        List<ServiceResource> resource = [SELECT Id FROM ServiceResource WHERE RelatedRecordId = :currentUserId];
-        return (resource.isEmpty()) ? null : resource[0].Id;
-    }
-
-    private static List<HOT_WageClaim__c> getUserWageClaims() {
-        Id resourceId = getUserServiceResourceId();
-        return [
-            SELECT Id, StartTime__c, EndTime__c, ServiceResource__r.Id, Status__c
-            FROM HOT_WageClaim__c
-            WHERE ServiceResource__r.Id = :resourceId
-        ];
-    }
-
-    @AuraEnabled(cacheable=true)
     public static List<CalendarEvent> getCalendarEvents() {
         List<CalendarEvent> events = new List<CalendarEvent>();
 
@@ -76,5 +47,34 @@ public with sharing class HOT_FullCalendarController {
             }
         }
         return events;
+    }
+
+    @AuraEnabled(cacheable=true)
+    public static List<ServiceAppointment> getUserServiceAppointments() {
+        Id currentUserId = UserInfo.getUserId();
+
+        List<ServiceAppointment> appointments = [
+            SELECT Id, Subject, AppointmentNumber, SchedStartTime, SchedEndTime
+            FROM ServiceAppointment
+            WHERE HOT_AssignedResourceId__c = :currentUserId
+            ORDER BY SchedStartTime ASC
+        ];
+
+        return appointments;
+    }
+
+    private static List<HOT_WageClaim__c> getUserWageClaims() {
+        Id resourceId = getUserServiceResourceId();
+        return [
+            SELECT Id, StartTime__c, EndTime__c, ServiceResource__r.Id, Status__c
+            FROM HOT_WageClaim__c
+            WHERE ServiceResource__r.Id = :resourceId
+        ];
+    }
+
+    private static Id getUserServiceResourceId() {
+        Id currentUserId = UserInfo.getUserId();
+        List<ServiceResource> resource = [SELECT Id FROM ServiceResource WHERE RelatedRecordId = :currentUserId];
+        return (resource.isEmpty()) ? null : resource[0].Id;
     }
 }
