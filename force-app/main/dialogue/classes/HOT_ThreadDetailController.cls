@@ -65,12 +65,16 @@ public without sharing class HOT_ThreadDetailController {
         }
         if (objectType == 'HOT_InterestedResource__c') {
             User user = [SELECT Id, AccountId FROM User WHERE Id = :UserInfo.getUserId()];
-            if (user.AccountId != null) {
-                ServiceResource serviceResource = [SELECT Id FROM ServiceResource WHERE AccountId = :user.AccountId];
+            List<ServiceResource> serviceResource = [
+                SELECT Id, HOT_IsEmployedInterpreter__c
+                FROM ServiceResource
+                WHERE RelatedRecordId = :user.Id
+            ];
+            if (serviceResource.size() != 0) {
                 List<HOT_InterestedResource__c> irList = [
                     SELECT Id
                     FROM HOT_InterestedResource__c
-                    WHERE Id = :thread.CRM_Related_Object__c AND ServiceResource__c = :serviceResource.Id
+                    WHERE Id = :thread.CRM_Related_Object__c AND ServiceResource__c IN :serviceResource
                 ];
                 if (irList.size() != 0) {
                     grantAccess = true;
