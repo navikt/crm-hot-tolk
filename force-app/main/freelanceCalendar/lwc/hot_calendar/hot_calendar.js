@@ -52,21 +52,39 @@ export default class LibsFullCalendar extends LightningElement {
                 'Could not load FullCalendar. Make sure that Lightning Web Security is enabled for your org.'
             );
         }
-        // Initialiserer kalender
-        this.calendar = new FullCalendar.Calendar(calendarEl, {
+
+        // Get the responsive calendar config
+        const calendarConfig = this.getCalendarConfig();
+
+        // Initialize FullCalendar with the dynamic config
+        this.calendar = new FullCalendar.Calendar(calendarEl, calendarConfig);
+
+        console.log('Rendrer FullCalendar med events:', this.events);
+        this.calendar.render();
+    }
+
+    getCalendarConfig() {
+        const screenWidth = window.innerWidth;
+        console.log(`Screen width: ${screenWidth}px`);
+
+        // Default configuration for large screens
+        let config = {
             events: this.events,
             headerToolbar: {
                 start: 'title', // will normally be on the left. if RTL, will be on the right
                 center: 'dayGridMonth', // will normally be on the bottom. if RTL, will be on the top
                 end: 'today prev,next' // will normally be on the right. if RTL, will be on the left
             },
+            dayMaxEventRows: 0,
+            moreLinkClick: 'timeGrid',
             display: 'background',
             hour: '2-digit',
             minute: '2-digit',
+            display: 'background',
             hour12: false,
             views: {
                 dayGrid: {
-                    // options apply to dayGridMonth, dayGridWeek, and dayGridDay views
+                    dayMaxEventRows: 10
                 },
                 timeGrid: {
                     // options apply to timeGridWeek and timeGridDay views
@@ -76,18 +94,30 @@ export default class LibsFullCalendar extends LightningElement {
                 },
                 day: {
                     // options apply to dayGridDay and timeGridDay views
+                },
+                dayGridMonth: {
+                    dayMaxEventRows: 4
                 }
             },
-            eventClick: (info) => {
-                this.calendar.changeView('timeGridDay', new Date(info.event.start));
-                console.log('Trykk');
-                console.log(info);
-                console.log(info.event.start);
-            }
-        });
+            eventClick: (info) => this.handleEventClick(info)
+        };
+        if (screenWidth < 768) {
+            // Small screens (e.g., mobile)
+            config.headerToolbar = {
+                start: 'prev,next',
+                center: 'title',
+                end: 'today month'
+            };
+            config.views.dayGridMonth.dayMaxEventRows = 0;
+        }
 
-        console.log('Rendrer FullCalendar med events:', this.events);
-        this.calendar.render();
+        return config;
+    }
+
+    handleEventClick(info) {
+        // Handle event click logic, e.g., change view to timeGridDay
+        this.calendar.changeView('timeGridDay', new Date(info.event.start));
+        console.log('Event clicked:', info);
     }
 }
 

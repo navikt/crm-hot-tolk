@@ -21,17 +21,38 @@
     display: flex;
     align-items: center;
 }
+.fullCard {
+    height: 100%;
+    width: 100;
+    background-color: #f5f5f5;
+}
 .calendarWrapper {
     background-color: transparent;
-    align-items: center;
+    margin: auto;
+    width: 90%;
     height: 100%;
 }
 .fc .fc-daygrid-day-events {
     margin-top: 1px;
     margin: 0.4vw;
-    background-color: #c2c2c2;
+    background-color: #ffffff;
     z-index: 1;
     border-radius: 10px;
     height: 8vw;
     transform: translateY(-6vw);
+}
+@media only screen and (max-width: 767px) {
+    .fc-daygrid-more-link.fc-more-link {
+        position: absolute;
+        top: 0;
+        border-radius: 10px;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        background: #6f92f9;
+        /* background: linear-gradient(to bottom, #6f92f9 33%, #f6ed43 33% 66%, #78fc64 66%); */
+        z-index: 10;
+        text-indent: -9999px;
+        display: block;
+    }
 }
