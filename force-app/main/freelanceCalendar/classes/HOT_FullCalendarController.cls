@@ -49,8 +49,8 @@ public with sharing class HOT_FullCalendarController {
         return events;
     }
 
-    @AuraEnabled(cacheable=true)
-    public static List<ServiceAppointment> getUserServiceAppointments() {
+    @TestVisible
+    private static List<ServiceAppointment> getUserServiceAppointments() {
         Id currentUserId = UserInfo.getUserId();
 
         List<ServiceAppointment> appointments = [
@@ -63,6 +63,7 @@ public with sharing class HOT_FullCalendarController {
         return appointments;
     }
 
+    @TestVisible
     private static List<HOT_WageClaim__c> getUserWageClaims() {
         Id resourceId = getUserServiceResourceId();
         return [
@@ -72,6 +73,7 @@ public with sharing class HOT_FullCalendarController {
         ];
     }
 
+    @TestVisible
     private static Id getUserServiceResourceId() {
         Id currentUserId = UserInfo.getUserId();
         List<ServiceResource> resource = [SELECT Id FROM ServiceResource WHERE RelatedRecordId = :currentUserId];
