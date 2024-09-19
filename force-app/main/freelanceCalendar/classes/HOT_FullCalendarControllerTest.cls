@@ -68,8 +68,8 @@ private class HOT_FullCalendarControllerTest {
     }
 
     @isTest
-    static void getUserWageClaims() {
-        List<HOT_WageClaim__c> claims = HOT_FullCalendarController.getUserWageClaims();
-        System.assertEquals(2, claims.size(), 'Should retrieve both wage claims');
+    static void getUserOpenWageClaims() {
+        List<HOT_WageClaim__c> claims = HOT_FullCalendarController.getUserOpenWageClaims();
+        System.assertEquals(1, claims.size(), 'Should only retrieve wage claims with Status__c == \'Open\'');
     }
 }

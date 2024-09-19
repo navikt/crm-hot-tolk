@@ -23,7 +23,7 @@ public with sharing class HOT_FullCalendarController {
         List<CalendarEvent> events = new List<CalendarEvent>();
 
         List<ServiceAppointment> appointments = getUserServiceAppointments();
-        List<HOT_WageClaim__c> wageClaims = getUserWageClaims();
+        List<HOT_WageClaim__c> openWageClaims = getUserOpenWageClaims();
 
         for (ServiceAppointment appointment : appointments) {
             CalendarEvent event = new CalendarEvent();
@@ -35,16 +35,14 @@ public with sharing class HOT_FullCalendarController {
             events.add(event);
         }
 
-        for (HOT_WageClaim__c claim : wageClaims) {
-            if (claim.Status__c == 'Open') {
-                CalendarEvent event = new CalendarEvent();
-                event.id = claim.Id;
-                event.type = EventType.OPEN_WAGE_CLAIM.toString();
-                event.startTime = claim.StartTime__c;
-                event.endTime = claim.EndTime__c;
-                event.title = 'Ledig på lønn';
-                events.add(event);
-            }
+        for (HOT_WageClaim__c claim : openWageClaims) {
+            CalendarEvent event = new CalendarEvent();
+            event.id = claim.Id;
+            event.type = EventType.OPEN_WAGE_CLAIM.toString();
+            event.startTime = claim.StartTime__c;
+            event.endTime = claim.EndTime__c;
+            event.title = 'Ledig på lønn';
+            events.add(event);
         }
         return events;
     }
@@ -64,12 +62,12 @@ public with sharing class HOT_FullCalendarController {
     }
 
     @TestVisible
-    private static List<HOT_WageClaim__c> getUserWageClaims() {
+    private static List<HOT_WageClaim__c> getUserOpenWageClaims() {
         Id resourceId = getUserServiceResourceId();
         return [
             SELECT Id, StartTime__c, EndTime__c, ServiceResource__r.Id, Status__c
             FROM HOT_WageClaim__c
-            WHERE ServiceResource__r.Id = :resourceId
+            WHERE ServiceResource__r.Id = :resourceId AND Status__c = 'Open'
         ];
     }
 
