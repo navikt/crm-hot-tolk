@@ -8,43 +8,41 @@ export default class LibsFullCalendar extends LightningElement {
     error;
     calendar;
     @track events = []; //Brukt for å lagre data fra service appointments
+    renderedCallback() {}
 
-    @wire(getCalendarEvents)
-    wiredEvents({ error, data }) {
+    async setupEvents() {
+        //fetch events from service appointments
+        const data = await getCalendarEvents();
         if (data) {
-            console.log('Service appointments fetched successfully:', data);
-
             this.events = data.map((event) => new CalendarEvent(event));
-            console.log('Mapped events for FullCalendar:', this.events);
-            this.initializeCalendar();
-        } else if (error) {
+        } else {
             console.error('Error fetching service appointments from Apex:', error);
             this.error = error;
         }
+        return this.events;
+    }
+    async setupCalendar() {
+        await this.loadScriptAndStyle();
+        const events = await this.setupEvents();
+        await this.initializeCalendar(events);
     }
 
-    async renderedCallback() {
-        if (this.isCalInitialized) {
-            return;
-        }
-        this.isCalInitialized = true;
-
+    async loadScriptAndStyle() {
         try {
-            console.log('Loading FullCalendar scripts and styles...');
             await Promise.all([
                 loadScript(this, FULL_CALENDAR + '/main.min.js'),
                 loadStyle(this, FULL_CALENDAR + '/main.min.css')
             ]);
-
-            console.log('FullCalendar scripts and styles loaded. Fetching service appointments...');
         } catch (error) {
             console.error('Error loading FullCalendar or fetching service appointments:', error);
             this.error = error;
         }
     }
+    connectedCallback() {
+        this.setupCalendar();
+    }
 
-    initializeCalendar() {
-        console.log('initialiserer FullCalendar...');
+    async initializeCalendar(events) {
         const calendarEl = this.template.querySelector('.calendar');
 
         if (typeof FullCalendar === 'undefined') {
@@ -53,48 +51,36 @@ export default class LibsFullCalendar extends LightningElement {
             );
         }
 
-        // Get the responsive calendar config
-        const calendarConfig = this.getCalendarConfig();
+        const calendarConfig = await this.getCalendarConfig(events);
 
-        // Initialize FullCalendar with the dynamic config
         this.calendar = new FullCalendar.Calendar(calendarEl, calendarConfig);
-
-        console.log('Rendrer FullCalendar med events:', this.events);
         this.calendar.render();
     }
 
-    getCalendarConfig() {
+    async getCalendarConfig(events) {
         const screenWidth = window.innerWidth;
-        console.log(`Screen width: ${screenWidth}px`);
-
-        // Default configuration for large screens
         let config = {
-            events: this.events,
+            events: events,
             headerToolbar: {
-                start: 'title', // will normally be on the left. if RTL, will be on the right
-                center: 'dayGridMonth', // will normally be on the bottom. if RTL, will be on the top
-                end: 'today prev,next' // will normally be on the right. if RTL, will be on the left
+                start: 'title',
+                center: 'dayGridMonth',
+                end: 'today prev,next'
             },
             dayMaxEventRows: 0,
             moreLinkClick: 'timeGrid',
             display: 'background',
-            hour: '2-digit',
-            minute: '2-digit',
-            display: 'background',
-            hour12: false,
+            eventTimeFormat: {
+                hour12: false,
+                hour: '2-digit',
+                minute: '2-digit'
+            },
             views: {
                 dayGrid: {
                     dayMaxEventRows: 10
                 },
-                timeGrid: {
-                    // options apply to timeGridWeek and timeGridDay views
-                },
-                week: {
-                    // options apply to dayGridWeek and timeGridWeek views
-                },
-                day: {
-                    // options apply to dayGridDay and timeGridDay views
-                },
+                timeGrid: {},
+                week: {},
+                day: {},
                 dayGridMonth: {
                     dayMaxEventRows: 4
                 }
@@ -106,7 +92,7 @@ export default class LibsFullCalendar extends LightningElement {
             config.headerToolbar = {
                 start: 'prev,next',
                 center: 'title',
-                end: 'today month'
+                end: 'today dayGridMonth'
             };
             config.views.dayGridMonth.dayMaxEventRows = 0;
         }
