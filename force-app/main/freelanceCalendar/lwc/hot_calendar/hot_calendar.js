@@ -5,6 +5,9 @@ import getCalendarEvents from '@salesforce/apex/HOT_FullCalendarController.getCa
 
 export default class LibsFullCalendar extends LightningElement {
     static MILLISECONDS_PER_DAY = 86400000;
+    static DAYS_TO_FETCH_FROM_TODAY = 4 * 31;
+    static DAYS_TO_FETCH_BEFORE_TODAY = 2 * 31;
+    static FETCH_THRESHOLD_IN_DAYS = 31; // How 'close' date view start or end can get to earliestTime or latestTime before a fetch of new events occurs
     todayInMilliseconds = new Date().getTime();
     earliestTime;
     latestTime;
@@ -47,9 +50,57 @@ export default class LibsFullCalendar extends LightningElement {
     }
 
     connectedCallback() {
-        this.earliestTime = this.todayInMilliseconds - 31 * LibsFullCalendar.MILLISECONDS_PER_DAY;
-        this.latestTime = this.todayInMilliseconds + 31 * LibsFullCalendar.MILLISECONDS_PER_DAY;
+        this.earliestTime =
+            this.todayInMilliseconds -
+            LibsFullCalendar.DAYS_TO_FETCH_BEFORE_TODAY * LibsFullCalendar.MILLISECONDS_PER_DAY;
+        this.latestTime =
+            this.todayInMilliseconds +
+            LibsFullCalendar.DAYS_TO_FETCH_FROM_TODAY * LibsFullCalendar.MILLISECONDS_PER_DAY;
         this.setupCalendar();
+    }
+
+    async fetchEventsForTimeRegion(earliestTime, latestTime) {
+        const data = await getCalendarEvents({
+            earliestTimeInMilliseconds: earliestTime,
+            latestTimeInMilliseconds: latestTime
+        });
+        if (data) {
+            return data.map((event) => new CalendarEvent(event));
+        } else {
+            console.error('Error fetching service appointments from Apex:', error);
+            this.error = error;
+            return [];
+        }
+    }
+
+    async updateEventsFromDateRange(earliestDateInView, latestDateInView) {
+        const earliestTimeInView = earliestDateInView.getTime();
+        const latestTimeInView = latestDateInView.getTime();
+        const events = [];
+
+        const fetchThresholdInMilliseconds =
+            LibsFullCalendar.FETCH_THRESHOLD_IN_DAYS * LibsFullCalendar.MILLISECONDS_PER_DAY;
+
+        if (earliestTimeInView < this.earliestTime + fetchThresholdInMilliseconds) {
+            const newEarliestTime =
+                this.earliestTime - LibsFullCalendar.DAYS_TO_FETCH_BEFORE_TODAY * LibsFullCalendar.MILLISECONDS_PER_DAY;
+            const pastEvents = await this.fetchEventsForTimeRegion(newEarliestTime, this.earliestTime);
+            this.earliestTime = newEarliestTime;
+            events.push(...pastEvents);
+        }
+
+        if (latestTimeInView > this.latestTime - fetchThresholdInMilliseconds) {
+            const newLatestTime =
+                this.latestTime + LibsFullCalendar.DAYS_TO_FETCH_FROM_TODAY * LibsFullCalendar.MILLISECONDS_PER_DAY;
+            const futureEvents = await this.fetchEventsForTimeRegion(this.latestTime, newLatestTime);
+            this.latestTime = newLatestTime;
+            events.push(...futureEvents);
+        }
+
+        this.events.push(...events);
+        for (const event of events) {
+            this.calendar?.addEvent(event);
+        }
     }
 
     async initializeCalendar(events) {
@@ -70,6 +121,9 @@ export default class LibsFullCalendar extends LightningElement {
     async getCalendarConfig(events) {
         const screenWidth = window.innerWidth;
         let config = {
+            datesSet: (dateInfo) => {
+                this.updateEventsFromDateRange(dateInfo.start, dateInfo.end);
+            },
             events: events,
             headerToolbar: {
                 start: 'title',
@@ -124,7 +178,7 @@ class CalendarEvent {
         ['OPEN_WAGE_CLAIM', { upcomingColor: '#57ff6c', pastColor: '#b8a798' }]
     ]);
 
-    id;
+    recordId;
     type;
     title;
     start;
@@ -137,7 +191,7 @@ class CalendarEvent {
      * @param {*} data - Forventer data i form av fra HOT_FullCalendarController.CalendarEvent
      */
     constructor(data) {
-        this.id = data.id;
+        this.recordId = data.id;
         this.title = data.title;
         this.start = new Date(data.startTime);
         this.end = new Date(data.endTime);
