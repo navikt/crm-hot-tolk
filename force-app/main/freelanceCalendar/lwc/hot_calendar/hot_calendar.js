@@ -11,6 +11,7 @@ export default class LibsFullCalendar extends LightningElement {
     todayInMilliseconds;
     earliestTime;
     latestTime;
+    cachedEventIds = new Set();
     isCalInitialized = false;
     error;
     calendar;
@@ -19,7 +20,7 @@ export default class LibsFullCalendar extends LightningElement {
 
     async setupCalendar() {
         await this.loadScriptAndStyle();
-        const events = await this.fetchEventsForTimeRegion(this.earliestTime, this.latestTime);
+        const events = await this.fetchUniqueEventsForTimeRegion(this.earliestTime, this.latestTime);
         this.events = events;
         console.log(`Calendar set up with ${this.events.length} initial events`);
         await this.initializeCalendar(events);
@@ -48,13 +49,21 @@ export default class LibsFullCalendar extends LightningElement {
         this.setupCalendar();
     }
 
-    async fetchEventsForTimeRegion(earliestTime, latestTime) {
+    async fetchUniqueEventsForTimeRegion(earliestTime, latestTime) {
         const data = await getCalendarEvents({
             earliestEventEndTimeInMilliseconds: earliestTime,
             latestEventStartInMilliseconds: latestTime
         });
         if (data) {
-            return data.map((event) => new CalendarEvent(event));
+            return data
+                .map((event) => new CalendarEvent(event))
+                .filter((event) => {
+                    const isAlreadyCached = this.cachedEventIds.has(event.recordId);
+                    if (!isAlreadyCached) {
+                        this.cachedEventIds.add(event.recordId);
+                    }
+                    return !isAlreadyCached;
+                });
         } else {
             console.error('Error fetching service appointments from Apex:', error);
             this.error = error;
@@ -73,7 +82,7 @@ export default class LibsFullCalendar extends LightningElement {
         if (earliestTimeInView < this.earliestTime + fetchThresholdInMilliseconds) {
             const newEarliestTime =
                 this.earliestTime - LibsFullCalendar.DAYS_TO_FETCH_BEFORE_TODAY * LibsFullCalendar.MILLISECONDS_PER_DAY;
-            const pastEvents = await this.fetchEventsForTimeRegion(newEarliestTime, this.earliestTime);
+            const pastEvents = await this.fetchUniqueEventsForTimeRegion(newEarliestTime, this.earliestTime);
             this.earliestTime = newEarliestTime;
             events.push(...pastEvents);
         }
@@ -81,7 +90,7 @@ export default class LibsFullCalendar extends LightningElement {
         if (latestTimeInView > this.latestTime - fetchThresholdInMilliseconds) {
             const newLatestTime =
                 this.latestTime + LibsFullCalendar.DAYS_TO_FETCH_FROM_TODAY * LibsFullCalendar.MILLISECONDS_PER_DAY;
-            const futureEvents = await this.fetchEventsForTimeRegion(this.latestTime, newLatestTime);
+            const futureEvents = await this.fetchUniqueEventsForTimeRegion(this.latestTime, newLatestTime);
             this.latestTime = newLatestTime;
             events.push(...futureEvents);
         }
