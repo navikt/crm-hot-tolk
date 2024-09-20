@@ -4,6 +4,10 @@ import { loadScript, loadStyle } from 'lightning/platformResourceLoader';
 import getCalendarEvents from '@salesforce/apex/HOT_FullCalendarController.getCalendarEvents';
 
 export default class LibsFullCalendar extends LightningElement {
+    static MILLISECONDS_PER_DAY = 86400000;
+    todayInMilliseconds = new Date().getTime();
+    earliestTime;
+    latestTime;
     isCalInitialized = false;
     error;
     calendar;
@@ -12,7 +16,10 @@ export default class LibsFullCalendar extends LightningElement {
 
     async setupEvents() {
         //fetch events from service appointments
-        const data = await getCalendarEvents();
+        const data = await getCalendarEvents({
+            earliestTimeInMilliseconds: this.earliestTime,
+            latestTimeInMilliseconds: this.latestTime
+        });
         if (data) {
             this.events = data.map((event) => new CalendarEvent(event));
         } else {
@@ -38,7 +45,10 @@ export default class LibsFullCalendar extends LightningElement {
             this.error = error;
         }
     }
+
     connectedCallback() {
+        this.earliestTime = this.todayInMilliseconds - 31 * LibsFullCalendar.MILLISECONDS_PER_DAY;
+        this.latestTime = this.todayInMilliseconds + 31 * LibsFullCalendar.MILLISECONDS_PER_DAY;
         this.setupCalendar();
     }
 

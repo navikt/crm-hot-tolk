@@ -19,11 +19,17 @@ public with sharing class HOT_FullCalendarController {
     }
 
     @AuraEnabled(cacheable=true)
-    public static List<CalendarEvent> getCalendarEvents() {
+    public static List<CalendarEvent> getCalendarEvents(
+        Long earliestTimeInMilliseconds,
+        Long latestTimeInMilliseconds
+    ) {
         List<CalendarEvent> events = new List<CalendarEvent>();
 
-        List<ServiceAppointment> appointments = getUserServiceAppointments();
-        List<HOT_WageClaim__c> openWageClaims = getUserOpenWageClaims();
+        DateTime earliestTime = DateTime.newInstance(earliestTimeInMilliseconds);
+        DateTime latestTime = DateTime.newInstance(latestTimeInMilliseconds);
+
+        List<ServiceAppointment> appointments = getUserServiceAppointments(earliestTime, latestTime);
+        List<HOT_WageClaim__c> openWageClaims = getUserOpenWageClaims(earliestTime, latestTime);
 
         for (ServiceAppointment appointment : appointments) {
             CalendarEvent event = new CalendarEvent();
@@ -48,13 +54,16 @@ public with sharing class HOT_FullCalendarController {
     }
 
     @TestVisible
-    private static List<ServiceAppointment> getUserServiceAppointments() {
+    private static List<ServiceAppointment> getUserServiceAppointments(DateTime earliestTime, DateTime latestTime) {
         Id currentUserId = UserInfo.getUserId();
 
         List<ServiceAppointment> appointments = [
             SELECT Id, Subject, AppointmentNumber, SchedStartTime, SchedEndTime
             FROM ServiceAppointment
-            WHERE HOT_AssignedResourceId__c = :currentUserId
+            WHERE
+                HOT_AssignedResourceId__c = :currentUserId
+                AND SchedEndTime < :latestTime
+                AND SchedStartTime > :earliestTime
             ORDER BY SchedStartTime ASC
         ];
 
@@ -62,12 +71,16 @@ public with sharing class HOT_FullCalendarController {
     }
 
     @TestVisible
-    private static List<HOT_WageClaim__c> getUserOpenWageClaims() {
+    private static List<HOT_WageClaim__c> getUserOpenWageClaims(DateTime earliestTime, DateTime latestTime) {
         Id resourceId = getUserServiceResourceId();
         return [
             SELECT Id, StartTime__c, EndTime__c, ServiceResource__r.Id, Status__c
             FROM HOT_WageClaim__c
-            WHERE ServiceResource__r.Id = :resourceId AND Status__c = 'Open'
+            WHERE
+                ServiceResource__r.Id = :resourceId
+                AND Status__c = 'Open'
+                AND EndTime__c < :latestTime
+                AND StartTime__c > :earliestTime
         ];
     }
 

@@ -41,8 +41,14 @@ private class HOT_FullCalendarControllerTest {
     @isTest
     static void getCalendarEventsTest() {
         ServiceAppointment appointment = [SELECT Id FROM ServiceAppointment LIMIT 1];
+        Long earliestTime = DateTime.now().addDays(-1).getTime();
+        Long latestTime = DateTime.now().addDays(1).getTime();
+
         Test.startTest();
-        List<HOT_FullCalendarController.CalendarEvent> events = HOT_FullCalendarController.getCalendarEvents();
+        List<HOT_FullCalendarController.CalendarEvent> events = HOT_FullCalendarController.getCalendarEvents(
+            earliestTime,
+            latestTime
+        );
         Test.stopTest();
         System.assert(
             events.size() == 2 && events[0].id == appointment.Id,
@@ -53,12 +59,14 @@ private class HOT_FullCalendarControllerTest {
     @isTest
     static void getCalendarEventsAsOtherUser() {
         User otherUser = [SELECT Id FROM User WHERE LastName = 'Bruker'];
+        Long earliestTime = DateTime.now().addDays(-1).getTime();
+        Long latestTime = DateTime.now().addDays(1).getTime();
 
         Test.startTest();
         List<HOT_FullCalendarController.CalendarEvent> events = new List<HOT_FullCalendarController.CalendarEvent>();
         Test.stopTest();
         System.runAs(otherUser) {
-            events = HOT_FullCalendarController.getCalendarEvents();
+            events = HOT_FullCalendarController.getCalendarEvents(earliestTime, latestTime);
         }
 
         System.assert(events.isEmpty(), 'Should not return any ServiceAppointment');
@@ -66,16 +74,24 @@ private class HOT_FullCalendarControllerTest {
 
     @isTest
     static void getUserServiceAppointments() {
+        DateTime earliestTime = DateTime.now().addDays(-1);
+        DateTime latestTime = DateTime.now().addDays(1);
+
         Test.startTest();
-        List<ServiceAppointment> appointments = HOT_FullCalendarController.getUserServiceAppointments();
+        List<ServiceAppointment> appointments = HOT_FullCalendarController.getUserServiceAppointments(
+            earliestTime,
+            latestTime
+        );
         Test.stopTest();
         System.assertEquals(1, appointments.size(), 'Should retrieve one ServiceAppointment');
     }
 
     @isTest
     static void getUserOpenWageClaims() {
+        DateTime earliestTime = DateTime.now().addDays(-1);
+        DateTime latestTime = DateTime.now().addDays(1);
         Test.startTest();
-        List<HOT_WageClaim__c> claims = HOT_FullCalendarController.getUserOpenWageClaims();
+        List<HOT_WageClaim__c> claims = HOT_FullCalendarController.getUserOpenWageClaims(earliestTime, latestTime);
         Test.stopTest();
         System.assertEquals(1, claims.size(), 'Should only retrieve wage claims with Status__c == \'Open\'');
     }
