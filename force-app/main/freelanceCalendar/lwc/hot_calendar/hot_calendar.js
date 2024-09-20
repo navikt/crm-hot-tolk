@@ -8,7 +8,7 @@ export default class LibsFullCalendar extends LightningElement {
     static DAYS_TO_FETCH_FROM_TODAY = 4 * 31;
     static DAYS_TO_FETCH_BEFORE_TODAY = 2 * 31;
     static FETCH_THRESHOLD_IN_DAYS = 31; // How 'close' date view start or end can get to earliestTime or latestTime before a fetch of new events occurs
-    todayInMilliseconds = new Date().getTime();
+    todayInMilliseconds;
     earliestTime;
     latestTime;
     isCalInitialized = false;
@@ -17,23 +17,10 @@ export default class LibsFullCalendar extends LightningElement {
     @track events = []; //Brukt for å lagre data fra service appointments
     renderedCallback() {}
 
-    async setupEvents() {
-        //fetch events from service appointments
-        const data = await getCalendarEvents({
-            earliestTimeInMilliseconds: this.earliestTime,
-            latestTimeInMilliseconds: this.latestTime
-        });
-        if (data) {
-            this.events = data.map((event) => new CalendarEvent(event));
-        } else {
-            console.error('Error fetching service appointments from Apex:', error);
-            this.error = error;
-        }
-        return this.events;
-    }
     async setupCalendar() {
         await this.loadScriptAndStyle();
-        const events = await this.setupEvents();
+        const events = await this.fetchEventsForTimeRegion(this.earliestTime, this.latestTime);
+        this.events = events;
         await this.initializeCalendar(events);
     }
 
@@ -50,6 +37,7 @@ export default class LibsFullCalendar extends LightningElement {
     }
 
     connectedCallback() {
+        this.todayInMilliseconds = new Date().getTime();
         this.earliestTime =
             this.todayInMilliseconds -
             LibsFullCalendar.DAYS_TO_FETCH_BEFORE_TODAY * LibsFullCalendar.MILLISECONDS_PER_DAY;
