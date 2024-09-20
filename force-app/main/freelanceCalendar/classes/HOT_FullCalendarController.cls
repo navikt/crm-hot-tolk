@@ -20,13 +20,13 @@ public with sharing class HOT_FullCalendarController {
 
     @AuraEnabled(cacheable=true)
     public static List<CalendarEvent> getCalendarEvents(
-        Long earliestTimeInMilliseconds,
-        Long latestTimeInMilliseconds
+        Long earliestEventEndTimeInMilliseconds,
+        Long latestEventStartInMilliseconds
     ) {
         List<CalendarEvent> events = new List<CalendarEvent>();
 
-        DateTime earliestTime = DateTime.newInstance(earliestTimeInMilliseconds);
-        DateTime latestTime = DateTime.newInstance(latestTimeInMilliseconds);
+        DateTime earliestTime = DateTime.newInstance(earliestEventEndTimeInMilliseconds);
+        DateTime latestTime = DateTime.newInstance(latestEventStartInMilliseconds);
 
         List<ServiceAppointment> appointments = getUserServiceAppointments(earliestTime, latestTime);
         List<HOT_WageClaim__c> openWageClaims = getUserOpenWageClaims(earliestTime, latestTime);
@@ -54,7 +54,10 @@ public with sharing class HOT_FullCalendarController {
     }
 
     @TestVisible
-    private static List<ServiceAppointment> getUserServiceAppointments(DateTime earliestTime, DateTime latestTime) {
+    private static List<ServiceAppointment> getUserServiceAppointments(
+        DateTime earliestAppointmentEnd,
+        DateTime latestAppointmentStart
+    ) {
         Id currentUserId = UserInfo.getUserId();
 
         List<ServiceAppointment> appointments = [
@@ -62,8 +65,8 @@ public with sharing class HOT_FullCalendarController {
             FROM ServiceAppointment
             WHERE
                 HOT_AssignedResourceId__c = :currentUserId
-                AND SchedEndTime < :latestTime
-                AND SchedStartTime > :earliestTime
+                AND SchedEndTime > :earliestAppointmentEnd
+                AND SchedStartTime < :latestAppointmentStart
             ORDER BY SchedStartTime ASC
         ];
 
@@ -71,7 +74,10 @@ public with sharing class HOT_FullCalendarController {
     }
 
     @TestVisible
-    private static List<HOT_WageClaim__c> getUserOpenWageClaims(DateTime earliestTime, DateTime latestTime) {
+    private static List<HOT_WageClaim__c> getUserOpenWageClaims(
+        DateTime earliestWageClaimEnd,
+        DateTime latestWageClaimStart
+    ) {
         Id resourceId = getUserServiceResourceId();
         return [
             SELECT Id, StartTime__c, EndTime__c, ServiceResource__r.Id, Status__c
@@ -79,8 +85,8 @@ public with sharing class HOT_FullCalendarController {
             WHERE
                 ServiceResource__r.Id = :resourceId
                 AND Status__c = 'Open'
-                AND EndTime__c < :latestTime
-                AND StartTime__c > :earliestTime
+                AND EndTime__c > :earliestWageClaimEnd
+                AND StartTime__c < :latestWageClaimStart
         ];
     }
 

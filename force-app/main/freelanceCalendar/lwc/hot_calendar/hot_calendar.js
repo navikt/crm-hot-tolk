@@ -21,6 +21,7 @@ export default class LibsFullCalendar extends LightningElement {
         await this.loadScriptAndStyle();
         const events = await this.fetchEventsForTimeRegion(this.earliestTime, this.latestTime);
         this.events = events;
+        console.log(`Calendar set up with ${this.events.length} initial events`);
         await this.initializeCalendar(events);
     }
 
@@ -49,8 +50,8 @@ export default class LibsFullCalendar extends LightningElement {
 
     async fetchEventsForTimeRegion(earliestTime, latestTime) {
         const data = await getCalendarEvents({
-            earliestTimeInMilliseconds: earliestTime,
-            latestTimeInMilliseconds: latestTime
+            earliestEventEndTimeInMilliseconds: earliestTime,
+            latestEventStartInMilliseconds: latestTime
         });
         if (data) {
             return data.map((event) => new CalendarEvent(event));
