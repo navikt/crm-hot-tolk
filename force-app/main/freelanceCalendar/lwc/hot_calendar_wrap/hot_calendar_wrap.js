@@ -8,7 +8,7 @@ export default class Hot_calendar_wrap extends LightningElement {
     toggleCalendar() {
         this.showCalendar = !this.showCalendar;
         if (this.showCalendar) {
-            this.buttonLabel = 'Skjul Oppdragskalender';
+            this.buttonLabel = 'Skjul';
             this.iconName = 'utility:close'; // Icon when the calendar is open
         } else {
             this.buttonLabel = 'Oppdragskalender';
