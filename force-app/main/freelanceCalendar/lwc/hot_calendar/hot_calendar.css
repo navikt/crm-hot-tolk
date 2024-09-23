@@ -43,4 +43,7 @@
         flex-direction: row;
         flex-wrap: wrap;
     }
+    .fc-daygrid-event-dot {
+        margin: 0;
+    }
 }
