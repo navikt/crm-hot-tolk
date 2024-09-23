@@ -123,7 +123,14 @@ export default class LibsFullCalendar extends LightningElement {
                 this.updateEventsFromDateRange(dateInfo.start, dateInfo.end);
             },
             firstDay: 1, // Mandag
+            locale: 'nb',
             events: events,
+            buttonText: {
+                today: 'I dag',
+                month: 'Måned',
+                week: 'Uke',
+                day: 'Dag'
+            },
             headerToolbar: {
                 start: 'title',
                 center: 'dayGridMonth',

@@ -1,30 +1,51 @@
-.calendar-button {
+.main {
+    padding: 0.25rem 1rem;
     display: flex;
+    flex-direction: column;
     align-items: center;
-    justify-content: center;
 }
-.calendar-button .slds-button {
-    margin: 0;
-    background-color: #ffffff; /* Calendar's highlight color */
-    border-color: #6f92f9;
-    color: #ffffff;
-    border-radius: 0.5rem;
+.content {
+    min-height: 96px;
+    width: 1000px;
 }
 
-.calendar-button .slds-button:hover {
-    background-color: #5a7bd7; /* Darker shade on hover */
-    border-color: #5a7bd7;
+.link {
+    position: relative;
+    color: black;
+    text-decoration: none;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    margin: 1rem 1.25rem;
+    min-width: 200px;
+    flex: 1;
+    border-radius: 4px;
+    max-width: 100%;
+    display: flex;
+    flex-direction: row;
+    padding-top: 2rem;
+    padding-bottom: 2rem;
+    background-color: white;
 }
-
-.calendar-button .slds-button:active {
-    background-color: #4a6ac0; /* Darker shade when active */
-    border-color: #4a6ac0;
+.link h2 {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
 }
-
-.calendar-button .slds-button__icon {
-    fill: #ffffff; /* Ensures the icon is white */
+.link:hover {
+    color: #0067c5;
+    cursor: pointer;
 }
-
-.calendar-button .slds-button__icon svg {
-    fill: #ffffff;
+@media (max-width: 576px) {
+    .main {
+        padding: 0;
+    }
+    .content {
+        width: 100%;
+        padding: 1rem;
+    }
+    .link {
+        max-width: 576px;
+        margin: 0;
+    }
 }
