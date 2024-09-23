@@ -1,8 +1,7 @@
 @media only screen and (max-width: 500px) {
     .fullCard {
         height: 100%;
-        width: 90%;
-        background-color: #f5f5f5;
+        width: 100%;
         margin: auto;
         margin-bottom: 0;
     }
@@ -13,25 +12,37 @@
         height: 100%;
     }
     .fc-daygrid-day-frame {
-        border: 0.2rem solid #e8edf0;
-        border-radius: 0.5rem;
-        background-color: #ffffff;
-        height: 2rem;
+        height: 100%;
+    }
+
+    .fc-scrollgrid-section {
+        height: 100%;
     }
 
     .fc .fc-daygrid-day-number {
+        justify-content: center;
+        display: flex;
         position: relative;
+        font-weight: bold;
+        padding: 0;
+        padding-top: 2;
         z-index: 4;
         height: 100%;
         width: 100%;
-        font-size: 0.7rem;
+        font-size: 0.8rem;
         text-decoration: none;
-        background-color: #ffffff;
+        background-color: #ffffff00;
         color: #000000;
     }
     .fc-daygrid-dot-event .fc-event-title {
         display: none;
     }
+
+    .fc-daygrid-event-harness {
+        width: 12px;
+        height: 12px;
+    }
+
     .fc-direction-ltr .fc-daygrid-event .fc-event-time {
         display: none;
     }
@@ -42,8 +53,17 @@
         display: flex;
         flex-direction: row;
         flex-wrap: wrap;
+        justify-content: space-around;
+        align-items: center;
     }
     .fc-daygrid-event-dot {
         margin: 0;
+        border-radius: 5px;
+        border-width: 5px;
+    }
+    .fc-daygrid-day-top {
+        display: flex;
+        justify-content: center;
+        position: relative;
     }
 }

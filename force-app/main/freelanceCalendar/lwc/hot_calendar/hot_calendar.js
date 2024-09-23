@@ -144,6 +144,7 @@ export default class LibsFullCalendar extends LightningElement {
                 week: {},
                 day: {},
                 dayGridMonth: {
+                    fixedWeekCount: false,
                     dayMaxEventRows: 4
                 }
             },
