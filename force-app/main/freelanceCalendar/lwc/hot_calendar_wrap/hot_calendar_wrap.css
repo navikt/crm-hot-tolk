@@ -1,0 +1,30 @@
+.calendar-button {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+.calendar-button .slds-button {
+    margin: 0;
+    background-color: #ffffff; /* Calendar's highlight color */
+    border-color: #6f92f9;
+    color: #ffffff;
+    border-radius: 0.5rem;
+}
+
+.calendar-button .slds-button:hover {
+    background-color: #5a7bd7; /* Darker shade on hover */
+    border-color: #5a7bd7;
+}
+
+.calendar-button .slds-button:active {
+    background-color: #4a6ac0; /* Darker shade when active */
+    border-color: #4a6ac0;
+}
+
+.calendar-button .slds-button__icon {
+    fill: #ffffff; /* Ensures the icon is white */
+}
+
+.calendar-button .slds-button__icon svg {
+    fill: #ffffff;
+}

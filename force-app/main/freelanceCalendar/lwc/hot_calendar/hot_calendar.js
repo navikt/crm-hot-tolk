@@ -149,19 +149,19 @@ export default class LibsFullCalendar extends LightningElement {
             },
             eventClick: (info) => this.handleEventClick(info)
         };
-        if (screenWidth < 768) {
+        if (screenWidth < 500) {
             // Small screens (e.g., mobile)
             config.headerToolbar = {
                 start: 'prev,next',
                 center: 'title',
                 end: 'today dayGridMonth'
             };
-            config.views.dayGridMonth.dayMaxEventRows = 0;
+            config.titleFormat = { year: 'numeric', month: 'short', day: 'numeric' };
+            config.views.dayGridMonth.dayMaxEventRows = 10;
         }
 
         return config;
     }
-
     handleEventClick(info) {
         // Handle event click logic, e.g., change view to timeGridDay
         this.calendar.changeView('timeGridDay', new Date(info.event.start));

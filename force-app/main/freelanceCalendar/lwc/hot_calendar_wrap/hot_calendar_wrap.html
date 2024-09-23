@@ -1,4 +1,11 @@
 <template>
-    <lightning-button label="Show Calendar" onclick={toggleCalendar}></lightning-button>
+    <lightning-button
+        label="Show Calendar"
+        icon-name="utility:event"
+        iconposition="left"
+        onclick={toggleCalendar}
+        class="calendar-button"
+    >
+    </lightning-button>
     <c-hot_calendar lwc:if={showCalendar}></c-hot_calendar>
 </template>
