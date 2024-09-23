@@ -122,11 +122,17 @@ export default class LibsFullCalendar extends LightningElement {
             datesSet: (dateInfo) => {
                 this.updateEventsFromDateRange(dateInfo.start, dateInfo.end);
             },
+            firstDay: 1, // Mandag
             events: events,
             headerToolbar: {
                 start: 'title',
                 center: 'dayGridMonth',
                 end: 'today prev,next'
+            },
+            slotLabelFormat: {
+                hour: '2-digit',
+                minute: '2-digit',
+                hour12: false
             },
             dayMaxEventRows: 0,
             moreLinkClick: 'timeGrid',
