@@ -138,12 +138,10 @@ export default class LibsFullCalendar extends LightningElement {
             },
             slotLabelFormat: {
                 hour: '2-digit',
-                minute: '2-digit',
-                hour12: false
+                minute: '2-digit'
             },
             dayMaxEventRows: 0,
             moreLinkClick: 'timeGrid',
-            display: 'background',
             eventTimeFormat: {
                 hour12: false,
                 hour: '2-digit',
