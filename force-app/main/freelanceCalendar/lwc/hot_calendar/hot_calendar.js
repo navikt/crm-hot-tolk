@@ -170,7 +170,7 @@ export default class LibsFullCalendar extends LightningElement {
                 center: 'title',
                 end: 'today dayGridMonth'
             };
-            config.titleFormat = { year: 'numeric', month: 'short', day: 'numeric' };
+            config.titleFormat = { year: 'numeric', month: 'short' };
             config.views.dayGridMonth.dayMaxEventRows = 10;
         }
 
