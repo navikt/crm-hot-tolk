@@ -34,7 +34,9 @@ public with sharing class HOT_FullCalendarController {
         for (ServiceAppointment appointment : appointments) {
             CalendarEvent event = new CalendarEvent();
             event.id = appointment.Id;
-            event.type = EventType.SERVICE_APPOINTMENT.toString();
+            event.type = (appointment.Status == 'Dispatched')
+                ? EventType.SERVICE_APPOINTMENT.toString()
+                : EventType.COMPLETED_SERVICE_APPOINTMENT.toString();
             event.startTime = appointment.SchedStartTime;
             event.endTime = appointment.SchedEndTime;
             event.title = appointment.Subject;
@@ -61,12 +63,14 @@ public with sharing class HOT_FullCalendarController {
         Id currentUserId = UserInfo.getUserId();
 
         List<ServiceAppointment> appointments = [
-            SELECT Id, Subject, AppointmentNumber, SchedStartTime, SchedEndTime
+            SELECT Id, Subject, AppointmentNumber, SchedStartTime, SchedEndTime, Status
             FROM ServiceAppointment
             WHERE
                 HOT_AssignedResourceId__c = :currentUserId
                 AND SchedEndTime > :earliestAppointmentEnd
                 AND SchedStartTime < :latestAppointmentStart
+                AND (Status = 'Dispatched'
+                OR Status = 'Completed')
             ORDER BY SchedStartTime ASC
         ];
 
