@@ -122,7 +122,15 @@ export default class LibsFullCalendar extends LightningElement {
             datesSet: (dateInfo) => {
                 this.updateEventsFromDateRange(dateInfo.start, dateInfo.end);
             },
+            dayHeaderDidMount: (arg) => {
+                const newNode = document.createElement('p');
+                const oldNode = arg.el.childNodes[0].childNodes[0];
+                newNode.textContent = oldNode.textContent;
+                newNode.classList = oldNode.classList;
+                arg.el.childNodes[0].replaceChild(newNode, oldNode);
+            },
             navLinks: true,
+            allDaySlot: false,
             navLinkDayClick: (date) => {
                 this.calendar.changeView('timeGridDay', date);
             },
