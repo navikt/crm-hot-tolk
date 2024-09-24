@@ -122,6 +122,10 @@ export default class LibsFullCalendar extends LightningElement {
             datesSet: (dateInfo) => {
                 this.updateEventsFromDateRange(dateInfo.start, dateInfo.end);
             },
+            navLinks: true,
+            navLinkDayClick: (date) => {
+                this.calendar.changeView('timeGridDay', date);
+            },
             firstDay: 1, // Mandag
             locale: 'nb',
             events: events,
