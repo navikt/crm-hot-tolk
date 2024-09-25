@@ -236,7 +236,7 @@ export default class LibsFullCalendar extends LightningElement {
 }
 
 class CalendarEvent {
-    static RED_300 = '#F25C5C';
+    static RED_200 = '#F68282';
     static BLUE_200 = '#99C3FF';
     static GREEN_300 = '#66C786';
     static ORANGE_200 = '#FFD799';
@@ -247,8 +247,8 @@ class CalendarEvent {
             {
                 fontColor: 'black',
                 color: CalendarEvent.BLUE_200,
-                pastFontColor: 'white',
-                pastColor: CalendarEvent.RED_300
+                pastFontColor: 'black',
+                pastColor: CalendarEvent.RED_200
             }
         ],
         ['COMPLETED_SERVICE_APPOINTMENT', { fontColor: 'black', color: CalendarEvent.GREEN_300 }],
@@ -262,7 +262,7 @@ class CalendarEvent {
     end;
     isPast;
     color;
-    eventTextColor;
+    textColor;
 
     /**
      *
@@ -275,15 +275,13 @@ class CalendarEvent {
         this.end = new Date(data.endTime);
         this.type = data.type;
         this.isPast = this.end <= new Date();
-        const properties = this.getEventProperties(eventType) ?? {
+        const properties = this.getEventProperties(this.type) ?? {
             upcomingColor: '#90cce8',
             pastColor: '#90cce8'
         };
         this.color = (this.isPast ? properties.pastColor : properties.color) ?? properties.color;
-        this.eventTextColor = (this.isPast ? properties.pastFontColor : properties.fontColor) ?? properties.fontColor;
+        this.textColor = (this.isPast ? properties.pastFontColor : properties.fontColor) ?? properties.fontColor;
     }
-
-    colorFromType(eventType) {}
 
     getEventProperties(eventType) {
         return CalendarEvent.eventTypeProperties.get(eventType);
