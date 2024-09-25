@@ -1,4 +1,7 @@
 public without sharing class HOT_SMSHandler extends MyTriggers {
+    public override void onBeforeInsert() {
+        routeSMSToQueue((List<SMS__c>) records);
+    }
     public override void onBeforeUpdate(Map<Id, sObject> triggerOldMap) {
         List<SMS__c> SMSToChangeOwnerToArchive = new List<SMS__c>();
         for (SMS__c sms : (List<SMS__c>) records) {
@@ -17,13 +20,12 @@ public without sharing class HOT_SMSHandler extends MyTriggers {
 
     public override void onAfterInsert() {
         HOT_IncomingSMSNotification.notifyDispatchersOnIncomingSMS((List<SMS__c>) records);
-        routeSMSToQueue((List<SMS__c>) records);
     }
 
     public void routeSMSToQueue(List<SMS__c> messages) {
         Set<Id> sendersAccountId = new Set<Id>();
         for (SMS__c message : messages) {
-            if (request.Account__c != null) {
+            if (message.Account__c != null) {
                 sendersAccountId.add(message.Account__c);
             }
         }
@@ -32,15 +34,35 @@ public without sharing class HOT_SMSHandler extends MyTriggers {
             FROM Person__c
             WHERE CRM_Account__c IN :sendersAccountId
         ];
-        List<Id> queueIds = HOT_IncomingSMSNotification.getQueueIdsFromSenders(senders);
-        Map<Id, Id> groupByQueue = HOT_NotificationHandler.getGroupIdByQueueId(queueIds);
-        Integer index = 0;
+        List<SobjectWrapper> wrappers = new List<SobjectWrapper>();
+        Integer senderIndex = 0;
+
         for (Person__c sender : senders) {
-            for (SMS__c sms : messages) {
-                sms.OwnerId = groupByQueue.get(queueIds[index]);
-            }
-            index++;
+            SobjectWrapper wrapper = new SobjectWrapper(
+                senderIndex,
+                sender.INT_MunicipalityNumber__c,
+                sender.INT_RegionNumber__c
+            );
+            wrapper.confidential = 'Ugradert';
+            wrappers.add(wrapper);
+            senderIndex++;
         }
-        update messages;
+
+        Map<Integer, ApexSharingRuleWrapper> ruleByPersonId = RecordOwnerService.getQueuesAndNavUnits(
+            wrappers,
+            'Person__c'
+        );
+
+        Integer i = 0;
+        Group adminGroup = [SELECT Id FROM Group WHERE Type = 'Queue' AND DeveloperName = 'HOT_Tolk_Admin' LIMIT 1];
+        for (SMS__c sms : messages) {
+            ApexSharingRuleWrapper rule = ruleByPersonId.get(i);
+            if (rule == null) {
+                sms.OwnerId = adminGroup.Id;
+            } else {
+                sms.OwnerId = rule.queueId;
+                i++;
+            }
+        }
     }
 }
