@@ -89,7 +89,7 @@ public with sharing class HOT_IncomingSMSNotification {
     }
 
     @TestVisible
-    public static List<Id> getQueueIdsFromSenders(List<Person__c> senders) {
+    private static List<Id> getQueueIdsFromSenders(List<Person__c> senders) {
         List<SobjectWrapper> wrappers = new List<SobjectWrapper>();
         Integer senderIndex = 0;
 
