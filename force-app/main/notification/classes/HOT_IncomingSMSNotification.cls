@@ -29,11 +29,7 @@ public with sharing class HOT_IncomingSMSNotification {
         }
 
         Map<Id, SMS__c> smsRecords = new Map<Id, SMS__c>(
-            [
-                SELECT Account__c, Domain__c, Type__c, Recipient__c, Message__c
-                FROM SMS__c
-                WHERE Id IN :smsIds
-            ]
+            [SELECT Account__c, Domain__c, Type__c, Recipient__c, Message__c FROM SMS__c WHERE Id IN :smsIds]
         );
 
         for (SMS__c sms : messages) {
@@ -93,7 +89,7 @@ public with sharing class HOT_IncomingSMSNotification {
     }
 
     @TestVisible
-    private static List<Id> getQueueIdsFromSenders(List<Person__c> senders) {
+    public static List<Id> getQueueIdsFromSenders(List<Person__c> senders) {
         List<SobjectWrapper> wrappers = new List<SobjectWrapper>();
         Integer senderIndex = 0;
 
