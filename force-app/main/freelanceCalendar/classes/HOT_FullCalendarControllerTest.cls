@@ -27,6 +27,8 @@ private class HOT_FullCalendarControllerTest {
             serviceAppointment.Id,
             serviceResource.Id
         );
+        serviceAppointment.Status = 'Dispatched';
+        update serviceAppointment;
         insert assignedResource;
 
         HOT_WageClaim__c openClaim = HOT_TestDataFactory.createWageClaim(serviceResource);
