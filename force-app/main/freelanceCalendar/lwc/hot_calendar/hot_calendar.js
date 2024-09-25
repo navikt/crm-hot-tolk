@@ -2,12 +2,14 @@ import { LightningElement, track, wire } from 'lwc';
 import FULL_CALENDAR from '@salesforce/resourceUrl/FullCalendar';
 import { loadScript, loadStyle } from 'lightning/platformResourceLoader';
 import getCalendarEvents from '@salesforce/apex/HOT_FullCalendarController.getCalendarEvents';
+import IKONER from '@salesforce/resourceUrl/ikoner';
 
 export default class LibsFullCalendar extends LightningElement {
     static MILLISECONDS_PER_DAY = 86400000;
     static DAYS_TO_FETCH_FROM_TODAY = 4 * 31;
     static DAYS_TO_FETCH_BEFORE_TODAY = 2 * 31;
     static FETCH_THRESHOLD_IN_DAYS = 31; // How 'close' date view start or end can get to earliestTime or latestTime before a fetch of new events occurs
+    static REFRESH_ICON = IKONER + '/Refresh/Refresh.svg';
     todayInMilliseconds;
     earliestTime;
     latestTime;
@@ -116,6 +118,27 @@ export default class LibsFullCalendar extends LightningElement {
         this.calendar.render();
     }
 
+    async refreshCalendar() {
+        this.cachedEventIds.clear();
+        this.todayInMilliseconds = new Date().getTime();
+        this.earliestTime =
+            this.todayInMilliseconds -
+            LibsFullCalendar.DAYS_TO_FETCH_BEFORE_TODAY * LibsFullCalendar.MILLISECONDS_PER_DAY;
+        this.latestTime =
+            this.todayInMilliseconds +
+            LibsFullCalendar.DAYS_TO_FETCH_FROM_TODAY * LibsFullCalendar.MILLISECONDS_PER_DAY;
+
+        const events = await this.fetchUniqueEventsForTimeRegion(this.earliestTime, this.latestTime);
+        this.events = events;
+
+        this.calendar.removeAllEvents();
+
+        for (const event of events) {
+            this.calendar.addEvent(event);
+        }
+        console.log(`Calendar set up with ${this.events.length} events`);
+    }
+
     async getCalendarConfig(events) {
         const screenWidth = window.innerWidth;
         let config = {
@@ -129,6 +152,14 @@ export default class LibsFullCalendar extends LightningElement {
             firstDay: 1, // Mandag
             locale: 'nb',
             events: events,
+            customButtons: {
+                refresh: {
+                    text: 'Refresh',
+                    click: () => {
+                        this.refreshCalendar(); // Call the refresh method
+                    }
+                }
+            },
             buttonText: {
                 today: 'I dag',
                 month: 'Måned',
@@ -139,6 +170,9 @@ export default class LibsFullCalendar extends LightningElement {
                 start: 'title',
                 center: 'dayGridMonth',
                 end: 'today prev,next'
+            },
+            footerToolbar: {
+                left: 'refresh'
             },
             slotLabelFormat: {
                 hour: '2-digit',
@@ -161,6 +195,14 @@ export default class LibsFullCalendar extends LightningElement {
                 dayGridMonth: {
                     fixedWeekCount: false,
                     dayMaxEventRows: 4
+                }
+            },
+            viewDidMount: (info) => {
+                const elements = document.getElementsByClassName('fc-refresh-button');
+                if (elements.length > 0) {
+                    const el = elements[0];
+                    console.log('fant knappen');
+                    el.innerHTML = `<img src="${LibsFullCalendar.REFRESH_ICON}" alt="Refresh Icon" style="width:16px; color:white; height:16px;" /> Oppdater tider`;
                 }
             },
             eventClick: (info) => this.handleEventClick(info)
