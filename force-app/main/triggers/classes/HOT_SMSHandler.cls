@@ -17,6 +17,7 @@ public without sharing class HOT_SMSHandler extends MyTriggers {
 
     public override void onAfterInsert() {
         HOT_IncomingSMSNotification.notifyDispatchersOnIncomingSMS((List<SMS__c>) records);
+        routeSMSToQueue((List<SMS__c>) records);
     }
 
     public void routeSMSToQueue(List<SMS__c> messages) {
