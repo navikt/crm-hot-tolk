@@ -194,10 +194,15 @@ export default class LibsFullCalendar extends LightningElement {
 }
 
 class CalendarEvent {
+    static RED_300 = '#F25C5C';
+    static BLUE_200 = '#99C3FF';
+    static GREEN_300 = '#66C786';
+    static ORANGE_200 = '#FFD799';
+
     static eventTypeProperties = new Map([
-        ['SERVICE_APPOINTMENT', { upcomingColor: '#90cce8', pastColor: '#ff9a4d' }],
-        ['COMPLETED_SERVICE_APPOINTMENT', { upcomingColor: '#90cce8', pastColor: '#90cce8' }],
-        ['OPEN_WAGE_CLAIM', { upcomingColor: '#57ff6c', pastColor: '#b8a798' }]
+        ['SERVICE_APPOINTMENT', { color: CalendarEvent.BLUE_200, pastColor: CalendarEvent.RED_300 }],
+        ['COMPLETED_SERVICE_APPOINTMENT', { color: CalendarEvent.GREEN_300 }],
+        ['OPEN_WAGE_CLAIM', { color: CalendarEvent.ORANGE_200 }]
     ]);
 
     recordId;
@@ -227,7 +232,7 @@ class CalendarEvent {
             upcomingColor: '#90cce8',
             pastColor: '#90cce8'
         };
-        return this.isPast ? properties.pastColor : properties.upcomingColor;
+        return (this.isPast ? properties.pastColor : properties.color) ?? properties.color;
     }
 
     getEventProperties(eventType) {
