@@ -242,9 +242,17 @@ class CalendarEvent {
     static ORANGE_200 = '#FFD799';
 
     static eventTypeProperties = new Map([
-        ['SERVICE_APPOINTMENT', { color: CalendarEvent.BLUE_200, pastColor: CalendarEvent.RED_300 }],
-        ['COMPLETED_SERVICE_APPOINTMENT', { color: CalendarEvent.GREEN_300 }],
-        ['OPEN_WAGE_CLAIM', { color: CalendarEvent.ORANGE_200 }]
+        [
+            'SERVICE_APPOINTMENT',
+            {
+                fontColor: 'black',
+                color: CalendarEvent.BLUE_200,
+                pastFontColor: 'white',
+                pastColor: CalendarEvent.RED_300
+            }
+        ],
+        ['COMPLETED_SERVICE_APPOINTMENT', { fontColor: 'black', color: CalendarEvent.GREEN_300 }],
+        ['OPEN_WAGE_CLAIM', { fontColor: 'black', color: CalendarEvent.ORANGE_200 }]
     ]);
 
     recordId;
@@ -254,6 +262,7 @@ class CalendarEvent {
     end;
     isPast;
     color;
+    eventTextColor;
 
     /**
      *
@@ -266,16 +275,15 @@ class CalendarEvent {
         this.end = new Date(data.endTime);
         this.type = data.type;
         this.isPast = this.end <= new Date();
-        this.color = this.colorFromType(data.type);
-    }
-
-    colorFromType(eventType) {
         const properties = this.getEventProperties(eventType) ?? {
             upcomingColor: '#90cce8',
             pastColor: '#90cce8'
         };
-        return (this.isPast ? properties.pastColor : properties.color) ?? properties.color;
+        this.color = (this.isPast ? properties.pastColor : properties.color) ?? properties.color;
+        this.eventTextColor = (this.isPast ? properties.pastFontColor : properties.fontColor) ?? properties.fontColor;
     }
+
+    colorFromType(eventType) {}
 
     getEventProperties(eventType) {
         return CalendarEvent.eventTypeProperties.get(eventType);
