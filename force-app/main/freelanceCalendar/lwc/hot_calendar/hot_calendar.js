@@ -162,7 +162,7 @@ export default class LibsFullCalendar extends LightningElement {
             events: events,
             customButtons: {
                 refresh: {
-                    text: 'Refresh',
+                    text: '',
                     click: () => {
                         this.refreshCalendar(); // Call the refresh method
                     }
