@@ -3,8 +3,9 @@ import FULL_CALENDAR from '@salesforce/resourceUrl/FullCalendar';
 import { loadScript, loadStyle } from 'lightning/platformResourceLoader';
 import getCalendarEvents from '@salesforce/apex/HOT_FullCalendarController.getCalendarEvents';
 import IKONER from '@salesforce/resourceUrl/ikoner';
+import { NavigationMixin } from 'lightning/navigation';
 
-export default class LibsFullCalendar extends LightningElement {
+export default class LibsFullCalendar extends NavigationMixin(LightningElement) {
     static MILLISECONDS_PER_DAY = 86400000;
     static DAYS_TO_FETCH_FROM_TODAY = 4 * 31;
     static DAYS_TO_FETCH_BEFORE_TODAY = 2 * 31;
@@ -229,9 +230,36 @@ export default class LibsFullCalendar extends LightningElement {
         return config;
     }
     handleEventClick(info) {
-        // Handle event click logic, e.g., change view to timeGridDay
-        this.calendar.changeView('timeGridDay', new Date(info.event.start));
-        console.log('Event clicked:', info);
+        if (info.view.type === 'timeGridDay') {
+            console.log('event clicked', info.event.extendedProps);
+            this.navigateToDetailView(info.event.extendedProps);
+        } else {
+            this.calendar.changeView('timeGridDay', new Date(info.event.start));
+            console.log('Event clicked:', info);
+        }
+    }
+
+    navigateToDetailView(eventExtendedProps) {
+        let listType = '';
+        switch (eventExtendedProps.type) {
+            case 'COMPLETED_SERVICE_APPOINTMENT':
+                listType = 'my';
+                break;
+            case 'SERVICE_APPOINTMENT':
+                listType = 'my';
+                break;
+            case 'OPEN_WAGE_CLAIM':
+                listType = 'wageClaim';
+                break;
+        }
+
+        this[NavigationMixin.Navigate]({
+            type: 'comm__namedPage',
+            attributes: {
+                pageName: 'mine-oppdrag'
+            },
+            state: { list: listType, from: 'calendar', id: eventExtendedProps.recordId }
+        });
     }
 }
 
