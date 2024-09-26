@@ -254,12 +254,12 @@ private class HOT_WantedSRListControllerTest {
         WorkType workType = HOT_TestDataFactory.createWorkType();
         insert workType;
 
+        Test.startTest();
         HOT_Request__c request = HOT_TestDataFactory.createRequest('TEST', workType);
         insert request;
 
         WorkOrder workOrder = HOT_TestDataFactory.createWorkOrder(request, workType);
         insert workOrder;
-        Test.startTest();
         WorkOrderLineItem WorkOrderLineItem = HOT_TestDataFactory.createWorkOrderLineItem(workOrder, workType);
         insert WorkOrderLineItem;
         ServiceAppointment ServiceAppointment = HOT_TestDataFactory.createServiceAppointment(WorkOrderLineItem);
@@ -282,6 +282,7 @@ private class HOT_WantedSRListControllerTest {
         insert workOrder2;
         WorkOrderLineItem WorkOrderLineItem2 = HOT_TestDataFactory.createWorkOrderLineItem(workOrder2, workType);
         insert WorkOrderLineItem2;
+        Test.stopTest();
 
         ServiceAppointment ServiceAppointment2 = HOT_TestDataFactory.createServiceAppointment(WorkOrderLineItem2);
         ServiceAppointment2.EarliestStartTime = Datetime.now().addDays(52);
@@ -296,7 +297,6 @@ private class HOT_WantedSRListControllerTest {
         System.runAs(user1) {
             List<ServiceAppointment> availableSA = HOT_wantedSRListController.checkForOverlap(saToCheck);
             System.assertEquals(1, availableSA.size(), 'Should return 1 because available sa');
-            Test.stopTest();
         }
 
     }
@@ -342,6 +342,7 @@ private class HOT_WantedSRListControllerTest {
             resource1.Id
         );
         insert interestedResource;
+        Test.stopTest();
         AssignedResource assignedResource = HOT_TestDataFactory.createAssignedResource(
             ServiceAppointment.Id,
             resource1.Id
@@ -369,7 +370,6 @@ private class HOT_WantedSRListControllerTest {
             List<ServiceAppointment> availableSA = HOT_wantedSRListController.checkForOverlap(saToCheck);
             System.assertEquals(0, availableSA.size(), 'Should return 0 because no available sa');
         }
-        Test.stopTest();
     }
     @IsTest
     static void hasOverlapTestExisting() {
@@ -427,6 +427,7 @@ private class HOT_WantedSRListControllerTest {
         List<String> result = HOT_wantedSRListController.checkForOverlapOrExisting(
             new List<HOT_wantedSRListController.Request>{ req }
         );
+        Test.stopTest();
         System.assertEquals('existing', result[0]);
     }
     @IsTest
@@ -474,7 +475,7 @@ private class HOT_WantedSRListControllerTest {
         HOT_wantedSRListController.Request req = new HOT_wantedSRListController.Request();
         req.saID = ServiceAppointment.Id;
         req.srID = resource1.Id;
-
+        Test.stopTest();
         List<String> result = HOT_wantedSRListController.checkForOverlapOrExisting(
             new List<HOT_wantedSRListController.Request>{ req }
         );
