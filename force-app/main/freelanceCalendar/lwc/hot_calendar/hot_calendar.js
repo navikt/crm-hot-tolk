@@ -156,8 +156,7 @@ export default class LibsFullCalendar extends LightningElement {
             },
             headerToolbar: {
                 start: 'title',
-                center: 'dayGridMonth',
-                end: 'today prev,next'
+                end: 'dayGridMonth today prev,next'
             },
             footerToolbar: {
                 left: 'refresh'
