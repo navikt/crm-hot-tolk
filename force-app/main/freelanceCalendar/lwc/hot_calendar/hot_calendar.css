@@ -1,17 +1,93 @@
+/* Style for loading spinner */
+.calendar-wrapper {
+    position: relative;
+}
+.loading-spinner-wrapper {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    z-index: 1;
+    margin: auto;
+    width: 100%;
+    height: 100%;
+}
+
+/* Style for primary buttons */
+.fc .fc-button-primary {
+    color: #000;
+    background-color: #e0e0e0;
+    border-color: #bdbdbd;
+    border: 1px solid transparent;
+}
+.fc .fc-button-primary:not(:disabled).fc-button-active {
+    color: #000;
+    background-color: #e0e0e0;
+    border-color: #bdbdbd;
+    border: 1px solid transparent;
+}
+.fc .fc-button-primary:hover {
+    background-color: #d5d5d5; /* Darker gray on hover */
+}
+.fc .fc-button {
+    display: inline-block;
+    font-weight: 400;
+    text-align: center;
+    vertical-align: middle;
+    user-select: none;
+    border: 1px solid transparent;
+    padding: 0.4em 0.65em;
+    font-size: 1em;
+    line-height: 1.5;
+    border-radius: 0.25em;
+    box-shadow: 0 2px 2px rgba(0, 0, 0, 0.1); /* Subtle shadow for depth */
+}
+.fc .fc-button {
+    -webkit-appearance: none;
+    -moz-appearance: none;
+    appearance: none;
+}
+.fc .fc-button:focus {
+    outline: none;
+    box-shadow: 0 0 0 2px rgba(0, 123, 255, 0.25);
+}
+.fc .fc-button-primary:disabled {
+    background-color: #f0f0f0;
+    border-color: #e0e0e0;
+    color: #ccc;
+}
+
 @media only screen and (min-width: 500px) {
     .fc-daygrid-day-frame {
         height: 2rem;
     }
+    .full-card {
+        height: 100%;
+        width: 1000px;
+        margin: auto;
+        margin-bottom: 0;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+    }
+    .calendar-wrapper {
+        position: relative;
+        background-color: white;
+        margin: 1rem 1.25rem;
+        padding: 1rem 1rem;
+        height: 100%;
+        width: 100%;
+    }
 }
 @media only screen and (max-width: 500px) {
-    .fullCard {
+    .full-card {
         height: 100%;
         width: 100%;
         margin: auto;
         margin-bottom: 0;
     }
-    .calendarWrapper {
-        background-color: transparent;
+    .calendar-wrapper {
+        background-color: white;
         margin: auto;
         width: 100%;
         height: 100%;
@@ -54,7 +130,7 @@
         display: flex;
         flex-direction: row;
         flex-wrap: wrap;
-        justify-content: space-around;
+        justify-content: center;
         align-items: center;
     }
     .fc-daygrid-event-dot {
