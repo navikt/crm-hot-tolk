@@ -10,6 +10,7 @@ export default class LibsFullCalendar extends LightningElement {
     static DAYS_TO_FETCH_BEFORE_TODAY = 2 * 31;
     static FETCH_THRESHOLD_IN_DAYS = 31; // How 'close' date view start or end can get to earliestTime or latestTime before a fetch of new events occurs
     static REFRESH_ICON = IKONER + '/Refresh/Refresh.svg';
+    isLoading = false;
     todayInMilliseconds;
     earliestTime;
     latestTime;
@@ -118,27 +119,6 @@ export default class LibsFullCalendar extends LightningElement {
         this.calendar.render();
     }
 
-    async refreshCalendar() {
-        this.cachedEventIds.clear();
-        this.todayInMilliseconds = new Date().getTime();
-        this.earliestTime =
-            this.todayInMilliseconds -
-            LibsFullCalendar.DAYS_TO_FETCH_BEFORE_TODAY * LibsFullCalendar.MILLISECONDS_PER_DAY;
-        this.latestTime =
-            this.todayInMilliseconds +
-            LibsFullCalendar.DAYS_TO_FETCH_FROM_TODAY * LibsFullCalendar.MILLISECONDS_PER_DAY;
-
-        const events = await this.fetchUniqueEventsForTimeRegion(this.earliestTime, this.latestTime);
-        this.events = events;
-
-        this.calendar.removeAllEvents();
-
-        for (const event of events) {
-            this.calendar.addEvent(event);
-        }
-        console.log(`Calendar set up with ${this.events.length} events`);
-    }
-
     async getCalendarConfig(events) {
         const screenWidth = window.innerWidth;
         let config = {
@@ -210,7 +190,7 @@ export default class LibsFullCalendar extends LightningElement {
                 if (elements.length > 0) {
                     const el = elements[0];
                     console.log('fant knappen');
-                    el.innerHTML = `<img src="${LibsFullCalendar.REFRESH_ICON}" alt="Refresh Icon" style="width:16px; color:white; height:16px;" /> Oppdater tider`;
+                    el.innerHTML = `<img src="${LibsFullCalendar.REFRESH_ICON}" alt="Refresh Icon" style="width:16px; color:white; height:16px;" />`;
                 }
             },
             eventClick: (info) => this.handleEventClick(info)
@@ -227,6 +207,31 @@ export default class LibsFullCalendar extends LightningElement {
         }
 
         return config;
+    }
+    async refreshCalendar() {
+        this.isLoading = true;
+        const minLoadingTime = new Promise((resolve) => setTimeout(resolve, 2500));
+
+        this.cachedEventIds.clear();
+        this.todayInMilliseconds = new Date().getTime();
+        this.earliestTime =
+            this.todayInMilliseconds -
+            LibsFullCalendar.DAYS_TO_FETCH_BEFORE_TODAY * LibsFullCalendar.MILLISECONDS_PER_DAY;
+        this.latestTime =
+            this.todayInMilliseconds +
+            LibsFullCalendar.DAYS_TO_FETCH_FROM_TODAY * LibsFullCalendar.MILLISECONDS_PER_DAY;
+
+        const events = await this.fetchUniqueEventsForTimeRegion(this.earliestTime, this.latestTime);
+        this.events = events;
+
+        this.calendar.removeAllEvents();
+
+        for (const event of events) {
+            this.calendar.addEvent(event);
+        }
+
+        await minLoadingTime;
+        this.isLoading = false;
     }
     handleEventClick(info) {
         // Handle event click logic, e.g., change view to timeGridDay
