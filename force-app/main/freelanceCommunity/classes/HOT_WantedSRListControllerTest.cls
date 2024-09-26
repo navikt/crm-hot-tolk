@@ -387,6 +387,7 @@ private class HOT_WantedSRListControllerTest {
             timezonesidkey = 'Europe/Paris',
             username = 'HOT_testaccount@nav.hot.no'
         );
+        Test.startTest();
         insert user1;
         ServiceResource resource1 = HOT_TestDataFactory.createServiceResource(user1.Id);
         insert resource1;
@@ -396,7 +397,6 @@ private class HOT_WantedSRListControllerTest {
 
         HOT_Request__c request = HOT_TestDataFactory.createRequest('TEST', workType);
         insert request;
-        Test.startTest();
         WorkOrder workOrder = HOT_TestDataFactory.createWorkOrder(request, workType);
         insert workOrder;
         WorkOrderLineItem WorkOrderLineItem = HOT_TestDataFactory.createWorkOrderLineItem(workOrder, workType);
@@ -419,6 +419,7 @@ private class HOT_WantedSRListControllerTest {
             resource1.Id
         );
         insert assignedResource;
+        Test.stopTest();
 
         HOT_wantedSRListController.Request req = new HOT_wantedSRListController.Request();
         req.saID = ServiceAppointment.Id;
@@ -427,7 +428,6 @@ private class HOT_WantedSRListControllerTest {
         List<String> result = HOT_wantedSRListController.checkForOverlapOrExisting(
             new List<HOT_wantedSRListController.Request>{ req }
         );
-        Test.stopTest();
         System.assertEquals('existing', result[0]);
     }
     @IsTest
@@ -446,6 +446,7 @@ private class HOT_WantedSRListControllerTest {
             timezonesidkey = 'Europe/Paris',
             username = 'HOT_testaccount@nav.hot.no'
         );
+        Test.startTest();
         insert user1;
         ServiceResource resource1 = HOT_TestDataFactory.createServiceResource(user1.Id);
         insert resource1;
@@ -455,7 +456,6 @@ private class HOT_WantedSRListControllerTest {
 
         HOT_Request__c request = HOT_TestDataFactory.createRequest('TEST', workType);
         insert request;
-        Test.startTest();
         WorkOrder workOrder = HOT_TestDataFactory.createWorkOrder(request, workType);
         insert workOrder;
         WorkOrderLineItem WorkOrderLineItem = HOT_TestDataFactory.createWorkOrderLineItem(workOrder, workType);
