@@ -316,6 +316,7 @@ private class HOT_WantedSRListControllerTest {
             timezonesidkey = 'Europe/Paris',
             username = 'HOT_testaccount@nav.hot.no'
         );
+        Test.startTest();
         insert user1;
         ServiceResource resource1 = HOT_TestDataFactory.createServiceResource(user1.Id);
         insert resource1;
@@ -325,7 +326,6 @@ private class HOT_WantedSRListControllerTest {
 
         HOT_Request__c request = HOT_TestDataFactory.createRequest('TEST', workType);
         insert request;
-        Test.startTest();
         WorkOrder workOrder = HOT_TestDataFactory.createWorkOrder(request, workType);
         insert workOrder;
         WorkOrderLineItem WorkOrderLineItem = HOT_TestDataFactory.createWorkOrderLineItem(workOrder, workType);
@@ -342,7 +342,6 @@ private class HOT_WantedSRListControllerTest {
             resource1.Id
         );
         insert interestedResource;
-        Test.stopTest();
         AssignedResource assignedResource = HOT_TestDataFactory.createAssignedResource(
             ServiceAppointment.Id,
             resource1.Id
@@ -362,6 +361,7 @@ private class HOT_WantedSRListControllerTest {
         ServiceAppointment2.SchedStartTime = Datetime.now().addDays(52);
         ServiceAppointment2.SchedEndTime = ServiceAppointment2.SchedStartTime.addHours(4);
         insert ServiceAppointment2;
+        Test.stopTest();
 
         List<ServiceAppointment> saToCheck = new List<ServiceAppointment>();
         saToCheck.add(ServiceAppointment2);
