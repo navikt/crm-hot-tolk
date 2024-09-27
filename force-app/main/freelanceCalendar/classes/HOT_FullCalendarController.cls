@@ -11,11 +11,13 @@ public with sharing class HOT_FullCalendarController {
         @AuraEnabled
         public String type;
         @AuraEnabled
-        public String title;
+        public String description;
         @AuraEnabled
         public DateTime startTime;
         @AuraEnabled
         public DateTime endTime;
+        @AuraEnabled
+        public String appointmentNumber;
     }
 
     @AuraEnabled(cacheable=true)
@@ -34,22 +36,24 @@ public with sharing class HOT_FullCalendarController {
         for (ServiceAppointment appointment : appointments) {
             CalendarEvent event = new CalendarEvent();
             event.id = appointment.Id;
+            event.appointmentNumber = appointment.AppointmentNumber;
             event.type = (appointment.Status == 'Dispatched')
                 ? EventType.SERVICE_APPOINTMENT.toString()
                 : EventType.COMPLETED_SERVICE_APPOINTMENT.toString();
             event.startTime = appointment.SchedStartTime;
             event.endTime = appointment.SchedEndTime;
-            event.title = appointment.Subject;
+            event.description = appointment.Subject;
             events.add(event);
         }
 
         for (HOT_WageClaim__c claim : openWageClaims) {
             CalendarEvent event = new CalendarEvent();
             event.id = claim.Id;
+            event.appointmentNumber = claim.ServiceAppointmentName__c;
             event.type = EventType.OPEN_WAGE_CLAIM.toString();
             event.startTime = claim.StartTime__c;
             event.endTime = claim.EndTime__c;
-            event.title = 'Ledig på lønn';
+            event.description = 'Ledig på lønn';
             events.add(event);
         }
         return events;
@@ -84,7 +88,7 @@ public with sharing class HOT_FullCalendarController {
     ) {
         Id resourceId = getUserServiceResourceId();
         return [
-            SELECT Id, StartTime__c, EndTime__c, ServiceResource__r.Id, Status__c
+            SELECT Id, StartTime__c, EndTime__c, ServiceResource__r.Id, Status__c, ServiceAppointmentName__c
             FROM HOT_WageClaim__c
             WHERE
                 ServiceResource__r.Id = :resourceId
