@@ -26,7 +26,6 @@ export default class LibsFullCalendar extends NavigationMixin(LightningElement) 
         await this.loadScriptAndStyle();
         const events = await this.fetchUniqueEventsForTimeRegion(this.earliestTime, this.latestTime);
         this.events = events;
-        console.log(`Calendar set up with ${this.events.length} initial events`);
         await this.initializeCalendar(events);
     }
 
@@ -37,7 +36,6 @@ export default class LibsFullCalendar extends NavigationMixin(LightningElement) 
                 loadStyle(this, FULL_CALENDAR + '/main.min.css')
             ]);
         } catch (error) {
-            console.error('Error loading FullCalendar or fetching service appointments:', error);
             this.error = error;
         }
     }
@@ -85,7 +83,8 @@ export default class LibsFullCalendar extends NavigationMixin(LightningElement) 
 
         if (earliestTimeInView < this.earliestTime + fetchThresholdInMilliseconds) {
             const newEarliestTime =
-                this.earliestTime - LibsFullCalendar.DAYS_TO_FETCH_BEFORE_TODAY * LibsFullCalendar.MILLISECONDS_PER_DAY;
+                earliestTimeInView -
+                LibsFullCalendar.DAYS_TO_FETCH_BEFORE_TODAY * LibsFullCalendar.MILLISECONDS_PER_DAY;
             const pastEvents = await this.fetchUniqueEventsForTimeRegion(newEarliestTime, this.earliestTime);
             this.earliestTime = newEarliestTime;
             events.push(...pastEvents);
@@ -93,7 +92,7 @@ export default class LibsFullCalendar extends NavigationMixin(LightningElement) 
 
         if (latestTimeInView > this.latestTime - fetchThresholdInMilliseconds) {
             const newLatestTime =
-                this.latestTime + LibsFullCalendar.DAYS_TO_FETCH_FROM_TODAY * LibsFullCalendar.MILLISECONDS_PER_DAY;
+                latestTimeInView + LibsFullCalendar.DAYS_TO_FETCH_FROM_TODAY * LibsFullCalendar.MILLISECONDS_PER_DAY;
             const futureEvents = await this.fetchUniqueEventsForTimeRegion(this.latestTime, newLatestTime);
             this.latestTime = newLatestTime;
             events.push(...futureEvents);
@@ -189,7 +188,6 @@ export default class LibsFullCalendar extends NavigationMixin(LightningElement) 
                 const elements = document.getElementsByClassName('fc-refresh-button');
                 if (elements.length > 0) {
                     const el = elements[0];
-                    console.log('fant knappen');
                     el.innerHTML = `<img src="${LibsFullCalendar.REFRESH_ICON}" alt="Refresh Icon" style="width:16px; color:white; height:16px;" />`;
                 }
             },
@@ -213,13 +211,13 @@ export default class LibsFullCalendar extends NavigationMixin(LightningElement) 
         const minLoadingTime = new Promise((resolve) => setTimeout(resolve, 2500));
 
         this.cachedEventIds.clear();
-        this.todayInMilliseconds = new Date().getTime();
+
+        const viewDateInMilliseconds = this.calendar.getDate().getTime();
         this.earliestTime =
-            this.todayInMilliseconds -
+            viewDateInMilliseconds -
             LibsFullCalendar.DAYS_TO_FETCH_BEFORE_TODAY * LibsFullCalendar.MILLISECONDS_PER_DAY;
         this.latestTime =
-            this.todayInMilliseconds +
-            LibsFullCalendar.DAYS_TO_FETCH_FROM_TODAY * LibsFullCalendar.MILLISECONDS_PER_DAY;
+            viewDateInMilliseconds + LibsFullCalendar.DAYS_TO_FETCH_FROM_TODAY * LibsFullCalendar.MILLISECONDS_PER_DAY;
 
         const events = await this.fetchUniqueEventsForTimeRegion(this.earliestTime, this.latestTime);
         this.events = events;
@@ -235,11 +233,9 @@ export default class LibsFullCalendar extends NavigationMixin(LightningElement) 
     }
     handleEventClick(info) {
         if (info.view.type === 'timeGridDay') {
-            console.log('event clicked', info.event.extendedProps);
             this.navigateToDetailView(info.event.extendedProps);
         } else {
             this.calendar.changeView('timeGridDay', new Date(info.event.start));
-            console.log('Event clicked:', info);
         }
     }
 
