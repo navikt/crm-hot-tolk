@@ -13,7 +13,6 @@ public without sharing class HOT_ServiceAppointmentHandler extends MyTriggers {
         List<ServiceAppointment> serviceAppointmentsStatusFromCannotCompleteToNone = new List<ServiceAppointment>();
         List<ServiceAppointment> serviceAppointmentsChangedOrderedTime = new List<ServiceAppointment>();
         List<ServiceAppointment> recievedNewInterpreter = new List<ServiceAppointment>();
-        List<ServiceAppointment> updatedServiceAppointments = new List<ServiceAppointment>();
         List<ServiceAppointment> serviceAppointmentsWithChangedStatusOrResource = new List<ServiceAppointment>();
         List<ServiceAppointment> allServiceAppointments = new List<ServiceAppointment>();
         List<ServiceAppointment> releasedServiceAppointments = new List<ServiceAppointment>();
@@ -55,14 +54,7 @@ public without sharing class HOT_ServiceAppointmentHandler extends MyTriggers {
             ) {
                 recievedNewInterpreter.add(serviceAppointment);
             }
-            if (
-                triggerOldMap.get(serviceAppointment.Id).get('HOT_PreferredResource__c') !=
-                ServiceAppointment.HOT_PreferredResource__c &&
-                serviceAppointment.HOT_PreferredResource__c != null &&
-                serviceAppointment.HOT_ServiceResource__c == null
-            ) {
-                updatedServiceAppointments.add(serviceAppointment);
-            }
+
             if (
                 serviceAppointment.Status == 'None' &&
                 triggerOldMap.get(serviceAppointment.Id).get('Status') == 'Cannot Complete'
@@ -195,9 +187,6 @@ public without sharing class HOT_ServiceAppointmentHandler extends MyTriggers {
             ) {
                 serviceAppointmentsWithStatusNone.add(serviceAppointment);
             }
-        }
-        if (!updatedServiceAppointments.isEmpty()) {
-            setFieldsByPreferredResource(updatedServiceAppointments);
         }
 
         if (recievedNewInterpreter.size() > 0) {
