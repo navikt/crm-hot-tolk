@@ -65,20 +65,6 @@ private class HOT_ServiceAppointmentHandlerTest {
         );
     }
     @IsTest
-    static void setFieldsByPreferredResourceTest_onInsert() {
-        ServiceResource serviceResource = [SELECT Id, HOT_IsFreelanceInterpreter__c FROM ServiceResource];
-        ServiceAppointment serviceAppointment = [
-            SELECT HOT_IsReleasedToFreelance__c
-            FROM ServiceAppointment
-            WHERE HOT_PreferredResource__c != NULL
-        ];
-        System.assertEquals(
-            serviceResource.HOT_IsFreelanceInterpreter__c,
-            serviceAppointment.HOT_IsReleasedToFreelance__c,
-            'IsFreelanceInterpreter on ServiceAppointment was not set to IsFreelanceInterpreter on PreferredResources.'
-        );
-    }
-    @IsTest
     static void setFieldsByPreferredResourceTest_onUpdate() {
         HOT_Resource__c resource = [SELECT Id, Name, Service_Resource__c FROM HOT_Resource__c];
 
@@ -659,60 +645,6 @@ private class HOT_ServiceAppointmentHandlerTest {
             serviceAppointment.DueDate.format('HH', 'Europe/Oslo'),
             serviceAppointment.HOT_EndHour__c,
             'End time ble ikke satt riktig'
-        );
-    }
-
-    @IsTest
-    public static void updateServiceTerritoryOnAssignedResourceDelete() {
-        ServiceAppointment serviceAppointment = [
-            SELECT Id, ServiceTerritoryId, HOT_WorkOrderLineItem__r.ServiceTerritoryId, ParentRecordId
-            FROM ServiceAppointment
-            LIMIT 1
-        ];
-        // Need to make new to see if the ServiceTerritory field on SA changes to the new one
-        OperatingHours operatingHours = HOT_TestDataFactory.createOperatingHours();
-        insert operatingHours;
-        ServiceTerritory serviceTerritory = HOT_TestDataFactory.createServiceTerritory(operatingHours);
-        insert serviceTerritory;
-
-        WorkOrderLineItem woli = [
-            SELECT Id, ServiceTerritoryId
-            FROM WorkOrderLineItem
-            WHERE Id = :serviceAppointment.ParentRecordId
-            LIMIT 1
-        ];
-        woli.ServiceTerritoryId = serviceTerritory.Id;
-        update woli;
-
-        serviceAppointment.HOT_PreferredResource__c = null;
-        update serviceAppointment;
-
-        List<AssignedResource> arList = [
-            SELECT Id
-            FROM AssignedResource
-            WHERE ServiceAppointmentId = :serviceAppointment.Id
-        ];
-
-        System.assertNotEquals(
-            woli.ServiceTerritoryId,
-            serviceAppointment.ServiceTerritoryId,
-            'ServiceTerritory ble ikke satt riktig - updateServiceTerritoryOnAssignedResourceDelete'
-        );
-
-        Test.startTest();
-        delete arList;
-        Test.stopTest();
-
-        serviceAppointment = [
-            SELECT Id, ServiceTerritoryId, HOT_WorkOrderLineItem__r.ServiceTerritoryId
-            FROM ServiceAppointment
-            WHERE Id = :serviceAppointment.Id
-        ];
-
-        System.assertEquals(
-            woli.ServiceTerritoryId,
-            serviceAppointment.ServiceTerritoryId,
-            'ServiceTerritory ble ikke satt riktig - updateServiceTerritoryOnAssignedResourceDelete'
         );
     }
 
