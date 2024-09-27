@@ -11,12 +11,16 @@ export default class LibsFullCalendar extends NavigationMixin(LightningElement) 
     static DAYS_TO_FETCH_BEFORE_TODAY = 2 * 31;
     static FETCH_THRESHOLD_IN_DAYS = 31; // How 'close' date view start or end can get to earliestTime or latestTime before a fetch of new events occurs
     static REFRESH_ICON = IKONER + '/Refresh/Refresh.svg';
+    static MOBILE_BREAK_POINT = 500;
+    static STATE_KEY = 'i98u14ij24j2+49i+04oasfdh';
     isLoading = false;
+    isMobileSize = false;
     todayInMilliseconds;
     earliestTime;
     latestTime;
     cachedEventIds = new Set();
     isCalInitialized = false;
+    sessionStorageState;
     error;
     calendar;
     @track events = []; //Brukt for å lagre data fra service appointments
@@ -41,6 +45,11 @@ export default class LibsFullCalendar extends NavigationMixin(LightningElement) 
     }
 
     connectedCallback() {
+        const state = sessionStorage.getItem(LibsFullCalendar.STATE_KEY);
+        if (state != null) {
+            this.sessionStorageState = JSON.parse(state);
+        }
+
         this.todayInMilliseconds = new Date().getTime();
         this.earliestTime =
             this.todayInMilliseconds -
@@ -49,6 +58,14 @@ export default class LibsFullCalendar extends NavigationMixin(LightningElement) 
             this.todayInMilliseconds +
             LibsFullCalendar.DAYS_TO_FETCH_FROM_TODAY * LibsFullCalendar.MILLISECONDS_PER_DAY;
         this.setupCalendar();
+    }
+
+    disconnectedCallback() {
+        const state = {
+            viewDate: this.calendar?.getDate(),
+            viewType: this.calendar?.view.type
+        };
+        sessionStorage.setItem(LibsFullCalendar.STATE_KEY, JSON.stringify(state));
     }
 
     async fetchUniqueEventsForTimeRegion(earliestTime, latestTime) {
@@ -122,13 +139,29 @@ export default class LibsFullCalendar extends NavigationMixin(LightningElement) 
     async getCalendarConfig(events) {
         const screenWidth = window.innerWidth;
         let config = {
+            eventDidMount: (arg) => {
+                if (arg.view.type === 'timeGridDay') {
+                    for (const child of arg.el.children[0].children[0].children) {
+                        if (child.classList.contains('fc-event-title-container')) {
+                            child.children[0].innerText = arg.event.title + ' - ' + arg.event.extendedProps.description;
+                        }
+                    }
+                }
+            },
+            windowResize: () => {
+                this.isMobileSize = window.innerWidth < LibsFullCalendar.MOBILE_BREAK_POINT;
+            },
             datesSet: (dateInfo) => {
                 this.updateEventsFromDateRange(dateInfo.start, dateInfo.end);
             },
             dayHeaderDidMount: (arg) => {
                 const newNode = document.createElement('p');
                 const oldNode = arg.el.childNodes[0].childNodes[0];
-                newNode.textContent = oldNode.textContent;
+                if (arg.view.type === 'timeGridDay') {
+                    newNode.textContent = oldNode.textContent + ` ${this.calendar?.getDate().getDate()}.`;
+                } else {
+                    newNode.textContent = oldNode.textContent;
+                }
                 newNode.classList = oldNode.classList;
                 arg.el.childNodes[0].replaceChild(newNode, oldNode);
             },
@@ -184,7 +217,7 @@ export default class LibsFullCalendar extends NavigationMixin(LightningElement) 
                     dayMaxEventRows: 4
                 }
             },
-            viewDidMount: (info) => {
+            viewDidMount: () => {
                 const elements = document.getElementsByClassName('fc-refresh-button');
                 if (elements.length > 0) {
                     const el = elements[0];
@@ -193,7 +226,8 @@ export default class LibsFullCalendar extends NavigationMixin(LightningElement) 
             },
             eventClick: (info) => this.handleEventClick(info)
         };
-        if (screenWidth < 500) {
+        if (screenWidth < LibsFullCalendar.MOBILE_BREAK_POINT) {
+            this.isMobileSize = true;
             // Small screens (e.g., mobile)
             config.headerToolbar = {
                 start: 'today dayGridMonth',
@@ -202,6 +236,17 @@ export default class LibsFullCalendar extends NavigationMixin(LightningElement) 
             };
             config.titleFormat = { year: 'numeric', month: 'short' };
             config.views.dayGridMonth.dayMaxEventRows = 10;
+        }
+        if (this.sessionStorageState != undefined) {
+            config.initialDate = new Date(this.sessionStorageState.viewDate);
+            const viewDateInMilliseconds = config.initialDate.getTime();
+            this.earliestTime =
+                viewDateInMilliseconds -
+                LibsFullCalendar.DAYS_TO_FETCH_BEFORE_TODAY * LibsFullCalendar.MILLISECONDS_PER_DAY;
+            this.latestTime =
+                viewDateInMilliseconds +
+                LibsFullCalendar.DAYS_TO_FETCH_FROM_TODAY * LibsFullCalendar.MILLISECONDS_PER_DAY;
+            config.initialView = this.sessionStorageState.viewType;
         }
 
         return config;
@@ -232,7 +277,8 @@ export default class LibsFullCalendar extends NavigationMixin(LightningElement) 
         this.isLoading = false;
     }
     handleEventClick(info) {
-        if (info.view.type === 'timeGridDay') {
+        if (info.view.type === 'timeGridDay' || !this.isMobileSize) {
+            console.log('event clicked', info.event.extendedProps);
             this.navigateToDetailView(info.event.extendedProps);
         } else {
             this.calendar.changeView('timeGridDay', new Date(info.event.start));
@@ -286,6 +332,8 @@ class CalendarEvent {
     recordId;
     type;
     title;
+    saNumber;
+    description;
     start;
     end;
     isPast;
@@ -298,7 +346,9 @@ class CalendarEvent {
      */
     constructor(data) {
         this.recordId = data.id;
-        this.title = data.title;
+        this.saNumber = data.appointmentNumber ?? '';
+        this.description = data.description;
+        this.title = this.saNumber;
         this.start = new Date(data.startTime);
         this.end = new Date(data.endTime);
         this.type = data.type;
