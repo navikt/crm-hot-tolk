@@ -198,9 +198,9 @@ export default class LibsFullCalendar extends NavigationMixin(LightningElement) 
         if (screenWidth < 500) {
             // Small screens (e.g., mobile)
             config.headerToolbar = {
-                start: 'prev,next',
+                start: 'today dayGridMonth',
                 center: 'title',
-                end: 'today dayGridMonth'
+                end: 'prev,next'
             };
             config.titleFormat = { year: 'numeric', month: 'short' };
             config.views.dayGridMonth.dayMaxEventRows = 10;
