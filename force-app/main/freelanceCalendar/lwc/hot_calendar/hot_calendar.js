@@ -141,11 +141,14 @@ export default class LibsFullCalendar extends NavigationMixin(LightningElement) 
         let config = {
             eventDidMount: (arg) => {
                 if (arg.view.type === 'timeGridDay') {
-                    for (const child of arg.el.children[0].children[0].children) {
-                        if (child.classList.contains('fc-event-title-container')) {
-                            child.children[0].innerText = arg.event.title + ' - ' + arg.event.extendedProps.description;
+                    //setTimeout er for å fikse rendering av event info i dayview, var en slags race condition
+                    setTimeout(() => {
+                        const titleElement = arg.el.querySelector('.fc-event-title');
+                        if (titleElement) {
+                            titleElement.textContent = '';
+                            titleElement.textContent = `${arg.event.title} - ${arg.event.extendedProps.description}`;
                         }
-                    }
+                    }, 0);
                 }
             },
             windowResize: () => {
