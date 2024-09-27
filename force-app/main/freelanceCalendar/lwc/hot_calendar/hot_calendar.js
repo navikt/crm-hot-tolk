@@ -11,7 +11,9 @@ export default class LibsFullCalendar extends NavigationMixin(LightningElement) 
     static DAYS_TO_FETCH_BEFORE_TODAY = 2 * 31;
     static FETCH_THRESHOLD_IN_DAYS = 31; // How 'close' date view start or end can get to earliestTime or latestTime before a fetch of new events occurs
     static REFRESH_ICON = IKONER + '/Refresh/Refresh.svg';
+    static MOBILE_BREAK_POINT = 500;
     isLoading = false;
+    isMobileSize = false;
     todayInMilliseconds;
     earliestTime;
     latestTime;
@@ -123,6 +125,9 @@ export default class LibsFullCalendar extends NavigationMixin(LightningElement) 
     async getCalendarConfig(events) {
         const screenWidth = window.innerWidth;
         let config = {
+            windowResize: () => {
+                this.isMobileSize = window.innerWidth < LibsFullCalendar.MOBILE_BREAK_POINT;
+            },
             datesSet: (dateInfo) => {
                 this.updateEventsFromDateRange(dateInfo.start, dateInfo.end);
             },
@@ -185,7 +190,7 @@ export default class LibsFullCalendar extends NavigationMixin(LightningElement) 
                     dayMaxEventRows: 4
                 }
             },
-            viewDidMount: (info) => {
+            viewDidMount: () => {
                 const elements = document.getElementsByClassName('fc-refresh-button');
                 if (elements.length > 0) {
                     const el = elements[0];
@@ -195,7 +200,8 @@ export default class LibsFullCalendar extends NavigationMixin(LightningElement) 
             },
             eventClick: (info) => this.handleEventClick(info)
         };
-        if (screenWidth < 500) {
+        if (screenWidth < LibsFullCalendar.MOBILE_BREAK_POINT) {
+            this.isMobileSize = true;
             // Small screens (e.g., mobile)
             config.headerToolbar = {
                 start: 'prev,next',
@@ -234,7 +240,7 @@ export default class LibsFullCalendar extends NavigationMixin(LightningElement) 
         this.isLoading = false;
     }
     handleEventClick(info) {
-        if (info.view.type === 'timeGridDay') {
+        if (info.view.type === 'timeGridDay' || !this.isMobileSize) {
             console.log('event clicked', info.event.extendedProps);
             this.navigateToDetailView(info.event.extendedProps);
         } else {
