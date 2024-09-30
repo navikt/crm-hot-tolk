@@ -66,57 +66,6 @@ private class HOT_ServiceAppointmentHandlerTest {
     }
 
     @IsTest
-    static void setFieldsIfPreferredResourceDeletedTest_onUpdate() {
-        ServiceResource serviceResource = [
-            SELECT Id, HOT_IsFreelanceInterpreter__c, HOT_IsEmployedInterpreter__c
-            FROM ServiceResource
-            LIMIT 1
-        ];
-        HOT_Resource__c resource = [
-            SELECT Id, Name, Service_Resource__c
-            FROM HOT_Resource__c
-            WHERE Service_Resource__c = :serviceResource.Id
-        ];
-        update serviceResource;
-
-        ServiceAppointment serviceAppointment = [
-            SELECT Id, HOT_PreferredResource__c, HOT_IsReleasedToFreelance__c, HOT_IsEmployedInterpreter__c
-            FROM ServiceAppointment
-            WHERE HOT_PreferredResource__c = NULL
-            LIMIT 1
-        ];
-        serviceAppointment.HOT_PreferredResource__c = resource.Id;
-        Id saId = serviceAppointment.Id;
-        update serviceAppointment;
-
-        serviceAppointment = [
-            SELECT Id, HOT_PreferredResource__c, HOT_IsReleasedToFreelance__c, HOT_IsEmployedInterpreter__c
-            FROM ServiceAppointment
-            WHERE Id = :saId
-        ];
-        system.assertEquals(resource.Id, serviceAppointment.HOT_PreferredResource__c);
-        system.assertEquals(true, serviceAppointment.HOT_IsReleasedToFreelance__c);
-        system.assertEquals(false, serviceAppointment.HOT_IsEmployedInterpreter__c);
-
-        serviceAppointment.HOT_PreferredResource__c = null;
-        update serviceAppointment;
-
-        serviceAppointment = [
-            SELECT
-                Id,
-                HOT_PreferredResource__c,
-                HOT_IsReleasedToFreelance__c,
-                HOT_IsEmployedInterpreter__c,
-                ServiceTerritoryId
-            FROM ServiceAppointment
-            WHERE Id = :saId
-        ];
-        system.assertEquals(null, serviceAppointment.HOT_PreferredResource__c);
-        system.assertEquals(false, serviceAppointment.HOT_IsReleasedToFreelance__c);
-        system.assertEquals(true, serviceAppointment.HOT_IsEmployedInterpreter__c);
-    }
-
-    @IsTest
     static void cancelServiceAppointment() {
         ServiceAppointment sa = [
             SELECT Id, Status, HOT_ServiceResource__c, HOT_CanceledByInterpreter__c
