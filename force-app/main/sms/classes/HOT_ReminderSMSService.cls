@@ -455,7 +455,7 @@ public without sharing class HOT_ReminderSMSService {
             sms.Type__c = 'Interpreter';
             sms.Account__c = sr.AccountId;
             sms.Recipient__c = sr.HOT_MobilePhone__c;
-            String message = 'INFO\nDu har fått en medtolk på flertolksoppdraget ditt. \nNy tolk er:\n';
+            String message = 'INFO\nDu har fått medtolk. \nTolk er:\n';
             message += interpreterName;
             message += '\nDato: ' + schedStartEndtime;
             message += '\n\nFor mer informasjon, se tolkebestilling.nav.no. Du kan ikke svare på denne meldingen.';
