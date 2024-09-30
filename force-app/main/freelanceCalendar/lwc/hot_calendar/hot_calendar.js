@@ -22,7 +22,6 @@ export default class LibsFullCalendar extends NavigationMixin(LightningElement) 
     cachedEventIds = new Set();
     error;
     calendar;
-    @track events = [];
 
     connectedCallback() {
         const state = sessionStorage.getItem(LibsFullCalendar.STATE_KEY);
@@ -52,7 +51,6 @@ export default class LibsFullCalendar extends NavigationMixin(LightningElement) 
     async setupCalendar(sessionState) {
         await this.loadScriptAndStyle();
         const events = await this.fetchUniqueEventsForTimeRegion(this.earliestTime, this.latestTime);
-        this.events = events;
         await this.initializeCalendar(events, sessionState);
     }
 
@@ -228,7 +226,6 @@ export default class LibsFullCalendar extends NavigationMixin(LightningElement) 
             viewDateInMilliseconds + LibsFullCalendar.DAYS_TO_FETCH_FROM_TODAY * LibsFullCalendar.MILLISECONDS_PER_DAY;
 
         const events = await this.fetchUniqueEventsForTimeRegion(this.earliestTime, this.latestTime);
-        this.events = events;
 
         this.calendar.removeAllEvents();
 
@@ -265,7 +262,6 @@ export default class LibsFullCalendar extends NavigationMixin(LightningElement) 
             events.push(...futureEvents);
         }
 
-        this.events.push(...events);
         for (const event of events) {
             this.calendar?.addEvent(event);
         }
