@@ -42,15 +42,11 @@ export class CalendarEvent {
         this.end = new Date(data.endTime);
         this.type = data.type;
         this.isPast = this.end <= new Date();
-        const properties = this.getEventProperties(this.type) ?? {
+        const properties = CalendarEvent.eventTypeProperties.get(this.type) ?? {
             upcomingColor: '#90cce8',
             pastColor: '#90cce8'
         };
         this.color = (this.isPast ? properties.pastColor : properties.color) ?? properties.color;
         this.textColor = (this.isPast ? properties.pastFontColor : properties.fontColor) ?? properties.fontColor;
-    }
-
-    getEventProperties(eventType) {
-        return CalendarEvent.eventTypeProperties.get(eventType);
     }
 }
