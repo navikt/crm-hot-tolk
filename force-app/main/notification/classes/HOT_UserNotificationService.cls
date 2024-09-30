@@ -191,7 +191,7 @@ public without sharing class HOT_UserNotificationService {
     ) {
         String title = 'Ny medtolk';
         String body =
-            'Du har fått en medtolk på flertolksoppdraget ditt. \nNy tolk er: ' +
+            'Du har fått medtolk. \nTolk er: ' +
             newInterpreter +
             '\nDato: ' +
             sa.SchedStartTime?.format('dd.MM.yyyy', 'Europe/Oslo') +

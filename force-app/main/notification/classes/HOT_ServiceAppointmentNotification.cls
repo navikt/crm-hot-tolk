@@ -1069,7 +1069,7 @@ public without sharing class HOT_ServiceAppointmentNotification {
                     newNotification.HOT_NotificationChannel__c = 'Push-varsel i appen';
                     newNotification.HOT_Subject__c = 'Ny medtolk';
                     String text =
-                        'Du har fått en medtolk på flertolksoppdraget ditt. \nNy tolk er: ' +
+                        'Du har fått medtolk. \nTolk er: ' +
                         updatedSAWithNewInterpreter.HOT_ServiceResource__r.Name +
                         '.\nDato: ' +
                         updatedSAWithNewInterpreter.SchedStartTime?.format('dd.MM.yyyy', 'Europe/Oslo') +
@@ -1097,7 +1097,7 @@ public without sharing class HOT_ServiceAppointmentNotification {
                         newNotification.HOT_Account__c = serviceAppointment.HOT_ServiceResource__r.AccountId;
                         newNotification.HOT_NotificationChannel__c = 'SMS';
                         newNotification.HOT_Subject__c = 'Ny medtolk';
-                        String text = 'INFO\nDu har fått en medtolk på flertolksoppdraget ditt. \nNy tolk er:\n';
+                        String text = 'INFO\nDu har fått medtolk.. \nTolk er:\n';
                         text += updatedSAWithNewInterpreter.HOT_ServiceResource__r.Name;
                         text +=
                             '.\nDato: ' +
@@ -1129,7 +1129,7 @@ public without sharing class HOT_ServiceAppointmentNotification {
                 Messaging.CustomNotification notification = new Messaging.CustomNotification();
                 notification.setTitle('Ny medtolk');
                 notification.setBody(
-                    'Du har fått en medtolk på flertolksoppdraget ditt. \nNy tolk er: ' +
+                    'Du har fått medtolk.\nTolk er: ' +
                     updatedSAWithNewInterpreter.HOT_ServiceResource__r.Name +
                     '\nDato: ' +
                     updatedSAWithNewInterpreter.SchedStartTime?.format('dd.MM.yyyy', 'Europe/Oslo') +
