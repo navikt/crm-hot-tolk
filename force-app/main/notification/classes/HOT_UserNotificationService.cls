@@ -187,12 +187,49 @@ public without sharing class HOT_UserNotificationService {
         ServiceAppointment sa,
         String targetPageRef,
         String newInterpreter,
-        Set<String> recipients
+        Set<String> recipients,
+        String appointmentNumber
     ) {
         String title = 'Ny medtolk';
         String body =
-            'Du har fått medtolk. \nTolk er: ' +
+            'Du har fått medtolk. ' +
+            appointmentNumber +
+            ' \nTolk er: ' +
             newInterpreter +
+            '\nDato: ' +
+            sa.SchedStartTime?.format('dd.MM.yyyy', 'Europe/Oslo') +
+            ', kl: ' +
+            sa.SchedStartTime?.format('HH:mm', 'Europe/Oslo') +
+            ' - ' +
+            sa.SchedEndTime?.format('HH:mm', 'Europe/Oslo') +
+            '.';
+
+        Id notificationTypeId = notificationType.Id;
+        Messaging.CustomNotification notification = new Messaging.CustomNotification();
+        notification.setTitle(title);
+        notification.setBody(body);
+        notification.setNotificationTypeId(notificationTypeId);
+        notification.setTargetPageRef(targetPageRef);
+
+        try {
+            notification.send(recipients);
+        } catch (Exception e) {
+            LoggerUtility logger = new LoggerUtility();
+            logger.exception(e, CRM_ApplicationDomain.Domain.HOT);
+            logger.publishSynch();
+        }
+    }
+    public static void coInterpreterRemovedNotification(
+        CustomNotificationType notificationType,
+        ServiceAppointment sa,
+        String targetPageRef,
+        Set<String> recipients,
+        String appointmentNumber
+    ) {
+        String title = 'Medtolk tatt av oppdraget';
+        String body =
+            'En medtolk er tatt av oppdraget. ' +
+            appointmentNumber +
             '\nDato: ' +
             sa.SchedStartTime?.format('dd.MM.yyyy', 'Europe/Oslo') +
             ', kl: ' +
@@ -221,11 +258,14 @@ public without sharing class HOT_UserNotificationService {
         ServiceAppointment sa,
         String targetPageRef,
         String newInterpreter,
-        Set<String> recipients
+        Set<String> recipients,
+        String appointmentNumber
     ) {
         String title = 'Endring av medtolk';
         String body =
-            'Medtolk på et oppdrag du er tildelt er blitt endret. \nNy tolk er: ' +
+            'Medtolk på et oppdrag du er tildelt er blitt endret. ' +
+            appointmentNumber +
+            ' \nNy tolk er: ' +
             newInterpreter +
             '\nDato: ' +
             sa.SchedStartTime?.format('dd.MM.yyyy', 'Europe/Oslo') +

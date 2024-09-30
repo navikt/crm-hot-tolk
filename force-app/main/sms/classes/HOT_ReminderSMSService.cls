@@ -437,14 +437,15 @@ public without sharing class HOT_ReminderSMSService {
         }
     }
     public static void sendSMSOnNewCoInterpreterChange(
-        Set<Id> serviceResourcesIds,
+        Id serviceResourceId,
         String schedStartEndtime,
+        String appointmentNumber,
         String interpreterName
     ) {
         List<ServiceResource> serviceresourceList = [
             SELECT Id, Name, AccountId, HOT_MobilePhone__c
             FROM ServiceResource
-            WHERE Id = :serviceResourcesIds
+            WHERE Id = :serviceResourceId
         ];
         List<SMS__c> smsList = new List<SMS__c>();
         //creating notification object list
@@ -455,7 +456,7 @@ public without sharing class HOT_ReminderSMSService {
             sms.Type__c = 'Interpreter';
             sms.Account__c = sr.AccountId;
             sms.Recipient__c = sr.HOT_MobilePhone__c;
-            String message = 'INFO\nDu har fått medtolk. \nTolk er:\n';
+            String message = 'INFO\nDu har fått medtolk. ' + appointmentNumber + ' \nTolk er:\n';
             message += interpreterName;
             message += '\nDato: ' + schedStartEndtime;
             message += '\n\nFor mer informasjon, se tolkebestilling.nav.no. Du kan ikke svare på denne meldingen.';
@@ -482,15 +483,15 @@ public without sharing class HOT_ReminderSMSService {
             logger.publishSynch();
         }
     }
-    public static void sendSMSOnCoInterpreterChange(
-        Set<Id> serviceResourcesIds,
+    public static void sendSMSOnCoInterpreterRemoved(
+        Id serviceResourceId,
         String schedStartEndtime,
-        String interpreterName
+        String appointmentNumber
     ) {
         List<ServiceResource> serviceresourceList = [
             SELECT Id, Name, AccountId, HOT_MobilePhone__c
             FROM ServiceResource
-            WHERE Id = :serviceResourcesIds
+            WHERE Id = :serviceResourceId
         ];
         List<SMS__c> smsList = new List<SMS__c>();
         //creating notification object list
@@ -501,7 +502,56 @@ public without sharing class HOT_ReminderSMSService {
             sms.Type__c = 'Interpreter';
             sms.Account__c = sr.AccountId;
             sms.Recipient__c = sr.HOT_MobilePhone__c;
-            String message = 'INFO\nMedtolk på et oppdrag du er tildelt er blitt endret. \nNy tolk er:\n';
+            String message = 'INFO\nEn medtolk har blitt tatt av oppdraget. ' + appointmentNumber + '\n';
+            message += '\nDato: ' + schedStartEndtime;
+            message += '\n\nFor mer informasjon, se tolkebestilling.nav.no. Du kan ikke svare på denne meldingen.';
+            message += '\nMvh tolketjenesten i NAV';
+
+            sms.Message__c = message;
+            if (SMS.Recipient__c != null) {
+                smsList.add(sms);
+            }
+        }
+        try {
+            HOT_DatabaseOperations.insertRecords(smsList);
+            //inserting notifications
+            try {
+                HOT_NotificationCentreController.createNotification(notificationList);
+            } catch (Exception e) {
+                LoggerUtility logger = new LoggerUtility();
+                logger.exception(e, CRM_ApplicationDomain.Domain.HOT);
+                logger.publish();
+            }
+        } catch (Exception e) {
+            LoggerUtility logger = new LoggerUtility();
+            logger.exception(e, CRM_ApplicationDomain.Domain.HOT);
+            logger.publishSynch();
+        }
+    }
+    public static void sendSMSOnCoInterpreterChange(
+        Id serviceResourceId,
+        String schedStartEndtime,
+        String appointmentNumber,
+        String interpreterName
+    ) {
+        List<ServiceResource> serviceresourceList = [
+            SELECT Id, Name, AccountId, HOT_MobilePhone__c
+            FROM ServiceResource
+            WHERE Id = :serviceResourceId
+        ];
+        List<SMS__c> smsList = new List<SMS__c>();
+        //creating notification object list
+        List<HOT_Notification__c> notificationList = new List<HOT_Notification__c>();
+        for (ServiceResource sr : serviceresourceList) {
+            SMS__c sms = new SMS__c();
+            sms.Domain__c = 'HOT';
+            sms.Type__c = 'Interpreter';
+            sms.Account__c = sr.AccountId;
+            sms.Recipient__c = sr.HOT_MobilePhone__c;
+            String message =
+                'INFO\nMedtolk på et oppdrag du er tildelt er blitt endret. ' +
+                appointmentNumber +
+                ' \nNy tolk er:\n';
             message += interpreterName;
             message += '\nDato: ' + schedStartEndtime;
             message += '\n\nFor mer informasjon, se tolkebestilling.nav.no. Du kan ikke svare på denne meldingen.';
