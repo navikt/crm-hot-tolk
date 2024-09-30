@@ -147,6 +147,16 @@ private class HOT_MySAListControllerTest {
     @IsTest
     static void getServiceAppointmentDetailsTest() {
         ServiceAppointment serviceAppointment = [SELECT Id FROM ServiceAppointment LIMIT 1];
+        User admin = [SELECT Id, UserRoleId FROM User WHERE Id = :UserInfo.getUserId() LIMIT 1];
+
+        ServiceResource serviceResource = [SELECT Id FROM ServiceResource WHERE RelatedRecordId = :admin.Id];
+
+        HOT_InterestedResource__c ir = HOT_TestDataFactory.createInterestedResource(
+            serviceAppointment.Id,
+            serviceResource.Id
+        );
+        ir.Status__c = 'Interested';
+        insert ir;
         ServiceAppointment saResult = HOT_MyServiceAppointmentListController.getServiceAppointmentDetails(
             serviceAppointment.Id
         );
