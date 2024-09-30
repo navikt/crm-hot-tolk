@@ -5,7 +5,7 @@ private class HOT_FullCalendarControllerTest {
         Profile otherUserProfile = [
             SELECT Id
             FROM Profile
-            WHERE Name = 'HOT Tolk Formidler'
+            WHERE Name = 'System Administrator' OR Name = 'Systemadministrator'
         ];
 
         User otherUser = HOT_TestDataFactory.createUser('Bruker', otherUserProfile);
@@ -53,7 +53,8 @@ private class HOT_FullCalendarControllerTest {
         );
         Test.stopTest();
         System.assert(
-            events.size() == 2 && events[0].id == appointment.Id,
+            events.size() == 2 &&
+            events[0].id == appointment.Id,
             'Should return one event with same Id as ServiceAppointment'
         );
     }
