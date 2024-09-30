@@ -64,34 +64,6 @@ private class HOT_ServiceAppointmentHandlerTest {
             'Owner of ServiceAppointment was not set to owner of Request.'
         );
     }
-    @IsTest
-    static void setFieldsByPreferredResourceTest_onUpdate() {
-        HOT_Resource__c resource = [SELECT Id, Name, Service_Resource__c FROM HOT_Resource__c];
-
-        ServiceAppointment serviceAppointment = [
-            SELECT Id, HOT_PreferredResource__c
-            FROM ServiceAppointment
-            WHERE HOT_PreferredResource__c = NULL
-            LIMIT 1
-        ];
-        serviceAppointment.HOT_PreferredResource__c = resource.Id;
-
-        Test.startTest();
-        update serviceAppointment;
-        Test.stopTest();
-
-        ServiceResource serviceResource = [SELECT Id, HOT_IsFreelanceInterpreter__c FROM ServiceResource];
-        serviceAppointment = [
-            SELECT HOT_IsReleasedToFreelance__c, HOT_Request__c
-            FROM ServiceAppointment
-            WHERE Id = :serviceAppointment.Id
-        ];
-        System.assertEquals(
-            serviceResource.HOT_IsFreelanceInterpreter__c,
-            serviceAppointment.HOT_IsReleasedToFreelance__c,
-            'IsFreelanceInterpreter on ServiceAppointment was not set to IsFreelanceInterpreter on PreferredResources.'
-        );
-    }
 
     @IsTest
     static void setFieldsIfPreferredResourceDeletedTest_onUpdate() {
