@@ -13,32 +13,31 @@ export default class LibsFullCalendar extends NavigationMixin(LightningElement) 
     static REFRESH_ICON = IKONER + '/Refresh/Refresh.svg';
     static MOBILE_BREAK_POINT = 500;
     static STATE_KEY = 'i98u14ij24j2+49i+04oasfdh';
+
     isLoading = false;
     isMobileSize = false;
-    todayInMilliseconds;
     earliestTime;
     latestTime;
     cachedEventIds = new Set();
-    isCalInitialized = false;
-    sessionStorageState;
     error;
     calendar;
-    @track events = []; //Brukt for å lagre data fra service appointments
+    @track events = [];
 
     connectedCallback() {
         const state = sessionStorage.getItem(LibsFullCalendar.STATE_KEY);
-        if (state != null) {
-            this.sessionStorageState = JSON.parse(state);
-        }
 
-        this.todayInMilliseconds = new Date().getTime();
+        const loadedSessionState = state ? JSON.parse(state) : null;
+
+        this.isMobileSize = window.innerWidth < LibsFullCalendar.MOBILE_BREAK_POINT;
+
+        const viewDateInMilliseconds = state ? new Date(loadedSessionState.viewDate).getTime() : new Date().getTime();
         this.earliestTime =
-            this.todayInMilliseconds -
+            viewDateInMilliseconds -
             LibsFullCalendar.DAYS_TO_FETCH_BEFORE_TODAY * LibsFullCalendar.MILLISECONDS_PER_DAY;
         this.latestTime =
-            this.todayInMilliseconds +
-            LibsFullCalendar.DAYS_TO_FETCH_FROM_TODAY * LibsFullCalendar.MILLISECONDS_PER_DAY;
-        this.setupCalendar();
+            viewDateInMilliseconds + LibsFullCalendar.DAYS_TO_FETCH_FROM_TODAY * LibsFullCalendar.MILLISECONDS_PER_DAY;
+
+        this.setupCalendar(loadedSessionState);
     }
 
     disconnectedCallback() {
@@ -49,11 +48,11 @@ export default class LibsFullCalendar extends NavigationMixin(LightningElement) 
         sessionStorage.setItem(LibsFullCalendar.STATE_KEY, JSON.stringify(state));
     }
 
-    async setupCalendar() {
+    async setupCalendar(sessionState) {
         await this.loadScriptAndStyle();
         const events = await this.fetchUniqueEventsForTimeRegion(this.earliestTime, this.latestTime);
         this.events = events;
-        await this.initializeCalendar(events);
+        await this.initializeCalendar(events, sessionState);
     }
 
     async loadScriptAndStyle() {
@@ -67,7 +66,7 @@ export default class LibsFullCalendar extends NavigationMixin(LightningElement) 
         }
     }
 
-    async initializeCalendar(events) {
+    async initializeCalendar(events, sessionState) {
         const calendarEl = this.template.querySelector('.calendar');
 
         if (typeof FullCalendar === 'undefined') {
@@ -76,26 +75,16 @@ export default class LibsFullCalendar extends NavigationMixin(LightningElement) 
             );
         }
 
-        const calendarConfig = await this.getCalendarConfig(events);
+        const calendarConfig = await this.getCalendarConfig(events, sessionState);
 
         this.calendar = new FullCalendar.Calendar(calendarEl, calendarConfig);
         this.calendar.render();
     }
 
-    async getCalendarConfig(events) {
-        const screenWidth = window.innerWidth;
+    async getCalendarConfig(events, sessionState) {
         let config = {
-            eventDidMount: (arg) => {
-                if (arg.view.type === 'timeGridDay') {
-                    //setTimeout er for å fikse rendering av event info i dayview, var en slags race condition
-                    setTimeout(() => {
-                        const titleElement = arg.el.querySelector('.fc-event-title');
-                        if (titleElement) {
-                            titleElement.textContent = '';
-                            titleElement.textContent = `${arg.event.title} - ${arg.event.extendedProps.description}`;
-                        }
-                    }, 0);
-                }
+            eventDidMount: (context) => {
+                this.onEventMount(context);
             },
             windowResize: () => {
                 this.isMobileSize = window.innerWidth < LibsFullCalendar.MOBILE_BREAK_POINT;
@@ -103,16 +92,8 @@ export default class LibsFullCalendar extends NavigationMixin(LightningElement) 
             datesSet: (dateInfo) => {
                 this.updateEventsFromDateRange(dateInfo.start, dateInfo.end);
             },
-            dayHeaderDidMount: (arg) => {
-                const newNode = document.createElement('p');
-                const oldNode = arg.el.childNodes[0].childNodes[0];
-                if (arg.view.type === 'timeGridDay') {
-                    newNode.textContent = oldNode.textContent + ` ${this.calendar?.getDate().getDate()}.`;
-                } else {
-                    newNode.textContent = oldNode.textContent;
-                }
-                newNode.classList = oldNode.classList;
-                arg.el.childNodes[0].replaceChild(newNode, oldNode);
+            dayHeaderDidMount: (context) => {
+                this.onDayHeaderMount(context);
             },
             navLinks: true,
             allDaySlot: false,
@@ -167,17 +148,12 @@ export default class LibsFullCalendar extends NavigationMixin(LightningElement) 
                 }
             },
             viewDidMount: () => {
-                const elements = document.getElementsByClassName('fc-refresh-button');
-                if (elements.length > 0) {
-                    const el = elements[0];
-                    el.innerHTML = `<img src="${LibsFullCalendar.REFRESH_ICON}" alt="Refresh Icon" style="width:16px; color:white; height:16px;" />`;
-                }
+                this.onViewMount();
             },
             eventClick: (info) => this.handleEventClick(info)
         };
-        if (screenWidth < LibsFullCalendar.MOBILE_BREAK_POINT) {
-            this.isMobileSize = true;
-            // Small screens (e.g., mobile)
+
+        if (this.isMobileSize) {
             config.headerToolbar = {
                 start: 'today dayGridMonth',
                 center: 'title',
@@ -186,19 +162,55 @@ export default class LibsFullCalendar extends NavigationMixin(LightningElement) 
             config.titleFormat = { year: 'numeric', month: 'short' };
             config.views.dayGridMonth.dayMaxEventRows = 10;
         }
-        if (this.sessionStorageState != undefined) {
-            config.initialDate = new Date(this.sessionStorageState.viewDate);
-            const viewDateInMilliseconds = config.initialDate.getTime();
-            this.earliestTime =
-                viewDateInMilliseconds -
-                LibsFullCalendar.DAYS_TO_FETCH_BEFORE_TODAY * LibsFullCalendar.MILLISECONDS_PER_DAY;
-            this.latestTime =
-                viewDateInMilliseconds +
-                LibsFullCalendar.DAYS_TO_FETCH_FROM_TODAY * LibsFullCalendar.MILLISECONDS_PER_DAY;
-            config.initialView = this.sessionStorageState.viewType;
+
+        if (sessionState) {
+            config.initialDate = new Date(sessionState.viewDate);
+            config.initialView = sessionState.viewType;
         }
 
         return config;
+    }
+
+    onEventMount(context) {
+        if (context.view.type === 'timeGridDay') {
+            //setTimeout er for å fikse rendering av event info i dayview, var en slags race condition
+            setTimeout(() => {
+                const titleElement = context.el.querySelector('.fc-event-title');
+                if (titleElement) {
+                    titleElement.textContent = '';
+                    titleElement.textContent = `${context.event.title} - ${context.event.extendedProps.description}`;
+                }
+            }, 0);
+        }
+    }
+
+    onDayHeaderMount(context) {
+        const newNode = document.createElement('p');
+        const oldNode = context.el.childNodes[0].childNodes[0];
+        if (context.view.type === 'timeGridDay') {
+            newNode.textContent = oldNode.textContent + ` ${this.calendar?.getDate().getDate()}.`;
+        } else {
+            newNode.textContent = oldNode.textContent;
+        }
+        newNode.classList = oldNode.classList;
+        context.el.childNodes[0].replaceChild(newNode, oldNode);
+    }
+
+    onViewMount() {
+        const elements = document.getElementsByClassName('fc-refresh-button');
+        if (elements.length > 0) {
+            const el = elements[0];
+            el.innerHTML = `<img src="${LibsFullCalendar.REFRESH_ICON}" alt="Refresh Icon" style="width:16px; color:white; height:16px;" />`;
+        }
+    }
+
+    handleEventClick(context) {
+        if (context.view.type === 'timeGridDay' || !this.isMobileSize) {
+            console.log('event clicked', context.event.extendedProps);
+            this.navigateToDetailView(context.event.extendedProps);
+        } else {
+            this.calendar.changeView('timeGridDay', new Date(context.event.start));
+        }
     }
 
     async refreshCalendar() {
@@ -277,15 +289,6 @@ export default class LibsFullCalendar extends NavigationMixin(LightningElement) 
             console.error('Error fetching service appointments from Apex:', error);
             this.error = error;
             return [];
-        }
-    }
-
-    handleEventClick(info) {
-        if (info.view.type === 'timeGridDay' || !this.isMobileSize) {
-            console.log('event clicked', info.event.extendedProps);
-            this.navigateToDetailView(info.event.extendedProps);
-        } else {
-            this.calendar.changeView('timeGridDay', new Date(info.event.start));
         }
     }
 
