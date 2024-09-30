@@ -24,25 +24,6 @@ export default class LibsFullCalendar extends NavigationMixin(LightningElement) 
     error;
     calendar;
     @track events = []; //Brukt for å lagre data fra service appointments
-    renderedCallback() {}
-
-    async setupCalendar() {
-        await this.loadScriptAndStyle();
-        const events = await this.fetchUniqueEventsForTimeRegion(this.earliestTime, this.latestTime);
-        this.events = events;
-        await this.initializeCalendar(events);
-    }
-
-    async loadScriptAndStyle() {
-        try {
-            await Promise.all([
-                loadScript(this, FULL_CALENDAR + '/main.min.js'),
-                loadStyle(this, FULL_CALENDAR + '/main.min.css')
-            ]);
-        } catch (error) {
-            this.error = error;
-        }
-    }
 
     connectedCallback() {
         const state = sessionStorage.getItem(LibsFullCalendar.STATE_KEY);
@@ -68,56 +49,21 @@ export default class LibsFullCalendar extends NavigationMixin(LightningElement) 
         sessionStorage.setItem(LibsFullCalendar.STATE_KEY, JSON.stringify(state));
     }
 
-    async fetchUniqueEventsForTimeRegion(earliestTime, latestTime) {
-        const data = await getCalendarEvents({
-            earliestEventEndTimeInMilliseconds: earliestTime,
-            latestEventStartInMilliseconds: latestTime
-        });
-        if (data) {
-            return data
-                .map((event) => new CalendarEvent(event))
-                .filter((event) => {
-                    const isAlreadyCached = this.cachedEventIds.has(event.recordId);
-                    if (!isAlreadyCached) {
-                        this.cachedEventIds.add(event.recordId);
-                    }
-                    return !isAlreadyCached;
-                });
-        } else {
-            console.error('Error fetching service appointments from Apex:', error);
-            this.error = error;
-            return [];
-        }
+    async setupCalendar() {
+        await this.loadScriptAndStyle();
+        const events = await this.fetchUniqueEventsForTimeRegion(this.earliestTime, this.latestTime);
+        this.events = events;
+        await this.initializeCalendar(events);
     }
 
-    async updateEventsFromDateRange(earliestDateInView, latestDateInView) {
-        const earliestTimeInView = earliestDateInView.getTime();
-        const latestTimeInView = latestDateInView.getTime();
-        const events = [];
-
-        const fetchThresholdInMilliseconds =
-            LibsFullCalendar.FETCH_THRESHOLD_IN_DAYS * LibsFullCalendar.MILLISECONDS_PER_DAY;
-
-        if (earliestTimeInView < this.earliestTime + fetchThresholdInMilliseconds) {
-            const newEarliestTime =
-                earliestTimeInView -
-                LibsFullCalendar.DAYS_TO_FETCH_BEFORE_TODAY * LibsFullCalendar.MILLISECONDS_PER_DAY;
-            const pastEvents = await this.fetchUniqueEventsForTimeRegion(newEarliestTime, this.earliestTime);
-            this.earliestTime = newEarliestTime;
-            events.push(...pastEvents);
-        }
-
-        if (latestTimeInView > this.latestTime - fetchThresholdInMilliseconds) {
-            const newLatestTime =
-                latestTimeInView + LibsFullCalendar.DAYS_TO_FETCH_FROM_TODAY * LibsFullCalendar.MILLISECONDS_PER_DAY;
-            const futureEvents = await this.fetchUniqueEventsForTimeRegion(this.latestTime, newLatestTime);
-            this.latestTime = newLatestTime;
-            events.push(...futureEvents);
-        }
-
-        this.events.push(...events);
-        for (const event of events) {
-            this.calendar?.addEvent(event);
+    async loadScriptAndStyle() {
+        try {
+            await Promise.all([
+                loadScript(this, FULL_CALENDAR + '/main.min.js'),
+                loadStyle(this, FULL_CALENDAR + '/main.min.css')
+            ]);
+        } catch (error) {
+            this.error = error;
         }
     }
 
@@ -254,6 +200,7 @@ export default class LibsFullCalendar extends NavigationMixin(LightningElement) 
 
         return config;
     }
+
     async refreshCalendar() {
         this.isLoading = true;
         const minLoadingTime = new Promise((resolve) => setTimeout(resolve, 2500));
@@ -279,6 +226,60 @@ export default class LibsFullCalendar extends NavigationMixin(LightningElement) 
         await minLoadingTime;
         this.isLoading = false;
     }
+
+    async updateEventsFromDateRange(earliestDateInView, latestDateInView) {
+        const earliestTimeInView = earliestDateInView.getTime();
+        const latestTimeInView = latestDateInView.getTime();
+        const events = [];
+
+        const fetchThresholdInMilliseconds =
+            LibsFullCalendar.FETCH_THRESHOLD_IN_DAYS * LibsFullCalendar.MILLISECONDS_PER_DAY;
+
+        if (earliestTimeInView < this.earliestTime + fetchThresholdInMilliseconds) {
+            const newEarliestTime =
+                earliestTimeInView -
+                LibsFullCalendar.DAYS_TO_FETCH_BEFORE_TODAY * LibsFullCalendar.MILLISECONDS_PER_DAY;
+            const pastEvents = await this.fetchUniqueEventsForTimeRegion(newEarliestTime, this.earliestTime);
+            this.earliestTime = newEarliestTime;
+            events.push(...pastEvents);
+        }
+
+        if (latestTimeInView > this.latestTime - fetchThresholdInMilliseconds) {
+            const newLatestTime =
+                latestTimeInView + LibsFullCalendar.DAYS_TO_FETCH_FROM_TODAY * LibsFullCalendar.MILLISECONDS_PER_DAY;
+            const futureEvents = await this.fetchUniqueEventsForTimeRegion(this.latestTime, newLatestTime);
+            this.latestTime = newLatestTime;
+            events.push(...futureEvents);
+        }
+
+        this.events.push(...events);
+        for (const event of events) {
+            this.calendar?.addEvent(event);
+        }
+    }
+
+    async fetchUniqueEventsForTimeRegion(earliestTime, latestTime) {
+        const data = await getCalendarEvents({
+            earliestEventEndTimeInMilliseconds: earliestTime,
+            latestEventStartInMilliseconds: latestTime
+        });
+        if (data) {
+            return data
+                .map((event) => new CalendarEvent(event))
+                .filter((event) => {
+                    const isAlreadyCached = this.cachedEventIds.has(event.recordId);
+                    if (!isAlreadyCached) {
+                        this.cachedEventIds.add(event.recordId);
+                    }
+                    return !isAlreadyCached;
+                });
+        } else {
+            console.error('Error fetching service appointments from Apex:', error);
+            this.error = error;
+            return [];
+        }
+    }
+
     handleEventClick(info) {
         if (info.view.type === 'timeGridDay' || !this.isMobileSize) {
             console.log('event clicked', info.event.extendedProps);
