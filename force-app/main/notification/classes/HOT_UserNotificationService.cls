@@ -182,6 +182,40 @@ public without sharing class HOT_UserNotificationService {
             logger.publishSynch();
         }
     }
+    public static void newCoInterpreterChangeNotification(
+        CustomNotificationType notificationType,
+        ServiceAppointment sa,
+        String targetPageRef,
+        String newInterpreter,
+        Set<String> recipients
+    ) {
+        String title = 'Ny medtolk';
+        String body =
+            'Du har fått en medtolk på flertolksoppdraget ditt. \nNy tolk er: ' +
+            newInterpreter +
+            '\nDato: ' +
+            sa.SchedStartTime?.format('dd.MM.yyyy', 'Europe/Oslo') +
+            ', kl: ' +
+            sa.SchedStartTime?.format('HH:mm', 'Europe/Oslo') +
+            ' - ' +
+            sa.SchedEndTime?.format('HH:mm', 'Europe/Oslo') +
+            '.';
+
+        Id notificationTypeId = notificationType.Id;
+        Messaging.CustomNotification notification = new Messaging.CustomNotification();
+        notification.setTitle(title);
+        notification.setBody(body);
+        notification.setNotificationTypeId(notificationTypeId);
+        notification.setTargetPageRef(targetPageRef);
+
+        try {
+            notification.send(recipients);
+        } catch (Exception e) {
+            LoggerUtility logger = new LoggerUtility();
+            logger.exception(e, CRM_ApplicationDomain.Domain.HOT);
+            logger.publishSynch();
+        }
+    }
     public static void coInterpreterChangeNotification(
         CustomNotificationType notificationType,
         ServiceAppointment sa,
