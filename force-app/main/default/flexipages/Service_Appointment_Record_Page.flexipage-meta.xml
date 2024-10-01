@@ -25,7 +25,8 @@
                                     <rightValue>Released to Freelance</rightValue>
                                 </criteria>
                                 <criteria>
-                                    <leftValue>{!$Permission.CustomPermission.HOT_ReleaseToFreelance}</leftValue>
+                                    <leftValue>
+                                        {!$Permission.CustomPermission.HOT_ReleaseToFreelance}</leftValue>
                                     <operator>EQUAL</operator>
                                     <rightValue>true</rightValue>
                                 </criteria>
@@ -41,7 +42,8 @@
                                     <rightValue>Released to Freelance</rightValue>
                                 </criteria>
                                 <criteria>
-                                    <leftValue>{!$Permission.CustomPermission.HOT_ReleaseToFreelance}</leftValue>
+                                    <leftValue>
+                                        {!$Permission.CustomPermission.HOT_ReleaseToFreelance}</leftValue>
                                     <operator>EQUAL</operator>
                                     <rightValue>true</rightValue>
                                 </criteria>
@@ -61,7 +63,8 @@
                             <value>ServiceAppointment.HOT_ChangeStatus</value>
                             <visibilityRule>
                                 <criteria>
-                                    <leftValue>{!$Permission.StandardPermission.FieldServiceMobileApp}</leftValue>
+                                    <leftValue>
+                                        {!$Permission.StandardPermission.FieldServiceMobileApp}</leftValue>
                                     <operator>EQUAL</operator>
                                     <rightValue>true</rightValue>
                                 </criteria>
@@ -202,8 +205,8 @@
                     <name>uiBehavior</name>
                     <value>readonly</value>
                 </fieldInstanceProperties>
-                <fieldItem>Record.ContactId</fieldItem>
-                <identifier>RecordContactIdField</identifier>
+                <fieldItem>Record.AccountId</fieldItem>
+                <identifier>RecordAccountIdField</identifier>
             </fieldInstance>
         </itemInstances>
         <itemInstances>
@@ -212,8 +215,8 @@
                     <name>uiBehavior</name>
                     <value>readonly</value>
                 </fieldInstanceProperties>
-                <fieldItem>Record.AccountId</fieldItem>
-                <identifier>RecordAccountIdField</identifier>
+                <fieldItem>Record.ContactId</fieldItem>
+                <identifier>RecordContactIdField</identifier>
             </fieldInstance>
         </itemInstances>
         <itemInstances>
