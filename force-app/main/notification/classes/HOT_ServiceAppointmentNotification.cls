@@ -1200,11 +1200,9 @@ public without sharing class HOT_ServiceAppointmentNotification {
                     employeeInterpreterRecipients.add(serviceAppointment.HOT_ServiceResource__r.RelatedRecordId);
 
                     Messaging.CustomNotification notification = new Messaging.CustomNotification();
-                    notification.setTitle('Ny medtolk');
+                    notification.setTitle('Ny medtolk ' + serviceAppointment.AppointmentNumber);
                     notification.setBody(
-                        'Du har fått medtolk. ' +
-                        serviceAppointment.AppointmentNumber +
-                        '\nTolk er: ' +
+                        'Du har fått medtolk. \nTolk er: ' +
                         updatedSAWithNewInterpreter.HOT_ServiceResource__r.Name +
                         '\nDato: ' +
                         updatedSAWithNewInterpreter.SchedStartTime?.format('dd.MM.yyyy', 'Europe/Oslo') +
@@ -1242,11 +1240,9 @@ public without sharing class HOT_ServiceAppointmentNotification {
                     HOT_Notification__c newNotification = new HOT_Notification__c();
                     newNotification.HOT_Account__c = serviceAppointment.HOT_ServiceResource__r.AccountId;
                     newNotification.HOT_NotificationChannel__c = 'Push-varsel i appen';
-                    newNotification.HOT_Subject__c = 'Ny medtolk';
+                    newNotification.HOT_Subject__c = 'Ny medtolk ' + serviceAppointment.AppointmentNumber;
                     String text =
-                        'Du har fått medtolk. ' +
-                        serviceAppointment.AppointmentNumber +
-                        '\nTolk er: ' +
+                        'Du har fått medtolk. \nTolk er: ' +
                         updatedSAWithNewInterpreter.HOT_ServiceResource__r.Name +
                         '.\nDato: ' +
                         updatedSAWithNewInterpreter.SchedStartTime?.format('dd.MM.yyyy', 'Europe/Oslo') +
@@ -1283,11 +1279,8 @@ public without sharing class HOT_ServiceAppointmentNotification {
                     if (serviceAppointment.HOT_ServiceResource__r.AccountId != null) {
                         newNotification.HOT_Account__c = serviceAppointment.HOT_ServiceResource__r.AccountId;
                         newNotification.HOT_NotificationChannel__c = 'SMS';
-                        newNotification.HOT_Subject__c = 'Ny medtolk';
-                        String text =
-                            'INFO\nDu har fått medtolk. ' +
-                            serviceAppointment.AppointmentNumber +
-                            '\nTolk er:\n';
+                        newNotification.HOT_Subject__c = 'Ny medtolk ' + serviceAppointment.AppointmentNumber;
+                        String text = 'INFO\nDu har fått medtolk. \nTolk er:\n';
                         text += updatedSAWithNewInterpreter.HOT_ServiceResource__r.Name;
                         text +=
                             '.\nDato: ' +
@@ -1361,11 +1354,9 @@ public without sharing class HOT_ServiceAppointmentNotification {
                     employeeInterpreterRecipients.add(serviceAppointment.HOT_ServiceResource__r.RelatedRecordId);
 
                     Messaging.CustomNotification notification = new Messaging.CustomNotification();
-                    notification.setTitle('Endring av medtolk');
+                    notification.setTitle('Endring av medtolk ' + serviceAppointment.AppointmentNumber);
                     notification.setBody(
-                        'Medtolk på et oppdrag du er tildelt er blitt endret. ' +
-                        serviceAppointment.AppointmentNumber +
-                        ' \nNy tolk er: ' +
+                        'Medtolk på et oppdrag du er tildelt er blitt endret. \nNy tolk er: ' +
                         updatedSAWithNewInterpreter.HOT_ServiceResource__r.Name +
                         '\nDato: ' +
                         updatedSAWithNewInterpreter.SchedStartTime?.format('dd.MM.yyyy', 'Europe/Oslo') +
@@ -1403,11 +1394,9 @@ public without sharing class HOT_ServiceAppointmentNotification {
                     HOT_Notification__c newNotification = new HOT_Notification__c();
                     newNotification.HOT_Account__c = serviceAppointment.HOT_ServiceResource__r.AccountId;
                     newNotification.HOT_NotificationChannel__c = 'Push-varsel i appen';
-                    newNotification.HOT_Subject__c = 'Endring av medtolk';
+                    newNotification.HOT_Subject__c = 'Endring av medtolk ' + serviceAppointment.AppointmentNumber;
                     String text =
-                        'Medtolk på et oppdrag du er tildelt er blitt endret. ' +
-                        serviceAppointment.AppointmentNumber +
-                        ' \nNy tolk er: ' +
+                        'Medtolk på et oppdrag du er tildelt er blitt endret.  \nNy tolk er: ' +
                         updatedSAWithNewInterpreter.HOT_ServiceResource__r.Name +
                         '.\nDato: ' +
                         updatedSAWithNewInterpreter.SchedStartTime?.format('dd.MM.yyyy', 'Europe/Oslo') +
@@ -1443,11 +1432,8 @@ public without sharing class HOT_ServiceAppointmentNotification {
                     if (serviceAppointment.HOT_ServiceResource__r.AccountId != null) {
                         newNotification.HOT_Account__c = serviceAppointment.HOT_ServiceResource__r.AccountId;
                         newNotification.HOT_NotificationChannel__c = 'SMS';
-                        newNotification.HOT_Subject__c = 'Endring av medtolk';
-                        String text =
-                            'INFO\nMedtolk på et oppdrag du er tildelt er blitt endret. ' +
-                            serviceAppointment.AppointmentNumber +
-                            '\nNy tolk er:\n';
+                        newNotification.HOT_Subject__c = 'Endring av medtolk ' + serviceAppointment.AppointmentNumber;
+                        String text = 'INFO\nMedtolk på et oppdrag du er tildelt er blitt endret. \nNy tolk er:\n';
                         text += updatedSAWithNewInterpreter.HOT_ServiceResource__r.Name;
                         text +=
                             '.\nDato: ' +
