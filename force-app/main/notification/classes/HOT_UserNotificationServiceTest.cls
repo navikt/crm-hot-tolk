@@ -61,6 +61,8 @@ public class HOT_UserNotificationServiceTest {
             FROM WorkOrder
             LIMIT 1
         ];
+        workOrder.Status = 'Dispatched';
+        update workOrder;
         Set<String> recipients = new Set<String>{ UserInfo.getUserId() };
         String interpreters = 'Tolk Vader';
 
@@ -280,5 +282,22 @@ public class HOT_UserNotificationServiceTest {
         Test.startTest();
         HOT_UserNotificationService.newWantedSRNotification(notificationType, recipients, 'SA-00110');
         Test.stopTest();
+    }
+    @IsTest
+    private static void getTargetPageRefThreadTest() {
+        Thread__c thread = HOT_TestDataFactory.createThread('HOT_TOLK-FORMIDLER');
+        thread.HOT_IsEmployeeThread__c = false;
+        thread.CRM_Related_Object_Type__c = 'ServiceAppointment';
+        thread.CRM_Related_Object__c = [SELECT Id FROM ServiceAppointment LIMIT 1].Id;
+        insert thread;
+        Test.startTest();
+        String result = HOT_UserNotificationService.getTargetPageRefThread(thread, true);
+        Test.stopTest();
+        System.assertEquals(
+            '{type: "comm__namedPage",attributes: {pageName: "samtale-frilans"}, state: {recordId: "' +
+            thread.Id +
+            '", from: "mine-samtaler-frilanstolk"}}',
+            result
+        );
     }
 }
