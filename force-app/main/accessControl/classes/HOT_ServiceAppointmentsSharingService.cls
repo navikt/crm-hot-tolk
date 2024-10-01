@@ -1,4 +1,9 @@
 public without sharing class HOT_ServiceAppointmentsSharingService {
+    private static void handleException(Exception e) {
+        LoggerUtility logger = new LoggerUtility();
+        logger.exception(e, CRM_ApplicationDomain.Domain.HOT);
+        logger.publishSynch();
+    }
     public static void grantAccess(Map<Id, Id> apppointmentIdByAssignment, Map<Id, Id> resourceByAssignment) {
         Map<Id, Id> userIdyResourceId = getUserIdyResourceId(resourceByAssignment.values());
         Map<Id, Id> woBySa = getWorkOrderIds(apppointmentIdByAssignment.values());
@@ -79,9 +84,7 @@ public without sharing class HOT_ServiceAppointmentsSharingService {
         try {
             delete serviceAppointmentShares;
         } catch (Exception e) {
-            LoggerUtility logger = new LoggerUtility();
-            logger.exception(e, CRM_ApplicationDomain.Domain.HOT);
-            logger.publishSynch();
+            handleException(e);
         }
     }
 
@@ -94,9 +97,7 @@ public without sharing class HOT_ServiceAppointmentsSharingService {
         try {
             delete serviceAppointmentShares;
         } catch (Exception e) {
-            LoggerUtility logger = new LoggerUtility();
-            logger.exception(e, CRM_ApplicationDomain.Domain.HOT);
-            logger.publishSynch();
+            handleException(e);
         }
     }
 
@@ -196,9 +197,7 @@ public without sharing class HOT_ServiceAppointmentsSharingService {
         try {
             delete sharesToBeDeleted;
         } catch (Exception e) {
-            LoggerUtility logger = new LoggerUtility();
-            logger.exception(e, CRM_ApplicationDomain.Domain.HOT);
-            logger.publishSynch();
+            handleException(e);
         }
         for (ServiceAppointment serviceAppointment : serviceAppointmentMap.values()) {
             serviceAppointment.HOT_IsRecalculateManualSharing__c = false;
@@ -206,9 +205,7 @@ public without sharing class HOT_ServiceAppointmentsSharingService {
         try {
             update serviceAppointmentMap.values();
         } catch (Exception e) {
-            LoggerUtility logger = new LoggerUtility();
-            logger.exception(e, CRM_ApplicationDomain.Domain.HOT);
-            logger.publishSynch();
+            handleException(e);
         }
     }
 }

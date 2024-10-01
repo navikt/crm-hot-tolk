@@ -1,5 +1,5 @@
 public without sharing class HOT_UserNotificationService {
-    private static void handleException(SObject relatedRecord, Exception e) {
+    private static void handleException(Exception e) {
         LoggerUtility logger = new LoggerUtility();
         logger.exception(e, relatedRecord, CRM_ApplicationDomain.Domain.HOT);
         logger.publishSynch();
@@ -34,7 +34,7 @@ public without sharing class HOT_UserNotificationService {
         try {
             notification.send(recipients);
         } catch (Exception e) {
-            handleException(request, e);
+            handleException(e);
         }
     }
 
@@ -74,7 +74,7 @@ public without sharing class HOT_UserNotificationService {
         try {
             notification.send(recipients);
         } catch (Exception e) {
-            handleException(workOrder, e);
+            handleException(e);
         }
     }
 
@@ -114,7 +114,7 @@ public without sharing class HOT_UserNotificationService {
         try {
             notification.send(recipients);
         } catch (Exception e) {
-            handleException(workOrder, e);
+            handleException(e);
         }
     }
 
@@ -142,7 +142,7 @@ public without sharing class HOT_UserNotificationService {
         try {
             notification.send(recipients);
         } catch (Exception e) {
-            handleException(workOrder, e);
+            handleException(e);
         }
     }
 
@@ -175,7 +175,7 @@ public without sharing class HOT_UserNotificationService {
         try {
             notification.send(recipients);
         } catch (Exception e) {
-            handleException(workOrder, e);
+            handleException(e);
         }
     }
     public static void newCoInterpreterChangeNotification(
@@ -208,7 +208,7 @@ public without sharing class HOT_UserNotificationService {
         try {
             notification.send(recipients);
         } catch (Exception e) {
-            handleException(sa, e);
+            handleException(e);
         }
     }
     public static void coInterpreterRemovedNotification(
@@ -238,7 +238,7 @@ public without sharing class HOT_UserNotificationService {
         try {
             notification.send(recipients);
         } catch (Exception e) {
-            handleException(sa, e);
+            handleException(e);
         }
     }
     public static void coInterpreterChangeNotification(
@@ -271,7 +271,7 @@ public without sharing class HOT_UserNotificationService {
         try {
             notification.send(recipients);
         } catch (Exception e) {
-            handleException(sa, e);
+            handleException(e);
         }
     }
 
@@ -294,7 +294,7 @@ public without sharing class HOT_UserNotificationService {
         try {
             notification.send(recipients);
         } catch (Exception e) {
-            handleException(thread, e);
+            handleException(e);
         }
     }
 
@@ -317,9 +317,7 @@ public without sharing class HOT_UserNotificationService {
         try {
             notification.send(recipients);
         } catch (Exception e) {
-            LoggerUtility logger = new LoggerUtility();
-            logger.exception(e, CRM_ApplicationDomain.Domain.HOT);
-            logger.publishSynch();
+            handleException(e);
         }
     }
 

@@ -1,4 +1,9 @@
 public without sharing class HOT_WageClaimService {
+    private static void handleException(Exception e) {
+        LoggerUtility logger = new LoggerUtility();
+        logger.exception(e, CRM_ApplicationDomain.Domain.HOT);
+        logger.publishSynch();
+    }
     @AuraEnabled
     public static void assign(Id wageClaimId, Id serviceAppointmentId) {
         HOT_WageClaim__c wageClaim = [SELECT Id, ServiceResource__c FROM HOT_WageClaim__c WHERE Id = :wageClaimId];
@@ -9,9 +14,7 @@ public without sharing class HOT_WageClaimService {
         try {
             insert assignedResource;
         } catch (Exception e) {
-            LoggerUtility logger = new LoggerUtility();
-            logger.exception(e, CRM_ApplicationDomain.Domain.HOT);
-            logger.publishSynch();
+            handleException(e);
             throw e;
         }
     }
@@ -106,9 +109,7 @@ public without sharing class HOT_WageClaimService {
         try {
             insert wageClaims;
         } catch (Exception e) {
-            LoggerUtility logger = new LoggerUtility();
-            logger.exception(e, CRM_ApplicationDomain.Domain.HOT);
-            logger.publishSynch();
+            handleException(e);
         }
     }
 
@@ -242,9 +243,7 @@ public without sharing class HOT_WageClaimService {
         try {
             upsert wageClaimsToUpsert;
         } catch (Exception e) {
-            LoggerUtility logger = new LoggerUtility();
-            logger.exception(e, CRM_ApplicationDomain.Domain.HOT);
-            logger.publishSynch();
+            handleException(e);
         }
         if (newWageClaims.size() > 0) {
             updateWageClaims(serviceAppointments, newWageClaims, isUpsert);

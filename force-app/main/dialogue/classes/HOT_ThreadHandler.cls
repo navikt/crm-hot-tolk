@@ -1,4 +1,9 @@
 public without sharing class HOT_ThreadHandler extends MyTriggers {
+    private static void handleException(Exception e) {
+        LoggerUtility logger = new LoggerUtility();
+        logger.exception(e, CRM_ApplicationDomain.Domain.HOT);
+        logger.publishSynch();
+    }
     public override void onBeforeInsert() {
         Map<Id, Thread__c> threadById = new Map<Id, Thread__c>();
         for (Thread__c thread : (List<Thread__c>) records) {
@@ -202,7 +207,7 @@ public without sharing class HOT_ThreadHandler extends MyTriggers {
         for (Thread__c thread : threads) {
             threadRelatedObjectId.add(thread.CRM_Related_Object__c);
         }
-        
+
         List<ServiceAppointment> saList = [
             SELECT Id, HOT_ServiceResource__r.RelatedRecordId
             FROM ServiceAppointment
@@ -224,9 +229,7 @@ public without sharing class HOT_ThreadHandler extends MyTriggers {
             try {
                 HOT_DatabaseOperations.updateRecords(threads);
             } catch (Exception e) {
-                LoggerUtility logger = new LoggerUtility();
-                logger.exception(e, CRM_ApplicationDomain.Domain.HOT);
-                logger.publishSynch();
+                handleException(e);
             }
         }
         if (irList.size() > 0) {
@@ -240,9 +243,7 @@ public without sharing class HOT_ThreadHandler extends MyTriggers {
             try {
                 HOT_DatabaseOperations.updateRecords(threads);
             } catch (Exception e) {
-                LoggerUtility logger = new LoggerUtility();
-                logger.exception(e, CRM_ApplicationDomain.Domain.HOT);
-                logger.publishSynch();
+                handleException(e);
             }
         }
     }
@@ -274,11 +275,11 @@ public without sharing class HOT_ThreadHandler extends MyTriggers {
     }
     public static Thread__c appendInterpreterUserIds(Thread__c thread, ServiceAppointment serviceAppointment) {
         if (thread.HOT_ParticipantIds__c != '') {
-            if(!thread.HOT_ParticipantIds__c.contains(serviceAppointment.HOT_ServiceResource__r.RelatedRecordId)){
+            if (!thread.HOT_ParticipantIds__c.contains(serviceAppointment.HOT_ServiceResource__r.RelatedRecordId)) {
                 thread.HOT_ParticipantIds__c += ', ' + serviceAppointment.HOT_ServiceResource__r?.RelatedRecordId;
             }
         } else {
-                thread.HOT_ParticipantIds__c = serviceAppointment.HOT_ServiceResource__r?.RelatedRecordId;
+            thread.HOT_ParticipantIds__c = serviceAppointment.HOT_ServiceResource__r?.RelatedRecordId;
         }
         return thread;
     }
