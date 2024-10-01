@@ -1,4 +1,10 @@
 public without sharing class HOT_UserNotificationService {
+    private static void handleException(SObject relatedRecord, Exception e) {
+        LoggerUtility logger = new LoggerUtility();
+        logger.exception(e, relatedRecord, CRM_ApplicationDomain.Domain.HOT);
+        logger.publishSynch();
+    }
+
     public static void newRequestNotification(
         CustomNotificationType notificationType,
         HOT_Request__c request,
@@ -28,9 +34,7 @@ public without sharing class HOT_UserNotificationService {
         try {
             notification.send(recipients);
         } catch (Exception e) {
-            LoggerUtility logger = new LoggerUtility();
-            logger.exception(e, CRM_ApplicationDomain.Domain.HOT);
-            logger.publishSynch();
+            handleException(request, e);
         }
     }
 
@@ -70,9 +74,7 @@ public without sharing class HOT_UserNotificationService {
         try {
             notification.send(recipients);
         } catch (Exception e) {
-            LoggerUtility logger = new LoggerUtility();
-            logger.exception(e, CRM_ApplicationDomain.Domain.HOT);
-            logger.publishSynch();
+            handleException(workOrder, e);
         }
     }
 
@@ -112,9 +114,7 @@ public without sharing class HOT_UserNotificationService {
         try {
             notification.send(recipients);
         } catch (Exception e) {
-            LoggerUtility logger = new LoggerUtility();
-            logger.exception(e, CRM_ApplicationDomain.Domain.HOT);
-            logger.publishSynch();
+            handleException(workOrder, e);
         }
     }
 
@@ -142,9 +142,7 @@ public without sharing class HOT_UserNotificationService {
         try {
             notification.send(recipients);
         } catch (Exception e) {
-            LoggerUtility logger = new LoggerUtility();
-            logger.exception(e, CRM_ApplicationDomain.Domain.HOT);
-            logger.publishSynch();
+            handleException(workOrder, e);
         }
     }
 
@@ -177,9 +175,7 @@ public without sharing class HOT_UserNotificationService {
         try {
             notification.send(recipients);
         } catch (Exception e) {
-            LoggerUtility logger = new LoggerUtility();
-            logger.exception(e, CRM_ApplicationDomain.Domain.HOT);
-            logger.publishSynch();
+            handleException(workOrder, e);
         }
     }
     public static void newCoInterpreterChangeNotification(
@@ -212,9 +208,7 @@ public without sharing class HOT_UserNotificationService {
         try {
             notification.send(recipients);
         } catch (Exception e) {
-            LoggerUtility logger = new LoggerUtility();
-            logger.exception(e, CRM_ApplicationDomain.Domain.HOT);
-            logger.publishSynch();
+            handleException(sa, e);
         }
     }
     public static void coInterpreterRemovedNotification(
@@ -244,9 +238,7 @@ public without sharing class HOT_UserNotificationService {
         try {
             notification.send(recipients);
         } catch (Exception e) {
-            LoggerUtility logger = new LoggerUtility();
-            logger.exception(e, CRM_ApplicationDomain.Domain.HOT);
-            logger.publishSynch();
+            handleException(sa, e);
         }
     }
     public static void coInterpreterChangeNotification(
@@ -279,9 +271,7 @@ public without sharing class HOT_UserNotificationService {
         try {
             notification.send(recipients);
         } catch (Exception e) {
-            LoggerUtility logger = new LoggerUtility();
-            logger.exception(e, CRM_ApplicationDomain.Domain.HOT);
-            logger.publishSynch();
+            handleException(sa, e);
         }
     }
 
@@ -304,9 +294,7 @@ public without sharing class HOT_UserNotificationService {
         try {
             notification.send(recipients);
         } catch (Exception e) {
-            LoggerUtility logger = new LoggerUtility();
-            logger.exception(e, CRM_ApplicationDomain.Domain.HOT);
-            logger.publishSynch();
+            handleException(thread, e);
         }
     }
 
