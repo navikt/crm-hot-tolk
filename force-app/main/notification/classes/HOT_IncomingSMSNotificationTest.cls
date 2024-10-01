@@ -16,11 +16,11 @@ private class HOT_IncomingSMSNotificationTest {
             insert account;
 
             TestDataFactory.getPublicGroup('HMS Oslo', 'group_4703');
-            TestDataFactory.getQueue('HMS Oslo', 'queue_4703', 'Person__c');
+            TestDataFactory.getQueue('HMS Oslo', 'queue_4703', 'Person__c', 'SMS__c');
             TestDataFactory.getPublicGroup('HMS Trøndelag', 'group_4716');
-            TestDataFactory.getQueue('HMS Trøndelag', 'queue_4716', 'Person__c');
+            TestDataFactory.getQueue('HMS Trøndelag', 'queue_4716', 'Person__c', 'SMS__c');
             TestDataFactory.getPublicGroup('HMS Innlandet', 'group_47003');
-            TestDataFactory.getQueue('HMS Innlandet', 'queue_47003', 'Person__c');
+            TestDataFactory.getQueue('HMS Innlandet', 'queue_47003', 'Person__c', 'SMS__c');
 
             List<Account> personAccounts = TestDataFactory_Community.getPersonAccounts(userNames.size());
             Map<String, Account> accountByLastName = new Map<String, Account>();
