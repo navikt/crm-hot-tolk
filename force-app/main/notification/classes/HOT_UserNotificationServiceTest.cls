@@ -126,6 +126,94 @@ public class HOT_UserNotificationServiceTest {
         );
         Test.stopTest();
     }
+    @IsTest
+    private static void coInterpreterChangeNotificationTest() {
+        CustomNotificationType notificationType = [
+            SELECT Id, DeveloperName
+            FROM CustomNotificationType
+            WHERE DeveloperName = 'HOT_NotifyUser'
+        ];
+        ServiceAppointment serviceAppointment = [
+            SELECT Id, HOT_ServiceResource__r.Name, AppointmentNumber, SchedStartTime, SchedEndTime
+            FROM ServiceAppointment
+            LIMIT 1
+        ];
+        Set<String> recipients = new Set<String>{ UserInfo.getUserId() };
+        String interpreter = 'Darth Vader';
+        String target = HOT_ServiceAppointmentNotification.getTargetPageRefInterpreterOnChanged(
+            'my',
+            serviceAppointment.Id
+        );
+
+        Test.startTest();
+        HOT_UserNotificationService.coInterpreterChangeNotification(
+            notificationType,
+            serviceAppointment,
+            target,
+            interpreter,
+            recipients,
+            serviceAppointment.AppointmentNumber
+        );
+        Test.stopTest();
+    }
+    @IsTest
+    private static void coInterpreterRemovedNotificationTest() {
+        CustomNotificationType notificationType = [
+            SELECT Id, DeveloperName
+            FROM CustomNotificationType
+            WHERE DeveloperName = 'HOT_NotifyUser'
+        ];
+        ServiceAppointment serviceAppointment = [
+            SELECT Id, HOT_ServiceResource__r.Name, AppointmentNumber, SchedStartTime, SchedEndTime
+            FROM ServiceAppointment
+            LIMIT 1
+        ];
+        Set<String> recipients = new Set<String>{ UserInfo.getUserId() };
+        String target = HOT_ServiceAppointmentNotification.getTargetPageRefInterpreterOnChanged(
+            'my',
+            serviceAppointment.Id
+        );
+
+        Test.startTest();
+        HOT_UserNotificationService.coInterpreterRemovedNotification(
+            notificationType,
+            serviceAppointment,
+            target,
+            recipients,
+            serviceAppointment.AppointmentNumber
+        );
+        Test.stopTest();
+    }
+    @IsTest
+    private static void newCoInterpreterChangeNotificationTest() {
+        CustomNotificationType notificationType = [
+            SELECT Id, DeveloperName
+            FROM CustomNotificationType
+            WHERE DeveloperName = 'HOT_NotifyUser'
+        ];
+        ServiceAppointment serviceAppointment = [
+            SELECT Id, HOT_ServiceResource__r.Name, AppointmentNumber, SchedStartTime, SchedEndTime
+            FROM ServiceAppointment
+            LIMIT 1
+        ];
+        Set<String> recipients = new Set<String>{ UserInfo.getUserId() };
+        String target = HOT_ServiceAppointmentNotification.getTargetPageRefInterpreterOnChanged(
+            'my',
+            serviceAppointment.Id
+        );
+        String interpreter = 'Darth Vader';
+
+        Test.startTest();
+        HOT_UserNotificationService.newCoInterpreterChangeNotification(
+            notificationType,
+            serviceAppointment,
+            interpreter,
+            target,
+            recipients,
+            serviceAppointment.AppointmentNumber
+        );
+        Test.stopTest();
+    }
 
     @IsTest
     private static void newMessageNotificationTest() {
