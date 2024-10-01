@@ -445,6 +445,13 @@
                 </fieldInstanceProperties>
                 <fieldItem>Record.UserPersonNumber__c</fieldItem>
                 <identifier>RecordUserPersonNumber__cField</identifier>
+                <visibilityRule>
+                    <criteria>
+                        <leftValue>{!Record.Person__r.INT_Confidential__c}</leftValue>
+                        <operator>EQUAL</operator>
+                        <rightValue>UGRADERT</rightValue>
+                    </criteria>
+                </visibilityRule>
             </fieldInstance>
         </itemInstances>
         <name>Facet-44bd0420-e99e-4568-9aab-a8594fd390cc</name>
@@ -459,6 +466,13 @@
                 </fieldInstanceProperties>
                 <fieldItem>Record.UserEmail__c</fieldItem>
                 <identifier>RecordUserEmail__cField</identifier>
+                <visibilityRule>
+                    <criteria>
+                        <leftValue>{!Record.Person__r.INT_Confidential__c}</leftValue>
+                        <operator>EQUAL</operator>
+                        <rightValue>UGRADERT</rightValue>
+                    </criteria>
+                </visibilityRule>
             </fieldInstance>
         </itemInstances>
         <itemInstances>
@@ -469,6 +483,13 @@
                 </fieldInstanceProperties>
                 <fieldItem>Record.UserPhone__c</fieldItem>
                 <identifier>RecordUserPhone__cField</identifier>
+                <visibilityRule>
+                    <criteria>
+                        <leftValue>{!Record.Person__r.INT_Confidential__c}</leftValue>
+                        <operator>EQUAL</operator>
+                        <rightValue>UGRADERT</rightValue>
+                    </criteria>
+                </visibilityRule>
             </fieldInstance>
         </itemInstances>
         <itemInstances>
@@ -479,6 +500,13 @@
                 </fieldInstanceProperties>
                 <fieldItem>Record.UserName__c</fieldItem>
                 <identifier>RecordUserName__cField</identifier>
+                <visibilityRule>
+                    <criteria>
+                        <leftValue>{!Record.Person__r.INT_Confidential__c}</leftValue>
+                        <operator>EQUAL</operator>
+                        <rightValue>UGRADERT</rightValue>
+                    </criteria>
+                </visibilityRule>
             </fieldInstance>
         </itemInstances>
         <itemInstances>
