@@ -154,7 +154,6 @@ export default class Hot_wageClaimList extends NavigationMixin(LightningElement)
     }
 
     goToRecordDetailsFromNotification(wageClaimId) {
-        console.log('wageclaim id', wageClaimId);
         getWageClaimDetails({ recordId: wageClaimId })
             .then((result) => {
                 this.isDisabledGoToThread = false;

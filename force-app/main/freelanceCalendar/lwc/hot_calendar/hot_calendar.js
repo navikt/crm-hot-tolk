@@ -205,7 +205,6 @@ export default class LibsFullCalendar extends NavigationMixin(LightningElement) 
 
     handleEventClick(context) {
         if (context.view.type === 'timeGridDay' || !this.isMobileSize) {
-            console.log('event clicked', context.event.extendedProps);
             this.navigateToDetailView(context.event.extendedProps);
         } else {
             this.calendar.changeView('timeGridDay', new Date(context.event.start));
