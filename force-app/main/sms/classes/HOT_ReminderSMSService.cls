@@ -308,7 +308,6 @@ public without sharing class HOT_ReminderSMSService {
             logger.publishSynch();
         }
     }
-
     public static void sendSMSOnNewWantedSR(Set<Id> wantedIRIds) {
         List<SMS__c> smsList = new List<SMS__c>();
         List<HOT_InterestedResource__c> wantedIRList = [
@@ -436,6 +435,7 @@ public without sharing class HOT_ReminderSMSService {
             logger.publishSynch();
         }
     }
+    @Future
     public static void sendSMSOnNewCoInterpreterChange(
         Id serviceResourceId,
         String schedStartEndtime,
@@ -483,6 +483,7 @@ public without sharing class HOT_ReminderSMSService {
             logger.publishSynch();
         }
     }
+    @Future
     public static void sendSMSOnCoInterpreterRemoved(
         Id serviceResourceId,
         String schedStartEndtime,
@@ -528,6 +529,7 @@ public without sharing class HOT_ReminderSMSService {
             logger.publishSynch();
         }
     }
+    @Future
     public static void sendSMSOnCoInterpreterChange(
         Id serviceResourceId,
         String schedStartEndtime,
