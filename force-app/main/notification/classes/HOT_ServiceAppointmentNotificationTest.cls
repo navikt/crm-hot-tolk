@@ -633,4 +633,17 @@ private class HOT_ServiceAppointmentNotificationTest {
         update assignedResource;
         Test.stopTest();
     }
+    @IsTest
+    private static void getTargetPageRefInterpreterOnChangedTest() {
+        Test.startTest();
+        HOT_Request__c request = [SELECT Id FROM HOT_Request__c LIMIT 1];
+        String result = HOT_ServiceAppointmentNotification.getTargetPageRefInterpreterOnChanged('my', request.Id);
+        Test.stopTest();
+        System.assertEquals(
+            '{type: "comm__namedPage",attributes: {pageName: "mine-oppdrag"}, state: {list: "my", id: "' +
+            request.Id +
+            '"}}',
+            result
+        );
+    }
 }
