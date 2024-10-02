@@ -16,7 +16,10 @@ export default class Hot_informationModal extends NavigationMixin(LightningEleme
     @api type;
     @api showDetails = false;
     @api fromUrlRedirect;
+
     @track freelanceThreadId;
+    @track saThreadId;
+    @track isflow = false;
 
     //serviceappointment
     @track isEditButtonDisabled;
@@ -32,6 +35,10 @@ export default class Hot_informationModal extends NavigationMixin(LightningEleme
     @track ordererPhoneNumber;
     @track address;
     @track termsOfAgreement;
+
+    @track isGoToThreadInterpretersButtonDisabled = false;
+    @track isGoToThreadButtonDisabled = false;
+    @track isGoToThreadServiceAppointmentButtonDisabled = false;
 
     @track isSADetails = false;
     @track hasAccess = false;
