@@ -189,6 +189,7 @@ export default class Hot_informationModal extends NavigationMixin(LightningEleme
         }
         //this.updateURL();
     }
+    @api
     goToRecordDetailsSAFromId(recordId) {
         this.isSADetails = true;
         this.hasAccess = true;
