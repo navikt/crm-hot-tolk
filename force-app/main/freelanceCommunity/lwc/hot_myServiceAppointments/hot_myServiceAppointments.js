@@ -202,21 +202,28 @@ export default class Hot_myServiceAppointments extends NavigationMixin(Lightning
     getParams() {
         let parsed_params = getParametersFromURL() ?? '';
         if (parsed_params.from == 'mine-varsler' && parsed_params.id != '') {
-            console.log('param ' + parsed_params.id);
+            this.navigationBaseUrl = parsed_params.from;
             this.goToRecordDetailsFromNotification(parsed_params.id);
         }
     }
 
     @api goBack() {
-        console.log('trtkker');
-        let recordIdToReturn = this.recordId;
-        this.recordId = undefined;
-        this.isDetails = false;
-        this.showTable = true;
-        this.isflow = false;
-        this.isEditButtonDisabled = false;
-        this.sendDetail();
-        return { id: recordIdToReturn, tab: 'my' };
+        if (this.navigationBaseUrl == 'mine-varsler') {
+            this[NavigationMixin.Navigate]({
+                type: 'comm__namedPage',
+                attributes: {
+                    pageName: 'mine-varsler'
+                },
+                state: {}
+            });
+        } else {
+            this[NavigationMixin.Navigate]({
+                type: 'comm__namedPage',
+                attributes: {
+                    pageName: 'home'
+                }
+            });
+        }
     }
     filteredRecordsLength = 0;
     @api
