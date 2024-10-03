@@ -8,6 +8,8 @@ import { columns, mobileColumns } from './columns';
 import { NavigationMixin } from 'lightning/navigation';
 import { formatRecord } from 'c/datetimeFormatter';
 import { defaultFilters, compare } from './filters';
+import { getParametersFromURL } from 'c/hot_URIDecoder';
+import getWageClaimDetails from '@salesforce/apex/HOT_WageClaimListController.getWageClaimDetails';
 
 export default class Hot_wageClaimList extends NavigationMixin(LightningElement) {
     @track columns = [];
@@ -43,6 +45,13 @@ export default class Hot_wageClaimList extends NavigationMixin(LightningElement)
         } else if (result.error) {
             this.error = result.error;
             this.allWageClaimsWired = undefined;
+        }
+    }
+
+    getParams() {
+        let parsed_params = getParametersFromURL() ?? '';
+        if ((parsed_params.from == 'calendar' || parsed_params.from == 'mine-varsler') && parsed_params.id != '') {
+            this.goToRecordDetailsFromNotification(parsed_params.id);
         }
     }
 
@@ -110,6 +119,7 @@ export default class Hot_wageClaimList extends NavigationMixin(LightningElement)
 
     connectedCallback() {
         this.setColumns();
+        this.getParams();
         this.updateURL();
         refreshApex(this.wiredWageClaimsResult);
     }
@@ -142,6 +152,27 @@ export default class Hot_wageClaimList extends NavigationMixin(LightningElement)
         }
         this.updateURL();
     }
+
+    goToRecordDetailsFromNotification(wageClaimId) {
+        getWageClaimDetails({ recordId: wageClaimId })
+            .then((result) => {
+                this.isDisabledGoToThread = false;
+
+                this.template.querySelector('.serviceAppointmentDetails').classList.remove('hidden');
+                this.template.querySelector('.serviceAppointmentDetails').focus();
+
+                this.isNotRetractable = result.Status__c != 'Open';
+                this.wageClaim = result;
+                this.wageClaim = formatRecord(Object.assign({}, result), this.datetimeFields);
+                this.wageClaim.weekday = this.getDayOfWeek(this.wageClaim.StartTime__c);
+                this.recordId = wageClaimId;
+                this.Status = result.Status__c;
+                this.isWageClaimDetails = !!this.recordId;
+            })
+            .catch((error) => console.log(error));
+        this.updateURL();
+    }
+
     treadId;
     goToWageClaimThread() {
         this.isDisabledGoToThread = true;

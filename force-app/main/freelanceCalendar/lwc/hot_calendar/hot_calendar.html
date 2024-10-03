@@ -1,0 +1,10 @@
+<template>
+    <div class="full-card">
+        <div class="calendar-wrapper">
+            <div class="calendar" lwc:dom="manual"></div>
+            <div if:true={isLoading} class="loading_spinner_holder">
+                <lightning-spinner alternative-text="Loading" size="large"></lightning-spinner>
+            </div>
+        </div>
+    </div>
+</template>
