@@ -7,7 +7,7 @@
             "path": "force-app",
             "default": true,
             "package": "crm-hot-tolk",
-            "versionNumber": "1.301.0.NEXT",
+            "versionNumber": "1.302.0.NEXT",
             "dependencies": [
                 {
                     "package": "crm-platform-base",
