@@ -128,8 +128,8 @@
                         </div>
                         <div style="display: inline-block; padding-right: 1vw; padding-bottom: 1vw; padding-top: 1vw">
                             <c-button
-                                disabled={isEditButtonDisabled}
-                                hidden={isEditButtonHidden}
+                                disabled={saIsEditButtonDisabled}
+                                hidden={saIsEditButtonHidden}
                                 onbuttonclick={changeStatus}
                                 button-styling="Primary"
                                 type="Submit"
@@ -137,7 +137,7 @@
                             >
                             </c-button>
                             <c-button
-                                hidden={isCancelButtonHidden}
+                                hidden={saIsCancelButtonHidden}
                                 onbuttonclick={cancelStatusFlow}
                                 button-styling="Secondary"
                                 type="Submit"
@@ -145,7 +145,7 @@
                             >
                             </c-button>
                         </div>
-                        <div if:true={isflow} class="flow-container">
+                        <div if:true={saIsflow} class="flow-container">
                             <lightning-flow
                                 flow-api-name="HOT_ChangeServiceAppointmentStatus_V1"
                                 flow-input-variables={flowVariables}

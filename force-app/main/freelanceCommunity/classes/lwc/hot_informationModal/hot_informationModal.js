@@ -22,14 +22,14 @@ export default class Hot_informationModal extends NavigationMixin(LightningEleme
     @api showDetails = false;
     @api fromUrlRedirect;
 
-    @track freelanceThreadId;
-    @track saThreadId;
-    @track isflow = false;
-
     //serviceappointment
-    @track isEditButtonDisabled;
-    @track isEditButtonHidden;
-    @track isCancelButtonHidden;
+    @track saFreelanceThreadId;
+    @track saThreadId;
+    @track saIsflow = false;
+
+    @track saIsEditButtonDisabled;
+    @track saIsEditButtonHidden;
+    @track saIsCancelButtonHidden;
 
     @track interestedResource;
     @track serviceAppointment;
@@ -70,7 +70,7 @@ export default class Hot_informationModal extends NavigationMixin(LightningEleme
         window.open('http://maps.apple.com/?q=' + this.serviceAppointment.HOT_AddressFormated__c);
     }
     connectedCallback() {
-        //betyr at det er varsel
+        //betyr at det er for eksempel fra et varsel
         if (this.fromUrlRedirect == true && this.showDetails == true && this.type == 'SA') {
             this.goToRecordDetailsSAFromId(this.recordId);
         }
@@ -120,9 +120,7 @@ export default class Hot_informationModal extends NavigationMixin(LightningEleme
             if (recordId === wageClaim.Id) {
                 this.wageClaim = wageClaim;
                 this.wageClaim.weekday = this.getDayOfWeek(this.wageClaim.StartTime__c);
-
-                //husk å bytt til Åpen
-                if (this.wageClaim.Status__c == 'Open') {
+                if (this.wageClaim.Status__c == 'Åpen') {
                     this.isNotRetractable = false;
                 } else {
                     this.isNotRetractable = true;
@@ -142,9 +140,9 @@ export default class Hot_informationModal extends NavigationMixin(LightningEleme
         let recordId = saID;
         this.serviceAppointment = undefined;
         this.interestedResource = undefined;
-        this.isEditButtonHidden = false;
-        this.isCancelButtonHidden = true;
-        this.isEditButtonDisabled = false;
+        this.saIsEditButtonHidden = false;
+        this.saIsCancelButtonHidden = true;
+        this.saIsEditButtonDisabled = false;
         for (let serviceAppointment of recordsArray) {
             console.log(serviceAppointment.Id);
             if (recordId === serviceAppointment.Id) {
@@ -171,7 +169,7 @@ export default class Hot_informationModal extends NavigationMixin(LightningEleme
                 }
                 let duedate = new Date(this.serviceAppointment.DueDate);
                 if (this.serviceAppointment.Status == 'Completed') {
-                    this.isEditButtonDisabled = true;
+                    this.saIsEditButtonDisabled = true;
                 }
                 if (this.serviceAppointment.HOT_TotalNumberOfInterpreters__c <= 1) {
                     this.isGoToThreadInterpretersButtonDisabled = true;
@@ -412,13 +410,13 @@ export default class Hot_informationModal extends NavigationMixin(LightningEleme
                         this.termsOfAgreement = this.interestedResource.HOT_TermsOfAgreement__c;
                     });
 
-                    this.isEditButtonHidden = false;
-                    this.isCancelButtonHidden = true;
-                    this.isEditButtonDisabled = false;
+                    this.saIsEditButtonHidden = false;
+                    this.saIsCancelButtonHidden = true;
+                    this.saIsEditButtonDisabled = false;
                     this.serviceAppointment.weekday = this.getDayOfWeek(this.serviceAppointment.EarliestStartTime);
                     let duedate = new Date(this.serviceAppointment.DueDate);
                     if (this.serviceAppointment.Status == 'Completed') {
-                        this.isEditButtonDisabled = true;
+                        this.saIsEditButtonDisabled = true;
                     }
                     if (this.serviceAppointment.HOT_TotalNumberOfInterpreters__c <= 1) {
                         this.isGoToThreadInterpretersButtonDisabled = true;
@@ -480,18 +478,18 @@ export default class Hot_informationModal extends NavigationMixin(LightningEleme
         window.history.pushState({ path: baseURL }, '', baseURL);
     }
     changeStatus() {
-        this.isflow = true;
-        this.isEditButtonDisabled = true;
-        this.isCancelButtonHidden = false;
+        this.saIsflow = true;
+        this.saIsEditButtonDisabled = true;
+        this.saIsCancelButtonHidden = false;
         this.isDetails = true;
-        this.isEditButtonHidden = true;
+        this.saIsEditButtonHidden = true;
     }
     cancelStatusFlow() {
-        this.isflow = false;
-        this.isEditButtonDisabled = false;
-        this.isCancelButtonHidden = true;
+        this.saIsflow = false;
+        this.saIsEditButtonDisabled = false;
+        this.saIsCancelButtonHidden = true;
         this.isDetails = true;
-        this.isEditButtonHidden = false;
+        this.saIsEditButtonHidden = false;
     }
     get flowVariables() {
         return [
@@ -555,13 +553,13 @@ export default class Hot_informationModal extends NavigationMixin(LightningEleme
         this.isGoToThreadButtonDisabled = true;
         getThreadFreelanceId({ serviceAppointmentId: this.serviceAppointment.Id }).then((result) => {
             if (result != '') {
-                this.freelanceThreadId = result;
-                this.navigateToThread(this.freelanceThreadId);
+                this.saFreelanceThreadId = result;
+                this.navigateToThread(this.saFreelanceThreadId);
             } else {
                 createThread({ recordId: this.serviceAppointment.Id, accountId: this.serviceAppointment.accountId })
                     .then((result) => {
                         this.navigateToThread(result.Id);
-                        this.freelanceThreadId = result;
+                        this.saFreelanceThreadId = result;
                     })
                     .catch((error) => {
                         this.modalHeader = 'Noe gikk galt';
@@ -598,15 +596,15 @@ export default class Hot_informationModal extends NavigationMixin(LightningEleme
         this.isGoToThreadInterpretersButtonDisabled = true;
         getThreadInterpretersId({ serviceAppointmentId: this.serviceAppointment.Id }).then((result) => {
             if (result != '') {
-                this.freelanceThreadId = result;
-                this.navigateToThread(this.freelanceThreadId);
+                this.saFreelanceThreadId = result;
+                this.navigateToThread(this.saFreelanceThreadId);
                 console.log('finnes');
             } else {
                 console.log('finnes ingen');
                 createThreadInterpreters({ recordId: this.serviceAppointment.Id })
                     .then((result) => {
                         this.navigateToThread(result.Id);
-                        this.freelanceThreadId = result;
+                        this.saFreelanceThreadId = result;
                     })
                     .catch((error) => {
                         this.modalHeader = 'Noe gikk galt';
@@ -625,18 +623,18 @@ export default class Hot_informationModal extends NavigationMixin(LightningEleme
             }).then((data) => {
                 console.log(data.Status);
                 if (data.Status == 'Completed') {
-                    this.isflow = false;
-                    this.isCancelButtonHidden = true;
+                    this.saIsflow = false;
+                    this.saIsCancelButtonHidden = true;
                     this.serviceAppointment.Status = 'Dekket';
                 }
                 if (data.Status == 'Canceled') {
-                    this.isflow = false;
-                    this.isCancelButtonHidden = true;
+                    this.saIsflow = false;
+                    this.saIsCancelButtonHidden = true;
                     this.serviceAppointment.Status = 'Avlyst';
                 }
                 if (data.HOT_CanceledByInterpreter__c) {
-                    this.isflow = false;
-                    this.isCancelButtonHidden = true;
+                    this.saIsflow = false;
+                    this.saIsCancelButtonHidden = true;
                     this.serviceAppointment.Status = 'Avlyst';
                 }
             });
