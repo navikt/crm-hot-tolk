@@ -201,8 +201,7 @@ export default class Hot_myServiceAppointments extends NavigationMixin(Lightning
     navigationBaseList = '';
     getParams() {
         let parsed_params = getParametersFromURL() ?? '';
-        if (parsed_params.from == 'mine-varsler' && parsed_params.id != '') {
-            this.navigationBaseUrl = parsed_params.from;
+        if ((parsed_params.from == 'calendar' || parsed_params.from == 'mine-varsler') && parsed_params.id != '') {
             this.goToRecordDetailsFromNotification(parsed_params.id);
         }
     }
