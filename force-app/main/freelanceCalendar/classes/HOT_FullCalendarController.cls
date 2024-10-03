@@ -20,7 +20,7 @@ public with sharing class HOT_FullCalendarController {
         public String appointmentNumber;
     }
 
-    @AuraEnabled(cacheable=true)
+    @AuraEnabled(cacheable=false)
     public static List<CalendarEvent> getCalendarEvents(
         Long earliestEventEndTimeInMilliseconds,
         Long latestEventStartInMilliseconds
