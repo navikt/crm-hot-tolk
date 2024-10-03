@@ -1,6 +1,5 @@
 import { LightningElement, wire, track, api } from 'lwc';
 import getMyServiceAppointments from '@salesforce/apex/HOT_MyServiceAppointmentListController.getMyServiceAppointments';
-import getServiceResource from '@salesforce/apex/HOT_Utility.getServiceResource';
 
 import { NavigationMixin } from 'lightning/navigation';
 import { columns, mobileColumns } from './columns';
@@ -64,13 +63,6 @@ export default class Hot_myServiceAppointments extends NavigationMixin(Lightning
         this.setColumns();
         this.getParams();
         this.updateURL();
-    }
-    @track serviceResource;
-    @wire(getServiceResource)
-    wiredServiceresource(result) {
-        if (result.data) {
-            this.serviceResource = result.data;
-        }
     }
     getDayOfWeek(date) {
         var jsDate = new Date(date);
@@ -201,7 +193,8 @@ export default class Hot_myServiceAppointments extends NavigationMixin(Lightning
     navigationBaseList = '';
     getParams() {
         let parsed_params = getParametersFromURL() ?? '';
-        if ((parsed_params.from == 'calendar' || parsed_params.from == 'mine-varsler') && parsed_params.id != '') {
+        if (parsed_params.from == 'mine-varsler' && parsed_params.id != '') {
+            this.navigationBaseUrl = parsed_params.from;
             this.goToRecordDetailsFromNotification(parsed_params.id);
         }
     }
@@ -247,5 +240,8 @@ export default class Hot_myServiceAppointments extends NavigationMixin(Lightning
             this.records = filteredRecords;
         }
         return this.filteredRecordsLength;
+    }
+    handleRefreshRecords() {
+        refreshApex(this.wiredMyServiceAppointmentsResult);
     }
 }

@@ -11,6 +11,17 @@
             role="dialog"
             aria-labelledby="comment-header-id"
         >
+            <c-alertdialog
+                header={modalHeader}
+                content={modalContent}
+                desktop-style="text-align: center; white-space: pre-line; width: 50%"
+                mobile-style="text-align: center; white-space: pre-line; width: 100%; max-width: 100%;"
+                center-buttons="true"
+                no-cancel-button={noCancelButton}
+                confirm-button-label={confirmButtonLabel}
+                onbuttonclick={handleAlertDialogClick}
+            >
+            </c-alertdialog>
             <section if:true={isSADetails}>
                 <div>
                     <h2 class="typo-undertittel">Informasjon om oppdraget:</h2>
@@ -21,7 +32,7 @@
                 </div>
                 <div if:true={hasAccess}>
                     <div if:true={serviceAppointment}>
-                        <div class="record-details-container">
+                        <div>
                             <p>Oppdragsnummer: <span>{serviceAppointment.AppointmentNumber}</span></p>
                             <p>Tema: <span>{serviceAppointment.Subject}</span></p>
                             <p>Tid: <span>{serviceAppointment.weekday} {serviceAppointment.StartAndEndDate}</span></p>
@@ -172,6 +183,43 @@
                             >
                             </c-button>
                         </div>
+                    </div>
+                </div>
+            </section>
+            <section if:true={isWCDetails}>
+                <div>
+                    <h2 class="typo-undertittel">Informasjon om oppdraget:</h2>
+                </div>
+                <div if:true={wageClaim}>
+                    <div>
+                        <p>Oppdragsnummer: <span>{wageClaim.ServiceAppointmentName__c}</span></p>
+                        <p>Tid: <span>{wageClaim.weekday} {wageClaim.StartAndEndDate}</span></p>
+                        <p>Poststed: <span>{wageClaim.ServiceAppointmentCity__c}</span></p>
+                        <p>Tolkemetode: <span>{wageClaim.WorkTypeName__c}</span></p>
+                        <p>Oppdragstype: <span>{wageClaim.AssignmentType__c}</span></p>
+                        <p>Eier: <span>{wageClaim.ServiceAppointment__r.HOT_Request__r.OwnerName__c}</span></p>
+                        <p>Døv/døvblind: <span>{wageClaim.DegreeOfHearingAndVisualImpairment__c}</span></p>
+                        <p>Status: <span>{wageClaim.Status__c}</span></p>
+                    </div>
+                    <div style="display: inline-block; padding-right: 1vw; padding-bottom: 1vw; padding-top: 1vw">
+                        <c-button
+                            disabled={isNotRetractable}
+                            button-styling="primary"
+                            button-label="Tilbaketrekk tilgjengelighet"
+                            aria-label="Tilbaketrekk tilgjengelighet"
+                            onbuttonclick={showModal}
+                        >
+                        </c-button>
+                    </div>
+                    <div style="display: inline-block; padding-bottom: 1vw">
+                        <c-button
+                            disabled={isDisabledGoToThreadWC}
+                            button-styling="primary"
+                            button-label="Samtale med ressurskontor"
+                            aria-label="Samtale med ressurskontor"
+                            onbuttonclick={goToWageClaimThread}
+                        >
+                        </c-button>
                     </div>
                 </div>
             </section>

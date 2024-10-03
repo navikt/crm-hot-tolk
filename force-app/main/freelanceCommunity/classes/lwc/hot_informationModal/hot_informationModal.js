@@ -1,4 +1,4 @@
-import { LightningElement, api, track } from 'lwc';
+import { LightningElement, api, track, wire } from 'lwc';
 import checkAccessToSA from '@salesforce/apex/HOT_MyServiceAppointmentListController.checkAccessToSA';
 import getServiceAppointmentDetails from '@salesforce/apex/HOT_MyServiceAppointmentListController.getServiceAppointmentDetails';
 import getInterestedResourceDetails from '@salesforce/apex/HOT_InterestedResourcesListController.getInterestedResourceDetails';
@@ -8,7 +8,12 @@ import getThreadInterpretersId from '@salesforce/apex/HOT_MyServiceAppointmentLi
 import createThread from '@salesforce/apex/HOT_MessageHelper.createThread';
 import createThreadInterpreter from '@salesforce/apex/HOT_MessageHelper.createThreadInterpreter';
 import createThreadInterpreters from '@salesforce/apex/HOT_MessageHelper.createThreadInterpreters';
+import getServiceAppointment from '@salesforce/apex/HOT_MyServiceAppointmentListController.getServiceAppointment';
 import { NavigationMixin } from 'lightning/navigation';
+import retractAvailability from '@salesforce/apex/HOT_WageClaimListController.retractAvailability';
+import getThreadIdWC from '@salesforce/apex/HOT_WageClaimListController.getThreadId';
+import getServiceResource from '@salesforce/apex/HOT_Utility.getServiceResource';
+import getWageClaimDetails from '@salesforce/apex/HOT_WageClaimListController.getWageClaimDetails';
 
 export default class Hot_informationModal extends NavigationMixin(LightningElement) {
     @api records;
@@ -33,45 +38,106 @@ export default class Hot_informationModal extends NavigationMixin(LightningEleme
     @track accountName;
     @track ownerName;
     @track ordererPhoneNumber;
-    @track address;
     @track termsOfAgreement;
 
     @track isGoToThreadInterpretersButtonDisabled = false;
     @track isGoToThreadButtonDisabled = false;
     @track isGoToThreadServiceAppointmentButtonDisabled = false;
 
+    //WC
+
+    @track isNotRetractable = false;
+    @track isDisabledGoToThreadWC = false;
+
+    noCancelButton = false;
+    modalHeader = 'Varsel';
+    modalContent =
+        'Er du sikker på at du vil fjerne tilgjengeligheten din for dette tidspunktet? Du vil da ikke ha krav på lønn.';
+    @track confirmButtonLabel = 'Ja';
+
+    //
+
     @track isSADetails = false;
     @track hasAccess = false;
+    @track isWCDetails = false;
 
     openGoogleMaps() {
-        window.open('https://www.google.com/maps/search/?api=1&query=' + this.address);
+        window.open(
+            'https://www.google.com/maps/search/?api=1&query=' + this.serviceAppointment.HOT_AddressFormated__c
+        );
     }
     openAppleMaps() {
-        window.open('http://maps.apple.com/?q=' + this.address);
+        window.open('http://maps.apple.com/?q=' + this.serviceAppointment.HOT_AddressFormated__c);
     }
     connectedCallback() {
-        console.log('kjører denne?');
-        if (this.fromUrlRedirect == true && this.showDetails == true) {
+        //betyr at det er varsel
+        if (this.fromUrlRedirect == true && this.showDetails == true && this.type == 'SA') {
             this.goToRecordDetailsSAFromId(this.recordId);
+        }
+    }
+    @track serviceResource;
+    @wire(getServiceResource)
+    wiredServiceresource(result) {
+        if (result.data) {
+            this.serviceResource = result.data;
+        }
+    }
+
+    handleAlertDialogClick(event) {
+        if (event.detail === 'confirm') {
+            this.retractAvailability();
+        }
+    }
+    showModal() {
+        this.template.querySelector('c-alertdialog').showModal();
+    }
+    retractAvailability() {
+        try {
+            retractAvailability({ recordId: this.wageClaim.Id }).then(() => {
+                this.isNotRetractable = true;
+                this.wageClaim.Status__c = 'Tilbaketrukket tilgjengelighet';
+                this.refreshApexCallout();
+            });
+        } catch (error) {
+            alert(JSON.stringify(error));
         }
     }
 
     closeModal() {
         this.recordId = undefined;
         this.updateURL();
-        // this.template.querySelector('.details').classList.add('hidden');
         const dialog = this.template.querySelector('dialog.details');
         dialog.close();
     }
     @api
-    showModalPopup() {
-        this.template.querySelector('.details').classList.remove('hidden');
-    }
-    @api
-    goToRecordDetailsSA(saID, recordsArray) {
+    goToRecordDetailsWC(woId, recordsArray) {
+        console.log('kom inn her');
+        this.isDisabledGoToThreadWC = false;
+        this.wageClaim = undefined;
+        let recordId = woId;
+        this.recordId = recordId;
+        for (let wageClaim of recordsArray) {
+            if (recordId === wageClaim.Id) {
+                this.wageClaim = wageClaim;
+                this.wageClaim.weekday = this.getDayOfWeek(this.wageClaim.StartTime__c);
+
+                //husk å bytt til Åpen
+                if (this.wageClaim.Status__c == 'Open') {
+                    this.isNotRetractable = false;
+                } else {
+                    this.isNotRetractable = true;
+                }
+            }
+        }
         const dialog = this.template.querySelector('dialog.details');
         dialog.showModal();
         dialog.focus();
+        this.showDetails = true;
+        this.isWCDetails = true;
+        this.updateURL();
+    }
+    @api
+    goToRecordDetailsSA(saID, recordsArray) {
         let today = new Date();
         let recordId = saID;
         this.serviceAppointment = undefined;
@@ -190,15 +256,13 @@ export default class Hot_informationModal extends NavigationMixin(LightningEleme
         //this.updateURL();
     }
     @api
-    goToRecordDetailsSAFromId(recordId) {
-        this.isSADetails = true;
-        this.hasAccess = true;
-        getServiceAppointmentDetails({ recordId: recordId }).then((result) => {
-            this.serviceAppointment = result;
-            console.log(this.serviceAppointment.AppointmentNumber);
-            let startTimeFormatted = new Date(result.EarliestStartTime);
-            let endTimeFormatted = new Date(result.DueDate);
-            this.serviceAppointment.StartAndEndDate =
+    goToRecordDetailsWCFromId(recordId) {
+        this.isWCDetails;
+        getWageClaimDetails({ recordId: recordId }).then((result) => {
+            this.wageClaim = result;
+            let startTimeFormatted = new Date(this.wageClaim.StartTime__c);
+            let endTimeFormatted = new Date(this.wageClaim.EndTime__c);
+            this.wageClaim.StartAndEndDate =
                 startTimeFormatted.getDate() +
                 '.' +
                 (startTimeFormatted.getMonth() + 1) +
@@ -212,121 +276,170 @@ export default class Hot_informationModal extends NavigationMixin(LightningEleme
                 ('0' + endTimeFormatted.getHours()).substr(-2) +
                 ':' +
                 ('0' + endTimeFormatted.getMinutes()).substr(-2);
-            let actualstartTimeFormatted = new Date(result.ActualStartTime);
-            let actualendTimeFormatted = new Date(result.ActualEndTime);
-            this.serviceAppointment.ActualStartTime =
-                actualstartTimeFormatted.getDate() +
-                '.' +
-                (actualstartTimeFormatted.getMonth() + 1) +
-                '.' +
-                actualstartTimeFormatted.getFullYear() +
-                ' ' +
-                ('0' + actualstartTimeFormatted.getHours()).substr(-2) +
-                ':' +
-                ('0' + actualstartTimeFormatted.getMinutes()).substr(-2);
-            this.serviceAppointment.ActualEndTime =
-                actualendTimeFormatted.getDate() +
-                '.' +
-                (actualendTimeFormatted.getMonth() + 1) +
-                '.' +
-                actualendTimeFormatted.getFullYear() +
-                ' ' +
-                ('0' + actualendTimeFormatted.getHours()).substr(-2) +
-                ':' +
-                ('0' + actualendTimeFormatted.getMinutes()).substr(-2);
-            if (this.serviceAppointment.ActualStartTime.includes('NaN')) {
-                this.serviceAppointment.ActualStartTime = '';
-            }
-            if (this.serviceAppointment.ActualEndTime.includes('NaN')) {
-                this.serviceAppointment.ActualEndTime = '';
-            }
-            if (
-                this.serviceAppointment &&
-                this.serviceAppointment.HOT_Request__r &&
-                this.serviceAppointment.HOT_Request__r.Account__r
-            ) {
-                this.accountName = this.serviceAppointment.HOT_Request__r.Account__r.Name;
-            }
-            if (
-                this.serviceAppointment &&
-                this.serviceAppointment.HOT_Request__r &&
-                this.serviceAppointment.HOT_Request__r.Account__r &&
-                this.serviceAppointment.HOT_Request__r.Account__r.CRM_Person__r
-            ) {
-                if (this.serviceAppointment.HOT_Request__r.Account__r.CRM_Person__r.CRM_AgeNumber__c == undefined) {
-                    if (this.serviceAppointment.HOT_Request__r.Account__r.CRM_Person__r.HOT_Gender__c !== undefined) {
-                        this.accountAgeGender =
-                            this.serviceAppointment.HOT_Request__r.Account__r.CRM_Person__r.HOT_Gender__c;
-                    }
-                } else if (this.serviceAppointment.HOT_Request__r.Account__r.CRM_Person__r.HOT_Gender__c == undefined) {
-                    if (
-                        this.serviceAppointment.HOT_Request__r.Account__r.CRM_Person__r.CRM_AgeNumber__c !== undefined
-                    ) {
-                        this.accountAgeGender =
-                            this.serviceAppointment.HOT_Request__r.Account__r.CRM_Person__r.CRM_AgeNumber__c + ' år';
-                    }
-                } else if (
-                    this.serviceAppointment.HOT_Request__r.Account__r.CRM_Person__r.HOT_Gender__c !== undefined &&
-                    this.serviceAppointment.HOT_Request__r.Account__r.CRM_Person__r.CRM_AgeNumber__c !== undefined
-                ) {
-                    this.accountAgeGender =
-                        this.serviceAppointment.HOT_Request__r.Account__r.CRM_Person__r.HOT_Gender__c +
-                        ' ' +
-                        this.serviceAppointment.HOT_Request__r.Account__r.CRM_Person__r.CRM_AgeNumber__c +
-                        ' år';
-                }
-                if (
-                    this.serviceAppointment.HOT_Request__r.Account__r.CRM_Person__r.INT_KrrMobilePhone__c !== undefined
-                ) {
-                    this.accountPhoneNumber =
-                        this.serviceAppointment.HOT_Request__r.Account__r.CRM_Person__r.INT_KrrMobilePhone__c;
-                }
-                if (this.serviceAppointment && this.serviceAppointment.HOT_Request__r) {
-                    this.ownerName = this.serviceAppointment.HOT_Request__r.OwnerName__c;
-                }
-            }
-            if (
-                this.serviceAppointment &&
-                this.serviceAppointment.HOT_Request__r &&
-                this.serviceAppointment.HOT_Request__r.Orderer__r &&
-                this.serviceAppointment.HOT_Request__r.Orderer__r.CRM_Person__r
-            ) {
-                if (
-                    this.serviceAppointment.HOT_Request__r.Orderer__r.CRM_Person__r.INT_KrrMobilePhone__c !== undefined
-                ) {
-                    this.ordererPhoneNumber =
-                        this.serviceAppointment.HOT_Request__r.Orderer__r.CRM_Person__r.INT_KrrMobilePhone__c;
-                }
-            }
-            getInterestedResourceDetails({ recordId: recordId }).then((result) => {
-                this.interestedResource = result;
-                this.termsOfAgreement = this.interestedResource.HOT_TermsOfAgreement__c;
-            });
-
-            this.isEditButtonHidden = false;
-            this.isCancelButtonHidden = true;
-            this.isEditButtonDisabled = false;
-            this.serviceAppointment.weekday = this.getDayOfWeek(this.serviceAppointment.EarliestStartTime);
-            let duedate = new Date(this.serviceAppointment.DueDate);
-            if (this.serviceAppointment.Status == 'Completed') {
-                this.isEditButtonDisabled = true;
-            }
-            if (this.serviceAppointment.HOT_TotalNumberOfInterpreters__c <= 1) {
-                this.isGoToThreadInterpretersButtonDisabled = true;
-            }
-            if (this.serviceAppointment.HOT_Request__r.IsNotNotifyAccount__c == true) {
-                this.isGoToThreadButtonDisabled = true;
-            }
+            this.isWCDetails = true;
             const dialog = this.template.querySelector('dialog.details');
             dialog.showModal();
             dialog.focus();
-            //this.updateURL();
         });
-        //} else {
-        // this.hasAccess = false;
-        //  this.template.querySelector('.details').classList.remove('hidden');
-        // this.template.querySelector('.details').focus();
-        // }
+    }
+    @api
+    goToRecordDetailsSAFromId(recordId) {
+        this.isSADetails = true;
+        //this.hasAccess = true;
+        checkAccessToSA({ saId: recordId }).then((result) => {
+            if (result != false) {
+                getServiceAppointmentDetails({ recordId: recordId }).then((result) => {
+                    this.serviceAppointment = result;
+                    console.log(this.serviceAppointment.AppointmentNumber);
+                    let startTimeFormatted = new Date(result.EarliestStartTime);
+                    let endTimeFormatted = new Date(result.DueDate);
+                    this.serviceAppointment.StartAndEndDate =
+                        startTimeFormatted.getDate() +
+                        '.' +
+                        (startTimeFormatted.getMonth() + 1) +
+                        '.' +
+                        startTimeFormatted.getFullYear() +
+                        ', ' +
+                        ('0' + startTimeFormatted.getHours()).substr(-2) +
+                        ':' +
+                        ('0' + startTimeFormatted.getMinutes()).substr(-2) +
+                        ' - ' +
+                        ('0' + endTimeFormatted.getHours()).substr(-2) +
+                        ':' +
+                        ('0' + endTimeFormatted.getMinutes()).substr(-2);
+                    let actualstartTimeFormatted = new Date(result.ActualStartTime);
+                    let actualendTimeFormatted = new Date(result.ActualEndTime);
+                    this.serviceAppointment.ActualStartTime =
+                        actualstartTimeFormatted.getDate() +
+                        '.' +
+                        (actualstartTimeFormatted.getMonth() + 1) +
+                        '.' +
+                        actualstartTimeFormatted.getFullYear() +
+                        ' ' +
+                        ('0' + actualstartTimeFormatted.getHours()).substr(-2) +
+                        ':' +
+                        ('0' + actualstartTimeFormatted.getMinutes()).substr(-2);
+                    this.serviceAppointment.ActualEndTime =
+                        actualendTimeFormatted.getDate() +
+                        '.' +
+                        (actualendTimeFormatted.getMonth() + 1) +
+                        '.' +
+                        actualendTimeFormatted.getFullYear() +
+                        ' ' +
+                        ('0' + actualendTimeFormatted.getHours()).substr(-2) +
+                        ':' +
+                        ('0' + actualendTimeFormatted.getMinutes()).substr(-2);
+                    if (this.serviceAppointment.ActualStartTime.includes('NaN')) {
+                        this.serviceAppointment.ActualStartTime = '';
+                    }
+                    if (this.serviceAppointment.ActualEndTime.includes('NaN')) {
+                        this.serviceAppointment.ActualEndTime = '';
+                    }
+                    if (
+                        this.serviceAppointment &&
+                        this.serviceAppointment.HOT_Request__r &&
+                        this.serviceAppointment.HOT_Request__r.Account__r
+                    ) {
+                        this.accountName = this.serviceAppointment.HOT_Request__r.Account__r.Name;
+                    }
+                    if (
+                        this.serviceAppointment &&
+                        this.serviceAppointment.HOT_Request__r &&
+                        this.serviceAppointment.HOT_Request__r.Account__r &&
+                        this.serviceAppointment.HOT_Request__r.Account__r.CRM_Person__r
+                    ) {
+                        if (
+                            this.serviceAppointment.HOT_Request__r.Account__r.CRM_Person__r.CRM_AgeNumber__c ==
+                            undefined
+                        ) {
+                            if (
+                                this.serviceAppointment.HOT_Request__r.Account__r.CRM_Person__r.HOT_Gender__c !==
+                                undefined
+                            ) {
+                                this.accountAgeGender =
+                                    this.serviceAppointment.HOT_Request__r.Account__r.CRM_Person__r.HOT_Gender__c;
+                            }
+                        } else if (
+                            this.serviceAppointment.HOT_Request__r.Account__r.CRM_Person__r.HOT_Gender__c == undefined
+                        ) {
+                            if (
+                                this.serviceAppointment.HOT_Request__r.Account__r.CRM_Person__r.CRM_AgeNumber__c !==
+                                undefined
+                            ) {
+                                this.accountAgeGender =
+                                    this.serviceAppointment.HOT_Request__r.Account__r.CRM_Person__r.CRM_AgeNumber__c +
+                                    ' år';
+                            }
+                        } else if (
+                            this.serviceAppointment.HOT_Request__r.Account__r.CRM_Person__r.HOT_Gender__c !==
+                                undefined &&
+                            this.serviceAppointment.HOT_Request__r.Account__r.CRM_Person__r.CRM_AgeNumber__c !==
+                                undefined
+                        ) {
+                            this.accountAgeGender =
+                                this.serviceAppointment.HOT_Request__r.Account__r.CRM_Person__r.HOT_Gender__c +
+                                ' ' +
+                                this.serviceAppointment.HOT_Request__r.Account__r.CRM_Person__r.CRM_AgeNumber__c +
+                                ' år';
+                        }
+                        if (
+                            this.serviceAppointment.HOT_Request__r.Account__r.CRM_Person__r.INT_KrrMobilePhone__c !==
+                            undefined
+                        ) {
+                            this.accountPhoneNumber =
+                                this.serviceAppointment.HOT_Request__r.Account__r.CRM_Person__r.INT_KrrMobilePhone__c;
+                        }
+                        if (this.serviceAppointment && this.serviceAppointment.HOT_Request__r) {
+                            this.ownerName = this.serviceAppointment.HOT_Request__r.OwnerName__c;
+                        }
+                    }
+                    if (
+                        this.serviceAppointment &&
+                        this.serviceAppointment.HOT_Request__r &&
+                        this.serviceAppointment.HOT_Request__r.Orderer__r &&
+                        this.serviceAppointment.HOT_Request__r.Orderer__r.CRM_Person__r
+                    ) {
+                        if (
+                            this.serviceAppointment.HOT_Request__r.Orderer__r.CRM_Person__r.INT_KrrMobilePhone__c !==
+                            undefined
+                        ) {
+                            this.ordererPhoneNumber =
+                                this.serviceAppointment.HOT_Request__r.Orderer__r.CRM_Person__r.INT_KrrMobilePhone__c;
+                        }
+                    }
+                    getInterestedResourceDetails({ recordId: recordId }).then((result) => {
+                        this.interestedResource = result;
+                        this.termsOfAgreement = this.interestedResource.HOT_TermsOfAgreement__c;
+                    });
+
+                    this.isEditButtonHidden = false;
+                    this.isCancelButtonHidden = true;
+                    this.isEditButtonDisabled = false;
+                    this.serviceAppointment.weekday = this.getDayOfWeek(this.serviceAppointment.EarliestStartTime);
+                    let duedate = new Date(this.serviceAppointment.DueDate);
+                    if (this.serviceAppointment.Status == 'Completed') {
+                        this.isEditButtonDisabled = true;
+                    }
+                    if (this.serviceAppointment.HOT_TotalNumberOfInterpreters__c <= 1) {
+                        this.isGoToThreadInterpretersButtonDisabled = true;
+                    }
+                    if (this.serviceAppointment.HOT_Request__r.IsNotNotifyAccount__c == true) {
+                        this.isGoToThreadButtonDisabled = true;
+                    }
+                    this.hasAccess = true;
+                    const dialog = this.template.querySelector('dialog.details');
+                    dialog.showModal();
+                    dialog.focus();
+                    //this.updateURL();
+                });
+            } else {
+                console.log('gåååååårr');
+                this.hasAccess = false;
+                const dialog = this.template.querySelector('dialog.details');
+                dialog.showModal();
+                dialog.focus();
+            }
+        });
     }
     getDayOfWeek(date) {
         var jsDate = new Date(date);
@@ -388,6 +501,41 @@ export default class Hot_informationModal extends NavigationMixin(LightningEleme
                 value: this.recordId
             }
         ];
+    }
+    treadId;
+    goToWageClaimThread() {
+        this.isDisabledGoToThread = true;
+        getThreadIdWC({ wageClaimeId: this.recordId }).then((result) => {
+            if (result != '') {
+                this.threadId = result;
+                this.navigateToThread(this.threadId);
+            } else {
+                console.log('tråd finnes ikke');
+                console.log('accountid: ' + this.wageClaim.ServiceResource__r.AccountId);
+                createThread({ recordId: this.recordId, accountId: this.wageClaim.ServiceResource__r.AccountId })
+                    .then((result) => {
+                        this.navigateToThreadWC(result.Id);
+                    })
+                    .catch((error) => {
+                        this.modalHeader = 'Noe gikk galt';
+                        this.modalContent = 'Kunne ikke åpne samtale. Feilmelding: ' + error;
+                        this.noCancelButton = true;
+                        this.showModal();
+                    });
+            }
+        });
+    }
+    navigateToThreadWC(recordId) {
+        const baseUrl = '/samtale-frilans';
+        const attributes = `recordId=${recordId}&from=mine-oppdrag&list=wageClaim`;
+        const url = `${baseUrl}?${attributes}`;
+
+        this[NavigationMixin.Navigate]({
+            type: 'standard__webPage',
+            attributes: {
+                url: url
+            }
+        });
     }
     navigateToThread(recordId) {
         const baseUrl = '/samtale-frilans';
@@ -492,12 +640,16 @@ export default class Hot_informationModal extends NavigationMixin(LightningEleme
                     this.serviceAppointment.Status = 'Avlyst';
                 }
             });
-            refreshApex(this.wiredMyServiceAppointmentsResult);
+            this.refreshApexCallout();
         }
     }
     handleKeyDown(event) {
         if (event.code == 'Escape') {
             this.closeModal();
         }
+    }
+    refreshApexCallout() {
+        const eventToSend = new CustomEvent('refreshrecords');
+        this.dispatchEvent(eventToSend);
     }
 }
