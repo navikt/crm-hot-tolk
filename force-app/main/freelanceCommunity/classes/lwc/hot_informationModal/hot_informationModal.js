@@ -84,9 +84,17 @@ export default class Hot_informationModal extends NavigationMixin(LightningEleme
     }
 
     handleAlertDialogClick(event) {
-        if (event.detail === 'confirm') {
+        if (event.detail === 'confirm' && this.noCancelButton == false) {
             this.retractAvailability();
         }
+    }
+    showModalRetract() {
+        this.noCancelButton = false;
+        this.modalHeader = 'Varsel';
+        this.modalContent =
+            'Er du sikker på at du vil fjerne tilgjengeligheten din for dette tidspunktet? Du vil da ikke ha krav på lønn.';
+        this.confirmButtonLabel = 'Ja';
+        this.showModal();
     }
     showModal() {
         this.template.querySelector('c-alertdialog').showModal();
