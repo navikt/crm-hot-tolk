@@ -28,8 +28,8 @@ public with sharing class HOT_FreelanceAbsenceController {
 
     @AuraEnabled
     public static Boolean createServiceResourceAbsence(
-        Integer startTimeInMilliseconds,
-        Integer endTimeInMilliseconds,
+        Long startTimeInMilliseconds,
+        Long endTimeInMilliseconds,
         String absenceType
     ) {
         return false;
@@ -37,8 +37,8 @@ public with sharing class HOT_FreelanceAbsenceController {
 
     @AuraEnabled(cacheable=true)
     public static List<ConflictingRecord> getConflictsForTimePeriod(
-        Integer startTimeInMilliseconds,
-        Integer endTimeInMilliseconds
+        Long startTimeInMilliseconds,
+        Long endTimeInMilliseconds
     ) {
         Datetime startTime = Datetime.newInstance(startTimeInMilliseconds);
         Datetime endTime = Datetime.newInstance(endTimeInMilliseconds);
@@ -74,7 +74,7 @@ public with sharing class HOT_FreelanceAbsenceController {
 
     @AuraEnabled
     public static List<ResolutionResult> resolveAbsenceConflicts(List<ConflictingRecord> conflicts, String reason) {
-        Set<Id> appointmentIds = new Set<Id>();
+        /*Set<Id> appointmentIds = new Set<Id>();
         Set<Id> wageClaimIds = new Set<Id>();
 
         List<ResolutionResult> results = new List<ResolutionResult>();
@@ -121,8 +121,7 @@ public with sharing class HOT_FreelanceAbsenceController {
             if(!interestedResource.isEmpty()) {
                 interestedResource[0].Status__c = 'Canceled by Interpreter';
                 interestedResources.add(ir[0]);
-            }
-        }
+            }        }
 
         update interestedResources;
         insert historicalAssignments;
@@ -140,6 +139,8 @@ public with sharing class HOT_FreelanceAbsenceController {
         
         Database.SaveResult[] wageClaimUpdateResults = Database.update(wageClaims, false);
         Database.SaveResult[] appointmentUpdateResults = Database.update(appointments, false);
+        */
+        return new List<ResolutionResult>();
     }
 
     @TestVisible
