@@ -1,0 +1,29 @@
+<template>
+    <lightning-modal-header label="Registrer nytt fravær"></lightning-modal-header>
+    <lightning-modal-body>
+        <lightning-radio-group
+            name="radioGroup"
+            lwc:ref="absenceTypeRadioGroup"
+            label="Radio Group"
+            options={options}
+            value={value}
+            type="radio"
+        >
+        </lightning-radio-group>
+        <lightning-input
+            type="datetime"
+            name="input1"
+            lwc:ref="absenceStartDateTimeInput"
+            label="Legg inn start dato/tid"
+        ></lightning-input>
+        <lightning-input
+            type="datetime"
+            name="input2"
+            lwc:ref="absenceEndDateTimeInput"
+            label="Legg inn slutt dato/tid"
+        ></lightning-input>
+    </lightning-modal-body>
+    <lightning-modal-footer>
+        <lightning-button variant="brand" label="Registrer" onclick={handleOkay}></lightning-button>
+    </lightning-modal-footer>
+</template>

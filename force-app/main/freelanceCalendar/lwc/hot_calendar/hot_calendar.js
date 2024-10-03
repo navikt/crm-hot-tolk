@@ -1,10 +1,11 @@
-import { LightningElement, track, wire } from 'lwc';
+import { LightningElement, track, wire, api } from 'lwc';
 import FULL_CALENDAR from '@salesforce/resourceUrl/FullCalendar';
 import { loadScript, loadStyle } from 'lightning/platformResourceLoader';
 import getCalendarEvents from '@salesforce/apex/HOT_FullCalendarController.getCalendarEvents';
 import IKONER from '@salesforce/resourceUrl/ikoner';
 import { NavigationMixin } from 'lightning/navigation';
 import { CalendarEvent } from './calendar_event';
+import Hot_Calendar_Absence_Modal from 'c/hot_calendar_absence_modal';
 
 export default class LibsFullCalendar extends NavigationMixin(LightningElement) {
     static MILLISECONDS_PER_DAY = 86400000;
@@ -108,6 +109,12 @@ export default class LibsFullCalendar extends NavigationMixin(LightningElement) 
                     click: () => {
                         this.refreshCalendar(); // Call the refresh method
                     }
+                },
+                absence: {
+                    text: 'Nytt fravær',
+                    click: () => {
+                        this.openAbsenceModal();
+                    }
                 }
             },
             buttonText: {
@@ -121,7 +128,8 @@ export default class LibsFullCalendar extends NavigationMixin(LightningElement) 
                 end: 'dayGridMonth today prev,next'
             },
             footerToolbar: {
-                left: 'refresh'
+                left: 'refresh',
+                right: 'absence'
             },
             slotLabelFormat: {
                 hour: '2-digit',
@@ -205,7 +213,6 @@ export default class LibsFullCalendar extends NavigationMixin(LightningElement) 
 
     handleEventClick(context) {
         if (context.view.type === 'timeGridDay' || !this.isMobileSize) {
-            console.log('event clicked', context.event.extendedProps);
             this.navigateToDetailView(context.event.extendedProps);
         } else {
             this.calendar.changeView('timeGridDay', new Date(context.event.start));
@@ -235,6 +242,11 @@ export default class LibsFullCalendar extends NavigationMixin(LightningElement) 
 
         await minLoadingTime;
         this.isLoading = false;
+    }
+
+    async openAbsenceModal() {
+        const result = await Hot_Calendar_Absence_Modal.open({ content: 'Heia Lyn' });
+        console.log(result);
     }
 
     async updateEventsFromDateRange(earliestDateInView, latestDateInView) {
