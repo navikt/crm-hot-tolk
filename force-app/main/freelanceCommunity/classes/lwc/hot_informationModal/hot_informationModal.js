@@ -22,6 +22,8 @@ export default class Hot_informationModal extends NavigationMixin(LightningEleme
     @api showDetails = false;
     @api fromUrlRedirect;
 
+    @track isAListView = true;
+
     //serviceappointment
     @track saFreelanceThreadId;
     @track saThreadId;
@@ -263,6 +265,7 @@ export default class Hot_informationModal extends NavigationMixin(LightningEleme
     }
     @api
     goToRecordDetailsWCFromId(recordId) {
+        this.isAListView = false;
         this.isWCDetails;
         getWageClaimDetails({ recordId: recordId }).then((result) => {
             this.wageClaim = result;
@@ -291,6 +294,7 @@ export default class Hot_informationModal extends NavigationMixin(LightningEleme
     @api
     goToRecordDetailsSAFromId(recordId) {
         this.isSADetails = true;
+        this.isAListView = false;
         //this.hasAccess = true;
         checkAccessToSA({ saId: recordId }).then((result) => {
             if (result != false) {
@@ -511,16 +515,15 @@ export default class Hot_informationModal extends NavigationMixin(LightningEleme
     treadId;
     goToWageClaimThread() {
         this.isDisabledGoToThread = true;
-        getThreadIdWC({ wageClaimeId: this.recordId }).then((result) => {
+        console.log(this.wageClaim.Id);
+        getThreadIdWC({ wageClaimeId: this.wageClaim.Id }).then((result) => {
             if (result != '') {
                 this.threadId = result;
-                this.navigateToThreadWC(this.threadId);
+                this.navigateToThread(this.threadId);
             } else {
-                console.log('tråd finnes ikke');
-                console.log('accountid: ' + this.wageClaim.ServiceResource__r.AccountId);
-                createThread({ recordId: this.recordId, accountId: this.wageClaim.ServiceResource__r.AccountId })
+                createThread({ recordId: this.wageClaim.Id, accountId: this.wageClaim.ServiceResource__r.AccountId })
                     .then((result) => {
-                        this.navigateToThreadWC(result.Id);
+                        this.navigateToThread(result.Id);
                     })
                     .catch((error) => {
                         this.modalHeader = 'Noe gikk galt';
@@ -531,29 +534,43 @@ export default class Hot_informationModal extends NavigationMixin(LightningEleme
             }
         });
     }
-    navigateToThreadWC(recordId) {
-        const baseUrl = '/samtale-frilans';
-        const attributes = `recordId=${recordId}&from=mine-oppdrag&list=wageClaim`;
-        const url = `${baseUrl}?${attributes}`;
-
-        this[NavigationMixin.Navigate]({
-            type: 'standard__webPage',
-            attributes: {
-                url: url
-            }
-        });
-    }
     navigateToThread(recordId) {
-        const baseUrl = '/samtale-frilans';
-        const attributes = `recordId=${recordId}&from=mine-oppdrag&list=my`;
-        const url = `${baseUrl}?${attributes}`;
+        if (this.isAListView && this.isSADetails) {
+            const baseUrl = '/samtale-frilans';
+            const attributes = `recordId=${recordId}&from=mine-oppdrag&list=my`;
+            const url = `${baseUrl}?${attributes}`;
 
-        this[NavigationMixin.Navigate]({
-            type: 'standard__webPage',
-            attributes: {
-                url: url
-            }
-        });
+            this[NavigationMixin.Navigate]({
+                type: 'standard__webPage',
+                attributes: {
+                    url: url
+                }
+            });
+        } else if (this.isAListView && this.isWCDetails) {
+            const baseUrl = '/samtale-frilans';
+            const attributes = `recordId=${recordId}&from=mine-oppdrag&list=wageClaim`;
+            const url = `${baseUrl}?${attributes}`;
+
+            this[NavigationMixin.Navigate]({
+                type: 'standard__webPage',
+                attributes: {
+                    url: url
+                }
+            });
+        }
+        //gå til hjem skjerm
+        else {
+            const baseUrl = '/samtale-frilans';
+            const attributes = `recordId=${recordId}&from=kalender`;
+            const url = `${baseUrl}?${attributes}`;
+
+            this[NavigationMixin.Navigate]({
+                type: 'standard__webPage',
+                attributes: {
+                    url: url
+                }
+            });
+        }
     }
 
     goToThreadFreelance() {
