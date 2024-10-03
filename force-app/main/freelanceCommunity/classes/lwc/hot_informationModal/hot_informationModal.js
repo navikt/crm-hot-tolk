@@ -506,7 +506,7 @@ export default class Hot_informationModal extends NavigationMixin(LightningEleme
         getThreadIdWC({ wageClaimeId: this.recordId }).then((result) => {
             if (result != '') {
                 this.threadId = result;
-                this.navigateToThread(this.threadId);
+                this.navigateToThreadWC(this.threadId);
             } else {
                 console.log('tråd finnes ikke');
                 console.log('accountid: ' + this.wageClaim.ServiceResource__r.AccountId);
