@@ -78,13 +78,13 @@ export default class Hot_informationModal extends NavigationMixin(LightningEleme
             this.goToRecordDetailsSAFromId(this.recordId);
         }
     }
-    @track serviceResource;
-    @wire(getServiceResource)
-    wiredServiceresource(result) {
-        if (result.data) {
-            this.serviceResource = result.data;
-        }
-    }
+    // @track serviceResource;
+    // @wire(getServiceResource)
+    // wiredServiceresource(result) {
+    //     if (result.data) {
+    //         this.serviceResource = result.data;
+    //     }
+    // }
 
     handleAlertDialogClick(event) {
         if (event.detail === 'confirm' && this.noCancelButton == false) {
@@ -495,29 +495,6 @@ export default class Hot_informationModal extends NavigationMixin(LightningEleme
         }
         window.history.pushState({ path: baseURL }, '', baseURL);
     }
-    changeStatus() {
-        this.saIsflow = true;
-        this.saIsEditButtonDisabled = true;
-        this.saIsCancelButtonHidden = false;
-        this.isDetails = true;
-        this.saIsEditButtonHidden = true;
-    }
-    cancelStatusFlow() {
-        this.saIsflow = false;
-        this.saIsEditButtonDisabled = false;
-        this.saIsCancelButtonHidden = true;
-        this.isDetails = true;
-        this.saIsEditButtonHidden = false;
-    }
-    get flowVariables() {
-        return [
-            {
-                name: 'recordId',
-                type: 'String',
-                value: this.serviceAppointment.Id
-            }
-        ];
-    }
     treadId;
     goToWageClaimThread() {
         this.wcIsDisabledGoToThread = true;
@@ -539,45 +516,6 @@ export default class Hot_informationModal extends NavigationMixin(LightningEleme
             }
         });
     }
-    navigateToThread(recordId) {
-        if (this.isAListView && this.isSADetails) {
-            const baseUrl = '/samtale-frilans';
-            const attributes = `recordId=${recordId}&from=mine-oppdrag&list=my`;
-            const url = `${baseUrl}?${attributes}`;
-
-            this[NavigationMixin.Navigate]({
-                type: 'standard__webPage',
-                attributes: {
-                    url: url
-                }
-            });
-        } else if (this.isAListView && this.isWCDetails) {
-            const baseUrl = '/samtale-frilans';
-            const attributes = `recordId=${recordId}&from=mine-oppdrag&list=wageClaim`;
-            const url = `${baseUrl}?${attributes}`;
-
-            this[NavigationMixin.Navigate]({
-                type: 'standard__webPage',
-                attributes: {
-                    url: url
-                }
-            });
-        }
-        //gå til hjem skjerm
-        else {
-            const baseUrl = '/samtale-frilans';
-            const attributes = `recordId=${recordId}&from=kalender`;
-            const url = `${baseUrl}?${attributes}`;
-
-            this[NavigationMixin.Navigate]({
-                type: 'standard__webPage',
-                attributes: {
-                    url: url
-                }
-            });
-        }
-    }
-
     goToThreadFreelance() {
         this.isGoToThreadButtonDisabled = true;
         getThreadFreelanceId({ serviceAppointmentId: this.serviceAppointment.Id }).then((result) => {
@@ -641,6 +579,66 @@ export default class Hot_informationModal extends NavigationMixin(LightningEleme
             }
         });
     }
+    navigateToThread(recordId) {
+        if (this.isAListView && this.isSADetails) {
+            const baseUrl = '/samtale-frilans';
+            const attributes = `recordId=${recordId}&from=mine-oppdrag&list=my`;
+            const url = `${baseUrl}?${attributes}`;
+
+            this[NavigationMixin.Navigate]({
+                type: 'standard__webPage',
+                attributes: {
+                    url: url
+                }
+            });
+        } else if (this.isAListView && this.isWCDetails) {
+            const baseUrl = '/samtale-frilans';
+            const attributes = `recordId=${recordId}&from=mine-oppdrag&list=wageClaim`;
+            const url = `${baseUrl}?${attributes}`;
+
+            this[NavigationMixin.Navigate]({
+                type: 'standard__webPage',
+                attributes: {
+                    url: url
+                }
+            });
+        } else {
+            const baseUrl = '/samtale-frilans';
+            const attributes = `recordId=${recordId}&from=kalender`;
+            const url = `${baseUrl}?${attributes}`;
+
+            this[NavigationMixin.Navigate]({
+                type: 'standard__webPage',
+                attributes: {
+                    url: url
+                }
+            });
+        }
+    }
+    //serviceappointment endre status flow
+    changeStatus() {
+        this.saIsflow = true;
+        this.saIsEditButtonDisabled = true;
+        this.saIsCancelButtonHidden = false;
+        this.isDetails = true;
+        this.saIsEditButtonHidden = true;
+    }
+    cancelStatusFlow() {
+        this.saIsflow = false;
+        this.saIsEditButtonDisabled = false;
+        this.saIsCancelButtonHidden = true;
+        this.isDetails = true;
+        this.saIsEditButtonHidden = false;
+    }
+    get flowVariables() {
+        return [
+            {
+                name: 'recordId',
+                type: 'String',
+                value: this.serviceAppointment.Id
+            }
+        ];
+    }
     handleStatusChange(event) {
         console.log('handleStatusChange', event.detail);
         if (event.detail.interviewStatus == 'FINISHED') {
@@ -671,6 +669,7 @@ export default class Hot_informationModal extends NavigationMixin(LightningEleme
             this.closeModal();
         }
     }
+    //brukes til å hente nye data etter endring av statuser
     refreshApexCallout() {
         const eventToSend = new CustomEvent('refreshrecords');
         this.dispatchEvent(eventToSend);
