@@ -31,6 +31,13 @@ private class HOT_FullCalendarControllerTest {
         update serviceAppointment;
         insert assignedResource;
 
+        ResourceAbsence absence = new ResourceAbsence();
+        absence.Start = Datetime.now();
+        absence.End = Datetime.now().addHours(1);
+        absence.Type = 'Vacation';
+        absence.ResourceId = serviceResource.Id;
+        insert absence;
+
         HOT_WageClaim__c openClaim = HOT_TestDataFactory.createWageClaim(serviceResource);
         openClaim.Status__c = 'Open';
         insert openClaim;
@@ -53,8 +60,7 @@ private class HOT_FullCalendarControllerTest {
         );
         Test.stopTest();
         System.assert(
-            events.size() == 2 &&
-            events[0].id == appointment.Id,
+            events.size() == 3 && events[0].id == appointment.Id,
             'Should return one event with same Id as ServiceAppointment'
         );
     }
@@ -97,5 +103,15 @@ private class HOT_FullCalendarControllerTest {
         List<HOT_WageClaim__c> claims = HOT_FullCalendarController.getUserOpenWageClaims(earliestTime, latestTime);
         Test.stopTest();
         System.assertEquals(1, claims.size(), 'Should only retrieve wage claims with Status__c == \'Open\'');
+    }
+
+    @isTest
+    static void getUserResourceAbsence() {
+        DateTime earliestTime = DateTime.now().addDays(-1);
+        DateTime latestTime = DateTime.now().addDays(1);
+        Test.startTest();
+        List<ResourceAbsence> claims = HOT_FullCalendarController.getUserResourceAbsence(earliestTime, latestTime);
+        Test.stopTest();
+        System.assertEquals(1, claims.size(), 'Should retrieve absence for given time period');
     }
 }

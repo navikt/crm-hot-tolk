@@ -289,6 +289,9 @@ export default class LibsFullCalendar extends NavigationMixin(LightningElement) 
     }
 
     navigateToDetailView(eventExtendedProps) {
+        if (eventExtendedProps.type === 'RESOURCE_ABSENCE') {
+            return;
+        }
         let listType = '';
         switch (eventExtendedProps.type) {
             case 'COMPLETED_SERVICE_APPOINTMENT':
