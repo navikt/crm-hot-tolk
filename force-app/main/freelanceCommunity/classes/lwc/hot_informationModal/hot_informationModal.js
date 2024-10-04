@@ -134,7 +134,7 @@ export default class Hot_informationModal extends NavigationMixin(LightningEleme
             if (recordId === wageClaim.Id) {
                 this.wageClaim = wageClaim;
                 this.wageClaim.weekday = this.getDayOfWeek(this.wageClaim.StartTime__c);
-                if (this.wageClaim.Status__c == 'Åpen') {
+                if (this.wageClaim.Status__c == 'Åpen' || this.wageClaim.Status__c == 'Open') {
                     this.wcIsNotRetractable = false;
                 } else {
                     this.wcIsNotRetractable = true;
