@@ -68,7 +68,7 @@ public with sharing class HOT_FullCalendarController {
             event.endTime = absence.End;
             switch on absence.Type {
                 when 'Medical' {
-                    event.description = 'Medisinsk fravær';
+                    event.description = 'Sykdom';
                 }
                 when 'Vacation' {
                     event.description = 'Ferie';
