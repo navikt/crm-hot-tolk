@@ -632,6 +632,7 @@ private class HOT_ReminderSMSServiceTest {
         insert workType;
         HOT_Request__c request = HOT_TestDataFactory.createRequest('TEST', workType);
         insert request;
+        Test.startTest();
         WorkOrder workOrder = HOT_TestDataFactory.createWorkOrder(request, workType);
         insert workOrder;
         WorkOrderLineItem workOrderLineItem = HOT_TestDataFactory.createWorkOrderLineItem(workOrder, workType);
@@ -648,7 +649,6 @@ private class HOT_ReminderSMSServiceTest {
         serviceAppointment.Status = 'Dispatched';
         update serviceAppointment;
 
-        Test.startTest();
         HOT_ReminderSMSService.sendSMSOnCoInterpreterRemoved(serviceResource.Id, 'Start', 'Slutt');
         Test.stopTest();
 
