@@ -27,15 +27,26 @@ public with sharing class HOT_FreelanceAbsenceController {
     }
 
     @AuraEnabled
-    public static Boolean createServiceResourceAbsence(
+    public static void createAbsenceAndResolveConflicts(
         Long startTimeInMilliseconds,
         Long endTimeInMilliseconds,
         String absenceType
     ) {
-        return false;
+        ResourceAbsence absence = new ResourceAbsence();
+        absence.Start = Datetime.newInstance(startTimeInMilliseconds);
+        absence.End = Datetime.newInstance(endTimeInMilliseconds);
+        absence.ResourceId = getUserServiceResourceId();
+
+        ConflictingRecord[] conflictingRecords = getConflictsForTimePeriod(
+            startTimeInMilliseconds,
+            endTimeInMilliseconds
+        );
+        resolveAbsenceConflicts(conflictingRecords, 'Fravær');
+
+        insert absence;
     }
 
-    @AuraEnabled(cacheable=true)
+    @AuraEnabled(cacheable=false)
     public static List<ConflictingRecord> getConflictsForTimePeriod(
         Long startTimeInMilliseconds,
         Long endTimeInMilliseconds
@@ -72,15 +83,15 @@ public with sharing class HOT_FreelanceAbsenceController {
         return conflicts;
     }
 
-    @AuraEnabled
-    public static List<ResolutionResult> resolveAbsenceConflicts(List<ConflictingRecord> conflicts, String reason) {
-        /*Set<Id> appointmentIds = new Set<Id>();
+    @TestVisible
+    private static void resolveAbsenceConflicts(List<ConflictingRecord> conflicts, String reason) {
+        Set<Id> appointmentIds = new Set<Id>();
         Set<Id> wageClaimIds = new Set<Id>();
 
         List<ResolutionResult> results = new List<ResolutionResult>();
 
         for (ConflictingRecord conflict : conflicts) {
-            if (conflict.recordType == ConflictingRecordType.OPEN_WAGE_CLAIM) {
+            if (conflict.recordType == ConflictingRecordType.OPEN_WAGE_CLAIM.toString()) {
                 wageClaimIds.add(conflict.recordId);
             } else {
                 appointmentIds.add(conflict.recordId);
@@ -92,7 +103,7 @@ public with sharing class HOT_FreelanceAbsenceController {
         List<ServiceAppointment> appointments = [
             SELECT Id
             FROM ServiceAppointment
-            WHERE HOT_AssignedResourceId__c = :currentUserId AND Id IN :appointmentIds.keySet()
+            WHERE HOT_AssignedResourceId__c = :currentUserId AND Id IN :appointmentIds
         ];
 
         HOT_InterestedResource__c[] interestedResources = new List<HOT_InterestedResource__c>();
@@ -100,12 +111,11 @@ public with sharing class HOT_FreelanceAbsenceController {
         for (ServiceAppointment appointment : appointments) {
             appointment.Status = null;
             appointment.HOT_AssignedResourceId__c = '';
-            appointment.ServiceResource = '';
             appointment.HOT_DoNotCreateHAR__c = true;
             appointment.HOT_IsNotifyDispatcher__c = true;
             appointment.HOT_CanceledByInterpreter__c = true;
 
-            HOT_HistoricallyAssignedResource__c har = new HOT_HistoricallyAssignedResource();
+            HOT_HistoricallyAssignedResource__c har = new HOT_HistoricallyAssignedResource__c();
             har.ServiceAppointment__c = appointment.Id;
             har.ServiceResource__c = resourceId;
             har.StatusComment__c = reason;
@@ -118,13 +128,11 @@ public with sharing class HOT_FreelanceAbsenceController {
                 LIMIT 1
             ];
 
-            if(!interestedResource.isEmpty()) {
+            if (!interestedResource.isEmpty()) {
                 interestedResource[0].Status__c = 'Canceled by Interpreter';
-                interestedResources.add(ir[0]);
-            }        }
-
-        update interestedResources;
-        insert historicalAssignments;
+                interestedResources.add(interestedResource[0]);
+            }
+        }
 
         List<HOT_WageClaim__c> wageClaims = [
             SELECT Id, ServiceResource__r.Id
@@ -136,11 +144,10 @@ public with sharing class HOT_FreelanceAbsenceController {
             claim.Status__c = 'Retracted Availability';
         }
 
-        
-        Database.SaveResult[] wageClaimUpdateResults = Database.update(wageClaims, false);
-        Database.SaveResult[] appointmentUpdateResults = Database.update(appointments, false);
-        */
-        return new List<ResolutionResult>();
+        update wageClaims;
+        update appointments;
+        update interestedResources;
+        insert historicalAssignments;
     }
 
     @TestVisible
