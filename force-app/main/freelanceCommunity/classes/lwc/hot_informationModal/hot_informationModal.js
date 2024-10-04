@@ -47,10 +47,10 @@ export default class Hot_informationModal extends NavigationMixin(LightningEleme
     @track isGoToThreadButtonDisabled = false;
     @track isGoToThreadServiceAppointmentButtonDisabled = false;
 
-    //WC
+    //wageclaim
 
-    @track isNotRetractable = false;
-    @track isDisabledGoToThreadWC = false;
+    @track wcIsNotRetractable = false;
+    @track wcIsDisabledGoToThread = false;
 
     noCancelButton = false;
     modalHeader = 'Varsel';
@@ -105,7 +105,7 @@ export default class Hot_informationModal extends NavigationMixin(LightningEleme
     retractAvailability() {
         try {
             retractAvailability({ recordId: this.wageClaim.Id }).then(() => {
-                this.isNotRetractable = true;
+                this.wcIsNotRetractable = true;
                 this.wageClaim.Status__c = 'Tilbaketrukket tilgjengelighet';
                 this.refreshApexCallout();
             });
@@ -126,7 +126,7 @@ export default class Hot_informationModal extends NavigationMixin(LightningEleme
     }
     @api
     goToRecordDetailsWC(woId, recordsArray) {
-        this.isDisabledGoToThreadWC = false;
+        this.wcIsDisabledGoToThread = false;
         this.wageClaim = undefined;
         let recordId = woId;
         this.recordId = recordId;
@@ -135,9 +135,9 @@ export default class Hot_informationModal extends NavigationMixin(LightningEleme
                 this.wageClaim = wageClaim;
                 this.wageClaim.weekday = this.getDayOfWeek(this.wageClaim.StartTime__c);
                 if (this.wageClaim.Status__c == 'Åpen') {
-                    this.isNotRetractable = false;
+                    this.wcIsNotRetractable = false;
                 } else {
-                    this.isNotRetractable = true;
+                    this.wcIsNotRetractable = true;
                 }
             }
         }
@@ -302,6 +302,11 @@ export default class Hot_informationModal extends NavigationMixin(LightningEleme
         checkAccessToSA({ saId: recordId }).then((result) => {
             if (result != false) {
                 getServiceAppointmentDetails({ recordId: recordId }).then((result) => {
+                    this.accountPhoneNumber = '';
+                    this.accountAgeGender = '';
+                    this.accountName = '';
+                    this.ordererPhoneNumber = '';
+                    this.ownerName = '';
                     this.serviceAppointment = result;
                     let startTimeFormatted = new Date(result.EarliestStartTime);
                     let endTimeFormatted = new Date(result.DueDate);
@@ -515,7 +520,7 @@ export default class Hot_informationModal extends NavigationMixin(LightningEleme
     }
     treadId;
     goToWageClaimThread() {
-        this.isDisabledGoToThread = true;
+        this.wcIsDisabledGoToThread = true;
         getThreadIdWC({ wageClaimeId: this.wageClaim.Id }).then((result) => {
             if (result != '') {
                 this.threadId = result;
