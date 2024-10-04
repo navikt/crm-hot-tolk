@@ -121,7 +121,6 @@ export default class Hot_informationModal extends NavigationMixin(LightningEleme
     }
     @api
     goToRecordDetailsWC(woId, recordsArray) {
-        console.log('kom inn her');
         this.isDisabledGoToThreadWC = false;
         this.wageClaim = undefined;
         let recordId = woId;
@@ -154,7 +153,6 @@ export default class Hot_informationModal extends NavigationMixin(LightningEleme
         this.saIsCancelButtonHidden = true;
         this.saIsEditButtonDisabled = false;
         for (let serviceAppointment of recordsArray) {
-            console.log(serviceAppointment.Id);
             if (recordId === serviceAppointment.Id) {
                 this.accountPhoneNumber = '';
                 this.accountAgeGender = '';
@@ -261,7 +259,7 @@ export default class Hot_informationModal extends NavigationMixin(LightningEleme
                 this.hasAccess = true;
             }
         }
-        //this.updateURL();
+        this.updateURL();
     }
     @api
     goToRecordDetailsWCFromId(recordId) {
@@ -300,7 +298,6 @@ export default class Hot_informationModal extends NavigationMixin(LightningEleme
             if (result != false) {
                 getServiceAppointmentDetails({ recordId: recordId }).then((result) => {
                     this.serviceAppointment = result;
-                    console.log(this.serviceAppointment.AppointmentNumber);
                     let startTimeFormatted = new Date(result.EarliestStartTime);
                     let endTimeFormatted = new Date(result.DueDate);
                     this.serviceAppointment.StartAndEndDate =
@@ -440,10 +437,9 @@ export default class Hot_informationModal extends NavigationMixin(LightningEleme
                     const dialog = this.template.querySelector('dialog.details');
                     dialog.showModal();
                     dialog.focus();
-                    //this.updateURL();
+                    this.updateURL();
                 });
             } else {
-                console.log('gåååååårr');
                 this.hasAccess = false;
                 const dialog = this.template.querySelector('dialog.details');
                 dialog.showModal();
@@ -515,7 +511,6 @@ export default class Hot_informationModal extends NavigationMixin(LightningEleme
     treadId;
     goToWageClaimThread() {
         this.isDisabledGoToThread = true;
-        console.log(this.wageClaim.Id);
         getThreadIdWC({ wageClaimeId: this.wageClaim.Id }).then((result) => {
             if (result != '') {
                 this.threadId = result;
@@ -574,7 +569,6 @@ export default class Hot_informationModal extends NavigationMixin(LightningEleme
     }
 
     goToThreadFreelance() {
-        console.log('trykker');
         this.isGoToThreadButtonDisabled = true;
         getThreadFreelanceId({ serviceAppointmentId: this.serviceAppointment.Id }).then((result) => {
             if (result != '') {
@@ -590,13 +584,12 @@ export default class Hot_informationModal extends NavigationMixin(LightningEleme
                         this.modalHeader = 'Noe gikk galt';
                         this.modalContent = 'Kunne ikke åpne samtale. Feilmelding: ' + error;
                         this.noCancelButton = true;
-                        //this.showModal();
+                        this.showModal();
                     });
             }
         });
     }
     goToThreadServiceAppointment() {
-        console.log('yayy');
         this.isGoToThreadServiceAppointmentButtonDisabled = true;
         getThreadServiceAppointmentId({ serviceAppointmentId: this.serviceAppointment.Id }).then((result) => {
             if (result != '') {
@@ -612,7 +605,7 @@ export default class Hot_informationModal extends NavigationMixin(LightningEleme
                         this.modalHeader = 'Noe gikk galt';
                         this.modalContent = 'Kunne ikke åpne samtale. Feilmelding: ' + error;
                         this.noCancelButton = true;
-                        //this.showModal();
+                        this.showModal();
                     });
             }
         });
@@ -623,9 +616,7 @@ export default class Hot_informationModal extends NavigationMixin(LightningEleme
             if (result != '') {
                 this.saFreelanceThreadId = result;
                 this.navigateToThread(this.saFreelanceThreadId);
-                console.log('finnes');
             } else {
-                console.log('finnes ingen');
                 createThreadInterpreters({ recordId: this.serviceAppointment.Id })
                     .then((result) => {
                         this.navigateToThread(result.Id);
@@ -635,7 +626,7 @@ export default class Hot_informationModal extends NavigationMixin(LightningEleme
                         this.modalHeader = 'Noe gikk galt';
                         this.modalContent = 'Kunne ikke åpne samtale. Feilmelding: ' + error;
                         this.noCancelButton = true;
-                        //this.showModal();
+                        this.showModal();
                     });
             }
         });
@@ -646,7 +637,6 @@ export default class Hot_informationModal extends NavigationMixin(LightningEleme
             getServiceAppointment({
                 recordId: this.recordId
             }).then((data) => {
-                console.log(data.Status);
                 if (data.Status == 'Completed') {
                     this.saIsflow = false;
                     this.saIsCancelButtonHidden = true;
