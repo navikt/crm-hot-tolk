@@ -1,4 +1,9 @@
 public without sharing class HOT_ServiceAppointmentNotification {
+    private static void handleException(Exception e) {
+        LoggerUtility logger = new LoggerUtility();
+        logger.exception(e, CRM_ApplicationDomain.Domain.HOT);
+        logger.publishSynch();
+    }
     public static void resourceServiceAppointmentChanged(
         List<ServiceAppointment> serviceAppointments,
         Map<Id, sObject> triggerOldMap
@@ -115,9 +120,7 @@ public without sharing class HOT_ServiceAppointmentNotification {
         try {
             HOT_NotificationCentreController.createNotification(notificationList);
         } catch (Exception e) {
-            LoggerUtility logger = new LoggerUtility();
-            logger.exception(e, CRM_ApplicationDomain.Domain.HOT);
-            logger.publish();
+            handleException(e);
         }
     }
 
@@ -279,9 +282,7 @@ public without sharing class HOT_ServiceAppointmentNotification {
         try {
             HOT_NotificationCentreController.createNotification(notificationList);
         } catch (Exception e) {
-            LoggerUtility logger = new LoggerUtility();
-            logger.exception(e, CRM_ApplicationDomain.Domain.HOT);
-            logger.publish();
+            handleException(e);
         }
     }
 
@@ -395,9 +396,7 @@ public without sharing class HOT_ServiceAppointmentNotification {
         try {
             HOT_NotificationCentreController.createNotification(notificationList);
         } catch (Exception e) {
-            LoggerUtility logger = new LoggerUtility();
-            logger.exception(e, CRM_ApplicationDomain.Domain.HOT);
-            logger.publish();
+            handleException(e);
         }
     }
 
@@ -503,9 +502,7 @@ public without sharing class HOT_ServiceAppointmentNotification {
         try {
             HOT_NotificationCentreController.createNotification(notificationList);
         } catch (Exception e) {
-            LoggerUtility logger = new LoggerUtility();
-            logger.exception(e, CRM_ApplicationDomain.Domain.HOT);
-            logger.publish();
+            handleException(e);
         }
     }
 
@@ -606,9 +603,7 @@ public without sharing class HOT_ServiceAppointmentNotification {
         try {
             HOT_NotificationCentreController.createNotification(notificationList);
         } catch (Exception e) {
-            LoggerUtility logger = new LoggerUtility();
-            logger.exception(e, CRM_ApplicationDomain.Domain.HOT);
-            logger.publish();
+            handleException(e);
         }
         if (saSMS.size() > 0) {
             HOT_ReminderSMSService.sendSMSToInterpreterOnAddedOrChanged(saSMS);
@@ -717,9 +712,7 @@ public without sharing class HOT_ServiceAppointmentNotification {
         try {
             HOT_NotificationCentreController.createNotification(notificationList);
         } catch (Exception e) {
-            LoggerUtility logger = new LoggerUtility();
-            logger.exception(e, CRM_ApplicationDomain.Domain.HOT);
-            logger.publish();
+            handleException(e);
         }
     }
 
@@ -841,9 +834,7 @@ public without sharing class HOT_ServiceAppointmentNotification {
         try {
             HOT_NotificationCentreController.createNotification(notificationList);
         } catch (Exception e) {
-            LoggerUtility logger = new LoggerUtility();
-            logger.exception(e, CRM_ApplicationDomain.Domain.HOT);
-            logger.publish();
+            handleException(e);
         }
     }
     public static String formatTimePeriod(Datetime startDate, Datetime endDate) {
@@ -1007,9 +998,7 @@ public without sharing class HOT_ServiceAppointmentNotification {
                 try {
                     HOT_NotificationCentreController.createNotification(notificationList);
                 } catch (Exception e) {
-                    LoggerUtility logger = new LoggerUtility();
-                    logger.exception(e, CRM_ApplicationDomain.Domain.HOT);
-                    logger.publish();
+                    handleException(e);
                 }
             }
         }
@@ -1154,9 +1143,7 @@ public without sharing class HOT_ServiceAppointmentNotification {
         try {
             HOT_NotificationCentreController.createNotification(notificationList);
         } catch (Exception e) {
-            LoggerUtility logger = new LoggerUtility();
-            logger.exception(e, CRM_ApplicationDomain.Domain.HOT);
-            logger.publish();
+            handleException(e);
         }
     }
     public static void notifyInterpretersOnCoInterpreterAdded(ServiceAppointment sa) {
@@ -1307,9 +1294,7 @@ public without sharing class HOT_ServiceAppointmentNotification {
         try {
             HOT_NotificationCentreController.createNotification(notificationList);
         } catch (Exception e) {
-            LoggerUtility logger = new LoggerUtility();
-            logger.exception(e, CRM_ApplicationDomain.Domain.HOT);
-            logger.publish();
+            handleException(e);
         }
     }
     public static void notifyInterpretersOnChangedResource(ServiceAppointment sa) {
@@ -1460,9 +1445,7 @@ public without sharing class HOT_ServiceAppointmentNotification {
         try {
             HOT_NotificationCentreController.createNotification(notificationList);
         } catch (Exception e) {
-            LoggerUtility logger = new LoggerUtility();
-            logger.exception(e, CRM_ApplicationDomain.Domain.HOT);
-            logger.publish();
+            handleException(e);
         }
     }
 

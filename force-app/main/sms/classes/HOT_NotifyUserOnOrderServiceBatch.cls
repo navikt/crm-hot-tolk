@@ -1,4 +1,9 @@
 public without sharing class HOT_NotifyUserOnOrderServiceBatch implements Database.Batchable<sObject>, Schedulable {
+    private static void handleException(Exception e) {
+        LoggerUtility logger = new LoggerUtility();
+        logger.exception(e, CRM_ApplicationDomain.Domain.HOT);
+        logger.publishSynch();
+    }
     public void execute(SchedulableContext sc) {
         HOT_NotifyUserOnOrderServiceBatch instance = new HOT_NotifyUserOnOrderServiceBatch();
         database.executebatch(instance, 10);
@@ -95,15 +100,11 @@ public without sharing class HOT_NotifyUserOnOrderServiceBatch implements Databa
                 try {
                     HOT_NotificationCentreController.createNotification(notificationList);
                 } catch (Exception e) {
-                    LoggerUtility logger = new LoggerUtility();
-                    logger.exception(e, CRM_ApplicationDomain.Domain.HOT);
-                    logger.publish();
+                    handleException(e);
                 }
             }
         } catch (Exception e) {
-            LoggerUtility logger = new LoggerUtility();
-            logger.exception(e, CRM_ApplicationDomain.Domain.HOT);
-            logger.publish();
+            handleException(e);
         }
     }
 
@@ -118,9 +119,7 @@ public without sharing class HOT_NotifyUserOnOrderServiceBatch implements Databa
                     10
                 );
             } catch (Exception e) {
-                LoggerUtility logger = new LoggerUtility();
-                logger.exception(e, CRM_ApplicationDomain.Domain.HOT);
-                logger.publishSynch();
+                handleException(e);
             }
         }
     }

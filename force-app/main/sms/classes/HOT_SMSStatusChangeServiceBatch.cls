@@ -1,4 +1,9 @@
 public without sharing class HOT_SMSStatusChangeServiceBatch implements Database.Batchable<sObject>, Schedulable {
+    private static void handleException(Exception e) {
+        LoggerUtility logger = new LoggerUtility();
+        logger.exception(e, CRM_ApplicationDomain.Domain.HOT);
+        logger.publishSynch();
+    }
     public void execute(SchedulableContext sc) {
         HOT_SMSStatusChangeServiceBatch instance = new HOT_SMSStatusChangeServiceBatch();
         database.executebatch(instance, 10);
@@ -117,15 +122,11 @@ public without sharing class HOT_SMSStatusChangeServiceBatch implements Database
                 try {
                     HOT_NotificationCentreController.createNotification(notificationList);
                 } catch (Exception e) {
-                    LoggerUtility logger = new LoggerUtility();
-                    logger.exception(e, CRM_ApplicationDomain.Domain.HOT);
-                    logger.publish();
+                    handleException(e);
                 }
             }
         } catch (Exception e) {
-            LoggerUtility logger = new LoggerUtility();
-            logger.exception(e, CRM_ApplicationDomain.Domain.HOT);
-            logger.publish();
+            handleException(e);
         }
     }
 
@@ -140,9 +141,7 @@ public without sharing class HOT_SMSStatusChangeServiceBatch implements Database
                     10
                 );
             } catch (Exception e) {
-                LoggerUtility logger = new LoggerUtility();
-                logger.exception(e, CRM_ApplicationDomain.Domain.HOT);
-                logger.publishSynch();
+                handleException(e);
             }
         }
     }
