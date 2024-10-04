@@ -1,4 +1,9 @@
 public without sharing class HOT_FreelanceQualificationsController {
+    private static void handleException(Exception e) {
+        LoggerUtility logger = new LoggerUtility();
+        logger.exception(e, CRM_ApplicationDomain.Domain.HOT);
+        logger.publishSynch();
+    }
     @AuraEnabled(cacheable=true)
     public static ServiceResource myServiceResource() {
         Id userId = UserInfo.getUserId();
@@ -54,9 +59,12 @@ public without sharing class HOT_FreelanceQualificationsController {
             // Create Skill not yet existing on user
             if (!serviceResourceSkills.keySet().contains(skill.Id)) {
                 serviceResourceSkillsToCreate.add(setResourceSkill(serviceResource, skill));
-            } 
+            }
             // Set Skill EffectiveEndDate to null if Skill already exists on user
-            if (serviceResourceSkills.keySet().contains(skill.Id) && serviceResourceSkills.get(skill.Id).EffectiveEndDate != null) {
+            if (
+                serviceResourceSkills.keySet().contains(skill.Id) &&
+                serviceResourceSkills.get(skill.Id).EffectiveEndDate != null
+            ) {
                 serviceResourceSkills.get(skill.Id).EffectiveEndDate = null;
                 serviceResourceSkillsToUpdateEndDate.add(serviceResourceSkills.get(skill.Id));
             }
@@ -71,16 +79,12 @@ public without sharing class HOT_FreelanceQualificationsController {
         try {
             insert serviceResourceSkillsToCreate;
         } catch (Exception e) {
-            LoggerUtility logger = new LoggerUtility();
-            logger.exception(e, CRM_ApplicationDomain.Domain.HOT);
-            logger.publishSynch();
+            handleException(e);
         }
         try {
             update serviceResourceSkillsToUpdateEndDate;
         } catch (Exception e) {
-            LoggerUtility logger = new LoggerUtility();
-            logger.exception(e, CRM_ApplicationDomain.Domain.HOT);
-            logger.publishSynch();
+            handleException(e);
         }
     }
 

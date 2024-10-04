@@ -1,4 +1,10 @@
 public without sharing class HOT_ReminderSMSService {
+    private static void handleException(Exception e) {
+        LoggerUtility logger = new LoggerUtility();
+        logger.exception(e, CRM_ApplicationDomain.Domain.HOT);
+        logger.publishSynch();
+    }
+
     public static void reminderSMS(List<WorkOrder> workOrderList) {
         Map<Id, WorkOrder> workOrders = new Map<Id, WorkOrder>(workOrderList);
         Map<Id, String> interpreterNames = interpreterNamesByWorkOrderIds(workOrderList);
@@ -53,9 +59,7 @@ public without sharing class HOT_ReminderSMSService {
         try {
             HOT_NotificationCentreController.createNotification(notificationList);
         } catch (Exception e) {
-            LoggerUtility logger = new LoggerUtility();
-            logger.exception(e, CRM_ApplicationDomain.Domain.HOT);
-            logger.publish();
+            handleException(e);
         }
     }
 
@@ -108,9 +112,7 @@ public without sharing class HOT_ReminderSMSService {
         try {
             HOT_NotificationCentreController.createNotification(notificationList);
         } catch (Exception e) {
-            LoggerUtility logger = new LoggerUtility();
-            logger.exception(e, CRM_ApplicationDomain.Domain.HOT);
-            logger.publish();
+            handleException(e);
         }
     }
 
@@ -245,9 +247,7 @@ public without sharing class HOT_ReminderSMSService {
         try {
             HOT_NotificationCentreController.createNotification(notificationList);
         } catch (Exception e) {
-            LoggerUtility logger = new LoggerUtility();
-            logger.exception(e, CRM_ApplicationDomain.Domain.HOT);
-            logger.publish();
+            handleException(e);
         }
     }
 
@@ -279,9 +279,7 @@ public without sharing class HOT_ReminderSMSService {
         try {
             HOT_DatabaseOperations.insertRecords(smsList);
         } catch (Exception e) {
-            LoggerUtility logger = new LoggerUtility();
-            logger.exception(e, CRM_ApplicationDomain.Domain.HOT);
-            logger.publishSynch();
+            handleException(e);
         }
     }
 
@@ -303,9 +301,7 @@ public without sharing class HOT_ReminderSMSService {
         try {
             HOT_DatabaseOperations.insertRecords(smsList);
         } catch (Exception e) {
-            LoggerUtility logger = new LoggerUtility();
-            logger.exception(e, CRM_ApplicationDomain.Domain.HOT);
-            logger.publishSynch();
+            handleException(e);
         }
     }
     public static void sendSMSOnNewWantedSR(Set<Id> wantedIRIds) {
@@ -352,14 +348,10 @@ public without sharing class HOT_ReminderSMSService {
             try {
                 HOT_NotificationCentreController.createNotification(notificationList);
             } catch (Exception e) {
-                LoggerUtility logger = new LoggerUtility();
-                logger.exception(e, CRM_ApplicationDomain.Domain.HOT);
-                logger.publish();
+                handleException(e);
             }
         } catch (Exception e) {
-            LoggerUtility logger = new LoggerUtility();
-            logger.exception(e, CRM_ApplicationDomain.Domain.HOT);
-            logger.publishSynch();
+            handleException(e);
         }
     }
 
@@ -425,14 +417,10 @@ public without sharing class HOT_ReminderSMSService {
             try {
                 HOT_NotificationCentreController.createNotification(notificationList);
             } catch (Exception e) {
-                LoggerUtility logger = new LoggerUtility();
-                logger.exception(e, CRM_ApplicationDomain.Domain.HOT);
-                logger.publish();
+                handleException(e);
             }
         } catch (Exception e) {
-            LoggerUtility logger = new LoggerUtility();
-            logger.exception(e, CRM_ApplicationDomain.Domain.HOT);
-            logger.publishSynch();
+            handleException(e);
         }
     }
     @Future
@@ -473,14 +461,10 @@ public without sharing class HOT_ReminderSMSService {
             try {
                 HOT_NotificationCentreController.createNotification(notificationList);
             } catch (Exception e) {
-                LoggerUtility logger = new LoggerUtility();
-                logger.exception(e, CRM_ApplicationDomain.Domain.HOT);
-                logger.publish();
+                handleException(e);
             }
         } catch (Exception e) {
-            LoggerUtility logger = new LoggerUtility();
-            logger.exception(e, CRM_ApplicationDomain.Domain.HOT);
-            logger.publishSynch();
+            handleException(e);
         }
     }
     @Future
@@ -519,14 +503,10 @@ public without sharing class HOT_ReminderSMSService {
             try {
                 HOT_NotificationCentreController.createNotification(notificationList);
             } catch (Exception e) {
-                LoggerUtility logger = new LoggerUtility();
-                logger.exception(e, CRM_ApplicationDomain.Domain.HOT);
-                logger.publish();
+                handleException(e);
             }
         } catch (Exception e) {
-            LoggerUtility logger = new LoggerUtility();
-            logger.exception(e, CRM_ApplicationDomain.Domain.HOT);
-            logger.publishSynch();
+            handleException(e);
         }
     }
     @Future
@@ -570,14 +550,10 @@ public without sharing class HOT_ReminderSMSService {
             try {
                 HOT_NotificationCentreController.createNotification(notificationList);
             } catch (Exception e) {
-                LoggerUtility logger = new LoggerUtility();
-                logger.exception(e, CRM_ApplicationDomain.Domain.HOT);
-                logger.publish();
+                handleException(e);
             }
         } catch (Exception e) {
-            LoggerUtility logger = new LoggerUtility();
-            logger.exception(e, CRM_ApplicationDomain.Domain.HOT);
-            logger.publishSynch();
+            handleException(e);
         }
     }
 
@@ -611,9 +587,7 @@ public without sharing class HOT_ReminderSMSService {
         try {
             HOT_DatabaseOperations.insertRecords(smsList);
         } catch (Exception e) {
-            LoggerUtility logger = new LoggerUtility();
-            logger.exception(e, CRM_ApplicationDomain.Domain.HOT);
-            logger.publishSynch();
+            handleException(e);
         }
     }
 
@@ -647,9 +621,7 @@ public without sharing class HOT_ReminderSMSService {
         try {
             HOT_DatabaseOperations.insertRecords(smsList);
         } catch (Exception e) {
-            LoggerUtility logger = new LoggerUtility();
-            logger.exception(e, CRM_ApplicationDomain.Domain.HOT);
-            logger.publishSynch();
+            handleException(e);
         }
     }
 
@@ -677,9 +649,7 @@ public without sharing class HOT_ReminderSMSService {
         try {
             HOT_DatabaseOperations.insertRecords(smsList);
         } catch (Exception e) {
-            LoggerUtility logger = new LoggerUtility();
-            logger.exception(e, CRM_ApplicationDomain.Domain.HOT);
-            logger.publishSynch();
+            handleException(e);
         }
     }
 
@@ -713,9 +683,7 @@ public without sharing class HOT_ReminderSMSService {
         try {
             HOT_DatabaseOperations.insertRecords(smsList);
         } catch (Exception e) {
-            LoggerUtility logger = new LoggerUtility();
-            logger.exception(e, CRM_ApplicationDomain.Domain.HOT);
-            logger.publishSynch();
+            handleException(e);
         }
     }
 
@@ -749,9 +717,7 @@ public without sharing class HOT_ReminderSMSService {
         try {
             HOT_DatabaseOperations.insertRecords(smsList);
         } catch (Exception e) {
-            LoggerUtility logger = new LoggerUtility();
-            logger.exception(e, CRM_ApplicationDomain.Domain.HOT);
-            logger.publishSynch();
+            handleException(e);
         }
     }
 
@@ -785,9 +751,7 @@ public without sharing class HOT_ReminderSMSService {
         try {
             HOT_DatabaseOperations.insertRecords(smsList);
         } catch (Exception e) {
-            LoggerUtility logger = new LoggerUtility();
-            logger.exception(e, CRM_ApplicationDomain.Domain.HOT);
-            logger.publishSynch();
+            handleException(e);
         }
     }
     public static String constructOnNewWantedSR(String appointmentNumber) {
