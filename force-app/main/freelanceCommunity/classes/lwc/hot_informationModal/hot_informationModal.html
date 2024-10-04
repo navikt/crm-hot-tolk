@@ -1,15 +1,30 @@
 <template>
     <dialog
         class="dialog details"
+        lwc:ref="dialog"
         style="z-index: 9999; background-color: transparent"
         tabindex="-1"
         aria-label="Informasjon om oppdrag"
         onkeydown={handleKeyDown}
     >
         <div
+            class="
+                ReactModal__Content ReactModal__Content--after-open
+                navno-dekorator
+                details-container
+                slds_is-relative
+                slds-align_absolute-center
+            "
+            lwc:if={isLoading}
+        >
+            <lightning-spinner alternative-text="Loading" size="large"></lightning-spinner>
+        </div>
+
+        <div
             class="ReactModal__Content ReactModal__Content--after-open navno-dekorator details-container"
             role="dialog"
             aria-labelledby="comment-header-id"
+            lwc:else
         >
             <c-alertdialog
                 header={modalHeader}

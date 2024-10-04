@@ -64,6 +64,7 @@ export default class Hot_informationModal extends NavigationMixin(LightningEleme
     @track hasAccess = false;
     @track isWCDetails = false;
 
+    isLoading = true;
     openGoogleMaps() {
         window.open(
             'https://www.google.com/maps/search/?api=1&query=' + this.serviceAppointment.HOT_AddressFormated__c
@@ -130,6 +131,9 @@ export default class Hot_informationModal extends NavigationMixin(LightningEleme
         this.wageClaim = undefined;
         let recordId = woId;
         this.recordId = recordId;
+        const dialog = this.refs.dialog;
+        this.isLoading = true;
+        dialog.showModal();
         for (let wageClaim of recordsArray) {
             if (recordId === wageClaim.Id) {
                 this.wageClaim = wageClaim;
@@ -141,8 +145,7 @@ export default class Hot_informationModal extends NavigationMixin(LightningEleme
                 }
             }
         }
-        const dialog = this.template.querySelector('dialog.details');
-        dialog.showModal();
+        this.isLoading = false;
         dialog.focus();
         this.showDetails = true;
         this.isWCDetails = true;
@@ -157,6 +160,9 @@ export default class Hot_informationModal extends NavigationMixin(LightningEleme
         this.saIsEditButtonHidden = false;
         this.saIsCancelButtonHidden = true;
         this.saIsEditButtonDisabled = false;
+        const dialog = this.refs.dialog;
+        this.isLoading = true;
+        dialog.showModal();
         for (let serviceAppointment of recordsArray) {
             if (recordId === serviceAppointment.Id) {
                 this.accountPhoneNumber = '';
@@ -256,8 +262,7 @@ export default class Hot_informationModal extends NavigationMixin(LightningEleme
                             this.serviceAppointment.HOT_Request__r.Orderer__r.CRM_Person__r.INT_KrrMobilePhone__c;
                     }
                 }
-                const dialog = this.template.querySelector('dialog.details');
-                dialog.showModal();
+                this.isLoading = false;
                 dialog.focus();
                 this.showDetails = true;
                 this.isSADetails = true;
@@ -270,6 +275,9 @@ export default class Hot_informationModal extends NavigationMixin(LightningEleme
     goToRecordDetailsWCFromId(recordId) {
         this.isAListView = false;
         this.isWCDetails;
+        const dialog = this.refs.dialog;
+        this.isLoading = true;
+        dialog.showModal();
         getWageClaimDetails({ recordId: recordId }).then((result) => {
             this.wageClaim = result;
             let startTimeFormatted = new Date(this.wageClaim.StartTime__c);
@@ -289,8 +297,7 @@ export default class Hot_informationModal extends NavigationMixin(LightningEleme
                 ':' +
                 ('0' + endTimeFormatted.getMinutes()).substr(-2);
             this.isWCDetails = true;
-            const dialog = this.template.querySelector('dialog.details');
-            dialog.showModal();
+            this.isLoading = false;
             dialog.focus();
         });
     }
@@ -298,6 +305,9 @@ export default class Hot_informationModal extends NavigationMixin(LightningEleme
     goToRecordDetailsSAFromId(recordId) {
         this.isSADetails = true;
         this.isAListView = false;
+        const dialog = this.refs.dialog;
+        this.isLoading = true;
+        dialog.showModal();
         //this.hasAccess = true;
         checkAccessToSA({ saId: recordId }).then((result) => {
             if (result != false) {
@@ -444,9 +454,9 @@ export default class Hot_informationModal extends NavigationMixin(LightningEleme
                         this.isGoToThreadButtonDisabled = true;
                     }
                     this.hasAccess = true;
-                    const dialog = this.template.querySelector('dialog.details');
-                    dialog.showModal();
                     dialog.focus();
+                    this.isLoading = false;
+
                     this.updateURL();
                 });
             } else {
