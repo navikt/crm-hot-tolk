@@ -621,7 +621,7 @@ private class HOT_ReminderSMSServiceTest {
     @IsTest
     static void sendSMSOnCoInterpreterRemoved() {
         Profile profile = [SELECT Id FROM Profile WHERE Name = 'Standard User' OR Name = 'Standardbruker' LIMIT 1];
-        User user = HOT_TestDataFactory.createUser('user', profile);
+        User user = HOT_TestDataFactory.createUser('user2', profile);
         insert user;
         ServiceResource serviceResource = HOT_TestDataFactory.createServiceResource(user.Id);
         serviceResource.HOT_IsEmployedInterpreter__c = false;
