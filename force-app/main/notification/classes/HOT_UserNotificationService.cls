@@ -1,7 +1,7 @@
 public without sharing class HOT_UserNotificationService {
     private static void handleException(Exception e) {
         LoggerUtility logger = new LoggerUtility();
-        logger.exception(e, relatedRecord, CRM_ApplicationDomain.Domain.HOT);
+        logger.exception(e, CRM_ApplicationDomain.Domain.HOT);
         logger.publishSynch();
     }
 
