@@ -623,6 +623,7 @@ private class HOT_ReminderSMSServiceTest {
         Profile profile = [SELECT Id FROM Profile WHERE Name = 'Standard User' OR Name = 'Standardbruker' LIMIT 1];
         User user = HOT_TestDataFactory.createUser('user2', profile);
         insert user;
+        Test.startTest();
         ServiceResource serviceResource = HOT_TestDataFactory.createServiceResource(user.Id);
         serviceResource.HOT_IsEmployedInterpreter__c = false;
         serviceResource.HOT_IsFreelanceInterpreter__c = true;
@@ -632,7 +633,6 @@ private class HOT_ReminderSMSServiceTest {
         insert workType;
         HOT_Request__c request = HOT_TestDataFactory.createRequest('TEST', workType);
         insert request;
-        Test.startTest();
         WorkOrder workOrder = HOT_TestDataFactory.createWorkOrder(request, workType);
         insert workOrder;
         WorkOrderLineItem workOrderLineItem = HOT_TestDataFactory.createWorkOrderLineItem(workOrder, workType);
