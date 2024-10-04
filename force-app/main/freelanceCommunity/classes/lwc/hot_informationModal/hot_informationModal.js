@@ -35,6 +35,7 @@ export default class Hot_informationModal extends NavigationMixin(LightningEleme
 
     @track interestedResource;
     @track serviceAppointment;
+
     @track accountPhoneNumber;
     @track accountAgeGender;
     @track accountName;
@@ -115,6 +116,10 @@ export default class Hot_informationModal extends NavigationMixin(LightningEleme
 
     closeModal() {
         this.recordId = undefined;
+        this.serviceAppointment = undefined;
+        this.wageClaim = undefined;
+        this.isWCDetails = false;
+        this.isSADetails = false;
         this.updateURL();
         const dialog = this.template.querySelector('dialog.details');
         dialog.close();
@@ -504,7 +509,7 @@ export default class Hot_informationModal extends NavigationMixin(LightningEleme
             {
                 name: 'recordId',
                 type: 'String',
-                value: this.recordId
+                value: this.serviceAppointment.Id
             }
         ];
     }
@@ -635,7 +640,7 @@ export default class Hot_informationModal extends NavigationMixin(LightningEleme
         console.log('handleStatusChange', event.detail);
         if (event.detail.interviewStatus == 'FINISHED') {
             getServiceAppointment({
-                recordId: this.recordId
+                recordId: this.serviceAppointment.Id
             }).then((data) => {
                 if (data.Status == 'Completed') {
                     this.saIsflow = false;
