@@ -2,7 +2,8 @@ public with sharing class HOT_FullCalendarController {
     public enum EventType {
         COMPLETED_SERVICE_APPOINTMENT,
         SERVICE_APPOINTMENT,
-        OPEN_WAGE_CLAIM
+        OPEN_WAGE_CLAIM,
+        RESOURCE_ABSENCE
     }
 
     public class CalendarEvent {
@@ -32,6 +33,7 @@ public with sharing class HOT_FullCalendarController {
 
         List<ServiceAppointment> appointments = getUserServiceAppointments(earliestTime, latestTime);
         List<HOT_WageClaim__c> openWageClaims = getUserOpenWageClaims(earliestTime, latestTime);
+        List<ResourceAbsence> absences = getUserResourceAbsence(earliestTime, latestTime);
 
         for (ServiceAppointment appointment : appointments) {
             CalendarEvent event = new CalendarEvent();
@@ -56,6 +58,28 @@ public with sharing class HOT_FullCalendarController {
             event.description = 'Ledig på lønn';
             events.add(event);
         }
+
+        for (ResourceAbsence absence : absences) {
+            CalendarEvent event = new CalendarEvent();
+            event.id = absence.Id;
+            event.type = EventType.RESOURCE_ABSENCE.toString();
+            event.appointmentNumber = 'Fravær';
+            event.startTime = absence.Start;
+            event.endTime = absence.End;
+            switch on absence.Type {
+                when 'Medical' {
+                    event.description = 'Medisinsk fravær';
+                }
+                when 'Vacation' {
+                    event.description = 'Ferie';
+                }
+                when else {
+                    event.description = 'Annet fravær';
+                }
+            }
+            events.add(event);
+        }
+
         return events;
     }
 
@@ -95,6 +119,19 @@ public with sharing class HOT_FullCalendarController {
                 AND Status__c = 'Open'
                 AND EndTime__c > :earliestWageClaimEnd
                 AND StartTime__c < :latestWageClaimStart
+        ];
+    }
+
+    @TestVisible
+    private static List<ResourceAbsence> getUserResourceAbsence(
+        DateTime earliestAbsenceStart,
+        DateTime latestAbsenceStart
+    ) {
+        Id resourceId = getUserServiceResourceId();
+        return [
+            SELECT Id, Start, End, Type, ResourceId
+            FROM ResourceAbsence
+            WHERE ResourceId = :resourceId AND Start < :latestAbsenceStart AND End > :earliestAbsenceStart
         ];
     }
 
