@@ -92,6 +92,7 @@
                             <p if:true={ownerName}>Eier: <span>{ownerName}</span></p>
 
                             <p>Status: <span>{serviceAppointment.Status}</span></p>
+                            <p>Region: <span>{serviceAppointment.HOT_ServiceTerritoryName__c}</span></p>
                             <p>Haptisk kommunikasjon: <span>{serviceAppointment.HOT_HapticCommunication__c}</span></p>
                             <p if:true={serviceAppointment.HOT_Escort__c}>
                                 Ledsaging: <span>{serviceAppointment.HOT_Escort__c}</span>
