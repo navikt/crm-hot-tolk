@@ -335,6 +335,14 @@ export default class hot_messagingCommunityThreadViewer extends NavigationMixin(
                 },
                 state: {}
             });
+        } else if (this.navigationBaseUrl == 'kalender') {
+            this[NavigationMixin.Navigate]({
+                type: 'comm__namedPage',
+                attributes: {
+                    pageName: 'home'
+                },
+                state: {}
+            });
         } else {
             this[NavigationMixin.Navigate]({
                 type: 'comm__namedPage',
@@ -657,6 +665,8 @@ export default class hot_messagingCommunityThreadViewer extends NavigationMixin(
             this.isFreelance = true;
         } else if (parsed_params.from == 'mine-varsler-tolkebruker') {
             this.navigationBaseUrl = 'mine-varsler-tolkebruker';
+        } else if (parsed_params.from == 'kalender') {
+            this.navigationBaseUrl = 'kalender';
         } else if (parsed_params.list !== undefined) {
             this.navigationBaseUrl = parsed_params.from;
             this.navigationId = parsed_params.recordId;
