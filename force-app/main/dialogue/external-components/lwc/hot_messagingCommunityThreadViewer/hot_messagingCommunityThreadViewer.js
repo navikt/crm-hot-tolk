@@ -583,7 +583,8 @@ export default class hot_messagingCommunityThreadViewer extends NavigationMixin(
                         },
                         state: {
                             id: key,
-                            level: 'WO'
+                            level: 'WO',
+                            from: 'mine-samtaler'
                         }
                     });
                     break;
@@ -596,7 +597,8 @@ export default class hot_messagingCommunityThreadViewer extends NavigationMixin(
                         },
                         state: {
                             id: key,
-                            level: 'R'
+                            level: 'R',
+                            from: 'mine-samtaler'
                         }
                     });
                     break;
@@ -608,7 +610,8 @@ export default class hot_messagingCommunityThreadViewer extends NavigationMixin(
                         },
                         state: {
                             id: key,
-                            level: result[key]
+                            level: result[key],
+                            from: 'mine-samtaler'
                         }
                     });
                 }
