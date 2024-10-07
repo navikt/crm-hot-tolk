@@ -1,4 +1,10 @@
 public without sharing class HOT_ReminderSMSService {
+    private static void handleException(Exception e) {
+        LoggerUtility logger = new LoggerUtility();
+        logger.exception(e, CRM_ApplicationDomain.Domain.HOT);
+        logger.publishSynch();
+    }
+
     public static void reminderSMS(List<WorkOrder> workOrderList) {
         Map<Id, WorkOrder> workOrders = new Map<Id, WorkOrder>(workOrderList);
         Map<Id, String> interpreterNames = interpreterNamesByWorkOrderIds(workOrderList);
@@ -53,9 +59,7 @@ public without sharing class HOT_ReminderSMSService {
         try {
             HOT_NotificationCentreController.createNotification(notificationList);
         } catch (Exception e) {
-            LoggerUtility logger = new LoggerUtility();
-            logger.exception(e, CRM_ApplicationDomain.Domain.HOT);
-            logger.publish();
+            handleException(e);
         }
     }
 
@@ -108,9 +112,7 @@ public without sharing class HOT_ReminderSMSService {
         try {
             HOT_NotificationCentreController.createNotification(notificationList);
         } catch (Exception e) {
-            LoggerUtility logger = new LoggerUtility();
-            logger.exception(e, CRM_ApplicationDomain.Domain.HOT);
-            logger.publish();
+            handleException(e);
         }
     }
 
@@ -245,9 +247,7 @@ public without sharing class HOT_ReminderSMSService {
         try {
             HOT_NotificationCentreController.createNotification(notificationList);
         } catch (Exception e) {
-            LoggerUtility logger = new LoggerUtility();
-            logger.exception(e, CRM_ApplicationDomain.Domain.HOT);
-            logger.publish();
+            handleException(e);
         }
     }
 
@@ -279,9 +279,7 @@ public without sharing class HOT_ReminderSMSService {
         try {
             HOT_DatabaseOperations.insertRecords(smsList);
         } catch (Exception e) {
-            LoggerUtility logger = new LoggerUtility();
-            logger.exception(e, CRM_ApplicationDomain.Domain.HOT);
-            logger.publishSynch();
+            handleException(e);
         }
     }
 
@@ -303,17 +301,16 @@ public without sharing class HOT_ReminderSMSService {
         try {
             HOT_DatabaseOperations.insertRecords(smsList);
         } catch (Exception e) {
-            LoggerUtility logger = new LoggerUtility();
-            logger.exception(e, CRM_ApplicationDomain.Domain.HOT);
-            logger.publishSynch();
+            handleException(e);
         }
     }
-
     public static void sendSMSOnNewWantedSR(Set<Id> wantedIRIds) {
         List<SMS__c> smsList = new List<SMS__c>();
         List<HOT_InterestedResource__c> wantedIRList = [
-            SELECT ServiceResource__r.Account.Id, ServiceResource__r.HOT_MobilePhone__c,
-            ServiceAppointment__r.AppointmentNumber
+            SELECT
+                ServiceResource__r.Account.Id,
+                ServiceResource__r.HOT_MobilePhone__c,
+                ServiceAppointment__r.AppointmentNumber
             FROM HOT_InterestedResource__c
             WHERE Id IN :wantedIRIds
         ];
@@ -335,7 +332,7 @@ public without sharing class HOT_ReminderSMSService {
             HOT_Notification__c notification = new HOT_Notification__c();
             notification.HOT_Account__c = ir.ServiceResource__r.Account.Id;
             notification.HOT_NotificationChannel__c = 'SMS';
-            notification.HOT_Subject__c = 'Du er ønsket til et oppdrag. '+ir.ServiceAppointment__r.AppointmentNumber;
+            notification.HOT_Subject__c = 'Du er ønsket til et oppdrag. ' + ir.ServiceAppointment__r.AppointmentNumber;
             notification.HOT_NotificationText__c =
                 'INFO\nDu er ønsket til et oppdrag.\n\nFor mer informasjon, se tolkebestilling.nav.no.\n' +
                 'Du kan ikke svare på denne meldingen.\n' +
@@ -351,14 +348,10 @@ public without sharing class HOT_ReminderSMSService {
             try {
                 HOT_NotificationCentreController.createNotification(notificationList);
             } catch (Exception e) {
-                LoggerUtility logger = new LoggerUtility();
-                logger.exception(e, CRM_ApplicationDomain.Domain.HOT);
-                logger.publish();
+                handleException(e);
             }
         } catch (Exception e) {
-            LoggerUtility logger = new LoggerUtility();
-            logger.exception(e, CRM_ApplicationDomain.Domain.HOT);
-            logger.publishSynch();
+            handleException(e);
         }
     }
 
@@ -424,25 +417,23 @@ public without sharing class HOT_ReminderSMSService {
             try {
                 HOT_NotificationCentreController.createNotification(notificationList);
             } catch (Exception e) {
-                LoggerUtility logger = new LoggerUtility();
-                logger.exception(e, CRM_ApplicationDomain.Domain.HOT);
-                logger.publish();
+                handleException(e);
             }
         } catch (Exception e) {
-            LoggerUtility logger = new LoggerUtility();
-            logger.exception(e, CRM_ApplicationDomain.Domain.HOT);
-            logger.publishSynch();
+            handleException(e);
         }
     }
-    public static void sendSMSOnCoInterpreterChange(
-        Set<Id> serviceResourcesIds,
+    @Future
+    public static void sendSMSOnNewCoInterpreterChange(
+        Id serviceResourceId,
         String schedStartEndtime,
+        String appointmentNumber,
         String interpreterName
     ) {
         List<ServiceResource> serviceresourceList = [
             SELECT Id, Name, AccountId, HOT_MobilePhone__c
             FROM ServiceResource
-            WHERE Id = :serviceResourcesIds
+            WHERE Id = :serviceResourceId
         ];
         List<SMS__c> smsList = new List<SMS__c>();
         //creating notification object list
@@ -453,7 +444,7 @@ public without sharing class HOT_ReminderSMSService {
             sms.Type__c = 'Interpreter';
             sms.Account__c = sr.AccountId;
             sms.Recipient__c = sr.HOT_MobilePhone__c;
-            String message = 'INFO\nMedtolk på et oppdrag du er tildelt er blitt endret. \nNy tolk er:\n';
+            String message = 'INFO\nDu har fått medtolk. ' + appointmentNumber + ' \nTolk er:\n';
             message += interpreterName;
             message += '\nDato: ' + schedStartEndtime;
             message += '\n\nFor mer informasjon, se tolkebestilling.nav.no. Du kan ikke svare på denne meldingen.';
@@ -470,14 +461,99 @@ public without sharing class HOT_ReminderSMSService {
             try {
                 HOT_NotificationCentreController.createNotification(notificationList);
             } catch (Exception e) {
-                LoggerUtility logger = new LoggerUtility();
-                logger.exception(e, CRM_ApplicationDomain.Domain.HOT);
-                logger.publish();
+                handleException(e);
             }
         } catch (Exception e) {
-            LoggerUtility logger = new LoggerUtility();
-            logger.exception(e, CRM_ApplicationDomain.Domain.HOT);
-            logger.publishSynch();
+            handleException(e);
+        }
+    }
+    @Future
+    public static void sendSMSOnCoInterpreterRemoved(
+        Id serviceResourceId,
+        String schedStartEndtime,
+        String appointmentNumber
+    ) {
+        List<ServiceResource> serviceresourceList = [
+            SELECT Id, Name, AccountId, HOT_MobilePhone__c
+            FROM ServiceResource
+            WHERE Id = :serviceResourceId
+        ];
+        List<SMS__c> smsList = new List<SMS__c>();
+        //creating notification object list
+        List<HOT_Notification__c> notificationList = new List<HOT_Notification__c>();
+        for (ServiceResource sr : serviceresourceList) {
+            SMS__c sms = new SMS__c();
+            sms.Domain__c = 'HOT';
+            sms.Type__c = 'Interpreter';
+            sms.Account__c = sr.AccountId;
+            sms.Recipient__c = sr.HOT_MobilePhone__c;
+            String message = 'INFO\nEn medtolk har blitt tatt av oppdraget. ' + appointmentNumber + '\n';
+            message += '\nDato: ' + schedStartEndtime;
+            message += '\n\nFor mer informasjon, se tolkebestilling.nav.no. Du kan ikke svare på denne meldingen.';
+            message += '\nMvh tolketjenesten i NAV';
+
+            sms.Message__c = message;
+            if (SMS.Recipient__c != null) {
+                smsList.add(sms);
+            }
+        }
+        try {
+            HOT_DatabaseOperations.insertRecords(smsList);
+            //inserting notifications
+            try {
+                HOT_NotificationCentreController.createNotification(notificationList);
+            } catch (Exception e) {
+                handleException(e);
+            }
+        } catch (Exception e) {
+            handleException(e);
+        }
+    }
+    @Future
+    public static void sendSMSOnCoInterpreterChange(
+        Id serviceResourceId,
+        String schedStartEndtime,
+        String appointmentNumber,
+        String interpreterName
+    ) {
+        List<ServiceResource> serviceresourceList = [
+            SELECT Id, Name, AccountId, HOT_MobilePhone__c
+            FROM ServiceResource
+            WHERE Id = :serviceResourceId
+        ];
+        List<SMS__c> smsList = new List<SMS__c>();
+        //creating notification object list
+        List<HOT_Notification__c> notificationList = new List<HOT_Notification__c>();
+        for (ServiceResource sr : serviceresourceList) {
+            SMS__c sms = new SMS__c();
+            sms.Domain__c = 'HOT';
+            sms.Type__c = 'Interpreter';
+            sms.Account__c = sr.AccountId;
+            sms.Recipient__c = sr.HOT_MobilePhone__c;
+            String message =
+                'INFO\nMedtolk på et oppdrag du er tildelt er blitt endret. ' +
+                appointmentNumber +
+                ' \nNy tolk er:\n';
+            message += interpreterName;
+            message += '\nDato: ' + schedStartEndtime;
+            message += '\n\nFor mer informasjon, se tolkebestilling.nav.no. Du kan ikke svare på denne meldingen.';
+            message += '\nMvh tolketjenesten i NAV';
+
+            sms.Message__c = message;
+            if (SMS.Recipient__c != null) {
+                smsList.add(sms);
+            }
+        }
+        try {
+            HOT_DatabaseOperations.insertRecords(smsList);
+            //inserting notifications
+            try {
+                HOT_NotificationCentreController.createNotification(notificationList);
+            } catch (Exception e) {
+                handleException(e);
+            }
+        } catch (Exception e) {
+            handleException(e);
         }
     }
 
@@ -511,9 +587,7 @@ public without sharing class HOT_ReminderSMSService {
         try {
             HOT_DatabaseOperations.insertRecords(smsList);
         } catch (Exception e) {
-            LoggerUtility logger = new LoggerUtility();
-            logger.exception(e, CRM_ApplicationDomain.Domain.HOT);
-            logger.publishSynch();
+            handleException(e);
         }
     }
 
@@ -547,9 +621,7 @@ public without sharing class HOT_ReminderSMSService {
         try {
             HOT_DatabaseOperations.insertRecords(smsList);
         } catch (Exception e) {
-            LoggerUtility logger = new LoggerUtility();
-            logger.exception(e, CRM_ApplicationDomain.Domain.HOT);
-            logger.publishSynch();
+            handleException(e);
         }
     }
 
@@ -577,9 +649,7 @@ public without sharing class HOT_ReminderSMSService {
         try {
             HOT_DatabaseOperations.insertRecords(smsList);
         } catch (Exception e) {
-            LoggerUtility logger = new LoggerUtility();
-            logger.exception(e, CRM_ApplicationDomain.Domain.HOT);
-            logger.publishSynch();
+            handleException(e);
         }
     }
 
@@ -613,9 +683,7 @@ public without sharing class HOT_ReminderSMSService {
         try {
             HOT_DatabaseOperations.insertRecords(smsList);
         } catch (Exception e) {
-            LoggerUtility logger = new LoggerUtility();
-            logger.exception(e, CRM_ApplicationDomain.Domain.HOT);
-            logger.publishSynch();
+            handleException(e);
         }
     }
 
@@ -649,9 +717,7 @@ public without sharing class HOT_ReminderSMSService {
         try {
             HOT_DatabaseOperations.insertRecords(smsList);
         } catch (Exception e) {
-            LoggerUtility logger = new LoggerUtility();
-            logger.exception(e, CRM_ApplicationDomain.Domain.HOT);
-            logger.publishSynch();
+            handleException(e);
         }
     }
 
@@ -685,13 +751,11 @@ public without sharing class HOT_ReminderSMSService {
         try {
             HOT_DatabaseOperations.insertRecords(smsList);
         } catch (Exception e) {
-            LoggerUtility logger = new LoggerUtility();
-            logger.exception(e, CRM_ApplicationDomain.Domain.HOT);
-            logger.publishSynch();
+            handleException(e);
         }
     }
     public static String constructOnNewWantedSR(String appointmentNumber) {
-        String message = 'INFO\nDu er ønsket til et oppdrag. '+appointmentNumber+'\n\n';
+        String message = 'INFO\nDu er ønsket til et oppdrag. ' + appointmentNumber + '\n\n';
         message += 'For mer informasjon, se tolkebestilling.nav.no.\n';
         message += 'Du kan ikke svare på denne meldingen.\n';
         message += 'Mvh tolketjenesten i NAV';
@@ -708,10 +772,10 @@ public without sharing class HOT_ReminderSMSService {
         }
         message += sa.AppointmentNumber;
         if (saEvent == 'Address') {
-            message += ' ' + formatTimePeriod(sa.EarliestStartTime, sa.DueDate) +' har endret adresse';
+            message += ' ' + formatTimePeriod(sa.EarliestStartTime, sa.DueDate) + ' har endret adresse';
         }
         if (saEvent == 'Time') {
-            message += ' har endret tidspunkt.\nNy tid er '+ formatTimePeriod(sa.EarliestStartTime, sa.DueDate);
+            message += ' har endret tidspunkt.\nNy tid er ' + formatTimePeriod(sa.EarliestStartTime, sa.DueDate);
         }
         if (saEvent == 'CanceledByUser') {
             message += ' ' + formatTimePeriod(sa.EarliestStartTime, sa.DueDate) + ' er avlyst';

@@ -1,4 +1,9 @@
 public without sharing class HOT_ReminderSMSBatch implements Database.Batchable<sObject>, Schedulable {
+    private static void handleException(Exception e) {
+        LoggerUtility logger = new LoggerUtility();
+        logger.exception(e, CRM_ApplicationDomain.Domain.HOT);
+        logger.publishSynch();
+    }
     public void execute(SchedulableContext sc) {
         HOT_ReminderSMSBatch instance = new HOT_ReminderSMSBatch();
         database.executebatch(instance, 10);
@@ -86,17 +91,13 @@ public without sharing class HOT_ReminderSMSBatch implements Database.Batchable<
                 HOT_DatabaseOperations.updateRecords(workorderListPush);
             }
         } catch (Exception e) {
-            LoggerUtility logger = new LoggerUtility();
-            logger.exception(e, CRM_ApplicationDomain.Domain.HOT);
-            logger.publish();
+            handleException(e);
         }
         //inserting notifications
         try {
             HOT_NotificationCentreController.createNotification(notificationList);
         } catch (Exception e) {
-            LoggerUtility logger = new LoggerUtility();
-            logger.exception(e, CRM_ApplicationDomain.Domain.HOT);
-            logger.publish();
+            handleException(e);
         }
     }
 
@@ -106,9 +107,7 @@ public without sharing class HOT_ReminderSMSBatch implements Database.Batchable<
             try {
                 System.scheduleBatch(new HOT_ReminderSMSBatch(), 'HOT_ReminderSMSBatch', (Integer) minutes, 10);
             } catch (Exception e) {
-                LoggerUtility logger = new LoggerUtility();
-                logger.exception(e, CRM_ApplicationDomain.Domain.HOT);
-                logger.publishSynch();
+                handleException(e);
             }
         }
     }

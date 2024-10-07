@@ -618,4 +618,41 @@ private class HOT_ReminderSMSServiceTest {
         Test.stopTest();
         System.assertEquals(0, smsList.size(), 'Should not created SMS');
     }
+    @IsTest
+    static void sendSMSOnCoInterpreterRemoved() {
+        Profile profile = [SELECT Id FROM Profile WHERE Name = 'Standard User' OR Name = 'Standardbruker' LIMIT 1];
+        User user = HOT_TestDataFactory.createUser('user2', profile);
+        insert user;
+        Test.startTest();
+        ServiceResource serviceResource = HOT_TestDataFactory.createServiceResource(user.Id);
+        serviceResource.HOT_IsEmployedInterpreter__c = false;
+        serviceResource.HOT_IsFreelanceInterpreter__c = true;
+        serviceResource.HOT_MobilePhoneOverride__c = '12345678';
+        insert serviceResource;
+        WorkType workType = HOT_TestDataFactory.createWorkType();
+        insert workType;
+        HOT_Request__c request = HOT_TestDataFactory.createRequest('TEST', workType);
+        insert request;
+        WorkOrder workOrder = HOT_TestDataFactory.createWorkOrder(request, workType);
+        insert workOrder;
+        WorkOrderLineItem workOrderLineItem = HOT_TestDataFactory.createWorkOrderLineItem(workOrder, workType);
+        insert workOrderLineItem;
+        ServiceAppointment serviceAppointment = HOT_TestDataFactory.createServiceAppointment(workOrderLineItem);
+        serviceAppointment.HOT_Request__c = request.Id;
+        insert serviceAppointment;
+
+        AssignedResource assignedResource = HOT_TestDataFactory.createAssignedResource(
+            serviceAppointment.Id,
+            serviceResource.Id
+        );
+        insert assignedResource;
+        serviceAppointment.Status = 'Dispatched';
+        update serviceAppointment;
+
+        HOT_ReminderSMSService.sendSMSOnCoInterpreterRemoved(serviceResource.Id, 'Start', 'Slutt');
+        Test.stopTest();
+
+        List<SMS__c> smsList = [SELECT Id, Message__c FROM SMS__c];
+        System.assertEquals(1, smsList.size(), 'Could not create sms-record');
+    }
 }
