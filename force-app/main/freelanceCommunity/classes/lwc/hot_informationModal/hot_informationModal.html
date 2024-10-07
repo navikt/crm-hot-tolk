@@ -24,7 +24,7 @@
             class="ReactModal__Content ReactModal__Content--after-open navno-dekorator details-container"
             role="dialog"
             aria-labelledby="comment-header-id"
-            lwc:else
+            if:false={isLoading}
         >
             <c-alertdialog
                 header={modalHeader}
@@ -38,14 +38,14 @@
             >
             </c-alertdialog>
             <section if:true={isSADetails}>
-                <div>
-                    <h2 class="typo-undertittel">Informasjon om oppdraget:</h2>
-                </div>
                 <div if:false={hasAccess}>
                     <p></p>
                     <p>Du er ikke tildelt oppdraget lenger.</p>
                 </div>
                 <div if:true={hasAccess}>
+                    <div>
+                        <h2 class="typo-undertittel">Informasjon om oppdraget:</h2>
+                    </div>
                     <div if:true={serviceAppointment}>
                         <div>
                             <p>Oppdragsnummer: <span>{serviceAppointment.AppointmentNumber}</span></p>

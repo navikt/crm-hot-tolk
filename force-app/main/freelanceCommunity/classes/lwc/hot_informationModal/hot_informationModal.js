@@ -131,7 +131,7 @@ export default class Hot_informationModal extends NavigationMixin(LightningEleme
         this.wageClaim = undefined;
         let recordId = woId;
         this.recordId = recordId;
-        const dialog = this.refs.dialog;
+        const dialog = this.template.querySelector('dialog.details');
         this.isLoading = true;
         dialog.showModal();
         for (let wageClaim of recordsArray) {
@@ -160,7 +160,7 @@ export default class Hot_informationModal extends NavigationMixin(LightningEleme
         this.saIsEditButtonHidden = false;
         this.saIsCancelButtonHidden = true;
         this.saIsEditButtonDisabled = false;
-        const dialog = this.refs.dialog;
+        const dialog = this.template.querySelector('dialog.details');
         this.isLoading = true;
         dialog.showModal();
         for (let serviceAppointment of recordsArray) {
@@ -275,7 +275,7 @@ export default class Hot_informationModal extends NavigationMixin(LightningEleme
     goToRecordDetailsWCFromId(recordId) {
         this.isAListView = false;
         this.isWCDetails;
-        const dialog = this.refs.dialog;
+        const dialog = this.template.querySelector('dialog.details');
         this.isLoading = true;
         dialog.showModal();
         getWageClaimDetails({ recordId: recordId }).then((result) => {
@@ -305,10 +305,14 @@ export default class Hot_informationModal extends NavigationMixin(LightningEleme
     goToRecordDetailsSAFromId(recordId) {
         this.isSADetails = true;
         this.isAListView = false;
-        const dialog = this.refs.dialog;
-        this.isLoading = true;
-        dialog.showModal();
-        //this.hasAccess = true;
+        if (this.type == null) {
+            this.isLoading = true;
+            const dialog = this.template.querySelector('dialog.details');
+            dialog.showModal();
+        }
+        // else {
+        //     this.hasAccess = true;
+        // }
         checkAccessToSA({ saId: recordId }).then((result) => {
             if (result != false) {
                 getServiceAppointmentDetails({ recordId: recordId }).then((result) => {
@@ -454,12 +458,14 @@ export default class Hot_informationModal extends NavigationMixin(LightningEleme
                         this.isGoToThreadButtonDisabled = true;
                     }
                     this.hasAccess = true;
+                    const dialog = this.template.querySelector('dialog.details');
+                    dialog.showModal();
                     dialog.focus();
                     this.isLoading = false;
-
                     this.updateURL();
                 });
             } else {
+                this.isLoading = false;
                 this.hasAccess = false;
                 const dialog = this.template.querySelector('dialog.details');
                 dialog.showModal();
