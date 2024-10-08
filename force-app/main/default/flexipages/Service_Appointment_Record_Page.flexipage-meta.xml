@@ -61,8 +61,7 @@
                             <value>ServiceAppointment.HOT_ChangeStatus</value>
                             <visibilityRule>
                                 <criteria>
-                                    <leftValue>
-                                        {!$Permission.StandardPermission.FieldServiceMobileApp}</leftValue>
+                                    <leftValue>{!$Permission.StandardPermission.FieldServiceMobileApp}</leftValue>
                                     <operator>EQUAL</operator>
                                     <rightValue>true</rightValue>
                                 </criteria>
