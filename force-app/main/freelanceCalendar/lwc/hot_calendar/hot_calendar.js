@@ -39,7 +39,9 @@ export default class LibsFullCalendar extends NavigationMixin(LightningElement) 
         this.latestTime =
             viewDateInMilliseconds + LibsFullCalendar.DAYS_TO_FETCH_FROM_TODAY * LibsFullCalendar.MILLISECONDS_PER_DAY;
 
-        this.setupCalendar(loadedSessionState);
+        this.setupCalendar(loadedSessionState).then(() => {
+            this.updatePseudoEventsDisplay(this.calendar.view);
+        });
     }
 
     disconnectedCallback() {
@@ -87,8 +89,9 @@ export default class LibsFullCalendar extends NavigationMixin(LightningElement) 
             eventDidMount: (context) => {
                 this.onEventMount(context);
             },
-            windowResize: () => {
+            windowResize: (context) => {
                 this.isMobileSize = window.innerWidth < LibsFullCalendar.MOBILE_BREAK_POINT;
+                this.updatePseudoEventsDisplay(context.view);
             },
             datesSet: (dateInfo) => {
                 this.updateEventsFromDateRange(dateInfo.start, dateInfo.end);
@@ -155,8 +158,8 @@ export default class LibsFullCalendar extends NavigationMixin(LightningElement) 
                     dayMaxEventRows: 4
                 }
             },
-            viewDidMount: () => {
-                this.onViewMount();
+            viewDidMount: (context) => {
+                this.onViewMount(context.view);
             },
             eventClick: (info) => this.handleEventClick(info)
         };
@@ -204,12 +207,29 @@ export default class LibsFullCalendar extends NavigationMixin(LightningElement) 
         context.el.childNodes[0].replaceChild(newNode, oldNode);
     }
 
-    onViewMount() {
+    onViewMount(view) {
+        this.updatePseudoEventsDisplay(view);
         const elements = document.getElementsByClassName('fc-refresh-button');
         if (elements.length > 0) {
             const el = elements[0];
             el.innerHTML = `<img src="${LibsFullCalendar.REFRESH_ICON}" alt="Refresh Icon" style="width:16px; color:white; height:16px;" />`;
         }
+    }
+
+    updatePseudoEventsDisplay(view) {
+        this.calendar?.getEvents().forEach((e) => {
+            if (!e.extendedProps.isMultiDay && !e.extendedProps.isPseudoEvent) {
+                return;
+            } else if (e.extendedProps.isPseudoEvent) {
+                if (view.type === 'timeGridDay') {
+                    e.setProp('display', 'none');
+                } else {
+                    e.setProp('display', this.isMobileSize ? 'list-item' : 'none');
+                }
+            } else {
+                e.setProp('display', this.isMobileSize ? 'list-item' : 'auto');
+            }
+        });
     }
 
     handleEventClick(context) {
@@ -296,12 +316,41 @@ export default class LibsFullCalendar extends NavigationMixin(LightningElement) 
                         this.cachedEventIds.add(event.recordId);
                     }
                     return !isAlreadyCached;
+                })
+                .flatMap((event) => {
+                    if (event.isMultiDay) {
+                        return this.createPseudoEventsFromApexEvent(event);
+                    } else {
+                        return event;
+                    }
                 });
         } else {
             console.error('Error fetching service appointments from Apex:', error);
             this.error = error;
             return [];
         }
+    }
+
+    createPseudoEventsFromApexEvent(event) {
+        const pseudoEvents = [];
+        if (this.isMobileSize) {
+            event.display = 'list-item';
+        }
+        pseudoEvents.push(event);
+
+        var start = new Date(event.start.getTime() + LibsFullCalendar.MILLISECONDS_PER_DAY);
+        const end = new Date(event.end.getTime() + LibsFullCalendar.MILLISECONDS_PER_DAY);
+
+        while (start.toLocaleDateString('nb-NO') != end.toLocaleDateString('nb-NO')) {
+            const pseudoEvent = JSON.parse(JSON.stringify(event));
+            pseudoEvent.isPseudoEvent = true;
+            pseudoEvent.start = new Date(start);
+            pseudoEvent.end = new Date(start);
+            pseudoEvents.push(pseudoEvent);
+            pseudoEvents.display = this.isMobileSize ? 'list-item' : 'none';
+            start = new Date(start.getTime() + LibsFullCalendar.MILLISECONDS_PER_DAY);
+        }
+        return pseudoEvents;
     }
 
     navigateToDetailView(eventExtendedProps) {
