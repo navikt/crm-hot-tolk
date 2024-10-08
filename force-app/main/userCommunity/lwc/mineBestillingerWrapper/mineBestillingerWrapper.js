@@ -307,6 +307,14 @@ export default class MineBestillingerWrapper extends NavigationMixin(LightningEl
                 }
             });
         }
+        if (this.urlStateParameters.from == 'mine-samtaler') {
+            this[NavigationMixin.Navigate]({
+                type: 'comm__namedPage',
+                attributes: {
+                    pageName: 'mine-samtaler'
+                }
+            });
+        }
         let currentLevel = this.urlStateParameters.level;
         if (currentLevel === undefined || currentLevel === '') {
             this[NavigationMixin.Navigate]({
