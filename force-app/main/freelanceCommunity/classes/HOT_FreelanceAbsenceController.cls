@@ -159,8 +159,8 @@ public with sharing class HOT_FreelanceAbsenceController {
             FROM ServiceAppointment
             WHERE
                 HOT_AssignedResourceId__c = :currentUserId
-                AND SchedStartTime >= :startTime
-                AND SchedEndTime <= :endTime
+                AND SchedStartTime < :endTime
+                AND SchedEndTime > :startTime
                 AND Status = 'Dispatched'
         ];
 
@@ -178,8 +178,8 @@ public with sharing class HOT_FreelanceAbsenceController {
             WHERE
                 ServiceResource__r.Id = :resourceId
                 AND Status__c = 'Open'
-                AND StartTime__c >= :startTime
-                AND EndTime__c <= :endTime
+                AND StartTime__c < :endTime
+                AND EndTime__c > :startTime
         ];
     }
 
