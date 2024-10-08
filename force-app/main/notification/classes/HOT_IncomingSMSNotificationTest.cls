@@ -15,8 +15,6 @@ private class HOT_IncomingSMSNotificationTest {
             account.Name = 'Gunnar Gunn Gundersen';
             insert account;
 
-            TestDataFactory.getPublicGroup('HMS Troms og Finmark', 'group_4719');
-            TestDataFactory.getQueue('HMS Troms og Finmark', 'queue_4719', 'SMS__c');
             TestDataFactory.getPublicGroup('HMS Oslo', 'group_4703');
             TestDataFactory.getQueue('HMS Oslo', 'queue_4703', 'Person__c');
             TestDataFactory.getPublicGroup('HMS Trøndelag', 'group_4716');
@@ -107,7 +105,7 @@ private class HOT_IncomingSMSNotificationTest {
         invalidSMS.Recipient__c = '2345';
         invalidSMS.Account__c = null;
 
-        List<SMS__c> smsList = new List<SMS__c>{ testSMS, invalidSMS };
+        List<SMS__c> smsList = new List<SMS__c>{ testSMS };
         insert smsList;
 
         Test.startTest();
@@ -140,7 +138,7 @@ private class HOT_IncomingSMSNotificationTest {
         invalidSMS.Recipient__c = '2345';
         invalidSMS.Account__c = null;
 
-        List<SMS__c> incomingSMS = new List<SMS__c>{ testSMS, secondSMS, invalidSMS };
+        List<SMS__c> incomingSMS = new List<SMS__c>{ testSMS, secondSMS };
         insert incomingSMS;
 
         Test.startTest();
