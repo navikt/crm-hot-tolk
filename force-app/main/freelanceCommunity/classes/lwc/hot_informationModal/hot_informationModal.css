@@ -5,6 +5,7 @@
     width: 60%;
     max-width: 1000px;
     box-sizing: border-box;
+    height: 100%;
 }
 
 .dialog::backdrop {
