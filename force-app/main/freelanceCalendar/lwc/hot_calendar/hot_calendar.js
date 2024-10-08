@@ -16,6 +16,7 @@ export default class LibsFullCalendar extends NavigationMixin(LightningElement) 
     static MOBILE_BREAK_POINT = 500;
     static STATE_KEY = 'i98u14ij24j2+49i+04oasfdh';
 
+    @track showDetails = false;
     isLoading = false;
     isMobileSize = false;
     earliestTime;
@@ -219,8 +220,8 @@ export default class LibsFullCalendar extends NavigationMixin(LightningElement) 
         }
     }
 
-    async refreshCalendar() {
-        this.isLoading = true;
+    async refreshCalendar(shouldSpin = true) {
+        this.isLoading = true && shouldSpin;
         const minLoadingTime = new Promise((resolve) => setTimeout(resolve, 2500));
 
         this.cachedEventIds.clear();
@@ -240,7 +241,9 @@ export default class LibsFullCalendar extends NavigationMixin(LightningElement) 
             this.calendar.addEvent(event);
         }
 
-        await minLoadingTime;
+        if (shouldSpin) {
+            await minLoadingTime;
+        }
         this.isLoading = false;
     }
 
@@ -302,25 +305,33 @@ export default class LibsFullCalendar extends NavigationMixin(LightningElement) 
     }
 
     navigateToDetailView(eventExtendedProps) {
+        if (eventExtendedProps.type === 'RESOURCE_ABSENCE') {
+            return;
+        }
         let listType = '';
+
         switch (eventExtendedProps.type) {
             case 'COMPLETED_SERVICE_APPOINTMENT':
-                listType = 'my';
+                this.showDetails = true;
+                this.template
+                    .querySelector('c-hot_information-modal')
+                    .goToRecordDetailsSAFromId(eventExtendedProps.recordId);
                 break;
             case 'SERVICE_APPOINTMENT':
-                listType = 'my';
+                this.showDetails = true;
+                this.template
+                    .querySelector('c-hot_information-modal')
+                    .goToRecordDetailsSAFromId(eventExtendedProps.recordId);
                 break;
             case 'OPEN_WAGE_CLAIM':
-                listType = 'wageClaim';
+                this.showDetails = true;
+                this.template
+                    .querySelector('c-hot_information-modal')
+                    .goToRecordDetailsWCFromId(eventExtendedProps.recordId);
                 break;
         }
-
-        this[NavigationMixin.Navigate]({
-            type: 'comm__namedPage',
-            attributes: {
-                pageName: 'mine-oppdrag'
-            },
-            state: { list: listType, from: 'calendar', id: eventExtendedProps.recordId }
-        });
+    }
+    handleRefreshRecords() {
+        this.refreshCalendar(false);
     }
 }

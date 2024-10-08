@@ -79,6 +79,7 @@ public without sharing class HOT_MyServiceAppointmentListController {
                     HOT_HapticCommunication__c,
                     HOT_IsSerieoppdrag__c,
                     HOT_ReleaseDate__c,
+                    HOT_ServiceResource__c,
                     HOT_ReleasedBy__c,
                     HOT_Request__r.Account__r.CRM_Person__r.INT_KrrMobilePhone__c,
                     HOT_Request__r.Account__r.Name,

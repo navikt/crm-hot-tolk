@@ -1,17 +1,6 @@
 import { LightningElement, wire, track, api } from 'lwc';
 import getMyServiceAppointments from '@salesforce/apex/HOT_MyServiceAppointmentListController.getMyServiceAppointments';
-import getServiceAppointment from '@salesforce/apex/HOT_MyServiceAppointmentListController.getServiceAppointment';
-import getServiceAppointmentDetails from '@salesforce/apex/HOT_MyServiceAppointmentListController.getServiceAppointmentDetails';
-import checkAccessToSA from '@salesforce/apex/HOT_MyServiceAppointmentListController.checkAccessToSA';
-import getInterestedResourceDetails from '@salesforce/apex/HOT_InterestedResourcesListController.getInterestedResourceDetails';
-import getOwnerName from '@salesforce/apex/HOT_MyServiceAppointmentListController.getOwnerName';
-import getServiceResource from '@salesforce/apex/HOT_Utility.getServiceResource';
-import getThreadFreelanceId from '@salesforce/apex/HOT_MyServiceAppointmentListController.getThreadFreelanceId';
-import getThreadServiceAppointmentId from '@salesforce/apex/HOT_MyServiceAppointmentListController.getThreadServiceAppointmentId';
-import getThreadInterpretersId from '@salesforce/apex/HOT_MyServiceAppointmentListController.getThreadInterpretersId';
-import createThread from '@salesforce/apex/HOT_MessageHelper.createThread';
-import createThreadInterpreter from '@salesforce/apex/HOT_MessageHelper.createThreadInterpreter';
-import createThreadInterpreters from '@salesforce/apex/HOT_MessageHelper.createThreadInterpreters';
+
 import { NavigationMixin } from 'lightning/navigation';
 import { columns, mobileColumns } from './columns';
 import { defaultFilters, compare } from './filters';
@@ -21,12 +10,7 @@ import { getParametersFromURL } from 'c/hot_URIDecoder';
 
 export default class Hot_myServiceAppointments extends NavigationMixin(LightningElement) {
     @track columns = [];
-    @track isEditButtonDisabled = false;
-    @track isCancelButtonHidden = true;
-    @track isEditButtonHidden = false;
     @track isMobile;
-    @track hasAccess = true;
-    freelanceThreadId;
     isGoToThreadButtonDisabled = false;
     isGoToThreadServiceAppointmentButtonDisabled = false;
     isGoToThreadInterpretersButtonDisabled = false;
@@ -80,12 +64,36 @@ export default class Hot_myServiceAppointments extends NavigationMixin(Lightning
         this.getParams();
         this.updateURL();
     }
-    @track serviceResource;
-    @wire(getServiceResource)
-    wiredServiceresource(result) {
-        if (result.data) {
-            this.serviceResource = result.data;
+    getDayOfWeek(date) {
+        var jsDate = new Date(date);
+        var dayOfWeek = jsDate.getDay();
+        var dayOfWeekString;
+        switch (dayOfWeek) {
+            case 0:
+                dayOfWeekString = 'Søndag';
+                break;
+            case 1:
+                dayOfWeekString = 'Mandag';
+                break;
+            case 2:
+                dayOfWeekString = 'Tirsdag';
+                break;
+            case 3:
+                dayOfWeekString = 'Onsdag';
+                break;
+            case 4:
+                dayOfWeekString = 'Torsdag';
+                break;
+            case 5:
+                dayOfWeekString = 'Fredag';
+                break;
+            case 6:
+                dayOfWeekString = 'Lørdag';
+                break;
+            default:
+                dayOfWeekString = '';
         }
+        return dayOfWeekString;
     }
 
     noServiceAppointments = false;
@@ -147,328 +155,28 @@ export default class Hot_myServiceAppointments extends NavigationMixin(Lightning
         { name: 'HOT_DeadlineDate__c', type: 'date' },
         { name: 'HOT_ReleaseDate__c', type: 'date' }
     ];
-    openGoogleMaps() {
-        window.open('https://www.google.com/maps/search/?api=1&query=' + this.address);
-    }
-    openAppleMaps() {
-        window.open('http://maps.apple.com/?q=' + this.address);
-    }
-    getDayOfWeek(date) {
-        var jsDate = new Date(date);
-        var dayOfWeek = jsDate.getDay();
-        var dayOfWeekString;
-        switch (dayOfWeek) {
-            case 0:
-                dayOfWeekString = 'Søndag';
-                break;
-            case 1:
-                dayOfWeekString = 'Mandag';
-                break;
-            case 2:
-                dayOfWeekString = 'Tirsdag';
-                break;
-            case 3:
-                dayOfWeekString = 'Onsdag';
-                break;
-            case 4:
-                dayOfWeekString = 'Torsdag';
-                break;
-            case 5:
-                dayOfWeekString = 'Fredag';
-                break;
-            case 6:
-                dayOfWeekString = 'Lørdag';
-                break;
-            default:
-                dayOfWeekString = '';
-        }
-        return dayOfWeekString;
-    }
     @track serviceAppointment;
     @track interestedResource;
-    @track termsOfAgreement;
-    @track ordererPhoneNumber;
-    @track accountPhoneNumber;
-    @track accountAgeGender;
-    @track accountName;
-    @track ownerName;
-    @track address;
 
     isDetails = false;
     isflow = false;
     isSeries = false;
     showTable = true;
+    @track recordId;
+    @track urlRedirect = false;
+    @track showDetails = false;
     goToRecordDetails(result) {
-        let today = new Date();
-        this.serviceAppointment = undefined;
-        this.interestedResource = undefined;
         let recordId = result.detail.Id;
         this.recordId = recordId;
-        this.isEditButtonHidden = false;
-        this.isCancelButtonHidden = true;
-        this.isEditButtonDisabled = false;
-        for (let serviceAppointment of this.records) {
-            if (recordId === serviceAppointment.Id) {
-                this.accountPhoneNumber = '';
-                this.accountAgeGender = '';
-                this.accountName = '';
-                this.ordererPhoneNumber = '';
-                this.ownerName = '';
-                this.serviceAppointment = serviceAppointment;
-                this.serviceAppointment.weekday = this.getDayOfWeek(this.serviceAppointment.EarliestStartTime);
-                this.interestedResource = serviceAppointment?.InterestedResources__r[0];
-                this.address = serviceAppointment.HOT_AddressFormated__c;
-                this.termsOfAgreement = this.interestedResource.HOT_TermsOfAgreement__c;
-                this.isDetails = !!this.recordId;
-                if (this.serviceAppointment.HOT_Request__r && this.serviceAppointment.HOT_Request__r.Account__r) {
-                    if (
-                        this.serviceAppointment.HOT_Request__r.Account__r.Name == null ||
-                        this.serviceAppointment.HOT_Request__r.Account__r.Name == ''
-                    ) {
-                        this.isGoToThreadButtonDisabled = true;
-                    } else {
-                        this.isGoToThreadButtonDisabled = false;
-                    }
-                } else {
-                    this.isGoToThreadButtonDisabled = true;
-                }
-                let duedate = new Date(this.serviceAppointment.DueDate);
-                if (this.serviceAppointment.Status == 'Completed') {
-                    this.isEditButtonDisabled = true;
-                }
-                if (this.serviceAppointment.HOT_TotalNumberOfInterpreters__c <= 1) {
-                    this.isGoToThreadInterpretersButtonDisabled = true;
-                }
-                if (this.serviceAppointment.HOT_Request__r.IsNotNotifyAccount__c == true) {
-                    this.isGoToThreadButtonDisabled = true;
-                }
-                if (
-                    this.serviceAppointment &&
-                    this.serviceAppointment.HOT_Request__r &&
-                    this.serviceAppointment.HOT_Request__r.Account__r
-                ) {
-                    this.accountName = this.serviceAppointment.HOT_Request__r.Account__r.Name;
-                }
-                if (this.serviceAppointment && this.serviceAppointment.HOT_Request__r) {
-                    this.ownerName = this.serviceAppointment.HOT_Request__r.OwnerName__c;
-                }
-                if (
-                    this.serviceAppointment &&
-                    this.serviceAppointment.HOT_Request__r &&
-                    this.serviceAppointment.HOT_Request__r.Account__r &&
-                    this.serviceAppointment.HOT_Request__r.Account__r.CRM_Person__r
-                ) {
-                    if (this.serviceAppointment.HOT_Request__r.Account__r.CRM_Person__r.CRM_AgeNumber__c == undefined) {
-                        if (
-                            this.serviceAppointment.HOT_Request__r.Account__r.CRM_Person__r.HOT_Gender__c !== undefined
-                        ) {
-                            this.accountAgeGender =
-                                this.serviceAppointment.HOT_Request__r.Account__r.CRM_Person__r.HOT_Gender__c;
-                        }
-                    } else if (
-                        this.serviceAppointment.HOT_Request__r.Account__r.CRM_Person__r.HOT_Gender__c == undefined
-                    ) {
-                        if (
-                            this.serviceAppointment.HOT_Request__r.Account__r.CRM_Person__r.CRM_AgeNumber__c !==
-                            undefined
-                        ) {
-                            this.accountAgeGender =
-                                this.serviceAppointment.HOT_Request__r.Account__r.CRM_Person__r.CRM_AgeNumber__c +
-                                ' år';
-                        }
-                    } else if (
-                        this.serviceAppointment.HOT_Request__r.Account__r.CRM_Person__r.HOT_Gender__c !== undefined &&
-                        this.serviceAppointment.HOT_Request__r.Account__r.CRM_Person__r.CRM_AgeNumber__c !== undefined
-                    ) {
-                        this.accountAgeGender =
-                            this.serviceAppointment.HOT_Request__r.Account__r.CRM_Person__r.HOT_Gender__c +
-                            ' ' +
-                            this.serviceAppointment.HOT_Request__r.Account__r.CRM_Person__r.CRM_AgeNumber__c +
-                            ' år';
-                    }
-                    if (
-                        this.serviceAppointment.HOT_Request__r.Account__r.CRM_Person__r.INT_KrrMobilePhone__c !==
-                        undefined
-                    ) {
-                        this.accountPhoneNumber =
-                            this.serviceAppointment.HOT_Request__r.Account__r.CRM_Person__r.INT_KrrMobilePhone__c;
-                    }
-                }
-                if (
-                    this.serviceAppointment &&
-                    this.serviceAppointment.HOT_Request__r &&
-                    this.serviceAppointment.HOT_Request__r.Orderer__r &&
-                    this.serviceAppointment.HOT_Request__r.Orderer__r.CRM_Person__r
-                ) {
-                    if (
-                        this.serviceAppointment.HOT_Request__r.Orderer__r.CRM_Person__r.INT_KrrMobilePhone__c !==
-                        undefined
-                    ) {
-                        this.ordererPhoneNumber =
-                            this.serviceAppointment.HOT_Request__r.Orderer__r.CRM_Person__r.INT_KrrMobilePhone__c;
-                    }
-                }
-                this.template.querySelector('.serviceAppointmentDetails').classList.remove('hidden');
-                this.template.querySelector('.serviceAppointmentDetails').focus();
-            }
-        }
+        this.template.querySelector('c-hot_information-modal').goToRecordDetailsSA(this.recordId, this.records);
         this.updateURL();
-        //this.sendDetail();
     }
     goToRecordDetailsFromNotification(saId) {
-        checkAccessToSA({ saId: saId }).then((result) => {
-            if (result != false) {
-                getServiceAppointmentDetails({ recordId: saId }).then((result) => {
-                    this.serviceAppointment = result;
-                    console.log(this.serviceAppointment.AppointmentNumber);
-                    let startTimeFormatted = new Date(result.EarliestStartTime);
-                    let endTimeFormatted = new Date(result.DueDate);
-                    this.serviceAppointment.StartAndEndDate =
-                        startTimeFormatted.getDate() +
-                        '.' +
-                        (startTimeFormatted.getMonth() + 1) +
-                        '.' +
-                        startTimeFormatted.getFullYear() +
-                        ', ' +
-                        ('0' + startTimeFormatted.getHours()).substr(-2) +
-                        ':' +
-                        ('0' + startTimeFormatted.getMinutes()).substr(-2) +
-                        ' - ' +
-                        ('0' + endTimeFormatted.getHours()).substr(-2) +
-                        ':' +
-                        ('0' + endTimeFormatted.getMinutes()).substr(-2);
-                    let actualstartTimeFormatted = new Date(result.ActualStartTime);
-                    let actualendTimeFormatted = new Date(result.ActualEndTime);
-                    this.serviceAppointment.ActualStartTime =
-                        actualstartTimeFormatted.getDate() +
-                        '.' +
-                        (actualstartTimeFormatted.getMonth() + 1) +
-                        '.' +
-                        actualstartTimeFormatted.getFullYear() +
-                        ' ' +
-                        ('0' + actualstartTimeFormatted.getHours()).substr(-2) +
-                        ':' +
-                        ('0' + actualstartTimeFormatted.getMinutes()).substr(-2);
-                    this.serviceAppointment.ActualEndTime =
-                        actualendTimeFormatted.getDate() +
-                        '.' +
-                        (actualendTimeFormatted.getMonth() + 1) +
-                        '.' +
-                        actualendTimeFormatted.getFullYear() +
-                        ' ' +
-                        ('0' + actualendTimeFormatted.getHours()).substr(-2) +
-                        ':' +
-                        ('0' + actualendTimeFormatted.getMinutes()).substr(-2);
-                    if (this.serviceAppointment.ActualStartTime.includes('NaN')) {
-                        this.serviceAppointment.ActualStartTime = '';
-                    }
-                    if (this.serviceAppointment.ActualEndTime.includes('NaN')) {
-                        this.serviceAppointment.ActualEndTime = '';
-                    }
-                    if (
-                        this.serviceAppointment &&
-                        this.serviceAppointment.HOT_Request__r &&
-                        this.serviceAppointment.HOT_Request__r.Account__r
-                    ) {
-                        this.accountName = this.serviceAppointment.HOT_Request__r.Account__r.Name;
-                    }
-                    if (
-                        this.serviceAppointment &&
-                        this.serviceAppointment.HOT_Request__r &&
-                        this.serviceAppointment.HOT_Request__r.Account__r &&
-                        this.serviceAppointment.HOT_Request__r.Account__r.CRM_Person__r
-                    ) {
-                        if (
-                            this.serviceAppointment.HOT_Request__r.Account__r.CRM_Person__r.CRM_AgeNumber__c ==
-                            undefined
-                        ) {
-                            if (
-                                this.serviceAppointment.HOT_Request__r.Account__r.CRM_Person__r.HOT_Gender__c !==
-                                undefined
-                            ) {
-                                this.accountAgeGender =
-                                    this.serviceAppointment.HOT_Request__r.Account__r.CRM_Person__r.HOT_Gender__c;
-                            }
-                        } else if (
-                            this.serviceAppointment.HOT_Request__r.Account__r.CRM_Person__r.HOT_Gender__c == undefined
-                        ) {
-                            if (
-                                this.serviceAppointment.HOT_Request__r.Account__r.CRM_Person__r.CRM_AgeNumber__c !==
-                                undefined
-                            ) {
-                                this.accountAgeGender =
-                                    this.serviceAppointment.HOT_Request__r.Account__r.CRM_Person__r.CRM_AgeNumber__c +
-                                    ' år';
-                            }
-                        } else if (
-                            this.serviceAppointment.HOT_Request__r.Account__r.CRM_Person__r.HOT_Gender__c !==
-                                undefined &&
-                            this.serviceAppointment.HOT_Request__r.Account__r.CRM_Person__r.CRM_AgeNumber__c !==
-                                undefined
-                        ) {
-                            this.accountAgeGender =
-                                this.serviceAppointment.HOT_Request__r.Account__r.CRM_Person__r.HOT_Gender__c +
-                                ' ' +
-                                this.serviceAppointment.HOT_Request__r.Account__r.CRM_Person__r.CRM_AgeNumber__c +
-                                ' år';
-                        }
-                        if (
-                            this.serviceAppointment.HOT_Request__r.Account__r.CRM_Person__r.INT_KrrMobilePhone__c !==
-                            undefined
-                        ) {
-                            this.accountPhoneNumber =
-                                this.serviceAppointment.HOT_Request__r.Account__r.CRM_Person__r.INT_KrrMobilePhone__c;
-                        }
-                        if (this.serviceAppointment && this.serviceAppointment.HOT_Request__r) {
-                            this.ownerName = this.serviceAppointment.HOT_Request__r.OwnerName__c;
-                        }
-                    }
-                    if (
-                        this.serviceAppointment &&
-                        this.serviceAppointment.HOT_Request__r &&
-                        this.serviceAppointment.HOT_Request__r.Orderer__r &&
-                        this.serviceAppointment.HOT_Request__r.Orderer__r.CRM_Person__r
-                    ) {
-                        if (
-                            this.serviceAppointment.HOT_Request__r.Orderer__r.CRM_Person__r.INT_KrrMobilePhone__c !==
-                            undefined
-                        ) {
-                            this.ordererPhoneNumber =
-                                this.serviceAppointment.HOT_Request__r.Orderer__r.CRM_Person__r.INT_KrrMobilePhone__c;
-                        }
-                    }
-                    getInterestedResourceDetails({ recordId: saId }).then((result) => {
-                        this.interestedResource = result;
-                        this.termsOfAgreement = this.interestedResource.HOT_TermsOfAgreement__c;
-                    });
-
-                    this.template.querySelector('.serviceAppointmentDetails').classList.remove('hidden');
-                    this.template.querySelector('.serviceAppointmentDetails').focus();
-
-                    this.isEditButtonHidden = false;
-                    this.isCancelButtonHidden = true;
-                    this.isEditButtonDisabled = false;
-                    this.isDetails = true;
-                    this.serviceAppointment.weekday = this.getDayOfWeek(this.serviceAppointment.EarliestStartTime);
-                    this.recordId = saId;
-                    let recordId = saId;
-                    let duedate = new Date(this.serviceAppointment.DueDate);
-                    if (this.serviceAppointment.Status == 'Completed') {
-                        this.isEditButtonDisabled = true;
-                    }
-                    if (this.serviceAppointment.HOT_TotalNumberOfInterpreters__c <= 1) {
-                        this.isGoToThreadInterpretersButtonDisabled = true;
-                    }
-                    if (this.serviceAppointment.HOT_Request__r.IsNotNotifyAccount__c == true) {
-                        this.isGoToThreadButtonDisabled = true;
-                    }
-                });
-            } else {
-                this.hasAccess = false;
-                this.template.querySelector('.serviceAppointmentDetails').classList.remove('hidden');
-                this.template.querySelector('.serviceAppointmentDetails').focus();
-            }
-        });
+        let recordId = saId;
+        this.recordId = recordId;
+        this.showDetails = true;
+        this.urlRedirect = true;
+        this.updateURL();
     }
 
     @api recordId;
@@ -485,20 +193,29 @@ export default class Hot_myServiceAppointments extends NavigationMixin(Lightning
     navigationBaseList = '';
     getParams() {
         let parsed_params = getParametersFromURL() ?? '';
-        if ((parsed_params.from == 'calendar' || parsed_params.from == 'mine-varsler') && parsed_params.id != '') {
+        if (parsed_params.from == 'mine-varsler' && parsed_params.id != '') {
+            this.navigationBaseUrl = parsed_params.from;
             this.goToRecordDetailsFromNotification(parsed_params.id);
         }
     }
 
     @api goBack() {
-        let recordIdToReturn = this.recordId;
-        this.recordId = undefined;
-        this.isDetails = false;
-        this.showTable = true;
-        this.isflow = false;
-        this.isEditButtonDisabled = false;
-        this.sendDetail();
-        return { id: recordIdToReturn, tab: 'my' };
+        if (this.navigationBaseUrl == 'mine-varsler') {
+            this[NavigationMixin.Navigate]({
+                type: 'comm__namedPage',
+                attributes: {
+                    pageName: 'mine-varsler'
+                },
+                state: {}
+            });
+        } else {
+            this[NavigationMixin.Navigate]({
+                type: 'comm__namedPage',
+                attributes: {
+                    pageName: 'home'
+                }
+            });
+        }
     }
     filteredRecordsLength = 0;
     @api
@@ -524,142 +241,7 @@ export default class Hot_myServiceAppointments extends NavigationMixin(Lightning
         }
         return this.filteredRecordsLength;
     }
-    changeStatus() {
-        this.isflow = true;
-        this.isEditButtonDisabled = true;
-        this.isCancelButtonHidden = false;
-        this.isDetails = true;
-        this.isEditButtonHidden = true;
-    }
-    cancelStatusFlow() {
-        this.isflow = false;
-        this.isEditButtonDisabled = false;
-        this.isCancelButtonHidden = true;
-        this.isDetails = true;
-        this.isEditButtonHidden = false;
-    }
-    get flowVariables() {
-        return [
-            {
-                name: 'recordId',
-                type: 'String',
-                value: this.recordId
-            }
-        ];
-    }
-    navigateToThread(recordId) {
-        const baseUrl = '/samtale-frilans';
-        const attributes = `recordId=${recordId}&from=mine-oppdrag&list=my`;
-        const url = `${baseUrl}?${attributes}`;
-
-        this[NavigationMixin.Navigate]({
-            type: 'standard__webPage',
-            attributes: {
-                url: url
-            }
-        });
-    }
-
-    goToThreadFreelance() {
-        this.isGoToThreadButtonDisabled = true;
-        getThreadFreelanceId({ serviceAppointmentId: this.serviceAppointment.Id }).then((result) => {
-            if (result != '') {
-                this.freelanceThreadId = result;
-                this.navigateToThread(this.freelanceThreadId);
-            } else {
-                createThread({ recordId: this.serviceAppointment.Id, accountId: this.serviceAppointment.accountId })
-                    .then((result) => {
-                        this.navigateToThread(result.Id);
-                        this.freelanceThreadId = result;
-                    })
-                    .catch((error) => {
-                        this.modalHeader = 'Noe gikk galt';
-                        this.modalContent = 'Kunne ikke åpne samtale. Feilmelding: ' + error;
-                        this.noCancelButton = true;
-                        this.showModal();
-                    });
-            }
-        });
-    }
-    goToThreadServiceAppointment() {
-        console.log('yayy');
-        this.isGoToThreadServiceAppointmentButtonDisabled = true;
-        getThreadServiceAppointmentId({ serviceAppointmentId: this.serviceAppointment.Id }).then((result) => {
-            if (result != '') {
-                this.saThreadId = result;
-                this.navigateToThread(this.saThreadId);
-            } else {
-                createThreadInterpreter({ recordId: this.serviceAppointment.Id })
-                    .then((result) => {
-                        this.navigateToThread(result.Id);
-                        this.saThreadId = result;
-                    })
-                    .catch((error) => {
-                        this.modalHeader = 'Noe gikk galt';
-                        this.modalContent = 'Kunne ikke åpne samtale. Feilmelding: ' + error;
-                        this.noCancelButton = true;
-                        this.showModal();
-                    });
-            }
-        });
-    }
-    goToThreadInterpreters() {
-        this.isGoToThreadInterpretersButtonDisabled = true;
-        getThreadInterpretersId({ serviceAppointmentId: this.serviceAppointment.Id }).then((result) => {
-            if (result != '') {
-                this.freelanceThreadId = result;
-                this.navigateToThread(this.freelanceThreadId);
-                console.log('finnes');
-            } else {
-                console.log('finnes ingen');
-                createThreadInterpreters({ recordId: this.serviceAppointment.Id })
-                    .then((result) => {
-                        this.navigateToThread(result.Id);
-                        this.freelanceThreadId = result;
-                    })
-                    .catch((error) => {
-                        this.modalHeader = 'Noe gikk galt';
-                        this.modalContent = 'Kunne ikke åpne samtale. Feilmelding: ' + error;
-                        this.noCancelButton = true;
-                        this.showModal();
-                    });
-            }
-        });
-    }
-
-    closeModal() {
-        this.template.querySelector('.serviceAppointmentDetails').classList.add('hidden');
-        this.recordId = undefined;
-        this.isflow = false;
-        this.updateURL();
-        this.isGoToThreadButtonDisabled = false;
-        this.isGoToThreadServiceAppointmentButtonDisabled = false;
-        this.isGoToThreadInterpretersButtonDisabled = false;
-    }
-    handleStatusChange(event) {
-        console.log('handleStatusChange', event.detail);
-        if (event.detail.interviewStatus == 'FINISHED') {
-            getServiceAppointment({
-                recordId: this.recordId
-            }).then((data) => {
-                console.log(data.Status);
-                if (data.Status == 'Completed') {
-                    this.isflow = false;
-                    this.isCancelButtonHidden = true;
-                    this.serviceAppointment.Status = 'Dekket';
-                }
-                if (data.Status == 'Canceled') {
-                    this.isflow = false;
-                    this.isCancelButtonHidden = true;
-                    this.serviceAppointment.Status = 'Avlyst';
-                }
-                if (data.HOT_CanceledByInterpreter__c) {
-                    this.isflow = false;
-                    this.isCancelButtonHidden = true;
-                    this.serviceAppointment.Status = 'Avlyst';
-                }
-            });
-            refreshApex(this.wiredMyServiceAppointmentsResult);
-        }
+    handleRefreshRecords() {
+        refreshApex(this.wiredMyServiceAppointmentsResult);
     }
 }
