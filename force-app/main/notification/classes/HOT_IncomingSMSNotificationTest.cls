@@ -105,7 +105,7 @@ private class HOT_IncomingSMSNotificationTest {
         invalidSMS.Recipient__c = '2345';
         invalidSMS.Account__c = null;
 
-        List<SMS__c> smsList = new List<SMS__c>{ testSMS };
+        List<SMS__c> smsList = new List<SMS__c>{ testSMS, invalidSMS };
         insert smsList;
 
         Test.startTest();
@@ -138,7 +138,7 @@ private class HOT_IncomingSMSNotificationTest {
         invalidSMS.Recipient__c = '2345';
         invalidSMS.Account__c = null;
 
-        List<SMS__c> incomingSMS = new List<SMS__c>{ testSMS, secondSMS };
+        List<SMS__c> incomingSMS = new List<SMS__c>{ testSMS, secondSMS, invalidSMS };
         insert incomingSMS;
 
         Test.startTest();
