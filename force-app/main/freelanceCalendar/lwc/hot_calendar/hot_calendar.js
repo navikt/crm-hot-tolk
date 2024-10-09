@@ -201,7 +201,7 @@ export default class LibsFullCalendar extends NavigationMixin(LightningElement) 
         context.el.childNodes[0].replaceChild(newNode, oldNode);
     }
 
-    onViewMount(view) {
+    onViewMount() {
         const elements = document.getElementsByClassName('fc-refresh-button');
         if (elements.length > 0) {
             const el = elements[0];
@@ -347,11 +347,13 @@ export default class LibsFullCalendar extends NavigationMixin(LightningElement) 
             pseudoEvent.isPseudoEvent = true;
             pseudoEvent.start = new Date(start);
             pseudoEvent.end = new Date(start);
-            const shouldHideFirstPseudoEventOfMonth =
-                view &&
-                pseudoEvent.start.getDate() == view.activeStart.getDate() &&
-                pseudoEvent.start.getMonth() != view.currentStart.getMonth();
-            pseudoEvent.display = this.isMobileSize && !shouldHideFirstPseudoEventOfMonth ? 'list-item' : 'none';
+            const shouldHidePseudoEvent =
+                !this.isMobileSize ||
+                (view && view.type === 'timeGridDay') ||
+                (view &&
+                    pseudoEvent.start.getDate() == view.activeStart.getDate() &&
+                    pseudoEvent.start.getMonth() != view.currentStart.getMonth());
+            pseudoEvent.display = shouldHidePseudoEvent ? 'none' : 'list-item';
             pseudoEvents.push(pseudoEvent);
             start = new Date(start.getTime() + LibsFullCalendar.MILLISECONDS_PER_DAY);
         }
