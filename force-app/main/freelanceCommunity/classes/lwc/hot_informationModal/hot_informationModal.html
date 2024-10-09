@@ -169,35 +169,37 @@
                             ></lightning-flow>
                         </div>
                         <p>Samtale med:</p>
-                        <div style="display: inline-block; padding-right: 1vw; padding-bottom: 1vw; padding-top: 1vw">
-                            <c-button
-                                button-styling="Primary"
-                                type="Submit"
-                                onbuttonclick={goToThreadFreelance}
-                                button-label="Bruker"
-                                disabled={isGoToThreadButtonDisabled}
-                            >
-                            </c-button>
-                        </div>
-                        <div style="display: inline-block; padding-right: 1vw; padding-bottom: 1vw; padding-top: 1vw">
-                            <c-button
-                                button-styling="Primary"
-                                type="Submit"
-                                onbuttonclick={goToThreadInterpreters}
-                                disabled={isGoToThreadInterpretersButtonDisabled}
-                                button-label="Medtolker"
-                            >
-                            </c-button>
-                        </div>
-                        <div style="display: inline-block; padding-right: 1vw">
-                            <c-button
-                                button-styling="Primary"
-                                type="Submit"
-                                onbuttonclick={goToThreadServiceAppointment}
-                                button-label="Formidler"
-                                disabled={isGoToThreadServiceAppointmentButtonDisabled}
-                            >
-                            </c-button>
+                        <div style="padding-top: 0.5vw">
+                            <div style="display: inline-block; padding-right: 0.5vw">
+                                <c-button
+                                    button-styling="Primary"
+                                    type="Submit"
+                                    onbuttonclick={goToThreadFreelance}
+                                    button-label="Bruker"
+                                    disabled={isGoToThreadButtonDisabled}
+                                >
+                                </c-button>
+                            </div>
+                            <div style="display: inline-block; padding-right: 0.5vw">
+                                <c-button
+                                    button-styling="Primary"
+                                    type="Submit"
+                                    onbuttonclick={goToThreadInterpreters}
+                                    disabled={isGoToThreadInterpretersButtonDisabled}
+                                    button-label="Medtolker"
+                                >
+                                </c-button>
+                            </div>
+                            <div style="display: inline-block">
+                                <c-button
+                                    button-styling="Primary"
+                                    type="Submit"
+                                    onbuttonclick={goToThreadServiceAppointment}
+                                    button-label="Formidler"
+                                    disabled={isGoToThreadServiceAppointmentButtonDisabled}
+                                >
+                                </c-button>
+                            </div>
                         </div>
                     </div>
                 </div>
