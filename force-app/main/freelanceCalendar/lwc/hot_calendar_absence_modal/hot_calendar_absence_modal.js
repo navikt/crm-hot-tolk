@@ -29,7 +29,6 @@ export default class Hot_Calendar_Absence_Modal extends LightningModal {
             this.absenceStart = this.event.start.toISOString().slice(0, 16);
             this.absenceEnd = this.event.end.toISOString().slice(0, 16);
         }
-        console.log((this.absenceType = this.event.extendedProps.description));
     }
     async handleOkay() {
         // Fetch radio button value
