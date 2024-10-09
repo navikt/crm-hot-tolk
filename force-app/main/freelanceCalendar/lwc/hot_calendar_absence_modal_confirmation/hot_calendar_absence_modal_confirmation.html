@@ -1,23 +1,96 @@
 <template>
-    <lightning-modal-header label="Er du sikker?"></lightning-modal-header>
+    <lightning-modal-header label={modalHeader}></lightning-modal-header>
     <lightning-modal-body>
-        <h2>
-            Du har ledig på lønn i denne perioden. Er du sikker på at du vil fjerne tilgjengeligheten din for disse
-            oppdragene? Du vil da ikke ha krav på lønn for disse oppdragene.
-        </h2>
+        <!-- Always display Absence Details -->
+        <div class="slds-p-around_medium">
+            <p><strong>Fraværstype:</strong> {absenceType}</p>
+            <p><strong>Startdato:</strong> {formattedAbsenceStartDateTime}</p>
+            <p><strong>Sluttdato:</strong> {formattedAbsenceEndDateTime}</p>
+        </div>
+
+        <!-- If there are conflicts -->
+        <template if:true={hasConflicts}>
+            <!-- Display Conflicts Message -->
+            <div class="slds-p-around_medium">
+                <p>
+                    Dersom du legger til fravær vil følgende oppdrag avlyses. Ved ledig på lønn vil du bli satt
+                    utilgjengelig.
+                </p>
+            </div>
+
+            <!-- Display Conflicts -->
+            <!-- Desktop View -->
+            <template if:false={isMobileView}>
+                <table class="slds-table slds-table_cell-buffer slds-table_bordered">
+                    <thead>
+                        <tr>
+                            <th scope="col">
+                                <div class="slds-truncate" title="Number">Oppdragsnummer</div>
+                            </th>
+                            <th scope="col">
+                                <div class="slds-truncate" title="Starttid">Starttid</div>
+                            </th>
+                            <th scope="col">
+                                <div class="slds-truncate" title="Slutttid">Slutttid</div>
+                            </th>
+                            <th scope="col">
+                                <div class="slds-truncate" title="Type">Type</div>
+                            </th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <template for:each={items} for:item="item">
+                            <tr key={item.number}>
+                                <td data-label="Number">
+                                    <div class="slds-truncate" title={item.number}>{item.number}</div>
+                                </td>
+                                <td data-label="Starttid">
+                                    <div class="slds-truncate" title={item.startTime}>{item.startTime}</div>
+                                </td>
+                                <td data-label="Slutttid">
+                                    <div class="slds-truncate" title={item.endTime}>{item.endTime}</div>
+                                </td>
+                                <td data-label="Type">
+                                    <div class="slds-truncate" title={item.recordType}>{item.recordType}</div>
+                                </td>
+                            </tr>
+                        </template>
+                    </tbody>
+                </table>
+            </template>
+
+            <!-- Mobile View -->
+            <template if:true={isMobileView}>
+                <template for:each={items} for:item="item">
+                    <div class="custom-card-border slds-m-bottom_small" key={item.number}>
+                        <div class="slds-box slds-p-around_small">
+                            <p class="slds-text-heading_small">{item.number}</p>
+                            <div class="slds-grid slds-wrap">
+                                <div class="slds-col slds-size_1-of-2 slds-p-horizontal_x-small">
+                                    <p class="slds-text-title">Starttid</p>
+                                    <p>{item.startTime}</p>
+                                </div>
+                                <div class="slds-col slds-size_1-of-2 slds-p-horizontal_x-small">
+                                    <p class="slds-text-title">Slutttid</p>
+                                    <p>{item.endTime}</p>
+                                </div>
+                                <div class="slds-col slds-size_1-of-1 slds-p-horizontal_x-small">
+                                    <p class="slds-text-title">Type</p>
+                                    <p>{item.recordType}</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </template>
+            </template>
+        </template>
     </lightning-modal-body>
     <lightning-modal-footer>
-        <lightning-button
-            variant="neutral"
-            class="slds-button"
-            label="Nei, jeg vil jo ha lønn"
-            onclick={handleDeny}
-        ></lightning-button>
-        <lightning-button
-            variant="brand"
-            class="slds-button slds-m-left_x-small"
-            label="Ja, jeg har masse penger fra før av"
-            onclick={handleOkay}
-        ></lightning-button>
+        <div class="button-container">
+            <button class="slds-button slds-button_neutral cancel-button custom-button" onclick={handleDeny}>
+                Avbryt
+            </button>
+            <button class="slds-button slds-button_brand custom-button" onclick={handleOkay}>Bekreft</button>
+        </div>
     </lightning-modal-footer>
 </template>

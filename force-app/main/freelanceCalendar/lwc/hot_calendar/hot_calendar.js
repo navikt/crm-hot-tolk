@@ -234,7 +234,7 @@ export default class LibsFullCalendar extends NavigationMixin(LightningElement) 
 
     handleEventClick(context) {
         if (context.view.type === 'timeGridDay' || !this.isMobileSize) {
-            this.navigateToDetailView(context.event.extendedProps);
+            this.navigateToDetailView(context.event);
         } else {
             this.calendar.changeView('timeGridDay', new Date(context.event.start));
         }
@@ -267,9 +267,11 @@ export default class LibsFullCalendar extends NavigationMixin(LightningElement) 
         this.isLoading = false;
     }
 
-    async openAbsenceModal() {
-        const result = await Hot_Calendar_Absence_Modal.open({ content: 'Heia Lyn' });
-        console.log(result);
+    async openAbsenceModal(event) {
+        const result = await Hot_Calendar_Absence_Modal.open({ event: event });
+        if (result) {
+            this.refreshCalendar(false);
+        }
     }
 
     async updateEventsFromDateRange(earliestDateInView, latestDateInView) {
@@ -353,12 +355,10 @@ export default class LibsFullCalendar extends NavigationMixin(LightningElement) 
         return pseudoEvents;
     }
 
-    navigateToDetailView(eventExtendedProps) {
-        if (eventExtendedProps.type === 'RESOURCE_ABSENCE') {
-            return;
-        }
+    async navigateToDetailView(event) {
         let listType = '';
-
+        console.log('event', event);
+        const eventExtendedProps = event.extendedProps;
         switch (eventExtendedProps.type) {
             case 'COMPLETED_SERVICE_APPOINTMENT':
                 this.showDetails = true;
@@ -377,6 +377,10 @@ export default class LibsFullCalendar extends NavigationMixin(LightningElement) 
                 this.template
                     .querySelector('c-hot_information-modal')
                     .goToRecordDetailsWCFromId(eventExtendedProps.recordId);
+                break;
+            case 'RESOURCE_ABSENCE':
+                const modal = await this.openAbsenceModal(event);
+                console.log(modal);
                 break;
         }
     }
