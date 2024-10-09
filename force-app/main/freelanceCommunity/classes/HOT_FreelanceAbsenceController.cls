@@ -84,11 +84,16 @@ public with sharing class HOT_FreelanceAbsenceController {
     }
 
     @TestVisible
-    private static void resolveConflictsForTimePeriod(Date absenceStartTime, Date absenceEndTime, String reason) {
+    private static void resolveConflictsForTimePeriod(
+        Datetime absenceStartTime,
+        Datetime absenceEndTime,
+        String reason
+    ) {
+        Id resourceId = getUserServiceResourceId();
         List<serviceAppointment> appointments = getConflictingServiceAppointments(absenceStartTime, absenceEndTime);
+
         HOT_InterestedResource__c[] interestedResources = new List<HOT_InterestedResource__c>();
         HOT_HistoricallyAssignedResource__c[] historicalAssignments = new List<HOT_HistoricallyAssignedResource__c>();
-
         for (ServiceAppointment appointment : appointments) {
             appointment.Status = null;
             appointment.HOT_AssignedResourceId__c = '';
