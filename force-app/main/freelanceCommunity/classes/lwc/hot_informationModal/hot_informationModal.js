@@ -116,14 +116,15 @@ export default class Hot_informationModal extends NavigationMixin(LightningEleme
     }
 
     closeModal() {
+        const dialog = this.template.querySelector('dialog.details');
+        dialog.close();
+        this.saIsflow = false;
         this.recordId = undefined;
         this.serviceAppointment = undefined;
         this.wageClaim = undefined;
         this.isWCDetails = false;
         this.isSADetails = false;
         this.updateURL();
-        const dialog = this.template.querySelector('dialog.details');
-        dialog.close();
     }
     @api
     goToRecordDetailsWC(woId, recordsArray) {
