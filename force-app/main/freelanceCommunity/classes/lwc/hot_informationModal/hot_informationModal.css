@@ -2,7 +2,7 @@
     padding: 0;
     border: none;
     background: transparent;
-    width: 60%;
+    width: fit-content;
     max-width: 1000px;
     box-sizing: border-box;
 }
@@ -20,18 +20,16 @@
     display: block;
     padding: 5rem;
     border-radius: 4px;
-    flex-grow: 0;
-    overflow-x: auto;
+    overflow: auto;
     position: relative;
-    max-height: 100%;
+    max-height: 100vh;
+    max-width: 500px;
+    height: auto;
+    /* width: 100%; */
     margin: auto;
-    margin-bottom: 1rem;
-    margin-top: 1rem;
-    z-index: 1010;
-    max-width: 432px;
-    max-height: 75%;
-    width: 100%;
+    box-sizing: border-box;
 }
+
 .flow-container {
     margin: 2rem 0;
     max-width: 500px;
