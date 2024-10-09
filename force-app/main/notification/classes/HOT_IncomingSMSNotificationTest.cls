@@ -25,6 +25,7 @@ private class HOT_IncomingSMSNotificationTest {
             TestDataFactory.getPublicGroup('NAV Tolketjeneste Innlandet', 'group_47003');
             TestDataFactory.getQueue('NAV Tolketjeneste Innlandet', 'queue_47003', 'Person__c');
             groupList.add(TestDataFactory.getQueue('NAV Tolketjeneste Innlandet', 'queue_47003', 'SMS__c'));
+
             update groupList;
 
             List<Account> personAccounts = TestDataFactory_Community.getPersonAccounts(userNames.size());
