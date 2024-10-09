@@ -41,7 +41,7 @@ public with sharing class HOT_FreelanceAbsenceController {
             startTimeInMilliseconds,
             endTimeInMilliseconds
         );
-        resolveAbsenceConflicts(conflictingRecords, 'Fravær');
+        resolveConflictsForTimePeriod(absence.Start, absence.End, 'Fravær');
 
         insert absence;
     }
@@ -84,30 +84,11 @@ public with sharing class HOT_FreelanceAbsenceController {
     }
 
     @TestVisible
-    private static void resolveAbsenceConflicts(List<ConflictingRecord> conflicts, String reason) {
-        Set<Id> appointmentIds = new Set<Id>();
-        Set<Id> wageClaimIds = new Set<Id>();
-
-        List<ResolutionResult> results = new List<ResolutionResult>();
-
-        for (ConflictingRecord conflict : conflicts) {
-            if (conflict.recordType == ConflictingRecordType.OPEN_WAGE_CLAIM.toString()) {
-                wageClaimIds.add(conflict.recordId);
-            } else {
-                appointmentIds.add(conflict.recordId);
-            }
-        }
-
-        Id currentUserId = UserInfo.getUserId();
-        Id resourceId = getUserServiceResourceId();
-        List<ServiceAppointment> appointments = [
-            SELECT Id
-            FROM ServiceAppointment
-            WHERE HOT_AssignedResourceId__c = :currentUserId AND Id IN :appointmentIds
-        ];
-
+    private static void resolveConflictsForTimePeriod(Date absenceStartTime, Date absenceEndTime, String reason) {
+        List<serviceAppointment> appointments = getConflictingServiceAppointments(absenceStartTime, absenceEndTime);
         HOT_InterestedResource__c[] interestedResources = new List<HOT_InterestedResource__c>();
         HOT_HistoricallyAssignedResource__c[] historicalAssignments = new List<HOT_HistoricallyAssignedResource__c>();
+
         for (ServiceAppointment appointment : appointments) {
             appointment.Status = null;
             appointment.HOT_AssignedResourceId__c = '';
@@ -134,12 +115,7 @@ public with sharing class HOT_FreelanceAbsenceController {
             }
         }
 
-        List<HOT_WageClaim__c> wageClaims = [
-            SELECT Id, ServiceResource__r.Id
-            FROM HOT_WageClaim__c
-            WHERE ServiceResource__r.Id = :resourceId AND Id IN :wageClaimIds
-        ];
-
+        HOT_WageClaim__c[] wageClaims = getConflictingOpenWageClaims(absenceStartTime, absenceEndTime);
         for (HOT_WageClaim__c claim : wageClaims) {
             claim.Status__c = 'Retracted Availability';
         }
