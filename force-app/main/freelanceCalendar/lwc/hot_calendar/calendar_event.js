@@ -28,6 +28,8 @@ export class CalendarEvent {
     start;
     end;
     isPast;
+    isMultiDay;
+    isPseudoEvent;
     color;
     textColor;
 
@@ -50,5 +52,9 @@ export class CalendarEvent {
         };
         this.color = (this.isPast ? properties.pastColor : properties.color) ?? properties.color;
         this.textColor = (this.isPast ? properties.pastFontColor : properties.fontColor) ?? properties.fontColor;
+
+        this.isMultiDay =
+            this.start.toLocaleDateString('nb-NO') != this.end.toLocaleDateString('nb-NO') && this.start < this.end;
+        this.isPseudoEvent = false;
     }
 }
