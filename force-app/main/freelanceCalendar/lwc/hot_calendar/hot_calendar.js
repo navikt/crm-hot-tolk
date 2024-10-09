@@ -284,6 +284,7 @@ export default class LibsFullCalendar extends NavigationMixin(LightningElement) 
         const result = await Hot_Calendar_Absence_Modal.open({ event: event });
         if (result) {
             this.refreshCalendar(false);
+            this.updatePseudoEventsDisplay(this.calendar.view);
         }
     }
 
