@@ -94,7 +94,9 @@ export default class LibsFullCalendar extends NavigationMixin(LightningElement) 
                 this.updatePseudoEventsDisplay(context.view);
             },
             datesSet: (dateInfo) => {
-                this.updateEventsFromDateRange(dateInfo.start, dateInfo.end);
+                this.updateEventsFromDateRange(dateInfo.start, dateInfo.end).then(() => {
+                    this.updatePseudoEventsDisplay(dateInfo.view);
+                });
             },
             dayHeaderDidMount: (context) => {
                 this.onDayHeaderMount(context);
@@ -207,8 +209,7 @@ export default class LibsFullCalendar extends NavigationMixin(LightningElement) 
         context.el.childNodes[0].replaceChild(newNode, oldNode);
     }
 
-    onViewMount(view) {
-        this.updatePseudoEventsDisplay(view);
+    onViewMount() {
         const elements = document.getElementsByClassName('fc-refresh-button');
         if (elements.length > 0) {
             const el = elements[0];
@@ -216,19 +217,31 @@ export default class LibsFullCalendar extends NavigationMixin(LightningElement) 
         }
     }
 
-    updatePseudoEventsDisplay(view) {
-        this.calendar?.getEvents().forEach((e) => {
-            if (!e.extendedProps.isMultiDay && !e.extendedProps.isPseudoEvent) {
-                return;
-            } else if (e.extendedProps.isPseudoEvent) {
-                if (view.type === 'timeGridDay') {
-                    e.setProp('display', 'none');
+    async updatePseudoEventsDisplay(view) {
+        this.calendar?.batchRendering(() => {
+            this.calendar?.getEvents().forEach((event) => {
+                if (!event.extendedProps.isMultiDay && !event.extendedProps.isPseudoEvent) {
+                    return;
+                } else if (event.extendedProps.isPseudoEvent) {
+                    // Has to hide a pseuo event if it is on the first day of the current view due to a conflict with
+                    // an event injected by fullcalendar
+                    const shouldHideFirstPseudoEventOfMonth =
+                        event.start.getDate() == view.activeStart.getDate() &&
+                        event.start.getMonth() != view.currentStart.getMonth();
+                    if (view.type === 'timeGridDay') {
+                        if (event.display != 'none') {
+                            event.setProp('display', 'none');
+                        }
+                    } else {
+                        event.setProp(
+                            'display',
+                            this.isMobileSize && !shouldHideFirstPseudoEventOfMonth ? 'list-item' : 'none'
+                        );
+                    }
                 } else {
-                    e.setProp('display', this.isMobileSize ? 'list-item' : 'none');
+                    event.setProp('display', this.isMobileSize ? 'list-item' : 'auto');
                 }
-            } else {
-                e.setProp('display', this.isMobileSize ? 'list-item' : 'auto');
-            }
+            });
         });
     }
 
@@ -339,6 +352,7 @@ export default class LibsFullCalendar extends NavigationMixin(LightningElement) 
             event.display = 'list-item';
         }
         pseudoEvents.push(event);
+        const view = this.calendar?.view;
 
         var start = new Date(event.start.getTime() + LibsFullCalendar.MILLISECONDS_PER_DAY);
         const end = new Date(event.end.getTime() + LibsFullCalendar.MILLISECONDS_PER_DAY);
@@ -348,16 +362,20 @@ export default class LibsFullCalendar extends NavigationMixin(LightningElement) 
             pseudoEvent.isPseudoEvent = true;
             pseudoEvent.start = new Date(start);
             pseudoEvent.end = new Date(start);
+            const shouldHidePseudoEvent =
+                !this.isMobileSize ||
+                (view && view.type === 'timeGridDay') ||
+                (view &&
+                    pseudoEvent.start.getDate() == view.activeStart.getDate() &&
+                    pseudoEvent.start.getMonth() != view.currentStart.getMonth());
+            pseudoEvent.display = shouldHidePseudoEvent ? 'none' : 'list-item';
             pseudoEvents.push(pseudoEvent);
-            pseudoEvents.display = this.isMobileSize ? 'list-item' : 'none';
             start = new Date(start.getTime() + LibsFullCalendar.MILLISECONDS_PER_DAY);
         }
         return pseudoEvents;
     }
 
     async navigateToDetailView(event) {
-        let listType = '';
-        console.log('event', event);
         const eventExtendedProps = event.extendedProps;
         switch (eventExtendedProps.type) {
             case 'COMPLETED_SERVICE_APPOINTMENT':
