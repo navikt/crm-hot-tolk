@@ -333,8 +333,8 @@ export default class LibsFullCalendar extends NavigationMixin(LightningElement) 
             pseudoEvent.isPseudoEvent = true;
             pseudoEvent.start = new Date(start);
             pseudoEvent.end = new Date(start);
+            pseudoEvent.display = this.isMobileSize ? 'list-item' : 'none';
             pseudoEvents.push(pseudoEvent);
-            pseudoEvents.display = this.isMobileSize ? 'list-item' : 'none';
             start = new Date(start.getTime() + LibsFullCalendar.MILLISECONDS_PER_DAY);
         }
         return pseudoEvents;
