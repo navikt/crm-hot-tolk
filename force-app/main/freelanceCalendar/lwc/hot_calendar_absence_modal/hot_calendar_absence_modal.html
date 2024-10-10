@@ -5,7 +5,7 @@
             <lightning-radio-group
                 name="radioGroup"
                 lwc:ref="absenceTypeRadioGroup"
-                label="Radio Group"
+                label="Type fravær"
                 options={options}
                 value={absenceType}
                 type="radio"
@@ -15,14 +15,14 @@
                 type="datetime"
                 name="input1"
                 lwc:ref="absenceStartDateTimeInput"
-                label="Legg inn start dato/tid"
+                label="Legg inn ny start dato/tid"
                 value={absenceStart}
             ></lightning-input>
             <lightning-input
                 type="datetime"
                 name="input2"
                 lwc:ref="absenceEndDateTimeInput"
-                label="Legg inn slutt dato/tid"
+                label="Legg inn ny slutt dato/tid"
                 value={absenceEnd}
             ></lightning-input>
         </lightning-modal-body>
@@ -44,7 +44,7 @@
             <lightning-radio-group
                 name="radioGroup"
                 lwc:ref="absenceTypeRadioGroup"
-                label="Radio Group"
+                label="Type fravær"
                 options={options}
                 value={value}
                 type="radio"
