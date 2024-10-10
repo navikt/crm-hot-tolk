@@ -113,8 +113,6 @@ export default class Hot_Calendar_Absence_Modal extends LightningModal {
                 this.dispatchEvent(event);
             }
             this.close(true);
-        } else if (!confirmation) {
-            console.log('not confirmation');
         }
     }
     async handleDeleteAbsence() {
