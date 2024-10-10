@@ -41,6 +41,11 @@ export default class Hot_Calendar_Absence_Modal extends LightningModal {
             }
             this.absenceStart = this.formatLocalDateTime(this.event.start);
             this.absenceEnd = this.formatLocalDateTime(this.event.end);
+        } else {
+            const now = new Date();
+            const startTime = new Date(Date.now() + (60 - now.getMinutes()) * 60000);
+            this.absenceStart = this.formatLocalDateTime(startTime);
+            this.absenceEnd = this.formatLocalDateTime(new Date(startTime.getTime() + 86400000));
         }
     }
 

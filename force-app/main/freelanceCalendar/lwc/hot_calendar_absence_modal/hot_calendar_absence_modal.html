@@ -55,14 +55,14 @@
                 name="input1"
                 lwc:ref="absenceStartDateTimeInput"
                 label="Legg inn start dato/tid"
-                value="2024-10-01"
+                value={absenceStart}
             ></lightning-input>
             <lightning-input
                 type="datetime"
                 name="input2"
                 lwc:ref="absenceEndDateTimeInput"
                 label="Legg inn slutt dato/tid"
-                value="2024-10-31"
+                value={absenceEnd}
             ></lightning-input>
         </lightning-modal-body>
         <lightning-modal-footer>
