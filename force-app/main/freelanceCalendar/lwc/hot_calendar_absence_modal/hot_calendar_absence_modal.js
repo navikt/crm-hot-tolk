@@ -25,7 +25,20 @@ export default class Hot_Calendar_Absence_Modal extends LightningModal {
     connectedCallback() {
         if (this.event && this.event.extendedProps.recordId) {
             this.isEdit = true;
-            this.absenceType = this.event.extendedProps.description;
+            switch (this.event.extendedProps.description) {
+                case 'Ferie':
+                    this.absenceType = 'Vacation';
+                    break;
+                case 'Sykdom':
+                    this.absenceType = 'Medical';
+                    break;
+                case 'Annet':
+                    this.absenceType = 'Other';
+                    break;
+                default:
+                    this.absenceType = 'Other';
+                    break;
+            }
             this.absenceStart = this.formatLocalDateTime(this.event.start);
             this.absenceEnd = this.formatLocalDateTime(this.event.end);
         }
