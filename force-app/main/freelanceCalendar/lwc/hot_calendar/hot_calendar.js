@@ -398,8 +398,7 @@ export default class LibsFullCalendar extends NavigationMixin(LightningElement) 
                     .goToRecordDetailsWCFromId(eventExtendedProps.recordId);
                 break;
             case 'RESOURCE_ABSENCE':
-                const modal = await this.openAbsenceModal(event);
-                console.log(modal);
+                await this.openAbsenceModal(event);
                 break;
         }
     }
