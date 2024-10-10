@@ -174,4 +174,16 @@ public with sharing class HOT_FreelanceAbsenceController {
         List<ServiceResource> resource = [SELECT Id FROM ServiceResource WHERE RelatedRecordId = :currentUserId];
         return (resource.isEmpty()) ? null : resource[0].Id;
     }
+
+    @AuraEnabled
+    public static void deleteAbsence(Id recordId) {
+        Id serviceResource = getUserServiceResourceId();
+        ResourceAbsence absence = [
+            SELECT Id
+            FROM ResourceAbsence
+            WHERE Id = :recordId AND ResourceId = :serviceResource
+            LIMIT 1
+        ];
+        delete absence;
+    }
 }
