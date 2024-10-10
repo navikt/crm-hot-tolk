@@ -11,7 +11,6 @@ export default class ConfimationModal extends LightningModal {
     @track isMobileView = false;
 
     connectedCallback() {
-        console.log('Connected callback with content:', this.content);
         this.updateViewMode();
         window.addEventListener('resize', this.updateViewMode);
     }
@@ -69,9 +68,7 @@ export default class ConfimationModal extends LightningModal {
     }
 
     handleOkay() {
-        console.log('Button clicked in modal');
         if (!this.absenceStartDateTime || !this.absenceEndDateTime) {
-            console.log('Missing start or end time');
             return;
         }
         createAbsenceAndResolveConflicts({
@@ -82,8 +79,7 @@ export default class ConfimationModal extends LightningModal {
             .then(() => {
                 this.close(true);
             })
-            .catch((error) => {
-                console.error('Error: ', error);
+            .catch(() => {
                 const event = new ShowToastEvent({
                     title: 'Kunne ikke legge til fravær',
                     message: 'Det oppstod en feil, prøv igjen senere',
