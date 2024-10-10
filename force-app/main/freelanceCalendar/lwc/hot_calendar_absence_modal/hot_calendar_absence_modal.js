@@ -29,14 +29,43 @@ export default class Hot_Calendar_Absence_Modal extends LightningModal {
             this.absenceEnd = this.formatLocalDateTime(this.event.end);
         }
     }
+
+    validateAbsenceType(absenceType) {
+        return ['Vacation', 'Other', 'Medical'].includes(absenceType);
+    }
+
     async handleOkay() {
         // Fetch radio button value
+        let validInputs = true;
         const radioGroup = this.refs.absenceTypeRadioGroup;
         const absenceType = radioGroup.value;
+        if (!this.validateAbsenceType(absenceType)) {
+            radioGroup.setCustomValidity('Velg en type');
+            radioGroup.reportValidity();
+            radioGroup.focus();
+            validInputs = false;
+        } else {
+            radioGroup.setCustomValidity('');
+            radioGroup.reportValidity();
+        }
 
         // Fetch input field values
         const absenceStartDateTime = this.refs.absenceStartDateTimeInput.value;
         const absenceEndDateTime = this.refs.absenceEndDateTimeInput.value;
+        const absenceStartElement = this.refs.absenceStartDateTimeInput;
+        if (absenceEndDateTime < absenceStartDateTime) {
+            absenceStartElement.setCustomValidity('Starttid kan ikke komme etter sluttid');
+            absenceStartElement.reportValidity();
+            validInputs = false;
+        } else {
+            absenceStartElement.setCustomValidity('');
+            absenceStartElement.reportValidity();
+        }
+
+        if (!validInputs) {
+            return;
+        }
+
         const result = await getConflictsForTimePeriod({
             startTimeInMilliseconds: new Date(absenceStartDateTime).getTime(),
             endTimeInMilliseconds: new Date(absenceEndDateTime).getTime()
