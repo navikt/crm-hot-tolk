@@ -49,7 +49,7 @@ export default class Hot_Calendar_Absence_Modal extends LightningModal {
         });
         if (confirmation) {
             if (this.isEdit) {
-                this.handleDeleteAbsence(false);
+                await this.handleDeleteAbsence(false);
                 const event = new ShowToastEvent({
                     title: 'Fravær endret',
                     message: 'Fravær ble endret, og eventuelle konflikter ble løst',
@@ -70,17 +70,16 @@ export default class Hot_Calendar_Absence_Modal extends LightningModal {
         }
     }
     async handleDeleteAbsence(giveDeleteToast) {
-        deleteAbsence({ recordId: this.event.extendedProps.recordId }).then(() => {
-            if (giveDeleteToast) {
-                const event = new ShowToastEvent({
-                    title: 'Fravær slettet',
-                    message: 'Fraværet ble slettet vellykket',
-                    variant: 'success'
-                });
-                this.dispatchEvent(event);
-            }
-            this.close(true);
-        });
+        await deleteAbsence({ recordId: this.event.extendedProps.recordId });
+        if (giveDeleteToast) {
+            const event = new ShowToastEvent({
+                title: 'Fravær slettet',
+                message: 'Fraværet ble slettet vellykket',
+                variant: 'success'
+            });
+            this.dispatchEvent(event);
+        }
+        this.close(true);
     }
     // Hjelper metode for å få dato i riktig tidsone for dateTime input felt
     formatLocalDateTime(date) {
