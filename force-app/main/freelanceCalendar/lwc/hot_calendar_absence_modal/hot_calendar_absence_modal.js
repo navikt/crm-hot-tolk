@@ -15,9 +15,9 @@ export default class Hot_Calendar_Absence_Modal extends LightningModal {
 
     get options() {
         return [
-            { label: 'Ferie', value: 'Ferie' },
-            { label: 'Sykdom', value: 'Sykdom' },
-            { label: 'Annet', value: 'Annet' }
+            { label: 'Ferie', value: 'Vacation' },
+            { label: 'Sykdom', value: 'Medical' },
+            { label: 'Annet', value: 'Other' }
         ];
     }
 
