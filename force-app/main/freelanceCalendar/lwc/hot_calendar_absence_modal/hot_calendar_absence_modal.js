@@ -48,11 +48,9 @@ export default class Hot_Calendar_Absence_Modal extends LightningModal {
             absenceStartDateTime: absenceStartDateTime,
             absenceEndDateTime: absenceEndDateTime
         });
-        if (this.isEdit) {
-            this.handleDeleteAbsence(false);
-        }
         if (confirmation) {
             if (this.isEdit) {
+                this.handleDeleteAbsence(false);
                 const event = new ShowToastEvent({
                     title: 'Fravær endret',
                     message: 'Fravær ble endret, og eventuelle konflikter ble løst',
