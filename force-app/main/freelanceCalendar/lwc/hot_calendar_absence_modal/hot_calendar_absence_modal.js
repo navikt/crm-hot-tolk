@@ -22,12 +22,11 @@ export default class Hot_Calendar_Absence_Modal extends LightningModal {
     }
 
     connectedCallback() {
-        // Check if event and event.recordId are populated
         if (this.event && this.event.extendedProps.recordId) {
             this.isEdit = true;
             this.absenceType = this.event.extendedProps.description;
-            this.absenceStart = this.event.start.toISOString().slice(0, 16);
-            this.absenceEnd = this.event.end.toISOString().slice(0, 16);
+            this.absenceStart = this.formatLocalDateTime(this.event.start);
+            this.absenceEnd = this.formatLocalDateTime(this.event.end);
         }
     }
     async handleOkay() {
@@ -82,5 +81,15 @@ export default class Hot_Calendar_Absence_Modal extends LightningModal {
             }
             this.close(true);
         });
+    }
+    // Hjelper metode for å få dato i riktig tidsone for dateTime input felt
+    formatLocalDateTime(date) {
+        const year = date.getFullYear();
+        const month = ('0' + (date.getMonth() + 1)).slice(-2); // Måneder er 0 indeksiert
+        const day = ('0' + date.getDate()).slice(-2);
+        const hours = ('0' + date.getHours()).slice(-2);
+        const minutes = ('0' + date.getMinutes()).slice(-2);
+
+        return `${year}-${month}-${day}T${hours}:${minutes}`;
     }
 }
