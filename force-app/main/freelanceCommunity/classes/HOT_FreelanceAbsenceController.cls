@@ -32,10 +32,14 @@ public with sharing class HOT_FreelanceAbsenceController {
         Long endTimeInMilliseconds,
         String absenceType
     ) {
+        if (absenceType != 'Other' && absenceType != 'Medical' && absenceType != 'Vacation') {
+            throw new IllegalArgumentException('Not a valid absence type');
+        }
         ResourceAbsence absence = new ResourceAbsence();
         absence.Start = Datetime.newInstance(startTimeInMilliseconds);
         absence.End = Datetime.newInstance(endTimeInMilliseconds);
         absence.ResourceId = getUserServiceResourceId();
+        absence.Type = absenceType;
 
         ConflictingRecord[] conflictingRecords = getConflictsForTimePeriod(
             startTimeInMilliseconds,
