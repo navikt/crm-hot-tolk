@@ -1,0 +1,15 @@
+<template>
+    <lightning-modal-header label="Slett fravær?"></lightning-modal-header>
+    <lightning-modal-body>
+        <!-- Always display Absence Details -->
+        <p>Er du sikker på at du vil slette dette fraværet?</p>
+    </lightning-modal-body>
+    <lightning-modal-footer>
+        <div class="button-container">
+            <button class="slds-button slds-button_neutral cancel-button custom-button" onclick={handleDeny}>
+                Avbryt
+            </button>
+            <button class="slds-button slds-button_brand custom-button" onclick={handleOkay}>Ja</button>
+        </div>
+    </lightning-modal-footer>
+</template>
