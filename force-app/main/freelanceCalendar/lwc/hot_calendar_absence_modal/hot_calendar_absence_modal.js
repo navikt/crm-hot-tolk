@@ -1,6 +1,7 @@
 import { api, track } from 'lwc';
 import LightningModal from 'lightning/modal';
 import ConfimationModal from 'c/hot_calendar_absence_modal_confirmation';
+import DeleteConfimationModal from 'c/hot_calendar_absence_modal_confirmation_delete';
 import getConflictsForTimePeriod from '@salesforce/apex/HOT_FreelanceAbsenceController.getConflictsForTimePeriod';
 import deleteAbsence from '@salesforce/apex/HOT_FreelanceAbsenceController.deleteAbsence';
 import { ShowToastEvent } from 'lightning/platformShowToastEvent';
@@ -49,7 +50,7 @@ export default class Hot_Calendar_Absence_Modal extends LightningModal {
         });
         if (confirmation) {
             if (this.isEdit) {
-                await this.handleDeleteAbsence(false);
+                await deleteAbsence({ recordId: this.event.extendedProps.recordId });
                 const event = new ShowToastEvent({
                     title: 'Fravær endret',
                     message: 'Fravær ble endret, og eventuelle konflikter ble løst',
@@ -69,18 +70,32 @@ export default class Hot_Calendar_Absence_Modal extends LightningModal {
             console.log('not confirmation');
         }
     }
-    async handleDeleteAbsence(giveDeleteToast) {
-        await deleteAbsence({ recordId: this.event.extendedProps.recordId });
-        if (giveDeleteToast) {
-            const event = new ShowToastEvent({
-                title: 'Fravær slettet',
-                message: 'Fraværet ble slettet vellykket',
-                variant: 'success'
-            });
-            this.dispatchEvent(event);
+    async handleDeleteAbsence() {
+        const deleteConfirm = await DeleteConfimationModal.open();
+        if (deleteConfirm) {
+            try {
+                await deleteAbsence({ recordId: this.event.extendedProps.recordId });
+                const event = new ShowToastEvent({
+                    title: 'Fravær slettet',
+                    message: 'Fraværet ble slettet vellykket',
+                    variant: 'success'
+                });
+                this.dispatchEvent(event);
+                this.close(true);
+            } catch {
+                const event = new ShowToastEvent({
+                    title: 'Noe gikk galt',
+                    message: 'Kunne ikke slette, prøv igjen senere',
+                    variant: 'error'
+                });
+                this.dispatchEvent(event);
+                this.close(false);
+            }
+        } else {
+            this.close(false);
         }
-        this.close(true);
     }
+
     // Hjelper metode for å få dato i riktig tidsone for dateTime input felt
     formatLocalDateTime(date) {
         const year = date.getFullYear();
