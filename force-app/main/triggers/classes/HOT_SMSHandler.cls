@@ -19,7 +19,15 @@ public without sharing class HOT_SMSHandler extends MyTriggers {
     }
 
     public override void onAfterInsert() {
-        HOT_IncomingSMSNotification.notifyDispatchersOnIncomingSMS((List<SMS__c>) records);
+        List<SMS__c> incomingSMS = new List<SMS__c>();
+        for (SMS__c sms : (List<SMS__c>) records) {
+            if (sms.Type__c == 'Incoming SMS' && sms.Domain__c == 'HOT') {
+                incomingSMS.add(sms);
+            }
+        }
+        if (incomingSMS.size() > 0) {
+            HOT_IncomingSMSNotification.notifyDispatchersOnIncomingSMS(incomingSMS);
+        }
     }
 
     public void routeSMSToQueue(List<SMS__c> messages) {
