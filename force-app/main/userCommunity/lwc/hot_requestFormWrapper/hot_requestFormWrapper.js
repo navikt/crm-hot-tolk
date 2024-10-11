@@ -1,6 +1,7 @@
 import { LightningElement, wire, track } from 'lwc';
 import { NavigationMixin } from 'lightning/navigation';
 import createAndUpdateWorkOrders from '@salesforce/apex/HOT_RequestHandler.createAndUpdateWorkOrders';
+import checkIfRequestWasCorrectlyCreated from '@salesforce/apex/HOT_RequestHandler.checkIfRequestWasCorrectlyCreated';
 import getRequestStatus from '@salesforce/apex/HOT_RequestListController.getRequestStatus';
 import createWorkOrders from '@salesforce/apex/HOT_CreateWorkOrderService.createWorkOrdersFromCommunity';
 import checkDuplicates from '@salesforce/apex/HOT_DuplicateHandler.checkDuplicates';
@@ -177,8 +178,12 @@ export default class Hot_requestFormWrapper extends NavigationMixin(LightningEle
         this.template.querySelector('c-alertdialog').showModal();
         this.spin = false;
     }
+    @track requestId;
 
     handleSuccess(event) {
+        const record = event.detail.id;
+        this.requestId = record;
+
         if (this.editNotAllowed) {
             return;
         }
@@ -200,6 +205,13 @@ export default class Hot_requestFormWrapper extends NavigationMixin(LightningEle
         this.template.querySelector('.submitted-loading').classList.remove('hidden');
         this.template.querySelector('.h2-loadingMessage').focus();
         window.scrollTo(0, 0);
+    }
+
+    hideFormAndShowError() {
+        this.template.querySelector('.submitted-loading').classList.add('hidden');
+        this.template.querySelector('.submitted-false').classList.add('hidden');
+        this.template.querySelector('.submitted-error').classList.remove('hidden');
+        this.template.querySelector('.h2-errorMessage').focus();
     }
 
     editNotAllowed = false;
@@ -230,7 +242,13 @@ export default class Hot_requestFormWrapper extends NavigationMixin(LightningEle
                         recurringEndDate: new Date(timeInput.repeatingEndDate).getTime()
                     }).then(() => {
                         this.spin = false;
-                        this.hideFormAndShowSuccess();
+                        if (this.isCreatedCorrectly(this.requestId)) {
+                            this.hideFormAndShowSuccess();
+                            console.log('suksess 1');
+                        } else {
+                            this.hideFormAndShowError();
+                            console.log('error 1');
+                        }
                     });
                 } catch (error) {
                     console.log(JSON.stringify(error));
@@ -238,10 +256,29 @@ export default class Hot_requestFormWrapper extends NavigationMixin(LightningEle
             } else {
                 createAndUpdateWorkOrders({ requestId: this.recordId, times: timeInput.times }).then(() => {
                     this.spin = false;
-                    this.hideFormAndShowSuccess();
+                    if (this.isCreatedCorrectly(this.requestId)) {
+                        this.hideFormAndShowSuccess();
+                        console.log('suksess 2');
+                    } else {
+                        this.hideFormAndShowError();
+                        console.log('error 2');
+                    }
                 });
             }
         }
+    }
+    isCreatedCorrectly(recordId) {
+        return checkIfRequestWasCorrectlyCreated({
+            requestId: recordId
+        }).then((result) => {
+            if (result === false) {
+                console.log('inn her');
+                return true;
+            } else {
+                console.log('eller her');
+                return false;
+            }
+        });
     }
 
     @track previousPage = 'home';
