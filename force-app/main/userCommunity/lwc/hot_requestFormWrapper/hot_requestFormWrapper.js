@@ -244,10 +244,8 @@ export default class Hot_requestFormWrapper extends NavigationMixin(LightningEle
                         this.spin = false;
                         if (this.isCreatedCorrectly(this.requestId)) {
                             this.hideFormAndShowSuccess();
-                            console.log('suksess 1');
                         } else {
                             this.hideFormAndShowError();
-                            console.log('error 1');
                         }
                     });
                 } catch (error) {
@@ -258,10 +256,8 @@ export default class Hot_requestFormWrapper extends NavigationMixin(LightningEle
                     this.spin = false;
                     if (this.isCreatedCorrectly(this.requestId)) {
                         this.hideFormAndShowSuccess();
-                        console.log('suksess 2');
                     } else {
                         this.hideFormAndShowError();
-                        console.log('error 2');
                     }
                 });
             }
@@ -272,10 +268,8 @@ export default class Hot_requestFormWrapper extends NavigationMixin(LightningEle
             requestId: recordId
         }).then((result) => {
             if (result === false) {
-                console.log('inn her');
                 return true;
             } else {
-                console.log('eller her');
                 return false;
             }
         });
