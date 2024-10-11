@@ -599,4 +599,26 @@ public without sharing class HOT_RequestHandler extends MyTriggers {
             }
         }
     }
+    @AuraEnabled
+    public static boolean checkIfRequestWasCorrectlyCreated(String requestId) {
+        Boolean isError = false;
+        HOT_Request__c createdRequest = [
+            SELECT Id, StartTime__c, EndTime__c, NumberOfWorkOrders__c
+            FROM HOT_Request__c
+            WHERE Id = :requestId
+        ];
+        if (createdRequest.StartTime__c == null || createdRequest.EndTime__c == null) {
+            isError = true;
+        } else {
+            List<WorkOrder> createdWorkOrders = [SELECT Id FROM WorkOrder WHERE HOT_Request__c = :requestId];
+            if (createdRequest.NumberOfWorkOrders__c != createdWorkOrders.size()) {
+                isError = true;
+                delete createdWorkOrders;
+            }
+        }
+        if (isError) {
+            delete createdRequest;
+        }
+        return isError;
+    }
 }
