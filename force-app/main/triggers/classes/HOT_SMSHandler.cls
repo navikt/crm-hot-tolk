@@ -20,7 +20,7 @@ public without sharing class HOT_SMSHandler extends MyTriggers {
 
     public override void onAfterInsert() {
         List<SMS__c> incomingSMS = new List<SMS__c>();
-        for (SMS__c sms : records) {
+        for (SMS__c sms : (List<SMS__>) records) {
             if (sms.Type__c == 'Incoming SMS' && sms.Domain__c == 'HOT') {
                 incomingSMS.add(sms);
             }
