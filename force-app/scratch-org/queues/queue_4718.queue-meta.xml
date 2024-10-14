@@ -1,9 +1,12 @@
-<?xml version="1.0" encoding="UTF-8"?>
+<?xml version="1.0" encoding="UTF-8" ?>
 <Queue xmlns="http://soap.sforce.com/2006/04/metadata">
     <doesSendEmailToMembers>false</doesSendEmailToMembers>
     <name>NAV Tolketjeneste Nordland</name>
     <queueSobject>
         <sobjectType>HOT_Request__c</sobjectType>
+    </queueSobject>
+    <queueSobject>
+        <sobjectType>SMS__c</sobjectType>
     </queueSobject>
     <queueSobject>
         <sobjectType>ServiceAppointment</sobjectType>
@@ -12,9 +15,9 @@
         <sobjectType>Task</sobjectType>
     </queueSobject>
     <queueSobject>
-        <sobjectType>WorkOrder</sobjectType>
+        <sobjectType>Thread__c</sobjectType>
     </queueSobject>
     <queueSobject>
-        <sobjectType>Thread__c</sobjectType>
+        <sobjectType>WorkOrder</sobjectType>
     </queueSobject>
 </Queue>
