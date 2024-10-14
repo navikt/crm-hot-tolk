@@ -18,7 +18,7 @@ public without sharing class HOT_ThreadDetailController {
     public static boolean checkAccess(Id threadId) {
         Boolean grantAccess = false;
         Thread__c thread = [SELECT Id, CRM_Related_Object__c, CRM_Thread_Type__c FROM Thread__c WHERE Id = :threadId];
-        if (!isBlank(thread.CRM_Related_Object__c)) {
+        if (!String.isBlank(thread.CRM_Related_Object__c)) {
             Id relatedObjectId = thread.CRM_Related_Object__c;
             String objectType = String.valueOf(relatedObjectId.getsobjecttype());
             if (objectType == 'WorkOrder') {
@@ -128,7 +128,11 @@ public without sharing class HOT_ThreadDetailController {
         }
         User user = [SELECT Id, FirstName, Profile.Name FROM User WHERE Id = :UserInfo.getUserId()];
         Group admingGroup = [SELECT Id FROM Group WHERE DeveloperName = 'HOT_Tolk_Admin' AND Type = 'Regular'];
-        List<GroupMember> groupMembers = [SELECT UserOrGroupId, GroupId FROM GroupMember WHERE GroupId IN :admingGroup];
+        List<GroupMember> groupMembers = [
+            SELECT UserOrGroupId, GroupId
+            FROM GroupMember
+            WHERE GroupId = :admingGroup.Id
+        ];
         Boolean isAdminGroupMember = false;
         for (GroupMember groupMember : groupMembers) {
             if (user.Id == groupMember.UserOrGroupId) {
