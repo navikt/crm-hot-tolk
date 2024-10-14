@@ -1,10 +1,17 @@
 public with sharing class HOT_FreelanceAbsenceController {
+    public static String ERROR_RESOURCE_ABSENCE_NO_ACCESS = 'Du har ikke tilgang til fravær som er forsøkt slettet';
+    public static String ERROR_RESOURCE_ABSENCE_NOT_FOUND = 'Fraværet ble ikke funnet';
+    public static String ERROR_FAILED_CONFLICT_RESOLUTION = 'Kunne ikke løse konflikter. Forsøk igjen seinere, eller kontakt formidler';
+    public static String ERROR_FAILED_TO_CREATE_ABSENCE = 'Kunne ikke opprette fravær. Forsøk igjen seinere, eller kontakt formidler';
+    public static String ERROR_INVALID_START_AND_END_TIME = 'Sjekk at starttid kommer før sluttid';
+    public static String ERROR_INVALID_ABSENCE_TypE = 'Sjekk at type fravær er satt';
+
     enum ConflictingRecordType {
         SERVICE_APPOINTMENT,
         OPEN_WAGE_CLAIM
     }
 
-    class ConflictingRecord {
+    public class ConflictingRecord {
         @AuraEnabled
         public Id recordId;
         @AuraEnabled
@@ -33,21 +40,30 @@ public with sharing class HOT_FreelanceAbsenceController {
         String absenceType
     ) {
         if (absenceType != 'Other' && absenceType != 'Medical' && absenceType != 'Vacation') {
-            throw new IllegalArgumentException('Not a valid absence type');
+            prepareAndThrowAuraException(ERROR_INVALID_ABSENCE_TYPE);
         }
+
+        if (startTimeInMilliseconds > endTimeInMilliseconds) {
+            prepareAndThrowAuraException(ERROR_INVALID_START_AND_END_TIME);
+        }
+
         ResourceAbsence absence = new ResourceAbsence();
         absence.Start = Datetime.newInstance(startTimeInMilliseconds);
         absence.End = Datetime.newInstance(endTimeInMilliseconds);
         absence.ResourceId = getUserServiceResourceId();
         absence.Type = absenceType;
 
-        ConflictingRecord[] conflictingRecords = getConflictsForTimePeriod(
-            startTimeInMilliseconds,
-            endTimeInMilliseconds
-        );
-        resolveConflictsForTimePeriod(absence.Start, absence.End, 'Fravær');
+        try {
+            resolveConflictsForTimePeriod(absence.Start, absence.End, 'Fravær');
+        } catch (Exception e) {
+            prepareAndThrowAuraException(ERROR_FAILED_CONFLICT_RESOLUTION);
+        }
 
-        insert absence;
+        try {
+            insert absence;
+        } catch (Exception e) {
+            prepareAndThrowAuraException(ERROR_FAILED_TO_CREATE_ABSENCE);
+        }
     }
 
     @AuraEnabled(cacheable=false)
@@ -55,6 +71,10 @@ public with sharing class HOT_FreelanceAbsenceController {
         Long startTimeInMilliseconds,
         Long endTimeInMilliseconds
     ) {
+        if (startTimeInMilliseconds > endTimeInMilliseconds) {
+            prepareAndThrowAuraException(ERROR_INVALID_START_AND_END_TIME);
+        }
+
         Datetime startTime = Datetime.newInstance(startTimeInMilliseconds);
         Datetime endTime = Datetime.newInstance(endTimeInMilliseconds);
 
@@ -129,10 +149,15 @@ public with sharing class HOT_FreelanceAbsenceController {
             claim.Status__c = 'Retracted Availability';
         }
 
-        update wageClaims;
-        update appointments;
-        update interestedResources;
-        insert historicalAssignments;
+        try {
+            update wageClaims;
+            update appointments;
+            update interestedResources;
+            insert historicalAssignments;
+        } catch (Exception e) {
+            logException(e, null);
+            throw e;
+        }
     }
 
     @TestVisible
@@ -144,9 +169,9 @@ public with sharing class HOT_FreelanceAbsenceController {
             FROM ServiceAppointment
             WHERE
                 HOT_AssignedResourceId__c = :currentUserId
+                AND Status = 'Dispatched'
                 AND SchedStartTime < :endTime
                 AND SchedEndTime > :startTime
-                AND Status = 'Dispatched'
         ];
 
         return appointments;
@@ -178,12 +203,43 @@ public with sharing class HOT_FreelanceAbsenceController {
     @AuraEnabled
     public static void deleteAbsence(Id recordId) {
         Id serviceResource = getUserServiceResourceId();
-        ResourceAbsence absence = [
-            SELECT Id
+        ResourceAbsence[] absences = [
+            SELECT Id, ResourceId
             FROM ResourceAbsence
-            WHERE Id = :recordId AND ResourceId = :serviceResource
+            WHERE Id = :recordId
             LIMIT 1
         ];
+
+        if (absences.size() != 1) {
+            prepareAndThrowAuraException(ERROR_RESOURCE_ABSENCE_NOT_FOUND);
+        }
+
+        ResourceAbsence absence = absences[0];
+
+        if (absence.ResourceId != serviceResource) {
+            LoggerUtility logger = new LoggerUtility();
+            String logMessage =
+                'ResourceAbsence ' +
+                recordId +
+                ' was attempted deleted by user' +
+                UserInfo.getUserId() +
+                ' without access to record';
+            logger.warning(logMessage, absence, CRM_ApplicationDomain.Domain.HOT);
+            logger.publish();
+            prepareAndThrowAuraException(ERROR_RESOURCE_ABSENCE_NO_ACCESS);
+        }
         delete absence;
+    }
+
+    static void prepareAndThrowAuraException(String message) {
+        AuraHandledException e = new AuraHandledException(message);
+        e.setMessage(message);
+        throw e;
+    }
+
+    static void logException(Exception e, SObject relatedRecord) {
+        LoggerUtility logger = new LoggerUtility();
+        logger.exception(e, relatedRecord, CRM_ApplicationDomain.Domain.HOT);
+        logger.publish();
     }
 }
