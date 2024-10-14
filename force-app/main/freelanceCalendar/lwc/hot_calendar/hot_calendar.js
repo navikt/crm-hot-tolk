@@ -319,10 +319,20 @@ export default class LibsFullCalendar extends NavigationMixin(LightningElement) 
     }
 
     async fetchUniqueEventsForTimeRegion(earliestTime, latestTime) {
-        const data = await getCalendarEvents({
-            earliestEventEndTimeInMilliseconds: earliestTime,
-            latestEventStartInMilliseconds: latestTime
-        });
+        let data;
+        try {
+            data = await getCalendarEvents({
+                earliestEventEndTimeInMilliseconds: earliestTime,
+                latestEventStartInMilliseconds: latestTime
+            });
+        } catch {
+            const event = new ShowToastEvent({
+                title: 'Det oppsto en feil',
+                message: 'Feil ved henting av avtaler i dette tidsrommet, prøv igjen senere.',
+                variant: 'error'
+            });
+            this.dispatchEvent(event);
+        }
         if (data) {
             return data
                 .map((event) => new CalendarEvent(event))

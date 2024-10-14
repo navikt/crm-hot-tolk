@@ -84,11 +84,22 @@ export default class Hot_Calendar_Absence_Modal extends LightningModal {
         if (!validInputs) {
             return;
         }
+        let result;
+        try {
+            result = await getConflictsForTimePeriod({
+                startTimeInMilliseconds: new Date(absenceStartDateTime).getTime(),
+                endTimeInMilliseconds: new Date(absenceEndDateTime).getTime()
+            });
+        } catch {
+            const event = new ShowToastEvent({
+                title: 'Det oppsto en feil',
+                message: 'Feil ved henting av avtaler i dette tidsrommet, prøv igjen senere.',
+                variant: 'error'
+            });
+            this.dispatchEvent(event);
+            return;
+        }
 
-        const result = await getConflictsForTimePeriod({
-            startTimeInMilliseconds: new Date(absenceStartDateTime).getTime(),
-            endTimeInMilliseconds: new Date(absenceEndDateTime).getTime()
-        });
         const confirmation = await ConfimationModal.open({
             content: result,
             absenceType: absenceType,
@@ -97,13 +108,22 @@ export default class Hot_Calendar_Absence_Modal extends LightningModal {
         });
         if (confirmation) {
             if (this.isEdit) {
-                await deleteAbsence({ recordId: this.event.extendedProps.recordId });
-                const event = new ShowToastEvent({
-                    title: 'Fravær endret',
-                    message: 'Fravær ble endret, og eventuelle konflikter ble løst',
-                    variant: 'success'
-                });
-                this.dispatchEvent(event);
+                try {
+                    await deleteAbsence({ recordId: this.event.extendedProps.recordId });
+                    const event = new ShowToastEvent({
+                        title: 'Fravær endret',
+                        message: 'Fravær ble endret, og eventuelle konflikter ble løst',
+                        variant: 'success'
+                    });
+                    this.dispatchEvent(event);
+                } catch {
+                    const event = new ShowToastEvent({
+                        title: 'Det oppsto en feil',
+                        message: 'Feil ved endring av avtale, prøv igjen senere.',
+                        variant: 'error'
+                    });
+                    this.dispatchEvent(event);
+                }
             } else {
                 const event = new ShowToastEvent({
                     title: 'Fravær lagt til',
