@@ -1,4 +1,9 @@
 public without sharing class HOT_RequestHandler extends MyTriggers {
+    private static void handleException(Exception e) {
+        LoggerUtility logger = new LoggerUtility();
+        logger.exception(e, CRM_ApplicationDomain.Domain.HOT);
+        logger.publishSynch();
+    }
     public override void onBeforeInsert() {
         setStatusDefault((List<HOT_Request__c>) records);
         setOrdererField((List<HOT_Request__c>) records);
@@ -613,11 +618,19 @@ public without sharing class HOT_RequestHandler extends MyTriggers {
             List<WorkOrder> createdWorkOrders = [SELECT Id FROM WorkOrder WHERE HOT_Request__c = :requestId];
             if (createdRequest.NumberOfWorkOrders__c != createdWorkOrders.size()) {
                 isError = true;
-                delete createdWorkOrders;
+                try {
+                    delete createdWorkOrders;
+                } catch (Exception e) {
+                    handleException(e);
+                }
             }
         }
         if (isError) {
-            delete createdRequest;
+            try {
+                delete createdRequest;
+            } catch (Exception e) {
+                handleException(e);
+            }
         }
         return isError;
     }
