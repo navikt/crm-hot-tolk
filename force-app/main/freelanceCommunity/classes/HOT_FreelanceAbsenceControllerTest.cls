@@ -138,7 +138,6 @@ private class HOT_FreelanceAbsenceControllerTest {
     static void getConflictsForTimePeriodTest() {
         Datetime absenceStart = Datetime.now().addHours(ABSENCE_START_TIME_OFFSET_IN_HOURS).addMinutes(1);
         Datetime absenceEnd = absenceStart.addHours(ABSENCE_DURATION_IN_HOURS).addMinutes(1);
-        System.debug('Andre' + absenceStart + absenceEnd);
 
         Test.startTest();
         HOT_FreelanceAbsenceController.ConflictingRecord[] conflicts = HOT_FreelanceAbsenceController.getConflictsForTimePeriod(
