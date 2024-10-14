@@ -152,7 +152,7 @@ public without sharing class HOT_ThreadDetailController {
         //ansatt tolk tråder tilgang
         List<ServiceResource> srList = [SELECT Id FROM ServiceResource WHERE RelatedRecordId = :user.Id];
         for (ServiceResource sr : srList) {
-            if (sr.Id = thread.HOT_ServiceResource__c) {
+            if (sr.Id == thread.HOT_ServiceResource__c) {
                 grantAccess = true;
             }
         }
