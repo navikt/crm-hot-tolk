@@ -250,6 +250,7 @@ export default class Hot_requestFormWrapper extends NavigationMixin(LightningEle
                     });
                 } catch (error) {
                     console.log(JSON.stringify(error));
+                    this.hideFormAndShowError();
                 }
             } else {
                 createAndUpdateWorkOrders({ requestId: this.recordId, times: timeInput.times }).then(() => {
