@@ -2,13 +2,15 @@
 private class HOT_FreelanceAbsenceControllerTest {
     static Integer CONFLICTING_WAGE_CLAIM_COUNT = 1;
     static Integer CONFLICTING_SA_COUNT = 1;
-    static Integer TOTAL_SA_COUNT = 1;
-    static Integer TOTAL_WAGE_CLAIM_COUNT = 1;
+    static Integer TOTAL_SA_COUNT = CONFLICTING_SA_COUNT + 1;
+    static Integer TOTAL_WAGE_CLAIM_COUNT = CONFLICTING_WAGE_CLAIM_COUNT + 1;
     static Integer ABSENCE_START_TIME_OFFSET_IN_HOURS = 1;
     static Integer ABSENCE_DURATION_IN_HOURS = 2;
 
     @testSetup
     static void setup() {
+        Integer appointmentDurationInMinutes = (60 * ABSENCE_DURATION_IN_HOURS) / TOTAL_SA_COUNT;
+
         Profile otherUserProfile = [
             SELECT Id
             FROM Profile
@@ -24,7 +26,7 @@ private class HOT_FreelanceAbsenceControllerTest {
         ServiceResource serviceResource = HOT_TestDataFactory.createServiceResource(UserInfo.getUserId());
         insert serviceResource;
 
-        Integer appointmentDurationInMinutes = (60 * ABSENCE_DURATION_IN_HOURS) / TOTAL_SA_COUNT;
+        HOT_Request__c[] requests = new List<HOT_Request__c>();
         for (Integer i = 0; i < TOTAL_SA_COUNT; i++) {
             HOT_Request__c request = HOT_TestDataFactory.createRequest('HOT_MySAListControllerTest', workType);
 
@@ -41,30 +43,72 @@ private class HOT_FreelanceAbsenceControllerTest {
                     .addDays(1)
                     .addMinutes((Integer) (0.9 * (i + 1) * appointmentDurationInMinutes));
             }
-            insert request;
+            requests.add(request);
+        }
+
+        insert requests;
+
+        for (HOT_Request__c request : requests) {
             request.Status__c = 'Godkjent';
-            update request;
+        }
 
-            WorkOrder workOrder = [SELECT Id FROM WorkOrder WHERE HOT_Request__c = :request.Id];
+        update requests;
 
-            WorkOrderLineItem workOrderLineItem = [SELECT Id FROM WOrkOrderLineItem WHERE WorkOrderId = :workOrder.Id];
+        Map<Id, WorkOrder> workOrders = new Map<Id, WorkOrder>(
+            [SELECT Id, HOT_Request__c FROM WorkOrder WHERE HOT_Request__c IN :requests]
+        );
 
-            ServiceAppointment serviceAppointment = HOT_TestDataFactory.createServiceAppointment(workOrderLineItem);
-            serviceAppointment.SchedStartTime = request.StartTime__c;
-            serviceAppointment.EarliestStartTime = serviceAppointment.SchedStartTime;
-            serviceAppointment.SchedEndTime = request.EndTime__c;
-            serviceAppointment.DueDate = serviceAppointment.SchedEndTime;
-            serviceAppointment.Status = 'Dispatched';
-            insert serviceAppointment;
-            System.debug('Andre' + serviceAppointment);
+        WorkOrderLineItem[] lineItems = [
+            SELECT Id, WorkOrderId
+            FROM WOrkOrderLineItem
+            WHERE WorkOrderId IN :workOrders.keySet()
+        ];
+
+        Map<Id, WorkOrderLineItem> woToLineItems = new Map<Id, WorkOrderLineItem>();
+        for (WorkOrderLineItem li : lineItems) {
+            woToLineItems.put(li.WorkOrderId, li);
+        }
+
+        Map<Id, WorkOrderLineItem> requestIdToWOLI = new Map<Id, WorkOrderLineItem>();
+        for (WorkOrder wo : workOrders.values()) {
+            WorkOrderLineItem li = woToLineItems.get(wo.Id);
+            if (li != null) {
+                requestIdToWOLI.put(wo.HOT_Request__c, li);
+            }
+        }
+
+        ServiceAppointment[] serviceAppointments = new List<ServiceAppointment>();
+        for (HOT_Request__c request : requests) {
+            WorkOrderLineItem lineItem = requestIdToWOLI.get(request.Id);
+            if (lineItem != null) {
+                ServiceAppointment serviceAppointment = HOT_TestDataFactory.createServiceAppointment(lineItem);
+                serviceAppointment.SchedStartTime = request.StartTime__c;
+                serviceAppointment.EarliestStartTime = serviceAppointment.SchedStartTime;
+                serviceAppointment.SchedEndTime = request.EndTime__c;
+                serviceAppointment.DueDate = serviceAppointment.SchedEndTime;
+                serviceAppointment.Status = 'Dispatched';
+                serviceAppointments.add(serviceAppointment);
+            }
+        }
+
+        insert serviceAppointments;
+
+        AssignedResource[] assignedResources = new List<AssignedResource>();
+        for (ServiceAppointment serviceAppointment : serviceAppointments) {
             AssignedResource assignedResource = HOT_TestDataFactory.createAssignedResource(
                 serviceAppointment.Id,
                 serviceResource.Id
             );
-            insert assignedResource;
-            serviceAppointment.HOT_AssignedResourceId__c = UserInfo.getUserId();
-            update serviceAppointment;
+            assignedResources.add(assignedResource);
         }
+
+        insert assignedResources;
+
+        for (ServiceAppointment serviceAppointment : serviceAppointments) {
+            serviceAppointment.HOT_AssignedResourceId__c = UserInfo.getUserId();
+        }
+
+        update serviceAppointments;
 
         ResourceAbsence absence = new ResourceAbsence();
         absence.Start = Datetime.now();
@@ -73,6 +117,7 @@ private class HOT_FreelanceAbsenceControllerTest {
         absence.ResourceId = serviceResource.Id;
         insert absence;
 
+        HOT_WageClaim__c[] wageClaims = new List<HOT_WageClaim__c>();
         for (Integer i = 0; i < TOTAL_WAGE_CLAIM_COUNT; i++) {
             HOT_WageClaim__c openClaim = HOT_TestDataFactory.createWageClaim(serviceResource);
             openClaim.Status__c = 'Open';
@@ -83,9 +128,10 @@ private class HOT_FreelanceAbsenceControllerTest {
                 openClaim.StartTime__c = Datetime.now().addDays(1);
                 openClaim.EndTime__c = Datetime.now().addDays(1).addHours(1);
             }
-            System.debug('Andre' + openClaim);
-            insert openClaim;
+            wageClaims.add(openClaim);
         }
+
+        insert wageClaims;
     }
 
     @IsTest
