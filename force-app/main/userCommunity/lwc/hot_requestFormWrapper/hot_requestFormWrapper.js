@@ -1,7 +1,7 @@
 import { LightningElement, wire, track } from 'lwc';
 import { NavigationMixin } from 'lightning/navigation';
 import createAndUpdateWorkOrders from '@salesforce/apex/HOT_RequestHandler.createAndUpdateWorkOrders';
-import checkIfRequestWasCorrectlyCreated from '@salesforce/apex/HOT_RequestHandler.checkIfRequestWasCorrectlyCreated';
+import isErrorOnRequestCreate from '@salesforce/apex/HOT_RequestHandler.isErrorOnRequestCreate';
 import getRequestStatus from '@salesforce/apex/HOT_RequestListController.getRequestStatus';
 import createWorkOrders from '@salesforce/apex/HOT_CreateWorkOrderService.createWorkOrdersFromCommunity';
 import checkDuplicates from '@salesforce/apex/HOT_DuplicateHandler.checkDuplicates';
@@ -264,7 +264,7 @@ export default class Hot_requestFormWrapper extends NavigationMixin(LightningEle
         }
     }
     isCreatedCorrectly(recordId) {
-        return checkIfRequestWasCorrectlyCreated({
+        return isErrorOnRequestCreate({
             requestId: recordId
         }).then((result) => {
             if (result === false) {

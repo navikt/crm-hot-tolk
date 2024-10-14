@@ -600,7 +600,7 @@ public without sharing class HOT_RequestHandler extends MyTriggers {
         }
     }
     @AuraEnabled
-    public static boolean checkIfRequestWasCorrectlyCreated(String requestId) {
+    public static boolean isErrorOnRequestCreate(String requestId) {
         Boolean isError = false;
         HOT_Request__c createdRequest = [
             SELECT Id, StartTime__c, EndTime__c, NumberOfWorkOrders__c
