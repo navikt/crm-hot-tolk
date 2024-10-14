@@ -262,7 +262,7 @@ public without sharing class HOT_MessageHelper {
                     }
                 }
                 ServiceAppointment sa = [
-                    SELECT Id, Subject, HOT_Request__r.Dispatcher__c
+                    SELECT Id, Subject, HOT_Request__r.Dispatcher__c, HOT_AssignedResourceId__c
                     FROM ServiceAppointment
                     WHERE Id = :ar.ServiceAppointmentId
                 ];
@@ -270,6 +270,7 @@ public without sharing class HOT_MessageHelper {
                 thread.CRM_Thread_Type__c = 'HOT_TOLK-FORMIDLER';
                 thread.HOT_Dispatcher__c = sa.HOT_Request__r.Dispatcher__c;
                 thread.HOT_IsEmployeeThread__c = true;
+                thread.HOT_ServiceResource__c = sa.HOT_AssignedResourceId__c;
                 thread.HOT_ServiceAppointment__c = recordId;
                 thread.HOT_Title__c = sa.Subject;
 
