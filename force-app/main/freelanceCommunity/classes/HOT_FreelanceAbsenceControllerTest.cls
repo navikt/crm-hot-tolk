@@ -377,4 +377,16 @@ private class HOT_FreelanceAbsenceControllerTest {
             'Trying to delete an existing record without being the correct user should result in an exception'
         );
     }
+
+    @IsTest
+    static void logExceptionTest() {
+        Boolean isLoggingSuccessful = false;
+        Id eventId = null;
+        Exception testException = new NoAccessException();
+        Test.startTest();
+        isLoggingSuccessful = HOT_FreelanceAbsenceController.logException(testException, null);
+        Test.stopTest();
+
+        System.assert(isLoggingSuccessful, 'Should succesfully log exception');
+    }
 }

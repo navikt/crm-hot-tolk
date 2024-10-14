@@ -238,9 +238,14 @@ public with sharing class HOT_FreelanceAbsenceController {
     }
 
     @TestVisible
-    private static void logException(Exception e, SObject relatedRecord) {
-        LoggerUtility logger = new LoggerUtility();
-        logger.exception(e, relatedRecord, CRM_ApplicationDomain.Domain.HOT);
-        logger.publish();
+    private static Boolean logException(Exception exceptionToLog, SObject relatedRecord) {
+        try {
+            LoggerUtility logger = new LoggerUtility();
+            logger.exception(exceptionToLog, relatedRecord, CRM_ApplicationDomain.Domain.HOT);
+            logger.publish();
+        } catch (Exception e) {
+            return false;
+        }
+        return true;
     }
 }
