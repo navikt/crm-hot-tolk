@@ -17,7 +17,11 @@ public without sharing class HOT_ThreadDetailController {
     @AuraEnabled(cacheable=false)
     public static boolean checkAccess(Id threadId) {
         Boolean grantAccess = false;
-        Thread__c thread = [SELECT Id, CRM_Related_Object__c, CRM_Thread_Type__c FROM Thread__c WHERE Id = :threadId];
+        Thread__c thread = [
+            SELECT Id, CRM_Related_Object__c, CRM_Thread_Type__c, HOT_ServiceResource__c
+            FROM Thread__c
+            WHERE Id = :threadId
+        ];
         if (!String.isBlank(thread.CRM_Related_Object__c)) {
             Id relatedObjectId = thread.CRM_Related_Object__c;
             String objectType = String.valueOf(relatedObjectId.getsobjecttype());
@@ -144,6 +148,14 @@ public without sharing class HOT_ThreadDetailController {
             thread.CRM_Thread_Type__c.startsWith('HOT_')
         ) {
             grantAccess = true;
+        }
+        //ansatt tolk tråder tilgang
+        User user = [SELECT Id FROM User WHERE Id = :UserInfo.getUserId()];
+        List<ServiceResource> srList = [SELECT Id FROM ServiceResource WHERE RelatedRecordId = :user.Id];
+        for (ServiceResource sr : srList) {
+            if (sr.Id = thread.HOT_ServiceResource__c) {
+                grantAccess = true;
+            }
         }
         return grantAccess;
     }
