@@ -117,6 +117,15 @@ private class HOT_FreelanceAbsenceControllerTest {
         absence.ResourceId = serviceResource.Id;
         insert absence;
 
+        Event event = new Event();
+        event.WhatId = absence.Id;
+        event.StartDateTime = absence.Start;
+        event.EndDateTime = absence.End;
+        insert event;
+
+        absence.HOT_EventId__c = event.Id;
+        update absence;
+
         HOT_WageClaim__c[] wageClaims = new List<HOT_WageClaim__c>();
         for (Integer i = 0; i < TOTAL_WAGE_CLAIM_COUNT; i++) {
             HOT_WageClaim__c openClaim = HOT_TestDataFactory.createWageClaim(serviceResource);
@@ -163,8 +172,15 @@ private class HOT_FreelanceAbsenceControllerTest {
             LIMIT 1
         ];
 
+        Event[] relatedEvents = [
+            SELECT Id
+            FROM Event
+            WHERE WhatId = :absence.Id
+        ];
+
         System.assert(
-            absence != null &&
+            relatedEvents.size() == 1 &&
+                absence != null &&
                 conflictsBeforeResolution.size() == CONFLICTING_SA_COUNT + CONFLICTING_WAGE_CLAIM_COUNT &&
                 conflictsAfterResolution.isEmpty(),
             'Should remove conflicts for given time period and create absence'
@@ -319,17 +335,20 @@ private class HOT_FreelanceAbsenceControllerTest {
     @IsTest
     static void deleteAbsenceTest() {
         Id resourceId = HOT_FreelanceAbsenceController.getUserServiceResourceId();
-        ResourceAbsence[] absences = [SELECT Id FROM ResourceAbsence WHERE ResourceId = :resourceId];
+        ResourceAbsence absence = [SELECT Id FROM ResourceAbsence WHERE ResourceId = :resourceId LIMIT 1];
+        Id absenceId = absence.Id;
 
         Test.startTest();
-        for (ResourceAbsence absence : absences) {
-            HOT_FreelanceAbsenceController.deleteAbsence(absence.Id);
-        }
+        HOT_FreelanceAbsenceController.deleteAbsence(absence.Id);
         Test.stopTest();
 
-        ResourceAbsence[] remainingAbsences = [SELECT Id FROM ResourceAbsence WHERE ResourceId = :resourceId];
+        ResourceAbsence[] remainingAbsence = [SELECT Id FROM ResourceAbsence WHERE Id = :absenceId];
+        Event[] remainingEvent = [SELECT Id FROM Event WHERE WhatId = :absenceId];
 
-        System.assert(absences.size() == 1 && remainingAbsences.isEmpty(), 'shoud delete users absences');
+        System.assert(
+            remainingAbsence.isEmpty() && remainingEvent.isEmpty(),
+            'shoud delete ResourceAbsence and related Event'
+        );
     }
 
     @IsTest
