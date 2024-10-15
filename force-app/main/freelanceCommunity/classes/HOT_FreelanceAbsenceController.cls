@@ -66,6 +66,40 @@ public with sharing class HOT_FreelanceAbsenceController {
             logException(e, absence);
             prepareAndThrowAuraException(ERROR_FAILED_TO_CREATE_ABSENCE);
         }
+
+        Event event = new Event();
+        event.WhatId = absence.Id;
+        event.StartDateTime = absence.Start;
+        event.EndDateTime = absence.End;
+        switch on absenceType {
+            when 'Other' {
+                event.Description = 'Annet';
+            }
+            when 'Vacation' {
+                event.Description = 'Ferie';
+            }
+            when 'Medical' {
+                event.Description = 'Sykdom.';
+            }
+        }
+        event.Subject = 'Fravær';
+        event.ShowAs = 'Busy';
+
+        try {
+            insert event;
+        } catch (Exception e) {
+            logException(e, absence);
+            prepareAndThrowAuraException(ERROR_FAILED_TO_CREATE_ABSENCE);
+        }
+
+        absence.HOT_EventId__c = event.Id;
+
+        try {
+            update absence;
+        } catch (Exception e) {
+            logException(e, absence);
+            prepareAndThrowAuraException(ERROR_FAILED_TO_CREATE_ABSENCE);
+        }
     }
 
     @AuraEnabled(cacheable=false)
@@ -231,7 +265,10 @@ public with sharing class HOT_FreelanceAbsenceController {
             prepareAndThrowAuraException(ERROR_RESOURCE_ABSENCE_NO_ACCESS);
         }
 
+        Event[] relatedEvents = [SELECT Id FROM Event WHERE WhatId = :absence.Id];
+
         try {
+            delete relatedEvents;
             delete absence;
         } catch (Exception e) {
             logException(e, absence);
