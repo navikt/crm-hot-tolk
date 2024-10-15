@@ -1052,7 +1052,7 @@
                 <identifier>RecordCreatedByIdField</identifier>
                 <visibilityRule>
                     <criteria>
-                        <leftValue>{!Record.Account__r.CRM_Person__r.INT_Confidential__c}</leftValue>
+                        <leftValue>{!Record.CreatedBy.Contact.Account.CRM_Person__r.INT_Confidential__c}</leftValue>
                         <operator>EQUAL</operator>
                         <rightValue>UGRADERT</rightValue>
                     </criteria>
@@ -1073,7 +1073,7 @@
                 <identifier>RecordLastModifiedByIdField</identifier>
                 <visibilityRule>
                     <criteria>
-                        <leftValue>{!Record.Account__r.CRM_Person__r.INT_Confidential__c}</leftValue>
+                        <leftValue>{!Record.LastModifiedBy.Contact.Account.CRM_Person__r.INT_Confidential__c}</leftValue>
                         <operator>EQUAL</operator>
                         <rightValue>UGRADERT</rightValue>
                     </criteria>
