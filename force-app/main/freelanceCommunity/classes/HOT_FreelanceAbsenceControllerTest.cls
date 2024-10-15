@@ -135,6 +135,87 @@ private class HOT_FreelanceAbsenceControllerTest {
     }
 
     @IsTest
+    static void createAbsenceAndResolveConflictsTest() {
+        Datetime absenceStart = Datetime.now().addHours(ABSENCE_START_TIME_OFFSET_IN_HOURS).addMinutes(1);
+        Datetime absenceEnd = absenceStart.addHours(ABSENCE_DURATION_IN_HOURS).addMinutes(1);
+        HOT_FreelanceAbsenceController.ConflictingRecord[] conflictsBeforeResolution = HOT_FreelanceAbsenceController.getConflictsForTimePeriod(
+            absenceStart.getTime(),
+            absenceEnd.getTime()
+        );
+
+        Test.startTest();
+        HOT_FreelanceAbsenceController.createAbsenceAndResolveConflicts(
+            absenceStart.getTime(),
+            absenceEnd.getTime(),
+            'Vacation'
+        );
+        Test.stopTest();
+
+        HOT_FreelanceAbsenceController.ConflictingRecord[] conflictsAfterResolution = HOT_FreelanceAbsenceController.getConflictsForTimePeriod(
+            absenceStart.getTime(),
+            absenceEnd.getTime()
+        );
+
+        ResourceAbsence absence = [
+            SELECT Id
+            FROM ResourceAbsence
+            WHERE Start = :absenceStart AND End = :absenceEnd
+            LIMIT 1
+        ];
+
+        System.assert(
+            absence != null &&
+                conflictsBeforeResolution.size() == CONFLICTING_SA_COUNT + CONFLICTING_WAGE_CLAIM_COUNT &&
+                conflictsAfterResolution.isEmpty(),
+            'Should remove conflicts for given time period and create absence'
+        );
+    }
+
+    @IsTest
+    static void createAbsenceAndResolveConflictsInvalidTypeTest() {
+        Exception createAbsenceException = null;
+        Test.startTest();
+        try {
+            HOT_FreelanceAbsenceController.createAbsenceAndResolveConflicts(
+                Datetime.now().getTime(),
+                Datetime.now().addMinutes(1).getTime(),
+                'Invalid type'
+            );
+        } catch (Exception e) {
+            createAbsenceException = e;
+        }
+        Test.stopTest();
+
+        System.assertEquals(
+            HOT_FreelanceAbsenceController.ERROR_INVALID_ABSENCE_TYPE,
+            createAbsenceException.getMessage(),
+            'Should raise exception when providing an invalid absence type'
+        );
+    }
+
+    @IsTest
+    static void createAbsenceAndResolveConflictsInvalidDates() {
+        Exception createAbsenceException = null;
+        Test.startTest();
+        try {
+            HOT_FreelanceAbsenceController.createAbsenceAndResolveConflicts(
+                Datetime.now().getTime(),
+                Datetime.now().addMinutes(-1).getTime(),
+                'Vacation'
+            );
+        } catch (Exception e) {
+            createAbsenceException = e;
+        }
+        Test.stopTest();
+
+        System.assertEquals(
+            HOT_FreelanceAbsenceController.ERROR_INVALID_START_AND_END_TIME,
+            createAbsenceException.getMessage(),
+            'Should raise exception when providing an invalid absence type'
+        );
+    }
+
+    @IsTest
     static void getConflictsForTimePeriodTest() {
         Datetime absenceStart = Datetime.now().addHours(ABSENCE_START_TIME_OFFSET_IN_HOURS).addMinutes(1);
         Datetime absenceEnd = absenceStart.addHours(ABSENCE_DURATION_IN_HOURS).addMinutes(1);
@@ -295,5 +376,17 @@ private class HOT_FreelanceAbsenceControllerTest {
             deletionException.getMessage(),
             'Trying to delete an existing record without being the correct user should result in an exception'
         );
+    }
+
+    @IsTest
+    static void logExceptionTest() {
+        Boolean isLoggingSuccessful = false;
+        Id eventId = null;
+        Exception testException = new NoAccessException();
+        Test.startTest();
+        isLoggingSuccessful = HOT_FreelanceAbsenceController.logException(testException, null);
+        Test.stopTest();
+
+        System.assert(isLoggingSuccessful, 'Should succesfully log exception');
     }
 }

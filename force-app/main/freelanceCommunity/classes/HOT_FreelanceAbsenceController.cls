@@ -4,7 +4,7 @@ public with sharing class HOT_FreelanceAbsenceController {
     public static String ERROR_FAILED_CONFLICT_RESOLUTION = 'Kunne ikke løse konflikter. Forsøk igjen seinere, eller kontakt formidler';
     public static String ERROR_FAILED_TO_CREATE_ABSENCE = 'Kunne ikke opprette fravær. Forsøk igjen seinere, eller kontakt formidler';
     public static String ERROR_INVALID_START_AND_END_TIME = 'Sjekk at starttid kommer før sluttid';
-    public static String ERROR_INVALID_ABSENCE_TypE = 'Sjekk at type fravær er satt';
+    public static String ERROR_INVALID_ABSENCE_TYPE = 'Sjekk at type fravær er satt';
 
     enum ConflictingRecordType {
         SERVICE_APPOINTMENT,
@@ -231,15 +231,21 @@ public with sharing class HOT_FreelanceAbsenceController {
         delete absence;
     }
 
-    static void prepareAndThrowAuraException(String message) {
+    private static void prepareAndThrowAuraException(String message) {
         AuraHandledException e = new AuraHandledException(message);
         e.setMessage(message);
         throw e;
     }
 
-    static void logException(Exception e, SObject relatedRecord) {
-        LoggerUtility logger = new LoggerUtility();
-        logger.exception(e, relatedRecord, CRM_ApplicationDomain.Domain.HOT);
-        logger.publish();
+    @TestVisible
+    private static Boolean logException(Exception exceptionToLog, SObject relatedRecord) {
+        try {
+            LoggerUtility logger = new LoggerUtility();
+            logger.exception(exceptionToLog, relatedRecord, CRM_ApplicationDomain.Domain.HOT);
+            logger.publish();
+        } catch (Exception e) {
+            return false;
+        }
+        return true;
     }
 }
