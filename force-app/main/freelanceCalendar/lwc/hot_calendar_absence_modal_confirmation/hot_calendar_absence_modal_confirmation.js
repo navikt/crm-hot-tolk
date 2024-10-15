@@ -1,7 +1,7 @@
 import LightningModal from 'lightning/modal';
 import { api, track } from 'lwc';
 
-export default class ConfimationModal extends LightningModal {
+export default class ConfirmationModal extends LightningModal {
     @api content;
     @api absenceType;
     @api absenceStartDateTime;
