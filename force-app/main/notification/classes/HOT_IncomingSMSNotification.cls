@@ -29,11 +29,7 @@ public with sharing class HOT_IncomingSMSNotification {
         }
 
         Map<Id, SMS__c> smsRecords = new Map<Id, SMS__c>(
-            [
-                SELECT Account__c, Domain__c, Type__c, Recipient__c, Message__c
-                FROM SMS__c
-                WHERE Id IN :smsIds
-            ]
+            [SELECT Account__c, Domain__c, Type__c, Recipient__c, Message__c FROM SMS__c WHERE Id IN :smsIds]
         );
 
         for (SMS__c sms : messages) {
@@ -132,7 +128,8 @@ public with sharing class HOT_IncomingSMSNotification {
 
     @TestVisible
     private static Boolean shouldNotifyDispatchersAboutSMS(SMS__c sms) {
-        return sms.Account__c != null &&
+        return sms != null &&
+            sms.Account__c != null &&
             sms.Domain__c == 'HOT' &&
             sms.Type__c == 'Incoming SMS' &&
             sms.Recipient__c == DISPATCH_INCOMING_NUMBER;

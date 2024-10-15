@@ -1,0 +1,10 @@
+<template>
+    <div class="main">
+        <div class="content">
+            <button class="link" type="button" onclick={toggleCalendar}>
+                <h2 class="typo-undertittel">{buttonLabel}</h2>
+            </button>
+        </div>
+    </div>
+    <c-hot_calendar lwc:if={showCalendar}></c-hot_calendar>
+</template>
