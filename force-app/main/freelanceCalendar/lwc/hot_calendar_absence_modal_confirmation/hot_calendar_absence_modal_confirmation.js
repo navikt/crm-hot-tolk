@@ -1,7 +1,5 @@
 import LightningModal from 'lightning/modal';
 import { api, track } from 'lwc';
-import createAbsenceAndResolveConflicts from '@salesforce/apex/HOT_FreelanceAbsenceController.createAbsenceAndResolveConflicts';
-import { ShowToastEvent } from 'lightning/platformShowToastEvent';
 
 export default class ConfimationModal extends LightningModal {
     @api content;
@@ -71,23 +69,7 @@ export default class ConfimationModal extends LightningModal {
         if (!this.absenceStartDateTime || !this.absenceEndDateTime) {
             return;
         }
-        createAbsenceAndResolveConflicts({
-            absenceType: this.absenceType,
-            startTimeInMilliseconds: new Date(this.absenceStartDateTime).getTime(),
-            endTimeInMilliseconds: new Date(this.absenceEndDateTime).getTime()
-        })
-            .then(() => {
-                this.close(true);
-            })
-            .catch(() => {
-                const event = new ShowToastEvent({
-                    title: 'Kunne ikke legge til fravær',
-                    message: 'Det oppstod en feil, prøv igjen senere',
-                    variant: 'error'
-                });
-                this.dispatchEvent(event);
-                this.close(false);
-            });
+        this.close(true);
     }
 
     handleDeny() {
