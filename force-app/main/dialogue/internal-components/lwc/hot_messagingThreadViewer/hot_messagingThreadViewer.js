@@ -1,6 +1,7 @@
 import { LightningElement, api, wire, track } from 'lwc';
 import getmessages from '@salesforce/apex/HOT_MessageHelper.getMessagesFromThread';
 import markAsReadByNav from '@salesforce/apex/HOT_MessageHelper.markAsReadByNav';
+import checkAccess from '@salesforce/apex/HOT_ThreadDetailController.checkAccess';
 import { subscribe, unsubscribe } from 'lightning/empApi';
 import setLastMessageFrom from '@salesforce/apex/HOT_MessageHelper.setLastMessageFrom';
 import getUserNameRole from '@salesforce/apex/HOT_MessageHelper.getUserNameRole';
@@ -32,6 +33,8 @@ export default class messagingThreadViewer extends LightningElement {
     @track langBtnLock = false;
     langBtnAriaToggle = false;
     newMessage = false;
+    @track hasAccess = false;
+    @track showAccessError = false;
 
     @api textTemplate; //Support for conditional text template as input
     //Constructor, called onload
@@ -39,6 +42,15 @@ export default class messagingThreadViewer extends LightningElement {
         if (this.thread) {
             this.threadid = this.thread.Id;
         }
+        checkAccess({ threadId: this.threadid }).then((result) => {
+            if (result == true) {
+                this.hasAccess = true;
+                this.showAccessError = false;
+            } else {
+                this.showAccessError = true;
+                this.hasAccess = false;
+            }
+        });
         this.handleSubscribe();
         this.scrolltobottom();
         markAsReadByNav({ threadId: this.threadid });
