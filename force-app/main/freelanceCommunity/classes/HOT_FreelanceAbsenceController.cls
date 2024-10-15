@@ -63,6 +63,7 @@ public with sharing class HOT_FreelanceAbsenceController {
         try {
             insert absence;
         } catch (Exception e) {
+            logException(e, absence);
             prepareAndThrowAuraException(ERROR_FAILED_TO_CREATE_ABSENCE);
         }
     }
