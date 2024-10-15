@@ -5,6 +5,7 @@ public with sharing class HOT_FreelanceAbsenceController {
     public static String ERROR_FAILED_TO_CREATE_ABSENCE = 'Kunne ikke opprette fravær. Forsøk igjen seinere, eller kontakt formidler';
     public static String ERROR_INVALID_START_AND_END_TIME = 'Sjekk at starttid kommer før sluttid';
     public static String ERROR_INVALID_ABSENCE_TYPE = 'Sjekk at type fravær er satt';
+    public static STRING ERROR_FAILED_TO_DELETE_ABSENCE = 'Kunne ikke slette fravær.';
 
     enum ConflictingRecordType {
         SERVICE_APPOINTMENT,
@@ -228,7 +229,13 @@ public with sharing class HOT_FreelanceAbsenceController {
             logger.publish();
             prepareAndThrowAuraException(ERROR_RESOURCE_ABSENCE_NO_ACCESS);
         }
-        delete absence;
+
+        try {
+            delete absence;
+        } catch (Exception e) {
+            logException(e, absence);
+            prepareAndThrowAuraException(ERROR_FAILED_TO_DELETE_ABSENCE);
+        }
     }
 
     private static void prepareAndThrowAuraException(String message) {
