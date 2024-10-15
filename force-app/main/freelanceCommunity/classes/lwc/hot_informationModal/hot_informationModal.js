@@ -124,7 +124,9 @@ export default class Hot_informationModal extends NavigationMixin(LightningEleme
         this.wageClaim = undefined;
         this.isWCDetails = false;
         this.isSADetails = false;
-        this.updateURL();
+        if (this.isAListView) {
+            this.updateURL();
+        }
     }
     @api
     goToRecordDetailsWC(woId, recordsArray) {
@@ -463,7 +465,7 @@ export default class Hot_informationModal extends NavigationMixin(LightningEleme
                     dialog.showModal();
                     dialog.focus();
                     this.isLoading = false;
-                    this.updateURL();
+                    // this.updateURL();
                 });
             } else {
                 this.isLoading = false;
