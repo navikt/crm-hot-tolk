@@ -1026,6 +1026,7 @@ public without sharing class HOT_ServiceAppointmentNotification {
                 HOT_WorkOrderLineItem__r.WorkOrderId = :updatedSAWithInterpreterRemoved.HOT_WorkOrderLineItem__r.WorkOrderId
                 AND Id != :sa.Id
                 AND Status = 'Dispatched'
+                AND HOT_IsImageInterpreter__c = FALSE
         ];
 
         //creating notification object list
@@ -1175,6 +1176,7 @@ public without sharing class HOT_ServiceAppointmentNotification {
                 HOT_WorkOrderLineItem__r.WorkOrderId = :updatedSAWithNewInterpreter.HOT_WorkOrderLineItem__r.WorkOrderId
                 AND Id != :sa.Id
                 AND Status = 'Dispatched'
+                AND HOT_IsImageInterpreter__c = FALSE
         ];
 
         //creating notification object list
