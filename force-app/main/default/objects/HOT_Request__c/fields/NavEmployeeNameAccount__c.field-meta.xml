@@ -3,9 +3,9 @@
     <fullName>NavEmployeeNameAccount__c</fullName>
     <deprecated>false</deprecated>
     <externalId>false</externalId>
-    <formula>IF($Permission.CRM_NavEmployees,  Person__r.CRM_FullName__c , &quot;&quot;)</formula>
+    <formula>IF($Permission.CRM_NavEmployees, Person__r.CRM_FullName__c , &quot;&quot;)</formula>
     <formulaTreatBlanksAs>BlankAsZero</formulaTreatBlanksAs>
-    <label>NAV Employee Name (Account)</label>
+    <label>NAV Employee Name (Person)</label>
     <required>false</required>
     <trackHistory>false</trackHistory>
     <trackTrending>false</trackTrending>
