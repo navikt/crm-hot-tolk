@@ -3,6 +3,7 @@ import LightningModal from 'lightning/modal';
 import ConfimationModal from 'c/hot_calendar_absence_modal_confirmation';
 import DeleteConfimationModal from 'c/hot_calendar_absence_modal_confirmation_delete';
 import getConflictsForTimePeriod from '@salesforce/apex/HOT_FreelanceAbsenceController.getConflictsForTimePeriod';
+import createAbsenceAndResolveConflicts from '@salesforce/apex/HOT_FreelanceAbsenceController.createAbsenceAndResolveConflicts';
 import deleteAbsence from '@salesforce/apex/HOT_FreelanceAbsenceController.deleteAbsence';
 import { ShowToastEvent } from 'lightning/platformShowToastEvent';
 
@@ -13,6 +14,7 @@ export default class Hot_Calendar_Absence_Modal extends LightningModal {
     absenceStart;
     absenceEnd;
     value = '';
+    isLoading = false;
 
     get options() {
         return [
@@ -107,7 +109,24 @@ export default class Hot_Calendar_Absence_Modal extends LightningModal {
             absenceEndDateTime: absenceEndDateTime
         });
         if (confirmation) {
+            this.isLoading = true;
+            try {
+                await createAbsenceAndResolveConflicts({
+                    absenceType: absenceType,
+                    startTimeInMilliseconds: new Date(absenceStartDateTime).getTime(),
+                    endTimeInMilliseconds: new Date(absenceEndDateTime).getTime()
+                });
+            } catch (error) {
+                console.error(error);
+                const event = new ShowToastEvent({
+                    title: 'Kunne ikke legge til fravær',
+                    message: 'Det oppstod en feil, prøv igjen senere',
+                    variant: 'error'
+                });
+                this.dispatchEvent(event);
+            }
             if (this.isEdit) {
+                console.log('nå er vi edit');
                 try {
                     await deleteAbsence({ recordId: this.event.extendedProps.recordId });
                     const event = new ShowToastEvent({
@@ -132,12 +151,14 @@ export default class Hot_Calendar_Absence_Modal extends LightningModal {
                 });
                 this.dispatchEvent(event);
             }
+            this.isLoading = false;
             this.close(true);
         }
     }
     async handleDeleteAbsence() {
         const deleteConfirm = await DeleteConfimationModal.open();
         if (deleteConfirm) {
+            this.isLoading = true;
             try {
                 await deleteAbsence({ recordId: this.event.extendedProps.recordId });
                 const event = new ShowToastEvent({
@@ -146,7 +167,6 @@ export default class Hot_Calendar_Absence_Modal extends LightningModal {
                     variant: 'success'
                 });
                 this.dispatchEvent(event);
-                this.close(true);
             } catch {
                 const event = new ShowToastEvent({
                     title: 'Noe gikk galt',
@@ -154,8 +174,9 @@ export default class Hot_Calendar_Absence_Modal extends LightningModal {
                     variant: 'error'
                 });
                 this.dispatchEvent(event);
-                this.close(false);
             }
+            this.isLoading = false;
+            this.close(true);
         } else {
             this.close(false);
         }
