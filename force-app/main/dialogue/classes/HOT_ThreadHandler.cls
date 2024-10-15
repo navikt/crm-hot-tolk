@@ -101,54 +101,62 @@ public without sharing class HOT_ThreadHandler extends MyTriggers {
             }
         }
         //serviceappointment
-        List<ServiceAppointment> serviceAppointment = [
-            SELECT Id, Subject, OwnerId
-            FROM ServiceAppointment
-            WHERE Id IN :threadByServiceAppointmentId.keySet()
-        ];
-        for (ServiceAppointment sa : serviceAppointment) {
-            threadByServiceAppointmentId.get(sa.Id).Name = threadSubjectMaker('SAMTALE MED TOLK: ' + sa.Subject);
-            threadByServiceAppointmentId.get(sa.Id).OwnerId = sa.OwnerId;
+        if(threadByServiceAppointmentId.size() > 0){
+            List<ServiceAppointment> serviceAppointment = [
+                SELECT Id, Subject, OwnerId
+                FROM ServiceAppointment
+                WHERE Id IN :threadByServiceAppointmentId.keySet()
+            ];
+            for (ServiceAppointment sa : serviceAppointment) {
+                threadByServiceAppointmentId.get(sa.Id).Name = threadSubjectMaker('SAMTALE MED TOLK: ' + sa.Subject);
+                threadByServiceAppointmentId.get(sa.Id).OwnerId = sa.OwnerId;
+            }
         }
         //interestedresource
-        List<HOT_InterestedResource__c> interestedResource = [
-            SELECT Id, ServiceAppointment__r.Subject, ServiceAppointment__r.OwnerId
-            FROM HOT_InterestedResource__c
-            WHERE Id IN :threadByInterestedResourceId.keySet()
-        ];
-        for (HOT_InterestedResource__c ir : interestedResource) {
-            threadByInterestedResourceId.get(ir.Id).Name = threadSubjectMaker(
-                'SAMTALE MED TOLK: ' + ir.ServiceAppointment__r.Subject
-            );
-            threadByInterestedResourceId.get(ir.Id).OwnerId = ir.ServiceAppointment__r.OwnerId;
+        if(threadByInterestedResourceId.size() > 0){
+            List<HOT_InterestedResource__c> interestedResource = [
+                SELECT Id, ServiceAppointment__r.Subject, ServiceAppointment__r.OwnerId
+                FROM HOT_InterestedResource__c
+                WHERE Id IN :threadByInterestedResourceId.keySet()
+            ];
+            for (HOT_InterestedResource__c ir : interestedResource) {
+                threadByInterestedResourceId.get(ir.Id).Name = threadSubjectMaker(
+                    'SAMTALE MED TOLK: ' + ir.ServiceAppointment__r.Subject
+                );
+                threadByInterestedResourceId.get(ir.Id).OwnerId = ir.ServiceAppointment__r.OwnerId;
+            }
         }
         //workorder
-        List<WorkOrder> workOrder = [
-            SELECT Id, Subject, OwnerId
-            FROM WorkOrder
-            WHERE Id IN :threadByWorkOrderId.keySet()
-        ];
-        for (WorkOrder wo : workOrder) {
-            if (threadByWorkOrderId.get(wo.Id).CRM_Type__c == 'HOT_BRUKER-TOLK') {
-                threadByWorkOrderId.get(wo.Id).Name = threadSubjectMaker(
-                    'SAMTALE MELLOM BRUKER OG TOLKER: ' + wo.Subject
-                );
-                threadByWorkOrderId.get(wo.Id).OwnerId = wo.OwnerId;
-            }
-            if (threadByWorkOrderId.get(wo.Id).CRM_Type__c == 'HOT_TOLK-TOLK') {
-                threadByWorkOrderId.get(wo.Id).Name = threadSubjectMaker('SAMTALE MELLOM MEDTOLKER: ' + wo.Subject);
-                threadByWorkOrderId.get(wo.Id).OwnerId = wo.OwnerId;
+        if(threadByWorkOrderId.size() > 0){
+            List<WorkOrder> workOrder = [
+                SELECT Id, Subject, OwnerId
+                FROM WorkOrder
+                WHERE Id IN :threadByWorkOrderId.keySet()
+            ];
+            for (WorkOrder wo : workOrder) {
+                if (threadByWorkOrderId.get(wo.Id).CRM_Type__c == 'HOT_BRUKER-TOLK') {
+                    threadByWorkOrderId.get(wo.Id).Name = threadSubjectMaker(
+                        'SAMTALE MELLOM BRUKER OG TOLKER: ' + wo.Subject
+                    );
+                    threadByWorkOrderId.get(wo.Id).OwnerId = wo.OwnerId;
+                }
+                if (threadByWorkOrderId.get(wo.Id).CRM_Type__c == 'HOT_TOLK-TOLK') {
+                    threadByWorkOrderId.get(wo.Id).Name = threadSubjectMaker('SAMTALE MELLOM MEDTOLKER: ' + wo.Subject);
+                    threadByWorkOrderId.get(wo.Id).OwnerId = wo.OwnerId;
+                }
             }
         }
         //wageclaim
-        List<HOT_WageClaim__c> wageClaim = [
-            SELECT Id, Name, ServiceAppointment__r.OwnerId
-            FROM HOT_WageClaim__c
-            WHERE Id IN :threadByWageClaimId.keySet()
-        ];
-        for (HOT_WageClaim__c wc : wageClaim) {
-            threadByWageClaimId.get(wc.Id).Name = threadSubjectMaker('LØNNSKRAV: ' + wc.Name);
-            threadByWageClaimId.get(wc.Id).OwnerId = wc.ServiceAppointment__r.OwnerId;
+        if(threadByWageClaimId.size() > 0){
+            List<HOT_WageClaim__c> wageClaim = [
+                SELECT Id, Name, ServiceAppointment__r.OwnerId
+                FROM HOT_WageClaim__c
+                WHERE Id IN :threadByWageClaimId.keySet()
+            ];
+            for (HOT_WageClaim__c wc : wageClaim) {
+                threadByWageClaimId.get(wc.Id).Name = threadSubjectMaker('LØNNSKRAV: ' + wc.Name);
+                threadByWageClaimId.get(wc.Id).OwnerId = wc.ServiceAppointment__r.OwnerId;
+            }
         }
     }
 
