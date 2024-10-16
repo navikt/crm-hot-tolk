@@ -3,10 +3,13 @@ public without sharing class HOT_ThreadAccessHandler extends MyTriggers {
         List<Thread__c> threadsToUpdate = new List<Thread__c>();
         for (Thread__c thread : (List<Thread__c>) records) {
             if (
-                thread.CRM_Thread_Type__c == 'HOT_TOLK-FORMIDLER' ||
-                thread.CRM_Thread_Type__c == 'HOT_TOLK-TOLK' ||
-                thread.CRM_Thread_Type__c == 'HOT_BRUKER-TOLK' ||
-                thread.CRM_Thread_Type__c == 'HOT_TOLK-RESSURSKONTOR'
+                new Set<String>{
+                    'HOT_TOLK-FORMIDLER', 
+                    'HOT_TOLK-TOLK', 
+                    'HOT_BRUKER-TOLK', 
+                    'HOT_TOLK-RESSURSKONTOR'
+                }.contains(thread.CRM_Thread_Type__c)
+                && MyTriggers.hasChangedFields(new List<String>{'HOT_ParticipantIds__c'},thread,(Thread__c)triggerOldMap.get(thread.Id))
             ) {
                 threadsToUpdate.add(thread);
             }
