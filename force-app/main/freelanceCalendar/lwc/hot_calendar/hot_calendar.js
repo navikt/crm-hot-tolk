@@ -1,10 +1,11 @@
-import { LightningElement, track, wire } from 'lwc';
+import { LightningElement, track, wire, api } from 'lwc';
 import FULL_CALENDAR from '@salesforce/resourceUrl/FullCalendar';
 import { loadScript, loadStyle } from 'lightning/platformResourceLoader';
 import getCalendarEvents from '@salesforce/apex/HOT_FullCalendarController.getCalendarEvents';
 import IKONER from '@salesforce/resourceUrl/ikoner';
 import { NavigationMixin } from 'lightning/navigation';
 import { CalendarEvent } from './calendar_event';
+import Hot_Calendar_Absence_Modal from 'c/hot_calendar_absence_modal';
 
 export default class LibsFullCalendar extends NavigationMixin(LightningElement) {
     static MILLISECONDS_PER_DAY = 86400000;
@@ -114,6 +115,12 @@ export default class LibsFullCalendar extends NavigationMixin(LightningElement) 
                     click: () => {
                         this.refreshCalendar(); // Call the refresh method
                     }
+                },
+                absence: {
+                    text: 'Nytt fravær',
+                    click: () => {
+                        this.openAbsenceModal();
+                    }
                 }
             },
             buttonText: {
@@ -127,7 +134,8 @@ export default class LibsFullCalendar extends NavigationMixin(LightningElement) 
                 end: 'dayGridMonth today prev,next'
             },
             footerToolbar: {
-                left: 'refresh'
+                left: 'refresh',
+                right: 'absence'
             },
             slotLabelFormat: {
                 hour: '2-digit',
@@ -239,7 +247,7 @@ export default class LibsFullCalendar extends NavigationMixin(LightningElement) 
 
     handleEventClick(context) {
         if (context.view.type === 'timeGridDay' || !this.isMobileSize) {
-            this.navigateToDetailView(context.event.extendedProps);
+            this.navigateToDetailView(context.event);
         } else {
             this.calendar.changeView('timeGridDay', new Date(context.event.start));
         }
@@ -270,6 +278,14 @@ export default class LibsFullCalendar extends NavigationMixin(LightningElement) 
             await minLoadingTime;
         }
         this.isLoading = false;
+    }
+
+    async openAbsenceModal(event) {
+        const result = await Hot_Calendar_Absence_Modal.open({ event: event });
+        if (result) {
+            await this.refreshCalendar(false);
+            this.updatePseudoEventsDisplay(this.calendar.view);
+        }
     }
 
     async updateEventsFromDateRange(earliestDateInView, latestDateInView) {
@@ -303,10 +319,20 @@ export default class LibsFullCalendar extends NavigationMixin(LightningElement) 
     }
 
     async fetchUniqueEventsForTimeRegion(earliestTime, latestTime) {
-        const data = await getCalendarEvents({
-            earliestEventEndTimeInMilliseconds: earliestTime,
-            latestEventStartInMilliseconds: latestTime
-        });
+        let data;
+        try {
+            data = await getCalendarEvents({
+                earliestEventEndTimeInMilliseconds: earliestTime,
+                latestEventStartInMilliseconds: latestTime
+            });
+        } catch {
+            const event = new ShowToastEvent({
+                title: 'Det oppsto en feil',
+                message: 'Feil ved henting av avtaler i dette tidsrommet, prøv igjen senere.',
+                variant: 'error'
+            });
+            this.dispatchEvent(event);
+        }
         if (data) {
             return data
                 .map((event) => new CalendarEvent(event))
@@ -360,11 +386,8 @@ export default class LibsFullCalendar extends NavigationMixin(LightningElement) 
         return pseudoEvents;
     }
 
-    navigateToDetailView(eventExtendedProps) {
-        if (eventExtendedProps.type === 'RESOURCE_ABSENCE') {
-            return;
-        }
-
+    async navigateToDetailView(event) {
+        const eventExtendedProps = event.extendedProps;
         switch (eventExtendedProps.type) {
             case 'COMPLETED_SERVICE_APPOINTMENT':
                 this.showDetails = true;
@@ -383,6 +406,9 @@ export default class LibsFullCalendar extends NavigationMixin(LightningElement) 
                 this.template
                     .querySelector('c-hot_information-modal')
                     .goToRecordDetailsWCFromId(eventExtendedProps.recordId);
+                break;
+            case 'RESOURCE_ABSENCE':
+                await this.openAbsenceModal(event);
                 break;
         }
     }
