@@ -1,6 +1,7 @@
 import { LightningElement, wire, track } from 'lwc';
 import { NavigationMixin } from 'lightning/navigation';
 import createAndUpdateWorkOrders from '@salesforce/apex/HOT_RequestHandler.createAndUpdateWorkOrders';
+import isErrorOnRequestCreate from '@salesforce/apex/HOT_RequestHandler.isErrorOnRequestCreate';
 import getRequestStatus from '@salesforce/apex/HOT_RequestListController.getRequestStatus';
 import createWorkOrders from '@salesforce/apex/HOT_CreateWorkOrderService.createWorkOrdersFromCommunity';
 import checkDuplicates from '@salesforce/apex/HOT_DuplicateHandler.checkDuplicates';
@@ -177,8 +178,12 @@ export default class Hot_requestFormWrapper extends NavigationMixin(LightningEle
         this.template.querySelector('c-alertdialog').showModal();
         this.spin = false;
     }
+    @track requestId;
 
     handleSuccess(event) {
+        const record = event.detail.id;
+        this.requestId = record;
+
         if (this.editNotAllowed) {
             return;
         }
@@ -200,6 +205,13 @@ export default class Hot_requestFormWrapper extends NavigationMixin(LightningEle
         this.template.querySelector('.submitted-loading').classList.remove('hidden');
         this.template.querySelector('.h2-loadingMessage').focus();
         window.scrollTo(0, 0);
+    }
+
+    hideFormAndShowError() {
+        this.template.querySelector('.submitted-loading').classList.add('hidden');
+        this.template.querySelector('.submitted-false').classList.add('hidden');
+        this.template.querySelector('.submitted-error').classList.remove('hidden');
+        this.template.querySelector('.h2-errorMessage').focus();
     }
 
     editNotAllowed = false;
@@ -230,18 +242,38 @@ export default class Hot_requestFormWrapper extends NavigationMixin(LightningEle
                         recurringEndDate: new Date(timeInput.repeatingEndDate).getTime()
                     }).then(() => {
                         this.spin = false;
-                        this.hideFormAndShowSuccess();
+                        if (this.isCreatedCorrectly(this.requestId)) {
+                            this.hideFormAndShowSuccess();
+                        } else {
+                            this.hideFormAndShowError();
+                        }
                     });
                 } catch (error) {
                     console.log(JSON.stringify(error));
+                    this.hideFormAndShowError();
                 }
             } else {
                 createAndUpdateWorkOrders({ requestId: this.recordId, times: timeInput.times }).then(() => {
                     this.spin = false;
-                    this.hideFormAndShowSuccess();
+                    if (this.isCreatedCorrectly(this.requestId)) {
+                        this.hideFormAndShowSuccess();
+                    } else {
+                        this.hideFormAndShowError();
+                    }
                 });
             }
         }
+    }
+    isCreatedCorrectly(recordId) {
+        return isErrorOnRequestCreate({
+            requestId: recordId
+        }).then((result) => {
+            if (result === false) {
+                return true;
+            } else {
+                return false;
+            }
+        });
     }
 
     @track previousPage = 'home';
