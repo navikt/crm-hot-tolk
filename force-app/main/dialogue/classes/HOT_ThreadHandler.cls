@@ -1,4 +1,5 @@
 public without sharing class HOT_ThreadHandler extends MyTriggers {
+    Set<Id> workOrderIds = new Set<Id>();
     private static void handleException(Exception e) {
         LoggerUtility logger = new LoggerUtility();
         logger.exception(e, CRM_ApplicationDomain.Domain.HOT);
@@ -8,13 +9,13 @@ public without sharing class HOT_ThreadHandler extends MyTriggers {
         Map<Id, Thread__c> threadById = new Map<Id, Thread__c>();
         for (Thread__c thread : (List<Thread__c>) records) {
             if (
-                thread.CRM_Type__c == 'HOT_BRUKER-FORMIDLER' ||
+                (thread.CRM_Type__c == 'HOT_BRUKER-FORMIDLER' ||
                 thread.CRM_Type__c == 'HOT_BRUKER-BESTILLER' ||
                 thread.CRM_Type__c == 'HOT_BRUKER-TOLK' ||
                 thread.CRM_Type__c == 'HOT_TOLK-TOLK' ||
                 thread.CRM_Type__c == 'HOT_BESTILLER-FORMIDLER' ||
                 thread.CRM_Type__c == 'HOT_TOLK-FORMIDLER' ||
-                thread.CRM_Type__c == 'HOT_TOLK-RESSURSKONTOR' &&
+                thread.CRM_Type__c == 'HOT_TOLK-RESSURSKONTOR') &&
                 thread.CRM_Related_Object__c != null
             ) {
                 threadById.put(thread.CRM_Related_Object__c, thread);
@@ -25,18 +26,17 @@ public without sharing class HOT_ThreadHandler extends MyTriggers {
         }
     }
     public override void onAfterInsert() {
-        Set<Id> workOrderIds = new Set<Id>();
         Set<Id> threadIds = new Set<Id>();
-        for (Thread__c t : [
-            SELECT Id, CRM_Related_Object__c
-            FROM Thread__c
-            WHERE
-                Id IN :records
-                AND (CRM_Thread_Type__c = 'HOT_BRUKER-TOLK'
-                OR CRM_Thread_Type__c = 'HOT_TOLK-TOLK'
-                OR CRM_Thread_Type__c = 'HOT_TOLK-FORMIDLER')
-        ]) {
-            workOrderIds.add(t.CRM_Related_Object__c);
+        List<Thread__c> threads = (List<Thread__c>) records;
+        Set<String> threadTypesOfInterest = new Set<String>{'HOT_BRUKER-TOLK','HOT_TOLK-TOLK','HOT_TOLK-FORMIDLER'};
+
+        for (Thread__c t : threads){
+            if(!threadTypesOfInterest.contains(t.CRM_Thread_Type__c)){
+                continue;
+            }
+            if(((Id)t.CRM_Related_Object__c).getSObjectType() == WorkOrder.SObjectType){
+                workOrderIds.add(t.CRM_Related_Object__c);
+            }
             threadIds.add(t.Id);
         }
 
@@ -44,9 +44,7 @@ public without sharing class HOT_ThreadHandler extends MyTriggers {
             setInterpreterThread(workOrderIds);
         }
 
-        if (threadIds.size() > 0) {
-            setInterpreterOnThreadOneToOne(threadIds);
-        }
+        setInterpreterOnThreadOneToOne(threads);
     }
 
     public static String threadSubjectMaker(String subject) {
@@ -190,6 +188,7 @@ public without sharing class HOT_ThreadHandler extends MyTriggers {
             WHERE CRM_Related_Object__c IN :workOrderIds
         ];
         for (Thread__c thread : threads) {
+            //TODO: check for changes before update
             thread.HOT_ParticipantIds__c = '';
             if (serviceAppointmentsByWorkOrderId.get(thread.CRM_Related_Object__c) != null) {
                 for (
@@ -204,55 +203,59 @@ public without sharing class HOT_ThreadHandler extends MyTriggers {
         HOT_DatabaseOperations.updateRecords(threads);
     }
 
-    public static void setInterpreterOnThreadOneToOne(Set<Id> threadIds) {
-        List<Thread__c> threads = [
-            SELECT Id, HOT_ParticipantIds__c, CRM_Related_Object__c
-            FROM Thread__c
-            WHERE Id IN :threadIds
-        ];
-
-        Set<Id> threadRelatedObjectId = new Set<Id>();
-        for (Thread__c thread : threads) {
-            threadRelatedObjectId.add(thread.CRM_Related_Object__c);
+    private static void setInterpreterOnThreadOneToOne(List<Thread__c> threads){
+        Set<Id> relatedSA = new Set<Id>();
+        Set<Id> relatedIR = new Set<Id>();
+        for(Thread__c t : threads){
+            if(
+                ((Id) t.CRM_Related_Object__c).getSObjectType() == ServiceAppointment.SObjectType
+            ){
+                relatedSA.add(t.CRM_Related_Object__c);
+            }else if(
+                ((Id) t.CRM_Related_Object__c).getSObjectType() == HOT_InterestedResource__c.SObjectType
+            ){
+                relatedIR.add(t.CRM_Related_Object__c);
+            }
         }
-
-        List<ServiceAppointment> saList = [
+        Map<Id,ServiceAppointment> serviceAppointmentMap = new Map<Id,ServiceAppointment>([
             SELECT Id, HOT_ServiceResource__r.RelatedRecordId
             FROM ServiceAppointment
-            WHERE Id IN :threadRelatedObjectId
-        ];
-        List<HOT_InterestedResource__c> irList = [
+            WHERE Id IN :relatedSA
+        ]);
+        Map<Id,HOT_InterestedResource__c> interestedResourceMap = new Map<Id, HOT_InterestedResource__c>([
             SELECT Id, ServiceResource__r.RelatedRecordId
             FROM HOT_InterestedResource__c
-            WHERE Id IN :threadRelatedObjectId
-        ];
-        if (saList.size() > 0) {
-            for (Thread__c thread : threads) {
-                for (ServiceAppointment sa : saList) {
-                    if (thread.CRM_Related_Object__c == sa.Id && sa.HOT_ServiceResource__r.RelatedRecordId != null) {
-                        thread.HOT_ParticipantIds__c = sa.HOT_ServiceResource__r.RelatedRecordId;
-                    }
+            WHERE Id IN :relatedIR
+        ]);
+        List<Thread__c> threadsToUpdate = new List<Thread__c>();
+        for(Thread__c t : threads){
+            if(
+                serviceAppointmentMap.containsKey(t.CRM_Related_Object__c)
+            ){
+                ServiceAppointment sa = serviceAppointmentMap.get(t.CRM_Related_Object__c);
+                if(
+                    sa.HOT_ServiceResource__r.RelatedRecordId != null
+                    && t.HOT_ParticipantIds__c != sa.HOT_ServiceResource__r.RelatedRecordId
+                ){
+                    t.HOT_ParticipantIds__c = sa.HOT_ServiceResource__r.RelatedRecordId;
+                    threadsToUpdate.add(t);
                 }
-            }
-            try {
-                HOT_DatabaseOperations.updateRecords(threads);
-            } catch (Exception e) {
-                handleException(e);
+            }else if(
+                interestedResourceMap.containsKey(t.CRM_Related_Object__c)
+            ){
+                HOT_InterestedResource__c ir = interestedResourceMap.get(t.CRM_Related_Object__c);
+                if(
+                    t.HOT_ParticipantIds__c != ir.ServiceResource__r.RelatedRecordId
+                ){
+                    t.HOT_ParticipantIds__c = ir.ServiceResource__r.RelatedRecordId;
+                    threadsToUpdate.add(t);
+                }
             }
         }
-        if (irList.size() > 0) {
-            for (Thread__c thread : threads) {
-                for (HOT_InterestedResource__c ir : irList) {
-                    if (thread.CRM_Related_Object__c == ir.Id) {
-                        thread.HOT_ParticipantIds__c = ir.ServiceResource__r.RelatedRecordId;
-                    }
-                }
-            }
-            try {
-                HOT_DatabaseOperations.updateRecords(threads);
-            } catch (Exception e) {
-                handleException(e);
-            }
+        try {
+            HOT_DatabaseOperations.updateRecords(threadsToUpdate);
+        } catch (Exception e) {
+            handleException(e);
         }
     }
 
