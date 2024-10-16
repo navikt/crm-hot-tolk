@@ -152,8 +152,9 @@ public with sharing class HOT_FreelanceAbsenceController {
         Id resourceId = getUserServiceResourceId();
         List<serviceAppointment> appointments = getConflictingServiceAppointments(absenceStartTime, absenceEndTime);
 
-        HOT_InterestedResource__c[] interestedResources = new List<HOT_InterestedResource__c>();
         HOT_HistoricallyAssignedResource__c[] historicalAssignments = new List<HOT_HistoricallyAssignedResource__c>();
+        Set<Id> appointmentIds = new Set<Id>();
+
         for (ServiceAppointment appointment : appointments) {
             appointment.Status = null;
             appointment.HOT_AssignedResourceId__c = '';
@@ -167,17 +168,17 @@ public with sharing class HOT_FreelanceAbsenceController {
             har.StatusComment__c = reason;
             historicalAssignments.add(har);
 
-            HOT_InterestedResource__c[] interestedResource = [
-                SELECT Id
-                FROM HOT_InterestedResource__c
-                WHERE ServiceResource__c = :resourceId AND ServiceAppointment__c = :appointment.id
-                LIMIT 1
-            ];
+            appointmentIds.add(appointment.Id);
+        }
 
-            if (!interestedResource.isEmpty()) {
-                interestedResource[0].Status__c = 'Canceled by Interpreter';
-                interestedResources.add(interestedResource[0]);
-            }
+        HOT_InterestedResource__c[] interestedResources = [
+            SELECT Id
+            FROM HOT_InterestedResource__c
+            WHERE ServiceResource__c = :resourceId AND ServiceAppointment__c IN :appointmentIds
+        ];
+
+        for (HOT_InterestedResource__c interestedResource : interestedResources) {
+            interestedResource.Status__c = 'Canceled by Interpreter';
         }
 
         HOT_WageClaim__c[] wageClaims = getConflictingOpenWageClaims(absenceStartTime, absenceEndTime);
