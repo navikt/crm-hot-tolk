@@ -156,6 +156,7 @@ public without sharing class HOT_MyServiceAppointmentListController {
                 HOT_Request__r.Account__r.CRM_Person__r.HOT_Gender__c,
                 HOT_Request__r.Account__r.CRM_Person__r.CRM_AgeNumber__c,
                 HOT_Request__r.OwnerName__c,
+                HOT_NavEmployeeName__c,
                 HOT_ServiceTerritoryName__c,
                 HOT_TermsOfAgreement__c,
                 HOT_TotalNumberOfInterpreters__c,

@@ -1,8 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
     <fullName>HOT_NavEmployeeName__c</fullName>
+    <deprecated>false</deprecated>
     <externalId>false</externalId>
-    <formula>IF($Permission.CRM_NavEmployees || CONTAINS(HOT_AssignedResourceId__c,$User.Id), Account.CRM_NavEmployeeName__c, &quot;&quot;)</formula>
+    <formula>IF($Permission.CRM_NavEmployees || CONTAINS(HOT_AssignedResourceId__c,$User.Id),   Account.CRM_Person__r.CRM_FullName__c , &quot;&quot;)</formula>
     <formulaTreatBlanksAs>BlankAsZero</formulaTreatBlanksAs>
     <label>NAV Employee Name</label>
     <required>false</required>
