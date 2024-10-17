@@ -1,4 +1,9 @@
 public without sharing class HOT_RequestHandler extends MyTriggers {
+    private static void handleException(Exception e) {
+        LoggerUtility logger = new LoggerUtility();
+        logger.exception(e, CRM_ApplicationDomain.Domain.HOT);
+        logger.publishSynch();
+    }
     public override void onBeforeInsert() {
         setStatusDefault((List<HOT_Request__c>) records);
         setOrdererField((List<HOT_Request__c>) records);
@@ -598,5 +603,35 @@ public without sharing class HOT_RequestHandler extends MyTriggers {
                 request.InterpretationPostalCode__c = request.MeetingPostalCode__c;
             }
         }
+    }
+    @AuraEnabled
+    public static boolean isErrorOnRequestCreate(String requestId) {
+        Boolean isError = false;
+        HOT_Request__c createdRequest = [
+            SELECT Id, StartTime__c, EndTime__c, NumberOfWorkOrders__c
+            FROM HOT_Request__c
+            WHERE Id = :requestId
+        ];
+        if (createdRequest.StartTime__c == null || createdRequest.EndTime__c == null) {
+            isError = true;
+        } else {
+            List<WorkOrder> createdWorkOrders = [SELECT Id FROM WorkOrder WHERE HOT_Request__c = :requestId];
+            if (createdRequest.NumberOfWorkOrders__c != createdWorkOrders.size()) {
+                isError = true;
+                try {
+                    delete createdWorkOrders;
+                } catch (Exception e) {
+                    handleException(e);
+                }
+            }
+        }
+        if (isError) {
+            try {
+                delete createdRequest;
+            } catch (Exception e) {
+                handleException(e);
+            }
+        }
+        return isError;
     }
 }

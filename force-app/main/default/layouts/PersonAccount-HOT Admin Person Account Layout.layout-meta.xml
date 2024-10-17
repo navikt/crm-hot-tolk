@@ -128,6 +128,7 @@
         <fields>SchedStartTime</fields>
         <fields>SchedEndTime</fields>
         <fields>WorkType</fields>
+        <fields>HOT_IsScreenInterpreterNew__c</fields>
         <fields>HOT_AssignmentType__c</fields>
         <fields>HOT_ServiceResource__c</fields>
         <fields>HOT_Request__c</fields>

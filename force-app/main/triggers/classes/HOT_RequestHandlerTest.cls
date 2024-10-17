@@ -823,4 +823,30 @@ private class HOT_RequestHandlerTest {
         System.AssertEquals('Oslo', workorderResult.HOT_InterpretationPostalCity__c, 'City did not get updated');
         System.AssertEquals('0166', workorderResult.HOT_InterpretationPostalCode__c, 'Postalcode did not get updated');
     }
+    @IsTest
+    public static void checkIfRequestCreatedCorrectlyTrueTest() {
+        Test.startTest();
+        WorkType workType = HOT_TestDataFactory.createWorkType();
+        insert workType;
+        HOT_Request__c request = HOT_TestDataFactory.createRequest('TEST', workType);
+        insert request;
+        WorkOrder workOrder = HOT_TestDataFactory.createWorkOrder(request, workType);
+        insert workOrder;
+
+        Boolean result = HOT_RequestHandler.isErrorOnRequestCreate(request.Id);
+        //Den sjekker om det ble feil ved opprettelse. False betyr at det ikke er noe feil
+        System.AssertEquals(false, result, 'Should have been shown to be created correctly');
+    }
+    @IsTest
+    public static void checkIfRequestCreatedCorrectlyFalseTest() {
+        Test.startTest();
+        WorkType workType = HOT_TestDataFactory.createWorkType();
+        insert workType;
+        HOT_Request__c request = HOT_TestDataFactory.createRequest('TEST', workType);
+        insert request;
+
+        Boolean result = HOT_RequestHandler.isErrorOnRequestCreate(request.Id);
+        //Den sjekker om det ble feil ved opprettelse. True betyr at det er feil
+        System.AssertEquals(true, result, 'Should have been shown to be not created correctly');
+    }
 }
