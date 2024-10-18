@@ -5,7 +5,7 @@
         <name>ErrorAssignment</name>
         <label>ErrorAssignment</label>
         <locationX>314</locationX>
-        <locationY>758</locationY>
+        <locationY>674</locationY>
         <assignmentItems>
             <assignToReference>error</assignToReference>
             <operator>Assign</operator>
@@ -21,7 +21,7 @@
         <name>SetSMSValues</name>
         <label>SetSMSValues</label>
         <locationX>50</locationX>
-        <locationY>518</locationY>
+        <locationY>458</locationY>
         <assignmentItems>
             <assignToReference>sms.Account__c</assignToReference>
             <operator>Assign</operator>
@@ -57,6 +57,13 @@
                 <stringValue>Manually Created</stringValue>
             </value>
         </assignmentItems>
+        <assignmentItems>
+            <assignToReference>sms.SourceAlternative__c</assignToReference>
+            <operator>Assign</operator>
+            <value>
+                <booleanValue>true</booleanValue>
+            </value>
+        </assignmentItems>
         <connector>
             <targetReference>createSMSRecord</targetReference>
         </connector>
@@ -65,7 +72,7 @@
         <name>Is_it_an_incoming_SMS</name>
         <label>Is it an incoming SMS</label>
         <locationX>314</locationX>
-        <locationY>278</locationY>
+        <locationY>242</locationY>
         <defaultConnector>
             <targetReference>Utg_ende_SMS</targetReference>
         </defaultConnector>
@@ -86,6 +93,7 @@
             <label>IsIncomingSMS</label>
         </rules>
     </decisions>
+    <environments>Default</environments>
     <interviewLabel>HOT_ReplyOnSMS {!$Flow.CurrentDateTime}</interviewLabel>
     <label>HOT_ReplyOnSMS</label>
     <processMetadataValues>
@@ -111,7 +119,7 @@
         <name>createSMSRecord</name>
         <label>createSMSRecord</label>
         <locationX>50</locationX>
-        <locationY>638</locationY>
+        <locationY>566</locationY>
         <faultConnector>
             <targetReference>ErrorAssignment</targetReference>
         </faultConnector>
@@ -121,7 +129,7 @@
         <name>GetSMSRecord</name>
         <label>GetSMSRecord</label>
         <locationX>314</locationX>
-        <locationY>158</locationY>
+        <locationY>134</locationY>
         <assignNullValuesIfNoRecordsFound>false</assignNullValuesIfNoRecordsFound>
         <connector>
             <targetReference>Is_it_an_incoming_SMS</targetReference>
@@ -143,7 +151,7 @@
         <name>Error_message_0</name>
         <label>Error message</label>
         <locationX>314</locationX>
-        <locationY>878</locationY>
+        <locationY>782</locationY>
         <allowBack>true</allowBack>
         <allowFinish>true</allowFinish>
         <allowPause>true</allowPause>
@@ -159,7 +167,7 @@
         <name>Type_message</name>
         <label>Type message</label>
         <locationX>50</locationX>
-        <locationY>398</locationY>
+        <locationY>350</locationY>
         <allowBack>true</allowBack>
         <allowFinish>true</allowFinish>
         <allowPause>true</allowPause>
@@ -172,6 +180,7 @@
             <fieldType>LargeTextArea</fieldType>
             <helpText
             >&lt;p&gt;Ikke skriv sensitive opplysninger! Meldingen vil bli sendt til nummeret brukeren har registrert i kontakt og reservasjonsregisteret.&lt;/p&gt;</helpText>
+            <inputsOnNextNavToAssocScrn>UseStoredValues</inputsOnNextNavToAssocScrn>
             <isRequired>true</isRequired>
         </fields>
         <showFooter>true</showFooter>
@@ -181,7 +190,7 @@
         <name>Utg_ende_SMS</name>
         <label>Utgående SMS</label>
         <locationX>578</locationX>
-        <locationY>398</locationY>
+        <locationY>350</locationY>
         <allowBack>true</allowBack>
         <allowFinish>true</allowFinish>
         <allowPause>true</allowPause>
