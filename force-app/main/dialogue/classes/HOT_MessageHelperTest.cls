@@ -149,7 +149,14 @@ private class HOT_MessageHelperTest {
         WorkType workType = HOT_TestDataFactory.createWorkType();
         workType.Name = 'Work Type Name';
         insert workType;
-        HOT_Request__c request = HOT_TestDataFactory.createRequest('Subject', workType);
+        Account account = HOT_TestDataFactory.createAccount(true);
+        insert account;
+
+        account = [SELECT Id FROM Account WHERE FirstName = 'Test' LIMIT 1];
+
+        HOT_Request__c request = HOT_TestDataFactory.createRequest('BRUKER-FORMIDLER', workType);
+        request.Account__c = account.Id;
+        request.Orderer__c = account.Id;
         insert request;
         Thread__c thread = new Thread__c();
         thread.CRM_Type__c = 'HOT_BRUKER-TOLK';
@@ -490,7 +497,7 @@ private class HOT_MessageHelperTest {
         Test.startTest();
         List<Message__c> msgList = HOT_MessageHelper.getMessagesFromThread(tList.get(0).Id);
         Test.stopTest();
-        System.assertEquals(1, msgList.size());
+        System.assertEquals(null, msgList, 'Should not have got any messages because no access');
     }
     @IsTest
     static void getUserLisenceTest() {
@@ -506,7 +513,7 @@ private class HOT_MessageHelperTest {
         HOT_MessageHelper.markAsRead(tList.get(0).Id);
         Test.stopTest();
         List<Message__c> msgList = [SELECT CRM_Read__c FROM Message__c WHERE CRM_Thread__c = :tList.get(0).Id];
-        System.assertEquals(true, msgList.get(0).CRM_Read__c);
+        System.assertEquals(false, msgList.get(0).CRM_Read__c, 'Should not be marked as red because no access');
     }
     @IsTest
     static void setLastMessageFromTolk() {
@@ -604,12 +611,7 @@ private class HOT_MessageHelperTest {
             FROM Message__c
             WHERE CRM_Thread__c = :thread.Id
         ];
-        System.assertEquals(true, msgList.get(0).CRM_Read_By_Nav__c, 'Could not set CRM_Read_By_Nav__c to true.');
-        System.assertNotEquals(
-            null,
-            msgList.get(0).CRM_Read_By_Nav_Datetime__c,
-            'CRM_Read_By_Nav_Datetime__c was not set.'
-        );
+        System.assertEquals(false, msgList.get(0).CRM_Read_By_Nav__c, 'Should not have permission to set read by nav');
     }
     @IsTest
     static void createMessageTest() {
@@ -664,7 +666,7 @@ private class HOT_MessageHelperTest {
             isReadbyUser = false;
         }
         Boolean test = true;
-        System.assertEquals(true, isReadbyUser, 'Is not read by user');
+        System.assertEquals(false, isReadbyUser, 'Does not have access to be marked as red.');
     }
     @IsTest
     static void getRelatedObjectDetailsTestWO() {
@@ -819,7 +821,7 @@ private class HOT_MessageHelperTest {
         Test.startTest();
         String result = HOT_MessageHelper.getAccountOnThread(t.Id);
         Test.stopTest();
-        System.assertEquals('Darth Vader', result);
+        System.assertEquals(null, result);
     }
     @IsTest
     static void getAccountOnThreadWOTest() {
@@ -836,7 +838,7 @@ private class HOT_MessageHelperTest {
         Test.startTest();
         String result = HOT_MessageHelper.getAccountOnThread(t.Id);
         Test.stopTest();
-        System.assertEquals('Darth Vader', result);
+        System.assertEquals('Darth Vader', result, 'Did not get correct name');
     }
     @IsTest
     static void createThreadInterpreterInterpreters() {
@@ -1279,7 +1281,7 @@ private class HOT_MessageHelperTest {
     }
     @IsTest
     static void createThreadWhenIRIsAssignedTest() {
-         WorkType workType = HOT_TestDataFactory.createWorkType();
+        WorkType workType = HOT_TestDataFactory.createWorkType();
         workType.Name = 'Work Type Name';
         insert workType;
         HOT_Request__c request = HOT_TestDataFactory.createRequest('Subject', workType);
@@ -1312,14 +1314,18 @@ private class HOT_MessageHelperTest {
         update sa;
         System.runAs(currentUser) {
             Thread__c thread = HOT_MessageHelper.createThreadInterpreter(sa.Id);
-           
-            System.assertEquals(sa.Id, thread.CRM_Related_Object__c, 'Should have made a thread with relatedobject serviceAppointment');
+
+            System.assertEquals(
+                sa.Id,
+                thread.CRM_Related_Object__c,
+                'Should have made a thread with relatedobject serviceAppointment'
+            );
         }
-         Test.stopTest();
+        Test.stopTest();
     }
-     @IsTest
+    @IsTest
     static void createThreadWhenIRIsNotAssignedTest() {
-          WorkType workType = HOT_TestDataFactory.createWorkType();
+        WorkType workType = HOT_TestDataFactory.createWorkType();
         workType.Name = 'Work Type Name';
         insert workType;
         HOT_Request__c request = HOT_TestDataFactory.createRequest('Subject', workType);
@@ -1353,9 +1359,13 @@ private class HOT_MessageHelperTest {
         update interestedResource;
         System.runAs(currentUser) {
             Thread__c thread = HOT_MessageHelper.createThreadInterpreter(sa.Id);
-           
-            System.assertEquals(interestedResource.Id, thread.CRM_Related_Object__c, 'Should have made a thread with relatedobject interestedresource');
+
+            System.assertEquals(
+                interestedResource.Id,
+                thread.CRM_Related_Object__c,
+                'Should have made a thread with relatedobject interestedresource'
+            );
         }
-         Test.stopTest();
+        Test.stopTest();
     }
 }

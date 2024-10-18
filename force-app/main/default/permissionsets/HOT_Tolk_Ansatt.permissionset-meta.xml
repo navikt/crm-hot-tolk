@@ -17,9 +17,17 @@
         <enabled>true</enabled>
     </classAccesses>
     <classAccesses>
+        <apexClass>HOT_ThreadDetailController</apexClass>
+        <enabled>true</enabled>
+    </classAccesses>
+    <classAccesses>
         <apexClass>HOT_UpdateSAStatusService</apexClass>
         <enabled>true</enabled>
     </classAccesses>
+    <customPermissions>
+        <enabled>true</enabled>
+        <name>HOT_DeleteFiles</name>
+    </customPermissions>
     <fieldPermissions>
         <editable>false</editable>
         <field>Account.CRM_Person__c</field>
@@ -281,7 +289,7 @@
         <readable>true</readable>
     </fieldPermissions>
     <fieldPermissions>
-        <editable>true</editable>
+        <editable>false</editable>
         <field>HOT_Request__c.EconomicProvider__c</field>
         <readable>true</readable>
     </fieldPermissions>
@@ -293,6 +301,11 @@
     <fieldPermissions>
         <editable>false</editable>
         <field>HOT_Request__c.ExternalRequestStatus__c</field>
+        <readable>true</readable>
+    </fieldPermissions>
+    <fieldPermissions>
+        <editable>false</editable>
+        <field>HOT_Request__c.HOT_PersonContactId__c</field>
         <readable>true</readable>
     </fieldPermissions>
     <fieldPermissions>
@@ -822,6 +835,16 @@
     </fieldPermissions>
     <fieldPermissions>
         <editable>false</editable>
+        <field>ServiceAppointment.HOT_DelPol_IsDeleteFiles__c</field>
+        <readable>true</readable>
+    </fieldPermissions>
+    <fieldPermissions>
+        <editable>false</editable>
+        <field>ServiceAppointment.HOT_DelPol_ToDeleteFiles__c</field>
+        <readable>true</readable>
+    </fieldPermissions>
+    <fieldPermissions>
+        <editable>false</editable>
         <field>ServiceAppointment.HOT_DispatcherNew__c</field>
         <readable>true</readable>
     </fieldPermissions>
@@ -1183,6 +1206,11 @@
     <fieldPermissions>
         <editable>true</editable>
         <field>Thread__c.HOT_ServiceAppointment__c</field>
+        <readable>true</readable>
+    </fieldPermissions>
+    <fieldPermissions>
+        <editable>true</editable>
+        <field>Thread__c.HOT_ServiceResource__c</field>
         <readable>true</readable>
     </fieldPermissions>
     <fieldPermissions>

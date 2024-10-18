@@ -9,69 +9,10 @@
                 Du har ingen ledig på lønn oppdrag.
             </div>
         </div>
-        <div
-            class="ReactModal__Overlay ReactModal__Overlay--after-open modal__overlay serviceAppointmentDetails hidden"
-            style="z-index: 9999; background-color: rgba(50, 65, 79, 0.8)"
-            tabindex="-1"
-            aria-label="Informasjon om oppdrag"
-        >
-            <div
-                class="ReactModal__Content ReactModal__Content--after-open navno-dekorator comments-dialog-container"
-                role="dialog"
-                aria-labelledby="comment-header-id"
-            >
-                <c-alertdialog
-                    header={modalHeader}
-                    content={modalContent}
-                    desktop-style="text-align: center; white-space: pre-line; width: 50%"
-                    mobile-style="text-align: center; white-space: pre-line; width: 100%; max-width: 100%;"
-                    center-buttons="true"
-                    no-cancel-button={noCancelButton}
-                    confirm-button-label={confirmButtonLabel}
-                    onbuttonclick={handleAlertDialogClick}
-                >
-                </c-alertdialog>
-                <section>
-                    <div>
-                        <h2 class="typo-undertittel">Informasjon om oppdraget:</h2>
-                    </div>
-                    <div if:true={isWageClaimDetails}>
-                        <div class="record-details-container">
-                            <p>Oppdragsnummer: <span>{wageClaim.ServiceAppointmentName__c}</span></p>
-                            <p>Tid: <span>{wageClaim.weekday} {wageClaim.StartAndEndDate}</span></p>
-                            <p>Poststed: <span>{wageClaim.ServiceAppointmentCity__c}</span></p>
-                            <p>Tolkemetode: <span>{wageClaim.WorkTypeName__c}</span></p>
-                            <p>Oppdragstype: <span>{wageClaim.AssignmentType__c}</span></p>
-                            <p>Eier: <span>{wageClaim.ServiceAppointment__r.HOT_Request__r.OwnerName__c}</span></p>
-                            <p>Døv/døvblind: <span>{wageClaim.DegreeOfHearingAndVisualImpairment__c}</span></p>
-                            <p>Status: <span>{Status}</span></p>
-                        </div>
-                        <div style="display: inline-block; padding-right: 1vw; padding-bottom: 1vw; padding-top: 1vw">
-                            <c-button
-                                disabled={isNotRetractable}
-                                button-styling="primary"
-                                button-label="Tilbaketrekk tilgjengelighet"
-                                aria-label="Tilbaketrekk tilgjengelighet"
-                                onbuttonclick={showModal}
-                            >
-                            </c-button>
-                        </div>
-                        <div style="display: inline-block; padding-bottom: 1vw">
-                            <c-button
-                                disabled={isDisabledGoToThread}
-                                button-styling="primary"
-                                button-label="Samtale med ressurskontor"
-                                aria-label="Samtale med ressurskontor"
-                                onbuttonclick={goToWageClaimThread}
-                            >
-                            </c-button>
-                        </div>
-                    </div>
-                </section>
-                <button class="lukknapp lukknapp--overstHjorne modal__lukkknapp--shake" onclick={closeModal}>
-                    <span class="text-hide">Lukk</span>
-                </button>
-            </div>
-        </div>
+        <c-hot_information-modal
+            if:false={noWageClaims}
+            type="WC"
+            onrefreshrecords={handleRefreshRecords}
+        ></c-hot_information-modal>
     </div>
 </template>

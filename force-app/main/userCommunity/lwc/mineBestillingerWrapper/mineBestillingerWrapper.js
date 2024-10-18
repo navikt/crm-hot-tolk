@@ -182,12 +182,14 @@ export default class MineBestillingerWrapper extends NavigationMixin(LightningEl
         let tempEndDate = this.isRequestDetails
             ? new Date(this.request.SeriesEndDate__c)
             : new Date(this.workOrder.EndDate);
+        const oneYearAgo = new Date(new Date().setFullYear(new Date().getFullYear() - 1));
         this.isRequestEditButtonDisabled = this.request.Status__c === 'Åpen' ? false : true;
         this.isRequestCancelButtonDisabled =
             this.request.Status__c === 'Avlyst' || tempEndDate.getTime() < Date.now() || this.isTheOrderer == false
                 ? true
                 : false;
-        this.isRequestAddFilesButtonDisabled = this.request.Status__c !== 'Avlyst' ? false : true;
+        this.isRequestAddFilesButtonDisabled =
+            this.request.Status__c !== 'Avlyst' && tempEndDate > oneYearAgo ? false : true;
         this.isWOEditButtonDisabled = this.workOrder.HOT_ExternalWorkOrderStatus__c === 'Åpen' ? false : true;
         this.isWOCancelButtonDisabled = this.workOrder.HOT_ExternalWorkOrderStatus__c === 'Avlyst' ? true : false;
         this.isWOAddFilesButtonDisabled = this.workOrder.HOT_ExternalWorkOrderStatus__c !== 'Avlyst' ? false : true;
@@ -303,6 +305,14 @@ export default class MineBestillingerWrapper extends NavigationMixin(LightningEl
                 type: 'comm__namedPage',
                 attributes: {
                     pageName: 'mine-varsler'
+                }
+            });
+        }
+        if (this.urlStateParameters.from == 'mine-samtaler') {
+            this[NavigationMixin.Navigate]({
+                type: 'comm__namedPage',
+                attributes: {
+                    pageName: 'mine-samtaler'
                 }
             });
         }

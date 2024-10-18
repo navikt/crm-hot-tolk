@@ -1,4 +1,9 @@
 public without sharing class HOT_RequestListController {
+    private static void handleException(Exception e) {
+        LoggerUtility logger = new LoggerUtility();
+        logger.exception(e, CRM_ApplicationDomain.Domain.HOT);
+        logger.publishSynch();
+    }
     @AuraEnabled
     public static void uploadFile(Map<String, String> files, String recordId) {
         List<ContentVersion> cvList = new List<ContentVersion>();
@@ -17,9 +22,7 @@ public without sharing class HOT_RequestListController {
         try {
             insert cdlList;
         } catch (DMLException e) {
-            LoggerUtility logger = new LoggerUtility();
-            logger.exception(e, CRM_ApplicationDomain.Domain.HOT);
-            logger.publishSynch();
+            handleException(e);
         }
     }
 
@@ -27,9 +30,7 @@ public without sharing class HOT_RequestListController {
         try {
             insert cvList;
         } catch (DMLException e) {
-            LoggerUtility logger = new LoggerUtility();
-            logger.exception(e, CRM_ApplicationDomain.Domain.HOT);
-            logger.publishSynch();
+            handleException(e);
         }
     }
 
@@ -225,12 +226,17 @@ public without sharing class HOT_RequestListController {
         update request;
     }
     @AuraEnabled
-   public static String getThreadRequestId(String requestId, String type) {
-    List<Thread__c> thread = [SELECT Id FROM Thread__c WHERE CRM_Related_Object__c=:requestId AND CRM_Thread_Type__c = :type LIMIT 1];
-    String Id='';
-    if (thread.size() >0) {
-           Id=thread[0].Id;
+    public static String getThreadRequestId(String requestId, String type) {
+        List<Thread__c> thread = [
+            SELECT Id
+            FROM Thread__c
+            WHERE CRM_Related_Object__c = :requestId AND CRM_Thread_Type__c = :type
+            LIMIT 1
+        ];
+        String Id = '';
+        if (thread.size() > 0) {
+            Id = thread[0].Id;
+        }
+        return Id;
     }
-    return Id;
-}
 }

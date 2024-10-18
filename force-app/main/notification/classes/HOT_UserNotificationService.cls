@@ -1,4 +1,10 @@
 public without sharing class HOT_UserNotificationService {
+    private static void handleException(Exception e) {
+        LoggerUtility logger = new LoggerUtility();
+        logger.exception(e, CRM_ApplicationDomain.Domain.HOT);
+        logger.publishSynch();
+    }
+
     public static void newRequestNotification(
         CustomNotificationType notificationType,
         HOT_Request__c request,
@@ -28,9 +34,7 @@ public without sharing class HOT_UserNotificationService {
         try {
             notification.send(recipients);
         } catch (Exception e) {
-            LoggerUtility logger = new LoggerUtility();
-            logger.exception(e, CRM_ApplicationDomain.Domain.HOT);
-            logger.publishSynch();
+            handleException(e);
         }
     }
 
@@ -70,9 +74,7 @@ public without sharing class HOT_UserNotificationService {
         try {
             notification.send(recipients);
         } catch (Exception e) {
-            LoggerUtility logger = new LoggerUtility();
-            logger.exception(e, CRM_ApplicationDomain.Domain.HOT);
-            logger.publishSynch();
+            handleException(e);
         }
     }
 
@@ -112,9 +114,7 @@ public without sharing class HOT_UserNotificationService {
         try {
             notification.send(recipients);
         } catch (Exception e) {
-            LoggerUtility logger = new LoggerUtility();
-            logger.exception(e, CRM_ApplicationDomain.Domain.HOT);
-            logger.publishSynch();
+            handleException(e);
         }
     }
 
@@ -142,9 +142,7 @@ public without sharing class HOT_UserNotificationService {
         try {
             notification.send(recipients);
         } catch (Exception e) {
-            LoggerUtility logger = new LoggerUtility();
-            logger.exception(e, CRM_ApplicationDomain.Domain.HOT);
-            logger.publishSynch();
+            handleException(e);
         }
     }
 
@@ -177,21 +175,21 @@ public without sharing class HOT_UserNotificationService {
         try {
             notification.send(recipients);
         } catch (Exception e) {
-            LoggerUtility logger = new LoggerUtility();
-            logger.exception(e, CRM_ApplicationDomain.Domain.HOT);
-            logger.publishSynch();
+            handleException(e);
         }
     }
-    public static void coInterpreterChangeNotification(
+    public static void newCoInterpreterChangeNotification(
         CustomNotificationType notificationType,
         ServiceAppointment sa,
-        String interpreters,
-        Set<String> recipients
+        String targetPageRef,
+        String newInterpreter,
+        Set<String> recipients,
+        String appointmentNumber
     ) {
-        String title = 'Endring av medtolk';
+        String title = 'Ny medtolk ' + appointmentNumber;
         String body =
-            'Medtolk på et oppdrag du er tildelt er blitt endret. \nNy tolk er: ' +
-            interpreters +
+            'Du har fått medtolk. \nTolk er: ' +
+            newInterpreter +
             '\nDato: ' +
             sa.SchedStartTime?.format('dd.MM.yyyy', 'Europe/Oslo') +
             ', kl: ' +
@@ -201,7 +199,6 @@ public without sharing class HOT_UserNotificationService {
             '.';
 
         Id notificationTypeId = notificationType.Id;
-        String targetPageRef = HOT_ServiceAppointmentNotification.getTargetPageRefInterpreterOnChanged('my', sa.Id);
         Messaging.CustomNotification notification = new Messaging.CustomNotification();
         notification.setTitle(title);
         notification.setBody(body);
@@ -211,9 +208,70 @@ public without sharing class HOT_UserNotificationService {
         try {
             notification.send(recipients);
         } catch (Exception e) {
-            LoggerUtility logger = new LoggerUtility();
-            logger.exception(e, CRM_ApplicationDomain.Domain.HOT);
-            logger.publishSynch();
+            handleException(e);
+        }
+    }
+    public static void coInterpreterRemovedNotification(
+        CustomNotificationType notificationType,
+        ServiceAppointment sa,
+        String targetPageRef,
+        Set<String> recipients,
+        String appointmentNumber
+    ) {
+        String title = 'Medtolk tatt av oppdraget ' + appointmentNumber;
+        String body =
+            'En medtolk er tatt av oppdraget. \nDato: ' +
+            sa.SchedStartTime?.format('dd.MM.yyyy', 'Europe/Oslo') +
+            ', kl: ' +
+            sa.SchedStartTime?.format('HH:mm', 'Europe/Oslo') +
+            ' - ' +
+            sa.SchedEndTime?.format('HH:mm', 'Europe/Oslo') +
+            '.';
+
+        Id notificationTypeId = notificationType.Id;
+        Messaging.CustomNotification notification = new Messaging.CustomNotification();
+        notification.setTitle(title);
+        notification.setBody(body);
+        notification.setNotificationTypeId(notificationTypeId);
+        notification.setTargetPageRef(targetPageRef);
+
+        try {
+            notification.send(recipients);
+        } catch (Exception e) {
+            handleException(e);
+        }
+    }
+    public static void coInterpreterChangeNotification(
+        CustomNotificationType notificationType,
+        ServiceAppointment sa,
+        String targetPageRef,
+        String newInterpreter,
+        Set<String> recipients,
+        String appointmentNumber
+    ) {
+        String title = 'Endring av medtolk ' + appointmentNumber;
+        String body =
+            'Medtolk på et oppdrag du er tildelt er blitt endret. \nNy tolk er: ' +
+            newInterpreter +
+            '\nDato: ' +
+            sa.SchedStartTime?.format('dd.MM.yyyy', 'Europe/Oslo') +
+            ', kl: ' +
+            sa.SchedStartTime?.format('HH:mm', 'Europe/Oslo') +
+            ' - ' +
+            sa.SchedEndTime?.format('HH:mm', 'Europe/Oslo') +
+            '.';
+
+        Id notificationTypeId = notificationType.Id;
+        Messaging.CustomNotification notification = new Messaging.CustomNotification();
+        notification.setTitle(title);
+        notification.setBody(body);
+        notification.setNotificationTypeId(notificationTypeId);
+        notification.setTargetPageRef(targetPageRef);
+
+        try {
+            notification.send(recipients);
+        } catch (Exception e) {
+            handleException(e);
         }
     }
 
@@ -236,14 +294,16 @@ public without sharing class HOT_UserNotificationService {
         try {
             notification.send(recipients);
         } catch (Exception e) {
-            LoggerUtility logger = new LoggerUtility();
-            logger.exception(e, CRM_ApplicationDomain.Domain.HOT);
-            logger.publishSynch();
+            handleException(e);
         }
     }
 
-    public static void newWantedSRNotification(CustomNotificationType notificationType, Set<String> recipients, String appointmentNumber) {
-        String title = 'Du er ønsket til et oppdrag. '+appointmentNumber;
+    public static void newWantedSRNotification(
+        CustomNotificationType notificationType,
+        Set<String> recipients,
+        String appointmentNumber
+    ) {
+        String title = 'Du er ønsket til et oppdrag. ' + appointmentNumber;
         String body = 'Du kan melde interesse for oppdraget eller avslå.';
 
         Id notificationTypeId = notificationType.Id;
@@ -257,9 +317,7 @@ public without sharing class HOT_UserNotificationService {
         try {
             notification.send(recipients);
         } catch (Exception e) {
-            LoggerUtility logger = new LoggerUtility();
-            logger.exception(e, CRM_ApplicationDomain.Domain.HOT);
-            logger.publishSynch();
+            handleException(e);
         }
     }
 
@@ -284,7 +342,7 @@ public without sharing class HOT_UserNotificationService {
 
         return pageRef;
     }
-
+    @TestVisible
     private static String getTargetPageRefThread(Thread__c target, Boolean isFreelanceInterpreter) {
         if (
             (target.CRM_Thread_Type__c == 'HOT_TOLK-FORMIDLER' && !target.HOT_IsEmployeeThread__c) ||

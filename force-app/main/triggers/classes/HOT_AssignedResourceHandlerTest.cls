@@ -85,6 +85,17 @@ private class HOT_AssignedResourceHandlerTest {
             WHERE Id = :serviceAppointment.Id
             LIMIT 1
         ];
+        HOT_InterestedResource__c ir = [
+            SELECT Id, ServiceResource__c, ServiceAppointment__c
+            FROM HOT_InterestedResource__c
+            WHERE
+                ServiceResource__c = :serviceAppointment.HOT_ServiceResource__c
+                AND ServiceAppointment__c = :serviceAppointment.Id
+        ];
+        serviceAppointment.Status = 'Dispatched';
+        update serviceAppointment;
+        ir.Status__c = 'Assigned';
+        update ir;
         System.assertEquals(
             adminResource.Id,
             serviceAppointment.HOT_ServiceResource__c,
@@ -105,6 +116,7 @@ private class HOT_AssignedResourceHandlerTest {
             WHERE Id = :serviceAppointment.Id
             LIMIT 1
         ];
+        Test.stopTest();
         System.assertEquals(
             testResource.Id,
             serviceAppointment.HOT_ServiceResource__c,
@@ -139,7 +151,6 @@ private class HOT_AssignedResourceHandlerTest {
 
         //Testing onAfterdelete()
         delete assignedResource;
-        Test.stopTest();
 
         serviceAppointment = [
             SELECT
@@ -424,7 +435,7 @@ private class HOT_AssignedResourceHandlerTest {
         interestedResource = [SELECT Id, Status__c FROM Hot_interestedresource__c];
 
         System.assertEquals(
-            'Assigned',
+            'Reserved',
             interestedResource.Status__c,
             'Could not set Interested Resource Status to Assigned'
         );
@@ -457,5 +468,90 @@ private class HOT_AssignedResourceHandlerTest {
         ];
         Test.stopTest();
         System.assertEquals(1, checkThread.size(), 'The thread was not moved back from SA to IR.');
+    }
+    @IsTest
+    static void updateInterestedResourceStatusKeepDeclinedTest() {
+        Hot_interestedresource__c interestedResource = [
+            SELECT Id, ServiceAppointment__c, ServiceResource__c, Status__c
+            FROM Hot_interestedresource__c
+        ];
+        interestedResource.Status__c = 'Declined';
+        update interestedResource;
+
+        interestedResource = [SELECT Id, Status__c, ServiceAppointment__c FROM Hot_interestedresource__c];
+
+        ServiceAppointment sa = [
+            SELECT Id, Status
+            FROM ServiceAppointment
+            WHERE Id = :interestedResource.ServiceAppointment__c
+        ];
+        sa.Status = 'Released to Freelance';
+        update sa;
+
+        System.assertEquals(
+            'Declined',
+            interestedResource.Status__c,
+            'Should have kept their original status when released to freelance'
+        );
+    }
+    @IsTest
+    static void updateInterestedResourceStatusKeepCanceledTest() {
+        Hot_interestedresource__c interestedResource = [
+            SELECT Id, ServiceAppointment__c, ServiceResource__c, Status__c
+            FROM Hot_interestedresource__c
+        ];
+        AssignedResource assignedResource = new AssignedResource();
+        assignedResource.ServiceAppointmentId = interestedResource.ServiceAppointment__c;
+        assignedResource.ServiceResourceId = interestedResource.ServiceResource__c;
+        insert assignedResource;
+
+        interestedResource = [SELECT Id, Status__c, ServiceAppointment__c FROM Hot_interestedresource__c];
+        interestedResource.Status__c = 'Canceled by Interpreter';
+
+        ServiceAppointment sa = [
+            SELECT Id, Status
+            FROM ServiceAppointment
+            WHERE Id = :interestedResource.ServiceAppointment__c
+        ];
+        sa.Status = 'None';
+        update sa;
+        sa.Status = 'Released to Freelance';
+        update sa;
+
+        System.assertEquals(
+            'Canceled by Interpreter',
+            interestedResource.Status__c,
+            'Should have kept their original status when released to freelance'
+        );
+    }
+    @IsTest
+    static void updateInterestedResourceStatusKeepRetractedTest() {
+        Hot_interestedresource__c interestedResource = [
+            SELECT Id, ServiceAppointment__c, ServiceResource__c, Status__c
+            FROM Hot_interestedresource__c
+        ];
+        AssignedResource assignedResource = new AssignedResource();
+        assignedResource.ServiceAppointmentId = interestedResource.ServiceAppointment__c;
+        assignedResource.ServiceResourceId = interestedResource.ServiceResource__c;
+        insert assignedResource;
+
+        interestedResource = [SELECT Id, Status__c, ServiceAppointment__c FROM Hot_interestedresource__c];
+        interestedResource.Status__c = 'Retracted Interest';
+
+        ServiceAppointment sa = [
+            SELECT Id, Status
+            FROM ServiceAppointment
+            WHERE Id = :interestedResource.ServiceAppointment__c
+        ];
+        sa.Status = 'None';
+        update sa;
+        sa.Status = 'Released to Freelance';
+        update sa;
+
+        System.assertEquals(
+            'Retracted Interest',
+            interestedResource.Status__c,
+            'Should have kept their original status when released to freelance'
+        );
     }
 }

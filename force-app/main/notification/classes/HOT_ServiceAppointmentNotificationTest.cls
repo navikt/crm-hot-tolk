@@ -11,7 +11,8 @@ private class HOT_ServiceAppointmentNotificationTest {
         User user = HOT_TestDataFactory.createUser('user', profile);
         insert user;
         ServiceResource serviceResource = HOT_TestDataFactory.createServiceResource(user.Id);
-        serviceResource.HOT_IsEmployedInterpreter__c = true;
+        serviceResource.HOT_IsEmployedInterpreter__c = false;
+        serviceResource.HOT_IsFreelanceInterpreter__c = true;
         insert serviceResource;
         ServiceTerritoryMember serviceTerritoryMember = HOT_TestDataFactory.createServiceTerritoryMember(
             serviceResource,
@@ -20,7 +21,7 @@ private class HOT_ServiceAppointmentNotificationTest {
         insert serviceTerritoryMember;
 
         HOT_Resource__c resource = new HOT_Resource__c();
-        resource.Name = 'Test';
+        resource.Name = 'Test2';
         resource.Service_Resource__c = serviceResource.Id;
         insert resource;
 
@@ -111,8 +112,10 @@ private class HOT_ServiceAppointmentNotificationTest {
             LIMIT 1
         ];
 
-        assignedResource = HOT_TestDataFactory.createAssignedResource(serviceAppointment.Id, testResources[1].Id);
-        update serviceAppointment;
+        if (testResources.size() < 1) {
+            assignedResource = HOT_TestDataFactory.createAssignedResource(serviceAppointment.Id, testResources[1].Id);
+            update serviceAppointment;
+        }
 
         serviceAppointment = [
             SELECT Id, HOT_ServiceResource__c, HOT_AssignedResourceId__c
@@ -411,6 +414,74 @@ private class HOT_ServiceAppointmentNotificationTest {
         HOT_ServiceAppointmentNotification.addressChanged(notificationType, saIds, recipients);
         Test.stopTest();
     }
+
+    @IsTest
+    private static void notifyInterpretersOnChangedResourceTest() {
+        Set<String> recipients = new Set<String>{ UserInfo.getUserId() };
+
+        //List<User> users = [SELECT Id, AccountId FROM User WHERE Id = :UserInfo.getUserId() LIMIT 2];
+        ServiceResource serviceResource = [
+            SELECT Id
+            FROM ServiceResource
+            WHERE HOT_IsEmployedInterpreter__c = TRUE
+            LIMIT 1
+        ];
+        ServiceResource serviceResourceFreelance = [
+            SELECT Id
+            FROM ServiceResource
+            WHERE HOT_IsFreelanceInterpreter__c = TRUE
+            LIMIT 1
+        ];
+
+        WorkType workType = HOT_TestDataFactory.createWorkType();
+        insert workType;
+
+        HOT_Request__c request = HOT_TestDataFactory.createRequest('Flertolksoppdrag med endring av medtolk', workType);
+        insert request;
+
+        WorkOrder workOrder = HOT_TestDataFactory.createWorkOrder(request, workType);
+        insert workOrder;
+
+        WorkOrderLineItem workOrderLineItem = HOT_TestDataFactory.createWorkOrderLineItem(workOrder, workType);
+        insert workOrderLineItem;
+
+        ServiceAppointment serviceAppointment = HOT_TestDataFactory.createServiceAppointment(workOrderLineItem);
+        serviceAppointment.HOT_Request__c = request.Id;
+        serviceAppointment.Subject = 'Flertolksoppdrag med endring av medtolk';
+        insert serviceAppointment;
+
+        ServiceAppointment serviceAppointment2 = HOT_TestDataFactory.createServiceAppointment(workOrderLineItem);
+        serviceAppointment2.HOT_Request__c = request.Id;
+        serviceAppointment2.Subject = 'Flertolksoppdrag med endring av medtolk';
+        insert serviceAppointment2;
+
+        Test.startTest();
+
+        AssignedResource assignedResource = HOT_TestDataFactory.createAssignedResource(
+            serviceAppointment.Id,
+            serviceResource.Id
+        );
+        insert assignedResource;
+
+        AssignedResource assignedResource2 = HOT_TestDataFactory.createAssignedResource(
+            serviceAppointment2.Id,
+            serviceResourceFreelance.Id
+        );
+        insert assignedResource2;
+
+        serviceAppointment.Status = 'Dispatched';
+        update serviceAppointment;
+
+        serviceAppointment2.Status = 'Dispatched';
+        update serviceAppointment2;
+
+        //Freelance notification
+        HOT_ServiceAppointmentNotification.notifyInterpretersOnChangedResource(serviceAppointment2);
+        //Employee notification
+        HOT_ServiceAppointmentNotification.notifyInterpretersOnChangedResource(serviceAppointment);
+        Test.stopTest();
+    }
+
     @IsTest
     private static void testFormatTimePeriod() {
         Datetime startDate = Datetime.newInstance(2023, 10, 20, 9, 0, 0);
@@ -441,5 +512,138 @@ private class HOT_ServiceAppointmentNotificationTest {
         serviceAppointment.Status = 'Cannot Complete';
         update serviceAppointment;
         Test.stopTest();
+    }
+    @IsTest
+    private static void notifyInterpretersOnCoInterpreterRemovedTest() {
+        WorkType workType = HOT_TestDataFactory.createWorkType();
+        insert workType;
+        HOT_Request__c request = HOT_TestDataFactory.createRequest('TEST', workType);
+        insert request;
+        WorkOrder workOrder = HOT_TestDataFactory.createWorkOrder(request, workType);
+        insert workOrder;
+        WorkOrderLineItem workOrderLineItem = HOT_TestDataFactory.createWorkOrderLineItem(workOrder, workType);
+        insert workOrderLineItem;
+        ServiceAppointment serviceAppointment = HOT_TestDataFactory.createServiceAppointment(workOrderLineItem);
+        serviceAppointment.HOT_Request__c = request.Id;
+        insert serviceAppointment;
+        ServiceAppointment serviceAppointment2 = HOT_TestDataFactory.createServiceAppointment(workOrderLineItem);
+        serviceAppointment2.HOT_Request__c = request.Id;
+        serviceAppointment2.HOT_WorkOrderLineItem__c = workOrderLineItem.Id;
+        insert serviceAppointment2;
+
+        Test.startTest();
+        ServiceResource serviceResource = [
+            SELECT Id
+            FROM ServiceResource
+            WHERE HOT_IsEmployedInterpreter__c = TRUE
+            LIMIT 1
+        ];
+        ServiceResource serviceResourceFreelance = [
+            SELECT Id
+            FROM ServiceResource
+            WHERE HOT_IsFreelanceInterpreter__c = TRUE
+            LIMIT 1
+        ];
+        AssignedResource assignedResource = HOT_TestDataFactory.createAssignedResource(
+            serviceAppointment.Id,
+            serviceResource.Id
+        );
+        insert assignedResource;
+
+        AssignedResource assignedResource2 = HOT_TestDataFactory.createAssignedResource(
+            serviceAppointment2.Id,
+            serviceResourceFreelance.Id
+        );
+        insert assignedResource2;
+
+        serviceAppointment.Status = 'Dispatched';
+        update serviceAppointment;
+
+        serviceAppointment2.Status = 'Dispatched';
+        update serviceAppointment2;
+
+        delete assignedResource;
+        Test.stopTest();
+    }
+    @IsTest
+    private static void notifyInterpretersOnCoInterpreterChangedTest() {
+        Profile profile = [SELECT Id FROM Profile WHERE Name = 'System Administrator' LIMIT 1];
+        User user = HOT_TestDataFactory.createUser('admin', profile);
+        insert user;
+        ServiceResource serviceResourceNew = HOT_TestDataFactory.createServiceResource(user.Id);
+        serviceResourceNew.HOT_IsEmployedInterpreter__c = false;
+        serviceResourceNew.HOT_IsFreelanceInterpreter__c = true;
+        serviceResourceNew.Name = 'Test2';
+        insert serviceResourceNew;
+
+        WorkType workType = HOT_TestDataFactory.createWorkType();
+        insert workType;
+        HOT_Request__c request = HOT_TestDataFactory.createRequest('TEST', workType);
+        insert request;
+        WorkOrder workOrder = HOT_TestDataFactory.createWorkOrder(request, workType);
+        insert workOrder;
+        WorkOrderLineItem workOrderLineItem = HOT_TestDataFactory.createWorkOrderLineItem(workOrder, workType);
+        insert workOrderLineItem;
+        ServiceAppointment serviceAppointment = HOT_TestDataFactory.createServiceAppointment(workOrderLineItem);
+        serviceAppointment.HOT_Request__c = request.Id;
+        insert serviceAppointment;
+        ServiceAppointment serviceAppointment2 = HOT_TestDataFactory.createServiceAppointment(workOrderLineItem);
+        serviceAppointment2.HOT_Request__c = request.Id;
+        serviceAppointment2.HOT_WorkOrderLineItem__c = workOrderLineItem.Id;
+        insert serviceAppointment2;
+
+        Test.startTest();
+        ServiceResource serviceResource = [
+            SELECT Id
+            FROM ServiceResource
+            WHERE HOT_IsEmployedInterpreter__c = TRUE
+            LIMIT 1
+        ];
+        ServiceResource serviceResourceFreelance = [
+            SELECT Id
+            FROM ServiceResource
+            WHERE HOT_IsFreelanceInterpreter__c = TRUE
+            LIMIT 1
+        ];
+        ServiceResource serviceResourceFreelance2 = [
+            SELECT Id
+            FROM ServiceResource
+            WHERE HOT_IsFreelanceInterpreter__c = TRUE AND Name = 'Test2'
+            LIMIT 1
+        ];
+        AssignedResource assignedResource = HOT_TestDataFactory.createAssignedResource(
+            serviceAppointment.Id,
+            serviceResource.Id
+        );
+        insert assignedResource;
+
+        AssignedResource assignedResource2 = HOT_TestDataFactory.createAssignedResource(
+            serviceAppointment2.Id,
+            serviceResourceFreelance.Id
+        );
+        insert assignedResource2;
+
+        serviceAppointment.Status = 'Dispatched';
+        update serviceAppointment;
+
+        serviceAppointment2.Status = 'Dispatched';
+        update serviceAppointment2;
+
+        assignedResource.ServiceResource = serviceResourceFreelance2;
+        update assignedResource;
+        Test.stopTest();
+    }
+    @IsTest
+    private static void getTargetPageRefInterpreterOnChangedTest() {
+        Test.startTest();
+        HOT_Request__c request = [SELECT Id FROM HOT_Request__c LIMIT 1];
+        String result = HOT_ServiceAppointmentNotification.getTargetPageRefInterpreterOnChanged('my', request.Id);
+        Test.stopTest();
+        System.assertEquals(
+            '{type: "comm__namedPage",attributes: {pageName: "mine-oppdrag"}, state: {list: "my", id: "' +
+            request.Id +
+            '"}}',
+            result
+        );
     }
 }

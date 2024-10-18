@@ -6,67 +6,6 @@
     align-items: center;
     padding-top: 0.5rem;
 }
-
-.record-details-container {
-    margin: 2rem 0;
-    display: flex;
-    flex-direction: column;
-    align-items: flex-start;
-}
-
-p {
-    font-weight: bold;
-}
-
-span {
-    font-weight: normal;
-}
-.files-container {
-    margin-top: 1rem;
-}
-.flow-container {
-    margin: 2rem 0;
-    max-width: 500px;
-}
-.comments-dialog-container {
-    all: unset;
-    background-color: #fff;
-    display: block;
-    padding: 5rem;
-    border-radius: 4px;
-    position: relative;
-    flex-grow: 0;
-    overflow-x: auto;
-    max-height: 100%;
-    margin-bottom: 1rem;
-    margin-top: 1rem;
-    z-index: 1010;
-    max-width: 432px;
-    max-height: 75%;
-    width: 100%;
-}
-@media (max-width: 576px) {
-    .record-details-container {
-        margin: 5vw 0;
-    }
-    .comments-dialog-container {
-        all: unset;
-        background-color: #fff;
-        display: block;
-        padding: 3rem;
-        border-radius: 4px;
-        position: relative;
-        flex-grow: 0;
-        overflow-x: auto;
-        max-height: 100%;
-        margin-bottom: 1rem;
-        margin-top: 1rem;
-        z-index: 1010;
-        max-width: 432px;
-        max-height: 75%;
-        width: 100%;
-    }
-}
 .hidden {
     display: none;
 }

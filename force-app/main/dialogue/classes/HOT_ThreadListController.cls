@@ -29,24 +29,19 @@ public without sharing class HOT_ThreadListController {
             WHERE
                 (CRM_Account__c = :user.AccountId
                 AND CRM_Type__c = 'HOT_BRUKER-FORMIDLER'
-                AND CRM_Number_of_Messages__c > 0
-                AND HOT_IsDone__c = FALSE)
+                AND CRM_Number_of_Messages__c > 0)
                 OR (CRM_Related_Object__c IN :bestillerSamtalerId
                 AND CRM_Type__c = 'HOT_BESTILLER-FORMIDLER'
-                AND CRM_Number_of_Messages__c > 0
-                AND HOT_IsDone__c = FALSE)
+                AND CRM_Number_of_Messages__c > 0)
                 OR (CRM_Account__c = :user.AccountId
                 AND CRM_Type__c = 'HOT_BRUKER-TOLK'
-                AND CRM_Number_of_Messages__c > 0
-                AND HOT_IsDone__c = FALSE)
+                AND CRM_Number_of_Messages__c > 0)
                 OR (CRM_Account__c = :user.AccountId
                 AND CRM_Type__c = 'HOT_BRUKER-BESTILLER'
-                AND CRM_Number_of_Messages__c > 0
-                AND HOT_IsDone__c = FALSE)
+                AND CRM_Number_of_Messages__c > 0)
                 OR (CRM_Related_Object__c IN :bestillerSamtalerId
                 AND CRM_Type__c = 'HOT_BRUKER-BESTILLER'
-                AND CRM_Number_of_Messages__c > 0
-                AND HOT_IsDone__c = FALSE)
+                AND CRM_Number_of_Messages__c > 0)
             ORDER BY CRM_Number_of_unread_Messages__c DESC, CRM_Registered_Datetime_Formula__c DESC
         ];
 
@@ -118,7 +113,10 @@ public without sharing class HOT_ThreadListController {
                     Id IN (
                         SELECT ServiceAppointment__c
                         FROM HOT_InterestedResource__c
-                        WHERE ServiceResource__c = :serviceResources[0].Id AND Status__c = 'Assigned'
+                        WHERE
+                            ServiceResource__c = :serviceResources[0].Id
+                            AND (Status__c = 'Assigned'
+                            OR Status__c = 'Reserved')
                     )
             ];
 
@@ -144,17 +142,14 @@ public without sharing class HOT_ThreadListController {
             WHERE
                 (CRM_Related_Object__c IN :workOrderIds
                 AND CRM_Number_of_Messages__c > 0
-                AND HOT_IsDone__c = FALSE
                 AND HOT_IsEmployeeThread__c = FALSE)
                 OR (CRM_Account__c = :user.AccountId
                 AND CRM_Type__c = 'HOT_TOLK-FORMIDLER'
                 AND CRM_Number_of_Messages__c > 0
-                AND HOT_IsDone__c = FALSE
                 AND HOT_IsEmployeeThread__c = FALSE)
                 OR (CRM_Account__c = :user.AccountId
                 AND CRM_Type__c = 'HOT_TOLK-RESSURSKONTOR'
-                AND CRM_Number_of_Messages__c > 0
-                AND HOT_IsEmployeeThread__c = FALSE)
+                AND CRM_Number_of_Messages__c > 0)
             ORDER BY CRM_Number_of_unread_Messages__c DESC, CRM_Registered_Datetime_Formula__c DESC
         ];
 

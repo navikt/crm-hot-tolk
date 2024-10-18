@@ -97,12 +97,13 @@ public class HOT_ThreadListControllerTest {
         insert sa;
 
         HOT_InterestedResource__c ir = HOT_TestDataFactory.createInterestedResource(sa.Id, serviceResource.Id);
-        ir.Status__c = 'Assigned';
+
         insert ir;
 
         AssignedResource ar = HOT_TestDataFactory.createAssignedResource(sa.Id, serviceResource.Id);
         insert ar;
-
+        ir.Status__c = 'Assigned';
+        update ir;
         Thread__c t = new Thread__c();
         t.CRM_Related_Object__c = workOrder.Id;
         insert t;

@@ -29,6 +29,10 @@
         <enabled>true</enabled>
     </classAccesses>
     <classAccesses>
+        <apexClass>HOT_ThreadDetailController</apexClass>
+        <enabled>true</enabled>
+    </classAccesses>
+    <classAccesses>
         <apexClass>HOT_UpdateChildRecordsService</apexClass>
         <enabled>true</enabled>
     </classAccesses>
@@ -394,6 +398,16 @@
     <fieldPermissions>
         <editable>false</editable>
         <field>HOT_Request__c.ExternalRequestStatus__c</field>
+        <readable>true</readable>
+    </fieldPermissions>
+    <fieldPermissions>
+        <editable>false</editable>
+        <field>HOT_Request__c.HOT_DelPol_IsDeleteFiles__c</field>
+        <readable>true</readable>
+    </fieldPermissions>
+    <fieldPermissions>
+        <editable>false</editable>
+        <field>HOT_Request__c.HOT_DelPol_ToDeleteFiles__c</field>
         <readable>true</readable>
     </fieldPermissions>
     <fieldPermissions>
@@ -1187,6 +1201,16 @@
         <readable>true</readable>
     </fieldPermissions>
     <fieldPermissions>
+        <editable>false</editable>
+        <field>ServiceAppointment.HOT_DelPol_IsDeleteFiles__c</field>
+        <readable>true</readable>
+    </fieldPermissions>
+    <fieldPermissions>
+        <editable>false</editable>
+        <field>ServiceAppointment.HOT_DelPol_ToDeleteFiles__c</field>
+        <readable>true</readable>
+    </fieldPermissions>
+    <fieldPermissions>
         <editable>true</editable>
         <field>ServiceAppointment.HOT_DispatcherNew__c</field>
         <readable>true</readable>
@@ -1762,6 +1786,11 @@
         <readable>true</readable>
     </fieldPermissions>
     <fieldPermissions>
+        <editable>true</editable>
+        <field>Thread__c.HOT_ServiceResource__c</field>
+        <readable>true</readable>
+    </fieldPermissions>
+    <fieldPermissions>
         <editable>false</editable>
         <field>Thread__c.HOT_Subject__c</field>
         <readable>true</readable>
@@ -1854,6 +1883,16 @@
     <fieldPermissions>
         <editable>false</editable>
         <field>WorkOrder.HOT_DayOfWeek__c</field>
+        <readable>true</readable>
+    </fieldPermissions>
+    <fieldPermissions>
+        <editable>false</editable>
+        <field>WorkOrder.HOT_DelPol_IsHideRecord__c</field>
+        <readable>true</readable>
+    </fieldPermissions>
+    <fieldPermissions>
+        <editable>false</editable>
+        <field>WorkOrder.HOT_DelPol_ToHideRecord__c</field>
         <readable>true</readable>
     </fieldPermissions>
     <fieldPermissions>

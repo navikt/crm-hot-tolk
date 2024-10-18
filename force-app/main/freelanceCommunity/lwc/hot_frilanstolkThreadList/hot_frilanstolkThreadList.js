@@ -268,25 +268,36 @@ export default class Hot_frilanstolkThreadList extends NavigationMixin(Lightning
                     //sorting, unread first
                     this.threads.sort((a, b) => {
                         if (a.read === b.read) {
-                            return a.appointmentDate.localeCompare(b.appointmentDate);
+                            return (
+                                new Date(b.CRM_Latest_Message_Datetime__c) - new Date(a.CRM_Latest_Message_Datetime__c)
+                            );
                         }
                         return a.read ? 1 : -1;
                     });
+
                     this.interpreterThreads.sort((a, b) => {
                         if (a.read === b.read) {
-                            return a.appointmentDate.localeCompare(b.appointmentDate);
+                            return (
+                                new Date(b.CRM_Latest_Message_Datetime__c) - new Date(a.CRM_Latest_Message_Datetime__c)
+                            );
                         }
                         return a.read ? 1 : -1;
                     });
+
                     this.wageClaimThreads.sort((a, b) => {
                         if (a.read === b.read) {
-                            return a.appointmentDate.localeCompare(b.appointmentDate);
+                            return (
+                                new Date(b.CRM_Latest_Message_Datetime__c) - new Date(a.CRM_Latest_Message_Datetime__c)
+                            );
                         }
                         return a.read ? 1 : -1;
                     });
+
                     this.interpreterInterpreterThreads.sort((a, b) => {
                         if (a.read === b.read) {
-                            return a.appointmentDate.localeCompare(b.appointmentDate);
+                            return (
+                                new Date(b.CRM_Latest_Message_Datetime__c) - new Date(a.CRM_Latest_Message_Datetime__c)
+                            );
                         }
                         return a.read ? 1 : -1;
                     });
