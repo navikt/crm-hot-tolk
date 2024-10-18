@@ -4,11 +4,7 @@ public without sharing class HOT_ServiceAppointmentAccessHandler extends MyTrigg
 
         for (ServiceAppointment sa : (List<ServiceAppointment>) records) {
             ServiceAppointment oldRecord = (ServiceAppointment) triggerOldMap.get(sa.Id);
-            if (
-                sa.Status != oldRecord.Status &&
-                sa.Status == 'Dispatched' &&
-                sa.HOT_AssignmentType__c != 'Bildetolkvakt'
-            ) {
+            if (sa.Status != oldRecord.Status && sa.Status == 'Dispatched' && !system.isBatch()) {
                 serviceAppointmentsWithUpdatedStatusDispatched.add(sa.Id);
             }
         }
