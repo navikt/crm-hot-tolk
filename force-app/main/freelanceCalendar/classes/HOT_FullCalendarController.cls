@@ -74,7 +74,7 @@ public with sharing class HOT_FullCalendarController {
                     event.description = 'Ferie';
                 }
                 when else {
-                    event.description = 'Annet fravær';
+                    event.description = 'Annet';
                 }
             }
             events.add(event);
