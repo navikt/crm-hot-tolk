@@ -1246,6 +1246,11 @@
     </fieldPermissions>
     <fieldPermissions>
         <editable>true</editable>
+        <field>SMS__c.SourceAlternative__c</field>
+        <readable>true</readable>
+    </fieldPermissions>
+    <fieldPermissions>
+        <editable>true</editable>
         <field>SMS__c.Status__c</field>
         <readable>true</readable>
     </fieldPermissions>
