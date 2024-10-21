@@ -702,4 +702,15 @@ export default class Hot_informationModal extends NavigationMixin(LightningEleme
         const eventToSend = new CustomEvent('refreshrecords');
         this.dispatchEvent(eventToSend);
     }
+
+    @track fileUploadMessage;
+    handleUploadFinished(event) {
+        const uploadedFiles = event.detail.files;
+        if (uploadedFiles.length > 0) {
+            this.fileUploadMessage = 'Filen(e) ble lastet opp. Se filen i listen over vedlegg ovenfor.';
+            this.template.querySelector('c-record-files-with-sharing').refreshContentDocuments();
+        } else {
+            this.fileUploadMessage = '';
+        }
+    }
 }

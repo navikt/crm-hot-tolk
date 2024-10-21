@@ -8,13 +8,7 @@
         onkeydown={handleKeyDown}
     >
         <div
-            class="
-                ReactModal__Content ReactModal__Content--after-open
-                navno-dekorator
-                details-container
-                slds_is-relative
-                slds-align_absolute-center
-            "
+            class="ReactModal__Content ReactModal__Content--after-open navno-dekorator details-container slds_is-relative slds-align_absolute-center"
             lwc:if={isLoading}
         >
             <lightning-spinner alternative-text="Loading" size="large"></lightning-spinner>
@@ -136,7 +130,7 @@
                                 <c-record-files-with-sharing
                                     record-id={serviceAppointment.Id}
                                     is-get-all="true"
-                                    is-delete-option="false"
+                                    is-delete-option="true"
                                     title="Vedlegg"
                                     delete-file-on-button-click="false"
                                 ></c-record-files-with-sharing>
@@ -199,6 +193,22 @@
                                     disabled={isGoToThreadServiceAppointmentButtonDisabled}
                                 >
                                 </c-button>
+                            </div>
+                            <div class="fileUploadContainer">
+                                <h2>Legg ved filer til bruker</h2>
+                                <lightning-file-upload
+                                    record-id={recordId}
+                                    name="fileUploader"
+                                    class="file-selector-large"
+                                    label="Ved å laste opp filer er jeg klar over at filene vil bli delt med tolkebruker. Opplastingen vil starte umiddelbart. Maks filstørelse: 2 GB."
+                                    title="Maks filstørrelse: 2 GB."
+                                    onuploadfinished={handleUploadFinished}
+                                    multiple
+                                >
+                                </lightning-file-upload>
+                                <br if:true={fileUploadMessage} />
+                                <p if:true={fileUploadMessage} class="typo-normal">{fileUploadMessage}</p>
+                                <br />
                             </div>
                         </div>
                     </div>
