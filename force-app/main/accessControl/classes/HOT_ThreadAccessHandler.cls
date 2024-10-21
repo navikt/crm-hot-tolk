@@ -9,7 +9,11 @@ public without sharing class HOT_ThreadAccessHandler extends MyTriggers {
                     'HOT_BRUKER-TOLK', 
                     'HOT_TOLK-RESSURSKONTOR'
                 }.contains(thread.CRM_Thread_Type__c)
-                && MyTriggers.hasChangedFields(new List<String>{'HOT_ParticipantIds__c'},thread,(Thread__c)triggerOldMap.get(thread.Id))
+                && MyTriggers.hasChangedFields(
+                    new List<String>{'HOT_ParticipantIds__c'},
+                    thread,
+                    (Thread__c)triggerOldMap.get(thread.Id)
+                )
             ) {
                 threadsToUpdate.add(thread);
             }

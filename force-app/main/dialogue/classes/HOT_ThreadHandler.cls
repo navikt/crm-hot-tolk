@@ -27,6 +27,7 @@ public without sharing class HOT_ThreadHandler extends MyTriggers {
     }
     public override void onAfterInsert() {
         Set<Id> threadIds = new Set<Id>();
+        List<Thread__c> threadsOfInterest = new List<Thread__c>();
         List<Thread__c> threads = (List<Thread__c>) records;
         Set<String> threadTypesOfInterest = new Set<String>{'HOT_BRUKER-TOLK','HOT_TOLK-TOLK','HOT_TOLK-FORMIDLER'};
 
@@ -37,14 +38,16 @@ public without sharing class HOT_ThreadHandler extends MyTriggers {
             if(((Id)t.CRM_Related_Object__c).getSObjectType() == WorkOrder.SObjectType){
                 workOrderIds.add(t.CRM_Related_Object__c);
             }
-            threadIds.add(t.Id);
+            threadsOfInterest.add(t);
+            //threadIds.add(t.Id);
         }
 
         if (workOrderIds.size() > 0) {
-            setInterpreterThread(workOrderIds);
+            setInterpreterThread(threads, getServiceAppointmentsByWorkOrderId(workOrderIds));
         }
-
-        setInterpreterOnThreadOneToOne(threads);
+        if(threadsOfInterest.size() > 0){
+            setInterpreterOnThreadOneToOne(threadsOfInterest);
+        }
     }
 
     public static String threadSubjectMaker(String subject) {
@@ -187,6 +190,8 @@ public without sharing class HOT_ThreadHandler extends MyTriggers {
             FROM Thread__c
             WHERE CRM_Related_Object__c IN :workOrderIds
         ];
+        setInterpreterThread(threads, serviceAppointmentsByWorkOrderId);
+        /*
         for (Thread__c thread : threads) {
             //TODO: check for changes before update
             thread.HOT_ParticipantIds__c = '';
@@ -201,12 +206,54 @@ public without sharing class HOT_ThreadHandler extends MyTriggers {
             }
         }
         HOT_DatabaseOperations.updateRecords(threads);
+        */
+    }
+
+    private static void setInterpreterThread(List<Thread__c> threads, Map<Id,List<ServiceAppointment>> saByWoIdMap){
+        List<Thread__c> threadsToUpdate = new List<Thread__c>();
+        for(Thread__c thread : threads){
+            if(!saByWoIdMap.containsKey(thread.CRM_Related_Object__c)){
+                continue;
+            }
+            Set<String> newParticipantIds = new Set<String>();
+            Set<String> oldParticipantIds = new Set<String>(thread.HOT_ParticipantIds__c?.split(',')??new List<String>());
+            for(ServiceAppointment sa : saByWoIdMap.get(thread.CRM_Related_Object__c)){
+                if(sa.HOT_ServiceResource__r == null){
+                    continue;
+                }
+                newParticipantIds.add(sa.HOT_ServiceResource__r.RelatedRecordId);
+            }
+            if(!newParticipantIds.equals(oldParticipantIds)){
+                //thread.HOT_ParticipantIds__c = String.join(new List<String>(newParticipantIds), ',');
+                threadsToUpdate.add(
+                    new Thread__c(
+                        Id = thread.Id, 
+                        HOT_ParticipantIds__c = String.join(
+                            new List<String>(newParticipantIds),
+                            ','
+                        )
+                    )
+                );
+            }
+            
+        }
+        if(threadsToUpdate.isEmpty()){
+            return;
+        }
+        try {
+            HOT_DatabaseOperations.updateRecords(threadsToUpdate);
+        } catch (Exception e) {
+            handleException(e);
+        }
     }
 
     private static void setInterpreterOnThreadOneToOne(List<Thread__c> threads){
         Set<Id> relatedSA = new Set<Id>();
         Set<Id> relatedIR = new Set<Id>();
         for(Thread__c t : threads){
+            if(t.CRM_Related_Object__c == null){
+                continue;
+            }
             if(
                 ((Id) t.CRM_Related_Object__c).getSObjectType() == ServiceAppointment.SObjectType
             ){
@@ -237,8 +284,13 @@ public without sharing class HOT_ThreadHandler extends MyTriggers {
                     sa.HOT_ServiceResource__r.RelatedRecordId != null
                     && t.HOT_ParticipantIds__c != sa.HOT_ServiceResource__r.RelatedRecordId
                 ){
-                    t.HOT_ParticipantIds__c = sa.HOT_ServiceResource__r.RelatedRecordId;
-                    threadsToUpdate.add(t);
+                    //t.HOT_ParticipantIds__c = sa.HOT_ServiceResource__r.RelatedRecordId;
+                    threadsToUpdate.add(
+                        new Thread__c(
+                            Id = t.Id,
+                            HOT_ParticipantIds__c = sa.HOT_ServiceResource__r.RelatedRecordId
+                        )
+                    );
                 }
             }else if(
                 interestedResourceMap.containsKey(t.CRM_Related_Object__c)
@@ -247,10 +299,18 @@ public without sharing class HOT_ThreadHandler extends MyTriggers {
                 if(
                     t.HOT_ParticipantIds__c != ir.ServiceResource__r.RelatedRecordId
                 ){
-                    t.HOT_ParticipantIds__c = ir.ServiceResource__r.RelatedRecordId;
-                    threadsToUpdate.add(t);
+                    //t.HOT_ParticipantIds__c = ir.ServiceResource__r.RelatedRecordId;
+                    threadsToUpdate.add(
+                        new Thread__c(
+                            Id = t.Id,
+                            HOT_ParticipantIds__c = ir.ServiceResource__r.RelatedRecordId
+                        )
+                    );
                 }
             }
+        }
+        if(threadsToUpdate.isEmpty()){
+            return;
         }
         try {
             HOT_DatabaseOperations.updateRecords(threadsToUpdate);
