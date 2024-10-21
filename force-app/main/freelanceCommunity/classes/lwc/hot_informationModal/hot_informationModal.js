@@ -1,4 +1,5 @@
 import { LightningElement, api, track, wire } from 'lwc';
+import LightningModal from 'lightning/modal';
 import checkAccessToSA from '@salesforce/apex/HOT_MyServiceAppointmentListController.checkAccessToSA';
 import getServiceAppointmentDetails from '@salesforce/apex/HOT_MyServiceAppointmentListController.getServiceAppointmentDetails';
 import getInterestedResourceDetails from '@salesforce/apex/HOT_InterestedResourcesListController.getInterestedResourceDetails';
@@ -15,34 +16,29 @@ import getThreadIdWC from '@salesforce/apex/HOT_WageClaimListController.getThrea
 import getServiceResource from '@salesforce/apex/HOT_Utility.getServiceResource';
 import getWageClaimDetails from '@salesforce/apex/HOT_WageClaimListController.getWageClaimDetails';
 
-export default class Hot_informationModal extends NavigationMixin(LightningElement) {
+export default class Hot_informationModal extends NavigationMixin(LightningModal) {
     @api records;
     @api recordId;
     @api type;
-    @api showDetails = false;
     @api fromUrlRedirect;
 
     @track isAListView = true;
 
-    //serviceappointment
+    // Service appointment properties
     @track saFreelanceThreadId;
     @track saThreadId;
     @track saIsflow = false;
-
     @track saIsEditButtonDisabled;
     @track saIsEditButtonHidden;
     @track saIsCancelButtonHidden;
-
     @track interestedResource;
     @track serviceAppointment;
-
     @track accountPhoneNumber;
     @track accountAgeGender;
     @track accountName;
     @track ownerName;
     @track ordererPhoneNumber;
     @track termsOfAgreement;
-
     @track isGoToThreadInterpretersButtonDisabled = false;
     @track isGoToThreadButtonDisabled = false;
     @track isGoToThreadServiceAppointmentButtonDisabled = false;
@@ -58,8 +54,6 @@ export default class Hot_informationModal extends NavigationMixin(LightningEleme
         'Er du sikker på at du vil fjerne tilgjengeligheten din for dette tidspunktet? Du vil da ikke ha krav på lønn.';
     @track confirmButtonLabel = 'Ja';
 
-    //
-
     @track isSADetails = false;
     @track hasAccess = false;
     @track isWCDetails = false;
@@ -70,28 +64,41 @@ export default class Hot_informationModal extends NavigationMixin(LightningEleme
             'https://www.google.com/maps/search/?api=1&query=' + this.serviceAppointment.HOT_AddressFormated__c
         );
     }
+
     openAppleMaps() {
         window.open('http://maps.apple.com/?q=' + this.serviceAppointment.HOT_AddressFormated__c);
     }
+
     connectedCallback() {
-        //betyr at det er for eksempel fra et varsel
-        if (this.fromUrlRedirect == true && this.showDetails == true && this.type == 'SA') {
-            this.goToRecordDetailsSAFromId(this.recordId);
+        console.log({
+            type: this.type,
+            fromUrlRedirect: this.fromUrlRedirect,
+            recordId: this.recordId,
+            records: this.records
+        });
+        if (this.type == 'WC') {
+            this.isLoading = true;
+            this.goToRecordDetailsWC(this.recordId);
+            if (this.fromUrlRedirect == true) {
+                this.goToRecordDetailsWCFromId(this.recordId);
+            } else if (this.fromUrlRedirect == false) {
+                this.goToRecordDetailsWC(this.recordId, this.records);
+            }
+        } else if (this.type == 'SA') {
+            if (this.fromUrlRedirect == true) {
+                this.goToRecordDetailsSAFromId(this.recordId);
+            } else if (this.fromUrlRedirect == false) {
+                this.goToRecordDetailsSA(this.recordId, this.records);
+            }
         }
     }
-    // @track serviceResource;
-    // @wire(getServiceResource)
-    // wiredServiceresource(result) {
-    //     if (result.data) {
-    //         this.serviceResource = result.data;
-    //     }
-    // }
 
     handleAlertDialogClick(event) {
         if (event.detail === 'confirm' && this.noCancelButton == false) {
             this.retractAvailability();
         }
     }
+
     showModalRetract() {
         this.noCancelButton = false;
         this.modalHeader = 'Varsel';
@@ -100,9 +107,11 @@ export default class Hot_informationModal extends NavigationMixin(LightningEleme
         this.confirmButtonLabel = 'Ja';
         this.showModal();
     }
+
     showModal() {
         this.template.querySelector('c-alertdialog').showModal();
     }
+
     retractAvailability() {
         try {
             retractAvailability({ recordId: this.wageClaim.Id }).then(() => {
@@ -116,8 +125,6 @@ export default class Hot_informationModal extends NavigationMixin(LightningEleme
     }
 
     closeModal() {
-        const dialog = this.template.querySelector('dialog.details');
-        dialog.close();
         this.saIsflow = false;
         this.recordId = undefined;
         this.serviceAppointment = undefined;
@@ -127,19 +134,22 @@ export default class Hot_informationModal extends NavigationMixin(LightningEleme
         if (this.isAListView) {
             this.updateURL();
         }
+        this.close('closed');
     }
+
     @api
     goToRecordDetailsWC(woId, recordsArray) {
         this.wcIsDisabledGoToThread = false;
         this.wageClaim = undefined;
         let recordId = woId;
         this.recordId = recordId;
-        const dialog = this.template.querySelector('dialog.details');
         this.isLoading = true;
-        dialog.showModal();
+        console.log('recordsArray', recordsArray);
         for (let wageClaim of recordsArray) {
+            console.log('hva med her da');
             if (recordId === wageClaim.Id) {
-                this.wageClaim = wageClaim;
+                console.log('lyn er tull');
+                this.wageClaim = { ...wageClaim };
                 this.wageClaim.weekday = this.getDayOfWeek(this.wageClaim.StartTime__c);
                 if (this.wageClaim.Status__c == 'Åpen' || this.wageClaim.Status__c == 'Open') {
                     this.wcIsNotRetractable = false;
@@ -149,23 +159,19 @@ export default class Hot_informationModal extends NavigationMixin(LightningEleme
             }
         }
         this.isLoading = false;
-        dialog.focus();
-        this.showDetails = true;
         this.isWCDetails = true;
         this.updateURL();
     }
+
     @api
     goToRecordDetailsSA(saID, recordsArray) {
-        let today = new Date();
         let recordId = saID;
         this.serviceAppointment = undefined;
         this.interestedResource = undefined;
         this.saIsEditButtonHidden = false;
         this.saIsCancelButtonHidden = true;
         this.saIsEditButtonDisabled = false;
-        const dialog = this.template.querySelector('dialog.details');
         this.isLoading = true;
-        dialog.showModal();
         for (let serviceAppointment of recordsArray) {
             if (recordId === serviceAppointment.Id) {
                 this.accountPhoneNumber = '';
@@ -173,7 +179,7 @@ export default class Hot_informationModal extends NavigationMixin(LightningEleme
                 this.accountName = '';
                 this.ordererPhoneNumber = '';
                 this.ownerName = '';
-                this.serviceAppointment = serviceAppointment;
+                this.serviceAppointment = { ...serviceAppointment };
                 this.serviceAppointment.weekday = this.getDayOfWeek(this.serviceAppointment.EarliestStartTime);
                 this.interestedResource = serviceAppointment?.InterestedResources__r[0];
                 this.termsOfAgreement = this.interestedResource.HOT_TermsOfAgreement__c;
@@ -189,7 +195,6 @@ export default class Hot_informationModal extends NavigationMixin(LightningEleme
                 } else {
                     this.isGoToThreadButtonDisabled = true;
                 }
-                let duedate = new Date(this.serviceAppointment.DueDate);
                 if (this.serviceAppointment.Status == 'Completed') {
                     this.saIsEditButtonDisabled = true;
                 }
@@ -266,21 +271,18 @@ export default class Hot_informationModal extends NavigationMixin(LightningEleme
                     }
                 }
                 this.isLoading = false;
-                dialog.focus();
-                this.showDetails = true;
                 this.isSADetails = true;
                 this.hasAccess = true;
             }
         }
         this.updateURL();
     }
+
     @api
     goToRecordDetailsWCFromId(recordId) {
         this.isAListView = false;
-        this.isWCDetails;
-        const dialog = this.template.querySelector('dialog.details');
+        this.isWCDetails = true;
         this.isLoading = true;
-        dialog.showModal();
         getWageClaimDetails({ recordId: recordId }).then((result) => {
             this.wageClaim = result;
             let startTimeFormatted = new Date(this.wageClaim.StartTime__c);
@@ -301,21 +303,17 @@ export default class Hot_informationModal extends NavigationMixin(LightningEleme
                 ('0' + endTimeFormatted.getMinutes()).substr(-2);
             this.isWCDetails = true;
             this.isLoading = false;
-            dialog.focus();
         });
     }
+
     @api
     goToRecordDetailsSAFromId(recordId) {
+        console.log('er  vi her og heier? på lyn?');
         this.isSADetails = true;
         this.isAListView = false;
         if (this.type == null) {
             this.isLoading = true;
-            const dialog = this.template.querySelector('dialog.details');
-            dialog.showModal();
         }
-        // else {
-        //     this.hasAccess = true;
-        // }
         checkAccessToSA({ saId: recordId }).then((result) => {
             if (result != false) {
                 getServiceAppointmentDetails({ recordId: recordId }).then((result) => {
@@ -461,21 +459,15 @@ export default class Hot_informationModal extends NavigationMixin(LightningEleme
                         this.isGoToThreadButtonDisabled = true;
                     }
                     this.hasAccess = true;
-                    const dialog = this.template.querySelector('dialog.details');
-                    dialog.showModal();
-                    dialog.focus();
                     this.isLoading = false;
-                    // this.updateURL();
                 });
             } else {
                 this.isLoading = false;
                 this.hasAccess = false;
-                const dialog = this.template.querySelector('dialog.details');
-                dialog.showModal();
-                dialog.focus();
             }
         });
     }
+
     getDayOfWeek(date) {
         var jsDate = new Date(date);
         var dayOfWeek = jsDate.getDay();
@@ -505,8 +497,10 @@ export default class Hot_informationModal extends NavigationMixin(LightningEleme
             default:
                 dayOfWeekString = '';
         }
+        console.log('dayofweekstring' + dayOfWeekString);
         return dayOfWeekString;
     }
+
     updateURL() {
         let list = 'my';
         if (this.type == 'SA') {

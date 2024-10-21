@@ -5,6 +5,7 @@ import { columns, mobileColumns } from './columns';
 import { NavigationMixin } from 'lightning/navigation';
 import { formatRecord } from 'c/datetimeFormatter';
 import { defaultFilters, compare } from './filters';
+import HOT_information_modal from 'c/hot_informationModal';
 export default class Hot_wageClaimList extends NavigationMixin(LightningElement) {
     @track columns = [];
     @track filters = [];
@@ -120,7 +121,13 @@ export default class Hot_wageClaimList extends NavigationMixin(LightningElement)
     goToRecordDetails(result) {
         let recordId = result.detail.Id;
         this.recordId = recordId;
-        this.template.querySelector('c-hot_information-modal').goToRecordDetailsWC(this.recordId, this.wageClaims);
+        //this.template.querySelector('c-hot_information-modal').goToRecordDetailsWC(this.recordId, this.wageClaims);
+        HOT_information_modal.open({
+            recordId: this.recordId,
+            type: 'WC',
+            fromUrlRedirect: false,
+            records: this.wageClaims
+        });
         this.updateURL();
     }
 
