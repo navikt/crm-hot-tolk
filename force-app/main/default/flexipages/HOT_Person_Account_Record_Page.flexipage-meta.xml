@@ -306,6 +306,9 @@
                         <valueListItems>
                             <value>Type__c|NOT_EQUAL|[&quot;Incoming SMS&quot;]</value>
                         </valueListItems>
+                        <valueListItems>
+                            <value>Domain__c|EQUALS|[&quot;HOT&quot;]</value>
+                        </valueListItems>
                     </valueList>
                 </componentInstanceProperties>
                 <componentInstanceProperties>
