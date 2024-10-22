@@ -138,7 +138,7 @@ public without sharing class HOT_MessagesNotification {
                             notification.HOT_NotificationText__c =
                                 'INFO Du har fått en melding fra tolketjenesten.\nFor mer informasjon, se tolkebestilling.nav.no.\n' +
                                 'Du kan ikke svare på denne meldingen.\n' +
-                                'Mvh tolketjenesten i NAV';
+                                'Mvh tolketjenesten i Nav';
                             notification.HOT_RelatedObject__c = thread.Id;
                             notification.HOT_RelatedObjectType__c = 'threadInterpreter';
 
@@ -152,7 +152,7 @@ public without sharing class HOT_MessagesNotification {
                             notification.HOT_NotificationText__c =
                                 'INFO Du har fått en melding fra tolketjenesten.\nFor mer informasjon, se tolkebestilling.nav.no.\n' +
                                 'Du kan ikke svare på denne meldingen.\n' +
-                                'Mvh tolketjenesten i NAV';
+                                'Mvh tolketjenesten i Nav';
                             notification.HOT_RelatedObject__c = thread.Id;
                             notification.HOT_RelatedObjectType__c = 'threadUser';
 
@@ -321,7 +321,7 @@ public without sharing class HOT_MessagesNotification {
                             notification.HOT_NotificationText__c =
                                 'INFO Du har fått en melding fra tolketjenesten. \nFor mer informasjon, se tolkebestilling.nav.no.\n' +
                                 'Du kan ikke svare på denne meldingen.\n' +
-                                'Mvh tolketjenesten i NAV';
+                                'Mvh tolketjenesten i Nav';
                             notification.HOT_RelatedObject__c = thread.Id;
                             notification.HOT_RelatedObjectType__c = 'threadInterpreter';
 
