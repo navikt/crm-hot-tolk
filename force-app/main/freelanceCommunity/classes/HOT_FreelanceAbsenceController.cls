@@ -195,8 +195,9 @@ public with sharing class HOT_FreelanceAbsenceController {
         Set<Id> appointmentIds = new Set<Id>();
 
         for (ServiceAppointment appointment : appointments) {
-            appointment.Status = null;
+            appointment.Status = 'None';
             appointment.HOT_AssignedResourceId__c = '';
+            appointment.HOT_ServiceResource__c = null;
             appointment.HOT_DoNotCreateHAR__c = true;
             appointment.HOT_IsNotifyDispatcher__c = true;
             appointment.HOT_CanceledByInterpreter__c = true;
