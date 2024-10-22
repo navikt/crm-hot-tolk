@@ -16,20 +16,30 @@
                 type="radio"
             >
             </lightning-radio-group>
-            <lightning-input
-                type="datetime"
-                name="input1"
-                lwc:ref="absenceStartDateTimeInput"
-                label={startTimeInputLabel}
-                value={absenceStart}
-            ></lightning-input>
-            <lightning-input
-                type="datetime"
-                name="input2"
-                lwc:ref="absenceEndDateTimeInput"
-                label={endTimeInputLabel}
-                value={absenceEnd}
-            ></lightning-input>
+            <div class="slds-var-m-top_medium">
+                <lightning-input
+                    type="checkbox"
+                    label="Heldags"
+                    value={isAllDayAbsence}
+                    onchange={handleAllDayEventSet}
+                ></lightning-input>
+                <lightning-input
+                    type={timeFormat}
+                    name="input1"
+                    lwc:ref="absenceStartDateTimeInput"
+                    label={startTimeInputLabel}
+                    value={initialAbsenceStart}
+                    onchange={handleDateStartChange}
+                ></lightning-input>
+                <lightning-input
+                    type={timeFormat}
+                    name="input2"
+                    lwc:ref="absenceEndDateTimeInput"
+                    label={endTimeInputLabel}
+                    value={initialAbsenceEnd}
+                    onchange={handleDateEndChange}
+                ></lightning-input>
+            </div>
         </lightning-modal-body>
         <lightning-modal-footer>
             <div class="button-container">

@@ -79,11 +79,43 @@ public with sharing class HOT_FreelanceAbsenceController {
             prepareAndThrowAuraException(ERROR_FAILED_TO_CREATE_ABSENCE);
         }
 
+        // Maks Event lengde er 14 dager, fordi Salesforce
+
+        Event[] events = new List<Event>();
+        Date splitDate = startTime.addDays(14).date();
+        Datetime splitDatetime = Datetime.newInstance(splitDate.year(), splitDate.month(), splitDate.day());
+        Datetime previous = startTime;
+        while (previous < endTime) {
+            Datetime chunkEndTime = splitDatetime < endTime ? splitDatetime : endTime;
+            events.add(createAbsenceEvent(absence.Id, previous, chunkEndTime, absenceType));
+            previous = splitDatetime;
+            splitDatetime = splitDatetime.addDays(14);
+        }
+
+        try {
+            insert events;
+        } catch (Exception e) {
+            logException(e, absence);
+            prepareAndThrowAuraException(ERROR_FAILED_TO_CREATE_ABSENCE);
+        }
+
+        absence.HOT_EventId__c = events[0].Id;
+
+        try {
+            update absence;
+        } catch (Exception e) {
+            logException(e, absence);
+            prepareAndThrowAuraException(ERROR_FAILED_TO_CREATE_ABSENCE);
+        }
+
+        return absence.Id;
+    }
+
+    private static Event createAbsenceEvent(Id absenceId, Datetime startTime, Datetime endTime, String absenceType) {
         Event event = new Event();
-        event.WhatId = absence.Id;
-        event.isAllDayEvent = isAllDayAbsence;
-        event.StartDateTime = absence.Start;
-        event.EndDateTime = absence.End;
+        event.WhatId = absenceId;
+        event.StartDateTime = startTime;
+        event.EndDateTime = endTime;
         switch on absenceType {
             when 'Other' {
                 event.Description = 'Annet';
@@ -97,24 +129,7 @@ public with sharing class HOT_FreelanceAbsenceController {
         }
         event.Subject = 'Fravær';
         event.ShowAs = 'Busy';
-
-        try {
-            insert event;
-        } catch (Exception e) {
-            logException(e, absence);
-            prepareAndThrowAuraException(ERROR_FAILED_TO_CREATE_ABSENCE);
-        }
-
-        absence.HOT_EventId__c = event.Id;
-
-        try {
-            update absence;
-        } catch (Exception e) {
-            logException(e, absence);
-            prepareAndThrowAuraException(ERROR_FAILED_TO_CREATE_ABSENCE);
-        }
-
-        return absence.Id;
+        return event;
     }
 
     @AuraEnabled(cacheable=false)

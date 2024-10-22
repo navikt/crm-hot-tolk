@@ -11,9 +11,11 @@ export default class Hot_Calendar_Absence_Modal extends LightningModal {
     @api event;
     isEdit;
     absenceType;
-    absenceStart;
-    absenceEnd;
+    initialAbsenceStart;
+    initialAbsenceEnd;
     value = '';
+    timeFormat = 'datetime';
+    isAllDayAbsence = false;
     isLoading = false;
     headerText;
     startTimeInputLabel;
@@ -28,30 +30,30 @@ export default class Hot_Calendar_Absence_Modal extends LightningModal {
         ];
     }
 
+    getNorwegianAbsenceType(absenceType) {
+        switch (absenceType) {
+            case 'Ferie':
+                return 'Vacation';
+            case 'Sykdom':
+                return 'Medical';
+            case 'Annet':
+                return 'Other';
+            default:
+                return 'Other';
+        }
+    }
+
     connectedCallback() {
         if (this.event && this.event.extendedProps.recordId) {
             this.isEdit = true;
-            switch (this.event.extendedProps.description) {
-                case 'Ferie':
-                    this.absenceType = 'Vacation';
-                    break;
-                case 'Sykdom':
-                    this.absenceType = 'Medical';
-                    break;
-                case 'Annet':
-                    this.absenceType = 'Other';
-                    break;
-                default:
-                    this.absenceType = 'Other';
-                    break;
-            }
-            this.absenceStart = this.formatLocalDateTime(this.event.start);
-            this.absenceEnd = this.formatLocalDateTime(this.event.end);
+            this.absenceType = this.getNorwegianAbsenceType(this.event.extendedProps.description);
+            this.initialAbsenceStart = this.formatLocalDateTime(this.event.start);
+            this.initialAbsenceEnd = this.formatLocalDateTime(this.event.end);
         } else {
             const now = new Date();
-            const startTime = new Date(Date.now() + (60 - now.getMinutes()) * 60000);
-            this.absenceStart = this.formatLocalDateTime(startTime);
-            this.absenceEnd = this.formatLocalDateTime(new Date(startTime.getTime() + 86400000));
+            const startTime = new Date(now.getTime() + (60 - now.getMinutes()) * 60000);
+            this.initialAbsenceStart = this.formatLocalDateTime(startTime);
+            this.initialAbsenceEnd = this.formatLocalDateTime(new Date(startTime.getTime() + 86400000));
         }
 
         this.headerText = this.isEdit ? 'Endre/Slett fravær' : 'Registrer nytt fravær';
@@ -62,6 +64,47 @@ export default class Hot_Calendar_Absence_Modal extends LightningModal {
 
     validateAbsenceType(absenceType) {
         return ['Vacation', 'Other', 'Medical'].includes(absenceType);
+    }
+
+    handleAllDayEventSet(event) {
+        this.isAllDayAbsence = event.detail.checked;
+        this.timeFormat = this.isAllDayAbsence ? 'date' : 'datetime';
+        const startTime = this.refs.absenceStartDateTimeInput.value;
+        const endTime = this.refs.absenceEndDateTimeInput.value;
+        if (this.isAllDayAbsence) {
+            this.initialAbsenceStart = this.formatLocalDateTime(new Date(startTime), '00', '00');
+            this.initialAbsenceEnd = this.formatLocalDateTime(new Date(endTime), '23', '59');
+        } else {
+            const hours = new Date().getHours();
+            const hoursString = (hours < 10 ? '0' : '') + hours.toString();
+            this.initialAbsenceStart = this.formatLocalDateTime(new Date(startTime), hoursString, '00');
+            this.initialAbsenceEnd = this.formatLocalDateTime(new Date(endTime), hoursString, '00');
+        }
+    }
+
+    handleDateStartChange(event) {
+        const startTime = new Date(event.detail.value);
+        const endTime = new Date(this.refs.absenceEndDateTimeInput.value);
+        if (startTime > endTime && !this.endHasBeenSet) {
+            this.initialAbsenceEnd = event.detail.value;
+        }
+
+        const startInput = this.refs.absenceStartDateTimeInput;
+        startInput.setCustomValidity(
+            startTime > endTime && this.endHasBeenSet ? 'Sluttid må komme etter starttid' : ''
+        );
+        startInput.reportValidity();
+        this.initialAbsenceStart = event.detail.value;
+    }
+
+    handleDateEndChange(event) {
+        const startInput = this.refs.absenceStartDateTimeInput;
+        const startTime = new Date(startInput.value);
+        const newEndDate = new Date(event.detail.value);
+        startInput.setCustomValidity(startTime > newEndDate ? 'Sluttid må komme etter starttid' : '');
+        startInput.reportValidity();
+        this.endHasBeenSet = true;
+        this.initialAbsenceEnd = event.detail.value;
     }
 
     async handleOkay() {
@@ -80,8 +123,13 @@ export default class Hot_Calendar_Absence_Modal extends LightningModal {
         }
 
         // Fetch input field values
-        const absenceStartDateTime = this.refs.absenceStartDateTimeInput.value;
-        const absenceEndDateTime = this.refs.absenceEndDateTimeInput.value;
+        let absenceStartDateTime = this.refs.absenceStartDateTimeInput.value;
+        let absenceEndDateTime = this.refs.absenceEndDateTimeInput.value;
+        if (this.isAllDayAbsence) {
+            absenceStartDateTime = this.formatLocalDateTime(new Date(absenceStartDateTime), '00', '00');
+            absenceEndDateTime = this.formatLocalDateTime(new Date(absenceEndDateTime), '23', '59');
+        }
+
         const absenceStartElement = this.refs.absenceStartDateTimeInput;
         if (absenceEndDateTime < absenceStartDateTime) {
             absenceStartElement.setCustomValidity('Starttid kan ikke komme etter sluttid');
@@ -95,12 +143,13 @@ export default class Hot_Calendar_Absence_Modal extends LightningModal {
         if (!validInputs) {
             return;
         }
+
         let result;
         try {
             result = await getConflictsForTimePeriod({
                 startTimeInMilliseconds: new Date(absenceStartDateTime).getTime(),
                 endTimeInMilliseconds: new Date(absenceEndDateTime).getTime(),
-                checkWholeDayForConflicts: false
+                checkWholeDayForConflicts: this.isAllDayAbsence
             });
         } catch {
             const event = new ShowToastEvent({
@@ -125,10 +174,9 @@ export default class Hot_Calendar_Absence_Modal extends LightningModal {
                     absenceType: absenceType,
                     startTimeInMilliseconds: new Date(absenceStartDateTime).getTime(),
                     endTimeInMilliseconds: new Date(absenceEndDateTime).getTime(),
-                    isAllDayAbsence: false
+                    isAllDayAbsence: this.isAllDayAbsence
                 });
             } catch (error) {
-                console.error(error);
                 const event = new ShowToastEvent({
                     title: 'Kunne ikke legge til fravær',
                     message: 'Det oppstod en feil, prøv igjen senere',
@@ -137,7 +185,6 @@ export default class Hot_Calendar_Absence_Modal extends LightningModal {
                 this.dispatchEvent(event);
             }
             if (this.isEdit) {
-                console.log('nå er vi edit');
                 try {
                     await deleteAbsence({ recordId: this.event.extendedProps.recordId });
                     const event = new ShowToastEvent({
