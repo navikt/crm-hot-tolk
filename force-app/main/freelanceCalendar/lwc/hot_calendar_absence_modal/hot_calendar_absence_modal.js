@@ -163,7 +163,7 @@ export default class Hot_Calendar_Absence_Modal extends LightningModal {
 
         const confirmation = await ConfimationModal.open({
             content: result,
-            absenceType: absenceType,
+            absenceType: this.getNorwegianAbsenceType(absenceType),
             absenceStartDateTime: absenceStartDateTime,
             absenceEndDateTime: absenceEndDateTime
         });
