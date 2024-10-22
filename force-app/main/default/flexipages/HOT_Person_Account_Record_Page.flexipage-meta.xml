@@ -304,7 +304,7 @@
                     <name>adminFilters</name>
                     <valueList>
                         <valueListItems>
-                            <value>Type__c|NOT_EQUAL|[&quot;Incoming SMS&quot;]</value>
+                            <value>Type__c|NOT_EQUAL|[&quot;Incoming SMS&quot;,&quot;Manually Created&quot;]</value>
                         </valueListItems>
                         <valueListItems>
                             <value>Domain__c|EQUALS|[&quot;HOT&quot;]</value>
@@ -405,6 +405,9 @@
                     <valueList>
                         <valueListItems>
                             <value>Type__c</value>
+                        </valueListItems>
+                        <valueListItems>
+                            <value>Status__c</value>
                         </valueListItems>
                         <valueListItems>
                             <value>CREATED_DATE</value>

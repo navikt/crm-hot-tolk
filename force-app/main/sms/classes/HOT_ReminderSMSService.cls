@@ -39,13 +39,13 @@ public without sharing class HOT_ReminderSMSService {
                     notification.HOT_NotificationText__c +=
                         '\nFor mer informasjon, se tolkebestilling.nav.no.\n' +
                         'Du kan ikke svare på denne meldingen.\n' +
-                        'Mvh tolketjenesten i NAV';
+                        'Mvh tolketjenesten i Nav';
                 } else {
                     notification.HOT_NotificationText__c = text;
                     notification.HOT_NotificationText__c +=
                         '\nFor mer informasjon, se tolkebestilling.nav.no.\n' +
                         'Du kan ikke svare på denne meldingen.\n' +
-                        'Mvh tolketjenesten i NAV';
+                        'Mvh tolketjenesten i Nav';
                 }
                 notification.HOT_RelatedObject__c = workOrder.Id;
                 notification.HOT_RelatedObjectType__c = 'workOrder';
@@ -94,7 +94,7 @@ public without sharing class HOT_ReminderSMSService {
                     message +
                     '\nFor mer informasjon, se tolkebestilling.nav.no.\n' +
                     'Du kan ikke svare på denne meldingen.\n' +
-                    'Mvh tolketjenesten i NAV';
+                    'Mvh tolketjenesten i Nav';
                 if (request.IsSerieoppdrag__c) {
                     notification.HOT_RelatedObject__c = HOT_WorkOrderHandler.getWorkOrder(request).Id;
                     notification.HOT_RelatedObjectType__c = 'request';
@@ -174,7 +174,7 @@ public without sharing class HOT_ReminderSMSService {
         message += 'Tolk er: ';
         message += interpreterNames;
         message += '\n\nFor mer informasjon, se tolkebestilling.nav.no. Du kan ikke svare på denne meldingen.';
-        message += '\nMvh tolketjenesten i NAV';
+        message += '\nMvh tolketjenesten i Nav';
         return message;
     }
 
@@ -215,7 +215,7 @@ public without sharing class HOT_ReminderSMSService {
                         notification.HOT_NotificationText__c += notification.HOT_NotificationText__c =
                             '\nFor mer informasjon, se tolkebestilling.nav.no.\n' +
                             'Du kan ikke svare på denne meldingen.\n' +
-                            'Mvh tolketjenesten i NAV';
+                            'Mvh tolketjenesten i Nav';
                     } else {
                         notification.HOT_NotificationText__c =
                             'Du har fått tolk. Tolk er: ' +
@@ -223,7 +223,7 @@ public without sharing class HOT_ReminderSMSService {
                             formatTimePeriod(workOrder.StartDate, workOrder.EndDate) +
                             '\nFor mer informasjon, se tolkebestilling.nav.no.\n' +
                             'Du kan ikke svare på denne meldingen.\n' +
-                            'Mvh tolketjenesten i NAV';
+                            'Mvh tolketjenesten i Nav';
                     }
                 } else if (workOrder.Status == 'Cannot Complete') {
                     notification.HOT_NotificationText__c =
@@ -232,7 +232,7 @@ public without sharing class HOT_ReminderSMSService {
                         formatTimePeriod(workOrder.StartDate, workOrder.EndDate) +
                         '\nFor mer informasjon, se tolkebestilling.nav.no.\n' +
                         'Du kan ikke svare på denne meldingen.\n' +
-                        'Mvh tolketjenesten i NAV';
+                        'Mvh tolketjenesten i Nav';
                 }
                 notification.HOT_RelatedObject__c = workOrder.Id;
                 notification.HOT_RelatedObjectType__c = 'workOrder';
@@ -336,7 +336,7 @@ public without sharing class HOT_ReminderSMSService {
             notification.HOT_NotificationText__c =
                 'INFO\nDu er ønsket til et oppdrag.\n\nFor mer informasjon, se tolkebestilling.nav.no.\n' +
                 'Du kan ikke svare på denne meldingen.\n' +
-                'Mvh tolketjenesten i NAV';
+                'Mvh tolketjenesten i Nav';
             notification.HOT_RelatedObject__c = ir.Id;
             notification.HOT_RelatedObjectType__c = 'wanted';
 
@@ -397,13 +397,13 @@ public without sharing class HOT_ReminderSMSService {
                     notification.HOT_NotificationText__c +=
                         '\nFor mer informasjon, se tolkebestilling.nav.no.\n' +
                         'Du kan ikke svare på denne meldingen.\n' +
-                        'Mvh tolketjenesten i NAV';
+                        'Mvh tolketjenesten i Nav';
                 } else {
                     notification.HOT_NotificationText__c = text;
                     notification.HOT_NotificationText__c +=
                         '\nFor mer informasjon, se tolkebestilling.nav.no.\n' +
                         'Du kan ikke svare på denne meldingen.\n' +
-                        'Mvh tolketjenesten i NAV';
+                        'Mvh tolketjenesten i Nav';
                 }
                 notification.HOT_RelatedObject__c = wo.Id;
                 notification.HOT_RelatedObjectType__c = 'workOrder';
@@ -448,7 +448,7 @@ public without sharing class HOT_ReminderSMSService {
             message += interpreterName;
             message += '\nDato: ' + schedStartEndtime;
             message += '\n\nFor mer informasjon, se tolkebestilling.nav.no. Du kan ikke svare på denne meldingen.';
-            message += '\nMvh tolketjenesten i NAV';
+            message += '\nMvh tolketjenesten i Nav';
 
             sms.Message__c = message;
             if (SMS.Recipient__c != null) {
@@ -490,7 +490,7 @@ public without sharing class HOT_ReminderSMSService {
             String message = 'INFO\nEn medtolk har blitt tatt av oppdraget. ' + appointmentNumber + '\n';
             message += '\nDato: ' + schedStartEndtime;
             message += '\n\nFor mer informasjon, se tolkebestilling.nav.no. Du kan ikke svare på denne meldingen.';
-            message += '\nMvh tolketjenesten i NAV';
+            message += '\nMvh tolketjenesten i Nav';
 
             sms.Message__c = message;
             if (SMS.Recipient__c != null) {
@@ -537,7 +537,7 @@ public without sharing class HOT_ReminderSMSService {
             message += interpreterName;
             message += '\nDato: ' + schedStartEndtime;
             message += '\n\nFor mer informasjon, se tolkebestilling.nav.no. Du kan ikke svare på denne meldingen.';
-            message += '\nMvh tolketjenesten i NAV';
+            message += '\nMvh tolketjenesten i Nav';
 
             sms.Message__c = message;
             if (SMS.Recipient__c != null) {
@@ -758,7 +758,7 @@ public without sharing class HOT_ReminderSMSService {
         String message = 'INFO\nDu er ønsket til et oppdrag. ' + appointmentNumber + '\n\n';
         message += 'For mer informasjon, se tolkebestilling.nav.no.\n';
         message += 'Du kan ikke svare på denne meldingen.\n';
-        message += 'Mvh tolketjenesten i NAV';
+        message += 'Mvh tolketjenesten i Nav';
         return message;
     }
 
@@ -791,7 +791,7 @@ public without sharing class HOT_ReminderSMSService {
         }
         message += '.\n\nFor mer informasjon, se tolkebestilling.nav.no.\n';
         message += 'Du kan ikke svare på denne meldingen.\n';
-        message += 'Mvh tolketjenesten i NAV';
+        message += 'Mvh tolketjenesten i Nav';
         return message;
     }
 
@@ -799,7 +799,7 @@ public without sharing class HOT_ReminderSMSService {
         String message = 'INFO\nDu har fått en melding fra tolketjenesten.\n\n';
         message += 'For mer informasjon, se tolkebestilling.nav.no.\n';
         message += 'Du kan ikke svare på denne meldingen.\n';
-        message += 'Mvh tolketjenesten i NAV';
+        message += 'Mvh tolketjenesten i Nav';
         return message;
     }
 
@@ -811,7 +811,7 @@ public without sharing class HOT_ReminderSMSService {
             message += ':\nDato: ' + formatTimePeriod(request.StartTime__c, request.EndTime__c);
         }
         message += '\n\nFor mer informasjon, se tolkebestilling.nav.no. Du kan ikke svare på denne meldingen.';
-        message += '\nMvh tolketjenesten i NAV';
+        message += '\nMvh tolketjenesten i Nav';
         return message;
     }
 
@@ -821,7 +821,7 @@ public without sharing class HOT_ReminderSMSService {
         message += interpreterNames;
         message += '\nDato: ' + formatTimePeriod(workOrder.StartDate, workOrder.EndDate);
         message += '\n\nFor mer informasjon, se tolkebestilling.nav.no. Du kan ikke svare på denne meldingen.';
-        message += '\nMvh tolketjenesten i NAV';
+        message += '\nMvh tolketjenesten i Nav';
         return message;
     }
 
@@ -875,7 +875,7 @@ public without sharing class HOT_ReminderSMSService {
         }
         message += '\nDato: ' + formatTimePeriod(workOrder.StartDate, workOrder.EndDate);
         message += '\n\nFor mer informasjon, se tolkebestilling.nav.no. Du kan ikke svare på denne meldingen.';
-        message += '\nMvh tolketjenesten i NAV';
+        message += '\nMvh tolketjenesten i Nav';
         return message;
     }
 
