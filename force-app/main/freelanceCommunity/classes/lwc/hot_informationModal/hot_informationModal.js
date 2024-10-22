@@ -78,7 +78,6 @@ export default class Hot_informationModal extends NavigationMixin(LightningModal
         });
         if (this.type == 'WC') {
             this.isLoading = true;
-            this.goToRecordDetailsWC(this.recordId);
             if (this.fromUrlRedirect == true) {
                 this.goToRecordDetailsWCFromId(this.recordId);
             } else if (this.fromUrlRedirect == false) {
