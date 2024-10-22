@@ -147,28 +147,82 @@ private class HOT_FreelanceAbsenceControllerTest {
     static void createAbsenceAndResolveConflictsTest() {
         Datetime absenceStart = Datetime.now().addHours(ABSENCE_START_TIME_OFFSET_IN_HOURS).addMinutes(1);
         Datetime absenceEnd = absenceStart.addHours(ABSENCE_DURATION_IN_HOURS).addMinutes(1);
+        Id absenceId = null;
         HOT_FreelanceAbsenceController.ConflictingRecord[] conflictsBeforeResolution = HOT_FreelanceAbsenceController.getConflictsForTimePeriod(
             absenceStart.getTime(),
-            absenceEnd.getTime()
+            absenceEnd.getTime(),
+            false
         );
 
         Test.startTest();
-        HOT_FreelanceAbsenceController.createAbsenceAndResolveConflicts(
+        absenceId = HOT_FreelanceAbsenceController.createAbsenceAndResolveConflicts(
             absenceStart.getTime(),
             absenceEnd.getTime(),
-            'Vacation'
+            'Vacation',
+            false
         );
         Test.stopTest();
 
         HOT_FreelanceAbsenceController.ConflictingRecord[] conflictsAfterResolution = HOT_FreelanceAbsenceController.getConflictsForTimePeriod(
             absenceStart.getTime(),
-            absenceEnd.getTime()
+            absenceEnd.getTime(),
+            false
         );
 
         ResourceAbsence absence = [
             SELECT Id
             FROM ResourceAbsence
-            WHERE Start = :absenceStart AND End = :absenceEnd
+            WHERE Id = :absenceId
+            LIMIT 1
+        ];
+
+        Event[] relatedEvents = [
+            SELECT Id
+            FROM Event
+            WHERE WhatId = :absence.Id
+        ];
+
+        System.assert(
+            relatedEvents.size() == 1 &&
+                absence != null &&
+                conflictsBeforeResolution.size() == CONFLICTING_SA_COUNT + CONFLICTING_WAGE_CLAIM_COUNT &&
+                conflictsAfterResolution.isEmpty(),
+            'Should remove conflicts for given time period and create absence'
+        );
+    }
+
+    @IsTest
+    static void createAbsenceAndResolveConflictsWholeDayTest() {
+        Datetime absenceStart = Datetime.now().addHours(ABSENCE_START_TIME_OFFSET_IN_HOURS).addMinutes(1);
+        absenceStart = Datetime.newInstance(absenceStart.year(), absenceStart.month(), absenceStart.day());
+        Datetime absenceEnd = absenceStart;
+        Id absenceId = null;
+
+        HOT_FreelanceAbsenceController.ConflictingRecord[] conflictsBeforeResolution = HOT_FreelanceAbsenceController.getConflictsForTimePeriod(
+            absenceStart.getTime(),
+            absenceEnd.getTime(),
+            true
+        );
+
+        Test.startTest();
+        absenceId = HOT_FreelanceAbsenceController.createAbsenceAndResolveConflicts(
+            absenceStart.getTime(),
+            absenceEnd.getTime(),
+            'Vacation',
+            true
+        );
+        Test.stopTest();
+
+        HOT_FreelanceAbsenceController.ConflictingRecord[] conflictsAfterResolution = HOT_FreelanceAbsenceController.getConflictsForTimePeriod(
+            absenceStart.getTime(),
+            absenceEnd.getTime(),
+            true
+        );
+
+        ResourceAbsence absence = [
+            SELECT Id
+            FROM ResourceAbsence
+            WHERE Id = :absenceId
             LIMIT 1
         ];
 
@@ -195,7 +249,8 @@ private class HOT_FreelanceAbsenceControllerTest {
             HOT_FreelanceAbsenceController.createAbsenceAndResolveConflicts(
                 Datetime.now().getTime(),
                 Datetime.now().addMinutes(1).getTime(),
-                'Invalid type'
+                'Invalid type',
+                false
             );
         } catch (Exception e) {
             createAbsenceException = e;
@@ -217,7 +272,8 @@ private class HOT_FreelanceAbsenceControllerTest {
             HOT_FreelanceAbsenceController.createAbsenceAndResolveConflicts(
                 Datetime.now().getTime(),
                 Datetime.now().addMinutes(-1).getTime(),
-                'Vacation'
+                'Vacation',
+                false
             );
         } catch (Exception e) {
             createAbsenceException = e;
@@ -239,7 +295,8 @@ private class HOT_FreelanceAbsenceControllerTest {
         Test.startTest();
         HOT_FreelanceAbsenceController.ConflictingRecord[] conflicts = HOT_FreelanceAbsenceController.getConflictsForTimePeriod(
             absenceStart.getTime(),
-            absenceEnd.getTime()
+            absenceEnd.getTime(),
+            false
         );
         Test.stopTest();
 
@@ -258,7 +315,11 @@ private class HOT_FreelanceAbsenceControllerTest {
 
         Test.startTest();
         try {
-            HOT_FreelanceAbsenceController.getConflictsForTimePeriod(absenceStart.getTime(), absenceEnd.getTime());
+            HOT_FreelanceAbsenceController.getConflictsForTimePeriod(
+                absenceStart.getTime(),
+                absenceEnd.getTime(),
+                false
+            );
         } catch (Exception e) {
             getConflictsException = e;
         }
@@ -277,7 +338,8 @@ private class HOT_FreelanceAbsenceControllerTest {
         Datetime absenceEnd = absenceStart.addHours(ABSENCE_DURATION_IN_HOURS).addMinutes(1);
         HOT_FreelanceAbsenceController.ConflictingRecord[] conflictsBeforeResolution = HOT_FreelanceAbsenceController.getConflictsForTimePeriod(
             absenceStart.getTime(),
-            absenceEnd.getTime()
+            absenceEnd.getTime(),
+            false
         );
 
         Test.startTest();
@@ -286,7 +348,8 @@ private class HOT_FreelanceAbsenceControllerTest {
 
         HOT_FreelanceAbsenceController.ConflictingRecord[] conflictsAfterResolution = HOT_FreelanceAbsenceController.getConflictsForTimePeriod(
             absenceStart.getTime(),
-            absenceEnd.getTime()
+            absenceEnd.getTime(),
+            false
         );
 
         System.assert(

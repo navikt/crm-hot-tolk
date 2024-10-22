@@ -99,7 +99,8 @@ export default class Hot_Calendar_Absence_Modal extends LightningModal {
         try {
             result = await getConflictsForTimePeriod({
                 startTimeInMilliseconds: new Date(absenceStartDateTime).getTime(),
-                endTimeInMilliseconds: new Date(absenceEndDateTime).getTime()
+                endTimeInMilliseconds: new Date(absenceEndDateTime).getTime(),
+                checkWholeDayForConflicts: false
             });
         } catch {
             const event = new ShowToastEvent({
@@ -123,7 +124,8 @@ export default class Hot_Calendar_Absence_Modal extends LightningModal {
                 await createAbsenceAndResolveConflicts({
                     absenceType: absenceType,
                     startTimeInMilliseconds: new Date(absenceStartDateTime).getTime(),
-                    endTimeInMilliseconds: new Date(absenceEndDateTime).getTime()
+                    endTimeInMilliseconds: new Date(absenceEndDateTime).getTime(),
+                    isAllDayAbsence: false
                 });
             } catch (error) {
                 console.error(error);
