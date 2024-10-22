@@ -377,13 +377,10 @@
                     <name>adminFilters</name>
                     <valueList>
                         <valueListItems>
-                            <value>Type__c|EQUALS|[&quot;Incoming SMS&quot;]</value>
+                            <value>Type__c|EQUALS|[&quot;Incoming SMS&quot;,&quot;Manually Created&quot;]</value>
                         </valueListItems>
                         <valueListItems>
                             <value>Domain__c|EQUALS|[&quot;HOT&quot;]</value>
-                        </valueListItems>
-                        <valueListItems>
-                            <value>Type__c|EQUALS|[&quot;Manually Created&quot;]</value>
                         </valueListItems>
                     </valueList>
                 </componentInstanceProperties>
@@ -407,7 +404,7 @@
                     <name>relatedListFieldAliases</name>
                     <valueList>
                         <valueListItems>
-                            <value>Sender__c</value>
+                            <value>Type__c</value>
                         </valueListItems>
                         <valueListItems>
                             <value>CREATED_DATE</value>
