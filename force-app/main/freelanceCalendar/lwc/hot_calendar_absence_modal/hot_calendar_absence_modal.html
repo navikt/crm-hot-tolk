@@ -5,75 +5,46 @@
                 <lightning-spinner alternative-text="Loading" size="large"></lightning-spinner>
             </div>
         </template>
-        <template lwc:if={isEdit}>
-            <lightning-modal-header label="Endre/Slett fravær"></lightning-modal-header>
-            <lightning-modal-body>
-                <lightning-radio-group
-                    name="radioGroup"
-                    lwc:ref="absenceTypeRadioGroup"
-                    label="Type fravær"
-                    options={options}
-                    value={absenceType}
-                    type="radio"
-                >
-                </lightning-radio-group>
-                <lightning-input
-                    type="datetime"
-                    name="input1"
-                    lwc:ref="absenceStartDateTimeInput"
-                    label="Legg inn ny start dato/tid"
-                    value={absenceStart}
-                ></lightning-input>
-                <lightning-input
-                    type="datetime"
-                    name="input2"
-                    lwc:ref="absenceEndDateTimeInput"
-                    label="Legg inn ny slutt dato/tid"
-                    value={absenceEnd}
-                ></lightning-input>
-            </lightning-modal-body>
-            <lightning-modal-footer>
-                <div class="button-container">
+        <lightning-modal-header label={headerText}></lightning-modal-header>
+        <lightning-modal-body>
+            <lightning-radio-group
+                name="radioGroup"
+                lwc:ref="absenceTypeRadioGroup"
+                label="Type fravær"
+                options={options}
+                value={absenceType}
+                type="radio"
+            >
+            </lightning-radio-group>
+            <lightning-input
+                type="datetime"
+                name="input1"
+                lwc:ref="absenceStartDateTimeInput"
+                label={startTimeInputLabel}
+                value={absenceStart}
+            ></lightning-input>
+            <lightning-input
+                type="datetime"
+                name="input2"
+                lwc:ref="absenceEndDateTimeInput"
+                label={endTimeInputLabel}
+                value={absenceEnd}
+            ></lightning-input>
+        </lightning-modal-body>
+        <lightning-modal-footer>
+            <div class="button-container">
+                <template lwc:if={isEdit}>
                     <button
                         class="slds-button slds-button_destructive cancel-button custom-button"
                         onclick={handleDeleteAbsence}
                     >
                         Slett
                     </button>
-                    <button class="slds-button slds-button_brand custom-button" onclick={handleOkay}>Endre</button>
-                </div>
-            </lightning-modal-footer>
-        </template>
-        <template lwc:else>
-            <lightning-modal-header label="Registrer nytt fravær"></lightning-modal-header>
-            <lightning-modal-body>
-                <lightning-radio-group
-                    name="radioGroup"
-                    lwc:ref="absenceTypeRadioGroup"
-                    label="Type fravær"
-                    options={options}
-                    value={value}
-                    type="radio"
-                >
-                </lightning-radio-group>
-                <lightning-input
-                    type="datetime"
-                    name="input1"
-                    lwc:ref="absenceStartDateTimeInput"
-                    label="Legg inn start dato/tid"
-                    value={absenceStart}
-                ></lightning-input>
-                <lightning-input
-                    type="datetime"
-                    name="input2"
-                    lwc:ref="absenceEndDateTimeInput"
-                    label="Legg inn slutt dato/tid"
-                    value={absenceEnd}
-                ></lightning-input>
-            </lightning-modal-body>
-            <lightning-modal-footer>
-                <lightning-button variant="brand" label="Registrer" onclick={handleOkay}></lightning-button>
-            </lightning-modal-footer>
-        </template>
+                </template>
+                <button class="slds-button slds-button_brand custom-button" onclick={handleOkay}>
+                    {registerButtonText}
+                </button>
+            </div>
+        </lightning-modal-footer>
     </div>
 </template>

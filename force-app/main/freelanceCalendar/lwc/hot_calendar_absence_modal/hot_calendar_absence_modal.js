@@ -15,6 +15,10 @@ export default class Hot_Calendar_Absence_Modal extends LightningModal {
     absenceEnd;
     value = '';
     isLoading = false;
+    headerText;
+    startTimeInputLabel;
+    endTImeInputLabel;
+    registerButtonText;
 
     get options() {
         return [
@@ -49,6 +53,11 @@ export default class Hot_Calendar_Absence_Modal extends LightningModal {
             this.absenceStart = this.formatLocalDateTime(startTime);
             this.absenceEnd = this.formatLocalDateTime(new Date(startTime.getTime() + 86400000));
         }
+
+        this.headerText = this.isEdit ? 'Endre/Slett fravær' : 'Registrer nytt fravær';
+        this.startTimeInputLabel = `Legg inn${this.isEdit ? ' ny' : ''} startdato/tid`;
+        this.endTimeInputLabel = `Legg inn${this.isEdit ? ' ny' : ''} sluttdato/tid`;
+        this.registerButtonText = this.isEdit ? 'Endre' : 'Registrer';
     }
 
     validateAbsenceType(absenceType) {
