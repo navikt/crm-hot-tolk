@@ -10,8 +10,8 @@ call sf package install --package 04t7U0000008qz4QAA --no-prompt --installation-
 echo "Installer crm-henvendelse-base ver. 0.20"
 call sf package install --package 04t7U000000Y4EgQAK --no-prompt --installation-key %3 --wait 30 --publish-wait 30
 
-echo "Installerer crm-platform-integration ver. 0.130"
-call sf package install --package 04tKB000000Y0coYAC --no-prompt --installation-key %3 --wait 30 --publish-wait 30
+echo "Installerer crm-platform-integration ver. 0.133"
+call sf package install --package 04tKB000000Y1GEYA0 --no-prompt --installation-key %3 --wait 30 --publish-wait 30
 
 echo "Installerer crm-platform-access-control ver. 0.113"
 call sf package install --package 04t7U0000004e8tQAA --no-prompt --installation-key %3 --wait 30 --publish-wait 30
