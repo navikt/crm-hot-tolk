@@ -124,7 +124,9 @@ export default class Hot_informationModal extends NavigationMixin(LightningEleme
         this.wageClaim = undefined;
         this.isWCDetails = false;
         this.isSADetails = false;
-        this.updateURL();
+        if (this.isAListView) {
+            this.updateURL();
+        }
     }
     @api
     goToRecordDetailsWC(woId, recordsArray) {
@@ -463,7 +465,7 @@ export default class Hot_informationModal extends NavigationMixin(LightningEleme
                     dialog.showModal();
                     dialog.focus();
                     this.isLoading = false;
-                    this.updateURL();
+                    // this.updateURL();
                 });
             } else {
                 this.isLoading = false;
@@ -506,7 +508,16 @@ export default class Hot_informationModal extends NavigationMixin(LightningEleme
         return dayOfWeekString;
     }
     updateURL() {
-        let baseURL = window.location.protocol + '//' + window.location.host + window.location.pathname + '?list=my';
+        let list = 'my';
+        if (this.type == 'SA') {
+            list = 'my';
+        }
+        if (this.type == 'WC') {
+            list = 'wageClaim';
+        }
+
+        let baseURL =
+            window.location.protocol + '//' + window.location.host + window.location.pathname + '?list=' + list;
         if (this.recordId) {
             baseURL += '&id=' + this.recordId;
         }
