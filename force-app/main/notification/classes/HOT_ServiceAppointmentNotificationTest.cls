@@ -309,17 +309,13 @@ private class HOT_ServiceAppointmentNotificationTest {
 
         Test.startTest();
 
-        Set<Id> saIds = (new Map<Id, ServiceAppointment>(
-                [SELECT Id FROM ServiceAppointment WHERE Subject = 'subject' LIMIT 1]
-            ))
-            .keySet();
-
         CustomNotificationType notificationType = [
             SELECT Id, DeveloperName
             FROM CustomNotificationType
             WHERE DeveloperName = 'HOT_NotifyUser'
         ];
-        HOT_ServiceAppointmentNotification.timeChanged(notificationType, saIds, recipients);
+        HOT_ServiceAppointmentNotification saN = new HOT_ServiceAppointmentNotification(saList);
+        saN.timeChanged(notificationType, [SELECT Id FROM ServiceAppointment WHERE Subject = 'subject' LIMIT 1].Id, recipients);
         Test.stopTest();
     }
     @IsTest
@@ -369,7 +365,8 @@ private class HOT_ServiceAppointmentNotificationTest {
             FROM CustomNotificationType
             WHERE DeveloperName = 'HOT_NotifyUser'
         ];
-        HOT_ServiceAppointmentNotification.timeChanged(notificationType, saIds, recipients);
+        HOT_ServiceAppointmentNotification saN = new HOT_ServiceAppointmentNotification(saList);
+        saN.timeChanged(notificationType, [SELECT Id FROM ServiceAppointment WHERE Subject = 'subject' LIMIT 1].Id, recipients);
         Test.stopTest();
     }
 
