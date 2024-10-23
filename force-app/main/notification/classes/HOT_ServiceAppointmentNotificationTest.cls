@@ -226,7 +226,8 @@ private class HOT_ServiceAppointmentNotificationTest {
             WHERE DeveloperName = 'HOT_NotifyUser'
         ];
         Test.startTest();
-        HOT_ServiceAppointmentNotification.canceledByUser(notificationType, serviceAppointment, srIds, recipients);
+        HOT_ServiceAppointmentNotification saN = new HOT_ServiceAppointmentNotification(new List<ServiceAppointment>{serviceAppointment});
+        saN.canceledByUser(notificationType, serviceAppointment, [SELECT Id FROM ServiceResource LIMIT 1].Id, recipients);
         Test.stopTest();
     }
     @IsTest
@@ -263,7 +264,8 @@ private class HOT_ServiceAppointmentNotificationTest {
             FROM CustomNotificationType
             WHERE DeveloperName = 'HOT_NotifyUser'
         ];
-        HOT_ServiceAppointmentNotification.canceledByUser(notificationType, serviceAppointment, srIds, recipients);
+        HOT_ServiceAppointmentNotification saN = new HOT_ServiceAppointmentNotification(new List<ServiceAppointment>{serviceAppointment});
+        saN.canceledByUser(notificationType, serviceAppointment, serviceResource.Id, recipients);
 
         Test.stopTest();
     }

@@ -1,12 +1,14 @@
 public without sharing class HOT_ServiceAppointmentNotification {
     Map<String,CustomNotificationType> customNotificationTypeByName;
     List<ServiceAppointment> sa;
+    List<ServiceAppointment> oldSaMap;
     Map<Id,ServiceAppointment> updatedSAMap;
     Map<Id,Id> accountIdByUSerIdMap;
     Map<Id,Id> userIdByAccountIdMap;
     Map<Id,WorkOrder> workOrderMap;
     Map<Id, Map<Id,ServiceAppointment>> serviceAppointmentByWorkOrderIdMap;
     Map<Id,String> interpreterNamesByWorkOrderIdMap;
+    Map<Id,ServiceResource> serviceResourceMap;
     
     private static void handleException(Exception e) {
         LoggerUtility logger = new LoggerUtility();
@@ -17,7 +19,7 @@ public without sharing class HOT_ServiceAppointmentNotification {
         List<ServiceAppointment> serviceAppointments,
         Map<Id, sObject> triggerOldMap
     ) {
-        HOT_ServiceAppointmentNotification sAN = new HOT_ServiceAppointmentNotification(serviceAppointments);
+        HOT_ServiceAppointmentNotification sAN = new HOT_ServiceAppointmentNotification(serviceAppointments, (Map<Id,ServiceAppointment>)triggerOldMap);
 
         //creating notification object list
         List<HOT_Notification__c> notificationList = new List<HOT_Notification__c>();
@@ -64,8 +66,7 @@ public without sharing class HOT_ServiceAppointmentNotification {
                     !recipients.contains(serviceAppointment.LastModifiedById) &&
                     serviceAppointment.HOT_CancelComment__c == null
                 ) {
-                    Set<Id> srIds = new Set<Id>{ oldServiceAppointment.HOT_ServiceResource__c };
-                    canceledByUser(saN.getCustomNotificationTypeByName('HOT_Service_Appointment_Changed'), serviceAppointment, srIds, recipients);
+                    saN.canceledByUser(saN.getCustomNotificationTypeByName('HOT_Service_Appointment_Changed'), serviceAppointment, oldServiceAppointment.HOT_ServiceResource__c, recipients);
                 }
 
                 // Varsel ved endring av tidspunkt
@@ -132,6 +133,8 @@ public without sharing class HOT_ServiceAppointmentNotification {
         List<ServiceAppointment> serviceAppointments,
         Map<Id, sObject> triggerOldMap
     ) {
+        HOT_ServiceAppointmentNotification sAN = new HOT_ServiceAppointmentNotification(serviceAppointments, (Map<Id,ServiceAppointment>)triggerOldMap);
+        
         CustomNotificationType notificationType = [
             SELECT Id, DeveloperName
             FROM CustomNotificationType
@@ -159,13 +162,12 @@ public without sharing class HOT_ServiceAppointmentNotification {
                 oldServiceAppointment.HOT_CanceledByInterpreter__c == false &&
                 serviceAppointment.HOT_CanceledByInterpreter__c == true
             ) {
-                resourceCanceled(notificationType, serviceAppointment, recipients);
+                resourceCanceled(saN.getCustomNotificationTypeByName('HOT_NotifyDispatcher'), serviceAppointment, recipients);
             }
 
             // Varsel ved avlyst på vegne av bruker
             if (serviceAppointment.Status == 'Canceled' && oldServiceAppointment.Status != 'Canceled') {
-                Set<Id> srIds = new Set<Id>{ oldServiceAppointment.HOT_ServiceResource__c };
-                canceledByUser(notificationType, serviceAppointment, srIds, recipients);
+                saN.canceledByUser(saN.getCustomNotificationTypeByName('HOT_NotifyDispatcher'), serviceAppointment, oldServiceAppointment.HOT_ServiceResource__c, recipients);
             }
         }
     }
@@ -191,20 +193,16 @@ public without sharing class HOT_ServiceAppointmentNotification {
         HOT_NotificationHandler.sendNotification(notification, recipients, (SObject) serviceAppointment);
     }
 
-    public static void canceledByUser(
+    public void canceledByUser(
         CustomNotificationType notificationType,
         ServiceAppointment serviceAppointment,
-        Set<Id> srIds,
+        Id srId,
         Set<String> recipients
     ) {
-        ServiceResource serviceResource = [
-            SELECT HOT_NotificationChannel__c, AccountId
-            FROM ServiceResource
-            WHERE Id IN :srIds AND HOT_NotificationChannel__c != NULL
-            LIMIT 1
-        ];
-        Set<Id> saSMS = new Set<Id>();
-        List<String> recipientList = new List<String>(recipients);
+        ServiceResource serviceResource = this.getServiceResourceMap().get(srId);
+        if(serviceResource == null){
+            return;
+        }
         //creating notification object list
         List<HOT_Notification__c> notificationList = new List<HOT_Notification__c>();
         if (
@@ -253,7 +251,6 @@ public without sharing class HOT_ServiceAppointmentNotification {
                 notificationList.add(newNotification);
             }
         } else {
-            saSMS.add(serviceAppointment.Id);
             //creating notification object
             if (serviceResource.AccountId != null) {
                 HOT_Notification__c newNotification = new HOT_Notification__c();
@@ -278,9 +275,7 @@ public without sharing class HOT_ServiceAppointmentNotification {
                     notificationList.add(newNotification);
                 }
             }
-        }
-        if (saSMS.size() > 0) {
-            HOT_ReminderSMSService.sendSMSToInterpreterOnCanceledByUser(saSMS, srIds);
+            HOT_ReminderSMSService.sendSMSToInterpreterOnCanceledByUser(new Set<Id>{serviceAppointment.Id}, new Set<Id>{srId});
         }
         //inserting notifications
         try {
@@ -1515,7 +1510,33 @@ public without sharing class HOT_ServiceAppointmentNotification {
         }
         return this.interpreterNamesByWorkOrderIdMap;
     }
-    public HOT_ServiceAppointmentNotification(List<ServiceAppointment> saList){
+    private static List<ServiceResource> getServiceResourceList(Set<Id> srIds){
+        List<ServiceResource> serviceResourceList = [
+            SELECT HOT_NotificationChannel__c, AccountId
+            FROM ServiceResource
+            WHERE Id IN :srIds AND HOT_NotificationChannel__c != NULL
+        ];
+        return serviceResourceList;
+    }
+    public Map<Id,ServiceResource> getServiceResourceMap(){
+        if(this.serviceResourceMap == null){
+            Set<Id> srIds = new Set<Id>();
+            for(ServiceAppointment sa : this.getUpdatedSaMap().values()){
+                if(sa.HOT_ServiceResource__c != null){
+                    srIds.add(sa.HOT_ServiceResource__c);
+                }
+            }
+            this.serviceResourceMap = new Map<Id, ServiceResource>(HOT_ServiceAppointmentNotification.getServiceResourceList(srIds));
+        }
+        return this.serviceResourceMap;
+    }
+
+    public HOT_ServiceAppointmentNotification(List<ServiceAppointment> saList, Map<Id,ServiceAppointment> oldSaMapt){
+        this.sa = saList;
+        this.oldSaMap = oldSaMap;
+    }
+    @TestVisible
+    private HOT_ServiceAppointmentNotification(List<ServiceAppointment> saList){
         this.sa = saList;
     }
 }
