@@ -477,9 +477,10 @@ private class HOT_ServiceAppointmentNotificationTest {
         update serviceAppointment2;
 
         //Freelance notification
-        HOT_ServiceAppointmentNotification.notifyInterpretersOnChangedResource(serviceAppointment2);
+        HOT_ServiceAppointmentNotification saN = new HOT_ServiceAppointmentNotification(new List<ServiceAppointment>{serviceAppointment});
+        saN.notifyInterpretersOnChangedResource(serviceAppointment2);
         //Employee notification
-        HOT_ServiceAppointmentNotification.notifyInterpretersOnChangedResource(serviceAppointment);
+        saN.notifyInterpretersOnChangedResource(serviceAppointment);
         Test.stopTest();
     }
 
