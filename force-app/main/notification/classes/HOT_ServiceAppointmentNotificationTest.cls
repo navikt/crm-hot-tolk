@@ -201,7 +201,8 @@ private class HOT_ServiceAppointmentNotificationTest {
         update serviceAppointment;
 
         Test.startTest();
-        HOT_ServiceAppointmentNotification.notifyUserOnChangedResource(serviceAppointment);
+        HOT_ServiceAppointmentNotification saN = new HOT_ServiceAppointmentNotification(new List<ServiceAppointment>{serviceAppointment});
+        saN.notifyUserOnChangedResource(serviceAppointment);
         Test.stopTest();
     }
 
