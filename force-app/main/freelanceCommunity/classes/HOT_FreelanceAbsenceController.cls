@@ -45,7 +45,7 @@ public with sharing class HOT_FreelanceAbsenceController {
             prepareAndThrowAuraException(ERROR_INVALID_ABSENCE_TYPE);
         }
 
-        if (startTimeInMilliseconds > endTimeInMilliseconds) {
+        if (startTimeInMilliseconds >= endTimeInMilliseconds) {
             prepareAndThrowAuraException(ERROR_INVALID_START_AND_END_TIME);
         }
 
@@ -57,7 +57,7 @@ public with sharing class HOT_FreelanceAbsenceController {
             Date endDate = endTime.date();
             startTime = Datetime.newInstance(startDate.year(), startDate.month(), startDate.day());
             endTime = Datetime.newInstance(endDate.year(), endDate.month(), endDate.day());
-            if (endTime != Datetime.newInstance(endTimeInMilliseconds)) {
+            if (endTime != Datetime.newInstance(endTimeInMilliseconds) || startTime == endTime) {
                 // om tid ikke er start på dagen, flytt end time til slutt på dagen.
                 endTime = endTime.addDays(1);
             }
@@ -88,6 +88,7 @@ public with sharing class HOT_FreelanceAbsenceController {
         Date splitDate = startTime.addDays(14).date();
         Datetime splitDatetime = Datetime.newInstance(splitDate.year(), splitDate.month(), splitDate.day());
         Datetime previous = startTime;
+        System.debug('Andre ' + previous + ' ' + endTime);
         while (previous < endTime) {
             Datetime chunkEndTime = splitDatetime < endTime ? splitDatetime : endTime;
             events.add(createAbsenceEvent(absence.Id, previous, chunkEndTime, absenceType));

@@ -98,7 +98,7 @@ export default class Hot_Calendar_Absence_Modal extends LightningModal {
 
         const startInput = this.refs.absenceStartDateTimeInput;
         startInput.setCustomValidity(
-            startTime > endTime && this.endHasBeenSet ? 'Sluttid må komme etter starttid' : ''
+            startTime >= endTime && this.endHasBeenSet ? 'Sluttid må komme etter starttid' : ''
         );
         startInput.reportValidity();
         this.initialAbsenceStart = event.detail.value;
@@ -108,7 +108,7 @@ export default class Hot_Calendar_Absence_Modal extends LightningModal {
         const startInput = this.refs.absenceStartDateTimeInput;
         const startTime = new Date(startInput.value);
         const newEndDate = new Date(event.detail.value);
-        startInput.setCustomValidity(startTime > newEndDate ? 'Sluttid må komme etter starttid' : '');
+        startInput.setCustomValidity(startTime >= newEndDate ? 'Sluttid må komme etter starttid' : '');
         startInput.reportValidity();
         this.endHasBeenSet = true;
         this.initialAbsenceEnd = event.detail.value;
@@ -138,8 +138,8 @@ export default class Hot_Calendar_Absence_Modal extends LightningModal {
         }
 
         const absenceStartElement = this.refs.absenceStartDateTimeInput;
-        if (absenceEndDateTime < absenceStartDateTime) {
-            absenceStartElement.setCustomValidity('Starttid kan ikke komme etter sluttid');
+        if (absenceEndDateTime <= absenceStartDateTime) {
+            absenceStartElement.setCustomValidity('Sluttid må komme etter starttid');
             absenceStartElement.reportValidity();
             validInputs = false;
         } else {
