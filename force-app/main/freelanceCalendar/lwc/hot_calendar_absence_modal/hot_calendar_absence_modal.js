@@ -30,23 +30,28 @@ export default class Hot_Calendar_Absence_Modal extends LightningModal {
         ];
     }
 
-    getNorwegianAbsenceType(absenceType) {
-        switch (absenceType) {
-            case 'Ferie':
-                return 'Vacation';
-            case 'Sykdom':
-                return 'Medical';
-            case 'Annet':
-                return 'Other';
-            default:
-                return 'Other';
+    getEnglishAbsenceType(absenceType) {
+        for (const pair of this.options) {
+            if (absenceType === pair.label) {
+                return pair.value;
+            }
         }
+        return 'Other';
+    }
+
+    getNorwegianAbsenceType(absenceType) {
+        for (const pair of this.options) {
+            if (absenceType === pair.value) {
+                return pair.label;
+            }
+        }
+        return 'Annet';
     }
 
     connectedCallback() {
         if (this.event && this.event.extendedProps.recordId) {
             this.isEdit = true;
-            this.absenceType = this.getNorwegianAbsenceType(this.event.extendedProps.description);
+            this.absenceType = this.getEnglishAbsenceType(this.event.extendedProps.description);
             this.initialAbsenceStart = this.formatLocalDateTime(this.event.start);
             this.initialAbsenceEnd = this.formatLocalDateTime(this.event.end);
         } else {
