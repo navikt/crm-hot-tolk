@@ -271,7 +271,7 @@ public without sharing class HOT_ServiceAppointmentNotification {
                 newNotification.HOT_NotificationText__c =
                     'For mer informasjon, se tolkebestilling.nav.no.\n' +
                     'Du kan ikke svare på denne meldingen.\n' +
-                    'Mvh tolketjenesten i NAV';
+                    'Mvh tolketjenesten i Nav';
                 newNotification.HOT_RelatedObject__c = serviceAppointment.Id;
                 newNotification.HOT_RelatedObjectType__c = 'noServiceAppointment';
 
@@ -386,7 +386,7 @@ public without sharing class HOT_ServiceAppointmentNotification {
                         serviceAppointment.DueDate?.format('HH:mm') +
                         '\nFor mer informasjon, se tolkebestilling.nav.no.\n' +
                         'Du kan ikke svare på denne meldingen.\n' +
-                        'Mvh tolketjenesten i NAV';
+                        'Mvh tolketjenesten i Nav';
                     newNotification.HOT_RelatedObject__c = serviceAppointment.Id;
                     newNotification.HOT_RelatedObjectType__c = 'serviceAppointment';
 
@@ -492,7 +492,7 @@ public without sharing class HOT_ServiceAppointmentNotification {
                     newNotification.HOT_NotificationText__c =
                         'For mer informasjon, se tolkebestilling.nav.no.\n' +
                         'Du kan ikke svare på denne meldingen.\n' +
-                        'Mvh tolketjenesten i NAV';
+                        'Mvh tolketjenesten i Nav';
                     newNotification.HOT_RelatedObject__c = serviceAppointment.Id;
                     newNotification.HOT_RelatedObjectType__c = 'serviceAppointment';
 
@@ -596,7 +596,7 @@ public without sharing class HOT_ServiceAppointmentNotification {
                     newNotification.HOT_NotificationText__c +=
                         '\nFor mer informasjon, se tolkebestilling.nav.no.\n' +
                         'Du kan ikke svare på denne meldingen.\n' +
-                        'Mvh tolketjenesten i NAV';
+                        'Mvh tolketjenesten i Nav';
                     newNotification.HOT_RelatedObject__c = serviceAppointment.Id;
                     newNotification.HOT_RelatedObjectType__c = 'serviceAppointment';
 
@@ -703,7 +703,7 @@ public without sharing class HOT_ServiceAppointmentNotification {
                 newNotification.HOT_NotificationText__c +=
                     'For mer informasjon, se tolkebestilling.nav.no.\n' +
                     'Du kan ikke svare på denne meldingen.\n' +
-                    'Mvh tolketjenesten i NAV';
+                    'Mvh tolketjenesten i Nav';
                 newNotification.HOT_RelatedObject__c = serviceAppointment.Id;
                 newNotification.HOT_RelatedObjectType__c = 'noServiceAppointment';
 
@@ -824,7 +824,7 @@ public without sharing class HOT_ServiceAppointmentNotification {
                     newNotification.HOT_NotificationText__c =
                         'For mer informasjon, se tolkebestilling.nav.no.\n' +
                         'Du kan ikke svare på denne meldingen.\n' +
-                        'Mvh tolketjenesten i NAV';
+                        'Mvh tolketjenesten i Nav';
                     newNotification.HOT_RelatedObject__c = serviceAppointment.Id;
                     newNotification.HOT_RelatedObjectType__c = 'serviceAppointment';
 
@@ -1131,7 +1131,7 @@ public without sharing class HOT_ServiceAppointmentNotification {
                                 updatedSAWithInterpreterRemoved.SchedEndTime
                             );
                         text += '\n\nFor mer informasjon, se tolkebestilling.nav.no. Du kan ikke svare på denne meldingen.';
-                        text += '\nMvh tolketjenesten i NAV';
+                        text += '\nMvh tolketjenesten i Nav';
                         if (text.length() > 250) {
                             newNotification.HOT_NotificationText__c = text.substring(0, 250) + ' ...';
                         } else {
@@ -1283,7 +1283,7 @@ public without sharing class HOT_ServiceAppointmentNotification {
                                 updatedSAWithNewInterpreter.SchedEndTime
                             );
                         text += '\n\nFor mer informasjon, se tolkebestilling.nav.no. Du kan ikke svare på denne meldingen.';
-                        text += '\nMvh tolketjenesten i NAV';
+                        text += '\nMvh tolketjenesten i Nav';
                         if (text.length() > 250) {
                             newNotification.HOT_NotificationText__c = text.substring(0, 250) + ' ...';
                         } else {
@@ -1434,7 +1434,7 @@ public without sharing class HOT_ServiceAppointmentNotification {
                                 updatedSAWithNewInterpreter.SchedEndTime
                             );
                         text += '\n\nFor mer informasjon, se tolkebestilling.nav.no. Du kan ikke svare på denne meldingen.';
-                        text += '\nMvh tolketjenesten i NAV';
+                        text += '\nMvh tolketjenesten i Nav';
                         if (text.length() > 250) {
                             newNotification.HOT_NotificationText__c = text.substring(0, 250) + ' ...';
                         } else {

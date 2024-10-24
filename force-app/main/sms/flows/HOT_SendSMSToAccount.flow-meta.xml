@@ -268,8 +268,9 @@
         <allowPause>true</allowPause>
         <fields>
             <name>errorMsg</name>
-            <fieldText
-            >&lt;p&gt;Brukeren har ikke registrert et telefonnummer i kontakt- og reservasjonsregisteret, og du kan derfor ikke sende en sms til bruker på denne måten.&lt;/p&gt;</fieldText>
+            <fieldText>&lt;p&gt;Brukeren har ikke registrert et telefonnummer i kontakt- og
+                reservasjonsregisteret, og du kan derfor ikke sende en sms til bruker på denne
+                måten.&lt;/p&gt;</fieldText>
             <fieldType>DisplayText</fieldType>
         </fields>
         <showFooter>true</showFooter>
@@ -293,8 +294,8 @@
             </defaultValue>
             <fieldText>Melding</fieldText>
             <fieldType>LargeTextArea</fieldType>
-            <helpText
-            >&lt;p&gt;Ikke skriv sensitive opplysninger! Meldingen vil bli sendt til nummeret brukeren har registrert i kontakt og reservasjonsregisteret.&lt;/p&gt;</helpText>
+            <helpText>&lt;p&gt;Ikke skriv sensitive opplysninger! Meldingen vil bli sendt til
+                nummeret brukeren har registrert i kontakt og reservasjonsregisteret.&lt;/p&gt;</helpText>
             <inputsOnNextNavToAssocScrn>UseStoredValues</inputsOnNextNavToAssocScrn>
             <isRequired>true</isRequired>
         </fields>
@@ -312,16 +313,16 @@
     <textTemplates>
         <name>quicktext1</name>
         <isViewedAsPlainText>true</isViewedAsPlainText>
-        <text>Hei! 
+        <text>Hei!
 Det har dessverre ikke latt seg gjøre å skaffe tolk til din bestilling i dag.
-Mvh tolketjenesten i NAV</text>
+Mvh tolketjenesten i Nav</text>
     </textTemplates>
     <textTemplates>
         <name>quicktext2</name>
         <isViewedAsPlainText>true</isViewedAsPlainText>
         <text>Hei!
 Du har fått tolk til din bestilling for [dato,klokkeslett]. For mer informasjon, logg inn på tolkebestilling.nav.no.
-Mvh tolketjenesten i NAV</text>
+Mvh tolketjenesten i Nav</text>
     </textTemplates>
     <variables>
         <name>choosenQuickText</name>
