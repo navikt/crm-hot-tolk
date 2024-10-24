@@ -11,8 +11,8 @@ export default class Hot_Calendar_Absence_Modal extends LightningModal {
     @api event;
     isEdit;
     absenceType;
-    initialAbsenceStart;
-    initialAbsenceEnd;
+    @api initialAbsenceStart;
+    @api initialAbsenceEnd;
     value = '';
     timeFormat = 'datetime';
     isAllDayAbsence = false;
@@ -52,8 +52,10 @@ export default class Hot_Calendar_Absence_Modal extends LightningModal {
         } else {
             const now = new Date();
             const startTime = new Date(now.getTime() + (60 - now.getMinutes()) * 60000);
-            this.initialAbsenceStart = this.formatLocalDateTime(startTime);
-            this.initialAbsenceEnd = this.formatLocalDateTime(new Date(startTime.getTime() + 86400000));
+            this.initialAbsenceStart = this.formatLocalDateTime(this.initialAbsenceStart ?? startTime);
+            this.initialAbsenceEnd = this.formatLocalDateTime(
+                this.initialAbsenceEnd ?? new Date(startTime.getTime() + 60 * 60000)
+            );
         }
 
         this.headerText = this.isEdit ? 'Endre/Slett fravær' : 'Registrer nytt fravær';
