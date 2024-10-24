@@ -57,7 +57,10 @@ public with sharing class HOT_FreelanceAbsenceController {
             Date endDate = endTime.date();
             startTime = Datetime.newInstance(startDate.year(), startDate.month(), startDate.day());
             endTime = Datetime.newInstance(endDate.year(), endDate.month(), endDate.day());
-            endTime = endTime.addDays(1);
+            if (endTime != Datetime.newInstance(endTimeInMilliseconds)) {
+                // om tid ikke er start på dagen, flytt end time til slutt på dagen.
+                endTime = endTime.addDays(1);
+            }
         }
 
         ResourceAbsence absence = new ResourceAbsence();
