@@ -1,4 +1,6 @@
 public without sharing class HOT_ServiceAppointmentNotification {
+    Map<String,CustomNotificationType> customNotificationTypeByName;
+    
     private static void handleException(Exception e) {
         LoggerUtility logger = new LoggerUtility();
         logger.exception(e, CRM_ApplicationDomain.Domain.HOT);
@@ -8,11 +10,14 @@ public without sharing class HOT_ServiceAppointmentNotification {
         List<ServiceAppointment> serviceAppointments,
         Map<Id, sObject> triggerOldMap
     ) {
-        CustomNotificationType notificationType = [
+        HOT_ServiceAppointmentNotification sAN = new HOT_ServiceAppointmentNotification();
+        //CustomNotificationType notificationType = new HOT_ServiceAppointmentNotification().getCustomNotificationTypeByName('HOT_Service_Appointment_Changed');
+        /*[
             SELECT Id, DeveloperName
             FROM CustomNotificationType
             WHERE DeveloperName = 'HOT_Service_Appointment_Changed'
         ];
+        */
         //creating notification object list
         List<HOT_Notification__c> notificationList = new List<HOT_Notification__c>();
 
@@ -27,7 +32,7 @@ public without sharing class HOT_ServiceAppointmentNotification {
                 Set<String> interpreterRecipients = new Set<String>{ serviceAppointment.HOT_AssignedResourceId__c };
                 Set<Id> saIds = new Set<Id>{ serviceAppointment.Id };
                 if (serviceAppointment.HOT_AssignedResourceId__c != null) {
-                    resourceAdded(notificationType, saIds, interpreterRecipients);
+                    resourceAdded(saN.getCustomNotificationTypeByName('HOT_Service_Appointment_Changed'), saIds, interpreterRecipients);
                     notifyInterpretersOnCoInterpreterAdded(serviceAppointment);
                 }
             }
@@ -41,7 +46,7 @@ public without sharing class HOT_ServiceAppointmentNotification {
             ) {
                 Set<String> interpreterRecipients = new Set<String>{ serviceAppointment.HOT_AssignedResourceId__c };
                 Set<Id> saIds = new Set<Id>{ serviceAppointment.Id };
-                resourceAdded(notificationType, saIds, interpreterRecipients);
+                resourceAdded(saN.getCustomNotificationTypeByName('HOT_Service_Appointment_Changed'), saIds, interpreterRecipients);
 
                 notifyUserOnChangedResource(serviceAppointment);
                 notifyInterpretersOnChangedResource(serviceAppointment);
@@ -61,7 +66,7 @@ public without sharing class HOT_ServiceAppointmentNotification {
                     serviceAppointment.HOT_CancelComment__c == null
                 ) {
                     Set<Id> srIds = new Set<Id>{ oldServiceAppointment.HOT_ServiceResource__c };
-                    canceledByUser(notificationType, serviceAppointment, srIds, recipients);
+                    canceledByUser(saN.getCustomNotificationTypeByName('HOT_Service_Appointment_Changed'), serviceAppointment, srIds, recipients);
                 }
 
                 // Varsel ved endring av tidspunkt
@@ -74,7 +79,7 @@ public without sharing class HOT_ServiceAppointmentNotification {
                     oldServiceAppointment.DueDate != null
                 ) {
                     Set<Id> saIds = new Set<Id>{ serviceAppointment.Id };
-                    timeChanged(notificationType, saIds, recipients);
+                    timeChanged(saN.getCustomNotificationTypeByName('HOT_Service_Appointment_Changed'), saIds, recipients);
                 }
 
                 // Varsel ved endring av adresse
@@ -84,7 +89,7 @@ public without sharing class HOT_ServiceAppointmentNotification {
                     serviceAppointment.Status != 'Scheduled'
                 ) {
                     Set<Id> saIds = new Set<Id>{ serviceAppointment.Id };
-                    addressChanged(notificationType, saIds, recipients);
+                    addressChanged(saN.getCustomNotificationTypeByName('HOT_Service_Appointment_Changed'), saIds, recipients);
                 }
 
                 // Varsel ved fjerning av tolk + varsel til medtolk av tolken er tatt av
@@ -98,7 +103,7 @@ public without sharing class HOT_ServiceAppointmentNotification {
                     serviceAppointment.HOT_CanceledByInterpreter__c == false
                 ) {
                     Set<Id> saIds = new Set<Id>{ serviceAppointment.Id };
-                    resourceChanged(notificationType, saIds, recipients);
+                    resourceChanged(saN.getCustomNotificationTypeByName('HOT_Service_Appointment_Changed'), saIds, recipients);
                     notifyInterpretersOnCoInterpreterRemoved(serviceAppointment);
                 }
 
@@ -112,7 +117,7 @@ public without sharing class HOT_ServiceAppointmentNotification {
                     String isScreenInterpreterString = serviceAppointment.HOT_IsScreenInterpreterNew__c
                         ? 'skjermtolk'
                         : 'oppmøtetolk';
-                    screenInterpreterChanged(notificationType, saIds, recipients, isScreenInterpreterString);
+                    screenInterpreterChanged(saN.getCustomNotificationTypeByName('HOT_Service_Appointment_Changed'), saIds, recipients, isScreenInterpreterString);
                 }
             }
         }
@@ -1478,4 +1483,24 @@ public without sharing class HOT_ServiceAppointmentNotification {
             '"}}';
         return pageRef;
     }
+
+    private static Map<String,CustomNotificationType> getCustomNotificationTypeByNameMap(){
+        Map<String, CustomNotificationType> cntMap = new Map<String, CustomNotificationType>();
+        List<CustomNotificationType> cntList = [
+            SELECT Id, DeveloperName
+            FROM CustomNotificationType
+        ];
+        for(CustomNotificationType cnt : cntList){
+            cntMap.put(cnt.DeveloperName,cnt);
+        }
+        return cntMap;
+    }
+    
+    public CustomNotificationType getCustomNotificationTypeByName(String Name){
+        if(this.customNotificationTypeByName == null){
+            this.customNotificationTypeByName = HOT_ServiceAppointmentNotification.getCustomNotificationTypeByNameMap();
+        }
+        return this.customNotificationTypeByName.get(Name);
+    }
+    public HOT_ServiceAppointmentNotification(){}
 }
