@@ -88,7 +88,6 @@ public with sharing class HOT_FreelanceAbsenceController {
         Date splitDate = startTime.addDays(14).date();
         Datetime splitDatetime = Datetime.newInstance(splitDate.year(), splitDate.month(), splitDate.day());
         Datetime previous = startTime;
-        System.debug('Andre ' + previous + ' ' + endTime);
         while (previous < endTime) {
             Datetime chunkEndTime = splitDatetime < endTime ? splitDatetime : endTime;
             events.add(createAbsenceEvent(absence.Id, previous, chunkEndTime, absenceType));

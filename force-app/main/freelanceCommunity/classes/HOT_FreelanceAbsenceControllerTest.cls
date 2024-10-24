@@ -204,8 +204,6 @@ private class HOT_FreelanceAbsenceControllerTest {
             true
         );
 
-        System.debug('Andre ' + conflictsBeforeResolution);
-
         Test.startTest();
         absenceId = HOT_FreelanceAbsenceController.createAbsenceAndResolveConflicts(
             absenceStart.getTime(),
@@ -215,7 +213,6 @@ private class HOT_FreelanceAbsenceControllerTest {
         );
 
         Test.stopTest();
-        System.debug('Andre' + absenceId);
 
         HOT_FreelanceAbsenceController.ConflictingRecord[] conflictsAfterResolution = HOT_FreelanceAbsenceController.getConflictsForTimePeriod(
             absenceStart.getTime(),
@@ -223,16 +220,12 @@ private class HOT_FreelanceAbsenceControllerTest {
             true
         );
 
-        System.debug('Andre' + conflictsAfterResolution);
-
         ResourceAbsence absence = [
             SELECT Id
             FROM ResourceAbsence
             WHERE Id = :absenceId
             LIMIT 1
         ];
-
-        System.debug('Andre' + absence);
 
         Event[] relatedEvents = [
             SELECT Id
