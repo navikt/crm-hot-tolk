@@ -87,8 +87,8 @@ export default class Hot_Calendar_Absence_Modal extends LightningModal {
     handleDateStartChange(event) {
         const startTime = new Date(event.detail.value);
         const endTime = new Date(this.refs.absenceEndDateTimeInput.value);
-        if (startTime > endTime && !this.endHasBeenSet) {
-            this.initialAbsenceEnd = event.detail.value;
+        if (!this.endHasBeenSet) {
+            this.initialAbsenceEnd = this.formatLocalDateTime(new Date(startTime.getTime() + 60 * 60 * 1000 * 24));
         }
 
         const startInput = this.refs.absenceStartDateTimeInput;
