@@ -191,22 +191,6 @@ public without sharing class HOT_ThreadHandler extends MyTriggers {
             WHERE CRM_Related_Object__c IN :workOrderIds
         ];
         setInterpreterThread(threads, serviceAppointmentsByWorkOrderId);
-        /*
-        for (Thread__c thread : threads) {
-            //TODO: check for changes before update
-            thread.HOT_ParticipantIds__c = '';
-            if (serviceAppointmentsByWorkOrderId.get(thread.CRM_Related_Object__c) != null) {
-                for (
-                    ServiceAppointment serviceAppointment : serviceAppointmentsByWorkOrderId.get(
-                        thread.CRM_Related_Object__c
-                    )
-                ) {
-                    thread = appendInterpreterUserIds(thread, serviceAppointment);
-                }
-            }
-        }
-        HOT_DatabaseOperations.updateRecords(threads);
-        */
     }
 
     private static void setInterpreterThread(List<Thread__c> threads, Map<Id,List<ServiceAppointment>> saByWoIdMap){
@@ -224,7 +208,6 @@ public without sharing class HOT_ThreadHandler extends MyTriggers {
                 newParticipantIds.add(sa.HOT_ServiceResource__r.RelatedRecordId);
             }
             if(!newParticipantIds.equals(oldParticipantIds)){
-                //thread.HOT_ParticipantIds__c = String.join(new List<String>(newParticipantIds), ',');
                 threadsToUpdate.add(
                     new Thread__c(
                         Id = thread.Id, 
@@ -343,15 +326,5 @@ public without sharing class HOT_ThreadHandler extends MyTriggers {
             }
         }
         return serviceAppointmentsByWorkOrderId;
-    }
-    public static Thread__c appendInterpreterUserIds(Thread__c thread, ServiceAppointment serviceAppointment) {
-        if (thread.HOT_ParticipantIds__c != '') {
-            if (!thread.HOT_ParticipantIds__c.contains(serviceAppointment.HOT_ServiceResource__r.RelatedRecordId)) {
-                thread.HOT_ParticipantIds__c += ', ' + serviceAppointment.HOT_ServiceResource__r?.RelatedRecordId;
-            }
-        } else {
-            thread.HOT_ParticipantIds__c = serviceAppointment.HOT_ServiceResource__r?.RelatedRecordId;
-        }
-        return thread;
     }
 }
