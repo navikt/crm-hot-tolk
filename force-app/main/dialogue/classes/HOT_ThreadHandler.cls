@@ -230,7 +230,7 @@ public without sharing class HOT_ThreadHandler extends MyTriggers {
                         Id = thread.Id, 
                         HOT_ParticipantIds__c = String.join(
                             new List<String>(newParticipantIds),
-                            ','
+                            ', '
                         )
                     )
                 );
