@@ -19,7 +19,6 @@ public without sharing class HOT_RequestHandler extends MyTriggers {
                 'NumberOfWorkOrders__c'
             }
         );
-        //setSourceFieldOnClone((List<HOT_Request__c>) records);
         List<HOT_Request__c> imageInterpreterRequests = new List<HOT_Request__c>();
         List<HOT_Request__c> requestsWithUserInterpretationMethod = new List<HOT_Request__c>();
 
@@ -532,15 +531,6 @@ public without sharing class HOT_RequestHandler extends MyTriggers {
                 if (request.get(field) != null) {
                     request.put(field, null);
                 }
-            }
-        }
-    }
-
-    // If Request is cloned we can assume it is Formidler since users can't clone
-    public static void setSourceFieldOnClone(List<HOT_Request__c> requests) {
-        for (HOT_Request__c request : requests) {
-            if (request.isClone()) {
-                request.Source__c = 'Dispatcher';
             }
         }
     }

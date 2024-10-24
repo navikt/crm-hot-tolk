@@ -851,64 +851,6 @@ public without sharing class HOT_ServiceAppointmentNotification {
 
         return timePeriod;
     }
-
-    public static void notiyUserOnStatusChange(ServiceAppointment sa) {
-        List<Id> accountIds = new List<Id>();
-        Boolean isPerson = false;
-
-        accountIds.add(sa.AccountId);
-
-        List<User> users = [SELECT Id, AccountId FROM User WHERE AccountId IN :accountIds];
-
-        Map<Id, Id> userIdByAccountId = new Map<Id, Id>();
-        for (User user : users) {
-            userIdByAccountId.put(user.AccountId, user.Id);
-        }
-
-        // Needed to get latest SR and status I guess
-        ServiceAppointment updatedSA = [
-            SELECT HOT_ServiceResource__r.Name, Status, HOT_WorkOrderLineItem__r.WorkOrderId
-            FROM ServiceAppointment
-            WHERE Id = :sa.Id
-        ];
-
-        List<WorkOrder> workordersList = [
-            SELECT
-                Id,
-                StartDate,
-                EndDate,
-                AccountId,
-                HOT_Interpreters__c,
-                HOT_Request__r.IsNotNotifyAccount__c,
-                Account.CRM_Person__r.HOT_NotificationChannel__c,
-                Account.CRM_Person__r.HOT_IsReservationAgainstNotifications__c
-            FROM WorkOrder
-            WHERE
-                Id = :updatedSA.HOT_WorkOrderLineItem__r.WorkOrderId
-                AND Account.CRM_Person__r.HOT_NotificationChannel__c != NULL
-                AND Account.CRM_Person__r.HOT_IsReservationAgainstNotifications__c = FALSE
-        ];
-
-        if (!workordersList.isEmpty()) {
-            for (WorkOrder wo : workordersList) {
-                isPerson = wo.Account.CRM_Person__c != null ? true : false;
-                Set<String> recipients = new Set<String>();
-                if (userIdByAccountId.get(wo.AccountId) != null && !wo.HOT_Request__r.IsNotNotifyAccount__c) {
-                    recipients.add(userIdByAccountId.get(wo.AccountId));
-                }
-                if (recipients.size() != 0 && isPerson) {
-                    if (wo.Account.CRM_Person__r.HOT_NotificationChannel__c.contains('Push')) {
-                        HOT_UserNotificationService.statusChangeNotification(
-                            getCustomNotificationType('HOT_NotifyUser'),
-                            wo,
-                            updatedSA,
-                            recipients
-                        );
-                    }
-                }
-            }
-        }
-    }
     public static void notifyUserOnChangedResource(ServiceAppointment sa) {
         List<Id> accountIds = new List<Id>();
 

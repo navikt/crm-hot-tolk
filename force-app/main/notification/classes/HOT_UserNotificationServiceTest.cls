@@ -75,63 +75,6 @@ public class HOT_UserNotificationServiceTest {
         );
         Test.stopTest();
     }
-
-    @IsTest
-    private static void statusChangeNotificationDispatchedTest() {
-        CustomNotificationType notificationType = [
-            SELECT Id, DeveloperName
-            FROM CustomNotificationType
-            WHERE DeveloperName = 'HOT_NotifyUser'
-        ];
-        ServiceAppointment serviceAppointment = [
-            SELECT HOT_ServiceResource__r.Name, Status, HOT_WorkOrderLineItem__r.WorkOrderId
-            FROM ServiceAppointment
-        ];
-        WorkOrder workOrder = [
-            SELECT Id, StartDate, EndDate, HOT_Interpreters__c, Status
-            FROM WorkOrder
-            WHERE Id = :serviceAppointment.HOT_WorkOrderLineItem__r.WorkOrderId
-        ];
-        workOrder.Status = 'Dispatched';
-        update workOrder;
-        Set<String> recipients = new Set<String>{ UserInfo.getUserId() };
-
-        Test.startTest();
-        HOT_UserNotificationService.statusChangeNotification(
-            notificationType,
-            workOrder,
-            serviceAppointment,
-            recipients
-        );
-        Test.stopTest();
-    }
-    @IsTest
-    private static void statusChangeNotificationTest() {
-        CustomNotificationType notificationType = [
-            SELECT Id, DeveloperName
-            FROM CustomNotificationType
-            WHERE DeveloperName = 'HOT_NotifyUser'
-        ];
-        ServiceAppointment serviceAppointment = [
-            SELECT HOT_ServiceResource__r.Name, Status, HOT_WorkOrderLineItem__r.WorkOrderId
-            FROM ServiceAppointment
-        ];
-        WorkOrder workOrder = [
-            SELECT Id, StartDate, EndDate, HOT_Interpreters__c, Status
-            FROM WorkOrder
-            WHERE Id = :serviceAppointment.HOT_WorkOrderLineItem__r.WorkOrderId
-        ];
-        Set<String> recipients = new Set<String>{ UserInfo.getUserId() };
-
-        Test.startTest();
-        HOT_UserNotificationService.statusChangeNotification(
-            notificationType,
-            workOrder,
-            serviceAppointment,
-            recipients
-        );
-        Test.stopTest();
-    }
     @IsTest
     private static void interpreterChangeNotificationTest() {
         CustomNotificationType notificationType = [

@@ -77,47 +77,6 @@ public without sharing class HOT_UserNotificationService {
             handleException(e);
         }
     }
-
-    public static void statusChangeNotification(
-        CustomNotificationType notificationType,
-        WorkOrder workOrder,
-        ServiceAppointment sa,
-        Set<String> recipients
-    ) {
-        String title = 'Status på din bestilling er endret';
-        String body;
-        if (workOrder.Status == 'Dispatched') {
-            body =
-                'Du har fått tolk. ' +
-                (sa.HOT_ServiceResource__r.Name != null ? 'Tolk er ' + sa.HOT_ServiceResource__r.Name + '.' : '');
-        }
-        if (workOrder.Status == 'Cannot Complete') {
-            body = 'Ikke ledig tolk';
-        }
-        body +=
-            '\nDato: ' +
-            workOrder.StartDate?.format('dd.MM.yyyy', 'Europe/Oslo') +
-            ', kl: ' +
-            workOrder.StartDate?.format('HH:mm', 'Europe/Oslo') +
-            ' - ' +
-            workOrder.EndDate?.format('HH:mm', 'Europe/Oslo') +
-            '.';
-
-        Id notificationTypeId = notificationType.Id;
-        String targetPageRef = getTargetPageRef(workOrder.Id, 'WO');
-        Messaging.CustomNotification notification = new Messaging.CustomNotification();
-        notification.setTitle(title);
-        notification.setBody(body);
-        notification.setNotificationTypeId(notificationTypeId);
-        notification.setTargetPageRef(targetPageRef);
-
-        try {
-            notification.send(recipients);
-        } catch (Exception e) {
-            handleException(e);
-        }
-    }
-
     public static void reminderNotification(
         CustomNotificationType notificationType,
         WorkOrder workOrder,
