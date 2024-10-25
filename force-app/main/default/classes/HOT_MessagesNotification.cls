@@ -1,4 +1,33 @@
 public without sharing class HOT_MessagesNotification {
+    public static HOT_Notification__c newMessageNotificationPush(Id accountId, Thread__c thread, String type) {
+        HOT_Notification__c notification = new HOT_Notification__c();
+        notification.HOT_Account__c = accountId;
+        notification.HOT_NotificationChannel__c = 'Push-varsel i appen';
+        notification.HOT_Subject__c = 'Ny melding fra Tolketjenesten';
+        notification.HOT_NotificationText__c = 'Du har fått en melding fra Tolketjenesten.';
+        notification.HOT_RelatedObject__c = thread.Id;
+        notification.HOT_RelatedObjectType__c = type;
+        return notification;
+    }
+    public static HOT_Notification__c newMessageNotificationSMS(Id accountId, Thread__c thread, String type) {
+        HOT_Notification__c notification = new HOT_Notification__c();
+        notification.HOT_Account__c = accountId;
+        notification.HOT_NotificationChannel__c = 'SMS';
+        notification.HOT_Subject__c = 'Ny melding fra Tolketjenesten';
+        notification.HOT_NotificationText__c = 'Du har fått en melding fra Tolketjenesten.';
+        notification.HOT_RelatedObject__c = thread.Id;
+        notification.HOT_RelatedObjectType__c = type;
+        return notification;
+    }
+    private static void insertNotifications(List<HOT_Notification__c> notifications) {
+        try {
+            HOT_NotificationCentreController.createNotification(notifications);
+        } catch (Exception e) {
+            LoggerUtility logger = new LoggerUtility();
+            logger.exception(e, CRM_ApplicationDomain.Domain.HOT);
+            logger.publish();
+        }
+    }
     public static void NotifyDispatcher(List<Id> threadIds) {
         List<Thread__c> threads = [
             SELECT Id, Name, OwnerId, HOT_Dispatcher__c, HOT_Subject__c
@@ -67,7 +96,7 @@ public without sharing class HOT_MessagesNotification {
         for (User user : users) {
             userIdByAccountId.put(user.AccountId, user.Id);
         }
-        //creating notification object list
+        //LAGER VARSLINGSOBJEKT LISTE TIL INSETTING SENERE
         List<HOT_Notification__c> notificationList = new List<HOT_Notification__c>();
 
         if (!threads.isEmpty()) {
@@ -83,6 +112,7 @@ public without sharing class HOT_MessagesNotification {
                     }
                 }
                 if (recipients.size() > 0) {
+                    //FØRST MÅ MAN FINNE UT AV OM DET ER EN TOLKE SAMTALE ELLER EN SAMTALE SOM BRUKER, OG BASERT PÅ DET BRUKE BRUKEREN  ELLER TOLKEN SIN VARSLINGSMETODE
                     if (
                         (thread.CRM_Thread_Type__c == 'HOT_TOLK-FORMIDLER' ||
                         thread.CRM_Thread_Type__c == 'HOT_TOLK-RESSURSKONTOR' &&
@@ -94,29 +124,25 @@ public without sharing class HOT_MessagesNotification {
                             thread.CRM_Thread_Type__c == 'HOT_TOLK-RESSURSKONTOR' ||
                             thread.CRM_Thread_Type__c == 'HOT_TOLK-FORMIDLER'
                         ) {
-                            //creating notification object
-                            HOT_Notification__c notification = new HOT_Notification__c();
-                            notification.HOT_Account__c = thread.CRM_Account__c;
-                            notification.HOT_NotificationChannel__c = 'Push-varsel i appen';
-                            notification.HOT_Subject__c = 'Ny melding fra Tolketjenesten';
-                            notification.HOT_NotificationText__c = 'Du har fått en melding fra Tolketjenesten.';
-                            notification.HOT_RelatedObject__c = thread.Id;
-                            notification.HOT_RelatedObjectType__c = 'threadInterpreter';
-
-                            notificationList.add(notification);
+                            //BETYR AT VARSELET SKAL LINKE TIL TOLKE SAMTALER. SAMTALER MELLOM RESSURSKONTOR OG EN TIL EN MED FORMIDLER
+                            //LAGER NOTIFIKASJONSOBJEKTET
+                            HOT_Notification__c newNotification = newMessageNotificationPush(
+                                thread.CRM_Account__c,
+                                thread,
+                                'threadInterpreter'
+                            );
+                            notificationList.add(newNotification);
                         } else {
-                            //creating notification object
-                            HOT_Notification__c notification = new HOT_Notification__c();
-                            notification.HOT_Account__c = thread.CRM_Account__c;
-                            notification.HOT_NotificationChannel__c = 'Push-varsel i appen';
-                            notification.HOT_Subject__c = 'Ny melding fra Tolketjenesten';
-                            notification.HOT_NotificationText__c = 'Du har fått en melding fra Tolketjenesten.';
-                            notification.HOT_RelatedObject__c = thread.Id;
-                            notification.HOT_RelatedObjectType__c = 'threadUser';
-
-                            notificationList.add(notification);
+                            //BETYR AT VARSELET SKAL LINKE TIL SAMTALE HVOR BRUKEREN IKKE ER TOLK
+                            //LAGER NOTIFIKASJONSOBJEKTET
+                            HOT_Notification__c newNotification = newMessageNotificationPush(
+                                thread.CRM_Account__c,
+                                thread,
+                                'threadUser'
+                            );
+                            notificationList.add(newNotification);
                         }
-
+                        //SENDER UT PUSHVARSEL
                         HOT_UserNotificationService.newMessageNotification(
                             getCustomNotificationType('HOT_NotifyUser'),
                             thread,
@@ -130,50 +156,33 @@ public without sharing class HOT_MessagesNotification {
                             thread.CRM_Thread_Type__c == 'HOT_TOLK-RESSURSKONTOR' ||
                             thread.CRM_Thread_Type__c == 'HOT_TOLK-FORMIDLER'
                         ) {
-                            //creating notification object
-                            HOT_Notification__c notification = new HOT_Notification__c();
-                            notification.HOT_Account__c = thread.CRM_Account__c;
-                            notification.HOT_NotificationChannel__c = 'SMS';
-                            notification.HOT_Subject__c = 'Ny melding fra Tolketjenesten';
-                            notification.HOT_NotificationText__c =
-                                'INFO Du har fått en melding fra tolketjenesten.\nFor mer informasjon, se tolkebestilling.nav.no.\n' +
-                                'Du kan ikke svare på denne meldingen.\n' +
-                                'Mvh tolketjenesten i Nav';
-                            notification.HOT_RelatedObject__c = thread.Id;
-                            notification.HOT_RelatedObjectType__c = 'threadInterpreter';
-
-                            notificationList.add(notification);
+                            //BETYR AT VARSELET SKAL LINKE TIL TOLKE SAMTALER. SAMTALER MELLOM RESSURSKONTOR OG EN TIL EN MED FORMIDLER
+                            //LAGER NOTIFIKASJONSOBJEKTET
+                            HOT_Notification__c newNotification = newMessageNotificationSMS(
+                                thread.CRM_Account__c,
+                                thread,
+                                'threadInterpreter'
+                            );
+                            notificationList.add(newNotification);
                         } else {
-                            //creating notification object
-                            HOT_Notification__c notification = new HOT_Notification__c();
-                            notification.HOT_Account__c = thread.CRM_Account__c;
-                            notification.HOT_NotificationChannel__c = 'SMS';
-                            notification.HOT_Subject__c = 'Ny melding fra Tolketjenesten';
-                            notification.HOT_NotificationText__c =
-                                'INFO Du har fått en melding fra tolketjenesten.\nFor mer informasjon, se tolkebestilling.nav.no.\n' +
-                                'Du kan ikke svare på denne meldingen.\n' +
-                                'Mvh tolketjenesten i Nav';
-                            notification.HOT_RelatedObject__c = thread.Id;
-                            notification.HOT_RelatedObjectType__c = 'threadUser';
-
-                            notificationList.add(notification);
+                            //BETYR AT VARSELET SKAL LINKE TIL SAMTALE HVOR BRUKEREN IKKE ER TOLK
+                            //LAGER NOTIFIKASJONSOBJEKTET
+                            HOT_Notification__c newNotification = newMessageNotificationSMS(
+                                thread.CRM_Account__c,
+                                thread,
+                                'threadUser'
+                            );
+                            notificationList.add(newNotification);
                         }
 
                         HOT_ReminderSMSService.sendSMSOnNewMessage(threadList);
                     }
                 }
             }
-            //inserting notifications
-            try {
-                HOT_NotificationCentreController.createNotification(notificationList);
-            } catch (Exception e) {
-                LoggerUtility logger = new LoggerUtility();
-                logger.exception(e, CRM_ApplicationDomain.Domain.HOT);
-                logger.publish();
-            }
+            //INSERTE NOTIFIKASJONSRECORD TIL VARSLINGSSENTERET
+            insertNotifications(notificationList);
         }
     }
-    @Future
     public static void NotifyInterpreter(List<Id> threadIds) {
         List<Thread__c> threads = [
             SELECT
@@ -236,6 +245,7 @@ public without sharing class HOT_MessagesNotification {
                         }
                     }
                 }
+                Map<User, Thread__c> userIdToThreadMapSMS = new Map<User, Thread__c>();
                 for (User user : userIdToThreadMap.keySet()) {
                     String notificationChannel = user.ServiceResources[0].HOT_NotificationChannel__c;
                     Thread__c thread = userIdToThreadMap.get(user);
@@ -249,10 +259,11 @@ public without sharing class HOT_MessagesNotification {
                         notification.setTargetId(thread.Id); // send med parameter for denne
                         HOT_NotificationHandler.sendNotification(notification, recipients, (SObject) thread); // send med parameter for denne
                     } else {
-                        Set<Id> threadList = new Set<Id>();
-                        threadList.add(thread.Id);
-                        HOT_ReminderSMSService.sendSMSOnNewMessageInterpreter(user.Id, thread.Id);
+                        userIdToThreadMapSMS.put(user, thread);
                     }
+                }
+                if (!userIdToThreadMapSMS.isEmpty()) {
+                    HOT_ReminderSMSService.sendSMSOnNewMessageInterpreter(userIdToThreadMapSMS);
                 }
             }
 
@@ -282,7 +293,7 @@ public without sharing class HOT_MessagesNotification {
                 }
                 //creating notification object list
                 List<HOT_Notification__c> notificationList = new List<HOT_Notification__c>();
-
+                Map<User, Thread__c> userIdToThreadMapSMS = new Map<User, Thread__c>();
                 for (User user : userIdToThreadMap.keySet()) {
                     Set<String> recipients = new Set<String>();
                     String notificationChannel = user.ServiceResources[0].HOT_NotificationChannel__c;
@@ -295,15 +306,12 @@ public without sharing class HOT_MessagesNotification {
                     if (recipients.size() > 0) {
                         if (notificationChannel.contains('Push')) {
                             //creating notification object
-                            HOT_Notification__c notification = new HOT_Notification__c();
-                            notification.HOT_Account__c = user.AccountId;
-                            notification.HOT_NotificationChannel__c = 'Push-varsel i appen';
-                            notification.HOT_Subject__c = 'Ny melding fra Tolketjenesten';
-                            notification.HOT_NotificationText__c = 'Du har fått en melding fra Tolketjenesten.';
-                            notification.HOT_RelatedObject__c = thread.Id;
-                            notification.HOT_RelatedObjectType__c = 'threadInterpreter';
-
-                            notificationList.add(notification);
+                            HOT_Notification__c newNotification = newMessageNotificationPush(
+                                user.AccountId,
+                                thread,
+                                'threadInterpreter'
+                            );
+                            notificationList.add(newNotification);
                             HOT_UserNotificationService.newMessageNotification(
                                 getCustomNotificationType('HOT_NotifyUser'),
                                 thread,
@@ -311,33 +319,23 @@ public without sharing class HOT_MessagesNotification {
                                 recipients
                             );
                         } else {
-                            Set<Id> threadList = new Set<Id>();
-                            threadList.add(thread.Id);
                             //creating notification object
-                            HOT_Notification__c notification = new HOT_Notification__c();
-                            notification.HOT_Account__c = user.AccountId;
-                            notification.HOT_NotificationChannel__c = 'SMS';
-                            notification.HOT_Subject__c = 'Ny melding fra Tolketjenesten';
-                            notification.HOT_NotificationText__c =
-                                'INFO Du har fått en melding fra tolketjenesten. \nFor mer informasjon, se tolkebestilling.nav.no.\n' +
-                                'Du kan ikke svare på denne meldingen.\n' +
-                                'Mvh tolketjenesten i Nav';
-                            notification.HOT_RelatedObject__c = thread.Id;
-                            notification.HOT_RelatedObjectType__c = 'threadInterpreter';
+                            HOT_Notification__c newNotification = newMessageNotificationSMS(
+                                user.AccountId,
+                                thread,
+                                'threadInterpreter'
+                            );
+                            notificationList.add(newNotification);
 
-                            notificationList.add(notification);
-                            HOT_ReminderSMSService.sendSMSOnNewMessageInterpreter(user.Id, thread.Id);
+                            userIdToThreadMapSMS.put(user, thread);
                         }
                     }
                 }
-                //inserting notifications
-                try {
-                    HOT_NotificationCentreController.createNotification(notificationList);
-                } catch (Exception e) {
-                    LoggerUtility logger = new LoggerUtility();
-                    logger.exception(e, CRM_ApplicationDomain.Domain.HOT);
-                    logger.publish();
+                if (!userIdToThreadMapSMS.isEmpty()) {
+                    HOT_ReminderSMSService.sendSMSOnNewMessageInterpreter(userIdToThreadMapSMS);
                 }
+                //INSERTE NOTIFIKASJONSRECORD TIL VARSLINGSSENTERET
+                insertNotifications(notificationList);
             }
         }
     }
