@@ -96,7 +96,7 @@ public without sharing class HOT_MessagesNotification {
         for (User user : users) {
             userIdByAccountId.put(user.AccountId, user.Id);
         }
-        //LAGER VARSLINGSOBJEKT LISTE TIL INSETTING SENERE
+        //LAGER VARSLINGS LISTE TIL INSETTING SENERE
         List<HOT_Notification__c> notificationList = new List<HOT_Notification__c>();
 
         if (!threads.isEmpty()) {
@@ -125,7 +125,7 @@ public without sharing class HOT_MessagesNotification {
                             thread.CRM_Thread_Type__c == 'HOT_TOLK-FORMIDLER'
                         ) {
                             //BETYR AT VARSELET SKAL LINKE TIL TOLKE SAMTALER. SAMTALER MELLOM RESSURSKONTOR OG EN TIL EN MED FORMIDLER
-                            //LAGER NOTIFIKASJONSOBJEKTET
+                            //LAGER NOTIFIKASJON
                             HOT_Notification__c newNotification = newMessageNotificationPush(
                                 thread.CRM_Account__c,
                                 thread,
@@ -134,7 +134,7 @@ public without sharing class HOT_MessagesNotification {
                             notificationList.add(newNotification);
                         } else {
                             //BETYR AT VARSELET SKAL LINKE TIL SAMTALE HVOR BRUKEREN IKKE ER TOLK
-                            //LAGER NOTIFIKASJONSOBJEKTET
+                            //LAGER NOTIFIKASJON
                             HOT_Notification__c newNotification = newMessageNotificationPush(
                                 thread.CRM_Account__c,
                                 thread,
@@ -142,7 +142,7 @@ public without sharing class HOT_MessagesNotification {
                             );
                             notificationList.add(newNotification);
                         }
-                        //SENDER UT PUSHVARSEL
+                        //SENDER UT PUSHVARSEL TIL MOBIL
                         HOT_UserNotificationService.newMessageNotification(
                             getCustomNotificationType('HOT_NotifyUser'),
                             thread,
@@ -174,7 +174,7 @@ public without sharing class HOT_MessagesNotification {
                             );
                             notificationList.add(newNotification);
                         }
-
+                        //SENDER SMS
                         HOT_ReminderSMSService.sendSMSOnNewMessage(threadList);
                     }
                 }
@@ -250,18 +250,21 @@ public without sharing class HOT_MessagesNotification {
                     String notificationChannel = user.ServiceResources[0].HOT_NotificationChannel__c;
                     Thread__c thread = userIdToThreadMap.get(user);
                     if (notificationChannel.contains('Push')) {
+                        //PUSHVARSEL TIL MOBIL
                         Set<String> recipients = new Set<String>();
                         recipients.add(user.Id);
                         Messaging.CustomNotification notification = new Messaging.CustomNotification();
                         notification.setTitle('Ny melding');
-                        notification.setBody(thread.HOT_Subject__c); // send med parameter for denne
-                        notification.setNotificationTypeId(getCustomNotificationType('HOT_NotifyInterpreter').Id); // send med parameter for denne
-                        notification.setTargetId(thread.Id); // send med parameter for denne
-                        HOT_NotificationHandler.sendNotification(notification, recipients, (SObject) thread); // send med parameter for denne
+                        notification.setBody(thread.HOT_Subject__c);
+                        notification.setNotificationTypeId(getCustomNotificationType('HOT_NotifyInterpreter').Id);
+                        notification.setTargetId(thread.Id);
+                        HOT_NotificationHandler.sendNotification(notification, recipients, (SObject) thread);
                     } else {
+                        //SMS
                         userIdToThreadMapSMS.put(user, thread);
                     }
                 }
+                //SENDER SMS
                 if (!userIdToThreadMapSMS.isEmpty()) {
                     HOT_ReminderSMSService.sendSMSOnNewMessageInterpreter(userIdToThreadMapSMS);
                 }
@@ -291,7 +294,7 @@ public without sharing class HOT_MessagesNotification {
                         }
                     }
                 }
-                //creating notification object list
+                //LAGER VARSLINGS LISTE TIL INSETTING SENERE
                 List<HOT_Notification__c> notificationList = new List<HOT_Notification__c>();
                 Map<User, Thread__c> userIdToThreadMapSMS = new Map<User, Thread__c>();
                 for (User user : userIdToThreadMap.keySet()) {
@@ -305,7 +308,8 @@ public without sharing class HOT_MessagesNotification {
 
                     if (recipients.size() > 0) {
                         if (notificationChannel.contains('Push')) {
-                            //creating notification object
+                            //PUSHVARSEL TIL MOBIL
+                            //LAGER NOTIFIKASJON
                             HOT_Notification__c newNotification = newMessageNotificationPush(
                                 user.AccountId,
                                 thread,
@@ -319,19 +323,20 @@ public without sharing class HOT_MessagesNotification {
                                 recipients
                             );
                         } else {
-                            //creating notification object
+                            //LAGER NOTIFIKASJON
                             HOT_Notification__c newNotification = newMessageNotificationSMS(
                                 user.AccountId,
                                 thread,
                                 'threadInterpreter'
                             );
+                            //SMS
                             notificationList.add(newNotification);
-
                             userIdToThreadMapSMS.put(user, thread);
                         }
                     }
                 }
                 if (!userIdToThreadMapSMS.isEmpty()) {
+                    //SENDER SMS
                     HOT_ReminderSMSService.sendSMSOnNewMessageInterpreter(userIdToThreadMapSMS);
                 }
                 //INSERTE NOTIFIKASJONSRECORD TIL VARSLINGSSENTERET
