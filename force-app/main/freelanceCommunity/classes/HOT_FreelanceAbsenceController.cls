@@ -35,22 +35,37 @@ public with sharing class HOT_FreelanceAbsenceController {
     }
 
     @AuraEnabled
-    public static void createAbsenceAndResolveConflicts(
+    public static Id createAbsenceAndResolveConflicts(
         Long startTimeInMilliseconds,
         Long endTimeInMilliseconds,
-        String absenceType
+        String absenceType,
+        Boolean isAllDayAbsence
     ) {
         if (absenceType != 'Other' && absenceType != 'Medical' && absenceType != 'Vacation') {
             prepareAndThrowAuraException(ERROR_INVALID_ABSENCE_TYPE);
         }
 
-        if (startTimeInMilliseconds > endTimeInMilliseconds) {
+        if (startTimeInMilliseconds >= endTimeInMilliseconds) {
             prepareAndThrowAuraException(ERROR_INVALID_START_AND_END_TIME);
         }
 
+        Datetime startTime = Datetime.newInstance(startTimeInMilliseconds);
+        Datetime endTime = Datetime.newInstance(endTimeInMilliseconds);
+
+        if (isAllDayAbsence) {
+            Date startDate = startTime.date();
+            Date endDate = endTime.date();
+            startTime = Datetime.newInstance(startDate.year(), startDate.month(), startDate.day());
+            endTime = Datetime.newInstance(endDate.year(), endDate.month(), endDate.day());
+            if (endTime != Datetime.newInstance(endTimeInMilliseconds) || startTime == endTime) {
+                // om tid ikke er start på dagen, flytt end time til slutt på dagen.
+                endTime = endTime.addDays(1);
+            }
+        }
+
         ResourceAbsence absence = new ResourceAbsence();
-        absence.Start = Datetime.newInstance(startTimeInMilliseconds);
-        absence.End = Datetime.newInstance(endTimeInMilliseconds);
+        absence.Start = startTime;
+        absence.End = endTime;
         absence.ResourceId = getUserServiceResourceId();
         absence.Type = absenceType;
 
@@ -67,10 +82,43 @@ public with sharing class HOT_FreelanceAbsenceController {
             prepareAndThrowAuraException(ERROR_FAILED_TO_CREATE_ABSENCE);
         }
 
+        // Maks Event lengde er 14 dager, fordi Salesforce
+
+        Event[] events = new List<Event>();
+        Date splitDate = startTime.addDays(14).date();
+        Datetime splitDatetime = Datetime.newInstance(splitDate.year(), splitDate.month(), splitDate.day());
+        Datetime previous = startTime;
+        while (previous < endTime) {
+            Datetime chunkEndTime = splitDatetime < endTime ? splitDatetime : endTime;
+            events.add(createAbsenceEvent(absence.Id, previous, chunkEndTime, absenceType));
+            previous = splitDatetime;
+            splitDatetime = splitDatetime.addDays(14);
+        }
+
+        try {
+            insert events;
+        } catch (Exception e) {
+            logException(e, absence);
+            prepareAndThrowAuraException(ERROR_FAILED_TO_CREATE_ABSENCE);
+        }
+
+        absence.HOT_EventId__c = events[0].Id;
+
+        try {
+            update absence;
+        } catch (Exception e) {
+            logException(e, absence);
+            prepareAndThrowAuraException(ERROR_FAILED_TO_CREATE_ABSENCE);
+        }
+
+        return absence.Id;
+    }
+
+    private static Event createAbsenceEvent(Id absenceId, Datetime startTime, Datetime endTime, String absenceType) {
         Event event = new Event();
-        event.WhatId = absence.Id;
-        event.StartDateTime = absence.Start;
-        event.EndDateTime = absence.End;
+        event.WhatId = absenceId;
+        event.StartDateTime = startTime;
+        event.EndDateTime = endTime;
         switch on absenceType {
             when 'Other' {
                 event.Description = 'Annet';
@@ -84,28 +132,14 @@ public with sharing class HOT_FreelanceAbsenceController {
         }
         event.Subject = 'Fravær';
         event.ShowAs = 'Busy';
-
-        try {
-            insert event;
-        } catch (Exception e) {
-            logException(e, absence);
-            prepareAndThrowAuraException(ERROR_FAILED_TO_CREATE_ABSENCE);
-        }
-
-        absence.HOT_EventId__c = event.Id;
-
-        try {
-            update absence;
-        } catch (Exception e) {
-            logException(e, absence);
-            prepareAndThrowAuraException(ERROR_FAILED_TO_CREATE_ABSENCE);
-        }
+        return event;
     }
 
     @AuraEnabled(cacheable=false)
     public static List<ConflictingRecord> getConflictsForTimePeriod(
         Long startTimeInMilliseconds,
-        Long endTimeInMilliseconds
+        Long endTimeInMilliseconds,
+        Boolean checkWholeDayForConflicts
     ) {
         if (startTimeInMilliseconds > endTimeInMilliseconds) {
             prepareAndThrowAuraException(ERROR_INVALID_START_AND_END_TIME);
@@ -113,6 +147,14 @@ public with sharing class HOT_FreelanceAbsenceController {
 
         Datetime startTime = Datetime.newInstance(startTimeInMilliseconds);
         Datetime endTime = Datetime.newInstance(endTimeInMilliseconds);
+
+        if (checkWholeDayForConflicts) {
+            Date startDate = startTime.date();
+            Date endDate = endTime.date();
+            startTime = Datetime.newInstance(startDate.year(), startDate.month(), startDate.day());
+            endTime = Datetime.newInstance(endDate.year(), endDate.month(), endDate.day());
+            endTime = endTime.addDays(1);
+        }
 
         List<ServiceAppointment> conflictingAppointments = getConflictingServiceAppointments(startTime, endTime);
 
