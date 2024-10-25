@@ -283,10 +283,10 @@ public without sharing class HOT_ReminderSMSService {
         }
     }
 
-    public static void sendSMSOnNewMessageInterpreter(Map<User, Thread__c> userIdToThreadMap) {
+    public static void sendSMSOnNewMessageInterpreter(Map<Thread__c, User> userIdToThreadMap) {
         List<SMS__c> smsList = new List<SMS__c>();
-        for (User user : userIdToThreadMap.keySet()) {
-            Thread__c thread = userIdToThreadMap.get(user);
+        for (Thread__c thread : userIdToThreadMap.keySet()) {
+            User user = userIdToThreadMap.get(thread);
 
             SMS__c sms = new SMS__c();
             sms.Domain__c = 'HOT';

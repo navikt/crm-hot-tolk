@@ -245,7 +245,7 @@ public without sharing class HOT_MessagesNotification {
                         }
                     }
                 }
-                Map<User, Thread__c> userIdToThreadMapSMS = new Map<User, Thread__c>();
+                Map<Thread__c, User> userIdToThreadMapSMS = new Map<Thread__c, User>();
                 for (User user : userIdToThreadMap.keySet()) {
                     String notificationChannel = user.ServiceResources[0].HOT_NotificationChannel__c;
                     Thread__c thread = userIdToThreadMap.get(user);
@@ -261,7 +261,7 @@ public without sharing class HOT_MessagesNotification {
                         HOT_NotificationHandler.sendNotification(notification, recipients, (SObject) thread);
                     } else {
                         //SMS
-                        userIdToThreadMapSMS.put(user, thread);
+                        userIdToThreadMapSMS.put(thread, user);
                     }
                 }
                 //SENDER SMS
@@ -296,7 +296,7 @@ public without sharing class HOT_MessagesNotification {
                 }
                 //LAGER VARSLINGS LISTE TIL INSETTING SENERE
                 List<HOT_Notification__c> notificationList = new List<HOT_Notification__c>();
-                Map<User, Thread__c> userIdToThreadMapSMS = new Map<User, Thread__c>();
+                Map<Thread__c, User> userIdToThreadMapSMS = new Map<Thread__c, User>();
                 for (User user : userIdToThreadMap.keySet()) {
                     Set<String> recipients = new Set<String>();
                     String notificationChannel = user.ServiceResources[0].HOT_NotificationChannel__c;
@@ -331,7 +331,7 @@ public without sharing class HOT_MessagesNotification {
                             );
                             //SMS
                             notificationList.add(newNotification);
-                            userIdToThreadMapSMS.put(user, thread);
+                            userIdToThreadMapSMS.put(thread, user);
                         }
                     }
                 }
