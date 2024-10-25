@@ -288,7 +288,7 @@ public without sharing class HOT_MessagesNotification {
                 Map<Id, User> userMap = new Map<Id, User>([
                     SELECT Id, AccountId, (SELECT Id, HOT_NotificationChannel__c FROM ServiceResources)
                     FROM User
-                    WHERE Id IN :freelanceAccountIds
+                    WHERE AccountId IN :freelanceAccountIds
                 ]);
 
                 Map<User, List<Thread__c>> userIdToThreadMap = new Map<User, List<Thread__c>>();
