@@ -118,6 +118,12 @@ public without sharing class HOT_MessagesNotification {
                         userToServiceResource.get(userIdByAccountId.get(thread.CRM_Account__c))
                             ?.HOT_NotificationChannel__c.contains('Push')) ||
                         (thread.CRM_Thread_Type__c == 'HOT_TOLK-FORMIDLER' &&
+                        thread.CRM_Account__r.CRM_Person__r.HOT_NotificationChannel__c.contains('Push')) ||
+                        (thread.CRM_Thread_Type__c == 'HOT_BRUKER-FORMIDLER' &&
+                        thread.CRM_Account__r.CRM_Person__r.HOT_NotificationChannel__c.contains('Push')) ||
+                        (thread.CRM_Thread_Type__c == 'HOT_BRUKER-TOLK' &&
+                        thread.CRM_Account__r.CRM_Person__r.HOT_NotificationChannel__c.contains('Push')) ||
+                        (thread.CRM_Thread_Type__c == 'HOT_BESTILLER-FORMIDLER' &&
                         thread.CRM_Account__r.CRM_Person__r.HOT_NotificationChannel__c.contains('Push'))
                     ) {
                         if (
