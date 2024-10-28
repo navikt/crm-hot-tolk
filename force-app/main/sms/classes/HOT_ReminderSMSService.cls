@@ -283,19 +283,22 @@ public without sharing class HOT_ReminderSMSService {
         }
     }
 
-    public static void sendSMSOnNewMessageInterpreter(String userId, String threadId) {
-        User user = [SELECT Id, AccountId FROM User WHERE Id = :userId];
+    public static void sendSMSOnNewMessageInterpreter(Map<User, List<Thread__c>> userIdToThreadMap) {
         List<SMS__c> smsList = new List<SMS__c>();
+        for (User user : userIdToThreadMap.keySet()) {
+            for (Thread__c thread : userIdToThreadMap.get(user)) {
+                SMS__c sms = new SMS__c();
+                sms.Domain__c = 'HOT';
+                sms.Type__c = 'Message';
+                sms.Account__c = user.AccountId;
+                sms.Thread__c = thread.Id;
+                sms.Recipient__c = getRecipientPhoneNumberInterpreter(user.Id);
+                sms.Message__c = constructOnNewMessage();
 
-        SMS__c sms = new SMS__c();
-        sms.Domain__c = 'HOT';
-        sms.Type__c = 'Message';
-        sms.Account__c = user.AccountId;
-        sms.Thread__c = threadId;
-        sms.Recipient__c = getRecipientPhoneNumberInterpreter(userId);
-        sms.Message__c = constructOnNewMessage();
-        if (SMS.Recipient__c != null) {
-            smsList.add(sms);
+                if (sms.Recipient__c != null) {
+                    smsList.add(sms);
+                }
+            }
         }
 
         try {
@@ -304,6 +307,7 @@ public without sharing class HOT_ReminderSMSService {
             handleException(e);
         }
     }
+
     public static void sendSMSOnNewWantedSR(Set<Id> wantedIRIds) {
         List<SMS__c> smsList = new List<SMS__c>();
         List<HOT_InterestedResource__c> wantedIRList = [
