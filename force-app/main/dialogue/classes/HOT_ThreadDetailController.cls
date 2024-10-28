@@ -144,7 +144,7 @@ public without sharing class HOT_ThreadDetailController {
             }
         }
         if (
-            (user.Profile.Name == 'HOT Tolk Formidler' || isAdminGroupMember) &&
+            (user.Profile.Name.equals('HOT Tolk Formidler') || isAdminGroupMember) &&
             thread.CRM_Thread_Type__c.startsWith('HOT_')
         ) {
             grantAccess = true;
