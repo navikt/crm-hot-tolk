@@ -114,11 +114,11 @@ public without sharing class HOT_MessagesNotification {
                 if (recipients.size() > 0) {
                     //FØRST MÅ MAN FINNE UT AV OM DET ER EN TOLKE SAMTALE ELLER EN SAMTALE SOM BRUKER, OG BASERT PÅ DET BRUKE BRUKEREN  ELLER TOLKEN SIN VARSLINGSMETODE
                     if (
-                        (thread.CRM_Thread_Type__c == 'HOT_TOLK-FORMIDLER' ||
-                        thread.CRM_Thread_Type__c == 'HOT_TOLK-RESSURSKONTOR' &&
+                        (thread.CRM_Thread_Type__c == 'HOT_TOLK-RESSURSKONTOR' &&
                         userToServiceResource.get(userIdByAccountId.get(thread.CRM_Account__c))
-                            .HOT_NotificationChannel__c.contains('Push')) ||
-                        thread.CRM_Account__r.CRM_Person__r.HOT_NotificationChannel__c.contains('Push')
+                            ?.HOT_NotificationChannel__c.contains('Push')) ||
+                        (thread.CRM_Thread_Type__c == 'HOT_TOLK-FORMIDLER' &&
+                        thread.CRM_Account__r.CRM_Person__r.HOT_NotificationChannel__c.contains('Push'))
                     ) {
                         if (
                             thread.CRM_Thread_Type__c == 'HOT_TOLK-RESSURSKONTOR' ||
