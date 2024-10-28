@@ -183,7 +183,7 @@ public without sharing class HOT_ServiceAppointmentHandler extends MyTriggers {
             }
             if (
                 serviceAppointment.Status != triggerOldMap.get(serviceAppointment.Id).get('Status') &&
-                serviceAppointment.Status == 'None'
+                serviceAppointment.Status.equals('None')
             ) {
                 serviceAppointmentsWithStatusNone.add(serviceAppointment);
             }
@@ -314,8 +314,7 @@ public without sharing class HOT_ServiceAppointmentHandler extends MyTriggers {
                 triggerOldMap.get(serviceAppointment.Id).get('SchedStartTime') != null &&
                 serviceAppointment.SchedEndTime != null &&
                 triggerOldMap.get(serviceAppointment.Id).get('SchedEndTime') != null &&
-                (serviceAppointment.Status == 'Dispatched' ||
-                serviceAppointment.Status == 'Completed')
+                (serviceAppointment.Status.equals('Dispatched') || serviceAppointment.Status.equals('Completed'))
             ) {
                 serviceResourceByServiceAppointmentSchedTimeChanged.put(
                     triggerOldMap.get(serviceAppointment.Id).Id,
