@@ -114,11 +114,11 @@ public without sharing class HOT_MessagesNotification {
                 if (recipients.size() > 0) {
                     //FØRST MÅ MAN FINNE UT AV OM DET ER EN TOLKE SAMTALE ELLER EN SAMTALE SOM BRUKER, OG BASERT PÅ DET BRUKE BRUKEREN  ELLER TOLKEN SIN VARSLINGSMETODE
                     if (
-                        (thread.CRM_Thread_Type__c == 'HOT_TOLK-FORMIDLER' ||
-                        thread.CRM_Thread_Type__c == 'HOT_TOLK-RESSURSKONTOR' &&
+                        (thread.CRM_Thread_Type__c == 'HOT_TOLK-RESSURSKONTOR' &&
                         userToServiceResource.get(userIdByAccountId.get(thread.CRM_Account__c))
-                            .HOT_NotificationChannel__c.contains('Push')) ||
-                        thread.CRM_Account__r.CRM_Person__r.HOT_NotificationChannel__c.contains('Push')
+                            ?.HOT_NotificationChannel__c.contains('Push')) ||
+                        (thread.CRM_Thread_Type__c == 'HOT_TOLK-FORMIDLER' &&
+                        thread.CRM_Account__r.CRM_Person__r.HOT_NotificationChannel__c.contains('Push'))
                     ) {
                         if (
                             thread.CRM_Thread_Type__c == 'HOT_TOLK-RESSURSKONTOR' ||
@@ -208,10 +208,10 @@ public without sharing class HOT_MessagesNotification {
                     if (participantId == '') {
                         continue;
                     }
-                    if(interpretersOnThreadMap.containsKey(participantId)){
+                    if (interpretersOnThreadMap.containsKey(participantId)) {
                         interpretersOnThreadMap.get(participantId).add(t);
-                    }else{
-                        interpretersOnThreadMap.put(participantId, new List<Thread__c>{t});
+                    } else {
+                        interpretersOnThreadMap.put(participantId, new List<Thread__c>{ t });
                     }
                 }
             }
@@ -233,31 +233,33 @@ public without sharing class HOT_MessagesNotification {
                     employeeUserIds.add(sr.RelatedRecordId);
                 }
 
-                Map<Id, User> userMap = new Map<Id, User>([
-                    SELECT Id, AccountId, (SELECT Id, HOT_NotificationChannel__c FROM ServiceResources)
-                    FROM User
-                    WHERE Id IN :employeeUserIds
-                ]);
+                Map<Id, User> userMap = new Map<Id, User>(
+                    [
+                        SELECT Id, AccountId, (SELECT Id, HOT_NotificationChannel__c FROM ServiceResources)
+                        FROM User
+                        WHERE Id IN :employeeUserIds
+                    ]
+                );
 
                 Map<User, List<Thread__c>> userIdToThreadMap = new Map<User, List<Thread__c>>();
                 for (Id participantId : interpretersOnThreadMap.keySet()) {
-                    if(!userMap.containsKey(participantId)){
+                    if (!userMap.containsKey(participantId)) {
                         continue;
                     }
-                    for(Thread__c thread: interpretersOnThreadMap.get(participantId)){
-                        if(thread.LastModifiedById == participantId){
+                    for (Thread__c thread : interpretersOnThreadMap.get(participantId)) {
+                        if (thread.LastModifiedById == participantId) {
                             continue;
                         }
-                        if(userIdToThreadMap.containsKey(userMap.get(participantId))){
+                        if (userIdToThreadMap.containsKey(userMap.get(participantId))) {
                             userIdToThreadMap.get(userMap.get(participantId)).add(thread);
-                        }else{
-                            userIdToThreadMap.put(userMap.get(participantId), new List<Thread__c>{thread});
+                        } else {
+                            userIdToThreadMap.put(userMap.get(participantId), new List<Thread__c>{ thread });
                         }
                     }
                 }
                 Map<User, List<Thread__c>> userIdToThreadMapSMS = new Map<User, List<Thread__c>>();
                 for (User user : userIdToThreadMap.keySet()) {
-                    if(user.ServiceResources[0].HOT_NotificationChannel__c.contains('Push')){
+                    if (user.ServiceResources[0].HOT_NotificationChannel__c.contains('Push')) {
                         for (Thread__c thread : userIdToThreadMap.get(user)) {
                             Set<String> recipients = new Set<String>();
                             recipients.add(user.Id);
@@ -268,7 +270,7 @@ public without sharing class HOT_MessagesNotification {
                             notification.setTargetId(thread.Id);
                             HOT_NotificationHandler.sendNotification(notification, recipients, (SObject) thread);
                         }
-                    }else{
+                    } else {
                         userIdToThreadMapSMS.put(user, userIdToThreadMap.get(user));
                     }
                 }
@@ -285,25 +287,27 @@ public without sharing class HOT_MessagesNotification {
                 for (ServiceResource sr : freelanceServiceresource) {
                     freelanceAccountIds.add(sr.AccountId);
                 }
-                Map<Id, User> userMap = new Map<Id, User>([
-                    SELECT Id, AccountId, (SELECT Id, HOT_NotificationChannel__c FROM ServiceResources)
-                    FROM User
-                    WHERE AccountId IN :freelanceAccountIds
-                ]);
+                Map<Id, User> userMap = new Map<Id, User>(
+                    [
+                        SELECT Id, AccountId, (SELECT Id, HOT_NotificationChannel__c FROM ServiceResources)
+                        FROM User
+                        WHERE AccountId IN :freelanceAccountIds
+                    ]
+                );
 
                 Map<User, List<Thread__c>> userIdToThreadMap = new Map<User, List<Thread__c>>();
                 for (Id participantId : interpretersOnThreadMap.keySet()) {
-                    if(!userMap.containsKey(participantId)){
+                    if (!userMap.containsKey(participantId)) {
                         continue;
                     }
-                    for(Thread__c thread: interpretersOnThreadMap.get(participantId)){
-                        if(thread.LastModifiedById == participantId){
+                    for (Thread__c thread : interpretersOnThreadMap.get(participantId)) {
+                        if (thread.LastModifiedById == participantId) {
                             continue;
                         }
-                        if(userIdToThreadMap.containsKey(userMap.get(participantId))){
+                        if (userIdToThreadMap.containsKey(userMap.get(participantId))) {
                             userIdToThreadMap.get(userMap.get(participantId)).add(thread);
-                        }else{
-                            userIdToThreadMap.put(userMap.get(participantId), new List<Thread__c>{thread});
+                        } else {
+                            userIdToThreadMap.put(userMap.get(participantId), new List<Thread__c>{ thread });
                         }
                     }
                 }
@@ -312,7 +316,7 @@ public without sharing class HOT_MessagesNotification {
                 Map<User, List<Thread__c>> userIdToThreadMapSMS = new Map<User, List<Thread__c>>();
                 for (User user : userIdToThreadMap.keySet()) {
                     if (user.ServiceResources[0].HOT_NotificationChannel__c.contains('Push')) {
-                        for(Thread__c thread : userIdToThreadMap.get(user)){
+                        for (Thread__c thread : userIdToThreadMap.get(user)) {
                             HOT_Notification__c newNotification = newMessageNotificationPush(
                                 user.AccountId,
                                 thread,
@@ -323,12 +327,12 @@ public without sharing class HOT_MessagesNotification {
                                 getCustomNotificationType('HOT_NotifyUser'),
                                 thread,
                                 true,
-                                new Set<String>{user.Id}
+                                new Set<String>{ user.Id }
                             );
                         }
                     } else {
-                        for(Thread__c thread : userIdToThreadMap.get(user)){
-                                HOT_Notification__c newNotification = newMessageNotificationSMS(
+                        for (Thread__c thread : userIdToThreadMap.get(user)) {
+                            HOT_Notification__c newNotification = newMessageNotificationSMS(
                                 user.AccountId,
                                 thread,
                                 'threadInterpreter'
