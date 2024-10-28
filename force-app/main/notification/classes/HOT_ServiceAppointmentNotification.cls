@@ -13,8 +13,6 @@ public without sharing class HOT_ServiceAppointmentNotification {
             FROM CustomNotificationType
             WHERE DeveloperName = 'HOT_Service_Appointment_Changed'
         ];
-        //creating notification object list
-        List<HOT_Notification__c> notificationList = new List<HOT_Notification__c>();
 
         for (ServiceAppointment serviceAppointment : serviceAppointments) {
             ServiceAppointment oldServiceAppointment = (ServiceAppointment) triggerOldMap.get(serviceAppointment.Id);
@@ -115,12 +113,6 @@ public without sharing class HOT_ServiceAppointmentNotification {
                     screenInterpreterChanged(notificationType, saIds, recipients, isScreenInterpreterString);
                 }
             }
-        }
-        //inserting notifications
-        try {
-            HOT_NotificationCentreController.createNotification(notificationList);
-        } catch (Exception e) {
-            handleException(e);
         }
     }
 
