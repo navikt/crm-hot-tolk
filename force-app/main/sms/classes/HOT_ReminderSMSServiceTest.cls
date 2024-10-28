@@ -178,7 +178,7 @@ private class HOT_ReminderSMSServiceTest {
             WHERE RelatedRecordId = :currentUser.Id
         ];
         Map<User, List<Thread__c>> userIdToThreadMapSMS = new Map<User, List<Thread__c>>{
-            currentUser => new List<Thread__c>{thread}
+            currentUser => new List<Thread__c>{ thread }
         };
         HOT_ReminderSMSService.sendSMSOnNewMessageInterpreter(userIdToThreadMapSMS);
         Test.stopTest();

@@ -282,11 +282,11 @@ public without sharing class HOT_ReminderSMSService {
             handleException(e);
         }
     }
-    
+
     public static void sendSMSOnNewMessageInterpreter(Map<User, List<Thread__c>> userIdToThreadMap) {
         List<SMS__c> smsList = new List<SMS__c>();
-        for(User user : userIdToThreadMap.keySet()){
-            for(Thread__c thread : userIdToThreadMap.get(user)){
+        for (User user : userIdToThreadMap.keySet()) {
+            for (Thread__c thread : userIdToThreadMap.get(user)) {
                 SMS__c sms = new SMS__c();
                 sms.Domain__c = 'HOT';
                 sms.Type__c = 'Message';
@@ -296,7 +296,7 @@ public without sharing class HOT_ReminderSMSService {
                 sms.Message__c = constructOnNewMessage();
 
                 if (sms.Recipient__c != null) {
-                smsList.add(sms);
+                    smsList.add(sms);
                 }
             }
         }
