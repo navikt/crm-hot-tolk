@@ -7,6 +7,14 @@ export default class Table extends LightningElement {
     @api hideMobileHeader;
     @api checkbox = false;
 
+    connectedCallback() {
+        //log api varaibles
+        console.log('colums', thi.columns);
+        console.log('records', this.records);
+        console.log('iconByValue', this.iconByValue);
+        console.log('checkbox', this.checkbox);
+    }
+
     get mobileHeaderStyle() {
         return this.hideMobileHeader && window.screen.width < 576 ? 'position: absolute; left: -10000px;' : '';
     }

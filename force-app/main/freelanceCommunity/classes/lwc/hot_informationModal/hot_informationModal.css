@@ -1,3 +1,6 @@
+/* :host {
+    --slds-c-modal-content-color-background: red;
+}
 .dialog {
     padding: 0;
     border: none;
@@ -33,10 +36,14 @@
     position: relative;
     max-height: 100vh;
     height: auto;
-    /* width: 100%; */
     margin: auto;
     box-sizing: border-box;
 }
+.slds-modal__container {
+    display: block;
+    background-color: aqua;
+}
+
 @media (max-width: 576px) {
     .fileUploadContainer {
         justify-content: center;
@@ -73,6 +80,7 @@
         margin: 1rem auto;
     }
 }
+    */
 p {
     font-weight: bold;
 }

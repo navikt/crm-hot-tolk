@@ -6,6 +6,7 @@ import { columns, inDetailsColumns, mobileColumns } from './columns';
 import { refreshApex } from '@salesforce/apex';
 import { defaultFilters, compare, setDefaultFilters } from './filters';
 import { formatRecord } from 'c/datetimeFormatter';
+import Hot_openServiceAppointmentsModal from 'c/hot_openServiceAppointmentsModal';
 
 export default class Hot_openServiceAppointments extends LightningElement {
     @track columns = [];
@@ -206,37 +207,12 @@ export default class Hot_openServiceAppointments extends LightningElement {
         { name: 'HOT_ReleaseDate__c', type: 'date', newName: 'ReleaseDate' }
     ];
 
-    @track serviceAppointment;
-    isDetails = false;
-    isSeries = false;
-    seriesRecords = [];
-    showTable = true;
     goToRecordDetails(result) {
-        this.serviceAppointment = undefined;
-        this.seriesRecords = [];
-        let recordId = result.detail.Id;
-        this.recordId = recordId;
-        this.isDetails = !!this.recordId;
-        for (let serviceAppointment of this.records) {
-            if (recordId === serviceAppointment.Id) {
-                this.serviceAppointment = serviceAppointment;
-                this.isSeries = this.serviceAppointment.HOT_IsSerieoppdrag__c;
-                this.serviceAppointment.weekday = this.getDayOfWeek(this.serviceAppointment.EarliestStartTime);
-            }
-        }
-        for (let serviceAppointment of this.records) {
-            if (this.serviceAppointment?.HOT_Request__c === serviceAppointment?.HOT_Request__c) {
-                this.seriesRecords.push(serviceAppointment);
-            }
-        }
-        this.isSeries = this.seriesRecords.length <= 1 ? false : true;
-        this.showServiceAppointmentDetails();
+        Hot_openServiceAppointmentsModal.open({
+            result: result,
+            records: this.records
+        });
     }
-    showServiceAppointmentDetails() {
-        this.template.querySelector('.serviceAppointmentDetails').classList.remove('hidden');
-        this.template.querySelector('.serviceAppointmentDetails').focus();
-    }
-
     @api recordId;
     updateURL() {
         let baseURL = window.location.protocol + '//' + window.location.host + window.location.pathname + '?list=open';
@@ -329,9 +305,10 @@ export default class Hot_openServiceAppointments extends LightningElement {
 
     showSendInterest = false;
     @track serviceAppointmentCommentDetails = [];
-    sendInterest() {
-        this.hideSubmitIndicators();
-        this.showCommentSection();
+    sendInterest(result) {
+        console.log('sendInterest metode');
+        //this.hideSubmitIndicators();
+        //this.showCommentSection();
         this.checkedServiceAppointments = [];
         this.serviceAppointmentCommentDetails = [];
         try {
@@ -360,30 +337,40 @@ export default class Hot_openServiceAppointments extends LightningElement {
             return;
         }
         this.showSendInterest = false;
-        this.showCommentPage();
+        this.showCommentPage(result);
     }
 
     sendInterestAllComplete = false;
     sendInterestAll = false;
-    sendInterestSeries() {
+    sendInterestSeries(result) {
         this.template.querySelector('.serviceAppointmentDetails').classList.add('hidden');
         this.hideSubmitIndicators();
         this.showCommentSection();
         this.serviceAppointmentCommentDetails = [];
         this.sendInterestAll = true;
         this.serviceAppointmentCommentDetails.push(...this.seriesRecords);
-        this.showCommentPage();
+        this.showCommentPage(result);
     }
 
-    showCommentPage() {
-        this.template.querySelector('.commentPage').classList.remove('hidden');
-        this.template.querySelector('.commentPage').focus();
+    showCommentPage(result) {
+        console.log('åpner result ', result);
+        Hot_openServiceAppointmentsModal.open({
+            result: result,
+            serviceAppointmentCommentDetails: this.serviceAppointmentCommentDetails,
+            checkedServiceAppointments: this.checkedServiceAppointments,
+            sendInterestAll: this.sendInterestAll
+        });
     }
 
     hideSubmitIndicators() {
         this.template.querySelector('.submitted-error').classList.add('hidden');
         this.template.querySelector('.submitted-loading').classList.add('hidden');
         this.template.querySelector('.submitted-true').classList.add('hidden');
+    }
+
+    showCommentSection() {
+        this.template.querySelector('.comment-details').classList.remove('hidden');
+        this.template.querySelector('.send-inn-button').classList.remove('hidden');
     }
 
     closeModal() {
@@ -399,11 +386,6 @@ export default class Hot_openServiceAppointments extends LightningElement {
         this.sendInterestAll = false;
         this.template.querySelector('.commentPage').classList.add('hidden');
         this.template.querySelector('.serviceAppointmentDetails').classList.add('hidden');
-    }
-
-    showCommentSection() {
-        this.template.querySelector('.comment-details').classList.remove('hidden');
-        this.template.querySelector('.send-inn-button').classList.remove('hidden');
     }
 
     getRecord(id) {

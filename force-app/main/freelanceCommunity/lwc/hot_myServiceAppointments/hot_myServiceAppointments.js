@@ -188,6 +188,7 @@ export default class Hot_myServiceAppointments extends NavigationMixin(Lightning
         this.urlRedirect = true;
         this.updateURL();
         Hot_informationModal.open({
+            size: 'full',
             recordId: this.recordId,
             type: 'SA',
             fromUrlRedirect: true,
