@@ -74,7 +74,7 @@ private class HOT_UserHandlerTest {
             insert user;
             Test.stopTest();
 
-            List<ServiceResource> serviceResources = [SELECT Id FROM ServiceResource];
+            List<ServiceResource> serviceResources = [SELECT Id,Name FROM ServiceResource];
             System.assertEquals(1, serviceResources.size());
             System.assertEquals('First Middle Last', serviceResources[0].Name, 'Name not set correctly');
         }
