@@ -402,16 +402,14 @@ private class HOT_ServiceAppointmentNotificationTest {
         serviceAppointment.HOT_InterpretationStreet__c = 'Tolkeveien 123';
         update serviceAppointment;
 
-        Set<Id> saIds = (new Map<Id, ServiceAppointment>(
-                [SELECT HOT_InterpretationStreet__c FROM ServiceAppointment WHERE Subject = 'Test' LIMIT 1]
-            ))
-            .keySet();
+        Id saId = [SELECT HOT_InterpretationStreet__c FROM ServiceAppointment WHERE Subject = 'Test' LIMIT 1].Id;
         CustomNotificationType notificationType = [
             SELECT Id, DeveloperName
             FROM CustomNotificationType
             WHERE DeveloperName = 'HOT_NotifyUser'
         ];
-        HOT_ServiceAppointmentNotification.addressChanged(notificationType, saIds, recipients);
+        HOT_ServiceAppointmentNotification saN = new HOT_ServiceAppointmentNotification(new List<ServiceAppointment>{serviceAppointment});
+        saN.addressChanged(notificationType, saId, recipients);
         Test.stopTest();
     }
 
