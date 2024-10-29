@@ -1387,7 +1387,10 @@ public without sharing class HOT_ServiceAppointmentNotification {
         return this.serviceAppointmentByWorkOrderIdMap;
     }
     private List<ServiceAppointment> getRelatedServiceAppointments(ServiceAppointment sa) {
-        if (sa.HOT_WorkOrderLineItem__r.WorkOrderId == null) {
+        if (
+            sa.HOT_WorkOrderLineItem__r?.WorkOrderId == null ||
+            !this.getServiceAppointmentByWorkOrderIdMap().containsKey(sa.HOT_WorkOrderLineItem__r.WorkOrderId)
+        ) {
             return new List<ServiceAppointment>();
         }
         Map<Id, ServiceAppointment> relatedServiceAppointmentMap = new Map<Id, ServiceAppointment>();
