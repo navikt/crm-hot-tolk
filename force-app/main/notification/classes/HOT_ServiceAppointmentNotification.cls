@@ -836,7 +836,7 @@ public without sharing class HOT_ServiceAppointmentNotification {
     public void notifyInterpretersOnCoInterpreterRemoved(ServiceAppointment sa) {
         ServiceAppointment updatedSAWithInterpreterRemoved = this.getUpdatedSAMap().get(sa.Id);
 
-        List<ServiceAppointment> relatedServiceAppointments = this.getRelatedServiceAppointments(sa);
+        List<ServiceAppointment> relatedServiceAppointments = this.getRelatedServiceAppointments(updatedSAWithInterpreterRemoved);
         //creating notification object list
         List<HOT_Notification__c> notificationList = new List<HOT_Notification__c>();
         for (ServiceAppointment serviceAppointment : relatedServiceAppointments) {
@@ -957,7 +957,7 @@ public without sharing class HOT_ServiceAppointmentNotification {
     public void notifyInterpretersOnCoInterpreterAdded(ServiceAppointment sa) {
         ServiceAppointment updatedSAWithNewInterpreter = this.getUpdatedSAMap().get(sa.Id);
 
-        List<ServiceAppointment> relatedServiceAppointments = this.getRelatedServiceAppointments(sa);
+        List<ServiceAppointment> relatedServiceAppointments = this.getRelatedServiceAppointments(updatedSAWithNewInterpreter);
 
         //creating notification object list
         List<HOT_Notification__c> notificationList = new List<HOT_Notification__c>();
@@ -1081,7 +1081,7 @@ public without sharing class HOT_ServiceAppointmentNotification {
     public void notifyInterpretersOnChangedResource(ServiceAppointment sa) {
         ServiceAppointment updatedSAWithNewInterpreter = this.getUpdatedSAMap().get(sa.Id);
 
-        List<ServiceAppointment> relatedServiceAppointments = this.getRelatedServiceAppointments(sa);
+        List<ServiceAppointment> relatedServiceAppointments = this.getRelatedServiceAppointments(updatedSAWithNewInterpreter);
 
         //creating notification object list
         List<HOT_Notification__c> notificationList = new List<HOT_Notification__c>();
@@ -1446,7 +1446,7 @@ public without sharing class HOT_ServiceAppointmentNotification {
         ];
         return serviceResourceList;
     }
-    public Map<Id, ServiceResource> getServiceResourceMap() {
+    private Map<Id, ServiceResource> getServiceResourceMap() {
         if (this.serviceResourceMap == null) {
             Set<Id> srIds = new Set<Id>();
             for (ServiceAppointment sa : this.getUpdatedSaMap().values()) {
@@ -1460,7 +1460,6 @@ public without sharing class HOT_ServiceAppointmentNotification {
         }
         return this.serviceResourceMap;
     }
-
     public HOT_ServiceAppointmentNotification(List<ServiceAppointment> saList, Map<Id, ServiceAppointment> oldSaMapt) {
         this.sa = saList;
         this.oldSaMap = oldSaMap;
