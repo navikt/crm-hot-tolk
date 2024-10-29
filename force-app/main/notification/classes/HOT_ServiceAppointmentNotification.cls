@@ -1,7 +1,6 @@
 public without sharing class HOT_ServiceAppointmentNotification {
     Map<String, CustomNotificationType> customNotificationTypeByName;
     List<ServiceAppointment> sa;
-    List<ServiceAppointment> oldSaMap;
     Map<Id, ServiceAppointment> updatedSAMap;
     Map<Id, Id> accountIdByUSerIdMap;
     Map<Id, Id> userIdByAccountIdMap;
@@ -19,10 +18,7 @@ public without sharing class HOT_ServiceAppointmentNotification {
         List<ServiceAppointment> serviceAppointments,
         Map<Id, sObject> triggerOldMap
     ) {
-        HOT_ServiceAppointmentNotification sAN = new HOT_ServiceAppointmentNotification(
-            serviceAppointments,
-            (Map<Id, ServiceAppointment>) triggerOldMap
-        );
+        HOT_ServiceAppointmentNotification sAN = new HOT_ServiceAppointmentNotification(serviceAppointments);
 
         for (ServiceAppointment serviceAppointment : serviceAppointments) {
             ServiceAppointment oldServiceAppointment = (ServiceAppointment) triggerOldMap.get(serviceAppointment.Id);
@@ -151,10 +147,7 @@ public without sharing class HOT_ServiceAppointmentNotification {
         List<ServiceAppointment> serviceAppointments,
         Map<Id, sObject> triggerOldMap
     ) {
-        HOT_ServiceAppointmentNotification sAN = new HOT_ServiceAppointmentNotification(
-            serviceAppointments,
-            (Map<Id, ServiceAppointment>) triggerOldMap
-        );
+        HOT_ServiceAppointmentNotification sAN = new HOT_ServiceAppointmentNotification(serviceAppointments);
 
         CustomNotificationType notificationType = [
             SELECT Id, DeveloperName
@@ -1460,11 +1453,6 @@ public without sharing class HOT_ServiceAppointmentNotification {
         }
         return this.serviceResourceMap;
     }
-    public HOT_ServiceAppointmentNotification(List<ServiceAppointment> saList, Map<Id, ServiceAppointment> oldSaMapt) {
-        this.sa = saList;
-        this.oldSaMap = oldSaMap;
-    }
-
     public HOT_ServiceAppointmentNotification(List<ServiceAppointment> saList) {
         this.sa = saList;
     }
