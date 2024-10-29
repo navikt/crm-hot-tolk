@@ -1,15 +1,15 @@
 public without sharing class HOT_ServiceAppointmentNotification {
-    Map<String,CustomNotificationType> customNotificationTypeByName;
+    Map<String, CustomNotificationType> customNotificationTypeByName;
     List<ServiceAppointment> sa;
     List<ServiceAppointment> oldSaMap;
-    Map<Id,ServiceAppointment> updatedSAMap;
-    Map<Id,Id> accountIdByUSerIdMap;
-    Map<Id,Id> userIdByAccountIdMap;
-    Map<Id,WorkOrder> workOrderMap;
-    Map<Id, Map<Id,ServiceAppointment>> serviceAppointmentByWorkOrderIdMap;
-    Map<Id,String> interpreterNamesByWorkOrderIdMap;
-    Map<Id,ServiceResource> serviceResourceMap;
-    
+    Map<Id, ServiceAppointment> updatedSAMap;
+    Map<Id, Id> accountIdByUSerIdMap;
+    Map<Id, Id> userIdByAccountIdMap;
+    Map<Id, WorkOrder> workOrderMap;
+    Map<Id, Map<Id, ServiceAppointment>> serviceAppointmentByWorkOrderIdMap;
+    Map<Id, String> interpreterNamesByWorkOrderIdMap;
+    Map<Id, ServiceResource> serviceResourceMap;
+
     private static void handleException(Exception e) {
         LoggerUtility logger = new LoggerUtility();
         logger.exception(e, CRM_ApplicationDomain.Domain.HOT);
@@ -19,8 +19,10 @@ public without sharing class HOT_ServiceAppointmentNotification {
         List<ServiceAppointment> serviceAppointments,
         Map<Id, sObject> triggerOldMap
     ) {
-        HOT_ServiceAppointmentNotification sAN = new HOT_ServiceAppointmentNotification(serviceAppointments, (Map<Id,ServiceAppointment>)triggerOldMap);
-
+        HOT_ServiceAppointmentNotification sAN = new HOT_ServiceAppointmentNotification(
+            serviceAppointments,
+            (Map<Id, ServiceAppointment>) triggerOldMap
+        );
 
         for (ServiceAppointment serviceAppointment : serviceAppointments) {
             ServiceAppointment oldServiceAppointment = (ServiceAppointment) triggerOldMap.get(serviceAppointment.Id);
@@ -31,7 +33,11 @@ public without sharing class HOT_ServiceAppointmentNotification {
                 serviceAppointment.Status == 'Dispatched'
             ) {
                 Set<String> interpreterRecipients = new Set<String>{ serviceAppointment.HOT_AssignedResourceId__c };
-                saN.resourceAdded(saN.getCustomNotificationTypeByName('HOT_Service_Appointment_Changed'),  serviceAppointment.Id, interpreterRecipients);
+                saN.resourceAdded(
+                    saN.getCustomNotificationTypeByName('HOT_Service_Appointment_Changed'),
+                    serviceAppointment.Id,
+                    interpreterRecipients
+                );
                 saN.notifyInterpretersOnCoInterpreterAdded(serviceAppointment);
             }
 
@@ -43,7 +49,11 @@ public without sharing class HOT_ServiceAppointmentNotification {
                 serviceAppointment.Status == 'Dispatched'
             ) {
                 Set<String> interpreterRecipients = new Set<String>{ serviceAppointment.HOT_AssignedResourceId__c };
-                saN.resourceAdded(saN.getCustomNotificationTypeByName('HOT_Service_Appointment_Changed'), serviceAppointment.Id, interpreterRecipients);
+                saN.resourceAdded(
+                    saN.getCustomNotificationTypeByName('HOT_Service_Appointment_Changed'),
+                    serviceAppointment.Id,
+                    interpreterRecipients
+                );
 
                 saN.notifyUserOnChangedResource(serviceAppointment);
                 saN.notifyInterpretersOnChangedResource(serviceAppointment);
@@ -62,7 +72,12 @@ public without sharing class HOT_ServiceAppointmentNotification {
                     !recipients.contains(serviceAppointment.LastModifiedById) &&
                     serviceAppointment.HOT_CancelComment__c == null
                 ) {
-                    saN.canceledByUser(saN.getCustomNotificationTypeByName('HOT_Service_Appointment_Changed'), serviceAppointment, oldServiceAppointment.HOT_ServiceResource__c, recipients);
+                    saN.canceledByUser(
+                        saN.getCustomNotificationTypeByName('HOT_Service_Appointment_Changed'),
+                        serviceAppointment,
+                        oldServiceAppointment.HOT_ServiceResource__c,
+                        recipients
+                    );
                 }
 
                 // Varsel ved endring av tidspunkt
@@ -74,7 +89,11 @@ public without sharing class HOT_ServiceAppointmentNotification {
                     serviceAppointment.EarliestStartTime != null &&
                     oldServiceAppointment.DueDate != null
                 ) {
-                    saN.timeChanged(saN.getCustomNotificationTypeByName('HOT_Service_Appointment_Changed'), serviceAppointment.Id, recipients);
+                    saN.timeChanged(
+                        saN.getCustomNotificationTypeByName('HOT_Service_Appointment_Changed'),
+                        serviceAppointment.Id,
+                        recipients
+                    );
                 }
 
                 // Varsel ved endring av adresse
@@ -83,7 +102,11 @@ public without sharing class HOT_ServiceAppointmentNotification {
                     serviceAppointment.HOT_ServiceResource__c == oldServiceAppointment.HOT_ServiceResource__c &&
                     serviceAppointment.Status != 'Scheduled'
                 ) {
-                    saN.addressChanged(saN.getCustomNotificationTypeByName('HOT_Service_Appointment_Changed'), serviceAppointment.Id, recipients);
+                    saN.addressChanged(
+                        saN.getCustomNotificationTypeByName('HOT_Service_Appointment_Changed'),
+                        serviceAppointment.Id,
+                        recipients
+                    );
                 }
 
                 // Varsel ved fjerning av tolk + varsel til medtolk av tolken er tatt av
@@ -96,7 +119,11 @@ public without sharing class HOT_ServiceAppointmentNotification {
                     serviceAppointment.Status == 'None') &&
                     serviceAppointment.HOT_CanceledByInterpreter__c == false
                 ) {
-                    saN.resourceChanged(saN.getCustomNotificationTypeByName('HOT_Service_Appointment_Changed'), serviceAppointment.Id, recipients);
+                    saN.resourceChanged(
+                        saN.getCustomNotificationTypeByName('HOT_Service_Appointment_Changed'),
+                        serviceAppointment.Id,
+                        recipients
+                    );
                     saN.notifyInterpretersOnCoInterpreterRemoved(serviceAppointment);
                 }
 
@@ -109,7 +136,12 @@ public without sharing class HOT_ServiceAppointmentNotification {
                     String isScreenInterpreterString = serviceAppointment.HOT_IsScreenInterpreterNew__c
                         ? 'skjermtolk'
                         : 'oppmøtetolk';
-                    saN.screenInterpreterChanged(saN.getCustomNotificationTypeByName('HOT_Service_Appointment_Changed'), serviceAppointment.Id, recipients, isScreenInterpreterString);
+                    saN.screenInterpreterChanged(
+                        saN.getCustomNotificationTypeByName('HOT_Service_Appointment_Changed'),
+                        serviceAppointment.Id,
+                        recipients,
+                        isScreenInterpreterString
+                    );
                 }
             }
         }
@@ -119,8 +151,11 @@ public without sharing class HOT_ServiceAppointmentNotification {
         List<ServiceAppointment> serviceAppointments,
         Map<Id, sObject> triggerOldMap
     ) {
-        HOT_ServiceAppointmentNotification sAN = new HOT_ServiceAppointmentNotification(serviceAppointments, (Map<Id,ServiceAppointment>)triggerOldMap);
-        
+        HOT_ServiceAppointmentNotification sAN = new HOT_ServiceAppointmentNotification(
+            serviceAppointments,
+            (Map<Id, ServiceAppointment>) triggerOldMap
+        );
+
         CustomNotificationType notificationType = [
             SELECT Id, DeveloperName
             FROM CustomNotificationType
@@ -148,12 +183,21 @@ public without sharing class HOT_ServiceAppointmentNotification {
                 oldServiceAppointment.HOT_CanceledByInterpreter__c == false &&
                 serviceAppointment.HOT_CanceledByInterpreter__c == true
             ) {
-                resourceCanceled(saN.getCustomNotificationTypeByName('HOT_NotifyDispatcher'), serviceAppointment, recipients);
+                resourceCanceled(
+                    saN.getCustomNotificationTypeByName('HOT_NotifyDispatcher'),
+                    serviceAppointment,
+                    recipients
+                );
             }
 
             // Varsel ved avlyst på vegne av bruker
             if (serviceAppointment.Status == 'Canceled' && oldServiceAppointment.Status != 'Canceled') {
-                saN.canceledByUser(saN.getCustomNotificationTypeByName('HOT_NotifyDispatcher'), serviceAppointment, oldServiceAppointment.HOT_ServiceResource__c, recipients);
+                saN.canceledByUser(
+                    saN.getCustomNotificationTypeByName('HOT_NotifyDispatcher'),
+                    serviceAppointment,
+                    oldServiceAppointment.HOT_ServiceResource__c,
+                    recipients
+                );
             }
         }
     }
@@ -167,11 +211,11 @@ public without sharing class HOT_ServiceAppointmentNotification {
         notification.setTitle('Avlyst av tolk: ' + serviceAppointment.AppointmentNumber);
         notification.setBody(
             'Tolken meldte seg av ' +
-            serviceAppointment.AppointmentNumber +
-            ' ' +
-            serviceAppointment.Subject +
-            ' den ' +
-            Datetime.now().format('d.M.yyyy HH:mm')
+                serviceAppointment.AppointmentNumber +
+                ' ' +
+                serviceAppointment.Subject +
+                ' den ' +
+                Datetime.now().format('d.M.yyyy HH:mm')
         );
         notification.setNotificationTypeId(notificationType.Id);
         notification.setTargetId(serviceAppointment.Id);
@@ -186,7 +230,7 @@ public without sharing class HOT_ServiceAppointmentNotification {
         Set<String> recipients
     ) {
         ServiceResource serviceResource = this.getServiceResourceMap().get(srId);
-        if(serviceResource == null){
+        if (serviceResource == null) {
             return;
         }
         //creating notification object list
@@ -198,17 +242,17 @@ public without sharing class HOT_ServiceAppointmentNotification {
             Messaging.CustomNotification notification = new Messaging.CustomNotification();
             notification.setTitle(
                 serviceAppointment.AppointmentNumber +
-                ' - ' +
-                serviceAppointment.EarliestStartTime?.format('d.M.yyyy') +
-                ' - ' +
-                ' Avlyst'
+                    ' - ' +
+                    serviceAppointment.EarliestStartTime?.format('d.M.yyyy') +
+                    ' - ' +
+                    ' Avlyst'
             );
             notification.setBody(
                 'Oppdraget ' +
-                serviceAppointment.AppointmentNumber +
-                ' som skulle vært gjennomført ' +
-                serviceAppointment.EarliestStartTime?.format('d.M.yyyy HH:mm') +
-                ' er avlyst.'
+                    serviceAppointment.AppointmentNumber +
+                    ' som skulle vært gjennomført ' +
+                    serviceAppointment.EarliestStartTime?.format('d.M.yyyy HH:mm') +
+                    ' er avlyst.'
             );
             notification.setNotificationTypeId(notificationType.Id);
             notification.setTargetId(serviceAppointment.Id);
@@ -261,7 +305,10 @@ public without sharing class HOT_ServiceAppointmentNotification {
                     notificationList.add(newNotification);
                 }
             }
-            HOT_ReminderSMSService.sendSMSToInterpreterOnCanceledByUser(new Set<Id>{serviceAppointment.Id}, new Set<Id>{srId});
+            HOT_ReminderSMSService.sendSMSToInterpreterOnCanceledByUser(
+                new Set<Id>{ serviceAppointment.Id },
+                new Set<Id>{ srId }
+            );
         }
         //inserting notifications
         try {
@@ -276,7 +323,7 @@ public without sharing class HOT_ServiceAppointmentNotification {
         //creating notification object list
         List<HOT_Notification__c> notificationList = new List<HOT_Notification__c>();
 
-        if(serviceAppointment?.HOT_ServiceResource__r?.HOT_NotificationChannel__c != null){
+        if (serviceAppointment?.HOT_ServiceResource__r?.HOT_NotificationChannel__c != null) {
             if (
                 serviceAppointment.HOT_ServiceResource__r.HOT_NotificationChannel__c.contains('Push') ||
                 serviceAppointment.HOT_IsEmployedInterpreter__c
@@ -284,16 +331,16 @@ public without sharing class HOT_ServiceAppointmentNotification {
                 Messaging.CustomNotification notification = new Messaging.CustomNotification();
                 notification.setTitle(
                     serviceAppointment.AppointmentNumber +
-                    ' - ' +
-                    serviceAppointment.EarliestStartTime?.format('d.M.yyyy') +
-                    ' - ' +
-                    'endret tidspunkt'
+                        ' - ' +
+                        serviceAppointment.EarliestStartTime?.format('d.M.yyyy') +
+                        ' - ' +
+                        'endret tidspunkt'
                 );
                 notification.setBody(
                     'Nytt tidspunkt er ' +
-                    serviceAppointment.EarliestStartTime?.format('d.M.yyyy HH:mm') +
-                    ' - ' +
-                    serviceAppointment.DueDate?.format('HH:mm')
+                        serviceAppointment.EarliestStartTime?.format('d.M.yyyy HH:mm') +
+                        ' - ' +
+                        serviceAppointment.DueDate?.format('HH:mm')
                 );
                 if (!serviceAppointment.HOT_IsEmployedInterpreter__c) {
                     String targetPageRef = getTargetPageRefInterpreter('my', serviceAppointment.Id);
@@ -350,7 +397,7 @@ public without sharing class HOT_ServiceAppointmentNotification {
 
                     notificationList.add(newNotification);
                 }
-                HOT_ReminderSMSService.sendSMSToInterpreterOnTimeChanged(new Set<Id>{serviceAppointment.Id});
+                HOT_ReminderSMSService.sendSMSToInterpreterOnTimeChanged(new Set<Id>{ serviceAppointment.Id });
             }
         }
         //inserting notifications
@@ -366,7 +413,7 @@ public without sharing class HOT_ServiceAppointmentNotification {
 
         List<HOT_Notification__c> notificationList = new List<HOT_Notification__c>();
 
-        if(serviceAppointment?.HOT_ServiceResource__r?.HOT_NotificationChannel__c != null){
+        if (serviceAppointment?.HOT_ServiceResource__r?.HOT_NotificationChannel__c != null) {
             if (
                 serviceAppointment.HOT_ServiceResource__r.HOT_NotificationChannel__c.contains('Push') ||
                 serviceAppointment.HOT_IsEmployedInterpreter__c
@@ -374,10 +421,10 @@ public without sharing class HOT_ServiceAppointmentNotification {
                 Messaging.CustomNotification notification = new Messaging.CustomNotification();
                 notification.setTitle(
                     serviceAppointment.AppointmentNumber +
-                    ' - ' +
-                    serviceAppointment.EarliestStartTime?.format('d.M.yyyy HH:mm') +
-                    ' - ' +
-                    'endret adresse'
+                        ' - ' +
+                        serviceAppointment.EarliestStartTime?.format('d.M.yyyy HH:mm') +
+                        ' - ' +
+                        'endret adresse'
                 );
                 notification.setBody('Ny adresse er ' + serviceAppointment.HOT_AddressFormated__c);
                 if (!serviceAppointment.HOT_IsEmployedInterpreter__c) {
@@ -431,7 +478,7 @@ public without sharing class HOT_ServiceAppointmentNotification {
                     newNotification.HOT_RelatedObjectType__c = 'serviceAppointment';
 
                     notificationList.add(newNotification);
-                    HOT_ReminderSMSService.sendSMSToInterpreterOnAddressChanged(new Set<Id>{serviceAppointment.Id});
+                    HOT_ReminderSMSService.sendSMSToInterpreterOnAddressChanged(new Set<Id>{ serviceAppointment.Id });
                 }
             }
         }
@@ -458,10 +505,10 @@ public without sharing class HOT_ServiceAppointmentNotification {
                 notification.setTitle('Du er tildelt oppdraget ' + serviceAppointment.AppointmentNumber);
                 notification.setBody(
                     'Tidspunkt for oppdraget er ' +
-                    serviceAppointment.EarliestStartTime?.format('d.M.yyyy HH:mm') +
-                    ' - ' +
-                    serviceAppointment.DueDate?.format('HH:mm') +
-                    '.'
+                        serviceAppointment.EarliestStartTime?.format('d.M.yyyy HH:mm') +
+                        ' - ' +
+                        serviceAppointment.DueDate?.format('HH:mm') +
+                        '.'
                 );
                 if (!serviceAppointment.HOT_IsEmployedInterpreter__c) {
                     String targetPageRef = getTargetPageRefInterpreter('my', serviceAppointment.Id);
@@ -514,7 +561,7 @@ public without sharing class HOT_ServiceAppointmentNotification {
 
                     notificationList.add(newNotification);
                 }
-                HOT_ReminderSMSService.sendSMSToInterpreterOnAddedOrChanged(new Set<Id>{serviceAppointment.Id});
+                HOT_ReminderSMSService.sendSMSToInterpreterOnAddedOrChanged(new Set<Id>{ serviceAppointment.Id });
             }
         }
         //inserting notifications
@@ -533,7 +580,6 @@ public without sharing class HOT_ServiceAppointmentNotification {
         //creating notification object list
         List<HOT_Notification__c> notificationList = new List<HOT_Notification__c>();
 
-
         if (serviceAppointment?.HOT_ServiceResource__r?.HOT_NotificationChannel__c != null) {
             if (
                 serviceAppointment.HOT_ServiceResource__r.HOT_NotificationChannel__c.contains('Push') ||
@@ -542,16 +588,16 @@ public without sharing class HOT_ServiceAppointmentNotification {
                 Messaging.CustomNotification notification = new Messaging.CustomNotification();
                 notification.setTitle(
                     serviceAppointment.AppointmentNumber +
-                    ' - ' +
-                    serviceAppointment.EarliestStartTime?.format('d.M.yyyy') +
-                    ' - ' +
-                    'Tatt av oppdraget'
+                        ' - ' +
+                        serviceAppointment.EarliestStartTime?.format('d.M.yyyy') +
+                        ' - ' +
+                        'Tatt av oppdraget'
                 );
                 notification.setBody(
                     'Du er tatt av oppdraget ' +
-                    serviceAppointment.AppointmentNumber +
-                    ' som skulle starte ' +
-                    serviceAppointment.EarliestStartTime?.format('d.M.yyyy HH:mm')
+                        serviceAppointment.AppointmentNumber +
+                        ' som skulle starte ' +
+                        serviceAppointment.EarliestStartTime?.format('d.M.yyyy HH:mm')
                 );
                 if (!serviceAppointment.HOT_IsEmployedInterpreter__c) {
                     String targetPageRef = getTargetPageRefInterpreter('interested', serviceAppointment.Id);
@@ -604,7 +650,7 @@ public without sharing class HOT_ServiceAppointmentNotification {
                 newNotification.HOT_RelatedObjectType__c = 'noServiceAppointment';
 
                 notificationList.add(newNotification);
-                HOT_ReminderSMSService.sendSMSToInterpreterOnAddressChanged(new Set<Id>{serviceAppointment.Id});
+                HOT_ReminderSMSService.sendSMSToInterpreterOnAddressChanged(new Set<Id>{ serviceAppointment.Id });
             }
         }
         //inserting notifications
@@ -626,7 +672,7 @@ public without sharing class HOT_ServiceAppointmentNotification {
         //creating notification object list
         List<HOT_Notification__c> notificationList = new List<HOT_Notification__c>();
 
-        if(serviceAppointment?.HOT_ServiceResource__r?.HOT_NotificationChannel__c != null){
+        if (serviceAppointment?.HOT_ServiceResource__r?.HOT_NotificationChannel__c != null) {
             if (
                 serviceAppointment.HOT_ServiceResource__r.HOT_NotificationChannel__c.contains('Push') ||
                 serviceAppointment.HOT_IsEmployedInterpreter__c
@@ -634,21 +680,21 @@ public without sharing class HOT_ServiceAppointmentNotification {
                 Messaging.CustomNotification notification = new Messaging.CustomNotification();
                 notification.setTitle(
                     serviceAppointment.AppointmentNumber +
-                    ' - ' +
-                    serviceAppointment.EarliestStartTime?.format('d.M.yyyy HH:mm') +
-                    ' - ' +
-                    'endret til ' +
-                    isScreenInterpreterString
+                        ' - ' +
+                        serviceAppointment.EarliestStartTime?.format('d.M.yyyy HH:mm') +
+                        ' - ' +
+                        'endret til ' +
+                        isScreenInterpreterString
                 );
                 notification.setBody(
                     'Oppdraget ' +
-                    serviceAppointment.AppointmentNumber +
-                    ', ' +
-                    serviceAppointment.EarliestStartTime?.format('d.M.yyyy HH:mm') +
-                    ' - ' +
-                    serviceAppointment.DueDate?.format('HH:mm') +
-                    ' ble endret til ' +
-                    isScreenInterpreterString
+                        serviceAppointment.AppointmentNumber +
+                        ', ' +
+                        serviceAppointment.EarliestStartTime?.format('d.M.yyyy HH:mm') +
+                        ' - ' +
+                        serviceAppointment.DueDate?.format('HH:mm') +
+                        ' ble endret til ' +
+                        isScreenInterpreterString
                 );
                 notification.setNotificationTypeId(notificationType.Id);
                 notification.setTargetId(serviceAppointment.Id);
@@ -703,7 +749,7 @@ public without sharing class HOT_ServiceAppointmentNotification {
 
                     notificationList.add(newNotification);
                 }
-                HOT_ReminderSMSService.sendSMSToInterpreterOnScreenInterpretation(new Set<Id>{serviceAppointment.Id});
+                HOT_ReminderSMSService.sendSMSToInterpreterOnScreenInterpretation(new Set<Id>{ serviceAppointment.Id });
             }
         }
         //inserting notifications
@@ -734,7 +780,7 @@ public without sharing class HOT_ServiceAppointmentNotification {
         ServiceAppointment updatedSA = this.getUpdatedSAMap().get(sa.Id);
 
         WorkOrder wo = this.getWorkOrderMap().get(updatedSA.HOT_WorkOrderLineItem__r.WorkOrderId);
-        if(wo == null){
+        if (wo == null) {
             return;
         }
         //creating notification object list
@@ -773,14 +819,19 @@ public without sharing class HOT_ServiceAppointmentNotification {
                 newNotification.HOT_RelatedObject__c = wo.Id;
                 newNotification.HOT_RelatedObjectType__c = 'workOrder';
                 try {
-                    HOT_NotificationCentreController.createNotification(new List<HOT_Notification__c>{newNotification});
+                    HOT_NotificationCentreController.createNotification(
+                        new List<HOT_Notification__c>{ newNotification }
+                    );
                 } catch (Exception e) {
                     handleException(e);
                 }
             } else {
-                HOT_ReminderSMSService.sendSMSOnInterpreterChange(new Set<Id>{wo.Id}, this.getinterpreterNamesByWorkOrderIdMap().get(wo.Id));
+                HOT_ReminderSMSService.sendSMSOnInterpreterChange(
+                    new Set<Id>{ wo.Id },
+                    this.getinterpreterNamesByWorkOrderIdMap().get(wo.Id)
+                );
             }
-        }          
+        }
     }
     public void notifyInterpretersOnCoInterpreterRemoved(ServiceAppointment sa) {
         ServiceAppointment updatedSAWithInterpreterRemoved = this.getUpdatedSAMap().get(sa.Id);
@@ -798,14 +849,14 @@ public without sharing class HOT_ServiceAppointmentNotification {
                     notification.setTitle('Medtolk tatt av oppdraget');
                     notification.setBody(
                         'En medtolk er tatt av oppdraget: ' +
-                        serviceAppointment.AppointmentNumber +
-                        '\nDato: ' +
-                        updatedSAWithInterpreterRemoved.SchedStartTime?.format('dd.MM.yyyy', 'Europe/Oslo') +
-                        ', kl: ' +
-                        updatedSAWithInterpreterRemoved.SchedStartTime?.format('HH:mm', 'Europe/Oslo') +
-                        ' - ' +
-                        updatedSAWithInterpreterRemoved.SchedEndTime?.format('HH:mm', 'Europe/Oslo') +
-                        '.'
+                            serviceAppointment.AppointmentNumber +
+                            '\nDato: ' +
+                            updatedSAWithInterpreterRemoved.SchedStartTime?.format('dd.MM.yyyy', 'Europe/Oslo') +
+                            ', kl: ' +
+                            updatedSAWithInterpreterRemoved.SchedStartTime?.format('HH:mm', 'Europe/Oslo') +
+                            ' - ' +
+                            updatedSAWithInterpreterRemoved.SchedEndTime?.format('HH:mm', 'Europe/Oslo') +
+                            '.'
                     );
                     notification.setNotificationTypeId(getCustomNotificationType('HOT_NotifyInterpreter').Id);
                     notification.setTargetId(serviceAppointment.Id);
@@ -920,14 +971,14 @@ public without sharing class HOT_ServiceAppointmentNotification {
                     notification.setTitle('Ny medtolk ' + serviceAppointment.AppointmentNumber);
                     notification.setBody(
                         'Du har fått medtolk. \nTolk er: ' +
-                        updatedSAWithNewInterpreter.HOT_ServiceResource__r.Name +
-                        '\nDato: ' +
-                        updatedSAWithNewInterpreter.SchedStartTime?.format('dd.MM.yyyy', 'Europe/Oslo') +
-                        ', kl: ' +
-                        updatedSAWithNewInterpreter.SchedStartTime?.format('HH:mm', 'Europe/Oslo') +
-                        ' - ' +
-                        updatedSAWithNewInterpreter.SchedEndTime?.format('HH:mm', 'Europe/Oslo') +
-                        '.'
+                            updatedSAWithNewInterpreter.HOT_ServiceResource__r.Name +
+                            '\nDato: ' +
+                            updatedSAWithNewInterpreter.SchedStartTime?.format('dd.MM.yyyy', 'Europe/Oslo') +
+                            ', kl: ' +
+                            updatedSAWithNewInterpreter.SchedStartTime?.format('HH:mm', 'Europe/Oslo') +
+                            ' - ' +
+                            updatedSAWithNewInterpreter.SchedEndTime?.format('HH:mm', 'Europe/Oslo') +
+                            '.'
                     );
                     notification.setNotificationTypeId(getCustomNotificationType('HOT_NotifyInterpreter').Id);
                     notification.setTargetId(serviceAppointment.Id);
@@ -1044,16 +1095,18 @@ public without sharing class HOT_ServiceAppointmentNotification {
                     notification.setTitle('Endring av medtolk ' + serviceAppointment.AppointmentNumber);
                     notification.setBody(
                         'Medtolk på et oppdrag du er tildelt er blitt endret. \nNy tolk er: ' +
-                        updatedSAWithNewInterpreter.HOT_ServiceResource__r.Name +
-                        '\nDato: ' +
-                        updatedSAWithNewInterpreter.SchedStartTime?.format('dd.MM.yyyy', 'Europe/Oslo') +
-                        ', kl: ' +
-                        updatedSAWithNewInterpreter.SchedStartTime?.format('HH:mm', 'Europe/Oslo') +
-                        ' - ' +
-                        updatedSAWithNewInterpreter.SchedEndTime?.format('HH:mm', 'Europe/Oslo') +
-                        '.'
+                            updatedSAWithNewInterpreter.HOT_ServiceResource__r.Name +
+                            '\nDato: ' +
+                            updatedSAWithNewInterpreter.SchedStartTime?.format('dd.MM.yyyy', 'Europe/Oslo') +
+                            ', kl: ' +
+                            updatedSAWithNewInterpreter.SchedStartTime?.format('HH:mm', 'Europe/Oslo') +
+                            ' - ' +
+                            updatedSAWithNewInterpreter.SchedEndTime?.format('HH:mm', 'Europe/Oslo') +
+                            '.'
                     );
-                    notification.setNotificationTypeId(this.getCustomNotificationTypeByName('HOT_NotifyInterpreter').Id);
+                    notification.setNotificationTypeId(
+                        this.getCustomNotificationTypeByName('HOT_NotifyInterpreter').Id
+                    );
                     notification.setTargetId(serviceAppointment.Id);
 
                     HOT_NotificationHandler.sendNotification(
@@ -1179,66 +1232,69 @@ public without sharing class HOT_ServiceAppointmentNotification {
         return pageRef;
     }
 
-    private static Map<String,CustomNotificationType> getCustomNotificationTypeByNameMap(){
+    private static Map<String, CustomNotificationType> getCustomNotificationTypeByNameMap() {
         Map<String, CustomNotificationType> cntMap = new Map<String, CustomNotificationType>();
         List<CustomNotificationType> cntList = [
             SELECT Id, DeveloperName
             FROM CustomNotificationType
         ];
-        for(CustomNotificationType cnt : cntList){
-            cntMap.put(cnt.DeveloperName,cnt);
+        for (CustomNotificationType cnt : cntList) {
+            cntMap.put(cnt.DeveloperName, cnt);
         }
         return cntMap;
     }
-    
-    public CustomNotificationType getCustomNotificationTypeByName(String Name){
-        if(this.customNotificationTypeByName == null){
+
+    public CustomNotificationType getCustomNotificationTypeByName(String Name) {
+        if (this.customNotificationTypeByName == null) {
             this.customNotificationTypeByName = HOT_ServiceAppointmentNotification.getCustomNotificationTypeByNameMap();
         }
         return this.customNotificationTypeByName.get(Name);
     }
-    private static Map<Id,ServiceAppointment> getUpdatedServiceAppointments(List<ServiceAppointment> serviceAppointments){
-        Map<Id, ServiceAppointment> saMap = new Map<Id, ServiceAppointment>([
-            SELECT
-                Id,
-                AccountId,
-                HOT_AssignedResourceId__c,
-                HOT_ServiceResource__r.HOT_NotificationChannel__c,
-                HOT_WorkOrderLineItem__r.WorkOrderId,
-                HOT_ServiceResource__r.Name,
-                HOT_ServiceResource__r.HOT_IsEmployedInterpreter__c,
-                HOT_ServiceResource__r.AccountId,
-                HOT_Request__r.Orderer__c,
-                HOT_AddressFormated__c,
-                AppointmentNumber,
-                EarliestStartTime,
-                HOT_IsEmployedInterpreter__c,
-                DueDate,
-                SchedStartTime,
-                SchedEndTime
-            FROM ServiceAppointment
-            WHERE 
-                Id IN :serviceAppointments
-        ]);
-        return saMap; 
+    private static Map<Id, ServiceAppointment> getUpdatedServiceAppointments(
+        List<ServiceAppointment> serviceAppointments
+    ) {
+        Map<Id, ServiceAppointment> saMap = new Map<Id, ServiceAppointment>(
+            [
+                SELECT
+                    Id,
+                    AccountId,
+                    HOT_AssignedResourceId__c,
+                    HOT_ServiceResource__r.HOT_NotificationChannel__c,
+                    HOT_WorkOrderLineItem__r.WorkOrderId,
+                    HOT_ServiceResource__r.Name,
+                    HOT_ServiceResource__r.HOT_IsEmployedInterpreter__c,
+                    HOT_ServiceResource__r.AccountId,
+                    HOT_Request__r.Orderer__c,
+                    HOT_AddressFormated__c,
+                    AppointmentNumber,
+                    EarliestStartTime,
+                    HOT_IsEmployedInterpreter__c,
+                    DueDate,
+                    SchedStartTime,
+                    SchedEndTime
+                FROM ServiceAppointment
+                WHERE Id IN :serviceAppointments
+            ]
+        );
+        return saMap;
     }
     private Map<Id, ServiceAppointment> getUpdatedSAMap() {
-        if(this.updatedSAMap == null){
+        if (this.updatedSAMap == null) {
             this.updatedSAMap = HOT_ServiceAppointmentNotification.getUpdatedServiceAppointments(this.sa);
         }
         return this.updatedSAMap;
     }
-    private Map<Id,ServiceAppointment> getUpdatedSAMapById(Set<Id> saIds){
+    private Map<Id, ServiceAppointment> getUpdatedSAMapById(Set<Id> saIds) {
         Map<Id, ServiceAppointment> mapToReturn = new Map<Id, ServiceAppointment>();
 
-        for(ServiceAppointment sa : this.getUpdatedSAMap().values()){
-            if(saIds.contains(sa.Id)){
+        for (ServiceAppointment sa : this.getUpdatedSAMap().values()) {
+            if (saIds.contains(sa.Id)) {
                 mapToReturn.put(sa.Id, sa);
             }
         }
         return mapToReturn;
     }
-    private static List<User> getUserByAccountIds(Set<Id> accountIds){
+    private static List<User> getUserByAccountIds(Set<Id> accountIds) {
         List<User> users = [
             SELECT Id, AccountId
             FROM User
@@ -1246,48 +1302,48 @@ public without sharing class HOT_ServiceAppointmentNotification {
         ];
         return users;
     }
-    private Map<Id,Id> getUserIdByAccountIdMap(){
-        if(this.userIdByAccountIdMap == null){
+    private Map<Id, Id> getUserIdByAccountIdMap() {
+        if (this.userIdByAccountIdMap == null) {
             Set<Id> accountIds = new Set<Id>();
-            for(ServiceAppointment sa : this.getUpdatedSAMap().values()){
+            for (ServiceAppointment sa : this.getUpdatedSAMap().values()) {
                 accountIds.add(sa.HOT_Request__r.Orderer__c);
             }
-            Map<Id,Id> userByAccountMap = new Map<Id,Id>();
-            for(User u : HOT_ServiceAppointmentNotification.getUserByAccountIds(accountIds)){
+            Map<Id, Id> userByAccountMap = new Map<Id, Id>();
+            for (User u : HOT_ServiceAppointmentNotification.getUserByAccountIds(accountIds)) {
                 userByAccountMap.put(u.AccountId, u.Id);
             }
             this.userIdByAccountIdMap = userByAccountMap;
         }
         return this.userIdByAccountIdMap;
     }
-    private static List<User> getUsersByUserIds(Set<Id> userIds){
-        List<User> users = [SELECT Id, AccountId FROM User WHERE Id IN: userIds];
+    private static List<User> getUsersByUserIds(Set<Id> userIds) {
+        List<User> users = [SELECT Id, AccountId FROM User WHERE Id IN :userIds];
         return users;
     }
-    private Map<Id,Id> getAccountIdByUserIdMap(){
-        if(this.accountIdByUserIdMap == null){
+    private Map<Id, Id> getAccountIdByUserIdMap() {
+        if (this.accountIdByUserIdMap == null) {
             Set<Id> userIds = new Set<Id>();
-            for(ServiceAppointment sa : this.getUpdatedSAMap().values()){
-                if(sa.HOT_AssignedResourceId__c != null){
+            for (ServiceAppointment sa : this.getUpdatedSAMap().values()) {
+                if (sa.HOT_AssignedResourceId__c != null) {
                     userIds.add(sa.HOT_AssignedResourceId__c);
                 }
             }
-            Map<Id,Id> accountByUserMap = new Map<Id,Id>();
-            for(User u : HOT_ServiceAppointmentNotification.getUsersByUserIds(userIds)){
+            Map<Id, Id> accountByUserMap = new Map<Id, Id>();
+            for (User u : HOT_ServiceAppointmentNotification.getUsersByUserIds(userIds)) {
                 accountByUserMap.put(u.Id, u.AccountId);
             }
             this.accountIdByUserIdMap = accountByUserMap;
         }
         return this.accountIdByUSerIdMap;
     }
-    private Map<Id,Id> getAccountIdByUserIdMap(Set<Id> userIds){
-        Map<Id,Id> mapToReturn = new Map<Id,Id>();
-        for(Id uId : userIds){
+    private Map<Id, Id> getAccountIdByUserIdMap(Set<Id> userIds) {
+        Map<Id, Id> mapToReturn = new Map<Id, Id>();
+        for (Id uId : userIds) {
             mapToReturn.put(uId, this.getAccountIdByUserIdMap().get(uId));
         }
         return mapToReturn;
     }
-    private static List<ServiceAppointment> getRelatedServiceAppointments(Set<Id> workOrderIds){
+    private static List<ServiceAppointment> getRelatedServiceAppointments(Set<Id> workOrderIds) {
         return [
             SELECT
                 HOT_WorkOrderLineItem__r.WorkOrderId,
@@ -1305,23 +1361,25 @@ public without sharing class HOT_ServiceAppointmentNotification {
                 HOT_WorkOrderLineItem__r.WorkOrderId IN :workOrderIds
                 AND Status = 'Dispatched'
                 AND HOT_IsImageInterpreter__c = FALSE
-        ]; 
+        ];
     }
-    private Map<Id,Map<Id,ServiceAppointment>> getServiceAppointmentByWorkOrderIdMap(){
-        if(this.serviceAppointmentByWorkOrderIdMap == null){
+    private Map<Id, Map<Id, ServiceAppointment>> getServiceAppointmentByWorkOrderIdMap() {
+        if (this.serviceAppointmentByWorkOrderIdMap == null) {
             Set<Id> workOrderIds = new Set<Id>();
             for (ServiceAppointment sa : this.getUpdatedSAMap().values()) {
-                if(workOrderIds != null){
+                if (workOrderIds != null) {
                     workOrderIds.add(sa.HOT_WorkOrderLineItem__r.WorkOrderId);
                 }
             }
-            this.serviceAppointmentByWorkOrderIdMap = new Map<Id,Map<Id,ServiceAppointment>>();
-            for(ServiceAppointment sa : HOT_ServiceAppointmentNotification.getRelatedServiceAppointments(workOrderIds)){
-                if(this.serviceAppointmentByWorkOrderIdMap.containsKey(sa.HOT_WorkOrderLineItem__r.WorkOrderId)){
-                    this.serviceAppointmentByWorkOrderIdMap.get(sa.HOT_WorkOrderLineItem__r.WorkOrderId).put(sa.Id,sa);
+            this.serviceAppointmentByWorkOrderIdMap = new Map<Id, Map<Id, ServiceAppointment>>();
+            for (
+                ServiceAppointment sa : HOT_ServiceAppointmentNotification.getRelatedServiceAppointments(workOrderIds)
+            ) {
+                if (this.serviceAppointmentByWorkOrderIdMap.containsKey(sa.HOT_WorkOrderLineItem__r.WorkOrderId)) {
+                    this.serviceAppointmentByWorkOrderIdMap.get(sa.HOT_WorkOrderLineItem__r.WorkOrderId).put(sa.Id, sa);
                 } else {
                     this.serviceAppointmentByWorkOrderIdMap.put(
-                         sa.HOT_WorkOrderLineItem__r.WorkOrderId,
+                        sa.HOT_WorkOrderLineItem__r.WorkOrderId,
                         new Map<Id, ServiceAppointment>{ sa.Id => sa }
                     );
                 }
@@ -1329,18 +1387,18 @@ public without sharing class HOT_ServiceAppointmentNotification {
         }
         return this.serviceAppointmentByWorkOrderIdMap;
     }
-    private List<ServiceAppointment> getRelatedServiceAppointments(ServiceAppointment sa){
-        if(sa.HOT_WorkOrderLineItem__r.WorkOrderId == null){
+    private List<ServiceAppointment> getRelatedServiceAppointments(ServiceAppointment sa) {
+        if (sa.HOT_WorkOrderLineItem__r.WorkOrderId == null) {
             return new List<ServiceAppointment>();
         }
-        Map<Id,ServiceAppointment> relatedServiceAppointmentMap = new Map<Id, ServiceAppointment>();
+        Map<Id, ServiceAppointment> relatedServiceAppointmentMap = new Map<Id, ServiceAppointment>();
         relatedServiceAppointmentMap.putAll(
             this.getServiceAppointmentByWorkOrderIdMap().get(sa.HOT_WorkOrderLineItem__r.WorkOrderId)
         );
         relatedServiceAppointmentMap.remove(sa.Id);
         return relatedServiceAppointmentMap.values();
     }
-    private static List<WorkOrder> getWorkOrders(Set<Id> workOrderIds){
+    private static List<WorkOrder> getWorkOrders(Set<Id> workOrderIds) {
         List<WorkOrder> workordersList = [
             SELECT
                 Id,
@@ -1362,23 +1420,25 @@ public without sharing class HOT_ServiceAppointmentNotification {
         ];
         return workordersList;
     }
-    private Map<Id,WorkOrder> getWorkOrderMap(){
-        if(this.workOrderMap == null){
+    private Map<Id, WorkOrder> getWorkOrderMap() {
+        if (this.workOrderMap == null) {
             Set<Id> workOrderIds = new Set<Id>();
-            for(ServiceAppointment sa : this.getUpdatedSaMap().values()){
+            for (ServiceAppointment sa : this.getUpdatedSaMap().values()) {
                 workOrderIds.add(sa.HOT_WorkOrderLineItem__r.WorkOrderId);
             }
-            this.workOrderMap = new Map<Id,WorkOrder>(HOT_ServiceAppointmentNotification.getWorkOrders(workOrderIds));
+            this.workOrderMap = new Map<Id, WorkOrder>(HOT_ServiceAppointmentNotification.getWorkOrders(workOrderIds));
         }
         return this.workOrderMap;
     }
-    private Map<Id, String> getinterpreterNamesByWorkOrderIdMap(){
-        if(this.interpreterNamesByWorkOrderIdMap == null){
-            this.interpreterNamesByWorkOrderIdMap = HOT_ReminderSMSService.interpreterNamesByWorkOrderIds(this.getWorkOrderMap().values());
+    private Map<Id, String> getinterpreterNamesByWorkOrderIdMap() {
+        if (this.interpreterNamesByWorkOrderIdMap == null) {
+            this.interpreterNamesByWorkOrderIdMap = HOT_ReminderSMSService.interpreterNamesByWorkOrderIds(
+                this.getWorkOrderMap().values()
+            );
         }
         return this.interpreterNamesByWorkOrderIdMap;
     }
-    private static List<ServiceResource> getServiceResourceList(Set<Id> srIds){
+    private static List<ServiceResource> getServiceResourceList(Set<Id> srIds) {
         List<ServiceResource> serviceResourceList = [
             SELECT HOT_NotificationChannel__c, AccountId
             FROM ServiceResource
@@ -1386,25 +1446,27 @@ public without sharing class HOT_ServiceAppointmentNotification {
         ];
         return serviceResourceList;
     }
-    public Map<Id,ServiceResource> getServiceResourceMap(){
-        if(this.serviceResourceMap == null){
+    public Map<Id, ServiceResource> getServiceResourceMap() {
+        if (this.serviceResourceMap == null) {
             Set<Id> srIds = new Set<Id>();
-            for(ServiceAppointment sa : this.getUpdatedSaMap().values()){
-                if(sa.HOT_ServiceResource__c != null){
+            for (ServiceAppointment sa : this.getUpdatedSaMap().values()) {
+                if (sa.HOT_ServiceResource__c != null) {
                     srIds.add(sa.HOT_ServiceResource__c);
                 }
             }
-            this.serviceResourceMap = new Map<Id, ServiceResource>(HOT_ServiceAppointmentNotification.getServiceResourceList(srIds));
+            this.serviceResourceMap = new Map<Id, ServiceResource>(
+                HOT_ServiceAppointmentNotification.getServiceResourceList(srIds)
+            );
         }
         return this.serviceResourceMap;
     }
 
-    public HOT_ServiceAppointmentNotification(List<ServiceAppointment> saList, Map<Id,ServiceAppointment> oldSaMapt){
+    public HOT_ServiceAppointmentNotification(List<ServiceAppointment> saList, Map<Id, ServiceAppointment> oldSaMapt) {
         this.sa = saList;
         this.oldSaMap = oldSaMap;
     }
 
-    public HOT_ServiceAppointmentNotification(List<ServiceAppointment> saList){
+    public HOT_ServiceAppointmentNotification(List<ServiceAppointment> saList) {
         this.sa = saList;
     }
 }

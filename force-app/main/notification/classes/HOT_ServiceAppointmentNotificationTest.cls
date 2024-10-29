@@ -201,7 +201,9 @@ private class HOT_ServiceAppointmentNotificationTest {
         update serviceAppointment;
 
         Test.startTest();
-        HOT_ServiceAppointmentNotification saN = new HOT_ServiceAppointmentNotification(new List<ServiceAppointment>{serviceAppointment});
+        HOT_ServiceAppointmentNotification saN = new HOT_ServiceAppointmentNotification(
+            new List<ServiceAppointment>{ serviceAppointment }
+        );
         saN.notifyUserOnChangedResource(serviceAppointment);
         Test.stopTest();
     }
@@ -226,8 +228,15 @@ private class HOT_ServiceAppointmentNotificationTest {
             WHERE DeveloperName = 'HOT_NotifyUser'
         ];
         Test.startTest();
-        HOT_ServiceAppointmentNotification saN = new HOT_ServiceAppointmentNotification(new List<ServiceAppointment>{serviceAppointment});
-        saN.canceledByUser(notificationType, serviceAppointment, [SELECT Id FROM ServiceResource LIMIT 1].Id, recipients);
+        HOT_ServiceAppointmentNotification saN = new HOT_ServiceAppointmentNotification(
+            new List<ServiceAppointment>{ serviceAppointment }
+        );
+        saN.canceledByUser(
+            notificationType,
+            serviceAppointment,
+            [SELECT Id FROM ServiceResource LIMIT 1].Id,
+            recipients
+        );
         Test.stopTest();
     }
     @IsTest
@@ -264,7 +273,9 @@ private class HOT_ServiceAppointmentNotificationTest {
             FROM CustomNotificationType
             WHERE DeveloperName = 'HOT_NotifyUser'
         ];
-        HOT_ServiceAppointmentNotification saN = new HOT_ServiceAppointmentNotification(new List<ServiceAppointment>{serviceAppointment});
+        HOT_ServiceAppointmentNotification saN = new HOT_ServiceAppointmentNotification(
+            new List<ServiceAppointment>{ serviceAppointment }
+        );
         saN.canceledByUser(notificationType, serviceAppointment, serviceResource.Id, recipients);
 
         Test.stopTest();
@@ -315,7 +326,11 @@ private class HOT_ServiceAppointmentNotificationTest {
             WHERE DeveloperName = 'HOT_NotifyUser'
         ];
         HOT_ServiceAppointmentNotification saN = new HOT_ServiceAppointmentNotification(saList);
-        saN.timeChanged(notificationType, [SELECT Id FROM ServiceAppointment WHERE Subject = 'subject' LIMIT 1].Id, recipients);
+        saN.timeChanged(
+            notificationType,
+            [SELECT Id FROM ServiceAppointment WHERE Subject = 'subject' LIMIT 1].Id,
+            recipients
+        );
         Test.stopTest();
     }
     @IsTest
@@ -366,7 +381,11 @@ private class HOT_ServiceAppointmentNotificationTest {
             WHERE DeveloperName = 'HOT_NotifyUser'
         ];
         HOT_ServiceAppointmentNotification saN = new HOT_ServiceAppointmentNotification(saList);
-        saN.timeChanged(notificationType, [SELECT Id FROM ServiceAppointment WHERE Subject = 'subject' LIMIT 1].Id, recipients);
+        saN.timeChanged(
+            notificationType,
+            [SELECT Id FROM ServiceAppointment WHERE Subject = 'subject' LIMIT 1].Id,
+            recipients
+        );
         Test.stopTest();
     }
 
@@ -408,7 +427,9 @@ private class HOT_ServiceAppointmentNotificationTest {
             FROM CustomNotificationType
             WHERE DeveloperName = 'HOT_NotifyUser'
         ];
-        HOT_ServiceAppointmentNotification saN = new HOT_ServiceAppointmentNotification(new List<ServiceAppointment>{serviceAppointment});
+        HOT_ServiceAppointmentNotification saN = new HOT_ServiceAppointmentNotification(
+            new List<ServiceAppointment>{ serviceAppointment }
+        );
         saN.addressChanged(notificationType, saId, recipients);
         Test.stopTest();
     }
@@ -474,7 +495,9 @@ private class HOT_ServiceAppointmentNotificationTest {
         update serviceAppointment2;
 
         //Freelance notification
-        HOT_ServiceAppointmentNotification saN = new HOT_ServiceAppointmentNotification(new List<ServiceAppointment>{serviceAppointment});
+        HOT_ServiceAppointmentNotification saN = new HOT_ServiceAppointmentNotification(
+            new List<ServiceAppointment>{ serviceAppointment }
+        );
         saN.notifyInterpretersOnChangedResource(serviceAppointment2);
         //Employee notification
         saN.notifyInterpretersOnChangedResource(serviceAppointment);
@@ -640,8 +663,8 @@ private class HOT_ServiceAppointmentNotificationTest {
         Test.stopTest();
         System.assertEquals(
             '{type: "comm__namedPage",attributes: {pageName: "mine-oppdrag"}, state: {list: "my", id: "' +
-            request.Id +
-            '"}}',
+                request.Id +
+                '"}}',
             result
         );
     }
