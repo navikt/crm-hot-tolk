@@ -829,7 +829,9 @@ public without sharing class HOT_ServiceAppointmentNotification {
     public void notifyInterpretersOnCoInterpreterRemoved(ServiceAppointment sa) {
         ServiceAppointment updatedSAWithInterpreterRemoved = this.getUpdatedSAMap().get(sa.Id);
 
-        List<ServiceAppointment> relatedServiceAppointments = this.getRelatedServiceAppointments(updatedSAWithInterpreterRemoved);
+        List<ServiceAppointment> relatedServiceAppointments = this.getRelatedServiceAppointments(
+            updatedSAWithInterpreterRemoved
+        );
         //creating notification object list
         List<HOT_Notification__c> notificationList = new List<HOT_Notification__c>();
         for (ServiceAppointment serviceAppointment : relatedServiceAppointments) {
@@ -950,7 +952,9 @@ public without sharing class HOT_ServiceAppointmentNotification {
     public void notifyInterpretersOnCoInterpreterAdded(ServiceAppointment sa) {
         ServiceAppointment updatedSAWithNewInterpreter = this.getUpdatedSAMap().get(sa.Id);
 
-        List<ServiceAppointment> relatedServiceAppointments = this.getRelatedServiceAppointments(updatedSAWithNewInterpreter);
+        List<ServiceAppointment> relatedServiceAppointments = this.getRelatedServiceAppointments(
+            updatedSAWithNewInterpreter
+        );
 
         //creating notification object list
         List<HOT_Notification__c> notificationList = new List<HOT_Notification__c>();
@@ -1074,7 +1078,9 @@ public without sharing class HOT_ServiceAppointmentNotification {
     public void notifyInterpretersOnChangedResource(ServiceAppointment sa) {
         ServiceAppointment updatedSAWithNewInterpreter = this.getUpdatedSAMap().get(sa.Id);
 
-        List<ServiceAppointment> relatedServiceAppointments = this.getRelatedServiceAppointments(updatedSAWithNewInterpreter);
+        List<ServiceAppointment> relatedServiceAppointments = this.getRelatedServiceAppointments(
+            updatedSAWithNewInterpreter
+        );
 
         //creating notification object list
         List<HOT_Notification__c> notificationList = new List<HOT_Notification__c>();
