@@ -21,8 +21,6 @@ public without sharing class HOT_ServiceAppointmentNotification {
     ) {
         HOT_ServiceAppointmentNotification sAN = new HOT_ServiceAppointmentNotification(serviceAppointments, (Map<Id,ServiceAppointment>)triggerOldMap);
 
-        //creating notification object list
-        List<HOT_Notification__c> notificationList = new List<HOT_Notification__c>();
 
         for (ServiceAppointment serviceAppointment : serviceAppointments) {
             ServiceAppointment oldServiceAppointment = (ServiceAppointment) triggerOldMap.get(serviceAppointment.Id);
@@ -99,7 +97,7 @@ public without sharing class HOT_ServiceAppointmentNotification {
                     serviceAppointment.HOT_CanceledByInterpreter__c == false
                 ) {
                     saN.resourceChanged(saN.getCustomNotificationTypeByName('HOT_Service_Appointment_Changed'), serviceAppointment.Id, recipients);
-                    notifyInterpretersOnCoInterpreterRemoved(serviceAppointment);
+                    saN.notifyInterpretersOnCoInterpreterRemoved(serviceAppointment);
                 }
 
                 // Varsel ved endring av skjermtolk/oppmøtetolk
@@ -108,19 +106,12 @@ public without sharing class HOT_ServiceAppointmentNotification {
                     oldServiceAppointment.HOT_IsScreenInterpreterNew__c &&
                     serviceAppointment.Status != 'Scheduled'
                 ) {
-                    Set<Id> saIds = new Set<Id>{ serviceAppointment.Id };
                     String isScreenInterpreterString = serviceAppointment.HOT_IsScreenInterpreterNew__c
                         ? 'skjermtolk'
                         : 'oppmøtetolk';
-                    screenInterpreterChanged(saN.getCustomNotificationTypeByName('HOT_Service_Appointment_Changed'), saIds, recipients, isScreenInterpreterString);
+                    saN.screenInterpreterChanged(saN.getCustomNotificationTypeByName('HOT_Service_Appointment_Changed'), serviceAppointment.Id, recipients, isScreenInterpreterString);
                 }
             }
-        }
-        //inserting notifications
-        try {
-            HOT_NotificationCentreController.createNotification(notificationList);
-        } catch (Exception e) {
-            handleException(e);
         }
     }
 
@@ -624,37 +615,18 @@ public without sharing class HOT_ServiceAppointmentNotification {
         }
     }
 
-    public static void screenInterpreterChanged(
+    public void screenInterpreterChanged(
         CustomNotificationType notificationType,
-        Set<Id> saIds,
+        Id saId,
         Set<String> recipients,
         String isScreenInterpreterString
     ) {
         Set<Id> saSMS = new Set<Id>();
-        List<ServiceAppointment> saList = [
-            SELECT
-                AppointmentNumber,
-                EarliestStartTime,
-                DueDate,
-                HOT_AssignedResourceId__c,
-                HOT_IsEmployedInterpreter__c,
-                HOT_ServiceResource__r.HOT_NotificationChannel__c
-            FROM ServiceAppointment
-            WHERE Id IN :saIds AND HOT_ServiceResource__r.HOT_NotificationChannel__c != NULL
-        ];
+        ServiceAppointment serviceAppointment = this.getUpdatedSAMap().get(saId);
         //creating notification object list
         List<HOT_Notification__c> notificationList = new List<HOT_Notification__c>();
-        Map<Id, Id> userIdToAccountMap = new Map<Id, Id>();
-        Set<Id> asUserIds = new Set<Id>();
-        for (ServiceAppointment serviceAppointment : saList) {
-            asUserIds.add(serviceAppointment.HOT_AssignedResourceId__c);
-        }
-        List<User> users = [SELECT Id, AccountId FROM User WHERE Id IN :asUserIds];
-        for (User user : users) {
-            userIdToAccountMap.put(user.Id, user.AccountId);
-        }
 
-        for (ServiceAppointment serviceAppointment : saList) {
+        if(serviceAppointment?.HOT_ServiceResource__r?.HOT_NotificationChannel__c != null){
             if (
                 serviceAppointment.HOT_ServiceResource__r.HOT_NotificationChannel__c.contains('Push') ||
                 serviceAppointment.HOT_IsEmployedInterpreter__c
@@ -683,9 +655,9 @@ public without sharing class HOT_ServiceAppointmentNotification {
 
                 HOT_NotificationHandler.sendNotification(notification, recipients, (SObject) serviceAppointment);
                 //creating notification object
-                if (userIdToAccountMap.get(serviceAppointment.HOT_AssignedResourceId__c) != null) {
+                if (this.getAccountIdByUserIdMap().get(serviceAppointment.HOT_AssignedResourceId__c) != null) {
                     HOT_Notification__c newNotification = new HOT_Notification__c();
-                    Id account = userIdToAccountMap.get(serviceAppointment.HOT_AssignedResourceId__c);
+                    Id account = this.getAccountIdByUserIdMap().get(serviceAppointment.HOT_AssignedResourceId__c);
                     newNotification.HOT_Account__c = account;
                     newNotification.HOT_NotificationChannel__c = 'Push-varsel i appen';
                     newNotification.HOT_Subject__c =
@@ -710,12 +682,10 @@ public without sharing class HOT_ServiceAppointmentNotification {
                     notificationList.add(newNotification);
                 }
             } else {
-                saSMS.add(serviceAppointment.Id);
-                if (userIdToAccountMap.get(serviceAppointment.HOT_AssignedResourceId__c) != null) {
-                    saSMS.add(serviceAppointment.Id);
+                if (this.getAccountIdByUserIdMap().get(serviceAppointment.HOT_AssignedResourceId__c) != null) {
                     //creating notification object
                     HOT_Notification__c newNotification = new HOT_Notification__c();
-                    Id account = userIdToAccountMap.get(serviceAppointment.HOT_AssignedResourceId__c);
+                    Id account = this.getAccountIdByUserIdMap().get(serviceAppointment.HOT_AssignedResourceId__c);
                     newNotification.HOT_Account__c = account;
                     newNotification.HOT_NotificationChannel__c = 'SMS';
                     newNotification.HOT_Subject__c =
@@ -733,10 +703,8 @@ public without sharing class HOT_ServiceAppointmentNotification {
 
                     notificationList.add(newNotification);
                 }
+                HOT_ReminderSMSService.sendSMSToInterpreterOnScreenInterpretation(new Set<Id>{serviceAppointment.Id});
             }
-        }
-        if (saSMS.size() > 0) {
-            HOT_ReminderSMSService.sendSMSToInterpreterOnScreenInterpretation(saSMS);
         }
         //inserting notifications
         try {
@@ -814,35 +782,12 @@ public without sharing class HOT_ServiceAppointmentNotification {
             }
         }          
     }
-    public static void notifyInterpretersOnCoInterpreterRemoved(ServiceAppointment sa) {
-        ServiceAppointment updatedSAWithInterpreterRemoved = [
-            SELECT HOT_WorkOrderLineItem__r.WorkOrderId, SchedStartTime, SchedEndTime
-            FROM ServiceAppointment
-            WHERE Id = :sa.Id
-        ];
+    public void notifyInterpretersOnCoInterpreterRemoved(ServiceAppointment sa) {
+        ServiceAppointment updatedSAWithInterpreterRemoved = this.getUpdatedSAMap().get(sa.Id);
 
-        List<ServiceAppointment> relatedServiceAppointments = [
-            SELECT
-                HOT_WorkOrderLineItem__r.WorkOrderId,
-                AppointmentNumber,
-                SchedStartTime,
-                SchedEndTime,
-                HOT_ServiceResource__r.AccountId,
-                HOT_ServiceResource__r.HOT_IsFreelanceInterpreter__c,
-                HOT_ServiceResource__r.HOT_IsEmployedInterpreter__c,
-                HOT_ServiceResource__r.HOT_NotificationChannel__c,
-                HOT_ServiceResource__r.RelatedRecordId
-            FROM ServiceAppointment
-            WHERE
-                HOT_WorkOrderLineItem__r.WorkOrderId = :updatedSAWithInterpreterRemoved.HOT_WorkOrderLineItem__r.WorkOrderId
-                AND Id != :sa.Id
-                AND Status = 'Dispatched'
-                AND HOT_IsImageInterpreter__c = FALSE
-        ];
-
+        List<ServiceAppointment> relatedServiceAppointments = this.getRelatedServiceAppointments(sa);
         //creating notification object list
         List<HOT_Notification__c> notificationList = new List<HOT_Notification__c>();
-        Set<Id> serviceResourcesIds = new Set<Id>();
         for (ServiceAppointment serviceAppointment : relatedServiceAppointments) {
             if (serviceAppointment.HOT_ServiceResource__r.HOT_NotificationChannel__c.contains('Push')) {
                 if (serviceAppointment.HOT_ServiceResource__r.HOT_IsEmployedInterpreter__c) {
@@ -965,7 +910,6 @@ public without sharing class HOT_ServiceAppointmentNotification {
 
         //creating notification object list
         List<HOT_Notification__c> notificationList = new List<HOT_Notification__c>();
-        Set<Id> serviceResourcesIds = new Set<Id>();
         for (ServiceAppointment serviceAppointment : relatedServiceAppointments) {
             if (serviceAppointment.HOT_ServiceResource__r.HOT_NotificationChannel__c.contains('Push')) {
                 if (serviceAppointment.HOT_ServiceResource__r.HOT_IsEmployedInterpreter__c) {
@@ -1090,7 +1034,6 @@ public without sharing class HOT_ServiceAppointmentNotification {
 
         //creating notification object list
         List<HOT_Notification__c> notificationList = new List<HOT_Notification__c>();
-        Set<Id> serviceResourcesIds = new Set<Id>();
         for (ServiceAppointment serviceAppointment : relatedServiceAppointments) {
             if (serviceAppointment.HOT_ServiceResource__r.HOT_NotificationChannel__c.contains('Push')) {
                 if (serviceAppointment.HOT_ServiceResource__r.HOT_IsEmployedInterpreter__c) {
