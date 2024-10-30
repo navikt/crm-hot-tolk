@@ -1,6 +1,6 @@
 public without sharing class HOT_ServiceAppointmentNotification {
     Map<String, CustomNotificationType> customNotificationTypeByName;
-    List<ServiceAppointment> sa;
+    List<ServiceAppointment> originalSaList;
     Map<Id, ServiceAppointment> updatedSAMap;
     Map<Id, Id> accountIdByUSerIdMap;
     Map<Id, Id> userIdByAccountIdMap;
@@ -1279,7 +1279,7 @@ public without sharing class HOT_ServiceAppointmentNotification {
     }
     private Map<Id, ServiceAppointment> getUpdatedSAMap() {
         if (this.updatedSAMap == null) {
-            this.updatedSAMap = HOT_ServiceAppointmentNotification.getUpdatedServiceAppointments(this.sa);
+            this.updatedSAMap = HOT_ServiceAppointmentNotification.getUpdatedServiceAppointments(this.originalSaList);
         }
         return this.updatedSAMap;
     }
@@ -1345,6 +1345,7 @@ public without sharing class HOT_ServiceAppointmentNotification {
     private static List<ServiceAppointment> getRelatedServiceAppointments(Set<Id> workOrderIds) {
         return [
             SELECT
+                Id,
                 HOT_WorkOrderLineItem__r.WorkOrderId,
                 SchedStartTime,
                 SchedEndTime,
@@ -1366,7 +1367,7 @@ public without sharing class HOT_ServiceAppointmentNotification {
         if (this.serviceAppointmentByWorkOrderIdMap == null) {
             Set<Id> workOrderIds = new Set<Id>();
             for (ServiceAppointment sa : this.getUpdatedSAMap().values()) {
-                if (workOrderIds != null) {
+                if (sa.HOT_WorkOrderLineItem__r.WorkOrderId != null) {
                     workOrderIds.add(sa.HOT_WorkOrderLineItem__r.WorkOrderId);
                 }
             }
@@ -1463,6 +1464,6 @@ public without sharing class HOT_ServiceAppointmentNotification {
         return this.serviceResourceMap;
     }
     public HOT_ServiceAppointmentNotification(List<ServiceAppointment> saList) {
-        this.sa = saList;
+        this.originalSaList = saList;
     }
 }

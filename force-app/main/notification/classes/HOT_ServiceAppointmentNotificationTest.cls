@@ -496,7 +496,7 @@ private class HOT_ServiceAppointmentNotificationTest {
 
         //Freelance notification
         HOT_ServiceAppointmentNotification saN = new HOT_ServiceAppointmentNotification(
-            new List<ServiceAppointment>{ serviceAppointment }
+            new List<ServiceAppointment>{ serviceAppointment, serviceAppointment2 }
         );
         saN.notifyInterpretersOnChangedResource(serviceAppointment2);
         //Employee notification
