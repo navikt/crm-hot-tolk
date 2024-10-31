@@ -5,7 +5,7 @@
             <div tabindex="-1" aria-label="Legg inn kommentarer til oppdragene">
                 <div role="dialog" aria-labelledby="comment-header-id">
                     <section>
-                        <div>
+                        <div lwc:if={showInfoAndCommentSection}>
                             <h2 id="comment-header-id" class="typo-undertittel">Legg til kommentarer til oppdragene</h2>
 
                             <!-- Iterate over serviceAppointmentCommentDetails -->
@@ -178,14 +178,14 @@
                                     <c-hot_freelance-table-list-mobile
                                         records={seriesRecords}
                                         columns={inDetailsColumns}
-                                        onrowclick={goToRecordDetails}
+                                        onrowclick={setupRecordDetails}
                                     ></c-hot_freelance-table-list-mobile>
                                 </template>
                                 <template if:false={isMobile}>
                                     <c-table
                                         records={seriesRecords}
                                         columns={inDetailsColumns}
-                                        onrowclick={goToRecordDetails}
+                                        onrowclick={setupRecordDetails}
                                     ></c-table>
                                 </template>
                             </template>
