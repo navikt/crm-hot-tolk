@@ -212,15 +212,14 @@ public class HOT_RequestRoutingHandler extends MyTriggers {
             }
         }
         Map<Id, SobjectWrapper> wrapperByAccountId = new Map<Id, SobjectWrapper>();
-        for (Person__c per : [
-            SELECT INT_RegionNumber__c, INT_MunicipalityNumber__c, CRM_Account__c
-            FROM Person__c
-            WHERE CRM_Account__c IN :accountIds
-        ]) {
-            SobjectWrapper wrapper = new SobjectWrapper();
-            wrapper.Region = per.INT_RegionNumber__c;
-            wrapper.Municipality = per.INT_MunicipalityNumber__c;
-            wrapperByAccountId.put(per.CRM_Account__c, wrapper);
+        for (Person__c per : getPersons()) {
+            if(accountIds.contains(per.CRM_Account__c)){
+                SobjectWrapper wrapper = new SobjectWrapper();
+                wrapper.Region = per.INT_RegionNumber__c;
+                wrapper.Municipality = per.INT_MunicipalityNumber__c;
+                wrapperByAccountId.put(per.CRM_Account__c, wrapper);
+            }
+            
         }
 
         return wrapperByAccountId;
@@ -234,18 +233,36 @@ public class HOT_RequestRoutingHandler extends MyTriggers {
             }
         }
         Map<Id, SobjectWrapper> wrapperByAccountId = new Map<Id, SobjectWrapper>();
-        for (Person__c per : [
-            SELECT INT_RegionNumber__c, INT_MunicipalityNumber__c, CRM_Account__c
-            FROM Person__c
-            WHERE CRM_Account__c IN :accountIds
-        ]) {
-            SobjectWrapper wrapper = new SobjectWrapper();
-            wrapper.Region = per.INT_RegionNumber__c;
-            wrapper.Municipality = per.INT_MunicipalityNumber__c;
-            wrapperByAccountId.put(per.CRM_Account__c, wrapper);
+        for (Person__c per : this.getPersons()) {
+            if(accountIds.contains(per.CRM_Account__c)){
+                SobjectWrapper wrapper = new SobjectWrapper();
+                wrapper.Region = per.INT_RegionNumber__c;
+                wrapper.Municipality = per.INT_MunicipalityNumber__c;
+                wrapperByAccountId.put(per.CRM_Account__c, wrapper);
+            }
         }
 
         return wrapperByAccountId;
+    }
+
+    private List<Person__c> persons;
+    private List<Person__c> getPersons(){
+        if(this.persons == null){
+            Set<Id> accountIds = new Set<Id>();
+            for (HOT_Request__c request : (List<HOT_Request__c>) records) {
+                if ( request.Orderer__c != null) {
+                    accountIds.add(request.Orderer__c);
+                }else if (request.Account__c != null) {
+                    accountIds.add(request.Account__c);
+                }
+            }
+            this.persons = [
+                SELECT Id, CRM_Account__c, INT_RegionNumber__c, INT_MunicipalityNumber__c
+                FROM Person__c
+                WHERE CRM_Account__c IN :accountIds
+            ];
+        }
+        return this.persons;
     }
 
     private Map<Id, SobjectWrapper> getCompanyInfo() {
