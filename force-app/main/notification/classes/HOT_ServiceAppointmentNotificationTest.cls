@@ -234,7 +234,8 @@ private class HOT_ServiceAppointmentNotificationTest {
         saN.canceledByUser(
             notificationType,
             serviceAppointment,
-            [SELECT Id FROM ServiceResource LIMIT 1].Id,
+            [SELECT Id FROM ServiceResource LIMIT 1]
+            .Id,
             recipients
         );
         Test.stopTest();
@@ -328,7 +329,8 @@ private class HOT_ServiceAppointmentNotificationTest {
         HOT_ServiceAppointmentNotification saN = new HOT_ServiceAppointmentNotification(saList);
         saN.timeChanged(
             notificationType,
-            [SELECT Id FROM ServiceAppointment WHERE Subject = 'subject' LIMIT 1].Id,
+            [SELECT Id FROM ServiceAppointment WHERE Subject = 'subject' LIMIT 1]
+            .Id,
             recipients
         );
         Test.stopTest();
@@ -383,7 +385,8 @@ private class HOT_ServiceAppointmentNotificationTest {
         HOT_ServiceAppointmentNotification saN = new HOT_ServiceAppointmentNotification(saList);
         saN.timeChanged(
             notificationType,
-            [SELECT Id FROM ServiceAppointment WHERE Subject = 'subject' LIMIT 1].Id,
+            [SELECT Id FROM ServiceAppointment WHERE Subject = 'subject' LIMIT 1]
+            .Id,
             recipients
         );
         Test.stopTest();
@@ -663,8 +666,8 @@ private class HOT_ServiceAppointmentNotificationTest {
         Test.stopTest();
         System.assertEquals(
             '{type: "comm__namedPage",attributes: {pageName: "mine-oppdrag"}, state: {list: "my", id: "' +
-                request.Id +
-                '"}}',
+            request.Id +
+            '"}}',
             result
         );
     }
