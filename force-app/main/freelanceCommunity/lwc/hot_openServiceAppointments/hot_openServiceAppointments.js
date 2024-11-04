@@ -282,9 +282,6 @@ export default class Hot_openServiceAppointments extends LightningElement {
     sendInterestAllComplete = false;
     sendInterestAll = false;
     sendInterestSeries(result) {
-        this.template.querySelector('.serviceAppointmentDetails').classList.add('hidden');
-        this.hideSubmitIndicators();
-        this.showCommentSection();
         this.serviceAppointmentCommentDetails = [];
         this.sendInterestAll = true;
         this.serviceAppointmentCommentDetails.push(...this.seriesRecords);
@@ -308,17 +305,6 @@ export default class Hot_openServiceAppointments extends LightningElement {
         }
     }
 
-    hideSubmitIndicators() {
-        this.template.querySelector('.submitted-error').classList.add('hidden');
-        this.template.querySelector('.submitted-loading').classList.add('hidden');
-        this.template.querySelector('.submitted-true').classList.add('hidden');
-    }
-
-    showCommentSection() {
-        this.template.querySelector('.comment-details').classList.remove('hidden');
-        this.template.querySelector('.send-inn-button').classList.remove('hidden');
-    }
-
     closeModal() {
         if (this.sendInterestAllComplete) {
             refreshApex(this.wiredAllServiceAppointmentsResult).then(() => {
@@ -330,8 +316,6 @@ export default class Hot_openServiceAppointments extends LightningElement {
         }
         this.sendInterestAllComplete = false;
         this.sendInterestAll = false;
-        this.template.querySelector('.commentPage').classList.add('hidden');
-        this.template.querySelector('.serviceAppointmentDetails').classList.add('hidden');
     }
 
     getRecord(id) {
