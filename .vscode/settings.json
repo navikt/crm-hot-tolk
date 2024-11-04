@@ -29,5 +29,5 @@
         "**/.vscode": true,
         "**/.idea": true
     },
-    "salesforce.einsteinForDevelopers.enableAutocompletions": true
+    "salesforce.einsteinForDevelopers.enableAutocompletions": false
 }
