@@ -13,16 +13,14 @@ export default class Hot_wantedServiceAppointmentsListModal extends LightningMod
     @track submittedSuccess = false;
     @track submittedError = false;
     @track isDetails = true;
-    actionType; // Local variable to keep track of action type
+    actionType;
 
-    // Method to handle accepting interest
     acceptInterest() {
         this.actionType = 'acceptInterest';
         this.processMessage = 'Melder interesse...';
         this.handleAction();
     }
 
-    // Method to handle declining interest
     declineInterest() {
         this.actionType = 'declineInterest';
         this.processMessage = 'Avslår interesse...';
@@ -53,8 +51,6 @@ export default class Hot_wantedServiceAppointmentsListModal extends LightningMod
                 this.submittedSuccess = true;
                 this.processMessageResult =
                     this.actionType === 'acceptInterest' ? 'Interesse er meldt.' : 'Avslått interesse for oppdraget';
-                // Optional: refresh data if needed
-                // refreshApex(this.wiredAllServiceAppointmentsResult);
             })
             .catch((error) => {
                 this.spin = false;

@@ -337,9 +337,6 @@ export default class Hot_wantedServiceAppointmentsList extends LightningElement 
         this.processMessage = 'Avslår interesse...';
         this.spin = true;
         this.template.querySelector('.submitted-loading').classList.remove('hidden');
-        this.checkedServiceAppointments.forEach((element) => {
-            console.log(element);
-        });
         declineInterestedResourceChecked({
             saIdsList: this.checkedServiceAppointments,
             srId: this.serviceResourceId
