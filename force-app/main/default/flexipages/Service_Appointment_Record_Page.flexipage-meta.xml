@@ -150,6 +150,16 @@
             <fieldInstance>
                 <fieldInstanceProperties>
                     <name>uiBehavior</name>
+                    <value>required</value>
+                </fieldInstanceProperties>
+                <fieldItem>Record.HOT_Request__c</fieldItem>
+                <identifier>RecordHOT_Request_cField</identifier>
+            </fieldInstance>
+        </itemInstances>
+        <itemInstances>
+            <fieldInstance>
+                <fieldInstanceProperties>
+                    <name>uiBehavior</name>
                     <value>readonly</value>
                 </fieldInstanceProperties>
                 <fieldItem>Record.HOT_WorkOrder__c</fieldItem>
@@ -170,16 +180,6 @@
             <fieldInstance>
                 <fieldInstanceProperties>
                     <name>uiBehavior</name>
-                    <value>required</value>
-                </fieldInstanceProperties>
-                <fieldItem>Record.HOT_Request__c</fieldItem>
-                <identifier>RecordHOT_Request_cField</identifier>
-            </fieldInstance>
-        </itemInstances>
-        <itemInstances>
-            <fieldInstance>
-                <fieldInstanceProperties>
-                    <name>uiBehavior</name>
                     <value>none</value>
                 </fieldInstanceProperties>
                 <fieldItem>Record.Subject</fieldItem>
@@ -194,6 +194,16 @@
                 </fieldInstanceProperties>
                 <fieldItem>Record.Description</fieldItem>
                 <identifier>RecordDescriptionField</identifier>
+            </fieldInstance>
+        </itemInstances>
+        <itemInstances>
+            <fieldInstance>
+                <fieldInstanceProperties>
+                    <name>uiBehavior</name>
+                    <value>none</value>
+                </fieldInstanceProperties>
+                <fieldItem>Record.HOT_Interpreters__c</fieldItem>
+                <identifier>RecordHOT_Interpreters_cField</identifier>
             </fieldInstance>
         </itemInstances>
         <itemInstances>
@@ -232,6 +242,26 @@
                     <name>uiBehavior</name>
                     <value>readonly</value>
                 </fieldInstanceProperties>
+                <fieldItem>Record.HOT_GenderAge__c</fieldItem>
+                <identifier>RecordHOT_GenderAge_cField</identifier>
+            </fieldInstance>
+        </itemInstances>
+        <itemInstances>
+            <fieldInstance>
+                <fieldInstanceProperties>
+                    <name>uiBehavior</name>
+                    <value>none</value>
+                </fieldInstanceProperties>
+                <fieldItem>Record.WorkTypeId</fieldItem>
+                <identifier>RecordWorkTypeIdField</identifier>
+            </fieldInstance>
+        </itemInstances>
+        <itemInstances>
+            <fieldInstance>
+                <fieldInstanceProperties>
+                    <name>uiBehavior</name>
+                    <value>readonly</value>
+                </fieldInstanceProperties>
                 <fieldItem>Record.HOT_AssignmentType__c</fieldItem>
                 <identifier>RecordHOT_AssignmentType_cField</identifier>
             </fieldInstance>
@@ -250,6 +280,16 @@
             <fieldInstance>
                 <fieldInstanceProperties>
                     <name>uiBehavior</name>
+                    <value>none</value>
+                </fieldInstanceProperties>
+                <fieldItem>Record.HOT_IsSerieoppdrag__c</fieldItem>
+                <identifier>RecordHOT_IsSerieoppdrag_cField</identifier>
+            </fieldInstance>
+        </itemInstances>
+        <itemInstances>
+            <fieldInstance>
+                <fieldInstanceProperties>
+                    <name>uiBehavior</name>
                     <value>readonly</value>
                 </fieldInstanceProperties>
                 <fieldItem>Record.HOT_IsOtherEconomicProvicer__c</fieldItem>
@@ -262,8 +302,8 @@
                     <name>uiBehavior</name>
                     <value>readonly</value>
                 </fieldInstanceProperties>
-                <fieldItem>Record.HOT_TotalNumberOfInterpreters__c</fieldItem>
-                <identifier>RecordHOT_TotalNumberOfInterpreters_cField</identifier>
+                <fieldItem>Record.HOT_IsImageInterpreter__c</fieldItem>
+                <identifier>RecordHOT_IsImageInterpreter_cField</identifier>
             </fieldInstance>
         </itemInstances>
         <itemInstances>
@@ -272,28 +312,8 @@
                     <name>uiBehavior</name>
                     <value>readonly</value>
                 </fieldInstanceProperties>
-                <fieldItem>Record.HOT_GenderAge__c</fieldItem>
-                <identifier>RecordHOT_GenderAge_cField</identifier>
-            </fieldInstance>
-        </itemInstances>
-        <itemInstances>
-            <fieldInstance>
-                <fieldInstanceProperties>
-                    <name>uiBehavior</name>
-                    <value>none</value>
-                </fieldInstanceProperties>
-                <fieldItem>Record.HOT_AutoDispatch__c</fieldItem>
-                <identifier>RecordHOT_AutoDispatch_cField</identifier>
-            </fieldInstance>
-        </itemInstances>
-        <itemInstances>
-            <fieldInstance>
-                <fieldInstanceProperties>
-                    <name>uiBehavior</name>
-                    <value>none</value>
-                </fieldInstanceProperties>
-                <fieldItem>Record.HOT_Company__c</fieldItem>
-                <identifier>RecordHOT_Company_cField</identifier>
+                <fieldItem>Record.HOT_TotalNumberOfInterpreters__c</fieldItem>
+                <identifier>RecordHOT_TotalNumberOfInterpreters_cField</identifier>
             </fieldInstance>
         </itemInstances>
         <name>Facet-518575a4-e422-4ef9-9367-accdfba4479c</name>
@@ -324,6 +344,16 @@
             <fieldInstance>
                 <fieldInstanceProperties>
                     <name>uiBehavior</name>
+                    <value>none</value>
+                </fieldInstanceProperties>
+                <fieldItem>Record.HOT_DispatcherNew__c</fieldItem>
+                <identifier>RecordHOT_DispatcherNew_cField</identifier>
+            </fieldInstance>
+        </itemInstances>
+        <itemInstances>
+            <fieldInstance>
+                <fieldInstanceProperties>
+                    <name>uiBehavior</name>
                     <value>required</value>
                 </fieldInstanceProperties>
                 <fieldItem>Record.Status</fieldItem>
@@ -338,16 +368,6 @@
                 </fieldInstanceProperties>
                 <fieldItem>Record.HOT_IsUrgent__c</fieldItem>
                 <identifier>RecordHOT_IsUrgent_cField</identifier>
-            </fieldInstance>
-        </itemInstances>
-        <itemInstances>
-            <fieldInstance>
-                <fieldInstanceProperties>
-                    <name>uiBehavior</name>
-                    <value>none</value>
-                </fieldInstanceProperties>
-                <fieldItem>Record.HOT_DispatcherNew__c</fieldItem>
-                <identifier>RecordHOT_DispatcherNew_cField</identifier>
             </fieldInstance>
         </itemInstances>
         <itemInstances>
@@ -376,16 +396,6 @@
                     <name>uiBehavior</name>
                     <value>readonly</value>
                 </fieldInstanceProperties>
-                <fieldItem>Record.HOT_IsAcute__c</fieldItem>
-                <identifier>RecordHOT_IsAcute_cField</identifier>
-            </fieldInstance>
-        </itemInstances>
-        <itemInstances>
-            <fieldInstance>
-                <fieldInstanceProperties>
-                    <name>uiBehavior</name>
-                    <value>readonly</value>
-                </fieldInstanceProperties>
                 <fieldItem>Record.HOT_DegreeOfHearingAndVisualImpairment__c</fieldItem>
                 <identifier>RecordHOT_DegreeOfHearingAndVisualImpairment_cField</identifier>
             </fieldInstance>
@@ -406,8 +416,8 @@
                     <name>uiBehavior</name>
                     <value>readonly</value>
                 </fieldInstanceProperties>
-                <fieldItem>Record.HOT_IsImageInterpreter__c</fieldItem>
-                <identifier>RecordHOT_IsImageInterpreter_cField</identifier>
+                <fieldItem>Record.HOT_IsAcute__c</fieldItem>
+                <identifier>RecordHOT_IsAcute_cField</identifier>
             </fieldInstance>
         </itemInstances>
         <itemInstances>
@@ -452,33 +462,23 @@
             <fieldInstance>
                 <fieldInstanceProperties>
                     <name>uiBehavior</name>
-                    <value>readonly</value>
+                    <value>required</value>
                 </fieldInstanceProperties>
-                <fieldItem>Record.HOT_DayOfWeek__c</fieldItem>
-                <identifier>RecordHOT_DayOfWeek_cField</identifier>
+                <fieldItem>Record.EarliestStartTime</fieldItem>
+                <identifier>RecordEarliestStartTimeField</identifier>
             </fieldInstance>
         </itemInstances>
         <itemInstances>
             <fieldInstance>
                 <fieldInstanceProperties>
                     <name>uiBehavior</name>
-                    <value>none</value>
+                    <value>required</value>
                 </fieldInstanceProperties>
-                <fieldItem>Record.SchedStartTime</fieldItem>
-                <identifier>RecordSchedStartTimeField</identifier>
+                <fieldItem>Record.DueDate</fieldItem>
+                <identifier>RecordDueDateField</identifier>
             </fieldInstance>
         </itemInstances>
-        <itemInstances>
-            <fieldInstance>
-                <fieldInstanceProperties>
-                    <name>uiBehavior</name>
-                    <value>none</value>
-                </fieldInstanceProperties>
-                <fieldItem>Record.SchedEndTime</fieldItem>
-                <identifier>RecordSchedEndTimeField</identifier>
-            </fieldInstance>
-        </itemInstances>
-        <name>Facet-3b63ae24-cf30-438d-bec2-68096ccfe34d</name>
+        <name>Facet-c432c073-6ff4-4920-ac0c-507bb98ac8bf</name>
         <type>Facet</type>
     </flexiPageRegions>
     <flexiPageRegions>
@@ -488,8 +488,8 @@
                     <name>uiBehavior</name>
                     <value>none</value>
                 </fieldInstanceProperties>
-                <fieldItem>Record.Duration</fieldItem>
-                <identifier>RecordDurationField</identifier>
+                <fieldItem>Record.ArrivalWindowStartTime</fieldItem>
+                <identifier>RecordArrivalWindowStartTimeField</identifier>
             </fieldInstance>
         </itemInstances>
         <itemInstances>
@@ -498,11 +498,11 @@
                     <name>uiBehavior</name>
                     <value>none</value>
                 </fieldInstanceProperties>
-                <fieldItem>Record.DurationType</fieldItem>
-                <identifier>RecordDurationTypeField</identifier>
+                <fieldItem>Record.ArrivalWindowEndTime</fieldItem>
+                <identifier>RecordArrivalWindowEndTimeField</identifier>
             </fieldInstance>
         </itemInstances>
-        <name>Facet-a1a43699-b133-4f87-b460-3b6d12b75a63</name>
+        <name>Facet-e6ae328e-9536-4d70-8b56-a9b41a0c8f83</name>
         <type>Facet</type>
     </flexiPageRegions>
     <flexiPageRegions>
@@ -510,23 +510,23 @@
             <componentInstance>
                 <componentInstanceProperties>
                     <name>body</name>
-                    <value>Facet-3b63ae24-cf30-438d-bec2-68096ccfe34d</value>
+                    <value>Facet-c432c073-6ff4-4920-ac0c-507bb98ac8bf</value>
                 </componentInstanceProperties>
                 <componentName>flexipage:column</componentName>
-                <identifier>flexipage_column3</identifier>
+                <identifier>flexipage_column12</identifier>
             </componentInstance>
         </itemInstances>
         <itemInstances>
             <componentInstance>
                 <componentInstanceProperties>
                     <name>body</name>
-                    <value>Facet-a1a43699-b133-4f87-b460-3b6d12b75a63</value>
+                    <value>Facet-e6ae328e-9536-4d70-8b56-a9b41a0c8f83</value>
                 </componentInstanceProperties>
                 <componentName>flexipage:column</componentName>
-                <identifier>flexipage_column4</identifier>
+                <identifier>flexipage_column13</identifier>
             </componentInstance>
         </itemInstances>
-        <name>Facet-2d8f2694-6f2f-487c-8c55-ff358683f5a7</name>
+        <name>Facet-ebec4acc-48e3-4a17-a127-eb8cd8223ae8</name>
         <type>Facet</type>
     </flexiPageRegions>
     <flexiPageRegions>
@@ -809,78 +809,6 @@
     </flexiPageRegions>
     <flexiPageRegions>
         <itemInstances>
-            <fieldInstance>
-                <fieldInstanceProperties>
-                    <name>uiBehavior</name>
-                    <value>required</value>
-                </fieldInstanceProperties>
-                <fieldItem>Record.EarliestStartTime</fieldItem>
-                <identifier>RecordEarliestStartTimeField</identifier>
-            </fieldInstance>
-        </itemInstances>
-        <itemInstances>
-            <fieldInstance>
-                <fieldInstanceProperties>
-                    <name>uiBehavior</name>
-                    <value>required</value>
-                </fieldInstanceProperties>
-                <fieldItem>Record.DueDate</fieldItem>
-                <identifier>RecordDueDateField</identifier>
-            </fieldInstance>
-        </itemInstances>
-        <name>Facet-c432c073-6ff4-4920-ac0c-507bb98ac8bf</name>
-        <type>Facet</type>
-    </flexiPageRegions>
-    <flexiPageRegions>
-        <itemInstances>
-            <fieldInstance>
-                <fieldInstanceProperties>
-                    <name>uiBehavior</name>
-                    <value>none</value>
-                </fieldInstanceProperties>
-                <fieldItem>Record.ArrivalWindowStartTime</fieldItem>
-                <identifier>RecordArrivalWindowStartTimeField</identifier>
-            </fieldInstance>
-        </itemInstances>
-        <itemInstances>
-            <fieldInstance>
-                <fieldInstanceProperties>
-                    <name>uiBehavior</name>
-                    <value>none</value>
-                </fieldInstanceProperties>
-                <fieldItem>Record.ArrivalWindowEndTime</fieldItem>
-                <identifier>RecordArrivalWindowEndTimeField</identifier>
-            </fieldInstance>
-        </itemInstances>
-        <name>Facet-e6ae328e-9536-4d70-8b56-a9b41a0c8f83</name>
-        <type>Facet</type>
-    </flexiPageRegions>
-    <flexiPageRegions>
-        <itemInstances>
-            <componentInstance>
-                <componentInstanceProperties>
-                    <name>body</name>
-                    <value>Facet-c432c073-6ff4-4920-ac0c-507bb98ac8bf</value>
-                </componentInstanceProperties>
-                <componentName>flexipage:column</componentName>
-                <identifier>flexipage_column12</identifier>
-            </componentInstance>
-        </itemInstances>
-        <itemInstances>
-            <componentInstance>
-                <componentInstanceProperties>
-                    <name>body</name>
-                    <value>Facet-e6ae328e-9536-4d70-8b56-a9b41a0c8f83</value>
-                </componentInstanceProperties>
-                <componentName>flexipage:column</componentName>
-                <identifier>flexipage_column13</identifier>
-            </componentInstance>
-        </itemInstances>
-        <name>Facet-ebec4acc-48e3-4a17-a127-eb8cd8223ae8</name>
-        <type>Facet</type>
-    </flexiPageRegions>
-    <flexiPageRegions>
-        <itemInstances>
             <componentInstance>
                 <componentInstanceProperties>
                     <name>columns</name>
@@ -902,7 +830,7 @@
             <componentInstance>
                 <componentInstanceProperties>
                     <name>columns</name>
-                    <value>Facet-2d8f2694-6f2f-487c-8c55-ff358683f5a7</value>
+                    <value>Facet-ebec4acc-48e3-4a17-a127-eb8cd8223ae8</value>
                 </componentInstanceProperties>
                 <componentInstanceProperties>
                     <name>horizontalAlignment</name>
@@ -910,10 +838,10 @@
                 </componentInstanceProperties>
                 <componentInstanceProperties>
                     <name>label</name>
-                    <value>Scheduled Times</value>
+                    <value>Time Constraints</value>
                 </componentInstanceProperties>
                 <componentName>flexipage:fieldSection</componentName>
-                <identifier>flexipage_fieldSection2</identifier>
+                <identifier>flexipage_fieldSection7</identifier>
             </componentInstance>
         </itemInstances>
         <itemInstances>
@@ -986,24 +914,6 @@
                 </componentInstanceProperties>
                 <componentName>flexipage:fieldSection</componentName>
                 <identifier>flexipage_fieldSection6</identifier>
-            </componentInstance>
-        </itemInstances>
-        <itemInstances>
-            <componentInstance>
-                <componentInstanceProperties>
-                    <name>columns</name>
-                    <value>Facet-ebec4acc-48e3-4a17-a127-eb8cd8223ae8</value>
-                </componentInstanceProperties>
-                <componentInstanceProperties>
-                    <name>horizontalAlignment</name>
-                    <value>false</value>
-                </componentInstanceProperties>
-                <componentInstanceProperties>
-                    <name>label</name>
-                    <value>Time Constraints</value>
-                </componentInstanceProperties>
-                <componentName>flexipage:fieldSection</componentName>
-                <identifier>flexipage_fieldSection7</identifier>
             </componentInstance>
         </itemInstances>
         <itemInstances>
