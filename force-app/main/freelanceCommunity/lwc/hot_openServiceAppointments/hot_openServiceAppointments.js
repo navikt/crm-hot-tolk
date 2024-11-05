@@ -6,6 +6,7 @@ import { columns, inDetailsColumns, mobileColumns } from './columns';
 import { refreshApex } from '@salesforce/apex';
 import { defaultFilters, compare, setDefaultFilters } from './filters';
 import { formatRecord } from 'c/datetimeFormatter';
+import Hot_openServiceAppointmentsModal from 'c/hot_openServiceAppointmentsModal';
 
 export default class Hot_openServiceAppointments extends LightningElement {
     @track columns = [];
@@ -206,37 +207,19 @@ export default class Hot_openServiceAppointments extends LightningElement {
         { name: 'HOT_ReleaseDate__c', type: 'date', newName: 'ReleaseDate' }
     ];
 
-    @track serviceAppointment;
-    isDetails = false;
-    isSeries = false;
-    seriesRecords = [];
-    showTable = true;
-    goToRecordDetails(result) {
-        this.serviceAppointment = undefined;
-        this.seriesRecords = [];
-        let recordId = result.detail.Id;
-        this.recordId = recordId;
-        this.isDetails = !!this.recordId;
-        for (let serviceAppointment of this.records) {
-            if (recordId === serviceAppointment.Id) {
-                this.serviceAppointment = serviceAppointment;
-                this.isSeries = this.serviceAppointment.HOT_IsSerieoppdrag__c;
-                this.serviceAppointment.weekday = this.getDayOfWeek(this.serviceAppointment.EarliestStartTime);
-            }
+    async goToRecordDetails(result) {
+        const { success, error } = await Hot_openServiceAppointmentsModal.open({
+            result: result,
+            records: this.records
+        });
+        if (success) {
+            refreshApex(this.wiredAllServiceAppointmentsResult).then(() => {
+                // Since refreshApex causes the wired methods to run again, the default filters will override current filters.
+                // Apply previous filter
+                this.applyFilter({ detail: { filterArray: currentFilters, setRecords: true } });
+            });
         }
-        for (let serviceAppointment of this.records) {
-            if (this.serviceAppointment?.HOT_Request__c === serviceAppointment?.HOT_Request__c) {
-                this.seriesRecords.push(serviceAppointment);
-            }
-        }
-        this.isSeries = this.seriesRecords.length <= 1 ? false : true;
-        this.showServiceAppointmentDetails();
     }
-    showServiceAppointmentDetails() {
-        this.template.querySelector('.serviceAppointmentDetails').classList.remove('hidden');
-        this.template.querySelector('.serviceAppointmentDetails').focus();
-    }
-
     @api recordId;
     updateURL() {
         let baseURL = window.location.protocol + '//' + window.location.host + window.location.pathname + '?list=open';
@@ -255,72 +238,7 @@ export default class Hot_openServiceAppointments extends LightningElement {
         return { id: recordIdToReturn, tab: 'open' };
     }
 
-    errorMessage = '';
-    spin = false;
     @track checkedServiceAppointments = [];
-    registerInterest() {
-        if (this.sendInterestAll) {
-            this.checkedServiceAppointments = [];
-            this.serviceAppointmentCommentDetails.forEach((element) => {
-                this.checkedServiceAppointments.push(element.Id);
-            });
-        } else {
-            if (this.isMobile) {
-                this.checkedServiceAppointments = this.template
-                    .querySelector('c-hot_freelance-table-list-mobile')
-                    .getCheckedRows();
-            } else {
-                this.checkedServiceAppointments = this.template.querySelector('c-table').getCheckedRows();
-            }
-        }
-        if (this.checkedServiceAppointments.length === 0) {
-            this.closeModal();
-            return;
-        }
-        let comments = [];
-        this.template.querySelectorAll('.comment-field').forEach((element) => {
-            comments.push(element.value);
-        });
-        this.spin = true;
-        this.template.querySelector('.comment-details').classList.add('hidden');
-        this.template.querySelector('.send-inn-button').classList.add('hidden');
-        this.template.querySelector('.submitted-loading').classList.remove('hidden');
-        createInterestedResources({
-            serviceAppointmentIds: this.checkedServiceAppointments,
-            comments: comments
-        })
-            .then(() => {
-                this.spin = false;
-                this.template.querySelector('.submitted-loading').classList.add('hidden');
-                this.template.querySelector('.submitted-true').classList.remove('hidden');
-                if (this.isMobile) {
-                    this.template.querySelector('c-hot_freelance-table-list-mobile').unsetCheckboxes();
-                } else {
-                    this.template.querySelector('c-table').unsetCheckboxes();
-                }
-                this.checkedServiceAppointments = [];
-                this.sendInterestedButtonDisabled = true; // Set button to disabled when interest is sent successfully
-                let currentFilters = this.filters;
-                if (this.sendInterestAll) {
-                    this.sendInterestAllComplete = true;
-
-                    return; // If series -> refresh after closeModal() to avoid showing weird data behind popup
-                }
-                refreshApex(this.wiredAllServiceAppointmentsResult).then(() => {
-                    // Since refreshApex causes the wired methods to run again, the default filters will override current filters.
-                    // Apply previous filter
-                    this.applyFilter({ detail: { filterArray: currentFilters, setRecords: true } });
-                });
-            })
-            .catch((error) => {
-                this.spin = false;
-                this.showSendInterest = true;
-                this.template.querySelector('.submitted-loading').classList.add('hidden');
-                this.template.querySelector('.submitted-error').classList.remove('hidden');
-                this.errorMessage = JSON.stringify(error);
-                this.sendInterestAll = false;
-            });
-    }
 
     handleRowChecked(event) {
         this.checkedServiceAppointments = event.detail.checkedRows;
@@ -329,9 +247,7 @@ export default class Hot_openServiceAppointments extends LightningElement {
 
     showSendInterest = false;
     @track serviceAppointmentCommentDetails = [];
-    sendInterest() {
-        this.hideSubmitIndicators();
-        this.showCommentSection();
+    sendInterest(result) {
         this.checkedServiceAppointments = [];
         this.serviceAppointmentCommentDetails = [];
         try {
@@ -360,30 +276,33 @@ export default class Hot_openServiceAppointments extends LightningElement {
             return;
         }
         this.showSendInterest = false;
-        this.showCommentPage();
+        this.showCommentPage(result);
     }
 
     sendInterestAllComplete = false;
     sendInterestAll = false;
-    sendInterestSeries() {
-        this.template.querySelector('.serviceAppointmentDetails').classList.add('hidden');
-        this.hideSubmitIndicators();
-        this.showCommentSection();
+    sendInterestSeries(result) {
         this.serviceAppointmentCommentDetails = [];
         this.sendInterestAll = true;
         this.serviceAppointmentCommentDetails.push(...this.seriesRecords);
-        this.showCommentPage();
+        this.showCommentPage(result);
     }
 
-    showCommentPage() {
-        this.template.querySelector('.commentPage').classList.remove('hidden');
-        this.template.querySelector('.commentPage').focus();
-    }
-
-    hideSubmitIndicators() {
-        this.template.querySelector('.submitted-error').classList.add('hidden');
-        this.template.querySelector('.submitted-loading').classList.add('hidden');
-        this.template.querySelector('.submitted-true').classList.add('hidden');
+    async showCommentPage(result) {
+        const { success, error } = await Hot_openServiceAppointmentsModal.open({
+            records: this.records,
+            result: result,
+            serviceAppointmentCommentDetails: this.serviceAppointmentCommentDetails,
+            checkedServiceAppointments: this.checkedServiceAppointments,
+            sendInterestAll: this.sendInterestAll
+        });
+        if (success) {
+            refreshApex(this.wiredAllServiceAppointmentsResult).then(() => {
+                // Since refreshApex causes the wired methods to run again, the default filters will override current filters.
+                // Apply previous filter
+                this.applyFilter({ detail: { filterArray: currentFilters, setRecords: true } });
+            });
+        }
     }
 
     closeModal() {
@@ -397,13 +316,6 @@ export default class Hot_openServiceAppointments extends LightningElement {
         }
         this.sendInterestAllComplete = false;
         this.sendInterestAll = false;
-        this.template.querySelector('.commentPage').classList.add('hidden');
-        this.template.querySelector('.serviceAppointmentDetails').classList.add('hidden');
-    }
-
-    showCommentSection() {
-        this.template.querySelector('.comment-details').classList.remove('hidden');
-        this.template.querySelector('.send-inn-button').classList.remove('hidden');
     }
 
     getRecord(id) {

@@ -70,12 +70,6 @@ export default class Hot_informationModal extends NavigationMixin(LightningModal
     }
 
     connectedCallback() {
-        console.log({
-            type: this.type,
-            fromUrlRedirect: this.fromUrlRedirect,
-            recordId: this.recordId,
-            records: this.records
-        });
         if (this.type == 'WC') {
             this.isLoading = true;
             if (this.fromUrlRedirect == true) {
@@ -143,11 +137,8 @@ export default class Hot_informationModal extends NavigationMixin(LightningModal
         let recordId = woId;
         this.recordId = recordId;
         this.isLoading = true;
-        console.log('recordsArray', recordsArray);
         for (let wageClaim of recordsArray) {
-            console.log('hva med her da');
             if (recordId === wageClaim.Id) {
-                console.log('lyn er tull');
                 this.wageClaim = { ...wageClaim };
                 this.wageClaim.weekday = this.getDayOfWeek(this.wageClaim.StartTime__c);
                 if (this.wageClaim.Status__c == 'Åpen' || this.wageClaim.Status__c == 'Open') {
@@ -307,7 +298,6 @@ export default class Hot_informationModal extends NavigationMixin(LightningModal
 
     @api
     goToRecordDetailsSAFromId(recordId) {
-        console.log('er  vi her og heier? på lyn?');
         this.isSADetails = true;
         this.isAListView = false;
         if (this.type == null) {
@@ -496,7 +486,6 @@ export default class Hot_informationModal extends NavigationMixin(LightningModal
             default:
                 dayOfWeekString = '';
         }
-        console.log('dayofweekstring' + dayOfWeekString);
         return dayOfWeekString;
     }
 
@@ -661,7 +650,6 @@ export default class Hot_informationModal extends NavigationMixin(LightningModal
         ];
     }
     handleStatusChange(event) {
-        console.log('handleStatusChange', event.detail);
         if (event.detail.interviewStatus == 'FINISHED') {
             getServiceAppointment({
                 recordId: this.serviceAppointment.Id

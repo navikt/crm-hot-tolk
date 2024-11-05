@@ -1,8 +1,5 @@
 import { LightningElement, wire, track, api } from 'lwc';
 import getInterestedResources from '@salesforce/apex/HOT_InterestedResourcesListController.getInterestedResources';
-import retractInterest from '@salesforce/apex/HOT_InterestedResourcesListController.retractInterest';
-import getThreadDispatcherId from '@salesforce/apex/HOT_InterestedResourcesListController.getThreadDispatcherId';
-import getThreadDispatcherIdSA from '@salesforce/apex/HOT_InterestedResourcesListController.getThreadDispatcherIdSA';
 import getMyThreads from '@salesforce/apex/HOT_ThreadListController.getMyThreadsIR';
 import getInterestedResourceDetails from '@salesforce/apex/HOT_InterestedResourcesListController.getInterestedResourceDetails';
 import checkAccessToSA from '@salesforce/apex/HOT_InterestedResourcesListController.checkAccessToSA';
@@ -15,7 +12,8 @@ import { columns, mobileColumns, iconByValue } from './columns';
 import { defaultFilters, compare } from './filters';
 import { formatRecord } from 'c/datetimeFormatter';
 import { NavigationMixin } from 'lightning/navigation';
-import createThreadInterpreter from '@salesforce/apex/HOT_MessageHelper.createThreadInterpreter';
+
+import Hot_interestedResourcesListModal from 'c/hot_interestedResourcesListModal';
 
 export default class Hot_interestedResourcesList extends NavigationMixin(LightningElement) {
     @track columns = [];
@@ -228,8 +226,6 @@ export default class Hot_interestedResourcesList extends NavigationMixin(Lightni
     isSeries = false;
     showTable = true;
     goToRecordDetails(result) {
-        this.template.querySelector('.serviceAppointmentDetails').classList.remove('hidden');
-        this.template.querySelector('.serviceAppointmentDetails').focus();
         this.interestedResource = undefined;
         let recordId = result.detail.Id;
         this.recordId = recordId;
@@ -258,6 +254,12 @@ export default class Hot_interestedResourcesList extends NavigationMixin(Lightni
 
         this.isNotRetractable = this.interestedResource?.Status__c !== 'Påmeldt';
         this.updateURL();
+
+        Hot_interestedResourcesListModal.open({
+            interestedResource: this.interestedResource,
+            isNotRetractable: this.isNotRetractable,
+            serviceResource: this.serviceResource
+        });
     }
     goToRecordDetailsFromNotification(saId) {
         checkAccessToSA({ saId: saId }).then((result) => {
@@ -307,8 +309,14 @@ export default class Hot_interestedResourcesList extends NavigationMixin(Lightni
                     if (this.interestedResource.AppointmentDeadlineDate__c.includes('NaN')) {
                         this.interestedResource.AppointmentDeadlineDate__c = '';
                     }
-                    this.template.querySelector('.serviceAppointmentDetails').classList.remove('hidden');
-                    this.template.querySelector('.serviceAppointmentDetails').focus();
+                    Hot_interestedResourcesListModal.open({
+                        size: 'large',
+                        description: 'Informasjon om oppdraget',
+                        interestedResource: this.interestedResource,
+                        isNotRetractable: this.isNotRetractable,
+                        serviceResource: this.serviceResource,
+                        hasAccess: true
+                    });
                 });
             } else {
                 this.hasAccess = false;
@@ -357,78 +365,5 @@ export default class Hot_interestedResourcesList extends NavigationMixin(Lightni
             this.records = filteredRecords;
         }
         return this.filteredRecordsLength;
-    }
-    isNotRetractable = false;
-    retractInterest() {
-        retractInterest({ interestedResourceId: this.interestedResource.Id }).then(() => {
-            refreshApex(this.wiredInterestedResourcesResult);
-            this.interestedResource.Status__c = 'Tilbaketrukket påmelding';
-            let newNumberOfInterestedResources = Number(this.interestedResource.NumberOfInterestedResources__c) - 1;
-            this.interestedResource.NumberOfInterestedResources__c = newNumberOfInterestedResources;
-            this.isNotRetractable = true;
-        });
-    }
-    closeModal() {
-        this.template.querySelector('.serviceAppointmentDetails').classList.add('hidden');
-        this.isGoToThreadButtonDisabled = false;
-        this.recordId = undefined;
-        this.updateURL();
-    }
-    navigateToThread(recordId) {
-        const baseUrl = '/samtale-frilans';
-        const attributes = `recordId=${recordId}&from=mine-oppdrag&list=interested&interestedRecordId=${this.interestedResource.Id}`;
-        const url = `${baseUrl}?${attributes}`;
-
-        this[NavigationMixin.Navigate]({
-            type: 'standard__webPage',
-            attributes: {
-                url: url
-            }
-        });
-    }
-    goToInterestedResourceThread() {
-        this.isGoToThreadButtonDisabled = true;
-        if (
-            this.interestedResource.Status__c != 'Assigned' &&
-            this.interestedResource.Status__c != 'Tildelt' &&
-            this.interestedResource.Status__c != 'Reserved' &&
-            this.interestedResource.Status__c != 'Reservert'
-        ) {
-            getThreadDispatcherId({ interestedResourceId: this.interestedResource.Id }).then((result) => {
-                if (result != '') {
-                    this.threadId = result;
-                    this.navigateToThread(this.threadId);
-                } else {
-                    createThreadInterpreter({ recordId: this.interestedResource.Id })
-                        .then((result) => {
-                            this.navigateToThread(result.Id);
-                        })
-                        .catch((error) => {
-                            this.modalHeader = 'Noe gikk galt';
-                            this.modalContent = 'Kunne ikke åpne samtale. Feilmelding: ' + error;
-                            this.noCancelButton = true;
-                            this.showModal();
-                        });
-                }
-            });
-        } else {
-            getThreadDispatcherIdSA({ saId: this.interestedResource.ServiceAppointment__c }).then((result) => {
-                if (result != '') {
-                    this.threadId = result;
-                    this.navigateToThread(this.threadId);
-                } else {
-                    createThreadInterpreter({ recordId: this.interestedResource.ServiceAppointment__c })
-                        .then((result) => {
-                            this.navigateToThread(result.Id);
-                        })
-                        .catch((error) => {
-                            this.modalHeader = 'Noe gikk galt';
-                            this.modalContent = 'Kunne ikke åpne samtale. Feilmelding: ' + error;
-                            this.noCancelButton = true;
-                            this.showModal();
-                        });
-                }
-            });
-        }
     }
 }

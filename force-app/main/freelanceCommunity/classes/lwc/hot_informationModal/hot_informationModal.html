@@ -1,260 +1,263 @@
 <template>
     <!-- <lightning-modal-header label="Heia Lyn"></lightning-modal-header> -->
-    <div onkeydown={handleKeyDown} class="dialog details">
-        <div
-            class="
-                ReactModal__Content ReactModal__Content--after-open
-                navno-dekorator
-                details-container
-                slds_is-relative
-                slds-align_absolute-center
-            "
-            lwc:if={isLoading}
-        >
-            <lightning-spinner alternative-text="Loading" size="large"></lightning-spinner>
-        </div>
-        <div
-            class="ReactModal__Content ReactModal__Content--after-open navno-dekorator details-container"
-            role="dialog"
-            aria-labelledby="comment-header-id"
-            if:false={isLoading}
-        >
-            <c-alertdialog
-                header={modalHeader}
-                content={modalContent}
-                desktop-style="text-align: center; white-space: pre-line; width: 50%"
-                mobile-style="text-align: center; white-space: pre-line; width: 100%; max-width: 100%;"
-                center-buttons="true"
-                no-cancel-button={noCancelButton}
-                confirm-button-label={confirmButtonLabel}
-                onbuttonclick={handleAlertDialogClick}
+    <lightning-modal-body>
+        <div onkeydown={handleKeyDown} class="dialog details">
+            <div
+                class="
+                    ReactModal__Content ReactModal__Content--after-open
+                    navno-dekorator
+                    details-container
+                    slds_is-relative
+                    slds-align_absolute-center
+                "
+                lwc:if={isLoading}
             >
-            </c-alertdialog>
-            <section if:true={isSADetails}>
-                <div if:false={hasAccess}>
-                    <p></p>
-                    <p>Du er ikke tildelt oppdraget lenger.</p>
-                </div>
-                <div if:true={hasAccess}>
+                <lightning-spinner alternative-text="Loading" size="large"></lightning-spinner>
+            </div>
+            <div
+                class="ReactModal__Content ReactModal__Content--after-open navno-dekorator details-container"
+                role="dialog"
+                aria-labelledby="comment-header-id"
+                if:false={isLoading}
+            >
+                <c-alertdialog
+                    header={modalHeader}
+                    content={modalContent}
+                    desktop-style="text-align: center; white-space: pre-line; width: 50%"
+                    mobile-style="text-align: center; white-space: pre-line; width: 100%; max-width: 100%;"
+                    center-buttons="true"
+                    no-cancel-button={noCancelButton}
+                    confirm-button-label={confirmButtonLabel}
+                    onbuttonclick={handleAlertDialogClick}
+                >
+                </c-alertdialog>
+                <section if:true={isSADetails}>
+                    <div if:false={hasAccess}>
+                        <p></p>
+                        <p>Du er ikke tildelt oppdraget lenger.</p>
+                    </div>
+                    <div if:true={hasAccess}>
+                        <div>
+                            <h2 class="typo-undertittel">Informasjon om oppdraget:</h2>
+                        </div>
+                        <div if:true={serviceAppointment}>
+                            <div>
+                                <p>Oppdragsnummer: <span>{serviceAppointment.AppointmentNumber}</span></p>
+                                <p>Tema: <span>{serviceAppointment.Subject}</span></p>
+                                <p>
+                                    Tid: <span>{serviceAppointment.weekday} {serviceAppointment.StartAndEndDate}</span>
+                                </p>
+                                <p if:true={serviceAppointment.HOT_AddressFormated__c}>
+                                    Adresse: <span>{serviceAppointment.HOT_AddressFormated__c}</span>
+                                </p>
+                                <div
+                                    if:true={serviceAppointment.HOT_AddressFormated__c}
+                                    style="display: inline-block; padding-right: 1vw"
+                                >
+                                    <p>Åpne adressen i en karttjeneste (ekstern):</p>
+                                    <div
+                                        style="
+                                            display: inline-block;
+                                            padding-right: 1vw;
+                                            padding-bottom: 1vw;
+                                            padding-top: 1vw;
+                                        "
+                                    >
+                                        <c-button
+                                            button-styling="secondary"
+                                            button-label="Google maps"
+                                            onbuttonclick={openGoogleMaps}
+                                        ></c-button>
+                                    </div>
+                                    <div
+                                        style="
+                                            display: inline-block;
+                                            padding-right: 1vw;
+                                            padding-bottom: 1vw;
+                                            padding-top: 1vw;
+                                        "
+                                    >
+                                        <c-button
+                                            button-styling="secondary"
+                                            button-label="Apple maps"
+                                            onbuttonclick={openAppleMaps}
+                                        ></c-button>
+                                    </div>
+                                </div>
+                                <p if:true={serviceAppointment.ActualStartTime}>
+                                    Faktisk start: <span>{serviceAppointment.ActualStartTime}</span>
+                                </p>
+                                <p if:true={serviceAppointment.ActualEndTime}>
+                                    Faktisk slutt: <span>{serviceAppointment.ActualEndTime}</span>
+                                </p>
+                                <p if:true={accountName}>
+                                    Navn til bruker:&nbsp;
+                                    <span> {accountName} ({accountAgeGender})</span>
+                                </p>
+                                <p if:true={accountPhoneNumber}>
+                                    Telefonnummer til bruker:&nbsp;
+                                    <span>{accountPhoneNumber}</span>
+                                </p>
+                                <p>Tolkemetode: <span>{serviceAppointment.HOT_WorkTypeName__c}</span></p>
+                                <p>Oppdragstype: <span>{serviceAppointment.HOT_AssignmentType__c}</span></p>
+                                <p if:true={ownerName}>Eier: <span>{ownerName}</span></p>
+
+                                <p>Status: <span>{serviceAppointment.Status}</span></p>
+                                <p>Region: <span>{serviceAppointment.HOT_ServiceTerritoryName__c}</span></p>
+                                <p>
+                                    Haptisk kommunikasjon: <span>{serviceAppointment.HOT_HapticCommunication__c}</span>
+                                </p>
+                                <p if:true={serviceAppointment.HOT_Escort__c}>
+                                    Ledsaging: <span>{serviceAppointment.HOT_Escort__c}</span>
+                                </p>
+                                <p></p>
+                                <p if:true={serviceAppointment.HOT_DegreeOfHearingAndVisualImpairment__c}>
+                                    Vedtak: <span>{serviceAppointment.HOT_DegreeOfHearingAndVisualImpairment__c}</span>
+                                </p>
+                                <p if:true={termsOfAgreement}>Avtalte betingelser: <span>{termsOfAgreement}</span></p>
+                                <p if:true={serviceAppointment.HOT_Interpreters__c}>
+                                    (Med)tolk: <span>{serviceAppointment.HOT_Interpreters__c}</span>
+                                </p>
+                                <p if:true={serviceAppointment.Description}>
+                                    Tilleggsopplysninger: <span>{serviceAppointment.Description}</span>
+                                </p>
+
+                                <p if:true={ordererPhoneNumber}>
+                                    Telefonnummer til bestiller:&nbsp;
+                                    <span>{ordererPhoneNumber}</span>
+                                </p>
+                                <p if:true={serviceAppointment.HOT_Dispatcher__c}>
+                                    Formidler: <span>{serviceAppointment.HOT_Dispatcher__c}</span>
+                                </p>
+
+                                <div class="files-container">
+                                    <c-record-files-with-sharing
+                                        record-id={serviceAppointment.Id}
+                                        is-get-all="true"
+                                        is-delete-option="true"
+                                        title="Vedlegg"
+                                        delete-file-on-button-click="false"
+                                    ></c-record-files-with-sharing>
+                                </div>
+                            </div>
+                            <div
+                                style="display: inline-block; padding-right: 1vw; padding-bottom: 1vw; padding-top: 1vw"
+                            >
+                                <c-button
+                                    disabled={saIsEditButtonDisabled}
+                                    hidden={saIsEditButtonHidden}
+                                    onbuttonclick={changeStatus}
+                                    button-styling="Primary"
+                                    type="Submit"
+                                    button-label="Endre status"
+                                >
+                                </c-button>
+                                <c-button
+                                    hidden={saIsCancelButtonHidden}
+                                    onbuttonclick={cancelStatusFlow}
+                                    button-styling="Secondary"
+                                    type="Submit"
+                                    button-label="Avbryt"
+                                >
+                                </c-button>
+                            </div>
+                            <div if:true={saIsflow} class="flow-container">
+                                <lightning-flow
+                                    flow-api-name="HOT_ChangeServiceAppointmentStatus_V1"
+                                    flow-input-variables={flowVariables}
+                                    onstatuschange={handleStatusChange}
+                                ></lightning-flow>
+                            </div>
+                            <p>Samtale med:</p>
+                            <div style="padding-top: 0.5vw">
+                                <div style="display: inline-block; padding-right: 0.5vw">
+                                    <c-button
+                                        button-styling="Primary"
+                                        type="Submit"
+                                        onbuttonclick={goToThreadFreelance}
+                                        button-label="Bruker"
+                                        disabled={isGoToThreadButtonDisabled}
+                                    >
+                                    </c-button>
+                                </div>
+                                <div style="display: inline-block; padding-right: 0.5vw">
+                                    <c-button
+                                        button-styling="Primary"
+                                        type="Submit"
+                                        onbuttonclick={goToThreadInterpreters}
+                                        disabled={isGoToThreadInterpretersButtonDisabled}
+                                        button-label="Medtolker"
+                                    >
+                                    </c-button>
+                                </div>
+                                <div style="display: inline-block">
+                                    <c-button
+                                        button-styling="Primary"
+                                        type="Submit"
+                                        onbuttonclick={goToThreadServiceAppointment}
+                                        button-label="Formidler"
+                                        disabled={isGoToThreadServiceAppointmentButtonDisabled}
+                                    >
+                                    </c-button>
+                                </div>
+                                <div class="fileUploadContainer">
+                                    <h2>Legg ved filer til bruker</h2>
+                                    <lightning-file-upload
+                                        record-id={recordId}
+                                        name="fileUploader"
+                                        class="file-selector-large"
+                                        label="Ved å laste opp filer er jeg klar over at filene vil bli delt med tolkebruker. Opplastingen vil starte umiddelbart. Maks filstørelse: 2 GB."
+                                        title="Maks filstørrelse: 2 GB."
+                                        onuploadfinished={handleUploadFinished}
+                                        multiple
+                                    >
+                                    </lightning-file-upload>
+                                    <br if:true={fileUploadMessage} />
+                                    <p if:true={fileUploadMessage} class="typo-normal">{fileUploadMessage}</p>
+                                    <br />
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+                <section if:true={isWCDetails}>
                     <div>
                         <h2 class="typo-undertittel">Informasjon om oppdraget:</h2>
                     </div>
-                    <div if:true={serviceAppointment}>
+                    <div if:true={wageClaim}>
                         <div>
-                            <p>Oppdragsnummer: <span>{serviceAppointment.AppointmentNumber}</span></p>
-                            <p>Tema: <span>{serviceAppointment.Subject}</span></p>
-                            <p>Tid: <span>{serviceAppointment.weekday} {serviceAppointment.StartAndEndDate}</span></p>
-                            <p if:true={serviceAppointment.HOT_AddressFormated__c}>
-                                Adresse: <span>{serviceAppointment.HOT_AddressFormated__c}</span>
-                            </p>
-                            <div
-                                if:true={serviceAppointment.HOT_AddressFormated__c}
-                                style="display: inline-block; padding-right: 1vw"
-                            >
-                                <p>Åpne adressen i en karttjeneste (ekstern):</p>
-                                <div
-                                    style="
-                                        display: inline-block;
-                                        padding-right: 1vw;
-                                        padding-bottom: 1vw;
-                                        padding-top: 1vw;
-                                    "
-                                >
-                                    <c-button
-                                        button-styling="secondary"
-                                        button-label="Google maps"
-                                        onbuttonclick={openGoogleMaps}
-                                    ></c-button>
-                                </div>
-                                <div
-                                    style="
-                                        display: inline-block;
-                                        padding-right: 1vw;
-                                        padding-bottom: 1vw;
-                                        padding-top: 1vw;
-                                    "
-                                >
-                                    <c-button
-                                        button-styling="secondary"
-                                        button-label="Apple maps"
-                                        onbuttonclick={openAppleMaps}
-                                    ></c-button>
-                                </div>
-                            </div>
-                            <p if:true={serviceAppointment.ActualStartTime}>
-                                Faktisk start: <span>{serviceAppointment.ActualStartTime}</span>
-                            </p>
-                            <p if:true={serviceAppointment.ActualEndTime}>
-                                Faktisk slutt: <span>{serviceAppointment.ActualEndTime}</span>
-                            </p>
-                            <p if:true={accountName}>
-                                Navn til bruker:&nbsp;
-                                <span> {accountName} ({accountAgeGender})</span>
-                            </p>
-                            <p if:true={accountPhoneNumber}>
-                                Telefonnummer til bruker:&nbsp;
-                                <span>{accountPhoneNumber}</span>
-                            </p>
-                            <p>Tolkemetode: <span>{serviceAppointment.HOT_WorkTypeName__c}</span></p>
-                            <p>Oppdragstype: <span>{serviceAppointment.HOT_AssignmentType__c}</span></p>
-                            <p if:true={ownerName}>Eier: <span>{ownerName}</span></p>
-
-                            <p>Status: <span>{serviceAppointment.Status}</span></p>
-                            <p>Region: <span>{serviceAppointment.HOT_ServiceTerritoryName__c}</span></p>
-                            <p>Haptisk kommunikasjon: <span>{serviceAppointment.HOT_HapticCommunication__c}</span></p>
-                            <p if:true={serviceAppointment.HOT_Escort__c}>
-                                Ledsaging: <span>{serviceAppointment.HOT_Escort__c}</span>
-                            </p>
-                            <p></p>
-                            <p if:true={serviceAppointment.HOT_DegreeOfHearingAndVisualImpairment__c}>
-                                Vedtak: <span>{serviceAppointment.HOT_DegreeOfHearingAndVisualImpairment__c}</span>
-                            </p>
-                            <p if:true={termsOfAgreement}>Avtalte betingelser: <span>{termsOfAgreement}</span></p>
-                            <p if:true={serviceAppointment.HOT_Interpreters__c}>
-                                (Med)tolk: <span>{serviceAppointment.HOT_Interpreters__c}</span>
-                            </p>
-                            <p if:true={serviceAppointment.Description}>
-                                Tilleggsopplysninger: <span>{serviceAppointment.Description}</span>
-                            </p>
-
-                            <p if:true={ordererPhoneNumber}>
-                                Telefonnummer til bestiller:&nbsp;
-                                <span>{ordererPhoneNumber}</span>
-                            </p>
-                            <p if:true={serviceAppointment.HOT_Dispatcher__c}>
-                                Formidler: <span>{serviceAppointment.HOT_Dispatcher__c}</span>
-                            </p>
-
-                            <div class="files-container">
-                                <c-record-files-with-sharing
-                                    record-id={serviceAppointment.Id}
-                                    is-get-all="true"
-                                    is-delete-option="true"
-                                    title="Vedlegg"
-                                    delete-file-on-button-click="false"
-                                ></c-record-files-with-sharing>
-                            </div>
+                            <p>Oppdragsnummer: <span>{wageClaim.ServiceAppointmentName__c}</span></p>
+                            <p>Tid: <span>{wageClaim.weekday} {wageClaim.StartAndEndDate}</span></p>
+                            <p>Poststed: <span>{wageClaim.ServiceAppointmentCity__c}</span></p>
+                            <p>Tolkemetode: <span>{wageClaim.WorkTypeName__c}</span></p>
+                            <p>Oppdragstype: <span>{wageClaim.AssignmentType__c}</span></p>
+                            <p>Eier: <span>{wageClaim.ServiceAppointment__r.HOT_Request__r.OwnerName__c}</span></p>
+                            <p>Døv/døvblind: <span>{wageClaim.DegreeOfHearingAndVisualImpairment__c}</span></p>
+                            <p>Status: <span>{wageClaim.Status__c}</span></p>
                         </div>
                         <div style="display: inline-block; padding-right: 1vw; padding-bottom: 1vw; padding-top: 1vw">
                             <c-button
-                                disabled={saIsEditButtonDisabled}
-                                hidden={saIsEditButtonHidden}
-                                onbuttonclick={changeStatus}
-                                button-styling="Primary"
-                                type="Submit"
-                                button-label="Endre status"
+                                disabled={wcIsNotRetractable}
+                                button-styling="primary"
+                                button-label="Tilbaketrekk tilgjengelighet"
+                                aria-label="Tilbaketrekk tilgjengelighet"
+                                onbuttonclick={showModalRetract}
                             >
                             </c-button>
+                        </div>
+                        <div style="display: inline-block; padding-bottom: 1vw">
                             <c-button
-                                hidden={saIsCancelButtonHidden}
-                                onbuttonclick={cancelStatusFlow}
-                                button-styling="Secondary"
-                                type="Submit"
-                                button-label="Avbryt"
+                                disabled={wcIsDisabledGoToThread}
+                                button-styling="primary"
+                                button-label="Samtale med ressurskontor"
+                                aria-label="Samtale med ressurskontor"
+                                onbuttonclick={goToWageClaimThread}
                             >
                             </c-button>
                         </div>
-                        <div if:true={saIsflow} class="flow-container">
-                            <lightning-flow
-                                flow-api-name="HOT_ChangeServiceAppointmentStatus_V1"
-                                flow-input-variables={flowVariables}
-                                onstatuschange={handleStatusChange}
-                            ></lightning-flow>
-                        </div>
-                        <p>Samtale med:</p>
-                        <div style="padding-top: 0.5vw">
-                            <div style="display: inline-block; padding-right: 0.5vw">
-                                <c-button
-                                    button-styling="Primary"
-                                    type="Submit"
-                                    onbuttonclick={goToThreadFreelance}
-                                    button-label="Bruker"
-                                    disabled={isGoToThreadButtonDisabled}
-                                >
-                                </c-button>
-                            </div>
-                            <div style="display: inline-block; padding-right: 0.5vw">
-                                <c-button
-                                    button-styling="Primary"
-                                    type="Submit"
-                                    onbuttonclick={goToThreadInterpreters}
-                                    disabled={isGoToThreadInterpretersButtonDisabled}
-                                    button-label="Medtolker"
-                                >
-                                </c-button>
-                            </div>
-                            <div style="display: inline-block">
-                                <c-button
-                                    button-styling="Primary"
-                                    type="Submit"
-                                    onbuttonclick={goToThreadServiceAppointment}
-                                    button-label="Formidler"
-                                    disabled={isGoToThreadServiceAppointmentButtonDisabled}
-                                >
-                                </c-button>
-                            </div>
-                            <div class="fileUploadContainer">
-                                <h2>Legg ved filer til bruker</h2>
-                                <lightning-file-upload
-                                    record-id={recordId}
-                                    name="fileUploader"
-                                    class="file-selector-large"
-                                    label="Ved å laste opp filer er jeg klar over at filene vil bli delt med tolkebruker. Opplastingen vil starte umiddelbart. Maks filstørelse: 2 GB."
-                                    title="Maks filstørrelse: 2 GB."
-                                    onuploadfinished={handleUploadFinished}
-                                    multiple
-                                >
-                                </lightning-file-upload>
-                                <br if:true={fileUploadMessage} />
-                                <p if:true={fileUploadMessage} class="typo-normal">{fileUploadMessage}</p>
-                                <br />
-                            </div>
-                        </div>
                     </div>
-                </div>
-            </section>
-            <section if:true={isWCDetails}>
-                <div>
-                    <h2 class="typo-undertittel">Informasjon om oppdraget:</h2>
-                </div>
-                <div if:true={wageClaim}>
-                    <div>
-                        <p>Oppdragsnummer: <span>{wageClaim.ServiceAppointmentName__c}</span></p>
-                        <p>Tid: <span>{wageClaim.weekday} {wageClaim.StartAndEndDate}</span></p>
-                        <p>Poststed: <span>{wageClaim.ServiceAppointmentCity__c}</span></p>
-                        <p>Tolkemetode: <span>{wageClaim.WorkTypeName__c}</span></p>
-                        <p>Oppdragstype: <span>{wageClaim.AssignmentType__c}</span></p>
-                        <p>Eier: <span>{wageClaim.ServiceAppointment__r.HOT_Request__r.OwnerName__c}</span></p>
-                        <p>Døv/døvblind: <span>{wageClaim.DegreeOfHearingAndVisualImpairment__c}</span></p>
-                        <p>Status: <span>{wageClaim.Status__c}</span></p>
-                    </div>
-                    <div style="display: inline-block; padding-right: 1vw; padding-bottom: 1vw; padding-top: 1vw">
-                        <c-button
-                            disabled={wcIsNotRetractable}
-                            button-styling="primary"
-                            button-label="Tilbaketrekk tilgjengelighet"
-                            aria-label="Tilbaketrekk tilgjengelighet"
-                            onbuttonclick={showModalRetract}
-                        >
-                        </c-button>
-                    </div>
-                    <div style="display: inline-block; padding-bottom: 1vw">
-                        <c-button
-                            disabled={wcIsDisabledGoToThread}
-                            button-styling="primary"
-                            button-label="Samtale med ressurskontor"
-                            aria-label="Samtale med ressurskontor"
-                            onbuttonclick={goToWageClaimThread}
-                        >
-                        </c-button>
-                    </div>
-                </div>
-            </section>
-            <button class="lukknapp lukknapp--overstHjorne modal__lukkknapp--shake" onclick={closeModal}>
-                <span class="text-hide">Lukk</span>
-            </button>
+                </section>
+            </div>
         </div>
-    </div>
-    <!-- <lightning-modal-footer></lightning-modal-footer>
- -->
+    </lightning-modal-body>
 </template>
