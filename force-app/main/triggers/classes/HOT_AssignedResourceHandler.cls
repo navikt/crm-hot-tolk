@@ -239,7 +239,7 @@ public without sharing class HOT_AssignedResourceHandler extends MyTriggers {
         for (HOT_InterestedResource__c ir : interestedResources) {
             if (
                 ir.ServiceResource__c == interestedresourceMap.get(ir.ServiceAppointment__c) &&
-                ir.Status__c != 'Canceled by Interpreter'
+                !ir.Status__c.equals('Canceled by Interpreter')
             ) {
                 ir.Status__c = 'Withdrawn';
             }
@@ -548,14 +548,17 @@ public without sharing class HOT_AssignedResourceHandler extends MyTriggers {
             ]
         );
 
+        Set<Id> saIds = new Set<Id>();
+        Set<String> recipients = new Set<String>();
+
         for (AssignedResource assignedResource : assignedResources) {
-            if (serviceAppointments.get(assignedResource.ServiceAppointmentId).Status != 'Scheduled') {
-                HOT_ServiceAppointmentNotification.resourceChanged(
-                    notificationType,
-                    new Set<Id>{ serviceAppointments.get(assignedResource.ServiceAppointmentId).Id },
-                    new Set<String>{ serviceResources.get(assignedResource.ServiceResourceId).RelatedRecordId }
-                );
+            if (!serviceAppointments.get(assignedResource.ServiceAppointmentId).Status.equals('Scheduled')) {
+                saIds.add(serviceAppointments.get(assignedResource.ServiceAppointmentId).Id);
+                recipients.add(serviceResources.get(assignedResource.ServiceResourceId).RelatedRecordId);
             }
+        }
+        if (!saIds.isEmpty() && !recipients.isEmpty()) {
+            HOT_ServiceAppointmentNotification.resourceChanged(notificationType, saIds, recipients);
         }
     }
 
