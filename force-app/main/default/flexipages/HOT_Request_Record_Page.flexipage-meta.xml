@@ -592,6 +592,13 @@
                 </fieldInstanceProperties>
                 <fieldItem>Record.OrdererName__c</fieldItem>
                 <identifier>RecordOrdererName__cField</identifier>
+                <visibilityRule>
+                    <criteria>
+                        <leftValue>{!Record.Orderer__r.CRM_Person__r.INT_Confidential__c}</leftValue>
+                        <operator>EQUAL</operator>
+                        <rightValue>UGRADERT</rightValue>
+                    </criteria>
+                </visibilityRule>
             </fieldInstance>
         </itemInstances>
         <name>Facet-5e66ae93-3880-45f2-af0b-ad75f2629535</name>
