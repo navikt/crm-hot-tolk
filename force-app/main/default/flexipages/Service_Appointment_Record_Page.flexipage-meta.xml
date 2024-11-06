@@ -414,10 +414,10 @@
             <fieldInstance>
                 <fieldInstanceProperties>
                     <name>uiBehavior</name>
-                    <value>readonly</value>
+                    <value>none</value>
                 </fieldInstanceProperties>
-                <fieldItem>Record.HOT_IsAcute__c</fieldItem>
-                <identifier>RecordHOT_IsAcute_cField</identifier>
+                <fieldItem>Record.HOT_PreferredResource__c</fieldItem>
+                <identifier>RecordHOT_PreferredResource_cField</identifier>
             </fieldInstance>
         </itemInstances>
         <itemInstances>
@@ -426,8 +426,18 @@
                     <name>uiBehavior</name>
                     <value>none</value>
                 </fieldInstanceProperties>
-                <fieldItem>Record.HOT_PreferredResource__c</fieldItem>
-                <identifier>RecordHOT_PreferredResource_cField</identifier>
+                <fieldItem>Record.FSL__Auto_Schedule__c</fieldItem>
+                <identifier>RecordFSL_Auto_Schedule_cField</identifier>
+            </fieldInstance>
+        </itemInstances>
+        <itemInstances>
+            <fieldInstance>
+                <fieldInstanceProperties>
+                    <name>uiBehavior</name>
+                    <value>none</value>
+                </fieldInstanceProperties>
+                <fieldItem>Record.FSL__Scheduling_Policy_Used__c</fieldItem>
+                <identifier>RecordFSL_Scheduling_Policy_Used_cField</identifier>
             </fieldInstance>
         </itemInstances>
         <name>Facet-01567e86-8b38-42c8-80ea-2ac6d1717480</name>
@@ -488,8 +498,8 @@
                     <name>uiBehavior</name>
                     <value>none</value>
                 </fieldInstanceProperties>
-                <fieldItem>Record.ArrivalWindowStartTime</fieldItem>
-                <identifier>RecordArrivalWindowStartTimeField</identifier>
+                <fieldItem>Record.Duration</fieldItem>
+                <identifier>RecordDurationField</identifier>
             </fieldInstance>
         </itemInstances>
         <itemInstances>
@@ -498,8 +508,8 @@
                     <name>uiBehavior</name>
                     <value>none</value>
                 </fieldInstanceProperties>
-                <fieldItem>Record.ArrivalWindowEndTime</fieldItem>
-                <identifier>RecordArrivalWindowEndTimeField</identifier>
+                <fieldItem>Record.HOT_DayOfWeek__c</fieldItem>
+                <identifier>RecordHOT_DayOfWeek_cField</identifier>
             </fieldInstance>
         </itemInstances>
         <name>Facet-e6ae328e-9536-4d70-8b56-a9b41a0c8f83</name>
