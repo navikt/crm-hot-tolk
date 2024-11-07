@@ -445,6 +445,13 @@
                 </fieldInstanceProperties>
                 <fieldItem>Record.UserPersonNumber__c</fieldItem>
                 <identifier>RecordUserPersonNumber__cField</identifier>
+                <visibilityRule>
+                    <criteria>
+                        <leftValue>{!Record.Person__r.INT_Confidential__c}</leftValue>
+                        <operator>EQUAL</operator>
+                        <rightValue>UGRADERT</rightValue>
+                    </criteria>
+                </visibilityRule>
             </fieldInstance>
         </itemInstances>
         <name>Facet-44bd0420-e99e-4568-9aab-a8594fd390cc</name>
@@ -459,6 +466,13 @@
                 </fieldInstanceProperties>
                 <fieldItem>Record.UserEmail__c</fieldItem>
                 <identifier>RecordUserEmail__cField</identifier>
+                <visibilityRule>
+                    <criteria>
+                        <leftValue>{!Record.Person__r.INT_Confidential__c}</leftValue>
+                        <operator>EQUAL</operator>
+                        <rightValue>UGRADERT</rightValue>
+                    </criteria>
+                </visibilityRule>
             </fieldInstance>
         </itemInstances>
         <itemInstances>
@@ -469,6 +483,13 @@
                 </fieldInstanceProperties>
                 <fieldItem>Record.UserPhone__c</fieldItem>
                 <identifier>RecordUserPhone__cField</identifier>
+                <visibilityRule>
+                    <criteria>
+                        <leftValue>{!Record.Person__r.INT_Confidential__c}</leftValue>
+                        <operator>EQUAL</operator>
+                        <rightValue>UGRADERT</rightValue>
+                    </criteria>
+                </visibilityRule>
             </fieldInstance>
         </itemInstances>
         <itemInstances>
@@ -479,6 +500,13 @@
                 </fieldInstanceProperties>
                 <fieldItem>Record.UserName__c</fieldItem>
                 <identifier>RecordUserName__cField</identifier>
+                <visibilityRule>
+                    <criteria>
+                        <leftValue>{!Record.Person__r.INT_Confidential__c}</leftValue>
+                        <operator>EQUAL</operator>
+                        <rightValue>UGRADERT</rightValue>
+                    </criteria>
+                </visibilityRule>
             </fieldInstance>
         </itemInstances>
         <itemInstances>
@@ -564,6 +592,13 @@
                 </fieldInstanceProperties>
                 <fieldItem>Record.OrdererName__c</fieldItem>
                 <identifier>RecordOrdererName__cField</identifier>
+                <visibilityRule>
+                    <criteria>
+                        <leftValue>{!Record.Orderer__r.CRM_Person__r.INT_Confidential__c}</leftValue>
+                        <operator>EQUAL</operator>
+                        <rightValue>UGRADERT</rightValue>
+                    </criteria>
+                </visibilityRule>
             </fieldInstance>
         </itemInstances>
         <name>Facet-5e66ae93-3880-45f2-af0b-ad75f2629535</name>
@@ -1022,6 +1057,13 @@
                 </fieldInstanceProperties>
                 <fieldItem>Record.CreatedById</fieldItem>
                 <identifier>RecordCreatedByIdField</identifier>
+                <visibilityRule>
+                    <criteria>
+                        <leftValue>{!Record.CreatedBy.Contact.Account.CRM_Person__r.INT_Confidential__c}</leftValue>
+                        <operator>EQUAL</operator>
+                        <rightValue>UGRADERT</rightValue>
+                    </criteria>
+                </visibilityRule>
             </fieldInstance>
         </itemInstances>
         <name>Facet-14ddce80-1f48-4abd-bb89-754ed88ec359</name>
@@ -1036,6 +1078,13 @@
                 </fieldInstanceProperties>
                 <fieldItem>Record.LastModifiedById</fieldItem>
                 <identifier>RecordLastModifiedByIdField</identifier>
+                <visibilityRule>
+                    <criteria>
+                        <leftValue>{!Record.LastModifiedBy.Contact.Account.CRM_Person__r.INT_Confidential__c}</leftValue>
+                        <operator>EQUAL</operator>
+                        <rightValue>UGRADERT</rightValue>
+                    </criteria>
+                </visibilityRule>
             </fieldInstance>
         </itemInstances>
         <name>Facet-da78511c-5540-4d3b-a8b9-c2cbc1a79bdb</name>
