@@ -1,73 +1,25 @@
 <template>
-    <table class="table-wrapper">
-        <thead style={mobileHeaderStyle}>
-            <tr>
-                <th class="checkbox-column" if:true={checkbox}>
-                    <c-checkbox oncheckboxclick={handleAllCheckboxesClick} title="Merk alle"></c-checkbox>
-                </th>
-            </tr>
-        </thead>
-        <tbody>
-            <template iterator:record={recordsToShow}>
-                <tr
-                    class="row"
-                    key={record.value.id}
-                    data-id={record.value.id}
-                    onclick={handleOnRowClick}
-                    onkeypress={handleOnRowClick}
-                >
-                    <td if:true={checkbox} class="checkbox-column">
-                        <template iterator:field={record.value.fields}
-                            ><template if:true={field.value.svg}>
-                                <span
-                                    key={field.value.name}
-                                    class="icon"
-                                    tabindex="0"
-                                    aria-label="Ingen status"
-                                    if:false={field.value.svg.icon}
-                                ></span>
-                                <span key={field.value.name} class="icon" tabindex="0" if:true={field.value.svg.icon}>
-                                    <div class="tooltip">
-                                        <c-icon
-                                            icon={field.value.svg.icon}
-                                            fill={field.value.svg.fill}
-                                            aria-label={field.value.svg.ariaLabel}
-                                            role="text"
-                                            class="iconPadding"
-                                        ></c-icon>
-                                        <span if:true={field.value.svg.ariaLabel} class="tooltiptext"
-                                            >{field.value.svg.ariaLabel}</span
-                                        >
-                                    </div>
-                                </span>
-                            </template>
-                        </template>
-                        <c-checkbox
-                            default-value={record.value.checked}
-                            oncheckboxclick={handleSingleCheckboxClick}
-                        ></c-checkbox>
-                    </td>
-                    <td>
-                        <template iterator:field={record.value.fields}>
-                            <template if:false={field.value.svg}>
-                                <template if:false={field.value.bold}>
-                                    <p tabindex="0" key={field.value.name} class={field.value.name}>
-                                        {field.value.value}
-                                    </p>
-                                </template>
-                                <template if:true={field.value.bold}>
-                                    <p tabindex="0" key={field.value.name} class={field.value.name}>
-                                        <strong>{field.value.label}: </strong>
-                                        {field.value.value}
-                                    </p>
-                                </template>
-                            </template>
-                        </template>
-                    </td>
-                    <td class="arrow" aria-hidden="true">
-                        <template iterator:field={record.value.fields}>
-                            <template if:false={checkbox}>
-                                <template if:true={field.value.svg}>
+    <div class="mobile-table-container">
+        <table class="table-wrapper">
+            <thead style={mobileHeaderStyle}>
+                <tr>
+                    <th class="checkbox-column" if:true={checkbox}>
+                        <c-checkbox oncheckboxclick={handleAllCheckboxesClick} title="Merk alle"></c-checkbox>
+                    </th>
+                </tr>
+            </thead>
+            <tbody>
+                <template iterator:record={recordsToShow}>
+                    <tr
+                        class="row"
+                        key={record.value.id}
+                        data-id={record.value.id}
+                        onclick={handleOnRowClick}
+                        onkeypress={handleOnRowClick}
+                    >
+                        <td if:true={checkbox} class="checkbox-column">
+                            <template iterator:field={record.value.fields}
+                                ><template if:true={field.value.svg}>
                                     <span
                                         key={field.value.name}
                                         class="icon"
@@ -96,11 +48,66 @@
                                     </span>
                                 </template>
                             </template>
-                        </template>
-                        <c-icon key={record.value.id} class="tooltip" icon="Next"></c-icon>
-                    </td>
-                </tr>
-            </template>
-        </tbody>
-    </table>
+                            <c-checkbox
+                                default-value={record.value.checked}
+                                oncheckboxclick={handleSingleCheckboxClick}
+                            ></c-checkbox>
+                        </td>
+                        <td>
+                            <template iterator:field={record.value.fields}>
+                                <template if:false={field.value.svg}>
+                                    <template if:false={field.value.bold}>
+                                        <p tabindex="0" key={field.value.name} class={field.value.name}>
+                                            {field.value.value}
+                                        </p>
+                                    </template>
+                                    <template if:true={field.value.bold}>
+                                        <p tabindex="0" key={field.value.name} class={field.value.name}>
+                                            <strong>{field.value.label}: </strong>
+                                            {field.value.value}
+                                        </p>
+                                    </template>
+                                </template>
+                            </template>
+                        </td>
+                        <td class="arrow" aria-hidden="true">
+                            <template iterator:field={record.value.fields}>
+                                <template if:false={checkbox}>
+                                    <template if:true={field.value.svg}>
+                                        <span
+                                            key={field.value.name}
+                                            class="icon"
+                                            tabindex="0"
+                                            aria-label="Ingen status"
+                                            if:false={field.value.svg.icon}
+                                        ></span>
+                                        <span
+                                            key={field.value.name}
+                                            class="icon"
+                                            tabindex="0"
+                                            if:true={field.value.svg.icon}
+                                        >
+                                            <div class="tooltip">
+                                                <c-icon
+                                                    icon={field.value.svg.icon}
+                                                    fill={field.value.svg.fill}
+                                                    aria-label={field.value.svg.ariaLabel}
+                                                    role="text"
+                                                    class="iconPadding"
+                                                ></c-icon>
+                                                <span if:true={field.value.svg.ariaLabel} class="tooltiptext"
+                                                    >{field.value.svg.ariaLabel}</span
+                                                >
+                                            </div>
+                                        </span>
+                                    </template>
+                                </template>
+                            </template>
+                            <c-icon key={record.value.id} class="tooltip" icon="Next"></c-icon>
+                        </td>
+                    </tr>
+                </template>
+            </tbody>
+        </table>
+    </div>
 </template>
