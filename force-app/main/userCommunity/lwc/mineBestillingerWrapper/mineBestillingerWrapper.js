@@ -11,8 +11,6 @@ import { columns, mobileColumns, workOrderColumns, workOrderMobileColumns, iconB
 import { defaultFilters, compare } from './filters';
 import getPersonAccount from '@salesforce/apex/HOT_Utility.getPersonAccount';
 import FILE_CONSENT from '@salesforce/schema/HOT_Request__c.IsFileConsent__c';
-import NOTIFY_DISPATCHER from '@salesforce/schema/HOT_Request__c.IsNotifyDispatcher__c';
-import STATUS from '@salesforce/schema/HOT_Request__c.Status__c';
 import REQUEST_ID from '@salesforce/schema/HOT_Request__c.Id';
 import WORKORDER_NOTIFY_DISPATCHER from '@salesforce/schema/WorkORder.HOT_IsNotifyDispatcher__c';
 import WORKORDER_STATUS from '@salesforce/schema/WorkOrder.Status';
@@ -39,7 +37,7 @@ export default class MineBestillingerWrapper extends NavigationMixin(LightningEl
 
     @track userAccountId;
     @wire(getUserAccountID)
-    wiredAccountId({ error, data }) {
+    wiredAccountId({ data }) {
         if (data) {
             this.userAccountId = data.AccountId;
         }
@@ -506,7 +504,7 @@ export default class MineBestillingerWrapper extends NavigationMixin(LightningEl
         const fields = {};
         if (this.urlStateParameters.level === 'R') {
             updateRelatedWorkOrders({ requestId: this.request.Id })
-                .then((result) => {
+                .then(() => {
                     refreshApex(this.wiredgetWorkOrdersResult);
                     this.noCancelButton = true;
                     this.template.querySelector('.ReactModal__Overlay').classList.add('hidden');
@@ -514,7 +512,7 @@ export default class MineBestillingerWrapper extends NavigationMixin(LightningEl
                     this.modalContent = 'Bestillingen er avlyst.';
                     this.showModal();
                 })
-                .catch((error) => {
+                .catch(() => {
                     this.noCancelButton = true;
                     this.template.querySelector('.ReactModal__Overlay').classList.add('hidden');
                     this.template.querySelector('.loader').classList.add('hidden');
