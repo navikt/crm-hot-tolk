@@ -69,7 +69,7 @@ export default class MineBestillingerWrapper extends NavigationMixin(LightningEl
         const uploadedFiles = event.detail.files;
         if (uploadedFiles.length > 0) {
             this.fileUploadMessage = 'Filen(e) ble lastet opp';
-            this.template.querySelector('c-record-files-with-sharing').refreshContentDocuments();
+            this.template.querySelector('c-record-files-without-sharing').refreshContentDocuments();
         }
     }
 
@@ -128,7 +128,6 @@ export default class MineBestillingerWrapper extends NavigationMixin(LightningEl
         let recordId = this.urlStateParameters.id;
         for (let record of this.records) {
             if (recordId === record.Id) {
-                this.recordId = record.Id;
                 this.workOrder = record;
                 this.request = record.HOT_Request__r;
                 this.recordId = record.HOT_Request__r.Id;
@@ -145,6 +144,13 @@ export default class MineBestillingerWrapper extends NavigationMixin(LightningEl
         if (this.request.Id !== undefined) {
             this.getWorkOrders();
         }
+    }
+
+    get isOwnRequest() {
+        return this.request.Orderer__c === this.userAccountId;
+    }
+    get getRelatedRecord() {
+        return this.recordId;
     }
 
     resetRequestAndWorkOrder() {
@@ -577,8 +583,8 @@ export default class MineBestillingerWrapper extends NavigationMixin(LightningEl
     }
 
     onUploadComplete() {
-        if (this.template.querySelector('c-record-files-with-sharing') !== null) {
-            this.template.querySelector('c-record-files-with-sharing').refreshContentDocuments();
+        if (this.template.querySelector('c-record-files-without-sharing') !== null) {
+            this.template.querySelector('c-record-files-without-sharing').refreshContentDocuments();
         }
         this.template.querySelector('.loader').classList.add('hidden');
         this.modalHeader = 'Suksess!';
@@ -653,7 +659,7 @@ export default class MineBestillingerWrapper extends NavigationMixin(LightningEl
     }
 
     deleteMarkedFiles() {
-        this.template.querySelector('c-record-files-with-sharing').deleteMarkedFiles();
+        this.template.querySelector('c-record-files-without-sharing').deleteMarkedFiles();
     }
 
     navigateToThread(recordId) {
