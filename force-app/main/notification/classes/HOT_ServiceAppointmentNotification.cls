@@ -1436,7 +1436,7 @@ public without sharing class HOT_ServiceAppointmentNotification {
     }
     private static List<ServiceResource> getServiceResourceList(Set<Id> srIds) {
         List<ServiceResource> serviceResourceList = [
-            SELECT HOT_NotificationChannel__c, AccountId
+            SELECT Id, HOT_NotificationChannel__c, AccountId
             FROM ServiceResource
             WHERE Id IN :srIds AND HOT_NotificationChannel__c != NULL
         ];
