@@ -1463,7 +1463,8 @@ public without sharing class HOT_ServiceAppointmentNotification {
         }
         return this.serviceResourceMap;
     }
-    public HOT_ServiceAppointmentNotification(List<ServiceAppointment> saList) {
+    @TestVisible
+    private HOT_ServiceAppointmentNotification(List<ServiceAppointment> saList) {
         this.originalSaList = saList;
         this.oldSAMap = new Map<Id, ServiceAppointment>();
     }
