@@ -1,8 +1,19 @@
+/**
+ * @description Class for handling the trigger on ContentVersion, used to share files to related records.
+ */
 public without sharing class HOT_ContentVersionHandler extends MyTriggers {
-    public HOT_ContentVersionHandler() {
-    }
+    /**
+     * @description onAfterInsert trigger action
+     */
     public override void onAfterInsert() {
-        List<ContentVersion> cvs = ((List<ContentVersion>) records);
+        HOT_ContentVersionHandler.createDocumentLinks(((List<ContentVersion>) records));
+    }
+    /**
+     * @descrioton method for creating ContentDocumentLink records related to HOT_Request__c records
+     * when user is not an Orderer
+     */
+    @TestVisible
+    private static void createDocumentLinks(List<ContentVersion> cvs) {
         List<ContentDocumentLink> cdls = new List<ContentDocumentLink>();
         for (ContentVersion cv : cvs) {
             if (
@@ -18,7 +29,7 @@ public without sharing class HOT_ContentVersionHandler extends MyTriggers {
             cdls.add(cdl);
         }
         if (cdls.size() > 0) {
-            insert cdls;
+            insert cdls; //NOPMD
         }
     }
 }
