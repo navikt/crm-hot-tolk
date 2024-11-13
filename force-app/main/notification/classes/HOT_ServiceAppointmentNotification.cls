@@ -1,6 +1,7 @@
 public without sharing class HOT_ServiceAppointmentNotification {
     Map<String, CustomNotificationType> customNotificationTypeByName;
     List<ServiceAppointment> originalSaList;
+    Map<Id, ServiceAppointment> oldSAMap;
     Map<Id, ServiceAppointment> updatedSAMap;
     Map<Id, Id> accountIdByUSerIdMap;
     Map<Id, Id> userIdByAccountIdMap;
@@ -18,7 +19,10 @@ public without sharing class HOT_ServiceAppointmentNotification {
         List<ServiceAppointment> serviceAppointments,
         Map<Id, sObject> triggerOldMap
     ) {
-        HOT_ServiceAppointmentNotification sAN = new HOT_ServiceAppointmentNotification(serviceAppointments);
+        HOT_ServiceAppointmentNotification sAN = new HOT_ServiceAppointmentNotification(
+            serviceAppointments,
+            (Map<Id, ServiceAppointment>) triggerOldMap
+        );
 
         for (ServiceAppointment serviceAppointment : serviceAppointments) {
             ServiceAppointment oldServiceAppointment = (ServiceAppointment) triggerOldMap.get(serviceAppointment.Id);
@@ -147,7 +151,10 @@ public without sharing class HOT_ServiceAppointmentNotification {
         List<ServiceAppointment> serviceAppointments,
         Map<Id, sObject> triggerOldMap
     ) {
-        HOT_ServiceAppointmentNotification sAN = new HOT_ServiceAppointmentNotification(serviceAppointments);
+        HOT_ServiceAppointmentNotification sAN = new HOT_ServiceAppointmentNotification(
+            serviceAppointments,
+            (Map<Id, ServiceAppointment>) triggerOldMap
+        );
 
         CustomNotificationType notificationType = [
             SELECT Id, DeveloperName
@@ -1445,7 +1452,7 @@ public without sharing class HOT_ServiceAppointmentNotification {
     private Map<Id, ServiceResource> getServiceResourceMap() {
         if (this.serviceResourceMap == null) {
             Set<Id> srIds = new Set<Id>();
-            for (ServiceAppointment sa : this.getUpdatedSaMap().values()) {
+            for (ServiceAppointment sa : this.oldSAMap.values()) {
                 if (sa.HOT_ServiceResource__c != null) {
                     srIds.add(sa.HOT_ServiceResource__c);
                 }
@@ -1458,5 +1465,10 @@ public without sharing class HOT_ServiceAppointmentNotification {
     }
     public HOT_ServiceAppointmentNotification(List<ServiceAppointment> saList) {
         this.originalSaList = saList;
+        this.oldSAMap = new Map<Id, ServiceAppointment>();
+    }
+    public HOT_ServiceAppointmentNotification(List<ServiceAppointment> saList, Map<Id, ServiceAppointment> oldSaMap) {
+        this.originalSaList = saList;
+        this.oldSAMap = oldSaMap;
     }
 }
