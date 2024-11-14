@@ -547,7 +547,10 @@ public without sharing class HOT_AssignedResourceHandler extends MyTriggers {
                 WHERE Id IN :serviceAppointmentIds
             ]
         );
-        HOT_ServiceAppointmentNotification saN = new HOT_ServiceAppointmentNotification(serviceAppointments.values());
+        HOT_ServiceAppointmentNotification saN = new HOT_ServiceAppointmentNotification(
+            serviceAppointments.values(),
+            new Map<Id, ServiceAppointment>()
+        );
         for (AssignedResource assignedResource : assignedResources) {
             if (serviceAppointments.get(assignedResource.ServiceAppointmentId).Status != 'Scheduled') {
                 saN.resourceChanged(
