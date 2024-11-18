@@ -1,4 +1,4 @@
-@isTest
+@IsTest
 public class HOT_InterpreterOnWorkOrderServiceTest {
     @testSetup
     static void setup() {
@@ -40,7 +40,7 @@ public class HOT_InterpreterOnWorkOrderServiceTest {
         insert serviceResources;
     }
 
-    @isTest
+    @IsTest
     static void updateInterpreterFieldOnWorkOrderAfterSingleAssignedResourceInsert() {
         ServiceAppointment serviceAppointment = [
             SELECT Id, HOT_ServiceResource__c, Status, HOT_WorkOrderLineItem__r.WorkOrderId
@@ -83,7 +83,7 @@ public class HOT_InterpreterOnWorkOrderServiceTest {
         );
     }
 
-    @isTest
+    @IsTest
     static void updateInterpreterFieldOnWorkOrderAfterMultipleAssignedResourceInsert() {
         ServiceAppointment serviceAppointment1 = [
             SELECT Id, HOT_ServiceResource__c, Status, HOT_WorkOrderLineItem__r.WorkOrderId
@@ -175,7 +175,7 @@ public class HOT_InterpreterOnWorkOrderServiceTest {
         );
     }
 
-    @isTest
+    @IsTest
     static void updateInterpreterFieldOnWorkOrderAfterSingleAssignedResourceDelete() {
         ServiceAppointment serviceAppointment = [
             SELECT Id, HOT_ServiceResource__c, Status, HOT_WorkOrderLineItem__r.WorkOrderId
@@ -245,7 +245,7 @@ public class HOT_InterpreterOnWorkOrderServiceTest {
         );
     }
 
-    @isTest
+    @IsTest
     static void updateInterpreterFieldOnWorkOrderAfterMultipleAssignedResourceDelete() {
         ServiceAppointment serviceAppointment1 = [
             SELECT Id, HOT_ServiceResource__c, Status, HOT_WorkOrderLineItem__r.WorkOrderId
@@ -337,7 +337,7 @@ public class HOT_InterpreterOnWorkOrderServiceTest {
         );
     }
 
-    @isTest
+    @IsTest
     static void updateInterpreterFieldOnWorkOrderAfterSingleAssignedResourceEdit() {
         ServiceAppointment serviceAppointment = [
             SELECT Id, HOT_ServiceResource__c, Status, HOT_WorkOrderLineItem__r.WorkOrderId
@@ -395,7 +395,7 @@ public class HOT_InterpreterOnWorkOrderServiceTest {
         );
     }
 
-    @isTest
+    @IsTest
     static void updateInterpreterFieldOnWorkOrderAfterMultipleAssignedResourceEdit() {
         ServiceAppointment serviceAppointment1 = [
             SELECT Id, HOT_ServiceResource__c, Status, HOT_WorkOrderLineItem__r.WorkOrderId
@@ -485,7 +485,7 @@ public class HOT_InterpreterOnWorkOrderServiceTest {
         );
     }
 
-    @isTest
+    @IsTest
     static void appendInterpretersTest() {
         ServiceAppointment serviceAppointment = [
             SELECT

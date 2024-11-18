@@ -1,4 +1,4 @@
-@isTest
+@IsTest
 private class HOT_ResourceAbsenceServiceTest {
     @testSetup
     static void setup() {
@@ -11,7 +11,7 @@ private class HOT_ResourceAbsenceServiceTest {
         insert serviceResource;
     }
 
-    @isTest
+    @IsTest
     private static void createResourceAbsenceTest() {
         RecordType eventRecordType = [SELECT Id FROM RecordType WHERE DeveloperName = 'HOT_Events'];
 
@@ -36,7 +36,7 @@ private class HOT_ResourceAbsenceServiceTest {
         System.assertEquals(2, resourceAbsenceList.size());
     }
 
-    @isTest
+    @IsTest
     private static void deleteResourceAbsenceTest() {
         RecordType eventRecordType = [SELECT Id FROM RecordType WHERE DeveloperName = 'HOT_Events'];
 

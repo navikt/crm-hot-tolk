@@ -2,28 +2,28 @@
   "appPageId" : "e1a097ff-c5e1-47c6-b293-9a8b7a2b049f",
   "componentName" : "siteforce:sldsOneColLayout",
   "dataProviders" : [ ],
-  "id" : "752ca6d2-03f7-461a-ba84-3ca7206daa61",
+  "id" : "940249a7-22d6-4514-ac8a-ec7ef17dbf60",
   "label" : "Samtale Frilans",
   "regions" : [ {
     "components" : [ {
       "componentAttributes" : {
-        "NAVarea" : "Privatperson",
-        "navareapicklist" : "Privatperson"
+        "context" : "Privatperson",
+        "env" : "Dev"
       },
-      "componentName" : "c:globalCommunityHeader",
-      "id" : "8464dd6c-cd33-4130-b244-e9cd31afe949",
+      "componentName" : "c:decoratorHeader",
+      "id" : "f673fa98-919c-442b-aac4-f63c32cb9954",
       "renderPriority" : "NEUTRAL",
       "renditionMap" : { },
       "type" : "component"
     } ],
-    "id" : "54740c90-91c1-4138-8804-347c08d6767e",
+    "id" : "cffa2fad-e008-41c7-8fe0-e87152d7699a",
     "regionName" : "header",
     "type" : "region"
   }, {
     "components" : [ {
       "componentAttributes" : { },
       "componentName" : "c:hot_tolketjenestenHovedBanner",
-      "id" : "097ec07c-ad46-4e9e-a5c7-3e5ec8666841",
+      "id" : "4879493f-a9aa-49f4-866e-dd522a50d25e",
       "renderPriority" : "NEUTRAL",
       "renditionMap" : { },
       "type" : "component"
@@ -34,27 +34,24 @@
         "maxLength" : 0
       },
       "componentName" : "c:hot_messagingCommunityThreadViewer",
-      "id" : "5cf3cbfa-73dc-453c-a566-0ad1e6659c2a",
+      "id" : "560b0c5a-1e27-4c9c-98ef-f7896f2ac05e",
       "renderPriority" : "NEUTRAL",
       "renditionMap" : { },
       "type" : "component"
     } ],
-    "id" : "839c9063-e941-4868-9990-e01d79a5ca2d",
+    "id" : "54da23d4-3a16-43c7-a4a1-9161c45d1ded",
     "regionName" : "content",
     "type" : "region"
   }, {
     "components" : [ {
-      "componentAttributes" : {
-        "NAVarea" : "Privatperson",
-        "navareapicklist" : "Privatperson"
-      },
-      "componentName" : "c:globalCommunityFooter",
-      "id" : "60037686-ed64-4117-973a-85d0534600dc",
+      "componentAttributes" : { },
+      "componentName" : "c:decoratorFooter",
+      "id" : "7cc1887a-4977-4305-aab7-8af3542cc386",
       "renderPriority" : "NEUTRAL",
       "renditionMap" : { },
       "type" : "component"
     } ],
-    "id" : "38000fef-bd48-43f3-bd44-d2fa05cbbac3",
+    "id" : "b89d0b6f-86cd-46ee-af4a-9650a5158051",
     "regionName" : "footer",
     "type" : "region"
   }, {
@@ -65,11 +62,11 @@
         "title" : "Samtale Frilans"
       },
       "componentName" : "forceCommunity:seoAssistant",
-      "id" : "67cfcc44-37e1-48f3-bb9d-ed25e62bac21",
+      "id" : "e6ea9b25-73dc-466b-9f14-0258a3342b06",
       "renditionMap" : { },
       "type" : "component"
     } ],
-    "id" : "6e089ad5-5e06-4dca-9eba-39d07422c629",
+    "id" : "ef4736c1-f3cc-4997-8854-0bf51467294f",
     "regionName" : "sfdcHiddenRegion",
     "type" : "region"
   } ],

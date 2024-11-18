@@ -1,13 +1,13 @@
 {
   "componentVariants" : [ {
-    "id" : "a04a8c15-465d-42ce-b83b-ef6c6faed702",
+    "id" : "03f7dc08-228f-4d91-b20a-30436bc2987f",
     "propertyOverrides" : {
-      "activeViewId" : "752ca6d2-03f7-461a-ba84-3ca7206daa61"
+      "activeViewId" : "940249a7-22d6-4514-ac8a-ec7ef17dbf60"
     },
-    "targetId" : "ab514961-bce6-4b1c-b6b0-358c34521f93",
+    "targetId" : "c3f07870-ace3-46b5-a246-cce151fd2e6d",
     "type" : "componentVariant"
   } ],
   "developerName" : "Samtale_Frilans_Samtale_Frilans_Page",
-  "id" : "c2e880ac-08eb-4299-91c9-c76b05bdd80d",
+  "id" : "f52958ed-4c6b-4d49-92ab-022157542ea6",
   "type" : "experienceVariation"
 }

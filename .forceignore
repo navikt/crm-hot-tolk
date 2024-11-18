@@ -9,6 +9,8 @@
 !**/profiles/NAV Bruker Plus.profile-meta.xml
 !**/profiles/NAV Samhandler.profile-meta.xml
 !**/profiles/NAV Administrator.profile-meta.xml
+!**/profiles/HOT Tolk Ansatt.profile-meta.xml
+!**/profiles/HOT Tolk Formidler.profile-meta.xml
 **/profilePasswordPolicies/*
 **/profileSessionSettings/*
 
@@ -69,10 +71,6 @@
 **/aura/selfRegister
 **/aura/setExpId
 **/aura/
-**/components/SiteFooter.component
-**/components/SiteHeader.component
-**/components/SiteLogin.component
-**/components/SitePoweredBy.component
 **/navigationMenus/*
 
 # Workflows
@@ -287,4 +285,4 @@ force-app/main/default/objects/Event/fields/Type.field-meta.xml
 force-app/main/default/objects/Event/fields/WhatId.field-meta.xml
 force-app/main/default/objects/Event/fields/WhoId.field-meta.xml
 force-app/main/default/audience/Default_Tolketjenesten.audience-meta.xml
-force-app/main/default/permissionsets/sfdcInternalInt__sfdc_scrt2.permissionset-meta.xml
+**sfdcInternalInt__sfdc_scrt2.permissionset-meta.xml

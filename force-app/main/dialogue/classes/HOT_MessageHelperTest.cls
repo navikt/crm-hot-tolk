@@ -1,4 +1,4 @@
-@isTest
+@IsTest
 private class HOT_MessageHelperTest {
     @TestSetup
     static void makeData() {
@@ -33,9 +33,10 @@ private class HOT_MessageHelperTest {
         Message__c m = new Message__c();
         m.CRM_Thread__c = t.Id;
         m.CRM_Message_Text__c = 'Lorem Ipsum Dolor Si Amet';
+        m.HOT_User_Role__c = HOT_MessageHelper.getUserProfileAndName();
         insert m;
     }
-    @isTest
+    @IsTest
     static void getObjectTypeFromidTest() {
         List<Account> accList = [SELECT Id FROM Account];
         Test.startTest();
@@ -43,14 +44,14 @@ private class HOT_MessageHelperTest {
         Test.stopTest();
         System.assertEquals('Account', objectType, 'Object type is not recoginzed as expected');
     }
-    @isTest
+    @IsTest
     static void getUserContactId() {
         Test.startTest();
         String contactId = HOT_MessageHelper.getUserContactId();
         Test.stopTest();
         System.assertEquals(null, contactId, 'User Contact Id was not returned correctly');
     }
-    @isTest
+    @IsTest
     static void getAccountOnWorkOrder() {
         WorkType workType = HOT_TestDataFactory.createWorkType();
         insert workType;
@@ -67,7 +68,7 @@ private class HOT_MessageHelperTest {
         Test.stopTest();
         System.assertEquals(workOrder.AccountId, accountId, 'Account Id was not correct');
     }
-    @isTest
+    @IsTest
     static void getRequestInformation() {
         Test.startTest();
         WorkType workType = HOT_TestDataFactory.createWorkType();
@@ -87,7 +88,7 @@ private class HOT_MessageHelperTest {
         Test.stopTest();
         System.assertEquals(result, true, 'Account Id was not correct');
     }
-    @isTest
+    @IsTest
     static void getWorkOrderInformation() {
         Test.startTest();
         WorkType workType = HOT_TestDataFactory.createWorkType();
@@ -107,7 +108,15 @@ private class HOT_MessageHelperTest {
         Test.stopTest();
         System.assertEquals(result, '0', 'Did not find correct number of interpreters');
     }
-    @isTest
+    @IsTest
+    static void getThreadsCollectionThread() {
+        Thread__c t = [SELECT Id FROM Thread__c WHERE CRM_Type__c = 'HOT_BRUKER-FORMIDLER' LIMIT 1];
+        Test.startTest();
+        List<Thread__c> resList = HOT_MessageHelper.getThreadsCollection(t.Id, true, 'HOT_BRUKER-FORMIDLER');
+        Test.stopTest();
+        System.assertEquals(1, resList.size());
+    }
+    @IsTest
     static void getThreadsCollectionSingleTest() {
         List<Account> accList = [SELECT Id FROM Account];
         Test.startTest();
@@ -122,7 +131,7 @@ private class HOT_MessageHelperTest {
     /**
      * TODO, has to run in a users context
      */
-    @isTest
+    @IsTest
     static void getThreadsCollectionMultiTest() {
         List<Account> accList = [SELECT Id FROM Account];
         Test.startTest();
@@ -135,12 +144,19 @@ private class HOT_MessageHelperTest {
         System.assertEquals(2, resList.size());
     }
 
-    @isTest
+    @IsTest
     static void getSingleThreadTest() {
         WorkType workType = HOT_TestDataFactory.createWorkType();
         workType.Name = 'Work Type Name';
         insert workType;
-        HOT_Request__c request = HOT_TestDataFactory.createRequest('Subject', workType);
+        Account account = HOT_TestDataFactory.createAccount(true);
+        insert account;
+
+        account = [SELECT Id FROM Account WHERE FirstName = 'Test' LIMIT 1];
+
+        HOT_Request__c request = HOT_TestDataFactory.createRequest('BRUKER-FORMIDLER', workType);
+        request.Account__c = account.Id;
+        request.Orderer__c = account.Id;
         insert request;
         Thread__c thread = new Thread__c();
         thread.CRM_Type__c = 'HOT_BRUKER-TOLK';
@@ -156,7 +172,7 @@ private class HOT_MessageHelperTest {
         Test.stopTest();
         System.assertEquals(t.size(), result.size());
     }
-    @isTest
+    @IsTest
     static void getSingleThreadTest2() {
         WorkType workType = HOT_TestDataFactory.createWorkType();
         workType.Name = 'Work Type Name';
@@ -172,7 +188,7 @@ private class HOT_MessageHelperTest {
         Test.stopTest();
         System.assertEquals(t.size(), 0);
     }
-    @isTest
+    @IsTest
     static void getThreads() {
         WorkType workType = HOT_TestDataFactory.createWorkType();
         workType.Name = 'Work Type Name';
@@ -195,7 +211,7 @@ private class HOT_MessageHelperTest {
         Test.stopTest();
         System.assertEquals(t.size(), 2);
     }
-    @isTest
+    @IsTest
     static void getThreadFromIdTest() {
         Thread__c thread = new Thread__c();
         insert thread;
@@ -204,7 +220,7 @@ private class HOT_MessageHelperTest {
         Test.stopTest();
         System.assertEquals(t.size(), 1);
     }
-    @isTest
+    @IsTest
     static void createThread() {
         WorkType workType = HOT_TestDataFactory.createWorkType();
         insert workType;
@@ -241,7 +257,7 @@ private class HOT_MessageHelperTest {
         System.assertEquals(account.Id, thread.CRM_Account__c);
         System.assertEquals(thread.CRM_Type__c, 'HOT_BRUKER-FORMIDLER');
     }
-    @isTest
+    @IsTest
     static void createThreadWorkOrder() {
         Account acc = new Account();
         acc.Name = 'Newly created account';
@@ -266,7 +282,7 @@ private class HOT_MessageHelperTest {
         System.assertEquals(tList[0].CRM_Account__c, acc.Id);
         System.assertEquals(tList[0].CRM_Type__c, 'HOT_BRUKER-TOLK');
     }
-    @isTest
+    @IsTest
     static void createThreadServiceAppointment() {
         Account acc = new Account();
         acc.Name = 'Newly created account';
@@ -299,7 +315,7 @@ private class HOT_MessageHelperTest {
         System.assertEquals(tList[0].CRM_Account__c, acc.Id);
         System.assertEquals(tList[0].CRM_Type__c, 'HOT_BRUKER-TOLK');
     }
-    @isTest
+    @IsTest
     static void createThreadInterestedResource() {
         WorkType workType = HOT_TestDataFactory.createWorkType();
         insert workType;
@@ -334,7 +350,7 @@ private class HOT_MessageHelperTest {
         ];
         System.assertNotEquals(null, tList);
     }
-    @isTest
+    @IsTest
     static void createThreadDispatcherRequest() {
         Account acc = new Account();
         acc.Name = 'Newly created account';
@@ -357,7 +373,7 @@ private class HOT_MessageHelperTest {
         System.assertEquals(tList[0].CRM_Account__c, acc.Id);
         System.assertEquals(tList[0].CRM_Type__c, 'HOT_BRUKER-FORMIDLER');
     }
-    @isTest
+    @IsTest
     static void createThreadDispatcherWorkOrder() {
         Account acc = new Account();
         acc.Name = 'Newly created account';
@@ -382,7 +398,7 @@ private class HOT_MessageHelperTest {
         System.assertEquals(tList[0].CRM_Account__c, acc.Id);
         System.assertEquals(tList[0].CRM_Type__c, 'HOT_BRUKER-TOLK');
     }
-    @isTest
+    @IsTest
     static void createThreadDispatcherInterestedResource() {
         WorkType workType = HOT_TestDataFactory.createWorkType();
         insert workType;
@@ -422,7 +438,7 @@ private class HOT_MessageHelperTest {
         ];
         System.assertNotEquals(null, tList);
     }
-    @isTest
+    @IsTest
     static void createThreadInterpreterInterestedResource() {
         WorkType workType = HOT_TestDataFactory.createWorkType();
         insert workType;
@@ -457,7 +473,7 @@ private class HOT_MessageHelperTest {
         ];
         System.assertNotEquals(null, tList);
     }
-    @isTest
+    @IsTest
     static void getAccountonRequestTest() {
         WorkType workType = HOT_TestDataFactory.createWorkType();
         workType.Name = 'Work Type Name';
@@ -475,60 +491,129 @@ private class HOT_MessageHelperTest {
         System.assertEquals(accountId, personAccount.Id);
     }
 
-    @isTest
+    @IsTest
     static void getMessagesFromThreadTest() {
         List<Thread__c> tList = [SELECT Id FROM Thread__c ORDER BY CRM_Number_of_External_Messages__c DESC];
         Test.startTest();
         List<Message__c> msgList = HOT_MessageHelper.getMessagesFromThread(tList.get(0).Id);
         Test.stopTest();
-        System.assertEquals(1, msgList.size());
+        System.assertEquals(null, msgList, 'Should not have got any messages because no access');
     }
-    @isTest
+    @IsTest
     static void getUserLisenceTest() {
         Test.startTest();
         String lisenceType = HOT_MessageHelper.getUserLisenceType(UserInfo.getUserId());
         Test.stopTest();
         System.assertNotEquals(null, lisenceType);
     }
-    @isTest
+    @IsTest
     static void markasreadTest() {
         List<Thread__c> tList = [SELECT Id FROM Thread__c ORDER BY CRM_Number_of_External_Messages__c DESC];
         Test.startTest();
         HOT_MessageHelper.markAsRead(tList.get(0).Id);
         Test.stopTest();
         List<Message__c> msgList = [SELECT CRM_Read__c FROM Message__c WHERE CRM_Thread__c = :tList.get(0).Id];
-        System.assertEquals(true, msgList.get(0).CRM_Read__c);
+        System.assertEquals(false, msgList.get(0).CRM_Read__c, 'Should not be marked as red because no access');
     }
-    @isTest
+    @IsTest
     static void setLastMessageFromTolk() {
         List<Thread__c> tList = [SELECT Id FROM Thread__c ORDER BY CRM_Number_of_External_Messages__c DESC];
         Test.startTest();
-        HOT_MessageHelper.setLastMessageFrom(tList.get(0).Id, 'tolk');
+        HOT_MessageHelper.setLastMessageFrom(tList.get(0).Id, 'ansatt/formidler');
         Test.stopTest();
 
-        List<Thread__c> tList2 = [SELECT Id, HOT_Last_message_from__c FROM Thread__c WHERE Id = :tList.get(0).Id];
-        Boolean isEmpty = tList2.get(0).HOT_Last_message_from__c == null;
-        System.assertEquals(true, isEmpty);
+        List<Thread__c> tList2 = [SELECT Id, HOT_Thread_read_by__c FROM Thread__c WHERE Id = :tList.get(0).Id];
+        Boolean isNotEmpty = tList2.get(0).HOT_Thread_read_by__c != null;
+        System.assertEquals(true, isNotEmpty);
     }
-    @isTest
-    static void markAsReadByNavTest() {
+    @IsTest
+    static void setLastMessageFromUser() {
         List<Thread__c> tList = [SELECT Id FROM Thread__c ORDER BY CRM_Number_of_External_Messages__c DESC];
+        User currentUser = [SELECT Id, AccountId, Account.CRM_Person__c FROM User WHERE Id = :UserInfo.getUserId()];
+
         Test.startTest();
-        HOT_MessageHelper.markAsReadByNav(tList.get(0).Id);
+        Contact contact = new Contact(
+            FirstName = 'Darth',
+            LastName = 'Vader',
+            Phone = '95410816',
+            AccountId = currentUser.AccountId
+        );
+        insert contact;
+        HOT_MessageHelper.setLastMessageFrom(tList.get(0).Id, contact.Id);
+        Test.stopTest();
+
+        List<Thread__c> tList2 = [SELECT Id, HOT_Thread_read_by__c FROM Thread__c WHERE Id = :tList.get(0).Id];
+        System.assertEquals(tList2[0].HOT_Thread_read_by__c, contact.Id + ';');
+    }
+    @IsTest
+    static void markAsReadByNavTest() {
+        WorkType workType = HOT_TestDataFactory.createWorkType();
+        workType.Name = 'Work Type Name';
+        insert workType;
+        HOT_Request__c request = HOT_TestDataFactory.createRequest('Subject', workType);
+        insert request;
+        WorkOrder workOrder = HOT_TestDataFactory.createWorkOrder(request, workType);
+        insert workOrder;
+        WorkOrderLineItem workOrderLineItem = HOT_TestDataFactory.createWorkOrderLineItem(workOrder, workType);
+        insert workOrderLineItem;
+        ServiceAppointment sa = HOT_TestDataFactory.createServiceAppointment(workOrderLineItem);
+        sa.HOT_Request__c = request.Id;
+        sa.Status = 'Dispatched';
+        sa.Subject = 'Hei';
+        insert sa;
+
+        Profile profile = [SELECT Id FROM Profile WHERE Name = 'Standard User' OR Name = 'Standardbruker' LIMIT 1];
+        User user = HOT_TestDataFactory.createUser('user', profile);
+        insert user;
+        Test.startTest();
+        Account acc = new Account();
+        acc.Name = 'Newly created account';
+        insert acc;
+        ServiceResource resource = HOT_TestDataFactory.createServiceResource(user.Id);
+        resource.AccountId = acc.Id;
+        insert resource;
+        HOT_InterestedResource__c interestedResource = HOT_TestDataFactory.createInterestedResource(sa.Id, resource.Id);
+        interestedResource.Status__c = 'Assigned';
+        insert interestedResource;
+        AssignedResource ar = HOT_TestDataFactory.createAssignedResource(sa.Id, resource.Id);
+        insert ar;
+
+        sa.Status = 'Dispatched';
+        update sa;
+
+        Thread__c thread = HOT_MessageHelper.createThreadDispatcher(sa.Id, acc.Id, 'HOT_TOLK-FORMIDLER');
+        Message__c m = new Message__c();
+        m.CRM_Thread__c = thread.Id;
+        m.CRM_Message_Text__c = 'Lorem Ipsum Dolor Si Amet';
+        m.HOT_User_Role__c = HOT_MessageHelper.getUserProfileAndName();
+        insert m;
+
+        Profile profile2 = [SELECT Id FROM Profile WHERE Name = 'System Administrator'];
+        User user1 = new User(
+            alias = 'TestUser',
+            email = 'HOT_testaccount@nav.hot.no',
+            emailencodingkey = 'UTF-8',
+            lastname = 'Testing',
+            languagelocalekey = 'en_US',
+            localesidkey = 'en_US',
+            profileid = profile2.Id,
+            country = 'Norway',
+            IsActive = true,
+            timezonesidkey = 'Europe/Paris',
+            username = 'HOT_testaccount@nav.hot.noo'
+        );
+
+        HOT_MessageHelper.markAsReadByNav(thread.Id);
+
         Test.stopTest();
         List<Message__c> msgList = [
             SELECT CRM_Read_By_Nav__c, CRM_Read_By_Nav_Datetime__c
             FROM Message__c
-            WHERE CRM_Thread__c = :tList.get(0).Id
+            WHERE CRM_Thread__c = :thread.Id
         ];
-        System.assertEquals(true, msgList.get(0).CRM_Read_By_Nav__c, 'Could not set CRM_Read_By_Nav__c to true.');
-        System.assertNotEquals(
-            null,
-            msgList.get(0).CRM_Read_By_Nav_Datetime__c,
-            'CRM_Read_By_Nav_Datetime__c was not set.'
-        );
+        System.assertEquals(false, msgList.get(0).CRM_Read_By_Nav__c, 'Should not have permission to set read by nav');
     }
-    @isTest
+    @IsTest
     static void createMessageTest() {
         List<Thread__c> tList = [SELECT Id FROM Thread__c ORDER BY CRM_Number_of_External_Messages__c DESC];
         Test.startTest();
@@ -537,7 +622,26 @@ private class HOT_MessageHelperTest {
         List<Message__c> msgList = [SELECT CRM_Read__c FROM Message__c WHERE CRM_Thread__c = :tList.get(0).Id];
         System.assertEquals(msgList.isEmpty(), false);
     }
-    @isTest
+    @IsTest
+    static void createMessagesTest() {
+        List<Thread__c> tList = [SELECT Id FROM Thread__c ORDER BY CRM_Number_of_External_Messages__c DESC];
+        Test.startTest();
+        HOT_MessageHelper.createMessages(tList.get(0).Id, 'Some text value', null);
+        Test.stopTest();
+        List<Message__c> msgList = [SELECT CRM_Read__c FROM Message__c WHERE CRM_Thread__c = :tList.get(0).Id];
+        System.assertEquals(msgList.isEmpty(), false);
+    }
+    @IsTest
+    static void createMessageTestNotActive() {
+        List<Thread__c> tList = [SELECT Id FROM Thread__c ORDER BY CRM_Number_of_External_Messages__c DESC];
+        tList[0].CRM_isActive__c = false;
+        update tList;
+        Test.startTest();
+        Boolean result = HOT_MessageHelper.createMessage(tList.get(0).Id, 'Some text value', null);
+        Test.stopTest();
+        System.assertEquals(false, result);
+    }
+    @IsTest
     static void markThreadAsReadTest() {
         WorkType workType = HOT_TestDataFactory.createWorkType();
         insert workType;
@@ -562,9 +666,9 @@ private class HOT_MessageHelperTest {
             isReadbyUser = false;
         }
         Boolean test = true;
-        System.assertEquals(true, isReadbyUser, 'Is not read by user');
+        System.assertEquals(false, isReadbyUser, 'Does not have access to be marked as red.');
     }
-    @isTest
+    @IsTest
     static void getRelatedObjectDetailsTestWO() {
         WorkType workType = HOT_TestDataFactory.createWorkType();
         insert workType;
@@ -587,7 +691,7 @@ private class HOT_MessageHelperTest {
         Test.stopTest();
         System.assertEquals(navigationhelp2, navigationhelp);
     }
-    @isTest
+    @IsTest
     public static void getThreadsFailTest() {
         Id recordId = null;
         test.startTest();
@@ -598,7 +702,7 @@ private class HOT_MessageHelperTest {
         }
         test.stopTest();
     }
-    @isTest
+    @IsTest
     public static void createThreadOrdererUserTest() {
         WorkType workType = HOT_TestDataFactory.createWorkType();
         insert workType;
@@ -614,7 +718,7 @@ private class HOT_MessageHelperTest {
         test.stopTest();
         System.assertEquals('HOT_BRUKER-BESTILLER', thread.CRM_Thread_Type__c);
     }
-    @isTest
+    @IsTest
     static void createThreadWageClaim() {
         WorkType workType = HOT_TestDataFactory.createWorkType();
         insert workType;
@@ -656,7 +760,7 @@ private class HOT_MessageHelperTest {
         ];
         System.assertNotEquals(null, tList);
     }
-    @isTest
+    @IsTest
     static void createThreadWageClaimDispatcher() {
         WorkType workType = HOT_TestDataFactory.createWorkType();
         insert workType;
@@ -698,7 +802,7 @@ private class HOT_MessageHelperTest {
         ];
         System.assertNotEquals(null, tList);
     }
-    @isTest
+    @IsTest
     static void getAccountOnThreadTest() {
         Profile profile = [SELECT Id FROM Profile WHERE Name = 'Standard User' OR Name = 'Standardbruker' LIMIT 1];
         User user = HOT_TestDataFactory.createUser('user', profile);
@@ -717,9 +821,9 @@ private class HOT_MessageHelperTest {
         Test.startTest();
         String result = HOT_MessageHelper.getAccountOnThread(t.Id);
         Test.stopTest();
-        System.assertEquals('Darth Vader', result);
+        System.assertEquals(null, result);
     }
-    @isTest
+    @IsTest
     static void getAccountOnThreadWOTest() {
         WorkType workType = HOT_TestDataFactory.createWorkType();
         insert workType;
@@ -734,9 +838,9 @@ private class HOT_MessageHelperTest {
         Test.startTest();
         String result = HOT_MessageHelper.getAccountOnThread(t.Id);
         Test.stopTest();
-        System.assertEquals('Darth Vader', result);
+        System.assertEquals('Darth Vader', result, 'Did not get correct name');
     }
-    @isTest
+    @IsTest
     static void createThreadInterpreterInterpreters() {
         WorkType workType = HOT_TestDataFactory.createWorkType();
         workType.Name = 'Work Type Name';
@@ -762,7 +866,7 @@ private class HOT_MessageHelperTest {
         ];
         System.assertNotEquals(null, tList);
     }
-    @isTest
+    @IsTest
     static void createThreadDispatcherEmployee() {
         WorkType workType = HOT_TestDataFactory.createWorkType();
         workType.Name = 'Work Type Name';
@@ -799,5 +903,469 @@ private class HOT_MessageHelperTest {
             WHERE CRM_Related_Object__c = :sa.Id
         ];
         System.assertNotEquals(null, tList);
+    }
+    @IsTest
+    static void createThreadInterpreterDispatcher() {
+        WorkType workType = HOT_TestDataFactory.createWorkType();
+        workType.Name = 'Work Type Name';
+        insert workType;
+        HOT_Request__c request = HOT_TestDataFactory.createRequest('Subject', workType);
+        insert request;
+        WorkOrder workOrder = HOT_TestDataFactory.createWorkOrder(request, workType);
+        insert workOrder;
+        WorkOrderLineItem workOrderLineItem = HOT_TestDataFactory.createWorkOrderLineItem(workOrder, workType);
+        insert workOrderLineItem;
+        ServiceAppointment sa = HOT_TestDataFactory.createServiceAppointment(workOrderLineItem);
+        sa.HOT_Request__c = request.Id;
+        sa.Status = 'Dispatched';
+        sa.Subject = 'Hei';
+        insert sa;
+
+        Profile profile = [SELECT Id FROM Profile WHERE Name = 'Standard User' OR Name = 'Standardbruker' LIMIT 1];
+        User user = HOT_TestDataFactory.createUser('user', profile);
+        insert user;
+        Account acc = new Account();
+        acc.Name = 'Newly created account';
+        insert acc;
+        ServiceResource resource = HOT_TestDataFactory.createServiceResource(user.Id);
+        resource.AccountId = acc.Id;
+        insert resource;
+        HOT_InterestedResource__c interestedResource = HOT_TestDataFactory.createInterestedResource(sa.Id, resource.Id);
+        interestedResource.Status__c = 'Assigned';
+        insert interestedResource;
+        Test.startTest();
+        AssignedResource ar = HOT_TestDataFactory.createAssignedResource(sa.Id, resource.Id);
+        insert ar;
+
+        sa.Status = 'Dispatched';
+        update sa;
+
+        Thread__c thread = HOT_MessageHelper.createThreadDispatcher(sa.Id, acc.Id, 'HOT_TOLK-FORMIDLER');
+        Test.stopTest();
+        System.assertEquals('HOT_TOLK-FORMIDLER', thread.CRM_Thread_Type__c);
+    }
+    @IsTest
+    public static void createThreadOrdererDispatcher() {
+        WorkType workType = HOT_TestDataFactory.createWorkType();
+        insert workType;
+        Account account = HOT_TestDataFactory.createAccount(true);
+        insert account;
+        User currentUser = [SELECT Id, AccountId, Account.CRM_Person__c FROM User WHERE Id = :UserInfo.getUserId()];
+
+        HOT_Request__c request = HOT_TestDataFactory.createRequest('TEST', workType);
+        request.Account__c = account.Id;
+        request.Orderer__c = currentUser.AccountId;
+        insert request;
+        WorkOrder workOrder = HOT_TestDataFactory.createWorkOrder(request, workType);
+        insert workOrder;
+        System.runAs(currentUser) {
+            Thread__c t = HOT_MessageHelper.createThread(request.Id, account.Id);
+            System.assertEquals('HOT_BESTILLER-FORMIDLER', t.CRM_Thread_Type__c, 'Did not create the thread');
+        }
+    }
+    @IsTest
+    static void createThreadInterpreterDispatcherSA() {
+        WorkType workType = HOT_TestDataFactory.createWorkType();
+        workType.Name = 'Work Type Name';
+        insert workType;
+        HOT_Request__c request = HOT_TestDataFactory.createRequest('Subject', workType);
+        insert request;
+        WorkOrder workOrder = HOT_TestDataFactory.createWorkOrder(request, workType);
+        insert workOrder;
+        WorkOrderLineItem workOrderLineItem = HOT_TestDataFactory.createWorkOrderLineItem(workOrder, workType);
+        insert workOrderLineItem;
+        ServiceAppointment sa = HOT_TestDataFactory.createServiceAppointment(workOrderLineItem);
+        sa.HOT_Request__c = request.Id;
+        sa.Status = 'Dispatched';
+        sa.Subject = 'Hei';
+        insert sa;
+
+        Account account = HOT_TestDataFactory.createAccount(true);
+        insert account;
+        User currentUser = [SELECT Id, AccountId, Account.CRM_Person__c FROM User WHERE Id = :UserInfo.getUserId()];
+
+        ServiceResource resource = HOT_TestDataFactory.createServiceResource(currentUser.Id);
+        resource.AccountId = currentUser.AccountId;
+        insert resource;
+        HOT_InterestedResource__c interestedResource = HOT_TestDataFactory.createInterestedResource(sa.Id, resource.Id);
+        interestedResource.Status__c = 'Assigned';
+        insert interestedResource;
+        Test.startTest();
+        AssignedResource ar = HOT_TestDataFactory.createAssignedResource(sa.Id, resource.Id);
+        insert ar;
+
+        sa.Status = 'Dispatched';
+        update sa;
+
+        Thread__c thread = HOT_MessageHelper.createThreadInterpreter(sa.Id);
+        Test.stopTest();
+        System.assertEquals('HOT_TOLK-FORMIDLER', thread.CRM_Thread_Type__c);
+    }
+    @IsTest
+    static void getRelatedObjectDetailsSA() {
+        WorkType workType = HOT_TestDataFactory.createWorkType();
+        insert workType;
+        HOT_Request__c request = HOT_TestDataFactory.createRequest('TEST', workType);
+        insert request;
+        WorkOrder workOrder = HOT_TestDataFactory.createWorkOrder(request, workType);
+        insert workOrder;
+        WorkOrderLineItem woli = HOT_TestDataFactory.createWorkOrderLineItem(workOrder, workType);
+        insert woli;
+        ServiceAppointment sa = HOT_TestDataFactory.createServiceAppointment(woli);
+        sa.Subject = 'TEST';
+        insert sa;
+
+        Account account = HOT_TestDataFactory.createAccount(true);
+        insert account;
+        User currentUser = [SELECT Id, AccountId, Account.CRM_Person__c FROM User WHERE Id = :UserInfo.getUserId()];
+
+        ServiceResource resource = HOT_TestDataFactory.createServiceResource(currentUser.Id);
+        resource.AccountId = currentUser.AccountId;
+        insert resource;
+        HOT_InterestedResource__c interestedResource = HOT_TestDataFactory.createInterestedResource(sa.Id, resource.Id);
+        interestedResource.Status__c = 'Assigned';
+        insert interestedResource;
+        Test.startTest();
+        AssignedResource ar = HOT_TestDataFactory.createAssignedResource(sa.Id, resource.Id);
+        insert ar;
+        sa.Status = 'Dispatched';
+        update sa;
+
+        Map<String, String> navigationhelp2 = new Map<String, String>();
+        navigationhelp2.put(sa.Id, 'SA');
+        Map<String, String> navigationhelp = new Map<String, String>();
+        navigationhelp = HOT_MessageHelper.getRelatedObjectDetails(workOrder.Id);
+        Test.stopTest();
+        System.assertEquals(navigationhelp2, navigationhelp);
+    }
+    @IsTest
+    static void getRelatedObjectDetailsSAIrNotFound() {
+        WorkType workType = HOT_TestDataFactory.createWorkType();
+        insert workType;
+        HOT_Request__c request = HOT_TestDataFactory.createRequest('TEST', workType);
+        insert request;
+        WorkOrder workOrder = HOT_TestDataFactory.createWorkOrder(request, workType);
+        insert workOrder;
+        WorkOrderLineItem woli = HOT_TestDataFactory.createWorkOrderLineItem(workOrder, workType);
+        insert woli;
+        ServiceAppointment sa = HOT_TestDataFactory.createServiceAppointment(woli);
+        sa.Subject = 'TEST';
+        insert sa;
+
+        Test.startTest();
+        User currentUser = [SELECT Id, AccountId, Account.CRM_Person__c FROM User WHERE Id = :UserInfo.getUserId()];
+
+        ServiceResource resource = HOT_TestDataFactory.createServiceResource(currentUser.Id);
+        resource.AccountId = currentUser.AccountId;
+        insert resource;
+
+        Map<String, String> navigationhelp2 = new Map<String, String>();
+        navigationhelp2.put(workOrder.Id, 'WO');
+        Map<String, String> navigationhelp = new Map<String, String>();
+        navigationhelp = HOT_MessageHelper.getRelatedObjectDetails(workOrder.Id);
+        Test.stopTest();
+        System.assertEquals(navigationhelp2, navigationhelp);
+    }
+    @IsTest
+    static void getRelatedObjectDetailsNoSA() {
+        WorkType workType = HOT_TestDataFactory.createWorkType();
+        insert workType;
+        HOT_Request__c request = HOT_TestDataFactory.createRequest('TEST', workType);
+        insert request;
+        WorkOrder workOrder = HOT_TestDataFactory.createWorkOrder(request, workType);
+        insert workOrder;
+
+        User currentUser = [SELECT Id, AccountId, Account.CRM_Person__c FROM User WHERE Id = :UserInfo.getUserId()];
+
+        ServiceResource resource = HOT_TestDataFactory.createServiceResource(currentUser.Id);
+        resource.AccountId = currentUser.AccountId;
+        insert resource;
+
+        Test.startTest();
+        Map<String, String> navigationhelp2 = new Map<String, String>();
+        navigationhelp2.put(workOrder.Id, 'WO');
+        Map<String, String> navigationhelp = new Map<String, String>();
+        navigationhelp = HOT_MessageHelper.getRelatedObjectDetails(workOrder.Id);
+        Test.stopTest();
+        System.assertEquals(navigationhelp2, navigationhelp);
+    }
+    @IsTest
+    static void getRelatedObjectDetailsOrdererRequest() {
+        WorkType workType = HOT_TestDataFactory.createWorkType();
+        insert workType;
+        Account account = HOT_TestDataFactory.createAccount(true);
+        insert account;
+
+        User currentUser = [SELECT Id, AccountId, Account.CRM_Person__c FROM User WHERE Id = :UserInfo.getUserId()];
+
+        HOT_Request__c request = HOT_TestDataFactory.createRequest('TEST', workType);
+        request.Orderer__c = currentUser.AccountId;
+        request.Account__c = account.Id;
+        insert request;
+        WorkOrder workOrder = HOT_TestDataFactory.createWorkOrder(request, workType);
+        insert workOrder;
+
+        Test.startTest();
+        Map<String, String> navigationhelp2 = new Map<String, String>();
+        navigationhelp2.put(workOrder.Id, 'Andre-WO');
+        Map<String, String> navigationhelp = new Map<String, String>();
+        navigationhelp = HOT_MessageHelper.getRelatedObjectDetails(request.Id);
+        Test.stopTest();
+        System.assertEquals(navigationhelp2, navigationhelp);
+    }
+    @IsTest
+    static void getRelatedObjectDetailsOrdererRequestSeries() {
+        WorkType workType = HOT_TestDataFactory.createWorkType();
+        insert workType;
+        Account account = HOT_TestDataFactory.createAccount(true);
+        insert account;
+
+        User currentUser = [SELECT Id, AccountId, Account.CRM_Person__c FROM User WHERE Id = :UserInfo.getUserId()];
+
+        HOT_Request__c request = HOT_TestDataFactory.createRequest('TEST', workType);
+        request.Orderer__c = currentUser.AccountId;
+        request.Account__c = account.Id;
+        request.NumberOfWorkOrders__c = 2;
+        insert request;
+        WorkOrder workOrder = HOT_TestDataFactory.createWorkOrder(request, workType);
+        insert workOrder;
+        WorkOrder workOrder2 = HOT_TestDataFactory.createWorkOrder(request, workType);
+        insert workOrder2;
+
+        Test.startTest();
+        Map<String, String> navigationhelp2 = new Map<String, String>();
+        navigationhelp2.put(workOrder.Id, 'Andre-R');
+        Map<String, String> navigationhelp = new Map<String, String>();
+        navigationhelp = HOT_MessageHelper.getRelatedObjectDetails(request.Id);
+        Test.stopTest();
+        System.assertEquals(navigationhelp2, navigationhelp);
+    }
+    @IsTest
+    static void getRelatedObjectDetailsUserRequest() {
+        WorkType workType = HOT_TestDataFactory.createWorkType();
+        insert workType;
+
+        User currentUser = [SELECT Id, AccountId, Account.CRM_Person__c FROM User WHERE Id = :UserInfo.getUserId()];
+
+        HOT_Request__c request = HOT_TestDataFactory.createRequest('TEST', workType);
+        request.Orderer__c = currentUser.AccountId;
+        request.Account__c = currentUser.AccountId;
+        insert request;
+        WorkOrder workOrder = HOT_TestDataFactory.createWorkOrder(request, workType);
+        insert workOrder;
+
+        Test.startTest();
+        Map<String, String> navigationhelp2 = new Map<String, String>();
+        navigationhelp2.put(workOrder.Id, 'WO');
+        Map<String, String> navigationhelp = new Map<String, String>();
+        navigationhelp = HOT_MessageHelper.getRelatedObjectDetails(request.Id);
+        Test.stopTest();
+        System.assertEquals(navigationhelp2, navigationhelp);
+    }
+    @IsTest
+    static void getRelatedObjectDetailsUserRequestSeries() {
+        WorkType workType = HOT_TestDataFactory.createWorkType();
+        insert workType;
+
+        User currentUser = [SELECT Id, AccountId, Account.CRM_Person__c FROM User WHERE Id = :UserInfo.getUserId()];
+
+        HOT_Request__c request = HOT_TestDataFactory.createRequest('TEST', workType);
+        request.Orderer__c = currentUser.AccountId;
+        request.Account__c = currentUser.AccountId;
+        request.NumberOfWorkOrders__c = 2;
+        insert request;
+        WorkOrder workOrder = HOT_TestDataFactory.createWorkOrder(request, workType);
+        insert workOrder;
+        WorkOrder workOrder2 = HOT_TestDataFactory.createWorkOrder(request, workType);
+        insert workOrder2;
+
+        Test.startTest();
+        Map<String, String> navigationhelp2 = new Map<String, String>();
+        navigationhelp2.put(workOrder.Id, 'R');
+        Map<String, String> navigationhelp = new Map<String, String>();
+        navigationhelp = HOT_MessageHelper.getRelatedObjectDetails(request.Id);
+        Test.stopTest();
+        System.assertEquals(navigationhelp2, navigationhelp);
+    }
+    @IsTest
+    static void getRelatedObjectDetailsSA2() {
+        WorkType workType = HOT_TestDataFactory.createWorkType();
+        insert workType;
+        HOT_Request__c request = HOT_TestDataFactory.createRequest('TEST', workType);
+        insert request;
+        WorkOrder workOrder = HOT_TestDataFactory.createWorkOrder(request, workType);
+        insert workOrder;
+        WorkOrderLineItem woli = HOT_TestDataFactory.createWorkOrderLineItem(workOrder, workType);
+        insert woli;
+        ServiceAppointment sa = HOT_TestDataFactory.createServiceAppointment(woli);
+        sa.Subject = 'TEST';
+        insert sa;
+
+        Test.startTest();
+        Map<String, String> navigationhelp2 = new Map<String, String>();
+        navigationhelp2.put(sa.Id, 'SA');
+        Map<String, String> navigationhelp = new Map<String, String>();
+        navigationhelp = HOT_MessageHelper.getRelatedObjectDetails(sa.Id);
+        Test.stopTest();
+        System.assertEquals(navigationhelp2, navigationhelp);
+    }
+    @IsTest
+    static void getRelatedObjectDetailsIR() {
+        WorkType workType = HOT_TestDataFactory.createWorkType();
+        insert workType;
+        HOT_Request__c request = HOT_TestDataFactory.createRequest('TEST', workType);
+        insert request;
+        WorkOrder workOrder = HOT_TestDataFactory.createWorkOrder(request, workType);
+        insert workOrder;
+        WorkOrderLineItem woli = HOT_TestDataFactory.createWorkOrderLineItem(workOrder, workType);
+        insert woli;
+        ServiceAppointment sa = HOT_TestDataFactory.createServiceAppointment(woli);
+        sa.Subject = 'TEST';
+        insert sa;
+
+        User currentUser = [SELECT Id, AccountId, Account.CRM_Person__c FROM User WHERE Id = :UserInfo.getUserId()];
+
+        ServiceResource resource = HOT_TestDataFactory.createServiceResource(currentUser.Id);
+        resource.AccountId = currentUser.AccountId;
+        insert resource;
+        HOT_InterestedResource__c interestedResource = HOT_TestDataFactory.createInterestedResource(sa.Id, resource.Id);
+        insert interestedResource;
+
+        Test.startTest();
+        Map<String, String> navigationhelp2 = new Map<String, String>();
+        Map<String, String> navigationhelp = new Map<String, String>();
+        navigationhelp = HOT_MessageHelper.getRelatedObjectDetails(interestedResource.Id);
+        Test.stopTest();
+        System.assertNotEquals(navigationhelp2, navigationhelp);
+    }
+    @IsTest
+    static void getRelatedObjectDetailsWC() {
+        WorkType workType = HOT_TestDataFactory.createWorkType();
+        insert workType;
+        HOT_Request__c request = HOT_TestDataFactory.createRequest('TEST', workType);
+        insert request;
+        WorkOrder workOrder = HOT_TestDataFactory.createWorkOrder(request, workType);
+        insert workOrder;
+        WorkOrderLineItem woli = HOT_TestDataFactory.createWorkOrderLineItem(workOrder, workType);
+        insert woli;
+        ServiceAppointment sa = HOT_TestDataFactory.createServiceAppointment(woli);
+        sa.Subject = 'TEST';
+        insert sa;
+
+        User currentUser = [SELECT Id, AccountId, Account.CRM_Person__c FROM User WHERE Id = :UserInfo.getUserId()];
+
+        ServiceResource resource = HOT_TestDataFactory.createServiceResource(currentUser.Id);
+        resource.AccountId = currentUser.AccountId;
+        insert resource;
+        HOT_InterestedResource__c interestedResource = HOT_TestDataFactory.createInterestedResource(sa.Id, resource.Id);
+        insert interestedResource;
+
+        HOT_WageClaim__c wageclaim = HOT_TestDataFactory.createWageClaim(resource);
+        wageclaim.ServiceAppointment__c = sa.Id;
+        insert wageclaim;
+
+        Test.startTest();
+        Map<String, String> navigationhelp2 = new Map<String, String>();
+        navigationhelp2.put(wageclaim.Id, 'WC');
+        Map<String, String> navigationhelp = new Map<String, String>();
+        navigationhelp = HOT_MessageHelper.getRelatedObjectDetails(wageclaim.Id);
+        Test.stopTest();
+        System.assertEquals(navigationhelp2, navigationhelp);
+    }
+    @IsTest
+    static void getUserProfileAndNameTest() {
+        Test.startTest();
+        String result = HOT_MessageHelper.getUserProfileAndName();
+        Test.stopTest();
+        System.assertNotEquals('', result, 'Did not get Profile and Name');
+    }
+    @IsTest
+    static void createThreadWhenIRIsAssignedTest() {
+        WorkType workType = HOT_TestDataFactory.createWorkType();
+        workType.Name = 'Work Type Name';
+        insert workType;
+        HOT_Request__c request = HOT_TestDataFactory.createRequest('Subject', workType);
+        insert request;
+        WorkOrder workOrder = HOT_TestDataFactory.createWorkOrder(request, workType);
+        insert workOrder;
+        WorkOrderLineItem workOrderLineItem = HOT_TestDataFactory.createWorkOrderLineItem(workOrder, workType);
+        insert workOrderLineItem;
+        ServiceAppointment sa = HOT_TestDataFactory.createServiceAppointment(workOrderLineItem);
+        sa.HOT_Request__c = request.Id;
+        sa.Status = 'Dispatched';
+        sa.Subject = 'Hei';
+        insert sa;
+
+        Account account = HOT_TestDataFactory.createAccount(true);
+        insert account;
+        User currentUser = [SELECT Id, AccountId, Account.CRM_Person__c FROM User WHERE Id = :UserInfo.getUserId()];
+
+        ServiceResource resource = HOT_TestDataFactory.createServiceResource(currentUser.Id);
+        resource.AccountId = currentUser.AccountId;
+        insert resource;
+        HOT_InterestedResource__c interestedResource = HOT_TestDataFactory.createInterestedResource(sa.Id, resource.Id);
+        interestedResource.Status__c = 'Assigned';
+        insert interestedResource;
+        Test.startTest();
+        AssignedResource ar = HOT_TestDataFactory.createAssignedResource(sa.Id, resource.Id);
+        insert ar;
+
+        sa.Status = 'Dispatched';
+        update sa;
+        System.runAs(currentUser) {
+            Thread__c thread = HOT_MessageHelper.createThreadInterpreter(sa.Id);
+
+            System.assertEquals(
+                sa.Id,
+                thread.CRM_Related_Object__c,
+                'Should have made a thread with relatedobject serviceAppointment'
+            );
+        }
+        Test.stopTest();
+    }
+    @IsTest
+    static void createThreadWhenIRIsNotAssignedTest() {
+        WorkType workType = HOT_TestDataFactory.createWorkType();
+        workType.Name = 'Work Type Name';
+        insert workType;
+        HOT_Request__c request = HOT_TestDataFactory.createRequest('Subject', workType);
+        insert request;
+        WorkOrder workOrder = HOT_TestDataFactory.createWorkOrder(request, workType);
+        insert workOrder;
+        WorkOrderLineItem workOrderLineItem = HOT_TestDataFactory.createWorkOrderLineItem(workOrder, workType);
+        insert workOrderLineItem;
+        ServiceAppointment sa = HOT_TestDataFactory.createServiceAppointment(workOrderLineItem);
+        sa.HOT_Request__c = request.Id;
+        sa.Status = 'Dispatched';
+        sa.Subject = 'Hei';
+        insert sa;
+
+        Account account = HOT_TestDataFactory.createAccount(true);
+        insert account;
+        User currentUser = [SELECT Id, AccountId, Account.CRM_Person__c FROM User WHERE Id = :UserInfo.getUserId()];
+
+        ServiceResource resource = HOT_TestDataFactory.createServiceResource(currentUser.Id);
+        resource.AccountId = currentUser.AccountId;
+        insert resource;
+        HOT_InterestedResource__c interestedResource = HOT_TestDataFactory.createInterestedResource(sa.Id, resource.Id);
+        insert interestedResource;
+        Test.startTest();
+        AssignedResource ar = HOT_TestDataFactory.createAssignedResource(sa.Id, resource.Id);
+        insert ar;
+
+        sa.Status = 'Dispatched';
+        update sa;
+        interestedResource.Status__c = 'Canceled by Interpreter';
+        update interestedResource;
+        System.runAs(currentUser) {
+            Thread__c thread = HOT_MessageHelper.createThreadInterpreter(sa.Id);
+
+            System.assertEquals(
+                interestedResource.Id,
+                thread.CRM_Related_Object__c,
+                'Should have made a thread with relatedobject interestedresource'
+            );
+        }
+        Test.stopTest();
     }
 }

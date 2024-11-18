@@ -135,7 +135,7 @@
                 <field>HOT_InterpretersInformation__c</field>
             </layoutItems>
             <layoutItems>
-                <behavior>Edit</behavior>
+                <behavior>Required</behavior>
                 <field>HOT_NotificationChannel__c</field>
             </layoutItems>
         </layoutColumns>
@@ -218,7 +218,7 @@
     <showRunAssignmentRulesCheckbox>false</showRunAssignmentRulesCheckbox>
     <showSubmitAndAttachButton>false</showSubmitAndAttachButton>
     <summaryLayout>
-        <masterLabel>00h3N0000046Nwr</masterLabel>
+        <masterLabel>00h1l000001cAcA</masterLabel>
         <sizeX>4</sizeX>
         <sizeY>0</sizeY>
         <summaryLayoutStyle>Default</summaryLayoutStyle>

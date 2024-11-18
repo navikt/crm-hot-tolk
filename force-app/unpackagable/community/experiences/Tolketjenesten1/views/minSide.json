@@ -1,6 +1,7 @@
 {
   "appPageId" : "e1a097ff-c5e1-47c6-b293-9a8b7a2b049f",
   "componentName" : "siteforce:dynamicLayout",
+  "dataProviders" : [ ],
   "id" : "1cf33995-56a7-412e-9b98-58b3d246a829",
   "label" : "Min Side",
   "regions" : [ {
@@ -26,10 +27,11 @@
       "regions" : [ {
         "components" : [ {
           "componentAttributes" : {
-            "NAVarea" : "Privatperson"
+            "context" : "Privatperson",
+            "env" : "Dev"
           },
-          "componentName" : "c:globalCommunityHeader",
-          "id" : "4c489d0e-a4bc-490b-8972-033ea5be26eb",
+          "componentName" : "c:decoratorHeader",
+          "id" : "99ed8117-cdbd-4fa5-badc-5825239ad00d",
           "renderPriority" : "NEUTRAL",
           "renditionMap" : { },
           "type" : "component"
@@ -48,12 +50,9 @@
           "renditionMap" : { },
           "type" : "component"
         }, {
-          "componentAttributes" : {
-            "NAVarea" : "",
-            "navareapicklist" : "Privatperson"
-          },
-          "componentName" : "c:globalCommunityFooter",
-          "id" : "9b2a7f4f-7efb-425d-8ae5-3062be6d90ea",
+          "componentAttributes" : { },
+          "componentName" : "c:decoratorFooter",
+          "id" : "d2517d80-5a5d-47a1-9e98-6cc44ca20d3b",
           "renderPriority" : "NEUTRAL",
           "renditionMap" : { },
           "type" : "component"

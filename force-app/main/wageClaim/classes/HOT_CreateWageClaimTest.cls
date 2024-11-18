@@ -1,4 +1,4 @@
-@isTest
+@IsTest
 private class HOT_CreateWageClaimTest {
     @testSetup
     static void setup() {
@@ -31,7 +31,7 @@ private class HOT_CreateWageClaimTest {
         update new ServiceAppointment(Id = serviceAppointmentId, Status = 'Dispatched');
     }
 
-    @isTest
+    @IsTest
     static void createWageClaimTest_saStatusNone() {
         AssignedResource assignedResource = [SELECT Id, ServiceAppointmentId FROM AssignedResource];
 
@@ -42,7 +42,7 @@ private class HOT_CreateWageClaimTest {
         List<HOT_WageClaim__c> wageClaims = [SELECT Id, ServiceResource__c FROM HOT_WageClaim__c LIMIT 1];
         System.assertEquals(1, wageClaims.size(), 'Could not create Wage Claims when SA Status None');
     }
-    @isTest
+    @IsTest
     static void createWageClaimTest_saStatusCanceled() {
         AssignedResource assignedResource = [SELECT Id, ServiceAppointmentId FROM AssignedResource];
 
@@ -54,24 +54,23 @@ private class HOT_CreateWageClaimTest {
         System.assertEquals(1, wageClaims.size(), 'Could not create Wage Claims when SA Status Canceled');
     }
 
-    @isTest
+    @IsTest
     static void dontCreateWageClaimIfAgreement() {
+        Test.startTest();
         AssignedResource assignedResource = [SELECT Id, ServiceAppointmentId, ServiceResourceId FROM AssignedResource];
         update new ServiceResource(Id = assignedResource.ServiceResourceId, HOT_AgreementFreelance__c = true);
         HOT_Request__c request = [SELECT Id, ServiceResourceWithAgreement1__c FROM HOT_Request__c];
         request.ServiceResourceWithAgreement1__c = assignedResource.ServiceResourceId;
         update request;
 
-        Test.startTest();
         update new ServiceAppointment(Id = assignedResource.ServiceAppointmentId, Status = 'None');
-        Test.stopTest();
 
         List<HOT_WageClaim__c> wageClaims = [SELECT Id, ServiceResource__c FROM HOT_WageClaim__c LIMIT 1];
-
+        Test.stopTest();
         System.assertEquals(0, wageClaims.size(), 'WageClaim was wrongly created for Agreement Interpreter');
     }
 
-    @isTest
+    @IsTest
     static void createWageClaimTest_arDeleted() {
         AssignedResource assignedResource = [SELECT Id, ServiceAppointmentId FROM AssignedResource];
 
@@ -82,8 +81,9 @@ private class HOT_CreateWageClaimTest {
         List<HOT_WageClaim__c> wageClaims = [SELECT Id, ServiceResource__c FROM HOT_WageClaim__c LIMIT 1];
         System.assertEquals(1, wageClaims.size(), 'Could not create Wage Claims when AR Deleted');
     }
-    @isTest
+    @IsTest
     static void createWageClaimTest_arChanged() {
+        Test.startTest();
         AssignedResource assignedResource = [SELECT Id, ServiceAppointmentId, ServiceResourceId FROM AssignedResource];
         Id oldServiceResourceId = assignedResource.ServiceResourceId;
 
@@ -91,9 +91,7 @@ private class HOT_CreateWageClaimTest {
 
         assignedResource.ServiceResourceId = serviceResource2.Id;
 
-        Test.startTest();
         update assignedResource;
-        Test.stopTest();
 
         List<HOT_WageClaim__c> wageClaims = [
             SELECT Id, ServiceResource__c
@@ -101,10 +99,11 @@ private class HOT_CreateWageClaimTest {
             WHERE ServiceResource__c = :oldServiceResourceId
             LIMIT 1
         ];
+        Test.stopTest();
         System.assertEquals(1, wageClaims.size(), 'Could not create Wage Claims when AR Changed');
     }
 
-    @isTest
+    @IsTest
     static void createWageClaimTest_negative_Completed() {
         AssignedResource assignedResource = [SELECT Id, ServiceAppointmentId FROM AssignedResource];
 
@@ -116,16 +115,16 @@ private class HOT_CreateWageClaimTest {
         System.assertEquals(0, wageClaims.size(), 'Wrongly created Wage Claims');
     }
 
-    @isTest
+    @IsTest
     static void createWageClaimTest_negative_duplicates() {
         Test.startTest();
         AssignedResource assignedResource = [SELECT Id, ServiceAppointmentId FROM AssignedResource];
         delete assignedResource;
 
         update new ServiceAppointment(Id = assignedResource.ServiceAppointmentId, Status = 'None');
-        Test.stopTest();
 
         List<HOT_WageClaim__c> wageClaims = [SELECT Id, ServiceResource__c FROM HOT_WageClaim__c LIMIT 1];
+        Test.stopTest();
         System.assertEquals(1, wageClaims.size(), 'Wrongly created Wage Claims');
     }
 

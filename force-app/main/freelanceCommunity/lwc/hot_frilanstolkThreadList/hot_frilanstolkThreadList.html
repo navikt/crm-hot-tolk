@@ -8,14 +8,14 @@
                 <div if:false={isMobile} class="back-link-div">
                     <a class="back-link" onclick={goBack}>
                         <c-icon icon="Back"></c-icon>
-                        <p style="margin-left: 0.25rem">Tilbake</p>
+                        <p class="backBtn" style="margin-left: 0.25rem">Tilbake</p>
                     </a>
                 </div>
                 <h2 class="header">Mine samtaler som frilanstolk</h2>
                 <div if:true={isMobile} class="back-link-div">
                     <a class="back-link" onclick={goBack}>
                         <c-icon icon="Back"></c-icon>
-                        <p style="margin-left: 0.25rem">Tilbake</p>
+                        <p class="backBtn" style="margin-left: 0.25rem">Tilbake</p>
                     </a>
                 </div>
                 <div class="empty"></div>
@@ -30,57 +30,89 @@
             <div if:true={showMythreads}>
                 <div class="record-details-container" if:false={noThreads}>
                     <c-table
+                        if:false={isMobile}
                         records={threads}
                         columns={columns}
                         onrowclick={openThread}
                         icon-by-value={iconByValue}
                     ></c-table>
+                    <c-hot_freelance-table-list-mobile
+                        if:true={isMobile}
+                        records={threads}
+                        columns={mobileColumns}
+                        onrowclick={openThread}
+                        icon-by-value={iconByValue}
+                    ></c-hot_freelance-table-list-mobile>
                 </div>
                 <div if:true={noThreads} style="text-align: center">
                     <br />
-                    Du har ingen samtaler. Når du starter en ny samtale vil den vises her.
+                    <p>Du har ingen samtaler. Når du starter en ny samtale vil den vises her.</p>
                 </div>
             </div>
             <div if:true={showInterpreterthreads}>
                 <div class="record-details-container" if:false={noInterpreterThreads}>
                     <c-table
+                        if:false={isMobile}
                         records={interpreterThreads}
                         columns={columns}
                         onrowclick={openThread}
                         icon-by-value={iconByValue}
                     ></c-table>
+                    <c-hot_freelance-table-list-mobile
+                        if:true={isMobile}
+                        records={interpreterThreads}
+                        columns={mobileColumns}
+                        onrowclick={openThread}
+                        icon-by-value={iconByValue}
+                    ></c-hot_freelance-table-list-mobile>
                 </div>
                 <div if:true={noInterpreterThreads} style="text-align: center">
                     <br />
-                    Du har ingen samtaler. Når du starter en ny samtale vil den vises her.
+                    <p>Du har ingen samtaler. Når du starter en ny samtale vil den vises her.</p>
                 </div>
             </div>
             <div if:true={showWageClaimthreads}>
                 <div class="record-details-container" if:false={noWageClaimThreads}>
                     <c-table
+                        if:false={isMobile}
                         records={wageClaimThreads}
                         columns={columns}
                         onrowclick={openThread}
                         icon-by-value={iconByValue}
                     ></c-table>
+                    <c-hot_freelance-table-list-mobile
+                        if:true={isMobile}
+                        records={wageClaimThreads}
+                        columns={mobileColumns}
+                        onrowclick={openThread}
+                        icon-by-value={iconByValue}
+                    ></c-hot_freelance-table-list-mobile>
                 </div>
                 <div if:true={noWageClaimThreads} style="text-align: center">
                     <br />
-                    Du har ingen samtaler. Når du starter en ny samtale vil den vises her.
+                    <p>Du har ingen samtaler. Når du starter en ny samtale vil den vises her.</p>
                 </div>
             </div>
             <div if:true={showInterpreterInterpreterThreads}>
                 <div class="record-details-container" if:false={noInterpreterInterpreterThreads}>
                     <c-table
+                        if:false={isMobile}
                         records={interpreterInterpreterThreads}
                         columns={columns}
                         onrowclick={openThread}
                         icon-by-value={iconByValue}
                     ></c-table>
+                    <c-hot_freelance-table-list-mobile
+                        if:true={isMobile}
+                        records={interpreterInterpreterThreads}
+                        columns={mobileColumns}
+                        onrowclick={openThread}
+                        icon-by-value={iconByValue}
+                    ></c-hot_freelance-table-list-mobile>
                 </div>
                 <div if:true={noInterpreterInterpreterThreads} style="text-align: center">
                     <br />
-                    Du har ingen samtaler. Når du starter en ny samtale vil den vises her.
+                    <p>Du har ingen samtaler. Når du starter en ny samtale vil den vises her.</p>
                 </div>
             </div>
         </div>

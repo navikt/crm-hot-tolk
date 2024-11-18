@@ -2,6 +2,7 @@
   "activeViewId" : "48973669-c6b2-42ad-b833-762373fecd5f",
   "appPageId" : "e1a097ff-c5e1-47c6-b293-9a8b7a2b049f",
   "configurationTags" : [ "allow-in-static-site" ],
+  "devName" : "Service_Not_Available",
   "id" : "0fc8978c-7a2e-4c17-af70-d61bd7759291",
   "label" : "Service Not Available",
   "routeType" : "service-not-available",

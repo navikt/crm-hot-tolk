@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>HOT_RelatedObjectType__c</fullName>
+    <description>Is used to determine what to open when the user click on the notification from the list</description>
+    <externalId>false</externalId>
+    <label>Related Object Type</label>
+    <required>false</required>
+    <trackTrending>false</trackTrending>
+    <type>Picklist</type>
+    <valueSet>
+        <restricted>true</restricted>
+        <valueSetDefinition>
+            <sorted>false</sorted>
+            <value>
+                <fullName>wanted</fullName>
+                <default>false</default>
+                <label>wanted</label>
+            </value>
+            <value>
+                <fullName>serviceAppointment</fullName>
+                <default>false</default>
+                <label>serviceAppointment</label>
+            </value>
+            <value>
+                <fullName>threadUser</fullName>
+                <default>false</default>
+                <label>threadUser</label>
+            </value>
+            <value>
+                <fullName>threadInterpreter</fullName>
+                <default>false</default>
+                <label>threadInterpreter</label>
+            </value>
+            <value>
+                <fullName>noServiceAppointment</fullName>
+                <default>false</default>
+                <label>noServiceAppointment</label>
+            </value>
+            <value>
+                <fullName>workOrder</fullName>
+                <default>false</default>
+                <label>workOrder</label>
+            </value>
+            <value>
+                <fullName>request</fullName>
+                <default>false</default>
+                <label>request</label>
+            </value>
+        </valueSetDefinition>
+    </valueSet>
+</CustomField>

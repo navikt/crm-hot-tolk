@@ -33,9 +33,14 @@ export let columns = [
 
 export let mobileColumns = [
     {
+        label: 'Oppdragsnummer',
+        name: 'AppointmentNumber',
+        type: 'String'
+    },
+    {
         label: 'Bestilt tid',
-        name: 'StartAndEndDate',
-        type: 'Datetime'
+        name: 'startAndEndDateWeekday',
+        type: 'String'
     },
     {
         label: 'Poststed',

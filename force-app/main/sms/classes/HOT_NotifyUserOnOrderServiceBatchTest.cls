@@ -1,10 +1,10 @@
-@isTest
+@IsTest
 private class HOT_NotifyUserOnOrderServiceBatchTest {
     @TestSetup
     static void setup() {
     }
 
-    @isTest
+    @IsTest
     static void batchableTest() {
         WorkType workType = HOT_TestDataFactory.createWorkType();
         insert workType;
@@ -28,11 +28,15 @@ private class HOT_NotifyUserOnOrderServiceBatchTest {
         Test.stopTest();
     }
 
-    @isTest
+    @IsTest
     static void schedulableTest() {
-        String cron_exp = '0 0 0 3 9 ? 2024';
+        String cron_exp = '0 0 0 3 9 ? 2099';
         Test.startTest();
-        String jobId = System.schedule('HOT_NotifyUserOnOrderServiceBatch', cron_exp, new HOT_NotifyUserOnOrderServiceBatch());
+        String jobId = System.schedule(
+            'HOT_NotifyUserOnOrderServiceBatch',
+            cron_exp,
+            new HOT_NotifyUserOnOrderServiceBatch()
+        );
         Test.stopTest();
         System.assert(jobId != null);
     }

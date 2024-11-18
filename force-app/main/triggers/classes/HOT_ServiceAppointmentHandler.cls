@@ -2,6 +2,7 @@ public without sharing class HOT_ServiceAppointmentHandler extends MyTriggers {
     public override void onBeforeInsert() {
         setOwnerAndStatus((List<ServiceAppointment>) records);
         setDefaultFields((List<ServiceAppointment>) records);
+        setCompanyOnServiceAppointment((List<ServiceAppointment>) records);
     }
 
     public override void onAfterInsert() {
@@ -12,8 +13,6 @@ public without sharing class HOT_ServiceAppointmentHandler extends MyTriggers {
         List<ServiceAppointment> serviceAppointmentsStatusFromCannotCompleteToNone = new List<ServiceAppointment>();
         List<ServiceAppointment> serviceAppointmentsChangedOrderedTime = new List<ServiceAppointment>();
         List<ServiceAppointment> recievedNewInterpreter = new List<ServiceAppointment>();
-        List<ServiceAppointment> updatedServiceAppointments = new List<ServiceAppointment>();
-        List<ServiceAppointment> serviceAppointmentsWithDeletedPreferredResources = new List<ServiceAppointment>();
         List<ServiceAppointment> serviceAppointmentsWithChangedStatusOrResource = new List<ServiceAppointment>();
         List<ServiceAppointment> allServiceAppointments = new List<ServiceAppointment>();
         List<ServiceAppointment> releasedServiceAppointments = new List<ServiceAppointment>();
@@ -55,22 +54,7 @@ public without sharing class HOT_ServiceAppointmentHandler extends MyTriggers {
             ) {
                 recievedNewInterpreter.add(serviceAppointment);
             }
-            if (
-                triggerOldMap.get(serviceAppointment.Id).get('HOT_PreferredResource__c') !=
-                ServiceAppointment.HOT_PreferredResource__c &&
-                serviceAppointment.HOT_PreferredResource__c != null &&
-                serviceAppointment.HOT_ServiceResource__c == null
-            ) {
-                updatedServiceAppointments.add(serviceAppointment);
-            }
-            if (
-                triggerOldMap.get(serviceAppointment.Id).get('HOT_PreferredResource__c') !=
-                ServiceAppointment.HOT_PreferredResource__c &&
-                serviceAppointment.HOT_PreferredResource__c == null &&
-                serviceAppointment.HOT_ServiceResource__c == null
-            ) {
-                serviceAppointmentsWithDeletedPreferredResources.add(serviceAppointment);
-            }
+
             if (
                 serviceAppointment.Status == 'None' &&
                 triggerOldMap.get(serviceAppointment.Id).get('Status') == 'Cannot Complete'
@@ -204,14 +188,7 @@ public without sharing class HOT_ServiceAppointmentHandler extends MyTriggers {
                 serviceAppointmentsWithStatusNone.add(serviceAppointment);
             }
         }
-        if (!updatedServiceAppointments.isEmpty()) {
-            setFieldsByPreferredResource(updatedServiceAppointments);
-        }
-        if (!serviceAppointmentsWithDeletedPreferredResources.isEmpty()) {
-            serviceAppointmentsWithDeletedPreferredResources = setFieldsIfPreferredResourceDeleted(
-                serviceAppointmentsWithDeletedPreferredResources
-            );
-        }
+
         if (recievedNewInterpreter.size() > 0) {
             updateCancelledByInterpreter(recievedNewInterpreter);
         }
@@ -272,6 +249,7 @@ public without sharing class HOT_ServiceAppointmentHandler extends MyTriggers {
     public override void onAfterUpdate(Map<Id, sObject> triggerOldMap) {
         List<ServiceAppointment> serviceAppointmentsToRemoveAssignedResource = new List<ServiceAppointment>();
         List<ServiceAppointment> releasedServiceAppointments = new List<ServiceAppointment>();
+        List<ServiceAppointment> dispatchedServiceAppointments = new List<ServiceAppointment>();
         List<ServiceAppointment> retractedServiceAppointments = new List<ServiceAppointment>();
         List<ServiceAppointment> serviceAppointmentsWithChangedAddress = new List<ServiceAppointment>();
         List<ServiceAppointment> SAnotifyResource = new List<ServiceAppointment>();
@@ -302,6 +280,12 @@ public without sharing class HOT_ServiceAppointmentHandler extends MyTriggers {
                 serviceAppointment.Status == 'Released to Freelance'
             ) {
                 releasedServiceAppointments.add(serviceAppointment);
+            }
+            if (
+                serviceAppointment.Status != triggerOldMap.get(serviceAppointment.Id).get('Status') &&
+                serviceAppointment.Status == 'Dispatched'
+            ) {
+                dispatchedServiceAppointments.add(serviceAppointment);
             }
             if (
                 serviceAppointment.Status != triggerOldMap.get(serviceAppointment.Id).get('Status') &&
@@ -362,6 +346,9 @@ public without sharing class HOT_ServiceAppointmentHandler extends MyTriggers {
         if (releasedServiceAppointments.size() > 0) {
             updateStatusOnInterestedResources(releasedServiceAppointments, 'Interested');
         }
+        if (dispatchedServiceAppointments.size() > 0) {
+            updateStatusOnInterestedResources(dispatchedServiceAppointments, 'Assigned');
+        }
         if (retractedServiceAppointments.size() > 0) {
             updateStatusOnInterestedResources(retractedServiceAppointments, 'Service Appointment Retracted');
         }
@@ -373,6 +360,9 @@ public without sharing class HOT_ServiceAppointmentHandler extends MyTriggers {
         }
         if (!serviceAppointmentWithNewAssignedResource.isEmpty()) {
             HOT_InterpreterOnWorkOrderService.setInterpreterOnWorkOrderFromServiceAppointment(
+                serviceAppointmentWithNewAssignedResource.keySet()
+            );
+            HOT_ThreadHandler.setInterpreterOnThreadFromServiceAppointment(
                 serviceAppointmentWithNewAssignedResource.keySet()
             );
         }
@@ -450,7 +440,6 @@ public without sharing class HOT_ServiceAppointmentHandler extends MyTriggers {
 
     private static void setDefaultFields(List<ServiceAppointment> serviceAppointments) {
         setFieldsBasedOnParent(serviceAppointments);
-        setFieldsByPreferredResource(serviceAppointments);
     }
 
     private static void removeAssignedResource(List<ServiceAppointment> serviceAppointments) {
@@ -803,72 +792,6 @@ public without sharing class HOT_ServiceAppointmentHandler extends MyTriggers {
         return ganttColorByStatus;
     }
 
-    public static void setFieldsByPreferredResource(List<ServiceAppointment> serviceAppointments) {
-        List<Id> preferredResourceId = new List<Id>();
-        for (ServiceAppointment serviceAppointment : serviceAppointments) {
-            if (serviceAppointment.HOT_PreferredServiceResourceId__c != null) {
-                preferredResourceId.add(serviceAppointment.HOT_PreferredServiceResourceId__c);
-            }
-        }
-        Map<Id, ServiceResource> serviceResources = new Map<Id, ServiceResource>(
-            [
-                SELECT Id, HOT_ServiceTerritory__c, HOT_IsFreelanceInterpreter__c, HOT_IsEmployedInterpreter__c
-                FROM ServiceResource
-                WHERE Id IN :preferredResourceId
-            ]
-        );
-        for (ServiceAppointment serviceAppointment : serviceAppointments) {
-            if (serviceAppointment.HOT_PreferredServiceResourceId__c != null) {
-                if (
-                    serviceAppointment.ServiceTerritoryId !=
-                    serviceResources.get(serviceAppointment.HOT_PreferredServiceResourceId__c).HOT_ServiceTerritory__c
-                ) {
-                    serviceAppointment.ServiceTerritoryId = serviceResources.get(
-                            serviceAppointment.HOT_PreferredServiceResourceId__c
-                        )
-                        .HOT_ServiceTerritory__c;
-                }
-
-                if (
-                    serviceAppointment.HOT_IsReleasedToFreelance__c !=
-                    serviceResources.get(serviceAppointment.HOT_PreferredServiceResourceId__c)
-                        .HOT_IsFreelanceInterpreter__c
-                ) {
-                    serviceAppointment.HOT_IsReleasedToFreelance__c = serviceResources.get(
-                            serviceAppointment.HOT_PreferredServiceResourceId__c
-                        )
-                        .HOT_IsFreelanceInterpreter__c;
-                    serviceAppointment.HOT_IsEmployedInterpreter__c = serviceResources.get(
-                            serviceAppointment.HOT_PreferredServiceResourceId__c
-                        )
-                        .HOT_IsEmployedInterpreter__c;
-                }
-            }
-        }
-    }
-
-    public static List<ServiceAppointment> setFieldsIfPreferredResourceDeleted(
-        List<ServiceAppointment> serviceAppointments
-    ) {
-        List<ServiceAppointment> serviceAppointmentsToUpdate = new List<ServiceAppointment>();
-        List<Id> woliIds = new List<Id>();
-        for (ServiceAppointment serviceAppointment : serviceAppointments) {
-            woliIds.add(serviceAppointment.HOT_WorkOrderLineItem__c);
-        }
-
-        List<WorkOrderLineItem> wolis = [SELECT Id, ServiceTerritoryId FROM WorkOrderLineItem WHERE Id IN :woliIds];
-        Map<Id, WorkOrderLineItem> woliMap = new Map<Id, WorkOrderLineItem>(wolis);
-
-        for (ServiceAppointment serviceAppointment : serviceAppointments) {
-            serviceAppointment.ServiceTerritoryId = woliMap.get(serviceAppointment.HOT_WorkOrderLineItem__c)
-                ?.ServiceTerritoryId;
-            serviceAppointment.HOT_IsReleasedToFreelance__c = false;
-            serviceAppointment.HOT_IsEmployedInterpreter__c = true;
-            serviceAppointmentsToUpdate.add(serviceAppointment);
-        }
-        return serviceAppointmentsToUpdate;
-    }
-
     public static void releaseServiceAppointments(List<ServiceAppointment> serviceAppointments) {
         for (ServiceAppointment serviceAppointment : serviceAppointments) {
             if (serviceAppointment.HOT_FreelanceSubject__c == null) {
@@ -903,12 +826,18 @@ public without sharing class HOT_ServiceAppointmentHandler extends MyTriggers {
         String newStatus
     ) {
         List<HOT_InterestedResource__c> interestedResources = [
-            SELECT Status__c, ServiceAppointment__r.Status
+            SELECT Status__c, ServiceAppointment__r.Status, ServiceResource__c
             FROM HOT_InterestedResource__c
             WHERE ServiceAppointment__c IN :serviceAppointments
         ];
         for (HOT_InterestedResource__c interestedResource : interestedResources) {
-            if (newStatus == 'Service Appointment Retracted') {
+            if (
+                newStatus == 'Service Appointment Retracted' &&
+                interestedResource.Status__c != 'Wanted' &&
+                interestedResource.Status__c != 'Declined' &&
+                interestedResource.Status__c != 'Retracted Interest' &&
+                interestedResource.Status__c != 'Canceled by Interpreter'
+            ) {
                 if (
                     interestedResource.ServiceAppointment__r.Status == 'None' ||
                     interestedResource.ServiceAppointment__r.Status == 'Annul' ||
@@ -922,9 +851,23 @@ public without sharing class HOT_ServiceAppointmentHandler extends MyTriggers {
                 if (
                     interestedResource.ServiceAppointment__r.Status == 'Released to Freelance' &&
                     (interestedResource.Status__c == 'Service Appointment Retracted' ||
-                    interestedResource.Status__c == 'Not Assigned')
+                    interestedResource.Status__c == 'Not Assigned' ||
+                    interestedResource.Status__c == 'Withdrawn')
                 ) {
                     interestedResource.Status__c = newStatus;
+                }
+            }
+            if (newStatus == 'Assigned') {
+                if (
+                    interestedResource.ServiceAppointment__r.Status == 'Dispatched' &&
+                    interestedResource.Status__c == 'Reserved'
+                ) {
+                    for (ServiceAppointment serviceAppointment : serviceAppointments) {
+                        if (serviceAppointment.HOT_ServiceResource__c == interestedResource.ServiceResource__c) {
+                            interestedResource.Status__c = newStatus;
+                            break;
+                        }
+                    }
                 }
             }
         }
@@ -989,7 +932,22 @@ public without sharing class HOT_ServiceAppointmentHandler extends MyTriggers {
         returnMap.put('resource', resourceByAssignment);
         return returnMap;
     }
-
+    public static void setCompanyOnServiceAppointment(List<ServiceAppointment> serviceAppointments) {
+        Set<Id> requestIds = new Set<Id>();
+        for (ServiceAppointment sa : serviceAppointments) {
+            if (sa.isClone()) {
+                requestIds.add(sa.HOT_Request__c);
+            }
+        }
+        List<HOT_Request__c> requestList = [SELECT Id, Company__c FROM HOT_Request__c WHERE Id IN :requestIds];
+        for (ServiceAppointment sa : serviceAppointments) {
+            for (HOT_Request__c request : requestList) {
+                if (sa.HOT_Request__c == request.Id && request.Company__c != null) {
+                    sa.HOT_Company__c = request.Company__c;
+                }
+            }
+        }
+    }
     public static void createContentDocumentLinks(List<ServiceAppointment> serviceAppointments) {
         List<Id> requestIds = new List<Id>();
 

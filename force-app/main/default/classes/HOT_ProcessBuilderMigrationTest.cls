@@ -1,6 +1,6 @@
-@isTest
+@IsTest
 public class HOT_ProcessBuilderMigrationTest {
-    @isTest
+    @IsTest
     public static void personProcessorTest() {
         Person__c person = HOT_TestDataFactory.createPerson();
         person.HOT_DailyLifeInterpreter__c = true;
@@ -23,12 +23,12 @@ public class HOT_ProcessBuilderMigrationTest {
         System.assertEquals(person.INT_KrrMobilePhone__c, account.PersonMobilePhone, 'Phone was NOT set correctly');
     }
 
-    @isTest
+    @IsTest
     public static void requestInitiatorTest() {
         //Test manually. Not critical functionality
     }
 
-    @isTest
+    @IsTest
     public static void requestProcessorSetAccountPerson() {
         Person__c person = HOT_TestDataFactory.createPerson();
         person.HOT_DailyLifeInterpreter__c = true;
@@ -75,7 +75,7 @@ public class HOT_ProcessBuilderMigrationTest {
         System.assertEquals(null, request.Person__c, 'Could not remove person field on request');
     }
 
-    @isTest
+    @IsTest
     public static void serviceTerritoryMemberTest() {
         OperatingHours operatingHours = HOT_TestDataFactory.createOperatingHours();
         insert operatingHours;
@@ -123,7 +123,7 @@ public class HOT_ProcessBuilderMigrationTest {
         );
     }
 
-    @isTest
+    @IsTest
     public static void workOrderLineItemTest() {
         WorkType workType = HOT_TestDataFactory.createWorkType();
         insert workType;

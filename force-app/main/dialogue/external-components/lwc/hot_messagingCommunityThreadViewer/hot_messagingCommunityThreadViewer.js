@@ -34,6 +34,7 @@ export default class hot_messagingCommunityThreadViewer extends NavigationMixin(
     @track isFreelance = false;
     @track isclosed;
     @track showContent = false;
+    @track showError = false;
     @track hasAccess;
 
     @api recordId;
@@ -89,7 +90,6 @@ export default class hot_messagingCommunityThreadViewer extends NavigationMixin(
             href: 'detail'
         }
     ];
-
     @track subject;
     @track threadType;
     @wire(getThreadDetails, { recordId: '$recordId' })
@@ -101,9 +101,10 @@ export default class hot_messagingCommunityThreadViewer extends NavigationMixin(
             this.threadRelatedObjectId = this.thread.CRM_Related_Object__c;
             this.isclosed = this.thread.CRM_Is_Closed__c;
             this.showContent = true;
+        } else if (result.error) {
+            this.showError = true;
         }
     }
-
     get showopenwarning() {
         if (this.alertopen) {
             return true;
@@ -270,6 +271,14 @@ export default class hot_messagingCommunityThreadViewer extends NavigationMixin(
         let item = this.template.querySelector(event.detail);
         item.focus();
     }
+    goToHome() {
+        this[NavigationMixin.Navigate]({
+            type: 'comm__namedPage',
+            attributes: {
+                pageName: 'home'
+            }
+        });
+    }
 
     goBack() {
         if (this.navigationBaseUrl == 'mine-oppdrag') {
@@ -282,6 +291,57 @@ export default class hot_messagingCommunityThreadViewer extends NavigationMixin(
                     list: this.navigationBaseList,
                     id: this.navigationId
                 }
+            });
+        } else if (this.navigationBaseUrl == 'mine-bestillinger') {
+            this[NavigationMixin.Navigate]({
+                type: 'comm__namedPage',
+                attributes: {
+                    pageName: 'mine-bestillinger'
+                },
+                state: {
+                    id: this.navigationId,
+                    level: this.navigationLevel
+                }
+            });
+        } else if (this.navigationBaseUrl == 'mine-samtaler-frilanstolk') {
+            this[NavigationMixin.Navigate]({
+                type: 'comm__namedPage',
+                attributes: {
+                    pageName: 'mine-samtaler-frilanstolk'
+                },
+                state: {}
+            });
+        } else if (this.navigationBaseUrl == 'mine-samtaler') {
+            this[NavigationMixin.Navigate]({
+                type: 'comm__namedPage',
+                attributes: {
+                    pageName: 'mine-samtaler'
+                },
+                state: {}
+            });
+        } else if (this.navigationBaseUrl == 'mine-varsler') {
+            this[NavigationMixin.Navigate]({
+                type: 'comm__namedPage',
+                attributes: {
+                    pageName: 'mine-varsler'
+                },
+                state: {}
+            });
+        } else if (this.navigationBaseUrl == 'mine-varsler-tolkebruker') {
+            this[NavigationMixin.Navigate]({
+                type: 'comm__namedPage',
+                attributes: {
+                    pageName: 'mine-varsler'
+                },
+                state: {}
+            });
+        } else if (this.navigationBaseUrl == 'kalender') {
+            this[NavigationMixin.Navigate]({
+                type: 'comm__namedPage',
+                attributes: {
+                    pageName: 'home'
+                },
+                state: {}
             });
         } else {
             this[NavigationMixin.Navigate]({
@@ -301,6 +361,11 @@ export default class hot_messagingCommunityThreadViewer extends NavigationMixin(
     }
     @track serviceAppointment;
     @track interestedResource;
+    @track address;
+    @track ordererPhoneNumber;
+    @track accountPhoneNumber;
+    @track accountAgeGender;
+    @track accountName;
 
     goToDetails() {
         let i = 0;
@@ -308,12 +373,17 @@ export default class hot_messagingCommunityThreadViewer extends NavigationMixin(
             for (var key in result) {
                 i++;
                 if (result[key] == 'SA') {
+                    this.accountPhoneNumber = '';
+                    this.accountAgeGender = '';
+                    this.accountName = '';
+                    this.ordererPhoneNumber = '';
                     this.interestedResource = false;
                     getInterestedResourceDetails({ recordId: key }).then((result) => {
                         this.interestedResource = result;
                     });
                     getServiceAppointmentDetails({ recordId: key }).then((result) => {
                         this.serviceAppointment = result;
+                        this.address = this.serviceAppointment.HOT_AddressFormated__c;
                         let startTimeFormatted = new Date(result.EarliestStartTime);
                         let endTimeFormatted = new Date(result.DueDate);
                         this.serviceAppointment.StartAndEndDate =
@@ -358,6 +428,76 @@ export default class hot_messagingCommunityThreadViewer extends NavigationMixin(
                         if (this.serviceAppointment.ActualEndTime.includes('NaN')) {
                             this.serviceAppointment.ActualEndTime = '';
                         }
+                        if (
+                            this.serviceAppointment &&
+                            this.serviceAppointment.HOT_Request__r &&
+                            this.serviceAppointment.HOT_Request__r.Account__r
+                        ) {
+                            this.accountName = this.serviceAppointment.HOT_Request__r.Account__r.Name;
+                        }
+                        if (
+                            this.serviceAppointment &&
+                            this.serviceAppointment.HOT_Request__r &&
+                            this.serviceAppointment.HOT_Request__r.Account__r &&
+                            this.serviceAppointment.HOT_Request__r.Account__r.CRM_Person__r
+                        ) {
+                            if (
+                                this.serviceAppointment.HOT_Request__r.Account__r.CRM_Person__r.CRM_AgeNumber__c ==
+                                undefined
+                            ) {
+                                if (
+                                    this.serviceAppointment.HOT_Request__r.Account__r.CRM_Person__r.HOT_Gender__c !==
+                                    undefined
+                                ) {
+                                    this.accountAgeGender =
+                                        this.serviceAppointment.HOT_Request__r.Account__r.CRM_Person__r.HOT_Gender__c;
+                                }
+                            } else if (
+                                this.serviceAppointment.HOT_Request__r.Account__r.CRM_Person__r.HOT_Gender__c ==
+                                undefined
+                            ) {
+                                if (
+                                    this.serviceAppointment.HOT_Request__r.Account__r.CRM_Person__r.CRM_AgeNumber__c !==
+                                    undefined
+                                ) {
+                                    this.accountAgeGender =
+                                        this.serviceAppointment.HOT_Request__r.Account__r.CRM_Person__r
+                                            .CRM_AgeNumber__c + ' år';
+                                }
+                            } else if (
+                                this.serviceAppointment.HOT_Request__r.Account__r.CRM_Person__r.HOT_Gender__c !==
+                                    undefined &&
+                                this.serviceAppointment.HOT_Request__r.Account__r.CRM_Person__r.CRM_AgeNumber__c !==
+                                    undefined
+                            ) {
+                                this.accountAgeGender =
+                                    this.serviceAppointment.HOT_Request__r.Account__r.CRM_Person__r.HOT_Gender__c +
+                                    ' ' +
+                                    this.serviceAppointment.HOT_Request__r.Account__r.CRM_Person__r.CRM_AgeNumber__c +
+                                    ' år';
+                            }
+                            if (
+                                this.serviceAppointment.HOT_Request__r.Account__r.CRM_Person__r
+                                    .INT_KrrMobilePhone__c !== undefined
+                            ) {
+                                this.accountPhoneNumber =
+                                    this.serviceAppointment.HOT_Request__r.Account__r.CRM_Person__r.INT_KrrMobilePhone__c;
+                            }
+                        }
+                        if (
+                            this.serviceAppointment &&
+                            this.serviceAppointment.HOT_Request__r &&
+                            this.serviceAppointment.HOT_Request__r.Orderer__r &&
+                            this.serviceAppointment.HOT_Request__r.Orderer__r.CRM_Person__r
+                        ) {
+                            if (
+                                this.serviceAppointment.HOT_Request__r.Orderer__r.CRM_Person__r
+                                    .INT_KrrMobilePhone__c !== undefined
+                            ) {
+                                this.ordererPhoneNumber =
+                                    this.serviceAppointment.HOT_Request__r.Orderer__r.CRM_Person__r.INT_KrrMobilePhone__c;
+                            }
+                        }
                         this.isDetails = true;
                         this.template.querySelector('.serviceAppointmentDetails').classList.remove('hidden');
                     });
@@ -391,6 +531,18 @@ export default class hot_messagingCommunityThreadViewer extends NavigationMixin(
                             DeadlineDateTimeFormatted.getFullYear();
                         if (this.interestedResource.AppointmentDeadlineDate__c.includes('NaN')) {
                             this.interestedResource.AppointmentDeadlineDate__c = '';
+                        }
+                        let relaseDateTimeFormatted = new Date(
+                            this.interestedResource.ServiceAppointment__r.HOT_ReleaseDate__c
+                        );
+                        this.interestedResource.ServiceAppointment__r.HOT_ReleaseDate__c =
+                            relaseDateTimeFormatted.getDate() +
+                            '.' +
+                            (relaseDateTimeFormatted.getMonth() + 1) +
+                            '.' +
+                            relaseDateTimeFormatted.getFullYear();
+                        if (this.interestedResource.ServiceAppointment__r.HOT_ReleaseDate__c.includes('NaN')) {
+                            this.interestedResource.ServiceAppointment__r.HOT_ReleaseDate__c = '';
                         }
                         this.isIRDetails = true;
                         this.template.querySelector('.serviceAppointmentDetails').classList.remove('hidden');
@@ -431,7 +583,8 @@ export default class hot_messagingCommunityThreadViewer extends NavigationMixin(
                         },
                         state: {
                             id: key,
-                            level: 'WO'
+                            level: 'WO',
+                            from: 'mine-samtaler'
                         }
                     });
                     break;
@@ -444,7 +597,8 @@ export default class hot_messagingCommunityThreadViewer extends NavigationMixin(
                         },
                         state: {
                             id: key,
-                            level: 'R'
+                            level: 'R',
+                            from: 'mine-samtaler'
                         }
                     });
                     break;
@@ -456,12 +610,19 @@ export default class hot_messagingCommunityThreadViewer extends NavigationMixin(
                         },
                         state: {
                             id: key,
-                            level: result[key]
+                            level: result[key],
+                            from: 'mine-samtaler'
                         }
                     });
                 }
             }
         });
+    }
+    openGoogleMaps() {
+        window.open('https://www.google.com/maps/search/?api=1&query=' + this.address);
+    }
+    openAppleMaps() {
+        window.open('http://maps.apple.com/?q=' + this.address);
     }
 
     navigationId = '';
@@ -473,7 +634,8 @@ export default class hot_messagingCommunityThreadViewer extends NavigationMixin(
         if (
             parsed_params.from != 'mine-bestillinger' &&
             parsed_params.from != 'mine-bestillinger-andre' &&
-            parsed_params.from != 'mine-samtaler'
+            parsed_params.from != 'mine-samtaler' &&
+            parsed_params.from != 'mine-varsler-tolkebruker'
         ) {
             this.recordId = parsed_params.recordId;
         }
@@ -498,6 +660,13 @@ export default class hot_messagingCommunityThreadViewer extends NavigationMixin(
         } else if (parsed_params.from == 'mine-samtaler-frilanstolk') {
             this.navigationBaseUrl = 'mine-samtaler-frilanstolk';
             this.isFreelance = true;
+        } else if (parsed_params.from == 'mine-varsler') {
+            this.navigationBaseUrl = 'mine-varsler';
+            this.isFreelance = true;
+        } else if (parsed_params.from == 'mine-varsler-tolkebruker') {
+            this.navigationBaseUrl = 'mine-varsler-tolkebruker';
+        } else if (parsed_params.from == 'kalender') {
+            this.navigationBaseUrl = 'kalender';
         } else if (parsed_params.list !== undefined) {
             this.navigationBaseUrl = parsed_params.from;
             this.navigationId = parsed_params.recordId;

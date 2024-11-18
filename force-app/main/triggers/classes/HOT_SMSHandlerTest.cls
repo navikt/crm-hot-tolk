@@ -1,6 +1,6 @@
-@isTest
+@IsTest
 public with sharing class HOT_SMSHandlerTest {
-    @isTest
+    @IsTest
     static void setArchiveAsOwnerTest() {
         SMS__c sms = HOT_TestDataFactory.createSms();
         insert sms;
@@ -15,5 +15,12 @@ public with sharing class HOT_SMSHandlerTest {
 
         SMS__c updatedSms = [SELECT Id, OwnerId FROM SMS__c WHERE Id = :sms.Id LIMIT 1];
         System.assertEquals(archive.Id, updatedSms.OwnerId, 'The owner was not changed to "HOT Arkiv" as expected.');
+    }
+
+    @IsTest
+    static void notifyDispatchersOnInsert() {
+        SMS__c sms = HOT_TestDataFactory.createSms();
+        sms.Type__c = 'Incoming SMS';
+        insert sms;
     }
 }

@@ -4,6 +4,9 @@ import retractInterest from '@salesforce/apex/HOT_InterestedResourcesListControl
 import getThreadDispatcherId from '@salesforce/apex/HOT_InterestedResourcesListController.getThreadDispatcherId';
 import getThreadDispatcherIdSA from '@salesforce/apex/HOT_InterestedResourcesListController.getThreadDispatcherIdSA';
 import getMyThreads from '@salesforce/apex/HOT_ThreadListController.getMyThreadsIR';
+import getInterestedResourceDetails from '@salesforce/apex/HOT_InterestedResourcesListController.getInterestedResourceDetails';
+import checkAccessToSA from '@salesforce/apex/HOT_InterestedResourcesListController.checkAccessToSA';
+
 import getContactId from '@salesforce/apex/HOT_MessageHelper.getUserContactId';
 import getServiceResource from '@salesforce/apex/HOT_Utility.getServiceResource';
 import { refreshApex } from '@salesforce/apex';
@@ -19,11 +22,15 @@ export default class Hot_interestedResourcesList extends NavigationMixin(Lightni
     @track filters = [];
     @track iconByValue = iconByValue;
     @track isGoToThreadButtonDisabled = false;
+    @track isMobile;
+    @track hasAccess = true;
     setColumns() {
         if (window.screen.width > 576) {
             this.columns = columns;
+            this.isMobile = false;
         } else {
             this.columns = mobileColumns;
+            this.isMobile = true;
         }
     }
     sendFilters() {
@@ -62,7 +69,14 @@ export default class Hot_interestedResourcesList extends NavigationMixin(Lightni
     connectedCallback() {
         this.setColumns();
         refreshApex(this.wiredInterestedResourcesResult);
+        this.getParams();
         this.updateURL();
+    }
+    getParams() {
+        let parsed_params = getParametersFromURL() ?? '';
+        if (parsed_params.from == 'mine-varsler' && parsed_params.id != '') {
+            this.goToRecordDetailsFromNotification(parsed_params.id);
+        }
     }
     getDayOfWeek(date) {
         var jsDate = new Date(date);
@@ -108,6 +122,7 @@ export default class Hot_interestedResourcesList extends NavigationMixin(Lightni
     @track records = [];
     @track allInterestedResourcesWired = [];
     wiredInterestedResourcesResult;
+    @track test = true;
     @wire(getInterestedResources)
     wiredInterestedResources(result) {
         this.wiredInterestedResourcesResult = result;
@@ -128,14 +143,7 @@ export default class Hot_interestedResourcesList extends NavigationMixin(Lightni
                     });
                     this.allInterestedResourcesWired = this.allInterestedResourcesWired.map((appointment) => {
                         let threadId;
-                        if (
-                            appointment.Status__c == 'Assigned' ||
-                            appointment.Status__c == 'Tildelt' ||
-                            appointment.Status__c == 'Canceled' ||
-                            appointment.Status__c == 'Avlyst' ||
-                            appointment.Status__c == 'Canceled by Interpreter' ||
-                            appointment.Status__c == 'Avlyst av tolk'
-                        ) {
+                        if (appointment.Status__c == 'Assigned' || appointment.Status__c == 'Tildelt') {
                             threadId = appointment.ServiceAppointment__c;
                         } else {
                             threadId = appointment.Id;
@@ -152,7 +160,15 @@ export default class Hot_interestedResourcesList extends NavigationMixin(Lightni
                         }
                         return {
                             ...appointment,
-                            IsUnreadMessage: status
+                            IsUnreadMessage: status,
+                            startAndEndDateWeekday:
+                                this.formatDatetime(
+                                    appointment.ServiceAppointmentStartTime__c,
+                                    appointment.ServiceAppointmentEndTime__c
+                                ) +
+                                ' ' +
+                                this.getDayOfWeek(appointment.ServiceAppointmentStartTime__c),
+                            statusMobile: 'Status: ' + appointment.Status__c
                         };
                     });
                     let tempRecords = [];
@@ -177,6 +193,22 @@ export default class Hot_interestedResourcesList extends NavigationMixin(Lightni
         //this.sendRecords();
         this.sendFilters();
         this.applyFilter({ detail: { filterArray: this.filters, setRecords: true } });
+    }
+
+    formatDatetime(Start, DueDate) {
+        const datetimeStart = new Date(Start);
+        const dayStart = datetimeStart.getDate().toString().padStart(2, '0');
+        const monthStart = (datetimeStart.getMonth() + 1).toString().padStart(2, '0');
+        const yearStart = datetimeStart.getFullYear();
+        const hoursStart = datetimeStart.getHours().toString().padStart(2, '0');
+        const minutesStart = datetimeStart.getMinutes().toString().padStart(2, '0');
+
+        const datetimeEnd = new Date(DueDate);
+        const hoursEnd = datetimeEnd.getHours().toString().padStart(2, '0');
+        const minutesEnd = datetimeEnd.getMinutes().toString().padStart(2, '0');
+
+        const formattedDatetime = `${dayStart}.${monthStart}.${yearStart} ${hoursStart}:${minutesStart} - ${hoursEnd}:${minutesEnd}`;
+        return formattedDatetime;
     }
 
     datetimeFields = [
@@ -205,23 +237,18 @@ export default class Hot_interestedResourcesList extends NavigationMixin(Lightni
         for (let interestedResource of this.records) {
             if (recordId === interestedResource.Id) {
                 this.interestedResource = interestedResource;
-                let DeadlineDateTimeFormatted = new Date(this.interestedResource.AppointmentDeadlineDate__c);
-                this.interestedResource.AppointmentDeadlineDate__c =
-                    DeadlineDateTimeFormatted.getDate() +
+                let relaseDateTimeFormatted = new Date(
+                    this.interestedResource.ServiceAppointment__r.HOT_ReleaseDate__c
+                );
+                this.interestedResource.releasedate =
+                    relaseDateTimeFormatted.getDate() +
                     '.' +
-                    (DeadlineDateTimeFormatted.getMonth() + 1) +
+                    (relaseDateTimeFormatted.getMonth() + 1) +
                     '.' +
-                    DeadlineDateTimeFormatted.getFullYear();
-                // if (
-                //     this.interestedResource.Status__c == 'Påmeldt' ||
-                //     this.interestedResource.Status__c == 'Tildelt' ||
-                //     this.interestedResource.Status__c == 'Assigned' ||
-                //     this.interestedResource.Status__c == 'Interested'
-                // ) {
-                //     this.isGoToThreadButtonDisabled = false;
-                // } else {
-                //     this.isGoToThreadButtonDisabled = true;
-                // }
+                    relaseDateTimeFormatted.getFullYear();
+                if (this.interestedResource.releasedate.includes('NaN')) {
+                    this.interestedResource.releasedate = '';
+                }
 
                 this.interestedResource.weekday = this.getDayOfWeek(
                     this.interestedResource.ServiceAppointmentStartTime__c
@@ -231,6 +258,62 @@ export default class Hot_interestedResourcesList extends NavigationMixin(Lightni
 
         this.isNotRetractable = this.interestedResource?.Status__c !== 'Påmeldt';
         this.updateURL();
+    }
+    goToRecordDetailsFromNotification(saId) {
+        checkAccessToSA({ saId: saId }).then((result) => {
+            if (result != false) {
+                getInterestedResourceDetails({ recordId: saId }).then((result) => {
+                    this.interestedResource = result;
+                    this.isDetails = true;
+                    this.isNotRetractable = this.interestedResource?.Status__c !== 'Påmeldt';
+                    this.interestedResource.weekday = this.getDayOfWeek(
+                        this.interestedResource.ServiceAppointmentStartTime__c
+                    );
+                    let startTimeFormatted = new Date(result.ServiceAppointmentStartTime__c);
+                    let endTimeFormatted = new Date(result.ServiceAppointmentEndTime__c);
+                    this.interestedResource.StartAndEndDate =
+                        startTimeFormatted.getDate() +
+                        '.' +
+                        (startTimeFormatted.getMonth() + 1) +
+                        '.' +
+                        startTimeFormatted.getFullYear() +
+                        ', ' +
+                        ('0' + startTimeFormatted.getHours()).substr(-2) +
+                        ':' +
+                        ('0' + startTimeFormatted.getMinutes()).substr(-2) +
+                        ' - ' +
+                        ('0' + endTimeFormatted.getHours()).substr(-2) +
+                        ':' +
+                        ('0' + endTimeFormatted.getMinutes()).substr(-2);
+                    let relaseDateTimeFormatted = new Date(
+                        this.interestedResource.ServiceAppointment__r.HOT_ReleaseDate__c
+                    );
+                    this.interestedResource.releasedate =
+                        relaseDateTimeFormatted.getDate() +
+                        '.' +
+                        (relaseDateTimeFormatted.getMonth() + 1) +
+                        '.' +
+                        relaseDateTimeFormatted.getFullYear();
+                    if (this.interestedResource.releasedate.includes('NaN')) {
+                        this.interestedResource.releasedate = '';
+                    }
+                    let DeadlineDateTimeFormatted = new Date(this.interestedResource.AppointmentDeadlineDate__c);
+                    this.interestedResource.AppointmentDeadlineDate__c =
+                        DeadlineDateTimeFormatted.getDate() +
+                        '.' +
+                        (DeadlineDateTimeFormatted.getMonth() + 1) +
+                        '.' +
+                        DeadlineDateTimeFormatted.getFullYear();
+                    if (this.interestedResource.AppointmentDeadlineDate__c.includes('NaN')) {
+                        this.interestedResource.AppointmentDeadlineDate__c = '';
+                    }
+                    this.template.querySelector('.serviceAppointmentDetails').classList.remove('hidden');
+                    this.template.querySelector('.serviceAppointmentDetails').focus();
+                });
+            } else {
+                this.hasAccess = false;
+            }
+        });
     }
 
     @api recordId;
@@ -307,11 +390,9 @@ export default class Hot_interestedResourcesList extends NavigationMixin(Lightni
         this.isGoToThreadButtonDisabled = true;
         if (
             this.interestedResource.Status__c != 'Assigned' &&
-            this.interestedResource.Status__c != 'Canceled' &&
             this.interestedResource.Status__c != 'Tildelt' &&
-            this.interestedResource.Status__c != 'Avlyst' &&
-            this.interestedResource.Status__c != 'Canceled by Interpreter' &&
-            this.interestedResource.Status__c != 'Avlyst av tolk'
+            this.interestedResource.Status__c != 'Reserved' &&
+            this.interestedResource.Status__c != 'Reservert'
         ) {
             getThreadDispatcherId({ interestedResourceId: this.interestedResource.Id }).then((result) => {
                 if (result != '') {

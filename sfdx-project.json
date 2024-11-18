@@ -1,26 +1,29 @@
 {
     "namespace": "",
     "sfdcLoginUrl": "https://login.salesforce.com",
-    "sourceApiVersion": "58.0",
+    "sourceApiVersion": "59.0",
     "packageDirectories": [
         {
             "path": "force-app",
             "default": true,
-            "package": "crm-hot",
-            "versionName": "ver 0.1",
-            "versionNumber": "1.230.0.NEXT",
+            "package": "crm-hot-tolk",
+            "versionNumber": "1.310.0.NEXT",
             "dependencies": [
                 {
                     "package": "crm-platform-base",
-                    "versionNumber": "0.195.0.LATEST"
+                    "versionNumber": "0.224.0.LATEST"
+                },
+                {
+                    "package": "crm-shared-flowComponents",
+                    "versionNumber": "0.4.0.LATEST"
                 },
                 {
                     "package": "crm-henvendelse-base",
-                    "versionNumber": "0.16.0.LATEST"
+                    "versionNumber": "0.20.0.LATEST"
                 },
                 {
                     "package": "crm-platform-integration",
-                    "versionNumber": "0.100.0.LATEST"
+                    "versionNumber": "0.133.0.LATEST"
                 },
                 {
                     "package": "crm-platform-access-control",
@@ -28,39 +31,7 @@
                 },
                 {
                     "package": "crm-community-base",
-                    "versionNumber": "0.86.0.LATEST"
-                },
-                {
-                    "package": "crm-platform-reporting",
-                    "versionNumber": "0.31.0.LATEST"
-                }
-            ]
-        },
-        {
-            "path": "force-app",
-            "default": false,
-            "package": "crm-hot-dev",
-            "versionNumber": "1.174.0.NEXT",
-            "dependencies": [
-                {
-                    "package": "crm-platform-base",
-                    "versionNumber": "0.195.0.LATEST"
-                },
-                {
-                    "package": "crm-henvendelse-base",
-                    "versionNumber": "0.16.0.LATEST"
-                },
-                {
-                    "package": "crm-platform-integration",
-                    "versionNumber": "0.100.0.LATEST"
-                },
-                {
-                    "package": "crm-platform-access-control",
-                    "versionNumber": "0.113.0.LATEST"
-                },
-                {
-                    "package": "crm-community-base",
-                    "versionNumber": "0.86.0.LATEST"
+                    "versionNumber": "0.119.0.LATEST"
                 },
                 {
                     "package": "crm-platform-reporting",
@@ -72,11 +43,11 @@
     "packageAliases": {
         "crm-platform-base": "0Ho2o0000008ORmCAM",
         "crm-platform-access-control": "0Ho2o0000008OR3CAM",
-        "crm-hot": "0Ho2o0000008OSVCA2",
+        "crm-hot-tolk": "0Ho2o0000008OSVCA2",
         "crm-community-base": "0Ho2o0000008OSzCAM",
-        "crm-hot-dev": "0Ho2o000000KylqCAC",
         "crm-platform-reporting": "0Ho2o0000008OSfCAM",
         "crm-platform-integration": "0Ho2o0000008ORrCAM",
-        "crm-henvendelse-base": "0Ho7U000000000kSAA"
+        "crm-henvendelse-base": "0Ho7U000000000kSAA",
+        "crm-shared-flowComponents": "0Ho2o000000fxYJCAY"
     }
 }

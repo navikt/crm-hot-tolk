@@ -50,10 +50,6 @@
     </layouts>
     <nameFieldLabel>Interessert ressurs</nameFieldLabel>
     <quickActions>
-        <label>Legg til kommentar</label>
-        <name>AddComment</name>
-    </quickActions>
-    <quickActions>
         <label>Reserver oppdraget til ressursen</label>
         <name>AssignResource</name>
     </quickActions>

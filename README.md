@@ -1,6 +1,6 @@
-# crm-hot
+# crm-hot-tolk
 
-Denne pakken inneholder Salesforce metadata som støtter arbeidet NAV gjør rundt formidling av tolker for hørselhemmede, døve og døvblinde. Løsningen er utviklet av Team Tolketjeneste, som ble opprettet i Januar 2020 og ligger under DigiHot.
+Denne pakken inneholder Salesforce metadata som støtter arbeidet NAV gjør rundt formidling av tolker for hørselhemmede, døve og døvblinde. Løsningen er utviklet av Team CRM HoT, som ble opprettet i Januar 2020 og ligger under DigiHot.
 
 ## Salesforce Features
 
@@ -10,5 +10,4 @@ Løsningen benytter seg av
 - Field Service
 
 ## Lenker
-- https://confluence.adeo.no/display/DigiHoT/Team+Tolketjeneste
-- https://confluence.adeo.no/display/PTC/Plattform+Team+CRM
+- https://confluence.adeo.no/display/DigiHoT/Team+HoT+CRM

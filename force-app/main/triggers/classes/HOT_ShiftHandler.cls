@@ -15,8 +15,14 @@ public without sharing class HOT_ShiftHandler extends MyTriggers {
 
     private static void setDefaultFieldValues(List<Shift> shifts) {
         for (Shift shift : shifts) {
+            shift.ServiceTerritoryId = getServiceTerritory(shift);
             shift.TimeSlotType = 'Extended';
             shift.CRM_Domain__c = 'HOT';
         }
+    }
+
+    private static Id getServiceTerritory(Shift shift) {
+        return [SELECT HOT_ServiceTerritory__c FROM ServiceResource WHERE Id = :shift.ServiceResourceId]
+        ?.HOT_ServiceTerritory__c;
     }
 }

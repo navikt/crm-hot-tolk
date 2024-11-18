@@ -23,6 +23,7 @@ import { updateRecord } from 'lightning/uiRecordApi';
 
 export default class MineBestillingerWrapper extends NavigationMixin(LightningElement) {
     @api header;
+    @track recordId;
     @api isAccount;
     @track filters = [];
     @track breadcrumbs = [];
@@ -35,6 +36,7 @@ export default class MineBestillingerWrapper extends NavigationMixin(LightningEl
     get buttonText() {
         return this.isMobile ? '+' : 'Ny bestilling';
     }
+
     @track userAccountId;
     @wire(getUserAccountID)
     wiredAccountId({ error, data }) {
@@ -60,6 +62,14 @@ export default class MineBestillingerWrapper extends NavigationMixin(LightningEl
     renderedCallback() {
         if (this.urlStateParameters.id === '' && this.urlStateParameters.level === '') {
             refreshApex(this.wiredgetWorkOrdersResult);
+        }
+    }
+    @track fileUploadMessage = '';
+    handleUploadFinished(event) {
+        const uploadedFiles = event.detail.files;
+        if (uploadedFiles.length > 0) {
+            this.fileUploadMessage = 'Filen(e) ble lastet opp';
+            this.template.querySelector('c-record-files-with-sharing').refreshContentDocuments();
         }
     }
 
@@ -118,8 +128,10 @@ export default class MineBestillingerWrapper extends NavigationMixin(LightningEl
         let recordId = this.urlStateParameters.id;
         for (let record of this.records) {
             if (recordId === record.Id) {
+                this.recordId = record.Id;
                 this.workOrder = record;
                 this.request = record.HOT_Request__r;
+                this.recordId = record.HOT_Request__r.Id;
 
                 getThreadInterpreterId({ workOrderId: this.workOrder.Id }).then((result) => {
                     if (result != '') {
@@ -170,10 +182,14 @@ export default class MineBestillingerWrapper extends NavigationMixin(LightningEl
         let tempEndDate = this.isRequestDetails
             ? new Date(this.request.SeriesEndDate__c)
             : new Date(this.workOrder.EndDate);
+        const oneYearAgo = new Date(new Date().setFullYear(new Date().getFullYear() - 1));
         this.isRequestEditButtonDisabled = this.request.Status__c === 'Åpen' ? false : true;
         this.isRequestCancelButtonDisabled =
-            this.request.Status__c === 'Avlyst' || tempEndDate.getTime() < Date.now() ? true : false;
-        this.isRequestAddFilesButtonDisabled = this.request.Status__c !== 'Avlyst' ? false : true;
+            this.request.Status__c === 'Avlyst' || tempEndDate.getTime() < Date.now() || this.isTheOrderer == false
+                ? true
+                : false;
+        this.isRequestAddFilesButtonDisabled =
+            this.request.Status__c !== 'Avlyst' && tempEndDate > oneYearAgo ? false : true;
         this.isWOEditButtonDisabled = this.workOrder.HOT_ExternalWorkOrderStatus__c === 'Åpen' ? false : true;
         this.isWOCancelButtonDisabled = this.workOrder.HOT_ExternalWorkOrderStatus__c === 'Avlyst' ? true : false;
         this.isWOAddFilesButtonDisabled = this.workOrder.HOT_ExternalWorkOrderStatus__c !== 'Avlyst' ? false : true;
@@ -224,8 +240,10 @@ export default class MineBestillingerWrapper extends NavigationMixin(LightningEl
     threadOrdererUserButtonLabel;
     isThreadButtonDisabled = false;
     isInterpreterThreadButtonDisabled = false;
+    isTheOrderer = true;
 
     setButtonLabels() {
+        this.isTheOrderer = true;
         if (this.urlStateParameters.level === 'R') {
             this.editButtonLabel = 'Rediger serie';
             this.copyButtonLabel = 'Kopier serie';
@@ -238,7 +256,11 @@ export default class MineBestillingerWrapper extends NavigationMixin(LightningEl
             this.copyButtonLabel = 'Kopier';
             this.cancelButtonLabel = 'Avlys';
             this.isThreadButtonDisabled = false;
-            this.isInterpreterThreadButtonDisabled = false;
+            if (this.workOrder.HOT_Interpreters__c != null) {
+                this.isInterpreterThreadButtonDisabled = false;
+            } else {
+                this.isInterpreterThreadButtonDisabled = true;
+            }
         }
         if (this.request.IsAccountEqualOrderer__c == false && this.request.Orderer__c == this.userAccountId) {
             this.threadOrdererUserButtonLabel = 'Samtale med bruker';
@@ -247,6 +269,7 @@ export default class MineBestillingerWrapper extends NavigationMixin(LightningEl
             this.request.Account__c === this.userRecord.AccountId
         ) {
             this.threadOrdererUserButtonLabel = 'Samtale med bestiller';
+            this.isTheOrderer = false;
         }
     }
 
@@ -278,6 +301,22 @@ export default class MineBestillingerWrapper extends NavigationMixin(LightningEl
     }
 
     goBack() {
+        if (this.urlStateParameters.from == 'mine-varsler') {
+            this[NavigationMixin.Navigate]({
+                type: 'comm__namedPage',
+                attributes: {
+                    pageName: 'mine-varsler'
+                }
+            });
+        }
+        if (this.urlStateParameters.from == 'mine-samtaler') {
+            this[NavigationMixin.Navigate]({
+                type: 'comm__namedPage',
+                attributes: {
+                    pageName: 'mine-samtaler'
+                }
+            });
+        }
         let currentLevel = this.urlStateParameters.level;
         if (currentLevel === undefined || currentLevel === '') {
             this[NavigationMixin.Navigate]({
@@ -503,6 +542,7 @@ export default class MineBestillingerWrapper extends NavigationMixin(LightningEl
     showUploadFilesComponent = false;
     isAddFiles = false;
     addFiles() {
+        this.fileUploadMessage = '';
         this.showCancelUploadButton = true;
         this.checkboxValue = false;
         this.isAddFiles = true;

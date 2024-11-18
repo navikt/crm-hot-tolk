@@ -1,4 +1,4 @@
-@isTest
+@IsTest
 private class HOT_WageClaimServiceTest {
     @testSetup
     static void setup() {
@@ -31,7 +31,7 @@ private class HOT_WageClaimServiceTest {
         update new ServiceAppointment(Id = serviceAppointmentId, Status = 'Dispatched');
     }
 
-    @isTest
+    @IsTest
     static void getServiceAppointmentsTest() {
         Test.startTest();
         AssignedResource assignedResource = [SELECT Id, ServiceAppointmentId FROM AssignedResource];
@@ -46,8 +46,9 @@ private class HOT_WageClaimServiceTest {
         );
     }
 
-    @isTest
+    @IsTest
     static void SAWithARTimesChanged() {
+        Test.startTest();
         AssignedResource assignedResource = [SELECT Id, ServiceAppointmentId, ServiceResourceId FROM AssignedResource];
         ServiceAppointment serviceAppointment = [
             SELECT Id, SchedStartTime, SchedEndTime, ActualStartTime, ActualEndTime
@@ -58,12 +59,12 @@ private class HOT_WageClaimServiceTest {
         serviceAppointment.ActualStartTime = serviceAppointment.SchedStartTime.addMinutes(15);
         serviceAppointment.ActualEndTime = serviceAppointment.SchedEndTime.addMinutes(-15);
         serviceAppointment.Status = 'Completed';
-        Test.startTest();
+
         update serviceAppointment;
-        Test.stopTest();
 
         List<HOT_WageClaim__c> wageClaims = [SELECT Id, StartTime__c, EndTime__c FROM HOT_WageClaim__c];
         Boolean isWageClaimTimesCorrect, isWageClaimTimesCorrect2 = false;
+        Test.stopTest();
         for (HOT_WageClaim__c wageClaim : wageClaims) {
             if (
                 wageClaim.StartTime__c == serviceAppointment.SchedStartTime &&
@@ -87,7 +88,7 @@ private class HOT_WageClaimServiceTest {
         System.assertEquals(2, wageClaims.size(), 'Could not create WageClaim when actual time on SA was updated.');
     }
 
-    @isTest
+    @IsTest
     static void SAWithARTimesChangedAndIsAgreement() {
         AssignedResource assignedResource = [SELECT Id, ServiceAppointmentId, ServiceResourceId FROM AssignedResource];
         update new ServiceResource(Id = assignedResource.ServiceResourceId, HOT_AgreementFreelance__c = true);
@@ -95,7 +96,6 @@ private class HOT_WageClaimServiceTest {
         HOT_Request__c request = [SELECT Id, ServiceResourceWithAgreement1__c FROM HOT_Request__c];
         request.ServiceResourceWithAgreement1__c = assignedResource.ServiceResourceId;
         update request;
-
         ServiceAppointment serviceAppointment = [
             SELECT
                 Id,
@@ -114,13 +114,13 @@ private class HOT_WageClaimServiceTest {
         serviceAppointment.Status = 'Completed';
 
         update serviceAppointment;
-        Test.stopTest();
 
         List<HOT_WageClaim__c> wageClaims = [
             SELECT Id, StartTime__c, EndTime__c, ServiceResource__c
             FROM HOT_WageClaim__c
             WHERE ServiceResource__c = :serviceAppointment.HOT_ServiceResource__c
         ];
+        Test.stopTest();
         System.assertEquals(0, wageClaims.size(), 'Wage Claim was incorrectly created when SR is on agreement.');
     }
 }

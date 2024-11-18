@@ -1,4 +1,4 @@
-@isTest
+@IsTest
 private class HOT_WorkOrderListControllerTest {
     @testSetup
     static void setup() {
@@ -10,7 +10,7 @@ private class HOT_WorkOrderListControllerTest {
         }
     }
 
-    @isTest
+    @IsTest
     static void getMyWorkOrdersTest() {
         User admin = [SELECT Id, UserRoleId FROM User WHERE Id = :UserInfo.getUserId() LIMIT 1];
 
@@ -49,7 +49,10 @@ private class HOT_WorkOrderListControllerTest {
         ServiceTerritory serviceTerritory = HOT_TestDataFactory.createServiceTerritory(operatingHours);
         insert serviceTerritory;
 
-        ServiceTerritoryMember serviceTerritoryMember = HOT_TestDataFactory.createServiceTerritoryMember(serviceResource, serviceTerritory);
+        ServiceTerritoryMember serviceTerritoryMember = HOT_TestDataFactory.createServiceTerritoryMember(
+            serviceResource,
+            serviceTerritory
+        );
         insert serviceTerritoryMember;
 
         List<AssignedResource> assignedResources = new List<AssignedResource>();
@@ -99,7 +102,7 @@ private class HOT_WorkOrderListControllerTest {
         }
     }
 
-    @isTest
+    @IsTest
     static void getWorkOrdersFromRequestTest() {
         User admin = [SELECT Id, UserRoleId FROM User WHERE Id = :UserInfo.getUserId() LIMIT 1];
 
@@ -137,7 +140,10 @@ private class HOT_WorkOrderListControllerTest {
         ServiceTerritory serviceTerritory = HOT_TestDataFactory.createServiceTerritory(operatingHours);
         insert serviceTerritory;
 
-        ServiceTerritoryMember serviceTerritoryMember = HOT_TestDataFactory.createServiceTerritoryMember(serviceResource, serviceTerritory);
+        ServiceTerritoryMember serviceTerritoryMember = HOT_TestDataFactory.createServiceTerritoryMember(
+            serviceResource,
+            serviceTerritory
+        );
         insert serviceTerritoryMember;
 
         ServiceAppointment serviceAppointment = [
@@ -175,8 +181,8 @@ private class HOT_WorkOrderListControllerTest {
             System.assertEquals(1, workOrders.size(), 'Could not get workOrders from Request');
         }
     }
-    
-    @isTest
+
+    @IsTest
     static void getThreadInterpreterIdTest() {
         Test.startTest();
         WorkType workType = HOT_TestDataFactory.createWorkType();
@@ -190,12 +196,11 @@ private class HOT_WorkOrderListControllerTest {
         insert workOrder;
 
         Thread__c t = HOT_TestDataFactory.createThread();
-        t.CRM_Related_Object__c=workOrder.Id;
-        t.CRM_Thread_Type__c='HOT_BRUKER-TOLK';
+        t.CRM_Related_Object__c = workOrder.Id;
+        t.CRM_Thread_Type__c = 'HOT_BRUKER-TOLK';
         insert t;
         Test.stopTest();
-           String threadId= HOT_WorkOrderListController.getThreadInterpreterId(workOrder.Id);
-            System.assertEquals(t.Id,threadId, 'Could not find the thread Id');
-        
+        String threadId = HOT_WorkOrderListController.getThreadInterpreterId(workOrder.Id);
+        System.assertEquals(t.Id, threadId, 'Could not find the thread Id');
     }
 }

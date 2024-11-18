@@ -2,7 +2,23 @@
 <CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
     <fullName>HOT_DelPol_ToDeleteFiles__c</fullName>
     <externalId>false</externalId>
-    <formula>Today() &gt; DateValue(EndTime__c + 365)</formula>
+    <formula>AND 
+(
+    HOT_DelPol_IsDeleteFiles__c = FALSE,
+IF(
+    NOT(ISBLANK(SeriesEndDate__c)),
+    TODAY() &gt; (SeriesEndDate__c + (365)),
+    IF(
+        NOT(ISBLANK(EndTime__c)),
+        TODAY() &gt; (DATEVALUE(EndTime__c)  + (365)),
+        IF(
+            TODAY() &gt; (DATEVALUE(CreatedDate) + (365)),
+            TRUE,
+            FALSE
+        )
+    )
+)
+)</formula>
     <formulaTreatBlanksAs>BlankAsZero</formulaTreatBlanksAs>
     <label>HOT DelPol Delete Files Condition</label>
     <trackHistory>false</trackHistory>

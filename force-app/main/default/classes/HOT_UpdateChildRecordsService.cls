@@ -14,6 +14,8 @@ public without sharing class HOT_UpdateChildRecordsService {
     public Boolean isScreenInterpreterChoice;
     @InvocableVariable
     public Boolean isDispatcherChoice;
+    @InvocableVariable
+    public Boolean isInterpreterMethodChoice;
 
     @InvocableMethod
     public static List<String> updateChildRecordsFromRequest(List<HOT_UpdateChildRecordsService> inputVariables) {
@@ -49,6 +51,9 @@ public without sharing class HOT_UpdateChildRecordsService {
         }
         if (input.isDispatcherChoice) {
             requestToUpdate.Dispatcher__c = request.Dispatcher__c;
+        }
+        if (input.isInterpreterMethodChoice) {
+            requestToUpdate.InterpretationMethod__c = request.InterpretationMethod__c;
         }
 
         try {
@@ -87,6 +92,7 @@ public without sharing class HOT_UpdateChildRecordsService {
                     HOT_InterpretationPostalStreet__c,
                     HOT_InterpretationPostalCode__c,
                     HOT_InterpretationPostalCity__c,
+                    WorkTypeId,
                     Street,
                     PostalCode,
                     City,
@@ -112,7 +118,8 @@ public without sharing class HOT_UpdateChildRecordsService {
                     Description,
                     HOT_Account__c,
                     HOT_IsScreenInterpreterNew__c,
-                    HOT_DispatcherNew__c
+                    HOT_DispatcherNew__c,
+                    WorkTypeId
                 FROM ServiceAppointment
                 WHERE HOT_Request__c = :request.Id AND Status IN :saStatuses
             ]
@@ -138,6 +145,9 @@ public without sharing class HOT_UpdateChildRecordsService {
             if (input.isDescriptionChoice) {
                 workOrder.Description = request.Description__c;
             }
+            if (input.isInterpreterMethodChoice) {
+                workOrder.WorkTypeId = request.InterpretationMethod__c;
+            }
         }
         try {
             update workOrders.values();
@@ -162,6 +172,9 @@ public without sharing class HOT_UpdateChildRecordsService {
             }
             if (input.isDescriptionChoice) {
                 workOrderLineItem.Description = request.Description__c;
+            }
+            if (input.isInterpreterMethodChoice) {
+                workOrderLineItem.WorkTypeId = request.InterpretationMethod__c;
             }
         }
 
@@ -199,6 +212,9 @@ public without sharing class HOT_UpdateChildRecordsService {
             }
             if (input.isDispatcherChoice) {
                 serviceAppointment.HOT_DispatcherNew__c = request.Dispatcher__c;
+            }
+            if (input.isInterpreterMethodChoice) {
+                serviceAppointment.WorkTypeId = request.InterpretationMethod__c;
             }
         }
 

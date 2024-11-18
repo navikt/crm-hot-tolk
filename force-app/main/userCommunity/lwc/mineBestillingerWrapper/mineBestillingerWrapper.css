@@ -5,6 +5,10 @@
     width: 100%;
     max-width: 1200px;
     padding: 2rem;
+    font-family: 'Source Sans Pro', Arial, sans-serif;
+}
+.backBtn {
+    font-weight: bold;
 }
 
 .back-link {
@@ -49,16 +53,13 @@
     max-width: 1200px;
 }
 
-p {
-    font-weight: bold;
-}
-
 span {
     font-weight: normal;
 }
 
 .mainContent {
     margin-bottom: 3.5rem;
+    font-size: 18px;
 }
 
 .buttonRow {
@@ -85,6 +86,12 @@ span {
     z-index: 1010;
     max-width: 100%;
     max-height: 75%;
+    width: 50%;
+}
+.fileUploader {
+    justify-content: center;
+    align-items: center;
+    margin: auto;
     width: 50%;
 }
 
@@ -118,6 +125,12 @@ span {
 }
 
 @media (max-width: 576px) {
+    .fileUploader {
+        justify-content: center;
+        align-items: center;
+        margin: auto;
+        width: 100%;
+    }
     .mine-bestillinger-wrapper {
         padding: 1rem;
     }

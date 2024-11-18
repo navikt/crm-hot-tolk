@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<PermissionSet xmlns="http://soap.sforce.com/2006/04/metadata">
+    <description>Brukes til å gå tilgang til Salesforce Field Service for iOS og Salesforce Field Service for Android.</description>
+    <hasActivationRequired>false</hasActivationRequired>
+    <label>HOT Tolk Field Service App</label>
+</PermissionSet>

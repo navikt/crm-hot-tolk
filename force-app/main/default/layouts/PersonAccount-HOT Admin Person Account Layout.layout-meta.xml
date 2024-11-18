@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <Layout xmlns="http://soap.sforce.com/2006/04/metadata">
+    <excludeButtons>OpenSlackRecordChannel</excludeButtons>
     <excludeButtons>Submit</excludeButtons>
     <layoutSections>
         <customLabel>false</customLabel>
@@ -16,12 +17,7 @@
                 <field>CRM_NavEmployeeName__c</field>
             </layoutItems>
         </layoutColumns>
-        <layoutColumns>
-            <layoutItems>
-                <behavior>Edit</behavior>
-                <field>INT_PersonIdent__c</field>
-            </layoutItems>
-        </layoutColumns>
+        <layoutColumns />
         <style>TwoColumnsTopToBottom</style>
     </layoutSections>
     <layoutSections>
@@ -97,7 +93,7 @@
             <sortOrder>4</sortOrder>
         </platformActionListItems>
         <platformActionListItems>
-            <actionName>Account.Oppgrader_bruker_til_frilanstolk</actionName>
+            <actionName>Account.HOT_UpgradeUserToFreelance</actionName>
             <actionType>QuickAction</actionType>
             <sortOrder>5</sortOrder>
         </platformActionListItems>
@@ -132,6 +128,7 @@
         <fields>SchedStartTime</fields>
         <fields>SchedEndTime</fields>
         <fields>WorkType</fields>
+        <fields>HOT_IsScreenInterpreterNew__c</fields>
         <fields>HOT_AssignmentType__c</fields>
         <fields>HOT_ServiceResource__c</fields>
         <fields>HOT_Request__c</fields>
@@ -164,7 +161,7 @@
     <showRunAssignmentRulesCheckbox>false</showRunAssignmentRulesCheckbox>
     <showSubmitAndAttachButton>false</showSubmitAndAttachButton>
     <summaryLayout>
-        <masterLabel>00h1X000002ezUn</masterLabel>
+        <masterLabel>00hKF000003jyYL</masterLabel>
         <sizeX>4</sizeX>
         <sizeY>0</sizeY>
         <summaryLayoutStyle>Default</summaryLayoutStyle>

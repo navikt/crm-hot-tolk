@@ -1,5 +1,5 @@
 {
-    "orgName": "crm-hot",
+    "orgName": "crm-hot-tolk",
     "edition": "Enterprise",
     "release": "Current",
     "adminEmail": "fakeemail@nav.no.scratchorg",
@@ -22,7 +22,8 @@
         "FieldService:5",
         "FieldServiceDispatcherUser:5",
         "FieldServiceMobileUser:5",
-        "FieldServiceSchedulingUser:5"
+        "FieldServiceSchedulingUser:5",
+        "LiveMessage"
     ],
     "country": "NO",
     "language": "en_US",
@@ -70,6 +71,9 @@
         },
         "userManagementSettings": {
             "permsetsInFieldCreation": true
+        },
+        "liveMessageSettings": {
+            "enableLiveMessage": true
         }
     }
 }

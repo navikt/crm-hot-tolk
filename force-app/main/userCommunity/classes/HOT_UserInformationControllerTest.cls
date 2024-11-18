@@ -1,4 +1,4 @@
-@isTest
+@IsTest
 private class HOT_UserInformationControllerTest {
     @testSetup
     static void setup() {
@@ -13,7 +13,7 @@ private class HOT_UserInformationControllerTest {
         insert admin;
     }
 
-    @isTest
+    @IsTest
     static void getPersonPhoneEmailAndStatus() {
         Test.startTest();
         Profile communityProfile = [SELECT Id FROM Profile WHERE Name = 'Customer Community Login User' LIMIT 1];
@@ -27,8 +27,6 @@ private class HOT_UserInformationControllerTest {
         person.INT_LastName__c = 'Bruker';
         person.INT_KrrIntegrationStatus__c = 'Queued';
         insert person;
-
-        
 
         Account account = [
             SELECT Id, OwnerId, PersonContactId, FirstName, LastName, PersonEmail, CRM_Person__c
@@ -47,11 +45,19 @@ private class HOT_UserInformationControllerTest {
 
         System.runAs(user) {
             person = HOT_UserInformationController.getPersonPhoneEmailAndStatus();
-            System.assertEquals('getpersontest@nav.no', person.INT_KrrEmail__c, 'Expected email to be "getpersontest@nav.no"');
-            System.assertEquals('Queued', person.INT_KrrIntegrationStatus__c, 'Expected KrrIntegrationStatus to be "Queued"');
+            System.assertEquals(
+                'getpersontest@nav.no',
+                person.INT_KrrEmail__c,
+                'Expected email to be "getpersontest@nav.no"'
+            );
+            System.assertEquals(
+                'Queued',
+                person.INT_KrrIntegrationStatus__c,
+                'Expected KrrIntegrationStatus to be "Queued"'
+            );
         }
     }
-    @isTest
+    @IsTest
     static void getPersonTest() {
         Test.startTest();
         Profile communityProfile = [SELECT Id FROM Profile WHERE Name = 'Customer Community Login User' LIMIT 1];
@@ -85,10 +91,10 @@ private class HOT_UserInformationControllerTest {
             System.assertEquals(true, person.HOT_WorkplaceInterpreter__c);
         }
     }
-    @isTest
+    @IsTest
     static void getAccountId() {
-         Test.startTest();
-     Profile communityProfile = [SELECT Id FROM Profile WHERE Name = 'Customer Community Login User' LIMIT 1];
+        Test.startTest();
+        Profile communityProfile = [SELECT Id FROM Profile WHERE Name = 'Customer Community Login User' LIMIT 1];
         User admin = [SELECT Id FROM User WHERE Name = 'admin' LIMIT 1];
 
         Person__c person = HOT_TestDataFactory.createPerson();
@@ -112,11 +118,11 @@ private class HOT_UserInformationControllerTest {
         user.Username = 'HOT_testuser1@nav.hot.no';
         user.CommunityNickname = 'userTest';
         insert user;
-         Test.stopTest();
+        Test.stopTest();
         System.runAs(user) {
             User user2 = HOT_UserInformationController.getAccountId();
             System.assertEquals(account.Id, user2.AccountId);
         }
-        
+
     }
 }

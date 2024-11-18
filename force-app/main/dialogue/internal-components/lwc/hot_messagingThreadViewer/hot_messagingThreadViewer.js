@@ -1,9 +1,11 @@
 import { LightningElement, api, wire, track } from 'lwc';
 import getmessages from '@salesforce/apex/HOT_MessageHelper.getMessagesFromThread';
 import markAsReadByNav from '@salesforce/apex/HOT_MessageHelper.markAsReadByNav';
+import checkAccess from '@salesforce/apex/HOT_ThreadDetailController.checkAccess';
 import { subscribe, unsubscribe } from 'lightning/empApi';
 import setLastMessageFrom from '@salesforce/apex/HOT_MessageHelper.setLastMessageFrom';
-
+import getUserNameRole from '@salesforce/apex/HOT_MessageHelper.getUserNameRole';
+import markThreadAsReadEmployee from '@salesforce/apex/HOT_MessageHelper.markThreadAsReadEmployee';
 import userId from '@salesforce/user/Id';
 import { updateRecord, getRecord, getFieldValue } from 'lightning/uiRecordApi';
 import ACTIVE_FIELD from '@salesforce/schema/Thread__c.CRM_isActive__c';
@@ -30,6 +32,9 @@ export default class messagingThreadViewer extends LightningElement {
     @api englishTextTemplate;
     @track langBtnLock = false;
     langBtnAriaToggle = false;
+    newMessage = false;
+    @track hasAccess = false;
+    @track showAccessError = false;
 
     @api textTemplate; //Support for conditional text template as input
     //Constructor, called onload
@@ -37,20 +42,33 @@ export default class messagingThreadViewer extends LightningElement {
         if (this.thread) {
             this.threadid = this.thread.Id;
         }
+        checkAccess({ threadId: this.threadid }).then((result) => {
+            if (result == true) {
+                this.hasAccess = true;
+                this.showAccessError = false;
+            } else {
+                this.showAccessError = true;
+                this.hasAccess = false;
+            }
+        });
         this.handleSubscribe();
         this.scrolltobottom();
         markAsReadByNav({ threadId: this.threadid });
+        markThreadAsReadEmployee({ threadId: this.threadid });
     }
 
     disconnectedCallback() {
         this.handleUnsubscribe();
     }
     renderedCallback() {
+        this.refreshMessages();
+        if (this.newMessage) {
+            markAsReadByNav({ threadId: this.threadid });
+            markThreadAsReadEmployee({ threadId: this.threadid });
+            this.newMessage = false;
+        }
         this.scrolltobottom();
         const test = this.template.querySelector('.cancelButton');
-        if (test) {
-            test.focus();
-        }
     }
 
     //Handles subscription to streaming API for listening to changes to auth status
@@ -111,21 +129,23 @@ export default class messagingThreadViewer extends LightningElement {
             // If messagefield is empty, stop the submit
             textInput.CRM_Thread__c = this.thread.Id;
             textInput.CRM_From_User__c = userId;
-            textInput.CRM_Read_By_Nav__c = true;
-            textInput.CRM_Read_By_Nav_Datetime__c = new Date().toISOString();
-            setLastMessageFrom({ threadId: this.thread.Id, fromContactId: 'tolk' });
-
-            if (textInput.CRM_Message_Text__c == null || textInput.CRM_Message_Text__c === '') {
-                const event1 = new ShowToastEvent({
-                    title: 'Message Body missing',
-                    message: 'Make sure that you fill in the message text',
-                    variant: 'error'
-                });
-                this.dispatchEvent(event1);
-                this.showspinner = false;
-            } else {
-                this.template.querySelector('lightning-record-edit-form').submit(textInput);
-            }
+            //her
+            getUserNameRole().then((result) => {
+                textInput.HOT_User_Role__c = result;
+                if (textInput.CRM_Message_Text__c == null || textInput.CRM_Message_Text__c === '') {
+                    const event1 = new ShowToastEvent({
+                        title: 'Message Body missing',
+                        message: 'Make sure that you fill in the message text',
+                        variant: 'error'
+                    });
+                    this.dispatchEvent(event1);
+                    this.showspinner = false;
+                } else {
+                    this.template.querySelector('lightning-record-edit-form').submit(textInput);
+                    setLastMessageFrom({ threadId: this.thread.Id, fromContactId: 'ansatt/formidler' });
+                    this.newMessage = true;
+                }
+            });
         }
     }
 

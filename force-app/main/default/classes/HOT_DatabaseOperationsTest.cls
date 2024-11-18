@@ -1,6 +1,6 @@
-@isTest
+@IsTest
 public with sharing class HOT_DatabaseOperationsTest {
-    @isTest
+    @IsTest
     public static void testInsertRecord() {
         WorkType workType = HOT_TestDataFactory.createWorkType();
         insert workType;
@@ -18,7 +18,7 @@ public with sharing class HOT_DatabaseOperationsTest {
         System.assert(requestResult != null, 'Expected to find a request');
     }
 
-    @isTest
+    @IsTest
     public static void testInsertRecords() {
         WorkType workType = HOT_TestDataFactory.createWorkType();
         insert workType;
@@ -38,7 +38,7 @@ public with sharing class HOT_DatabaseOperationsTest {
         System.assert(requestResult != null, 'Expected to find a request');
     }
 
-    @isTest
+    @IsTest
     public static void testUpdateRecord() {
         WorkType workType = HOT_TestDataFactory.createWorkType();
         insert workType;
@@ -62,7 +62,7 @@ public with sharing class HOT_DatabaseOperationsTest {
         System.assert(requestResult != null, 'Expected to find a request');
     }
 
-    @isTest
+    @IsTest
     public static void testUpdateRecords() {
         WorkType workType = HOT_TestDataFactory.createWorkType();
         insert workType;
@@ -88,7 +88,7 @@ public with sharing class HOT_DatabaseOperationsTest {
         System.assert(requestResult != null, 'Expected to find a request');
     }
 
-    @isTest
+    @IsTest
     public static void testUpsertRecord() {
         WorkType workType = HOT_TestDataFactory.createWorkType();
         insert workType;
@@ -125,7 +125,7 @@ public with sharing class HOT_DatabaseOperationsTest {
         );
     }
 
-    @isTest
+    @IsTest
     public static void testUpsertRecords() {
         WorkType workType = HOT_TestDataFactory.createWorkType();
         insert workType;
@@ -163,7 +163,7 @@ public with sharing class HOT_DatabaseOperationsTest {
         );
     }
 
-    @isTest
+    @IsTest
     public static void deleteRecord() {
         WorkType workType = HOT_TestDataFactory.createWorkType();
         insert workType;
@@ -180,7 +180,7 @@ public with sharing class HOT_DatabaseOperationsTest {
         Test.stopTest();
     }
 
-    @isTest
+    @IsTest
     public static void deleteRecordFail() {
         WorkType workType = HOT_TestDataFactory.createWorkType();
         insert workType;
@@ -201,7 +201,7 @@ public with sharing class HOT_DatabaseOperationsTest {
         System.assert(logs.size() > 0, 'Expected to find no records and an error since no records exists.');
     }
 
-    @isTest
+    @IsTest
     public static void deleteRecords() {
         WorkType workType = HOT_TestDataFactory.createWorkType();
         insert workType;
@@ -221,7 +221,7 @@ public with sharing class HOT_DatabaseOperationsTest {
         Test.stopTest();
     }
 
-    @isTest
+    @IsTest
     public static void undeleteRecord() {
         WorkType workType = HOT_TestDataFactory.createWorkType();
         insert workType;
@@ -243,7 +243,7 @@ public with sharing class HOT_DatabaseOperationsTest {
         System.assert(requestResult.Subject__c == subject, 'Expected to find a request with correct subject.');
     }
 
-    @isTest
+    @IsTest
     public static void undeleteRecords() {
         WorkType workType = HOT_TestDataFactory.createWorkType();
         insert workType;

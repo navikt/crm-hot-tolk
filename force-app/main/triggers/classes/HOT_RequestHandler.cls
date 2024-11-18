@@ -1,4 +1,9 @@
 public without sharing class HOT_RequestHandler extends MyTriggers {
+    private static void handleException(Exception e) {
+        LoggerUtility logger = new LoggerUtility();
+        logger.exception(e, CRM_ApplicationDomain.Domain.HOT);
+        logger.publishSynch();
+    }
     public override void onBeforeInsert() {
         setStatusDefault((List<HOT_Request__c>) records);
         setOrdererField((List<HOT_Request__c>) records);
@@ -91,8 +96,8 @@ public without sharing class HOT_RequestHandler extends MyTriggers {
             // Notify user on order
             if (
                 triggerOldMap.get(request.Id).get('Status__c') == 'Åpen' &&
-                triggerOldMap.get(request.Id).get('Status__c') !==
-                request.Status__c && request.Status__c == 'Godkjent' && 
+                triggerOldMap.get(request.Id).get('Status__c') !== request.Status__c &&
+                request.Status__c == 'Godkjent' &&
                 !request.IsAccountEqualOrderer__c
             ) {
                 ordererRequestsToNotifyUsers.add(request);
@@ -105,7 +110,7 @@ public without sharing class HOT_RequestHandler extends MyTriggers {
             setCancelDate(avlystRequests);
         }
         if (notifyDispatcherRequests.size() > 0) {
-            HOT_RequestNotification.notifyDispatchers_requestChanged(notifyDispatcherRequests, triggerOldMap);
+            HOT_RequestNotification.notifyDispatchers_requestChanged(notifyDispatcherRequests);
             resetNotifyDispatcher(notifyDispatcherRequests);
         }
         if (requestsToChangeOwnerToArchive.size() > 0) {
@@ -119,9 +124,11 @@ public without sharing class HOT_RequestHandler extends MyTriggers {
     public override void onAfterUpdate(Map<Id, sObject> triggerOldMap) {
         List<HOT_Request__c> godkjentRequests = new List<HOT_Request__c>();
         List<Hot_Request__c> requestsWithNewSubject = new List<Hot_Request__c>();
+        List<Hot_Request__c> requestsWithNewAccount = new List<Hot_Request__c>();
         List<Hot_Request__c> requestsWithUpdatedDispatcher = new List<Hot_Request__c>();
-
-
+        List<Hot_Request__c> requestsWithUpdatedCompany = new List<Hot_Request__c>();
+        List<Hot_Request__c> requestsWithUpdatedMeetingAddress = new List<Hot_Request__c>();
+        List<Hot_Request__c> requestsWithUpdatedInterpretationAddress = new List<Hot_Request__c>();
         for (HOT_Request__c request : (List<HOT_Request__c>) records) {
             // Filter for Godkjent requests
             if (triggerOldMap.get(request.Id).get('Status__c') == 'Åpen' && request.Status__c == 'Godkjent') {
@@ -130,8 +137,29 @@ public without sharing class HOT_RequestHandler extends MyTriggers {
             if (triggerOldMap.get(request.Id).get('Subject__c') !== request.Subject__c) {
                 requestsWithNewSubject.add(request);
             }
+            if (triggerOldMap.get(request.Id).get('Account__c') !== request.Account__c) {
+                requestsWithNewAccount.add(request);
+            }
             if (triggerOldMap.get(request.Id).get('Dispatcher__c') !== request.Dispatcher__c) {
-            requestsWithUpdatedDispatcher.add(request);
+                requestsWithUpdatedDispatcher.add(request);
+            }
+            if (triggerOldMap.get(request.Id).get('Company__c') !== request.Company__c) {
+                requestsWithUpdatedCompany.add(request);
+            }
+            if (
+                triggerOldMap.get(request.Id).get('MeetingStreet__c') !== request.MeetingStreet__c ||
+                triggerOldMap.get(request.Id).get('MeetingPostalCode__c') !== request.MeetingPostalCode__c ||
+                triggerOldMap.get(request.Id).get('MeetingPostalCity__c') !== request.MeetingPostalCity__c
+            ) {
+                requestsWithUpdatedMeetingAddress.add(request);
+            }
+            if (
+                triggerOldMap.get(request.Id).get('InterpretationStreet__c') !== request.InterpretationStreet__c ||
+                triggerOldMap.get(request.Id).get('InterpretationPostalCode__c') !==
+                request.InterpretationPostalCode__c ||
+                triggerOldMap.get(request.Id).get('InterpretationPostalCity__c') !== request.InterpretationPostalCity__c
+            ) {
+                requestsWithUpdatedInterpretationAddress.add(request);
             }
         }
         if (godkjentRequests.size() > 0) {
@@ -140,45 +168,132 @@ public without sharing class HOT_RequestHandler extends MyTriggers {
         if (requestsWithNewSubject.size() > 0) {
             updateWorkOrderSubject(requestsWithNewSubject);
         }
+        if (requestsWithNewAccount.size() > 0) {
+            updateWorkOrderAccount(requestsWithNewAccount);
+        }
         if (requestsWithUpdatedDispatcher.size() > 0) {
-             updateDispatcherOnThread(requestsWithUpdatedDispatcher);
+            updateDispatcherOnThread(requestsWithUpdatedDispatcher);
+        }
+        if (requestsWithUpdatedCompany.size() > 0) {
+            updateCompany(requestsWithUpdatedCompany);
+        }
+        if (requestsWithUpdatedMeetingAddress.size() > 0) {
+            updateMeetingAddress(requestsWithUpdatedMeetingAddress);
+        }
+        if (requestsWithUpdatedInterpretationAddress.size() > 0) {
+            updateInterpretationAddress(requestsWithUpdatedInterpretationAddress);
         }
     }
-    public static void updateDispatcherOnThread(List<HOT_Request__c>  requestsList){
-        Set<Id> requestIds=new Set<Id>();
-        for(HOT_Request__c r:requestsList ){
+    private static void updateMeetingAddress(List<HOT_Request__c> requestsWithNewAddress) {
+        List<WorkOrder> WorkOrders = [
+            SELECT Address, HOT_Request__c
+            FROM WorkOrder
+            WHERE HOT_Request__c IN :requestsWithNewAddress
+        ];
+        for (WorkOrder wo : WorkOrders) {
+            for (HOT_Request__c request : requestsWithNewAddress) {
+                if (wo.HOT_Request__c == request.Id) {
+                    wo.Street = request.MeetingStreet__c;
+                    wo.City = request.MeetingPostalCity__c;
+                    wo.PostalCode = request.MeetingPostalCode__c;
+                }
+            }
+        }
+        update WorkOrders;
+    }
+    private static void updateInterpretationAddress(List<HOT_Request__c> requestsWithNewAddress) {
+        List<WorkOrder> WorkOrders = [
+            SELECT
+                HOT_InterpretationPostalCode__c,
+                HOT_InterpretationPostalCity__c,
+                HOT_InterpretationStreet__c,
+                HOT_Request__c
+            FROM WorkOrder
+            WHERE HOT_Request__c IN :requestsWithNewAddress
+        ];
+        for (WorkOrder wo : WorkOrders) {
+            for (HOT_Request__c request : requestsWithNewAddress) {
+                if (wo.HOT_Request__c == request.Id) {
+                    wo.HOT_InterpretationPostalCode__c = request.InterpretationPostalCode__c;
+                    wo.HOT_InterpretationPostalCity__c = request.InterpretationPostalCity__c;
+                    wo.HOT_InterpretationStreet__c = request.InterpretationStreet__c;
+                }
+            }
+        }
+        update WorkOrders;
+    }
+    private static void updateCompany(List<HOT_Request__c> requestsWithNewCompany) {
+        List<ServiceAppointment> saList = [
+            SELECT Id, HOT_Company__c, HOT_Request__c
+            FROM ServiceAppointment
+            WHERE HOT_Request__c IN :requestsWithNewCompany
+        ];
+
+        if (saList.size() > 0) {
+            for (ServiceAppointment sa : saList) {
+                for (HOT_Request__c request : requestsWithNewCompany) {
+                    if (sa.HOT_Request__c == request.Id && request.Company__c != null) {
+                        sa.HOT_Company__c = request.Company__c;
+                    }
+                }
+            }
+            update saList;
+        }
+    }
+    public static void updateDispatcherOnThread(List<HOT_Request__c> requestsList) {
+        Set<Id> requestIds = new Set<Id>();
+        for (HOT_Request__c r : requestsList) {
             requestIds.add(r.Id);
         }
-        List<HOT_Request__c> requests=[SELECT Id, Dispatcher__c FROM HOT_Request__C WHERE Id IN :requestIds];
-        List<WorkOrder> workorders=[SELECT Id, HOT_Request__r.Dispatcher__c FROM WorkOrder WHERE HOT_Request__c IN :requestIds];
-        List<ServiceAppointment> serviceAppointments=[SELECT Id, HOT_Request__r.Dispatcher__c FROM ServiceAppointment WHERE HOT_Request__c IN :requestIds];
-        List<HOT_InterestedResource__c> interestedReources=[SELECT Id, ServiceAppointment__r.HOT_Request__r.Dispatcher__c FROM HOT_InterestedResource__c WHERE ServiceAppointment__r.HOT_Request__c IN :requestIds];
-        
-        
-     Map<Id, Id> requestMap = new Map<Id, Id>();
-     Map<Id, Id> workOrderMap = new Map<Id, Id>();
-     Map<Id, Id> serviceApppointmentMap = new Map<Id, Id>();
-     Map<Id, Id> interestedResourceMap = new Map<Id, Id>();
-        for(HOT_Request__c r: requests){
+        List<HOT_Request__c> requests = [SELECT Id, Dispatcher__c FROM HOT_Request__C WHERE Id IN :requestIds];
+        List<WorkOrder> workorders = [
+            SELECT Id, HOT_Request__r.Dispatcher__c
+            FROM WorkOrder
+            WHERE HOT_Request__c IN :requestIds
+        ];
+        List<ServiceAppointment> serviceAppointments = [
+            SELECT Id, HOT_Request__r.Dispatcher__c
+            FROM ServiceAppointment
+            WHERE HOT_Request__c IN :requestIds
+        ];
+        List<HOT_InterestedResource__c> interestedReources = [
+            SELECT Id, ServiceAppointment__r.HOT_Request__r.Dispatcher__c
+            FROM HOT_InterestedResource__c
+            WHERE ServiceAppointment__r.HOT_Request__c IN :requestIds
+        ];
+
+        Map<Id, Id> requestMap = new Map<Id, Id>();
+        Map<Id, Id> workOrderMap = new Map<Id, Id>();
+        Map<Id, Id> serviceApppointmentMap = new Map<Id, Id>();
+        Map<Id, Id> interestedResourceMap = new Map<Id, Id>();
+        for (HOT_Request__c r : requests) {
             requestMap.put(r.Id, r.Dispatcher__c);
         }
-        Set<Id> woIds=new Set<Id>();
-        for(WorkOrder wo: workorders){
+        Set<Id> woIds = new Set<Id>();
+        for (WorkOrder wo : workorders) {
             woIds.add(wo.Id);
             workOrderMap.put(wo.Id, wo.HOT_Request__r.Dispatcher__c);
         }
-        Set<Id> saIds=new Set<Id>();
-        for(ServiceAppointment sa: serviceAppointments){
+        Set<Id> saIds = new Set<Id>();
+        for (ServiceAppointment sa : serviceAppointments) {
             saIds.add(sa.Id);
             serviceApppointmentMap.put(sa.Id, sa.HOT_Request__r.Dispatcher__c);
         }
-        Set<Id> irIds=new Set<Id>();
-        for(HOT_InterestedResource__c ir: interestedReources){
+        Set<Id> irIds = new Set<Id>();
+        for (HOT_InterestedResource__c ir : interestedReources) {
             irIds.add(ir.Id);
             interestedResourceMap.put(ir.Id, ir.serviceAppointment__r.HOT_Request__r.Dispatcher__c);
         }
 
-        List<Thread__c> threadList=[SELECT Id, CRM_Related_Object__c FROM Thread__c WHERE CRM_Related_Object__c IN:requestIds OR CRM_Related_Object__c IN:woIds OR CRM_Related_Object__c IN: saIds OR CRM_Related_Object__c IN: irIds];
+        List<Thread__c> threadList = [
+            SELECT Id, CRM_Related_Object__c
+            FROM Thread__c
+            WHERE
+                CRM_Related_Object__c IN :requestIds
+                OR CRM_Related_Object__c IN :woIds
+                OR CRM_Related_Object__c IN :saIds
+                OR CRM_Related_Object__c IN :irIds
+        ];
 
         for (Thread__c thread : threadList) {
             if (requestMap.containsKey(thread.CRM_Related_Object__c)) {
@@ -192,8 +307,8 @@ public without sharing class HOT_RequestHandler extends MyTriggers {
             }
         }
         update threadList;
-    }  
-    
+    }
+
     private static void updateWorkOrderSubject(List<HOT_Request__c> requestsWithNewSubject) {
         List<WorkOrder> workOrders = [
             SELECT Id, Subject, HOT_Request__r.Subject__c
@@ -206,6 +321,21 @@ public without sharing class HOT_RequestHandler extends MyTriggers {
                 if (wo.HOT_Request__r.Subject__c != null) {
                     wo.Subject = wo.HOT_Request__r.Subject__c;
                 }
+            }
+            update workOrders;
+        }
+    }
+
+    private static void updateWorkOrderAccount(List<HOT_Request__c> requestsWithNewAccount) {
+        List<WorkOrder> workOrders = [
+            SELECT Id, AccountId, HOT_Request__r.Account__c
+            FROM WorkOrder
+            WHERE HOT_Request__c IN :requestsWithNewAccount
+        ];
+
+        if (workOrders.size() > 0) {
+            for (WorkOrder wo : workOrders) {
+                wo.AccountId = wo.HOT_Request__r.Account__c;
             }
             update workOrders;
         }
@@ -473,5 +603,35 @@ public without sharing class HOT_RequestHandler extends MyTriggers {
                 request.InterpretationPostalCode__c = request.MeetingPostalCode__c;
             }
         }
+    }
+    @AuraEnabled
+    public static boolean isErrorOnRequestCreate(String requestId) {
+        Boolean isError = false;
+        HOT_Request__c createdRequest = [
+            SELECT Id, StartTime__c, EndTime__c, NumberOfWorkOrders__c
+            FROM HOT_Request__c
+            WHERE Id = :requestId
+        ];
+        if (createdRequest.StartTime__c == null || createdRequest.EndTime__c == null) {
+            isError = true;
+        } else {
+            List<WorkOrder> createdWorkOrders = [SELECT Id FROM WorkOrder WHERE HOT_Request__c = :requestId];
+            if (createdRequest.NumberOfWorkOrders__c != createdWorkOrders.size()) {
+                isError = true;
+                try {
+                    delete createdWorkOrders;
+                } catch (Exception e) {
+                    handleException(e);
+                }
+            }
+        }
+        if (isError) {
+            try {
+                delete createdRequest;
+            } catch (Exception e) {
+                handleException(e);
+            }
+        }
+        return isError;
     }
 }

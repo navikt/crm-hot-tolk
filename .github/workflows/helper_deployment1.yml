@@ -30,6 +30,8 @@ jobs:
   deploy-package:
     name: Deploy Package
     uses: navikt/crm-workflows-base/.github/workflows/deployPackage.yml@master
+    permissions:
+      contents: read
     with:
       packageId: ${{ inputs.packageId }}
       org: ${{ inputs.org }}

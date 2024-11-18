@@ -17,8 +17,18 @@
             ></c-button>
         </div>
         <div if:false={noServiceAppointments}>
+            <c-hot_freelance-table-list-mobile
+                if:true={isMobile}
+                records={records}
+                columns={columns}
+                onrowclick={goToRecordDetails}
+                checkbox="true"
+                checked-rows={checkedServiceAppointments}
+                oncheckedrows={handleRowChecked}
+                icon-by-value={iconByValue}
+            ></c-hot_freelance-table-list-mobile>
             <c-table
-                if:false={noServiceAppointments}
+                if:false={isMobile}
                 records={records}
                 columns={columns}
                 onrowclick={goToRecordDetails}
@@ -195,7 +205,14 @@
                             title="Meld interesse til alle oppdrag i serien"
                         >
                         </c-button>
+                        <c-hot_freelance-table-list-mobile
+                            if:true={isMobile}
+                            records={seriesRecords}
+                            columns={inDetailsColumns}
+                            onrowclick={goToRecordDetails}
+                        ></c-hot_freelance-table-list-mobile>
                         <c-table
+                            if:false={isMobile}
                             records={seriesRecords}
                             columns={inDetailsColumns}
                             onrowclick={goToRecordDetails}

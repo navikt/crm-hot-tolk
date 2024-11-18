@@ -36,29 +36,39 @@ public without sharing class HOT_WageClaimListController {
             throw e;
         }
     }
-     @AuraEnabled
+    @AuraEnabled
     public static String getThreadId(String wageClaimeId) {
-         String Id='';
-        try{
+        String Id = '';
+        try {
+            Thread__c thread = [SELECT Id FROM Thread__c WHERE CRM_Related_Object__c = :wageClaimeId LIMIT 1];
+            if (thread.Id != null) {
+                Id = thread.Id;
+                return Id;
+            }
 
-            Thread__c thread = [SELECT Id FROM Thread__c WHERE CRM_Related_Object__c=:wageClaimeId LIMIT 1];
-             if (thread.Id != null) {
-               Id=thread.Id;
-               return Id;
-             }
-             
             return Id;
-        }catch(Exception E){
-
+        } catch (Exception E) {
         }
         return Id;
     }
     @AuraEnabled
     public static HOT_WageClaim__c getWageClaimDetails(String recordId) {
-    User currentUser = [SELECT Id, AccountId, Account.CRM_Person__c FROM User WHERE Id = :UserInfo.getUserId()];
-      HOT_WageClaim__c wageClaim= [
-            SELECT  Id, ServiceAppointmentName__c, StartTime__c, EndTime__c, ServiceAppointmentCity__c, Status__c, WorkTypeName__c FROM HOT_WageClaim__c
-            WHERE Id=:recordId AND ServiceResource__r.AccountId=:currentUser.AccountId
+        User currentUser = [SELECT Id, AccountId, Account.CRM_Person__c FROM User WHERE Id = :UserInfo.getUserId()];
+        HOT_WageClaim__c wageClaim = [
+            SELECT
+                Id,
+                ServiceAppointmentName__c,
+                StartTime__c,
+                EndTime__c,
+                ServiceAppointmentCity__c,
+                Status__c,
+                WorkTypeName__c,
+                DegreeOfHearingAndVisualImpairment__c,
+                ServiceAppointment__r.HOT_Request__r.OwnerName__c,
+                AssignmentType__c,
+                ServiceResource__r.AccountId
+            FROM HOT_WageClaim__c
+            WHERE Id = :recordId AND ServiceResource__r.AccountId = :currentUser.AccountId
         ];
         return wageClaim;
     }

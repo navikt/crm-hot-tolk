@@ -1,11 +1,41 @@
-<?xml version="1.0" encoding="UTF-8"?>
+<?xml version="1.0" encoding="UTF-8" ?>
 <Flow xmlns="http://soap.sforce.com/2006/04/metadata">
+    <actionCalls>
+        <name>check_for_overlap_and_interested_ir</name>
+        <label>check for overlap and interested ir</label>
+        <locationX>380</locationX>
+        <locationY>674</locationY>
+        <actionName>HOT_wantedSRListController</actionName>
+        <actionType>apex</actionType>
+        <connector>
+            <targetReference>overlapDecision</targetReference>
+        </connector>
+        <flowTransactionModel>Automatic</flowTransactionModel>
+        <inputParameters>
+            <name>saID</name>
+            <value>
+                <elementReference>recordId</elementReference>
+            </value>
+        </inputParameters>
+        <inputParameters>
+            <name>srID</name>
+            <value>
+                <elementReference>check_if_freelance.Id</elementReference>
+            </value>
+        </inputParameters>
+        <nameSegment>HOT_wantedSRListController</nameSegment>
+        <outputParameters>
+            <assignToReference>overlappingSA</assignToReference>
+            <name>output</name>
+        </outputParameters>
+        <versionSegment>1</versionSegment>
+    </actionCalls>
     <apiVersion>58.0</apiVersion>
     <assignments>
         <name>change_status</name>
         <label>change status</label>
-        <locationX>50</locationX>
-        <locationY>674</locationY>
+        <locationX>578</locationX>
+        <locationY>1106</locationY>
         <assignmentItems>
             <assignToReference>get_IR.Status__c</assignToReference>
             <operator>Assign</operator>
@@ -20,8 +50,8 @@
     <decisions>
         <name>check_if_sr_is_freelance</name>
         <label>check if sr is freelance</label>
-        <locationX>380</locationX>
-        <locationY>350</locationY>
+        <locationX>743</locationX>
+        <locationY>566</locationY>
         <defaultConnector>
             <targetReference>Is_not_freelance_message</targetReference>
         </defaultConnector>
@@ -36,17 +66,49 @@
                     <booleanValue>true</booleanValue>
                 </rightValue>
             </conditions>
+            <conditions>
+                <leftValueReference>check_if_freelance.IsActive</leftValueReference>
+                <operator>EqualTo</operator>
+                <rightValue>
+                    <booleanValue>true</booleanValue>
+                </rightValue>
+            </conditions>
             <connector>
-                <targetReference>get_IR</targetReference>
+                <targetReference>check_for_overlap_and_interested_ir</targetReference>
             </connector>
             <label>Is freelance</label>
         </rules>
     </decisions>
     <decisions>
+        <name>checkSAReleasedToFreelance</name>
+        <label>checkSAReleasedToFreelance</label>
+        <locationX>1056</locationX>
+        <locationY>242</locationY>
+        <defaultConnector>
+            <targetReference>notReleasedScreen</targetReference>
+        </defaultConnector>
+        <defaultConnectorLabel>Not released to freelance</defaultConnectorLabel>
+        <rules>
+            <name>Is_released_to_freelance</name>
+            <conditionLogic>and</conditionLogic>
+            <conditions>
+                <leftValueReference>getSA.Status</leftValueReference>
+                <operator>EqualTo</operator>
+                <rightValue>
+                    <stringValue>Released to Freelance</stringValue>
+                </rightValue>
+            </conditions>
+            <connector>
+                <targetReference>registerWanterSr</targetReference>
+            </connector>
+            <label>Is released to freelance</label>
+        </rules>
+    </decisions>
+    <decisions>
         <name>if_IR_not_exist</name>
         <label>if IR not exist</label>
-        <locationX>182</locationX>
-        <locationY>566</locationY>
+        <locationX>710</locationX>
+        <locationY>998</locationY>
         <defaultConnector>
             <targetReference>New_wanted_interested_resource</targetReference>
         </defaultConnector>
@@ -65,6 +127,46 @@
                 <targetReference>change_status</targetReference>
             </connector>
             <label>Change status on IR</label>
+        </rules>
+    </decisions>
+    <decisions>
+        <name>overlapDecision</name>
+        <label>overlapDecision</label>
+        <locationX>380</locationX>
+        <locationY>782</locationY>
+        <defaultConnector>
+            <targetReference>get_IR</targetReference>
+        </defaultConnector>
+        <defaultConnectorLabel>no overlap</defaultConnectorLabel>
+        <rules>
+            <name>Overlap</name>
+            <conditionLogic>and</conditionLogic>
+            <conditions>
+                <leftValueReference>overlappingSA</leftValueReference>
+                <operator>EqualTo</operator>
+                <rightValue>
+                    <stringValue>overlap</stringValue>
+                </rightValue>
+            </conditions>
+            <connector>
+                <targetReference>overlapScreen</targetReference>
+            </connector>
+            <label>Overlap or existing ir on WO</label>
+        </rules>
+        <rules>
+            <name>existing_IR</name>
+            <conditionLogic>and</conditionLogic>
+            <conditions>
+                <leftValueReference>overlappingSA</leftValueReference>
+                <operator>EqualTo</operator>
+                <rightValue>
+                    <stringValue>existing</stringValue>
+                </rightValue>
+            </conditions>
+            <connector>
+                <targetReference>existing</targetReference>
+            </connector>
+            <label>existing IR</label>
         </rules>
     </decisions>
     <environments>Default</environments>
@@ -92,8 +194,8 @@
     <recordCreates>
         <name>New_wanted_interested_resource</name>
         <label>New wanted interested resource</label>
-        <locationX>314</locationX>
-        <locationY>674</locationY>
+        <locationX>842</locationX>
+        <locationY>1106</locationY>
         <inputAssignments>
             <field>ServiceAppointment__c</field>
             <value>
@@ -118,8 +220,8 @@
     <recordLookups>
         <name>check_if_freelance</name>
         <label>check if freelance</label>
-        <locationX>380</locationX>
-        <locationY>242</locationY>
+        <locationX>743</locationX>
+        <locationY>458</locationY>
         <assignNullValuesIfNoRecordsFound>false</assignNullValuesIfNoRecordsFound>
         <connector>
             <targetReference>check_if_sr_is_freelance</targetReference>
@@ -139,8 +241,8 @@
     <recordLookups>
         <name>get_IR</name>
         <label>get IR</label>
-        <locationX>182</locationX>
-        <locationY>458</locationY>
+        <locationX>710</locationX>
+        <locationY>890</locationY>
         <assignNullValuesIfNoRecordsFound>false</assignNullValuesIfNoRecordsFound>
         <connector>
             <targetReference>if_IR_not_exist</targetReference>
@@ -164,24 +266,97 @@
         <object>HOT_InterestedResource__c</object>
         <storeOutputAutomatically>true</storeOutputAutomatically>
     </recordLookups>
+    <recordLookups>
+        <name>getSA</name>
+        <label>getSA</label>
+        <locationX>1056</locationX>
+        <locationY>134</locationY>
+        <assignNullValuesIfNoRecordsFound>false</assignNullValuesIfNoRecordsFound>
+        <connector>
+            <targetReference>checkSAReleasedToFreelance</targetReference>
+        </connector>
+        <filterLogic>and</filterLogic>
+        <filters>
+            <field>Id</field>
+            <operator>EqualTo</operator>
+            <value>
+                <elementReference>recordId</elementReference>
+            </value>
+        </filters>
+        <getFirstRecordOnly>true</getFirstRecordOnly>
+        <object>ServiceAppointment</object>
+        <storeOutputAutomatically>true</storeOutputAutomatically>
+    </recordLookups>
     <recordUpdates>
         <name>update_IR</name>
         <label>update IR</label>
-        <locationX>50</locationX>
-        <locationY>782</locationY>
+        <locationX>578</locationX>
+        <locationY>1214</locationY>
         <inputReference>get_IR</inputReference>
     </recordUpdates>
     <screens>
+        <name>existing</name>
+        <label>existing</label>
+        <locationX>314</locationX>
+        <locationY>890</locationY>
+        <allowBack>false</allowBack>
+        <allowFinish>true</allowFinish>
+        <allowPause>false</allowPause>
+        <fields>
+            <name>existingText</name>
+            <fieldText
+            >&lt;p&gt;Tolken har allerede en interessert ressurs på oppdrag som tilhører samme arbeidsordre.&lt;/p&gt;</fieldText>
+            <fieldType>DisplayText</fieldType>
+        </fields>
+        <showFooter>true</showFooter>
+        <showHeader>false</showHeader>
+    </screens>
+    <screens>
         <name>Is_not_freelance_message</name>
         <label>Is not freelance message</label>
-        <locationX>578</locationX>
-        <locationY>458</locationY>
+        <locationX>1106</locationX>
+        <locationY>674</locationY>
         <allowBack>true</allowBack>
         <allowFinish>false</allowFinish>
         <allowPause>false</allowPause>
         <fields>
             <name>NoFreelanceMessage</name>
-            <fieldText>&lt;p&gt;Ønsket tolk &lt;strong&gt;må&lt;/strong&gt; være en frilanstolk. Trykk på tilbake og velg en annen&lt;/p&gt;</fieldText>
+            <fieldText
+            >&lt;p&gt;Ønsket tolk &lt;strong&gt;må&lt;/strong&gt; være en frilanstolk og ha en aktiv tjenesteressurs. Trykk på tilbake og velg en annen&lt;/p&gt;</fieldText>
+            <fieldType>DisplayText</fieldType>
+        </fields>
+        <showFooter>true</showFooter>
+        <showHeader>false</showHeader>
+    </screens>
+    <screens>
+        <name>notReleasedScreen</name>
+        <label>notReleasedScreen</label>
+        <locationX>1370</locationX>
+        <locationY>350</locationY>
+        <allowBack>false</allowBack>
+        <allowFinish>true</allowFinish>
+        <allowPause>false</allowPause>
+        <fields>
+            <name>notReleasedText</name>
+            <fieldText
+            >&lt;p&gt;Oppdraget må være frigitt til frilans før du kan registrere ønsket frilanstolk.&lt;/p&gt;</fieldText>
+            <fieldType>DisplayText</fieldType>
+        </fields>
+        <showFooter>true</showFooter>
+        <showHeader>false</showHeader>
+    </screens>
+    <screens>
+        <name>overlapScreen</name>
+        <label>overlapScreen</label>
+        <locationX>50</locationX>
+        <locationY>890</locationY>
+        <allowBack>false</allowBack>
+        <allowFinish>true</allowFinish>
+        <allowPause>false</allowPause>
+        <fields>
+            <name>textoverlap</name>
+            <fieldText
+            >&lt;p&gt;Tolken har overlappende oppdrag og kan derfor ikke registreres som ønsket på dette oppdraget.&lt;/p&gt;</fieldText>
             <fieldType>DisplayText</fieldType>
         </fields>
         <showFooter>true</showFooter>
@@ -190,8 +365,8 @@
     <screens>
         <name>registerWanterSr</name>
         <label>Register Wanter ServiceResource</label>
-        <locationX>380</locationX>
-        <locationY>134</locationY>
+        <locationX>743</locationX>
+        <locationY>350</locationY>
         <allowBack>false</allowBack>
         <allowFinish>true</allowFinish>
         <allowPause>false</allowPause>
@@ -200,7 +375,8 @@
         </connector>
         <fields>
             <name>infotext</name>
-            <fieldText>&lt;p&gt;Når en ønsket tolk er registrert vil tolken få mulighet til å avslå eller automatisk tildele seg selv oppdraget.&lt;/p&gt;</fieldText>
+            <fieldText
+            >&lt;p&gt;Når en ønsket tolk er registrert vil tolken få mulighet til å avslå eller melde interesse for oppdraget.&lt;/p&gt;</fieldText>
             <fieldType>DisplayText</fieldType>
         </fields>
         <fields>
@@ -239,13 +415,31 @@
         <showHeader>false</showHeader>
     </screens>
     <start>
-        <locationX>254</locationX>
+        <locationX>930</locationX>
         <locationY>0</locationY>
         <connector>
-            <targetReference>registerWanterSr</targetReference>
+            <targetReference>getSA</targetReference>
         </connector>
     </start>
     <status>Active</status>
+    <variables>
+        <name>existingWantedIRCount</name>
+        <dataType>Number</dataType>
+        <isCollection>false</isCollection>
+        <isInput>false</isInput>
+        <isOutput>false</isOutput>
+        <scale>2</scale>
+        <value>
+            <numberValue>0.0</numberValue>
+        </value>
+    </variables>
+    <variables>
+        <name>overlappingSA</name>
+        <dataType>String</dataType>
+        <isCollection>false</isCollection>
+        <isInput>true</isInput>
+        <isOutput>true</isOutput>
+    </variables>
     <variables>
         <name>recordId</name>
         <dataType>String</dataType>

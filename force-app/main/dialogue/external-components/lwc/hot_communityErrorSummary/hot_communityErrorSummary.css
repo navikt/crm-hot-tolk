@@ -1,0 +1,7 @@
+.content {
+    box-shadow: 0 0 0 1px var(--ac-textarea-error-border, var(--__ac-textarea-error-border, var(--a-border-danger)));
+    border: 3px solid var(--ac-textarea-error-border, var(--__ac-textarea-error-border, var(--a-border-danger)));
+    background-color: white;
+    font-size: 18px;
+    padding: 1.5rem;
+}

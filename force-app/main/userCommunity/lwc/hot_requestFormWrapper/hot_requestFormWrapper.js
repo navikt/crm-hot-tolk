@@ -1,6 +1,7 @@
 import { LightningElement, wire, track } from 'lwc';
 import { NavigationMixin } from 'lightning/navigation';
 import createAndUpdateWorkOrders from '@salesforce/apex/HOT_RequestHandler.createAndUpdateWorkOrders';
+import isErrorOnRequestCreate from '@salesforce/apex/HOT_RequestHandler.isErrorOnRequestCreate';
 import getRequestStatus from '@salesforce/apex/HOT_RequestListController.getRequestStatus';
 import createWorkOrders from '@salesforce/apex/HOT_CreateWorkOrderService.createWorkOrdersFromCommunity';
 import checkDuplicates from '@salesforce/apex/HOT_DuplicateHandler.checkDuplicates';
@@ -177,8 +178,12 @@ export default class Hot_requestFormWrapper extends NavigationMixin(LightningEle
         this.template.querySelector('c-alertdialog').showModal();
         this.spin = false;
     }
+    @track requestId;
 
     handleSuccess(event) {
+        const record = event.detail.id;
+        this.requestId = record;
+
         if (this.editNotAllowed) {
             return;
         }
@@ -202,12 +207,20 @@ export default class Hot_requestFormWrapper extends NavigationMixin(LightningEle
         window.scrollTo(0, 0);
     }
 
+    hideFormAndShowError() {
+        this.template.querySelector('.submitted-loading').classList.add('hidden');
+        this.template.querySelector('.submitted-false').classList.add('hidden');
+        this.template.querySelector('.submitted-error').classList.remove('hidden');
+        this.template.querySelector('.h2-errorMessage').focus();
+    }
+
     editNotAllowed = false;
     showModalOnEditNotAllowed() {
         this.editNotAllowed = true;
         this.noCancelButton = true;
         this.confirmButtonStyle = 'width: 15rem;';
-        this.modalContent = 'En formidler har nettopp begynt å jobbe med bestillingen din, og den kan derfor ikke redigeres.';
+        this.modalContent =
+            'En formidler har nettopp begynt å jobbe med bestillingen din, og den kan derfor ikke redigeres.';
         this.modalHeader = 'Kunne ikke redigere bestilling';
         this.template.querySelector('c-alertdialog').showModal();
     }
@@ -229,18 +242,38 @@ export default class Hot_requestFormWrapper extends NavigationMixin(LightningEle
                         recurringEndDate: new Date(timeInput.repeatingEndDate).getTime()
                     }).then(() => {
                         this.spin = false;
-                        this.hideFormAndShowSuccess();
+                        if (this.isCreatedCorrectly(this.requestId)) {
+                            this.hideFormAndShowSuccess();
+                        } else {
+                            this.hideFormAndShowError();
+                        }
                     });
                 } catch (error) {
                     console.log(JSON.stringify(error));
+                    this.hideFormAndShowError();
                 }
             } else {
                 createAndUpdateWorkOrders({ requestId: this.recordId, times: timeInput.times }).then(() => {
                     this.spin = false;
-                    this.hideFormAndShowSuccess();
+                    if (this.isCreatedCorrectly(this.requestId)) {
+                        this.hideFormAndShowSuccess();
+                    } else {
+                        this.hideFormAndShowError();
+                    }
                 });
             }
         }
+    }
+    isCreatedCorrectly(recordId) {
+        return isErrorOnRequestCreate({
+            requestId: recordId
+        }).then((result) => {
+            if (result === false) {
+                return true;
+            } else {
+                return false;
+            }
+        });
     }
 
     @track previousPage = 'home';
@@ -263,16 +296,24 @@ export default class Hot_requestFormWrapper extends NavigationMixin(LightningEle
             }
         }
     }
+    handleUploadFinished(event) {
+        const uploadedFiles = event.detail.files;
+        if (uploadedFiles.length > 0) {
+            this.template.querySelector('c-record-files-with-sharing').refreshContentDocuments();
+        }
+    }
 
     submitButtonLabel = 'Send inn';
     submitSuccessMessage = 'Bestilling mottatt';
     isEditOrCopyMode = false;
+    showUploadFileModule = true;
     isEditModeAndTypeMe = false;
     handleEditOrCopyModeRequestType(parsed_params) {
         if (parsed_params.edit != null) {
             this.breadcrumbs.push({ label: 'Rediger bestilling' });
             this.submitButtonLabel = 'Lagre';
             this.submitSuccessMessage = 'Dine endringer er lagret';
+            this.showUploadFileModule = false;
         }
         if (parsed_params.copy != null) {
             this.breadcrumbs.push({ label: 'Kopier bestilling' });

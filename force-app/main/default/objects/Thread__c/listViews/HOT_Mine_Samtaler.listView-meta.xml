@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<ListView xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>HOT_Mine_Samtaler</fullName>
+    <columns>NAME</columns>
+    <columns>CRM_Account__c</columns>
+    <columns>HOT_Request__c</columns>
+    <columns>CRM_Number_of_unread_Messages_by_NAV__c</columns>
+    <columns>CREATEDBY_USER</columns>
+    <columns>LAST_UPDATE</columns>
+    <columns>UPDATEDBY_USER</columns>
+    <filterScope>Mine</filterScope>
+    <label>Mine Samtaler</label>
+</ListView>

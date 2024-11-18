@@ -1,4 +1,4 @@
-@isTest
+@IsTest
 private class HOT_IRListControllerTest {
     @testSetup
     static void setup() {
@@ -21,28 +21,19 @@ private class HOT_IRListControllerTest {
         insert interestedResource;
     }
 
-    @isTest
+    @IsTest
     static void getInterestedResourcesTest() {
         List<HOT_InterestedResource__c> interestedResources = HOT_InterestedResourcesListController.getInterestedResources();
         System.assertEquals(1, interestedResources.size(), 'Could not get list of interested resources');
     }
-     @isTest
-    static void dispatcherReadCommentTest() {
-        HOT_InterestedResource__c interestedResource = [
-            SELECT Id, IsDispatcherNewComment__c
-            FROM HOT_InterestedResource__c
-        ];
-        interestedResource.IsDispatcherNewComment__c = true;
-        update interestedResource;
-        HOT_InterestedResourcesListController.dispatcherReadComment(interestedResource.Id);
-        interestedResource = [SELECT Id, IsDispatcherNewComment__c FROM HOT_InterestedResource__c];
-        System.assertEquals(
-            false,
-            interestedResource.IsDispatcherNewComment__c,
-            'Could not set IsDispatcherNewComment__c'
-        );
+    @IsTest
+    static void checkAccessToSA() {
+        ServiceAppointment serviceAppointment = [SELECT Id FROM ServiceAppointment];
+        Boolean access = HOT_InterestedResourcesListController.checkAccessToSA(serviceAppointment.Id);
+        System.assertEquals(true, access, 'Should have access to this sa');
     }
-     @isTest
+
+    @IsTest
     static void getThreadDispatcherIdSATest() {
         ServiceAppointment serviceAppointment = [SELECT Id FROM ServiceAppointment];
         Profile profile = [SELECT Id FROM Profile WHERE Name = 'Standard User' OR Name = 'Standardbruker' LIMIT 1];
@@ -62,7 +53,7 @@ private class HOT_IRListControllerTest {
         String threadId = HOT_InterestedResourcesListController.getThreadDispatcherIdSA(serviceAppointment.Id);
         System.assertNotEquals(null, threadId, 'Could not get SA Thread');
     }
-     @isTest
+    @IsTest
     static void getThreadDispatcherIdTest() {
         HOT_InterestedResource__c ir = [SELECT Id FROM HOT_InterestedResource__c];
         Thread__c thread = HOT_TestDataFactory.createThread();
@@ -71,10 +62,8 @@ private class HOT_IRListControllerTest {
         String threadId = HOT_InterestedResourcesListController.getThreadDispatcherId(ir.Id);
         System.assertNotEquals(null, threadId, 'Could not get SA Thread');
     }
-    
 
-
-    @isTest
+    @IsTest
     static void retractInterestsTest() {
         HOT_InterestedResource__c interestedResource = [SELECT Id, Status__c FROM HOT_InterestedResource__c];
         List<Id> retractionIds = new List<Id>{ interestedResource.Id };
@@ -86,7 +75,7 @@ private class HOT_IRListControllerTest {
         ];
         System.assertEquals('Retracted Interest', updatedInterestedResource.Status__c, 'Status was not updated');
     }
-    @isTest
+    @IsTest
     static void resendInterestTest() {
         HOT_InterestedResource__c interestedResource = [SELECT Id, Status__c FROM HOT_InterestedResource__c];
         List<Id> retractionIds = new List<Id>{ interestedResource.Id };
@@ -99,63 +88,63 @@ private class HOT_IRListControllerTest {
         ];
         System.assertEquals('Interested', updatedInterestedResource.Status__c, 'Status was not updated');
     }
-    @isTest
-    static void addCommentTest() {
-        HOT_InterestedResource__c interestedResource = [SELECT Id, Comments__c FROM HOT_InterestedResource__c];
-        String newComment = 'New Comment';
-        HOT_InterestedResourcesListController.addComment(interestedResource.Id, newComment);
-        HOT_InterestedResource__c updatedInterestedResource = [
-            SELECT Id, Comments__c
-            FROM HOT_InterestedResource__c
-            WHERE Id = :interestedResource.Id
-        ];
-        System.debug(updatedInterestedResource.Comments__c);
-        System.assertEquals(
-            true,
-            updatedInterestedResource.Comments__c.contains('New Comment'),
-            'Comment was not updated'
-        );
-    }
-      @isTest
-    static void dispatcherAddCommentTest() {
-        HOT_InterestedResource__c interestedResource = [SELECT Id FROM HOT_InterestedResource__c];
-        HOT_InterestedResourcesListController interestedResourcesListController = new HOT_InterestedResourcesListController();
-        interestedResourcesListController.recordId = interestedResource.Id;
-        interestedResourcesListController.newComment = 'New Comment From Dispatcher';
-        HOT_InterestedResourcesListController.addComment(
-            new List<HOT_InterestedResourcesListController>{ interestedResourcesListController }
-        );
-        interestedResource = [SELECT Id, IsDispatcherNewComment__c FROM HOT_InterestedResource__c];
-        System.assertEquals(
-            true,
-            interestedResource.IsDispatcherNewComment__c,
-            'Could not set IsDispatcherNewComment__c'
-        );
-    }
-      @isTest 
-      static void testRetractInterest() {
+
+    @IsTest
+    static void testRetractInterest() {
         HOT_InterestedResource__c interestedResource = [SELECT Id, Status__c FROM HOT_InterestedResource__c];
         interestedResource.Status__c = 'Interested';
         update interestedResource;
 
         HOT_InterestedResourcesListController.retractInterest(interestedResource.Id);
-    
-        HOT_InterestedResource__c updatedInterestedResource = [SELECT Id, Status__c FROM HOT_InterestedResource__c WHERE Id = :interestedResource.Id];
+
+        HOT_InterestedResource__c updatedInterestedResource = [
+            SELECT Id, Status__c
+            FROM HOT_InterestedResource__c
+            WHERE Id = :interestedResource.Id
+        ];
         System.assertEquals(updatedInterestedResource.Status__c, 'Retracted Interest');
     }
-    @isTest 
-     static void startAThreadAndAddCommentTest() {
-        
+    @IsTest
+    static void startAThreadAndAddCommentTest() {
         HOT_InterestedResource__c interestedResource = [SELECT Id, Status__c FROM HOT_InterestedResource__c];
-        
+
         String newComment = 'This is a test comment';
-        
+
         Test.startTest();
-        HOT_InterestedResourcesListController.startAThreadAndAddComment(interestedResource.Id, newComment);
+        Thread__c thread = HOT_InterestedResourcesListController.startAThreadAndAddComment(
+            interestedResource.Id,
+            newComment,
+            null
+        );
         Test.stopTest();
-    
-        Thread__c thread = [SELECT Id, CRM_Related_Object__c, CRM_Thread_Type__c, CRM_Account__c, HOT_InterestedResource__c FROM Thread__c WHERE CRM_Related_Object__c =: interestedResource.Id LIMIT 1];
-        
+
         System.assertNotEquals(null, thread, 'Thread was not made');
+    }
+    @IsTest
+    static void getIRDetails() {
+        ServiceResource serviceResource = [
+            SELECT Id
+            FROM ServiceResource
+            WHERE RelatedRecordId = :UserInfo.getUserId()
+        ];
+
+        HOT_InterestedResource__c interestedResource = [
+            SELECT Id, Status__c, AppointmentNumber__c, ServiceResource__c, ServiceAppointment__c
+            FROM HOT_InterestedResource__c
+        ];
+        interestedResource.ServiceResource__c = serviceResource.Id;
+        update interestedResource;
+        Test.startTest();
+
+        HOT_InterestedResource__c irResult = HOT_InterestedResourcesListController.getInterestedResourceDetails(
+            interestedResource.ServiceAppointment__c
+        );
+        System.assertEquals(
+            irResult.AppointmentNumber__c,
+            interestedResource.AppointmentNumber__c,
+            'Did not get the correct IR details'
+        );
+
+        Test.stopTest();
     }
 }

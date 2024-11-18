@@ -1,14 +1,10 @@
 import { LightningElement, wire, track, api } from 'lwc';
 import { refreshApex } from '@salesforce/apex';
 import getMyWageClaims from '@salesforce/apex/HOT_WageClaimListController.getMyWageClaims';
-import retractAvailability from '@salesforce/apex/HOT_WageClaimListController.retractAvailability';
-import getThreadId from '@salesforce/apex/HOT_WageClaimListController.getThreadId';
-import createThread from '@salesforce/apex/HOT_MessageHelper.createThread';
 import { columns, mobileColumns } from './columns';
 import { NavigationMixin } from 'lightning/navigation';
 import { formatRecord } from 'c/datetimeFormatter';
 import { defaultFilters, compare } from './filters';
-
 export default class Hot_wageClaimList extends NavigationMixin(LightningElement) {
     @track columns = [];
     @track filters = [];
@@ -19,9 +15,6 @@ export default class Hot_wageClaimList extends NavigationMixin(LightningElement)
             this.columns = mobileColumns;
         }
     }
-    @track Status;
-    isNotRetractable = false;
-    isDisabledGoToThread = false;
     noWageClaims = false;
     @track wageClaims = [];
     @track allWageClaimsWired = [];
@@ -108,6 +101,10 @@ export default class Hot_wageClaimList extends NavigationMixin(LightningElement)
 
     datetimeFields = [{ name: 'StartAndEndDate', type: 'datetimeinterval', start: 'StartTime__c', end: 'EndTime__c' }];
 
+    @track recordId;
+    @track showDetails = false;
+    @track urlRedirect = false;
+
     connectedCallback() {
         this.setColumns();
         this.updateURL();
@@ -121,61 +118,10 @@ export default class Hot_wageClaimList extends NavigationMixin(LightningElement)
     @track wageClaim;
     isWageClaimDetails = false;
     goToRecordDetails(result) {
-        this.isDisabledGoToThread = false;
-        this.template.querySelector('.serviceAppointmentDetails').classList.remove('hidden');
-        this.template.querySelector('.serviceAppointmentDetails').focus();
-        this.wageClaim = undefined;
-        this.Status = result.detail.Status__c;
         let recordId = result.detail.Id;
         this.recordId = recordId;
-        if (result.detail.Status__c == 'Åpen') {
-            this.isNotRetractable = false;
-        } else {
-            this.isNotRetractable = true;
-        }
-        this.isWageClaimDetails = !!this.recordId;
-        for (let wageClaim of this.wageClaims) {
-            if (recordId === wageClaim.Id) {
-                this.wageClaim = wageClaim;
-                this.wageClaim.weekday = this.getDayOfWeek(this.wageClaim.StartTime__c);
-            }
-        }
+        this.template.querySelector('c-hot_information-modal').goToRecordDetailsWC(this.recordId, this.wageClaims);
         this.updateURL();
-    }
-    treadId;
-    goToWageClaimThread() {
-        this.isDisabledGoToThread = true;
-        getThreadId({ wageClaimeId: this.recordId }).then((result) => {
-            if (result != '') {
-                this.threadId = result;
-                this.navigateToThread(this.threadId);
-            } else {
-                console.log('tråd finnes ikke');
-                console.log('accountid: ' + this.wageClaim.ServiceResource__r.AccountId);
-                createThread({ recordId: this.recordId, accountId: this.wageClaim.ServiceResource__r.AccountId })
-                    .then((result) => {
-                        this.navigateToThread(result.Id);
-                    })
-                    .catch((error) => {
-                        this.modalHeader = 'Noe gikk galt';
-                        this.modalContent = 'Kunne ikke åpne samtale. Feilmelding: ' + error;
-                        this.noCancelButton = true;
-                        this.showModal();
-                    });
-            }
-        });
-    }
-    navigateToThread(recordId) {
-        const baseUrl = '/samtale-frilans';
-        const attributes = `recordId=${recordId}&from=mine-oppdrag&list=wageClaim`;
-        const url = `${baseUrl}?${attributes}`;
-
-        this[NavigationMixin.Navigate]({
-            type: 'standard__webPage',
-            attributes: {
-                url: url
-            }
-        });
     }
 
     @api recordId;
@@ -189,30 +135,15 @@ export default class Hot_wageClaimList extends NavigationMixin(LightningElement)
     }
 
     @api goBack() {
-        let recordIdToReturn = this.recordId;
         this.recordId = undefined;
-        this.isWageClaimDetails = false;
-        this.sendDetail();
-        return { id: recordIdToReturn, tab: 'wageClaim' };
+        this[NavigationMixin.Navigate]({
+            type: 'comm__namedPage',
+            attributes: {
+                pageName: 'home'
+            }
+        });
     }
 
-    retractAvailability() {
-        if (
-            confirm(
-                'Er du sikker på at du vil fjerne tilgjengeligheten din for dette tidspunktet? Du vil da ikke ha krav på lønn.'
-            )
-        ) {
-            try {
-                retractAvailability({ recordId: this.wageClaim.Id }).then(() => {
-                    this.isNotRetractable = true;
-                    this.Status = 'Tilbaketrukket tilgjengelighet';
-                    refreshApex(this.wiredWageClaimsResult);
-                });
-            } catch (error) {
-                alert(JSON.stringify(error));
-            }
-        }
-    }
     sendFilters() {
         const eventToSend = new CustomEvent('sendfilters', { detail: this.filters });
         this.dispatchEvent(eventToSend);
@@ -248,5 +179,8 @@ export default class Hot_wageClaimList extends NavigationMixin(LightningElement)
             this.wageClaims = filteredRecords;
         }
         return this.filteredRecordsLength;
+    }
+    handleRefreshRecords() {
+        refreshApex(this.wiredWageClaimsResult);
     }
 }

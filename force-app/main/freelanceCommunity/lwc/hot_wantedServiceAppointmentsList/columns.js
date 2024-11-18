@@ -47,8 +47,8 @@ export let inDetailsColumns = [
 export let mobileColumns = [
     {
         label: 'Tid',
-        name: 'StartAndEndDate',
-        type: 'Datetime'
+        name: 'startAndEndDateWeekday',
+        type: 'String'
     },
     {
         label: 'Info',

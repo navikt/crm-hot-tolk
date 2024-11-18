@@ -1,10 +1,10 @@
-<?xml version="1.0" encoding="UTF-8"?>
+<?xml version="1.0" encoding="UTF-8" ?>
 <Flow xmlns="http://soap.sforce.com/2006/04/metadata">
     <actionCalls>
         <name>UpdateChildRecords</name>
         <label>UpdateChildRecords</label>
         <locationX>314</locationX>
-        <locationY>1094</locationY>
+        <locationY>1274</locationY>
         <actionName>HOT_UpdateChildRecordsService</actionName>
         <actionType>apex</actionType>
         <flowTransactionModel>Automatic</flowTransactionModel>
@@ -33,6 +33,12 @@
             </value>
         </inputParameters>
         <inputParameters>
+            <name>isInterpreterMethodChoice</name>
+            <value>
+                <elementReference>isInterpreterMethod</elementReference>
+            </value>
+        </inputParameters>
+        <inputParameters>
             <name>isScreenInterpreterChoice</name>
             <value>
                 <elementReference>isScreenInterpreter</elementReference>
@@ -50,14 +56,16 @@
                 <elementReference>getRequest</elementReference>
             </value>
         </inputParameters>
+        <nameSegment>HOT_UpdateChildRecordsService</nameSegment>
         <storeOutputAutomatically>true</storeOutputAutomatically>
+        <versionSegment>1</versionSegment>
     </actionCalls>
     <apiVersion>52.0</apiVersion>
     <assignments>
         <name>Store_Account_Value</name>
         <label>Store Account Value</label>
         <locationX>314</locationX>
-        <locationY>878</locationY>
+        <locationY>782</locationY>
         <assignmentItems>
             <assignToReference>getRequest.Account__c</assignToReference>
             <operator>Assign</operator>
@@ -87,19 +95,35 @@
             </value>
         </assignmentItems>
         <connector>
-            <targetReference>UpdateChildRecords</targetReference>
+            <targetReference>isInterpreterMethodCheck</targetReference>
         </connector>
     </assignments>
     <assignments>
         <name>Store_Dispatcher_Value</name>
         <label>Store Dispatcher Value</label>
         <locationX>50</locationX>
-        <locationY>758</locationY>
+        <locationY>674</locationY>
         <assignmentItems>
             <assignToReference>getRequest.Dispatcher__c</assignToReference>
             <operator>Assign</operator>
             <value>
                 <elementReference>DispatcherLookup.recordId</elementReference>
+            </value>
+        </assignmentItems>
+        <connector>
+            <targetReference>isInterpreterMethodCheck</targetReference>
+        </connector>
+    </assignments>
+    <assignments>
+        <name>Store_Interpreter_method_value</name>
+        <label>Store Interpreter method value</label>
+        <locationX>182</locationX>
+        <locationY>1082</locationY>
+        <assignmentItems>
+            <assignToReference>getRequest.InterpretationMethod__c</assignToReference>
+            <operator>Assign</operator>
+            <value>
+                <elementReference>InterpretationMethodLookup.recordId</elementReference>
             </value>
         </assignmentItems>
         <connector>
@@ -139,6 +163,14 @@
         </value>
     </choices>
     <choices>
+        <name>InterpretationMethod</name>
+        <choiceText>Tolkemetode</choiceText>
+        <dataType>String</dataType>
+        <value>
+            <stringValue>InterpretationMethod</stringValue>
+        </value>
+    </choices>
+    <choices>
         <name>ScreenInterpreter</name>
         <choiceText>Skjermtolk</choiceText>
         <dataType>String</dataType>
@@ -158,7 +190,7 @@
         <name>Check_Request</name>
         <label>Check Request</label>
         <locationX>534</locationX>
-        <locationY>278</locationY>
+        <locationY>242</locationY>
         <defaultConnector>
             <targetReference>Cannot_update_Screen</targetReference>
         </defaultConnector>
@@ -190,9 +222,9 @@
         <name>Is_Dispatcher</name>
         <label>Is Dispatcher?</label>
         <locationX>314</locationX>
-        <locationY>638</locationY>
+        <locationY>566</locationY>
         <defaultConnector>
-            <targetReference>UpdateChildRecords</targetReference>
+            <targetReference>isInterpreterMethodCheck</targetReference>
         </defaultConnector>
         <defaultConnectorLabel>Not Dispatcher</defaultConnectorLabel>
         <rules>
@@ -226,6 +258,31 @@
             <label>isAccountCheck</label>
         </rules>
     </decisions>
+    <decisions>
+        <name>isInterpreterMethodCheck</name>
+        <label>isInterpreterMethodCheck</label>
+        <locationX>314</locationX>
+        <locationY>974</locationY>
+        <defaultConnector>
+            <targetReference>UpdateChildRecords</targetReference>
+        </defaultConnector>
+        <defaultConnectorLabel>Default Outcome</defaultConnectorLabel>
+        <rules>
+            <name>isInterpretermethodChecked</name>
+            <conditionLogic>and</conditionLogic>
+            <conditions>
+                <leftValueReference>isInterpreterMethod</leftValueReference>
+                <operator>EqualTo</operator>
+                <rightValue>
+                    <booleanValue>true</booleanValue>
+                </rightValue>
+            </conditions>
+            <connector>
+                <targetReference>Store_Interpreter_method_value</targetReference>
+            </connector>
+            <label>isInterpretermethodChecked</label>
+        </rules>
+    </decisions>
     <environments>Default</environments>
     <formulas>
         <name>isAccount</name>
@@ -246,6 +303,11 @@
         <name>isDispatcher</name>
         <dataType>Boolean</dataType>
         <expression>CONTAINS({!ChosenFields}, {!Dispatcher})</expression>
+    </formulas>
+    <formulas>
+        <name>isInterpreterMethod</name>
+        <dataType>Boolean</dataType>
+        <expression>CONTAINS({!ChosenFields}, {!InterpretationMethod})</expression>
     </formulas>
     <formulas>
         <name>isScreenInterpreter</name>
@@ -282,7 +344,7 @@
         <name>getPerson</name>
         <label>getPerson</label>
         <locationX>314</locationX>
-        <locationY>758</locationY>
+        <locationY>674</locationY>
         <assignNullValuesIfNoRecordsFound>false</assignNullValuesIfNoRecordsFound>
         <connector>
             <targetReference>Store_Account_Value</targetReference>
@@ -303,7 +365,7 @@
         <name>getRequest</name>
         <label>getRequest</label>
         <locationX>534</locationX>
-        <locationY>158</locationY>
+        <locationY>134</locationY>
         <assignNullValuesIfNoRecordsFound>false</assignNullValuesIfNoRecordsFound>
         <connector>
             <targetReference>Check_Request</targetReference>
@@ -324,13 +386,14 @@
         <name>Cannot_update_Screen</name>
         <label>Cannot update Screen</label>
         <locationX>754</locationX>
-        <locationY>398</locationY>
+        <locationY>350</locationY>
         <allowBack>false</allowBack>
         <allowFinish>true</allowFinish>
         <allowPause>false</allowPause>
         <fields>
             <name>cannotUpdateText</name>
-            <fieldText>&lt;p&gt;Denne funksjonaliteten kan IKKE benyttes når forespørselen har status Avlyst eller Annullert.&lt;/p&gt;</fieldText>
+            <fieldText
+            >&lt;p&gt;Denne funksjonaliteten kan IKKE benyttes når forespørselen har status Avlyst eller Annullert.&lt;/p&gt;</fieldText>
             <fieldType>DisplayText</fieldType>
         </fields>
         <showFooter>true</showFooter>
@@ -340,7 +403,7 @@
         <name>ChooseFieldScreen</name>
         <label>ChooseFieldScreen</label>
         <locationX>314</locationX>
-        <locationY>398</locationY>
+        <locationY>350</locationY>
         <allowBack>false</allowBack>
         <allowFinish>true</allowFinish>
         <allowPause>false</allowPause>
@@ -355,9 +418,11 @@
             <choiceReferences>ScreenInterpreter</choiceReferences>
             <choiceReferences>Dispatcher</choiceReferences>
             <choiceReferences>Account</choiceReferences>
+            <choiceReferences>InterpretationMethod</choiceReferences>
             <dataType>String</dataType>
             <fieldText>Velg felter</fieldText>
             <fieldType>MultiSelectCheckboxes</fieldType>
+            <inputsOnNextNavToAssocScrn>UseStoredValues</inputsOnNextNavToAssocScrn>
             <isRequired>true</isRequired>
         </fields>
         <showFooter>true</showFooter>
@@ -367,7 +432,7 @@
         <name>NewValuesScreen</name>
         <label>NewValuesScreen</label>
         <locationX>314</locationX>
-        <locationY>518</locationY>
+        <locationY>458</locationY>
         <allowBack>true</allowBack>
         <allowFinish>true</allowFinish>
         <allowPause>false</allowPause>
@@ -382,16 +447,19 @@
                 <fieldType>Region</fieldType>
                 <fields>
                     <fieldType>ObjectProvided</fieldType>
+                    <inputsOnNextNavToAssocScrn>UseStoredValues</inputsOnNextNavToAssocScrn>
                     <isRequired>false</isRequired>
                     <objectFieldReference>getRequest.MeetingStreet__c</objectFieldReference>
                 </fields>
                 <fields>
                     <fieldType>ObjectProvided</fieldType>
+                    <inputsOnNextNavToAssocScrn>UseStoredValues</inputsOnNextNavToAssocScrn>
                     <isRequired>false</isRequired>
                     <objectFieldReference>getRequest.MeetingPostalCode__c</objectFieldReference>
                 </fields>
                 <fields>
                     <fieldType>ObjectProvided</fieldType>
+                    <inputsOnNextNavToAssocScrn>UseStoredValues</inputsOnNextNavToAssocScrn>
                     <isRequired>false</isRequired>
                     <objectFieldReference>getRequest.MeetingPostalCity__c</objectFieldReference>
                 </fields>
@@ -408,16 +476,19 @@
                 <fieldType>Region</fieldType>
                 <fields>
                     <fieldType>ObjectProvided</fieldType>
+                    <inputsOnNextNavToAssocScrn>UseStoredValues</inputsOnNextNavToAssocScrn>
                     <isRequired>false</isRequired>
                     <objectFieldReference>getRequest.InterpretationStreet__c</objectFieldReference>
                 </fields>
                 <fields>
                     <fieldType>ObjectProvided</fieldType>
+                    <inputsOnNextNavToAssocScrn>UseStoredValues</inputsOnNextNavToAssocScrn>
                     <isRequired>false</isRequired>
                     <objectFieldReference>getRequest.InterpretationPostalCode__c</objectFieldReference>
                 </fields>
                 <fields>
                     <fieldType>ObjectProvided</fieldType>
+                    <inputsOnNextNavToAssocScrn>UseStoredValues</inputsOnNextNavToAssocScrn>
                     <isRequired>false</isRequired>
                     <objectFieldReference>getRequest.InterpretationPostalCity__c</objectFieldReference>
                 </fields>
@@ -450,6 +521,7 @@
                 <fieldType>Region</fieldType>
                 <fields>
                     <fieldType>ObjectProvided</fieldType>
+                    <inputsOnNextNavToAssocScrn>UseStoredValues</inputsOnNextNavToAssocScrn>
                     <isRequired>false</isRequired>
                     <objectFieldReference>getRequest.Subject__c</objectFieldReference>
                 </fields>
@@ -482,6 +554,7 @@
                 <fieldType>Region</fieldType>
                 <fields>
                     <fieldType>ObjectProvided</fieldType>
+                    <inputsOnNextNavToAssocScrn>UseStoredValues</inputsOnNextNavToAssocScrn>
                     <isRequired>false</isRequired>
                     <objectFieldReference>getRequest.Description__c</objectFieldReference>
                 </fields>
@@ -514,6 +587,7 @@
                 <fieldType>Region</fieldType>
                 <fields>
                     <fieldType>ObjectProvided</fieldType>
+                    <inputsOnNextNavToAssocScrn>UseStoredValues</inputsOnNextNavToAssocScrn>
                     <isRequired>false</isRequired>
                     <objectFieldReference>getRequest.IsScreenInterpreter__c</objectFieldReference>
                 </fields>
@@ -658,6 +732,65 @@
                     <operator>Contains</operator>
                     <rightValue>
                         <elementReference>Account</elementReference>
+                    </rightValue>
+                </conditions>
+            </visibilityRule>
+        </fields>
+        <fields>
+            <name>NewValuesScreen_Section7</name>
+            <fieldType>RegionContainer</fieldType>
+            <fields>
+                <name>NewValuesScreen_Section7_Column1</name>
+                <fieldType>Region</fieldType>
+                <fields>
+                    <name>InterpretationMethodLookup</name>
+                    <extensionName>flowruntime:lookup</extensionName>
+                    <fieldType>ComponentInstance</fieldType>
+                    <inputParameters>
+                        <name>objectApiName</name>
+                        <value>
+                            <stringValue>HOT_Request__c</stringValue>
+                        </value>
+                    </inputParameters>
+                    <inputParameters>
+                        <name>fieldApiName</name>
+                        <value>
+                            <stringValue>InterpretationMethod__c</stringValue>
+                        </value>
+                    </inputParameters>
+                    <inputParameters>
+                        <name>label</name>
+                        <value>
+                            <stringValue>Tolkemetode</stringValue>
+                        </value>
+                    </inputParameters>
+                    <inputParameters>
+                        <name>recordId</name>
+                        <value>
+                            <elementReference>getRequest.InterpretationMethod__c</elementReference>
+                        </value>
+                    </inputParameters>
+                    <inputsOnNextNavToAssocScrn>UseStoredValues</inputsOnNextNavToAssocScrn>
+                    <isRequired>true</isRequired>
+                    <storeOutputAutomatically>true</storeOutputAutomatically>
+                </fields>
+                <inputParameters>
+                    <name>width</name>
+                    <value>
+                        <stringValue>12</stringValue>
+                    </value>
+                </inputParameters>
+                <isRequired>false</isRequired>
+            </fields>
+            <isRequired>false</isRequired>
+            <regionContainerType>SectionWithoutHeader</regionContainerType>
+            <visibilityRule>
+                <conditionLogic>and</conditionLogic>
+                <conditions>
+                    <leftValueReference>ChosenFields</leftValueReference>
+                    <operator>Contains</operator>
+                    <rightValue>
+                        <elementReference>InterpretationMethod</elementReference>
                     </rightValue>
                 </conditions>
             </visibilityRule>

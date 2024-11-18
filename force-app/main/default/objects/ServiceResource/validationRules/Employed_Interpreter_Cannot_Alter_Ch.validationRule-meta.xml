@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<ValidationRule xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>Employed_Interpreter_Cannot_Alter_Ch</fullName>
+    <active>true</active>
+    <description>Ansattolker skal ikke kunne endre varslingskanal</description>
+    <errorConditionFormula>AND(
+    ISCHANGED(HOT_NotificationChannel__c),
+     RelatedRecord.Profile.Name = &apos;HOT Tolk Ansatt&apos;
+)</errorConditionFormula>
+    <errorDisplayField>HOT_NotificationChannel__c</errorDisplayField>
+    <errorMessage>Ansattolker kan ikke endre varslingskanal</errorMessage>
+</ValidationRule>

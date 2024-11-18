@@ -1,11 +1,12 @@
 {
-    "activeViewId": "752ca6d2-03f7-461a-ba84-3ca7206daa61",
-    "appPageId": "e1a097ff-c5e1-47c6-b293-9a8b7a2b049f",
-    "configurationTags": [],
-    "id": "ab514961-bce6-4b1c-b6b0-358c34521f93",
-    "label": "Samtale Frilans",
-    "pageAccess": "UseParent",
-    "routeType": "custom-samtale-frilans",
-    "type": "route",
-    "urlPrefix": "samtale-frilans"
+  "activeViewId" : null,
+  "appPageId" : "e1a097ff-c5e1-47c6-b293-9a8b7a2b049f",
+  "configurationTags" : [ ],
+  "devName" : "samtalefrilans__c",
+  "id" : "c3f07870-ace3-46b5-a246-cce151fd2e6d",
+  "label" : "Samtale Frilans",
+  "pageAccess" : "UseParent",
+  "routeType" : "custom-samtale-frilans",
+  "type" : "route",
+  "urlPrefix" : "samtale-frilans"
 }

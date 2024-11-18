@@ -445,6 +445,13 @@
                 </fieldInstanceProperties>
                 <fieldItem>Record.UserPersonNumber__c</fieldItem>
                 <identifier>RecordUserPersonNumber__cField</identifier>
+                <visibilityRule>
+                    <criteria>
+                        <leftValue>{!Record.Person__r.INT_Confidential__c}</leftValue>
+                        <operator>EQUAL</operator>
+                        <rightValue>UGRADERT</rightValue>
+                    </criteria>
+                </visibilityRule>
             </fieldInstance>
         </itemInstances>
         <name>Facet-44bd0420-e99e-4568-9aab-a8594fd390cc</name>
@@ -459,6 +466,13 @@
                 </fieldInstanceProperties>
                 <fieldItem>Record.UserEmail__c</fieldItem>
                 <identifier>RecordUserEmail__cField</identifier>
+                <visibilityRule>
+                    <criteria>
+                        <leftValue>{!Record.Person__r.INT_Confidential__c}</leftValue>
+                        <operator>EQUAL</operator>
+                        <rightValue>UGRADERT</rightValue>
+                    </criteria>
+                </visibilityRule>
             </fieldInstance>
         </itemInstances>
         <itemInstances>
@@ -469,6 +483,13 @@
                 </fieldInstanceProperties>
                 <fieldItem>Record.UserPhone__c</fieldItem>
                 <identifier>RecordUserPhone__cField</identifier>
+                <visibilityRule>
+                    <criteria>
+                        <leftValue>{!Record.Person__r.INT_Confidential__c}</leftValue>
+                        <operator>EQUAL</operator>
+                        <rightValue>UGRADERT</rightValue>
+                    </criteria>
+                </visibilityRule>
             </fieldInstance>
         </itemInstances>
         <itemInstances>
@@ -479,6 +500,13 @@
                 </fieldInstanceProperties>
                 <fieldItem>Record.UserName__c</fieldItem>
                 <identifier>RecordUserName__cField</identifier>
+                <visibilityRule>
+                    <criteria>
+                        <leftValue>{!Record.Person__r.INT_Confidential__c}</leftValue>
+                        <operator>EQUAL</operator>
+                        <rightValue>UGRADERT</rightValue>
+                    </criteria>
+                </visibilityRule>
             </fieldInstance>
         </itemInstances>
         <itemInstances>
@@ -564,6 +592,13 @@
                 </fieldInstanceProperties>
                 <fieldItem>Record.OrdererName__c</fieldItem>
                 <identifier>RecordOrdererName__cField</identifier>
+                <visibilityRule>
+                    <criteria>
+                        <leftValue>{!Record.Orderer__r.CRM_Person__r.INT_Confidential__c}</leftValue>
+                        <operator>EQUAL</operator>
+                        <rightValue>UGRADERT</rightValue>
+                    </criteria>
+                </visibilityRule>
             </fieldInstance>
         </itemInstances>
         <name>Facet-5e66ae93-3880-45f2-af0b-ad75f2629535</name>
@@ -1022,6 +1057,13 @@
                 </fieldInstanceProperties>
                 <fieldItem>Record.CreatedById</fieldItem>
                 <identifier>RecordCreatedByIdField</identifier>
+                <visibilityRule>
+                    <criteria>
+                        <leftValue>{!Record.CreatedBy.Contact.Account.CRM_Person__r.INT_Confidential__c}</leftValue>
+                        <operator>EQUAL</operator>
+                        <rightValue>UGRADERT</rightValue>
+                    </criteria>
+                </visibilityRule>
             </fieldInstance>
         </itemInstances>
         <name>Facet-14ddce80-1f48-4abd-bb89-754ed88ec359</name>
@@ -1036,6 +1078,13 @@
                 </fieldInstanceProperties>
                 <fieldItem>Record.LastModifiedById</fieldItem>
                 <identifier>RecordLastModifiedByIdField</identifier>
+                <visibilityRule>
+                    <criteria>
+                        <leftValue>{!Record.LastModifiedBy.Contact.Account.CRM_Person__r.INT_Confidential__c}</leftValue>
+                        <operator>EQUAL</operator>
+                        <rightValue>UGRADERT</rightValue>
+                    </criteria>
+                </visibilityRule>
             </fieldInstance>
         </itemInstances>
         <name>Facet-da78511c-5540-4d3b-a8b9-c2cbc1a79bdb</name>
@@ -1073,6 +1122,10 @@
                     <value>Facet-cc28ffd7-bee6-4a57-9da6-b0294d4a35ee</value>
                 </componentInstanceProperties>
                 <componentInstanceProperties>
+                    <name>horizontalAlignment</name>
+                    <value>false</value>
+                </componentInstanceProperties>
+                <componentInstanceProperties>
                     <name>label</name>
                     <value>Grunnleggende informasjon</value>
                 </componentInstanceProperties>
@@ -1087,6 +1140,10 @@
                     <value>Facet-05633c5a-fce9-4434-8d8c-57c691e1748d</value>
                 </componentInstanceProperties>
                 <componentInstanceProperties>
+                    <name>horizontalAlignment</name>
+                    <value>false</value>
+                </componentInstanceProperties>
+                <componentInstanceProperties>
                     <name>label</name>
                     <value>Formidler seksjon</value>
                 </componentInstanceProperties>
@@ -1099,6 +1156,10 @@
                 <componentInstanceProperties>
                     <name>columns</name>
                     <value>Facet-dc42a636-0fea-47fa-99b7-39dec8e5d35b</value>
+                </componentInstanceProperties>
+                <componentInstanceProperties>
+                    <name>horizontalAlignment</name>
+                    <value>false</value>
                 </componentInstanceProperties>
                 <componentInstanceProperties>
                     <name>label</name>
@@ -1122,6 +1183,10 @@
                     <value>Facet-60394f62-f73d-4cd8-8b51-15f11333b843</value>
                 </componentInstanceProperties>
                 <componentInstanceProperties>
+                    <name>horizontalAlignment</name>
+                    <value>false</value>
+                </componentInstanceProperties>
+                <componentInstanceProperties>
                     <name>label</name>
                     <value>Brukerinformasjon</value>
                 </componentInstanceProperties>
@@ -1141,6 +1206,10 @@
                 <componentInstanceProperties>
                     <name>columns</name>
                     <value>Facet-995bfe01-fb35-491f-b4b1-a2b9ad3ae7fc</value>
+                </componentInstanceProperties>
+                <componentInstanceProperties>
+                    <name>horizontalAlignment</name>
+                    <value>false</value>
                 </componentInstanceProperties>
                 <componentInstanceProperties>
                     <name>label</name>
@@ -1164,6 +1233,10 @@
                     <value>Facet-2ad7c764-e9be-4cda-8835-45f8f6c90b11</value>
                 </componentInstanceProperties>
                 <componentInstanceProperties>
+                    <name>horizontalAlignment</name>
+                    <value>false</value>
+                </componentInstanceProperties>
+                <componentInstanceProperties>
                     <name>label</name>
                     <value>Annen betaler</value>
                 </componentInstanceProperties>
@@ -1185,6 +1258,10 @@
                     <value>Facet-7358e53b-e344-45df-ac0e-0c87dddc0e65</value>
                 </componentInstanceProperties>
                 <componentInstanceProperties>
+                    <name>horizontalAlignment</name>
+                    <value>false</value>
+                </componentInstanceProperties>
+                <componentInstanceProperties>
                     <name>label</name>
                     <value>Beskjed til formidler</value>
                 </componentInstanceProperties>
@@ -1199,6 +1276,10 @@
                     <value>Facet-a54beff0-e6f5-4190-aadf-f95e2f5d7bd1</value>
                 </componentInstanceProperties>
                 <componentInstanceProperties>
+                    <name>horizontalAlignment</name>
+                    <value>false</value>
+                </componentInstanceProperties>
+                <componentInstanceProperties>
                     <name>label</name>
                     <value>Serieoppdrag</value>
                 </componentInstanceProperties>
@@ -1211,6 +1292,10 @@
                 <componentInstanceProperties>
                     <name>columns</name>
                     <value>Facet-b2c8d9f7-f260-45a1-8652-04872ba9d73e</value>
+                </componentInstanceProperties>
+                <componentInstanceProperties>
+                    <name>horizontalAlignment</name>
+                    <value>false</value>
                 </componentInstanceProperties>
                 <componentInstanceProperties>
                     <name>label</name>
@@ -1234,6 +1319,10 @@
                     <value>Facet-c96aa121-8d8d-4e58-a1a4-00d4c4c462a3</value>
                 </componentInstanceProperties>
                 <componentInstanceProperties>
+                    <name>horizontalAlignment</name>
+                    <value>false</value>
+                </componentInstanceProperties>
+                <componentInstanceProperties>
                     <name>label</name>
                     <value>Tolk med avtale</value>
                 </componentInstanceProperties>
@@ -1246,6 +1335,10 @@
                 <componentInstanceProperties>
                     <name>columns</name>
                     <value>Facet-4b405830-94b8-4793-998e-9ef8a7b17a0a</value>
+                </componentInstanceProperties>
+                <componentInstanceProperties>
+                    <name>horizontalAlignment</name>
+                    <value>false</value>
                 </componentInstanceProperties>
                 <componentInstanceProperties>
                     <name>label</name>
@@ -1351,10 +1444,16 @@
                 <componentName>force:relatedListSingleContainer</componentName>
                 <identifier>force_relatedListSingleContainer4</identifier>
                 <visibilityRule>
+                    <booleanFilter>1 AND 2</booleanFilter>
                     <criteria>
                         <leftValue>{!$Permission.CustomPermission.HOT_DeleteFiles}</leftValue>
                         <operator>EQUAL</operator>
                         <rightValue>true</rightValue>
+                    </criteria>
+                    <criteria>
+                        <leftValue>{!Record.HOT_DelPol_IsDeleteFiles__c}</leftValue>
+                        <operator>EQUAL</operator>
+                        <rightValue>false</rightValue>
                     </criteria>
                 </visibilityRule>
             </componentInstance>
@@ -1554,10 +1653,16 @@
                 <componentName>force:relatedListSingleContainer</componentName>
                 <identifier>force_relatedListSingleContainer6</identifier>
                 <visibilityRule>
+                    <booleanFilter>1 AND 2</booleanFilter>
                     <criteria>
                         <leftValue>{!$Permission.CustomPermission.HOT_DeleteFiles}</leftValue>
                         <operator>EQUAL</operator>
                         <rightValue>true</rightValue>
+                    </criteria>
+                    <criteria>
+                        <leftValue>{!Record.HOT_DelPol_IsDeleteFiles__c}</leftValue>
+                        <operator>EQUAL</operator>
+                        <rightValue>false</rightValue>
                     </criteria>
                 </visibilityRule>
             </componentInstance>

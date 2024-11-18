@@ -1,4 +1,4 @@
-@isTest
+@IsTest
 private class HOT_MySAListControllerTest {
     @testSetup
     static void setup() {
@@ -7,7 +7,7 @@ private class HOT_MySAListControllerTest {
         HOT_Request__c request = HOT_TestDataFactory.createRequest('HOT_MySAListControllerTest', workType);
         insert request;
         request.Status__c = 'Godkjent';
-        
+
         update request;
         ServiceResource serviceResource = HOT_TestDataFactory.createServiceResource(UserInfo.getUserId());
         insert serviceResource;
@@ -18,7 +18,7 @@ private class HOT_MySAListControllerTest {
         );
         insert assignedResource;
     }
-    @isTest
+    @IsTest
     static void getMyServiceAppointmentsTest() {
         List<ServiceAppointment> myServiceAppointment = [SELECT Id, Status FROM ServiceAppointment];
         System.assertEquals(1, myServiceAppointment.size(), 'Could not fetch my ServiceAppointment ');
@@ -78,7 +78,7 @@ private class HOT_MySAListControllerTest {
             'Could not fetch my ServiceAppointment with status "Cannot Completed"'
         );
     }
-    @isTest
+    @IsTest
     static void getParentWorkOrderLineItemsTest() {
         Test.startTest();
         List<WorkOrderLineItem> workOrderLineItem = HOT_MyServiceAppointmentListController.getParentWorkOrderLineItems();
@@ -86,7 +86,7 @@ private class HOT_MySAListControllerTest {
         System.assertEquals(1, workOrderLineItem.size(), 'Could not fetch parent WorkOrderLineItems');
     }
 
-    @isTest
+    @IsTest
     static void getMyServiceAppointmentsTestOldSA() {
         WorkType workType = [SELECT Id FROM WorkType LIMIT 1];
         HOT_Request__c request = HOT_TestDataFactory.createRequest('HOT_MySAListControllerTestnewSA', workType);
@@ -124,128 +124,101 @@ private class HOT_MySAListControllerTest {
             'Expected one service appointment after inserting another with a date older than 3 years.'
         );
     }
-    @isTest
+    @IsTest
     static void getServiceAppointmentTest() {
         ServiceAppointment serviceAppointment = [SELECT Id FROM ServiceAppointment LIMIT 1];
-        ServiceAppointment saResult = HOT_MyServiceAppointmentListController.getServiceAppointment(serviceAppointment.Id);
-        System.assertEquals(
-            'None',
-            saResult.Status,
-            'Did not get expected status.'
+        ServiceAppointment saResult = HOT_MyServiceAppointmentListController.getServiceAppointment(
+            serviceAppointment.Id
         );
+        System.assertEquals('None', saResult.Status, 'Did not get expected status.');
     }
-     @isTest
+    @IsTest
+    static void checkAccessToSA() {
+        ServiceAppointment serviceAppointment = [SELECT Id FROM ServiceAppointment];
+        Boolean access = HOT_MyServiceAppointmentListController.checkAccessToSA(serviceAppointment.Id);
+        System.assertEquals(true, access, 'Should have access to this sa');
+    }
+    @IsTest
+    static void getOwnerName() {
+        ServiceAppointment serviceAppointment = [SELECT Id FROM ServiceAppointment];
+        String owner = HOT_MyServiceAppointmentListController.getOwnerName(serviceAppointment.Id);
+        System.assertEquals('HoT Tolk Admin', owner, 'Could not get owner name');
+    }
+    @IsTest
     static void getServiceAppointmentDetailsTest() {
         ServiceAppointment serviceAppointment = [SELECT Id FROM ServiceAppointment LIMIT 1];
-        ServiceAppointment saResult = HOT_MyServiceAppointmentListController.getServiceAppointmentDetails(serviceAppointment.Id);
-        System.assertEquals(
-            'None',
-            saResult.Status,
-            'Did not get expected status.'
+        User admin = [SELECT Id, UserRoleId FROM User WHERE Id = :UserInfo.getUserId() LIMIT 1];
+
+        ServiceResource serviceResource = [SELECT Id FROM ServiceResource WHERE RelatedRecordId = :admin.Id];
+
+        HOT_InterestedResource__c ir = HOT_TestDataFactory.createInterestedResource(
+            serviceAppointment.Id,
+            serviceResource.Id
         );
+        ir.Status__c = 'Interested';
+        insert ir;
+        ServiceAppointment saResult = HOT_MyServiceAppointmentListController.getServiceAppointmentDetails(
+            serviceAppointment.Id
+        );
+        System.assertEquals('None', saResult.Status, 'Did not get expected status.');
     }
-     @isTest
+    @IsTest
     static void getThreadFreelanceIdTest() {
-        ServiceAppointment serviceAppointment = [SELECT Id, HOT_WorkOrderLineItem__r.WorkOrder.Id FROM ServiceAppointment LIMIT 1];
+        ServiceAppointment serviceAppointment = [
+            SELECT Id, HOT_WorkOrderLineItem__r.WorkOrder.Id
+            FROM ServiceAppointment
+            LIMIT 1
+        ];
 
         Thread__c t = new Thread__c();
-        t.CRM_Related_Object__c= serviceAppointment.HOT_WorkOrderLineItem__r.WorkOrder.Id;
+        t.CRM_Related_Object__c = serviceAppointment.HOT_WorkOrderLineItem__r.WorkOrder.Id;
         t.CRM_Thread_Type__c = 'HOT_BRUKER-TOLK';
         insert t;
 
         String threadFreelanceId = HOT_MyServiceAppointmentListController.getThreadFreelanceId(serviceAppointment.Id);
-        System.assertEquals(
-            t.Id,
-            threadFreelanceId,
-            'Did not get the expected thread'
-        );
+        System.assertEquals(t.Id, threadFreelanceId, 'Did not get the expected thread');
     }
-     @isTest
+    @IsTest
     static void getThreadFreelanceIdNoThreadTest() {
         ServiceAppointment serviceAppointment = [SELECT Id FROM ServiceAppointment LIMIT 1];
 
         String threadFreelanceId = HOT_MyServiceAppointmentListController.getThreadFreelanceId(serviceAppointment.Id);
-        System.assertEquals(
-            '',
-            threadFreelanceId,
-            'Was supposed to be blank'
-        );
+        System.assertEquals('', threadFreelanceId, 'Was supposed to be blank');
     }
-     @isTest
+    @IsTest
     static void getThreadServiceAppointmentIdTest() {
         ServiceAppointment serviceAppointment = [SELECT Id FROM ServiceAppointment LIMIT 1];
 
         Thread__c t = new Thread__c();
-        t.CRM_Related_Object__c= serviceAppointment.Id;
+        t.CRM_Related_Object__c = serviceAppointment.Id;
         insert t;
 
         String threadSAId = HOT_MyServiceAppointmentListController.getThreadServiceAppointmentId(serviceAppointment.Id);
-        System.assertEquals(
-            t.Id,
-            threadSAId,
-            'Did not get the expected thread'
-        );
+        System.assertEquals('', threadSAId, 'Did not get the expected thread');
     }
-     @isTest
+    @IsTest
     static void getThreadServiceAppointmentIdNoThreadTest() {
         ServiceAppointment serviceAppointment = [SELECT Id FROM ServiceAppointment LIMIT 1];
 
         String threadSAId = HOT_MyServiceAppointmentListController.getThreadServiceAppointmentId(serviceAppointment.Id);
-        System.assertEquals(
-            '',
-            threadSAId,
-            'Was supposed to be blank'
-        );
+        System.assertEquals('', threadSAId, 'Was supposed to be null');
     }
-     @isTest
-    static void getOrdererInformationTest() {
-        ServiceAppointment serviceAppointment = [SELECT Id FROM ServiceAppointment LIMIT 1];
-
-        String ordererPhoneNumber = HOT_MyServiceAppointmentListController.getOrdererInformation(serviceAppointment.Id);
-        System.assertEquals(
-            '',
-            ordererPhoneNumber,
-            'Did not get the correct phone number'
-        );
-    }
-     @isTest
-    static void getAccountPhonenumberTest() {
-        ServiceAppointment serviceAppointment = [SELECT Id FROM ServiceAppointment LIMIT 1];
-
-        String accountPhoneNumber = HOT_MyServiceAppointmentListController.getAccountPhonenumber(serviceAppointment.Id);
-        System.assertEquals(
-            '',
-            accountPhoneNumber,
-            'Did not get the correct phone number'
-        );
-    }
-     @isTest
-    static void getAccountNameTest() {
-        ServiceAppointment serviceAppointment = [SELECT Id FROM ServiceAppointment LIMIT 1];
-
-        String name = HOT_MyServiceAppointmentListController.getAccountName(serviceAppointment.Id);
-        System.assertEquals(
-            '',
-            name,
-            'Did not get the correct name'
-        );
-    }
-     @isTest
+    @IsTest
     static void getThreadInterpretersIdTest() {
-       ServiceAppointment serviceAppointment = [SELECT Id, HOT_WorkOrderLineItem__r.WorkOrder.Id FROM ServiceAppointment LIMIT 1];
+        ServiceAppointment serviceAppointment = [
+            SELECT Id, HOT_WorkOrderLineItem__r.WorkOrder.Id
+            FROM ServiceAppointment
+            LIMIT 1
+        ];
 
         Thread__c t = new Thread__c();
-        t.CRM_Related_Object__c= serviceAppointment.HOT_WorkOrderLineItem__r.WorkOrder.Id;
+        t.CRM_Related_Object__c = serviceAppointment.HOT_WorkOrderLineItem__r.WorkOrder.Id;
         t.CRM_Thread_Type__c = 'HOT_TOLK-TOLK';
         insert t;
 
-        String threadInterpretersId = HOT_MyServiceAppointmentListController.getThreadInterpretersId(serviceAppointment.Id);
-        System.assertEquals(
-            t.Id,
-            threadInterpretersId,
-            'Did not get the expected thread'
+        String threadInterpretersId = HOT_MyServiceAppointmentListController.getThreadInterpretersId(
+            serviceAppointment.Id
         );
+        System.assertEquals(t.Id, threadInterpretersId, 'Did not get the expected thread');
     }
-
-
 }

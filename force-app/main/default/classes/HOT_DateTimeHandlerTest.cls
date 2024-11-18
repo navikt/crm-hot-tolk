@@ -1,6 +1,6 @@
-@isTest
+@IsTest
 public with sharing class HOT_DateTimeHandlerTest {
-    @isTest
+    @IsTest
     static void checkOverlappingDatesFalse() {
         Datetime aStart = Datetime.now().addDays(8);
         Datetime aEnd = Datetime.now().addDays(9);
@@ -13,7 +13,7 @@ public with sharing class HOT_DateTimeHandlerTest {
         Test.stopTest();
     }
 
-    @isTest
+    @IsTest
     static void checkOverlappingDatesFalse2() {
         Datetime aStart = Datetime.now().addDays(2);
         Datetime aEnd = Datetime.now().addDays(3);
@@ -26,7 +26,7 @@ public with sharing class HOT_DateTimeHandlerTest {
         Test.stopTest();
     }
 
-    @isTest
+    @IsTest
     static void checkOverlappingDatesFalse3() {
         Datetime aStart = Datetime.now().addDays(2);
         Datetime aEnd = Datetime.now().addDays(3);
@@ -39,7 +39,7 @@ public with sharing class HOT_DateTimeHandlerTest {
         Test.stopTest();
     }
 
-    @isTest
+    @IsTest
     static void checkOverlappingDatesFalse4() {
         Datetime aStart = Datetime.now().addDays(3);
         Datetime aEnd = Datetime.now().addDays(4);
@@ -52,7 +52,7 @@ public with sharing class HOT_DateTimeHandlerTest {
         Test.stopTest();
     }
 
-    @isTest
+    @IsTest
     static void checkOverlappingDatesTrue() {
         Datetime aStart = Datetime.now().addDays(2);
         Datetime aEnd = Datetime.now().addDays(7);
@@ -65,7 +65,7 @@ public with sharing class HOT_DateTimeHandlerTest {
         Test.stopTest();
     }
 
-    @isTest
+    @IsTest
     static void checkOverlappingDatesTrue2() {
         Datetime aStart = Datetime.now().addDays(5);
         Datetime aEnd = Datetime.now().addDays(12);
@@ -78,7 +78,7 @@ public with sharing class HOT_DateTimeHandlerTest {
         Test.stopTest();
     }
 
-    @isTest
+    @IsTest
     static void checkOverlappingDatesTrue3() {
         Datetime aStart = Datetime.now().addDays(5);
         Datetime aEnd = Datetime.now().addDays(8);
@@ -91,7 +91,7 @@ public with sharing class HOT_DateTimeHandlerTest {
         Test.stopTest();
     }
 
-    @isTest
+    @IsTest
     static void checkOverlappingDatesTrue4() {
         Datetime aStart = Datetime.now().addDays(1);
         Datetime aEnd = Datetime.now().addDays(12);
@@ -104,7 +104,7 @@ public with sharing class HOT_DateTimeHandlerTest {
         Test.stopTest();
     }
 
-    @isTest
+    @IsTest
     static void checkOverlappingDatesException() {
         Datetime aStart = null;
         Datetime aEnd = Datetime.now().addDays(5);
@@ -128,7 +128,7 @@ public with sharing class HOT_DateTimeHandlerTest {
         Test.stopTest();
     }
 
-    @isTest
+    @IsTest
     static void checkOverlappingDatesException2() {
         Datetime aStart = Datetime.now().addDays(5);
         Datetime aEnd = Datetime.now().addDays(4);
@@ -152,7 +152,7 @@ public with sharing class HOT_DateTimeHandlerTest {
         Test.stopTest();
     }
 
-    @isTest
+    @IsTest
     static void checkOverlappingDatesException3() {
         Datetime aStart = Datetime.now().addDays(3);
         Datetime aEnd = Datetime.now().addDays(3);
@@ -176,7 +176,7 @@ public with sharing class HOT_DateTimeHandlerTest {
         Test.stopTest();
     }
 
-    @isTest
+    @IsTest
     static void checkOverlappingDatesException4() {
         Datetime aStart = Datetime.now().addDays(3);
         Datetime aEnd = Datetime.now().addDays(2);

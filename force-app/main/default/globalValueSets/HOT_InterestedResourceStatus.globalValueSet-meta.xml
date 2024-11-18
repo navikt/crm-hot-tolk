@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="UTF-8"?>
+<?xml version="1.0" encoding="UTF-8" ?>
 <GlobalValueSet xmlns="http://soap.sforce.com/2006/04/metadata">
     <customValue>
         <fullName>Interested</fullName>
@@ -49,6 +49,11 @@
         <fullName>Declined</fullName>
         <default>false</default>
         <label>Declined</label>
+    </customValue>
+    <customValue>
+        <fullName>Reserved</fullName>
+        <default>false</default>
+        <label>Reserved</label>
     </customValue>
     <masterLabel>Interested Resource Status</masterLabel>
     <sorted>false</sorted>

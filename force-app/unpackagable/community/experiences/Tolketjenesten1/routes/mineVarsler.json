@@ -1,0 +1,12 @@
+{
+    "activeViewId": "ee2a4e9d-7248-499c-97dd-5e93588d7b77",
+    "appPageId": "e1a097ff-c5e1-47c6-b293-9a8b7a2b049f",
+    "configurationTags": [],
+    "devName": "Mine_varsler__c",
+    "id": "37a6a92e-0315-4a0f-9e12-ca4874e8297d",
+    "label": "Mine varsler",
+    "pageAccess": "UseParent",
+    "routeType": "custom-mine-varsler",
+    "type": "route",
+    "urlPrefix": "mine-varsler"
+}

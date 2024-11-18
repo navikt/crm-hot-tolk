@@ -20,6 +20,7 @@
                             field-name="HOT_IsAvailableForAcuteAssignments__c"
                         ></lightning-output-field>
                         <lightning-output-field field-name="HOT_MobileDevice__c"></lightning-output-field>
+                        <lightning-output-field field-name="HOT_NotificationChannel__c"></lightning-output-field>
                     </div>
                     <lightning-output-field field-name="HOT_PreferredRegions__c"></lightning-output-field>
                 </lightning-record-view-form>
@@ -33,7 +34,13 @@
                 ></c-button>
             </section>
             <section class="editUserInformation" if:true={editUserInformation} aria-live="polite">
-                <lightning-record-edit-form object-api-name="ServiceResource" record-id={recordId}>
+                <lightning-record-edit-form
+                    object-api-name="ServiceResource"
+                    record-id={recordId}
+                    onsubmit={handleSubmit}
+                    onerror={handleError}
+                    onsuccess={handleSuccess}
+                >
                     <div class="form-wrapper">
                         <lightning-input-field
                             field-name="HOT_EmailOverride__c"
@@ -50,17 +57,21 @@
                         ></lightning-input-field>
                         <lightning-input-field field-name="HOT_MobileDevice__c"></lightning-input-field>
                         <lightning-input-field
+                            field-name="HOT_NotificationChannel__c"
+                            label="Varslingskanal"
+                        ></lightning-input-field>
+                        <lightning-input-field
                             field-name="HOT_PreferredRegions__c"
                             style="margin-bottom: 5px"
                         ></lightning-input-field>
                     </div>
                     <div class="button-class">
                         <c-button
+                            type="submit"
                             button-label="Lagre"
                             button-styling="primary"
                             desktop-style="width: 8rem; justify-content: center"
                             mobile-style="width: 8rem; justify-content: center"
-                            onbuttonclick={handleSubmit}
                         ></c-button>
                         <c-button
                             button-label="Avbryt"

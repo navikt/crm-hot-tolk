@@ -1,6 +1,7 @@
 {
   "appPageId" : "e1a097ff-c5e1-47c6-b293-9a8b7a2b049f",
   "componentName" : "siteforce:dynamicLayout",
+  "dataProviders" : [ ],
   "id" : "93bb3b00-d222-406e-9321-96f1aaefbd55",
   "label" : "Mine Bestillinger Andre",
   "regions" : [ {
@@ -26,11 +27,11 @@
       "regions" : [ {
         "components" : [ {
           "componentAttributes" : {
-            "NAVarea" : "Privatperson",
-            "navareapicklist" : "Privatperson"
+            "context" : "Privatperson",
+            "env" : "Dev"
           },
-          "componentName" : "c:globalCommunityHeader",
-          "id" : "0481a0aa-6aad-4a4a-a1f3-7a5e4535df7f",
+          "componentName" : "c:decoratorHeader",
+          "id" : "aeb27eba-c5cc-410b-97ff-a07001990268",
           "renderPriority" : "NEUTRAL",
           "renditionMap" : { },
           "type" : "component"
@@ -52,12 +53,9 @@
           "renditionMap" : { },
           "type" : "component"
         }, {
-          "componentAttributes" : {
-            "NAVarea" : "Privatperson",
-            "navareapicklist" : "Privatperson"
-          },
-          "componentName" : "c:globalCommunityFooter",
-          "id" : "d2373248-94e2-4478-a477-11f0becedb49",
+          "componentAttributes" : { },
+          "componentName" : "c:decoratorFooter",
+          "id" : "d96f89fb-789d-4f5a-9d31-318890ae1262",
           "renderPriority" : "NEUTRAL",
           "renditionMap" : { },
           "type" : "component"

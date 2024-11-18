@@ -1,4 +1,4 @@
-@isTest
+@IsTest
 private class HOT_ServiceResourceHandlerTest {
     @testSetup
     static void setup() {
@@ -56,7 +56,7 @@ private class HOT_ServiceResourceHandlerTest {
 
     }
 
-    @isTest
+    @IsTest
     static void CreateServiceResourceTest() {
         Test.startTest();
         CommunityUsersService.createCommunityPlusUser(new List<String>{ '01011800001' });
@@ -76,7 +76,7 @@ private class HOT_ServiceResourceHandlerTest {
         System.assertEquals(1, resources.size());
         System.assertEquals(1, resourceMembers.size());
     }
-    @isTest
+    @IsTest
     static void CreateServiceResourceAutoTest() {
         Test.startTest();
         List<User> users = CommunityUsersService.createCommunityPlusUser(new List<String>{ '01011800001' });

@@ -5,6 +5,7 @@ export default class Hot_frilanstolkServiceAppointmentLists extends NavigationMi
     @track filters = [];
     @track records = [];
     @track checkedRows = [];
+    @track isWantedList = false;
 
     handleFilters(event) {
         this.filters = event.detail;
@@ -18,11 +19,13 @@ export default class Hot_frilanstolkServiceAppointmentLists extends NavigationMi
 
     recordId;
     @track urlStateParameters;
+    @track fromUrl;
     @wire(CurrentPageReference)
     getStateParameters(currentPageReference) {
         if (currentPageReference && Object.keys(currentPageReference.state).length > 0) {
             this.urlStateParameters = { ...currentPageReference.state };
             this.updateTab({ target: { dataset: { id: this.urlStateParameters.list } } });
+            this.fromUrl = this.urlStateParameters.from;
             this.recordId = this.urlStateParameters.id;
         } else {
             if (sessionStorage.getItem('activeTabFreelanceHome') != null) {
@@ -49,6 +52,11 @@ export default class Hot_frilanstolkServiceAppointmentLists extends NavigationMi
                 this.activeTab = tab.name;
                 sessionStorage.setItem('activeTabFreelanceHome', this.activeTab);
                 this.tabMap[tab.name] = true;
+                if (this.activeTab == 'wanted') {
+                    this.isWantedList = true;
+                } else {
+                    this.isWantedList = false;
+                }
             }
         }
         this.updateTabStyle();
@@ -65,12 +73,21 @@ export default class Hot_frilanstolkServiceAppointmentLists extends NavigationMi
     goBack() {
         let res = this.template.querySelector('[data-name="' + this.activeTab + '"]').goBack();
         if (!res.id) {
-            this[NavigationMixin.Navigate]({
-                type: 'comm__namedPage',
-                attributes: {
-                    pageName: 'home'
-                }
-            });
+            if (this.fromUrl == 'mine-varsler') {
+                this[NavigationMixin.Navigate]({
+                    type: 'comm__namedPage',
+                    attributes: {
+                        pageName: 'mine-varsler'
+                    }
+                });
+            } else {
+                this[NavigationMixin.Navigate]({
+                    type: 'comm__namedPage',
+                    attributes: {
+                        pageName: 'home'
+                    }
+                });
+            }
         }
         if (res.id && this.activeTab === res.tab) {
             this.updateURL();

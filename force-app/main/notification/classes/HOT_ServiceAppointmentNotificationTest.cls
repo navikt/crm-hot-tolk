@@ -1,4 +1,4 @@
-@isTest
+@IsTest
 private class HOT_ServiceAppointmentNotificationTest {
     @testSetup
     static void setup() {
@@ -11,7 +11,8 @@ private class HOT_ServiceAppointmentNotificationTest {
         User user = HOT_TestDataFactory.createUser('user', profile);
         insert user;
         ServiceResource serviceResource = HOT_TestDataFactory.createServiceResource(user.Id);
-        serviceResource.HOT_IsEmployedInterpreter__c = true;
+        serviceResource.HOT_IsEmployedInterpreter__c = false;
+        serviceResource.HOT_IsFreelanceInterpreter__c = true;
         insert serviceResource;
         ServiceTerritoryMember serviceTerritoryMember = HOT_TestDataFactory.createServiceTerritoryMember(
             serviceResource,
@@ -20,7 +21,7 @@ private class HOT_ServiceAppointmentNotificationTest {
         insert serviceTerritoryMember;
 
         HOT_Resource__c resource = new HOT_Resource__c();
-        resource.Name = 'Test';
+        resource.Name = 'Test2';
         resource.Service_Resource__c = serviceResource.Id;
         insert resource;
 
@@ -49,8 +50,11 @@ private class HOT_ServiceAppointmentNotificationTest {
 
         WorkType workType = HOT_TestDataFactory.createWorkType();
         insert WorkType;
+        Account acc = HOT_TestDataFactory.createAccount(true);
+        insert acc;
         HOT_Request__c request = HOT_TestDataFactory.createRequest('subject', workType);
         request.PreferredResource1__c = resource.Id;
+        request.Orderer__c = acc.Id;
         request.NumberOfInterpreters__c = 3;
         insert request;
 
@@ -58,7 +62,7 @@ private class HOT_ServiceAppointmentNotificationTest {
         update request;
     }
 
-    @isTest
+    @IsTest
     private static void notifyResourceAndDispatcherTest() {
         ServiceAppointment serviceAppointment = [
             SELECT Id, HOT_ServiceResource__c, HOT_AssignedResourceId__c
@@ -108,8 +112,10 @@ private class HOT_ServiceAppointmentNotificationTest {
             LIMIT 1
         ];
 
-        assignedResource = HOT_TestDataFactory.createAssignedResource(serviceAppointment.Id, testResources[1].Id);
-        update serviceAppointment;
+        if (testResources.size() < 1) {
+            assignedResource = HOT_TestDataFactory.createAssignedResource(serviceAppointment.Id, testResources[1].Id);
+            update serviceAppointment;
+        }
 
         serviceAppointment = [
             SELECT Id, HOT_ServiceResource__c, HOT_AssignedResourceId__c
@@ -146,5 +152,523 @@ private class HOT_ServiceAppointmentNotificationTest {
         system.assertEquals('Canceled', serviceAppointment.Status, 'Could not set Status');
 
         Test.stopTest();
+    }
+
+    @IsTest
+    private static void resourceCanceledTest() {
+        Set<String> recipients = new Set<String>{ UserInfo.getUserId() };
+
+        ServiceAppointment serviceAppointment = [
+            SELECT Id, AppointmentNumber, Subject
+            FROM ServiceAppointment
+            WHERE Subject = 'subject'
+            LIMIT 1
+        ];
+
+        CustomNotificationType notificationType = [
+            SELECT Id, DeveloperName
+            FROM CustomNotificationType
+            WHERE DeveloperName = 'HOT_NotifyUser'
+        ];
+        Test.startTest();
+        HOT_ServiceAppointmentNotification.resourceCanceled(notificationType, serviceAppointment, recipients);
+        Test.stopTest();
+    }
+
+    @IsTest
+    private static void notifyUserOnChangedResourceTest() {
+        ServiceAppointment serviceAppointment = [
+            SELECT Id, AppointmentNumber, EarliestStartTime
+            FROM ServiceAppointment
+            WHERE Subject = 'subject'
+            LIMIT 1
+        ];
+        User user = [SELECT Id, AccountId FROM User WHERE Id = :UserInfo.getUserId() LIMIT 1];
+        ServiceResource serviceResource = HOT_TestDataFactory.createServiceResource(user.Id);
+        insert serviceResource;
+
+        AssignedResource assignedResource = HOT_TestDataFactory.createAssignedResource(
+            serviceAppointment.Id,
+            serviceResource.Id
+        );
+        insert assignedResource;
+
+        ServiceResource serviceResourceNew = [SELECT Id FROM ServiceResource WHERE Id != :serviceResource.Id LIMIT 1];
+        assignedResource.ServiceResource = serviceResourceNew;
+        update assignedResource;
+
+        serviceAppointment.Status = 'Dispatched';
+        update serviceAppointment;
+
+        Test.startTest();
+        HOT_ServiceAppointmentNotification saN = new HOT_ServiceAppointmentNotification(
+            new List<ServiceAppointment>{ serviceAppointment }
+        );
+        saN.notifyUserOnChangedResource(serviceAppointment);
+        Test.stopTest();
+    }
+
+    @IsTest
+    private static void canceledByUserTest() {
+        Set<String> recipients = new Set<String>{ UserInfo.getUserId() };
+
+        ServiceAppointment serviceAppointment = [
+            SELECT Id, AppointmentNumber, EarliestStartTime
+            FROM ServiceAppointment
+            WHERE Subject = 'subject'
+            LIMIT 1
+        ];
+
+        //Set<Id> srIds = new Set<Id>([SELECT Id FROM ServiceResource LIMIT 1]);
+        Set<Id> srIds = (new Map<Id, ServiceResource>([SELECT Id FROM ServiceResource LIMIT 1])).keySet();
+
+        CustomNotificationType notificationType = [
+            SELECT Id, DeveloperName
+            FROM CustomNotificationType
+            WHERE DeveloperName = 'HOT_NotifyUser'
+        ];
+        Test.startTest();
+        HOT_ServiceAppointmentNotification saN = new HOT_ServiceAppointmentNotification(
+            new List<ServiceAppointment>{ serviceAppointment }
+        );
+        saN.canceledByUser(
+            notificationType,
+            serviceAppointment,
+            [SELECT Id FROM ServiceResource LIMIT 1]
+            .Id,
+            recipients
+        );
+        Test.stopTest();
+    }
+    @IsTest
+    private static void canceledByUserSMSTest() {
+        Set<String> recipients = new Set<String>{ UserInfo.getUserId() };
+        Test.startTest();
+        ServiceAppointment serviceAppointment = [
+            SELECT Id, AppointmentNumber, EarliestStartTime, HOT_IsEmployedInterpreter__c
+            FROM ServiceAppointment
+            WHERE Subject = 'subject'
+            LIMIT 1
+        ];
+        serviceAppointment.HOT_IsEmployedInterpreter__c = false;
+        update serviceAppointment;
+
+        User user = [SELECT Id, AccountId FROM User WHERE Id = :UserInfo.getUserId() LIMIT 1];
+        ServiceResource serviceResource = HOT_TestDataFactory.createServiceResource(user.Id);
+        serviceResource.HOT_NotificationChannel__c = 'SMS';
+        insert serviceResource;
+
+        AssignedResource assignedResource = HOT_TestDataFactory.createAssignedResource(
+            serviceAppointment.Id,
+            serviceResource.Id
+        );
+        insert assignedResource;
+
+        serviceAppointment.Status = 'Canceled';
+        update serviceAppointment;
+        Set<Id> srIds = new Set<Id>();
+        srIds.add(serviceResource.Id);
+
+        CustomNotificationType notificationType = [
+            SELECT Id, DeveloperName
+            FROM CustomNotificationType
+            WHERE DeveloperName = 'HOT_NotifyUser'
+        ];
+        HOT_ServiceAppointmentNotification saN = new HOT_ServiceAppointmentNotification(
+            new List<ServiceAppointment>{ serviceAppointment }
+        );
+        saN.canceledByUser(notificationType, serviceAppointment, serviceResource.Id, recipients);
+
+        Test.stopTest();
+    }
+
+    @IsTest
+    private static void timeChangedTest() {
+        Set<String> recipients = new Set<String>{ UserInfo.getUserId() };
+
+        //Set<Id> saIds = new Set<Id>([SELECT Id FROM ServiceAppointment WHERE Subject = 'subject' LIMIT 1]);
+        List<ServiceAppointment> saList = [SELECT Id FROM ServiceAppointment WHERE Subject = 'subject' LIMIT 1];
+        Person__c person = HOT_TestDataFactory.createPerson();
+        person.Name = '12015678999';
+        insert person;
+        Account personAccount = HOT_TestDataFactory.createAccount(true);
+        personAccount.INT_PersonIdent__c = '12015678999';
+        personAccount.CRM_Person__c = person.Id;
+        insert personAccount;
+        User user = [SELECT Id, AccountId FROM User WHERE Id = :UserInfo.getUserId() LIMIT 1];
+        ServiceResource serviceResource = HOT_TestDataFactory.createServiceResource(user.Id);
+        insert serviceResource;
+
+        AssignedResource assignedResource = HOT_TestDataFactory.createAssignedResource(
+            saList[0].Id,
+            serviceResource.Id
+        );
+        insert assignedResource;
+
+        DateTime now = DateTime.now();
+        DateTime newTime = now.addDays(2);
+        DateTime newTime2 = newTime.addHours(2);
+        for (ServiceAppointment sa : saList) {
+            sa.EarliestStartTime = newTime;
+            sa.DueDate = newTime2;
+        }
+        update saList;
+        List<ServiceResource> testResources = [
+            SELECT Id, HOT_IsEmployedInterpreter__c
+            FROM ServiceResource
+            WHERE HOT_IsEmployedInterpreter__c = TRUE
+        ];
+
+        Test.startTest();
+
+        CustomNotificationType notificationType = [
+            SELECT Id, DeveloperName
+            FROM CustomNotificationType
+            WHERE DeveloperName = 'HOT_NotifyUser'
+        ];
+        HOT_ServiceAppointmentNotification saN = new HOT_ServiceAppointmentNotification(saList);
+        saN.timeChanged(
+            notificationType,
+            [SELECT Id FROM ServiceAppointment WHERE Subject = 'subject' LIMIT 1]
+            .Id,
+            recipients
+        );
+        Test.stopTest();
+    }
+    @IsTest
+    private static void timeChangedSMSTest() {
+        Set<String> recipients = new Set<String>{ UserInfo.getUserId() };
+
+        //Set<Id> saIds = new Set<Id>([SELECT Id FROM ServiceAppointment WHERE Subject = 'subject' LIMIT 1]);
+        List<ServiceAppointment> saList = [SELECT Id FROM ServiceAppointment WHERE Subject = 'subject' LIMIT 1];
+
+        User user = [SELECT Id, AccountId FROM User WHERE Id = :UserInfo.getUserId() LIMIT 1];
+        Person__c person = HOT_TestDataFactory.createPerson();
+        person.Name = '12015678999';
+        insert person;
+        Account personAccount = HOT_TestDataFactory.createAccount(true);
+        personAccount.INT_PersonIdent__c = '12015678999';
+        personAccount.CRM_Person__c = person.Id;
+        insert personAccount;
+        ServiceResource serviceResource = HOT_TestDataFactory.createServiceResource(user.Id);
+        serviceResource.HOT_NotificationChannel__c = 'SMS';
+        insert serviceResource;
+
+        AssignedResource assignedResource = HOT_TestDataFactory.createAssignedResource(
+            saList[0].Id,
+            serviceResource.Id
+        );
+        insert assignedResource;
+
+        DateTime now = DateTime.now();
+        DateTime newTime = now.addDays(2);
+        DateTime newTime2 = newTime.addHours(2);
+        for (ServiceAppointment sa : saList) {
+            sa.EarliestStartTime = newTime;
+            sa.DueDate = newTime2;
+            sa.HOT_IsEmployedInterpreter__c = false;
+        }
+        update saList;
+
+        Test.startTest();
+
+        Set<Id> saIds = (new Map<Id, ServiceAppointment>(
+                [SELECT Id FROM ServiceAppointment WHERE Subject = 'subject' LIMIT 1]
+            ))
+            .keySet();
+
+        CustomNotificationType notificationType = [
+            SELECT Id, DeveloperName
+            FROM CustomNotificationType
+            WHERE DeveloperName = 'HOT_NotifyUser'
+        ];
+        HOT_ServiceAppointmentNotification saN = new HOT_ServiceAppointmentNotification(saList);
+        saN.timeChanged(
+            notificationType,
+            [SELECT Id FROM ServiceAppointment WHERE Subject = 'subject' LIMIT 1]
+            .Id,
+            recipients
+        );
+        Test.stopTest();
+    }
+
+    @IsTest
+    private static void addressChangedTest() {
+        Set<String> recipients = new Set<String>{ UserInfo.getUserId() };
+
+        User user = [SELECT Id, AccountId FROM User WHERE Id = :UserInfo.getUserId() LIMIT 1];
+        ServiceResource serviceResource = HOT_TestDataFactory.createServiceResource(user.Id);
+        insert serviceResource;
+        Test.startTest();
+        WorkType workType = HOT_TestDataFactory.createWorkType();
+        insert workType;
+        HOT_Request__c request = HOT_TestDataFactory.createRequest('TEST', workType);
+        insert request;
+        WorkOrder workOrder = HOT_TestDataFactory.createWorkOrder(request, workType);
+        insert workOrder;
+        WorkOrderLineItem workOrderLineItem = HOT_TestDataFactory.createWorkOrderLineItem(workOrder, workType);
+        insert workOrderLineItem;
+        ServiceAppointment serviceAppointment = HOT_TestDataFactory.createServiceAppointment(workOrderLineItem);
+        serviceAppointment.HOT_Request__c = request.Id;
+        serviceAppointment.Subject = 'Test';
+        insert serviceAppointment;
+        AssignedResource assignedResource = HOT_TestDataFactory.createAssignedResource(
+            serviceAppointment.Id,
+            serviceResource.Id
+        );
+        insert assignedResource;
+
+        serviceAppointment.Status = 'Dispatched';
+        update serviceAppointment;
+
+        serviceAppointment.HOT_InterpretationStreet__c = 'Tolkeveien 123';
+        update serviceAppointment;
+
+        Id saId = [SELECT HOT_InterpretationStreet__c FROM ServiceAppointment WHERE Subject = 'Test' LIMIT 1].Id;
+        CustomNotificationType notificationType = [
+            SELECT Id, DeveloperName
+            FROM CustomNotificationType
+            WHERE DeveloperName = 'HOT_NotifyUser'
+        ];
+        HOT_ServiceAppointmentNotification saN = new HOT_ServiceAppointmentNotification(
+            new List<ServiceAppointment>{ serviceAppointment }
+        );
+        saN.addressChanged(notificationType, saId, recipients);
+        Test.stopTest();
+    }
+
+    @IsTest
+    private static void notifyInterpretersOnChangedResourceTest() {
+        Set<String> recipients = new Set<String>{ UserInfo.getUserId() };
+
+        //List<User> users = [SELECT Id, AccountId FROM User WHERE Id = :UserInfo.getUserId() LIMIT 2];
+        ServiceResource serviceResource = [
+            SELECT Id
+            FROM ServiceResource
+            WHERE HOT_IsEmployedInterpreter__c = TRUE
+            LIMIT 1
+        ];
+        ServiceResource serviceResourceFreelance = [
+            SELECT Id
+            FROM ServiceResource
+            WHERE HOT_IsFreelanceInterpreter__c = TRUE
+            LIMIT 1
+        ];
+
+        WorkType workType = HOT_TestDataFactory.createWorkType();
+        insert workType;
+
+        HOT_Request__c request = HOT_TestDataFactory.createRequest('Flertolksoppdrag med endring av medtolk', workType);
+        insert request;
+
+        WorkOrder workOrder = HOT_TestDataFactory.createWorkOrder(request, workType);
+        insert workOrder;
+
+        WorkOrderLineItem workOrderLineItem = HOT_TestDataFactory.createWorkOrderLineItem(workOrder, workType);
+        insert workOrderLineItem;
+
+        ServiceAppointment serviceAppointment = HOT_TestDataFactory.createServiceAppointment(workOrderLineItem);
+        serviceAppointment.HOT_Request__c = request.Id;
+        serviceAppointment.Subject = 'Flertolksoppdrag med endring av medtolk';
+        insert serviceAppointment;
+
+        ServiceAppointment serviceAppointment2 = HOT_TestDataFactory.createServiceAppointment(workOrderLineItem);
+        serviceAppointment2.HOT_Request__c = request.Id;
+        serviceAppointment2.Subject = 'Flertolksoppdrag med endring av medtolk';
+        insert serviceAppointment2;
+
+        Test.startTest();
+
+        AssignedResource assignedResource = HOT_TestDataFactory.createAssignedResource(
+            serviceAppointment.Id,
+            serviceResource.Id
+        );
+        insert assignedResource;
+
+        AssignedResource assignedResource2 = HOT_TestDataFactory.createAssignedResource(
+            serviceAppointment2.Id,
+            serviceResourceFreelance.Id
+        );
+        insert assignedResource2;
+
+        serviceAppointment.Status = 'Dispatched';
+        update serviceAppointment;
+
+        serviceAppointment2.Status = 'Dispatched';
+        update serviceAppointment2;
+
+        //Freelance notification
+        HOT_ServiceAppointmentNotification saN = new HOT_ServiceAppointmentNotification(
+            new List<ServiceAppointment>{ serviceAppointment, serviceAppointment2 }
+        );
+        saN.notifyInterpretersOnChangedResource(serviceAppointment2);
+        //Employee notification
+        saN.notifyInterpretersOnChangedResource(serviceAppointment);
+        Test.stopTest();
+    }
+
+    @IsTest
+    private static void testFormatTimePeriod() {
+        Datetime startDate = Datetime.newInstance(2023, 10, 20, 9, 0, 0);
+        Datetime endDate = Datetime.newInstance(2023, 10, 20, 15, 30, 0);
+
+        String result = HOT_ServiceAppointmentNotification.formatTimePeriod(startDate, endDate);
+
+        String expected = '20.10.2023\nKlokkeslett: 09.00 - 15.30';
+
+        System.assertEquals(expected, result, 'The formatted time period is incorrect.');
+    }
+    @IsTest
+    private static void cannotCompleteTest() {
+        Set<String> recipients = new Set<String>{ UserInfo.getUserId() };
+        Test.startTest();
+        WorkType workType = HOT_TestDataFactory.createWorkType();
+        insert workType;
+        HOT_Request__c request = HOT_TestDataFactory.createRequest('TEST', workType);
+        insert request;
+        WorkOrder workOrder = HOT_TestDataFactory.createWorkOrder(request, workType);
+        insert workOrder;
+        WorkOrderLineItem workOrderLineItem = HOT_TestDataFactory.createWorkOrderLineItem(workOrder, workType);
+        insert workOrderLineItem;
+        ServiceAppointment serviceAppointment = HOT_TestDataFactory.createServiceAppointment(workOrderLineItem);
+        serviceAppointment.HOT_Request__c = request.Id;
+        insert serviceAppointment;
+
+        serviceAppointment.Status = 'Cannot Complete';
+        update serviceAppointment;
+        Test.stopTest();
+    }
+    @IsTest
+    private static void notifyInterpretersOnCoInterpreterRemovedTest() {
+        WorkType workType = HOT_TestDataFactory.createWorkType();
+        insert workType;
+        HOT_Request__c request = HOT_TestDataFactory.createRequest('TEST', workType);
+        insert request;
+        WorkOrder workOrder = HOT_TestDataFactory.createWorkOrder(request, workType);
+        insert workOrder;
+        WorkOrderLineItem workOrderLineItem = HOT_TestDataFactory.createWorkOrderLineItem(workOrder, workType);
+        insert workOrderLineItem;
+        ServiceAppointment serviceAppointment = HOT_TestDataFactory.createServiceAppointment(workOrderLineItem);
+        serviceAppointment.HOT_Request__c = request.Id;
+        insert serviceAppointment;
+        ServiceAppointment serviceAppointment2 = HOT_TestDataFactory.createServiceAppointment(workOrderLineItem);
+        serviceAppointment2.HOT_Request__c = request.Id;
+        serviceAppointment2.HOT_WorkOrderLineItem__c = workOrderLineItem.Id;
+        insert serviceAppointment2;
+
+        Test.startTest();
+        ServiceResource serviceResource = [
+            SELECT Id
+            FROM ServiceResource
+            WHERE HOT_IsEmployedInterpreter__c = TRUE
+            LIMIT 1
+        ];
+        ServiceResource serviceResourceFreelance = [
+            SELECT Id
+            FROM ServiceResource
+            WHERE HOT_IsFreelanceInterpreter__c = TRUE
+            LIMIT 1
+        ];
+        AssignedResource assignedResource = HOT_TestDataFactory.createAssignedResource(
+            serviceAppointment.Id,
+            serviceResource.Id
+        );
+        insert assignedResource;
+
+        AssignedResource assignedResource2 = HOT_TestDataFactory.createAssignedResource(
+            serviceAppointment2.Id,
+            serviceResourceFreelance.Id
+        );
+        insert assignedResource2;
+
+        serviceAppointment.Status = 'Dispatched';
+        update serviceAppointment;
+
+        serviceAppointment2.Status = 'Dispatched';
+        update serviceAppointment2;
+
+        delete assignedResource;
+        Test.stopTest();
+    }
+    @IsTest
+    private static void notifyInterpretersOnCoInterpreterChangedTest() {
+        Profile profile = [SELECT Id FROM Profile WHERE Name = 'System Administrator' LIMIT 1];
+        User user = HOT_TestDataFactory.createUser('admin', profile);
+        insert user;
+        ServiceResource serviceResourceNew = HOT_TestDataFactory.createServiceResource(user.Id);
+        serviceResourceNew.HOT_IsEmployedInterpreter__c = false;
+        serviceResourceNew.HOT_IsFreelanceInterpreter__c = true;
+        serviceResourceNew.Name = 'Test2';
+        insert serviceResourceNew;
+
+        WorkType workType = HOT_TestDataFactory.createWorkType();
+        insert workType;
+        HOT_Request__c request = HOT_TestDataFactory.createRequest('TEST', workType);
+        insert request;
+        WorkOrder workOrder = HOT_TestDataFactory.createWorkOrder(request, workType);
+        insert workOrder;
+        WorkOrderLineItem workOrderLineItem = HOT_TestDataFactory.createWorkOrderLineItem(workOrder, workType);
+        insert workOrderLineItem;
+        ServiceAppointment serviceAppointment = HOT_TestDataFactory.createServiceAppointment(workOrderLineItem);
+        serviceAppointment.HOT_Request__c = request.Id;
+        insert serviceAppointment;
+        ServiceAppointment serviceAppointment2 = HOT_TestDataFactory.createServiceAppointment(workOrderLineItem);
+        serviceAppointment2.HOT_Request__c = request.Id;
+        serviceAppointment2.HOT_WorkOrderLineItem__c = workOrderLineItem.Id;
+        insert serviceAppointment2;
+
+        Test.startTest();
+        ServiceResource serviceResource = [
+            SELECT Id
+            FROM ServiceResource
+            WHERE HOT_IsEmployedInterpreter__c = TRUE
+            LIMIT 1
+        ];
+        ServiceResource serviceResourceFreelance = [
+            SELECT Id
+            FROM ServiceResource
+            WHERE HOT_IsFreelanceInterpreter__c = TRUE
+            LIMIT 1
+        ];
+        ServiceResource serviceResourceFreelance2 = [
+            SELECT Id
+            FROM ServiceResource
+            WHERE HOT_IsFreelanceInterpreter__c = TRUE AND Name = 'Test2'
+            LIMIT 1
+        ];
+        AssignedResource assignedResource = HOT_TestDataFactory.createAssignedResource(
+            serviceAppointment.Id,
+            serviceResource.Id
+        );
+        insert assignedResource;
+
+        AssignedResource assignedResource2 = HOT_TestDataFactory.createAssignedResource(
+            serviceAppointment2.Id,
+            serviceResourceFreelance.Id
+        );
+        insert assignedResource2;
+
+        serviceAppointment.Status = 'Dispatched';
+        update serviceAppointment;
+
+        serviceAppointment2.Status = 'Dispatched';
+        update serviceAppointment2;
+
+        assignedResource.ServiceResource = serviceResourceFreelance2;
+        update assignedResource;
+        Test.stopTest();
+    }
+    @IsTest
+    private static void getTargetPageRefInterpreterOnChangedTest() {
+        Test.startTest();
+        HOT_Request__c request = [SELECT Id FROM HOT_Request__c LIMIT 1];
+        String result = HOT_ServiceAppointmentNotification.getTargetPageRefInterpreterOnChanged('my', request.Id);
+        Test.stopTest();
+        System.assertEquals(
+            '{type: "comm__namedPage",attributes: {pageName: "mine-oppdrag"}, state: {list: "my", id: "' +
+            request.Id +
+            '"}}',
+            result
+        );
     }
 }

@@ -24,7 +24,9 @@ export default class CrmMessagingMessageComponent extends LightningElement {
     threads;
     setCardTitle;
     hasError = false;
+    setToRedactionFlow = false;
 
+    @track showSetToRedactionBtn = false;
     @track isRequestMessages = false;
     @track showThreads = false;
     @track showButtonDiv;
@@ -62,6 +64,7 @@ export default class CrmMessagingMessageComponent extends LightningElement {
                 this.showButtonDiv = true;
             }
             if (this.threads.length == 1) {
+                this.showSetToRedactionBtn = true;
                 if (this.objectApiName != 'HOT_Request__c') {
                     getAccountOnThread({ recordId: this.threads[0].Id })
                         .then((result) => {
@@ -123,6 +126,7 @@ export default class CrmMessagingMessageComponent extends LightningElement {
         return this.threads.length == 0;
     }
     goToThreadTypeInterpreterInterpreter() {
+        this.setToRedactionFlow = false;
         this.noThreadExist = false;
         this.ThreadInfo = 'Du er i samtale med mellom medtolker';
         refreshApex(this._threadsforRefresh);
@@ -149,6 +153,7 @@ export default class CrmMessagingMessageComponent extends LightningElement {
     }
 
     goToThreadTypeUserInterpreter() {
+        this.setToRedactionFlow = false;
         this.noThreadExist = false;
         this.ThreadInfo = 'Du er i samtale med mellom bruker og tolker';
         refreshApex(this._threadsforRefresh);
@@ -174,6 +179,7 @@ export default class CrmMessagingMessageComponent extends LightningElement {
         }
     }
     goToThreadTypeOrderer() {
+        this.setToRedactionFlow = false;
         this.noThreadExist = false;
         this.ThreadInfo = 'Du er i samtale med bestiller';
         refreshApex(this._threadsforRefresh);
@@ -199,6 +205,7 @@ export default class CrmMessagingMessageComponent extends LightningElement {
         }
     }
     goToThreadTypeUser() {
+        this.setToRedactionFlow = false;
         this.noThreadExist = false;
         refreshApex(this._threadsforRefresh);
         this.ThreadInfo = 'Du er i samtale med bruker';
@@ -224,6 +231,7 @@ export default class CrmMessagingMessageComponent extends LightningElement {
         }
     }
     goToThreadTypeUserOrderer() {
+        this.setToRedactionFlow = false;
         this.shownewbutton = false;
         refreshApex(this._threadsforRefresh);
         this.ThreadInfo = 'Du er i samtale mellom bruker og bestiller';
@@ -266,7 +274,11 @@ export default class CrmMessagingMessageComponent extends LightningElement {
         });
         this.dispatchEvent(englishEvent);
     }
+    renderedCallback() {
+        refreshApex(this._threadsforRefresh);
+    }
     connectedCallback() {
+        this.setToRedactionFlow = false;
         if (this.threads?.length > 0) {
             markAsReadByNav({ threadId: this.threads[0]?.Id });
         }
@@ -309,5 +321,22 @@ export default class CrmMessagingMessageComponent extends LightningElement {
                         this.buttonMessage = 'Klikk for å starte samtale';
                     });
             });
+    }
+    handleSetToRedactionBtnClick() {
+        this.setToRedactionFlow = true;
+    }
+    get flowVariables() {
+        return [
+            {
+                name: 'recordId',
+                type: 'String',
+                value: this.threads[0]?.Id
+            }
+        ];
+    }
+    handleStatusChange(event) {
+        if (event.detail.status === 'FINISHED') {
+            this.setToRedactionFlow = false;
+        }
     }
 }

@@ -1,4 +1,4 @@
-@isTest
+@IsTest
 private class HOT_WageClaimListControllerTest {
     @testSetup
     static void setup() {
@@ -15,22 +15,22 @@ private class HOT_WageClaimListControllerTest {
         insert request;
         WorkOrder workOrder = HOT_TestDataFactory.createWorkOrder(request, workType);
         insert workOrder;
-        WorkOrderLineItem woli=HOT_TestDataFactory.createWorkOrderLineItem(workOrder,workType);
+        WorkOrderLineItem woli = HOT_TestDataFactory.createWorkOrderLineItem(workOrder, workType);
         insert woli;
-        ServiceAppointment sa=HOT_TestDataFactory.createServiceAppointment(woli);
-        sa.Subject='TEST';
+        ServiceAppointment sa = HOT_TestDataFactory.createServiceAppointment(woli);
+        sa.Subject = 'TEST';
         insert sa;
 
         HOT_WageClaim__c wageClaim = HOT_TestDataFactory.createWageClaim(resource);
         wageClaim.WorkType__c = workType.Id;
-        wageClaim.ServiceAppointment__c=sa.Id;
+        wageClaim.ServiceAppointment__c = sa.Id;
         insert wageClaim;
         HOT_WageClaim__c wageClaim2 = HOT_TestDataFactory.createWageClaim(resource);
         wageClaim2.Status__c = 'Annul';
         insert wageClaim2;
     }
 
-    @isTest
+    @IsTest
     static void getMyWageClaimsTest() {
         User user = [SELECT Id FROM User WHERE UserName = 'HOT.user1@nav.hot.no'];
 
@@ -44,7 +44,7 @@ private class HOT_WageClaimListControllerTest {
         }
     }
 
-    @isTest
+    @IsTest
     static void retractAvailabilityTest() {
         HOT_WageClaim__c wageClaim = [SELECT Id FROM HOT_WageClaim__c WHERE Status__c != 'Annul' LIMIT 1];
         String recordId = String.valueOf(wageClaim.Id);
@@ -55,7 +55,7 @@ private class HOT_WageClaimListControllerTest {
         wageClaim = [SELECT Id, Status__c FROM HOT_WageClaim__c WHERE Id = :wageClaim.Id LIMIT 1];
         System.assertEquals('Retracted Availability', wageClaim.Status__c, 'Could not retract wage claim');
     }
-     @isTest
+    @IsTest
     static void getWageClaimThreadIdTest() {
         HOT_WageClaim__c wageClaim = [SELECT Id FROM HOT_WageClaim__c LIMIT 1];
         Thread__c thread = HOT_TestDataFactory.createThread();
@@ -63,10 +63,8 @@ private class HOT_WageClaimListControllerTest {
         insert thread;
 
         Test.startTest();
-        String threadId=HOT_WageClaimListController.getThreadId(wageClaim.Id);
+        String threadId = HOT_WageClaimListController.getThreadId(wageClaim.Id);
         Test.stopTest();
         System.assertEquals(thread.Id, threadId, 'Could not find the wageclaim thread');
-        
-
     }
 }

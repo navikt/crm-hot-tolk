@@ -1,4 +1,9 @@
 public without sharing class HOT_SMSStatusChangeServiceBatch implements Database.Batchable<sObject>, Schedulable {
+    private static void handleException(Exception e) {
+        LoggerUtility logger = new LoggerUtility();
+        logger.exception(e, CRM_ApplicationDomain.Domain.HOT);
+        logger.publishSynch();
+    }
     public void execute(SchedulableContext sc) {
         HOT_SMSStatusChangeServiceBatch instance = new HOT_SMSStatusChangeServiceBatch();
         database.executebatch(instance, 10);
@@ -53,20 +58,75 @@ public without sharing class HOT_SMSStatusChangeServiceBatch implements Database
             }
 
             if (!workorderListPush.isEmpty()) {
+                List<HOT_Notification__c> notificationList = new List<HOT_Notification__c>();
                 for (WorkOrder wo : workorderListPush) {
                     if (userIdByOrdererAccountId.get(wo.HOT_Request__r.Orderer__c) != null) {
                         Set<String> recipients = new Set<String>();
                         recipients.add(userIdByOrdererAccountId.get(wo.HOT_Request__r.Orderer__c));
-                        HOT_UserNotificationService.sendNotificationToOrdererOnStatusUpdate(notificationTypePush, wo, interpreterNames.get(wo.Id), recipients);
+                        HOT_UserNotificationService.sendNotificationToOrdererOnStatusUpdate(
+                            notificationTypePush,
+                            wo,
+                            interpreterNames.get(wo.Id),
+                            recipients
+                        );
                         wo.HOT_SendSMSNotificationOnStatusChanged__c = false;
+                        //creating notification object
+                        HOT_Notification__c notification = new HOT_Notification__c();
+                        notification.HOT_Account__c = wo.HOT_Request__r.Orderer__c;
+                        notification.HOT_NotificationChannel__c = 'Push-varsel i appen';
+                        notification.HOT_Subject__c = 'Status på din bestilling er endret';
+                        if (wo.Status == 'Dispatched') {
+                            String text = 'Du har fått tolk. Tolk er ' + wo.HOT_Interpreters__c;
+                            if (text.length() > 135) {
+                                notification.HOT_NotificationText__c = text.substring(0, 135) + ' ...';
+                                notification.HOT_NotificationText__c +=
+                                    '\nDato: ' +
+                                    wo.StartDate?.format('dd.MM.yyyy', 'Europe/Oslo') +
+                                    ', kl: ' +
+                                    wo.StartDate?.format('HH:mm', 'Europe/Oslo') +
+                                    ' - ' +
+                                    wo.EndDate?.format('HH:mm', 'Europe/Oslo') +
+                                    '.';
+                            } else {
+                                notification.HOT_NotificationText__c =
+                                    'Du har fått tolk. Tolk er ' +
+                                    wo.HOT_Interpreters__c +
+                                    '\nDato: ' +
+                                    wo.StartDate?.format('dd.MM.yyyy', 'Europe/Oslo') +
+                                    ', kl: ' +
+                                    wo.StartDate?.format('HH:mm', 'Europe/Oslo') +
+                                    ' - ' +
+                                    wo.EndDate?.format('HH:mm', 'Europe/Oslo') +
+                                    '.';
+                            }
+                        }
+                        if (wo.Status == 'Cannot Complete') {
+                            notification.HOT_NotificationText__c =
+                                'Ikke ledig tolk.' +
+                                '\nDato: ' +
+                                wo.StartDate?.format('dd.MM.yyyy', 'Europe/Oslo') +
+                                ', kl: ' +
+                                wo.StartDate?.format('HH:mm', 'Europe/Oslo') +
+                                ' - ' +
+                                wo.EndDate?.format('HH:mm', 'Europe/Oslo') +
+                                '.';
+                        }
+                        notification.HOT_RelatedObject__c = wo.Id;
+                        notification.HOT_RelatedObjectType__c = 'workOrder';
+
+                        notificationList.add(notification);
                     }
                 }
                 HOT_DatabaseOperations.updateRecords(workorderListPush);
+                //inserting notifications
+                try {
+                    HOT_NotificationCentreController.createNotification(notificationList);
+                } catch (Exception e) {
+                    handleException(e);
+                }
             }
         } catch (Exception e) {
-            LoggerUtility logger = new LoggerUtility();
-            logger.exception(e, CRM_ApplicationDomain.Domain.HOT);
-            logger.publish();
+            handleException(e);
         }
     }
 
@@ -81,9 +141,7 @@ public without sharing class HOT_SMSStatusChangeServiceBatch implements Database
                     10
                 );
             } catch (Exception e) {
-                LoggerUtility logger = new LoggerUtility();
-                logger.exception(e, CRM_ApplicationDomain.Domain.HOT);
-                logger.publishSynch();
+                handleException(e);
             }
         }
     }

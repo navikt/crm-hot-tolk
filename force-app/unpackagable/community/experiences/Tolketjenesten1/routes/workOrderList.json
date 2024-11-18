@@ -2,6 +2,7 @@
   "activeViewId" : "8028f51e-c013-4245-968b-a145cf21c6e5",
   "appPageId" : "e1a097ff-c5e1-47c6-b293-9a8b7a2b049f",
   "configurationTags" : [ ],
+  "devName" : "Work_Order_List__c",
   "id" : "25d7315e-f70f-4a85-b94a-f6dca31d131c",
   "label" : "Work Order List",
   "routeType" : "list-0WO",

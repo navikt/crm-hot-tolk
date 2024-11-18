@@ -1,8 +1,0 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<PermissionSetGroup xmlns="http://soap.sforce.com/2006/04/metadata">
-    <hasActivationRequired>false</hasActivationRequired>
-    <label>HOT Config Gruppe</label>
-    <permissionSets>HOT_Config</permissionSets>
-    <permissionSets>HOT_Dialog</permissionSets>
-    <status>Updated</status>
-</PermissionSetGroup>

@@ -15,6 +15,52 @@ public without sharing class HOT_AssignedResourceHandler extends MyTriggers {
             throwExceptionIfARHasSAOverlap(assignedResourcesFiltered, true);
         }
     }
+    public override void onBeforeDelete() {
+        Set<Id> potentialSAWithThreadsIds = new Set<Id>();
+        for (AssignedResource ar : (List<AssignedResource>) records) {
+            potentialSAWithThreadsIds.add(ar.ServiceAppointmentId);
+        }
+        List<Thread__c> exisitingThreadsToBeTransferred = [
+            SELECT Id, HOT_IsEmployeeThread__c, CRM_Account__c, CRM_Related_Object__c, HOT_ServiceAppointment__c
+            FROM Thread__c
+            WHERE CRM_Related_Object__c IN :potentialSAWithThreadsIds AND CRM_Thread_Type__c = 'HOT_TOLK-FORMIDLER'
+        ];
+        //Finn ir hvor accountid og serviceappointment id er samme
+        Set<Id> accountIds = new Set<Id>();
+        for (Thread__c thread : exisitingThreadsToBeTransferred) {
+            accountIds.add(thread.CRM_Account__c);
+        }
+        List<HOT_InterestedResource__c> irList = [
+            SELECT Id, ServiceAppointment__c
+            FROM HOT_InterestedResource__c
+            WHERE ServiceResource__r.AccountId IN :accountIds AND ServiceAppointment__c IN :potentialSAWithThreadsIds
+        ];
+        //LOOP om threads sin related record er samme serviceappointmentId. Så sett ir sin id som related object
+        Map<Id, List<Id>> saIdToIrIdListMap = new Map<Id, List<Id>>();
+        for (HOT_InterestedResource__c ir : irList) {
+            if (!saIdToIrIdListMap.containsKey(ir.ServiceAppointment__c)) {
+                saIdToIrIdListMap.put(ir.ServiceAppointment__c, new List<Id>{ ir.Id });
+            } else {
+                saIdToIrIdListMap.get(ir.ServiceAppointment__c).add(ir.Id);
+            }
+        }
+
+        if (exisitingThreadsToBeTransferred.size() != 0) {
+            for (Thread__c thread : exisitingThreadsToBeTransferred) {
+                if (
+                    saIdToIrIdListMap.containsKey(thread.HOT_ServiceAppointment__c) &&
+                    thread.HOT_IsEmployeeThread__c == false
+                ) {
+                    thread.CRM_Related_Object__c = saIdToIrIdListMap.get(thread.HOT_ServiceAppointment__c)[0];
+                    thread.HOT_InterestedResource__c = saIdToIrIdListMap.get(thread.HOT_ServiceAppointment__c)[0];
+                }
+                if (thread.HOT_IsEmployeeThread__c == true) {
+                    thread.CRM_Related_Object__c = null;
+                }
+            }
+            update exisitingThreadsToBeTransferred;
+        }
+    }
 
     public override void onAfterInsert() {
         List<ServiceAppointment> serviceAppointments = setServiceResourceFieldsOnServiceAppointment(
@@ -78,7 +124,10 @@ public without sharing class HOT_AssignedResourceHandler extends MyTriggers {
         List<HOT_InterestedResource__c> potentialIRWithThreads = [
             SELECT Id, ServiceAppointment__c
             FROM HOT_InterestedResource__c
-            WHERE Status__c = 'Assigned' AND ServiceAppointment__c IN :potentialSAWithThreadsIds
+            WHERE
+                (Status__c = 'Reserved'
+                OR Status__c = 'Assigned')
+                AND ServiceAppointment__c IN :potentialSAWithThreadsIds
         ];
         if (potentialIRWithThreads.size() != 0) {
             Map<Id, HOT_InterestedResource__c> threadMap = new Map<Id, HOT_InterestedResource__c>();
@@ -188,7 +237,10 @@ public without sharing class HOT_AssignedResourceHandler extends MyTriggers {
         ];
 
         for (HOT_InterestedResource__c ir : interestedResources) {
-            if (ir.ServiceResource__c == interestedresourceMap.get(ir.ServiceAppointment__c)) {
+            if (
+                ir.ServiceResource__c == interestedresourceMap.get(ir.ServiceAppointment__c) &&
+                ir.Status__c != 'Canceled by Interpreter'
+            ) {
                 ir.Status__c = 'Withdrawn';
             }
         }
@@ -263,7 +315,6 @@ public without sharing class HOT_AssignedResourceHandler extends MyTriggers {
                     HOT_InterestedResource__c interestedResource = new HOT_InterestedResource__c();
                     interestedResource.ServiceAppointment__c = assignedResource.ServiceAppointmentId;
                     interestedResource.ServiceResource__c = assignedResource.ServiceResourceId;
-                    interestedResource.Status__c = 'Assigned';
                     interestedResources.add(interestedResource);
                 }
             }
@@ -286,11 +337,12 @@ public without sharing class HOT_AssignedResourceHandler extends MyTriggers {
         for (AssignedResource assignedResource : assignedResources) {
             for (HOT_InterestedResource__c interestedResource : interestedResources) {
                 if (assignedResource.ServiceAppointmentId == interestedResource.ServiceAppointment__c) {
-                    if (
-                        interestedResource.ServiceResource__c == assignedResource.ServiceResourceId &&
-                        interestedResource.Status__c != 'Assigned'
-                    ) {
-                        interestedResource.Status__c = 'Assigned';
+                    if (interestedResource.ServiceResource__c == assignedResource.ServiceResourceId) {
+                        if (interestedResource.ServiceAppointment__r.Status == 'Dispatched') {
+                            interestedResource.Status__c = 'Assigned';
+                        } else {
+                            interestedResource.Status__c = 'Reserved';
+                        }
                     }
                     if (
                         interestedResource.ServiceResource__c != assignedResource.ServiceResourceId &&
@@ -303,11 +355,17 @@ public without sharing class HOT_AssignedResourceHandler extends MyTriggers {
                         interestedResource.ServiceResource__c != assignedResource.ServiceResourceId &&
                         interestedResource.Status__c == 'Withdrawn'
                     ) {
-                    } 
-                    else if(interestedResource.ServiceResource__c != assignedResource.ServiceResourceId &&
-                        interestedResource.Status__c == 'Declined'){
-                    }
-                    else if (
+                    } else if (
+                        interestedResource.ServiceResource__c != assignedResource.ServiceResourceId &&
+                        (interestedResource.Status__c == 'Declined' ||
+                        interestedResource.Status__c == 'Retracted Interest' ||
+                        interestedResource.Status__c == 'Canceled by Interpreter')
+                    ) {
+                    } else if (
+                        interestedResource.ServiceResource__c != assignedResource.ServiceResourceId &&
+                        interestedResource.Status__c == 'Wanted'
+                    ) {
+                    } else if (
                         interestedResource.ServiceResource__c != assignedResource.ServiceResourceId &&
                         interestedResource.Status__c != 'Not Assigned'
                     ) {
@@ -484,17 +542,17 @@ public without sharing class HOT_AssignedResourceHandler extends MyTriggers {
         );
         Map<Id, ServiceAppointment> serviceAppointments = new Map<Id, ServiceAppointment>(
             [
-                SELECT Id, AppointmentNumber, EarliestStartTime, Status
+                SELECT Id, AppointmentNumber, EarliestStartTime, Status, HOT_IsEmployedInterpreter__c
                 FROM ServiceAppointment
                 WHERE Id IN :serviceAppointmentIds
             ]
         );
-
+        HOT_ServiceAppointmentNotification saN = new HOT_ServiceAppointmentNotification(serviceAppointments.values());
         for (AssignedResource assignedResource : assignedResources) {
             if (serviceAppointments.get(assignedResource.ServiceAppointmentId).Status != 'Scheduled') {
-                HOT_ServiceAppointmentNotification.resourceChanged(
+                saN.resourceChanged(
                     notificationType,
-                    serviceAppointments.get(assignedResource.ServiceAppointmentId),
+                    serviceAppointments.get(assignedResource.ServiceAppointmentId).Id,
                     new Set<String>{ serviceResources.get(assignedResource.ServiceResourceId).RelatedRecordId }
                 );
             }
