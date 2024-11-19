@@ -231,7 +231,7 @@ public without sharing class HOT_WageClaimService {
                     }
 
                     if (
-                        updatedWageClaim.Id == null &&
+                        updatedWageClaim != null && updatedWageClaim.Id == null &&
                         (serviceAppointmentStartTime <= updatedWageClaim.StartTime__c &&
                         serviceAppointmentEndTime <= updatedWageClaim.StartTime__c) ||
                         (serviceAppointmentStartTime >= updatedWageClaim.EndTime__c &&
