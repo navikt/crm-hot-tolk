@@ -128,29 +128,50 @@ private class HOT_CreateWageClaimTest {
         System.assertEquals(1, wageClaims.size(), 'Wrongly created Wage Claims');
     }
 
-    @isTest
-    static void createWageClaimTest_timeChanges1() {
+    private static Integer testTimeChange(Integer startOffsetInMinutes, Integer endOffsetInMinutes) {
         ServiceAppointment serviceAppointment = [SELECT Id, SchedStartTime, SchedEndTime FROM ServiceAppointment];
         Test.startTest();
-        serviceAppointment.SchedStartTime = serviceAppointment.SchedStartTime.addHours(1);
-        serviceAppointment.SchedEndTime = serviceAppointment.SchedEndTime.addHours(1);
+        serviceAppointment.SchedStartTime = serviceAppointment.SchedStartTime.addMinutes(startOffsetInMinutes);
+        serviceAppointment.SchedEndTime = serviceAppointment.SchedEndTime.addMinutes(endOffsetInMinutes);
         update serviceAppointment;
         Test.stopTest();
 
-        List<HOT_WageClaim__c> wageClaims = [SELECT Id FROM HOT_WageClaim__c LIMIT 1];
-        System.assertEquals(1, wageClaims.size(), 'Did not create Wage Claim as expected');
+        List<HOT_WageClaim__c> wageClaims = [
+            SELECT Id, StartTime__c, EndTime__c, Status__c
+            FROM HOT_WageClaim__c
+            LIMIT 5
+        ];
+
+        return wageClaims.size();
     }
 
     @isTest
-    static void createWageClaimTest_timeChanges2() {
-        ServiceAppointment serviceAppointment = [SELECT Id, SchedStartTime, SchedEndTime FROM ServiceAppointment];
-        Test.startTest();
-        serviceAppointment.SchedStartTime = serviceAppointment.SchedStartTime.addHours(2);
-        serviceAppointment.SchedEndTime = serviceAppointment.SchedEndTime.addHours(2);
-        update serviceAppointment;
-        Test.stopTest();
+    static void createWageClaimTest_timeChangesLower() {
+        Integer wageClaimCount = testTimechange(-10, -10);
+        System.assertEquals(1, wageClaimCount, 'Did not create Wage Claim as expected');
+    }
 
-        List<HOT_WageClaim__c> wageClaims = [SELECT Id FROM HOT_WageClaim__c LIMIT 1];
-        System.assertEquals(1, wageClaims.size(), 'Did not create Wage Claim as expected');
+    @isTest
+    static void createWageClaimTest_timeChangesCovered() {
+        Integer wageClaimCount = testTimeChange(-10, 10);
+        System.assertEquals(0, wageClaimCount, 'Created Wage Claim when new timespan covers the old timespan of SA');
+    }
+
+    @isTest
+    static void createWageClaimTest_timeChangesUpper() {
+        Integer wageClaimCount = testTimeChange(10, 10);
+        System.assertEquals(1, wageClaimCount, 'Did not create Wage Claim as expected');
+    }
+
+    @isTest
+    static void createWageClaimTest_timeChangesExactlyAfter() {
+        Integer wageClaimCount = testTimeChange(120, 120);
+        System.assertEquals(1, wageClaimCount, 'Did not create Wage Claim as expected');
+    }
+
+    @isTest
+    static void createWageClaimTest_timeChangesAfter() {
+        Integer wageClaimCount = testTimeChange(400, 400);
+        System.assertEquals(1, wageClaimCount, 'Did not create Wage Claim as expected');
     }
 }
