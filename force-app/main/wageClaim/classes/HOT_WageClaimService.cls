@@ -231,14 +231,13 @@ public without sharing class HOT_WageClaimService {
                     }
 
                     if (
-                        (serviceAppointmentStartTime < updatedWageClaim.StartTime__c &&
+                        updatedWageClaim.Id == null &&
+                        (serviceAppointmentStartTime <= updatedWageClaim.StartTime__c &&
                         serviceAppointmentEndTime <= updatedWageClaim.StartTime__c) ||
                         (serviceAppointmentStartTime >= updatedWageClaim.EndTime__c &&
                         serviceAppointmentEndTime >= updatedWageClaim.EndTime__c)
                     ) {
-                        if (updatedWageClaim.Id == null) {
-                            nonOverlappingClaims.add(updatedWageClaim);
-                        }
+                        nonOverlappingClaims.add(updatedWageClaim);
                     }
 
                     if (isWageClaimChanged) {
