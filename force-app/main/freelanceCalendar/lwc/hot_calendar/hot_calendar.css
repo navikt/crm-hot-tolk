@@ -47,13 +47,14 @@
     color: #ccc;
 }
 
-@media only screen and (min-width: 500px) {
+@media only screen and (min-width: 768px) {
     .fc-daygrid-day-frame {
         height: 2rem;
     }
     .full-card {
         height: 100%;
-        width: 1000px;
+        width: 100%;
+        max-width: 1000px;
         margin: auto;
         margin-bottom: 0;
         display: flex;
@@ -69,7 +70,7 @@
         width: 100%;
     }
 }
-@media only screen and (max-width: 500px) {
+@media only screen and (max-width: 768px) {
     .full-card {
         height: 100%;
         width: 100%;
