@@ -172,7 +172,6 @@ public without sharing class HOT_WageClaimService {
 
         List<HOT_WageClaim__c> newWageClaims = new List<HOT_WageClaim__c>();
         Map<Id, HOT_WageClaim__c> updatedWageClaims = new Map<Id, HOT_WageClaim__c>();
-        List<HOT_WageClaim__c> nonOverlappingClaims = new List<HOT_WageClaim__c>();
 
         for (ServiceAppointment serviceAppointment : serviceAppointments.values()) {
             if (wageClaimsByServiceResourceId.get(serviceAppointment.HOT_ServiceResource__c) != null) {
@@ -238,7 +237,6 @@ public without sharing class HOT_WageClaimService {
         }
         List<HOT_WageClaim__c> wageClaimsToUpsert = new List<HOT_WageClaim__c>();
         wageClaimsToUpsert.addAll(newWageClaims);
-        wageClaimsToUpsert.addAll(nonOverlappingClaims);
         if (isUpsert) {
             wageClaimsToUpsert.addAll(updatedWageClaims.values());
         }
