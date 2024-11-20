@@ -127,4 +127,51 @@ private class HOT_CreateWageClaimTest {
         Test.stopTest();
         System.assertEquals(1, wageClaims.size(), 'Wrongly created Wage Claims');
     }
+
+    private static Integer testTimeChange(Integer startOffsetInMinutes, Integer endOffsetInMinutes) {
+        ServiceAppointment serviceAppointment = [SELECT Id, SchedStartTime, SchedEndTime FROM ServiceAppointment];
+        Test.startTest();
+        serviceAppointment.SchedStartTime = serviceAppointment.SchedStartTime.addMinutes(startOffsetInMinutes);
+        serviceAppointment.SchedEndTime = serviceAppointment.SchedEndTime.addMinutes(endOffsetInMinutes);
+        update serviceAppointment;
+        Test.stopTest();
+
+        List<HOT_WageClaim__c> wageClaims = [
+            SELECT Id, StartTime__c, EndTime__c, Status__c
+            FROM HOT_WageClaim__c
+            LIMIT 5
+        ];
+
+        return wageClaims.size();
+    }
+
+    @isTest
+    static void createWageClaimTest_timeChangesLower() {
+        Integer wageClaimCount = testTimechange(-10, -10);
+        System.assertEquals(1, wageClaimCount, 'Did not create Wage Claim as expected');
+    }
+
+    @isTest
+    static void createWageClaimTest_timeChangesCovered() {
+        Integer wageClaimCount = testTimeChange(-10, 10);
+        System.assertEquals(0, wageClaimCount, 'Created Wage Claim when new timespan covers the old timespan of SA');
+    }
+
+    @isTest
+    static void createWageClaimTest_timeChangesUpper() {
+        Integer wageClaimCount = testTimeChange(10, 10);
+        System.assertEquals(1, wageClaimCount, 'Did not create Wage Claim as expected');
+    }
+
+    @isTest
+    static void createWageClaimTest_timeChangesExactlyAfter() {
+        Integer wageClaimCount = testTimeChange(120, 120);
+        System.assertEquals(1, wageClaimCount, 'Did not create Wage Claim as expected');
+    }
+
+    @isTest
+    static void createWageClaimTest_timeChangesAfter() {
+        Integer wageClaimCount = testTimeChange(400, 400);
+        System.assertEquals(1, wageClaimCount, 'Did not create Wage Claim as expected');
+    }
 }
