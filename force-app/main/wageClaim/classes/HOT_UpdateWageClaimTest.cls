@@ -401,7 +401,7 @@ private class HOT_UpdateWageClaimTest {
 
         List<HOT_WageClaim__c> wageClaimsAfter = [SELECT Id, Status__c FROM HOT_WageClaim__c];
         System.assertEquals(1, wageClaimsBefore.size(), 'Not correct number of Wage Claims');
-        System.assertEquals(1, wageClaimsAfter.size(), 'Not correct number of Wage Claims');
+        System.assertEquals(2, wageClaimsAfter.size(), 'Not correct number of Wage Claims');
         System.assertEquals('Open', wageClaimsBefore[0].Status__c, 'Should be Open before time is changed');
         System.assertEquals('Covered', wageClaimsAfter[0].Status__c, 'Should be Covered after time is changed');
     }

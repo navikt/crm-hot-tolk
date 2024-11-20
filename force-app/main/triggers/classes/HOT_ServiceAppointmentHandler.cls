@@ -403,7 +403,7 @@ public without sharing class HOT_ServiceAppointmentHandler extends MyTriggers {
             for (HOT_WageClaim__c wc : wageClaims) {
                 Boolean isConflict = false;
                 for (ServiceAppointment sa : newServiceAppointmentsSchedTimeChanged.values()) {
-                    if (sa.SchedStartTime <= wc.EndTime__c && sa.SchedEndTime >= wc.StartTime__c) {
+                    if (sa.SchedStartTime < wc.EndTime__c && sa.SchedEndTime > wc.StartTime__c) {
                         isConflict = true;
                     }
                 }
