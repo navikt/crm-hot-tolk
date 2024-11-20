@@ -230,16 +230,6 @@ public without sharing class HOT_WageClaimService {
                         isWageClaimChanged = true;
                     }
 
-                    if (
-                        updatedWageClaim != null && updatedWageClaim.Id == null &&
-                        (serviceAppointmentStartTime <= updatedWageClaim.StartTime__c &&
-                        serviceAppointmentEndTime <= updatedWageClaim.StartTime__c) ||
-                        (serviceAppointmentStartTime >= updatedWageClaim.EndTime__c &&
-                        serviceAppointmentEndTime >= updatedWageClaim.EndTime__c)
-                    ) {
-                        nonOverlappingClaims.add(updatedWageClaim);
-                    }
-
                     if (isWageClaimChanged) {
                         updatedWageClaims.put(updatedWageClaim.Id, updatedWageClaim);
                     }
