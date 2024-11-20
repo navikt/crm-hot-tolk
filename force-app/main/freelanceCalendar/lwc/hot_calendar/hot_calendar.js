@@ -13,7 +13,7 @@ export default class LibsFullCalendar extends NavigationMixin(LightningElement) 
     static DAYS_TO_FETCH_BEFORE_TODAY = 2 * 31;
     static FETCH_THRESHOLD_IN_DAYS = 31; // How 'close' date view start or end can get to earliestTime or latestTime before a fetch of new events occurs
     static REFRESH_ICON = IKONER + '/Refresh/Refresh.svg';
-    static MOBILE_BREAK_POINT = 500;
+    static MOBILE_BREAK_POINT = 768;
     static STATE_KEY = 'i98u14ij24j2+49i+04oasfdh';
 
     @track showDetails = false;
