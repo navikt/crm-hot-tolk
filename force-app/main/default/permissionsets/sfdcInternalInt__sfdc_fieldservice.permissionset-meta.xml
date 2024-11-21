@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<PermissionSet xmlns="http://soap.sforce.com/2006/04/metadata">
+    <description>Permissions to access data needed for optimization, automatic scheduling, and service appointment bundling.(Licenseless)</description>
+    <hasActivationRequired>true</hasActivationRequired>
+    <label>Field Service Integration</label>
+    <license>Cloud Integration User</license>
+</PermissionSet>

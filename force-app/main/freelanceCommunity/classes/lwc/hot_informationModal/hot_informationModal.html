@@ -131,13 +131,13 @@
                                 </p>
 
                                 <div class="files-container">
-                                    <c-record-files-with-sharing
-                                        record-id={serviceAppointment.Id}
+                                    <c-hot_record-files-with-sharing
+                                        record-id={hotFileRecordId}
                                         is-get-all="true"
                                         is-delete-option="true"
                                         title="Vedlegg"
-                                        delete-file-on-button-click="false"
-                                    ></c-record-files-with-sharing>
+                                        delete-file-on-button-click="true"
+                                    ></c-hot_record-files-with-sharing>
                                 </div>
                             </div>
                             <div
@@ -203,7 +203,7 @@
                                 <div class="fileUploadContainer">
                                     <h2>Legg ved filer til bruker</h2>
                                     <lightning-file-upload
-                                        record-id={recordId}
+                                        record-id={hotFileRecordId}
                                         name="fileUploader"
                                         class="file-selector-large"
                                         label="Ved å laste opp filer er jeg klar over at filene vil bli delt med tolkebruker. Opplastingen vil starte umiddelbart. Maks filstørelse: 2 GB."

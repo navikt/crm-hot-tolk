@@ -5,7 +5,8 @@ import deleteFilesOnRecord from '@salesforce/apex/RecordFilesControllerWithShari
 import getOnlyMyContentDocuments from '@salesforce/apex/RecordFilesControllerWithSharing.getOnlyMyContentDocuments';
 import { setDefaultValue, convertStringToBoolean } from 'c/componentHelperClass';
 import { refreshApex } from '@salesforce/apex';
-export default class hot_recordFilesWithSharing extends LightningElement {
+
+export default class Hot_recordFilesWithSharing extends LightningElement {
     @api recordId;
     @api title;
     @api files = [];
@@ -110,7 +111,6 @@ export default class hot_recordFilesWithSharing extends LightningElement {
                     });
                 }
             });
-
             this.hasFiles();
             const contentDocumentIds = Array.from(uniqueContentDocumentIds);
 

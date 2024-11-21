@@ -269,7 +269,7 @@ export default class Hot_openServiceAppointments extends LightningElement {
                     });
             }
         } catch (error) {
-            console.log(error);
+            console.error(error);
         }
         if (this.checkedServiceAppointments.length === 0) {
             this.showSendInterest = false;
@@ -297,6 +297,7 @@ export default class Hot_openServiceAppointments extends LightningElement {
             sendInterestAll: this.sendInterestAll
         });
         if (success) {
+            this.showSendInterest = false;
             refreshApex(this.wiredAllServiceAppointmentsResult).then(() => {
                 // Since refreshApex causes the wired methods to run again, the default filters will override current filters.
                 // Apply previous filter

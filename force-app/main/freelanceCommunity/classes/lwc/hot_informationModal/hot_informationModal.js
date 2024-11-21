@@ -15,6 +15,8 @@ import retractAvailability from '@salesforce/apex/HOT_WageClaimListController.re
 import getThreadIdWC from '@salesforce/apex/HOT_WageClaimListController.getThreadId';
 import getServiceResource from '@salesforce/apex/HOT_Utility.getServiceResource';
 import getWageClaimDetails from '@salesforce/apex/HOT_WageClaimListController.getWageClaimDetails';
+import shareWithUser from '@salesforce/apex/HOT_HotFilesController.shareWithUser';
+import createHotFileRecord from '@salesforce/apex/HOT_HotFilesController.createHotFileRecord';
 
 export default class Hot_informationModal extends NavigationMixin(LightningModal) {
     @api records;
@@ -23,6 +25,9 @@ export default class Hot_informationModal extends NavigationMixin(LightningModal
     @api fromUrlRedirect;
 
     @track isAListView = true;
+
+    //file record
+    @track hotFileRecordId;
 
     // Service appointment properties
     @track saFreelanceThreadId;
@@ -70,6 +75,7 @@ export default class Hot_informationModal extends NavigationMixin(LightningModal
     }
 
     connectedCallback() {
+        this.initializeHotFilesRecord();
         if (this.type == 'WC') {
             this.isLoading = true;
             if (this.fromUrlRedirect == true) {
@@ -684,12 +690,32 @@ export default class Hot_informationModal extends NavigationMixin(LightningModal
         this.dispatchEvent(eventToSend);
     }
 
+    async initializeHotFilesRecord() {
+        if (this.hotFileRecordId) {
+            // HotFileRecordId is already set, no need to initialize again
+            return;
+        }
+        try {
+            this.hotFileRecordId = await createHotFileRecord({ serviceAppointmentId: this.recordId });
+        } catch (error) {
+            console.error('Error in initializeHotFilesRecord:', error);
+        }
+    }
+
     @track fileUploadMessage;
     handleUploadFinished(event) {
         const uploadedFiles = event.detail.files;
         if (uploadedFiles.length > 0) {
-            this.fileUploadMessage = 'Filen(e) ble lastet opp. Se filen i listen over vedlegg ovenfor.';
-            this.template.querySelector('c-record-files-with-sharing').refreshContentDocuments();
+            const contentDocumentIds = uploadedFiles.map((file) => file.documentId);
+            shareWithUser({ hotFileId: this.hotFileRecordId, contentDocumentIds: contentDocumentIds })
+                .then(() => {
+                    this.fileUploadMessage = 'Files uploaded successfully.';
+                    this.template.querySelector('c-record-files-with-sharing').refreshContentDocuments();
+                    this.template.querySelector('c-hot_record-files-with-sharing').refreshContentDocuments();
+                })
+                .catch((error) => {
+                    console.error('Error sharing files:', error);
+                });
         } else {
             this.fileUploadMessage = '';
         }

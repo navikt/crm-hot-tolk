@@ -4,11 +4,13 @@ public with sharing class HOT_RecordFilesControllerWithSharing {
         if (recordId == null) {
             return new List<ContentDocument>{};
         }
+
         Set<Id> requestId = new Set<Id>();
         List<WorkOrder> workOrder = [SELECT Id, HOT_Request__c FROM WorkOrder WHERE Id = :recordId];
         for (WorkOrder wo : workOrder) {
             requestId.add(wo.HOT_Request__c);
         }
+
         List<ServiceAppointment> serviceAppointments = [
             SELECT Id
             FROM ServiceAppointment
@@ -18,10 +20,21 @@ public with sharing class HOT_RecordFilesControllerWithSharing {
         for (ServiceAppointment sa : serviceAppointments) {
             saIds.add(sa.Id);
         }
+
+        List<HOT_File__c> hotFiles = [SELECT Id FROM HOT_File__c WHERE Service_Appointment__c = :saIds];
+        Set<Id> hotFileIds = new Set<Id>();
+        for (HOT_File__c hf : hotFiles) {
+            hotFileIds.add(hf.Id);
+        }
+
         List<ContentDocumentLink> contentDocumentLinks = [
             SELECT ContentDocumentId
             FROM ContentDocumentLink
-            WHERE LinkedEntityId = :recordId OR LinkedEntityId IN :saIds OR LinkedEntityId IN :requestId
+            WHERE
+                LinkedEntityId = :recordId
+                OR LinkedEntityId IN :saIds
+                OR LinkedEntityId IN :requestId
+                OR LinkedEntityId IN :hotFileIds
         ];
 
         List<Id> contentDocumentIds = new List<Id>();
@@ -34,7 +47,7 @@ public with sharing class HOT_RecordFilesControllerWithSharing {
         }
 
         List<ContentDocument> contentDocuments = [
-            SELECT Id, FileType, CreatedDate, Title
+            SELECT Id, FileType, CreatedDate, Title, LatestPublishedVersionId
             FROM ContentDocument
             WHERE Id IN :contentDocumentIds AND ContentAssetId = NULL
         ];

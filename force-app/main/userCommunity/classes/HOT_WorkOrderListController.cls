@@ -105,7 +105,8 @@ public without sharing class HOT_WorkOrderListController {
                     HOT_Request__r.CompanyName__c,
                     HOT_Request__r.OwnerName__c,
                     HOT_Request__r.InterpretationMethodName__c,
-                    HOT_DelPol_IsHideInterpreterFromUser__c
+                    HOT_DelPol_IsHideInterpreterFromUser__c,
+                    (SELECT Id, Subject, EarliestStartTime, DueDate FROM ServiceAppointments)
                 FROM WorkOrder
                 WHERE
                     (HOT_Request__r.Account__c = :user.AccountId
@@ -193,17 +194,26 @@ public without sharing class HOT_WorkOrderListController {
         return workOrders;
     }
     @AuraEnabled
-   public static String getThreadInterpreterId(String workOrderId) {
-    List<Thread__c> thread = [SELECT Id, CRM_Thread_Type__c FROM Thread__c WHERE CRM_Related_Object__c=:workOrderId AND CRM_Thread_Type__c='HOT_BRUKER-TOLK' LIMIT 1];
-    String Id='';
-    if (thread.size() >0) {
-           Id=thread[0].Id;
+    public static String getThreadInterpreterId(String workOrderId) {
+        List<Thread__c> thread = [
+            SELECT Id, CRM_Thread_Type__c
+            FROM Thread__c
+            WHERE CRM_Related_Object__c = :workOrderId AND CRM_Thread_Type__c = 'HOT_BRUKER-TOLK'
+            LIMIT 1
+        ];
+        String Id = '';
+        if (thread.size() > 0) {
+            Id = thread[0].Id;
+        }
+        return Id;
     }
-    return Id;
-}
-@AuraEnabled(cacheable=true)
-   public static List<ServiceAppointment> getServiceAppointmentsIds(String workOrderId) {
-    List<ServiceAppointment> saIds = [SELECT Id FROM ServiceAppointment WHERE HOT_WorkOrderLineItem__r.WorkOrderId=:workOrderId];
-    return saIds;
-}
+    @AuraEnabled(cacheable=true)
+    public static List<ServiceAppointment> getServiceAppointmentsIds(String workOrderId) {
+        List<ServiceAppointment> saIds = [
+            SELECT Id
+            FROM ServiceAppointment
+            WHERE HOT_WorkOrderLineItem__r.WorkOrderId = :workOrderId
+        ];
+        return saIds;
+    }
 }
