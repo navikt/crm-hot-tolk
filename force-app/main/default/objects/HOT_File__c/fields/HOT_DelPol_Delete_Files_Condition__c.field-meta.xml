@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>HOT_DelPol_Delete_Files_Condition__c</fullName>
+    <externalId>false</externalId>
+    <formula>AND(
+    TODAY() &gt; DATEVALUE(Service_Appointment__r.SchedEndTime) + 21,
+    ISPICKVAL(Service_Appointment__r.Status, &apos;Completed&apos;)
+)</formula>
+    <formulaTreatBlanksAs>BlankAsZero</formulaTreatBlanksAs>
+    <label>HOT DelPol Delete Files Condition</label>
+    <trackTrending>false</trackTrending>
+    <type>Checkbox</type>
+</CustomField>
