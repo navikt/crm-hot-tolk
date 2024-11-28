@@ -40,7 +40,7 @@
     </values>
     <values>
         <field>Policy_Object__c</field>
-        <value xsi:type="xsd:string">HOT_File</value>
+        <value xsi:type="xsd:string">HOT_File__c</value>
     </values>
     <values>
         <field>Policy_Success_Field__c</field>
