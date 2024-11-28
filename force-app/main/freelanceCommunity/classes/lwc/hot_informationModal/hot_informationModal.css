@@ -1,6 +1,3 @@
-/* :host {
-    --slds-c-modal-content-color-background: red;
-}
 .dialog {
     padding: 0;
     border: none;
@@ -9,14 +6,12 @@
     max-width: 1000px;
     box-sizing: border-box;
 }
-
 .dialog::backdrop {
     background: rgba(50, 65, 79, 0.8);
 }
 .files-container {
     margin-top: 1rem;
 }
-
 .fileUploadContainer {
     background-color: #f2f3f5;
     justify-content: center;
@@ -25,25 +20,19 @@
     border-radius: 4px;
     padding: 1.5rem;
 }
-
 .details-container {
     all: unset;
     background-color: #fff;
     display: block;
     padding: 5rem;
     border-radius: 4px;
-    overflow: auto;
+    overflow: hidden;
     position: relative;
     max-height: 100vh;
     height: auto;
     margin: auto;
     box-sizing: border-box;
 }
-.slds-modal__container {
-    display: block;
-    background-color: aqua;
-}
-
 @media (max-width: 576px) {
     .fileUploadContainer {
         justify-content: center;
@@ -67,7 +56,6 @@
         right: 0;
         margin: 0;
     }
-
     .details-container {
         display: block;
         max-height: 100%;
@@ -80,11 +68,9 @@
         margin: 1rem auto;
     }
 }
-    */
 p {
     font-weight: bold;
 }
-
 span {
     font-weight: normal;
 }

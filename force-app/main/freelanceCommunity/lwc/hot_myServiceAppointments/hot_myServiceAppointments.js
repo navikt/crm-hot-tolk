@@ -166,10 +166,16 @@ export default class Hot_myServiceAppointments extends NavigationMixin(Lightning
     @track recordId;
     @track urlRedirect = false;
     @track showDetails = false;
+
+    getModalSize() {
+        return window.screen.width < 768 ? 'full' : 'small';
+    }
+
     goToRecordDetails(result) {
         let recordId = result.detail.Id;
         this.recordId = recordId;
         Hot_informationModal.open({
+            size: this.getModalSize(),
             recordId: this.recordId,
             type: 'SA',
             fromUrlRedirect: false,
@@ -184,7 +190,7 @@ export default class Hot_myServiceAppointments extends NavigationMixin(Lightning
         this.urlRedirect = true;
         this.updateURL();
         Hot_informationModal.open({
-            size: 'full',
+            size: this.getModalSize(),
             recordId: this.recordId,
             type: 'SA',
             fromUrlRedirect: true,
