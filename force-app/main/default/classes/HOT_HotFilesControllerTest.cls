@@ -2,43 +2,34 @@
 public class HOT_HotFilesControllerTest {
     @testSetup
     static void setupTestData() {
-        // Create a Person__c record
         Person__c person = HOT_TestDataFactory.createPerson();
         person.Name = '12015678999';
         insert person;
 
-        // Create an Account linked to the Person__c
         Account personAccount = HOT_TestDataFactory.createAccount(true);
         personAccount.INT_PersonIdent__c = '12015678999';
         personAccount.CRM_Person__c = person.Id;
         insert personAccount;
 
-        // Create a WorkType
         WorkType workType = HOT_TestDataFactory.createWorkType();
         insert workType;
 
-        // Create a HOT_Request__c
         HOT_Request__c request = HOT_TestDataFactory.createRequest('TEST', workType);
         insert request;
 
-        // Create a WorkOrder
         WorkOrder wo = HOT_TestDataFactory.createWorkOrder(request, workType);
         insert wo;
 
-        // Create a WorkOrderLineItem
         WorkOrderLineItem woli = HOT_TestDataFactory.createWorkOrderLineItem(wo, workType);
         insert woli;
 
-        // Create a ServiceAppointment linked to the WorkOrderLineItem and Account
         ServiceAppointment sa = HOT_TestDataFactory.createServiceAppointment(woli);
         sa.HOT_Account__c = personAccount.Id;
         insert sa;
 
-        // Create a HOT_File__c linked to the ServiceAppointment and Account
         HOT_File__c hotFile = new HOT_File__c(Service_Appointment__c = sa.Id, Account__c = personAccount.Id);
         insert hotFile;
 
-        // Create a ContentVersion (which in turn creates a ContentDocument)
         ContentVersion contentVersion = new ContentVersion(
             Title = 'Test File',
             PathOnClient = 'TestFile.txt',
@@ -53,34 +44,27 @@ public class HOT_HotFilesControllerTest {
         person.Name = '12015678999';
         insert person;
 
-        // Create an Account linked to the Person__c
         Account personAccount = HOT_TestDataFactory.createAccount(true);
         personAccount.INT_PersonIdent__c = '12015678999';
         personAccount.CRM_Person__c = person.Id;
         insert personAccount;
 
-        // Create a WorkType
         WorkType workType = HOT_TestDataFactory.createWorkType();
         insert workType;
 
-        // Create a HOT_Request__c
         HOT_Request__c request = HOT_TestDataFactory.createRequest('TEST', workType);
         insert request;
 
-        // Create a WorkOrder
         WorkOrder wo = HOT_TestDataFactory.createWorkOrder(request, workType);
         insert wo;
 
-        // Create a WorkOrderLineItem
         WorkOrderLineItem woli = HOT_TestDataFactory.createWorkOrderLineItem(wo, workType);
         insert woli;
 
-        // Create a ServiceAppointment linked to the WorkOrderLineItem and Account
         ServiceAppointment sa = HOT_TestDataFactory.createServiceAppointment(woli);
         sa.HOT_Account__c = personAccount.Id;
         insert sa;
 
-        // Create a HOT_File__c linked to the ServiceAppointment and Account
         HOT_File__c hotFile = new HOT_File__c(Service_Appointment__c = sa.Id, Account__c = personAccount.Id);
         insert hotFile;
 
