@@ -1058,10 +1058,16 @@
                 <fieldItem>Record.CreatedById</fieldItem>
                 <identifier>RecordCreatedByIdField</identifier>
                 <visibilityRule>
+                    <booleanFilter>1 OR 2</booleanFilter>
                     <criteria>
                         <leftValue>{!Record.CreatedBy.Contact.Account.CRM_Person__r.INT_Confidential__c}</leftValue>
                         <operator>EQUAL</operator>
                         <rightValue>UGRADERT</rightValue>
+                    </criteria>
+                    <criteria>
+                        <leftValue>{!Record.CreatedBy.Profile.Name}</leftValue>
+                        <operator>CONTAINS</operator>
+                        <rightValue>Formidler</rightValue>
                     </criteria>
                 </visibilityRule>
             </fieldInstance>
@@ -1079,10 +1085,16 @@
                 <fieldItem>Record.LastModifiedById</fieldItem>
                 <identifier>RecordLastModifiedByIdField</identifier>
                 <visibilityRule>
+                    <booleanFilter>1 OR 2</booleanFilter>
                     <criteria>
                         <leftValue>{!Record.LastModifiedBy.Contact.Account.CRM_Person__r.INT_Confidential__c}</leftValue>
                         <operator>EQUAL</operator>
                         <rightValue>UGRADERT</rightValue>
+                    </criteria>
+                    <criteria>
+                        <leftValue>{!Record.LastModifiedBy.Profile.Name}</leftValue>
+                        <operator>CONTAINS</operator>
+                        <rightValue>Formidler</rightValue>
                     </criteria>
                 </visibilityRule>
             </fieldInstance>
