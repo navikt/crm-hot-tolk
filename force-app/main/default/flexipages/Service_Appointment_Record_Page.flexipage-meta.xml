@@ -436,16 +436,6 @@
                     <name>uiBehavior</name>
                     <value>none</value>
                 </fieldInstanceProperties>
-                <fieldItem>Record.FSL__Auto_Schedule__c</fieldItem>
-                <identifier>RecordFSL_Auto_Schedule_cField</identifier>
-            </fieldInstance>
-        </itemInstances>
-        <itemInstances>
-            <fieldInstance>
-                <fieldInstanceProperties>
-                    <name>uiBehavior</name>
-                    <value>none</value>
-                </fieldInstanceProperties>
                 <fieldItem>Record.FSL__Scheduling_Policy_Used__c</fieldItem>
                 <identifier>RecordFSL_Scheduling_Policy_Used_cField</identifier>
             </fieldInstance>
