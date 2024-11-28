@@ -298,6 +298,7 @@ export default class Hot_openServiceAppointments extends LightningElement {
         });
         if (success) {
             this.showSendInterest = false;
+            this.checkedServiceAppointments = [];
             refreshApex(this.wiredAllServiceAppointmentsResult).then(() => {
                 // Since refreshApex causes the wired methods to run again, the default filters will override current filters.
                 // Apply previous filter
