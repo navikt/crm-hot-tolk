@@ -710,7 +710,6 @@ export default class Hot_informationModal extends NavigationMixin(LightningModal
             shareWithUser({ hotFileId: this.hotFileRecordId, contentDocumentIds: contentDocumentIds })
                 .then(() => {
                     this.fileUploadMessage = 'Files uploaded successfully.';
-                    this.template.querySelector('c-record-files-with-sharing').refreshContentDocuments();
                     this.template.querySelector('c-hot_record-files-with-sharing').refreshContentDocuments();
                 })
                 .catch((error) => {
