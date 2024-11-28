@@ -203,9 +203,18 @@ export default class Hot_informationModal extends NavigationMixin(LightningModal
                 if (
                     this.serviceAppointment &&
                     this.serviceAppointment.HOT_Request__r &&
-                    this.serviceAppointment.HOT_Request__r.Account__r
+                    this.serviceAppointment.HOT_Request__r.Account__r &&
+                    this.serviceAppointment.HOT_Request__r.Account__r.CRM_Person__r.INT_Confidential == 'UGRADERT'
                 ) {
                     this.accountName = this.serviceAppointment.HOT_Request__r.Account__r.Name;
+                }
+                if (
+                    this.serviceAppointment &&
+                    this.serviceAppointment.HOT_Request__r &&
+                    this.serviceAppointment.HOT_Request__r.Account__r &&
+                    this.serviceAppointment.HOT_Request__r.Account__r.CRM_Person__r.INT_Confidential != 'FORTROLIG'
+                ) {
+                    this.accountName = this.serviceAppointment.HOT_NavEmployeeName__c;
                 }
                 if (this.serviceAppointment && this.serviceAppointment.HOT_Request__r) {
                     this.ownerName = this.serviceAppointment.HOT_Request__r.OwnerName__c;

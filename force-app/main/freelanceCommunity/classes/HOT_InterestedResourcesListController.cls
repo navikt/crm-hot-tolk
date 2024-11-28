@@ -120,7 +120,7 @@ public without sharing class HOT_InterestedResourcesListController {
         thread.HOT_Title__c = ir.ServiceAppointment__r.Subject;
         thread.HOT_Dispatcher__c = ir.ServiceAppointment__r.HOT_Request__r.Dispatcher__c;
         if (userContactId != null) {
-            thread.HOT_Thread_read_by__c = userContactId;
+            thread.HOT_Thread_read_by__c = userContactId + ';';
             thread.CRM_Latest_Message_Datetime__c = Datetime.now();
         }
         return thread;

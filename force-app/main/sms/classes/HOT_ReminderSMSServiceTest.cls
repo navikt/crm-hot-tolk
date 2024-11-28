@@ -177,7 +177,10 @@ private class HOT_ReminderSMSServiceTest {
             FROM ServiceResource
             WHERE RelatedRecordId = :currentUser.Id
         ];
-        HOT_ReminderSMSService.sendSMSOnNewMessageInterpreter(currentUser.Id, thread.Id);
+        Map<User, List<Thread__c>> userIdToThreadMapSMS = new Map<User, List<Thread__c>>{
+            currentUser => new List<Thread__c>{ thread }
+        };
+        HOT_ReminderSMSService.sendSMSOnNewMessageInterpreter(userIdToThreadMapSMS);
         Test.stopTest();
         List<SMS__c> smsList = [SELECT Id, Message__c FROM SMS__c];
         System.assertEquals(1, smsList.size(), 'Could not create sms-record');

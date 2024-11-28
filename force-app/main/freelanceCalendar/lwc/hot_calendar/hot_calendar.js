@@ -13,7 +13,7 @@ export default class LibsFullCalendar extends NavigationMixin(LightningElement) 
     static DAYS_TO_FETCH_BEFORE_TODAY = 2 * 31;
     static FETCH_THRESHOLD_IN_DAYS = 31; // How 'close' date view start or end can get to earliestTime or latestTime before a fetch of new events occurs
     static REFRESH_ICON = IKONER + '/Refresh/Refresh.svg';
-    static MOBILE_BREAK_POINT = 500;
+    static MOBILE_BREAK_POINT = 768;
     static STATE_KEY = 'i98u14ij24j2+49i+04oasfdh';
 
     @track showDetails = false;
@@ -119,7 +119,15 @@ export default class LibsFullCalendar extends NavigationMixin(LightningElement) 
                 absence: {
                     text: 'Nytt fravær',
                     click: () => {
-                        this.openAbsenceModal();
+                        if (this.calendar?.view.type == 'timeGridDay') {
+                            const millisecondsPerHour = 60 * 60 * 1000;
+                            const viewedDate = this.calendar.view.activeStart;
+                            const suggestedStartTime = new Date(viewedDate.getTime() + 12 * millisecondsPerHour);
+                            const suggestEndTime = new Date(suggestedStartTime.getTime() + millisecondsPerHour);
+                            this.openAbsenceModal(null, suggestedStartTime, suggestEndTime);
+                        } else {
+                            this.openAbsenceModal();
+                        }
                     }
                 }
             },
@@ -280,8 +288,8 @@ export default class LibsFullCalendar extends NavigationMixin(LightningElement) 
         this.isLoading = false;
     }
 
-    async openAbsenceModal(event) {
-        const result = await Hot_Calendar_Absence_Modal.open({ event: event });
+    async openAbsenceModal(event, initialAbsenceStart, initialAbsenceEnd) {
+        const result = await Hot_Calendar_Absence_Modal.open({ event, initialAbsenceEnd, initialAbsenceStart });
         if (result) {
             await this.refreshCalendar(false);
             this.updatePseudoEventsDisplay(this.calendar.view);
