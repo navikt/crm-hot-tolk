@@ -417,6 +417,17 @@
         <dataType>String</dataType>
         <expression>{!$User.Id}</expression>
     </formulas>
+    <formulas>
+        <name>Validate_actual_end_time</name>
+        <dataType>Boolean</dataType>
+        <expression>{!New_end_time_dekket} &lt;= ({!CurrentServiceAppointment.SchedEndTime} + (1/2))</expression>
+    </formulas>
+    <formulas>
+        <name>Validate_actual_start_time</name>
+        <dataType>Boolean</dataType>
+        <expression>{!New_start_time_dekket} &gt;= ({!CurrentServiceAppointment.SchedStartTime} - (1/2)) &amp;&amp; 
+{!New_start_time_dekket} &lt; {!New_end_time_dekket}</expression>
+    </formulas>
     <interviewLabel>HOT_ChangeServiceAppointmentStatus {!$Flow.CurrentDateTime}</interviewLabel>
     <label>HOT_ChangeServiceAppointmentStatus</label>
     <processMetadataValues>
@@ -844,6 +855,10 @@
             <fieldType>InputField</fieldType>
             <inputsOnNextNavToAssocScrn>UseStoredValues</inputsOnNextNavToAssocScrn>
             <isRequired>false</isRequired>
+            <validationRule>
+                <errorMessage>&lt;p&gt;Ny starttid kan tidligst starte 12 timer før planlagt starttid. Sluttid kan ikke komme før starttid.&lt;/p&gt;</errorMessage>
+                <formulaExpression>{!Validate_actual_start_time}</formulaExpression>
+            </validationRule>
         </fields>
         <fields>
             <name>New_end_time_dekket</name>
@@ -855,6 +870,10 @@
             <fieldType>InputField</fieldType>
             <inputsOnNextNavToAssocScrn>UseStoredValues</inputsOnNextNavToAssocScrn>
             <isRequired>false</isRequired>
+            <validationRule>
+                <errorMessage>&lt;p&gt;Ny sluttid kan seinest slutte 12 timer etter planlagt sluttid.&lt;/p&gt;</errorMessage>
+                <formulaExpression>{!Validate_actual_end_time}</formulaExpression>
+            </validationRule>
         </fields>
         <showFooter>true</showFooter>
         <showHeader>false</showHeader>
