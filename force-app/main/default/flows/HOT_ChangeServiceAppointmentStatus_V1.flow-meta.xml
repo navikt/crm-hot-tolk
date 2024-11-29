@@ -425,8 +425,9 @@
     <formulas>
         <name>Validate_actual_start_time</name>
         <dataType>Boolean</dataType>
-        <expression>{!New_start_time_dekket} &gt;= ({!CurrentServiceAppointment.SchedStartTime} - (1/2)) &amp;&amp; 
-{!New_start_time_dekket} &lt; {!New_end_time_dekket}</expression>
+        <expression>{!New_start_time_dekket} &gt;= ({!CurrentServiceAppointment.SchedStartTime} -
+            (1/2)) &amp;&amp;
+            {!New_start_time_dekket} &lt; {!New_end_time_dekket}</expression>
     </formulas>
     <interviewLabel>HOT_ChangeServiceAppointmentStatus {!$Flow.CurrentDateTime}</interviewLabel>
     <label>HOT_ChangeServiceAppointmentStatus</label>
@@ -686,7 +687,10 @@
         <allowPause>true</allowPause>
         <fields>
             <name>Already_Completed_Text</name>
-            <fieldText>&lt;p&gt;&lt;span style=&quot;background-color: rgb(255, 255, 255); color: rgb(68, 68, 68);&quot;&gt;Det er ikke mulig å oppdatere statusen etter at oppdraget er satt til Dekket. Kontakt formidler for å gi ytterligere informasjon om oppdraget.&lt;/span&gt;&lt;/p&gt;</fieldText>
+            <fieldText>&lt;p&gt;&lt;span style=&quot;background-color: rgb(255, 255, 255); color:
+                rgb(68, 68, 68);&quot;&gt;Det er ikke mulig å oppdatere statusen etter at oppdraget
+                er satt til Dekket. Kontakt formidler for å gi ytterligere informasjon om
+                oppdraget.&lt;/span&gt;&lt;/p&gt;</fieldText>
             <fieldType>DisplayText</fieldType>
         </fields>
         <showFooter>true</showFooter>
@@ -718,7 +722,9 @@
         <allowPause>false</allowPause>
         <fields>
             <name>notYourSAText</name>
-            <fieldText>&lt;p&gt;&lt;span style=&quot;background-color: rgb(255, 255, 255); color: rgb(68, 68, 68);&quot;&gt;Du kan ikke endre status på dette oppdraget, ettersom det ikke er ditt.&lt;/span&gt;&lt;/p&gt;</fieldText>
+            <fieldText>&lt;p&gt;&lt;span style=&quot;background-color: rgb(255, 255, 255); color:
+                rgb(68, 68, 68);&quot;&gt;Du kan ikke endre status på dette oppdraget, ettersom det
+                ikke er ditt.&lt;/span&gt;&lt;/p&gt;</fieldText>
             <fieldType>DisplayText</fieldType>
         </fields>
         <showFooter>true</showFooter>
@@ -734,7 +740,10 @@
         <allowPause>true</allowPause>
         <fields>
             <name>SANotStartedMessage</name>
-            <fieldText>&lt;p&gt;&lt;span style=&quot;background-color: rgb(255, 255, 255); color: rgb(62, 62, 60);&quot;&gt;Oppdraget kan ikke settes til &apos;Dekket&apos; før det har begynt. Status kan settes til &apos;Dekket&apos; tidligst etter {!CurrentServiceAppointment.SchedStartTime}&lt;/span&gt;&lt;/p&gt;</fieldText>
+            <fieldText>&lt;p&gt;&lt;span style=&quot;background-color: rgb(255, 255, 255); color:
+                rgb(62, 62, 60);&quot;&gt;Oppdraget kan ikke settes til &apos;Dekket&apos; før det
+                har begynt. Status kan settes til &apos;Dekket&apos; tidligst etter
+                {!CurrentServiceAppointment.SchedStartTime}&lt;/span&gt;&lt;/p&gt;</fieldText>
             <fieldType>DisplayText</fieldType>
         </fields>
         <showFooter>true</showFooter>
@@ -836,7 +845,7 @@
     </screens>
     <screens>
         <name>Set_Time_Dekket</name>
-        <label>Set Time-  Dekket</label>
+        <label>Set Time- Dekket</label>
         <locationX>710</locationX>
         <locationY>1214</locationY>
         <allowBack>true</allowBack>
@@ -856,7 +865,8 @@
             <inputsOnNextNavToAssocScrn>UseStoredValues</inputsOnNextNavToAssocScrn>
             <isRequired>false</isRequired>
             <validationRule>
-                <errorMessage>&lt;p&gt;Ny starttid kan tidligst starte 12 timer før planlagt starttid. Sluttid kan ikke komme før starttid.&lt;/p&gt;</errorMessage>
+                <errorMessage>&lt;p&gt;Ny starttid kan tidligst starte 12 timer før planlagt
+                    starttid. Sluttid kan ikke komme før starttid.&lt;/p&gt;</errorMessage>
                 <formulaExpression>{!Validate_actual_start_time}</formulaExpression>
             </validationRule>
         </fields>
@@ -871,7 +881,8 @@
             <inputsOnNextNavToAssocScrn>UseStoredValues</inputsOnNextNavToAssocScrn>
             <isRequired>false</isRequired>
             <validationRule>
-                <errorMessage>&lt;p&gt;Ny sluttid kan seinest slutte 12 timer etter planlagt sluttid.&lt;/p&gt;</errorMessage>
+                <errorMessage>&lt;p&gt;Ny sluttid kan seinest slutte 12 timer etter planlagt
+                    sluttid.&lt;/p&gt;</errorMessage>
                 <formulaExpression>{!Validate_actual_end_time}</formulaExpression>
             </validationRule>
         </fields>
