@@ -560,6 +560,11 @@ public without sharing class HOT_ServiceAppointmentHandler extends MyTriggers {
                         .HOT_InterpretationPostalStreet__c;
                 }
                 if (
+                    serviceAppointment.Country == null
+                ) {
+                    serviceAppointment.Country = 'Norge';
+                }
+                if (
                     serviceAppointment.City == null &&
                     workOrderLineItems.get(serviceAppointment.ParentRecordId).City != null
                 ) {
