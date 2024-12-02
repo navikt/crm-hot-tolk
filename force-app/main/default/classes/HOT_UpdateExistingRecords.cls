@@ -1,7 +1,7 @@
 public class HOT_UpdateExistingRecords implements Database.Batchable<sObject> {
     public Database.QueryLocator start(Database.BatchableContext bc) {
         return Database.getQueryLocator(
-            'SELECT City, Street, Country, PostalCode, Status FROM ServiceAppointment WHERE CreatedDate = LAST_N_DAYS:90 AND (Status = \'None\' OR Status = \'Scheduled\' OR Status = \'Dispatched\' OR Status = \'Release to Freelance\')'
+            'SELECT City, Street, Country, PostalCode, Status FROM ServiceAppointment WHERE SchedStartTime > 2024-11-25T00:00:00.000+00:00 AND (Status = \'None\' OR Status = \'Scheduled\' OR Status = \'Dispatched\' OR Status = \'Release to Freelance\')'
         );
     }
 
