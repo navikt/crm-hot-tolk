@@ -1,9 +1,18 @@
-<?xml version="1.0" encoding="UTF-8"?>
+<?xml version="1.0" encoding="UTF-8" ?>
 <CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
     <fullName>HOT_DelPol_ToDeleteRecord__c</fullName>
+    <deprecated>false</deprecated>
     <externalId>false</externalId>
-    <formula>IF(AND(
-    OR(ISPICKVAL(CRM_Thread_Type__c, &apos;HOT_BRUKER-FORMIDLER&apos;), ISPICKVAL(CRM_Thread_Type__c, &apos;HOT_BRUKER-TOLK&apos;), ISPICKVAL(CRM_Thread_Type__c, &apos;HOT_BESTILLER-FORMIDLER&apos;)),
+    <formula>IF(
+  AND(
+    OR(
+      ISPICKVAL(CRM_Thread_Type__c, &apos;HOT_BRUKER-FORMIDLER&apos;), 
+      ISPICKVAL(CRM_Thread_Type__c, &apos;HOT_BRUKER-TOLK&apos;), 
+      ISPICKVAL(CRM_Thread_Type__c, &apos;HOT_BESTILLER-FORMIDLER&apos;),
+      ISPICKVAL(CRM_Thread_Type__c, &apos;HOT_TOLK-RESSURSKONTOR&apos;),
+      ISPICKVAL(CRM_Thread_Type__c, &apos;HOT_TOLK-TOLK&apos;),
+      ISPICKVAL(CRM_Thread_Type__c, &apos;HOT_TOLK-FORMIDLER&apos;)
+    ),
     (TODAY() - DATEVALUE(CreatedDate)) &gt; 365
   ),
   true,
