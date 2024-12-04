@@ -100,7 +100,8 @@ public without sharing class HOT_ServiceAppointmentNotification {
                 if (
                     serviceAppointment.HOT_AddressFormated__c != oldServiceAppointment.HOT_AddressFormated__c &&
                     serviceAppointment.HOT_ServiceResource__c == oldServiceAppointment.HOT_ServiceResource__c &&
-                    serviceAppointment.Status == 'Dispatched'
+                    serviceAppointment.Status == 'Dispatched' &&
+                    serviceAppointment.SchedStartTime >= Date.today()
                 ) {
                     saN.addressChanged(
                         saN.getCustomNotificationTypeByName('HOT_Service_Appointment_Changed'),
