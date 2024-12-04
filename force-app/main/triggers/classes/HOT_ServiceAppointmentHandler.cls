@@ -396,7 +396,26 @@ public without sharing class HOT_ServiceAppointmentHandler extends MyTriggers {
                 serviceResourceByServiceAppointmentSchedTimeChanged,
                 serviceResources
             );
-            HOT_WageClaimService.updateWageClaims(newServiceAppointmentsSchedTimeChanged, wageClaims, false);
+
+            HOT_WageClaim__c[] claimsWithNoConflicts = new List<HOT_WageClaim__c>();
+            HOT_WageClaim__c[] claimsWithConflicts = new List<HOT_WageClaim__c>();
+
+            for (HOT_WageClaim__c wc : wageClaims) {
+                Boolean isConflict = false;
+                for (ServiceAppointment sa : newServiceAppointmentsSchedTimeChanged.values()) {
+                    if (sa.SchedStartTime < wc.EndTime__c && sa.SchedEndTime > wc.StartTime__c) {
+                        isConflict = true;
+                    }
+                }
+                if (isConflict) {
+                    claimsWithConflicts.add(wc);
+                } else {
+                    claimsWithNoConflicts.add(wc);
+                }
+            }
+
+            HOT_DatabaseOperations.insertRecords(claimsWithNoConflicts);
+            HOT_WageClaimService.updateWageClaims(newServiceAppointmentsSchedTimeChanged, claimsWithConflicts, false);
             HOT_WageClaimService.updateWageClaimsFuture(serviceResourceByServiceAppointmentSchedTimeChanged.keySet());
         }
 
@@ -540,24 +559,39 @@ public without sharing class HOT_ServiceAppointmentHandler extends MyTriggers {
                         )
                         .HOT_InterpretationPostalStreet__c;
                 }
+                if (serviceAppointment.HOT_IsScreenInterpreter__c || serviceAppointment.Country == null) {
+                    serviceAppointment.Country = 'Norge';
+                }
                 if (
+                    serviceAppointment.HOT_IsScreenInterpreter__c ||
                     serviceAppointment.City == null &&
                     workOrderLineItems.get(serviceAppointment.ParentRecordId).City != null
                 ) {
                     serviceAppointment.City = workOrderLineItems.get(serviceAppointment.ParentRecordId).City;
+                    if (serviceAppointment.HOT_IsScreenInterpreter__c) {
+                        serviceAppointment.City = 'N/A';
+                    }
                 }
                 if (
+                    serviceAppointment.HOT_IsScreenInterpreter__c ||
                     serviceAppointment.PostalCode == null &&
                     workOrderLineItems.get(serviceAppointment.ParentRecordId).PostalCode != null
                 ) {
                     serviceAppointment.PostalCode = workOrderLineItems.get(serviceAppointment.ParentRecordId)
                         .PostalCode;
+                    if (serviceAppointment.HOT_IsScreenInterpreter__c) {
+                        serviceAppointment.PostalCode = 'N/A';
+                    }
                 }
                 if (
+                    serviceAppointment.HOT_IsScreenInterpreter__c ||
                     serviceAppointment.Street == null &&
                     workOrderLineItems.get(serviceAppointment.ParentRecordId).Street != null
                 ) {
                     serviceAppointment.Street = workOrderLineItems.get(serviceAppointment.ParentRecordId).Street;
+                    if (serviceAppointment.HOT_IsScreenInterpreter__c) {
+                        serviceAppointment.Street = 'N/A';
+                    }
                 }
                 if (
                     serviceAppointment.EarliestStartTime == null &&
