@@ -2504,7 +2504,7 @@
     </tabSettings>
     <tabSettings>
         <tab>SMS__c</tab>
-        <visibility>Available</visibility>
+        <visibility>Visible</visibility>
     </tabSettings>
     <tabSettings>
         <tab>standard-Account</tab>
