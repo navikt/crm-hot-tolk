@@ -21,7 +21,7 @@
                 <div class="empty"></div>
             </div>
             <div if:true={showMyNotifications} class="notificationlist">
-                <div>
+                <div class="notification-container">
                     <template for:each={notifications} for:item="notification">
                         <button
                             key={notification.Id}

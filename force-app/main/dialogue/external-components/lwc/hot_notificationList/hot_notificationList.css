@@ -90,6 +90,10 @@ span {
     flex-basis: 33%;
 }
 @media (max-width: 576px) {
+    .notification-container {
+        overflow-y: scroll;
+        max-height: 70vh;
+    }
     .header {
         font-size: 1.4rem;
         margin-bottom: 1rem;
