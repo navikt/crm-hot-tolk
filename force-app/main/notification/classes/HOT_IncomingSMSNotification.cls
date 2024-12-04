@@ -1,4 +1,4 @@
-public with sharing class HOT_IncomingSMSNotification {
+public without sharing class HOT_IncomingSMSNotification {
     private static final Integer MAX_NOTIFICATION_BODY_CHARACTERS = 320;
     public static final String DISPATCH_INCOMING_NUMBER = '+4741716090';
 
