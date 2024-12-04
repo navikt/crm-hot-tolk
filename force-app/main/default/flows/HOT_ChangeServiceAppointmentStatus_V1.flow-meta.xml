@@ -865,8 +865,8 @@
             <inputsOnNextNavToAssocScrn>UseStoredValues</inputsOnNextNavToAssocScrn>
             <isRequired>false</isRequired>
             <validationRule>
-                <errorMessage>&lt;p&gt;Ny starttid kan tidligst starte 12 timer før planlagt
-                    starttid. Sluttid kan ikke komme før starttid.&lt;/p&gt;</errorMessage>
+                <errorMessage>&lt;p&gt;Ny starttid kan tidligst starte 12 timer før bestilt
+                    starttid. Starttid kan ikke komme etter sluttid.&lt;/p&gt;</errorMessage>
                 <formulaExpression>{!Validate_actual_start_time}</formulaExpression>
             </validationRule>
         </fields>
@@ -881,8 +881,8 @@
             <inputsOnNextNavToAssocScrn>UseStoredValues</inputsOnNextNavToAssocScrn>
             <isRequired>false</isRequired>
             <validationRule>
-                <errorMessage>&lt;p&gt;Ny sluttid kan seinest slutte 12 timer etter planlagt
-                    sluttid.&lt;/p&gt;</errorMessage>
+                <errorMessage>&lt;p&gt;Ny sluttid kan senest slutte 12 timer etter bestilt
+                    sluttid. Sluttid kan ikke komme før starttid.&lt;/p&gt;</errorMessage>
                 <formulaExpression>{!Validate_actual_end_time}</formulaExpression>
             </validationRule>
         </fields>
