@@ -1,8 +1,24 @@
 public with sharing class HOT_RecordFilesControllerWithSharing {
+    @TestVisible
+    private static Id getWorkorderFromSa(String saId) {
+        ServiceAppointment[] sa = [
+            SELECT Id, HOT_WorkOrderLineItem__r.WorkOrderId
+            FROM ServiceAppointment
+            WHERE Id = :saId
+        ];
+        if (!sa.isEmpty()) {
+            return sa[0].HOT_WorkOrderLineItem__r.WorkOrderId;
+        }
+        return null;
+    }
     @AuraEnabled(cacheable=true)
     public static List<ContentDocument> getContentDocuments(String recordId, Boolean isGetAll) {
         if (recordId == null) {
             return new List<ContentDocument>{};
+        }
+        String serviceAppointmentPrefix = '08p';
+        if (recordId != null && String.valueOf(recordId).startsWith(serviceAppointmentPrefix)) {
+            recordId = getWorkorderFromSa(recordId);
         }
 
         Set<Id> requestId = new Set<Id>();
