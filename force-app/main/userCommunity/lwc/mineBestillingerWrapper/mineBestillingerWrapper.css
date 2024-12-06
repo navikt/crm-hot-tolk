@@ -147,6 +147,9 @@ span {
     }
     .record-details-container {
         margin: 5vw 0;
+        scroll-behavior: auto;
+        max-height: 50vh;
+        overflow: scroll;
     }
     .navigation-container {
         display: block;

@@ -74,6 +74,8 @@ span {
     .record-details-container {
         margin: 5vw 0;
         padding: 1rem;
+        max-height: 50vh;
+        overflow-y: scroll;
     }
     .navigation-container {
         display: block;

@@ -559,24 +559,39 @@ public without sharing class HOT_ServiceAppointmentHandler extends MyTriggers {
                         )
                         .HOT_InterpretationPostalStreet__c;
                 }
+                if (serviceAppointment.HOT_IsScreenInterpreter__c || serviceAppointment.Country == null) {
+                    serviceAppointment.Country = 'Norge';
+                }
                 if (
+                    serviceAppointment.HOT_IsScreenInterpreter__c ||
                     serviceAppointment.City == null &&
                     workOrderLineItems.get(serviceAppointment.ParentRecordId).City != null
                 ) {
                     serviceAppointment.City = workOrderLineItems.get(serviceAppointment.ParentRecordId).City;
+                    if (serviceAppointment.HOT_IsScreenInterpreter__c) {
+                        serviceAppointment.City = 'N/A';
+                    }
                 }
                 if (
+                    serviceAppointment.HOT_IsScreenInterpreter__c ||
                     serviceAppointment.PostalCode == null &&
                     workOrderLineItems.get(serviceAppointment.ParentRecordId).PostalCode != null
                 ) {
                     serviceAppointment.PostalCode = workOrderLineItems.get(serviceAppointment.ParentRecordId)
                         .PostalCode;
+                    if (serviceAppointment.HOT_IsScreenInterpreter__c) {
+                        serviceAppointment.PostalCode = 'N/A';
+                    }
                 }
                 if (
+                    serviceAppointment.HOT_IsScreenInterpreter__c ||
                     serviceAppointment.Street == null &&
                     workOrderLineItems.get(serviceAppointment.ParentRecordId).Street != null
                 ) {
                     serviceAppointment.Street = workOrderLineItems.get(serviceAppointment.ParentRecordId).Street;
+                    if (serviceAppointment.HOT_IsScreenInterpreter__c) {
+                        serviceAppointment.Street = 'N/A';
+                    }
                 }
                 if (
                     serviceAppointment.EarliestStartTime == null &&

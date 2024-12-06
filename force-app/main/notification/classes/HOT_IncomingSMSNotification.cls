@@ -1,4 +1,4 @@
-public with sharing class HOT_IncomingSMSNotification {
+public without sharing class HOT_IncomingSMSNotification {
     private static final Integer MAX_NOTIFICATION_BODY_CHARACTERS = 320;
     public static final String DISPATCH_INCOMING_NUMBER = '+4741716090';
 
@@ -69,7 +69,7 @@ public with sharing class HOT_IncomingSMSNotification {
             for (NotificationContext context : contexts) {
                 context.recipients = new Set<String>{ (String) groupByQueue.get(queueIds[index]) };
 
-                String title = 'Melding fra ' + sender.CRM_FullName__c;
+                String title = 'SMS fra ' + sender.CRM_FullName__c;
                 String body = context.sms.Message__c.length() > MAX_NOTIFICATION_BODY_CHARACTERS
                     ? context.sms.Message__c.substring(0, MAX_NOTIFICATION_BODY_CHARACTERS - 3) + '...'
                     : context.sms.Message__c;

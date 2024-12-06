@@ -1,56 +1,18 @@
 public class HOT_UpdateExistingRecords implements Database.Batchable<sObject> {
     public Database.QueryLocator start(Database.BatchableContext bc) {
         return Database.getQueryLocator(
-            'Select Id, CreatedDate, CRM_Related_Object__c, CRM_Account__c, HOT_ServiceAppointment__c, HOT_InterestedResource__c FROM Thread__c WHERE HOT_IsDone__c =false AND CRM_Thread_Type__c =\'HOT_TOLK-FORMIDLER\' AND HOT_ServiceAppointment__c != null AND CRM_Account__c !=null'
+            'SELECT City, Street, Country, PostalCode, Status FROM ServiceAppointment WHERE SchedStartTime > 2021-12-01T00:00:00.000+00:00 AND SchedStartTime < 2024-12-01T00:00:00.000+00:00 AND Status = \'Dispatched\' AND HOT_Processed__c = false AND HOT_IsReleasedToFreelance__c = true'
         );
     }
 
-    public void execute(Database.BatchableContext bc, List<Thread__c> records) {
-        /* System.debug('fant ' + records.size());
-        Set<String> serviceAppointmentIds = new Set<String>();
-        for (Thread__c thread : records) {
-            if(thread.CRM_Related_Object__c != null){
-                Id relatedobject = thread.CRM_Related_Object__c;
-                String objectType = String.valueOf(relatedobject.getsobjecttype());
-                if (objectType == 'ServiceAppointment') {
-                    serviceAppointmentIds.add(thread.CRM_Related_Object__c);
-                }
-            }
+    public void execute(Database.BatchableContext bc, List<ServiceAppointment> records) {
+        for (ServiceAppointment sa : records) {
+            sa.Country = sa.Country == null ? 'Norge' : sa.Country;
+            sa.City = sa.City == null ? 'N/A' : sa.City;
+            sa.Street = sa.Street == null ? 'N/A' : sa.Street;
+            sa.PostalCode = sa.PostalCode == null ? 'N/A' : sa.PostalCode;
         }
-        Map<Id, List<HOT_InterestedResource__c>> irMap = new Map<Id, List<HOT_InterestedResource__c>>();
-        if (!serviceAppointmentIds.isEmpty()) {
-            List<HOT_InterestedResource__c> irList = [
-                SELECT Id, Status__c, ServiceAppointment__c, ServiceResource__r.AccountId 
-                FROM HOT_InterestedResource__c 
-                WHERE ServiceAppointment__c IN :serviceAppointmentIds 
-                AND Status__c != 'Assigned'
-            ];
-            for (HOT_InterestedResource__c ir : irList) {
-                if (!irMap.containsKey(ir.ServiceAppointment__c)) {
-                    irMap.put(ir.ServiceAppointment__c, new List<HOT_InterestedResource__c>());
-                }
-                irMap.get(ir.ServiceAppointment__c).add(ir);
-            }
-        }
-         // Update the Thread__c records
-        List<Thread__c> threadsToUpdate = new List<Thread__c>();
-        for (Thread__c thread : records) {
-            if (irMap.containsKey(thread.CRM_Related_Object__c)) {
-                for (HOT_InterestedResource__c ir : irMap.get(thread.CRM_Related_Object__c)) {
-                    if (ir.ServiceResource__r.AccountId == thread.CRM_Account__c) {
-                        thread.CRM_Related_Object__c = ir.Id;
-                        thread.HOT_ServiceAppointment__c=null;
-                        thread.HOT_InterestedResource__c=ir.Id;
-                        threadsToUpdate.add(thread);
-                    }
-                }
-            }
-        }
-
-        if (!threadsToUpdate.isEmpty()) {
-            update threadsToUpdate;
-        }
-        */
+        update records;
     }
     public void finish(Database.BatchableContext bc) {
         // execute any post-processing operations
