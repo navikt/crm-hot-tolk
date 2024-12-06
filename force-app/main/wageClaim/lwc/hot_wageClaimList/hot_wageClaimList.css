@@ -42,6 +42,10 @@ span {
     .record-details-container {
         margin: 5vw 0;
     }
+    .main-content {
+        overflow-y: scroll;
+        max-height: 50vh;
+    }
     .comments-dialog-container {
         all: unset;
         background-color: #fff;

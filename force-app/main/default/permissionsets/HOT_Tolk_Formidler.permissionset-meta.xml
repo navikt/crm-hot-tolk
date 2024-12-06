@@ -1021,7 +1021,7 @@
         <readable>true</readable>
     </fieldPermissions>
     <fieldPermissions>
-        <editable>false</editable>
+        <editable>true</editable>
         <field>SMS__c.Account__c</field>
         <readable>true</readable>
     </fieldPermissions>
@@ -2504,7 +2504,7 @@
     </tabSettings>
     <tabSettings>
         <tab>SMS__c</tab>
-        <visibility>Available</visibility>
+        <visibility>Visible</visibility>
     </tabSettings>
     <tabSettings>
         <tab>standard-Account</tab>
