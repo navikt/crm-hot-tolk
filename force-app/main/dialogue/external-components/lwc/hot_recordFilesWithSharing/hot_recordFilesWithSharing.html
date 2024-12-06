@@ -1,0 +1,34 @@
+<template>
+    <section if:false={isContentDocumentsEmpty}>
+        <h3 class="header" if:true={filesToShowLength} style={headerAlign}>{defaultTitle}</h3>
+        <ul>
+            <template for:each={filesToShow} for:item="file" for:index="index">
+                <li key={file.Title}>
+                    <a
+                        if:false={noDownloadLink}
+                        class="listelement"
+                        style="margin: 0 0.5em 0 0"
+                        href={file.downloadLink}
+                        >{file.Title}
+                    </a>
+                    <p if:true={noDownloadLink} class="listelement" style="margin: 0 0.5em 0 0">{file.Title}</p>
+                    <div if:true={isDelete} style="display: inline">
+                        <button
+                            if:true={file.isDeletable}
+                            onfocus={onFileFocus}
+                            aria-label={fileButtonLabel}
+                            data-index={index}
+                            key={file.Title}
+                            type="button"
+                            value={file.Title}
+                            class="navds-button"
+                            onclick={onFileDelete}
+                        >
+                            Slett
+                        </button>
+                    </div>
+                </li>
+            </template>
+        </ul>
+    </section>
+</template>
