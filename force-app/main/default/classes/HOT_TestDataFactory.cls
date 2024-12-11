@@ -55,6 +55,7 @@ public class HOT_TestDataFactory {
     public static ServiceAppointment createServiceAppointment(WorkOrderLineItem workOrderLineItem) {
         ServiceAppointment serviceAppointment = new ServiceAppointment();
         serviceAppointment.ParentRecordId = workOrderLineItem.Id;
+        serviceAppointment.HOT_WorkOrderLineItem__c = workOrderLineItem.Id;
         serviceAppointment.Status = 'None';
         serviceAppointment.EarliestStartTime = Datetime.now().addHours(1);
         serviceAppointment.DueDate = serviceAppointment.EarliestStartTime.addHours(2);
