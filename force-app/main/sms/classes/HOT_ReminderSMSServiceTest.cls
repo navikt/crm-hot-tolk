@@ -156,13 +156,13 @@ private class HOT_ReminderSMSServiceTest {
     @IsTest
     static void sendSMSOnNewMessageInterpreterTest() {
         User currentUser = [SELECT Id, AccountId FROM User WHERE Id = :UserInfo.getUserId()];
+        // startTest flyttet hit på grunn av limits
+        Test.startTest();
         WorkType workType = HOT_TestDataFactory.createWorkType();
         insert workType;
         HOT_Request__c request = HOT_TestDataFactory.createRequest('TEST', workType);
         insert request;
 
-        // startTest flyttet hit på grunn av limits
-        Test.startTest();
         Thread__c thread = HOT_TestDataFactory.createThread();
         thread.CRM_Account__c = currentUser.AccountId;
         thread.CRM_Related_Object__c = request.Id;
@@ -491,7 +491,8 @@ private class HOT_ReminderSMSServiceTest {
                 Account.CRM_Person__r.INT_KrrMobilePhone__c
             FROM WorkOrder
         ];
-
+        //flyttet pga limits
+        Test.startTest();
         ServiceResource interpreter = [SELECT Id, Name FROM ServiceResource LIMIT 1];
         interpreter.Name = 'InterpreterName';
 
@@ -509,11 +510,10 @@ private class HOT_ReminderSMSServiceTest {
 
         HOT_DatabaseOperations.updateRecords(serviceAppointments);
 
-        Test.startTest();
         HOT_ReminderSMSService.sendSMSToOrdererOnStatusUpdate(workOrders);
-        Test.stopTest();
 
         String message = [SELECT Id, Message__c FROM SMS__c LIMIT 1].Message__c;
+        Test.stopTest();
         System.assert(message.contains('InterpreterName'), 'Could not create sms-record');
     }
 
@@ -586,10 +586,10 @@ private class HOT_ReminderSMSServiceTest {
     }
     @IsTest
     public static void testSendSMSOnNewMessage() {
+        Test.startTest();
         Person__c person = HOT_TestDataFactory.createPerson();
         person.Name = '12015678999';
         insert person;
-        Test.startTest();
         Account personAccount = HOT_TestDataFactory.createAccount(true);
         personAccount.INT_PersonIdent__c = '12015678999';
         personAccount.CRM_Person__c = person.Id;
@@ -623,10 +623,10 @@ private class HOT_ReminderSMSServiceTest {
     }
     @IsTest
     static void sendSMSOnCoInterpreterRemoved() {
+        Test.startTest();
         Profile profile = [SELECT Id FROM Profile WHERE Name = 'Standard User' OR Name = 'Standardbruker' LIMIT 1];
         User user = HOT_TestDataFactory.createUser('user2', profile);
         insert user;
-        Test.startTest();
         ServiceResource serviceResource = HOT_TestDataFactory.createServiceResource(user.Id);
         serviceResource.HOT_IsEmployedInterpreter__c = false;
         serviceResource.HOT_IsFreelanceInterpreter__c = true;
