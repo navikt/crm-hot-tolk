@@ -12,6 +12,7 @@ public class HOT_ShiftHandlerTest {
         insert user;
         ServiceResource serviceResource = HOT_TestDataFactory.createServiceResource(user.Id);
         serviceResource.CRM_Domain__c = 'HOT';
+        serviceResource.CRM_Subdomain__c = 'Tolketjenesten';
         insert serviceResource;
     }
     @IsTest
