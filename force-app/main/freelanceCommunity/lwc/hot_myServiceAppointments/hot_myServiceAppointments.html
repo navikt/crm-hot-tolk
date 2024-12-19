@@ -9,14 +9,6 @@
                 onrowclick={goToRecordDetails}
             ></c-hot_freelance-table-list-mobile>
         </div>
-        <c-hot_information-modal
-            if:false={noServiceAppointments}
-            record-id={recordId}
-            from-url-redirect={urlRedirect}
-            show-details={showDetails}
-            type="SA"
-            onrefreshrecords={handleRefreshRecords}
-        ></c-hot_information-modal>
         <div if:true={noServiceAppointments} style="text-align: center">
             <br />
             Du har ingen oppdrag.
