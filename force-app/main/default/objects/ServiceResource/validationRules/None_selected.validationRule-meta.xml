@@ -4,6 +4,7 @@
     <active>true</active>
     <errorConditionFormula>AND(
         ISPICKVAL(CRM_Domain__c, &apos;HOT&apos;),
+        ISPICKVAL(CRM_Subdomain__c, &apos;Tolketjenesten&apos;),
         IsActive,
         $Profile.Name = &apos;NAV Samhandler&apos;,
         NOT(INCLUDES(HOT_PreferredRegions__c, &quot;Tromso&quot;)) &amp;&amp;
