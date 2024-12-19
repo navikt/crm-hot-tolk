@@ -3,10 +3,11 @@
     <fullName>No_Notificationchannel</fullName>
     <active>true</active>
     <errorConditionFormula>AND(
-    ISPICKVAL(CRM_Domain__c, &apos;HOT&apos;), 
-    ISBLANK(TEXT(HOT_NotificationChannel__c)),
-    IsActive
-)</errorConditionFormula>
+        ISPICKVAL(CRM_Domain__c, &apos;HOT&apos;),
+        ISPICKVAL(CRM_Subdomain__c, &apos;Tolketjenesten&apos;),
+        ISBLANK(TEXT(HOT_NotificationChannel__c)),
+        IsActive
+        )</errorConditionFormula>
     <errorDisplayField>HOT_NotificationChannel__c</errorDisplayField>
     <errorMessage>Du må velge en notifikasjonskanal</errorMessage>
 </ValidationRule>
