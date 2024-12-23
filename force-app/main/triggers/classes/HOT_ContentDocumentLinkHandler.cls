@@ -57,10 +57,15 @@ public without sharing class HOT_ContentDocumentLinkHandler extends MyTriggers {
     public static void confirmVisibilitySettings(List<ContentDocumentLink> contentDocumentLinks) {
         SObjectType requestType = new HOT_Request__c().getSObjectType();
         SObjectType serviceAppointmentType = new ServiceAppointment().getSObjectType();
+        SObjectType hotFileType = new HOT_File__c().getSObjectType();
 
         for (ContentDocumentLink contentDocumentLink : contentDocumentLinks) {
             SObjectType cdiLinkedEntityIdType = contentDocumentLink.LinkedEntityId.getSobjectType();
-            if (cdiLinkedEntityIdType == requestType || cdiLinkedEntityIdType == serviceAppointmentType) {
+            if (
+                cdiLinkedEntityIdType == requestType ||
+                cdiLinkedEntityIdType == serviceAppointmentType ||
+                cdiLinkedEntityIdType == hotFileType
+            ) {
                 contentDocumentLink.Visibility = 'AllUsers';
             }
         }
