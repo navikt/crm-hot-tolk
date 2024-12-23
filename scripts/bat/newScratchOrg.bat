@@ -1,26 +1,26 @@
 echo "Oppretter scratch org"
 call sf org create scratch --definition-file config\project-scratch-def.json --alias %1 --duration-days %2 --set-default --json --wait 30
 
-echo "Installerer crm-platform-base ver. 0.240"
-call sf package install --package 04tKB000000Y5xtYAC --no-prompt --installation-key %3 --wait 30 --publish-wait 30
+echo "Installerer crm-platform-base ver. 0.247"
+call sf package install --package 04tKB000000Y6N2YAK --no-prompt --installation-key %3 --wait 30 --publish-wait 30
 
 echo "Installerer crm-shared-flowComponents ver. 0.4"
 call sf package install --package 04t7U0000008qz4QAA --no-prompt --installation-key %3 --wait 30 --publish-wait 30
 
-echo "Installer crm-henvendelse-base ver. 0.20"
-call sf package install --package 04t7U000000Y4EgQAK --no-prompt --installation-key %3 --wait 30 --publish-wait 30
+echo "Installer crm-henvendelse-base ver. 0.26"
+call sf package install --package 04tKB000000Y6NqYAK --no-prompt --installation-key %3 --wait 30 --publish-wait 30
 
-echo "Installerer crm-platform-integration ver. 0.133"
-call sf package install --package 04tKB000000Y1GEYA0 --no-prompt --installation-key %3 --wait 30 --publish-wait 30
+echo "Installerer crm-platform-integration ver. 0.142"
+call sf package install --package 04tKB000000Y6CWYA0 --no-prompt --installation-key %3 --wait 30 --publish-wait 30
 
-echo "Installerer crm-platform-access-control ver. 0.113"
-call sf package install --package 04t7U0000004e8tQAA --no-prompt --installation-key %3 --wait 30 --publish-wait 30
+echo "Installerer crm-platform-access-control ver. 0.144"
+call sf package install --package 04tKB000000Y6MEYA0 --no-prompt --installation-key %3 --wait 30 --publish-wait 30
 
 echo "Installerer crm-community-base ver. 0.119"
 call sf package install --package 04tKB000000Y0CZYA0 --no-prompt --installation-key %3 --wait 30 --publish-wait 30
 
-echo "Installerer crm-platform-reporting ver. 0.31"
-call sf package install --package 04t7U0000008rBAQAY --no-prompt --installation-key %3 --wait 30 --publish-wait 30
+echo "Installerer crm-platform-reporting ver. 0.39"
+call sf package install --package 04tKB000000Y5GEYA0 --no-prompt --installation-key %3 --wait 30 --publish-wait 30
 
 echo "Dytter kildekoden til scratch org'en"
 call sf project deploy start
