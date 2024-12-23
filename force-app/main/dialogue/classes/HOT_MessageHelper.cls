@@ -538,18 +538,19 @@ public without sharing class HOT_MessageHelper {
     }
     @AuraEnabled
     public static void markThreadAsReadEmployee(Id threadId) {
-        if (HOT_ThreadDetailController.checkAccess(threadId)) {
-            User user = [SELECT Id FROM User WHERE Id = :UserInfo.getUserId()];
-            Thread__c thread = [SELECT Id, HOT_Thread_read_by__c FROM Thread__c WHERE Id = :threadId];
-            if (thread.HOT_Thread_read_by__c == null || thread.HOT_Thread_read_by__c.contains(user.Id)) {
-            } else {
-                thread.HOT_Thread_read_by__c = thread.HOT_Thread_read_by__c + user.Id + ';';
-            }
-            try {
-                update thread;
-            } catch (Exception e) {
-                throw new AuraHandledException(e.getMessage());
-            }
+        User user = [SELECT Id FROM User WHERE Id = :UserInfo.getUserId()];
+        Thread__c thread = [
+            SELECT Id, HOT_Thread_read_by__c, HOT_ParticipantIds__c
+            FROM Thread__c
+            WHERE Id = :threadId
+        ];
+        if (!thread.HOT_Thread_read_by__c.contains(user.Id) && thread.HOT_ParticipantIds__c.contains(user.Id)) {
+            thread.HOT_Thread_read_by__c = thread.HOT_Thread_read_by__c + user.Id + ';';
+        }
+        try {
+            update thread;
+        } catch (Exception e) {
+            throw new AuraHandledException(e.getMessage());
         }
     }
     @AuraEnabled
