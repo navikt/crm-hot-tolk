@@ -115,6 +115,7 @@ public without sharing class HOT_ServiceResourceHandler {
             serviceResource.HOT_IsEmployedInterpreter__c = !isFreelance;
             serviceResource.HOT_IsFreelanceInterpreter__c = isFreelance;
             serviceResource.CRM_Domain__c = 'HOT';
+            ServiceResource.CRM_Subdomain__c = 'Tolketjenesten';
             if (!Test.isRunningTest()) {
                 serviceResource.put('FSL__GanttLabel__c', isFreelance ? 'Frilanstolk' : '');
             }

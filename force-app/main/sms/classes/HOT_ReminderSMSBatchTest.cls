@@ -58,6 +58,7 @@ private class HOT_ReminderSMSBatchTest {
 
         WorkType workType = HOT_TestDataFactory.createWorkType();
         insert workType;
+        Test.startTest();
 
         HOT_Request__c request = HOT_TestDataFactory.createRequest('TEST', workType);
         request.StartTime__c = request.StartTime__c.addDays(1);
@@ -89,7 +90,6 @@ private class HOT_ReminderSMSBatchTest {
         update workOrders;
 
         HOT_ReminderSMSBatch instance = new HOT_ReminderSMSBatch();
-        Test.startTest();
         database.executebatch(instance);
         Test.stopTest();
     }
