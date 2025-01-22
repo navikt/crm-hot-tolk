@@ -29,7 +29,7 @@ private class HOT_RequestRoutingHandlerTest {
     @IsTest
     private static void testRequstRegion54OnOrderer() {
         Person__c person = HOT_TestDataFactory.createPerson();
-        person.INT_RegionNumber__c = '54';
+        person.INT_RegionNumber__c = '55';
         insert person;
         Id accountId = [SELECT Id FROM Account LIMIT 1].Id;
 
@@ -50,7 +50,7 @@ private class HOT_RequestRoutingHandlerTest {
         insert workType;
 
         Account company = HOT_TestDataFactory.createAccount(false);
-        company.INT_RegionNumber__c = '54';
+        company.INT_RegionNumber__c = '55';
         insert company;
 
         HOT_Request__c companyRequest = HOT_TestDataFactory.createRequest('Company TEST', workType);
