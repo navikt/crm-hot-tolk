@@ -50,7 +50,7 @@ private class HOT_RequestRoutingHandlerTest {
         insert workType;
 
         Account company = HOT_TestDataFactory.createAccount(false);
-        company.INT_MunicipalityNumber__c = '5501s';
+        company.INT_MunicipalityNumber__c = '5501';
         insert company;
 
         HOT_Request__c companyRequest = HOT_TestDataFactory.createRequest('Company TEST', workType);
