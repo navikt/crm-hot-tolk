@@ -11,7 +11,7 @@
             "dependencies": [
                 {
                     "package": "crm-platform-base",
-                    "versionNumber": "0.247.0.LATEST"
+                    "versionNumber": "0.252.0.LATEST"
                 },
                 {
                     "package": "crm-shared-flowComponents",
