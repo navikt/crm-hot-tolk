@@ -1,8 +1,8 @@
 echo "Oppretter scratch org"
 call sf org create scratch --definition-file config\project-scratch-def.json --alias %1 --duration-days %2 --set-default --json --wait 30
 
-echo "Installerer crm-platform-base ver. 0.240"
-call sf package install --package 04tKB000000Y5xtYAC --no-prompt --installation-key %3 --wait 30 --publish-wait 30
+echo "Installerer crm-platform-base ver. 0.252"
+call sf package install --package 04tKB000000Y7SbYAK --no-prompt --installation-key %3 --wait 30 --publish-wait 30
 
 echo "Installerer crm-shared-flowComponents ver. 0.4"
 call sf package install --package 04t7U0000008qz4QAA --no-prompt --installation-key %3 --wait 30 --publish-wait 30
