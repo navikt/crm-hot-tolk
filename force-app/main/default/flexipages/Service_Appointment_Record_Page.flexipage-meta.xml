@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="UTF-8"?>
+<?xml version="1.0" encoding="UTF-8" ?>
 <FlexiPage xmlns="http://soap.sforce.com/2006/04/metadata">
     <flexiPageRegions>
         <itemInstances>
@@ -778,7 +778,7 @@
                 <fieldItem>Record.LastModifiedById</fieldItem>
                 <identifier>RecordLastModifiedByIdField</identifier>
                 <visibilityRule>
-                    <booleanFilter>1 OR 2</booleanFilter>
+                    <booleanFilter>1 OR 2 OR 3</booleanFilter>
                     <criteria>
                         <leftValue>{!Record.LastModifiedBy.Profile.Name}</leftValue>
                         <operator>CONTAINS</operator>
@@ -788,6 +788,11 @@
                         <leftValue>{!Record.Contact.Account.CRM_Person__r.INT_Confidential__c}</leftValue>
                         <operator>EQUAL</operator>
                         <rightValue>UGRADERT</rightValue>
+                    </criteria>
+                    <criteria>
+                        <leftValue>{!Record.LastModifiedBy.Profile.Name}</leftValue>
+                        <operator>CONTAINS</operator>
+                        <rightValue>Saksbehandler</rightValue>
                     </criteria>
                 </visibilityRule>
             </fieldInstance>
