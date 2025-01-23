@@ -23,7 +23,7 @@
                 },
                 {
                     "package": "crm-platform-integration",
-                    "versionNumber": "0.133.0.LATEST"
+                    "versionNumber": "0.142.0.LATEST"
                 },
                 {
                     "package": "crm-platform-access-control",
@@ -35,7 +35,7 @@
                 },
                 {
                     "package": "crm-platform-reporting",
-                    "versionNumber": "0.31.0.LATEST"
+                    "versionNumber": "0.39.0.LATEST"
                 }
             ]
         }
