@@ -54,7 +54,8 @@ private class HOT_RequestHandlerTest {
         Person__c personTromso = HOT_TestDataFactory.createPerson();
         personTromso.INT_FirstName__c = 'Tromso';
         personTromso.INT_LastName__c = 'User';
-        personTromso.INT_RegionNumber__c = '54';
+        personTromso.INT_RegionNumber__c = '55';
+        personTromso.INT_MunicipalityNumber__c = '5501';
         insert personTromso;
         Account accountTromso = [SELECT Id FROM Account WHERE FirstName = :personTromso.INT_FirstName__c LIMIT 1];
 
@@ -154,7 +155,8 @@ private class HOT_RequestHandlerTest {
         Person__c personTromso = HOT_TestDataFactory.createPerson();
         personTromso.INT_FirstName__c = 'Tromso';
         personTromso.INT_LastName__c = 'User';
-        personTromso.INT_RegionNumber__c = '54';
+        personTromso.INT_MunicipalityNumber__c = '5501';
+        personTromso.INT_RegionNumber__c = '55';
         insert personTromso;
         Account accountTromso = [SELECT Id FROM Account WHERE FirstName = :personTromso.INT_FirstName__c LIMIT 1];
 
