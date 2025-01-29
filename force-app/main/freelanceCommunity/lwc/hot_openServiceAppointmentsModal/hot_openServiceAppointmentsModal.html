@@ -2,7 +2,7 @@
     <lightning-modal-body>
         <!-- Comment Page -->
         <template if:true={showCommentPage}>
-            <div tabindex="-1" aria-label="Legg inn kommentarer til oppdragene">
+            <div tabindex="-1" aria-label="Legg inn kommentarer til oppdragene" class="record-details-container">
                 <div role="dialog" aria-labelledby="comment-header-id">
                     <section>
                         <div lwc:if={showInfoAndCommentSection}>
@@ -15,7 +15,7 @@
                                     object-api-name="HOT_InterestedResource__c"
                                     density="comfy"
                                 >
-                                    <div class="record-details-container">
+                                    <div>
                                         <p>Tema: <span>{item.HOT_FreelanceSubject__c}</span></p>
                                         <p>Tid: <span>{item.StartAndEndDate}</span></p>
                                         <p>Adresse: <span>{item.HOT_AddressFormated__c}</span></p>
@@ -128,7 +128,7 @@
 
         <!-- Service Appointment Details -->
         <template if:true={showServiceAppointmentDetails}>
-            <div tabindex="-1" aria-label="Informasjon om oppdrag">
+            <div tabindex="-1" aria-label="Informasjon om oppdrag" class="record-details-container">
                 <div role="dialog" aria-labelledby="comment-header-id">
                     <section>
                         <div>
@@ -137,7 +137,7 @@
 
                         <!-- Display Service Appointment Details -->
                         <template if:true={serviceAppointment}>
-                            <div class="record-details-container">
+                            <div>
                                 <p>
                                     Oppdragsnummer:
                                     <span>{serviceAppointment.HOT_ServiceAppointmentNumber__c}</span>

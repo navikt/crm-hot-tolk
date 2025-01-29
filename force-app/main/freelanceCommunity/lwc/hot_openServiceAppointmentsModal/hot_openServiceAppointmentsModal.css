@@ -1,3 +1,11 @@
+.record-details-container {
+    background-color: #fff;
+    display: block;
+    padding: 2rem;
+    border-radius: 4px;
+    max-height: 100vh;
+    box-sizing: border-box;
+}
 p {
     font-family: 'Salesforce Sans', Arial, sans-serif;
 }

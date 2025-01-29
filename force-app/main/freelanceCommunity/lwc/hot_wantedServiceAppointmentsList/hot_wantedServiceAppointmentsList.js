@@ -206,9 +206,15 @@ export default class Hot_wantedServiceAppointmentsList extends LightningElement 
         }
         this.showServiceAppointmentDetails();
     }
+
+    getModalSize() {
+        return window.screen.width < 768 ? 'full' : 'small';
+    }
+    
     async showServiceAppointmentDetails() {
         try {
             const modalResult = await Hot_wantedServiceAppointmentsListModal.open({
+                size: this.getModalSize(),
                 serviceAppointment: this.serviceAppointment,
                 serviceResourceId: this.serviceResourceId
             });

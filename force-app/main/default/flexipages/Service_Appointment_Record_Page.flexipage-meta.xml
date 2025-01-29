@@ -70,9 +70,6 @@
                         <valueListItems>
                             <value>ServiceAppointment.HOT_registrerWantedServiceResource</value>
                         </valueListItems>
-                        <valueListItems>
-                            <value>ServiceAppointment.UploadToHotFile</value>
-                        </valueListItems>
                     </valueList>
                 </componentInstanceProperties>
                 <componentInstanceProperties>

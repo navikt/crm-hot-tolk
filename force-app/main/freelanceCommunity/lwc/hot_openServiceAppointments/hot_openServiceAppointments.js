@@ -207,8 +207,13 @@ export default class Hot_openServiceAppointments extends LightningElement {
         { name: 'HOT_ReleaseDate__c', type: 'date', newName: 'ReleaseDate' }
     ];
 
+    getModalSize() {
+        return window.screen.width < 768 ? 'full' : 'small';
+    }
+
     async goToRecordDetails(result) {
         const { success, error } = await Hot_openServiceAppointmentsModal.open({
+            size: this.getModalSize(),
             result: result,
             records: this.records
         });

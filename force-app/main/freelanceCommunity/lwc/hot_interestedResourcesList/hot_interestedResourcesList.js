@@ -256,11 +256,17 @@ export default class Hot_interestedResourcesList extends NavigationMixin(Lightni
         this.updateURL();
 
         Hot_interestedResourcesListModal.open({
+            size: this.getModalSize(),
             interestedResource: this.interestedResource,
             isNotRetractable: this.isNotRetractable,
             serviceResource: this.serviceResource
         });
     }
+
+    getModalSize() {
+        return window.screen.width < 768 ? 'full' : 'small';
+    }
+
     goToRecordDetailsFromNotification(saId) {
         checkAccessToSA({ saId: saId }).then((result) => {
             if (result != false) {
