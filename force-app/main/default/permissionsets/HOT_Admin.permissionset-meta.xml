@@ -1479,6 +1479,11 @@
         <field>ServiceAppointment.HOT_Information__c</field>
         <readable>true</readable>
     </fieldPermissions>
+        <fieldPermissions>
+        <editable>true</editable>
+        <field>ServiceAppointment.HOT_IsRecieptRecieved__c</field>
+        <readable>true</readable>
+    </fieldPermissions>
     <fieldPermissions>
         <editable>true</editable>
         <field>ServiceAppointment.HOT_InterestedResourceNames__c</field>
