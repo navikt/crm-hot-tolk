@@ -123,12 +123,17 @@ export default class Hot_wageClaimList extends NavigationMixin(LightningElement)
         this.recordId = recordId;
         //this.template.querySelector('c-hot_information-modal').goToRecordDetailsWC(this.recordId, this.wageClaims);
         HOT_informationModal.open({
+            size: this.getModalSize(),
             recordId: this.recordId,
             type: 'WC',
             fromUrlRedirect: false,
             records: this.wageClaims
         });
         this.updateURL();
+    }
+
+    getModalSize() {
+        return window.screen.width < 768 ? 'full' : 'small';
     }
 
     @api recordId;

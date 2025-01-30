@@ -534,6 +534,7 @@ export default class Hot_informationModal extends NavigationMixin(LightningModal
                     });
             }
         });
+        this.close();
     }
     goToThreadFreelance() {
         this.isGoToThreadButtonDisabled = true;
@@ -541,6 +542,7 @@ export default class Hot_informationModal extends NavigationMixin(LightningModal
             if (result != '') {
                 this.saFreelanceThreadId = result;
                 this.navigateToThread(this.saFreelanceThreadId);
+                this.modalContent.close()
             } else {
                 createThread({ recordId: this.serviceAppointment.Id, accountId: this.serviceAppointment.accountId })
                     .then((result) => {
@@ -555,6 +557,7 @@ export default class Hot_informationModal extends NavigationMixin(LightningModal
                     });
             }
         });
+        this.close();
     }
     goToThreadServiceAppointment() {
         this.isGoToThreadServiceAppointmentButtonDisabled = true;
@@ -576,6 +579,7 @@ export default class Hot_informationModal extends NavigationMixin(LightningModal
                     });
             }
         });
+        this.close();
     }
     goToThreadInterpreters() {
         this.isGoToThreadInterpretersButtonDisabled = true;
@@ -597,6 +601,7 @@ export default class Hot_informationModal extends NavigationMixin(LightningModal
                     });
             }
         });
+        this.close();
     }
     navigateToThread(recordId) {
         if (this.isAListView && this.isSADetails) {

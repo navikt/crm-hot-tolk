@@ -28,6 +28,5 @@
         "**/.sfdx": true,
         "**/.vscode": true,
         "**/.idea": true
-    },
-    "salesforce.einsteinForDevelopers.enableAutocompletions": false
+    }
 }

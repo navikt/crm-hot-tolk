@@ -295,6 +295,7 @@ export default class Hot_openServiceAppointments extends LightningElement {
 
     async showCommentPage(result) {
         const { success, error } = await Hot_openServiceAppointmentsModal.open({
+            size: this.getModalSize(),
             records: this.records,
             result: result,
             serviceAppointmentCommentDetails: this.serviceAppointmentCommentDetails,

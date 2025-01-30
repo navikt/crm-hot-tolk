@@ -7,5 +7,9 @@
     box-sizing: border-box;
 }
 p {
-    font-family: 'Salesforce Sans', Arial, sans-serif;
+    font-weight: bold;
+}
+
+span {
+    font-weight: normal;
 }

@@ -316,7 +316,7 @@ export default class Hot_interestedResourcesList extends NavigationMixin(Lightni
                         this.interestedResource.AppointmentDeadlineDate__c = '';
                     }
                     Hot_interestedResourcesListModal.open({
-                        size: 'large',
+                        size: this.getModalSize(),
                         description: 'Informasjon om oppdraget',
                         interestedResource: this.interestedResource,
                         isNotRetractable: this.isNotRetractable,
