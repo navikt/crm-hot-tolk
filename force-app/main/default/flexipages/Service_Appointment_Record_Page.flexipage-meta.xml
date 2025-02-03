@@ -430,6 +430,16 @@
                 <identifier>RecordHOT_PreferredResource_cField</identifier>
             </fieldInstance>
         </itemInstances>
+        <itemInstances>
+            <fieldInstance>
+                <fieldInstanceProperties>
+                    <name>uiBehavior</name>
+                    <value>none</value>
+                </fieldInstanceProperties>
+                <fieldItem>Record.HOT_IsRecieptRecieved__c</fieldItem>
+                <identifier>RecordHOT_IsRecieptRecieved__cField</identifier>
+            </fieldInstance>
+        </itemInstances>
         <name>Facet-9076d0db-a5a7-442a-b012-cb35bc98b822</name>
         <type>Facet</type>
     </flexiPageRegions>
