@@ -308,6 +308,7 @@ public class HOT_TestDataFactory {
     }
     public static Thread__c createThread(String threadType) {
         Thread__c thread = new Thread__c();
+        thread.RecordTypeId = HOT_MessageHelper.getHOTThreadRecordType();
         thread.CRM_Thread_Type__c = threadType;
         return thread;
     }

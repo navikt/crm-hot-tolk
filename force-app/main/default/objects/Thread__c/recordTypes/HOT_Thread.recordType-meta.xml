@@ -1,0 +1,119 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<RecordType xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>HOT_Thread</fullName>
+    <active>true</active>
+    <description>HOT Tolketjenesten</description>
+    <label>HOT Thread</label>
+    <picklistValues>
+        <picklist>CRM_Journal_Status__c</picklist>
+        <values>
+            <fullName>Journal Completed</fullName>
+            <default>false</default>
+        </values>
+        <values>
+            <fullName>Journal Error</fullName>
+            <default>false</default>
+        </values>
+        <values>
+            <fullName>Journal Started</fullName>
+            <default>false</default>
+        </values>
+        <values>
+            <fullName>Not Journaled</fullName>
+            <default>true</default>
+        </values>
+    </picklistValues>
+    <picklistValues>
+        <picklist>CRM_Thread_Type__c</picklist>
+        <values>
+            <fullName>HOT_BESTILLER-FORMIDLER</fullName>
+            <default>false</default>
+        </values>
+        <values>
+            <fullName>HOT_BRUKER-BESTILLER</fullName>
+            <default>false</default>
+        </values>
+        <values>
+            <fullName>HOT_BRUKER-FORMIDLER</fullName>
+            <default>false</default>
+        </values>
+        <values>
+            <fullName>HOT_BRUKER-TOLK</fullName>
+            <default>false</default>
+        </values>
+        <values>
+            <fullName>HOT_TOLK-FORMIDLER</fullName>
+            <default>false</default>
+        </values>
+        <values>
+            <fullName>HOT_TOLK-RESSURSKONTOR</fullName>
+            <default>false</default>
+        </values>
+        <values>
+            <fullName>HOT_TOLK-TOLK</fullName>
+            <default>false</default>
+        </values>
+    </picklistValues>
+    <picklistValues>
+        <picklist>Cause__c</picklist>
+        <values>
+            <fullName>Andre årsaker</fullName>
+            <default>false</default>
+        </values>
+        <values>
+            <fullName>Ikke statlig dialog</fullName>
+            <default>false</default>
+        </values>
+        <values>
+            <fullName>Sendt feil bruker</fullName>
+            <default>false</default>
+        </values>
+        <values>
+            <fullName>Sensitive personopplysninger</fullName>
+            <default>false</default>
+        </values>
+        <values>
+            <fullName>Sikkerhetshendelse</fullName>
+            <default>false</default>
+        </values>
+        <values>
+            <fullName>Utenfor Navs behandlingsområde</fullName>
+            <default>false</default>
+        </values>
+    </picklistValues>
+    <picklistValues>
+        <picklist>STO_Category__c</picklist>
+        <values>
+            <fullName>Arbeid</fullName>
+            <default>false</default>
+        </values>
+        <values>
+            <fullName>Familie</fullName>
+            <default>false</default>
+        </values>
+        <values>
+            <fullName>Helse</fullName>
+            <default>false</default>
+        </values>
+        <values>
+            <fullName>Hjelpemidler</fullName>
+            <default>false</default>
+        </values>
+        <values>
+            <fullName>Internasjonal</fullName>
+            <default>false</default>
+        </values>
+        <values>
+            <fullName>Pensjon</fullName>
+            <default>false</default>
+        </values>
+        <values>
+            <fullName>Pleiepenger</fullName>
+            <default>false</default>
+        </values>
+        <values>
+            <fullName>Ufør</fullName>
+            <default>false</default>
+        </values>
+    </picklistValues>
+</RecordType>

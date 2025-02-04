@@ -171,6 +171,7 @@ private class HOT_MySAListControllerTest {
         ];
 
         Thread__c t = new Thread__c();
+        t.RecordTypeId = HOT_MessageHelper.getHOTThreadRecordType();
         t.CRM_Related_Object__c = serviceAppointment.HOT_WorkOrderLineItem__r.WorkOrder.Id;
         t.CRM_Thread_Type__c = 'HOT_BRUKER-TOLK';
         insert t;
@@ -190,6 +191,7 @@ private class HOT_MySAListControllerTest {
         ServiceAppointment serviceAppointment = [SELECT Id FROM ServiceAppointment LIMIT 1];
 
         Thread__c t = new Thread__c();
+        t.RecordTypeId = HOT_MessageHelper.getHOTThreadRecordType();
         t.CRM_Related_Object__c = serviceAppointment.Id;
         insert t;
 
@@ -212,6 +214,7 @@ private class HOT_MySAListControllerTest {
         ];
 
         Thread__c t = new Thread__c();
+        t.RecordTypeId = HOT_MessageHelper.getHOTThreadRecordType();
         t.CRM_Related_Object__c = serviceAppointment.HOT_WorkOrderLineItem__r.WorkOrder.Id;
         t.CRM_Thread_Type__c = 'HOT_TOLK-TOLK';
         insert t;
