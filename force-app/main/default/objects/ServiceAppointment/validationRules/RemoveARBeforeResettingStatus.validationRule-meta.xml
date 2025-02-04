@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<ValidationRule xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>RemoveARBeforeResettingStatus</fullName>
+    <active>true</active>
+    <description>Får ikke satt status til &apos;Åpen&apos; dersom allerede tildelt ressurs</description>
+    <errorConditionFormula>HOT_ServiceResource__c != null
+&amp;&amp;
+ISPICKVAL(Status, &apos;None&apos;)
+&amp;&amp;
+ISCHANGED(Status)
+&amp;&amp;
+NOT($Permission.Validation_Override)</errorConditionFormula>
+    <errorMessage>Fjern ressursen fra oppdraget før du setter det til &apos;Åpen&apos;</errorMessage>
+</ValidationRule>
