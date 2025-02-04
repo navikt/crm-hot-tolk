@@ -3,7 +3,9 @@
     <fullName>RemoveARBeforeResettingStatus</fullName>
     <active>true</active>
     <description>Får ikke satt status til &apos;Åpen&apos; dersom allerede tildelt ressurs</description>
-    <errorConditionFormula>HOT_ServiceResource__c != null
+    <errorConditionFormula>$Profile.Name = &apos;HOT Tolk Formidler&apos; 
+&amp;&amp; 
+HOT_ServiceResource__c != null
 &amp;&amp;
 ISPICKVAL(Status, &apos;None&apos;)
 &amp;&amp;
