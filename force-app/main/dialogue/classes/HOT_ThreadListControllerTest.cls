@@ -12,12 +12,15 @@ public class HOT_ThreadListControllerTest {
         insert request;
 
         Thread__c t = new Thread__c();
+        t.RecordTypeId = HOT_MessageHelper.getHOTThreadRecordType();
         t.HOT_Request__c = request.Id;
 
         Thread__c t2 = new Thread__c();
+        t2.RecordTypeId = HOT_MessageHelper.getHOTThreadRecordType();
         t2.HOT_Request__c = request.Id;
 
         Thread__c t3 = new Thread__c();
+        t3.RecordTypeId = HOT_MessageHelper.getHOTThreadRecordType();
         t3.HOT_Request__c = request.Id;
 
         HOT_DIALOG_TestDataFactory.createRecordList(new List<Thread__c>{ t, t2, t3 });
@@ -62,6 +65,7 @@ public class HOT_ThreadListControllerTest {
 
         Test.startTest();
         Thread__c t = new Thread__c();
+        t.RecordTypeId = HOT_MessageHelper.getHOTThreadRecordType();
         t.CRM_Related_Object__c = ir.Id;
         t.CRM_Account__c = admin.AccountId;
         t.CRM_Thread_Type__c = 'HOT_TOLK-FORMIDLER';
@@ -105,6 +109,7 @@ public class HOT_ThreadListControllerTest {
         ir.Status__c = 'Assigned';
         update ir;
         Thread__c t = new Thread__c();
+        t.RecordTypeId = HOT_MessageHelper.getHOTThreadRecordType();
         t.CRM_Related_Object__c = workOrder.Id;
         insert t;
         Message__c message = new Message__c();

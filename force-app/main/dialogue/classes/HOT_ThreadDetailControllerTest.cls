@@ -8,6 +8,7 @@ public without sharing class HOT_ThreadDetailControllerTest {
         request.Subject__c = 'TEST';
         insert request;
         Thread__c t = new Thread__c();
+        t.RecordTypeId = HOT_MessageHelper.getHOTThreadRecordType();
         t.CRM_Related_Object__c = request.Id;
         t.CRM_Thread_Type__c = 'HOT_BRUKER-FORMIDLER';
         t.HOT_Request__c = request.Id;
@@ -46,6 +47,7 @@ public without sharing class HOT_ThreadDetailControllerTest {
         insert ar;
 
         Thread__c t = new Thread__c();
+        t.RecordTypeId = HOT_MessageHelper.getHOTThreadRecordType();
         t.CRM_Related_Object__c = workOrder.Id;
         insert t;
         System.runAs(admin) {
@@ -78,6 +80,7 @@ public without sharing class HOT_ThreadDetailControllerTest {
         insert wageclaim;
 
         Thread__c t = new Thread__c();
+        t.RecordTypeId = HOT_MessageHelper.getHOTThreadRecordType();
         t.CRM_Related_Object__c = wageClaim.Id;
         insert t;
 
@@ -234,6 +237,7 @@ public without sharing class HOT_ThreadDetailControllerTest {
         insert interestedResource;
 
         Thread__c t = new Thread__c();
+        t.RecordTypeId = HOT_MessageHelper.getHOTThreadRecordType();
         t.CRM_Related_Object__c = interestedResource.Id;
         insert t;
         System.runAs(admin) {
@@ -273,6 +277,7 @@ public without sharing class HOT_ThreadDetailControllerTest {
         update interestedResource;
 
         Thread__c t = new Thread__c();
+        t.RecordTypeId = HOT_MessageHelper.getHOTThreadRecordType();
         t.CRM_Related_Object__c = sa.Id;
         insert t;
         System.runAs(admin) {

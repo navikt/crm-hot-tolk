@@ -603,12 +603,14 @@ private class HOT_ReminderSMSServiceTest {
         request.Orderer__c = personAccount.Id;
         insert request;
         Thread__c thread1 = new Thread__c(
+            RecordTypeId = HOT_MessageHelper.getHOTThreadRecordType(),
             CRM_Account__c = serviceResource.AccountId,
             CRM_Thread_Type__c = 'HOT_TOLK-RESSURSKONTOR'
         );
         insert thread1;
 
         Thread__c thread2 = new Thread__c(
+            RecordTypeId = HOT_MessageHelper.getHOTThreadRecordType(),
             CRM_Account__c = serviceResource.AccountId,
             CRM_Thread_Type__c = 'HOT_TOLK-RESSURSKONTOR'
         );

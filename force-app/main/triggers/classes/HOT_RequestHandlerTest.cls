@@ -573,6 +573,7 @@ private class HOT_RequestHandlerTest {
         insert admin;
 
         Thread__c thread = new Thread__c();
+        thread.RecordTypeId = HOT_MessageHelper.getHOTThreadRecordType();
         thread.CRM_Related_Object__c = request.Id;
         thread.HOT_Request__c = request.Id;
         insert thread;
@@ -601,6 +602,7 @@ private class HOT_RequestHandlerTest {
         insert admin;
 
         Thread__c thread = new Thread__c();
+        thread.RecordTypeId = HOT_MessageHelper.getHOTThreadRecordType();
         thread.CRM_Related_Object__c = workOrder1.Id;
         thread.HOT_WorkOrder__c = workOrder1.Id;
         insert thread;
@@ -634,6 +636,7 @@ private class HOT_RequestHandlerTest {
         insert admin;
 
         Thread__c thread = new Thread__c();
+        thread.RecordTypeId = HOT_MessageHelper.getHOTThreadRecordType();
         thread.CRM_Related_Object__c = sa.Id;
         thread.HOT_ServiceAppointment__c = sa.Id;
         insert thread;
@@ -689,6 +692,7 @@ private class HOT_RequestHandlerTest {
         insert admin;
 
         Thread__c thread = new Thread__c();
+        thread.RecordTypeId = HOT_MessageHelper.getHOTThreadRecordType();
         thread.CRM_Related_Object__c = interestedResource.Id;
         thread.HOT_InterestedResource__c = interestedResource.Id;
         insert thread;
