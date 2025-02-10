@@ -256,13 +256,12 @@
     <div
         class="ReactModal__Overlay ReactModal__Overlay--after-open modal__overlay hidden"
         style="z-index: 9999; background-color: rgba(38, 38, 38, 0.7)"
-        tabindex="-1"
+        tabindex="0"
+        role="dialog"
+        aria-label="Legg til filer"
+        aria-modal="true"
     >
-        <div
-            class="ReactModal__Content ReactModal__Content--after-open comments-dialog-container"
-            role="dialog"
-            aria-labelledby="details-header-id"
-        >
+        <div class="ReactModal__Content ReactModal__Content--after-open comments-dialog-container">
             <div class="loader hidden"></div>
             <div if:true={showUploadFilesComponent}>
                 <h2 style="font-size: 1.25rem; text-align: center">Legg ved filer til denne bestillingen</h2>
