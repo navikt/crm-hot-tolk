@@ -7,12 +7,12 @@
         <div class="mine-bestillinger-wrapper">
             <div class="navigation-container">
                 <div if:false={isMobile} class="back-link-div">
-                    <a class="back-link" onclick={goBack} aria-label="Gå tilbake knapp" tabindex="0">
+                    <a class="back-link" href="#" onclick={goBack} aria-label="Gå tilbake knapp">
                         <c-icon icon="Back"></c-icon>
                         <p class="backBtn" style="margin-left: 0.25rem">Tilbake</p>
                     </a>
                 </div>
-                <h2 class="header" tabindex="-1" autofocus>{headerToShow}</h2>
+                <h2 class="header" autofocus>{headerToShow}</h2>
                 <div class="header-buttons">
                     <c-button
                         if:false={urlStateParameters.id}
@@ -27,7 +27,7 @@
                         onbuttonclick={goToNewRequest}
                     ></c-button>
                     <div if:true={isMobile} class="back-link-div">
-                        <a class="back-link" onclick={goBack} aria-label="Gå tilbake knapp" tabindex="0">
+                        <a class="back-link" href="#" onclick={goBack} aria-label="Gå tilbake knapp">
                             <c-icon icon="Back"></c-icon>
                             <p class="backBtn" style="margin-left: 0.25rem">Tilbake</p>
                         </a>
@@ -43,51 +43,49 @@
             </div>
             <div if:true={isRequestDetails}>
                 <div class="record-details-container" aria-label="Informasjon i bestillingen" role="region">
-                    <p tabindex="0">
+                    <p>
                         <strong>Gjelder periode: </strong><span>{requestSeriesStartDate} - {requestSeriesEndDate}</span>
                     </p>
                     <br />
-                    <p tabindex="0"><strong>Adresse: </strong><span>{requestAddressToShow}</span></p>
+                    <p><strong>Adresse: </strong><span>{requestAddressToShow}</span></p>
                     <p if:true={requestInterpretationAddressToShow}>
                         <strong>Oppmøteadresse: </strong><span>{requestInterpretationAddressToShow}</span>
                     </p>
                     <br />
-                    <p if:true={request.OwnerName__c} tabindex="0">
-                        <strong>Sentral: </strong><span>{request.OwnerName__c}</span>
-                    </p>
-                    <p tabindex="0"><strong>Bestillingsnummer: </strong><span>{request.Name}</span></p>
-                    <p if:true={request.OrdererName__c} tabindex="0">
+                    <p if:true={request.OwnerName__c}><strong>Sentral: </strong><span>{request.OwnerName__c}</span></p>
+                    <p><strong>Bestillingsnummer: </strong><span>{request.Name}</span></p>
+                    <p if:true={request.OrdererName__c}>
                         <strong>Bestiller: </strong><span>{request.OrdererName__c}</span>
                     </p>
-                    <p if:true={request.UserName__c} tabindex="0">
+                    <p if:true={request.UserName__c}>
                         <strong>Tolkebrukers navn: </strong><span>{request.UserName__c}</span>
                     </p>
-                    <p tabindex="0">
+                    <p>
                         <strong>Varsel ved statusendring på bestillingen: </strong
                         ><span>{isOrdererWantStatusUpdateOnSMS}</span>
                     </p>
                     <br />
-                    <p if:true={request.UserPreferredInterpreter__c} tabindex="0">
+                    <p if:true={request.UserPreferredInterpreter__c}>
                         <strong>Ønsket tolk: </strong><span>{request.UserPreferredInterpreter__c}</span>
                     </p>
-                    <p if:true={request.UserInterpretationMethod__c} tabindex="0">
+                    <p if:true={request.UserInterpretationMethod__c}>
                         <strong>Foretrukket tolkemetode: </strong><span>{request.UserInterpretationMethod__c}</span>
                     </p>
-                    <p if:true={request.InterpretationMethodName__c} tabindex="0">
+                    <p if:true={request.InterpretationMethodName__c}>
                         <strong>Tolkemetode: </strong><span>{request.InterpretationMethodName__c}</span>
                     </p>
-                    <p if:true={request.AssignmentType__c} tabindex="0">
+                    <p if:true={request.AssignmentType__c}>
                         <strong>Anledning: </strong><span>{request.AssignmentType__c}</span>
                     </p>
                     <br />
-                    <p if:true={request.CompanyName__c} tabindex="0">
+                    <p if:true={request.CompanyName__c}>
                         <strong>Virksomhet: </strong><span>{request.CompanyName__c}</span>
                     </p>
-                    <p if:true={request.PaymentLiability__c} tabindex="0">
+                    <p if:true={request.PaymentLiability__c}>
                         <strong>Betalingsansvar: </strong><span>{request.PaymentLiability__c}</span>
                     </p>
                     <br if:true={request.Description__c} />
-                    <p if:true={request.Description__c} tabindex="0">
+                    <p if:true={request.Description__c}>
                         <strong>Tilleggsopplysninger: </strong><span>{request.Description__c}</span>
                     </p>
                 </div>
@@ -103,56 +101,54 @@
             </div>
             <div if:true={isWorkOrderDetails}>
                 <div class="record-details-container" aria-label="Informasjon i bestillingen" role="region">
-                    <p tabindex="0"><strong>Fra dato: </strong><span>{workOrderStartDate}</span></p>
-                    <p tabindex="0"><strong>Til dato: </strong><span>{workOrderEndDate}</span></p>
+                    <p><strong>Fra dato: </strong><span>{workOrderStartDate}</span></p>
+                    <p><strong>Til dato: </strong><span>{workOrderEndDate}</span></p>
                     <br />
-                    <p tabindex="0"><strong>Adresse: </strong><span>{workOrder.HOT_AddressFormated__c}</span></p>
-                    <p if:true={workOrderInterpretationAddressToShow} tabindex="0">
+                    <p><strong>Adresse: </strong><span>{workOrder.HOT_AddressFormated__c}</span></p>
+                    <p if:true={workOrderInterpretationAddressToShow}>
                         <strong>Oppmøteadresse: </strong><span>{workOrderInterpretationAddressToShow}</span>
                     </p>
                     <br />
-                    <p tabindex="0"><strong>Status: </strong><span>{workOrder.HOT_ExternalWorkOrderStatus__c}</span></p>
+                    <p><strong>Status: </strong><span>{workOrder.HOT_ExternalWorkOrderStatus__c}</span></p>
                     <br />
-                    <p if:true={request.OwnerName__c} tabindex="0">
-                        <strong>Sentral: </strong><span>{request.OwnerName__c}</span>
-                    </p>
-                    <p tabindex="0"><strong>Bestillingsnummer: </strong><span>{workOrder.HOT_RequestName__c}</span></p>
-                    <p if:true={request.OrdererName__c} tabindex="0">
+                    <p if:true={request.OwnerName__c}><strong>Sentral: </strong><span>{request.OwnerName__c}</span></p>
+                    <p><strong>Bestillingsnummer: </strong><span>{workOrder.HOT_RequestName__c}</span></p>
+                    <p if:true={request.OrdererName__c}>
                         <strong>Bestiller: </strong><span>{request.OrdererName__c}</span>
                     </p>
-                    <p if:true={request.UserName__c} tabindex="0">
+                    <p if:true={request.UserName__c}>
                         <strong>Tolkebrukers navn: </strong><span>{request.UserName__c}</span>
                     </p>
-                    <p tabindex="0">
+                    <p>
                         <strong>Varsel ved statusendring på bestillingen: </strong
                         ><span>{isOrdererWantStatusUpdateOnSMS}</span>
                     </p>
-                    <p tabindex="0"><strong>Sende varsler til bruker: </strong><span>{IsNotNotifyAccount}</span></p>
+                    <p><strong>Sende varsler til bruker: </strong><span>{IsNotNotifyAccount}</span></p>
                     <br />
-                    <p if:true={request.UserPreferredInterpreter__c} tabindex="0">
+                    <p if:true={request.UserPreferredInterpreter__c}>
                         <strong>Ønsket tolk: </strong><span>{request.UserPreferredInterpreter__c}</span>
                     </p>
-                    <p if:true={workOrder.HOT_Interpreters__c} tabindex="0">
+                    <p if:true={workOrder.HOT_Interpreters__c}>
                         <strong>{interpreter}: </strong><span>{workOrder.HOT_Interpreters__c}</span>
                     </p>
-                    <p if:true={request.UserInterpretationMethod__c} tabindex="0">
+                    <p if:true={request.UserInterpretationMethod__c}>
                         <strong>Foretrukket tolkemetode: </strong><span>{request.UserInterpretationMethod__c}</span>
                     </p>
-                    <p if:true={request.InterpretationMethodName__c} tabindex="0">
+                    <p if:true={request.InterpretationMethodName__c}>
                         <strong>Tolkemetode: </strong><span>{request.InterpretationMethodName__c}</span>
                     </p>
-                    <p if:true={request.AssignmentType__c} tabindex="0">
+                    <p if:true={request.AssignmentType__c}>
                         <strong>Anledning: </strong><span>{request.AssignmentType__c}</span>
                     </p>
                     <br />
-                    <p if:true={request.CompanyName__c} tabindex="0">
+                    <p if:true={request.CompanyName__c}>
                         <strong>Virksomhet: </strong><span>{request.CompanyName__c}</span>
                     </p>
-                    <p if:true={request.PaymentLiability__c} tabindex="0">
+                    <p if:true={request.PaymentLiability__c}>
                         <strong>Betalingsansvar: </strong><span>{request.PaymentLiability__c}</span>
                     </p>
                     <br if:true={request.Description__c} />
-                    <p if:true={request.Description__c} tabindex="0">
+                    <p if:true={request.Description__c}>
                         <strong>Tilleggsopplysninger: </strong><span>{request.Description__c}</span>
                     </p>
                 </div>
