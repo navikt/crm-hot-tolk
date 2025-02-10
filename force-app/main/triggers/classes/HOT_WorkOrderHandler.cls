@@ -1,4 +1,13 @@
 public without sharing class HOT_WorkOrderHandler extends MyTriggers {
+    private class WorkOrderException extends Exception {
+    }
+
+    private static void handleException(Exception e) {
+        LoggerUtility logger = new LoggerUtility();
+        logger.exception(e, CRM_ApplicationDomain.Domain.HOT);
+        logger.publishSynch();
+    }
+
     public override void onBeforeInsert() {
         setDefaultFields((List<WorkOrder>) records);
         setDuration((List<WorkOrder>) records);
@@ -50,13 +59,15 @@ public without sharing class HOT_WorkOrderHandler extends MyTriggers {
         Map<Id, HOT_Request__c> requests = new Map<Id, HOT_Request__c>(
             [SELECT Id, Status__c FROM HOT_Request__c WHERE Id IN :requestIds]
         );
-        for (WorkOrder workOrder : (List<WorkOrder>) records) {
-            if (
-                requests.get(workOrder.HOT_Request__c).Status__c != 'Åpen' &&
-                requests.get(workOrder.HOT_Request__c).Status__c != 'Avlyst' &&
-                requests.get(workOrder.HOT_Request__c).Status__c != 'Annullert'
-            ) {
-                approvedWorkOrders.add(workOrder);
+        if (requests.size() > 0) {
+            for (WorkOrder workOrder : (List<WorkOrder>) records) {
+                if (
+                    requests.get(workOrder.HOT_Request__c).Status__c != 'Åpen' &&
+                    requests.get(workOrder.HOT_Request__c).Status__c != 'Avlyst' &&
+                    requests.get(workOrder.HOT_Request__c).Status__c != 'Annullert'
+                ) {
+                    approvedWorkOrders.add(workOrder);
+                }
             }
         }
         if (approvedWorkOrders.size() > 0) {
@@ -243,6 +254,11 @@ public without sharing class HOT_WorkOrderHandler extends MyTriggers {
                 ) {
                     workOrder.PostalCode = requests.get(workOrder.HOT_Request__c).MeetingPostalCode__c;
                 }
+            } else {
+                WorkOrderException woException = new WorkOrderException(
+                    'Request on Work Order should not be empty! Work Order details: ' + workOrder
+                );
+                handleException(woException);
             }
         }
     }
