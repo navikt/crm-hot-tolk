@@ -24,6 +24,7 @@
     </processMetadataValues>
     <processType>AutoLaunchedFlow</processType>
     <recordUpdates>
+        <description>Resets FSL__calculated_duration__c</description>
         <name>setTravelTimeToZero</name>
         <label>setTravelTimeToZero</label>
         <locationX>176</locationX>
@@ -51,5 +52,5 @@
         <recordTriggerType>Create</recordTriggerType>
         <triggerType>RecordAfterSave</triggerType>
     </start>
-    <status>Draft</status>
+    <status>Active</status>
 </Flow>
