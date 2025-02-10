@@ -106,8 +106,8 @@ export default class Hot_requestForm_request extends LightningElement {
         this.componentValues.physicalOrDigitalRadiobuttons[1].checked = this.fieldValues.IsScreenInterpreter__c;
         this.componentValues.sameAddressRadioButtons[1].checked =
             this.fieldValues.InterpretationStreet__c !== this.fieldValues.MeetingStreet__c;
-        this.componentValues.sameAddressRadioButtons[0].checked = !this.componentValues.sameAddressRadioButtons[1]
-            .checked;
+        this.componentValues.sameAddressRadioButtons[0].checked =
+            !this.componentValues.sameAddressRadioButtons[1].checked;
         this.componentValues.isOptionalFields =
             this.fieldValues.UserInterpretationMethod__c !== '' ||
             this.fieldValues.UserPreferredInterpreter__c !== '' ||
@@ -145,7 +145,7 @@ export default class Hot_requestForm_request extends LightningElement {
 
     @api
     setFieldValues() {
-        this.template.querySelectorAll('c-input').forEach((element) => {
+        this.template.querySelectorAll('c-input2').forEach((element) => {
             this.fieldValues[element.name] = element.getValue();
         });
         this.fieldValues.Description__c = this.template.querySelector('c-textarea').getValue();
@@ -177,7 +177,7 @@ export default class Hot_requestForm_request extends LightningElement {
     @api
     validateFields() {
         let hasErrors = false;
-        this.template.querySelectorAll('c-input').forEach((element) => {
+        this.template.querySelectorAll('c-input2').forEach((element) => {
             if (element.validationHandler()) {
                 hasErrors += 1;
             }
