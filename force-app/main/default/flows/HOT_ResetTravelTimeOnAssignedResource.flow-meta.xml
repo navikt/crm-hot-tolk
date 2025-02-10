@@ -2,7 +2,7 @@
 <Flow xmlns="http://soap.sforce.com/2006/04/metadata">
     <apiVersion>62.0</apiVersion>
     <environments>Default</environments>
-    <interviewLabel>Reset Travel Time On Assigned Resource {!$Flow.CurrentDateTime}</interviewLabel>
+    <interviewLabel>resetTravelTimeOnAssignedResource {!$Flow.CurrentDateTime}</interviewLabel>
     <label>Reset Travel Time On Assigned Resource</label>
     <processMetadataValues>
         <name>BuilderType</name>
