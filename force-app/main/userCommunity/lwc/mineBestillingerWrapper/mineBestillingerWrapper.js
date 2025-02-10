@@ -793,4 +793,10 @@ export default class MineBestillingerWrapper extends NavigationMixin(LightningEl
             }
         });
     }
+    handleKeyDown(event) {
+        if (event.key === 'Enter' || event.key === ' ') {
+            this.goBack();
+            event.preventDefault();
+        }
+    }
 }
