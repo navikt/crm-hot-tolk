@@ -159,6 +159,7 @@ private class HOT_MessageHelperTest {
         request.Orderer__c = account.Id;
         insert request;
         Thread__c thread = new Thread__c();
+        thread.RecordTypeId = HOT_MessageHelper.getHOTThreadRecordType();
         thread.CRM_Type__c = 'HOT_BRUKER-TOLK';
         thread.CRM_Related_Object__c = request.Id;
         insert thread;
@@ -180,6 +181,7 @@ private class HOT_MessageHelperTest {
         HOT_Request__c request = HOT_TestDataFactory.createRequest('Subject', workType);
         insert request;
         Thread__c thread = new Thread__c();
+        thread.RecordTypeId = HOT_MessageHelper.getHOTThreadRecordType();
         thread.CRM_Thread_Type__c = 'HOT_BRUKER-TOLK';
         thread.CRM_Related_Object__c = request.Id;
         HOT_DatabaseOperations.insertRecords(thread);
@@ -197,11 +199,13 @@ private class HOT_MessageHelperTest {
         insert request;
 
         Thread__c thread = new Thread__c();
+        thread.RecordTypeId = HOT_MessageHelper.getHOTThreadRecordType();
         thread.CRM_Thread_Type__c = 'HOT_BRUKER-TOLK';
         thread.CRM_Related_Object__c = request.Id;
         HOT_DatabaseOperations.insertRecords(thread);
 
         Thread__c thread2 = new Thread__c();
+        thread2.RecordTypeId = HOT_MessageHelper.getHOTThreadRecordType();
         thread2.CRM_Thread_Type__c = 'HOT_BRUKER-TOLK';
         thread2.CRM_Related_Object__c = request.Id;
         HOT_DatabaseOperations.insertRecords(thread2);
@@ -214,6 +218,7 @@ private class HOT_MessageHelperTest {
     @IsTest
     static void getThreadFromIdTest() {
         Thread__c thread = new Thread__c();
+        thread.RecordTypeId = HOT_MessageHelper.getHOTThreadRecordType();
         insert thread;
         Test.startTest();
         List<Thread__c> t = HOT_MessageHelper.getThreadFromThreadId(thread.Id);
@@ -649,6 +654,7 @@ private class HOT_MessageHelperTest {
         insert request;
 
         Thread__c thread = new Thread__c();
+        thread.RecordTypeId = HOT_MessageHelper.getHOTThreadRecordType();
         thread.CRM_Type__c = 'HOT_BRUKER-FORMIDLER';
         thread.CRM_Related_Object__c = request.Id;
         thread.HOT_Thread_read_by__c = '33rnf43r';
