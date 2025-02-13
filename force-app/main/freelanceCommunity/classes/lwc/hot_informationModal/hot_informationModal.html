@@ -2,35 +2,16 @@
     <!-- <lightning-modal-header label="Heia Lyn"></lightning-modal-header> -->
     <lightning-modal-body>
         <div onkeydown={handleKeyDown} class="dialog details">
-            <div
-                class="
-                    ReactModal__Content ReactModal__Content--after-open
-                    navno-dekorator
-                    details-container
-                    slds_is-relative
-                    slds-align_absolute-center
-                "
-                lwc:if={isLoading}
-            >
+            <!-- Mulig det trengs en loader. Kan være forvirrende hvis det ser ut som det ikke skjer noe
+            <div lwc:if={isLoading}>
                 <lightning-spinner alternative-text="Loading" size="large"></lightning-spinner>
-            </div>
+            </div> -->
             <div
                 class="ReactModal__Content ReactModal__Content--after-open navno-dekorator details-container"
                 role="dialog"
                 aria-labelledby="comment-header-id"
                 if:false={isLoading}
             >
-                <c-alertdialog
-                    header={modalHeader}
-                    content={modalContent}
-                    desktop-style="text-align: center; white-space: pre-line; width: 50%"
-                    mobile-style="text-align: center; white-space: pre-line; width: 100%; max-width: 100%;"
-                    center-buttons="true"
-                    no-cancel-button={noCancelButton}
-                    confirm-button-label={confirmButtonLabel}
-                    onbuttonclick={handleAlertDialogClick}
-                >
-                </c-alertdialog>
                 <section if:true={isSADetails}>
                     <div if:false={hasAccess}>
                         <p></p>
@@ -129,7 +110,6 @@
                                 <p if:true={serviceAppointment.HOT_Dispatcher__c}>
                                     Formidler: <span>{serviceAppointment.HOT_Dispatcher__c}</span>
                                 </p>
-
                             </div>
                             <div
                                 style="display: inline-block; padding-right: 1vw; padding-bottom: 1vw; padding-top: 1vw"

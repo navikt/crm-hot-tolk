@@ -118,18 +118,21 @@ export default class Hot_wageClaimList extends NavigationMixin(LightningElement)
     }
     @track wageClaim;
     isWageClaimDetails = false;
-    goToRecordDetails(result) {
+    async goToRecordDetails(result) {
         let recordId = result.detail.Id;
         this.recordId = recordId;
-        //this.template.querySelector('c-hot_information-modal').goToRecordDetailsWC(this.recordId, this.wageClaims);
-        HOT_informationModal.open({
+        // Open the modal and wait for it to close.
+        await HOT_informationModal.open({
             size: this.getModalSize(),
             recordId: this.recordId,
             type: 'WC',
             fromUrlRedirect: false,
             records: this.wageClaims
         });
+        // Update the URL after the modal is closed.
         this.updateURL();
+        // Refresh Apex data after modal closure.
+        refreshApex(this.wiredWageClaimsResult);
     }
 
     getModalSize() {

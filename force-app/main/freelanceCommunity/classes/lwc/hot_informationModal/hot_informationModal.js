@@ -15,6 +15,8 @@ import retractAvailability from '@salesforce/apex/HOT_WageClaimListController.re
 import getThreadIdWC from '@salesforce/apex/HOT_WageClaimListController.getThreadId';
 import getServiceResource from '@salesforce/apex/HOT_Utility.getServiceResource';
 import getWageClaimDetails from '@salesforce/apex/HOT_WageClaimListController.getWageClaimDetails';
+import refreshApex from '@salesforce/apex';
+import HOT_ConfirmationModal from 'c/hot_confirmationModal';
 
 export default class Hot_informationModal extends NavigationMixin(LightningModal) {
     @api records;
@@ -70,6 +72,7 @@ export default class Hot_informationModal extends NavigationMixin(LightningModal
     }
 
     connectedCallback() {
+        console.log('type conncected callback', this.type);
         if (this.type == 'WC') {
             this.isLoading = true;
             if (this.fromUrlRedirect == true) {
@@ -86,26 +89,24 @@ export default class Hot_informationModal extends NavigationMixin(LightningModal
         }
     }
 
-    handleAlertDialogClick(event) {
-        if (event.detail === 'confirm' && this.noCancelButton == false) {
+    async showModalRetract() {
+        const result = await HOT_ConfirmationModal.open({
+            size: 'small',
+            headline: 'Varsel',
+            message:
+                'Er du sikker på at du vil fjerne tilgjengeligheten din for dette tidspunktet? Du vil da ikke ha krav på lønn.',
+            primaryLabel: 'Ja',
+            secondaryLabel: 'Cancel'
+        });
+        console.log('result', result);
+        if (result === 'primary') {
+            console.log('dette fungerte jaja');
             this.retractAvailability();
         }
     }
 
-    showModalRetract() {
-        this.noCancelButton = false;
-        this.modalHeader = 'Varsel';
-        this.modalContent =
-            'Er du sikker på at du vil fjerne tilgjengeligheten din for dette tidspunktet? Du vil da ikke ha krav på lønn.';
-        this.confirmButtonLabel = 'Ja';
-        this.showModal();
-    }
-
-    showModal() {
-        this.template.querySelector('c-alertdialog').showModal();
-    }
-
     retractAvailability() {
+        //this.isLoading = true;
         try {
             retractAvailability({ recordId: this.wageClaim.Id }).then(() => {
                 this.wcIsNotRetractable = true;
@@ -115,6 +116,7 @@ export default class Hot_informationModal extends NavigationMixin(LightningModal
         } catch (error) {
             alert(JSON.stringify(error));
         }
+        //this.isLoading = false;
     }
 
     closeModal() {
@@ -542,7 +544,7 @@ export default class Hot_informationModal extends NavigationMixin(LightningModal
             if (result != '') {
                 this.saFreelanceThreadId = result;
                 this.navigateToThread(this.saFreelanceThreadId);
-                this.modalContent.close()
+                this.modalContent.close();
             } else {
                 createThread({ recordId: this.serviceAppointment.Id, accountId: this.serviceAppointment.accountId })
                     .then((result) => {

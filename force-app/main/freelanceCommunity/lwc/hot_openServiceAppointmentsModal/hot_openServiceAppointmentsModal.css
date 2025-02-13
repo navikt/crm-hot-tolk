@@ -13,3 +13,8 @@ p {
 span {
     font-weight: normal;
 }
+.submit {
+    display: flex;
+    justify-content: center;
+    text-align: center;
+}

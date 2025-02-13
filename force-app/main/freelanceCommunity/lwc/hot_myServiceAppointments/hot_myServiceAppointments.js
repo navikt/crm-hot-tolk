@@ -171,16 +171,17 @@ export default class Hot_myServiceAppointments extends NavigationMixin(Lightning
         return window.screen.width < 768 ? 'full' : 'small';
     }
 
-    goToRecordDetails(result) {
+    async goToRecordDetails(result) {
         let recordId = result.detail.Id;
         this.recordId = recordId;
-        Hot_informationModal.open({
+        await Hot_informationModal.open({
             size: this.getModalSize(),
             recordId: this.recordId,
             type: 'SA',
             fromUrlRedirect: false,
             records: this.records
         });
+        refreshApex(this.wiredMyServiceAppointmentsResult);
         this.updateURL();
     }
     goToRecordDetailsFromNotification(saId) {

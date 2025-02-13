@@ -1,0 +1,15 @@
+<template>
+    <!-- Modal Header -->
+    <lightning-modal-header label={headline}></lightning-modal-header>
+
+    <!-- Modal Body -->
+    <lightning-modal-body>
+        <p>{message}</p>
+    </lightning-modal-body>
+
+    <!-- Modal Footer -->
+    <lightning-modal-footer>
+        <lightning-button variant="neutral" label={secondaryLabel} onclick={handleSecondaryAction}> </lightning-button>
+        <lightning-button variant="brand" label={primaryLabel} onclick={handlePrimaryAction}> </lightning-button>
+    </lightning-modal-footer>
+</template>

@@ -225,7 +225,7 @@ export default class Hot_interestedResourcesList extends NavigationMixin(Lightni
     isDetails = false;
     isSeries = false;
     showTable = true;
-    goToRecordDetails(result) {
+    async goToRecordDetails(result) {
         this.interestedResource = undefined;
         let recordId = result.detail.Id;
         this.recordId = recordId;
@@ -255,12 +255,13 @@ export default class Hot_interestedResourcesList extends NavigationMixin(Lightni
         this.isNotRetractable = this.interestedResource?.Status__c !== 'Påmeldt';
         this.updateURL();
 
-        Hot_interestedResourcesListModal.open({
+        await Hot_interestedResourcesListModal.open({
             size: this.getModalSize(),
             interestedResource: this.interestedResource,
             isNotRetractable: this.isNotRetractable,
             serviceResource: this.serviceResource
         });
+        refreshApex(this.wiredInterestedResourcesResult);
     }
 
     getModalSize() {

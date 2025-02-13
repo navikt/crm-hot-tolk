@@ -44,72 +44,74 @@
                     </template>
                 </section>
 
-                <!-- Loading Section -->
-                <template if:true={spin}>
-                    <div class="submitted-loading">
-                        <h2
-                            class="typo-undertittel h2-loadingMessage"
-                            id="loadingMessage"
-                            tabindex="-1"
-                            role="alert"
-                            aria-live="polite"
-                        >
-                            {processMessage}
-                        </h2>
-                        <br />
-                        <div class="loader"></div>
-                        <br />
-                    </div>
-                </template>
+                <div class="submit">
+                    <!-- Loading Section -->
+                    <template if:true={spin}>
+                        <div class="submitted-loading">
+                            <h2
+                                class="typo-undertittel h2-loadingMessage"
+                                id="loadingMessage"
+                                tabindex="-1"
+                                role="alert"
+                                aria-live="polite"
+                            >
+                                {processMessage}
+                            </h2>
+                            <br />
+                            <div class="loader"></div>
+                            <br />
+                        </div>
+                    </template>
 
-                <!-- Success Section -->
-                <template if:true={submittedSuccess}>
-                    <div class="submitted-true">
-                        <lightning-icon
-                            icon-name="utility:success"
-                            alternative-text="Suksess"
-                            title="Suksess"
-                            variant="success"
-                            size="large"
-                        ></lightning-icon>
-                        <br />
-                        <h2
-                            class="typo-undertittel h2-successMessage"
-                            id="successMessage"
-                            tabindex="-1"
-                            role="alert"
-                            aria-live="polite"
-                        >
-                            {processMessageResult}
-                        </h2>
-                        <br />
-                        <c-button
-                            button-styling="primary"
-                            button-label="OK"
-                            onbuttonclick={closeModal}
-                            desktop-style="width: 8rem; justify-content: center"
-                            mobile-style="width: 8rem; justify-content: center"
-                        ></c-button>
-                    </div>
-                </template>
+                    <!-- Success Section -->
+                    <template if:true={submittedSuccess}>
+                        <div class="submitted-true">
+                            <lightning-icon
+                                icon-name="utility:success"
+                                alternative-text="Suksess"
+                                title="Suksess"
+                                variant="success"
+                                size="large"
+                            ></lightning-icon>
+                            <br />
+                            <h2
+                                class="typo-undertittel h2-successMessage"
+                                id="successMessage"
+                                tabindex="-1"
+                                role="alert"
+                                aria-live="polite"
+                            >
+                                {processMessageResult}
+                            </h2>
+                            <br />
+                            <c-button
+                                button-styling="primary"
+                                button-label="OK"
+                                onbuttonclick={closeModal}
+                                desktop-style="width: 8rem; justify-content: center"
+                                mobile-style="width: 8rem; justify-content: center"
+                            ></c-button>
+                        </div>
+                    </template>
 
-                <!-- Error Section -->
-                <template if:true={submittedError}>
-                    <div class="submitted-error">
-                        <h2
-                            class="typo-undertittel h2-loadingMessage"
-                            id="errorMessage"
-                            tabindex="-1"
-                            role="alert"
-                            aria-live="polite"
-                        >
-                            Noe gikk galt.
-                        </h2>
-                        <br />
-                        <h3>Feilmelding: {errorMessage}</h3>
-                        <br />
-                    </div>
-                </template>
+                    <!-- Error Section -->
+                    <template if:true={submittedError}>
+                        <div class="submitted-error">
+                            <h2
+                                class="typo-undertittel h2-loadingMessage"
+                                id="errorMessage"
+                                tabindex="-1"
+                                role="alert"
+                                aria-live="polite"
+                            >
+                                Noe gikk galt.
+                            </h2>
+                            <br />
+                            <h3>Feilmelding: {errorMessage}</h3>
+                            <br />
+                        </div>
+                    </template>
+                </div>
             </div>
         </div>
     </lightning-modal-body>

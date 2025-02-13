@@ -25,3 +25,9 @@ span {
     animation: spin 1s linear infinite;
     justify-content: center;
 }
+
+.submit {
+    display: flex;
+    justify-content: center;
+    text-align: center;
+}

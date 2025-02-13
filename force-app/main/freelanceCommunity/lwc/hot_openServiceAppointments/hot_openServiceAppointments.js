@@ -218,11 +218,8 @@ export default class Hot_openServiceAppointments extends LightningElement {
             records: this.records
         });
         if (success) {
-            refreshApex(this.wiredAllServiceAppointmentsResult).then(() => {
-                // Since refreshApex causes the wired methods to run again, the default filters will override current filters.
-                // Apply previous filter
-                this.applyFilter({ detail: { filterArray: currentFilters, setRecords: true } });
-            });
+            console.log('dette fungerte jaja');
+            refreshApex(this.wiredAllServiceAppointmentsResult);
         }
     }
     @api recordId;
@@ -305,21 +302,13 @@ export default class Hot_openServiceAppointments extends LightningElement {
         if (success) {
             this.showSendInterest = false;
             this.checkedServiceAppointments = [];
-            refreshApex(this.wiredAllServiceAppointmentsResult).then(() => {
-                // Since refreshApex causes the wired methods to run again, the default filters will override current filters.
-                // Apply previous filter
-                this.applyFilter({ detail: { filterArray: currentFilters, setRecords: true } });
-            });
+            refreshApex(this.wiredAllServiceAppointmentsResult);
         }
     }
 
     closeModal() {
         if (this.sendInterestAllComplete) {
-            refreshApex(this.wiredAllServiceAppointmentsResult).then(() => {
-                // Since refreshApex causes the wired methods to run again, the default filters will override current filters.
-                // Apply previous filter
-                this.applyFilter({ detail: { filterArray: currentFilters, setRecords: true } });
-            });
+            refreshApex(this.wiredAllServiceAppointmentsResult);
             this.goBack();
         }
         this.sendInterestAllComplete = false;

@@ -18,13 +18,17 @@ export default class Hot_interestedResourcesInfoModal extends NavigationMixin(Li
     isNotRetractable = false;
     retractInterest() {
         retractInterest({ interestedResourceId: this.interestedResource.Id }).then(() => {
-            refreshApex(this.wiredInterestedResourcesResult);
-            this.interestedResource.Status__c = 'Tilbaketrukket påmelding';
-            let newNumberOfInterestedResources = Number(this.interestedResource.NumberOfInterestedResources__c) - 1;
-            this.interestedResource.NumberOfInterestedResources__c = newNumberOfInterestedResources;
+            // Lag en kopi av objektet
+            const newInterestedResource = { ...this.interestedResource };
+            newInterestedResource.Status__c = 'Tilbaketrukket påmelding';
+            newInterestedResource.NumberOfInterestedResources__c =
+                Number(newInterestedResource.NumberOfInterestedResources__c) - 1;
+            // Sett den oppdaterte kopien tilbake til propertyen
+            this.interestedResource = newInterestedResource;
             this.isNotRetractable = true;
         });
     }
+
     goToInterestedResourceThread() {
         this.isGoToThreadButtonDisabled = true;
         if (
