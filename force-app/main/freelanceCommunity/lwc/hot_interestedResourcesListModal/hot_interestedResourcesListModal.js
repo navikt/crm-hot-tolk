@@ -41,32 +41,34 @@ export default class Hot_interestedResourcesInfoModal extends NavigationMixin(Li
                 if (result != '') {
                     this.threadId = result;
                     this.navigateToThread(this.threadId);
+                    this.closeModal();
                 } else {
                     createThreadInterpreter({ recordId: this.interestedResource.Id })
                         .then((result) => {
                             this.navigateToThread(result.Id);
+                            this.closeModal();
                         })
                         .catch((error) => {
                             console.error(error);
                         });
                 }
-                this.closeModal();
             });
         } else {
             getThreadDispatcherIdSA({ saId: this.interestedResource.ServiceAppointment__c }).then((result) => {
                 if (result != '') {
                     this.threadId = result;
                     this.navigateToThread(this.threadId);
+                    this.closeModal();
                 } else {
                     createThreadInterpreter({ recordId: this.interestedResource.ServiceAppointment__c })
                         .then((result) => {
                             this.navigateToThread(result.Id);
+                            this.closeModal();
                         })
                         .catch((error) => {
                             console.error(error);
                         });
                 }
-                this.closeModal();
             });
         }
     }

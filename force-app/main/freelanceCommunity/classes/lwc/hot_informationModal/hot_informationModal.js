@@ -72,7 +72,6 @@ export default class Hot_informationModal extends NavigationMixin(LightningModal
     }
 
     connectedCallback() {
-        console.log('type conncected callback', this.type);
         if (this.type == 'WC') {
             this.isLoading = true;
             if (this.fromUrlRedirect == true) {
@@ -96,11 +95,10 @@ export default class Hot_informationModal extends NavigationMixin(LightningModal
             message:
                 'Er du sikker på at du vil fjerne tilgjengeligheten din for dette tidspunktet? Du vil da ikke ha krav på lønn.',
             primaryLabel: 'Ja',
-            secondaryLabel: 'Cancel'
+            showSecondButton: true,
+            secondaryLabel: 'Avbryt'
         });
-        console.log('result', result);
         if (result === 'primary') {
-            console.log('dette fungerte jaja');
             this.retractAvailability();
         }
     }
@@ -523,20 +521,23 @@ export default class Hot_informationModal extends NavigationMixin(LightningModal
             if (result != '') {
                 this.threadId = result;
                 this.navigateToThread(this.threadId);
+                this.close();
             } else {
                 createThread({ recordId: this.wageClaim.Id, accountId: this.wageClaim.ServiceResource__r.AccountId })
                     .then((result) => {
                         this.navigateToThread(result.Id);
+                        this.close();
                     })
                     .catch((error) => {
-                        this.modalHeader = 'Noe gikk galt';
-                        this.modalContent = 'Kunne ikke åpne samtale. Feilmelding: ' + error;
-                        this.noCancelButton = true;
-                        this.showModal();
+                        const result = HOT_ConfirmationModal.open({
+                            size: 'small',
+                            headline: 'Noe gikk galt',
+                            message: 'Kunne ikke åpne samtale. Feilmelding: ' + error,
+                            primaryLabel: 'Ok'
+                        });
                     });
             }
         });
-        this.close();
     }
     goToThreadFreelance() {
         this.isGoToThreadButtonDisabled = true;
@@ -544,22 +545,24 @@ export default class Hot_informationModal extends NavigationMixin(LightningModal
             if (result != '') {
                 this.saFreelanceThreadId = result;
                 this.navigateToThread(this.saFreelanceThreadId);
-                this.modalContent.close();
+                this.close();
             } else {
                 createThread({ recordId: this.serviceAppointment.Id, accountId: this.serviceAppointment.accountId })
                     .then((result) => {
                         this.navigateToThread(result.Id);
                         this.saFreelanceThreadId = result;
+                        this.close();
                     })
                     .catch((error) => {
-                        this.modalHeader = 'Noe gikk galt';
-                        this.modalContent = 'Kunne ikke åpne samtale. Feilmelding: ' + error;
-                        this.noCancelButton = true;
-                        this.showModal();
+                        const result = HOT_ConfirmationModal.open({
+                            size: 'small',
+                            headline: 'Noe gikk galt',
+                            message: 'Kunne ikke åpne samtale. Feilmelding: ' + error,
+                            primaryLabel: 'Ok'
+                        });
                     });
             }
         });
-        this.close();
     }
     goToThreadServiceAppointment() {
         this.isGoToThreadServiceAppointmentButtonDisabled = true;
@@ -567,21 +570,24 @@ export default class Hot_informationModal extends NavigationMixin(LightningModal
             if (result != '') {
                 this.saThreadId = result;
                 this.navigateToThread(this.saThreadId);
+                this.close();
             } else {
                 createThreadInterpreter({ recordId: this.serviceAppointment.Id })
                     .then((result) => {
-                        this.navigateToThread(result.Id);
                         this.saThreadId = result;
+                        this.navigateToThread(result.Id);
+                        this.close();
                     })
                     .catch((error) => {
-                        this.modalHeader = 'Noe gikk galt';
-                        this.modalContent = 'Kunne ikke åpne samtale. Feilmelding: ' + error;
-                        this.noCancelButton = true;
-                        this.showModal();
+                        const result = HOT_ConfirmationModal.open({
+                            size: 'small',
+                            headline: 'Noe gikk galt',
+                            message: 'Kunne ikke åpne samtale. Feilmelding: ' + error,
+                            primaryLabel: 'Ok'
+                        });
                     });
             }
         });
-        this.close();
     }
     goToThreadInterpreters() {
         this.isGoToThreadInterpretersButtonDisabled = true;
@@ -589,21 +595,24 @@ export default class Hot_informationModal extends NavigationMixin(LightningModal
             if (result != '') {
                 this.saFreelanceThreadId = result;
                 this.navigateToThread(this.saFreelanceThreadId);
+                this.close();
             } else {
                 createThreadInterpreters({ recordId: this.serviceAppointment.Id })
                     .then((result) => {
                         this.navigateToThread(result.Id);
                         this.saFreelanceThreadId = result;
+                        this.close();
                     })
                     .catch((error) => {
-                        this.modalHeader = 'Noe gikk galt';
-                        this.modalContent = 'Kunne ikke åpne samtale. Feilmelding: ' + error;
-                        this.noCancelButton = true;
-                        this.showModal();
+                        const result = HOT_ConfirmationModal.open({
+                            size: 'small',
+                            headline: 'Noe gikk galt',
+                            message: 'Kunne ikke åpne samtale. Feilmelding: ' + error,
+                            primaryLabel: 'Ok'
+                        });
                     });
             }
         });
-        this.close();
     }
     navigateToThread(recordId) {
         if (this.isAListView && this.isSADetails) {

@@ -9,7 +9,20 @@
 
     <!-- Modal Footer -->
     <lightning-modal-footer>
-        <lightning-button variant="neutral" label={secondaryLabel} onclick={handleSecondaryAction}> </lightning-button>
-        <lightning-button variant="brand" label={primaryLabel} onclick={handlePrimaryAction}> </lightning-button>
+        <lightning-button
+            lwc:if={showSecondButton}
+            variant="destructive"
+            label={secondaryLabel}
+            onclick={handleSecondaryAction}
+            class="slds-m-left_x-small"
+        >
+        </lightning-button>
+        <lightning-button
+            variant="brand"
+            class="slds-m-left_x-small"
+            label={primaryLabel}
+            onclick={handlePrimaryAction}
+        >
+        </lightning-button>
     </lightning-modal-footer>
 </template>
