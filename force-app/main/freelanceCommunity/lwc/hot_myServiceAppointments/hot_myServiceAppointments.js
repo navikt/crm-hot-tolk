@@ -8,6 +8,7 @@ import { defaultFilters, compare } from './filters';
 import { formatRecord } from 'c/datetimeFormatter';
 import { refreshApex } from '@salesforce/apex';
 import { getParametersFromURL } from 'c/hot_URIDecoder';
+import { formatDatetime, getDayOfWeek } from 'c/hot_helperMethods';
 
 export default class Hot_myServiceAppointments extends NavigationMixin(LightningElement) {
     @track columns = [];
@@ -65,37 +66,6 @@ export default class Hot_myServiceAppointments extends NavigationMixin(Lightning
         this.getParams();
         this.updateURL();
     }
-    getDayOfWeek(date) {
-        var jsDate = new Date(date);
-        var dayOfWeek = jsDate.getDay();
-        var dayOfWeekString;
-        switch (dayOfWeek) {
-            case 0:
-                dayOfWeekString = 'Søndag';
-                break;
-            case 1:
-                dayOfWeekString = 'Mandag';
-                break;
-            case 2:
-                dayOfWeekString = 'Tirsdag';
-                break;
-            case 3:
-                dayOfWeekString = 'Onsdag';
-                break;
-            case 4:
-                dayOfWeekString = 'Torsdag';
-                break;
-            case 5:
-                dayOfWeekString = 'Fredag';
-                break;
-            case 6:
-                dayOfWeekString = 'Lørdag';
-                break;
-            default:
-                dayOfWeekString = '';
-        }
-        return dayOfWeekString;
-    }
 
     noServiceAppointments = false;
     initialServiceAppointments = [];
@@ -116,7 +86,8 @@ export default class Hot_myServiceAppointments extends NavigationMixin(Lightning
             this.records = tempRecords.map((x) => ({
                 ...x,
                 startAndEndDateWeekday:
-                    this.formatDatetime(x.EarliestStartTime, x.DueDate) + ' ' + this.getDayOfWeek(x.EarliestStartTime)
+                    formatDatetime(x.EarliestStartTime, x.DueDate) + ' ' + getDayOfWeek(x.EarliestStartTime),
+                StartAndEndDate: formatDatetime(x.EarliestStartTime, x.DueDate)
             }));
             this.initialServiceAppointments = [...this.records];
             this.refresh();
@@ -133,24 +104,8 @@ export default class Hot_myServiceAppointments extends NavigationMixin(Lightning
         this.sendFilters();
         this.applyFilter({ detail: { filterArray: this.filters, setRecords: true } });
     }
-    formatDatetime(Start, DueDate) {
-        const datetimeStart = new Date(Start);
-        const dayStart = datetimeStart.getDate().toString().padStart(2, '0');
-        const monthStart = (datetimeStart.getMonth() + 1).toString().padStart(2, '0');
-        const yearStart = datetimeStart.getFullYear();
-        const hoursStart = datetimeStart.getHours().toString().padStart(2, '0');
-        const minutesStart = datetimeStart.getMinutes().toString().padStart(2, '0');
-
-        const datetimeEnd = new Date(DueDate);
-        const hoursEnd = datetimeEnd.getHours().toString().padStart(2, '0');
-        const minutesEnd = datetimeEnd.getMinutes().toString().padStart(2, '0');
-
-        const formattedDatetime = `${dayStart}.${monthStart}.${yearStart} ${hoursStart}:${minutesStart} - ${hoursEnd}:${minutesEnd}`;
-        return formattedDatetime;
-    }
 
     datetimeFields = [
-        { name: 'StartAndEndDate', type: 'datetimeinterval', start: 'EarliestStartTime', end: 'DueDate' },
         { name: 'ActualStartTime', type: 'datetime' },
         { name: 'ActualEndTime', type: 'datetime' },
         { name: 'HOT_DeadlineDate__c', type: 'date' },
