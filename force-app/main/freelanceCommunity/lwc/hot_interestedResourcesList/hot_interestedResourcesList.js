@@ -12,6 +12,7 @@ import { columns, mobileColumns, iconByValue } from './columns';
 import { defaultFilters, compare } from './filters';
 import { formatRecord } from 'c/datetimeFormatter';
 import { NavigationMixin } from 'lightning/navigation';
+import { formatDatetime, getDayOfWeek } from 'c/hot_helperMethods';
 
 import Hot_interestedResourcesListModal from 'c/hot_interestedResourcesListModal';
 
@@ -76,37 +77,7 @@ export default class Hot_interestedResourcesList extends NavigationMixin(Lightni
             this.goToRecordDetailsFromNotification(parsed_params.id);
         }
     }
-    getDayOfWeek(date) {
-        var jsDate = new Date(date);
-        var dayOfWeek = jsDate.getDay();
-        var dayOfWeekString;
-        switch (dayOfWeek) {
-            case 0:
-                dayOfWeekString = 'Søndag';
-                break;
-            case 1:
-                dayOfWeekString = 'Mandag';
-                break;
-            case 2:
-                dayOfWeekString = 'Tirsdag';
-                break;
-            case 3:
-                dayOfWeekString = 'Onsdag';
-                break;
-            case 4:
-                dayOfWeekString = 'Torsdag';
-                break;
-            case 5:
-                dayOfWeekString = 'Fredag';
-                break;
-            case 6:
-                dayOfWeekString = 'Lørdag';
-                break;
-            default:
-                dayOfWeekString = '';
-        }
-        return dayOfWeekString;
-    }
+
     @track serviceResource;
     @wire(getServiceResource)
     wiredServiceresource(result) {
@@ -160,13 +131,17 @@ export default class Hot_interestedResourcesList extends NavigationMixin(Lightni
                             ...appointment,
                             IsUnreadMessage: status,
                             startAndEndDateWeekday:
-                                this.formatDatetime(
+                                formatDatetime(
                                     appointment.ServiceAppointmentStartTime__c,
                                     appointment.ServiceAppointmentEndTime__c
                                 ) +
                                 ' ' +
-                                this.getDayOfWeek(appointment.ServiceAppointmentStartTime__c),
-                            statusMobile: 'Status: ' + appointment.Status__c
+                                getDayOfWeek(appointment.ServiceAppointmentStartTime__c),
+                            statusMobile: 'Status: ' + appointment.Status__c,
+                            StartAndEndDate: formatDatetime(
+                                appointment.ServiceAppointmentStartTime__c,
+                                appointment.ServiceAppointmentEndTime__c
+                            )
                         };
                     });
                     let tempRecords = [];
@@ -193,29 +168,7 @@ export default class Hot_interestedResourcesList extends NavigationMixin(Lightni
         this.applyFilter({ detail: { filterArray: this.filters, setRecords: true } });
     }
 
-    formatDatetime(Start, DueDate) {
-        const datetimeStart = new Date(Start);
-        const dayStart = datetimeStart.getDate().toString().padStart(2, '0');
-        const monthStart = (datetimeStart.getMonth() + 1).toString().padStart(2, '0');
-        const yearStart = datetimeStart.getFullYear();
-        const hoursStart = datetimeStart.getHours().toString().padStart(2, '0');
-        const minutesStart = datetimeStart.getMinutes().toString().padStart(2, '0');
-
-        const datetimeEnd = new Date(DueDate);
-        const hoursEnd = datetimeEnd.getHours().toString().padStart(2, '0');
-        const minutesEnd = datetimeEnd.getMinutes().toString().padStart(2, '0');
-
-        const formattedDatetime = `${dayStart}.${monthStart}.${yearStart} ${hoursStart}:${minutesStart} - ${hoursEnd}:${minutesEnd}`;
-        return formattedDatetime;
-    }
-
     datetimeFields = [
-        {
-            name: 'StartAndEndDate',
-            type: 'datetimeinterval',
-            start: 'ServiceAppointmentStartTime__c',
-            end: 'ServiceAppointmentEndTime__c'
-        },
         { name: 'WorkOrderCanceledDate__c', type: 'date' },
         { name: 'HOT_ReleaseDate__c', type: 'date' },
         { name: 'AppointmentDeadlineDate__c', type: 'date' }
@@ -246,9 +199,7 @@ export default class Hot_interestedResourcesList extends NavigationMixin(Lightni
                     this.interestedResource.releasedate = '';
                 }
 
-                this.interestedResource.weekday = this.getDayOfWeek(
-                    this.interestedResource.ServiceAppointmentStartTime__c
-                );
+                this.interestedResource.weekday = getDayOfWeek(this.interestedResource.ServiceAppointmentStartTime__c);
             }
         }
 
@@ -275,7 +226,7 @@ export default class Hot_interestedResourcesList extends NavigationMixin(Lightni
                     this.interestedResource = result;
                     this.isDetails = true;
                     this.isNotRetractable = this.interestedResource?.Status__c !== 'Påmeldt';
-                    this.interestedResource.weekday = this.getDayOfWeek(
+                    this.interestedResource.weekday = getDayOfWeek(
                         this.interestedResource.ServiceAppointmentStartTime__c
                     );
                     let startTimeFormatted = new Date(result.ServiceAppointmentStartTime__c);
