@@ -475,7 +475,7 @@ public without sharing class HOT_ServiceAppointmentHandler extends MyTriggers {
             serviceAppointment.HOT_CanceledByInterpreter__c = false;
         }
     }
-
+    //
     private static void setFieldsBasedOnParent(List<ServiceAppointment> serviceAppointments) {
         List<Id> workOrderLineItemIds = new List<Id>();
         for (ServiceAppointment serviceAppointment : serviceAppointments) {

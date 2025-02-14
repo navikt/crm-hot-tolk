@@ -1,5 +1,6 @@
 import { LightningElement, wire, track, api } from 'lwc';
 import getMyServiceAppointments from '@salesforce/apex/HOT_MyServiceAppointmentListController.getMyServiceAppointments';
+import Hot_informationModal from 'c/hot_informationModal';
 
 import { NavigationMixin } from 'lightning/navigation';
 import { columns, mobileColumns } from './columns';
@@ -165,10 +166,22 @@ export default class Hot_myServiceAppointments extends NavigationMixin(Lightning
     @track recordId;
     @track urlRedirect = false;
     @track showDetails = false;
-    goToRecordDetails(result) {
+
+    getModalSize() {
+        return window.screen.width < 768 ? 'full' : 'small';
+    }
+
+    async goToRecordDetails(result) {
         let recordId = result.detail.Id;
         this.recordId = recordId;
-        this.template.querySelector('c-hot_information-modal').goToRecordDetailsSA(this.recordId, this.records);
+        await Hot_informationModal.open({
+            size: this.getModalSize(),
+            recordId: this.recordId,
+            type: 'SA',
+            fromUrlRedirect: false,
+            records: this.records
+        });
+        refreshApex(this.wiredMyServiceAppointmentsResult);
         this.updateURL();
     }
     goToRecordDetailsFromNotification(saId) {
@@ -177,6 +190,13 @@ export default class Hot_myServiceAppointments extends NavigationMixin(Lightning
         this.showDetails = true;
         this.urlRedirect = true;
         this.updateURL();
+        Hot_informationModal.open({
+            size: this.getModalSize(),
+            recordId: this.recordId,
+            type: 'SA',
+            fromUrlRedirect: true,
+            records: this.records
+        });
     }
 
     @api recordId;
