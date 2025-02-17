@@ -1,24 +1,25 @@
 export function formatDatetime(Start, DueDate) {
-    const datetimeStart = new Date(new Date(Start).toLocaleString('nb-NO', { timeZone: 'Europe/Oslo' }));
-    const datetimeEnd = new Date(new Date(DueDate).toLocaleString('nb-NO', { timeZone: 'Europe/Oslo' }));
+    // Parse the input dates
+    const datetimeStart = new Date(Start);
+    const datetimeEnd = new Date(DueDate);
 
-    // Check for invalid Date objects
+    // Validate dates
     if (isNaN(datetimeStart) || isNaN(datetimeEnd)) {
         console.error('Invalid date conversion.');
-        return null; // or handle the error as needed
+        return null;
     }
-    const dayStart = datetimeStart.getDate().toString();
-    const monthStart = (datetimeStart.getMonth() + 1).toString();
-    const yearStart = datetimeStart.getFullYear();
-    const hoursStart = datetimeStart.getHours().toString().padStart(2, '0');
-    const minutesStart = datetimeStart.getMinutes().toString().padStart(2, '0');
 
-    const hoursEnd = datetimeEnd.getHours().toString().padStart(2, '0');
-    const minutesEnd = datetimeEnd.getMinutes().toString().padStart(2, '0');
+    // Format options for Norwegian locale
+    const optionsDate = { timeZone: 'Europe/Oslo', day: '2-digit', month: '2-digit', year: 'numeric' };
+    const optionsTime = { timeZone: 'Europe/Oslo', hour: '2-digit', minute: '2-digit' };
 
-    const formattedDatetime = `${dayStart}.${monthStart}.${yearStart}, ${hoursStart}:${minutesStart} - ${hoursEnd}:${minutesEnd}`;
-    return formattedDatetime;
+    const formattedDate = new Intl.DateTimeFormat('nb-NO', optionsDate).format(datetimeStart);
+    const formattedTimeStart = new Intl.DateTimeFormat('nb-NO', optionsTime).format(datetimeStart);
+    const formattedTimeEnd = new Intl.DateTimeFormat('nb-NO', optionsTime).format(datetimeEnd);
+
+    return `${formattedDate}, ${formattedTimeStart} - ${formattedTimeEnd}`;
 }
+
 export function getDayOfWeek(date) {
     var jsDate = new Date(date);
     var dayOfWeek = jsDate.getDay();
