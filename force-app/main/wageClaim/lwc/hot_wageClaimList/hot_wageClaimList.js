@@ -6,6 +6,7 @@ import { NavigationMixin } from 'lightning/navigation';
 import { formatRecord } from 'c/datetimeFormatter';
 import { defaultFilters, compare } from './filters';
 import HOT_informationModal from 'c/hot_informationModal';
+import { formatDatetime } from 'c/hot_helperMethods';
 export default class Hot_wageClaimList extends NavigationMixin(LightningElement) {
     @track columns = [];
     @track filters = [];
@@ -27,16 +28,17 @@ export default class Hot_wageClaimList extends NavigationMixin(LightningElement)
             this.allWageClaimsWired = result.data;
             this.noWageClaims = this.allWageClaimsWired.length === 0;
             this.error = undefined;
-            let tempRecords = [];
-            for (let record of result.data) {
-                tempRecords.push(formatRecord(Object.assign({}, record), this.datetimeFields));
-            }
-            this.wageClaims = tempRecords;
-            this.allWageClaimsWired = this.wageClaims;
+            this.wageClaims = result.data.map((record) => ({
+                ...record,
+                StartAndEndDate: formatDatetime(record.StartTime__c, record.EndTime__c)
+            }));
+
+            this.allWageClaimsWired = [...this.wageClaims];
+
             this.refresh();
         } else if (result.error) {
             this.error = result.error;
-            this.allWageClaimsWired = undefined;
+            this.allWageClaimsWired = [];
         }
     }
 
@@ -67,40 +69,6 @@ export default class Hot_wageClaimList extends NavigationMixin(LightningElement)
     renderedCallback() {
         this.setPreviousFiltersOnRefresh();
     }
-
-    getDayOfWeek(date) {
-        var jsDate = new Date(date);
-        var dayOfWeek = jsDate.getDay();
-        var dayOfWeekString;
-        switch (dayOfWeek) {
-            case 0:
-                dayOfWeekString = 'Søndag';
-                break;
-            case 1:
-                dayOfWeekString = 'Mandag';
-                break;
-            case 2:
-                dayOfWeekString = 'Tirsdag';
-                break;
-            case 3:
-                dayOfWeekString = 'Onsdag';
-                break;
-            case 4:
-                dayOfWeekString = 'Torsdag';
-                break;
-            case 5:
-                dayOfWeekString = 'Fredag';
-                break;
-            case 6:
-                dayOfWeekString = 'Lørdag';
-                break;
-            default:
-                dayOfWeekString = '';
-        }
-        return dayOfWeekString;
-    }
-
-    datetimeFields = [{ name: 'StartAndEndDate', type: 'datetimeinterval', start: 'StartTime__c', end: 'EndTime__c' }];
 
     @track recordId;
     @track showDetails = false;
