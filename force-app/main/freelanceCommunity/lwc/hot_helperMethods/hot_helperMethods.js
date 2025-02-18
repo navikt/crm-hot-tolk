@@ -19,6 +19,26 @@ export function formatDatetime(Start, DueDate) {
 
     return `${formattedDate}, ${formattedTimeStart} - ${formattedTimeEnd}`;
 }
+export function formatDateTimeSingle(date) {
+    // Parse the input date
+    const datetime = new Date(date);
+
+    // Validate date
+    if (isNaN(datetime)) {
+        console.error('Invalid date conversion.');
+        return null;
+    }
+
+    // Format options for Norwegian locale
+    const optionsDate = { timeZone: 'Europe/Oslo', day: '2-digit', month: '2-digit', year: 'numeric' };
+    const optionsTime = { timeZone: 'Europe/Oslo', hour: '2-digit', minute: '2-digit' };
+
+    const formattedDate = new Intl.DateTimeFormat('nb-NO', optionsDate).format(datetime);
+    const formattedTime = new Intl.DateTimeFormat('nb-NO', optionsTime).format(datetime);
+
+    // Return the formatted date and time
+    return `${formattedDate}, ${formattedTime}`;
+}
 
 export function getDayOfWeek(date) {
     var jsDate = new Date(date);
