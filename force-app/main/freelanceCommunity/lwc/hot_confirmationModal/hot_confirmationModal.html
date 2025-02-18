@@ -1,0 +1,24 @@
+<template>
+    <!-- Modal Header -->
+    <lightning-modal-header label={headline}></lightning-modal-header>
+
+    <!-- Modal Body -->
+    <lightning-modal-body>
+        <p>{message}</p>
+    </lightning-modal-body>
+
+    <!-- Modal Footer -->
+    <lightning-modal-footer>
+        <div class="button-container">
+            <button
+                class="slds-button slds-button_destructive cancel-button custom-button"
+                onclick={handleSecondaryAction}
+            >
+                {secondaryLabel}
+            </button>
+            <button class="slds-button slds-button_brand custom-button" onclick={handlePrimaryAction}>
+                {primaryLabel}
+            </button>
+        </div>
+    </lightning-modal-footer>
+</template>
