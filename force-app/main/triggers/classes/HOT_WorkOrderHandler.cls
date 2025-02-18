@@ -80,6 +80,7 @@ public without sharing class HOT_WorkOrderHandler extends MyTriggers {
     //Vi gjør derfor om denne "trigger"-metoden til en statisk metode, og kaller på den fra HOT_WorkOrderStatusHandler.onAfterUpdate.
     public static void onAfterUpdateTemp(Map<Id, sObject> triggerOldMap, List<WorkOrder> records) {
         List<WorkOrder> updatedWorkOrders = new List<WorkOrder>();
+        List<WorkOrder> workOrderToBeDeleted = new List<WorkOrder>();
 
         //Om status eller tidspunkt på WorkOrder er endret, kan det ha ført til at den førstkommende, ikke-avlyste WorkOrderen har endret seg
         for (WorkOrder record : records) {
@@ -90,9 +91,18 @@ public without sharing class HOT_WorkOrderHandler extends MyTriggers {
             ) {
                 updatedWorkOrders.add(record);
             }
+
+            // WorkOrders shall be deleted if there is no request connected to it
+            if (record.HOT_Request__c == null) {
+                workOrderToBeDeleted.add(record);
+            }
         }
+
         if (updatedWorkOrders.size() > 0) {
             updateRequests(updatedWorkOrders);
+        }
+        if (workOrderToBeDeleted.size() > 0) {
+            delete workOrderToBeDeleted;
         }
     }
     public override void onAfterDelete() {
@@ -165,6 +175,7 @@ public without sharing class HOT_WorkOrderHandler extends MyTriggers {
     }
 
     public static void setDefaultFields(List<WorkOrder> workOrders) {
+        List<WorkOrder> workOrdersToBeDeleted = new List<WorkOrder>();
         List<Id> requestIds = new List<Id>();
         for (WorkOrder workOrder : workOrders) {
             requestIds.add(workOrder.HOT_Request__c);
@@ -259,7 +270,11 @@ public without sharing class HOT_WorkOrderHandler extends MyTriggers {
                     'Request on Work Order should not be empty! Work Order details: ' + workOrder
                 );
                 handleException(woException);
+                workOrdersToBeDeleted.add(workOrder);
             }
+        }
+        if (workOrdersToBeDeleted.size() > 0) {
+            delete workOrdersToBeDeleted;
         }
     }
 
