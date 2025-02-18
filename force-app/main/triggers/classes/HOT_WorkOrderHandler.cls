@@ -85,7 +85,7 @@ public without sharing class HOT_WorkOrderHandler extends MyTriggers {
         updateRequests((List<WorkOrder>) records);
 
         if (workOrdersWithoutRequests.size() > 0) {
-            Database.delete(workOrdersWithoutRequests);
+            Database.delete(workOrdersWithoutRequests, false);
         }
     }
 
