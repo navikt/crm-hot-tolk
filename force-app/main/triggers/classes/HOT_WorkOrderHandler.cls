@@ -268,11 +268,6 @@ public without sharing class HOT_WorkOrderHandler extends MyTriggers {
                 ) {
                     workOrder.PostalCode = requests.get(workOrder.HOT_Request__c).MeetingPostalCode__c;
                 }
-            } else {
-                WorkOrderException woException = new WorkOrderException(
-                    'Request on Work Order should not be empty! Work Order details: ' + workOrder
-                );
-                handleException(woException);
             }
         }
     }
