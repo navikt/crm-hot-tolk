@@ -9,20 +9,16 @@
 
     <!-- Modal Footer -->
     <lightning-modal-footer>
-        <lightning-button
-            lwc:if={showSecondButton}
-            variant="destructive"
-            label={secondaryLabel}
-            onclick={handleSecondaryAction}
-            class="slds-m-left_x-small"
-        >
-        </lightning-button>
-        <lightning-button
-            variant="brand"
-            class="slds-m-left_x-small"
-            label={primaryLabel}
-            onclick={handlePrimaryAction}
-        >
-        </lightning-button>
+        <div class="button-container">
+            <button
+                class="slds-button slds-button_destructive cancel-button custom-button"
+                onclick={handleSecondaryAction}
+            >
+                {secondaryLabel}
+            </button>
+            <button class="slds-button slds-button_brand custom-button" onclick={handlePrimaryAction}>
+                {primaryLabel}
+            </button>
+        </div>
     </lightning-modal-footer>
 </template>
