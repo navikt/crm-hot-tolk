@@ -220,7 +220,6 @@ export default class MineBestillingerWrapper extends NavigationMixin(LightningEl
         }
         this.workOrders = workOrders;
     }
-
     goToRecordDetails(result) {
         window.scrollTo(0, 0);
         let record = result.detail;

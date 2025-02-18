@@ -6,6 +6,7 @@ import IKONER from '@salesforce/resourceUrl/ikoner';
 import { NavigationMixin } from 'lightning/navigation';
 import { CalendarEvent } from './calendar_event';
 import Hot_Calendar_Absence_Modal from 'c/hot_calendar_absence_modal';
+import HOT_informationModal from 'c/hot_informationModal';
 
 export default class LibsFullCalendar extends NavigationMixin(LightningElement) {
     static MILLISECONDS_PER_DAY = 86400000;
@@ -396,29 +397,42 @@ export default class LibsFullCalendar extends NavigationMixin(LightningElement) 
 
     async navigateToDetailView(event) {
         const eventExtendedProps = event.extendedProps;
+        console.log('EventEctendedProps: ' + eventExtendedProps);
         switch (eventExtendedProps.type) {
             case 'COMPLETED_SERVICE_APPOINTMENT':
-                this.showDetails = true;
-                this.template
-                    .querySelector('c-hot_information-modal')
-                    .goToRecordDetailsSAFromId(eventExtendedProps.recordId);
+                await HOT_informationModal.open({
+                    size: this.getModalSize(),
+                    recordId: eventExtendedProps.recordId,
+                    type: 'SA',
+                    fromUrlRedirect: true
+                });
+                this.refreshCalendar(false);
                 break;
             case 'SERVICE_APPOINTMENT':
-                this.showDetails = true;
-                this.template
-                    .querySelector('c-hot_information-modal')
-                    .goToRecordDetailsSAFromId(eventExtendedProps.recordId);
+                await HOT_informationModal.open({
+                    size: this.getModalSize(),
+                    recordId: eventExtendedProps.recordId,
+                    type: 'SA',
+                    fromUrlRedirect: true
+                });
+                this.refreshCalendar(false);
                 break;
             case 'OPEN_WAGE_CLAIM':
-                this.showDetails = true;
-                this.template
-                    .querySelector('c-hot_information-modal')
-                    .goToRecordDetailsWCFromId(eventExtendedProps.recordId);
+                await HOT_informationModal.open({
+                    size: this.getModalSize(),
+                    recordId: eventExtendedProps.recordId,
+                    type: 'WC',
+                    fromUrlRedirect: true
+                });
+                this.refreshCalendar(false);
                 break;
             case 'RESOURCE_ABSENCE':
                 await this.openAbsenceModal(event);
                 break;
         }
+    }
+    getModalSize() {
+        return window.screen.width < 768 ? 'full' : 'small';
     }
     handleRefreshRecords() {
         this.refreshCalendar(false);
