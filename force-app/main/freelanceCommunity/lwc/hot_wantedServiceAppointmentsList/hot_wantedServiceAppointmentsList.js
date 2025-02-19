@@ -9,6 +9,7 @@ import { columns, inDetailsColumns, mobileColumns } from './columns';
 import { refreshApex } from '@salesforce/apex';
 import { defaultFilters, compare, setDefaultFilters } from './filters';
 import { formatRecord } from 'c/datetimeFormatter';
+import { formatDatetime, getDayOfWeek } from 'c/hot_helperMethods';
 import Hot_wantedServiceAppointmentsListModal from 'c/hot_wantedServiceAppointmentsListModal';
 
 export default class Hot_wantedServiceAppointmentsList extends LightningElement {
@@ -86,52 +87,6 @@ export default class Hot_wantedServiceAppointmentsList extends LightningElement 
         }
         refreshApex(this.wiredAllServiceAppointmentsResult);
     }
-    getDayOfWeek(date) {
-        var jsDate = new Date(date);
-        var dayOfWeek = jsDate.getDay();
-        var dayOfWeekString;
-        switch (dayOfWeek) {
-            case 0:
-                dayOfWeekString = 'Søndag';
-                break;
-            case 1:
-                dayOfWeekString = 'Mandag';
-                break;
-            case 2:
-                dayOfWeekString = 'Tirsdag';
-                break;
-            case 3:
-                dayOfWeekString = 'Onsdag';
-                break;
-            case 4:
-                dayOfWeekString = 'Torsdag';
-                break;
-            case 5:
-                dayOfWeekString = 'Fredag';
-                break;
-            case 6:
-                dayOfWeekString = 'Lørdag';
-                break;
-            default:
-                dayOfWeekString = '';
-        }
-        return dayOfWeekString;
-    }
-    formatDatetime(Start, DueDate) {
-        const datetimeStart = new Date(Start);
-        const dayStart = datetimeStart.getDate().toString().padStart(2, '0');
-        const monthStart = (datetimeStart.getMonth() + 1).toString().padStart(2, '0');
-        const yearStart = datetimeStart.getFullYear();
-        const hoursStart = datetimeStart.getHours().toString().padStart(2, '0');
-        const minutesStart = datetimeStart.getMinutes().toString().padStart(2, '0');
-
-        const datetimeEnd = new Date(DueDate);
-        const hoursEnd = datetimeEnd.getHours().toString().padStart(2, '0');
-        const minutesEnd = datetimeEnd.getMinutes().toString().padStart(2, '0');
-
-        const formattedDatetime = `${dayStart}.${monthStart}.${yearStart} ${hoursStart}:${minutesStart} - ${hoursEnd}:${minutesEnd}`;
-        return formattedDatetime;
-    }
 
     @track serviceResource;
     @track serviceResourceId;
@@ -158,10 +113,11 @@ export default class Hot_wantedServiceAppointmentsList extends LightningElement 
             this.error = undefined;
             this.allServiceAppointmentsWired = result.data.map((x) => ({
                 ...x,
-                weekday: this.getDayOfWeek(x.EarliestStartTime),
+                weekday: getDayOfWeek(x.EarliestStartTime),
                 isUrgent: x.HOT_IsUrgent__c,
                 startAndEndDateWeekday:
-                    this.formatDatetime(x.EarliestStartTime, x.DueDate) + ' ' + this.getDayOfWeek(x.EarliestStartTime)
+                    formatDatetime(x.EarliestStartTime, x.DueDate) + ' ' + getDayOfWeek(x.EarliestStartTime),
+                StartAndEndDate: formatDatetime(x.EarliestStartTime, x.DueDate)
             }));
             this.noServiceAppointments = this.allServiceAppointmentsWired.length === 0;
             let tempRecords = [];
@@ -185,7 +141,6 @@ export default class Hot_wantedServiceAppointmentsList extends LightningElement 
     }
 
     datetimeFields = [
-        { name: 'StartAndEndDate', type: 'datetimeinterval', start: 'EarliestStartTime', end: 'DueDate' },
         { name: 'HOT_DeadlineDate__c', type: 'date' },
         { name: 'HOT_ReleaseDate__c', type: 'date', newName: 'ReleaseDate' }
     ];
@@ -201,7 +156,7 @@ export default class Hot_wantedServiceAppointmentsList extends LightningElement 
         for (let serviceAppointment of this.records) {
             if (recordId === serviceAppointment.Id) {
                 this.serviceAppointment = serviceAppointment;
-                this.serviceAppointment.weekday = this.getDayOfWeek(this.serviceAppointment.EarliestStartTime);
+                this.serviceAppointment.weekday = getDayOfWeek(this.serviceAppointment.EarliestStartTime);
             }
         }
         this.showServiceAppointmentDetails();
@@ -210,7 +165,7 @@ export default class Hot_wantedServiceAppointmentsList extends LightningElement 
     getModalSize() {
         return window.screen.width < 768 ? 'full' : 'small';
     }
-    
+
     async showServiceAppointmentDetails() {
         try {
             const modalResult = await Hot_wantedServiceAppointmentsListModal.open({
