@@ -17,7 +17,7 @@ import { getParametersFromURL } from 'c/hot_URIDecoder';
 
 import setLastMessageFrom from '@salesforce/apex/HOT_MessageHelper.setLastMessageFrom';
 import { formatRecord } from 'c/datetimeFormatter';
-
+import { formatDatetime, formatDateTimeSingle } from 'c/hot_helperMethods';
 import getThreadDetails from '@salesforce/apex/HOT_ThreadDetailController.getThreadDetails';
 
 export default class hot_messagingCommunityThreadViewer extends NavigationMixin(LightningElement) {
@@ -384,44 +384,12 @@ export default class hot_messagingCommunityThreadViewer extends NavigationMixin(
                     getServiceAppointmentDetails({ recordId: key }).then((result) => {
                         this.serviceAppointment = result;
                         this.address = this.serviceAppointment.HOT_AddressFormated__c;
-                        let startTimeFormatted = new Date(result.EarliestStartTime);
-                        let endTimeFormatted = new Date(result.DueDate);
-                        this.serviceAppointment.StartAndEndDate =
-                            startTimeFormatted.getDate() +
-                            '.' +
-                            (startTimeFormatted.getMonth() + 1) +
-                            '.' +
-                            startTimeFormatted.getFullYear() +
-                            ', ' +
-                            ('0' + startTimeFormatted.getHours()).substr(-2) +
-                            ':' +
-                            ('0' + startTimeFormatted.getMinutes()).substr(-2) +
-                            ' - ' +
-                            ('0' + endTimeFormatted.getHours()).substr(-2) +
-                            ':' +
-                            ('0' + endTimeFormatted.getMinutes()).substr(-2);
-                        let actualstartTimeFormatted = new Date(result.ActualStartTime);
-                        let actualendTimeFormatted = new Date(result.ActualEndTime);
-                        this.serviceAppointment.ActualStartTime =
-                            actualstartTimeFormatted.getDate() +
-                            '.' +
-                            (actualstartTimeFormatted.getMonth() + 1) +
-                            '.' +
-                            actualstartTimeFormatted.getFullYear() +
-                            ' ' +
-                            ('0' + actualstartTimeFormatted.getHours()).substr(-2) +
-                            ':' +
-                            ('0' + actualstartTimeFormatted.getMinutes()).substr(-2);
-                        this.serviceAppointment.ActualEndTime =
-                            actualendTimeFormatted.getDate() +
-                            '.' +
-                            (actualendTimeFormatted.getMonth() + 1) +
-                            '.' +
-                            actualendTimeFormatted.getFullYear() +
-                            ' ' +
-                            ('0' + actualendTimeFormatted.getHours()).substr(-2) +
-                            ':' +
-                            ('0' + actualendTimeFormatted.getMinutes()).substr(-2);
+                        this.serviceAppointment.StartAndEndDate = formatDatetime(
+                            result.EarliestStartTime,
+                            result.DueDate
+                        );
+                        this.serviceAppointment.ActualStartTime = formatDateTimeSingle(result.ActualStartTime);
+                        this.serviceAppointment.ActualEndTime = formatDateTimeSingle(result.ActualEndTime);
                         if (this.serviceAppointment.ActualStartTime.includes('NaN')) {
                             this.serviceAppointment.ActualStartTime = '';
                         }
@@ -506,22 +474,10 @@ export default class hot_messagingCommunityThreadViewer extends NavigationMixin(
                 if (result[key] == 'IR') {
                     getInterestedResourceDetails({ recordId: key }).then((result) => {
                         this.interestedResource = result;
-                        let startTimeFormatted = new Date(result.ServiceAppointmentStartTime__c);
-                        let endTimeFormatted = new Date(result.ServiceAppointmentEndTime__c);
-                        this.interestedResource.StartAndEndDate =
-                            startTimeFormatted.getDate() +
-                            '.' +
-                            (startTimeFormatted.getMonth() + 1) +
-                            '.' +
-                            startTimeFormatted.getFullYear() +
-                            ', ' +
-                            ('0' + startTimeFormatted.getHours()).substr(-2) +
-                            ':' +
-                            ('0' + startTimeFormatted.getMinutes()).substr(-2) +
-                            ' - ' +
-                            ('0' + endTimeFormatted.getHours()).substr(-2) +
-                            ':' +
-                            ('0' + endTimeFormatted.getMinutes()).substr(-2);
+                        this.interestedResource.StartAndEndDate = formatDatetime(
+                            result.ServiceAppointmentStartTime__c,
+                            result.ServiceAppointmentEndTime__c
+                        );
                         let DeadlineDateTimeFormatted = new Date(this.interestedResource.AppointmentDeadlineDate__c);
                         this.interestedResource.AppointmentDeadlineDate__c =
                             DeadlineDateTimeFormatted.getDate() +
@@ -553,22 +509,10 @@ export default class hot_messagingCommunityThreadViewer extends NavigationMixin(
                 if (result[key] == 'WC') {
                     getWageClaimDetails({ recordId: key }).then((result) => {
                         this.wageClaim = result;
-                        let startTimeFormatted = new Date(this.wageClaim.StartTime__c);
-                        let endTimeFormatted = new Date(this.wageClaim.EndTime__c);
-                        this.wageClaim.StartAndEndDate =
-                            startTimeFormatted.getDate() +
-                            '.' +
-                            (startTimeFormatted.getMonth() + 1) +
-                            '.' +
-                            startTimeFormatted.getFullYear() +
-                            ', ' +
-                            ('0' + startTimeFormatted.getHours()).substr(-2) +
-                            ':' +
-                            ('0' + startTimeFormatted.getMinutes()).substr(-2) +
-                            ' - ' +
-                            ('0' + endTimeFormatted.getHours()).substr(-2) +
-                            ':' +
-                            ('0' + endTimeFormatted.getMinutes()).substr(-2);
+                        this.wageClaim.StartAndEndDate = formatDatetime(
+                            this.wageClaim.StartTime__c,
+                            this.wageClaim.EndTime__c
+                        );
                         this.isWCDetails = true;
                         this.template.querySelector('.serviceAppointmentDetails').classList.remove('hidden');
                     });
