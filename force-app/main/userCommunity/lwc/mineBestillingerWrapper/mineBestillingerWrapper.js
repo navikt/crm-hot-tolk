@@ -20,6 +20,7 @@ import WORKORDER_ID from '@salesforce/schema/WorkOrder.Id';
 import { refreshApex } from '@salesforce/apex';
 import { formatRecord } from 'c/datetimeFormatter';
 import { updateRecord } from 'lightning/uiRecordApi';
+import { formatDatetime, formatDateTimeSingle } from 'c/hot_helperMethods';
 
 export default class MineBestillingerWrapper extends NavigationMixin(LightningElement) {
     @api header;
@@ -84,27 +85,21 @@ export default class MineBestillingerWrapper extends NavigationMixin(LightningEl
     @track allRecords = [];
     noWorkOrders = false;
     wiredgetWorkOrdersResult;
+
     @wire(getMyWorkOrdersAndRelatedRequest, { isAccount: '$isAccount' })
     wiredgetWorkOrdersHandler(result) {
         this.wiredgetWorkOrdersResult = result;
         if (result.data) {
-            let tempRecords = [];
-            for (let record of result.data) {
-                tempRecords.push(formatRecord(Object.assign({}, record), this.datetimeFields));
-            }
-            this.records = tempRecords;
+            this.records = result.data.map((record) => ({
+                ...record,
+                StartAndEndDate: formatDatetime(record.StartDate, record.EndDate)
+            }));
+
             this.noWorkOrders = this.records.length === 0;
-            this.allRecords = [...tempRecords];
+            this.allRecords = [...this.records];
             this.refresh(false);
         }
     }
-    datetimeFields = [
-        { name: 'StartAndEndDate', type: 'datetimeinterval', start: 'StartDate', end: 'EndDate' },
-        { name: 'HOT_Request__r.SeriesStartDate__c', type: 'date' },
-        { name: 'HOT_Request__r.SeriesEndDate__c', type: 'date' },
-        { name: 'HOT_Request__r.StartTime__c', type: 'date' },
-        { name: 'HOT_Request__r.EndTime__c', type: 'date' }
-    ];
 
     @wire(CurrentPageReference)
     getStateParameters(currentPageReference) {
@@ -157,19 +152,29 @@ export default class MineBestillingerWrapper extends NavigationMixin(LightningEl
     requestSeriesStartDate = '';
     requestSeriesEndDate = '';
     setDateFormats() {
-        this.workOrderStartDate = this.formatDate(this.workOrder.StartDate, true);
-        this.workOrderEndDate = this.formatDate(this.workOrder.EndDate, true);
-        this.requestSeriesStartDate = this.formatDate(this.request.SeriesStartDate__c, false);
-        this.requestSeriesEndDate = this.formatDate(this.request.SeriesEndDate__c, false);
+        this.workOrderStartDate = this.workOrder.StartDate;
+        this.workOrderEndDate = this.workOrder.EndDate;
+        this.requestSeriesStartDate = this.request.SeriesStartDate__c;
+        this.requestSeriesEndDate = this.request.SeriesEndDate__c;
+
+        this.workOrderStartDate = formatDateTimeSingle(this.workOrder.StartDate);
+        this.workOrderEndDate = formatDateTimeSingle(this.workOrder.EndDate);
+        this.requestSeriesStartDate = formatDateTimeSingle(this.request.SeriesStartDate__c);
+        this.requestSeriesEndDate = formatDateTimeSingle(this.request.SeriesEndDate__c);
+
+        this.workOrderStartDate = this.formatDate(this.workOrderStartDate, true);
+        this.workOrderEndDate = this.formatDate(this.workOrderEndDate, true);
+        this.requestSeriesStartDate = this.formatDate(this.requestSeriesStartDate, false);
+        this.requestSeriesEndDate = this.formatDate(this.requestSeriesEndDate, false);
     }
 
     formatDate(dateInput, isWorkOrder) {
-        let value = new Date(dateInput);
-        value = value.toLocaleString();
+        if (!dateInput) return null;
+        let value = String(dateInput);
         if (isWorkOrder) {
-            return value.substring(0, value.length - 3);
+            return value;
         }
-        return value.substring(0, value.length - 10);
+        return value.split(',')[0].trim();
     }
 
     isRequestEditButtonDisabled = false;
