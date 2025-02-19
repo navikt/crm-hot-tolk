@@ -2,6 +2,7 @@ import LightningModal from 'lightning/modal';
 import { api, track } from 'lwc';
 import { columns, inDetailsColumns, mobileColumns } from './columns';
 import createInterestedResources from '@salesforce/apex/HOT_OpenServiceAppointmentListController.createInterestedResources';
+import { getDayOfWeek } from 'c/hot_helperMethods';
 
 export default class Hot_openServiceAppointmentsModal extends LightningModal {
     @api serviceAppointmentCommentDetails = [];
@@ -69,7 +70,7 @@ export default class Hot_openServiceAppointmentsModal extends LightningModal {
             if (recordId === serviceAppointment.Id) {
                 this.serviceAppointment = { ...serviceAppointment };
                 this.isSeries = this.serviceAppointment.HOT_IsSerieoppdrag__c;
-                this.serviceAppointment.weekday = this.getDayOfWeek(this.serviceAppointment.EarliestStartTime);
+                this.serviceAppointment.weekday = getDayOfWeek(this.serviceAppointment.EarliestStartTime);
             }
         }
         for (let serviceAppointment of this.records) {
@@ -79,13 +80,6 @@ export default class Hot_openServiceAppointmentsModal extends LightningModal {
         }
 
         this.isSeries = this.seriesRecords.length > 1;
-    }
-
-    getDayOfWeek(date) {
-        var jsDate = new Date(date);
-        var dayOfWeek = jsDate.getDay();
-        var days = ['Søndag', 'Mandag', 'Tirsdag', 'Onsdag', 'Torsdag', 'Fredag', 'Lørdag'];
-        return days[dayOfWeek] || '';
     }
 
     registerInterest() {
