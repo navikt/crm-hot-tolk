@@ -6,6 +6,7 @@ import { columns, inDetailsColumns, mobileColumns } from './columns';
 import { refreshApex } from '@salesforce/apex';
 import { defaultFilters, compare, setDefaultFilters } from './filters';
 import { formatRecord } from 'c/datetimeFormatter';
+import { formatDatetime, getDayOfWeek } from 'c/hot_helperMethods';
 import Hot_openServiceAppointmentsModal from 'c/hot_openServiceAppointmentsModal';
 
 export default class Hot_openServiceAppointments extends LightningElement {
@@ -141,21 +142,7 @@ export default class Hot_openServiceAppointments extends LightningElement {
             }
         }
     }
-    formatDatetime(Start, DueDate) {
-        const datetimeStart = new Date(Start);
-        const dayStart = datetimeStart.getDate().toString().padStart(2, '0');
-        const monthStart = (datetimeStart.getMonth() + 1).toString().padStart(2, '0');
-        const yearStart = datetimeStart.getFullYear();
-        const hoursStart = datetimeStart.getHours().toString().padStart(2, '0');
-        const minutesStart = datetimeStart.getMinutes().toString().padStart(2, '0');
 
-        const datetimeEnd = new Date(DueDate);
-        const hoursEnd = datetimeEnd.getHours().toString().padStart(2, '0');
-        const minutesEnd = datetimeEnd.getMinutes().toString().padStart(2, '0');
-
-        const formattedDatetime = `${dayStart}.${monthStart}.${yearStart} ${hoursStart}:${minutesStart} - ${hoursEnd}:${minutesEnd}`;
-        return formattedDatetime;
-    }
     noServiceAppointments = false;
     initialServiceAppointments = [];
     @track records = [];
@@ -171,10 +158,10 @@ export default class Hot_openServiceAppointments extends LightningElement {
                 ...x,
                 isUrgent: x.HOT_IsUrgent__c,
                 startAndEndDateWeekday:
-                    this.formatDatetime(x.EarliestStartTime, x.DueDate) + ' ' + this.getDayOfWeek(x.EarliestStartTime),
-                weekday: this.getDayOfWeek(x.EarliestStartTime)
+                    formatDatetime(x.EarliestStartTime, x.DueDate) + ' ' + getDayOfWeek(x.EarliestStartTime),
+                weekday: getDayOfWeek(x.EarliestStartTime),
+                StartAndEndDate: formatDatetime(x.EarliestStartTime, x.DueDate)
             }));
-
             this.noServiceAppointments = this.allServiceAppointmentsWired.length === 0;
             let tempRecords = [];
             for (let record of this.allServiceAppointmentsWired) {
@@ -202,7 +189,6 @@ export default class Hot_openServiceAppointments extends LightningElement {
     }
 
     datetimeFields = [
-        { name: 'StartAndEndDate', type: 'datetimeinterval', start: 'EarliestStartTime', end: 'DueDate' },
         { name: 'HOT_DeadlineDate__c', type: 'date' },
         { name: 'HOT_ReleaseDate__c', type: 'date', newName: 'ReleaseDate' }
     ];
