@@ -589,9 +589,16 @@ private class HOT_RequestHandlerTest {
     public static void ownerOnThreadChangeRequest() {
         WorkType workType = HOT_TestDataFactory.createWorkType();
         insert workType;
-        HOT_Request__c request = HOT_TestDataFactory.createRequest('TEST', workType);
-        Group nordlandQueue = [SELECT Id FROM Group WHERE Type = 'Queue' AND DeveloperName = 'queue_4718'];
+
+        Group nordlandQueue = TestDataFactory.getQueue('HMS Troms og Finmark', 'queue_4718', 'Thread__c');
+        QueueSobject queueSobject = new QueueSobject(SobjectType = Thread__c, QueueId = nordlandQueue.Id);
+        insert queueSobject;
+
         Group tromsOgFinnmarkQueue = TestDataFactory.getQueue('HMS Troms og Finmark', 'queue_4719', 'Thread__c');
+        QueueSobject queueSobject = new QueueSobject(SobjectType = Thread__c, QueueId = tromsOgFinnmarkQueue.Id);
+        insert queueSobject;
+
+        HOT_Request__c request = HOT_TestDataFactory.createRequest('TEST', workType);
         request.OwnerId = nordlandQueue.Id;
         insert request;
 
