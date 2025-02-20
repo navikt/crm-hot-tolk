@@ -66,6 +66,107 @@ private class HOT_ServiceAppointmentHandlerTest {
     }
 
     @IsTest
+    public static void ownerOnThreadChangeServiceAppointmentTest() {
+        Group nordlandQueue = [SELECT Id FROM Group WHERE Type = 'Queue' AND DeveloperName = 'queue_4718'];
+        Group tromsOgFinnmarkQueue = TestDataFactory.getQueue('HMS Troms og Finmark', 'queue_4719', 'HOT_Request__c');
+
+        WorkType workType = HOT_TestDataFactory.createWorkType();
+        insert workType;
+
+        HOT_Request__c request = HOT_TestDataFactory.createRequest('TEST', workType);
+        insert request;
+        request.Status__c = 'Godkjent';
+        update request;
+
+        ServiceAppointment serviceAppointment = [
+            SELECT Id, OwnerId
+            FROM ServiceAppointment
+            WHERE HOT_Request__c = :request.Id
+        ];
+
+        Thread__c thread = new Thread__c();
+        thread.RecordTypeId = HOT_MessageHelper.getHOTThreadRecordType();
+        thread.CRM_Related_Object__c = serviceAppointment.Id;
+        thread.OwnerId = serviceAppointment.OwnerId;
+        insert thread;
+
+        thread = [
+            SELECT OwnerId, CRM_Related_Object__c
+            FROM Thread__c
+            WHERE CRM_Related_Object__c = :serviceAppointment.Id
+        ];
+
+        Test.startTest();
+        System.assertEquals(serviceAppointment.OwnerId, thread.OwnerId, 'Owner was not set correctly');
+
+        serviceAppointment.OwnerId = tromsOgFinnmarkQueue.Id;
+        update serviceAppointment;
+
+        thread = [
+            SELECT OwnerId, CRM_Related_Object__c
+            FROM Thread__c
+            WHERE CRM_Related_Object__c = :serviceAppointment.Id
+        ];
+        System.assertEquals(tromsOgFinnmarkQueue.Id, thread.OwnerId, 'Owner was not set correctly');
+
+        Test.stopTest();
+    }
+
+    @IsTest
+    public static void dispatcherOnThreadChangeServiceAppointmentTest() {
+        User admin = HOT_TestDataFactory.createUser('admin', adminProfile);
+        insert admin;
+        WorkType workType = HOT_TestDataFactory.createWorkType();
+        insert workType;
+
+        HOT_Request__c request = HOT_TestDataFactory.createRequest('TEST', workType);
+        insert request;
+        request.Status__c = 'Godkjent';
+        update request;
+
+        ServiceAppointment serviceAppointment = [
+            SELECT Id, HOT_DispatcherNew__c
+            FROM ServiceAppointment
+            WHERE HOT_Request__c = :request.Id
+        ];
+
+        Thread__c thread = new Thread__c();
+        thread.RecordTypeId = HOT_MessageHelper.getHOTThreadRecordType();
+        thread.CRM_Related_Object__c = serviceAppointment.Id;
+        thread.Dispatcher__c = serviceAppointment.HOT_DispatcherNew__c;
+        insert thread;
+
+        thread = [
+            SELECT Dispatcher__c, CRM_Related_Object__c
+            FROM Thread__c
+            WHERE CRM_Related_Object__c = :serviceAppointment.Id
+        ];
+
+        Test.startTest();
+        System.assertEquals(
+            serviceAppointment.HOT_DispatcherNew__c,
+            thread.Dispatcher__c,
+            'Dispatcher was not set correctly'
+        );
+
+        serviceAppointment.HOT_DispatcherNew__c = admin.Id;
+        update serviceAppointment;
+
+        thread = [
+            SELECT Dispatcher__c, CRM_Related_Object__c
+            FROM Thread__c
+            WHERE CRM_Related_Object__c = :serviceAppointment.Id
+        ];
+        System.assertEquals(
+            serviceAppointment.HOT_DispatcherNew__c,
+            thread.Dispatcher__c,
+            'Dispatcher was not set correctly'
+        );
+
+        Test.stopTest();
+    }
+
+    @IsTest
     static void cancelServiceAppointment() {
         ServiceAppointment sa = [
             SELECT Id, Status, HOT_ServiceResource__c, HOT_CanceledByInterpreter__c
