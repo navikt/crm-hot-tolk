@@ -5,6 +5,7 @@
         <c-input
             label="Organisasjonsnummer"
             name="OrganizationNumber__c"
+            max-length="11"
             form="tolk-skjema-input"
             value={fieldValues.OrganizationNumber__c}
             error-text="Ikke gyldig format for organisasjonsnummer."
@@ -23,6 +24,7 @@
                 label="Deres fakturareferanse"
                 name="InvoiceReference__c"
                 form="tolk-skjema-input"
+                max-length="255"
                 value={fieldValues.InvoiceReference__c}
             ></c-input>
             <br />
@@ -30,6 +32,7 @@
                 label="Tilleggsinformasjon"
                 name="AdditionalInvoiceText__c"
                 form="tolk-skjema-input"
+                max-length="255"
                 value={fieldValues.AdditionalInvoiceText__c}
             ></c-input>
             <br />
