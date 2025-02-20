@@ -591,7 +591,7 @@ private class HOT_RequestHandlerTest {
         insert workType;
         HOT_Request__c request = HOT_TestDataFactory.createRequest('TEST', workType);
         Group nordlandQueue = [SELECT Id FROM Group WHERE Type = 'Queue' AND DeveloperName = 'queue_4718'];
-        Group tromsOgFinnmarkQueue = [SELECT Id FROM Group WHERE Type = 'Queue' AND DeveloperName = 'queue_4719'];
+        Group tromsOgFinnmarkQueue = TestDataFactory.getQueue('HMS Troms og Finmark', 'queue_4719', 'Thread__c');
         request.OwnerId = nordlandQueue.Id;
         insert request;
 
