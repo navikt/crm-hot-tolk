@@ -591,12 +591,7 @@ private class HOT_RequestHandlerTest {
         insert workType;
 
         Group nordlandQueue = TestDataFactory.getQueue('HMS Troms og Finmark', 'queue_4718', 'Thread__c');
-        QueueSobject queueSobject = new QueueSobject(SobjectType = Thread__c, QueueId = nordlandQueue.Id);
-        insert queueSobject;
-
         Group tromsOgFinnmarkQueue = TestDataFactory.getQueue('HMS Troms og Finmark', 'queue_4719', 'Thread__c');
-        QueueSobject queueSobject = new QueueSobject(SobjectType = Thread__c, QueueId = tromsOgFinnmarkQueue.Id);
-        insert queueSobject;
 
         HOT_Request__c request = HOT_TestDataFactory.createRequest('TEST', workType);
         request.OwnerId = nordlandQueue.Id;
