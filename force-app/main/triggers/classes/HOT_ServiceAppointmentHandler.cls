@@ -462,8 +462,8 @@ public without sharing class HOT_ServiceAppointmentHandler extends MyTriggers {
                     thread.HOT_Dispatcher__c = ownerAndDispatchers.get(thread.OwnerId);
                 }
             }
-            update threadList;
         }
+        update threadList;
     }
 
     private static void setScheduledTimesToOldValues(
