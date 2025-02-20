@@ -140,7 +140,10 @@ public without sharing class HOT_RequestHandler extends MyTriggers {
             if (triggerOldMap.get(request.Id).get('Account__c') !== request.Account__c) {
                 requestsWithNewAccount.add(request);
             }
-            if (triggerOldMap.get(request.Id).get('Dispatcher__c') !== request.Dispatcher__c) {
+            if (
+                triggerOldMap.get(request.Id).get('Dispatcher__c') !== request.Dispatcher__c ||
+                triggerOldMap.get(request.Id).get('OwnerId') !== request.OwnerId
+            ) {
                 requestsWithUpdatedDispatcher.add(request);
             }
             if (triggerOldMap.get(request.Id).get('Company__c') !== request.Company__c) {
@@ -245,44 +248,53 @@ public without sharing class HOT_RequestHandler extends MyTriggers {
         for (HOT_Request__c r : requestsList) {
             requestIds.add(r.Id);
         }
-        List<HOT_Request__c> requests = [SELECT Id, Dispatcher__c FROM HOT_Request__C WHERE Id IN :requestIds];
+        List<HOT_Request__c> requests = [SELECT Id, Dispatcher__c, OwnerId FROM HOT_Request__C WHERE Id IN :requestIds];
         List<WorkOrder> workorders = [
-            SELECT Id, HOT_Request__r.Dispatcher__c
+            SELECT Id, HOT_Request__r.Dispatcher__c, HOT_Request__r.OwnerId
             FROM WorkOrder
             WHERE HOT_Request__c IN :requestIds
         ];
         List<ServiceAppointment> serviceAppointments = [
-            SELECT Id, HOT_Request__r.Dispatcher__c
+            SELECT Id, HOT_Request__r.Dispatcher__c, HOT_Request__r.OwnerId
             FROM ServiceAppointment
             WHERE HOT_Request__c IN :requestIds
         ];
         List<HOT_InterestedResource__c> interestedReources = [
-            SELECT Id, ServiceAppointment__r.HOT_Request__r.Dispatcher__c
+            SELECT Id, ServiceAppointment__r.HOT_Request__r.Dispatcher__c, ServiceAppointment__r.HOT_Request__r.OwnerId
             FROM HOT_InterestedResource__c
             WHERE ServiceAppointment__r.HOT_Request__c IN :requestIds
         ];
 
-        Map<Id, Id> requestMap = new Map<Id, Id>();
-        Map<Id, Id> workOrderMap = new Map<Id, Id>();
-        Map<Id, Id> serviceApppointmentMap = new Map<Id, Id>();
-        Map<Id, Id> interestedResourceMap = new Map<Id, Id>();
+        Map<Id, Id> requestDispatcherMap = new Map<Id, Id>();
+        Map<Id, Id> requestOwnerMap = new Map<Id, Id>();
+        Map<Id, Id> workOrderDispatcherMap = new Map<Id, Id>();
+        Map<Id, Id> workOrderOwnerMap = new Map<Id, Id>();
+        Map<Id, Id> serviceAppointmentDispatcherMap = new Map<Id, Id>();
+        Map<Id, Id> serviceAppointmentOwnerMap = new Map<Id, Id>();
+        Map<Id, Id> interestedResourceDispatcherMap = new Map<Id, Id>();
+        Map<Id, Id> interestedResourceOwnerMap = new Map<Id, Id>();
+
         for (HOT_Request__c r : requests) {
-            requestMap.put(r.Id, r.Dispatcher__c);
+            requestDispatcherMap.put(r.Id, r.Dispatcher__c);
+            requestOwnerMap.put(r.Id, r.OwnerId);
         }
         Set<Id> woIds = new Set<Id>();
         for (WorkOrder wo : workorders) {
             woIds.add(wo.Id);
-            workOrderMap.put(wo.Id, wo.HOT_Request__r.Dispatcher__c);
+            workOrderDispatcherMap.put(wo.Id, wo.HOT_Request__r.Dispatcher__c);
+            workOrderOwnerMap.put(wo.Id, wo.HOT_Request__r.OwnerId);
         }
         Set<Id> saIds = new Set<Id>();
         for (ServiceAppointment sa : serviceAppointments) {
             saIds.add(sa.Id);
-            serviceApppointmentMap.put(sa.Id, sa.HOT_Request__r.Dispatcher__c);
+            serviceAppointmentDispatcherMap.put(sa.Id, sa.HOT_Request__r.Dispatcher__c);
+            serviceAppointmentOwnerMap.put(sa.Id, sa.HOT_Request__r.OwnerId);
         }
         Set<Id> irIds = new Set<Id>();
         for (HOT_InterestedResource__c ir : interestedReources) {
             irIds.add(ir.Id);
-            interestedResourceMap.put(ir.Id, ir.serviceAppointment__r.HOT_Request__r.Dispatcher__c);
+            interestedResourceDispatcherMap.put(ir.Id, ir.serviceAppointment__r.HOT_Request__r.Dispatcher__c);
+            interestedResourceOwnerMap.put(ir.Id, ir.ServiceAppointment__r.HOT_Request__r.OwnerId);
         }
 
         List<Thread__c> threadList = [
@@ -296,14 +308,20 @@ public without sharing class HOT_RequestHandler extends MyTriggers {
         ];
 
         for (Thread__c thread : threadList) {
-            if (requestMap.containsKey(thread.CRM_Related_Object__c)) {
-                thread.HOT_Dispatcher__c = requestMap.get(thread.CRM_Related_Object__c);
-            } else if (workOrderMap.containsKey(thread.CRM_Related_Object__c)) {
-                thread.HOT_Dispatcher__c = workOrderMap.get(thread.CRM_Related_Object__c);
-            } else if (serviceApppointmentMap.containsKey(thread.CRM_Related_Object__c)) {
-                thread.HOT_Dispatcher__c = serviceApppointmentMap.get(thread.CRM_Related_Object__c);
-            } else if (interestedResourceMap.containsKey(thread.CRM_Related_Object__c)) {
-                thread.HOT_Dispatcher__c = interestedResourceMap.get(thread.CRM_Related_Object__c);
+            Id relatedId = thread.CRM_Related_Object__c;
+
+            if (requestDispatcherMap.containsKey(relatedId)) {
+                thread.HOT_Dispatcher__c = requestDispatcherMap.get(relatedId);
+                thread.OwnerId = requestOwnerMap.get(relatedId);
+            } else if (workOrderDispatcherMap.containsKey(relatedId)) {
+                thread.HOT_Dispatcher__c = workOrderDispatcherMap.get(relatedId);
+                thread.OwnerId = workOrderOwnerMap.get(relatedId);
+            } else if (serviceAppointmentDispatcherMap.containsKey(relatedId)) {
+                thread.HOT_Dispatcher__c = serviceAppointmentDispatcherMap.get(relatedId);
+                thread.OwnerId = serviceAppointmentOwnerMap.get(relatedId);
+            } else if (interestedResourceDispatcherMap.containsKey(relatedId)) {
+                thread.HOT_Dispatcher__c = interestedResourceDispatcherMap.get(relatedId);
+                thread.OwnerId = interestedResourceOwnerMap.get(relatedId);
             }
         }
         update threadList;
