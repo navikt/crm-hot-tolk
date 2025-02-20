@@ -114,8 +114,14 @@ private class HOT_ServiceAppointmentHandlerTest {
 
     @IsTest
     public static void dispatcherOnThreadChangeServiceAppointmentTest() {
+        Profile adminProfile = [
+            SELECT Id, Name
+            FROM Profile
+            WHERE Name = 'System Administrator' OR Name = 'Systemadministrator'
+        ];
         User admin = HOT_TestDataFactory.createUser('admin', adminProfile);
         insert admin;
+
         WorkType workType = HOT_TestDataFactory.createWorkType();
         insert workType;
 
@@ -133,11 +139,11 @@ private class HOT_ServiceAppointmentHandlerTest {
         Thread__c thread = new Thread__c();
         thread.RecordTypeId = HOT_MessageHelper.getHOTThreadRecordType();
         thread.CRM_Related_Object__c = serviceAppointment.Id;
-        thread.Dispatcher__c = serviceAppointment.HOT_DispatcherNew__c;
+        thread.HOT_Dispatcher__c = serviceAppointment.HOT_DispatcherNew__c;
         insert thread;
 
         thread = [
-            SELECT Dispatcher__c, CRM_Related_Object__c
+            SELECT HOT_Dispatcher__c, CRM_Related_Object__c
             FROM Thread__c
             WHERE CRM_Related_Object__c = :serviceAppointment.Id
         ];
@@ -145,7 +151,7 @@ private class HOT_ServiceAppointmentHandlerTest {
         Test.startTest();
         System.assertEquals(
             serviceAppointment.HOT_DispatcherNew__c,
-            thread.Dispatcher__c,
+            thread.HOT_Dispatcher__c,
             'Dispatcher was not set correctly'
         );
 
@@ -153,13 +159,13 @@ private class HOT_ServiceAppointmentHandlerTest {
         update serviceAppointment;
 
         thread = [
-            SELECT Dispatcher__c, CRM_Related_Object__c
+            SELECT HOT_Dispatcher__c, CRM_Related_Object__c
             FROM Thread__c
             WHERE CRM_Related_Object__c = :serviceAppointment.Id
         ];
         System.assertEquals(
             serviceAppointment.HOT_DispatcherNew__c,
-            thread.Dispatcher__c,
+            thread.HOT_Dispatcher__c,
             'Dispatcher was not set correctly'
         );
 
