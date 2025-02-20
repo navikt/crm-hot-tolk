@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="UTF-8"?>
+<?xml version="1.0" encoding="UTF-8" ?>
 <FlexiPage xmlns="http://soap.sforce.com/2006/04/metadata">
     <flexiPageRegions>
         <itemInstances>
@@ -467,10 +467,15 @@
                 <fieldItem>Record.UserEmail__c</fieldItem>
                 <identifier>RecordUserEmail__cField</identifier>
                 <visibilityRule>
+                    <booleanFilter>1 OR 2</booleanFilter>
                     <criteria>
                         <leftValue>{!Record.Person__r.INT_Confidential__c}</leftValue>
                         <operator>EQUAL</operator>
                         <rightValue>UGRADERT</rightValue>
+                    </criteria>
+                    <criteria>
+                        <leftValue>{!Record.ActualUserName__c}</leftValue>
+                        <operator>EQUAL</operator>
                     </criteria>
                 </visibilityRule>
             </fieldInstance>
@@ -484,10 +489,15 @@
                 <fieldItem>Record.UserPhone__c</fieldItem>
                 <identifier>RecordUserPhone__cField</identifier>
                 <visibilityRule>
+                    <booleanFilter>1 OR 2</booleanFilter>
                     <criteria>
                         <leftValue>{!Record.Person__r.INT_Confidential__c}</leftValue>
                         <operator>EQUAL</operator>
                         <rightValue>UGRADERT</rightValue>
+                    </criteria>
+                    <criteria>
+                        <leftValue>{!Record.ActualUserName__c}</leftValue>
+                        <operator>EQUAL</operator>
                     </criteria>
                 </visibilityRule>
             </fieldInstance>
@@ -501,10 +511,15 @@
                 <fieldItem>Record.UserName__c</fieldItem>
                 <identifier>RecordUserName__cField</identifier>
                 <visibilityRule>
+                    <booleanFilter>1 OR 2</booleanFilter>
                     <criteria>
                         <leftValue>{!Record.Person__r.INT_Confidential__c}</leftValue>
                         <operator>EQUAL</operator>
                         <rightValue>UGRADERT</rightValue>
+                    </criteria>
+                    <criteria>
+                        <leftValue>{!Record.ActualUserName__c}</leftValue>
+                        <operator>EQUAL</operator>
                     </criteria>
                 </visibilityRule>
             </fieldInstance>
@@ -1087,7 +1102,8 @@
                 <visibilityRule>
                     <booleanFilter>1 OR 2 OR 3</booleanFilter>
                     <criteria>
-                        <leftValue>{!Record.LastModifiedBy.Contact.Account.CRM_Person__r.INT_Confidential__c}</leftValue>
+                        <leftValue
+                        >{!Record.LastModifiedBy.Contact.Account.CRM_Person__r.INT_Confidential__c}</leftValue>
                         <operator>EQUAL</operator>
                         <rightValue>UGRADERT</rightValue>
                     </criteria>
