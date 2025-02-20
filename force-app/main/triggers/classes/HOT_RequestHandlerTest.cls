@@ -591,7 +591,7 @@ private class HOT_RequestHandlerTest {
         insert workType;
         HOT_Request__c request = HOT_TestDataFactory.createRequest('TEST', workType);
         Group nordlandQueue = [SELECT Id FROM Group WHERE Type = 'Queue' AND DeveloperName = 'queue_4718'];
-        Group tromsOgFinnmarkQueue = TestDataFactory.getQueue('HMS Troms og Finmark', 'queue_4719', 'HOT_Request__c');
+        Group tromsOgFinnmarkQueue = [SELECT Id FROM Group WHERE Type = 'Queue' AND DeveloperName = 'queue_4719'];
         request.OwnerId = nordlandQueue.Id;
         insert request;
 
@@ -609,11 +609,10 @@ private class HOT_RequestHandlerTest {
 
         request.OwnerId = tromsOgFinnmarkQueue.Id;
         update request;
+        Test.stopTest();
 
         thread = [SELECT OwnerId, HOT_Request__c FROM Thread__c WHERE HOT_Request__c = :request.Id];
         System.assertEquals(tromsOgFinnmarkQueue.Id, thread.OwnerId, 'Owner was not set correctly');
-
-        Test.stopTest();
     }
     @IsTest
     public static void dispatcherOnThreadChangeWorkOrder() {

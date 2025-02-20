@@ -68,7 +68,7 @@ private class HOT_ServiceAppointmentHandlerTest {
     @IsTest
     public static void ownerOnThreadChangeServiceAppointmentTest() {
         Group nordlandQueue = [SELECT Id FROM Group WHERE Type = 'Queue' AND DeveloperName = 'queue_4718'];
-        Group tromsOgFinnmarkQueue = TestDataFactory.getQueue('HMS Troms og Finmark', 'queue_4719', 'HOT_Request__c');
+        Group tromsOgFinnmarkQueue = [SELECT Id FROM Group WHERE Type = 'Queue' AND DeveloperName = 'queue_4719'];
 
         WorkType workType = HOT_TestDataFactory.createWorkType();
         insert workType;
@@ -101,6 +101,7 @@ private class HOT_ServiceAppointmentHandlerTest {
 
         serviceAppointment.OwnerId = tromsOgFinnmarkQueue.Id;
         update serviceAppointment;
+        Test.stopTest();
 
         thread = [
             SELECT OwnerId, CRM_Related_Object__c
@@ -108,8 +109,6 @@ private class HOT_ServiceAppointmentHandlerTest {
             WHERE CRM_Related_Object__c = :serviceAppointment.Id
         ];
         System.assertEquals(tromsOgFinnmarkQueue.Id, thread.OwnerId, 'Owner was not set correctly');
-
-        Test.stopTest();
     }
 
     @IsTest
@@ -158,6 +157,7 @@ private class HOT_ServiceAppointmentHandlerTest {
         serviceAppointment.HOT_DispatcherNew__c = admin.Id;
         update serviceAppointment;
 
+        Test.stopTest();
         thread = [
             SELECT HOT_Dispatcher__c, CRM_Related_Object__c
             FROM Thread__c
@@ -168,8 +168,6 @@ private class HOT_ServiceAppointmentHandlerTest {
             thread.HOT_Dispatcher__c,
             'Dispatcher was not set correctly'
         );
-
-        Test.stopTest();
     }
 
     @IsTest
