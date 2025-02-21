@@ -33,19 +33,19 @@ export class CalendarEvent {
     color;
     textColor;
 
+    /**
+     *
+     * @param {*} data - Forventer data i form av fra HOT_FullCalendarController.CalendarEvent
+     */
     constructor(data) {
         this.recordId = data.id;
         this.saNumber = data.appointmentNumber ?? '';
         this.description = data.description;
         this.title = this.saNumber;
-
-        //Convert start & end to correct timezone in ISO format
-        this.start = this.convertToOsloTime(data.startTime);
-        this.end = this.convertToOsloTime(data.endTime);
-
+        this.start = new Date(data.startTime);
+        this.end = new Date(data.endTime);
         this.type = data.type;
-        this.isPast = new Date(this.end) <= new Date();
-
+        this.isPast = this.end <= new Date();
         const properties = CalendarEvent.eventTypeProperties.get(this.type) ?? {
             upcomingColor: '#90cce8',
             pastColor: '#90cce8'
@@ -53,18 +53,8 @@ export class CalendarEvent {
         this.color = (this.isPast ? properties.pastColor : properties.color) ?? properties.color;
         this.textColor = (this.isPast ? properties.pastFontColor : properties.fontColor) ?? properties.fontColor;
 
-        //Convert back to Date before checking `toLocaleDateString()`
-        const startDate = new Date(this.start);
-        const endDate = new Date(this.end);
-
         this.isMultiDay =
-            startDate.toLocaleDateString('nb-NO') !== endDate.toLocaleDateString('nb-NO') && startDate < endDate;
-
+            this.start.toLocaleDateString('nb-NO') != this.end.toLocaleDateString('nb-NO') && this.start < this.end;
         this.isPseudoEvent = false;
-    }
-
-    convertToOsloTime(isoString) {
-        // Convert UTC time to Oslo time, keeping the Date object
-        return new Date(new Date(isoString).toLocaleString('en-US', { timeZone: 'Europe/Oslo' })).toISOString();
     }
 }
