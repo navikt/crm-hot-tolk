@@ -1,4 +1,7 @@
 export function formatDatetime(Start, DueDate) {
+    if (!Start || !DueDate) {
+        return 'N/A';
+    }
     // Parse the input dates
     const datetimeStart = new Date(Start);
     const datetimeEnd = new Date(DueDate);
@@ -20,6 +23,9 @@ export function formatDatetime(Start, DueDate) {
     return `${formattedDate}, ${formattedTimeStart} - ${formattedTimeEnd}`;
 }
 export function formatDateTimeSingle(date) {
+    if (!date) {
+        return 'N/A';
+    }
     // Parse the input date
     const datetime = new Date(date);
 
