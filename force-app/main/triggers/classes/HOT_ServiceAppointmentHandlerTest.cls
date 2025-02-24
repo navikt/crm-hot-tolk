@@ -67,8 +67,9 @@ private class HOT_ServiceAppointmentHandlerTest {
 
     @IsTest
     public static void ownerOnThreadChangeServiceAppointmentTest() {
-        WorkType workType = [SELECT Id FROM WorkType LIMIT 1];
         Group tromsOgFinnmarkQueue = TestDataFactory.getQueue('HMS Troms og Finmark', 'queue_4719', 'Thread__c');
+
+        WorkType workType = [SELECT Id FROM WorkType LIMIT 1];
 
         HOT_Request__c request = HOT_TestDataFactory.createRequest('TEST', workType);
         insert request;

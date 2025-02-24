@@ -587,11 +587,11 @@ private class HOT_RequestHandlerTest {
     }
     @IsTest
     public static void ownerOnThreadChangeRequest() {
-        WorkType workType = HOT_TestDataFactory.createWorkType();
-        insert workType;
-
         Group tromsOgFinnmarkQueue = TestDataFactory.getQueue('HMS Troms og Finmark', 'queue_4719', 'Thread__c');
         Group nordlandQueue = TestDataFactory.getQueue('HMS Nordland', 'queue_4718', 'Thread__c');
+
+        WorkType workType = HOT_TestDataFactory.createWorkType();
+        insert workType;
 
         HOT_Request__c request = HOT_TestDataFactory.createRequest('TEST', workType);
         insert request;
