@@ -175,7 +175,11 @@ public without sharing class HOT_RequestHandler extends MyTriggers {
             updateWorkOrderAccount(requestsWithNewAccount);
         }
         if (requestsWithUpdatedDispatcher.size() > 0) {
-            updateDispatcherOnThread(requestsWithUpdatedDispatcher);
+            Set<Id> requestId = new Set<Id>();
+            for (HOT_Request__c request : requestsWithUpdatedDispatcher) {
+                requestId.add(request.Id);
+            }
+            updateDispatcherOnThread(requestIds);
         }
         if (requestsWithUpdatedCompany.size() > 0) {
             updateCompany(requestsWithUpdatedCompany);
@@ -245,11 +249,7 @@ public without sharing class HOT_RequestHandler extends MyTriggers {
     }
 
     @Future
-    public static void updateDispatcherOnThread(List<HOT_Request__c> requestsList) {
-        Set<Id> requestIds = new Set<Id>();
-        for (HOT_Request__c r : requestsList) {
-            requestIds.add(r.Id);
-        }
+    public static void updateDispatcherOnThread(Set<Id> requestIds) {
         List<HOT_Request__c> requests = [SELECT Id, Dispatcher__c, OwnerId FROM HOT_Request__C WHERE Id IN :requestIds];
         List<WorkOrder> workorders = [
             SELECT Id, HOT_Request__r.Dispatcher__c, HOT_Request__r.OwnerId
