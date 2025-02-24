@@ -67,9 +67,7 @@ private class HOT_ServiceAppointmentHandlerTest {
 
     @IsTest
     public static void ownerOnThreadChangeServiceAppointmentTest() {
-        WorkType workType = HOT_TestDataFactory.createWorkType();
-        insert workType;
-
+        WorkType workType = [SELECT Id FROM WorkType LIMIT 1];
         Group tromsOgFinnmarkQueue = TestDataFactory.getQueue('HMS Troms og Finmark', 'queue_4719', 'Thread__c');
 
         HOT_Request__c request = HOT_TestDataFactory.createRequest('TEST', workType);
@@ -156,12 +154,12 @@ private class HOT_ServiceAppointmentHandlerTest {
         serviceAppointment.HOT_DispatcherNew__c = admin.Id;
         update serviceAppointment;
 
-        Test.stopTest();
         thread = [
             SELECT HOT_Dispatcher__c, CRM_Related_Object__c
             FROM Thread__c
             WHERE CRM_Related_Object__c = :serviceAppointment.Id
         ];
+        Test.stopTest();
         System.assertEquals(
             serviceAppointment.HOT_DispatcherNew__c,
             thread.HOT_Dispatcher__c,
