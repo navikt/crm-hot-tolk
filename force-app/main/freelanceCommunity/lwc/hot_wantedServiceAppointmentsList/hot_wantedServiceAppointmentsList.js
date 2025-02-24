@@ -8,7 +8,7 @@ import getServiceResource from '@salesforce/apex/HOT_Utility.getServiceResource'
 import { columns, inDetailsColumns, mobileColumns } from './columns';
 import { refreshApex } from '@salesforce/apex';
 import { defaultFilters, compare, setDefaultFilters } from './filters';
-import { formatRecord } from 'c/datetimeFormatter';
+import { formatRecord } from 'c/datetimeFormatterNorwegianTime';
 import Hot_wantedServiceAppointmentsListModal from 'c/hot_wantedServiceAppointmentsListModal';
 
 export default class Hot_wantedServiceAppointmentsList extends LightningElement {
@@ -210,7 +210,7 @@ export default class Hot_wantedServiceAppointmentsList extends LightningElement 
     getModalSize() {
         return window.screen.width < 768 ? 'full' : 'small';
     }
-    
+
     async showServiceAppointmentDetails() {
         try {
             const modalResult = await Hot_wantedServiceAppointmentsListModal.open({
