@@ -316,12 +316,6 @@ export default class Hot_informationModal extends NavigationMixin(LightningModal
                     );
                     this.serviceAppointment.ActualStartTime = formatDatetime(result.ActualStartTime);
                     this.serviceAppointment.ActualEndTime = formatDatetime(result.ActualEndTime);
-                    if (this.serviceAppointment.ActualStartTime.includes('NaN')) {
-                        this.serviceAppointment.ActualStartTime = '';
-                    }
-                    if (this.serviceAppointment.ActualEndTime.includes('NaN')) {
-                        this.serviceAppointment.ActualEndTime = '';
-                    }
                     if (
                         this.serviceAppointment &&
                         this.serviceAppointment.HOT_Request__r &&
