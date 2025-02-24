@@ -5,7 +5,7 @@ import getServiceResource from '@salesforce/apex/HOT_Utility.getServiceResource'
 import { columns, inDetailsColumns, mobileColumns } from './columns';
 import { refreshApex } from '@salesforce/apex';
 import { defaultFilters, compare, setDefaultFilters } from './filters';
-import { formatRecord } from 'c/datetimeFormatterNorwegianTime';
+import { formatRecord, formatDatetimeinterval } from 'c/datetimeFormatterNorwegianTime';
 import Hot_openServiceAppointmentsModal from 'c/hot_openServiceAppointmentsModal';
 
 export default class Hot_openServiceAppointments extends LightningElement {
@@ -141,21 +141,7 @@ export default class Hot_openServiceAppointments extends LightningElement {
             }
         }
     }
-    formatDatetime(Start, DueDate) {
-        const datetimeStart = new Date(Start);
-        const dayStart = datetimeStart.getDate().toString().padStart(2, '0');
-        const monthStart = (datetimeStart.getMonth() + 1).toString().padStart(2, '0');
-        const yearStart = datetimeStart.getFullYear();
-        const hoursStart = datetimeStart.getHours().toString().padStart(2, '0');
-        const minutesStart = datetimeStart.getMinutes().toString().padStart(2, '0');
 
-        const datetimeEnd = new Date(DueDate);
-        const hoursEnd = datetimeEnd.getHours().toString().padStart(2, '0');
-        const minutesEnd = datetimeEnd.getMinutes().toString().padStart(2, '0');
-
-        const formattedDatetime = `${dayStart}.${monthStart}.${yearStart} ${hoursStart}:${minutesStart} - ${hoursEnd}:${minutesEnd}`;
-        return formattedDatetime;
-    }
     noServiceAppointments = false;
     initialServiceAppointments = [];
     @track records = [];
@@ -171,7 +157,9 @@ export default class Hot_openServiceAppointments extends LightningElement {
                 ...x,
                 isUrgent: x.HOT_IsUrgent__c,
                 startAndEndDateWeekday:
-                    this.formatDatetime(x.EarliestStartTime, x.DueDate) + ' ' + this.getDayOfWeek(x.EarliestStartTime),
+                    formatDatetimeinterval(x.EarliestStartTime, x.DueDate) +
+                    ' ' +
+                    this.getDayOfWeek(x.EarliestStartTime),
                 weekday: this.getDayOfWeek(x.EarliestStartTime)
             }));
 

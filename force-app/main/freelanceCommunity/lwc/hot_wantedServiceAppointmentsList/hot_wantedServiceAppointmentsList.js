@@ -8,7 +8,7 @@ import getServiceResource from '@salesforce/apex/HOT_Utility.getServiceResource'
 import { columns, inDetailsColumns, mobileColumns } from './columns';
 import { refreshApex } from '@salesforce/apex';
 import { defaultFilters, compare, setDefaultFilters } from './filters';
-import { formatRecord } from 'c/datetimeFormatterNorwegianTime';
+import { formatRecord, formatDatetimeinterval } from 'c/datetimeFormatterNorwegianTime';
 import Hot_wantedServiceAppointmentsListModal from 'c/hot_wantedServiceAppointmentsListModal';
 
 export default class Hot_wantedServiceAppointmentsList extends LightningElement {
@@ -117,21 +117,6 @@ export default class Hot_wantedServiceAppointmentsList extends LightningElement 
         }
         return dayOfWeekString;
     }
-    formatDatetime(Start, DueDate) {
-        const datetimeStart = new Date(Start);
-        const dayStart = datetimeStart.getDate().toString().padStart(2, '0');
-        const monthStart = (datetimeStart.getMonth() + 1).toString().padStart(2, '0');
-        const yearStart = datetimeStart.getFullYear();
-        const hoursStart = datetimeStart.getHours().toString().padStart(2, '0');
-        const minutesStart = datetimeStart.getMinutes().toString().padStart(2, '0');
-
-        const datetimeEnd = new Date(DueDate);
-        const hoursEnd = datetimeEnd.getHours().toString().padStart(2, '0');
-        const minutesEnd = datetimeEnd.getMinutes().toString().padStart(2, '0');
-
-        const formattedDatetime = `${dayStart}.${monthStart}.${yearStart} ${hoursStart}:${minutesStart} - ${hoursEnd}:${minutesEnd}`;
-        return formattedDatetime;
-    }
 
     @track serviceResource;
     @track serviceResourceId;
@@ -161,7 +146,9 @@ export default class Hot_wantedServiceAppointmentsList extends LightningElement 
                 weekday: this.getDayOfWeek(x.EarliestStartTime),
                 isUrgent: x.HOT_IsUrgent__c,
                 startAndEndDateWeekday:
-                    this.formatDatetime(x.EarliestStartTime, x.DueDate) + ' ' + this.getDayOfWeek(x.EarliestStartTime)
+                    formatDatetimeinterval(x.EarliestStartTime, x.DueDate) +
+                    ' ' +
+                    this.getDayOfWeek(x.EarliestStartTime)
             }));
             this.noServiceAppointments = this.allServiceAppointmentsWired.length === 0;
             let tempRecords = [];
