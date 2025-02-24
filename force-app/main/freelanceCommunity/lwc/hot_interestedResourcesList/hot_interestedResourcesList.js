@@ -10,7 +10,7 @@ import { refreshApex } from '@salesforce/apex';
 import { getParametersFromURL } from 'c/hot_URIDecoder';
 import { columns, mobileColumns, iconByValue } from './columns';
 import { defaultFilters, compare } from './filters';
-import { formatRecord } from 'c/datetimeFormatter';
+import { formatRecord } from 'c/datetimeFormatterNorwegianTime';
 import { NavigationMixin } from 'lightning/navigation';
 
 import Hot_interestedResourcesListModal from 'c/hot_interestedResourcesListModal';
