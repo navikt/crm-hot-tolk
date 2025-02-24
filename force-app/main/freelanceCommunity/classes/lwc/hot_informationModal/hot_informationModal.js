@@ -16,7 +16,7 @@ import getThreadIdWC from '@salesforce/apex/HOT_WageClaimListController.getThrea
 import getServiceResource from '@salesforce/apex/HOT_Utility.getServiceResource';
 import getWageClaimDetails from '@salesforce/apex/HOT_WageClaimListController.getWageClaimDetails';
 import refreshApex from '@salesforce/apex';
-import { formatDatetimeinterval, formatDateTime } from 'c/datetimeFormatterNorwegianTime';
+import { formatDatetimeinterval, formatDatetime } from 'c/datetimeFormatterNorwegianTime';
 import HOT_ConfirmationModal from 'c/hot_confirmationModal';
 
 export default class Hot_informationModal extends NavigationMixin(LightningModal) {
@@ -314,8 +314,8 @@ export default class Hot_informationModal extends NavigationMixin(LightningModal
                         result.EarliestStartTime,
                         result.DueDate
                     );
-                    this.serviceAppointment.ActualStartTime = formatDateTime(result.ActualStartTime);
-                    this.serviceAppointment.ActualEndTime = formatDateTime(result.ActualEndTime);
+                    this.serviceAppointment.ActualStartTime = formatDatetime(result.ActualStartTime);
+                    this.serviceAppointment.ActualEndTime = formatDatetime(result.ActualEndTime);
                     if (this.serviceAppointment.ActualStartTime.includes('NaN')) {
                         this.serviceAppointment.ActualStartTime = '';
                     }
