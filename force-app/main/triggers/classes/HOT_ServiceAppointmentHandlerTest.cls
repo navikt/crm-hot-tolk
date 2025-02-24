@@ -67,11 +67,10 @@ private class HOT_ServiceAppointmentHandlerTest {
 
     @IsTest
     public static void ownerOnThreadChangeServiceAppointmentTest() {
-        Group nordlandQueue = TestDataFactory.getQueue('HMS Troms og Finmark', 'queue_4718', 'Thread__c');
-        Group tromsOgFinnmarkQueue = TestDataFactory.getQueue('HMS Troms og Finmark', 'queue_4719', 'Thread__c');
-
         WorkType workType = HOT_TestDataFactory.createWorkType();
         insert workType;
+
+        Group tromsOgFinnmarkQueue = TestDataFactory.getQueue('HMS Troms og Finmark', 'queue_4719', 'Thread__c');
 
         HOT_Request__c request = HOT_TestDataFactory.createRequest('TEST', workType);
         insert request;

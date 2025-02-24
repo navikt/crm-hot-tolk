@@ -590,7 +590,6 @@ private class HOT_RequestHandlerTest {
         WorkType workType = HOT_TestDataFactory.createWorkType();
         insert workType;
 
-        Group nordlandQueue = TestDataFactory.getQueue('HMS Troms og Finmark', 'queue_4718', 'Thread__c');
         Group tromsOgFinnmarkQueue = TestDataFactory.getQueue('HMS Troms og Finmark', 'queue_4719', 'Thread__c');
 
         HOT_Request__c request = HOT_TestDataFactory.createRequest('TEST', workType);
@@ -601,19 +600,18 @@ private class HOT_RequestHandlerTest {
         thread.RecordTypeId = HOT_MessageHelper.getHOTThreadRecordType();
         thread.CRM_Related_Object__c = request.Id;
         thread.HOT_Request__c = request.Id;
-        thread.OwnerId = nordlandQueue.Id;
+        thread.OwnerId = request.OwnerId;
         insert thread;
 
-        thread = [SELECT OwnerId, HOT_Request__c FROM Thread__c WHERE HOT_Request__c = :request.Id];
-
         Test.startTest();
-        System.assertEquals(nordlandQueue.Id, thread.OwnerId, 'Owner was not set correctly');
+        thread = [SELECT OwnerId, HOT_Request__c FROM Thread__c WHERE HOT_Request__c = :request.Id];
+        System.assertEquals(request.OwnerId, thread.OwnerId, 'Owner was not set correctly');
 
         request.OwnerId = tromsOgFinnmarkQueue.Id;
         update request;
+        thread = [SELECT OwnerId, HOT_Request__c FROM Thread__c WHERE HOT_Request__c = :request.Id];
         Test.stopTest();
 
-        thread = [SELECT OwnerId, HOT_Request__c FROM Thread__c WHERE HOT_Request__c = :request.Id];
         System.assertEquals(tromsOgFinnmarkQueue.Id, thread.OwnerId, 'Owner was not set correctly');
     }
     @IsTest
