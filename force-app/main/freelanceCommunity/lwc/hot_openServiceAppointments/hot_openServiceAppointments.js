@@ -5,7 +5,7 @@ import getServiceResource from '@salesforce/apex/HOT_Utility.getServiceResource'
 import { columns, inDetailsColumns, mobileColumns } from './columns';
 import { refreshApex } from '@salesforce/apex';
 import { defaultFilters, compare, setDefaultFilters } from './filters';
-import { formatRecord } from 'c/datetimeFormatter';
+import { formatRecord } from 'c/datetimeFormatterNorwegianTime';
 import Hot_openServiceAppointmentsModal from 'c/hot_openServiceAppointmentsModal';
 
 export default class Hot_openServiceAppointments extends LightningElement {
