@@ -175,9 +175,9 @@ public without sharing class HOT_RequestHandler extends MyTriggers {
             updateWorkOrderAccount(requestsWithNewAccount);
         }
         if (requestsWithUpdatedDispatcher.size() > 0) {
-            Set<Id> requestId = new Set<Id>();
+            Set<Id> requestIds = new Set<Id>();
             for (HOT_Request__c request : requestsWithUpdatedDispatcher) {
-                requestId.add(request.Id);
+                requestIds.add(request.Id);
             }
             updateDispatcherOnThread(requestIds);
         }
