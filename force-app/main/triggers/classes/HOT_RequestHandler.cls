@@ -243,6 +243,8 @@ public without sharing class HOT_RequestHandler extends MyTriggers {
             update saList;
         }
     }
+
+    @Future
     public static void updateDispatcherOnThread(List<HOT_Request__c> requestsList) {
         Set<Id> requestIds = new Set<Id>();
         for (HOT_Request__c r : requestsList) {
