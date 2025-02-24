@@ -5,7 +5,7 @@ import Hot_informationModal from 'c/hot_informationModal';
 import { NavigationMixin } from 'lightning/navigation';
 import { columns, mobileColumns } from './columns';
 import { defaultFilters, compare } from './filters';
-import { formatRecord } from 'c/datetimeFormatter';
+import { formatRecord } from 'c/datetimeFormatterNorwegianTime';
 import { refreshApex } from '@salesforce/apex';
 import { getParametersFromURL } from 'c/hot_URIDecoder';
 
