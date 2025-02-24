@@ -2,6 +2,11 @@
 private class HOT_ServiceAppointmentHandlerTest {
     @testSetup
     static void setup() {
+        TestDataFactory.getPublicGroup('HMS Troms og Finmark', 'group_4719');
+        TestDataFactory.getQueue('HMS Troms og Finmark', 'queue_4719', 'Thread__c');
+        TestDataFactory.getPublicGroup('HMS Nordland', 'group_4718');
+        TestDataFactory.getQueue('HMS Nordland', 'queue_4718', 'Thread__c');
+
         OperatingHours operatingHours = HOT_TestDataFactory.createOperatingHours();
         insert operatingHours;
         ServiceTerritory serviceTerritory = HOT_TestDataFactory.createServiceTerritory(operatingHours);
@@ -67,7 +72,12 @@ private class HOT_ServiceAppointmentHandlerTest {
 
     @IsTest
     public static void ownerOnThreadChangeServiceAppointmentTest() {
-        Group tromsOgFinnmarkQueue = TestDataFactory.getQueue('HMS Troms og Finmark', 'queue_4719', 'Thread__c');
+        Group tromsOgFinnmarkQueue = [
+            SELECT Id, Name, DeveloperName
+            FROM Group
+            WHERE Type = 'Queue' AND DeveloperName = 'HMS Troms og Finmark'
+            LIMIT 1
+        ];
 
         WorkType workType = [SELECT Id FROM WorkType LIMIT 1];
 
