@@ -78,6 +78,7 @@ private class HOT_ServiceAppointmentHandlerTest {
 
     @IsTest
     static void setOwnerTest() {
+        Group moreQueue = TestDataFactory.getQueue('HMS Møre og Romsdal', 'queue_4715', 'HOT_Request__c');
         OperatingHours operatingHours = HOT_TestDataFactory.createOperatingHours();
         insert operatingHours;
         ServiceTerritory serviceTerritory = HOT_TestDataFactory.createServiceTerritory(operatingHours);
@@ -110,6 +111,7 @@ private class HOT_ServiceAppointmentHandlerTest {
         HOT_Request__c request = HOT_TestDataFactory.createRequest('HOT_ServiceAppointmentHandler', workType);
         request.PreferredResource1__c = resource.Id;
         request.NumberOfInterpreters__c = 3;
+        request.OwnerId = moreQueue.Id;
         insert request;
 
         request.Status__c = 'Godkjent';
@@ -321,7 +323,7 @@ private class HOT_ServiceAppointmentHandlerTest {
         Test.startTest();
         ServiceAppointment sa = [SELECT Id FROM ServiceAppointment LIMIT 1];
 
-        AssignedResource ar = HOT_TestDataFactory.createAssignedResource(sa.Id, resource.Id);
+        AssignedResource ar = HOT_TestDataFactory.createAssignedResource(sa.Id, serviceResource.Id);
         insert ar;
 
         sa.Status = 'Canceled';
@@ -374,7 +376,7 @@ private class HOT_ServiceAppointmentHandlerTest {
         Test.startTest();
         ServiceAppointment sa = [SELECT Id FROM ServiceAppointment LIMIT 1];
 
-        AssignedResource ar = HOT_TestDataFactory.createAssignedResource(sa.Id, resource.Id);
+        AssignedResource ar = HOT_TestDataFactory.createAssignedResource(sa.Id, serviceResource.Id);
         insert ar;
 
         sa.Status = 'Dispatched';
