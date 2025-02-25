@@ -578,7 +578,11 @@ private class HOT_RequestHandlerTest {
     public static void dispatcherOnThreadChangeRequest() {
         WorkType workType = HOT_TestDataFactory.createWorkType();
         insert workType;
+        Account acc = HOT_TestDataFactory.createAccount(true);
+        insert acc;
+
         HOT_Request__c request = HOT_TestDataFactory.createRequest('TEST', workType);
+        request.Account__c = acc.Id;
         insert request;
         Profile adminProfile = [
             SELECT Id, Name
@@ -608,7 +612,11 @@ private class HOT_RequestHandlerTest {
         WorkType workType = HOT_TestDataFactory.createWorkType();
         insert workType;
 
+        Account acc = HOT_TestDataFactory.createAccount(true);
+        insert acc;
+
         HOT_Request__c request = HOT_TestDataFactory.createRequest('TEST', workType);
+        request.Account__c = acc.Id;
         insert request;
 
         Thread__c thread = new Thread__c();
@@ -633,7 +641,10 @@ private class HOT_RequestHandlerTest {
     public static void dispatcherOnThreadChangeWorkOrder() {
         WorkType workType = HOT_TestDataFactory.createWorkType();
         insert workType;
+        Account acc = HOT_TestDataFactory.createAccount(true);
+        insert acc;
         HOT_Request__c request = HOT_TestDataFactory.createRequest('TEST', workType);
+        request.Account__c = acc.Id;
         insert request;
         WorkOrder workOrder1 = HOT_TestDataFactory.createWorkOrder(request, workType);
         insert workOrder1;
