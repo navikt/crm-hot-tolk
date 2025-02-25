@@ -478,7 +478,7 @@ private class HOT_ServiceAppointmentHandlerTest {
 
         AssignedResource assignedResource = HOT_TestDataFactory.createAssignedResource(
             serviceAppointment.Id,
-            resource.Id
+            serviceResource.Id
         );
         insert assignedResource;
 
@@ -494,7 +494,11 @@ private class HOT_ServiceAppointmentHandlerTest {
             WHERE Status__c = 'Tildelt'
         ];
         System.assertEquals(1, harList.size(), 'Det ble ikke opprette en Historically Assigned Resource');
-        System.assertEquals(resource.Id, harList[0].ServiceResource__c, 'HAR ble ikke knyttet til korrekt ressurs');
+        System.assertEquals(
+            serviceResource.Id,
+            harList[0].ServiceResource__c,
+            'HAR ble ikke knyttet til korrekt ressurs'
+        );
         System.assertEquals(
             serviceAppointment.Id,
             harList[0].ServiceAppointment__c,
@@ -545,7 +549,7 @@ private class HOT_ServiceAppointmentHandlerTest {
 
         AssignedResource assignedResource = HOT_TestDataFactory.createAssignedResource(
             serviceAppointment.Id,
-            resource.Id
+            serviceResource.Id
         );
         insert assignedResource;
 
@@ -572,7 +576,11 @@ private class HOT_ServiceAppointmentHandlerTest {
             WHERE Status__c = 'Tolk tatt av oppdraget'
         ];
         System.assertEquals(1, harList.size(), 'Det ble ikke opprette en Historically Assigned Resource');
-        System.assertEquals(resource.Id, harList[0].ServiceResource__c, 'HAR ble ikke knyttet til korrekt ressurs');
+        System.assertEquals(
+            serviceResource.Id,
+            harList[0].ServiceResource__c,
+            'HAR ble ikke knyttet til korrekt ressurs'
+        );
         System.assertEquals(
             serviceAppointment.Id,
             harList[0].ServiceAppointment__c,
@@ -642,7 +650,7 @@ private class HOT_ServiceAppointmentHandlerTest {
 
         AssignedResource assignedResource = HOT_TestDataFactory.createAssignedResource(
             serviceAppointment.Id,
-            resource.Id
+            serviceResource.Id
         );
         insert assignedResource;
 
@@ -657,7 +665,11 @@ private class HOT_ServiceAppointmentHandlerTest {
             WHERE Status__c = 'Tolk tatt av oppdraget'
         ];
         System.assertEquals(1, harList.size(), 'Det ble ikke opprette en Historically Assigned Resource');
-        System.assertEquals(resource.Id, harList[0].ServiceResource__c, 'HAR ble ikke knyttet til korrekt ressurs');
+        System.assertEquals(
+            serviceResource.Id,
+            harList[0].ServiceResource__c,
+            'HAR ble ikke knyttet til korrekt ressurs'
+        );
         System.assertEquals(
             serviceAppointment.Id,
             harList[0].ServiceAppointment__c,
@@ -953,6 +965,11 @@ private class HOT_ServiceAppointmentHandlerTest {
 
         WorkType workType = HOT_TestDataFactory.createWorkType();
         insert WorkType;
+
+        workType = HOT_TestDataFactory.createWorkType('BTV');
+        workType.HOT_DeveloperName__c = 'BTV';
+        insert WorkType;
+
         HOT_Request__c request = HOT_TestDataFactory.createRequest('HOT_ServiceAppointmentHandler', workType);
         request.PreferredResource1__c = resource.Id;
         request.NumberOfInterpreters__c = 3;
