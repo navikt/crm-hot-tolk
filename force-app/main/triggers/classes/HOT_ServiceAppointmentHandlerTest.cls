@@ -196,10 +196,12 @@ private class HOT_ServiceAppointmentHandlerTest {
         update request;
 
         ServiceAppointment serviceAppointment = [
-            SELECT Id, HOT_DispatcherNew__c
+            SELECT Id, HOT_DispatcherNew__c, Status
             FROM ServiceAppointment
             WHERE HOT_Request__c = :request.Id
         ];
+
+        serviceAppointment.Status = 'Dispatched';
 
         Thread__c thread = new Thread__c();
         thread.RecordTypeId = HOT_MessageHelper.getHOTThreadRecordType();

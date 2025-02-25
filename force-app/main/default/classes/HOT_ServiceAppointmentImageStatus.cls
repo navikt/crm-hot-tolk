@@ -19,7 +19,7 @@ public without sharing class HOT_ServiceAppointmentImageStatus implements Databa
             for (ServiceAppointment sa : records) {
                 sa.Status = 'Completed';
             }
-            
+
             try {
                 update records;
             } catch (Exception e) {
