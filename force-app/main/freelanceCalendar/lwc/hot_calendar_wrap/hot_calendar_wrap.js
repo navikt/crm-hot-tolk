@@ -1,9 +1,12 @@
 import { LightningElement, track } from 'lwc';
+import icons from '@salesforce/resourceUrl/icons';
 
 export default class Hot_calendar_wrap extends LightningElement {
     @track showCalendar = false;
+    @track isUserInNorwegianTimeZone = true;
     @track buttonLabel = 'Kalender'; // Initial label
     static STATE_KEY = 'calendarWrapState';
+    warningicon = icons + '/warningicon.svg';
 
     toggleCalendar() {
         this.showCalendar = !this.showCalendar;
@@ -15,6 +18,7 @@ export default class Hot_calendar_wrap extends LightningElement {
     }
 
     connectedCallback() {
+        this.checkTimeZone();
         const state = sessionStorage.getItem(Hot_calendar_wrap.STATE_KEY);
         if (state != null) {
             const parsedState = JSON.parse(state);
@@ -28,5 +32,10 @@ export default class Hot_calendar_wrap extends LightningElement {
             showCalendar: this.showCalendar
         };
         sessionStorage.setItem(Hot_calendar_wrap.STATE_KEY, JSON.stringify(state));
+    }
+    checkTimeZone() {
+        const osloTime = new Date().toLocaleString('no-NB', { timeZone: 'Europe/Oslo' });
+        const userTime = new Date().toLocaleString('no-NB');
+        this.isUserInNorwegianTimeZone = osloTime === userTime;
     }
 }
