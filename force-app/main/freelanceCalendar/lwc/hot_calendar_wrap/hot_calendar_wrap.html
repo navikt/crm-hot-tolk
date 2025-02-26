@@ -1,10 +1,22 @@
 <template>
-    <div class="main">
-        <div class="content">
-            <button class="link" type="button" onclick={toggleCalendar}>
-                <h2 class="typo-undertittel">{buttonLabel}</h2>
-            </button>
+    <template lwc:if={isUserInNorwegianTimeZone}>
+        <div class="main">
+            <div class="content">
+                <button class="link" type="button" onclick={toggleCalendar}>
+                    <h2 class="typo-undertittel">{buttonLabel}</h2>
+                </button>
+            </div>
         </div>
-    </div>
+    </template>
+
+    <template lwc:else>
+        <div class="navno-dekorator alertstripe navno-dekorator alertstripe--advarsel">
+            <img class="navno-dekorator alertstripe__ikon" src={warningicon} alt="advarsel-ikon" />
+            <div class="alertstripe__tekst">
+                <p>Kalender er ikke tilgjengelig når du befinner deg utenfor norsk tidssone.</p>
+            </div>
+        </div>
+    </template>
+
     <c-hot_calendar lwc:if={showCalendar}></c-hot_calendar>
 </template>

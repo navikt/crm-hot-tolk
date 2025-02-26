@@ -16,6 +16,7 @@ import getThreadIdWC from '@salesforce/apex/HOT_WageClaimListController.getThrea
 import getServiceResource from '@salesforce/apex/HOT_Utility.getServiceResource';
 import getWageClaimDetails from '@salesforce/apex/HOT_WageClaimListController.getWageClaimDetails';
 import refreshApex from '@salesforce/apex';
+import { formatDatetimeinterval, formatDatetime } from 'c/datetimeFormatterNorwegianTime';
 import HOT_ConfirmationModal from 'c/hot_confirmationModal';
 
 export default class Hot_informationModal extends NavigationMixin(LightningModal) {
@@ -284,22 +285,10 @@ export default class Hot_informationModal extends NavigationMixin(LightningModal
         this.isLoading = true;
         getWageClaimDetails({ recordId: recordId }).then((result) => {
             this.wageClaim = result;
-            let startTimeFormatted = new Date(this.wageClaim.StartTime__c);
-            let endTimeFormatted = new Date(this.wageClaim.EndTime__c);
-            this.wageClaim.StartAndEndDate =
-                startTimeFormatted.getDate() +
-                '.' +
-                (startTimeFormatted.getMonth() + 1) +
-                '.' +
-                startTimeFormatted.getFullYear() +
-                ', ' +
-                ('0' + startTimeFormatted.getHours()).substr(-2) +
-                ':' +
-                ('0' + startTimeFormatted.getMinutes()).substr(-2) +
-                ' - ' +
-                ('0' + endTimeFormatted.getHours()).substr(-2) +
-                ':' +
-                ('0' + endTimeFormatted.getMinutes()).substr(-2);
+            this.wageClaim.StartAndEndDate = formatDatetimeinterval(
+                this.wageClaim.StartTime__c,
+                this.wageClaim.EndTime__c
+            );
             this.isWCDetails = true;
             this.isLoading = false;
         });
@@ -321,50 +310,12 @@ export default class Hot_informationModal extends NavigationMixin(LightningModal
                     this.ordererPhoneNumber = '';
                     this.ownerName = '';
                     this.serviceAppointment = result;
-                    let startTimeFormatted = new Date(result.EarliestStartTime);
-                    let endTimeFormatted = new Date(result.DueDate);
-                    this.serviceAppointment.StartAndEndDate =
-                        startTimeFormatted.getDate() +
-                        '.' +
-                        (startTimeFormatted.getMonth() + 1) +
-                        '.' +
-                        startTimeFormatted.getFullYear() +
-                        ', ' +
-                        ('0' + startTimeFormatted.getHours()).substr(-2) +
-                        ':' +
-                        ('0' + startTimeFormatted.getMinutes()).substr(-2) +
-                        ' - ' +
-                        ('0' + endTimeFormatted.getHours()).substr(-2) +
-                        ':' +
-                        ('0' + endTimeFormatted.getMinutes()).substr(-2);
-                    let actualstartTimeFormatted = new Date(result.ActualStartTime);
-                    let actualendTimeFormatted = new Date(result.ActualEndTime);
-                    this.serviceAppointment.ActualStartTime =
-                        actualstartTimeFormatted.getDate() +
-                        '.' +
-                        (actualstartTimeFormatted.getMonth() + 1) +
-                        '.' +
-                        actualstartTimeFormatted.getFullYear() +
-                        ' ' +
-                        ('0' + actualstartTimeFormatted.getHours()).substr(-2) +
-                        ':' +
-                        ('0' + actualstartTimeFormatted.getMinutes()).substr(-2);
-                    this.serviceAppointment.ActualEndTime =
-                        actualendTimeFormatted.getDate() +
-                        '.' +
-                        (actualendTimeFormatted.getMonth() + 1) +
-                        '.' +
-                        actualendTimeFormatted.getFullYear() +
-                        ' ' +
-                        ('0' + actualendTimeFormatted.getHours()).substr(-2) +
-                        ':' +
-                        ('0' + actualendTimeFormatted.getMinutes()).substr(-2);
-                    if (this.serviceAppointment.ActualStartTime.includes('NaN')) {
-                        this.serviceAppointment.ActualStartTime = '';
-                    }
-                    if (this.serviceAppointment.ActualEndTime.includes('NaN')) {
-                        this.serviceAppointment.ActualEndTime = '';
-                    }
+                    this.serviceAppointment.StartAndEndDate = formatDatetimeinterval(
+                        result.EarliestStartTime,
+                        result.DueDate
+                    );
+                    this.serviceAppointment.ActualStartTime = formatDatetime(result.ActualStartTime);
+                    this.serviceAppointment.ActualEndTime = formatDatetime(result.ActualEndTime);
                     if (
                         this.serviceAppointment &&
                         this.serviceAppointment.HOT_Request__r &&
