@@ -390,12 +390,6 @@ export default class hot_messagingCommunityThreadViewer extends NavigationMixin(
                         );
                         this.serviceAppointment.ActualStartTime = formatDatetime(result.ActualStartTime);
                         this.serviceAppointment.ActualEndTime = formatDatetime(result.ActualEndTime);
-                        if (this.serviceAppointment.ActualStartTime.includes('NaN')) {
-                            this.serviceAppointment.ActualStartTime = '';
-                        }
-                        if (this.serviceAppointment.ActualEndTime.includes('NaN')) {
-                            this.serviceAppointment.ActualEndTime = '';
-                        }
                         if (
                             this.serviceAppointment &&
                             this.serviceAppointment.HOT_Request__r &&
@@ -485,9 +479,6 @@ export default class hot_messagingCommunityThreadViewer extends NavigationMixin(
                             (DeadlineDateTimeFormatted.getMonth() + 1) +
                             '.' +
                             DeadlineDateTimeFormatted.getFullYear();
-                        if (this.interestedResource.AppointmentDeadlineDate__c.includes('NaN')) {
-                            this.interestedResource.AppointmentDeadlineDate__c = '';
-                        }
                         let relaseDateTimeFormatted = new Date(
                             this.interestedResource.ServiceAppointment__r.HOT_ReleaseDate__c
                         );
@@ -497,9 +488,6 @@ export default class hot_messagingCommunityThreadViewer extends NavigationMixin(
                             (relaseDateTimeFormatted.getMonth() + 1) +
                             '.' +
                             relaseDateTimeFormatted.getFullYear();
-                        if (this.interestedResource.ServiceAppointment__r.HOT_ReleaseDate__c.includes('NaN')) {
-                            this.interestedResource.ServiceAppointment__r.HOT_ReleaseDate__c = '';
-                        }
                         this.isIRDetails = true;
                         this.template.querySelector('.serviceAppointmentDetails').classList.remove('hidden');
                     });
