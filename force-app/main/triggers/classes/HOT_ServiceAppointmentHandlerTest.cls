@@ -947,24 +947,25 @@ private class HOT_ServiceAppointmentHandlerTest {
 
         HOT_Request__c request = HOT_TestDataFactory.createRequest('HOT_ServiceAppointmentHandler', workType);
         request.Type__c = 'ImageInterpreter';
+        request.AssignmentType__c = 'Image Interpreter';
         insert request;
 
         request.Status__c = 'Godkjent';
-        Test.startTest();
         update request;
-        Test.stopTest();
 
-        serviceAppointment = [
-            SELECT Id, Street, PostalCode, City, Country, HOT_IsImageInterpreter__c
-            FROM serviceAppointment
-            WHERE Id = :serviceAppointment.Id
+        List<ServiceAppointment> serviceAppointment = [
+            SELECT Id, Street, PostalCode, City, Country, HOT_AssignmentType__c, HOT_IsImageInterpreter__c
+            FROM ServiceAppointment
+            LIMIT 1
         ];
 
-        System.assertEquals('N/A', serviceAppointment.Street, 'Could not set street to N/A');
-        System.assertEquals('N/A', serviceAppointment.PostalCode, 'Could not set postal code to N/A');
-        System.assertEquals('N/A', serviceAppointment.City, 'Could not set City to N/A');
-        System.assertEquals('Norge', serviceAppointment.Country, 'Could not set cuntry to Norge');
-        System.assertEquals(serviceAppointment.HOT_IsImageInterpreter__c, true, 'Could not set imgint');
+        System.assertEquals(1, serviceAppointment.size(), 'Could not set street to N/A');
+        System.assertEquals('Bildetolkvakt', serviceAppointment[0].HOT_AssignmentType__c, 'Could not set type');
+        System.assertEquals('N/A', serviceAppointment[0].Street, 'Could not set type');
+        System.assertEquals('N/A', serviceAppointment[0].PostalCode, 'Could not set postal code to N/A');
+        System.assertEquals('N/A', serviceAppointment[0].City, 'Could not set City to N/A');
+        System.assertEquals('Norge', serviceAppointment[0].Country, 'Could not set cuntry to Norge');
+        System.assertEquals(serviceAppointment[0].HOT_IsImageInterpreter__c, true, 'Could not set imgint');
     }
 
     @IsTest
@@ -1017,7 +1018,7 @@ private class HOT_ServiceAppointmentHandlerTest {
         update serviceAppointment;
         serviceAppointment = [
             SELECT Id, ActualStartTime, ActualEndTime, SchedStartTime, SchedEndTime, HOT_IsImageInterpreter__c
-            FROM serviceAppointment
+            FROM ServiceAppointment
             WHERE Id = :serviceAppointment.Id
         ];
         System.assertEquals(
