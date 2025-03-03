@@ -3,14 +3,13 @@ import getInterestedResources from '@salesforce/apex/HOT_InterestedResourcesList
 import getMyThreads from '@salesforce/apex/HOT_ThreadListController.getMyThreadsIR';
 import getInterestedResourceDetails from '@salesforce/apex/HOT_InterestedResourcesListController.getInterestedResourceDetails';
 import checkAccessToSA from '@salesforce/apex/HOT_InterestedResourcesListController.checkAccessToSA';
-
+import { formatRecord, formatDatetimeinterval } from 'c/datetimeFormatterNorwegianTime';
 import getContactId from '@salesforce/apex/HOT_MessageHelper.getUserContactId';
 import getServiceResource from '@salesforce/apex/HOT_Utility.getServiceResource';
 import { refreshApex } from '@salesforce/apex';
 import { getParametersFromURL } from 'c/hot_URIDecoder';
 import { columns, mobileColumns, iconByValue } from './columns';
 import { defaultFilters, compare } from './filters';
-import { formatRecord } from 'c/datetimeFormatter';
 import { NavigationMixin } from 'lightning/navigation';
 
 import Hot_interestedResourcesListModal from 'c/hot_interestedResourcesListModal';
@@ -160,7 +159,7 @@ export default class Hot_interestedResourcesList extends NavigationMixin(Lightni
                             ...appointment,
                             IsUnreadMessage: status,
                             startAndEndDateWeekday:
-                                this.formatDatetime(
+                                formatDatetimeinterval(
                                     appointment.ServiceAppointmentStartTime__c,
                                     appointment.ServiceAppointmentEndTime__c
                                 ) +
@@ -191,22 +190,6 @@ export default class Hot_interestedResourcesList extends NavigationMixin(Lightni
         //this.sendRecords();
         this.sendFilters();
         this.applyFilter({ detail: { filterArray: this.filters, setRecords: true } });
-    }
-
-    formatDatetime(Start, DueDate) {
-        const datetimeStart = new Date(Start);
-        const dayStart = datetimeStart.getDate().toString().padStart(2, '0');
-        const monthStart = (datetimeStart.getMonth() + 1).toString().padStart(2, '0');
-        const yearStart = datetimeStart.getFullYear();
-        const hoursStart = datetimeStart.getHours().toString().padStart(2, '0');
-        const minutesStart = datetimeStart.getMinutes().toString().padStart(2, '0');
-
-        const datetimeEnd = new Date(DueDate);
-        const hoursEnd = datetimeEnd.getHours().toString().padStart(2, '0');
-        const minutesEnd = datetimeEnd.getMinutes().toString().padStart(2, '0');
-
-        const formattedDatetime = `${dayStart}.${monthStart}.${yearStart} ${hoursStart}:${minutesStart} - ${hoursEnd}:${minutesEnd}`;
-        return formattedDatetime;
     }
 
     datetimeFields = [

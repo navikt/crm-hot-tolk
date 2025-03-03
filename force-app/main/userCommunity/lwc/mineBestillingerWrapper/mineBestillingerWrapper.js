@@ -18,7 +18,7 @@ import WORKORDER_NOTIFY_DISPATCHER from '@salesforce/schema/WorkORder.HOT_IsNoti
 import WORKORDER_STATUS from '@salesforce/schema/WorkOrder.Status';
 import WORKORDER_ID from '@salesforce/schema/WorkOrder.Id';
 import { refreshApex } from '@salesforce/apex';
-import { formatRecord } from 'c/datetimeFormatter';
+import { formatRecord } from 'c/datetimeFormatterNorwegianTime';
 import { updateRecord } from 'lightning/uiRecordApi';
 
 export default class MineBestillingerWrapper extends NavigationMixin(LightningElement) {

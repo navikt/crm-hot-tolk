@@ -3,7 +3,7 @@ import { refreshApex } from '@salesforce/apex';
 import getMyWageClaims from '@salesforce/apex/HOT_WageClaimListController.getMyWageClaims';
 import { columns, mobileColumns } from './columns';
 import { NavigationMixin } from 'lightning/navigation';
-import { formatRecord } from 'c/datetimeFormatter';
+import { formatRecord } from 'c/datetimeFormatterNorwegianTime';
 import { defaultFilters, compare } from './filters';
 import HOT_informationModal from 'c/hot_informationModal';
 export default class Hot_wageClaimList extends NavigationMixin(LightningElement) {
