@@ -2,6 +2,7 @@ public without sharing class HOT_WorkOrderHandler extends MyTriggers {
     private class WorkOrderException extends Exception {
     }
 
+    @Future
     private static void handleException(Exception e) {
         LoggerUtility logger = new LoggerUtility();
         logger.exception(e, CRM_ApplicationDomain.Domain.HOT);
