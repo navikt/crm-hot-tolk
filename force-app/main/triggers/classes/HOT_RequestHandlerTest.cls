@@ -671,10 +671,12 @@ private class HOT_RequestHandlerTest {
     }
     @IsTest
     public static void dispatcherOnThreadChangeSA() {
+        Account account = HOT_TestDataFactory.createAccount(true);
+        insert account;
         WorkType workType = HOT_TestDataFactory.createWorkType();
         insert workType;
         HOT_Request__c request = HOT_TestDataFactory.createRequest('TEST', workType);
-        request.Account__c = HOT_TestDataFactory.createAccount(true);
+        request.Account__c = account.Id;
         insert request;
         WorkOrder workOrder = HOT_TestDataFactory.createWorkOrder(request, workType);
         insert workOrder;
@@ -706,10 +708,12 @@ private class HOT_RequestHandlerTest {
     }
     @IsTest
     public static void dispatcherOnThreadChangeIR() {
+        Account account = HOT_TestDataFactory.createAccount(true);
+        insert account;
         WorkType workType = HOT_TestDataFactory.createWorkType();
         insert workType;
         HOT_Request__c request = HOT_TestDataFactory.createRequest('TEST', workType);
-        request.Account__c = HOT_TestDataFactory.createAccount(true);
+        request.Account__c = account.Id;
         insert request;
         WorkOrder workOrder = HOT_TestDataFactory.createWorkOrder(request, workType);
         insert workOrder;
