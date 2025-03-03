@@ -141,10 +141,10 @@ public without sharing class HOT_RequestHandler extends MyTriggers {
                 requestsWithNewAccount.add(request);
             }
             if (
-                triggerOldMap.get(request.Id).get('Dispatcher__c') !== request.Dispatcher__c ||
-                triggerOldMap.get(request.Id).get('OwnerId') !== request.OwnerId &&
-                request.Account__c != null ||
-                request.Orderer__c != null
+                (triggerOldMap.get(request.Id).get('Dispatcher__c') != request.Dispatcher__c ||
+                triggerOldMap.get(request.Id).get('OwnerId') != request.OwnerId) &&
+                (request.Account__c != null ||
+                request.Orderer__c != null)
             ) {
                 requestsWithUpdatedDispatcher.add(request);
             }
