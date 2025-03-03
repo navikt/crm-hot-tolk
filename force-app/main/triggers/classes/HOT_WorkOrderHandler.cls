@@ -1,14 +1,4 @@
 public without sharing class HOT_WorkOrderHandler extends MyTriggers {
-    private class WorkOrderException extends Exception {
-    }
-
-    @Future
-    private static void handleException(Exception e) {
-        LoggerUtility logger = new LoggerUtility();
-        logger.exception(e, CRM_ApplicationDomain.Domain.HOT);
-        logger.publishSynch();
-    }
-
     public override void onBeforeInsert() {
         setDefaultFields((List<WorkOrder>) records);
         setDuration((List<WorkOrder>) records);
@@ -55,10 +45,6 @@ public without sharing class HOT_WorkOrderHandler extends MyTriggers {
         for (WorkOrder workOrder : (List<WorkOrder>) records) {
             if (workOrder.HOT_Request__c == null) {
                 workOrdersWithoutRequests.add(workOrder.Id);
-                WorkOrderException woException = new WorkOrderException(
-                    'Request on Work Order should not be empty! Work Order details: ' + workOrder
-                );
-                handleException(woException);
             }
 
             requestIds.add(workOrder.HOT_Request__c);
