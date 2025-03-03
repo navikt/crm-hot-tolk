@@ -258,6 +258,7 @@ public without sharing class HOT_ServiceAppointmentHandler extends MyTriggers {
         Map<Id, ServiceAppointment> oldServiceAppointmentsSchedTimeChanged = new Map<Id, ServiceAppointment>();
         Map<Id, ServiceAppointment> newServiceAppointmentsSchedTimeChanged = new Map<Id, ServiceAppointment>();
         Map<Id, ServiceAppointment> serviceAppointmentWithNewAssignedResource = new Map<Id, ServiceAppointment>();
+        List<ServiceAppointment> serviceAppointmentsWithUpdatedOwnerOrDispatcher = new List<ServiceAppointment>();
 
         for (ServiceAppointment serviceAppointment : (List<ServiceAppointment>) records) {
             if (
@@ -337,6 +338,14 @@ public without sharing class HOT_ServiceAppointmentHandler extends MyTriggers {
                 triggerOldMap.get(serviceAppointment.Id).get('HOT_ServiceResource__c') != null)
             ) {
                 serviceAppointmentWithNewAssignedResource.put(serviceAppointment.Id, serviceAppointment);
+            }
+
+            if (
+                triggerOldMap.get(serviceAppointment.Id).get('OwnerId') != serviceAppointment.OwnerId ||
+                triggerOldMap.get(serviceAppointment.Id).get('HOT_DispatcherNew__c') !=
+                serviceAppointment.HOT_DispatcherNew__c
+            ) {
+                serviceAppointmentsWithUpdatedOwnerOrDispatcher.add(serviceAppointment);
             }
         }
 
@@ -419,10 +428,42 @@ public without sharing class HOT_ServiceAppointmentHandler extends MyTriggers {
             HOT_WageClaimService.updateWageClaimsFuture(serviceResourceByServiceAppointmentSchedTimeChanged.keySet());
         }
 
+        if (serviceAppointmentsWithUpdatedOwnerOrDispatcher.size() > 0) {
+            updateOwnerOrDispatcherOnThread(serviceAppointmentsWithUpdatedOwnerOrDispatcher);
+        }
+
         HOT_ServiceAppointmentNotification.resourceServiceAppointmentChanged(
             (List<ServiceAppointment>) records,
             triggerOldMap
         );
+    }
+
+    public static void updateOwnerOrDispatcherOnThread(List<ServiceAppointment> records) {
+        Map<Id, Map<Id, Id>> serviceAppointmentWithOwnerDispatcher = new Map<Id, Map<Id, Id>>();
+        Set<Id> saIds = new Set<Id>();
+
+        for (ServiceAppointment sa : records) {
+            saIds.add(sa.Id);
+            serviceAppointmentWithOwnerDispatcher.put(sa.Id, new Map<Id, Id>{ sa.OwnerId => sa.HOT_DispatcherNew__c });
+        }
+        List<Thread__c> threadList = [
+            SELECT Id, CRM_Related_Object__c
+            FROM Thread__c
+            WHERE CRM_Related_Object__c IN :saIds
+        ];
+
+        for (Thread__c thread : threadList) {
+            Id relatedId = thread.CRM_Related_Object__c;
+
+            if (serviceAppointmentWithOwnerDispatcher.containsKey(relatedId)) {
+                Map<Id, Id> ownerAndDispatchers = serviceAppointmentWithOwnerDispatcher.get(relatedId);
+                if (ownerAndDispatchers.size() == 1) {
+                    thread.OwnerId = ownerAndDispatchers.keySet().iterator().next();
+                    thread.HOT_Dispatcher__c = ownerAndDispatchers.get(thread.OwnerId);
+                }
+            }
+        }
+        update threadList;
     }
 
     private static void setScheduledTimesToOldValues(
