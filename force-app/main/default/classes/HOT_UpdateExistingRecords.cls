@@ -1,16 +1,16 @@
 public class HOT_UpdateExistingRecords implements Database.Batchable<sObject> {
     public Database.QueryLocator start(Database.BatchableContext bc) {
         return Database.getQueryLocator(
-            'SELECT City, Street, Country, PostalCode, Status FROM ServiceAppointment WHERE SchedStartTime > 2021-12-01T00:00:00.000+00:00 AND SchedStartTime < 2024-12-01T00:00:00.000+00:00 AND Status = \'Dispatched\' AND HOT_Processed__c = false AND HOT_IsReleasedToFreelance__c = true'
+            'SELECT Id, Subject,  Street, City, PostalCode FROM ServiceAppointment WHERE HOT_AssignmentType__c = \'Bildetolkvakt\' AND (Street = \'\' OR City = \'\' OR PostalCode = \'\') AND CreatedDate >= LAST_N_DAYS:365'
         );
     }
 
     public void execute(Database.BatchableContext bc, List<ServiceAppointment> records) {
         for (ServiceAppointment sa : records) {
-            sa.Country = sa.Country == null ? 'Norge' : sa.Country;
-            sa.City = sa.City == null ? 'N/A' : sa.City;
-            sa.Street = sa.Street == null ? 'N/A' : sa.Street;
-            sa.PostalCode = sa.PostalCode == null ? 'N/A' : sa.PostalCode;
+            sa.Country = 'Norge';
+            sa.City = 'N/A';
+            sa.Street = 'N/A';
+            sa.PostalCode = 'N/A';
         }
         update records;
     }
