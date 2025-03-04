@@ -73,6 +73,8 @@ export default class Hot_informationModal extends NavigationMixin(LightningModal
     }
 
     connectedCallback() {
+        document.body.style.overflow = 'hidden';
+
         if (this.type == 'WC') {
             this.isLoading = true;
             if (this.fromUrlRedirect == true) {
@@ -87,6 +89,9 @@ export default class Hot_informationModal extends NavigationMixin(LightningModal
                 this.goToRecordDetailsSA(this.recordId, this.records);
             }
         }
+    }
+    disconnectedCallback() {
+        document.body.style.overflow = '';
     }
 
     async showModalRetract() {
