@@ -15,6 +15,9 @@
     max-height: 100vh;
     box-sizing: border-box;
 }
+.files-container {
+    margin-top: 1rem;
+}
 
 .flow-container {
     margin: 2rem 0;

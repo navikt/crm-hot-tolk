@@ -110,6 +110,15 @@
                                 <p if:true={serviceAppointment.HOT_Dispatcher__c}>
                                     Formidler: <span>{serviceAppointment.HOT_Dispatcher__c}</span>
                                 </p>
+                                <div class="files-container">
+                                    <c-record-files-with-sharing
+                                        record-id={serviceAppointment.Id}
+                                        is-get-all="true"
+                                        is-delete-option="false"
+                                        title="Vedlegg"
+                                        delete-file-on-button-click="false"
+                                    ></c-record-files-with-sharing>
+                                </div>
                             </div>
                             <div
                                 style="display: inline-block; padding-right: 1vw; padding-bottom: 1vw; padding-top: 1vw"
