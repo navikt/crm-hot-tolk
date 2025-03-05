@@ -206,7 +206,6 @@ export default class Hot_openServiceAppointments extends LightningElement {
             records: this.records
         });
         if (success) {
-            console.log('dette fungerte jaja');
             refreshApex(this.wiredAllServiceAppointmentsResult);
         }
     }
