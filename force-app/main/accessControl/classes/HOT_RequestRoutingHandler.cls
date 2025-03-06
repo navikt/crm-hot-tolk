@@ -249,10 +249,10 @@ public class HOT_RequestRoutingHandler extends MyTriggers {
         if (this.persons == null) {
             Set<Id> accountIds = new Set<Id>();
             for (HOT_Request__c request : (List<HOT_Request__c>) records) {
-                if (request.Orderer__c != null) {
-                    accountIds.add(request.Orderer__c);
-                } else if (request.Account__c != null) {
+                if (request.Account__c != null) {
                     accountIds.add(request.Account__c);
+                } else {
+                    accountIds.add(request.Orderer__c);
                 }
             }
             this.persons = [
