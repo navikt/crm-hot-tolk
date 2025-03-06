@@ -4,6 +4,8 @@ private class HOT_RequestRoutingHandlerTest {
     static void makeData() {
         TestDataFactory.getPublicGroup('HMS Troms og Finmark', 'group_4719');
         TestDataFactory.getQueue('HMS Troms og Finmark', 'queue_4719', 'HOT_Request__c');
+        TestDataFactory.getPublicGroup('NAV Tolketjeneste Oslo', 'group_4703');
+        TestDataFactory.getQueue('NAV Tolketjeneste Oslo', 'queue_4703', 'HOT_Request__c');
         User user = [SELECT Id, Department FROM User WHERE Id = :UserInfo.getUserId()];
         user.Department = '4719';
         update user;
@@ -24,6 +26,38 @@ private class HOT_RequestRoutingHandlerTest {
 
         Id queueId = [SELECT Id FROM Group WHERE DeveloperName = 'queue_4719' LIMIT 1].Id;
         System.assertEquals(queueId, [SELECT OwnerId FROM HOT_Request__c WHERE Id = :request.Id].OwnerId);
+    }
+
+    @IsTest
+    private static void testRequestRoutingWhenAccountDifferFromOrdererRegion() {
+        Person__c personTromso = HOT_TestDataFactory.createPerson();
+        personTromso.INT_FirstName__c = 'Tromso';
+        personTromso.INT_LastName__c = 'User';
+        personTromso.INT_MunicipalityNumber__c = '5501';
+        insert personTromso;
+        Account accountTromso = [SELECT Id FROM Account WHERE FirstName = :personTromso.INT_FirstName__c LIMIT 1];
+
+        Person__c personOslo = HOT_TestDataFactory.createPerson();
+        personOslo.INT_FirstName__c = 'Oslo';
+        personOslo.INT_LastName__c = 'User';
+        personOslo.INT_MunicipalityNumber__c = '0301';
+        insert personOslo;
+        Account accountOslo = [SELECT Id FROM Account WHERE FirstName = :personOslo.INT_FirstName__c LIMIT 1];
+
+        WorkType workType = HOT_TestDataFactory.createWorkType();
+        insert workType;
+        HOT_Request__c request = HOT_TestDataFactory.createRequest('TEST', workType);
+        request.Account__c = accountOslo.Id;
+        request.Orderer__c = accountTromso.Id;
+        Test.startTest();
+        insert request;
+        Test.stopTest();
+
+        Id queueOrdererId = [SELECT Id FROM Group WHERE DeveloperName = 'queue_4719' LIMIT 1].Id;
+        Id queueAccountId = [SELECT Id FROM Group WHERE DeveloperName = 'queue_4703' LIMIT 1].Id;
+        Id orderedOnBehalfRequestOwnersId = [SELECT OwnerId FROM HOT_Request__c WHERE Id = :request.Id].OwnerId;
+        System.assertNotEquals(queueOrdererId, orderedOnBehalfRequestOwnersId);
+        System.assertEquals(queueAccountId, orderedOnBehalfRequestOwnersId);
     }
 
     @IsTest
