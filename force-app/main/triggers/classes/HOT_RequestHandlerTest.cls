@@ -605,6 +605,7 @@ private class HOT_RequestHandlerTest {
         Thread__c t = [SELECT HOT_Dispatcher__c FROM Thread__c WHERE Id = :thread.Id];
         System.AssertEquals(admin.Id, t.HOT_Dispatcher__c);
     }
+
     @IsTest
     public static void ownerOnThreadChangeRequest() {
         Group moreQueue = TestDataFactory.getQueue('HMS Møre og Romsdal', 'queue_4715', 'Thread__c');
@@ -636,6 +637,38 @@ private class HOT_RequestHandlerTest {
         thread = [SELECT OwnerId, HOT_Request__c FROM Thread__c WHERE HOT_Request__c = :request.Id];
 
         System.assertEquals(vikenQueue.Id, thread.OwnerId, 'Owner was not set correctly');
+    }
+
+    @IsTest
+    public static void archiveAsOwnerShouldNotAffectRelatedThread() {
+        Group moreQueue = TestDataFactory.getQueue('HMS Møre og Romsdal', 'queue_4715', 'Thread__c');
+        Group archive = [SELECT Id FROM Group WHERE Type = 'Queue' AND Name = 'HOT Arkiv' LIMIT 1];
+        WorkType workType = HOT_TestDataFactory.createWorkType();
+        insert workType;
+        HOT_Request__c request = HOT_TestDataFactory.createRequest('TEST', workType);
+        request.OwnerId = moreQueue.Id;
+        insert request;
+
+        Thread__c thread = new Thread__c();
+        thread.RecordTypeId = HOT_MessageHelper.getHOTThreadRecordType();
+        thread.CRM_Related_Object__c = request.Id;
+        thread.HOT_Request__c = request.Id;
+        thread.OwnerId = moreQueue.Id;
+        insert thread;
+
+        Test.startTest();
+        request.HOT_DelPol_IsHideRecord__c = true;
+        update request;
+        Test.stopTest();
+
+        HOT_Request__c updatedRequest = [SELECT Id, OwnerId FROM HOT_Request__c WHERE Id = :request.Id LIMIT 1];
+        thread = [SELECT OwnerId FROM Thread__c WHERE HOT_Request__c = :request.Id];
+        System.assertEquals(
+            archive.Id,
+            updatedRequest.OwnerId,
+            'The owner was not changed to "HOT Arkiv" as expected.'
+        );
+        System.assertNotEquals(archive.Id, thread.OwnerId, 'The owner was updated to archive.');
     }
     @IsTest
     public static void dispatcherOnThreadChangeWorkOrder() {

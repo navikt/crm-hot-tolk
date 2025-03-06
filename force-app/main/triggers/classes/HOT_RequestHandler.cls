@@ -143,6 +143,7 @@ public without sharing class HOT_RequestHandler extends MyTriggers {
             if (
                 (triggerOldMap.get(request.Id).get('Dispatcher__c') != request.Dispatcher__c ||
                 triggerOldMap.get(request.Id).get('OwnerId') != request.OwnerId) &&
+                request.OwnerName__c != 'HOT Arkiv' &&
                 (request.Account__c != null ||
                 request.Orderer__c != null)
             ) {
