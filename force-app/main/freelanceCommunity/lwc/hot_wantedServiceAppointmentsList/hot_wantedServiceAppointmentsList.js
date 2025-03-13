@@ -201,7 +201,7 @@ export default class Hot_wantedServiceAppointmentsList extends LightningElement 
     async showServiceAppointmentDetails() {
         try {
             const modalResult = await Hot_wantedServiceAppointmentsListModal.open({
-                size: this.getModalSize(),
+                size: 'small',
                 serviceAppointment: this.serviceAppointment,
                 serviceResourceId: this.serviceResourceId
             });

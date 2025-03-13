@@ -239,7 +239,7 @@ export default class Hot_interestedResourcesList extends NavigationMixin(Lightni
         this.updateURL();
 
         await Hot_interestedResourcesListModal.open({
-            size: this.getModalSize(),
+            size: 'small',
             interestedResource: this.interestedResource,
             isNotRetractable: this.isNotRetractable,
             serviceResource: this.serviceResource
@@ -300,7 +300,7 @@ export default class Hot_interestedResourcesList extends NavigationMixin(Lightni
                         this.interestedResource.AppointmentDeadlineDate__c = '';
                     }
                     Hot_interestedResourcesListModal.open({
-                        size: this.getModalSize(),
+                        size: 'small',
                         description: 'Informasjon om oppdraget',
                         interestedResource: this.interestedResource,
                         isNotRetractable: this.isNotRetractable,

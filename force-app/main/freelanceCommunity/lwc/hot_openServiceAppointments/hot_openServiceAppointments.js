@@ -201,7 +201,7 @@ export default class Hot_openServiceAppointments extends LightningElement {
 
     async goToRecordDetails(result) {
         const { success, error } = await Hot_openServiceAppointmentsModal.open({
-            size: this.getModalSize(),
+            size: 'small',
             result: result,
             records: this.records
         });
@@ -279,7 +279,7 @@ export default class Hot_openServiceAppointments extends LightningElement {
 
     async showCommentPage(result) {
         const { success, error } = await Hot_openServiceAppointmentsModal.open({
-            size: this.getModalSize(),
+            size: 'small',
             records: this.records,
             result: result,
             serviceAppointmentCommentDetails: this.serviceAppointmentCommentDetails,
