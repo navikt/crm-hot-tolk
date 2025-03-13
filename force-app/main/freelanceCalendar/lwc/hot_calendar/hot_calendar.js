@@ -401,7 +401,7 @@ export default class LibsFullCalendar extends NavigationMixin(LightningElement) 
         switch (eventExtendedProps.type) {
             case 'COMPLETED_SERVICE_APPOINTMENT':
                 await HOT_informationModal.open({
-                    size: this.getModalSize(),
+                    size: 'small',
                     recordId: eventExtendedProps.recordId,
                     type: 'SA',
                     fromUrlRedirect: true
@@ -410,7 +410,7 @@ export default class LibsFullCalendar extends NavigationMixin(LightningElement) 
                 break;
             case 'SERVICE_APPOINTMENT':
                 await HOT_informationModal.open({
-                    size: this.getModalSize(),
+                    size: 'small',
                     recordId: eventExtendedProps.recordId,
                     type: 'SA',
                     fromUrlRedirect: true
@@ -419,7 +419,7 @@ export default class LibsFullCalendar extends NavigationMixin(LightningElement) 
                 break;
             case 'OPEN_WAGE_CLAIM':
                 await HOT_informationModal.open({
-                    size: this.getModalSize(),
+                    size: 'small',
                     recordId: eventExtendedProps.recordId,
                     type: 'WC',
                     fromUrlRedirect: true

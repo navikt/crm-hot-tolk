@@ -162,7 +162,7 @@ export default class Hot_myServiceAppointments extends NavigationMixin(Lightning
         let recordId = result.detail.Id;
         this.recordId = recordId;
         await Hot_informationModal.open({
-            size: this.getModalSize(),
+            size: 'small',
             recordId: this.recordId,
             type: 'SA',
             fromUrlRedirect: false,
@@ -178,7 +178,7 @@ export default class Hot_myServiceAppointments extends NavigationMixin(Lightning
         this.urlRedirect = true;
         this.updateURL();
         Hot_informationModal.open({
-            size: this.getModalSize(),
+            size: 'small',
             recordId: this.recordId,
             type: 'SA',
             fromUrlRedirect: true,

@@ -123,7 +123,7 @@ export default class Hot_wageClaimList extends NavigationMixin(LightningElement)
         this.recordId = recordId;
         // Open the modal and wait for it to close.
         await HOT_informationModal.open({
-            size: this.getModalSize(),
+            size: 'small',
             recordId: this.recordId,
             type: 'WC',
             fromUrlRedirect: false,
