@@ -811,11 +811,6 @@
         <readable>true</readable>
     </fieldPermissions>
     <fieldPermissions>
-        <editable>false</editable>
-        <field>Person__c.HOT_Gender__c</field>
-        <readable>true</readable>
-    </fieldPermissions>
-    <fieldPermissions>
         <editable>true</editable>
         <field>Person__c.HOT_IsReservationAgainstNotifications__c</field>
         <readable>true</readable>

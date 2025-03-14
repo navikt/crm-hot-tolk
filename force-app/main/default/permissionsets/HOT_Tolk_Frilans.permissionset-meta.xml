@@ -578,11 +578,6 @@
     </fieldPermissions>
     <fieldPermissions>
         <editable>false</editable>
-        <field>Person__c.HOT_Gender__c</field>
-        <readable>true</readable>
-    </fieldPermissions>
-    <fieldPermissions>
-        <editable>false</editable>
         <field>Person__c.HOT_HapticCommunication__c</field>
         <readable>true</readable>
     </fieldPermissions>
@@ -654,6 +649,11 @@
     <fieldPermissions>
         <editable>false</editable>
         <field>Person__c.INT_SecurityMeasures__c</field>
+        <readable>true</readable>
+    </fieldPermissions>
+    <fieldPermissions>
+        <editable>false</editable>
+        <field>Person__c.INT_Sex__c</field>
         <readable>true</readable>
     </fieldPermissions>
     <fieldPermissions>
