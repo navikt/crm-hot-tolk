@@ -226,14 +226,12 @@ export default class Hot_informationModal extends NavigationMixin(LightningModal
                     this.serviceAppointment.HOT_Request__r.Account__r.CRM_Person__r
                 ) {
                     if (this.serviceAppointment.HOT_Request__r.Account__r.CRM_Person__r.CRM_AgeNumber__c == undefined) {
-                        if (
-                            this.serviceAppointment.HOT_Request__r.Account__r.CRM_Person__r.HOT_Gender__c !== undefined
-                        ) {
+                        if (this.serviceAppointment.HOT_Request__r.Account__r.CRM_Person__r.INT_Sex__c !== undefined) {
                             this.accountAgeGender =
-                                this.serviceAppointment.HOT_Request__r.Account__r.CRM_Person__r.HOT_Gender__c;
+                                this.serviceAppointment.HOT_Request__r.Account__r.CRM_Person__r.INT_Sex__c;
                         }
                     } else if (
-                        this.serviceAppointment.HOT_Request__r.Account__r.CRM_Person__r.HOT_Gender__c == undefined
+                        this.serviceAppointment.HOT_Request__r.Account__r.CRM_Person__r.INT_Sex__c == undefined
                     ) {
                         if (
                             this.serviceAppointment.HOT_Request__r.Account__r.CRM_Person__r.CRM_AgeNumber__c !==
@@ -244,11 +242,11 @@ export default class Hot_informationModal extends NavigationMixin(LightningModal
                                 ' år';
                         }
                     } else if (
-                        this.serviceAppointment.HOT_Request__r.Account__r.CRM_Person__r.HOT_Gender__c !== undefined &&
+                        this.serviceAppointment.HOT_Request__r.Account__r.CRM_Person__r.INT_Sex__c !== undefined &&
                         this.serviceAppointment.HOT_Request__r.Account__r.CRM_Person__r.CRM_AgeNumber__c !== undefined
                     ) {
                         this.accountAgeGender =
-                            this.serviceAppointment.HOT_Request__r.Account__r.CRM_Person__r.HOT_Gender__c +
+                            this.serviceAppointment.HOT_Request__r.Account__r.CRM_Person__r.INT_Sex__c +
                             ' ' +
                             this.serviceAppointment.HOT_Request__r.Account__r.CRM_Person__r.CRM_AgeNumber__c +
                             ' år';
@@ -339,14 +337,13 @@ export default class Hot_informationModal extends NavigationMixin(LightningModal
                             undefined
                         ) {
                             if (
-                                this.serviceAppointment.HOT_Request__r.Account__r.CRM_Person__r.HOT_Gender__c !==
-                                undefined
+                                this.serviceAppointment.HOT_Request__r.Account__r.CRM_Person__r.INT_Sex__c !== undefined
                             ) {
                                 this.accountAgeGender =
-                                    this.serviceAppointment.HOT_Request__r.Account__r.CRM_Person__r.HOT_Gender__c;
+                                    this.serviceAppointment.HOT_Request__r.Account__r.CRM_Person__r.INT_Sex__c;
                             }
                         } else if (
-                            this.serviceAppointment.HOT_Request__r.Account__r.CRM_Person__r.HOT_Gender__c == undefined
+                            this.serviceAppointment.HOT_Request__r.Account__r.CRM_Person__r.INT_Sex__c == undefined
                         ) {
                             if (
                                 this.serviceAppointment.HOT_Request__r.Account__r.CRM_Person__r.CRM_AgeNumber__c !==
@@ -357,13 +354,12 @@ export default class Hot_informationModal extends NavigationMixin(LightningModal
                                     ' år';
                             }
                         } else if (
-                            this.serviceAppointment.HOT_Request__r.Account__r.CRM_Person__r.HOT_Gender__c !==
-                                undefined &&
+                            this.serviceAppointment.HOT_Request__r.Account__r.CRM_Person__r.INT_Sex__c !== undefined &&
                             this.serviceAppointment.HOT_Request__r.Account__r.CRM_Person__r.CRM_AgeNumber__c !==
                                 undefined
                         ) {
                             this.accountAgeGender =
-                                this.serviceAppointment.HOT_Request__r.Account__r.CRM_Person__r.HOT_Gender__c +
+                                this.serviceAppointment.HOT_Request__r.Account__r.CRM_Person__r.INT_Sex__c +
                                 ' ' +
                                 this.serviceAppointment.HOT_Request__r.Account__r.CRM_Person__r.CRM_AgeNumber__c +
                                 ' år';

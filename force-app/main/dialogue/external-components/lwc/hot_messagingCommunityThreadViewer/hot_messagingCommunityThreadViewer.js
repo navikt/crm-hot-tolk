@@ -408,15 +408,14 @@ export default class hot_messagingCommunityThreadViewer extends NavigationMixin(
                                 undefined
                             ) {
                                 if (
-                                    this.serviceAppointment.HOT_Request__r.Account__r.CRM_Person__r.HOT_Gender__c !==
+                                    this.serviceAppointment.HOT_Request__r.Account__r.CRM_Person__r.INT_Sex__c !==
                                     undefined
                                 ) {
                                     this.accountAgeGender =
-                                        this.serviceAppointment.HOT_Request__r.Account__r.CRM_Person__r.HOT_Gender__c;
+                                        this.serviceAppointment.HOT_Request__r.Account__r.CRM_Person__r.INT_Sex__c;
                                 }
                             } else if (
-                                this.serviceAppointment.HOT_Request__r.Account__r.CRM_Person__r.HOT_Gender__c ==
-                                undefined
+                                this.serviceAppointment.HOT_Request__r.Account__r.CRM_Person__r.INT_Sex__c == undefined
                             ) {
                                 if (
                                     this.serviceAppointment.HOT_Request__r.Account__r.CRM_Person__r.CRM_AgeNumber__c !==
@@ -427,13 +426,13 @@ export default class hot_messagingCommunityThreadViewer extends NavigationMixin(
                                             .CRM_AgeNumber__c + ' år';
                                 }
                             } else if (
-                                this.serviceAppointment.HOT_Request__r.Account__r.CRM_Person__r.HOT_Gender__c !==
+                                this.serviceAppointment.HOT_Request__r.Account__r.CRM_Person__r.INT_Sex__c !==
                                     undefined &&
                                 this.serviceAppointment.HOT_Request__r.Account__r.CRM_Person__r.CRM_AgeNumber__c !==
                                     undefined
                             ) {
                                 this.accountAgeGender =
-                                    this.serviceAppointment.HOT_Request__r.Account__r.CRM_Person__r.HOT_Gender__c +
+                                    this.serviceAppointment.HOT_Request__r.Account__r.CRM_Person__r.INT_Sex__c +
                                     ' ' +
                                     this.serviceAppointment.HOT_Request__r.Account__r.CRM_Person__r.CRM_AgeNumber__c +
                                     ' år';
