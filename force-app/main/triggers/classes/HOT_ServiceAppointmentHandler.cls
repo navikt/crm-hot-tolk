@@ -348,6 +348,10 @@ public without sharing class HOT_ServiceAppointmentHandler extends MyTriggers {
                 serviceAppointmentsWithUpdatedOwnerOrDispatcher.add(serviceAppointment);
             }
         }
+        HOT_ServiceAppointmentNotification.resourceServiceAppointmentChanged(
+            (List<ServiceAppointment>) records,
+            triggerOldMap
+        );
 
         if (serviceAppointmentsToRemoveAssignedResource.size() > 0) {
             removeAssignedResource(serviceAppointmentsToRemoveAssignedResource);
@@ -431,11 +435,6 @@ public without sharing class HOT_ServiceAppointmentHandler extends MyTriggers {
         if (serviceAppointmentsWithUpdatedOwnerOrDispatcher.size() > 0) {
             updateOwnerOrDispatcherOnThread(serviceAppointmentsWithUpdatedOwnerOrDispatcher);
         }
-
-        HOT_ServiceAppointmentNotification.resourceServiceAppointmentChanged(
-            (List<ServiceAppointment>) records,
-            triggerOldMap
-        );
     }
 
     public static void updateOwnerOrDispatcherOnThread(List<ServiceAppointment> records) {
