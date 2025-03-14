@@ -758,6 +758,24 @@ public without sharing class HOT_ReminderSMSService {
             handleException(e);
         }
     }
+    public static void sendSMSToInterpreterOnResourceRemoved(ServiceAppointment sa, ServiceResource sr) {
+        List<SMS__c> smsList = new List<SMS__c>();
+        SMS__c sms = new SMS__c();
+        sms.Domain__c = 'HOT';
+        sms.Type__c = 'Interpreter';
+        sms.Account__c = sr?.AccountId;
+        sms.ServiceAppointment__c = sa.Id;
+        sms.Recipient__c = sr?.HOT_MobilePhone__c;
+        sms.Message__c = constructMessageToInterpreter(sa, 'Removed');
+        if (SMS.Recipient__c != null) {
+            smsList.add(sms);
+        }
+        try {
+            HOT_DatabaseOperations.insertRecords(smsList);
+        } catch (Exception e) {
+            handleException(e);
+        }
+    }
     public static String constructOnNewWantedSR(String appointmentNumber) {
         String message = 'INFO\nDu er ønsket til et oppdrag. ' + appointmentNumber + '\n\n';
         message += 'For mer informasjon, se tolkebestilling.nav.no.\n';
