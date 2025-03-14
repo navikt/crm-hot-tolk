@@ -651,7 +651,7 @@ public without sharing class HOT_ServiceAppointmentNotification {
                 newNotification.HOT_RelatedObjectType__c = 'noServiceAppointment';
 
                 notificationList.add(newNotification);
-                HOT_ReminderSMSService.sendSMSToInterpreterOnAddressChanged(new Set<Id>{ serviceAppointment.Id });
+                HOT_ReminderSMSService.sendSMSToInterpreterOnResourceChanged(new Set<Id>{ serviceAppointment.Id });
             }
         }
         //inserting notifications
