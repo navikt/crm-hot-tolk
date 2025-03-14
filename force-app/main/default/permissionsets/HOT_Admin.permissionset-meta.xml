@@ -1180,7 +1180,7 @@
         <readable>true</readable>
     </fieldPermissions>
     <fieldPermissions>
-        <editable>true</editable>
+        <editable>false</editable>
         <field>Person__c.INT_Sex__c</field>
         <readable>true</readable>
     </fieldPermissions>
