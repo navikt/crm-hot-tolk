@@ -959,11 +959,11 @@ private class HOT_ServiceAppointmentHandlerTest {
             LIMIT 1
         ];
 
-        System.assertEquals(1, serviceAppointment.size(), 'Could not set street to N/A');
+        System.assertEquals(1, serviceAppointment.size(), 'Could not set street to -');
         System.assertEquals('Bildetolkvakt', serviceAppointment[0].HOT_AssignmentType__c, 'Could not set type');
-        System.assertEquals('N/A', serviceAppointment[0].Street, 'Could not set type');
-        System.assertEquals('N/A', serviceAppointment[0].PostalCode, 'Could not set postal code to N/A');
-        System.assertEquals('N/A', serviceAppointment[0].City, 'Could not set City to N/A');
+        System.assertEquals('-', serviceAppointment[0].Street, 'Could not set type');
+        System.assertEquals('-', serviceAppointment[0].PostalCode, 'Could not set postal code to -');
+        System.assertEquals('-', serviceAppointment[0].City, 'Could not set City to -');
         System.assertEquals('Norge', serviceAppointment[0].Country, 'Could not set cuntry to Norge');
         System.assertEquals(serviceAppointment[0].HOT_IsImageInterpreter__c, true, 'Could not set imgint');
     }

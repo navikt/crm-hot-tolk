@@ -617,7 +617,7 @@ public without sharing class HOT_ServiceAppointmentHandler extends MyTriggers {
                         serviceAppointment.HOT_AssignmentType__c == 'Bildetolkvakt' ||
                         serviceAppointment.HOT_IsScreenInterpreter__c
                     ) {
-                        serviceAppointment.City = 'N/A';
+                        serviceAppointment.City = '-';
                     }
                 }
                 if (
@@ -632,7 +632,7 @@ public without sharing class HOT_ServiceAppointmentHandler extends MyTriggers {
                         serviceAppointment.HOT_AssignmentType__c == 'Bildetolkvakt' ||
                         serviceAppointment.HOT_IsScreenInterpreter__c
                     ) {
-                        serviceAppointment.PostalCode = 'N/A';
+                        serviceAppointment.PostalCode = '-';
                     }
                 }
                 if (
@@ -646,7 +646,7 @@ public without sharing class HOT_ServiceAppointmentHandler extends MyTriggers {
                         serviceAppointment.HOT_AssignmentType__c == 'Bildetolkvakt' ||
                         serviceAppointment.HOT_IsScreenInterpreter__c
                     ) {
-                        serviceAppointment.Street = 'N/A';
+                        serviceAppointment.Street = '-';
                     }
                 }
                 if (
