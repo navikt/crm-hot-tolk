@@ -32,3 +32,23 @@ p {
 span {
     font-weight: normal;
 }
+.button-container {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.5vw;
+    margin-bottom: 1vw;
+    margin-top: 1vw;
+}
+
+.button-wrapper {
+    display: inline-block;
+    padding-right: 0.5vw;
+}
+
+@media (max-width: 576px) {
+    .button-wrapper {
+        display: block;
+        width: 100%;
+        margin-bottom: 1.5vw;
+    }
+}
