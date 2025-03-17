@@ -149,36 +149,33 @@
                                 ></lightning-flow>
                             </div>
                             <p>Samtale med:</p>
-                            <div style="padding-top: 0.5vw">
-                                <div style="display: inline-block; padding-right: 0.5vw">
+                            <div class="button-container">
+                                <div class="button-wrapper">
                                     <c-button
                                         button-styling="Primary"
                                         type="Submit"
                                         onbuttonclick={goToThreadFreelance}
                                         button-label="Bruker"
                                         disabled={isGoToThreadButtonDisabled}
-                                    >
-                                    </c-button>
+                                    ></c-button>
                                 </div>
-                                <div style="display: inline-block; padding-right: 0.5vw">
+                                <div class="button-wrapper">
                                     <c-button
                                         button-styling="Primary"
                                         type="Submit"
                                         onbuttonclick={goToThreadInterpreters}
                                         disabled={isGoToThreadInterpretersButtonDisabled}
                                         button-label="Medtolker"
-                                    >
-                                    </c-button>
+                                    ></c-button>
                                 </div>
-                                <div style="display: inline-block">
+                                <div class="button-wrapper">
                                     <c-button
                                         button-styling="Primary"
                                         type="Submit"
                                         onbuttonclick={goToThreadServiceAppointment}
                                         button-label="Formidler"
                                         disabled={isGoToThreadServiceAppointmentButtonDisabled}
-                                    >
-                                    </c-button>
+                                    ></c-button>
                                 </div>
                             </div>
                         </div>
