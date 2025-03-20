@@ -176,7 +176,7 @@
         <recordTriggerType>Create</recordTriggerType>
         <triggerType>RecordAfterSave</triggerType>
     </start>
-    <status>Draft</status>
+    <status>Active</status>
     <textTemplates>
         <description>Storing &quot;HOT_Request_Created&quot; in a String</description>
         <name>HOT_Request_Created_String</name>
