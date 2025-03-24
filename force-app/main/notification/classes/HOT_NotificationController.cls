@@ -108,6 +108,9 @@ public without sharing class HOT_NotificationController {
         if (saEvent == 'Removed') {
             relatedObjectType = 'noServiceAppointment';
         }
+        if (saEvent == 'Removed') {
+            relatedObjectType = 'serviceAppointment';
+        }
         return relatedObjectType;
     }
 }
