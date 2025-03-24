@@ -586,71 +586,36 @@ public without sharing class HOT_ServiceAppointmentNotification {
                 serviceAppointment.HOT_ServiceResource__r.HOT_NotificationChannel__c.contains('Push') ||
                 serviceAppointment.HOT_IsEmployedInterpreter__c
             ) {
+                /* PUSHVARSEL  */
                 Messaging.CustomNotification notification = new Messaging.CustomNotification();
                 notification.setTitle(
-                    serviceAppointment.AppointmentNumber +
-                    ' - ' +
-                    serviceAppointment.EarliestStartTime?.format('d.M.yyyy') +
-                    ' - ' +
-                    'Tatt av oppdraget'
+                    HOT_NotificationController.constructNotificationSubject(serviceAppointment, 'Removed', false)
                 );
                 notification.setBody(
-                    'Du er tatt av oppdraget ' +
-                    serviceAppointment.AppointmentNumber +
-                    ' som skulle starte ' +
-                    serviceAppointment.EarliestStartTime?.format('d.M.yyyy HH:mm')
+                    HOT_NotificationController.constructNotificationMessage(serviceAppointment, 'Removed', false)
                 );
                 if (!serviceAppointment.HOT_IsEmployedInterpreter__c) {
                     String targetPageRef = getTargetPageRefInterpreter('interested', serviceAppointment.Id);
                     notification.setTargetPageRef(targetPageRef);
                 }
-                //String targetPageRef = getTargetPageRefInterpreter('interested', getHARs(serviceAppointment.Id));
                 notification.setNotificationTypeId(notificationType.Id);
                 notification.setTargetId(serviceAppointment.Id);
 
                 HOT_NotificationHandler.sendNotification(notification, recipients, (SObject) serviceAppointment);
-                //creating notification object
-                if (this.getAccountIdByUserIdMap().get(serviceAppointment.HOT_AssignedResourceId__c) != null) {
-                    HOT_Notification__c newNotification = new HOT_Notification__c();
-                    Id account = this.getAccountIdByUserIdMap().get(serviceAppointment.HOT_AssignedResourceId__c);
-                    newNotification.HOT_Account__c = account;
-                    newNotification.HOT_NotificationChannel__c = 'Push-varsel i appen';
-                    newNotification.HOT_Subject__c =
-                        serviceAppointment.AppointmentNumber +
-                        ' - ' +
-                        serviceAppointment.EarliestStartTime?.format('d.M.yyyy') +
-                        ' - ' +
-                        'Tatt av oppdraget';
-                    newNotification.HOT_NotificationText__c =
-                        'Du er tatt av oppdraget ' +
-                        serviceAppointment.AppointmentNumber +
-                        ' som skulle starte ' +
-                        serviceAppointment.EarliestStartTime?.format('d.M.yyyy HH:mm');
-                    newNotification.HOT_RelatedObject__c = serviceAppointment.Id;
-                    newNotification.HOT_RelatedObjectType__c = 'noServiceAppointment';
-
-                    notificationList.add(newNotification);
+                if (serviceAppointment.HOT_AssignedResourceId__c != null) {
+                    notificationList.add(
+                        HOT_NotificationController.createNotificationServiceAppointment(
+                            serviceAppointment,
+                            'Removed',
+                            false
+                        )
+                    );
                 }
             } else {
-                HOT_Notification__c newNotification = new HOT_Notification__c();
-                Id account = this.getAccountIdByUserIdMap().get(serviceAppointment.HOT_AssignedResourceId__c);
-                newNotification.HOT_Account__c = account;
-                newNotification.HOT_NotificationChannel__c = 'SMS';
-                newNotification.HOT_Subject__c = 'INFO Du er tatt av oppdraget ' + serviceAppointment.AppointmentNumber;
-                newNotification.HOT_NotificationText__c =
-                    'Dato: ' +
-                    serviceAppointment.EarliestStartTime?.format('d.M.yyyy HH:mm') +
-                    ' - ' +
-                    serviceAppointment.DueDate?.format('HH:mm') +
-                    '.\n';
-                newNotification.HOT_NotificationText__c +=
-                    'For mer informasjon, se tolkebestilling.nav.no.\n' +
-                    'Du kan ikke svare på denne meldingen.\n' +
-                    'Mvh tolketjenesten i Nav';
-                newNotification.HOT_RelatedObject__c = serviceAppointment.Id;
-                newNotification.HOT_RelatedObjectType__c = 'noServiceAppointment';
-
-                notificationList.add(newNotification);
+                /* SMS */
+                notificationList.add(
+                    HOT_NotificationController.createNotificationServiceAppointment(serviceAppointment, 'Removed', true)
+                );
                 HOT_ReminderSMSService.sendSMSToInterpreterOnResourceChanged(new Set<Id>{ serviceAppointment.Id });
             }
         }
