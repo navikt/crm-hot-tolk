@@ -104,13 +104,16 @@ public without sharing class HOT_NotificationController {
     }
     //getting type used for navigation when clicking on the notification on experience site
     public static String getRelatedObjectType(String saEvent) {
-        String relatedObjectType = '';
-        if (saEvent == 'Removed') {
-            relatedObjectType = 'noServiceAppointment';
+        switch on saEvent {
+            when 'Removed' {
+                return 'noServiceAppointment';
+            }
+            when 'Dispatched' {
+                return 'serviceAppointment';
+            }
+            when else {
+                return '';
+            }
         }
-        if (saEvent == 'Dispatched') {
-            relatedObjectType = 'serviceAppointment';
-        }
-        return relatedObjectType;
     }
 }
