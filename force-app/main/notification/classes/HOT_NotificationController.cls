@@ -5,7 +5,7 @@ public without sharing class HOT_NotificationController {
         Boolean isSmsNotification
     ) {
         HOT_Notification__c notification = new HOT_Notification__c();
-        notification.HOT_ServiceResource__c = sa.HOT_AssignedResourceId__c;
+        notification.HOT_ServiceResource__c = sa.HOT_ServiceResource__r.Id;
         notification.HOT_NotificationChannel__c = isSmsNotification == true ? 'SMS' : 'Push-varsel i appen';
         notification.HOT_Subject__c = constructNotificationSubject(sa, saEvent, isSmsNotification);
         notification.HOT_NotificationText__c = constructNotificationMessage(sa, saEvent, isSmsNotification);
@@ -21,7 +21,44 @@ public without sharing class HOT_NotificationController {
     ) {
         String subject = '';
         if (isSmsNotification) {
-            return subject = HOT_ReminderSMSService.constructMessageToInterpreter(sa, saEvent);
+            subject = 'INFO\n';
+            if (saEvent == 'Dispatched') {
+                subject += 'Du er tildelt oppdraget ';
+            }
+            if (saEvent == 'Removed') {
+                subject += 'Du er tatt av oppdraget ';
+            }
+            subject += sa.AppointmentNumber;
+            if (saEvent == 'Address') {
+                subject +=
+                    ' ' +
+                    HOT_ReminderSMSService.formatTimePeriod(sa.EarliestStartTime, sa.DueDate) +
+                    ' har endret adresse';
+            }
+            if (saEvent == 'Time') {
+                subject +=
+                    ' har endret tidspunkt.\nNy tid er ' +
+                    HOT_ReminderSMSService.formatTimePeriod(sa.EarliestStartTime, sa.DueDate);
+            }
+            if (saEvent == 'CanceledByUser') {
+                subject +=
+                    ' ' +
+                    HOT_ReminderSMSService.formatTimePeriod(sa.EarliestStartTime, sa.DueDate) +
+                    ' er avlyst';
+            }
+            if (saEvent == 'Screen') {
+                subject +=
+                    ' ' +
+                    HOT_ReminderSMSService.formatTimePeriod(sa.EarliestStartTime, sa.DueDate) +
+                    ' er endret';
+            }
+            if (saEvent == 'Dispatched') {
+                subject += '\n' + HOT_ReminderSMSService.formatTimePeriodExtended(sa.EarliestStartTime, sa.DueDate);
+            }
+            if (saEvent == 'Removed') {
+                subject += '\n' + HOT_ReminderSMSService.formatTimePeriodExtended(sa.EarliestStartTime, sa.DueDate);
+            }
+            return subject;
         }
         if (saEvent == 'Removed') {
             subject =
@@ -30,6 +67,9 @@ public without sharing class HOT_NotificationController {
                 sa.EarliestStartTime?.format('d.M.yyyy') +
                 ' - ' +
                 'Tatt av oppdraget';
+        }
+        if (saEvent == 'Dispatched') {
+            subject = 'Du er tildelt oppdraget ' + sa.AppointmentNumber;
         }
         return subject;
     }
@@ -52,8 +92,17 @@ public without sharing class HOT_NotificationController {
                 ' som skulle starte ' +
                 sa.EarliestStartTime?.format('d.M.yyyy HH:mm');
         }
+        if (saEvent == 'Dispatched') {
+            message =
+                'Tidspunkt for oppdraget er ' +
+                sa.EarliestStartTime?.format('d.M.yyyy HH:mm') +
+                ' - ' +
+                sa.DueDate?.format('HH:mm') +
+                '.';
+        }
         return message;
     }
+    //getting type used for navigation when clicking on the notification on experience site
     public static String getRelatedObjectType(String saEvent) {
         String relatedObjectType = '';
         if (saEvent == 'Removed') {
