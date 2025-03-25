@@ -839,70 +839,51 @@ public without sharing class HOT_ServiceAppointmentNotification {
         List<HOT_Notification__c> notificationList = new List<HOT_Notification__c>();
         for (ServiceAppointment serviceAppointment : relatedServiceAppointments) {
             if (serviceAppointment.HOT_ServiceResource__r.HOT_NotificationChannel__c.contains('Push')) {
-                if (serviceAppointment.HOT_ServiceResource__r.HOT_IsEmployedInterpreter__c) {
-                    Set<String> employeeInterpreterRecipients = new Set<String>();
-                    employeeInterpreterRecipients.add(serviceAppointment.HOT_ServiceResource__r.RelatedRecordId);
+                Set<String> recipients = new Set<String>();
+                recipients.add(serviceAppointment.HOT_ServiceResource__r.RelatedRecordId);
 
-                    Messaging.CustomNotification notification = new Messaging.CustomNotification();
-                    notification.setTitle('Medtolk tatt av oppdraget');
-                    notification.setBody(
-                        'En medtolk er tatt av oppdraget: ' +
-                        serviceAppointment.AppointmentNumber +
-                        '\nDato: ' +
-                        updatedSAWithInterpreterRemoved.SchedStartTime?.format('dd.MM.yyyy', 'Europe/Oslo') +
-                        ', kl: ' +
-                        updatedSAWithInterpreterRemoved.SchedStartTime?.format('HH:mm', 'Europe/Oslo') +
-                        ' - ' +
-                        updatedSAWithInterpreterRemoved.SchedEndTime?.format('HH:mm', 'Europe/Oslo') +
-                        '.'
-                    );
-                    notification.setNotificationTypeId(getCustomNotificationType('HOT_NotifyInterpreter').Id);
-                    notification.setTargetId(serviceAppointment.Id);
+                Messaging.CustomNotification notification = new Messaging.CustomNotification();
+                notification.setTitle('Medtolk tatt av oppdraget');
+                notification.setBody(
+                    'En medtolk er tatt av oppdraget: ' +
+                    serviceAppointment.AppointmentNumber +
+                    '\nDato: ' +
+                    updatedSAWithInterpreterRemoved.SchedStartTime?.format('dd.MM.yyyy', 'Europe/Oslo') +
+                    ', kl: ' +
+                    updatedSAWithInterpreterRemoved.SchedStartTime?.format('HH:mm', 'Europe/Oslo') +
+                    ' - ' +
+                    updatedSAWithInterpreterRemoved.SchedEndTime?.format('HH:mm', 'Europe/Oslo') +
+                    '.'
+                );
+                notification.setNotificationTypeId(getCustomNotificationType('HOT_NotifyInterpreter').Id);
+                notification.setTargetId(serviceAppointment.Id);
 
-                    HOT_NotificationHandler.sendNotification(
-                        notification,
-                        employeeInterpreterRecipients,
-                        (SObject) serviceAppointment
-                    );
+                HOT_NotificationHandler.sendNotification(notification, recipients, (SObject) serviceAppointment);
+                //creating notification object
+                if (serviceAppointment.HOT_ServiceResource__c == null) {
+                    return;
+                }
+                HOT_Notification__c newNotification = new HOT_Notification__c();
+                newNotification.HOT_ServiceResource__c = serviceAppointment.HOT_ServiceResource__c;
+                newNotification.HOT_NotificationChannel__c = 'Push-varsel i appen';
+                newNotification.HOT_Subject__c = 'Medtolk tatt av oppdraget: ' + serviceAppointment.AppointmentNumber;
+                String text =
+                    'En medtolk er tatt av oppdraget' +
+                    '.\nDato: ' +
+                    updatedSAWithInterpreterRemoved.SchedStartTime?.format('dd.MM.yyyy', 'Europe/Oslo') +
+                    ', kl: ' +
+                    updatedSAWithInterpreterRemoved.SchedStartTime?.format('HH:mm', 'Europe/Oslo') +
+                    ' - ' +
+                    updatedSAWithInterpreterRemoved.SchedEndTime?.format('HH:mm', 'Europe/Oslo') +
+                    '.';
+                if (text.length() > 250) {
+                    newNotification.HOT_NotificationText__c = text.substring(0, 250) + ' ...';
                 } else {
-                    Set<String> freelanceInterpreterRecipients = new Set<String>();
-                    freelanceInterpreterRecipients.add(serviceAppointment.HOT_ServiceResource__r.RelatedRecordId);
-                    HOT_UserNotificationService.coInterpreterRemovedNotification(
-                        getCustomNotificationType('HOT_NotifyUser'),
-                        updatedSAWithInterpreterRemoved,
-                        getTargetPageRefInterpreter('my', serviceAppointment.Id),
-                        freelanceInterpreterRecipients,
-                        serviceAppointment.AppointmentNumber
-                    );
+                    newNotification.HOT_NotificationText__c = text;
                 }
-                if (
-                    serviceAppointment.HOT_ServiceResource__r.AccountId != null &&
-                    !serviceAppointment.HOT_ServiceResource__r.HOT_IsEmployedInterpreter__c
-                ) {
-                    //creating notification object
-                    HOT_Notification__c newNotification = new HOT_Notification__c();
-                    newNotification.HOT_Account__c = serviceAppointment.HOT_ServiceResource__r.AccountId;
-                    newNotification.HOT_NotificationChannel__c = 'Push-varsel i appen';
-                    newNotification.HOT_Subject__c =
-                        'Medtolk tatt av oppdraget: ' + serviceAppointment.AppointmentNumber;
-                    String text =
-                        'En medtolk er tatt av oppdraget' +
-                        '.\nDato: ' +
-                        updatedSAWithInterpreterRemoved.SchedStartTime?.format('dd.MM.yyyy', 'Europe/Oslo') +
-                        ', kl: ' +
-                        updatedSAWithInterpreterRemoved.SchedStartTime?.format('HH:mm', 'Europe/Oslo') +
-                        ' - ' +
-                        updatedSAWithInterpreterRemoved.SchedEndTime?.format('HH:mm', 'Europe/Oslo') +
-                        '.';
-                    if (text.length() > 250) {
-                        newNotification.HOT_NotificationText__c = text.substring(0, 250) + ' ...';
-                    } else {
-                        newNotification.HOT_NotificationText__c = text;
-                    }
-                    newNotification.HOT_RelatedObject__c = serviceAppointment.Id;
-                    newNotification.HOT_RelatedObjectType__c = 'serviceAppointment';
-                    notificationList.add(newNotification);
-                }
+                newNotification.HOT_RelatedObject__c = serviceAppointment.Id;
+                newNotification.HOT_RelatedObjectType__c = 'serviceAppointment';
+                notificationList.add(newNotification);
             } else {
                 String startEndString = HOT_ReminderSMSService.formatTimePeriod(
                     updatedSAWithInterpreterRemoved.SchedStartTime,
@@ -913,35 +894,32 @@ public without sharing class HOT_ServiceAppointmentNotification {
                     startEndString,
                     serviceAppointment.AppointmentNumber
                 );
-
-                if (serviceAppointment.HOT_ServiceResource__r.HOT_IsFreelanceInterpreter__c == true) {
-                    //creating notification object
-                    HOT_Notification__c newNotification = new HOT_Notification__c();
-                    if (serviceAppointment.HOT_ServiceResource__r.AccountId != null) {
-                        newNotification.HOT_Account__c = serviceAppointment.HOT_ServiceResource__r.AccountId;
-                        newNotification.HOT_NotificationChannel__c = 'SMS';
-                        newNotification.HOT_Subject__c =
-                            'Medtolk tatt av oppdraget. ' + serviceAppointment.AppointmentNumber;
-                        String text = 'INFO\nEn medtolk er tatt av oppdraget\n';
-                        text +=
-                            '.\nDato: ' +
-                            HOT_ReminderSMSService.formatTimePeriod(
-                                updatedSAWithInterpreterRemoved.SchedStartTime,
-                                updatedSAWithInterpreterRemoved.SchedEndTime
-                            );
-                        text += '\n\nFor mer informasjon, se tolkebestilling.nav.no. Du kan ikke svare på denne meldingen.';
-                        text += '\nMvh tolketjenesten i Nav';
-                        if (text.length() > 250) {
-                            newNotification.HOT_NotificationText__c = text.substring(0, 250) + ' ...';
-                        } else {
-                            newNotification.HOT_NotificationText__c = text;
-                        }
-                        newNotification.HOT_RelatedObject__c = serviceAppointment.Id;
-                        newNotification.HOT_RelatedObjectType__c = 'serviceAppointment';
-
-                        notificationList.add(newNotification);
-                    }
+                if (serviceAppointment.HOT_ServiceResource__c == null) {
+                    return;
                 }
+                //creating notification object
+                HOT_Notification__c newNotification = new HOT_Notification__c();
+                newNotification.HOT_ServiceResource__c = serviceAppointment.HOT_ServiceResource__c;
+                newNotification.HOT_NotificationChannel__c = 'SMS';
+                newNotification.HOT_Subject__c = 'Medtolk tatt av oppdraget. ' + serviceAppointment.AppointmentNumber;
+                String text = 'INFO\nEn medtolk er tatt av oppdraget\n';
+                text +=
+                    '.\nDato: ' +
+                    HOT_ReminderSMSService.formatTimePeriod(
+                        updatedSAWithInterpreterRemoved.SchedStartTime,
+                        updatedSAWithInterpreterRemoved.SchedEndTime
+                    );
+                text += '\n\nFor mer informasjon, se tolkebestilling.nav.no. Du kan ikke svare på denne meldingen.';
+                text += '\nMvh tolketjenesten i Nav';
+                if (text.length() > 250) {
+                    newNotification.HOT_NotificationText__c = text.substring(0, 250) + ' ...';
+                } else {
+                    newNotification.HOT_NotificationText__c = text;
+                }
+                newNotification.HOT_RelatedObject__c = serviceAppointment.Id;
+                newNotification.HOT_RelatedObjectType__c = 'serviceAppointment';
+
+                notificationList.add(newNotification);
             }
         }
         //inserting notifications
