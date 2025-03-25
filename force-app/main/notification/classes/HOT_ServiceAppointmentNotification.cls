@@ -431,49 +431,48 @@ public without sharing class HOT_ServiceAppointmentNotification {
 
                 HOT_NotificationHandler.sendNotification(notification, recipients, (SObject) serviceAppointment);
                 //creating notification object
-                if (this.getAccountIdByUserIdMap().get(serviceAppointment.HOT_AssignedResourceId__c) != null) {
-                    HOT_Notification__c newNotification = new HOT_Notification__c();
-                    Id account = this.getAccountIdByUserIdMap().get(serviceAppointment.HOT_AssignedResourceId__c);
-                    newNotification.HOT_Account__c = account;
-                    newNotification.HOT_NotificationChannel__c = 'Push-varsel i appen';
-                    newNotification.HOT_Subject__c =
-                        serviceAppointment.AppointmentNumber +
-                        ' - ' +
-                        serviceAppointment.EarliestStartTime?.format('d.M.yyyy HH:mm') +
-                        ' - ' +
-                        'endret adresse';
-                    newNotification.HOT_NotificationText__c =
-                        'Ny adresse er ' + serviceAppointment.HOT_AddressFormated__c;
-                    newNotification.HOT_RelatedObject__c = serviceAppointment.Id;
-                    newNotification.HOT_RelatedObjectType__c = 'serviceAppointment';
-
-                    notificationList.add(newNotification);
+                if (serviceAppointment.HOT_ServiceResource__c == null) {
+                    return;
                 }
+                HOT_Notification__c newNotification = new HOT_Notification__c();
+                newNotification.HOT_ServiceResource__c = serviceAppointment.HOT_ServiceResource__c;
+                newNotification.HOT_NotificationChannel__c = 'Push-varsel i appen';
+                newNotification.HOT_Subject__c =
+                    serviceAppointment.AppointmentNumber +
+                    ' - ' +
+                    serviceAppointment.EarliestStartTime?.format('d.M.yyyy HH:mm') +
+                    ' - ' +
+                    'endret adresse';
+                newNotification.HOT_NotificationText__c = 'Ny adresse er ' + serviceAppointment.HOT_AddressFormated__c;
+                newNotification.HOT_RelatedObject__c = serviceAppointment.Id;
+                newNotification.HOT_RelatedObjectType__c = 'serviceAppointment';
+
+                notificationList.add(newNotification);
             } else {
-                if (this.getAccountIdByUserIdMap().get(serviceAppointment.HOT_AssignedResourceId__c) != null) {
-                    //creating notification object
-                    HOT_Notification__c newNotification = new HOT_Notification__c();
-                    Id account = this.getAccountIdByUserIdMap().get(serviceAppointment.HOT_AssignedResourceId__c);
-                    newNotification.HOT_Account__c = account;
-                    newNotification.HOT_NotificationChannel__c = 'SMS';
-                    newNotification.HOT_Subject__c =
-                        'INFO\n' +
-                        serviceAppointment.AppointmentNumber +
-                        ' ' +
-                        serviceAppointment.EarliestStartTime?.format('d.M.yyyy HH:mm') +
-                        ' - ' +
-                        serviceAppointment.DueDate?.format('HH:mm') +
-                        ' har endret adresse.';
-                    newNotification.HOT_NotificationText__c =
-                        'For mer informasjon, se tolkebestilling.nav.no.\n' +
-                        'Du kan ikke svare på denne meldingen.\n' +
-                        'Mvh tolketjenesten i Nav';
-                    newNotification.HOT_RelatedObject__c = serviceAppointment.Id;
-                    newNotification.HOT_RelatedObjectType__c = 'serviceAppointment';
-
-                    notificationList.add(newNotification);
-                    HOT_ReminderSMSService.sendSMSToInterpreterOnAddressChanged(new Set<Id>{ serviceAppointment.Id });
+                if (serviceAppointment.HOT_ServiceResource__c == null) {
+                    return;
                 }
+                //creating notification object
+                HOT_Notification__c newNotification = new HOT_Notification__c();
+                newNotification.HOT_ServiceResource__c = serviceAppointment.HOT_ServiceResource__c;
+                newNotification.HOT_NotificationChannel__c = 'SMS';
+                newNotification.HOT_Subject__c =
+                    'INFO\n' +
+                    serviceAppointment.AppointmentNumber +
+                    ' ' +
+                    serviceAppointment.EarliestStartTime?.format('d.M.yyyy HH:mm') +
+                    ' - ' +
+                    serviceAppointment.DueDate?.format('HH:mm') +
+                    ' har endret adresse.';
+                newNotification.HOT_NotificationText__c =
+                    'For mer informasjon, se tolkebestilling.nav.no.\n' +
+                    'Du kan ikke svare på denne meldingen.\n' +
+                    'Mvh tolketjenesten i Nav';
+                newNotification.HOT_RelatedObject__c = serviceAppointment.Id;
+                newNotification.HOT_RelatedObjectType__c = 'serviceAppointment';
+
+                notificationList.add(newNotification);
+                HOT_ReminderSMSService.sendSMSToInterpreterOnAddressChanged(new Set<Id>{ serviceAppointment.Id });
             }
         }
         //inserting notifications
