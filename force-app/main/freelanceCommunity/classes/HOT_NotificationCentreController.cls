@@ -2,6 +2,15 @@ public without sharing class HOT_NotificationCentreController {
     @AuraEnabled(cacheable=true)
     public static List<HOT_Notification__c> getMyNotifications() {
         User currentUser = [SELECT Id, AccountId FROM User WHERE Id = :UserInfo.getUserId()];
+        List<ServiceResource> sr = [
+            SELECT Id
+            FROM ServiceResource
+            WHERE CRM_Domain__c = 'HOT' AND RelatedRecordId = :currentUser.Id
+        ];
+        Set<Id> serviceResourceIds = new Set<Id>();
+        for (ServiceResource resource : sr) {
+            serviceResourceIds.add(resource.Id);
+        }
         List<HOT_Notification__c> notifications = [
             SELECT
                 Id,
@@ -14,7 +23,10 @@ public without sharing class HOT_NotificationCentreController {
                 HOT_RelatedObjectType__c,
                 CreatedDate
             FROM HOT_Notification__c
-            WHERE HOT_Account__c = :currentUser.AccountId AND CreatedDate = LAST_N_DAYS:30
+            WHERE
+                (HOT_Account__c = :currentUser.AccountId
+                OR HOT_ServiceResource__c IN :serviceResourceIds)
+                AND CreatedDate = LAST_N_DAYS:30
         ];
         return notifications;
     }

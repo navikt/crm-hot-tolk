@@ -341,6 +341,11 @@
     </fieldPermissions>
     <fieldPermissions>
         <editable>true</editable>
+        <field>HOT_Notification__c.HOT_Account__c</field>
+        <readable>true</readable>
+    </fieldPermissions>
+    <fieldPermissions>
+        <editable>true</editable>
         <field>HOT_Notification__c.HOT_IsRead__c</field>
         <readable>true</readable>
     </fieldPermissions>
@@ -362,6 +367,11 @@
     <fieldPermissions>
         <editable>true</editable>
         <field>HOT_Notification__c.HOT_RelatedObject__c</field>
+        <readable>true</readable>
+    </fieldPermissions>
+    <fieldPermissions>
+        <editable>true</editable>
+        <field>HOT_Notification__c.HOT_ServiceResource__c</field>
         <readable>true</readable>
     </fieldPermissions>
     <fieldPermissions>
@@ -1454,11 +1464,6 @@
         <field>ServiceAppointment.HOT_Information__c</field>
         <readable>true</readable>
     </fieldPermissions>
-        <fieldPermissions>
-        <editable>true</editable>
-        <field>ServiceAppointment.HOT_IsRecieptRecieved__c</field>
-        <readable>true</readable>
-    </fieldPermissions>
     <fieldPermissions>
         <editable>true</editable>
         <field>ServiceAppointment.HOT_InterestedResourceNames__c</field>
@@ -1522,6 +1527,11 @@
     <fieldPermissions>
         <editable>true</editable>
         <field>ServiceAppointment.HOT_IsRecalculateManualSharing__c</field>
+        <readable>true</readable>
+    </fieldPermissions>
+    <fieldPermissions>
+        <editable>true</editable>
+        <field>ServiceAppointment.HOT_IsRecieptRecieved__c</field>
         <readable>true</readable>
     </fieldPermissions>
     <fieldPermissions>
