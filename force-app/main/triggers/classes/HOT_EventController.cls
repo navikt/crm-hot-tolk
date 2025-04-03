@@ -13,7 +13,7 @@ public with sharing class HOT_EventController {
         Set<Id> serviceAppointmentIdsToCreateEvents = new Set<Id>();
         for (ServiceAppointment serviceAppointment : serviceAppointments) {
             ServiceAppointment oldServiceAppointment = (ServiceAppointment) triggerOldMap.get(serviceAppointment.Id);
-            //Om ny tolk er tildelt eller om tolk er endret
+            //Når ny tolk er tildelt eller om tolk er endret
             if (
                 (serviceAppointment.HOT_AssignedResourceId__c != null &&
                 oldServiceAppointment.Status != serviceAppointment.Status &&
@@ -23,11 +23,10 @@ public with sharing class HOT_EventController {
                 serviceAppointment.HOT_AssignedResourceId__c != oldServiceAppointment.HOT_AssignedResourceId__c &&
                 serviceAppointment.Status == 'Dispatched')
             ) {
-                //SLETTE EVENT OG LEGGE PÅ NY TOLK
                 serviceAppointmentIdsToDeleteEvents.add(serviceAppointment.Id);
                 serviceAppointmentIdsToCreateEvents.add(serviceAppointment.Id);
             }
-            //Om tolk er tatt av
+            //Når tolk tas av
             if (
                 ((oldServiceAppointment.Status == 'Completed' ||
                 oldServiceAppointment.Status == 'Dispatched' ||
@@ -38,12 +37,11 @@ public with sharing class HOT_EventController {
                 (oldServiceAppointment.HOT_AssignedResourceId__c != null &&
                 serviceAppointment.HOT_AssignedResourceId__c == null)
             ) {
-                //SLETTE EVENT
                 serviceAppointmentIdsToDeleteEvents.add(serviceAppointment.Id);
             }
 
             if (serviceAppointment.HOT_AssignedResourceId__c != null && serviceAppointment.Status == 'Dispatched') {
-                // Varsel ved endring av tidspunkt, adresse eller tolkemetode
+                //Når tidspunkt eller adresse endres
                 if (
                     ((serviceAppointment.EarliestStartTime != oldServiceAppointment.EarliestStartTime ||
                     serviceAppointment.DueDate != oldServiceAppointment.DueDate) &&
@@ -52,7 +50,6 @@ public with sharing class HOT_EventController {
                     (serviceAppointment.HOT_AddressFormated__c != oldServiceAppointment.HOT_AddressFormated__c &&
                     serviceAppointment.SchedStartTime >= Date.today())
                 ) {
-                    // SLETTE EVENT OG LAGE NYTT EVENT MED OPPDATERT INFORMASJON
                     serviceAppointmentIdsToDeleteEvents.add(serviceAppointment.Id);
                     serviceAppointmentIdsToCreateEvents.add(serviceAppointment.Id);
                 }
