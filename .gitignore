@@ -297,8 +297,8 @@ dmypy.json
 .pyre/
 
 # MyTriggers
-# force-app/main/default/classes/MyTriggers.cls
-# force-app/main/default/classes/MyTriggers.cls-meta.xml
+force-app/main/default/classes/MyTriggers.cls
+force-app/main/default/classes/MyTriggers.cls-meta.xml
 
 **/jsconfig.json
 
