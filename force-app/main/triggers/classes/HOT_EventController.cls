@@ -5,7 +5,7 @@ public with sharing class HOT_EventController {
         logger.publishSynch();
     }
 
-    public static void resourceServiceAppointmentChanged(
+    public static void updateServiceAppointmentEvents(
         List<ServiceAppointment> serviceAppointments,
         Map<Id, sObject> triggerOldMap
     ) {

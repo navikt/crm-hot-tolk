@@ -352,7 +352,7 @@ public without sharing class HOT_ServiceAppointmentHandler extends MyTriggers {
             (List<ServiceAppointment>) records,
             triggerOldMap
         );
-        HOT_EventController.resourceServiceAppointmentChanged((List<ServiceAppointment>) records, triggerOldMap);
+        HOT_EventController.updateServiceAppointmentEvents((List<ServiceAppointment>) records, triggerOldMap);
 
         if (serviceAppointmentsToRemoveAssignedResource.size() > 0) {
             removeAssignedResource(serviceAppointmentsToRemoveAssignedResource);
