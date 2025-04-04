@@ -1,4 +1,4 @@
-public with sharing class HOT_EventController {
+public without sharing class HOT_EventController {
     private static void handleException(Exception e) {
         LoggerUtility logger = new LoggerUtility();
         logger.exception(e, CRM_ApplicationDomain.Domain.HOT);
