@@ -109,7 +109,6 @@ public with sharing class HOT_EventController {
             newEvent.HOT_IsCreatedFromSA__c = true;
             newEvent.isReminderSet = true;
             newEvent.ReminderDateTime = newEvent.StartDateTime.addHours(-1);
-            newEvent.FSL__Event_Type__c = 'Service Appointment';
             createdEvents.add(newEvent);
         }
         if (createdEvents.size() != null) {
