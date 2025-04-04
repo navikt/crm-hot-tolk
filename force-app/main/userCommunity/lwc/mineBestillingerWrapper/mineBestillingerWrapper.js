@@ -11,8 +11,6 @@ import { columns, mobileColumns, workOrderColumns, workOrderMobileColumns, iconB
 import { defaultFilters, compare } from './filters';
 import getPersonAccount from '@salesforce/apex/HOT_Utility.getPersonAccount';
 import FILE_CONSENT from '@salesforce/schema/HOT_Request__c.IsFileConsent__c';
-import NOTIFY_DISPATCHER from '@salesforce/schema/HOT_Request__c.IsNotifyDispatcher__c';
-import STATUS from '@salesforce/schema/HOT_Request__c.Status__c';
 import REQUEST_ID from '@salesforce/schema/HOT_Request__c.Id';
 import WORKORDER_NOTIFY_DISPATCHER from '@salesforce/schema/WorkORder.HOT_IsNotifyDispatcher__c';
 import WORKORDER_STATUS from '@salesforce/schema/WorkOrder.Status';
@@ -39,7 +37,7 @@ export default class MineBestillingerWrapper extends NavigationMixin(LightningEl
 
     @track userAccountId;
     @wire(getUserAccountID)
-    wiredAccountId({ error, data }) {
+    wiredAccountId({ data }) {
         if (data) {
             this.userAccountId = data.AccountId;
         }
@@ -69,7 +67,7 @@ export default class MineBestillingerWrapper extends NavigationMixin(LightningEl
         const uploadedFiles = event.detail.files;
         if (uploadedFiles.length > 0) {
             this.fileUploadMessage = 'Filen(e) ble lastet opp';
-            this.template.querySelector('c-record-files-with-sharing').refreshContentDocuments();
+            this.template.querySelector('c-record-files-without-sharing').refreshContentDocuments();
         }
     }
 
@@ -128,7 +126,6 @@ export default class MineBestillingerWrapper extends NavigationMixin(LightningEl
         let recordId = this.urlStateParameters.id;
         for (let record of this.records) {
             if (recordId === record.Id) {
-                this.recordId = record.Id;
                 this.workOrder = record;
                 this.request = record.HOT_Request__r;
                 this.recordId = record.HOT_Request__r.Id;
@@ -145,6 +142,13 @@ export default class MineBestillingerWrapper extends NavigationMixin(LightningEl
         if (this.request.Id !== undefined) {
             this.getWorkOrders();
         }
+    }
+
+    get isOwnRequest() {
+        return this.request.Orderer__c === this.userAccountId;
+    }
+    get getRelatedRecord() {
+        return this.recordId;
     }
 
     resetRequestAndWorkOrder() {
@@ -499,7 +503,7 @@ export default class MineBestillingerWrapper extends NavigationMixin(LightningEl
         const fields = {};
         if (this.urlStateParameters.level === 'R') {
             updateRelatedWorkOrders({ requestId: this.request.Id })
-                .then((result) => {
+                .then(() => {
                     refreshApex(this.wiredgetWorkOrdersResult);
                     this.noCancelButton = true;
                     this.template.querySelector('.ReactModal__Overlay').classList.add('hidden');
@@ -507,7 +511,7 @@ export default class MineBestillingerWrapper extends NavigationMixin(LightningEl
                     this.modalContent = 'Bestillingen er avlyst.';
                     this.showModal();
                 })
-                .catch((error) => {
+                .catch(() => {
                     this.noCancelButton = true;
                     this.template.querySelector('.ReactModal__Overlay').classList.add('hidden');
                     this.template.querySelector('.loader').classList.add('hidden');
@@ -576,8 +580,8 @@ export default class MineBestillingerWrapper extends NavigationMixin(LightningEl
     }
 
     onUploadComplete() {
-        if (this.template.querySelector('c-record-files-with-sharing') !== null) {
-            this.template.querySelector('c-record-files-with-sharing').refreshContentDocuments();
+        if (this.template.querySelector('c-record-files-without-sharing') !== null) {
+            this.template.querySelector('c-record-files-without-sharing').refreshContentDocuments();
         }
         this.template.querySelector('.loader').classList.add('hidden');
         this.modalHeader = 'Suksess!';
@@ -652,7 +656,7 @@ export default class MineBestillingerWrapper extends NavigationMixin(LightningEl
     }
 
     deleteMarkedFiles() {
-        this.template.querySelector('c-record-files-with-sharing').deleteMarkedFiles();
+        this.template.querySelector('c-record-files-without-sharing').deleteMarkedFiles();
     }
 
     navigateToThread(recordId) {
