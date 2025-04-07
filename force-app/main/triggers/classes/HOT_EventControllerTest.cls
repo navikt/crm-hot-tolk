@@ -3,7 +3,7 @@ private class HOT_EventControllerTest {
     @IsTest
     public static void testResourceServiceAppointmentChanged() {
         WorkType workType = HOT_TestDataFactory.createWorkType();
-        insert WorkType;
+        insert workType;
         HOT_Request__c request = HOT_TestDataFactory.createRequest('HOT_ServiceAppointmentHandler', workType);
         insert request;
 
@@ -39,6 +39,7 @@ private class HOT_EventControllerTest {
         AssignedResource ar = HOT_TestDataFactory.createAssignedResource(sa.Id, serviceResource.Id);
         insert ar;
 
+        Test.startTest();
         sa = [
             SELECT Id, Status, HOT_ServiceResource__c, HOT_CanceledByInterpreter__c
             FROM ServiceAppointment
@@ -47,10 +48,8 @@ private class HOT_EventControllerTest {
         ];
         sa.Status = 'Dispatched';
         update sa;
-        Test.startTest();
-        Event event = [SELECT Id, WhatId FROM Event WHERE WhatId = :sa.Id];
+        Test.stopTest();
 
         System.Assert.areEqual(1, [SELECT COUNT() FROM Event WHERE WhatId = :sa.Id], 'Could not create event');
-        Test.stopTest();
     }
 }
