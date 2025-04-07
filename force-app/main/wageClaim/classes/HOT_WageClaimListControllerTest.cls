@@ -32,7 +32,7 @@ private class HOT_WageClaimListControllerTest {
 
     @IsTest
     static void getMyWageClaimsTest() {
-        User user = [SELECT Id FROM User WHERE UserName = 'HOT.user1@nav.hot.no'];
+        User user = [SELECT Id FROM User WHERE UserName = 'HOT.user1@nav.hot.nav.no'];
 
         System.runAs(user) {
             Test.startTest();
