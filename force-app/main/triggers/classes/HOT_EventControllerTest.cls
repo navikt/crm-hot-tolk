@@ -29,6 +29,7 @@ private class HOT_EventControllerTest {
         User user = HOT_TestDataFactory.createUser('User', profile);
         insert user;
         ServiceResource serviceResource = HOT_TestDataFactory.createServiceResource(user.Id);
+        serviceResource.HOT_IsEmployedInterpreter__c = true;
         insert serviceResource;
         ServiceTerritoryMember serviceTerritoryMember = HOT_TestDataFactory.createServiceTerritoryMember(
             serviceResource,
