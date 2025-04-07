@@ -352,6 +352,7 @@ public without sharing class HOT_ServiceAppointmentHandler extends MyTriggers {
             (List<ServiceAppointment>) records,
             triggerOldMap
         );
+        HOT_EventController.updateServiceAppointmentEvents((List<ServiceAppointment>) records, triggerOldMap);
 
         if (serviceAppointmentsToRemoveAssignedResource.size() > 0) {
             removeAssignedResource(serviceAppointmentsToRemoveAssignedResource);
@@ -364,12 +365,6 @@ public without sharing class HOT_ServiceAppointmentHandler extends MyTriggers {
         }
         if (retractedServiceAppointments.size() > 0) {
             updateStatusOnInterestedResources(retractedServiceAppointments, 'Service Appointment Retracted');
-        }
-        if (serviceAppointmentsWithChangedAddress.size() > 0) {
-            updateRelatedEvents(serviceAppointmentsWithChangedAddress);
-        }
-        if (serviceAppointmentsToRemoveAssignedResource.size() > 0) {
-            deleteRelatedEvents(serviceAppointmentsToRemoveAssignedResource);
         }
         if (!serviceAppointmentWithNewAssignedResource.isEmpty()) {
             HOT_InterpreterOnWorkOrderService.setInterpreterOnWorkOrderFromServiceAppointment(
@@ -515,7 +510,6 @@ public without sharing class HOT_ServiceAppointmentHandler extends MyTriggers {
             serviceAppointment.HOT_CanceledByInterpreter__c = false;
         }
     }
-    //
     private static void setFieldsBasedOnParent(List<ServiceAppointment> serviceAppointments) {
         List<Id> workOrderLineItemIds = new List<Id>();
         for (ServiceAppointment serviceAppointment : serviceAppointments) {
@@ -964,14 +958,6 @@ public without sharing class HOT_ServiceAppointmentHandler extends MyTriggers {
         update interestedResources;
     }
 
-    public static void updateRelatedEvents(List<ServiceAppointment> serviceAppointments) {
-        List<Event> events = [SELECT Id, Location FROM Event WHERE WhatId IN :serviceAppointments];
-        for (Event event : events) {
-            event.Location = 'TO_UPDATE';
-        }
-        update events;
-    }
-
     private static ServiceAppointment updateDuration(ServiceAppointment serviceAppointment) {
         if (serviceAppointment.EarliestStartTime != null && serviceAppointment.DueDate != null) {
             serviceAppointment.Duration =
@@ -979,10 +965,6 @@ public without sharing class HOT_ServiceAppointmentHandler extends MyTriggers {
                 (Double) serviceAppointment.EarliestStartTime.getTime()) / 3600000;
         }
         return serviceAppointment;
-    }
-    public static void deleteRelatedEvents(List<ServiceAppointment> serviceAppointments) {
-        List<Event> events = [SELECT Id FROM Event WHERE WhatId IN :serviceAppointments];
-        delete events;
     }
 
     public static void setActualTime(List<ServiceAppointment> serviceAppointments) {
