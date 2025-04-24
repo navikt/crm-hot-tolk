@@ -88,7 +88,10 @@ private class HOT_ReminderSMSServiceTest {
                 EndTime__c
             FROM HOT_Request__c
         ];
+        System.assertEquals(2, requests.size(), 'Could not create request-records');
+        Test.startTest();
         HOT_ReminderSMSService.notifyUserOnOrderSMS(requests);
+        Test.stopTest();
         List<SMS__c> smsList = [SELECT Id FROM SMS__c];
         System.assertEquals(2, smsList.size(), 'Could not create sms-record');
     }
