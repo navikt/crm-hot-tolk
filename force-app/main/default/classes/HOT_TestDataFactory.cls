@@ -180,9 +180,9 @@ public class HOT_TestDataFactory {
 
     public static User createUser(String lastName, Profile profile) {
         User user = new User(
-            Username = 'HOT.' + lastName + '@nav.hot.no',
+            Username = 'HOT.' + lastName + '@nav.hot.nav.no',
             LastName = lastName,
-            Email = 'HOT_testuser@nav.hot.no',
+            Email = 'HOT_testuser@nav.hot.nav.no',
             Alias = lastName,
             CommunityNickname = lastName,
             TimeZoneSidKey = 'Europe/Paris',
