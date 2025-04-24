@@ -254,10 +254,10 @@ private class HOT_WantedSRListControllerTest {
         WorkType workType = HOT_TestDataFactory.createWorkType();
         insert workType;
 
-        Test.startTest();
         HOT_Request__c request = HOT_TestDataFactory.createRequest('TEST', workType);
         insert request;
 
+        Test.startTest();
         WorkOrder workOrder = HOT_TestDataFactory.createWorkOrder(request, workType);
         insert workOrder;
         WorkOrderLineItem WorkOrderLineItem = HOT_TestDataFactory.createWorkOrderLineItem(workOrder, workType);
