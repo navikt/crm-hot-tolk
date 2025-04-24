@@ -50,7 +50,7 @@
             <assignToReference>RecipientIds</assignToReference>
             <operator>Add</operator>
             <value>
-                <elementReference>Get_formidler_admins.OwnerId</elementReference>
+                <elementReference>Get_formidler_admins.Id</elementReference>
             </value>
         </assignmentItems>
         <assignmentItems>
