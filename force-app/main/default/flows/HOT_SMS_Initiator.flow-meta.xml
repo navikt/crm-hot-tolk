@@ -170,6 +170,21 @@
         <connector>
             <targetReference>Is_owner_HOT_Tolk_Admin</targetReference>
         </connector>
+        <filterLogic>and</filterLogic>
+        <filters>
+            <field>Domain__c</field>
+            <operator>EqualTo</operator>
+            <value>
+                <stringValue>HOT</stringValue>
+            </value>
+        </filters>
+        <filters>
+            <field>Type__c</field>
+            <operator>EqualTo</operator>
+            <value>
+                <stringValue>Incoming SMS</stringValue>
+            </value>
+        </filters>
         <object>SMS__c</object>
         <recordTriggerType>Create</recordTriggerType>
         <triggerType>RecordAfterSave</triggerType>
