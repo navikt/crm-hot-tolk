@@ -233,6 +233,6 @@ private class HOT_FreelanceQualificationsCtlTest {
     @IsTest
     static void getAllSkillsListTest() {
         List<Skill> skills = HOT_FreelanceQualificationsController.getAllSkillsList();
-        System.assertEquals(skills.size(), 0);
+        System.assertEquals(skills.size(), 7);
     }
 }
