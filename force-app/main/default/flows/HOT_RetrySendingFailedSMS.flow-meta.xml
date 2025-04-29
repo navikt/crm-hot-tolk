@@ -7,7 +7,7 @@
     <formulas>
         <name>xHoursAgo</name>
         <dataType>DateTime</dataType>
-        <expression>{!$System.OriginDateTime} - (6 / 24)</expression>
+        <expression>{!$System.OriginDateTime} - (2 / 24)</expression>
     </formulas>
     <interviewLabel>HOT_RetrySendingFailedSMS {!$Flow.CurrentDateTime}</interviewLabel>
     <label>HOT_RetrySendingFailedSMS</label>
