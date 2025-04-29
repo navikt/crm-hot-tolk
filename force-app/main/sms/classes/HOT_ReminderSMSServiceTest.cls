@@ -67,7 +67,9 @@ private class HOT_ReminderSMSServiceTest {
             SELECT Id, AccountId, Account.CRM_Person__r.INT_KrrMobilePhone__c, StartDate, EndDate
             FROM WorkOrder
         ];
+        Test.startTest();
         HOT_ReminderSMSService.reminderSMS(workOrders);
+        Test.stopTest();
         List<SMS__c> smsList = [SELECT Id FROM SMS__c];
         System.assertEquals(2, smsList.size(), 'Could not create sms-record');
     }
@@ -86,7 +88,10 @@ private class HOT_ReminderSMSServiceTest {
                 EndTime__c
             FROM HOT_Request__c
         ];
+        System.assertEquals(2, requests.size(), 'Could not create request-records');
+        Test.startTest();
         HOT_ReminderSMSService.notifyUserOnOrderSMS(requests);
+        Test.stopTest();
         List<SMS__c> smsList = [SELECT Id FROM SMS__c];
         System.assertEquals(2, smsList.size(), 'Could not create sms-record');
     }
@@ -149,7 +154,9 @@ private class HOT_ReminderSMSServiceTest {
                 HOT_Request__r.IsOrdererWantStatusUpdateOnSMS__c
             FROM WorkOrder
         ];
+        Test.startTest();
         HOT_ReminderSMSService.sendSMSToOrdererOnStatusUpdate(workOrders);
+        Test.stopTest();
         List<SMS__c> smsList = [SELECT Id, Message__c FROM SMS__c];
         System.assertEquals(1, smsList.size(), 'Could not create sms-record');
     }

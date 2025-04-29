@@ -233,6 +233,8 @@ private class HOT_WantedSRListControllerTest {
     }
     @IsTest
     static void noOverlapTest() {
+        List<ServiceAppointment> saList = [SELECT Id FROM ServiceAppointment LIMIT 2];
+
         Profile profile = [SELECT Id FROM Profile WHERE Name = 'System Administrator'];
         User user1 = new User(
             alias = 'TestUser',
@@ -255,44 +257,23 @@ private class HOT_WantedSRListControllerTest {
         insert workType;
 
         Test.startTest();
-        HOT_Request__c request = HOT_TestDataFactory.createRequest('TEST', workType);
-        insert request;
+        Integer index = 2;
+        for (ServiceAppointment ServiceAppointment : saList) {
+            ServiceAppointment.EarliestStartTime = Datetime.now().addDays(index);
+            ServiceAppointment.DueDate = ServiceAppointment.EarliestStartTime.addHours(index);
+            ServiceAppointment.SchedStartTime = Datetime.now().addDays(index);
+            ServiceAppointment.SchedEndTime = ServiceAppointment.SchedStartTime.addHours(index);
+            index += 2;
+        }
+        update saList;
 
-        WorkOrder workOrder = HOT_TestDataFactory.createWorkOrder(request, workType);
-        insert workOrder;
-        WorkOrderLineItem WorkOrderLineItem = HOT_TestDataFactory.createWorkOrderLineItem(workOrder, workType);
-        insert WorkOrderLineItem;
-        ServiceAppointment ServiceAppointment = HOT_TestDataFactory.createServiceAppointment(WorkOrderLineItem);
-        ServiceAppointment.EarliestStartTime = Datetime.now().addDays(50);
-        ServiceAppointment.DueDate = ServiceAppointment.EarliestStartTime.addHours(2);
-        ServiceAppointment.SchedStartTime = Datetime.now().addDays(50);
-        ServiceAppointment.SchedEndTime = ServiceAppointment.SchedStartTime.addHours(2);
-        insert ServiceAppointment;
-        AssignedResource assignedResource = HOT_TestDataFactory.createAssignedResource(
-            ServiceAppointment.Id,
-            resource1.Id
-        );
+        AssignedResource assignedResource = HOT_TestDataFactory.createAssignedResource(saList[0].Id, resource1.Id);
         insert assignedResource;
 
-        //
-
-        HOT_Request__c request2 = HOT_TestDataFactory.createRequest('TEST', workType);
-        insert request2;
-        WorkOrder workOrder2 = HOT_TestDataFactory.createWorkOrder(request2, workType);
-        insert workOrder2;
-        WorkOrderLineItem WorkOrderLineItem2 = HOT_TestDataFactory.createWorkOrderLineItem(workOrder2, workType);
-        insert WorkOrderLineItem2;
         Test.stopTest();
 
-        ServiceAppointment ServiceAppointment2 = HOT_TestDataFactory.createServiceAppointment(WorkOrderLineItem2);
-        ServiceAppointment2.EarliestStartTime = Datetime.now().addDays(52);
-        ServiceAppointment2.DueDate = ServiceAppointment2.EarliestStartTime.addHours(3);
-        ServiceAppointment2.SchedStartTime = Datetime.now().addDays(52);
-        ServiceAppointment2.SchedEndTime = ServiceAppointment2.SchedStartTime.addHours(5);
-        insert ServiceAppointment2;
-
         List<ServiceAppointment> saToCheck = new List<ServiceAppointment>();
-        saToCheck.add(ServiceAppointment2);
+        saToCheck.add(saList[1]);
 
         System.runAs(user1) {
             List<ServiceAppointment> availableSA = HOT_wantedSRListController.checkForOverlap(saToCheck);
