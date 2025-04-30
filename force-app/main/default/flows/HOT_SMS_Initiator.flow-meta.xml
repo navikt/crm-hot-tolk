@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <Flow xmlns="http://soap.sforce.com/2006/04/metadata">
     <actionCalls>
-        <name>HOT_Create_Notification</name>
-        <label>Create Notification</label>
+        <name>HOT_Create_SMS_Notification</name>
+        <label>Create notification</label>
         <locationX>50</locationX>
         <locationY>755</locationY>
         <actionName>customNotificationAction</actionName>
@@ -11,25 +11,25 @@
         <inputParameters>
             <name>customNotifTypeId</name>
             <value>
-                <elementReference>HOT_GetNotificationId.Id</elementReference>
-            </value>
-        </inputParameters>
-        <inputParameters>
-            <name>body</name>
-            <value>
-                <stringValue>Det har blitt opprettet en Forespørsel i HOT Tolk Admin køen i produksjon.</stringValue>
-            </value>
-        </inputParameters>
-        <inputParameters>
-            <name>title</name>
-            <value>
-                <stringValue>Opprettet en Forespørsel i HOT Tolk Admin køen</stringValue>
+                <elementReference>getNotificationType.Id</elementReference>
             </value>
         </inputParameters>
         <inputParameters>
             <name>recipientIds</name>
             <value>
-                <elementReference>RecipientIDs</elementReference>
+                <elementReference>RecipientIds</elementReference>
+            </value>
+        </inputParameters>
+        <inputParameters>
+            <name>title</name>
+            <value>
+                <stringValue>Opprettet en SMS i HOT Tolk Admin-køen</stringValue>
+            </value>
+        </inputParameters>
+        <inputParameters>
+            <name>body</name>
+            <value>
+                <stringValue>Det har blitt opprettet en SMS i HOT Tolk Admin-køen.</stringValue>
             </value>
         </inputParameters>
         <inputParameters>
@@ -40,36 +40,35 @@
         </inputParameters>
         <nameSegment>customNotificationAction</nameSegment>
     </actionCalls>
-    <apiVersion>56.0</apiVersion>
+    <apiVersion>63.0</apiVersion>
     <assignments>
-        <name>HOT_Add_Owner_to_the_RecipientIDs</name>
-        <label>Add Owner to the RecipientIDs</label>
+        <name>Add_recipients</name>
+        <label>Add recipients</label>
         <locationX>50</locationX>
         <locationY>647</locationY>
         <assignmentItems>
-            <assignToReference>RecipientIDs</assignToReference>
+            <assignToReference>RecipientIds</assignToReference>
+            <operator>Add</operator>
+            <value>
+                <elementReference>Get_formidler_admins.Id</elementReference>
+            </value>
+        </assignmentItems>
+        <assignmentItems>
+            <assignToReference>RecipientIds</assignToReference>
             <operator>Add</operator>
             <value>
                 <elementReference>$Record.OwnerId</elementReference>
             </value>
         </assignmentItems>
-        <assignmentItems>
-            <assignToReference>RecipientIDs</assignToReference>
-            <operator>Add</operator>
-            <value>
-                <elementReference>getDispatcherAdminRecipients.Id</elementReference>
-            </value>
-        </assignmentItems>
         <connector>
-            <targetReference>HOT_Create_Notification</targetReference>
+            <targetReference>HOT_Create_SMS_Notification</targetReference>
         </connector>
     </assignments>
     <constants>
-        <description>Variable for storing &quot;HOT_Tolk_Admin&quot; in a String</description>
         <name>HOT_Tolk_Admin_String</name>
         <dataType>String</dataType>
         <value>
-            <stringValue>HOT_Tolk_Admin</stringValue>
+            <stringValue>HoT Tolk Admin</stringValue>
         </value>
     </constants>
     <constants>
@@ -80,31 +79,30 @@
         </value>
     </constants>
     <decisions>
-        <name>HOT_Is_Owner_HOT_Tolk_Admin</name>
-        <label>Is Owner HOT_Tolk_Admin</label>
+        <name>Is_owner_HOT_Tolk_Admin</name>
+        <label>Is owner HOT Tolk Admin?</label>
         <locationX>182</locationX>
         <locationY>323</locationY>
         <defaultConnectorLabel>Default Outcome</defaultConnectorLabel>
         <rules>
-            <name>HOT_CheckOwner</name>
+            <name>Owner_is_HOT_Tolk_Admin</name>
             <conditionLogic>and</conditionLogic>
             <conditions>
-                <leftValueReference>$Record.OwnerName__c</leftValueReference>
+                <leftValueReference>$Record.Owner:Group.Name</leftValueReference>
                 <operator>EqualTo</operator>
                 <rightValue>
-                    <stringValue>HoT Tolk Admin</stringValue>
+                    <elementReference>HOT_Tolk_Admin_String</elementReference>
                 </rightValue>
             </conditions>
             <connector>
-                <targetReference>HOT_GetNotificationId</targetReference>
+                <targetReference>getNotificationType</targetReference>
             </connector>
-            <label>CheckOwner</label>
+            <label>Owner is  HOT Tolk Admin</label>
         </rules>
     </decisions>
-    <description>Request - Notify Owner if there has been created a request in the HOT_Tolk_Admin queue.</description>
     <environments>Default</environments>
-    <interviewLabel>Request Initiator {!$Flow.CurrentDateTime}</interviewLabel>
-    <label>Request Initiator</label>
+    <interviewLabel>HOT_SMS_Initiator {!$Flow.CurrentDateTime}</interviewLabel>
+    <label>SMS Initiator</label>
     <processMetadataValues>
         <name>BuilderType</name>
         <value>
@@ -125,13 +123,13 @@
     </processMetadataValues>
     <processType>AutoLaunchedFlow</processType>
     <recordLookups>
-        <name>getDispatcherAdminRecipients</name>
-        <label>getDispatcherAdminRecipients</label>
+        <name>Get_formidler_admins</name>
+        <label>Get formidler admins</label>
         <locationX>50</locationX>
         <locationY>539</locationY>
         <assignNullValuesIfNoRecordsFound>false</assignNullValuesIfNoRecordsFound>
         <connector>
-            <targetReference>HOT_Add_Owner_to_the_RecipientIDs</targetReference>
+            <targetReference>Add_recipients</targetReference>
         </connector>
         <filterLogic>and</filterLogic>
         <filters>
@@ -146,20 +144,20 @@
         <storeOutputAutomatically>true</storeOutputAutomatically>
     </recordLookups>
     <recordLookups>
-        <name>HOT_GetNotificationId</name>
-        <label>getNotificationId</label>
+        <name>getNotificationType</name>
+        <label>getNotificationType</label>
         <locationX>50</locationX>
         <locationY>431</locationY>
         <assignNullValuesIfNoRecordsFound>false</assignNullValuesIfNoRecordsFound>
         <connector>
-            <targetReference>getDispatcherAdminRecipients</targetReference>
+            <targetReference>Get_formidler_admins</targetReference>
         </connector>
         <filterLogic>and</filterLogic>
         <filters>
             <field>DeveloperName</field>
             <operator>EqualTo</operator>
             <value>
-                <elementReference>HOT_Request_Created_String</elementReference>
+                <stringValue>HOT_Request_Created</stringValue>
             </value>
         </filters>
         <getFirstRecordOnly>true</getFirstRecordOnly>
@@ -170,21 +168,35 @@
         <locationX>56</locationX>
         <locationY>0</locationY>
         <connector>
-            <targetReference>HOT_Is_Owner_HOT_Tolk_Admin</targetReference>
+            <targetReference>Is_owner_HOT_Tolk_Admin</targetReference>
         </connector>
-        <object>HOT_Request__c</object>
+        <filterLogic>and</filterLogic>
+        <filters>
+            <field>Domain__c</field>
+            <operator>EqualTo</operator>
+            <value>
+                <stringValue>HOT</stringValue>
+            </value>
+        </filters>
+        <filters>
+            <field>Type__c</field>
+            <operator>EqualTo</operator>
+            <value>
+                <stringValue>Incoming SMS</stringValue>
+            </value>
+        </filters>
+        <object>SMS__c</object>
         <recordTriggerType>Create</recordTriggerType>
         <triggerType>RecordAfterSave</triggerType>
     </start>
     <status>Active</status>
     <textTemplates>
-        <description>Storing &quot;HOT_Request_Created&quot; in a String</description>
         <name>HOT_Request_Created_String</name>
-        <isViewedAsPlainText>true</isViewedAsPlainText>
-        <text>HOT_Request_Created</text>
+        <isViewedAsPlainText>false</isViewedAsPlainText>
+        <text>&lt;p&gt;HOT_Request_Created&lt;/p&gt;</text>
     </textTemplates>
     <variables>
-        <name>RecipientIDs</name>
+        <name>RecipientIds</name>
         <dataType>String</dataType>
         <isCollection>true</isCollection>
         <isInput>false</isInput>
