@@ -54,7 +54,7 @@ private class HOT_EventControllerTest {
         System.Assert.areEqual(1, [SELECT COUNT() FROM Event WHERE WhatId = :sa.Id], 'Could not create event');
     }
     @IsTest
-    public static void testResourceServiceAppointmentChanged() {
+    public static void testResourceServiceAppointmentChangedActualTime() {
         WorkType workType = HOT_TestDataFactory.createWorkType();
         insert workType;
         HOT_Request__c request = HOT_TestDataFactory.createRequest('HOT_ServiceAppointmentHandler', workType);
