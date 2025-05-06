@@ -57,6 +57,15 @@ public without sharing class HOT_EventController {
                         serviceAppointmentIdsToCreateEvents.add(serviceAppointment.Id);
                     }
                 }
+                //Når oppdraget er ferdig og faktisk start og slutt endres
+                if (
+                    (serviceAppointment.HOT_AssignedResourceId__c == oldServiceAppointment.HOT_AssignedResourceId__c) &&
+                    (serviceAppointment.ActualStartTime != oldServiceAppointment.ActualStartTime ||
+                    serviceAppointment.ActualEndTime != oldServiceAppointment.ActualEndTime)
+                ) {
+                    serviceAppointmentIdsToDeleteEvents.add(serviceAppointment.Id);
+                    serviceAppointmentIdsToCreateEvents.add(serviceAppointment.Id);
+                }
             }
         }
         if (!serviceAppointmentIdsToDeleteEvents.isEmpty()) {
@@ -91,6 +100,8 @@ public without sharing class HOT_EventController {
                 WorkType.Name,
                 HOT_AddressFormated__c,
                 EarliestStartTime,
+                ActualStartTime,
+                ActualEndTime,
                 DueDate,
                 HOT_AssignedResourceId__c
             FROM ServiceAppointment
@@ -104,8 +115,8 @@ public without sharing class HOT_EventController {
             newEvent.RecordTypeId = hotEventRecordTypeId;
             newEvent.Subject = sa.AppointmentNumber + ': ' + sa.WorkType.Name;
             newEvent.Location = sa.HOT_AddressFormated__c;
-            newEvent.StartDateTime = sa.EarliestStartTime;
-            newEvent.EndDateTime = sa.DueDate;
+            newEvent.StartDateTime = sa.ActualStartTime != null ? sa.ActualStartTime : sa.EarliestStartTime;
+            newEvent.EndDateTime = sa.ActualEndTime != null ? sa.ActualEndTime : sa.DueDate;
             newEvent.Description =
                 'Link til TinD: https://navdialog.lightning.force.com/lightning/r/ServiceAppointment/' +
                 sa.Id +
