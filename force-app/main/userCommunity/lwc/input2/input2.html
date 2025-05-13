@@ -1,0 +1,32 @@
+<template>
+    <div class="navds-form-field navds-form-field--medium" style={setDefaultStyle}>
+        <div style="flex-direction: row; display: flex; align-items: center">
+            <label for={idValue} if:true={haslabel} class="navds-label" style={labelFontSize}>{label}</label>
+            <c-helptext if:true={isHelpText} text={helptextContent} hover-text={helptextHovertext}></c-helptext>
+        </div>
+        <input
+            onfocus={handleFocus}
+            aria-invalid="false"
+            class="navds-text-field__input navds-body-short navds-body-medium without"
+            type={type}
+            id={idValue}
+            name={name}
+            alt={alt}
+            placeholder={placeholder}
+            autofocus={setDefaultAutofocus}
+            disabled={disabled}
+            readonly={readonly}
+            oninput={sendValueOnChange}
+            onchange={handleonchange}
+            form={form}
+            value={value}
+            maxlength={maxLength}
+            minlength={minLength}
+        />
+        <div if:true={showError} id="errorTextId" aria-relevant="additions removals" aria-live="polite" role="alert">
+            <div class="navds-error-message navds-error-message--medium navds-label" style={errorFontSize}>
+                {actualErrorText}
+            </div>
+        </div>
+    </div>
+</template>
