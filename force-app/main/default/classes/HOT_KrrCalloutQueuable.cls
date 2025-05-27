@@ -22,18 +22,19 @@ public without sharing class HOT_KrrCalloutQueuable implements Queueable, Databa
         }
 
         try {
-            if (personIdByPersonalNumber.size() == 0) {
+            if (personIdByPersonalNumber.isEmpty()) {
                 throw new KRRException('(HOT) personIdByPersonalNumber was empty.');
             }
-            Map<String, KRRCalloutService.Person> krrResponseByPersonalNumber = new Map<String, KRRCalloutService.Person>();
+
             List<String> personNumbers = new List<String>(personIdByPersonalNumber.keySet());
+
             KrrCalloutService krrService = new KrrCalloutService();
-            KrrCalloutService.KrrResponse personResponse = krrService.getPersons(personNumbers, true);
+            KrrCalloutService.KrrResponse response = krrService.getPersons(personNumbers, true);
 
             // Line #34 might be irrelevant after we switced to getPersons.
             // KrrCalloutService.doPersonOppslag() fails in 25% of cases. We are rerunning the Callout, to see if there are some irregularities with the integration
-            if (personResponse == null || personResponse.personer == null) {
-                throw new KRRException('(HOT) KrrCalloutService.getPersons return null.');
+            if (response == null || response.personer == null) {
+                throw new KRRException('(HOT) KrrCalloutService.getPersons returned null or empty.');
             }
 
             Map<String, KrrCalloutService.Person> krrResponseByPersonalNumber = response.personer;
