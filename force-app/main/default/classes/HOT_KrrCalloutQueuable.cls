@@ -35,7 +35,7 @@ public without sharing class HOT_KrrCalloutQueuable implements Queueable, Databa
             if (personResponse == null || personResponse.personer == null) {
                 throw new KRRException('(HOT) KrrCalloutService.getPersons return null.');
             }
-      
+
             Map<String, KrrCalloutService.Person> krrResponseByPersonalNumber = response.personer;
 
             List<Person__c> personsToUpdate = new List<Person__c>();
@@ -47,12 +47,12 @@ public without sharing class HOT_KrrCalloutQueuable implements Queueable, Databa
                     person.INT_LastUpdatedFromKRR__c = System.now();
                     person.INT_KrrIntegrationStatus__c = 'Completed';
                     person.HOT_KrrIntegrationErrorCounter__c = 0;
-    
+
                     if (p.epostadresse != null)
                         person.INT_KrrEmail__c = p.epostadresse;
                     if (p.mobiltelefonnummer != null)
                         person.INT_KrrMobilePhone__c = p.mobiltelefonnummer;
-    
+
                     personsToUpdate.add(person);
                 }
             }
@@ -61,7 +61,7 @@ public without sharing class HOT_KrrCalloutQueuable implements Queueable, Databa
             LoggerUtility logger = new LoggerUtility();
             logger.exception(e, requests[0], CRM_ApplicationDomain.Domain.HOT);
             logger.publish();
-    
+
             List<Person__c> personsToUpdate = new List<Person__c>();
             for (Id personId : personIdByPersonalNumber.values()) {
                 Person__c person = new Person__c();
@@ -74,4 +74,5 @@ public without sharing class HOT_KrrCalloutQueuable implements Queueable, Databa
             }
             cdo.updateRecords(personsToUpdate);
         }
+    }
 }
