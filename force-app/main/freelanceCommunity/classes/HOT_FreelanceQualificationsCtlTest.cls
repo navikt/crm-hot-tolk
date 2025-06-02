@@ -1,16 +1,17 @@
 @IsTest
 private class HOT_FreelanceQualificationsCtlTest {
-    /* @TestSetup
+    @TestSetup
     static void setup() {
         ServiceResource serviceResource = HOT_TestDataFactory.createServiceResource(UserInfo.getUserId());
         insert serviceResource;
 
-        Skill skill = new skill(MasterLabel = 'HOT');
+        Skill skill = [SELECT Id FROM Skill WHERE DeveloperName = 'Bildetolk' LIMIT 1];
 
         ServiceResourceSkill serviceResourceSkill = HOT_TestDataFactory.createServiceResourceSkill(
             serviceResource,
             skill
         );
+        
         insert serviceResourceSkill;
     }
 
@@ -73,35 +74,20 @@ private class HOT_FreelanceQualificationsCtlTest {
         Test.stopTest();
 
         System.assertNotEquals(0, skills.size(), 'Skills list should not be empty');
-    } */
-    /*
-    @TestSetup
-    static void setup() {
-        ServiceResource serviceResource = HOT_TestDataFactory.createServiceResource(UserInfo.getUserId());
-        insert serviceResource;
+    } 
 
-        Skill skill = [SELECT Id, MasterLabel FROM Skill LIMIT 1];
-
-        ServiceResourceSkill serviceResourceSkill = HOT_TestDataFactory.createServiceResourceSkill(
-            serviceResource,
-            skill
-        );
-        insert serviceResourceSkill;
-    }
     @IsTest
     static void myServiceResourceTest() {
+        Test.startTest();
         ServiceResource freelanceInterpreter = HOT_FreelanceQualificationsController.myServiceResource();
+        Test.stopTest();
         System.assertEquals(
             UserInfo.getUserId(),
             freelanceInterpreter.RelatedRecordId,
             'Could not find myServiceResource from getUserId'
         );
     }
-    @IsTest
-    static void getServiceResourceSkillTest() {
-        List<ServiceResourceSkill> freelanceSkills = HOT_FreelanceQualificationsController.getServiceResourceSkill();
-        System.assertEquals(1, freelanceSkills.size(), 'Could not fetch getServiceResourceSkill');
-    }
+
     @IsTest
     static void setResourceSkillTest() {
         Profile profile = [SELECT Id FROM Profile WHERE Name = 'Standard User' OR Name = 'Standardbruker' LIMIT 1];
@@ -112,10 +98,13 @@ private class HOT_FreelanceQualificationsCtlTest {
 
         Skill skill = [SELECT Id, MasterLabel FROM Skill LIMIT 1];
 
+        Test.startTest();
         ServiceResourceSkill setFreelanceSkill = HOT_FreelanceQualificationsController.setResourceSkill(
             serviceResource,
             skill
         );
+        Test.stopTest();
+
         System.assertEquals(
             serviceResource.Id,
             setFreelanceSkill.ServiceResourceId,
@@ -124,44 +113,13 @@ private class HOT_FreelanceQualificationsCtlTest {
     }
 
     @IsTest
-    static void createServiceResourceSkillTest() {
-        Skill skill = [SELECT Id, MasterLabel FROM Skill LIMIT 1];
-        List<Skill> selectedSkills = new List<Skill>{ skill };
-
-        ServiceResource serviceResource = HOT_TestDataFactory.createServiceResource(UserInfo.getUserId());
-        HOT_FreelanceQualificationsController.createServiceResourceSkill(serviceResource, selectedSkills);
-        List<ServiceResourceSkill> freelanceSkills = HOT_FreelanceQualificationsController.getServiceResourceSkill();
-
-        System.assertEquals(freelanceSkills[0].EffectiveStartDate, Date.today());
-        System.assertEquals(freelanceSkills[0].EffectiveEndDate, null);
-
-        selectedSkills.clear();
-
-        HOT_FreelanceQualificationsController.createServiceResourceSkill(serviceResource, selectedSkills);
-        List<ServiceResourceSkill> freelanceSkills1 = HOT_FreelanceQualificationsController.getServiceResourceSkill();
-
-        System.assertEquals(freelanceSkills1.size(), 0, 'Could not delete serviceResourceSkills');
-
-        Skill skill1 = [SELECT Id, MasterLabel FROM Skill WHERE MasterLabel = 'Tegnspråktolk' LIMIT 1];
-        List<Skill> selectedSkills1 = new List<Skill>{ skill1 };
-
-        try {
-            HOT_FreelanceQualificationsController.createServiceResourceSkill(serviceResource, selectedSkills1);
-        } catch (Exception e) {
-            String expectedExceptionThrown = e.getMessage();
-            System.assertEquals(
-                'Upsert failed. First exception on row 1; first error: REQUIRED_FIELD_MISSING, Required fields are missing: [ServiceResourceId]: [ServiceResourceId]',
-                expectedExceptionThrown
-            );
-        }
-    }
-
-    @IsTest
     static void getAllSkillsListTest() {
+        Test.startTest();
         List<Skill> skills = HOT_FreelanceQualificationsController.getAllSkillsList();
-        System.assertEquals(8, skills.size(), 'Could not fetch allSkillsList');
+        Test.stopTest();
+        System.assertEquals(7, skills.size(), 'Could not fetch allSkillsList');
     }
-    */
+    
     @IsTest
     static void getmyServiceResourceTest() {
         Profile profile = [SELECT Id FROM Profile WHERE Name = 'System Administrator'];
@@ -181,58 +139,59 @@ private class HOT_FreelanceQualificationsCtlTest {
         insert user1;
         ServiceResource resource1 = HOT_TestDataFactory.createServiceResource(user1.Id);
         insert resource1;
+        Test.startTest();
         System.runAs(user1) {
             ServiceResource sr = HOT_FreelanceQualificationsController.myServiceResource();
             System.assertEquals(sr.Id, resource1.Id, 'Could not get my service resource');
         }
+        Test.stopTest();
     }
-    // @IsTest
-    // static void getServiceResourceSkillsTest() {
-    //     ServiceResource serviceResource = HOT_TestDataFactory.createServiceResource(UserInfo.getUserId());
-    //     insert serviceResource;
 
-    //     Skill skill = [SELECT Id, MasterLabel FROM Skill LIMIT 1];
-
-    //     ServiceResourceSkill srSkill = HOT_TestDataFactory.createServiceResourceSkill(serviceResource, skill);
-    //     insert srSkill;
-    //     List<ServiceResourceSkill> freelanceSkills = HOT_FreelanceQualificationsController.getUserServiceResourceSkills();
-
-    //     System.assertEquals(freelanceSkills[0].EffectiveStartDate, Date.today());
-    // }
-    // @IsTest
-    // static void setServiceResourceSkillsTest() {
-    //     ServiceResource serviceResource = HOT_TestDataFactory.createServiceResource(UserInfo.getUserId());
-    //     insert serviceResource;
-    //     WorkType workType = HOT_TestDataFactory.createWorkType();
-    //     insert workType;
-
-    //     Skill skill = [SELECT Id, MasterLabel FROM Skill LIMIT 1];
-
-    //     ServiceResourceSkill srSkill = HOT_FreelanceQualificationsController.setResourceSkill(serviceResource, skill);
-
-    //     System.assertEquals(srSkill.SkillId, skill.Id);
-    // }
-    // @IsTest
-    // static void editServiceResourceSkillsTest() {
-    //     ServiceResource serviceResource = HOT_TestDataFactory.createServiceResource(UserInfo.getUserId());
-    //     insert serviceResource;
-    //     WorkType workType = HOT_TestDataFactory.createWorkType();
-    //     insert workType;
-
-    //     List<Skill> skills = [SELECT Id, MasterLabel FROM Skill];
-
-    //     ServiceResourceSkill srSkill = HOT_TestDataFactory.createServiceResourceSkill(serviceResource, skills[0]);
-    //     srSkill.EffectiveEndDate = Datetime.now();
-    //     insert srSkill;
-
-    //     List<Skill> newSkills = new List<Skill>();
-    //     newSkills.add(skills[0]);
-
-    //     HOT_FreelanceQualificationsController.editServiceResourceSkill(skills);
-    // }
     @IsTest
-    static void getAllSkillsListTest() {
-        List<Skill> skills = HOT_FreelanceQualificationsController.getAllSkillsList();
-        System.assertEquals(0, skills.size());
+    static void getServiceResourceSkillsTest() {
+
+        Skill skill = [SELECT Id, MasterLabel FROM Skill LIMIT 1];
+        ServiceResource serviceResource = [SELECT id FROM ServiceResource LIMIT 1];
+
+        Test.startTest();
+        List<ServiceResourceSkill> freelanceSkills = HOT_FreelanceQualificationsController.getUserServiceResourceSkills();
+        Test.stopTest();
+        System.assertEquals(freelanceSkills[0].EffectiveStartDate, Date.today());
+    }
+
+    @IsTest
+    static void setServiceResourceSkillsTest() {
+        WorkType workType = HOT_TestDataFactory.createWorkType();
+        insert workType;
+
+        Skill skill = [SELECT Id, MasterLabel FROM Skill LIMIT 1];
+        ServiceResource serviceResource = [SELECT id FROM ServiceResource LIMIT 1];
+
+        Test.startTest();
+        ServiceResourceSkill srSkill = HOT_FreelanceQualificationsController.setResourceSkill(serviceResource, skill);
+        Test.stopTest();
+        System.assertEquals(srSkill.SkillId, skill.Id);
+    }
+
+    @IsTest
+    static void editServiceResourceSkillsTest() {
+        WorkType workType = HOT_TestDataFactory.createWorkType();
+        insert workType;
+
+        Skill skill = [SELECT Id, MasterLabel FROM Skill LIMIT 1];
+        ServiceResource serviceResource = [SELECT id FROM ServiceResource LIMIT 1];
+
+        ServiceResourceSkill srs = [SELECT Id FROM ServiceResourceSkill LIMIT 1];
+        srs.EffectiveEndDate = Datetime.now();
+        update srs;
+
+        List<Skill> newSkills = new List<Skill>();
+        newSkills.add(skill);
+        Test.startTest();
+        HOT_FreelanceQualificationsController.editServiceResourceSkill(newSkills);
+        Test.stopTest();
+
+        ServiceResourceSkill srsT = [SELECT Id, EffectiveEndDate FROM ServiceResourceSkill LIMIT 1];
+        System.assertEquals(null, srsT.EffectiveEndDate, 'EffectiveEndDate should be null if skill already exists');
     }
 }

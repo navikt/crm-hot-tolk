@@ -1374,4 +1374,711 @@ private class HOT_MessageHelperTest {
         }
         Test.stopTest();
     }
+
+    @IsTest
+    static void createThreadDispatcherIR() {
+        WorkType workType = HOT_TestDataFactory.createWorkType();
+        workType.Name = 'Work Type Name';
+        insert workType;
+
+        HOT_Request__c request = HOT_TestDataFactory.createRequest('Subject', workType);
+        insert request;
+
+        WorkOrder workOrder = HOT_TestDataFactory.createWorkOrder(request, workType);
+        insert workOrder;
+
+        WorkOrderLineItem workOrderLineItem = HOT_TestDataFactory.createWorkOrderLineItem(workOrder, workType);
+        insert workOrderLineItem;
+
+        ServiceAppointment sa = HOT_TestDataFactory.createServiceAppointment(workOrderLineItem);
+        sa.HOT_Request__c = request.Id;
+        sa.Subject = 'Hei';
+        insert sa;
+
+        Profile profile = [SELECT Id FROM Profile WHERE Name = 'Standard User' OR Name = 'Standardbruker' LIMIT 1];
+        User user = HOT_TestDataFactory.createUser('user', profile);
+        insert user;
+        Account acc = new Account();
+        acc.Name = 'Newly created account';
+        insert acc;
+
+        User currentUser = [SELECT Id, AccountId FROM User WHERE Id = :UserInfo.getUserId()];
+        ServiceResource resource = HOT_TestDataFactory.createServiceResource(currentUser.Id);
+        resource.AccountId = acc.Id;
+        insert resource;
+
+        AssignedResource ar = HOT_TestDataFactory.createAssignedResource(sa.Id, resource.Id);
+        insert ar;
+
+        HOT_InterestedResource__c interestedResource = HOT_TestDataFactory.createInterestedResource(sa.Id, resource.Id);
+        insert interestedResource;
+
+        Test.startTest();
+        Thread__c thread = HOT_MessageHelper.createThreadInterpreter(interestedResource.Id);
+        Test.stopTest();
+        List<Thread__c> tList = [
+            SELECT Id, CRM_Account__c, CRM_Type__c
+            FROM Thread__c
+            WHERE CRM_Related_Object__c = :sa.Id
+        ];
+        System.assertNotEquals(null, tList);
+    }
+
+    @IsTest
+    static void createThreadDispatcherIRs() {
+        WorkType workType = HOT_TestDataFactory.createWorkType();
+        workType.Name = 'Work Type Name';
+        insert workType;
+
+        HOT_Request__c request = HOT_TestDataFactory.createRequest('Subject', workType);
+        insert request;
+        WorkOrder workOrder = HOT_TestDataFactory.createWorkOrder(request, workType);
+        insert workOrder;
+
+        WorkOrderLineItem workOrderLineItem = HOT_TestDataFactory.createWorkOrderLineItem(workOrder, workType);
+        insert workOrderLineItem;
+
+        ServiceAppointment sa = HOT_TestDataFactory.createServiceAppointment(workOrderLineItem);
+        sa.HOT_Request__c = request.Id;
+        sa.Subject = 'Hei';
+        insert sa;
+
+        Profile profile = [SELECT Id FROM Profile WHERE Name = 'Standard User' OR Name = 'Standardbruker' LIMIT 1];
+        User user = HOT_TestDataFactory.createUser('user', profile);
+        insert user;
+        Account acc = new Account();
+        acc.Name = 'Newly created account';
+        insert acc;
+
+        User currentUser = [SELECT Id, AccountId FROM User WHERE Id = :UserInfo.getUserId()];
+        ServiceResource resource = HOT_TestDataFactory.createServiceResource(currentUser.Id);
+        resource.AccountId = acc.Id;
+        insert resource;
+
+        AssignedResource ar = HOT_TestDataFactory.createAssignedResource(sa.Id, resource.Id);
+        insert ar;
+
+        HOT_InterestedResource__c interestedResource = HOT_TestDataFactory.createInterestedResource(sa.Id, resource.Id);
+        insert interestedResource;
+
+        Test.startTest();
+        Thread__c thread = HOT_MessageHelper.createThreadInterpreters(sa.Id);
+        Test.stopTest();
+        List<Thread__c> tList = [
+            SELECT Id, CRM_Account__c, CRM_Type__c
+            FROM Thread__c
+            WHERE CRM_Related_Object__c = :sa.Id
+        ];
+        System.assertNotEquals(null, tList);
+    }
+
+    @IsTest
+    static void getMessagesFromThreadTestAcc() {
+        Account acc = new Account();
+        acc.Name = 'Newly created account';
+        insert acc;
+
+        User currentUser = [SELECT Id, AccountId FROM User WHERE Id = :UserInfo.getUserId()];
+        ServiceResource resource = HOT_TestDataFactory.createServiceResource(currentUser.Id);
+        resource.AccountId = acc.Id;
+        insert resource;
+
+        Thread__c t = HOT_TestDataFactory.createThread();
+        t.CRM_Related_Object__c = resource.Id;
+        t.CRM_Type__c = 'HOT_BRUKER-FORMIDLER';
+        t.HOT_ServiceResource__c = resource.Id;
+        insert t;
+
+        Message__c m = new Message__c();
+        m.CRM_Thread__c = t.Id;
+        m.CRM_Message_Text__c = 'Lorem Ipsum Dolor Si Amet';
+        m.HOT_User_Role__c = HOT_MessageHelper.getUserProfileAndName();
+        insert m;
+
+        Test.startTest();
+        List<Message__c> msgList = HOT_MessageHelper.getMessagesFromThread(t.id);
+        Test.stopTest();
+        assert.isNotNull(msgList, 'Should have got  messages because it should have access');
+    }
+
+    @IsTest
+    static void getUserLisenceTypeErr() {
+        id a = [SELECT Id FROM Account LIMIT 1].id;
+
+        Test.startTest();
+        try {
+            string s = HOT_MessageHelper.getUserLisenceType(a);
+        } catch (AurahandledException e) {
+            System.assertEquals('Script-thrown exception', e.getMessage());
+        }
+        Test.stopTest();
+    }
+
+    @IsTest
+    static void markasreadTestAcc() {
+        Account acc = new Account();
+        acc.Name = 'Newly created account';
+        insert acc;
+
+        User currentUser = [SELECT Id, AccountId FROM User WHERE Id = :UserInfo.getUserId()];
+        ServiceResource resource = HOT_TestDataFactory.createServiceResource(currentUser.Id);
+        resource.AccountId = acc.Id;
+        insert resource;
+
+        Thread__c t = HOT_TestDataFactory.createThread();
+        t.CRM_Related_Object__c = resource.Id;
+        t.CRM_Type__c = 'HOT_BRUKER-FORMIDLER';
+        t.HOT_ServiceResource__c = resource.Id;
+        insert t;
+
+        Message__c m = new Message__c();
+        m.CRM_Thread__c = t.Id;
+        m.CRM_Message_Text__c = 'Lorem Ipsum Dolor Si Amet';
+        m.HOT_User_Role__c = HOT_MessageHelper.getUserProfileAndName();
+        insert m;
+
+        Test.startTest();
+        HOT_MessageHelper.markAsRead(t.Id);
+        Test.stopTest();
+        Message__c msg = [SELECT CRM_Read__c FROM Message__c WHERE CRM_Thread__c = :t.Id LIMIT 1];
+        System.assertEquals(true, msg.CRM_Read__c, 'Should be marked as read because user has access');
+    }
+
+    @IsTest
+    static void markThreadAsReadTestAcc() {
+        Account acc = new Account();
+        acc.Name = 'Newly created account';
+        insert acc;
+
+        User currentUser = [SELECT Id, AccountId FROM User WHERE Id = :UserInfo.getUserId()];
+        ServiceResource resource = HOT_TestDataFactory.createServiceResource(currentUser.Id);
+        resource.AccountId = acc.Id;
+        insert resource;
+
+        Thread__c t = HOT_TestDataFactory.createThread();
+        t.CRM_Related_Object__c = resource.Id;
+        t.CRM_Type__c = 'HOT_BRUKER-FORMIDLER';
+        t.HOT_ServiceResource__c = resource.Id;
+        t.HOT_Thread_read_by__c = '007';
+        insert t;
+
+        Message__c m = new Message__c();
+        m.CRM_Thread__c = t.Id;
+        m.CRM_Message_Text__c = 'Lorem Ipsum Dolor Si Amet';
+        m.HOT_User_Role__c = HOT_MessageHelper.getUserProfileAndName();
+        insert m;
+        
+        String contactId = '123456';
+
+        Test.startTest();
+        HOT_MessageHelper.markThreadAsRead(t.Id, contactId);
+        Test.stopTest();
+        Thread__c th = [SELECT HOT_Thread_read_by__c FROM Thread__c WHERE id = :t.Id LIMIT 1];
+        System.assertEquals('007123456;', th.HOT_Thread_read_by__c, 'Should be HOT Thread Read By + contactid + ;');
+    }
+
+    @IsTest
+    static void markThreadAsReadEmployeeTestAcc() {
+        Account acc = new Account();
+        acc.Name = 'Newly created account';
+        insert acc;
+
+        User currentUser = [SELECT Id, AccountId FROM User WHERE Id = :UserInfo.getUserId()];
+        ServiceResource resource = HOT_TestDataFactory.createServiceResource(currentUser.Id);
+        resource.AccountId = acc.Id;
+        insert resource;
+
+        Thread__c t = HOT_TestDataFactory.createThread();
+        t.CRM_Related_Object__c = resource.Id;
+        t.CRM_Type__c = 'HOT_BRUKER-FORMIDLER';
+        t.HOT_ServiceResource__c = resource.Id;
+        t.HOT_Thread_read_by__c = '007';
+        t.HOT_ParticipantIds__c = currentUser.id;
+        insert t;
+
+        Message__c m = new Message__c();
+        m.CRM_Thread__c = t.Id;
+        m.CRM_Message_Text__c = 'Lorem Ipsum Dolor Si Amet';
+        m.HOT_User_Role__c = HOT_MessageHelper.getUserProfileAndName();
+        insert m;
+
+        Test.startTest();
+        HOT_MessageHelper.markThreadAsReadEmployee(t.Id);
+        Test.stopTest();
+        Thread__c th = [SELECT HOT_Thread_read_by__c FROM Thread__c WHERE id = :t.Id LIMIT 1];
+        System.assertEquals('007' + currentUser.id + ';', th.HOT_Thread_read_by__c, 'Should be HOT Thread Read By + user id + ;');
+    }
+
+    @IsTest
+    static void markAsReadByNavTestAcc() {
+        Account acc = new Account();
+        acc.Name = 'Newly created account';
+        insert acc;
+
+        WorkType workType = HOT_TestDataFactory.createWorkType();
+        insert workType;
+
+        HOT_Request__c request = HOT_TestDataFactory.createRequest('TEST', workType);
+        insert request;
+
+        WorkOrder workOrder = HOT_TestDataFactory.createWorkOrder(request, workType);
+        workOrder.AccountId = acc.Id;
+        insert workOrder;
+
+        WorkOrderLineItem workOrderLineItem = HOT_TestDataFactory.createWorkOrderLineItem(workOrder, workType);
+        insert workOrderLineItem;
+
+        User currentUser = [SELECT Id, AccountId FROM User WHERE Id = :UserInfo.getUserId()];
+        ServiceResource resource = HOT_TestDataFactory.createServiceResource(currentUser.Id);
+        resource.AccountId = acc.Id;
+        insert resource;
+
+        ServiceAppointment sa = HOT_TestDataFactory.createServiceAppointment(workOrderLineItem);
+        sa.HOT_Request__c = request.Id;
+        sa.Subject = 'Hei';
+        sa.HOT_Account__c = acc.Id;
+        insert sa;
+
+        Thread__c t = HOT_TestDataFactory.createThread();
+        t.CRM_Related_Object__c = resource.Id;
+        t.CRM_Type__c = 'HOT_BRUKER-FORMIDLER';
+        t.HOT_ServiceResource__c = resource.Id;
+        t.HOT_Thread_read_by__c = '007';
+        t.HOT_ParticipantIds__c = '123456';
+        t.HOT_ServiceAppointment__c = sa.id;
+        insert t;
+
+        Message__c m = new Message__c();
+        m.CRM_Thread__c = t.Id;
+        m.CRM_Message_Text__c = 'Lorem Ipsum Dolor Si Amet';
+        m.HOT_User_Role__c = HOT_MessageHelper.getUserProfileAndName();
+        insert m;
+
+        Test.startTest();
+        HOT_MessageHelper.markAsReadByNav(t.Id);
+        Test.stopTest();
+        Message__c msg = [SELECT CRM_Read_By_Nav__c FROM Message__c WHERE CRM_Thread__c = :t.Id LIMIT 1];
+        System.assertEquals(true, msg.CRM_Read_By_Nav__c, 'Should be true');
+    }
+
+    @IsTest
+    static void markAsReadByNavTestAccSA() {
+        Account acc = new Account();
+        acc.Name = 'Newly created account';
+        insert acc;
+
+        WorkType workType = HOT_TestDataFactory.createWorkType();
+        insert workType;
+
+        HOT_Request__c request = HOT_TestDataFactory.createRequest('TEST', workType);
+        insert request;
+
+        WorkOrder workOrder = HOT_TestDataFactory.createWorkOrder(request, workType);
+        workOrder.AccountId = acc.Id;
+        insert workOrder;
+
+        WorkOrderLineItem workOrderLineItem = HOT_TestDataFactory.createWorkOrderLineItem(workOrder, workType);
+        insert workOrderLineItem;
+
+        User currentUser = [SELECT Id, AccountId FROM User WHERE Id = :UserInfo.getUserId()];
+        ServiceResource resource = HOT_TestDataFactory.createServiceResource(currentUser.Id);
+        resource.AccountId = acc.Id;
+        insert resource;
+
+        ServiceAppointment sa = HOT_TestDataFactory.createServiceAppointment(workOrderLineItem);
+        sa.HOT_Request__c = request.Id;
+        sa.Subject = 'Hei';
+        sa.HOT_Account__c = acc.Id;
+        insert sa;
+
+        Thread__c t = HOT_TestDataFactory.createThread();
+        t.CRM_Related_Object__c = resource.Id;
+        t.CRM_Type__c = 'HOT_BRUKER-FORMIDLER';
+        t.HOT_ServiceResource__c = resource.Id;
+        t.HOT_Thread_read_by__c = '007';
+        t.HOT_ParticipantIds__c = '123456';
+        //t.HOT_ServiceAppointment__c = sa.id;
+        insert t;
+
+        Message__c m = new Message__c();
+        m.CRM_Thread__c = t.Id;
+        m.CRM_Message_Text__c = 'Lorem Ipsum Dolor Si Amet';
+        m.HOT_User_Role__c = HOT_MessageHelper.getUserProfileAndName();
+        insert m;
+
+        Test.startTest();
+        HOT_MessageHelper.markAsReadByNav(t.Id);
+        Test.stopTest();
+        Message__c msg = [SELECT CRM_Read_By_Nav__c FROM Message__c WHERE CRM_Thread__c = :t.Id LIMIT 1];
+        System.assertEquals(true, msg.CRM_Read_By_Nav__c, 'Should be true');
+    }
+
+    @IsTest
+    static void getUserNameRoleFormidler() {
+        Profile p = [SELECT id FROM Profile WHERE Name = 'HOT Tolk Formidler'];
+
+        User u = new User();
+        u.alias = 'TestUser';
+        u.email = 'HOT_testaccount@nav.hot.no';
+        u.emailencodingkey = 'UTF-8';
+        u.lastname = 'Testing';
+        u.languagelocalekey = 'en_US';
+        u.localesidkey = 'en_US';
+        u.country = 'Norway';
+        u.IsActive = true;
+        u.timezonesidkey = 'Europe/Paris';
+        u.username = 'HOT_testaccount@nav.hot.noo';
+        u.ProfileId = p.id;
+        insert u;
+
+        Test.startTest();
+        System.runAs(u) {
+            String r = HOT_MessageHelper.getUserNameRole();
+            System.assertEquals(u.FirstName + ', Formidler', r, 'Should return the first name of running user + profile name');
+        }
+        Test.stopTest();
+    }
+
+    /*@IsTest
+    static void getUserNameRoleTolk() {
+        Profile p = [SELECT id FROM Profile WHERE Name = 'HOT Tolk Ansatt'];
+
+        User u = new User();
+        u.alias = 'TestUser';
+        u.email = 'HOT_testaccount@nav.hot.no';
+        u.emailencodingkey = 'UTF-8';
+        u.lastname = 'Testing';
+        u.languagelocalekey = 'en_US';
+        u.localesidkey = 'en_US';
+        u.country = 'Norway';
+        u.IsActive = true;
+        u.timezonesidkey = 'Europe/Paris';
+        u.username = 'HOT_testaccount@nav.hot.noo';
+        u.ProfileId = p.id;
+        insert u;
+
+        Test.startTest();
+        System.runAs(u) {
+            String r = HOT_MessageHelper.getUserNameRole();
+            System.assertEquals(u.FirstName + ', Tolk', r, 'Should return the first name of running user + profile name');
+        }
+        Test.stopTest();
+    }*/
+
+    @IsTest
+    static void getUserNameRoleSamhandler() {
+        UserRole ur = [SELECT Id, DeveloperName FROM UserRole LIMIT 1];
+        User currentUser = [SELECT Id, AccountId FROM User WHERE Id = :UserInfo.getUserId()];
+        currentUser.UserRoleId = ur.id;
+        Update currentUser;
+
+        Profile p = [SELECT id FROM Profile WHERE Name = 'NAV Samhandler'];
+        contact c = [SELECT id FROM Contact LIMIT 1];
+
+        User u = new User();
+        u.alias = 'TestUser';
+        u.email = 'HOT_testaccount@nav.hot.no';
+        u.emailencodingkey = 'UTF-8';
+        u.lastname = 'Testing';
+        u.languagelocalekey = 'en_US';
+        u.localesidkey = 'en_US';
+        u.country = 'Norway';
+        u.IsActive = true;
+        u.timezonesidkey = 'Europe/Paris';
+        u.username = 'HOT_testaccount@nav.hot.noo';
+        u.ProfileId = p.id;
+        u.contactid = c.id;
+        insert u;
+
+        Test.startTest();
+        System.runAs(u) {
+            String r = HOT_MessageHelper.getUserNameRole();
+            System.assertEquals(u.FirstName + ', Tolk', r, 'Should return the first name of running user + profile name');
+        }
+        Test.stopTest();
+    }
+
+    @IsTest
+    static void getUserNameRoleBruker() {
+        UserRole ur = [SELECT Id, DeveloperName FROM UserRole LIMIT 1];
+        User currentUser = [SELECT Id, AccountId FROM User WHERE Id = :UserInfo.getUserId()];
+        currentUser.UserRoleId = ur.id;
+        Update currentUser;
+
+        Profile p = [SELECT id FROM Profile WHERE Name = 'NAV Bruker'];
+
+        contact c = [SELECT id FROM Contact LIMIT 1];
+
+        User u = new User();
+        u.alias = 'TestUser';
+        u.email = 'HOT_testaccount@nav.hot.no';
+        u.emailencodingkey = 'UTF-8';
+        u.lastname = 'Testing';
+        u.languagelocalekey = 'en_US';
+        u.localesidkey = 'en_US';
+        u.country = 'Norway';
+        u.IsActive = true;
+        u.timezonesidkey = 'Europe/Paris';
+        u.username = 'HOT_testaccount@nav.hot.noo';
+        u.ProfileId = p.id;
+        u.contactid = c.id;
+        insert u;
+
+        Test.startTest();
+        System.runAs(u) {
+            String r = HOT_MessageHelper.getUserNameRole();
+            System.assertEquals(u.FirstName + ', Tolkebruker', r, 'Should return the first name of running user + profile name');
+        }
+        Test.stopTest();
+    }
+
+    @IsTest
+    static void getUserNameRoleBrukerBP() {
+        UserRole ur = [SELECT Id, DeveloperName FROM UserRole LIMIT 1];
+        User currentUser = [SELECT Id, AccountId FROM User WHERE Id = :UserInfo.getUserId()];
+        currentUser.UserRoleId = ur.id;
+        Update currentUser;
+
+        Profile p = [SELECT id FROM Profile WHERE Name = 'NAV Bruker Plus'];
+
+        contact c = [SELECT id FROM Contact LIMIT 1];
+
+        User u = new User();
+        u.alias = 'TestUser';
+        u.email = 'HOT_testaccount@nav.hot.no';
+        u.emailencodingkey = 'UTF-8';
+        u.lastname = 'Testing';
+        u.languagelocalekey = 'en_US';
+        u.localesidkey = 'en_US';
+        u.country = 'Norway';
+        u.IsActive = true;
+        u.timezonesidkey = 'Europe/Paris';
+        u.username = 'HOT_testaccount@nav.hot.noo';
+        u.ProfileId = p.id;
+        u.contactid = c.id;
+        insert u;
+
+        Test.startTest();
+        System.runAs(u) {
+            String r = HOT_MessageHelper.getUserNameRole();
+            System.assertEquals(u.FirstName + ', Tolkebruker', r, 'Should return the first name of running user + profile name');
+        }
+        Test.stopTest();
+    }
+    
+    @IsTest
+    static void getUserNameRoleTolk() {
+
+        User u = [SELECT Id, FirstName FROM User WHERE Id = :UserInfo.getUserId()];
+
+        Test.startTest();
+        String r = HOT_MessageHelper.getUserNameRole();
+        System.assertEquals(u.FirstName + ', Administrator', r, 'Should return the first name of running user + profile name');
+
+        Test.stopTest();
+    }
+
+    @IsTest
+    static void getUserProfileAndNameFormidler() {
+        Profile p = [SELECT id FROM Profile WHERE Name = 'HOT Tolk Formidler'];
+
+        User u = new User();
+        u.alias = 'TestUser';
+        u.email = 'HOT_testaccount@nav.hot.no';
+        u.emailencodingkey = 'UTF-8';
+        u.lastname = 'Testing';
+        u.languagelocalekey = 'en_US';
+        u.localesidkey = 'en_US';
+        u.country = 'Norway';
+        u.IsActive = true;
+        u.timezonesidkey = 'Europe/Paris';
+        u.username = 'HOT_testaccount@nav.hot.noo';
+        u.ProfileId = p.id;
+        insert u;
+
+        Test.startTest();
+        System.runAs(u) {
+            String r = HOT_MessageHelper.getUserProfileAndName();
+            System.assertEquals(u.FirstName + ', Formidler', r, 'Should return the first name of running user + profile name');
+        }
+        Test.stopTest();
+    }
+
+    /*@IsTest
+    static void getUserProfileAndNameTolk() {
+        Profile p = [SELECT id FROM Profile WHERE Name = 'HOT Tolk Ansatt'];
+
+        User u = new User();
+        u.alias = 'TestUser';
+        u.email = 'HOT_testaccount@nav.hot.no';
+        u.emailencodingkey = 'UTF-8';
+        u.lastname = 'Testing';
+        u.languagelocalekey = 'en_US';
+        u.localesidkey = 'en_US';
+        u.country = 'Norway';
+        u.IsActive = true;
+        u.timezonesidkey = 'Europe/Paris';
+        u.username = 'HOT_testaccount@nav.hot.noo';
+        u.ProfileId = p.id;
+        insert u;
+
+        Test.startTest();
+        System.runAs(u) {
+            String r = HOT_MessageHelper.getUserProfileAndName();
+            System.assertEquals(u.FirstName + ', Tolk', r, 'Should return the first name of running user + profile name');
+        }
+        Test.stopTest();
+    }*/
+
+    @IsTest
+    static void getUserProfileAndNameSamhandler() {
+        UserRole ur = [SELECT Id, DeveloperName FROM UserRole LIMIT 1];
+        User currentUser = [SELECT Id, AccountId FROM User WHERE Id = :UserInfo.getUserId()];
+        currentUser.UserRoleId = ur.id;
+        Update currentUser;
+
+        Profile p = [SELECT id FROM Profile WHERE Name = 'NAV Samhandler'];
+        contact c = [SELECT id FROM Contact LIMIT 1];
+
+        User u = new User();
+        u.alias = 'TestUser';
+        u.email = 'HOT_testaccount@nav.hot.no';
+        u.emailencodingkey = 'UTF-8';
+        u.lastname = 'Testing';
+        u.languagelocalekey = 'en_US';
+        u.localesidkey = 'en_US';
+        u.country = 'Norway';
+        u.IsActive = true;
+        u.timezonesidkey = 'Europe/Paris';
+        u.username = 'HOT_testaccount@nav.hot.noo';
+        u.ProfileId = p.id;
+        u.contactid = c.id;
+        insert u;
+
+        Test.startTest();
+        System.runAs(u) {
+            String r = HOT_MessageHelper.getUserProfileAndName();
+            System.assertEquals(u.FirstName + ', Tolk', r, 'Should return the first name of running user + profile name');
+        }
+        Test.stopTest();
+    }
+
+    @IsTest
+    static void getUserProfileAndNameBruker() {
+        UserRole ur = [SELECT Id, DeveloperName FROM UserRole LIMIT 1];
+        User currentUser = [SELECT Id, AccountId FROM User WHERE Id = :UserInfo.getUserId()];
+        currentUser.UserRoleId = ur.id;
+        Update currentUser;
+
+        Profile p = [SELECT id FROM Profile WHERE Name = 'NAV Bruker'];
+
+        contact c = [SELECT id FROM Contact LIMIT 1];
+
+        User u = new User();
+        u.alias = 'TestUser';
+        u.email = 'HOT_testaccount@nav.hot.no';
+        u.emailencodingkey = 'UTF-8';
+        u.lastname = 'Testing';
+        u.languagelocalekey = 'en_US';
+        u.localesidkey = 'en_US';
+        u.country = 'Norway';
+        u.IsActive = true;
+        u.timezonesidkey = 'Europe/Paris';
+        u.username = 'HOT_testaccount@nav.hot.noo';
+        u.ProfileId = p.id;
+        u.contactid = c.id;
+        insert u;
+
+        Test.startTest();
+        System.runAs(u) {
+            String r = HOT_MessageHelper.getUserProfileAndName();
+            System.assertEquals(u.FirstName + ', Tolkebruker', r, 'Should return the first name of running user + profile name');
+        }
+        Test.stopTest();
+    }
+
+    @IsTest
+    static void getUserProfileAndNameBP() {
+        UserRole ur = [SELECT Id, DeveloperName FROM UserRole LIMIT 1];
+        User currentUser = [SELECT Id, AccountId FROM User WHERE Id = :UserInfo.getUserId()];
+        currentUser.UserRoleId = ur.id;
+        Update currentUser;
+
+        Profile p = [SELECT id FROM Profile WHERE Name = 'NAV Bruker Plus'];
+
+        contact c = [SELECT id FROM Contact LIMIT 1];
+
+        User u = new User();
+        u.alias = 'TestUser';
+        u.email = 'HOT_testaccount@nav.hot.no';
+        u.emailencodingkey = 'UTF-8';
+        u.lastname = 'Testing';
+        u.languagelocalekey = 'en_US';
+        u.localesidkey = 'en_US';
+        u.country = 'Norway';
+        u.IsActive = true;
+        u.timezonesidkey = 'Europe/Paris';
+        u.username = 'HOT_testaccount@nav.hot.noo';
+        u.ProfileId = p.id;
+        u.contactid = c.id;
+        insert u;
+
+        Test.startTest();
+        System.runAs(u) {
+            String r = HOT_MessageHelper.getUserProfileAndName();
+            System.assertEquals(u.FirstName + ', Tolkebruker', r, 'Should return the first name of running user + profile name');
+        }
+        Test.stopTest();
+    }
+
+    @IsTest
+    static void createMessageAcc() {
+        Account acc = new Account();
+        acc.Name = 'Newly created account';
+        insert acc;
+
+        contact c = [SELECT id FROM Contact LIMIT 1];
+
+        User currentUser = [SELECT Id, AccountId FROM User WHERE Id = :UserInfo.getUserId()];
+        ServiceResource resource = HOT_TestDataFactory.createServiceResource(currentUser.Id);
+        resource.AccountId = acc.Id;
+        insert resource;
+
+        Thread__c t = HOT_TestDataFactory.createThread();
+        t.CRM_Related_Object__c = resource.Id;
+        t.CRM_Type__c = 'HOT_BRUKER-FORMIDLER';
+        t.HOT_ServiceResource__c = resource.Id;
+        t.HOT_Thread_read_by__c = '007';
+        t.HOT_ParticipantIds__c = currentUser.id;
+        t.CRM_isActive__c = true;
+        insert t;
+
+        Thread__c t2 = HOT_TestDataFactory.createThread();
+        t2.CRM_Related_Object__c = resource.Id;
+        t2.CRM_Type__c = 'HOT_BRUKER-FORMIDLER';
+        t2.HOT_ServiceResource__c = resource.Id;
+        t2.HOT_Thread_read_by__c = '007';
+        t2.HOT_ParticipantIds__c = currentUser.id;
+        t2.CRM_isActive__c = false;
+        insert t2;
+
+        Thread__c t3 = HOT_TestDataFactory.createThread();
+        insert t3;
+
+        Message__c m = new Message__c();
+        m.CRM_Thread__c = t.Id;
+        m.CRM_Message_Text__c = 'Lorem Ipsum Dolor Si Amet';
+        m.HOT_User_Role__c = HOT_MessageHelper.getUserProfileAndName();
+        insert m;
+
+        Test.startTest();
+        Boolean r = HOT_MessageHelper.createMessage(t.Id, 'Test', c.id);
+        Boolean r2 = HOT_MessageHelper.createMessage(t2.Id, 'Test', c.id);
+        Boolean r3 = HOT_MessageHelper.createMessage(t3.Id, 'Test', c.id);
+        Test.stopTest();
+        System.assertEquals(true, r, 'Should be True because crm_isactive__c');
+        System.assertEquals(false, r2, 'Should be False because crm_isactive__c');
+        System.assertEquals(false, r3, 'Should be False because no access');
+    }
+
 }
