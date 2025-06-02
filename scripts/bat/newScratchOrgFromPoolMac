@@ -1,0 +1,15 @@
+# Hent scratch org fra pool
+sfp pool:fetch --tag dev --targetdevhubusername $1 --alias $2 --setdefaultusername
+
+# Dytter kildekoden til scratch org'en
+sf project deploy start
+
+# Tildel tilatelsessett til brukeren
+sf org assign permset --name HOT_Admin
+sf org assign permset --name HOT_Config
+
+# Publish Experience Site
+sf community publish --name Tolketjenesten
+
+# Opprett testdata
+sf apex run --file scripts/apex/createTestData.apex
