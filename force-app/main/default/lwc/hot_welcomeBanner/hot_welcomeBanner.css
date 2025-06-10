@@ -9,34 +9,3 @@
     padding: 2vw;
     gap: 4vw;
 }
-/* CSS FOR CUSTOM MINE VARSLER KNAPP */
-.navds-button {
-    display: inline-flex;
-    cursor: pointer;
-    background-color: #ffffff;
-    color: #0067c5;
-    margin: 0;
-    text-align: center;
-    text-decoration: none;
-    border-color: #0067c5;
-    min-height: 48px;
-    align-items: center;
-    padding: calc(0.75rem - 2px) 0.75rem;
-    border-radius: 5px;
-}
-.navds-body-short {
-    font-size: 1.125rem;
-    letter-spacing: 0;
-    line-height: 1.3;
-    margin: 0;
-}
-.navds-button--tertiary {
-    border: 2px solid #3386e0;
-    background-color: transparent;
-}
-
-.navds-button--tertiary:hover,
-.navds-button--tertiary:focus {
-    border-color: #0067c5;
-    background-color: #cce1ff;
-}

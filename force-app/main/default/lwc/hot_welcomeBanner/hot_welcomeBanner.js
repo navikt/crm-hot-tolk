@@ -1,8 +1,7 @@
 import { LightningElement, api } from 'lwc';
-import icons from '@salesforce/resourceUrl/ikoner';
 
 export default class Hot_welcomebannerV2 extends LightningElement {
-    notificationIcon = icons + '/Bell/BellBlue.svg';
+    showNotificationList = false;
 
     @api personDetails;
 
