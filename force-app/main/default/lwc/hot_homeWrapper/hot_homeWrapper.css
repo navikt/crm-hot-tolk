@@ -1,0 +1,10 @@
+.wrapper {
+    width: 100%;
+    margin: 0 auto;
+    background-color: #ffffff;
+    height: 100vw;
+}
+.content {
+    max-width: 1200px;
+    margin: 0 auto;
+}
