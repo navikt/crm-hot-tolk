@@ -18,6 +18,7 @@ export default class Hot_notificationListViewer extends LightningElement {
             date: '11.05.2025, kl 10:79 Push-varsel i appen'
         }
         // Add the other notifications here...
+        //SKIR VIER JERIO FJDPOFÅL
     ];
 
     get hasNotifications() {
