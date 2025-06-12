@@ -1,3 +1,8 @@
+/*
+This Class has several commented classes and setup. This is because the code works in this scratch org, 
+and not in the scratch-org made during Pull Request code coverage testing. The one created during Code Coverage
+testing does not include skills and profiles, which are needed in order to test this code properly.
+*/
 @IsTest
 private class HOT_FreelanceQualificationsCtlTest {
     @TestSetup
