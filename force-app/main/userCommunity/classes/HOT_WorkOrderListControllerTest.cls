@@ -203,4 +203,47 @@ private class HOT_WorkOrderListControllerTest {
         String threadId = HOT_WorkOrderListController.getThreadInterpreterId(workOrder.Id);
         System.assertEquals(t.Id, threadId, 'Could not find the thread Id');
     }
+
+    @IsTest
+    static void getServiceAppointmentsIdsTest() {
+        WorkType workType = HOT_TestDataFactory.createWorkType();
+        insert workType;
+        Account account = HOT_TestDataFactory.createAccount(true);
+        insert account;
+        HOT_Request__c request = HOT_TestDataFactory.createRequest('TEST', workType);
+        insert request;
+        WorkOrder workOrder = HOT_TestDataFactory.createWorkOrder(request, workType);
+        workOrder.AccountId = account.Id;
+        insert workOrder;
+        Thread__c t = HOT_TestDataFactory.createThread();
+        t.CRM_Related_Object__c = workOrder.Id;
+        t.CRM_Thread_Type__c = 'HOT_BRUKER-TOLK';
+        insert t;
+
+        Test.startTest();
+        List<ServiceAppointment> saList = HOT_WorkOrderListController.getServiceAppointmentsIds(workOrder.Id);
+        Test.stopTest();
+    }
+
+    @IsTest
+    static void getMyWorkOrdersAndRelatedRequestTest() {
+        WorkType workType = HOT_TestDataFactory.createWorkType();
+        insert workType;
+        Account account = HOT_TestDataFactory.createAccount(true);
+        insert account;
+        HOT_Request__c request = HOT_TestDataFactory.createRequest('TEST', workType);
+        insert request;
+        WorkOrder workOrder = HOT_TestDataFactory.createWorkOrder(request, workType);
+        workOrder.AccountId = account.Id;
+        insert workOrder;
+        Thread__c t = HOT_TestDataFactory.createThread();
+        t.CRM_Related_Object__c = workOrder.Id;
+        t.CRM_Thread_Type__c = 'HOT_BRUKER-TOLK';
+        insert t;
+
+        Test.startTest();
+        Boolean b = true;
+        List<WorkOrder> woList = HOT_WorkOrderListController.getMyWorkOrdersAndRelatedRequest(b);
+        Test.stopTest();
+    }
 }

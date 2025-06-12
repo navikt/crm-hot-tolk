@@ -125,4 +125,47 @@ private class HOT_UserInformationControllerTest {
         }
 
     }
+
+    @IsTest
+    static void updateKrrTest() {
+        Person__c person = HOT_TestDataFactory.createPerson();
+        person.INT_KrrEmail__c = 'getPersonTest@nav.no';
+        person.HOT_WorkplaceInterpreter__c = true;
+        person.INT_Confidential__c = 'Ugradert';
+        person.INT_FirstName__c = 'Tolk';
+        person.INT_LastName__c = 'Bruker';
+        insert person;
+
+        Test.startTest();
+        HOT_UserInformationController.updateKrrStatus(person);
+        Test.stopTest();
+    }
+
+    @IsTest
+    static void getNotificationPickListValuesTest() {
+        String s = 'SMS';
+
+        Test.startTest();
+        List < Map < String, String >> lm = HOT_UserInformationController.getNotificationPickListValues(s);
+        Test.stopTest();
+    }
+
+    @IsTest
+    static void changeUserNotificationSettingTest() {
+        Person__c person = HOT_TestDataFactory.createPerson();
+        person.INT_KrrEmail__c = 'getPersonTest@nav.no';
+        person.HOT_WorkplaceInterpreter__c = true;
+        person.INT_Confidential__c = 'Ugradert';
+        person.INT_FirstName__c = 'Tolk';
+        person.INT_LastName__c = 'Bruker';
+        insert person;
+
+        String pId = person.id;
+        String notval = 'SMS';
+        Boolean reserved = true;
+
+        Test.startTest();
+        Boolean a = HOT_UserInformationController.changeUserNotificationSetting(pId, notval, reserved);
+        Test.stopTest();
+    }
 }

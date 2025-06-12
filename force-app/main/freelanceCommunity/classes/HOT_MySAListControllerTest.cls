@@ -188,7 +188,19 @@ private class HOT_MySAListControllerTest {
     }
     @IsTest
     static void getThreadServiceAppointmentIdTest() {
+        User admin = [SELECT Id, UserRoleId FROM User WHERE Id = :UserInfo.getUserId() LIMIT 1];
+
+        ServiceResource serviceResource = [SELECT Id FROM ServiceResource WHERE RelatedRecordId = :admin.Id];
         ServiceAppointment serviceAppointment = [SELECT Id FROM ServiceAppointment LIMIT 1];
+
+        HOT_InterestedResource__c ir = HOT_TestDataFactory.createInterestedResource(
+            serviceAppointment.Id,
+            serviceResource.Id
+        );
+        insert ir;
+
+        ir.Status__c = 'Assigned';
+        update ir;
 
         Thread__c t = new Thread__c();
         t.RecordTypeId = HOT_MessageHelper.getHOTThreadRecordType();
@@ -196,7 +208,29 @@ private class HOT_MySAListControllerTest {
         insert t;
 
         String threadSAId = HOT_MyServiceAppointmentListController.getThreadServiceAppointmentId(serviceAppointment.Id);
-        System.assertEquals('', threadSAId, 'Did not get the expected thread');
+        System.assertEquals(t.Id, threadSAId, 'Did not get the expected thread');
+    }
+
+    @IsTest
+    static void getThreadServiceAppointmentIdNotAssignedTest() {
+        User admin = [SELECT Id, UserRoleId FROM User WHERE Id = :UserInfo.getUserId() LIMIT 1];
+
+        ServiceResource serviceResource = [SELECT Id FROM ServiceResource WHERE RelatedRecordId = :admin.Id];
+        ServiceAppointment serviceAppointment = [SELECT Id FROM ServiceAppointment LIMIT 1];
+
+        HOT_InterestedResource__c ir = HOT_TestDataFactory.createInterestedResource(
+            serviceAppointment.Id,
+            serviceResource.Id
+        );
+        insert ir;
+
+        Thread__c t = new Thread__c();
+        t.RecordTypeId = HOT_MessageHelper.getHOTThreadRecordType();
+        t.CRM_Related_Object__c = ir.Id;
+        insert t;
+
+        String threadSAId = HOT_MyServiceAppointmentListController.getThreadServiceAppointmentId(serviceAppointment.Id);
+        System.assertEquals(t.Id, threadSAId, 'Did not get the expected thread');
     }
     @IsTest
     static void getThreadServiceAppointmentIdNoThreadTest() {
@@ -205,6 +239,7 @@ private class HOT_MySAListControllerTest {
         String threadSAId = HOT_MyServiceAppointmentListController.getThreadServiceAppointmentId(serviceAppointment.Id);
         System.assertEquals('', threadSAId, 'Was supposed to be null');
     }
+
     @IsTest
     static void getThreadInterpretersIdTest() {
         ServiceAppointment serviceAppointment = [
