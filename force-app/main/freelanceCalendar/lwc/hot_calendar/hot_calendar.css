@@ -54,7 +54,6 @@
     .full-card {
         height: 100%;
         width: 100%;
-        max-width: 1000px;
         margin: auto;
         margin-bottom: 0;
         display: flex;
