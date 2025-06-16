@@ -1567,7 +1567,7 @@ private class HOT_MessageHelperTest {
         m.CRM_Message_Text__c = 'Lorem Ipsum Dolor Si Amet';
         m.HOT_User_Role__c = HOT_MessageHelper.getUserProfileAndName();
         insert m;
-        
+
         String contactId = '123456';
 
         Test.startTest();
@@ -1606,7 +1606,13 @@ private class HOT_MessageHelperTest {
         HOT_MessageHelper.markThreadAsReadEmployee(t.Id);
         Test.stopTest();
         Thread__c th = [SELECT HOT_Thread_read_by__c FROM Thread__c WHERE id = :t.Id LIMIT 1];
-        System.assertEquals('007' + currentUser.id + ';', th.HOT_Thread_read_by__c, 'Should be HOT Thread Read By + user id + ;');
+        System.assertEquals(
+            '007' +
+            currentUser.id +
+            ';',
+            th.HOT_Thread_read_by__c,
+            'Should be HOT Thread Read By + user id + ;'
+        );
     }
 
     @IsTest
@@ -1715,12 +1721,15 @@ private class HOT_MessageHelperTest {
 
     @IsTest
     static void getUserNameRoleTolk() {
-
         User u = [SELECT Id, FirstName FROM User WHERE Id = :UserInfo.getUserId()];
 
         Test.startTest();
         String r = HOT_MessageHelper.getUserNameRole();
-        System.assertEquals(u.FirstName + ', Administrator', r, 'Should return the first name of running user + profile name');
+        System.assertEquals(
+            u.FirstName + ', Administrator',
+            r,
+            'Should return the first name of running user + profile name'
+        );
 
         Test.stopTest();
     }
@@ -1775,6 +1784,7 @@ private class HOT_MessageHelperTest {
         System.assertEquals(false, r3, 'Should be False because no access');
     }
 
+    // Removed due to test issues where code coverage test runs on a new scratch-org without the profiles from this package
     // @IsTest
     // static void getUserNameRoleFormidler() {
     //     Profile p = [SELECT id FROM Profile WHERE Name = 'HOT Tolk Formidler'];
