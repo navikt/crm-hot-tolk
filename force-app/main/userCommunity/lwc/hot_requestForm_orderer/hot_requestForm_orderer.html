@@ -46,8 +46,8 @@
             default-value={fieldValues.IsOrdererWantStatusUpdateOnSMS__c}
         ></c-checkbox>
         <c-checkbox
-            label="Ikke send varsel til bruker"
-            helptext-content="Bruker vil ikke få varsel vedrørende bestillingen."
+            label="Skjul bestillingen for bruker"
+            helptext-content="Om du huker av her, vil bruker ikke se bestillingen i sin løsning.  Bruker vil heller ikke motta noen varsler vedrørende denne bestillingen."
             oncheckboxclick={handleDontNotifyUserCheckbox}
             name="IsNotNotifyAccount__c"
             form="tolk-skjema-input"

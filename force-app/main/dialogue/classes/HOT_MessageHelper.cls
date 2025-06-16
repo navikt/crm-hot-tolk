@@ -122,10 +122,18 @@ public without sharing class HOT_MessageHelper {
             return null;
         }
     }
+    /**
+     * @description geting recordtype id for HOT Thread
+     * @return Id
+     */
+    public static Id getHOTThreadRecordType() {
+        return [SELECT Id, DeveloperName FROM RecordType WHERE DeveloperName = 'HOT_Thread' LIMIT 1].Id;
+    }
     //Orderer, interpreter, user users use this
     @AuraEnabled(cacheable=false)
     public static Thread__c createThread(Id recordId, Id accountId) {
         Thread__c thread = new Thread__c();
+        thread.RecordTypeId = HOT_MessageHelper.getHOTThreadRecordType();
         String objectType = String.valueOf(recordId.getsobjecttype());
         if (objectType == 'WorkOrder') {
             WorkOrder wo = [SELECT Subject, HOT_Request__r.Dispatcher__c FROM WorkOrder WHERE Id = :recordId LIMIT 1];
@@ -195,6 +203,7 @@ public without sharing class HOT_MessageHelper {
     @AuraEnabled(cacheable=false)
     public static Thread__c createThreadDispatcher(Id recordId, Id accountId, String type) {
         Thread__c thread = new Thread__c();
+        thread.RecordTypeId = HOT_MessageHelper.getHOTThreadRecordType();
         String objectType = String.valueOf(recordId.getsobjecttype());
         if (objectType == 'WorkOrder') {
             WorkOrder wo = [SELECT Subject, HOT_Request__r.Dispatcher__c FROM WorkOrder WHERE Id = :recordId LIMIT 1];
@@ -344,6 +353,7 @@ public without sharing class HOT_MessageHelper {
             srIdList.add(sr.Id);
         }
         Thread__c thread = new Thread__c();
+        thread.RecordTypeId = HOT_MessageHelper.getHOTThreadRecordType();
         String objectType = String.valueOf(recordId.getsobjecttype());
         if (objectType == 'HOT_InterestedResource__c') {
             HOT_InterestedResource__c ir = [
@@ -414,6 +424,7 @@ public without sharing class HOT_MessageHelper {
             LIMIT 1
         ];
         Thread__c thread = new Thread__c();
+        thread.RecordTypeId = HOT_MessageHelper.getHOTThreadRecordType();
         thread.CRM_Related_Object__c = recordId;
         thread.CRM_Thread_Type__c = 'HOT_BRUKER-BESTILLER';
         thread.CRM_Account__c = request.Account__c;
@@ -446,6 +457,7 @@ public without sharing class HOT_MessageHelper {
         ];
         if (arList.size() != 0) {
             Thread__c thread = new Thread__c();
+            thread.RecordTypeId = HOT_MessageHelper.getHOTThreadRecordType();
             thread.CRM_Related_Object__c = serviceAppointment.HOT_WorkOrderLineItem__r.WorkOrderId;
             thread.CRM_Thread_Type__c = 'HOT_TOLK-TOLK';
             thread.HOT_Title__c = serviceAppointment.Subject;
@@ -538,18 +550,19 @@ public without sharing class HOT_MessageHelper {
     }
     @AuraEnabled
     public static void markThreadAsReadEmployee(Id threadId) {
-        if (HOT_ThreadDetailController.checkAccess(threadId)) {
-            User user = [SELECT Id FROM User WHERE Id = :UserInfo.getUserId()];
-            Thread__c thread = [SELECT Id, HOT_Thread_read_by__c FROM Thread__c WHERE Id = :threadId];
-            if (thread.HOT_Thread_read_by__c == null || thread.HOT_Thread_read_by__c.contains(user.Id)) {
-            } else {
-                thread.HOT_Thread_read_by__c = thread.HOT_Thread_read_by__c + user.Id + ';';
-            }
-            try {
-                update thread;
-            } catch (Exception e) {
-                throw new AuraHandledException(e.getMessage());
-            }
+        User user = [SELECT Id FROM User WHERE Id = :UserInfo.getUserId()];
+        Thread__c thread = [
+            SELECT Id, HOT_Thread_read_by__c, HOT_ParticipantIds__c
+            FROM Thread__c
+            WHERE Id = :threadId
+        ];
+        if (!thread.HOT_Thread_read_by__c.contains(user.Id) && thread.HOT_ParticipantIds__c.contains(user.Id)) {
+            thread.HOT_Thread_read_by__c = thread.HOT_Thread_read_by__c + user.Id + ';';
+        }
+        try {
+            update thread;
+        } catch (Exception e) {
+            throw new AuraHandledException(e.getMessage());
         }
     }
     @AuraEnabled

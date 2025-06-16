@@ -38,10 +38,15 @@ public without sharing class HOT_WorkOrderHandler extends MyTriggers {
     }
 
     public override void onAfterInsert() {
+        List<Id> workOrdersWithoutRequests = new List<Id>();
         List<Id> accountIds = new List<Id>();
         List<Id> requestIds = new List<Id>();
 
         for (WorkOrder workOrder : (List<WorkOrder>) records) {
+            if (workOrder.HOT_Request__c == null) {
+                workOrdersWithoutRequests.add(workOrder.Id);
+            }
+
             requestIds.add(workOrder.HOT_Request__c);
             accountIds.add(workOrder.AccountId);
         }
@@ -50,19 +55,25 @@ public without sharing class HOT_WorkOrderHandler extends MyTriggers {
         Map<Id, HOT_Request__c> requests = new Map<Id, HOT_Request__c>(
             [SELECT Id, Status__c FROM HOT_Request__c WHERE Id IN :requestIds]
         );
-        for (WorkOrder workOrder : (List<WorkOrder>) records) {
-            if (
-                requests.get(workOrder.HOT_Request__c).Status__c != 'Åpen' &&
-                requests.get(workOrder.HOT_Request__c).Status__c != 'Avlyst' &&
-                requests.get(workOrder.HOT_Request__c).Status__c != 'Annullert'
-            ) {
-                approvedWorkOrders.add(workOrder);
+        if (requests.size() > 0) {
+            for (WorkOrder workOrder : (List<WorkOrder>) records) {
+                if (
+                    requests.get(workOrder.HOT_Request__c).Status__c != 'Åpen' &&
+                    requests.get(workOrder.HOT_Request__c).Status__c != 'Avlyst' &&
+                    requests.get(workOrder.HOT_Request__c).Status__c != 'Annullert'
+                ) {
+                    approvedWorkOrders.add(workOrder);
+                }
             }
         }
         if (approvedWorkOrders.size() > 0) {
             createChildRecords(approvedWorkOrders);
         }
         updateRequests((List<WorkOrder>) records);
+
+        if (workOrdersWithoutRequests.size() > 0) {
+            Database.delete(workOrdersWithoutRequests, false);
+        }
     }
 
     //Issue 10 i MyTriggers-rammeverket fører til en feil ved manuel testing, hvor kun HOT_WorkOrderStatusHandler.onAfterUpdate blir kjørt.
@@ -80,6 +91,7 @@ public without sharing class HOT_WorkOrderHandler extends MyTriggers {
                 updatedWorkOrders.add(record);
             }
         }
+
         if (updatedWorkOrders.size() > 0) {
             updateRequests(updatedWorkOrders);
         }

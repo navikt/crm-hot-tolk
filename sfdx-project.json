@@ -7,11 +7,11 @@
             "path": "force-app",
             "default": true,
             "package": "crm-hot-tolk",
-            "versionNumber": "1.316.0.NEXT",
+            "versionNumber": "1.336.0.NEXT",
             "dependencies": [
                 {
                     "package": "crm-platform-base",
-                    "versionNumber": "0.224.0.LATEST"
+                    "versionNumber": "0.270.0.LATEST"
                 },
                 {
                     "package": "crm-shared-flowComponents",
@@ -19,23 +19,23 @@
                 },
                 {
                     "package": "crm-henvendelse-base",
-                    "versionNumber": "0.20.0.LATEST"
+                    "versionNumber": "0.31.0.LATEST"
                 },
                 {
                     "package": "crm-platform-integration",
-                    "versionNumber": "0.133.0.LATEST"
+                    "versionNumber": "0.155.0.LATEST"
                 },
                 {
                     "package": "crm-platform-access-control",
-                    "versionNumber": "0.113.0.LATEST"
+                    "versionNumber": "0.160.0.LATEST"
                 },
                 {
                     "package": "crm-community-base",
-                    "versionNumber": "0.119.0.LATEST"
+                    "versionNumber": "0.121.0.LATEST"
                 },
                 {
                     "package": "crm-platform-reporting",
-                    "versionNumber": "0.31.0.LATEST"
+                    "versionNumber": "0.41.0.LATEST"
                 }
             ]
         }

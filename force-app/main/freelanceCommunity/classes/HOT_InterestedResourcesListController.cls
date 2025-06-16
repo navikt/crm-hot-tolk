@@ -113,6 +113,7 @@ public without sharing class HOT_InterestedResourcesListController {
             WHERE Id = :interestedResourceId
         ];
         Thread__c thread = new Thread__c();
+        thread.RecordTypeId = HOT_MessageHelper.getHOTThreadRecordType();
         thread.CRM_Related_Object__c = interestedResourceId;
         thread.CRM_Thread_Type__c = 'HOT_TOLK-FORMIDLER';
         thread.CRM_Account__c = ir.ServiceResource__r.AccountId;

@@ -341,6 +341,11 @@
     </fieldPermissions>
     <fieldPermissions>
         <editable>true</editable>
+        <field>HOT_Notification__c.HOT_Account__c</field>
+        <readable>true</readable>
+    </fieldPermissions>
+    <fieldPermissions>
+        <editable>true</editable>
         <field>HOT_Notification__c.HOT_IsRead__c</field>
         <readable>true</readable>
     </fieldPermissions>
@@ -362,6 +367,11 @@
     <fieldPermissions>
         <editable>true</editable>
         <field>HOT_Notification__c.HOT_RelatedObject__c</field>
+        <readable>true</readable>
+    </fieldPermissions>
+    <fieldPermissions>
+        <editable>true</editable>
+        <field>HOT_Notification__c.HOT_ServiceResource__c</field>
         <readable>true</readable>
     </fieldPermissions>
     <fieldPermissions>
@@ -472,6 +482,11 @@
     <fieldPermissions>
         <editable>false</editable>
         <field>HOT_Request__c.HOT_PersonContactId__c</field>
+        <readable>true</readable>
+    </fieldPermissions>
+    <fieldPermissions>
+        <editable>false</editable>
+        <field>HOT_Request__c.HOT_User_Email__c</field>
         <readable>true</readable>
     </fieldPermissions>
     <fieldPermissions>
@@ -1000,11 +1015,6 @@
         <readable>true</readable>
     </fieldPermissions>
     <fieldPermissions>
-        <editable>false</editable>
-        <field>Person__c.HOT_Gender__c</field>
-        <readable>true</readable>
-    </fieldPermissions>
-    <fieldPermissions>
         <editable>true</editable>
         <field>Person__c.HOT_HapticCommunication__c</field>
         <readable>true</readable>
@@ -1526,6 +1536,11 @@
     </fieldPermissions>
     <fieldPermissions>
         <editable>true</editable>
+        <field>ServiceAppointment.HOT_IsRecieptRecieved__c</field>
+        <readable>true</readable>
+    </fieldPermissions>
+    <fieldPermissions>
+        <editable>true</editable>
         <field>ServiceAppointment.HOT_IsReleasedToFreelance__c</field>
         <readable>true</readable>
     </fieldPermissions>
@@ -1727,6 +1742,11 @@
     <fieldPermissions>
         <editable>true</editable>
         <field>ServiceResource.CRM_Domain__c</field>
+        <readable>true</readable>
+    </fieldPermissions>
+    <fieldPermissions>
+        <editable>true</editable>
+        <field>ServiceResource.CRM_Subdomain__c</field>
         <readable>true</readable>
     </fieldPermissions>
     <fieldPermissions>

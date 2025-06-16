@@ -487,6 +487,11 @@
     </fieldPermissions>
     <fieldPermissions>
         <editable>true</editable>
+        <field>HOT_Notification__c.HOT_Account__c</field>
+        <readable>true</readable>
+    </fieldPermissions>
+    <fieldPermissions>
+        <editable>true</editable>
         <field>HOT_Notification__c.HOT_IsRead__c</field>
         <readable>true</readable>
     </fieldPermissions>
@@ -811,11 +816,6 @@
         <readable>true</readable>
     </fieldPermissions>
     <fieldPermissions>
-        <editable>false</editable>
-        <field>Person__c.HOT_Gender__c</field>
-        <readable>true</readable>
-    </fieldPermissions>
-    <fieldPermissions>
         <editable>true</editable>
         <field>Person__c.HOT_IsReservationAgainstNotifications__c</field>
         <readable>true</readable>
@@ -931,13 +931,13 @@
         <readable>true</readable>
     </fieldPermissions>
     <fieldPermissions>
-        <editable>true</editable>
-        <field>ServiceAppointment.HOT_Company__c</field>
+        <editable>false</editable>
+        <field>ServiceAppointment.HOT_CanceledDaysBefore__c</field>
         <readable>true</readable>
     </fieldPermissions>
     <fieldPermissions>
-        <editable>false</editable>
-        <field>ServiceAppointment.HOT_CanceledDaysBefore__c</field>
+        <editable>true</editable>
+        <field>ServiceAppointment.HOT_Company__c</field>
         <readable>true</readable>
     </fieldPermissions>
     <fieldPermissions>
@@ -1008,6 +1008,11 @@
     <fieldPermissions>
         <editable>true</editable>
         <field>ServiceAppointment.HOT_IsRecalculateManualSharing__c</field>
+        <readable>true</readable>
+    </fieldPermissions>
+    <fieldPermissions>
+        <editable>true</editable>
+        <field>ServiceAppointment.HOT_IsRecieptRecieved__c</field>
         <readable>true</readable>
     </fieldPermissions>
     <fieldPermissions>
@@ -1083,6 +1088,11 @@
     <fieldPermissions>
         <editable>true</editable>
         <field>ServiceResource.CRM_Domain__c</field>
+        <readable>true</readable>
+    </fieldPermissions>
+    <fieldPermissions>
+        <editable>true</editable>
+        <field>ServiceResource.CRM_Subdomain__c</field>
         <readable>true</readable>
     </fieldPermissions>
     <fieldPermissions>

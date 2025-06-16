@@ -125,6 +125,7 @@ export default class Hot_requestFormWrapper extends NavigationMixin(LightningEle
         this.modalContent = '';
         let response = true;
         let timeInput = this.template.querySelector('c-hot_request-form_request').getTimeInput();
+
         if (!timeInput.isAdvancedTimes && this.fieldValues.Type__c === 'Me') {
             let duplicateRequests = await checkDuplicates({
                 accountId: this.personAccount.Id,
@@ -167,7 +168,7 @@ export default class Hot_requestFormWrapper extends NavigationMixin(LightningEle
     noCancelButton = true;
     handleError(event) {
         this.template.querySelector('[data-id="saveButton"]').disabled = false;
-        this.modalHeader = 'Noe gikk galt';
+        this.modalHeader = 'Noe gikk galt under opprettelsen av bestillingen.';
         this.noCancelButton = true;
         if (event.detail.detail === 'Fant ingen virksomhet med dette organisasjonsnummeret.') {
             this.modalContent =

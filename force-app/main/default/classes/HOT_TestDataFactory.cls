@@ -55,6 +55,7 @@ public class HOT_TestDataFactory {
     public static ServiceAppointment createServiceAppointment(WorkOrderLineItem workOrderLineItem) {
         ServiceAppointment serviceAppointment = new ServiceAppointment();
         serviceAppointment.ParentRecordId = workOrderLineItem.Id;
+        serviceAppointment.HOT_WorkOrderLineItem__c = workOrderLineItem.Id;
         serviceAppointment.Status = 'None';
         serviceAppointment.EarliestStartTime = Datetime.now().addHours(1);
         serviceAppointment.DueDate = serviceAppointment.EarliestStartTime.addHours(2);
@@ -179,9 +180,9 @@ public class HOT_TestDataFactory {
 
     public static User createUser(String lastName, Profile profile) {
         User user = new User(
-            Username = 'HOT.' + lastName + '@nav.hot.no',
+            Username = 'HOT.' + lastName + '@nav.hot.nav.no',
             LastName = lastName,
-            Email = 'HOT_testuser@nav.hot.no',
+            Email = 'HOT_testuser@nav.hot.nav.no',
             Alias = lastName,
             CommunityNickname = lastName,
             TimeZoneSidKey = 'Europe/Paris',
@@ -308,6 +309,7 @@ public class HOT_TestDataFactory {
     }
     public static Thread__c createThread(String threadType) {
         Thread__c thread = new Thread__c();
+        thread.RecordTypeId = HOT_MessageHelper.getHOTThreadRecordType();
         thread.CRM_Thread_Type__c = threadType;
         return thread;
     }

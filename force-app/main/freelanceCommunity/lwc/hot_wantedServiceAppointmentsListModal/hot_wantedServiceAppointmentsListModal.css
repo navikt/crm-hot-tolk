@@ -1,0 +1,33 @@
+.record-details-container {
+    background-color: #fff;
+    display: block;
+    padding: 2rem;
+    border-radius: 4px;
+    max-height: 100vh;
+    box-sizing: border-box;
+}
+
+p {
+    font-weight: bold;
+}
+
+span {
+    font-weight: normal;
+}
+.loader {
+    border: 16px solid #f3f3f3;
+    /* Light grey */
+    border-top: 16px solid #3498db;
+    /* Blue */
+    border-radius: 50%;
+    width: 80px;
+    height: 80px;
+    animation: spin 1s linear infinite;
+    justify-content: center;
+}
+
+.submit {
+    display: flex;
+    justify-content: center;
+    text-align: center;
+}

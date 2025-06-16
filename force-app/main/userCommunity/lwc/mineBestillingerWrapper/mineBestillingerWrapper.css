@@ -80,7 +80,6 @@ span {
     border-radius: 4px;
     position: relative;
     flex-grow: 0;
-    overflow-x: auto;
     margin-bottom: 1rem;
     margin-top: 1rem;
     z-index: 1010;
@@ -147,12 +146,12 @@ span {
     }
     .record-details-container {
         margin: 5vw 0;
-        scroll-behavior: auto;
-        max-height: 50vh;
-        overflow: scroll;
     }
     .navigation-container {
         display: block;
+        scroll-behavior: auto;
+        max-height: 50vh;
+        overflow: scroll;
     }
     .mobile-button {
         position: fixed;
