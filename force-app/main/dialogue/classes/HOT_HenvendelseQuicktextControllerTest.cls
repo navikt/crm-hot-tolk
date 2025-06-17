@@ -1,5 +1,5 @@
 @IsTest
-public with sharing class HOT_HenvendelseQuicktextController_Test {
+public with sharing class HOT_HenvendelseQuicktextControllerTest {
     @TestSetup
     static void makeData() {
         HOT_DIALOG_TestDataFactory.createQuickTexts(3);
