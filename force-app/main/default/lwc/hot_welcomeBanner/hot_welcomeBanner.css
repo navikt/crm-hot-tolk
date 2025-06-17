@@ -10,3 +10,8 @@
     padding: 2vw;
     gap: 4vw;
 }
+@media (max-width: 768px) {
+    .banner {
+        margin-left: 2vw;
+    }
+}
