@@ -58,7 +58,7 @@
 .box:hover,
 .box:focus {
     border-color: #0067c5;
-    background-color: #cce1ff;
+    /* background-color: #cce1ff; */
 }
 .box:hover .boxLabel,
 .box:focus .boxLabel {

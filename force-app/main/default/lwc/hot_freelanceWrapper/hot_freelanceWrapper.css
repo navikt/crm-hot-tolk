@@ -3,7 +3,7 @@
     width: 100%;
     padding: 2vw;
     padding-top: 2.5vw;
-    padding-bottom: 2.5vw;
+    padding-bottom: 3vw;
     font-family: 'Source Sans 3', 'Source Sans Pro', Arial, sans-serif;
 }
 
@@ -69,7 +69,7 @@
 .box:hover,
 .box:focus {
     border-color: #0067c5;
-    background-color: #cce1ff;
+    background-color: #ffffff;
 }
 
 .box:hover .boxLabel,
@@ -79,7 +79,7 @@
 
 @media (max-width: 768px) {
     .freelanceWrapper {
-        padding: 1rem;
+        padding: 0.5rem;
     }
     .buttonFlexContainer {
         flex-direction: column;
@@ -99,7 +99,7 @@
 }
 .calenderModalContent {
     width: 100%;
-    border-radius: 7px;
+    border-radius: 10px;
     font-size: 18px;
     padding: 2vw;
 }
@@ -136,7 +136,8 @@
         padding: 0;
     }
     .calenderModalContent {
-        padding: 1vw;
+        padding: 0vw;
+        width: 100%;
     }
 }
 
