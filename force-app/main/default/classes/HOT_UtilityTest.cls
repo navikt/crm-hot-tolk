@@ -99,12 +99,11 @@ private class HOT_UtilityTest {
 
     @IsTest
     static void getPersonAccountTest() {
-        
         Test.startTest();
         User u;
-        try{
+        try {
             u = HOT_Utility.getPersonAccount();
-        }catch(exception e){
+        } catch (exception e) {
             //This will always fail due to no User with AccountId existing
         }
         Test.stopTest();
@@ -130,13 +129,4 @@ private class HOT_UtilityTest {
         List<Skill> skill = HOT_Utility.getSkills();
         Test.stopTest();
     }
-
-    /*@IsTest
-    static void setArchiveAsOwnerTest() {
-        List<SObject> so = new List<SObject>();
-
-        Test.startTest();
-        HOT_Utility.setArchiveAsOwner(so);
-        Test.stopTest();
-    }*/
 }

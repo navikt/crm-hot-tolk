@@ -1,6 +1,5 @@
 @isTest
 private class HOT_InterestedResourceNotificationTest {
-
     @testSetup
     static void setup() {
         OperatingHours operatingHours = HOT_TestDataFactory.createOperatingHours();
@@ -39,18 +38,10 @@ private class HOT_InterestedResourceNotificationTest {
             ServiceAppointment__c = serviceAppointment.Id
         );
         insert interestedResource;
-
-        /*HOT_InterestedResource__c errResource = new HOT_InterestedResource__c(
-            ServiceResource__c = serviceResource.Id,
-            Status__c = 'Interested',
-            ServiceAppointment__c = serviceAppointment.Id
-        );
-        insert errResource;*/
     }
 
     @isTest
     static void CustomNotificationTypeTest() {
-
         String devName = [SELECT DeveloperName FROM CustomNotificationType LIMIT 1].DeveloperName;
 
         Test.startTest();
@@ -60,22 +51,10 @@ private class HOT_InterestedResourceNotificationTest {
 
     @isTest
     static void InterestedUserIdTest() {
-
-        list<id> ids = new List<id>{[SELECT id FROM HOT_InterestedResource__c LIMIT 1].id};
+        list<id> ids = new List<id>{ [SELECT id FROM HOT_InterestedResource__c LIMIT 1].id };
 
         Test.startTest();
         HOT_InterestedResourceNotification.newWantedServiceResource(ids);
         Test.stopTest();
     }
-
-    /* //Nothing gives an error on the insert, so its impossible to catch
-    @isTest
-    static void InterestedPushTestErr() {
-
-        list<id> ids = new List<id>{[SELECT id FROM HOT_InterestedResource__c].id};
-
-        Test.startTest();
-        HOT_InterestedResourceNotification.newWantedServiceResource(ids);
-        Test.stopTest();
-    }*/
 }

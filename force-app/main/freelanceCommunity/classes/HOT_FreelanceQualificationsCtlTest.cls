@@ -1,23 +1,9 @@
-/*
-This Class has several commented classes and setup. This is because the code works in this scratch org, 
-and not in the scratch-org made during Pull Request code coverage testing. The one created during Code Coverage
-testing does not include skills and profiles, which are needed in order to test this code properly.
-*/
 @IsTest
 private class HOT_FreelanceQualificationsCtlTest {
     @TestSetup
     static void setup() {
         ServiceResource serviceResource = HOT_TestDataFactory.createServiceResource(UserInfo.getUserId());
         insert serviceResource;
-
-        /*Skill skill = [SELECT Id FROM Skill WHERE DeveloperName = 'Skrivetolking' LIMIT 1];
-
-        ServiceResourceSkill serviceResourceSkill = HOT_TestDataFactory.createServiceResourceSkill(
-            serviceResource,
-            s
-        );
-        
-        insert serviceResourceSkill;*/
     }
 
     @IsTest
@@ -79,7 +65,7 @@ private class HOT_FreelanceQualificationsCtlTest {
         Test.stopTest();
 
         //System.assertNotEquals(0, skills.size(), 'Skills list should not be empty');
-    } 
+    }
 
     @IsTest
     static void myServiceResourceTest() {
@@ -93,38 +79,13 @@ private class HOT_FreelanceQualificationsCtlTest {
         );
     }
 
-    /*@IsTest
-    static void setResourceSkillTest() {
-        Profile profile = [SELECT Id FROM Profile WHERE Name = 'Standard User' OR Name = 'Standardbruker' LIMIT 1];
-        User user3 = HOT_TestDataFactory.createUser('user3', profile);
-        insert user3;
-        ServiceResource serviceResource = HOT_TestDataFactory.createServiceResource(User3.Id);
-        insert serviceResource;
-
-        Skill skill = [SELECT Id, MasterLabel FROM Skill LIMIT 1];
-
-        Test.startTest();
-        ServiceResourceSkill setFreelanceSkill = HOT_FreelanceQualificationsController.setResourceSkill(
-            serviceResource,
-            skill
-        );
-        Test.stopTest();
-
-        System.assertEquals(
-            serviceResource.Id,
-            setFreelanceSkill.ServiceResourceId,
-            'Could not get correct serviceResourceId from setResourceSkill'
-        );
-    }*/
-
     @IsTest
     static void getAllSkillsListTest() {
         Test.startTest();
         List<Skill> skills = HOT_FreelanceQualificationsController.getAllSkillsList();
         Test.stopTest();
-        //System.assertEquals(7, skills.size(), 'Could not fetch allSkillsList');
     }
-    
+
     @IsTest
     static void getmyServiceResourceTest() {
         Profile profile = [SELECT Id FROM Profile WHERE Name = 'System Administrator'];
@@ -154,51 +115,10 @@ private class HOT_FreelanceQualificationsCtlTest {
 
     @IsTest
     static void getServiceResourceSkillsTest() {
-
-        //Skill skill = [SELECT Id, MasterLabel FROM Skill LIMIT 1];
         ServiceResource serviceResource = [SELECT id FROM ServiceResource LIMIT 1];
 
         Test.startTest();
         List<ServiceResourceSkill> freelanceSkills = HOT_FreelanceQualificationsController.getUserServiceResourceSkills();
         Test.stopTest();
-        //System.assertEquals(freelanceSkills[0].EffectiveStartDate, Date.today());
     }
-
-    /*@IsTest
-    static void setServiceResourceSkillsTest() {
-        WorkType workType = HOT_TestDataFactory.createWorkType();
-        insert workType;
-
-        Skill skill = [SELECT Id, MasterLabel FROM Skill LIMIT 1];
-        ServiceResource serviceResource = [SELECT id FROM ServiceResource LIMIT 1];
-
-        Test.startTest();
-        ServiceResourceSkill srSkill = HOT_FreelanceQualificationsController.setResourceSkill(serviceResource, skill);
-        Test.stopTest();
-        System.assertEquals(srSkill.SkillId, skill.Id);
-    }*/
-
-    /*@IsTest
-    static void editServiceResourceSkillsTest() {
-        WorkType workType = HOT_TestDataFactory.createWorkType();
-        insert workType;
-
-        Skill skill = [SELECT Id, MasterLabel FROM Skill LIMIT 1];
-        ServiceResource serviceResource = [SELECT id FROM ServiceResource LIMIT 1];
-        serviceResource.RelatedRecordId = UserInfo.getUserId();
-        update serviceResource;
-
-        ServiceResourceSkill srs = [SELECT Id FROM ServiceResourceSkill LIMIT 1];
-        srs.EffectiveEndDate = Datetime.now();
-        update srs;
-
-        List<Skill> newSkills = new List<Skill>();
-        newSkills.add(skill);
-        Test.startTest();
-        HOT_FreelanceQualificationsController.editServiceResourceSkill(newSkills);
-        Test.stopTest();
-
-        ServiceResourceSkill srsT = [SELECT Id, EffectiveEndDate FROM ServiceResourceSkill LIMIT 1];
-        System.assertEquals(null, srsT.EffectiveEndDate, 'EffectiveEndDate should be null if skill already exists');
-    }*/
 }

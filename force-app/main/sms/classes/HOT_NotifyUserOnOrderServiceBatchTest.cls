@@ -1,40 +1,5 @@
 @IsTest
 private class HOT_NotifyUserOnOrderServiceBatchTest {
-    /*@testSetup
-    static void setup() {
-
-        Person__c p = HOT_TestDataFactory.createPerson();
-        p.HOT_NotificationChannel__c = 'Push-varsel i appen';
-        p.HOT_IsReservationAgainstNotifications__c = false;
-        insert p;
-
-        ID acc = [SELECT CRM_Account__c FROM Person__c WHERE id = :p.id].CRM_Account__c;
-        ID con = [SELECT id FROM Contact WHERE AccountId = :acc].id;
-
-        Profile communityProfile = [
-            SELECT id, Name
-            FROM Profile
-            WHERE Name = 'Trial Customer Portal User'
-            LIMIT 1
-        ];
-
-        UserRole r = [SELECT Id FROM UserRole WHERE Name = 'Default' LIMIT 1];
-
-        User u = new User();
-        u.FirstName = 'Superman';
-        u.LastName = 'last';
-        u.Alias = 'test';
-        u.ContactId = con;
-        u.Username = 'test@test.nav.test';
-        u.Email = 'test@test.nav.test';
-        u.ProfileId = communityProfile.Id;
-        u.EmailEncodingKey = 'UTF-8';
-        u.TimeZoneSidKey = 'Europe/Paris';
-        u.LocaleSidKey = 'no_NO';
-        u.LanguageLocaleKey = 'no';
-        u.UserRoleId = r.id;
-        insert u;
-    }*/
     @IsTest
     static void batchableTestSMS() {
         WorkType workType = HOT_TestDataFactory.createWorkType();
@@ -71,7 +36,6 @@ private class HOT_NotifyUserOnOrderServiceBatchTest {
 
     @IsTest
     static void batchableTestPush() {
-
         WorkType workType = HOT_TestDataFactory.createWorkType();
         insert workType;
 
@@ -81,8 +45,6 @@ private class HOT_NotifyUserOnOrderServiceBatchTest {
         insert p;
 
         ID acc = [SELECT CRM_Account__c FROM Person__c WHERE id = :p.id].CRM_Account__c;
-        /*ID con = [SELECT id FROM Contact WHERE AccountId = :acc].id;
-        ID use = [SELECT id FROM User WHERE FirstName = 'Superman' LIMIT 1].id;*/
 
         HOT_Request__c request = new HOT_Request__c();
         request.Account__c = acc;
