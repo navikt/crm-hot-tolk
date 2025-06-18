@@ -146,7 +146,7 @@ private class HOT_ServiceAppointmentNotificationTest {
         serviceAppointment.HOT_IsNotifyDispatcher__c = true;
         serviceAppointment.Status = 'Dispatched';
         serviceAppointment.HOT_IsScreenInterpreterNew__c = true;
-        serviceAppointment.PostalCode ='3044';
+        serviceAppointment.PostalCode = '3044';
         update serviceAppointment;
 
         //Avlyst på vegne av bruker
@@ -181,47 +181,6 @@ private class HOT_ServiceAppointmentNotificationTest {
         HOT_ServiceAppointmentNotification.resourceCanceled(notificationType, serviceAppointment, recipients);
         Test.stopTest();
     }
-
-    /*@IsTest
-    private static void notifyUserOnChangedResourceTest() {
-        User user = [SELECT Id, AccountId FROM User WHERE Id = :UserInfo.getUserId() LIMIT 1];
-        ServiceResource serviceResource = HOT_TestDataFactory.createServiceResource(user.Id);
-        serviceResource.HOT_NotificationChannel__c = null;
-        insert serviceResource;
-        WorkType workType = HOT_TestDataFactory.createWorkType();
-        insert workType;
-        HOT_Request__c request = HOT_TestDataFactory.createRequest('TEST', workType);
-        insert request;
-        WorkOrder workOrder = HOT_TestDataFactory.createWorkOrder(request, workType);
-        insert workOrder;
-        WorkOrderLineItem workOrderLineItem = HOT_TestDataFactory.createWorkOrderLineItem(workOrder, workType);
-        insert workOrderLineItem;
-        ServiceAppointment serviceAppointment = HOT_TestDataFactory.createServiceAppointment(workOrderLineItem);
-        serviceAppointment.HOT_Request__c = request.Id;
-        serviceAppointment.Subject = 'Test';
-        insert serviceAppointment;
-
-        AssignedResource assignedResource = HOT_TestDataFactory.createAssignedResource(
-            serviceAppointment.Id,
-            serviceResource.Id
-        );
-        insert assignedResource;
-
-        ServiceResource serviceResourceNew = [SELECT Id FROM ServiceResource WHERE Id != :serviceResource.Id LIMIT 1];
-        assignedResource.ServiceResource = serviceResourceNew;
-        update assignedResource;
-
-        serviceAppointment.Status = 'Dispatched';
-        update serviceAppointment;
-
-        Test.startTest();
-        HOT_ServiceAppointmentNotification saN = new HOT_ServiceAppointmentNotification(
-            new List<ServiceAppointment>{ serviceAppointment },
-            new Map<Id, ServiceAppointment>()
-        );
-        saN.notifyUserOnChangedResource(serviceAppointment);
-        Test.stopTest();
-    }*/
 
     @IsTest
     private static void canceledByUserTest() {
@@ -370,8 +329,6 @@ private class HOT_ServiceAppointmentNotificationTest {
     @IsTest
     private static void timeChangedSMSTest() {
         Set<String> recipients = new Set<String>{ UserInfo.getUserId() };
-
-        //Set<Id> saIds = new Set<Id>([SELECT Id FROM ServiceAppointment WHERE Subject = 'subject' LIMIT 1]);
         List<ServiceAppointment> saList = [SELECT Id FROM ServiceAppointment WHERE Subject = 'subject' LIMIT 1];
 
         User user = [SELECT Id, AccountId FROM User WHERE Id = :UserInfo.getUserId() LIMIT 1];
@@ -524,7 +481,6 @@ private class HOT_ServiceAppointmentNotificationTest {
     private static void notifyInterpretersOnChangedResourceTest() {
         Set<String> recipients = new Set<String>{ UserInfo.getUserId() };
 
-        //List<User> users = [SELECT Id, AccountId FROM User WHERE Id = :UserInfo.getUserId() LIMIT 2];
         ServiceResource serviceResource = [
             SELECT Id
             FROM ServiceResource
@@ -595,28 +551,24 @@ private class HOT_ServiceAppointmentNotificationTest {
     private static void notifyInterpretersOnChangedResourceSMSTest() {
         Set<String> recipients = new Set<String>{ UserInfo.getUserId() };
 
-        Account acc = [
-            SELECT Id
-            FROM Account
-            LIMIT 1
-        ];
+        Account acc = [SELECT Id FROM Account LIMIT 1];
         ServiceResource serviceResource = [
             SELECT Id
             FROM ServiceResource
             WHERE HOT_IsEmployedInterpreter__c = TRUE
             LIMIT 1
         ];
-        serviceResource.HOT_NotificationChannel__c ='SMS';
+        serviceResource.HOT_NotificationChannel__c = 'SMS';
         serviceResource.AccountId = acc.id;
         update serviceResource;
-        
+
         ServiceResource serviceResourceFreelance = [
             SELECT Id
             FROM ServiceResource
             WHERE HOT_IsFreelanceInterpreter__c = TRUE
             LIMIT 1
         ];
-        serviceResourceFreelance.HOT_NotificationChannel__c ='SMS';
+        serviceResourceFreelance.HOT_NotificationChannel__c = 'SMS';
         serviceResourceFreelance.AccountId = acc.id;
         update serviceResourceFreelance;
 
