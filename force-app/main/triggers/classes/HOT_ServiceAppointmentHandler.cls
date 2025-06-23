@@ -259,8 +259,16 @@ public without sharing class HOT_ServiceAppointmentHandler extends MyTriggers {
         Map<Id, ServiceAppointment> newServiceAppointmentsSchedTimeChanged = new Map<Id, ServiceAppointment>();
         Map<Id, ServiceAppointment> serviceAppointmentWithNewAssignedResource = new Map<Id, ServiceAppointment>();
         List<ServiceAppointment> serviceAppointmentsWithUpdatedOwnerOrDispatcher = new List<ServiceAppointment>();
+        Map<Id, ServiceAppointment> serviceAppointmentsWithChangedScreenInterpreters = new Map<Id, ServiceAppointment>();
+        List<ServiceAppointment> serviceAppointmentsWithUpdatedOwnerOrDispatcher = new List<ServiceAppointment>(); 
 
         for (ServiceAppointment serviceAppointment : (List<ServiceAppointment>) records) {
+            
+            if(
+                triggerOldMap.get(serviceAppointment.Id).get('HOT_IsScreenInterpreterNew__c') != serviceAppointment.HOT_IsScreenInterpreterNew__c
+            ) {
+                serviceAppointmentsWithChangedScreenInterpreters.put(serviceAppointment.Id, serviceAppointment); 
+            } 
             if (
                 triggerOldMap.get(serviceAppointment.Id).get('OwnerId') != serviceAppointment.OwnerId &&
                 serviceAppointment.HOT_AssignedResourceId__c != null &&
@@ -348,6 +356,11 @@ public without sharing class HOT_ServiceAppointmentHandler extends MyTriggers {
                 serviceAppointmentsWithUpdatedOwnerOrDispatcher.add(serviceAppointment);
             }
         }
+
+        if(!serviceAppointmentsWithChangedScreenInterpreters.isEmpty()){
+            HOT_InterpreterOnWorkOrderService.setInterpreterOnWorkOrderFromServiceAppointment(serviceAppointmentsWithChangedScreenInterpreters.keySet());
+        }
+
         HOT_ServiceAppointmentNotification.resourceServiceAppointmentChanged(
             (List<ServiceAppointment>) records,
             triggerOldMap
