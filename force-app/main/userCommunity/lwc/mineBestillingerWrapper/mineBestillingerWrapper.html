@@ -89,14 +89,14 @@
                         <strong>Tilleggsopplysninger: </strong><span>{request.Description__c}</span>
                     </p>
                 </div>
-                <c-record-files-with-sharing
+                <c-record-files-without-sharing
                     if:true={isSeries}
                     record-id={request.Id}
                     is-get-all={isGetAllFiles}
                     is-delete-option="true"
                     title="Vedlegg"
                     delete-file-on-button-click="true"
-                ></c-record-files-with-sharing>
+                ></c-record-files-without-sharing>
                 <br />
             </div>
             <div if:true={isWorkOrderDetails}>
@@ -152,14 +152,14 @@
                         <strong>Tilleggsopplysninger: </strong><span>{request.Description__c}</span>
                     </p>
                 </div>
-                <c-record-files-with-sharing
+                <c-record-files-without-sharing
                     if:false={isSeries}
                     record-id={request.Id}
                     is-get-all={isGetAllFiles}
                     is-delete-option="true"
                     title="Vedlegg"
                     delete-file-on-button-click="true"
-                ></c-record-files-with-sharing>
+                ></c-record-files-without-sharing>
                 <br />
             </div>
 
