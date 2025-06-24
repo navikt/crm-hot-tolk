@@ -98,6 +98,7 @@
     }
 }
 .calenderModalContent {
+    background-color: #ffffff;
     width: 100%;
     border-radius: 7px;
     font-size: 18px;
