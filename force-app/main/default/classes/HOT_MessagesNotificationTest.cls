@@ -276,4 +276,87 @@ private class HOT_MessagesNotificationTest {
         HOT_MessagesNotification.NotifyDispatcher(threadIds);
         test.stopTest();
     }
+
+    @IsTest
+    static void NotifyInterpreterTest() {
+        Account account = [SELECT Id, PersonContactId FROM Account LIMIT 1];
+        List<User> ulist = [SELECT id FROM User WHERE contactId != null LIMIT 5];
+        String parti = '';
+        for(user u : ulist){
+            parti = parti + u.id + ', ';
+        }
+        parti = parti.substring(0, parti.length() - 2);
+        
+        ServiceResource s1 = [SELECT id FROM ServiceResource WHERE RelatedRecordId = :ulist[0].Id LIMIT 1];
+        s1.HOT_IsEmployedInterpreter__c = true;
+        update s1;
+
+        ServiceResource s2 = [SELECT id FROM ServiceResource WHERE RelatedRecordId = :ulist[1].Id LIMIT 1];
+        s2.HOT_IsFreelanceInterpreter__c = true;
+        update s2;
+
+        Thread__c thread = HOT_TestDataFactory.createThread();
+        thread.CRM_Related_Object__c = account.PersonContactId;
+        thread.CRM_Account__c = account.Id;
+        thread.HOT_Dispatcher__c = UserInfo.getUserId();
+        thread.HOT_ParticipantIds__c = parti;
+        insert thread;
+
+        Message__c message = new Message__c();
+        message.CRM_Thread__c = thread.Id;
+        message.CRM_From_Contact__c = account.PersonContactId;
+        message.CRM_Message_Text__c = 'Dette er en testmelding';
+        message.HOT_User_Role__c = HOT_MessageHelper.getUserProfileAndName();
+        insert message;
+
+        List<Id> threadIds = new List<Id>();
+        List<Thread__c> threads = [SELECT Id FROM Thread__c];
+        for (Thread__c t : threads) {
+            threadIds.add(t.Id);
+        }
+
+        test.startTest();
+        HOT_MessagesNotification.NotifyInterpreter(threadIds);
+        test.stopTest();
+    }
+
+    @IsTest
+    static void NotifyInterpreterTestSMS() {
+        Account account = [SELECT Id, PersonContactId FROM Account LIMIT 1];
+        List<User> ulist = [SELECT id FROM User WHERE contactId != null LIMIT 5];
+        String parti = '';
+        for(user u : ulist){
+            parti = parti + u.id + ', ';
+        }
+        parti = parti.substring(0, parti.length() - 2);
+        
+        ServiceResource s1 = [SELECT id FROM ServiceResource WHERE RelatedRecordId = :ulist[1].Id LIMIT 1];
+        s1.HOT_IsFreelanceInterpreter__c = true;
+        s1.HOT_NotificationChannel__c ='SMS';
+        update s1;
+
+        Thread__c thread = HOT_TestDataFactory.createThread();
+        thread.CRM_Related_Object__c = account.PersonContactId;
+        thread.CRM_Account__c = account.Id;
+        thread.HOT_Dispatcher__c = UserInfo.getUserId();
+        thread.HOT_ParticipantIds__c = parti;
+        insert thread;
+
+        Message__c message = new Message__c();
+        message.CRM_Thread__c = thread.Id;
+        message.CRM_From_Contact__c = account.PersonContactId;
+        message.CRM_Message_Text__c = 'Dette er en testmelding';
+        message.HOT_User_Role__c = HOT_MessageHelper.getUserProfileAndName();
+        insert message;
+
+        List<Id> threadIds = new List<Id>();
+        List<Thread__c> threads = [SELECT Id FROM Thread__c];
+        for (Thread__c t : threads) {
+            threadIds.add(t.Id);
+        }
+
+        test.startTest();
+        HOT_MessagesNotification.NotifyInterpreter(threadIds);
+        test.stopTest();
+    }
 }
