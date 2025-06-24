@@ -77,6 +77,34 @@ public class HOT_UserNotificationServiceTest {
     }
 
     @IsTest
+    private static void sendNotificationToOrdererOnStatusUpdateCCTest() {
+        CustomNotificationType notificationType = [
+            SELECT Id, DeveloperName
+            FROM CustomNotificationType
+            WHERE DeveloperName = 'HOT_NotifyUser'
+        ];
+
+        WorkOrder workOrder = [
+            SELECT Id, StartDate, EndDate, HOT_Interpreters__c, Status, HOT_Request__r.Type__c
+            FROM WorkOrder
+            LIMIT 1
+        ];
+        workOrder.Status = 'Cannot Complete';
+        update workOrder;
+        Set<String> recipients = new Set<String>{ UserInfo.getUserId() };
+        String interpreters = 'Tolk Vader';
+
+        Test.startTest();
+        HOT_UserNotificationService.sendNotificationToOrdererOnStatusUpdate(
+            notificationType,
+            workOrder,
+            interpreters,
+            recipients
+        );
+        Test.stopTest();
+    }
+
+    @IsTest
     private static void statusChangeNotificationDispatchedTest() {
         CustomNotificationType notificationType = [
             SELECT Id, DeveloperName
@@ -93,6 +121,36 @@ public class HOT_UserNotificationServiceTest {
             WHERE Id = :serviceAppointment.HOT_WorkOrderLineItem__r.WorkOrderId
         ];
         workOrder.Status = 'Dispatched';
+        update workOrder;
+        Set<String> recipients = new Set<String>{ UserInfo.getUserId() };
+
+        Test.startTest();
+        HOT_UserNotificationService.statusChangeNotification(
+            notificationType,
+            workOrder,
+            serviceAppointment,
+            recipients
+        );
+        Test.stopTest();
+    }
+
+    @IsTest
+    private static void statusChangeNotificationCCTest() {
+        CustomNotificationType notificationType = [
+            SELECT Id, DeveloperName
+            FROM CustomNotificationType
+            WHERE DeveloperName = 'HOT_NotifyUser'
+        ];
+        ServiceAppointment serviceAppointment = [
+            SELECT HOT_ServiceResource__r.Name, Status, HOT_WorkOrderLineItem__r.WorkOrderId
+            FROM ServiceAppointment
+        ];
+        WorkOrder workOrder = [
+            SELECT Id, StartDate, EndDate, HOT_Interpreters__c, Status
+            FROM WorkOrder
+            WHERE Id = :serviceAppointment.HOT_WorkOrderLineItem__r.WorkOrderId
+        ];
+        workOrder.Status = 'Cannot Complete';
         update workOrder;
         Set<String> recipients = new Set<String>{ UserInfo.getUserId() };
 
