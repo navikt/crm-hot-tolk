@@ -1,21 +1,29 @@
 <template>
-    <div class="freelanceWrapper">
+    <section class="freelanceWrapper">
         <div class="row">
             <h2 class="freelanceHeader">For deg som er frilanstolk</h2>
             <button
                 lwc:if={showCalender}
                 class="calenderButton"
-                aria-label="Åpne frilanstolk kalender"
                 onclick={toggleCalender}
-                label="Lukk kalender"
+                aria-label="Lukk frilanstolk kalender"
+                aria-expanded="true"
+                aria-controls="kalenderModal"
             >
-                <img src={closeIcon} alt="kalender-ikon" style="" />
+                <img src={closeIcon} alt="" aria-hidden="true" />
             </button>
-            <button lwc:else class="calenderButton" aria-label="Åpne frilanstolk kalender" onclick={toggleCalender}>
-                <img src={calenderIcon} alt="kalender-ikon" style="" />
+            <button
+                lwc:else
+                class="calenderButton"
+                onclick={toggleCalender}
+                aria-label="Åpne frilanstolk kalender"
+                aria-expanded="false"
+                aria-controls="kalenderModal"
+            >
+                <img src={calenderIcon} alt="" aria-hidden="true" />
             </button>
         </div>
-        <div class="spacer"></div>
+        <div class="spacer" role="presentation" aria-hidden="true"></div>
         <template lwc:if={showCalender}>
             <div class="calenderModalContent" aria-live="polite">
                 <template lwc:if={isUserInNorwegianTimeZone}>
@@ -23,7 +31,7 @@
                 </template>
                 <template lwc:else>
                     <div class="navno-dekorator alertstripe navno-dekorator alertstripe--advarsel">
-                        <img class="navno-dekorator alertstripe__ikon" src={warningicon} alt="advarsel-ikon" />
+                        <img class="navno-dekorator alertstripe__ikon" src={warningIcon} alt="advarsel-ikon" />
                         <div class="alertstripe__tekst">
                             <p>Kalender er ikke tilgjengelig når du befinner deg utenfor norsk tidssone.</p>
                         </div>
@@ -32,26 +40,26 @@
             </div>
         </template>
         <div class="buttonFlexContainer">
-            <a class="box" href="#">
+            <a class="box" href={pageLinks.freelanceMyServiceAppointments}>
                 <div class="boxContent">
                     <p class="boxLabel">Mine oppdrag</p>
                     <p class="boxDescription">Se oversikt over dine oppdrag</p>
                 </div>
             </a>
-            <a class="box" href="#">
+            <a class="box" href={pageLinks.freelanceMyThreads}>
                 <div class="boxContent">
                     <p class="boxLabel">Mine samtaler</p>
                     <p class="boxDescription">Se alle dine samtaler</p>
                 </div>
             </a>
-            <a class="box" href="#">
+            <a class="box" href={pageLinks.freelanceMyUserInformation}>
                 <div class="boxContent">
                     <p class="boxLabel">Min side</p>
                     <p class="boxDescription">Rediger kontaktinformasjon og kvalifikasjoner</p>
                 </div>
             </a>
         </div>
-    </div>
+    </section>
     <!-- Frilans Kalender -->
     <!-- Slutt Frilans Kalender -->
 </template>
