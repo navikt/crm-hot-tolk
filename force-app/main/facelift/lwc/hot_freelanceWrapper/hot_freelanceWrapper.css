@@ -28,7 +28,7 @@
 .box {
     box-sizing: border-box;
     flex: 1;
-    max-width: 30%;
+    width: calc(33.333% - (2% * 2 / 3));
     min-width: 200px;
     background-color: #ffffff;
     padding: 20px;
