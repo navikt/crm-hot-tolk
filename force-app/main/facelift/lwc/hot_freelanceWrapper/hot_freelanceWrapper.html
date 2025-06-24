@@ -5,14 +5,22 @@
             <button
                 lwc:if={showCalender}
                 class="calenderButton"
-                aria-label="Åpne frilanstolk kalender"
                 onclick={toggleCalender}
-                label="Lukk kalender"
+                aria-label="Lukk frilanstolk kalender"
+                aria-expanded="true"
+                aria-controls="kalenderModal"
             >
-                <img src={closeIcon} alt="kalender-ikon" style="" />
+                <img src={closeIcon} alt="" aria-hidden="true" />
             </button>
-            <button lwc:else class="calenderButton" aria-label="Åpne frilanstolk kalender" onclick={toggleCalender}>
-                <img src={calenderIcon} alt="kalender-ikon" style="" />
+            <button
+                lwc:else
+                class="calenderButton"
+                onclick={toggleCalender}
+                aria-label="Åpne frilanstolk kalender"
+                aria-expanded="false"
+                aria-controls="kalenderModal"
+            >
+                <img src={calenderIcon} alt="" aria-hidden="true" />
             </button>
         </div>
         <div class="spacer"></div>
