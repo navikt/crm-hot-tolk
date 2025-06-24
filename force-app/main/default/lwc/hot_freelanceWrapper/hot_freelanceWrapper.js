@@ -9,6 +9,8 @@ export default class Hot_freelanceWrapper extends LightningElement {
     showCalender = false;
     static STATE_KEY = 'calendarWrapState';
 
+    pageLinks = {};
+
     toggleCalender() {
         this.showCalender = !this.showCalender;
         if (this.showCalender) {
@@ -20,9 +22,21 @@ export default class Hot_freelanceWrapper extends LightningElement {
             });
         }
     }
+    setPageLinks() {
+        let baseURLArray = window.location.pathname.split('/');
+        baseURLArray.pop();
+        let baseURL = baseURLArray.join('/');
+        this.pageLinks = {
+            freelanceMyServiceAppointments: baseURL + '/mine-oppdrag',
+            freelanceMyUserInformation: baseURL + '/frilanstolk-min-side',
+            freelanceMyThreads: baseURL + '/mine-samtaler-frilanstolk'
+        };
+    }
 
     connectedCallback() {
         this.checkTimeZone();
+        this.setPageLinks();
+        /* Kalender */
         const state = sessionStorage.getItem(Hot_freelanceWrapper.STATE_KEY);
         if (state != null) {
             const parsedState = JSON.parse(state);
