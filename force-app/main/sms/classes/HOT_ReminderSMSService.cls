@@ -19,7 +19,7 @@ public without sharing class HOT_ReminderSMSService {
             sms.WorkOrder__c = workOrder.Id;
             sms.Recipient__c = workOrder.Account.CRM_Person__r.INT_KrrMobilePhone__c;
             sms.Message__c = constructReminderMessage(workOrder, interpreterNames.get(workOrder.Id));
-            if (SMS.Recipient__c != null) {
+            if (sms.Recipient__c != null) {
                 smsList.add(sms);
                 workOrder.HOT_IsReminderSMSSendt__c = true;
                 //creating notification object
@@ -76,7 +76,7 @@ public without sharing class HOT_ReminderSMSService {
             sms.Account__c = request.Account__c;
             sms.Recipient__c = request.Account__r.CRM_Person__r.INT_KrrMobilePhone__c;
             sms.Message__c = constructOnOrdererMessage(request);
-            if (SMS.Recipient__c != null) {
+            if (sms.Recipient__c != null) {
                 smsList.add(sms);
                 request.IsNotifyUserOnOrder__c = false;
                 //creating notification object
@@ -272,7 +272,7 @@ public without sharing class HOT_ReminderSMSService {
             sms.Thread__c = thread.Id;
             sms.Recipient__c = getRecipientOnThread(thread);
             sms.Message__c = constructOnNewMessage();
-            if (SMS.Recipient__c != null) {
+            if (sms.Recipient__c != null) {
                 smsList.add(sms);
             }
         }
@@ -328,7 +328,7 @@ public without sharing class HOT_ReminderSMSService {
             sms.Account__c = ir.ServiceResource__r.Account.Id;
             sms.Recipient__c = ir.ServiceResource__r.HOT_MobilePhone__c;
             sms.Message__c = constructOnNewWantedSR(ir.ServiceAppointment__r.AppointmentNumber);
-            if (SMS.Recipient__c != null) {
+            if (sms.Recipient__c != null) {
                 smsList.add(sms);
             }
 
@@ -388,7 +388,7 @@ public without sharing class HOT_ReminderSMSService {
             sms.WorkOrder__c = wo.Id;
             sms.Recipient__c = getRecipient(wo);
             sms.Message__c = constructInterpreterChangedMessage(wo, interpreterName);
-            if (SMS.Recipient__c != null) {
+            if (sms.Recipient__c != null) {
                 smsList.add(sms);
                 //creating notification object
                 HOT_Notification__c notification = new HOT_Notification__c();
@@ -455,7 +455,7 @@ public without sharing class HOT_ReminderSMSService {
             message += '\nMvh tolketjenesten i Nav';
 
             sms.Message__c = message;
-            if (SMS.Recipient__c != null) {
+            if (sms.Recipient__c != null) {
                 smsList.add(sms);
             }
         }
@@ -497,7 +497,7 @@ public without sharing class HOT_ReminderSMSService {
             message += '\nMvh tolketjenesten i Nav';
 
             sms.Message__c = message;
-            if (SMS.Recipient__c != null) {
+            if (sms.Recipient__c != null) {
                 smsList.add(sms);
             }
         }
@@ -544,7 +544,7 @@ public without sharing class HOT_ReminderSMSService {
             message += '\nMvh tolketjenesten i Nav';
 
             sms.Message__c = message;
-            if (SMS.Recipient__c != null) {
+            if (sms.Recipient__c != null) {
                 smsList.add(sms);
             }
         }
@@ -584,7 +584,7 @@ public without sharing class HOT_ReminderSMSService {
             sms.ServiceAppointment__c = sa.Id;
             sms.Recipient__c = sa.HOT_ServiceResource__r?.HOT_MobilePhone__c;
             sms.Message__c = constructMessageToInterpreter(sa, 'Screen');
-            if (SMS.Recipient__c != null) {
+            if (sms.Recipient__c != null) {
                 smsList.add(sms);
             }
         }
@@ -618,7 +618,7 @@ public without sharing class HOT_ReminderSMSService {
             sms.ServiceAppointment__c = sa.Id;
             sms.Recipient__c = sa.HOT_ServiceResource__r?.HOT_MobilePhone__c;
             sms.Message__c = constructMessageToInterpreter(sa, 'Time');
-            if (SMS.Recipient__c != null) {
+            if (sms.Recipient__c != null) {
                 smsList.add(sms);
             }
         }
@@ -646,7 +646,7 @@ public without sharing class HOT_ReminderSMSService {
             sms.ServiceAppointment__c = sa.Id;
             sms.Recipient__c = srList[0]?.HOT_MobilePhone__c;
             sms.Message__c = constructMessageToInterpreter(sa, 'CanceledByUser');
-            if (SMS.Recipient__c != null) {
+            if (sms.Recipient__c != null) {
                 smsList.add(sms);
             }
         }
@@ -680,7 +680,7 @@ public without sharing class HOT_ReminderSMSService {
             sms.ServiceAppointment__c = sa.Id;
             sms.Recipient__c = sa.HOT_ServiceResource__r?.HOT_MobilePhone__c;
             sms.Message__c = constructMessageToInterpreter(sa, 'Address');
-            if (SMS.Recipient__c != null) {
+            if (sms.Recipient__c != null) {
                 smsList.add(sms);
             }
         }
@@ -714,7 +714,7 @@ public without sharing class HOT_ReminderSMSService {
             sms.ServiceAppointment__c = sa.Id;
             sms.Recipient__c = sa.HOT_ServiceResource__r?.HOT_MobilePhone__c;
             sms.Message__c = constructMessageToInterpreter(sa, 'Dispatched');
-            if (SMS.Recipient__c != null) {
+            if (sms.Recipient__c != null) {
                 smsList.add(sms);
             }
         }
