@@ -96,4 +96,37 @@ private class HOT_UtilityTest {
         System.assertEquals('', ordererDetails.get('OrdererEmail__c'));
         System.assertEquals('', ordererDetails.get('OrdererPhone__c'));
     }
+
+    @IsTest
+    static void getPersonAccountTest() {
+        Test.startTest();
+        User u;
+        try {
+            u = HOT_Utility.getPersonAccount();
+        } catch (exception e) {
+            //This will always fail due to no User with AccountId existing
+        }
+        Test.stopTest();
+    }
+
+    @IsTest
+    static void getMinutesUntilNextSMSBatchTest() {
+        Test.startTest();
+        long re = HOT_Utility.getMinutesUntilNextSMSBatch();
+        Test.stopTest();
+    }
+
+    @IsTest
+    static void getMinutesUntilNextReminderSMSBatchTest() {
+        Test.startTest();
+        long re = HOT_Utility.getMinutesUntilNextReminderSMSBatch();
+        Test.stopTest();
+    }
+
+    @IsTest
+    static void getSkillsTest() {
+        Test.startTest();
+        List<Skill> skill = HOT_Utility.getSkills();
+        Test.stopTest();
+    }
 }
