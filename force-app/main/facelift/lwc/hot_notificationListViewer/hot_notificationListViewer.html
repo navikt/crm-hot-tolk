@@ -7,25 +7,38 @@
         >
             <img src={notificationIcon} alt="notifikasjon-ikon" style="padding-right: 0.5rem" />Varsler
         </button>
-
-        <!-- Overlay: Grays out screen -->
+        <!-- Notfification List dropdown and gray overlay -->
         <template if:true={showNotifications}>
+            <!-- Overlay: Grays out screen -->
             <div class="notification-overlay" onclick={toggleNotifications}></div>
 
             <!-- Dropdown notification box -->
             <div class="dropdown">
+                <!--Header-->
                 <div class="dropdown-header">
-                    <span>Notifications</span>
-                    <button class="close-btn" onclick={toggleNotifications} title="Close">&times;</button>
+                    <span>Varsler</span>
+                    <button class="close-btn" onclick={toggleNotifications} title="Close">
+                        <img src={exitCrossIcon} alt="kryss-ikon" />
+                    </button>
+                    <p>Kun varsler fra tolketjenesten siste 30 dager vises her.</p>
                 </div>
-                <div class="dropdown-info" if:false={hasNotifications}>No new notifications.</div>
+                <!---->
+                <!--Feilmelding når ingen varsler-->
+                <div class="dropdown-info" if:false={hasNotifications}>Ingen nye varsler.</div>
+
+                <!--Hver single notifikasjon card-->
                 <template for:each={notifications} for:item="notification">
-                    <div key={notification.id} class="notification-card">
-                        <div>{notification.title}</div>
-                        <div>{notification.description}</div>
-                        <div class="notification-date">{notification.date}</div>
-                    </div>
+                    <a href="www.nrk.no" key={notification.id} class="link-container">
+                        <div class="notification-card">
+                            <div>{notification.HOT_Subject__c}</div>
+                            <div>{notification.HOT_NotificationText__c}</div>
+                            <div class="notification-date">
+                                {notification.HOT_NotificationChannel__c} {notification.created}
+                            </div>
+                        </div>
+                    </a>
                 </template>
+                <!---->
             </div>
         </template>
     </div>

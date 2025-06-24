@@ -1,25 +1,29 @@
-import { LightningElement, track } from 'lwc';
+import { LightningElement, track, wire } from 'lwc';
 import icons from '@salesforce/resourceUrl/ikoner';
+import getMyNotifications from '@salesforce/apex/HOT_NotificationCentreController.getMyNotifications';
 
 export default class Hot_notificationListViewer extends LightningElement {
     notificationIcon = icons + '/Bell/BellBlue.svg';
+    exitCrossIcon = icons + '/Close/Close.svg';
     showNotifications = false;
-    notifications = [
-        {
-            id: 1,
-            title: 'SA-481484 - 21.5.2025 10:30 - endret adresse',
-            description: 'Ny adresse er Skolegata 14, Tromsø',
-            date: '13.05.2025, kl 10:97 Push-varsel i appen'
-        },
-        {
-            id: 2,
-            title: 'Du er tildelt oppdraget SA-343434',
-            description: 'Tidspunkt for oppdraget er 23.07.2025 kl 15.00-16.00',
-            date: '11.05.2025, kl 10:79 Push-varsel i appen'
+    @track notifications;
+
+    @wire(getMyNotifications)
+    wiredNotifications(result) {
+        this.wiredNotificationResult = result;
+        if (result.data) {
+            const notifications = result.data.map((x) => ({
+                ...x,
+                created: this.formatDateTime(x.CreatedDate)
+            }));
+
+            // Sort by CreatedDate descending
+            notifications.sort((a, b) => new Date(b.CreatedDate) - new Date(a.CreatedDate));
+
+            this.notifications = notifications;
+            console.log(this.notifications);
         }
-        // Add the other notifications here...
-        //SKIR VIER JERIO FJDPOFÅL
-    ];
+    }
 
     get hasNotifications() {
         return this.notifications && this.notifications.length > 0;
@@ -27,5 +31,23 @@ export default class Hot_notificationListViewer extends LightningElement {
     toggleNotifications() {
         this.showNotifications = !this.showNotifications;
         this.template.querySelector('.dropdown').focus();
+    }
+
+    formatDateTime(date) {
+        let unformatted = new Date(date);
+        let formattedTime =
+            ('0' + unformatted.getDate()).slice(-2) +
+            '.' +
+            ('0' + (unformatted.getMonth() + 1)).slice(-2) +
+            '.' +
+            unformatted.getFullYear() +
+            ', Kl ' +
+            ('0' + unformatted.getHours()).slice(-2) +
+            ':' +
+            ('0' + unformatted.getMinutes()).slice(-2);
+        if (formattedTime.includes('NaN')) {
+            formattedTime = '';
+        }
+        return formattedTime;
     }
 }
