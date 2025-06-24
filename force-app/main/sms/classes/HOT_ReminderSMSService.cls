@@ -748,7 +748,7 @@ public without sharing class HOT_ReminderSMSService {
             sms.ServiceAppointment__c = sa.Id;
             sms.Recipient__c = sa.HOT_ServiceResource__r?.HOT_MobilePhone__c;
             sms.Message__c = constructMessageToInterpreter(sa, 'Removed');
-            if (SMS.Recipient__c != null) {
+            if (sms.Recipient__c != null) {
                 smsList.add(sms);
             }
         }
