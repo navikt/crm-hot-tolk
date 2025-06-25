@@ -42,6 +42,17 @@ private class HOT_UpdateShiftsControllerTest {
         System.assertEquals(59, updatedShift.EndTime.minute(), 'End time minute should be updated to 59');
     }
 
+    // Test the updateRecords method to ensure shifts are updated correctly
+    @isTest
+    static void testUpdateRecordsNotTime() {
+        Shift testShift = createTestShift();
+        Map<String, String> fieldValues = new Map<String, String>{ 'Label' => '23:59' };
+
+        Test.startTest();
+        HOT_UpdateShiftsController.updateRecords(new List<Shift>{ testShift }, fieldValues);
+        Test.stopTest();
+    }
+
     // Test the deleteRecords method to ensure shifts are deleted correctly
     @isTest
     static void testDeleteRecords() {
