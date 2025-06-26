@@ -55,7 +55,7 @@
 }
 
 .dropdown-header p {
-    flex: 0 0 100%; /* tar hele raden under tittelen */
+    flex: 0 0 100%; /* tar hele raden under tittelen test */
     margin: 4px 1.5vw 0; /* samme side­marg som tittelen */
     font-size: 1.25rem;
     color: #666;
