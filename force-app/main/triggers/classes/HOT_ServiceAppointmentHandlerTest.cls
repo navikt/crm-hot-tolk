@@ -27,6 +27,74 @@ private class HOT_ServiceAppointmentHandlerTest {
             SobjectType = 'ServiceAppointment'
         );
         insert qso;
+    } 
+
+    // checks for changes in isScreenInterpreter checkbox field 
+    @isTest
+    static void checkIfScreenInterpreterIsChangedTest() {
+       
+        /*
+        WorkType workType = HOT_TestDataFactory.createWorkType();
+        insert workType;
+        HOT_Request__c request = HOT_TestDataFactory.createRequest('HOT_ServiceAppointmentHandler', workType);
+        request.Status__c = 'Godkjent';
+        insert request;
+
+
+
+        WorkOrder workOrder = HOT_TestDataFactory.createWorkOrder(request, workType);
+        insert workOrder;
+        WorkOrderLineItem woli = HOT_TestDataFactory.createWorkOrderLineItem(workOrder, workType);
+        insert woli;
+
+        Profile profile = [
+            SELECT Id, Name
+            FROM Profile
+            WHERE Name = 'System Administrator' OR Name = 'Systemadministrator'
+        ];
+        User user2 = HOT_TestDataFactory.createUser('User2', profile);
+        insert user2;
+
+        ServiceResource sr = HOT_TestDataFactory.createServiceResource(user2.Id);
+        insert sr;
+
+        
+        ServiceAppointment sa = HOT_TestDataFactory.createServiceAppointment(woli);
+        //sa.HOT_IsScreenInterpreterNew__c = false; 
+        insert sa; 
+        AssignedResource ar = HOT_TestDataFactory.createAssignedResource(sa.Id, sr.Id);
+        insert ar; */
+
+        WorkType workType = HOT_TestDataFactory.createWorkType();
+        insert workType;
+        HOT_Request__c request = HOT_TestDataFactory.createRequest('Bestilling', workType);
+        insert request;
+        request.Status__c = 'Godkjent';
+        update request;
+        ServiceAppointment sa = [SELECT Id FROM ServiceAppointment];
+        Profile profile = [SELECT Id FROM Profile WHERE Name = 'Standard User' OR Name = 'Standardbruker' LIMIT 1];
+        User user = HOT_TestDataFactory.createUser('user', profile);
+        insert user;
+        ServiceResource resource = HOT_TestDataFactory.createServiceResource(user.Id);
+        insert resource;
+        AssignedResource assignedResource = HOT_TestDataFactory.createAssignedResource(
+            sa.Id,
+            resource.Id
+        );
+        
+        sa.HOT_IsScreenInterpreterNew__c = true;
+        System.Test.startTest();
+
+        update sa;
+        System.Test.stopTest();
+
+        
+       WorkOrder woAct = [SELECT Id, HOT_Interpreters__c FROM WorkOrder ];
+       HOT_Request__c req = [ SELECT Id FROM HOT_Request__c ]; 
+       
+
+       
+       System.assertEquals(req.Id,'Hei der', 'Expected HOT_Interpreters__c from Workorder to contains (skjermtolk)');
     }
 
     @IsTest
