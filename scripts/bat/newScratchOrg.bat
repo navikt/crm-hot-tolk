@@ -1,8 +1,8 @@
 echo "Oppretter scratch org"
 call sf org create scratch --definition-file config\project-scratch-def.json --alias %1 --duration-days %2 --set-default --json --wait 30
 
-echo "Installer crm-platform-base ver. 0.270"
-call sf package install --package 04tQC000000kpU9YAI --no-prompt --installation-key %3 --wait 30 --publish-wait 30
+echo "Installer crm-platform-base ver. 0.273"
+call sf package install --package 04tQC000000onbpYAA --no-prompt --installation-key %3 --wait 30 --publish-wait 30
 
 echo "Installer crm-shared-flowComponents ver. 0.4"
 call sf package install --package 04t7U0000008qz4QAA --no-prompt --installation-key %3 --wait 30 --publish-wait 30
@@ -16,8 +16,8 @@ call sf package install --package 04tQC000000lBhZYAU --no-prompt --installation-
 echo "Installer crm-platform-access-control ver. 0.160"
 call sf package install --package 04tKB000000YBLfYAO --no-prompt --installation-key %3 --wait 30 --publish-wait 30
 
-echo "Installer crm-community-base ver. 0.121"
-call sf package install --package 04tQC000000ieEfYAI --no-prompt --installation-key %3 --wait 30 --publish-wait 30
+echo "Installer crm-community-base ver. 0.128"
+call sf package install --package 04tQC000000ocOfYAI --no-prompt --installation-key %3 --wait 30 --publish-wait 30
 
 echo "Installer crm-platform-reporting ver. 0.41"
 call sf package install --package 04tKB000000YAWDYA4 --no-prompt --installation-key %3 --wait 30 --publish-wait 30
