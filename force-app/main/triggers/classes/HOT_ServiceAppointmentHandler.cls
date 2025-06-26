@@ -30,8 +30,7 @@ public without sharing class HOT_ServiceAppointmentHandler extends MyTriggers {
         Map<Id, Id> resourceByAppointmentCreateWageClaim = new Map<Id, Id>();
         Map<Id, Id> resourceByAppointmentUpdateWageClaim = new Map<Id, Id>();
 
-        for (ServiceAppointment serviceAppointment : (List<ServiceAppointment>) records) { 
-
+        for (ServiceAppointment serviceAppointment : (List<ServiceAppointment>) records) {
             if (
                 triggerOldMap.get(serviceAppointment.Id).get('EarliestStartTime') !=
                 serviceAppointment.EarliestStartTime ||
@@ -188,7 +187,7 @@ public without sharing class HOT_ServiceAppointmentHandler extends MyTriggers {
             ) {
                 serviceAppointmentsWithStatusNone.add(serviceAppointment);
             }
-        } 
+        }
 
         if (recievedNewInterpreter.size() > 0) {
             updateCancelledByInterpreter(recievedNewInterpreter);
@@ -260,18 +259,15 @@ public without sharing class HOT_ServiceAppointmentHandler extends MyTriggers {
         Map<Id, ServiceAppointment> newServiceAppointmentsSchedTimeChanged = new Map<Id, ServiceAppointment>();
         Map<Id, ServiceAppointment> serviceAppointmentWithNewAssignedResource = new Map<Id, ServiceAppointment>();
         Map<Id, ServiceAppointment> serviceAppointmentsWithChangedScreenInterpreters = new Map<Id, ServiceAppointment>();
-        List<ServiceAppointment> serviceAppointmentsWithUpdatedOwnerOrDispatcher = new List<ServiceAppointment>(); 
-
+        List<ServiceAppointment> serviceAppointmentsWithUpdatedOwnerOrDispatcher = new List<ServiceAppointment>();
 
         for (ServiceAppointment serviceAppointment : (List<ServiceAppointment>) records) {
-            
-            // Checks if any changes to the HOT_IsScreenInterpreterNew__c field
-            ServiceAppointment saOld = (ServiceAppointment) triggerOldMap.get(serviceAppointment.Id);
-            Boolean isScreenInterpreterNew = saOld.HOT_IsScreenInterpreterNew__c != serviceAppointment.HOT_IsScreenInterpreterNew__c;
-
-            if(isScreenInterpreterNew) {
-                serviceAppointmentsWithChangedScreenInterpreters.put(serviceAppointment.Id, serviceAppointment); 
-            } 
+            if (
+                triggerOldMap.get(serviceAppointment.Id).get('HOT_IsScreenInterpreterNew__c') !=
+                serviceAppointment.HOT_IsScreenInterpreterNew__c
+            ) {
+                serviceAppointmentsWithChangedScreenInterpreters.put(serviceAppointment.Id, serviceAppointment);
+            }
             if (
                 triggerOldMap.get(serviceAppointment.Id).get('OwnerId') != serviceAppointment.OwnerId &&
                 serviceAppointment.HOT_AssignedResourceId__c != null &&
@@ -360,9 +356,10 @@ public without sharing class HOT_ServiceAppointmentHandler extends MyTriggers {
             }
         }
 
-        
-        if(!serviceAppointmentsWithChangedScreenInterpreters.isEmpty()){
-            HOT_InterpreterOnWorkOrderService.setInterpreterOnWorkOrderFromServiceAppointment(serviceAppointmentsWithChangedScreenInterpreters.keySet());
+        if (!serviceAppointmentsWithChangedScreenInterpreters.isEmpty()) {
+            HOT_InterpreterOnWorkOrderService.setInterpreterOnWorkOrderFromServiceAppointment(
+                serviceAppointmentsWithChangedScreenInterpreters.keySet()
+            );
         }
 
         HOT_ServiceAppointmentNotification.resourceServiceAppointmentChanged(
