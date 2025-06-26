@@ -1,0 +1,32 @@
+<template>
+    <div class="notification-center">
+        <button
+            class="navds-button navds-button--tertiary navds-body-short"
+            onclick={toggleNotifications}
+            aria-label="Vis varsler fra Tolketjenesten"
+        >
+            <img src={notificationIcon} alt="notifikasjon-ikon" style="padding-right: 0.5rem" />Varsler
+        </button>
+
+        <!-- Overlay: Grays out screen -->
+        <template if:true={showNotifications}>
+            <div class="notification-overlay" onclick={toggleNotifications}></div>
+
+            <!-- Dropdown notification box -->
+            <div class="dropdown">
+                <div class="dropdown-header">
+                    <span>Notifications</span>
+                    <button class="close-btn" onclick={toggleNotifications} title="Close">&times;</button>
+                </div>
+                <div class="dropdown-info" if:false={hasNotifications}>No new notifications.</div>
+                <template for:each={notifications} for:item="notification">
+                    <div key={notification.id} class="notification-card">
+                        <div>{notification.title}</div>
+                        <div>{notification.description}</div>
+                        <div class="notification-date">{notification.date}</div>
+                    </div>
+                </template>
+            </div>
+        </template>
+    </div>
+</template>
