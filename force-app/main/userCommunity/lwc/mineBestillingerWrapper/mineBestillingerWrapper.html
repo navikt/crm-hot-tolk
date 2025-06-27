@@ -89,14 +89,14 @@
                         <strong>Tilleggsopplysninger: </strong><span>{request.Description__c}</span>
                     </p>
                 </div>
-                <c-record-files-with-sharing
+                <c-record-files-without-sharing
                     if:true={isSeries}
                     record-id={request.Id}
                     is-get-all={isGetAllFiles}
                     is-delete-option="true"
                     title="Vedlegg"
                     delete-file-on-button-click="true"
-                ></c-record-files-with-sharing>
+                ></c-record-files-without-sharing>
                 <br />
             </div>
             <div if:true={isWorkOrderDetails}>
@@ -152,14 +152,14 @@
                         <strong>Tilleggsopplysninger: </strong><span>{request.Description__c}</span>
                     </p>
                 </div>
-                <c-record-files-with-sharing
+                <c-record-files-without-sharing
                     if:false={isSeries}
                     record-id={request.Id}
                     is-get-all={isGetAllFiles}
                     is-delete-option="true"
                     title="Vedlegg"
                     delete-file-on-button-click="true"
-                ></c-record-files-with-sharing>
+                ></c-record-files-without-sharing>
                 <br />
             </div>
 
@@ -268,16 +268,31 @@
                 <h2 style="font-size: 1.25rem; text-align: center">Legg ved filer til denne bestillingen</h2>
                 <br />
                 <div class="fileUploader">
-                    <lightning-file-upload
-                        record-id={recordId}
-                        name="fileUploader"
-                        class="file-selector-large"
-                        label="Ved å laste opp filer er jeg klar over at filene vil bli delt med formidler og tolken(e) jeg får. Opplastingen vil starte umiddelbart. Maks filstørelse: 2 GB."
-                        title="Maks filstørrelse: 2 GB."
-                        onuploadfinished={handleUploadFinished}
-                        multiple
-                    >
-                    </lightning-file-upload>
+                    <div if:true={isOwnRequest}>
+                        <lightning-file-upload
+                            record-id={recordId}
+                            name="fileUploader"
+                            class="file-selector-large"
+                            label="Ved å laste opp filer er jeg klar over at filene vil bli delt med formidler og tolken(e) jeg får. Opplastingen vil starte umiddelbart. Maks filstørelse: 2 GB."
+                            title="Maks filstørrelse: 2 GB."
+                            onuploadfinished={handleUploadFinished}
+                            multiple
+                        >
+                        </lightning-file-upload>
+                    </div>
+                    <div if:false={isOwnRequest}>
+                        <lightning-file-upload
+                            file-field-name="HOT_RelatedRecordId_fileupload__c"
+                            file-field-value={getRelatedRecord}
+                            name="fileUploader"
+                            class="file-selector-large"
+                            label="Ved å laste opp filer er jeg klar over at filene vil bli delt med formidler og tolken(e) jeg får. Opplastingen vil starte umiddelbart. Maks filstørelse: 2 GB."
+                            title="Maks filstørrelse: 2 GB."
+                            onuploadfinished={handleUploadFinished}
+                            multiple
+                        >
+                        </lightning-file-upload>
+                    </div>
                     <br />
                     <p class="typo-undertittel">{fileUploadMessage}</p>
                 </div>

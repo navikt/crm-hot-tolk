@@ -7,11 +7,11 @@
             "path": "force-app",
             "default": true,
             "package": "crm-hot-tolk",
-            "versionNumber": "1.336.0.NEXT",
+            "versionNumber": "1.337.0.NEXT",
             "dependencies": [
                 {
                     "package": "crm-platform-base",
-                    "versionNumber": "0.270.0.LATEST"
+                    "versionNumber": "0.273.0.LATEST"
                 },
                 {
                     "package": "crm-shared-flowComponents",
@@ -31,7 +31,7 @@
                 },
                 {
                     "package": "crm-community-base",
-                    "versionNumber": "0.121.0.LATEST"
+                    "versionNumber": "0.128.0.LATEST"
                 },
                 {
                     "package": "crm-platform-reporting",

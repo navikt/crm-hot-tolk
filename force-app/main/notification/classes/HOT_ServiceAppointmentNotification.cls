@@ -631,36 +631,36 @@ public without sharing class HOT_ServiceAppointmentNotification {
                 newNotification.HOT_RelatedObjectType__c = 'noServiceAppointment';
 
                 notificationList.add(newNotification);
-            }
-        } else {
-            if (serviceAppointment.HOT_ServiceResource__c == null) {
-                return;
-            }
-            HOT_Notification__c newNotification = new HOT_Notification__c();
-            newNotification.HOT_ServiceResource__c = serviceAppointment.HOT_ServiceResource__c;
-            newNotification.HOT_NotificationChannel__c = 'SMS';
-            newNotification.HOT_Subject__c = 'INFO Du er tatt av oppdraget ' + serviceAppointment.AppointmentNumber;
-            newNotification.HOT_NotificationText__c =
-                'Dato: ' +
-                serviceAppointment.EarliestStartTime?.format('d.M.yyyy HH:mm') +
-                ' - ' +
-                serviceAppointment.DueDate?.format('HH:mm') +
-                '.\n';
-            newNotification.HOT_NotificationText__c +=
-                'For mer informasjon, se tolkebestilling.nav.no.\n' +
-                'Du kan ikke svare på denne meldingen.\n' +
-                'Mvh tolketjenesten i Nav';
-            newNotification.HOT_RelatedObject__c = serviceAppointment.Id;
-            newNotification.HOT_RelatedObjectType__c = 'noServiceAppointment';
+            } else {
+                if (serviceAppointment.HOT_ServiceResource__c == null) {
+                    return;
+                }
+                HOT_Notification__c newNotification = new HOT_Notification__c();
+                newNotification.HOT_ServiceResource__c = serviceAppointment.HOT_ServiceResource__c;
+                newNotification.HOT_NotificationChannel__c = 'SMS';
+                newNotification.HOT_Subject__c = 'INFO Du er tatt av oppdraget ' + serviceAppointment.AppointmentNumber;
+                newNotification.HOT_NotificationText__c =
+                    'Dato: ' +
+                    serviceAppointment.EarliestStartTime?.format('d.M.yyyy HH:mm') +
+                    ' - ' +
+                    serviceAppointment.DueDate?.format('HH:mm') +
+                    '.\n';
+                newNotification.HOT_NotificationText__c +=
+                    'For mer informasjon, se tolkebestilling.nav.no.\n' +
+                    'Du kan ikke svare på denne meldingen.\n' +
+                    'Mvh tolketjenesten i Nav';
+                newNotification.HOT_RelatedObject__c = serviceAppointment.Id;
+                newNotification.HOT_RelatedObjectType__c = 'noServiceAppointment';
 
-            notificationList.add(newNotification);
-            HOT_ReminderSMSService.sendSMSToInterpreterOnResourceChanged(new Set<Id>{ serviceAppointment.Id });
-        }
-        //inserting notifications
-        try {
-            HOT_NotificationCentreController.createNotification(notificationList);
-        } catch (Exception e) {
-            handleException(e);
+                notificationList.add(newNotification);
+                HOT_ReminderSMSService.sendSMSToInterpreterOnResourceChanged(new Set<Id>{ serviceAppointment.Id });
+            }
+            //inserting notifications
+            try {
+                HOT_NotificationCentreController.createNotification(notificationList);
+            } catch (Exception e) {
+                handleException(e);
+            }
         }
     }
 

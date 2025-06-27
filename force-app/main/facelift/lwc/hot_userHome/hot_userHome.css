@@ -25,12 +25,12 @@
 }
 
 .rowSpacing {
-    margin-top: 1.5rem;
+    margin-top: 2%;
 }
 
 .box {
     box-sizing: border-box;
-    width: 32%;
+    width: calc(33.333% - (2% * 2 / 3));
     background-color: #ffffff;
     padding: 20px;
     border-radius: 7px;

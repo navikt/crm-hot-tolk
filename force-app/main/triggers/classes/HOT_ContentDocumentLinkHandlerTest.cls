@@ -183,4 +183,60 @@ private class HOT_ContentDocumentLinkHandlerTest {
             'Det har blitt opprettet en ContentDocumetLink for mye.'
         );
     }
+
+    @isTest
+    static void testDeleteContentDocumentLink() {
+        Person__c person = HOT_TestDataFactory.createPerson();
+        person.Name = '12015678999';
+        insert person;
+        Account personAccount = HOT_TestDataFactory.createAccount(true);
+        personAccount.INT_PersonIdent__c = '12015678999';
+        personAccount.CRM_Person__c = person.Id;
+        insert personAccount;
+
+        WorkType workType = HOT_TestDataFactory.createWorkType();
+        insert WorkType;
+        HOT_Request__c request = HOT_TestDataFactory.createRequest('HOT_ServiceAppointmentHandler', workType);
+        insert request;
+
+        request.Status__c = 'Godkjent';
+        update request;
+
+        ContentVersion contentVersion = new ContentVersion(
+            Title = 'a picture',
+            PathOnClient = 'Pic.jpg',
+            VersionData = Blob.valueOf('Test Content'),
+            IsMajorVersion = true
+        );
+        insert contentVersion;
+
+        ContentDocument contentDocument = [SELECT Id FROM ContentDocument LIMIT 1];
+        List<ContentDocument> cdi = new List<ContentDocument>();
+        cdi.add(contentDocument);
+
+        ContentDocumentLink contentDocumentLink = new ContentDocumentLink(
+            ContentDocumentId = contentDocument.Id,
+            LinkedEntityId = request.Id
+        );
+        insert contentDocumentLink;
+
+        // Assert the link exists before delete
+        System.assertEquals(1, [SELECT COUNT() FROM ContentDocumentLink WHERE LinkedEntityId = :request.Id]);
+
+        HOT_ContentDocumentLinkService input = new HOT_ContentDocumentLinkService();
+        input.recordId = request.Id;
+        input.contentDocuments = new List<ContentDocument>{ contentDocument };
+
+        Test.startTest();
+        HOT_ContentDocumentLinkService.deleteContentDocumentLink(new List<HOT_ContentDocumentLinkService>{ input });
+        Test.stopTest();
+
+        // Verify the ContentDocumentLink was deleted
+        List<ContentDocumentLink> linksAfterDelete = [
+            SELECT Id
+            FROM ContentDocumentLink
+            WHERE LinkedEntityId = :request.Id AND ContentDocumentId = :contentDocument.Id
+        ];
+        System.assertEquals(0, linksAfterDelete.size(), 'ContentDocumentLink should be deleted');
+    }
 }
