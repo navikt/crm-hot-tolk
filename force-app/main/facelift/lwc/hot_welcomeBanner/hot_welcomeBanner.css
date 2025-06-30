@@ -6,6 +6,13 @@
     display: flex;
     justify-content: flex-start;
     align-items: center;
-    padding: 2vw;
-    gap: 4vw;
+    /* padding: 2vw; */
+    padding-top: 2vh;
+    padding-bottom: 2vh;
+    gap: 3vw;
+}
+@media (max-width: 768px) {
+    .banner {
+        padding: 1rem;
+    }
 }

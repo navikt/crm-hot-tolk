@@ -15,15 +15,8 @@ export default class Hot_freelanceWrapper extends LightningElement {
 
     toggleCalender() {
         this.showCalender = !this.showCalender;
-        if (this.showCalender) {
-            requestAnimationFrame(() => {
-                const calenderEl = this.template.querySelector('[data-id="calenderContent"]');
-                if (calenderEl) {
-                    calenderEl.scrollIntoView({ behavior: 'smooth' });
-                }
-            });
-        }
     }
+
     setPageLinks() {
         let baseURLArray = window.location.pathname.split('/');
         baseURLArray.pop();
