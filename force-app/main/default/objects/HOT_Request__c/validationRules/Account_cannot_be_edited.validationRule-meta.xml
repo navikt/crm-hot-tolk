@@ -1,9 +1,0 @@
-<?xml version="1.0" encoding="UTF-8" ?>
-<ValidationRule xmlns="http://soap.sforce.com/2006/04/metadata">
-    <fullName>Account_cannot_be_edited</fullName>
-    <active>false</active>
-    <description>Konto kan ikke endres når forespørsel har arbeidsordre</description>
-    <errorConditionFormula
-    >ISCHANGED(Account__c) &amp;&amp; NumberOfWorkOrders__c &gt; 0 &amp;&amp; !$Permission.Validation_Override</errorConditionFormula>
-    <errorMessage>Konto kan ikke endres når forespørsel har arbeidsordre</errorMessage>
-</ValidationRule>
