@@ -53,7 +53,6 @@ private class HOT_ServiceResourceHandlerTest {
             serviceTerritory.HOT_DeveloperName__c = 'Nordland';
             insert serviceTerritory;
         }
-
     }
 
     @IsTest
@@ -76,6 +75,7 @@ private class HOT_ServiceResourceHandlerTest {
         System.assertEquals(1, resources.size());
         System.assertEquals(1, resourceMembers.size());
     }
+
     @IsTest
     static void CreateServiceResourceAutoTest() {
         Test.startTest();
@@ -100,4 +100,93 @@ private class HOT_ServiceResourceHandlerTest {
         System.assertEquals(1, resources.size());
         System.assertEquals(1, resourceMembers.size());
     }
+
+    @IsTest
+    static void UpdateServiceResourceTest() {
+        List<User> users = CommunityUsersService.createCommunityPlusUser(new List<String>{ '01011800001' });
+        List<User> uList = new List<User>();
+        
+        User officeUser = [
+            SELECT Id, Department, LastName, UserRoleId
+            FROM User
+            WHERE Department = '4718' AND LastName = 'admin'
+        ];
+        uList.add(officeUser);
+        System.runAs(officeUser) {
+            //Testing the new service resource path
+            Test.startTest();
+            HOT_ServiceResourceHandler.updateServiceResource(new List<String>{ '01011800001' }, true, 'AUTO');
+        }
+        //Verifying the new service resource path
+        List<ServiceResource> serviceResources = [SELECT Id, RelatedRecordId FROM ServiceResource];
+        List<ServiceTerritoryMember> serviceTerritoryMembers = [SELECT Id FROM ServiceTerritoryMember];
+        List<HOT_Resource__c> resources = [SELECT Id FROM HOT_Resource__c];
+        List<HOT_ResourceMember__c> resourceMembers = [SELECT Id FROM HOT_ResourceMember__c];
+        System.assertEquals(1, serviceResources.size());
+        System.assertEquals(1, serviceTerritoryMembers.size());
+        System.assertEquals(1, resources.size());
+        System.assertEquals(1, resourceMembers.size());
+
+        //Testing and verifying the deactivate and re-activate resource path
+        ServiceResource newSR = [SELECT Id, IsActive FROM ServiceResource WHERE RelatedRecordId = :officeUser.id LIMIT 1];
+        System.assertEquals(true, newSR.IsActive, 'Service Resource was not active');
+        
+        //Deactivate user
+        officeUser.IsActive = false;
+        update officeUser;
+
+        //Verify service resource and user is deactivated
+        User deactivatedUser = [SELECT Id, IsActive FROM User WHERE id = :officeUser.id LIMIT 1];
+        ServiceResource deactivatedSR = [SELECT Id, IsActive FROM ServiceResource WHERE id = :newSr.id LIMIT 1];
+        System.assertEquals(false, deactivatedSR.IsActive, 'De-activating did not make the Service Resource Inactive');
+        System.assertEquals(false, deactivatedUser.IsActive, 'De-activating did not make the User Inactive');
+
+        //Reactivate user
+        officeUser.IsActive = true;
+        update officeUser;
+
+        //Testing and verifying deactivating SR manually, then running update with correct path
+        System.runAs(officeUser) {
+            //Testing the existing service with inactive resource path
+            HOT_ServiceResourceHandler.updateServiceResource(uList, true, 'Nordland');
+            ServiceResource newSR2 = [SELECT Id, IsActive FROM ServiceResource WHERE RelatedRecordId = :officeUser.id LIMIT 1];
+            System.assertEquals(true, newSR2.IsActive, 'Running the future job did not make a service resource');
+            newSR2.IsActive = false;
+            update newSR2;
+            ServiceResource deactivatedSR2 = [SELECT Id, IsActive FROM ServiceResource WHERE RelatedRecordId = :officeUser.id LIMIT 1];
+            System.assertEquals(false, deactivatedSR2.IsActive, 'De-activating did not make the Service Resource Inactive');
+            HOT_ServiceResourceHandler.updateServiceResourceFuture(new List<Id>{ officeUser.Id });
+        }
+        test.stopTest();
+
+        //Confirm service resource is now active
+        ServiceResource activateSR2 = [SELECT Id, IsActive FROM ServiceResource WHERE RelatedRecordId = :officeUser.id LIMIT 1];
+        System.assertEquals(true, activateSR2.IsActive, 'Re-running did not make the Service Resource Active');
+    }
+
+    @IsTest
+    static void UpdateServiceResourceAutoTest() {
+        List<User> users = CommunityUsersService.createCommunityPlusUser(new List<String>{ '01011800001' });
+        
+        User officeUser = [
+            SELECT Id, Department, LastName, UserRoleId
+            FROM User
+            WHERE Department = '4718' AND LastName = 'admin'
+        ];
+        System.runAs(officeUser) {
+            //Testing the new service resource path
+            Test.startTest();
+            HOT_ServiceResourceHandler.updateServiceResource(new List<String>{ '01011800001' }, true, 'Nordland');
+            test.stopTest();
+        }
+        //Verifying the new service resource path
+        List<ServiceResource> serviceResources = [SELECT Id, RelatedRecordId FROM ServiceResource];
+        List<ServiceTerritoryMember> serviceTerritoryMembers = [SELECT Id FROM ServiceTerritoryMember];
+        List<HOT_Resource__c> resources = [SELECT Id FROM HOT_Resource__c];
+        List<HOT_ResourceMember__c> resourceMembers = [SELECT Id FROM HOT_ResourceMember__c];
+        System.assertEquals(1, serviceResources.size());
+        System.assertEquals(1, serviceTerritoryMembers.size());
+        System.assertEquals(1, resources.size());
+        System.assertEquals(1, resourceMembers.size()); 
+    }            
 }
