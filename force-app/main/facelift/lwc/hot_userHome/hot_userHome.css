@@ -1,16 +1,16 @@
 .wrapper {
     width: 100%;
-    padding-left: 2vw;
-    padding-right: 2vw;
-    padding-top: 2vw;
-    padding-bottom: 2.5vw;
+    /* padding-left: 2vw;
+    padding-right: 2vw; */
+    padding-top: 0;
+    padding-bottom: 6vh;
     font-family: 'Source Sans 3', 'Source Sans Pro', Arial, sans-serif;
 }
 
 .spacer {
     height: 1rem;
     width: 4rem;
-    background-color: #e6c7d8;
+    background-color: #005b82;
     margin-top: 1rem;
 }
 .buttonFlexContainer {

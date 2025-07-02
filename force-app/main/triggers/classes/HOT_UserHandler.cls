@@ -17,22 +17,22 @@ public without sharing class HOT_UserHandler extends MyTriggers {
     }
 
     public override void onAfterUpdate(Map<Id, sObject> triggerOldMap) {
-    
         List<Profile> ansattProfile = [SELECT Id, Name FROM Profile WHERE Name = 'HOT Tolk Ansatt'];
-        Set<Id> usersWithChangedProfile = new Set<Id>();
+        Set<Id> usersToUpdate = new Set<Id>();
         
         if(!ansattProfile.isEmpty()){
             for (User user : (List<User>) records) {
                 User oldUser = (User)triggerOldMap.get(user.Id);
     
-                if (oldUser.ProfileId != ansattProfile[0].Id && user.ProfileId == ansattProfile[0].Id) {
-                    usersWithChangedProfile.add(user.Id);
+                if ((oldUser.ProfileId != ansattProfile[0].Id && user.ProfileId == ansattProfile[0].Id) ||
+                    (oldUser.IsActive == false && user.IsActive == true && user.ProfileId == ansattProfile[0].Id)) {
+                    usersToUpdate.add(user.Id);
                 }
             }
         }
     
-        if (!usersWithChangedProfile.isEmpty()) {
-            HOT_ServiceResourceHandler.createServiceResourceFuture(new List<Id>(usersWithChangedProfile));
+        if (!usersToUpdate.isEmpty()) {
+            HOT_ServiceResourceHandler.updateServiceResourceFuture(new List<Id>(usersToUpdate));
         }
     }
 
