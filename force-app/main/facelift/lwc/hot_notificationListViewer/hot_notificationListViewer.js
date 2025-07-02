@@ -26,34 +26,21 @@ export default class Hot_notificationListViewer extends NavigationMixin(Lightnin
             notifications.sort((a, b) => new Date(b.CreatedDate) - new Date(a.CreatedDate));
 
             this.notifications = notifications;
-            console.log(this.notifications);
         }
     }
 
     get hasNotifications() {
         return this.notifications && this.notifications.length > 0;
     }
-    /* toggleNotifications() {
-        this.showNotifications = !this.showNotifications;
-        this.template.querySelector('.dropdown').focus();
-    } */
 
     async goToNotification(event) {
-        console.log('knapp trykket');
-        //const clickedButton = event.target;
-        //const notificationElement = clickedButton.closest('[data-id]');
         const notificationElement = event.currentTarget;
-        console.log('notificationElement:', notificationElement);
-        console.log('dataset:', notificationElement.dataset);
-        console.log('data-id attribute:', notificationElement.getAttribute('data-id'));
 
         if (notificationElement) {
             const notificationId = notificationElement.getAttribute('data-id');
-            console.log('notficationId', notificationId);
 
             try {
                 const result = await getNotificationType({ notificationId: notificationId });
-                console.log('result.HOT_relatedobject', result.HOT_RelatedObjectType__c);
                 switch (result.HOT_RelatedObjectType__c) {
                     case 'wanted': {
                         this[NavigationMixin.Navigate]({

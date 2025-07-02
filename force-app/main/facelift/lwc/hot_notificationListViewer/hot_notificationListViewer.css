@@ -197,7 +197,6 @@ input[type='reset'] {
 
 @media (max-width: 600px) {
     .notification-center {
-        /* Optional: full width container on mobile */
         width: 100%;
         display: block;
     }
