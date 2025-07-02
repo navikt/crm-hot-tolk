@@ -1,44 +1,57 @@
 <template>
     <div class="notification-center">
         <button
-            class="navds-button navds-button--tertiary navds-body-short"
+            class="navds-button navds-body-short"
             onclick={toggleNotifications}
             aria-label="Vis varsler fra Tolketjenesten"
+            aria-haspopup="dialog"
+            aria-expanded={showNotifications}
         >
-            <img src={notificationIcon} alt="notifikasjon-ikon" style="padding-right: 0.5rem" />Varsler
+            <img src={notificationIcon} alt="" aria-hidden="true" style="padding-right: 0.5rem" />
+            Varsler
         </button>
-        <!-- Notfification List dropdown and gray overlay -->
-        <template if:true={showNotifications}>
-            <!-- Overlay: Grays out screen -->
-            <div class="notification-overlay" onclick={toggleNotifications}></div>
 
-            <!-- Dropdown notification box -->
-            <div class="dropdown">
-                <!--Header-->
+        <template if:true={showNotifications}>
+            <div class="notification-overlay" onclick={toggleNotifications} aria-hidden="true"></div>
+
+            <div
+                class="dropdown"
+                role="dialog"
+                aria-modal="true"
+                aria-label="Varselsenter for tolketjenesten"
+                tabindex="-1"
+                onkeydown={handleFocusTrap}
+                onclick={noop}
+            >
                 <div class="dropdown-header">
-                    <span>Varsler</span>
-                    <button class="close-btn" onclick={toggleNotifications} title="Close">
-                        <img src={exitCrossIcon} alt="kryss-ikon" />
+                    <h2 id="varsler-heading">Varsler</h2>
+                    <button class="close-btn" onclick={toggleNotifications} aria-label="Lukk varselsenter">
+                        <img src={exitCrossIcon} alt="" aria-hidden="true" />
                     </button>
-                    <p>Kun varsler fra tolketjenesten siste 30 dager vises her.</p>
+                    <p id="varsler-info">Kun varsler fra tolketjenesten siste 30 dager vises her.</p>
                 </div>
-                <!---->
-                <!--Feilmelding når ingen varsler-->
+
                 <div class="dropdown-info" if:false={hasNotifications}>Ingen nye varsler.</div>
 
-                <!--Hver single notifikasjon card-->
                 <template for:each={notifications} for:item="notification">
-                    <a href="www.nrk.no" key={notification.id} class="link-container">
+                    <button
+                        key={notification.Id}
+                        data-id={notification.Id}
+                        class="link-container"
+                        onclick={goToNotification}
+                        aria-label={notification.ariaLabel}
+                    >
                         <div class="notification-card">
-                            <div>{notification.HOT_Subject__c}</div>
+                            <h3>{notification.HOT_Subject__c}</h3>
                             <div>{notification.HOT_NotificationText__c}</div>
                             <div class="notification-date">
-                                {notification.HOT_NotificationChannel__c} {notification.created}
+                                {notification.HOT_NotificationChannel__c}
+                                <span aria-hidden="true"> | </span>
+                                {notification.created}
                             </div>
                         </div>
-                    </a>
+                    </button>
                 </template>
-                <!---->
             </div>
         </template>
     </div>
