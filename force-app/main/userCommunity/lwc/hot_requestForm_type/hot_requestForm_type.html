@@ -1,12 +1,13 @@
 <template>
-    <section class="valg-av-bestillingstype__container sub-form">
-        <c-radiobuttons
+    <section class="valg-av-bestillingstype__container sub-form" aria-label="Ny bestilling skjema">
+        <!-- HUSK Å FJERNE 2 - TIL NORMAL KOMPONONET -->
+        <c-radiobuttons2
             radiobuttons={radiobuttons}
             onradiobuttonsclick={handleRequestTypeChange}
             header="Hvilken type bestilling ønsker du?"
             group-name="testRadioGroup"
         >
-        </c-radiobuttons>
+        </c-radiobuttons2>
         <div class="button-container">
             <c-button
                 button-label="Neste"
