@@ -1,0 +1,20 @@
+<template>
+    <button class="threadCard" onclick={handleButtonClick} value={thread.Id}>
+        <div class="threadCardHeader">
+            <div class="threadCardHeader-left"><p>{thread.HOT_Subject__c}</p></div>
+            <div class="threadCardHeader-right desktop-only">
+                <p>{thread.lastMessageSentFormatted}</p>
+            </div>
+            <div class="threadCardHeader-right mobile-only">
+                <p>Siste melding: {thread.lastMessageSentFormatted}</p>
+            </div>
+        </div>
+        <p class="desktop-only">({thread.appointmentStartFormatted})</p>
+        <p class="mobile-only">Oppdrags start: {thread.appointmentStartFormatted}</p>
+
+        <div class="threadCardBottom">
+            <div class={thread.statusClass}><p>{thread.statusText}</p></div>
+            <div class="threadType tagBox"><p>{thread.threadTypeName}</p></div>
+        </div>
+    </button>
+</template>
