@@ -289,6 +289,7 @@
             <label>isInterpretermethodChecked</label>
         </rules>
     </decisions>
+    <description>In this version we removed the Dispatcher and Tolk method options from the screen, but we kept the paths with decisions. This was done because this is going to be a version 0.5, so it is easier to re-add when the users decides they want it. If they don&apos;t want it or ask for it it will be removed in a jira ticket in August/September.</description>
     <environments>Default</environments>
     <formulas>
         <name>isAccount</name>
@@ -420,10 +421,7 @@
             <name>ChosenFields</name>
             <choiceReferences>Address</choiceReferences>
             <choiceReferences>Description</choiceReferences>
-            <choiceReferences>Dispatcher</choiceReferences>
-            <choiceReferences>InterpretationMethod</choiceReferences>
             <choiceReferences>ScreenInterpreter</choiceReferences>
-            <choiceReferences>Subject</choiceReferences>
             <dataType>String</dataType>
             <fieldText>Velg felter</fieldText>
             <fieldType>MultiSelectCheckboxes</fieldType>
