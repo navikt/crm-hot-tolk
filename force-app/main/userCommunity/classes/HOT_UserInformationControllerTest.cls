@@ -146,7 +146,7 @@ private class HOT_UserInformationControllerTest {
         String s = 'SMS';
 
         Test.startTest();
-        List < Map < String, String >> lm = HOT_UserInformationController.getNotificationPickListValues(s);
+        List<Map<String, String>> lm = HOT_UserInformationController.getNotificationPickListValues(s);
         Test.stopTest();
     }
 

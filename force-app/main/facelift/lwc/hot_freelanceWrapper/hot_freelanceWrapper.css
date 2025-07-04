@@ -70,7 +70,7 @@
 .box:hover,
 .box:focus {
     border-color: #0067c5;
-    /* background-color: #cce1ff; */
+    background-color: #ffffff;
 }
 
 .box:hover .boxLabel,
@@ -80,7 +80,7 @@
 
 @media (max-width: 768px) {
     .freelanceWrapper {
-        padding: 1rem;
+        padding: 0.5rem;
     }
     .buttonFlexContainer {
         flex-direction: column;
@@ -101,9 +101,10 @@
 .calenderModalContent {
     background-color: #ffffff;
     width: 100%;
-    border-radius: 7px;
+    border-radius: 10px;
     font-size: 18px;
     padding: 2vw;
+    background-color: #ffffff;
 }
 
 .navno-dekorator.alertstripe {
@@ -137,7 +138,8 @@
         padding: 0;
     }
     .calenderModalContent {
-        padding: 1vw;
+        padding: 0vw;
+        width: 100%;
     }
 }
 

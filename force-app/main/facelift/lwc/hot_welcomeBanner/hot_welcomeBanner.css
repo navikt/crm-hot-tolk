@@ -3,6 +3,7 @@
     text-align: left;
     font-family: Arial, sans-serif;
     width: 100%;
+    max-width: 100vw;
     display: flex;
     justify-content: flex-start;
     align-items: center;
@@ -14,5 +15,10 @@
 @media (max-width: 768px) {
     .banner {
         padding: 1rem;
+    }
+}
+@media (max-width: 768px) {
+    .banner {
+        margin-left: 2vw;
     }
 }
