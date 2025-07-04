@@ -221,7 +221,7 @@ private class HOT_ContentDocumentLinkHandlerTest {
         insert contentDocumentLink;
 
         // Assert the link exists before delete
-        System.assertEquals(1, [SELECT Count() FROM ContentDocumentLink WHERE LinkedEntityId = :request.Id]);
+        System.assertEquals(1, [SELECT COUNT() FROM ContentDocumentLink WHERE LinkedEntityId = :request.Id]);
 
         HOT_ContentDocumentLinkService input = new HOT_ContentDocumentLinkService();
         input.recordId = request.Id;
@@ -233,7 +233,8 @@ private class HOT_ContentDocumentLinkHandlerTest {
 
         // Verify the ContentDocumentLink was deleted
         List<ContentDocumentLink> linksAfterDelete = [
-            SELECT Id FROM ContentDocumentLink
+            SELECT Id
+            FROM ContentDocumentLink
             WHERE LinkedEntityId = :request.Id AND ContentDocumentId = :contentDocument.Id
         ];
         System.assertEquals(0, linksAfterDelete.size(), 'ContentDocumentLink should be deleted');

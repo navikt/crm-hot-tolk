@@ -280,13 +280,13 @@ private class HOT_MessagesNotificationTest {
     @IsTest
     static void NotifyInterpreterTest() {
         Account account = [SELECT Id, PersonContactId FROM Account LIMIT 1];
-        List<User> ulist = [SELECT id FROM User WHERE contactId != null LIMIT 5];
+        List<User> ulist = [SELECT id FROM User WHERE contactId != NULL LIMIT 5];
         String parti = '';
-        for(user u : ulist){
+        for (user u : ulist) {
             parti = parti + u.id + ', ';
         }
         parti = parti.substring(0, parti.length() - 2);
-        
+
         ServiceResource s1 = [SELECT id FROM ServiceResource WHERE RelatedRecordId = :ulist[0].Id LIMIT 1];
         s1.HOT_IsEmployedInterpreter__c = true;
         update s1;
@@ -323,16 +323,16 @@ private class HOT_MessagesNotificationTest {
     @IsTest
     static void NotifyInterpreterTestSMS() {
         Account account = [SELECT Id, PersonContactId FROM Account LIMIT 1];
-        List<User> ulist = [SELECT id FROM User WHERE contactId != null LIMIT 5];
+        List<User> ulist = [SELECT id FROM User WHERE contactId != NULL LIMIT 5];
         String parti = '';
-        for(user u : ulist){
+        for (user u : ulist) {
             parti = parti + u.id + ', ';
         }
         parti = parti.substring(0, parti.length() - 2);
-        
+
         ServiceResource s1 = [SELECT id FROM ServiceResource WHERE RelatedRecordId = :ulist[1].Id LIMIT 1];
         s1.HOT_IsFreelanceInterpreter__c = true;
-        s1.HOT_NotificationChannel__c ='SMS';
+        s1.HOT_NotificationChannel__c = 'SMS';
         update s1;
 
         Thread__c thread = HOT_TestDataFactory.createThread();
