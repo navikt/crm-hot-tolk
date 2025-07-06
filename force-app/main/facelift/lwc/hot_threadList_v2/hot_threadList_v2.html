@@ -1,0 +1,49 @@
+<template>
+    <div class="threadListWrapper">
+        <div class="content">
+            <h1 class="headerText">{headerText}</h1>
+            <div class="threadFilterSearchMobile mobile-only">
+                <c-hot_thread-list-search
+                    is-freelance-view={isFreelanceView}
+                    helptext-hovertext={threadSearchHelpText}
+                    onsearchchange={handleSearchChange}
+                ></c-hot_thread-list-search>
+                <div class="space"></div>
+                <c-hot_thread-list-filter-buttons
+                    is-freelance-view={isFreelanceView}
+                    onfilterbuttonclick={handleFilterButtonClick}
+                ></c-hot_thread-list-filter-buttons>
+            </div>
+            <div class="threadList">
+                <div class="left">
+                    <div class="leftSpacer"></div>
+                    <c-hot_thread-list-filter-buttons
+                        is-freelance-view={isFreelanceView}
+                        onfilterbuttonclick={handleFilterButtonClick}
+                    ></c-hot_thread-list-filter-buttons>
+                    <c-hot_thread-list-search
+                        is-freelance-view={isFreelanceView}
+                        helptext-hovertext={threadSearchHelpText}
+                        onsearchchange={handleSearchChange}
+                    ></c-hot_thread-list-search>
+                </div>
+                <div class="right">
+                    <div class="rightHeader desktop-only">
+                        <p class="left-text"></p>
+                        <p lwc:if={hasThreads} class="right-text">Siste melding sendt</p>
+                    </div>
+                    <div lwc:if={noTreads} class="noThreads">
+                        <p>Ingen samtaler</p>
+                    </div>
+                    <template for:each={sortedThreads} for:item="thread">
+                        <c-hot_thread-list-card
+                            key={thread.Id}
+                            thread={thread}
+                            onthreadbuttonclick={handleThreadClick}
+                        ></c-hot_thread-list-card>
+                    </template>
+                </div>
+            </div>
+        </div>
+    </div>
+</template>
