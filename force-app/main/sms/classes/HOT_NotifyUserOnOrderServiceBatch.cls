@@ -58,6 +58,15 @@ public without sharing class HOT_NotifyUserOnOrderServiceBatch implements Databa
 
             if (!pushNotifications.isEmpty()) {
                 //creating notification object list
+                List<WorkOrder> woList = [
+                    SELECT Id, HOT_Request__c
+                    FROM WorkOrder
+                    WHERE HOT_Request__c IN (:new Map<Id, HOT_Request__c>(pushNotifications).keySet())
+                ];
+                Map<Id, Id> requestByOrderMap = new Map<Id, Id>();
+                for (WorkOrder wo : woList) {
+                    requestByOrderMap.put(wo.HOT_Request__c, wo.Id);
+                }
                 List<HOT_Notification__c> notificationList = new List<HOT_Notification__c>();
                 for (HOT_Request__c request : pushNotifications) {
                     if (userIdByAccountId.get(request.Account__c) != null) {
@@ -84,13 +93,8 @@ public without sharing class HOT_NotifyUserOnOrderServiceBatch implements Databa
                                 request.EndTime__c?.format('HH:mm', 'Europe/Oslo') +
                                 '.';
                         }
-                        if (request.IsSerieoppdrag__c) {
-                            notification.HOT_RelatedObject__c = HOT_WorkOrderHandler.getWorkOrder(request).Id;
-                            notification.HOT_RelatedObjectType__c = 'request';
-                        } else {
-                            notification.HOT_RelatedObject__c = HOT_WorkOrderHandler.getWorkOrder(request).Id;
-                            notification.HOT_RelatedObjectType__c = 'workOrder';
-                        }
+                        notification.HOT_RelatedObject__c = requestByOrderMap.get(request.Id);
+                        notification.HOT_RelatedObjectType__c = request.IsSerieoppdrag__c ? 'request' : 'workOrder';
 
                         notificationList.add(notification);
                     }
