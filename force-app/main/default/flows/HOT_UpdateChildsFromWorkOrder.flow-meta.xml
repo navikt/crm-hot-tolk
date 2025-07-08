@@ -7,6 +7,9 @@
         <locationY>0</locationY>
         <actionName>HOT_UpdateChildRecordsService</actionName>
         <actionType>apex</actionType>
+        <connector>
+            <targetReference>errorCheck</targetReference>
+        </connector>
         <flowTransactionModel>Automatic</flowTransactionModel>
         <inputParameters>
             <name>isAccountChoice</name>
@@ -63,7 +66,10 @@
             </value>
         </inputParameters>
         <nameSegment>HOT_UpdateChildRecordsService</nameSegment>
-        <storeOutputAutomatically>true</storeOutputAutomatically>
+        <outputParameters>
+            <assignToReference>errorOutput</assignToReference>
+            <name>output</name>
+        </outputParameters>
     </actionCalls>
     <apiVersion>64.0</apiVersion>
     <assignments>
@@ -225,6 +231,28 @@
         </rules>
     </decisions>
     <decisions>
+        <name>errorCheck</name>
+        <label>errorCheck</label>
+        <locationX>0</locationX>
+        <locationY>0</locationY>
+        <defaultConnectorLabel>noErrorsFound</defaultConnectorLabel>
+        <rules>
+            <name>errorFound</name>
+            <conditionLogic>and</conditionLogic>
+            <conditions>
+                <leftValueReference>errorOutput</leftValueReference>
+                <operator>IsNull</operator>
+                <rightValue>
+                    <booleanValue>false</booleanValue>
+                </rightValue>
+            </conditions>
+            <connector>
+                <targetReference>errorScreen</targetReference>
+            </connector>
+            <label>errorFound</label>
+        </rules>
+    </decisions>
+    <decisions>
         <name>Is_Dispatcher</name>
         <label>Is Dispatcher?</label>
         <locationX>0</locationX>
@@ -289,7 +317,10 @@
             <label>isInterpretermethodChecked</label>
         </rules>
     </decisions>
-    <description>In this version we removed the Dispatcher and Tolk method options from the screen, but we kept the paths with decisions. This was done because this is going to be a version 0.5, so it is easier to re-add when the users decides they want it. If they don&apos;t want it or ask for it it will be removed in a jira ticket in August/September.</description>
+    <description>In this version we removed the Dispatcher and Tolk method options from the screen,
+        but we kept the paths with decisions. This was done because this is going to be a version
+        0.5, so it is easier to re-add when the users decides they want it. If they don&apos;t want
+        it or ask for it it will be removed in a jira ticket in August/September.</description>
     <environments>Default</environments>
     <formulas>
         <name>isAccount</name>
@@ -369,7 +400,8 @@
         <storeOutputAutomatically>true</storeOutputAutomatically>
     </recordLookups>
     <recordLookups>
-        <description>Get the request associated with the WorkOrder in order to validate that the request is in the correct state.</description>
+        <description>Get the request associated with the WorkOrder in order to validate that the
+            request is in the correct state.</description>
         <name>getRequest</name>
         <label>getRequest</label>
         <locationX>0</locationX>
@@ -400,7 +432,9 @@
         <allowPause>false</allowPause>
         <fields>
             <name>cannotUpdateText</name>
-            <fieldText>&lt;p&gt;&lt;span style=&quot;background-color: rgb(255, 255, 255);&quot;&gt;Denne funksjonaliteten kan IKKE benyttes når forespørselen har status Avlyst eller Annullert.&lt;/span&gt;&lt;/p&gt;</fieldText>
+            <fieldText>&lt;p&gt;&lt;span style=&quot;background-color: rgb(255, 255,
+                255);&quot;&gt;Denne funksjonaliteten kan IKKE benyttes når forespørselen har status
+                Avlyst eller Annullert.&lt;/span&gt;&lt;/p&gt;</fieldText>
             <fieldType>DisplayText</fieldType>
         </fields>
         <showFooter>true</showFooter>
@@ -427,6 +461,23 @@
             <fieldType>MultiSelectCheckboxes</fieldType>
             <inputsOnNextNavToAssocScrn>UseStoredValues</inputsOnNextNavToAssocScrn>
             <isRequired>true</isRequired>
+        </fields>
+        <showFooter>true</showFooter>
+        <showHeader>false</showHeader>
+    </screens>
+    <screens>
+        <name>errorScreen</name>
+        <label>errorScreen</label>
+        <locationX>0</locationX>
+        <locationY>0</locationY>
+        <allowBack>false</allowBack>
+        <allowFinish>true</allowFinish>
+        <allowPause>false</allowPause>
+        <fields>
+            <name>errorOutputMessage</name>
+            <fieldText>&lt;p&gt;Noe gikk galt under oppdatering. Følgende feilmelding ble
+                registrert:&lt;/p&gt;&lt;p&gt;&lt;br&gt;&lt;/p&gt;&lt;p&gt;{!errorOutput}&lt;/p&gt;</fieldText>
+            <fieldType>DisplayText</fieldType>
         </fields>
         <showFooter>true</showFooter>
         <showHeader>false</showHeader>
@@ -809,6 +860,15 @@
         </connector>
     </start>
     <status>Active</status>
+    <variables>
+        <description>Holds the return value from the Apex action. To be used with an error screen if
+            errors occur.</description>
+        <name>errorOutput</name>
+        <dataType>String</dataType>
+        <isCollection>false</isCollection>
+        <isInput>true</isInput>
+        <isOutput>false</isOutput>
+    </variables>
     <variables>
         <name>recordId</name>
         <dataType>SObject</dataType>

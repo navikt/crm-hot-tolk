@@ -3,7 +3,6 @@ public without sharing class HOT_UpdateChildRecordsService {
     public HOT_Request__c request;
     @InvocableVariable
     public WorkOrder workOrder;
-
     @InvocableVariable
     public Boolean isAccountChoice;
     @InvocableVariable
@@ -27,6 +26,8 @@ public without sharing class HOT_UpdateChildRecordsService {
         HOT_UpdateChildRecordsService input = inputVariables[0];
         HOT_Request__c request = input.request;
         List<String> errors = new List<String>();
+        String error;
+        String errorOutput;
         List<WorkOrder> workOrders = new List<WorkOrder>(
             [
                 SELECT
@@ -88,7 +89,7 @@ public without sharing class HOT_UpdateChildRecordsService {
         );
 
         if (input.request != null && input.workOrder == null) {
-            updateRequest(
+            error = updateRequest(
                 request,
                 input.isAccountChoice,
                 input.isAddressChoice,
@@ -98,7 +99,10 @@ public without sharing class HOT_UpdateChildRecordsService {
                 input.isDispatcherChoice,
                 input.isInterpreterMethodChoice
             );
-            updateWorkOrder(
+            if (error != null) {
+                errorOutput = error;
+            }
+            error = updateWorkOrder(
                 workOrders,
                 request,
                 input.isAccountChoice,
@@ -107,7 +111,14 @@ public without sharing class HOT_UpdateChildRecordsService {
                 input.isDescriptionChoice,
                 input.isInterpreterMethodChoice
             );
-            updateWorkOrderLineItem(
+            if (error != null) {
+                if (errorOutput == null || errorOutput == '') {
+                    errorOutput = error;
+                } else {
+                    errorOutput = errorOutput + '+' + error;
+                }
+            }
+            error = updateWorkOrderLineItem(
                 workOrderLineItems,
                 request,
                 input.isAddressChoice,
@@ -115,7 +126,14 @@ public without sharing class HOT_UpdateChildRecordsService {
                 input.isDescriptionChoice,
                 input.isInterpreterMethodChoice
             );
-            updateServiceAppointments(
+            if (error != null) {
+                if (errorOutput == null || errorOutput == '') {
+                    errorOutput = error;
+                } else {
+                    errorOutput = errorOutput + '+' + error;
+                }
+            }
+            error = updateServiceAppointments(
                 serviceAppointments,
                 request,
                 input.isAccountChoice,
@@ -126,9 +144,16 @@ public without sharing class HOT_UpdateChildRecordsService {
                 input.isDispatcherChoice,
                 input.isInterpreterMethodChoice
             );
+            if (error != null) {
+                if (errorOutput == null || errorOutput == '') {
+                    errorOutput = error;
+                } else {
+                    errorOutput = errorOutput + '+' + error;
+                }
+            }
         } else if (input.request != null && input.workOrder != null) {
             list<WorkOrder> singleWorkOrder = new List<WorkOrder>{ input.workOrder };
-            updateWorkOrder(
+            error = updateWorkOrder(
                 singleWorkOrder,
                 request,
                 input.isAccountChoice,
@@ -137,7 +162,10 @@ public without sharing class HOT_UpdateChildRecordsService {
                 input.isDescriptionChoice,
                 input.isInterpreterMethodChoice
             );
-            updateWorkOrderLineItem(
+            if (error != null) {
+                errorOutput = error;
+            }
+            error = updateWorkOrderLineItem(
                 workOrderLineItems,
                 request,
                 input.isAddressChoice,
@@ -145,7 +173,14 @@ public without sharing class HOT_UpdateChildRecordsService {
                 input.isDescriptionChoice,
                 input.isInterpreterMethodChoice
             );
-            updateServiceAppointments(
+            if (error != null) {
+                if (errorOutput == null || errorOutput == '') {
+                    errorOutput = error;
+                } else {
+                    errorOutput = errorOutput + '+' + error;
+                }
+            }
+            error = updateServiceAppointments(
                 serviceAppointments,
                 request,
                 input.isAccountChoice,
@@ -156,11 +191,23 @@ public without sharing class HOT_UpdateChildRecordsService {
                 input.isDispatcherChoice,
                 input.isInterpreterMethodChoice
             );
+            if (error != null) {
+                if (errorOutput == null || errorOutput == '') {
+                    errorOutput = error;
+                } else {
+                    errorOutput = errorOutput + '+' + error;
+                }
+            }
+        }
+        // Only return error message if there is 0 messages, or 1 message. Invocable methods can only have the same input and output size, due to bulkification
+        // and because we use a single input (HOT_Request), we will only be able to a single string. Single string is not supported in Invocable, and therefor a LIST is used.
+        if (errorOutput != null) {
+            errors.add(errorOutput);
         }
         return errors;
     }
 
-    public static void updateRequest(
+    public static String updateRequest(
         HOT_Request__c request,
         Boolean isAccountChoice,
         Boolean isAddressChoice,
@@ -171,6 +218,7 @@ public without sharing class HOT_UpdateChildRecordsService {
         Boolean isInterpreterMethodChoice
     ) {
         HOT_Request__c requestToUpdate = new HOT_Request__c(Id = request.Id);
+        String error;
         if (isAccountChoice) {
             requestToUpdate.Account__c = request.Account__c;
             requestToUpdate.UserPersonNumber__c = request.UserPersonNumber__c;
@@ -206,10 +254,12 @@ public without sharing class HOT_UpdateChildRecordsService {
             LoggerUtility logger = new LoggerUtility();
             logger.exception(e, CRM_ApplicationDomain.Domain.HOT);
             logger.publishSynch();
+            error = 'Feilet på oppdatering av Forespørsel';
         }
+        return error;
     }
 
-    public static void updateWorkOrder(
+    public static String updateWorkOrder(
         List<WorkOrder> workOrders,
         HOT_Request__c request,
         Boolean isAccountChoice,
@@ -218,6 +268,7 @@ public without sharing class HOT_UpdateChildRecordsService {
         Boolean isDescriptionChoice,
         Boolean isInterpreterMethodChoice
     ) {
+        String error;
         for (WorkOrder workOrder : workOrders) {
             if (isAccountChoice) {
                 workOrder.AccountId = request.Account__c;
@@ -247,10 +298,12 @@ public without sharing class HOT_UpdateChildRecordsService {
             LoggerUtility logger = new LoggerUtility();
             logger.exception(e, CRM_ApplicationDomain.Domain.HOT);
             logger.publishSynch();
+            error = 'Feilet ved oppdatering av Arbeidsordre';
         }
+        return error;
     }
 
-    public static void updateWorkOrderLineItem(
+    public static String updateWorkOrderLineItem(
         List<WorkOrderLineItem> workOrderLineItems,
         HOT_Request__c request,
         Boolean isAddressChoice,
@@ -258,6 +311,7 @@ public without sharing class HOT_UpdateChildRecordsService {
         Boolean isDescriptionChoice,
         Boolean isInterpreterMethodChoice
     ) {
+        String error;
         for (WorkOrderLineItem workOrderLineItem : workOrderLineItems) {
             if (isAddressChoice) {
                 workOrderLineItem.HOT_InterpretationPostalStreet__c = request.InterpretationStreet__c;
@@ -284,10 +338,12 @@ public without sharing class HOT_UpdateChildRecordsService {
             LoggerUtility logger = new LoggerUtility();
             logger.exception(e, CRM_ApplicationDomain.Domain.HOT);
             logger.publishSynch();
+            error = 'Feilet ved oppdatering av Arbeidsordrelinjer';
         }
+        return error;
     }
 
-    public static void updateServiceAppointments(
+    public static String updateServiceAppointments(
         List<ServiceAppointment> serviceAppointments,
         HOT_Request__c request,
         Boolean isAccountChoice,
@@ -298,6 +354,7 @@ public without sharing class HOT_UpdateChildRecordsService {
         Boolean isDispatcherChoice,
         Boolean isInterpreterMethodChoice
     ) {
+        String error;
         for (ServiceAppointment serviceAppointment : serviceAppointments) {
             if (isAccountChoice) {
                 serviceAppointment.HOT_Account__c = request.Account__c;
@@ -334,6 +391,8 @@ public without sharing class HOT_UpdateChildRecordsService {
             LoggerUtility logger = new LoggerUtility();
             logger.exception(e, CRM_ApplicationDomain.Domain.HOT);
             logger.publishSynch();
+            error = 'Feilet ved oppdatering av Service Appointment';
         }
+        return error;
     }
 }

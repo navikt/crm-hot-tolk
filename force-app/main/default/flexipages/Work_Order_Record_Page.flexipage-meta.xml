@@ -17,7 +17,7 @@
                             </visibilityRule>
                         </valueListItems>
                         <valueListItems>
-                            <value>WorkOrder.Update_Child_Records</value>
+                            <value>WorkOrder.HOT_Update_Child_Records</value>
                             <visibilityRule>
                                 <criteria>
                                     <leftValue>{!$Client.formFactor}</leftValue>
