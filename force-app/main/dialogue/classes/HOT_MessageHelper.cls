@@ -746,73 +746,52 @@ public without sharing class HOT_MessageHelper {
     @AuraEnabled
     public static Map<String, String> getRelatedObjectDetails(Id relatedRecordId) {
         Map<String, String> navigationhelp = new Map<String, String>();
-        String workorderId;
         String objectType = String.valueOf(relatedRecordId.getsobjecttype());
         if (objectType == 'WorkOrder') {
             User currentUser = [SELECT Id, AccountId FROM User WHERE Id = :UserInfo.getUserId()];
-            List<ServiceResource> serviceResource = [
-                SELECT Id, AccountId
-                FROM ServiceResource
-                WHERE AccountId = :currentUser.AccountId
-            ];
-            if (serviceResource.size() > 0) {
-                List<ServiceAppointment> sa = [
-                    SELECT Id
-                    FROM ServiceAppointment
-                    WHERE HOT_WorkOrderLineItem__r.WorkOrderId = :relatedRecordId
-                ];
-                if (sa.size() > 0) {
-                    Boolean irFound = false;
-                    for (ServiceAppointment serviceappointment : sa) {
-                        List<HOT_InterestedResource__c> ir = [
-                            SELECT Id, ServiceAppointment__c
-                            FROM HOT_InterestedResource__c
-                            WHERE
-                                ServiceAppointment__c = :serviceappointment.Id
-                                AND ServiceResource__c IN :serviceResource
-                        ];
-                        if (ir.size() > 0) {
-                            irFound = true;
-                            navigationhelp.put(serviceappointment.Id, 'SA');
-                        }
-                    }
-                    if (!irFound) {
-                        workorderId = relatedRecordId;
-                        navigationhelp.put(workorderId, 'WO');
-                    }
-                } else {
-                    workorderId = relatedRecordId;
-                    navigationhelp.put(workorderId, 'WO');
-                }
-            } else {
-                workorderId = relatedRecordId;
-                navigationhelp.put(workorderId, 'WO');
+            for (HOT_InterestedResource__c ir : [
+                SELECT Id, ServiceAppointment__c
+                FROM HOT_InterestedResource__c
+                WHERE
+                    ServiceAppointment__c IN (
+                        SELECT Id
+                        FROM ServiceAppointment
+                        WHERE HOT_WorkOrderLineItem__r.WorkOrderId = :relatedRecordId
+                    )
+                    AND ServiceResource__r.AccountId = :currentUser.AccountId
+            ]) {
+                navigationhelp.put(ir.ServiceAppointment__c, 'SA');
+            }
+            if (navigationhelp.size() == 0) {
+                navigationhelp.put(relatedRecordId, 'WO');
             }
         }
         if (objectType == 'HOT_Request__c') {
             User currentUser = [SELECT Id, AccountId FROM User WHERE Id = :UserInfo.getUserId()];
             WorkOrder workOrder = [
-                SELECT Id, HOT_Request__r.IsAccountEqualOrderer__c, HOT_Request__r.Orderer__c
+                SELECT
+                    Id,
+                    HOT_Request__r.IsAccountEqualOrderer__c,
+                    HOT_Request__r.Orderer__c,
+                    HOT_Request__r.IsSerieoppdrag__c
                 FROM WorkOrder
                 WHERE HOT_Request__c = :relatedRecordId
                 LIMIT 1
             ];
-            HOT_Request__c request = [SELECT IsSerieoppdrag__c FROM HOT_Request__c WHERE Id = :relatedRecordId LIMIT 1];
-            workorderId = workOrder.Id;
             if (
                 workOrder.HOT_Request__r.IsAccountEqualOrderer__c == false &&
                 workOrder.HOT_Request__r.Orderer__c == currentUser.AccountId
             ) {
-                if (request.IsSerieoppdrag__c == false) {
-                    navigationhelp.put(workorderId, 'Andre-WO');
+                if (workOrder.HOT_Request__r.IsSerieoppdrag__c == false) {
+                    navigationhelp.put(workOrder.Id, 'Andre-WO');
                 } else {
-                    navigationhelp.put(workorderId, 'Andre-R');
+                    navigationhelp.put(workOrder.Id, 'Andre-R');
                 }
             } else {
-                if (request.IsSerieoppdrag__c == false) {
-                    navigationhelp.put(workorderId, 'WO');
+                if (workOrder.HOT_Request__r.IsSerieoppdrag__c == false) {
+                    navigationhelp.put(workOrder.Id, 'WO');
                 } else {
-                    navigationhelp.put(workorderId, 'R');
+                    navigationhelp.put(workOrder.Id, 'R');
                 }
             }
         }
