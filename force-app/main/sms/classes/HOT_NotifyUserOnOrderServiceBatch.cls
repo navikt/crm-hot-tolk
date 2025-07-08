@@ -61,7 +61,7 @@ public without sharing class HOT_NotifyUserOnOrderServiceBatch implements Databa
                 List<WorkOrder> woList = [
                     SELECT Id, HOT_Request__c
                     FROM WorkOrder
-                    WHERE HOT_Request__c IN (:new Map<Id, HOT_Request__c>(pushNotifications).keySet())
+                    WHERE HOT_Request__c IN :pushNotifications
                 ];
                 Map<Id, Id> requestByOrderMap = new Map<Id, Id>();
                 for (WorkOrder wo : woList) {
