@@ -100,7 +100,7 @@ public without sharing class HOT_MessagesNotification {
             }
             //LAGER VARSLINGS LISTE TIL INSETTING SENERE
             List<HOT_Notification__c> notificationList = new List<HOT_Notification__c>();
-            String notificationTypeID = getCustomNotificationType('HOT_NotifyUser').Id;
+            CustomNotificationType notificationType = getCustomNotificationType('HOT_NotifyUser');
             for (Thread__c thread : threads) {
                 Boolean isInterpreter = (thread.CRM_Thread_Type__c == 'HOT_TOLK-RESSURSKONTOR' ||
                     (thread.CRM_Thread_Type__c == 'HOT_TOLK-FORMIDLER' && !thread.HOT_IsEmployeeThread__c))
@@ -151,7 +151,7 @@ public without sharing class HOT_MessagesNotification {
                         }
                         //SENDER UT PUSHVARSEL TIL MOBIL
                         HOT_UserNotificationService.newMessageNotification(
-                            notificationTypeID,
+                            notificationType,
                             thread,
                             isInterpreter,
                             recipients
@@ -332,7 +332,7 @@ public without sharing class HOT_MessagesNotification {
                     }
                 }
                 Map<User, List<Thread__c>> userIdToThreadMapSMS = new Map<User, List<Thread__c>>();
-                String notificationTypeID = getCustomNotificationType('HOT_NotifyUser').Id;
+                CustomNotificationType notificationType = getCustomNotificationType('HOT_NotifyUser');
                 for (User user : userIdToThreadMap.keySet()) {
                     if (user.ServiceResources[0].HOT_NotificationChannel__c.contains('Push')) {
                         for (Thread__c thread : userIdToThreadMap.get(user)) {
@@ -347,7 +347,7 @@ public without sharing class HOT_MessagesNotification {
                                 notificationList.add(newNotification);
                             }
                             HOT_UserNotificationService.newMessageNotification(
-                                notificationTypeID,
+                                notificationType,
                                 thread,
                                 true,
                                 new Set<String>{ user.Id }
