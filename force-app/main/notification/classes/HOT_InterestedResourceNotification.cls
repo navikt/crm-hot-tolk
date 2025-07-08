@@ -25,7 +25,7 @@ public without sharing class HOT_InterestedResourceNotification {
             }
             //creating notification object list
             List<HOT_Notification__c> notificationList = new List<HOT_Notification__c>();
-            String notificationTypeID = getCustomNotificationType('HOT_NotifyUser').Id;
+            CustomNotificationType notificationType = getCustomNotificationType('HOT_NotifyUser');
             for (HOT_InterestedResource__c wantedIr : interestedResources) {
                 Set<String> recipients = new Set<String>();
                 if (userIdByAccountId.get(wantedIr.ServiceResource__r.AccountId) != null) {
@@ -33,7 +33,7 @@ public without sharing class HOT_InterestedResourceNotification {
                 }
                 if (recipients.size() != 0 && wantedIr.ServiceResource__r.HOT_NotificationChannel__c.contains('Push')) {
                     HOT_UserNotificationService.newWantedSRNotification(
-                        notificationTypeID,
+                        notificationType,
                         recipients,
                         wantedIr.ServiceAppointment__r.AppointmentNumber
                     );
