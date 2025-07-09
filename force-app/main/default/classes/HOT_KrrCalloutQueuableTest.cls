@@ -16,8 +16,7 @@ private class HOT_KrrCalloutQueuableTest {
 
     @IsTest
     static void batchableTest() {
-
-        List<HOT_Request__c> reqs = New List<HOT_Request__c>([SELECT id FROM HOT_Request__c]);
+        List<HOT_Request__c> reqs = new List<HOT_Request__c>([SELECT id FROM HOT_Request__c]);
 
         Test.startTest();
         HOT_KrrCalloutQueuable job = new HOT_KrrCalloutQueuable(reqs);

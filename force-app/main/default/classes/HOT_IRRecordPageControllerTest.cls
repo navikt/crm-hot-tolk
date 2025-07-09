@@ -1,6 +1,5 @@
 @isTest
 private class HOT_IRRecordPageControllerTest {
-
     @TestSetup
     static void makeData() {
         OperatingHours operatingHours = HOT_TestDataFactory.createOperatingHours();
@@ -39,7 +38,6 @@ private class HOT_IRRecordPageControllerTest {
             ServiceAppointment__c = serviceAppointment.Id
         );
         insert interestedResource;
-
     }
 
     @isTest
