@@ -48,8 +48,11 @@
                             </div>
 
                             <div class="form-col checkbox-row checkbox-right">
-                                <c-checkbox type="checkbox" default-val={isAvailableForAcuteAssignments} disabled>
-                                </c-checkbox>
+                                <c-checkbox
+                                    type="checkbox"
+                                    default-val={isAvailableForAcuteAssignments}
+                                    disabled
+                                ></c-checkbox>
                                 <label class="label-form-small">Tilgjengelig for akuttoppdrag</label>
                             </div>
                         </div>
@@ -64,12 +67,9 @@
                                     <div key={region.value} class="form-col checkbox-row">
                                         <c-checkbox
                                             default-val={region.selected}
-                                            data-value={region.value}
-                                            oncheckboxclick={handleRegionSelectionChange}
                                             label={region.label}
                                             disabled
-                                        >
-                                        </c-checkbox>
+                                        ></c-checkbox>
                                     </div>
                                 </template>
                             </div>
@@ -78,12 +78,9 @@
                                     <div key={region.value} class="form-col checkbox-row">
                                         <c-checkbox
                                             default-val={region.selected}
-                                            data-value={region.value}
-                                            oncheckboxclick={handleRegionSelectionChange}
                                             label={region.label}
                                             disabled
-                                        >
-                                        </c-checkbox>
+                                        ></c-checkbox>
                                     </div>
                                 </template>
                             </div>
@@ -97,7 +94,7 @@
                                 <template if:true={userQualificationSelectedSkillList}>
                                     <ul>
                                         <template for:each={userQualificationSelectedSkillList} for:item="skill">
-                                            <li class="label-form-small" key={skill.Id}>{skill.MasterLabel}</li>
+                                            <li key={skill.Id} class="label-form-small">{skill.MasterLabel}</li>
                                         </template>
                                     </ul>
                                 </template>
@@ -260,30 +257,20 @@
                         </div>
                     </div>
 
+                    <!-- Skills Section -->
                     <h1 class="heading-medium center-text">Kvalifikasjoner</h1>
-                    <lightning-datatable
-                        key-field="Id"
-                        class="cell-border order-column"
-                        data={skill}
-                        columns={qualificationOptions}
-                        onrowselection={handleRowSelect}
-                        selected-rows={selectedRows}
-                    >
-                    </lightning-datatable>
-
                     <div class="form-row">
                         <div class="form-col">
                             <label class="heading-small">Kvalifikasjoner du innehar</label>
-
                             <template if:true={skillsWithSelection}>
                                 <template for:each={skillsWithSelection} for:item="skills">
                                     <div key={skills.Id} class="form-col checkbox-row">
                                         <c-checkbox
                                             label={skills.MasterLabel}
                                             default-val={skills.selected}
+                                            data-value={skills.Id}
                                             oncheckboxclick={handleCheckboxClick}
-                                        >
-                                        </c-checkbox>
+                                        ></c-checkbox>
                                     </div>
                                 </template>
                             </template>

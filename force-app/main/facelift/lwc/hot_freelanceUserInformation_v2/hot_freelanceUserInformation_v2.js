@@ -69,6 +69,9 @@ export default class Hot_freelanceUserInformation_v2 extends LightningElement {
         { label: 'Tegnspråktolk', value: 'Tegnspraktolk', selected: false }
     ];
 
+    // Track selected Skill Ids here
+    userSelectedSkillIds = [];
+
     // Fetch the user Service Resource record
     @wire(getServiceResource)
     wiredGetServiceResource(result) {
@@ -106,6 +109,10 @@ export default class Hot_freelanceUserInformation_v2 extends LightningElement {
         this.wiredUserServiceResourceSkillsResult = result;
         if (result.data) {
             this.serviceResourceSkillList = result.data;
+            // Initialize selected skill IDs to those without EffectiveEndDate (active skills)
+            this.userSelectedSkillIds = this.serviceResourceSkillList
+                .filter((skill) => !skill.EffectiveEndDate)
+                .map((skill) => skill.SkillId);
         }
     }
 
@@ -119,11 +126,11 @@ export default class Hot_freelanceUserInformation_v2 extends LightningElement {
     }
 
     get userQualificationSelectedSkillList() {
-        return this.serviceResourceSkillList ? this.serviceResourceSkillList : '';
+        return this.serviceResourceSkillList ? this.serviceResourceSkillList : [];
     }
 
     get skillsList() {
-        return this.skill ? this.skill : '';
+        return this.skill ? this.skill : [];
     }
 
     get name() {
@@ -182,17 +189,9 @@ export default class Hot_freelanceUserInformation_v2 extends LightningElement {
         if (!this.skill) return [];
 
         return this.skill.map((skill) => {
-            const isSelectedInUserSkills = this.serviceResourceSkillList
-                ? this.serviceResourceSkillList.some((srs) => srs.Id === skill.Id)
-                : false;
-
-            const isSelectedInTable = this.userSelectedRows
-                ? this.userSelectedRows.some((row) => row.Id === skill.Id)
-                : false;
-
             return {
                 ...skill,
-                selected: isSelectedInUserSkills || isSelectedInTable
+                selected: this.userSelectedSkillIds.includes(skill.Id)
             };
         });
     }
@@ -224,7 +223,6 @@ export default class Hot_freelanceUserInformation_v2 extends LightningElement {
 
     handleMobilePhoneChange(event) {
         this.userData.mobilePhoneValue = event.target.value;
-        // this.handlePhoneValidation();
     }
 
     handleAddressChange(event) {
@@ -293,17 +291,20 @@ export default class Hot_freelanceUserInformation_v2 extends LightningElement {
     }
 
     handleSaveQualification() {
-        try {
-            editServiceResourceSkill({
-                selectedSkills: this.userSelectedRows
-            }).then(() => {
-                refreshApex(this.wiredUserServiceResourceSkillsResult).then(() => {
-                    this.filterServiceResourceSkills();
-                });
+        const selectedSkills = this.skill
+            ? this.skill.filter((skill) => this.userSelectedSkillIds.includes(skill.Id))
+            : [];
+
+        editServiceResourceSkill({ selectedSkills })
+            .then(() => {
+                return refreshApex(this.wiredUserServiceResourceSkillsResult);
+            })
+            .then(() => {
+                this.filterServiceResourceSkills();
+            })
+            .catch((error) => {
+                console.error('Error saving qualifications:', error);
             });
-        } catch (error) {
-            console.log(JSON.stringify(error));
-        }
     }
 
     handleSuccess() {
@@ -317,12 +318,6 @@ export default class Hot_freelanceUserInformation_v2 extends LightningElement {
             .split(';')
             .map((item) => item.trim().toLowerCase());
 
-        // Reset the regionOptions array
-        this.regionOptions.forEach((region) => {
-            region.selected = false;
-        });
-
-        // Set selected to true for regions found in preferred string
         this.regionOptions.forEach((region) => {
             region.selected = preferredList.includes(region.value.toLowerCase());
         });
@@ -407,5 +402,21 @@ export default class Hot_freelanceUserInformation_v2 extends LightningElement {
     // Saves all selected rows in a list
     handleRowSelect(event) {
         this.userSelectedRows = event.detail.selectedRows;
+    }
+
+    // UPDATED: Handle checkbox click for qualifications
+    handleCheckboxClick(event) {
+        const skillId = event.target.dataset.value;
+        const checked = event.detail;
+
+        if (!skillId) return;
+
+        if (checked) {
+            if (!this.userSelectedSkillIds.includes(skillId)) {
+                this.userSelectedSkillIds = [...this.userSelectedSkillIds, skillId];
+            }
+        } else {
+            this.userSelectedSkillIds = this.userSelectedSkillIds.filter((id) => id !== skillId);
+        }
     }
 }
