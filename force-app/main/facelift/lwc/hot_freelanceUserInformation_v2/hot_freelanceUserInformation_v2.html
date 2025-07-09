@@ -275,24 +275,15 @@
                         <div class="form-col">
                             <label class="heading-small">Kvalifikasjoner du innehar</label>
 
-                            <!-- <template for:each={leftRegionOptions} for:item="region">
-                                <div key={region.value} class="form-col checkbox-row">
-                                    <c-checkbox
-                                        default-val={region.selected}
-                                        data-value={region.value}
-                                        oncheckboxclick={handleRegionSelectionChange}
-                                        label={region.label}
-                                    >
-                                    </c-checkbox>
-                                </div>
-                            </template> -->
-
-                            <template if:true={skillsList}>
-                                <template for:each={skillsList} for:item="skills">
+                            <template if:true={skillsWithSelection}>
+                                <template for:each={skillsWithSelection} for:item="skills">
                                     <div key={skills.Id} class="form-col checkbox-row">
-                                        <c-checkbox label={skills.MasterLabel} oncheckboxclick={handleRowSelect}
-                                            >{skills.MasterLabel}</c-checkbox
+                                        <c-checkbox
+                                            label={skills.MasterLabel}
+                                            default-val={skills.selected}
+                                            oncheckboxclick={handleCheckboxClick}
                                         >
+                                        </c-checkbox>
                                     </div>
                                 </template>
                             </template>

@@ -178,6 +178,25 @@ export default class Hot_freelanceUserInformation_v2 extends LightningElement {
         return this.userData ? this.userData.preferences : '';
     }
 
+    get skillsWithSelection() {
+        if (!this.skill) return [];
+
+        return this.skill.map((skill) => {
+            const isSelectedInUserSkills = this.serviceResourceSkillList
+                ? this.serviceResourceSkillList.some((srs) => srs.Id === skill.Id)
+                : false;
+
+            const isSelectedInTable = this.userSelectedRows
+                ? this.userSelectedRows.some((row) => row.Id === skill.Id)
+                : false;
+
+            return {
+                ...skill,
+                selected: isSelectedInUserSkills || isSelectedInTable
+            };
+        });
+    }
+
     handleNameChange(event) {
         this.userData.nameValue = event.target.value;
     }
@@ -385,7 +404,7 @@ export default class Hot_freelanceUserInformation_v2 extends LightningElement {
         });
     }
 
-    //Lagrer alle huket av skills i en liste
+    // Saves all selected rows in a list
     handleRowSelect(event) {
         this.userSelectedRows = event.detail.selectedRows;
     }
