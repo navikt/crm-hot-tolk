@@ -1,0 +1,178 @@
+.flex-center {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.page-background {
+    background: #ffffff;
+    padding: 2rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    min-height: 100vh;
+}
+
+.card-container {
+    padding: 2rem;
+    border-radius: 8px;
+    width: 100%;
+    max-width: 800px;
+    margin: 2rem auto;
+    box-sizing: border-box;
+}
+
+.heading-title {
+    font-size: 1.5rem;
+    margin-bottom: 2rem;
+    font-family: 'Source Sans 3', 'Source Sans Pro', Arial, sans-serif;
+    font-weight: 600;
+    font-style: normal;
+    font-size: 2rem;
+    line-height: 2.5rem;
+}
+
+.heading-medium {
+    margin: 2.5rem;
+    margin-bottom: 3rem;
+    font-family: 'Source Sans 3', 'Source Sans Pro', Arial, sans-serif;
+    font-weight: 600;
+    font-style: normal;
+    font-size: 1.5rem;
+    line-height: 2rem;
+}
+
+.heading-small {
+    font-family: 'Source Sans 3', 'Source Sans Pro', Arial, sans-serif;
+    font-weight: 600;
+    font-style: normal;
+    font-size: 1.25rem;
+    line-height: 1.75rem;
+}
+
+.heading-more-info {
+    font-family: 'Source Sans 3', 'Source Sans Pro', Arial, sans-serif;
+    font-weight: 600;
+    font-style: normal;
+    font-size: 1.125rem;
+    line-height: 1.75rem;
+}
+
+.center-text {
+    text-align: center;
+}
+
+.form-container {
+    margin: 3.5rem;
+}
+
+.form-row {
+    display: flex;
+    gap: 1rem;
+    margin-bottom: 1rem;
+    flex-wrap: wrap;
+    padding-left: 2rem;
+}
+
+.form-row-input {
+    display: flex;
+    gap: 1rem;
+    margin-bottom: 1.2rem;
+    flex-wrap: wrap;
+    padding-left: 2rem;
+}
+
+.form-col-input-left {
+    margin-right: 2rem;
+}
+
+.form-col {
+    flex: 1 1 45%;
+}
+
+.form-row-region {
+    display: flex;
+    justify-content: space-between;
+    gap: 1rem;
+    margin-bottom: 1rem;
+    flex-wrap: wrap;
+    padding-left: 2rem;
+    align-items: flex-start;
+}
+
+.form-col-region-left {
+    flex: 1;
+    margin-right: 0.7rem;
+}
+
+.form-col-right {
+    flex: 1;
+    margin-left: 0.7rem;
+}
+
+.button-container {
+    display: flex;
+    justify-content: center;
+    gap: 1rem;
+    margin-top: 1rem;
+}
+
+.checkbox-row {
+    display: flex;
+    align-items: center;
+}
+
+.checkbox-right {
+    margin-left: 1.3rem;
+}
+
+.btn-edit {
+    margin-top: 4rem;
+}
+
+.btn-save {
+    border: none;
+    border-radius: 3px;
+    border: 3px solid transparent;
+}
+
+/* label large */
+.label-form-big {
+    font-size: 1.25rem;
+    font-weight: 400;
+    font-family: 'Source Sans 3', 'Source Sans Pro', Arial, sans-serif;
+    line-height: 1.75rem;
+    font-weight: 600;
+}
+
+/*label medium */
+.label-form-small {
+    font-size: 1.125rem;
+    font-family: 'Source Sans 3', 'Source Sans Pro', Arial, sans-serif;
+    line-height: 1.5rem;
+}
+
+.notification-picklist {
+    border: 1px solid #6a6a6a;
+    border-radius: 0.25rem;
+    padding: 0.5rem;
+    font-family: 'Source Sans 3', 'Source Sans Pro', Arial, sans-serif;
+    font-size: 1.125rem;
+    line-height: 1.5rem;
+    color: #000000;
+    background-color: #ffffff;
+    margin-top: 0.42rem;
+    height: 2.7rem;
+    width: 17rem;
+    font-weight: 400;
+}
+
+.preference-info-box {
+    margin-top: 0.6rem;
+}
+
+@media (max-width: 768px) {
+    .label-form-small {
+        color: red;
+    }
+}

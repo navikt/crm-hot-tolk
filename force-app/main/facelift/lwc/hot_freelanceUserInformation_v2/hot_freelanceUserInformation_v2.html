@@ -1,0 +1,339 @@
+<template>
+    <div class="page-background flex-center">
+        <div class="card-container">
+            <h1 class="heading-title center-text">Min side frilanstolk</h1>
+            <h1 class="heading-medium center-text">Kontaktinformasjon</h1>
+
+            <section if:true={viewUserInformation}>
+                <template if:true={serviceResource}>
+                    <div class="form-container">
+                        <div class="form-row">
+                            <div class="form-col">
+                                <label class="label-form-big">Navn</label>
+                                <p class="label-form-small">{name}</p>
+                            </div>
+                            <div class="form-col">
+                                <label class="label-form-big">Epost</label>
+                                <p class="label-form-small">{email}</p>
+                            </div>
+                        </div>
+
+                        <div class="form-row">
+                            <div class="form-col">
+                                <label class="label-form-big">Mobilnummer</label>
+                                <p class="label-form-small">{mobilePhone}</p>
+                            </div>
+                            <div class="form-col">
+                                <label class="label-form-big">Adresse</label>
+                                <p class="label-form-small">{address}</p>
+                            </div>
+                        </div>
+
+                        <div class="form-row">
+                            <div class="form-col">
+                                <label class="label-form-big">Mobil enhet</label>
+                                <p class="label-form-small">{mobileDevice}</p>
+                            </div>
+                            <div class="form-col">
+                                <label class="label-form-big">Varslingskanal</label>
+                                <p>{selectedNotificationChannel}</p>
+                                <br />
+                            </div>
+                        </div>
+
+                        <div class="form-row">
+                            <div class="form-col checkbox-row">
+                                <c-checkbox type="checkbox" default-val={isSkilled} disabled> </c-checkbox>
+                                <label class="label-form-small">Faglært</label>
+                            </div>
+
+                            <div class="form-col checkbox-row checkbox-right">
+                                <c-checkbox type="checkbox" default-val={isAvailableForAcuteAssignments} disabled>
+                                </c-checkbox>
+                                <label class="label-form-small">Tilgjengelig for akuttoppdrag</label>
+                            </div>
+                        </div>
+
+                        <div class="form-row">
+                            <label class="label-form-big">Foretrukne regioner</label>
+                        </div>
+
+                        <div class="form-row-region">
+                            <div class="form-col-region-left">
+                                <template for:each={leftRegionOptions} for:item="region">
+                                    <div key={region.value} class="form-col checkbox-row">
+                                        <c-checkbox
+                                            default-val={region.selected}
+                                            data-value={region.value}
+                                            oncheckboxclick={handleRegionSelectionChange}
+                                            label={region.label}
+                                            disabled
+                                        >
+                                        </c-checkbox>
+                                    </div>
+                                </template>
+                            </div>
+                            <div class="form-col-right">
+                                <template for:each={rightRegionOptions} for:item="region">
+                                    <div key={region.value} class="form-col checkbox-row">
+                                        <c-checkbox
+                                            default-val={region.selected}
+                                            data-value={region.value}
+                                            oncheckboxclick={handleRegionSelectionChange}
+                                            label={region.label}
+                                            disabled
+                                        >
+                                        </c-checkbox>
+                                    </div>
+                                </template>
+                            </div>
+                        </div>
+
+                        <h1 class="heading-medium center-text">Kvalifikasjoner</h1>
+
+                        <div class="form-row">
+                            <div class="form-col">
+                                <label class="heading-small">Kvalifikasjoner du innehar</label>
+                                <template if:true={userQualificationSelectedSkillList}>
+                                    <ul>
+                                        <template for:each={userQualificationSelectedSkillList} for:item="skill">
+                                            <li class="label-form-small" key={skill.Id}>{skill.MasterLabel}</li>
+                                        </template>
+                                    </ul>
+                                </template>
+                            </div>
+                        </div>
+                        <br />
+
+                        <h1 class="heading-medium center-text">Diverse</h1>
+
+                        <div class="form-row">
+                            <div class="form-col">
+                                <label class="heading-more-info">Mer informasjon</label>
+                                <c-helptext text={helpText}></c-helptext>
+                                <p class="label-form-small preference-info-box">{userPreferences}</p>
+                            </div>
+                        </div>
+
+                        <div class="button-container">
+                            <c-button
+                                type="Submit"
+                                class="btn-edit"
+                                onbuttonclick={editProfile}
+                                button-label="Rediger"
+                                button-styling="Primary"
+                            ></c-button>
+                        </div>
+                    </div>
+                </template>
+            </section>
+
+            <!--Edit information section-->
+            <section if:true={editUserInformation}>
+                <div class="form-container">
+                    <div class="form-row-input">
+                        <div class="form-col form-col-input-left">
+                            <label class="label-form-big">Navn</label>
+                            <c-input
+                                class="input-config"
+                                text="type"
+                                max-length="255"
+                                value={name}
+                                onchange={handleNameChange}
+                            ></c-input>
+                        </div>
+                        <div class="form-col">
+                            <label class="label-form-big">Epost</label>
+                            <c-input
+                                type="email"
+                                class="input-config"
+                                text="type"
+                                max-length="255"
+                                value={email}
+                                onchange={handleEmailChange}
+                            ></c-input>
+                        </div>
+                    </div>
+
+                    <div class="form-row">
+                        <div class="form-col form-col-input-left">
+                            <label class="label-form-big">Mobilnummer</label>
+                            <c-input
+                                class="input-config"
+                                type="tel"
+                                text="type"
+                                max-length="255"
+                                value={mobilePhone}
+                                onchange={handleMobilePhoneChange}
+                            ></c-input>
+                        </div>
+                        <div class="form-col">
+                            <label class="label-form-big">Adresse</label>
+                            <c-input
+                                class="input-config"
+                                text="type"
+                                max-length="255"
+                                value={address}
+                                onchange={handleAddressChange}
+                            ></c-input>
+                        </div>
+                    </div>
+
+                    <div class="form-row">
+                        <div class="form-col form-col-input-left">
+                            <label class="label-form-big">Mobil enhet</label>
+                            <c-input
+                                class="input-config"
+                                text="type"
+                                max-length="255"
+                                value={mobileDevice}
+                                onchange={handleMobileDeviceChange}
+                            ></c-input>
+                        </div>
+
+                        <div class="form-col">
+                            <label class="label-form-big">Varslingskanal</label>
+                            <br />
+                            <select class="notification-picklist" onchange={handleNotificationSelectionChange}>
+                                <template for:each={notificationChannelOptions} for:item="option">
+                                    <template if:true={option.selected}>
+                                        <option key={option.label} value={option.value}>{option.label}</option>
+                                    </template>
+                                </template>
+                                <template for:each={notificationChannelOptions} for:item="option">
+                                    <template if:false={option.selected}>
+                                        <option key={option.label} value={option.value}>{option.label}</option>
+                                    </template>
+                                </template>
+                            </select>
+                        </div>
+                    </div>
+
+                    <div class="form-row">
+                        <div class="form-col checkbox-row">
+                            <c-checkbox type="checkbox" default-val={isSkilled} oncheckboxclick={handleIsSkilledChange}>
+                            </c-checkbox>
+                            <label class="label-form-small">Faglært</label>
+                        </div>
+
+                        <div class="form-col checkbox-row checkbox-right">
+                            <c-checkbox
+                                type="checkbox"
+                                default-val={isAvailableForAcuteAssignments}
+                                oncheckboxclick={handleIsAvailableChange}
+                            >
+                            </c-checkbox>
+                            <label class="label-form-small">Tilgjengelig for akuttoppdrag</label>
+                        </div>
+                    </div>
+
+                    <div class="form-row">
+                        <label class="label-form-big">Foretrukne regioner</label>
+                    </div>
+
+                    <div class="form-row-region">
+                        <div class="form-col-region-left">
+                            <template for:each={leftRegionOptions} for:item="region">
+                                <div key={region.value} class="form-col checkbox-row">
+                                    <c-checkbox
+                                        default-val={region.selected}
+                                        data-value={region.value}
+                                        oncheckboxclick={handleRegionSelectionChange}
+                                        label={region.label}
+                                    >
+                                    </c-checkbox>
+                                </div>
+                            </template>
+                        </div>
+                        <div class="form-col-right">
+                            <template for:each={rightRegionOptions} for:item="region">
+                                <div key={region.value} class="form-col checkbox-row">
+                                    <c-checkbox
+                                        default-val={region.selected}
+                                        data-value={region.value}
+                                        oncheckboxclick={handleRegionSelectionChange}
+                                        label={region.label}
+                                    >
+                                    </c-checkbox>
+                                </div>
+                            </template>
+                        </div>
+                    </div>
+
+                    <h1 class="heading-medium center-text">Kvalifikasjoner</h1>
+                    <lightning-datatable
+                        key-field="Id"
+                        class="cell-border order-column"
+                        data={skill}
+                        columns={qualificationOptions}
+                        onrowselection={handleRowSelect}
+                        selected-rows={selectedRows}
+                    >
+                    </lightning-datatable>
+
+                    <div class="form-row">
+                        <div class="form-col">
+                            <label class="heading-small">Kvalifikasjoner du innehar</label>
+
+                            <!-- <template for:each={leftRegionOptions} for:item="region">
+                                <div key={region.value} class="form-col checkbox-row">
+                                    <c-checkbox
+                                        default-val={region.selected}
+                                        data-value={region.value}
+                                        oncheckboxclick={handleRegionSelectionChange}
+                                        label={region.label}
+                                    >
+                                    </c-checkbox>
+                                </div>
+                            </template> -->
+
+                            <template if:true={skillsList}>
+                                <template for:each={skillsList} for:item="skills">
+                                    <div key={skills.Id} class="form-col checkbox-row">
+                                        <c-checkbox label={skills.MasterLabel} oncheckboxclick={handleRowSelect}
+                                            >{skills.MasterLabel}</c-checkbox
+                                        >
+                                    </div>
+                                </template>
+                            </template>
+                        </div>
+                        <c-hot_frilanstolk-qualifications
+                            item-name="frilanstolkQualifications"
+                        ></c-hot_frilanstolk-qualifications>
+                    </div>
+
+                    <h1 class="heading-medium center-text">Diverse</h1>
+
+                    <div class="form-row">
+                        <div class="form-col">
+                            <c-textarea
+                                class="label-form-small"
+                                maxlength="255"
+                                label="Mer Informasjon"
+                                helptext-content={helpText}
+                                ongetvalueontextareachange={handleUserPreferences}
+                                value={userPreferences}
+                            ></c-textarea>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="button-container">
+                    <c-button
+                        type="Reset"
+                        onbuttonclick={handleAbort}
+                        button-label="Avbryt"
+                        button-styling="Secondary"
+                    ></c-button>
+                    <c-button
+                        type="Submit"
+                        class="btn-save"
+                        onbuttonclick={handleSubmit}
+                        button-label="Lagre"
+                        button-styling="Primary"
+                    ></c-button>
+                </div>
+            </section>
+        </div>
+    </div>
+</template>
