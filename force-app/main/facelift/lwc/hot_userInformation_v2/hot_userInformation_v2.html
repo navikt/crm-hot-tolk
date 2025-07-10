@@ -1,15 +1,16 @@
 <template>
-    <div class="center-content" aria-label="Brukerinformasjon">
-        <div class="user-info-tile center-content" tabindex="-1">
+    <div class="center-content" aria-labelledby="user-info-header">
+        <div class="user-info-tile" tabindex="-1">
             <div class="back-link-div">
                 <c-hot_back-button aria-label="Tilbake"></c-hot_back-button>
             </div>
-            <h1>Min side</h1>
-            <br />
+
+            <h1 id="user-info-header">Min side</h1>
+
             <section>
-                <section aria-labelledby="contact-info-header" class="bruker-info-skjema sub-form">
-                    <h2 aria-label="Kontaktinformasjon">Kontaktinformasjon</h2>
-                    <br />
+                <!-- Kontaktinformasjon -->
+                <section class="sub-form" aria-labelledby="contact-info-header">
+                    <h2 id="contact-info-header">Kontaktinformasjon</h2>
                     <div class="my-grid">
                         <div class="my-col-half">
                             <label class="output-label" for="mobilePhone">Mobilnummer</label>
@@ -17,30 +18,26 @@
                         </div>
                         <div class="my-col-half">
                             <label class="output-label" for="email">E-postadresse</label>
-                            <p class="output-value" tabindex="0">{email}</p>
+                            <p id="email" class="output-value" tabindex="0">{email}</p>
                         </div>
                     </div>
-                    <br />
                     <p>
                         <a
                             href="https://minprofil.kontaktregisteret.no/"
-                            class="lenke kilde__lenke lenke"
+                            class="lenke"
                             target="_blank"
                             onclick={setKrrIntegrationStatusToQueued}
+                            aria-label="Endre kontaktinformasjon i KRR"
                         >
                             Endre i Kontakt- og reservasjonsregisteret
                         </a>
                     </p>
-                    <p lwc:if={isKrrQueued}>Kontaktinformasjonen vil bli oppdatert innen 24 timer</p>
+                    <p lwc:if={isKrrQueued} aria-live="polite">Kontaktinformasjonen vil bli oppdatert innen 24 timer</p>
                 </section>
-                <br />
 
-                <section
-                    aria-labelledby="vedtak-header"
-                    class="bruker-info-skjema sub-form"
-                    style="margin-bottom: 2rem"
-                >
-                    <h2 aria-label="Vedtak">Vedtak</h2>
+                <!-- Vedtak -->
+                <section class="sub-form" aria-labelledby="vedtak-header">
+                    <h2 id="vedtak-header">Vedtak</h2>
                     <div class="my-grid">
                         <div class="my-col-half">
                             <c-checkbox
@@ -79,12 +76,9 @@
                     </div>
                 </section>
 
-                <section
-                    aria-labelledby="tolkemetoder-header"
-                    class="bruker-info-skjema sub-form"
-                    style="margin-bottom: 2rem"
-                >
-                    <h2 aria-label="Tolkemetoder">Tolkemetoder</h2>
+                <!-- Tolkemetoder -->
+                <section class="sub-form" aria-labelledby="tolkemetoder-header">
+                    <h2 id="tolkemetoder-header">Tolkemetoder</h2>
                     <div class="my-grid">
                         <div class="my-col-half">
                             <c-checkbox
@@ -112,7 +106,6 @@
                                 disabled
                             ></c-checkbox>
                         </div>
-
                         <div class="my-col-half">
                             <c-checkbox
                                 label="Taktilt tegnspråk"
@@ -142,39 +135,38 @@
                     </div>
                 </section>
 
-                <section aria-labelledby="annet-header" class="bruker-info-skjema sub-form" style="margin-bottom: 2rem">
-                    <h2 aria-label="Annet">Annet</h2>
+                <!-- Annet -->
+                <section class="sub-form" aria-labelledby="annet-header">
+                    <h2 id="annet-header">Annet</h2>
                     <div class="my-grid">
                         <div class="my-col-half">
                             <label class="output-label" for="degreeOfImpairment">Vedtak</label>
-                            <p class="output-value" tabindex="0">{degreeOfImpairment}</p>
+                            <p id="degreeOfImpairment" class="output-value" tabindex="0">{degreeOfImpairment}</p>
                         </div>
                         <div class="my-col-half">
                             <label class="output-label" for="sipAddress">SIP-Adresse Bildetolk</label>
-                            <p class="output-value" tabindex="0">{sipAddress}</p>
+                            <p id="sipAddress" class="output-value" tabindex="0">{sipAddress}</p>
                         </div>
                     </div>
                 </section>
-                <section
-                    aria-labelledby="security-measures-header"
-                    class="bruker-info-skjema sub-form"
-                    style="margin-bottom: 2rem"
-                >
-                    <h2 aria-label="Sikkerhetstiltak">Sikkerhetstiltak</h2>
+
+                <!-- Sikkerhetstiltak -->
+                <section class="sub-form" aria-labelledby="security-measures-header">
+                    <h2 id="security-measures-header">Sikkerhetstiltak</h2>
                     <div lwc:if={hasSecurityMeassures}>
                         <template for:each={securityMeassures} for:item="sm">
-                            <p key={sm} tabindex="0">{sm}<br /></p>
+                            <p key={sm} tabindex="0">{sm}</p>
                         </template>
                     </div>
                 </section>
 
-                <h2 aria-label="Varslingsinnstillinger" style="text-align: center">Varslingsinnstillinger</h2>
+                <!-- Varslingsinnstillinger - visning -->
                 <section
-                    class="bruker-info-skjema sub-form"
-                    style="margin-bottom: 4rem"
-                    lwc:if={viewUserNotificationSettings}
+                    class="sub-form"
                     aria-labelledby="notification-settings-header"
+                    lwc:if={viewUserNotificationSettings}
                 >
+                    <h2 id="notification-settings-header" style="text-align: center">Varslingsinnstillinger</h2>
                     <div class="my-grid">
                         <div class="my-col-half">
                             <label for="notificationChannel" class="output-label">Varslingskanal</label>
@@ -182,8 +174,8 @@
                                 id="notificationChannel"
                                 class="custom-select"
                                 disabled
-                                onchange={selectionChangeHandler}
                                 aria-disabled="true"
+                                onchange={selectionChangeHandler}
                             >
                                 <option selected value={selectedOption}>{selectedOption}</option>
                                 <template for:each={options} for:item="option">
@@ -196,7 +188,7 @@
                                 label="Reserver mot alle varsler fra tolketjenesten"
                                 default-value={isReservedAgainstNotifications}
                                 class="checkbox-inline"
-                                disabled="disabled"
+                                disabled
                             ></c-checkbox>
                         </div>
                     </div>
@@ -208,19 +200,17 @@
                                 desktop-style="width: 20rem; justify-content: center"
                                 mobile-style="width: 16rem; justify-content: center"
                                 onclick={editUserNotificationBtn}
-                                style="margin-top: 2rem"
                             ></c-button>
                         </div>
                     </template>
                 </section>
 
+                <!-- Varslingsinnstillinger - redigering -->
                 <template lwc:if={editUserNotification}>
-                    <section
-                        class="bruker-info-skjema"
-                        style="margin-bottom: 4rem"
-                        aria-live="polite"
-                        aria-labelledby="notification-settings-edit-header"
-                    >
+                    <section class="sub-form" aria-live="polite" aria-labelledby="notification-settings-edit-header">
+                        <h2 id="notification-settings-edit-header" style="text-align: center">
+                            Rediger varslingsinnstillinger
+                        </h2>
                         <div class="my-grid">
                             <div class="my-col-half">
                                 <c-picklist
@@ -249,7 +239,6 @@
                             <c-button
                                 button-label="Avbryt"
                                 button-styling="secondary"
-                                style="padding-left: 1rem"
                                 desktop-style="width: 8rem; justify-content: center"
                                 mobile-style="width: 8rem; justify-content: center"
                                 onbuttonclick={handleAbort}
@@ -258,12 +247,14 @@
                     </section>
                 </template>
             </section>
+
+            <!-- Success message -->
             <template lwc:if={showSuccess}>
                 <div class="success-message" role="status" aria-live="polite">
                     <span class="success-icon" aria-hidden="true">✔</span>
                     <span>Endringene ble lagret</span>
                     <button class="close-success-button" onclick={handleCloseSuccess} aria-label="Lukk melding">
-                        ×
+                        &times;
                     </button>
                 </div>
             </template>
