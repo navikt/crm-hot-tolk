@@ -25,14 +25,6 @@
         </connector>
     </assignments>
     <choices>
-        <name>Andre_arsaker</name>
-        <choiceText>Andre årsaker&lt;p&gt;&lt;br&gt;&lt;/p&gt;</choiceText>
-        <dataType>String</dataType>
-        <value>
-            <stringValue>Andre årsaker</stringValue>
-        </value>
-    </choices>
-    <choices>
         <name>Sendt_feil_bruker</name>
         <choiceText>Sendt feil bruker</choiceText>
         <dataType>String</dataType>
@@ -330,7 +322,6 @@
             <choiceReferences>Sendt_feil_bruker</choiceReferences>
             <choiceReferences>Sensitive_personopplysninger</choiceReferences>
             <choiceReferences>Utenfor_NAVs_behandlingsomrade</choiceReferences>
-            <choiceReferences>Andre_arsaker</choiceReferences>
             <dataType>String</dataType>
             <defaultSelectedChoiceReference>Sendt_feil_bruker</defaultSelectedChoiceReference>
             <fieldText>Årsak</fieldText>
