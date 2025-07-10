@@ -1,0 +1,272 @@
+<template>
+    <div class="center-content" aria-label="Brukerinformasjon">
+        <div class="user-info-tile center-content" tabindex="-1">
+            <div class="back-link-div">
+                <c-hot_back-button aria-label="Tilbake"></c-hot_back-button>
+            </div>
+            <h1>Min side</h1>
+            <br />
+            <section>
+                <section aria-labelledby="contact-info-header" class="bruker-info-skjema sub-form">
+                    <h2 aria-label="Kontaktinformasjon">Kontaktinformasjon</h2>
+                    <br />
+                    <div class="my-grid">
+                        <div class="my-col-half">
+                            <label class="output-label" for="mobilePhone">Mobilnummer</label>
+                            <p id="mobilePhone" class="output-value" tabindex="0">{mobilePhone}</p>
+                        </div>
+                        <div class="my-col-half">
+                            <label class="output-label" for="email">E-postadresse</label>
+                            <p class="output-value" tabindex="0">{email}</p>
+                        </div>
+                    </div>
+                    <br />
+                    <p>
+                        <a
+                            href="https://minprofil.kontaktregisteret.no/"
+                            class="lenke kilde__lenke lenke"
+                            target="_blank"
+                            onclick={setKrrIntegrationStatusToQueued}
+                        >
+                            Endre i Kontakt- og reservasjonsregisteret
+                        </a>
+                    </p>
+                    <p lwc:if={isKrrQueued}>Kontaktinformasjonen vil bli oppdatert innen 24 timer</p>
+                </section>
+                <br />
+
+                <section
+                    aria-labelledby="vedtak-header"
+                    class="bruker-info-skjema sub-form"
+                    style="margin-bottom: 2rem"
+                >
+                    <h2 aria-label="Vedtak">Vedtak</h2>
+                    <div class="my-grid">
+                        <div class="my-col-half">
+                            <c-checkbox
+                                label="Arbeidsliv"
+                                default-value={workplaceInterpreter}
+                                class="checkbox-inline"
+                                disabled
+                            ></c-checkbox>
+                            <c-checkbox
+                                label="Dagligliv"
+                                default-value={dailyLifeInterpreter}
+                                class="checkbox-inline"
+                                disabled
+                            ></c-checkbox>
+                            <c-checkbox
+                                label="Utdanning"
+                                default-value={educationInterpreter}
+                                class="checkbox-inline"
+                                disabled
+                            ></c-checkbox>
+                        </div>
+                        <div class="my-col-half">
+                            <c-checkbox
+                                label="Tolk på arbeidsplass - TPA"
+                                default-value={interpreterAW}
+                                class="checkbox-inline"
+                                disabled
+                            ></c-checkbox>
+                            <c-checkbox
+                                label="Bildetolk"
+                                default-value={remoteInterpreter}
+                                class="checkbox-inline"
+                                disabled
+                            ></c-checkbox>
+                        </div>
+                    </div>
+                </section>
+
+                <section
+                    aria-labelledby="tolkemetoder-header"
+                    class="bruker-info-skjema sub-form"
+                    style="margin-bottom: 2rem"
+                >
+                    <h2 aria-label="Tolkemetoder">Tolkemetoder</h2>
+                    <div class="my-grid">
+                        <div class="my-col-half">
+                            <c-checkbox
+                                label="Tegnspråk"
+                                default-value={signLanguage}
+                                class="checkbox-inline"
+                                disabled
+                            ></c-checkbox>
+                            <c-checkbox
+                                label="Skrivetolking"
+                                default-value={writtenInterpreter}
+                                class="checkbox-inline"
+                                disabled
+                            ></c-checkbox>
+                            <c-checkbox
+                                label="Tegn til støtte som munnavlesning"
+                                default-value={supportMouthReading}
+                                class="checkbox-inline"
+                                disabled
+                            ></c-checkbox>
+                            <c-checkbox
+                                label="Taletolking"
+                                default-value={speechInterpreting}
+                                class="checkbox-inline"
+                                disabled
+                            ></c-checkbox>
+                        </div>
+
+                        <div class="my-col-half">
+                            <c-checkbox
+                                label="Taktilt tegnspråk"
+                                default-value={tactileSignLanguage}
+                                class="checkbox-inline"
+                                disabled
+                            ></c-checkbox>
+                            <c-checkbox
+                                label="Tegnspråk i begrenset synsfelt"
+                                default-value={signLimitedView}
+                                class="checkbox-inline"
+                                disabled
+                            ></c-checkbox>
+                            <c-checkbox
+                                label="Haptisk kommunikasjon"
+                                default-value={hapticCommunication}
+                                class="checkbox-inline"
+                                disabled
+                            ></c-checkbox>
+                            <c-checkbox
+                                label="Ledsaging"
+                                default-value={escort}
+                                class="checkbox-inline"
+                                disabled
+                            ></c-checkbox>
+                        </div>
+                    </div>
+                </section>
+
+                <section aria-labelledby="annet-header" class="bruker-info-skjema sub-form" style="margin-bottom: 2rem">
+                    <h2 aria-label="Annet">Annet</h2>
+                    <div class="my-grid">
+                        <div class="my-col-half">
+                            <label class="output-label" for="degreeOfImpairment">Vedtak</label>
+                            <p class="output-value" tabindex="0">{degreeOfImpairment}</p>
+                        </div>
+                        <div class="my-col-half">
+                            <label class="output-label" for="sipAddress">SIP-Adresse Bildetolk</label>
+                            <p class="output-value" tabindex="0">{sipAddress}</p>
+                        </div>
+                    </div>
+                </section>
+                <section
+                    aria-labelledby="security-measures-header"
+                    class="bruker-info-skjema sub-form"
+                    style="margin-bottom: 2rem"
+                >
+                    <h2 aria-label="Sikkerhetstiltak">Sikkerhetstiltak</h2>
+                    <div lwc:if={hasSecurityMeassures}>
+                        <template for:each={securityMeassures} for:item="sm">
+                            <p key={sm} tabindex="0">{sm}<br /></p>
+                        </template>
+                    </div>
+                </section>
+
+                <h2 aria-label="Varslingsinnstillinger" style="text-align: center">Varslingsinnstillinger</h2>
+                <section
+                    class="bruker-info-skjema sub-form"
+                    style="margin-bottom: 4rem"
+                    lwc:if={viewUserNotificationSettings}
+                    aria-labelledby="notification-settings-header"
+                >
+                    <div class="my-grid">
+                        <div class="my-col-half">
+                            <label for="notificationChannel" class="output-label">Varslingskanal</label>
+                            <select
+                                id="notificationChannel"
+                                class="custom-select"
+                                disabled
+                                onchange={selectionChangeHandler}
+                                aria-disabled="true"
+                            >
+                                <option selected value={selectedOption}>{selectedOption}</option>
+                                <template for:each={options} for:item="option">
+                                    <option key={option.value} value={option.value}>{option.value}</option>
+                                </template>
+                            </select>
+                        </div>
+                        <div class="my-col-half">
+                            <c-checkbox
+                                label="Reserver mot alle varsler fra tolketjenesten"
+                                default-value={isReservedAgainstNotifications}
+                                class="checkbox-inline"
+                                disabled="disabled"
+                            ></c-checkbox>
+                        </div>
+                    </div>
+                    <template if:false={showSuccess}>
+                        <div class="button-class">
+                            <c-button
+                                button-label="Rediger varslingsinnstillinger"
+                                button-styling="primary"
+                                desktop-style="width: 20rem; justify-content: center"
+                                mobile-style="width: 16rem; justify-content: center"
+                                onclick={editUserNotificationBtn}
+                                style="margin-top: 2rem"
+                            ></c-button>
+                        </div>
+                    </template>
+                </section>
+
+                <template lwc:if={editUserNotification}>
+                    <section
+                        class="bruker-info-skjema"
+                        style="margin-bottom: 4rem"
+                        aria-live="polite"
+                        aria-labelledby="notification-settings-edit-header"
+                    >
+                        <div class="my-grid">
+                            <div class="my-col-half">
+                                <c-picklist
+                                    master-label="Velg hvor du vil få varsler"
+                                    choices={picklistOptions}
+                                    onpicklistvaluechange={selectionChangeHandler}
+                                ></c-picklist>
+                            </div>
+                            <div class="my-col-half">
+                                <c-checkbox
+                                    label="Reserver mot alle varsler fra tolketjenesten"
+                                    default-value={isReservedAgainstNotifications}
+                                    oncheckboxclick={handleOptionalCheckbox}
+                                ></c-checkbox>
+                            </div>
+                        </div>
+
+                        <div class="button-class">
+                            <c-button
+                                button-label="Lagre"
+                                button-styling="primary"
+                                desktop-style="width: 8rem; justify-content: center"
+                                mobile-style="width: 8rem; justify-content: center"
+                                onbuttonclick={handleSubmit}
+                            ></c-button>
+                            <c-button
+                                button-label="Avbryt"
+                                button-styling="secondary"
+                                style="padding-left: 1rem"
+                                desktop-style="width: 8rem; justify-content: center"
+                                mobile-style="width: 8rem; justify-content: center"
+                                onbuttonclick={handleAbort}
+                            ></c-button>
+                        </div>
+                    </section>
+                </template>
+            </section>
+            <template lwc:if={showSuccess}>
+                <div class="success-message" role="status" aria-live="polite">
+                    <span class="success-icon" aria-hidden="true">✔</span>
+                    <span>Endringene ble lagret</span>
+                    <button class="close-success-button" onclick={handleCloseSuccess} aria-label="Lukk melding">
+                        ×
+                    </button>
+                </div>
+            </template>
+        </div>
+    </div>
+</template>
