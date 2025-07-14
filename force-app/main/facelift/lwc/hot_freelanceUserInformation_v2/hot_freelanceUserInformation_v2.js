@@ -20,6 +20,10 @@ export default class Hot_freelanceUserInformation_v2 extends LightningElement {
     skill;
     serviceResourceSkillList;
 
+    originalUserData;
+    originalRegionOptions;
+    originalServiceResourceSkillList;
+
     viewUserInformation = true;
     editUserInformation = false;
 
@@ -58,16 +62,6 @@ export default class Hot_freelanceUserInformation_v2 extends LightningElement {
     ];
 
     qualificationOptions = [{ fieldName: 'MasterLabel', type: 'text' }];
-
-    skillOptions = [
-        { label: 'Haptisk Kommunikasjon', value: 'Haptisk_Kommunikasjon', selected: false },
-        { label: 'Skrivetolking', value: 'Skrivetolking', selected: false },
-        { label: 'Taktilt Tegnspråk', value: 'Taktilt_Tegnsprak', selected: false },
-        { label: 'Taletolking', value: 'Taletolking', selected: false },
-        { label: 'Tegn Som Støtte Til Munnavlesning', value: 'Tegn_Som_Stotte_Til_Munnavlesning', selected: false },
-        { label: 'Tegnspråk I Begrenset Synsfelt', value: 'Tegnsprak_I_Begrenset_Synsfelt', selected: false },
-        { label: 'Tegnspråktolk', value: 'Tegnspraktolk', selected: false }
-    ];
 
     // Track selected Skill Ids here
     userSelectedSkillIds = [];
@@ -173,6 +167,13 @@ export default class Hot_freelanceUserInformation_v2 extends LightningElement {
         return this.userData?.preferredRegionsValue ? this.userData.preferredRegionsValue.split(';').join(', ') : '';
     }
 
+    get selectedRegionLabels() {
+        return (this.regionOptions || [])
+            .filter((region) => region.selected)
+            .map((region) => region.label)
+            .join(', ');
+    }
+
     get leftRegionOptions() {
         return this.regionOptions.slice(0, Math.ceil(this.regionOptions.length / 2));
     }
@@ -250,6 +251,11 @@ export default class Hot_freelanceUserInformation_v2 extends LightningElement {
     }
 
     editProfile() {
+        // Snapshot only UserData
+        this.originalUserData = JSON.parse(JSON.stringify(this.userData));
+        this.originalRegionOptions = JSON.parse(JSON.stringify(this.regionOptions));
+        this.originalServiceResourceSkillList = JSON.parse(JSON.stringify(this.serviceResourceSkillList));
+
         this.viewUserInformation = false;
         this.editUserInformation = true;
 
@@ -257,6 +263,19 @@ export default class Hot_freelanceUserInformation_v2 extends LightningElement {
     }
 
     handleAbort() {
+        // Restore original user data if it exist
+        if (this.originalUserData) {
+            this.userData = this.originalUserData;
+        }
+
+        if (this.originalRegionOptions) {
+            this.regionOptions = this.originalRegionOptions;
+        }
+
+        if (this.originalServiceResourceSkillList) {
+            this.serviceResourceSkillList = this.originalServiceResourceSkillList;
+        }
+
         this.viewUserInformation = true;
         this.editUserInformation = false;
     }
@@ -374,9 +393,10 @@ export default class Hot_freelanceUserInformation_v2 extends LightningElement {
     // Filters out skills that the user has and are still active (no end date)
     filterServiceResourceSkills() {
         let skillsToShowList = [];
-        if (this.serviceResourceSkillList === 'undefined' || this.serviceResourceSkillList.length === 0) {
+        if (!this.serviceResourceSkillList || this.serviceResourceSkillList.length === 0) {
             return;
         }
+
         this.skill.forEach((skill) => {
             this.serviceResourceSkillList.forEach((element) => {
                 if (element.SkillId === skill.Id && element.EffectiveEndDate === undefined) {
@@ -390,6 +410,7 @@ export default class Hot_freelanceUserInformation_v2 extends LightningElement {
     userSelectedRows = [];
     selectedRows = [];
 
+    // Checks currently active skill record has no EffectiveEndDate
     handleEditSkills() {
         this.selectedRows = [];
         this.serviceResourceSkillList.forEach((element) => {
