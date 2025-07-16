@@ -1,0 +1,107 @@
+<template>
+    <template lwc:if={errorMessages}>
+        <template iterator:it={errorMessages}>
+            <div class="errorPanel highlightPanel" key={it.value.errorName}>
+                <div class="warningIcon">
+                    <c-hot_custom-svg src={warningIconSrc} alt-text="warning"></c-hot_custom-svg>
+                </div>
+                <p>{it.value.error}</p>
+                <div class="xMarkIcon" data-error-name={it.value.errorName} onclick={closeErrorMessage}>
+                    <c-hot_custom-svg src={xMarkIconSrc} alt-text="close"></c-hot_custom-svg>
+                </div>
+            </div>
+            <div lwc:if={it.last} key={it.value.errorName}></div>
+            <div lwc:else key={it.value.errorName} class="errorBorder"></div>
+        </template>
+    </template>
+    <div class="gender-wrapper">
+        <template lwc:if={isLoading}>
+            <c-hot_skeleton-loading-component></c-hot_skeleton-loading-component>
+        </template>
+        <template lwc:elseif={noPerson}></template>
+        <template lwc:else>
+            <lightning-layout class="panelBackground">
+                <div class={panelClass}>
+                    <lightning-layout-item class="highlightPanelTop nowrap-selector">
+                        <lightning-layout-item>
+                            <template lwc:if={isPersonDetailsLoaded}>
+                                <c-hot_person-highlight-panel-top
+                                    record-id={recordId}
+                                    object-api-name={objectApiName}
+                                    relationship-field={relationshipField}
+                                    person-details={personDetails}
+                                ></c-hot_person-highlight-panel-top>
+                            </template>
+                        </lightning-layout-item>
+
+                        <template lwc:if={fullName}>
+                            <span lwc:if={uuAlertText} class="slds-assistive-text" role="alert">{uuAlertText}</span>
+                            <lightning-layout-item class="custom-padding-left">
+                                <template for:each={personAccessBadges} for:item="badge">
+                                    <lightning-layout-item key={badge.name}>
+                                        <lightning-badge
+                                            class="slds-theme_error slds-var-m-left_x-small slds-var-m-vertical_xx-small redBadge"
+                                            data-id={badge.name}
+                                            label={badge.label}
+                                            role="heading"
+                                        >
+                                        </lightning-badge>
+                                    </lightning-layout-item>
+                                </template>
+
+                                <template for:each={badges} for:item="badge">
+                                    <lightning-layout-item
+                                        key={badge.name}
+                                        data-id={badge.name}
+                                        class="relativePosition"
+                                    >
+                                        <template lwc:if={badge.clickable}>
+                                            <lightning-badge
+                                                data-id={badge.name}
+                                                label={badge.label}
+                                                icon-name={badge.iconName}
+                                                icon-position="start"
+                                                class={badge.styling}
+                                                tabindex={badge.tabindex}
+                                                onkeypress={onKeyPressHandler}
+                                                onclick={onClickHandler}
+                                                aria-expanded="false"
+                                                role="heading"
+                                            >
+                                            </lightning-badge>
+                                        </template>
+                                        <template lwc:else>
+                                            <lightning-badge
+                                                data-id={badge.name}
+                                                label={badge.label}
+                                                icon-name={badge.iconName}
+                                                icon-position="start"
+                                                class={badge.styling}
+                                                role="heading"
+                                            >
+                                            </lightning-badge>
+                                        </template>
+                                        <lightning-layout-item lwc:if={badge.badgeContent}>
+                                            <c-hot_person-panel-badge-content
+                                                data-id={badge.badgeContentType}
+                                                shown-badge={shownBadge}
+                                                type={badge.badgeContentType}
+                                                badge-data={badge.badgeContent}
+                                                onbadgeclosed={closeBadge}
+                                            ></c-hot_person-panel-badge-content>
+                                        </lightning-layout-item>
+                                    </lightning-layout-item>
+                                </template>
+                            </lightning-layout-item>
+                        </template>
+                    </lightning-layout-item>
+                    <lightning-layout-item>
+                        <c-hot_person-highlight-panel-bot
+                            person-details={personDetails}
+                        ></c-hot_person-highlight-panel-bot>
+                    </lightning-layout-item>
+                </div>
+            </lightning-layout>
+        </template>
+    </div>
+</template>

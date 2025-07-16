@@ -1,0 +1,38 @@
+.copy-icon {
+    padding-bottom: 12px;
+    padding-left: 2px;
+    float: right;
+}
+.fullName {
+    font-size: 1.5rem;
+}
+
+.custom-padding-around-small {
+    padding: 0.5rem;
+}
+
+.custom-padding-left {
+    padding-left: 1.875rem;
+}
+
+.custom-padding-left-small {
+    padding-left: 0.5rem;
+}
+
+.custom-grid-vertical-align-center {
+    display: flex;
+    align-items: center;
+}
+
+.person-info-container {
+    flex-wrap: wrap;
+}
+
+.sr-only {
+    position: absolute;
+    left: -100000px;
+    top: auto;
+    width: 1px;
+    height: 1px;
+    overflow: hidden;
+}

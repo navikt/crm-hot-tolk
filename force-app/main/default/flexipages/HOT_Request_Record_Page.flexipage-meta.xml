@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="UTF-8" ?>
+<?xml version="1.0" encoding="UTF-8"?>
 <FlexiPage xmlns="http://soap.sforce.com/2006/04/metadata">
     <flexiPageRegions>
         <itemInstances>
@@ -27,6 +27,16 @@
             <componentInstance>
                 <componentName>hot_warningBannerRequest</componentName>
                 <identifier>hot_warningBannerRequest</identifier>
+            </componentInstance>
+        </itemInstances>
+        <itemInstances>
+            <componentInstance>
+                <componentInstanceProperties>
+                    <name>relationshipField</name>
+                    <value>Account__r.CRM_Person__c</value>
+                </componentInstanceProperties>
+                <componentName>hot_personHighlightPanel</componentName>
+                <identifier>c_hot_personHighlightPanel</identifier>
             </componentInstance>
         </itemInstances>
         <mode>Replace</mode>
@@ -1107,8 +1117,7 @@
                 <visibilityRule>
                     <booleanFilter>1 OR 2 OR 3</booleanFilter>
                     <criteria>
-                        <leftValue
-                        >{!Record.LastModifiedBy.Contact.Account.CRM_Person__r.INT_Confidential__c}</leftValue>
+                        <leftValue>{!Record.LastModifiedBy.Contact.Account.CRM_Person__r.INT_Confidential__c}</leftValue>
                         <operator>EQUAL</operator>
                         <rightValue>UGRADERT</rightValue>
                     </criteria>
