@@ -888,7 +888,7 @@ private class HOT_ServiceAppointmentNotificationTest {
         ServiceResource serviceResource = HOT_TestDataFactory.createServiceResource(user.Id);
         serviceResource.HOT_NotificationChannel__c = 'Push-varsel i appen';
         serviceResource.HOT_MobilePhoneOverride__c = '12345678';
-        serviceResource.HOT_IsEmployedInterpreter__c = 'false';
+        serviceResource.HOT_IsEmployedInterpreter__c = false;
         insert serviceResource;
         WorkType workType = HOT_TestDataFactory.createWorkType();
         insert workType;
