@@ -1185,8 +1185,9 @@ public without sharing class HOT_ServiceAppointmentNotification {
         List<HOT_Notification__c> notificationList = new List<HOT_Notification__c>();
         for (ServiceAppointment serviceAppointment : saList) {
             if (
-                serviceAppointment.HOT_ServiceResource__r.HOT_NotificationChannel__c.contains('Push') ||
-                serviceAppointment.HOT_ServiceResource__r.HOT_IsEmployedInterpreter__c
+                serviceAppointment.HOT_ServiceResource__c != null &&
+                (serviceAppointment.HOT_ServiceResource__r.HOT_NotificationChannel__c.contains('Push') ||
+                serviceAppointment.HOT_ServiceResource__r.HOT_IsEmployedInterpreter__c)
             ) {
                 Set<String> employeeInterpreterRecipients = new Set<String>();
                 employeeInterpreterRecipients.add(serviceAppointment.HOT_ServiceResource__r.RelatedRecordId);
