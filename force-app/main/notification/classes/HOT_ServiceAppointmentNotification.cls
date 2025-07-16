@@ -1166,6 +1166,7 @@ public without sharing class HOT_ServiceAppointmentNotification {
         }
     }
 
+    @Future
     public static void notifyInterpretersOnNewFiles(Set<Id> saIds) {
         List<ServiceAppointment> saList = [
             SELECT

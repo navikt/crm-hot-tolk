@@ -316,7 +316,6 @@ private class HOT_ReminderSMSServiceTest {
 
     @IsTest
     static void sendSMSOnNewFilesAddedTest() {
-        Set<Id> saIds = (new Map<Id, ServiceAppointment>([SELECT Id FROM ServiceAppointment LIMIT 1])).keySet();
         User currentUser = [SELECT Id, AccountId FROM User WHERE Id = :UserInfo.getUserId()];
 
         ServiceResource resource = HOT_TestDataFactory.createServiceResource(currentUser.Id);

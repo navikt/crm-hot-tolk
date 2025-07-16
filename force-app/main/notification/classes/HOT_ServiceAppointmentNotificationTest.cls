@@ -209,8 +209,7 @@ private class HOT_ServiceAppointmentNotificationTest {
         saN.canceledByUser(
             notificationType,
             serviceAppointment,
-            [SELECT Id FROM ServiceResource LIMIT 1]
-            .Id,
+            [SELECT Id FROM ServiceResource LIMIT 1].Id,
             recipients
         );
         Test.stopTest();
@@ -320,8 +319,7 @@ private class HOT_ServiceAppointmentNotificationTest {
         );
         saN.timeChanged(
             notificationType,
-            [SELECT Id FROM ServiceAppointment WHERE Subject = 'subject' LIMIT 1]
-            .Id,
+            [SELECT Id FROM ServiceAppointment WHERE Subject = 'subject' LIMIT 1].Id,
             recipients
         );
         Test.stopTest();
@@ -377,8 +375,7 @@ private class HOT_ServiceAppointmentNotificationTest {
         );
         saN.timeChanged(
             notificationType,
-            [SELECT Id FROM ServiceAppointment WHERE Subject = 'subject' LIMIT 1]
-            .Id,
+            [SELECT Id FROM ServiceAppointment WHERE Subject = 'subject' LIMIT 1].Id,
             recipients
         );
         Test.stopTest();
@@ -786,8 +783,8 @@ private class HOT_ServiceAppointmentNotificationTest {
         Test.stopTest();
         System.assertEquals(
             '{type: "comm__namedPage",attributes: {pageName: "mine-oppdrag"}, state: {list: "my", id: "' +
-            request.Id +
-            '"}}',
+                request.Id +
+                '"}}',
             result
         );
     }
@@ -882,6 +879,49 @@ private class HOT_ServiceAppointmentNotificationTest {
             new Map<Id, ServiceAppointment>()
         );
         saN.resourceChanged(notificationType, serviceAppointment.id, recipients);
+        Test.stopTest();
+    }
+
+    @isTest
+    private static void notifyInterpretersOnNewFilesTest() {
+        User user = [SELECT Id, AccountId FROM User WHERE Id = :UserInfo.getUserId() LIMIT 1];
+        ServiceResource serviceResource = HOT_TestDataFactory.createServiceResource(user.Id);
+        serviceResource.HOT_NotificationChannel__c = 'Push-varsel i appen';
+        serviceResource.HOT_MobilePhone__c = '12345678';
+        serviceResource.HOT_IsEmployedInterpreter__c = 'false';
+        insert serviceResource;
+        WorkType workType = HOT_TestDataFactory.createWorkType();
+        insert workType;
+        HOT_Request__c request = HOT_TestDataFactory.createRequest('TEST', workType);
+        insert request;
+        WorkOrder workOrder = HOT_TestDataFactory.createWorkOrder(request, workType);
+        insert workOrder;
+        WorkOrderLineItem workOrderLineItem = HOT_TestDataFactory.createWorkOrderLineItem(workOrder, workType);
+        insert workOrderLineItem;
+        ServiceAppointment serviceAppointment = HOT_TestDataFactory.createServiceAppointment(workOrderLineItem);
+        serviceAppointment.HOT_Request__c = request.Id;
+        serviceAppointment.Subject = 'Test';
+        insert serviceAppointment;
+        AssignedResource assignedResource = HOT_TestDataFactory.createAssignedResource(
+            serviceAppointment.Id,
+            serviceResource.Id
+        );
+        insert assignedResource;
+
+        serviceAppointment.Status = 'Dispatched';
+        serviceAppointment.HOT_ServiceResource__c = serviceResource.id;
+        update serviceAppointment;
+
+        CustomNotificationType notificationType = [
+            SELECT Id, DeveloperName
+            FROM CustomNotificationType
+            WHERE DeveloperName = 'HOT_NotifyInterpreter'
+        ];
+        Test.startTest();
+        HOT_ServiceAppointmentNotification.notifyInterpretersOnNewFiles(new Set<Id>{ serviceAppointment.Id });
+        serviceResource.HOT_NotificationChannel__c = 'Push-varsel i appen';
+        update serviceAppointment;
+        HOT_ServiceAppointmentNotification.notifyInterpretersOnNewFiles(new Set<Id>{ serviceAppointment.Id });
         Test.stopTest();
     }
 
