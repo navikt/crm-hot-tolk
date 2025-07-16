@@ -315,6 +315,23 @@ private class HOT_ReminderSMSServiceTest {
     }
 
     @IsTest
+    static void sendSMSOnNewFilesAddedTest() {
+        Set<Id> saIds = (new Map<Id, ServiceAppointment>([SELECT Id FROM ServiceAppointment LIMIT 1])).keySet();
+        User currentUser = [SELECT Id, AccountId FROM User WHERE Id = :UserInfo.getUserId()];
+
+        ServiceResource resource = HOT_TestDataFactory.createServiceResource(currentUser.Id);
+        resource.HOT_MobilePhoneOverride__c = '12345678';
+        insert resource;
+
+        ServiceAppointment sa = [SELECT Id FROM ServiceAppointment LIMIT 1];
+        AssignedResource assignedResource = HOT_TestDataFactory.createAssignedResource(sa.Id, resource.Id);
+        insert assignedResource;
+
+        Test.startTest();
+        HOT_ReminderSMSService.sendSMSOnNewFilesAdded(new List<ServiceAppointment>{ sa });
+        Test.stopTest();
+    }
+    @IsTest
     static void sendSMSOnNewWantedSRTest() {
         ServiceAppointment sa = [SELECT Id FROM ServiceAppointment WHERE Subject = 'TEST' LIMIT 1];
         ServiceResource sr = [SELECT Id FROM ServiceResource LIMIT 1];
