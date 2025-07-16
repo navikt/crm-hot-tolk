@@ -887,7 +887,7 @@ private class HOT_ServiceAppointmentNotificationTest {
         User user = [SELECT Id, AccountId FROM User WHERE Id = :UserInfo.getUserId() LIMIT 1];
         ServiceResource serviceResource = HOT_TestDataFactory.createServiceResource(user.Id);
         serviceResource.HOT_NotificationChannel__c = 'Push-varsel i appen';
-        serviceResource.HOT_MobilePhone__c = '12345678';
+        serviceResource.HOT_MobilePhoneOverride__c = '12345678';
         serviceResource.HOT_IsEmployedInterpreter__c = 'false';
         insert serviceResource;
         WorkType workType = HOT_TestDataFactory.createWorkType();
