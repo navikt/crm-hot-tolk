@@ -161,7 +161,7 @@
     line-height: 1.5rem;
     color: #000000;
     background-color: #ffffff;
-    margin-top: 0.42rem;
+    margin-top: 0.25rem;
     height: 2.7rem;
     width: 17rem;
     font-weight: 400;
@@ -183,9 +183,6 @@
 }
 
 @media (max-width: 768px) {
-    .label-form-small {
-        color: red;
-    }
     .back-button-info {
         margin-left: -2rem;
         margin-bottom: 1.5rem;

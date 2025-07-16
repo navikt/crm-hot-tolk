@@ -2,44 +2,44 @@
     <div class="page-background flex-center" lang="no">
         <div class="card-container">
             <div class="back-button-info">
-                <c-hot_back-button tabindex="0" aria-label="Tilbake knapp"></c-hot_back-button>
+                <c-hot_back-button tabindex="0" role="button"></c-hot_back-button>
             </div>
-            <h1 class="heading-title center-text" tabindex="0">Min side frilanstolk</h1>
-            <h2 class="heading-medium center-text" tabindex="0">Kontaktinformasjon</h2>
+            <h1 class="heading-title center-text" tabindex="0" role="heading" aria-level="1">Min side frilanstolk</h1>
+            <h2 class="heading-medium center-text" tabindex="0" role="heading" aria-level="2">Kontaktinformasjon</h2>
 
-            <div class="form-big-container">
+            <main class="form-big-container">
                 <section class="section-mobile" if:true={viewUserInformation} aria-live="polite">
                     <template if:true={serviceResource}>
                         <div class="form-container">
                             <div class="form-row">
                                 <div class="form-col">
-                                    <label class="label-form-big">Navn</label>
+                                    <p class="label-form-big">Navn</p>
                                     <p class="label-form-small">{name}</p>
                                 </div>
                                 <div class="form-col form-mobile-right">
-                                    <label class="label-form-big">Epost</label>
+                                    <p class="label-form-big">Epost</p>
                                     <p class="label-form-small">{email}</p>
                                 </div>
                             </div>
 
                             <div class="form-row">
                                 <div class="form-col">
-                                    <label class="label-form-big">Mobilnummer</label>
+                                    <p class="label-form-big">Mobilnummer</p>
                                     <p class="label-form-small">{mobilePhone}</p>
                                 </div>
                                 <div class="form-col">
-                                    <label class="label-form-big">Adresse</label>
+                                    <p class="label-form-big">Adresse</p>
                                     <p class="label-form-small">{address}</p>
                                 </div>
                             </div>
 
                             <div class="form-row">
                                 <div class="form-col">
-                                    <label class="label-form-big">Mobil enhet</label>
+                                    <p class="label-form-big">Mobil enhet</p>
                                     <p class="label-form-small">{mobileDevice}</p>
                                 </div>
                                 <div class="form-col">
-                                    <label class="label-form-big">Varslingskanal</label>
+                                    <p class="label-form-big">Varslingskanal</p>
                                     <p class="label-form-small">{selectedNotificationChannel}</p>
                                     <br />
                                 </div>
@@ -47,17 +47,25 @@
 
                             <div class="form-row">
                                 <div class="form-col checkbox-row">
-                                    <c-checkbox type="checkbox" default-val={isSkilled} disabled> </c-checkbox>
-                                    <label class="label-form-small">Faglært</label>
+                                    <c-checkbox
+                                        class="label-form-small"
+                                        type="checkbox"
+                                        default-val={isSkilled}
+                                        aria-label="Faglært"
+                                        disabled
+                                    >
+                                    </c-checkbox>
+                                    <p class="label-form-small">Faglært</p>
                                 </div>
 
                                 <div class="form-col checkbox-row">
                                     <c-checkbox
                                         type="checkbox"
                                         default-val={isAvailableForAcuteAssignments}
+                                        aria-label="Tilgjengelig for akuttoppdrag"
                                         disabled
                                     ></c-checkbox>
-                                    <label class="label-form-small label-acute">Tilgjengelig for akuttoppdrag</label>
+                                    <p class="label-form-small label-acute">Tilgjengelig for akuttoppdrag</p>
                                 </div>
                             </div>
 
@@ -109,7 +117,7 @@
 
                             <div class="form-row">
                                 <div class="form-col more-info">
-                                    <label class="heading-more-info">Mer informasjon</label>
+                                    <p class="heading-more-info">Mer informasjon</p>
                                     <p class="label-form-small preference-info-box">{userPreferences}</p>
                                 </div>
                             </div>
@@ -133,22 +141,22 @@
                     <div class="form-container">
                         <div class="form-row form-row-input">
                             <div class="form-col form-col-input-left">
-                                <label class="label-form-big">Navn</label>
                                 <c-input
+                                    label="Navn"
+                                    label-size="1.25rem"
+                                    aria-label="navn"
                                     class="input-config"
-                                    aria-label="Redigerbart felt for Navn"
-                                    text="type"
                                     max-length="255"
                                     value={name}
                                     onchange={handleNameChange}
                                 ></c-input>
                             </div>
                             <div class="form-col">
-                                <label class="label-form-big">Epost</label>
                                 <c-input
+                                    label="Epost"
+                                    label-size="1.25rem"
                                     type="email"
                                     class="input-config"
-                                    text="type"
                                     max-length="255"
                                     value={email}
                                     onchange={handleEmailChange}
@@ -158,46 +166,58 @@
 
                         <div class="form-row form-row-input">
                             <div class="form-col form-col-input-left">
-                                <label class="label-form-big">Mobilnummer</label>
                                 <c-input
+                                    label="Mobilnummer"
+                                    label-size="1.25rem"
                                     class="input-config"
                                     type="tel"
-                                    text="type"
                                     max-length="255"
                                     value={mobilePhone}
                                     onchange={handleMobilePhoneChange}
                                 ></c-input>
                             </div>
                             <div class="form-col">
-                                <label class="label-form-big">Adresse</label>
                                 <c-input
+                                    label="Adresse"
+                                    label-size="1.25rem"
                                     class="input-config"
-                                    text="type"
+                                    type="address"
+                                    aria-label="Adresse"
                                     max-length="255"
                                     value={address}
                                     onchange={handleAddressChange}
-                                    aria-label="Redigerbart felt for Adresse"
                                 ></c-input>
                             </div>
                         </div>
 
                         <div class="form-row form-row-input">
                             <div class="form-col form-col-input-left">
-                                <label class="label-form-big">Mobil enhet</label>
                                 <c-input
+                                    label="Mobil enhet"
+                                    label-size="1.25rem"
                                     class="input-config"
-                                    text="type"
+                                    aria-label="Mobil enhet"
                                     max-length="255"
                                     value={mobileDevice}
                                     onchange={handleMobileDeviceChange}
-                                    aria-label="Redigerbart felt for Mobil enhet"
                                 ></c-input>
                             </div>
 
                             <div class="form-col">
-                                <label class="label-form-big" tabindex="0">Varslingskanal</label>
+                                <label
+                                    class="label-form-big"
+                                    tabindex="0"
+                                    role="heading"
+                                    aria-level="3"
+                                    for="notification-channel"
+                                    >Varslingskanal</label
+                                >
                                 <br />
-                                <select class="notification-picklist" onchange={handleNotificationSelectionChange}>
+                                <select
+                                    id="notification-channel"
+                                    class="notification-picklist"
+                                    onchange={handleNotificationSelectionChange}
+                                >
                                     <template for:each={notificationChannelOptions} for:item="option">
                                         <template if:true={option.selected}>
                                             <option key={option.label} value={option.value}>{option.label}</option>
@@ -221,7 +241,7 @@
                                     aria-label="Avkrysningsboks for Faglært"
                                 >
                                 </c-checkbox>
-                                <label class="label-form-small">Faglært</label>
+                                <p class="label-form-small">Faglært</p>
                             </div>
 
                             <div class="form-col checkbox-row checkbox-right">
@@ -232,11 +252,11 @@
                                     aria-label="Avkrysningsboks for Tilgjengelig for akuttoppdrag"
                                 >
                                 </c-checkbox>
-                                <label class="label-form-small">Tilgjengelig for akuttoppdrag</label>
+                                <p class="label-form-small">Tilgjengelig for akuttoppdrag</p>
                             </div>
                         </div>
 
-                        <h3 class="heading-small" tabindex="0">Foretrukne regioner</h3>
+                        <h3 class="heading-small" tabindex="0" aria-level="3" role="heading">Foretrukne regioner</h3>
 
                         <div class="form-row-region">
                             <div class="form-col-region-left">
@@ -268,8 +288,12 @@
                         </div>
 
                         <!-- Skills Section -->
-                        <h2 class="heading-medium center-text header-quali" tabindex="0">Kvalifikasjoner</h2>
-                        <h3 class="heading-small" tabindex="0">Kvalifikasjoner du innehar</h3>
+                        <h2 class="heading-medium center-text header-quali" tabindex="0" aria-level="2" role="heading">
+                            Kvalifikasjoner
+                        </h2>
+                        <h3 class="heading-small" tabindex="0" aria-level="3" role="heading">
+                            Kvalifikasjoner du innehar
+                        </h3>
                         <div class="form-row">
                             <div class="form-col skills-mobile">
                                 <template if:true={skillsWithSelection}>
@@ -287,18 +311,18 @@
                             </div>
                         </div>
 
-                        <h2 class="heading-medium center-text" tabindex="0">Diverse</h2>
+                        <h2 class="heading-medium center-text" tabindex="0" aria-level="2" role="heading">Diverse</h2>
 
                         <div class="form-row">
                             <div class="form-col">
                                 <c-textarea
                                     class="label-form-small"
+                                    name="textarea"
                                     maxlength="255"
                                     label="Mer Informasjon"
                                     helptext-content={helpText}
                                     ongetvalueontextareachange={handleUserPreferences}
                                     value={userPreferences}
-                                    aria-label="Avbryt"
                                 ></c-textarea>
                             </div>
                         </div>
@@ -321,7 +345,7 @@
                         ></c-button>
                     </div>
                 </section>
-            </div>
+            </main>
         </div>
     </div>
 </template>
