@@ -308,7 +308,9 @@ public without sharing class HOT_ReminderSMSService {
         }
     }
 
+    @Future
     public static void sendSMSOnNewWantedSR(Set<Id> wantedIRIds) {
+        System.debug('SendSMS');
         List<SMS__c> smsList = new List<SMS__c>();
         List<HOT_InterestedResource__c> wantedIRList = [
             SELECT
@@ -595,6 +597,28 @@ public without sharing class HOT_ReminderSMSService {
         }
     }
 
+    public static void sendSMSOnNewFilesAdded(List<ServiceAppointment> saList) {
+        List<SMS__c> smsList = new List<SMS__c>();
+
+        for (ServiceAppointment sa : saList) {
+            SMS__c sms = new SMS__c();
+            sms.Domain__c = 'HOT';
+            sms.Type__c = 'Interpreter';
+            sms.Account__c = sa.HOT_ServiceResource__r?.AccountId;
+            sms.ServiceAppointment__c = sa.Id;
+            sms.Recipient__c = sa.HOT_ServiceResource__r?.HOT_MobilePhone__c;
+            sms.Message__c = constructMessageToInterpreter(sa, 'File');
+            if (sms.Recipient__c != null) {
+                smsList.add(sms);
+            }
+        }
+        try {
+            HOT_DatabaseOperations.insertRecords(smsList);
+        } catch (Exception e) {
+            handleException(e);
+        }
+    }
+
     public static void sendSMSToInterpreterOnTimeChanged(Set<Id> saIds) {
         List<ServiceAppointment> saList = [
             SELECT
@@ -773,6 +797,10 @@ public without sharing class HOT_ReminderSMSService {
         }
         if (saEvent == 'Removed') {
             message += 'Du er tatt av oppdraget ';
+        }
+
+        if (saEvent == 'File') {
+            message += 'Det er blitt lagt til et vedlegg på ';
         }
         message += sa.AppointmentNumber;
         if (saEvent == 'Address') {

@@ -1175,6 +1175,7 @@ public without sharing class HOT_ServiceAppointmentNotification {
                 HOT_ServiceResource__r.AccountId,
                 HOT_ServiceResource__r.RelatedRecordId,
                 HOT_ServiceResource__r.HOT_NotificationChannel__c,
+                HOT_ServiceResource__r.HOT_MobilePhone__c,
                 HOT_ServiceResource__r.HOT_IsEmployedInterpreter__c
             FROM ServiceAppointment
             WHERE Id IN :saIds
@@ -1219,12 +1220,7 @@ public without sharing class HOT_ServiceAppointmentNotification {
 
                 notificationList.add(newNotification);
             } else {
-                // HOT_ReminderSMSService.sendSMSOnNewFilesAdded(
-                //     serviceAppointment.HOT_ServiceResource__r.Id,
-                //     startEndString,
-                //     serviceAppointment.AppointmentNumber,
-                //     updatedSAWithNewInterpreter.HOT_ServiceResource__r.Name
-                // );
+                HOT_ReminderSMSService.sendSMSOnNewFilesAdded(new List<ServiceAppointment>{ serviceAppointment });
                 if (serviceAppointment.HOT_ServiceResource__c == null) {
                     return;
                 }
