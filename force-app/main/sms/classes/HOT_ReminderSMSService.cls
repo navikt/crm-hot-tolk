@@ -429,6 +429,7 @@ public without sharing class HOT_ReminderSMSService {
             handleException(e);
         }
     }
+
     @Future
     public static void sendSMSOnNewCoInterpreterChange(
         Id serviceResourceId,
@@ -473,6 +474,7 @@ public without sharing class HOT_ReminderSMSService {
             handleException(e);
         }
     }
+
     @Future
     public static void sendSMSOnCoInterpreterRemoved(
         Id serviceResourceId,

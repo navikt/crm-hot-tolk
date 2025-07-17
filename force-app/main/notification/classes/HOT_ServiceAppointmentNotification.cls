@@ -10,9 +10,6 @@ public without sharing class HOT_ServiceAppointmentNotification {
     Map<Id, String> interpreterNamesByWorkOrderIdMap;
     Map<Id, ServiceResource> serviceResourceMap;
 
-    public HOT_ServiceAppointmentNotification() {
-    }
-
     private static void handleException(Exception e) {
         LoggerUtility logger = new LoggerUtility();
         logger.exception(e, CRM_ApplicationDomain.Domain.HOT);
