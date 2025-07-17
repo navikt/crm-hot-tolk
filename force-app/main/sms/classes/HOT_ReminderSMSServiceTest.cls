@@ -319,7 +319,7 @@ private class HOT_ReminderSMSServiceTest {
         ServiceResource sr = [SELECT Id FROM ServiceResource LIMIT 1];
         Test.startTest();
         ServiceAppointment sa = [
-            SELECT Id, AppointmentNumber, ServiceResource__r.AccountId, ServiceResource__r.HOT_MobilePhone__c
+            SELECT Id, AppointmentNumber, HOT_ServiceResource__r.AccountId, HOT_ServiceResource__r.HOT_MobilePhone__c
             FROM ServiceAppointment
             LIMIT 1
         ];
