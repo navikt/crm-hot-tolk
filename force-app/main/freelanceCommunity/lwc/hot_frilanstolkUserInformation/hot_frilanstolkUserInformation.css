@@ -77,22 +77,3 @@ h1 {
         justify-content: center;
     }
 }
-
-.custom-outline-button {
-    padding: 0.6rem 1.2rem;
-    font-size: 1rem;
-    font-weight: 600;
-    color: #0070d2;
-    background-color: transparent;
-    border: 2px solid #0070d2;
-    border-radius: 6px;
-    cursor: pointer;
-    transition:
-        background-color 0.2s ease,
-        color 0.2s ease;
-}
-
-.custom-outline-button:hover {
-    background-color: #0070d2;
-    color: white;
-}
