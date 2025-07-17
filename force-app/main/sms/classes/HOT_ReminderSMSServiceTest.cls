@@ -317,11 +317,11 @@ private class HOT_ReminderSMSServiceTest {
     @IsTest
     static void sendSMSOnNewFilesAddedTest() {
         ServiceResource sr = [SELECT Id FROM ServiceResource LIMIT 1];
+        Test.startTest();
         ServiceAppointment sa = [SELECT Id FROM ServiceAppointment LIMIT 1];
         AssignedResource assignedResource = HOT_TestDataFactory.createAssignedResource(sa.Id, sr.Id);
         insert assignedResource;
 
-        Test.startTest();
         HOT_ReminderSMSService.sendSMSOnNewFilesAdded(new List<ServiceAppointment>{ sa });
         Test.stopTest();
     }
