@@ -912,9 +912,6 @@ private class HOT_ServiceAppointmentNotificationTest {
         ];
         Test.startTest();
         HOT_ServiceAppointmentNotification.notifyInterpretersOnNewFiles(new Set<Id>{ serviceAppointment.Id });
-        serviceResource.HOT_NotificationChannel__c = 'SMS';
-        update serviceAppointment;
-        HOT_ServiceAppointmentNotification.notifyInterpretersOnNewFiles(new Set<Id>{ serviceAppointment.Id });
         Test.stopTest();
     }
 

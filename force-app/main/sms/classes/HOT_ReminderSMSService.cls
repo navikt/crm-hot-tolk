@@ -800,7 +800,6 @@ public without sharing class HOT_ReminderSMSService {
         if (saEvent == 'Removed') {
             message += 'Du er tatt av oppdraget ';
         }
-
         if (saEvent == 'File') {
             message += 'Det er blitt lagt til et vedlegg på ';
         }
