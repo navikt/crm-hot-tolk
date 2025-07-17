@@ -12,6 +12,7 @@ private class HOT_ServiceAppointmentNotificationTest {
         insert user;
         ServiceResource serviceResource = HOT_TestDataFactory.createServiceResource(user.Id);
         serviceResource.HOT_IsEmployedInterpreter__c = false;
+        serviceResource.HOT_MobilePhoneOverride__c = '12345678';
         serviceResource.HOT_IsFreelanceInterpreter__c = true;
         insert serviceResource;
         ServiceTerritoryMember serviceTerritoryMember = HOT_TestDataFactory.createServiceTerritoryMember(
@@ -885,23 +886,17 @@ private class HOT_ServiceAppointmentNotificationTest {
     @isTest
     private static void notifyInterpretersOnNewFilesTest() {
         User user = [SELECT Id, AccountId FROM User WHERE Id = :UserInfo.getUserId() LIMIT 1];
-        ServiceResource serviceResource = HOT_TestDataFactory.createServiceResource(user.Id);
+        ServiceResource serviceResource = [
+            SELECT HOT_NotificationChannel__c, HOT_MobilePhoneOverride__c, HOT_IsEmployedInterpreter__c
+            FROM ServiceResource
+            WHERE HOT_IsEmployedInterpreter__c = FALSE
+            LIMIT 1
+        ];
         serviceResource.HOT_NotificationChannel__c = 'Push-varsel i appen';
-        serviceResource.HOT_MobilePhoneOverride__c = '12345678';
-        serviceResource.HOT_IsEmployedInterpreter__c = false;
-        insert serviceResource;
+        update serviceResource;
         WorkType workType = HOT_TestDataFactory.createWorkType();
         insert workType;
-        HOT_Request__c request = HOT_TestDataFactory.createRequest('TEST', workType);
-        insert request;
-        WorkOrder workOrder = HOT_TestDataFactory.createWorkOrder(request, workType);
-        insert workOrder;
-        WorkOrderLineItem workOrderLineItem = HOT_TestDataFactory.createWorkOrderLineItem(workOrder, workType);
-        insert workOrderLineItem;
-        ServiceAppointment serviceAppointment = HOT_TestDataFactory.createServiceAppointment(workOrderLineItem);
-        serviceAppointment.HOT_Request__c = request.Id;
-        serviceAppointment.Subject = 'Test';
-        insert serviceAppointment;
+        ServiceAppointment serviceAppointment = [SELECT Id FROM ServiceAppointment LIMIT 1];
         AssignedResource assignedResource = HOT_TestDataFactory.createAssignedResource(
             serviceAppointment.Id,
             serviceResource.Id
@@ -909,8 +904,6 @@ private class HOT_ServiceAppointmentNotificationTest {
         insert assignedResource;
 
         serviceAppointment.Status = 'Dispatched';
-        serviceAppointment.HOT_ServiceResource__c = serviceResource.id;
-        update serviceAppointment;
 
         CustomNotificationType notificationType = [
             SELECT Id, DeveloperName
@@ -919,7 +912,7 @@ private class HOT_ServiceAppointmentNotificationTest {
         ];
         Test.startTest();
         HOT_ServiceAppointmentNotification.notifyInterpretersOnNewFiles(new Set<Id>{ serviceAppointment.Id });
-        serviceResource.HOT_NotificationChannel__c = 'Push-varsel i appen';
+        serviceResource.HOT_NotificationChannel__c = 'SMS';
         update serviceAppointment;
         HOT_ServiceAppointmentNotification.notifyInterpretersOnNewFiles(new Set<Id>{ serviceAppointment.Id });
         Test.stopTest();

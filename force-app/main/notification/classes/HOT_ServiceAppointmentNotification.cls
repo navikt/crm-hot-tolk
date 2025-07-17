@@ -1175,8 +1175,8 @@ public without sharing class HOT_ServiceAppointmentNotification {
                 HOT_AssignedResourceId__c,
                 HOT_ServiceResource__r.AccountId,
                 HOT_ServiceResource__r.RelatedRecordId,
-                HOT_ServiceResource__r.HOT_NotificationChannel__c,
                 HOT_ServiceResource__r.HOT_MobilePhone__c,
+                HOT_ServiceResource__r.HOT_NotificationChannel__c,
                 HOT_ServiceResource__r.HOT_IsEmployedInterpreter__c
             FROM ServiceAppointment
             WHERE Id IN :saIds
@@ -1305,21 +1305,21 @@ public without sharing class HOT_ServiceAppointmentNotification {
             [
                 SELECT
                     Id,
+                    DueDate,
                     AccountId,
-                    HOT_AssignedResourceId__c,
-                    HOT_ServiceResource__r.HOT_NotificationChannel__c,
-                    HOT_WorkOrderLineItem__r.WorkOrderId,
-                    HOT_ServiceResource__r.Name,
-                    HOT_ServiceResource__r.HOT_IsEmployedInterpreter__c,
-                    HOT_ServiceResource__r.AccountId,
-                    HOT_Request__r.Orderer__c,
-                    HOT_AddressFormated__c,
+                    SchedEndTime,
+                    SchedStartTime,
                     AppointmentNumber,
                     EarliestStartTime,
+                    HOT_AddressFormated__c,
+                    HOT_Request__r.Orderer__c,
+                    HOT_AssignedResourceId__c,
+                    HOT_ServiceResource__r.Name,
                     HOT_IsEmployedInterpreter__c,
-                    DueDate,
-                    SchedStartTime,
-                    SchedEndTime
+                    HOT_ServiceResource__r.AccountId,
+                    HOT_WorkOrderLineItem__r.WorkOrderId,
+                    HOT_ServiceResource__r.HOT_NotificationChannel__c,
+                    HOT_ServiceResource__r.HOT_IsEmployedInterpreter__c
                 FROM ServiceAppointment
                 WHERE Id IN :serviceAppointments
             ]
@@ -1392,16 +1392,16 @@ public without sharing class HOT_ServiceAppointmentNotification {
         return [
             SELECT
                 Id,
-                HOT_WorkOrderLineItem__r.WorkOrderId,
-                SchedStartTime,
                 SchedEndTime,
+                SchedStartTime,
                 AppointmentNumber,
+                HOT_ServiceResource__r.Id,
                 HOT_ServiceResource__r.AccountId,
-                HOT_ServiceResource__r.HOT_IsFreelanceInterpreter__c,
-                HOT_ServiceResource__r.HOT_IsEmployedInterpreter__c,
-                HOT_ServiceResource__r.HOT_NotificationChannel__c,
+                HOT_WorkOrderLineItem__r.WorkOrderId,
                 HOT_ServiceResource__r.RelatedRecordId,
-                HOT_ServiceResource__r.Id
+                HOT_ServiceResource__r.HOT_NotificationChannel__c,
+                HOT_ServiceResource__r.HOT_IsEmployedInterpreter__c,
+                HOT_ServiceResource__r.HOT_IsFreelanceInterpreter__c
             FROM ServiceAppointment
             WHERE
                 HOT_WorkOrderLineItem__r.WorkOrderId IN :workOrderIds
@@ -1464,8 +1464,8 @@ public without sharing class HOT_ServiceAppointmentNotification {
             WHERE
                 Id IN :workOrderIds
                 AND HOT_Request__r.Orderer__c != NULL
-                AND HOT_Request__r.Orderer__r.CRM_Person__r.HOT_IsReservationAgainstNotifications__c = FALSE
                 AND HOT_Request__r.IsOrdererWantStatusUpdateOnSMS__c = TRUE
+                AND HOT_Request__r.Orderer__r.CRM_Person__r.HOT_IsReservationAgainstNotifications__c = FALSE
         ];
         return workordersList;
     }
