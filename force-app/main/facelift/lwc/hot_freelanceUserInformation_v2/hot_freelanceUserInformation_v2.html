@@ -8,136 +8,139 @@
             <h2 class="heading-medium center-text" tabindex="0" role="heading" aria-level="2">Kontaktinformasjon</h2>
 
             <main class="form-big-container">
-                <section class="section-mobile" if:true={viewUserInformation} aria-live="polite">
-                    <template if:true={serviceResource}>
-                        <div class="form-container">
-                            <div class="form-row">
-                                <div class="form-col">
-                                    <p class="label-form-big">Navn</p>
-                                    <p class="label-form-small">{name}</p>
-                                </div>
-                                <div class="form-col form-mobile-right">
-                                    <p class="label-form-big">Epost</p>
-                                    <p class="label-form-small">{email}</p>
-                                </div>
-                            </div>
-
-                            <div class="form-row">
-                                <div class="form-col">
-                                    <p class="label-form-big">Mobilnummer</p>
-                                    <p class="label-form-small">{mobilePhone}</p>
-                                </div>
-                                <div class="form-col">
-                                    <p class="label-form-big">Adresse</p>
-                                    <p class="label-form-small">{address}</p>
-                                </div>
-                            </div>
-
-                            <div class="form-row">
-                                <div class="form-col">
-                                    <p class="label-form-big">Mobil enhet</p>
-                                    <p class="label-form-small">{mobileDevice}</p>
-                                </div>
-                                <div class="form-col">
-                                    <p class="label-form-big">Varslingskanal</p>
-                                    <p class="label-form-small">{selectedNotificationChannel}</p>
-                                    <br />
-                                </div>
-                            </div>
-
-                            <div class="form-row">
-                                <div class="form-col checkbox-row">
-                                    <c-checkbox
-                                        class="label-form-small"
-                                        type="checkbox"
-                                        default-val={isSkilled}
-                                        aria-label="Faglært"
-                                        disabled
-                                    >
-                                    </c-checkbox>
-                                    <p class="label-form-small">Faglært</p>
+                <!--View information section-->
+                <template lwc:if={viewUserInformation}>
+                    <section class="section-mobile" aria-live="polite">
+                        <template lwc:if={serviceResource}>
+                            <div class="form-container">
+                                <div class="form-row">
+                                    <div class="form-col">
+                                        <p class="label-form-big">Navn</p>
+                                        <p class="label-form-small">{name}</p>
+                                    </div>
+                                    <div class="form-col form-mobile-right">
+                                        <p class="label-form-big">Epost</p>
+                                        <p class="label-form-small">{email}</p>
+                                    </div>
                                 </div>
 
-                                <div class="form-col checkbox-row">
-                                    <c-checkbox
-                                        type="checkbox"
-                                        default-val={isAvailableForAcuteAssignments}
-                                        aria-label="Tilgjengelig for akuttoppdrag"
-                                        disabled
-                                    ></c-checkbox>
-                                    <p class="label-form-small label-acute">Tilgjengelig for akuttoppdrag</p>
+                                <div class="form-row">
+                                    <div class="form-col">
+                                        <p class="label-form-big">Mobilnummer</p>
+                                        <p class="label-form-small">{mobilePhone}</p>
+                                    </div>
+                                    <div class="form-col">
+                                        <p class="label-form-big">Adresse</p>
+                                        <p class="label-form-small">{address}</p>
+                                    </div>
                                 </div>
-                            </div>
 
-                            <h3 class="heading-small">Foretrukne regioner</h3>
-
-                            <div class="form-col response-mobile-region">
-                                <p class="label-form-small response-mobile-region">{selectedRegionLabels}</p>
-                            </div>
-
-                            <div class="form-row-region">
-                                <div class="form-col-region-left response-hide-region">
-                                    <template for:each={leftRegionOptions} for:item="region">
-                                        <div key={region.value} class="form-col checkbox-row">
-                                            <c-checkbox
-                                                default-val={region.selected}
-                                                label={region.label}
-                                                disabled
-                                            ></c-checkbox>
-                                        </div>
-                                    </template>
+                                <div class="form-row">
+                                    <div class="form-col">
+                                        <p class="label-form-big">Mobil enhet</p>
+                                        <p class="label-form-small">{mobileDevice}</p>
+                                    </div>
+                                    <div class="form-col">
+                                        <p class="label-form-big">Varslingskanal</p>
+                                        <p class="label-form-small">{selectedNotificationChannel}</p>
+                                        <br />
+                                    </div>
                                 </div>
-                                <div class="form-col-right response-hide-region">
-                                    <template for:each={rightRegionOptions} for:item="region">
-                                        <div key={region.value} class="form-col checkbox-row">
-                                            <c-checkbox
-                                                default-val={region.selected}
-                                                label={region.label}
-                                                disabled
-                                            ></c-checkbox>
-                                        </div>
-                                    </template>
+
+                                <div class="form-row">
+                                    <div class="form-col checkbox-row">
+                                        <c-checkbox
+                                            class="label-form-small"
+                                            type="checkbox"
+                                            default-val={isSkilled}
+                                            aria-label="Faglært"
+                                            disabled
+                                        >
+                                        </c-checkbox>
+                                        <p class="label-form-small">Faglært</p>
+                                    </div>
+
+                                    <div class="form-col checkbox-row">
+                                        <c-checkbox
+                                            type="checkbox"
+                                            default-val={isAvailableForAcuteAssignments}
+                                            aria-label="Tilgjengelig for akuttoppdrag"
+                                            disabled
+                                        ></c-checkbox>
+                                        <p class="label-form-small label-acute">Tilgjengelig for akuttoppdrag</p>
+                                    </div>
                                 </div>
-                            </div>
 
-                            <h2 class="heading-medium center-text header-quali">Kvalifikasjoner</h2>
+                                <h3 class="heading-small">Foretrukne regioner</h3>
 
-                            <h3 class="heading-small">Kvalifikasjoner du innehar</h3>
-                            <div class="form-row response-mobile-qualification">
-                                <template if:true={userQualificationSelectedSkillList}>
-                                    <ul>
-                                        <template for:each={userQualificationSelectedSkillList} for:item="skill">
-                                            <li key={skill.Id} class="label-form-small">{skill.MasterLabel}</li>
+                                <div class="form-col response-mobile-region">
+                                    <p class="label-form-small response-mobile-region">{selectedRegionLabels}</p>
+                                </div>
+
+                                <div class="form-row-region">
+                                    <div class="form-col-region-left response-hide-region">
+                                        <template for:each={leftRegionOptions} for:item="region">
+                                            <div key={region.value} class="form-col checkbox-row">
+                                                <c-checkbox
+                                                    default-val={region.selected}
+                                                    label={region.label}
+                                                    disabled
+                                                ></c-checkbox>
+                                            </div>
                                         </template>
-                                    </ul>
-                                </template>
-                            </div>
+                                    </div>
+                                    <div class="form-col-right response-hide-region">
+                                        <template for:each={rightRegionOptions} for:item="region">
+                                            <div key={region.value} class="form-col checkbox-row">
+                                                <c-checkbox
+                                                    default-val={region.selected}
+                                                    label={region.label}
+                                                    disabled
+                                                ></c-checkbox>
+                                            </div>
+                                        </template>
+                                    </div>
+                                </div>
 
-                            <h2 class="heading-medium center-text">Diverse</h2>
+                                <h2 class="heading-medium center-text header-quali">Kvalifikasjoner</h2>
 
-                            <div class="form-row">
-                                <div class="form-col more-info">
-                                    <p class="heading-more-info">Mer informasjon</p>
-                                    <p class="label-form-small preference-info-box">{userPreferences}</p>
+                                <h3 class="heading-small">Kvalifikasjoner du innehar</h3>
+                                <div class="form-row response-mobile-qualification">
+                                    <template lwc:if={userQualificationSelectedSkillList}>
+                                        <ul>
+                                            <template for:each={userQualificationSelectedSkillList} for:item="skill">
+                                                <li key={skill.Id} class="label-form-small">{skill.MasterLabel}</li>
+                                            </template>
+                                        </ul>
+                                    </template>
+                                </div>
+
+                                <h2 class="heading-medium center-text">Diverse</h2>
+
+                                <div class="form-row">
+                                    <div class="form-col more-info">
+                                        <p class="heading-more-info">Mer informasjon</p>
+                                        <p class="label-form-small preference-info-box">{userPreferences}</p>
+                                    </div>
+                                </div>
+
+                                <div class="button-container">
+                                    <c-button
+                                        type="Submit"
+                                        class="btn-edit"
+                                        onbuttonclick={editProfile}
+                                        button-label="Rediger"
+                                        button-styling="Primary"
+                                        aria-label="Rediger"
+                                    ></c-button>
                                 </div>
                             </div>
-
-                            <div class="button-container">
-                                <c-button
-                                    type="Submit"
-                                    class="btn-edit"
-                                    onbuttonclick={editProfile}
-                                    button-label="Rediger"
-                                    button-styling="Primary"
-                                    aria-label="Rediger"
-                                ></c-button>
-                            </div>
-                        </div>
-                    </template>
-                </section>
+                        </template>
+                    </section>
+                </template>
 
                 <!--Edit information section-->
-                <section if:true={editUserInformation} aria-live="polite">
+                <section lwc:if={editUserInformation} aria-live="polite">
                     <div class="form-container">
                         <div class="form-row form-row-input">
                             <div class="form-col form-col-input-left">
@@ -219,14 +222,9 @@
                                     onchange={handleNotificationSelectionChange}
                                 >
                                     <template for:each={notificationChannelOptions} for:item="option">
-                                        <template if:true={option.selected}>
-                                            <option key={option.label} value={option.value}>{option.label}</option>
-                                        </template>
-                                    </template>
-                                    <template for:each={notificationChannelOptions} for:item="option">
-                                        <template if:false={option.selected}>
-                                            <option key={option.label} value={option.value}>{option.label}</option>
-                                        </template>
+                                        <option key={option.label} value={option.value} selected={option.selected}>
+                                            {option.label}
+                                        </option>
                                     </template>
                                 </select>
                             </div>
@@ -256,6 +254,7 @@
                             </div>
                         </div>
 
+                        <!-- Regions Section -->
                         <h3 class="heading-small" tabindex="0" aria-level="3" role="heading">Foretrukne regioner</h3>
 
                         <div class="form-row-region">
@@ -296,7 +295,7 @@
                         </h3>
                         <div class="form-row">
                             <div class="form-col skills-mobile">
-                                <template if:true={skillsWithSelection}>
+                                <template lwc:if={skillsWithSelection}>
                                     <template for:each={skillsWithSelection} for:item="skills">
                                         <div key={skills.Id} class="form-col checkbox-row">
                                             <c-checkbox
@@ -311,6 +310,7 @@
                             </div>
                         </div>
 
+                        <!-- More information Section -->
                         <h2 class="heading-medium center-text" tabindex="0" aria-level="2" role="heading">Diverse</h2>
 
                         <div class="form-row">
