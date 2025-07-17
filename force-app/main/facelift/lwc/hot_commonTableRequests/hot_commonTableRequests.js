@@ -4,6 +4,7 @@ export default class Hot_commonTableRequests extends LightningElement {
     @api records = [];
     @api columns = [];
     @api labelMap = {}; // used for mapping status or other fields to label + css class
+    @api ariaLabel;
 
     get isMobile() {
         return window.screen.width < 576;
@@ -43,6 +44,7 @@ export default class Hot_commonTableRequests extends LightningElement {
 
             return {
                 key: record.Id || `row-${rowIndex}`,
+                index: rowIndex,
                 cells,
                 original: record,
                 statusLabel: statusCell?.statusLabel,
@@ -52,16 +54,24 @@ export default class Hot_commonTableRequests extends LightningElement {
     }
 
     handleRowClick(event) {
-        const key = event.currentTarget.dataset.key;
-        const row = this.displayRows.find((row) => row.key === key);
-        if (row?.original) {
+        const index = event.currentTarget.dataset.index;
+        if (index === undefined) {
+            console.warn('Missing row index on click');
+            return;
+        }
+
+        const record = this.records[index];
+        if (record) {
             this.dispatchEvent(
                 new CustomEvent('rowclick', {
-                    detail: row.original,
+                    detail: record,
                     bubbles: true,
                     composed: true
                 })
             );
+        } else {
+            console.warn('No matching record at index:', index);
+            console.log('Records:', this.records);
         }
     }
 

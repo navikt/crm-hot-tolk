@@ -13,7 +13,7 @@
                     <template for:each={displayRows} for:item="row">
                         <tr
                             key={row.key}
-                            data-key={row.key}
+                            data-index={row.index}
                             class="row"
                             onclick={handleRowClick}
                             onkeydown={handleRowKeydown}
