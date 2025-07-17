@@ -3,9 +3,9 @@
         <div class="table-wrapper" role="region" aria-label={ariaLabel} tabindex="0">
             <table class="data-table" role="table">
                 <thead>
-                    <tr>
+                    <tr role="row">
                         <template for:each={columns} for:item="col">
-                            <th key={col.fieldName} scope="col">{col.label}</th>
+                            <th key={col.fieldName} scope="col" role="columnheader">{col.label}</th>
                         </template>
                     </tr>
                 </thead>
@@ -18,17 +18,20 @@
                             onclick={handleRowClick}
                             onkeydown={handleRowKeydown}
                             tabindex="0"
+                            role="row"
                         >
+                            <!-- Mobile: show status on top -->
                             <td class="mobile-status-label-wrapper" aria-hidden="true">
                                 <template lwc:if={row.statusLabel}>
                                     <div class={row.mobileStatusClass}>{row.statusLabel}</div>
                                 </template>
                             </td>
 
+                            <!-- Render table cells -->
                             <template for:each={row.cells} for:item="cell">
-                                <td key={cell.key} class={cell.cellClass}>
+                                <td key={cell.key} class={cell.cellClass} role="cell">
                                     <template lwc:if={cell.isStatus}>
-                                        <span class={cell.desktopStatusClass}> {cell.statusLabel} </span>
+                                        <span class={cell.desktopStatusClass}>{cell.statusLabel}</span>
                                     </template>
                                     <template lwc:else> {cell.value} </template>
                                 </td>

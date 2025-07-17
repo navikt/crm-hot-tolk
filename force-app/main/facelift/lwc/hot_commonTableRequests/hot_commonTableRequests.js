@@ -1,17 +1,18 @@
 import { LightningElement, api } from 'lwc';
 
 export default class Hot_commonTableRequests extends LightningElement {
-    @api columns = [];
     @api records = [];
-    @api ariaLabel = 'Dynamisk tabell';
+    @api columns = [];
+    @api labelMap = {}; // used for mapping status or other fields to label + css class
 
-    statusMap = {
-        Completed: { label: 'Du har fått tolk', cssClass: 'label-green' },
-        New: { label: 'Åpen', cssClass: 'label-gray' },
-        Canceled: { label: 'Avlyst', cssClass: 'label-red' },
-        Dispatched: { label: 'Under Behandling', cssClass: 'label-orange' },
-        Scheduled: { label: 'Under Behandling', cssClass: 'label-orange' }
-    };
+    get isMobile() {
+        return window.screen.width < 576;
+    }
+
+    getFormattedValue(field, value) {
+        const mapEntry = this.labelMap[field]?.[value];
+        return mapEntry ? { label: mapEntry.label, cssClass: mapEntry.cssClass } : { label: value, cssClass: '' };
+    }
 
     get hasData() {
         return Array.isArray(this.records) && this.records.length > 0;
@@ -23,25 +24,17 @@ export default class Hot_commonTableRequests extends LightningElement {
         return this.records.map((record, rowIndex) => {
             const cells = this.columns.map((col, colIndex) => {
                 const value = record[col.fieldName] ?? '';
-                const isStatus = col.fieldName === 'Status';
-                let statusLabel = '';
-                let cssClass = '';
-
-                if (isStatus) {
-                    const status = this.statusMap[value] || {};
-                    statusLabel = status.label || value;
-                    cssClass = status.cssClass || '';
-                }
+                const fieldMapping = this.getFormattedValue(col.fieldName, value);
 
                 return {
                     key: `${rowIndex}-${col.fieldName}`,
                     value,
                     label: col.label,
-                    isStatus,
-                    statusLabel,
-                    fullStatusClass: cssClass,
+                    isStatus: !!this.labelMap[col.fieldName],
+                    statusLabel: fieldMapping.label,
+                    fullStatusClass: fieldMapping.cssClass,
                     cellClass: colIndex === 0 ? 'first-column date-cell' : '',
-                    desktopStatusClass: isStatus ? `desktop-status-label ${cssClass}` : ''
+                    desktopStatusClass: fieldMapping.cssClass ? `desktop-status-label ${fieldMapping.cssClass}` : ''
                 };
             });
 
