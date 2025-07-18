@@ -1170,6 +1170,7 @@ public without sharing class HOT_ServiceAppointmentNotification {
                 AppointmentNumber,
                 HOT_ServiceResource__c,
                 HOT_AssignedResourceId__c,
+                HOT_IsEmployedInterpreter__c,
                 HOT_ServiceResource__r.AccountId,
                 HOT_ServiceResource__r.RelatedRecordId,
                 HOT_ServiceResource__r.HOT_MobilePhone__c,
@@ -1193,6 +1194,10 @@ public without sharing class HOT_ServiceAppointmentNotification {
                 notification.setTitle('Nytt vedlegg er lagt til ' + serviceAppointment.AppointmentNumber);
                 notification.setBody('Det er blitt lagt til et vedlegg på ' + serviceAppointment.AppointmentNumber);
                 notification.setNotificationTypeId(getCustomNotificationType('HOT_NotifyInterpreter').Id);
+                if (!serviceAppointment.HOT_IsEmployedInterpreter__c) {
+                    String targetPageRef = getTargetPageRefInterpreter('my', serviceAppointment.Id);
+                    notification.setTargetPageRef(targetPageRef);
+                }
                 notification.setTargetId(serviceAppointment.Id);
 
                 HOT_NotificationHandler.sendNotification(
