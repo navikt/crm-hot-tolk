@@ -73,6 +73,11 @@ tr.row:hover {
     color: #000000;
 }
 
+.label-blue {
+    background-color: #00bfff;
+    color: #000000;
+}
+
 /* Shared styles for all status labels */
 .label-green,
 .label-gray,
