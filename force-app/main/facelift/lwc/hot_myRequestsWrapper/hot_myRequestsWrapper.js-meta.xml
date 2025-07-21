@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<LightningComponentBundle xmlns="http://soap.sforce.com/2006/04/metadata">
+    <apiVersion>52.0</apiVersion>
+    <isExposed>true</isExposed>
+    <description>Used to show a list of Requests in the Community</description>
+    <masterLabel>Mine Bestillinger Wrapper V2</masterLabel>
+    <targets>
+        <target>lightningCommunity__Page</target>
+        <target>lightningCommunity__Default</target>
+    </targets>
+    <targetConfigs>
+        <targetConfig targets="lightningCommunity__Default">
+            <property name="header" type="String" label="Header" default="Mine Bestillinger" />
+            <property name="isAccount" type="Boolean" label="User is Account?" default="true" />
+        </targetConfig>
+    </targetConfigs>
+</LightningComponentBundle>
