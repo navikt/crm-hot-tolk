@@ -126,7 +126,7 @@ export default class Hot_freelanceCommonTable extends LightningElement {
         let recordIdArray = this.resetRecordIdArray();
         this.template.querySelectorAll('c-checkbox').forEach((element, index) => {
             if (element.getValue()) {
-                recordIdArray[index - 1].checked = true; // Index-1 to account for the first checkbox in header
+                recordIdArray[index - 1].checked = true;
             }
         });
         recordIdArray.forEach((element) => {

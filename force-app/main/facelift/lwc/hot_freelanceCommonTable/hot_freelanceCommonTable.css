@@ -109,7 +109,7 @@ tr.row:hover {
     }
 
     .mobile-only {
-        display: inline; /* or inline-block if you want */
+        display: inline;
     }
     thead {
         display: none;
@@ -128,13 +128,14 @@ tr.row:hover {
 
         /* WIP */
         display: flex;
-        flex-wrap: wrap;
+        flex-direction: column;
     }
 
     /* WIP Start reset order*/
     tr.row td {
         font-family: 'Source Sans 3', 'Source Sans Pro', Arial, sans-serif;
         order: initial;
+        width: 100%;
     }
 
     /* Table data row for the columns */
@@ -146,11 +147,12 @@ tr.row:hover {
     }
 
     tr.row td:nth-child(2) {
-        font-size: 1rem;
+        font-family: 'Source Sans 3', 'Source Sans Pro', Arial, sans-serif;
+        font-size: 1.125rem;
     }
 
     tr.row td:nth-child(3) {
-        font-size: 1.125rem;
+        font-size: 1.25rem;
     }
 
     tr.row td:last-child {
