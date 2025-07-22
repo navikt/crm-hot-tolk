@@ -64,7 +64,7 @@ export default class Hot_freelanceCommonTable extends LightningElement {
                     }
                 }
 
-                if (column.name === 'Status__c') {
+                if (column.name === 'Status__c' || column.name === 'statusMobile') {
                     field.statusBadgeClass = this.getStatusBadgeClass(value);
                     field.statusBadgeLabel = value;
                 }
@@ -91,6 +91,7 @@ export default class Hot_freelanceCommonTable extends LightningElement {
     // Returns the CSS badge class matching the given status value
     // Checks statusBadgeMap for Norwegian and English picklist values
     getStatusBadgeClass(value) {
+        console.log('This status badge value' + value);
         for (let badgeClass in this.statusBadgeMap) {
             if (this.statusBadgeMap[badgeClass].includes(value)) {
                 return badgeClass;

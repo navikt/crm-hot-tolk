@@ -125,16 +125,10 @@ tr.row:hover {
         height: auto;
         border: none;
         position: relative;
-
-        /* WIP */
-        display: flex;
-        flex-direction: column;
     }
 
-    /* WIP Start reset order*/
     tr.row td {
         font-family: 'Source Sans 3', 'Source Sans Pro', Arial, sans-serif;
-        order: initial;
         width: 100%;
     }
 
@@ -148,36 +142,17 @@ tr.row:hover {
 
     tr.row td:nth-child(2) {
         font-family: 'Source Sans 3', 'Source Sans Pro', Arial, sans-serif;
-        font-size: 1.125rem;
+        font-size: 1.25rem;
     }
 
     tr.row td:nth-child(3) {
-        font-size: 1.25rem;
+        font-size: 1.125rem;
     }
 
     tr.row td:last-child {
         font-size: 0.85rem;
         color: #444444;
     }
-
-    /*WIP td child, hardcoded which might only be good for one table*/
-
-    tr.row td:nth-child(2) {
-        order: 3;
-    }
-    tr.row td:nth-child(3) {
-        order: 2;
-    }
-    tr.row td:nth-child(4) {
-        order: 4;
-    }
-    tr.row td:nth-child(5) {
-        order: 5;
-    }
-    tr.row td:nth-child(6):last-child {
-        order: 5;
-    }
-    /* WIP END*/
 
     td {
         display: block;
