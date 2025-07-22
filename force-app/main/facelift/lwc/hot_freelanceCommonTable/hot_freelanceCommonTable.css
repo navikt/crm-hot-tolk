@@ -1,0 +1,224 @@
+.table-wrapper {
+    width: 100%;
+}
+
+tr.row {
+    height: 60px;
+    border-top: 1px solid #2c2c2c8e;
+    transition: transform 0.1s;
+}
+tr.row:last-child {
+    border-bottom: 1px solid #2c2c2c8e;
+}
+
+.iconPadding {
+    padding-left: 10px;
+}
+
+td,
+th {
+    width: 15%;
+    padding: 0.2rem;
+    font-family: 'Source Sans 3', 'Source Sans Pro', Arial, sans-serif;
+}
+
+tr.row:hover {
+    cursor: pointer;
+    background-color: #f1f1f1;
+}
+
+.first-column {
+    font-weight: normal;
+}
+
+.tooltip {
+    position: relative;
+    display: inline-block;
+}
+
+.tooltip .tooltiptext {
+    visibility: hidden;
+    width: 120px;
+    bottom: 100%;
+    left: 50%;
+    background-color: black;
+    color: #fff;
+    text-align: center;
+    padding: 5px 0;
+    border-radius: 6px;
+    margin-left: -55px;
+    margin-bottom: 5px;
+    position: absolute;
+    z-index: 1;
+}
+
+.tooltip:hover .tooltiptext {
+    visibility: visible;
+}
+
+.checkbox-column {
+    width: 5%;
+}
+
+/* badge colors and styling */
+.badge-orange {
+    background-color: #fcda9d;
+    color: #000000;
+}
+
+.badge-green {
+    background-color: #99deae;
+    color: #000000;
+}
+
+.badge-gray {
+    background-color: #e0e3e6;
+    color: #000000;
+}
+
+.badge-red {
+    background-color: #f48684;
+    color: #000000;
+}
+
+.badge-orange,
+.badge-green,
+.badge-gray,
+.badge-red {
+    font-family: 'Source Sans 3', 'Source Sans Pro', Arial, sans-serif;
+    padding: 0.25em 0.7em;
+    border-radius: 0.25rem;
+    font-size: 1.125rem;
+    display: inline-block;
+    white-space: nowrap;
+    /* line-height: 1.5rem; */
+}
+
+.badge-none {
+    display: none;
+}
+
+.mobile-only {
+    display: none;
+}
+
+@media (max-width: 576px) {
+    .table-wrapper {
+        overflow-x: auto;
+        padding: 0;
+    }
+
+    .mobile-only {
+        display: inline; /* or inline-block if you want */
+    }
+    thead {
+        display: none;
+    }
+
+    tr.row {
+        display: block;
+        margin-bottom: 1rem;
+        background-color: #f4f4f4;
+        border-radius: 0.5rem;
+        box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
+        padding: 1rem;
+        height: auto;
+        border: none;
+        position: relative;
+
+        /* WIP */
+        display: flex;
+        flex-wrap: wrap;
+    }
+
+    /* WIP Start reset order*/
+    tr.row td {
+        font-family: 'Source Sans 3', 'Source Sans Pro', Arial, sans-serif;
+        order: initial;
+    }
+
+    /* Table data row for the columns */
+    tr.row td:nth-child(1) {
+        font-weight: 600;
+        font-size: 1.25rem;
+
+        order: 1;
+    }
+
+    tr.row td:nth-child(2) {
+        font-size: 1rem;
+    }
+
+    tr.row td:nth-child(3) {
+        font-size: 1.125rem;
+    }
+
+    tr.row td:last-child {
+        font-size: 0.85rem;
+        color: #444444;
+    }
+
+    /*WIP td child, hardcoded which might only be good for one table*/
+
+    tr.row td:nth-child(2) {
+        order: 3;
+    }
+    tr.row td:nth-child(3) {
+        order: 2;
+    }
+    tr.row td:nth-child(4) {
+        order: 4;
+    }
+    tr.row td:nth-child(5) {
+        order: 5;
+    }
+    tr.row td:nth-child(6):last-child {
+        order: 5;
+    }
+    /* WIP END*/
+
+    td {
+        display: block;
+        text-align: left;
+        width: 100%;
+        padding: 0 0;
+        position: relative;
+        box-sizing: border-box;
+    }
+
+    td::before {
+        content: attr(data-label);
+        font-weight: 600;
+        display: block;
+        margin-bottom: 0.25rem;
+    }
+
+    .mobile-status-label-wrapper {
+        display: block;
+        text-align: right;
+        margin-bottom: -1.7rem;
+    }
+
+    .mobile-status-label {
+        font-size: 1rem;
+        display: inline-block;
+    }
+
+    .desktop-status-label {
+        display: none;
+    }
+    /* Temporary css, will remove later START */
+    .iconPadding {
+        padding-right: 10px;
+    }
+    .icon {
+        width: 5%;
+    }
+    th {
+        /* Overwrite experience cloud default styling */
+        padding-left: 0;
+        border-bottom: unset;
+    }
+
+    /* END */
+}
