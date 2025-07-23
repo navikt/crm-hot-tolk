@@ -11,6 +11,10 @@
                         aria-label="Ny bestilling"
                         button-styling="primary"
                         class="button-padding mobile-button"
+                        desktop-style="width: 7em; height: 3em; justify-content: center"
+                        mobile-style="border-radius: 50%; justify-content: center; border-radius: 50%; 
+                        justify-content: center; height: 15vw; font-size: 12vw; width: 15vw; 
+                        box-shadow: 0px 5px 10px 0px rgb(0 0 0 / 30%); background-color: forestgreen"
                         onbuttonclick={goToNewRequest}
                     ></c-button>
                     <c-list-filters-button
@@ -22,8 +26,8 @@
                     ></c-list-filters-button>
                 </div>
             </div>
-            <template lwc:if={isRequestDetails}>
-                <section class="record-details-container" aria-label="Detaljer om bestilling">
+            <div lwc:if={isRequestDetails}>
+                <div class="record-details-container">
                     <p>
                         <strong>Gjelder periode: </strong><span>{requestSeriesStartDate} - {requestSeriesEndDate}</span>
                     </p>
@@ -69,7 +73,7 @@
                     <p lwc:if={request.Description__c}>
                         <strong>Tilleggsopplysninger: </strong><span>{request.Description__c}</span>
                     </p>
-                </section>
+                </div>
                 <c-record-files-without-sharing
                     lwc:if={isSeries}
                     record-id={request.Id}
@@ -79,9 +83,9 @@
                     delete-file-on-button-click="true"
                 ></c-record-files-without-sharing>
                 <br />
-            </template>
-            <template lwc:if={isWorkOrderDetails}>
-                <section class="record-details-container" aria-label="Detaljer om arbeidsordre">
+            </div>
+            <div lwc:if={isWorkOrderDetails}>
+                <div class="record-details-container" aria-label="Detaljer om arbeidsordre">
                     <p><strong>Fra dato: </strong><span>{workOrderStartDate}</span></p>
                     <p><strong>Til dato: </strong><span>{workOrderEndDate}</span></p>
                     <br />
@@ -132,7 +136,7 @@
                     <p lwc:if={request.Description__c}>
                         <strong>Tilleggsopplysninger: </strong><span>{request.Description__c}</span>
                     </p>
-                </section>
+                </div>
                 <c-record-files-without-sharing
                     if:false={isSeries}
                     record-id={request.Id}
@@ -142,53 +146,50 @@
                     delete-file-on-button-click="true"
                 ></c-record-files-without-sharing>
                 <br />
-            </template>
-            <!-- Common Table Section -->
-            <div class="record-details-container" if:false={isRequestOrWorkOrderDetails}>
-                <c-hot_common-table-requests
-                    columns={commonTableColumns}
-                    records={commonTableRecords}
-                    label-map={labelMap}
-                    aria-label="Bestillingstabell"
-                    onrowclick={goToRecordDetails}
-                ></c-hot_common-table-requests>
             </div>
             <!-- Buttons Section -->
             <div class="buttonRow" lwc:if={isRequestOrWorkOrderDetails}>
                 <c-button
                     button-label={editButtonLabel}
                     button-styling="secondary"
-                    class="button-padding button-small"
+                    style="padding-right: 1vw; padding-bottom: 1vw"
+                    desktop-style="width: 8rem; justify-content: center"
+                    mobile-style="width: 8rem; justify-content: center"
                     onbuttonclick={editOrder}
                     disabled={isRequestEditButtonDisabled}
-                    aria-disabled={isRequestEditButtonDisabled}
                 ></c-button>
                 <c-button
                     button-label={copyButtonLabel}
                     button-styling="secondary"
-                    class="button-padding button-small"
+                    style="padding-right: 1vw; padding-bottom: 1vw"
+                    desktop-style="width: 8rem; justify-content: center"
+                    mobile-style="width: 8rem; justify-content: center"
                     onbuttonclick={cloneOrder}
                 ></c-button>
                 <c-button
                     button-label={cancelButtonLabel}
                     button-styling="secondary"
-                    class="button-padding button-small"
+                    style="padding-right: 1vw; padding-bottom: 1vw"
+                    desktop-style="width: 8rem; justify-content: center"
+                    mobile-style="width: 8rem; justify-content: center"
                     onbuttonclick={cancelOrder}
                     disabled={isRequestCancelButtonDisabled}
-                    aria-disabled={isRequestCancelButtonDisabled}
                 ></c-button>
                 <c-button
                     button-label="Legg til filer"
                     button-styling="primary"
-                    class="button-padding button-small"
+                    style="padding-right: 1vw; padding-bottom: 1vw"
+                    desktop-style="width: 8rem; justify-content: center"
+                    mobile-style="width: 8rem; justify-content: center"
                     onbuttonclick={addFiles}
                     disabled={isRequestAddFilesButtonDisabled}
-                    aria-disabled={isRequestAddFilesButtonDisabled}
                 ></c-button>
                 <c-button
                     button-label="Samtale med formidler"
                     button-styling="primary"
-                    class="button-padding button-small"
+                    style="padding-right: 1vw; padding-bottom: 1vw"
+                    desktop-style="justify-content: center"
+                    mobile-style="justify-content: center"
                     onbuttonclick={goToThread}
                     disabled={isThreadButtonDisabled}
                     aria-disabled={isThreadButtonDisabled}
@@ -197,16 +198,25 @@
                     lwc:if={isUserAccount}
                     button-label="Samtale med tolk"
                     button-styling="primary"
-                    class="button-padding button-small"
+                    style="padding-right: 1vw; padding-bottom: 1vw"
+                    desktop-style="justify-content: center"
+                    mobile-style="justify-content: center"
                     onbuttonclick={goToThreadInterpreter}
                     disabled={isInterpreterThreadButtonDisabled}
                     aria-disabled={isInterpreterThreadButtonDisabled}
                 ></c-button>
             </div>
-            <!-- <div if:true={noWorkOrders} style="text-align: center">
-                <br />
-                <p>Du har ingen bestillinger. Når du sender inn en ny bestilling vil den vises her.</p>
-            </div> -->
+            <!-- Common Table Section -->
+            <div class="record-details-container" if:false={noWorkOrders}>
+                <c-hot_common-table-requests
+                    if:false={isWorkOrderDetails}
+                    columns={columns}
+                    records={records}
+                    label-map={labelMap}
+                    aria-label="Bestillingstabell"
+                    onrowclick={goToRecordDetails}
+                ></c-hot_common-table-requests>
+            </div>
         </div>
     </main>
 

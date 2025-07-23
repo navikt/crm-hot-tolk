@@ -1,4 +1,4 @@
-import { LightningElement, track, wire, api } from 'lwc';
+import { LightningElement, wire, api } from 'lwc';
 import { refreshApex } from '@salesforce/apex';
 import { updateRecord, getRecord, getFieldValue } from 'lightning/uiRecordApi';
 import { CurrentPageReference, NavigationMixin } from 'lightning/navigation';
@@ -10,6 +10,8 @@ import updateRelatedWorkOrders from '@salesforce/apex/HOT_RequestListController.
 import createThread from '@salesforce/apex/HOT_MessageHelper.createThread';
 import createThreadOrdererUser from '@salesforce/apex/HOT_MessageHelper.createThreadOrdererUser';
 
+import { columns, workOrderColumns, labelMap } from './columns';
+import { defaultFilters, compare } from './filters';
 import FILE_CONSENT from '@salesforce/schema/HOT_Request__c.IsFileConsent__c';
 import REQUEST_ID from '@salesforce/schema/HOT_Request__c.Id';
 import WORKORDER_NOTIFY_DISPATCHER from '@salesforce/schema/WorkOrder.HOT_IsNotifyDispatcher__c';
@@ -20,122 +22,22 @@ import USER_ID from '@salesforce/user/Id';
 import USER_ACCOUNT_ID from '@salesforce/schema/User.AccountId';
 
 import { formatRecord } from 'c/datetimeFormatterNorwegianTime';
-import { defaultFilters, compare } from './filters';
 
 export default class Hot_myRequestsWrapper extends NavigationMixin(LightningElement) {
     @api header;
     @api isAccount;
-
-    @track commonTableColumns = [
-        { label: 'Tid', fieldName: 'StartAndEndDate' },
-        { label: 'Status', fieldName: 'Status' },
-        { label: 'Tema', fieldName: 'Subject' },
-        { label: 'Adresse', fieldName: 'Address' }
-    ];
-
-    @track labelMap = {
-        Status: {
-            Completed: { label: 'Ferdig', cssClass: 'label-green' },
-            New: { label: 'Åpen', cssClass: 'label-gray' },
-            Canceled: { label: 'Avlyst', cssClass: 'label-red' },
-            Dispatched: { label: 'Du har fått tolk', cssClass: 'label-green' },
-            Scheduled: { label: 'Under behandling', cssClass: 'label-orange' },
-            'Partially Complete': { label: 'Ferdig', cssClass: 'label-green' },
-            'Cannot Complete': { label: 'Ikke ledig tolk', cssClass: 'label-red' }
-        }
-    };
-
-    @track userAccountId;
-    @track userRecord = { AccountId: null };
-
     recordId;
     filters = [];
-
-    records = [];
-    allRecords = [];
-    commonTableRecords = [];
-    urlStateParameters = { level: '', id: '' };
-
-    request = { MeetingStreet__c: '', Subject__c: '' };
-    workOrder = { HOT_AddressFormated__c: '', Subject: '' };
-    workOrders = [];
-
-    fileUploadMessage = '';
-    threadDispatcherId;
-    workOrderThreadId;
-
-    threadOrdererUserButtonDescription = 'Test';
-
-    isRequestDetails = false;
-    isWorkOrderDetails = false;
-    isRequestOrWorkOrderDetails = false;
-
-    requestAddressToShow;
-    requestInterpretationAddressToShow;
-    workOrderInterpretationAddressToShow;
-
-    isCancel = false;
-    noCancelButton = true;
-
-    showUploadFilesComponent = false;
-    isAddFiles = false;
-    showCancelUploadButton = true;
-
-    checkboxValue = false;
-    hasFiles = false;
-    fileLength;
-
-    filteredRecordsLength = 0;
-
-    isNavigatingAway = false;
-
-    // Some button states and labels
-    isRequestEditButtonDisabled = false;
-    isRequestCancelButtonDisabled = false;
-    isRequestAddFilesButtonDisabled = false;
-
-    isWOEditButtonDisabled = false;
-    isWOCancelButtonDisabled = false;
-    isWOAddFilesButtonDisabled = false;
-
-    isThreadButtonDisabled = false;
-    isInterpreterThreadButtonDisabled = false;
-    isTheOrderer = true;
-
-    editButtonLabel = 'Rediger';
-    copyButtonLabel = 'Kopier';
-    cancelButtonLabel = 'Avlys';
-    threadOrdererUserButtonLabel;
-
-    headerToShow = '';
-
-    interpreter = 'Tolk';
-    isOrdererWantStatusUpdateOnSMS = 'Ja';
-    isSeries = false;
-    isUserAccount = false;
-    isAccountEqualOrderer = false;
-    IsNotNotifyAccount = 'Ja';
-
-    datetimeFields = [
-        { name: 'StartAndEndDate', type: 'datetimeinterval', start: 'StartDate', end: 'EndDate' },
-        { name: 'HOT_Request__r.SeriesStartDate__c', type: 'date' },
-        { name: 'HOT_Request__r.SeriesEndDate__c', type: 'date' },
-        { name: 'HOT_Request__r.StartTime__c', type: 'date' },
-        { name: 'HOT_Request__r.EndTime__c', type: 'date' }
-    ];
-
-    workOrderStartDate = '';
-    workOrderEndDate = '';
-    requestSeriesStartDate = '';
-    requestSeriesEndDate = '';
-
-    // Responsive computed properties
+    labelMap = labelMap;
     get isMobile() {
         return window.screen.width < 576;
     }
     get buttonText() {
         return this.isMobile ? '+' : 'Ny bestilling';
     }
+
+    userAccountId;
+    userRecord = { AccountId: null };
 
     @wire(getRecord, { recordId: USER_ID, fields: [USER_ACCOUNT_ID] })
     wiredUser({ error, data }) {
@@ -144,21 +46,6 @@ export default class Hot_myRequestsWrapper extends NavigationMixin(LightningElem
             this.userRecord.AccountId = this.userAccountId;
         } else if (error) {
             console.error('Error fetching user account info', error);
-        }
-    }
-
-    // Wire the work orders and related requests
-    wiredgetWorkOrdersResult;
-    @wire(getMyWorkOrdersAndRelatedRequest, { isAccount: '$isAccount' })
-    wiredgetWorkOrdersHandler(result) {
-        this.wiredgetWorkOrdersResult = result;
-        if (result.data) {
-            const tempRecords = result.data.map((record) => formatRecord({ ...record }, this.datetimeFields));
-            this.records = tempRecords;
-            // this.noWorkOrders = !this.records.length;
-            this.allRecords = [...tempRecords];
-            this.commonTableRecords = this.flattenRecords(tempRecords);
-            this.refresh(false);
         }
     }
 
@@ -173,38 +60,85 @@ export default class Hot_myRequestsWrapper extends NavigationMixin(LightningElem
         }
     }
 
+    fileUploadMessage = '';
+    handleUploadFinished(event) {
+        const uploadedFiles = event.detail.files;
+        if (uploadedFiles.length > 0) {
+            this.fileUploadMessage = 'Filen(e) ble lastet opp';
+            this.template.querySelector('c-record-files-without-sharing').refreshContentDocuments();
+        }
+    }
+
+    isRequestDetails = false;
+    isWorkOrderDetails = false;
+    isRequestOrWorkOrderDetails = false;
+    urlStateParameters = { level: '', id: '' };
+    columns;
+
+    records = [];
+    allRecords = [];
+    noWorkOrders = false;
+    wiredgetWorkOrdersResult;
+    @wire(getMyWorkOrdersAndRelatedRequest, { isAccount: '$isAccount' })
+    wiredgetWorkOrdersHandler(result) {
+        this.wiredgetWorkOrdersResult = result;
+        if (result.data) {
+            let tempRecords = [];
+            for (let record of result.data) {
+                tempRecords.push(formatRecord(Object.assign({}, record), this.datetimeFields));
+            }
+            this.records = tempRecords;
+            this.noWorkOrders = this.records.length === 0;
+            this.allRecords = [...tempRecords];
+            this.refresh(false);
+        }
+    }
+
+    datetimeFields = [
+        { name: 'StartAndEndDate', type: 'datetimeinterval', start: 'StartDate', end: 'EndDate' },
+        { name: 'HOT_Request__r.SeriesStartDate__c', type: 'date' },
+        { name: 'HOT_Request__r.SeriesEndDate__c', type: 'date' },
+        { name: 'HOT_Request__r.StartTime__c', type: 'date' },
+        { name: 'HOT_Request__r.EndTime__c', type: 'date' }
+    ];
+
     @wire(CurrentPageReference)
     getStateParameters(currentPageReference) {
-        if (currentPageReference && Object.keys(currentPageReference.state).length > 0 && !this.isNavigatingAway) {
+        if (
+            currentPageReference &&
+            Object.keys(currentPageReference.state).length > 0 &&
+            this.isNavigatingAway === false
+        ) {
             this.urlStateParameters = { ...currentPageReference.state };
         } else {
             this.urlStateParameters = { level: '', id: '' };
         }
     }
 
-    // Fetch and set current selected record details
+    request = { MeetingStreet__c: '', Subject__c: '' };
+    workOrder = { HOT_AddressFormated__c: '', Subject: '' };
+    workOrders = [];
+    workOrderThreadId;
+
     getRecords() {
         this.resetRequestAndWorkOrder();
-        const recordId = this.urlStateParameters.id;
-
-        for (const record of this.records) {
+        let recordId = this.urlStateParameters.id;
+        for (let record of this.records) {
             if (recordId === record.Id) {
                 this.workOrder = record;
-                this.request = record.HOT_Request__r || {};
-                this.recordId = this.request.Id;
+                this.request = record.HOT_Request__r;
+                this.recordId = record.HOT_Request__r.Id;
 
-                getThreadInterpreterId({ workOrderId: this.workOrder.Id })
-                    .then((result) => {
-                        this.workOrderThreadId = result || undefined;
-                    })
-                    .catch(() => {
+                getThreadInterpreterId({ workOrderId: this.workOrder.Id }).then((result) => {
+                    if (result != '') {
+                        this.workOrderThreadId = result;
+                    } else {
                         this.workOrderThreadId = undefined;
-                    });
-                break;
+                    }
+                });
             }
         }
-
-        if (this.request.Id) {
+        if (this.request.Id !== undefined) {
             this.getWorkOrders();
         }
     }
@@ -216,8 +150,16 @@ export default class Hot_myRequestsWrapper extends NavigationMixin(LightningElem
             StartAndEndDate: record.StartAndEndDate,
             Status: record.Status,
             Subject: record.HOT_Request__r?.Subject__c,
-            Address: record.HOT_AddressFormated__c
+            HOT_Request__r: record.HOT_Request__r,
+            HOT_ExternalWorkOrderStatus__c: record.WorkOrder.HOT_ExternalWorkOrderStatus__c
         }));
+    }
+
+    get isOwnRequest() {
+        return this.request.Orderer__c === this.userAccountId;
+    }
+    get getRelatedRecord() {
+        return this.recordId;
     }
 
     resetRequestAndWorkOrder() {
@@ -225,48 +167,59 @@ export default class Hot_myRequestsWrapper extends NavigationMixin(LightningElem
         this.workOrder = { HOT_AddressFormated__c: '', Subject: '' };
     }
 
-    // Date formatting helpers
+    workOrderStartDate = '';
+    workOrderEndDate = '';
+    requestSeriesStartDate = '';
+    requestSeriesEndDate = '';
     setDateFormats() {
         this.workOrderStartDate = this.formatDate(this.workOrder.StartDate, true);
         this.workOrderEndDate = this.formatDate(this.workOrder.EndDate, true);
         this.requestSeriesStartDate = this.formatDate(this.request.SeriesStartDate__c, false);
         this.requestSeriesEndDate = this.formatDate(this.request.SeriesEndDate__c, false);
     }
+
     formatDate(dateInput, isWorkOrder) {
-        if (!dateInput) return '';
-        let value = new Date(dateInput).toLocaleString();
-        return isWorkOrder ? value.slice(0, -3) : value.slice(0, -10);
+        let value = new Date(dateInput);
+        value = value.toLocaleString();
+        if (isWorkOrder) {
+            return value.substring(0, value.length - 3);
+        }
+        return value.substring(0, value.length - 10);
     }
 
-    // Button enable/disable logic
+    isRequestEditButtonDisabled = false;
+    isRequestCancelButtonDisabled = false;
+    isRequestAddFilesButtonDisabled = false;
+    isWOEditButtonDisabled = false;
+    isWOCancelButtonDisabled = false;
+    isWOAddFilesButtonDisabled = false;
     setButtonStates() {
-        const tempEndDate = this.isRequestDetails
+        let tempEndDate = this.isRequestDetails
             ? new Date(this.request.SeriesEndDate__c)
             : new Date(this.workOrder.EndDate);
-
-        const oneYearAgo = new Date();
-        oneYearAgo.setFullYear(oneYearAgo.getFullYear() - 1);
-
-        this.isRequestEditButtonDisabled = this.request.Status__c !== 'Åpen';
+        const oneYearAgo = new Date(new Date().setFullYear(new Date().getFullYear() - 1));
+        this.isRequestEditButtonDisabled = this.request.Status__c === 'Åpen' ? false : true;
         this.isRequestCancelButtonDisabled =
-            this.request.Status__c === 'Avlyst' || tempEndDate.getTime() < Date.now() || !this.isTheOrderer;
-
-        this.isRequestAddFilesButtonDisabled = this.request.Status__c === 'Avlyst' || tempEndDate <= oneYearAgo;
-
-        this.isWOEditButtonDisabled = this.workOrder.HOT_ExternalWorkOrderStatus__c !== 'Åpen';
-        this.isWOCancelButtonDisabled = this.workOrder.HOT_ExternalWorkOrderStatus__c === 'Avlyst';
-        this.isWOAddFilesButtonDisabled = this.workOrder.HOT_ExternalWorkOrderStatus__c === 'Avlyst';
+            this.request.Status__c === 'Avlyst' || tempEndDate.getTime() < Date.now() || this.isTheOrderer == false
+                ? true
+                : false;
+        this.isRequestAddFilesButtonDisabled =
+            this.request.Status__c !== 'Avlyst' && tempEndDate > oneYearAgo ? false : true;
+        this.isWOEditButtonDisabled = this.workOrder.HOT_ExternalWorkOrderStatus__c === 'Åpen' ? false : true;
+        this.isWOCancelButtonDisabled = this.workOrder.HOT_ExternalWorkOrderStatus__c === 'Avlyst' ? true : false;
+        this.isWOAddFilesButtonDisabled = this.workOrder.HOT_ExternalWorkOrderStatus__c !== 'Avlyst' ? false : true;
     }
 
-    // Header and columns
+    headerToShow = '';
     setHeader() {
-        if (this.urlStateParameters.level === 'R') {
-            this.headerToShow = 'Serie: ' + this.request.Subject__c;
-        } else if (this.urlStateParameters.id === '') {
+        this.headerToShow =
+            this.urlStateParameters.level === 'R' ? 'Serie: ' + this.request.Subject__c : this.workOrder.Subject;
+        if (this.urlStateParameters.id === '') {
             this.headerToShow = this.header;
-        } else {
-            this.headerToShow = this.workOrder.Subject;
         }
+    }
+    setColumns() {
+        this.columns = this.urlStateParameters.level === 'R' ? workOrderColumns : columns;
     }
 
     getWorkOrders() {
@@ -276,15 +229,24 @@ export default class Hot_myRequestsWrapper extends NavigationMixin(LightningElem
     goToRecordDetails(event) {
         window.scrollTo(0, 0);
         const record = event.detail;
-        let level = record.HOT_Request__r?.IsSerieoppdrag__c ? 'R' : 'WO';
+        let recordId = record.Id;
+        let level = record.HOT_Request__r.IsSerieoppdrag__c ? 'R' : 'WO';
         if (this.urlStateParameters.level === 'R') {
             level = 'WO';
         }
-        this.urlStateParameters = { id: record.Id, level };
+        this.urlStateParameters.id = recordId;
+        this.urlStateParameters.level = level;
         this.refresh(true);
     }
 
-    // Button label logic
+    editButtonLabel = 'Rediger';
+    copyButtonLabel = 'Kopier';
+    cancelButtonLabel = 'Avlys';
+    threadOrdererUserButtonLabel;
+    isThreadButtonDisabled = false;
+    isInterpreterThreadButtonDisabled = false;
+    isTheOrderer = true;
+
     setButtonLabels() {
         this.isTheOrderer = true;
 
@@ -299,18 +261,26 @@ export default class Hot_myRequestsWrapper extends NavigationMixin(LightningElem
             this.copyButtonLabel = 'Kopier';
             this.cancelButtonLabel = 'Avlys';
             this.isThreadButtonDisabled = false;
-            this.isInterpreterThreadButtonDisabled = this.workOrder.HOT_Interpreters__c == null;
+            if (this.workOrder.HOT_Interpreters__c != null) {
+                this.isInterpreterThreadButtonDisabled = false;
+            } else {
+                this.isInterpreterThreadButtonDisabled = true;
+            }
         }
-
-        if (!this.request.IsAccountEqualOrderer__c && this.request.Orderer__c === this.userAccountId) {
+        if (this.request.IsAccountEqualOrderer__c == false && this.request.Orderer__c == this.userAccountId) {
             this.threadOrdererUserButtonLabel = 'Samtale med bruker';
-        } else if (!this.request.IsAccountEqualOrderer__c && this.request.Account__c === this.userRecord.AccountId) {
+        } else if (
+            this.request.IsAccountEqualOrderer__c == false &&
+            this.request.Account__c === this.userRecord.AccountId
+        ) {
             this.threadOrdererUserButtonLabel = 'Samtale med bestiller';
             this.isTheOrderer = false;
         }
     }
 
-    // Format addresses depending on digital/physical meeting
+    requestAddressToShow;
+    requestInterpretationAddressToShow;
+    workOrderInterpretationAddressToShow;
     setAddressFormat() {
         const digitalLabel = 'Digitalt oppmøte';
         this.requestAddressToShow = this.request.IsScreenInterpreter__c
@@ -329,23 +299,29 @@ export default class Hot_myRequestsWrapper extends NavigationMixin(LightningElem
     // Refresh view with options to update URL
     refresh(isUpdateURL) {
         this.getRecords();
-        if (isUpdateURL) this.updateURL();
-        // this.setColumns();
+        if (isUpdateURL) {
+            this.updateURL();
+        }
+        this.setColumns();
         this.updateView();
         this.applyFilter({ detail: { filterArray: this.filters, setRecords: true } });
     }
 
+    interpreter = 'Tolk';
+    isOrdererWantStatusUpdateOnSMS = 'Ja';
+    isSeries = false;
+    isUserAccount = false;
     updateView() {
         this.isUserAccount = this.request.Account__c === this.userRecord.AccountId;
         this.isAccountEqualOrderer = this.request.IsAccountEqualOrderer__c;
         this.isRequestDetails = this.urlStateParameters.level === 'R';
         this.isWorkOrderDetails = this.urlStateParameters.level === 'WO';
-        this.isRequestOrWorkOrderDetails = this.isRequestDetails || this.isWorkOrderDetails;
+        this.isRequestOrWorkOrderDetails = this.isWorkOrderDetails || this.isRequestDetails;
         this.isSeries = this.workOrder?.HOT_Request__r?.IsSerieoppdrag__c;
-        this.interpreter = (this.workOrder?.HOT_Interpreters__c?.length || 0) > 1 ? 'Tolker' : 'Tolk';
+        this.interpreter = this.workOrder?.HOT_Interpreters__c?.length > 1 ? 'Tolker' : 'Tolk';
         this.isOrdererWantStatusUpdateOnSMS = this.request.IsOrdererWantStatusUpdateOnSMS__c ? 'Ja' : 'Nei';
         this.IsNotNotifyAccount = this.request.IsNotNotifyAccount__c ? 'Nei' : 'Ja';
-        this.isGetAllFiles = this.request.Account__c === this.userRecord.AccountId;
+        this.isGetAllFiles = this.request.Account__c === this.userRecord.AccountId ? true : false;
         this.setHeader();
         this.setButtonLabels();
         this.setButtonStates();
@@ -362,6 +338,7 @@ export default class Hot_myRequestsWrapper extends NavigationMixin(LightningElem
     }
 
     // Filtering logic
+    filteredRecordsLength = 0;
     applyFilter(event) {
         let setRecords = event.detail.setRecords;
         this.filters = event.detail.filterArray;
@@ -382,8 +359,7 @@ export default class Hot_myRequestsWrapper extends NavigationMixin(LightningElem
 
         if (setRecords) {
             this.records = filteredRecords;
-            // Also update the common table records with flattened filtered records
-            this.commonTableRecords = this.flattenRecords(filteredRecords);
+            this.records = this.flattenRecords(filteredRecords);
         }
     }
 
@@ -391,22 +367,28 @@ export default class Hot_myRequestsWrapper extends NavigationMixin(LightningElem
         this.applyFilter(event);
         this.template.querySelector('c-list-filters-button').setFilteredRecordsLength(this.filteredRecordsLength);
     }
+    isGetAllFiles = false;
+    isNavigatingAway = false;
 
     // Edit, clone, cancel and navigation
     editOrder() {
         this.isNavigatingAway = true;
-        if (this.request.Orderer__c === this.userRecord.AccountId && this.request.Status__c.includes('Åpen')) {
+        if (this.request.Orderer__c === this.userRecord.AccountId) {
             this.isGetAllFiles = true;
-            this[NavigationMixin.Navigate]({
-                type: 'comm__namedPage',
-                attributes: { pageName: 'ny-bestilling' },
-                state: {
-                    fieldValues: JSON.stringify(this.request),
-                    fromList: true,
-                    edit: true,
-                    isAccount: JSON.stringify(this.isAccount)
-                }
-            });
+            if (this.request.Status__c.includes('Åpen')) {
+                this[NavigationMixin.Navigate]({
+                    type: 'comm__namedPage',
+                    attributes: {
+                        pageName: 'ny-bestilling'
+                    },
+                    state: {
+                        fieldValues: JSON.stringify(this.request),
+                        fromList: true,
+                        edit: true,
+                        isAccount: JSON.stringify(this.isAccount)
+                    }
+                });
+            }
         } else {
             this.modalContent =
                 'Denne bestillingen er bestilt av noen andre, og du har ikke rettigheter til å endre den.';
@@ -418,7 +400,9 @@ export default class Hot_myRequestsWrapper extends NavigationMixin(LightningElem
         this.isNavigatingAway = true;
         this[NavigationMixin.Navigate]({
             type: 'comm__namedPage',
-            attributes: { pageName: 'ny-bestilling' },
+            attributes: {
+                pageName: 'ny-bestilling'
+            },
             state: {
                 fieldValues: JSON.stringify(this.request),
                 fromList: true,
@@ -661,7 +645,7 @@ export default class Hot_myRequestsWrapper extends NavigationMixin(LightningElem
             });
         }
     }
-    @track threadDispatcherId;
+    threadDispatcherId;
     goToThread() {
         this.isThreadButtonDisabled = true;
         if (this.request.IsAccountEqualOrderer__c == false && this.request.Orderer__c == this.userAccountId) {
