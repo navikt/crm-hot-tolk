@@ -6,61 +6,60 @@ export default class Hot_commonTableRequests extends LightningElement {
     @api labelMap = {}; // used for mapping status or other fields to label + css class
     @api ariaLabel;
 
+    recordMap = {};
+
     get isMobile() {
         return window.screen.width < 576;
     }
 
-    getFormattedValue(field, value) {
-        const mapEntry = this.labelMap[field]?.[value];
-        return mapEntry ? { label: mapEntry.label, cssClass: mapEntry.cssClass } : { label: value, cssClass: '' };
+    get recordsToShow() {
+        const processed = [];
+        this.recordMap = {};
+
+        if (Array.isArray(this.records)) {
+            for (let record of this.records) {
+                let fields = [];
+
+                for (let column of this.columns) {
+                    const fieldName = column.fieldName;
+                    const rawValue = record[fieldName];
+                    const mapping = this.labelMap[fieldName]?.[rawValue];
+
+                    fields.push({
+                        name: fieldName,
+                        label: column.label,
+                        value: rawValue,
+                        displayLabel: mapping?.label ?? rawValue,
+                        cssClass: mapping?.cssClass ?? '',
+                        isStatus: !!mapping,
+                        fullCssClass: mapping?.cssClass ? `desktop-status-label ${mapping.cssClass}` : ''
+                    });
+                }
+
+                const statusField = fields.find((f) => f.isStatus);
+
+                processed.push({
+                    id: record.Id,
+                    original: record,
+                    fields,
+                    statusLabel: statusField?.displayLabel,
+                    mobileStatusClass: statusField ? `mobile-status-label ${statusField.cssClass}` : ''
+                });
+
+                this.recordMap[record.Id] = record;
+            }
+        }
+
+        return processed;
     }
 
     get hasData() {
-        return Array.isArray(this.records) && this.records.length > 0;
-    }
-
-    get displayRows() {
-        if (!this.hasData || !Array.isArray(this.columns)) return [];
-
-        return this.records.map((record, rowIndex) => {
-            const cells = this.columns.map((col, colIndex) => {
-                const value = record[col.fieldName] ?? '';
-                const fieldMapping = this.getFormattedValue(col.fieldName, value);
-
-                return {
-                    key: `${rowIndex}-${col.fieldName}`,
-                    value,
-                    label: col.label,
-                    isStatus: !!this.labelMap[col.fieldName],
-                    statusLabel: fieldMapping.label,
-                    fullStatusClass: fieldMapping.cssClass,
-                    cellClass: colIndex === 0 ? 'first-column date-cell' : '',
-                    desktopStatusClass: fieldMapping.cssClass ? `desktop-status-label ${fieldMapping.cssClass}` : ''
-                };
-            });
-
-            const statusCell = cells.find((c) => c.isStatus);
-            const mobileStatusClass = `mobile-status-label ${statusCell?.fullStatusClass || ''}`;
-
-            return {
-                key: record.Id || `row-${rowIndex}`,
-                index: rowIndex,
-                cells,
-                original: record,
-                statusLabel: statusCell?.statusLabel,
-                mobileStatusClass
-            };
-        });
+        return this.recordsToShow.length > 0;
     }
 
     handleRowClick(event) {
-        const index = event.currentTarget.dataset.index;
-        if (index === undefined) {
-            console.warn('Missing row index on click');
-            return;
-        }
-
-        const record = this.records[index];
+        const recordId = event.currentTarget.dataset.id;
+        const record = this.recordMap[recordId];
         if (record) {
             this.dispatchEvent(
                 new CustomEvent('rowclick', {
@@ -70,7 +69,7 @@ export default class Hot_commonTableRequests extends LightningElement {
                 })
             );
         } else {
-            console.warn('No matching record at index:', index);
+            console.warn('No matching record for row click:', recordId);
             console.log('Records:', this.records);
         }
     }

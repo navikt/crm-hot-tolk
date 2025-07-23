@@ -7,7 +7,7 @@
 /* Table row styling */
 tr.row {
     height: 60px;
-    border-top: 1px solid rgba(44, 44, 44, 0.56); /* #2c2c2c8e in rgba */
+    border-top: 1px solid rgba(44, 44, 44, 0.56);
     transition: transform 0.1s;
 }
 
@@ -82,7 +82,8 @@ tr.row:hover {
 .label-green,
 .label-gray,
 .label-red,
-.label-orange {
+.label-orange,
+.label-blue {
     padding: 0.25em 0.7em;
     border-radius: 0.25rem;
     font-size: 1rem;
