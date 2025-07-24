@@ -46,8 +46,8 @@ export default class hot_tolketjenestenUserInformation extends LightningElement 
     viewUserNotificationSettings = true;
     editUserNotification = false;
     showSuccess = false;
-    securityMeassures;
-    hasSecurityMeassures = false;
+    securityMeasures;
+    hasSecurityMeasures = false;
 
     picklistOptions = [
         { name: 'SMS', label: 'SMS', selected: false },
@@ -102,7 +102,7 @@ export default class hot_tolketjenestenUserInformation extends LightningElement 
                 });
             });
             if (this.person.INT_SecurityMeasures__c != null || this.person.INT_SecurityMeasures__c != '') {
-                this.hasSecurityMeassures = true;
+                this.hasSecurityMeasures = true;
                 let secMeasures = JSON.parse(this.person.INT_SecurityMeasures__c);
                 let securityMeasuresFormatted = [];
                 secMeasures.forEach((sm) => {
@@ -117,7 +117,7 @@ export default class hot_tolketjenestenUserInformation extends LightningElement 
                             formatDate(sm.gyldigTilOgMed)
                     );
                 });
-                this.securityMeassures = securityMeasuresFormatted;
+                this.securityMeasures = securityMeasuresFormatted;
             }
         }
     }
