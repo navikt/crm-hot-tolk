@@ -1,16 +1,21 @@
 <template>
     <div class="page-background flex-center" lang="no">
         <div class="card-container">
+            <!-- Back button -->
             <div class="back-button-info">
                 <c-hot_back-button tabindex="0" role="button"></c-hot_back-button>
             </div>
+
+            <!-- Header -->
             <h1 class="heading-title center-text" tabindex="0" role="heading" aria-level="1">Min side frilanstolk</h1>
-            <h2 class="heading-medium center-text" tabindex="0" role="heading" aria-level="2">Kontaktinformasjon</h2>
+            <h2 class="heading-medium center-text" tabindex="0" role="heading" aria-level="2" id="kontaktinfo">
+                Kontaktinformasjon
+            </h2>
 
             <main class="form-big-container">
                 <!--View information section-->
                 <template lwc:if={viewUserInformation}>
-                    <section class="section-mobile" aria-live="polite">
+                    <section class="section-mobile" aria-live="polite" aria-labelledby="kontaktinfo">
                         <template lwc:if={serviceResource}>
                             <div class="form-container">
                                 <div class="form-row">
@@ -77,31 +82,6 @@
                                     <p class="label-form-small response-mobile-region">{selectedRegionLabels}</p>
                                 </div>
 
-                                <div class="form-row-region">
-                                    <div class="form-col-region-left response-hide-region">
-                                        <template for:each={leftRegionOptions} for:item="region">
-                                            <div key={region.value} class="form-col checkbox-row">
-                                                <c-checkbox
-                                                    default-val={region.selected}
-                                                    label={region.label}
-                                                    disabled
-                                                ></c-checkbox>
-                                            </div>
-                                        </template>
-                                    </div>
-                                    <div class="form-col-right response-hide-region">
-                                        <template for:each={rightRegionOptions} for:item="region">
-                                            <div key={region.value} class="form-col checkbox-row">
-                                                <c-checkbox
-                                                    default-val={region.selected}
-                                                    label={region.label}
-                                                    disabled
-                                                ></c-checkbox>
-                                            </div>
-                                        </template>
-                                    </div>
-                                </div>
-
                                 <h2 class="heading-medium center-text header-quali">Kvalifikasjoner</h2>
 
                                 <h3 class="heading-small">Kvalifikasjoner du innehar</h3>
@@ -128,9 +108,9 @@
                                     <c-button
                                         type="Submit"
                                         class="btn-edit"
+                                        button-styling="primary"
                                         onbuttonclick={editProfile}
                                         button-label="Rediger"
-                                        button-styling="Primary"
                                         aria-label="Rediger"
                                     ></c-button>
                                 </div>
@@ -206,6 +186,7 @@
                                 ></c-input>
                             </div>
 
+                            <!-- Notification channel edit section-->
                             <div class="form-col">
                                 <label
                                     class="label-form-big"
@@ -254,7 +235,7 @@
                             </div>
                         </div>
 
-                        <!-- Regions Section -->
+                        <!-- Regions edit section -->
                         <h3 class="heading-small" tabindex="0" aria-level="3" role="heading">Foretrukne regioner</h3>
 
                         <div class="form-row-region">
@@ -286,7 +267,7 @@
                             </div>
                         </div>
 
-                        <!-- Skills Section -->
+                        <!-- Skills edit section -->
                         <h2 class="heading-medium center-text header-quali" tabindex="0" aria-level="2" role="heading">
                             Kvalifikasjoner
                         </h2>
@@ -310,7 +291,7 @@
                             </div>
                         </div>
 
-                        <!-- More information Section -->
+                        <!-- More information edit section -->
                         <h2 class="heading-medium center-text" tabindex="0" aria-level="2" role="heading">Diverse</h2>
 
                         <div class="form-row">
@@ -328,6 +309,7 @@
                         </div>
                     </div>
 
+                    <!-- Cancel and save buttons -->
                     <div class="button-container">
                         <c-button
                             type="Reset"

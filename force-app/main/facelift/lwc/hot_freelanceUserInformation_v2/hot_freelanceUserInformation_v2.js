@@ -120,7 +120,7 @@ export default class Hot_freelanceUserInformation_v2 extends LightningElement {
     }
 
     get userQualificationSelectedSkillList() {
-        return this.serviceResourceSkillList ? this.serviceResourceSkillList : [];
+        return this.filteredSkillsToShowList || [];
     }
 
     get skillsList() {
@@ -390,6 +390,7 @@ export default class Hot_freelanceUserInformation_v2 extends LightningElement {
         console.log('Updated notificationChannelValue: ', this.userData.notificationChannelValue);
     }
 
+    filteredSkillsToShowList = [];
     // Filters out skills that the user has and are still active (no end date)
     filterServiceResourceSkills() {
         let skillsToShowList = [];
@@ -404,7 +405,7 @@ export default class Hot_freelanceUserInformation_v2 extends LightningElement {
                 }
             });
         });
-        this.serviceResourceSkillList = skillsToShowList;
+        this.filteredSkillsToShowList = skillsToShowList;
     }
 
     userSelectedRows = [];

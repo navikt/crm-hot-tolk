@@ -11,6 +11,8 @@
     align-items: center;
     justify-content: center;
     min-height: 100vh;
+    margin-top: -6rem;
+    margin-bottom: -4.5rem;
 }
 
 .card-container {
@@ -175,7 +177,7 @@
 }
 
 .response-mobile-region {
-    display: none;
+    margin-left: 1rem;
 }
 
 .response-hide-region {
@@ -208,6 +210,7 @@
 
     .page-background {
         padding: 1rem;
+        margin-top: -0.5rem;
     }
 
     .card-container {
