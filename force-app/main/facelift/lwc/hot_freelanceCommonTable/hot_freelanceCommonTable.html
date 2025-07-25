@@ -2,7 +2,7 @@
     <table class="table-wrapper" role="region" aria-label={ariaLabel} tabindex="0">
         <thead>
             <tr>
-                <th lwc:if={showCheckboxes} class="checkbox-column">
+                <th lwc:if={checkbox} class="checkbox-column">
                     <c-checkbox title="Merk alle" oncheckboxclick={handleAllCheckboxesClick}></c-checkbox>
                 </th>
 
@@ -24,16 +24,19 @@
                     onkeypress={handleOnRowClick}
                 >
                     <!-- Row checkbox no value added -->
-                    <td lwc:if={checkbox} class="checkbox-column">
+                    <!-- TODO: Needs to fix the checkbox position when user resize the browser to small-->
+                    <!-- Checkbox position is fine when dimensions are iphone on developer console -->
+                    <td lwc:if={checkbox} class="checkbox-column checkbox-mobile-right">
                         <c-checkbox
                             default-value={record.checked}
                             oncheckboxclick={handleSingleCheckboxClick}
                         ></c-checkbox>
                     </td>
 
-                    <!-- Show Conversation badges -->
+                    <!-- Show Conversation, priority and status badges -->
+                    <!-- TODO: Position the conversation and status badges beside each other -->
                     <template for:each={record.fields} for:item="field">
-                        <td key={field.name} tabindex="0">
+                        <td key={field.name} tabindex="0" class={field.cssClass}>
                             <template lwc:if={field.badgeClass}>
                                 <span class={field.badgeClass} aria-label={field.iconAriaLabel}
                                     >{field.iconAriaLabel}</span

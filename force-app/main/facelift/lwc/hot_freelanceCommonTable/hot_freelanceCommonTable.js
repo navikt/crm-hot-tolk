@@ -10,13 +10,13 @@ export default class Hot_freelanceCommonTable extends LightningElement {
     @api checkedRows = [];
 
     // WIP Not sure what css to return based of status
-    // All css badge-status are only temporary placement until we have a proper design for them
+    // All css badge-status are only temporary placement until we have a proper design color for them
     statusBadgeMap = {
-        'badge-green': ['Assigned', 'Tildelt'],
+        'badge-green': ['Assigned', 'Tildelt', 'Dekket', 'Tilbaketrukket tilgjengelighet'],
         'badge-status-canceled': ['Canceled', 'Avlyst'],
         'badge-status-canceled-by-interpreter': ['Canceled by Interpreter', 'Avlyst av tolk'],
         'badge-status-declined': ['Declined', 'Avslått'],
-        'badge-orange': ['Interested', 'Påmeldt'],
+        'badge-orange': ['Interested', 'Påmeldt', 'Åpen'],
         'badge-status-not-assigned': ['Not Assigned', 'Ikke tildelt deg'],
         'badge-status-reserved': ['Reserved', 'Reservert'],
         'badge-status-retracted': ['Retracted Interest', 'Tilbaketrukket påmelding'],
@@ -28,7 +28,8 @@ export default class Hot_freelanceCommonTable extends LightningElement {
     // Maps aria-label from message icons to CSS badge classes
     statusBadgeIconByAriaLabel = {
         'Ulest melding': 'badge-orange',
-        'Ingen nye meldinger': 'badge-green'
+        'Ingen nye meldinger': 'badge-green',
+        'Høyt prioritert': 'badge-orange'
     };
 
     recordMap = {};
@@ -51,22 +52,17 @@ export default class Hot_freelanceCommonTable extends LightningElement {
                 };
 
                 if (column.svg && this.iconByValue) {
-                    const iconData = this.iconByValue[value];
-
-                    if (iconData) {
-                        // Add icon details to field
-                        field.icon = iconData.icon;
-                        field.iconFill = iconData.fill;
-                        field.iconAriaLabel = iconData.ariaLabel;
-
-                        // Set badge CSS class from aria-label
-                        field.badgeClass = this.getBadgeClassByAriaLabel(iconData.ariaLabel || '');
-                    }
+                    this.applyIconDataToField(value, field);
                 }
 
-                if (column.name === 'Status__c' || column.name === 'statusMobile') {
+                if (column.name === 'Status__c' || column.name === 'statusMobile' || column.name === 'Status') {
                     field.statusBadgeClass = this.getStatusBadgeClass(value);
                     field.statusBadgeLabel = value;
+                }
+
+                // Apply bold font weight and size to date columns
+                if (column.name === 'StartAndEndDate' || column.name === 'startAndEndDateWeekday') {
+                    field.cssClass = 'bold-date';
                 }
 
                 fields.push(field);
@@ -75,13 +71,25 @@ export default class Hot_freelanceCommonTable extends LightningElement {
             // Store processed record and track checked state
             records.push({
                 id: record.Id,
-                checked: this.checkedRows?.includes(record.Id),
-                fields
+                checked: this.checkedRows.includes(record.Id),
+                fields: fields
             });
             this.recordMap[record.Id] = record;
         }
 
         return records;
+    }
+
+    applyIconDataToField(value, field) {
+        const iconData = this.iconByValue[value];
+        if (!iconData) return;
+
+        field.icon = iconData.icon;
+        field.iconFill = iconData.fill;
+        field.iconAriaLabel = iconData.ariaLabel === 'Høyt prioritert' ? 'Prioritert' : iconData.ariaLabel;
+
+        // Assign a CSS class based on the ariaLabel
+        field.badgeClass = this.getBadgeClassByAriaLabel(iconData.ariaLabel || '');
     }
 
     getBadgeClassByAriaLabel(ariaLabel) {
@@ -91,7 +99,6 @@ export default class Hot_freelanceCommonTable extends LightningElement {
     // Returns the CSS badge class matching the given status value
     // Checks statusBadgeMap for Norwegian and English picklist values
     getStatusBadgeClass(value) {
-        console.log('This status badge value' + value);
         for (let badgeClass in this.statusBadgeMap) {
             if (this.statusBadgeMap[badgeClass].includes(value)) {
                 return badgeClass;

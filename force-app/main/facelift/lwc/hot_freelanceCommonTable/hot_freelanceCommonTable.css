@@ -103,6 +103,22 @@ tr.row:hover {
 }
 
 @media (max-width: 576px) {
+    .bold-date {
+        font-weight: 600;
+        font-size: 1.25rem !important;
+    }
+
+    .checkbox-mobile-right {
+        position: absolute;
+        margin-top: -1.5rem;
+        margin-left: 19rem;
+        padding: 0;
+    }
+
+    tr.row {
+        position: relative;
+    }
+
     .table-wrapper {
         overflow-x: auto;
         padding: 0;
@@ -130,28 +146,12 @@ tr.row:hover {
     tr.row td {
         font-family: 'Source Sans 3', 'Source Sans Pro', Arial, sans-serif;
         width: 100%;
-    }
-
-    /* Table data row for the columns */
-    tr.row td:nth-child(1) {
-        font-weight: 600;
-        font-size: 1.25rem;
-
-        order: 1;
-    }
-
-    tr.row td:nth-child(2) {
-        font-family: 'Source Sans 3', 'Source Sans Pro', Arial, sans-serif;
-        font-size: 1.25rem;
-    }
-
-    tr.row td:nth-child(3) {
         font-size: 1.125rem;
     }
 
-    tr.row td:last-child {
-        font-size: 0.85rem;
-        color: #444444;
+    /* Table data row for specific columns */
+    tr.row td:nth-child(4) {
+        font-size: 1.25rem;
     }
 
     td {
@@ -184,18 +184,4 @@ tr.row:hover {
     .desktop-status-label {
         display: none;
     }
-    /* Temporary css, will remove later START */
-    .iconPadding {
-        padding-right: 10px;
-    }
-    .icon {
-        width: 5%;
-    }
-    th {
-        /* Overwrite experience cloud default styling */
-        padding-left: 0;
-        border-bottom: unset;
-    }
-
-    /* END */
 }
