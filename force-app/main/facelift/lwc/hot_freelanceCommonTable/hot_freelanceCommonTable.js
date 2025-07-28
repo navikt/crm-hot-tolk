@@ -9,20 +9,24 @@ export default class Hot_freelanceCommonTable extends LightningElement {
     @api checkbox = false;
     @api checkedRows = [];
 
-    // WIP Not sure what css to return based of status
-    // All css badge-status are only temporary placement until we have a proper design color for them
+    // WIP: return badge css will be changed when we have a design system
     statusBadgeMap = {
-        'badge-green': ['Assigned', 'Tildelt', 'Dekket', 'Tilbaketrukket tilgjengelighet'],
-        'badge-status-canceled': ['Canceled', 'Avlyst'],
-        'badge-status-canceled-by-interpreter': ['Canceled by Interpreter', 'Avlyst av tolk'],
-        'badge-status-declined': ['Declined', 'Avslått'],
-        'badge-orange': ['Interested', 'Påmeldt', 'Åpen'],
-        'badge-status-not-assigned': ['Not Assigned', 'Ikke tildelt deg'],
-        'badge-status-reserved': ['Reserved', 'Reservert'],
-        'badge-status-retracted': ['Retracted Interest', 'Tilbaketrukket påmelding'],
-        'badge-status-sa-retracted': ['Service Appointment Retracted', 'Oppdrag tilbaketrukket'],
-        'badge-status-wanted': ['Wanted', 'Ønsket til'],
-        'badge-red': ['Withdrawn', 'Tatt av oppdraget']
+        'badge-green': ['Assigned', 'Tildelt', 'Dekket', 'Tilbaketrukket tilgjengelighet', 'Reserved', 'Reservert'],
+        'badge-orange': ['Interested', 'Påmeldt', 'Åpen', 'Not Assigned', 'Ikke tildelt deg', 'Wanted', 'Ønsket til'],
+        'badge-red': [
+            'Withdrawn',
+            'Tatt av oppdraget',
+            'Canceled',
+            'Avlyst',
+            'Canceled by Interpreter',
+            'Avlyst av tolk',
+            'Declined',
+            'Avslått',
+            'Retracted Interest',
+            'Tilbaketrukket påmelding',
+            'Service Appointment Retracted',
+            'Oppdrag tilbaketrukket'
+        ]
     };
 
     // Maps aria-label from message icons to CSS badge classes
