@@ -71,6 +71,7 @@ public without sharing class HOT_ResourceAbsenceCreateService implements Databas
                 }
                 resourceAbsence.ResourceId = relatedRecordIdToResourceIdMap.get(event.OwnerId);
                 resourceAbsence.HOT_EventId__c = event.Id;
+                resourceAbsence.FSL__Approved__c = true;
 
                 // All-day events in Salesforce has the same start time and end time
                 if (event.StartDateTime == event.EndDateTime) {
