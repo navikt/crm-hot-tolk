@@ -71,7 +71,6 @@ public without sharing class HOT_ResourceAbsenceCreateService implements Databas
                 }
                 resourceAbsence.ResourceId = relatedRecordIdToResourceIdMap.get(event.OwnerId);
                 resourceAbsence.HOT_EventId__c = event.Id;
-                resourceAbsence.FSL__Approved__c = true;
 
                 // All-day events in Salesforce has the same start time and end time
                 if (event.StartDateTime == event.EndDateTime) {
@@ -91,6 +90,9 @@ public without sharing class HOT_ResourceAbsenceCreateService implements Databas
                 }
                 if (resourceAbsenceFields.contains('fsl__gantt_color__c') && event.ShowAs != 'OutOfOffice') {
                     resourceAbsence.put('FSL__Gantt_Color__c', '');
+                }
+                if (resourceAbsenceFields.contains('fsl__approved__c')) {
+                    resourceAbsence.put('FSL__Approved__c', true);
                 }
                 resourceAbsenceList.add(resourceAbsence);
             }
