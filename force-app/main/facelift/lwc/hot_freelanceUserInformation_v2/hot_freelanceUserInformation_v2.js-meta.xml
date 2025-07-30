@@ -6,6 +6,5 @@
     <masterLabel>Freelance User Information v2</masterLabel>
     <targets>
         <target>lightningCommunity__Page</target>
-        <target>lightning__AppPage</target>
     </targets>
 </LightningComponentBundle>
