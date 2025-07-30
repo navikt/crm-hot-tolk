@@ -62,7 +62,7 @@
     font-family: 'Source Sans 3', 'Source Sans Pro', Arial, sans-serif;
     font-weight: 600;
     font-style: normal;
-    font-size: 1.125rem;
+    font-size: 1.25rem;
     line-height: 1.75rem;
 }
 
@@ -238,7 +238,7 @@
         margin-bottom: 0.8rem;
     }
     .header-quali {
-        margin-left: 0.6rem;
+        margin-left: 1rem;
     }
     .response-mobile-qualification {
         margin-left: -5rem;

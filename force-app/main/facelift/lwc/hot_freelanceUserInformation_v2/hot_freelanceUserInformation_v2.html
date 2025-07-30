@@ -127,7 +127,6 @@
                                 <c-input
                                     label="Navn"
                                     label-size="1.25rem"
-                                    aria-label="navn"
                                     class="input-config"
                                     max-length="255"
                                     value={name}
@@ -164,8 +163,7 @@
                                     label="Adresse"
                                     label-size="1.25rem"
                                     class="input-config"
-                                    type="address"
-                                    aria-label="Adresse"
+                                    type="text"
                                     max-length="255"
                                     value={address}
                                     onchange={handleAddressChange}
@@ -179,7 +177,6 @@
                                     label="Mobil enhet"
                                     label-size="1.25rem"
                                     class="input-config"
-                                    aria-label="Mobil enhet"
                                     max-length="255"
                                     value={mobileDevice}
                                     onchange={handleMobileDeviceChange}
@@ -188,14 +185,7 @@
 
                             <!-- Notification channel edit section-->
                             <div class="form-col">
-                                <label
-                                    class="label-form-big"
-                                    tabindex="0"
-                                    role="heading"
-                                    aria-level="3"
-                                    for="notification-channel"
-                                    >Varslingskanal</label
-                                >
+                                <label class="label-form-big" for="notification-channel">Varslingskanal</label>
                                 <br />
                                 <select
                                     id="notification-channel"

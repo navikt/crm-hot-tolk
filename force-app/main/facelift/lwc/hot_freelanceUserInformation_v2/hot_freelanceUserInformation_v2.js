@@ -303,6 +303,7 @@ export default class Hot_freelanceUserInformation_v2 extends LightningElement {
             })
             .then(() => {
                 this.handleSuccess();
+                window.scrollTo({ top: 0, behavior: 'smooth' });
             })
             .catch((error) => {
                 console.error('Error in handleSubmit process:', error);
