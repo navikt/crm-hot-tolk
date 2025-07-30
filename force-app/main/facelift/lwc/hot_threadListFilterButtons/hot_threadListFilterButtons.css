@@ -1,0 +1,29 @@
+.filterButtons {
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+}
+button.filterButton {
+    appearance: none;
+    -webkit-appearance: none;
+    font: inherit;
+    line-height: inherit;
+    display: block;
+    width: 100%;
+    text-align: left;
+    cursor: pointer;
+    background-color: aqua;
+}
+
+.mobile-only {
+    display: none;
+}
+
+@media (max-width: 768px) {
+    .desktop-only {
+        display: none;
+    }
+    .mobile-only {
+        display: block; /* eller flex/inline‑block, alt etter layouten din */
+    }
+}

@@ -24,7 +24,8 @@ public without sharing class HOT_ThreadListController {
                 HOT_Thread_read_by__c,
                 CRM_Registered_Datetime_Formula__c,
                 CRM_Latest_Message_Datetime__c,
-                HOT_AppointmentStartTime__c
+                HOT_AppointmentStartTime__c,
+                CRM_Thread_Type__c
             FROM Thread__c
             WHERE
                 (CRM_Account__c = :user.AccountId
@@ -137,7 +138,8 @@ public without sharing class HOT_ThreadListController {
                 HOT_Thread_read_by__c,
                 CRM_Registered_Datetime_Formula__c,
                 CRM_Latest_Message_Datetime__c,
-                HOT_AppointmentStartTime__c
+                HOT_AppointmentStartTime__c,
+                CRM_Thread_Type__c
             FROM Thread__c
             WHERE
                 (CRM_Related_Object__c IN :workOrderIds
@@ -154,5 +156,13 @@ public without sharing class HOT_ThreadListController {
         ];
 
         return threads;
+    }
+    @AuraEnabled(cacheable=true)
+    public static List<Thread__c> getAllMyThreads(Boolean isFreelance) {
+        if (isFreelance) {
+            return getMyThreadsFreelance();
+        } else {
+            return getMyThreads();
+        }
     }
 }
