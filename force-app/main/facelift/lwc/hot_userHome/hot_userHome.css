@@ -1,5 +1,4 @@
 .wrapper {
-    background-color: #ffffff;
     width: 100%;
     /* padding-left: 2vw;
     padding-right: 2vw; */
@@ -58,7 +57,6 @@
 .box:hover,
 .box:focus {
     border-color: #0067c5;
-    /* background-color: #cce1ff; */
 }
 .box:hover .boxLabel,
 .box:focus .boxLabel {
