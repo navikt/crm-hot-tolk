@@ -165,7 +165,9 @@ export default class Hot_interestedResourcesList extends NavigationMixin(Lightni
                                 ) +
                                 ' ' +
                                 this.getDayOfWeek(appointment.ServiceAppointmentStartTime__c),
-                            statusMobile: 'Status: ' + appointment.Status__c
+                            // Remove string Status so Freelance common table can read the statusMobile
+                            // statusMobile: 'Status: ' + appointment.Status__c
+                            statusMobile: appointment.Status__c
                         };
                     });
                     let tempRecords = [];

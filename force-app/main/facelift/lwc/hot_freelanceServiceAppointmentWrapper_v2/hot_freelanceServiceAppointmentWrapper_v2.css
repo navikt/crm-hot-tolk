@@ -1,0 +1,113 @@
+.list {
+    padding: 2rem;
+    background-color: #fff !important;
+    font-family: 'Source Sans Pro', Arial, sans-serif;
+    margin: auto;
+    font-size: 18px;
+    border-radius: 0.5rem;
+    display: flex;
+    justify-content: center;
+    flex-direction: column;
+    max-width: 1200px;
+    width: 100%;
+}
+.header-buttons {
+    display: flex;
+    justify-content: space-between;
+    padding-bottom: 1rem;
+    z-index: 999;
+}
+
+.header {
+    flex: 2;
+    width: 100%;
+    text-align: center;
+    font-size: 1.5rem;
+}
+
+.back-button-info {
+    margin-left: 0rem;
+    margin-top: -2.4rem;
+}
+
+.tab-button {
+    all: unset;
+    margin-left: 0.5rem;
+    padding: 0.3rem 1rem;
+    border-radius: 5rem;
+    font-size: 1rem;
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    cursor: pointer;
+    transition:
+        background-color 0.2s ease,
+        color 0.2s ease;
+    border: 1px solid #e0e3e6;
+    background-color: #f4f4f4;
+}
+
+.tab-button::before {
+    content: '◯';
+    font-size: 0.9rem;
+    color: #555;
+}
+
+.tab-button.tab-active {
+    background-color: #0056b4;
+    color: white;
+    border: none;
+}
+
+.tab-button.tab-active::before {
+    content: '✔';
+    display: inline-block;
+    width: 1.2em;
+    height: 1.2em;
+    background: #ffffff;
+    color: #0056b4;
+    border-radius: 50%;
+    text-align: center;
+    line-height: 1.2em;
+    margin-right: 0.5rem;
+    font-size: 0.8rem;
+    font-weight: bold;
+}
+
+@media (max-width: 576px) {
+    .desktop-only {
+        display: none;
+    }
+    .header {
+        margin-left: -5.5rem;
+        margin-top: 3rem;
+        font-size: 2rem;
+    }
+    .header-buttons {
+        padding-bottom: 0rem;
+    }
+    .list {
+        max-width: 100vw;
+        padding: 1rem;
+    }
+
+    .back-button-info {
+        margin-top: -0.5rem;
+        margin-left: -0.5rem;
+    }
+
+    .filter-button {
+        margin-bottom: -8.4rem;
+        margin-left: 2rem;
+        align-self: flex-end;
+        width: 100%;
+        display: flex;
+        justify-content: flex-end;
+    }
+}
+
+@media (min-width: 576px) {
+    .mobile-only {
+        display: none;
+    }
+}

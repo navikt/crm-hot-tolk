@@ -1,0 +1,108 @@
+<template>
+    <div class="list">
+        <div class="header-buttons">
+            <div class="back-button-info">
+                <c-hot_back-button tabindex="0" role="button"></c-hot_back-button>
+            </div>
+            <h2 class="header" tabindex="-1" autofocus>Oppdrag</h2>
+
+            <template lwc:if={showFilterButton}>
+                <div class="filter-button">
+                    <c-list-filters-button
+                        header="Filtrer søket"
+                        filters={filters}
+                        onapplyfilter={applyFilter}
+                        ongetfilteredrecordslength={sendFilteredRecordsLength}
+                    ></c-list-filters-button>
+                </div>
+            </template>
+        </div>
+
+        <template lwc:if={showTabsAndLineBreak}>
+            <div class="tabset desktop-only">
+                <template for:each={tabs} for:item="tab">
+                    <button key={tab.name} class="tab tab-button" data-id={tab.name} onclick={setActiveTab}>
+                        {tab.label}
+                    </button>
+                </template>
+            </div>
+            <br />
+        </template>
+
+        <div class="tabset mobile-only">
+            <c-picklist choices={tabs} onpicklistvaluechange={setActiveTabMobile}></c-picklist>
+        </div>
+        <div class="tab-content-wrapper">
+            <!-- Open Service Appointment table -->
+            <template lwc:if={tabMap.open}>
+                <div class="tab-content">
+                    <c-hot_open-service-appointments
+                        record-id={recordId}
+                        data-name="open"
+                        onsendfilters={handleFilters}
+                        onsendrecords={handleRecords}
+                        onsenddetail={handleDetails}
+                        onsendcheckedrows={handleRowChecked}
+                    >
+                    </c-hot_open-service-appointments>
+                </div>
+            </template>
+
+            <!-- Interested Resources List table -->
+            <template lwc:elseif={tabMap.interested}>
+                <div class="tab-content">
+                    <c-hot_interested-resources-list
+                        record-id={recordId}
+                        data-name="interested"
+                        onsendfilters={handleFilters}
+                        onsendrecords={handleRecords}
+                        onsenddetail={handleDetails}
+                    >
+                    </c-hot_interested-resources-list>
+                </div>
+            </template>
+
+            <!-- My Service Appointments table -->
+            <template lwc:elseif={tabMap.my}>
+                <div class="tab-content">
+                    <c-hot_my-service-appointments
+                        record-id={recordId}
+                        data-name="my"
+                        onsendfilters={handleFilters}
+                        onsendrecords={handleRecords}
+                        onsenddetail={handleDetails}
+                    >
+                    </c-hot_my-service-appointments>
+                </div>
+            </template>
+
+            <!-- Wage Claim List table -->
+            <template lwc:elseif={tabMap.wageClaim}>
+                <div class="tab-content">
+                    <c-hot_wage-claim-list
+                        record-id={recordId}
+                        data-name="wageClaim"
+                        onsendfilters={handleFilters}
+                        onsendrecords={handleRecords}
+                        onsenddetail={handleDetails}
+                    >
+                    </c-hot_wage-claim-list>
+                </div>
+            </template>
+
+            <!-- Wanted Service Appointments List table -->
+            <template lwc:elseif={tabMap.wanted}>
+                <div class="tab-content">
+                    <c-hot_wanted-service-appointments-list
+                        record-id={recordId}
+                        data-name="wanted"
+                        onsendfilters={handleFilters}
+                        onsendrecords={handleRecords}
+                        onsenddetail={handleDetails}
+                    >
+                    </c-hot_wanted-service-appointments-list>
+                </div>
+            </template>
+        </div>
+    </div>
+</template>

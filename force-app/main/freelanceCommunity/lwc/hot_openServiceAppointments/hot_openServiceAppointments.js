@@ -157,9 +157,14 @@ export default class Hot_openServiceAppointments extends LightningElement {
                 ...x,
                 isUrgent: x.HOT_IsUrgent__c,
                 startAndEndDateWeekday:
-                    formatDatetimeinterval(x.EarliestStartTime, x.DueDate) +
-                    ' ' +
-                    this.getDayOfWeek(x.EarliestStartTime),
+                    /* comment out the day data so we only show date START */
+                    // formatDatetimeinterval(x.EarliestStartTime, x.DueDate) +
+                    // ' ' +
+                    // this.getDayOfWeek(x.EarliestStartTime),
+
+                    formatDatetimeinterval(x.EarliestStartTime, x.DueDate),
+
+                /* END */
                 weekday: this.getDayOfWeek(x.EarliestStartTime)
             }));
 
