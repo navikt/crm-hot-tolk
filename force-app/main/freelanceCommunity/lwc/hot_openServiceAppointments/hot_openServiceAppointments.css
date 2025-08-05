@@ -84,7 +84,22 @@ lightning-input-field.ikke-sensitive-opplysninger > lightning-textarea > label:a
     max-height: 75%;
     width: 100%;
 }
+/* Testing START */
+.releaseButton {
+    width: 8rem;
+}
+
+.release-button-container {
+    text-align: left;
+}
+
+/* Testing END  */
+
 @media (max-width: 576px) {
+    .release-button-container {
+        margin-bottom: 0.5rem;
+    }
+
     .record-details-container {
         margin: 5vw 0;
     }

@@ -10,6 +10,12 @@ export let columns = [
         type: 'String'
     },
     {
+        label: 'Prioritert',
+        name: 'isUrgent',
+        type: 'boolean',
+        svg: true
+    },
+    {
         label: 'Informasjon',
         name: 'HOT_Information__c',
         type: 'String'
@@ -18,12 +24,6 @@ export let columns = [
         label: 'Tema',
         name: 'HOT_FreelanceSubject__c',
         type: 'String'
-    },
-    {
-        label: '',
-        name: 'isUrgent',
-        type: 'boolean',
-        svg: true
     }
 ];
 export let inDetailsColumns = [
@@ -50,6 +50,11 @@ export let mobileColumns = [
         name: 'startAndEndDateWeekday',
         type: 'String',
         bold: true
+    },
+    {
+        label: 'Dag',
+        name: 'weekday',
+        type: 'String'
     },
     {
         label: 'Info',

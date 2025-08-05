@@ -2,7 +2,12 @@
     <div class="main-content">
         <div>
             <div if:false={noWageClaims}>
-                <c-table records={wageClaims} columns={columns} onrowclick={goToRecordDetails}></c-table>
+                <!-- <c-table records={wageClaims} columns={columns} onrowclick={goToRecordDetails}></c-table> -->
+                <c-hot_freelance-common-table
+                    records={wageClaims}
+                    columns={columns}
+                    onrowclick={goToRecordDetails}
+                ></c-hot_freelance-common-table>
             </div>
             <div if:true={noWageClaims} style="text-align: center">
                 <br />

@@ -4,7 +4,7 @@
             <div class="back-button-info">
                 <c-hot_back-button tabindex="0" role="button"></c-hot_back-button>
             </div>
-            <h2 class="header" tabindex="-1" autofocus>Oppdrag</h2>
+            <h1 class="header" tabindex="-1" autofocus>Oppdrag</h1>
 
             <template lwc:if={showFilterButton}>
                 <div class="filter-button">
@@ -29,7 +29,7 @@
             <br />
         </template>
 
-        <div class="tabset mobile-only">
+        <div class="tabset picklist-service mobile-only">
             <c-picklist choices={tabs} onpicklistvaluechange={setActiveTabMobile}></c-picklist>
         </div>
         <div class="tab-content-wrapper">

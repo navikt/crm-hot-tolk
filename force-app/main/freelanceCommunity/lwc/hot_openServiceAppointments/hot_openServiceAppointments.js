@@ -247,7 +247,10 @@ export default class Hot_openServiceAppointments extends LightningElement {
         try {
             if (this.isMobile) {
                 this.template
-                    .querySelector('c-hot_freelance-table-list-mobile')
+                    /* Testing queryselector START */
+                    //.querySelector('c-hot_freelance-table-list-mobile')
+                    .querySelector('c-hot_freelance-common-table')
+                    /* Testing queryselector END */
                     .getCheckedRows()
                     .forEach((row) => {
                         this.checkedServiceAppointments.push(row);
@@ -255,7 +258,12 @@ export default class Hot_openServiceAppointments extends LightningElement {
                     });
             } else {
                 this.template
-                    .querySelector('c-table')
+                    /* Testing queryselector START */
+                    /* This will send the checked row data */
+                    //.querySelector('c-table')
+
+                    .querySelector('c-hot_freelance-common-table')
+                    /* Testing queryselector END */
                     .getCheckedRows()
                     .forEach((row) => {
                         this.checkedServiceAppointments.push(row);
