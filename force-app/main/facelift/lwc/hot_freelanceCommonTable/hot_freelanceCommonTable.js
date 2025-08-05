@@ -112,7 +112,9 @@ export default class Hot_freelanceCommonTable extends LightningElement {
     }
 
     handleOnRowClick(event) {
-        const eventToSend = new CustomEvent('rowclick', { detail: this.recordMap[event.currentTarget.dataset.id] });
+        const eventToSend = new CustomEvent('rowclick', {
+            detail: this.recordMap[event.currentTarget.dataset.id]
+        });
         this.dispatchEvent(eventToSend);
     }
 

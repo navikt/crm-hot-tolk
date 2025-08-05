@@ -91,7 +91,6 @@ tr.row:hover {
     font-size: 1.125rem;
     display: inline-block;
     white-space: nowrap;
-    /* line-height: 1.5rem; */
 }
 
 .badge-none {
@@ -102,7 +101,30 @@ tr.row:hover {
     display: none;
 }
 
+.select-all-mobile {
+    display: none;
+}
+
 @media (max-width: 576px) {
+    .checkbox-column {
+        margin-top: -3.5rem;
+        margin-left: 19.8rem;
+        position: absolute;
+        border-bottom: none;
+    }
+
+    .column-th-desktop {
+        display: none;
+        border: none;
+        padding: 0;
+        margin: 0;
+    }
+
+    thead tr {
+        border: none;
+        height: auto;
+    }
+
     .bold-date {
         font-weight: 600;
         font-size: 1.25rem !important;
@@ -126,9 +148,6 @@ tr.row:hover {
 
     .mobile-only {
         display: inline;
-    }
-    thead {
-        display: none;
     }
 
     tr.row {
