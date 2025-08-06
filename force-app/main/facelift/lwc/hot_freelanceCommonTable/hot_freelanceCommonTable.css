@@ -107,9 +107,9 @@ tr.row:hover {
 
 @media (max-width: 576px) {
     .checkbox-column {
-        margin-top: -3.5rem;
-        margin-left: 19.8rem;
         position: absolute;
+        margin-top: -13%;
+        margin-left: 80.45%;
         border-bottom: none;
     }
 
@@ -127,14 +127,13 @@ tr.row:hover {
 
     .bold-date {
         font-weight: 600;
-        font-size: 1.25rem !important;
+        font-size: 1.5rem !important;
     }
 
     .checkbox-mobile-right {
         position: absolute;
-        margin-top: -1.5rem;
-        margin-left: 19rem;
-        padding: 0;
+        margin-top: -4%;
+        margin-left: 84%;
     }
 
     tr.row {
