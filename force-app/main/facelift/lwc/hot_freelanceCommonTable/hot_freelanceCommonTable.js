@@ -11,8 +11,17 @@ export default class Hot_freelanceCommonTable extends LightningElement {
 
     // WIP: return badge css will be changed when we have a design system
     statusBadgeMap = {
-        'badge-green': ['Assigned', 'Tildelt', 'Dekket', 'Tilbaketrukket tilgjengelighet', 'Reserved', 'Reservert'],
-        'badge-orange': ['Interested', 'Påmeldt', 'Åpen', 'Not Assigned', 'Ikke tildelt deg', 'Wanted', 'Ønsket til'],
+        'badge-green': ['Assigned', 'Tildelt', 'Dekket', 'Covered', 'Reserved', 'Reservert'],
+        'badge-orange': [
+            'Interested',
+            'Påmeldt',
+            'Åpen',
+            'Open',
+            'Not Assigned',
+            'Ikke tildelt deg',
+            'Wanted',
+            'Ønsket til'
+        ],
         'badge-red': [
             'Withdrawn',
             'Tatt av oppdraget',
@@ -25,7 +34,11 @@ export default class Hot_freelanceCommonTable extends LightningElement {
             'Retracted Interest',
             'Tilbaketrukket påmelding',
             'Service Appointment Retracted',
-            'Oppdrag tilbaketrukket'
+            'Oppdrag tilbaketrukket',
+            'Annullert',
+            'Annul',
+            'Tilbaketrukket tilgjengelighet',
+            'Retracted Availability'
         ]
     };
 
