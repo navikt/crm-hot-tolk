@@ -158,13 +158,12 @@ export default class Hot_interestedResourcesList extends NavigationMixin(Lightni
                         return {
                             ...appointment,
                             IsUnreadMessage: status,
-                            startAndEndDateWeekday:
-                                formatDatetimeinterval(
-                                    appointment.ServiceAppointmentStartTime__c,
-                                    appointment.ServiceAppointmentEndTime__c
-                                ) +
-                                ' ' +
-                                this.getDayOfWeek(appointment.ServiceAppointmentStartTime__c),
+                            startAndEndDateWeekday: formatDatetimeinterval(
+                                appointment.ServiceAppointmentStartTime__c,
+                                appointment.ServiceAppointmentEndTime__c
+                            ),
+                            // + ' ' +
+                            // this.getDayOfWeek(appointment.ServiceAppointmentStartTime__c),
                             // Remove string Status so Freelance common table can read the statusMobile
                             // statusMobile: 'Status: ' + appointment.Status__c
                             statusMobile: appointment.Status__c

@@ -28,18 +28,24 @@ export let columns = [
         label: 'Status',
         name: 'Status',
         type: 'String'
+    },
+    {
+        name: 'IsUnreadMessage',
+        label: 'Samtale',
+        type: 'String',
+        svg: true
     }
 ];
 
 export let mobileColumns = [
     {
-        label: 'Oppdragsnummer',
-        name: 'AppointmentNumber',
+        label: 'Bestilt tid',
+        name: 'startAndEndDateWeekday',
         type: 'String'
     },
     {
-        label: 'Bestilt tid',
-        name: 'startAndEndDateWeekday',
+        label: 'Oppdragsnummer',
+        name: 'AppointmentNumber',
         type: 'String'
     },
     {
@@ -47,14 +53,25 @@ export let mobileColumns = [
         name: 'City',
         type: 'String'
     },
-    // {
-    //     label: 'Tolkemetode',
-    //     name: 'HOT_WorkTypeName__c',
-    //     type: 'String'
-    // },
+    {
+        label: 'Tolkemetode',
+        name: 'HOT_WorkTypeName__c',
+        type: 'String'
+    },
     {
         label: 'Tema',
         name: 'Subject',
         type: 'String'
+    },
+    {
+        label: 'Status',
+        name: 'Status',
+        type: 'String'
+    },
+    {
+        name: 'IsUnreadMessage',
+        label: 'Samtale',
+        type: 'String',
+        svg: true
     }
 ];

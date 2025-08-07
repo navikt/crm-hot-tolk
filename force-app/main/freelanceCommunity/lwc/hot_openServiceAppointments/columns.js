@@ -57,16 +57,17 @@ export let mobileColumns = [
         type: 'String'
     },
     {
-        label: 'Info',
-        name: 'HOT_Information__c',
-        type: 'String'
-    },
-    {
         label: '',
         name: 'isUrgent',
         type: 'boolean',
         svg: true
     },
+    {
+        label: 'Info',
+        name: 'HOT_Information__c',
+        type: 'String'
+    },
+
     {
         label: 'Tema',
         name: 'HOT_FreelanceSubject__c',

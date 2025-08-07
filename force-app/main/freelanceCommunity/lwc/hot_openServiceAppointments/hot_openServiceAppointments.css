@@ -84,20 +84,38 @@ lightning-input-field.ikke-sensitive-opplysninger > lightning-textarea > label:a
     max-height: 75%;
     width: 100%;
 }
-/* Testing START */
-.releaseButton {
+
+.release-button {
     width: 8rem;
+    border-radius: 0.25rem;
 }
 
 .release-button-container {
-    text-align: left;
+    display: flex;
+    justify-content: flex-start;
+    margin-top: 1rem;
+    margin-left: -1rem;
 }
 
-/* Testing END  */
+.remove-released-today-button {
+    margin-left: 1.3rem;
+    border-radius: 0.25rem;
+}
 
 @media (max-width: 576px) {
     .release-button-container {
         margin-bottom: 0.5rem;
+        margin-right: 15.5rem;
+    }
+
+    .remove-released-today-button {
+        margin-left: 1rem;
+    }
+
+    .release-button-container {
+        margin-top: -0.2rem;
+        margin-left: -1.15rem;
+        width: 60%;
     }
 
     .record-details-container {
