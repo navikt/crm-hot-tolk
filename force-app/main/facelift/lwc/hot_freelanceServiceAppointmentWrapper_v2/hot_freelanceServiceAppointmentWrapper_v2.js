@@ -138,12 +138,6 @@ export default class Hot_freelanceServiceAppointmentWrapper_v2 extends Navigatio
     }
 
     updateTabStyle() {
-        // this.template.querySelectorAll('button.tab').forEach((element) => {
-        //     element.classList.remove('tab_active');
-        //     if (element.dataset.id === this.activeTab) {
-        //         element.classList.add('tab_active');
-        //     }
-        // });
         const buttons = this.template.querySelectorAll('button.tab-button');
         buttons.forEach((button) => {
             const isActive = button.dataset.id === this.activeTab;
