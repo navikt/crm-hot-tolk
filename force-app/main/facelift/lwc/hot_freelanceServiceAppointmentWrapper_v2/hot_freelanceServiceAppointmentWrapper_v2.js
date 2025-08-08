@@ -35,6 +35,10 @@ export default class Hot_freelanceServiceAppointmentWrapper_v2 extends Navigatio
         return !this.isDetails;
     }
 
+    get showOpenTabReleaseButton() {
+        return this.activeTab === 'open';
+    }
+
     handleFilters(event) {
         this.filters = event.detail;
     }
@@ -69,8 +73,6 @@ export default class Hot_freelanceServiceAppointmentWrapper_v2 extends Navigatio
     }
 
     setActiveTab(event) {
-        // this.updateTab(event);
-
         const selected = event.target.dataset.id;
         if (selected && this.activeTab !== selected) {
             this.activeTab = selected;
@@ -162,5 +164,39 @@ export default class Hot_freelanceServiceAppointmentWrapper_v2 extends Navigatio
         if (!this.isDetails) {
             this.recordId = undefined;
         }
+    }
+
+    sendFilters() {
+        const eventToSend = new CustomEvent('sendfilters', { detail: this.filters });
+        this.dispatchEvent(eventToSend);
+    }
+
+    isRemoveReleasedTodayButtonHidden = true;
+    isReleasedTodayButtonHidden = false;
+    checkedServiceAppointments = [];
+    releasedTodayFilter() {
+        this.checkedServiceAppointments = [];
+        this.noReleasedToday = false;
+        const d = new Date();
+        let year = d.getFullYear();
+        let day = d.getDate();
+        let month = d.getMonth() + 1;
+        month = month < 10 ? '0' + month : month;
+        day = day < 10 ? '0' + day : day;
+        const formattedDate = `${year}-${month}-${day}`;
+        this.filters[5].value[0].value = formattedDate;
+
+        this.sendFilters();
+        this.applyFilter({ detail: { filterArray: this.filters, setRecords: true } });
+        this.isReleasedTodayButtonHidden = true;
+        this.isRemoveReleasedTodayButtonHidden = false;
+    }
+    removeReleasedTodayFilter() {
+        this.checkedServiceAppointments = [];
+        this.filters[5].value[0].value = '';
+        this.sendFilters();
+        this.applyFilter({ detail: { filterArray: this.filters, setRecords: true } });
+        this.isReleasedTodayButtonHidden = false;
+        this.isRemoveReleasedTodayButtonHidden = true;
     }
 }

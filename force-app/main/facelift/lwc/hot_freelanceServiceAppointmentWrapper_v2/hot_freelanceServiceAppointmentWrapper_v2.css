@@ -11,6 +11,7 @@
     max-width: 1200px;
     width: 100%;
 }
+
 .header-buttons {
     display: flex;
     justify-content: space-between;
@@ -20,12 +21,11 @@
 
 .header {
     font-family: 'Source Sans Pro', Arial, sans-serif;
-    flex: 2;
+    position: relative;
     width: 100%;
-    text-align: center;
     font-size: 2rem;
     font-weight: 600;
-    margin-left: -4rem;
+    margin-left: 32%;
     padding-bottom: 1.5rem;
 }
 
@@ -81,17 +81,67 @@
     border-radius: 0.25rem;
 }
 
+.filter-button-wrapper {
+    margin-left: 1rem;
+}
+
+.release-button-wrapper-desktop {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.5rem;
+    border-radius: 0.25rem;
+    margin-right: 5.5rem;
+    align-items: center;
+    justify-content: flex-start;
+    flex: 1 1 auto;
+    min-width: 0;
+    margin-top: -1rem;
+}
+
+.remove-released-today-button {
+    margin-left: -55%;
+}
+
+.release-button {
+    margin-left: 40%;
+}
+
+.release-button-style {
+    height: 3.4rem;
+    width: 7rem;
+    background-color: #ffffff;
+    border: 1px solid #00459c;
+}
+
+.release-button-wrapper-mobile {
+    display: none;
+}
+
 @media (max-width: 576px) {
+    .release-button-wrapper-desktop {
+        display: none;
+    }
+    .release-button-wrapper-mobile {
+        display: block;
+        margin-left: 35.5%;
+        margin-top: 0.5rem;
+        margin-bottom: -0.5rem;
+    }
+    .release-button {
+        margin-left: -54%;
+    }
     .desktop-only {
         display: none;
     }
+
     .header {
-        margin-left: -5.5rem;
-        margin-top: 3rem;
+        /* top, right, bottom, left */
+        margin: 2.8rem 1rem -3rem -5.5rem;
         font-size: 2.5rem;
-        margin-bottom: -3.5rem;
         font-weight: 600;
+        text-align: left;
     }
+
     .header-buttons {
         padding-bottom: 0rem;
     }
@@ -106,13 +156,13 @@
         margin-left: -0.5rem;
     }
 
-    .filter-button {
-        margin-bottom: -5rem;
-        margin-left: 5.5rem;
-        align-self: flex-end;
-        width: 100%;
+    .filter-button-wrapper {
         display: flex;
-        justify-content: flex-end;
+        justify-content: flex-start;
+        position: relative;
+        padding: 0 1rem;
+        top: 6.9rem;
+        left: 1rem;
     }
 
     .picklist-service {

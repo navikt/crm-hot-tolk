@@ -6,8 +6,32 @@
             </div>
             <h1 class="header" tabindex="-1" autofocus>Oppdrag</h1>
 
+            <!-- Desktop: Release button -->
+            <template lwc:if={showOpenTabReleaseButton}>
+                <div class="release-button-wrapper-desktop">
+                    <c-button
+                        hidden={isReleasedTodayButtonHidden}
+                        button-label="Frigitt idag"
+                        button-styling="primary"
+                        class="release-button"
+                        desktop-style="height: 3.4rem; white-space: nowrap; background-color: #FFFFFF; border: 3px solid #0067C5; color: #0067C5;"
+                        mobile-style="height: 3.4rem; white-space: nowrap; background-color: #FFFFFF; border: 3px solid #0067C5; color: #0067C5;"
+                        onbuttonclick={releasedTodayFilter}
+                    ></c-button>
+                    <c-button
+                        hidden={isRemoveReleasedTodayButtonHidden}
+                        button-label="Fjern frigitt idag filter"
+                        button-styling="primary"
+                        class="remove-released-today-button"
+                        desktop-style="height: 3.4rem; white-space: nowrap; background-color: #FFFFFF; border: 3px solid #0067C5; color: #0067C5;"
+                        mobile-style="height: 3.4rem; white-space: nowrap; background-color: #FFFFFF; border: 3px solid #0067C5; color: #0067C5;"
+                        onbuttonclick={removeReleasedTodayFilter}
+                    ></c-button>
+                </div>
+            </template>
+
             <template lwc:if={showFilterButton}>
-                <div class="filter-button">
+                <div class="filter-button-wrapper">
                     <c-list-filters-button
                         header="Filtrer søket"
                         class="filter-button-styling"
@@ -33,6 +57,30 @@
         <div class="tabset picklist-service mobile-only">
             <c-picklist choices={tabs} onpicklistvaluechange={setActiveTabMobile}></c-picklist>
         </div>
+
+        <!-- Release button Mobile -->
+        <template lwc:if={showOpenTabReleaseButton}>
+            <div class="release-button-wrapper-mobile">
+                <c-button
+                    hidden={isReleasedTodayButtonHidden}
+                    button-label="Frigitt idag"
+                    button-styling="primary"
+                    class="release-button"
+                    desktop-style="white-space: nowrap; height: 3.4rem; background-color: #FFFFFF; border: 3px solid #0067C5; color: #0067C5;"
+                    mobile-style="white-space: nowrap; background-color: #FFFFFF; border: 3px solid #0067C5; color: #0067C5;"
+                    onbuttonclick={releasedTodayFilter}
+                ></c-button>
+                <c-button
+                    hidden={isRemoveReleasedTodayButtonHidden}
+                    button-label="Fjern frigitt idag filter"
+                    button-styling="primary"
+                    class="remove-released-today-button"
+                    desktop-style="height: 3.4rem; white-space: nowrap; background-color: #FFFFFF; border: 3px solid #0067C5; color: #0067C5;"
+                    mobile-style="background-color: #FFFFFF; white-space: nowrap; border: 3px solid #0067C5; color: #0067C5;"
+                    onbuttonclick={removeReleasedTodayFilter}
+                ></c-button>
+            </div>
+        </template>
         <div class="tab-content-wrapper">
             <!-- Open Service Appointment table -->
             <template lwc:if={tabMap.open}>
