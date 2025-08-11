@@ -10,7 +10,7 @@ export let columns = [
         type: 'String'
     },
     {
-        label: 'Prioritert',
+        label: 'Merknad',
         name: 'isUrgent',
         type: 'boolean',
         svg: true

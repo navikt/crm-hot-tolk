@@ -39,13 +39,18 @@ export let columns = [
 
 export let mobileColumns = [
     {
+        label: 'Oppdragsnummer',
+        name: 'AppointmentNumber',
+        type: 'String'
+    },
+    {
         label: 'Bestilt tid',
         name: 'startAndEndDateWeekday',
         type: 'String'
     },
     {
-        label: 'Oppdragsnummer',
-        name: 'AppointmentNumber',
+        label: 'Status',
+        name: 'Status',
         type: 'String'
     },
     {
@@ -61,11 +66,6 @@ export let mobileColumns = [
     {
         label: 'Tema',
         name: 'Subject',
-        type: 'String'
-    },
-    {
-        label: 'Status',
-        name: 'Status',
         type: 'String'
     },
     {

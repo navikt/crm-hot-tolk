@@ -26,9 +26,7 @@ export let columns = [
     },
     {
         name: 'IsUnreadMessage',
-        // Label: Samtale is only used for testing, remove when done. Benjamin Le
         label: 'Samtale',
-        //label: '',
         type: 'String',
         svg: true
     }
@@ -38,6 +36,11 @@ export let mobileColumns = [
     {
         label: 'Tid',
         name: 'startAndEndDateWeekday',
+        type: 'String'
+    },
+    {
+        label: 'Status',
+        name: 'Status__c',
         type: 'String'
     },
     {
@@ -53,11 +56,6 @@ export let mobileColumns = [
     {
         label: 'Tema',
         name: 'ServiceAppointmentFreelanceSubject__c',
-        type: 'String'
-    },
-    {
-        label: 'Status',
-        name: 'statusMobile',
         type: 'String'
     },
     {

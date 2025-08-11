@@ -44,13 +44,13 @@ export let mobileColumns = [
         type: 'Datetime'
     },
     {
-        label: 'Oppdrag',
-        name: 'ServiceAppointmentName__c',
+        label: 'Status',
+        name: 'Status__c',
         type: 'String'
     },
     {
-        label: 'Status',
-        name: 'Status__c',
+        label: 'Oppdrag',
+        name: 'ServiceAppointmentName__c',
         type: 'String'
     }
 ];

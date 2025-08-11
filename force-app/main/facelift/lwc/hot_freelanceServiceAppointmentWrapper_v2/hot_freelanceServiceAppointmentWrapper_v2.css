@@ -2,14 +2,13 @@
     padding: 2rem;
     background-color: #fff !important;
     font-family: 'Source Sans Pro', Arial, sans-serif;
-    margin: auto;
     font-size: 18px;
     border-radius: 0.5rem;
     display: flex;
     justify-content: center;
     flex-direction: column;
-    max-width: 1200px;
-    width: 100%;
+    max-width: 1400px;
+    margin: auto;
 }
 
 .header-buttons {
@@ -25,13 +24,8 @@
     width: 100%;
     font-size: 2rem;
     font-weight: 600;
-    margin-left: 32%;
+    margin-left: 36%;
     padding-bottom: 1.5rem;
-}
-
-.back-button-info {
-    margin-left: 0rem;
-    margin-top: -2.4rem;
 }
 
 .tab-button {
