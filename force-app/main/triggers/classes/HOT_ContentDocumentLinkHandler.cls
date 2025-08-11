@@ -4,8 +4,25 @@ public without sharing class HOT_ContentDocumentLinkHandler extends MyTriggers {
     }
 
     public override void onAfterInsert() {
+        createContentDocumentLinksToWO((List<ContentDocumentLink>) records);
         createContentDocumentLinksToSA((List<ContentDocumentLink>) records);
         createContentDocumentLinksToAccount((List<ContentDocumentLink>) records);
+    }
+
+    public static void createContentDocumentLinksToWO(List<ContentDocumentLink> contentDocumentLinks) {
+        Map<Id, List<ContentDocumentLink>> linkedEntityMap = getContentDocumentLinksByRequest(contentDocumentLinks);
+        List<WorkOrder> workOrder = [
+            SELECT Id, HOT_Request__c
+            FROM WorkOrder
+            WHERE HOT_Request__c IN :linkedEntityMap.keySet()
+        ];
+        Map<Id, List<ContentDocumentLink>> contentDocumentLinksByWorkOrder = new Map<Id, List<ContentDocumentLink>>();
+        for (WorkOrder wo : workOrder) {
+            contentDocumentLinksByWorkOrder.put(wo.Id, linkedEntityMap.get(wo.HOT_Request__c));
+        }
+        if (!contentDocumentLinksByWorkOrder.isEmpty()) {
+            HOT_ContentDocumentLinkService.setContentDocumentLinks(contentDocumentLinksByWorkOrder);
+        }
     }
 
     public static void createContentDocumentLinksToSA(List<ContentDocumentLink> contentDocumentLinks) {
@@ -60,10 +77,7 @@ public without sharing class HOT_ContentDocumentLinkHandler extends MyTriggers {
 
         for (ContentDocumentLink contentDocumentLink : contentDocumentLinks) {
             SObjectType cdiLinkedEntityIdType = contentDocumentLink.LinkedEntityId.getSobjectType();
-            if (
-                cdiLinkedEntityIdType == requestType ||
-                cdiLinkedEntityIdType == serviceAppointmentType
-            ) {
+            if (cdiLinkedEntityIdType == requestType || cdiLinkedEntityIdType == serviceAppointmentType) {
                 contentDocumentLink.Visibility = 'AllUsers';
             }
         }

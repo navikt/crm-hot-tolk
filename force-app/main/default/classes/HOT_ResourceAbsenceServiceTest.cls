@@ -135,6 +135,4 @@ private class HOT_ResourceAbsenceServiceTest {
         List<ResourceAbsence> resourceAbsenceList = [SELECT Id FROM ResourceAbsence];
         System.assertEquals(0, resourceAbsenceList.size());
     }
-
-    
 }
