@@ -81,7 +81,13 @@ tr.row:hover {
     color: #000000;
 }
 
+.badge-blue {
+    background-color: #66a5f4;
+    color: #000000;
+}
+
 .badge-orange,
+.badge-blue,
 .badge-green,
 .badge-gray,
 .badge-red {
@@ -152,7 +158,7 @@ tr.row:hover {
     tr.row {
         display: block;
         margin-bottom: 1rem;
-        background-color: #f4f4f4;
+        background-color: #eceef0;
         border-radius: 0.5rem;
         box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
         padding: 1rem;
