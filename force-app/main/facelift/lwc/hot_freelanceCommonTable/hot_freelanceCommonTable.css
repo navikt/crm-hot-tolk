@@ -109,7 +109,7 @@ tr.row:hover {
     .checkbox-column {
         position: absolute;
         margin-top: -13%;
-        margin-left: 80.45%;
+        margin-left: 80.5%;
         border-bottom: none;
     }
 
@@ -164,7 +164,7 @@ tr.row:hover {
     tr.row td {
         font-family: 'Source Sans 3', 'Source Sans Pro', Arial, sans-serif;
         width: 100%;
-        font-size: 1.125rem;
+        font-size: 1.25rem;
     }
 
     /* Table data row for specific columns */
