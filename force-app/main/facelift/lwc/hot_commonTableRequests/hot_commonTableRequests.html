@@ -20,18 +20,10 @@
                             tabindex="0"
                             role="row"
                         >
-                            <!-- Mobile-only: show status as full-width row above -->
-                            <td class="mobile-status-label-wrapper" aria-hidden="true">
-                                <template lwc:if={row.statusLabel}>
-                                    <div class={row.mobileStatusClass}>{row.statusLabel}</div>
-                                </template>
-                            </td>
-
-                            <!-- Render each field cell -->
                             <template for:each={row.fields} for:item="field">
-                                <td key={field.name} role="cell">
-                                    <template lwc:if={field.isStatus}>
-                                        <span class={field.fullCssClass}> {field.displayLabel} </span>
+                                <td key={field.name} data-label={field.label}>
+                                    <template lwc:if={field.cssClass}>
+                                        <span class={field.cssClass}>{field.displayLabel}</span>
                                     </template>
                                     <template lwc:else> {field.displayLabel} </template>
                                 </td>

@@ -1,54 +1,48 @@
 .table-wrapper {
     width: 100%;
-    /* Added box-sizing for better layout control */
+    max-width: 1200px;
+    margin: 0 auto;
     box-sizing: border-box;
+    padding: 0 1rem;
 }
 
 /* Table row styling */
 tr.row {
     height: 60px;
     border-top: 1px solid rgba(44, 44, 44, 0.56);
-    transition: transform 0.1s;
-}
-
-tr.row:last-child {
-    border-bottom: 1px solid rgba(44, 44, 44, 0.56);
+    transition: background-color 0.1s;
 }
 
 td,
 th {
-    width: 15%;
-    padding: 0 1rem;
+    padding: 0.5rem 1rem;
     vertical-align: middle;
     box-sizing: border-box;
+    font-size: 1.125rem;
 }
 
-/* First column font-weight */
-.first-column {
-    font-weight: normal;
+th {
+    font-size: 1.25rem;
 }
 
-/* Hover effect for rows */
 tr.row:hover {
     cursor: pointer;
-    background-color: #f1f1f1;
+    background-color: #f9f9f9;
 }
 
-/* Desktop status label visible */
-.desktop-status-label {
-    display: inline-block;
+/* Focus state for accessibility */
+tr.row:focus {
+    outline: 3px solid #1976d2;
+    outline-offset: 2px;
+    background-color: #e3f2fd;
+    cursor: pointer;
 }
 
-/* Mobile status label hidden on desktop */
-.mobile-status-label-wrapper {
-    display: none;
-}
-
-/* No data message styling */
+/* No data message */
 .no-data {
     text-align: center;
     padding: 1rem;
-    font-size: 1rem;
+    font-size: 1.125rem;
     color: #6b6b6b;
 }
 
@@ -86,89 +80,50 @@ tr.row:hover {
 .label-blue {
     padding: 0.25em 0.7em;
     border-radius: 0.25rem;
-    font-size: 1rem;
+    font-size: 1.125rem;
     display: inline-block;
     white-space: nowrap;
 }
 
 /* MOBILE LAYOUT */
-@media (max-width: 576px) {
+@media (max-width: 768px) {
     .table-wrapper {
         overflow-x: auto;
-        padding: 0;
+        padding: 1rem;
     }
 
-    /* Hide table headers on mobile */
     thead {
         display: none;
     }
 
-    /* Rows become block cards */
     tr.row {
         display: block;
         margin-bottom: 1rem;
-        background-color: #f4f4f4;
+        background-color: #eceef0;
         border-radius: 0.5rem;
         box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
         padding: 1rem;
         height: auto;
         border: none;
-        position: relative;
     }
 
-    /* Bold and larger font for 2nd and 3rd cells */
-    tr.row td:nth-child(2),
-    tr.row td:nth-child(3) {
-        font-weight: 700;
-        font-size: 1.125rem;
-    }
-
-    /* Smaller, grayed text for last column */
-    tr.row td:last-child {
-        font-size: 0.85rem;
-        color: #444444;
-    }
-
-    /* Make all cells block and full width */
     td {
         display: block;
         text-align: left;
         width: 100%;
-        padding: 0 0;
+        padding: 0.1rem 0;
+        font-size: 1.25rem;
         position: relative;
         box-sizing: border-box;
     }
 
-    /* Add label before each cell for clarity */
     td::before {
-        content: attr(data-label);
-        font-weight: 600;
-        display: block;
-        margin-bottom: 0.25rem;
+        content: none;
     }
 
-    /* Show mobile status label */
-    .mobile-status-label-wrapper {
-        display: block;
-        text-align: right;
-        margin-bottom: -1.7rem;
+    /* First and third column bold */
+    td:nth-child(1),
+    td:nth-child(3) {
+        font-weight: bold;
     }
-
-    .mobile-status-label {
-        font-size: 0.9rem;
-        display: inline-block;
-    }
-
-    /* Hide desktop status label on mobile */
-    .desktop-status-label {
-        display: none;
-    }
-}
-
-/* Focus styles for keyboard navigation accessibility */
-tr.row:focus {
-    outline: 3px solid #1976d2; /* Blue focus ring */
-    outline-offset: 2px;
-    background-color: #e3f2fd; /* Light blue highlight */
-    cursor: pointer;
 }

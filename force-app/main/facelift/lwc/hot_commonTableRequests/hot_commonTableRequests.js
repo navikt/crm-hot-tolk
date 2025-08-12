@@ -3,14 +3,10 @@ import { LightningElement, api } from 'lwc';
 export default class Hot_commonTableRequests extends LightningElement {
     @api records = [];
     @api columns = [];
-    @api labelMap = {}; // used for mapping status or other fields to label + css class
+    @api labelMap = {};
     @api ariaLabel;
 
     recordMap = {};
-
-    get isMobile() {
-        return window.screen.width < 576;
-    }
 
     get recordsToShow() {
         const processed = [];
@@ -18,32 +14,22 @@ export default class Hot_commonTableRequests extends LightningElement {
 
         if (Array.isArray(this.records)) {
             for (let record of this.records) {
-                let fields = [];
-
-                for (let column of this.columns) {
-                    const fieldName = column.fieldName;
-                    const rawValue = record[fieldName];
-                    const mapping = this.labelMap[fieldName]?.[rawValue];
-
-                    fields.push({
-                        name: fieldName,
-                        label: column.label,
+                let fields = this.columns.map((col) => {
+                    const rawValue = record[col.fieldName];
+                    const mapping = this.labelMap[col.fieldName]?.[rawValue];
+                    return {
+                        name: col.fieldName,
+                        label: col.label,
                         value: rawValue,
-                        displayLabel: mapping?.label ?? rawValue,
-                        cssClass: mapping?.cssClass ?? '',
-                        isStatus: !!mapping,
-                        fullCssClass: mapping?.cssClass ? `desktop-status-label ${mapping.cssClass}` : ''
-                    });
-                }
-
-                const statusField = fields.find((f) => f.isStatus);
+                        displayLabel: mapping?.label ?? rawValue ?? '',
+                        cssClass: mapping?.cssClass ?? ''
+                    };
+                });
 
                 processed.push({
                     id: record.Id,
                     original: record,
-                    fields,
-                    statusLabel: statusField?.displayLabel,
-                    mobileStatusClass: statusField ? `mobile-status-label ${statusField.cssClass}` : ''
+                    fields
                 });
 
                 this.recordMap[record.Id] = record;
@@ -68,9 +54,6 @@ export default class Hot_commonTableRequests extends LightningElement {
                     composed: true
                 })
             );
-        } else {
-            console.warn('No matching record for row click:', recordId);
-            console.log('Records:', this.records);
         }
     }
 
