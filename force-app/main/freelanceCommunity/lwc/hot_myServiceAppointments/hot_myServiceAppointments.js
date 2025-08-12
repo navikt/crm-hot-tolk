@@ -115,10 +115,10 @@ export default class Hot_myServiceAppointments extends NavigationMixin(Lightning
             this.error = undefined;
             this.records = tempRecords.map((x) => ({
                 ...x,
-                startAndEndDateWeekday: formatDatetimeinterval(x.EarliestStartTime, x.DueDate)
-                // Testing comment out display of day of the ween on date
-                // + ' ' +
-                // this.getDayOfWeek(x.EarliestStartTime)
+                startAndEndDateWeekday:
+                    formatDatetimeinterval(x.EarliestStartTime, x.DueDate) +
+                    ' ' +
+                    this.getDayOfWeek(x.EarliestStartTime)
             }));
             this.initialServiceAppointments = [...this.records];
             this.refresh();

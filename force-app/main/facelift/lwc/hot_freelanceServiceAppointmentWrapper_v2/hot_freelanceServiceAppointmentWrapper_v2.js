@@ -191,6 +191,7 @@ export default class Hot_freelanceServiceAppointmentWrapper_v2 extends Navigatio
         this.isReleasedTodayButtonHidden = true;
         this.isRemoveReleasedTodayButtonHidden = false;
     }
+
     removeReleasedTodayFilter() {
         this.checkedServiceAppointments = [];
         this.filters[5].value[0].value = '';

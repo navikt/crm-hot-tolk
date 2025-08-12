@@ -6,7 +6,7 @@
             </div>
             <h1 class="header" tabindex="0" autofocus>Oppdrag</h1>
 
-            <!-- Desktop: Release button -->
+            <!-- Desktop: Release today button -->
             <template lwc:if={showOpenTabReleaseButton}>
                 <div class="release-button-wrapper-desktop">
                     <c-button
@@ -30,6 +30,7 @@
                 </div>
             </template>
 
+            <!-- Filter button -->
             <template lwc:if={showFilterButton}>
                 <div class="filter-button-wrapper">
                     <c-list-filters-button
@@ -43,6 +44,7 @@
             </template>
         </div>
 
+        <!-- Tab section for the freelance tables-->
         <template lwc:if={showTabsAndLineBreak}>
             <div class="tabset desktop-only">
                 <template for:each={tabs} for:item="tab">
@@ -54,11 +56,12 @@
             <br />
         </template>
 
+        <!-- Mobile: picklist-->
         <div class="tabset picklist-service mobile-only">
             <c-picklist choices={tabs} onpicklistvaluechange={setActiveTabMobile}></c-picklist>
         </div>
 
-        <!-- Release button Mobile -->
+        <!-- Mobile: Release button -->
         <template lwc:if={showOpenTabReleaseButton}>
             <div class="release-button-wrapper-mobile">
                 <c-button

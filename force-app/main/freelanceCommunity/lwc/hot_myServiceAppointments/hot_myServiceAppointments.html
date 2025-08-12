@@ -1,13 +1,6 @@
 <template>
     <div class="main-content">
         <div if:false={noServiceAppointments}>
-            <!-- <c-table if:false={isMobile} records={records} columns={columns} onrowclick={goToRecordDetails}></c-table>
-            <c-hot_freelance-table-list-mobile
-                if:true={isMobile}
-                records={records}
-                columns={columns}
-                onrowclick={goToRecordDetails}
-            ></c-hot_freelance-table-list-mobile> -->
             <c-hot_freelance-common-table
                 if:false={isMobile}
                 records={records}

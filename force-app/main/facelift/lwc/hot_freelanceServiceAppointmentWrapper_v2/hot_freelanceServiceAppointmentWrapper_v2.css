@@ -138,6 +138,7 @@
 
     .header-buttons {
         padding-bottom: 0rem;
+        margin-top: -1rem;
     }
     .list {
         max-width: 100vw;
@@ -155,7 +156,7 @@
         justify-content: flex-start;
         position: relative;
         padding: 0 1rem;
-        top: 7.3rem;
+        top: 7rem;
         left: 1rem;
     }
 

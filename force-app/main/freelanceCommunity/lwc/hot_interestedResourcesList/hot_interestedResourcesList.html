@@ -1,20 +1,6 @@
 <template>
     <div class="main-content">
         <div if:false={noInterestedResources}>
-            <!-- <c-hot_freelance-table-list-mobile
-                if:true={isMobile}
-                records={records}
-                columns={columns}
-                onrowclick={goToRecordDetails}
-                icon-by-value={iconByValue}
-            ></c-hot_freelance-table-list-mobile>
-            <c-table
-                if:false={isMobile}
-                records={records}
-                columns={columns}
-                onrowclick={goToRecordDetails}
-                icon-by-value={iconByValue}
-            ></c-table> -->
             <c-hot_freelance-common-table
                 if:true={isMobile}
                 records={records}

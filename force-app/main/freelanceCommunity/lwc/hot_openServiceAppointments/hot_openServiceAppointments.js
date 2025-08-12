@@ -156,15 +156,7 @@ export default class Hot_openServiceAppointments extends LightningElement {
             this.allServiceAppointmentsWired = result.data.map((x) => ({
                 ...x,
                 isUrgent: x.HOT_IsUrgent__c,
-                startAndEndDateWeekday:
-                    /* comment out the day data so we only show date START */
-                    // formatDatetimeinterval(x.EarliestStartTime, x.DueDate) +
-                    // ' ' +
-                    // this.getDayOfWeek(x.EarliestStartTime),
-
-                    formatDatetimeinterval(x.EarliestStartTime, x.DueDate),
-
-                /* END */
+                startAndEndDateWeekday: formatDatetimeinterval(x.EarliestStartTime, x.DueDate),
                 weekday: this.getDayOfWeek(x.EarliestStartTime)
             }));
 
@@ -247,10 +239,7 @@ export default class Hot_openServiceAppointments extends LightningElement {
         try {
             if (this.isMobile) {
                 this.template
-                    /* Testing queryselector START */
-                    //.querySelector('c-hot_freelance-table-list-mobile')
                     .querySelector('c-hot_freelance-common-table')
-                    /* Testing queryselector END */
                     .getCheckedRows()
                     .forEach((row) => {
                         this.checkedServiceAppointments.push(row);
@@ -258,12 +247,7 @@ export default class Hot_openServiceAppointments extends LightningElement {
                     });
             } else {
                 this.template
-                    /* Testing queryselector START */
-                    /* This will send the checked row data */
-                    //.querySelector('c-table')
-
                     .querySelector('c-hot_freelance-common-table')
-                    /* Testing queryselector END */
                     .getCheckedRows()
                     .forEach((row) => {
                         this.checkedServiceAppointments.push(row);

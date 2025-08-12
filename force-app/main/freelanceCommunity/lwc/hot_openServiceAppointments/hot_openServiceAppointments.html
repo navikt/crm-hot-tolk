@@ -1,46 +1,5 @@
 <template>
     <div class="main-content">
-        <div class="release-button-container">
-            <!-- Added releaseButton style changes -->
-            <!-- <c-button
-                hidden={isReleasedTodayButtonHidden}
-                button-label="Frigitt idag"
-                button-styling="primary"
-                class="release-button"
-                onbuttonclick={releasedTodayFilter}
-            ></c-button>
-            <c-button
-                hidden={isRemoveReleasedTodayButtonHidden}
-                button-label="Fjern frigitt idag filter"
-                button-styling="primary"
-                class="remove-released-today-button"
-                onbuttonclick={removeReleasedTodayFilter}
-            ></c-button> -->
-        </div>
-        <!-- <div>
-            <c-hot_freelance-table-list-mobile
-                if:true={isMobile}
-                records={records}
-                columns={columns}
-                onrowclick={goToRecordDetails}
-                checkbox="true"
-                checked-rows={checkedServiceAppointments}
-                oncheckedrows={handleRowChecked}
-                icon-by-value={iconByValue}
-            ></c-hot_freelance-table-list-mobile>
-            <c-table
-                if:false={isMobile}
-                records={records}
-                columns={columns}
-                onrowclick={goToRecordDetails}
-                checkbox="true"
-                checked-rows={checkedServiceAppointments}
-                oncheckedrows={handleRowChecked}
-                icon-by-value={iconByValue}
-            ></c-table>
-        </div> -->
-
-        <!-- Testing START -->
         <div>
             <template lwc:if={isMobile}>
                 <c-hot_freelance-common-table
@@ -67,7 +26,6 @@
                 </c-hot_freelance-common-table>
             </template>
         </div>
-        <!-- Testing END -->
         <div if:true={noServiceAppointments} style="text-align: center">
             <br />
             Det finnes ingen ledige oppdrag.
