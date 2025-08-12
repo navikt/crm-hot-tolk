@@ -7,14 +7,12 @@
                 <div class="header-buttons">
                     <c-button
                         if:false={urlStateParameters.id}
-                        button-label={buttonText}
+                        button-label="Ny bestilling"
                         aria-label="Ny bestilling"
                         button-styling="primary"
-                        class="button-padding mobile-button"
+                        class="button-padding"
                         desktop-style="width: 7em; height: 3em; justify-content: center"
-                        mobile-style="border-radius: 50%; justify-content: center; border-radius: 50%; 
-                        justify-content: center; height: 15vw; font-size: 12vw; width: 15vw; 
-                        box-shadow: 0px 5px 10px 0px rgb(0 0 0 / 30%); background-color: forestgreen"
+                        mobile-style="justify-content: center; width: 7em; height: 2.5em;"
                         onbuttonclick={goToNewRequest}
                     ></c-button>
                     <c-list-filters-button

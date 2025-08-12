@@ -1,7 +1,7 @@
 /* Layout */
 .mainContent {
-    margin-bottom: 3.5rem;
     font-size: 18px;
+    background: white;
 }
 
 .mine-bestillinger-wrapper {
@@ -10,7 +10,7 @@
     margin: 0 auto;
     width: 100%;
     max-width: 1200px;
-    padding: 2rem;
+    padding: 1rem;
     font-family: 'Source Sans Pro', Arial, sans-serif;
 }
 
@@ -28,7 +28,7 @@
     flex: 2;
     width: 100%;
     text-align: center;
-    font-size: 1.5rem;
+    font-size: 2rem;
 }
 
 .header:focus {
@@ -147,10 +147,6 @@ span {
         scroll-behavior: auto;
         max-height: 50vh;
         overflow: scroll;
-    }
-
-    .mobile-button {
-        right: 10vw;
     }
 
     .header-buttons {
