@@ -3,24 +3,18 @@
         <template for:each={threadFilterButtonType} for:item="filterOption">
             <button
                 key={filterOption.value}
+                class="tab tab-button"
+                data-id={filterOption.value}
                 onclick={handleFilterButtonClick}
-                class="filterButton"
                 value={filterOption.value}
             >
                 {filterOption.label}
             </button>
         </template>
     </div>
-    <select class="slds-select mobile-only" onchange={handleFilterSelectChange}>
-        <template for:each={threadFilterButtonType} for:item="filterOption">
-            <option key={filterOption.label} class="uiInputSelectOption" value={filterOption.value}>
-                {filterOption.label}
-            </option>
-        </template>
-    </select>
-    <!-- <c-picklist
-        master-label=""
+    <c-picklist
         choices={threadFilterButtonType}
+        class="mobile-only"
         onpicklistvaluechange={handleFilterSelectChange}
-    ></c-picklist> -->
+    ></c-picklist>
 </template>
