@@ -1,7 +1,10 @@
 <template>
     <div class="threadListWrapper">
         <div class="content">
-            <h1 class="headerText">{headerText}</h1>
+            <div class="back-button-info">
+                <c-hot_back-button tabindex="0" role="button"></c-hot_back-button>
+            </div>
+            <h1 class="header">{headerText}</h1>
             <div class="threadFilterSearchMobile mobile-only">
                 <c-hot_thread-list-search
                     is-freelance-view={isFreelanceView}
@@ -39,7 +42,7 @@
                         <c-hot_thread-list-card
                             key={thread.Id}
                             thread={thread}
-                            onthreadbuttonclick={handleThreadClick}
+                            onthreadbuttonclick={goToThread}
                         ></c-hot_thread-list-card>
                     </template>
                 </div>
