@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ValidationRule xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>HOT_Prevent_Faulty_Outlook_Events</fullName>
+    <active>true</active>
+    <description>This should stop the insertion of deleted events being reinserted from outlook sync</description>
+    <errorConditionFormula>AND(
+  $RecordType.DeveloperName = &quot;HOT_Events&quot;,
+  BEGINS(Subject, &quot;SA-&quot;),
+  ISBLANK(WhatId),
+  CONTAINS(Description, &quot;Link til TinD: https://navdialog&quot;)
+)</errorConditionFormula>
+    <errorMessage>Event cannot be saved: Missing linked record (WhatId) for HOT Event with TinD link.</errorMessage>
+</ValidationRule>
