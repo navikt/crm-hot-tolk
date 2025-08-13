@@ -9,13 +9,15 @@ export default class Hot_freelanceCommonTable extends LightningElement {
     @api checkbox = false;
     @api checkedRows = [];
 
-    // WIP: return badge css will be changed when we have a design system
+    // WIP: return badge css will be changed when we have a decided on design colors
     statusBadgeMap = {
         'badge-gray': ['Åpen', 'Open'],
         'badge-blue': ['Reserved', 'Reservert'],
         'badge-green': ['Assigned', 'Tildelt', 'Dekket', 'Covered'],
-        'badge-orange': ['Interested', 'Påmeldt', 'Not Assigned', 'Ikke tildelt deg', 'Wanted', 'Ønsket til'],
+        'badge-yellow': ['Interested', 'Påmeldt', 'Wanted', 'Ønsket til'],
         'badge-red': [
+            'Not Assigned',
+            'Ikke tildelt deg',
             'Withdrawn',
             'Tatt av oppdraget',
             'Canceled',
@@ -37,7 +39,7 @@ export default class Hot_freelanceCommonTable extends LightningElement {
 
     // Maps aria-label from message icons to CSS badge classes
     statusBadgeIconByAriaLabel = {
-        'Ulest melding': 'badge-orange',
+        'Ulest melding': 'badge-yellow',
         'Ingen nye meldinger': 'badge-green',
         'Høyt prioritert': 'badge-orange'
     };

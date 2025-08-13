@@ -60,9 +60,14 @@ tr.row:hover {
     width: 5%;
 }
 
-/* badge colors and styling */
-.badge-orange {
+/* Badge colors and styling */
+.badge-yellow {
     background-color: #fcda9d;
+    color: #000000;
+}
+
+.badge-orange {
+    background-color: #ffc166;
     color: #000000;
 }
 
@@ -82,10 +87,11 @@ tr.row:hover {
 }
 
 .badge-blue {
-    background-color: #66a5f4;
+    background-color: #99c3ff;
     color: #000000;
 }
 
+.badge-yellow,
 .badge-orange,
 .badge-blue,
 .badge-green,
