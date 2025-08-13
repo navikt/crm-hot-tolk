@@ -54,9 +54,9 @@ export default class Hot_threadList_v2 extends NavigationMixin(LightningElement)
         this.filterValue = event.detail;
         this.tryMapAndSortThreads();
     }
-    handleThreadClick(event) {
-        alert('funket tråd' + event.detail);
-    }
+    // handleThreadClick(event) {
+    //     alert('funket tråd' + event.detail);
+    // }
     handleSearchChange(event) {
         this.searchValue = event.detail;
         this.tryMapAndSortThreads();
@@ -72,7 +72,7 @@ export default class Hot_threadList_v2 extends NavigationMixin(LightningElement)
         const fv = this.filterValue;
         const sv = (this.searchValue ?? '').trim().toLowerCase(); // søkestreng
 
-        const hasFilter = !!fv; //sjekker om det er satt filterverdi
+        const hasFilter = !!fv && fv !== 'all'; //Sjekke om filterverdi er satt og ikke er all
         const hasSearch = sv.length > 0; //sjekker om det er søkestreng verdi
 
         this.sortedThreads = (this.threads ?? [])
@@ -163,7 +163,7 @@ export default class Hot_threadList_v2 extends NavigationMixin(LightningElement)
         // Vi skal lage en record page for alle typer tråder men foreløpig nå må den gå til hver sin.
         if (this.isFreelanceView) {
             const baseUrl = '/samtale-frilans';
-            const attributes = `recordId=${event.detail.Id}&from=mine-samtaler-frilanstolk`;
+            const attributes = `recordId=${event.detail}&from=mine-samtaler-frilanstolk`;
             const url = `${baseUrl}?${attributes}`;
 
             this[NavigationMixin.Navigate]({
@@ -176,7 +176,7 @@ export default class Hot_threadList_v2 extends NavigationMixin(LightningElement)
             this[NavigationMixin.Navigate]({
                 type: 'standard__recordPage',
                 attributes: {
-                    recordId: event.detail.Id,
+                    recordId: event.detail,
                     objectApiName: 'Thread__c',
                     actionName: 'view'
                 }
