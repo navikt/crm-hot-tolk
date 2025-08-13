@@ -7,8 +7,8 @@
             </div>
 
             <!-- Header -->
-            <h1 class="heading-title center-text" tabindex="0" role="heading" aria-level="1" autofocus>Min side frilanstolk</h1>
-            <h2 class="heading-medium center-text" tabindex="0" role="heading" aria-level="2" id="kontaktinfo">
+            <h1 class="heading-title center-text" role="heading" aria-level="1">Min side frilanstolk</h1>
+            <h2 class="heading-medium heading-contact center-text" role="heading" aria-level="2" id="kontaktinfo">
                 Kontaktinformasjon
             </h2>
 
@@ -82,7 +82,7 @@
                                     <p class="label-form-small response-mobile-region">{selectedRegionLabels}</p>
                                 </div>
 
-                                <h2 class="heading-medium center-text header-quali">Kvalifikasjoner</h2>
+                                <h2 class="heading-medium header-quali center-text">Kvalifikasjoner</h2>
 
                                 <h3 class="heading-small">Kvalifikasjoner du innehar</h3>
                                 <div class="form-row response-mobile-qualification">
@@ -95,7 +95,7 @@
                                     </template>
                                 </div>
 
-                                <h2 class="heading-medium center-text">Diverse</h2>
+                                <h2 class="heading-medium center-text heading-diverse">Diverse</h2>
 
                                 <div class="form-row">
                                     <div class="form-col more-info">
@@ -120,7 +120,7 @@
                 </template>
 
                 <!--Edit information section-->
-                <section lwc:if={editUserInformation} aria-live="polite">
+                <section lwc:if={editUserInformation} class="section-edit-mobile" aria-live="polite">
                     <div class="form-container">
                         <div class="form-row form-row-input">
                             <div class="form-col form-col-input-left">
@@ -226,7 +226,7 @@
                         </div>
 
                         <!-- Regions edit section -->
-                        <h3 class="heading-small" tabindex="0" aria-level="3" role="heading">Foretrukne regioner</h3>
+                        <h3 class="heading-small" aria-level="3" role="heading">Foretrukne regioner</h3>
 
                         <div class="form-row-region">
                             <div class="form-col-region-left">
@@ -258,12 +258,10 @@
                         </div>
 
                         <!-- Skills edit section -->
-                        <h2 class="heading-medium center-text header-quali" tabindex="0" aria-level="2" role="heading">
+                        <h2 class="heading-medium center-text header-quali" aria-level="2" role="heading">
                             Kvalifikasjoner
                         </h2>
-                        <h3 class="heading-small" tabindex="0" aria-level="3" role="heading">
-                            Kvalifikasjoner du innehar
-                        </h3>
+                        <h3 class="heading-small" aria-level="3" role="heading">Kvalifikasjoner du innehar</h3>
                         <div class="form-row">
                             <div class="form-col skills-mobile">
                                 <template lwc:if={skillsWithSelection}>
@@ -282,7 +280,9 @@
                         </div>
 
                         <!-- More information edit section -->
-                        <h2 class="heading-medium center-text" tabindex="0" aria-level="2" role="heading">Diverse</h2>
+                        <h2 class="heading-medium heading-diverse center-text" aria-level="2" role="heading">
+                            Diverse
+                        </h2>
 
                         <div class="form-row">
                             <div class="form-col">

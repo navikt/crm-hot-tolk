@@ -19,14 +19,14 @@
     padding: 2rem;
     border-radius: 8px;
     width: 100%;
-    max-width: 800px;
+    max-width: 1000px;
     margin: 2rem auto;
     box-sizing: border-box;
 }
 
 .back-button-info {
     margin-left: 4.9rem;
-    margin-bottom: 0.5rem;
+    margin-top: 0.5rem;
 }
 
 .heading-title {
@@ -185,9 +185,11 @@
 }
 
 @media (max-width: 768px) {
+    .section-mobile {
+        width: 160%;
+    }
     .back-button-info {
-        margin-left: -2rem;
-        margin-bottom: 1.5rem;
+        margin-left: -0.5rem;
     }
     .form-row {
         display: grid;
@@ -209,14 +211,17 @@
     }
 
     .page-background {
-        padding: 1rem;
         margin-top: -0.5rem;
+        padding: 0;
+        width: 100%;
     }
 
     .card-container {
-        margin-left: 0rem;
         margin-top: -2rem;
+        margin-bottom: 3rem;
+        margin-left: -1rem;
     }
+
     .form-big-container {
         margin-right: 5rem;
     }
@@ -229,8 +234,22 @@
     .response-hide-region {
         display: none;
     }
+    .heading-title {
+        font-size: 2.5rem;
+        width: 100%;
+        font-weight: 600;
+        text-align: left;
+        margin-left: 0.4rem;
+        margin-top: 1rem;
+        margin-bottom: -1rem;
+    }
+    .heading-contact {
+        text-align: left;
+        margin-left: 0.5rem;
+        margin-bottom: -2rem !important;
+    }
     .heading-medium {
-        margin-bottom: 2rem;
+        margin-bottom: 1rem;
     }
     .heading-small {
         margin-left: -3rem;
@@ -238,13 +257,19 @@
         margin-bottom: 0.8rem;
     }
     .header-quali {
-        margin-left: 1rem;
+        text-align: left;
+        margin-left: -3rem;
     }
+    .heading-diverse {
+        text-align: left;
+        margin-left: -3rem;
+    }
+
     .response-mobile-qualification {
         margin-left: -5rem;
     }
     .button-container {
-        margin-left: 4.2rem;
+        margin-left: -3rem;
     }
     .skills-mobile {
         margin-left: -0.1rem;
@@ -255,5 +280,13 @@
 
     .notification-picklist {
         width: 17.5rem;
+    }
+
+    .section-edit-mobile {
+        width: 160%;
+    }
+
+    .form-col-right {
+        margin-left: 4rem;
     }
 }
