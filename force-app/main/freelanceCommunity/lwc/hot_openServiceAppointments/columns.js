@@ -10,12 +10,6 @@ export let columns = [
         type: 'String'
     },
     {
-        label: 'Merknad',
-        name: 'isUrgent',
-        type: 'boolean',
-        svg: true
-    },
-    {
         label: 'Informasjon',
         name: 'HOT_Information__c',
         type: 'String'
@@ -24,6 +18,12 @@ export let columns = [
         label: 'Tema',
         name: 'HOT_FreelanceSubject__c',
         type: 'String'
+    },
+    {
+        label: 'Merknad',
+        name: 'isUrgent',
+        type: 'boolean',
+        svg: true
     }
 ];
 export let inDetailsColumns = [

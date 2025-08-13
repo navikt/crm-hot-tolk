@@ -38,6 +38,10 @@
     padding-bottom: 1.5rem;
 }
 
+.back-button-info {
+    margin-top: -2.7rem;
+}
+
 .tab-button {
     all: unset;
     margin-left: 0.5rem;
@@ -87,11 +91,6 @@
 
 .filter-button-wrapper {
     margin-left: 1rem;
-}
-
-.back-button-info {
-    margin-top: -2.7rem;
-    flex: 1 1 auto;
 }
 
 .release-button-wrapper-desktop {
