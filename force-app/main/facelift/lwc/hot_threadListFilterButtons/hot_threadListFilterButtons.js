@@ -2,6 +2,7 @@ import { LightningElement, api } from 'lwc';
 
 export default class Hot_threadListFilterButtons extends LightningElement {
     @api isFreelanceView = false;
+    activeTab = 'all';
 
     get threadFilterButtonType() {
         if (this.isFreelanceView) {
@@ -14,40 +15,59 @@ export default class Hot_threadListFilterButtons extends LightningElement {
     freelanceThreadsFilterButtons = [
         {
             label: 'Alle',
-            value: ''
+            name: 'all',
+            value: 'all',
+            selected: false
         },
         {
             label: 'Med formidler',
-            value: 'HOT_TOLK-FORMIDLER'
+            name: 'HOT_TOLK-FORMIDLER',
+            value: 'HOT_TOLK-FORMIDLER',
+            selected: false
         },
         {
             label: 'Med bruker',
-            value: 'HOT_BRUKER-TOLK'
+            name: 'HOT_BRUKER-TOLK',
+            value: 'HOT_BRUKER-TOLK',
+            selected: false
         },
         {
             label: 'Med medtolk og bruker',
-            value: 'HOT_TOLK-TOLK'
+            name: 'HOT_TOLK-TOLK',
+            value: 'HOT_TOLK-TOLK',
+            selected: false
         },
         {
             label: 'Med ressurskontor',
-            value: 'HOT_TOLK-RESSURSKONTOR'
+            name: 'HOT_TOLK-RESSURSKONTOR',
+            value: 'HOT_TOLK-RESSURSKONTOR',
+            selected: false
         }
     ];
+
     userThreadsFilterButtons = [
         {
             label: 'Alle',
-            value: ''
+            name: 'all',
+            value: 'all',
+            selected: false
         },
         {
             label: 'Med formidler',
-            value: 'HOT_BRUKER-FORMIDLER'
+            name: 'HOT_BRUKER-FORMIDLER',
+            value: 'HOT_BRUKER-FORMIDLER',
+            selected: false
         },
         {
             label: 'Med tolk',
-            value: 'HOT_BRUKER-TOLK'
+            name: 'HOT_BRUKER-TOLK',
+            value: 'HOT_BRUKER-TOLK',
+            selected: false
         }
     ];
+
     handleFilterButtonClick(event) {
+        this.setActiveTab(event);
         const eventToSend = new CustomEvent('filterbuttonclick', {
             detail: event.target.value
         });
@@ -55,8 +75,27 @@ export default class Hot_threadListFilterButtons extends LightningElement {
     }
     handleFilterSelectChange(event) {
         const eventToSend = new CustomEvent('filterbuttonclick', {
-            detail: event.target.value
+            detail: event.detail.name
         });
         this.dispatchEvent(eventToSend);
+    }
+
+    renderedCallback() {
+        this.updateTabStyle();
+    }
+
+    setActiveTab(event) {
+        const selected = event.target.dataset.id;
+        if (selected && this.activeTab !== selected) {
+            this.activeTab = selected;
+            this.updateTabStyle();
+        }
+    }
+    updateTabStyle() {
+        const buttons = this.template.querySelectorAll('button.tab-button');
+        buttons.forEach((button) => {
+            const isActive = button.dataset.id === this.activeTab;
+            button.classList.toggle('tab-active', isActive);
+        });
     }
 }
