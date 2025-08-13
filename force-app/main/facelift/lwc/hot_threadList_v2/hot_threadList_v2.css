@@ -9,10 +9,6 @@
     gap: 20px;
     margin: auto;
 }
-.headerText {
-    text-align: center;
-    padding: 2rem;
-}
 .left {
     flex: 0 0 30%;
     display: flex;
@@ -29,13 +25,25 @@
     background-color: #ffffff;
     margin: auto;
     max-width: 1200px;
+    padding-left: 1rem;
 }
-h1 {
-    font-size: 1.75rem;
-}
+
 .leftSpacer {
     height: 40px; /* samme høyde som right-header */
     margin-bottom: 0.5rem;
+}
+.header {
+    font-family: 'Source Sans Pro', Arial, sans-serif;
+    position: relative;
+    width: 100%;
+    font-size: 2rem;
+    font-weight: 600;
+    text-align: center;
+    padding-bottom: 1.5rem;
+}
+.back-button-info {
+    margin-top: 0rem;
+    margin-left: -0.5rem;
 }
 
 .rightHeader {
@@ -75,5 +83,16 @@ h1 {
     }
     .space {
         padding: 1rem;
+    }
+    .header {
+        font-size: 2.5rem;
+        font-weight: 600;
+        text-align: left;
+        margin-left: 0; /* Fjerner desktop-margin */
+        padding-left: 0; /* Hvis nødvendig for å flukte med innholdet */
+    }
+    .back-button-info {
+        margin-top: 0rem;
+        margin-left: -0.5rem;
     }
 }
