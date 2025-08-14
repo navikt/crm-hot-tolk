@@ -10,7 +10,7 @@
     margin: 0 auto;
     width: 100%;
     max-width: 1200px;
-    padding: 1rem;
+    padding-bottom: 1rem;
     font-family: 'Source Sans Pro', Arial, sans-serif;
 }
 
@@ -25,10 +25,17 @@
 
 /* Header */
 .header {
-    flex: 2;
+    font-family: 'Source Sans Pro', Arial, sans-serif;
+    position: relative;
     width: 100%;
-    text-align: center;
     font-size: 2rem;
+    font-weight: 600;
+    text-align: center;
+    padding-bottom: 1.5rem;
+}
+.back-button-info {
+    margin-top: 0rem;
+    margin-left: -0.5rem;
 }
 
 .header:focus {
@@ -38,9 +45,8 @@
 .header-buttons {
     display: flex;
     flex-direction: row;
-    flex: 1;
     justify-content: end;
-    z-index: 999;
+    margin-top: -3rem;
 }
 
 /* Button Row */
@@ -112,7 +118,7 @@ span {
 }
 
 /* Responsive Design */
-@media (max-width: 576px) {
+@media (max-width: 768px) {
     .fileUploader {
         justify-content: center;
         align-items: center;
@@ -128,28 +134,24 @@ span {
         width: 100%;
     }
 
-    .button-padding {
-        padding-bottom: 1vw;
-        /* padding-right: unset; */
-    }
-
     .header {
-        font-size: 1.4rem;
-        margin-bottom: 1rem;
+        font-size: 2.5rem;
+        font-weight: 600;
+        text-align: left;
+        margin-left: 0; /* Fjerner desktop-margin */
+        padding-left: 0; /* Hvis nødvendig for å flukte med innholdet */
+    }
+    .back-button-info {
+        margin-top: 0rem;
+        margin-left: -0.5rem;
     }
 
     .record-details-container {
         margin: 5vw 0;
     }
 
-    .navigation-container {
-        display: block;
-        scroll-behavior: auto;
-        max-height: 50vh;
-        overflow: scroll;
-    }
-
     .header-buttons {
-        justify-content: center;
+        justify-content: flex-start;
+        margin-top: -1rem;
     }
 }

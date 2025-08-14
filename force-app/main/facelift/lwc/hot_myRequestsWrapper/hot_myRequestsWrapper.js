@@ -30,10 +30,7 @@ export default class Hot_myRequestsWrapper extends NavigationMixin(LightningElem
     filters = [];
     labelMap = labelMap;
     get isMobile() {
-        return window.screen.width < 576;
-    }
-    get buttonText() {
-        return this.isMobile ? '+' : 'Ny bestilling';
+        return window.screen.width < 768;
     }
 
     userAccountId;

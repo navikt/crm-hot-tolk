@@ -1,28 +1,28 @@
 <template>
     <main class="mainContent" role="main" aria-label="Bestillinger">
         <div class="mine-bestillinger-wrapper">
-            <div class="navigation-container">
-                <c-hot_back-button></c-hot_back-button>
-                <h2 class="header" tabindex="-1" autofocus>{headerToShow}</h2>
-                <div class="header-buttons">
-                    <c-button
-                        if:false={urlStateParameters.id}
-                        button-label="Ny bestilling"
-                        aria-label="Ny bestilling"
-                        button-styling="primary"
-                        class="button-padding"
-                        desktop-style="width: 7em; height: 3em; justify-content: center"
-                        mobile-style="justify-content: center; width: 7em; height: 2.5em;"
-                        onbuttonclick={goToNewRequest}
-                    ></c-button>
-                    <c-list-filters-button
-                        if:false={isWorkOrderDetails}
-                        header="Filtrer søket"
-                        filters={filters}
-                        onapplyfilter={applyFilter}
-                        ongetfilteredrecordslength={sendFilteredRecordsLength}
-                    ></c-list-filters-button>
-                </div>
+            <div class="back-button-info">
+                <c-hot_back-button tabindex="0" role="button"></c-hot_back-button>
+            </div>
+            <h1 class="header">{headerToShow}</h1>
+            <div class="header-buttons">
+                <c-button
+                    if:false={urlStateParameters.id}
+                    button-label="Ny bestilling"
+                    aria-label="Ny bestilling"
+                    button-styling="primary"
+                    class="button-padding"
+                    desktop-style="width: 7em; height: 3em; justify-content: center"
+                    mobile-style="justify-content: center; width: 7em; min-height: 2.5em;"
+                    onbuttonclick={goToNewRequest}
+                ></c-button>
+                <c-list-filters-button
+                    if:false={isWorkOrderDetails}
+                    header="Filtrer søket"
+                    filters={filters}
+                    onapplyfilter={applyFilter}
+                    ongetfilteredrecordslength={sendFilteredRecordsLength}
+                ></c-list-filters-button>
             </div>
             <div lwc:if={isRequestDetails}>
                 <div class="record-details-container">

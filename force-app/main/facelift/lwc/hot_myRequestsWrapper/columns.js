@@ -23,13 +23,14 @@ export let columns = [
         fieldName: 'StartAndEndDate'
     },
     {
-        label: 'Status',
-        fieldName: 'Status'
-    },
-    {
         label: 'Tema',
         fieldName: 'Subject'
     },
+    {
+        label: 'Status',
+        fieldName: 'Status'
+    },
+
     {
         label: 'Adresse',
         fieldName: 'HOT_AddressFormated__c'
