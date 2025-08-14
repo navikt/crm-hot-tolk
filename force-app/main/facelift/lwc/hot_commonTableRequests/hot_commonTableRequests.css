@@ -98,13 +98,15 @@ tr.row:focus {
 
     tr.row {
         display: block;
-        margin-bottom: 1rem;
         background-color: #eceef0;
         border-radius: 0.5rem;
         box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
         padding: 1rem;
         height: auto;
         border: none;
+        margin-left: -1rem;
+        margin-right: -1rem;
+        margin-bottom: 1rem;
     }
 
     td {
