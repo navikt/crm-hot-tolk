@@ -1,22 +1,77 @@
 <template>
     <div class="page-background">
-        <div class="list">
-            <div class="header-buttons">
+        <div class="tab-content-wrapper">
+            <div class="list">
                 <div class="back-button-info">
                     <c-hot_back-button tabindex="0" role="button"></c-hot_back-button>
                 </div>
                 <h1 class="header">Oppdrag</h1>
+                <div class="header-buttons">
+                    <!-- Desktop: Release today button -->
+                    <template lwc:if={showOpenTabReleaseButton}>
+                        <div class="release-button-wrapper-desktop">
+                            <c-button
+                                hidden={isReleasedTodayButtonHidden}
+                                button-label="Frigitt idag"
+                                button-styling="primary"
+                                class="release-button"
+                                desktop-style="height: 3.4rem; white-space: nowrap; background-color: #FFFFFF; border: 3px solid #0067C5; color: #0067C5;"
+                                mobile-style="height: 3.4rem; white-space: nowrap; background-color: #FFFFFF; border: 3px solid #0067C5; color: #0067C5;"
+                                onbuttonclick={releasedTodayFilter}
+                            ></c-button>
+                            <c-button
+                                hidden={isRemoveReleasedTodayButtonHidden}
+                                button-label="Fjern frigitt idag filter"
+                                button-styling="primary"
+                                class="remove-released-today-button"
+                                desktop-style="height: 3.4rem; white-space: nowrap; background-color: #FFFFFF; border: 3px solid #0067C5; color: #0067C5;"
+                                mobile-style="height: 3.4rem; white-space: nowrap; background-color: #FFFFFF; border: 3px solid #0067C5; color: #0067C5;"
+                                onbuttonclick={removeReleasedTodayFilter}
+                            ></c-button>
+                        </div>
+                    </template>
 
-                <!-- Desktop: Release today button -->
+                    <!-- Filter button -->
+                    <template lwc:if={showFilterButton}>
+                        <div class="filter-button-wrapper">
+                            <c-list-filters-button
+                                header="Filtrer søket"
+                                class="filter-button-styling"
+                                filters={filters}
+                                onapplyfilter={applyFilter}
+                                ongetfilteredrecordslength={sendFilteredRecordsLength}
+                            ></c-list-filters-button>
+                        </div>
+                    </template>
+                </div>
+
+                <!-- Tab section for the freelance tables-->
+                <template lwc:if={showTabsAndLineBreak}>
+                    <div class="tabset desktop-only">
+                        <template for:each={tabs} for:item="tab">
+                            <button key={tab.name} class="tab tab-button" data-id={tab.name} onclick={setActiveTab}>
+                                {tab.label}
+                            </button>
+                        </template>
+                    </div>
+                    <br />
+                </template>
+
+                <!-- Mobile: picklist-->
+                <div class="tabset picklist-service mobile-only">
+                    <c-picklist choices={tabs} onpicklistvaluechange={setActiveTabMobile}></c-picklist>
+                </div>
+
+                <!-- Mobile: Release button -->
                 <template lwc:if={showOpenTabReleaseButton}>
-                    <div class="release-button-wrapper-desktop">
+                    <div class="release-button-wrapper-mobile">
                         <c-button
                             hidden={isReleasedTodayButtonHidden}
                             button-label="Frigitt idag"
                             button-styling="primary"
                             class="release-button"
-                            desktop-style="height: 3.4rem; white-space: nowrap; background-color: #FFFFFF; border: 3px solid #0067C5; color: #0067C5;"
-                            mobile-style="height: 3.4rem; white-space: nowrap; background-color: #FFFFFF; border: 3px solid #0067C5; color: #0067C5;"
+                            desktop-style="white-space: nowrap; height: 3.4rem; background-color: #FFFFFF; border: 3px solid #0067C5; color: #0067C5;"
+                            mobile-style="white-space: nowrap; background-color: #FFFFFF; border: 3px solid #0067C5; color: #0067C5;"
                             onbuttonclick={releasedTodayFilter}
                         ></c-button>
                         <c-button
@@ -25,67 +80,12 @@
                             button-styling="primary"
                             class="remove-released-today-button"
                             desktop-style="height: 3.4rem; white-space: nowrap; background-color: #FFFFFF; border: 3px solid #0067C5; color: #0067C5;"
-                            mobile-style="height: 3.4rem; white-space: nowrap; background-color: #FFFFFF; border: 3px solid #0067C5; color: #0067C5;"
+                            mobile-style="background-color: #FFFFFF; white-space: nowrap; border: 3px solid #0067C5; color: #0067C5;"
                             onbuttonclick={removeReleasedTodayFilter}
                         ></c-button>
                     </div>
                 </template>
-
-                <!-- Filter button -->
-                <template lwc:if={showFilterButton}>
-                    <div class="filter-button-wrapper">
-                        <c-list-filters-button
-                            header="Filtrer søket"
-                            class="filter-button-styling"
-                            filters={filters}
-                            onapplyfilter={applyFilter}
-                            ongetfilteredrecordslength={sendFilteredRecordsLength}
-                        ></c-list-filters-button>
-                    </div>
-                </template>
-            </div>
-
-            <!-- Tab section for the freelance tables-->
-            <template lwc:if={showTabsAndLineBreak}>
-                <div class="tabset desktop-only">
-                    <template for:each={tabs} for:item="tab">
-                        <button key={tab.name} class="tab tab-button" data-id={tab.name} onclick={setActiveTab}>
-                            {tab.label}
-                        </button>
-                    </template>
-                </div>
-                <br />
-            </template>
-
-            <!-- Mobile: picklist-->
-            <div class="tabset picklist-service mobile-only">
-                <c-picklist choices={tabs} onpicklistvaluechange={setActiveTabMobile}></c-picklist>
-            </div>
-
-            <!-- Mobile: Release button -->
-            <template lwc:if={showOpenTabReleaseButton}>
-                <div class="release-button-wrapper-mobile">
-                    <c-button
-                        hidden={isReleasedTodayButtonHidden}
-                        button-label="Frigitt idag"
-                        button-styling="primary"
-                        class="release-button"
-                        desktop-style="white-space: nowrap; height: 3.4rem; background-color: #FFFFFF; border: 3px solid #0067C5; color: #0067C5;"
-                        mobile-style="white-space: nowrap; background-color: #FFFFFF; border: 3px solid #0067C5; color: #0067C5;"
-                        onbuttonclick={releasedTodayFilter}
-                    ></c-button>
-                    <c-button
-                        hidden={isRemoveReleasedTodayButtonHidden}
-                        button-label="Fjern frigitt idag filter"
-                        button-styling="primary"
-                        class="remove-released-today-button"
-                        desktop-style="height: 3.4rem; white-space: nowrap; background-color: #FFFFFF; border: 3px solid #0067C5; color: #0067C5;"
-                        mobile-style="background-color: #FFFFFF; white-space: nowrap; border: 3px solid #0067C5; color: #0067C5;"
-                        onbuttonclick={removeReleasedTodayFilter}
-                    ></c-button>
-                </div>
-            </template>
-            <div class="tab-content-wrapper">
+                <!-- <div class="tab-content-wrapper"> -->
                 <!-- Open Service Appointment table -->
                 <template lwc:if={tabMap.open}>
                     <div class="tab-content">
