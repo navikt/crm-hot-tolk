@@ -45,6 +45,8 @@
     display: flex;
     justify-content: flex-end;
     margin-top: -3rem;
+    position: relative;
+    z-index: 1;
 }
 
 /* Button Row */
