@@ -17,8 +17,8 @@ button.threadCard {
 }
 .threadCard:hover,
 .threadCard:focus {
-    background-color: #f2f3f5;
-    border-color: #0067c5;
+    background-color: #e0e3e6;
+    border-color: #e0e3e6;
 }
 .threadCardHeader {
     display: flex;
@@ -63,7 +63,7 @@ button.threadCard {
     }
 }
 .unreadThread {
-    background-color: #ffd799;
+    background-color: #ffc166;
 }
 
 .readThread {
@@ -78,10 +78,16 @@ button.threadCard {
 .threadType {
     background-color: #d5d9de;
 }
+
+.desktop-only {
+    display: block;
+}
+
 .mobile-only {
     display: none;
 }
 
+/* Mobilvisning */
 @media (max-width: 768px) {
     .desktop-only {
         display: none;
