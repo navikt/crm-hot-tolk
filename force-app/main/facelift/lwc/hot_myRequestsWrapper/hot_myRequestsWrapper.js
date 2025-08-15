@@ -21,7 +21,7 @@ import WORKORDER_ID from '@salesforce/schema/WorkOrder.Id';
 import USER_ID from '@salesforce/user/Id';
 import USER_ACCOUNT_ID from '@salesforce/schema/User.AccountId';
 
-import { formatRecord } from 'c/datetimeFormatterNorwegianTime';
+import { formatRecord, formatDatetime, formatDate } from 'c/datetimeFormatterNorwegianTime';
 
 export default class Hot_myRequestsWrapper extends NavigationMixin(LightningElement) {
     @api header;
@@ -169,21 +169,11 @@ export default class Hot_myRequestsWrapper extends NavigationMixin(LightningElem
     requestSeriesStartDate = '';
     requestSeriesEndDate = '';
     setDateFormats() {
-        this.workOrderStartDate = this.formatDate(this.workOrder.StartDate, true);
-        this.workOrderEndDate = this.formatDate(this.workOrder.EndDate, true);
-        this.requestSeriesStartDate = this.formatDate(this.request.SeriesStartDate__c, false);
-        this.requestSeriesEndDate = this.formatDate(this.request.SeriesEndDate__c, false);
+        this.workOrderStartDate = formatDatetime(this.workOrder.StartDate);
+        this.workOrderEndDate = formatDatetime(this.workOrder.EndDate);
+        this.requestSeriesStartDate = formatDate(this.request.SeriesStartDate__c);
+        this.requestSeriesEndDate = formatDate(this.request.SeriesEndDate__c);
     }
-
-    formatDate(dateInput, isWorkOrder) {
-        let value = new Date(dateInput);
-        value = value.toLocaleString();
-        if (isWorkOrder) {
-            return value.substring(0, value.length - 3);
-        }
-        return value.substring(0, value.length - 10);
-    }
-
     isRequestEditButtonDisabled = false;
     isRequestCancelButtonDisabled = false;
     isRequestAddFilesButtonDisabled = false;
