@@ -16,7 +16,6 @@ export default class Hot_threadList_v2 extends NavigationMixin(LightningElement)
     searchValue;
 
     sortedThreads = [];
-    threadSearchHelpText = 'Du kan søke etter tittel på oppdraget eller navnet på tolker';
 
     get headerText() {
         if (this.isFreelanceView) {
@@ -154,7 +153,7 @@ export default class Hot_threadList_v2 extends NavigationMixin(LightningElement)
             return 'Med ressurskontor';
         }
         if (threadTypeValue === 'HOT_TOLK-TOLK') {
-            return 'Med medtolker';
+            return 'Med bare medtolker';
         } else {
             return '';
         }
