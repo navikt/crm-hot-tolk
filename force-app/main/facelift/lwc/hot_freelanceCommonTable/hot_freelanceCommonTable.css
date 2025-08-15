@@ -7,9 +7,6 @@ tr.row {
     border-top: 1px solid #2c2c2c8e;
     transition: transform 0.1s;
 }
-tr.row:last-child {
-    border-bottom: 1px solid #2c2c2c8e;
-}
 
 .iconPadding {
     padding-left: 10px;
@@ -117,7 +114,7 @@ tr.row:hover {
     display: none;
 }
 
-@media (max-width: 576px) {
+@media (max-width: 768px) {
     .checkbox-column {
         position: absolute;
         margin-top: -13%;
@@ -155,6 +152,7 @@ tr.row:hover {
     .table-wrapper {
         overflow-x: auto;
         padding: 0;
+        max-width: 1200px;
     }
 
     .mobile-only {
@@ -182,6 +180,10 @@ tr.row:hover {
     /* Table data row for specific columns */
     tr.row td:nth-child(4) {
         font-size: 1.25rem;
+    }
+
+    tr.row:last-child {
+        transition: background-color 0.15s;
     }
 
     td {
