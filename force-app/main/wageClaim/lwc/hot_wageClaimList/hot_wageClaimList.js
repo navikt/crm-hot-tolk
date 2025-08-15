@@ -16,6 +16,15 @@ export default class Hot_wageClaimList extends NavigationMixin(LightningElement)
             this.columns = mobileColumns;
         }
     }
+
+    get noWageClaims() {
+        return (!this.records || this.records.length === 0) && !this.filters?.length;
+    }
+
+    get noFilteredRecords() {
+        return (!this.records || this.records.length === 0) && this.filters?.length > 0;
+    }
+
     noWageClaims = false;
     @track wageClaims = [];
     @track allWageClaimsWired = [];
@@ -172,6 +181,7 @@ export default class Hot_wageClaimList extends NavigationMixin(LightningElement)
         this.dispatchEvent(eventToSend);
     }
     filteredRecordsLength = 0;
+    noFilteredRecords = false;
     @api
     applyFilter(event) {
         let setRecords = event.detail.setRecords;
@@ -189,6 +199,7 @@ export default class Hot_wageClaimList extends NavigationMixin(LightningElement)
             }
         }
         this.filteredRecordsLength = filteredRecords.length;
+        this.noFilteredRecords = this.filteredRecordsLength === 0 && this.filters.length > 0;
 
         if (setRecords) {
             this.wageClaims = filteredRecords;

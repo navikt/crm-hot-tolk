@@ -1,7 +1,7 @@
 <template>
     <div class="main-content">
         <div if:false={noServiceAppointments}>
-            <c-table
+            <c-hot_freelance-common-table
                 if:false={isMobile}
                 records={records}
                 columns={columns}
@@ -10,8 +10,8 @@
                 checkbox="true"
                 checked-rows={checkedServiceAppointments}
                 oncheckedrows={handleRowChecked}
-            ></c-table>
-            <c-hot_freelance-table-list-mobile
+            ></c-hot_freelance-common-table>
+            <c-hot_freelance-common-table
                 if:true={isMobile}
                 records={records}
                 checkbox="true"
@@ -20,7 +20,7 @@
                 icon-by-value={iconByValue}
                 checked-rows={checkedServiceAppointments}
                 oncheckedrows={handleRowChecked}
-            ></c-hot_freelance-table-list-mobile>
+            ></c-hot_freelance-common-table>
         </div>
         <div if:true={noServiceAppointments} style="text-align: center">
             <br />
@@ -122,8 +122,8 @@
                 button-label={sendInterestButtonLabel}
                 aria-label="Meld interesse"
                 onbuttonclick={registerInterestChecked}
-                desktop-style=" justify-content: center; margin: 1vw"
-                mobile-style="justify-content: center; margin: 1vw"
+                desktop-style=" justify-content: center; margin: 1.5vw; border-radius: 0.25rem;"
+                mobile-style="justify-content: center; margin: 1.5vw; border-radius: 0.25rem;"
                 title="Merk sjekkboks i listen for å melde interesse"
             >
             </c-button>
@@ -132,8 +132,8 @@
                 button-label={declineInterestButtonLabel}
                 aria-label="Avslå interesse"
                 onbuttonclick={declineInterestChecked}
-                desktop-style=" justify-content: center;"
-                mobile-style="justify-content: center;"
+                desktop-style=" justify-content: center; border-radius: 0.25rem;"
+                mobile-style="justify-content: center; border-radius: 0.25rem;"
                 title="Merk sjekkboks i listen for å melde interesse"
             >
             </c-button>

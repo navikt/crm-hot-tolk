@@ -1,57 +1,53 @@
 <template>
-    <div class="main-content">
-        <div style="text-align: left">
-            <c-button
-                hidden={isReleasedTodayButtonHidden}
-                button-label="Frigitt idag"
-                button-styling="primary"
-                desktop-style="width: 8rem; justify-content: center"
-                mobile-style="width: 8rem; justify-content: center"
-                onbuttonclick={releasedTodayFilter}
-            ></c-button>
-            <c-button
-                hidden={isRemoveReleasedTodayButtonHidden}
-                button-label="Fjern frigitt idag filter"
-                button-styling="primary"
-                onbuttonclick={removeReleasedTodayFilter}
-            ></c-button>
+    <template lwc:if={hasResult}>
+        <div class="main-content">
+            <template lwc:if={isMobile}>
+                <c-hot_freelance-common-table
+                    records={records}
+                    columns={columns}
+                    onrowclick={goToRecordDetails}
+                    checkbox="true"
+                    checked-rows={checkedServiceAppointments}
+                    oncheckedrows={handleRowChecked}
+                    icon-by-value={iconByValue}
+                >
+                </c-hot_freelance-common-table>
+            </template>
+            <template lwc:else>
+                <c-hot_freelance-common-table
+                    records={records}
+                    columns={columns}
+                    onrowclick={goToRecordDetails}
+                    checkbox="true"
+                    checked-rows={checkedServiceAppointments}
+                    oncheckedrows={handleRowChecked}
+                    icon-by-value={iconByValue}
+                >
+                </c-hot_freelance-common-table>
+            </template>
         </div>
-        <div>
-            <c-hot_freelance-table-list-mobile
-                if:true={isMobile}
-                records={records}
-                columns={columns}
-                onrowclick={goToRecordDetails}
-                checkbox="true"
-                checked-rows={checkedServiceAppointments}
-                oncheckedrows={handleRowChecked}
-                icon-by-value={iconByValue}
-            ></c-hot_freelance-table-list-mobile>
-            <c-table
-                if:false={isMobile}
-                records={records}
-                columns={columns}
-                onrowclick={goToRecordDetails}
-                checkbox="true"
-                checked-rows={checkedServiceAppointments}
-                oncheckedrows={handleRowChecked}
-                icon-by-value={iconByValue}
-            ></c-table>
-        </div>
-        <div if:true={noServiceAppointments} style="text-align: center">
-            <br />
-            Det finnes ingen ledige oppdrag.
-        </div>
+    </template>
+
+    <div lwc:elseif={noServiceAppointments} style="text-align: center">
+        <br />
+        <p>Det finnes ingen ledige oppdrag.</p>
+        <br />
     </div>
-    <div if:true={showSendInterest} class="meld-interesse-overlay">
+    <div lwc:elseif={noFilteredRecords} style="text-align: center">
+        <br />
+        <p>Det finnes ingen oppdrag med denne filtreringen. Du kan endre filteret for å se andre oppdrag</p>
+        <br />
+    </div>
+
+    <div lwc:if={showSendInterest} class="meld-interesse-overlay">
         <div class="meld-interesse-content">
             <c-button
                 button-styling="primary"
                 button-label={sendInterestButtonLabel}
                 aria-label="Meld interesse"
                 onbuttonclick={sendInterest}
-                desktop-style=" justify-content: center;"
-                mobile-style="justify-content: center;"
+                desktop-style=" justify-content: center; border-radius: 0.25rem;"
+                mobile-style="justify-content: center; border-radius: 0.25rem;"
                 title="Merk sjekkboks i listen for å melde interesse"
             >
             </c-button>

@@ -21,6 +21,7 @@ export default class Hot_interestedResourcesList extends NavigationMixin(Lightni
     @track isGoToThreadButtonDisabled = false;
     @track isMobile;
     @track hasAccess = true;
+
     setColumns() {
         if (window.screen.width > 576) {
             this.columns = columns;
@@ -30,6 +31,19 @@ export default class Hot_interestedResourcesList extends NavigationMixin(Lightni
             this.isMobile = true;
         }
     }
+
+    get hasResult() {
+        return this.records && this.records.length > 0;
+    }
+
+    get noInterestedResources() {
+        return (!this.records || this.records.length === 0) && !this.filters?.length;
+    }
+
+    get noFilteredRecords() {
+        return (!this.records || this.records.length === 0) && this.filters?.length > 0;
+    }
+
     sendFilters() {
         const eventToSend = new CustomEvent('sendfilters', { detail: this.filters });
         this.dispatchEvent(eventToSend);
@@ -333,6 +347,7 @@ export default class Hot_interestedResourcesList extends NavigationMixin(Lightni
         return { id: recordIdToReturn, tab: 'interested' };
     }
     filteredRecordsLength = 0;
+    noFilteredRecords = false;
     @api
     applyFilter(event) {
         let setRecords = event.detail.setRecords;
@@ -350,6 +365,7 @@ export default class Hot_interestedResourcesList extends NavigationMixin(Lightni
             }
         }
         this.filteredRecordsLength = filteredRecords.length;
+        this.noFilteredRecords = this.filteredRecordsLength === 0 && this.filters.length > 0;
 
         if (setRecords) {
             this.records = filteredRecords;
