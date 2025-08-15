@@ -91,6 +91,9 @@ public without sharing class HOT_ResourceAbsenceCreateService implements Databas
                 if (resourceAbsenceFields.contains('fsl__gantt_color__c') && event.ShowAs != 'OutOfOffice') {
                     resourceAbsence.put('FSL__Gantt_Color__c', '');
                 }
+                if (resourceAbsenceFields.contains('fsl__approved__c')) {
+                    resourceAbsence.put('FSL__Approved__c', true);
+                }
                 resourceAbsenceList.add(resourceAbsence);
             }
         }
