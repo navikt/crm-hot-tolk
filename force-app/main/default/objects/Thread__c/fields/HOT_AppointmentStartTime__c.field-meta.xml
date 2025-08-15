@@ -9,7 +9,7 @@
     HOT_WageClaim__r.StartTime__c,
     IF(
         NOT(ISBLANK(HOT_ServiceAppointment__c)),
-        HOT_ServiceAppointment__r.SchedStartTime,
+        HOT_ServiceAppointment__r.EarliestStartTime,
         IF(
             NOT(ISBLANK(HOT_Request__c)),
             HOT_Request__r.StartTime__c,

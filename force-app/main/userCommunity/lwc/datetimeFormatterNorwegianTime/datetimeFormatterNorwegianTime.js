@@ -22,14 +22,29 @@ export function formatDatetimeinterval(initialStart, initialEnd) {
     if (initialStart === undefined || initialEnd === undefined) {
         return null;
     }
+
     let start = new Date(initialStart);
     let end = new Date(initialEnd);
+
     return (
-        start.toLocaleDateString('nb-NO', { timeZone: 'Europe/Oslo' }) +
+        start.toLocaleDateString('nb-NO', {
+            day: '2-digit',
+            month: '2-digit',
+            year: 'numeric',
+            timeZone: 'Europe/Oslo'
+        }) +
         ', ' +
-        start.toLocaleTimeString('nb-NO', { hour: '2-digit', minute: '2-digit', timeZone: 'Europe/Oslo' }) +
+        start.toLocaleTimeString('nb-NO', {
+            hour: '2-digit',
+            minute: '2-digit',
+            timeZone: 'Europe/Oslo'
+        }) +
         ' - ' +
-        end.toLocaleTimeString('nb-NO', { hour: '2-digit', minute: '2-digit', timeZone: 'Europe/Oslo' })
+        end.toLocaleTimeString('nb-NO', {
+            hour: '2-digit',
+            minute: '2-digit',
+            timeZone: 'Europe/Oslo'
+        })
     );
 }
 
