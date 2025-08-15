@@ -1,22 +1,31 @@
 <template>
-    <div class="main-content">
-        <div if:false={noServiceAppointments}>
-            <c-hot_freelance-common-table
-                if:false={isMobile}
-                records={records}
-                columns={columns}
-                onrowclick={goToRecordDetails}
-            ></c-hot_freelance-common-table>
-            <c-hot_freelance-common-table
-                if:true={isMobile}
-                records={records}
-                columns={columns}
-                onrowclick={goToRecordDetails}
-            ></c-hot_freelance-common-table>
+    <template lwc:if={hasResult}>
+        <div class="main-content">
+            <template lwc:if={isMobile}>
+                <c-hot_freelance-common-table
+                    records={records}
+                    columns={columns}
+                    onrowclick={goToRecordDetails}
+                ></c-hot_freelance-common-table>
+            </template>
+            <template lwc:else>
+                <c-hot_freelance-common-table
+                    records={records}
+                    columns={columns}
+                    onrowclick={goToRecordDetails}
+                ></c-hot_freelance-common-table>
+            </template>
         </div>
-        <div if:true={noServiceAppointments} style="text-align: center">
-            <br />
-            Du har ingen oppdrag.
-        </div>
+    </template>
+
+    <div lwc:elseif={noServiceAppointments} style="text-align: center">
+        <br />
+        <p>Det finnes ingen oppdrag.</p>
+        <br />
+    </div>
+    <div lwc:elseif={noFilteredRecords} style="text-align: center">
+        <br />
+        <p>Det finnes ingen oppdrag med denne filtreringen. Du kan endre filteret for å se andre oppdrag</p>
+        <br />
     </div>
 </template>

@@ -1,24 +1,34 @@
 <template>
-    <div class="main-content">
-        <div if:false={noInterestedResources}>
-            <c-hot_freelance-common-table
-                if:true={isMobile}
-                records={records}
-                columns={columns}
-                onrowclick={goToRecordDetails}
-                icon-by-value={iconByValue}
-            ></c-hot_freelance-common-table>
-            <c-hot_freelance-common-table
-                if:false={isMobile}
-                records={records}
-                columns={columns}
-                onrowclick={goToRecordDetails}
-                icon-by-value={iconByValue}
-            ></c-hot_freelance-common-table>
+    <template lwc:if={hasResult}>
+        <div class="main-content">
+            <template lwc:if={isMobile}>
+                <c-hot_freelance-common-table
+                    records={records}
+                    columns={columns}
+                    onrowclick={goToRecordDetails}
+                    icon-by-value={iconByValue}
+                ></c-hot_freelance-common-table>
+            </template>
+            <template lwc:else>
+                <c-hot_freelance-common-table
+                    if:false={isMobile}
+                    records={records}
+                    columns={columns}
+                    onrowclick={goToRecordDetails}
+                    icon-by-value={iconByValue}
+                ></c-hot_freelance-common-table>
+            </template>
         </div>
-        <div if:true={noInterestedResources} style="text-align: center">
-            <br />
-            Du har ingen påmeldte oppdrag.
-        </div>
+    </template>
+
+    <div lwc:elseif={noInterestedResources} style="text-align: center">
+        <br />
+        <p>Du har ingen påmeldte oppdrag.</p>
+        <br />
+    </div>
+    <div lwc:elseif={noFilteredRecords} style="text-align: center">
+        <br />
+        <p>Det finnes ingen oppdrag med denne filtreringen. Du kan endre filteret for å se andre oppdrag</p>
+        <br />
     </div>
 </template>

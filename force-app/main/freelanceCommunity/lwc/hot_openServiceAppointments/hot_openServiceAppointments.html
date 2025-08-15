@@ -1,6 +1,6 @@
 <template>
-    <div class="main-content">
-        <div>
+    <template lwc:if={hasResult}>
+        <div class="main-content">
             <template lwc:if={isMobile}>
                 <c-hot_freelance-common-table
                     records={records}
@@ -26,12 +26,20 @@
                 </c-hot_freelance-common-table>
             </template>
         </div>
-        <div if:true={noServiceAppointments} style="text-align: center">
-            <br />
-            Det finnes ingen ledige oppdrag.
-        </div>
+    </template>
+
+    <div lwc:elseif={noServiceAppointments} style="text-align: center">
+        <br />
+        <p>Det finnes ingen ledige oppdrag.</p>
+        <br />
     </div>
-    <div if:true={showSendInterest} class="meld-interesse-overlay">
+    <div lwc:elseif={noFilteredRecords} style="text-align: center">
+        <br />
+        <p>Det finnes ingen oppdrag med denne filtreringen. Du kan endre filteret for å se andre oppdrag</p>
+        <br />
+    </div>
+
+    <div lwc:if={showSendInterest} class="meld-interesse-overlay">
         <div class="meld-interesse-content">
             <c-button
                 button-styling="primary"

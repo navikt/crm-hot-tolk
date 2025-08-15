@@ -36,6 +36,19 @@ export default class Hot_openServiceAppointments extends LightningElement {
         }
     };
 
+    get hasResult() {
+        return this.records && this.records.length > 0;
+    }
+
+    get noServiceAppointments() {
+        return (!this.records || this.records.length === 0) && !this.filters?.length;
+    }
+
+    get noFilteredRecords() {
+        // return (!this.records || this.records.length === 0) && this.filters?.length > 0;
+        return this.filteredRecordsLength === 0 && this.filters?.length > 0;
+    }
+
     sendFilters() {
         const eventToSend = new CustomEvent('sendfilters', { detail: this.filters });
         this.dispatchEvent(eventToSend);
@@ -307,34 +320,9 @@ export default class Hot_openServiceAppointments extends LightningElement {
         }
         return null;
     }
-    isRemoveReleasedTodayButtonHidden = true;
-    isReleasedTodayButtonHidden = false;
-    releasedTodayFilter() {
-        this.checkedServiceAppointments = [];
-        this.noReleasedToday = false;
-        const d = new Date();
-        let year = d.getFullYear();
-        let day = d.getDate();
-        let month = d.getMonth() + 1;
-        month = month < 10 ? '0' + month : month;
-        day = day < 10 ? '0' + day : day;
-        const formattedDate = `${year}-${month}-${day}`;
-        this.filters[5].value[0].value = formattedDate;
 
-        this.sendFilters();
-        this.applyFilter({ detail: { filterArray: this.filters, setRecords: true } });
-        this.isReleasedTodayButtonHidden = true;
-        this.isRemoveReleasedTodayButtonHidden = false;
-    }
-    removeReleasedTodayFilter() {
-        this.checkedServiceAppointments = [];
-        this.filters[5].value[0].value = '';
-        this.sendFilters();
-        this.applyFilter({ detail: { filterArray: this.filters, setRecords: true } });
-        this.isReleasedTodayButtonHidden = false;
-        this.isRemoveReleasedTodayButtonHidden = true;
-    }
     filteredRecordsLength = 0;
+    noFilteredRecords = false;
     @api
     applyFilter(event) {
         this.numberTimesCalled = this.numberTimesCalled + 1;
@@ -369,6 +357,7 @@ export default class Hot_openServiceAppointments extends LightningElement {
                 }
             }
             this.filteredRecordsLength = filteredRecords.length;
+            this.noFilteredRecords = this.filteredRecordsLength === 0 && this.filters.length > 0;
 
             if (setRecords) {
                 this.records = filteredRecords;

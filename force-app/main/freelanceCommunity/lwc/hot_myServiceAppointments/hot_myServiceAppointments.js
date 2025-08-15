@@ -15,6 +15,19 @@ export default class Hot_myServiceAppointments extends NavigationMixin(Lightning
     isGoToThreadButtonDisabled = false;
     isGoToThreadServiceAppointmentButtonDisabled = false;
     isGoToThreadInterpretersButtonDisabled = false;
+
+    get hasResult() {
+        return this.records && this.records.length > 0;
+    }
+
+    get noServiceAppointments() {
+        return (!this.records || this.records.length === 0) && !this.filters?.length;
+    }
+
+    get noFilteredRecords() {
+        return (!this.records || this.records.length === 0) && this.filters?.length > 0;
+    }
+
     setColumns() {
         if (window.screen.width > 576) {
             this.columns = columns;
@@ -225,6 +238,7 @@ export default class Hot_myServiceAppointments extends NavigationMixin(Lightning
         }
     }
     filteredRecordsLength = 0;
+    noFilteredRecords = false;
     @api
     applyFilter(event) {
         let setRecords = event.detail.setRecords;
@@ -242,6 +256,7 @@ export default class Hot_myServiceAppointments extends NavigationMixin(Lightning
             }
         }
         this.filteredRecordsLength = filteredRecords.length;
+        this.noFilteredRecords = this.filteredRecordsLength === 0 && this.filters.length > 0;
 
         if (setRecords) {
             this.records = filteredRecords;

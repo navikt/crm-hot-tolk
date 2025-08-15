@@ -1,17 +1,25 @@
 <template>
-    <div class="main-content">
-        <div>
-            <div if:false={noWageClaims}>
-                <c-hot_freelance-common-table
-                    records={wageClaims}
-                    columns={columns}
-                    onrowclick={goToRecordDetails}
-                ></c-hot_freelance-common-table>
-            </div>
-            <div if:true={noWageClaims} style="text-align: center">
-                <br />
-                Du har ingen ledig på lønn oppdrag.
-            </div>
+    <template lwc:if={noWageClaims}>
+        <div style="text-align: center">
+            <br />
+            <p>Det finnes ingen ledig på lønn oppdrag.</p>
+            <br />
         </div>
-    </div>
+    </template>
+    <template lwc:elseif={noFilteredRecords}>
+        <div style="text-align: center">
+            <br />
+            <p>Det finnes ingen oppdrag med denne filtreringen. Du kan endre filteret for å se andre oppdrag</p>
+            <br />
+        </div>
+    </template>
+    <template lwc:else>
+        <div class="main-content">
+            <c-hot_freelance-common-table
+                records={wageClaims}
+                columns={columns}
+                onrowclick={goToRecordDetails}
+            ></c-hot_freelance-common-table>
+        </div>
+    </template>
 </template>
