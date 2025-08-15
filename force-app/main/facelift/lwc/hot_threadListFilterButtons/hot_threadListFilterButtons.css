@@ -14,7 +14,7 @@
         display: none;
     }
     .mobile-only {
-        display: block; /* eller flex/inline‑block, alt etter layouten din */
+        display: block;
     }
 }
 .tab-button {
