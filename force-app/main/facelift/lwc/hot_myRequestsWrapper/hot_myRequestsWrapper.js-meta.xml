@@ -3,7 +3,7 @@
     <apiVersion>52.0</apiVersion>
     <isExposed>true</isExposed>
     <description>Used to show a list of Requests in the Community</description>
-    <masterLabel>Mine Bestillinger Wrapper V2</masterLabel>
+    <masterLabel>HOT Mine Bestillinger Wrapper</masterLabel>
     <targets>
         <target>lightningCommunity__Page</target>
         <target>lightningCommunity__Default</target>
