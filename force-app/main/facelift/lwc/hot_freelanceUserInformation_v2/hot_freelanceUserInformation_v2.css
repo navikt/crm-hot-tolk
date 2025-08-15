@@ -25,22 +25,22 @@
 }
 
 .back-button-info {
-    margin-left: 4.9rem;
-    margin-top: 0.5rem;
+    margin-top: 0rem;
+    margin-left: -0.5rem;
 }
 
-.heading-title {
-    font-size: 1.5rem;
-    margin-bottom: 2rem;
-    font-family: 'Source Sans 3', 'Source Sans Pro', Arial, sans-serif;
-    font-weight: 600;
-    font-style: normal;
+.header {
+    font-family: 'Source Sans Pro', Arial, sans-serif;
+    position: relative;
+    width: 100%;
     font-size: 2rem;
-    line-height: 2.5rem;
+    font-weight: 600;
+    text-align: center;
+    padding-bottom: 1rem;
 }
 
 .heading-medium {
-    margin: 3rem;
+    margin: 2rem;
     font-family: 'Source Sans 3', 'Source Sans Pro', Arial, sans-serif;
     font-weight: 600;
     font-style: normal;
@@ -186,9 +186,10 @@
 
 @media (max-width: 768px) {
     .section-mobile {
-        width: 160%;
+        width: 150%;
     }
     .back-button-info {
+        margin-top: 0rem;
         margin-left: -0.5rem;
     }
     .form-row {
@@ -211,15 +212,15 @@
     }
 
     .page-background {
-        margin-top: -0.5rem;
+        margin-top: 0rem;
         padding: 0;
         width: 100%;
     }
 
     .card-container {
-        margin-top: -2rem;
         margin-bottom: 3rem;
-        margin-left: -1rem;
+        padding: 1rem;
+        margin-top: 0rem;
     }
 
     .form-big-container {
@@ -234,15 +235,16 @@
     .response-hide-region {
         display: none;
     }
-    .heading-title {
+
+    .header {
         font-size: 2.5rem;
-        width: 100%;
         font-weight: 600;
         text-align: left;
-        margin-left: 0.4rem;
-        margin-top: 1rem;
-        margin-bottom: -1rem;
+        margin-left: 0rem;
+        padding-left: 0;
+        margin-bottom: -2rem;
     }
+
     .heading-contact {
         text-align: left;
         margin-left: 0.5rem;
@@ -268,9 +270,12 @@
     .response-mobile-qualification {
         margin-left: -5rem;
     }
+
     .button-container {
-        margin-left: -3rem;
+        margin-left: -4rem;
+        margin-bottom: 1rem;
     }
+
     .skills-mobile {
         margin-left: -0.1rem;
     }
@@ -283,7 +288,7 @@
     }
 
     .section-edit-mobile {
-        width: 160%;
+        width: 140%;
     }
 
     .form-col-right {
