@@ -1,27 +1,32 @@
 .center-content {
+    font-family: 'Source Sans 3', 'Source Sans Pro', Arial, sans-serif;
     display: flex;
     flex-direction: column;
     align-items: center;
     justify-content: center;
+    background-color: #ffffff;
 }
 
 .user-info-tile {
     background-color: #ffffff;
     border-radius: 0.5rem;
-    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.08);
-    padding: 3rem 15rem;
+    padding: 0rem 12rem;
     max-width: 1200px;
     width: 100%;
 }
 
 h1 {
-    font-size: 1.75rem;
+    font-family: 'Source Sans Pro', Arial, sans-serif;
+    position: relative;
+    width: 100%;
+    font-size: 2rem;
+    font-weight: 600;
     text-align: center;
-    padding: 2rem;
+    padding-bottom: 1.5rem;
 }
 
 h2 {
-    font-size: 1.25rem;
+    font-size: 1.5rem;
     margin-bottom: 1rem;
 }
 
@@ -49,7 +54,7 @@ h2 {
 
 .output-label {
     display: block;
-    font-weight: bold;
+    font-weight: 600;
     font-size: 1.125rem;
     margin-bottom: 0.25rem;
 }
@@ -74,6 +79,8 @@ h2 {
 }
 
 .back-link-div {
+    margin-top: 0rem;
+    margin-left: -0.5rem;
     display: flex;
     width: 100%;
 }
@@ -91,29 +98,7 @@ a.lenke:hover {
     text-decoration: underline;
 }
 
-.success-message {
-    max-width: 1200px;
-    width: 100%;
-    background-color: #ccf1d6;
-    border: 1px solid #28a745;
-    color: #155724;
-    padding: 1rem 2rem;
-    border-radius: 0.5rem;
-    font-size: 1.125rem;
-    font-weight: 700;
-    margin-bottom: 1.5rem;
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    box-sizing: border-box;
-    gap: 1rem;
-}
-
-.success-icon {
-    font-size: 1.25rem;
-}
-
-.close-success-button {
+.navno-dekorator.close-success-button {
     background: none;
     border: none;
     font-size: 1.5rem;
@@ -121,6 +106,40 @@ a.lenke:hover {
     cursor: pointer;
     padding: 0 0.5rem;
     line-height: 1;
+    margin-left: auto;
+}
+
+.navno-dekorator.alertstripe {
+    display: block;
+    padding: 1rem 1rem 1rem 0rem;
+    border-radius: 4px;
+    display: flex;
+    align-content: center;
+    border-radius: 0.25rem;
+    color: #3e3832;
+    max-width: 100%;
+}
+
+.navno-dekorator.alertstripe--advarsel {
+    border: 1px solid #ff9100;
+    background-color: #ffe9cc;
+    margin-bottom: 0.2rem;
+}
+
+.navno-dekorator.alertstripe--success {
+    border: 1px solid #28a745;
+    background-color: #ccf1d6;
+    margin-bottom: 0.2rem;
+}
+
+.navno-dekorator.alertstripe__ikon {
+    margin-right: 0.75rem;
+    margin-left: 0.75rem;
+    display: flex;
+    top: 1rem;
+    flex-shrink: 0;
+    height: 24px;
+    width: 24px;
 }
 
 /* Add visible focus outline for accessibility */
@@ -157,5 +176,13 @@ button:focus,
     .user-info-tile {
         padding-left: 3rem !important;
         padding-right: 3rem !important;
+    }
+
+    h2 {
+        text-align: left !important;
+    }
+
+    h1 {
+        font-size: 2.5rem;
     }
 }

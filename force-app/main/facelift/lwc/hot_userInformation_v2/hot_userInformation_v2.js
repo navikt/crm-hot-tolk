@@ -11,10 +11,14 @@ import MOBILE from '@salesforce/schema/Person__c.INT_KrrMobilePhone__c';
 import EMAIL from '@salesforce/schema/Person__c.INT_KrrEmail__c';
 import DEGREE_OF_IMPAIRMENT from '@salesforce/schema/Person__c.HOT_DegreeOfHearingAndVisualImpairment__c';
 import SIP_ADDRESS from '@salesforce/schema/Person__c.HOT_SIPAddress__c';
+import icons from '@salesforce/resourceUrl/icons';
 
 const FIELDS = [MOBILE, EMAIL, DEGREE_OF_IMPAIRMENT, SIP_ADDRESS];
 
 export default class hot_tolketjenestenUserInformation extends LightningElement {
+    warningicon = icons + '/warningicon.svg';
+    successicon = icons + '/successicon.svg';
+
     @api recordId;
 
     mobilePhone;

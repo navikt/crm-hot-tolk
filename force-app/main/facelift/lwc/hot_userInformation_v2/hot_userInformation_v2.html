@@ -10,7 +10,7 @@
             <section>
                 <!-- Kontaktinformasjon -->
                 <section class="sub-form" aria-labelledby="contact-info-header">
-                    <h2 id="contact-info-header">Kontaktinformasjon</h2>
+                    <h2 id="contact-info-header" style="text-align: center">Kontaktinformasjon</h2>
                     <div class="my-grid">
                         <div class="my-col-half">
                             <label class="output-label" for="mobilePhone">Mobilnummer</label>
@@ -32,7 +32,15 @@
                             Endre i Kontakt- og reservasjonsregisteret
                         </a>
                     </p>
-                    <p lwc:if={isKrrQueued} aria-live="polite">Kontaktinformasjonen vil bli oppdatert innen 24 timer</p>
+                    <div
+                        if:true={isKrrQueued}
+                        class="navno-dekorator alertstripe navno-dekorator alertstripe--advarsel"
+                    >
+                        <img class="navno-dekorator alertstripe__ikon" src={warningicon} alt="advarsel-ikon" />
+                        <div class="typo-normal alertstripe__tekst">
+                            Kontaktinformasjonen vil bli oppdatert innen 24 timer
+                        </div>
+                    </div>
                 </section>
 
                 <!-- Vedtak -->
@@ -249,15 +257,17 @@
             </section>
 
             <!-- Success message -->
-            <template lwc:if={showSuccess}>
-                <div class="success-message" role="status" aria-live="polite">
-                    <span class="success-icon" aria-hidden="true">✔</span>
-                    <span>Endringene ble lagret</span>
-                    <button class="close-success-button" onclick={handleCloseSuccess} aria-label="Lukk melding">
-                        &times;
-                    </button>
-                </div>
-            </template>
+            <div lwc:if={showSuccess} class="navno-dekorator alertstripe navno-dekorator alertstripe--success">
+                <img class="navno-dekorator alertstripe__ikon" src={successicon} alt="success-ikon" />
+                <div class="typo-normal alertstripe__tekst">Endringene ble lagret</div>
+                <button
+                    class="navno-dekorator close-success-button"
+                    onclick={handleCloseSuccess}
+                    aria-label="Lukk melding"
+                >
+                    &times;
+                </button>
+            </div>
         </div>
     </div>
 </template>
