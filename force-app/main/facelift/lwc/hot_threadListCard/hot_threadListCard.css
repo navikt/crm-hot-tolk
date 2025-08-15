@@ -61,6 +61,9 @@ button.threadCard {
         word-break: normal;
         overflow-wrap: normal;
     }
+    .threadCardHeader-left {
+        padding-bottom: 0.5rem;
+    }
 }
 .unreadThread {
     background-color: #ffc166;
