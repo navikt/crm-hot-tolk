@@ -336,6 +336,7 @@ export default class Hot_myRequestsWrapper extends NavigationMixin(LightningElem
 
     // Filtering logic
     filteredRecordsLength = 0;
+    noFilteredRecords = false;
     applyFilter(event) {
         let setRecords = event.detail.setRecords;
         this.filters = event.detail.filterArray;
@@ -353,6 +354,7 @@ export default class Hot_myRequestsWrapper extends NavigationMixin(LightningElem
             }
         }
         this.filteredRecordsLength = filteredRecords.length;
+        this.noFilteredRecords = recordsToFilter.length > 0 && filteredRecords.length === 0;
 
         if (setRecords) {
             this.records = filteredRecords;
