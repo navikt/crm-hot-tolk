@@ -35,12 +35,9 @@
         </div>
     </template>
 
-    <!-- While loading, show nothing -->
-    <template lwc:elseif={loading}> </template>
-
     <template lwc:else>
         <div class="no-data" role="status" aria-live="polite">
-            <p>{emptyMessage}</p>
+            <p>Ingen data å vise.</p>
         </div>
     </template>
 </template>

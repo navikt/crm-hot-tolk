@@ -2,11 +2,9 @@ import { LightningElement, api } from 'lwc';
 
 export default class Hot_commonTableRequests extends LightningElement {
     @api records = [];
-    @api allRecords = [];
     @api columns = [];
     @api labelMap = {};
     @api ariaLabel;
-    @api loading = false;
 
     recordMap = {};
 
@@ -43,17 +41,6 @@ export default class Hot_commonTableRequests extends LightningElement {
 
     get hasData() {
         return this.recordsToShow.length > 0;
-    }
-
-    get hasAnyRecords() {
-        return Array.isArray(this.allRecords) && this.allRecords.length > 0;
-    }
-
-    get emptyMessage() {
-        if (!this.hasAnyRecords) {
-            return 'Du har ingen bestillinger. Når du sender inn en ny bestilling vil den vises her.';
-        }
-        return 'Du har ingen bestillinger i fremtiden. Du kan endre filteret for å se tidligere bestillinger.';
     }
 
     handleRowClick(event) {
