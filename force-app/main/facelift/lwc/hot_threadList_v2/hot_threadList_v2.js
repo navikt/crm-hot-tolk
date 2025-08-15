@@ -35,7 +35,6 @@ export default class Hot_threadList_v2 extends NavigationMixin(LightningElement)
             this.error = error;
             this.threads = undefined;
         }
-        console.log('wire data:', data);
         console.log('wire error:', error);
     }
     @wire(getContactId, {})
@@ -46,16 +45,12 @@ export default class Hot_threadList_v2 extends NavigationMixin(LightningElement)
         } else if (error) {
             this.error = error;
         }
-        console.log('contactid', data);
         console.log('contactid feil', error);
     }
     handleFilterButtonClick(event) {
         this.filterValue = event.detail;
         this.tryMapAndSortThreads();
     }
-    // handleThreadClick(event) {
-    //     alert('funket tråd' + event.detail);
-    // }
     handleSearchChange(event) {
         this.searchValue = event.detail;
         this.tryMapAndSortThreads();
