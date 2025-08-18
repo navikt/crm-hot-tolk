@@ -9,6 +9,7 @@ body {
     flex-direction: column;
     align-items: center;
     justify-content: center;
+    background-color: #ffffff;
 }
 
 .user-info-tile {
@@ -21,6 +22,7 @@ body {
 
 /* Headings */
 h1 {
+    font-family: 'Source Sans 3', 'Source Sans Pro', Arial, sans-serif;
     font-size: 2rem;
     font-weight: 600;
     position: relative;
