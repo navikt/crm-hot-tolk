@@ -123,9 +123,12 @@ tr.row:focus {
         content: none;
     }
 
-    /* First and third column bold */
     td:nth-child(1),
     td:nth-child(2) {
         font-weight: bold;
+    }
+
+    td:nth-child(1) {
+        font-size: 1.5rem;
     }
 }
