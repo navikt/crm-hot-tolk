@@ -1,0 +1,142 @@
+/* Layout */
+.mainContent {
+    font-size: 18px;
+    background: #fff;
+}
+
+.mine-bestillinger-wrapper {
+    background: #fff;
+    border-radius: 0.5rem;
+    margin: 0 auto;
+    width: 100%;
+    max-width: 1200px;
+    padding-bottom: 1rem;
+    font-family: 'Source Sans Pro', Arial, sans-serif;
+}
+
+.skjema-max-width {
+    width: 100%;
+    max-width: 1200px;
+}
+
+.record-details-container {
+    margin: 2rem 0;
+}
+
+/* Header */
+.header {
+    font-family: 'Source Sans Pro', Arial, sans-serif;
+    position: relative;
+    width: 100%;
+    font-size: 2rem;
+    font-weight: 600;
+    text-align: center;
+    padding-bottom: 1.5rem;
+}
+.back-button-info {
+    margin: 0 0 0 -0.5rem;
+}
+
+.header:focus {
+    outline: none;
+}
+
+.header-buttons {
+    display: flex;
+    justify-content: flex-end;
+    margin-top: -3rem;
+    position: relative;
+    z-index: 1;
+}
+
+/* Button Row */
+.buttonRow {
+    display: flex;
+    flex-wrap: wrap;
+}
+
+.button-padding {
+    padding-right: 0.5vw;
+    height: 3em;
+}
+
+/* Spinner Loader */
+.loader {
+    border: 16px solid #f3f3f3;
+    border-top: 16px solid #3498db;
+    border-radius: 50%;
+    width: 120px;
+    height: 120px;
+    animation: spin 2s linear infinite;
+    margin: 0 auto;
+}
+
+@keyframes spin {
+    to {
+        transform: rotate(360deg);
+    }
+}
+
+/* File Uploader & Dialog */
+.fileUploader {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin: auto;
+    width: 50%;
+}
+
+.comments-dialog-container {
+    all: unset;
+    background: #fff;
+    display: block;
+    padding: 5rem;
+    border-radius: 4px;
+    position: relative;
+    flex-grow: 0;
+    margin: 1rem 0;
+    z-index: 1010;
+    max-width: 100%;
+    max-height: 75%;
+    width: 50%;
+}
+
+/* Hidden Utility */
+.hidden {
+    display: none !important;
+}
+
+span {
+    font-weight: normal;
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+    .fileUploader {
+        width: 100%;
+    }
+
+    .mine-bestillinger-wrapper {
+        padding: 1rem;
+    }
+
+    .comments-dialog-container {
+        width: 100%;
+    }
+
+    .header {
+        font-size: 2.5rem;
+        text-align: left;
+        margin-left: 0;
+        padding-left: 0;
+    }
+
+    .record-details-container {
+        margin: 5vw 0;
+    }
+
+    .header-buttons {
+        justify-content: flex-start;
+        margin-top: -1rem;
+    }
+}

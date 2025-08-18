@@ -4,7 +4,7 @@
         <name>HOT_Create_Notification</name>
         <label>Create Notification</label>
         <locationX>50</locationX>
-        <locationY>695</locationY>
+        <locationY>755</locationY>
         <actionName>customNotificationAction</actionName>
         <actionType>customNotificationAction</actionType>
         <flowTransactionModel>CurrentTransaction</flowTransactionModel>
@@ -39,19 +39,25 @@
             </value>
         </inputParameters>
         <nameSegment>customNotificationAction</nameSegment>
-        <versionSegment>1</versionSegment>
     </actionCalls>
     <apiVersion>56.0</apiVersion>
     <assignments>
         <name>HOT_Add_Owner_to_the_RecipientIDs</name>
         <label>Add Owner to the RecipientIDs</label>
         <locationX>50</locationX>
-        <locationY>575</locationY>
+        <locationY>647</locationY>
         <assignmentItems>
             <assignToReference>RecipientIDs</assignToReference>
             <operator>Add</operator>
             <value>
                 <elementReference>$Record.OwnerId</elementReference>
+            </value>
+        </assignmentItems>
+        <assignmentItems>
+            <assignToReference>RecipientIDs</assignToReference>
+            <operator>Add</operator>
+            <value>
+                <elementReference>getDispatcherAdminRecipients.Id</elementReference>
             </value>
         </assignmentItems>
         <connector>
@@ -66,11 +72,18 @@
             <stringValue>HOT_Tolk_Admin</stringValue>
         </value>
     </constants>
+    <constants>
+        <name>HOT_Tolk_Formidler_Admin_String</name>
+        <dataType>String</dataType>
+        <value>
+            <stringValue>HOT_Tolk_Formidler_Admin</stringValue>
+        </value>
+    </constants>
     <decisions>
         <name>HOT_Is_Owner_HOT_Tolk_Admin</name>
         <label>Is Owner HOT_Tolk_Admin</label>
         <locationX>182</locationX>
-        <locationY>335</locationY>
+        <locationY>323</locationY>
         <defaultConnectorLabel>Default Outcome</defaultConnectorLabel>
         <rules>
             <name>HOT_CheckOwner</name>
@@ -112,13 +125,34 @@
     </processMetadataValues>
     <processType>AutoLaunchedFlow</processType>
     <recordLookups>
-        <name>HOT_GetNotificationId</name>
-        <label>getNotificationId</label>
+        <name>getDispatcherAdminRecipients</name>
+        <label>getDispatcherAdminRecipients</label>
         <locationX>50</locationX>
-        <locationY>455</locationY>
+        <locationY>539</locationY>
         <assignNullValuesIfNoRecordsFound>false</assignNullValuesIfNoRecordsFound>
         <connector>
             <targetReference>HOT_Add_Owner_to_the_RecipientIDs</targetReference>
+        </connector>
+        <filterLogic>and</filterLogic>
+        <filters>
+            <field>DeveloperName</field>
+            <operator>EqualTo</operator>
+            <value>
+                <elementReference>HOT_Tolk_Formidler_Admin_String</elementReference>
+            </value>
+        </filters>
+        <getFirstRecordOnly>true</getFirstRecordOnly>
+        <object>Group</object>
+        <storeOutputAutomatically>true</storeOutputAutomatically>
+    </recordLookups>
+    <recordLookups>
+        <name>HOT_GetNotificationId</name>
+        <label>getNotificationId</label>
+        <locationX>50</locationX>
+        <locationY>431</locationY>
+        <assignNullValuesIfNoRecordsFound>false</assignNullValuesIfNoRecordsFound>
+        <connector>
+            <targetReference>getDispatcherAdminRecipients</targetReference>
         </connector>
         <filterLogic>and</filterLogic>
         <filters>

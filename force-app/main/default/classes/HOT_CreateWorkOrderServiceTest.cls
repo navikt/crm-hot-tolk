@@ -351,7 +351,7 @@ private class HOT_CreateWorkOrderServiceTest {
         inputVariable.startDate = Datetime.now();
         inputVariable.endDate = Datetime.now().addHours(1);
         inputVariable.recurringType = 'Monthly';
-        inputVariable.recurringEndDate = Date.today().addDays(6100);
+        inputVariable.recurringEndDate = Date.today().addDays(6200);
 
         List<HOT_CreateWorkOrderService> inputVariables = new List<HOT_CreateWorkOrderService>();
         inputVariables.add(inputVariable);

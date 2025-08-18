@@ -1,0 +1,50 @@
+.full-width-container {
+    background-color: none;
+    padding: 2vw;
+    font-family: 'Source Sans 3', 'Source Sans Pro', Arial, sans-serif;
+    box-sizing: border-box;
+}
+
+.inline-container {
+    background-color: none;
+    font-family: 'Source Sans 3', 'Source Sans Pro', Arial, sans-serif;
+    box-sizing: border-box;
+}
+
+.back-button {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.4rem;
+    font-size: 1.2rem;
+    font-weight: 500;
+    line-height: 1.4;
+    color: #000000;
+    cursor: pointer;
+    user-select: none;
+    text-decoration: none;
+}
+
+.back-link:hover .back-label,
+.back-link:focus .back-label {
+    text-decoration: underline;
+}
+
+.back-icon {
+    --slds-c-icon-color-foreground-default: #000000;
+    margin-right: 0.2rem;
+    width: 1.2rem;
+    height: 1.2rem;
+}
+
+@media (max-width: 768px) {
+    .full-width-container {
+        padding: 1rem;
+    }
+    .inline-container {
+        padding: 0.5rem;
+    }
+
+    .back-button {
+        font-size: 1rem;
+    }
+}

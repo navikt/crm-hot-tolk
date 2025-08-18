@@ -24,12 +24,13 @@
     </processMetadataValues>
     <processType>AutoLaunchedFlow</processType>
     <recordUpdates>
+        <description>Resets EstimatedTravelTime</description>
         <name>setTravelTimeToZero</name>
         <label>setTravelTimeToZero</label>
         <locationX>176</locationX>
         <locationY>323</locationY>
         <inputAssignments>
-            <field>FSL__calculated_duration__c</field>
+            <field>EstimatedTravelTime</field>
         </inputAssignments>
         <inputReference>$Record</inputReference>
     </recordUpdates>
@@ -39,17 +40,18 @@
         <connector>
             <targetReference>setTravelTimeToZero</targetReference>
         </connector>
+        <doesRequireRecordChangedToMeetCriteria>true</doesRequireRecordChangedToMeetCriteria>
         <filterLogic>and</filterLogic>
         <filters>
-            <field>FSL__calculated_duration__c</field>
+            <field>EstimatedTravelTime</field>
             <operator>GreaterThan</operator>
             <value>
                 <numberValue>0.0</numberValue>
             </value>
         </filters>
         <object>AssignedResource</object>
-        <recordTriggerType>Create</recordTriggerType>
+        <recordTriggerType>CreateAndUpdate</recordTriggerType>
         <triggerType>RecordAfterSave</triggerType>
     </start>
-    <status>Draft</status>
+    <status>Active</status>
 </Flow>

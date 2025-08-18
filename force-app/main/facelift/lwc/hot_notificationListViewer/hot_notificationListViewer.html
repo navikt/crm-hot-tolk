@@ -1,0 +1,58 @@
+<template>
+    <div class="notification-center">
+        <button
+            class="navds-button navds-body-short"
+            onclick={toggleNotifications}
+            aria-label="Vis varsler fra Tolketjenesten"
+            aria-haspopup="dialog"
+            aria-expanded={showNotifications}
+        >
+            <img src={notificationIcon} alt="" aria-hidden="true" style="padding-right: 0.5rem" />
+            Varsler
+        </button>
+
+        <template if:true={showNotifications}>
+            <div class="notification-overlay" onclick={toggleNotifications} aria-hidden="true"></div>
+
+            <div
+                class="dropdown"
+                role="dialog"
+                aria-modal="true"
+                aria-label="Varselsenter for tolketjenesten"
+                tabindex="-1"
+                onkeydown={handleFocusTrap}
+                onclick={noop}
+            >
+                <div class="dropdown-header">
+                    <h2 id="varsler-heading">Varsler</h2>
+                    <button class="close-btn" onclick={toggleNotifications} aria-label="Lukk varselsenter">
+                        <img src={exitCrossIcon} alt="" aria-hidden="true" />
+                    </button>
+                    <p id="varsler-info">Kun varsler fra tolketjenesten siste 30 dager vises her.</p>
+                </div>
+
+                <div class="dropdown-info" if:false={hasNotifications}>Ingen nye varsler.</div>
+
+                <template for:each={notifications} for:item="notification">
+                    <button
+                        key={notification.Id}
+                        data-id={notification.Id}
+                        class="link-container"
+                        onclick={goToNotification}
+                        aria-label={notification.ariaLabel}
+                    >
+                        <div class="notification-card">
+                            <h3>{notification.HOT_Subject__c}</h3>
+                            <div>{notification.HOT_NotificationText__c}</div>
+                            <div class="notification-date">
+                                {notification.HOT_NotificationChannel__c}
+                                <span aria-hidden="true"> | </span>
+                                {notification.created}
+                            </div>
+                        </div>
+                    </button>
+                </template>
+            </div>
+        </template>
+    </div>
+</template>

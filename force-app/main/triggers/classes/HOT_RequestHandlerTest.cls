@@ -6,6 +6,22 @@ private class HOT_RequestHandlerTest {
         TestDataFactory.getQueue('HMS Troms og Finmark', 'queue_4719', 'HOT_Request__c');
         TestDataFactory.getPublicGroup('HMS Nordland', 'group_4718');
         TestDataFactory.getQueue('HMS Nordland', 'queue_4718', 'HOT_Request__c');
+
+        TestDataFactory.getPublicGroup('HMS Møre og Romsdal', 'group_4715');
+        TestDataFactory.getQueue('HMS Møre og Romsdal', 'queue_4715', 'Thread__c');
+        QueuesObject qso = new QueueSObject(
+            QueueID = TestDataFactory.getQueue('HMS Møre og Romsdal', 'queue_4715', 'Thread__c').id,
+            SobjectType = 'HOT_Request__c'
+        );
+        insert qso;
+
+        TestDataFactory.getPublicGroup('HMS Øst-Viken', 'group_4701');
+        TestDataFactory.getQueue('HMS Øst-Viken', 'queue_4701', 'Thread__c');
+        qso = new QueueSObject(
+            QueueID = TestDataFactory.getQueue('HMS Øst-Viken', 'queue_4701', 'Thread__c').Id,
+            SobjectType = 'HOT_Request__c'
+        );
+        insert qso;
     }
 
     @IsTest
@@ -562,7 +578,11 @@ private class HOT_RequestHandlerTest {
     public static void dispatcherOnThreadChangeRequest() {
         WorkType workType = HOT_TestDataFactory.createWorkType();
         insert workType;
+        Account acc = HOT_TestDataFactory.createAccount(true);
+        insert acc;
+
         HOT_Request__c request = HOT_TestDataFactory.createRequest('TEST', workType);
+        request.Account__c = acc.Id;
         insert request;
         Profile adminProfile = [
             SELECT Id, Name
@@ -585,11 +605,79 @@ private class HOT_RequestHandlerTest {
         Thread__c t = [SELECT HOT_Dispatcher__c FROM Thread__c WHERE Id = :thread.Id];
         System.AssertEquals(admin.Id, t.HOT_Dispatcher__c);
     }
+
+    @IsTest
+    public static void ownerOnThreadChangeRequest() {
+        Group moreQueue = TestDataFactory.getQueue('HMS Møre og Romsdal', 'queue_4715', 'Thread__c');
+        Group vikenQueue = TestDataFactory.getQueue('HMS Øst-Viken', 'queue_4701', 'Thread__c');
+        WorkType workType = HOT_TestDataFactory.createWorkType();
+        insert workType;
+
+        Account acc = HOT_TestDataFactory.createAccount(true);
+        insert acc;
+
+        HOT_Request__c request = HOT_TestDataFactory.createRequest('TEST', workType);
+        request.Account__c = acc.Id;
+        insert request;
+
+        Thread__c thread = new Thread__c();
+        thread.RecordTypeId = HOT_MessageHelper.getHOTThreadRecordType();
+        thread.CRM_Related_Object__c = request.Id;
+        thread.HOT_Request__c = request.Id;
+        thread.OwnerId = moreQueue.Id;
+        insert thread;
+
+        Test.startTest();
+        thread = [SELECT OwnerId, HOT_Request__c FROM Thread__c WHERE HOT_Request__c = :request.Id];
+        System.assertEquals(moreQueue.Id, thread.OwnerId, 'Owner was not set correctly');
+
+        request.OwnerId = vikenQueue.Id;
+        update request;
+        Test.stopTest();
+        thread = [SELECT OwnerId, HOT_Request__c FROM Thread__c WHERE HOT_Request__c = :request.Id];
+
+        System.assertEquals(vikenQueue.Id, thread.OwnerId, 'Owner was not set correctly');
+    }
+
+    @IsTest
+    public static void archiveAsOwnerShouldNotAffectRelatedThread() {
+        Group moreQueue = TestDataFactory.getQueue('HMS Møre og Romsdal', 'queue_4715', 'Thread__c');
+        Group archive = [SELECT Id FROM Group WHERE Type = 'Queue' AND Name = 'HOT Arkiv' LIMIT 1];
+        WorkType workType = HOT_TestDataFactory.createWorkType();
+        insert workType;
+        HOT_Request__c request = HOT_TestDataFactory.createRequest('TEST', workType);
+        request.OwnerId = moreQueue.Id;
+        insert request;
+
+        Thread__c thread = new Thread__c();
+        thread.RecordTypeId = HOT_MessageHelper.getHOTThreadRecordType();
+        thread.CRM_Related_Object__c = request.Id;
+        thread.HOT_Request__c = request.Id;
+        thread.OwnerId = moreQueue.Id;
+        insert thread;
+
+        Test.startTest();
+        request.HOT_DelPol_IsHideRecord__c = true;
+        update request;
+        Test.stopTest();
+
+        HOT_Request__c updatedRequest = [SELECT Id, OwnerId FROM HOT_Request__c WHERE Id = :request.Id LIMIT 1];
+        thread = [SELECT OwnerId FROM Thread__c WHERE HOT_Request__c = :request.Id];
+        System.assertEquals(
+            archive.Id,
+            updatedRequest.OwnerId,
+            'The owner was not changed to "HOT Arkiv" as expected.'
+        );
+        System.assertNotEquals(archive.Id, thread.OwnerId, 'The owner was updated to archive.');
+    }
     @IsTest
     public static void dispatcherOnThreadChangeWorkOrder() {
         WorkType workType = HOT_TestDataFactory.createWorkType();
         insert workType;
+        Account acc = HOT_TestDataFactory.createAccount(true);
+        insert acc;
         HOT_Request__c request = HOT_TestDataFactory.createRequest('TEST', workType);
+        request.Account__c = acc.Id;
         insert request;
         WorkOrder workOrder1 = HOT_TestDataFactory.createWorkOrder(request, workType);
         insert workOrder1;
@@ -616,9 +704,12 @@ private class HOT_RequestHandlerTest {
     }
     @IsTest
     public static void dispatcherOnThreadChangeSA() {
+        Account account = HOT_TestDataFactory.createAccount(true);
+        insert account;
         WorkType workType = HOT_TestDataFactory.createWorkType();
         insert workType;
         HOT_Request__c request = HOT_TestDataFactory.createRequest('TEST', workType);
+        request.Account__c = account.Id;
         insert request;
         WorkOrder workOrder = HOT_TestDataFactory.createWorkOrder(request, workType);
         insert workOrder;
@@ -650,9 +741,12 @@ private class HOT_RequestHandlerTest {
     }
     @IsTest
     public static void dispatcherOnThreadChangeIR() {
+        Account account = HOT_TestDataFactory.createAccount(true);
+        insert account;
         WorkType workType = HOT_TestDataFactory.createWorkType();
         insert workType;
         HOT_Request__c request = HOT_TestDataFactory.createRequest('TEST', workType);
+        request.Account__c = account.Id;
         insert request;
         WorkOrder workOrder = HOT_TestDataFactory.createWorkOrder(request, workType);
         insert workOrder;

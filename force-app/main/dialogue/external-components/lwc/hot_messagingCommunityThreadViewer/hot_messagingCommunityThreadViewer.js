@@ -6,7 +6,7 @@ import markThreadAsRead from '@salesforce/apex/HOT_MessageHelper.markThreadAsRea
 import { refreshApex } from '@salesforce/apex';
 import getContactId from '@salesforce/apex/HOT_MessageHelper.getUserContactId';
 import getRelatedObjectDetails from '@salesforce/apex/HOT_MessageHelper.getRelatedObjectDetails';
-import { formatDate } from 'c/datetimeFormatter';
+import { formatDate, formatDatetimeinterval, formatDatetime } from 'c/datetimeFormatterNorwegianTime';
 import getServiceAppointmentDetails from '@salesforce/apex/HOT_MyServiceAppointmentListController.getServiceAppointmentDetails';
 import getInterestedResourceDetails from '@salesforce/apex/HOT_InterestedResourcesListController.getInterestedResourceDetails';
 import getWageClaimDetails from '@salesforce/apex/HOT_WageClaimListController.getWageClaimDetails';
@@ -16,7 +16,7 @@ import createmsg from '@salesforce/apex/HOT_MessageHelper.createMessage';
 import { getParametersFromURL } from 'c/hot_URIDecoder';
 
 import setLastMessageFrom from '@salesforce/apex/HOT_MessageHelper.setLastMessageFrom';
-import { formatRecord } from 'c/datetimeFormatter';
+import { formatRecord } from 'c/datetimeFormatterNorwegianTime';
 
 import getThreadDetails from '@salesforce/apex/HOT_ThreadDetailController.getThreadDetails';
 
@@ -384,50 +384,12 @@ export default class hot_messagingCommunityThreadViewer extends NavigationMixin(
                     getServiceAppointmentDetails({ recordId: key }).then((result) => {
                         this.serviceAppointment = result;
                         this.address = this.serviceAppointment.HOT_AddressFormated__c;
-                        let startTimeFormatted = new Date(result.EarliestStartTime);
-                        let endTimeFormatted = new Date(result.DueDate);
-                        this.serviceAppointment.StartAndEndDate =
-                            startTimeFormatted.getDate() +
-                            '.' +
-                            (startTimeFormatted.getMonth() + 1) +
-                            '.' +
-                            startTimeFormatted.getFullYear() +
-                            ', ' +
-                            ('0' + startTimeFormatted.getHours()).substr(-2) +
-                            ':' +
-                            ('0' + startTimeFormatted.getMinutes()).substr(-2) +
-                            ' - ' +
-                            ('0' + endTimeFormatted.getHours()).substr(-2) +
-                            ':' +
-                            ('0' + endTimeFormatted.getMinutes()).substr(-2);
-                        let actualstartTimeFormatted = new Date(result.ActualStartTime);
-                        let actualendTimeFormatted = new Date(result.ActualEndTime);
-                        this.serviceAppointment.ActualStartTime =
-                            actualstartTimeFormatted.getDate() +
-                            '.' +
-                            (actualstartTimeFormatted.getMonth() + 1) +
-                            '.' +
-                            actualstartTimeFormatted.getFullYear() +
-                            ' ' +
-                            ('0' + actualstartTimeFormatted.getHours()).substr(-2) +
-                            ':' +
-                            ('0' + actualstartTimeFormatted.getMinutes()).substr(-2);
-                        this.serviceAppointment.ActualEndTime =
-                            actualendTimeFormatted.getDate() +
-                            '.' +
-                            (actualendTimeFormatted.getMonth() + 1) +
-                            '.' +
-                            actualendTimeFormatted.getFullYear() +
-                            ' ' +
-                            ('0' + actualendTimeFormatted.getHours()).substr(-2) +
-                            ':' +
-                            ('0' + actualendTimeFormatted.getMinutes()).substr(-2);
-                        if (this.serviceAppointment.ActualStartTime.includes('NaN')) {
-                            this.serviceAppointment.ActualStartTime = '';
-                        }
-                        if (this.serviceAppointment.ActualEndTime.includes('NaN')) {
-                            this.serviceAppointment.ActualEndTime = '';
-                        }
+                        this.serviceAppointment.StartAndEndDate = formatDatetimeinterval(
+                            result.EarliestStartTime,
+                            result.DueDate
+                        );
+                        this.serviceAppointment.ActualStartTime = formatDatetime(result.ActualStartTime);
+                        this.serviceAppointment.ActualEndTime = formatDatetime(result.ActualEndTime);
                         if (
                             this.serviceAppointment &&
                             this.serviceAppointment.HOT_Request__r &&
@@ -446,15 +408,14 @@ export default class hot_messagingCommunityThreadViewer extends NavigationMixin(
                                 undefined
                             ) {
                                 if (
-                                    this.serviceAppointment.HOT_Request__r.Account__r.CRM_Person__r.HOT_Gender__c !==
+                                    this.serviceAppointment.HOT_Request__r.Account__r.CRM_Person__r.INT_Sex__c !==
                                     undefined
                                 ) {
                                     this.accountAgeGender =
-                                        this.serviceAppointment.HOT_Request__r.Account__r.CRM_Person__r.HOT_Gender__c;
+                                        this.serviceAppointment.HOT_Request__r.Account__r.CRM_Person__r.INT_Sex__c;
                                 }
                             } else if (
-                                this.serviceAppointment.HOT_Request__r.Account__r.CRM_Person__r.HOT_Gender__c ==
-                                undefined
+                                this.serviceAppointment.HOT_Request__r.Account__r.CRM_Person__r.INT_Sex__c == undefined
                             ) {
                                 if (
                                     this.serviceAppointment.HOT_Request__r.Account__r.CRM_Person__r.CRM_AgeNumber__c !==
@@ -465,13 +426,13 @@ export default class hot_messagingCommunityThreadViewer extends NavigationMixin(
                                             .CRM_AgeNumber__c + ' år';
                                 }
                             } else if (
-                                this.serviceAppointment.HOT_Request__r.Account__r.CRM_Person__r.HOT_Gender__c !==
+                                this.serviceAppointment.HOT_Request__r.Account__r.CRM_Person__r.INT_Sex__c !==
                                     undefined &&
                                 this.serviceAppointment.HOT_Request__r.Account__r.CRM_Person__r.CRM_AgeNumber__c !==
                                     undefined
                             ) {
                                 this.accountAgeGender =
-                                    this.serviceAppointment.HOT_Request__r.Account__r.CRM_Person__r.HOT_Gender__c +
+                                    this.serviceAppointment.HOT_Request__r.Account__r.CRM_Person__r.INT_Sex__c +
                                     ' ' +
                                     this.serviceAppointment.HOT_Request__r.Account__r.CRM_Person__r.CRM_AgeNumber__c +
                                     ' år';
@@ -506,22 +467,10 @@ export default class hot_messagingCommunityThreadViewer extends NavigationMixin(
                 if (result[key] == 'IR') {
                     getInterestedResourceDetails({ recordId: key }).then((result) => {
                         this.interestedResource = result;
-                        let startTimeFormatted = new Date(result.ServiceAppointmentStartTime__c);
-                        let endTimeFormatted = new Date(result.ServiceAppointmentEndTime__c);
-                        this.interestedResource.StartAndEndDate =
-                            startTimeFormatted.getDate() +
-                            '.' +
-                            (startTimeFormatted.getMonth() + 1) +
-                            '.' +
-                            startTimeFormatted.getFullYear() +
-                            ', ' +
-                            ('0' + startTimeFormatted.getHours()).substr(-2) +
-                            ':' +
-                            ('0' + startTimeFormatted.getMinutes()).substr(-2) +
-                            ' - ' +
-                            ('0' + endTimeFormatted.getHours()).substr(-2) +
-                            ':' +
-                            ('0' + endTimeFormatted.getMinutes()).substr(-2);
+                        this.interestedResource.StartAndEndDate = formatDatetimeinterval(
+                            result.ServiceAppointmentStartTime__c,
+                            result.ServiceAppointmentEndTime__c
+                        );
                         let DeadlineDateTimeFormatted = new Date(this.interestedResource.AppointmentDeadlineDate__c);
                         this.interestedResource.AppointmentDeadlineDate__c =
                             DeadlineDateTimeFormatted.getDate() +
@@ -529,9 +478,6 @@ export default class hot_messagingCommunityThreadViewer extends NavigationMixin(
                             (DeadlineDateTimeFormatted.getMonth() + 1) +
                             '.' +
                             DeadlineDateTimeFormatted.getFullYear();
-                        if (this.interestedResource.AppointmentDeadlineDate__c.includes('NaN')) {
-                            this.interestedResource.AppointmentDeadlineDate__c = '';
-                        }
                         let relaseDateTimeFormatted = new Date(
                             this.interestedResource.ServiceAppointment__r.HOT_ReleaseDate__c
                         );
@@ -541,9 +487,6 @@ export default class hot_messagingCommunityThreadViewer extends NavigationMixin(
                             (relaseDateTimeFormatted.getMonth() + 1) +
                             '.' +
                             relaseDateTimeFormatted.getFullYear();
-                        if (this.interestedResource.ServiceAppointment__r.HOT_ReleaseDate__c.includes('NaN')) {
-                            this.interestedResource.ServiceAppointment__r.HOT_ReleaseDate__c = '';
-                        }
                         this.isIRDetails = true;
                         this.template.querySelector('.serviceAppointmentDetails').classList.remove('hidden');
                     });
@@ -553,22 +496,10 @@ export default class hot_messagingCommunityThreadViewer extends NavigationMixin(
                 if (result[key] == 'WC') {
                     getWageClaimDetails({ recordId: key }).then((result) => {
                         this.wageClaim = result;
-                        let startTimeFormatted = new Date(this.wageClaim.StartTime__c);
-                        let endTimeFormatted = new Date(this.wageClaim.EndTime__c);
-                        this.wageClaim.StartAndEndDate =
-                            startTimeFormatted.getDate() +
-                            '.' +
-                            (startTimeFormatted.getMonth() + 1) +
-                            '.' +
-                            startTimeFormatted.getFullYear() +
-                            ', ' +
-                            ('0' + startTimeFormatted.getHours()).substr(-2) +
-                            ':' +
-                            ('0' + startTimeFormatted.getMinutes()).substr(-2) +
-                            ' - ' +
-                            ('0' + endTimeFormatted.getHours()).substr(-2) +
-                            ':' +
-                            ('0' + endTimeFormatted.getMinutes()).substr(-2);
+                        this.wageClaim.StartAndEndDate = formatDatetimeinterval(
+                            this.wageClaim.StartTime__c,
+                            this.wageClaim.EndTime__c
+                        );
                         this.isWCDetails = true;
                         this.template.querySelector('.serviceAppointmentDetails').classList.remove('hidden');
                     });

@@ -1,0 +1,24 @@
+.banner {
+    font-size: 1.75rem;
+    text-align: left;
+    font-family: Arial, sans-serif;
+    width: 100%;
+    max-width: 100vw;
+    display: flex;
+    justify-content: flex-start;
+    align-items: center;
+    /* padding: 2vw; */
+    padding-top: 2vh;
+    padding-bottom: 2vh;
+    gap: 3vw;
+}
+@media (max-width: 768px) {
+    .banner {
+        padding: 1rem;
+    }
+}
+@media (max-width: 768px) {
+    .banner {
+        margin-left: 2vw;
+    }
+}

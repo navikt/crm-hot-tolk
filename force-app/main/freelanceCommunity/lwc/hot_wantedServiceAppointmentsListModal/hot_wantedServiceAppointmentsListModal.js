@@ -15,6 +15,14 @@ export default class Hot_wantedServiceAppointmentsListModal extends LightningMod
     @track isDetails = true;
     actionType;
 
+    connectedCallback() {
+        document.body.style.overflow = 'hidden';
+    }
+
+    disconnectedCallback() {
+        document.body.style.overflow = '';
+    }
+
     acceptInterest() {
         this.actionType = 'acceptInterest';
         this.processMessage = 'Melder interesse...';

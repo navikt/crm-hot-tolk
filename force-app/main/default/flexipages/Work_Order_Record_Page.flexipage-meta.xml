@@ -17,6 +17,26 @@
                             </visibilityRule>
                         </valueListItems>
                         <valueListItems>
+                            <value>WorkOrder.HOT_DeleteFiles</value>
+                            <visibilityRule>
+                                <criteria>
+                                    <leftValue>{!$Client.formFactor}</leftValue>
+                                    <operator>EQUAL</operator>
+                                    <rightValue>Large</rightValue>
+                                </criteria>
+                            </visibilityRule>
+                        </valueListItems>
+                        <valueListItems>
+                            <value>WorkOrder.HOT_Update_Child_Records</value>
+                            <visibilityRule>
+                                <criteria>
+                                    <leftValue>{!$Client.formFactor}</leftValue>
+                                    <operator>EQUAL</operator>
+                                    <rightValue>Large</rightValue>
+                                </criteria>
+                            </visibilityRule>
+                        </valueListItems>
+                        <valueListItems>
                             <value>Edit</value>
                             <visibilityRule>
                                 <criteria>
@@ -127,6 +147,36 @@
         <itemInstances>
             <componentInstance>
                 <componentInstanceProperties>
+                    <name>parentFieldApiName</name>
+                    <value>WorkOrder.Id</value>
+                </componentInstanceProperties>
+                <componentInstanceProperties>
+                    <name>relatedListApiName</name>
+                    <value>AttachedContentDocuments</value>
+                </componentInstanceProperties>
+                <componentInstanceProperties>
+                    <name>relatedListComponentOverride</name>
+                    <value>NONE</value>
+                </componentInstanceProperties>
+                <componentInstanceProperties>
+                    <name>rowsToDisplay</name>
+                    <value>10</value>
+                </componentInstanceProperties>
+                <componentInstanceProperties>
+                    <name>showActionBar</name>
+                    <value>true</value>
+                </componentInstanceProperties>
+                <componentName>force:relatedListSingleContainer</componentName>
+                <identifier>force_relatedListSingleContainer3</identifier>
+            </componentInstance>
+        </itemInstances>
+        <name>Facet-e1f4d6b6-22ea-4e43-8d74-00401ca60e5f</name>
+        <type>Facet</type>
+    </flexiPageRegions>
+    <flexiPageRegions>
+        <itemInstances>
+            <componentInstance>
+                <componentInstanceProperties>
                     <name>showClose</name>
                     <value>false</value>
                 </componentInstanceProperties>
@@ -176,6 +226,20 @@
                 </componentInstanceProperties>
                 <componentName>flexipage:tab</componentName>
                 <identifier>detailTab</identifier>
+            </componentInstance>
+        </itemInstances>
+        <itemInstances>
+            <componentInstance>
+                <componentInstanceProperties>
+                    <name>body</name>
+                    <value>Facet-e1f4d6b6-22ea-4e43-8d74-00401ca60e5f</value>
+                </componentInstanceProperties>
+                <componentInstanceProperties>
+                    <name>title</name>
+                    <value>Filer</value>
+                </componentInstanceProperties>
+                <componentName>flexipage:tab</componentName>
+                <identifier>flexipage_tab2</identifier>
             </componentInstance>
         </itemInstances>
         <itemInstances>

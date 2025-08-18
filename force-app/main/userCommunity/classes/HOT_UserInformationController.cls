@@ -9,7 +9,12 @@ public without sharing class HOT_UserInformationController {
         ];
         return person;
     }
-     @AuraEnabled(cacheable=true)
+    @AuraEnabled(cacheable=true)
+    public static User getUserInformation() {
+        User currentUser = [SELECT Id, FirstName, Profile.Name FROM User WHERE Id = :UserInfo.getUserId()];
+        return currentUser;
+    }
+    @AuraEnabled(cacheable=true)
     public static User getAccountId() {
         User currentUser = [SELECT Id, AccountId FROM User WHERE Id = :UserInfo.getUserId()];
         return currentUser;
@@ -47,59 +52,57 @@ public without sharing class HOT_UserInformationController {
 
     @AuraEnabled
     public static void updateKrrStatus(Person__c receivedPerson) {
-        Person__c newPerson = new Person__c(Id = receivedPerson.Id, INT_KrrIntegrationStatus__c = receivedPerson.INT_KrrIntegrationStatus__c);
+        Person__c newPerson = new Person__c(
+            Id = receivedPerson.Id,
+            INT_KrrIntegrationStatus__c = receivedPerson.INT_KrrIntegrationStatus__c
+        );
         update newPerson;
-        
     }
 
-
     @AuraEnabled
-    public static List < Map < String, String >> getNotificationPickListValues(String chosen) {
-        List < Map < String, String >> options = new List < Map < String, String >> ();
-        
+    public static List<Map<String, String>> getNotificationPickListValues(String chosen) {
+        List<Map<String, String>> options = new List<Map<String, String>>();
+
         Schema.DescribeFieldResult fieldResult = Person__c.HOT_NotificationChannel__c.getDescribe();
-		List<Schema.PicklistEntry> ple = fieldResult.getPicklistValues();
-        for( Schema.PicklistEntry f : ple){
-            if(chosen==f.getLabel()){
-                Map < String, String > values = new Map < String, String > {
+        List<Schema.PicklistEntry> ple = fieldResult.getPicklistValues();
+        for (Schema.PicklistEntry f : ple) {
+            if (chosen == f.getLabel()) {
+                Map<String, String> values = new Map<String, String>{
                     'label' => f.getLabel(),
                     'value' => f.getValue()
                 };
                 options.add(values);
             }
-		}   
-		for( Schema.PicklistEntry f : ple){
-            if(chosen!=f.getLabel()){
-                Map < String, String > values = new Map < String, String > {
+        }
+        for (Schema.PicklistEntry f : ple) {
+            if (chosen != f.getLabel()) {
+                Map<String, String> values = new Map<String, String>{
                     'label' => f.getLabel(),
                     'value' => f.getValue()
                 };
                 options.add(values);
             }
-		}     
+        }
         return options;
     }
-    
+
     @AuraEnabled
-    public static boolean changeUserNotificationSetting(String personId, String newNotificationValue, Boolean isReservedAgainstNotifications) {
-        Person__c person = [
-            SELECT
-                Id,
-                HOT_NotificationChannel__c
-                FROM Person__c
-                WHERE Id = :personId
-        ];
-        if(person!=null){
-            if(String.isNotBlank(String.valueOf(isReservedAgainstNotifications))){
-                person.HOT_NotificationChannel__c=newNotificationValue;
-                person.HOT_IsReservationAgainstNotifications__c=isReservedAgainstNotifications;
+    public static boolean changeUserNotificationSetting(
+        String personId,
+        String newNotificationValue,
+        Boolean isReservedAgainstNotifications
+    ) {
+        Person__c person = [SELECT Id, HOT_NotificationChannel__c FROM Person__c WHERE Id = :personId];
+        if (person != null) {
+            if (String.isNotBlank(String.valueOf(isReservedAgainstNotifications))) {
+                person.HOT_NotificationChannel__c = newNotificationValue;
+                person.HOT_IsReservationAgainstNotifications__c = isReservedAgainstNotifications;
+                update person;
+            } else {
+                person.HOT_NotificationChannel__c = newNotificationValue;
                 update person;
             }
-            else{
-                person.HOT_NotificationChannel__c=newNotificationValue;
-                update person;
-            }
-         }
+        }
         return true;
     }
 }
