@@ -3,8 +3,10 @@ public without sharing class HOT_ContentDocumentLinkService {
         Map<Id, List<ContentDocumentLink>> contentDocumentLinksByServiceAppointment
     ) {
         List<ContentDocumentLink> contentDocumentLinks = new List<ContentDocumentLink>();
+        Set<Id> serviceAppointmentIds = new Set<Id>();
 
         for (Id serviceAppointmentId : contentDocumentLinksByServiceAppointment.keySet()) {
+            serviceAppointmentIds.add(serviceAppointmentId);
             for (
                 ContentDocumentLink contentDocumentLink : contentDocumentLinksByServiceAppointment.get(
                     serviceAppointmentId
@@ -19,6 +21,7 @@ public without sharing class HOT_ContentDocumentLinkService {
             }
         }
         HOT_DatabaseOperations.insertRecords(contentDocumentLinks);
+        HOT_ServiceAppointmentNotification.notifyInterpretersOnNewFiles(serviceAppointmentIds);
     }
 
     @InvocableVariable
