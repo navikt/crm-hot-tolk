@@ -1,0 +1,37 @@
+<template>
+    <template lwc:if={hasData}>
+        <div class="table-wrapper" role="region" aria-label={ariaLabel} tabindex="0">
+            <table class="data-table" role="table">
+                <thead>
+                    <tr role="row">
+                        <template for:each={columns} for:item="col">
+                            <th key={col.fieldName} scope="col" role="columnheader">{col.label}</th>
+                        </template>
+                    </tr>
+                </thead>
+                <tbody>
+                    <template for:each={recordsToShow} for:item="row">
+                        <tr
+                            key={row.id}
+                            data-id={row.id}
+                            class="row"
+                            onclick={handleRowClick}
+                            onkeydown={handleRowKeydown}
+                            tabindex="0"
+                            role="row"
+                        >
+                            <template for:each={row.fields} for:item="field">
+                                <td key={field.name} data-label={field.label}>
+                                    <template lwc:if={field.cssClass}>
+                                        <span class={field.cssClass}>{field.displayLabel}</span>
+                                    </template>
+                                    <template lwc:else> {field.displayLabel} </template>
+                                </td>
+                            </template>
+                        </tr>
+                    </template>
+                </tbody>
+            </table>
+        </div>
+    </template>
+</template>
