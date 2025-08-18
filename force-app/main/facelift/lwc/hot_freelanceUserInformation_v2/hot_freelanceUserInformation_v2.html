@@ -76,7 +76,7 @@
                                     </div>
                                 </div>
 
-                                <h3 class="heading-small">Foretrukne regioner</h3>
+                                <h3 class="heading-small">Foretrukne regioner:</h3>
 
                                 <div class="form-col response-mobile-region">
                                     <p class="label-form-small response-mobile-region">{selectedRegionLabels}</p>
@@ -84,7 +84,7 @@
 
                                 <h2 class="heading-medium header-quali center-text">Kvalifikasjoner</h2>
 
-                                <h3 class="heading-small">Kvalifikasjoner du innehar</h3>
+                                <h3 class="heading-small">Kvalifikasjoner du innehar:</h3>
                                 <div class="form-row response-mobile-qualification">
                                     <template lwc:if={userQualificationSelectedSkillList}>
                                         <ul>
@@ -99,7 +99,7 @@
 
                                 <div class="form-row">
                                     <div class="form-col more-info">
-                                        <p class="heading-more-info">Mer informasjon</p>
+                                        <p class="heading-more-info">Mer informasjon:</p>
                                         <p class="label-form-small preference-info-box">{userPreferences}</p>
                                     </div>
                                 </div>
@@ -108,10 +108,12 @@
                                     <c-button
                                         type="Submit"
                                         class="btn-edit"
-                                        button-styling="primary"
+                                        button-styling="Primary"
                                         onbuttonclick={editProfile}
                                         button-label="Rediger"
                                         aria-label="Rediger"
+                                        desktop-style="width: 8rem; justify-content: center"
+                                        mobile-style="width: 8rem; justify-content: center "
                                     ></c-button>
                                 </div>
                             </div>
@@ -226,7 +228,7 @@
                         </div>
 
                         <!-- Regions edit section -->
-                        <h3 class="heading-small" aria-level="3" role="heading">Foretrukne regioner</h3>
+                        <h3 class="heading-small" aria-level="3" role="heading">Foretrukne regioner:</h3>
 
                         <div class="form-row-region">
                             <div class="form-col-region-left">
@@ -261,7 +263,7 @@
                         <h2 class="heading-medium center-text header-quali" aria-level="2" role="heading">
                             Kvalifikasjoner
                         </h2>
-                        <h3 class="heading-small" aria-level="3" role="heading">Kvalifikasjoner du innehar</h3>
+                        <h3 class="heading-small" aria-level="3" role="heading">Kvalifikasjoner du innehar:</h3>
                         <div class="form-row">
                             <div class="form-col skills-mobile">
                                 <template lwc:if={skillsWithSelection}>
@@ -290,7 +292,7 @@
                                     class="label-form-small"
                                     name="textarea"
                                     maxlength="255"
-                                    label="Mer Informasjon"
+                                    label="Mer Informasjon:"
                                     helptext-content={helpText}
                                     ongetvalueontextareachange={handleUserPreferences}
                                     value={userPreferences}
@@ -302,18 +304,21 @@
                     <!-- Cancel and save buttons -->
                     <div class="button-container">
                         <c-button
-                            type="Reset"
-                            onbuttonclick={handleAbort}
-                            button-label="Avbryt"
-                            button-styling="Secondary"
-                        ></c-button>
-                        <c-button
                             type="Submit"
-                            class="btn-save"
                             onbuttonclick={handleSubmit}
                             button-label="Lagre"
                             button-styling="Primary"
                             aria-label="Lagre"
+                            desktop-style="width: 8rem; justify-content: center"
+                            mobile-style="width: 8rem; justify-content: center"
+                        ></c-button>
+                        <c-button
+                            type="Reset"
+                            onbuttonclick={handleAbort}
+                            button-label="Avbryt"
+                            button-styling="Secondary"
+                            desktop-style="width: 8rem; justify-content: center"
+                            mobile-style="width: 8rem; justify-content: center"
                         ></c-button>
                     </div>
                 </section>

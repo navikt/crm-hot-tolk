@@ -36,8 +36,7 @@
             "enableOotbProfExtUserOpsEnable": true
         },
         "lightningExperienceSettings": {
-            "enableS1DesktopEnabled": true,
-            "enableLightningPreviewDef": true
+            "enableS1DesktopEnabled": true
         },
         "languageSettings": {
             "enableTranslationWorkbench": true

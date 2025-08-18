@@ -132,12 +132,7 @@
 
 .btn-edit {
     margin-top: 4rem;
-}
-
-.btn-save {
-    border: none;
-    border-radius: 3px;
-    border: 3px solid transparent;
+    margin-left: 0;
 }
 
 .label-form-big {
@@ -272,8 +267,7 @@
     }
 
     .button-container {
-        margin-left: -4rem;
-        margin-bottom: 1rem;
+        margin-bottom: 2rem;
     }
 
     .skills-mobile {
@@ -293,5 +287,9 @@
 
     .form-col-right {
         margin-left: 4rem;
+    }
+
+    .btn-edit {
+        margin-left: -3rem;
     }
 }
