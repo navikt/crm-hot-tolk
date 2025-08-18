@@ -206,17 +206,4 @@ export default class Input extends LightningElement {
         }
         return setDefaultValue(style, '');
     }
-    hasSetFocus;
-
-    renderedCallback() {
-        if (this.autofocus && !this.hasSetFocus) {
-            setTimeout(() => {
-                const inputElement = this.template.querySelector('input');
-                if (inputElement) {
-                    inputElement.focus();
-                    this.hasSetFocus = true; // Prevent multiple focus calls
-                }
-            }, 300); // Small delay to ensure the element is in the DOM
-        }
-    }
 }
