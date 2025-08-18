@@ -33,15 +33,20 @@ export default class Hot_interestedResourcesList extends NavigationMixin(Lightni
     }
 
     get hasResult() {
-        return this.records && this.records.length > 0;
+        return !this.dataLoader && this.records && this.records.length > 0;
     }
 
-    get noInterestedResources() {
-        return (!this.records || this.records.length === 0) && !this.filters?.length;
+    get noInterestedResourcesResult() {
+        return !this.dataLoader && this.initialInterestedResources.length === 0;
     }
 
-    get noFilteredRecords() {
-        return (!this.records || this.records.length === 0) && this.filters?.length > 0;
+    get noFilteredRecordsResult() {
+        return (
+            !this.dataLoader &&
+            this.initialInterestedResources.length > 0 &&
+            this.records.length === 0 &&
+            this.filters?.length > 0
+        );
     }
 
     sendFilters() {
@@ -128,6 +133,7 @@ export default class Hot_interestedResourcesList extends NavigationMixin(Lightni
         }
     }
 
+    dataLoader = true;
     noInterestedResources = false;
     initialInterestedResources = [];
     @track records = [];
@@ -162,10 +168,15 @@ export default class Hot_interestedResourcesList extends NavigationMixin(Lightni
                         let status = 'noThread';
                         if (map.has(threadId)) {
                             var readBy = map.get(threadId);
-                            if (readBy.includes(this.userContactId)) {
-                                status = 'false';
+
+                            if (Array.isArray(readBy) && readBy.length > 0) {
+                                if (readBy.includes(this.userContactId)) {
+                                    status = 'false';
+                                } else {
+                                    status = 'true';
+                                }
                             } else {
-                                status = 'true';
+                                status = 'noThread';
                             }
                         } else {
                         }
@@ -188,10 +199,13 @@ export default class Hot_interestedResourcesList extends NavigationMixin(Lightni
                     }
                     this.records = tempRecords;
                     this.initialInterestedResources = [...this.records];
+
                     this.refresh();
+                    this.dataLoader = false;
                 });
             });
         } else if (result.error) {
+            this.dataLoader = false;
             this.error = result.error;
             this.allInterestedResourcesWired = undefined;
         }

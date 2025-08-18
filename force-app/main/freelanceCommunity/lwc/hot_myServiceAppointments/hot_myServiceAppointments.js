@@ -17,15 +17,20 @@ export default class Hot_myServiceAppointments extends NavigationMixin(Lightning
     isGoToThreadInterpretersButtonDisabled = false;
 
     get hasResult() {
-        return this.records && this.records.length > 0;
+        return !this.dataLoader && this.records && this.records.length > 0;
     }
 
-    get noServiceAppointments() {
-        return (!this.records || this.records.length === 0) && !this.filters?.length;
+    get noServiceAppointmentsResult() {
+        return !this.dataLoader && this.initialServiceAppointments.length === 0;
     }
 
-    get noFilteredRecords() {
-        return (!this.records || this.records.length === 0) && this.filters?.length > 0;
+    get noFilteredRecordsResult() {
+        return (
+            !this.dataLoader &&
+            this.initialServiceAppointments.length > 0 &&
+            this.records.length === 0 &&
+            this.filters?.length > 0
+        );
     }
 
     setColumns() {
@@ -110,6 +115,7 @@ export default class Hot_myServiceAppointments extends NavigationMixin(Lightning
         return dayOfWeekString;
     }
 
+    dataLoader = true;
     noServiceAppointments = false;
     initialServiceAppointments = [];
     @track records = [];
@@ -135,7 +141,9 @@ export default class Hot_myServiceAppointments extends NavigationMixin(Lightning
             }));
             this.initialServiceAppointments = [...this.records];
             this.refresh();
+            this.dataLoader = false;
         } else if (result.error) {
+            this.dataLoader = false;
             this.error = result.error;
             this.allMyServiceAppointmentsWired = undefined;
         }

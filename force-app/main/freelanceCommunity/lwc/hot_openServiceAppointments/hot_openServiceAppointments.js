@@ -37,16 +37,20 @@ export default class Hot_openServiceAppointments extends LightningElement {
     };
 
     get hasResult() {
-        return this.records && this.records.length > 0;
+        return !this.dataLoader && this.records && this.records.length > 0;
     }
 
-    get noServiceAppointments() {
-        return (!this.records || this.records.length === 0) && !this.filters?.length;
+    get noServiceAppointmentsResult() {
+        return !this.dataLoader && this.initialServiceAppointments.length === 0;
     }
 
-    get noFilteredRecords() {
-        // return (!this.records || this.records.length === 0) && this.filters?.length > 0;
-        return this.filteredRecordsLength === 0 && this.filters?.length > 0;
+    get noFilteredRecordsResult() {
+        return (
+            !this.dataLoader &&
+            this.initialServiceAppointments.length > 0 &&
+            this.records.length === 0 &&
+            this.filters?.length > 0
+        );
     }
 
     sendFilters() {
@@ -155,6 +159,7 @@ export default class Hot_openServiceAppointments extends LightningElement {
         }
     }
 
+    dataLoader = true;
     noServiceAppointments = false;
     initialServiceAppointments = [];
     @track records = [];
@@ -182,8 +187,10 @@ export default class Hot_openServiceAppointments extends LightningElement {
             this.initialServiceAppointments = [...this.records];
             if (this.serviceResource !== null) {
                 this.refresh();
+                this.dataLoader = false;
             }
         } else if (result.error) {
+            this.dataLoader = false;
             this.error = result.error;
             this.allServiceAppointmentsWired = undefined;
         }

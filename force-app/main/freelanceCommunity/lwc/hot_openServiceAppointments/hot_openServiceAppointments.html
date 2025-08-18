@@ -28,16 +28,21 @@
         </div>
     </template>
 
-    <div lwc:elseif={noServiceAppointments} style="text-align: center">
-        <br />
-        <p>Det finnes ingen ledige oppdrag.</p>
-        <br />
-    </div>
-    <div lwc:elseif={noFilteredRecords} style="text-align: center">
-        <br />
-        <p>Det finnes ingen oppdrag med denne filtreringen. Du kan endre filteret for å se andre oppdrag</p>
-        <br />
-    </div>
+    <template lwc:elseif={noServiceAppointmentsResult}>
+        <div style="text-align: center">
+            <br />
+            <p>Det finnes ingen ledige oppdrag.</p>
+            <br />
+        </div>
+    </template>
+
+    <template lwc:elseif={noFilteredRecordsResult}>
+        <div style="text-align: center">
+            <br />
+            <p>Det finnes ingen oppdrag med denne filtreringen. Du kan endre filteret for å se andre oppdrag</p>
+            <br />
+        </div>
+    </template>
 
     <div lwc:if={showSendInterest} class="meld-interesse-overlay">
         <div class="meld-interesse-content">

@@ -7,28 +7,34 @@
                     columns={columns}
                     onrowclick={goToRecordDetails}
                     icon-by-value={iconByValue}
-                ></c-hot_freelance-common-table>
+                >
+                </c-hot_freelance-common-table>
             </template>
             <template lwc:else>
                 <c-hot_freelance-common-table
-                    if:false={isMobile}
                     records={records}
                     columns={columns}
                     onrowclick={goToRecordDetails}
                     icon-by-value={iconByValue}
-                ></c-hot_freelance-common-table>
+                >
+                </c-hot_freelance-common-table>
             </template>
         </div>
     </template>
 
-    <div lwc:elseif={noInterestedResources} style="text-align: center">
-        <br />
-        <p>Du har ingen påmeldte oppdrag.</p>
-        <br />
-    </div>
-    <div lwc:elseif={noFilteredRecords} style="text-align: center">
-        <br />
-        <p>Det finnes ingen oppdrag med denne filtreringen. Du kan endre filteret for å se andre oppdrag</p>
-        <br />
-    </div>
+    <template lwc:elseif={noInterestedResourcesResult}>
+        <div style="text-align: center">
+            <br />
+            <p>Du har ingen påmeldte oppdrag.</p>
+            <br />
+        </div>
+    </template>
+
+    <template lwc:elseif={noFilteredRecordsResult}>
+        <div style="text-align: center">
+            <br />
+            <p>Det finnes ingen oppdrag med denne filtreringen. Du kan endre filteret for å se andre oppdrag</p>
+            <br />
+        </div>
+    </template>
 </template>
