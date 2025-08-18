@@ -608,10 +608,15 @@
                 <fieldItem>Record.OrdererName__c</fieldItem>
                 <identifier>RecordOrdererName__cField</identifier>
                 <visibilityRule>
+                    <booleanFilter>1 OR 2</booleanFilter>
                     <criteria>
                         <leftValue>{!Record.Orderer__r.CRM_Person__r.INT_Confidential__c}</leftValue>
                         <operator>EQUAL</operator>
                         <rightValue>UGRADERT</rightValue>
+                    </criteria>
+                    <criteria>
+                        <leftValue>{!Record.Orderer__r.Name}</leftValue>
+                        <operator>EQUAL</operator>
                     </criteria>
                 </visibilityRule>
             </fieldInstance>

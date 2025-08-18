@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Queue xmlns="http://soap.sforce.com/2006/04/metadata">
+    <doesSendEmailToMembers>false</doesSendEmailToMembers>
+    <name>HOT Tolk Formidler Admin</name>
+    <queueMembers>
+        <publicGroups>
+            <publicGroup>HOT_Tolk_Formidler_Admin</publicGroup>
+        </publicGroups>
+    </queueMembers>
+    <queueSobject>
+        <sobjectType>HOT_Request__c</sobjectType>
+    </queueSobject>
+    <queueSobject>
+        <sobjectType>SMS__c</sobjectType>
+    </queueSobject>
+    <queueSobject>
+        <sobjectType>Thread__c</sobjectType>
+    </queueSobject>
+</Queue>

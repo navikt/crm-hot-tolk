@@ -70,6 +70,28 @@ public without sharing class HOT_InterpreterOnWorkOrderService {
         return workOrder;
     }
 
+    public class workOrderInvocableWrapper {
+        @InvocableVariable(label='Service Appointments')
+        public List<ServiceAppointment> serviceAppointments;
+    }
+
+    @InvocableMethod(label='Set Interpreter field on Work Order')
+    public static void setInterpreterOnWorkOrderFromServiceAppointmentInvokable(
+        List<workOrderInvocableWrapper> wrapperList
+    ) {
+        Set<Id> saIds = new Set<Id>();
+
+        for (workOrderInvocableWrapper wrapper : wrapperList) {
+            if (wrapper.serviceAppointments != null) {
+                for (ServiceAppointment sa : wrapper.serviceAppointments) {
+                    saIds.add(sa.Id);
+                }
+            }
+        }
+
+        setInterpreterOnWorkOrderFromServiceAppointment(saIds);
+    }
+
     @Future
     public static void setInterpreterOnWorkOrderFromServiceAppointment(Set<Id> serviceAppointmentIds) {
         Set<Id> workOrderIds = new Set<Id>();

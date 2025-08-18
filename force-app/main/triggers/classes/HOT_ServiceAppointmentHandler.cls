@@ -258,6 +258,7 @@ public without sharing class HOT_ServiceAppointmentHandler extends MyTriggers {
         Map<Id, ServiceAppointment> oldServiceAppointmentsSchedTimeChanged = new Map<Id, ServiceAppointment>();
         Map<Id, ServiceAppointment> newServiceAppointmentsSchedTimeChanged = new Map<Id, ServiceAppointment>();
         Map<Id, ServiceAppointment> serviceAppointmentWithNewAssignedResource = new Map<Id, ServiceAppointment>();
+        List<ServiceAppointment> serviceAppointmentsWithUpdatedOwnerOrDispatcher = new List<ServiceAppointment>();
 
         for (ServiceAppointment serviceAppointment : (List<ServiceAppointment>) records) {
             if (
@@ -338,7 +339,20 @@ public without sharing class HOT_ServiceAppointmentHandler extends MyTriggers {
             ) {
                 serviceAppointmentWithNewAssignedResource.put(serviceAppointment.Id, serviceAppointment);
             }
+
+            if (
+                triggerOldMap.get(serviceAppointment.Id).get('OwnerId') != serviceAppointment.OwnerId ||
+                triggerOldMap.get(serviceAppointment.Id).get('HOT_DispatcherNew__c') !=
+                serviceAppointment.HOT_DispatcherNew__c
+            ) {
+                serviceAppointmentsWithUpdatedOwnerOrDispatcher.add(serviceAppointment);
+            }
         }
+        HOT_ServiceAppointmentNotification.resourceServiceAppointmentChanged(
+            (List<ServiceAppointment>) records,
+            triggerOldMap
+        );
+        HOT_EventController.updateServiceAppointmentEvents((List<ServiceAppointment>) records, triggerOldMap);
 
         if (serviceAppointmentsToRemoveAssignedResource.size() > 0) {
             removeAssignedResource(serviceAppointmentsToRemoveAssignedResource);
@@ -351,12 +365,6 @@ public without sharing class HOT_ServiceAppointmentHandler extends MyTriggers {
         }
         if (retractedServiceAppointments.size() > 0) {
             updateStatusOnInterestedResources(retractedServiceAppointments, 'Service Appointment Retracted');
-        }
-        if (serviceAppointmentsWithChangedAddress.size() > 0) {
-            updateRelatedEvents(serviceAppointmentsWithChangedAddress);
-        }
-        if (serviceAppointmentsToRemoveAssignedResource.size() > 0) {
-            deleteRelatedEvents(serviceAppointmentsToRemoveAssignedResource);
         }
         if (!serviceAppointmentWithNewAssignedResource.isEmpty()) {
             HOT_InterpreterOnWorkOrderService.setInterpreterOnWorkOrderFromServiceAppointment(
@@ -419,10 +427,37 @@ public without sharing class HOT_ServiceAppointmentHandler extends MyTriggers {
             HOT_WageClaimService.updateWageClaimsFuture(serviceResourceByServiceAppointmentSchedTimeChanged.keySet());
         }
 
-        HOT_ServiceAppointmentNotification.resourceServiceAppointmentChanged(
-            (List<ServiceAppointment>) records,
-            triggerOldMap
-        );
+        if (serviceAppointmentsWithUpdatedOwnerOrDispatcher.size() > 0) {
+            updateOwnerOrDispatcherOnThread(serviceAppointmentsWithUpdatedOwnerOrDispatcher);
+        }
+    }
+
+    public static void updateOwnerOrDispatcherOnThread(List<ServiceAppointment> records) {
+        Map<Id, Map<Id, Id>> serviceAppointmentWithOwnerDispatcher = new Map<Id, Map<Id, Id>>();
+        Set<Id> saIds = new Set<Id>();
+
+        for (ServiceAppointment sa : records) {
+            saIds.add(sa.Id);
+            serviceAppointmentWithOwnerDispatcher.put(sa.Id, new Map<Id, Id>{ sa.OwnerId => sa.HOT_DispatcherNew__c });
+        }
+        List<Thread__c> threadList = [
+            SELECT Id, CRM_Related_Object__c
+            FROM Thread__c
+            WHERE CRM_Related_Object__c IN :saIds
+        ];
+
+        for (Thread__c thread : threadList) {
+            Id relatedId = thread.CRM_Related_Object__c;
+
+            if (serviceAppointmentWithOwnerDispatcher.containsKey(relatedId)) {
+                Map<Id, Id> ownerAndDispatchers = serviceAppointmentWithOwnerDispatcher.get(relatedId);
+                if (ownerAndDispatchers.size() == 1) {
+                    thread.OwnerId = ownerAndDispatchers.keySet().iterator().next();
+                    thread.HOT_Dispatcher__c = ownerAndDispatchers.get(thread.OwnerId);
+                }
+            }
+        }
+        update threadList;
     }
 
     private static void setScheduledTimesToOldValues(
@@ -475,7 +510,6 @@ public without sharing class HOT_ServiceAppointmentHandler extends MyTriggers {
             serviceAppointment.HOT_CanceledByInterpreter__c = false;
         }
     }
-    //
     private static void setFieldsBasedOnParent(List<ServiceAppointment> serviceAppointments) {
         List<Id> workOrderLineItemIds = new List<Id>();
         for (ServiceAppointment serviceAppointment : serviceAppointments) {
@@ -559,38 +593,54 @@ public without sharing class HOT_ServiceAppointmentHandler extends MyTriggers {
                         )
                         .HOT_InterpretationPostalStreet__c;
                 }
-                if (serviceAppointment.HOT_IsScreenInterpreter__c || serviceAppointment.Country == null) {
+                if (
+                    serviceAppointment.HOT_AssignmentType__c == 'Bildetolkvakt' ||
+                    serviceAppointment.HOT_IsScreenInterpreter__c ||
+                    serviceAppointment.Country == null
+                ) {
                     serviceAppointment.Country = 'Norge';
                 }
                 if (
+                    serviceAppointment.HOT_AssignmentType__c == 'Bildetolkvakt' ||
                     serviceAppointment.HOT_IsScreenInterpreter__c ||
-                    serviceAppointment.City == null &&
-                    workOrderLineItems.get(serviceAppointment.ParentRecordId).City != null
+                    (serviceAppointment.City == null &&
+                    workOrderLineItems.get(serviceAppointment.ParentRecordId).City != null)
                 ) {
                     serviceAppointment.City = workOrderLineItems.get(serviceAppointment.ParentRecordId).City;
-                    if (serviceAppointment.HOT_IsScreenInterpreter__c) {
-                        serviceAppointment.City = 'N/A';
+                    if (
+                        serviceAppointment.HOT_AssignmentType__c == 'Bildetolkvakt' ||
+                        serviceAppointment.HOT_IsScreenInterpreter__c
+                    ) {
+                        serviceAppointment.City = '-';
                     }
                 }
                 if (
+                    serviceAppointment.HOT_AssignmentType__c == 'Bildetolkvakt' ||
                     serviceAppointment.HOT_IsScreenInterpreter__c ||
-                    serviceAppointment.PostalCode == null &&
-                    workOrderLineItems.get(serviceAppointment.ParentRecordId).PostalCode != null
+                    (serviceAppointment.PostalCode == null &&
+                    workOrderLineItems.get(serviceAppointment.ParentRecordId).PostalCode != null)
                 ) {
                     serviceAppointment.PostalCode = workOrderLineItems.get(serviceAppointment.ParentRecordId)
                         .PostalCode;
-                    if (serviceAppointment.HOT_IsScreenInterpreter__c) {
-                        serviceAppointment.PostalCode = 'N/A';
+                    if (
+                        serviceAppointment.HOT_AssignmentType__c == 'Bildetolkvakt' ||
+                        serviceAppointment.HOT_IsScreenInterpreter__c
+                    ) {
+                        serviceAppointment.PostalCode = '-';
                     }
                 }
                 if (
+                    serviceAppointment.HOT_AssignmentType__c == 'Bildetolkvakt' ||
                     serviceAppointment.HOT_IsScreenInterpreter__c ||
-                    serviceAppointment.Street == null &&
-                    workOrderLineItems.get(serviceAppointment.ParentRecordId).Street != null
+                    (serviceAppointment.Street == null &&
+                    workOrderLineItems.get(serviceAppointment.ParentRecordId).Street != null)
                 ) {
                     serviceAppointment.Street = workOrderLineItems.get(serviceAppointment.ParentRecordId).Street;
-                    if (serviceAppointment.HOT_IsScreenInterpreter__c) {
-                        serviceAppointment.Street = 'N/A';
+                    if (
+                        serviceAppointment.HOT_AssignmentType__c == 'Bildetolkvakt' ||
+                        serviceAppointment.HOT_IsScreenInterpreter__c
+                    ) {
+                        serviceAppointment.Street = '-';
                     }
                 }
                 if (
@@ -908,14 +958,6 @@ public without sharing class HOT_ServiceAppointmentHandler extends MyTriggers {
         update interestedResources;
     }
 
-    public static void updateRelatedEvents(List<ServiceAppointment> serviceAppointments) {
-        List<Event> events = [SELECT Id, Location FROM Event WHERE WhatId IN :serviceAppointments];
-        for (Event event : events) {
-            event.Location = 'TO_UPDATE';
-        }
-        update events;
-    }
-
     private static ServiceAppointment updateDuration(ServiceAppointment serviceAppointment) {
         if (serviceAppointment.EarliestStartTime != null && serviceAppointment.DueDate != null) {
             serviceAppointment.Duration =
@@ -923,10 +965,6 @@ public without sharing class HOT_ServiceAppointmentHandler extends MyTriggers {
                 (Double) serviceAppointment.EarliestStartTime.getTime()) / 3600000;
         }
         return serviceAppointment;
-    }
-    public static void deleteRelatedEvents(List<ServiceAppointment> serviceAppointments) {
-        List<Event> events = [SELECT Id FROM Event WHERE WhatId IN :serviceAppointments];
-        delete events;
     }
 
     public static void setActualTime(List<ServiceAppointment> serviceAppointments) {

@@ -29,10 +29,14 @@ export default class Hot_openServiceAppointmentsModal extends LightningModal {
     connectedCallback() {
         this.setupRecordDetails(this.result);
         this.setColumns();
+        document.body.style.overflow = 'hidden';
 
         if (this.checkedServiceAppointments.length > 0) {
             this.sendInterestSeries();
         }
+    }
+    disconnectedCallback() {
+        document.body.style.overflow = '';
     }
 
     setColumns() {

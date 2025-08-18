@@ -2,7 +2,11 @@
 private class HOT_WageClaimListControllerTest {
     @testSetup
     static void setup() {
-        Profile profile = [SELECT Id FROM Profile WHERE Name = 'Standard User' OR Name = 'Standardbruker' LIMIT 1];
+        Profile profile = [
+            SELECT Id, Name
+            FROM Profile
+            WHERE Name = 'System Administrator' OR Name = 'Systemadministrator'
+        ];
         User user = HOT_TestDataFactory.createUser('user1', profile);
         insert user;
         ServiceResource resource = HOT_TestDataFactory.createServiceResource(user.Id);
@@ -32,7 +36,7 @@ private class HOT_WageClaimListControllerTest {
 
     @IsTest
     static void getMyWageClaimsTest() {
-        User user = [SELECT Id FROM User WHERE UserName = 'HOT.user1@nav.hot.no'];
+        User user = [SELECT Id FROM User WHERE UserName = 'HOT.user1@nav.hot.nav.no'];
 
         System.runAs(user) {
             Test.startTest();

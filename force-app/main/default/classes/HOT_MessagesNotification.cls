@@ -231,7 +231,8 @@ public without sharing class HOT_MessagesNotification {
                 FROM ServiceResource
                 WHERE RelatedRecordId IN :interpretersOnThreadMap.keySet() AND HOT_IsFreelanceInterpreter__c = TRUE
             ];
-
+            //LAGER VARSLINGS LISTE TIL INSETTING SENERE
+            List<HOT_Notification__c> notificationList = new List<HOT_Notification__c>();
             //ANSATTOLKER VARSEL
             if (!employeeServiceresource.isEmpty()) {
                 Set<Id> employeeUserIds = new Set<Id>();
@@ -275,6 +276,17 @@ public without sharing class HOT_MessagesNotification {
                             notification.setNotificationTypeId(getCustomNotificationType('HOT_NotifyInterpreter').Id);
                             notification.setTargetId(thread.Id);
                             HOT_NotificationHandler.sendNotification(notification, recipients, (SObject) thread);
+
+                            if (!user.ServiceResources.isEmpty()) {
+                                HOT_Notification__c newNotification = new HOT_Notification__c();
+                                newNotification.HOT_ServiceResource__c = user.ServiceResources[0].Id; // Fetch ServiceResource ID
+                                newNotification.HOT_NotificationChannel__c = 'Push-varsel i appen';
+                                newNotification.HOT_Subject__c = 'Ny melding fra Tolketjenesten';
+                                newNotification.HOT_NotificationText__c = 'Du har fått en melding fra Tolketjenesten.';
+                                newNotification.HOT_RelatedObject__c = thread.Id;
+                                newNotification.HOT_RelatedObjectType__c = 'threadInterpreter';
+                                notificationList.add(newNotification);
+                            }
                         }
                     } else {
                         userIdToThreadMapSMS.put(user, userIdToThreadMap.get(user));
@@ -317,18 +329,20 @@ public without sharing class HOT_MessagesNotification {
                         }
                     }
                 }
-                //LAGER VARSLINGS LISTE TIL INSETTING SENERE
-                List<HOT_Notification__c> notificationList = new List<HOT_Notification__c>();
                 Map<User, List<Thread__c>> userIdToThreadMapSMS = new Map<User, List<Thread__c>>();
                 for (User user : userIdToThreadMap.keySet()) {
                     if (user.ServiceResources[0].HOT_NotificationChannel__c.contains('Push')) {
                         for (Thread__c thread : userIdToThreadMap.get(user)) {
-                            HOT_Notification__c newNotification = newMessageNotificationPush(
-                                user.AccountId,
-                                thread,
-                                'threadInterpreter'
-                            );
-                            notificationList.add(newNotification);
+                            if (!user.ServiceResources.isEmpty()) {
+                                HOT_Notification__c newNotification = new HOT_Notification__c();
+                                newNotification.HOT_ServiceResource__c = user.ServiceResources[0].Id; // Fetch ServiceResource ID
+                                newNotification.HOT_NotificationChannel__c = 'Push-varsel i appen';
+                                newNotification.HOT_Subject__c = 'Ny melding fra Tolketjenesten';
+                                newNotification.HOT_NotificationText__c = 'Du har fått en melding fra Tolketjenesten.';
+                                newNotification.HOT_RelatedObject__c = thread.Id;
+                                newNotification.HOT_RelatedObjectType__c = 'threadInterpreter';
+                                notificationList.add(newNotification);
+                            }
                             HOT_UserNotificationService.newMessageNotification(
                                 getCustomNotificationType('HOT_NotifyUser'),
                                 thread,
@@ -338,13 +352,16 @@ public without sharing class HOT_MessagesNotification {
                         }
                     } else {
                         for (Thread__c thread : userIdToThreadMap.get(user)) {
-                            HOT_Notification__c newNotification = newMessageNotificationSMS(
-                                user.AccountId,
-                                thread,
-                                'threadInterpreter'
-                            );
-                            //SMS
-                            notificationList.add(newNotification);
+                            if (!user.ServiceResources.isEmpty()) {
+                                HOT_Notification__c newNotification = new HOT_Notification__c();
+                                newNotification.HOT_ServiceResource__c = user.ServiceResources[0].Id; // Fetch ServiceResource ID
+                                newNotification.HOT_NotificationChannel__c = 'SMS';
+                                newNotification.HOT_Subject__c = 'Ny melding fra Tolketjenesten';
+                                newNotification.HOT_NotificationText__c = 'Du har fått en melding fra Tolketjenesten.';
+                                newNotification.HOT_RelatedObject__c = thread.Id;
+                                newNotification.HOT_RelatedObjectType__c = 'threadInterpreter';
+                                notificationList.add(newNotification);
+                            }
                         }
                         //SMS
                         userIdToThreadMapSMS.put(user, userIdToThreadMap.get(user));
@@ -354,9 +371,9 @@ public without sharing class HOT_MessagesNotification {
                     //SENDER SMS
                     HOT_ReminderSMSService.sendSMSOnNewMessageInterpreter(userIdToThreadMapSMS);
                 }
-                //INSERTE NOTIFIKASJONSRECORD TIL VARSLINGSSENTERET
-                insertNotifications(notificationList);
             }
+            //INSERTE NOTIFIKASJONSRECORD TIL VARSLINGSSENTERET
+            insertNotifications(notificationList);
         }
     }
 

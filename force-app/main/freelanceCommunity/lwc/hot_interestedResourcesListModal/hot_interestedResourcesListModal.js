@@ -15,6 +15,14 @@ export default class Hot_interestedResourcesInfoModal extends NavigationMixin(Li
     @api isNotRetractable;
     @api serviceResource;
 
+    connectedCallback() {
+        document.body.style.overflow = 'hidden';
+    }
+
+    disconnectedCallback() {
+        document.body.style.overflow = '';
+    }
+
     isNotRetractable = false;
     retractInterest() {
         retractInterest({ interestedResourceId: this.interestedResource.Id }).then(() => {

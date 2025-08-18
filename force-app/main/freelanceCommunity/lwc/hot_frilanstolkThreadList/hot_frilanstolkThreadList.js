@@ -2,6 +2,7 @@ import { LightningElement, wire, track } from 'lwc';
 import { NavigationMixin } from 'lightning/navigation';
 import getMyThreads from '@salesforce/apex/HOT_ThreadListController.getMyThreadsFreelance';
 import getContactId from '@salesforce/apex/HOT_MessageHelper.getUserContactId';
+import { formatDatetime } from 'c/datetimeFormatterNorwegianTime';
 import { refreshApex } from '@salesforce/apex';
 
 export default class Hot_frilanstolkThreadList extends NavigationMixin(LightningElement) {
@@ -236,28 +237,28 @@ export default class Hot_frilanstolkThreadList extends NavigationMixin(Lightning
                         read: !String(x.HOT_Thread_read_by__c).includes(contactId) ? false : true,
                         lastMessage: this.formatDateTime(x.CRM_Latest_Message_Datetime__c),
                         appointmentDate: x.HOT_AppointmentStartTime__c,
-                        appointmentStart: this.formatDateTime(x.HOT_AppointmentStartTime__c)
+                        appointmentStart: formatDatetime(x.HOT_AppointmentStartTime__c)
                     }));
                     this.interpreterThreads = this.unmappedInterpreterThreads.map((x) => ({
                         ...x,
                         read: !String(x.HOT_Thread_read_by__c).includes(contactId) ? false : true,
                         lastMessage: this.formatDateTime(x.CRM_Latest_Message_Datetime__c),
                         appointmentDate: x.HOT_AppointmentStartTime__c,
-                        appointmentStart: this.formatDateTime(x.HOT_AppointmentStartTime__c)
+                        appointmentStart: formatDatetime(x.HOT_AppointmentStartTime__c)
                     }));
                     this.wageClaimThreads = this.unmappedWageClaimThreads.map((x) => ({
                         ...x,
                         read: !String(x.HOT_Thread_read_by__c).includes(contactId) ? false : true,
                         lastMessage: this.formatDateTime(x.CRM_Latest_Message_Datetime__c),
                         appointmentDate: x.HOT_AppointmentStartTime__c,
-                        appointmentStart: this.formatDateTime(x.HOT_AppointmentStartTime__c)
+                        appointmentStart: formatDatetime(x.HOT_AppointmentStartTime__c)
                     }));
                     this.interpreterInterpreterThreads = this.unmappedInterpreterInterpreterThreads.map((x) => ({
                         ...x,
                         read: !String(x.HOT_Thread_read_by__c).includes(contactId) ? false : true,
                         lastMessage: this.formatDateTime(x.CRM_Latest_Message_Datetime__c),
                         appointmentDate: x.HOT_AppointmentStartTime__c,
-                        appointmentStart: this.formatDateTime(x.HOT_AppointmentStartTime__c)
+                        appointmentStart: formatDatetime(x.HOT_AppointmentStartTime__c)
                     }));
 
                     this.noThreads = this.threads.length === 0;
