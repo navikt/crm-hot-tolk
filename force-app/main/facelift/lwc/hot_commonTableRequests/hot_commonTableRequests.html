@@ -10,42 +10,28 @@
                     </tr>
                 </thead>
                 <tbody>
-                    <template for:each={displayRows} for:item="row">
+                    <template for:each={recordsToShow} for:item="row">
                         <tr
-                            key={row.key}
-                            data-index={row.index}
+                            key={row.id}
+                            data-id={row.id}
                             class="row"
                             onclick={handleRowClick}
                             onkeydown={handleRowKeydown}
                             tabindex="0"
                             role="row"
                         >
-                            <!-- Mobile: show status on top -->
-                            <td class="mobile-status-label-wrapper" aria-hidden="true">
-                                <template lwc:if={row.statusLabel}>
-                                    <div class={row.mobileStatusClass}>{row.statusLabel}</div>
-                                </template>
-                            </td>
-
-                            <!-- Render table cells -->
-                            <template for:each={row.cells} for:item="cell">
-                                <td key={cell.key} class={cell.cellClass} role="cell">
-                                    <template lwc:if={cell.isStatus}>
-                                        <span class={cell.desktopStatusClass}>{cell.statusLabel}</span>
+                            <template for:each={row.fields} for:item="field">
+                                <td key={field.name} data-label={field.label}>
+                                    <template lwc:if={field.cssClass}>
+                                        <span class={field.cssClass}>{field.displayLabel}</span>
                                     </template>
-                                    <template lwc:else> {cell.value} </template>
+                                    <template lwc:else> {field.displayLabel} </template>
                                 </td>
                             </template>
                         </tr>
                     </template>
                 </tbody>
             </table>
-        </div>
-    </template>
-
-    <template lwc:else>
-        <div class="no-data" role="status" aria-live="polite">
-            <p>Ingen data å vise.</p>
         </div>
     </template>
 </template>
