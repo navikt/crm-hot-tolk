@@ -8,6 +8,9 @@
     height: 80px;
     animation: spin 1s linear infinite;
 }
+.contentBackground {
+    background-color: #fff;
+}
 
 @keyframes spin {
     0% {
@@ -119,6 +122,7 @@ section.sub-form:last-child {
     display: flex;
     justify-content: center;
     flex-direction: column;
+    background-color: #ffffff;
 }
 
 .button-container {
