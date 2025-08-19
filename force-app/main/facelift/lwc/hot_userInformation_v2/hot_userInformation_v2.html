@@ -1,6 +1,6 @@
 <template>
     <div class="center-content" aria-labelledby="user-info-header">
-        <div class="user-info-tile" tabindex="-1">
+        <div class="user-info-tile">
             <div class="back-link-div">
                 <c-hot_back-button aria-label="Tilbake"></c-hot_back-button>
             </div>
@@ -14,11 +14,11 @@
                     <div class="my-grid">
                         <div class="my-col-half">
                             <label class="output-label" for="mobilePhone">Mobilnummer</label>
-                            <p id="mobilePhone" class="output-value" tabindex="0">{mobilePhone}</p>
+                            <p id="mobilePhone" class="output-value">{mobilePhone}</p>
                         </div>
                         <div class="my-col-half">
                             <label class="output-label" for="email">E-postadresse</label>
-                            <p id="email" class="output-value" tabindex="0">{email}</p>
+                            <p id="email" class="output-value">{email}</p>
                         </div>
                     </div>
                     <p>
@@ -149,11 +149,11 @@
                     <div class="my-grid">
                         <div class="my-col-half">
                             <label class="output-label" for="degreeOfImpairment">Vedtak</label>
-                            <p id="degreeOfImpairment" class="output-value" tabindex="0">{degreeOfImpairment}</p>
+                            <p id="degreeOfImpairment" class="output-value">{degreeOfImpairment}</p>
                         </div>
                         <div class="my-col-half">
                             <label class="output-label" for="sipAddress">SIP-Adresse Bildetolk</label>
-                            <p id="sipAddress" class="output-value" tabindex="0">{sipAddress}</p>
+                            <p id="sipAddress" class="output-value">{sipAddress}</p>
                         </div>
                     </div>
                 </section>
@@ -163,7 +163,7 @@
                     <h2 id="security-measures-header">Sikkerhetstiltak</h2>
                     <div lwc:if={hasSecurityMeasures}>
                         <template for:each={securityMeasures} for:item="sm">
-                            <p key={sm} tabindex="0">{sm}</p>
+                            <p key={sm}>{sm}</p>
                         </template>
                     </div>
                 </section>
