@@ -167,18 +167,12 @@ export default class Hot_interestedResourcesList extends NavigationMixin(Lightni
                         }
                         let status = 'noThread';
                         if (map.has(threadId)) {
-                            var readBy = map.get(threadId);
-
-                            if (Array.isArray(readBy) && readBy.length > 0) {
-                                if (readBy.includes(this.userContactId)) {
-                                    status = 'false';
-                                } else {
-                                    status = 'true';
-                                }
+                            const readBy = map.get(threadId);
+                            if (typeof readBy === 'string' && readBy.includes(this.userContactId)) {
+                                status = 'false';
                             } else {
-                                status = 'noThread';
+                                status = 'true';
                             }
-                        } else {
                         }
                         return {
                             ...appointment,
