@@ -7,14 +7,22 @@
     flex-direction: row;
 }
 
+.valg-av-bestillingstype__container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
 section {
     padding: 2rem 2rem 2rem 2rem;
 }
 
 .button-container {
     max-width: 792px;
-    flex-direction: column;
     display: flex;
+    flex-direction: row;
+    justify-content: center;
+    gap: 1rem;
     padding-top: 2rem;
     align-items: center;
 }
@@ -36,12 +44,13 @@ section {
 }
 
 .header {
-    font-family: 'Source Sans 3', 'Source Sans Pro', Arial, sans-serif;
-    font-size: 1.125rem;
-    letter-spacing: 0;
-    line-height: 1.3;
+    font-size: 1.5rem;
     font-weight: 600;
+    letter-spacing: 0;
+    line-height: 1.5rem;
     margin: 0;
+    font-family: Source Sans Pro, Arial, sans-serif;
+    color: #262626;
 }
 
 @media (max-width: 768px) {
