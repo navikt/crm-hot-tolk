@@ -26,7 +26,7 @@ export let columns = [
     },
     {
         name: 'IsUnreadMessage',
-        label: 'Samtale',
+        label: 'Samtale med formidler',
         type: 'String',
         svg: true
     }

@@ -1,5 +1,5 @@
 <template>
-    <div class="main-content">
+    <!-- <div class="main-content">
         <div if:false={noServiceAppointments}>
             <c-hot_freelance-common-table
                 if:false={isMobile}
@@ -26,7 +26,42 @@
             <br />
             Det er ingen oppdrag her.
         </div>
-    </div>
+    </div> -->
+
+    <template lwc:if={hasResult}>
+        <div class="main-content">
+            <template lwc:if={isMobile}>
+                <c-hot_freelance-common-table
+                    records={records}
+                    checkbox="true"
+                    columns={columns}
+                    onrowclick={goToRecordDetails}
+                    icon-by-value={iconByValue}
+                    checked-rows={checkedServiceAppointments}
+                    oncheckedrows={handleRowChecked}
+                ></c-hot_freelance-common-table>
+            </template>
+            <template lwc:else>
+                <c-hot_freelance-common-table
+                    records={records}
+                    columns={columns}
+                    onrowclick={goToRecordDetails}
+                    icon-by-value={iconByValue}
+                    checkbox="true"
+                    checked-rows={checkedServiceAppointments}
+                    oncheckedrows={handleRowChecked}
+                ></c-hot_freelance-common-table>
+            </template>
+        </div>
+    </template>
+
+    <template lwc:elseif={noServiceAppointmentsResult}>
+        <div style="text-align: center">
+            <br />
+            <p>Det er ingen oppdrag her.</p>
+            <br />
+        </div>
+    </template>
 
     <div
         class="ReactModal__Overlay ReactModal__Overlay--after-open modal__overlay commentPage hidden"

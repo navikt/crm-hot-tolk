@@ -41,6 +41,14 @@ export default class Hot_wantedServiceAppointmentsList extends LightningElement 
         }
     };
 
+    get hasResult() {
+        return !this.dataLoader && this.records && this.records.length > 0;
+    }
+
+    get noServiceAppointmentsResult() {
+        return !this.dataLoader && this.initialServiceAppointments.length === 0;
+    }
+
     sendRecords() {
         const eventToSend = new CustomEvent('sendrecords', { detail: this.initialServiceAppointments });
         this.dispatchEvent(eventToSend);
@@ -131,6 +139,8 @@ export default class Hot_wantedServiceAppointmentsList extends LightningElement 
             }
         }
     }
+
+    dataLoader = true;
     noServiceAppointments = false;
     initialServiceAppointments = [];
     @track records = [];
@@ -156,8 +166,10 @@ export default class Hot_wantedServiceAppointmentsList extends LightningElement 
             this.initialServiceAppointments = [...this.records];
             if (this.serviceResource !== null) {
                 this.refresh();
+                this.dataLoader = false;
             }
         } else if (result.error) {
+            this.dataLoader = false;
             this.error = result.error;
             this.allServiceAppointmentsWired = undefined;
         }
