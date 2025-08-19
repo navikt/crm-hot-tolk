@@ -97,16 +97,18 @@ tr.row:focus {
     }
 
     tr.row {
-        display: block;
-        background-color: #eceef0;
+        background-color: #f2f3f5;
+        padding: 1rem 2rem;
+        margin-bottom: 0.5rem;
         border-radius: 0.5rem;
-        box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
+        border: 4px solid #f2f3f5;
+
+        display: block;
         padding: 1rem;
         height: auto;
-        border: none;
         margin-left: -1rem;
         margin-right: -1rem;
-        margin-bottom: 1rem;
+        margin-bottom: 0.5rem;
     }
 
     td {
@@ -114,9 +116,20 @@ tr.row:focus {
         text-align: left;
         width: 100%;
         padding: 0.1rem 0;
-        font-size: 1.25rem;
+        font-size: 1.125rem;
         position: relative;
         box-sizing: border-box;
+    }
+
+    tr.row:hover {
+        border-color: #e0e3e6;
+        background-color: #e0e3e6;
+    }
+
+    tr.row:focus {
+        outline: none;
+        background-color: #e0e3e6;
+        border-color: #0067c5;
     }
 
     td::before {
