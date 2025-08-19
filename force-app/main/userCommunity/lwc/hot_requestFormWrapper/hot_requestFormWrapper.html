@@ -1,201 +1,203 @@
 <template>
-    <div class="brodsmulesti">
+    <div class="contentBackground">
+        <!-- <div class="brodsmulesti">
         <c-breadcrumbs url-list={breadcrumbs} class="skjema-max-width"></c-breadcrumbs>
-    </div>
-    <c-alertdialog
-        header={modalHeader}
-        content={modalContent}
-        desktop-style="text-align: center; white-space: pre-line; min-width: 50%;"
-        mobile-style="text-align: center; white-space: pre-line; max-width: 100%; min-width: 100%;"
-        center-buttons="true"
-        no-cancel-button={noCancelButton}
-        onbuttonclick={handleAlertDialogClick}
-    >
-    </c-alertdialog>
-    <main class="main-content submitted-false">
-        <div class="skjema skjema-max-width">
-            <lightning-record-edit-form
-                object-api-name="HOT_Request__c"
-                density="comfy"
-                onsuccess={handleSuccess}
-                onerror={handleError}
-                onsubmit={handleSubmit}
-                record-id={recordId}
-            >
-                <c-hot_request-form_type
-                    if:false={requestTypeChosen}
-                    onrequestformtyperesult={handleRequestType}
-                    previous-page={previousPage}
-                ></c-hot_request-form_type>
-                <div if:true={requestTypeChosen} class="actual-form">
-                    <c-hot_request-form_orderer
-                        parent-field-values={fieldValues}
-                        class="subform"
-                        if:true={requestTypeResult.ordererForm}
-                    ></c-hot_request-form_orderer>
-                    <c-hot_request-form_company
-                        parent-field-values={fieldValues}
-                        parent-company-component-values={componentValues}
-                        class="subform"
-                        onusercheckboxclicked={handleUserCheckbox}
-                        if:true={requestTypeResult.companyForm}
-                        is-edit-or-copy-mode={isEditOrCopyMode}
-                    ></c-hot_request-form_company>
-                    <c-hot_request-form_user
-                        parent-field-values={fieldValues}
-                        class="subform"
-                        if:true={requestTypeResult.userForm}
-                        is-edit-or-copy-mode={isEditOrCopyMode}
-                    ></c-hot_request-form_user>
-                    <c-hot_request-form_request
-                        parent-field-values={fieldValues}
-                        parent-request-component-values={componentValues}
-                        is-get-all={isGetAll}
-                        request-ids={requestIds}
-                        record-id={recordId}
-                        class="subform"
-                        if:true={requestTypeResult.requestForm}
-                        is-edit-or-copy-mode={isEditOrCopyMode}
-                    ></c-hot_request-form_request>
-                    <div class="button-container">
-                        <div style="display: flex; justify-content: center; flex-direction: column">
-                            <c-button
-                                data-id="saveButton"
-                                if:true={requestTypeResult.requestForm}
-                                button-label={submitButtonLabel}
-                                name="Send inn bestilling"
-                                button-styling="primary"
-                                type="submit"
-                                style="padding-bottom: 1em"
-                                desktop-style="width: 8rem; justify-content: center"
-                                mobile-style="width: 8rem; justify-content: center"
-                            ></c-button>
-                            <c-button
-                                if:false={requestTypeResult.requestForm}
-                                button-label="Neste"
-                                button-styling="primary"
-                                onbuttonclick={handleNextButtonClicked}
-                                style="padding-bottom: 1em"
-                                desktop-style="width: 8rem; justify-content: center"
-                                mobile-style="width: 8rem; justify-content: center"
-                            ></c-button>
-                            <c-button
-                                if:false={isEditModeAndTypeMe}
-                                button-label="Forrige"
-                                button-styling="secondary"
-                                onbuttonclick={handleBackButtonClicked}
-                                style="padding-bottom: 1em"
-                                desktop-style="width: 8rem; justify-content: center"
-                                mobile-style="width: 8rem; justify-content: center"
-                            ></c-button>
-                            <c-button
-                                if:true={requestTypeResult.requestForm}
-                                button-label="Avbryt"
-                                button-styling="tertiary"
-                                onbuttonclick={goToPreviousPage}
-                                desktop-style="width: 8rem; justify-content: center"
-                                mobile-style="width: 8rem; justify-content: center"
-                            ></c-button>
+    </div> -->
+        <c-alertdialog
+            header={modalHeader}
+            content={modalContent}
+            desktop-style="text-align: center; white-space: pre-line; min-width: 50%;"
+            mobile-style="text-align: center; white-space: pre-line; max-width: 100%; min-width: 100%;"
+            center-buttons="true"
+            no-cancel-button={noCancelButton}
+            onbuttonclick={handleAlertDialogClick}
+        >
+        </c-alertdialog>
+        <main class="main-content submitted-false">
+            <div class="skjema skjema-max-width">
+                <lightning-record-edit-form
+                    object-api-name="HOT_Request__c"
+                    density="comfy"
+                    onsuccess={handleSuccess}
+                    onerror={handleError}
+                    onsubmit={handleSubmit}
+                    record-id={recordId}
+                >
+                    <c-hot_request-form_type
+                        if:false={requestTypeChosen}
+                        onrequestformtyperesult={handleRequestType}
+                        previous-page={previousPage}
+                    ></c-hot_request-form_type>
+                    <div if:true={requestTypeChosen} class="actual-form">
+                        <c-hot_request-form_orderer
+                            parent-field-values={fieldValues}
+                            class="subform"
+                            if:true={requestTypeResult.ordererForm}
+                        ></c-hot_request-form_orderer>
+                        <c-hot_request-form_company
+                            parent-field-values={fieldValues}
+                            parent-company-component-values={componentValues}
+                            class="subform"
+                            onusercheckboxclicked={handleUserCheckbox}
+                            if:true={requestTypeResult.companyForm}
+                            is-edit-or-copy-mode={isEditOrCopyMode}
+                        ></c-hot_request-form_company>
+                        <c-hot_request-form_user
+                            parent-field-values={fieldValues}
+                            class="subform"
+                            if:true={requestTypeResult.userForm}
+                            is-edit-or-copy-mode={isEditOrCopyMode}
+                        ></c-hot_request-form_user>
+                        <c-hot_request-form_request
+                            parent-field-values={fieldValues}
+                            parent-request-component-values={componentValues}
+                            is-get-all={isGetAll}
+                            request-ids={requestIds}
+                            record-id={recordId}
+                            class="subform"
+                            if:true={requestTypeResult.requestForm}
+                            is-edit-or-copy-mode={isEditOrCopyMode}
+                        ></c-hot_request-form_request>
+                        <div class="button-container">
+                            <div style="display: flex; justify-content: center; flex-direction: row">
+                                <c-button
+                                    data-id="saveButton"
+                                    if:true={requestTypeResult.requestForm}
+                                    button-label={submitButtonLabel}
+                                    name="Send inn bestilling"
+                                    button-styling="primary"
+                                    type="submit"
+                                    style="padding-bottom: 1em"
+                                    desktop-style="width: 8rem; justify-content: center"
+                                    mobile-style="width: 8rem; justify-content: center"
+                                ></c-button>
+                                <c-button
+                                    if:false={requestTypeResult.requestForm}
+                                    button-label="Neste"
+                                    button-styling="primary"
+                                    onbuttonclick={handleNextButtonClicked}
+                                    style="padding-bottom: 1em"
+                                    desktop-style="width: 8rem; justify-content: center"
+                                    mobile-style="width: 8rem; justify-content: center"
+                                ></c-button>
+                                <c-button
+                                    if:false={isEditModeAndTypeMe}
+                                    button-label="Forrige"
+                                    button-styling="secondary"
+                                    onbuttonclick={handleBackButtonClicked}
+                                    style="padding-bottom: 1em"
+                                    desktop-style="width: 8rem; justify-content: center"
+                                    mobile-style="width: 8rem; justify-content: center"
+                                ></c-button>
+                                <c-button
+                                    if:true={requestTypeResult.requestForm}
+                                    button-label="Avbryt"
+                                    button-styling="tertiary"
+                                    onbuttonclick={goToPreviousPage}
+                                    desktop-style="width: 8rem; justify-content: center"
+                                    mobile-style="width: 8rem; justify-content: center"
+                                ></c-button>
+                            </div>
+                        </div>
+                    </div>
+                </lightning-record-edit-form>
+            </div>
+        </main>
+
+        <div class="main-content hidden submitted-true">
+            <div class="main-content dialog-boks skjema-max-width">
+                <lightning-icon
+                    icon-name="utility:success"
+                    alternative-text="Suksess"
+                    title="Suksess"
+                    variant="success"
+                    size="large"
+                >
+                </lightning-icon>
+                <br />
+                <h2
+                    class="typo-undertittel h2-successMessage"
+                    id="successMessage"
+                    tabindex="-1"
+                    role="alert"
+                    aria-live="polite"
+                >
+                    {submitSuccessMessage}
+                </h2>
+                <br />
+                <div if:true={showUploadFileModule}>
+                    <div class="fileUploader">
+                        <h2 class="typo-undertittel">Legg ved filer til denne bestillingen</h2>
+                        <lightning-file-upload
+                            record-id={recordId}
+                            name="fileUploader"
+                            class="file-selector-large"
+                            label="Ved å laste opp filer er jeg klar over at filene vil bli delt med formidler og tolken(e) jeg får. Opplastingen vil starte umiddelbart. Maks filstørelse: 2 GB."
+                            title="Maks filstørrelse: 2 GB."
+                            onuploadfinished={handleUploadFinished}
+                            multiple
+                        >
+                        </lightning-file-upload>
+                        <br />
+                        <div class="files-container">
+                            <c-record-files-with-sharing
+                                record-id={recordId}
+                                is-get-all="true"
+                                is-delete-option="true"
+                                title="Vedlegg"
+                                delete-file-on-button-click="true"
+                            ></c-record-files-with-sharing>
                         </div>
                     </div>
                 </div>
-            </lightning-record-edit-form>
-        </div>
-    </main>
-
-    <div class="main-content hidden submitted-true">
-        <div class="main-content dialog-boks skjema-max-width">
-            <lightning-icon
-                icon-name="utility:success"
-                alternative-text="Suksess"
-                title="Suksess"
-                variant="success"
-                size="large"
-            >
-            </lightning-icon>
-            <br />
-            <h2
-                class="typo-undertittel h2-successMessage"
-                id="successMessage"
-                tabindex="-1"
-                role="alert"
-                aria-live="polite"
-            >
-                {submitSuccessMessage}
-            </h2>
-            <br />
-            <div if:true={showUploadFileModule}>
-                <div class="fileUploader">
-                    <h2 class="typo-undertittel">Legg ved filer til denne bestillingen</h2>
-                    <lightning-file-upload
-                        record-id={recordId}
-                        name="fileUploader"
-                        class="file-selector-large"
-                        label="Ved å laste opp filer er jeg klar over at filene vil bli delt med formidler og tolken(e) jeg får. Opplastingen vil starte umiddelbart. Maks filstørelse: 2 GB."
-                        title="Maks filstørrelse: 2 GB."
-                        onuploadfinished={handleUploadFinished}
-                        multiple
-                    >
-                    </lightning-file-upload>
-                    <br />
-                    <div class="files-container">
-                        <c-record-files-with-sharing
-                            record-id={recordId}
-                            is-get-all="true"
-                            is-delete-option="true"
-                            title="Vedlegg"
-                            delete-file-on-button-click="true"
-                        ></c-record-files-with-sharing>
-                    </div>
-                </div>
+                <br />
+                <c-button
+                    button-label="Gå til mine bestillinger"
+                    button-styling="primary"
+                    onbuttonclick={goToMyRequests}
+                    desktop-style="width: 16rem; justify-content: center"
+                    mobile-style="width: 16rem; justify-content: center"
+                ></c-button>
             </div>
-            <br />
-            <c-button
-                button-label="Gå til mine bestillinger"
-                button-styling="primary"
-                onbuttonclick={goToMyRequests}
-                desktop-style="width: 16rem; justify-content: center"
-                mobile-style="width: 16rem; justify-content: center"
-            ></c-button>
         </div>
-    </div>
-    <div class="main-content hidden submitted-loading">
-        <div class="main-content dialog-boks skjema-max-width">
-            <h2
-                class="typo-undertittel h2-loadingMessage"
-                id="loadingMessage"
-                tabindex="-1"
-                role="alert"
-                aria-live="polite"
-            >
-                Sender bestilling...
-            </h2>
-            <br />
-            <div if:true={spin} class="loader" style="display: flex; justify-content: center"></div>
-            <br />
+        <div class="main-content hidden submitted-loading">
+            <div class="main-content dialog-boks skjema-max-width">
+                <h2
+                    class="typo-undertittel h2-loadingMessage"
+                    id="loadingMessage"
+                    tabindex="-1"
+                    role="alert"
+                    aria-live="polite"
+                >
+                    Sender bestilling...
+                </h2>
+                <br />
+                <div if:true={spin} class="loader" style="display: flex; justify-content: center"></div>
+                <br />
+            </div>
         </div>
-    </div>
-    <div class="main-content hidden submitted-error">
-        <div class="main-content dialog-boks skjema-max-width">
-            <lightning-icon
-                icon-name="utility:warning"
-                alternative-text="Advarsel"
-                title="Advarsel"
-                variant="warning"
-                size="large"
-            >
-            </lightning-icon>
-            <br />
-            <h2
-                class="typo-undertittel h2-errorMessage"
-                id="errorMessage"
-                tabindex="-1"
-                role="alert"
-                aria-live="polite"
-            >
-                Noe gikk galt under innsending av din bestilling. Vennligst prøv igjen, eller kontakt tolketjenesten om
-                problemet vedvarer.
-            </h2>
+        <div class="main-content hidden submitted-error">
+            <div class="main-content dialog-boks skjema-max-width">
+                <lightning-icon
+                    icon-name="utility:warning"
+                    alternative-text="Advarsel"
+                    title="Advarsel"
+                    variant="warning"
+                    size="large"
+                >
+                </lightning-icon>
+                <br />
+                <h2
+                    class="typo-undertittel h2-errorMessage"
+                    id="errorMessage"
+                    tabindex="-1"
+                    role="alert"
+                    aria-live="polite"
+                >
+                    Noe gikk galt under innsending av din bestilling. Vennligst prøv igjen, eller kontakt tolketjenesten
+                    om problemet vedvarer.
+                </h2>
+            </div>
         </div>
     </div>
 </template>
