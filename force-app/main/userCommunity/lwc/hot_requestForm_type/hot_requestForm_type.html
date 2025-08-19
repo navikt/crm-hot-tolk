@@ -1,12 +1,24 @@
 <template>
     <section class="valg-av-bestillingstype__container sub-form">
-        <c-radiobuttons
-            radiobuttons={radiobuttons}
-            onradiobuttonsclick={handleRequestTypeChange}
-            header="Hvilken type bestilling ønsker du?"
-            group-name="testRadioGroup"
-        >
-        </c-radiobuttons>
+        <div>
+            <h2 class="header">Hvilken type bestilling ønsker du?</h2>
+            <template for:each={radioWrappers} for:item="radio">
+                <div key={radio.value} class="radio-with-help">
+                    <span class="label-and-icon">
+                        <c-radiobuttons
+                            radiobuttons={radio.singleRadioArray}
+                            group-name="testRadioGroup"
+                            onradiobuttonsclick={handleRequestTypeChange}
+                        ></c-radiobuttons>
+
+                        <template lwc:if={radio.helptext}>
+                            <c-helptext text={radio.helptext} hover-text={radio.helptext}></c-helptext>
+                        </template>
+                    </span>
+                </div>
+            </template>
+        </div>
+
         <div class="button-container">
             <c-button
                 button-label="Neste"
