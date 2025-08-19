@@ -28,12 +28,6 @@ export let columns = [
         label: 'Status',
         name: 'Status',
         type: 'String'
-    },
-    {
-        name: 'IsUnreadMessage',
-        label: 'Samtale',
-        type: 'String',
-        svg: true
     }
 ];
 
@@ -67,11 +61,5 @@ export let mobileColumns = [
         label: 'Tema',
         name: 'Subject',
         type: 'String'
-    },
-    {
-        name: 'IsUnreadMessage',
-        label: 'Samtale',
-        type: 'String',
-        svg: true
     }
 ];
