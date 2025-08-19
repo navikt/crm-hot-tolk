@@ -1,23 +1,17 @@
 <template>
     <section class="valg-av-bestillingstype__container sub-form" aria-label="Ny bestilling skjema">
         <!-- HUSK Å FJERNE 2 - TIL NORMAL KOMPONONET -->
-        <c-radiobuttons2
-            radiobuttons={radiobuttons}
-            onradiobuttonsclick={handleRequestTypeChange}
-            header="Hvilken type bestilling ønsker du?"
-            group-name="requestType"
-        >
-        </c-radiobuttons2>
     </section>
     <section class="valg-av-bestillingstype__container sub-form">
         <div>
             <h2 class="header">Hvilken type bestilling ønsker du?</h2>
+            <br />
             <template for:each={radioWrappers} for:item="radio">
                 <div key={radio.value} class="radio-with-help">
                     <span class="label-and-icon">
                         <c-radiobuttons
                             radiobuttons={radio.singleRadioArray}
-                            group-name="testRadioGroup"
+                            group-name="requestType"
                             onradiobuttonsclick={handleRequestTypeChange}
                         ></c-radiobuttons>
 
@@ -35,11 +29,10 @@
                 onbuttonclick={sendResult}
                 desktop-style="width: 8rem; justify-content: center"
                 mobile-style="width: 8rem; justify-content: center"
-                style="padding-bottom: 1em"
             ></c-button>
             <c-button
                 button-label="Avbryt"
-                button-styling="tertiary"
+                button-styling="secondary"
                 onbuttonclick={goToPreviousPage}
                 desktop-style="width: 8rem; justify-content: center"
                 mobile-style="width: 8rem; justify-content: center"
