@@ -22,6 +22,7 @@
     cursor: pointer;
     user-select: none;
     text-decoration: none;
+    padding-top: 1rem;
 }
 
 .back-link:hover .back-label,
