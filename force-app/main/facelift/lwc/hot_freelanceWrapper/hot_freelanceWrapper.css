@@ -1,21 +1,23 @@
 .freelanceWrapper {
-    background-color: #efecf4;
+    background-color: #cce2f0;
     width: 100%;
     padding: 2vw;
-    padding-top: 2.5vw;
-    padding-bottom: 2.5vw;
+    padding-top: 3vh;
+    padding-bottom: 6vh;
     font-family: 'Source Sans 3', 'Source Sans Pro', Arial, sans-serif;
+    border-radius: 7px;
+    margin-bottom: 3vh;
 }
 
 .freelanceHeader {
-    color: #99185e;
+    color: #005b82;
     font-size: 1.75rem;
     text-align: left;
 }
 .spacer {
     height: 1rem;
     width: 4rem;
-    background-color: #e6c7d8;
+    background-color: #005b82;
     margin-top: 1rem;
 }
 .buttonFlexContainer {
@@ -68,7 +70,7 @@
 .box:hover,
 .box:focus {
     border-color: #0067c5;
-    /* background-color: #cce1ff; */
+    background-color: #ffffff;
 }
 
 .box:hover .boxLabel,
@@ -78,7 +80,7 @@
 
 @media (max-width: 768px) {
     .freelanceWrapper {
-        padding: 1rem;
+        padding: 0.5rem;
     }
     .buttonFlexContainer {
         flex-direction: column;
@@ -99,9 +101,10 @@
 .calenderModalContent {
     background-color: #ffffff;
     width: 100%;
-    border-radius: 7px;
+    border-radius: 10px;
     font-size: 18px;
     padding: 2vw;
+    background-color: #ffffff;
 }
 
 .navno-dekorator.alertstripe {
@@ -135,7 +138,8 @@
         padding: 0;
     }
     .calenderModalContent {
-        padding: 1vw;
+        padding: 0vw;
+        width: 100%;
     }
 }
 

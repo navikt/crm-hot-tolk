@@ -5,7 +5,7 @@ public without sharing class HOT_MessageHelper {
         return objectType;
     }
 
-    @AuraEnabled
+    @AuraEnabled(cacheable=true)
     public static string getUserContactId() {
         return [SELECT Id, ContactId FROM User WHERE Id = :UserInfo.getUserId()]?.ContactId;
     }

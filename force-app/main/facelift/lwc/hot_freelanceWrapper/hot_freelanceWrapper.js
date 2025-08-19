@@ -2,6 +2,7 @@ import { LightningElement } from 'lwc';
 import icons from '@salesforce/resourceUrl/ikoner';
 
 export default class Hot_freelanceWrapper extends LightningElement {
+    pageLinks = {};
     calenderIcon = icons + '/Calender/Calender.svg';
     closeIcon = icons + '/Close/Close.svg';
     warningIcon = icons + '/Warning/WarningRed.svg';
@@ -15,15 +16,8 @@ export default class Hot_freelanceWrapper extends LightningElement {
 
     toggleCalender() {
         this.showCalender = !this.showCalender;
-        if (this.showCalender) {
-            requestAnimationFrame(() => {
-                const calenderEl = this.template.querySelector('[data-id="calenderContent"]');
-                if (calenderEl) {
-                    calenderEl.scrollIntoView({ behavior: 'smooth' });
-                }
-            });
-        }
     }
+
     setPageLinks() {
         let baseURLArray = window.location.pathname.split('/');
         baseURLArray.pop();
@@ -42,6 +36,16 @@ export default class Hot_freelanceWrapper extends LightningElement {
     }
 
     connectedCallback() {
+        sessionStorage.clear(); // Clear session storage when on home
+        window.scrollTo(0, 0);
+        let baseURLArray = window.location.pathname.split('/');
+        baseURLArray.pop();
+        let baseURL = baseURLArray.join('/');
+        this.pageLinks = {
+            myServiceAppointments: baseURL + '/mine-oppdrag',
+            freelanceMyPage: baseURL + '/frilanstolk-min-side',
+            freelanceMyThreads: baseURL + '/mine-samtaler-frilanstolk'
+        };
         this.checkTimeZone();
         this.setPageLinks();
         const state = sessionStorage.getItem(Hot_freelanceWrapper.STATE_KEY);

@@ -1,0 +1,20 @@
+<template>
+    <div class="filterButtons desktop-only">
+        <template for:each={threadFilterButtonType} for:item="filterOption">
+            <button
+                key={filterOption.value}
+                class="tab tab-button"
+                data-id={filterOption.value}
+                onclick={handleFilterButtonClick}
+                value={filterOption.value}
+            >
+                {filterOption.label}
+            </button>
+        </template>
+    </div>
+    <c-picklist
+        choices={threadFilterButtonType}
+        class="mobile-only"
+        onpicklistvaluechange={handleFilterSelectChange}
+    ></c-picklist>
+</template>
