@@ -26,9 +26,7 @@ export let columns = [
     },
     {
         name: 'IsUnreadMessage',
-        // Label: Samtale is only used for testing, remove when done. Benjamin Le
-        label: 'Samtale',
-        //label: '',
+        label: '',
         type: 'String',
         svg: true
     }
