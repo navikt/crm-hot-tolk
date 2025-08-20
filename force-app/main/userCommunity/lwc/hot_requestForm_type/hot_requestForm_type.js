@@ -4,11 +4,25 @@ import { NavigationMixin } from 'lightning/navigation';
 export default class Hot_requestForm_type extends NavigationMixin(LightningElement) {
     @api previousPage = 'home';
     @track currentRequestType = 'Me';
+
+    user =
+        'Dette velger du dersom du som privatperson bestiller for en annen person. For eksempel kan du bestille for ditt barn, din partner eller en venn';
+    company =
+        'Dette velger du om du er ansatt i en virksomhet. Du kan underveis i bestillingen koble den til en bestemt bruker.  For eksempel om du er ansatt i en kommune/på et sykehus, og skal snakke med en bruker. Eller du ønsker å bestille tolk til et arrangement, for eksempel tolking av 17. mai arrangement, gudstjeneste i døvekirken og lignende, uten at det er knyttet til en bestemt bruker.';
+
     @track radiobuttons = [
-        { label: 'For meg selv', value: 'Me', checked: true },
-        { label: 'For en bruker', value: 'User' },
-        { label: 'På vegne av en virksomhet/arrangement/annet', value: 'Company' }
+        { label: 'For meg selv', value: 'Me', checked: true, helptext: null },
+        { label: 'For en bruker', value: 'User', helptext: this.user },
+        { label: 'På vegne av en virksomhet/arrangement/annet', value: 'Company', helptext: this.company }
     ];
+
+    get radioWrappers() {
+        return this.radiobuttons.map((rb) => ({
+            singleRadioArray: [rb],
+            helptext: rb.helptext,
+            value: rb.value
+        }));
+    }
 
     handleRequestTypeChange(event) {
         let radiobuttonValues = event.detail;
