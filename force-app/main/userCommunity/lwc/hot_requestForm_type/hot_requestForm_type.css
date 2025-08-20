@@ -14,7 +14,7 @@
 }
 
 section {
-    padding: 2rem 2rem 2rem 2rem;
+    padding: 2rem 1rem 2rem 1rem;
 }
 
 .button-container {
@@ -55,8 +55,8 @@ section {
 
 @media (max-width: 768px) {
     section {
-        padding: 2rem 2rem 2rem 2rem;
         margin-left: 1.5rem;
+        padding: 2rem 1rem 2rem 1rem;
     }
 
     .label-and-icon {
