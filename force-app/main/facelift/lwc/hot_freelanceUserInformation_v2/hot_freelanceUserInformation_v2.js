@@ -94,6 +94,7 @@ export default class Hot_freelanceUserInformation_v2 extends LightningElement {
 
             this.handlePreferredNotificationChannel();
             this.handlePreferredPicklistRegion();
+            this.checkIfLoaded();
         }
     }
 
@@ -116,6 +117,13 @@ export default class Hot_freelanceUserInformation_v2 extends LightningElement {
         if (resultList.data) {
             this.skill = resultList.data;
             this.filterServiceResourceSkills();
+        }
+    }
+
+    pageLoader = false;
+    checkIfLoaded() {
+        if (this.serviceResource) {
+            this.pageLoader = true;
         }
     }
 
