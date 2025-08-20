@@ -36,7 +36,7 @@ h2 {
     font-size: 1.5rem;
     font-weight: 600;
     font-style: normal;
-    margin: 2rem 0rem;
+    margin: 1rem 0rem;
     line-height: 2rem;
 }
 
@@ -96,8 +96,8 @@ h2 {
 }
 
 .back-link-div {
-    display: flex;
-    width: 100%;
+    margin-top: 0rem;
+    margin-left: -0.5rem;
 }
 
 /* Links */
@@ -142,7 +142,7 @@ a.lenke:hover {
 .navno-dekorator.alertstripe--success {
     border: 1px solid #28a745;
     background-color: #ccf1d6;
-    margin-bottom: 0.2rem;
+    margin-bottom: 1rem;
 }
 
 .navno-dekorator.alertstripe__ikon {
@@ -185,8 +185,7 @@ button:focus,
     }
 
     .user-info-tile {
-        padding-left: 3rem !important;
-        padding-right: 3rem !important;
+        padding: 1rem !important;
     }
 
     h2 {
@@ -195,5 +194,6 @@ button:focus,
 
     h1 {
         font-size: 2.5rem;
+        margin-bottom: -2rem;
     }
 }
