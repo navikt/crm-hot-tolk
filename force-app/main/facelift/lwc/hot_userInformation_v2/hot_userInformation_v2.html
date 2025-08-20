@@ -7,9 +7,9 @@
 
             <h1 id="user-info-header">Min side</h1>
 
-            <section>
+            <section aria-labelledby="contact-info-header">
                 <!-- Kontaktinformasjon -->
-                <section class="sub-form">
+                <section class="sub-form" aria-labelledby="contact-info-header">
                     <h2 id="contact-info-header" style="text-align: center">Kontaktinformasjon</h2>
                     <div class="my-grid">
                         <div class="my-col-half">
@@ -26,8 +26,9 @@
                             href="https://minprofil.kontaktregisteret.no/"
                             class="lenke"
                             target="_blank"
+                            rel="noopener noreferrer"
                             onclick={setKrrIntegrationStatusToQueued}
-                            aria-label="Endre kontaktinformasjon i KRR"
+                            aria-label="Endre i Kontakt- og reservasjonsregisteret"
                         >
                             Endre i Kontakt- og reservasjonsregisteret
                         </a>
@@ -35,8 +36,10 @@
                     <div
                         if:true={isKrrQueued}
                         class="navno-dekorator alertstripe navno-dekorator alertstripe--advarsel"
+                        role="alert"
+                        aria-live="polite"
                     >
-                        <img class="navno-dekorator alertstripe__ikon" src={warningicon} alt="advarsel-ikon" />
+                        <img class="navno-dekorator alertstripe__ikon" src={warningicon} alt="" aria-hidden="true" />
                         <div class="typo-normal alertstripe__tekst">
                             Kontaktinformasjonen vil bli oppdatert innen 24 timer
                         </div>
@@ -257,8 +260,13 @@
             </section>
 
             <!-- Success message -->
-            <div lwc:if={showSuccess} class="navno-dekorator alertstripe navno-dekorator alertstripe--success">
-                <img class="navno-dekorator alertstripe__ikon" src={successicon} alt="success-ikon" />
+            <div
+                lwc:if={showSuccess}
+                class="navno-dekorator alertstripe navno-dekorator alertstripe--success"
+                role="status"
+                aria-live="polite"
+            >
+                <img class="navno-dekorator alertstripe__ikon" src={successicon} alt="" aria-hidden="true" />
                 <div class="typo-normal alertstripe__tekst">Endringene ble lagret</div>
                 <button
                     class="navno-dekorator close-success-button"
