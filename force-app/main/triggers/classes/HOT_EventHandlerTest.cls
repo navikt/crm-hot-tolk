@@ -110,16 +110,12 @@ private class HOT_EventHandlerTest {
         // Covers: e.RecordTypeId == null, rti == null
         Id hotRtId = getHotEventRtId();
 
-        // Build two "records" with dummy Ids so code doesn't skip on Id == null.
-        //  - One with no RecordTypeId (skips)
-        //  - One with a bogus RecordTypeId (rti == null -> skips)
         Event noRt = new Event(
-            Id = '00U000000000001AAA', // valid Event Id prefix, non-existent is fine (no DML)
+            Id = '00U000000000001AAA',
             Subject = 'SA-111',
             Description = 'Link til TinD: https://navdialog'
         );
 
-        // "012" is the prefix for RecordType Ids. Use bogus one to force rti == null.
         Id bogusRtId = (Id) '012000000000000AAA';
         Event unknownRt = new Event(
             Id = '00U000000000002AAA',
@@ -148,19 +144,19 @@ private class HOT_EventHandlerTest {
             Id = '00U000000000004AAA',
             RecordTypeId = hotRtId,
             Subject = 'SA-123',
-            WhatId = '001000000000001AAA' // any 001… looks like Account Id; no DML so ok
+            WhatId = '001000000000001AAA'
         );
         Event badDesc1 = new Event(
             Id = '00U000000000005AAA',
             RecordTypeId = hotRtId,
             Subject = 'SA-456',
-            Description = null // blank -> skip
+            Description = null
         );
         Event badDesc2 = new Event(
             Id = '00U000000000006AAA',
             RecordTypeId = hotRtId,
             Subject = 'SA-789',
-            Description = 'some other text' // does not contain link -> skip
+            Description = 'some other text'
         );
 
         Test.startTest();
