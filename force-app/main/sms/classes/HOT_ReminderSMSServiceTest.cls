@@ -376,7 +376,7 @@ private class HOT_ReminderSMSServiceTest {
         thread.CRM_Thread_Type__c = 'HOT_TOLK-FORMIDLER';
         insert thread;
 
-        String result = HOT_ReminderSMSService.getRecipientOnThread(thread);
+        String result = HOT_ReminderSMSService.getRecipientByThreadIdMap(new List<Thread__c>{ thread }).get(thread.Id);
         System.assertEquals('12345678', result, 'Did not get correct recipient');
 
         Test.stopTest();
@@ -404,7 +404,7 @@ private class HOT_ReminderSMSServiceTest {
         thread.CRM_Thread_Type__c = 'HOT_BRUKER-FORMIDLER';
         insert thread;
 
-        String result = HOT_ReminderSMSService.getRecipientOnThread(thread);
+        String result = HOT_ReminderSMSService.getRecipientByThreadIdMap(new List<Thread__c>{ thread }).get(thread.Id);
         System.assertEquals(null, result, 'Did not get correct recipient');
 
         Test.stopTest();
@@ -432,7 +432,7 @@ private class HOT_ReminderSMSServiceTest {
         thread.CRM_Thread_Type__c = 'HOT_BESTILLER-FORMIDLER';
         insert thread;
 
-        String result = HOT_ReminderSMSService.getRecipientOnThread(thread);
+        String result = HOT_ReminderSMSService.getRecipientByThreadIdMap(new List<Thread__c>{ thread }).get(thread.Id);
         System.assertEquals(null, result, 'Did not get correct recipient');
 
         Test.stopTest();
