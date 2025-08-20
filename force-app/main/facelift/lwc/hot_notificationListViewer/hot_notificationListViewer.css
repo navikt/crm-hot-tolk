@@ -98,8 +98,10 @@ input[type='reset'] {
 .dropdown-info {
     padding: 32px 2.5vw;
     text-align: center;
-    font-size: 15px;
     color: #666;
+}
+.dropdown-info p{
+    font-size: 1.125rem;
 }
 
 /* ============================
