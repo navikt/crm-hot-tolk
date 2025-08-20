@@ -9,12 +9,17 @@
     padding: 1rem;
 }
 
+.back-button-info {
+    margin-top: 0rem;
+    margin-left: -0.5rem;
+}
+
 .header-content {
     border-radius: 0.5rem;
     display: flex;
     justify-content: center;
     flex-direction: column;
-    max-width: 1000px;
+    max-width: 900px;
     margin: auto;
 }
 
@@ -23,11 +28,28 @@
     display: flex;
     justify-content: center;
     flex-direction: column;
-    max-width: 800px;
+    max-width: 900px;
     margin: auto;
     margin-top: 0.5rem;
 
     border: 2px solid red;
+}
+
+.thread-container {
+    display: flex;
+    border: 2px solid blue;
+    height: 300px;
+}
+
+.textarea-container {
+    display: block;
+}
+
+.send-button-container {
+    display: flex;
+    justify-content: end;
+    margin-top: 1.5rem;
+    margin-bottom: 3rem;
 }
 
 .header {
@@ -80,11 +102,6 @@
 
 .show-service-assignment-text {
     color: #ffffff;
-}
-
-.back-button-info {
-    margin-top: 0rem;
-    margin-left: -0.5rem;
 }
 
 @media (max-width: 768px) {
