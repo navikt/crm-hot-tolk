@@ -98,8 +98,10 @@ input[type='reset'] {
 .dropdown-info {
     padding: 32px 2.5vw;
     text-align: center;
-    font-size: 15px;
     color: #666;
+}
+.dropdown-info p{
+    font-size: 1.125rem;
 }
 
 /* ============================
@@ -125,9 +127,14 @@ input[type='reset'] {
     border-radius: 6px;
     box-shadow: 0 0.1vw 0.2vw rgba(0, 0, 0, 0.06);
 }
-.notification-card:hover,
+.notification-card:hover{
+    border-color: #E0E3E6;
+    background-color: #E0E3E6;
+}
 .notification-card:focus {
-    border-color: #0067c5;
+    outline: none;
+    background-color: #E0E3E6;
+    border-color: #0067C5;
 }
 
 .link-container:first-child {
@@ -178,7 +185,8 @@ input[type='reset'] {
     border: 4px solid #f2f3f5;
     min-height: 48px;
     align-items: center;
-    padding: calc(0.75rem - 2px) 0.75rem;
+    justify-content: center;
+    padding: calc(0.75rem - 2px) 1rem;
     border-radius: 5px;
     z-index: 1002;
 }

@@ -1,0 +1,147 @@
+.table-wrapper {
+    width: 100%;
+    max-width: 1200px;
+    margin: 0 auto;
+    box-sizing: border-box;
+    padding: 0 1rem;
+}
+
+/* Table row styling */
+tr.row {
+    height: 60px;
+    border-top: 1px solid rgba(44, 44, 44, 0.56);
+    transition: background-color 0.1s;
+}
+
+td,
+th {
+    padding: 0.5rem 1rem;
+    vertical-align: middle;
+    box-sizing: border-box;
+    font-size: 1.125rem;
+}
+
+th {
+    font-size: 1.25rem;
+}
+
+tr.row:hover {
+    cursor: pointer;
+    background-color: #f9f9f9;
+}
+
+/* Focus state for accessibility */
+tr.row:focus {
+    outline: 3px solid #1976d2;
+    outline-offset: 2px;
+    background-color: #e3f2fd;
+    cursor: pointer;
+}
+
+/* No data message */
+.no-data {
+    text-align: center;
+    padding: 1rem;
+    font-size: 1.125rem;
+    color: #6b6b6b;
+}
+
+/* Status label colors and styling */
+.label-green {
+    background-color: #99deae;
+    color: #000000;
+}
+
+.label-gray {
+    background-color: #e0e3e6;
+    color: #000000;
+}
+
+.label-red {
+    background-color: #f48684;
+    color: #000000;
+}
+
+.label-orange {
+    background-color: #fcda9d;
+    color: #000000;
+}
+
+.label-blue {
+    background-color: #00bfff;
+    color: #000000;
+}
+
+/* Shared styles for all status labels */
+.label-green,
+.label-gray,
+.label-red,
+.label-orange,
+.label-blue {
+    padding: 0.25em 0.7em;
+    border-radius: 0.25rem;
+    font-size: 1.125rem;
+    display: inline-block;
+    white-space: nowrap;
+}
+
+/* MOBILE LAYOUT */
+@media (max-width: 768px) {
+    .table-wrapper {
+        overflow-x: auto;
+        padding: 1rem;
+    }
+
+    thead {
+        display: none;
+    }
+
+    tr.row {
+        background-color: #f2f3f5;
+        padding: 1rem 2rem;
+        margin-bottom: 0.5rem;
+        border-radius: 0.5rem;
+        border: 4px solid #f2f3f5;
+
+        display: block;
+        padding: 1rem;
+        height: auto;
+        margin-left: -1rem;
+        margin-right: -1rem;
+        margin-bottom: 0.5rem;
+    }
+
+    td {
+        display: block;
+        text-align: left;
+        width: 100%;
+        padding: 0.1rem 0;
+        font-size: 1.125rem;
+        position: relative;
+        box-sizing: border-box;
+    }
+
+    tr.row:hover {
+        border-color: #e0e3e6;
+        background-color: #e0e3e6;
+    }
+
+    tr.row:focus {
+        outline: none;
+        background-color: #e0e3e6;
+        border-color: #0067c5;
+    }
+
+    td::before {
+        content: none;
+    }
+
+    td:nth-child(1),
+    td:nth-child(2) {
+        font-weight: bold;
+    }
+
+    td:nth-child(1) {
+        font-size: 1.5rem;
+    }
+}

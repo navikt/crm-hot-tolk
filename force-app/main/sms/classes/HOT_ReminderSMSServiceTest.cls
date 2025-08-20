@@ -315,6 +315,21 @@ private class HOT_ReminderSMSServiceTest {
     }
 
     @IsTest
+    static void sendSMSOnNewFilesAddedTest() {
+        ServiceResource sr = [SELECT Id FROM ServiceResource LIMIT 1];
+        Test.startTest();
+        ServiceAppointment sa = [
+            SELECT Id, AppointmentNumber, HOT_ServiceResource__r.AccountId, HOT_ServiceResource__r.HOT_MobilePhone__c
+            FROM ServiceAppointment
+            LIMIT 1
+        ];
+        AssignedResource assignedResource = HOT_TestDataFactory.createAssignedResource(sa.Id, sr.Id);
+        insert assignedResource;
+
+        HOT_ReminderSMSService.sendSMSOnNewFilesAdded(new List<ServiceAppointment>{ sa });
+        Test.stopTest();
+    }
+    @IsTest
     static void sendSMSOnNewWantedSRTest() {
         ServiceAppointment sa = [SELECT Id FROM ServiceAppointment WHERE Subject = 'TEST' LIMIT 1];
         ServiceResource sr = [SELECT Id FROM ServiceResource LIMIT 1];
