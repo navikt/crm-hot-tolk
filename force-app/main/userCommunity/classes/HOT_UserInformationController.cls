@@ -43,7 +43,10 @@ public without sharing class HOT_UserInformationController {
                 INT_SecurityMeasures__c,
                 HOT_SIPAddress__c,
                 HOT_NotificationChannel__c,
-                HOT_IsReservationAgainstNotifications__c
+                HOT_IsReservationAgainstNotifications__c,
+                INT_KrrEmail__c,
+                INT_KrrMobilePhone__c, 
+                INT_KrrIntegrationStatus__c
             FROM Person__c
             WHERE Id = :currentUser.Account.CRM_Person__c
         ];
