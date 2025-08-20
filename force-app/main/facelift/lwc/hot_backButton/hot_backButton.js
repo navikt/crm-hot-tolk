@@ -90,4 +90,11 @@ export default class Hot_backButton extends NavigationMixin(LightningElement) {
     refresh(force) {
         this.dispatchEvent(new CustomEvent('refresh', { detail: { force } }));
     }
+
+    handleKeyDown(event) {
+        if (event.key === 'Enter' || event.key === ' ') {
+            event.preventDefault();
+            this.goBack();
+        }
+    }
 }
