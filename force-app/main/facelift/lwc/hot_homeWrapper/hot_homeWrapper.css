@@ -2,6 +2,8 @@
     width: 100vw;
     margin: 0 auto;
     background-color: #ffffff;
+    padding: 0 0.5rem;
+    box-sizing: border-box;
 }
 .content {
     max-width: 1200px;

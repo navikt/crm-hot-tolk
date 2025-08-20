@@ -14,11 +14,7 @@
 }
 @media (max-width: 768px) {
     .banner {
-        padding: 1rem;
-    }
-}
-@media (max-width: 768px) {
-    .banner {
-        margin-left: 2vw;
+        padding: 0.5rem;
+        margin-left: 0;
     }
 }
