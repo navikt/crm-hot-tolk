@@ -31,7 +31,9 @@
                     <p id="varsler-info">Kun varsler fra tolketjenesten siste 30 dager vises her.</p>
                 </div>
 
-                <div class="dropdown-info" if:false={hasNotifications}>Ingen nye varsler.</div>
+                <div class="dropdown-info" if:false={hasNotifications}>
+                    <p>Ingen nye varsler.</p>
+                </div>
 
                 <template for:each={notifications} for:item="notification">
                     <button

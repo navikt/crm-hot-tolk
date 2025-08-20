@@ -27,6 +27,7 @@
 .back-button-info {
     margin-top: 0rem;
     margin-left: -0.5rem;
+    padding-left: 5.5rem;
 }
 
 .header {
@@ -186,6 +187,7 @@
     .back-button-info {
         margin-top: 0rem;
         margin-left: -0.5rem;
+        padding-left: 0;
     }
     .form-row {
         display: grid;
