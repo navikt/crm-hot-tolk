@@ -127,9 +127,14 @@ input[type='reset'] {
     border-radius: 6px;
     box-shadow: 0 0.1vw 0.2vw rgba(0, 0, 0, 0.06);
 }
-.notification-card:hover,
+.notification-card:hover{
+    border-color: #E0E3E6;
+    background-color: #E0E3E6;
+}
 .notification-card:focus {
-    border-color: #0067c5;
+    outline: none;
+    background-color: #E0E3E6;
+    border-color: #0067C5;
 }
 
 .link-container:first-child {
