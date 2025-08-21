@@ -1,6 +1,6 @@
 <template>
     <div class={containerClass}>
-        <div class="back-button" onclick={goBack}>
+        <div class="back-button" onclick={goBack} onkeydown={handleKeyDown}>
             <lightning-icon
                 icon-name="utility:back"
                 alternative-text="Tilbake"
