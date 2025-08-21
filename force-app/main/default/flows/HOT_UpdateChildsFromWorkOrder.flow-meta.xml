@@ -141,6 +141,51 @@
             <targetReference>UpdateChildRecords</targetReference>
         </connector>
     </assignments>
+    <assignments>
+        <description>Because we re-use apex class we will use the same logic with the request fields as the main fields. However, we want to read the WorkOrder values in case they have been updated once before.</description>
+        <name>Update_request_values_to_WorkOrder_values</name>
+        <label>Update request values to WorkOrder values</label>
+        <locationX>0</locationX>
+        <locationY>0</locationY>
+        <assignmentItems>
+            <assignToReference>getRequest.InterpretationStreet__c</assignToReference>
+            <operator>Assign</operator>
+            <value>
+                <elementReference>recordId.HOT_InterpretationStreet__c</elementReference>
+            </value>
+        </assignmentItems>
+        <assignmentItems>
+            <assignToReference>getRequest.InterpretationPostalCity__c</assignToReference>
+            <operator>Assign</operator>
+            <value>
+                <elementReference>recordId.HOT_InterpretationPostalCity__c</elementReference>
+            </value>
+        </assignmentItems>
+        <assignmentItems>
+            <assignToReference>getRequest.InterpretationPostalCode__c</assignToReference>
+            <operator>Assign</operator>
+            <value>
+                <elementReference>recordId.HOT_InterpretationPostalCode__c</elementReference>
+            </value>
+        </assignmentItems>
+        <assignmentItems>
+            <assignToReference>getRequest.Subject__c</assignToReference>
+            <operator>Assign</operator>
+            <value>
+                <elementReference>recordId.Subject</elementReference>
+            </value>
+        </assignmentItems>
+        <assignmentItems>
+            <assignToReference>getRequest.Description__c</assignToReference>
+            <operator>Assign</operator>
+            <value>
+                <elementReference>recordId.Description</elementReference>
+            </value>
+        </assignmentItems>
+        <connector>
+            <targetReference>ChooseFieldScreen</targetReference>
+        </connector>
+    </assignments>
     <choices>
         <description>Bruker</description>
         <name>Account</name>
@@ -225,7 +270,7 @@
                 </rightValue>
             </conditions>
             <connector>
-                <targetReference>ChooseFieldScreen</targetReference>
+                <targetReference>Update_request_values_to_WorkOrder_values</targetReference>
             </connector>
             <label>Request is Active</label>
         </rules>
@@ -320,7 +365,9 @@
     <description>In this version we removed the Dispatcher and Tolk method options from the screen,
         but we kept the paths with decisions. This was done because this is going to be a version
         0.5, so it is easier to re-add when the users decides they want it. If they don&apos;t want
-        it or ask for it it will be removed in a jira ticket in August/September.</description>
+        it or ask for it it will be removed in a jira ticket in August/September.
+
+Version two adds in Subject and uses workOrder for values on the screen instead of request.</description>
     <environments>Default</environments>
     <formulas>
         <name>isAccount</name>
@@ -455,6 +502,7 @@
             <name>ChosenFields</name>
             <choiceReferences>Address</choiceReferences>
             <choiceReferences>Description</choiceReferences>
+            <choiceReferences>Subject</choiceReferences>
             <choiceReferences>ScreenInterpreter</choiceReferences>
             <dataType>String</dataType>
             <fieldText>Velg felter</fieldText>
@@ -503,35 +551,6 @@
                     <fieldType>ObjectProvided</fieldType>
                     <inputsOnNextNavToAssocScrn>UseStoredValues</inputsOnNextNavToAssocScrn>
                     <isRequired>false</isRequired>
-                    <objectFieldReference>getRequest.MeetingStreet__c</objectFieldReference>
-                </fields>
-                <fields>
-                    <fieldType>ObjectProvided</fieldType>
-                    <inputsOnNextNavToAssocScrn>UseStoredValues</inputsOnNextNavToAssocScrn>
-                    <isRequired>false</isRequired>
-                    <objectFieldReference>getRequest.MeetingPostalCode__c</objectFieldReference>
-                </fields>
-                <fields>
-                    <fieldType>ObjectProvided</fieldType>
-                    <inputsOnNextNavToAssocScrn>UseStoredValues</inputsOnNextNavToAssocScrn>
-                    <isRequired>false</isRequired>
-                    <objectFieldReference>getRequest.MeetingPostalCity__c</objectFieldReference>
-                </fields>
-                <inputParameters>
-                    <name>width</name>
-                    <value>
-                        <stringValue>6</stringValue>
-                    </value>
-                </inputParameters>
-                <isRequired>false</isRequired>
-            </fields>
-            <fields>
-                <name>NewValuesScreen_Section1_Column2</name>
-                <fieldType>Region</fieldType>
-                <fields>
-                    <fieldType>ObjectProvided</fieldType>
-                    <inputsOnNextNavToAssocScrn>UseStoredValues</inputsOnNextNavToAssocScrn>
-                    <isRequired>false</isRequired>
                     <objectFieldReference>getRequest.InterpretationStreet__c</objectFieldReference>
                 </fields>
                 <fields>
@@ -549,7 +568,7 @@
                 <inputParameters>
                     <name>width</name>
                     <value>
-                        <stringValue>6</stringValue>
+                        <stringValue>12</stringValue>
                     </value>
                 </inputParameters>
                 <isRequired>false</isRequired>
