@@ -39,26 +39,29 @@ export default class Hot_backButton extends NavigationMixin(LightningElement) {
                 return;
             }
 
-            if (pathname.includes('/s/mine-bestillinger') && searchParams.has('id') && searchParams.has('level')) {
+            // ✅ Patched block for mine-bestillinger (desktop + mobile)
+            if (pathname.includes('/s/mine-bestillinger')) {
                 const pageName = pathname.includes('/s/mine-bestillinger-andre')
                     ? 'mine-bestillinger-andre'
                     : 'mine-bestillinger';
-                const id = searchParams.get('id');
-                const level = searchParams.get('level');
 
-                if (level === 'R') {
-                    this.navigateToPage(pageName);
-                } else if (level === 'WO') {
-                    if (this.isSeries) {
-                        this.navigateToPageWithParams(pageName, { id, level: 'R' });
-                    } else {
-                        this.navigateToPage(pageName);
+                let id = searchParams.get('id');
+                let level = searchParams.get('level');
+
+                if (id && level) {
+                    if (level === 'R') {
+                        this.navigateToPageWithParams(pageName, {}); // clear id/level → list
+                    } else if (level === 'WO') {
+                        if (this.isSeries) {
+                            this.navigateToPageWithParams(pageName, { id, level: 'R' });
+                        } else {
+                            this.navigateToPageWithParams(pageName, {}); // clear id/level → list
+                        }
                     }
+                    return;
                 }
-                return;
             }
 
-            //  Fallback: Always go home
             this.navigateHome();
         } catch (e) {
             this.navigateHome();
