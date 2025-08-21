@@ -182,6 +182,27 @@
                 <elementReference>recordId.Description</elementReference>
             </value>
         </assignmentItems>
+        <assignmentItems>
+            <assignToReference>getRequest.MeetingStreet__c</assignToReference>
+            <operator>Assign</operator>
+            <value>
+                <elementReference>recordId.Street</elementReference>
+            </value>
+        </assignmentItems>
+        <assignmentItems>
+            <assignToReference>getRequest.MeetingPostalCity__c</assignToReference>
+            <operator>Assign</operator>
+            <value>
+                <elementReference>recordId.City</elementReference>
+            </value>
+        </assignmentItems>
+        <assignmentItems>
+            <assignToReference>getRequest.MeetingPostalCode__c</assignToReference>
+            <operator>Assign</operator>
+            <value>
+                <elementReference>recordId.PostalCode</elementReference>
+            </value>
+        </assignmentItems>
         <connector>
             <targetReference>ChooseFieldScreen</targetReference>
         </connector>
@@ -551,6 +572,35 @@ Version two adds in Subject and uses workOrder for values on the screen instead 
                     <fieldType>ObjectProvided</fieldType>
                     <inputsOnNextNavToAssocScrn>UseStoredValues</inputsOnNextNavToAssocScrn>
                     <isRequired>false</isRequired>
+                    <objectFieldReference>getRequest.MeetingStreet__c</objectFieldReference>
+                </fields>
+                <fields>
+                    <fieldType>ObjectProvided</fieldType>
+                    <inputsOnNextNavToAssocScrn>UseStoredValues</inputsOnNextNavToAssocScrn>
+                    <isRequired>false</isRequired>
+                    <objectFieldReference>getRequest.MeetingPostalCode__c</objectFieldReference>
+                </fields>
+                <fields>
+                    <fieldType>ObjectProvided</fieldType>
+                    <inputsOnNextNavToAssocScrn>UseStoredValues</inputsOnNextNavToAssocScrn>
+                    <isRequired>false</isRequired>
+                    <objectFieldReference>getRequest.MeetingPostalCity__c</objectFieldReference>
+                </fields>
+                <inputParameters>
+                    <name>width</name>
+                    <value>
+                        <stringValue>6</stringValue>
+                    </value>
+                </inputParameters>
+                <isRequired>false</isRequired>
+            </fields>
+            <fields>
+                <name>NewValuesScreen_Section1_Column2</name>
+                <fieldType>Region</fieldType>
+                <fields>
+                    <fieldType>ObjectProvided</fieldType>
+                    <inputsOnNextNavToAssocScrn>UseStoredValues</inputsOnNextNavToAssocScrn>
+                    <isRequired>false</isRequired>
                     <objectFieldReference>getRequest.InterpretationStreet__c</objectFieldReference>
                 </fields>
                 <fields>
@@ -568,7 +618,7 @@ Version two adds in Subject and uses workOrder for values on the screen instead 
                 <inputParameters>
                     <name>width</name>
                     <value>
-                        <stringValue>12</stringValue>
+                        <stringValue>6</stringValue>
                     </value>
                 </inputParameters>
                 <isRequired>false</isRequired>
