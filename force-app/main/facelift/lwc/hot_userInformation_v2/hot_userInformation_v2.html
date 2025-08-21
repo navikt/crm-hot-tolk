@@ -7,9 +7,9 @@
 
             <h1 id="user-info-header">Min side</h1>
 
-            <section aria-labelledby="contact-info-header">
+            <section>
                 <!-- Kontaktinformasjon -->
-                <section class="sub-form" aria-labelledby="contact-info-header">
+                <section class="sub-form">
                     <h2 id="contact-info-header" style="text-align: center">Kontaktinformasjon</h2>
                     <div class="my-grid">
                         <div class="my-col-half">
@@ -47,7 +47,7 @@
                 </section>
 
                 <!-- Vedtak -->
-                <section class="sub-form" aria-labelledby="vedtak-header">
+                <section class="sub-form">
                     <h2 id="vedtak-header">Vedtak</h2>
                     <div class="my-grid">
                         <div class="my-col-half">
@@ -88,7 +88,7 @@
                 </section>
 
                 <!-- Tolkemetoder -->
-                <section class="sub-form" aria-labelledby="tolkemetoder-header">
+                <section class="sub-form">
                     <h2 id="tolkemetoder-header">Tolkemetoder</h2>
                     <div class="my-grid">
                         <div class="my-col-half">
@@ -147,7 +147,7 @@
                 </section>
 
                 <!-- Annet -->
-                <section class="sub-form" aria-labelledby="annet-header">
+                <section class="sub-form">
                     <h2 id="annet-header">Annet</h2>
                     <div class="my-grid">
                         <div class="my-col-half">
@@ -162,7 +162,7 @@
                 </section>
 
                 <!-- Sikkerhetstiltak -->
-                <section class="sub-form" aria-labelledby="security-measures-header">
+                <section class="sub-form">
                     <h2 id="security-measures-header">Sikkerhetstiltak</h2>
                     <div lwc:if={hasSecurityMeasures}>
                         <template for:each={securityMeasures} for:item="sm">
@@ -172,11 +172,7 @@
                 </section>
 
                 <!-- Varslingsinnstillinger - visning -->
-                <section
-                    class="sub-form"
-                    aria-labelledby="notification-settings-header"
-                    lwc:if={viewUserNotificationSettings}
-                >
+                <section class="sub-form" lwc:if={viewUserNotificationSettings}>
                     <h2 id="notification-settings-header" style="text-align: center">Varslingsinnstillinger</h2>
                     <div class="my-grid">
                         <div class="my-col-half">
@@ -218,7 +214,7 @@
 
                 <!-- Varslingsinnstillinger - redigering -->
                 <template lwc:if={editUserNotification}>
-                    <section class="sub-form" aria-live="polite" aria-labelledby="notification-settings-edit-header">
+                    <section class="sub-form" aria-live="polite">
                         <h2 id="notification-settings-edit-header" style="text-align: center">
                             Rediger varslingsinnstillinger
                         </h2>
