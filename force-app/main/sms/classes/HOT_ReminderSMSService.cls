@@ -264,7 +264,7 @@ public without sharing class HOT_ReminderSMSService {
             FROM Thread__c
             WHERE Id IN :threadIds
         ];
-        Map<Id, String> recipientByThreadId = HOT_ReminderSMSService.getRecipientByThreadIdMap(threads);
+        Map<Id, String> recipientByThreadId = HOT_ReminderSMSService.getRecipientByThreadIdMap(threadList);
         for (Thread__c thread : threadList) {
             SMS__c sms = new SMS__c();
             sms.Domain__c = 'HOT';
@@ -874,13 +874,13 @@ public without sharing class HOT_ReminderSMSService {
         }
         return workOrder.Account.CRM_Person__r.INT_KrrMobilePhone__c;
     }
-
+    @TestVisible
     private static Map<Id, String> getRecipientByThreadIdMap(List<Thread__c> threads) {
         Map<Id, String> threadMap = new Map<Id, String>();
 
         List<Thread__c> accountRecipients = new List<Thread__c>();
-        Map<Thread__c, Account> srRecipients = new Map<Thread__c, Account>();
-        Map<Thread__c, Id> requestRecipients = new Map<Thread__c, Id>();
+        Map<Thread__c, Id> srRecipients = new Map<Thread__c, Id>();
+        Map<Thread__c, String> requestRecipients = new Map<Thread__c, String>();
 
         for (Thread__c thread : threads) {
             if (thread.CRM_Thread_Type__c == 'HOT_BRUKER-FORMIDLER' || thread.CRM_Thread_Type__c == 'HOT_BRUKER-TOLK') {
@@ -891,7 +891,7 @@ public without sharing class HOT_ReminderSMSService {
             ) {
                 srRecipients.put(thread, thread.CRM_Account__c);
             } else if (thread.CRM_Thread_Type__c == 'HOT_BESTILLER-FORMIDLER') {
-                requestRecipients.add(thread);
+                requestRecipients.put(thread, thread.CRM_Related_Object__c);
             } else {
                 threadMap.put(thread.Id, '');
             }
