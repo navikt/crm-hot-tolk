@@ -39,7 +39,6 @@ export default class Hot_backButton extends NavigationMixin(LightningElement) {
                 return;
             }
 
-            // ✅ Patched block for mine-bestillinger (desktop + mobile)
             if (pathname.includes('/s/mine-bestillinger')) {
                 const pageName = pathname.includes('/s/mine-bestillinger-andre')
                     ? 'mine-bestillinger-andre'
@@ -50,12 +49,12 @@ export default class Hot_backButton extends NavigationMixin(LightningElement) {
 
                 if (id && level) {
                     if (level === 'R') {
-                        this.navigateToPageWithParams(pageName, {}); // clear id/level → list
+                        this.navigateToPageWithParams(pageName, {});
                     } else if (level === 'WO') {
                         if (this.isSeries) {
                             this.navigateToPageWithParams(pageName, { id, level: 'R' });
                         } else {
-                            this.navigateToPageWithParams(pageName, {}); // clear id/level → list
+                            this.navigateToPageWithParams(pageName, {});
                         }
                     }
                     return;
