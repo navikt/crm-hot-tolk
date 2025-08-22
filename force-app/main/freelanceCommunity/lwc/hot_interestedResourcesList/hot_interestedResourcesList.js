@@ -10,6 +10,7 @@ import { refreshApex } from '@salesforce/apex';
 import { getParametersFromURL } from 'c/hot_URIDecoder';
 import { columns, mobileColumns, iconByValue } from './columns';
 import { defaultFilters, compare } from './filters';
+import { getDayOfWeek } from 'c/hot_commonUtils';
 import { NavigationMixin } from 'lightning/navigation';
 
 import Hot_interestedResourcesListModal from 'c/hot_interestedResourcesListModal';
@@ -94,37 +95,7 @@ export default class Hot_interestedResourcesList extends NavigationMixin(Lightni
             this.goToRecordDetailsFromNotification(parsed_params.id);
         }
     }
-    getDayOfWeek(date) {
-        var jsDate = new Date(date);
-        var dayOfWeek = jsDate.getDay();
-        var dayOfWeekString;
-        switch (dayOfWeek) {
-            case 0:
-                dayOfWeekString = 'Søndag';
-                break;
-            case 1:
-                dayOfWeekString = 'Mandag';
-                break;
-            case 2:
-                dayOfWeekString = 'Tirsdag';
-                break;
-            case 3:
-                dayOfWeekString = 'Onsdag';
-                break;
-            case 4:
-                dayOfWeekString = 'Torsdag';
-                break;
-            case 5:
-                dayOfWeekString = 'Fredag';
-                break;
-            case 6:
-                dayOfWeekString = 'Lørdag';
-                break;
-            default:
-                dayOfWeekString = '';
-        }
-        return dayOfWeekString;
-    }
+
     @track serviceResource;
     @wire(getServiceResource)
     wiredServiceresource(result) {
@@ -183,7 +154,7 @@ export default class Hot_interestedResourcesList extends NavigationMixin(Lightni
                                     appointment.ServiceAppointmentEndTime__c
                                 ) +
                                 ' ' +
-                                this.getDayOfWeek(appointment.ServiceAppointmentStartTime__c),
+                                getDayOfWeek(appointment.ServiceAppointmentStartTime__c),
                             statusMobile: 'Status: ' + appointment.Status__c
                         };
                     });
@@ -251,9 +222,7 @@ export default class Hot_interestedResourcesList extends NavigationMixin(Lightni
                     this.interestedResource.releasedate = '';
                 }
 
-                this.interestedResource.weekday = this.getDayOfWeek(
-                    this.interestedResource.ServiceAppointmentStartTime__c
-                );
+                this.interestedResource.weekday = getDayOfWeek(this.interestedResource.ServiceAppointmentStartTime__c);
             }
         }
 
@@ -280,7 +249,7 @@ export default class Hot_interestedResourcesList extends NavigationMixin(Lightni
                     this.interestedResource = result;
                     this.isDetails = true;
                     this.isNotRetractable = this.interestedResource?.Status__c !== 'Påmeldt';
-                    this.interestedResource.weekday = this.getDayOfWeek(
+                    this.interestedResource.weekday = getDayOfWeek(
                         this.interestedResource.ServiceAppointmentStartTime__c
                     );
                     let startTimeFormatted = new Date(result.ServiceAppointmentStartTime__c);
