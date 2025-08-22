@@ -41,10 +41,6 @@
     }
 }
 
-p {
-    font-weight: bold;
-}
-
 span {
     font-weight: normal;
 }
@@ -97,6 +93,9 @@ lightning-input-field.ikke-sensitive-opplysninger > lightning-textarea > label:a
 
 .modal-wrapper h2 {
     font-family: 'Source Sans Pro', Arial, sans-serif;
+}
+.modal-wrapper p {
+    font-weight: bold;
 }
 /* MODAL CSS */
 .modal-wrapper .modal-backdrop {
