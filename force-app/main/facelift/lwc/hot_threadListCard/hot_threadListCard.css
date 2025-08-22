@@ -35,7 +35,13 @@ button.threadCard {
     gap: 0.5rem;
     padding-top: 0.5rem;
 }
-
+.threadCardHeader-left p {
+    font-size: 1.25rem;
+    font-weight: bold;
+}
+p {
+    font-size: 1.125rem;
+}
 .threadCardHeader-left {
     font-weight: bold;
     flex: 1 1 0;

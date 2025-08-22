@@ -1,15 +1,15 @@
 <template>
-    <div class="center-content" aria-labelledby="user-info-header">
+    <div class="center-content">
         <div class="user-info-tile">
             <div class="back-link-div">
-                <c-hot_back-button aria-label="Tilbake"></c-hot_back-button>
+                <c-hot_back-button></c-hot_back-button>
             </div>
 
             <h1 id="user-info-header">Min side</h1>
 
             <section>
                 <!-- Kontaktinformasjon -->
-                <section class="sub-form" aria-labelledby="contact-info-header">
+                <section class="sub-form">
                     <h2 id="contact-info-header" style="text-align: center">Kontaktinformasjon</h2>
                     <div class="my-grid">
                         <div class="my-col-half">
@@ -26,8 +26,9 @@
                             href="https://minprofil.kontaktregisteret.no/"
                             class="lenke"
                             target="_blank"
+                            rel="noopener noreferrer"
                             onclick={setKrrIntegrationStatusToQueued}
-                            aria-label="Endre kontaktinformasjon i KRR"
+                            aria-label="Endre i Kontakt- og reservasjonsregisteret"
                         >
                             Endre i Kontakt- og reservasjonsregisteret
                         </a>
@@ -35,8 +36,10 @@
                     <div
                         if:true={isKrrQueued}
                         class="navno-dekorator alertstripe navno-dekorator alertstripe--advarsel"
+                        role="alert"
+                        aria-live="polite"
                     >
-                        <img class="navno-dekorator alertstripe__ikon" src={warningicon} alt="advarsel-ikon" />
+                        <img class="navno-dekorator alertstripe__ikon" src={warningicon} alt="" aria-hidden="true" />
                         <div class="typo-normal alertstripe__tekst">
                             Kontaktinformasjonen vil bli oppdatert innen 24 timer
                         </div>
@@ -44,7 +47,7 @@
                 </section>
 
                 <!-- Vedtak -->
-                <section class="sub-form" aria-labelledby="vedtak-header">
+                <section class="sub-form">
                     <h2 id="vedtak-header">Vedtak</h2>
                     <div class="my-grid">
                         <div class="my-col-half">
@@ -85,7 +88,7 @@
                 </section>
 
                 <!-- Tolkemetoder -->
-                <section class="sub-form" aria-labelledby="tolkemetoder-header">
+                <section class="sub-form">
                     <h2 id="tolkemetoder-header">Tolkemetoder</h2>
                     <div class="my-grid">
                         <div class="my-col-half">
@@ -144,7 +147,7 @@
                 </section>
 
                 <!-- Annet -->
-                <section class="sub-form" aria-labelledby="annet-header">
+                <section class="sub-form">
                     <h2 id="annet-header">Annet</h2>
                     <div class="my-grid">
                         <div class="my-col-half">
@@ -159,7 +162,7 @@
                 </section>
 
                 <!-- Sikkerhetstiltak -->
-                <section class="sub-form" aria-labelledby="security-measures-header">
+                <section class="sub-form">
                     <h2 id="security-measures-header">Sikkerhetstiltak</h2>
                     <div lwc:if={hasSecurityMeasures}>
                         <template for:each={securityMeasures} for:item="sm">
@@ -169,11 +172,7 @@
                 </section>
 
                 <!-- Varslingsinnstillinger - visning -->
-                <section
-                    class="sub-form"
-                    aria-labelledby="notification-settings-header"
-                    lwc:if={viewUserNotificationSettings}
-                >
+                <section class="sub-form" lwc:if={viewUserNotificationSettings}>
                     <h2 id="notification-settings-header" style="text-align: center">Varslingsinnstillinger</h2>
                     <div class="my-grid">
                         <div class="my-col-half">
@@ -215,7 +214,7 @@
 
                 <!-- Varslingsinnstillinger - redigering -->
                 <template lwc:if={editUserNotification}>
-                    <section class="sub-form" aria-live="polite" aria-labelledby="notification-settings-edit-header">
+                    <section class="sub-form" aria-live="polite">
                         <h2 id="notification-settings-edit-header" style="text-align: center">
                             Rediger varslingsinnstillinger
                         </h2>
@@ -257,8 +256,13 @@
             </section>
 
             <!-- Success message -->
-            <div lwc:if={showSuccess} class="navno-dekorator alertstripe navno-dekorator alertstripe--success">
-                <img class="navno-dekorator alertstripe__ikon" src={successicon} alt="success-ikon" />
+            <div
+                lwc:if={showSuccess}
+                class="navno-dekorator alertstripe navno-dekorator alertstripe--success"
+                role="status"
+                aria-live="polite"
+            >
+                <img class="navno-dekorator alertstripe__ikon" src={successicon} alt="" aria-hidden="true" />
                 <div class="typo-normal alertstripe__tekst">Endringene ble lagret</div>
                 <button
                     class="navno-dekorator close-success-button"
