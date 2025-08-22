@@ -1,13 +1,14 @@
 <template>
     <div class={containerClass}>
-        <div class="back-button" role="button" tabindex="0" onclick={goBack} onkeydown={handleKeyDown}>
+        <button class="back-button" onclick={goBack} onkeydown={handleKeyDown} type="button">
             <lightning-icon
                 icon-name="utility:back"
                 alternative-text=""
-                size="x-small"
                 class="back-icon"
+                size="x-small"
+                aria-hidden="true"
             ></lightning-icon>
             <span class="back-label">Tilbake</span>
-        </div>
+        </button>
     </div>
 </template>

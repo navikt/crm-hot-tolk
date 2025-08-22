@@ -12,6 +12,7 @@
 }
 
 .back-button {
+    all: unset;
     display: inline-flex;
     align-items: center;
     gap: 0.4rem;
@@ -21,7 +22,6 @@
     color: #000000;
     cursor: pointer;
     user-select: none;
-    text-decoration: none;
     padding-top: 1rem;
     padding-left: 0.5rem;
     border-radius: 0.25rem;

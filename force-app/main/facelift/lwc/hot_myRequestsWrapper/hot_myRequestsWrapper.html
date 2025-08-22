@@ -151,8 +151,8 @@
                     button-label={editButtonLabel}
                     button-styling="secondary"
                     style="padding-right: 1vw; padding-bottom: 1vw"
-                    desktop-style="width: 8rem; justify-content: center"
-                    mobile-style="width: 8rem; justify-content: center"
+                    desktop-style="width: 8rem; justify-content: center; border-radius: 6px"
+                    mobile-style="width: 8rem; justify-content: center; border-radius: 6px"
                     onbuttonclick={editOrder}
                     disabled={isRequestEditButtonDisabled}
                 ></c-button>
@@ -160,16 +160,16 @@
                     button-label={copyButtonLabel}
                     button-styling="secondary"
                     style="padding-right: 1vw; padding-bottom: 1vw"
-                    desktop-style="width: 8rem; justify-content: center"
-                    mobile-style="width: 8rem; justify-content: center"
+                    desktop-style="width: 8rem; justify-content: center; border-radius: 6px"
+                    mobile-style="width: 8rem; justify-content: center; border-radius: 6px"
                     onbuttonclick={cloneOrder}
                 ></c-button>
                 <c-button
                     button-label={cancelButtonLabel}
                     button-styling="secondary"
                     style="padding-right: 1vw; padding-bottom: 1vw"
-                    desktop-style="width: 8rem; justify-content: center"
-                    mobile-style="width: 8rem; justify-content: center"
+                    desktop-style="width: 8rem; justify-content: center; border-radius: 6px"
+                    mobile-style="width: 8rem; justify-content: center; border-radius: 6px"
                     onbuttonclick={cancelOrder}
                     disabled={isRequestCancelButtonDisabled}
                 ></c-button>
@@ -177,8 +177,8 @@
                     button-label="Legg til filer"
                     button-styling="primary"
                     style="padding-right: 1vw; padding-bottom: 1vw"
-                    desktop-style="width: 8rem; justify-content: center"
-                    mobile-style="width: 8rem; justify-content: center"
+                    desktop-style="width: 8rem; justify-content: center; border-radius: 6px"
+                    mobile-style="width: 8rem; justify-content: center; border-radius: 6px"
                     onbuttonclick={addFiles}
                     disabled={isRequestAddFilesButtonDisabled}
                 ></c-button>
@@ -186,8 +186,8 @@
                     button-label="Samtale med formidler"
                     button-styling="primary"
                     style="padding-right: 1vw; padding-bottom: 1vw"
-                    desktop-style="justify-content: center"
-                    mobile-style="justify-content: center"
+                    desktop-style="justify-content: center; border-radius: 6px"
+                    mobile-style="justify-content: center; border-radius: 6px"
                     onbuttonclick={goToThread}
                     disabled={isThreadButtonDisabled}
                     aria-disabled={isThreadButtonDisabled}
@@ -197,8 +197,8 @@
                     button-label="Samtale med tolk"
                     button-styling="primary"
                     style="padding-right: 1vw; padding-bottom: 1vw"
-                    desktop-style="justify-content: center"
-                    mobile-style="justify-content: center"
+                    desktop-style="justify-content: center; border-radius: 6px"
+                    mobile-style="justify-content: center; border-radius: 6px"
                     onbuttonclick={goToThreadInterpreter}
                     disabled={isInterpreterThreadButtonDisabled}
                     aria-disabled={isInterpreterThreadButtonDisabled}
@@ -298,16 +298,16 @@
                     button-label="Lagre"
                     onbuttonclick={uploadFilesOnSave}
                     style="padding-right: 1vw"
-                    desktop-style="width: 8rem; justify-content: center"
-                    mobile-style="width: 8rem; justify-content: center"
+                    desktop-style="width: 8rem; justify-content: center; border-radius: 6px"
+                    mobile-style="width: 8rem; justify-content: center; border-radius: 6px"
                 ></c-button>
                 <c-button
                     lwc:if={showCancelUploadButton}
                     button-styling="secondary"
                     button-label="Lukk"
                     onbuttonclick={cancelUploadFiles}
-                    desktop-style="width: 8rem; justify-content: center"
-                    mobile-style="width: 8rem; justify-content: center"
+                    desktop-style="width: 8rem; justify-content: center; border-radius: 6px"
+                    mobile-style="width: 8rem; justify-content: center; border-radius: 6px"
                 ></c-button>
             </div>
         </div>
