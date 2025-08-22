@@ -17,6 +17,7 @@
     justify-content: center;
     flex-direction: column;
     text-align: center;
+    padding: 2rem;
 }
 
 .loader {
@@ -40,11 +41,8 @@
     }
 }
 
-.record-details-container {
-    margin: 2rem 0;
-    display: flex;
-    flex-direction: column;
-    align-items: flex-start;
+p {
+    font-weight: bold;
 }
 
 span {
@@ -63,49 +61,11 @@ lightning-input-field.ikke-sensitive-opplysninger > lightning-textarea > label:a
     padding: 25px 0;
 }
 
-.comments-dialog-container {
-    all: unset;
-    background-color: #fff;
-    display: block;
-    padding: 5rem;
-    border-radius: 4px;
-    position: relative;
-    flex-grow: 0;
-    overflow-x: auto;
-    max-height: 100%;
-    margin-bottom: 1rem;
-    margin-top: 1rem;
-    z-index: 1010;
-    max-width: 432px;
-    max-height: 75%;
-    width: 100%;
-}
-
 @media (max-width: 576px) {
-    .record-details-container {
-        margin: 5vw 0;
-    }
-    .comments-dialog-container {
-        all: unset;
-        background-color: #fff;
-        display: block;
-        padding: 3rem;
-        border-radius: 4px;
-        position: relative;
-        flex-grow: 0;
-        overflow-x: auto;
-        max-height: 100%;
-        margin-bottom: 1rem;
-        margin-top: 1rem;
-        z-index: 1010;
-        max-width: 432px;
-        max-height: 75%;
-        width: 100%;
-    }
     .main-content {
         background-color: #fff;
         border-radius: 0.5rem;
-        max-width: 100vw;
+        max-width: 100%;
         margin: 0 auto;
         overflow-x: hidden;
         font-family: 'Source Sans Pro', Arial, sans-serif;
@@ -135,6 +95,98 @@ lightning-input-field.ikke-sensitive-opplysninger > lightning-textarea > label:a
     padding-right: 2rem;
 }
 
-.hidden {
-    display: none;
+.modal-wrapper h2 {
+    font-family: 'Source Sans Pro', Arial, sans-serif;
 }
+/* MODAL CSS */
+.modal-wrapper .modal-backdrop {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100vw;
+    height: 100vh;
+    background-color: rgba(0, 0, 0, 0.6);
+    z-index: 10000; /* høyere enn dekoratørens */
+}
+
+.modal-wrapper .modal-container {
+    z-index: 10001;
+
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    background: white;
+    border-radius: 0.5rem;
+    max-width: 40rem;
+    width: 90%;
+    max-height: 90vh; /* Maks høyde på modal */
+    overflow-y: auto; /* Scroll internt hvis innholdet er stort */
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.3);
+    display: flex;
+    flex-direction: column;
+}
+.modal-wrapper .modal-header {
+    font-size: 1.5rem;
+}
+
+.modal-wrapper .modal-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 2rem;
+    font-size: 1.5rem;
+}
+
+.modal-wrapper .modal-body {
+    padding: 0 2rem;
+}
+
+.modal-wrapper .modal-footer {
+    padding: 2rem;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 1rem;
+    justify-content: flex-start;
+}
+
+.modal-wrapper .close-btn {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: none;
+    border: 4px solid transparent;
+    border-radius: 4px;
+    cursor: pointer;
+}
+
+.modal-wrapper .close-btn:focus {
+    border-color: #0067c5;
+    outline: none;
+}
+
+.modal-wrapper .close-btn:hover {
+    background-color: #e1e3e6;
+}
+
+@media (max-width: 600px) {
+    .modal-wrapper .modal-container {
+        width: 100%;
+        max-width: 100%;
+        height: 100vh;
+        max-height: 100vh;
+        border-radius: 0;
+        padding: 1rem;
+        top: 0;
+        left: 0;
+        transform: none;
+    }
+
+    .modal-wrapper .modal-header,
+    .modal-wrapper .modal-body,
+    .modal-wrapper .modal-footer {
+        padding: 1rem;
+    }
+}
+
+/* MODAL CSS SLUTT */
