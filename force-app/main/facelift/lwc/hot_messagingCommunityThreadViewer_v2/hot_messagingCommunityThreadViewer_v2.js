@@ -50,7 +50,25 @@ export default class Hot_messagingCommunityThreadViewer_v2 extends NavigationMix
     @api helptextContent;
     @api helptextHovertext;
 
-    connectedCallback() {}
+    connectedCallback() {
+        // this.getParams();
+        getContactId({})
+            .then((contactId) => {
+                this.userContactId = contactId;
+                refreshApex(this._mySendForSplitting);
+                markThreadAsRead({ threadId: this.recordId, userContactId: this.userContactId });
+            })
+            .catch((error) => {
+                console.error('Error fetching user contact ID:', error);
+            });
+    }
+
+    openGoogleMaps() {
+        window.open('https://www.google.com/maps/search/?api=1&query=' + this.address);
+    }
+    openAppleMaps() {
+        window.open('http://maps.apple.com/?q=' + this.address);
+    }
 
     breadcrumbs = [
         {
@@ -85,7 +103,7 @@ export default class Hot_messagingCommunityThreadViewer_v2 extends NavigationMix
     subject;
     threadType;
     @wire(getThreadDetails, { recordId: '$recordId' })
-    wirethreads(result) {
+    wireThreads(result) {
         if (result.data) {
             this.thread = result.data;
             this.subject = this.thread.HOT_Subject__c;
@@ -98,10 +116,112 @@ export default class Hot_messagingCommunityThreadViewer_v2 extends NavigationMix
         }
     }
 
+    // Calls apex and extracts messages related to this record
+    @wire(getmessages, { threadId: '$recordId' })
+    wireMessages(result) {
+        this._mySendForSplitting = result;
+        if (result.error) {
+            this.error = result.error;
+        } else if (result.data) {
+            this.messages = result.data;
+            this.showspinner = false;
+        }
+    }
+
     get showOpenWarning() {
         if (this.alertopen) {
             return true;
         }
         return false;
+    }
+
+    get isHelpText() {
+        return this.helptextContent !== '' && this.helptextContent !== undefined ? true : false;
+    }
+
+    serviceAppointment;
+    interestedResource;
+    address;
+    ordererPhoneNumber;
+    accountPhoneNumber;
+    accountAgeGender;
+    accountName;
+
+    closeModal() {
+        this.template.querySelector('.serviceAppointmentDetails').classList.add('hidden');
+    }
+
+    goToHome() {
+        this[NavigationMixin.Navigate]({
+            type: 'comm__namedPage',
+            attributes: {
+                pageName: 'home'
+            }
+        });
+    }
+
+    // Set helptextContent based on type and return label
+    threadTypeName() {
+        const threadTypeValue = this.thread.CRM_Thread_Type__c;
+
+        switch (threadTypeValue) {
+            case 'HOT_BRUKER-FORMIDLER':
+            case 'HOT_BESTILLER-FORMIDLER':
+                this.helptextContent =
+                    'Her kan du sende en melding til tolkeformidlingen som er relevant for din bestilling.  Det du skriver her, kan tolkeformidlere ved din tolketjeneste se.  Meldingen vil bli slettet etter ett år.';
+                return '(Samtale med formidler)';
+
+            case 'HOT_BRUKER-TOLK': {
+                this.helptextContent =
+                    'Her kan du sende en melding som er relevant for din bestilling.  Det du skriver her, kan tolkeformidlere, NAV-ansatte tolker og eventuelt frilanstolker ved din tolketjeneste se.  Meldingen vil bli slettet etter ett år.';
+                if (this.isFreelance === true || this.navigationBaseList !== '') {
+                    return '(Samtale mellom tolk og bruker)';
+                } else {
+                    return '(Samtale med tolk)';
+                }
+            }
+
+            case 'HOT_BRUKER-BESTILLER':
+                this.helptextContent =
+                    'Her kan du sende en melding som er relevant for din bestilling.  Det du skriver her, kan tolkeformidlere, bruker og bestiller av bestillingen se.  Meldingen vil bli slettet etter ett år.';
+                return '(Samtale med formidler';
+
+            case 'HOT_TOLK-FORMIDLER':
+                this.helptextContent =
+                    'Her kan du sende en melding som er relevant for oppdraget.  Det du skriver her, kan tolkeformidlere ved din tolketjeneste se.  Meldingen vil bli slettet etter ett år.';
+                return '(Samtale med formidler)';
+
+            case 'HOT_TOLK-RESSURSKONTOR':
+                this.helptextContent =
+                    'Her kan du sende en melding som er relevant for oppdraget.  Det du skriver her, kan ressurskontoret ved din tolketjeneste se.  Meldingen vil bli slettet etter ett år.';
+                return '(Samtale med ressurskontor)';
+
+            case 'HOT_TOLK-TOLK':
+                this.helptextContent =
+                    'Her kan du sende en melding som er relevant for oppdraget.  Det du skriver her, kan tolkeformidlere og andre tolker som er tildelt oppdraget ved din tolketjeneste se.  Meldingen vil bli slettet etter ett år.';
+                return '(Samtale med medtolker)';
+
+            default:
+                return threadTypeValue;
+        }
+    }
+
+    navigationBaseList = '';
+
+    goToDetails() {
+        getRelatedObjectDetails({ relatedRecordId: this.threadRelatedObjectId }).then((result) => {
+            for (const [key, type] of Object.defineProperties(result)) {
+                switch (type) {
+                    case 'SA':
+
+                    case 'IR':
+
+                    case 'WC':
+
+                    default:
+                        return;
+                }
+            }
+        });
     }
 }
