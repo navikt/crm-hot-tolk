@@ -20,7 +20,7 @@
     <div lwc:if={showServiceAppointmentDetailsModal} aria-label="Informasjon om oppdrag">
         <div class="modal-wrapper">
             <section class="modal-backdrop" onclick={closeModal} tabindex="-1"></section>
-            <section class="modal-container" tabindex="0" onkeydown={handleKeyDown}>
+            <section class="modal-container" tabindex="0" onkeydown={handleKeyDown} role="dialog" aria-modal="true">
                 <div class="modal-header" lwc:if={showModalHeader}>
                     <h2>Informasjon om oppdraget:</h2>
                     <button class="close-btn" onclick={closeModal} aria-label="Lukk">
