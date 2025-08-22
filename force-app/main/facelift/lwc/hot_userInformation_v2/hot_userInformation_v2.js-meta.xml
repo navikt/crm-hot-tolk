@@ -3,7 +3,7 @@
     <apiVersion>64.0</apiVersion>
     <isExposed>true</isExposed>
     <description>Used to show user the information stored about them.</description>
-    <masterLabel>User Information V2</masterLabel>
+    <masterLabel>HOT User Information V2</masterLabel>
     <targets>
         <target>lightningCommunity__Page</target>
     </targets>
