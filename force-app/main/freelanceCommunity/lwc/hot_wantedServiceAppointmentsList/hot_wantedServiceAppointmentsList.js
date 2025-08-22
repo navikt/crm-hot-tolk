@@ -281,15 +281,7 @@ export default class Hot_wantedServiceAppointmentsList extends LightningElement 
         this.template.querySelector('.comments-dialog-container').classList.remove('hidden');
         this.template.querySelector('.serviceAppointmentDetails').classList.remove('hidden');
         this.template.querySelector('.submitted-loading').classList.remove('hidden');
-        if (this.isMobile) {
-            this.checkedServiceAppointments = this.template
-                .querySelector('c-hot_freelance-common-table')
-                .getCheckedRows();
-        } else {
-            this.checkedServiceAppointments = this.template
-                .querySelector('c-hot_freelance-common-table')
-                .getCheckedRows();
-        }
+        this.checkedServiceAppointments = this.template.querySelector('c-hot_freelance-common-table').getCheckedRows();
 
         if (this.checkedServiceAppointments.length === 0) {
             this.closeModal();
@@ -304,15 +296,10 @@ export default class Hot_wantedServiceAppointmentsList extends LightningElement 
                 this.spin = false;
                 this.template.querySelector('.submitted-loading').classList.add('hidden');
                 this.template.querySelector('.submitted-true').classList.remove('hidden');
-                if (this.isMobile) {
-                    this.checkedServiceAppointments = this.template
-                        .querySelector('c-hot_freelance-common-table')
-                        .unsetCheckboxes();
-                } else {
-                    this.checkedServiceAppointments = this.template
-                        .querySelector('c-hot_freelance-common-table')
-                        .unsetCheckboxes();
-                }
+                this.checkedServiceAppointments = this.template
+                    .querySelector('c-hot_freelance-common-table')
+                    .unsetCheckboxes();
+
                 this.checkedServiceAppointments = [];
                 refreshApex(this.wiredAllServiceAppointmentsResult).then(() => {});
             })
@@ -328,15 +315,7 @@ export default class Hot_wantedServiceAppointmentsList extends LightningElement 
     declineInterestChecked() {
         this.template.querySelector('.submitted-true').classList.add('hidden');
         this.isDetails = false;
-        if (this.isMobile) {
-            this.checkedServiceAppointments = this.template
-                .querySelector('c-hot_freelance-common-table')
-                .getCheckedRows();
-        } else {
-            this.checkedServiceAppointments = this.template
-                .querySelector('c-hot_freelance-common-table')
-                .getCheckedRows();
-        }
+        this.checkedServiceAppointments = this.template.querySelector('c-hot_freelance-common-table').getCheckedRows();
 
         if (this.checkedServiceAppointments.length === 0) {
             this.closeModal();
@@ -354,15 +333,10 @@ export default class Hot_wantedServiceAppointmentsList extends LightningElement 
                 this.spin = false;
                 this.template.querySelector('.submitted-loading').classList.add('hidden');
                 this.template.querySelector('.submitted-true').classList.remove('hidden');
-                if (this.isMobile) {
-                    this.checkedServiceAppointments = this.template
-                        .querySelector('c-hot_freelance-common-table')
-                        .unsetCheckboxes();
-                } else {
-                    this.checkedServiceAppointments = this.template
-                        .querySelector('c-hot_freelance-common-table')
-                        .unsetCheckboxes();
-                }
+                this.checkedServiceAppointments = this.template
+                    .querySelector('c-hot_freelance-common-table')
+                    .unsetCheckboxes();
+
                 this.checkedServiceAppointments = [];
                 refreshApex(this.wiredAllServiceAppointmentsResult).then(() => {});
             })
