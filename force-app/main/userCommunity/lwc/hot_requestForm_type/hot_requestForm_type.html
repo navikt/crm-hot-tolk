@@ -2,12 +2,13 @@
     <section class="valg-av-bestillingstype__container sub-form">
         <div>
             <h2 class="header">Hvilken type bestilling ønsker du?</h2>
+            <br />
             <template for:each={radioWrappers} for:item="radio">
                 <div key={radio.value} class="radio-with-help">
                     <span class="label-and-icon">
                         <c-radiobuttons
                             radiobuttons={radio.singleRadioArray}
-                            group-name="testRadioGroup"
+                            group-name="requestType"
                             onradiobuttonsclick={handleRequestTypeChange}
                         ></c-radiobuttons>
 
@@ -18,7 +19,6 @@
                 </div>
             </template>
         </div>
-
         <div class="button-container">
             <c-button
                 button-label="Neste"
@@ -26,11 +26,10 @@
                 onbuttonclick={sendResult}
                 desktop-style="width: 8rem; justify-content: center"
                 mobile-style="width: 8rem; justify-content: center"
-                style="padding-bottom: 1em"
             ></c-button>
             <c-button
                 button-label="Avbryt"
-                button-styling="tertiary"
+                button-styling="secondary"
                 onbuttonclick={goToPreviousPage}
                 desktop-style="width: 8rem; justify-content: center"
                 mobile-style="width: 8rem; justify-content: center"
