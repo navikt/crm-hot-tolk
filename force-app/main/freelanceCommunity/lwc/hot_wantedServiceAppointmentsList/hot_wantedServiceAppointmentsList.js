@@ -9,9 +9,11 @@ import { columns, inDetailsColumns, mobileColumns } from './columns';
 import { refreshApex } from '@salesforce/apex';
 import { defaultFilters, compare, setDefaultFilters } from './filters';
 import { formatRecord, formatDatetimeinterval } from 'c/datetimeFormatterNorwegianTime';
-import Hot_wantedServiceAppointmentsListModal from 'c/hot_wantedServiceAppointmentsListModal';
+import { getDayOfWeek } from 'c/hot_commonUtils';
+import icons from '@salesforce/resourceUrl/ikoner';
 
 export default class Hot_wantedServiceAppointmentsList extends LightningElement {
+    exitCrossIcon = icons + '/Close/Close.svg';
     @track columns = [];
     @track inDetailsColumns = [];
     @track processMessage;
@@ -40,7 +42,7 @@ export default class Hot_wantedServiceAppointmentsList extends LightningElement 
             ariaLabel: 'Høyt prioritert'
         }
     };
-
+    dataLoader = true;
     get hasResult() {
         return !this.dataLoader && this.records && this.records.length > 0;
     }
@@ -94,37 +96,6 @@ export default class Hot_wantedServiceAppointmentsList extends LightningElement 
         }
         refreshApex(this.wiredAllServiceAppointmentsResult);
     }
-    getDayOfWeek(date) {
-        var jsDate = new Date(date);
-        var dayOfWeek = jsDate.getDay();
-        var dayOfWeekString;
-        switch (dayOfWeek) {
-            case 0:
-                dayOfWeekString = 'Søndag';
-                break;
-            case 1:
-                dayOfWeekString = 'Mandag';
-                break;
-            case 2:
-                dayOfWeekString = 'Tirsdag';
-                break;
-            case 3:
-                dayOfWeekString = 'Onsdag';
-                break;
-            case 4:
-                dayOfWeekString = 'Torsdag';
-                break;
-            case 5:
-                dayOfWeekString = 'Fredag';
-                break;
-            case 6:
-                dayOfWeekString = 'Lørdag';
-                break;
-            default:
-                dayOfWeekString = '';
-        }
-        return dayOfWeekString;
-    }
 
     @track serviceResource;
     @track serviceResourceId;
@@ -140,7 +111,6 @@ export default class Hot_wantedServiceAppointmentsList extends LightningElement 
         }
     }
 
-    dataLoader = true;
     noServiceAppointments = false;
     initialServiceAppointments = [];
     @track records = [];
@@ -153,7 +123,7 @@ export default class Hot_wantedServiceAppointmentsList extends LightningElement 
             this.error = undefined;
             this.allServiceAppointmentsWired = result.data.map((x) => ({
                 ...x,
-                weekday: this.getDayOfWeek(x.EarliestStartTime),
+                weekday: getDayOfWeek(x.EarliestStartTime),
                 isUrgent: x.HOT_IsUrgent__c,
                 startAndEndDateWeekday: formatDatetimeinterval(x.EarliestStartTime, x.DueDate)
             }));
@@ -185,6 +155,7 @@ export default class Hot_wantedServiceAppointmentsList extends LightningElement 
         { name: 'HOT_DeadlineDate__c', type: 'date' },
         { name: 'HOT_ReleaseDate__c', type: 'date', newName: 'ReleaseDate' }
     ];
+    showServiceAppointmentDetailsModal = false;
 
     @track serviceAppointment;
     isDetails = false;
@@ -197,31 +168,68 @@ export default class Hot_wantedServiceAppointmentsList extends LightningElement 
         for (let serviceAppointment of this.records) {
             if (recordId === serviceAppointment.Id) {
                 this.serviceAppointment = serviceAppointment;
-                this.serviceAppointment.weekday = this.getDayOfWeek(this.serviceAppointment.EarliestStartTime);
+                this.serviceAppointment.weekday = getDayOfWeek(this.serviceAppointment.EarliestStartTime);
             }
         }
         this.showServiceAppointmentDetails();
     }
 
-    getModalSize() {
-        return window.screen.width < 768 ? 'full' : 'small';
+    hasFocused = false;
+    showCommentsModal = false;
+    showModalHeader = false;
+    showSubmittedLoading = false;
+    showSubmittedError = false;
+    showSubmittedTrue = false;
+
+    handleKeyDown(event) {
+        const focusables = this._getFocusableElements();
+        const firstEl = focusables[0];
+        const lastEl = focusables[focusables.length - 1];
+        const active = this.template.activeElement;
+
+        if (event.key === 'Tab') {
+            if (event.shiftKey) {
+                // Shift + Tab
+                if (active === firstEl) {
+                    event.preventDefault();
+                    lastEl.focus();
+                }
+            } else {
+                // Tab
+                if (active === lastEl) {
+                    event.preventDefault();
+                    firstEl.focus();
+                }
+            }
+        }
+
+        // Escape lukker modal
+        if (event.key === 'Escape') {
+            this.handleClose();
+        }
     }
 
-    async showServiceAppointmentDetails() {
-        try {
-            const modalResult = await Hot_wantedServiceAppointmentsListModal.open({
-                size: 'small',
-                serviceAppointment: this.serviceAppointment,
-                serviceResourceId: this.serviceResourceId
-            });
-            if (modalResult.success) {
-                await refreshApex(this.wiredAllServiceAppointmentsResult);
-            } else {
-                console.error('Modal action failed or was canceled.');
+    // Hent alle tabbable elementer i modal
+    _getFocusableElements() {
+        const modal = this.template.querySelector('.modal-container');
+        if (!modal) return [];
+        return Array.from(
+            modal.querySelectorAll('button, [href], input, select, textarea, [tabindex]:not([tabindex="-1"])')
+        );
+    }
+
+    showServiceAppointmentDetails() {
+        this.showServiceAppointmentDetailsModal = true;
+        this.showModalHeader = true;
+        document.body.style.overflow = 'hidden';
+        // Vent til DOM er oppdatert før vi fokuserer første element
+        setTimeout(() => {
+            const firstFocusable = this._getFocusableElements()[0];
+            if (firstFocusable) {
+                firstFocusable.focus();
+                this.hasFocused = true;
             }
-        } catch (error) {
-            console.error('Error in opening modal:', error);
-        }
+        }, 0);
     }
 
     @api recordId;
@@ -253,15 +261,73 @@ export default class Hot_wantedServiceAppointmentsList extends LightningElement 
     }
 
     hideSubmitIndicators() {
-        this.template.querySelector('.submitted-error').classList.add('hidden');
-        this.template.querySelector('.submitted-loading').classList.add('hidden');
-        this.template.querySelector('.submitted-true').classList.add('hidden');
+        this.showSubmittedError = false;
+        this.showSubmittedLoading = false;
+        this.showSubmittedTrue = false;
     }
 
     closeModal() {
+        this.hideSubmitIndicators();
         this.sendInterestAll = false;
-        this.template.querySelector('.commentPage').classList.add('hidden');
-        this.template.querySelector('.serviceAppointmentDetails').classList.add('hidden');
+        this.showCommentsModal = false;
+        this.hasFocused = false;
+        document.body.style.overflow = '';
+        this.showServiceAppointmentDetailsModal = false;
+        this.showModalHeader = false;
+    }
+    acceptInterest() {
+        this.isDetails = false;
+        this.showModalHeader = false;
+        this.checkedServiceAppointments = [];
+        this.processMessage = 'Melder interesse for oppdraget';
+        this.spin = true;
+        this.showSubmittedLoading = true;
+        updateInterestedResource({
+            saId: this.serviceAppointment.Id,
+            srId: this.serviceResourceId
+        })
+            .then(() => {
+                this.spin = false;
+                this.showSubmittedLoading = false;
+                this.showSubmittedTrue = true;
+                this.processMessageResult = 'Interesse er meldt.';
+                let currentFilters = this.filters;
+                refreshApex(this.wiredAllServiceAppointmentsResult).then(() => {});
+            })
+            .catch((error) => {
+                this.spin = false;
+                this.showSubmittedLoading = false;
+                this.showSubmittedError = true;
+                this.errorMessage = JSON.stringify(error);
+                this.sendInterestAll = false;
+            });
+    }
+    declineInterest() {
+        this.isDetails = false;
+        this.showModalHeader = false;
+        this.checkedServiceAppointments = [];
+        this.processMessage = 'Avslår interesse for oppdrag';
+        this.spin = true;
+        this.showSubmittedLoading = true;
+        declineInterestedResource({
+            saId: this.serviceAppointment.Id,
+            srId: this.serviceResourceId
+        })
+            .then(() => {
+                this.spin = false;
+                this.showSubmittedLoading = false;
+                this.showSubmittedTrue = true;
+                this.processMessageResult = 'Avslått interesse for oppdraget';
+                let currentFilters = this.filters;
+                refreshApex(this.wiredAllServiceAppointmentsResult).then(() => {});
+            })
+            .catch((error) => {
+                this.spin = false;
+                this.showSubmittedLoading = false;
+                this.showSubmittedError = true;
+                this.errorMessage = JSON.stringify(error);
+                this.sendInterestAll = false;
+            });
     }
 
     getRecord(id) {
@@ -274,13 +340,12 @@ export default class Hot_wantedServiceAppointmentsList extends LightningElement 
     }
     filteredRecordsLength = 0;
     registerInterestChecked() {
-        this.template.querySelector('.submitted-true').classList.add('hidden');
+        this.showServiceAppointmentDetailsModal = true;
         this.isDetails = false;
+        this.showModalHeader = false;
         this.processMessage = 'Melder interesse...';
         this.spin = true;
-        this.template.querySelector('.comments-dialog-container').classList.remove('hidden');
-        this.template.querySelector('.serviceAppointmentDetails').classList.remove('hidden');
-        this.template.querySelector('.submitted-loading').classList.remove('hidden');
+        this.showSubmittedLoading = true;
         this.checkedServiceAppointments = this.template.querySelector('c-hot_freelance-common-table').getCheckedRows();
 
         if (this.checkedServiceAppointments.length === 0) {
@@ -294,8 +359,8 @@ export default class Hot_wantedServiceAppointmentsList extends LightningElement 
             .then(() => {
                 this.processMessageResult = 'Interesse er meldt.';
                 this.spin = false;
-                this.template.querySelector('.submitted-loading').classList.add('hidden');
-                this.template.querySelector('.submitted-true').classList.remove('hidden');
+                this.showSubmittedLoading = false;
+                this.showSubmittedTrue = true;
                 this.checkedServiceAppointments = this.template
                     .querySelector('c-hot_freelance-common-table')
                     .unsetCheckboxes();
@@ -306,15 +371,16 @@ export default class Hot_wantedServiceAppointmentsList extends LightningElement 
             .catch((error) => {
                 this.spin = false;
                 this.showSendInterest = true;
-                this.template.querySelector('.submitted-loading').classList.add('hidden');
-                this.template.querySelector('.submitted-error').classList.remove('hidden');
+                this.showSubmittedLoading = false;
+                this.showSubmittedError = true;
                 this.errorMessage = JSON.stringify(error);
                 this.processMessage = this.errorMessage;
             });
     }
     declineInterestChecked() {
-        this.template.querySelector('.submitted-true').classList.add('hidden');
+        this.showServiceAppointmentDetailsModal = true;
         this.isDetails = false;
+        this.showModalHeader = false;
         this.checkedServiceAppointments = this.template.querySelector('c-hot_freelance-common-table').getCheckedRows();
 
         if (this.checkedServiceAppointments.length === 0) {
@@ -323,7 +389,7 @@ export default class Hot_wantedServiceAppointmentsList extends LightningElement 
         }
         this.processMessage = 'Avslår interesse...';
         this.spin = true;
-        this.template.querySelector('.submitted-loading').classList.remove('hidden');
+        this.showSubmittedLoading = true;
         declineInterestedResourceChecked({
             saIdsList: this.checkedServiceAppointments,
             srId: this.serviceResourceId
@@ -331,8 +397,8 @@ export default class Hot_wantedServiceAppointmentsList extends LightningElement 
             .then(() => {
                 this.processMessageResult = 'Avslått interesse.';
                 this.spin = false;
-                this.template.querySelector('.submitted-loading').classList.add('hidden');
-                this.template.querySelector('.submitted-true').classList.remove('hidden');
+                this.showSubmittedLoading = false;
+                this.showSubmittedTrue = true;
                 this.checkedServiceAppointments = this.template
                     .querySelector('c-hot_freelance-common-table')
                     .unsetCheckboxes();
@@ -343,8 +409,8 @@ export default class Hot_wantedServiceAppointmentsList extends LightningElement 
             .catch((error) => {
                 this.spin = false;
                 this.showSendInterest = true;
-                this.template.querySelector('.submitted-loading').classList.add('hidden');
-                this.template.querySelector('.submitted-error').classList.remove('hidden');
+                this.showSubmittedLoading = false;
+                this.showError = true;
                 this.errorMessage = JSON.stringify(error);
                 this.processMessage = this.errorMessage;
             });

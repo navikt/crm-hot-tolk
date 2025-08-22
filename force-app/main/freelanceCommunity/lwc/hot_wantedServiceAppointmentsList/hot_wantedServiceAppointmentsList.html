@@ -12,19 +12,16 @@
             ></c-hot_freelance-common-table>
         </div>
     </template>
+    <div if:true={noServiceAppointments} style="text-align: center">
+        <br />
+        <p>Det er ingen oppdrag her.</p>
+    </div>
 
-    <template lwc:elseif={noServiceAppointmentsResult}>
-        <div style="text-align: center">
-            <br />
-            <p>Det er ingen oppdrag her.</p>
-            <br />
-        </div>
-    </template>
     <div lwc:if={showServiceAppointmentDetailsModal} aria-label="Informasjon om oppdrag">
         <div class="modal-wrapper">
             <section class="modal-backdrop" onclick={closeModal} tabindex="-1"></section>
             <section class="modal-container" tabindex="0" onkeydown={handleKeyDown}>
-                <div class="modal-header">
+                <div class="modal-header" lwc:if={showModalHeader}>
                     <h2>Informasjon om oppdraget:</h2>
                     <button class="close-btn" onclick={closeModal} aria-label="Lukk">
                         <img src={exitCrossIcon} alt="" aria-hidden="true" />
@@ -43,22 +40,85 @@
                     <p>Eier: <span>{serviceAppointment.HOT_Request__r.OwnerName__c}</span></p>
                     <p>Frist dato: <span>{serviceAppointment.HOT_DeadlineDate__c}</span></p>
                     <br />
-                    <div if:true={isSeries}>
+                    <p>Du er ønsket til dette oppdraget.</p>
+                    <div style="display: inline-block; padding-bottom: 1vw; padding-top: 1vw">
                         <c-button
                             button-styling="primary"
-                            button-label="Meld interesse til alle oppdrag i serien"
-                            aria-label="Meld interesse til alle oppdrag i serien"
-                            onbuttonclick={sendInterestSeries}
-                            desktop-style="width: 20rem; justify-content: center; margin-bottom: 1rem;"
-                            mobile-style="width: 100%; justify-content: center; margin-bottom: 1rem;"
-                            title="Meld interesse til alle oppdrag i serien"
+                            button-label="Meld interesse"
+                            aria-label="Meld interesse"
+                            title="Meld interesse"
+                            style="margin-right: 1vw; margin-bottom: 3rem"
+                            onbuttonclick={acceptInterest}
                         >
                         </c-button>
-                        <c-hot_freelance-common-table
-                            records={seriesRecords}
-                            columns={inDetailsColumns}
-                            onrowclick={goToRecordDetails}
-                        ></c-hot_freelance-common-table>
+                        <c-button
+                            button-styling="danger"
+                            button-label="Avslå interesse"
+                            aria-label="Avslå interesse"
+                            title="Avslå interesse"
+                            style="margin-right: 1vw; margin-bottom: 3rem"
+                            onbuttonclick={declineInterest}
+                        >
+                        </c-button>
+                    </div>
+                </div>
+                <div class="submit">
+                    <div lwc:if={showSubmittedTrue} class="submitted-true">
+                        <lightning-icon
+                            icon-name="utility:success"
+                            alternative-text="Suksess"
+                            title="Suksess"
+                            variant="success"
+                            size="large"
+                        ></lightning-icon>
+                        <br />
+                        <h2
+                            class="typo-undertittel h2-successMessage"
+                            id="successMessage"
+                            tabindex="-1"
+                            role="alert"
+                            aria-live="polite"
+                        >
+                            {processMessageResult}
+                        </h2>
+                        <br />
+                        <c-button
+                            button-styling="primary"
+                            button-label="OK"
+                            onbuttonclick={closeModal}
+                            desktop-style="width: 8rem; justify-content: center"
+                            mobile-style="width: 8rem; justify-content: center"
+                        ></c-button>
+                    </div>
+
+                    <div lwc:if={showSubmittedLoading} class="submitted-loading">
+                        <h2
+                            class="typo-undertittel h2-loadingMessage"
+                            id="loadingMessage"
+                            tabindex="-1"
+                            role="alert"
+                            aria-live="polite"
+                        >
+                            {processMessage}
+                        </h2>
+                        <br />
+                        <div if:true={spin} class="loader"></div>
+                        <br />
+                    </div>
+
+                    <div lwc:if={showSubmittedError} class="submitted-error">
+                        <h2
+                            class="typo-undertittel h2-loadingMessage"
+                            id="errorMessage"
+                            tabindex="-1"
+                            role="alert"
+                            aria-live="polite"
+                        >
+                            Noe gikk galt under melding av interesse.
+                        </h2>
+                        <br />
+                        <h3>Feilmelding: {errorMessage}</h3>
+                        <br />
                     </div>
                 </div>
             </section>
@@ -71,8 +131,18 @@
                 button-label={sendInterestButtonLabel}
                 aria-label="Meld interesse"
                 onbuttonclick={registerInterestChecked}
-                desktop-style=" justify-content: center; margin: 1.5vw; border-radius: 0.25rem;"
-                mobile-style="justify-content: center; margin: 1.5vw; border-radius: 0.25rem;"
+                desktop-style=" justify-content: center; margin: 1vw"
+                mobile-style="justify-content: center; margin: 1vw"
+                title="Merk sjekkboks i listen for å melde interesse"
+            >
+            </c-button>
+            <c-button
+                button-styling="danger"
+                button-label={declineInterestButtonLabel}
+                aria-label="Avslå interesse"
+                onbuttonclick={declineInterestChecked}
+                desktop-style=" justify-content: center;"
+                mobile-style="justify-content: center;"
                 title="Merk sjekkboks i listen for å melde interesse"
             >
             </c-button>
