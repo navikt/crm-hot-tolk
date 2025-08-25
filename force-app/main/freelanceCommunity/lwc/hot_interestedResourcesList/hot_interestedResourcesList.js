@@ -3,6 +3,10 @@ import getInterestedResources from '@salesforce/apex/HOT_InterestedResourcesList
 import getMyThreads from '@salesforce/apex/HOT_ThreadListController.getMyThreadsIR';
 import getInterestedResourceDetails from '@salesforce/apex/HOT_InterestedResourcesListController.getInterestedResourceDetails';
 import checkAccessToSA from '@salesforce/apex/HOT_InterestedResourcesListController.checkAccessToSA';
+import retractInterest from '@salesforce/apex/HOT_InterestedResourcesListController.retractInterest';
+import getThreadDispatcherId from '@salesforce/apex/HOT_InterestedResourcesListController.getThreadDispatcherId';
+import getThreadDispatcherIdSA from '@salesforce/apex/HOT_InterestedResourcesListController.getThreadDispatcherIdSA';
+import createThreadInterpreter from '@salesforce/apex/HOT_MessageHelper.createThreadInterpreter';
 import { formatRecord, formatDatetimeinterval } from 'c/datetimeFormatterNorwegianTime';
 import getContactId from '@salesforce/apex/HOT_MessageHelper.getUserContactId';
 import getServiceResource from '@salesforce/apex/HOT_Utility.getServiceResource';
@@ -12,24 +16,21 @@ import { columns, mobileColumns, iconByValue } from './columns';
 import { defaultFilters, compare } from './filters';
 import { getDayOfWeek } from 'c/hot_commonUtils';
 import { NavigationMixin } from 'lightning/navigation';
-
-import Hot_interestedResourcesListModal from 'c/hot_interestedResourcesListModal';
+import icons from '@salesforce/resourceUrl/ikoner';
 
 export default class Hot_interestedResourcesList extends NavigationMixin(LightningElement) {
+    exitCrossIcon = icons + '/Close/Close.svg';
     @track columns = [];
     @track filters = [];
     @track iconByValue = iconByValue;
     @track isGoToThreadButtonDisabled = false;
-    @track isMobile;
     @track hasAccess = true;
 
     setColumns() {
         if (window.screen.width > 576) {
             this.columns = columns;
-            this.isMobile = false;
         } else {
             this.columns = mobileColumns;
-            this.isMobile = true;
         }
     }
 
@@ -196,12 +197,65 @@ export default class Hot_interestedResourcesList extends NavigationMixin(Lightni
         { name: 'HOT_ReleaseDate__c', type: 'date' },
         { name: 'AppointmentDeadlineDate__c', type: 'date' }
     ];
+    hasFocused = false;
+    handleKeyDown(event) {
+        const focusables = this._getFocusableElements();
+        const firstEl = focusables[0];
+        const lastEl = focusables[focusables.length - 1];
+        const active = this.template.activeElement;
+
+        if (event.key === 'Tab') {
+            if (event.shiftKey) {
+                // Shift + Tab
+                if (active === firstEl) {
+                    event.preventDefault();
+                    lastEl.focus();
+                }
+            } else {
+                // Tab
+                if (active === lastEl) {
+                    event.preventDefault();
+                    firstEl.focus();
+                }
+            }
+        }
+
+        // Escape lukker modal
+        if (event.key === 'Escape') {
+            this.handleClose();
+        }
+    }
+
+    // Hent alle tabbable elementer i modal
+    _getFocusableElements() {
+        const modal = this.template.querySelector('.modal-container');
+        if (!modal) return [];
+        return Array.from(
+            modal.querySelectorAll('button, [href], input, select, textarea, [tabindex]:not([tabindex="-1"])')
+        );
+    }
+
+    showServiceAppointmentDetails() {
+        this.showServiceAppointmentDetailsModal = true;
+        document.body.style.overflow = 'hidden';
+        // Vent til DOM er oppdatert før vi fokuserer første element
+        setTimeout(() => {
+            const firstFocusable = this._getFocusableElements()[0];
+            if (firstFocusable) {
+                firstFocusable.focus();
+                this.hasFocused = true;
+            }
+        }, 0);
+    }
+
+    showServiceAppointmentDetailsModal = false;
 
     @track interestedResource;
     isDetails = false;
     isSeries = false;
     showTable = true;
-    async goToRecordDetails(result) {
+    goToRecordDetails(result) {
+        this.showServiceAppointmentDetails();
         this.interestedResource = undefined;
         let recordId = result.detail.Id;
         this.recordId = recordId;
@@ -229,17 +283,8 @@ export default class Hot_interestedResourcesList extends NavigationMixin(Lightni
         this.isNotRetractable = this.interestedResource?.Status__c !== 'Påmeldt';
         this.updateURL();
 
-        await Hot_interestedResourcesListModal.open({
-            size: 'small',
-            interestedResource: this.interestedResource,
-            isNotRetractable: this.isNotRetractable,
-            serviceResource: this.serviceResource
-        });
+        this.showServiceAppointmentDetails();
         refreshApex(this.wiredInterestedResourcesResult);
-    }
-
-    getModalSize() {
-        return window.screen.width < 768 ? 'full' : 'small';
     }
 
     goToRecordDetailsFromNotification(saId) {
@@ -290,16 +335,10 @@ export default class Hot_interestedResourcesList extends NavigationMixin(Lightni
                     if (this.interestedResource.AppointmentDeadlineDate__c.includes('NaN')) {
                         this.interestedResource.AppointmentDeadlineDate__c = '';
                     }
-                    Hot_interestedResourcesListModal.open({
-                        size: 'small',
-                        description: 'Informasjon om oppdraget',
-                        interestedResource: this.interestedResource,
-                        isNotRetractable: this.isNotRetractable,
-                        serviceResource: this.serviceResource,
-                        hasAccess: true
-                    });
+                    this.showServiceAppointmentDetails();
                 });
             } else {
+                this.showServiceAppointmentDetails();
                 this.hasAccess = false;
             }
         });
@@ -348,5 +387,138 @@ export default class Hot_interestedResourcesList extends NavigationMixin(Lightni
             this.records = filteredRecords;
         }
         return this.filteredRecordsLength;
+    }
+    isNotRetractable = false;
+    retractInterest() {
+        retractInterest({ interestedResourceId: this.interestedResource.Id }).then(() => {
+            refreshApex(this.wiredInterestedResourcesResult);
+            this.interestedResource.Status__c = 'Tilbaketrukket påmelding';
+            let newNumberOfInterestedResources = Number(this.interestedResource.NumberOfInterestedResources__c) - 1;
+            this.interestedResource.NumberOfInterestedResources__c = newNumberOfInterestedResources;
+            this.isNotRetractable = true;
+        });
+    }
+    closeModal() {
+        this.showServiceAppointmentDetailsModal = false;
+        document.body.style.overflow = '';
+        this.isGoToThreadButtonDisabled = false;
+        this.recordId = undefined;
+        this.updateURL();
+    }
+    navigateToThread(recordId) {
+        const baseUrl = '/samtale-frilans';
+        const attributes = `recordId=${recordId}&from=mine-oppdrag&list=interested&interestedRecordId=${this.interestedResource.Id}`;
+        const url = `${baseUrl}?${attributes}`;
+
+        this[NavigationMixin.Navigate]({
+            type: 'standard__webPage',
+            attributes: {
+                url: url
+            }
+        });
+    }
+    goToInterestedResourceThread() {
+        this.isGoToThreadButtonDisabled = true;
+        if (
+            this.interestedResource.Status__c != 'Assigned' &&
+            this.interestedResource.Status__c != 'Tildelt' &&
+            this.interestedResource.Status__c != 'Reserved' &&
+            this.interestedResource.Status__c != 'Reservert'
+        ) {
+            getThreadDispatcherId({ interestedResourceId: this.interestedResource.Id }).then((result) => {
+                if (result != '') {
+                    this.threadId = result;
+                    this.navigateToThread(this.threadId);
+                } else {
+                    createThreadInterpreter({ recordId: this.interestedResource.Id })
+                        .then((result) => {
+                            this.navigateToThread(result.Id);
+                        })
+                        .catch((error) => {
+                            this.modalHeader = 'Noe gikk galt';
+                            this.modalContent = 'Kunne ikke åpne samtale. Feilmelding: ' + error;
+                            this.noCancelButton = true;
+                            this.showModal();
+                        });
+                }
+            });
+        } else {
+            getThreadDispatcherIdSA({ saId: this.interestedResource.ServiceAppointment__c }).then((result) => {
+                if (result != '') {
+                    this.threadId = result;
+                    this.navigateToThread(this.threadId);
+                } else {
+                    createThreadInterpreter({ recordId: this.interestedResource.ServiceAppointment__c })
+                        .then((result) => {
+                            this.navigateToThread(result.Id);
+                        })
+                        .catch((error) => {
+                            this.modalHeader = 'Noe gikk galt';
+                            this.modalContent = 'Kunne ikke åpne samtale. Feilmelding: ' + error;
+                            this.noCancelButton = true;
+                            this.showModal();
+                        });
+                }
+            });
+        }
+    }
+    get appointmentNumber() {
+        return this.interestedResource?.AppointmentNumber__c || '';
+    }
+
+    get subject() {
+        return this.interestedResource?.ServiceAppointmentFreelanceSubject__c || '';
+    }
+
+    get time() {
+        return `${this.interestedResource?.weekday || ''} ${this.interestedResource?.StartAndEndDate || ''}`.trim();
+    }
+
+    get address() {
+        return this.interestedResource?.ServiceAppointmentAddress__c || '';
+    }
+
+    get workType() {
+        return this.interestedResource?.WorkTypeName__c || '';
+    }
+
+    get assignmentType() {
+        return this.interestedResource?.AssignmentType__c || '';
+    }
+
+    get status() {
+        return this.interestedResource?.Status__c || '';
+    }
+
+    get numberOfResources() {
+        return this.interestedResource?.NumberOfInterestedResources__c ?? '';
+    }
+
+    get releaseDate() {
+        return this.interestedResource?.releasedate || '';
+    }
+
+    get releasedBy() {
+        return this.interestedResource?.ServiceAppointment__r?.HOT_ReleasedBy__c || '';
+    }
+
+    get deadline() {
+        return this.interestedResource?.AppointmentDeadlineDate__c || '';
+    }
+
+    get region() {
+        return this.interestedResource?.AppointmentServiceTerritory__c || '';
+    }
+
+    get ownerName() {
+        return this.interestedResource?.ServiceAppointment__r?.HOT_Request__r?.OwnerName__c || '';
+    }
+
+    get canceledDate() {
+        return this.interestedResource?.WorkOrderCanceledDate__c || '';
+    }
+
+    get terms() {
+        return this.interestedResource?.HOT_TermsOfAgreement__c || '';
     }
 }
