@@ -13,17 +13,14 @@ export default class Hot_openServiceAppointments extends LightningElement {
     exitCrossIcon = icons + '/Close/Close.svg';
     @track columns = [];
     @track inDetailsColumns = [];
-    @track isMobile;
     dataLoader = true;
     setColumns() {
         if (window.screen.width > 576) {
             this.columns = columns;
             this.inDetailsColumns = inDetailsColumns;
-            this.isMobile = false;
         } else {
             this.columns = mobileColumns;
             this.inDetailsColumns = inDetailsColumns;
-            this.isMobile = true;
         }
     }
     iconByValue = {
