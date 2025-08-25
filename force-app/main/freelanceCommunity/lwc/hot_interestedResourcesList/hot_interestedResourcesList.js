@@ -222,7 +222,7 @@ export default class Hot_interestedResourcesList extends NavigationMixin(Lightni
 
         // Escape lukker modal
         if (event.key === 'Escape') {
-            this.handleClose();
+            this.closeModal();
         }
     }
 
