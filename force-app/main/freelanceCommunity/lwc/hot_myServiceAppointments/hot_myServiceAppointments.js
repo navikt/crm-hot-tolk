@@ -18,7 +18,6 @@ import { refreshApex } from '@salesforce/apex';
 import { getDayOfWeek } from 'c/hot_commonUtils';
 import { getParametersFromURL } from 'c/hot_URIDecoder';
 import icons from '@salesforce/resourceUrl/ikoner';
-import LastResultDate from '@salesforce/schema/PromptAction.LastResultDate';
 
 export default class Hot_myServiceAppointments extends NavigationMixin(LightningElement) {
     exitCrossIcon = icons + '/Close/Close.svg';
