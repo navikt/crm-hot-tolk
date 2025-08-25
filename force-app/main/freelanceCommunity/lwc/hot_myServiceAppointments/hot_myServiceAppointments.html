@@ -12,7 +12,7 @@
     <template lwc:elseif={noServiceAppointmentsResult}>
         <div style="text-align: center">
             <br />
-            <p>Du har ingen oppdrag.</p>
+            <p>Du har ingen kommende oppdrag.</p>
             <br />
         </div>
     </template>
@@ -24,4 +24,155 @@
             <br />
         </div>
     </template>
+    <!-- MODAL -->
+    <div lwc:if={showServiceAppointmentDetailsModal} aria-label="Informasjon om oppdrag">
+        <div class="modal-wrapper">
+            <section class="modal-backdrop" onclick={closeModal} tabindex="-1"></section>
+            <section class="modal-container" tabindex="0" onkeydown={handleKeyDown} role="dialog" aria-modal="true">
+                <div class="modal-header">
+                    <h2>Informasjon om oppdraget:</h2>
+                    <button class="close-btn" onclick={closeModal} aria-label="Lukk">
+                        <img src={exitCrossIcon} alt="" aria-hidden="true" />
+                    </button>
+                </div>
+                <div if:false={hasAccess} class="modal-body">
+                    <p>Du er ikke tildelt oppdraget lenger.</p>
+                </div>
+                <div if:true={hasAccess} class="modal-body">
+                    <div if:true={isDetails}>
+                        <p>Oppdragsnummer: <span>{appointmentNumber}</span></p>
+                        <p>Tema: <span>{subject}</span></p>
+                        <p>Tid: <span>{startAndEndTime}</span></p>
+                        <p if:true={address}>Adresse: <span>{address}</span></p>
+                        <div
+                            if:true={serviceAppointment.HOT_AddressFormated__c}
+                            style="display: inline-block; padding-right: 1vw"
+                        >
+                            <p>Åpne adressen i en karttjeneste (ekstern):</p>
+                            <div
+                                style="display: inline-block; padding-right: 1vw; padding-bottom: 1vw; padding-top: 1vw"
+                            >
+                                <c-button
+                                    button-styling="secondary"
+                                    button-label="Google maps"
+                                    onbuttonclick={openGoogleMaps}
+                                ></c-button>
+                            </div>
+                            <div
+                                style="display: inline-block; padding-right: 1vw; padding-bottom: 1vw; padding-top: 1vw"
+                            >
+                                <c-button
+                                    button-styling="secondary"
+                                    button-label="Apple maps"
+                                    onbuttonclick={openAppleMaps}
+                                ></c-button>
+                            </div>
+                        </div>
+                        <p if:true={actualStartTime}>Faktisk start: <span>{actualStartTime}</span></p>
+
+                        <p if:true={actualEndTime}>Faktisk slutt: <span>{actualEndTime}</span></p>
+                        <p if:true={accountName}>
+                            Navn til bruker:&nbsp;
+                            <span> {accountName} ({accountAgeGender})</span>
+                        </p>
+                        <p if:true={accountPhoneNumber}>
+                            Telefonnummer til bruker:&nbsp;
+                            <span>{accountPhoneNumber}</span>
+                        </p>
+                        <p>Tolkemetode: <span>{workType}</span></p>
+                        <p>Oppdragstype: <span>{assignmentType}</span></p>
+                        <p>Eier: <span>{ownerName}</span></p>
+
+                        <p>Status: <span>{status}</span></p>
+                        <p>Haptisk kommunikasjon: <span>{hapticCommunication}</span></p>
+                        <p if:true={escort}>Ledsaging: <span>{escort}</span></p>
+
+                        <p if:true={degreeOfHearingAndVisualImpairment}>
+                            Vedtak: <span>{degreeOfHearingAndVisualImpairment}</span>
+                        </p>
+
+                        <p if:true={showTermsOfAgreement}>Avtalte betingelser: <span>{showTermsOfAgreement}</span></p>
+
+                        <p if:true={interpreters}>(Med)tolk: <span>{interpreters}</span></p>
+
+                        <p if:true={description}>Tilleggsopplysninger: <span>{description}</span></p>
+
+                        <p if:true={showOrdererPhoneNumber}>
+                            Telefonnummer til bestiller: <span>{showOrdererPhoneNumber}</span>
+                        </p>
+
+                        <p if:true={dispatcher}>Formidler: <span>{dispatcher}</span></p>
+
+                        <div class="files-container">
+                            <c-record-files-with-sharing
+                                record-id={serviceAppointment.Id}
+                                is-get-all="true"
+                                is-delete-option="false"
+                                title="Vedlegg"
+                                delete-file-on-button-click="false"
+                            ></c-record-files-with-sharing>
+                        </div>
+                        <div class="button-container">
+                            <c-button
+                                disabled={isEditButtonDisabled}
+                                hidden={isEditButtonHidden}
+                                onbuttonclick={changeStatus}
+                                button-styling="Primary"
+                                type="Submit"
+                                button-label="Endre status"
+                            >
+                            </c-button>
+
+                            <c-button
+                                hidden={isCancelButtonHidden}
+                                onbuttonclick={cancelStatusFlow}
+                                button-styling="Secondary"
+                                type="Submit"
+                                button-label="Avbryt"
+                            >
+                            </c-button>
+                        </div>
+                        <div if:true={isflow} class="flow-container">
+                            <lightning-flow
+                                flow-api-name="HOT_ChangeServiceAppointmentStatus_V1"
+                                flow-input-variables={flowVariables}
+                                onstatuschange={handleStatusChange}
+                            ></lightning-flow>
+                        </div>
+                        <p>Samtale med:</p>
+                        <div class="button-container">
+                            <c-button
+                                button-styling="Primary"
+                                type="Submit"
+                                onbuttonclick={goToThreadFreelance}
+                                button-label="Bruker"
+                                disabled={isGoToThreadButtonDisabled}
+                            >
+                            </c-button>
+                        </div>
+                        <div class="button-container">
+                            <c-button
+                                button-styling="Primary"
+                                type="Submit"
+                                onbuttonclick={goToThreadInterpreters}
+                                disabled={isGoToThreadInterpretersButtonDisabled}
+                                button-label="Medtolker"
+                            >
+                            </c-button>
+                        </div>
+                        <div class="button-container">
+                            <c-button
+                                button-styling="Primary"
+                                type="Submit"
+                                onbuttonclick={goToThreadServiceAppointment}
+                                button-label="Formidler"
+                                disabled={isGoToThreadServiceAppointmentButtonDisabled}
+                            >
+                            </c-button>
+                        </div>
+                    </div>
+                </div>
+            </section>
+        </div>
+    </div>
 </template>
