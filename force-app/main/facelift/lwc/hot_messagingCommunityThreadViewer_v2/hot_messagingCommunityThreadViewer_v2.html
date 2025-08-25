@@ -8,8 +8,7 @@
             <!-- TODO: Should be dynamic on thread with user and show SA-->
             <div class="header-buttons">
                 <div class="thread-with-user">
-                    <p>Samtale med bruker</p>
-                    <!-- <p>{threadType}</p> -->
+                    <p>{threadType}</p>
                 </div>
 
                 <!-- TODO: Dynamic show SA for freelance/interpreter and vis bestilling for user onclick={gotodetails}-->
@@ -18,9 +17,9 @@
                     <c-button
                         button-label="Vis oppdrag"
                         type="button"
-                        onclick={goToDetails}
+                        onbuttonclick={goToDetails}
                         desktop-style="background-color: #525962; justify-content: center; width: 7.1rem; border-radius: 0.25rem;"
-                        mobile-style="background-color: #525962; justify-content: center; width: 7.1rem; height: ; border-radius: 0.25rem;"
+                        mobile-style="background-color: #525962; justify-content: center; width: 7.1rem; border-radius: 0.25rem;"
                     ></c-button>
                 </div>
             </div>
@@ -184,11 +183,15 @@
 
             <!-- TODO: Needs to be dynamic header -->
             <div>
-                <p>{subject}</p>
-                <h1 class="header" role="heading" aria-level="1">
-                    Møte med byggmester Bob og en samling etterpå hos Wenche hvor vi får litt kanelbolller
-                </h1>
+                <h1 class="header" role="heading" aria-level="1">{subject}</h1>
             </div>
+
+            <c-hot_community-error-summary
+                error-list={errorList}
+                onclickedevent={handleErrorClick}
+                class="errorSummary"
+            >
+            </c-hot_community-error-summary>
 
             <div class="thread-multiple-user">
                 <!-- TODO: Dynamically show how many people in this thread and button will open a modal -->
@@ -215,7 +218,12 @@
             <!-- </template> -->
 
             <div class="textarea-container">
-                <c-textarea desktop-style="width: 100%; height: 100%;" mobile-style=""></c-textarea>
+                <c-textarea
+                    max-length={maxLength}
+                    ongetvalueontextareachange={handleTextChange}
+                    desktop-style="width: 100%; height: 100%;"
+                    mobile-style=""
+                ></c-textarea>
             </div>
 
             <div class="send-button-container">
