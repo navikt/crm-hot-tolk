@@ -255,7 +255,7 @@ export default class Hot_openServiceAppointments extends LightningElement {
 
         // Escape lukker modal
         if (event.key === 'Escape') {
-            this.handleClose();
+            this.closeModal();
         }
     }
 
