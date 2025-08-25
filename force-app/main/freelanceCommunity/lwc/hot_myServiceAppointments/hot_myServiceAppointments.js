@@ -18,13 +18,11 @@ import { refreshApex } from '@salesforce/apex';
 import { getDayOfWeek } from 'c/hot_commonUtils';
 import { getParametersFromURL } from 'c/hot_URIDecoder';
 import icons from '@salesforce/resourceUrl/ikoner';
+import LastResultDate from '@salesforce/schema/PromptAction.LastResultDate';
 
 export default class Hot_myServiceAppointments extends NavigationMixin(LightningElement) {
     exitCrossIcon = icons + '/Close/Close.svg';
     @track columns = [];
-    isGoToThreadButtonDisabled = false;
-    isGoToThreadServiceAppointmentButtonDisabled = false;
-    isGoToThreadInterpretersButtonDisabled = false;
 
     get hasResult() {
         return !this.dataLoader && this.records && this.records.length > 0;
@@ -157,7 +155,6 @@ export default class Hot_myServiceAppointments extends NavigationMixin(Lightning
         { name: 'HOT_DeadlineDate__c', type: 'date' },
         { name: 'HOT_ReleaseDate__c', type: 'date' }
     ];
-    @track serviceAppointment;
 
     hasFocused = false;
     handleKeyDown(event) {
@@ -220,7 +217,6 @@ export default class Hot_myServiceAppointments extends NavigationMixin(Lightning
     isDetails = false;
     @track recordId;
     @track urlRedirect = false;
-    @track showDetails = false;
 
     openGoogleMaps() {
         window.open('https://www.google.com/maps/search/?api=1&query=' + this.address);
@@ -234,24 +230,28 @@ export default class Hot_myServiceAppointments extends NavigationMixin(Lightning
     @track termsOfAgreement;
     @track address;
 
+    resetButtonFlags() {
+        this.isGoToThreadInterpretersButtonDisabled = false;
+        this.isGoToThreadButtonDisabled = false;
+        this.isGoToThreadServiceAppointmentButtonDisabled = false;
+        this.isEditButtonDisabled = false;
+        this.isCancelButtonHidden = true;
+    }
+
     isflow = false;
     goToRecordDetails(result) {
         this.hasAccess = true;
-        let today = new Date();
         this.serviceAppointment = undefined;
         this.interestedResource = undefined;
         let recordId = result.detail.Id;
         this.recordId = recordId;
         this.isEditButtonHidden = false;
-        this.isCancelButtonHidden = true;
-        this.isEditButtonDisabled = false;
+        this.resetButtonFlags();
         for (let serviceAppointment of this.records) {
             if (recordId === serviceAppointment.Id) {
                 this.serviceAppointment = serviceAppointment;
                 this.serviceAppointment.weekday = getDayOfWeek(this.serviceAppointment.EarliestStartTime);
-                this.interestedResource = serviceAppointment?.InterestedResources__r[0];
-                this.address = serviceAppointment.HOT_AddressFormated__c;
-                this.termsOfAgreement = this.interestedResource.HOT_TermsOfAgreement__c;
+                this.address = this.serviceAppointment.HOT_AddressFormated__c;
                 this.isDetails = !!this.recordId;
                 if (this.serviceAppointment.HOT_Request__r && this.serviceAppointment.HOT_Request__r.Account__r) {
                     if (
@@ -443,17 +443,46 @@ export default class Hot_myServiceAppointments extends NavigationMixin(Lightning
     }
 
     goToRecordDetailsFromNotification(saId) {
-        let recordId = saId;
-        this.recordId = recordId;
-        this.showDetails = true;
-        this.urlRedirect = true;
-        this.updateURL();
-        Hot_informationModal.open({
-            size: 'small',
-            recordId: this.recordId,
-            type: 'SA',
-            fromUrlRedirect: true,
-            records: this.records
+        checkAccessToSA({ saId: saId }).then((result) => {
+            if (result != false) {
+                getServiceAppointmentDetails({ recordId: saId }).then((result) => {
+                    this.serviceAppointment = result;
+                    this.serviceAppointment.weekday = getDayOfWeek(this.serviceAppointment.EarliestStartTime);
+                    this.address = this.serviceAppointment.HOT_AddressFormated__c;
+                    this.isDetails = saId;
+                    if (this.serviceAppointment.HOT_Request__r && this.serviceAppointment.HOT_Request__r.Account__r) {
+                        if (
+                            this.serviceAppointment.HOT_Request__r.Account__r.Name == null ||
+                            this.serviceAppointment.HOT_Request__r.Account__r.Name == ''
+                        ) {
+                            this.isGoToThreadButtonDisabled = true;
+                        } else {
+                            this.isGoToThreadButtonDisabled = false;
+                        }
+                    } else {
+                        this.isGoToThreadButtonDisabled = true;
+                    }
+                    getInterestedResourceDetails({ recordId: saId }).then((result) => {
+                        this.interestedResource = result;
+                        this.termsOfAgreement = this.interestedResource.HOT_TermsOfAgreement__c;
+                    });
+                    if (this.serviceAppointment.Status == 'Completed') {
+                        this.isEditButtonDisabled = true;
+                    }
+                    if (this.serviceAppointment.HOT_TotalNumberOfInterpreters__c <= 1) {
+                        this.isGoToThreadInterpretersButtonDisabled = true;
+                    }
+                    if (this.serviceAppointment.HOT_Request__r.IsNotNotifyAccount__c == true) {
+                        this.isGoToThreadButtonDisabled = true;
+                    }
+                    this.showServiceAppointmentDetails();
+                    this.urlRedirect = true;
+                    this.updateURL();
+                });
+            } else {
+                this.showServiceAppointmentDetails();
+                this.hasAccess = false;
+            }
         });
     }
 
