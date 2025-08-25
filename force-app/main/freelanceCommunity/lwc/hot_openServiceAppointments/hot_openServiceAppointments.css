@@ -138,7 +138,7 @@ lightning-input-field.ikke-sensitive-opplysninger > lightning-textarea > label:a
 }
 
 .modal-wrapper .modal-body {
-    padding: 0 2rem;
+    padding: 0 2rem 2rem;
 }
 
 .modal-wrapper .modal-footer {
