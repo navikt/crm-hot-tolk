@@ -255,7 +255,7 @@ export default class Hot_interestedResourcesList extends NavigationMixin(Lightni
     isSeries = false;
     showTable = true;
     goToRecordDetails(result) {
-        this.showServiceAppointmentDetails();
+        this.hasAccess = true;
         this.interestedResource = undefined;
         let recordId = result.detail.Id;
         this.recordId = recordId;
@@ -335,6 +335,7 @@ export default class Hot_interestedResourcesList extends NavigationMixin(Lightni
                     if (this.interestedResource.AppointmentDeadlineDate__c.includes('NaN')) {
                         this.interestedResource.AppointmentDeadlineDate__c = '';
                     }
+                    this.hasAccess = true;
                     this.showServiceAppointmentDetails();
                 });
             } else {
