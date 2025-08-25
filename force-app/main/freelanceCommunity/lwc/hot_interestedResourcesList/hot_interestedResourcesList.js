@@ -21,6 +21,7 @@ export default class Hot_interestedResourcesList extends NavigationMixin(Lightni
     @track isGoToThreadButtonDisabled = false;
     @track isMobile;
     @track hasAccess = true;
+
     setColumns() {
         if (window.screen.width > 576) {
             this.columns = columns;
@@ -30,6 +31,24 @@ export default class Hot_interestedResourcesList extends NavigationMixin(Lightni
             this.isMobile = true;
         }
     }
+
+    get hasResult() {
+        return !this.dataLoader && this.records && this.records.length > 0;
+    }
+
+    get noInterestedResourcesResult() {
+        return !this.dataLoader && this.initialInterestedResources.length === 0;
+    }
+
+    get noFilteredRecordsResult() {
+        return (
+            !this.dataLoader &&
+            this.initialInterestedResources.length > 0 &&
+            this.records.length === 0 &&
+            this.filters?.length > 0
+        );
+    }
+
     sendFilters() {
         const eventToSend = new CustomEvent('sendfilters', { detail: this.filters });
         this.dispatchEvent(eventToSend);
@@ -114,6 +133,7 @@ export default class Hot_interestedResourcesList extends NavigationMixin(Lightni
         }
     }
 
+    dataLoader = true;
     noInterestedResources = false;
     initialInterestedResources = [];
     @track records = [];
@@ -147,13 +167,12 @@ export default class Hot_interestedResourcesList extends NavigationMixin(Lightni
                         }
                         let status = 'noThread';
                         if (map.has(threadId)) {
-                            var readBy = map.get(threadId);
-                            if (readBy.includes(this.userContactId)) {
+                            const readBy = map.get(threadId);
+                            if (typeof readBy === 'string' && readBy.includes(this.userContactId)) {
                                 status = 'false';
                             } else {
                                 status = 'true';
                             }
-                        } else {
                         }
                         return {
                             ...appointment,
@@ -174,10 +193,13 @@ export default class Hot_interestedResourcesList extends NavigationMixin(Lightni
                     }
                     this.records = tempRecords;
                     this.initialInterestedResources = [...this.records];
+
                     this.refresh();
+                    this.dataLoader = false;
                 });
             });
         } else if (result.error) {
+            this.dataLoader = false;
             this.error = result.error;
             this.allInterestedResourcesWired = undefined;
         }
@@ -333,6 +355,7 @@ export default class Hot_interestedResourcesList extends NavigationMixin(Lightni
         return { id: recordIdToReturn, tab: 'interested' };
     }
     filteredRecordsLength = 0;
+    noFilteredRecords = false;
     @api
     applyFilter(event) {
         let setRecords = event.detail.setRecords;
@@ -350,6 +373,7 @@ export default class Hot_interestedResourcesList extends NavigationMixin(Lightni
             }
         }
         this.filteredRecordsLength = filteredRecords.length;
+        this.noFilteredRecords = this.filteredRecordsLength === 0 && this.filters.length > 0;
 
         if (setRecords) {
             this.records = filteredRecords;

@@ -16,6 +16,25 @@ export default class Hot_wageClaimList extends NavigationMixin(LightningElement)
             this.columns = mobileColumns;
         }
     }
+
+    get hasResult() {
+        return !this.dataLoader && this.wageClaims && this.wageClaims.length > 0;
+    }
+
+    get noWageClaimsResult() {
+        return !this.dataLoader && this.allWageClaimsWired.length === 0;
+    }
+
+    get noFilteredRecordsResult() {
+        return (
+            !this.dataLoader &&
+            this.allWageClaimsWired.length > 0 &&
+            this.wageClaims.length === 0 &&
+            this.filters?.length > 0
+        );
+    }
+
+    dataLoader = true;
     noWageClaims = false;
     @track wageClaims = [];
     @track allWageClaimsWired = [];
@@ -34,7 +53,9 @@ export default class Hot_wageClaimList extends NavigationMixin(LightningElement)
             this.wageClaims = tempRecords;
             this.allWageClaimsWired = this.wageClaims;
             this.refresh();
+            this.dataLoader = false;
         } else if (result.error) {
+            this.dataLoader = false;
             this.error = result.error;
             this.allWageClaimsWired = undefined;
         }
@@ -172,6 +193,7 @@ export default class Hot_wageClaimList extends NavigationMixin(LightningElement)
         this.dispatchEvent(eventToSend);
     }
     filteredRecordsLength = 0;
+    noFilteredRecords = false;
     @api
     applyFilter(event) {
         let setRecords = event.detail.setRecords;
@@ -189,6 +211,7 @@ export default class Hot_wageClaimList extends NavigationMixin(LightningElement)
             }
         }
         this.filteredRecordsLength = filteredRecords.length;
+        this.noFilteredRecords = this.filteredRecordsLength === 0 && this.filters.length > 0;
 
         if (setRecords) {
             this.wageClaims = filteredRecords;

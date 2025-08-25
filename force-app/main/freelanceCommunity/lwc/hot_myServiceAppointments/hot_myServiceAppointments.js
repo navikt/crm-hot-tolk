@@ -15,6 +15,24 @@ export default class Hot_myServiceAppointments extends NavigationMixin(Lightning
     isGoToThreadButtonDisabled = false;
     isGoToThreadServiceAppointmentButtonDisabled = false;
     isGoToThreadInterpretersButtonDisabled = false;
+
+    get hasResult() {
+        return !this.dataLoader && this.records && this.records.length > 0;
+    }
+
+    get noServiceAppointmentsResult() {
+        return !this.dataLoader && this.initialServiceAppointments.length === 0;
+    }
+
+    get noFilteredRecordsResult() {
+        return (
+            !this.dataLoader &&
+            this.initialServiceAppointments.length > 0 &&
+            this.records.length === 0 &&
+            this.filters?.length > 0
+        );
+    }
+
     setColumns() {
         if (window.screen.width > 576) {
             this.columns = columns;
@@ -97,6 +115,7 @@ export default class Hot_myServiceAppointments extends NavigationMixin(Lightning
         return dayOfWeekString;
     }
 
+    dataLoader = true;
     noServiceAppointments = false;
     initialServiceAppointments = [];
     @track records = [];
@@ -122,7 +141,9 @@ export default class Hot_myServiceAppointments extends NavigationMixin(Lightning
             }));
             this.initialServiceAppointments = [...this.records];
             this.refresh();
+            this.dataLoader = false;
         } else if (result.error) {
+            this.dataLoader = false;
             this.error = result.error;
             this.allMyServiceAppointmentsWired = undefined;
         }
@@ -225,6 +246,7 @@ export default class Hot_myServiceAppointments extends NavigationMixin(Lightning
         }
     }
     filteredRecordsLength = 0;
+    noFilteredRecords = false;
     @api
     applyFilter(event) {
         let setRecords = event.detail.setRecords;
@@ -242,6 +264,7 @@ export default class Hot_myServiceAppointments extends NavigationMixin(Lightning
             }
         }
         this.filteredRecordsLength = filteredRecords.length;
+        this.noFilteredRecords = this.filteredRecordsLength === 0 && this.filters.length > 0;
 
         if (setRecords) {
             this.records = filteredRecords;

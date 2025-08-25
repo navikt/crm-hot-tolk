@@ -1,0 +1,202 @@
+.list {
+    font-family: 'Source Sans Pro', Arial, sans-serif;
+    font-size: 18px;
+    border-radius: 0.5rem;
+    display: flex;
+    justify-content: center;
+    flex-direction: column;
+    max-width: 1400px;
+    margin: auto;
+    padding: 1rem;
+}
+
+.inline-container {
+    padding: 0;
+}
+
+.page-background {
+    display: block;
+    width: 100%;
+    height: 100%;
+    min-height: 80vh;
+    background-color: #ffffff;
+}
+
+.header-buttons {
+    display: flex;
+    justify-content: end;
+    z-index: 999;
+    margin-top: 2rem;
+}
+
+.header {
+    font-family: 'Source Sans Pro', Arial, sans-serif;
+    position: relative;
+    width: 100%;
+    font-size: 2rem;
+    text-align: center;
+    font-weight: 600;
+    margin-left: 0%;
+    padding-left: 0;
+}
+.back-button-info {
+    margin-top: 0rem;
+    margin-left: -0.5rem;
+}
+
+.tab-button {
+    all: unset;
+    margin-bottom: 0.5rem;
+    padding: 0.3rem 1rem;
+    border-radius: 5rem;
+    font-size: 1rem;
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    cursor: pointer;
+    transition:
+        background-color 0.2s ease,
+        color 0.2s ease;
+    border: 1.5px solid #b7c3d5;
+    background-color: #e6f0ff;
+    color: #00347d;
+    margin-left: 0.5rem;
+}
+.tab-button:not(.tab-active):hover,
+.tab-button:not(.tab-active):focus {
+    background-color: #cce1ff;
+}
+.tab-button::before {
+    content: '◯';
+    font-size: 0.9rem;
+    color: #00347d;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 1.2em;
+    height: 1.2em;
+}
+.tab-button.tab-active {
+    background-color: #00459c;
+    color: #ffffff;
+    border: none;
+}
+.tab-button.tab-active:hover,
+.tab-button.tab-active:focus {
+    background-color: #00347d;
+}
+.tab-button.tab-active::before {
+    content: '';
+    background-color: #ffffff;
+    background-image: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="4.75 6.75 14.5 10.5"><path fill-rule="evenodd" clip-rule="evenodd" d="M18.9983 6.93945C19.3079 7.21464 19.3357 7.68869 19.0606 7.99828L11.0606 16.9983C10.9233 17.1527 10.7285 17.2436 10.522 17.2497C10.3156 17.2558 10.1157 17.1764 9.96967 17.0303L4.96967 12.0303C4.67678 11.7374 4.67678 11.2626 4.96967 10.9697C5.26256 10.6768 5.73744 10.6768 6.03033 10.9697L10.4679 15.4072L17.9394 7.00174C18.2146 6.69215 18.6887 6.66426 18.9983 6.93945Z" fill="%2300347D"/></svg>');
+    background-position: center;
+    background-repeat: no-repeat;
+    background-size: 65%;
+    border-radius: 50%;
+    width: 1.2em;
+    height: 1.2em;
+}
+
+.filter-button-styling {
+    border-radius: 0.25rem;
+}
+
+.filter-button-wrapper {
+    margin-left: 1rem;
+    margin-top: -5rem;
+}
+
+.release-button-wrapper-desktop {
+    flex-wrap: wrap;
+    gap: 0.5rem;
+    border-radius: 0.25rem;
+    margin-right: 3rem;
+    margin-top: -5rem;
+    justify-content: flex-start;
+    min-width: 0;
+}
+
+.remove-released-today-button {
+    margin-left: 18%;
+}
+
+.release-button {
+    margin-left: 40%;
+}
+
+.release-button-style {
+    height: 3.4rem;
+    width: 7rem;
+    background-color: #ffffff;
+    border: 1px solid #00459c;
+}
+
+.release-button-wrapper-mobile {
+    display: none;
+}
+
+@media (max-width: 768px) {
+    .release-button-wrapper-desktop {
+        display: none;
+    }
+    .release-button-wrapper-mobile {
+        display: block;
+        margin-left: 0%;
+        margin-top: 0.5rem;
+        margin-bottom: 0.5rem;
+    }
+    .release-button {
+        margin-left: 0%;
+    }
+    .remove-released-today-button {
+        margin-left: 0%;
+    }
+    .desktop-only {
+        display: none;
+    }
+
+    .header {
+        font-size: 2.5rem;
+        font-weight: 600;
+        text-align: left;
+        padding-left: 0;
+        margin-top: -0.5rem;
+        margin-bottom: -0.5rem;
+    }
+    .back-button-info {
+        margin-top: 0rem;
+        margin-left: -0.5rem;
+    }
+
+    .header-buttons {
+        padding-bottom: 0rem;
+        margin-top: -1rem;
+    }
+    .list {
+        max-width: 100vw;
+        padding: 1rem;
+        height: auto;
+        margin-top: -0.5rem;
+    }
+
+    .filter-button-wrapper {
+        display: flex;
+        justify-content: flex-start;
+        position: relative;
+        top: 7.2rem;
+    }
+
+    .picklist-service {
+        width: 65%;
+    }
+
+    .tab-content-wrapper {
+        margin-top: 0.5rem;
+    }
+}
+
+@media (min-width: 576px) {
+    .mobile-only {
+        display: none;
+    }
+}

@@ -2,9 +2,8 @@
 <LightningComponentBundle xmlns="http://soap.sforce.com/2006/04/metadata">
     <apiVersion>64.0</apiVersion>
     <isExposed>true</isExposed>
-    <masterLabel>HOT Freelance Common Table</masterLabel>
+    <masterLabel>HOT Freelance ServiceAppointment List</masterLabel>
     <targets>
-        <target>lightning__AppPage</target>
         <target>lightningCommunity__Page</target>
     </targets>
 </LightningComponentBundle>
