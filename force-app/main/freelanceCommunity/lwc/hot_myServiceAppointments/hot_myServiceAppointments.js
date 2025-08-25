@@ -11,7 +11,6 @@ import { getParametersFromURL } from 'c/hot_URIDecoder';
 
 export default class Hot_myServiceAppointments extends NavigationMixin(LightningElement) {
     @track columns = [];
-    @track isMobile;
     isGoToThreadButtonDisabled = false;
     isGoToThreadServiceAppointmentButtonDisabled = false;
     isGoToThreadInterpretersButtonDisabled = false;
@@ -36,10 +35,8 @@ export default class Hot_myServiceAppointments extends NavigationMixin(Lightning
     setColumns() {
         if (window.screen.width > 576) {
             this.columns = columns;
-            this.isMobile = false;
         } else {
             this.columns = mobileColumns;
-            this.isMobile = true;
         }
     }
 

@@ -1,20 +1,11 @@
 <template>
     <template lwc:if={hasResult}>
         <div class="main-content">
-            <template lwc:if={isMobile}>
-                <c-hot_freelance-common-table
-                    records={records}
-                    columns={columns}
-                    onrowclick={goToRecordDetails}
-                ></c-hot_freelance-common-table>
-            </template>
-            <template lwc:else>
-                <c-hot_freelance-common-table
-                    records={records}
-                    columns={columns}
-                    onrowclick={goToRecordDetails}
-                ></c-hot_freelance-common-table>
-            </template>
+            <c-hot_freelance-common-table
+                records={records}
+                columns={columns}
+                onrowclick={goToRecordDetails}
+            ></c-hot_freelance-common-table>
         </div>
     </template>
 
