@@ -6,7 +6,7 @@ import markThreadAsRead from '@salesforce/apex/HOT_MessageHelper.markThreadAsRea
 import { refreshApex } from '@salesforce/apex';
 import getContactId from '@salesforce/apex/HOT_MessageHelper.getUserContactId';
 import getRelatedObjectDetails from '@salesforce/apex/HOT_MessageHelper.getRelatedObjectDetails';
-import { formatDate, formatDatetimeInterval, formatDateTime } from 'c/datetimeFormatterNorwegianTime';
+import { formatDate, formatDatetimeinterval, formatDatetime } from 'c/datetimeFormatterNorwegianTime';
 import getServiceAppointmentDetails from '@salesforce/apex/HOT_MyServiceAppointmentListController.getServiceAppointmentDetails';
 import getInterestedResourceDetails from '@salesforce/apex/HOT_InterestedResourcesListController.getInterestedResourceDetails';
 import getWageClaimDetails from '@salesforce/apex/HOT_WageClaimListController.getWageClaimDetails';
@@ -148,7 +148,9 @@ export default class Hot_messagingCommunityThreadViewer_v2 extends NavigationMix
     accountName;
 
     closeModal() {
-        this.template.querySelector('.serviceAppointmentDetails').classList.add('hidden');
+        this.isDetails = false;
+        this.isIRDetails = false;
+        this.isWCDetails = false;
     }
 
     goToHome() {
@@ -317,12 +319,12 @@ export default class Hot_messagingCommunityThreadViewer_v2 extends NavigationMix
                         getServiceAppointmentDetails({ recordId: key }).then((result) => {
                             this.serviceAppointment = result;
                             this.address = this.serviceAppointment.HOT_AddressFormated__c;
-                            this.serviceAppointment.StartAndEndDate = formatDatetimeInterval(
+                            this.serviceAppointment.StartAndEndDate = formatDatetimeinterval(
                                 result.EarliestStartTime,
                                 result.DueDate
                             );
-                            this.serviceAppointment.ActualStartTime = formatDateTime(result.ActualStartTime);
-                            this.serviceAppointment.ActualEndTime = formatDateTime(result.ActualEndTime);
+                            this.serviceAppointment.ActualStartTime = formatDatetime(result.ActualStartTime);
+                            this.serviceAppointment.ActualEndTime = formatDatetime(result.ActualEndTime);
                             if (
                                 this.serviceAppointment &&
                                 this.serviceAppointment.HOT_Request__r &&
@@ -396,26 +398,25 @@ export default class Hot_messagingCommunityThreadViewer_v2 extends NavigationMix
                                 }
                             }
                             this.isDetails = true;
-                            this.template.querySelector('.serviceAppointmentDetails').classList.remove('hidden');
                         });
                         break;
 
                     case 'IR':
                         getInterestedResourceDetails({ recordId: key }).then((result) => {
                             this.interestedResource = result;
-                            this.interestedResource.StartAndEndDate = formatDatetimeInterval(
+                            this.interestedResource.StartAndEndDate = formatDatetimeinterval(
                                 result.ServiceAppointmentStartTime__c,
                                 result.ServiceAppointmentEndTime__c
                             );
-                            let deadLineDateTimeFormatted = new Date(
+                            let DeadlineDateTimeFormatted = new Date(
                                 this.interestedResource.AppointmentDeadlineDate__c
                             );
                             this.interestedResource.AppointmentDeadlineDate__c =
-                                deadLineDateTimeFormatted.getDate() +
+                                DeadlineDateTimeFormatted.getDate() +
                                 '.' +
-                                (deadLineDateTimeFormatted.getMonth() + 1) +
+                                (DeadlineDateTimeFormatted.getMonth() + 1) +
                                 '.' +
-                                deadLineDateTimeFormatted.getFullYear();
+                                DeadlineDateTimeFormatted.getFullYear();
                             let releaseDateTimeFormatted = new Date(
                                 this.interestedResource.ServiceAppointment__r.HOT_ReleaseDate__c
                             );
@@ -426,19 +427,17 @@ export default class Hot_messagingCommunityThreadViewer_v2 extends NavigationMix
                                 '.' +
                                 releaseDateTimeFormatted.getFullYear();
                             this.isIRDetails = true;
-                            this.template.querySelector('.serviceAppointmentDetails').classList.remove('hidden');
                         });
                         break;
 
                     case 'WC':
                         getWageClaimDetails({ recordId: key }).then((result) => {
                             this.wageClaim = result;
-                            this.wageClaim.StartAndEndDate = formatDatetimeInterval(
+                            this.wageClaim.StartAndEndDate = formatDatetimeinterval(
                                 this.wageClaim.StartTime__c,
                                 this.wageClaim.EndTime__c
                             );
                             this.isWCDetails = true;
-                            this.template.querySelector('.serviceAppointmentDetails').classList.remove('hidden');
                         });
 
                         break;

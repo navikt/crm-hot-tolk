@@ -101,11 +101,6 @@
     text-align: end;
 }
 
-.modal-subtitle {
-    font-size: 2rem;
-    margin: auto;
-}
-
 .comments-dialog-container {
     all: unset;
     background-color: #fff;
@@ -139,12 +134,15 @@
     text-align: center;
 }
 
-.hidden {
-    display: none;
-}
-
 .helpText {
     text-align: center;
+}
+
+.modal-header {
+    font-family: 'Source Sans Pro', Arial, sans-serif;
+    font-size: 1.25rem;
+    font-weight: 600;
+    margin: auto;
 }
 
 @media (max-width: 768px) {
