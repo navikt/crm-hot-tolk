@@ -230,53 +230,14 @@ export default class Hot_openServiceAppointments extends LightningElement {
         this.isSeries = this.seriesRecords.length <= 1 ? false : true;
         this.showServiceAppointmentDetails();
     }
-    hasFocused = false;
-    handleKeyDown(event) {
-        const focusables = this._getFocusableElements();
-        const firstEl = focusables[0];
-        const lastEl = focusables[focusables.length - 1];
-        const active = this.template.activeElement;
-
-        if (event.key === 'Tab') {
-            if (event.shiftKey) {
-                // Shift + Tab
-                if (active === firstEl) {
-                    event.preventDefault();
-                    lastEl.focus();
-                }
-            } else {
-                // Tab
-                if (active === lastEl) {
-                    event.preventDefault();
-                    firstEl.focus();
-                }
-            }
-        }
-
-        // Escape lukker modal
-        if (event.key === 'Escape') {
-            this.closeModal();
-        }
-    }
-
-    // Hent alle tabbable elementer i modal
-    _getFocusableElements() {
-        const modal = this.template.querySelector('.modal-container');
-        if (!modal) return [];
-        return Array.from(
-            modal.querySelectorAll('button, [href], input, select, textarea, [tabindex]:not([tabindex="-1"])')
-        );
-    }
 
     showServiceAppointmentDetails() {
         this.showServiceAppointmentDetailsModal = true;
-        document.body.style.overflow = 'hidden';
-        // Vent til DOM er oppdatert før vi fokuserer første element
         setTimeout(() => {
-            const firstFocusable = this._getFocusableElements()[0];
-            if (firstFocusable) {
-                firstFocusable.focus();
-                this.hasFocused = true;
+            const dialog = this.template.querySelector('dialog');
+            if (dialog) {
+                dialog.showModal();
+                dialog.focus();
             }
         }, 0);
     }
@@ -405,13 +366,11 @@ export default class Hot_openServiceAppointments extends LightningElement {
 
     showCommentPage() {
         this.showCommentsModal = true;
-        document.body.style.overflow = 'hidden';
-        // Vent til DOM er oppdatert før vi fokuserer første element
         setTimeout(() => {
-            const firstFocusable = this._getFocusableElements()[0];
-            if (firstFocusable) {
-                firstFocusable.focus();
-                this.hasFocused = true;
+            const dialog = this.template.querySelector('dialog');
+            if (dialog) {
+                dialog.showModal();
+                dialog.focus();
             }
         }, 0);
     }
@@ -435,7 +394,8 @@ export default class Hot_openServiceAppointments extends LightningElement {
         this.sendInterestAll = false;
         this.showCommentsModal = false;
         this.hasFocused = false;
-        document.body.style.overflow = '';
+        const dialog = this.template.querySelector('dialog');
+        dialog.close();
         this.showServiceAppointmentDetailsModal = false;
     }
 

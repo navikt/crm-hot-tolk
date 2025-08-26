@@ -46,166 +46,161 @@
     </div>
     <!-- MODALER -->
     <!-- MODAL SOM VISES NÅR MAN TRYKKER MELD INTERESSE-->
-    <div lwc:if={showCommentsModal} aria-label="Legg inn kommentarer til oppdragene">
-        <div class="modal-wrapper">
-            <section class="modal-backdrop" onclick={closeModal} tabindex="-1"></section>
-            <section class="modal-container" tabindex="0" onkeydown={handleKeyDown} role="dialog" aria-modal="true">
-                <div class="modal-header" lwc:if={showModalHeader}>
-                    <h2>Legg inn kommentarer til oppdragene:</h2>
-                    <button class="close-btn" onclick={closeModal} aria-label="Lukk">
-                        <img src={exitCrossIcon} alt="" aria-hidden="true" />
-                    </button>
-                </div>
-                <div class="modal-body">
-                    <div lwc:if={showCommentSectionDetails}>
-                        <template iterator:it={serviceAppointmentCommentDetails}>
-                            <lightning-record-edit-form
-                                class="comment-form"
-                                key={it.value.Id}
-                                object-api-name="HOT_InterestedResource__c"
-                                density="comfy"
-                            >
-                                <label>Tema: </label><span>{it.value.HOT_FreelanceSubject__c}</span>
-                                <p>Tid: <span>{it.value.StartAndEndDate}</span></p>
-                                <p>Adresse: <span>{it.value.HOT_AddressFormated__c}</span></p>
-                                <p>Tolkemetode: <span>{it.value.HOT_WorkTypeName__c}</span></p>
-                                <p>Oppdragstype: <span>{it.value.HOT_AssignmentType__c}</span></p>
-                                <p>Frigitt av: <span>{it.value.HOT_ReleasedBy__c}</span></p>
-                                <p>Frigitt dato: <span>{it.value.ReleaseDate}</span></p>
-                                <p>
-                                    Antall påmeldte:
-                                    <span>{it.value.HOT_NumberOfInterestedResources__c}</span>
-                                </p>
-                                <p>Region: <span>{it.value.HOT_ServiceTerritoryName__c}</span></p>
-                                <p>Frist dato: <span>{it.value.HOT_DeadlineDate__c}</span></p>
-                                <label for="Comments__c">Start samtale med formidler</label>
-                                <lightning-input-field
-                                    class="ikke-sensitive-opplysninger comment-field"
-                                    field-name="Comments__c"
-                                    variant="label-hidden"
-                                ></lightning-input-field>
-                            </lightning-record-edit-form>
-                        </template>
-                    </div>
+    <dialog class="modal-container" lwc:if={showCommentsModal} aria-label="Informasjon om oppdrag" onclose={closeModal}>
+        <div class="modal-header" lwc:if={showModalHeader}>
+            <h2>Legg inn kommentarer til oppdragene:</h2>
+            <button class="close-btn" onclick={closeModal} aria-label="Lukk">
+                <img src={exitCrossIcon} alt="" aria-hidden="true" />
+            </button>
+        </div>
+        <div class="modal-body">
+            <div lwc:if={showCommentSectionDetails}>
+                <template iterator:it={serviceAppointmentCommentDetails}>
+                    <lightning-record-edit-form
+                        class="comment-form"
+                        key={it.value.Id}
+                        object-api-name="HOT_InterestedResource__c"
+                        density="comfy"
+                    >
+                        <label>Tema: </label><span>{it.value.HOT_FreelanceSubject__c}</span>
+                        <p>Tid: <span>{it.value.StartAndEndDate}</span></p>
+                        <p>Adresse: <span>{it.value.HOT_AddressFormated__c}</span></p>
+                        <p>Tolkemetode: <span>{it.value.HOT_WorkTypeName__c}</span></p>
+                        <p>Oppdragstype: <span>{it.value.HOT_AssignmentType__c}</span></p>
+                        <p>Frigitt av: <span>{it.value.HOT_ReleasedBy__c}</span></p>
+                        <p>Frigitt dato: <span>{it.value.ReleaseDate}</span></p>
+                        <p>
+                            Antall påmeldte:
+                            <span>{it.value.HOT_NumberOfInterestedResources__c}</span>
+                        </p>
+                        <p>Region: <span>{it.value.HOT_ServiceTerritoryName__c}</span></p>
+                        <p>Frist dato: <span>{it.value.HOT_DeadlineDate__c}</span></p>
+                        <label for="Comments__c">Start samtale med formidler</label>
+                        <lightning-input-field
+                            class="ikke-sensitive-opplysninger comment-field"
+                            field-name="Comments__c"
+                            variant="label-hidden"
+                        ></lightning-input-field>
+                    </lightning-record-edit-form>
+                </template>
+            </div>
 
-                    <div class="submit">
-                        <div lwc:if={showSubmittedTrue} class="submitted-true">
-                            <lightning-icon
-                                icon-name="utility:success"
-                                alternative-text="Suksess"
-                                title="Suksess"
-                                variant="success"
-                                size="large"
-                            ></lightning-icon>
-                            <br />
-                            <h2
-                                class="typo-undertittel h2-successMessage"
-                                id="successMessage"
-                                tabindex="-1"
-                                role="alert"
-                                aria-live="polite"
-                            >
-                                Interesse er meldt.
-                            </h2>
-                            <br />
-                            <c-button
-                                button-styling="primary"
-                                button-label="OK"
-                                onbuttonclick={closeModal}
-                                desktop-style="width: 8rem; justify-content: center"
-                                mobile-style="width: 8rem; justify-content: center"
-                            ></c-button>
-                        </div>
-
-                        <div lwc:if={showSubmittedLoading} class="submitted-loading">
-                            <h2
-                                class="typo-undertittel h2-loadingMessage"
-                                id="loadingMessage"
-                                tabindex="-1"
-                                role="alert"
-                                aria-live="polite"
-                            >
-                                Melder interesse...
-                            </h2>
-                            <br />
-                            <div if:true={spin} class="loader"></div>
-                            <br />
-                        </div>
-
-                        <div lwc:if={showSubmittedError} class="submitted-error">
-                            <h2
-                                class="typo-undertittel h2-loadingMessage"
-                                id="errorMessage"
-                                tabindex="-1"
-                                role="alert"
-                                aria-live="polite"
-                            >
-                                Noe gikk galt under melding av interesse.
-                            </h2>
-                            <br />
-                            <h3>Feilmelding: {errorMessage}</h3>
-                            <br />
-                        </div>
-                    </div>
-
+            <div class="submit">
+                <div lwc:if={showSubmittedTrue} class="submitted-true">
+                    <lightning-icon
+                        icon-name="utility:success"
+                        alternative-text="Suksess"
+                        title="Suksess"
+                        variant="success"
+                        size="large"
+                    ></lightning-icon>
+                    <br />
+                    <h2
+                        class="typo-undertittel h2-successMessage"
+                        id="successMessage"
+                        tabindex="-1"
+                        role="alert"
+                        aria-live="polite"
+                    >
+                        Interesse er meldt.
+                    </h2>
+                    <br />
                     <c-button
-                        lwc:if={showSendInnBtn}
-                        class="send-inn-button"
                         button-styling="primary"
-                        button-label="Send inn"
-                        type="submit"
-                        onbuttonclick={registerInterest}
+                        button-label="OK"
+                        onbuttonclick={closeModal}
                         desktop-style="width: 8rem; justify-content: center"
                         mobile-style="width: 8rem; justify-content: center"
                     ></c-button>
                 </div>
-            </section>
-        </div>
-    </div>
-    <!-- MODAL SOM VISES NÅR MAN TRYKKER PÅ OPPDRAG (IKKE NÅR MAN TRYKKER "MELD INTERESSE..")-->
-    <div lwc:if={showServiceAppointmentDetailsModal} aria-label="Informasjon om oppdrag">
-        <div class="modal-wrapper">
-            <section class="modal-backdrop" onclick={closeModal} tabindex="-1"></section>
-            <section class="modal-container" tabindex="0" onkeydown={handleKeyDown} role="dialog" aria-modal="true">
-                <div class="modal-header">
-                    <h2>Informasjon om oppdraget:</h2>
-                    <button class="close-btn" onclick={closeModal} aria-label="Lukk">
-                        <img src={exitCrossIcon} alt="" aria-hidden="true" />
-                    </button>
-                </div>
-                <div if:true={isDetails} class="modal-body">
-                    <p>Oppdragsnummer: <span>{serviceAppointment.HOT_ServiceAppointmentNumber__c}</span></p>
-                    <p>Tema: <span>{serviceAppointment.HOT_FreelanceSubject__c}</span></p>
-                    <p>Tid: <span> {serviceAppointment.weekday} {serviceAppointment.StartAndEndDate}</span></p>
-                    <p>Adresse: <span>{serviceAppointment.HOT_AddressFormated__c}</span></p>
-                    <p>Tolkemetode: <span>{serviceAppointment.HOT_WorkTypeName__c}</span></p>
-                    <p>Oppdragstype: <span>{serviceAppointment.HOT_AssignmentType__c}</span></p>
-                    <p>Frigitt av: <span>{serviceAppointment.HOT_ReleasedBy__c}</span></p>
-                    <p>Frigitt dato: <span>{serviceAppointment.ReleaseDate}</span></p>
-                    <p>Antall påmeldte: <span>{serviceAppointment.HOT_NumberOfInterestedResources__c}</span></p>
-                    <p>Eier: <span>{serviceAppointment.HOT_Request__r.OwnerName__c}</span></p>
-                    <p>Frist dato: <span>{serviceAppointment.HOT_DeadlineDate__c}</span></p>
+
+                <div lwc:if={showSubmittedLoading} class="submitted-loading">
+                    <h2
+                        class="typo-undertittel h2-loadingMessage"
+                        id="loadingMessage"
+                        tabindex="-1"
+                        role="alert"
+                        aria-live="polite"
+                    >
+                        Melder interesse...
+                    </h2>
                     <br />
-                    <div if:true={isSeries}>
-                        <c-button
-                            button-styling="primary"
-                            button-label="Meld interesse til alle oppdrag i serien"
-                            aria-label="Meld interesse til alle oppdrag i serien"
-                            onbuttonclick={sendInterestSeries}
-                            desktop-style="width: 20rem; justify-content: center;"
-                            mobile-style="width: 100%; justify-content: center;"
-                            title="Meld interesse til alle oppdrag i serien"
-                        >
-                        </c-button>
-                        <c-hot_freelance-common-table
-                            records={seriesRecords}
-                            columns={inDetailsColumns}
-                            onrowclick={goToRecordDetails}
-                        ></c-hot_freelance-common-table>
-                    </div>
+                    <div if:true={spin} class="loader"></div>
+                    <br />
                 </div>
-            </section>
+
+                <div lwc:if={showSubmittedError} class="submitted-error">
+                    <h2
+                        class="typo-undertittel h2-loadingMessage"
+                        id="errorMessage"
+                        tabindex="-1"
+                        role="alert"
+                        aria-live="polite"
+                    >
+                        Noe gikk galt under melding av interesse.
+                    </h2>
+                    <br />
+                    <h3>Feilmelding: {errorMessage}</h3>
+                    <br />
+                </div>
+            </div>
+
+            <c-button
+                lwc:if={showSendInnBtn}
+                class="send-inn-button"
+                button-styling="primary"
+                button-label="Send inn"
+                type="submit"
+                onbuttonclick={registerInterest}
+                desktop-style="width: 8rem; justify-content: center"
+                mobile-style="width: 8rem; justify-content: center"
+            ></c-button>
         </div>
-    </div>
+    </dialog>
+    <!-- MODAL SOM VISES NÅR MAN TRYKKER PÅ OPPDRAG (IKKE NÅR MAN TRYKKER "MELD INTERESSE..")-->
+    <dialog
+        class="modal-container"
+        lwc:if={showServiceAppointmentDetailsModal}
+        aria-label="Informasjon om oppdrag"
+        onclose={closeModal}
+    >
+        <div class="modal-header">
+            <h2>Informasjon om oppdraget:</h2>
+            <button class="close-btn" onclick={closeModal} aria-label="Lukk">
+                <img src={exitCrossIcon} alt="" aria-hidden="true" />
+            </button>
+        </div>
+        <div if:true={isDetails} class="modal-body">
+            <p>Oppdragsnummer: <span>{serviceAppointment.HOT_ServiceAppointmentNumber__c}</span></p>
+            <p>Tema: <span>{serviceAppointment.HOT_FreelanceSubject__c}</span></p>
+            <p>Tid: <span> {serviceAppointment.weekday} {serviceAppointment.StartAndEndDate}</span></p>
+            <p>Adresse: <span>{serviceAppointment.HOT_AddressFormated__c}</span></p>
+            <p>Tolkemetode: <span>{serviceAppointment.HOT_WorkTypeName__c}</span></p>
+            <p>Oppdragstype: <span>{serviceAppointment.HOT_AssignmentType__c}</span></p>
+            <p>Frigitt av: <span>{serviceAppointment.HOT_ReleasedBy__c}</span></p>
+            <p>Frigitt dato: <span>{serviceAppointment.ReleaseDate}</span></p>
+            <p>Antall påmeldte: <span>{serviceAppointment.HOT_NumberOfInterestedResources__c}</span></p>
+            <p>Eier: <span>{serviceAppointment.HOT_Request__r.OwnerName__c}</span></p>
+            <p>Frist dato: <span>{serviceAppointment.HOT_DeadlineDate__c}</span></p>
+            <br />
+            <div if:true={isSeries}>
+                <c-button
+                    button-styling="primary"
+                    button-label="Meld interesse til alle oppdrag i serien"
+                    aria-label="Meld interesse til alle oppdrag i serien"
+                    onbuttonclick={sendInterestSeries}
+                    desktop-style="width: 20rem; justify-content: center;"
+                    mobile-style="width: 100%; justify-content: center;"
+                    title="Meld interesse til alle oppdrag i serien"
+                >
+                </c-button>
+                <c-hot_freelance-common-table
+                    records={seriesRecords}
+                    columns={inDetailsColumns}
+                    onrowclick={goToRecordDetails}
+                ></c-hot_freelance-common-table>
+            </div>
+        </div>
+    </dialog>
     <!-- MODALER SLUTT-->
 </template>
