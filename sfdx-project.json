@@ -11,7 +11,7 @@
             "dependencies": [
                 {
                     "package": "crm-platform-base",
-                    "versionNumber": "0.277.0.LATEST"
+                    "versionNumber": "0.279.0.LATEST"
                 },
                 {
                     "package": "crm-shared-flowComponents",
@@ -19,11 +19,11 @@
                 },
                 {
                     "package": "crm-henvendelse-base",
-                    "versionNumber": "0.35.0.LATEST"
+                    "versionNumber": "0.41.0.LATEST"
                 },
                 {
                     "package": "crm-platform-integration",
-                    "versionNumber": "0.157.0.LATEST"
+                    "versionNumber": "0.158.0.LATEST"
                 },
                 {
                     "package": "crm-platform-access-control",
