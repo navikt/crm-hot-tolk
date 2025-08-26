@@ -26,20 +26,20 @@
 
                 <!-- Modal overlay with service appointment details -->
                 <template lwc:if={isDetails}>
-                    <div
-                        class="ReactModal__Overlay ReactModal__Overlay--after-open modal__overlay serviceAppointmentDetails"
-                        style="z-index: 9999; background-color: rgba(50, 65, 79, 0.8)"
+                    <dialog
+                        class="ReactModal__Overlay ReactModal__Overlay--after-open modal__overlay modal-header"
+                        style="background-color: #ffffff"
                         tabindex="-1"
                         aria-label="Informasjon om oppdrag"
                     >
                         <div
-                            class="ReactModal__Content ReactModal__Content--after-open navno-dekorator comments-dialog-container"
+                            class="ReactModal__Content ReactModal__Content--after-open navno-dekorator modal-container"
                             role="dialog"
                             aria-labelledby="comment-header-id"
                         >
                             <section>
                                 <div>
-                                    <h2 class="modal-header">Informasjon om oppdraget:</h2>
+                                    <h2 class="modal-header-text">Informasjon om oppdraget:</h2>
                                 </div>
                                 <!-- <template lwc:if={isDetails}> -->
                                 <div>
@@ -201,10 +201,10 @@
                                 <span class="text-hide">Lukk</span>
                             </button>
                         </div>
-                    </div>
+                    </dialog>
                 </template>
 
-                <!-- TODO: Needs to be dynamic header -->
+                <!-- Header -->
                 <div>
                     <h1 class="header" role="heading" aria-level="1">{subject}</h1>
                 </div>
@@ -229,7 +229,14 @@
             <div class="main-content">
                 <div class="thread-container">
                     <div class="thread-dialog">
-                        <p>testing</p>
+                        <template for:each={messages} for:item="message">
+                            <c-hot_messaging-Community-Message-Container
+                                tabindex="0"
+                                message={message}
+                                user-contact-id={userContactId}
+                                key={message.Id}
+                            ></c-hot_messaging-Community-Message-Container>
+                        </template>
                     </div>
                     <div class="read-by-container">
                         <p class="read-by-text">Lest av Mathias Burger King, Svenn Terje, Øvind, Mathias</p>
@@ -251,6 +258,8 @@
 
                 <div class="send-button-container">
                     <c-button
+                        disabled={buttonisdisabled}
+                        onbuttonclick={handleSendButtonClick}
                         button-label="Send melding"
                         type="submit"
                         button-styling="primary"

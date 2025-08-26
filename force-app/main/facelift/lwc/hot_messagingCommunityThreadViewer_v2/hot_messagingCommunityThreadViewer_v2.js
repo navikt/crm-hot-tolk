@@ -209,10 +209,6 @@ export default class Hot_messagingCommunityThreadViewer_v2 extends NavigationMix
     }
 
     handleSuccess() {
-        this.template.querySelectorAll('.msgText').forEach((field) => {
-            field.reset();
-        });
-
         this.template.querySelector('c-textarea').clearText();
 
         this.buttonisdisabled = false;

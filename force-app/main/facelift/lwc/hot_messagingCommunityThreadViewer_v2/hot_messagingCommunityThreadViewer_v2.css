@@ -57,7 +57,6 @@
     flex-direction: column;
     justify-content: space-between;
     border: 2px solid blue;
-    height: 300px;
     margin-bottom: 0.5rem;
 }
 
@@ -101,7 +100,7 @@
     text-align: end;
 }
 
-.comments-dialog-container {
+.modal-container {
     all: unset;
     background-color: #fff;
     display: block;
@@ -138,7 +137,7 @@
     text-align: center;
 }
 
-.modal-header {
+.modal-header-text {
     font-family: 'Source Sans Pro', Arial, sans-serif;
     font-size: 1.25rem;
     font-weight: 600;
@@ -164,7 +163,6 @@
     }
 
     .thread-container {
-        height: 250px;
     }
 
     .textarea-container {
@@ -193,4 +191,26 @@
         max-height: 75%;
         width: 100%;
     }
+
+    /* Testing  for modal on mobile*/
+    @media (max-width: 600px) {
+        /* dialog.modal-container {
+        width: 100%;
+        max-width: 100%;
+        height: 100vh;
+        max-height: 100vh;
+        border-radius: 0;
+        padding: 1rem;
+        top: 0;
+        left: 0;
+        transform: none;
+    }
+    dialog.modal-container .modal-header,
+    dialog.modal-container .modal-body,
+    dialog.modal-container .modal-footer {
+        padding: 1rem;
+    } */
+    }
+
+    /* Testing END */
 }
