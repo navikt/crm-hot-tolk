@@ -155,61 +155,16 @@ export default class Hot_myServiceAppointments extends NavigationMixin(Lightning
         { name: 'HOT_ReleaseDate__c', type: 'date' }
     ];
 
-    hasFocused = false;
-    handleKeyDown(event) {
-        const focusables = this._getFocusableElements();
-        const firstEl = focusables[0];
-        const lastEl = focusables[focusables.length - 1];
-        const active = this.template.activeElement;
-
-        if (event.key === 'Tab') {
-            if (event.shiftKey) {
-                // Shift + Tab
-                if (active === firstEl) {
-                    event.preventDefault();
-                    lastEl.focus();
-                }
-            } else {
-                // Tab
-                if (active === lastEl) {
-                    event.preventDefault();
-                    firstEl.focus();
-                }
-            }
-        }
-
-        // Escape lukker modal
-        if (event.key === 'Escape') {
-            this.closeModal();
-        }
-    }
-
-    // Hent alle tabbable elementer i modal
-    _getFocusableElements() {
-        const modal = this.template.querySelector('.modal-container');
-        if (!modal) return [];
-        return Array.from(
-            modal.querySelectorAll('button, [href], input, select, textarea, [tabindex]:not([tabindex="-1"])')
-        );
-    }
     closeModal() {
-        this.hasFocused = false;
-        document.body.style.overflow = '';
-        this.showServiceAppointmentDetailsModal = false;
-        this.isDetails = false;
+        this.updateURL();
+        const dialog = this.template.querySelector('dialog');
+        dialog.close();
     }
 
     showServiceAppointmentDetails() {
-        this.showServiceAppointmentDetailsModal = true;
-        document.body.style.overflow = 'hidden';
-        // Vent til DOM er oppdatert før vi fokuserer første element
-        setTimeout(() => {
-            const firstFocusable = this._getFocusableElements()[0];
-            if (firstFocusable) {
-                firstFocusable.focus();
-                this.hasFocused = true;
-            }
-        }, 0);
+        const dialog = this.template.querySelector('dialog');
+        dialog.showModal();
+        dialog.focus();
     }
 
     showServiceAppointmentDetailsModal = false;
