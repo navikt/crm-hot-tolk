@@ -27,66 +27,61 @@
         </div>
     </template>
     <!-- MODAL SOM VISES NÅR MAN TRYKKER PÅ OPPDRAG OG KOMMER FRA VARSEL-->
-    <div lwc:if={showServiceAppointmentDetailsModal} aria-label="Informasjon om oppdrag">
-        <div class="modal-wrapper">
-            <section class="modal-backdrop" onclick={closeModal} tabindex="-1"></section>
-            <section class="modal-container" tabindex="0" onkeydown={handleKeyDown} role="dialog" aria-modal="true">
-                <div class="modal-header">
-                    <h2>Informasjon om oppdraget:</h2>
-                    <button class="close-btn" onclick={closeModal} aria-label="Lukk">
-                        <img src={exitCrossIcon} alt="" aria-hidden="true" />
-                    </button>
-                </div>
-                <div if:false={hasAccess} class="modal-body">
-                    <p></p>
-                    <p>Du er ikke tildelt oppdraget lenger.</p>
-                </div>
-                <div if:true={hasAccess} class="modal-body">
-                    <div if:true={isDetails}>
-                        <div>
-                            <p>Oppdrag: <span>{appointmentNumber}</span></p>
-                            <p>Tema: <span>{subject}</span></p>
-                            <p>Tid: <span>{time}</span></p>
-                            <p>Adresse: <span>{address}</span></p>
-                            <p>Tolkemetode: <span>{workType}</span></p>
-                            <p>Oppdragstype: <span>{assignmentType}</span></p>
-                            <p>Status: <span>{status}</span></p>
-                            <p>Antall påmeldte: <span>{numberOfResources}</span></p>
-                            <p>Frigitt dato: <span>{releaseDate}</span></p>
-                            <p>Frigitt av: <span>{releasedBy}</span></p>
-                            <p>Frist dato: <span>{deadline}</span></p>
-                            <p>Region: <span>{region}</span></p>
-                            <p>Eier: <span>{ownerName}</span></p>
-                            <template if:true={canceledDate}>
-                                <p>Avlyst dato: <span>{canceledDate}</span></p>
-                            </template>
-                            <template if:true={terms}>
-                                <p>Avtalte betingelser: <span>{terms}</span></p>
-                            </template>
-                        </div>
-
-                        <div style="display: inline-block; padding-right: 1vw; padding-bottom: 1vw; padding-top: 1vw">
-                            <c-button
-                                disabled={isNotRetractable}
-                                onbuttonclick={retractInterest}
-                                button-styling="Primary"
-                                type="Submit"
-                                button-label="Tilbaketrekk interesse"
-                                mobile-style="margin-top: 1rem"
-                            >
-                            </c-button>
-                        </div>
-                        <div style="display: inline-block; padding-right: 1vw; padding-bottom: 1vw; padding-top: 1vw">
-                            <c-button
-                                disabled={isGoToThreadButtonDisabled}
-                                button-label="Samtale med formidler"
-                                button-styling="Primary"
-                                onbuttonclick={goToInterestedResourceThread}
-                            ></c-button>
-                        </div>
-                    </div>
-                </div>
-            </section>
+    <dialog class="modal-container" aria-label="Informasjon om oppdrag" onclose={closeModal}>
+        <div class="modal-header">
+            <h2>Informasjon om oppdraget:</h2>
+            <button class="close-btn" onclick={closeModal} aria-label="Lukk">
+                <img src={exitCrossIcon} alt="" aria-hidden="true" />
+            </button>
         </div>
-    </div>
+        <div if:false={hasAccess} class="modal-body">
+            <p></p>
+            <p>Du er ikke tildelt oppdraget lenger.</p>
+        </div>
+        <div if:true={hasAccess} class="modal-body">
+            <div if:true={isDetails}>
+                <div>
+                    <p>Oppdrag: <span>{appointmentNumber}</span></p>
+                    <p>Tema: <span>{subject}</span></p>
+                    <p>Tid: <span>{time}</span></p>
+                    <p>Adresse: <span>{address}</span></p>
+                    <p>Tolkemetode: <span>{workType}</span></p>
+                    <p>Oppdragstype: <span>{assignmentType}</span></p>
+                    <p>Status: <span>{status}</span></p>
+                    <p>Antall påmeldte: <span>{numberOfResources}</span></p>
+                    <p>Frigitt dato: <span>{releaseDate}</span></p>
+                    <p>Frigitt av: <span>{releasedBy}</span></p>
+                    <p>Frist dato: <span>{deadline}</span></p>
+                    <p>Region: <span>{region}</span></p>
+                    <p>Eier: <span>{ownerName}</span></p>
+                    <template if:true={canceledDate}>
+                        <p>Avlyst dato: <span>{canceledDate}</span></p>
+                    </template>
+                    <template if:true={terms}>
+                        <p>Avtalte betingelser: <span>{terms}</span></p>
+                    </template>
+                </div>
+
+                <div style="display: inline-block; padding-right: 1vw; padding-bottom: 1vw; padding-top: 1vw">
+                    <c-button
+                        disabled={isNotRetractable}
+                        onbuttonclick={retractInterest}
+                        button-styling="Primary"
+                        type="Submit"
+                        button-label="Tilbaketrekk interesse"
+                        mobile-style="margin-top: 1rem"
+                    >
+                    </c-button>
+                </div>
+                <div style="display: inline-block; padding-right: 1vw; padding-bottom: 1vw; padding-top: 1vw">
+                    <c-button
+                        disabled={isGoToThreadButtonDisabled}
+                        button-label="Samtale med formidler"
+                        button-styling="Primary"
+                        onbuttonclick={goToInterestedResourceThread}
+                    ></c-button>
+                </div>
+            </div>
+        </div>
+    </dialog>
 </template>

@@ -236,19 +236,10 @@ export default class Hot_interestedResourcesList extends NavigationMixin(Lightni
     }
 
     showServiceAppointmentDetails() {
-        this.showServiceAppointmentDetailsModal = true;
-        document.body.style.overflow = 'hidden';
-        // Vent til DOM er oppdatert før vi fokuserer første element
-        setTimeout(() => {
-            const firstFocusable = this._getFocusableElements()[0];
-            if (firstFocusable) {
-                firstFocusable.focus();
-                this.hasFocused = true;
-            }
-        }, 0);
+        const dialog = this.template.querySelector('dialog');
+        dialog.showModal();
+        dialog.focus();
     }
-
-    showServiceAppointmentDetailsModal = false;
 
     @track interestedResource;
     isDetails = false;
@@ -400,9 +391,9 @@ export default class Hot_interestedResourcesList extends NavigationMixin(Lightni
         });
     }
     closeModal() {
-        this.showServiceAppointmentDetailsModal = false;
-        document.body.style.overflow = '';
         this.isGoToThreadButtonDisabled = false;
+        const dialog = this.template.querySelector('dialog');
+        dialog.close();
         this.recordId = undefined;
         this.updateURL();
     }
