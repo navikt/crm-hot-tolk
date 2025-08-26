@@ -52,7 +52,7 @@ public without sharing class HOT_RequestStatusHandler extends MyTriggers {
             updateChildRecords(avslaattRequests, 'Denied');
         }
         if (cannotCompleteRequests.size() > 0) {
-            updateServiceAppointments(cannotCompleteRequests, 'Cannot Complete');
+            updateServiceAppointments(cannotCompleteRequests);
         }
     }
 
@@ -199,61 +199,82 @@ public without sharing class HOT_RequestStatusHandler extends MyTriggers {
             update workOrders;
         }
     }
-    private static void updateServiceAppointments(List<HOT_Request__c> changedRequests, String newStatus) {
-        List<ServiceAppointment> serviceAppointments = [
-            SELECT Id, Status, HOT_Request__c
-            FROM ServiceAppointment
-            WHERE HOT_Request__c IN :changedRequests AND Status != 'Canceled' AND Status != 'Annul'
-        ];
-        Map<Id, ServiceAppointment> serviceAppointmentMap = new Map<Id, ServiceAppointment>(serviceAppointments);
+    private static void updateServiceAppointments(List<HOT_Request__c> changedRequests) {
+        Map<Id, HOT_Request__c> changedRequestMap = new Map<Id, HOT_Request__c>(changedRequests);
+        Map<Id, ServiceAppointment> serviceAppointmentMap = new Map<Id, ServiceAppointment>(
+            [
+                SELECT Id, Status, HOT_Request__c
+                FROM ServiceAppointment
+                WHERE HOT_Request__c IN :changedRequestMap.keySet() AND Status != 'Canceled' AND Status != 'Annul'
+            ]
+        );
+        Map<Id, WorkOrder> workOrderMap = new Map<Id, WorkOrder>(
+            [
+                SELECT Id, Status, HOT_Request__c
+                FROM WorkOrder
+                WHERE HOT_Request__c IN :changedRequestMap.keySet() AND Status != 'Canceled' AND Status != 'Annul'
+            ]
+        );
 
-        List<WorkOrder> workOrders = [
-            SELECT Id, Status, HOT_Request__c
-            FROM WorkOrder
-            WHERE HOT_Request__c IN :changedRequests AND Status != 'Canceled' AND Status != 'Annul'
-        ];
-        Map<Id, WorkOrder> workOrderMap = new Map<Id, WorkOrder>(workOrders);
+        Map<String, List<ServiceAppointment>> serviceAppointmentsByRequestId = (Map<String, List<ServiceAppointment>>) groupByField(
+            serviceAppointmentMap.values(),
+            'HOT_Request__c'
+        );
 
-        for (HOT_Request__c request : changedRequests) {
-            Integer numberOfReleasedToFreelance = 0;
-            Integer numberOfServiceAppointments = 0;
-            for (Id saId : serviceAppointmentMap.keySet()) {
-                ServiceAppointment sa = serviceAppointmentMap.get(saId);
-                if (sa.HOT_Request__c == request.Id) {
-                    if (sa.Status == 'Released to Freelance' || sa.Status == 'Cannot Complete') {
-                        numberOfReleasedToFreelance++;
-                    }
-                    numberOfServiceAppointments++;
+        Map<String, List<WorkOrder>> workOrdersByRequestId = (Map<String, List<WorkOrder>>) groupByField(
+            workOrderMap.values(),
+            'HOT_Request__c'
+        );
+
+        Set<Id> requestIdsNotMatchSA = new Set<Id>();
+        for (Id requestId : serviceAppointmentsByRequestId.keySet()) {
+            for (ServiceAppointment sa : serviceAppointmentsByRequestId.get(requestId)) {
+                if (!(sa.Status == 'Released to Freelance' || sa.Status == 'Cannot Complete')) {
+                    requestIdsNotMatchSA.add(requestId);
+                    break;
                 }
             }
-            Integer numberOfOpenWorkOrders = 0;
-            Integer numberOfWorkOrders = 0;
-            for (Id woId : workOrderMap.keySet()) {
-                WorkOrder wo = workOrderMap.get(woId);
-                if (wo.HOT_Request__c == request.Id) {
-                    if (wo.Status == 'New' || wo.Status == 'Cannot Complete') {
-                        numberOfOpenWorkOrders++;
-                    }
-                    numberOfWorkOrders++;
+        }
+        Set<Id> requestIdsNotMatchWO = new Set<Id>();
+        for (Id requestId : workOrdersByRequestId.keySet()) {
+            for (WorkOrder wo : workOrdersByRequestId.get(requestId)) {
+                if (!(wo.Status == 'New' || wo.Status == 'Cannot Complete')) {
+                    requestIdsNotMatchWO.add(requestId);
+                    break;
                 }
             }
-
+        }
+        List<ServiceAppointment> serviceAppointmentsToUpdate = new List<ServiceAppointment>();
+        for (ServiceAppointment sa : serviceAppointmentMap.values()) {
             if (
-                numberOfServiceAppointments == numberOfReleasedToFreelance ||
-                numberOfOpenWorkOrders == numberOfWorkOrders
+                !requestIdsNotMatchSA.contains(sa.HOT_Request__c) || !requestIdsNotMatchWO.contains(sa.HOT_Request__c)
             ) {
-                for (Id saId : serviceAppointmentMap.keySet()) {
-                    ServiceAppointment sa = serviceAppointmentMap.get(saId);
-                    if (sa.HOT_Request__c == request.Id) {
-                        sa.Status = 'Cannot Complete';
-                    }
-                }
-                update serviceAppointmentMap.values();
-            } else {
+                sa.Status = 'Cannot Complete';
+                serviceAppointmentsToUpdate.add(sa);
+            }
+        }
+        if (serviceAppointmentsToUpdate.size() > 0) {
+            update serviceAppointmentsToUpdate;
+        }
+        for (HOT_Request__c request : changedRequests) {
+            if (requestIdsNotMatchSA.contains(request.Id) && requestIdsNotMatchWO.contains(request.Id)) {
                 request.addError(
                     'Alle oppdrag må være Frigitt til frilans, eller alle arbeidsordre må være Åpen for at du skal kunne sette hele forespørselen til Udekket.'
                 );
             }
         }
+    }
+
+    private static Map<String, List<SObject>> groupByField(List<SObject> records, String fieldName) {
+        Map<String, List<SObject>> groupedRecords = new Map<String, List<SObject>>();
+        for (SObject record : records) {
+            String fieldValue = (String) record.get(fieldName);
+            if (groupedRecords.containsKey(fieldValue)) {
+                groupedRecords.get(fieldValue).add(record);
+            } else {
+                groupedRecords.put(fieldValue, new List<SObject>{ record });
+            }
+        }
+        return groupedRecords;
     }
 }
