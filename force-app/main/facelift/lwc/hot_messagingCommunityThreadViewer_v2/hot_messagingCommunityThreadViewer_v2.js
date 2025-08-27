@@ -209,8 +209,8 @@ export default class Hot_messagingCommunityThreadViewer_v2 extends NavigationMix
     }
 
     handleSuccess() {
-        this.template.querySelector('c-textarea').clearText();
-
+        this.template.querySelector('c-textarea').setTextValue('');
+        this.msgVal = '';
         this.buttonisdisabled = false;
 
         return refreshApex(this._mySendForSplitting);
