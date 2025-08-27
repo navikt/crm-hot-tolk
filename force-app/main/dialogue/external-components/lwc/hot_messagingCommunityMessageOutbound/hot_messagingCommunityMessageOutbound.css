@@ -12,10 +12,11 @@
     display: contents;
 }
 .snakkeboble-panel {
-    max-width: 80%;
+    max-width: 75%;
+    width: 75%;
     float: right;
     /* background-color: #cce1ff !important; */
-    min-width: fit-content;
+    /* min-width: fit-content; */
     padding: 1rem;
 
     background-color: #cce1ff !important;
