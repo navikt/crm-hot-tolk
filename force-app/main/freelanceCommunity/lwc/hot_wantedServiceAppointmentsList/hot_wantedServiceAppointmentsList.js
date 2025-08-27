@@ -175,61 +175,17 @@ export default class Hot_wantedServiceAppointmentsList extends LightningElement 
     }
 
     hasFocused = false;
-    showCommentsModal = false;
     showModalHeader = false;
     showSubmittedLoading = false;
     showSubmittedError = false;
     showSubmittedTrue = false;
 
-    handleKeyDown(event) {
-        const focusables = this._getFocusableElements();
-        const firstEl = focusables[0];
-        const lastEl = focusables[focusables.length - 1];
-        const active = this.template.activeElement;
-
-        if (event.key === 'Tab') {
-            if (event.shiftKey) {
-                // Shift + Tab
-                if (active === firstEl) {
-                    event.preventDefault();
-                    lastEl.focus();
-                }
-            } else {
-                // Tab
-                if (active === lastEl) {
-                    event.preventDefault();
-                    firstEl.focus();
-                }
-            }
-        }
-
-        // Escape lukker modal
-        if (event.key === 'Escape') {
-            this.closeModal();
-        }
-    }
-
-    // Hent alle tabbable elementer i modal
-    _getFocusableElements() {
-        const modal = this.template.querySelector('.modal-container');
-        if (!modal) return [];
-        return Array.from(
-            modal.querySelectorAll('button, [href], input, select, textarea, [tabindex]:not([tabindex="-1"])')
-        );
-    }
-
     showServiceAppointmentDetails() {
         this.showServiceAppointmentDetailsModal = true;
         this.showModalHeader = true;
-        document.body.style.overflow = 'hidden';
-        // Vent til DOM er oppdatert før vi fokuserer første element
-        setTimeout(() => {
-            const firstFocusable = this._getFocusableElements()[0];
-            if (firstFocusable) {
-                firstFocusable.focus();
-                this.hasFocused = true;
-            }
-        }, 0);
+        const dialog = this.template.querySelector('dialog');
+        dialog.showModal();
+        dialog.focus();
     }
 
     @api recordId;
@@ -269,11 +225,9 @@ export default class Hot_wantedServiceAppointmentsList extends LightningElement 
     closeModal() {
         this.hideSubmitIndicators();
         this.sendInterestAll = false;
-        this.showCommentsModal = false;
-        this.hasFocused = false;
-        document.body.style.overflow = '';
-        this.showServiceAppointmentDetailsModal = false;
         this.showModalHeader = false;
+        const dialog = this.template.querySelector('dialog');
+        dialog.close();
     }
     acceptInterest() {
         this.isDetails = false;
