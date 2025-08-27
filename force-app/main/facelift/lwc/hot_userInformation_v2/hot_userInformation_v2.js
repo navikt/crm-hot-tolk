@@ -15,7 +15,7 @@ import icons from '@salesforce/resourceUrl/icons';
 
 const FIELDS = [MOBILE, EMAIL, DEGREE_OF_IMPAIRMENT, SIP_ADDRESS];
 
-export default class hot_tolketjenestenUserInformation extends LightningElement {
+export default class Hot_userInformation_v2 extends LightningElement {
     warningicon = icons + '/warningicon.svg';
     successicon = icons + '/successicon.svg';
 
