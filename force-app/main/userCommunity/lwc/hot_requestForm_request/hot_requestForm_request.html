@@ -8,8 +8,8 @@
         <h2 class="header" tabindex="0" autofocus>Informasjon om behov for tolk</h2>
         <br />
         <c-input2
+            id="temaOgSted"
             label="Tema og sted"
-            autofocus="true"
             name="Subject__c"
             form="tolk-skjema-input"
             value={fieldValues.Subject__c}
@@ -30,6 +30,7 @@
 
         <div if:false={fieldValues.IsScreenInterpreter__c}>
             <c-input2
+                id="oppmoteAdresse"
                 label="Oppmøteadresse"
                 name="MeetingStreet__c"
                 form="tolk-skjema-input"
@@ -40,6 +41,7 @@
             <div class="slds-grid slds-gutters">
                 <div class="slds-col slds-size_2-of-5">
                     <c-input2
+                        id="postnummer"
                         label="Postnummer"
                         name="MeetingPostalCode__c"
                         form="tolk-skjema-input"
@@ -49,6 +51,7 @@
                 </div>
                 <div class="slds-col slds-size_3-of-5">
                     <c-input2
+                        id="poststed"
                         label="Poststed"
                         name="MeetingPostalCity__c"
                         form="tolk-skjema-input"
@@ -67,6 +70,7 @@
             </c-radiobuttons>
             <div if:false={sameLocation}>
                 <c-input2
+                    id="tolkeAdresse"
                     label="Tolkeadresse"
                     name="InterpretationStreet__c"
                     form="tolk-skjema-input"
@@ -77,6 +81,7 @@
                 <div class="slds-grid slds-gutters">
                     <div class="slds-col slds-size_2-of-5">
                         <c-input2
+                            id="tolkePostnummer"
                             label="Postnummer"
                             name="InterpretationPostalCode__c"
                             form="tolk-skjema-input"
@@ -86,6 +91,7 @@
                     </div>
                     <div class="slds-col slds-size_3-of-5">
                         <c-input2
+                            id="tolkePoststed"
                             label="Poststed"
                             name="InterpretationPostalCity__c"
                             form="tolk-skjema-input"
@@ -123,6 +129,7 @@
         <div if:true={componentValues.isOptionalFields}>
             <br />
             <c-input2
+                id="onsketTolk"
                 label="Ønsket tolk"
                 name="UserPreferredInterpreter__c"
                 form="tolk-skjema-input"

@@ -3,6 +3,7 @@
         <h2 class="header" tabindex="-1">Informasjon om virksomhet</h2>
         <br />
         <c-input
+            id="organisasjonsnummer"
             label="Organisasjonsnummer"
             name="OrganizationNumber__c"
             max-length="11"
@@ -21,6 +22,7 @@
         <br />
         <div if:true={fieldValues.IsOtherEconomicProvicer__c}>
             <c-input
+                id="fakturareferanse"
                 label="Deres fakturareferanse"
                 name="InvoiceReference__c"
                 form="tolk-skjema-input"
@@ -29,6 +31,7 @@
             ></c-input>
             <br />
             <c-input
+                id="tilleggsinformasjon"
                 label="Tilleggsinformasjon"
                 name="AdditionalInvoiceText__c"
                 form="tolk-skjema-input"
