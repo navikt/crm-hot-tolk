@@ -197,43 +197,6 @@ export default class Hot_interestedResourcesList extends NavigationMixin(Lightni
         { name: 'HOT_ReleaseDate__c', type: 'date' },
         { name: 'AppointmentDeadlineDate__c', type: 'date' }
     ];
-    hasFocused = false;
-    handleKeyDown(event) {
-        const focusables = this._getFocusableElements();
-        const firstEl = focusables[0];
-        const lastEl = focusables[focusables.length - 1];
-        const active = this.template.activeElement;
-
-        if (event.key === 'Tab') {
-            if (event.shiftKey) {
-                // Shift + Tab
-                if (active === firstEl) {
-                    event.preventDefault();
-                    lastEl.focus();
-                }
-            } else {
-                // Tab
-                if (active === lastEl) {
-                    event.preventDefault();
-                    firstEl.focus();
-                }
-            }
-        }
-
-        // Escape lukker modal
-        if (event.key === 'Escape') {
-            this.closeModal();
-        }
-    }
-
-    // Hent alle tabbable elementer i modal
-    _getFocusableElements() {
-        const modal = this.template.querySelector('.modal-container');
-        if (!modal) return [];
-        return Array.from(
-            modal.querySelectorAll('button, [href], input, select, textarea, [tabindex]:not([tabindex="-1"])')
-        );
-    }
 
     showServiceAppointmentDetails() {
         const dialog = this.template.querySelector('dialog');
