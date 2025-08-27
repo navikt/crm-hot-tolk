@@ -201,18 +201,38 @@ public without sharing class HOT_RequestStatusHandler extends MyTriggers {
     }
     private static void updateServiceAppointments(List<HOT_Request__c> changedRequests) {
         Map<Id, HOT_Request__c> changedRequestMap = new Map<Id, HOT_Request__c>(changedRequests);
+        Set<String> serviceAppointmentStatusesOfInterest = new Set<String>{
+            'None',
+            'Released to Freelance',
+            'Scheduled',
+            'Dispatched',
+            'In Progress',
+            'Completed',
+            'Cannot Complete',
+            'Denied'
+        };
         Map<Id, ServiceAppointment> serviceAppointmentMap = new Map<Id, ServiceAppointment>(
             [
                 SELECT Id, Status, HOT_Request__c
                 FROM ServiceAppointment
-                WHERE HOT_Request__c IN :changedRequestMap.keySet() AND Status != 'Canceled' AND Status != 'Annul'
+                WHERE HOT_Request__c IN :changedRequestMap.keySet() AND Status IN :serviceAppointmentStatusesOfInterest //Status != 'Canceled' AND Status != 'Annul'
             ]
         );
+        Set<String> workOrderStatusesOfInterest = new Set<String>{
+            'New',
+            'Scheduled',
+            'Dispatched',
+            'In Progress',
+            'Completed',
+            'Partially Complete',
+            'Cannot Complete',
+            'Denied'
+        };
         Map<Id, WorkOrder> workOrderMap = new Map<Id, WorkOrder>(
             [
                 SELECT Id, Status, HOT_Request__c
                 FROM WorkOrder
-                WHERE HOT_Request__c IN :changedRequestMap.keySet() AND Status != 'Canceled' AND Status != 'Annul'
+                WHERE HOT_Request__c IN :changedRequestMap.keySet() AND Status IN :workOrderStatusesOfInterest //Status != 'Canceled' AND Status != 'Annul'
             ]
         );
 
