@@ -56,45 +56,43 @@
                             is-edit-or-copy-mode={isEditOrCopyMode}
                         ></c-hot_request-form_request>
                         <div class="button-container">
-                            <div style="display: flex; justify-content: center; flex-direction: row">
-                                <c-button
-                                    data-id="saveButton"
-                                    if:true={requestTypeResult.requestForm}
-                                    button-label={submitButtonLabel}
-                                    name="Send inn bestilling"
-                                    button-styling="primary"
-                                    type="submit"
-                                    style="padding-bottom: 1em"
-                                    desktop-style="width: 8rem; justify-content: center"
-                                    mobile-style="width: 8rem; justify-content: center"
-                                ></c-button>
-                                <c-button
-                                    if:false={requestTypeResult.requestForm}
-                                    button-label="Neste"
-                                    button-styling="primary"
-                                    onbuttonclick={handleNextButtonClicked}
-                                    style="padding-bottom: 1em"
-                                    desktop-style="width: 8rem; justify-content: center"
-                                    mobile-style="width: 8rem; justify-content: center"
-                                ></c-button>
-                                <c-button
-                                    if:false={isEditModeAndTypeMe}
-                                    button-label="Forrige"
-                                    button-styling="secondary"
-                                    onbuttonclick={handleBackButtonClicked}
-                                    style="padding-bottom: 1em"
-                                    desktop-style="width: 8rem; justify-content: center"
-                                    mobile-style="width: 8rem; justify-content: center"
-                                ></c-button>
-                                <c-button
-                                    if:true={requestTypeResult.requestForm}
-                                    button-label="Avbryt"
-                                    button-styling="tertiary"
-                                    onbuttonclick={goToPreviousPage}
-                                    desktop-style="width: 8rem; justify-content: center"
-                                    mobile-style="width: 8rem; justify-content: center"
-                                ></c-button>
-                            </div>
+                            <c-button
+                                data-id="saveButton"
+                                if:true={requestTypeResult.requestForm}
+                                button-label={submitButtonLabel}
+                                name="Send inn bestilling"
+                                button-styling="primary"
+                                type="submit"
+                                style="padding-bottom: 1em"
+                                desktop-style="width: 8rem; justify-content: center"
+                                mobile-style="width: 8rem; justify-content: center"
+                            ></c-button>
+                            <c-button
+                                if:false={requestTypeResult.requestForm}
+                                button-label="Neste"
+                                button-styling="primary"
+                                onbuttonclick={handleNextButtonClicked}
+                                style="padding-bottom: 1em"
+                                desktop-style="width: 8rem; justify-content: center"
+                                mobile-style="width: 8rem; justify-content: center"
+                            ></c-button>
+                            <c-button
+                                if:false={isEditModeAndTypeMe}
+                                button-label="Forrige"
+                                button-styling="secondary"
+                                onbuttonclick={handleBackButtonClicked}
+                                style="padding-bottom: 1em"
+                                desktop-style="width: 8rem; justify-content: center"
+                                mobile-style="width: 8rem; justify-content: center"
+                            ></c-button>
+                            <c-button
+                                if:true={requestTypeResult.requestForm}
+                                button-label="Avbryt"
+                                button-styling="secondary"
+                                onbuttonclick={goToPreviousPage}
+                                desktop-style="width: 8rem; justify-content: center"
+                                mobile-style="width: 8rem; justify-content: center"
+                            ></c-button>
                         </div>
                     </div>
                 </lightning-record-edit-form>
