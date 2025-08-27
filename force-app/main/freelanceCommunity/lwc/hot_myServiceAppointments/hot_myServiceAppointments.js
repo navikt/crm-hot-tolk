@@ -509,17 +509,17 @@ export default class Hot_myServiceAppointments extends NavigationMixin(Lightning
     }
     changeStatus() {
         this.isflow = true;
-        this.saIsEditButtonDisabled = true;
-        this.saIsCancelButtonHidden = false;
+        this.IsEditButtonDisabled = true;
+        this.isCancelButtonHidden = false;
         this.isDetails = true;
-        this.saIsEditButtonHidden = true;
+        this.isEditButtonHidden = true;
     }
     cancelStatusFlow() {
         this.isflow = false;
-        this.saIsEditButtonDisabled = false;
-        this.saIsCancelButtonHidden = true;
+        this.isEditButtonDisabled = false;
+        this.isCancelButtonHidden = true;
         this.isDetails = true;
-        this.saIsEditButtonHidden = false;
+        this.isEditButtonHidden = false;
     }
     get flowVariables() {
         return [
@@ -537,17 +537,17 @@ export default class Hot_myServiceAppointments extends NavigationMixin(Lightning
             }).then((data) => {
                 if (data.Status == 'Completed') {
                     this.isflow = false;
-                    this.saIsCancelButtonHidden = true;
+                    this.isCancelButtonHidden = true;
                     this.serviceAppointment.Status = 'Dekket';
                 }
                 if (data.Status == 'Canceled') {
                     this.isflow = false;
-                    this.saIsCancelButtonHidden = true;
+                    this.isCancelButtonHidden = true;
                     this.serviceAppointment.Status = 'Avlyst';
                 }
                 if (data.HOT_CanceledByInterpreter__c) {
                     this.isflow = false;
-                    this.saIsCancelButtonHidden = true;
+                    this.isCancelButtonHidden = true;
                     this.serviceAppointment.Status = 'Avlyst';
                 }
             });
