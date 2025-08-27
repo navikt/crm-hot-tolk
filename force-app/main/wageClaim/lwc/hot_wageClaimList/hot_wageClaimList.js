@@ -1,12 +1,21 @@
 import { LightningElement, wire, track, api } from 'lwc';
 import { refreshApex } from '@salesforce/apex';
 import getMyWageClaims from '@salesforce/apex/HOT_WageClaimListController.getMyWageClaims';
+import retractAvailability from '@salesforce/apex/HOT_WageClaimListController.retractAvailability';
+import getThreadId from '@salesforce/apex/HOT_WageClaimListController.getThreadId';
+import createThread from '@salesforce/apex/HOT_MessageHelper.createThread';
+import { getParametersFromURL } from 'c/hot_URIDecoder';
+import getWageClaimDetails from '@salesforce/apex/HOT_WageClaimListController.getWageClaimDetails';
 import { columns, mobileColumns } from './columns';
 import { NavigationMixin } from 'lightning/navigation';
 import { formatRecord } from 'c/datetimeFormatterNorwegianTime';
 import { defaultFilters, compare } from './filters';
-import HOT_informationModal from 'c/hot_informationModal';
+import icons from '@salesforce/resourceUrl/ikoner';
+import icons2 from '@salesforce/resourceUrl/icons';
+
 export default class Hot_wageClaimList extends NavigationMixin(LightningElement) {
+    exitCrossIcon = icons + '/Close/Close.svg';
+    warningicon = icons2 + '/warningicon.svg';
     @track columns = [];
     @track filters = [];
     setColumns() {
@@ -34,6 +43,11 @@ export default class Hot_wageClaimList extends NavigationMixin(LightningElement)
         );
     }
 
+    @track Status;
+    isNotRetractable = false;
+    isDisabledGoToThread = false;
+    isRetracting = false;
+
     dataLoader = true;
     noWageClaims = false;
     @track wageClaims = [];
@@ -58,6 +72,13 @@ export default class Hot_wageClaimList extends NavigationMixin(LightningElement)
             this.dataLoader = false;
             this.error = result.error;
             this.allWageClaimsWired = undefined;
+        }
+    }
+
+    getParams() {
+        let parsed_params = getParametersFromURL() ?? '';
+        if ((parsed_params.from == 'calendar' || parsed_params.from == 'mine-varsler') && parsed_params.id != '') {
+            this.goToRecordDetailsFromNotification(parsed_params.id);
         }
     }
 
@@ -89,38 +110,6 @@ export default class Hot_wageClaimList extends NavigationMixin(LightningElement)
         this.setPreviousFiltersOnRefresh();
     }
 
-    getDayOfWeek(date) {
-        var jsDate = new Date(date);
-        var dayOfWeek = jsDate.getDay();
-        var dayOfWeekString;
-        switch (dayOfWeek) {
-            case 0:
-                dayOfWeekString = 'Søndag';
-                break;
-            case 1:
-                dayOfWeekString = 'Mandag';
-                break;
-            case 2:
-                dayOfWeekString = 'Tirsdag';
-                break;
-            case 3:
-                dayOfWeekString = 'Onsdag';
-                break;
-            case 4:
-                dayOfWeekString = 'Torsdag';
-                break;
-            case 5:
-                dayOfWeekString = 'Fredag';
-                break;
-            case 6:
-                dayOfWeekString = 'Lørdag';
-                break;
-            default:
-                dayOfWeekString = '';
-        }
-        return dayOfWeekString;
-    }
-
     datetimeFields = [{ name: 'StartAndEndDate', type: 'datetimeinterval', start: 'StartTime__c', end: 'EndTime__c' }];
 
     @track recordId;
@@ -129,35 +118,56 @@ export default class Hot_wageClaimList extends NavigationMixin(LightningElement)
 
     connectedCallback() {
         this.setColumns();
+        this.getParams();
         this.updateURL();
         refreshApex(this.wiredWageClaimsResult);
     }
-    closeModal() {
-        this.template.querySelector('.serviceAppointmentDetails').classList.add('hidden');
-        this.recordId = undefined;
-        this.updateURL();
-    }
+    hasAccess = true;
     @track wageClaim;
     isWageClaimDetails = false;
-    async goToRecordDetails(result) {
+    goToRecordDetails(result) {
+        this.hasAccess = true;
+        this.isDisabledGoToThread = false;
+        this.showServiceAppointmentDetails();
+        this.wageClaim = undefined;
+        this.Status = result.detail.Status__c;
         let recordId = result.detail.Id;
         this.recordId = recordId;
-        // Open the modal and wait for it to close.
-        await HOT_informationModal.open({
-            size: 'small',
-            recordId: this.recordId,
-            type: 'WC',
-            fromUrlRedirect: false,
-            records: this.wageClaims
-        });
-        // Update the URL after the modal is closed.
+        if (result.detail.Status__c == 'Åpen') {
+            this.isNotRetractable = false;
+        } else {
+            this.isNotRetractable = true;
+        }
+        this.isWageClaimDetails = !!this.recordId;
+        for (let wageClaim of this.wageClaims) {
+            if (recordId === wageClaim.Id) {
+                this.wageClaim = wageClaim;
+                this.wageClaim.weekday = getDayOfWeek(this.wageClaim.StartTime__c);
+            }
+        }
         this.updateURL();
-        // Refresh Apex data after modal closure.
-        refreshApex(this.wiredWageClaimsResult);
     }
 
-    getModalSize() {
-        return window.screen.width < 768 ? 'full' : 'small';
+    goToRecordDetailsFromNotification(wageClaimId) {
+        this.hasAccess = false;
+        getWageClaimDetails({ recordId: wageClaimId })
+            .then((result) => {
+                this.isDisabledGoToThread = false;
+                this.hasAccess = true;
+                this.showServiceAppointmentDetails();
+                this.isNotRetractable = result.Status__c != 'Open';
+                this.wageClaim = result;
+                this.wageClaim = formatRecord(Object.assign({}, result), this.datetimeFields);
+                this.wageClaim.weekday = this.getDayOfWeek(this.wageClaim.StartTime__c);
+                this.recordId = wageClaimId;
+                this.Status = result.Status__c;
+                this.isWageClaimDetails = !!this.recordId;
+            })
+            .catch((error) => {
+                console.log(error);
+                this.showServiceAppointmentDetails();
+            });
+        this.updateURL();
     }
 
     @api recordId;
@@ -169,15 +179,66 @@ export default class Hot_wageClaimList extends NavigationMixin(LightningElement)
         }
         window.history.pushState({ path: baseURL }, '', baseURL);
     }
-
-    @api goBack() {
-        this.recordId = undefined;
-        this[NavigationMixin.Navigate]({
-            type: 'comm__namedPage',
-            attributes: {
-                pageName: 'home'
+    treadId;
+    goToWageClaimThread() {
+        this.isDisabledGoToThread = true;
+        getThreadId({ wageClaimeId: this.recordId }).then((result) => {
+            if (result != '') {
+                this.threadId = result;
+                this.navigateToThread(this.threadId);
+            } else {
+                createThread({ recordId: this.recordId, accountId: this.wageClaim.ServiceResource__r.AccountId })
+                    .then((result) => {
+                        this.navigateToThread(result.Id);
+                    })
+                    .catch((error) => {
+                        this.modalHeader = 'Noe gikk galt';
+                        this.modalContent = 'Kunne ikke åpne samtale. Feilmelding: ' + error;
+                        this.noCancelButton = true;
+                        this.showModal();
+                    });
             }
         });
+    }
+    navigateToThread(recordId) {
+        const baseUrl = '/samtale-frilans';
+        const attributes = `recordId=${recordId}&from=mine-oppdrag&list=wageClaim`;
+        const url = `${baseUrl}?${attributes}`;
+
+        this[NavigationMixin.Navigate]({
+            type: 'standard__webPage',
+            attributes: {
+                url: url
+            }
+        });
+    }
+
+    noCancelButton = false;
+    modalHeader = 'Noe gikk galt';
+    modalContent = 'Prøv igjen';
+    @track confirmButtonLabel = 'Ok';
+
+    cancelRetraction() {
+        this.isRetracting = false;
+    }
+    showModal() {
+        this.template.querySelector('c-alertdialog').showModal();
+    }
+    retractAvailability() {
+        try {
+            retractAvailability({ recordId: this.wageClaim.Id }).then(() => {
+                this.isNotRetractable = true;
+                this.isRetracting = false;
+                this.wageClaim.Status__c = 'Tilbaketrukket tilgjengelighet';
+                refreshApex(this.wiredWageClaimsResult);
+            });
+        } catch (error) {
+            alert(JSON.stringify(error));
+            this.modalHeader = 'Noe gikk galt';
+            this.modalContent = 'Kunne tilbaketrekke tilgjengelighet. Feilmelding: ' + error;
+            this.noCancelButton = true;
+            this.showModal();
+        }
     }
 
     sendFilters() {
@@ -220,5 +281,55 @@ export default class Hot_wageClaimList extends NavigationMixin(LightningElement)
     }
     handleRefreshRecords() {
         refreshApex(this.wiredWageClaimsResult);
+    }
+    showServiceAppointmentDetailsModal = false;
+
+    closeModal() {
+        this.updateURL();
+        const dialog = this.template.querySelector('dialog');
+        dialog.close();
+    }
+
+    showServiceAppointmentDetails() {
+        const dialog = this.template.querySelector('dialog');
+        dialog.showModal();
+        dialog.focus();
+    }
+    showModalRetract() {
+        this.isRetracting = true;
+    }
+    showModal() {
+        this.template.querySelector('c-alertdialog').showModal();
+    }
+    get appointmentNumber() {
+        return this.wageClaim?.ServiceAppointmentName__c || '';
+    }
+
+    get appointmentTime() {
+        return this.wageClaim?.StartAndEndDate || '';
+    }
+
+    get appointmentCity() {
+        return this.wageClaim?.ServiceAppointmentCity__c || '';
+    }
+
+    get workType() {
+        return this.wageClaim?.WorkTypeName__c || '';
+    }
+
+    get assignmentType() {
+        return this.wageClaim?.AssignmentType__c || '';
+    }
+
+    get ownerName() {
+        return this.wageClaim?.ServiceAppointment__r?.HOT_Request__r?.OwnerName__c || '';
+    }
+
+    get degreeOfHearingAndVisualImpairment() {
+        return this.wageClaim?.DegreeOfHearingAndVisualImpairment__c || '';
+    }
+
+    get status() {
+        return this.wageClaim?.Status__c || '';
     }
 }
