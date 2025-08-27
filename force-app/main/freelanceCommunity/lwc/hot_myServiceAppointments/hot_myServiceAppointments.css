@@ -103,6 +103,9 @@ dialog.modal-container .close-btn:hover {
         left: 0;
         transform: none;
     }
+    dialog.modal-container .close-btn {
+        background-color: #e0e3e6;
+    }
 
     dialog.modal-container .modal-header,
     dialog.modal-container .modal-body,
