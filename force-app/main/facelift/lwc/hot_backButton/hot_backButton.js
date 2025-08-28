@@ -12,6 +12,17 @@ export default class Hot_backButton extends NavigationMixin(LightningElement) {
             const pathname = url.pathname.toLowerCase();
             const searchParams = url.searchParams;
 
+            if (pathname.includes('/s/thread')) {
+                const from = searchParams.get('from');
+                const recordId = searchParams.get('recordId');
+                const level = searchParams.get('level');
+
+                if ((from === 'mine-bestillinger' || from === 'mine-bestillinger-andre') && recordId && level) {
+                    this.navigateToPageWithParams(from, { id: recordId, level });
+                    return;
+                }
+            }
+
             if (pathname.includes('/s/mine-oppdrag') || pathname.includes('/s/mine-samtaler-frilanstolk')) {
                 this.navigateHome();
                 return;
@@ -26,6 +37,10 @@ export default class Hot_backButton extends NavigationMixin(LightningElement) {
                     this.navigateToPage('mine-samtaler');
                     return;
                 }
+                if (this.urlStateParameters.from === 'mine-samtaler-frilanstolk') {
+                    this.navigateToPage('mine-samtaler-frilanstolk');
+                    return;
+                }
 
                 const currentLevel = this.urlStateParameters.level;
                 if (!currentLevel) {
@@ -37,6 +52,24 @@ export default class Hot_backButton extends NavigationMixin(LightningElement) {
                 this.urlStateParameters.level = '';
                 this.refresh(true);
                 return;
+            } else {
+                const from = searchParams.get('from');
+                if (from === 'mine-samtaler-frilanstolk') {
+                    this.navigateToPage('mine-samtaler-frilanstolk');
+                    return;
+                }
+                if (from === 'mine-samtaler') {
+                    this.navigateToPage('mine-samtaler');
+                    return;
+                }
+                if (from === 'mine-varsler') {
+                    this.navigateToPage('mine-varsler');
+                    return;
+                }
+                if (from === 'mine-oppdrag') {
+                    this.navigateToPage('mine-oppdrag');
+                    return;
+                }
             }
 
             if (pathname.includes('/s/mine-bestillinger')) {
