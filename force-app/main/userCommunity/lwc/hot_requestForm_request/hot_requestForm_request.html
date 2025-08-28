@@ -7,7 +7,7 @@
     >
         <h2 class="header" tabindex="0" autofocus>Informasjon om behov for tolk</h2>
         <br />
-        <c-input2
+        <c-input
             id="temaOgSted"
             label="Tema og sted"
             name="Subject__c"
@@ -15,7 +15,7 @@
             value={fieldValues.Subject__c}
             error-text="Tema og sted må fylles ut."
             helptext-content="Beskriv hva du trenger tolk til og hvor, f.eks. legetime ved xx-legesenter, forelesning ved xx-universitet osv."
-        ></c-input2>
+        ></c-input>
         <br />
         <c-hot_recurring-time-input request-ids={requestIds}></c-hot_recurring-time-input>
         <br />
@@ -29,34 +29,34 @@
         <br />
 
         <div if:false={fieldValues.IsScreenInterpreter__c}>
-            <c-input2
+            <c-input
                 id="oppmoteAdresse"
                 label="Oppmøteadresse"
                 name="MeetingStreet__c"
                 form="tolk-skjema-input"
                 value={fieldValues.MeetingStreet__c}
                 error-text="Oppmøteadresse må fylles ut."
-            ></c-input2>
+            ></c-input>
             <br />
             <div class="slds-grid slds-gutters">
                 <div class="slds-col slds-size_2-of-5">
-                    <c-input2
+                    <c-input
                         id="postnummer"
                         label="Postnummer"
                         name="MeetingPostalCode__c"
                         form="tolk-skjema-input"
                         value={fieldValues.MeetingPostalCode__c}
                         max-length="4"
-                    ></c-input2>
+                    ></c-input>
                 </div>
                 <div class="slds-col slds-size_3-of-5">
-                    <c-input2
+                    <c-input
                         id="poststed"
                         label="Poststed"
                         name="MeetingPostalCity__c"
                         form="tolk-skjema-input"
                         value={fieldValues.MeetingPostalCity__c}
-                    ></c-input2>
+                    ></c-input>
                 </div>
             </div>
             <br />
@@ -69,34 +69,34 @@
             >
             </c-radiobuttons>
             <div if:false={sameLocation}>
-                <c-input2
+                <c-input
                     id="tolkeAdresse"
                     label="Tolkeadresse"
                     name="InterpretationStreet__c"
                     form="tolk-skjema-input"
                     value={fieldValues.InterpretationStreet__c}
                     error-text="Tolkeadresse må fylles ut."
-                ></c-input2>
+                ></c-input>
                 <br />
                 <div class="slds-grid slds-gutters">
                     <div class="slds-col slds-size_2-of-5">
-                        <c-input2
+                        <c-input
                             id="tolkePostnummer"
                             label="Postnummer"
                             name="InterpretationPostalCode__c"
                             form="tolk-skjema-input"
                             value={fieldValues.InterpretationPostalCode__c}
                             max-length="4"
-                        ></c-input2>
+                        ></c-input>
                     </div>
                     <div class="slds-col slds-size_3-of-5">
-                        <c-input2
+                        <c-input
                             id="tolkePoststed"
                             label="Poststed"
                             name="InterpretationPostalCity__c"
                             form="tolk-skjema-input"
                             value={fieldValues.InterpretationPostalCity__c}
-                        ></c-input2>
+                        ></c-input>
                     </div>
                 </div>
                 <br />
@@ -128,13 +128,13 @@
         ></c-checkbox>
         <div if:true={componentValues.isOptionalFields}>
             <br />
-            <c-input2
+            <c-input
                 id="onsketTolk"
                 label="Ønsket tolk"
                 name="UserPreferredInterpreter__c"
                 form="tolk-skjema-input"
                 value={fieldValues.UserPreferredInterpreter__c}
-            ></c-input2>
+            ></c-input>
             <br />
             <c-picklist
                 master-label="Anledning"

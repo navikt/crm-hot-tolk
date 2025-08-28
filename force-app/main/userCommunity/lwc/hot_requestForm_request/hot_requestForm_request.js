@@ -145,7 +145,7 @@ export default class Hot_requestForm_request extends LightningElement {
 
     @api
     setFieldValues() {
-        this.template.querySelectorAll('c-input2').forEach((element) => {
+        this.template.querySelectorAll('c-input').forEach((element) => {
             this.fieldValues[element.name] = element.getValue();
         });
         this.fieldValues.Description__c = this.template.querySelector('c-textarea').getValue();
@@ -177,7 +177,7 @@ export default class Hot_requestForm_request extends LightningElement {
     @api
     validateFields() {
         let hasErrors = false;
-        this.template.querySelectorAll('c-input2').forEach((element) => {
+        this.template.querySelectorAll('c-input').forEach((element) => {
             if (element.validationHandler()) {
                 hasErrors += 1;
             }
