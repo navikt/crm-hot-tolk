@@ -103,14 +103,14 @@
                 <!-- Interested Resources List table -->
                 <template lwc:elseif={tabMap.interested}>
                     <div class="tab-content">
-                        <c-hot_interested-resources-list
+                        <c-hot_interested-resources-list_v2
                             record-id={recordId}
                             data-name="interested"
                             onsendfilters={handleFilters}
                             onsendrecords={handleRecords}
                             onsenddetail={handleDetails}
                         >
-                        </c-hot_interested-resources-list>
+                        </c-hot_interested-resources-list_v2>
                     </div>
                 </template>
 
