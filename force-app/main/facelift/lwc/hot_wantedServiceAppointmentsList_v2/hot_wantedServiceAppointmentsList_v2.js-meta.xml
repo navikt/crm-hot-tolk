@@ -3,5 +3,5 @@
     <apiVersion>64.0</apiVersion>
     <isExposed>false</isExposed>
     <masterLabel>HOT - Wanter serviceappointment list</masterLabel>
-    <description>Du </description>
+    <description>Oppdrag du er onsket til liste</description>
 </LightningComponentBundle>

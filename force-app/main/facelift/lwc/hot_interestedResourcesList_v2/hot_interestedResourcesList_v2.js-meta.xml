@@ -3,5 +3,5 @@
     <apiVersion>64.0</apiVersion>
     <isExposed>false</isExposed>
     <masterLabel>HOT - Interested resource list v2</masterLabel>
-    <description>Pameldte oppdrag liste</description>
+    <description>Paameldte oppdrag liste</description>
 </LightningComponentBundle>

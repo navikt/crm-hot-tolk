@@ -3,5 +3,5 @@
     <apiVersion>64.0</apiVersion>
     <isExposed>false</isExposed>
     <masterLabel>HOT - Wageclaim list v2</masterLabel>
-    <description>Wage Claims to show to freelance interpreter</description>
+    <description>Ledig på lønn liste</description>
 </LightningComponentBundle>

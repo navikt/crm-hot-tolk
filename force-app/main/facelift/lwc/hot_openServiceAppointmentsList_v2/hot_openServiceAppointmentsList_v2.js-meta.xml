@@ -3,5 +3,5 @@
     <apiVersion>64.0</apiVersion>
     <isExposed>false</isExposed>
     <masterLabel>HOT - Open serviceappointments list</masterLabel>
-    <description>Wrapper komponent som kan vise alle samtaletyper</description>
+    <description>Ledige oppdrag liste</description>
 </LightningComponentBundle>
