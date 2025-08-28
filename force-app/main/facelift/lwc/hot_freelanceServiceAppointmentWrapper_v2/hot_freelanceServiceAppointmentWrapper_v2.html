@@ -117,14 +117,14 @@
                 <!-- My Service Appointments table -->
                 <template lwc:elseif={tabMap.my}>
                     <div class="tab-content">
-                        <c-hot_my-service-appointments
+                        <c-hot_my-service-appointments-list_v2
                             record-id={recordId}
                             data-name="my"
                             onsendfilters={handleFilters}
                             onsendrecords={handleRecords}
                             onsenddetail={handleDetails}
                         >
-                        </c-hot_my-service-appointments>
+                        </c-hot_my-service-appointments-list_v2>
                     </div>
                 </template>
 
