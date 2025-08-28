@@ -27,13 +27,7 @@
                         onbuttonclick={goToNewRequest}
                     ></c-button>
                     <div if:true={isMobile} class="back-link-div">
-                        <a
-                            class="back-link"
-                            onclick={goBack}
-                            aria-label="Gå tilbake knapp"
-                            tabindex="0"
-                            onkeydown={handleKeyDown}
-                        >
+                        <a class="back-link" onclick={goBack}>
                             <c-icon icon="Back"></c-icon>
                             <p class="backBtn" style="margin-left: 0.25rem">Tilbake</p>
                         </a>
