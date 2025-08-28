@@ -3,6 +3,7 @@
     <apiVersion>64.0</apiVersion>
     <isExposed>true</isExposed>
     <masterLabel>HOT Freelance ServiceAppointment List</masterLabel>
+    <description>Wrapper for alle listene for frilanstolker. Ledige oppdrag, påmeldte oppdrag, mine oppdrag, ledig på lønn, oppdrag du er ønsket til</description>
     <targets>
         <target>lightningCommunity__Page</target>
     </targets>
