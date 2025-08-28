@@ -145,14 +145,14 @@
                 <!-- Wanted Service Appointments List table -->
                 <template lwc:elseif={tabMap.wanted}>
                     <div class="tab-content">
-                        <c-hot_wanted-service-appointments-list
+                        <c-hot_wanted-service-appointments-list_v2
                             record-id={recordId}
                             data-name="wanted"
                             onsendfilters={handleFilters}
                             onsendrecords={handleRecords}
                             onsenddetail={handleDetails}
                         >
-                        </c-hot_wanted-service-appointments-list>
+                        </c-hot_wanted-service-appointments-list_v2>
                     </div>
                 </template>
             </div>
