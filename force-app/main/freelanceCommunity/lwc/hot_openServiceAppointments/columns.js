@@ -20,7 +20,7 @@ export let columns = [
         type: 'String'
     },
     {
-        label: 'Merknad',
+        label: '',
         name: 'isUrgent',
         type: 'boolean',
         svg: true
@@ -52,8 +52,8 @@ export let mobileColumns = [
         bold: true
     },
     {
-        label: 'Dag',
-        name: 'weekday',
+        label: 'Info',
+        name: 'HOT_Information__c',
         type: 'String'
     },
     {
@@ -62,12 +62,6 @@ export let mobileColumns = [
         type: 'boolean',
         svg: true
     },
-    {
-        label: 'Info',
-        name: 'HOT_Information__c',
-        type: 'String'
-    },
-
     {
         label: 'Tema',
         name: 'HOT_FreelanceSubject__c',
