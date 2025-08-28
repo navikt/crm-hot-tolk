@@ -1,4 +1,4 @@
-import { LightningElement, wire, api, track } from 'lwc';
+import { LightningElement, wire, api } from 'lwc';
 import { NavigationMixin } from 'lightning/navigation';
 import getmessages from '@salesforce/apex/HOT_MessageHelper.getMessagesFromThread';
 import markAsRead from '@salesforce/apex/HOT_MessageHelper.markAsRead';
@@ -29,6 +29,7 @@ export default class Hot_messagingCommunityThreadViewer_v2 extends NavigationMix
     threadRelatedObjectId;
 
     isDetails = false;
+    isDetailsContent = false;
     isIRDetails = false;
     isWCDetails = false;
     msgVal;
@@ -112,6 +113,7 @@ export default class Hot_messagingCommunityThreadViewer_v2 extends NavigationMix
             this.isclosed = this.thread.CRM_Is_Closed__c;
             this.showContent = true;
         } else if (result.error) {
+            console.log('Error retrieving thread: ', result.error);
             this.showError = true;
         }
     }
@@ -121,6 +123,7 @@ export default class Hot_messagingCommunityThreadViewer_v2 extends NavigationMix
     wireMessages(result) {
         this._mySendForSplitting = result;
         if (result.error) {
+            console.log('Error retrieving messages: ', result.error);
             this.error = result.error;
         } else if (result.data) {
             this.messages = result.data;
@@ -139,18 +142,11 @@ export default class Hot_messagingCommunityThreadViewer_v2 extends NavigationMix
         return this.helptextContent !== '' && this.helptextContent !== undefined ? true : false;
     }
 
-    serviceAppointment;
-    interestedResource;
-    address;
-    ordererPhoneNumber;
-    accountPhoneNumber;
-    accountAgeGender;
-    accountName;
-
     closeModal() {
         this.isDetails = false;
         this.isIRDetails = false;
         this.isWCDetails = false;
+        this.isDetailsContent = false;
     }
 
     goToHome() {
@@ -164,7 +160,7 @@ export default class Hot_messagingCommunityThreadViewer_v2 extends NavigationMix
 
     // Set helptextContent based on type and return label
     threadTypeName() {
-        const threadTypeValue = this.thread.CRM_Thread_Type__c;
+        var threadTypeValue = this.thread.CRM_Thread_Type__c;
 
         switch (threadTypeValue) {
             case 'HOT_BRUKER-FORMIDLER':
@@ -296,6 +292,14 @@ export default class Hot_messagingCommunityThreadViewer_v2 extends NavigationMix
         item.focus();
     }
 
+    serviceAppointment;
+    interestedResource;
+    address;
+    ordererPhoneNumber;
+    accountPhoneNumber;
+    accountAgeGender;
+    accountName;
+
     goToDetails() {
         getRelatedObjectDetails({ relatedRecordId: this.threadRelatedObjectId }).then((result) => {
             for (var key in result) {
@@ -393,6 +397,7 @@ export default class Hot_messagingCommunityThreadViewer_v2 extends NavigationMix
                                         this.serviceAppointment.HOT_Request__r.Orderer__r.CRM_Person__r.INT_KrrMobilePhone__c;
                                 }
                             }
+                            this.isDetailsContent = true;
                             this.isDetails = true;
                         });
                         break;
@@ -422,6 +427,7 @@ export default class Hot_messagingCommunityThreadViewer_v2 extends NavigationMix
                                 (releaseDateTimeFormatted.getMonth() + 1) +
                                 '.' +
                                 releaseDateTimeFormatted.getFullYear();
+                            this.isDetailsContent = true;
                             this.isIRDetails = true;
                         });
                         break;
@@ -433,6 +439,7 @@ export default class Hot_messagingCommunityThreadViewer_v2 extends NavigationMix
                                 this.wageClaim.StartTime__c,
                                 this.wageClaim.EndTime__c
                             );
+                            this.isDetailsContent = true;
                             this.isWCDetails = true;
                         });
 
@@ -524,6 +531,7 @@ export default class Hot_messagingCommunityThreadViewer_v2 extends NavigationMix
         } else if (parsed_params.list !== undefined) {
             this.navigationBaseUrl = parsed_params.from;
             this.navigationId = parsed_params.recordId;
+            this.navigationBaseList = parsed_params.list;
             this.navigationLevel = undefined;
             if (parsed_params.list == 'interested') {
                 this.breadcrumbs[1] = {
