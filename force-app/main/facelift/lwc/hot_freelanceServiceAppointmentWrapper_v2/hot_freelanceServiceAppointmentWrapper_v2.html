@@ -131,14 +131,14 @@
                 <!-- Wage Claim List table -->
                 <template lwc:elseif={tabMap.wageClaim}>
                     <div class="tab-content">
-                        <c-hot_wage-claim-list
+                        <c-hot_wage-claim-list_v2
                             record-id={recordId}
                             data-name="wageClaim"
                             onsendfilters={handleFilters}
                             onsendrecords={handleRecords}
                             onsenddetail={handleDetails}
                         >
-                        </c-hot_wage-claim-list>
+                        </c-hot_wage-claim-list_v2>
                     </div>
                 </template>
 
