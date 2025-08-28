@@ -88,7 +88,7 @@
                 <!-- Open Service Appointment table -->
                 <template lwc:if={tabMap.open}>
                     <div class="tab-content">
-                        <c-hot_open-service-appointments
+                        <c-hot_open-service-appointments-list_v2
                             record-id={recordId}
                             data-name="open"
                             onsendfilters={handleFilters}
@@ -96,7 +96,7 @@
                             onsenddetail={handleDetails}
                             onsendcheckedrows={handleRowChecked}
                         >
-                        </c-hot_open-service-appointments>
+                        </c-hot_open-service-appointments-list_v2>
                     </div>
                 </template>
 
