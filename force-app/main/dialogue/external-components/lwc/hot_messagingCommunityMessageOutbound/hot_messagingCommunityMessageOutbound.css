@@ -65,4 +65,12 @@
     .iconholder {
         display: none;
     }
+
+    .snakkeboble-panel {
+        max-width: 100%;
+        width: 100%;
+
+        background-color: #cce1ff !important;
+        border-radius: 0.5rem;
+    }
 }

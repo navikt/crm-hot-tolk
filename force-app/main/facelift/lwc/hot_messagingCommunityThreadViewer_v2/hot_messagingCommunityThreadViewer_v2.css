@@ -14,8 +14,23 @@
     margin-left: -0.5rem;
 }
 
-.lukknapp {
-    border: none;
+.close-btn {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: none;
+    border: 4px solid transparent;
+    border-radius: 4px;
+    cursor: pointer;
+}
+
+.close-btn:focus {
+    border-color: #0067c5;
+    outline: none;
+}
+
+.close-btn:hover {
+    background-color: #e1e3e6;
 }
 
 .header {
@@ -109,17 +124,30 @@
     background-color: #fff;
     display: block;
     padding: 5rem;
-    border-radius: 4px;
+    border-radius: 0.5rem;
     position: relative;
     flex-grow: 0;
     overflow-x: auto;
     max-height: 100%;
-    margin-bottom: 1rem;
-    margin-top: 1rem;
+    margin-bottom: 0.5rem;
     z-index: 1010;
     max-width: 432px;
     max-height: 75%;
-    width: 100%;
+    width: 90%;
+
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    padding: 2rem 5rem 2rem 2rem;
+}
+
+.details-section p {
+    font-weight: bold;
+}
+
+.details-section p span {
+    font-weight: normal;
 }
 
 .maps-button-container {
@@ -143,9 +171,28 @@
 
 .modal-header-text {
     font-family: 'Source Sans Pro', Arial, sans-serif;
-    font-size: 1.25rem;
-    font-weight: 600;
-    margin: auto;
+    font-size: 1.5rem;
+    margin: 0;
+    padding: 0;
+}
+
+dialog[open].modal-container {
+    display: flex;
+}
+
+.modal-header-container {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding-bottom: 0 0 2rem 0;
+    font-size: 1.5rem;
+    white-space: nowrap;
+    padding-bottom: 2rem;
+    gap: 7rem;
+}
+
+dialog.modal-container .modal-body {
+    padding: 0 2rem 2rem;
 }
 
 @media (max-width: 768px) {
@@ -166,9 +213,6 @@
         margin-left: -0.5rem;
     }
 
-    .thread-container {
-    }
-
     .textarea-container {
         height: 50%;
     }
@@ -177,43 +221,42 @@
         font-size: 0.875rem;
         text-align: end;
     }
-
-    .comments-dialog-container {
-        all: unset;
-        background-color: #fff;
-        display: block;
-        padding: 3rem;
-        border-radius: 4px;
-        position: relative;
-        flex-grow: 0;
-        overflow-x: auto;
-        max-height: 100%;
-        margin-bottom: 1rem;
-        margin-top: 1rem;
-        z-index: 1010;
-        max-width: 432px;
-        max-height: 75%;
-        width: 100%;
-    }
 }
-/* Testing  for modal on mobile*/
+
 @media (max-width: 600px) {
-    /* dialog.modal-container {
-        width: 100%;
-        max-width: 100%;
-        height: 100vh;
-        max-height: 100vh;
-        border-radius: 0;
-        padding: 1rem;
+    .modal-container {
+        all: unset;
+        position: fixed;
         top: 0;
         left: 0;
-        transform: none;
+        width: 100vw;
+        height: 100vh;
+        background-color: #fff;
+        border-radius: 0;
+        padding: 2rem;
+        margin: 0;
+        z-index: 1000;
+        overflow-y: auto;
     }
-    dialog.modal-container .modal-header,
-    dialog.modal-container .modal-body,
-    dialog.modal-container .modal-footer {
-        padding: 1rem;
-    } */
-}
+    .modal-container .close-btn {
+        background-color: #e0e3e6;
+    }
 
-/* Testing END */
+    .close-btn {
+        margin-right: 4rem;
+    }
+
+    .modal-header-container {
+        gap: 0rem;
+    }
+
+    .modal-container .modal-header,
+    .modal-container .modal-body,
+    .modal-container .modal-footer {
+        padding: 1rem;
+    }
+
+    .modal-container {
+        z-index: 1000;
+    }
+}

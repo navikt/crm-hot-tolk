@@ -1,6 +1,6 @@
 <template>
-    <div class="page-background">
-        <template lwc:if={showContent}>
+    <template lwc:if={showContent}>
+        <div class="page-background">
             <div class="header-content">
                 <div class="back-button-info">
                     <c-hot_back-button></c-hot_back-button>
@@ -28,18 +28,24 @@
                 <template lwc:if={isDetailsContent}>
                     <dialog
                         class="ReactModal__Overlay ReactModal__Overlay--after-open modal__overlay modal-header"
-                        style="background-color: #ffffff"
+                        style="background-color: #ffffff; padding: 0rem; border-radius: 0.5rem"
                         tabindex="-1"
                         aria-label="Informasjon om oppdrag"
                     >
+                        <!-- class="ReactModal__Content ReactModal__Content--after-open navno-dekorator modal-container" -->
                         <div
                             class="ReactModal__Content ReactModal__Content--after-open navno-dekorator modal-container"
                             role="dialog"
                             aria-labelledby="comment-header-id"
                         >
-                            <section>
-                                <div>
+                            <section class="details-section">
+                                <div class="modal-header-container">
                                     <h2 class="modal-header-text">Informasjon om oppdraget:</h2>
+                                    <div>
+                                        <button class="close-btn" onclick={closeModal} aria-label="Lukk">
+                                            <img src={exitCrossIcon} alt="" aria-hidden="true" />
+                                        </button>
+                                    </div>
                                 </div>
                                 <template lwc:if={isDetails}>
                                     <div>
@@ -195,13 +201,6 @@
                                     </div>
                                 </template>
                             </section>
-
-                            <button
-                                class="lukknapp lukknapp--overstHjorne modal__lukkknapp--shake"
-                                onclick={closeModal}
-                            >
-                                <span class="text-hide">Lukk</span>
-                            </button>
                         </div>
                     </dialog>
                 </template>
@@ -270,11 +269,11 @@
                     ></c-button>
                 </div>
             </div>
-        </template>
-    </div>
+        </div>
+    </template>
 
     <template lwc:if={showError}>
-        <div class="error-content">
+        <div>
             <p>Du har ikke tilgang til denne samtalen.</p>
             <br />
             <c-button button-styling="Primary" button-label="Gå til hjem" onbuttonclick={goToHome}></c-button>

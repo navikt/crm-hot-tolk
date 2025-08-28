@@ -14,13 +14,14 @@ import { ShowToastEvent } from 'lightning/platformShowToastEvent';
 import { getRecord, getFieldValue } from 'lightning/uiRecordApi';
 import createmsg from '@salesforce/apex/HOT_MessageHelper.createMessage';
 import { getParametersFromURL } from 'c/hot_URIDecoder';
+import icons from '@salesforce/resourceUrl/ikoner';
 
 import setLastMessageFrom from '@salesforce/apex/HOT_MessageHelper.setLastMessageFrom';
 import { formatRecord } from 'c/datetimeFormatterNorwegianTime';
 
 import getThreadDetails from '@salesforce/apex/HOT_ThreadDetailController.getThreadDetails';
-
 export default class Hot_messagingCommunityThreadViewer_v2 extends NavigationMixin(LightningElement) {
+    exitCrossIcon = icons + '/Close/Close.svg';
     _mySendForSplitting;
     messages = [];
     buttonisdisabled = false;
@@ -52,7 +53,11 @@ export default class Hot_messagingCommunityThreadViewer_v2 extends NavigationMix
     @api helptextHovertext;
 
     connectedCallback() {
+        console.log('RecordId after getParams():', this.recordId);
+
         this.getParams();
+        // this.threadId = params.recordId;
+
         getContactId({})
             .then((contactId) => {
                 this.userContactId = contactId;
@@ -105,6 +110,9 @@ export default class Hot_messagingCommunityThreadViewer_v2 extends NavigationMix
     threadType;
     @wire(getThreadDetails, { recordId: '$recordId' })
     wireThreads(result) {
+        console.log('Current recordId:', this.recordId);
+        console.log('Wire result object:', result);
+
         if (result.data) {
             this.thread = result.data;
             this.subject = this.thread.HOT_Subject__c;
@@ -112,6 +120,7 @@ export default class Hot_messagingCommunityThreadViewer_v2 extends NavigationMix
             this.threadRelatedObjectId = this.thread.CRM_Related_Object__c;
             this.isclosed = this.thread.CRM_Is_Closed__c;
             this.showContent = true;
+            console.log('Thread data retrieved:', this.thread);
         } else if (result.error) {
             console.log('Error retrieving thread: ', result.error);
             this.showError = true;
