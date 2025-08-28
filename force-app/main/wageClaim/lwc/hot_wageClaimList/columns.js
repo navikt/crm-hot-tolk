@@ -5,20 +5,29 @@ export let columns = [
         type: 'Datetime'
     },
     {
-        label: 'Oppdrag',
+        label: 'Poststed',
+        name: 'ServiceAppointmentCity__c',
+        type: 'String'
+    },
+    {
+        label: 'Oppdragsnummer',
         name: 'ServiceAppointmentName__c',
+        type: 'String'
+    },
+    {
+        label: 'Oppdragstype',
+        name: 'AssignmentType__c',
+        type: 'String'
+    },
+    {
+        label: 'Tolkemetode',
+        name: 'WorkTypeName__c',
         type: 'String'
     },
     {
         label: 'Status',
         name: 'Status__c',
         type: 'String'
-    },
-    {
-        name: 'IsUnreadMessage',
-        label: 'Samtale',
-        type: 'String',
-        svg: true
     }
 ];
 
@@ -37,11 +46,5 @@ export let mobileColumns = [
         label: 'Status',
         name: 'Status__c',
         type: 'String'
-    },
-    {
-        name: 'IsUnreadMessage',
-        label: 'Samtale',
-        type: 'String',
-        svg: true
     }
 ];
