@@ -26,7 +26,7 @@ export let columns = [
     },
     {
         name: 'IsUnreadMessage',
-        label: 'Samtale med formidler',
+        label: '',
         type: 'String',
         svg: true
     }
@@ -36,11 +36,6 @@ export let mobileColumns = [
     {
         label: 'Tid',
         name: 'startAndEndDateWeekday',
-        type: 'String'
-    },
-    {
-        label: 'Status',
-        name: 'Status__c',
         type: 'String'
     },
     {
@@ -56,6 +51,11 @@ export let mobileColumns = [
     {
         label: 'Tema',
         name: 'ServiceAppointmentFreelanceSubject__c',
+        type: 'String'
+    },
+    {
+        label: 'Status',
+        name: 'statusMobile',
         type: 'String'
     },
     {

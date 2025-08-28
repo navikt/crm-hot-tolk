@@ -3,10 +3,6 @@ import getInterestedResources from '@salesforce/apex/HOT_InterestedResourcesList
 import getMyThreads from '@salesforce/apex/HOT_ThreadListController.getMyThreadsIR';
 import getInterestedResourceDetails from '@salesforce/apex/HOT_InterestedResourcesListController.getInterestedResourceDetails';
 import checkAccessToSA from '@salesforce/apex/HOT_InterestedResourcesListController.checkAccessToSA';
-import retractInterest from '@salesforce/apex/HOT_InterestedResourcesListController.retractInterest';
-import getThreadDispatcherId from '@salesforce/apex/HOT_InterestedResourcesListController.getThreadDispatcherId';
-import getThreadDispatcherIdSA from '@salesforce/apex/HOT_InterestedResourcesListController.getThreadDispatcherIdSA';
-import createThreadInterpreter from '@salesforce/apex/HOT_MessageHelper.createThreadInterpreter';
 import { formatRecord, formatDatetimeinterval } from 'c/datetimeFormatterNorwegianTime';
 import getContactId from '@salesforce/apex/HOT_MessageHelper.getUserContactId';
 import getServiceResource from '@salesforce/apex/HOT_Utility.getServiceResource';
@@ -14,43 +10,26 @@ import { refreshApex } from '@salesforce/apex';
 import { getParametersFromURL } from 'c/hot_URIDecoder';
 import { columns, mobileColumns, iconByValue } from './columns';
 import { defaultFilters, compare } from './filters';
-import { getDayOfWeek } from 'c/hot_commonUtils';
 import { NavigationMixin } from 'lightning/navigation';
-import icons from '@salesforce/resourceUrl/ikoner';
+
+import Hot_interestedResourcesListModal from 'c/hot_interestedResourcesListModal';
 
 export default class Hot_interestedResourcesList extends NavigationMixin(LightningElement) {
-    exitCrossIcon = icons + '/Close/Close.svg';
     @track columns = [];
     @track filters = [];
     @track iconByValue = iconByValue;
     @track isGoToThreadButtonDisabled = false;
+    @track isMobile;
     @track hasAccess = true;
-
     setColumns() {
         if (window.screen.width > 576) {
             this.columns = columns;
+            this.isMobile = false;
         } else {
             this.columns = mobileColumns;
+            this.isMobile = true;
         }
     }
-
-    get hasResult() {
-        return !this.dataLoader && this.records && this.records.length > 0;
-    }
-
-    get noInterestedResourcesResult() {
-        return !this.dataLoader && this.initialInterestedResources.length === 0;
-    }
-
-    get noFilteredRecordsResult() {
-        return (
-            !this.dataLoader &&
-            this.initialInterestedResources.length > 0 &&
-            this.records.length === 0 &&
-            this.filters?.length > 0
-        );
-    }
-
     sendFilters() {
         const eventToSend = new CustomEvent('sendfilters', { detail: this.filters });
         this.dispatchEvent(eventToSend);
@@ -96,7 +75,37 @@ export default class Hot_interestedResourcesList extends NavigationMixin(Lightni
             this.goToRecordDetailsFromNotification(parsed_params.id);
         }
     }
-
+    getDayOfWeek(date) {
+        var jsDate = new Date(date);
+        var dayOfWeek = jsDate.getDay();
+        var dayOfWeekString;
+        switch (dayOfWeek) {
+            case 0:
+                dayOfWeekString = 'Søndag';
+                break;
+            case 1:
+                dayOfWeekString = 'Mandag';
+                break;
+            case 2:
+                dayOfWeekString = 'Tirsdag';
+                break;
+            case 3:
+                dayOfWeekString = 'Onsdag';
+                break;
+            case 4:
+                dayOfWeekString = 'Torsdag';
+                break;
+            case 5:
+                dayOfWeekString = 'Fredag';
+                break;
+            case 6:
+                dayOfWeekString = 'Lørdag';
+                break;
+            default:
+                dayOfWeekString = '';
+        }
+        return dayOfWeekString;
+    }
     @track serviceResource;
     @wire(getServiceResource)
     wiredServiceresource(result) {
@@ -105,7 +114,6 @@ export default class Hot_interestedResourcesList extends NavigationMixin(Lightni
         }
     }
 
-    dataLoader = true;
     noInterestedResources = false;
     initialInterestedResources = [];
     @track records = [];
@@ -139,12 +147,13 @@ export default class Hot_interestedResourcesList extends NavigationMixin(Lightni
                         }
                         let status = 'noThread';
                         if (map.has(threadId)) {
-                            const readBy = map.get(threadId);
-                            if (typeof readBy === 'string' && readBy.includes(this.userContactId)) {
+                            var readBy = map.get(threadId);
+                            if (readBy.includes(this.userContactId)) {
                                 status = 'false';
                             } else {
                                 status = 'true';
                             }
+                        } else {
                         }
                         return {
                             ...appointment,
@@ -155,7 +164,7 @@ export default class Hot_interestedResourcesList extends NavigationMixin(Lightni
                                     appointment.ServiceAppointmentEndTime__c
                                 ) +
                                 ' ' +
-                                getDayOfWeek(appointment.ServiceAppointmentStartTime__c),
+                                this.getDayOfWeek(appointment.ServiceAppointmentStartTime__c),
                             statusMobile: 'Status: ' + appointment.Status__c
                         };
                     });
@@ -165,13 +174,10 @@ export default class Hot_interestedResourcesList extends NavigationMixin(Lightni
                     }
                     this.records = tempRecords;
                     this.initialInterestedResources = [...this.records];
-
                     this.refresh();
-                    this.dataLoader = false;
                 });
             });
         } else if (result.error) {
-            this.dataLoader = false;
             this.error = result.error;
             this.allInterestedResourcesWired = undefined;
         }
@@ -198,18 +204,11 @@ export default class Hot_interestedResourcesList extends NavigationMixin(Lightni
         { name: 'AppointmentDeadlineDate__c', type: 'date' }
     ];
 
-    showServiceAppointmentDetails() {
-        const dialog = this.template.querySelector('dialog');
-        dialog.showModal();
-        dialog.focus();
-    }
-
     @track interestedResource;
     isDetails = false;
     isSeries = false;
     showTable = true;
-    goToRecordDetails(result) {
-        this.hasAccess = true;
+    async goToRecordDetails(result) {
         this.interestedResource = undefined;
         let recordId = result.detail.Id;
         this.recordId = recordId;
@@ -230,15 +229,26 @@ export default class Hot_interestedResourcesList extends NavigationMixin(Lightni
                     this.interestedResource.releasedate = '';
                 }
 
-                this.interestedResource.weekday = getDayOfWeek(this.interestedResource.ServiceAppointmentStartTime__c);
+                this.interestedResource.weekday = this.getDayOfWeek(
+                    this.interestedResource.ServiceAppointmentStartTime__c
+                );
             }
         }
 
         this.isNotRetractable = this.interestedResource?.Status__c !== 'Påmeldt';
         this.updateURL();
 
-        this.showServiceAppointmentDetails();
+        await Hot_interestedResourcesListModal.open({
+            size: 'small',
+            interestedResource: this.interestedResource,
+            isNotRetractable: this.isNotRetractable,
+            serviceResource: this.serviceResource
+        });
         refreshApex(this.wiredInterestedResourcesResult);
+    }
+
+    getModalSize() {
+        return window.screen.width < 768 ? 'full' : 'small';
     }
 
     goToRecordDetailsFromNotification(saId) {
@@ -248,7 +258,7 @@ export default class Hot_interestedResourcesList extends NavigationMixin(Lightni
                     this.interestedResource = result;
                     this.isDetails = true;
                     this.isNotRetractable = this.interestedResource?.Status__c !== 'Påmeldt';
-                    this.interestedResource.weekday = getDayOfWeek(
+                    this.interestedResource.weekday = this.getDayOfWeek(
                         this.interestedResource.ServiceAppointmentStartTime__c
                     );
                     let startTimeFormatted = new Date(result.ServiceAppointmentStartTime__c);
@@ -289,11 +299,16 @@ export default class Hot_interestedResourcesList extends NavigationMixin(Lightni
                     if (this.interestedResource.AppointmentDeadlineDate__c.includes('NaN')) {
                         this.interestedResource.AppointmentDeadlineDate__c = '';
                     }
-                    this.hasAccess = true;
-                    this.showServiceAppointmentDetails();
+                    Hot_interestedResourcesListModal.open({
+                        size: 'small',
+                        description: 'Informasjon om oppdraget',
+                        interestedResource: this.interestedResource,
+                        isNotRetractable: this.isNotRetractable,
+                        serviceResource: this.serviceResource,
+                        hasAccess: true
+                    });
                 });
             } else {
-                this.showServiceAppointmentDetails();
                 this.hasAccess = false;
             }
         });
@@ -318,7 +333,6 @@ export default class Hot_interestedResourcesList extends NavigationMixin(Lightni
         return { id: recordIdToReturn, tab: 'interested' };
     }
     filteredRecordsLength = 0;
-    noFilteredRecords = false;
     @api
     applyFilter(event) {
         let setRecords = event.detail.setRecords;
@@ -336,144 +350,10 @@ export default class Hot_interestedResourcesList extends NavigationMixin(Lightni
             }
         }
         this.filteredRecordsLength = filteredRecords.length;
-        this.noFilteredRecords = this.filteredRecordsLength === 0 && this.filters.length > 0;
 
         if (setRecords) {
             this.records = filteredRecords;
         }
         return this.filteredRecordsLength;
-    }
-    isNotRetractable = false;
-    retractInterest() {
-        retractInterest({ interestedResourceId: this.interestedResource.Id }).then(() => {
-            refreshApex(this.wiredInterestedResourcesResult);
-            this.interestedResource.Status__c = 'Tilbaketrukket påmelding';
-            let newNumberOfInterestedResources = Number(this.interestedResource.NumberOfInterestedResources__c) - 1;
-            this.interestedResource.NumberOfInterestedResources__c = newNumberOfInterestedResources;
-            this.isNotRetractable = true;
-        });
-    }
-    closeModal() {
-        this.isGoToThreadButtonDisabled = false;
-        const dialog = this.template.querySelector('dialog');
-        dialog.close();
-        this.recordId = undefined;
-        this.updateURL();
-    }
-    navigateToThread(recordId) {
-        const baseUrl = '/samtale-frilans';
-        const attributes = `recordId=${recordId}&from=mine-oppdrag&list=interested&interestedRecordId=${this.interestedResource.Id}`;
-        const url = `${baseUrl}?${attributes}`;
-
-        this[NavigationMixin.Navigate]({
-            type: 'standard__webPage',
-            attributes: {
-                url: url
-            }
-        });
-    }
-    goToInterestedResourceThread() {
-        this.isGoToThreadButtonDisabled = true;
-        if (
-            this.interestedResource.Status__c != 'Assigned' &&
-            this.interestedResource.Status__c != 'Tildelt' &&
-            this.interestedResource.Status__c != 'Reserved' &&
-            this.interestedResource.Status__c != 'Reservert'
-        ) {
-            getThreadDispatcherId({ interestedResourceId: this.interestedResource.Id }).then((result) => {
-                if (result != '') {
-                    this.threadId = result;
-                    this.navigateToThread(this.threadId);
-                } else {
-                    createThreadInterpreter({ recordId: this.interestedResource.Id })
-                        .then((result) => {
-                            this.navigateToThread(result.Id);
-                        })
-                        .catch((error) => {
-                            this.modalHeader = 'Noe gikk galt';
-                            this.modalContent = 'Kunne ikke åpne samtale. Feilmelding: ' + error;
-                            this.noCancelButton = true;
-                            this.showModal();
-                        });
-                }
-            });
-        } else {
-            getThreadDispatcherIdSA({ saId: this.interestedResource.ServiceAppointment__c }).then((result) => {
-                if (result != '') {
-                    this.threadId = result;
-                    this.navigateToThread(this.threadId);
-                } else {
-                    createThreadInterpreter({ recordId: this.interestedResource.ServiceAppointment__c })
-                        .then((result) => {
-                            this.navigateToThread(result.Id);
-                        })
-                        .catch((error) => {
-                            this.modalHeader = 'Noe gikk galt';
-                            this.modalContent = 'Kunne ikke åpne samtale. Feilmelding: ' + error;
-                            this.noCancelButton = true;
-                            this.showModal();
-                        });
-                }
-            });
-        }
-    }
-    get appointmentNumber() {
-        return this.interestedResource?.AppointmentNumber__c || '';
-    }
-
-    get subject() {
-        return this.interestedResource?.ServiceAppointmentFreelanceSubject__c || '';
-    }
-
-    get time() {
-        return `${this.interestedResource?.weekday || ''} ${this.interestedResource?.StartAndEndDate || ''}`.trim();
-    }
-
-    get address() {
-        return this.interestedResource?.ServiceAppointmentAddress__c || '';
-    }
-
-    get workType() {
-        return this.interestedResource?.WorkTypeName__c || '';
-    }
-
-    get assignmentType() {
-        return this.interestedResource?.AssignmentType__c || '';
-    }
-
-    get status() {
-        return this.interestedResource?.Status__c || '';
-    }
-
-    get numberOfResources() {
-        return this.interestedResource?.NumberOfInterestedResources__c ?? '';
-    }
-
-    get releaseDate() {
-        return this.interestedResource?.releasedate || '';
-    }
-
-    get releasedBy() {
-        return this.interestedResource?.ServiceAppointment__r?.HOT_ReleasedBy__c || '';
-    }
-
-    get deadline() {
-        return this.interestedResource?.AppointmentDeadlineDate__c || '';
-    }
-
-    get region() {
-        return this.interestedResource?.AppointmentServiceTerritory__c || '';
-    }
-
-    get ownerName() {
-        return this.interestedResource?.ServiceAppointment__r?.HOT_Request__r?.OwnerName__c || '';
-    }
-
-    get canceledDate() {
-        return this.interestedResource?.WorkOrderCanceledDate__c || '';
-    }
-
-    get terms() {
-        return this.interestedResource?.HOT_TermsOfAgreement__c || '';
     }
 }
