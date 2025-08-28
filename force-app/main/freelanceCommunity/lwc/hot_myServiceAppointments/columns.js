@@ -43,20 +43,15 @@ export let mobileColumns = [
         type: 'String'
     },
     {
-        label: 'Status',
-        name: 'Status',
-        type: 'String'
-    },
-    {
         label: 'Poststed',
         name: 'City',
         type: 'String'
     },
-    {
-        label: 'Tolkemetode',
-        name: 'HOT_WorkTypeName__c',
-        type: 'String'
-    },
+    // {
+    //     label: 'Tolkemetode',
+    //     name: 'HOT_WorkTypeName__c',
+    //     type: 'String'
+    // },
     {
         label: 'Tema',
         name: 'Subject',
