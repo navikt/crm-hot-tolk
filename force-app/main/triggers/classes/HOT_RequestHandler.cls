@@ -236,7 +236,7 @@ public without sharing class HOT_RequestHandler extends MyTriggers {
         List<ServiceAppointment> saList = [
             SELECT Id, HOT_Company__c, HOT_Request__c
             FROM ServiceAppointment
-            WHERE HOT_Request__c IN :requestsWithNewCompany
+            WHERE HOT_Request__c IN :(new Map<Id, HOT_Request__c>(requestsWithNewCompany)).keySet()
         ];
 
         if (saList.size() > 0) {
@@ -385,7 +385,7 @@ public without sharing class HOT_RequestHandler extends MyTriggers {
                 HOT_NumberOfInterpreters__c,
                 WorkTypeId
             FROM WorkOrder
-            WHERE HOT_Request__c IN :godkjentRequests AND Status = 'New'
+            WHERE HOT_Request__c IN :(new Map<Id, HOT_Request__c>(godkjentRequests)).keySet() AND Status = 'New'
         ];
         if (workOrders.size() > 0) {
             HOT_WorkOrderHandler.updateWorkOrders(workOrders);
