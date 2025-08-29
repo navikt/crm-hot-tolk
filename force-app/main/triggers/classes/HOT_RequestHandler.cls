@@ -494,10 +494,8 @@ public without sharing class HOT_RequestHandler extends MyTriggers {
     }
 
     public static void setServiceTerritory(List<HOT_Request__c> requests) {
-        List<HOT_ServiceTerritoryByQueue__mdt> serviceTerritoryByQueueList = [
-            SELECT Queue__c, ServiceTerritory__c
-            FROM HOT_ServiceTerritoryByQueue__mdt
-        ];
+        List<HOT_ServiceTerritoryByQueue__mdt> serviceTerritoryByQueueList = HOT_ServiceTerritoryByQueue__mdt.getAll()
+            .values();
         Map<String, String> serviceTerritoryByQueue = new Map<String, String>();
         for (HOT_ServiceTerritoryByQueue__mdt STbyQ : serviceTerritoryByQueueList) {
             serviceTerritoryByQueue.put(STbyQ.Queue__c, STbyQ.ServiceTerritory__c);
