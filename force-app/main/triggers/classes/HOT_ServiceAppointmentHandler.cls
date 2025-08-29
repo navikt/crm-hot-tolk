@@ -912,7 +912,7 @@ public without sharing class HOT_ServiceAppointmentHandler extends MyTriggers {
         List<HOT_InterestedResource__c> interestedResources = [
             SELECT Status__c, ServiceAppointment__r.Status, ServiceResource__c
             FROM HOT_InterestedResource__c
-            WHERE ServiceAppointment__c IN :serviceAppointments
+            WHERE ServiceAppointment__c IN :(new Map<Id, ServiceAppointment>(serviceAppointments)).keySet()
         ];
         for (HOT_InterestedResource__c interestedResource : interestedResources) {
             if (
