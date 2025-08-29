@@ -1,0 +1,87 @@
+<template>
+    <template lwc:if={hasResult}>
+        <div class="main-content">
+            <c-hot_freelance-common-table
+                records={records}
+                columns={columns}
+                onrowclick={goToRecordDetails}
+                icon-by-value={iconByValue}
+            >
+            </c-hot_freelance-common-table>
+        </div>
+    </template>
+
+    <template lwc:elseif={noInterestedResourcesResult}>
+        <div style="text-align: center">
+            <br />
+            <p>Du har ingen påmeldte oppdrag.</p>
+            <br />
+        </div>
+    </template>
+
+    <template lwc:elseif={noFilteredRecordsResult}>
+        <div style="text-align: center">
+            <br />
+            <p>Det er ingen oppdrag med denne filtreringen. Du kan endre filteret for å se andre oppdrag</p>
+            <br />
+        </div>
+    </template>
+    <!-- MODAL SOM VISES NÅR MAN TRYKKER PÅ OPPDRAG OG KOMMER FRA VARSEL-->
+    <dialog class="modal-container" aria-label="Informasjon om oppdrag" onclose={closeModal}>
+        <div class="modal-header">
+            <h2>Informasjon om oppdraget:</h2>
+            <button class="close-btn" onclick={closeModal} aria-label="Lukk">
+                <img src={exitCrossIcon} alt="" aria-hidden="true" />
+            </button>
+        </div>
+        <div if:false={hasAccess} class="modal-body">
+            <p></p>
+            <p>Du er ikke tildelt oppdraget lenger.</p>
+        </div>
+        <div if:true={hasAccess} class="modal-body">
+            <div if:true={isDetails}>
+                <div>
+                    <p>Oppdrag: <span>{appointmentNumber}</span></p>
+                    <p>Tema: <span>{subject}</span></p>
+                    <p>Tid: <span>{time}</span></p>
+                    <p>Adresse: <span>{address}</span></p>
+                    <p>Tolkemetode: <span>{workType}</span></p>
+                    <p>Oppdragstype: <span>{assignmentType}</span></p>
+                    <p>Status: <span>{status}</span></p>
+                    <p>Antall påmeldte: <span>{numberOfResources}</span></p>
+                    <p>Frigitt dato: <span>{releaseDate}</span></p>
+                    <p>Frigitt av: <span>{releasedBy}</span></p>
+                    <p>Frist dato: <span>{deadline}</span></p>
+                    <p>Region: <span>{region}</span></p>
+                    <p>Eier: <span>{ownerName}</span></p>
+                    <template if:true={canceledDate}>
+                        <p>Avlyst dato: <span>{canceledDate}</span></p>
+                    </template>
+                    <template if:true={terms}>
+                        <p>Avtalte betingelser: <span>{terms}</span></p>
+                    </template>
+                </div>
+
+                <div style="display: inline-block; padding-right: 1vw; padding-bottom: 1vw; padding-top: 1vw">
+                    <c-button
+                        disabled={isNotRetractable}
+                        onbuttonclick={retractInterest}
+                        button-styling="Primary"
+                        type="Submit"
+                        button-label="Tilbaketrekk interesse"
+                        mobile-style="margin-top: 2rem; margin-bottom: 1rem"
+                    >
+                    </c-button>
+                </div>
+                <div style="display: inline-block; padding-right: 1vw; padding-bottom: 1vw; padding-top: 1vw">
+                    <c-button
+                        disabled={isGoToThreadButtonDisabled}
+                        button-label="Samtale med formidler"
+                        button-styling="Primary"
+                        onbuttonclick={goToInterestedResourceThread}
+                    ></c-button>
+                </div>
+            </div>
+        </div>
+    </dialog>
+</template>
