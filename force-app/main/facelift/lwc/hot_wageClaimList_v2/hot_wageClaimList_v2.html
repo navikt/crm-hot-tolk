@@ -1,0 +1,118 @@
+<template>
+    <template lwc:if={hasResult}>
+        <div class="main-content">
+            <c-hot_freelance-common-table
+                records={wageClaims}
+                columns={columns}
+                onrowclick={goToRecordDetails}
+            ></c-hot_freelance-common-table>
+        </div>
+    </template>
+
+    <template lwc:elseif={noWageClaimsResult}>
+        <div style="text-align: center">
+            <br />
+            <p>Du har ingen ledig på lønn oppdrag.</p>
+            <br />
+        </div>
+    </template>
+
+    <template lwc:elseif={noFilteredRecordsResult}>
+        <div style="text-align: center">
+            <br />
+            <p>
+                Det finnes ingen ledig på lønn oppdrag med denne filtreringen. Du kan endre filteret for å se andre
+                oppdrag
+            </p>
+            <br />
+        </div>
+    </template>
+    <!-- MODAL -->
+    <dialog class="modal-container" aria-label="Informasjon om oppdrag" onclose={closeModal}>
+        <div class="modal-header">
+            <h2>Informasjon om oppdraget:</h2>
+            <button class="close-btn" onclick={closeModal} aria-label="Lukk">
+                <img src={exitCrossIcon} alt="" aria-hidden="true" />
+            </button>
+        </div>
+
+        <div if:false={hasAccess} class="modal-body">
+            <p>Du er ikke tildelt oppdraget lenger.</p>
+        </div>
+
+        <div if:true={hasAccess} class="modal-body">
+            <p>Oppdragsnummer: <span>{appointmentNumber}</span></p>
+            <p>Tid: <span>{appointmentTime}</span></p>
+            <p>Poststed: <span>{appointmentCity}</span></p>
+            <p>Tolkemetode: <span>{workType}</span></p>
+            <p>Oppdragstype: <span>{assignmentType}</span></p>
+            <p>Eier: <span>{ownerName}</span></p>
+            <p>Døv/døvblind: <span>{degreeOfHearingAndVisualImpairment}</span></p>
+            <p>Status: <span>{status}</span></p>
+            <div
+                lwc:if={isRetracting}
+                class="navno-dekorator alertstripe navno-dekorator alertstripe--advarsel"
+                role="alert"
+            >
+                <img class="navno-dekorator alertstripe__ikon" src={warningicon} alt="" />
+                <div class="alertstripe__innhold">
+                    <div class="typo-normal alertstripe__tekst">
+                        Er du sikker på at du vil fjerne tilgjengeligheten din for dette tidspunktet? Du vil da ikke ha
+                        krav på lønn.
+                    </div>
+                    <div class="alertstripe__knapper">
+                        <c-button
+                            disabled={isNotRetractable}
+                            button-styling="danger"
+                            button-label="Tilbaketrekk tilgjengelighet"
+                            aria-label="Tilbaketrekk tilgjengelighet"
+                            onbuttonclick={retractAvailability}
+                        ></c-button>
+
+                        <c-button
+                            disabled={isDisabledGoToThread}
+                            button-styling="primary"
+                            button-label="Avbryt"
+                            aria-label="Avbryt"
+                            onbuttonclick={cancelRetraction}
+                        ></c-button>
+                    </div>
+                </div>
+            </div>
+
+            <div lwc:else>
+                <div style="display: inline-block; padding-right: 1vw; padding-top: 1rem">
+                    <c-button
+                        disabled={isNotRetractable}
+                        button-styling="primary"
+                        button-label="Tilbaketrekk tilgjengelighet"
+                        aria-label="Tilbaketrekk tilgjengelighet"
+                        onbuttonclick={showModalRetract}
+                    ></c-button>
+                </div>
+
+                <div style="display: inline-block; padding-top: 1rem">
+                    <c-button
+                        disabled={isDisabledGoToThread}
+                        button-styling="primary"
+                        button-label="Samtale med ressurskontor"
+                        aria-label="Samtale med ressurskontor"
+                        onbuttonclick={goToWageClaimThread}
+                    ></c-button>
+                </div>
+            </div>
+        </div>
+    </dialog>
+
+    <c-alertdialog
+        header={modalHeader}
+        content={modalContent}
+        desktop-style="text-align: center; white-space: pre-line; width: 50%"
+        mobile-style="text-align: center; white-space: pre-line; width: 100%; max-width: 100%;"
+        center-buttons="true"
+        no-cancel-button={noCancelButton}
+        confirm-button-label={confirmButtonLabel}
+        onbuttonclick={handleAlertDialogClick}
+    >
+    </c-alertdialog>
+</template>

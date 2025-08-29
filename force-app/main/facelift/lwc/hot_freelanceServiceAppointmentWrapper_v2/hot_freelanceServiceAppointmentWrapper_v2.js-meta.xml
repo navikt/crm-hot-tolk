@@ -2,8 +2,8 @@
 <LightningComponentBundle xmlns="http://soap.sforce.com/2006/04/metadata">
     <apiVersion>64.0</apiVersion>
     <isExposed>true</isExposed>
-    <description>Used to show user the information stored about them.</description>
-    <masterLabel>HOT User Information V2</masterLabel>
+    <masterLabel>HOT Freelance ServiceAppointment List</masterLabel>
+    <description>Wrapper for alle listene for frilanstolker. Ledige oppdrag, påmeldte oppdrag, mine oppdrag, ledig på lønn, oppdrag du er ønsket til</description>
     <targets>
         <target>lightningCommunity__Page</target>
     </targets>

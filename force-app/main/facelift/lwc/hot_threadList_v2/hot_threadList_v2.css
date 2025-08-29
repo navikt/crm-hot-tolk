@@ -3,6 +3,7 @@
     height: 100%;
     min-height: 80vh;
     padding: 0 0.5rem 2rem;
+    background-color: #fff;
 }
 .threadList {
     display: flex;
