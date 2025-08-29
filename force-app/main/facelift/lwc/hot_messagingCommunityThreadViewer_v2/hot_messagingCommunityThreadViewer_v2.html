@@ -131,7 +131,6 @@
                                 </template>
 
                                 <!-- Show Interested Resource Details -->
-                                <!-- <template lwc:elseif={isIRDetails}> -->
                                 <template lwc:if={isIRDetails}>
                                     <div>
                                         <p>Oppdrag: <span>{interestedResource.AppointmentNumber__c}</span></p>
@@ -272,7 +271,7 @@
     </template>
 
     <template lwc:if={showError}>
-        <div>
+        <div class="error-content">
             <p>Du har ikke tilgang til denne samtalen.</p>
             <br />
             <c-button button-styling="Primary" button-label="Gå til hjem" onbuttonclick={goToHome}></c-button>
