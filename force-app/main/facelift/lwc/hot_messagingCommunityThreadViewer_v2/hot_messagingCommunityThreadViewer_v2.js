@@ -2,6 +2,7 @@ import { LightningElement, wire, api } from 'lwc';
 import { NavigationMixin } from 'lightning/navigation';
 import getmessages from '@salesforce/apex/HOT_MessageHelper.getMessagesFromThread';
 import markAsRead from '@salesforce/apex/HOT_MessageHelper.markAsRead';
+import markAsReadByNav from '@salesforce/apex/HOT_MessageHelper.markAsReadByNav';
 import markThreadAsRead from '@salesforce/apex/HOT_MessageHelper.markThreadAsRead';
 import { refreshApex } from '@salesforce/apex';
 import getContactId from '@salesforce/apex/HOT_MessageHelper.getUserContactId';
@@ -39,6 +40,9 @@ export default class Hot_messagingCommunityThreadViewer_v2 extends NavigationMix
     showContent = false;
     showError = false;
     hasAccess;
+    readByThread;
+
+    // isReadBy = false;
 
     @api recordId;
     @api requestId;
@@ -60,6 +64,12 @@ export default class Hot_messagingCommunityThreadViewer_v2 extends NavigationMix
                 this.userContactId = contactId;
                 refreshApex(this._mySendForSplitting);
                 markThreadAsRead({ threadId: this.recordId, userContactId: this.userContactId });
+            })
+            .then(() => {
+                // Just refresh the messages wire to get updated names
+                if (this._mySendForSplitting) {
+                    return refreshApex(this._mySendForSplitting);
+                }
             })
             .catch((error) => {
                 console.error('Error fetching user contact ID:', error);
@@ -107,6 +117,7 @@ export default class Hot_messagingCommunityThreadViewer_v2 extends NavigationMix
     threadType;
     @wire(getThreadDetails, { recordId: '$recordId' })
     wireThreads(result) {
+        this._threadWire = result;
         if (result.data) {
             this.thread = result.data;
             this.subject = this.thread.HOT_Subject__c;
@@ -114,9 +125,40 @@ export default class Hot_messagingCommunityThreadViewer_v2 extends NavigationMix
             this.threadRelatedObjectId = this.thread.CRM_Related_Object__c;
             this.isclosed = this.thread.CRM_Is_Closed__c;
             this.showContent = true;
+
+            this.readByThread = this.thread.HOT_Thread_read_by__c;
+
+            // Compute names from messages if already loaded
+            if (this.messages && this.messages.length > 0) {
+                this.readByNames = this.getReadByNames();
+            }
         } else if (result.error) {
             this.showError = true;
         }
+    }
+
+    // Shows up when message has been read
+    showReadBy = false;
+    get readByNames() {
+        if (!this.readByThread || !this.messages || this.messages.length === 0) {
+            this.showReadBy = false;
+            return '';
+        }
+
+        const ids = this.readByThread.split(';');
+        const idRoleMap = {};
+
+        this.messages.forEach((msg) => {
+            if (msg.CRM_From_Contact__c) idRoleMap[msg.CRM_From_Contact__c] = msg.HOT_User_Role__c;
+            if (msg.CRM_From_User__c) idRoleMap[msg.CRM_From_User__c] = msg.HOT_User_Role__c;
+        });
+
+        const currentUserId = this.userContactId;
+        const names = ids.map((id) => (id === currentUserId ? null : idRoleMap[id])).filter(Boolean);
+
+        this.showReadBy = names.length > 0;
+
+        return names.join(', ');
     }
 
     // Calls apex and extracts messages related to this record
@@ -210,7 +252,9 @@ export default class Hot_messagingCommunityThreadViewer_v2 extends NavigationMix
         this.msgVal = '';
         this.buttonisdisabled = false;
 
-        return refreshApex(this._mySendForSplitting);
+        this.showReadBy = false;
+        // return refreshApex(this._mySendForSplitting);
+        Promise.all([refreshApex(this._mySendForSplitting), refreshApex(this._threadWire)]);
     }
 
     handleMessageFailed() {

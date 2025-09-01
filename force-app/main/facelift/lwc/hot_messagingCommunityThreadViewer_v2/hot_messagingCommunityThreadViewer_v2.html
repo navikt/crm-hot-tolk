@@ -237,8 +237,12 @@
                             ></c-hot_messaging-Community-Message-Container>
                         </template>
                     </div>
+
                     <div class="read-by-container">
-                        <p class="read-by-text">Lest av Mathias Burger King, Svenn Terje, Øvind, Mathias</p>
+                        <!-- <template lwc:if={showReadBy}> -->
+                        <template lwc:if={readByNames}>
+                            <p class="read-by-text">Lest av {readByNames}</p>
+                        </template>
                     </div>
                 </div>
 

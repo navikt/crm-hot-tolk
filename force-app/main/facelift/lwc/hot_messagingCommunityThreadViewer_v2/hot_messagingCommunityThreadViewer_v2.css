@@ -68,15 +68,16 @@
     margin: auto;
     margin-top: 0.5rem;
 
-    border: 2px solid red;
+    /* border: 2px solid red; */
 }
 
 .thread-container {
     display: flex;
     flex-direction: column;
     justify-content: space-between;
-    border: 2px solid blue;
     margin-bottom: 0.5rem;
+
+    /* border: 2px solid blue; */
 }
 
 .textarea-container {
@@ -117,6 +118,7 @@
 .read-by-text {
     font-size: 1rem;
     text-align: end;
+    margin-right: 1rem;
 }
 
 .modal-container {
@@ -220,6 +222,7 @@ dialog.modal-container .modal-body {
     .read-by-text {
         font-size: 0.875rem;
         text-align: end;
+        margin-left: 3.5rem;
     }
 }
 
@@ -258,5 +261,9 @@ dialog.modal-container .modal-body {
 
     .modal-container {
         z-index: 1000;
+    }
+
+    .helpText {
+        margin-bottom: -0.5rem;
     }
 }
