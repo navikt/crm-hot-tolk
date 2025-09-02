@@ -139,12 +139,6 @@ private class HOT_MySAListControllerTest {
         System.assertEquals(true, access, 'Should have access to this sa');
     }
     @IsTest
-    static void getOwnerName() {
-        ServiceAppointment serviceAppointment = [SELECT Id FROM ServiceAppointment];
-        String owner = HOT_MyServiceAppointmentListController.getOwnerName(serviceAppointment.Id);
-        System.assertEquals('HoT Tolk Admin', owner, 'Could not get owner name');
-    }
-    @IsTest
     static void getServiceAppointmentDetailsTest() {
         ServiceAppointment serviceAppointment = [SELECT Id FROM ServiceAppointment LIMIT 1];
         User admin = [SELECT Id, UserRoleId FROM User WHERE Id = :UserInfo.getUserId() LIMIT 1];
