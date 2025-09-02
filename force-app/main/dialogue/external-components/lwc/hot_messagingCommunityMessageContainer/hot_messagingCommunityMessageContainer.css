@@ -2,3 +2,9 @@
     padding: 0 1rem;
     font-size: 18px;
 }
+
+@media (max-width: 576px) {
+    .thread-container {
+        padding: 0 0rem;
+    }
+}
