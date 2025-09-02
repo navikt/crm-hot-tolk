@@ -238,14 +238,15 @@
                         </template>
                     </div>
 
+                    <!-- Read by info -->
                     <div class="read-by-container">
-                        <!-- <template lwc:if={showReadBy}> -->
                         <template lwc:if={readByNames}>
                             <p class="read-by-text">Lest av {readByNames}</p>
                         </template>
                     </div>
                 </div>
 
+                <!-- Helptext -->
                 <template lwc:if={isHelpText}>
                     <c-helptext class="helpText" text={helptextContent} hover-text={helptextHovertext}></c-helptext>
                 </template>
@@ -274,6 +275,7 @@
         </div>
     </template>
 
+    <!-- User has no access to the thread -->
     <template lwc:if={showError}>
         <div class="error-content">
             <p>Du har ikke tilgang til denne samtalen.</p>

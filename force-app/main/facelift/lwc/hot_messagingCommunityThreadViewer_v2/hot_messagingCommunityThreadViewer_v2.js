@@ -30,6 +30,8 @@ export default class Hot_messagingCommunityThreadViewer_v2 extends NavigationMix
     thread;
     threadRelatedObjectId;
 
+    _threadWire;
+
     isDetails = false;
     isDetailsContent = false;
     isIRDetails = false;
@@ -41,8 +43,6 @@ export default class Hot_messagingCommunityThreadViewer_v2 extends NavigationMix
     showError = false;
     hasAccess;
     readByThread;
-
-    // isReadBy = false;
 
     @api recordId;
     @api requestId;
