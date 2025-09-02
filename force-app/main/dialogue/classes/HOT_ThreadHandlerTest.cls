@@ -398,7 +398,7 @@ public without sharing class HOT_ThreadHandlerTest {
             new Set<String>((user.Id +
             ', ' +
             user2.Id).split(', ')),
-             new Set<String>(t.HOT_ParticipantIds__c.split(', ')),
+             new Set<String>(t.HOT_ParticipantIds__c.split(',')),
             'Did not change/add correct participant to thread'
         );
     }
