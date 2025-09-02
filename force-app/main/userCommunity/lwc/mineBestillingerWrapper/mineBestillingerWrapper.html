@@ -12,7 +12,7 @@
                         <p class="backBtn" style="margin-left: 0.25rem">Tilbake</p>
                     </a>
                 </div>
-                <h2 class="header" autofocus>{headerToShow}</h2>
+                <h2 class="header" tabindex="-1" autofocus>{headerToShow}</h2>
                 <div class="header-buttons">
                     <c-button
                         if:false={urlStateParameters.id}
@@ -42,7 +42,7 @@
                 </div>
             </div>
             <div if:true={isRequestDetails}>
-                <div class="record-details-container" aria-label="Informasjon i bestillingen" role="region">
+                <div class="record-details-container">
                     <p>
                         <strong>Gjelder periode: </strong><span>{requestSeriesStartDate} - {requestSeriesEndDate}</span>
                     </p>
@@ -100,7 +100,7 @@
                 <br />
             </div>
             <div if:true={isWorkOrderDetails}>
-                <div class="record-details-container" aria-label="Informasjon i bestillingen" role="region">
+                <div class="record-details-container">
                     <p><strong>Fra dato: </strong><span>{workOrderStartDate}</span></p>
                     <p><strong>Til dato: </strong><span>{workOrderEndDate}</span></p>
                     <br />
@@ -256,12 +256,13 @@
     <div
         class="ReactModal__Overlay ReactModal__Overlay--after-open modal__overlay hidden"
         style="z-index: 9999; background-color: rgba(38, 38, 38, 0.7)"
-        tabindex="0"
-        role="dialog"
-        aria-label="Legg til filer"
-        aria-modal="true"
+        tabindex="-1"
     >
-        <div class="ReactModal__Content ReactModal__Content--after-open comments-dialog-container">
+        <div
+            class="ReactModal__Content ReactModal__Content--after-open comments-dialog-container"
+            role="dialog"
+            aria-labelledby="details-header-id"
+        >
             <div class="loader hidden"></div>
             <div if:true={showUploadFilesComponent}>
                 <h2 style="font-size: 1.25rem; text-align: center">Legg ved filer til denne bestillingen</h2>
