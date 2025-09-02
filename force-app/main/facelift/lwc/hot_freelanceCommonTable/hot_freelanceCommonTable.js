@@ -12,8 +12,8 @@ export default class Hot_freelanceCommonTable extends LightningElement {
     // WIP: return badge css will be changed when we have a decided on design colors
     statusBadgeMap = {
         'badge-gray': ['Åpen', 'Open'],
-        'badge-blue': ['Reserved', 'Reservert'],
-        'badge-green': ['Assigned', 'Tildelt', 'Dekket', 'Covered'],
+        'badge-blue': ['Reserved', 'Reservert', 'Assigned', 'Tildelt'],
+        'badge-green': ['Dekket', 'Covered'],
         'badge-yellow': ['Interested', 'Påmeldt', 'Wanted', 'Ønsket til'],
         'badge-red': [
             'Not Assigned',
