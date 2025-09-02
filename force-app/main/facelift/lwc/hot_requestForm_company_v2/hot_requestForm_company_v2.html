@@ -1,0 +1,51 @@
+<template>
+    <section class="virksomhet-info-skjema sub-form">
+        <h2 class="header" tabindex="-1">Informasjon om virksomhet</h2>
+        <br />
+        <c-input
+            id="organisasjonsnummer"
+            label="Organisasjonsnummer"
+            name="OrganizationNumber__c"
+            max-length="11"
+            form="tolk-skjema-input"
+            value={fieldValues.OrganizationNumber__c}
+            error-text="Ikke gyldig format for organisasjonsnummer."
+        ></c-input>
+        <br />
+        <c-picklist
+            choices={componentValues.choices}
+            master-label="Betalingsansvar"
+            onpicklistvaluechange={handlePicklist}
+            desktop-style="width: 50%;"
+            error-text="Du må velge et alternativ for betalingsansvar."
+        ></c-picklist>
+        <br />
+        <div if:true={fieldValues.IsOtherEconomicProvicer__c}>
+            <c-input
+                id="fakturareferanse"
+                label="Deres fakturareferanse"
+                name="InvoiceReference__c"
+                form="tolk-skjema-input"
+                max-length="255"
+                value={fieldValues.InvoiceReference__c}
+            ></c-input>
+            <br />
+            <c-input
+                id="tilleggsinformasjon"
+                label="Tilleggsinformasjon"
+                name="AdditionalInvoiceText__c"
+                form="tolk-skjema-input"
+                max-length="255"
+                value={fieldValues.AdditionalInvoiceText__c}
+            ></c-input>
+            <br />
+        </div>
+
+        <c-checkbox
+            label="Legge til bruker?"
+            oncheckboxclick={handleUserCheckbox}
+            default-value={componentValues.checkboxValue}
+            disabled={isEditOrCopyMode}
+        ></c-checkbox>
+    </section>
+</template>
