@@ -8,9 +8,6 @@
     height: 80px;
     animation: spin 1s linear infinite;
 }
-.contentBackground {
-    background-color: #fff;
-}
 
 @keyframes spin {
     0% {
@@ -39,7 +36,6 @@
     font-size: 1rem;
     font-weight: 400;
     letter-spacing: 0;
-    padding-left: 0.5rem;
 }
 
 .skjema-ikon {
@@ -91,7 +87,6 @@ div.skjema {
     border-radius: 0.5rem;
     padding: 0 2rem;
     background-color: #fff;
-    margin: 2rem 0;
 }
 
 @media (max-width: 576px) {
@@ -113,31 +108,26 @@ section.sub-form:last-child {
     width: 100%;
 }
 
+.tolketjenesten {
+    background-color: #dade99;
+    border-bottom: 4px solid rgb(181, 189, 51);
+}
+
 .main-content {
     font-family: 'Source Sans Pro', Arial, sans-serif;
     align-items: center;
     display: flex;
     justify-content: center;
     flex-direction: column;
-    background-color: #f2f3f5;
 }
 
 .button-container {
-    display: flex;
-    justify-content: center;
-    flex-wrap: wrap;
-    gap: 1rem;
     text-align: center;
     max-width: 792px;
     padding: 1rem 2rem 2rem 2rem;
     flex-direction: row;
-}
-
-@media (max-width: 600px) {
-    .button-container {
-        flex-direction: column;
-        align-items: center;
-    }
+    display: flex;
+    justify-content: center;
 }
 
 .back-button {

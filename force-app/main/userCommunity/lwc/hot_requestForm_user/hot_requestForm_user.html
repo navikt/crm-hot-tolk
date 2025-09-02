@@ -9,7 +9,6 @@
         </div>
         <br />
         <c-input
-            id="tolkebrukerNavn"
             label="Tolkebrukers navn"
             name="UserName__c"
             form="tolk-skjema-input"
@@ -27,7 +26,6 @@
         ></c-radiobuttons>
         <br />
         <c-input
-            id="tolkebrukerFnr"
             if:true={isBirthdate}
             label="Tolkebrukers fødselsnummer"
             name="UserPersonNumber__c"
@@ -40,7 +38,6 @@
             mobile-style="width: 100%"
         ></c-input>
         <c-input
-            id="tolkebrukerMobilnr"
             if:false={isBirthdate}
             label="Tolkebrukers telefonnummer"
             name="UserPhone__c"

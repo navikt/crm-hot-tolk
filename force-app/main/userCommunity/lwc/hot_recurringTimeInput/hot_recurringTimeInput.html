@@ -62,7 +62,7 @@
             name="Gjentagende"
             aria-label="Gjentagende bestilling?"
         ></c-checkbox>
-        <div if:true={isAdvancedTimes} class="time-inputs-container" style="margin-bottom: 0.5rem" aria-live="polite">
+        <div if:true={isAdvancedTimes} class="time-inputs-container" style="margin-bottom: 0.5rem" aria-live>
             <c-picklist
                 name="Gjenta"
                 choices={repeatingOptions}
@@ -74,7 +74,7 @@
             >
             </c-picklist>
             <br />
-            <div if:true={showWeekDays} aria-live="polite">
+            <div if:true={showWeekDays} aria-live>
                 <c-checkboxgroup
                     data-id="recurringDays"
                     checkboxes={days}
@@ -83,7 +83,7 @@
                     error-text="Du må velge minst én dag tolkebehovet gjentas."
                 ></c-checkboxgroup>
             </div>
-            <div aria-live="polite" if:true={isRepeating}>
+            <div aria-live if:true={isRepeating}>
                 <c-input
                     label="Sluttdato"
                     data-id="recurringEndDate"

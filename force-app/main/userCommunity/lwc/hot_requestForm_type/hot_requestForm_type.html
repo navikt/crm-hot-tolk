@@ -2,23 +2,23 @@
     <section class="valg-av-bestillingstype__container sub-form">
         <div>
             <h2 class="header">Hvilken type bestilling ønsker du?</h2>
-            <br />
             <template for:each={radioWrappers} for:item="radio">
                 <div key={radio.value} class="radio-with-help">
                     <span class="label-and-icon">
                         <c-radiobuttons
                             radiobuttons={radio.singleRadioArray}
-                            group-name="requestType"
+                            group-name="testRadioGroup"
                             onradiobuttonsclick={handleRequestTypeChange}
                         ></c-radiobuttons>
 
                         <template lwc:if={radio.helptext}>
-                            <c-helptext2 text={radio.helptext} hover-text={radio.helptext}></c-helptext2>
+                            <c-helptext text={radio.helptext} hover-text={radio.helptext}></c-helptext>
                         </template>
                     </span>
                 </div>
             </template>
         </div>
+
         <div class="button-container">
             <c-button
                 button-label="Neste"
@@ -26,10 +26,11 @@
                 onbuttonclick={sendResult}
                 desktop-style="width: 8rem; justify-content: center"
                 mobile-style="width: 8rem; justify-content: center"
+                style="padding-bottom: 1em"
             ></c-button>
             <c-button
                 button-label="Avbryt"
-                button-styling="secondary"
+                button-styling="tertiary"
                 onbuttonclick={goToPreviousPage}
                 desktop-style="width: 8rem; justify-content: center"
                 mobile-style="width: 8rem; justify-content: center"
