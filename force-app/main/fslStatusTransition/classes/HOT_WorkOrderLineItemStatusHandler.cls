@@ -69,7 +69,7 @@ public without sharing class HOT_WorkOrderLineItemStatusHandler extends MyTrigge
         List<ServiceAppointment> serviceAppointments = [
             SELECT ParentRecordId, Status
             FROM ServiceAppointment
-            WHERE ParentRecordId IN :workOrderLineItems AND Status != 'Annul'
+            WHERE ParentRecordId IN :(new Map<Id, WorkOrderLineItem>(workOrderLineItems)).keySet() AND Status != 'Annul'
         ];
         Map<Id, List<ServiceAppointment>> serviceAppointmentMaps = new Map<Id, List<ServiceAppointment>>();
 
@@ -177,7 +177,10 @@ public without sharing class HOT_WorkOrderLineItemStatusHandler extends MyTrigge
                     workOrderLineItem.Status = 'Partially Complete';
                     continue;
                 }
-                if (numberOfServiceAppointments > 1 && numberOfCanceled + numberOfCannotComplete == numberOfServiceAppointments) {
+                if (
+                    numberOfServiceAppointments > 1 &&
+                    numberOfCanceled + numberOfCannotComplete == numberOfServiceAppointments
+                ) {
                     workOrderLineItem.Status = 'Cannot Complete';
                     continue;
                 }

@@ -19,7 +19,6 @@ public without sharing class HOT_RequestHandler extends MyTriggers {
                 'NumberOfWorkOrders__c'
             }
         );
-        //setSourceFieldOnClone((List<HOT_Request__c>) records);
         List<HOT_Request__c> imageInterpreterRequests = new List<HOT_Request__c>();
         List<HOT_Request__c> requestsWithUserInterpretationMethod = new List<HOT_Request__c>();
 
@@ -236,7 +235,7 @@ public without sharing class HOT_RequestHandler extends MyTriggers {
         List<ServiceAppointment> saList = [
             SELECT Id, HOT_Company__c, HOT_Request__c
             FROM ServiceAppointment
-            WHERE HOT_Request__c IN :requestsWithNewCompany
+            WHERE HOT_Request__c IN :(new Map<Id, HOT_Request__c>(requestsWithNewCompany)).keySet()
         ];
 
         if (saList.size() > 0) {
@@ -385,7 +384,7 @@ public without sharing class HOT_RequestHandler extends MyTriggers {
                 HOT_NumberOfInterpreters__c,
                 WorkTypeId
             FROM WorkOrder
-            WHERE HOT_Request__c IN :godkjentRequests AND Status = 'New'
+            WHERE HOT_Request__c IN :(new Map<Id, HOT_Request__c>(godkjentRequests)).keySet() AND Status = 'New'
         ];
         if (workOrders.size() > 0) {
             HOT_WorkOrderHandler.updateWorkOrders(workOrders);
@@ -494,10 +493,8 @@ public without sharing class HOT_RequestHandler extends MyTriggers {
     }
 
     public static void setServiceTerritory(List<HOT_Request__c> requests) {
-        List<HOT_ServiceTerritoryByQueue__mdt> serviceTerritoryByQueueList = [
-            SELECT Queue__c, ServiceTerritory__c
-            FROM HOT_ServiceTerritoryByQueue__mdt
-        ];
+        List<HOT_ServiceTerritoryByQueue__mdt> serviceTerritoryByQueueList = HOT_ServiceTerritoryByQueue__mdt.getAll()
+            .values();
         Map<String, String> serviceTerritoryByQueue = new Map<String, String>();
         for (HOT_ServiceTerritoryByQueue__mdt STbyQ : serviceTerritoryByQueueList) {
             serviceTerritoryByQueue.put(STbyQ.Queue__c, STbyQ.ServiceTerritory__c);
@@ -555,15 +552,6 @@ public without sharing class HOT_RequestHandler extends MyTriggers {
                 if (request.get(field) != null) {
                     request.put(field, null);
                 }
-            }
-        }
-    }
-
-    // If Request is cloned we can assume it is Formidler since users can't clone
-    public static void setSourceFieldOnClone(List<HOT_Request__c> requests) {
-        for (HOT_Request__c request : requests) {
-            if (request.isClone()) {
-                request.Source__c = 'Dispatcher';
             }
         }
     }
