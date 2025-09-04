@@ -8,32 +8,37 @@ import {
 } from 'lightning/flowSupport';
 
 export default class Hot_changeStatusServiceAppointment_v2 extends LightningElement {
-    @api label;
+    @api groupLabel;
     @api value;
 
-    @api statusDekketLabel;
-    @api statusAvlystLabel;
-    @api statusTolkAvlystLabel;
-
-    @api statusDekketValue;
-    @api statusAvlystValue;
-    @api statusTolkAvlystValue;
+    @api rbOneLabel;
+    @api rbOneValue;
+    @api rbTwoLabel;
+    @api rbTwoValue;
+    @api rbThreeLabel;
+    @api rbThreeValue;
 
     get radiobuttons() {
         return [
-            this.statusDekketValue ? { label: this.statusDekketLabel, value: this.statusDekketValue } : null,
-            this.statusAvlystValue ? { label: this.statusAvlystLabel, value: this.statusAvlystValue } : null,
-            this.statusTolkAvlystValue ? { label: this.statusTolkAvlystLabel, value: this.statusTolkAvlystValue } : null
+            this.rbOneValue ? { label: this.rbOneLabel, value: this.rbOneValue } : null,
+            this.rbTwoValue ? { label: this.rbTwoLabel, value: this.rbTwoValue } : null,
+            this.rbThreeValue ? { label: this.rbThreeLabel, value: this.rbThreeValue } : null
         ].filter((r) => r !== null);
     }
 
+    // Updates the Flow variable "value" when a radio button is selected
     handleRequestTypeChange(event) {
         const detail = event.detail;
         if (!Array.isArray(detail)) return;
 
-        const checkedRadio = detail.find((r) => r.checked);
-        this.value = checkedRadio ? checkedRadio.value : null;
+        const selectedRadio = detail.find((r) => r.checked);
+        this.value = selectedRadio ? selectedRadio.value : null;
 
         this.dispatchEvent(new FlowAttributeChangeEvent('value', this.value));
+    }
+
+    // Dispatch the Flow "Next" event
+    handleNext() {
+        this.dispatchEvent(new FlowNavigationNextEvent());
     }
 }

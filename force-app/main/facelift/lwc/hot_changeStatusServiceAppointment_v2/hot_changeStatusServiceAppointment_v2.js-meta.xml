@@ -2,36 +2,36 @@
 <LightningComponentBundle xmlns="http://soap.sforce.com/2006/04/metadata">
     <apiVersion>64.0</apiVersion>
     <isExposed>true</isExposed>
-    <masterLabel>HOT Change Status Tags</masterLabel>
-    <description>Group of button that only one button can be selected</description>
+    <masterLabel>HOT Radio Button Status Change</masterLabel>
+    <description>Group of radio button that only one button can be selected</description>
     <targets>
         <target>lightning__AppPage</target>
         <target>lightning__FlowScreen</target>
     </targets>
     <targetConfigs>
         <targetConfig targets="lightning__FlowScreen">
-            <property name="label" type="String" label="Radio Group Label"
-                description="Text above the radio buttons" />
+            <!-- Group Label -->
+            <property name="groupLabel" type="String" label="Radio Group Label"
+                description="Header text above the radio buttons" />
 
-            <property name="statusDekketLabel" type="String" label="Choice 1 Label"
-                description="Text shown to the user" />
-            <property name="statusDekketValue" type="String" label="Choice 1 Value"
-                description="Value stored in Flow" />
+            <!-- Radio Buttons -->
+            <property name="rbOneLabel" type="String" label="Choice 1 Label"
+                description="Text 1 shown to user" />
+            <property name="rbOneValue" type="String" label="Choice 1 Value"
+                description="Value 1 stored in Flow" />
+            <property name="rbTwoLabel" type="String" label="Choice 2 Label"
+                description="Text 2 shown to user" />
+            <property name="rbTwoValue" type="String" label="Choice 2 Value"
+                description="Value 2 stored in Flow" />
+            <property name="rbThreeLabel" type="String" label="Choice 3 Label"
+                description="Text 3 shown to user" />
+            <property name="rbThreeValue" type="String" label="Choice 3 Value"
+                description="Value 3 stored in Flow" />
 
-            <property name="statusAvlystLabel" type="String" label="Choice 2 Label"
-                description="Text shown to the user" />
-            <property name="statusAvlystValue" type="String" label="Choice 2 Value"
-                description="Value stored in Flow" />
-
-            <property name="statusTolkAvlystLabel" type="String" label="Choice 3 Label"
-                description="Text shown to the user" />
-            <property name="statusTolkAvlystValue" type="String" label="Choice 3 Value"
-                description="Value stored in Flow" />
-
+            <!-- Selected value -->
             <property name="value" type="String" label="Selected Value"
                 description="Flow variable for selected choice" />
         </targetConfig>
-
     </targetConfigs>
 
 </LightningComponentBundle>
