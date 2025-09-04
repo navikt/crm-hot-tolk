@@ -13,9 +13,9 @@ export default class Hot_threadListSearch extends LightningElement {
     }
     get placeholderText() {
         if (this.isFreelanceView) {
-            return 'Søk på tittel på oppdraget';
+            return 'Søk på tema på oppdraget';
         } else {
-            return 'Søk på tittel på bestilling';
+            return 'Søk på tema på bestilling';
         }
     }
 }
