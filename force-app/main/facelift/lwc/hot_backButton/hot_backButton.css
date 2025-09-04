@@ -1,17 +1,18 @@
 .full-width-container {
-    background-color: none;
+    background-color: transparent;
     padding: 2vw;
     font-family: 'Source Sans 3', 'Source Sans Pro', Arial, sans-serif;
     box-sizing: border-box;
 }
 
 .inline-container {
-    background-color: none;
+    background-color: transparent;
     font-family: 'Source Sans 3', 'Source Sans Pro', Arial, sans-serif;
     box-sizing: border-box;
 }
 
 .back-button {
+    all: unset;
     display: inline-flex;
     align-items: center;
     gap: 0.4rem;
@@ -21,12 +22,27 @@
     color: #000000;
     cursor: pointer;
     user-select: none;
-    text-decoration: none;
+    padding-top: 1rem;
+    padding-left: 0.5rem;
+    border-radius: 0.25rem;
 }
 
-.back-link:hover .back-label,
-.back-link:focus .back-label {
+.back-button:hover .back-label,
+.back-button:focus .back-label {
     text-decoration: underline;
+}
+
+.back-button:focus {
+    outline: 2px solid #005fcc;
+    outline-offset: 3px;
+}
+
+.back-button:focus:not(:focus-visible) {
+    outline: none;
+}
+.back-button:focus-visible {
+    outline: 2px solid #005fcc;
+    outline-offset: 3px;
 }
 
 .back-icon {

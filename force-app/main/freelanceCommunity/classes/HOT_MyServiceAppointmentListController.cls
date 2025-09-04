@@ -256,19 +256,6 @@ public without sharing class HOT_MyServiceAppointmentListController {
         return Id;
     }
     @AuraEnabled
-    public static String getOwnerName(String serviceAppointmentId) {
-        String ownerName = '';
-        ServiceAppointment sa = [
-            SELECT HOT_Request__r.OwnerName__c
-            FROM ServiceAppointment
-            WHERE Id = :serviceAppointmentId
-        ];
-        if (sa.HOT_Request__r.OwnerName__c != null) {
-            ownerName = sa.HOT_Request__r.OwnerName__c;
-        }
-        return ownerName;
-    }
-    @AuraEnabled
     public static String getThreadInterpretersId(String serviceAppointmentId) {
         String Id = '';
         ServiceAppointment serviceAppointment = [

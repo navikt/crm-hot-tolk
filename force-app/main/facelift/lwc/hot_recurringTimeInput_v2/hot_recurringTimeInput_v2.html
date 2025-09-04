@@ -1,0 +1,109 @@
+<template>
+    <div style="margin-bottom: 0.5rem">
+        <template iterator:it={times}>
+            <div key={it.value.id} class="listClass">
+                <h2 class="sr-only">
+                    Dato: {it.value.date}. Tid: {it.value.startTimeString} - {it.value.endTimeString}
+                </h2>
+                <c-input
+                    label="Dato"
+                    data-id="date"
+                    type="date"
+                    ongetvalueonchange={handleDateChange}
+                    name={it.value.id}
+                    value={it.value.date}
+                    error-text="Feltet må fylles ut."
+                    style={dateTimeDesktopStyle}
+                    mobile-style="padding-bottom: 1vw"
+                ></c-input>
+                <c-input
+                    label="Starttid"
+                    data-id="startTime"
+                    type="time"
+                    value={it.value.startTimeString}
+                    error-text="Feltet må fylles ut."
+                    name={it.value.id}
+                    ongetvalueonchange={handleStartTimeChange}
+                    desktop-style="padding-left: 1vw"
+                    mobile-style="padding-bottom: 1vw"
+                    style={dateTimeDesktopStyle}
+                ></c-input>
+                <c-input
+                    label="Sluttid"
+                    data-id="endTime"
+                    type="time"
+                    value={it.value.endTimeString}
+                    error-text="Feltet må fylles ut."
+                    name={it.value.id}
+                    ongetvalueonchange={handleEndTimeChange}
+                    desktop-style="padding-left: 1vw"
+                    style={dateTimeDesktopStyle}
+                ></c-input>
+                <br if:false={isOnlyOneTime} />
+                <div style="padding-top: 4.5%; padding-left: 1vw">
+                    <c-button
+                        if:false={isOnlyOneTime}
+                        type="button"
+                        button-styling="danger"
+                        onbuttonclick={removeTime}
+                        aria-label="Fjern tid"
+                        name={it.value.id}
+                        button-label="Slett"
+                    >
+                    </c-button>
+                </div>
+                <br if:false={isOnlyOneTime} />
+            </div>
+        </template>
+
+        <c-checkbox
+            label="Gjentagende"
+            oncheckboxclick={advancedTimes}
+            name="Gjentagende"
+            aria-label="Gjentagende bestilling?"
+        ></c-checkbox>
+        <div if:true={isAdvancedTimes} class="time-inputs-container" style="margin-bottom: 0.5rem" aria-live="polite">
+            <c-picklist
+                name="Gjenta"
+                choices={repeatingOptions}
+                onpicklistvaluechange={handleRepeatChoiceMade}
+                master-label="Gjenta"
+                desktop-style="width: 30%"
+                mobile-style="width: 100%"
+                data-id="recurringType"
+            >
+            </c-picklist>
+            <br />
+            <div if:true={showWeekDays} aria-live="polite">
+                <c-checkboxgroup
+                    data-id="recurringDays"
+                    checkboxes={days}
+                    oncheckboxgroupclick={handleDayChosen}
+                    header="Ukedager"
+                    error-text="Du må velge minst én dag tolkebehovet gjentas."
+                ></c-checkboxgroup>
+            </div>
+            <div aria-live="polite" if:true={isRepeating}>
+                <c-input
+                    label="Sluttdato"
+                    data-id="recurringEndDate"
+                    type="date"
+                    ongetvalueonchange={setRepeatingEndDateDate}
+                    name="recurring End Date"
+                    value={repeatingEndDateString}
+                    error-text="Feltet må fylles ut."
+                    desktop-style="width: 30%"
+                ></c-input>
+            </div>
+        </div>
+        <c-button
+            if:false={isAdvancedTimes}
+            type="button"
+            button-styling="secondary"
+            onbuttonclick={addTime}
+            aria-label="Legg til flere tider"
+            button-label="+ Legg til flere tider"
+        >
+        </c-button>
+    </div>
+</template>

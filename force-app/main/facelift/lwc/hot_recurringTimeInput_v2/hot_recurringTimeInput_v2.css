@@ -1,0 +1,26 @@
+.listClass {
+    padding-bottom: 1vw;
+    display: flex;
+    flex-direction: row;
+}
+
+@media only screen and (max-device-width: 480px) {
+    .listClass {
+        align-items: start;
+        padding-bottom: 1vw;
+        display: flex;
+        flex-direction: column;
+    }
+}
+
+.sr-only {
+    position: absolute;
+    width: 1 px;
+    height: 1 px;
+    padding: 0;
+    margin: -1 px;
+    overflow: hidden;
+    clip: rect(0, 0, 0, 0);
+    white-space: nowrap;
+    border: 0;
+}
