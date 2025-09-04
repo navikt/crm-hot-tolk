@@ -20,32 +20,32 @@
                     onsubmit={handleSubmit}
                     record-id={recordId}
                 >
-                    <c-hot_request-form_type
+                    <c-hot_request-form_type_v2
                         if:false={requestTypeChosen}
                         onrequestformtyperesult={handleRequestType}
                         previous-page={previousPage}
-                    ></c-hot_request-form_type>
+                    ></c-hot_request-form_type_v2>
                     <div if:true={requestTypeChosen} class="actual-form">
-                        <c-hot_request-form_orderer
+                        <c-hot_request-form_orderer_v2
                             parent-field-values={fieldValues}
                             class="subform"
                             if:true={requestTypeResult.ordererForm}
-                        ></c-hot_request-form_orderer>
-                        <c-hot_request-form_company
+                        ></c-hot_request-form_orderer_v2>
+                        <c-hot_request-form_company_v2
                             parent-field-values={fieldValues}
                             parent-company-component-values={componentValues}
                             class="subform"
                             onusercheckboxclicked={handleUserCheckbox}
                             if:true={requestTypeResult.companyForm}
                             is-edit-or-copy-mode={isEditOrCopyMode}
-                        ></c-hot_request-form_company>
-                        <c-hot_request-form_user
+                        ></c-hot_request-form_company_v2>
+                        <c-hot_request-form_user_v2
                             parent-field-values={fieldValues}
                             class="subform"
                             if:true={requestTypeResult.userForm}
                             is-edit-or-copy-mode={isEditOrCopyMode}
-                        ></c-hot_request-form_user>
-                        <c-hot_request-form_request
+                        ></c-hot_request-form_user_v2>
+                        <c-hot_request-form_request_v2
                             parent-field-values={fieldValues}
                             parent-request-component-values={componentValues}
                             is-get-all={isGetAll}
@@ -54,7 +54,7 @@
                             class="subform"
                             if:true={requestTypeResult.requestForm}
                             is-edit-or-copy-mode={isEditOrCopyMode}
-                        ></c-hot_request-form_request>
+                        ></c-hot_request-form_request_v2>
                         <div class="button-container">
                             <c-button
                                 data-id="saveButton"

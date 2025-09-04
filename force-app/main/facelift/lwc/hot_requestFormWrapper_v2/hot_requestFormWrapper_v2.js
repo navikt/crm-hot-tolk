@@ -44,7 +44,7 @@ export default class hot_requestFormWrapper_v2 extends NavigationMixin(Lightning
     }
 
     deleteMarkedFiles() {
-        this.template.querySelector('c-hot_request-form_request').deleteMarkedFiles();
+        this.template.querySelector('c-hot_request-form_request_v2').deleteMarkedFiles();
     }
 
     async handleSubmit(event) {
@@ -103,11 +103,11 @@ export default class hot_requestFormWrapper_v2 extends NavigationMixin(Lightning
     }
 
     getComponentValues() {
-        let reqForm = this.template.querySelector('c-hot_request-form_request');
+        let reqForm = this.template.querySelector('c-hot_request-form_request_v2');
         if (reqForm !== null) {
             this.setComponentValuesInWrapper(reqForm.getComponentValues());
         }
-        let companyForm = this.template.querySelector('c-hot_request-form_company');
+        let companyForm = this.template.querySelector('c-hot_request-form_company_v2');
         if (companyForm !== null) {
             this.setComponentValuesInWrapper(companyForm.getComponentValues());
         }
@@ -124,7 +124,7 @@ export default class hot_requestFormWrapper_v2 extends NavigationMixin(Lightning
     async promptOverlap() {
         this.modalContent = '';
         let response = true;
-        let timeInput = this.template.querySelector('c-hot_request-form_request').getTimeInput();
+        let timeInput = this.template.querySelector('c-hot_request-form_request_v2').getTimeInput();
 
         if (!timeInput.isAdvancedTimes && this.fieldValues.Type__c === 'Me') {
             let duplicateRequests = await checkDuplicates({
@@ -227,11 +227,11 @@ export default class hot_requestFormWrapper_v2 extends NavigationMixin(Lightning
     }
 
     uploadFiles() {
-        this.template.querySelector('c-hot_request-form_request').handleFileUpload(this.recordId);
+        this.template.querySelector('c-hot_request-form_request_v2').handleFileUpload(this.recordId);
     }
 
     createWorkOrders() {
-        let timeInput = this.template.querySelector('c-hot_request-form_request').getTimeInput();
+        let timeInput = this.template.querySelector('c-hot_request-form_request_v2').getTimeInput();
         if (timeInput.times !== {}) {
             if (timeInput.isAdvancedTimes) {
                 try {
@@ -371,9 +371,9 @@ export default class hot_requestFormWrapper_v2 extends NavigationMixin(Lightning
 
     formArray = [];
     setCurrentForm() {
-        const currentFormUserForm = this.template.querySelector('c-hot_request-form_user') !== null;
-        const currentFormOrdererForm = this.template.querySelector('c-hot_request-form_orderer') !== null;
-        const currentFormCompanyForm = this.template.querySelector('c-hot_request-form_company') !== null;
+        const currentFormUserForm = this.template.querySelector('c-hot_request-form_user_v2') !== null;
+        const currentFormOrdererForm = this.template.querySelector('c-hot_request-form_orderer_v2') !== null;
+        const currentFormCompanyForm = this.template.querySelector('c-hot_request-form_company_v2') !== null;
 
         if (this.formArray.length === 0 && this.fieldValues.Type__c !== 'Me') {
             this.formArray.push('ordererForm');
