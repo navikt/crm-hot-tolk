@@ -17,6 +17,8 @@ import createmsg from '@salesforce/apex/HOT_MessageHelper.createMessage';
 import { getParametersFromURL } from 'c/hot_URIDecoder';
 import icons from '@salesforce/resourceUrl/ikoner';
 
+import buildReadByEntriesForThread from '@salesforce/apex/HOT_MessageHelper.buildReadByEntriesForThread';
+import USER_ID from '@salesforce/user/Id';
 import setLastMessageFrom from '@salesforce/apex/HOT_MessageHelper.setLastMessageFrom';
 import { formatRecord } from 'c/datetimeFormatterNorwegianTime';
 
@@ -42,7 +44,8 @@ export default class Hot_messagingCommunityThreadViewer_v2 extends NavigationMix
     showContent = false;
     showError = false;
     hasAccess;
-    readByThread;
+    readByText = '';
+    showReadBy = false;
 
     @api recordId;
     @api requestId;
@@ -126,39 +129,61 @@ export default class Hot_messagingCommunityThreadViewer_v2 extends NavigationMix
             this.isclosed = this.thread.CRM_Is_Closed__c;
             this.showContent = true;
 
-            this.readByThread = this.thread.HOT_Thread_read_by__c;
-
-            // Compute names from messages if already loaded
-            if (this.messages && this.messages.length > 0) {
-                this.readByNames = this.getReadByNames();
-            }
+            this.ReadByNames();
         } else if (result.error) {
             this.showError = true;
         }
     }
 
-    // Shows up when message has been read
-    showReadBy = false;
-    get readByNames() {
-        if (!this.readByThread || !this.messages || this.messages.length === 0) {
+    // --- Lest av (read by) ---
+    async ReadByNames() {
+        // Need current user's ids to exclude self
+        if (!this.userContactId || !this.recordId) {
             this.showReadBy = false;
-            return '';
+            this.readByText = '';
+            return;
         }
 
-        const ids = this.readByThread.split(';');
-        const idRoleMap = {};
+        try {
+            // Server returns ReadByEntry[] where:
+            // - displayName is NKS_FullName__c or Name (users) / Name (contacts)
+            // - System Administrators and Formidler users are excluded server-side
+            // - isFormidlerRole = true only if the LAST message has CRM_Read_By_Nav__c = true
+            const entries = await buildReadByEntriesForThread({ threadId: this.recordId });
 
-        this.messages.forEach((msg) => {
-            if (msg.CRM_From_Contact__c) idRoleMap[msg.CRM_From_Contact__c] = msg.HOT_User_Role__c;
-            if (msg.CRM_From_User__c) idRoleMap[msg.CRM_From_User__c] = msg.HOT_User_Role__c;
-        });
+            const labels = [];
+            const seen = new Set(); // case-insensitive dedupe
 
-        const currentUserId = this.userContactId;
-        const names = ids.map((id) => (id === currentUserId ? null : idRoleMap[id])).filter(Boolean);
+            for (const e of entries || []) {
+                if (!e) continue;
 
-        this.showReadBy = names.length > 0;
+                // Exclude the current user (both Contact and User Id)
+                if (e.principalId && (e.principalId === this.userContactId || e.principalId === USER_ID)) {
+                    continue;
+                }
 
-        return names.join(', ');
+                // Map to final label
+                const label = e.isFormidlerRole ? 'Formidler' : e.displayName;
+                if (!label) continue;
+
+                const key = label.trim().toLowerCase();
+                if (seen.has(key)) continue;
+                seen.add(key);
+                labels.push(label);
+            }
+
+            this.showReadBy = labels.length > 0;
+            this.readByText = labels.join(', ');
+        } catch (e) {
+            // eslint-disable-next-line no-console
+            console.error('buildReadByEntriesForThread failed', e);
+            this.showReadBy = false;
+            this.readByText = '';
+        }
+    }
+
+    get readByNames() {
+        return this.readByText;
     }
 
     // Calls apex and extracts messages related to this record
@@ -171,6 +196,7 @@ export default class Hot_messagingCommunityThreadViewer_v2 extends NavigationMix
         } else if (result.data) {
             this.messages = result.data;
             this.showspinner = false;
+            this.ReadByNames();
         }
     }
 
