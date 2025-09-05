@@ -135,9 +135,7 @@ export default class Hot_messagingCommunityThreadViewer_v2 extends NavigationMix
         }
     }
 
-    // --- Lest av (read by) ---
     async ReadByNames() {
-        // Need current user's ids to exclude self
         if (!this.userContactId || !this.recordId) {
             this.showReadBy = false;
             this.readByText = '';
@@ -145,24 +143,18 @@ export default class Hot_messagingCommunityThreadViewer_v2 extends NavigationMix
         }
 
         try {
-            // Server returns ReadByEntry[] where:
-            // - displayName is NKS_FullName__c or Name (users) / Name (contacts)
-            // - System Administrators and Formidler users are excluded server-side
-            // - isFormidlerRole = true only if the LAST message has CRM_Read_By_Nav__c = true
             const entries = await buildReadByEntriesForThread({ threadId: this.recordId });
 
             const labels = [];
-            const seen = new Set(); // case-insensitive dedupe
+            const seen = new Set();
 
             for (const e of entries || []) {
                 if (!e) continue;
 
-                // Exclude the current user (both Contact and User Id)
                 if (e.principalId && (e.principalId === this.userContactId || e.principalId === USER_ID)) {
                     continue;
                 }
 
-                // Map to final label
                 const label = e.isFormidlerRole ? 'Formidler' : e.displayName;
                 if (!label) continue;
 
@@ -175,7 +167,6 @@ export default class Hot_messagingCommunityThreadViewer_v2 extends NavigationMix
             this.showReadBy = labels.length > 0;
             this.readByText = labels.join(', ');
         } catch (e) {
-            // eslint-disable-next-line no-console
             console.error('buildReadByEntriesForThread failed', e);
             this.showReadBy = false;
             this.readByText = '';
