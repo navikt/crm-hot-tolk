@@ -1,0 +1,40 @@
+<template>
+    <div class="main-container">
+        <c-textarea
+            name="textarea"
+            maxlength="255"
+            label={label}
+            ongetvalueontextareachange={handleUserInputTextarea}
+            error-text={errorText}
+            value={inputText}
+            helptext-content={helptextContent}
+            helptext-hovertext={helptextHovertext}
+        >
+        </c-textarea>
+
+        <template if:true={errorText}>
+            <div class="error-message" aria-live="polite">{errorText}</div>
+        </template>
+    </div>
+    <div class="button-container">
+        <c-button
+            type="Button"
+            onbuttonclick={handleBack}
+            button-label="Forrige"
+            button-styling="Secondary"
+            aria-label="Forrige"
+            desktop-style="width: 5rem; justify-content: center; margin-right: 0.5rem;"
+            mobile-style="justify-content: center, margin-top: 0.5rem; margin-right: 0.5rem;"
+        ></c-button>
+
+        <c-button
+            type="Button"
+            onbuttonclick={handleNext}
+            button-label="Neste"
+            button-styling="Primary"
+            aria-label="Neste"
+            desktop-style="width: 5rem; justify-content: center; margin-top: 0.5rem;"
+            mobile-style="justify-content: center, margin-top: 0.5rem;"
+        ></c-button>
+    </div>
+</template>

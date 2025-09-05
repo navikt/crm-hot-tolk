@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<LightningComponentBundle xmlns="http://soap.sforce.com/2006/04/metadata">
+    <apiVersion>64.0</apiVersion>
+    <isExposed>true</isExposed>
+    <masterLabel>HOT Flow Info Text </masterLabel>
+    <description>Displays a configurable paragraph of text</description>
+    <targets>
+        <target>lightning__FlowScreen</target>
+    </targets>
+    <targetConfigs>
+        <targetConfig targets="lightning__FlowScreen">
+            <property name="label" type="String" label="Section Label" />
+            <property name="text" type="String" label="Text to Display" />
+        </targetConfig>
+    </targetConfigs>
+</LightningComponentBundle>

@@ -1,0 +1,22 @@
+<template>
+    <div class="main-container">
+        <div>
+            <template if:true={label}>
+                <h2>{label}</h2>
+            </template>
+
+            <p>{text}</p>
+        </div>
+    </div>
+    <div>
+        <c-button
+            type="Button"
+            onbuttonclick={handleFinish}
+            button-label="Fullfør"
+            button-styling="Primary"
+            aria-label="Fullfør"
+            desktop-style="width: 5rem; justify-content: center; margin-top: 0.5rem;"
+            mobile-style="justify-content: center, margin-top: 0.5rem;"
+        ></c-button>
+    </div>
+</template>

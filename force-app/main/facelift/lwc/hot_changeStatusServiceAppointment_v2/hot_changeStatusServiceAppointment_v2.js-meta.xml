@@ -5,7 +5,6 @@
     <masterLabel>HOT Radio Button Status Change</masterLabel>
     <description>Group of radio button that only one button can be selected</description>
     <targets>
-        <target>lightning__AppPage</target>
         <target>lightning__FlowScreen</target>
     </targets>
     <targetConfigs>

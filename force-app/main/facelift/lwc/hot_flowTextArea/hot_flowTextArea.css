@@ -1,0 +1,11 @@
+.main-container {
+    font-size: 1.125rem;
+    font-family: 'Source Sans 3', 'Source Sans Pro', Arial, sans-serif;
+    line-height: 1.5rem;
+}
+
+.error-message {
+    display: block;
+    color: #ba3a26;
+    margin-top: 0.25rem;
+}
