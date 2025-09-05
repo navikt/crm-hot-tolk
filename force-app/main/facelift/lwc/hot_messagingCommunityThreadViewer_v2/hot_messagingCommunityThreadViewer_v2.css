@@ -1,0 +1,269 @@
+.page-background {
+    display: block;
+    width: 100%;
+    height: 100%;
+    min-height: 80vh;
+    background-color: #ffffff;
+    font-family: 'Source Sans Pro', Arial, sans-serif;
+    font-size: 1.125rem;
+    padding: 1rem;
+}
+
+.back-button-info {
+    margin-top: 0rem;
+    margin-left: -0.5rem;
+}
+
+.close-btn {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: none;
+    border: 4px solid transparent;
+    border-radius: 4px;
+    cursor: pointer;
+}
+
+.close-btn:focus {
+    border-color: #0067c5;
+    outline: none;
+}
+
+.close-btn:hover {
+    background-color: #e1e3e6;
+}
+
+.header {
+    font-family: 'Source Sans Pro', Arial, sans-serif;
+    position: relative;
+    width: 100%;
+    font-size: 2rem;
+    font-weight: 600;
+    padding-left: 0;
+    margin-top: 0.5rem;
+    margin-bottom: 0.5rem;
+    margin-left: 0%;
+}
+
+.header-buttons {
+    display: flex;
+    margin-top: 2rem;
+}
+
+.header-content {
+    border-radius: 0.5rem;
+    display: flex;
+    justify-content: center;
+    flex-direction: column;
+    max-width: 900px;
+    margin: auto;
+}
+
+.main-content {
+    border-radius: 0.5rem;
+    display: flex;
+    justify-content: center;
+    flex-direction: column;
+    max-width: 900px;
+    margin: auto;
+    margin-top: 0.5rem;
+
+    /* border: 2px solid red; */
+}
+
+.thread-container {
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    margin-bottom: 0.5rem;
+
+    /* border: 2px solid blue; */
+}
+
+.textarea-container {
+    display: block;
+}
+
+.send-button-container {
+    display: flex;
+    justify-content: end;
+    margin-top: 1.5rem;
+    margin-bottom: 3rem;
+}
+
+.thread-with-user {
+    background-color: #99c4dd;
+    height: 3rem;
+    margin-right: 1rem;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding: 1rem;
+    border-radius: 0.1rem;
+}
+
+.thread-multiple-user {
+    display: flex;
+    align-items: center;
+}
+
+.show-service-assignment-text {
+    color: #ffffff;
+}
+
+.thread-dialog {
+    width: 100%;
+}
+
+.read-by-text {
+    font-size: 1rem;
+    text-align: end;
+    margin-right: 1rem;
+}
+
+.modal-container {
+    all: unset;
+    background-color: #fff;
+    display: block;
+    padding: 5rem;
+    border-radius: 0.5rem;
+    position: relative;
+    flex-grow: 0;
+    overflow-x: auto;
+    max-height: 100%;
+    margin-bottom: 0.5rem;
+    z-index: 1010;
+    max-width: 432px;
+    max-height: 75%;
+    width: 90%;
+
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    padding: 2rem 2.5rem 2rem 2rem;
+}
+
+.details-section p {
+    font-weight: bold;
+}
+
+.details-section p span {
+    font-weight: normal;
+}
+
+.maps-button-container {
+    display: inline-block;
+    padding-right: 1vw;
+    padding-bottom: 1vw;
+    padding-top: 1vw;
+}
+
+.error-content {
+    padding: 3vw;
+    margin: auto;
+    width: 100%;
+    background-color: white;
+    text-align: center;
+}
+
+.helpText {
+    text-align: center;
+}
+
+.modal-header-text {
+    font-family: 'Source Sans Pro', Arial, sans-serif;
+    font-size: 1.5rem;
+    margin: 0;
+    padding: 0;
+}
+
+dialog[open].modal-container {
+    display: flex;
+}
+
+.modal-header-container {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding-bottom: 0 0 2rem 0;
+    font-size: 1.5rem;
+    white-space: nowrap;
+    padding-bottom: 2rem;
+    gap: 7rem;
+}
+
+dialog.modal-container .modal-body {
+    padding: 0 2rem 2rem;
+}
+
+@media (max-width: 768px) {
+    .header {
+        font-size: 1.5rem;
+        text-align: left;
+        padding-left: 0;
+        margin-top: 0.5rem;
+        margin-bottom: 0.5rem;
+    }
+
+    .header-buttons {
+        margin-top: 1rem;
+    }
+
+    .back-button-info {
+        margin-top: 0rem;
+        margin-left: -0.5rem;
+    }
+
+    .textarea-container {
+        height: 50%;
+    }
+
+    .read-by-text {
+        font-size: 0.875rem;
+        text-align: end;
+        margin-left: 3.5rem;
+    }
+}
+
+@media (max-width: 600px) {
+    .modal-container {
+        all: unset;
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100vw;
+        height: 100vh;
+        background-color: #fff;
+        border-radius: 0;
+        padding: 2rem;
+        margin: 0;
+        z-index: 1000;
+        overflow-y: auto;
+    }
+    .modal-container .close-btn {
+        background-color: #e0e3e6;
+    }
+
+    .close-btn {
+        margin-right: 4rem;
+    }
+
+    .modal-header-container {
+        gap: 0rem;
+    }
+
+    .modal-container .modal-header,
+    .modal-container .modal-body,
+    .modal-container .modal-footer {
+        padding: 1rem;
+    }
+
+    .modal-container {
+        z-index: 1000;
+    }
+
+    .helpText {
+        margin-bottom: -0.5rem;
+    }
+}
