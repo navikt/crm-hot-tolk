@@ -2,7 +2,7 @@
 <LightningComponentBundle xmlns="http://soap.sforce.com/2006/04/metadata">
     <apiVersion>64.0</apiVersion>
     <isExposed>true</isExposed>
-    <masterLabel>HOT Flow Info Text </masterLabel>
+    <masterLabel>HOT Display Text Flow</masterLabel>
     <description>Displays a configurable paragraph of text</description>
     <targets>
         <target>lightning__FlowScreen</target>
@@ -11,6 +11,9 @@
         <targetConfig targets="lightning__FlowScreen">
             <property name="label" type="String" label="Section Label" />
             <property name="text" type="String" label="Text to Display" />
+            <property name="fontSize" type="String"
+                label="Font Size for body text (small, medium, large)" default="medium" />
+
         </targetConfig>
     </targetConfigs>
 </LightningComponentBundle>

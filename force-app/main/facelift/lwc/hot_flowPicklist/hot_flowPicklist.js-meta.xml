@@ -2,18 +2,15 @@
 <LightningComponentBundle xmlns="http://soap.sforce.com/2006/04/metadata">
     <apiVersion>64.0</apiVersion>
     <isExposed>true</isExposed>
-    <masterLabel>HOT Text Area Flow</masterLabel>
-    <description>The next button has validation for user input</description>
+    <masterLabel>HOT Flow Picklist</masterLabel>
     <targets>
         <target>lightning__FlowScreen</target>
     </targets>
     <targetConfigs>
         <targetConfig targets="lightning__FlowScreen">
             <property name="label" type="String" label="Label" />
-            <property name="inputText" type="String" label="User Input" />
             <property name="required" type="Boolean" label="Required" default="false" />
-            <property name="helptextContent" type="String" label="Help Text Icon" />
-            <property name="helptextHovertext" type="String" label="Help Hover Text" />
+            <property name="value" type="String" label="Selected Value" />
         </targetConfig>
     </targetConfigs>
 </LightningComponentBundle>

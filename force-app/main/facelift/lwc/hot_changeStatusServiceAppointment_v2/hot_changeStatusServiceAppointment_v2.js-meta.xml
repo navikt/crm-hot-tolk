@@ -2,7 +2,7 @@
 <LightningComponentBundle xmlns="http://soap.sforce.com/2006/04/metadata">
     <apiVersion>64.0</apiVersion>
     <isExposed>true</isExposed>
-    <masterLabel>HOT Radio Button Status Change</masterLabel>
+    <masterLabel>HOT Radio Button Status Flow</masterLabel>
     <description>Group of radio button that only one button can be selected</description>
     <targets>
         <target>lightning__FlowScreen</target>

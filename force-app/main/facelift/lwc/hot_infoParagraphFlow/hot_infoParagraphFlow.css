@@ -1,4 +1,38 @@
 .main-container {
     font-family: 'Source Sans Pro', Arial, sans-serif;
+}
+
+.header-small {
+    font-size: 1.25rem;
+    line-height: 1.75rem;
+}
+
+.header-medium {
+    font-size: 1.5rem;
+    line-height: 2rem;
+}
+
+.header-large {
+    font-size: 2rem;
+    line-height: 2.5rem;
+}
+
+.p {
+    word-wrap: break-word;
+    font-weight: normal;
+}
+
+.text-small {
+    font-size: 1rem;
+    line-height: 1.5rem;
+}
+
+.text-medium {
     font-size: 1.125rem;
+    line-height: 1.5rem;
+}
+
+.text-large {
+    font-size: 1.25rem;
+    line-height: 1.75rem;
 }
