@@ -1,7 +1,7 @@
 <template>
     <div>
         <c-radiobuttons
-            label={groupLabel}
+            header={groupLabel}
             radiobuttons={radiobuttons}
             group-name="radioGroup"
             set-default-value={value}
@@ -10,16 +10,5 @@
             mobile-style="font-size: 1.125rem;"
         >
         </c-radiobuttons>
-    </div>
-    <div>
-        <c-button
-            type="Button"
-            onbuttonclick={handleNext}
-            button-label="Neste"
-            button-styling="Primary"
-            aria-label="Neste"
-            desktop-style="width: 5rem; justify-content: center; margin-top: 0.5rem;"
-            mobile-style="justify-content: center; margin-top: 0.5rem;"
-        ></c-button>
     </div>
 </template>

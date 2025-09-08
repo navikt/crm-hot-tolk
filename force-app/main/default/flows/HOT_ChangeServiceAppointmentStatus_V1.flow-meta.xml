@@ -543,7 +543,7 @@
         <inputAssignments>
             <field>StatusComment__c</field>
             <value>
-                <elementReference>Completed_Comment_Text</elementReference>
+                <elementReference>hot_completed_comment_text_area.inputText</elementReference>
             </value>
         </inputAssignments>
         <inputAssignments>
@@ -705,7 +705,7 @@
             <storeOutputAutomatically>true</storeOutputAutomatically>
         </fields>
         <fields>
-            <name>btn_Already_Completed_Text</name>
+            <name>btn_already_completed_text</name>
             <extensionName>c:hot_flowFooterButtons</extensionName>
             <fieldType>ComponentInstance</fieldType>
             <inputParameters>
@@ -805,7 +805,7 @@
             <storeOutputAutomatically>true</storeOutputAutomatically>
         </fields>
         <fields>
-            <name>btn_notYourSAText</name>
+            <name>btn_not_your_sa_text</name>
             <extensionName>c:hot_flowFooterButtons</extensionName>
             <fieldType>ComponentInstance</fieldType>
             <inputParameters>
@@ -841,7 +841,7 @@
             <inputParameters>
                 <name>text</name>
                 <value>
-                    <elementReference>Cannot_set_to_dekket_text</elementReference>
+                    <elementReference>CannotSetToDekketText</elementReference>
                 </value>
             </inputParameters>
             <inputsOnNextNavToAssocScrn>UseStoredValues</inputsOnNextNavToAssocScrn>
@@ -1047,7 +1047,7 @@
             <inputParameters>
                 <name>rbThreeLabel</name>
                 <value>
-                    <stringValue>Avlyst av tolk</stringValue>
+                    <stringValue>Tolk tar seg av</stringValue>
                 </value>
             </inputParameters>
             <inputParameters>
@@ -1073,7 +1073,7 @@
             <inputParameters>
                 <name>showBack</name>
                 <value>
-                    <booleanValue>true</booleanValue>
+                    <booleanValue>false</booleanValue>
                 </value>
             </inputParameters>
             <inputParameters>
@@ -1164,7 +1164,7 @@
     </start>
     <status>Draft</status>
     <variables>
-        <name>Cannot_set_to_dekket_text</name>
+        <name>CannotSetToDekketText</name>
         <dataType>String</dataType>
         <isCollection>false</isCollection>
         <isInput>false</isInput>

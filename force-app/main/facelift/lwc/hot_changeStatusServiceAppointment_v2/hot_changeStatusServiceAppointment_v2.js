@@ -36,9 +36,4 @@ export default class Hot_changeStatusServiceAppointment_v2 extends LightningElem
 
         this.dispatchEvent(new FlowAttributeChangeEvent('value', this.value));
     }
-
-    // Dispatch the Flow "Next" event
-    handleNext() {
-        this.dispatchEvent(new FlowNavigationNextEvent());
-    }
 }

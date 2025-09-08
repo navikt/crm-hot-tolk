@@ -20,8 +20,10 @@
     font-weight: 400;
 }
 
-.p {
-    word-wrap: break-word;
+.text-small,
+.text-medium,
+.text-large {
+    overflow-wrap: break-word;
     font-weight: normal;
 }
 

@@ -10,22 +10,15 @@
     <targetConfigs>
         <targetConfig targets="lightning__FlowScreen">
             <!-- Group Label -->
-            <property name="groupLabel" type="String" label="Radio Group Label"
-                description="Header text above the radio buttons" />
+            <property name="groupLabel" type="String" label="Radio Group Label" />
 
             <!-- Radio Buttons -->
-            <property name="rbOneLabel" type="String" label="Choice 1 Label"
-                description="Text 1 shown to user" />
-            <property name="rbOneValue" type="String" label="Choice 1 Value"
-                description="Value 1 stored in Flow" />
-            <property name="rbTwoLabel" type="String" label="Choice 2 Label"
-                description="Text 2 shown to user" />
-            <property name="rbTwoValue" type="String" label="Choice 2 Value"
-                description="Value 2 stored in Flow" />
-            <property name="rbThreeLabel" type="String" label="Choice 3 Label"
-                description="Text 3 shown to user" />
-            <property name="rbThreeValue" type="String" label="Choice 3 Value"
-                description="Value 3 stored in Flow" />
+            <property name="rbOneLabel" type="String" label="Choice 1 Label" />
+            <property name="rbOneValue" type="String" label="Choice 1 Value" />
+            <property name="rbTwoLabel" type="String" label="Choice 2 Label" />
+            <property name="rbTwoValue" type="String" label="Choice 2 Value" />
+            <property name="rbThreeLabel" type="String" label="Choice 3 Label" />
+            <property name="rbThreeValue" type="String" label="Choice 3 Value" />
 
             <!-- Selected value -->
             <property name="value" type="String" label="Selected Value"
