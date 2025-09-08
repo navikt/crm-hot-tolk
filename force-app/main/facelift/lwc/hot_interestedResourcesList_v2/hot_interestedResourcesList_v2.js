@@ -476,4 +476,7 @@ export default class Hot_interestedResourcesList_v2 extends NavigationMixin(Ligh
     get terms() {
         return this.interestedResource?.HOT_TermsOfAgreement__c || '';
     }
+    get otherProvider() {
+        return this.ServiceAppointment__r.HOT_Request__r.IsOtherEconomicProvicer__c ? 'Ja' : 'Nei';
+    }
 }
