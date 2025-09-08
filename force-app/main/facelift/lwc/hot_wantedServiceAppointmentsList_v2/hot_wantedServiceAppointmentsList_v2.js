@@ -125,7 +125,8 @@ export default class Hot_wantedServiceAppointmentsList extends LightningElement 
                 ...x,
                 weekday: getDayOfWeek(x.EarliestStartTime),
                 isUrgent: x.HOT_IsUrgent__c,
-                startAndEndDateWeekday: formatDatetimeinterval(x.EarliestStartTime, x.DueDate)
+                startAndEndDateWeekday: formatDatetimeinterval(x.EarliestStartTime, x.DueDate),
+                isOtherProvider: x.HOT_Request__r?.IsOtherEconomicProvicer__c ? 'Ja' : 'Nei'
             }));
             this.noServiceAppointments = this.allServiceAppointmentsWired.length === 0;
             let tempRecords = [];

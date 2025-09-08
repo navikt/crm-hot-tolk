@@ -331,6 +331,9 @@ export default class Hot_myServiceAppointmentsList_v2 extends NavigationMixin(Li
         }
         return '';
     }
+    get isOtherProvider() {
+        return this.ServiceAppointment__r.HOT_Request__r.IsOtherEconomicProvicer__c ? 'Ja' : 'Nei';
+    }
 
     get address() {
         return this.serviceAppointment?.HOT_AddressFormated__c ?? '';
