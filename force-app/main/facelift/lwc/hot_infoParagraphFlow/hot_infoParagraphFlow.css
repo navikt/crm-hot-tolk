@@ -5,16 +5,19 @@
 .header-small {
     font-size: 1.25rem;
     line-height: 1.75rem;
+    font-weight: 400;
 }
 
 .header-medium {
     font-size: 1.5rem;
     line-height: 2rem;
+    font-weight: 400;
 }
 
 .header-large {
     font-size: 2rem;
     line-height: 2.5rem;
+    font-weight: 400;
 }
 
 .p {

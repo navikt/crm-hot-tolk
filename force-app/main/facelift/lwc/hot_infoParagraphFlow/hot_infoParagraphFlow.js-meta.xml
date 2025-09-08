@@ -12,8 +12,9 @@
             <property name="label" type="String" label="Section Label" />
             <property name="text" type="String" label="Text to Display" />
             <property name="fontSize" type="String"
-                label="Font Size for body text (small, medium, large)" default="medium" />
-
+                label="Font size for body text (small, medium, large)" default="medium" />
+            <property name="headerSize" type="String"
+                label="Header size (h-small, h-medium, h-large)" default="h-medium" />
         </targetConfig>
     </targetConfigs>
 </LightningComponentBundle>

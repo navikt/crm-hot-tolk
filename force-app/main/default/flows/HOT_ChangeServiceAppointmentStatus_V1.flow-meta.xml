@@ -368,7 +368,7 @@
             <name>Dekket</name>
             <conditionLogic>and</conditionLogic>
             <conditions>
-                <leftValueReference>New_status</leftValueReference>
+                <leftValueReference>hot_new_status.rbOneValue</leftValueReference>
                 <operator>EqualTo</operator>
                 <rightValue>
                     <elementReference>Status_Dekket</elementReference>
@@ -383,7 +383,7 @@
             <name>Avlyst</name>
             <conditionLogic>and</conditionLogic>
             <conditions>
-                <leftValueReference>New_status</leftValueReference>
+                <leftValueReference>hot_new_status.rbTwoValue</leftValueReference>
                 <operator>EqualTo</operator>
                 <rightValue>
                     <elementReference>Status_Avlyst</elementReference>
@@ -398,7 +398,7 @@
             <name>Tolk_Avlyst</name>
             <conditionLogic>and</conditionLogic>
             <conditions>
-                <leftValueReference>New_status</leftValueReference>
+                <leftValueReference>hot_new_status.rbThreeValue</leftValueReference>
                 <operator>EqualTo</operator>
                 <rightValue>
                     <elementReference>Status_TolkAvlyst</elementReference>
@@ -687,13 +687,38 @@
         <allowPause>true</allowPause>
         <fields>
             <name>Already_Completed_Text</name>
-            <fieldText>&lt;p&gt;&lt;span style=&quot;background-color: rgb(255, 255, 255); color:
-                rgb(68, 68, 68);&quot;&gt;Det er ikke mulig å oppdatere statusen etter at oppdraget
-                er satt til Dekket. Kontakt formidler for å gi ytterligere informasjon om
-                oppdraget.&lt;/span&gt;&lt;/p&gt;</fieldText>
+            <fieldText>&lt;p&gt;&lt;span style=&quot;background-color: rgb(255, 255, 255);&quot;&gt;Det er ikke mulig å oppdatere statusen etter at oppdraget&lt;/span&gt;&lt;/p&gt;&lt;p&gt;&lt;span style=&quot;background-color: rgb(255, 255, 255);&quot;&gt;                er satt til Dekket. Kontakt formidler for å gi ytterligere informasjon om&lt;/span&gt;&lt;/p&gt;&lt;p&gt;&lt;span style=&quot;background-color: rgb(255, 255, 255);&quot;&gt;                oppdraget.&lt;/span&gt;&lt;/p&gt;</fieldText>
             <fieldType>DisplayText</fieldType>
         </fields>
-        <showFooter>true</showFooter>
+        <fields>
+            <name>hot_already_completed_text</name>
+            <extensionName>c:hot_infoParagraphFlow</extensionName>
+            <fieldType>ComponentInstance</fieldType>
+            <inputParameters>
+                <name>text</name>
+                <value>
+                    <stringValue>Det er ikke mulig å oppdatere statusen etter at oppdraget er satt til Dekket. Kontakt formidler for å gi ytterligere informasjon om oppdraget.</stringValue>
+                </value>
+            </inputParameters>
+            <inputsOnNextNavToAssocScrn>UseStoredValues</inputsOnNextNavToAssocScrn>
+            <isRequired>true</isRequired>
+            <storeOutputAutomatically>true</storeOutputAutomatically>
+        </fields>
+        <fields>
+            <name>btn_Already_Completed_Text</name>
+            <extensionName>c:hot_flowFooterButtons</extensionName>
+            <fieldType>ComponentInstance</fieldType>
+            <inputParameters>
+                <name>showFinish</name>
+                <value>
+                    <booleanValue>true</booleanValue>
+                </value>
+            </inputParameters>
+            <inputsOnNextNavToAssocScrn>UseStoredValues</inputsOnNextNavToAssocScrn>
+            <isRequired>true</isRequired>
+            <storeOutputAutomatically>true</storeOutputAutomatically>
+        </fields>
+        <showFooter>false</showFooter>
         <showHeader>false</showHeader>
     </screens>
     <screens>
@@ -709,7 +734,47 @@
             <fieldText>&lt;p&gt;Kunne ikke finne oppdraget!&lt;/p&gt;</fieldText>
             <fieldType>DisplayText</fieldType>
         </fields>
-        <showFooter>true</showFooter>
+        <fields>
+            <name>display_not_found</name>
+            <extensionName>c:hot_infoParagraphFlow</extensionName>
+            <fieldType>ComponentInstance</fieldType>
+            <inputParameters>
+                <name>text</name>
+                <value>
+                    <stringValue>Kunne ikke finne oppdraget! </stringValue>
+                </value>
+            </inputParameters>
+            <inputParameters>
+                <name>fontSize</name>
+                <value>
+                    <stringValue>large</stringValue>
+                </value>
+            </inputParameters>
+            <inputsOnNextNavToAssocScrn>UseStoredValues</inputsOnNextNavToAssocScrn>
+            <isRequired>true</isRequired>
+            <storeOutputAutomatically>true</storeOutputAutomatically>
+        </fields>
+        <fields>
+            <name>display_not_found_button</name>
+            <extensionName>c:hot_flowFooterButtons</extensionName>
+            <fieldType>ComponentInstance</fieldType>
+            <inputParameters>
+                <name>showFinish</name>
+                <value>
+                    <booleanValue>true</booleanValue>
+                </value>
+            </inputParameters>
+            <inputParameters>
+                <name>showBack</name>
+                <value>
+                    <booleanValue>false</booleanValue>
+                </value>
+            </inputParameters>
+            <inputsOnNextNavToAssocScrn>UseStoredValues</inputsOnNextNavToAssocScrn>
+            <isRequired>true</isRequired>
+            <storeOutputAutomatically>true</storeOutputAutomatically>
+        </fields>
+        <showFooter>false</showFooter>
         <showHeader>true</showHeader>
     </screens>
     <screens>
@@ -722,12 +787,38 @@
         <allowPause>false</allowPause>
         <fields>
             <name>notYourSAText</name>
-            <fieldText>&lt;p&gt;&lt;span style=&quot;background-color: rgb(255, 255, 255); color:
-                rgb(68, 68, 68);&quot;&gt;Du kan ikke endre status på dette oppdraget, ettersom det
-                ikke er ditt.&lt;/span&gt;&lt;/p&gt;</fieldText>
+            <fieldText>&lt;p&gt;&lt;span style=&quot;background-color: rgb(255, 255, 255);&quot;&gt;Du kan ikke endre status på dette oppdraget, ettersom det&lt;/span&gt;&lt;/p&gt;&lt;p&gt;&lt;span style=&quot;background-color: rgb(255, 255, 255);&quot;&gt;                ikke er ditt.&lt;/span&gt;&lt;/p&gt;</fieldText>
             <fieldType>DisplayText</fieldType>
         </fields>
-        <showFooter>true</showFooter>
+        <fields>
+            <name>hot_not_your_sa_text</name>
+            <extensionName>c:hot_infoParagraphFlow</extensionName>
+            <fieldType>ComponentInstance</fieldType>
+            <inputParameters>
+                <name>text</name>
+                <value>
+                    <stringValue>Du kan ikke endre status på dette oppdraget, ettersom det ikke er ditt.</stringValue>
+                </value>
+            </inputParameters>
+            <inputsOnNextNavToAssocScrn>UseStoredValues</inputsOnNextNavToAssocScrn>
+            <isRequired>true</isRequired>
+            <storeOutputAutomatically>true</storeOutputAutomatically>
+        </fields>
+        <fields>
+            <name>btn_notYourSAText</name>
+            <extensionName>c:hot_flowFooterButtons</extensionName>
+            <fieldType>ComponentInstance</fieldType>
+            <inputParameters>
+                <name>showFinish</name>
+                <value>
+                    <booleanValue>true</booleanValue>
+                </value>
+            </inputParameters>
+            <inputsOnNextNavToAssocScrn>UseStoredValues</inputsOnNextNavToAssocScrn>
+            <isRequired>true</isRequired>
+            <storeOutputAutomatically>true</storeOutputAutomatically>
+        </fields>
+        <showFooter>false</showFooter>
         <showHeader>false</showHeader>
     </screens>
     <screens>
@@ -740,13 +831,38 @@
         <allowPause>true</allowPause>
         <fields>
             <name>SANotStartedMessage</name>
-            <fieldText>&lt;p&gt;&lt;span style=&quot;background-color: rgb(255, 255, 255); color:
-                rgb(62, 62, 60);&quot;&gt;Oppdraget kan ikke settes til &apos;Dekket&apos; før det
-                har begynt. Status kan settes til &apos;Dekket&apos; tidligst etter
-                {!CurrentServiceAppointment.SchedStartTime}&lt;/span&gt;&lt;/p&gt;</fieldText>
+            <fieldText>&lt;p&gt;&lt;span style=&quot;background-color: rgb(255, 255, 255);&quot;&gt;Oppdraget kan ikke settes til &apos;Dekket&apos; før det&lt;/span&gt;&lt;/p&gt;&lt;p&gt;&lt;span style=&quot;background-color: rgb(255, 255, 255);&quot;&gt;                har begynt. Status kan settes til &apos;Dekket&apos; tidligst etter&lt;/span&gt;&lt;/p&gt;&lt;p&gt;&lt;span style=&quot;background-color: rgb(255, 255, 255);&quot;&gt;                {!CurrentServiceAppointment.SchedStartTime}&lt;/span&gt;&lt;/p&gt;</fieldText>
             <fieldType>DisplayText</fieldType>
         </fields>
-        <showFooter>true</showFooter>
+        <fields>
+            <name>hot_SANotStartedMessage</name>
+            <extensionName>c:hot_infoParagraphFlow</extensionName>
+            <fieldType>ComponentInstance</fieldType>
+            <inputParameters>
+                <name>text</name>
+                <value>
+                    <elementReference>Cannot_set_to_dekket_text</elementReference>
+                </value>
+            </inputParameters>
+            <inputsOnNextNavToAssocScrn>UseStoredValues</inputsOnNextNavToAssocScrn>
+            <isRequired>true</isRequired>
+            <storeOutputAutomatically>true</storeOutputAutomatically>
+        </fields>
+        <fields>
+            <name>btn_SANotStartedMessage</name>
+            <extensionName>c:hot_flowFooterButtons</extensionName>
+            <fieldType>ComponentInstance</fieldType>
+            <inputParameters>
+                <name>showFinish</name>
+                <value>
+                    <booleanValue>true</booleanValue>
+                </value>
+            </inputParameters>
+            <inputsOnNextNavToAssocScrn>UseStoredValues</inputsOnNextNavToAssocScrn>
+            <isRequired>true</isRequired>
+            <storeOutputAutomatically>true</storeOutputAutomatically>
+        </fields>
+        <showFooter>false</showFooter>
         <showHeader>false</showHeader>
     </screens>
     <screens>
@@ -793,7 +909,47 @@
             <inputsOnNextNavToAssocScrn>UseStoredValues</inputsOnNextNavToAssocScrn>
             <isRequired>true</isRequired>
         </fields>
-        <showFooter>true</showFooter>
+        <fields>
+            <name>hot_cancel_comment_tolk</name>
+            <extensionName>c:hot_flowTextArea</extensionName>
+            <fieldType>ComponentInstance</fieldType>
+            <inputParameters>
+                <name>required</name>
+                <value>
+                    <booleanValue>true</booleanValue>
+                </value>
+            </inputParameters>
+            <inputParameters>
+                <name>label</name>
+                <value>
+                    <stringValue>* Oppgi en begrunnelse for å avlyse</stringValue>
+                </value>
+            </inputParameters>
+            <inputsOnNextNavToAssocScrn>UseStoredValues</inputsOnNextNavToAssocScrn>
+            <isRequired>true</isRequired>
+            <storeOutputAutomatically>true</storeOutputAutomatically>
+        </fields>
+        <fields>
+            <name>btn_cancel_comment_tolk</name>
+            <extensionName>c:hot_flowFooterButtons</extensionName>
+            <fieldType>ComponentInstance</fieldType>
+            <inputParameters>
+                <name>showBack</name>
+                <value>
+                    <booleanValue>true</booleanValue>
+                </value>
+            </inputParameters>
+            <inputParameters>
+                <name>showNext</name>
+                <value>
+                    <booleanValue>true</booleanValue>
+                </value>
+            </inputParameters>
+            <inputsOnNextNavToAssocScrn>UseStoredValues</inputsOnNextNavToAssocScrn>
+            <isRequired>true</isRequired>
+            <storeOutputAutomatically>true</storeOutputAutomatically>
+        </fields>
+        <showFooter>false</showFooter>
         <showHeader>false</showHeader>
     </screens>
     <screens>
@@ -815,7 +971,27 @@
             <inputsOnNextNavToAssocScrn>UseStoredValues</inputsOnNextNavToAssocScrn>
             <isRequired>true</isRequired>
         </fields>
-        <showFooter>true</showFooter>
+        <fields>
+            <name>hot_completed_comment_text_area</name>
+            <extensionName>c:hot_flowTextArea</extensionName>
+            <fieldType>ComponentInstance</fieldType>
+            <inputParameters>
+                <name>label</name>
+                <value>
+                    <stringValue>* Oppgi en begrunnelse for å endre start- eller slutt-tid</stringValue>
+                </value>
+            </inputParameters>
+            <inputParameters>
+                <name>required</name>
+                <value>
+                    <booleanValue>true</booleanValue>
+                </value>
+            </inputParameters>
+            <inputsOnNextNavToAssocScrn>UseStoredValues</inputsOnNextNavToAssocScrn>
+            <isRequired>true</isRequired>
+            <storeOutputAutomatically>true</storeOutputAutomatically>
+        </fields>
+        <showFooter>false</showFooter>
         <showHeader>false</showHeader>
     </screens>
     <screens>
@@ -840,7 +1016,77 @@
             <inputsOnNextNavToAssocScrn>UseStoredValues</inputsOnNextNavToAssocScrn>
             <isRequired>false</isRequired>
         </fields>
-        <showFooter>true</showFooter>
+        <fields>
+            <name>hot_new_status</name>
+            <extensionName>c:hot_changeStatusServiceAppointment_v2</extensionName>
+            <fieldType>ComponentInstance</fieldType>
+            <inputParameters>
+                <name>rbOneLabel</name>
+                <value>
+                    <stringValue>Dekket</stringValue>
+                </value>
+            </inputParameters>
+            <inputParameters>
+                <name>rbOneValue</name>
+                <value>
+                    <elementReference>Status_Dekket</elementReference>
+                </value>
+            </inputParameters>
+            <inputParameters>
+                <name>rbTwoLabel</name>
+                <value>
+                    <stringValue>Avlyst av bruker</stringValue>
+                </value>
+            </inputParameters>
+            <inputParameters>
+                <name>rbTwoValue</name>
+                <value>
+                    <elementReference>Status_Avlyst</elementReference>
+                </value>
+            </inputParameters>
+            <inputParameters>
+                <name>rbThreeLabel</name>
+                <value>
+                    <stringValue>Avlyst av tolk</stringValue>
+                </value>
+            </inputParameters>
+            <inputParameters>
+                <name>rbThreeValue</name>
+                <value>
+                    <elementReference>Status_TolkAvlyst</elementReference>
+                </value>
+            </inputParameters>
+            <inputParameters>
+                <name>groupLabel</name>
+                <value>
+                    <stringValue>Status</stringValue>
+                </value>
+            </inputParameters>
+            <inputsOnNextNavToAssocScrn>UseStoredValues</inputsOnNextNavToAssocScrn>
+            <isRequired>true</isRequired>
+            <storeOutputAutomatically>true</storeOutputAutomatically>
+        </fields>
+        <fields>
+            <name>btn_status</name>
+            <extensionName>c:hot_flowFooterButtons</extensionName>
+            <fieldType>ComponentInstance</fieldType>
+            <inputParameters>
+                <name>showBack</name>
+                <value>
+                    <booleanValue>true</booleanValue>
+                </value>
+            </inputParameters>
+            <inputParameters>
+                <name>showNext</name>
+                <value>
+                    <booleanValue>true</booleanValue>
+                </value>
+            </inputParameters>
+            <inputsOnNextNavToAssocScrn>UseStoredValues</inputsOnNextNavToAssocScrn>
+            <isRequired>true</isRequired>
+            <storeOutputAutomatically>true</storeOutputAutomatically>
+        </fields>
+        <showFooter>false</showFooter>
         <showHeader>false</showHeader>
     </screens>
     <screens>
@@ -886,7 +1132,27 @@
                 <formulaExpression>{!Validate_actual_end_time}</formulaExpression>
             </validationRule>
         </fields>
-        <showFooter>true</showFooter>
+        <fields>
+            <name>btn_set_time_dekket</name>
+            <extensionName>c:hot_flowFooterButtons</extensionName>
+            <fieldType>ComponentInstance</fieldType>
+            <inputParameters>
+                <name>showNext</name>
+                <value>
+                    <booleanValue>true</booleanValue>
+                </value>
+            </inputParameters>
+            <inputParameters>
+                <name>showBack</name>
+                <value>
+                    <booleanValue>true</booleanValue>
+                </value>
+            </inputParameters>
+            <inputsOnNextNavToAssocScrn>UseStoredValues</inputsOnNextNavToAssocScrn>
+            <isRequired>true</isRequired>
+            <storeOutputAutomatically>true</storeOutputAutomatically>
+        </fields>
+        <showFooter>false</showFooter>
         <showHeader>false</showHeader>
     </screens>
     <start>
@@ -896,7 +1162,17 @@
             <targetReference>Set_Record_Id_0</targetReference>
         </connector>
     </start>
-    <status>Active</status>
+    <status>Draft</status>
+    <variables>
+        <name>Cannot_set_to_dekket_text</name>
+        <dataType>String</dataType>
+        <isCollection>false</isCollection>
+        <isInput>false</isInput>
+        <isOutput>true</isOutput>
+        <value>
+            <stringValue>Oppdraget kan ikke settes til &apos;Dekket&apos; før det har begynt. Status kan settes til &apos;Dekket&apos; tidligst etter {!CurrentServiceAppointment.SchedStartTime}</stringValue>
+        </value>
+    </variables>
     <variables>
         <name>CurrentServiceAppointment</name>
         <dataType>SObject</dataType>

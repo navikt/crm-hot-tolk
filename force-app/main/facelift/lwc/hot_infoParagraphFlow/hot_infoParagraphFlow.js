@@ -9,9 +9,9 @@ export default class Hot_infoParagraphFlow extends LightningElement {
 
     get headerClass() {
         switch (this.headerSize) {
-            case 'header-small':
+            case 'h-small':
                 return 'header-small';
-            case 'header-large':
+            case 'h-large':
                 return 'header-large';
             default:
                 return 'header-medium';
