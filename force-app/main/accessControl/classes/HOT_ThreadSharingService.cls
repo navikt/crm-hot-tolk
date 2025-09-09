@@ -17,7 +17,7 @@ public without sharing class HOT_ThreadSharingService {
             }
         }
         try {
-            Database.insert(threadShares, false);
+            insert threadShares;
         } catch (Exception e) {
             LoggerUtility logger = new LoggerUtility();
             logger.exception(e, CRM_ApplicationDomain.Domain.HOT);
