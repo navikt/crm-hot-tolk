@@ -26,30 +26,33 @@ public without sharing class HOT_ThreadHandler extends MyTriggers {
         }
     }
     public override void onAfterInsert() {
-        Set<Id> threadIds = new Set<Id>();
         List<Thread__c> threadsOfInterest = new List<Thread__c>();
         List<Thread__c> threads = (List<Thread__c>) records;
         Set<String> threadTypesOfInterest = new Set<String>{'HOT_BRUKER-TOLK','HOT_TOLK-TOLK','HOT_TOLK-FORMIDLER'};
 
-        for (Thread__c t : threads){
-            if(!threadTypesOfInterest.contains(t.CRM_Thread_Type__c)){
-                continue;
+        for(Thread__c t : threads){
+            if(threadTypesOfInterest.contains(t.CRM_Thread_Type__c)){
+                threadsOfInterest.add(t);
             }
+        }
+        setInterpreter(threadsOfInterest);
+    }
+    public static void setInterpreter(List<Thread__c> threads){
+        Set<Id> workOrderIds = new Set<Id>();
+        for (Thread__c t : threads){
+ 
             if(((Id)t.CRM_Related_Object__c).getSObjectType() == WorkOrder.SObjectType){
                 workOrderIds.add(t.CRM_Related_Object__c);
             }
-            threadsOfInterest.add(t);
-            //threadIds.add(t.Id);
         }
 
         if (workOrderIds.size() > 0) {
             setInterpreterThread(threads, getServiceAppointmentsByWorkOrderId(workOrderIds));
         }
-        if(threadsOfInterest.size() > 0){
-            setInterpreterOnThreadOneToOne(threadsOfInterest);
+        if(threads.size() > 0){
+            setInterpreterOnThreadOneToOne(threads);
         }
     }
-
     public static String threadSubjectMaker(String subject) {
         if (subject.length() > 80) {
             subject = subject.substring(0, 76) + '...';
