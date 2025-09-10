@@ -774,6 +774,70 @@
             <isRequired>true</isRequired>
             <storeOutputAutomatically>true</storeOutputAutomatically>
         </fields>
+        <fields>
+            <name>test_pick</name>
+            <choiceReferences>Status_Dekket</choiceReferences>
+            <dataType>String</dataType>
+            <fieldType>DropdownBox</fieldType>
+            <inputsOnNextNavToAssocScrn>UseStoredValues</inputsOnNextNavToAssocScrn>
+            <isRequired>false</isRequired>
+        </fields>
+        <fields>
+            <name>test_picklist</name>
+            <extensionName>c:hot_flowPicklist</extensionName>
+            <fieldType>ComponentInstance</fieldType>
+            <inputParameters>
+                <name>label</name>
+                <value>
+                    <stringValue>Picklist test</stringValue>
+                </value>
+            </inputParameters>
+            <inputParameters>
+                <name>optionLabelOne</name>
+                <value>
+                    <stringValue>Dekket</stringValue>
+                </value>
+            </inputParameters>
+            <inputParameters>
+                <name>optionLabelTwo</name>
+                <value>
+                    <stringValue>Avlyst</stringValue>
+                </value>
+            </inputParameters>
+            <inputParameters>
+                <name>optionLabelThree</name>
+                <value>
+                    <stringValue>Avlyst av tolk</stringValue>
+                </value>
+            </inputParameters>
+            <inputParameters>
+                <name>optionValueOne</name>
+                <value>
+                    <elementReference>Status_Dekket</elementReference>
+                </value>
+            </inputParameters>
+            <inputParameters>
+                <name>optionValueTwo</name>
+                <value>
+                    <elementReference>Status_Avlyst</elementReference>
+                </value>
+            </inputParameters>
+            <inputParameters>
+                <name>optionValueThree</name>
+                <value>
+                    <elementReference>Status_TolkAvlyst</elementReference>
+                </value>
+            </inputParameters>
+            <inputParameters>
+                <name>required</name>
+                <value>
+                    <booleanValue>true</booleanValue>
+                </value>
+            </inputParameters>
+            <inputsOnNextNavToAssocScrn>UseStoredValues</inputsOnNextNavToAssocScrn>
+            <isRequired>true</isRequired>
+            <storeOutputAutomatically>true</storeOutputAutomatically>
+        </fields>
         <showFooter>false</showFooter>
         <showHeader>true</showHeader>
     </screens>

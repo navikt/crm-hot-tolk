@@ -1,2 +1,23 @@
 .main-content {
+    font-family: 'Source Sans Pro', Arial, sans-serif;
+}
+
+.button-container {
+    margin-top: 0.5rem;
+}
+
+.error-message {
+    display: block;
+    color: #ba3a26;
+    margin-top: 0.25rem;
+    font-size: 0.875rem;
+}
+
+.custom-combobox .slds-form-element__label {
+    font-family: 'Source Sans Pro', Arial, sans-serif;
+    font-weight: 600;
+}
+
+.custom-combobox .slds-select {
+    font-family: 'Source Sans Pro', Arial, sans-serif;
 }

@@ -1,5 +1,37 @@
 <template>
     <div class="main-content">
-        <c-picklist master-label={label} set-default-value={value}></c-picklist>
+        <lightning-combobox
+            class="custom-combobox"
+            label={label}
+            value={value}
+            placeholder="Velg et alternativ"
+            options={options}
+            onchange={handleChange}
+        >
+        </lightning-combobox>
+        <template if:true={errorMessage}>
+            <div class="error-message">{errorMessage}</div>
+        </template>
+    </div>
+    <div class="button-container">
+        <c-button
+            type="Button"
+            onbuttonclick={handleBack}
+            button-label="Forrige"
+            button-styling="Secondary"
+            aria-label="Forrige"
+            desktop-style="width: 5rem; justify-content: center; margin-right: 0.5rem;"
+            mobile-style="justify-content: center; margin-right: 0.5rem;"
+        ></c-button>
+
+        <c-button
+            type="Button"
+            onbuttonclick={handleNext}
+            button-label="Neste"
+            button-styling="Primary"
+            aria-label="Neste"
+            desktop-style="width: 5rem; justify-content: center;"
+            mobile-style="justify-content: center;"
+        ></c-button>
     </div>
 </template>

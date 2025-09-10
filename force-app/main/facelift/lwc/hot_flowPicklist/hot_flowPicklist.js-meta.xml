@@ -8,18 +8,12 @@
     </targets>
     <targetConfigs>
         <targetConfig targets="lightning__FlowScreen">
-            <property name="label" type="String" label="Field Label" />
+            <property name="label" type="String" label="Combobox Label" />
             <property name="value" type="String" label="Selected Value" />
+            <property name="option1" type="String" label="Option 1" />
+            <property name="option2" type="String" label="Option 2" />
+            <property name="option3" type="String" label="Option 3" />
             <property name="required" type="Boolean" label="Required" default="false" />
-            <property name="helptextContent" type="String" label="Help Text" />
-            <property name="helptextHovertext" type="String" label="Help Text (hover)" />
-
-            <property name="optionLabelOne" type="String" label="Option 1 Label" />
-            <property name="optionValueOne" type="String" label="Option 1 Value" />
-            <property name="optionLabelTwo" type="String" label="Option 2 Label" />
-            <property name="optionValueTwo" type="String" label="Option 2 Value" />
-            <property name="optionLabelThree" type="String" label="Option 3 Label" />
-            <property name="optionValueThree" type="String" label="Option 3 Value" />
         </targetConfig>
     </targetConfigs>
 </LightningComponentBundle>
