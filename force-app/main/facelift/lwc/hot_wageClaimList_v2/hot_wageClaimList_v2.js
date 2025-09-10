@@ -126,6 +126,7 @@ export default class Hot_wageClaimList_v2 extends NavigationMixin(LightningEleme
     @track wageClaim;
     isWageClaimDetails = false;
     goToRecordDetails(result) {
+        this.isRetracting = false;
         this.hasAccess = true;
         this.isDisabledGoToThread = false;
         this.showServiceAppointmentDetails();
