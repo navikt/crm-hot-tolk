@@ -47,6 +47,10 @@ export default class Hot_messagingCommunityThreadViewer_v2 extends NavigationMix
     readByText = '';
     showReadBy = false;
 
+    latestSenderContactId;
+    latestSenderUserId;
+    hideReadBy = false;
+
     @api recordId;
     @api requestId;
     @api alerttext;
@@ -73,6 +77,15 @@ export default class Hot_messagingCommunityThreadViewer_v2 extends NavigationMix
                 if (this._mySendForSplitting) {
                     return refreshApex(this._mySendForSplitting);
                 }
+            })
+            .then(() => {
+                if (this._mySendForSplitting) {
+                    return refreshApex(this._mySendForSplitting);
+                }
+            })
+            .then(() => {
+                // Ensure read-by reflects any server-side updates from markThreadAsRead
+                return this.ReadByNames();
             })
             .catch((error) => {
                 console.error('Error fetching user contact ID:', error);
@@ -135,7 +148,21 @@ export default class Hot_messagingCommunityThreadViewer_v2 extends NavigationMix
         }
     }
 
+    formatName(value) {
+        if (!value) return '';
+        const s = String(value).trim();
+        return s
+            .toLocaleLowerCase('nb-NO')
+            .replace(/(^|[\s\-'])(\p{L})/gu, (m, p1, p2) => p1 + p2.toLocaleUpperCase('nb-NO'));
+    }
+
     async ReadByNames() {
+        if (this.hideReadBy) {
+            this.showReadBy = false;
+            this.readByText = '';
+            return;
+        }
+
         if (!this.userContactId || !this.recordId) {
             this.showReadBy = false;
             this.readByText = '';
@@ -154,6 +181,12 @@ export default class Hot_messagingCommunityThreadViewer_v2 extends NavigationMix
                 if (e.principalId && (e.principalId === this.userContactId || e.principalId === USER_ID)) {
                     continue;
                 }
+                if (
+                    e.principalId &&
+                    (e.principalId === this.latestSenderContactId || e.principalId === this.latestSenderUserId)
+                ) {
+                    continue;
+                }
 
                 const label = e.isFormidlerRole ? 'Formidler' : e.displayName;
                 if (!label) continue;
@@ -161,7 +194,7 @@ export default class Hot_messagingCommunityThreadViewer_v2 extends NavigationMix
                 const key = label.trim().toLowerCase();
                 if (seen.has(key)) continue;
                 seen.add(key);
-                labels.push(label);
+                labels.push(this.formatName(label));
             }
 
             this.showReadBy = labels.length > 0;
@@ -174,7 +207,7 @@ export default class Hot_messagingCommunityThreadViewer_v2 extends NavigationMix
     }
 
     get readByNames() {
-        return this.readByText;
+        return this.showReadBy ? this.readByText : '';
     }
 
     // Calls apex and extracts messages related to this record
@@ -186,6 +219,22 @@ export default class Hot_messagingCommunityThreadViewer_v2 extends NavigationMix
             this.error = result.error;
         } else if (result.data) {
             this.messages = result.data;
+
+            // figure out latest sender (supports user and contact)
+            const last = this.messages && this.messages.length ? this.messages[this.messages.length - 1] : null;
+            this.latestSenderContactId = last ? last.CRM_From_Contact__c : undefined;
+            this.latestSenderUserId = last ? last.CRM_From_User__c : undefined;
+
+            const latestFromMe =
+                (this.latestSenderContactId &&
+                    this.userContactId &&
+                    this.latestSenderContactId === this.userContactId) ||
+                (this.latestSenderUserId && USER_ID && this.latestSenderUserId === USER_ID);
+
+            if (this.hideReadBy && !latestFromMe) {
+                this.hideReadBy = false;
+            }
+
             this.showspinner = false;
             this.ReadByNames();
         }
@@ -269,9 +318,15 @@ export default class Hot_messagingCommunityThreadViewer_v2 extends NavigationMix
         this.msgVal = '';
         this.buttonisdisabled = false;
 
+        this.hideReadBy = true;
         this.showReadBy = false;
-        // return refreshApex(this._mySendForSplitting);
-        Promise.all([refreshApex(this._mySendForSplitting), refreshApex(this._threadWire)]);
+        this.readByText = '';
+
+        try {
+            Promise.all([refreshApex(this._mySendForSplitting), refreshApex(this._threadWire)]);
+        } catch (e) {
+            console.error('refresh after send failed', e);
+        }
     }
 
     handleMessageFailed() {
@@ -312,7 +367,10 @@ export default class Hot_messagingCommunityThreadViewer_v2 extends NavigationMix
 
     handleSendButtonClick() {
         this.buttonisdisabled = true;
-        // Sending out event to parent to handle any needed validation
+        this.hideReadBy = true;
+        this.showReadBy = false;
+        this.readByText = '';
+
         if (this.overrideValidation === true) {
             const validationEvent = new CustomEvent('validationevent', {
                 msg: this.msgVal,

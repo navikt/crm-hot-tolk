@@ -8,20 +8,39 @@
 
                 <!-- Conversation with -->
                 <div class="header-buttons">
-                    <div class="thread-with-user">
-                        <p>{threadType}</p>
-                    </div>
+                    <c-button
+                        button-label={threadType}
+                        type="button"
+                        disabled
+                        aria-disabled="true"
+                        aria-label={threadType}
+                        desktop-style="background-color: #F2F3F5; color: #23262a; border-radius: 0.25rem;"
+                        mobile-style="background-color: #F2F3F5; color: #23262a; border-radius: 0.25rem;"
+                    ></c-button>
 
-                    <!-- Show Service appointment button -->
-                    <div class="show-service-assignment">
-                        <c-button
-                            button-label="Vis oppdrag"
-                            type="button"
-                            onbuttonclick={goToDetails}
-                            desktop-style="background-color: #525962; justify-content: center; width: 7.1rem; border-radius: 0.25rem;"
-                            mobile-style="background-color: #525962; justify-content: center; width: 7.1rem; border-radius: 0.25rem;"
-                        ></c-button>
-                    </div>
+                    <!-- TODO: Dynamically show how many people in this thread and button will open a modal -->
+                    <c-button
+                        button-label="4 personer i denne samtalen"
+                        type="button"
+                        desktop-style="background-color: #F2F3F5; color: #23262a; border-radius: 0.25rem;"
+                        mobile-style="background-color: #F2F3F5; color: #23262a; border-radius: 0.25rem;"
+                    ></c-button>
+                </div>
+
+                <!-- Header -->
+                <div>
+                    <h1 class="header" role="heading" aria-level="1">{subject}</h1>
+                </div>
+
+                <!-- Show Service appointment button -->
+                <div class="show-service-assignment">
+                    <c-button
+                        button-label="Vis oppdrag"
+                        type="button"
+                        onbuttonclick={goToDetails}
+                        desktop-style="background-color: #525962; justify-content: center; width: 7.1rem; border-radius: 0.25rem;"
+                        mobile-style="background-color: #525962; justify-content: center; width: 7.1rem; border-radius: 0.25rem;"
+                    ></c-button>
                 </div>
 
                 <!-- Modal overlay with service appointment details -->
@@ -203,27 +222,12 @@
                     </dialog>
                 </template>
 
-                <!-- Header -->
-                <div>
-                    <h1 class="header" role="heading" aria-level="1">{subject}</h1>
-                </div>
-
                 <c-hot_community-error-summary
                     error-list={errorList}
                     onclickedevent={handleErrorClick}
                     class="errorSummary"
                 >
                 </c-hot_community-error-summary>
-
-                <div class="thread-multiple-user">
-                    <!-- TODO: Dynamically show how many people in this thread and button will open a modal -->
-                    <c-button
-                        button-label="4 personer i denne samtalen"
-                        type="button"
-                        desktop-style="background-color: #99C4DD; color: #23262a; border-radius: 0.25rem;"
-                        mobile-style="background-color: #99C4DD; color: #23262a; border-radius: 0.25rem;"
-                    ></c-button>
-                </div>
             </div>
             <div class="main-content">
                 <div class="thread-container">
@@ -241,7 +245,7 @@
                     <!-- Read by info -->
                     <div class="read-by-container">
                         <template lwc:if={readByNames}>
-                            <p class="read-by-text">Lest av {readByNames}</p>
+                            <p class="read-by-text">Sett av {readByNames}</p>
                         </template>
                     </div>
                 </div>

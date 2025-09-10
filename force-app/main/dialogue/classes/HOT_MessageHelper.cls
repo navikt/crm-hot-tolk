@@ -555,12 +555,16 @@ public without sharing class HOT_MessageHelper {
     }
     @AuraEnabled
     public static void markThreadAsReadEmployee(Id threadId) {
-        User user = [SELECT Id FROM User WHERE Id = :UserInfo.getUserId()];
+        User user = [SELECT Id, Profile.Name FROM User WHERE Id = :UserInfo.getUserId()];
         Thread__c thread = [
             SELECT Id, HOT_Thread_read_by__c, HOT_ParticipantIds__c
             FROM Thread__c
             WHERE Id = :threadId
         ];
+
+        if (!thread.HOT_Thread_read_by__c.contains(user.Id) && user.Profile.Name == 'HOT Tolk Formidler') {
+            thread.HOT_Thread_read_by__c = thread.HOT_Thread_read_by__c + user.Id + ';';
+        }
         if (!thread.HOT_Thread_read_by__c.contains(user.Id) && thread.HOT_ParticipantIds__c.contains(user.Id)) {
             thread.HOT_Thread_read_by__c = thread.HOT_Thread_read_by__c + user.Id + ';';
         }
@@ -856,7 +860,7 @@ public without sharing class HOT_MessageHelper {
         }
     }
 
-    @AuraEnabled(cacheable=true)
+    @AuraEnabled(cacheable=false)
     public static List<ReadByEntry> resolveReadByEntries(List<Id> principalIds) {
         List<ReadByEntry> results = new List<ReadByEntry>();
         if (principalIds == null || principalIds.isEmpty())
@@ -874,7 +878,7 @@ public without sharing class HOT_MessageHelper {
                 contactIdSet.add(pid);
         }
 
-        // Users (internal) — exclude admins and formidlers
+        // Users: include Formidler as "Formidler", exclude System Administrators
         if (!userIdSet.isEmpty()) {
             for (User u : [
                 SELECT Id, Name, Profile.Name, NKS_FullName__c
@@ -882,39 +886,43 @@ public without sharing class HOT_MessageHelper {
                 WHERE Id IN :userIdSet
             ]) {
                 Boolean isAdmin = (u.Profile != null && u.Profile.Name == 'System Administrator');
-                Boolean isFormidlerProfile = (u.Profile != null && u.Profile.Name == 'HOT Tolk Formidler');
-                if (isAdmin || isFormidlerProfile)
+                if (isAdmin)
                     continue;
 
-                String display = !String.isBlank(u.NKS_FullName__c) ? u.NKS_FullName__c : u.Name;
-                results.add(new ReadByEntry(u.Id, display, false, false));
+                Boolean isFormidler = (u.Profile != null && u.Profile.Name == 'HOT Tolk Formidler');
+                if (isFormidler) {
+                    // Show as "Formidler" instead of personal name
+                    results.add(new ReadByEntry(u.Id, 'Formidler', false, true));
+                } else {
+                    String display = !String.isBlank(u.NKS_FullName__c) ? u.NKS_FullName__c : u.Name;
+                    results.add(new ReadByEntry(u.Id, display, false, false));
+                }
             }
         }
 
-        // Contacts
+        // Contacts: show contact name
         if (!contactIdSet.isEmpty()) {
             for (Contact c : [
                 SELECT Id, Name
                 FROM Contact
                 WHERE Id IN :contactIdSet
             ]) {
-                String display = c.Name;
-                results.add(new ReadByEntry(c.Id, display, false, false));
+                results.add(new ReadByEntry(c.Id, c.Name, false, false));
             }
         }
         return results;
     }
 
-    @AuraEnabled(cacheable=true)
+    @AuraEnabled(cacheable=false)
     public static List<ReadByEntry> buildReadByEntriesForThread(Id threadId) {
-        List<ReadByEntry> entries = new List<ReadByEntry>();
-
         Thread__c t = [
             SELECT HOT_Thread_read_by__c
             FROM Thread__c
             WHERE Id = :threadId
             LIMIT 1
         ];
+
+        // Use HOT_Thread_read_by__c to build the list
         List<Id> parsedIds = new List<Id>();
         if (!String.isBlank(t.HOT_Thread_read_by__c)) {
             for (String s : t.HOT_Thread_read_by__c.split(';')) {
@@ -922,32 +930,6 @@ public without sharing class HOT_MessageHelper {
                     parsedIds.add((Id) s);
             }
         }
-        entries.addAll(resolveReadByEntries(parsedIds));
-
-        Message__c lastMsg;
-        List<Message__c> lastList = [
-            SELECT Id, CRM_Read_By_Nav__c
-            FROM Message__c
-            WHERE CRM_Thread__c = :threadId
-            ORDER BY CRM_Sent_date__c DESC, CreatedDate DESC
-            LIMIT 1
-        ];
-        if (!lastList.isEmpty()) {
-            lastMsg = lastList[0];
-        }
-
-        if (lastMsg != null && lastMsg.CRM_Read_By_Nav__c == true) {
-            Boolean alreadyPresent = false;
-            for (ReadByEntry e : entries) {
-                if ((e != null && e.isFormidlerRole == true) || (e != null && e.displayName == 'Formidler')) {
-                    alreadyPresent = true;
-                    break;
-                }
-            }
-            if (!alreadyPresent) {
-                entries.add(new ReadByEntry(null, 'Formidler', false, true));
-            }
-        }
-        return entries;
+        return resolveReadByEntries(parsedIds);
     }
 }

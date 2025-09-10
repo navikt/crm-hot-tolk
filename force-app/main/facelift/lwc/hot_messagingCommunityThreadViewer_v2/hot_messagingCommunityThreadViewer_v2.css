@@ -37,7 +37,7 @@
     font-family: 'Source Sans Pro', Arial, sans-serif;
     position: relative;
     width: 100%;
-    font-size: 2rem;
+    font-size: 3rem;
     font-weight: 600;
     padding-left: 0;
     margin-top: 0.5rem;
@@ -48,6 +48,7 @@
 .header-buttons {
     display: flex;
     margin-top: 2rem;
+    gap: 1rem;
 }
 
 .header-content {
@@ -89,22 +90,6 @@
     justify-content: end;
     margin-top: 1.5rem;
     margin-bottom: 3rem;
-}
-
-.thread-with-user {
-    background-color: #99c4dd;
-    height: 3rem;
-    margin-right: 1rem;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    padding: 1rem;
-    border-radius: 0.1rem;
-}
-
-.thread-multiple-user {
-    display: flex;
-    align-items: center;
 }
 
 .show-service-assignment-text {
