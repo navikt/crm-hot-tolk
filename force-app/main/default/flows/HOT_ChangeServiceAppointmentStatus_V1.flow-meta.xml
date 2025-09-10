@@ -508,7 +508,7 @@
         <inputAssignments>
             <field>StatusComment__c</field>
             <value>
-                <elementReference>Cancel_Comment_Tolk</elementReference>
+                <elementReference>hot_cancel_comment_tolk.inputText</elementReference>
             </value>
         </inputAssignments>
         <inputAssignments>
@@ -686,11 +686,6 @@
         <allowFinish>true</allowFinish>
         <allowPause>true</allowPause>
         <fields>
-            <name>Already_Completed_Text</name>
-            <fieldText>&lt;p&gt;&lt;span style=&quot;background-color: rgb(255, 255, 255);&quot;&gt;Det er ikke mulig å oppdatere statusen etter at oppdraget&lt;/span&gt;&lt;/p&gt;&lt;p&gt;&lt;span style=&quot;background-color: rgb(255, 255, 255);&quot;&gt;                er satt til Dekket. Kontakt formidler for å gi ytterligere informasjon om&lt;/span&gt;&lt;/p&gt;&lt;p&gt;&lt;span style=&quot;background-color: rgb(255, 255, 255);&quot;&gt;                oppdraget.&lt;/span&gt;&lt;/p&gt;</fieldText>
-            <fieldType>DisplayText</fieldType>
-        </fields>
-        <fields>
             <name>hot_already_completed_text</name>
             <extensionName>c:hot_infoParagraphFlow</extensionName>
             <fieldType>ComponentInstance</fieldType>
@@ -729,11 +724,6 @@
         <allowBack>true</allowBack>
         <allowFinish>true</allowFinish>
         <allowPause>true</allowPause>
-        <fields>
-            <name>displayNotFound</name>
-            <fieldText>&lt;p&gt;Kunne ikke finne oppdraget!&lt;/p&gt;</fieldText>
-            <fieldType>DisplayText</fieldType>
-        </fields>
         <fields>
             <name>display_not_found</name>
             <extensionName>c:hot_infoParagraphFlow</extensionName>
@@ -786,11 +776,6 @@
         <allowFinish>true</allowFinish>
         <allowPause>false</allowPause>
         <fields>
-            <name>notYourSAText</name>
-            <fieldText>&lt;p&gt;&lt;span style=&quot;background-color: rgb(255, 255, 255);&quot;&gt;Du kan ikke endre status på dette oppdraget, ettersom det&lt;/span&gt;&lt;/p&gt;&lt;p&gt;&lt;span style=&quot;background-color: rgb(255, 255, 255);&quot;&gt;                ikke er ditt.&lt;/span&gt;&lt;/p&gt;</fieldText>
-            <fieldType>DisplayText</fieldType>
-        </fields>
-        <fields>
             <name>hot_not_your_sa_text</name>
             <extensionName>c:hot_infoParagraphFlow</extensionName>
             <fieldType>ComponentInstance</fieldType>
@@ -829,11 +814,6 @@
         <allowBack>true</allowBack>
         <allowFinish>true</allowFinish>
         <allowPause>true</allowPause>
-        <fields>
-            <name>SANotStartedMessage</name>
-            <fieldText>&lt;p&gt;&lt;span style=&quot;background-color: rgb(255, 255, 255);&quot;&gt;Oppdraget kan ikke settes til &apos;Dekket&apos; før det&lt;/span&gt;&lt;/p&gt;&lt;p&gt;&lt;span style=&quot;background-color: rgb(255, 255, 255);&quot;&gt;                har begynt. Status kan settes til &apos;Dekket&apos; tidligst etter&lt;/span&gt;&lt;/p&gt;&lt;p&gt;&lt;span style=&quot;background-color: rgb(255, 255, 255);&quot;&gt;                {!CurrentServiceAppointment.SchedStartTime}&lt;/span&gt;&lt;/p&gt;</fieldText>
-            <fieldType>DisplayText</fieldType>
-        </fields>
         <fields>
             <name>hot_SANotStartedMessage</name>
             <extensionName>c:hot_infoParagraphFlow</extensionName>
@@ -929,14 +909,6 @@
             <targetReference>Create_Historically_Assigned_Resource_Avlyst_Tolk</targetReference>
         </connector>
         <fields>
-            <name>Cancel_Comment_Tolk</name>
-            <dataType>String</dataType>
-            <fieldText>Oppgi en begrunnelse for å avlyse</fieldText>
-            <fieldType>InputField</fieldType>
-            <inputsOnNextNavToAssocScrn>UseStoredValues</inputsOnNextNavToAssocScrn>
-            <isRequired>true</isRequired>
-        </fields>
-        <fields>
             <name>hot_cancel_comment_tolk</name>
             <extensionName>c:hot_flowTextArea</extensionName>
             <fieldType>ComponentInstance</fieldType>
@@ -950,26 +922,6 @@
                 <name>label</name>
                 <value>
                     <stringValue>* Oppgi en begrunnelse for å avlyse</stringValue>
-                </value>
-            </inputParameters>
-            <inputsOnNextNavToAssocScrn>UseStoredValues</inputsOnNextNavToAssocScrn>
-            <isRequired>true</isRequired>
-            <storeOutputAutomatically>true</storeOutputAutomatically>
-        </fields>
-        <fields>
-            <name>btn_cancel_comment_tolk</name>
-            <extensionName>c:hot_flowFooterButtons</extensionName>
-            <fieldType>ComponentInstance</fieldType>
-            <inputParameters>
-                <name>showBack</name>
-                <value>
-                    <booleanValue>true</booleanValue>
-                </value>
-            </inputParameters>
-            <inputParameters>
-                <name>showNext</name>
-                <value>
-                    <booleanValue>true</booleanValue>
                 </value>
             </inputParameters>
             <inputsOnNextNavToAssocScrn>UseStoredValues</inputsOnNextNavToAssocScrn>
@@ -990,14 +942,6 @@
         <connector>
             <targetReference>Create_Historically_Assigned_Resource_Dekket</targetReference>
         </connector>
-        <fields>
-            <name>Completed_Comment_Text</name>
-            <dataType>String</dataType>
-            <fieldText>Oppgi en begrunnelse for å endre start- eller slutt-tid</fieldText>
-            <fieldType>InputField</fieldType>
-            <inputsOnNextNavToAssocScrn>UseStoredValues</inputsOnNextNavToAssocScrn>
-            <isRequired>false</isRequired>
-        </fields>
         <fields>
             <name>hot_completed_comment_text_area</name>
             <extensionName>c:hot_flowTextArea</extensionName>
@@ -1032,17 +976,6 @@
         <connector>
             <targetReference>Status</targetReference>
         </connector>
-        <fields>
-            <name>New_status</name>
-            <choiceReferences>Status_Dekket</choiceReferences>
-            <choiceReferences>Status_Avlyst</choiceReferences>
-            <choiceReferences>Status_TolkAvlyst</choiceReferences>
-            <dataType>String</dataType>
-            <fieldText>Status</fieldText>
-            <fieldType>RadioButtons</fieldType>
-            <inputsOnNextNavToAssocScrn>UseStoredValues</inputsOnNextNavToAssocScrn>
-            <isRequired>false</isRequired>
-        </fields>
         <fields>
             <name>hot_new_status</name>
             <extensionName>c:hot_changeStatusServiceAppointment_v2</extensionName>
