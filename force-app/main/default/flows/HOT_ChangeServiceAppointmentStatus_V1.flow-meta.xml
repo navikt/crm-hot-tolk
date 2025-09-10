@@ -10,7 +10,7 @@
             <assignToReference>CurrentServiceAppointment.HOT_CancelComment__c</assignToReference>
             <operator>Assign</operator>
             <value>
-                <elementReference>Cancel_Comment_Bruker_Picklist</elementReference>
+                <elementReference>hot_cancel_comment_bruker_picklist.value</elementReference>
             </value>
         </assignmentItems>
         <assignmentItems>
@@ -368,7 +368,7 @@
             <name>Dekket</name>
             <conditionLogic>and</conditionLogic>
             <conditions>
-                <leftValueReference>hot_new_status.rbOneValue</leftValueReference>
+                <leftValueReference>hot_new_status.value</leftValueReference>
                 <operator>EqualTo</operator>
                 <rightValue>
                     <elementReference>Status_Dekket</elementReference>
@@ -383,7 +383,7 @@
             <name>Avlyst</name>
             <conditionLogic>and</conditionLogic>
             <conditions>
-                <leftValueReference>hot_new_status.rbTwoValue</leftValueReference>
+                <leftValueReference>hot_new_status.value</leftValueReference>
                 <operator>EqualTo</operator>
                 <rightValue>
                     <elementReference>Status_Avlyst</elementReference>
@@ -398,7 +398,7 @@
             <name>Tolk_Avlyst</name>
             <conditionLogic>and</conditionLogic>
             <conditions>
-                <leftValueReference>hot_new_status.rbThreeValue</leftValueReference>
+                <leftValueReference>hot_new_status.value</leftValueReference>
                 <operator>EqualTo</operator>
                 <rightValue>
                     <elementReference>Status_TolkAvlyst</elementReference>
@@ -473,7 +473,7 @@
         <inputAssignments>
             <field>StatusComment__c</field>
             <value>
-                <elementReference>Cancel_Comment_Bruker_Picklist</elementReference>
+                <elementReference>hot_cancel_comment_bruker_picklist.value</elementReference>
             </value>
         </inputAssignments>
         <inputAssignments>
@@ -774,70 +774,6 @@
             <isRequired>true</isRequired>
             <storeOutputAutomatically>true</storeOutputAutomatically>
         </fields>
-        <fields>
-            <name>test_pick</name>
-            <choiceReferences>Status_Dekket</choiceReferences>
-            <dataType>String</dataType>
-            <fieldType>DropdownBox</fieldType>
-            <inputsOnNextNavToAssocScrn>UseStoredValues</inputsOnNextNavToAssocScrn>
-            <isRequired>false</isRequired>
-        </fields>
-        <fields>
-            <name>test_picklist</name>
-            <extensionName>c:hot_flowPicklist</extensionName>
-            <fieldType>ComponentInstance</fieldType>
-            <inputParameters>
-                <name>label</name>
-                <value>
-                    <stringValue>Picklist test</stringValue>
-                </value>
-            </inputParameters>
-            <inputParameters>
-                <name>optionLabelOne</name>
-                <value>
-                    <stringValue>Dekket</stringValue>
-                </value>
-            </inputParameters>
-            <inputParameters>
-                <name>optionLabelTwo</name>
-                <value>
-                    <stringValue>Avlyst</stringValue>
-                </value>
-            </inputParameters>
-            <inputParameters>
-                <name>optionLabelThree</name>
-                <value>
-                    <stringValue>Avlyst av tolk</stringValue>
-                </value>
-            </inputParameters>
-            <inputParameters>
-                <name>optionValueOne</name>
-                <value>
-                    <elementReference>Status_Dekket</elementReference>
-                </value>
-            </inputParameters>
-            <inputParameters>
-                <name>optionValueTwo</name>
-                <value>
-                    <elementReference>Status_Avlyst</elementReference>
-                </value>
-            </inputParameters>
-            <inputParameters>
-                <name>optionValueThree</name>
-                <value>
-                    <elementReference>Status_TolkAvlyst</elementReference>
-                </value>
-            </inputParameters>
-            <inputParameters>
-                <name>required</name>
-                <value>
-                    <booleanValue>true</booleanValue>
-                </value>
-            </inputParameters>
-            <inputsOnNextNavToAssocScrn>UseStoredValues</inputsOnNextNavToAssocScrn>
-            <isRequired>true</isRequired>
-            <storeOutputAutomatically>true</storeOutputAutomatically>
-        </fields>
         <showFooter>false</showFooter>
         <showHeader>true</showHeader>
     </screens>
@@ -941,17 +877,44 @@
             <targetReference>Create_Historically_Assigned_Resource_Avlyst_Bruker</targetReference>
         </connector>
         <fields>
-            <name>Cancel_Comment_Bruker_Picklist</name>
-            <choiceReferences>Tekniske_Problemer</choiceReferences>
-            <choiceReferences>Bruker_Ikke_Mott</choiceReferences>
-            <choiceReferences>Annet</choiceReferences>
-            <dataType>String</dataType>
-            <fieldText>Oppgi en begrunnelse for å avlyse</fieldText>
-            <fieldType>DropdownBox</fieldType>
+            <name>hot_cancel_comment_bruker_picklist</name>
+            <extensionName>c:hot_flowPicklist</extensionName>
+            <fieldType>ComponentInstance</fieldType>
+            <inputParameters>
+                <name>label</name>
+                <value>
+                    <stringValue>* Oppgi en begrunnelse for å avlyse</stringValue>
+                </value>
+            </inputParameters>
+            <inputParameters>
+                <name>option1</name>
+                <value>
+                    <stringValue>Tekniske Problemer</stringValue>
+                </value>
+            </inputParameters>
+            <inputParameters>
+                <name>option2</name>
+                <value>
+                    <stringValue>Bruker ikke møtt</stringValue>
+                </value>
+            </inputParameters>
+            <inputParameters>
+                <name>option3</name>
+                <value>
+                    <stringValue>Annet</stringValue>
+                </value>
+            </inputParameters>
+            <inputParameters>
+                <name>required</name>
+                <value>
+                    <booleanValue>true</booleanValue>
+                </value>
+            </inputParameters>
             <inputsOnNextNavToAssocScrn>UseStoredValues</inputsOnNextNavToAssocScrn>
             <isRequired>true</isRequired>
+            <storeOutputAutomatically>true</storeOutputAutomatically>
         </fields>
-        <showFooter>true</showFooter>
+        <showFooter>false</showFooter>
         <showHeader>false</showHeader>
     </screens>
     <screens>
@@ -1033,7 +996,7 @@
             <fieldText>Oppgi en begrunnelse for å endre start- eller slutt-tid</fieldText>
             <fieldType>InputField</fieldType>
             <inputsOnNextNavToAssocScrn>UseStoredValues</inputsOnNextNavToAssocScrn>
-            <isRequired>true</isRequired>
+            <isRequired>false</isRequired>
         </fields>
         <fields>
             <name>hot_completed_comment_text_area</name>
