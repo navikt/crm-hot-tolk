@@ -194,6 +194,10 @@ export default class Hot_myServiceAppointmentsList_v2 extends NavigationMixin(Li
 
     isflow = false;
     goToRecordDetails(result) {
+        this.isflow = false;
+        this.IsEditButtonDisabled = false;
+        this.isCancelButtonHidden = true;
+        this.isEditButtonHidden = false;
         this.hasAccess = true;
         this.serviceAppointment = undefined;
         this.interestedResource = undefined;
