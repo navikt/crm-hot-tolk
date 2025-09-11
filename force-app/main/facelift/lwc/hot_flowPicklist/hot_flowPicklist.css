@@ -17,8 +17,22 @@
 .custom-combobox .slds-form-element__label {
     font-family: 'Source Sans Pro', Arial, sans-serif;
     font-weight: 600;
+    font-size: 18px;
+    color: #e00a0a;
 }
 
-.custom-combobox .slds-select {
+.custom-combobox .slds-combobox__input {
     font-family: 'Source Sans Pro', Arial, sans-serif;
+    font-size: 16px;
+    color: #1f1db0;
+}
+
+.custom-combobox label {
+    font-size: 18px;
+    color: #12b818;
+}
+
+.custom-combobox::placeholder {
+    color: black !important;
+    opacity: 1;
 }
