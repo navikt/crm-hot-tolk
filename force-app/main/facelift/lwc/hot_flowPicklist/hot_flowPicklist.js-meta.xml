@@ -8,12 +8,18 @@
     </targets>
     <targetConfigs>
         <targetConfig targets="lightning__FlowScreen">
+            <!-- Label shown above the combobox -->
             <property name="label" type="String" label="Combobox Label" />
             <property name="value" type="String" label="Selected Value" />
+
+            <!-- Configurable picklist options -->
             <property name="option1" type="String" label="Option 1" />
             <property name="option2" type="String" label="Option 2" />
             <property name="option3" type="String" label="Option 3" />
-            <property name="required" type="Boolean" label="Required" default="false" />
+
+            <!-- If true, user must select a value to continue -->
+            <property name="required" type="Boolean" label="Require a selection before continuing"
+                default="false" />
         </targetConfig>
     </targetConfigs>
 </LightningComponentBundle>

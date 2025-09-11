@@ -12,9 +12,8 @@ export default class Hot_flowTextArea extends LightningElement {
     @api inputText = '';
     @api required = false;
     @api errorText = '';
-    @api helptextContent = '';
-    @api helptextHovertext = '';
 
+    // Check if input is valid; show error if required and empty
     validate() {
         if (this.required && (!this.inputText || this.inputText.trim() === '')) {
             this.errorText = 'Vennligst fyll ut tekstfeltet for å gå videre.';

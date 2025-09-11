@@ -35,7 +35,7 @@
             </value>
         </assignmentItems>
         <connector>
-            <targetReference>Save_Service_Appointment</targetReference>
+            <targetReference>testRollBack</targetReference>
         </connector>
     </assignments>
     <assignments>
@@ -86,7 +86,7 @@
             </value>
         </assignmentItems>
         <connector>
-            <targetReference>Save_Service_Appointment</targetReference>
+            <targetReference>testRollBack</targetReference>
         </connector>
     </assignments>
     <assignments>
@@ -123,7 +123,7 @@
             </value>
         </assignmentItems>
         <connector>
-            <targetReference>Save_Service_Appointment</targetReference>
+            <targetReference>testRollBack</targetReference>
         </connector>
     </assignments>
     <assignments>
@@ -410,6 +410,28 @@
             <label>TolkAvlyst</label>
         </rules>
     </decisions>
+    <decisions>
+        <name>testRollBack</name>
+        <label>testRollBack</label>
+        <locationX>1425</locationX>
+        <locationY>2030</locationY>
+        <defaultConnector>
+            <targetReference>Save_Service_Appointment</targetReference>
+        </defaultConnector>
+        <defaultConnectorLabel>Default Outcome</defaultConnectorLabel>
+        <rules>
+            <name>testRun</name>
+            <conditionLogic>and</conditionLogic>
+            <conditions>
+                <leftValueReference>testroll</leftValueReference>
+                <operator>EqualTo</operator>
+                <rightValue>
+                    <stringValue>test</stringValue>
+                </rightValue>
+            </conditions>
+            <label>testRun</label>
+        </rules>
+    </decisions>
     <description>This flow is recreated as Field service app is no longer used</description>
     <environments>Default</environments>
     <formulas>
@@ -663,8 +685,8 @@
     <recordUpdates>
         <name>Save_Service_Appointment</name>
         <label>Save Service Appointment</label>
-        <locationX>1425</locationX>
-        <locationY>2030</locationY>
+        <locationX>1557</locationX>
+        <locationY>2138</locationY>
         <inputReference>CurrentServiceAppointment</inputReference>
     </recordUpdates>
     <recordUpdates>
@@ -913,15 +935,15 @@
             <extensionName>c:hot_flowTextArea</extensionName>
             <fieldType>ComponentInstance</fieldType>
             <inputParameters>
-                <name>required</name>
-                <value>
-                    <booleanValue>true</booleanValue>
-                </value>
-            </inputParameters>
-            <inputParameters>
                 <name>label</name>
                 <value>
                     <stringValue>* Oppgi en begrunnelse for å avlyse</stringValue>
+                </value>
+            </inputParameters>
+            <inputParameters>
+                <name>required</name>
+                <value>
+                    <booleanValue>true</booleanValue>
                 </value>
             </inputParameters>
             <inputsOnNextNavToAssocScrn>UseStoredValues</inputsOnNextNavToAssocScrn>
@@ -978,7 +1000,7 @@
         </connector>
         <fields>
             <name>hot_new_status</name>
-            <extensionName>c:hot_changeStatusServiceAppointment_v2</extensionName>
+            <extensionName>c:hot_flowRadioButton</extensionName>
             <fieldType>ComponentInstance</fieldType>
             <inputParameters>
                 <name>rbOneLabel</name>
@@ -1177,5 +1199,15 @@
         <isCollection>false</isCollection>
         <isInput>false</isInput>
         <isOutput>false</isOutput>
+    </variables>
+    <variables>
+        <name>testroll</name>
+        <dataType>String</dataType>
+        <isCollection>false</isCollection>
+        <isInput>true</isInput>
+        <isOutput>false</isOutput>
+        <value>
+            <stringValue>test</stringValue>
+        </value>
     </variables>
 </Flow>

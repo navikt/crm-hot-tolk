@@ -9,10 +9,17 @@
     </targets>
     <targetConfigs>
         <targetConfig targets="lightning__FlowScreen">
+            <!-- Section header text -->
             <property name="label" type="String" label="Section Label" />
+
+            <!-- Main body text displayed -->
             <property name="text" type="String" label="Text to Display" />
+
+            <!-- Controls the font size of the body text -->
             <property name="fontSize" type="String"
                 label="Font size for body text (small, medium, large)" default="medium" />
+
+            <!-- Controls the size of the header -->
             <property name="headerSize" type="String"
                 label="Header size (h-small, h-medium, h-large)" default="h-medium" />
         </targetConfig>

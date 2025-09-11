@@ -20,9 +20,9 @@ export default class Hot_flowPicklist extends LightningElement {
 
     get options() {
         return [
-            { label: this.option1 || 'Option 1', value: this.option1 || 'Option 1' },
-            { label: this.option2 || 'Option 2', value: this.option2 || 'Option 2' },
-            { label: this.option3 || 'Option 3', value: this.option3 || 'Option 3' }
+            { label: this.option1, value: this.option1 },
+            { label: this.option2, value: this.option2 },
+            { label: this.option3, value: this.option3 }
         ];
     }
 

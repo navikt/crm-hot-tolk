@@ -9,11 +9,14 @@
     </targets>
     <targetConfigs>
         <targetConfig targets="lightning__FlowScreen">
+            <!-- Label shown above the text area -->
             <property name="label" type="String" label="Label" />
+
+
+            <!-- Default text value in the text area -->
             <property name="inputText" type="String" label="Default value" />
-            <property name="required" type="Boolean" label="Required" default="false" />
-            <property name="helptextContent" type="String" label="Help Text Icon" />
-            <property name="helptextHovertext" type="String" label="Help Hover Text" />
+            <property name="required" type="Boolean" label="Require input before continuing"
+                default="false" />
         </targetConfig>
     </targetConfigs>
 </LightningComponentBundle>
