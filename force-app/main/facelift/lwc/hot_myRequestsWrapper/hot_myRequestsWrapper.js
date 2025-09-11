@@ -713,7 +713,7 @@ export default class Hot_myRequestsWrapper extends NavigationMixin(LightningElem
         }
     }
     goToThreadInterpreter() {
-        this.goToThreadInterpreter = true;
+        this.isInterpreterThreadButtonDisabled = true;
         getThreadInterpreterId({ workOrderId: this.workOrder.Id }).then((result) => {
             if (result != '') {
                 this.workOrderThreadId = result;
