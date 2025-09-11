@@ -26,7 +26,7 @@ private class HOT_MessageHelperTest {
 
         Thread__c t3 = HOT_TestDataFactory.createThread();
         t3.CRM_Related_Object__c = acc.Id;
-        t2.CRM_Type__c = 'HOT_BRUKER-FORMIDLER';
+        t3.CRM_Type__c = 'HOT_BRUKER-FORMIDLER';
 
         insert new List<Thread__c>{ t, t2, t3 };
 
@@ -35,7 +35,23 @@ private class HOT_MessageHelperTest {
         m.CRM_Message_Text__c = 'Lorem Ipsum Dolor Si Amet';
         m.HOT_User_Role__c = HOT_MessageHelper.getUserProfileAndName();
         insert m;
+
+        // === Users for read-by tests (setup objects must be created in @TestSetup) ===
+        Profile std = [SELECT Id FROM Profile WHERE Name IN ('Standard User', 'Standardbruker') LIMIT 1];
+        User stdUser = HOT_TestDataFactory.createUser('rbstd', std);
+        insert stdUser;
+
+        List<Profile> pFormidler = [SELECT Id FROM Profile WHERE Name = 'HOT Tolk Formidler' LIMIT 1];
+        if (!pFormidler.isEmpty()) {
+            User formidlerUser = HOT_TestDataFactory.createUser('rbform', pFormidler[0]);
+            insert formidlerUser;
+        }
+
+        Profile adminProf = [SELECT Id FROM Profile WHERE Name = 'System Administrator' LIMIT 1];
+        User adminUser = HOT_TestDataFactory.createUser('rbadm', adminProf);
+        insert adminUser;
     }
+
     @IsTest
     static void getObjectTypeFromidTest() {
         List<Account> accList = [SELECT Id FROM Account];
@@ -1285,6 +1301,97 @@ private class HOT_MessageHelperTest {
         Test.stopTest();
         System.assertNotEquals('', result, 'Did not get Profile and Name');
     }
+
+    @IsTest
+    static void testResolveReadByEntries() {
+        User stdUser = [SELECT Id, Name FROM User WHERE Alias = 'rbstd' LIMIT 1];
+        User adminUser = [SELECT Id, Name FROM User WHERE Alias = 'rbadm' LIMIT 1];
+        User formidlerUser;
+        List<User> uForm = [SELECT Id, Name FROM User WHERE Alias = 'rbform' LIMIT 1];
+        if (!uForm.isEmpty())
+            formidlerUser = uForm[0];
+
+        List<Id> principalIds = new List<Id>{ stdUser.Id, adminUser.Id };
+        if (formidlerUser != null)
+            principalIds.add(formidlerUser.Id);
+
+        Test.startTest();
+        List<HOT_MessageHelper.ReadByEntry> entries = HOT_MessageHelper.resolveReadByEntries(principalIds);
+        Test.stopTest();
+
+        Boolean hasAdmin = false, hasStd = false, hasFormidler = false, formidlerFlag = false;
+        String stdName, formidlerName;
+        for (HOT_MessageHelper.ReadByEntry e : entries) {
+            if (e.principalId == adminUser.Id)
+                hasAdmin = true;
+            if (e.principalId == stdUser.Id) {
+                hasStd = true;
+                stdName = e.displayName;
+            }
+            if (formidlerUser != null && e.principalId == formidlerUser.Id) {
+                hasFormidler = true;
+                formidlerName = e.displayName;
+                formidlerFlag = e.isFormidlerRole;
+            }
+        }
+
+        System.assertEquals(false, hasAdmin);
+        System.assertEquals(true, hasStd);
+        System.assertEquals(stdUser.Name, stdName);
+        if (formidlerUser != null) {
+            System.assertEquals(true, hasFormidler);
+            System.assertEquals('Formidler', formidlerName);
+            System.assertEquals(true, formidlerFlag);
+        }
+    }
+
+    @IsTest
+    static void testBuildReadByEntriesForThread() {
+        User uStd = [SELECT Id, Name FROM User WHERE Alias = 'rbstd' LIMIT 1];
+        User uAdmin = [SELECT Id, Name FROM User WHERE Alias = 'rbadm' LIMIT 1];
+        User uFormidler;
+        List<User> uForm = [SELECT Id, Name FROM User WHERE Alias = 'rbform' LIMIT 1];
+        if (!uForm.isEmpty())
+            uFormidler = uForm[0];
+
+        Thread__c t = HOT_TestDataFactory.createThread();
+        String readBy = String.valueOf(uStd.Id) + ';';
+        if (uFormidler != null)
+            readBy += String.valueOf(uFormidler.Id) + ';';
+        readBy += String.valueOf(uAdmin.Id) + ';';
+        t.HOT_Thread_read_by__c = readBy;
+        insert t;
+
+        Test.startTest();
+        List<HOT_MessageHelper.ReadByEntry> entries = HOT_MessageHelper.buildReadByEntriesForThread(t.Id);
+        Test.stopTest();
+
+        Boolean hasAdmin = false, hasStd = false, hasFormidler = false, formidlerFlag = false;
+        String stdName, formidlerName;
+        for (HOT_MessageHelper.ReadByEntry e : entries) {
+            if (e.principalId == uAdmin.Id)
+                hasAdmin = true;
+            if (e.principalId == uStd.Id) {
+                hasStd = true;
+                stdName = e.displayName;
+            }
+            if (uFormidler != null && e.principalId == uFormidler.Id) {
+                hasFormidler = true;
+                formidlerName = e.displayName;
+                formidlerFlag = e.isFormidlerRole;
+            }
+        }
+
+        System.assertEquals(false, hasAdmin);
+        System.assertEquals(true, hasStd);
+        System.assertEquals(uStd.Name, stdName);
+        if (uFormidler != null) {
+            System.assertEquals(true, hasFormidler);
+            System.assertEquals('Formidler', formidlerName);
+            System.assertEquals(true, formidlerFlag);
+        }
+    }
+
     @IsTest
     static void createThreadWhenIRIsAssignedTest() {
         WorkType workType = HOT_TestDataFactory.createWorkType();
@@ -1607,9 +1714,7 @@ private class HOT_MessageHelperTest {
         Test.stopTest();
         Thread__c th = [SELECT HOT_Thread_read_by__c FROM Thread__c WHERE id = :t.Id LIMIT 1];
         System.assertEquals(
-            '007' +
-            currentUser.id +
-            ';',
+            '007' + currentUser.id + ';',
             th.HOT_Thread_read_by__c,
             'Should be HOT Thread Read By + user id + ;'
         );
