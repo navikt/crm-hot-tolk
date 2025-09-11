@@ -1,4 +1,5 @@
 import { LightningElement, track, wire } from 'lwc';
+import { refreshApex } from '@salesforce/apex';
 import icons from '@salesforce/resourceUrl/ikoner';
 import { NavigationMixin } from 'lightning/navigation';
 import getMyNotifications from '@salesforce/apex/HOT_NotificationCentreController.getMyNotifications';
@@ -153,6 +154,7 @@ export default class Hot_notificationListViewer extends NavigationMixin(Lightnin
     toggleNotifications() {
         this.showNotifications = !this.showNotifications;
         if (this.showNotifications) {
+            refreshApex(this.wiredNotificationResult);
             // after DOM updates, focus first tabbable in dropdown
             setTimeout(() => {
                 const first = this._getTrapElements()[0]; //First notification
