@@ -4,7 +4,7 @@
     <assignments>
         <name>Assign_new_values_Avlyst_Bruker</name>
         <label>Assign new values - Avlyst - Bruker</label>
-        <locationX>1810</locationX>
+        <locationX>1282</locationX>
         <locationY>1322</locationY>
         <assignmentItems>
             <assignToReference>CurrentServiceAppointment.HOT_CancelComment__c</assignToReference>
@@ -35,13 +35,13 @@
             </value>
         </assignmentItems>
         <connector>
-            <targetReference>testRollBack</targetReference>
+            <targetReference>Save_Service_Appointment</targetReference>
         </connector>
     </assignments>
     <assignments>
         <name>Assign_new_values_Avlyst_Tolk</name>
         <label>Assign new values - Avlyst - Tolk</label>
-        <locationX>2162</locationX>
+        <locationX>1634</locationX>
         <locationY>1838</locationY>
         <assignmentItems>
             <assignToReference>CurrentServiceAppointment.Status</assignToReference>
@@ -86,13 +86,13 @@
             </value>
         </assignmentItems>
         <connector>
-            <targetReference>testRollBack</targetReference>
+            <targetReference>Save_Service_Appointment</targetReference>
         </connector>
     </assignments>
     <assignments>
         <name>Assign_new_values_dekket</name>
         <label>Assign new values - Dekket</label>
-        <locationX>1238</locationX>
+        <locationX>710</locationX>
         <locationY>1730</locationY>
         <assignmentItems>
             <assignToReference>CurrentServiceAppointment.Status</assignToReference>
@@ -123,13 +123,13 @@
             </value>
         </assignmentItems>
         <connector>
-            <targetReference>testRollBack</targetReference>
+            <targetReference>Save_Service_Appointment</targetReference>
         </connector>
     </assignments>
     <assignments>
         <name>Set_Record_Id_0</name>
         <label>Set Record Id</label>
-        <locationX>1200</locationX>
+        <locationX>804</locationX>
         <locationY>134</locationY>
         <assignmentItems>
             <assignToReference>Id</assignToReference>
@@ -145,7 +145,7 @@
     <assignments>
         <name>setInterestedResourceStatus</name>
         <label>setInterestedResourceStatus</label>
-        <locationX>2250</locationX>
+        <locationX>1722</locationX>
         <locationY>1538</locationY>
         <assignmentItems>
             <assignToReference>interestedResource.Status__c</assignToReference>
@@ -200,7 +200,7 @@
     <decisions>
         <name>Changed_Start_or_End_Time</name>
         <label>Changed Start or End Time?</label>
-        <locationX>1238</locationX>
+        <locationX>710</locationX>
         <locationY>1322</locationY>
         <defaultConnector>
             <targetReference>Create_Historically_Assigned_Resource_Dekket</targetReference>
@@ -232,7 +232,7 @@
     <decisions>
         <name>Found_the_SA</name>
         <label>Found the SA</label>
-        <locationX>1200</locationX>
+        <locationX>804</locationX>
         <locationY>350</locationY>
         <defaultConnector>
             <targetReference>Get_Assigned_Resource</targetReference>
@@ -254,7 +254,7 @@
     <decisions>
         <name>Interested_Resource</name>
         <label>Interested Resource?</label>
-        <locationX>2162</locationX>
+        <locationX>1634</locationX>
         <locationY>1430</locationY>
         <defaultConnector>
             <targetReference>setInterestedResourceStatus</targetReference>
@@ -279,7 +279,7 @@
     <decisions>
         <name>isCompleted</name>
         <label>Completed?</label>
-        <locationX>1397</locationX>
+        <locationX>869</locationX>
         <locationY>782</locationY>
         <defaultConnector>
             <targetReference>Set_status</targetReference>
@@ -304,7 +304,7 @@
     <decisions>
         <name>My_Service_Appointment</name>
         <label>My Service Appointment</label>
-        <locationX>2087</locationX>
+        <locationX>1559</locationX>
         <locationY>674</locationY>
         <defaultConnector>
             <targetReference>NOT_your_SA</targetReference>
@@ -336,7 +336,7 @@
     <decisions>
         <name>Startet</name>
         <label>Startet?</label>
-        <locationX>1392</locationX>
+        <locationX>864</locationX>
         <locationY>1106</locationY>
         <defaultConnector>
             <targetReference>SA_Not_Started_Error</targetReference>
@@ -361,7 +361,7 @@
     <decisions>
         <name>Status</name>
         <label>Status</label>
-        <locationX>1953</locationX>
+        <locationX>1425</locationX>
         <locationY>998</locationY>
         <defaultConnectorLabel>Default Outcome</defaultConnectorLabel>
         <rules>
@@ -410,65 +410,6 @@
             <label>TolkAvlyst</label>
         </rules>
     </decisions>
-    <decisions>
-        <name>tesss</name>
-        <label>tesss</label>
-        <locationX>314</locationX>
-        <locationY>566</locationY>
-        <defaultConnectorLabel>Default Outcome</defaultConnectorLabel>
-        <rules>
-            <name>Tekniske_Problemerad</name>
-            <conditionLogic>and</conditionLogic>
-            <conditions>
-                <leftValueReference>testpicklist.value</leftValueReference>
-                <operator>EqualTo</operator>
-                <rightValue>
-                    <stringValue>Tekniske Problemer</stringValue>
-                </rightValue>
-            </conditions>
-            <connector>
-                <targetReference>Teknisk</targetReference>
-            </connector>
-            <label>Tekniske Problemer</label>
-        </rules>
-        <rules>
-            <name>Bruker_ikke_m_tt</name>
-            <conditionLogic>and</conditionLogic>
-            <conditions>
-                <leftValueReference>testpicklist.value</leftValueReference>
-                <operator>EqualTo</operator>
-                <rightValue>
-                    <stringValue>Bruker ikke møtt</stringValue>
-                </rightValue>
-            </conditions>
-            <connector>
-                <targetReference>dadawdwa</targetReference>
-            </connector>
-            <label>Bruker ikke møtt</label>
-        </rules>
-    </decisions>
-    <decisions>
-        <name>testRollBack</name>
-        <label>testRollBack</label>
-        <locationX>1953</locationX>
-        <locationY>2030</locationY>
-        <defaultConnector>
-            <targetReference>Save_Service_Appointment</targetReference>
-        </defaultConnector>
-        <defaultConnectorLabel>Default Outcome</defaultConnectorLabel>
-        <rules>
-            <name>testRun</name>
-            <conditionLogic>and</conditionLogic>
-            <conditions>
-                <leftValueReference>testroll</leftValueReference>
-                <operator>EqualTo</operator>
-                <rightValue>
-                    <stringValue>test</stringValue>
-                </rightValue>
-            </conditions>
-            <label>testRun</label>
-        </rules>
-    </decisions>
     <description>This flow is recreated as Field service app is no longer used</description>
     <environments>Default</environments>
     <formulas>
@@ -512,7 +453,7 @@
     <recordCreates>
         <name>Create_Historically_Assigned_Resource_Avlyst_Bruker</name>
         <label>Create Historically Assigned Resource - Avlyst av bruker</label>
-        <locationX>1810</locationX>
+        <locationX>1282</locationX>
         <locationY>1214</locationY>
         <connector>
             <targetReference>Assign_new_values_Avlyst_Bruker</targetReference>
@@ -547,7 +488,7 @@
     <recordCreates>
         <name>Create_Historically_Assigned_Resource_Avlyst_Tolk</name>
         <label>Create Historically Assigned Resource - Avlyst av tolk</label>
-        <locationX>2162</locationX>
+        <locationX>1634</locationX>
         <locationY>1214</locationY>
         <connector>
             <targetReference>getInterestedResource</targetReference>
@@ -582,7 +523,7 @@
     <recordCreates>
         <name>Create_Historically_Assigned_Resource_Dekket</name>
         <label>Create Historically Assigned Resource - Dekket</label>
-        <locationX>1238</locationX>
+        <locationX>710</locationX>
         <locationY>1622</locationY>
         <connector>
             <targetReference>Assign_new_values_dekket</targetReference>
@@ -617,7 +558,7 @@
     <recordLookups>
         <name>Get_Assigned_Resource</name>
         <label>Get Assigned Resource</label>
-        <locationX>2087</locationX>
+        <locationX>1559</locationX>
         <locationY>458</locationY>
         <assignNullValuesIfNoRecordsFound>true</assignNullValuesIfNoRecordsFound>
         <connector>
@@ -640,7 +581,7 @@
     <recordLookups>
         <name>Get_Service_Resource</name>
         <label>Get Service Resource</label>
-        <locationX>2087</locationX>
+        <locationX>1559</locationX>
         <locationY>566</locationY>
         <assignNullValuesIfNoRecordsFound>false</assignNullValuesIfNoRecordsFound>
         <connector>
@@ -662,7 +603,7 @@
     <recordLookups>
         <name>Get_ServiceApoointment_0_0_0</name>
         <label>Get ServiceAppointment</label>
-        <locationX>1200</locationX>
+        <locationX>804</locationX>
         <locationY>242</locationY>
         <assignNullValuesIfNoRecordsFound>false</assignNullValuesIfNoRecordsFound>
         <connector>
@@ -691,7 +632,7 @@
     <recordLookups>
         <name>getInterestedResource</name>
         <label>getInterestedResource</label>
-        <locationX>2162</locationX>
+        <locationX>1634</locationX>
         <locationY>1322</locationY>
         <assignNullValuesIfNoRecordsFound>true</assignNullValuesIfNoRecordsFound>
         <connector>
@@ -722,14 +663,14 @@
     <recordUpdates>
         <name>Save_Service_Appointment</name>
         <label>Save Service Appointment</label>
-        <locationX>2085</locationX>
-        <locationY>2138</locationY>
+        <locationX>1425</locationX>
+        <locationY>2030</locationY>
         <inputReference>CurrentServiceAppointment</inputReference>
     </recordUpdates>
     <recordUpdates>
         <name>updateInterestedResource</name>
         <label>updateInterestedResource</label>
-        <locationX>2250</locationX>
+        <locationX>1722</locationX>
         <locationY>1646</locationY>
         <connector>
             <targetReference>Assign_new_values_Avlyst_Tolk</targetReference>
@@ -739,7 +680,7 @@
     <screens>
         <name>Already_Completed</name>
         <label>Already Completed</label>
-        <locationX>842</locationX>
+        <locationX>314</locationX>
         <locationY>890</locationY>
         <allowBack>true</allowBack>
         <allowFinish>true</allowFinish>
@@ -778,14 +719,11 @@
     <screens>
         <name>Could_not_find_SA</name>
         <label>Could not find SA</label>
-        <locationX>314</locationX>
+        <locationX>50</locationX>
         <locationY>458</locationY>
         <allowBack>true</allowBack>
         <allowFinish>true</allowFinish>
         <allowPause>true</allowPause>
-        <connector>
-            <targetReference>tesss</targetReference>
-        </connector>
         <fields>
             <name>display_not_found</name>
             <extensionName>c:hot_infoParagraphFlow</extensionName>
@@ -826,67 +764,13 @@
             <isRequired>true</isRequired>
             <storeOutputAutomatically>true</storeOutputAutomatically>
         </fields>
-        <fields>
-            <name>testpicklist</name>
-            <extensionName>c:hot_flowPicklist</extensionName>
-            <fieldType>ComponentInstance</fieldType>
-            <inputParameters>
-                <name>label</name>
-                <value>
-                    <stringValue>* Oppgi en begrunnelse for å avlyse</stringValue>
-                </value>
-            </inputParameters>
-            <inputParameters>
-                <name>option1</name>
-                <value>
-                    <stringValue>Tekniske Problemer</stringValue>
-                </value>
-            </inputParameters>
-            <inputParameters>
-                <name>option2</name>
-                <value>
-                    <stringValue>Bruker ikke møtt</stringValue>
-                </value>
-            </inputParameters>
-            <inputParameters>
-                <name>option3</name>
-                <value>
-                    <stringValue>Annet</stringValue>
-                </value>
-            </inputParameters>
-            <inputParameters>
-                <name>required</name>
-                <value>
-                    <booleanValue>true</booleanValue>
-                </value>
-            </inputParameters>
-            <inputsOnNextNavToAssocScrn>UseStoredValues</inputsOnNextNavToAssocScrn>
-            <isRequired>true</isRequired>
-            <storeOutputAutomatically>true</storeOutputAutomatically>
-        </fields>
         <showFooter>false</showFooter>
-        <showHeader>true</showHeader>
-    </screens>
-    <screens>
-        <name>dadawdwa</name>
-        <label>dadawdwad</label>
-        <locationX>314</locationX>
-        <locationY>674</locationY>
-        <allowBack>true</allowBack>
-        <allowFinish>true</allowFinish>
-        <allowPause>true</allowPause>
-        <fields>
-            <name>dadaw</name>
-            <fieldText>&lt;p&gt;Bruker ikke møtt&lt;/p&gt;</fieldText>
-            <fieldType>DisplayText</fieldType>
-        </fields>
-        <showFooter>true</showFooter>
         <showHeader>true</showHeader>
     </screens>
     <screens>
         <name>NOT_your_SA</name>
         <label>NOT your SA</label>
-        <locationX>2778</locationX>
+        <locationX>2250</locationX>
         <locationY>782</locationY>
         <allowBack>false</allowBack>
         <allowFinish>true</allowFinish>
@@ -925,7 +809,7 @@
     <screens>
         <name>SA_Not_Started_Error</name>
         <label>SA Not Started Error</label>
-        <locationX>1546</locationX>
+        <locationX>1018</locationX>
         <locationY>1214</locationY>
         <allowBack>true</allowBack>
         <allowFinish>true</allowFinish>
@@ -964,7 +848,7 @@
     <screens>
         <name>Set_Cancel_Comment_Bruker</name>
         <label>Set Cancel Comment - Bruker</label>
-        <locationX>1810</locationX>
+        <locationX>1282</locationX>
         <locationY>1106</locationY>
         <allowBack>true</allowBack>
         <allowFinish>true</allowFinish>
@@ -973,15 +857,29 @@
             <targetReference>Create_Historically_Assigned_Resource_Avlyst_Bruker</targetReference>
         </connector>
         <fields>
-            <name>hot_cancel_comment_bruker_picklist</name>
-            <extensionName>c:hot_flowPicklist</extensionName>
+            <name>hot_cancel_comment_bruker_text</name>
+            <extensionName>c:hot_infoParagraphFlow</extensionName>
             <fieldType>ComponentInstance</fieldType>
             <inputParameters>
-                <name>label</name>
+                <name>fontSize</name>
+                <value>
+                    <stringValue>small</stringValue>
+                </value>
+            </inputParameters>
+            <inputParameters>
+                <name>text</name>
                 <value>
                     <stringValue>* Oppgi en begrunnelse for å avlyse</stringValue>
                 </value>
             </inputParameters>
+            <inputsOnNextNavToAssocScrn>UseStoredValues</inputsOnNextNavToAssocScrn>
+            <isRequired>true</isRequired>
+            <storeOutputAutomatically>true</storeOutputAutomatically>
+        </fields>
+        <fields>
+            <name>hot_cancel_comment_bruker_picklist</name>
+            <extensionName>c:hot_flowPicklist</extensionName>
+            <fieldType>ComponentInstance</fieldType>
             <inputParameters>
                 <name>option1</name>
                 <value>
@@ -1016,7 +914,7 @@
     <screens>
         <name>Set_Cancel_Comment_Tolk</name>
         <label>Set Cancel Comment - Tolk</label>
-        <locationX>2162</locationX>
+        <locationX>1634</locationX>
         <locationY>1106</locationY>
         <allowBack>true</allowBack>
         <allowFinish>true</allowFinish>
@@ -1050,7 +948,7 @@
     <screens>
         <name>Set_Completed_Comment</name>
         <label>Set Completed Comment</label>
-        <locationX>1106</locationX>
+        <locationX>578</locationX>
         <locationY>1430</locationY>
         <allowBack>true</allowBack>
         <allowFinish>true</allowFinish>
@@ -1084,7 +982,7 @@
     <screens>
         <name>Set_status</name>
         <label>Set status</label>
-        <locationX>1953</locationX>
+        <locationX>1425</locationX>
         <locationY>890</locationY>
         <allowBack>true</allowBack>
         <allowFinish>true</allowFinish>
@@ -1168,7 +1066,7 @@
     <screens>
         <name>Set_Time_Dekket</name>
         <label>Set Time- Dekket</label>
-        <locationX>1238</locationX>
+        <locationX>710</locationX>
         <locationY>1214</locationY>
         <allowBack>true</allowBack>
         <allowFinish>true</allowFinish>
@@ -1231,30 +1129,14 @@
         <showFooter>false</showFooter>
         <showHeader>false</showHeader>
     </screens>
-    <screens>
-        <name>Teknisk</name>
-        <label>Teknisk</label>
-        <locationX>50</locationX>
-        <locationY>674</locationY>
-        <allowBack>true</allowBack>
-        <allowFinish>true</allowFinish>
-        <allowPause>true</allowPause>
-        <fields>
-            <name>fafa</name>
-            <fieldText>&lt;p&gt;Tekniske Problemer&lt;/p&gt;</fieldText>
-            <fieldType>DisplayText</fieldType>
-        </fields>
-        <showFooter>true</showFooter>
-        <showHeader>true</showHeader>
-    </screens>
     <start>
-        <locationX>1074</locationX>
+        <locationX>678</locationX>
         <locationY>0</locationY>
         <connector>
             <targetReference>Set_Record_Id_0</targetReference>
         </connector>
     </start>
-    <status>Draft</status>
+    <status>Active</status>
     <variables>
         <name>CannotSetToDekketText</name>
         <dataType>String</dataType>
