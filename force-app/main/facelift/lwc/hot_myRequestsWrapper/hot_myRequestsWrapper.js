@@ -448,17 +448,11 @@ export default class Hot_myRequestsWrapper extends NavigationMixin(LightningElem
         this.showCancelUploadButton = false;
         this.showSubmittedLoading = true;
         this.showModalContent = false;
-
         const fields = {};
-
         if (this.urlStateParameters.level === 'R') {
             updateRelatedWorkOrders({ requestId: this.request.Id })
                 .then(() => {
-                    return refreshApex(this.wiredgetWorkOrdersResult);
-                })
-                .then(() => {
-                    this.getRecords();
-                    console.log('her også');
+                    refreshApex(this.wiredgetWorkOrdersResult);
                     this.isCancelButton = false;
                     this.showSubmittedLoading = false;
                     this.showSubmittedTrue = true;
@@ -479,14 +473,9 @@ export default class Hot_myRequestsWrapper extends NavigationMixin(LightningElem
             fields[WORKORDER_STATUS.fieldApiName] = 'Canceled';
             fields[WORKORDER_NOTIFY_DISPATCHER.fieldApiName] = true;
             const recordInput = { fields };
-
             updateRecord(recordInput)
                 .then(() => {
-                    return refreshApex(this.wiredgetWorkOrdersResult);
-                })
-                .then(() => {
-                    this.getRecords();
-                    console.log('oppdatert');
+                    refreshApex(this.wiredgetWorkOrdersResult);
                     this.isCancelButton = false;
                     this.showSubmittedLoading = false;
                     this.showModalContent = true;
