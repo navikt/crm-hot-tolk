@@ -22,7 +22,7 @@ public without sharing class HOT_ThreadDetailController {
             FROM Thread__c
             WHERE Id = :threadId
         ];
-        if(thread.UserRecordAccess.HasReadAccess){
+        if (thread.UserRecordAccess.HasReadAccess) {
             return true;
         }
         if (!String.isBlank(thread.CRM_Related_Object__c)) {
@@ -35,24 +35,26 @@ public without sharing class HOT_ThreadDetailController {
                     FROM WorkOrder
                     WHERE Id = :thread.CRM_Related_Object__c
                 ];
-                List<ServiceResource> serviceResource = [
-                    SELECT Id, HOT_IsEmployedInterpreter__c
-                    FROM ServiceResource
-                    WHERE RelatedRecordId = :user.Id
-                ];
-                if (!serviceResource.isEmpty()) {
-                    List<AssignedResource> arList = [
-                        SELECT ServiceResourceId
-                        FROM AssignedResource
-                        WHERE
-                            ServiceAppointment.HOT_WorkOrderLineItem__r.WorkOrderId = :thread.CRM_Related_Object__c
-                            AND ServiceResourceId IN :serviceResource
-                    ];
-                    if (arList.size() != 0) {
-                        grantAccess = true;
-                    }
-                } else if (wo.HOT_Request__r.Account__c == user.AccountId) {
+                if (wo.HOT_Request__r.Account__c == user.AccountId) {
                     grantAccess = true;
+                } else {
+                    List<ServiceResource> serviceResource = [
+                        SELECT Id, HOT_IsEmployedInterpreter__c
+                        FROM ServiceResource
+                        WHERE RelatedRecordId = :user.Id
+                    ];
+                    if (!serviceResource.isEmpty()) {
+                        List<AssignedResource> arList = [
+                            SELECT ServiceResourceId
+                            FROM AssignedResource
+                            WHERE
+                                ServiceAppointment.HOT_WorkOrderLineItem__r.WorkOrderId = :thread.CRM_Related_Object__c
+                                AND ServiceResourceId IN :serviceResource
+                        ];
+                        if (arList.size() != 0) {
+                            grantAccess = true;
+                        }
+                    }
                 }
             }
             if (objectType == 'HOT_WageClaim__c') {
