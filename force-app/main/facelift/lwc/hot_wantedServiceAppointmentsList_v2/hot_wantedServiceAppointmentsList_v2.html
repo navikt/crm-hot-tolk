@@ -12,7 +12,7 @@
             ></c-hot_freelance-common-table>
         </div>
     </template>
-    <div if:true={noServiceAppointments} style="text-align: center">
+    <div lwc:if={noServiceAppointments} style="text-align: center">
         <br />
         <p>Det er ingen oppdrag her</p>
     </div>
@@ -24,7 +24,7 @@
                 <img src={exitCrossIcon} alt="" aria-hidden="true" />
             </button>
         </div>
-        <div if:true={isDetails} class="modal-body">
+        <div lwc:if={isDetails} class="modal-body">
             <p>Oppdragsnummer: <span>{serviceAppointment.HOT_ServiceAppointmentNumber__c}</span></p>
             <p>Tema: <span>{serviceAppointment.HOT_FreelanceSubject__c}</span></p>
             <p>Tid: <span> {serviceAppointment.weekday} {serviceAppointment.StartAndEndDate}</span></p>
@@ -100,7 +100,7 @@
                     {processMessage}
                 </h2>
                 <br />
-                <div if:true={spin} class="loader"></div>
+                <div lwc:if={spin} class="loader"></div>
                 <br />
             </div>
 
@@ -120,7 +120,7 @@
             </div>
         </div>
     </dialog>
-    <div if:true={showSendInterestOrDecline} class="meld-interesse-eller-avlsaa--overlay">
+    <div lwc:if={showSendInterestOrDecline} class="meld-interesse-eller-avlsaa--overlay">
         <div class="meld-interesse-eller-avslaa-content">
             <c-button
                 button-styling="primary"
