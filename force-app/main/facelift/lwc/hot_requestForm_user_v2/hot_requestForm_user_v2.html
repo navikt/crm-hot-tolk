@@ -1,0 +1,57 @@
+<template>
+    <section class="bruker-info-skjema sub-form">
+        <div style="flex-direction: row; display: flex">
+            <h2 class="header" tabindex="-1">Informasjon om tolkebruker</h2>
+            <c-helptext
+                text="Oppgi hvem som trenger tolk fra tolketjenesten for døve, døvblinde og hørselshemmede."
+                hover-text="Hjelpeknapp for informasjon om tolkebruker."
+            ></c-helptext>
+        </div>
+        <br />
+        <c-input
+            id="tolkebrukerNavn"
+            label="Tolkebrukers navn"
+            name="UserName__c"
+            form="tolk-skjema-input"
+            value={fieldValues.UserName__c}
+            error-text="Tolkebrukers navn må fylles ut."
+            disabled={isEditOrCopyMode}
+        ></c-input>
+        <br />
+        <c-radiobuttons
+            radiobuttons={birthdateAndPhoneRadiobuttons}
+            onradiobuttonsclick={handleBirthdateOrPhone}
+            header="Fyll inn tolkebrukers fødselsnummer eller telefonnummer"
+            group-name="radioGroup"
+            flex-direction="row"
+        ></c-radiobuttons>
+        <br />
+        <c-input
+            id="tolkebrukerFnr"
+            if:true={isBirthdate}
+            label="Tolkebrukers fødselsnummer"
+            name="UserPersonNumber__c"
+            form="tolk-skjema-input"
+            value={fieldValues.UserPersonNumber__c}
+            error-text="Ikke gyldig fødselsnummer."
+            max-length="11"
+            disabled={isEditOrCopyMode}
+            desktop-style="width: 50%"
+            mobile-style="width: 100%"
+        ></c-input>
+        <c-input
+            id="tolkebrukerMobilnr"
+            if:false={isBirthdate}
+            label="Tolkebrukers telefonnummer"
+            name="UserPhone__c"
+            form="tolk-skjema-input"
+            value={fieldValues.UserPhone__c}
+            type="tel"
+            error-text="Telefonnummer må fylles ut."
+            max-length="8"
+            disabled={isEditOrCopyMode}
+            desktop-style="width: 50%"
+            mobile-style="width: 100%"
+        ></c-input>
+    </section>
+</template>

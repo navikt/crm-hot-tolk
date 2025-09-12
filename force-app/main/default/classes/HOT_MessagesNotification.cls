@@ -206,7 +206,7 @@ public without sharing class HOT_MessagesNotification {
             Map<Id, List<Thread__c>> interpretersOnThreadMap = new Map<Id, List<Thread__c>>();
 
             for (Thread__c t : threads) {
-                String[] participantIds = t.HOT_ParticipantIds__c.split(', ');
+                String[] participantIds = t.HOT_ParticipantIds__c.split(',');
 
                 for (String participantId : participantIds) {
                     participantId = participantId.trim();
