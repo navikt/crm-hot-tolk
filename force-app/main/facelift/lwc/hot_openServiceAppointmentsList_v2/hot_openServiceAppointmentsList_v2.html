@@ -127,7 +127,7 @@
                             Melder interesse...
                         </h2>
                         <br />
-                        <div if:true={spin} class="loader"></div>
+                        <div lwc:if={spin} class="loader"></div>
                         <br />
                     </div>
 
@@ -167,7 +167,7 @@
                     <img src={exitCrossIcon} alt="" aria-hidden="true" />
                 </button>
             </div>
-            <div if:true={isDetails} class="modal-body">
+            <div lwc:if={isDetails} class="modal-body">
                 <p>Oppdragsnummer: <span>{serviceAppointment.HOT_ServiceAppointmentNumber__c}</span></p>
                 <p>Tema: <span>{serviceAppointment.HOT_FreelanceSubject__c}</span></p>
                 <p>Tid: <span> {serviceAppointment.weekday} {serviceAppointment.StartAndEndDate}</span></p>
@@ -181,7 +181,7 @@
                 <p>Eier: <span>{serviceAppointment.HOT_Request__r.OwnerName__c}</span></p>
                 <p>Frist dato: <span>{serviceAppointment.HOT_DeadlineDate__c}</span></p>
                 <br />
-                <div if:true={isSeries}>
+                <div lwc:if={isSeries}>
                     <c-button
                         button-styling="primary"
                         button-label="Meld interesse til alle oppdrag i serien"
