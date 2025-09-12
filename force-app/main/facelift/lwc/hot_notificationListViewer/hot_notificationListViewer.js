@@ -1,4 +1,4 @@
-import { LightningElement, track, wire } from 'lwc';
+import { LightningElement, wire } from 'lwc';
 import { refreshApex } from '@salesforce/apex';
 import icons from '@salesforce/resourceUrl/ikoner';
 import { NavigationMixin } from 'lightning/navigation';
@@ -11,7 +11,7 @@ export default class Hot_notificationListViewer extends NavigationMixin(Lightnin
     notificationIcon = icons + '/Bell/Bell.svg';
     exitCrossIcon = icons + '/Close/Close.svg';
     showNotifications = false;
-    @track notifications;
+    notifications;
 
     @wire(getMyNotifications)
     wiredNotifications(result) {
@@ -32,6 +32,9 @@ export default class Hot_notificationListViewer extends NavigationMixin(Lightnin
 
     get hasNotifications() {
         return this.notifications && this.notifications.length > 0;
+    }
+    get hasNoNotifications() {
+        return !this.hasNotifications;
     }
 
     async goToNotification(event) {
