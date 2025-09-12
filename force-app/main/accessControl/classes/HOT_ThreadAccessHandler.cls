@@ -20,6 +20,7 @@ public without sharing class HOT_ThreadAccessHandler extends MyTriggers {
         }
 
         if (threadsToUpdate.size() > 0) {
+            HOT_ThreadSharingService.revokeAccess(threadsToUpdate);
             grantAccessToThreads(threadsToUpdate);
         }
     }
