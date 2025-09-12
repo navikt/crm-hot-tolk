@@ -151,8 +151,8 @@
                     button-label={editButtonLabel}
                     button-styling="secondary"
                     style="padding-right: 1vw; padding-bottom: 1vw"
-                    desktop-style="width: 8rem; justify-content: center; border-radius: 6px"
-                    mobile-style="width: 8rem; justify-content: center; border-radius: 6px"
+                    desktop-style="width: 8rem; justify-content: center"
+                    mobile-style="width: 8rem; justify-content: center"
                     onbuttonclick={editOrder}
                     disabled={isRequestEditButtonDisabled}
                 ></c-button>
@@ -160,16 +160,16 @@
                     button-label={copyButtonLabel}
                     button-styling="secondary"
                     style="padding-right: 1vw; padding-bottom: 1vw"
-                    desktop-style="width: 8rem; justify-content: center; border-radius: 6px"
-                    mobile-style="width: 8rem; justify-content: center; border-radius: 6px"
+                    desktop-style="width: 8rem; justify-content: center"
+                    mobile-style="width: 8rem; justify-content: center"
                     onbuttonclick={cloneOrder}
                 ></c-button>
                 <c-button
                     button-label={cancelButtonLabel}
                     button-styling="secondary"
                     style="padding-right: 1vw; padding-bottom: 1vw"
-                    desktop-style="width: 8rem; justify-content: center; border-radius: 6px"
-                    mobile-style="width: 8rem; justify-content: center; border-radius: 6px"
+                    desktop-style="width: 8rem; justify-content: center"
+                    mobile-style="width: 8rem; justify-content: center"
                     onbuttonclick={cancelOrder}
                     disabled={isRequestCancelButtonDisabled}
                 ></c-button>
@@ -177,8 +177,8 @@
                     button-label="Legg til filer"
                     button-styling="primary"
                     style="padding-right: 1vw; padding-bottom: 1vw"
-                    desktop-style="width: 8rem; justify-content: center; border-radius: 6px"
-                    mobile-style="width: 8rem; justify-content: center; border-radius: 6px"
+                    desktop-style="width: 8rem; justify-content: center"
+                    mobile-style="width: 8rem; justify-content: center"
                     onbuttonclick={addFiles}
                     disabled={isRequestAddFilesButtonDisabled}
                 ></c-button>
@@ -186,8 +186,8 @@
                     button-label="Samtale med formidler"
                     button-styling="primary"
                     style="padding-right: 1vw; padding-bottom: 1vw"
-                    desktop-style="justify-content: center; border-radius: 6px"
-                    mobile-style="justify-content: center; border-radius: 6px"
+                    desktop-style="justify-content: center"
+                    mobile-style="justify-content: center"
                     onbuttonclick={goToThread}
                     disabled={isThreadButtonDisabled}
                     aria-disabled={isThreadButtonDisabled}
@@ -197,8 +197,8 @@
                     button-label="Samtale med tolk"
                     button-styling="primary"
                     style="padding-right: 1vw; padding-bottom: 1vw"
-                    desktop-style="justify-content: center; border-radius: 6px"
-                    mobile-style="justify-content: center; border-radius: 6px"
+                    desktop-style="justify-content: center"
+                    mobile-style="justify-content: center"
                     onbuttonclick={goToThreadInterpreter}
                     disabled={isInterpreterThreadButtonDisabled}
                     aria-disabled={isInterpreterThreadButtonDisabled}
@@ -232,7 +232,7 @@
     </main>
 
     <!-- Upload Modal Section -->
-    <c-alertdialog
+    <!-- <c-alertdialog
         header={modalHeader}
         content={modalContent}
         desktop-style="text-align: center; white-space: pre-line; width: 50%"
@@ -241,7 +241,7 @@
         no-cancel-button={noCancelButton}
         onbuttonclick={handleAlertDialogClick}
     >
-    </c-alertdialog>
+    </c-alertdialog> -->
     <div
         class="ReactModal__Overlay ReactModal__Overlay--after-open modal__overlay hidden"
         style="z-index: 9999; background-color: rgba(38, 38, 38, 0.7)"
@@ -298,18 +298,91 @@
                     button-label="Lagre"
                     onbuttonclick={uploadFilesOnSave}
                     style="padding-right: 1vw"
-                    desktop-style="width: 8rem; justify-content: center; border-radius: 6px"
-                    mobile-style="width: 8rem; justify-content: center; border-radius: 6px"
+                    desktop-style="width: 8rem; justify-content: center"
+                    mobile-style="width: 8rem; justify-content: center"
                 ></c-button>
                 <c-button
                     lwc:if={showCancelUploadButton}
                     button-styling="secondary"
                     button-label="Lukk"
                     onbuttonclick={cancelUploadFiles}
-                    desktop-style="width: 8rem; justify-content: center; border-radius: 6px"
-                    mobile-style="width: 8rem; justify-content: center; border-radius: 6px"
+                    desktop-style="width: 8rem; justify-content: center"
+                    mobile-style="width: 8rem; justify-content: center"
                 ></c-button>
             </div>
         </div>
     </div>
+    <!-- MODAL -->
+    <dialog class="modal-container" aria-label="Informasjon om oppdrag" onclose={closeModal}>
+        <div class="modal-header" lwc:if={showModalContent}>
+            <h2>{modalHeader}</h2>
+            <button class="close-btn" onclick={closeModal} aria-label="Lukk">
+                <img src={exitCrossIcon} alt="" aria-hidden="true" />
+            </button>
+        </div>
+        <div class="submit">
+            <div lwc:if={showSubmittedTrue} class="submitted-true">
+                <lightning-icon
+                    icon-name="utility:success"
+                    alternative-text="Suksess"
+                    title="Suksess"
+                    variant="success"
+                    size="large"
+                ></lightning-icon>
+                <br />
+                <h2
+                    class="typo-undertittel h2-successMessage"
+                    id="successMessage"
+                    tabindex="-1"
+                    role="alert"
+                    aria-live="polite"
+                >
+                    Bestillingen er avlyst
+                </h2>
+                <br />
+            </div>
+
+            <div lwc:if={showSubmittedLoading} class="submitted-loading">
+                <br />
+                <div if:true={showSubmittedLoading} class="loader"></div>
+                <br />
+            </div>
+
+            <div lwc:if={showSubmittedError} class="submitted-error">
+                <h2
+                    class="typo-undertittel h2-loadingMessage"
+                    id="errorMessage"
+                    tabindex="-1"
+                    role="alert"
+                    aria-live="polite"
+                >
+                    Noe gikk galt.
+                </h2>
+                <br />
+                <h3>Feilmelding: {modalContent}</h3>
+                <br />
+            </div>
+        </div>
+        <div class="modal-body" lwc:if={showModalContent}>
+            <p lwc:if={isNotSubmitted} style="white-space: pre-line">{modalContent}</p>
+            <div style="text-align: center; padding-top: 2rem" aria-live="polite">
+                <c-button
+                    button-styling="primary"
+                    button-label="Ok"
+                    onbuttonclick={handleAlertDialogClick}
+                    style="padding-right: 1vw"
+                    desktop-style="width: 8rem; justify-content: center"
+                    mobile-style="width: 8rem; justify-content: center"
+                ></c-button>
+                <c-button
+                    lwc:if={isCancelButton}
+                    button-styling="secondary"
+                    button-label="Lukk"
+                    onbuttonclick={closeModal}
+                    desktop-style="width: 8rem; justify-content: center"
+                    mobile-style="width: 8rem; justify-content: center"
+                ></c-button>
+            </div>
+        </div>
+    </dialog>
 </template>

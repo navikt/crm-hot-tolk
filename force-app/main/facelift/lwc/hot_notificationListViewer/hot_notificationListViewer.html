@@ -11,7 +11,7 @@
             Varsler
         </button>
 
-        <template if:true={showNotifications}>
+        <template lwc:if={showNotifications}>
             <div class="notification-overlay" onclick={toggleNotifications} aria-hidden="true"></div>
 
             <div
@@ -31,7 +31,7 @@
                     <p id="varsler-info">Kun varsler fra tolketjenesten siste 30 dager vises her.</p>
                 </div>
 
-                <div class="dropdown-info" if:false={hasNotifications}>
+                <div class="dropdown-info" lwc:if={hasNoNotifications}>
                     <p>Ingen nye varsler.</p>
                 </div>
 

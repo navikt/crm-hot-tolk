@@ -1,4 +1,4 @@
-import { LightningElement, wire, track, api } from 'lwc';
+import { LightningElement, wire, api } from 'lwc';
 import { refreshApex } from '@salesforce/apex';
 import getMyWageClaims from '@salesforce/apex/HOT_WageClaimListController.getMyWageClaims';
 import retractAvailability from '@salesforce/apex/HOT_WageClaimListController.retractAvailability';
@@ -16,8 +16,8 @@ import icons2 from '@salesforce/resourceUrl/icons';
 export default class Hot_wageClaimList_v2 extends NavigationMixin(LightningElement) {
     exitCrossIcon = icons + '/Close/Close.svg';
     warningicon = icons2 + '/warningicon.svg';
-    @track columns = [];
-    @track filters = [];
+    columns = [];
+    filters = [];
     setColumns() {
         if (window.screen.width > 576) {
             this.columns = columns;
@@ -43,15 +43,15 @@ export default class Hot_wageClaimList_v2 extends NavigationMixin(LightningEleme
         );
     }
 
-    @track Status;
+    status;
     isNotRetractable = false;
     isDisabledGoToThread = false;
     isRetracting = false;
 
     dataLoader = true;
     noWageClaims = false;
-    @track wageClaims = [];
-    @track allWageClaimsWired = [];
+    wageClaims = [];
+    allWageClaimsWired = [];
     wiredWageClaimsResult;
     @wire(getMyWageClaims)
     wiredWageClaims(result) {
@@ -112,9 +112,9 @@ export default class Hot_wageClaimList_v2 extends NavigationMixin(LightningEleme
 
     datetimeFields = [{ name: 'StartAndEndDate', type: 'datetimeinterval', start: 'StartTime__c', end: 'EndTime__c' }];
 
-    @track recordId;
-    @track showDetails = false;
-    @track urlRedirect = false;
+    recordId;
+    showDetails = false;
+    urlRedirect = false;
 
     connectedCallback() {
         this.setColumns();
@@ -123,14 +123,15 @@ export default class Hot_wageClaimList_v2 extends NavigationMixin(LightningEleme
         refreshApex(this.wiredWageClaimsResult);
     }
     hasAccess = true;
-    @track wageClaim;
+    wageClaim;
     isWageClaimDetails = false;
     goToRecordDetails(result) {
+        this.isRetracting = false;
         this.hasAccess = true;
         this.isDisabledGoToThread = false;
         this.showServiceAppointmentDetails();
         this.wageClaim = undefined;
-        this.Status = result.detail.Status__c;
+        this.status = result.detail.Status__c;
         let recordId = result.detail.Id;
         this.recordId = recordId;
         if (result.detail.Status__c == 'Åpen') {
@@ -160,7 +161,7 @@ export default class Hot_wageClaimList_v2 extends NavigationMixin(LightningEleme
                 this.wageClaim = formatRecord(Object.assign({}, result), this.datetimeFields);
                 this.wageClaim.weekday = this.getDayOfWeek(this.wageClaim.StartTime__c);
                 this.recordId = wageClaimId;
-                this.Status = result.Status__c;
+                this.status = result.Status__c;
                 this.isWageClaimDetails = !!this.recordId;
             })
             .catch((error) => {
@@ -216,7 +217,7 @@ export default class Hot_wageClaimList_v2 extends NavigationMixin(LightningEleme
     noCancelButton = false;
     modalHeader = 'Noe gikk galt';
     modalContent = 'Prøv igjen';
-    @track confirmButtonLabel = 'Ok';
+    confirmButtonLabel = 'Ok';
 
     cancelRetraction() {
         this.isRetracting = false;

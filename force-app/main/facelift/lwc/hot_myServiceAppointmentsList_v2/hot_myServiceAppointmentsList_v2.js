@@ -194,6 +194,10 @@ export default class Hot_myServiceAppointmentsList_v2 extends NavigationMixin(Li
 
     isflow = false;
     goToRecordDetails(result) {
+        this.isflow = false;
+        this.IsEditButtonDisabled = false;
+        this.isCancelButtonHidden = true;
+        this.isEditButtonHidden = false;
         this.hasAccess = true;
         this.serviceAppointment = undefined;
         this.interestedResource = undefined;
@@ -321,6 +325,9 @@ export default class Hot_myServiceAppointmentsList_v2 extends NavigationMixin(Li
 
     get subject() {
         return this.serviceAppointment?.Subject ?? '';
+    }
+    get isOtherProvider() {
+        return this.serviceAppointment.HOT_Request__r.IsOtherEconomicProvicer__c ? 'Ja' : 'Nei';
     }
 
     get startAndEndTime() {
