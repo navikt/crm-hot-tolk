@@ -18,13 +18,10 @@ public without sharing class HOT_ThreadDetailController {
     public static boolean checkAccess(Id threadId) {
         Boolean grantAccess = false;
         Thread__c thread = [
-            SELECT Id, CRM_Related_Object__c, CRM_Thread_Type__c, HOT_ServiceResource__c, UserRecordAccess.HasReadAccess
+            SELECT Id, CRM_Related_Object__c, CRM_Thread_Type__c, HOT_ServiceResource__c
             FROM Thread__c
             WHERE Id = :threadId
         ];
-        if (thread.UserRecordAccess.HasReadAccess) {
-            return true;
-        }
         if (!String.isBlank(thread.CRM_Related_Object__c)) {
             Id relatedObjectId = thread.CRM_Related_Object__c;
             String objectType = String.valueOf(relatedObjectId.getsobjecttype());
