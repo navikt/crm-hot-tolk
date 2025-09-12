@@ -125,7 +125,7 @@ private class HOT_ServiceAppointmentNotificationTest {
             LIMIT 1
         ];
 
-        // Tolk tar seg av
+        //Avlyst av tolk
         serviceAppointment.HOT_IsNotifyDispatcher__c = true;
         serviceAppointment.HOT_CanceledByInterpreter__c = true;
         update serviceAppointment;
