@@ -1,0 +1,11 @@
+<template>
+    <div class="main-container">
+        <div>
+            <template if:true={label}>
+                <h2 class={headerClass}>{label}</h2>
+            </template>
+
+            <p class={textClass}>{text}</p>
+        </div>
+    </div>
+</template>
