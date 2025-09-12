@@ -1,4 +1,4 @@
-import { LightningElement, wire, track, api } from 'lwc';
+import { LightningElement, wire, api } from 'lwc';
 import getWantedServiceAppointments from '@salesforce/apex/HOT_wantedSRListController.getWantedServiceAppointments';
 import updateInterestedResource from '@salesforce/apex/HOT_wantedSRListController.updateInterestedResource';
 import updateInterestedResourceChecked from '@salesforce/apex/HOT_wantedSRListController.updateInterestedResourceChecked';
@@ -14,11 +14,11 @@ import icons from '@salesforce/resourceUrl/ikoner';
 
 export default class Hot_wantedServiceAppointmentsList extends LightningElement {
     exitCrossIcon = icons + '/Close/Close.svg';
-    @track columns = [];
-    @track inDetailsColumns = [];
-    @track processMessage;
-    @track processMessageResult;
-    @track isMobile;
+    columns = [];
+    inDetailsColumns = [];
+    processMessage;
+    processMessageResult;
+    isMobile;
     setColumns() {
         if (window.screen.width > 576) {
             this.columns = columns;
@@ -85,7 +85,7 @@ export default class Hot_wantedServiceAppointmentsList extends LightningElement 
         sessionStorage.setItem('checkedrowsSavedForRefreshWanted', JSON.stringify(this.checkedServiceAppointments));
     }
 
-    @track filters = [];
+    filters = [];
     numberTimesCalled = 0;
     connectedCallback() {
         this.updateURL();
@@ -97,8 +97,8 @@ export default class Hot_wantedServiceAppointmentsList extends LightningElement 
         refreshApex(this.wiredAllServiceAppointmentsResult);
     }
 
-    @track serviceResource;
-    @track serviceResourceId;
+    serviceResource;
+    serviceResourceId;
     @wire(getServiceResource)
     wiredServiceresource(result) {
         if (result.data) {
@@ -113,8 +113,8 @@ export default class Hot_wantedServiceAppointmentsList extends LightningElement 
 
     noServiceAppointments = false;
     initialServiceAppointments = [];
-    @track records = [];
-    @track allServiceAppointmentsWired = [];
+    records = [];
+    allServiceAppointmentsWired = [];
     wiredAllServiceAppointmentsResult;
     @wire(getWantedServiceAppointments)
     wiredAllServiceAppointmentsWired(result) {
@@ -125,7 +125,8 @@ export default class Hot_wantedServiceAppointmentsList extends LightningElement 
                 ...x,
                 weekday: getDayOfWeek(x.EarliestStartTime),
                 isUrgent: x.HOT_IsUrgent__c,
-                startAndEndDateWeekday: formatDatetimeinterval(x.EarliestStartTime, x.DueDate)
+                startAndEndDateWeekday: formatDatetimeinterval(x.EarliestStartTime, x.DueDate),
+                isOtherProvider: x.HOT_Request__r?.IsOtherEconomicProvicer__c ? 'Ja' : 'Nei'
             }));
             this.noServiceAppointments = this.allServiceAppointmentsWired.length === 0;
             let tempRecords = [];
@@ -157,7 +158,7 @@ export default class Hot_wantedServiceAppointmentsList extends LightningElement 
     ];
     showServiceAppointmentDetailsModal = false;
 
-    @track serviceAppointment;
+    serviceAppointment;
     isDetails = false;
     showTable = true;
     goToRecordDetails(result) {
@@ -209,7 +210,7 @@ export default class Hot_wantedServiceAppointmentsList extends LightningElement 
 
     errorMessage = '';
     spin = false;
-    @track checkedServiceAppointments = [];
+    checkedServiceAppointments = [];
 
     handleRowChecked(event) {
         this.checkedServiceAppointments = event.detail.checkedRows;
