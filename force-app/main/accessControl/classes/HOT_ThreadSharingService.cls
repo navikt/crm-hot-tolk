@@ -16,12 +16,23 @@ public without sharing class HOT_ThreadSharingService {
                 );
             }
         }
-        try {
-            insert threadShares;
-        } catch (Exception e) {
-            LoggerUtility logger = new LoggerUtility();
-            logger.exception(e, CRM_ApplicationDomain.Domain.HOT);
-            logger.publishSynch();
+        new CRM_DatabaseOperations()
+            .setNumberOfRetries(1)
+            .setDomain(CRM_ApplicationDomain.Domain.HOT)
+            .insertRecords(threadShares);
+    }
+    public static void revokeAccess(List<Thread__c> threads) {
+        Set<Id> parentIdToDelete = new Map<Id, Thread__c>(threads).keySet();
+        if (parentIdToDelete.size() > 0) {
+            List<Thread__Share> toDelete = [
+                SELECT Id
+                FROM Thread__Share
+                WHERE RowCause = 'Manual' AND ParentId IN :parentIdToDelete
+            ];
+            new CRM_DatabaseOperations()
+                .setNumberOfRetries(1)
+                .setDomain(CRM_ApplicationDomain.Domain.HOT)
+                .deleteRecords(toDelete);
         }
     }
 
