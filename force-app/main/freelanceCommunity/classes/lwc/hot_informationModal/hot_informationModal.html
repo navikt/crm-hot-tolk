@@ -13,7 +13,7 @@
                 if:false={isLoading}
             >
                 <section lwc:if={isSADetails}>
-                    <div lwc:if={hasAccess}>
+                    <template lwc:if={hasAccess}>
                         <div>
                             <h2 class="typo-undertittel">Informasjon om oppdraget:</h2>
                             <br />
@@ -177,11 +177,11 @@
                                 </div>
                             </div>
                         </div>
-                    </div>
-                    <div lwc:else>
+                    </template>
+                    <template lwc:else>
                         <p></p>
                         <p>Du er ikke tildelt oppdraget lenger.</p>
-                    </div>
+                    </template>
                 </section>
                 <section lwc:if={isWCDetails}>
                     <div>
