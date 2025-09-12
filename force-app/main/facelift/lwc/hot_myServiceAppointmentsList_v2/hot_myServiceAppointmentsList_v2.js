@@ -1,4 +1,4 @@
-import { LightningElement, wire, api } from 'lwc';
+import { LightningElement, wire, track, api } from 'lwc';
 import getMyServiceAppointments from '@salesforce/apex/HOT_MyServiceAppointmentListController.getMyServiceAppointments';
 import getServiceAppointment from '@salesforce/apex/HOT_MyServiceAppointmentListController.getServiceAppointment';
 import getServiceAppointmentDetails from '@salesforce/apex/HOT_MyServiceAppointmentListController.getServiceAppointmentDetails';
@@ -21,7 +21,7 @@ import icons from '@salesforce/resourceUrl/ikoner';
 
 export default class Hot_myServiceAppointmentsList_v2 extends NavigationMixin(LightningElement) {
     exitCrossIcon = icons + '/Close/Close.svg';
-    columns = [];
+    @track columns = [];
 
     get hasResult() {
         return !this.dataLoader && this.records && this.records.length > 0;
@@ -81,7 +81,7 @@ export default class Hot_myServiceAppointmentsList_v2 extends NavigationMixin(Li
         this.setPreviousFiltersOnRefresh();
     }
 
-    filters = [];
+    @track filters = [];
     connectedCallback() {
         refreshApex(this.wiredMyServiceAppointmentsResult);
         this.setColumns();
@@ -110,8 +110,8 @@ export default class Hot_myServiceAppointmentsList_v2 extends NavigationMixin(Li
     dataLoader = true;
     noServiceAppointments = false;
     initialServiceAppointments = [];
-    records = [];
-    allMyServiceAppointmentsWired = [];
+    @track records = [];
+    @track allMyServiceAppointmentsWired = [];
     wiredMyServiceAppointmentsResult;
     @wire(getMyServiceAppointments)
     wiredMyServiceAppointments(result) {
@@ -169,8 +169,8 @@ export default class Hot_myServiceAppointmentsList_v2 extends NavigationMixin(Li
 
     showServiceAppointmentDetailsModal = false;
     isDetails = false;
-    recordId;
-    urlRedirect = false;
+    @track recordId;
+    @track urlRedirect = false;
 
     openGoogleMaps() {
         window.open('https://www.google.com/maps/search/?api=1&query=' + this.address);
@@ -179,10 +179,10 @@ export default class Hot_myServiceAppointmentsList_v2 extends NavigationMixin(Li
         window.open('http://maps.apple.com/?q=' + this.address);
     }
 
-    serviceAppointment;
-    interestedResource;
-    termsOfAgreement;
-    address;
+    @track serviceAppointment;
+    @track interestedResource;
+    @track termsOfAgreement;
+    @track address;
 
     resetButtonFlags() {
         this.isGoToThreadInterpretersButtonDisabled = false;
@@ -326,6 +326,9 @@ export default class Hot_myServiceAppointmentsList_v2 extends NavigationMixin(Li
     get subject() {
         return this.serviceAppointment?.Subject ?? '';
     }
+    get isOtherProvider() {
+        return this.ServiceAppointment__r.HOT_Request__r.IsOtherEconomicProvicer__c ? 'Ja' : 'Nei';
+    }
 
     get startAndEndTime() {
         const weekday = this.serviceAppointment?.weekday ?? '';
@@ -334,9 +337,6 @@ export default class Hot_myServiceAppointmentsList_v2 extends NavigationMixin(Li
             return `${weekday} ${time}`.trim();
         }
         return '';
-    }
-    get isOtherProvider() {
-        return this.ServiceAppointment__r.HOT_Request__r.IsOtherEconomicProvicer__c ? 'Ja' : 'Nei';
     }
 
     get address() {
