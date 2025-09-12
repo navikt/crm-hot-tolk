@@ -34,12 +34,8 @@
                 <img src={exitCrossIcon} alt="" aria-hidden="true" />
             </button>
         </div>
-        <div if:false={hasAccess} class="modal-body">
-            <p></p>
-            <p>Du er ikke tildelt oppdraget lenger.</p>
-        </div>
-        <div if:true={hasAccess} class="modal-body">
-            <div if:true={isDetails}>
+        <div lwc:if={hasAccess} class="modal-body">
+            <div lwc:if={isDetails}>
                 <div>
                     <p>Oppdrag: <span>{appointmentNumber}</span></p>
                     <p>Tema: <span>{subject}</span></p>
@@ -55,10 +51,10 @@
                     <p>Annen betaler: <span>{isOtherProvider}</span></p>
                     <p>Region: <span>{region}</span></p>
                     <p>Eier: <span>{ownerName}</span></p>
-                    <template if:true={canceledDate}>
+                    <template lwc:if={canceledDate}>
                         <p>Avlyst dato: <span>{canceledDate}</span></p>
                     </template>
-                    <template if:true={terms}>
+                    <template lwc:if={terms}>
                         <p>Avtalte betingelser: <span>{terms}</span></p>
                     </template>
                 </div>
@@ -83,6 +79,10 @@
                     ></c-button>
                 </div>
             </div>
+        </div>
+        <div lwc:else class="modal-body">
+            <p></p>
+            <p>Du er ikke tildelt oppdraget lenger.</p>
         </div>
     </dialog>
 </template>
