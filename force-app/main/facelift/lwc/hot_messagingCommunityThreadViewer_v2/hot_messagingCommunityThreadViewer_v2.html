@@ -14,16 +14,16 @@
                         disabled
                         aria-disabled="true"
                         aria-label={threadType}
-                        desktop-style="background-color: #F2F3F5; color: #23262a; border-radius: 0.25rem;"
-                        mobile-style="background-color: #F2F3F5; color: #23262a; border-radius: 0.25rem;"
+                        desktop-style="background-color: #F2F3F5; color: #23262a;"
+                        mobile-style="background-color: #F2F3F5; color: #23262a;"
                     ></c-button>
 
                     <!-- TODO: Dynamically show how many people in this thread and button will open a modal -->
                     <c-button
                         button-label="4 personer i denne samtalen"
                         type="button"
-                        desktop-style="background-color: #F2F3F5; color: #23262a; border-radius: 0.25rem;"
-                        mobile-style="background-color: #F2F3F5; color: #23262a; border-radius: 0.25rem;"
+                        desktop-style="background-color: #F2F3F5; color: #23262a;"
+                        mobile-style="background-color: #F2F3F5; color: #23262a;"
                     ></c-button>
                 </div>
 
@@ -36,10 +36,11 @@
                 <div class="show-service-assignment">
                     <c-button
                         button-label="Vis oppdrag"
+                        class="show-details-button"
                         type="button"
                         onbuttonclick={goToDetails}
-                        desktop-style="background-color: #525962; justify-content: center; width: 7.1rem; border-radius: 0.25rem;"
-                        mobile-style="background-color: #525962; justify-content: center; width: 7.1rem; border-radius: 0.25rem;"
+                        desktop-style="background-color: #525962 !important; justify-content: center; width: 7.1rem;"
+                        mobile-style="background-color: #525962 !important; justify-content: center; width: 7.1rem;"
                     ></c-button>
                 </div>
 
@@ -271,8 +272,8 @@
                         button-label="Send melding"
                         type="submit"
                         button-styling="primary"
-                        desktop-style="width: 10rem; justify-content: center; border-radius: 0.25rem;"
-                        mobile-style="width: 9rem; justify-content: center; border-radius: 0.25rem;"
+                        desktop-style="width: 10rem; justify-content: center;"
+                        mobile-style="width: 9rem; justify-content: center;"
                     ></c-button>
                 </div>
             </div>
