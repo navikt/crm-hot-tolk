@@ -24,10 +24,12 @@
                 onclick={noop}
             >
                 <div class="dropdown-header">
-                    <h2 id="varsler-heading">Varsler</h2>
-                    <button class="close-btn" onclick={toggleNotifications} aria-label="Lukk varselsenter">
-                        <img src={exitCrossIcon} alt="" aria-hidden="true" />
-                    </button>
+                    <div class="dropdown-header-top">
+                        <h2 id="varsler-heading">Varsler</h2>
+                        <button class="close-btn" onclick={toggleNotifications} aria-label="Lukk varselsenter">
+                            <img src={exitCrossIcon} alt="" aria-hidden="true" />
+                        </button>
+                    </div>
                     <p id="varsler-info">Kun varsler fra tolketjenesten siste 30 dager vises her.</p>
                 </div>
 
