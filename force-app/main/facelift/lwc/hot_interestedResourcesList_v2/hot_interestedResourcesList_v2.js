@@ -1,4 +1,4 @@
-import { LightningElement, wire, track, api } from 'lwc';
+import { LightningElement, wire, api } from 'lwc';
 import getInterestedResources from '@salesforce/apex/HOT_InterestedResourcesListController.getInterestedResources';
 import getMyThreads from '@salesforce/apex/HOT_ThreadListController.getMyThreadsIR';
 import getInterestedResourceDetails from '@salesforce/apex/HOT_InterestedResourcesListController.getInterestedResourceDetails';
@@ -20,11 +20,11 @@ import icons from '@salesforce/resourceUrl/ikoner';
 
 export default class Hot_interestedResourcesList_v2 extends NavigationMixin(LightningElement) {
     exitCrossIcon = icons + '/Close/Close.svg';
-    @track columns = [];
-    @track filters = [];
-    @track iconByValue = iconByValue;
-    @track isGoToThreadButtonDisabled = false;
-    @track hasAccess = true;
+    columns = [];
+    filters = [];
+    iconByValue = iconByValue;
+    isGoToThreadButtonDisabled = false;
+    hasAccess = true;
 
     setColumns() {
         if (window.screen.width > 576) {
@@ -97,7 +97,7 @@ export default class Hot_interestedResourcesList_v2 extends NavigationMixin(Ligh
         }
     }
 
-    @track serviceResource;
+    serviceResource;
     @wire(getServiceResource)
     wiredServiceresource(result) {
         if (result.data) {
@@ -108,10 +108,10 @@ export default class Hot_interestedResourcesList_v2 extends NavigationMixin(Ligh
     dataLoader = true;
     noInterestedResources = false;
     initialInterestedResources = [];
-    @track records = [];
-    @track allInterestedResourcesWired = [];
+    records = [];
+    allInterestedResourcesWired = [];
     wiredInterestedResourcesResult;
-    @track test = true;
+    test = true;
     @wire(getInterestedResources)
     wiredInterestedResources(result) {
         this.wiredInterestedResourcesResult = result;
@@ -204,7 +204,7 @@ export default class Hot_interestedResourcesList_v2 extends NavigationMixin(Ligh
         dialog.focus();
     }
 
-    @track interestedResource;
+    interestedResource;
     isDetails = false;
     isSeries = false;
     showTable = true;
@@ -475,5 +475,8 @@ export default class Hot_interestedResourcesList_v2 extends NavigationMixin(Ligh
 
     get terms() {
         return this.interestedResource?.HOT_TermsOfAgreement__c || '';
+    }
+    get isOtherProvider() {
+        return this.serviceAppointment.HOT_Request__r.IsOtherEconomicProvicer__c ? 'Ja' : 'Nei';
     }
 }
