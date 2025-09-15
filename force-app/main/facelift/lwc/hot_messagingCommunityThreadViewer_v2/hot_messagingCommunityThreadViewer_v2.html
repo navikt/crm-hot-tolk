@@ -14,17 +14,25 @@
                         readonly
                         aria-disabled="true"
                         aria-label={threadType}
-                        desktop-style="background-color: #F2F3F5; color: #23262a;"
-                        mobile-style="background-color: #F2F3F5; color: #23262a;"
+                        desktop-style="background-color: #F2F3F5; color: #23262a; pointer-events: none;"
+                        mobile-style="background-color: #F2F3F5; color: #23262a; pointer-events: none;"
                     ></c-button>
 
                     <!-- TODO: Dynamically show how many people in this thread and button will open a modal -->
                     <c-button
-                        button-label="4 personer i denne samtalen"
+                        button-label="Vis personer i samtalen"
                         type="button"
+                        onbuttonclick={handleShowParticipants}
                         desktop-style="background-color: #F2F3F5; color: #23262a;"
                         mobile-style="background-color: #F2F3F5; color: #23262a;"
                     ></c-button>
+                </div>
+
+                <!-- TODO: Create a modal that will show participants-->
+                <div>
+                    <template lwc:if={showParticipants}>
+                        <p class=""><strong>{amountOfParticipantsInThread}: </strong> {readByText}</p>
+                    </template>
                 </div>
 
                 <!-- Header -->

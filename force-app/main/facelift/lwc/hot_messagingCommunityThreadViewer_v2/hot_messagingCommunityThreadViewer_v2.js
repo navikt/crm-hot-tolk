@@ -252,6 +252,19 @@ export default class Hot_messagingCommunityThreadViewer_v2 extends NavigationMix
         return this.helptextContent !== '' && this.helptextContent !== undefined ? true : false;
     }
 
+    get amountOfParticipantsInThread() {
+        if (!this.readByText) {
+            return `Personer i samtalen`;
+        }
+
+        const count = this.readByText
+            .split(',')
+            .map((name) => name.trim())
+            .filter((name) => name).length;
+
+        return `${count} personer i denne samtalen`;
+    }
+
     scrollToLatestMessage() {
         const messageContainers = this.template.querySelectorAll('c-hot_messaging-Community-Message-Container');
 
@@ -259,6 +272,33 @@ export default class Hot_messagingCommunityThreadViewer_v2 extends NavigationMix
             const lastMessage = messageContainers[messageContainers.length - 1];
             lastMessage.scrollIntoView({ behavior: 'smooth', block: 'start' });
             lastMessage.focus();
+        }
+    }
+
+    showParticipants = false;
+    async handleShowParticipants() {
+        if (!this.userContactId || !this.recordId) return;
+
+        try {
+            const entries = await buildReadByEntriesForThread({
+                threadId: this.recordId,
+                userContactId: this.userContactId
+            });
+
+            const labels = [];
+            for (const e of entries || []) {
+                if (!e) continue;
+                const name = e.displayName;
+                if (name) labels.push(this.formatName(name));
+            }
+
+            this.readByText = labels.join(', ');
+            this.showReadBy = labels.length > 0;
+            this.showParticipants = this.showReadBy;
+        } catch (error) {
+            console.error('Error fetching participants on button click:', error);
+            this.showReadBy = false;
+            this.showParticipants = false;
         }
     }
 
