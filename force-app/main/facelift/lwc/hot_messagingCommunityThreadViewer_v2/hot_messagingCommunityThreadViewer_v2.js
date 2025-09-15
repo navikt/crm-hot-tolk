@@ -43,9 +43,9 @@ export default class Hot_messagingCommunityThreadViewer_v2 extends NavigationMix
     isclosed;
     showContent = false;
     showError = false;
-    hasAccess;
     readByText = '';
     showReadBy = false;
+    hasAccess = true;
 
     latestSenderContactId;
     latestSenderUserId;
@@ -252,6 +252,9 @@ export default class Hot_messagingCommunityThreadViewer_v2 extends NavigationMix
     }
 
     closeModal() {
+        const dialog = this.template.querySelector('dialog');
+        dialog.close();
+
         this.isDetails = false;
         this.isIRDetails = false;
         this.isWCDetails = false;
@@ -265,6 +268,12 @@ export default class Hot_messagingCommunityThreadViewer_v2 extends NavigationMix
                 pageName: 'home'
             }
         });
+    }
+
+    showServiceAppointmentDetails() {
+        const dialog = this.template.querySelector('dialog');
+        dialog.showModal();
+        dialog.focus();
     }
 
     // Set helptextContent based on type and return label
@@ -519,6 +528,8 @@ export default class Hot_messagingCommunityThreadViewer_v2 extends NavigationMix
                             }
                             this.isDetailsContent = true;
                             this.isDetails = true;
+                            this.hasAccess = true;
+                            this.showServiceAppointmentDetails();
                         });
                         break;
 
@@ -549,6 +560,8 @@ export default class Hot_messagingCommunityThreadViewer_v2 extends NavigationMix
                                 releaseDateTimeFormatted.getFullYear();
                             this.isDetailsContent = true;
                             this.isIRDetails = true;
+                            this.hasAccess = true;
+                            this.showServiceAppointmentDetails();
                         });
                         break;
 
@@ -561,8 +574,9 @@ export default class Hot_messagingCommunityThreadViewer_v2 extends NavigationMix
                             );
                             this.isDetailsContent = true;
                             this.isWCDetails = true;
+                            this.hasAccess = true;
+                            this.showServiceAppointmentDetails();
                         });
-
                         break;
 
                     case 'Andre-WO':
