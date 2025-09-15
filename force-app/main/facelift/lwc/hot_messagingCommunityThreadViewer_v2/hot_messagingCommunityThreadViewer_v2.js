@@ -219,6 +219,7 @@ export default class Hot_messagingCommunityThreadViewer_v2 extends NavigationMix
             this.error = result.error;
         } else if (result.data) {
             this.messages = result.data;
+            this.showScrollButton = this.messages.length > 0;
 
             // figure out latest sender (supports user and contact)
             const last = this.messages && this.messages.length ? this.messages[this.messages.length - 1] : null;
@@ -249,6 +250,16 @@ export default class Hot_messagingCommunityThreadViewer_v2 extends NavigationMix
 
     get isHelpText() {
         return this.helptextContent !== '' && this.helptextContent !== undefined ? true : false;
+    }
+
+    scrollToLatestMessage() {
+        const messageContainers = this.template.querySelectorAll('c-hot_messaging-Community-Message-Container');
+
+        if (messageContainers && messageContainers.length > 0) {
+            const lastMessage = messageContainers[messageContainers.length - 1];
+            lastMessage.scrollIntoView({ behavior: 'smooth', block: 'start' });
+            lastMessage.focus();
+        }
     }
 
     closeModal() {

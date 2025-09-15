@@ -39,9 +39,21 @@
                         class="show-details-button"
                         type="button"
                         onbuttonclick={goToDetails}
-                        desktop-style="background-color: #525962 !important; justify-content: center; width: 7.1rem;"
-                        mobile-style="background-color: #525962 !important; justify-content: center; width: 7.1rem;"
+                        desktop-style="background-color: #525962 !important; justify-content: center; width: 7.1rem; margin-right: 0.5rem;"
+                        mobile-style="background-color: #525962 !important; justify-content: center; width: 7.1rem; margin-right: 0.5rem;"
                     ></c-button>
+
+                    <template lwc:if={showScrollButton}>
+                        <c-button
+                            button-label="Til siste melding"
+                            button-styling="Primary"
+                            type="button"
+                            aria-label="Til bunnen"
+                            onbuttonclick={scrollToLatestMessage}
+                            desktop-style=""
+                            mobile-style=""
+                        ></c-button>
+                    </template>
                 </div>
 
                 <!-- Show Service appointment modal -->
