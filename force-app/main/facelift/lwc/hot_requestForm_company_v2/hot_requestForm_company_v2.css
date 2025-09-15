@@ -1,0 +1,275 @@
+.loader {
+    border: 16px solid #f3f3f3;
+    /* Light grey */
+    border-top: 16px solid #3498db;
+    /* Blue */
+    border-radius: 50%;
+    width: 80px;
+    height: 80px;
+    animation: spin 1s linear infinite;
+}
+
+.header:focus {
+    outline: none;
+}
+
+@keyframes spin {
+    0% {
+        transform: rotate(0deg);
+    }
+    100% {
+        transform: rotate(360deg);
+    }
+}
+
+.skjema-ikon-img {
+    height: 70%;
+    margin-top: 0.6rem;
+}
+
+.skjema-ikon {
+    width: 4rem;
+    height: 4rem;
+    border-radius: 50%;
+    border: 0 !important;
+    margin-top: -2rem;
+    display: flex;
+    justify-content: center;
+    padding: 0;
+    z-index: 1;
+    position: relative;
+}
+
+@media (max-width: 576px) {
+    .skjema-ikon {
+        margin-bottom: -2rem;
+        margin-top: 0;
+    }
+}
+
+.skjema-max-width {
+    width: 100%;
+    max-width: 800px;
+}
+
+div.skjema {
+    margin-bottom: 2rem;
+    margin-top: -2rem;
+    border-radius: 0.5rem;
+    padding: 0 2rem;
+    background-color: #fff;
+}
+
+@media (max-width: 576px) {
+    div.skjema {
+        margin: 0;
+        padding: 0;
+    }
+}
+
+lightning-record-edit-form section {
+    padding: 2rem 1rem 2rem 1rem;
+}
+
+.filter-list-checkbox {
+    width: 100%;
+}
+
+.tolketjenesten {
+    background-color: #dade99;
+    border-bottom: 4px solid rgb(181, 189, 51);
+}
+
+.main-content {
+    font-family: 'Source Sans Pro', Arial, sans-serif;
+    align-items: center;
+    display: flex;
+    justify-content: center;
+    flex-direction: column;
+}
+
+.button-container {
+    text-align: center;
+    max-width: 792px;
+    padding: 1rem 2rem 1rem 2rem;
+}
+
+.back-button {
+    color: #0067c5;
+    text-decoration: underline;
+    text-decoration-color: #0067c5;
+}
+
+.back-button:hover {
+    color: #3385d1;
+}
+.dialog-boks {
+    background-color: white;
+    padding: 2rem;
+    margin: 2rem 0;
+    border-radius: 0.5rem;
+}
+.tolk-skjema-input {
+    font-size: 1rem;
+}
+
+@media (max-width: 576px) {
+    .postnummer label {
+        left: -1000px;
+        visibility: hidden;
+        position: absolute;
+    }
+    .postnummer label:after {
+        visibility: visible;
+        position: absolute;
+        top: -23px;
+        left: 1000px;
+        content: 'Postnr';
+    }
+    .postnummer {
+        top: 29px;
+    }
+}
+
+.dynamic-time-inputs-with-line_button {
+    display: grid;
+    grid-template-columns: 95% 5%;
+}
+
+.dynamic-time-inputs {
+    display: grid;
+    grid-template-columns: 32% 64%;
+    grid-column-gap: 4%;
+}
+
+.remove-time__button {
+    display: flex;
+    justify-content: center;
+    bottom: -20%;
+    position: relative;
+}
+
+.dynamic-time-inputs__times {
+    display: grid;
+    grid-template-columns: 47% 47%;
+    grid-column-gap: 6.25%;
+}
+
+@media (max-width: 564px) {
+    .dynamic-time-inputs-with-line_button {
+        grid-template-columns: 85% 15%;
+    }
+    .dynamic-time-inputs {
+        grid-template-columns: none;
+        grid-template-rows: 50% 50%;
+    }
+    .remove-time__button {
+        bottom: 15%;
+    }
+}
+
+.sub-form > form {
+    padding: 0 1rem;
+}
+
+.sub-form > form > slot {
+    display: flex;
+    flex-direction: row;
+}
+
+.hidden {
+    display: none;
+}
+
+.button-standard {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: 600;
+    font-family: Source Sans Pro, Arial, sans-serif;
+    font-size: 1em;
+    white-space: nowrap;
+    border-radius: 0.125em;
+    cursor: pointer;
+    user-select: none;
+    letter-spacing: 0.0625em;
+    line-height: 1.375rem;
+    text-transform: uppercase;
+    text-decoration: none;
+    background-color: #fff;
+    padding: calc(0.475rem - 1px) 2.5rem calc(0.525rem - 1px);
+    min-height: 2.5rem;
+    vertical-align: middle;
+    border: 2px solid #0067c5;
+    color: #0067c5;
+    outline: var(--outline);
+    box-shadow: var(--boxShadow);
+}
+
+.button-standard:hover {
+    background-color: #0067c5;
+    color: #fff;
+}
+
+.dropzone-label {
+    font-weight: 600;
+    color: #0067c5;
+    text-transform: uppercase;
+    padding: 0.5rem;
+    font-size: 13.33px;
+}
+
+.dropzone {
+    padding: 0.125rem;
+    border: 1px dashed #d4d4d4;
+    border-radius: 0.25rem;
+    width: auto;
+    white-space: nowrap;
+}
+
+.uploadFileElement {
+    width: fit-content;
+}
+
+.filesClass {
+    padding: 0.25em 0 0 0;
+}
+
+.fileNameClass {
+    margin: 0 0.5em 0 0;
+}
+
+.fileAndButton {
+    width: fit-content;
+    height: fit-content;
+}
+
+.navds-button {
+    cursor: pointer;
+    color: #ba3a26;
+    text-align: center;
+    text-decoration: none;
+    align-items: center;
+    padding: 0;
+    font-weight: bold;
+    border-color: transparent;
+    background-color: transparent;
+}
+
+.navds-button--secondary:hover {
+    opacity: 0.7;
+}
+
+section {
+    padding: 2rem 1rem 2rem 1rem;
+}
+
+.header {
+    font-size: 1.5rem;
+    font-weight: 600;
+    letter-spacing: 0;
+    line-height: 1.5rem;
+    margin: 0;
+    font-family: Source Sans Pro, Arial, sans-serif;
+    color: #262626;
+}

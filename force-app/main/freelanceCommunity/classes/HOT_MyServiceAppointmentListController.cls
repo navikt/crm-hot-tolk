@@ -93,6 +93,7 @@ public without sharing class HOT_MyServiceAppointmentListController {
                     HOT_WorkTypeName__c,
                     HOT_Request__r.Account__r.CRM_Person__r.INT_Sex__c,
                     HOT_Request__r.Account__r.CRM_Person__r.CRM_AgeNumber__c,
+                    HOT_Request__r.IsOtherEconomicProvicer__c,
                     SchedEndTime,
                     SchedStartTime,
                     Status,
@@ -156,6 +157,7 @@ public without sharing class HOT_MyServiceAppointmentListController {
                 HOT_Request__r.Account__r.CRM_Person__r.INT_Sex__c,
                 HOT_Request__r.Account__r.CRM_Person__r.CRM_AgeNumber__c,
                 HOT_Request__r.OwnerName__c,
+                HOT_Request__r.IsOtherEconomicProvicer__c,
                 HOT_NavEmployeeName__c,
                 HOT_ServiceTerritoryName__c,
                 HOT_TermsOfAgreement__c,
@@ -216,11 +218,7 @@ public without sharing class HOT_MyServiceAppointmentListController {
                 SELECT Id, Status__c, ServiceResource__c, ServiceAppointment__c
                 FROM HOT_InterestedResource__c
                 WHERE
-                    ServiceResource__c IN (
-                        SELECT Id
-                        FROM ServiceResource
-                        WHERE RelatedRecordId = :UserInfo.getUserId()
-                    )
+                    ServiceResource__c IN (SELECT Id FROM ServiceResource WHERE RelatedRecordId = :UserInfo.getUserId())
                     AND ServiceAppointment__c = :serviceAppointmentId
             ];
 
@@ -254,19 +252,6 @@ public without sharing class HOT_MyServiceAppointmentListController {
         } catch (Exception E) {
         }
         return Id;
-    }
-    @AuraEnabled
-    public static String getOwnerName(String serviceAppointmentId) {
-        String ownerName = '';
-        ServiceAppointment sa = [
-            SELECT HOT_Request__r.OwnerName__c
-            FROM ServiceAppointment
-            WHERE Id = :serviceAppointmentId
-        ];
-        if (sa.HOT_Request__r.OwnerName__c != null) {
-            ownerName = sa.HOT_Request__r.OwnerName__c;
-        }
-        return ownerName;
     }
     @AuraEnabled
     public static String getThreadInterpretersId(String serviceAppointmentId) {

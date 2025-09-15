@@ -28,6 +28,15 @@ public without sharing class HOT_UpdateChildRecordsService {
         List<String> errors = new List<String>();
         String error;
         String errorOutput;
+        WorkOrder singleWO;
+        List<WorkOrderLineItem> workOrderLineItemsWO = new List<WorkOrderLineItem>();
+        List<ServiceAppointment> serviceAppointmentsWO = new List<ServiceAppointment>();
+        if (input.workOrder == null) {
+            singleWO = null;
+        } else {
+            singleWO = input.workOrder;
+        }
+
         List<WorkOrder> workOrders = new List<WorkOrder>(
             [
                 SELECT
@@ -87,6 +96,44 @@ public without sharing class HOT_UpdateChildRecordsService {
                 WHERE HOT_Request__c = :request.Id AND Status IN :saStatuses
             ]
         );
+        if (singleWO != null) {
+            workOrderLineItemsWO = [
+                SELECT
+                    Id,
+                    Status,
+                    HOT_InterpretationPostalStreet__c,
+                    HOT_InterpretationPostalCode__c,
+                    HOT_InterpretationPostalCity__c,
+                    WorkTypeId,
+                    Street,
+                    PostalCode,
+                    City,
+                    Subject,
+                    Description
+                FROM WorkOrderLineItem
+                WHERE WorkOrderId = :singleWO.Id AND Status IN :woliStatuses
+            ];
+            serviceAppointmentsWO = [
+                SELECT
+                    Id,
+                    Status,
+                    HOT_InterpretationStreet__c,
+                    HOT_InterpretationPostalCode__c,
+                    HOT_InterpretationPostalCity__c,
+                    Street,
+                    PostalCode,
+                    City,
+                    ContactId,
+                    Subject,
+                    Description,
+                    HOT_Account__c,
+                    HOT_IsScreenInterpreterNew__c,
+                    HOT_DispatcherNew__c,
+                    WorkTypeId
+                FROM ServiceAppointment
+                WHERE HOT_WorkOrderLineItem__r.WorkOrderId = :singleWO.Id AND Status IN :saStatuses
+            ];
+        }
 
         if (input.request != null && input.workOrder == null) {
             error = updateRequest(
@@ -166,7 +213,7 @@ public without sharing class HOT_UpdateChildRecordsService {
                 errorOutput = error;
             }
             error = updateWorkOrderLineItem(
-                workOrderLineItems,
+                workOrderLineItemsWO,
                 request,
                 input.isAddressChoice,
                 input.isSubjectChoice,
@@ -181,7 +228,7 @@ public without sharing class HOT_UpdateChildRecordsService {
                 }
             }
             error = updateServiceAppointments(
-                serviceAppointments,
+                serviceAppointmentsWO,
                 request,
                 input.isAccountChoice,
                 input.isAddressChoice,

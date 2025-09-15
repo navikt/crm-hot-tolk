@@ -1,0 +1,181 @@
+<template>
+    <template lwc:if={hasResult}>
+        <div class="main-content">
+            <c-hot_freelance-common-table
+                records={records}
+                columns={columns}
+                onrowclick={goToRecordDetails}
+            ></c-hot_freelance-common-table>
+        </div>
+    </template>
+
+    <template lwc:elseif={noServiceAppointmentsResult}>
+        <div style="text-align: center">
+            <br />
+            <p>Du har ingen kommende oppdrag.</p>
+            <br />
+        </div>
+    </template>
+
+    <template lwc:elseif={noFilteredRecordsResult}>
+        <div style="text-align: center">
+            <br />
+            <p>Det finnes ingen oppdrag med denne filtreringen. Du kan endre filteret for å se andre oppdrag</p>
+            <br />
+        </div>
+    </template>
+    <!-- MODAL -->
+    <dialog class="modal-container" aria-label="Informasjon om oppdrag" onclose={closeModal}>
+        <div class="modal-header">
+            <h2>Informasjon om oppdraget:</h2>
+            <button class="close-btn" onclick={closeModal} aria-label="Lukk">
+                <img src={exitCrossIcon} alt="" aria-hidden="true" />
+            </button>
+        </div>
+        <template lwc:if={hasAccess}>
+            <div class="modal-body">
+                <div lwc:if={isDetails}>
+                    <p>Oppdragsnummer: <span>{appointmentNumber}</span></p>
+                    <p>Tema: <span>{subject}</span></p>
+                    <p>Tid: <span>{startAndEndTime}</span></p>
+                    <p lwc:if={address}>Adresse: <span>{address}</span></p>
+                    <div
+                        lwc:if={serviceAppointment.HOT_AddressFormated__c}
+                        style="display: inline-block; padding-right: 1vw"
+                    >
+                        <p>Søk på adressen i en karttjeneste:</p>
+                        <div style="display: inline-block; padding-right: 1vw; padding-bottom: 1vw; padding-top: 1vw">
+                            <c-button
+                                button-styling="secondary"
+                                button-label="Google maps"
+                                onbuttonclick={openGoogleMaps}
+                                mobile-style="margin-top: 0.5rem; margin-bottom: 0.5rem"
+                            ></c-button>
+                        </div>
+                        <div style="display: inline-block; padding-right: 1vw; padding-bottom: 1vw; padding-top: 1vw">
+                            <c-button
+                                button-styling="secondary"
+                                button-label="Apple maps"
+                                onbuttonclick={openAppleMaps}
+                                mobile-style="margin-top: 0.5rem; margin-bottom: 0.5rem"
+                            ></c-button>
+                        </div>
+                    </div>
+                    <p lwc:if={actualStartTime}>Faktisk start: <span>{actualStartTime}</span></p>
+
+                    <p lwc:if={actualEndTime}>Faktisk slutt: <span>{actualEndTime}</span></p>
+                    <p lwc:if={accountName}>
+                        Navn til bruker:&nbsp;
+                        <span> {accountName} ({accountAgeGender})</span>
+                    </p>
+                    <p lwc:if={accountPhoneNumber}>
+                        Telefonnummer til bruker:&nbsp;
+                        <span>{accountPhoneNumber}</span>
+                    </p>
+                    <p>Tolkemetode: <span>{workType}</span></p>
+                    <p>Oppdragstype: <span>{assignmentType}</span></p>
+                    <p>Eier: <span>{ownerName}</span></p>
+
+                    <p>Status: <span>{status}</span></p>
+                    <p>Haptisk kommunikasjon: <span>{hapticCommunication}</span></p>
+                    <p lwc:if={escort}>Ledsaging: <span>{escort}</span></p>
+
+                    <p lwc:if={degreeOfHearingAndVisualImpairment}>
+                        Vedtak: <span>{degreeOfHearingAndVisualImpairment}</span>
+                    </p>
+
+                    <p lwc:if={showTermsOfAgreement}>Avtalte betingelser: <span>{showTermsOfAgreement}</span></p>
+
+                    <p lwc:if={interpreters}>(Med)tolk: <span>{interpreters}</span></p>
+
+                    <p lwc:if={description}>Tilleggsopplysninger: <span>{description}</span></p>
+
+                    <p lwc:if={showOrdererPhoneNumber}>
+                        Telefonnummer til bestiller: <span>{showOrdererPhoneNumber}</span>
+                    </p>
+                    <p>Annen betaler: <span>{isOtherProvider}</span></p>
+
+                    <p lwc:if={dispatcher}>Formidler: <span>{dispatcher}</span></p>
+
+                    <div class="files-container">
+                        <c-record-files-with-sharing
+                            record-id={serviceAppointment.Id}
+                            is-get-all="true"
+                            is-delete-option="false"
+                            title="Vedlegg"
+                            delete-file-on-button-click="false"
+                        ></c-record-files-with-sharing>
+                    </div>
+                    <div class="button-container">
+                        <c-button
+                            disabled={isEditButtonDisabled}
+                            hidden={isEditButtonHidden}
+                            onbuttonclick={changeStatus}
+                            button-styling="Primary"
+                            type="Submit"
+                            button-label="Endre status"
+                            mobile-style="margin-top: 1rem; margin-bottom: 1rem"
+                        >
+                        </c-button>
+
+                        <c-button
+                            hidden={isCancelButtonHidden}
+                            onbuttonclick={cancelStatusFlow}
+                            button-styling="Secondary"
+                            type="Submit"
+                            button-label="Avbryt"
+                            mobile-style="margin-top: 1rem; margin-bottom: 1rem"
+                        >
+                        </c-button>
+                    </div>
+                    <div lwc:if={isflow} class="flow-container">
+                        <lightning-flow
+                            flow-api-name="HOT_ChangeServiceAppointmentStatus_V1"
+                            flow-input-variables={flowVariables}
+                            onstatuschange={handleStatusChange}
+                        ></lightning-flow>
+                    </div>
+                    <p>Samtale med:</p>
+                    <div class="button-container">
+                        <c-button
+                            button-styling="Primary"
+                            type="Submit"
+                            onbuttonclick={goToThreadFreelance}
+                            button-label="Bruker"
+                            disabled={isGoToThreadButtonDisabled}
+                            mobile-style="margin-top: 1rem"
+                        >
+                        </c-button>
+                    </div>
+                    <div class="button-container">
+                        <c-button
+                            button-styling="Primary"
+                            type="Submit"
+                            onbuttonclick={goToThreadInterpreters}
+                            disabled={isGoToThreadInterpretersButtonDisabled}
+                            button-label="Medtolker"
+                            mobile-style="margin-top: 1rem"
+                        >
+                        </c-button>
+                    </div>
+                    <div class="button-container">
+                        <c-button
+                            button-styling="Primary"
+                            type="Submit"
+                            onbuttonclick={goToThreadServiceAppointment}
+                            button-label="Formidler"
+                            disabled={isGoToThreadServiceAppointmentButtonDisabled}
+                            mobile-style="margin-top: 1rem"
+                        >
+                        </c-button>
+                    </div>
+                </div>
+            </div>
+        </template>
+        <template lwc:else>
+            <div class="modal-body">
+                <p>Du er ikke tildelt oppdraget lenger.</p>
+            </div>
+        </template>
+    </dialog>
+</template>

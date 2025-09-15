@@ -12,14 +12,19 @@ button.threadCard {
     background-color: #f2f3f5;
     padding: 1rem 2rem;
     margin-bottom: 0.5rem;
-    border-radius: 3px;
+    border-radius: 0.5rem;
     border: 4px solid #f2f3f5;
 }
-.threadCard:hover,
-.threadCard:focus {
-    background-color: #e0e3e6;
+.threadCard:hover {
     border-color: #e0e3e6;
+    background-color: #e0e3e6;
 }
+.threadCard:focus {
+    outline: none;
+    background-color: #e0e3e6;
+    border-color: #0067c5;
+}
+
 .threadCardHeader {
     display: flex;
     justify-content: space-between;
@@ -30,7 +35,13 @@ button.threadCard {
     gap: 0.5rem;
     padding-top: 0.5rem;
 }
-
+.threadCardHeader-left p {
+    font-size: 1.25rem;
+    font-weight: bold;
+}
+p {
+    font-size: 1.125rem;
+}
 .threadCardHeader-left {
     font-weight: bold;
     flex: 1 1 0;

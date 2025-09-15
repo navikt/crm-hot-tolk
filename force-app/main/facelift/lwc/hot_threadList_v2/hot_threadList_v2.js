@@ -173,6 +173,11 @@ export default class Hot_threadList_v2 extends NavigationMixin(LightningElement)
                     recordId: event.detail,
                     objectApiName: 'Thread__c',
                     actionName: 'view'
+                },
+                state: {
+                    from: 'mine-samtaler',
+                    recordId: event.detail,
+                    level: 'WO'
                 }
             });
         }
