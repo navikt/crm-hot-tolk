@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<LightningComponentBundle xmlns="http://soap.sforce.com/2006/04/metadata">
+    <apiVersion>64.0</apiVersion>
+    <isExposed>true</isExposed>
+    <masterLabel>HOT Radio Button Flow</masterLabel>
+    <description>Group of radio button that only one button can be selected</description>
+    <targets>
+        <target>lightning__FlowScreen</target>
+    </targets>
+    <targetConfigs>
+        <targetConfig targets="lightning__FlowScreen">
+            <!-- Group Label -->
+            <property name="groupLabel" type="String" label="Radio Group Label" />
+
+            <!-- Radio Buttons -->
+            <property name="rbOneLabel" type="String" label="Choice 1 Label" />
+            <property name="rbOneValue" type="String" label="Choice 1 Value" />
+            <property name="rbTwoLabel" type="String" label="Choice 2 Label" />
+            <property name="rbTwoValue" type="String" label="Choice 2 Value" />
+            <property name="rbThreeLabel" type="String" label="Choice 3 Label" />
+            <property name="rbThreeValue" type="String" label="Choice 3 Value" />
+
+            <!-- Selected value -->
+            <property name="value" type="String" label="Selected Value"
+                description="Flow variable for selected choice" />
+        </targetConfig>
+    </targetConfigs>
+
+</LightningComponentBundle>
