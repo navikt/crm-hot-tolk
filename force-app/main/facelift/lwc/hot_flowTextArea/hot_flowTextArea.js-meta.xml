@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<LightningComponentBundle xmlns="http://soap.sforce.com/2006/04/metadata">
+    <apiVersion>64.0</apiVersion>
+    <isExposed>true</isExposed>
+    <masterLabel>HOT Text Area Flow</masterLabel>
+    <description>The next button has validation for user input</description>
+    <targets>
+        <target>lightning__FlowScreen</target>
+    </targets>
+    <targetConfigs>
+        <targetConfig targets="lightning__FlowScreen">
+            <!-- Label shown above the text area -->
+            <property name="label" type="String" label="Label" />
+
+
+            <!-- Default text value in the text area -->
+            <property name="inputText" type="String" label="Default value" />
+            <property name="required" type="Boolean" label="Require input before continuing"
+                default="false" />
+        </targetConfig>
+    </targetConfigs>
+</LightningComponentBundle>

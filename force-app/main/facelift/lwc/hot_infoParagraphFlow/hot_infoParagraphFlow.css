@@ -1,0 +1,43 @@
+.main-container {
+    font-family: 'Source Sans Pro', Arial, sans-serif;
+}
+
+.header-small {
+    font-size: 1.25rem;
+    line-height: 1.75rem;
+    font-weight: 400;
+}
+
+.header-medium {
+    font-size: 1.5rem;
+    line-height: 2rem;
+    font-weight: 400;
+}
+
+.header-large {
+    font-size: 2rem;
+    line-height: 2.5rem;
+    font-weight: 400;
+}
+
+.text-small,
+.text-medium,
+.text-large {
+    overflow-wrap: break-word;
+    font-weight: normal;
+}
+
+.text-small {
+    font-size: 1rem;
+    line-height: 1.5rem;
+}
+
+.text-medium {
+    font-size: 1.125rem;
+    line-height: 1.5rem;
+}
+
+.text-large {
+    font-size: 1.25rem;
+    line-height: 1.75rem;
+}

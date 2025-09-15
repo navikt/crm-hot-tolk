@@ -1,4 +1,4 @@
-import { LightningElement, wire, track, api } from 'lwc';
+import { LightningElement, wire, api } from 'lwc';
 import getOpenServiceAppointments from '@salesforce/apex/HOT_OpenServiceAppointmentListController.getOpenServiceAppointments';
 import createInterestedResources from '@salesforce/apex/HOT_OpenServiceAppointmentListController.createInterestedResources';
 import getServiceResource from '@salesforce/apex/HOT_Utility.getServiceResource';
@@ -11,8 +11,8 @@ import icons from '@salesforce/resourceUrl/ikoner';
 
 export default class Hot_openServiceAppointmentsList_v2 extends LightningElement {
     exitCrossIcon = icons + '/Close/Close.svg';
-    @track columns = [];
-    @track inDetailsColumns = [];
+    columns = [];
+    inDetailsColumns = [];
     dataLoader = true;
     setColumns() {
         if (window.screen.width > 576) {
@@ -103,7 +103,7 @@ export default class Hot_openServiceAppointmentsList_v2 extends LightningElement
         sessionStorage.setItem('checkedrowsSavedForRefresh', JSON.stringify(this.checkedServiceAppointments));
     }
 
-    @track filters = [];
+    filters = [];
     numberTimesCalled = 0;
     connectedCallback() {
         this.updateURL();
@@ -115,8 +115,8 @@ export default class Hot_openServiceAppointmentsList_v2 extends LightningElement
         refreshApex(this.wiredAllServiceAppointmentsResult);
     }
 
-    @track serviceResource;
-    @track serviceResourceId;
+    serviceResource;
+    serviceResourceId;
     @wire(getServiceResource)
     wiredServiceresource(result) {
         if (result.data) {
@@ -145,9 +145,9 @@ export default class Hot_openServiceAppointmentsList_v2 extends LightningElement
     }
     noServiceAppointments = false;
     initialServiceAppointments = [];
-    @track records = [];
-    @track allServiceAppointmentsWired = [];
-    @track allServiceAppointmentsWiredMobile = [];
+    records = [];
+    allServiceAppointmentsWired = [];
+    allServiceAppointmentsWiredMobile = [];
     wiredAllServiceAppointmentsResult;
     @wire(getOpenServiceAppointments)
     wiredAllServiceAppointmentsWired(result) {
@@ -159,7 +159,8 @@ export default class Hot_openServiceAppointmentsList_v2 extends LightningElement
                 isUrgent: x.HOT_IsUrgent__c,
                 startAndEndDateWeekday:
                     this.formatDatetime(x.EarliestStartTime, x.DueDate) + ' ' + getDayOfWeek(x.EarliestStartTime),
-                weekday: getDayOfWeek(x.EarliestStartTime)
+                weekday: getDayOfWeek(x.EarliestStartTime),
+                isOtherProvider: x.HOT_Request__r?.IsOtherEconomicProvicer__c ? 'Ja' : 'Nei'
             }));
 
             this.noServiceAppointments = this.allServiceAppointmentsWired.length === 0;
@@ -204,7 +205,7 @@ export default class Hot_openServiceAppointmentsList_v2 extends LightningElement
     showSendInnBtn = false;
     showModalHeader = false;
 
-    @track serviceAppointment;
+    serviceAppointment;
     isDetails = false;
     isSeries = false;
     seriesRecords = [];
@@ -262,7 +263,7 @@ export default class Hot_openServiceAppointmentsList_v2 extends LightningElement
 
     errorMessage = '';
     spin = false;
-    @track checkedServiceAppointments = [];
+    checkedServiceAppointments = [];
     registerInterest() {
         if (this.sendInterestAll) {
             this.checkedServiceAppointments = [];
@@ -327,7 +328,7 @@ export default class Hot_openServiceAppointmentsList_v2 extends LightningElement
     }
 
     showSendInterest = false;
-    @track serviceAppointmentCommentDetails = [];
+    serviceAppointmentCommentDetails = [];
     sendInterest() {
         this.hideSubmitIndicators();
         this.showCommentSection();

@@ -11,7 +11,7 @@
             Varsler
         </button>
 
-        <template if:true={showNotifications}>
+        <template lwc:if={showNotifications}>
             <div class="notification-overlay" onclick={toggleNotifications} aria-hidden="true"></div>
 
             <div
@@ -24,14 +24,16 @@
                 onclick={noop}
             >
                 <div class="dropdown-header">
-                    <h2 id="varsler-heading">Varsler</h2>
-                    <button class="close-btn" onclick={toggleNotifications} aria-label="Lukk varselsenter">
-                        <img src={exitCrossIcon} alt="" aria-hidden="true" />
-                    </button>
+                    <div class="dropdown-header-top">
+                        <h2 id="varsler-heading">Varsler</h2>
+                        <button class="close-btn" onclick={toggleNotifications} aria-label="Lukk varselsenter">
+                            <img src={exitCrossIcon} alt="" aria-hidden="true" />
+                        </button>
+                    </div>
                     <p id="varsler-info">Kun varsler fra tolketjenesten siste 30 dager vises her.</p>
                 </div>
 
-                <div class="dropdown-info" if:false={hasNotifications}>
+                <div class="dropdown-info" lwc:if={hasNoNotifications}>
                     <p>Ingen nye varsler.</p>
                 </div>
 
