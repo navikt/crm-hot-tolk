@@ -1,4 +1,4 @@
-import { LightningElement, api, track, wire } from 'lwc';
+import { LightningElement, api, wire } from 'lwc';
 import LightningModal from 'lightning/modal';
 import checkAccessToSA from '@salesforce/apex/HOT_MyServiceAppointmentListController.checkAccessToSA';
 import getServiceAppointmentDetails from '@salesforce/apex/HOT_MyServiceAppointmentListController.getServiceAppointmentDetails';
@@ -25,41 +25,42 @@ export default class Hot_informationModal extends NavigationMixin(LightningModal
     @api type;
     @api fromUrlRedirect;
 
-    @track isAListView = true;
+    isAListView = true;
 
     // Service appointment properties
-    @track saFreelanceThreadId;
-    @track saThreadId;
-    @track saIsflow = false;
-    @track saIsEditButtonDisabled;
-    @track saIsEditButtonHidden;
-    @track saIsCancelButtonHidden;
-    @track interestedResource;
-    @track serviceAppointment;
-    @track accountPhoneNumber;
-    @track accountAgeGender;
-    @track accountName;
-    @track ownerName;
-    @track ordererPhoneNumber;
-    @track termsOfAgreement;
-    @track isGoToThreadInterpretersButtonDisabled = false;
-    @track isGoToThreadButtonDisabled = false;
-    @track isGoToThreadServiceAppointmentButtonDisabled = false;
+    saFreelanceThreadId;
+    saThreadId;
+    saIsflow = false;
+    saIsEditButtonDisabled;
+    saIsEditButtonHidden;
+    saIsCancelButtonHidden;
+    interestedResource;
+    serviceAppointment;
+    accountPhoneNumber;
+    isOtherProvider;
+    accountAgeGender;
+    accountName;
+    ownerName;
+    ordererPhoneNumber;
+    termsOfAgreement;
+    isGoToThreadInterpretersButtonDisabled = false;
+    isGoToThreadButtonDisabled = false;
+    isGoToThreadServiceAppointmentButtonDisabled = false;
 
     //wageclaim
 
-    @track wcIsNotRetractable = false;
-    @track wcIsDisabledGoToThread = false;
+    wcIsNotRetractable = false;
+    wcIsDisabledGoToThread = false;
 
     noCancelButton = false;
     modalHeader = 'Varsel';
     modalContent =
         'Er du sikker på at du vil fjerne tilgjengeligheten din for dette tidspunktet? Du vil da ikke ha krav på lønn.';
-    @track confirmButtonLabel = 'Ja';
+    confirmButtonLabel = 'Ja';
 
-    @track isSADetails = false;
-    @track hasAccess = false;
-    @track isWCDetails = false;
+    isSADetails = false;
+    hasAccess = false;
+    isWCDetails = false;
 
     isLoading = true;
     openGoogleMaps() {
@@ -179,6 +180,9 @@ export default class Hot_informationModal extends NavigationMixin(LightningModal
                 this.serviceAppointment.weekday = this.getDayOfWeek(this.serviceAppointment.EarliestStartTime);
                 this.interestedResource = serviceAppointment?.InterestedResources__r[0];
                 this.termsOfAgreement = this.interestedResource.HOT_TermsOfAgreement__c;
+                this.isOtherProvider = this.ServiceAppointment__r.HOT_Request__r.IsOtherEconomicProvicer__c
+                    ? 'Ja'
+                    : 'Nei';
                 if (this.serviceAppointment.HOT_Request__r && this.serviceAppointment.HOT_Request__r.Account__r) {
                     if (
                         this.serviceAppointment.HOT_Request__r.Account__r.Name == null ||
