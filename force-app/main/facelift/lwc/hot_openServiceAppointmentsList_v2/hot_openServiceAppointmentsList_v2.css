@@ -20,27 +20,6 @@
     padding: 2rem;
 }
 
-.loader {
-    border: 16px solid #f3f3f3;
-    /* Light grey */
-    border-top: 16px solid #3498db;
-    /* Blue */
-    border-radius: 50%;
-    width: 80px;
-    height: 80px;
-    animation: spin 1s linear infinite;
-    justify-content: center;
-}
-
-@keyframes spin {
-    0% {
-        transform: rotate(0deg);
-    }
-    100% {
-        transform: rotate(360deg);
-    }
-}
-
 span {
     font-weight: normal;
 }
@@ -89,6 +68,12 @@ lightning-input-field.ikke-sensitive-opplysninger > lightning-textarea > label:a
     justify-content: end;
     align-items: center;
     padding-right: 2rem;
+}
+.loader-container {
+    display: flex;
+    justify-content: center;
+    align-items: flex-start;
+    padding-top: 5rem;
 }
 
 dialog.modal-container h2 {
