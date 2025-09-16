@@ -31,9 +31,8 @@ public without sharing class HOT_MessageHandler extends MyTriggers {
                         threadIdsToNotifyInterpretersOnNewMessage.add(message.CRM_Thread__c);
                     }
                     when 'HOT_BRUKER-TOLK' {
-                        if (role != null && role.contains(', Tolkebruker')) {
-                            threadIdsToNotifyInterpretersOnNewMessage.add(message.CRM_Thread__c);
-                        } else {
+                        threadIdsToNotifyInterpretersOnNewMessage.add(message.CRM_Thread__c);
+                        if (role != null && !role.contains(', Tolkebruker')) {
                             threadIdsToNotifyUserOnNewMessage.add(message.CRM_Thread__c);
                         }
                     }
