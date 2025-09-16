@@ -180,9 +180,8 @@ export default class Hot_informationModal extends NavigationMixin(LightningModal
                 this.serviceAppointment.weekday = this.getDayOfWeek(this.serviceAppointment.EarliestStartTime);
                 this.interestedResource = serviceAppointment?.InterestedResources__r[0];
                 this.termsOfAgreement = this.interestedResource.HOT_TermsOfAgreement__c;
-                this.isOtherProvider = this.ServiceAppointment__r.HOT_Request__r.IsOtherEconomicProvicer__c
-                    ? 'Ja'
-                    : 'Nei';
+                this.isOtherProvider = this.serviceAppointment.HOT_Request__r.IsOtherEconomicProvicer__c ? 'Ja' : 'Nei';
+
                 if (this.serviceAppointment.HOT_Request__r && this.serviceAppointment.HOT_Request__r.Account__r) {
                     if (
                         this.serviceAppointment.HOT_Request__r.Account__r.Name == null ||
