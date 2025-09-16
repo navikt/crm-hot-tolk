@@ -320,6 +320,9 @@ export default class Hot_informationModal extends NavigationMixin(LightningModal
                         result.EarliestStartTime,
                         result.DueDate
                     );
+                    this.isOtherProvider = this.serviceAppointment.HOT_Request__r.IsOtherEconomicProvicer__c
+                        ? 'Ja'
+                        : 'Nei';
                     this.serviceAppointment.ActualStartTime = formatDatetime(result.ActualStartTime);
                     this.serviceAppointment.ActualEndTime = formatDatetime(result.ActualEndTime);
                     if (
