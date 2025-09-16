@@ -255,7 +255,9 @@
             role="dialog"
             aria-labelledby="details-header-id"
         >
-            <div class="loader hidden"></div>
+            <div class="loader-container" lwc:if={showLoader}>
+                <c-hot_loader size="3xlarge"></c-hot_loader>
+            </div>
             <div lwc:if={showUploadFilesComponent}>
                 <h2 style="font-size: 1.25rem; text-align: center">Legg ved filer til denne bestillingen</h2>
                 <br />
@@ -344,7 +346,11 @@
 
             <div lwc:if={showSubmittedLoading} class="submitted-loading">
                 <br />
-                <div if:true={showSubmittedLoading} class="loader"></div>
+                <div if:true={showSubmittedLoading}>
+                    <div class="loader-container">
+                        <c-hot_loader size="3xlarge"></c-hot_loader>
+                    </div>
+                </div>
                 <br />
             </div>
 

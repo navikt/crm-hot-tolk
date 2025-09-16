@@ -30,6 +30,7 @@ export default class Hot_myRequestsWrapper extends NavigationMixin(LightningElem
     recordId;
     filters = [];
     labelMap = labelMap;
+    showLoader = false;
     get isMobile() {
         return window.screen.width < 768;
     }
@@ -522,7 +523,7 @@ export default class Hot_myRequestsWrapper extends NavigationMixin(LightningElem
         if (this.template.querySelector('c-record-files-without-sharing') !== null) {
             this.template.querySelector('c-record-files-without-sharing').refreshContentDocuments();
         }
-        this.template.querySelector('.loader').classList.add('hidden');
+        this.showLoader = false;
         this.modalHeader = 'Suksess!';
         // Only show pop-up modal if in add files window
         if (this.isAddFiles) {
@@ -532,7 +533,7 @@ export default class Hot_myRequestsWrapper extends NavigationMixin(LightningElem
     }
 
     onUploadError(err) {
-        this.template.querySelector('.loader').classList.add('hidden');
+        this.showLoader = false;
         this.modalHeader = 'Noe gikk galt';
         this.modalContent = 'Kunne ikke laste opp fil(er). Feilmelding: ' + err;
         this.showModal();
@@ -555,7 +556,7 @@ export default class Hot_myRequestsWrapper extends NavigationMixin(LightningElem
         // Show spinner
         if (this.checkboxValue) {
             this.showCancelUploadButton = false;
-            this.template.querySelector('.loader').classList.remove('hidden');
+            this.showLoader = true;
             this.showUploadFilesComponent = false;
         }
         this.handleFileUpload();

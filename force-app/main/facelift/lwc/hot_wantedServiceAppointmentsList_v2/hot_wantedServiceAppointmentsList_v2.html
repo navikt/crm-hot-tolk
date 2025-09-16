@@ -12,6 +12,11 @@
             ></c-hot_freelance-common-table>
         </div>
     </template>
+    <template lwc:if={dataLoader}>
+        <div class="loader-container">
+            <c-hot_loader size="3xlarge"></c-hot_loader>
+        </div>
+    </template>
     <div lwc:if={noServiceAppointments} style="text-align: center">
         <br />
         <p>Det er ingen oppdrag her</p>
@@ -100,7 +105,9 @@
                     {processMessage}
                 </h2>
                 <br />
-                <div lwc:if={spin} class="loader"></div>
+                <div lwc:if={spin}>
+                    <c-hot_loader size="3xlarge" variant="interaction"></c-hot_loader>
+                </div>
                 <br />
             </div>
 

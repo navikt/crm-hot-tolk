@@ -24,6 +24,11 @@
             <br />
         </div>
     </template>
+    <template lwc:if={dataLoader}>
+        <div class="loader-container">
+            <c-hot_loader size="3xlarge"></c-hot_loader>
+        </div>
+    </template>
     <!-- MODAL -->
     <dialog class="modal-container" aria-label="Informasjon om oppdrag" onclose={closeModal}>
         <div class="modal-header">
