@@ -159,7 +159,7 @@ export default class Hot_openServiceAppointmentsList_v2 extends LightningElement
                 isUrgent: x.HOT_IsUrgent__c,
                 startAndEndDateWeekday: this.formatDatetime(x.EarliestStartTime, x.DueDate),
                 weekday: getDayOfWeek(x.EarliestStartTime),
-                isOtherProvider: x.HOT_Request__r?.IsOtherEconomicProvicer__c ? 'Ja' : 'Nei'
+                isOtherProvider: x.HOT_Request__r?.IsOtherEconomicProvider__c ? 'Ja' : 'Nei'
             }));
 
             this.noServiceAppointments = this.allServiceAppointmentsWired.length === 0;
