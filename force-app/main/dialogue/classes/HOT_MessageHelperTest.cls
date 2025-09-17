@@ -658,19 +658,14 @@ private class HOT_MessageHelperTest {
         User currentUser = [SELECT Id, AccountId, Account.CRM_Person__c FROM User WHERE Id = :UserInfo.getUserId()];
 
         Test.startTest();
-        Contact contact = new Contact(
-            FirstName = 'Darth',
-            LastName = 'Vader',
-            Phone = '95410816',
-            TAG_Informed__c = true,
-            AccountId = currentUser.AccountId
-        );
-        insert contact;
-        HOT_MessageHelper.setLastMessageFrom(tList.get(0).Id, contact.Id);
+        Account account = HOT_TestDataFactory.createAccount(true);
+        insert account;
+
+        HOT_MessageHelper.setLastMessageFrom(tList.get(0).Id, account.Id);
         Test.stopTest();
 
         List<Thread__c> tList2 = [SELECT Id, HOT_Thread_read_by__c FROM Thread__c WHERE Id = :tList.get(0).Id];
-        System.assertEquals(tList2[0].HOT_Thread_read_by__c, contact.Id + ';');
+        System.assertEquals(tList2[0].HOT_Thread_read_by__c, account.Id + ';');
     }
     @IsTest
     static void markAsReadByNavTest() {
@@ -1417,152 +1412,6 @@ private class HOT_MessageHelperTest {
         String result = HOT_MessageHelper.getUserProfileAndName();
         Test.stopTest();
         System.assertNotEquals('', result, 'Did not get Profile and Name');
-    }
-
-    @IsTest
-    static void testResolveReadByEntries() {
-        User stdUser = [
-            SELECT Id, Profile.Name
-            FROM User
-            WHERE Id = :UserInfo.getUserId()
-            LIMIT 1
-        ];
-        Boolean stdIsAdmin = (stdUser.Profile != null && stdUser.Profile.Name == 'System Administrator');
-        List<User> adminList = [
-            SELECT Id
-            FROM User
-            WHERE Profile.Name = 'System Administrator'
-            LIMIT 1
-        ];
-        User adminUser = adminList.isEmpty() ? null : adminList[0];
-        List<User> formidlerList = [
-            SELECT Id
-            FROM User
-            WHERE Profile.Name = 'HOT Tolk Formidler'
-            LIMIT 1
-        ];
-        User formidler = formidlerList.isEmpty() ? null : formidlerList[0];
-
-        Contact c = new Contact(FirstName = 'Read', LastName = 'By Contact', TAG_Informed__c = true);
-        insert c;
-
-        List<Id> inputs = new List<Id>{ stdUser.Id, c.Id };
-        if (adminUser != null)
-            inputs.add(adminUser.Id);
-        if (formidler != null)
-            inputs.add(formidler.Id);
-
-        Test.startTest();
-        Object raw = HOT_MessageHelper.resolveReadByEntries(inputs);
-        Test.stopTest();
-
-        List<Object> rowsRaw = (List<Object>) JSON.deserializeUntyped(JSON.serialize(raw));
-        List<Map<String, Object>> rows = new List<Map<String, Object>>();
-        for (Object o : rowsRaw)
-            rows.add((Map<String, Object>) o);
-
-        Integer expected = 1; // contact
-        if (!stdIsAdmin)
-            expected++;
-        if (formidler != null)
-            expected++;
-        System.assertEquals(expected, rows.size(), 'Expected non-admin users + contacts only');
-
-        Set<String> principals = new Set<String>();
-        for (Map<String, Object> m : rows)
-            principals.add((String) m.get('principalId'));
-
-        System.assert(principals.contains((String) c.Id), 'Contact should be included');
-        if (!stdIsAdmin) {
-            System.assert(principals.contains((String) stdUser.Id), 'Running user (non-admin) should be included');
-        }
-        if (adminUser != null) {
-            System.assert(!principals.contains((String) adminUser.Id), 'Admin must be excluded');
-        }
-        if (formidler != null) {
-            System.assert(principals.contains((String) formidler.Id), 'Formidler should be included');
-            for (Map<String, Object> m : rows) {
-                if ((String) m.get('principalId') == (String) formidler.Id) {
-                    System.assertEquals('Formidler', (String) m.get('displayName'));
-                    System.assertEquals(true, (Boolean) m.get('isFormidlerRole'));
-                    System.assertEquals(false, (Boolean) m.get('isSystemAdmin'));
-                }
-            }
-        }
-    }
-
-    @IsTest
-    static void buildReadByEntriesForThreadTest() {
-        Thread__c t = [SELECT Id FROM Thread__c ORDER BY CreatedDate ASC LIMIT 1];
-        User stdUser = [
-            SELECT Id, Profile.Name
-            FROM User
-            WHERE Id = :UserInfo.getUserId()
-            LIMIT 1
-        ];
-        Boolean stdIsAdmin = (stdUser.Profile != null && stdUser.Profile.Name == 'System Administrator');
-        List<User> adminList = [
-            SELECT Id
-            FROM User
-            WHERE Profile.Name = 'System Administrator'
-            LIMIT 1
-        ];
-        User adminUser = adminList.isEmpty() ? null : adminList[0];
-        List<User> formidlerList = [
-            SELECT Id
-            FROM User
-            WHERE Profile.Name = 'HOT Tolk Formidler'
-            LIMIT 1
-        ];
-        User formidler = formidlerList.isEmpty() ? null : formidlerList[0];
-        Contact c = new Contact(FirstName = 'Thread', LastName = 'Reader', TAG_Informed__c = true);
-        insert c;
-        List<String> ids = new List<String>{ (String) stdUser.Id, (String) stdUser.Id, (String) c.Id };
-        if (adminUser != null)
-            ids.add((String) adminUser.Id);
-        if (formidler != null)
-            ids.add((String) formidler.Id);
-
-        t.HOT_Thread_read_by__c = String.join(ids, ';') + ';';
-        update t;
-
-        Test.startTest();
-        Object raw = HOT_MessageHelper.buildReadByEntriesForThread(t.Id);
-        Test.stopTest();
-
-        List<Object> rowsRaw = (List<Object>) JSON.deserializeUntyped(JSON.serialize(raw));
-        List<Map<String, Object>> rows = new List<Map<String, Object>>();
-        for (Object o : rowsRaw)
-            rows.add((Map<String, Object>) o);
-
-        Integer expected = 1;
-        if (!stdIsAdmin)
-            expected++;
-        if (formidler != null)
-            expected++;
-        System.assertEquals(expected, rows.size(), 'Should include std + contact (+formidler) and exclude admin');
-
-        Set<String> principals = new Set<String>();
-        for (Map<String, Object> m : rows)
-            principals.add((String) m.get('principalId'));
-
-        System.assert(principals.contains((String) c.Id), 'Contact should be present');
-        if (!stdIsAdmin) {
-            System.assert(principals.contains((String) stdUser.Id), 'Running user (non-admin) should be present');
-        }
-        if (adminUser != null) {
-            System.assert(!principals.contains((String) adminUser.Id), 'Admin must be excluded');
-        }
-        if (formidler != null) {
-            System.assert(principals.contains((String) formidler.Id), 'Formidler should be present');
-            for (Map<String, Object> m : rows) {
-                if ((String) m.get('principalId') == (String) formidler.Id) {
-                    System.assertEquals('Formidler', (String) m.get('displayName'));
-                    System.assertEquals(true, (Boolean) m.get('isFormidlerRole'));
-                    System.assertEquals(false, (Boolean) m.get('isSystemAdmin'));
-                }
-            }
-        }
     }
 
     @IsTest

@@ -47,6 +47,11 @@ export default class Hot_backButton extends NavigationMixin(LightningElement) {
             // Handle navigation based on URL search params
             const fromParam = searchParams.get('from');
             if (fromParam) {
+                const varsel = ['mine-varsler'];
+                if (varsel.includes(fromParam)) {
+                    this.navigateHome();
+                }
+
                 // If fromParam matches known pages
                 const knownPages = ['mine-samtaler-frilanstolk', 'mine-samtaler', 'mine-oppdrag'];
                 if (knownPages.includes(fromParam)) {
