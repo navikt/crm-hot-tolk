@@ -4,30 +4,39 @@ public without sharing class HOT_MessageHandler extends MyTriggers {
         List<Id> threadIdsToNotifyUserOnNewMessage = new List<Id>();
         List<Id> threadIdsToNotifyInterpretersOnNewMessage = new List<Id>();
 
+        Set<String> threadType = new Set<String>{
+            'HOT_BRUKER-FORMIDLER',
+            'HOT_BESTILLER-FORMIDLER',
+            'HOT_TOLK-RESSURSKONTOR',
+            'HOT_TOLK-FORMIDLER'
+        };
+
         for (Message__c message : (List<Message__c>) records) {
-            if (
-                message.CRM_Thread_Type__c == 'HOT_BRUKER-FORMIDLER' ||
-                message.CRM_Thread_Type__c == 'HOT_BESTILLER-FORMIDLER' ||
-                message.CRM_Thread_Type__c == 'HOT_TOLK-RESSURSKONTOR' ||
-                message.CRM_Thread_Type__c == 'HOT_TOLK-FORMIDLER'
-            ) {
-                if (message.HOT_User_Role__c != null && !message.HOT_User_Role__c.contains(', Formidler')) {
+            String type = message.CRM_Thread_Type__c;
+            String role = message.HOT_User_Role__c;
+
+            if (threadType.contains(type)) {
+                if (role != null && !role.contains(', Formidler')) {
                     threadIdsToNotifyDispatcherOnNewMessage.add(message.CRM_Thread__c);
                 } else {
-                    if (message.CRM_Thread_Type__c != 'HOT_TOLK-FORMIDLER') {
+                    if (type == 'HOT_TOLK-FORMIDLER') {
+                        threadIdsToNotifyInterpretersOnNewMessage.add(message.CRM_Thread__c);
+                    } else {
                         threadIdsToNotifyUserOnNewMessage.add(message.CRM_Thread__c);
                     }
-                    if (message.CRM_Thread_Type__c == 'HOT_TOLK-FORMIDLER') {
+                }
+            } else {
+                switch on type {
+                    when 'HOT_TOLK-TOLK' {
                         threadIdsToNotifyInterpretersOnNewMessage.add(message.CRM_Thread__c);
                     }
+                    when 'HOT_BRUKER-TOLK' {
+                        threadIdsToNotifyInterpretersOnNewMessage.add(message.CRM_Thread__c);
+                        if (role != null && !role.contains(', Tolkebruker')) {
+                            threadIdsToNotifyUserOnNewMessage.add(message.CRM_Thread__c);
+                        }
+                    }
                 }
-            }
-            if (message.CRM_Thread_Type__c == 'HOT_TOLK-TOLK') {
-                threadIdsToNotifyInterpretersOnNewMessage.add(message.CRM_Thread__c);
-            }
-            if (message.CRM_Thread_Type__c == 'HOT_BRUKER-TOLK') {
-                threadIdsToNotifyUserOnNewMessage.add(message.CRM_Thread__c);
-                threadIdsToNotifyInterpretersOnNewMessage.add(message.CRM_Thread__c);
             }
         }
 

@@ -167,7 +167,9 @@
                     Sender bestilling...
                 </h2>
                 <br />
-                <div if:true={spin} class="loader" style="display: flex; justify-content: center"></div>
+                <div if:true={spin} style="display: flex; justify-content: center">
+                    <c-hot_loader size="3xlarge" variant="interaction"></c-hot_loader>
+                </div>
                 <br />
             </div>
         </div>
