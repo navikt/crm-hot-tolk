@@ -11,10 +11,13 @@
 span {
     font-weight: normal;
 }
-
-.hidden {
-    display: none;
+.loader-container {
+    display: flex;
+    justify-content: center;
+    align-items: flex-start;
+    padding-top: 5rem;
 }
+
 lightning-button {
     display: flex;
     justify-content: center;

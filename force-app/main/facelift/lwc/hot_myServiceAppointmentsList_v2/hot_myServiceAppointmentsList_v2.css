@@ -9,6 +9,12 @@
 span {
     font-weight: normal;
 }
+.loader-container {
+    display: flex;
+    justify-content: center;
+    align-items: flex-start;
+    padding-top: 5rem;
+}
 .button-container {
     display: inline-block;
     padding: 1vw 1vw 1vw 0;

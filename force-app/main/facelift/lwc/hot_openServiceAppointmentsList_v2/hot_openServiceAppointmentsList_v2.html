@@ -29,6 +29,11 @@
             <br />
         </div>
     </template>
+    <template lwc:if={dataLoader}>
+        <div class="loader-container">
+            <c-hot_loader size="3xlarge"></c-hot_loader>
+        </div>
+    </template>
 
     <div lwc:if={showSendInterest} class="meld-interesse-overlay">
         <div class="meld-interesse-content">
@@ -127,7 +132,9 @@
                             Melder interesse...
                         </h2>
                         <br />
-                        <div lwc:if={spin} class="loader"></div>
+                        <div lwc:if={spin}>
+                            <c-hot_loader size="3xlarge" variant="interaction"></c-hot_loader>
+                        </div>
                         <br />
                     </div>
 
