@@ -844,7 +844,7 @@ public without sharing class HOT_MessageHelper {
 
     public class ReadByEntry {
         @AuraEnabled
-        public Id principalId;
+        public Id threadId;
         @AuraEnabled
         public String displayName;
         @AuraEnabled
@@ -852,8 +852,8 @@ public without sharing class HOT_MessageHelper {
         @AuraEnabled
         public Boolean isFormidlerRole;
 
-        public ReadByEntry(Id principalId, String displayName, Boolean isSystemAdmin, Boolean isFormidlerRole) {
-            this.principalId = principalId;
+        public ReadByEntry(Id threadId, String displayName, Boolean isSystemAdmin, Boolean isFormidlerRole) {
+            this.threadId = threadId;
             this.displayName = displayName;
             this.isSystemAdmin = isSystemAdmin;
             this.isFormidlerRole = isFormidlerRole;
@@ -861,14 +861,14 @@ public without sharing class HOT_MessageHelper {
     }
 
     @AuraEnabled(cacheable=false)
-    public static List<ReadByEntry> resolveReadByEntries(List<Id> principalIds) {
+    public static List<ReadByEntry> resolveReadByEntries(List<Id> threadIds) {
         List<ReadByEntry> results = new List<ReadByEntry>();
-        if (principalIds == null || principalIds.isEmpty())
+        if (threadIds == null || threadIds.isEmpty())
             return results;
 
         Set<Id> userIdSet = new Set<Id>();
         Set<Id> contactIdSet = new Set<Id>();
-        for (Id pid : principalIds) {
+        for (Id pid : threadIds) {
             if (pid == null)
                 continue;
             String s = String.valueOf(pid);
