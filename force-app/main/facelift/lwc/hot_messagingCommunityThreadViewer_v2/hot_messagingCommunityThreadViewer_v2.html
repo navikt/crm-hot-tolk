@@ -1,6 +1,7 @@
 <template>
-    <template lwc:if={showContent}>
-        <div class="page-background">
+    <!-- <template lwc:if={showContent}> -->
+    <div class="page-background">
+        <template lwc:if={isContentReady}>
             <div class="header-content">
                 <div class="back-button-info">
                     <c-hot_back-button></c-hot_back-button>
@@ -23,9 +24,8 @@
                         button-label="Vis personer i samtalen"
                         type="button"
                         onbuttonclick={handleShowParticipants}
-                        desktop-style="background-color: #F2F3F5; color: #23262a; pointer-events: none;"
+                        desktop-style="background-color: #F2F3F5; color: #23262a;"
                         mobile-style="background-color: #F2F3F5; color: #23262a;"
-                        readonly
                     ></c-button>
                 </div>
 
@@ -35,6 +35,44 @@
                         <p class=""><strong>{amountOfParticipantsInThread}: </strong> {readByText}</p>
                     </template>
                 </div> -->
+
+                <!-- <div>
+                    <dialog
+                        class="modal-participants modal-container"
+                        aria-label="Informasjon om oppdrag"
+                        onclose={closeModal}
+                    >
+                        <div class="modal-header">
+                            <h2>{amountOfParticipantsInThread}:</h2>
+                            <button class="close-btn" onclick={closeModal} aria-label="Lukk">
+                                <img src={exitCrossIcon} alt="" aria-hidden="true" />
+                            </button>
+                        </div>
+                        <div class="modal-body">
+                            <p><span>{participantList}</span></p>
+                        </div>
+                    </dialog>
+                </div> -->
+
+                <div>
+                    <dialog
+                        class="modal-participants modal-container"
+                        aria-label="Informasjon om oppdrag"
+                        onclose={closeModal}
+                    >
+                        <div class="modal-header">
+                            <h2>{amountOfParticipantsInThread}:</h2>
+                            <button class="close-btn" onclick={closeModal} aria-label="Lukk">
+                                <img src={exitCrossIcon} alt="" aria-hidden="true" />
+                            </button>
+                        </div>
+                        <div class="modal-body">
+                            <template for:each={participantList} for:item="participant">
+                                <p class="participant-text" key={participant}>{participant}</p>
+                            </template>
+                        </div>
+                    </dialog>
+                </div>
 
                 <!-- Header -->
                 <div>
@@ -67,7 +105,11 @@
 
                 <!-- Show Service appointment modal -->
                 <template lwc:if={hasAccess}>
-                    <dialog class="modal-container" aria-label="Informasjon om oppdrag" onclose={closeModal}>
+                    <dialog
+                        class="modal-service-appointment modal-container"
+                        aria-label="Informasjon om oppdrag"
+                        onclose={closeModal}
+                    >
                         <div class="modal-header">
                             <h2>Informasjon om oppdraget:</h2>
                             <button class="close-btn" onclick={closeModal} aria-label="Lukk">
@@ -287,8 +329,8 @@
                     ></c-button>
                 </div>
             </div>
-        </div>
-    </template>
+        </template>
+    </div>
 
     <!-- User has no access to the thread -->
     <template lwc:if={showError}>

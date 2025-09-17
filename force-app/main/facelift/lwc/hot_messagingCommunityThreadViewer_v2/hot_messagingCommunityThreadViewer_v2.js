@@ -210,6 +210,10 @@ export default class Hot_messagingCommunityThreadViewer_v2 extends NavigationMix
         return this.showReadBy ? this.readByText : '';
     }
 
+    get isContentReady() {
+        return this.showContent && this._threadWire?.data && this._mySendForSplitting?.data && this.userContactId;
+    }
+
     // Calls apex and extracts messages related to this record
     @wire(getmessages, { threadId: '$recordId' })
     wireMessages(result) {
@@ -262,11 +266,31 @@ export default class Hot_messagingCommunityThreadViewer_v2 extends NavigationMix
             .map((name) => name.trim())
             .filter((name) => name).length;
 
-        return `${count} personer i denne samtalen`;
+        return count === 1 ? `1 person i denne samtalen` : `${count} personer i denne samtalen`;
+    }
+
+    // get participantList() {
+    //     if (!this.readByText) {
+    //         return '';
+    //     }
+
+    //     return this.readByText
+    //         .split(',')
+    //         .map((name) => name.trim())
+    //         .filter((name) => name)
+    //         .join('\n');
+    // }
+
+    get participantList() {
+        if (!this.readByText) return [];
+        return this.readByText
+            .split(',')
+            .map((name) => name.trim())
+            .filter((name) => name);
     }
 
     scrollToLatestMessage() {
-        const messageContainers = this.template.querySelectorAll('c-hot_messaging-Community-Message-Container');
+        const messageContainers = this.template.querySelectorAll('c-hot_messaging-Community-Message-Container_v2');
 
         if (messageContainers && messageContainers.length > 0) {
             const lastMessage = messageContainers[messageContainers.length - 1];
@@ -295,6 +319,7 @@ export default class Hot_messagingCommunityThreadViewer_v2 extends NavigationMix
             this.readByText = labels.join(', ');
             this.showReadBy = labels.length > 0;
             this.showParticipants = this.showReadBy;
+            this.showParticipantsModalDetails();
         } catch (error) {
             console.error('Error fetching participants on button click:', error);
             this.showReadBy = false;
@@ -303,8 +328,11 @@ export default class Hot_messagingCommunityThreadViewer_v2 extends NavigationMix
     }
 
     closeModal() {
-        const dialog = this.template.querySelector('dialog');
-        dialog.close();
+        const dialogModalSA = this.template.querySelector('.modal-service-appointment');
+        dialogModalSA.close();
+
+        const dialogParticipants = this.template.querySelector('.modal-participants');
+        dialogParticipants.close();
 
         this.isDetails = false;
         this.isIRDetails = false;
@@ -321,8 +349,14 @@ export default class Hot_messagingCommunityThreadViewer_v2 extends NavigationMix
         });
     }
 
+    showParticipantsModalDetails() {
+        const dialog = this.template.querySelector('.modal-participants');
+        dialog.showModal();
+        dialog.focus();
+    }
+
     showServiceAppointmentDetails() {
-        const dialog = this.template.querySelector('dialog');
+        const dialog = this.template.querySelector('.modal-service-appointment');
         dialog.showModal();
         dialog.focus();
     }

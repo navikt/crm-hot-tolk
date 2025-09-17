@@ -60,6 +60,11 @@
     margin: auto;
 }
 
+.participant-text {
+    font-weight: normal !important;
+    font-size: 1.25rem;
+}
+
 .main-content {
     border-radius: 0.5rem;
     display: flex;
