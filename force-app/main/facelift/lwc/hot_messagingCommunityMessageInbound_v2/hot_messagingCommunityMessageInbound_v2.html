@@ -1,0 +1,32 @@
+<template>
+    <article role="article">
+        <div class="body-wrapper">
+            <div class="snakkeboble snakkeboble--venstre">
+                <lightning-layout class="slds-m-top_x-small slds-p-top_small layout-container" multiple-rows="false">
+                    <lightning-layout-item
+                        padding="horizontalSmall"
+                        size="10"
+                        small-device-size="11"
+                        flexibility="auto"
+                    >
+                        <div class="panel snakkeboble-panel">
+                            <div class="snakkeboble-panel__tekst" aria-label="Melding fra NAV ansatt">
+                                <h2 class="message-from inline-block">{message.HOT_User_Role__c}</h2>
+                                <div class="datewrapper inline-block">
+                                    <c-hot_nav-formatted-date
+                                        date={message.CRM_Sent_date__c}
+                                        class="timestamp inline-block"
+                                    ></c-hot_nav-formatted-date>
+                                </div>
+                            </div>
+                            <lightning-formatted-rich-text
+                                value={message.CRM_Message_Text__c}
+                                class="linebreaks message-text"
+                            ></lightning-formatted-rich-text>
+                        </div>
+                    </lightning-layout-item>
+                </lightning-layout>
+            </div>
+        </div>
+    </article>
+</template>
