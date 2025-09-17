@@ -23,17 +23,18 @@
                         button-label="Vis personer i samtalen"
                         type="button"
                         onbuttonclick={handleShowParticipants}
-                        desktop-style="background-color: #F2F3F5; color: #23262a;"
+                        desktop-style="background-color: #F2F3F5; color: #23262a; pointer-events: none;"
                         mobile-style="background-color: #F2F3F5; color: #23262a;"
+                        readonly
                     ></c-button>
                 </div>
 
                 <!-- TODO: Create a modal that will show participants-->
-                <div>
+                <!-- <div>
                     <template lwc:if={showParticipants}>
                         <p class=""><strong>{amountOfParticipantsInThread}: </strong> {readByText}</p>
                     </template>
-                </div>
+                </div> -->
 
                 <!-- Header -->
                 <div>
@@ -243,12 +244,18 @@
                 <div class="thread-container">
                     <div class="thread-dialog">
                         <template for:each={messages} for:item="message">
-                            <c-hot_messaging-Community-Message-Container
+                            <!-- <c-hot_messaging-Community-Message-Container
                                 tabindex="0"
                                 message={message}
                                 user-contact-id={userContactId}
                                 key={message.Id}
-                            ></c-hot_messaging-Community-Message-Container>
+                            ></c-hot_messaging-Community-Message-Container> -->
+                            <c-hot_messaging-community-message-container_v2
+                                tabindex="0"
+                                message={message}
+                                user-contact-id={userContactId}
+                                key={message.Id}
+                            ></c-hot_messaging-community-message-container_v2>
                         </template>
                     </div>
 
