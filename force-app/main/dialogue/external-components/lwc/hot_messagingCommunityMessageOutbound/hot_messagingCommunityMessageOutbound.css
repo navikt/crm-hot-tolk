@@ -12,15 +12,11 @@
     display: contents;
 }
 .snakkeboble-panel {
-    max-width: 75%;
-    width: 75%;
+    max-width: 80%;
     float: right;
-    /* background-color: #cce1ff !important; */
-    /* min-width: fit-content; */
-    padding: 1rem;
-
     background-color: #cce1ff !important;
-    border-radius: 0.5rem;
+    min-width: fit-content;
+    padding: 1rem;
 }
 .Person-Icon {
     height: 3em;
@@ -32,7 +28,7 @@
 }
 .datewrapper {
     width: fit-content;
-    font-size: 1.125rem;
+    font-size: 0.8em;
 }
 .hide-element {
     border: 0;
@@ -64,13 +60,5 @@
 @media (max-width: 576px) {
     .iconholder {
         display: none;
-    }
-
-    .snakkeboble-panel {
-        max-width: 100%;
-        width: 100%;
-
-        background-color: #cce1ff !important;
-        border-radius: 0.5rem;
     }
 }

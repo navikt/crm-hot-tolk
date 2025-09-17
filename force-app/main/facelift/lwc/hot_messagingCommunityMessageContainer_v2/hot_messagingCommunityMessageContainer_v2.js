@@ -1,4 +1,5 @@
 import { LightningElement, api } from 'lwc';
+import uId from '@salesforce/user/Id';
 
 export default class Hot_messagingCommunityMessageContainer_v2 extends LightningElement {
     @api message;

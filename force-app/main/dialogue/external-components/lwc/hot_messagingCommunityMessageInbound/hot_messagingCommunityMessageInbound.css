@@ -11,13 +11,9 @@
 .snakkeboble-panel {
     display: block;
     max-width: 80%;
-    width: 80%;
-    /* min-width: fit-content; */
-    /* background-color: white; */
+    min-width: fit-content;
+    background-color: white;
     padding: 1rem;
-
-    background-color: #f2f3f5;
-    border-radius: 0.5rem;
 }
 .ikon {
     display: block;
@@ -40,7 +36,7 @@
 
 .datewrapper {
     width: fit-content;
-    font-size: 1.125rem;
+    font-size: 0.8em;
 }
 
 .tind-Icon {
@@ -61,11 +57,6 @@
 }
 
 @media (max-width: 576px) {
-    .snakkeboble-panel {
-        display: block;
-        max-width: 100%;
-        width: 100%;
-    }
     .iconholder {
         display: none;
     }
