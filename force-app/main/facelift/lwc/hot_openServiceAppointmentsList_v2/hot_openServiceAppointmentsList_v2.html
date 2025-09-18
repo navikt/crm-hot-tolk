@@ -50,7 +50,7 @@
         </div>
     </div>
     <!-- MODALER -->
-    <dialog class="modal-container" aria-label="Informasjon om oppdrag" onclose={closeModal}>
+    <dialog class="modal-container" aria-label="Informasjon om oppdrag" aria-modal="true" onclose={closeModal}>
         <!-- MODAL SOM VISES NÅR MAN TRYKKER MELD INTERESSE-->
         <div lwc:if={showCommentsModal}>
             <div class="modal-header" lwc:if={showModalHeader}>

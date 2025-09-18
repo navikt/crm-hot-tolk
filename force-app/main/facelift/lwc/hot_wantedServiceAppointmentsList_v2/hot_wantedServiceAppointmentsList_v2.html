@@ -22,7 +22,7 @@
         <p>Det er ingen oppdrag her</p>
     </div>
 
-    <dialog class="modal-container" aria-label="Informasjon om oppdrag" onclose={closeModal}>
+    <dialog class="modal-container" aria-label="Informasjon om oppdrag" aria-modal="true" onclose={closeModal}>
         <div class="modal-header" lwc:if={showModalHeader}>
             <h2>Informasjon om oppdraget:</h2>
             <button class="close-btn" onclick={closeModal} aria-label="Lukk">
@@ -44,6 +44,7 @@
             <p>Frist dato: <span>{serviceAppointment.HOT_DeadlineDate__c}</span></p>
             <br />
             <p>Du er ønsket til dette oppdraget.</p>
+
             <div style="display: inline-block; padding-bottom: 1vw; padding-top: 1vw">
                 <c-button
                     button-styling="primary"

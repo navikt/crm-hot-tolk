@@ -32,7 +32,7 @@
         </div>
     </template>
     <!-- MODAL SOM VISES NÅR MAN TRYKKER PÅ OPPDRAG OG KOMMER FRA VARSEL-->
-    <dialog class="modal-container" aria-label="Informasjon om oppdrag" onclose={closeModal}>
+    <dialog class="modal-container" aria-label="Informasjon om oppdrag" aria-modal="true" onclose={closeModal}>
         <div class="modal-header">
             <h2>Informasjon om oppdraget:</h2>
             <button class="close-btn" onclick={closeModal} aria-label="Lukk">
