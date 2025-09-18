@@ -178,12 +178,12 @@ export default class Hot_messagingCommunityThreadViewer_v2 extends NavigationMix
             for (const e of entries || []) {
                 if (!e) continue;
 
-                if (e.principalId && (e.principalId === this.userContactId || e.principalId === USER_ID)) {
+                if (e.threadId && (e.threadId === this.userContactId || e.threadId === USER_ID)) {
                     continue;
                 }
                 if (
-                    e.principalId &&
-                    (e.principalId === this.latestSenderContactId || e.principalId === this.latestSenderUserId)
+                    e.threadId &&
+                    (e.threadId === this.latestSenderContactId || e.threadId === this.latestSenderUserId)
                 ) {
                     continue;
                 }
