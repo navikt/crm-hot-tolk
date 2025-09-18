@@ -43,26 +43,24 @@
             <div class="modal-body">
                 <div lwc:if={isDetails}>
                     <div>
-                        <p>Oppdrag: <span>{appointmentNumber}</span></p>
-                        <p>Tema: <span>{subject}</span></p>
-                        <p>Tid: <span>{time}</span></p>
-                        <p>Adresse: <span>{address}</span></p>
-                        <p>Tolkemetode: <span>{workType}</span></p>
-                        <p>Oppdragstype: <span>{assignmentType}</span></p>
-                        <p>Status: <span>{status}</span></p>
-                        <p>Antall påmeldte: <span>{numberOfResources}</span></p>
-                        <p>Frigitt dato: <span>{releaseDate}</span></p>
-                        <p>Frigitt av: <span>{releasedBy}</span></p>
-                        <p>Frist dato: <span>{deadline}</span></p>
-                        <p>Annen betaler: <span>{isOtherProvider}</span></p>
-                        <p>Region: <span>{region}</span></p>
-                        <p>Eier: <span>{ownerName}</span></p>
-                        <template lwc:if={canceledDate}>
-                            <p>Avlyst dato: <span>{canceledDate}</span></p>
-                        </template>
-                        <template lwc:if={terms}>
-                            <p>Avtalte betingelser: <span>{terms}</span></p>
-                        </template>
+                        <p><strong>Oppdrag:</strong> {appointmentNumber}</p>
+                        <p><strong>Tema:</strong> {subject}</p>
+                        <p><strong>Tid:</strong> {time}</p>
+                        <p><strong>Adresse:</strong> {address}</p>
+                        <p><strong>Tolkemetode:</strong> {workType}</p>
+                        <p><strong>Oppdragstype:</strong> {assignmentType}</p>
+                        <p><strong>Status:</strong> {status}</p>
+                        <p><strong>Antall påmeldte:</strong> {numberOfResources}</p>
+                        <p><strong>Frigitt dato:</strong> {releaseDate}</p>
+                        <p><strong>Frigitt av:</strong> {releasedBy}</p>
+                        <p><strong>Frist dato:</strong> {deadline}</p>
+                        <p><strong>Annen betaler:</strong> {isOtherProvider}</p>
+                        <p><strong>Region:</strong> {region}</p>
+                        <p><strong>Eier:</strong> {ownerName}</p>
+
+                        <p lwc:if={canceledDate}><strong>Avlyst dato:</strong> {canceledDate}</p>
+
+                        <p lwc:if={terms}><strong>Avtalte betingelser:</strong> {terms}</p>
                     </div>
 
                     <div style="display: inline-block; padding-right: 1vw; padding-bottom: 1vw; padding-top: 1vw">
