@@ -10,7 +10,7 @@
     </template>
 
     <template lwc:elseif={noWageClaimsResult}>
-        <div style="text-align: center">
+        <div style="text-align: center" aria-live="polite">
             <br />
             <p>Du har ingen ledig på lønn oppdrag.</p>
             <br />
@@ -22,7 +22,7 @@
         </div>
     </template>
     <template lwc:elseif={noFilteredRecordsResult}>
-        <div style="text-align: center">
+        <div style="text-align: center" aria-live="polite">
             <br />
             <p>
                 Det finnes ingen ledig på lønn oppdrag med denne filtreringen. Du kan endre filteret for å se andre

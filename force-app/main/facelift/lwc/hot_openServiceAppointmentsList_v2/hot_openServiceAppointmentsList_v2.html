@@ -15,7 +15,7 @@
     </template>
 
     <template lwc:elseif={noServiceAppointmentsResult}>
-        <div style="text-align: center">
+        <div style="text-align: center" aria-live="polite">
             <br />
             <p>Det er ingen ledige oppdrag.</p>
             <br />
@@ -23,7 +23,7 @@
     </template>
 
     <template lwc:elseif={noFilteredRecordsResult}>
-        <div style="text-align: center">
+        <div style="text-align: center" aria-live="polite">
             <br />
             <p>Det er ingen oppdrag med denne filtreringen. Du kan endre filteret for å se andre oppdrag</p>
             <br />
