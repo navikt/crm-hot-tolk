@@ -63,6 +63,15 @@ public class HOT_TestDataFactory {
         return serviceAppointment;
     }
 
+    public static ServiceAppointment createSchedulableSA(WorkOrderLineItem woli, ServiceTerritory st) {
+        ServiceAppointment sa = createServiceAppointment(woli);
+        sa.ServiceTerritoryId = st.Id;
+        sa.SchedStartTime = sa.EarliestStartTime;
+        sa.SchedEndTime = sa.DueDate;
+        sa.Status = 'Scheduled'; // avoid Dispatched to keep managed flows quiet
+        return sa; // remember to INSERT in the test
+    }
+
     public static WorkType createWorkType() {
         return createWorkType('workTypeName');
     }
@@ -437,5 +446,36 @@ public class HOT_TestDataFactory {
         if (doInsert)
             insert users;
         return users;
+    }
+
+    // Call this before createServiceResource(userId) in tests that use a new user
+    public static void ensureFieldServicePermission(User u) {
+        List<PermissionSet> psets = [
+            SELECT Id
+            FROM PermissionSet
+            WHERE
+                Name IN ('Field_Service_Standard', 'Field_Service_Mobile', 'Field_Service_Dispatcher')
+                OR Label LIKE 'Field Service%'
+            LIMIT 1
+        ];
+        if (!psets.isEmpty()) {
+            insert new PermissionSetAssignment(AssigneeId = u.Id, PermissionSetId = psets[0].Id);
+        }
+    }
+
+    // Creates an ACTIVE ST and membership for the given SR. Returns the ST.
+    public static ServiceTerritory ensureActiveTerritoryWithMember(ServiceResource sr) {
+        OperatingHours oh = ([SELECT Id FROM OperatingHours LIMIT 1].isEmpty())
+            ? (insertAndReturn(createOperatingHours()))
+            : [SELECT Id FROM OperatingHours LIMIT 1];
+        ServiceTerritory st = new ServiceTerritory(OperatingHoursId = oh.Id, IsActive = true, Name = 'TS_ST');
+        insert st;
+        insert createServiceTerritoryMember(sr, st);
+        return st;
+    }
+
+    private static OperatingHours insertAndReturn(OperatingHours oh) {
+        insert oh;
+        return oh;
     }
 }
