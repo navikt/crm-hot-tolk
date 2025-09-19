@@ -300,6 +300,11 @@ public without sharing class HOT_ServiceAppointmentHandler extends MyTriggers {
                 serviceAppointment.Status == 'Annul' || serviceAppointment.Status == 'Cannot Complete'
             ) {
                 retractedServiceAppointments.add(serviceAppointment);
+                if (serviceAppointment.SchedEndTime >= System.today()) {
+                    HOT_InterpreterOnWorkOrderService.setInterpreterOnWorkOrderFromServiceAppointment(
+                        new Set<Id>{ serviceAppointment.Id }
+                    );
+                }
             }
             if (
                 serviceAppointment.HOT_AddressFormated__c !=
