@@ -5,11 +5,18 @@ export default class Hot_threadListFilterButtons extends LightningElement {
     activeTab = 'all';
 
     get threadFilterButtonType() {
-        if (this.isFreelanceView) {
-            return this.freelanceThreadsFilterButtons;
-        } else {
-            return this.userThreadsFilterButtons;
-        }
+        const active = this.activeTab;
+        const buttons = this.isFreelanceView ? this.freelanceThreadsFilterButtons : this.userThreadsFilterButtons;
+
+        return buttons.map((btn) => {
+            return {
+                ...btn,
+                ariaSelected: btn.value === active ? 'true' : 'false',
+                ariaControls: 'tabpanel-' + btn.value,
+                ariaId: 'tab-' + btn.value,
+                ariaLabel: 'Vis samtaler ' + btn.label.toLowerCase()
+            };
+        });
     }
 
     freelanceThreadsFilterButtons = [

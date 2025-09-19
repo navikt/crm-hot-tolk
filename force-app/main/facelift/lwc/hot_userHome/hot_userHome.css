@@ -6,6 +6,10 @@
     padding-bottom: 6vh;
     font-family: 'Source Sans 3', 'Source Sans Pro', Arial, sans-serif;
 }
+.boxLabel,
+.boxDescription {
+    display: block;
+}
 
 .spacer {
     height: 1rem;

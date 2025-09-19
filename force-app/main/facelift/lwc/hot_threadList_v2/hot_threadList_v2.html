@@ -34,7 +34,7 @@
                         <p class="left-text"></p>
                         <p lwc:if={hasThreads} class="right-text">Siste melding sendt</p>
                     </div>
-                    <div lwc:if={noTreads} class="noThreads">
+                    <div lwc:if={noTreads} class="noThreads" aria-live="polite">
                         <p>Ingen samtaler</p>
                     </div>
                     <template for:each={sortedThreads} for:item="thread">

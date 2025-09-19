@@ -1,0 +1,74 @@
+.body-wrapper {
+    float: none;
+}
+.message-text {
+    font-size: 18px;
+    font-family: 'Source Sans Pro', Arial, sans-serif;
+}
+.snakkeboble {
+}
+.snakkeboble--hoyre {
+    float: right;
+    display: contents;
+}
+.snakkeboble-panel {
+    max-width: 75%;
+    width: 75%;
+    float: right;
+    padding: 1rem;
+
+    background-color: #cce1ff !important;
+    border-radius: 0.5rem;
+}
+.Person-Icon {
+    height: 3em;
+    margin-top: 1em;
+    margin-left: 0.5em;
+}
+.iconholder {
+    align-content: center;
+}
+.datewrapper {
+    width: fit-content;
+    font-size: 1.125rem;
+}
+.hide-element {
+    border: 0;
+    clip: rect(1px 1px 1px 1px);
+    height: 1px;
+    margin: -1px;
+    overflow: hidden;
+    padding: 0;
+    position: absolute;
+    width: 1px;
+}
+
+.linebreaks {
+    white-space: pre-wrap;
+    word-break: break-word;
+}
+
+.message-from {
+    margin-right: 0.5em;
+    font-weight: bolder;
+    display: inline;
+}
+
+.layout-container {
+    display: flex;
+    justify-content: flex-end;
+}
+
+@media (max-width: 576px) {
+    .iconholder {
+        display: none;
+    }
+
+    .snakkeboble-panel {
+        max-width: 100%;
+        width: 100%;
+
+        background-color: #cce1ff !important;
+        border-radius: 0.5rem;
+    }
+}
