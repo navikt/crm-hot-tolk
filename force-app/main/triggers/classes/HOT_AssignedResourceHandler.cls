@@ -130,16 +130,14 @@ public without sharing class HOT_AssignedResourceHandler extends MyTriggers {
                 AND ServiceAppointment__c IN :potentialSAWithThreadsIds
         ];
         if (potentialIRWithThreads.size() != 0) {
-            Map<Id, HOT_InterestedResource__c> threadMap = new Map<Id, HOT_InterestedResource__c>();
-            Set<Id> potentialIRWithThreadsIds = new Set<Id>();
-            for (HOT_InterestedResource__c ir : potentialIRWithThreads) {
-                potentialIRWithThreadsIds.add(ir.Id);
-                threadMap.put(ir.Id, ir);
-            }
+            Map<Id, HOT_InterestedResource__c> threadMap = new Map<Id, HOT_InterestedResource__c>(
+                potentialIRWithThreads
+            );
+
             List<Thread__c> threadsToTransfer = [
                 SELECT Id, CRM_Related_Object__c
                 FROM Thread__c
-                WHERE CRM_Related_Object__c IN :potentialIRWithThreadsIds
+                WHERE CRM_Related_Object__c IN :threadMap.keySet()
             ];
 
             for (Thread__c threads : threadsToTransfer) {

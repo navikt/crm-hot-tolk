@@ -89,7 +89,7 @@ public without sharing class HOT_Utility {
 
         //Metode 1
         List<HOT_Request__c> requests = [
-            SELECT Id, OrdererEmail__c, OrdererPhone__c, CreatedDate
+            SELECT Id, OrdererEmail__c, OrdererPhone__c
             FROM HOT_Request__c
             WHERE Orderer__c = :user.AccountId AND OrdererEmail__c != '' AND OrdererPhone__c != ''
             ORDER BY CreatedDate DESC
