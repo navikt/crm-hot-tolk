@@ -100,21 +100,20 @@ export default class LibsFullCalendarV2 extends NavigationMixin(LightningElement
             this.updatePseudoEventsDisplay(this.calendar.view);
         });
 
-        /* Testing  */
-        if (this.type == 'WC') {
-            this.isLoading = true;
-            if (this.fromUrlRedirect == true) {
-                this.goToRecordDetailsWCFromId(this.recordId);
-            } else if (this.fromUrlRedirect == false) {
-                this.goToRecordDetailsWC(this.recordId, this.records);
-            }
-        } else if (this.type == 'SA') {
-            if (this.fromUrlRedirect == true) {
-                this.goToRecordDetailsSAFromId(this.recordId);
-            } else if (this.fromUrlRedirect == false) {
-                this.goToRecordDetailsSA(this.recordId, this.records);
-            }
-        }
+        // if (this.type == 'WC') {
+        //     this.isLoading = true;
+        //     if (this.fromUrlRedirect == true) {
+        //         this.goToRecordDetailsWCFromId(this.recordId);
+        //     } else if (this.fromUrlRedirect == false) {
+        //         this.goToRecordDetailsWC(this.recordId, this.records);
+        //     }
+        // } else if (this.type == 'SA') {
+        //     if (this.fromUrlRedirect == true) {
+        //         this.goToRecordDetailsSAFromId(this.recordId);
+        //     } else if (this.fromUrlRedirect == false) {
+        //         this.goToRecordDetailsSA(this.recordId, this.records);
+        //     }
+        // }
     }
 
     disconnectedCallback() {
@@ -472,41 +471,6 @@ export default class LibsFullCalendarV2 extends NavigationMixin(LightningElement
     isInformationModalOpen = false;
     modalRecordId;
     modalType;
-
-    // async navigateToDetailView(event) {
-    //     const props = event.extendedProps;
-
-    //     // Clear previous modal data
-    //     this.serviceAppointment = null;
-    //     this.accountPhoneNumber = '';
-    //     this.accountName = '';
-    //     this.accountAgeGender = '';
-    //     this.ownerName = '';
-    //     this.ordererPhoneNumber = '';
-    //     this.interestedResource = null;
-    //     this.termsOfAgreement = null;
-    //     this.wageClaim = null;
-    //     this.isSADetails = false;
-    //     this.isWCDetails = false;
-    //     this.hasAccess = false;
-
-    //     switch (props.type) {
-    //         case 'COMPLETED_SERVICE_APPOINTMENT':
-    //         case 'SERVICE_APPOINTMENT':
-    //             this.showInformationModalDetails(props.recordId, 'SA');
-    //             this.loadServiceAppointment(props.recordId, true);
-    //             break;
-
-    //         case 'OPEN_WAGE_CLAIM':
-    //             this.showInformationModalDetails(props.recordId, 'WC');
-    //             this.loadWageClaim(props.recordId, true);
-    //             break;
-
-    //         case 'RESOURCE_ABSENCE':
-    //             this.openAbsenceModal(event);
-    //             break;
-    //     }
-    // }
 
     async navigateToDetailView(event) {
         const props = event.extendedProps;
@@ -964,13 +928,11 @@ export default class LibsFullCalendarV2 extends NavigationMixin(LightningElement
             if (result != '') {
                 this.saThreadId = result;
                 this.navigateToThread(this.saThreadId);
-                // this.close();
             } else {
                 createThreadInterpreter({ recordId: this.serviceAppointment.Id })
                     .then((result) => {
                         this.saThreadId = result;
                         this.navigateToThread(result.Id);
-                        // this.close();
                     })
                     .catch((error) => {
                         const result = HOT_ConfirmationModal.open({
@@ -1008,12 +970,10 @@ export default class LibsFullCalendarV2 extends NavigationMixin(LightningElement
             if (result != '') {
                 this.threadId = result;
                 this.navigateToThread(this.threadId);
-                // this.close();
             } else {
                 createThread({ recordId: this.wageClaim.Id, accountId: this.wageClaim.ServiceResource__r.AccountId })
                     .then((result) => {
                         this.navigateToThread(result.Id);
-                        // this.close();
                     })
                     .catch((error) => {
                         const result = HOT_ConfirmationModal.open({
@@ -1033,13 +993,11 @@ export default class LibsFullCalendarV2 extends NavigationMixin(LightningElement
             if (result != '') {
                 this.saFreelanceThreadId = result;
                 this.navigateToThread(this.saFreelanceThreadId);
-                // this.close();
             } else {
                 createThread({ recordId: this.serviceAppointment.Id, accountId: this.serviceAppointment.accountId })
                     .then((result) => {
                         this.navigateToThread(result.Id);
                         this.saFreelanceThreadId = result;
-                        // this.close();
                     })
                     .catch((error) => {
                         const result = HOT_ConfirmationModal.open({
@@ -1059,13 +1017,11 @@ export default class LibsFullCalendarV2 extends NavigationMixin(LightningElement
             if (result != '') {
                 this.saFreelanceThreadId = result;
                 this.navigateToThread(this.saFreelanceThreadId);
-                // this.close();
             } else {
                 createThreadInterpreters({ recordId: this.serviceAppointment.Id })
                     .then((result) => {
                         this.navigateToThread(result.Id);
                         this.saFreelanceThreadId = result;
-                        // this.close();
                     })
                     .catch((error) => {
                         const result = HOT_ConfirmationModal.open({
