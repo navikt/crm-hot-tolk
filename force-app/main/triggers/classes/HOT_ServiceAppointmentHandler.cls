@@ -300,6 +300,11 @@ public without sharing class HOT_ServiceAppointmentHandler extends MyTriggers {
                 serviceAppointment.Status == 'Annul' || serviceAppointment.Status == 'Cannot Complete'
             ) {
                 retractedServiceAppointments.add(serviceAppointment);
+                if (serviceAppointment.SchedEndTime >= System.today()) {
+                    HOT_InterpreterOnWorkOrderService.setInterpreterOnWorkOrderFromServiceAppointment(
+                        new Set<Id>{ serviceAppointment.Id }
+                    );
+                }
             }
             if (
                 serviceAppointment.HOT_AddressFormated__c !=
@@ -335,8 +340,7 @@ public without sharing class HOT_ServiceAppointmentHandler extends MyTriggers {
                 serviceAppointment.HOT_ServiceResource__c !=
                 triggerOldMap.get(serviceAppointment.Id).get('HOT_ServiceResource__c')) &&
                 (serviceAppointment.HOT_ServiceResource__c != null ||
-                triggerOldMap.get(serviceAppointment.Id).get('HOT_ServiceResource__c') != null ||
-                serviceAppointment.Status == 'Cannot Complete')
+                triggerOldMap.get(serviceAppointment.Id).get('HOT_ServiceResource__c') != null)
             ) {
                 serviceAppointmentWithNewAssignedResource.put(serviceAppointment.Id, serviceAppointment);
             }
