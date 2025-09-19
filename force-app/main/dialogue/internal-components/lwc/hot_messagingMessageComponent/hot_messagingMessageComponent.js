@@ -2,6 +2,9 @@ import { LightningElement, api, wire, track } from 'lwc';
 import getThreads from '@salesforce/apex/HOT_MessageHelper.getThreadsCollection';
 import createThread from '@salesforce/apex/HOT_MessageHelper.createThreadDispatcher';
 import markAsReadByNav from '@salesforce/apex/HOT_MessageHelper.markAsReadByNav';
+import markThreadAsRead from '@salesforce/apex/HOT_MessageHelper.markThreadAsRead';
+import markThreadAsReadEmployee from '@salesforce/apex/HOT_MessageHelper.markThreadAsReadEmployee';
+import getUserContactId from '@salesforce/apex/HOT_MessageHelper.getUserContactId';
 import getAccountOnThread from '@salesforce/apex/HOT_MessageHelper.getAccountOnThread';
 import getAccountOnRequest from '@salesforce/apex/HOT_MessageHelper.getAccountOnRequest';
 import getRequestInformation from '@salesforce/apex/HOT_MessageHelper.getRequestInformation';
@@ -40,6 +43,7 @@ export default class CrmMessagingMessageComponent extends LightningElement {
 
     @track showAccountName = false;
     @track accountName;
+    userContactId;
 
     @api recordId;
     @api singleThread;
@@ -47,6 +51,11 @@ export default class CrmMessagingMessageComponent extends LightningElement {
     @api englishTextTemplate;
     @api textTemplate;
     @api objectApiName;
+
+    @wire(getUserContactId)
+    wiredUserContactId({ data }) {
+        if (data) this.userContactId = data;
+    }
 
     @wire(getThreads, { recordId: '$recordId', singleThread: '$singleThread', type: '$messageType' }) //Calls apex and extracts messages related to this record
     wiredThreads(result) {
@@ -74,6 +83,17 @@ export default class CrmMessagingMessageComponent extends LightningElement {
                         .catch((error) => {});
                 }
             }
+
+            try {
+                (this.threads || []).forEach((t) => {
+                    if (!t?.Id) return;
+                    markAsReadByNav({ threadId: t.Id }).catch(() => {});
+                    markThreadAsReadEmployee({ threadId: t.Id }).catch(() => {});
+                    if (this.userContactId) {
+                        markThreadAsRead({ threadId: t.Id, userContactId: this.userContactId }).catch(() => {});
+                    }
+                });
+            } catch (e) {}
         }
     }
 
@@ -279,9 +299,6 @@ export default class CrmMessagingMessageComponent extends LightningElement {
     }
     connectedCallback() {
         this.setToRedactionFlow = false;
-        if (this.threads?.length > 0) {
-            markAsReadByNav({ threadId: this.threads[0]?.Id });
-        }
         getRequestInformation({ recordId: this.recordId })
             .then((result) => {
                 this.isRequestMessages = true;
