@@ -1,0 +1,254 @@
+<template>
+    <div class="full-card">
+        <div class="calendar-wrapper">
+            <div class="calendar" lwc:dom="manual"></div>
+            <lightning-spinner if:true={isLoading} alternative-text="Loading" size="large"></lightning-spinner>
+        </div>
+
+        <!-- Information modal -->
+        <div>
+            <dialog class="modal-information modal-container" aria-label="Informasjon om oppdrag" onclose={closeModal}>
+                <div class="modal-header">
+                    <template lwc:if={isInformationModalOpen}>
+                        <h2>Informasjon om oppdraget:</h2>
+                        <button class="close-btn" onclick={closeModal} aria-label="Lukk">
+                            <img src={exitCrossIcon} alt="" aria-hidden="true" />
+                        </button>
+                    </template>
+                </div>
+                <div class="modal-body">
+                    <!-- Service appointment details -->
+                    <template lwc:if={isInformationModalOpen}>
+                        <section lwc:if={isSADetails}>
+                            <template lwc:if={hasAccess}>
+                                <template lwc:if={serviceAppointment}>
+                                    <div>
+                                        <p>Oppdragsnummer: <span>{serviceAppointment.AppointmentNumber}</span></p>
+                                        <p>Tema: <span>{serviceAppointment.Subject}</span></p>
+                                        <p>
+                                            Tid:
+                                            <span
+                                                >{serviceAppointment.weekday} {serviceAppointment.StartAndEndDate}</span
+                                            >
+                                        </p>
+                                        <p lwc:if={serviceAppointment.HOT_AddressFormated__c}>
+                                            Adresse: <span>{serviceAppointment.HOT_AddressFormated__c}</span>
+                                        </p>
+                                        <div
+                                            lwc:if={serviceAppointment.HOT_AddressFormated__c}
+                                            style="display: inline-block; padding-right: 1vw"
+                                        >
+                                            <p>Åpne adressen i en karttjeneste (ekstern):</p>
+                                            <div
+                                                style="
+                                                    display: inline-block;
+                                                    padding-right: 1vw;
+                                                    padding-bottom: 1vw;
+                                                    padding-top: 1vw;
+                                                "
+                                            >
+                                                <c-button
+                                                    button-styling="secondary"
+                                                    button-label="Google maps"
+                                                    onbuttonclick={openGoogleMaps}
+                                                ></c-button>
+                                            </div>
+                                            <div
+                                                style="
+                                                    display: inline-block;
+                                                    padding-right: 1vw;
+                                                    padding-bottom: 1vw;
+                                                    padding-top: 1vw;
+                                                "
+                                            >
+                                                <c-button
+                                                    button-styling="secondary"
+                                                    button-label="Apple maps"
+                                                    onbuttonclick={openAppleMaps}
+                                                ></c-button>
+                                            </div>
+                                        </div>
+
+                                        <p lwc:if={serviceAppointment.ActualStartTime}>
+                                            Faktisk start: <span>{serviceAppointment.ActualStartTime}</span>
+                                        </p>
+                                        <p lwc:if={serviceAppointment.ActualEndTime}>
+                                            Faktisk slutt: <span>{serviceAppointment.ActualEndTime}</span>
+                                        </p>
+                                        <p lwc:if={accountName}>
+                                            Navn til bruker:&nbsp;
+                                            <span> {accountName} ({accountAgeGender})</span>
+                                        </p>
+                                        <p lwc:if={accountPhoneNumber}>
+                                            Telefonnummer til bruker:&nbsp;
+                                            <span>{accountPhoneNumber}</span>
+                                        </p>
+                                        <p>Tolkemetode: <span>{serviceAppointment.HOT_WorkTypeName__c}</span></p>
+                                        <p>Oppdragstype: <span>{serviceAppointment.HOT_AssignmentType__c}</span></p>
+                                        <p lwc:if={ownerName}>Eier: <span>{ownerName}</span></p>
+
+                                        <p>Status: <span>{serviceAppointment.Status}</span></p>
+                                        <p>Region: <span>{serviceAppointment.HOT_ServiceTerritoryName__c}</span></p>
+                                        <p>
+                                            Haptisk kommunikasjon:
+                                            <span>{serviceAppointment.HOT_HapticCommunication__c}</span>
+                                        </p>
+                                        <p lwc:if={serviceAppointment.HOT_Escort__c}>
+                                            Ledsaging: <span>{serviceAppointment.HOT_Escort__c}</span>
+                                        </p>
+                                        <p></p>
+                                        <p lwc:if={serviceAppointment.HOT_DegreeOfHearingAndVisualImpairment__c}>
+                                            Vedtak:
+                                            <span>{serviceAppointment.HOT_DegreeOfHearingAndVisualImpairment__c}</span>
+                                        </p>
+                                        <p lwc:if={termsOfAgreement}>
+                                            Avtalte betingelser: <span>{termsOfAgreement}</span>
+                                        </p>
+                                        <p lwc:if={serviceAppointment.HOT_Interpreters__c}>
+                                            (Med)tolk: <span>{serviceAppointment.HOT_Interpreters__c}</span>
+                                        </p>
+                                        <p lwc:if={serviceAppointment.Description}>
+                                            Tilleggsopplysninger: <span>{serviceAppointment.Description}</span>
+                                        </p>
+
+                                        <p lwc:if={ordererPhoneNumber}>
+                                            Telefonnummer til bestiller:&nbsp;
+                                            <span>{ordererPhoneNumber}</span>
+                                        </p>
+                                        <p>Annen betaler: <span>{isOtherProvider}</span></p>
+                                        <p lwc:if={serviceAppointment.HOT_Dispatcher__c}>
+                                            Formidler: <span>{serviceAppointment.HOT_Dispatcher__c}</span>
+                                        </p>
+
+                                        <div class="files-container">
+                                            <c-record-files-with-sharing
+                                                record-id={serviceAppointment.Id}
+                                                is-get-all="true"
+                                                is-delete-option="false"
+                                                title="Vedlegg"
+                                                delete-file-on-button-click="false"
+                                            ></c-record-files-with-sharing>
+                                        </div>
+                                    </div>
+
+                                    <div
+                                        style="
+                                            display: inline-block;
+                                            padding-right: 1vw;
+                                            padding-bottom: 1vw;
+                                            padding-top: 1vw;
+                                        "
+                                    >
+                                        <c-button
+                                            disabled={saIsEditButtonDisabled}
+                                            hidden={saIsEditButtonHidden}
+                                            onbuttonclick={changeStatus}
+                                            button-styling="Primary"
+                                            type="Submit"
+                                            button-label="Endre status"
+                                        >
+                                        </c-button>
+                                        <c-button
+                                            hidden={saIsCancelButtonHidden}
+                                            onbuttonclick={cancelStatusFlow}
+                                            button-styling="Secondary"
+                                            type="Submit"
+                                            button-label="Avbryt"
+                                        >
+                                        </c-button>
+                                    </div>
+                                    <div lwc:if={saIsflow} class="flow-container">
+                                        <lightning-flow
+                                            flow-api-name="HOT_ChangeServiceAppointmentStatus_V1"
+                                            flow-input-variables={flowVariables}
+                                            onstatuschange={handleStatusChange}
+                                        ></lightning-flow>
+                                    </div>
+                                    <p>Samtale med:</p>
+                                    <div class="button-container">
+                                        <div class="button-wrapper">
+                                            <c-button
+                                                button-styling="Primary"
+                                                type="Submit"
+                                                onbuttonclick={goToThreadFreelance}
+                                                button-label="Bruker"
+                                                disabled={isGoToThreadButtonDisabled}
+                                            ></c-button>
+                                        </div>
+                                        <div class="button-wrapper">
+                                            <c-button
+                                                button-styling="Primary"
+                                                type="Submit"
+                                                onbuttonclick={goToThreadInterpreters}
+                                                disabled={isGoToThreadInterpretersButtonDisabled}
+                                                button-label="Medtolker"
+                                            ></c-button>
+                                        </div>
+                                        <div class="button-wrapper">
+                                            <c-button
+                                                button-styling="Primary"
+                                                type="Submit"
+                                                onbuttonclick={goToThreadServiceAppointment}
+                                                button-label="Formidler"
+                                                disabled={isGoToThreadServiceAppointmentButtonDisabled}
+                                            ></c-button>
+                                        </div>
+                                    </div>
+                                </template>
+                            </template>
+                            <template lwc:else>
+                                <p></p>
+                                <p>Du er ikke tildelt oppdraget lenger.</p>
+                            </template>
+                        </section>
+                        <!-- Wage claim details-->
+                        <section lwc:if={isWCDetails}>
+                            <div lwc:if={wageClaim}>
+                                <div>
+                                    <p>Oppdragsnummer: <span>{wageClaim.ServiceAppointmentName__c}</span></p>
+                                    <p>Tid: <span>{wageClaim.weekday} {wageClaim.StartAndEndDate}</span></p>
+                                    <p>Poststed: <span>{wageClaim.ServiceAppointmentCity__c}</span></p>
+                                    <p>Tolkemetode: <span>{wageClaim.WorkTypeName__c}</span></p>
+                                    <p>Oppdragstype: <span>{wageClaim.AssignmentType__c}</span></p>
+                                    <p>
+                                        Eier: <span>{wageClaim.ServiceAppointment__r.HOT_Request__r.OwnerName__c}</span>
+                                    </p>
+                                    <p>Døv/døvblind: <span>{wageClaim.DegreeOfHearingAndVisualImpairment__c}</span></p>
+                                    <p>Status: <span>{wageClaim.Status__c}</span></p>
+                                </div>
+                                <div
+                                    style="
+                                        display: inline-block;
+                                        padding-right: 1vw;
+                                        padding-bottom: 1vw;
+                                        padding-top: 1vw;
+                                    "
+                                >
+                                    <c-button
+                                        disabled={wcIsNotRetractable}
+                                        button-styling="primary"
+                                        button-label="Tilbaketrekk tilgjengelighet"
+                                        aria-label="Tilbaketrekk tilgjengelighet"
+                                        onbuttonclick={showModalRetract}
+                                    >
+                                    </c-button>
+                                </div>
+                                <div style="display: inline-block; padding-bottom: 1vw">
+                                    <c-button
+                                        disabled={wcIsDisabledGoToThread}
+                                        button-styling="primary"
+                                        button-label="Samtale med ressurskontor"
+                                        aria-label="Samtale med ressurskontor"
+                                        onbuttonclick={goToWageClaimThread}
+                                    >
+                                    </c-button>
+                                </div>
+                            </div>
+                        </section>
+                        <!--test-->
+                    </template>
+                </div>
+            </dialog>
+        </div>
+    </div>
+</template>
