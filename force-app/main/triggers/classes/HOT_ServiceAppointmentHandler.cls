@@ -259,6 +259,7 @@ public without sharing class HOT_ServiceAppointmentHandler extends MyTriggers {
         Map<Id, ServiceAppointment> newServiceAppointmentsSchedTimeChanged = new Map<Id, ServiceAppointment>();
         Map<Id, ServiceAppointment> serviceAppointmentWithNewAssignedResource = new Map<Id, ServiceAppointment>();
         List<ServiceAppointment> serviceAppointmentsWithUpdatedOwnerOrDispatcher = new List<ServiceAppointment>();
+        Set<Id> serviceAppointmentsWithStatusCannotComplete = new Set<Id>();
 
         for (ServiceAppointment serviceAppointment : (List<ServiceAppointment>) records) {
             if (
@@ -300,10 +301,11 @@ public without sharing class HOT_ServiceAppointmentHandler extends MyTriggers {
                 serviceAppointment.Status == 'Annul' || serviceAppointment.Status == 'Cannot Complete'
             ) {
                 retractedServiceAppointments.add(serviceAppointment);
-                if (serviceAppointment.SchedEndTime >= System.today()) {
-                    HOT_InterpreterOnWorkOrderService.setInterpreterOnWorkOrderFromServiceAppointment(
-                        new Set<Id>{ serviceAppointment.Id }
-                    );
+                if (
+                    serviceAppointment.SchedEndTime >= System.today() &&
+                    serviceAppointment.Status == 'Cannot Complete'
+                ) {
+                    serviceAppointmentsWithStatusCannotComplete.add(serviceAppointment.Id);
                 }
             }
             if (
@@ -434,6 +436,12 @@ public without sharing class HOT_ServiceAppointmentHandler extends MyTriggers {
 
         if (serviceAppointmentsWithUpdatedOwnerOrDispatcher.size() > 0) {
             updateOwnerOrDispatcherOnThread(serviceAppointmentsWithUpdatedOwnerOrDispatcher);
+        }
+
+        if (serviceAppointmentsWithStatusCannotComplete.size() > 0) {
+            HOT_InterpreterOnWorkOrderService.setInterpreterOnWorkOrderFromServiceAppointment(
+                serviceAppointmentsWithStatusCannotComplete
+            );
         }
     }
 
