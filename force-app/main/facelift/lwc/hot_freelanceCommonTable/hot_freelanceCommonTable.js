@@ -23,7 +23,7 @@ export default class Hot_freelanceCommonTable extends LightningElement {
             'Canceled',
             'Avlyst',
             'Canceled by Interpreter',
-            'Avlyst av tolk',
+            'Tolk tar seg av',
             'Declined',
             'Avslått',
             'Retracted Interest',

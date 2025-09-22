@@ -10,15 +10,19 @@
     </template>
 
     <template lwc:elseif={noWageClaimsResult}>
-        <div style="text-align: center">
+        <div style="text-align: center" aria-live="polite">
             <br />
             <p>Du har ingen ledig på lønn oppdrag.</p>
             <br />
         </div>
     </template>
-
+    <template lwc:if={dataLoader}>
+        <div class="loader-container">
+            <c-hot_loader size="3xlarge"></c-hot_loader>
+        </div>
+    </template>
     <template lwc:elseif={noFilteredRecordsResult}>
-        <div style="text-align: center">
+        <div style="text-align: center" aria-live="polite">
             <br />
             <p>
                 Det finnes ingen ledig på lønn oppdrag med denne filtreringen. Du kan endre filteret for å se andre
@@ -28,7 +32,7 @@
         </div>
     </template>
     <!-- MODAL -->
-    <dialog class="modal-container" aria-label="Informasjon om oppdrag" onclose={closeModal}>
+    <dialog class="modal-container" aria-label="Informasjon om oppdrag" aria-modal="true" onclose={closeModal}>
         <div class="modal-header">
             <h2>Informasjon om oppdraget:</h2>
             <button class="close-btn" onclick={closeModal} aria-label="Lukk">
@@ -41,14 +45,15 @@
         </div>
 
         <div if:true={hasAccess} class="modal-body">
-            <p>Oppdragsnummer: <span>{appointmentNumber}</span></p>
-            <p>Tid: <span>{appointmentTime}</span></p>
-            <p>Poststed: <span>{appointmentCity}</span></p>
-            <p>Tolkemetode: <span>{workType}</span></p>
-            <p>Oppdragstype: <span>{assignmentType}</span></p>
-            <p>Eier: <span>{ownerName}</span></p>
-            <p>Døv/døvblind: <span>{degreeOfHearingAndVisualImpairment}</span></p>
-            <p>Status: <span>{status}</span></p>
+            <p><strong>Oppdragsnummer:</strong> {appointmentNumber}</p>
+            <p><strong>Tid:</strong> {appointmentTime}</p>
+            <p><strong>Poststed:</strong> {appointmentCity}</p>
+            <p><strong>Tolkemetode:</strong> {workType}</p>
+            <p><strong>Oppdragstype:</strong> {assignmentType}</p>
+            <p><strong>Eier:</strong> {ownerName}</p>
+            <p><strong>Døv/døvblind:</strong> {degreeOfHearingAndVisualImpairment}</p>
+            <p><strong>Status:</strong> {status}</p>
+
             <template lwc:if={isRetracting}>
                 <div class="navno-dekorator alertstripe navno-dekorator alertstripe--advarsel" role="alert">
                     <img class="navno-dekorator alertstripe__ikon" src={warningicon} alt="" />

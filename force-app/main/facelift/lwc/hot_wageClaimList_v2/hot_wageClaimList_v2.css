@@ -9,6 +9,12 @@
     align-items: center;
     padding-top: 0.5rem;
 }
+.loader-container {
+    display: flex;
+    justify-content: center;
+    align-items: flex-start;
+    padding-top: 5rem;
+}
 
 span {
     font-weight: normal;
@@ -23,9 +29,6 @@ span {
 
 dialog.modal-container h2 {
     font-family: 'Source Sans Pro', Arial, sans-serif;
-}
-dialog.modal-container p {
-    font-weight: bold;
 }
 
 /* Backdrop */

@@ -15,7 +15,7 @@
     </template>
 
     <template lwc:elseif={noServiceAppointmentsResult}>
-        <div style="text-align: center">
+        <div style="text-align: center" aria-live="polite">
             <br />
             <p>Det er ingen ledige oppdrag.</p>
             <br />
@@ -23,10 +23,15 @@
     </template>
 
     <template lwc:elseif={noFilteredRecordsResult}>
-        <div style="text-align: center">
+        <div style="text-align: center" aria-live="polite">
             <br />
             <p>Det er ingen oppdrag med denne filtreringen. Du kan endre filteret for å se andre oppdrag</p>
             <br />
+        </div>
+    </template>
+    <template lwc:if={dataLoader}>
+        <div class="loader-container">
+            <c-hot_loader size="3xlarge"></c-hot_loader>
         </div>
     </template>
 
@@ -45,7 +50,7 @@
         </div>
     </div>
     <!-- MODALER -->
-    <dialog class="modal-container" aria-label="Informasjon om oppdrag" onclose={closeModal}>
+    <dialog class="modal-container" aria-label="Informasjon om oppdrag" aria-modal="true" onclose={closeModal}>
         <!-- MODAL SOM VISES NÅR MAN TRYKKER MELD INTERESSE-->
         <div lwc:if={showCommentsModal}>
             <div class="modal-header" lwc:if={showModalHeader}>
@@ -63,20 +68,17 @@
                             object-api-name="HOT_InterestedResource__c"
                             density="comfy"
                         >
-                            <label>Tema: </label><span>{it.value.HOT_FreelanceSubject__c}</span>
-                            <p>Tid: <span>{it.value.StartAndEndDate}</span></p>
-                            <p>Adresse: <span>{it.value.HOT_AddressFormated__c}</span></p>
-                            <p>Tolkemetode: <span>{it.value.HOT_WorkTypeName__c}</span></p>
-                            <p>Oppdragstype: <span>{it.value.HOT_AssignmentType__c}</span></p>
-                            <p>Frigitt av: <span>{it.value.HOT_ReleasedBy__c}</span></p>
-                            <p>Frigitt dato: <span>{it.value.ReleaseDate}</span></p>
-                            <p>
-                                Antall påmeldte:
-                                <span>{it.value.HOT_NumberOfInterestedResources__c}</span>
-                            </p>
-                            <p>Annen betaler: <span>{it.isOtherProvider}</span></p>
-                            <p>Region: <span>{it.value.HOT_ServiceTerritoryName__c}</span></p>
-                            <p>Frist dato: <span>{it.value.HOT_DeadlineDate__c}</span></p>
+                            <p><strong>Tema:</strong> {it.value.HOT_FreelanceSubject__c}</p>
+                            <p><strong>Tid:</strong> {it.value.StartAndEndDate}</p>
+                            <p><strong>Adresse:</strong> {it.value.HOT_AddressFormated__c}</p>
+                            <p><strong>Tolkemetode:</strong> {it.value.HOT_WorkTypeName__c}</p>
+                            <p><strong>Oppdragstype:</strong> {it.value.HOT_AssignmentType__c}</p>
+                            <p><strong>Frigitt av:</strong> {it.value.HOT_ReleasedBy__c}</p>
+                            <p><strong>Frigitt dato:</strong> {it.value.ReleaseDate}</p>
+                            <p><strong>Antall påmeldte:</strong> {it.value.HOT_NumberOfInterestedResources__c}</p>
+                            <p><strong>Annen betaler:</strong> {it.isOtherProvider}</p>
+                            <p><strong>Region:</strong> {it.value.HOT_ServiceTerritoryName__c}</p>
+                            <p><strong>Frist dato:</strong> {it.value.HOT_DeadlineDate__c}</p>
                             <label for="Comments__c">Start samtale med formidler</label>
                             <lightning-input-field
                                 class="ikke-sensitive-opplysninger comment-field"
@@ -127,7 +129,9 @@
                             Melder interesse...
                         </h2>
                         <br />
-                        <div lwc:if={spin} class="loader"></div>
+                        <div lwc:if={spin}>
+                            <c-hot_loader size="3xlarge" variant="interaction"></c-hot_loader>
+                        </div>
                         <br />
                     </div>
 
@@ -168,18 +172,18 @@
                 </button>
             </div>
             <div lwc:if={isDetails} class="modal-body">
-                <p>Oppdragsnummer: <span>{serviceAppointment.HOT_ServiceAppointmentNumber__c}</span></p>
-                <p>Tema: <span>{serviceAppointment.HOT_FreelanceSubject__c}</span></p>
-                <p>Tid: <span> {serviceAppointment.weekday} {serviceAppointment.StartAndEndDate}</span></p>
-                <p>Adresse: <span>{serviceAppointment.HOT_AddressFormated__c}</span></p>
-                <p>Tolkemetode: <span>{serviceAppointment.HOT_WorkTypeName__c}</span></p>
-                <p>Oppdragstype: <span>{serviceAppointment.HOT_AssignmentType__c}</span></p>
-                <p>Frigitt av: <span>{serviceAppointment.HOT_ReleasedBy__c}</span></p>
-                <p>Frigitt dato: <span>{serviceAppointment.ReleaseDate}</span></p>
-                <p>Antall påmeldte: <span>{serviceAppointment.HOT_NumberOfInterestedResources__c}</span></p>
-                <p>Annen betaler: <span>{serviceAppointment.isOtherProvider}</span></p>
-                <p>Eier: <span>{serviceAppointment.HOT_Request__r.OwnerName__c}</span></p>
-                <p>Frist dato: <span>{serviceAppointment.HOT_DeadlineDate__c}</span></p>
+                <p><strong>Oppdragsnummer:</strong> {serviceAppointment.HOT_ServiceAppointmentNumber__c}</p>
+                <p><strong>Tema:</strong> {serviceAppointment.HOT_FreelanceSubject__c}</p>
+                <p><strong>Tid:</strong> {serviceAppointment.weekday} {serviceAppointment.StartAndEndDate}</p>
+                <p><strong>Adresse:</strong> {serviceAppointment.HOT_AddressFormated__c}</p>
+                <p><strong>Tolkemetode:</strong> {serviceAppointment.HOT_WorkTypeName__c}</p>
+                <p><strong>Oppdragstype:</strong> {serviceAppointment.HOT_AssignmentType__c}</p>
+                <p><strong>Frigitt av:</strong> {serviceAppointment.HOT_ReleasedBy__c}</p>
+                <p><strong>Frigitt dato:</strong> {serviceAppointment.ReleaseDate}</p>
+                <p><strong>Antall påmeldte:</strong> {serviceAppointment.HOT_NumberOfInterestedResources__c}</p>
+                <p><strong>Annen betaler:</strong> {serviceAppointment.isOtherProvider}</p>
+                <p><strong>Eier:</strong> {serviceAppointment.HOT_Request__r.OwnerName__c}</p>
+                <p><strong>Frist dato:</strong> {serviceAppointment.HOT_DeadlineDate__c}</p>
                 <br />
                 <div lwc:if={isSeries}>
                     <c-button

@@ -11,10 +11,13 @@
 span {
     font-weight: normal;
 }
-
-.hidden {
-    display: none;
+.loader-container {
+    display: flex;
+    justify-content: center;
+    align-items: flex-start;
+    padding-top: 5rem;
 }
+
 lightning-button {
     display: flex;
     justify-content: center;
@@ -22,9 +25,6 @@ lightning-button {
 /* MODAL CSS */
 dialog.modal-container h2 {
     font-family: 'Source Sans Pro', Arial, sans-serif;
-}
-dialog.modal-container p {
-    font-weight: bold;
 }
 
 /* Backdrop */

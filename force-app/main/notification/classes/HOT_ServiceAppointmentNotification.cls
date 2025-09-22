@@ -194,7 +194,7 @@ public without sharing class HOT_ServiceAppointmentNotification {
 
             Set<String> recipients = new Set<String>{ (String) groupByQueue.get(serviceAppointment.OwnerId) };
 
-            // Varsel ved avlyst av tolk
+            // Varsel ved tolk tar seg av
             if (
                 oldServiceAppointment.HOT_CanceledByInterpreter__c == false &&
                 serviceAppointment.HOT_CanceledByInterpreter__c == true

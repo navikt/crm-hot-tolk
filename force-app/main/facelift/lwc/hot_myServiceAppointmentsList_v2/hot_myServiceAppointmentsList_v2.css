@@ -9,15 +9,18 @@
 span {
     font-weight: normal;
 }
+.loader-container {
+    display: flex;
+    justify-content: center;
+    align-items: flex-start;
+    padding-top: 5rem;
+}
 .button-container {
     display: inline-block;
     padding: 1vw 1vw 1vw 0;
 }
 dialog.modal-container h2 {
     font-family: 'Source Sans Pro', Arial, sans-serif;
-}
-dialog.modal-container p {
-    font-weight: bold;
 }
 dialog::backdrop {
     background-color: rgba(0, 0, 0, 0.6);

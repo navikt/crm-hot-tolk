@@ -10,7 +10,7 @@
     </template>
 
     <template lwc:elseif={noServiceAppointmentsResult}>
-        <div style="text-align: center">
+        <div style="text-align: center" aria-live="polite">
             <br />
             <p>Du har ingen kommende oppdrag.</p>
             <br />
@@ -18,14 +18,19 @@
     </template>
 
     <template lwc:elseif={noFilteredRecordsResult}>
-        <div style="text-align: center">
+        <div style="text-align: center" aria-live="polite">
             <br />
             <p>Det finnes ingen oppdrag med denne filtreringen. Du kan endre filteret for å se andre oppdrag</p>
             <br />
         </div>
     </template>
+    <template lwc:if={dataLoader}>
+        <div class="loader-container">
+            <c-hot_loader size="3xlarge"></c-hot_loader>
+        </div>
+    </template>
     <!-- MODAL -->
-    <dialog class="modal-container" aria-label="Informasjon om oppdrag" onclose={closeModal}>
+    <dialog class="modal-container" aria-label="Informasjon om oppdrag" aria-modal="true" onclose={closeModal}>
         <div class="modal-header">
             <h2>Informasjon om oppdraget:</h2>
             <button class="close-btn" onclick={closeModal} aria-label="Lukk">
@@ -35,20 +40,23 @@
         <template lwc:if={hasAccess}>
             <div class="modal-body">
                 <div lwc:if={isDetails}>
-                    <p>Oppdragsnummer: <span>{appointmentNumber}</span></p>
-                    <p>Tema: <span>{subject}</span></p>
-                    <p>Tid: <span>{startAndEndTime}</span></p>
-                    <p lwc:if={address}>Adresse: <span>{address}</span></p>
+                    <p><strong>Oppdragsnummer:</strong> {appointmentNumber}</p>
+                    <p><strong>Tema:</strong> {subject}</p>
+                    <p><strong>Tid:</strong> {startAndEndTime}</p>
+
+                    <p lwc:if={address}><strong>Adresse:</strong> {address}</p>
+
                     <div
                         lwc:if={serviceAppointment.HOT_AddressFormated__c}
                         style="display: inline-block; padding-right: 1vw"
                     >
-                        <p>Søk på adressen i en karttjeneste:</p>
+                        <p aria-hidden="true"><strong>Søk på adressen i en karttjeneste:</strong></p>
                         <div style="display: inline-block; padding-right: 1vw; padding-bottom: 1vw; padding-top: 1vw">
                             <c-button
                                 button-styling="secondary"
                                 button-label="Google maps"
                                 onbuttonclick={openGoogleMaps}
+                                aria-label="Åpne adressen i Google maps"
                                 mobile-style="margin-top: 0.5rem; margin-bottom: 0.5rem"
                             ></c-button>
                         </div>
@@ -57,45 +65,44 @@
                                 button-styling="secondary"
                                 button-label="Apple maps"
                                 onbuttonclick={openAppleMaps}
+                                aria-label="Åpne adressen i Apple maps"
                                 mobile-style="margin-top: 0.5rem; margin-bottom: 0.5rem"
                             ></c-button>
                         </div>
                     </div>
-                    <p lwc:if={actualStartTime}>Faktisk start: <span>{actualStartTime}</span></p>
 
-                    <p lwc:if={actualEndTime}>Faktisk slutt: <span>{actualEndTime}</span></p>
-                    <p lwc:if={accountName}>
-                        Navn til bruker:&nbsp;
-                        <span> {accountName} ({accountAgeGender})</span>
-                    </p>
-                    <p lwc:if={accountPhoneNumber}>
-                        Telefonnummer til bruker:&nbsp;
-                        <span>{accountPhoneNumber}</span>
-                    </p>
-                    <p>Tolkemetode: <span>{workType}</span></p>
-                    <p>Oppdragstype: <span>{assignmentType}</span></p>
-                    <p>Eier: <span>{ownerName}</span></p>
+                    <p lwc:if={actualStartTime}><strong>Faktisk start:</strong> {actualStartTime}</p>
+                    <p lwc:if={actualEndTime}><strong>Faktisk slutt:</strong> {actualEndTime}</p>
 
-                    <p>Status: <span>{status}</span></p>
-                    <p>Haptisk kommunikasjon: <span>{hapticCommunication}</span></p>
-                    <p lwc:if={escort}>Ledsaging: <span>{escort}</span></p>
+                    <p lwc:if={accountName}><strong>Navn til bruker:</strong> {accountName} ({accountAgeGender})</p>
+
+                    <p lwc:if={accountPhoneNumber}><strong>Telefonnummer til bruker:</strong> {accountPhoneNumber}</p>
+
+                    <p><strong>Tolkemetode:</strong> {workType}</p>
+                    <p><strong>Oppdragstype:</strong> {assignmentType}</p>
+                    <p><strong>Eier:</strong> {ownerName}</p>
+                    <p><strong>Status:</strong> {status}</p>
+                    <p><strong>Haptisk kommunikasjon:</strong> {hapticCommunication}</p>
+
+                    <p lwc:if={escort}><strong>Ledsaging:</strong> {escort}</p>
 
                     <p lwc:if={degreeOfHearingAndVisualImpairment}>
-                        Vedtak: <span>{degreeOfHearingAndVisualImpairment}</span>
+                        <strong>Vedtak:</strong> {degreeOfHearingAndVisualImpairment}
                     </p>
 
-                    <p lwc:if={showTermsOfAgreement}>Avtalte betingelser: <span>{showTermsOfAgreement}</span></p>
+                    <p lwc:if={showTermsOfAgreement}><strong>Avtalte betingelser:</strong> {showTermsOfAgreement}</p>
 
-                    <p lwc:if={interpreters}>(Med)tolk: <span>{interpreters}</span></p>
+                    <p lwc:if={interpreters}><strong>(Med)tolk:</strong> {interpreters}</p>
 
-                    <p lwc:if={description}>Tilleggsopplysninger: <span>{description}</span></p>
+                    <p lwc:if={description}><strong>Tilleggsopplysninger:</strong> {description}</p>
 
                     <p lwc:if={showOrdererPhoneNumber}>
-                        Telefonnummer til bestiller: <span>{showOrdererPhoneNumber}</span>
+                        <strong>Telefonnummer til bestiller:</strong> {showOrdererPhoneNumber}
                     </p>
-                    <p>Annen betaler: <span>{isOtherProvider}</span></p>
 
-                    <p lwc:if={dispatcher}>Formidler: <span>{dispatcher}</span></p>
+                    <p><strong>Annen betaler:</strong> {isOtherProvider}</p>
+
+                    <p lwc:if={dispatcher}><strong>Formidler:</strong> {dispatcher}</p>
 
                     <div class="files-container">
                         <c-record-files-with-sharing
@@ -114,6 +121,7 @@
                             button-styling="Primary"
                             type="Submit"
                             button-label="Endre status"
+                            aria-label="Endre status på oppdraget"
                             mobile-style="margin-top: 1rem; margin-bottom: 1rem"
                         >
                         </c-button>
@@ -124,6 +132,7 @@
                             button-styling="Secondary"
                             type="Submit"
                             button-label="Avbryt"
+                            aria-label="Avbryt endring av status"
                             mobile-style="margin-top: 1rem; margin-bottom: 1rem"
                         >
                         </c-button>
@@ -135,13 +144,14 @@
                             onstatuschange={handleStatusChange}
                         ></lightning-flow>
                     </div>
-                    <p>Samtale med:</p>
+                    <p aria-hidden="true">Samtale med:</p>
                     <div class="button-container">
                         <c-button
                             button-styling="Primary"
                             type="Submit"
                             onbuttonclick={goToThreadFreelance}
                             button-label="Bruker"
+                            aria-label="Gå til samtale med bruker"
                             disabled={isGoToThreadButtonDisabled}
                             mobile-style="margin-top: 1rem"
                         >
@@ -153,6 +163,7 @@
                             type="Submit"
                             onbuttonclick={goToThreadInterpreters}
                             disabled={isGoToThreadInterpretersButtonDisabled}
+                            aria-label="Gå til samtale med medtolk"
                             button-label="Medtolker"
                             mobile-style="margin-top: 1rem"
                         >
@@ -164,6 +175,7 @@
                             type="Submit"
                             onbuttonclick={goToThreadServiceAppointment}
                             button-label="Formidler"
+                            aria-label="Gå til samtale med formidler"
                             disabled={isGoToThreadServiceAppointmentButtonDisabled}
                             mobile-style="margin-top: 1rem"
                         >
