@@ -10,6 +10,7 @@ import { formatDatetimeinterval, formatDatetime } from 'c/datetimeFormatterNorwe
 import icons from '@salesforce/resourceUrl/ikoner';
 
 import HOT_ConfirmationModal from 'c/hot_confirmationModal';
+import retractAvailability from '@salesforce/apex/HOT_WageClaimListController.retractAvailability';
 import getWageClaimDetails from '@salesforce/apex/HOT_WageClaimListController.getWageClaimDetails';
 import checkAccessToSA from '@salesforce/apex/HOT_MyServiceAppointmentListController.checkAccessToSA';
 import getInterestedResourceDetails from '@salesforce/apex/HOT_InterestedResourcesListController.getInterestedResourceDetails';
@@ -554,6 +555,16 @@ export default class LibsFullCalendarV2 extends NavigationMixin(LightningElement
         this.modalRecordId = recordId;
         this.modalType = type;
         this.isInformationModalOpen = true;
+
+        // Disable retract button only if status is "Tilbaketrukket tilgjengelighet"
+        if (type === 'WC' && this.wageClaim) {
+            this.wcIsNotRetractable = this.wageClaim.Status__c === 'Tilbaketrukket tilgjengelighet';
+            this.wcIsDisabledGoToThread = this.wageClaim.Status__c === 'Tilbaketrukket tilgjengelighet';
+        }
+
+        if (type === 'SA') {
+            this.isSADetails = true;
+        }
     }
 
     closeModal() {
@@ -574,6 +585,7 @@ export default class LibsFullCalendarV2 extends NavigationMixin(LightningElement
     }
 
     async showModalRetract() {
+        this.closeModal();
         const result = await HOT_ConfirmationModal.open({
             size: 'small',
             headline: 'Varsel',
@@ -586,6 +598,7 @@ export default class LibsFullCalendarV2 extends NavigationMixin(LightningElement
         if (result === 'primary') {
             this.retractAvailability();
         }
+        this.showInformationModalDetails();
     }
 
     retractAvailability() {
@@ -918,6 +931,7 @@ export default class LibsFullCalendarV2 extends NavigationMixin(LightningElement
 
     // brukes til å hente nye data etter endring av statuser
     refreshApexCallout() {
+        this.refreshCalendar();
         const eventToSend = new CustomEvent('refreshrecords');
         this.dispatchEvent(eventToSend);
     }
