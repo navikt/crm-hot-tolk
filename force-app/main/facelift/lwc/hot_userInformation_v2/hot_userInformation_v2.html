@@ -48,7 +48,7 @@
 
                 <!-- Vedtak -->
                 <section class="sub-form">
-                    <h2 id="vedtak-header">Vedtak</h2>
+                    <h3 id="vedtak-header" class="sub-header">Vedtak</h3>
                     <div class="my-grid">
                         <div class="my-col-half">
                             <c-checkbox
@@ -89,7 +89,7 @@
 
                 <!-- Tolkemetoder -->
                 <section class="sub-form">
-                    <h2 id="tolkemetoder-header">Tolkemetoder</h2>
+                    <h3 id="tolkemetoder-header" class="sub-header">Tolkemetoder</h3>
                     <div class="my-grid">
                         <div class="my-col-half">
                             <c-checkbox
@@ -148,7 +148,7 @@
 
                 <!-- Annet -->
                 <section class="sub-form">
-                    <h2 id="annet-header">Annet</h2>
+                    <h3 id="annet-header" class="sub-header">Annet</h3>
                     <div class="my-grid">
                         <div class="my-col-half">
                             <label class="output-label" for="degreeOfImpairment">Vedtak</label>
@@ -163,7 +163,7 @@
 
                 <!-- Sikkerhetstiltak -->
                 <section class="sub-form">
-                    <h2 id="security-measures-header">Sikkerhetstiltak</h2>
+                    <h3 id="security-measures-header" class="sub-header">Sikkerhetstiltak</h3>
                     <div lwc:if={hasSecurityMeasures}>
                         <template for:each={securityMeasures} for:item="sm">
                             <p key={sm}>{sm}</p>
