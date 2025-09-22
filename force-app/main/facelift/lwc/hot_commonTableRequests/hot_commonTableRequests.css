@@ -84,8 +84,7 @@ tr.row:focus {
     white-space: nowrap;
 }
 
-.data-table td:nth-child(1),
-.data-table th:nth-child(1) {
+.data-table td:nth-child(1) {
     white-space: nowrap;
 }
 /* MOBILE LAYOUT */
