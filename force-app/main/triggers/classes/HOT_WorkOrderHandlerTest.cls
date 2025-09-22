@@ -1,4 +1,4 @@
-@IsTest
+@IsTest(IsParallel=true)
 private class HOT_WorkOrderHandlerTest {
     @IsTest
     private static void testSetDefaultFields() {

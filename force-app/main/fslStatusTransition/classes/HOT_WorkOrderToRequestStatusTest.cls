@@ -1,4 +1,4 @@
-@IsTest
+@IsTest(IsParallel=true)
 public class HOT_WorkOrderToRequestStatusTest {
     @IsTest
     private static void test_all_new() {

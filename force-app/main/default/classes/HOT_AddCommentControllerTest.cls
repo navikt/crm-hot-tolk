@@ -1,4 +1,4 @@
-@IsTest
+@IsTest(IsParallel=true)
 private class HOT_AddCommentControllerTest {
     @testSetup
     static void setup() {
