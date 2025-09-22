@@ -92,6 +92,7 @@ public without sharing class HOT_InterpreterOnWorkOrderService {
         setInterpreterOnWorkOrderFromServiceAppointment(saIds);
     }
 
+    @Future
     public static void setInterpreterOnWorkOrderFromServiceAppointment(Set<Id> serviceAppointmentIds) {
         Set<Id> workOrderIds = new Set<Id>();
         for (ServiceAppointment serviceAppointment : [
