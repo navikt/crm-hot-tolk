@@ -100,21 +100,6 @@ export default class LibsFullCalendarV2 extends NavigationMixin(LightningElement
         this.setupCalendar(loadedSessionState).then(() => {
             this.updatePseudoEventsDisplay(this.calendar.view);
         });
-
-        // if (this.type == 'WC') {
-        //     this.isLoading = true;
-        //     if (this.fromUrlRedirect == true) {
-        //         this.goToRecordDetailsWCFromId(this.recordId);
-        //     } else if (this.fromUrlRedirect == false) {
-        //         this.goToRecordDetailsWC(this.recordId, this.records);
-        //     }
-        // } else if (this.type == 'SA') {
-        //     if (this.fromUrlRedirect == true) {
-        //         this.goToRecordDetailsSAFromId(this.recordId);
-        //     } else if (this.fromUrlRedirect == false) {
-        //         this.goToRecordDetailsSA(this.recordId, this.records);
-        //     }
-        // }
     }
 
     disconnectedCallback() {
@@ -469,10 +454,6 @@ export default class LibsFullCalendarV2 extends NavigationMixin(LightningElement
         return pseudoEvents;
     }
 
-    isInformationModalOpen = false;
-    modalRecordId;
-    modalType;
-
     async navigateToDetailView(event) {
         const props = event.extendedProps;
 
@@ -546,6 +527,10 @@ export default class LibsFullCalendarV2 extends NavigationMixin(LightningElement
         }
         return dayOfWeekString;
     }
+
+    isInformationModalOpen = false;
+    modalRecordId;
+    modalType;
 
     showInformationModalDetails(recordId, type) {
         const dialog = this.template.querySelector('.modal-information');
