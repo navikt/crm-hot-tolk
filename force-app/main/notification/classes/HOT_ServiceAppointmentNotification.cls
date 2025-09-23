@@ -209,7 +209,7 @@ public without sharing class HOT_ServiceAppointmentNotification {
         Set<String> recipients
     ) {
         Messaging.CustomNotification notification = new Messaging.CustomNotification();
-        notification.setTitle('Avlyst av tolk: ' + serviceAppointment.AppointmentNumber);
+        notification.setTitle('Tolk tar seg av: ' + serviceAppointment.AppointmentNumber);
         notification.setBody(
             'Tolken meldte seg av ' +
                 serviceAppointment.AppointmentNumber +
