@@ -1,4 +1,4 @@
-@isTest
+@IsTest(IsParallel=true)
 private class HOT_KrrCalloutQueuableTest {
     @TestSetup
     static void makeData() {
