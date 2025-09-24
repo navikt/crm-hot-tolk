@@ -12,6 +12,11 @@ export default class Hot_commonTableRequests extends LightningElement {
         const processed = [];
         this.recordMap = {};
 
+        const targetFieldName =
+            (Array.isArray(this.columns)
+                ? this.columns.find((c) => (c.label || '').toLowerCase() === 'tema')?.fieldName
+                : undefined) ?? 'StartAndEndDate';
+
         if (Array.isArray(this.records)) {
             for (let record of this.records) {
                 let fields = this.columns.map((col) => {
@@ -26,10 +31,14 @@ export default class Hot_commonTableRequests extends LightningElement {
                     };
                 });
 
+                const targetField = fields.find((f) => f.name === targetFieldName);
+                const ariaLabelRow = (targetField?.displayLabel ?? targetField?.value ?? '').toString();
+
                 processed.push({
                     id: record.Id,
                     original: record,
-                    fields
+                    fields,
+                    ariaLabelRow
                 });
 
                 this.recordMap[record.Id] = record;
