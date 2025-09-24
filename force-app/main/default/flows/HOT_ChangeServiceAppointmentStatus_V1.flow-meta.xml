@@ -40,7 +40,7 @@
     </assignments>
     <assignments>
         <name>Assign_new_values_Avlyst_Tolk</name>
-        <label>Assign new values - Avlyst - Tolk</label>
+        <label>Assign new values - Tolk tar seg av</label>
         <locationX>1634</locationX>
         <locationY>1838</locationY>
         <assignmentItems>
@@ -186,7 +186,7 @@
     </choices>
     <choices>
         <name>Status_TolkAvlyst</name>
-        <choiceText>Avlyst av tolk</choiceText>
+        <choiceText>Tolk tar seg av</choiceText>
         <dataType>String</dataType>
         <value>
             <stringValue>None</stringValue>
@@ -514,7 +514,7 @@
         <inputAssignments>
             <field>Status__c</field>
             <value>
-                <stringValue>Avlyst av tolk</stringValue>
+                <stringValue>Tolk tar seg av</stringValue>
             </value>
         </inputAssignments>
         <object>HOT_HistoricallyAssignedResource__c</object>
