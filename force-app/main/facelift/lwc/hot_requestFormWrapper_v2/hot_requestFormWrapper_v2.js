@@ -425,6 +425,7 @@ export default class hot_requestFormWrapper_v2 extends NavigationMixin(Lightning
     }
 
     handleBackButtonClicked() {
+        window.scrollTo(0, 0);
         this.getFieldValuesFromSubForms();
         this.getComponentValues();
         if (!this.requestTypeChosen) {
