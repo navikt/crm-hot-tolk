@@ -17,12 +17,12 @@
             <c-hot_loader size="3xlarge"></c-hot_loader>
         </div>
     </template>
-    <div lwc:if={noServiceAppointments} style="text-align: center">
+    <div lwc:if={noServiceAppointments} style="text-align: center" aria-live="polite">
         <br />
         <p>Det er ingen oppdrag her</p>
     </div>
 
-    <dialog class="modal-container" aria-label="Informasjon om oppdrag" onclose={closeModal}>
+    <dialog class="modal-container" aria-label="Informasjon om oppdrag" aria-modal="true" onclose={closeModal}>
         <div class="modal-header" lwc:if={showModalHeader}>
             <h2>Informasjon om oppdraget:</h2>
             <button class="close-btn" onclick={closeModal} aria-label="Lukk">
@@ -30,20 +30,21 @@
             </button>
         </div>
         <div lwc:if={isDetails} class="modal-body">
-            <p>Oppdragsnummer: <span>{serviceAppointment.HOT_ServiceAppointmentNumber__c}</span></p>
-            <p>Tema: <span>{serviceAppointment.HOT_FreelanceSubject__c}</span></p>
-            <p>Tid: <span> {serviceAppointment.weekday} {serviceAppointment.StartAndEndDate}</span></p>
-            <p>Adresse: <span>{serviceAppointment.HOT_AddressFormated__c}</span></p>
-            <p>Tolkemetode: <span>{serviceAppointment.HOT_WorkTypeName__c}</span></p>
-            <p>Oppdragstype: <span>{serviceAppointment.HOT_AssignmentType__c}</span></p>
-            <p>Frigitt av: <span>{serviceAppointment.HOT_ReleasedBy__c}</span></p>
-            <p>Frigitt dato: <span>{serviceAppointment.ReleaseDate}</span></p>
-            <p>Antall påmeldte: <span>{serviceAppointment.HOT_NumberOfInterestedResources__c}</span></p>
-            <p>Annen betaler: <span>{serviceAppointment.isOtherProvider}</span></p>
-            <p>Eier: <span>{serviceAppointment.HOT_Request__r.OwnerName__c}</span></p>
-            <p>Frist dato: <span>{serviceAppointment.HOT_DeadlineDate__c}</span></p>
-            <br />
+            <p><strong>Oppdragsnummer:</strong> {serviceAppointment.HOT_ServiceAppointmentNumber__c}</p>
+            <p><strong>Tema:</strong> {serviceAppointment.HOT_FreelanceSubject__c}</p>
+            <p><strong>Tid:</strong> {serviceAppointment.weekday} {serviceAppointment.StartAndEndDate}</p>
+            <p><strong>Adresse:</strong> {serviceAppointment.HOT_AddressFormated__c}</p>
+            <p><strong>Tolkemetode:</strong> {serviceAppointment.HOT_WorkTypeName__c}</p>
+            <p><strong>Oppdragstype:</strong> {serviceAppointment.HOT_AssignmentType__c}</p>
+            <p><strong>Frigitt av:</strong> {serviceAppointment.HOT_ReleasedBy__c}</p>
+            <p><strong>Frigitt dato:</strong> {serviceAppointment.ReleaseDate}</p>
+            <p><strong>Antall påmeldte:</strong> {serviceAppointment.HOT_NumberOfInterestedResources__c}</p>
+            <p><strong>Annen betaler:</strong> {serviceAppointment.isOtherProvider}</p>
+            <p><strong>Eier:</strong> {serviceAppointment.HOT_Request__r.OwnerName__c}</p>
+            <p><strong>Frist dato:</strong> {serviceAppointment.HOT_DeadlineDate__c}</p>
+
             <p>Du er ønsket til dette oppdraget.</p>
+
             <div style="display: inline-block; padding-bottom: 1vw; padding-top: 1vw">
                 <c-button
                     button-styling="primary"
@@ -132,7 +133,7 @@
             <c-button
                 button-styling="primary"
                 button-label={sendInterestButtonLabel}
-                aria-label="Meld interesse"
+                aria-label="Meld interesse for oppdrag"
                 onbuttonclick={registerInterestChecked}
                 desktop-style=" justify-content: center; margin: 1vw"
                 mobile-style="justify-content: center; margin: 1vw"
@@ -142,7 +143,7 @@
             <c-button
                 button-styling="danger"
                 button-label={declineInterestButtonLabel}
-                aria-label="Avslå interesse"
+                aria-label="Avslå interesse for oppdrag"
                 onbuttonclick={declineInterestChecked}
                 desktop-style=" justify-content: center;"
                 mobile-style="justify-content: center;"

@@ -48,6 +48,7 @@ export default class Hot_freelanceCommonTable extends LightningElement {
     get recordsToShow() {
         const records = [];
         this.recordMap = {};
+        let ariaLabelTheme = '';
 
         if (!this.records || !this.columns) return records;
 
@@ -60,7 +61,8 @@ export default class Hot_freelanceCommonTable extends LightningElement {
                     name: column.name,
                     label: column.label,
                     value: value,
-                    type: column.type
+                    type: column.type,
+                    ariaLabel: value
                 };
 
                 if (column.svg && this.iconByValue) {
@@ -77,6 +79,11 @@ export default class Hot_freelanceCommonTable extends LightningElement {
                     field.cssClass = 'bold-date';
                 }
 
+                // Name of the theme aria label, this will be used for the checboxes
+                if (column.name === 'HOT_FreelanceSubject__c' && value) {
+                    ariaLabelTheme = value;
+                }
+
                 fields.push(field);
             }
 
@@ -84,7 +91,8 @@ export default class Hot_freelanceCommonTable extends LightningElement {
             records.push({
                 id: record.Id,
                 checked: this.checkedRows.includes(record.Id),
-                fields: fields
+                fields: fields,
+                ariaLabelTheme: ariaLabelTheme ? `Velg ${ariaLabelTheme}` : ''
             });
             this.recordMap[record.Id] = record;
         }

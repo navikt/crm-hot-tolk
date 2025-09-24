@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<LightningComponentBundle xmlns="http://soap.sforce.com/2006/04/metadata">
+    <apiVersion>64.0</apiVersion>
+    <isExposed>true</isExposed>
+    <masterLabel>HOT Dialog external v2</masterLabel>
+    <targets>
+        <target>lightningCommunity__Page</target>
+        <target>lightningCommunity__Default</target>
+    </targets>
+    <targetConfigs>
+        <targetConfig targets="lightningCommunity__Default">
+            <property name="recordId" type="String" label="Record ID"
+                description="Should be set to {!recordId}" default="{!recordId}" />
+            <property name="alerttext" type="String" label="Alert text when closed"
+                description="Alert text shown when the thread is closed. HTML formatted"
+                default="Dialogen er lukket" />
+            <property name="alertopen" type="String" label="Alert text when still open"
+                description="Alert text shown when the thread is closed. HTML formatted" default="" />
+            <property name="maxLength" type="Integer" label="Max length"
+                description="The max length a user is allowed to write. Defaults to 0 (infinite)"
+                default="0" />
+        </targetConfig>
+    </targetConfigs>
+</LightningComponentBundle>

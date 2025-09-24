@@ -79,9 +79,6 @@ lightning-input-field.ikke-sensitive-opplysninger > lightning-textarea > label:a
 dialog.modal-container h2 {
     font-family: 'Source Sans Pro', Arial, sans-serif;
 }
-dialog.modal-container p {
-    font-weight: bold;
-}
 dialog::backdrop {
     background-color: rgba(0, 0, 0, 0.6);
     z-index: 10000;

@@ -2,6 +2,7 @@ import { LightningElement, api, wire } from 'lwc';
 import getMyThreads from '@salesforce/apex/HOT_ThreadListController.getAllMyThreads';
 import getContactId from '@salesforce/apex/HOT_MessageHelper.getUserContactId';
 import { NavigationMixin } from 'lightning/navigation';
+import { refreshApex } from '@salesforce/apex';
 
 export default class Hot_threadList_v2 extends NavigationMixin(LightningElement) {
     @api isFreelanceView;
@@ -16,6 +17,8 @@ export default class Hot_threadList_v2 extends NavigationMixin(LightningElement)
     searchValue;
 
     sortedThreads = [];
+    wiredThreadsResult;
+    shouldRefreshAfterWire = false;
 
     get headerText() {
         if (this.isFreelanceView) {
@@ -24,9 +27,15 @@ export default class Hot_threadList_v2 extends NavigationMixin(LightningElement)
             return 'Mine samtaler';
         }
     }
+    connectedCallback() {
+        this.shouldRefreshAfterWire = true;
+    }
 
     @wire(getMyThreads, { isFreelance: '$isFreelanceView' })
-    wiredThreads({ data, error }) {
+    wiredThreads(value) {
+        this.wiredThreadsResult = value;
+        const { data, error } = value;
+
         if (data) {
             this.threads = data;
             this.error = undefined;
@@ -36,6 +45,12 @@ export default class Hot_threadList_v2 extends NavigationMixin(LightningElement)
             this.threads = undefined;
         }
         console.log('wire error:', error);
+        if (this.shouldRefreshAfterWire) {
+            this.shouldRefreshAfterWire = false;
+            refreshApex(this.wiredThreadsResult)
+                .then(() => this.tryMapAndSortThreads())
+                .catch((e) => console.error('refreshApex failed', e));
+        }
     }
     @wire(getContactId, {})
     wiredContactId({ data, error }) {
