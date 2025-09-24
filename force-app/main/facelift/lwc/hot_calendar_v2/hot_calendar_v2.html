@@ -252,5 +252,40 @@
                 </div>
             </dialog>
         </div>
+
+        <!-- Absence modal -->
+        <dialog class="modal-absence modal-container" aria-label="Register nytt fravær">
+            <div class="modal-header">
+                <h2>Registrer nytt fravær</h2>
+                <button class="close-btn" onclick={closeModal} aria-label="Lukk">
+                    <img src={exitCrossIcon} alt="" aria-hidden="true" />
+                </button>
+            </div>
+            <div class="modal-body">
+                <!-- Radio buttons -->
+                <h2 class="sub-header">Type fravær</h2>
+                <template for:each={radioWrappers} for:item="radio">
+                    <div key={radio.value} class="radio-with-help">
+                        <span class="label-and-icon">
+                            <c-radiobuttons
+                                radiobuttons={radio.singleRadioArray}
+                                group-name="testRadioGroup"
+                                onradiobuttonsclick={handleRequestTypeChange}
+                            ></c-radiobuttons>
+                        </span>
+                    </div>
+                </template>
+
+                <!-- Checkbox -->
+                <c-checkbox
+                    label="Heldags"
+                    desktop-style="margin-top: 0.25rem; margin-bottom: 0.25rem"
+                    mobile-style="margin-top: 0.25rem; margin-bottom: 0.25rem"
+                ></c-checkbox>
+
+                <!-- Header for dates -->
+                <h2 class="sub-header">Legg inn startdato/tid</h2>
+            </div>
+        </dialog>
     </div>
 </template>

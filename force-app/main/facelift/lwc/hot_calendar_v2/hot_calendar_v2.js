@@ -5,9 +5,10 @@ import getCalendarEvents from '@salesforce/apex/HOT_FullCalendarController.getCa
 import IKONER from '@salesforce/resourceUrl/ikoner';
 import { NavigationMixin } from 'lightning/navigation';
 import { CalendarEvent } from './calendar_event';
-import Hot_Calendar_Absence_Modal from 'c/hot_calendar_absence_modal';
 import { formatDatetimeinterval, formatDatetime } from 'c/datetimeFormatterNorwegianTime';
 import icons from '@salesforce/resourceUrl/ikoner';
+
+import Hot_Calendar_Absence_Modal from 'c/hot_calendar_absence_modal';
 
 import HOT_ConfirmationModal from 'c/hot_confirmationModal';
 import retractAvailability from '@salesforce/apex/HOT_WageClaimListController.retractAvailability';
@@ -347,12 +348,46 @@ export default class LibsFullCalendarV2 extends NavigationMixin(LightningElement
         this.isLoading = false;
     }
 
+    // Absence modal functionalities
     async openAbsenceModal(event, initialAbsenceStart, initialAbsenceEnd) {
-        const result = await Hot_Calendar_Absence_Modal.open({ event, initialAbsenceEnd, initialAbsenceStart });
+        // const result = await Hot_Calendar_Absence_Modal.open({
+        //     event,
+        //     initialAbsenceEnd,
+        //     initialAbsenceStart
+        // });
+
+        const absenceDialog = this.template.querySelector('.modal-absence');
+
+        absenceDialog.showModal();
+        absenceDialog.focus();
+
         if (result) {
             await this.refreshCalendar(false);
             this.updatePseudoEventsDisplay(this.calendar.view);
         }
+    }
+
+    radiobuttons = [
+        { label: 'Ferie', value: 'Vacation', checked: false },
+        { label: 'Sykdom', value: 'Medical', checked: false },
+        { label: 'Annet', value: 'Other', checked: false }
+    ];
+
+    get radioWrappers() {
+        return this.radiobuttons.map((rb) => ({
+            singleRadioArray: [rb],
+            value: rb.value
+        }));
+    }
+
+    handleRequestTypeChange(event) {
+        let radiobuttonValues = event.detail;
+        radiobuttonValues.forEach((element) => {
+            if (element.checked) {
+                this.currentRequestType = element.value;
+            }
+        });
+        this.result.type = this.currentRequestType;
     }
 
     async updateEventsFromDateRange(earliestDateInView, latestDateInView) {
@@ -555,6 +590,10 @@ export default class LibsFullCalendarV2 extends NavigationMixin(LightningElement
     closeModal() {
         const dialogModalInfo = this.template.querySelector('.modal-information');
         dialogModalInfo.close();
+
+        const dialogAbsence = this.template.querySelector('.modal-absence');
+        dialogAbsence.close();
+
         this.isInformationModalOpen = false;
         this.dispatchEvent(new CustomEvent('closemodal'));
     }

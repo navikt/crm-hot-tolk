@@ -47,6 +47,10 @@
     color: #ccc;
 }
 
+.full-card {
+    font-family: 'Source Sans Pro', Arial, sans-serif;
+}
+
 .button-container {
     display: flex;
     flex-wrap: wrap;
@@ -66,6 +70,10 @@ p {
 
 span {
     font-weight: normal;
+}
+
+.sub-header {
+    font-size: 1.25rem;
 }
 
 @media only screen and (min-width: 768px) {
