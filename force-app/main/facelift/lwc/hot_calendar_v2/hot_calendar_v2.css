@@ -72,8 +72,32 @@ span {
     font-weight: normal;
 }
 
-.sub-header {
+.sub-header-absence {
+    font-weight: bold;
     font-size: 1.25rem;
+    margin-top: 0.5rem;
+    margin-bottom: 0.5rem;
+}
+
+.loader-container {
+    display: flex;
+    justify-content: center;
+    align-items: flex-start;
+    padding-top: 3rem;
+    padding-bottom: 3rem;
+    /* z-index: 10000; */
+}
+
+.start-time-container {
+    display: flex;
+}
+
+.end-time-container {
+    display: flex;
+}
+
+.button-container {
+    margin-top: 1rem;
 }
 
 @media only screen and (min-width: 768px) {

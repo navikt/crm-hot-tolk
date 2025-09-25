@@ -5,6 +5,11 @@
             <template lwc:if={isLoading}>
                 <lightning-spinner alternative-text="Loading" size="large"></lightning-spinner>
             </template>
+            <!-- <template lwc:if={isLoading}>
+                <div class="loader-container">
+                    <c-hot_loader size="3xlarge"></c-hot_loader>
+                </div>
+            </template> -->
         </div>
 
         <!-- Information modal -->
@@ -256,14 +261,14 @@
         <!-- Absence modal -->
         <dialog class="modal-absence modal-container" aria-label="Register nytt fravær">
             <div class="modal-header">
-                <h2>Registrer nytt fravær</h2>
+                <h2>{headerAbsenceText}</h2>
                 <button class="close-btn" onclick={closeModal} aria-label="Lukk">
                     <img src={exitCrossIcon} alt="" aria-hidden="true" />
                 </button>
             </div>
             <div class="modal-body">
                 <!-- Radio buttons -->
-                <h2 class="sub-header">Type fravær</h2>
+                <h2 class="sub-header-absence">Type fravær</h2>
                 <template for:each={radioWrappers} for:item="radio">
                     <div key={radio.value} class="radio-with-help">
                         <span class="label-and-icon">
@@ -276,15 +281,129 @@
                     </div>
                 </template>
 
-                <!-- Checkbox -->
+                <!-- Checkbox whole day -->
                 <c-checkbox
                     label="Heldags"
-                    desktop-style="margin-top: 0.25rem; margin-bottom: 0.25rem"
+                    oncheckboxclick={isAllDayAbsenceCheckedHandle}
+                    desktop-style="margin-top: 0.15rem; margin-bottom: 0.25rem"
                     mobile-style="margin-top: 0.25rem; margin-bottom: 0.25rem"
                 ></c-checkbox>
 
-                <!-- Header for dates -->
-                <h2 class="sub-header">Legg inn startdato/tid</h2>
+                <template lwc:if={isAllDayAbsence}>
+                    <!-- Whole day hidden container until AllDay is checked-->
+                    <div class="whole-day-hidden-container">
+                        <!-- Start date -->
+                        <c-input
+                            label="Legg inn startdato/tid"
+                            data-id="date"
+                            type="date"
+                            name={value}
+                            value={value}
+                            error-text="Feltet må fylles ut."
+                            desktop-style="font-weight:normal"
+                            mobile-style="padding-bottom: 1vw"
+                        ></c-input>
+
+                        <!-- End date -->
+                        <c-input
+                            label="Legg inn sluttdato/tid"
+                            data-id="date"
+                            type="date"
+                            name={value}
+                            value={value}
+                            error-text="Feltet må fylles ut."
+                            mobile-style="padding-bottom: 1vw"
+                        ></c-input>
+                    </div>
+                </template>
+                <template lwc:else>
+                    <!-- TODO: Start time -->
+                    <div>
+                        <h2 class="sub-header-absence">Legg inn startdato/tid</h2>
+
+                        <div class="start-time-container">
+                            <!-- ongetvalueonchange={handleDateChange} -->
+                            <!-- name={it.value.id}
+                         value={it.value.date} -->
+                            <c-input
+                                label="Dato"
+                                data-id="date"
+                                type="date"
+                                name={value}
+                                value={value}
+                                error-text="Feltet må fylles ut."
+                                mobile-style="padding-bottom: 1vw"
+                            ></c-input>
+                            <!-- value={it.value.startTimeString} -->
+                            <!-- name={it.value.id} -->
+                            <!-- ongetvalueonchange={handleStartTimeChange} -->
+                            <c-input
+                                label="Starttid"
+                                data-id="startTime"
+                                type="time"
+                                value={value}
+                                error-text="Feltet må fylles ut."
+                                name={value}
+                                desktop-style="margin-left: 0.5rem;"
+                                mobile-style="margin-left: 0.5rem;"
+                            ></c-input>
+                        </div>
+
+                        <!-- TODO: End time -->
+                        <h2 class="sub-header-absence">Legg inn sluttdato/tid</h2>
+                        <div class="end-time-container">
+                            <c-input
+                                label="Dato"
+                                data-id="date"
+                                type="date"
+                                name={value}
+                                value={value}
+                                error-text="Feltet må fylles ut."
+                                mobile-style="padding-bottom: 1vw"
+                            ></c-input>
+                            <!-- value={it.value.endTimeString} -->
+                            <!-- ongetvalueonchange={handleEndTimeChange} -->
+                            <c-input
+                                label="Sluttid"
+                                data-id="endTime"
+                                type="time"
+                                value={value}
+                                error-text="Feltet må fylles ut."
+                                name={value}
+                                desktop-style="margin-left: 0.5rem;"
+                                mobile-style="margin-left: 0.5rem;"
+                            ></c-input>
+                        </div>
+                    </div>
+                </template>
+
+                <!-- Absence button container -->
+                <div class="button-container">
+                    <template lwc:if={isEdit}>
+                        <!-- Delete button -->
+                        <c-button
+                            button-label="Slett"
+                            button-styling="Danger"
+                            desktop-style="width: 6rem; justify-content: center; margin-right: 0.25rem"
+                            mobile-style="justify-content: center;"
+                        ></c-button>
+
+                        <!-- Edit button -->
+                        <!-- <c-button
+                            button-label={registerButtonText}
+                            button-styling="primary"
+                            desktop-style="width: 6rem; justify-content: center;"
+                            mobile-style="justify-content: center;"
+                        ></c-button> -->
+                    </template>
+                    <!-- Register absence button -->
+                    <c-button
+                        button-label={registerButtonText}
+                        button-styling="primary"
+                        desktop-style="width: 6rem; justify-content: center;"
+                        mobile-style="justify-content: center;"
+                    ></c-button>
+                </div>
             </div>
         </dialog>
     </div>

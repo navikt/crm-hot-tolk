@@ -24,6 +24,15 @@ import createThread from '@salesforce/apex/HOT_MessageHelper.createThread';
 import createThreadInterpreter from '@salesforce/apex/HOT_MessageHelper.createThreadInterpreter';
 import createThreadInterpreters from '@salesforce/apex/HOT_MessageHelper.createThreadInterpreters';
 
+// Absence imports WIP
+import LightningModal from 'lightning/modal';
+import ConfimationModal from 'c/hot_calendar_absence_modal_confirmation';
+import DeleteConfimationModal from 'c/hot_calendar_absence_modal_confirmation_delete';
+import getConflictsForTimePeriod from '@salesforce/apex/HOT_FreelanceAbsenceController.getConflictsForTimePeriod';
+import createAbsenceAndResolveConflicts from '@salesforce/apex/HOT_FreelanceAbsenceController.createAbsenceAndResolveConflicts';
+import deleteAbsence from '@salesforce/apex/HOT_FreelanceAbsenceController.deleteAbsence';
+import { ShowToastEvent } from 'lightning/platformShowToastEvent';
+
 export default class LibsFullCalendarV2 extends NavigationMixin(LightningElement) {
     static MILLISECONDS_PER_DAY = 86400000;
     static DAYS_TO_FETCH_FROM_TODAY = 4 * 31;
@@ -143,114 +152,6 @@ export default class LibsFullCalendarV2 extends NavigationMixin(LightningElement
         this.calendar.render();
     }
 
-    async getCalendarConfig(events, sessionState) {
-        let config = {
-            eventDidMount: (context) => {
-                this.onEventMount(context);
-            },
-            windowResize: (context) => {
-                this.isMobileSize = window.innerWidth < LibsFullCalendarV2.MOBILE_BREAK_POINT;
-                this.updatePseudoEventsDisplay(context.view);
-            },
-            datesSet: (dateInfo) => {
-                this.updateEventsFromDateRange(dateInfo.start, dateInfo.end).then(() => {
-                    this.updatePseudoEventsDisplay(dateInfo.view);
-                });
-            },
-            dayHeaderDidMount: (context) => {
-                this.onDayHeaderMount(context);
-            },
-            navLinks: true,
-            allDaySlot: false,
-            navLinkDayClick: (date) => {
-                this.calendar.changeView('timeGridDay', date);
-            },
-            firstDay: 1, // Mandag
-            locale: 'nb',
-            events: events,
-            customButtons: {
-                refresh: {
-                    text: '',
-                    click: () => {
-                        this.refreshCalendar(); // Call the refresh method
-                    }
-                },
-                absence: {
-                    text: 'Nytt fravær',
-                    click: () => {
-                        if (this.calendar?.view.type == 'timeGridDay') {
-                            const millisecondsPerHour = 60 * 60 * 1000;
-                            const viewedDate = this.calendar.view.activeStart;
-                            const suggestedStartTime = new Date(viewedDate.getTime() + 12 * millisecondsPerHour);
-                            const suggestEndTime = new Date(suggestedStartTime.getTime() + millisecondsPerHour);
-                            this.openAbsenceModal(null, suggestedStartTime, suggestEndTime);
-                        } else {
-                            this.openAbsenceModal();
-                        }
-                    }
-                }
-            },
-            buttonText: {
-                today: 'I dag',
-                month: 'Måned',
-                week: 'Uke',
-                day: 'Dag'
-            },
-            headerToolbar: {
-                start: 'title',
-                end: 'dayGridMonth today prev,next'
-            },
-            footerToolbar: {
-                left: 'refresh',
-                right: 'absence'
-            },
-            slotLabelFormat: {
-                hour: '2-digit',
-                minute: '2-digit'
-            },
-            dayMaxEventRows: 0,
-            moreLinkClick: 'timeGrid',
-            eventTimeFormat: {
-                hour12: false,
-                hour: '2-digit',
-                minute: '2-digit'
-            },
-            views: {
-                dayGrid: {
-                    dayMaxEventRows: 10
-                },
-                timeGrid: {},
-                week: {},
-                day: {},
-                dayGridMonth: {
-                    fixedWeekCount: false,
-                    dayMaxEventRows: 4
-                }
-            },
-            viewDidMount: (context) => {
-                this.onViewMount(context.view);
-            },
-            eventClick: (info) => this.handleEventClick(info)
-        };
-
-        if (this.isMobileSize) {
-            config.headerToolbar = {
-                start: 'today dayGridMonth',
-                center: 'title',
-                end: 'prev,next'
-            };
-            config.titleFormat = { year: 'numeric', month: 'short' };
-            config.views.dayGridMonth.dayMaxEventRows = 10;
-        }
-
-        if (sessionState) {
-            config.initialDate = new Date(sessionState.viewDate);
-            config.initialView = sessionState.viewType;
-        }
-
-        return config;
-    }
-
     onEventMount(context) {
         if (context.view.type === 'timeGridDay') {
             //setTimeout er for å fikse rendering av event info i dayview, var en slags race condition
@@ -346,48 +247,6 @@ export default class LibsFullCalendarV2 extends NavigationMixin(LightningElement
             await minLoadingTime;
         }
         this.isLoading = false;
-    }
-
-    // Absence modal functionalities
-    async openAbsenceModal(event, initialAbsenceStart, initialAbsenceEnd) {
-        // const result = await Hot_Calendar_Absence_Modal.open({
-        //     event,
-        //     initialAbsenceEnd,
-        //     initialAbsenceStart
-        // });
-
-        const absenceDialog = this.template.querySelector('.modal-absence');
-
-        absenceDialog.showModal();
-        absenceDialog.focus();
-
-        if (result) {
-            await this.refreshCalendar(false);
-            this.updatePseudoEventsDisplay(this.calendar.view);
-        }
-    }
-
-    radiobuttons = [
-        { label: 'Ferie', value: 'Vacation', checked: false },
-        { label: 'Sykdom', value: 'Medical', checked: false },
-        { label: 'Annet', value: 'Other', checked: false }
-    ];
-
-    get radioWrappers() {
-        return this.radiobuttons.map((rb) => ({
-            singleRadioArray: [rb],
-            value: rb.value
-        }));
-    }
-
-    handleRequestTypeChange(event) {
-        let radiobuttonValues = event.detail;
-        radiobuttonValues.forEach((element) => {
-            if (element.checked) {
-                this.currentRequestType = element.value;
-            }
-        });
-        this.result.type = this.currentRequestType;
     }
 
     async updateEventsFromDateRange(earliestDateInView, latestDateInView) {
@@ -1158,5 +1017,223 @@ export default class LibsFullCalendarV2 extends NavigationMixin(LightningElement
         } finally {
             if (!suppressLoader) this.isLoading = false;
         }
+    }
+
+    async getCalendarConfig(events, sessionState) {
+        let config = {
+            eventDidMount: (context) => {
+                this.onEventMount(context);
+            },
+            windowResize: (context) => {
+                this.isMobileSize = window.innerWidth < LibsFullCalendarV2.MOBILE_BREAK_POINT;
+                this.updatePseudoEventsDisplay(context.view);
+            },
+            datesSet: (dateInfo) => {
+                this.updateEventsFromDateRange(dateInfo.start, dateInfo.end).then(() => {
+                    this.updatePseudoEventsDisplay(dateInfo.view);
+                });
+            },
+            dayHeaderDidMount: (context) => {
+                this.onDayHeaderMount(context);
+            },
+            navLinks: true,
+            allDaySlot: false,
+            navLinkDayClick: (date) => {
+                this.calendar.changeView('timeGridDay', date);
+            },
+            firstDay: 1, // Mandag
+            locale: 'nb',
+            events: events,
+            customButtons: {
+                refresh: {
+                    text: '',
+                    click: () => {
+                        this.refreshCalendar(); // Call the refresh method
+                    }
+                },
+                absence: {
+                    text: 'Nytt fravær',
+                    click: () => {
+                        if (this.calendar?.view.type == 'timeGridDay') {
+                            const millisecondsPerHour = 60 * 60 * 1000;
+                            const viewedDate = this.calendar.view.activeStart;
+                            const suggestedStartTime = new Date(viewedDate.getTime() + 12 * millisecondsPerHour);
+                            const suggestEndTime = new Date(suggestedStartTime.getTime() + millisecondsPerHour);
+                            this.openAbsenceModal(null, suggestedStartTime, suggestEndTime);
+                        } else {
+                            this.openAbsenceModal();
+                        }
+                    }
+                }
+            },
+            buttonText: {
+                today: 'I dag',
+                month: 'Måned',
+                week: 'Uke',
+                day: 'Dag'
+            },
+            headerToolbar: {
+                start: 'title',
+                end: 'dayGridMonth today prev,next'
+            },
+            footerToolbar: {
+                left: 'refresh',
+                right: 'absence'
+            },
+            slotLabelFormat: {
+                hour: '2-digit',
+                minute: '2-digit'
+            },
+            dayMaxEventRows: 0,
+            moreLinkClick: 'timeGrid',
+            eventTimeFormat: {
+                hour12: false,
+                hour: '2-digit',
+                minute: '2-digit'
+            },
+            views: {
+                dayGrid: {
+                    dayMaxEventRows: 10
+                },
+                timeGrid: {},
+                week: {},
+                day: {},
+                dayGridMonth: {
+                    fixedWeekCount: false,
+                    dayMaxEventRows: 4
+                }
+            },
+            viewDidMount: (context) => {
+                this.onViewMount(context.view);
+            },
+            eventClick: (info) => this.handleEventClick(info)
+        };
+
+        if (this.isMobileSize) {
+            config.headerToolbar = {
+                start: 'today dayGridMonth',
+                center: 'title',
+                end: 'prev,next'
+            };
+            config.titleFormat = { year: 'numeric', month: 'short' };
+            config.views.dayGridMonth.dayMaxEventRows = 10;
+        }
+
+        if (sessionState) {
+            config.initialDate = new Date(sessionState.viewDate);
+            config.initialView = sessionState.viewType;
+        }
+
+        return config;
+    }
+
+    // Absence modal functionalities
+    async openAbsenceModal(event, initialAbsenceStart, initialAbsenceEnd) {
+        this.isEdit = false;
+
+        if (event) {
+            if (event.extendedProps?.recordId) {
+                this.isEdit = true;
+                this.initialAbsenceStart = this.formatLocalDateTime(event.start);
+                this.initialAbsenceEnd = this.formatLocalDateTime(event.end);
+            } else {
+                const now = new Date();
+                const startTime = new Date(now.getTime() + (60 - now.getMinutes()) * 60000);
+
+                this.initialAbsenceStart = this.formatLocalDateTime(initialAbsenceStart ?? startTime);
+                this.initialAbsenceEnd = this.formatLocalDateTime(
+                    initialAbsenceEnd ?? new Date(startTime.getTime() + 60 * 60000)
+                );
+            }
+        }
+        this.headerAbsenceText = this.isEdit ? 'Endre/Slett fravær' : 'Registrer nytt fravær';
+        this.startTimeInputLabel = `Legg inn${this.isEdit ? ' ny' : ''} startdato/tid`;
+        this.endTimeInputLabel = `Legg inn${this.isEdit ? ' ny' : ''} sluttdato/tid`;
+        this.registerButtonText = this.isEdit ? 'Endre' : 'Registrer';
+
+        const absenceDialog = this.template.querySelector('.modal-absence');
+        if (!absenceDialog) return;
+
+        absenceDialog.returnValue = ''; // reset state
+
+        absenceDialog.showModal();
+        absenceDialog.focus();
+
+        const result = await new Promise((resolve) => {
+            const handler = () => {
+                absenceDialog.removeEventListener('close', handler);
+                resolve(absenceDialog.returnValue === 'confirm');
+            };
+            absenceDialog.addEventListener('close', handler);
+        });
+
+        if (result) {
+            await this.refreshCalendar(false);
+            this.updatePseudoEventsDisplay(this.calendar.view);
+        }
+    }
+
+    radiobuttons = [
+        { label: 'Ferie', value: 'Vacation', checked: false },
+        { label: 'Sykdom', value: 'Medical', checked: false },
+        { label: 'Annet', value: 'Other', checked: false }
+    ];
+
+    get radioWrappers() {
+        return this.radiobuttons.map((rb) => ({
+            singleRadioArray: [rb],
+            value: rb.value
+        }));
+    }
+
+    handleRequestTypeChange(event) {
+        let radiobuttonValues = event.detail;
+        radiobuttonValues.forEach((element) => {
+            if (element.checked) {
+                this.currentRequestType = element.value;
+            }
+        });
+        this.result.type = this.currentRequestType;
+    }
+
+    // Absence fields
+    isEdit = false;
+    absenceType;
+    absenceValue = '';
+    timeFormat = 'datetime';
+    startTimeInputLabel;
+    endTImeInputLabel;
+    headerAbsenceText = '';
+    registerButtonText = '';
+
+    // Absence event fields
+    event;
+    initialAbsenceStart;
+    initialAbsenceEnd;
+
+    isAllDayAbsence = false;
+    times = [];
+    timesBackup;
+
+    isAllDayAbsenceCheckedHandle(event) {
+        this.isAllDayAbsence = event.detail;
+
+        if (this.isAllDayAbsence) {
+            this.timesBackup = this.times;
+            this.times = [this.times[0]];
+        } else {
+            this.times = this.timesBackup;
+        }
+    }
+
+    // Hjelper metode for å få dato i riktig tidsone for dateTime input felt
+    formatLocalDateTime(date, hoursOverride, minutesOverride) {
+        const year = date.getFullYear();
+        const month = ('0' + (date.getMonth() + 1)).slice(-2); // Måneder er 0 indeksiert
+        const day = ('0' + date.getDate()).slice(-2);
+        const hours = hoursOverride !== undefined ? hoursOverride : ('0' + date.getHours()).slice(-2);
+        const minutes = minutesOverride !== undefined ? minutesOverride : ('0' + date.getMinutes()).slice(-2);
+
+        return `${year}-${month}-${day}T${hours}:${minutes}`;
     }
 }
