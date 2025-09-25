@@ -8,7 +8,13 @@
     font-size: 1.125rem;
     padding: 1rem;
 }
-
+.loader-container {
+    display: flex;
+    justify-content: center;
+    align-items: flex-start;
+    padding-top: 3rem;
+    padding-bottom: 3rem;
+}
 .back-button-info {
     margin-top: 0rem;
     margin-left: -0.5rem;
