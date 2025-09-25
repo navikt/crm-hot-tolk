@@ -1,4 +1,4 @@
-@IsTest
+@IsTest(IsParallel=true)
 public class HOT_RequestNotificationTest {
     @testSetup
     static void setup() {

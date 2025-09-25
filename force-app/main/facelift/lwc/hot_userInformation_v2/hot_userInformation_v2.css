@@ -169,6 +169,14 @@ a.lenke:focus {
     width: 24px;
 }
 
+.sub-header {
+    font-family: 'Source Sans 3', 'Source Sans Pro', Arial, sans-serif;
+    font-size: 1.5rem;
+    font-weight: 600;
+    font-style: normal;
+    line-height: 2rem;
+}
+
 /* Accessibility */
 a:focus,
 button:focus,

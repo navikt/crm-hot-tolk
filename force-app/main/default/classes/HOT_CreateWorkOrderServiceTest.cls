@@ -1,4 +1,4 @@
-@IsTest
+@IsTest(IsParallel=true)
 private class HOT_CreateWorkOrderServiceTest {
     @IsTest
     private static void createWorkOrdersNever() {

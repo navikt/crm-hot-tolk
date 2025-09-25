@@ -1,4 +1,4 @@
-@IsTest
+@IsTest(IsParallel=true)
 public class HOT_UserNotificationServiceTest {
     @testSetup
     static void setup() {
@@ -353,8 +353,8 @@ public class HOT_UserNotificationServiceTest {
         Test.stopTest();
         System.assertEquals(
             '{type: "comm__namedPage",attributes: {pageName: "samtale-frilans"}, state: {recordId: "' +
-            thread.Id +
-            '", from: "mine-samtaler-frilanstolk"}}',
+                thread.Id +
+                '", from: "mine-samtaler-frilanstolk"}}',
             result
         );
     }
