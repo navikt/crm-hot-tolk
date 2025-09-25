@@ -555,7 +555,7 @@ export default class Hot_myServiceAppointmentsList_v2 extends NavigationMixin(Li
                 if (data.HOT_CanceledByInterpreter__c) {
                     this.isflow = false;
                     this.isCancelButtonHidden = true;
-                    this.serviceAppointment.Status = 'Avlyst';
+                    this.serviceAppointment.Status = 'Tolk tar seg av';
                 }
             });
             this.refreshApexCallout();

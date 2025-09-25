@@ -170,8 +170,23 @@ public without sharing class HOT_ServiceAppointmentNotification {
             workOrderLineItemIds.add(serviceAppointment.HOT_WorkOrderLineItem__c);
         }
         Map<Id, Id> groupByQueue = HOT_NotificationHandler.getGroupIdByQueueId(queueIds);
+        // !Annul
+        Set<String> workOrderLineItemtatusesOfInterest = new Set<String>{
+            'New',
+            'Scheduled',
+            'Dispatched',
+            'In Progress',
+            'Completed',
+            'Partially Complete',
+            'Cannot Complete',
+            'Canceled'
+        };
         Map<Id, WorkOrderLineItem> workOrderLineItems = new Map<Id, WorkOrderLineItem>(
-            [SELECT Id, Status FROM WorkOrderLineItem WHERE Id IN :workOrderLineItemIds AND Status != 'Annul']
+            [
+                SELECT Id, Status
+                FROM WorkOrderLineItem
+                WHERE Id IN :workOrderLineItemIds AND Status IN :workOrderLineItemtatusesOfInterest
+            ]
         );
 
         for (ServiceAppointment serviceAppointment : serviceAppointments) {
@@ -209,7 +224,7 @@ public without sharing class HOT_ServiceAppointmentNotification {
         Set<String> recipients
     ) {
         Messaging.CustomNotification notification = new Messaging.CustomNotification();
-        notification.setTitle('Avlyst av tolk: ' + serviceAppointment.AppointmentNumber);
+        notification.setTitle('Tolk tar seg av: ' + serviceAppointment.AppointmentNumber);
         notification.setBody(
             'Tolken meldte seg av ' +
             serviceAppointment.AppointmentNumber +
@@ -835,7 +850,7 @@ public without sharing class HOT_ServiceAppointmentNotification {
                     updatedSAWithInterpreterRemoved.SchedEndTime?.format('HH:mm', 'Europe/Oslo') +
                     '.'
                 );
-                notification.setNotificationTypeId(getCustomNotificationType('HOT_NotifyInterpreter').Id);
+                notification.setNotificationTypeId(this.getCustomNotificationTypeByName('HOT_NotifyInterpreter').Id);
                 notification.setTargetId(serviceAppointment.Id);
 
                 HOT_NotificationHandler.sendNotification(notification, recipients, (SObject) serviceAppointment);
@@ -939,7 +954,7 @@ public without sharing class HOT_ServiceAppointmentNotification {
                     updatedSAWithNewInterpreter.SchedEndTime?.format('HH:mm', 'Europe/Oslo') +
                     '.'
                 );
-                notification.setNotificationTypeId(getCustomNotificationType('HOT_NotifyInterpreter').Id);
+                notification.setNotificationTypeId(this.getCustomNotificationTypeByName('HOT_NotifyInterpreter').Id);
                 notification.setTargetId(serviceAppointment.Id);
 
                 HOT_NotificationHandler.sendNotification(notification, recipients, (SObject) serviceAppointment);

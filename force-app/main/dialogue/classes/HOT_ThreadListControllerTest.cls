@@ -1,4 +1,4 @@
-@IsTest
+@IsTest(IsParallel=true)
 public class HOT_ThreadListControllerTest {
     @TestSetup
     static void makeData() {

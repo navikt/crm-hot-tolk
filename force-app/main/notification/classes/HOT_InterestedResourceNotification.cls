@@ -25,7 +25,7 @@ public without sharing class HOT_InterestedResourceNotification {
             }
             //creating notification object list
             List<HOT_Notification__c> notificationList = new List<HOT_Notification__c>();
-
+            CustomNotificationType notificationType = getCustomNotificationType('HOT_NotifyUser');
             for (HOT_InterestedResource__c wantedIr : interestedResources) {
                 Set<String> recipients = new Set<String>();
                 if (userIdByAccountId.get(wantedIr.ServiceResource__r.AccountId) != null) {
@@ -33,15 +33,17 @@ public without sharing class HOT_InterestedResourceNotification {
                 }
                 if (recipients.size() != 0 && wantedIr.ServiceResource__r.HOT_NotificationChannel__c.contains('Push')) {
                     HOT_UserNotificationService.newWantedSRNotification(
-                        getCustomNotificationType('HOT_NotifyUser'),
-                        recipients, wantedIr.ServiceAppointment__r.AppointmentNumber
+                        notificationType,
+                        recipients,
+                        wantedIr.ServiceAppointment__r.AppointmentNumber
                     );
 
                     //creating notification object
                     HOT_Notification__c notification = new HOT_Notification__c();
                     notification.HOT_Account__c = wantedIr.ServiceResource__r.AccountId;
                     notification.HOT_NotificationChannel__c = 'Push-varsel i appen';
-                    notification.HOT_Subject__c = 'Du er ønsket til et oppdrag. '+wantedIr.ServiceAppointment__r.AppointmentNumber;
+                    notification.HOT_Subject__c =
+                        'Du er ønsket til et oppdrag. ' + wantedIr.ServiceAppointment__r.AppointmentNumber;
                     notification.HOT_NotificationText__c = 'Du kan melde interesse for oppdraget eller avslå.';
                     notification.HOT_RelatedObject__c = wantedIr.Id;
                     notification.HOT_RelatedObjectType__c = 'wanted';

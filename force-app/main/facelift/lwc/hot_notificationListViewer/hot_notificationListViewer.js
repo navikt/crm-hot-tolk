@@ -166,7 +166,10 @@ export default class Hot_notificationListViewer extends NavigationMixin(Lightnin
         }
     }
 
-    handleFocusTrap(e) {
+    handleKeyDown(e) {
+        if (e.key === 'Escape' || e.key === 'Esc') {
+            this.showNotifications = false;
+        }
         if (e.key !== 'Tab') return;
         const focusables = this._getTrapElements();
         const first = focusables[0];

@@ -1,4 +1,4 @@
-@IsTest
+@IsTest(IsParallel=true)
 private class HOT_SAReportControllerTest {
     @testSetup
     static void setup() {
