@@ -14,7 +14,7 @@
                     value={it.value.date}
                     error-text="Feltet må fylles ut."
                     style={dateTimeDesktopStyle}
-                    mobile-style="padding-bottom: 1vw"
+                    mobile-style="padding-bottom: 1vw; --c-input-date-min-height: 44px;"
                 ></c-input>
                 <c-input
                     label="Starttid"
@@ -25,7 +25,7 @@
                     name={it.value.id}
                     ongetvalueonchange={handleStartTimeChange}
                     desktop-style="padding-left: 1vw"
-                    mobile-style="padding-bottom: 1vw"
+                    mobile-style="padding-bottom: 1vw; --c-input-time-min-height: 44px;"
                     style={dateTimeDesktopStyle}
                 ></c-input>
                 <c-input
@@ -37,6 +37,7 @@
                     name={it.value.id}
                     ongetvalueonchange={handleEndTimeChange}
                     desktop-style="padding-left: 1vw"
+                    mobile-style="--c-input-time-min-height: 44px;"
                     style={dateTimeDesktopStyle}
                 ></c-input>
                 <br if:false={isOnlyOneTime} />
