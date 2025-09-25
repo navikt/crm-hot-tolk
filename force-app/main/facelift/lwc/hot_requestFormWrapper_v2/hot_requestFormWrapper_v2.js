@@ -425,7 +425,7 @@ export default class hot_requestFormWrapper_v2 extends NavigationMixin(Lightning
     }
 
     handleBackButtonClicked() {
-        window.scrollTo(0, 0);
+        this.scrollToTop();
         this.getFieldValuesFromSubForms();
         this.getComponentValues();
         if (!this.requestTypeChosen) {
@@ -470,5 +470,43 @@ export default class hot_requestFormWrapper_v2 extends NavigationMixin(Lightning
         this.requestTypeChosen = false;
         this.userCheckboxValue = true;
         this.requestTypeResult = null;
+    }
+
+    scrollToTop() {
+        try {
+            document.activeElement?.blur?.();
+        } catch (e) {}
+
+        const htmlEl = document.documentElement;
+        const prevBehavior = htmlEl.style.scrollBehavior;
+        htmlEl.style.scrollBehavior = 'auto';
+
+        const candidates = [
+            document.scrollingElement,
+            document.documentElement,
+            document.body,
+            this.template.host?.closest('.siteforceContentArea'),
+            this.template.host?.closest('.comm-layout-container'),
+            this.template.host?.closest('[role="main"]')
+        ].filter(Boolean);
+
+        const snapTop = () => {
+            try {
+                window.scrollTo(0, 0);
+            } catch (e) {}
+            candidates.forEach((el) => {
+                try {
+                    el.scrollTop = 0;
+                    el.scrollLeft = 0;
+                } catch (e) {}
+            });
+        };
+
+        snapTop();
+
+        requestAnimationFrame(() => {
+            snapTop();
+            htmlEl.style.scrollBehavior = prevBehavior || '';
+        });
     }
 }
