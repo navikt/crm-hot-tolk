@@ -17,7 +17,7 @@
     align-items: center;
     gap: 0.4rem;
     font-size: 1.2rem;
-    font-weight: 500;
+    font-weight: 600;
     line-height: 1.4;
     color: #000000;
     cursor: pointer;
@@ -62,5 +62,8 @@
 
     .back-button {
         font-size: 1rem;
+        padding: 0.5rem;
+        background-color: #f2f3f5;
+        margin-top: 0.5rem;
     }
 }

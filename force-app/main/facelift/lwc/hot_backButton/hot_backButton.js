@@ -5,6 +5,85 @@ export default class Hot_backButton extends NavigationMixin(LightningElement) {
     @api urlStateParameters;
     @api workOrder;
     @api isSeries; // Whether the request is a series
+    @api destinationLabel;
+
+    get computedDestinationLabel() {
+        return this.destinationLabel || this.deriveDestinationFromContext() || 'forrige side';
+    }
+
+    get computedAriaLabel() {
+        return `Tilbake til ${this.computedDestinationLabel}`;
+    }
+
+    deriveDestinationFromContext() {
+        try {
+            const url = new URL(window.location.href);
+            const pathname = url.pathname.toLowerCase();
+            const searchParams = url.searchParams;
+
+            const pageLabel = (name) =>
+                ({
+                    home: 'Hjem',
+                    'frilanstolk-min-side': 'Mine side som frilans',
+                    'min-side': 'Mine side',
+                    'mine-oppdrag': 'Mine oppdrag',
+                    'mine-samtaler': 'Mine samtaler',
+                    'mine-samtaler-frilanstolk': 'Mine samtaler som frilans',
+                    'mine-bestillinger': 'Mine bestillinger',
+                    'mine-bestillinger-andre': 'Bestillinger på vegne av andre ',
+                    'mine-varsler': 'Mine varsler'
+                })[name];
+
+            if (pathname.includes('/s/thread')) {
+                const from = searchParams.get('from');
+                const recordId = searchParams.get('recordId');
+                const level = searchParams.get('level');
+                if (from && recordId && level) {
+                    return pageLabel(from) || 'tråden';
+                }
+            }
+
+            if (
+                pathname.includes('/s/mine-oppdrag') ||
+                pathname.includes('/s/mine-samtaler-frilanstolk') ||
+                pathname.includes('/s/mine-samtaler') ||
+                pathname.includes('/s/frilanstolk-min-side') ||
+                pathname.includes('/s/min-side')
+            ) {
+                return pageLabel('home');
+            }
+
+            if (this.urlStateParameters && this.urlStateParameters.from) {
+                const lbl = pageLabel(this.urlStateParameters.from);
+                if (lbl) return lbl;
+
+                if (!this.urlStateParameters.level) return pageLabel('home');
+            }
+
+            const fromParam = searchParams.get('from');
+            if (fromParam) {
+                if (fromParam === 'mine-varsler') return pageLabel('home');
+                const known = ['mine-samtaler-frilanstolk', 'mine-samtaler', 'mine-oppdrag'];
+                if (known.includes(fromParam)) return pageLabel(fromParam);
+            }
+            if (pathname.includes('/s/mine-bestillinger')) {
+                const pageName = pathname.includes('/s/mine-bestillinger-andre')
+                    ? 'mine-bestillinger-andre'
+                    : 'mine-bestillinger';
+
+                const level = (this.urlStateParameters && this.urlStateParameters.level) || searchParams.get('level');
+
+                if (this.isSeries && level === 'WO') {
+                    return 'hoved bestilling fra serien';
+                }
+
+                if (level) return pageLabel(pageName);
+                return pageLabel('home');
+            }
+        } catch (e) {
+            return 'Hjem';
+        }
+    }
 
     goBack() {
         try {
