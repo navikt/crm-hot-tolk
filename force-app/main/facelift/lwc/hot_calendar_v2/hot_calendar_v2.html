@@ -261,6 +261,7 @@
         <!-- Absence modal -->
         <dialog class="modal-absence modal-container" aria-label="Register nytt fravær">
             <div class="modal-header">
+                <!-- Dynamic header shows "Endre/Slett fravær" || "Registrer nytt fravær" -->
                 <h2>{headerAbsenceText}</h2>
                 <button class="close-btn" onclick={closeModal} aria-label="Lukk">
                     <img src={exitCrossIcon} alt="" aria-hidden="true" />
@@ -270,21 +271,20 @@
                 <!-- Radio buttons -->
                 <h2 class="sub-header-absence">Type fravær</h2>
                 <template for:each={radioWrappers} for:item="radio">
-                    <div key={radio.value} class="radio-with-help">
-                        <span class="label-and-icon">
+                    <div key={radio.value}>
                             <c-radiobuttons
                                 radiobuttons={radio.singleRadioArray}
                                 group-name="testRadioGroup"
                                 onradiobuttonsclick={handleRequestTypeChange}
                             ></c-radiobuttons>
-                        </span>
                     </div>
                 </template>
 
                 <!-- Checkbox whole day -->
                 <c-checkbox
                     label="Heldags"
-                    oncheckboxclick={isAllDayAbsenceCheckedHandle}
+                    default-val={isAllDayAbsence}
+                    oncheckboxclick={handleAllDayEventSet}
                     desktop-style="margin-top: 0.15rem; margin-bottom: 0.25rem"
                     mobile-style="margin-top: 0.25rem; margin-bottom: 0.25rem"
                 ></c-checkbox>
@@ -322,6 +322,7 @@
                         <h2 class="sub-header-absence">Legg inn startdato/tid</h2>
 
                         <div class="start-time-container">
+                            <!-- TODO: Add value for the date -->
                             <!-- ongetvalueonchange={handleDateChange} -->
                             <!-- name={it.value.id}
                          value={it.value.date} -->
@@ -330,7 +331,7 @@
                                 data-id="date"
                                 type="date"
                                 name={value}
-                                value={value}
+                                value={initialAbsenceStart}
                                 error-text="Feltet må fylles ut."
                                 mobile-style="padding-bottom: 1vw"
                             ></c-input>
@@ -388,20 +389,14 @@
                             mobile-style="justify-content: center;"
                         ></c-button>
 
-                        <!-- Edit button -->
-                        <!-- <c-button
-                            button-label={registerButtonText}
-                            button-styling="primary"
-                            desktop-style="width: 6rem; justify-content: center;"
-                            mobile-style="justify-content: center;"
-                        ></c-button> -->
                     </template>
-                    <!-- Register absence button -->
+                    <!-- Register and edit absence button -->
                     <c-button
                         button-label={registerButtonText}
                         button-styling="primary"
                         desktop-style="width: 6rem; justify-content: center;"
                         mobile-style="justify-content: center;"
+                        onbuttonclick={handleOkay}
                     ></c-button>
                 </div>
             </div>

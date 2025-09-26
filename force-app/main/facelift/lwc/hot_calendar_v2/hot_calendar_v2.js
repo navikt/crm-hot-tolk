@@ -1130,22 +1130,45 @@ export default class LibsFullCalendarV2 extends NavigationMixin(LightningElement
     // Absence modal functionalities
     async openAbsenceModal(event, initialAbsenceStart, initialAbsenceEnd) {
         this.isEdit = false;
+        this.clearCheckedRadios();
 
-        if (event) {
-            if (event.extendedProps?.recordId) {
+        if (event && event.extendedProps.recordId) {
                 this.isEdit = true;
-                this.initialAbsenceStart = this.formatLocalDateTime(event.start);
-                this.initialAbsenceEnd = this.formatLocalDateTime(event.end);
+                this.setAbsenceTypeFromDescription(event.extendedProps.description);
+                initialAbsenceStart = this.formatLocalDateTime(event.start);
+                initialAbsenceEnd = this.formatLocalDateTime(event.end);
+
+                // Assign to class properties
+                this.initialAbsenceStart = initialAbsenceStart;
+                this.initialAbsenceEnd = initialAbsenceEnd;
+
+                console.log(
+                            'Existing event:\n' +
+                            'Absence type: ' + this.absenceType + '\n' +
+                            'Initial absence start event: ' + this.initialAbsenceStart + '\n' +
+                            'Initial absence end event: ' + this.initialAbsenceEnd
+                        );
+
             } else {
                 const now = new Date();
                 const startTime = new Date(now.getTime() + (60 - now.getMinutes()) * 60000);
 
-                this.initialAbsenceStart = this.formatLocalDateTime(initialAbsenceStart ?? startTime);
-                this.initialAbsenceEnd = this.formatLocalDateTime(
+                initialAbsenceStart = this.formatLocalDateTime(initialAbsenceStart ?? startTime);
+                initialAbsenceEnd = this.formatLocalDateTime(
                     initialAbsenceEnd ?? new Date(startTime.getTime() + 60 * 60000)
                 );
+
+                this.initialAbsenceStart = initialAbsenceStart;
+                this.initialAbsenceEnd = initialAbsenceEnd;
+
+                console.log(
+                            'New event:\n' +
+                            'Absence type: ' + this.absenceType + '\n' +
+                            'Initial absence start no event: ' + this.initialAbsenceStart + '\n' +
+                            'Initial absence end no event: ' + this.initialAbsenceEnd
+                        );
             }
-        }
+
         this.headerAbsenceText = this.isEdit ? 'Endre/Slett fravær' : 'Registrer nytt fravær';
         this.startTimeInputLabel = `Legg inn${this.isEdit ? ' ny' : ''} startdato/tid`;
         this.endTimeInputLabel = `Legg inn${this.isEdit ? ' ny' : ''} sluttdato/tid`;
@@ -1173,6 +1196,41 @@ export default class LibsFullCalendarV2 extends NavigationMixin(LightningElement
         }
     }
 
+    setAbsenceTypeFromDescription(description) {
+        if (!description) {
+            this.clearCheckedRadios();
+        return;
+        }
+
+        const mapping = [
+            { label: 'Ferie', value: 'Vacation' },
+            { label: 'Sykdom', value: 'Medical' },
+            { label: 'Annet', value: 'Other' }
+        ];
+
+        const match = mapping.find(item =>
+            description.toLowerCase().includes(item.label.toLowerCase())
+        );
+
+        if (match) {
+            this.absenceType = match.value;
+        } else {
+            this.absenceType = null;
+        }
+
+        this.radiobuttons = this.radiobuttons.map(rb => ({ ...rb,
+            checked: rb.value === this.absenceType
+        }));
+    }
+
+    clearCheckedRadios() {
+        this.radiobuttons = this.radiobuttons.map(rb => ({
+        ...rb,
+        checked: false
+        }));
+        this.absenceType = null;
+    }
+
     radiobuttons = [
         { label: 'Ferie', value: 'Vacation', checked: false },
         { label: 'Sykdom', value: 'Medical', checked: false },
@@ -1180,20 +1238,22 @@ export default class LibsFullCalendarV2 extends NavigationMixin(LightningElement
     ];
 
     get radioWrappers() {
-        return this.radiobuttons.map((rb) => ({
-            singleRadioArray: [rb],
-            value: rb.value
-        }));
-    }
+    return this.radiobuttons.map(rb => ({
+        singleRadioArray: [{
+            ...rb,
+            checked: rb.value === this.absenceType
+        }],
+        value: rb.value
+    }));
+}
 
     handleRequestTypeChange(event) {
         let radiobuttonValues = event.detail;
         radiobuttonValues.forEach((element) => {
             if (element.checked) {
-                this.currentRequestType = element.value;
+                this.absenceType = element.value;
             }
         });
-        this.result.type = this.currentRequestType;
     }
 
     // Absence fields
@@ -1215,14 +1275,19 @@ export default class LibsFullCalendarV2 extends NavigationMixin(LightningElement
     times = [];
     timesBackup;
 
-    isAllDayAbsenceCheckedHandle(event) {
+    handleAllDayEventSet(event) {
         this.isAllDayAbsence = event.detail;
-
+        this.timeFormat = this.isAllDayAbsence ? 'date' : 'datetime';
+        const startTime = this.refs.absenceStartDateTimeInput.value;
+        const endTime = this.refs.absenceEndDateTimeInput.value;
         if (this.isAllDayAbsence) {
-            this.timesBackup = this.times;
-            this.times = [this.times[0]];
+            this.initialAbsenceStart = this.formatLocalDateTime(new Date(startTime), '00', '00');
+            this.initialAbsenceEnd = this.formatLocalDateTime(new Date(endTime), '23', '59');
         } else {
-            this.times = this.timesBackup;
+            const hours = new Date().getHours();
+            const hoursString = (hours < 10 ? '0' : '') + hours.toString();
+            this.initialAbsenceStart = this.formatLocalDateTime(new Date(startTime), hoursString, '00');
+            this.initialAbsenceEnd = this.formatLocalDateTime(new Date(endTime), hoursString, '00');
         }
     }
 
@@ -1235,5 +1300,20 @@ export default class LibsFullCalendarV2 extends NavigationMixin(LightningElement
         const minutes = minutesOverride !== undefined ? minutesOverride : ('0' + date.getMinutes()).slice(-2);
 
         return `${year}-${month}-${day}T${hours}:${minutes}`;
+    }
+
+    validateAbsenceType(absenceType) {
+        return ['Vacation', 'Other', 'Medical'].includes(absenceType);
+    }
+
+    async handleOkay() {
+
+        validInputs = true;
+        errorAbsenceRadioButtonText = '';
+
+        if(!this.validateAbsenceType(absenceType)) {
+
+        }
+
     }
 }
