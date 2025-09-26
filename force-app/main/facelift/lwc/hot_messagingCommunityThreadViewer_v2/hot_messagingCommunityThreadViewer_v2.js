@@ -1,9 +1,8 @@
 import { LightningElement, wire, api } from 'lwc';
 import { NavigationMixin } from 'lightning/navigation';
 import getmessages from '@salesforce/apex/HOT_MessageHelper.getMessagesFromThread';
-import markAsRead from '@salesforce/apex/HOT_MessageHelper.markAsRead';
-import markAsReadByNav from '@salesforce/apex/HOT_MessageHelper.markAsReadByNav';
 import markThreadAsRead from '@salesforce/apex/HOT_MessageHelper.markThreadAsRead';
+import getThreadParticipants from '@salesforce/apex/HOT_ThreadParticipants.getParticipants';
 import { refreshApex } from '@salesforce/apex';
 import getContactId from '@salesforce/apex/HOT_MessageHelper.getUserContactId';
 import getRelatedObjectDetails from '@salesforce/apex/HOT_MessageHelper.getRelatedObjectDetails';
@@ -50,6 +49,7 @@ export default class Hot_messagingCommunityThreadViewer_v2 extends NavigationMix
     latestSenderContactId;
     latestSenderUserId;
     hideReadBy = false;
+    isLoading = false;
 
     @api recordId;
     @api requestId;
@@ -256,31 +256,6 @@ export default class Hot_messagingCommunityThreadViewer_v2 extends NavigationMix
         return this.helptextContent !== '' && this.helptextContent !== undefined ? true : false;
     }
 
-    get amountOfParticipantsInThread() {
-        if (!this.readByText) {
-            return `Personer i samtalen`;
-        }
-
-        const count = this.readByText
-            .split(',')
-            .map((name) => name.trim())
-            .filter((name) => name).length;
-
-        return count === 1 ? `1 person i denne samtalen` : `${count} personer i denne samtalen`;
-    }
-
-    // get participantList() {
-    //     if (!this.readByText) {
-    //         return '';
-    //     }
-
-    //     return this.readByText
-    //         .split(',')
-    //         .map((name) => name.trim())
-    //         .filter((name) => name)
-    //         .join('\n');
-    // }
-
     get participantList() {
         if (!this.readByText) return [];
         return this.readByText
@@ -299,32 +274,19 @@ export default class Hot_messagingCommunityThreadViewer_v2 extends NavigationMix
         }
     }
 
-    showParticipants = false;
-    async handleShowParticipants() {
-        if (!this.userContactId || !this.recordId) return;
+    threadParticipants = [];
 
-        try {
-            const entries = await buildReadByEntriesForThread({
-                threadId: this.recordId,
-                userContactId: this.userContactId
+    handleShowParticipants() {
+        this.isLoading = true;
+        this.showParticipantsModalDetails();
+        getThreadParticipants({ threadId: this.recordId })
+            .then((result) => {
+                this.threadParticipants = result; // lagrer deltakerne
+                this.isLoading = false;
+            })
+            .catch((error) => {
+                console.error(error);
             });
-
-            const labels = [];
-            for (const e of entries || []) {
-                if (!e) continue;
-                const name = e.displayName;
-                if (name) labels.push(this.formatName(name));
-            }
-
-            this.readByText = labels.join(', ');
-            this.showReadBy = labels.length > 0;
-            this.showParticipants = this.showReadBy;
-            this.showParticipantsModalDetails();
-        } catch (error) {
-            console.error('Error fetching participants on button click:', error);
-            this.showReadBy = false;
-            this.showParticipants = false;
-        }
     }
 
     closeModal() {
@@ -515,6 +477,8 @@ export default class Hot_messagingCommunityThreadViewer_v2 extends NavigationMix
     accountName;
 
     goToDetails() {
+        this.isLoading = true;
+        this.showServiceAppointmentDetails();
         getRelatedObjectDetails({ relatedRecordId: this.threadRelatedObjectId }).then((result) => {
             for (var key in result) {
                 let type = result[key];
@@ -614,7 +578,7 @@ export default class Hot_messagingCommunityThreadViewer_v2 extends NavigationMix
                             this.isDetailsContent = true;
                             this.isDetails = true;
                             this.hasAccess = true;
-                            this.showServiceAppointmentDetails();
+                            this.isLoading = false;
                         });
                         break;
 
@@ -646,7 +610,7 @@ export default class Hot_messagingCommunityThreadViewer_v2 extends NavigationMix
                             this.isDetailsContent = true;
                             this.isIRDetails = true;
                             this.hasAccess = true;
-                            this.showServiceAppointmentDetails();
+                            this.isLoading = false;
                         });
                         break;
 
@@ -660,7 +624,7 @@ export default class Hot_messagingCommunityThreadViewer_v2 extends NavigationMix
                             this.isDetailsContent = true;
                             this.isWCDetails = true;
                             this.hasAccess = true;
-                            this.showServiceAppointmentDetails();
+                            this.isLoading = false;
                         });
                         break;
 

@@ -98,10 +98,14 @@
 
                 <!--  -->
                 <template lwc:if={ThreadInfo}>
-                    <span class="slds-badge slds-theme_success">{ThreadInfo}</span>
+                    <br /><br />
+                    <p class="slds-badge slds-theme_success">{ThreadInfo}</p>
                 </template>
-                <template lwc:if={showAccountName}>
-                    <span class="slds-badge slds-theme_success">{accountName}</span>
+                <template for:each={threadParticipants} for:item="participant">
+                    <p class="slds-badge slds-theme_info" key={participant.userId}>
+                        {participant.name}
+                        <template if:true={participant.role}> ({participant.role}) </template>
+                    </p>
                 </template>
                 <br /><br />
                 <div if:true={showButtonDiv}>

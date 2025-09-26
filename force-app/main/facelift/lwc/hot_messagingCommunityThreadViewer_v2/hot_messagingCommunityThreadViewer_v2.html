@@ -20,33 +20,43 @@
                     ></c-button>
 
                     <!-- TODO: Dynamically show how many people in this thread and button will open a modal -->
-                    <!-- <c-button
+                    <c-button
                         button-label="Vis personer i samtalen"
                         type="button"
                         onbuttonclick={handleShowParticipants}
                         desktop-style="background-color: #F2F3F5; color: #23262a;"
                         mobile-style="background-color: #F2F3F5; color: #23262a;"
-                    ></c-button> -->
+                    ></c-button>
                 </div>
 
                 <!-- Participants modal -->
                 <div>
                     <dialog
                         class="modal-participants modal-container"
-                        aria-label="Informasjon om oppdrag"
+                        aria-label="Personer som er med i samtalen"
                         onclose={closeModal}
                     >
-                        <div class="modal-header">
-                            <h2>{amountOfParticipantsInThread}:</h2>
-                            <button class="close-btn" onclick={closeModal} aria-label="Lukk">
-                                <img src={exitCrossIcon} alt="" aria-hidden="true" />
-                            </button>
-                        </div>
-                        <div class="modal-body">
-                            <template for:each={participantList} for:item="participant">
-                                <p class="participant-text" key={participant}>{participant}</p>
-                            </template>
-                        </div>
+                        <template lwc:if={isLoading}>
+                            <div class="loader-container">
+                                <c-hot_loader size="3xlarge"></c-hot_loader>
+                            </div>
+                        </template>
+                        <template lwc:else>
+                            <div class="modal-header">
+                                <h2>Personer med i denne samtalen nå:</h2>
+                                <button class="close-btn" onclick={closeModal} aria-label="Lukk">
+                                    <img src={exitCrossIcon} alt="" aria-hidden="true" />
+                                </button>
+                            </div>
+                            <div class="modal-body">
+                                <template for:each={threadParticipants} for:item="participant">
+                                    <p class="participant-text" key={participant.userId}>
+                                        {participant.name}
+                                        <template if:true={participant.role}> ({participant.role}) </template>
+                                    </p>
+                                </template>
+                            </div>
+                        </template>
                     </dialog>
                 </div>
 
@@ -80,176 +90,188 @@
                 </div>
 
                 <!-- Show Service appointment modal -->
-                <template lwc:if={hasAccess}>
-                    <dialog
-                        class="modal-service-appointment modal-container"
-                        aria-label="Informasjon om oppdrag"
-                        onclose={closeModal}
-                    >
-                        <div class="modal-header">
-                            <h2>Informasjon om oppdraget:</h2>
-                            <button class="close-btn" onclick={closeModal} aria-label="Lukk">
-                                <img src={exitCrossIcon} alt="" aria-hidden="true" />
-                            </button>
+                <dialog
+                    class="modal-service-appointment modal-container"
+                    aria-label="Informasjon om oppdrag"
+                    onclose={closeModal}
+                >
+                    <template lwc:if={isLoading}>
+                        <div class="loader-container">
+                            <c-hot_loader size="3xlarge"></c-hot_loader>
                         </div>
+                    </template>
+                    <template lwc:else>
+                        <template lwc:if={hasAccess}>
+                            <div class="modal-header">
+                                <h2>Informasjon om oppdraget:</h2>
+                                <button class="close-btn" onclick={closeModal} aria-label="Lukk">
+                                    <img src={exitCrossIcon} alt="" aria-hidden="true" />
+                                </button>
+                            </div>
 
-                        <template lwc:if={isDetailsContent}>
-                            <!-- Service Appointment Details -->
-                            <template lwc:if={isDetails}>
-                                <div class="modal-body">
-                                    <p>Oppdragsnummer: <span>{serviceAppointment.AppointmentNumber}</span></p>
-                                    <p>Tema: <span>{serviceAppointment.Subject}</span></p>
-                                    <p>Tid: <span>{serviceAppointment.StartAndEndDate}</span></p>
-                                    <p>Adresse: <span>{serviceAppointment.HOT_AddressFormated__c}</span></p>
+                            <template lwc:if={isDetailsContent}>
+                                <!-- Service Appointment Details -->
+                                <template lwc:if={isDetails}>
+                                    <div class="modal-body">
+                                        <p>Oppdragsnummer: <span>{serviceAppointment.AppointmentNumber}</span></p>
+                                        <p>Tema: <span>{serviceAppointment.Subject}</span></p>
+                                        <p>Tid: <span>{serviceAppointment.StartAndEndDate}</span></p>
+                                        <p>Adresse: <span>{serviceAppointment.HOT_AddressFormated__c}</span></p>
 
-                                    <!-- Show maps if address is present -->
-                                    <template lwc:if={serviceAppointment.HOT_AddressFormated__c}>
-                                        <div style="display: inline-block; padding-right: 1vw">
-                                            <p>Åpne adressen i en karttjeneste (ekstern):</p>
-                                            <div class="maps-button-container">
-                                                <c-button
-                                                    button-styling="secondary"
-                                                    button-label="Google maps"
-                                                    onbuttonclick={openGoogleMaps}
-                                                ></c-button>
+                                        <!-- Show maps if address is present -->
+                                        <template lwc:if={serviceAppointment.HOT_AddressFormated__c}>
+                                            <div style="display: inline-block; padding-right: 1vw">
+                                                <p>Åpne adressen i en karttjeneste (ekstern):</p>
+                                                <div class="maps-button-container">
+                                                    <c-button
+                                                        button-styling="secondary"
+                                                        button-label="Google maps"
+                                                        onbuttonclick={openGoogleMaps}
+                                                    ></c-button>
+                                                </div>
+                                                <div class="maps-button-container">
+                                                    <c-button
+                                                        button-styling="secondary"
+                                                        button-label="Apple maps"
+                                                        onbuttonclick={openAppleMaps}
+                                                    ></c-button>
+                                                </div>
                                             </div>
-                                            <div class="maps-button-container">
-                                                <c-button
-                                                    button-styling="secondary"
-                                                    button-label="Apple maps"
-                                                    onbuttonclick={openAppleMaps}
-                                                ></c-button>
-                                            </div>
-                                        </div>
-                                    </template>
+                                        </template>
 
-                                    <template lwc:if={accountName}>
+                                        <template lwc:if={accountName}>
+                                            <p>
+                                                Navn til bruker:&nbsp;
+                                                <span> {accountName} ({accountAgeGender})</span>
+                                            </p>
+                                        </template>
+
+                                        <template lwc:if={accountPhoneNumber}>
+                                            <p>
+                                                Telefonnummer til bruker:&nbsp;
+                                                <span>{accountPhoneNumber}</span>
+                                            </p>
+                                        </template>
+
+                                        <p>Tolkemetode: <span>{serviceAppointment.HOT_WorkTypeName__c}</span></p>
+                                        <p>Oppdragstype: <span>{serviceAppointment.HOT_AssignmentType__c}</span></p>
+                                        <p>Eier: <span>{serviceAppointment.HOT_Request__r.OwnerName__c}</span></p>
+                                        <p>Status: <span>{serviceAppointment.Status}</span></p>
+                                        <p>Region: <span>{serviceAppointment.HOT_ServiceTerritoryName__c}</span></p>
                                         <p>
-                                            Navn til bruker:&nbsp;
-                                            <span> {accountName} ({accountAgeGender})</span>
+                                            Haptisk kommunikasjon:&nbsp;
+                                            <span>{serviceAppointment.HOT_HapticCommunication__c}</span>
                                         </p>
-                                    </template>
 
-                                    <template lwc:if={accountPhoneNumber}>
+                                        <template lwc:if={serviceAppointment.HOT_Escort__c}>
+                                            <p>Ledsaging: <span>{serviceAppointment.HOT_Escort__c}</span></p>
+                                        </template>
+
+                                        <template lwc:if={serviceAppointment.HOT_DegreeOfHearingAndVisualImpairment__c}>
+                                            <p>
+                                                Vedtak:&nbsp;
+                                                <span
+                                                    >{serviceAppointment.HOT_DegreeOfHearingAndVisualImpairment__c}</span
+                                                >
+                                            </p>
+                                        </template>
+
+                                        <template lwc:if={interestedResource}>
+                                            <p>
+                                                Avtalte betingelser:
+                                                <span>{interestedResource.HOT_TermsOfAgreement__c}</span>
+                                            </p>
+                                        </template>
+
+                                        <p>Tilleggsopplysninger: <span>{serviceAppointment.Description}</span></p>
+
+                                        <template lwc:if={ordererPhoneNumber}>
+                                            <p>Telefonnummer til bestiller:&nbsp;<span>{ordererPhoneNumber}</span></p>
+                                        </template>
+
+                                        <template lwc:if={serviceAppointment.HOT_Dispatcher__c}>
+                                            <p>Formidler: <span>{serviceAppointment.HOT_Dispatcher__c}</span></p>
+                                        </template>
+                                    </div>
+                                </template>
+
+                                <!-- Show Interested Resource Details -->
+                                <template lwc:if={isIRDetails}>
+                                    <div class="modal-body">
+                                        <p>Oppdrag: <span>{interestedResource.AppointmentNumber__c}</span></p>
                                         <p>
-                                            Telefonnummer til bruker:&nbsp;
-                                            <span>{accountPhoneNumber}</span>
+                                            Tema:
+                                            <span>{interestedResource.ServiceAppointmentFreelanceSubject__c}</span>
                                         </p>
-                                    </template>
-
-                                    <p>Tolkemetode: <span>{serviceAppointment.HOT_WorkTypeName__c}</span></p>
-                                    <p>Oppdragstype: <span>{serviceAppointment.HOT_AssignmentType__c}</span></p>
-                                    <p>Eier: <span>{serviceAppointment.HOT_Request__r.OwnerName__c}</span></p>
-                                    <p>Status: <span>{serviceAppointment.Status}</span></p>
-                                    <p>Region: <span>{serviceAppointment.HOT_ServiceTerritoryName__c}</span></p>
-                                    <p>
-                                        Haptisk kommunikasjon:&nbsp;
-                                        <span>{serviceAppointment.HOT_HapticCommunication__c}</span>
-                                    </p>
-
-                                    <template lwc:if={serviceAppointment.HOT_Escort__c}>
-                                        <p>Ledsaging: <span>{serviceAppointment.HOT_Escort__c}</span></p>
-                                    </template>
-
-                                    <template lwc:if={serviceAppointment.HOT_DegreeOfHearingAndVisualImpairment__c}>
+                                        <p>Tid: <span>{interestedResource.StartAndEndDate}</span></p>
+                                        <p>Adresse: <span>{interestedResource.ServiceAppointmentAddress__c}</span></p>
+                                        <p>Tolkemetode: <span>{interestedResource.WorkTypeName__c}</span></p>
+                                        <p>Oppdragstype: <span>{interestedResource.AssignmentType__c}</span></p>
+                                        <p>Status: <span>{interestedResource.Status__c}</span></p>
                                         <p>
-                                            Vedtak:&nbsp;
-                                            <span>{serviceAppointment.HOT_DegreeOfHearingAndVisualImpairment__c}</span>
+                                            Antall påmeldte:
+                                            <span>{interestedResource.NumberOfInterestedResources__c}</span>
                                         </p>
-                                    </template>
-
-                                    <template lwc:if={interestedResource}>
                                         <p>
-                                            Avtalte betingelser:
-                                            <span>{interestedResource.HOT_TermsOfAgreement__c}</span>
+                                            Frigitt dato:
+                                            <span> {interestedResource.ServiceAppointment__r.HOT_ReleaseDate__c}</span>
                                         </p>
-                                    </template>
 
-                                    <p>Tilleggsopplysninger: <span>{serviceAppointment.Description}</span></p>
-
-                                    <template lwc:if={ordererPhoneNumber}>
-                                        <p>Telefonnummer til bestiller:&nbsp;<span>{ordererPhoneNumber}</span></p>
-                                    </template>
-
-                                    <template lwc:if={serviceAppointment.HOT_Dispatcher__c}>
-                                        <p>Formidler: <span>{serviceAppointment.HOT_Dispatcher__c}</span></p>
-                                    </template>
-                                </div>
-                            </template>
-
-                            <!-- Show Interested Resource Details -->
-                            <template lwc:if={isIRDetails}>
-                                <div class="modal-body">
-                                    <p>Oppdrag: <span>{interestedResource.AppointmentNumber__c}</span></p>
-                                    <p>
-                                        Tema:
-                                        <span>{interestedResource.ServiceAppointmentFreelanceSubject__c}</span>
-                                    </p>
-                                    <p>Tid: <span>{interestedResource.StartAndEndDate}</span></p>
-                                    <p>Adresse: <span>{interestedResource.ServiceAppointmentAddress__c}</span></p>
-                                    <p>Tolkemetode: <span>{interestedResource.WorkTypeName__c}</span></p>
-                                    <p>Oppdragstype: <span>{interestedResource.AssignmentType__c}</span></p>
-                                    <p>Status: <span>{interestedResource.Status__c}</span></p>
-                                    <p>
-                                        Antall påmeldte:
-                                        <span>{interestedResource.NumberOfInterestedResources__c}</span>
-                                    </p>
-                                    <p>
-                                        Frigitt dato:
-                                        <span> {interestedResource.ServiceAppointment__r.HOT_ReleaseDate__c}</span>
-                                    </p>
-
-                                    <p>
-                                        Frigitt av:
-                                        <span> {interestedResource.ServiceAppointment__r.HOT_ReleasedBy__c}</span>
-                                    </p>
-                                    <p>Frist dato:<span> {interestedResource.AppointmentDeadlineDate__c}</span></p>
-                                    <p>Region:<span> {interestedResource.AppointmentServiceTerritory__c}</span></p>
-                                    <p>
-                                        Eier:
-                                        <span>
-                                            {interestedResource.ServiceAppointment__r.HOT_Request__r.OwnerName__c}</span
-                                        >
-                                    </p>
-
-                                    <template lwc:if={interestedResource.WorkOrderCanceledDate__c}>
-                                        <p>Avlyst dato: <span>{interestedResource.WorkOrderCanceledDate__c}</span></p>
-                                    </template>
-
-                                    <template lwc:if={interestedResource.HOT_TermsOfAgreement__c}>
                                         <p>
-                                            Avtalte betingelser:
-                                            <span>{interestedResource.HOT_TermsOfAgreement__c}</span>
+                                            Frigitt av:
+                                            <span> {interestedResource.ServiceAppointment__r.HOT_ReleasedBy__c}</span>
                                         </p>
-                                    </template>
-                                </div>
-                            </template>
+                                        <p>Frist dato:<span> {interestedResource.AppointmentDeadlineDate__c}</span></p>
+                                        <p>Region:<span> {interestedResource.AppointmentServiceTerritory__c}</span></p>
+                                        <p>
+                                            Eier:
+                                            <span>
+                                                {interestedResource.ServiceAppointment__r.HOT_Request__r.OwnerName__c}</span
+                                            >
+                                        </p>
 
-                            <!-- Show Wage Claim Details -->
-                            <template lwc:if={isWCDetails}>
-                                <div class="modal-body">
-                                    <p>Oppdragsnummer: <span>{wageClaim.ServiceAppointmentName__c}</span></p>
-                                    <p>Tid: <span>{wageClaim.StartAndEndDate}</span></p>
-                                    <p>Poststed: <span>{wageClaim.ServiceAppointmentCity__c}</span></p>
-                                    <p>Tolkemetode: <span>{wageClaim.WorkTypeName__c}</span></p>
-                                    <p>Oppdragstype: <span>{wageClaim.AssignmentType__c}</span></p>
-                                    <p>
-                                        Eier:
-                                        <span>{wageClaim.ServiceAppointment__r.HOT_Request__r.OwnerName__c}</span>
-                                    </p>
-                                    <p>Døv/døvblind: <span>{wageClaim.DegreeOfHearingAndVisualImpairment__c}</span></p>
-                                    <p>Status: <span>{wageClaim.Status__c}</span></p>
-                                </div>
+                                        <template lwc:if={interestedResource.WorkOrderCanceledDate__c}>
+                                            <p>
+                                                Avlyst dato: <span>{interestedResource.WorkOrderCanceledDate__c}</span>
+                                            </p>
+                                        </template>
+
+                                        <template lwc:if={interestedResource.HOT_TermsOfAgreement__c}>
+                                            <p>
+                                                Avtalte betingelser:
+                                                <span>{interestedResource.HOT_TermsOfAgreement__c}</span>
+                                            </p>
+                                        </template>
+                                    </div>
+                                </template>
+
+                                <!-- Show Wage Claim Details -->
+                                <template lwc:if={isWCDetails}>
+                                    <div class="modal-body">
+                                        <p>Oppdragsnummer: <span>{wageClaim.ServiceAppointmentName__c}</span></p>
+                                        <p>Tid: <span>{wageClaim.StartAndEndDate}</span></p>
+                                        <p>Poststed: <span>{wageClaim.ServiceAppointmentCity__c}</span></p>
+                                        <p>Tolkemetode: <span>{wageClaim.WorkTypeName__c}</span></p>
+                                        <p>Oppdragstype: <span>{wageClaim.AssignmentType__c}</span></p>
+                                        <p>
+                                            Eier:
+                                            <span>{wageClaim.ServiceAppointment__r.HOT_Request__r.OwnerName__c}</span>
+                                        </p>
+                                        <p>
+                                            Døv/døvblind: <span>{wageClaim.DegreeOfHearingAndVisualImpairment__c}</span>
+                                        </p>
+                                        <p>Status: <span>{wageClaim.Status__c}</span></p>
+                                    </div>
+                                </template>
                             </template>
                         </template>
-                        <!-- User has no access -->
                         <template lwc:else>
                             <div class="modal-body">
-                                <p>Finner ikke informasjon om oppdraget</p>
+                                <p>Noe gikk galt!</p>
                             </div>
                         </template>
-                    </dialog>
-                </template>
+                    </template>
+                </dialog>
 
                 <c-hot_community-error-summary
                     error-list={errorList}

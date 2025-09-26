@@ -9,27 +9,6 @@ public without sharing class HOT_MessageHelper {
     public static string getUserContactId() {
         return [SELECT Id, ContactId FROM User WHERE Id = :UserInfo.getUserId()]?.ContactId;
     }
-    @AuraEnabled
-    public static String getAccountOnThread(Id recordId) {
-        String result;
-        if (HOT_ThreadDetailController.checkAccess(recordId)) {
-            Thread__c thread = [
-                SELECT CRM_Account__r.Name, CRM_Related_Object__c
-                FROM Thread__c
-                WHERE Id = :recordId
-                LIMIT 1
-            ];
-            Id search = thread.CRM_Related_Object__c;
-            String objectType = String.valueOf(search.getsobjecttype());
-            if (objectType == 'WorkOrder') {
-                WorkOrder wo = [SELECT Id, HOT_Interpreters__c FROM WorkOrder WHERE Id = :search];
-                result = wo.HOT_Interpreters__c;
-            } else {
-                result = thread.CRM_Account__r.Name;
-            }
-        }
-        return result;
-    }
 
     @AuraEnabled(cacheable=true)
     public static Id getAccountOnRequest(Id recordId) {
