@@ -279,8 +279,6 @@ export default class Hot_messagingCommunityThreadViewer_v2 extends NavigationMix
     handleShowParticipants() {
         this.isLoading = true;
         this.showParticipantsModalDetails();
-
-        console.log('id' + this.recordId);
         getThreadParticipants({ threadId: this.recordId })
             .then((result) => {
                 this.threadParticipants = result; // lagrer deltakerne
