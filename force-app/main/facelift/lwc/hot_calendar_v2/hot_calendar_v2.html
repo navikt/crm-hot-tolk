@@ -1,0 +1,405 @@
+<template>
+    <div class="full-card">
+        <div class="calendar-wrapper">
+            <div class="calendar" lwc:dom="manual"></div>
+            <template lwc:if={isLoading}>
+                <lightning-spinner alternative-text="Loading" size="large"></lightning-spinner>
+            </template>
+            <!-- <template lwc:if={isLoading}>
+                <div class="loader-container">
+                    <c-hot_loader size="3xlarge"></c-hot_loader>
+                </div>
+            </template> -->
+        </div>
+
+        <!-- Information modal -->
+        <div>
+            <dialog class="modal-information modal-container" aria-label="Informasjon om oppdrag" onclose={closeModal}>
+                <div class="modal-header">
+                    <template lwc:if={isInformationModalOpen}>
+                        <h2>Informasjon om oppdraget:</h2>
+                        <button class="close-btn" onclick={closeModal} aria-label="Lukk">
+                            <img src={exitCrossIcon} alt="" aria-hidden="true" />
+                        </button>
+                    </template>
+                </div>
+                <div class="modal-body">
+                    <!-- Service appointment details -->
+                    <template lwc:if={isInformationModalOpen}>
+                        <section lwc:if={isSADetails}>
+                            <template lwc:if={hasAccess}>
+                                <template lwc:if={serviceAppointment}>
+                                    <div>
+                                        <p>Oppdragsnummer: <span>{serviceAppointment.AppointmentNumber}</span></p>
+                                        <p>Tema: <span>{serviceAppointment.Subject}</span></p>
+                                        <p>
+                                            Tid:
+                                            <span
+                                                >{serviceAppointment.weekday} {serviceAppointment.StartAndEndDate}</span
+                                            >
+                                        </p>
+                                        <p lwc:if={serviceAppointment.HOT_AddressFormated__c}>
+                                            Adresse: <span>{serviceAppointment.HOT_AddressFormated__c}</span>
+                                        </p>
+                                        <div
+                                            lwc:if={serviceAppointment.HOT_AddressFormated__c}
+                                            style="display: inline-block; padding-right: 1vw"
+                                        >
+                                            <p>Åpne adressen i en karttjeneste (ekstern):</p>
+                                            <div
+                                                style="
+                                                    display: inline-block;
+                                                    padding-right: 1vw;
+                                                    padding-bottom: 1vw;
+                                                    padding-top: 1vw;
+                                                "
+                                            >
+                                                <c-button
+                                                    button-styling="secondary"
+                                                    button-label="Google maps"
+                                                    onbuttonclick={openGoogleMaps}
+                                                ></c-button>
+                                            </div>
+                                            <div
+                                                style="
+                                                    display: inline-block;
+                                                    padding-right: 1vw;
+                                                    padding-bottom: 1vw;
+                                                    padding-top: 1vw;
+                                                "
+                                            >
+                                                <c-button
+                                                    button-styling="secondary"
+                                                    button-label="Apple maps"
+                                                    onbuttonclick={openAppleMaps}
+                                                ></c-button>
+                                            </div>
+                                        </div>
+
+                                        <p lwc:if={serviceAppointment.ActualStartTime}>
+                                            Faktisk start: <span>{serviceAppointment.ActualStartTime}</span>
+                                        </p>
+                                        <p lwc:if={serviceAppointment.ActualEndTime}>
+                                            Faktisk slutt: <span>{serviceAppointment.ActualEndTime}</span>
+                                        </p>
+                                        <p lwc:if={accountName}>
+                                            Navn til bruker:&nbsp;
+                                            <span> {accountName} ({accountAgeGender})</span>
+                                        </p>
+                                        <p lwc:if={accountPhoneNumber}>
+                                            Telefonnummer til bruker:&nbsp;
+                                            <span>{accountPhoneNumber}</span>
+                                        </p>
+                                        <p>Tolkemetode: <span>{serviceAppointment.HOT_WorkTypeName__c}</span></p>
+                                        <p>Oppdragstype: <span>{serviceAppointment.HOT_AssignmentType__c}</span></p>
+                                        <p lwc:if={ownerName}>Eier: <span>{ownerName}</span></p>
+
+                                        <p>Status: <span>{serviceAppointment.Status}</span></p>
+                                        <p>Region: <span>{serviceAppointment.HOT_ServiceTerritoryName__c}</span></p>
+                                        <p>
+                                            Haptisk kommunikasjon:&nbsp;
+                                            <span>{serviceAppointment.HOT_HapticCommunication__c}</span>
+                                        </p>
+                                        <p lwc:if={serviceAppointment.HOT_Escort__c}>
+                                            Ledsaging: <span>{serviceAppointment.HOT_Escort__c}</span>
+                                        </p>
+                                        <p></p>
+                                        <p lwc:if={serviceAppointment.HOT_DegreeOfHearingAndVisualImpairment__c}>
+                                            Vedtak:&nbsp;
+                                            <span>{serviceAppointment.HOT_DegreeOfHearingAndVisualImpairment__c}</span>
+                                        </p>
+                                        <p lwc:if={termsOfAgreement}>
+                                            Avtalte betingelser: <span>{termsOfAgreement}</span>
+                                        </p>
+                                        <p lwc:if={serviceAppointment.HOT_Interpreters__c}>
+                                            (Med)tolk: <span>{serviceAppointment.HOT_Interpreters__c}</span>
+                                        </p>
+                                        <p lwc:if={serviceAppointment.Description}>
+                                            Tilleggsopplysninger: <span>{serviceAppointment.Description}</span>
+                                        </p>
+
+                                        <p lwc:if={ordererPhoneNumber}>
+                                            Telefonnummer til bestiller:&nbsp;
+                                            <span>{ordererPhoneNumber}</span>
+                                        </p>
+                                        <p>Annen betaler: <span>{isOtherProvider}</span></p>
+                                        <p lwc:if={serviceAppointment.HOT_Dispatcher__c}>
+                                            Formidler: <span>{serviceAppointment.HOT_Dispatcher__c}</span>
+                                        </p>
+
+                                        <div class="files-container">
+                                            <c-record-files-with-sharing
+                                                record-id={serviceAppointment.Id}
+                                                is-get-all="true"
+                                                is-delete-option="false"
+                                                title="Vedlegg"
+                                                delete-file-on-button-click="false"
+                                            ></c-record-files-with-sharing>
+                                        </div>
+                                    </div>
+
+                                    <div
+                                        style="
+                                            display: inline-block;
+                                            padding-right: 1vw;
+                                            padding-bottom: 1vw;
+                                            padding-top: 1vw;
+                                        "
+                                    >
+                                        <c-button
+                                            disabled={saIsEditButtonDisabled}
+                                            hidden={saIsEditButtonHidden}
+                                            onbuttonclick={changeStatus}
+                                            button-styling="Primary"
+                                            type="Submit"
+                                            button-label="Endre status"
+                                        >
+                                        </c-button>
+                                        <c-button
+                                            hidden={saIsCancelButtonHidden}
+                                            onbuttonclick={cancelStatusFlow}
+                                            button-styling="Secondary"
+                                            type="Submit"
+                                            button-label="Avbryt"
+                                        >
+                                        </c-button>
+                                    </div>
+                                    <div lwc:if={saIsflow} class="flow-container">
+                                        <lightning-flow
+                                            flow-api-name="HOT_ChangeServiceAppointmentStatus_V1"
+                                            flow-input-variables={flowVariables}
+                                            onstatuschange={handleStatusChange}
+                                        ></lightning-flow>
+                                    </div>
+                                    <p>Samtale med:</p>
+                                    <div class="button-container">
+                                        <div class="button-wrapper">
+                                            <c-button
+                                                button-styling="Primary"
+                                                type="Submit"
+                                                onbuttonclick={goToThreadFreelance}
+                                                button-label="Bruker"
+                                                disabled={isGoToThreadButtonDisabled}
+                                            ></c-button>
+                                        </div>
+                                        <div class="button-wrapper">
+                                            <c-button
+                                                button-styling="Primary"
+                                                type="Submit"
+                                                onbuttonclick={goToThreadInterpreters}
+                                                disabled={isGoToThreadInterpretersButtonDisabled}
+                                                button-label="Medtolker"
+                                            ></c-button>
+                                        </div>
+                                        <div class="button-wrapper">
+                                            <c-button
+                                                button-styling="Primary"
+                                                type="Submit"
+                                                onbuttonclick={goToThreadServiceAppointment}
+                                                button-label="Formidler"
+                                                disabled={isGoToThreadServiceAppointmentButtonDisabled}
+                                            ></c-button>
+                                        </div>
+                                    </div>
+                                </template>
+                            </template>
+                            <template lwc:else>
+                                <p></p>
+                                <p>Du er ikke tildelt oppdraget lenger.</p>
+                            </template>
+                        </section>
+
+                        <!-- Wage claim details-->
+                        <section lwc:if={isWCDetails}>
+                            <div lwc:if={wageClaim}>
+                                <div>
+                                    <p>Oppdragsnummer: <span>{wageClaim.ServiceAppointmentName__c}</span></p>
+                                    <p>Tid: <span>{wageClaim.weekday} {wageClaim.StartAndEndDate}</span></p>
+                                    <p>Poststed: <span>{wageClaim.ServiceAppointmentCity__c}</span></p>
+                                    <p>Tolkemetode: <span>{wageClaim.WorkTypeName__c}</span></p>
+                                    <p>Oppdragstype: <span>{wageClaim.AssignmentType__c}</span></p>
+                                    <p>
+                                        Eier: <span>{wageClaim.ServiceAppointment__r.HOT_Request__r.OwnerName__c}</span>
+                                    </p>
+                                    <p>Døv/døvblind: <span>{wageClaim.DegreeOfHearingAndVisualImpairment__c}</span></p>
+                                    <p>Status: <span>{wageClaim.Status__c}</span></p>
+                                </div>
+                                <div
+                                    style="
+                                        display: inline-block;
+                                        padding-right: 1vw;
+                                        padding-bottom: 1vw;
+                                        padding-top: 1vw;
+                                    "
+                                >
+                                    <c-button
+                                        disabled={wcIsNotRetractable}
+                                        button-styling="primary"
+                                        button-label="Tilbaketrekk tilgjengelighet"
+                                        aria-label="Tilbaketrekk tilgjengelighet"
+                                        onbuttonclick={showModalRetract}
+                                    >
+                                    </c-button>
+                                </div>
+                                <div style="display: inline-block; padding-bottom: 1vw">
+                                    <c-button
+                                        disabled={wcIsDisabledGoToThread}
+                                        button-styling="primary"
+                                        button-label="Samtale med ressurskontor"
+                                        aria-label="Samtale med ressurskontor"
+                                        onbuttonclick={goToWageClaimThread}
+                                    >
+                                    </c-button>
+                                </div>
+                            </div>
+                        </section>
+                    </template>
+                </div>
+            </dialog>
+        </div>
+
+        <!-- Absence modal -->
+        <dialog class="modal-absence modal-container" aria-label="Register nytt fravær">
+            <div class="modal-header">
+                <!-- Dynamic header shows "Endre/Slett fravær" || "Registrer nytt fravær" -->
+                <h2>{headerAbsenceText}</h2>
+                <button class="close-btn" onclick={closeModal} aria-label="Lukk">
+                    <img src={exitCrossIcon} alt="" aria-hidden="true" />
+                </button>
+            </div>
+            <div class="modal-body">
+                <!-- Radio buttons -->
+                <h2 class="sub-header-absence">Type fravær</h2>
+                <template for:each={radioWrappers} for:item="radio">
+                    <div key={radio.value}>
+                            <c-radiobuttons
+                                radiobuttons={radio.singleRadioArray}
+                                group-name="testRadioGroup"
+                                onradiobuttonsclick={handleRequestTypeChange}
+                            ></c-radiobuttons>
+                    </div>
+                </template>
+
+                <!-- Checkbox whole day -->
+                <c-checkbox
+                    label="Heldags"
+                    default-val={isAllDayAbsence}
+                    oncheckboxclick={handleAllDayEventSet}
+                    desktop-style="margin-top: 0.15rem; margin-bottom: 0.25rem"
+                    mobile-style="margin-top: 0.25rem; margin-bottom: 0.25rem"
+                ></c-checkbox>
+
+                <template lwc:if={isAllDayAbsence}>
+                    <!-- Whole day hidden container until AllDay is checked-->
+                    <div class="whole-day-hidden-container">
+                        <!-- Start date -->
+                        <c-input
+                            label="Legg inn startdato/tid"
+                            data-id="date"
+                            type="date"
+                            name={value}
+                            value={value}
+                            error-text="Feltet må fylles ut."
+                            desktop-style="font-weight:normal"
+                            mobile-style="padding-bottom: 1vw"
+                        ></c-input>
+
+                        <!-- End date -->
+                        <c-input
+                            label="Legg inn sluttdato/tid"
+                            data-id="date"
+                            type="date"
+                            name={value}
+                            value={value}
+                            error-text="Feltet må fylles ut."
+                            mobile-style="padding-bottom: 1vw"
+                        ></c-input>
+                    </div>
+                </template>
+                <template lwc:else>
+                    <!-- TODO: Start time -->
+                    <div>
+                        <h2 class="sub-header-absence">Legg inn startdato/tid</h2>
+
+                        <div class="start-time-container">
+                            <!-- TODO: Add value for the date -->
+                            <!-- ongetvalueonchange={handleDateChange} -->
+                            <!-- name={it.value.id}
+                         value={it.value.date} -->
+                            <c-input
+                                label="Dato"
+                                data-id="date"
+                                type="date"
+                                name={value}
+                                value={initialAbsenceStart}
+                                error-text="Feltet må fylles ut."
+                                mobile-style="padding-bottom: 1vw"
+                            ></c-input>
+                            <!-- value={it.value.startTimeString} -->
+                            <!-- name={it.value.id} -->
+                            <!-- ongetvalueonchange={handleStartTimeChange} -->
+                            <c-input
+                                label="Starttid"
+                                data-id="startTime"
+                                type="time"
+                                value={value}
+                                error-text="Feltet må fylles ut."
+                                name={value}
+                                desktop-style="margin-left: 0.5rem;"
+                                mobile-style="margin-left: 0.5rem;"
+                            ></c-input>
+                        </div>
+
+                        <!-- TODO: End time -->
+                        <h2 class="sub-header-absence">Legg inn sluttdato/tid</h2>
+                        <div class="end-time-container">
+                            <c-input
+                                label="Dato"
+                                data-id="date"
+                                type="date"
+                                name={value}
+                                value={value}
+                                error-text="Feltet må fylles ut."
+                                mobile-style="padding-bottom: 1vw"
+                            ></c-input>
+                            <!-- value={it.value.endTimeString} -->
+                            <!-- ongetvalueonchange={handleEndTimeChange} -->
+                            <c-input
+                                label="Sluttid"
+                                data-id="endTime"
+                                type="time"
+                                value={value}
+                                error-text="Feltet må fylles ut."
+                                name={value}
+                                desktop-style="margin-left: 0.5rem;"
+                                mobile-style="margin-left: 0.5rem;"
+                            ></c-input>
+                        </div>
+                    </div>
+                </template>
+
+                <!-- Absence button container -->
+                <div class="button-container">
+                    <template lwc:if={isEdit}>
+                        <!-- Delete button -->
+                        <c-button
+                            button-label="Slett"
+                            button-styling="Danger"
+                            desktop-style="width: 6rem; justify-content: center; margin-right: 0.25rem"
+                            mobile-style="justify-content: center;"
+                        ></c-button>
+
+                    </template>
+                    <!-- Register and edit absence button -->
+                    <c-button
+                        button-label={registerButtonText}
+                        button-styling="primary"
+                        desktop-style="width: 6rem; justify-content: center;"
+                        mobile-style="justify-content: center;"
+                        onbuttonclick={handleOkay}
+                    ></c-button>
+                </div>
+            </div>
+        </dialog>
+    </div>
+</template>
