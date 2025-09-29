@@ -72,6 +72,7 @@ private class HOT_ThreadParticipantsTest {
                         Email = email,
                         ProfileId = profile.Id,
                         EmailEncodingKey = 'UTF-8',
+                        UserRoleId = role.Id,
                         CommunityNickname = acc.LastName,
                         TimeZoneSidKey = 'Europe/Paris',
                         LocaleSidKey = 'no_NO',
