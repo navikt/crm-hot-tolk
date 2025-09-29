@@ -39,6 +39,7 @@ private class HOT_ThreadParticipantsTest {
             WHERE Id IN :accountsToInsert
         ];
         Profile profile = [SELECT Id FROM Profile WHERE Name = 'Customer Community Plus User' LIMIT 1];
+        UserRole userRole = [SELECT Id FROM UserRole LIMIT 1];
         // Steg 4: Opprett Users koblet til hver PersonContact
         List<User> usersToInsert = new List<User>();
         for (Account acc : accounts) {
@@ -53,6 +54,7 @@ private class HOT_ThreadParticipantsTest {
                         Username = email,
                         Email = email,
                         ProfileId = profile.Id,
+                        UserRoleId = userRole.Id,
                         EmailEncodingKey = 'UTF-8',
                         CommunityNickname = acc.LastName,
                         TimeZoneSidKey = 'Europe/Paris',
