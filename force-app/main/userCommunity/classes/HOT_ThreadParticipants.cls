@@ -129,7 +129,7 @@ public without sharing class HOT_ThreadParticipants {
                 Participant participant = new Participant();
                 participant.name = formatName(request.Account__r.Name);
                 participant.role = 'Tolkebruker';
-                participant.userId = request.Account__r.Name;
+                participant.userId = user.Id;
                 participantList.add(participant);
             }
         }
