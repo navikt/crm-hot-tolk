@@ -1,4 +1,4 @@
-@IsTest
+@IsTest(IsParallel=true)
 private class HOT_EventHandlerTest {
     // ---------- Test Utilities ----------
     private static Event makeEvent(
@@ -73,7 +73,6 @@ private class HOT_EventHandlerTest {
         System.assert(remaining.containsKey(blankDesc.Id), 'Events with blank Description should remain.');
     }
 
-    
     // ---------- Direct-method tests to cover return/continue branches ----------
 
     @IsTest
@@ -95,10 +94,7 @@ private class HOT_EventHandlerTest {
     @IsTest
     static void continuesOnNullRecordAndNoId() {
         // Covers: e == null, e.Id == null
-        List<Event> input = new List<Event>{
-            null,
-            new Event()
-        };
+        List<Event> input = new List<Event>{ null, new Event() };
         Test.startTest();
         HOT_EventHandler.deleteFaultyOutlookSyncEvents(input);
         Test.stopTest();

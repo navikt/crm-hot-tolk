@@ -2,7 +2,7 @@
     <main class="mainContent" role="main" aria-label="Bestillinger">
         <div class="mine-bestillinger-wrapper">
             <div class="back-button-info">
-                <c-hot_back-button is-series={isSeries}></c-hot_back-button>
+                <c-hot_back-button is-series={isSeries} url-state-parameters={urlStateParameters}></c-hot_back-button>
             </div>
             <h1 class="header">{headerToShow}</h1>
             <div class="header-buttons">
@@ -209,7 +209,7 @@
                 <c-hot_common-table-requests
                     if:false={isWorkOrderDetails}
                     columns={columns}
-                    records={records}
+                    records={viewRows}
                     label-map={labelMap}
                     aria-label="Bestillingstabell"
                     onrowclick={goToRecordDetails}

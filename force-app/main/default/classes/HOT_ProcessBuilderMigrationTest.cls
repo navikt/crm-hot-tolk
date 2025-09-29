@@ -1,4 +1,4 @@
-@IsTest
+@IsTest(IsParallel=true)
 public class HOT_ProcessBuilderMigrationTest {
     @IsTest
     public static void personProcessorTest() {
