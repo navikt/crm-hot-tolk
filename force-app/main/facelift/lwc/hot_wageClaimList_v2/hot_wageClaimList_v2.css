@@ -30,9 +30,6 @@ span {
 dialog.modal-container h2 {
     font-family: 'Source Sans Pro', Arial, sans-serif;
 }
-dialog.modal-container p {
-    font-weight: bold;
-}
 
 /* Backdrop */
 dialog::backdrop {
