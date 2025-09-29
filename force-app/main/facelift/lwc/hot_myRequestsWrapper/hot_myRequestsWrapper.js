@@ -138,7 +138,7 @@ export default class Hot_myRequestsWrapper extends NavigationMixin(LightningElem
         return records.map((record) => ({
             Id: record.Id,
             StartAndEndDate: record.StartAndEndDate,
-            Status: record.Status,
+            Status: record?.HOT_Request__r?.ExternalRequestStatus__c ?? record.Status,
             Subject: record.HOT_Request__r?.Subject__c,
             HOT_AddressFormated__c: record.HOT_AddressFormated__c,
             HOT_Interpreters__c: record.HOT_Interpreters__c
@@ -208,9 +208,14 @@ export default class Hot_myRequestsWrapper extends NavigationMixin(LightningElem
 
     goToRecordDetails(event) {
         window.scrollTo(0, 0);
-        const record = event.detail;
+        const record = event?.detail?.row ?? event?.detail ?? {};
         const recordId = record.Id;
-        let level = record.HOT_Request__r.IsSerieoppdrag__c ? 'R' : 'WO';
+        const fullRecord = this.records.find((r) => r.Id === recordId);
+        if (!fullRecord) {
+            return;
+        }
+
+        let level = fullRecord?.HOT_Request__r?.IsSerieoppdrag__c ? 'R' : 'WO';
         if (this.urlStateParameters.level === 'R') {
             level = 'WO';
         }
