@@ -54,22 +54,6 @@ private class HOT_ThreadParticipantsTest {
 
         Profile profile = [SELECT Id FROM Profile WHERE Name = 'Customer Community Plus User' LIMIT 1];
 
-        // Opprett en system administrator user for runAs
-        User adminUser = new User(
-            FirstName = 'Admin',
-            LastName = 'User',
-            Alias = 'admusr',
-            Username = 'adminuser' + DateTime.now().getTime() + '@test.com',
-            Email = 'adminuser@nav.no',
-            ProfileId = [SELECT Id FROM Profile WHERE Name = 'System Administrator' LIMIT 1]
-            .Id,
-            EmailEncodingKey = 'UTF-8',
-            TimeZoneSidKey = 'Europe/Paris',
-            LocaleSidKey = 'no_NO',
-            LanguageLocaleKey = 'no'
-        );
-        insert adminUser;
-
         // Steg 3: Opprett Users koblet til hver PersonContact med runAs adminUser
         List<User> usersToInsert = new List<User>();
         for (Account acc : accounts) {
@@ -93,9 +77,7 @@ private class HOT_ThreadParticipantsTest {
                 );
             }
         }
-        System.runAs(adminUser) {
-            insert usersToInsert;
-        }
+        insert usersToInsert;
         data.users = usersToInsert;
 
         // Opprett annen testdata
