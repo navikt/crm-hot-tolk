@@ -1,13 +1,22 @@
 <template>
-    <div class={containerClass}>
-        <div class="back-button" onclick={goBack}>
+    <div>
+        <button
+            class="back-button"
+            onclick={goBack}
+            onkeydown={handleKeyDown}
+            type="button"
+            aria-label={computedAriaLabel}
+            title={computedAriaLabel}
+        >
             <lightning-icon
                 icon-name="utility:back"
-                alternative-text="Tilbake"
-                size="x-small"
+                alternative-text=""
                 class="back-icon"
+                size="x-small"
+                aria-hidden="true"
             ></lightning-icon>
             <span class="back-label">Tilbake</span>
-        </div>
+            <span class="slds-assistive-text">til {computedDestinationLabel}</span>
+        </button>
     </div>
 </template>

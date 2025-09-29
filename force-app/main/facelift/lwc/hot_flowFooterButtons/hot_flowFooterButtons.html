@@ -1,0 +1,39 @@
+<template>
+    <div class="button-container">
+        <template lwc:if={showBack}>
+            <c-button
+                type="Button"
+                onbuttonclick={handleBack}
+                button-label="Forrige"
+                button-styling="Secondary"
+                aria-label="Forrige"
+                desktop-style="width: 5rem; justify-content: center; margin-right: 0.5rem;"
+                mobile-style="justify-content: center; margin-right: 0.5rem;"
+            ></c-button>
+        </template>
+
+        <template lwc:if={showNext}>
+            <c-button
+                type="Button"
+                onbuttonclick={handleNext}
+                button-label="Neste"
+                button-styling="Primary"
+                aria-label="Neste"
+                desktop-style="width: 5rem; justify-content: center;  margin-right: 0.5rem;"
+                mobile-style="justify-content: center;  margin-right: 0.5rem;"
+            ></c-button>
+        </template>
+
+        <template lwc:if={showFinish}>
+            <c-button
+                type="Button"
+                onbuttonclick={handleFinish}
+                button-label="Fullfør"
+                button-styling="Primary"
+                aria-label="Fullfør"
+                desktop-style="width: 5rem; justify-content: center; "
+                mobile-style="justify-content: center;"
+            ></c-button>
+        </template>
+    </div>
+</template>

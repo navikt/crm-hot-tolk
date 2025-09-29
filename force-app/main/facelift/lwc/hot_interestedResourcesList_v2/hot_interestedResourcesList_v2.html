@@ -1,0 +1,95 @@
+<template>
+    <template lwc:if={hasResult}>
+        <div class="main-content">
+            <c-hot_freelance-common-table
+                records={records}
+                columns={columns}
+                onrowclick={goToRecordDetails}
+                icon-by-value={iconByValue}
+            >
+            </c-hot_freelance-common-table>
+        </div>
+    </template>
+
+    <template lwc:elseif={noInterestedResourcesResult}>
+        <div style="text-align: center" aria-live="polite">
+            <br />
+            <p>Du har ingen påmeldte oppdrag.</p>
+            <br />
+        </div>
+    </template>
+    <template lwc:if={dataLoader}>
+        <div class="loader-container">
+            <c-hot_loader size="3xlarge"></c-hot_loader>
+        </div>
+    </template>
+
+    <template lwc:elseif={noFilteredRecordsResult}>
+        <div style="text-align: center" aria-live="polite">
+            <br />
+            <p>Det er ingen oppdrag med denne filtreringen. Du kan endre filteret for å se andre oppdrag</p>
+            <br />
+        </div>
+    </template>
+    <!-- MODAL SOM VISES NÅR MAN TRYKKER PÅ OPPDRAG OG KOMMER FRA VARSEL-->
+    <dialog class="modal-container" aria-label="Informasjon om oppdrag" aria-modal="true" onclose={closeModal}>
+        <div class="modal-header">
+            <h2>Informasjon om oppdraget:</h2>
+            <button class="close-btn" onclick={closeModal} aria-label="Lukk">
+                <img src={exitCrossIcon} alt="" aria-hidden="true" />
+            </button>
+        </div>
+        <template lwc:if={hasAccess}>
+            <div class="modal-body">
+                <div lwc:if={isDetails}>
+                    <div>
+                        <p><strong>Oppdrag:</strong> {appointmentNumber}</p>
+                        <p><strong>Tema:</strong> {subject}</p>
+                        <p><strong>Tid:</strong> {time}</p>
+                        <p><strong>Adresse:</strong> {address}</p>
+                        <p><strong>Tolkemetode:</strong> {workType}</p>
+                        <p><strong>Oppdragstype:</strong> {assignmentType}</p>
+                        <p><strong>Status:</strong> {status}</p>
+                        <p><strong>Antall påmeldte:</strong> {numberOfResources}</p>
+                        <p><strong>Frigitt dato:</strong> {releaseDate}</p>
+                        <p><strong>Frigitt av:</strong> {releasedBy}</p>
+                        <p><strong>Frist dato:</strong> {deadline}</p>
+                        <p><strong>Annen betaler:</strong> {isOtherProvider}</p>
+                        <p><strong>Region:</strong> {region}</p>
+                        <p><strong>Eier:</strong> {ownerName}</p>
+
+                        <p lwc:if={canceledDate}><strong>Avlyst dato:</strong> {canceledDate}</p>
+
+                        <p lwc:if={terms}><strong>Avtalte betingelser:</strong> {terms}</p>
+                    </div>
+
+                    <div style="display: inline-block; padding-right: 1vw; padding-bottom: 1vw; padding-top: 1vw">
+                        <c-button
+                            disabled={isNotRetractable}
+                            onbuttonclick={retractInterest}
+                            button-styling="Primary"
+                            type="Submit"
+                            button-label="Tilbaketrekk interesse"
+                            mobile-style="margin-top: 2rem; margin-bottom: 1rem"
+                        >
+                        </c-button>
+                    </div>
+                    <div style="display: inline-block; padding-right: 1vw; padding-bottom: 1vw; padding-top: 1vw">
+                        <c-button
+                            disabled={isGoToThreadButtonDisabled}
+                            button-label="Samtale med formidler"
+                            button-styling="Primary"
+                            onbuttonclick={goToInterestedResourceThread}
+                        ></c-button>
+                    </div>
+                </div>
+            </div>
+        </template>
+        <template lwc:else>
+            <div class="modal-body">
+                <p></p>
+                <p>Du er ikke tildelt oppdraget lenger.</p>
+            </div>
+        </template>
+    </dialog>
+</template>

@@ -1900,11 +1900,6 @@
     </fieldPermissions>
     <fieldPermissions>
         <editable>true</editable>
-        <field>Thread__c.CRM_Last_Edited_By__c</field>
-        <readable>true</readable>
-    </fieldPermissions>
-    <fieldPermissions>
-        <editable>true</editable>
         <field>Thread__c.CRM_Latest_Message_Datetime__c</field>
         <readable>true</readable>
     </fieldPermissions>
@@ -1956,11 +1951,6 @@
     <fieldPermissions>
         <editable>true</editable>
         <field>Thread__c.CRM_Original_Person_NAV_Unit__c</field>
-        <readable>true</readable>
-    </fieldPermissions>
-    <fieldPermissions>
-        <editable>true</editable>
-        <field>Thread__c.CRM_Recipient__c</field>
         <readable>true</readable>
     </fieldPermissions>
     <fieldPermissions>

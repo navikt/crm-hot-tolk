@@ -1,0 +1,112 @@
+button.threadCard {
+    appearance: none;
+    -webkit-appearance: none;
+    font: inherit;
+    line-height: inherit;
+    display: block;
+    width: 100%;
+    text-align: left;
+    cursor: pointer;
+}
+.threadCard {
+    background-color: #f2f3f5;
+    padding: 1rem 2rem;
+    margin-bottom: 0.5rem;
+    border-radius: 0.5rem;
+    border: 4px solid #f2f3f5;
+}
+.threadCard:hover {
+    border-color: #e0e3e6;
+    background-color: #e0e3e6;
+}
+.threadCard:focus {
+    outline: none;
+    background-color: #e0e3e6;
+    border-color: #0067c5;
+}
+
+.threadCardHeader {
+    display: flex;
+    justify-content: space-between;
+}
+.threadCardBottom {
+    display: flex;
+    justify-content: flex-start;
+    gap: 0.5rem;
+    padding-top: 0.5rem;
+}
+.threadCardHeader-left p {
+    font-size: 1.25rem;
+    font-weight: bold;
+}
+p {
+    font-size: 1.125rem;
+}
+.threadCardHeader-left {
+    font-weight: bold;
+    flex: 1 1 0;
+    min-width: 0;
+    overflow-wrap: anywhere;
+    word-break: break-word;
+}
+
+/* Datoen skal ikke brytes eller krympe */
+.threadCardHeader-right {
+    flex: 0 0 auto;
+    white-space: nowrap;
+    margin-left: 1rem;
+}
+@media (max-width: 768px) {
+    .threadCardHeader {
+        flex-direction: column;
+        align-items: flex-start;
+    }
+    .threadCard {
+        margin: 0;
+        margin-bottom: 1rem;
+        padding: 0.5rem;
+    }
+    .threadCardHeader-right {
+        margin-left: 0;
+        max-width: 100%;
+        word-break: normal;
+        overflow-wrap: normal;
+    }
+    .threadCardHeader-left {
+        padding-bottom: 0.5rem;
+    }
+}
+.unreadThread {
+    background-color: #ffc166;
+}
+
+.readThread {
+    background-color: #99dead;
+}
+.tagBox {
+    padding: 0.5rem;
+    padding-top: 0.2rem;
+    padding-bottom: 0.2rem;
+    border-radius: 0.25rem;
+}
+.threadType {
+    background-color: #d5d9de;
+}
+
+.desktop-only {
+    display: block;
+}
+
+.mobile-only {
+    display: none;
+}
+
+/* Mobilvisning */
+@media (max-width: 768px) {
+    .desktop-only {
+        display: none;
+    }
+    .mobile-only {
+        display: block;
+    }
+}

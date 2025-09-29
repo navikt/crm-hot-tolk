@@ -41,6 +41,7 @@ public without sharing class HOT_MessagesNotification {
         }
         Map<Id, ID> groupByQueue = HOT_NotificationHandler.getGroupIdByQueueId(ownerIds);
 
+        String notificationTypeID = getCustomNotificationType('HOT_NotifyDispatcher').Id;
         for (Thread__c thread : threads) {
             Set<String> recipients = new Set<String>();
             if (thread.HOT_Dispatcher__c != null) {
@@ -51,7 +52,7 @@ public without sharing class HOT_MessagesNotification {
             Messaging.CustomNotification notification = new Messaging.CustomNotification();
             notification.setTitle('Ny melding');
             notification.setBody(thread.HOT_Subject__c);
-            notification.setNotificationTypeId(getCustomNotificationType('HOT_NotifyDispatcher').Id);
+            notification.setNotificationTypeId(notificationTypeID);
             notification.setTargetId(thread.Id);
             HOT_NotificationHandler.sendNotification(notification, recipients, (SObject) thread);
         }
@@ -74,32 +75,32 @@ public without sharing class HOT_MessagesNotification {
                 AND CRM_Account__c != NULL
                 AND CRM_Account__r.CRM_Person__r.HOT_IsReservationAgainstNotifications__c = FALSE
         ];
-        List<Id> accountIds = new List<Id>();
-
-        for (Thread__c thread : threads) {
-            accountIds.add(thread.CRM_Account__c);
-        }
-
-        List<User> users = [
-            SELECT Id, AccountId, (SELECT Id, HOT_NotificationChannel__c FROM ServiceResources)
-            FROM User
-            WHERE AccountId IN :accountIds
-        ];
-        Map<Id, ServiceResource> userToServiceResource = new Map<Id, ServiceResource>();
-        for (User user : users) {
-            if (user.ServiceResources.size() > 0) {
-                userToServiceResource.put(user.Id, user.ServiceResources[0]);
-            }
-        }
-
-        Map<Id, Id> userIdByAccountId = new Map<Id, Id>();
-        for (User user : users) {
-            userIdByAccountId.put(user.AccountId, user.Id);
-        }
-        //LAGER VARSLINGS LISTE TIL INSETTING SENERE
-        List<HOT_Notification__c> notificationList = new List<HOT_Notification__c>();
-
         if (!threads.isEmpty()) {
+            List<Id> accountIds = new List<Id>();
+
+            for (Thread__c thread : threads) {
+                accountIds.add(thread.CRM_Account__c);
+            }
+
+            List<User> users = [
+                SELECT Id, AccountId, (SELECT Id, HOT_NotificationChannel__c FROM ServiceResources)
+                FROM User
+                WHERE AccountId IN :accountIds
+            ];
+            Map<Id, ServiceResource> userToServiceResource = new Map<Id, ServiceResource>();
+            for (User user : users) {
+                if (user.ServiceResources.size() > 0) {
+                    userToServiceResource.put(user.Id, user.ServiceResources[0]);
+                }
+            }
+
+            Map<Id, Id> userIdByAccountId = new Map<Id, Id>();
+            for (User user : users) {
+                userIdByAccountId.put(user.AccountId, user.Id);
+            }
+            //LAGER VARSLINGS LISTE TIL INSETTING SENERE
+            List<HOT_Notification__c> notificationList = new List<HOT_Notification__c>();
+            CustomNotificationType notificationType = getCustomNotificationType('HOT_NotifyUser');
             for (Thread__c thread : threads) {
                 Boolean isInterpreter = (thread.CRM_Thread_Type__c == 'HOT_TOLK-RESSURSKONTOR' ||
                     (thread.CRM_Thread_Type__c == 'HOT_TOLK-FORMIDLER' && !thread.HOT_IsEmployeeThread__c))
@@ -150,7 +151,7 @@ public without sharing class HOT_MessagesNotification {
                         }
                         //SENDER UT PUSHVARSEL TIL MOBIL
                         HOT_UserNotificationService.newMessageNotification(
-                            getCustomNotificationType('HOT_NotifyUser'),
+                            notificationType,
                             thread,
                             isInterpreter,
                             recipients
@@ -206,7 +207,7 @@ public without sharing class HOT_MessagesNotification {
             Map<Id, List<Thread__c>> interpretersOnThreadMap = new Map<Id, List<Thread__c>>();
 
             for (Thread__c t : threads) {
-                String[] participantIds = t.HOT_ParticipantIds__c.split(', ');
+                String[] participantIds = t.HOT_ParticipantIds__c.split(',');
 
                 for (String participantId : participantIds) {
                     participantId = participantId.trim();
@@ -265,6 +266,7 @@ public without sharing class HOT_MessagesNotification {
                     }
                 }
                 Map<User, List<Thread__c>> userIdToThreadMapSMS = new Map<User, List<Thread__c>>();
+                String notificationTypeID = getCustomNotificationType('HOT_NotifyInterpreter').Id;
                 for (User user : userIdToThreadMap.keySet()) {
                     if (user.ServiceResources[0].HOT_NotificationChannel__c.contains('Push')) {
                         for (Thread__c thread : userIdToThreadMap.get(user)) {
@@ -273,7 +275,7 @@ public without sharing class HOT_MessagesNotification {
                             Messaging.CustomNotification notification = new Messaging.CustomNotification();
                             notification.setTitle('Ny melding');
                             notification.setBody(thread.HOT_Subject__c);
-                            notification.setNotificationTypeId(getCustomNotificationType('HOT_NotifyInterpreter').Id);
+                            notification.setNotificationTypeId(notificationTypeID);
                             notification.setTargetId(thread.Id);
                             HOT_NotificationHandler.sendNotification(notification, recipients, (SObject) thread);
 
@@ -330,6 +332,7 @@ public without sharing class HOT_MessagesNotification {
                     }
                 }
                 Map<User, List<Thread__c>> userIdToThreadMapSMS = new Map<User, List<Thread__c>>();
+                CustomNotificationType notificationType = getCustomNotificationType('HOT_NotifyUser');
                 for (User user : userIdToThreadMap.keySet()) {
                     if (user.ServiceResources[0].HOT_NotificationChannel__c.contains('Push')) {
                         for (Thread__c thread : userIdToThreadMap.get(user)) {
@@ -344,7 +347,7 @@ public without sharing class HOT_MessagesNotification {
                                 notificationList.add(newNotification);
                             }
                             HOT_UserNotificationService.newMessageNotification(
-                                getCustomNotificationType('HOT_NotifyUser'),
+                                notificationType,
                                 thread,
                                 true,
                                 new Set<String>{ user.Id }

@@ -30,12 +30,12 @@ input[type='reset'] {
 }
 
 .notification-center {
-    position: relative; 
-    display: inline-block; 
+    position: relative;
+    display: inline-block;
 }
 
 .dropdown {
-    position: absolute; 
+    position: absolute;
     top: calc(100% + 0.5rem);
     left: 0;
     right: auto;
@@ -55,14 +55,21 @@ input[type='reset'] {
 
 .dropdown-header {
     display: flex;
-    flex-wrap: wrap;
+    flex-direction: column;
+    padding-top: 1rem;
+}
+
+.dropdown-header-top {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 0 1.5vw;
 }
 
 .dropdown-header h2 {
     font-size: 1.75rem;
     font-weight: 700;
     color: #111;
-    margin-left: 1.5vw;
     margin-top: 0.5vh;
 }
 
@@ -74,22 +81,22 @@ input[type='reset'] {
 }
 
 .close-btn {
-    background: transparent;
-    border: 4px solid #f2f3f5;
-    padding-right: 0.75vw;
-    padding-left: 0.75vw;
-    font-size: 24px;
-    line-height: 1;
-    margin-left: auto;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: none;
+    border: 4px solid transparent;
+    border-radius: 4px;
     cursor: pointer;
-    color: #5f6368;
 }
-.close-btn:hover {
-    color: #333;
-}
+
 .close-btn:focus {
     border-color: #0067c5;
-    box-shadow: 0 0.1vw 0.2vw rgba(0, 0, 0, 0.06);
+    outline: none;
+}
+
+.close-btn:hover {
+    background-color: #e1e3e6;
 }
 
 /* ============================
@@ -98,8 +105,10 @@ input[type='reset'] {
 .dropdown-info {
     padding: 32px 2.5vw;
     text-align: center;
-    font-size: 15px;
     color: #666;
+}
+.dropdown-info p {
+    font-size: 1.125rem;
 }
 
 /* ============================
@@ -125,8 +134,13 @@ input[type='reset'] {
     border-radius: 6px;
     box-shadow: 0 0.1vw 0.2vw rgba(0, 0, 0, 0.06);
 }
-.notification-card:hover,
+.notification-card:hover {
+    border-color: #e0e3e6;
+    background-color: #e0e3e6;
+}
 .notification-card:focus {
+    outline: none;
+    background-color: #e0e3e6;
     border-color: #0067c5;
 }
 
@@ -178,7 +192,8 @@ input[type='reset'] {
     border: 4px solid #f2f3f5;
     min-height: 48px;
     align-items: center;
-    padding: calc(0.75rem - 2px) 0.75rem;
+    justify-content: center;
+    padding: calc(0.75rem - 2px) 1rem;
     border-radius: 5px;
     z-index: 1002;
 }

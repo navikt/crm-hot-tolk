@@ -3,7 +3,19 @@ public without sharing class HOT_InterestedResourcesListController {
     public static List<HOT_InterestedResource__c> getInterestedResources() {
         Id userId = UserInfo.getUserId();
         List<ServiceResource> serviceResource = [SELECT Id, Name FROM ServiceResource WHERE RelatedRecordId = :userId];
-
+        // !Wanted
+        Set<String> interestedResourceStatusesOfInterest = new Set<String>{
+            'Interested',
+            'Assigned',
+            'Not Assigned',
+            'Retracted Interest',
+            'Canceled',
+            'Service Appointment Retracted',
+            'Canceled by Interpreter',
+            'Withdrawn',
+            'Declined',
+            'Reserved'
+        };
         List<HOT_InterestedResource__c> interestedResources = [
             SELECT
                 Id,
@@ -28,6 +40,7 @@ public without sharing class HOT_InterestedResourcesListController {
                 ServiceAppointment__r.HOT_ReleaseDate__c,
                 ServiceAppointment__r.HOT_ReleasedBy__c,
                 ServiceAppointment__r.HOT_Request__r.OwnerName__c,
+                ServiceAppointment__r.HOT_Request__r.IsOtherEconomicProvicer__c,
                 AssignmentType__c,
                 AppointmentDeadlineDate__c,
                 AppointmentServiceTerritory__c,
@@ -37,9 +50,9 @@ public without sharing class HOT_InterestedResourcesListController {
                 HOT_DelPol_ToHideRecord__c
             FROM HOT_InterestedResource__c
             WHERE
-                ServiceResource__c IN :serviceResource
+                ServiceResource__c IN :(new Map<Id, ServiceResource>(serviceResource)).keySet()
                 AND HOT_DelPol_ToHideRecord__c = FALSE
-                AND Status__c != 'Wanted'
+                AND Status__c IN :interestedResourceStatusesOfInterest
             ORDER BY ServiceAppointmentStartTime__c ASC
         ];
         return interestedResources;
@@ -174,6 +187,7 @@ public without sharing class HOT_InterestedResourcesListController {
                 ServiceAppointment__r.HOT_ReleaseDate__c,
                 ServiceAppointment__r.HOT_ReleasedBy__c,
                 ServiceAppointment__r.HOT_Request__r.OwnerName__c,
+                ServiceAppointment__r.HOT_Request__r.IsOtherEconomicProvicer__c,
                 NumberOfInterestedResources__c,
                 AppointmentDeadlineDate__c,
                 AppointmentServiceTerritory__c,

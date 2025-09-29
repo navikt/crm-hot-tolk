@@ -1,4 +1,4 @@
-@IsTest
+@IsTest(IsParallel=true)
 private class HOT_ContentDocumentLinkHandlerTest {
     @testSetup
     static void setup() {
@@ -135,6 +135,74 @@ private class HOT_ContentDocumentLinkHandlerTest {
     }
 
     @IsTest
+    public static void addContentDocumentLinkToWorkOrder() {
+        Person__c person = HOT_TestDataFactory.createPerson();
+        person.Name = '12015678999';
+        insert person;
+        Account personAccount = HOT_TestDataFactory.createAccount(true);
+        personAccount.INT_PersonIdent__c = '12015678999';
+        personAccount.CRM_Person__c = person.Id;
+        insert personAccount;
+
+        WorkType workType = HOT_TestDataFactory.createWorkType();
+        insert WorkType;
+        HOT_Request__c request = HOT_TestDataFactory.createRequest('HOT_WorkOrderHandler', workType);
+        insert request;
+
+        request.Status__c = 'Godkjent';
+        update request;
+
+        WorkOrder workOrder = [
+            SELECT Id, HOT_Request__c
+            FROM WorkOrder
+            WHERE HOT_Request__c = :request.Id
+            LIMIT 1
+        ];
+
+        ContentVersion contentVersion = new ContentVersion(
+            Title = 'a picture',
+            PathOnClient = 'Pic.jpg',
+            VersionData = Blob.valueOf('Test Content'),
+            IsMajorVersion = true
+        );
+        insert contentVersion;
+
+        ContentDocument contentDocument = [SELECT Id FROM ContentDocument LIMIT 1];
+
+        ContentDocumentLink contentDocumentLink = new ContentDocumentLink(
+            ContentDocumentId = contentDocument.Id,
+            LinkedEntityId = request.Id
+        );
+
+        Test.startTest();
+        insert contentDocumentLink;
+        Test.stopTest();
+
+        ContentDocumentLink contentDocumentLinkRequest = [
+            SELECT ContentDocumentId
+            FROM ContentDocumentLink
+            WHERE LinkedEntityId = :request.Id
+            LIMIT 1
+        ];
+
+        ContentDocumentLink contentDocumentLinkWorkOrder = [
+            SELECT ContentDocumentId
+            FROM ContentDocumentLink
+            WHERE LinkedEntityId = :workOrder.Id
+            LIMIT 1
+        ];
+
+        Id requestContentDocumentid = contentDocumentLinkRequest.ContentDocumentId;
+        Id workOrderContentDocumentId = contentDocumentLinkWorkOrder.ContentDocumentId;
+
+        System.assertEquals(
+            requestContentDocumentId,
+            workOrderContentDocumentId,
+            'ContentDocumentId fra request og serviceAppointment stemmer ikke overens.'
+        );
+    }
+
+    @IsTest
     public static void addContentDocumentLinkToAccountNoAccountTest() {
         Person__c person = HOT_TestDataFactory.createPerson();
         person.Name = '12015678999';
@@ -178,9 +246,9 @@ private class HOT_ContentDocumentLinkHandlerTest {
         ];
 
         System.assertEquals(
+            4,
             contentDocumentLinkRequest.size(),
-            3,
-            'Det har blitt opprettet en ContentDocumetLink for mye.'
+            'Antallet opprettede dokumenter stemmer ikke overens med forventningene.'
         );
     }
 

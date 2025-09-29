@@ -1,0 +1,19 @@
+<template>
+    <div class="thread-container">
+        <template if:true={isevent}>
+            <c-hot_messaging-message-event message={message}></c-hot_messaging-message-event>
+        </template>
+        <template if:false={isevent}>
+            <template if:false={isoutbound}>
+                <c-hot_messaging-community-message-inbound_v2
+                    message={message}
+                ></c-hot_messaging-community-message-inbound_v2>
+            </template>
+            <template if:true={isoutbound}>
+                <c-hot_messaging-community-message-outbound_v2
+                    message={message}
+                ></c-hot_messaging-community-message-outbound_v2>
+            </template>
+        </template>
+    </div>
+</template>

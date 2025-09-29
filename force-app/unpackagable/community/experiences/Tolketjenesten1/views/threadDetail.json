@@ -1,77 +1,91 @@
 {
-  "appPageId" : "e1a097ff-c5e1-47c6-b293-9a8b7a2b049f",
-  "componentName" : "siteforce:sldsOneColLayout",
-  "dataProviders" : [ ],
-  "id" : "b74aaafd-833c-4ee0-b424-c3526b9b8ac4",
-  "label" : "Thread Detail",
-  "regions" : [ {
-    "components" : [ {
-      "componentAttributes" : {
-        "context" : "Privatperson",
-        "env" : "Dev"
-      },
-      "componentName" : "c:decoratorHeader",
-      "id" : "c2a5aebe-3950-44b1-b86a-c3c5c50f70fb",
-      "renderPriority" : "NEUTRAL",
-      "renditionMap" : { },
-      "type" : "component"
-    } ],
-    "id" : "56dca452-b869-4789-bdd4-a1137d8fe946",
-    "regionName" : "header",
-    "type" : "region"
-  }, {
-    "components" : [ {
-      "componentAttributes" : { },
-      "componentName" : "c:hot_tolketjenestenHovedBanner",
-      "id" : "c1c5eb4f-1336-403e-aecf-8ae06897fdff",
-      "renderPriority" : "NEUTRAL",
-      "renditionMap" : { },
-      "type" : "component"
-    }, {
-      "componentAttributes" : {
-        "alertopen" : "",
-        "alerttext" : "Dialogen er lukket",
-        "maxLength" : 0,
-        "recordId" : "{!recordId}"
-      },
-      "componentName" : "c:hot_messagingCommunityThreadViewer",
-      "id" : "99ad00dd-0ce4-4a75-96ec-f0ec0761f9d1",
-      "renderPriority" : "NEUTRAL",
-      "renditionMap" : { },
-      "type" : "component"
-    } ],
-    "id" : "77b508ee-11fa-420e-aea9-32cd55f8adb1",
-    "regionName" : "content",
-    "type" : "region"
-  }, {
-    "components" : [ {
-      "componentAttributes" : { },
-      "componentName" : "c:decoratorFooter",
-      "id" : "51485ffc-de1f-4e4b-880c-3a38ccec3457",
-      "renderPriority" : "NEUTRAL",
-      "renditionMap" : { },
-      "type" : "component"
-    } ],
-    "id" : "36e320ae-6bfd-4cb3-9d16-f9db4f506700",
-    "regionName" : "footer",
-    "type" : "region"
-  }, {
-    "components" : [ {
-      "componentAttributes" : {
-        "customHeadTags" : "",
-        "description" : "",
-        "title" : "Samtale: {!Record.HOT_Subject__c}"
-      },
-      "componentName" : "forceCommunity:seoAssistant",
-      "id" : "3d95a202-2d9d-4c84-89a3-c866967de384",
-      "renditionMap" : { },
-      "type" : "component"
-    } ],
-    "id" : "86068f07-c391-44a1-87ab-6adc047c0315",
-    "regionName" : "sfdcHiddenRegion",
-    "type" : "region"
-  } ],
-  "themeLayoutType" : "Inner",
-  "type" : "view",
-  "viewType" : "detail-a0N"
+    "appPageId": "e1a097ff-c5e1-47c6-b293-9a8b7a2b049f",
+    "componentName": "siteforce:sldsOneColLayout",
+    "dataProviders": [],
+    "id": "b74aaafd-833c-4ee0-b424-c3526b9b8ac4",
+    "label": "Thread Detail",
+    "regions": [
+        {
+            "components": [
+                {
+                    "componentAttributes": {
+                        "context": "Privatperson",
+                        "env": "Dev"
+                    },
+                    "componentName": "c:decoratorHeader",
+                    "id": "c2a5aebe-3950-44b1-b86a-c3c5c50f70fb",
+                    "renderPriority": "NEUTRAL",
+                    "renditionMap": {},
+                    "type": "component"
+                }
+            ],
+            "id": "56dca452-b869-4789-bdd4-a1137d8fe946",
+            "regionName": "header",
+            "type": "region"
+        },
+        {
+            "components": [
+                {
+                    "componentAttributes": {},
+                    "componentName": "c:hot_tolketjenestenHovedBanner",
+                    "id": "c1c5eb4f-1336-403e-aecf-8ae06897fdff",
+                    "renderPriority": "NEUTRAL",
+                    "renditionMap": {},
+                    "type": "component"
+                },
+                {
+                    "componentAttributes": {
+                        "alertopen": "",
+                        "alerttext": "Dialogen er lukket",
+                        "maxLength": 0,
+                        "recordId": "{!recordId}"
+                    },
+                    "componentName": "c:hot_messagingCommunityThreadViewer",
+                    "id": "99ad00dd-0ce4-4a75-96ec-f0ec0761f9d1",
+                    "renderPriority": "NEUTRAL",
+                    "renditionMap": {},
+                    "type": "component"
+                }
+            ],
+            "id": "77b508ee-11fa-420e-aea9-32cd55f8adb1",
+            "regionName": "content",
+            "type": "region"
+        },
+        {
+            "components": [
+                {
+                    "componentAttributes": {},
+                    "componentName": "c:decoratorFooter",
+                    "id": "51485ffc-de1f-4e4b-880c-3a38ccec3457",
+                    "renderPriority": "NEUTRAL",
+                    "renditionMap": {},
+                    "type": "component"
+                }
+            ],
+            "id": "36e320ae-6bfd-4cb3-9d16-f9db4f506700",
+            "regionName": "footer",
+            "type": "region"
+        },
+        {
+            "components": [
+                {
+                    "componentAttributes": {
+                        "customHeadTags": "",
+                        "description": "",
+                        "title": "Samtale: {!Record.HOT_Subject__c}"
+                    },
+                    "componentName": "forceCommunity:seoAssistant",
+                    "id": "3d95a202-2d9d-4c84-89a3-c866967de384",
+                    "renditionMap": {},
+                    "type": "component"
+                }
+            ],
+            "id": "86068f07-c391-44a1-87ab-6adc047c0315",
+            "regionName": "sfdcHiddenRegion",
+            "type": "region"
+        }
+    ],
+    "themeLayoutType": "Inner",
+    "type": "view",
+    "viewType": "detail-a1f"
 }

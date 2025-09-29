@@ -1,4 +1,4 @@
-@isTest
+@isTest(IsParallel=true)
 private class HOT_ContentVersionHandlerTest {
     @isTest
     static void createDocumentLinks() {

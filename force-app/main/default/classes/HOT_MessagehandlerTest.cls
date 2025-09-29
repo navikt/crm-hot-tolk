@@ -1,4 +1,4 @@
-@IsTest
+@IsTest(IsParallel=true)
 private class HOT_MessagehandlerTest {
     @TestSetup
     static void makeData() {
@@ -176,6 +176,7 @@ private class HOT_MessagehandlerTest {
         thread.CRM_Thread_Type__c = 'HOT_BRUKER-TOLK';
 
         insert thread;
+        HOT_ThreadHandler.setInterpreter(new List<Thread__c>{ thread });
         Message__c message = new Message__c();
         message.CRM_Thread__c = thread.Id;
         message.CRM_From_Contact__c = user.AccountId;

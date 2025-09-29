@@ -1,0 +1,155 @@
+<template>
+    <template lwc:if={hasResult}>
+        <div class="main-content">
+            <c-hot_freelance-common-table
+                records={records}
+                checkbox="true"
+                columns={columns}
+                onrowclick={goToRecordDetails}
+                icon-by-value={iconByValue}
+                checked-rows={checkedServiceAppointments}
+                oncheckedrows={handleRowChecked}
+            ></c-hot_freelance-common-table>
+        </div>
+    </template>
+    <template lwc:if={dataLoader}>
+        <div class="loader-container">
+            <c-hot_loader size="3xlarge"></c-hot_loader>
+        </div>
+    </template>
+    <div lwc:if={noServiceAppointments} style="text-align: center" aria-live="polite">
+        <br />
+        <p>Det er ingen oppdrag her</p>
+    </div>
+
+    <dialog class="modal-container" aria-label="Informasjon om oppdrag" aria-modal="true" onclose={closeModal}>
+        <div class="modal-header" lwc:if={showModalHeader}>
+            <h2>Informasjon om oppdraget:</h2>
+            <button class="close-btn" onclick={closeModal} aria-label="Lukk">
+                <img src={exitCrossIcon} alt="" aria-hidden="true" />
+            </button>
+        </div>
+        <div lwc:if={isDetails} class="modal-body">
+            <p><strong>Oppdragsnummer:</strong> {serviceAppointment.HOT_ServiceAppointmentNumber__c}</p>
+            <p><strong>Tema:</strong> {serviceAppointment.HOT_FreelanceSubject__c}</p>
+            <p><strong>Tid:</strong> {serviceAppointment.weekday} {serviceAppointment.StartAndEndDate}</p>
+            <p><strong>Adresse:</strong> {serviceAppointment.HOT_AddressFormated__c}</p>
+            <p><strong>Tolkemetode:</strong> {serviceAppointment.HOT_WorkTypeName__c}</p>
+            <p><strong>Oppdragstype:</strong> {serviceAppointment.HOT_AssignmentType__c}</p>
+            <p><strong>Frigitt av:</strong> {serviceAppointment.HOT_ReleasedBy__c}</p>
+            <p><strong>Frigitt dato:</strong> {serviceAppointment.ReleaseDate}</p>
+            <p><strong>Antall påmeldte:</strong> {serviceAppointment.HOT_NumberOfInterestedResources__c}</p>
+            <p><strong>Annen betaler:</strong> {serviceAppointment.isOtherProvider}</p>
+            <p><strong>Eier:</strong> {serviceAppointment.HOT_Request__r.OwnerName__c}</p>
+            <p><strong>Frist dato:</strong> {serviceAppointment.HOT_DeadlineDate__c}</p>
+
+            <p>Du er ønsket til dette oppdraget.</p>
+
+            <div style="display: inline-block; padding-bottom: 1vw; padding-top: 1vw">
+                <c-button
+                    button-styling="primary"
+                    button-label="Meld interesse"
+                    aria-label="Meld interesse"
+                    title="Meld interesse"
+                    style="margin-right: 1vw"
+                    onbuttonclick={acceptInterest}
+                >
+                </c-button>
+                <c-button
+                    button-styling="danger"
+                    button-label="Avslå interesse"
+                    aria-label="Avslå interesse"
+                    title="Avslå interesse"
+                    style="margin-right: 1vw"
+                    onbuttonclick={declineInterest}
+                >
+                </c-button>
+            </div>
+        </div>
+        <div class="submit">
+            <div lwc:if={showSubmittedTrue} class="submitted-true">
+                <lightning-icon
+                    icon-name="utility:success"
+                    alternative-text="Suksess"
+                    title="Suksess"
+                    variant="success"
+                    size="large"
+                ></lightning-icon>
+                <br />
+                <h2
+                    class="typo-undertittel h2-successMessage"
+                    id="successMessage"
+                    tabindex="-1"
+                    role="alert"
+                    aria-live="polite"
+                >
+                    {processMessageResult}
+                </h2>
+                <br />
+                <c-button
+                    button-styling="primary"
+                    button-label="OK"
+                    onbuttonclick={closeModal}
+                    desktop-style="width: 8rem; justify-content: center"
+                    mobile-style="width: 8rem; justify-content: center"
+                ></c-button>
+            </div>
+
+            <div lwc:if={showSubmittedLoading} class="submitted-loading">
+                <h2
+                    class="typo-undertittel h2-loadingMessage"
+                    id="loadingMessage"
+                    tabindex="-1"
+                    role="alert"
+                    aria-live="polite"
+                >
+                    {processMessage}
+                </h2>
+                <br />
+                <div lwc:if={spin}>
+                    <c-hot_loader size="3xlarge" variant="interaction"></c-hot_loader>
+                </div>
+                <br />
+            </div>
+
+            <div lwc:if={showSubmittedError} class="submitted-error">
+                <h2
+                    class="typo-undertittel h2-loadingMessage"
+                    id="errorMessage"
+                    tabindex="-1"
+                    role="alert"
+                    aria-live="polite"
+                >
+                    Noe gikk galt under melding av interesse.
+                </h2>
+                <br />
+                <h3>Feilmelding: {errorMessage}</h3>
+                <br />
+            </div>
+        </div>
+    </dialog>
+    <div lwc:if={showSendInterestOrDecline} class="meld-interesse-eller-avlsaa--overlay">
+        <div class="meld-interesse-eller-avslaa-content">
+            <c-button
+                button-styling="primary"
+                button-label={sendInterestButtonLabel}
+                aria-label="Meld interesse for oppdrag"
+                onbuttonclick={registerInterestChecked}
+                desktop-style=" justify-content: center; margin: 1vw"
+                mobile-style="justify-content: center; margin: 1vw"
+                title="Merk sjekkboks i listen for å melde interesse"
+            >
+            </c-button>
+            <c-button
+                button-styling="danger"
+                button-label={declineInterestButtonLabel}
+                aria-label="Avslå interesse for oppdrag"
+                onbuttonclick={declineInterestChecked}
+                desktop-style=" justify-content: center;"
+                mobile-style="justify-content: center;"
+                title="Merk sjekkboks i listen for å melde interesse"
+            >
+            </c-button>
+        </div>
+    </div>
+</template>

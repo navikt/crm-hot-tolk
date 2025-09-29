@@ -63,13 +63,18 @@ public without sharing class HOT_ReminderSMSService {
         }
     }
 
-    public static void notifyUserOnOrderSMS(List<HOT_Request__c> requestList) {
+    public static void notifyUserOnOrderSMS(List<HOT_Request__c> requests) {
         //creating notification object list
         List<HOT_Notification__c> notificationList = new List<HOT_Notification__c>();
-        Map<Id, HOT_Request__c> requests = new Map<Id, HOT_Request__c>(requestList);
         List<SMS__c> smsList = new List<SMS__c>();
 
-        for (HOT_Request__c request : requests.values()) {
+        List<WorkOrder> woList = [SELECT Id, HOT_Request__c FROM WorkOrder WHERE HOT_Request__c IN :requests];
+        Map<Id, Id> requestByOrderMap = new Map<Id, Id>();
+        for (WorkOrder wo : woList) {
+            requestByOrderMap.put(wo.HOT_Request__c, wo.Id);
+        }
+
+        for (HOT_Request__c request : requests) {
             SMS__c sms = new SMS__c();
             sms.Domain__c = 'HOT';
             sms.Type__c = 'Orderer On Status Update';
@@ -95,19 +100,15 @@ public without sharing class HOT_ReminderSMSService {
                     '\nFor mer informasjon, se tolkebestilling.nav.no.\n' +
                     'Du kan ikke svare på denne meldingen.\n' +
                     'Mvh tolketjenesten i Nav';
-                if (request.IsSerieoppdrag__c) {
-                    notification.HOT_RelatedObject__c = HOT_WorkOrderHandler.getWorkOrder(request).Id;
-                    notification.HOT_RelatedObjectType__c = 'request';
-                } else {
-                    notification.HOT_RelatedObject__c = HOT_WorkOrderHandler.getWorkOrder(request).Id;
-                    notification.HOT_RelatedObjectType__c = 'workOrder';
-                }
+
+                notification.HOT_RelatedObject__c = requestByOrderMap.get(request.Id);
+                notification.HOT_RelatedObjectType__c = request.IsSerieoppdrag__c ? 'request' : 'workOrder';
 
                 notificationList.add(notification);
             }
         }
         HOT_DatabaseOperations.insertRecords(smsList);
-        HOT_DatabaseOperations.updateRecords(requests.values());
+        HOT_DatabaseOperations.updateRecords(requests);
         //inserting notifications
         try {
             HOT_NotificationCentreController.createNotification(notificationList);
@@ -263,14 +264,14 @@ public without sharing class HOT_ReminderSMSService {
             FROM Thread__c
             WHERE Id IN :threadIds
         ];
-
+        Map<Id, String> recipientByThreadId = HOT_ReminderSMSService.getRecipientByThreadIdMap(threadList);
         for (Thread__c thread : threadList) {
             SMS__c sms = new SMS__c();
             sms.Domain__c = 'HOT';
             sms.Type__c = 'Message';
             sms.Account__c = thread.CRM_Account__c;
             sms.Thread__c = thread.Id;
-            sms.Recipient__c = getRecipientOnThread(thread);
+            sms.Recipient__c = recipientByThreadId.get(thread.Id);
             sms.Message__c = constructOnNewMessage();
             if (sms.Recipient__c != null) {
                 smsList.add(sms);
@@ -284,6 +285,15 @@ public without sharing class HOT_ReminderSMSService {
     }
 
     public static void sendSMSOnNewMessageInterpreter(Map<User, List<Thread__c>> userIdToThreadMap) {
+        List<ServiceResource> srList = [
+            SELECT RelatedRecordId, HOT_MobilePhone__c
+            FROM ServiceResource
+            WHERE RelatedRecordId IN :userIdToThreadMap.keySet()
+        ];
+        Map<Id, String> phoneNumberByUserIdMap = new Map<Id, String>();
+        for (ServiceResource sr : srList) {
+            phoneNumberByUserIdMap.put(sr.RelatedRecordId, sr.HOT_MobilePhone__c);
+        }
         List<SMS__c> smsList = new List<SMS__c>();
         for (User user : userIdToThreadMap.keySet()) {
             for (Thread__c thread : userIdToThreadMap.get(user)) {
@@ -292,7 +302,7 @@ public without sharing class HOT_ReminderSMSService {
                 sms.Type__c = 'Message';
                 sms.Account__c = user.AccountId;
                 sms.Thread__c = thread.Id;
-                sms.Recipient__c = getRecipientPhoneNumberInterpreter(user.Id);
+                sms.Recipient__c = phoneNumberByUserIdMap.get(user.Id);
                 sms.Message__c = constructOnNewMessage();
 
                 if (sms.Recipient__c != null) {
@@ -308,7 +318,9 @@ public without sharing class HOT_ReminderSMSService {
         }
     }
 
+    @Future
     public static void sendSMSOnNewWantedSR(Set<Id> wantedIRIds) {
+        System.debug('SendSMS');
         List<SMS__c> smsList = new List<SMS__c>();
         List<HOT_InterestedResource__c> wantedIRList = [
             SELECT
@@ -427,6 +439,7 @@ public without sharing class HOT_ReminderSMSService {
             handleException(e);
         }
     }
+
     @Future
     public static void sendSMSOnNewCoInterpreterChange(
         Id serviceResourceId,
@@ -471,6 +484,7 @@ public without sharing class HOT_ReminderSMSService {
             handleException(e);
         }
     }
+
     @Future
     public static void sendSMSOnCoInterpreterRemoved(
         Id serviceResourceId,
@@ -584,6 +598,28 @@ public without sharing class HOT_ReminderSMSService {
             sms.ServiceAppointment__c = sa.Id;
             sms.Recipient__c = sa.HOT_ServiceResource__r?.HOT_MobilePhone__c;
             sms.Message__c = constructMessageToInterpreter(sa, 'Screen');
+            if (sms.Recipient__c != null) {
+                smsList.add(sms);
+            }
+        }
+        try {
+            HOT_DatabaseOperations.insertRecords(smsList);
+        } catch (Exception e) {
+            handleException(e);
+        }
+    }
+
+    public static void sendSMSOnNewFilesAdded(List<ServiceAppointment> saList) {
+        List<SMS__c> smsList = new List<SMS__c>();
+
+        for (ServiceAppointment sa : saList) {
+            SMS__c sms = new SMS__c();
+            sms.Domain__c = 'HOT';
+            sms.Type__c = 'Interpreter';
+            sms.Account__c = sa.HOT_ServiceResource__r?.AccountId;
+            sms.ServiceAppointment__c = sa.Id;
+            sms.Recipient__c = sa.HOT_ServiceResource__r?.HOT_MobilePhone__c;
+            sms.Message__c = constructMessageToInterpreter(sa, 'File');
             if (sms.Recipient__c != null) {
                 smsList.add(sms);
             }
@@ -774,6 +810,9 @@ public without sharing class HOT_ReminderSMSService {
         if (saEvent == 'Removed') {
             message += 'Du er tatt av oppdraget ';
         }
+        if (saEvent == 'File') {
+            message += 'Det er blitt lagt til et vedlegg på ';
+        }
         message += sa.AppointmentNumber;
         if (saEvent == 'Address') {
             message += ' ' + formatTimePeriod(sa.EarliestStartTime, sa.DueDate) + ' har endret adresse';
@@ -835,37 +874,61 @@ public without sharing class HOT_ReminderSMSService {
         }
         return workOrder.Account.CRM_Person__r.INT_KrrMobilePhone__c;
     }
+    @TestVisible
+    private static Map<Id, String> getRecipientByThreadIdMap(List<Thread__c> threads) {
+        Map<Id, String> threadMap = new Map<Id, String>();
 
-    public static String getRecipientOnThread(Thread__c thread) {
-        if (thread.CRM_Thread_Type__c == 'HOT_BRUKER-FORMIDLER' || thread.CRM_Thread_Type__c == 'HOT_BRUKER-TOLK') {
-            return thread?.CRM_Account__r.CRM_Person__r.INT_KrrMobilePhone__c;
-        } else if (
-            thread.CRM_Thread_Type__c == 'HOT_TOLK-FORMIDLER' ||
-            thread.CRM_Thread_Type__c == 'HOT_TOLK-RESSURSKONTOR'
-        ) {
-            ServiceResource sr = [
+        List<Thread__c> accountRecipients = new List<Thread__c>();
+        Map<Thread__c, Id> srRecipients = new Map<Thread__c, Id>();
+        Map<Thread__c, String> requestRecipients = new Map<Thread__c, String>();
+
+        for (Thread__c thread : threads) {
+            if (thread.CRM_Thread_Type__c == 'HOT_BRUKER-FORMIDLER' || thread.CRM_Thread_Type__c == 'HOT_BRUKER-TOLK') {
+                accountRecipients.add(thread);
+            } else if (
+                thread.CRM_Thread_Type__c == 'HOT_TOLK-FORMIDLER' ||
+                thread.CRM_Thread_Type__c == 'HOT_TOLK-RESSURSKONTOR'
+            ) {
+                srRecipients.put(thread, thread.CRM_Account__c);
+            } else if (thread.CRM_Thread_Type__c == 'HOT_BESTILLER-FORMIDLER') {
+                requestRecipients.put(thread, thread.CRM_Related_Object__c);
+            } else {
+                threadMap.put(thread.Id, '');
+            }
+        }
+        if (accountRecipients.size() > 0) {
+            for (Thread__c thread : accountRecipients) {
+                threadMap.put(thread.Id, thread.CRM_Account__r.CRM_Person__r.INT_KrrMobilePhone__c);
+            }
+        }
+        if (srRecipients.size() > 0) {
+            Map<Id, String> phoneNumberByAccountIdMap = new Map<Id, String>();
+            for (ServiceResource sr : [
                 SELECT AccountId, HOT_MobilePhone__c
                 FROM ServiceResource
-                WHERE AccountId = :thread.CRM_Account__c
-            ];
-            return sr?.HOT_MobilePhone__c;
-        } else if (thread.CRM_Thread_Type__c == 'HOT_BESTILLER-FORMIDLER') {
-            HOT_Request__c request = [
+                WHERE AccountId IN :srRecipients.values()
+            ]) {
+                phoneNumberByAccountIdMap.put(sr.AccountId, sr.HOT_MobilePhone__c);
+            }
+            for (Thread__c thread : srRecipients.keySet()) {
+                threadMap.put(thread.Id, phoneNumberByAccountIdMap.get(thread.CRM_Account__c));
+            }
+        }
+        if (requestRecipients.size() > 0) {
+            Map<Id, String> phoneNumberByRequestIdMap = new Map<Id, String>();
+            for (HOT_Request__c request : [
                 SELECT Id, OrdererPhone__c
                 FROM HOT_Request__c
-                WHERE Id = :thread.CRM_Related_Object__c
-            ];
-            return request?.OrdererPhone__c;
+                WHERE Id IN :requestRecipients.values()
+            ]) {
+                phoneNumberByRequestIdMap.put(request.Id, request.OrdererPhone__c);
+            }
+
+            for (Thread__c thread : requestRecipients.keySet()) {
+                threadMap.put(thread.Id, phoneNumberByRequestIdMap.get(thread.CRM_Related_Object__c));
+            }
         }
-        return '';
-    }
-    private static String getRecipientPhoneNumberInterpreter(String userId) {
-        ServiceResource sr = [
-            SELECT RelatedRecordId, HOT_MobilePhone__c
-            FROM ServiceResource
-            WHERE RelatedRecordId = :userId
-        ];
-        return sr?.HOT_MobilePhone__c;
+        return threadMap;
     }
 
     public static String constructStatusChangedMessage(WorkOrder workOrder, String interpreterNames) {

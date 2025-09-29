@@ -315,6 +315,21 @@ private class HOT_ReminderSMSServiceTest {
     }
 
     @IsTest
+    static void sendSMSOnNewFilesAddedTest() {
+        ServiceResource sr = [SELECT Id FROM ServiceResource LIMIT 1];
+        Test.startTest();
+        ServiceAppointment sa = [
+            SELECT Id, AppointmentNumber, HOT_ServiceResource__r.AccountId, HOT_ServiceResource__r.HOT_MobilePhone__c
+            FROM ServiceAppointment
+            LIMIT 1
+        ];
+        AssignedResource assignedResource = HOT_TestDataFactory.createAssignedResource(sa.Id, sr.Id);
+        insert assignedResource;
+
+        HOT_ReminderSMSService.sendSMSOnNewFilesAdded(new List<ServiceAppointment>{ sa });
+        Test.stopTest();
+    }
+    @IsTest
     static void sendSMSOnNewWantedSRTest() {
         ServiceAppointment sa = [SELECT Id FROM ServiceAppointment WHERE Subject = 'TEST' LIMIT 1];
         ServiceResource sr = [SELECT Id FROM ServiceResource LIMIT 1];
@@ -376,7 +391,7 @@ private class HOT_ReminderSMSServiceTest {
         thread.CRM_Thread_Type__c = 'HOT_TOLK-FORMIDLER';
         insert thread;
 
-        String result = HOT_ReminderSMSService.getRecipientOnThread(thread);
+        String result = HOT_ReminderSMSService.getRecipientByThreadIdMap(new List<Thread__c>{ thread }).get(thread.Id);
         System.assertEquals('12345678', result, 'Did not get correct recipient');
 
         Test.stopTest();
@@ -404,7 +419,7 @@ private class HOT_ReminderSMSServiceTest {
         thread.CRM_Thread_Type__c = 'HOT_BRUKER-FORMIDLER';
         insert thread;
 
-        String result = HOT_ReminderSMSService.getRecipientOnThread(thread);
+        String result = HOT_ReminderSMSService.getRecipientByThreadIdMap(new List<Thread__c>{ thread }).get(thread.Id);
         System.assertEquals(null, result, 'Did not get correct recipient');
 
         Test.stopTest();
@@ -432,7 +447,7 @@ private class HOT_ReminderSMSServiceTest {
         thread.CRM_Thread_Type__c = 'HOT_BESTILLER-FORMIDLER';
         insert thread;
 
-        String result = HOT_ReminderSMSService.getRecipientOnThread(thread);
+        String result = HOT_ReminderSMSService.getRecipientByThreadIdMap(new List<Thread__c>{ thread }).get(thread.Id);
         System.assertEquals(null, result, 'Did not get correct recipient');
 
         Test.stopTest();

@@ -1,5 +1,4 @@
-public without sharing class HOT_ThreadHandler extends MyTriggers {
-    Set<Id> workOrderIds = new Set<Id>();
+public without sharing class HOT_ThreadHandler extends MyTriggers implements Callable{
     private static void handleException(Exception e) {
         LoggerUtility logger = new LoggerUtility();
         logger.exception(e, CRM_ApplicationDomain.Domain.HOT);
@@ -26,30 +25,47 @@ public without sharing class HOT_ThreadHandler extends MyTriggers {
         }
     }
     public override void onAfterInsert() {
-        Set<Id> threadIds = new Set<Id>();
         List<Thread__c> threadsOfInterest = new List<Thread__c>();
         List<Thread__c> threads = (List<Thread__c>) records;
-        Set<String> threadTypesOfInterest = new Set<String>{'HOT_BRUKER-TOLK','HOT_TOLK-TOLK','HOT_TOLK-FORMIDLER'};
+        Set<String> threadTypesOfInterest = new Set<String>{'HOT_TOLK-TOLK','HOT_TOLK-FORMIDLER'};
 
-        for (Thread__c t : threads){
-            if(!threadTypesOfInterest.contains(t.CRM_Thread_Type__c)){
-                continue;
+        for(Thread__c t : threads){
+            if(threadTypesOfInterest.contains(t.CRM_Thread_Type__c)){
+                threadsOfInterest.add(t);
             }
+        }
+        setInterpreter(threadsOfInterest);
+    }
+    public Object call(String action, Map<String, Object> args) {
+        switch on action {
+            when 'setInterpreter' {
+                HOT_ThreadHandler.setInterpreter((List<Thread__c>) args.get('threads'));
+                return true;
+            }
+            when else {
+                throw new HOT_ThreadHandlerCallException('Method not implemented');
+            }
+        }
+    }
+
+    public class HOT_ThreadHandlerCallException extends Exception {
+    }
+    public static void setInterpreter(List<Thread__c> threads){
+        Set<Id> workOrderIds = new Set<Id>();
+        for (Thread__c t : threads){
+ 
             if(((Id)t.CRM_Related_Object__c).getSObjectType() == WorkOrder.SObjectType){
                 workOrderIds.add(t.CRM_Related_Object__c);
             }
-            threadsOfInterest.add(t);
-            //threadIds.add(t.Id);
         }
 
         if (workOrderIds.size() > 0) {
             setInterpreterThread(threads, getServiceAppointmentsByWorkOrderId(workOrderIds));
         }
-        if(threadsOfInterest.size() > 0){
-            setInterpreterOnThreadOneToOne(threadsOfInterest);
+        if(threads.size() > 0){
+            setInterpreterOnThreadOneToOne(threads);
         }
     }
-
     public static String threadSubjectMaker(String subject) {
         if (subject.length() > 80) {
             subject = subject.substring(0, 76) + '...';
@@ -213,7 +229,7 @@ public without sharing class HOT_ThreadHandler extends MyTriggers {
                         Id = thread.Id, 
                         HOT_ParticipantIds__c = String.join(
                             new List<String>(newParticipantIds),
-                            ', '
+                            ','
                         )
                     )
                 );

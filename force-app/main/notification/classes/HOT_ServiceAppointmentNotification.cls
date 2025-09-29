@@ -170,8 +170,23 @@ public without sharing class HOT_ServiceAppointmentNotification {
             workOrderLineItemIds.add(serviceAppointment.HOT_WorkOrderLineItem__c);
         }
         Map<Id, Id> groupByQueue = HOT_NotificationHandler.getGroupIdByQueueId(queueIds);
+        // !Annul
+        Set<String> workOrderLineItemtatusesOfInterest = new Set<String>{
+            'New',
+            'Scheduled',
+            'Dispatched',
+            'In Progress',
+            'Completed',
+            'Partially Complete',
+            'Cannot Complete',
+            'Canceled'
+        };
         Map<Id, WorkOrderLineItem> workOrderLineItems = new Map<Id, WorkOrderLineItem>(
-            [SELECT Id, Status FROM WorkOrderLineItem WHERE Id IN :workOrderLineItemIds AND Status != 'Annul']
+            [
+                SELECT Id, Status
+                FROM WorkOrderLineItem
+                WHERE Id IN :workOrderLineItemIds AND Status IN :workOrderLineItemtatusesOfInterest
+            ]
         );
 
         for (ServiceAppointment serviceAppointment : serviceAppointments) {
@@ -179,7 +194,7 @@ public without sharing class HOT_ServiceAppointmentNotification {
 
             Set<String> recipients = new Set<String>{ (String) groupByQueue.get(serviceAppointment.OwnerId) };
 
-            // Varsel ved avlyst av tolk
+            // Varsel ved tolk tar seg av
             if (
                 oldServiceAppointment.HOT_CanceledByInterpreter__c == false &&
                 serviceAppointment.HOT_CanceledByInterpreter__c == true
@@ -209,7 +224,7 @@ public without sharing class HOT_ServiceAppointmentNotification {
         Set<String> recipients
     ) {
         Messaging.CustomNotification notification = new Messaging.CustomNotification();
-        notification.setTitle('Avlyst av tolk: ' + serviceAppointment.AppointmentNumber);
+        notification.setTitle('Tolk tar seg av: ' + serviceAppointment.AppointmentNumber);
         notification.setBody(
             'Tolken meldte seg av ' +
             serviceAppointment.AppointmentNumber +
@@ -866,7 +881,7 @@ public without sharing class HOT_ServiceAppointmentNotification {
                     updatedSAWithInterpreterRemoved.SchedEndTime?.format('HH:mm', 'Europe/Oslo') +
                     '.'
                 );
-                notification.setNotificationTypeId(getCustomNotificationType('HOT_NotifyInterpreter').Id);
+                notification.setNotificationTypeId(this.getCustomNotificationTypeByName('HOT_NotifyInterpreter').Id);
                 notification.setTargetId(serviceAppointment.Id);
 
                 HOT_NotificationHandler.sendNotification(notification, recipients, (SObject) serviceAppointment);
@@ -970,7 +985,7 @@ public without sharing class HOT_ServiceAppointmentNotification {
                     updatedSAWithNewInterpreter.SchedEndTime?.format('HH:mm', 'Europe/Oslo') +
                     '.'
                 );
-                notification.setNotificationTypeId(getCustomNotificationType('HOT_NotifyInterpreter').Id);
+                notification.setNotificationTypeId(this.getCustomNotificationTypeByName('HOT_NotifyInterpreter').Id);
                 notification.setTargetId(serviceAppointment.Id);
 
                 HOT_NotificationHandler.sendNotification(notification, recipients, (SObject) serviceAppointment);
@@ -1163,6 +1178,100 @@ public without sharing class HOT_ServiceAppointmentNotification {
         }
     }
 
+    @Future
+    public static void notifyInterpretersOnNewFiles(Set<Id> saIds) {
+        List<ServiceAppointment> saList = [
+            SELECT
+                AppointmentNumber,
+                HOT_ServiceResource__c,
+                HOT_AssignedResourceId__c,
+                HOT_IsEmployedInterpreter__c,
+                HOT_ServiceResource__r.AccountId,
+                HOT_ServiceResource__r.RelatedRecordId,
+                HOT_ServiceResource__r.HOT_MobilePhone__c,
+                HOT_ServiceResource__r.HOT_NotificationChannel__c,
+                HOT_ServiceResource__r.HOT_IsEmployedInterpreter__c
+            FROM ServiceAppointment
+            WHERE Id IN :saIds
+        ];
+        //creating notification object list
+        List<HOT_Notification__c> notificationList = new List<HOT_Notification__c>();
+        for (ServiceAppointment serviceAppointment : saList) {
+            if (
+                serviceAppointment.HOT_ServiceResource__c != null &&
+                (serviceAppointment.HOT_ServiceResource__r.HOT_NotificationChannel__c.contains('Push') ||
+                serviceAppointment.HOT_ServiceResource__r.HOT_IsEmployedInterpreter__c)
+            ) {
+                Set<String> employeeInterpreterRecipients = new Set<String>();
+                employeeInterpreterRecipients.add(serviceAppointment.HOT_ServiceResource__r.RelatedRecordId);
+
+                Messaging.CustomNotification notification = new Messaging.CustomNotification();
+                notification.setTitle('Nytt vedlegg er lagt til ' + serviceAppointment.AppointmentNumber);
+                notification.setBody('Det er blitt lagt til et vedlegg på ' + serviceAppointment.AppointmentNumber);
+                notification.setNotificationTypeId(getCustomNotificationType('HOT_NotifyInterpreter').Id);
+                if (!serviceAppointment.HOT_IsEmployedInterpreter__c) {
+                    String targetPageRef = getTargetPageRefInterpreter('my', serviceAppointment.Id);
+                    notification.setTargetPageRef(targetPageRef);
+                }
+                notification.setTargetId(serviceAppointment.Id);
+
+                HOT_NotificationHandler.sendNotification(
+                    notification,
+                    employeeInterpreterRecipients,
+                    (SObject) serviceAppointment
+                );
+                //creating notification object
+                if (serviceAppointment.HOT_ServiceResource__c == null) {
+                    return;
+                }
+                HOT_Notification__c newNotification = new HOT_Notification__c();
+                newNotification.HOT_ServiceResource__c = serviceAppointment.HOT_ServiceResource__c;
+                newNotification.HOT_NotificationChannel__c = 'Push-varsel i appen';
+                newNotification.HOT_Subject__c = 'Nytt vedlegg er lagt til ' + serviceAppointment.AppointmentNumber;
+                String text = 'Det er blitt lagt til et vedlegg på ' + serviceAppointment.AppointmentNumber;
+                if (text.length() > 250) {
+                    newNotification.HOT_NotificationText__c = text.substring(0, 250) + ' ...';
+                } else {
+                    newNotification.HOT_NotificationText__c = text;
+                }
+                newNotification.HOT_RelatedObject__c = serviceAppointment.Id;
+                newNotification.HOT_RelatedObjectType__c = 'serviceAppointment';
+
+                notificationList.add(newNotification);
+            } else {
+                HOT_ReminderSMSService.sendSMSOnNewFilesAdded(new List<ServiceAppointment>{ serviceAppointment });
+                if (serviceAppointment.HOT_ServiceResource__c == null) {
+                    return;
+                }
+                //creating notification object
+                HOT_Notification__c newNotification = new HOT_Notification__c();
+                if (serviceAppointment.HOT_ServiceResource__r.AccountId != null) {
+                    newNotification.HOT_ServiceResource__c = serviceAppointment.HOT_ServiceResource__c;
+                    newNotification.HOT_NotificationChannel__c = 'SMS';
+                    newNotification.HOT_Subject__c = 'Nytt vedlegg er lagt til ' + serviceAppointment.AppointmentNumber;
+                    String text = 'Det er blitt lagt til et vedlegg på ' + serviceAppointment.AppointmentNumber;
+                    text += '\n\nFor mer informasjon, se tolkebestilling.nav.no. Du kan ikke svare på denne meldingen.';
+                    text += '\nMvh tolketjenesten i Nav';
+                    if (text.length() > 250) {
+                        newNotification.HOT_NotificationText__c = text.substring(0, 250) + ' ...';
+                    } else {
+                        newNotification.HOT_NotificationText__c = text;
+                    }
+                    newNotification.HOT_RelatedObject__c = serviceAppointment.Id;
+                    newNotification.HOT_RelatedObjectType__c = 'serviceAppointment';
+
+                    notificationList.add(newNotification);
+                }
+            }
+        }
+        //inserting notifications
+        try {
+            HOT_NotificationCentreController.createNotification(notificationList);
+        } catch (Exception e) {
+            handleException(e);
+        }
+    }
+
     public static CustomNotificationType getCustomNotificationType(String devName) {
         CustomNotificationType notificationType = [
             SELECT Id, DeveloperName
@@ -1213,21 +1322,21 @@ public without sharing class HOT_ServiceAppointmentNotification {
             [
                 SELECT
                     Id,
+                    DueDate,
                     AccountId,
-                    HOT_AssignedResourceId__c,
-                    HOT_ServiceResource__r.HOT_NotificationChannel__c,
-                    HOT_WorkOrderLineItem__r.WorkOrderId,
-                    HOT_ServiceResource__r.Name,
-                    HOT_ServiceResource__r.HOT_IsEmployedInterpreter__c,
-                    HOT_ServiceResource__r.AccountId,
-                    HOT_Request__r.Orderer__c,
-                    HOT_AddressFormated__c,
+                    SchedEndTime,
+                    SchedStartTime,
                     AppointmentNumber,
                     EarliestStartTime,
+                    HOT_AddressFormated__c,
+                    HOT_Request__r.Orderer__c,
+                    HOT_AssignedResourceId__c,
+                    HOT_ServiceResource__r.Name,
                     HOT_IsEmployedInterpreter__c,
-                    DueDate,
-                    SchedStartTime,
-                    SchedEndTime
+                    HOT_ServiceResource__r.AccountId,
+                    HOT_WorkOrderLineItem__r.WorkOrderId,
+                    HOT_ServiceResource__r.HOT_NotificationChannel__c,
+                    HOT_ServiceResource__r.HOT_IsEmployedInterpreter__c
                 FROM ServiceAppointment
                 WHERE Id IN :serviceAppointments
             ]
@@ -1300,16 +1409,16 @@ public without sharing class HOT_ServiceAppointmentNotification {
         return [
             SELECT
                 Id,
-                HOT_WorkOrderLineItem__r.WorkOrderId,
-                SchedStartTime,
                 SchedEndTime,
+                SchedStartTime,
                 AppointmentNumber,
+                HOT_ServiceResource__r.Id,
                 HOT_ServiceResource__r.AccountId,
-                HOT_ServiceResource__r.HOT_IsFreelanceInterpreter__c,
-                HOT_ServiceResource__r.HOT_IsEmployedInterpreter__c,
-                HOT_ServiceResource__r.HOT_NotificationChannel__c,
+                HOT_WorkOrderLineItem__r.WorkOrderId,
                 HOT_ServiceResource__r.RelatedRecordId,
-                HOT_ServiceResource__r.Id
+                HOT_ServiceResource__r.HOT_NotificationChannel__c,
+                HOT_ServiceResource__r.HOT_IsEmployedInterpreter__c,
+                HOT_ServiceResource__r.HOT_IsFreelanceInterpreter__c
             FROM ServiceAppointment
             WHERE
                 HOT_WorkOrderLineItem__r.WorkOrderId IN :workOrderIds
@@ -1372,8 +1481,8 @@ public without sharing class HOT_ServiceAppointmentNotification {
             WHERE
                 Id IN :workOrderIds
                 AND HOT_Request__r.Orderer__c != NULL
-                AND HOT_Request__r.Orderer__r.CRM_Person__r.HOT_IsReservationAgainstNotifications__c = FALSE
                 AND HOT_Request__r.IsOrdererWantStatusUpdateOnSMS__c = TRUE
+                AND HOT_Request__r.Orderer__r.CRM_Person__r.HOT_IsReservationAgainstNotifications__c = FALSE
         ];
         return workordersList;
     }

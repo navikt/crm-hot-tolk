@@ -12,27 +12,24 @@
                 aria-labelledby="comment-header-id"
                 if:false={isLoading}
             >
-                <section if:true={isSADetails}>
-                    <div if:false={hasAccess}>
-                        <p></p>
-                        <p>Du er ikke tildelt oppdraget lenger.</p>
-                    </div>
-                    <div if:true={hasAccess}>
+                <section lwc:if={isSADetails}>
+                    <template lwc:if={hasAccess}>
                         <div>
                             <h2 class="typo-undertittel">Informasjon om oppdraget:</h2>
+                            <br />
                         </div>
-                        <div if:true={serviceAppointment}>
+                        <div lwc:if={serviceAppointment}>
                             <div>
                                 <p>Oppdragsnummer: <span>{serviceAppointment.AppointmentNumber}</span></p>
                                 <p>Tema: <span>{serviceAppointment.Subject}</span></p>
                                 <p>
                                     Tid: <span>{serviceAppointment.weekday} {serviceAppointment.StartAndEndDate}</span>
                                 </p>
-                                <p if:true={serviceAppointment.HOT_AddressFormated__c}>
+                                <p lwc:if={serviceAppointment.HOT_AddressFormated__c}>
                                     Adresse: <span>{serviceAppointment.HOT_AddressFormated__c}</span>
                                 </p>
                                 <div
-                                    if:true={serviceAppointment.HOT_AddressFormated__c}
+                                    lwc:if={serviceAppointment.HOT_AddressFormated__c}
                                     style="display: inline-block; padding-right: 1vw"
                                 >
                                     <p>Åpne adressen i en karttjeneste (ekstern):</p>
@@ -65,49 +62,50 @@
                                         ></c-button>
                                     </div>
                                 </div>
-                                <p if:true={serviceAppointment.ActualStartTime}>
+                                <p lwc:if={serviceAppointment.ActualStartTime}>
                                     Faktisk start: <span>{serviceAppointment.ActualStartTime}</span>
                                 </p>
-                                <p if:true={serviceAppointment.ActualEndTime}>
+                                <p lwc:if={serviceAppointment.ActualEndTime}>
                                     Faktisk slutt: <span>{serviceAppointment.ActualEndTime}</span>
                                 </p>
-                                <p if:true={accountName}>
+                                <p lwc:if={accountName}>
                                     Navn til bruker:&nbsp;
                                     <span> {accountName} ({accountAgeGender})</span>
                                 </p>
-                                <p if:true={accountPhoneNumber}>
+                                <p lwc:if={accountPhoneNumber}>
                                     Telefonnummer til bruker:&nbsp;
                                     <span>{accountPhoneNumber}</span>
                                 </p>
                                 <p>Tolkemetode: <span>{serviceAppointment.HOT_WorkTypeName__c}</span></p>
                                 <p>Oppdragstype: <span>{serviceAppointment.HOT_AssignmentType__c}</span></p>
-                                <p if:true={ownerName}>Eier: <span>{ownerName}</span></p>
+                                <p lwc:if={ownerName}>Eier: <span>{ownerName}</span></p>
 
                                 <p>Status: <span>{serviceAppointment.Status}</span></p>
                                 <p>Region: <span>{serviceAppointment.HOT_ServiceTerritoryName__c}</span></p>
                                 <p>
                                     Haptisk kommunikasjon: <span>{serviceAppointment.HOT_HapticCommunication__c}</span>
                                 </p>
-                                <p if:true={serviceAppointment.HOT_Escort__c}>
+                                <p lwc:if={serviceAppointment.HOT_Escort__c}>
                                     Ledsaging: <span>{serviceAppointment.HOT_Escort__c}</span>
                                 </p>
                                 <p></p>
-                                <p if:true={serviceAppointment.HOT_DegreeOfHearingAndVisualImpairment__c}>
+                                <p lwc:if={serviceAppointment.HOT_DegreeOfHearingAndVisualImpairment__c}>
                                     Vedtak: <span>{serviceAppointment.HOT_DegreeOfHearingAndVisualImpairment__c}</span>
                                 </p>
-                                <p if:true={termsOfAgreement}>Avtalte betingelser: <span>{termsOfAgreement}</span></p>
-                                <p if:true={serviceAppointment.HOT_Interpreters__c}>
+                                <p lwc:if={termsOfAgreement}>Avtalte betingelser: <span>{termsOfAgreement}</span></p>
+                                <p lwc:if={serviceAppointment.HOT_Interpreters__c}>
                                     (Med)tolk: <span>{serviceAppointment.HOT_Interpreters__c}</span>
                                 </p>
-                                <p if:true={serviceAppointment.Description}>
+                                <p lwc:if={serviceAppointment.Description}>
                                     Tilleggsopplysninger: <span>{serviceAppointment.Description}</span>
                                 </p>
 
-                                <p if:true={ordererPhoneNumber}>
+                                <p lwc:if={ordererPhoneNumber}>
                                     Telefonnummer til bestiller:&nbsp;
                                     <span>{ordererPhoneNumber}</span>
                                 </p>
-                                <p if:true={serviceAppointment.HOT_Dispatcher__c}>
+                                <p>Annen betaler: <span>{isOtherProvider}</span></p>
+                                <p lwc:if={serviceAppointment.HOT_Dispatcher__c}>
                                     Formidler: <span>{serviceAppointment.HOT_Dispatcher__c}</span>
                                 </p>
                                 <div class="files-container">
@@ -141,7 +139,7 @@
                                 >
                                 </c-button>
                             </div>
-                            <div if:true={saIsflow} class="flow-container">
+                            <div lwc:if={saIsflow} class="flow-container">
                                 <lightning-flow
                                     flow-api-name="HOT_ChangeServiceAppointmentStatus_V1"
                                     flow-input-variables={flowVariables}
@@ -179,13 +177,18 @@
                                 </div>
                             </div>
                         </div>
-                    </div>
+                    </template>
+                    <template lwc:else>
+                        <p></p>
+                        <p>Du er ikke tildelt oppdraget lenger.</p>
+                    </template>
                 </section>
-                <section if:true={isWCDetails}>
+                <section lwc:if={isWCDetails}>
                     <div>
                         <h2 class="typo-undertittel">Informasjon om oppdraget:</h2>
+                        <br />
                     </div>
-                    <div if:true={wageClaim}>
+                    <div lwc:if={wageClaim}>
                         <div>
                             <p>Oppdragsnummer: <span>{wageClaim.ServiceAppointmentName__c}</span></p>
                             <p>Tid: <span>{wageClaim.weekday} {wageClaim.StartAndEndDate}</span></p>
