@@ -39,12 +39,13 @@ export let columns = [
 
 export let labelMap = {
     Status: {
-        Completed: { label: 'Ferdig', cssClass: 'label-green' },
-        New: { label: 'Åpen', cssClass: 'label-gray' },
-        Canceled: { label: 'Avlyst', cssClass: 'label-red' },
-        Dispatched: { label: 'Du har fått tolk', cssClass: 'label-green' },
-        Scheduled: { label: 'Under behandling', cssClass: 'label-orange' },
-        'Partially Complete': { label: 'Ferdig', cssClass: 'label-green' },
-        'Cannot Complete': { label: 'Ikke ledig tolk', cssClass: 'label-red' }
+        Ferdig: { label: 'Ferdig', cssClass: 'label-green' },
+        Åpen: { label: 'Åpen', cssClass: 'label-gray' },
+        Avlyst: { label: 'Avlyst', cssClass: 'label-red' },
+        'Du har fått tolk': { label: 'Du har fått tolk', cssClass: 'label-green' },
+        'Under behandling': { label: 'Under behandling', cssClass: 'label-orange' },
+        'Ikke ledig tolk': { label: 'Ikke ledig tolk', cssClass: 'label-red' },
+        Pågår: { label: 'Pågår', cssClass: 'label-blue' },
+        Avslått: { label: 'Avslått', cssClass: 'label-red' }
     }
 };

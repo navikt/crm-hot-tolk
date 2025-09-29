@@ -1,11 +1,11 @@
 <template>
     <template lwc:if={hasData}>
         <div class="table-wrapper" role="region" aria-label={ariaLabel}>
-            <table class="data-table" role="table">
+            <table class="data-table">
                 <thead>
                     <tr role="row">
                         <template for:each={columns} for:item="col">
-                            <th key={col.fieldName} scope="col" role="columnheader">{col.label}</th>
+                            <th key={col.fieldName} scope="col" tabindex="0">{col.label}</th>
                         </template>
                     </tr>
                 </thead>
@@ -19,9 +19,10 @@
                             onkeydown={handleRowKeydown}
                             tabindex="0"
                             role="row"
+                            aria-label={row.ariaLabelRow}
                         >
                             <template for:each={row.fields} for:item="field">
-                                <td key={field.name} data-label={field.label}>
+                                <td key={field.name} data-label={field.label} tabindex="0">
                                     <template lwc:if={field.cssClass}>
                                         <span class={field.cssClass}>{field.displayLabel}</span>
                                     </template>
