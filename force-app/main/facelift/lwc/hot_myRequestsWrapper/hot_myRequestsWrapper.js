@@ -214,8 +214,7 @@ export default class Hot_myRequestsWrapper extends NavigationMixin(LightningElem
         if (this.urlStateParameters.level === 'R') {
             level = 'WO';
         }
-        this.urlStateParameters.id = recordId;
-        this.urlStateParameters.level = level;
+        this.urlStateParameters = { ...this.urlStateParameters, id: recordId, level };
         this.refresh(true);
     }
 
