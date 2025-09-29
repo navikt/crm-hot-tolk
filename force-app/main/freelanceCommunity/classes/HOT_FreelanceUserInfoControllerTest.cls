@@ -1,4 +1,4 @@
-@IsTest
+@IsTest(IsParallel=true)
 private class HOT_FreelanceUserInfoControllerTest {
     @TestSetup
     static void setup() {
@@ -48,22 +48,20 @@ private class HOT_FreelanceUserInfoControllerTest {
         Test.stopTest();
 
         ServiceResource sr = [
-            SELECT 
-                Name, 
-                HOT_EmailOverride__c, 
-                HOT_MobilePhoneOverride__c, 
-                HOT_AddressOverride__c, 
-                HOT_MobileDevice__c, 
+            SELECT
+                Name,
+                HOT_EmailOverride__c,
+                HOT_MobilePhoneOverride__c,
+                HOT_AddressOverride__c,
+                HOT_MobileDevice__c,
                 HOT_NotificationChannel__c,
-                HOT_Skilled__c, 
-                HOT_IsAvailableForAcuteAssignments__c, 
+                HOT_Skilled__c,
+                HOT_IsAvailableForAcuteAssignments__c,
                 HOT_PreferredRegions__c,
-                HOT_MoreInformation__c 
-            FROM 
-                ServiceResource 
-            WHERE 
-                Id = :updatedSR.Id];
-
+                HOT_MoreInformation__c
+            FROM ServiceResource
+            WHERE Id = :updatedSR.Id
+        ];
 
         System.assertEquals(newName, sr.Name);
         System.assertEquals(newEmail, sr.HOT_EmailOverride__c);
@@ -76,12 +74,4 @@ private class HOT_FreelanceUserInfoControllerTest {
         System.assertEquals(newPreferredRegions, sr.HOT_PreferredRegions__c);
         System.assertEquals(newPreferences, sr.HOT_MoreInformation__c);
     }
-
-    
-
-    
-
-
-
-
 }

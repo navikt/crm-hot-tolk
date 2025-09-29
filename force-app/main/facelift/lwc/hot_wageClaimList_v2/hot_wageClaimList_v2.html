@@ -52,7 +52,9 @@
             <p><strong>Oppdragstype:</strong> {assignmentType}</p>
             <p><strong>Eier:</strong> {ownerName}</p>
             <p><strong>Døv/døvblind:</strong> {degreeOfHearingAndVisualImpairment}</p>
-            <p><strong>Status:</strong> {status}</p>
+            <template lwc:if={wageClaim}>
+                <p><strong>Status:</strong> {wageClaim.Status__c}</p>
+            </template>
 
             <template lwc:if={isRetracting}>
                 <div class="navno-dekorator alertstripe navno-dekorator alertstripe--advarsel" role="alert">

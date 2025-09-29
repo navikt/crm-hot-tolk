@@ -1,4 +1,4 @@
-@IsTest
+@IsTest(IsParallel=true)
 public with sharing class HOT_SMSHandlerTest {
     @IsTest
     static void setArchiveAsOwnerTest() {
