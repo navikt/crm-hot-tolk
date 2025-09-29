@@ -20,7 +20,7 @@ function pageLabel(name) {
 
 export default class Hot_backButton extends NavigationMixin(LightningElement) {
     @api ariaLabel;
-    @api destinationLabel = 'Hjem';
+    @api destinationLabel;
     @api fallbackUrl;
     @api isSeries = false;
 
