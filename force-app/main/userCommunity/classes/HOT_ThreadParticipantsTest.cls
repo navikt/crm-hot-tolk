@@ -1,11 +1,23 @@
 @isTest
 private class HOT_ThreadParticipantsTest {
-    @testSetup
-    static void setup() {
+    // Wrapper for å holde på opprettede testdata
+    private class TestData {
+        public List<Account> accounts;
+        public List<User> users;
+        public WorkType workType;
+        public HOT_Request__c request;
+        public ServiceAppointment serviceAppointment;
+        public ServiceResource resource1;
+    }
+
+    private static TestData createTestData() {
+        TestData data = new TestData();
+
         Id personAccountRtId = Schema.SObjectType.Account.getRecordTypeInfosByDeveloperName()
             .get('PersonAccount')
             .getRecordTypeId();
-        // Steg 1: Lag 2 Person__c som kreves for Account
+
+        // Steg 1: Lag 2 Person__c
         List<Person__c> persons = new List<Person__c>();
         for (Integer i = 1; i <= 2; i++) {
             persons.add(
@@ -17,6 +29,7 @@ private class HOT_ThreadParticipantsTest {
             );
         }
         insert persons;
+
         // Steg 2: Opprett 2 Person Accounts
         List<Account> accountsToInsert = new List<Account>();
         for (Integer i = 0; i < 2; i++) {
@@ -32,14 +45,14 @@ private class HOT_ThreadParticipantsTest {
         }
         insert accountsToInsert;
 
-        // Reload accounts to get PersonContactId
         List<Account> accounts = [
             SELECT Id, FirstName, LastName, PersonContactId
             FROM Account
             WHERE Id IN :accountsToInsert
         ];
+        data.accounts = accounts;
+
         Profile profile = [SELECT Id FROM Profile WHERE Name = 'Customer Community Plus User' LIMIT 1];
-        UserRole role = [SELECT Id FROM UserRole WHERE Name = 'Default' LIMIT 1];
 
         // Opprett en system administrator user for runAs
         User adminUser = new User(
@@ -57,7 +70,7 @@ private class HOT_ThreadParticipantsTest {
         );
         insert adminUser;
 
-        // Steg 4: Opprett Users koblet til hver PersonContact
+        // Steg 3: Opprett Users koblet til hver PersonContact med runAs adminUser
         List<User> usersToInsert = new List<User>();
         for (Account acc : accounts) {
             if (acc.PersonContactId != null) {
@@ -72,7 +85,6 @@ private class HOT_ThreadParticipantsTest {
                         Email = email,
                         ProfileId = profile.Id,
                         EmailEncodingKey = 'UTF-8',
-                        UserRoleId = role.Id,
                         CommunityNickname = acc.LastName,
                         TimeZoneSidKey = 'Europe/Paris',
                         LocaleSidKey = 'no_NO',
@@ -81,21 +93,25 @@ private class HOT_ThreadParticipantsTest {
                 );
             }
         }
-
-        // Bruk runAs for å isolere User insert DML
         System.runAs(adminUser) {
             insert usersToInsert;
         }
+        data.users = usersToInsert;
 
+        // Opprett annen testdata
         WorkType workType = HOT_TestDataFactory.createWorkType();
         insert workType;
+        data.workType = workType;
+
         HOT_Request__c request = HOT_TestDataFactory.createRequest('Test', workType);
         request.Account__c = accounts[0].Id;
         insert request;
         request.Status__c = 'Godkjent';
-
         update request;
+        data.request = request;
+
         ServiceAppointment serviceAppointment = [SELECT Id FROM ServiceAppointment LIMIT 1];
+        data.serviceAppointment = serviceAppointment;
 
         User getUserToBeFreelanc = usersToInsert[1];
 
@@ -103,11 +119,13 @@ private class HOT_ThreadParticipantsTest {
         insert operatingHours;
         ServiceTerritory serviceTerritory = HOT_TestDataFactory.createServiceTerritory(operatingHours);
         insert serviceTerritory;
+
         ServiceResource resource1 = HOT_TestDataFactory.createServiceResource(getUserToBeFreelanc.Id);
         resource1.HOT_ServiceTerritory__c = serviceTerritory.Id;
         resource1.HOT_IsFreelanceInterpreter__c = true;
         resource1.Name = 'Frilans';
         insert resource1;
+        data.resource1 = resource1;
 
         ServiceTerritoryMember serviceTerritoryMember = HOT_TestDataFactory.createServiceTerritoryMember(
             resource1,
@@ -120,20 +138,24 @@ private class HOT_ThreadParticipantsTest {
             resource1.Id
         );
         insert assignedResource;
+
+        return data;
     }
 
     @IsTest
     private static void getRequestThreadParticipants() {
+        TestData data = createTestData();
+
         Test.startTest();
-        //Request thread (bruker formidler)
-        HOT_Request__c request = [SELECT Id FROM HOT_Request__c LIMIT 1];
+        HOT_Request__c request = data.request;
+
         Thread__c thread = HOT_TestDataFactory.createThread('HOT_BRUKER-FORMIDLER');
         thread.CRM_Related_Object__c = request.Id;
         insert thread;
 
         List<HOT_ThreadParticipants.Participant> participants = HOT_ThreadParticipants.getParticipants(thread.Id);
-
         Test.stopTest();
+
         List<String> participantNames = new List<String>();
         for (HOT_ThreadParticipants.Participant p : participants) {
             participantNames.add(p.name);
@@ -149,18 +171,20 @@ private class HOT_ThreadParticipantsTest {
             'Mangler deltaker med navn "Formidler". Faktiske deltakere: ' + String.join(participantNames, ', ')
         );
     }
+
     @IsTest
     private static void getWorkOrderThreadParticipants() {
+        TestData data = createTestData();
+
         Test.startTest();
-        //Workorder thread (tolk-tolk)
         WorkOrder workOrder = [SELECT Id FROM WorkOrder LIMIT 1];
         Thread__c thread = HOT_TestDataFactory.createThread('HOT_BRUKER-TOLK');
         thread.CRM_Related_Object__c = workOrder.Id;
         insert thread;
 
         List<HOT_ThreadParticipants.Participant> participants = HOT_ThreadParticipants.getParticipants(thread.Id);
-
         Test.stopTest();
+
         List<String> participantNames = new List<String>();
         for (HOT_ThreadParticipants.Participant p : participants) {
             participantNames.add(p.name);
@@ -176,18 +200,22 @@ private class HOT_ThreadParticipantsTest {
             'Mangler deltaker med navn "Frilans". Faktiske deltakere: ' + String.join(participantNames, ', ')
         );
     }
+
+    // Gjør tilsvarende endringer for alle andre tester (kall createTestData i starten)
+
     @IsTest
     private static void getWorkOrderThread2Participants() {
+        TestData data = createTestData();
+
         Test.startTest();
-        //Workorder thread (tolk-tolk)
         WorkOrder workOrder = [SELECT Id FROM WorkOrder LIMIT 1];
         Thread__c thread = HOT_TestDataFactory.createThread('HOT_TOLK-TOLK');
         thread.CRM_Related_Object__c = workOrder.Id;
         insert thread;
 
         List<HOT_ThreadParticipants.Participant> participants = HOT_ThreadParticipants.getParticipants(thread.Id);
-
         Test.stopTest();
+
         List<String> participantNames = new List<String>();
         for (HOT_ThreadParticipants.Participant p : participants) {
             participantNames.add(p.name);
@@ -204,18 +232,20 @@ private class HOT_ThreadParticipantsTest {
             'Mangler deltaker med navn "Frilans". Faktiske deltakere: ' + String.join(participantNames, ', ')
         );
     }
+
     @IsTest
     private static void getInterestedResourceThreadParticipants() {
+        TestData data = createTestData();
+
         Test.startTest();
-        //Interestedresource thread (tolk-formidler)
         HOT_InterestedResource__c interestedResource = [SELECT Id FROM HOT_InterestedResource__c LIMIT 1];
         Thread__c thread = HOT_TestDataFactory.createThread('HOT_TOLK-FORMIDLER');
         thread.CRM_Related_Object__c = interestedResource.Id;
         insert thread;
 
         List<HOT_ThreadParticipants.Participant> participants = HOT_ThreadParticipants.getParticipants(thread.Id);
-
         Test.stopTest();
+
         List<String> participantNames = new List<String>();
         for (HOT_ThreadParticipants.Participant p : participants) {
             participantNames.add(p.name);
@@ -231,18 +261,20 @@ private class HOT_ThreadParticipantsTest {
             'Mangler deltaker med navn "Frilans". Faktiske deltakere: ' + String.join(participantNames, ', ')
         );
     }
+
     @IsTest
     private static void getServiceAppointmentThreadParticipants() {
+        TestData data = createTestData();
+
         Test.startTest();
-        //Serviceappointment thread (tolk-formidler)
-        ServiceAppointment serviceAppointment = [SELECT Id FROM ServiceAppointment LIMIT 1];
+        ServiceAppointment serviceAppointment = data.serviceAppointment;
         Thread__c thread = HOT_TestDataFactory.createThread('HOT_TOLK-FORMIDLER');
         thread.CRM_Related_Object__c = serviceAppointment.Id;
         insert thread;
 
         List<HOT_ThreadParticipants.Participant> participants = HOT_ThreadParticipants.getParticipants(thread.Id);
-
         Test.stopTest();
+
         List<String> participantNames = new List<String>();
         for (HOT_ThreadParticipants.Participant p : participants) {
             participantNames.add(p.name);
@@ -258,11 +290,13 @@ private class HOT_ThreadParticipantsTest {
             'Mangler deltaker med navn "Frilans". Faktiske deltakere: ' + String.join(participantNames, ', ')
         );
     }
+
     @IsTest
     private static void getWageClaimThreadParticipants() {
+        TestData data = createTestData();
+
         Test.startTest();
-        //WageClaim thread (tolk-ressurskontor)
-        ServiceAppointment serviceAppointment = [SELECT Id FROM ServiceAppointment LIMIT 1];
+        ServiceAppointment serviceAppointment = data.serviceAppointment;
         serviceAppointment.Status = 'Dispatched';
         update serviceAppointment;
         serviceAppointment.Status = 'Canceled';
@@ -275,8 +309,8 @@ private class HOT_ThreadParticipantsTest {
         insert thread;
 
         List<HOT_ThreadParticipants.Participant> participants = HOT_ThreadParticipants.getParticipants(thread.Id);
-
         Test.stopTest();
+
         List<String> participantNames = new List<String>();
         for (HOT_ThreadParticipants.Participant p : participants) {
             participantNames.add(p.name);
