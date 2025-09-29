@@ -437,11 +437,10 @@ public without sharing class HOT_MessageHelper {
     }
     @AuraEnabled(cacheable=false)
     public static Thread__c createThreadInterpreters(Id recordId) {
-        User currentUser = [SELECT Id FROM User WHERE Id = :UserInfo.getUserId()];
         List<ServiceResource> serviceResourceList = [
             SELECT Id, RelatedRecordId
             FROM ServiceResource
-            WHERE RelatedRecordId = :currentUser.Id
+            WHERE RelatedRecordId = :UserInfo.getUserId()
         ];
 
         ServiceAppointment serviceAppointment = [
@@ -584,11 +583,10 @@ public without sharing class HOT_MessageHelper {
             ];
             if (thread.size() != 0) {
                 if (thread[0].HOT_ServiceAppointment__c != null) {
-                    User currentUser = [SELECT Id FROM User WHERE Id = :UserInfo.getUserId()];
                     List<ServiceResource> serviceResource = [
                         SELECT Id, RelatedRecordId
                         FROM ServiceResource
-                        WHERE RelatedRecordId = :currentUser.Id
+                        WHERE RelatedRecordId = :UserInfo.getUserId()
                     ];
                     if (serviceResource.size() == 0) {
                         List<Message__c> msgList = [
@@ -615,7 +613,7 @@ public without sharing class HOT_MessageHelper {
                         ];
                         if (ar.size() != 0) {
                         } else {
-                            Boolean IdInParticipants = thread[0].HOT_ParticipantIds__c.contains(currentUser.Id);
+                            Boolean IdInParticipants = thread[0].HOT_ParticipantIds__c.contains(UserInfo.getUserId());
                             if (!IdInParticipants) {
                                 List<Message__c> msgList = [
                                     SELECT Id, CRM_Read_By_Nav__c, CRM_Read_By_Nav_Datetime__c
@@ -740,10 +738,9 @@ public without sharing class HOT_MessageHelper {
                 OR CRM_Type__c = 'HOT_BRUKER-BESTILLER'
                 OR CRM_Type__c = 'HOT_TOLK-TOLK')
         ];
-        User user = [SELECT Id FROM User WHERE Id = :UserInfo.getUserId()];
         if (fromContactId == 'ansatt/formidler') {
             t.HOT_Thread_read_by__c = null;
-            t.HOT_Thread_read_by__c = user.Id + ';';
+            t.HOT_Thread_read_by__c = UserInfo.getUserId() + ';';
             t.CRM_Latest_Message_Datetime__c = Datetime.now();
         } else {
             t.HOT_Thread_read_by__c = null;
