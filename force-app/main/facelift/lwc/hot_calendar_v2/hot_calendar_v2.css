@@ -100,6 +100,13 @@ span {
     margin-top: 1rem;
 }
 
+.error-message {
+    display: block;
+    color: #ba3a26;
+    margin-top: 0.25rem;
+    font-size: 1rem;
+}
+
 @media only screen and (min-width: 768px) {
     .fc-daygrid-day-frame {
         height: 2rem;

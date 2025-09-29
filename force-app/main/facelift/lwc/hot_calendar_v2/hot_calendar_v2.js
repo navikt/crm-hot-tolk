@@ -1142,6 +1142,8 @@ export default class LibsFullCalendarV2 extends NavigationMixin(LightningElement
                 this.initialAbsenceStart = initialAbsenceStart;
                 this.initialAbsenceEnd = initialAbsenceEnd;
 
+                this.currentEventRecordId = event.extendedProps.recordId;
+
                 console.log(
                             'Existing event:\n' +
                             'Absence type: ' + this.absenceType + '\n' +
@@ -1267,7 +1269,7 @@ export default class LibsFullCalendarV2 extends NavigationMixin(LightningElement
     registerButtonText = '';
 
     // Absence event fields
-    event;
+    currentEventRecordId;
     initialAbsenceStart;
     initialAbsenceEnd;
 
@@ -1306,14 +1308,183 @@ export default class LibsFullCalendarV2 extends NavigationMixin(LightningElement
         return ['Vacation', 'Other', 'Medical'].includes(absenceType);
     }
 
-    async handleOkay() {
-
-        validInputs = true;
-        errorAbsenceRadioButtonText = '';
-
-        if(!this.validateAbsenceType(absenceType)) {
-
+     handleDateStartChange(event) {
+        const startTime = new Date(event.detail.value);
+        const endTime = new Date(this.refs.absenceEndDateTimeInput.value);
+        if (!this.endHasBeenSet) {
+            this.initialAbsenceEnd = this.formatLocalDateTime(new Date(startTime.getTime() + 60 * 60 * 1000 * 24));
         }
 
+        const startInput = this.refs.absenceStartDateTimeInput;
+        startInput.setCustomValidity(
+            startTime >= endTime && this.endHasBeenSet ? 'Sluttid må komme etter starttid' : ''
+        );
+        startInput.reportValidity();
+        this.initialAbsenceStart = event.detail.value;
+    }
+
+    handleDateEndChange(event) {
+        const startInput = this.refs.absenceStartDateTimeInput;
+        const startTime = new Date(startInput.value);
+        const newEndDate = new Date(event.detail.value);
+        startInput.setCustomValidity(startTime >= newEndDate ? 'Sluttid må komme etter starttid' : '');
+        startInput.reportValidity();
+        this.endHasBeenSet = true;
+        this.initialAbsenceEnd = event.detail.value;
+    }
+
+    async handleDeleteAbsence() {
+        this.isLoading = true;
+        try {
+            if (!this.currentEventRecordId) {
+                throw new Error('No recordId found for event');
+            }
+
+        // this.isInformationModalOpen = false;
+        this.closeModal();
+        await deleteAbsence({ recordId: this.currentEventRecordId });
+
+        this.dispatchEvent(
+            new ShowToastEvent({
+                title: 'Fravær slettet',
+                message: 'Fraværet ble slettet vellykket',
+                variant: 'success'
+            })
+        );
+        this.refreshCalendar(false);
+    } catch (error) {
+        console.error('Delete failed:', error);
+
+        this.dispatchEvent(
+            new ShowToastEvent({
+                title: 'Noe gikk galt',
+                message: 'Kunne ikke slette, prøv igjen senere',
+                variant: 'error'
+            })
+        );
+    }
+
+    this.isLoading = false;
+}
+
+    errorText= '';
+
+     async handleOkay() {
+        // Fetch radio button value
+        let validInputs = true;
+        // const radioGroup = this.refs.absenceTypeRadioGroup;
+        let absenceType = this.absenceType;
+        if (!this.validateAbsenceType(absenceType)) {
+            // radioGroup.setCustomValidity('Velg en type');
+            // radioGroup.reportValidity();
+            // radioGroup.focus();
+            validInputs = false;
+            this.errorText = 'Velg en type fravær';
+            console.log('No absence type selected');
+        } else {
+            // radioGroup.setCustomValidity('');
+            // radioGroup.reportValidity();
+            this.errorText = '';
+        }
+        console.log('Selected absence type:', absenceType);
+
+        // Fetch input field values
+        let absenceStartDateTime = this.refs.absenceStartDateTimeInput.value;
+        let absenceEndDateTime = this.refs.absenceEndDateTimeInput.value;
+        if (this.isAllDayAbsence) {
+            absenceStartDateTime = this.formatLocalDateTime(new Date(absenceStartDateTime), '00', '00');
+            absenceEndDateTime = this.formatLocalDateTime(new Date(absenceEndDateTime), '23', '59');
+        }
+
+        const absenceStartElement = this.refs.absenceStartDateTimeInput;
+        if (absenceEndDateTime <= absenceStartDateTime) {
+            absenceStartElement.setCustomValidity('Sluttid må komme etter starttid');
+            absenceStartElement.reportValidity();
+            validInputs = false;
+        } else {
+            absenceStartElement.setCustomValidity('');
+            absenceStartElement.reportValidity();
+        }
+
+        if (!validInputs) {
+            return;
+        }
+
+        let result;
+        try {
+            result = await getConflictsForTimePeriod({
+                startTimeInMilliseconds: new Date(absenceStartDateTime).getTime(),
+                endTimeInMilliseconds: new Date(absenceEndDateTime).getTime(),
+                checkWholeDayForConflicts: this.isAllDayAbsence
+            });
+        } catch {
+            const event = new ShowToastEvent({
+                title: 'Det oppsto en feil',
+                message: 'Feil ved henting av avtaler i dette tidsrommet, prøv igjen senere.',
+                variant: 'error'
+            });
+            this.dispatchEvent(event);
+            return;
+        }
+
+        
+        // const confirmation = await ConfimationModal.open({
+        //     content: result,
+        //     absenceType: absenceType,
+        //     absenceStartDateTime: absenceStartDateTime,
+        //     absenceEndDateTime: absenceEndDateTime
+        // });
+        // if (confirmation) { 
+            this.isLoading = true;
+            try {
+                this.closeModal();
+                await createAbsenceAndResolveConflicts({
+                    absenceType: this.absenceType,
+                    startTimeInMilliseconds: new Date(absenceStartDateTime).getTime(),
+                    endTimeInMilliseconds: new Date(absenceEndDateTime).getTime(),
+                    isAllDayAbsence: this.isAllDayAbsence
+                });
+            } catch (error) {
+                const event = new ShowToastEvent({
+                    title: 'Kunne ikke legge til fravær',
+                    message: 'Det oppstod en feil, prøv igjen senere',
+                    variant: 'error'
+                });
+                this.dispatchEvent(event);
+            }
+            if (this.isEdit) {
+                try {
+                    await deleteAbsence({ recordId: this.currentEventRecordId });
+                    const event = new ShowToastEvent({
+                        title: 'Fravær endret',
+                        message: 'Fravær ble endret, og eventuelle konflikter ble løst',
+                        variant: 'success'
+                    });
+                    this.dispatchEvent(event);
+                    this.refreshCalendar(false);
+                } catch {
+                    const event = new ShowToastEvent({
+                        title: 'Det oppsto en feil',
+                        message: 'Feil ved endring av avtale, prøv igjen senere.',
+                        variant: 'error'
+                    });
+                    this.dispatchEvent(event);
+                }
+            } else {
+                const event = new ShowToastEvent({
+                    title: 'Fravær lagt til',
+                    message: 'Fravær lagt til, og eventuelle konflikter ble løst',
+                    variant: 'success'
+                });
+                this.dispatchEvent(event);
+                this.refreshCalendar(false);
+            }
+            this.isLoading = false;
+            this.currentEventRecordId = null;
+            this.isAllDayAbsence = false;
+            absenceType = null;
+            this.clearCheckedRadios();
+            this.closeModal();
+        // }
     }
 }
