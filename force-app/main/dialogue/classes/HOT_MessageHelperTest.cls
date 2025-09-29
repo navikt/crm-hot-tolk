@@ -14,21 +14,30 @@ private class HOT_MessageHelperTest {
         request.Account__c = account.Id;
         request.Orderer__c = account.Id;
         insert request;
+        WorkOrder workOrder = HOT_TestDataFactory.createWorkOrder(request, workType);
+        workOrder.AccountId = account.Id;
+        insert workOrder;
 
         Thread__c t = HOT_TestDataFactory.createThread();
-        t.CRM_Related_Object__c = acc.Id;
-        t.CRM_Type__c = 'HOT_BRUKER-FORMIDLER';
+        //t.CRM_Related_Object__c = acc.Id;
+        t.CRM_Thread_Type__c = 'HOT_BRUKER-FORMIDLER';
         t.CRM_Related_Object__c = request.Id;
 
         Thread__c t2 = HOT_TestDataFactory.createThread();
         t2.CRM_Related_Object__c = acc.Id;
-        t2.CRM_Type__c = 'HOT_BRUKER-FORMIDLER';
+        t2.CRM_Thread_Type__c = 'HOT_BRUKER-FORMIDLER';
+        //t2.CRM_Related_Object__c = request.Id;
 
         Thread__c t3 = HOT_TestDataFactory.createThread();
         t3.CRM_Related_Object__c = acc.Id;
-        t3.CRM_Type__c = 'HOT_BRUKER-FORMIDLER';
+        t3.CRM_Thread_Type__c = 'HOT_BRUKER-FORMIDLER';
+        //t3.CRM_Related_Object__c = request.Id;
 
-        insert new List<Thread__c>{ t, t2, t3 };
+        Thread__c t4 = new Thread__c();
+        t4.CRM_Thread_Type__c = 'HOT_BRUKER-TOLK';
+        t4.CRM_Related_Object__c = request.Id;
+
+        insert new List<Thread__c>{ t, t2, t3, t4 };
 
         Message__c m = new Message__c();
         m.CRM_Thread__c = t.Id;
@@ -68,15 +77,7 @@ private class HOT_MessageHelperTest {
     }
     @IsTest
     static void getAccountOnWorkOrder() {
-        WorkType workType = HOT_TestDataFactory.createWorkType();
-        insert workType;
-        Account account = HOT_TestDataFactory.createAccount(true);
-        insert account;
-        HOT_Request__c request = HOT_TestDataFactory.createRequest('TEST', workType);
-        insert request;
-        WorkOrder workOrder = HOT_TestDataFactory.createWorkOrder(request, workType);
-        workOrder.AccountId = account.Id;
-        insert workOrder;
+        WorkOrder workOrder = [SELECT Id, AccountId FROM WorkOrder WHERE HOT_Request__r.Subject__c = 'TEST' LIMIT 1];
 
         Test.startTest();
         Id accountId = HOT_MessageHelper.getAccountOnWorkOrder(workOrder.Id);
@@ -85,39 +86,19 @@ private class HOT_MessageHelperTest {
     }
     @IsTest
     static void getRequestInformation() {
-        Test.startTest();
-        WorkType workType = HOT_TestDataFactory.createWorkType();
-        insert workType;
-        Account account = HOT_TestDataFactory.createAccount(true);
-        insert account;
-        HOT_Request__c request = HOT_TestDataFactory.createRequest('TEST', workType);
-        request.Account__c = account.Id;
-        request.Orderer__c = account.Id;
-        insert request;
-        WorkOrder workOrder = HOT_TestDataFactory.createWorkOrder(request, workType);
-        workOrder.AccountId = account.Id;
-        insert workOrder;
+        HOT_Request__c request = [SELECT Id FROM HOT_Request__c WHERE Subject__c = 'TEST' LIMIT 1];
 
+        Test.startTest();
         List<HOT_Request__c> requests = HOT_MessageHelper.getRequestInformation(request.Id);
-        Boolean result = requests[0].IsAccountEqualOrderer__c;
         Test.stopTest();
+        Boolean result = requests[0].IsAccountEqualOrderer__c;
         System.assertEquals(result, true, 'Account Id was not correct');
     }
     @IsTest
     static void getWorkOrderInformation() {
-        Test.startTest();
-        WorkType workType = HOT_TestDataFactory.createWorkType();
-        insert workType;
-        Account account = HOT_TestDataFactory.createAccount(true);
-        insert account;
-        HOT_Request__c request = HOT_TestDataFactory.createRequest('TEST', workType);
-        request.Account__c = account.Id;
-        request.Orderer__c = account.Id;
-        insert request;
-        WorkOrder workOrder = HOT_TestDataFactory.createWorkOrder(request, workType);
-        workOrder.AccountId = account.Id;
-        insert workOrder;
+        WorkOrder workOrder = [SELECT Id FROM WorkOrder WHERE HOT_Request__r.Subject__c = 'TEST' LIMIT 1];
 
+        Test.startTest();
         List<WorkOrder> wo = HOT_MessageHelper.getWorkOrderInformation(workOrder.Id);
         String result = String.valueOf(wo[0].HOT_TotalNumberOfInterpreters__c);
         Test.stopTest();
@@ -133,13 +114,9 @@ private class HOT_MessageHelperTest {
     }
     @IsTest
     static void getThreadsCollectionSingleTest() {
-        List<Account> accList = [SELECT Id FROM Account];
+        Account acc = [SELECT Id FROM Account WHERE Name = 'Test account' LIMIT 1];
         Test.startTest();
-        List<Thread__c> resList = HOT_MessageHelper.getThreadsCollection(
-            accList.get(0).Id,
-            true,
-            'HOT_BRUKER-FORMIDLER'
-        );
+        List<Thread__c> resList = HOT_MessageHelper.getThreadsCollection(acc.Id, true, 'HOT_BRUKER-FORMIDLER');
         Test.stopTest();
         System.assertEquals(1, resList.size());
     }
@@ -148,133 +125,61 @@ private class HOT_MessageHelperTest {
      */
     @IsTest
     static void getThreadsCollectionMultiTest() {
-        List<Account> accList = [SELECT Id FROM Account];
+        Account acc = [SELECT Id FROM Account WHERE Name = 'Test account' LIMIT 1];
         Test.startTest();
-        List<Thread__c> resList = HOT_MessageHelper.getThreadsCollection(
-            accList.get(0).Id,
-            false,
-            'HOT_BRUKER-FORMIDLER'
-        );
+        List<Thread__c> resList = HOT_MessageHelper.getThreadsCollection(acc.Id, false, 'HOT_BRUKER-FORMIDLER');
         Test.stopTest();
         System.assertEquals(2, resList.size());
+    }
+    @IsTest
+    static void getThreadsCollectionThreadIdTest() {
+        Id threadId = [SELECT Id FROM Thread__c WHERE CRM_Type__c = 'HOT_BRUKER-FORMIDLER' LIMIT 1].Id;
+        Test.startTest();
+        List<Thread__c> resList = HOT_MessageHelper.getThreadsCollection(threadId, false, 'blabla');
+        Test.stopTest();
+        System.assertEquals(1, resList.size());
     }
 
     @IsTest
     static void getSingleThreadTest() {
-        WorkType workType = HOT_TestDataFactory.createWorkType();
-        workType.Name = 'Work Type Name';
-        insert workType;
-        Account account = HOT_TestDataFactory.createAccount(true);
-        insert account;
+        HOT_Request__c request = [SELECT Id FROM HOT_Request__c WHERE Subject__c = 'TEST' LIMIT 1];
 
-        account = [SELECT Id FROM Account WHERE FirstName = 'Test' LIMIT 1];
-
-        HOT_Request__c request = HOT_TestDataFactory.createRequest('BRUKER-FORMIDLER', workType);
-        request.Account__c = account.Id;
-        request.Orderer__c = account.Id;
-        insert request;
-        Thread__c thread = new Thread__c();
-        thread.RecordTypeId = HOT_MessageHelper.getHOTThreadRecordType();
-        thread.CRM_Type__c = 'HOT_BRUKER-TOLK';
-        thread.CRM_Related_Object__c = request.Id;
-        insert thread;
         Test.startTest();
-        List<Thread__c> result = [
-            SELECT Id
-            FROM Thread__c
-            WHERE CRM_Related_Object__c = :request.Id AND CRM_Type__c = 'HOT_BRUKER-TOLK'
-        ];
-        List<Thread__c> t = HOT_MessageHelper.getSingleThread(request.Id, 'HOT_BRUKER-TOLK');
+        List<Thread__c> t = HOT_MessageHelper.getSingleThread(request.Id, 'HOT_BRUKER-FORMIDLER');
         Test.stopTest();
-        System.assertEquals(t.size(), result.size());
-    }
-    @IsTest
-    static void getSingleThreadTest2() {
-        WorkType workType = HOT_TestDataFactory.createWorkType();
-        workType.Name = 'Work Type Name';
-        insert workType;
-        HOT_Request__c request = HOT_TestDataFactory.createRequest('Subject', workType);
-        insert request;
-        Thread__c thread = new Thread__c();
-        thread.RecordTypeId = HOT_MessageHelper.getHOTThreadRecordType();
-        thread.CRM_Thread_Type__c = 'HOT_BRUKER-TOLK';
-        thread.CRM_Related_Object__c = request.Id;
-        HOT_DatabaseOperations.insertRecords(thread);
-        Test.startTest();
-        List<Thread__c> t = HOT_MessageHelper.getSingleThread(thread.Id, 'HOT_BRUKER-FORMIDLER');
-        Test.stopTest();
-        System.assertEquals(t.size(), 0);
+        System.assertEquals(1, t.size());
     }
     @IsTest
     static void getThreads() {
-        WorkType workType = HOT_TestDataFactory.createWorkType();
-        workType.Name = 'Work Type Name';
-        insert workType;
-        HOT_Request__c request = HOT_TestDataFactory.createRequest('Subject', workType);
-        insert request;
-
-        Thread__c thread = new Thread__c();
-        thread.RecordTypeId = HOT_MessageHelper.getHOTThreadRecordType();
-        thread.CRM_Thread_Type__c = 'HOT_BRUKER-TOLK';
-        thread.CRM_Related_Object__c = request.Id;
-        HOT_DatabaseOperations.insertRecords(thread);
-
-        Thread__c thread2 = new Thread__c();
-        thread2.RecordTypeId = HOT_MessageHelper.getHOTThreadRecordType();
-        thread2.CRM_Thread_Type__c = 'HOT_BRUKER-TOLK';
-        thread2.CRM_Related_Object__c = request.Id;
-        HOT_DatabaseOperations.insertRecords(thread2);
-
+        HOT_Request__c request = [SELECT Id FROM HOT_Request__c WHERE Subject__c = 'TEST' LIMIT 1];
         Test.startTest();
         List<Thread__c> t = HOT_MessageHelper.getThreads(request.Id);
         Test.stopTest();
         System.assertEquals(t.size(), 2);
     }
     @IsTest
-    static void getThreadFromIdTest() {
-        Thread__c thread = new Thread__c();
-        thread.RecordTypeId = HOT_MessageHelper.getHOTThreadRecordType();
-        insert thread;
-        Test.startTest();
-        List<Thread__c> t = HOT_MessageHelper.getThreadFromThreadId(thread.Id);
-        Test.stopTest();
-        System.assertEquals(t.size(), 1);
-    }
-    @IsTest
     static void createThread() {
-        WorkType workType = HOT_TestDataFactory.createWorkType();
-        insert workType;
-
-        Account account = HOT_TestDataFactory.createAccount(true);
-        insert account;
-
-        account = [SELECT Id FROM Account WHERE FirstName = 'Test' LIMIT 1];
-
-        HOT_Request__c request = HOT_TestDataFactory.createRequest('BRUKER-FORMIDLER', workType);
-        request.Account__c = account.Id;
-        request.Orderer__c = account.Id;
-        insert request;
+        HOT_Request__c request = [SELECT Id, Account__c FROM HOT_Request__c WHERE Subject__c = 'TEST' LIMIT 1];
+        myTriggers.disable(HOT_RequestHandler.class);
+        request.Subject__c = 'BRUKER-FORMIDLER';
+        update request;
+        Set<Id> threadIds = new Map<Id, Thread__c>([SELECT Id FROM Thread__c WHERE CRM_Related_Object__c = :request.Id])
+            .keySet();
 
         Test.startTest();
-        request = [
-            SELECT Id, Subject__c, Account__c, Orderer__c, IsAccountEqualOrderer__c
-            FROM HOT_Request__c
-            WHERE Subject__c = 'BRUKER-FORMIDLER'
-            LIMIT 1
-        ];
 
-        Thread__c thread = HOT_MessageHelper.createThread(request.Id, account.Id);
+        Thread__c thread = HOT_MessageHelper.createThread(request.Id, request.Account__c);
 
+        Test.stopTest();
         thread = [
             SELECT Id, CRM_Account__c, CRM_Type__c
             FROM Thread__c
-            WHERE CRM_Related_Object__c = :request.Id
+            WHERE CRM_Related_Object__c = :request.Id AND Id NOT IN :threadIds
             LIMIT 1
         ];
 
-        Test.stopTest();
         System.assertNotEquals(null, thread);
-        System.assertEquals(account.Id, thread.CRM_Account__c);
+        System.assertEquals(request.Account__c, thread.CRM_Account__c);
         System.assertEquals(thread.CRM_Type__c, 'HOT_BRUKER-FORMIDLER');
     }
     @IsTest
@@ -528,8 +433,8 @@ private class HOT_MessageHelperTest {
         insert acc;
 
         Test.startTest();
-        User me = [SELECT Id FROM User WHERE Id = :UserInfo.getUserId()];
-        ServiceResource sr = HOT_TestDataFactory.createServiceResource(me.Id);
+
+        ServiceResource sr = HOT_TestDataFactory.createServiceResource(UserInfo.getUserId());
         insert sr;
         sr.AccountId = acc.Id;
         update sr;
@@ -669,12 +574,7 @@ private class HOT_MessageHelperTest {
     }
     @IsTest
     static void markAsReadByNavTest() {
-        Profile stdProf = [
-            SELECT Id
-            FROM Profile
-            WHERE Name IN ('Standardbruker', 'Standard User')
-            LIMIT 1
-        ];
+        Profile stdProf = [SELECT Id FROM Profile WHERE Name IN ('Standardbruker', 'Standard User') LIMIT 1];
         User navReader = HOT_TestDataFactory.createUser('navstd', stdProf);
         insert navReader;
         Account acc = new Account(Name = 'ReadByNav Acc');
@@ -1005,7 +905,8 @@ private class HOT_MessageHelperTest {
         System.assertNotEquals(null, created, 'Dispatcher thread should be created.');
         System.assertEquals('HOT_TOLK-FORMIDLER', created.CRM_Type__c, 'Wrong thread type.');
         System.assert(
-            created.CRM_Related_Object__c == sa.Id || created.CRM_Related_Object__c == wo.Id,
+            created.CRM_Related_Object__c == sa.Id ||
+            created.CRM_Related_Object__c == wo.Id,
             'Helper may relate to SA or normalize to WO.'
         );
         if (created.CRM_Account__c != null) {
@@ -1063,7 +964,8 @@ private class HOT_MessageHelperTest {
             System.assertNotEquals(null, created, 'Dispatcher thread should be created.');
             System.assertEquals('HOT_TOLK-FORMIDLER', created.CRM_Type__c, 'Wrong thread type.');
             System.assert(
-                created.CRM_Related_Object__c == sa.Id || created.CRM_Related_Object__c == wo.Id,
+                created.CRM_Related_Object__c == sa.Id ||
+                created.CRM_Related_Object__c == wo.Id,
                 'Helper may relate to SA directly or normalize to WO.'
             );
             if (created.CRM_Account__c != null) {
@@ -1709,7 +1611,9 @@ private class HOT_MessageHelperTest {
         Test.stopTest();
         Thread__c th = [SELECT HOT_Thread_read_by__c FROM Thread__c WHERE id = :t.Id LIMIT 1];
         System.assertEquals(
-            '007' + currentUser.id + ';',
+            '007' +
+            currentUser.id +
+            ';',
             th.HOT_Thread_read_by__c,
             'Should be HOT Thread Read By + user id + ;'
         );
