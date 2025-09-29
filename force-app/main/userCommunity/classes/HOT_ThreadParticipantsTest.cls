@@ -39,7 +39,24 @@ private class HOT_ThreadParticipantsTest {
             WHERE Id IN :accountsToInsert
         ];
         Profile profile = [SELECT Id FROM Profile WHERE Name = 'Customer Community Plus User' LIMIT 1];
-        UserRole userRole = [SELECT Id FROM UserRole LIMIT 1];
+        UserRole role = [SELECT Id FROM UserRole WHERE Name = 'Default' LIMIT 1];
+
+        // Opprett en system administrator user for runAs
+        User adminUser = new User(
+            FirstName = 'Admin',
+            LastName = 'User',
+            Alias = 'admusr',
+            Username = 'adminuser' + DateTime.now().getTime() + '@test.com',
+            Email = 'adminuser@nav.no',
+            ProfileId = [SELECT Id FROM Profile WHERE Name = 'System Administrator' LIMIT 1]
+            .Id,
+            EmailEncodingKey = 'UTF-8',
+            TimeZoneSidKey = 'Europe/Paris',
+            LocaleSidKey = 'no_NO',
+            LanguageLocaleKey = 'no'
+        );
+        insert adminUser;
+
         // Steg 4: Opprett Users koblet til hver PersonContact
         List<User> usersToInsert = new List<User>();
         for (Account acc : accounts) {
@@ -54,7 +71,6 @@ private class HOT_ThreadParticipantsTest {
                         Username = email,
                         Email = email,
                         ProfileId = profile.Id,
-                        UserRoleId = userRole.Id,
                         EmailEncodingKey = 'UTF-8',
                         CommunityNickname = acc.LastName,
                         TimeZoneSidKey = 'Europe/Paris',
@@ -64,7 +80,11 @@ private class HOT_ThreadParticipantsTest {
                 );
             }
         }
-        insert usersToInsert;
+
+        // Bruk runAs for å isolere User insert DML
+        System.runAs(adminUser) {
+            insert usersToInsert;
+        }
 
         WorkType workType = HOT_TestDataFactory.createWorkType();
         insert workType;
