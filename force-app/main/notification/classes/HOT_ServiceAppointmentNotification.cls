@@ -202,7 +202,8 @@ public without sharing class HOT_ServiceAppointmentNotification {
                 resourceCanceled(
                     saN.getCustomNotificationTypeByName('HOT_NotifyDispatcher'),
                     serviceAppointment,
-                    recipients
+                    recipients, 
+                    oldServiceAppointment
                 );
             }
 
@@ -221,15 +222,18 @@ public without sharing class HOT_ServiceAppointmentNotification {
     public static void resourceCanceled(
         CustomNotificationType notificationType,
         ServiceAppointment serviceAppointment,
-        Set<String> recipients
+        Set<String> recipients, 
+        ServiceAppointment oldServiceAppointment
     ) {
+        ServiceResource oldResource = [SELECT Name FROM ServiceResource WHERE Id = :oldServiceAppointment.HOT_ServiceResource__c LIMIT 1];
         Messaging.CustomNotification notification = new Messaging.CustomNotification();
-        notification.setTitle('Tolk tar seg av: ' + serviceAppointment.AppointmentNumber);
+        notification.setTitle('Tolk tar seg av: ' + '\n' + serviceAppointment.AppointmentNumber);
         notification.setBody(
-            'Tolken meldte seg av ' +
-            serviceAppointment.AppointmentNumber +
-            ' ' +
-            serviceAppointment.Subject +
+            'Tolk ' + oldResource.Name + ' meldte seg av ' +
+            serviceAppointment.AppointmentNumber 
+            + '(' + serviceAppointment.EarliestStartTime?.format('d.M.yyyy HH:mm') + ')' +
+            '\n' +
+            serviceAppointment.Subject + '\n' +
             ' den ' +
             Datetime.now().format('d.M.yyyy HH:mm')
         );
