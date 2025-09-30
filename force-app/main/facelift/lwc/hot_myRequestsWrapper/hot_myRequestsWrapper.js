@@ -595,6 +595,7 @@ export default class Hot_myRequestsWrapper extends NavigationMixin(LightningElem
         }
     }
     closeModal() {
+        this.setButtonStates();
         const dialog = this.template.querySelector('dialog');
         dialog.close();
     }
