@@ -179,7 +179,7 @@ private class HOT_ServiceAppointmentNotificationTest {
             WHERE DeveloperName = 'HOT_NotifyUser'
         ];
         Test.startTest();
-        HOT_ServiceAppointmentNotification.resourceCanceled(notificationType, serviceAppointment, recipients);
+        HOT_ServiceAppointmentNotification.resourceCanceled(notificationType, serviceAppointment, recipients, serviceAppointment);
         Test.stopTest();
     }
 
