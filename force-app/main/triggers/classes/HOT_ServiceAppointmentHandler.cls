@@ -259,6 +259,7 @@ public without sharing class HOT_ServiceAppointmentHandler extends MyTriggers {
         Map<Id, ServiceAppointment> newServiceAppointmentsSchedTimeChanged = new Map<Id, ServiceAppointment>();
         Map<Id, ServiceAppointment> serviceAppointmentWithNewAssignedResource = new Map<Id, ServiceAppointment>();
         List<ServiceAppointment> serviceAppointmentsWithUpdatedOwnerOrDispatcher = new List<ServiceAppointment>();
+        Set<Id> serviceAppointmentsWithStatusCannotComplete = new Set<Id>();
 
         for (ServiceAppointment serviceAppointment : (List<ServiceAppointment>) records) {
             if (
@@ -300,6 +301,12 @@ public without sharing class HOT_ServiceAppointmentHandler extends MyTriggers {
                 serviceAppointment.Status == 'Annul' || serviceAppointment.Status == 'Cannot Complete'
             ) {
                 retractedServiceAppointments.add(serviceAppointment);
+                if (
+                    serviceAppointment.SchedEndTime >= System.today() &&
+                    serviceAppointment.Status == 'Cannot Complete'
+                ) {
+                    serviceAppointmentsWithStatusCannotComplete.add(serviceAppointment.Id);
+                }
             }
             if (
                 serviceAppointment.HOT_AddressFormated__c !=
@@ -429,6 +436,12 @@ public without sharing class HOT_ServiceAppointmentHandler extends MyTriggers {
 
         if (serviceAppointmentsWithUpdatedOwnerOrDispatcher.size() > 0) {
             updateOwnerOrDispatcherOnThread(serviceAppointmentsWithUpdatedOwnerOrDispatcher);
+        }
+
+        if (serviceAppointmentsWithStatusCannotComplete.size() > 0) {
+            HOT_InterpreterOnWorkOrderService.setInterpreterOnWorkOrderFromServiceAppointment(
+                serviceAppointmentsWithStatusCannotComplete
+            );
         }
     }
 
@@ -912,7 +925,7 @@ public without sharing class HOT_ServiceAppointmentHandler extends MyTriggers {
         List<HOT_InterestedResource__c> interestedResources = [
             SELECT Status__c, ServiceAppointment__r.Status, ServiceResource__c
             FROM HOT_InterestedResource__c
-            WHERE ServiceAppointment__c IN :serviceAppointments
+            WHERE ServiceAppointment__c IN :(new Map<Id, ServiceAppointment>(serviceAppointments)).keySet()
         ];
         for (HOT_InterestedResource__c interestedResource : interestedResources) {
             if (

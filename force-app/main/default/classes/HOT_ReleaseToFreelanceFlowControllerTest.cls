@@ -1,4 +1,4 @@
-@IsTest
+@IsTest(IsParallel=true)
 private class HOT_ReleaseToFreelanceFlowControllerTest {
     @testSetup
     static void setup() {

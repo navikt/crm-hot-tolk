@@ -22,6 +22,7 @@
     max-width: 1000px;
     margin: 2rem auto;
     box-sizing: border-box;
+    overflow-x: hidden;
 }
 
 .back-button-info {

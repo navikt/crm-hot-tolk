@@ -86,13 +86,10 @@ public without sharing class HOT_EventController {
         }
     }
     public static void createNewEvent(Set<Id> serviceAppointmentsIds) {
-        String hotEventRecordTypeId = Schema.getGlobalDescribe()
-            .get('Event')
-            .getDescribe()
+        String hotEventRecordTypeId = Event.sObjectType.getDescribe()
             .getRecordTypeInfosByDeveloperName()
             .get('HOT_Events')
             .getRecordTypeId();
-
         List<ServiceAppointment> serviceAppointments = [
             SELECT
                 Id,
