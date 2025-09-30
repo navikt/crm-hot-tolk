@@ -29,6 +29,12 @@ private class HOT_ThreadParticipantsTest {
             );
         }
         insert persons;
+        User adminUser = [
+            SELECT Id
+            FROM User
+            WHERE Profile.Name = 'System Administrator' AND UserRoleId != NULL
+            LIMIT 1
+        ];
 
         // Steg 2: Opprett 2 Person Accounts
         List<Account> accountsToInsert = new List<Account>();
@@ -39,7 +45,8 @@ private class HOT_ThreadParticipantsTest {
                     LastName = String.valueOf(i + 1),
                     INT_PersonIdent__c = String.valueOf(i + 1),
                     CRM_Person__c = persons[i].Id,
-                    RecordTypeId = personAccountRtId
+                    RecordTypeId = personAccountRtId,
+                    OwnerId = adminUser.Id
                 )
             );
         }
@@ -77,7 +84,10 @@ private class HOT_ThreadParticipantsTest {
                 );
             }
         }
-        insert usersToInsert;
+        System.runAs(adminUser) {
+            insert usersToInsert;
+        }
+
         data.users = usersToInsert;
 
         // Opprett annen testdata
