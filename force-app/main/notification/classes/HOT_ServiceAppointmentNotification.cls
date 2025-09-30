@@ -229,13 +229,11 @@ public without sharing class HOT_ServiceAppointmentNotification {
         Messaging.CustomNotification notification = new Messaging.CustomNotification();
         notification.setTitle('Tolk tar seg av: ' + '\n' + serviceAppointment.AppointmentNumber);
         notification.setBody(
-            'Tolk ' + oldResource.Name + ' meldte seg av ' +
-            serviceAppointment.AppointmentNumber 
-            + '(' + serviceAppointment.EarliestStartTime?.format('d.M.yyyy HH:mm') + ')' +
-            '\n' +
-            serviceAppointment.Subject + '\n' +
-            ' den ' +
-            Datetime.now().format('d.M.yyyy HH:mm')
+            'Tolk ' + oldResource.Name + ' meldte seg av\n' +
+            serviceAppointment.AppointmentNumber + ' den ' + Datetime.now().format('d.M.yyyy HH:mm') + 
+            ',\n\n' + 
+            serviceAppointment.Subject + 
+            '\nsom starter ' + serviceAppointment.EarliestStartTime?.format('d.M.yyyy HH:mm')
         );
         notification.setNotificationTypeId(notificationType.Id);
         notification.setTargetId(serviceAppointment.Id);
