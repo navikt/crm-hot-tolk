@@ -64,7 +64,7 @@ private class HOT_ThreadParticipantsTest {
             ];
             data.accounts = accounts;
 
-            Profile profile = [SELECT Id FROM Profile WHERE Name = 'Customer Community Plus User' LIMIT 1];
+            Profile profile = [SELECT Id FROM Profile WHERE Name = 'System Administrator' LIMIT 1];
 
             // Steg 3: Opprett Users koblet til hver PersonContact
             List<User> usersToInsert = new List<User>();
