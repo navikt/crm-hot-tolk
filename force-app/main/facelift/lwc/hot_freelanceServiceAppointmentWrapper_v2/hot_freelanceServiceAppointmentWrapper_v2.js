@@ -10,21 +10,25 @@ export default class Hot_freelanceServiceAppointmentWrapper_v2 extends Navigatio
     activeTab = 'open';
 
     tabs = [
-        { name: 'open', label: 'Ledige oppdrag', selected: false },
-        { name: 'interested', label: 'Påmeldte oppdrag', selected: false },
-        { name: 'my', label: 'Mine oppdrag', selected: false },
-        { name: 'wageClaim', label: 'Ledig på lønn', selected: false },
-        { name: 'wanted', label: 'Oppdrag du er ønsket til', selected: false }
+        { name: 'open', label: 'Ledige oppdrag' },
+        { name: 'interested', label: 'Påmeldte oppdrag' },
+        { name: 'my', label: 'Mine oppdrag' },
+        { name: 'wageClaim', label: 'Ledig på lønn' },
+        { name: 'wanted', label: 'Oppdrag du er ønsket til' }
     ];
 
     get tabMap() {
-        return {
-            open: this.activeTab === 'open',
-            interested: this.activeTab === 'interested',
-            my: this.activeTab === 'my',
-            wageClaim: this.activeTab === 'wageClaim',
-            wanted: this.activeTab === 'wanted'
-        };
+        return this.tabs.map((btn) => {
+            const isActive = btn.name === this.activeTab;
+            return {
+                ...btn,
+                isActive,
+                ariaSelected: isActive ? 'true' : 'false',
+                ariaControls: 'tabpanel-' + btn.name,
+                ariaId: 'tab-' + btn.name,
+                ariaLabel: btn.label
+            };
+        });
     }
 
     get showFilterButton() {
@@ -85,13 +89,11 @@ export default class Hot_freelanceServiceAppointmentWrapper_v2 extends Navigatio
     updateTab(event) {
         for (let tab of this.tabs) {
             tab.selected = false;
-            this.tabMap[tab.name] = false;
             if (tab.name === event.target.dataset.id) {
                 tab.selected = true;
                 this.urlStateParameterList = tab.name;
                 this.activeTab = tab.name;
                 sessionStorage.setItem('activeTabFreelanceHome', this.activeTab);
-                this.tabMap[tab.name] = true;
                 if (this.activeTab == 'wanted') {
                     this.isWantedList = true;
                 } else {
@@ -100,6 +102,25 @@ export default class Hot_freelanceServiceAppointmentWrapper_v2 extends Navigatio
             }
         }
         this.updateTabStyle();
+    }
+    get isOpenTab() {
+        return this.activeTab === 'open';
+    }
+
+    get isInterestedTab() {
+        return this.activeTab === 'interested';
+    }
+
+    get isMyTab() {
+        return this.activeTab === 'my';
+    }
+
+    get isWageClaimTab() {
+        return this.activeTab === 'wageClaim';
+    }
+
+    get isWantedTab() {
+        return this.activeTab === 'wanted';
     }
 
     urlStateParameterList = '';
