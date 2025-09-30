@@ -29,8 +29,11 @@ private class HOT_ThreadParticipantsTest {
             );
         }
         insert persons;
+        UserRole testRole = new UserRole(Name = 'Test Rolle', DeveloperName = 'Test_Rolle');
+        insert testRole;
         Profile adminProf = [SELECT Id FROM Profile WHERE Name = 'System Administrator' LIMIT 1];
         User adminUser = HOT_TestDataFactory.createUser('rbadm', adminProf);
+        adminUser.UserRoleId = testRole.Id;
         insert adminUser;
 
         // Steg 2: Opprett 2 Person Accounts
