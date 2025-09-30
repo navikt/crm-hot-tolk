@@ -127,7 +127,7 @@ public without sharing class HOT_MessageHelper {
      * @return Id
      */
     public static Id getHOTThreadRecordType() {
-        return [SELECT Id, DeveloperName FROM RecordType WHERE DeveloperName = 'HOT_Thread' LIMIT 1].Id;
+        return Schema.SObjectType.Thread__c.getRecordTypeInfosByDeveloperName().get('HOT_Thread').getRecordTypeId();
     }
     //Orderer, interpreter, user users use this
     @AuraEnabled(cacheable=false)
