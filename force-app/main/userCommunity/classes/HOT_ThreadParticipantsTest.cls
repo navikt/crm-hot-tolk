@@ -18,7 +18,7 @@ private class HOT_ThreadParticipantsTest {
         insert testRole;
 
         Profile adminProf = [SELECT Id FROM Profile WHERE Name = 'System Administrator' LIMIT 1];
-        Profile profile = [SELECT Id FROM Profile WHERE Name = 'NAV Bruker Plus' LIMIT 1];
+        Profile profile = [SELECT Id FROM Profile WHERE Name = 'Customer Community Plus User' LIMIT 1];
         PermissionSet psg = [SELECT Id FROM PermissionSet WHERE Name = 'HOT_Tolk_Frilans' LIMIT 1];
         User adminUser = HOT_TestDataFactory.createUser('rbadm', adminProf);
         adminUser.UserRoleId = testRole.Id;
