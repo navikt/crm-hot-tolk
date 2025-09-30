@@ -47,14 +47,18 @@
 
                 <!-- Tab section for the freelance tables-->
                 <template lwc:if={showTabsAndLineBreak}>
-                    <div class="tabset desktop-only">
-                        <template for:each={tabs} for:item="tab">
+                    <div class="tabset desktop-only" role="tablist">
+                        <template for:each={tabMap} for:item="tab">
                             <button
                                 key={tab.name}
                                 class="tab tab-button"
                                 data-id={tab.name}
                                 onclick={setActiveTab}
                                 role="tab"
+                                aria-selected={tab.ariaSelected}
+                                aria-controls={tab.ariaControls}
+                                id={tab.ariaId}
+                                aria-label={tab.ariaLabel}
                             >
                                 {tab.label}
                             </button>
@@ -92,7 +96,7 @@
                     </div>
                 </template>
                 <!-- Open Service Appointment table -->
-                <template lwc:if={tabMap.open}>
+                <template lwc:if={isOpenTab}>
                     <div class="tab-content">
                         <c-hot_open-service-appointments-list_v2
                             record-id={recordId}
@@ -107,7 +111,7 @@
                 </template>
 
                 <!-- Interested Resources List table -->
-                <template lwc:elseif={tabMap.interested}>
+                <template lwc:if={isInterestedTab}>
                     <div class="tab-content">
                         <c-hot_interested-resources-list_v2
                             record-id={recordId}
@@ -121,7 +125,7 @@
                 </template>
 
                 <!-- My Service Appointments table -->
-                <template lwc:elseif={tabMap.my}>
+                <template lwc:if={isMyTab}>
                     <div class="tab-content">
                         <c-hot_my-service-appointments-list_v2
                             record-id={recordId}
@@ -135,7 +139,7 @@
                 </template>
 
                 <!-- Wage Claim List table -->
-                <template lwc:elseif={tabMap.wageClaim}>
+                <template lwc:if={isWageClaimTab}>
                     <div class="tab-content">
                         <c-hot_wage-claim-list_v2
                             record-id={recordId}
@@ -149,7 +153,7 @@
                 </template>
 
                 <!-- Wanted Service Appointments List table -->
-                <template lwc:elseif={tabMap.wanted}>
+                <template lwc:if={isWantedTab}>
                     <div class="tab-content">
                         <c-hot_wanted-service-appointments-list_v2
                             record-id={recordId}
