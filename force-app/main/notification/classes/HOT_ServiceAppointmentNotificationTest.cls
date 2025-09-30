@@ -167,7 +167,7 @@ private class HOT_ServiceAppointmentNotificationTest {
         Set<String> recipients = new Set<String>{ UserInfo.getUserId() };
 
         ServiceAppointment serviceAppointment = [
-            SELECT Id, AppointmentNumber, Subject
+            SELECT Id, AppointmentNumber, Subject, HOT_ServiceResource__c 
             FROM ServiceAppointment
             WHERE Subject = 'subject'
             LIMIT 1
