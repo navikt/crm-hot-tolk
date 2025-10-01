@@ -28,14 +28,25 @@
                         helptext-hovertext={threadSearchHelpText}
                         onsearchchange={handleSearchChange}
                     ></c-hot_thread-list-search>
+                    <!-- Skjermleser-informasjon om antall samtaler -->
+                    <div class="sr-only" tabindex="0" aria-live="polite" role="status">
+                        <template lwc:if={hasThreads}>
+                            <p>Du har {sortedThreads.length} samtaler i listen med dette filteret</p>
+                        </template>
+                        <template lwc:if={noTreads}>
+                            <p>Ingen samtaler</p>
+                        </template>
+                    </div>
                 </div>
                 <div class="right">
                     <div class="rightHeader desktop-only">
                         <p class="left-text"></p>
                         <p lwc:if={hasThreads} class="right-text">Siste melding sendt</p>
                     </div>
-                    <div lwc:if={noTreads} class="noThreads" aria-live="polite">
-                        <p>Ingen samtaler</p>
+                    <div class="noThreads">
+                        <template lwc:if={noTreads}>
+                            <p>Ingen samtaler</p>
+                        </template>
                     </div>
                     <template for:each={sortedThreads} for:item="thread">
                         <c-hot_thread-list-card
