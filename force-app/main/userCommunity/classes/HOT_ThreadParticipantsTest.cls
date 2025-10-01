@@ -2,6 +2,11 @@
 private class HOT_ThreadParticipantsTest {
     @TestSetup
     private static void setup() {
+        myTriggers.disable(UserPermissionSetAssignmentHandler.class);
+        myTriggers.disable(UserProfileHandler.class);
+        myTriggers.disable(UserRegionHandler.class);
+        myTriggers.disable(UserRoleAssignmentHandler.class);
+
         // Opprett nødvendige setup-objekter
         UserRole testRole = new UserRole(Name = 'Test Rolle', DeveloperName = 'Test_Rolle');
         //insert testRole;
@@ -24,6 +29,7 @@ private class HOT_ThreadParticipantsTest {
             persons.add(
                 new Person__c(
                     Name = String.valueOf(i),
+                    INT_FirstName__c = 'Person',
                     INT_LastName__c = String.valueOf(i),
                     INT_Confidential__c = 'UGRADERT'
                 )
@@ -31,29 +37,11 @@ private class HOT_ThreadParticipantsTest {
         }
         insert persons;
 
-        // Opprett Person Accounts
-        List<Account> accountsToInsert = new List<Account>();
-        for (Integer i = 0; i < 2; i++) {
-            accountsToInsert.add(
-                new Account(
-                    FirstName = 'Person',
-                    LastName = String.valueOf(i + 1),
-                    INT_PersonIdent__c = String.valueOf(i + 1),
-                    CRM_Person__c = persons[i].Id,
-                    RecordTypeId = personAccountRtId,
-                    //OwnerId = adminUser.Id
-                    OwnerId = UserInfo.getUserId()
-                )
-            );
-        }
-        insert accountsToInsert;
-
         List<Account> accounts = [
             SELECT Id, FirstName, LastName, PersonContactId
             FROM Account
-            WHERE Id IN :accountsToInsert
+            WHERE CRM_Person__c IN :new Map<Id, Person__c>(persons).keySet()
         ];
-
         // Opprett Users
         List<User> usersToInsert = new List<User>();
         for (Account acc : accounts) {
@@ -77,7 +65,9 @@ private class HOT_ThreadParticipantsTest {
                 );
             }
         }
+
         insert usersToInsert;
+
         System.runAs([SELECT Id FROM User WHERE Id = :UserInfo.getUserId() LIMIT 1][0]) {
             insert new PermissionSetAssignment(PermissionSetId = psg.Id, AssigneeId = usersToInsert[1].Id);
         }
