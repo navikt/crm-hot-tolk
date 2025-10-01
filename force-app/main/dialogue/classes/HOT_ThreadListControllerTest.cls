@@ -121,4 +121,13 @@ public class HOT_ThreadListControllerTest {
 
         System.assertEquals(1, threadList.size(), 'Could not get my threads'); // Can't get current running user in test
     }
+    @isTest
+    static void testGetAllMyThreadsForBadge_RunMethod() {
+        Test.startTest();
+        HOT_ThreadListController.getAllMyThreadsForBadge(true);
+
+        HOT_ThreadListController.getAllMyThreadsForBadge(false);
+
+        Test.stopTest();
+    }
 }
