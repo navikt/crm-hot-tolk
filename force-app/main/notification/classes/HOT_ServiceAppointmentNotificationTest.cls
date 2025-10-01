@@ -61,6 +61,7 @@ private class HOT_ServiceAppointmentNotificationTest {
 
         request.Status__c = 'Godkjent';
         update request;
+
     }
 
     @IsTest
@@ -162,12 +163,69 @@ private class HOT_ServiceAppointmentNotificationTest {
         Test.stopTest();
     }
 
+
+    @IsTest
+    private static void resourceCanceledTest2() {
+        Set<String> recipients = new Set<String>{ UserInfo.getUserId() };
+
+        PermissionSet psg = [
+            SELECT Id 
+            FROM PermissionSet 
+            WHERE Name = 'HOT_Tolk_Frilans' 
+            LIMIT 1
+        ];
+
+        insert new PermissionSetAssignment(
+            PermissionSetId = psg.Id, 
+            AssigneeId = UserInfo.getUserId()
+        );
+
+        ServiceResource serviceResource = new ServiceResource(
+            Name = 'Test Resource',
+            RelatedRecordId = UserInfo.getUserId(),
+            ResourceType = 'Technician',
+            IsActive = true
+        );
+        insert serviceResource;
+
+        ServiceAppointment saToInsert = new ServiceAppointment(
+            Subject = 'subject',
+            Status = 'Scheduled',
+            HOT_ServiceResource__c = serviceResource.Id,
+            EarliestStartTime = System.now().addDays(1)
+        );
+        insert saToInsert;
+
+        ServiceAppointment serviceAppointment = [
+            SELECT Id, AppointmentNumber, Subject, HOT_ServiceResource__c, EarliestStartTime
+            FROM ServiceAppointment
+            WHERE Subject = 'subject'
+            LIMIT 1
+        ];
+
+        CustomNotificationType notificationType = [
+            SELECT Id, DeveloperName
+            FROM CustomNotificationType
+            WHERE DeveloperName = 'HOT_NotifyUser'
+            LIMIT 1
+        ];
+
+        Test.startTest();
+        HOT_ServiceAppointmentNotification.resourceCanceled(
+            notificationType, 
+            serviceAppointment, 
+            recipients, 
+            serviceAppointment
+        );
+        Test.stopTest();
+    } 
+
     @IsTest
     private static void resourceCanceledTest() {
         Set<String> recipients = new Set<String>{ UserInfo.getUserId() };
 
         ServiceAppointment serviceAppointment = [
-            SELECT Id, AppointmentNumber, Subject, HOT_ServiceResource__c 
+            SELECT Id, AppointmentNumber, Subject
             FROM ServiceAppointment
             WHERE Subject = 'subject'
             LIMIT 1
