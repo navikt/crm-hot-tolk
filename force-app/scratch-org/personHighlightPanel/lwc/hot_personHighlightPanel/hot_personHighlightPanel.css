@@ -133,3 +133,7 @@
     position: absolute;
     right: 0;
 }
+
+.action-buttons lightning-button {
+    margin-left: 0.25rem;
+}

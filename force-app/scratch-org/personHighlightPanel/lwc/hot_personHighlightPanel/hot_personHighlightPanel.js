@@ -1,6 +1,7 @@
 import { LightningElement, api, track, wire } from 'lwc';
 import { getFieldValue, getRecord } from 'lightning/uiRecordApi';
 import { resolve } from 'c/hot_componentsUtils';
+import { NavigationMixin } from 'lightning/navigation';
 
 import PERSON_ACTORID_FIELD from '@salesforce/schema/Person__c.INT_ActorId__c';
 import PERSON_FIRST_NAME from '@salesforce/schema/Person__c.INT_FirstName__c';
@@ -40,10 +41,56 @@ const PERSON_FIELDS = [
     //DISTRICT_URL_FIELD
 ];
 
-export default class hot_personHighlightPanel extends LightningElement {
+export default class hot_personHighlightPanel extends NavigationMixin(LightningElement) {
     @api recordId;
     @api objectApiName;
     @api relationshipField;
+    @api modalTitle = '';
+
+    isModalOpen = false;
+    currentFlow;
+
+    // Handle Flow buttons
+    handleFlowButton(event) {
+        this.currentFlow = event.target.dataset.flow;
+        this.modalTitle = `Run ${this.currentFlow}`;
+        this.isModalOpen = true;
+
+        // Wait for modal to render, then start Flow
+        setTimeout(() => {
+            const flow = this.template.querySelector('lightning-flow');
+            if (flow) {
+                flow.startFlow(this.currentFlow, [
+                    {
+                        name: 'recordId',
+                        type: 'String',
+                        value: this.recordId
+                    }
+                ]);
+            }
+        }, 0);
+    }
+
+    closeModal() {
+        this.isModalOpen = false;
+        this.currentFlow = null;
+    }
+
+    handleStatusChange(event) {
+        if (event.detail.status === 'FINISHED' || event.detail.status === 'FINISHED_SCREEN') {
+            this.closeModal();
+        }
+    }
+
+    handleEditRecord() {
+        this[NavigationMixin.Navigate]({
+            type: 'standard__recordPage',
+            attributes: {
+                recordId: this.recordId,
+                actionName: 'edit'
+            }
+        });
+    }
 
     @track loadingStates = {
         getPersonBadgesAndInfo: true,
@@ -77,6 +124,16 @@ export default class hot_personHighlightPanel extends LightningElement {
 
     connectedCallback() {
         this.wireFields = [`${this.objectApiName}.Id`];
+    }
+
+    handleActionClick(event) {
+        const apiName = event.target.dataset.apiname;
+        this[NavigationMixin.Navigate]({
+            type: 'standard__quickAction',
+            attributes: {
+                apiName
+            }
+        });
     }
 
     @wire(getPersonBadgesAndInfo, {

@@ -33,67 +33,112 @@
                                 ></c-hot_person-highlight-panel-top>
                             </template>
                         </lightning-layout-item>
-
-                        <template lwc:if={fullName}>
-                            <span lwc:if={uuAlertText} class="slds-assistive-text" role="alert">{uuAlertText}</span>
-                            <lightning-layout-item class="custom-padding-left">
-                                <template for:each={personAccessBadges} for:item="badge">
-                                    <lightning-layout-item key={badge.name}>
+                        <span lwc:if={uuAlertText} class="slds-assistive-text" role="alert">{uuAlertText}</span>
+                        <lightning-layout-item class="custom-padding-left">
+                            <template for:each={personAccessBadges} for:item="badge">
+                                <lightning-layout-item key={badge.name}>
+                                    <lightning-badge
+                                        class="slds-theme_error slds-var-m-left_x-small slds-var-m-vertical_xx-small redBadge"
+                                        data-id={badge.name}
+                                        label={badge.label}
+                                        role="heading"
+                                    >
+                                    </lightning-badge>
+                                </lightning-layout-item>
+                            </template>
+                            <template for:each={badges} for:item="badge">
+                                <lightning-layout-item key={badge.name} data-id={badge.name} class="relativePosition">
+                                    <template lwc:if={badge.clickable}>
                                         <lightning-badge
-                                            class="slds-theme_error slds-var-m-left_x-small slds-var-m-vertical_xx-small redBadge"
                                             data-id={badge.name}
                                             label={badge.label}
+                                            icon-name={badge.iconName}
+                                            icon-position="start"
+                                            class={badge.styling}
+                                            tabindex={badge.tabindex}
+                                            onkeypress={onKeyPressHandler}
+                                            onclick={onClickHandler}
+                                            aria-expanded="false"
                                             role="heading"
                                         >
                                         </lightning-badge>
+                                    </template>
+                                    <template lwc:else>
+                                        <lightning-badge
+                                            data-id={badge.name}
+                                            label={badge.label}
+                                            icon-name={badge.iconName}
+                                            icon-position="start"
+                                            class={badge.styling}
+                                            role="heading"
+                                        >
+                                        </lightning-badge>
+                                    </template>
+                                    <lightning-layout-item lwc:if={badge.badgeContent}>
+                                        <c-hot_person-panel-badge-content
+                                            data-id={badge.badgeContentType}
+                                            shown-badge={shownBadge}
+                                            type={badge.badgeContentType}
+                                            badge-data={badge.badgeContent}
+                                            onbadgeclosed={closeBadge}
+                                        ></c-hot_person-panel-badge-content>
                                     </lightning-layout-item>
-                                </template>
+                                </lightning-layout-item>
+                            </template>
+                        </lightning-layout-item>
+                        <div class="slds-p-around_small slds-grid slds-grid_align-end">
+                            <template lwc:if={fullName}>
+                                <!-- Qucik actions -->
+                                <lightning-button label="Edit" onclick={handleEditRecord}> </lightning-button>
+                                <lightning-button
+                                    label="Send SMS"
+                                    onclick={handleFlowButton}
+                                    data-flow="HOT_SendSMSToAccount"
+                                >
+                                </lightning-button>
+                                <lightning-button
+                                    label="Styr tilgang til Mobil App"
+                                    onclick={handleFlowButton}
+                                    data-flow="HOT_MobileAppAccess"
+                                >
+                                </lightning-button>
 
-                                <template for:each={badges} for:item="badge">
-                                    <lightning-layout-item
-                                        key={badge.name}
-                                        data-id={badge.name}
-                                        class="relativePosition"
-                                    >
-                                        <template lwc:if={badge.clickable}>
-                                            <lightning-badge
-                                                data-id={badge.name}
-                                                label={badge.label}
-                                                icon-name={badge.iconName}
-                                                icon-position="start"
-                                                class={badge.styling}
-                                                tabindex={badge.tabindex}
-                                                onkeypress={onKeyPressHandler}
-                                                onclick={onClickHandler}
-                                                aria-expanded="false"
-                                                role="heading"
-                                            >
-                                            </lightning-badge>
-                                        </template>
-                                        <template lwc:else>
-                                            <lightning-badge
-                                                data-id={badge.name}
-                                                label={badge.label}
-                                                icon-name={badge.iconName}
-                                                icon-position="start"
-                                                class={badge.styling}
-                                                role="heading"
-                                            >
-                                            </lightning-badge>
-                                        </template>
-                                        <lightning-layout-item lwc:if={badge.badgeContent}>
-                                            <c-hot_person-panel-badge-content
-                                                data-id={badge.badgeContentType}
-                                                shown-badge={shownBadge}
-                                                type={badge.badgeContentType}
-                                                badge-data={badge.badgeContent}
-                                                onbadgeclosed={closeBadge}
-                                            ></c-hot_person-panel-badge-content>
-                                        </lightning-layout-item>
-                                    </lightning-layout-item>
+                                <!-- Flow Modal -->
+                                <template if:true={isModalOpen}>
+                                    <section role="dialog" tabindex="-1" class="slds-modal slds-fade-in-open">
+                                        <div class="slds-modal__container">
+                                            <!-- Header -->
+                                            <header class="slds-modal__header">
+                                                <button
+                                                    class="slds-button slds-button_icon slds-modal__close slds-button_icon-inverse"
+                                                    title="Close"
+                                                    onclick={closeModal}
+                                                >
+                                                    <lightning-icon
+                                                        icon-name="utility:close"
+                                                        alternative-text="close"
+                                                        size="small"
+                                                    ></lightning-icon>
+                                                </button>
+                                                <h2 class="slds-text-heading_medium">{modalTitle}</h2>
+                                            </header>
+
+                                            <!-- Body -->
+                                            <div class="slds-modal__content slds-p-around_medium slds-theme_default">
+                                                <lightning-flow
+                                                    flow-api-name={currentFlow}
+                                                    onstatuschange={handleStatusChange}
+                                                >
+                                                </lightning-flow>
+                                            </div>
+                                        </div>
+                                    </section>
+
+                                    <!-- Backdrop -->
+                                    <div class="slds-backdrop slds-backdrop_open"></div>
                                 </template>
-                            </lightning-layout-item>
-                        </template>
+                            </template>
+                        </div>
                     </lightning-layout-item>
                     <lightning-layout-item>
                         <c-hot_person-highlight-panel-bot
