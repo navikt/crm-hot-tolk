@@ -7,6 +7,7 @@ import { NavigationMixin } from 'lightning/navigation';
 import { CalendarEvent } from './calendar_event';
 import { formatDatetimeinterval, formatDatetime } from 'c/datetimeFormatterNorwegianTime';
 import icons from '@salesforce/resourceUrl/ikoner';
+import icons2 from '@salesforce/resourceUrl/icons';
 
 import Hot_Calendar_Absence_Modal from 'c/hot_calendar_absence_modal';
 
@@ -43,6 +44,7 @@ export default class LibsFullCalendarV2 extends NavigationMixin(LightningElement
     static STATE_KEY = 'i98u14ij24j2+49i+04oasfdh';
 
     exitCrossIcon = icons + '/Close/Close.svg';
+    warningicon = icons2 + '/warningicon.svg';
 
     showDetails = false;
     isLoading = false;
@@ -1331,6 +1333,11 @@ export default class LibsFullCalendarV2 extends NavigationMixin(LightningElement
         startInput.reportValidity();
         this.endHasBeenSet = true;
         this.initialAbsenceEnd = event.detail.value;
+    }
+
+    isNotRetractable = false; 
+    retractAvailability() {
+        this.isNotRetractable = true;
     }
 
     async handleDeleteAbsence() {

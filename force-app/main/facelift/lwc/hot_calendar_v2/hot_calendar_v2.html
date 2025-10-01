@@ -320,7 +320,33 @@
 
                 <!-- Absence button container -->
                 <div class="button-container">
+                    <!-- Info check if user wants to delete -->
                     <template lwc:if={isEdit}>
+
+        <!-- <div class="navno-dekorator alertstripe navno-dekorator alertstripe--advarsel" role="alert">
+          <img class="navno-dekorator alertstripe__ikon" src={warningicon} alt="" />
+          <div class="alertstripe__innhold">
+            <div class="typo-normal alertstripe__tekst">
+              Er du sikker på at du vil fjerne slette dette fraværet?
+            </div>
+            <div class="alertstripe__knapper">
+              <c-button
+                disabled={isNotRetractable}
+                button-styling="danger"
+                button-label="Slett 1"
+                aria-label="Slett"
+                onbuttonclick={retractAvailability}
+              ></c-button>
+              <c-button
+                disabled={isDisabledGoToThread}
+                button-styling="primary"
+                button-label="Avbryt"
+                aria-label="Avbryt"
+                onbuttonclick={cancelRetraction}
+              ></c-button>
+            </div>
+          </div>
+        </div> -->
                         <!-- Delete button -->
                         <c-button
                             button-label="Slett"
@@ -329,16 +355,27 @@
                             mobile-style="justify-content: center;"
                             onbuttonclick={handleDeleteAbsence}
                         ></c-button>
-
-                    </template>
-                    <!-- Register and edit absence button -->
-                    <c-button
+                        
+                        <!-- Edit absence button -->
+                        <c-button
                         button-label={registerButtonText}
                         button-styling="primary"
                         desktop-style="width: 6rem; justify-content: center;"
                         mobile-style="justify-content: center;"
                         onbuttonclick={handleOkay}
                     ></c-button>
+                    </template>
+                    <template lwc:else>
+
+                        <!-- Register absence button -->
+                        <c-button
+                        button-label={registerButtonText}
+                        button-styling="primary"
+                        desktop-style="width: 6rem; justify-content: center;"
+                        mobile-style="justify-content: center;"
+                        onbuttonclick={handleOkay}
+                        ></c-button>
+                    </template>
                 </div>
             </div>
         </dialog>

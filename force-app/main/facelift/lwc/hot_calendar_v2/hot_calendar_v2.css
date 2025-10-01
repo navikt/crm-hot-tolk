@@ -107,6 +107,43 @@ span {
     font-size: 1rem;
 }
 
+.navno-dekorator.alertstripe {
+  display: block;
+  padding: 1rem 1rem 1rem 0rem;
+  border-radius: 4px;
+  display: flex;
+  align-content: center;
+  border-radius: 0.25rem;
+  color: #3E3832;
+  max-width: 100%;
+}
+.navno-dekorator.alertstripe--advarsel {
+  border: 1px solid #FF9100;
+  background-color: #FFE9CC;
+  margin-bottom: 0.2rem;
+}
+.navno-dekorator.alertstripe__ikon {
+  margin-right: 0.75rem;
+  margin-left: 0.75rem;
+  display: flex;
+  top: 1rem;
+  flex-shrink: 0;
+  height: 24px;
+  width: 24px;
+}
+.alertstripe__innhold {
+  display: flex;
+  flex-direction: column;
+  flex: 1;
+}
+.alertstripe__tekst {
+  margin-bottom: 1rem;
+}
+.alertstripe__knapper {
+  display: flex;
+  gap: 1rem;
+}
+
 @media only screen and (min-width: 768px) {
     .fc-daygrid-day-frame {
         height: 2rem;
