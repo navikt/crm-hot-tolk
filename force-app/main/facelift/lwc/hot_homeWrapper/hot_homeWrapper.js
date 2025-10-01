@@ -52,12 +52,6 @@ export default class Hot_homeWrapper extends LightningElement {
         }
     }
 
-    renderedCallback() {
-        if (this.wiredThreadsResult) {
-            refreshApex(this.wiredThreadsResult);
-        }
-    }
-
     tryMapAndSortThreads() {
         if (
             this.userContactId &&
