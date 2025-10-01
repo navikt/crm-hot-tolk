@@ -165,4 +165,15 @@ public without sharing class HOT_ThreadListController {
             return getMyThreads();
         }
     }
+    @AuraEnabled(cacheable=true)
+    public static Map<String, List<Thread__c>> getAllMyThreadsForBadge(Boolean isFreelance) {
+        Map<String, List<Thread__c>> result = new Map<String, List<Thread__c>>();
+        result.put('mythreads', getMyThreads());
+        if (isFreelance) {
+            result.put('freelance', getMyThreadsFreelance());
+        } else {
+            result.put('freelance', new List<Thread__c>()); // tom liste
+        }
+        return result;
+    }
 }

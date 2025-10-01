@@ -29,6 +29,9 @@
                 <h2 id="calenderHeading" class="sr-only">Kalender for frilanstolk</h2>
                 <template lwc:if={isUserInNorwegianTimeZone}>
                     <c-hot_calendar></c-hot_calendar>
+                    <!--Testing calendar STARTs-->
+                    <c-hot_calendar_v2></c-hot_calendar_v2>
+                    <!--Testing calendar Ends-->
                 </template>
                 <template lwc:else>
                     <div class="navno-dekorator alertstripe navno-dekorator alertstripe--advarsel">
@@ -52,6 +55,7 @@
                     <div class="boxContent">
                         <span class="boxLabel">Mine samtaler</span>
                         <span class="boxDescription">Se alle dine samtaler</span>
+                        <div lwc:if={unreadThreadsText} class="unreadThreadsTag">{unreadThreadsText}</div>
                     </div>
                 </a>
                 <a class="box" href={pageLinks.freelanceMyUserInformation}>
