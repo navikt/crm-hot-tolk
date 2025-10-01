@@ -1,4 +1,5 @@
-import { LightningElement, wire, track } from 'lwc';
+import { LightningElement, wire } from 'lwc';
+import { refreshApex } from '@salesforce/apex';
 import getUserInformation from '@salesforce/apex/HOT_UserInformationController.getUserInformation';
 import getAllMyThreadsForBadge from '@salesforce/apex/HOT_ThreadListController.getAllMyThreadsForBadge';
 import getContactId from '@salesforce/apex/HOT_MessageHelper.getUserContactId';
@@ -50,6 +51,13 @@ export default class Hot_homeWrapper extends LightningElement {
             this.error = error;
         }
     }
+
+    renderedCallback() {
+        if (this.wiredThreadsResult) {
+            refreshApex(this.wiredThreadsResult);
+        }
+    }
+
     tryMapAndSortThreads() {
         if (
             this.userContactId &&
