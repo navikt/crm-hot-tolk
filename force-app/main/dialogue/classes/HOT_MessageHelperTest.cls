@@ -1363,26 +1363,28 @@ private class HOT_MessageHelperTest {
 
     @IsTest
     static void markAsReadByNavTestAcc() {
-        Account acc = new Account(Name = 'ReadByNav Acc');
-        insert acc;
-
-        WorkType wt = HOT_TestDataFactory.createWorkType();
-        insert wt;
-        HOT_Request__c req = HOT_TestDataFactory.createRequest('TEST', wt);
-        insert req;
-
-        WorkOrder wo = HOT_TestDataFactory.createWorkOrder(req, wt);
-        wo.AccountId = acc.Id;
-        insert wo;
-
-        WorkOrderLineItem woli = HOT_TestDataFactory.createWorkOrderLineItem(wo, wt);
-        insert woli;
-
-        ServiceAppointment sa = HOT_TestDataFactory.createServiceAppointment(woli);
-        sa.HOT_Request__c = req.Id;
-        sa.HOT_Account__c = acc.Id;
-        sa.Subject = 'Hei';
-        insert sa;
+        User u = [SELECT Id FROM User WHERE Name = 'user' LIMIT 1][0];
+        System.runAs([SELECT Id FROM User WHERE Id = :UserInfo.getUserId() LIMIT 1][0]) {
+            insert new GroupMember(
+                GroupId = [SELECT Id FROM Group WHERE DeveloperName = 'HOT_Tolk_Admin' AND Type = 'Regular']
+                .Id,
+                UserOrGroupId = u.Id
+            );
+        }
+        ServiceAppointment sa = [
+            SELECT Id, HOT_Account__c, HOT_WorkOrderLineItem__r.WorkOrderId
+            FROM ServiceAppointment
+            WHERE Subject = 'TEST'
+            LIMIT 1
+        ];
+        myTriggers.disable(PersonHandler.class);
+        myTriggers.disable(PersonAccessHandler.class);
+        insert new Person__c(
+            Name = 'Vasilij',
+            INT_LastName__c = 'Pupkin',
+            INT_Confidential__c = 'UGRADERT',
+            CRM_Account__c = sa.HOT_Account__c
+        );
 
         Thread__c t = new Thread__c();
         t.RecordTypeId = HOT_MessageHelper.getHOTThreadRecordType();
@@ -1391,11 +1393,12 @@ private class HOT_MessageHelperTest {
         t.CRM_Type__c = 'HOT_TOLK-FORMIDLER';
         t.CRM_Related_Object__c = sa.Id;
         t.HOT_ServiceAppointment__c = sa.Id;
-        t.CRM_Account__c = acc.Id;
+        t.CRM_Account__c = sa.HOT_Account__c; //acc.Id;
         t.CRM_isActive__c = true;
         t.HOT_ParticipantIds__c = UserInfo.getUserId();
         insert t;
 
+        Test.startTest();
         Message__c m = new Message__c(
             CRM_Thread__c = t.Id,
             CRM_Message_Text__c = 'Lorem Ipsum Dolor Si Amet',
@@ -1405,46 +1408,18 @@ private class HOT_MessageHelperTest {
         Boolean threwExpected = false;
         String errMsg = '';
 
-        Test.startTest();
-        try {
+        System.runAs(u) {
             HOT_MessageHelper.markAsReadByNav(t.Id);
-        } catch (Exception e1) {
-            threwExpected =
-                e1.getMessage().contains('MISSING_ARGUMENT, Id not specified in an update call') ||
-                e1.getMessage().contains('CANNOT_EXECUTE_FLOW_TRIGGER') ||
-                e1.getMessage().contains('Too many SOQL queries');
-            errMsg = e1.getMessage();
         }
-        try {
             Test.stopTest();
-        } catch (Exception e2) {
-            Boolean matches =
-                e2.getMessage().contains('MISSING_ARGUMENT, Id not specified in an update call') ||
-                e2.getMessage().contains('CANNOT_EXECUTE_FLOW_TRIGGER') ||
-                e2.getMessage().contains('Too many SOQL queries');
-            if (matches) {
-                threwExpected = true;
-                errMsg = e2.getMessage();
-            } else {
-                System.assert(false, 'Unexpected automation error: ' + e2.getMessage());
-            }
-        }
         Message__c got = [
             SELECT CRM_Read_By_Nav__c, CRM_Read_By_Nav_Datetime__c
             FROM Message__c
             WHERE Id = :m.Id
             LIMIT 1
         ];
-
-        if (!threwExpected) {
-            if (got.CRM_Read_By_Nav__c == true) {
+        System.assertNotEquals(null, got, 'Message should still exist after helper call.');
                 System.assertNotEquals(null, got.CRM_Read_By_Nav_Datetime__c, 'Timestamp should be set when marked.');
-            } else {
-                System.assertNotEquals(null, got.Id, 'Message should still exist after helper call.');
-            }
-        } else {
-            System.assert(threwExpected, 'Expected org DML exception path not observed: ' + errMsg);
-        }
     }
     @IsTest
     static void markAsReadByNavTestAccSA() {
