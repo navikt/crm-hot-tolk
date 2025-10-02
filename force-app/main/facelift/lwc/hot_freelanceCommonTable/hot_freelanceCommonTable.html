@@ -22,7 +22,7 @@
                     key={record.id}
                     data-id={record.id}
                     onclick={handleOnRowClick}
-                    onkeypress={handleOnRowClick}
+                    onkeydown={handleOnRowKeyDown}
                 >
                     <!-- Row checkboxes-->
                     <td lwc:if={checkbox} class="checkbox-column checkbox-mobile-right">
