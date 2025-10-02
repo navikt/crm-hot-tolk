@@ -5,7 +5,7 @@ import markAsReadByNav from '@salesforce/apex/HOT_MessageHelper.markAsReadByNav'
 import markThreadAsRead from '@salesforce/apex/HOT_MessageHelper.markThreadAsRead';
 import markThreadAsReadEmployee from '@salesforce/apex/HOT_MessageHelper.markThreadAsReadEmployee';
 import getUserContactId from '@salesforce/apex/HOT_MessageHelper.getUserContactId';
-import getAccountOnThread from '@salesforce/apex/HOT_MessageHelper.getAccountOnThread';
+import getThreadParticipants from '@salesforce/apex/HOT_ThreadParticipants.getParticipants';
 import getAccountOnRequest from '@salesforce/apex/HOT_MessageHelper.getAccountOnRequest';
 import getRequestInformation from '@salesforce/apex/HOT_MessageHelper.getRequestInformation';
 import getWorkOrderInformation from '@salesforce/apex/HOT_MessageHelper.getWorkOrderInformation';
@@ -40,9 +40,8 @@ export default class CrmMessagingMessageComponent extends LightningElement {
     @track noAssignedResource = false;
     @track interestedResourceIsAssigned = false;
     @track noThreadExist = false;
+    threadParticipants;
 
-    @track showAccountName = false;
-    @track accountName;
     userContactId;
 
     @api recordId;
@@ -59,7 +58,6 @@ export default class CrmMessagingMessageComponent extends LightningElement {
 
     @wire(getThreads, { recordId: '$recordId', singleThread: '$singleThread', type: '$messageType' }) //Calls apex and extracts messages related to this record
     wiredThreads(result) {
-        this.showAccountName = false;
         this._threadsforRefresh = result;
         if (result.error) {
             this.error = result.error;
@@ -74,14 +72,13 @@ export default class CrmMessagingMessageComponent extends LightningElement {
             }
             if (this.threads.length == 1) {
                 this.showSetToRedactionBtn = true;
-                if (this.objectApiName != 'HOT_Request__c') {
-                    getAccountOnThread({ recordId: this.threads[0].Id })
-                        .then((result) => {
-                            this.accountName = result;
-                            this.showAccountName = true;
-                        })
-                        .catch((error) => {});
-                }
+                getThreadParticipants({ threadId: this.threads[0].Id })
+                    .then((result) => {
+                        this.threadParticipants = result;
+                    })
+                    .catch((error) => {
+                        console.error(error);
+                    });
             }
 
             try {
@@ -156,7 +153,6 @@ export default class CrmMessagingMessageComponent extends LightningElement {
                 this.singleThread = true;
                 refreshApex(this._threadsforRefresh);
                 this.showThreads = true;
-                this.showAccountName = true;
                 event.preventDefault();
                 event.stopPropagation();
                 break;
@@ -183,7 +179,6 @@ export default class CrmMessagingMessageComponent extends LightningElement {
                 this.singleThread = true;
                 refreshApex(this._threadsforRefresh);
                 this.showThreads = true;
-                this.showAccountName = true;
                 event.preventDefault(); // prevent the default scroll behavior
                 event.stopPropagation();
                 break;
@@ -209,7 +204,6 @@ export default class CrmMessagingMessageComponent extends LightningElement {
                 this.singleThread = true;
                 refreshApex(this._threadsforRefresh);
                 this.showThreads = true;
-                this.showAccountName = true;
                 event.preventDefault(); // prevent the default scroll behavior
                 event.stopPropagation();
                 break;
@@ -235,7 +229,6 @@ export default class CrmMessagingMessageComponent extends LightningElement {
                 this.singleThread = true;
                 refreshApex(this._threadsforRefresh);
                 this.showThreads = true;
-                this.showAccountName = true;
                 event.preventDefault(); // prevent the default scroll behavior
                 event.stopPropagation();
                 break;

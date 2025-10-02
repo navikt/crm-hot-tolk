@@ -669,12 +669,7 @@ private class HOT_MessageHelperTest {
     }
     @IsTest
     static void markAsReadByNavTest() {
-        Profile stdProf = [
-            SELECT Id
-            FROM Profile
-            WHERE Name IN ('Standardbruker', 'Standard User')
-            LIMIT 1
-        ];
+        Profile stdProf = [SELECT Id FROM Profile WHERE Name IN ('Standardbruker', 'Standard User') LIMIT 1];
         User navReader = HOT_TestDataFactory.createUser('navstd', stdProf);
         insert navReader;
         Account acc = new Account(Name = 'ReadByNav Acc');
@@ -899,44 +894,6 @@ private class HOT_MessageHelperTest {
         System.assertNotEquals(0, tList.size(), 'Expected at least one thread related to the Wage Claim.');
     }
     @IsTest
-    static void getAccountOnThreadTest() {
-        Profile profile = [SELECT Id FROM Profile WHERE Name = 'Standard User' OR Name = 'Standardbruker' LIMIT 1];
-        User user = HOT_TestDataFactory.createUser('user', profile);
-        insert user;
-        Account acc = new Account();
-        acc.Name = 'Darth Vader';
-        insert acc;
-        WorkType workType = HOT_TestDataFactory.createWorkType();
-        insert workType;
-        HOT_Request__c request = HOT_TestDataFactory.createRequest('TEST', workType);
-        insert request;
-        Thread__c t = HOT_TestDataFactory.createThread();
-        t.CRM_Related_Object__c = request.Id;
-        t.CRM_Account__c = acc.Id;
-        insert t;
-        Test.startTest();
-        String result = HOT_MessageHelper.getAccountOnThread(t.Id);
-        Test.stopTest();
-        System.assertEquals(null, result);
-    }
-    @IsTest
-    static void getAccountOnThreadWOTest() {
-        WorkType workType = HOT_TestDataFactory.createWorkType();
-        insert workType;
-        HOT_Request__c request = HOT_TestDataFactory.createRequest('TEST', workType);
-        insert request;
-        WorkOrder workOrder = HOT_TestDataFactory.createWorkOrder(request, workType);
-        workOrder.HOT_Interpreters__c = 'Darth Vader';
-        insert workOrder;
-        Thread__c t = HOT_TestDataFactory.createThread();
-        t.CRM_Related_Object__c = workOrder.Id;
-        insert t;
-        Test.startTest();
-        String result = HOT_MessageHelper.getAccountOnThread(t.Id);
-        Test.stopTest();
-        System.assertEquals('Darth Vader', result, 'Did not get correct name');
-    }
-    @IsTest
     static void createThreadInterpreterInterpreters() {
         WorkType workType = HOT_TestDataFactory.createWorkType();
         workType.Name = 'Work Type Name';
@@ -1005,7 +962,8 @@ private class HOT_MessageHelperTest {
         System.assertNotEquals(null, created, 'Dispatcher thread should be created.');
         System.assertEquals('HOT_TOLK-FORMIDLER', created.CRM_Type__c, 'Wrong thread type.');
         System.assert(
-            created.CRM_Related_Object__c == sa.Id || created.CRM_Related_Object__c == wo.Id,
+            created.CRM_Related_Object__c == sa.Id ||
+            created.CRM_Related_Object__c == wo.Id,
             'Helper may relate to SA or normalize to WO.'
         );
         if (created.CRM_Account__c != null) {
@@ -1063,7 +1021,8 @@ private class HOT_MessageHelperTest {
             System.assertNotEquals(null, created, 'Dispatcher thread should be created.');
             System.assertEquals('HOT_TOLK-FORMIDLER', created.CRM_Type__c, 'Wrong thread type.');
             System.assert(
-                created.CRM_Related_Object__c == sa.Id || created.CRM_Related_Object__c == wo.Id,
+                created.CRM_Related_Object__c == sa.Id ||
+                created.CRM_Related_Object__c == wo.Id,
                 'Helper may relate to SA directly or normalize to WO.'
             );
             if (created.CRM_Account__c != null) {
@@ -1709,7 +1668,9 @@ private class HOT_MessageHelperTest {
         Test.stopTest();
         Thread__c th = [SELECT HOT_Thread_read_by__c FROM Thread__c WHERE id = :t.Id LIMIT 1];
         System.assertEquals(
-            '007' + currentUser.id + ';',
+            '007' +
+            currentUser.id +
+            ';',
             th.HOT_Thread_read_by__c,
             'Should be HOT Thread Read By + user id + ;'
         );
