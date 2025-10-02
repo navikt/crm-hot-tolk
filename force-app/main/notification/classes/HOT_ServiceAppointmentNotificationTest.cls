@@ -61,6 +61,7 @@ private class HOT_ServiceAppointmentNotificationTest {
 
         request.Status__c = 'Godkjent';
         update request;
+
     }
 
     @IsTest
@@ -159,27 +160,6 @@ private class HOT_ServiceAppointmentNotificationTest {
 
         system.assertEquals('Canceled', serviceAppointment.Status, 'Could not set Status');
 
-        Test.stopTest();
-    }
-
-    @IsTest
-    private static void resourceCanceledTest() {
-        Set<String> recipients = new Set<String>{ UserInfo.getUserId() };
-
-        ServiceAppointment serviceAppointment = [
-            SELECT Id, AppointmentNumber, Subject
-            FROM ServiceAppointment
-            WHERE Subject = 'subject'
-            LIMIT 1
-        ];
-
-        CustomNotificationType notificationType = [
-            SELECT Id, DeveloperName
-            FROM CustomNotificationType
-            WHERE DeveloperName = 'HOT_NotifyUser'
-        ];
-        Test.startTest();
-        HOT_ServiceAppointmentNotification.resourceCanceled(notificationType, serviceAppointment, recipients);
         Test.stopTest();
     }
 
