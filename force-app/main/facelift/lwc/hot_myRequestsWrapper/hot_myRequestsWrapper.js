@@ -586,11 +586,15 @@ export default class Hot_myRequestsWrapper extends NavigationMixin(LightningElem
     modalHeader = 'Varsel';
     modalContent = 'Noe gikk galt';
     isAlertdialogConfirm = false;
+    alertButtonLabelConfirm = 'Ja';
+
     handleAlertDialogClick() {
         if (this.isCancel) {
             this.cancelAndRefreshApex();
             this.isCancel = false;
+            this.alertButtonLabelConfirm = 'Ok';
         } else {
+            this.alertButtonLabelConfirm = 'Ja';
             this.closeModal();
         }
     }
