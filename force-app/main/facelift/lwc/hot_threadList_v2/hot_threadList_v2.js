@@ -2,7 +2,6 @@ import { LightningElement, api, wire } from 'lwc';
 import getMyThreads from '@salesforce/apex/HOT_ThreadListController.getAllMyThreads';
 import getContactId from '@salesforce/apex/HOT_MessageHelper.getUserContactId';
 import { NavigationMixin } from 'lightning/navigation';
-import { refreshApex } from '@salesforce/apex';
 
 export default class Hot_threadList_v2 extends NavigationMixin(LightningElement) {
     @api isFreelanceView;
@@ -18,8 +17,8 @@ export default class Hot_threadList_v2 extends NavigationMixin(LightningElement)
 
     sortedThreads = [];
     wiredThreadsResult;
-    shouldRefreshAfterWire = false;
     unreadThreadsCount;
+
 
     get headerText() {
         if (this.isFreelanceView) {
@@ -29,39 +28,25 @@ export default class Hot_threadList_v2 extends NavigationMixin(LightningElement)
         }
     }
     connectedCallback() {
-        this.shouldRefreshAfterWire = true;
+        this.loadData();
     }
 
-    @wire(getMyThreads, { isFreelance: '$isFreelanceView' })
-    wiredThreads(value) {
-        this.wiredThreadsResult = value;
-        const { data, error } = value;
-
-        if (data) {
-            this.threads = data;
-            this.error = undefined;
-            this.tryMapAndSortThreads();
-        } else if (error) {
-            this.error = error;
-            this.threads = undefined;
-        }
-        console.log('wire error:', error);
-        if (this.shouldRefreshAfterWire) {
-            this.shouldRefreshAfterWire = false;
-            refreshApex(this.wiredThreadsResult)
-                .then(() => this.tryMapAndSortThreads())
-                .catch((e) => console.error('refreshApex failed', e));
-        }
-    }
-    @wire(getContactId, {})
-    wiredContactId({ data, error }) {
-        if (data) {
-            this.userContactId = data;
-            this.tryMapAndSortThreads();
-        } else if (error) {
-            this.error = error;
-        }
-        console.log('contactid feil', error);
+    loadData() {
+        getContactId()
+            .then((contactId) => {
+                this.userContactId = contactId;
+                return getMyThreads({ isFreelance: this.isFreelanceView });
+            })
+            .then((threadData) => {
+                this.threads = threadData;
+                this.error = undefined;
+                this.tryMapAndSortThreads();
+            })
+            .catch((error) => {
+                this.error = error;
+                this.threads = [];
+                console.error('Feil i henting av data:', error);
+            });
     }
     handleFilterButtonClick(event) {
         this.filterValue = event.detail;
