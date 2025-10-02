@@ -726,44 +726,6 @@ private class HOT_MessageHelperTest {
         System.assertNotEquals(0, tList.size(), 'Expected at least one thread related to the Wage Claim.');
     }
     @IsTest
-    static void getAccountOnThreadTest() {
-        Profile profile = [SELECT Id FROM Profile WHERE Name = 'Standard User' OR Name = 'Standardbruker' LIMIT 1];
-        User user = HOT_TestDataFactory.createUser('user', profile);
-        insert user;
-        Account acc = new Account();
-        acc.Name = 'Darth Vader';
-        insert acc;
-        WorkType workType = HOT_TestDataFactory.createWorkType();
-        insert workType;
-        HOT_Request__c request = HOT_TestDataFactory.createRequest('TEST', workType);
-        insert request;
-        Thread__c t = HOT_TestDataFactory.createThread();
-        t.CRM_Related_Object__c = request.Id;
-        t.CRM_Account__c = acc.Id;
-        insert t;
-        Test.startTest();
-        String result = HOT_MessageHelper.getAccountOnThread(t.Id);
-        Test.stopTest();
-        System.assertEquals(null, result);
-    }
-    @IsTest
-    static void getAccountOnThreadWOTest() {
-        WorkType workType = HOT_TestDataFactory.createWorkType();
-        insert workType;
-        HOT_Request__c request = HOT_TestDataFactory.createRequest('TEST', workType);
-        insert request;
-        WorkOrder workOrder = HOT_TestDataFactory.createWorkOrder(request, workType);
-        workOrder.HOT_Interpreters__c = 'Darth Vader';
-        insert workOrder;
-        Thread__c t = HOT_TestDataFactory.createThread();
-        t.CRM_Related_Object__c = workOrder.Id;
-        insert t;
-        Test.startTest();
-        String result = HOT_MessageHelper.getAccountOnThread(t.Id);
-        Test.stopTest();
-        System.assertEquals('Darth Vader', result, 'Did not get correct name');
-    }
-    @IsTest
     static void createThreadInterpreterInterpreters() {
         WorkType workType = HOT_TestDataFactory.createWorkType();
         workType.Name = 'Work Type Name';

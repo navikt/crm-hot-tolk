@@ -1,20 +1,21 @@
 <template>
-    <button class="threadCard" onclick={handleButtonClick} value={thread.Id}>
-        <div class="threadCardHeader">
+    <button class="threadCard" onclick={handleButtonClick} value={thread.Id} aria-label={fullAriaLabel}>
+        <!-- Skjuler innholdet for skjermleser siden aria-label brukes -->
+        <div class="threadCardHeader" aria-hidden="true">
             <div class="threadCardHeader-left"><p>{thread.HOT_Subject__c}</p></div>
             <div class="threadCardHeader-right desktop-only">
-                <p aria-label={lastMessageAria}>{thread.lastMessageSentFormatted}</p>
+                <p>{thread.lastMessageSentFormatted}</p>
             </div>
             <div class="threadCardHeader-right mobile-only">
                 <p>Siste melding: {thread.lastMessageSentFormatted}</p>
             </div>
         </div>
-        <p class="desktop-only" aria-label={appointmentStartAria}>({thread.appointmentStartFormatted})</p>
-        <p class="mobile-only">Oppdrags start: {thread.appointmentStartFormatted}</p>
+        <p class="desktop-only" aria-hidden="true">({thread.appointmentStartFormatted})</p>
+        <p class="mobile-only" aria-hidden="true">Oppdrags start: {thread.appointmentStartFormatted}</p>
 
-        <div class="threadCardBottom">
+        <div class="threadCardBottom" aria-hidden="true">
             <div class={thread.statusClass}><p>{thread.statusText}</p></div>
-            <div class="threadType tagBox" aria-label={threadTypeAria}>
+            <div class="threadType tagBox">
                 <p>{thread.threadTypeName}</p>
             </div>
         </div>

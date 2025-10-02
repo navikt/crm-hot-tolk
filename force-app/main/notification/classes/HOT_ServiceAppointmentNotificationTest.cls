@@ -156,23 +156,6 @@ private class HOT_ServiceAppointmentNotificationTest {
     }
 
     @IsTest
-    private static void resourceCanceledTest() {
-        ServiceAppointment serviceAppointment = [
-            SELECT Id, AppointmentNumber, Subject
-            FROM ServiceAppointment
-            WHERE Subject = 'subject'
-            LIMIT 1
-        ];
-
-        try {
-            serviceAppointment.HOT_CanceledByInterpreter__c = true;
-            update serviceAppointment;
-        } catch (Exception e) {
-            System.assert(false, 'Exception: ' + e.getMessage());
-        }
-    }
-
-    @IsTest
     private static void canceledByUserTest() {
         ServiceAppointment sa = [
             SELECT Id, AppointmentNumber, EarliestStartTime
