@@ -134,6 +134,20 @@ export default class Hot_freelanceCommonTable extends LightningElement {
         this.dispatchEvent(eventToSend);
     }
 
+    handleOnRowKeyDown(event) {
+    if (event.code === 'Space') {
+        const focusElement = event.target; 
+
+        // If the focused element is a checkbox, do not trigger row click
+        if ( focusElement.type === 'checkbox' || focusElement.closest('c-checkbox')) {
+            return; 
+        }
+
+        event.preventDefault(); 
+        this.handleOnRowClick(event);
+        }
+    }
+
     sendCheckedRows() {
         const eventToSend = new CustomEvent('checkedrows', {
             detail: { checkedRows: this.checkedRows }
