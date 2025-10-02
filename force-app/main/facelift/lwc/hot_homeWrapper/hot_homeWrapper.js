@@ -64,6 +64,10 @@ export default class Hot_homeWrapper extends LightningElement {
     unreadMyThreads;
     unreadFreelanceThreads;
 
+    renderedCallback() {
+        refreshApex(this.wiredThreadsResult);
+    }
+
     mapAndSortThreads() {
         const uid = this.userContactId;
 
