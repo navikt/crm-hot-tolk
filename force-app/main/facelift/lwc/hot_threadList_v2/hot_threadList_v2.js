@@ -19,6 +19,7 @@ export default class Hot_threadList_v2 extends NavigationMixin(LightningElement)
     sortedThreads = [];
     wiredThreadsResult;
     shouldRefreshAfterWire = false;
+    unreadThreadsCount;
 
     get headerText() {
         if (this.isFreelanceView) {
@@ -114,6 +115,9 @@ export default class Hot_threadList_v2 extends NavigationMixin(LightningElement)
                 if (a.isRead !== b.isRead) return a.isRead ? 1 : -1; // ulest først
                 return b.latestMessageSent - a.latestMessageSent; // nyeste først
             });
+
+        this.unreadThreadsCount = this.sortedThreads.filter((t) => !t.isRead).length;
+
         if (this.sortedThreads.length == 0) {
             this.noTreads = true;
             this.hasThreads = false;
