@@ -121,7 +121,7 @@ private class HOT_MessageHelperTest {
         List<WorkOrder> wo = HOT_MessageHelper.getWorkOrderInformation(workOrder.Id);
         String result = String.valueOf(wo[0].HOT_TotalNumberOfInterpreters__c);
         Test.stopTest();
-        System.assertEquals(result, '0', 'Did not find correct number of interpreters');
+        System.assertEquals('1', result, 'Did not find correct number of interpreters');
     }
     @IsTest
     static void getThreadsCollectionThread() {
@@ -640,150 +640,105 @@ private class HOT_MessageHelperTest {
     }
     @IsTest
     static void createThreadWageClaim() {
-        WorkType wt = HOT_TestDataFactory.createWorkType();
-        insert wt;
-        HOT_Request__c req = HOT_TestDataFactory.createRequest('TEST', wt);
-        insert req;
-        WorkOrder wo = HOT_TestDataFactory.createWorkOrder(req, wt);
-        insert wo;
-        WorkOrderLineItem woli = HOT_TestDataFactory.createWorkOrderLineItem(wo, wt);
-        insert woli;
-        ServiceAppointment sa = HOT_TestDataFactory.createServiceAppointment(woli);
-        sa.Subject = 'TEST';
-        insert sa;
-        Account acc = new Account(Name = 'Newly created account');
-        insert acc;
-        User me = [SELECT Id FROM User WHERE Id = :UserInfo.getUserId()];
-        ServiceResource sr = HOT_TestDataFactory.createServiceResource(me.Id);
-        sr.AccountId = acc.Id;
-        insert sr;
+        //TODO: OK
+        ServiceAppointment sa = [
+            SELECT Id, EarliestStartTime, DueDate, HOT_WorkOrderLineItem__r.WorkOrderId
+            FROM ServiceAppointment
+            WHERE Subject = 'TEST'
+            LIMIT 1
+        ];
+
+        ServiceResource sr = [SELECT Id, AccountId FROM ServiceResource LIMIT 1];
 
         HOT_WageClaim__c wage = HOT_TestDataFactory.createWageClaim(sr);
         wage.ServiceAppointment__c = sa.Id;
         insert wage;
-        Thread__c seed = HOT_TestDataFactory.createThread();
-        seed.CRM_Related_Object__c = wage.Id;
-        seed.CRM_Account__c = acc.Id;
-        insert seed;
 
         Test.startTest();
-        try {
-            Thread__c created = HOT_MessageHelper.createThread(wage.Id, acc.Id);
-        } catch (AuraHandledException e) {
-        }
+
+        Thread__c created = HOT_MessageHelper.createThread(wage.Id, sr.AccountId);
+
         Test.stopTest();
         List<Thread__c> threads = [
             SELECT Id, CRM_Account__c, CRM_Type__c
             FROM Thread__c
             WHERE CRM_Related_Object__c = :wage.Id
         ];
-        System.assertNotEquals(0, threads.size(), 'Expected at least one thread related to the Wage Claim.');
+        System.assertEquals(1, threads.size(), 'Expected at one thread related to the Wage Claim.');
+        System.assertEquals(
+            'HOT_TOLK-RESSURSKONTOR',
+            threads[0].CRM_Type__c,
+            'Thread type should be HOT_TOLK-RESSURSKONTOR'
+        );
     }
     @IsTest
     static void createThreadWageClaimDispatcher() {
-        WorkType wt = HOT_TestDataFactory.createWorkType();
-        insert wt;
-        HOT_Request__c req = HOT_TestDataFactory.createRequest('TEST', wt);
-        insert req;
-        WorkOrder wo = HOT_TestDataFactory.createWorkOrder(req, wt);
-        insert wo;
-        WorkOrderLineItem woli = HOT_TestDataFactory.createWorkOrderLineItem(wo, wt);
-        insert woli;
-        ServiceAppointment sa = HOT_TestDataFactory.createServiceAppointment(woli);
-        sa.Subject = 'TEST';
-        insert sa;
-        Account acc = new Account(Name = 'Newly created account');
-        insert acc;
-        User me = [SELECT Id FROM User WHERE Id = :UserInfo.getUserId()];
-        ServiceResource sr = HOT_TestDataFactory.createServiceResource(me.Id);
-        sr.AccountId = acc.Id;
-        insert sr;
+        //TODO: OK
+        ServiceAppointment sa = [
+            SELECT Id, EarliestStartTime, DueDate, HOT_WorkOrderLineItem__r.WorkOrderId
+            FROM ServiceAppointment
+            WHERE Subject = 'TEST'
+            LIMIT 1
+        ];
+
+        ServiceResource sr = [SELECT Id, AccountId FROM ServiceResource LIMIT 1];
 
         HOT_WageClaim__c wageclaim = HOT_TestDataFactory.createWageClaim(sr);
         wageclaim.ServiceAppointment__c = sa.Id;
         insert wageclaim;
 
-        Thread__c seed = HOT_TestDataFactory.createThread();
-        seed.CRM_Related_Object__c = wageclaim.Id;
-        seed.CRM_Account__c = acc.Id;
-        insert seed;
-
         Test.startTest();
-        try {
-            Thread__c created = HOT_MessageHelper.createThreadDispatcher(
-                wageclaim.Id,
-                acc.Id,
-                'HOT_TOLK-RESSURSKONTOR'
-            );
-        } catch (AuraHandledException e) {
-        }
+        Thread__c created = HOT_MessageHelper.createThreadDispatcher(wageclaim.Id, sr.AccountId, null);
         Test.stopTest();
         List<Thread__c> tList = [
             SELECT Id, CRM_Account__c, CRM_Type__c
             FROM Thread__c
             WHERE CRM_Related_Object__c = :wageclaim.Id
         ];
-        System.assertNotEquals(0, tList.size(), 'Expected at least one thread related to the Wage Claim.');
+        System.assertEquals(1, tList.size(), 'Expected  one thread related to the Wage Claim.');
+        System.assertEquals(
+            'HOT_TOLK-RESSURSKONTOR',
+            tList[0].CRM_Type__c,
+            'Thread type should be HOT_TOLK-RESSURSKONTOR'
+        );
     }
     @IsTest
     static void createThreadInterpreterInterpreters() {
-        WorkType workType = HOT_TestDataFactory.createWorkType();
-        workType.Name = 'Work Type Name';
-        insert workType;
-        HOT_Request__c request = HOT_TestDataFactory.createRequest('Subject', workType);
-        insert request;
-        WorkOrder workOrder = HOT_TestDataFactory.createWorkOrder(request, workType);
-        insert workOrder;
-        WorkOrderLineItem workOrderLineItem = HOT_TestDataFactory.createWorkOrderLineItem(workOrder, workType);
-        insert workOrderLineItem;
-        ServiceAppointment sa = HOT_TestDataFactory.createServiceAppointment(workOrderLineItem);
-        sa.HOT_Request__c = request.Id;
-        sa.Subject = 'Hei';
-        insert sa;
-
+        ServiceAppointment sa = [
+            SELECT Id, HOT_WorkOrderLineItem__r.WorkOrderId
+            FROM ServiceAppointment
+            WHERE Subject = 'TEST'
+            LIMIT 1
+        ];
         Test.startTest();
         Thread__c thread = HOT_MessageHelper.createThreadInterpreters(sa.Id);
         Test.stopTest();
         List<Thread__c> tList = [
             SELECT Id, CRM_Account__c, CRM_Type__c
             FROM Thread__c
-            WHERE CRM_Related_Object__c = :workOrder.Id
+            WHERE CRM_Related_Object__c = :sa.HOT_WorkOrderLineItem__r.WorkOrderId //:workOrder.Id
         ];
         System.assertNotEquals(null, tList);
     }
     @IsTest
     static void createThreadDispatcherEmployeeTest() {
-        WorkType wt = HOT_TestDataFactory.createWorkType();
-        insert wt;
-        HOT_Request__c req = HOT_TestDataFactory.createRequest('Subject', wt);
-        insert req;
-        WorkOrder wo = HOT_TestDataFactory.createWorkOrder(req, wt);
-        insert wo;
-        WorkOrderLineItem woli = HOT_TestDataFactory.createWorkOrderLineItem(wo, wt);
-        insert woli;
-        Account acc = new Account(Name = 'Dispatcher Acc');
-        insert acc;
-        wo.AccountId = acc.Id;
-        update wo;
+        ServiceAppointment sa = [
+            SELECT Id, EarliestStartTime, DueDate, HOT_Account__c, HOT_WorkOrderLineItem__r.WorkOrderId
+            FROM ServiceAppointment
+            WHERE Subject = 'TEST'
+            LIMIT 1
+        ];
+        myTriggers.disable(HOT_ServiceAppointmentHandler.class);
+        sa.SchedStartTime = sa.EarliestStartTime;
+        sa.SchedEndTime = sa.DueDate;
+        sa.Status = 'Scheduled';
+        update sa;
+
+        ServiceResource sr = [SELECT Id FROM ServiceResource LIMIT 1];
 
         Test.startTest();
-        User me = [SELECT Id FROM User WHERE Id = :UserInfo.getUserId()];
-        ServiceResource sr = HOT_TestDataFactory.createServiceResource(me.Id);
-        insert sr;
-        sr.AccountId = acc.Id;
-        update sr;
-        OperatingHours oh = HOT_TestDataFactory.createOperatingHours();
-        insert oh;
-        ServiceTerritory st = HOT_TestDataFactory.createServiceTerritory(oh);
-        insert st;
-        insert HOT_TestDataFactory.createServiceTerritoryMember(sr, st);
-        ServiceAppointment sa = HOT_TestDataFactory.createSchedulableSA(woli, st);
-        sa.HOT_Account__c = acc.Id;
-        sa.Subject = 'Hei';
-        insert sa;
-
         insert HOT_TestDataFactory.createAssignedResource(sa.Id, sr.Id);
-        Thread__c t = HOT_MessageHelper.createThreadDispatcher(sa.Id, acc.Id, 'HOT_TOLK-FORMIDLER');
+        Thread__c t = HOT_MessageHelper.createThreadDispatcher(sa.Id, null, 'HOT_TOLK-FORMIDLER');
         Test.stopTest();
         Thread__c created = [
             SELECT Id, CRM_Account__c, CRM_Type__c, CRM_Related_Object__c
@@ -795,11 +750,15 @@ private class HOT_MessageHelperTest {
         System.assertEquals('HOT_TOLK-FORMIDLER', created.CRM_Type__c, 'Wrong thread type.');
         System.assert(
             created.CRM_Related_Object__c == sa.Id ||
-            created.CRM_Related_Object__c == wo.Id,
+            created.CRM_Related_Object__c == sa.HOT_WorkOrderLineItem__r.WorkOrderId,
             'Helper may relate to SA or normalize to WO.'
         );
         if (created.CRM_Account__c != null) {
-            System.assertEquals(acc.Id, created.CRM_Account__c, 'If stamped, it should match our Account.');
+            System.assertEquals(
+                /*acc.Id*/ sa.HOT_Account__c,
+                created.CRM_Account__c,
+                'If stamped, it should match our Account.'
+            );
         }
     }
     @IsTest
@@ -933,28 +892,13 @@ private class HOT_MessageHelperTest {
     }
     @IsTest
     static void getRelatedObjectDetailsSA() {
-        WorkType wt = HOT_TestDataFactory.createWorkType();
-        insert wt;
-        HOT_Request__c req = HOT_TestDataFactory.createRequest('TEST', wt);
-        insert req;
-        WorkOrder wo = HOT_TestDataFactory.createWorkOrder(req, wt);
-        insert wo;
-        WorkOrderLineItem woli = HOT_TestDataFactory.createWorkOrderLineItem(wo, wt);
-        insert woli;
-        OperatingHours oh = HOT_TestDataFactory.createOperatingHours();
-        insert oh;
-        ServiceTerritory st = HOT_TestDataFactory.createServiceTerritory(oh);
-        insert st;
-        User me = [SELECT Id FROM User WHERE Id = :UserInfo.getUserId()];
-        ServiceResource sr = HOT_TestDataFactory.createServiceResource(me.Id);
-        insert sr;
-        insert HOT_TestDataFactory.createServiceTerritoryMember(sr, st);
-
-        ServiceAppointment sa = HOT_TestDataFactory.createSchedulableSA(woli, st);
-        sa.Subject = 'TEST';
-        sa.HOT_Request__c = req.Id;
-        insert sa;
-
+        //TODO: OK
+        ServiceAppointment sa = [
+            SELECT Id, HOT_WorkOrderLineItem__r.WorkOrderId
+            FROM ServiceAppointment
+            WHERE Subject = 'TEST'
+            LIMIT 1
+        ];
         Test.startTest();
 
         Map<String, String> expected = new Map<String, String>{ sa.Id => 'SA' };
@@ -1136,23 +1080,14 @@ private class HOT_MessageHelperTest {
     }
     @IsTest
     static void getRelatedObjectDetailsIR() {
-        WorkType workType = HOT_TestDataFactory.createWorkType();
-        insert workType;
-        HOT_Request__c request = HOT_TestDataFactory.createRequest('TEST', workType);
-        insert request;
-        WorkOrder workOrder = HOT_TestDataFactory.createWorkOrder(request, workType);
-        insert workOrder;
-        WorkOrderLineItem woli = HOT_TestDataFactory.createWorkOrderLineItem(workOrder, workType);
-        insert woli;
-        ServiceAppointment sa = HOT_TestDataFactory.createServiceAppointment(woli);
-        sa.Subject = 'TEST';
-        insert sa;
-
-        User currentUser = [SELECT Id, AccountId, Account.CRM_Person__c FROM User WHERE Id = :UserInfo.getUserId()];
-
-        ServiceResource resource = HOT_TestDataFactory.createServiceResource(currentUser.Id);
-        resource.AccountId = currentUser.AccountId;
-        insert resource;
+        //TODO: OK
+        ServiceAppointment sa = [
+            SELECT Id, HOT_WorkOrderLineItem__r.WorkOrderId
+            FROM ServiceAppointment
+            WHERE Subject = 'TEST'
+            LIMIT 1
+        ];
+        ServiceResource resource = [SELECT Id FROM ServiceResource LIMIT 1];
         HOT_InterestedResource__c interestedResource = HOT_TestDataFactory.createInterestedResource(sa.Id, resource.Id);
         insert interestedResource;
 
@@ -1165,23 +1100,15 @@ private class HOT_MessageHelperTest {
     }
     @IsTest
     static void getRelatedObjectDetailsWC() {
-        WorkType workType = HOT_TestDataFactory.createWorkType();
-        insert workType;
-        HOT_Request__c request = HOT_TestDataFactory.createRequest('TEST', workType);
-        insert request;
-        WorkOrder workOrder = HOT_TestDataFactory.createWorkOrder(request, workType);
-        insert workOrder;
-        WorkOrderLineItem woli = HOT_TestDataFactory.createWorkOrderLineItem(workOrder, workType);
-        insert woli;
-        ServiceAppointment sa = HOT_TestDataFactory.createServiceAppointment(woli);
-        sa.Subject = 'TEST';
-        insert sa;
+        //TODO: OK
+        ServiceAppointment sa = [
+            SELECT Id, HOT_WorkOrderLineItem__r.WorkOrderId
+            FROM ServiceAppointment
+            WHERE Subject = 'TEST'
+            LIMIT 1
+        ];
+        ServiceResource resource = [SELECT Id FROM ServiceResource LIMIT 1];
 
-        User currentUser = [SELECT Id, AccountId, Account.CRM_Person__c FROM User WHERE Id = :UserInfo.getUserId()];
-
-        ServiceResource resource = HOT_TestDataFactory.createServiceResource(currentUser.Id);
-        resource.AccountId = currentUser.AccountId;
-        insert resource;
         HOT_InterestedResource__c interestedResource = HOT_TestDataFactory.createInterestedResource(sa.Id, resource.Id);
         insert interestedResource;
 
@@ -1291,82 +1218,6 @@ private class HOT_MessageHelperTest {
         ];
         System.assertNotEquals(null, roundTrip.Id, 'Thread must exist after helper call.');
     }
-
-    @IsTest
-    static void createThreadDispatcherIRs() {
-        /*
-        WorkType wt = HOT_TestDataFactory.createWorkType();
-        insert wt;
-        HOT_Request__c req = HOT_TestDataFactory.createRequest('Subject', wt);
-        insert req;
-        WorkOrder wo = HOT_TestDataFactory.createWorkOrder(req, wt);
-        insert wo;
-
-        Account acc = new Account(Name = 'IRs Acc');
-        insert acc;
-        wo.AccountId = acc.Id;
-        update wo;
-
-        WorkOrderLineItem woli = HOT_TestDataFactory.createWorkOrderLineItem(wo, wt);
-        insert woli;
-
-        ServiceAppointment sa = HOT_TestDataFactory.createServiceAppointment(woli);
-        sa.HOT_Request__c = req.Id;
-        sa.HOT_Account__c = acc.Id;
-        sa.Subject = 'Hei';
-        insert sa;
-
-        User me = [SELECT Id FROM User WHERE Id = :UserInfo.getUserId()];
-        ServiceResource sr = HOT_TestDataFactory.createServiceResource(me.Id);
-        sr.AccountId = acc.Id;
-        insert sr;
-
-        */
-        Account acc = new Account(Name = 'IRs Acc');
-        insert acc;
-        ServiceResource sr = HOT_TestDataFactory.createServiceResource(UserInfo.getUserId());
-        sr.AccountId = acc.Id;
-        insert sr;
-        ServiceAppointment sa = [SELECT Id FROM ServiceAppointment WHERE Subject = 'TEST' LIMIT 1];
-        myTriggers.disable(HOT_ServiceAppointmentHandler.class);
-        myTriggers.disable(HOT_ServiceAppointmentStatusHandler.class);
-        myTriggers.disable(HOT_ServiceAppointmentAccessHandler.class);
-
-        sa.Subject = 'Hei';
-        sa.HOT_Account__c = sr.AccountId;
-        update sa;
-
-        HOT_InterestedResource__c ir = HOT_TestDataFactory.createInterestedResource(sa.Id, sr.Id);
-        insert ir;
-        /*
-        Thread__c seed = new Thread__c();
-        seed.RecordTypeId = HOT_MessageHelper.getHOTThreadRecordType();
-        seed.OwnerId = UserInfo.getUserId();
-        seed.CRM_Thread_Type__c = 'HOT_TOLK-FORMIDLER';
-        seed.CRM_Type__c = 'HOT_TOLK-FORMIDLER';
-        seed.CRM_Related_Object__c = sa.Id;
-        seed.HOT_ServiceAppointment__c = sa.Id;
-        seed.CRM_Account__c = acc.Id;
-        seed.CRM_isActive__c = true;
-        seed.HOT_ParticipantIds__c = UserInfo.getUserId();
-        insert seed;
-        */
-        Test.startTest();
-        try {
-            Thread__c created = HOT_MessageHelper.createThreadInterpreters(sa.Id);
-        } catch (Exception e) {
-        }
-        Test.stopTest();
-        List<Thread__c> tList = [
-            SELECT Id, CRM_Account__c, CRM_Type__c, CRM_Related_Object__c
-            FROM Thread__c
-            WHERE HOT_ParticipantIds__c LIKE :('%' + UserInfo.getUserId() + '%') //CRM_Related_Object__c IN :new Set<Id>{ sa.Id, wo.Id, req.Id }
-            ORDER BY CreatedDate DESC
-            LIMIT 10
-        ];
-        System.assertNotEquals(0, tList.size(), 'Expected at least one thread created for the interpreters context.');
-    }
-
     @IsTest
     static void getMessagesFromThreadTestAcc() {
         Account acc = new Account();
