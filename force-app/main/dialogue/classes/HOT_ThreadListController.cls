@@ -157,12 +157,12 @@ public without sharing class HOT_ThreadListController {
 
         return threads;
     }
-    @AuraEnabled(cacheable=true)
+    @AuraEnabled
     public static List<Thread__c> getAllMyThreads(Boolean isFreelance) {
         if (isFreelance) {
-            return getMyThreadsFreelance();
+            return getMyThreadsFreelance2();
         } else {
-            return getMyThreads();
+            return getMyThreads2();
         }
     }
     @AuraEnabled
