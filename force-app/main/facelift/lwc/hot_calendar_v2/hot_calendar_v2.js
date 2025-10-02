@@ -1129,50 +1129,91 @@ export default class LibsFullCalendarV2 extends NavigationMixin(LightningElement
         return config;
     }
 
+    radiobuttons = [
+        { label: 'Ferie', value: 'Vacation', checked: false },
+        { label: 'Sykdom', value: 'Medical', checked: false },
+        { label: 'Annet', value: 'Other', checked: false }
+    ];
+
+    applyAbsenceTypeToRadios() {
+        this.radiobuttons = this.radiobuttons.map((rb) => ({
+            ...rb,
+            checked: this.absenceType ? rb.value === this.absenceType : false
+        }));
+    }
+
+    syncAllDayCheckbox() {
+        const allDayCmp = this.template.querySelector('c-checkbox');
+        if (allDayCmp) {
+            allDayCmp.setCheckboxValue(!!this.isAllDayAbsence);
+        }
+    }
+
     // Absence modal functionalities
     async openAbsenceModal(event, initialAbsenceStart, initialAbsenceEnd) {
         this.isEdit = false;
+        this.isAllDayAbsence = false;
+        this.timeFormat = 'datetime';
+        this.endHasBeenSet = false;
         this.clearCheckedRadios();
 
         if (event && event.extendedProps.recordId) {
-                this.isEdit = true;
-                this.setAbsenceTypeFromDescription(event.extendedProps.description);
-                initialAbsenceStart = this.formatLocalDateTime(event.start);
-                initialAbsenceEnd = this.formatLocalDateTime(event.end);
+            this.isEdit = true;
+            this.setAbsenceTypeFromDescription(event.extendedProps.description);
+            initialAbsenceStart = this.formatLocalDateTime(event.start);
+            initialAbsenceEnd = this.formatLocalDateTime(event.end);
 
-                // Assign to class properties
-                this.initialAbsenceStart = initialAbsenceStart;
-                this.initialAbsenceEnd = initialAbsenceEnd;
+            // Assign to class properties
+            this.initialAbsenceStart = initialAbsenceStart;
+            this.initialAbsenceEnd = initialAbsenceEnd;
 
-                this.currentEventRecordId = event.extendedProps.recordId;
+            this.currentEventRecordId = event.extendedProps.recordId;
 
-                console.log(
-                            'Existing event:\n' +
-                            'Absence type: ' + this.absenceType + '\n' +
-                            'Initial absence start event: ' + this.initialAbsenceStart + '\n' +
-                            'Initial absence end event: ' + this.initialAbsenceEnd
-                        );
+            console.log(
+                'Existing event:\n' +
+                    'Absence type: ' +
+                    this.absenceType +
+                    '\n' +
+                    'Initial absence start event: ' +
+                    this.initialAbsenceStart +
+                    '\n' +
+                    'Initial absence end event: ' +
+                    this.initialAbsenceEnd +
+                    '\n' +
+                    'is all day absence: ' +
+                    this.isAllDayAbsence
+            );
+        } else {
+            const now = new Date();
+            const startTime = new Date(now.getTime() + (60 - now.getMinutes()) * 60000);
 
-            } else {
-                const now = new Date();
-                const startTime = new Date(now.getTime() + (60 - now.getMinutes()) * 60000);
+            initialAbsenceStart = this.formatLocalDateTime(initialAbsenceStart ?? startTime);
+            initialAbsenceEnd = this.formatLocalDateTime(
+                initialAbsenceEnd ?? new Date(startTime.getTime() + 60 * 60000)
+            );
 
-                initialAbsenceStart = this.formatLocalDateTime(initialAbsenceStart ?? startTime);
-                initialAbsenceEnd = this.formatLocalDateTime(
-                    initialAbsenceEnd ?? new Date(startTime.getTime() + 60 * 60000)
-                );
+            this.initialAbsenceStart = initialAbsenceStart;
+            this.initialAbsenceEnd = initialAbsenceEnd;
+            this.isAllDayAbsence = false;
+            this.timeFormat = 'datetime';
 
-                this.initialAbsenceStart = initialAbsenceStart;
-                this.initialAbsenceEnd = initialAbsenceEnd;
-
-                console.log(
-                            'New event:\n' +
-                            'Absence type: ' + this.absenceType + '\n' +
-                            'Initial absence start no event: ' + this.initialAbsenceStart + '\n' +
-                            'Initial absence end no event: ' + this.initialAbsenceEnd
-                        );
-            }
-
+            console.log(
+                'New event:\n' +
+                    'Absence type: ' +
+                    this.absenceType +
+                    '\n' +
+                    'Initial absence start no event: ' +
+                    this.initialAbsenceStart +
+                    '\n' +
+                    'Initial absence end no event: ' +
+                    this.initialAbsenceEnd +
+                    '\n' +
+                    'is all day absence: ' +
+                    this.isAllDayAbsence
+            );
+        }
+        this.syncAllDayCheckbox();
+        this.applyAbsenceTypeToRadios();
         this.headerAbsenceText = this.isEdit ? 'Endre/Slett fravær' : 'Registrer nytt fravær';
         this.startTimeInputLabel = `Legg inn${this.isEdit ? ' ny' : ''} startdato/tid`;
         this.endTimeInputLabel = `Legg inn${this.isEdit ? ' ny' : ''} sluttdato/tid`;
@@ -1203,7 +1244,7 @@ export default class LibsFullCalendarV2 extends NavigationMixin(LightningElement
     setAbsenceTypeFromDescription(description) {
         if (!description) {
             this.clearCheckedRadios();
-        return;
+            return;
         }
 
         const mapping = [
@@ -1212,44 +1253,23 @@ export default class LibsFullCalendarV2 extends NavigationMixin(LightningElement
             { label: 'Annet', value: 'Other' }
         ];
 
-        const match = mapping.find(item =>
-            description.toLowerCase().includes(item.label.toLowerCase())
-        );
-
+        const match = mapping.find((item) => description.toLowerCase().includes(item.label.toLowerCase()));
         if (match) {
             this.absenceType = match.value;
         } else {
             this.absenceType = null;
         }
 
-        this.radiobuttons = this.radiobuttons.map(rb => ({ ...rb,
-            checked: rb.value === this.absenceType
-        }));
+        this.applyAbsenceTypeToRadios();
     }
 
     clearCheckedRadios() {
-        this.radiobuttons = this.radiobuttons.map(rb => ({
-        ...rb,
-        checked: false
+        this.radiobuttons = this.radiobuttons.map((rb) => ({
+            ...rb,
+            checked: false
         }));
         this.absenceType = null;
     }
-
-    radiobuttons = [
-        { label: 'Ferie', value: 'Vacation', checked: false },
-        { label: 'Sykdom', value: 'Medical', checked: false },
-        { label: 'Annet', value: 'Other', checked: false }
-    ];
-
-    get radioWrappers() {
-    return this.radiobuttons.map(rb => ({
-        singleRadioArray: [{
-            ...rb,
-            checked: rb.value === this.absenceType
-        }],
-        value: rb.value
-    }));
-}
 
     handleRequestTypeChange(event) {
         let radiobuttonValues = event.detail;
@@ -1258,6 +1278,7 @@ export default class LibsFullCalendarV2 extends NavigationMixin(LightningElement
                 this.absenceType = element.value;
             }
         });
+        this.applyAbsenceTypeToRadios();
     }
 
     // Absence fields
@@ -1310,7 +1331,7 @@ export default class LibsFullCalendarV2 extends NavigationMixin(LightningElement
         return ['Vacation', 'Other', 'Medical'].includes(absenceType);
     }
 
-     handleDateStartChange(event) {
+    handleDateStartChange(event) {
         const startTime = new Date(event.detail.value);
         const endTime = new Date(this.refs.absenceEndDateTimeInput.value);
         if (!this.endHasBeenSet) {
@@ -1335,7 +1356,7 @@ export default class LibsFullCalendarV2 extends NavigationMixin(LightningElement
         this.initialAbsenceEnd = event.detail.value;
     }
 
-    isNotRetractable = false; 
+    isNotRetractable = false;
     retractAvailability() {
         this.isNotRetractable = true;
     }
@@ -1347,36 +1368,36 @@ export default class LibsFullCalendarV2 extends NavigationMixin(LightningElement
                 throw new Error('No recordId found for event');
             }
 
-        // this.isInformationModalOpen = false;
-        this.closeModal();
-        await deleteAbsence({ recordId: this.currentEventRecordId });
+            // this.isInformationModalOpen = false;
+            this.closeModal();
+            await deleteAbsence({ recordId: this.currentEventRecordId });
 
-        this.dispatchEvent(
-            new ShowToastEvent({
-                title: 'Fravær slettet',
-                message: 'Fraværet ble slettet vellykket',
-                variant: 'success'
-            })
-        );
-        this.refreshCalendar(false);
-    } catch (error) {
-        console.error('Delete failed:', error);
+            this.dispatchEvent(
+                new ShowToastEvent({
+                    title: 'Fravær slettet',
+                    message: 'Fraværet ble slettet vellykket',
+                    variant: 'success'
+                })
+            );
+            this.refreshCalendar(false);
+        } catch (error) {
+            console.error('Delete failed:', error);
 
-        this.dispatchEvent(
-            new ShowToastEvent({
-                title: 'Noe gikk galt',
-                message: 'Kunne ikke slette, prøv igjen senere',
-                variant: 'error'
-            })
-        );
+            this.dispatchEvent(
+                new ShowToastEvent({
+                    title: 'Noe gikk galt',
+                    message: 'Kunne ikke slette, prøv igjen senere',
+                    variant: 'error'
+                })
+            );
+        }
+
+        this.isLoading = false;
     }
 
-    this.isLoading = false;
-}
+    errorText = '';
 
-    errorText= '';
-
-     async handleOkay() {
+    async handleOkay() {
         // Fetch radio button value
         let validInputs = true;
         // const radioGroup = this.refs.absenceTypeRadioGroup;
@@ -1434,64 +1455,63 @@ export default class LibsFullCalendarV2 extends NavigationMixin(LightningElement
             return;
         }
 
-        
         // const confirmation = await ConfimationModal.open({
         //     content: result,
         //     absenceType: absenceType,
         //     absenceStartDateTime: absenceStartDateTime,
         //     absenceEndDateTime: absenceEndDateTime
         // });
-        // if (confirmation) { 
-            this.isLoading = true;
+        // if (confirmation) {
+        this.isLoading = true;
+        try {
+            this.closeModal();
+            await createAbsenceAndResolveConflicts({
+                absenceType: this.absenceType,
+                startTimeInMilliseconds: new Date(absenceStartDateTime).getTime(),
+                endTimeInMilliseconds: new Date(absenceEndDateTime).getTime(),
+                isAllDayAbsence: this.isAllDayAbsence
+            });
+        } catch (error) {
+            const event = new ShowToastEvent({
+                title: 'Kunne ikke legge til fravær',
+                message: 'Det oppstod en feil, prøv igjen senere',
+                variant: 'error'
+            });
+            this.dispatchEvent(event);
+        }
+        if (this.isEdit) {
             try {
-                this.closeModal();
-                await createAbsenceAndResolveConflicts({
-                    absenceType: this.absenceType,
-                    startTimeInMilliseconds: new Date(absenceStartDateTime).getTime(),
-                    endTimeInMilliseconds: new Date(absenceEndDateTime).getTime(),
-                    isAllDayAbsence: this.isAllDayAbsence
-                });
-            } catch (error) {
+                await deleteAbsence({ recordId: this.currentEventRecordId });
                 const event = new ShowToastEvent({
-                    title: 'Kunne ikke legge til fravær',
-                    message: 'Det oppstod en feil, prøv igjen senere',
-                    variant: 'error'
-                });
-                this.dispatchEvent(event);
-            }
-            if (this.isEdit) {
-                try {
-                    await deleteAbsence({ recordId: this.currentEventRecordId });
-                    const event = new ShowToastEvent({
-                        title: 'Fravær endret',
-                        message: 'Fravær ble endret, og eventuelle konflikter ble løst',
-                        variant: 'success'
-                    });
-                    this.dispatchEvent(event);
-                    this.refreshCalendar(false);
-                } catch {
-                    const event = new ShowToastEvent({
-                        title: 'Det oppsto en feil',
-                        message: 'Feil ved endring av avtale, prøv igjen senere.',
-                        variant: 'error'
-                    });
-                    this.dispatchEvent(event);
-                }
-            } else {
-                const event = new ShowToastEvent({
-                    title: 'Fravær lagt til',
-                    message: 'Fravær lagt til, og eventuelle konflikter ble løst',
+                    title: 'Fravær endret',
+                    message: 'Fravær ble endret, og eventuelle konflikter ble løst',
                     variant: 'success'
                 });
                 this.dispatchEvent(event);
                 this.refreshCalendar(false);
+            } catch {
+                const event = new ShowToastEvent({
+                    title: 'Det oppsto en feil',
+                    message: 'Feil ved endring av avtale, prøv igjen senere.',
+                    variant: 'error'
+                });
+                this.dispatchEvent(event);
             }
-            this.isLoading = false;
-            this.currentEventRecordId = null;
-            this.isAllDayAbsence = false;
-            absenceType = null;
-            this.clearCheckedRadios();
-            this.closeModal();
+        } else {
+            const event = new ShowToastEvent({
+                title: 'Fravær lagt til',
+                message: 'Fravær lagt til, og eventuelle konflikter ble løst',
+                variant: 'success'
+            });
+            this.dispatchEvent(event);
+            this.refreshCalendar(false);
+        }
+        this.isLoading = false;
+        this.currentEventRecordId = null;
+        this.isAllDayAbsence = false;
+        absenceType = null;
+        this.clearCheckedRadios();
+        this.closeModal();
         // }
     }
 }

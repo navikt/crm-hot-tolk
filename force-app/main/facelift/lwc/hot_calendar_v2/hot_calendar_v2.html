@@ -270,20 +270,16 @@
             <div class="modal-body">
                 <!-- Radio buttons -->
                 <h2 class="sub-header-absence">Type fravær</h2>
-                <template for:each={radioWrappers} for:item="radio">
-                    <div key={radio.value}>
-                            <c-radiobuttons
-                                radiobuttons={radio.singleRadioArray}
-                                group-name="testRadioGroup"
-                                onradiobuttonsclick={handleRequestTypeChange}
-                                error-text={errorTextRadio}
-                            ></c-radiobuttons>
-                    </div>
-                </template>
-                
+                <c-radiobuttons
+                    radiobuttons={radiobuttons}
+                    group-name="absenceType"
+                    onradiobuttonsclick={handleRequestTypeChange}
+                    error-text={errorTextRadio}
+                ></c-radiobuttons>
+
                 <template lwc:if={errorText}>
-                        <p class="error-message">{errorText}</p>
-                    </template>
+                    <p class="error-message">{errorText}</p>
+                </template>
 
                 <!-- Checkbox whole day -->
                 <c-checkbox
@@ -294,36 +290,34 @@
                     mobile-style="margin-top: 0.25rem; margin-bottom: 0.25rem"
                 ></c-checkbox>
 
-                    <!-- Whole day hidden container until AllDay is checked-->
-                    <div class="whole-day-hidden-container">
-                        <!-- Start date -->
-                        <lightning-input
+                <!-- Whole day hidden container until AllDay is checked-->
+                <div class="whole-day-hidden-container">
+                    <!-- Start date -->
+                    <lightning-input
                         type={timeFormat}
                         name="input1"
                         lwc:ref="absenceStartDateTimeInput"
                         label={startTimeInputLabel}
                         value={initialAbsenceStart}
                         onchange={handleDateStartChange}
-                        ></lightning-input>
+                    ></lightning-input>
 
-                        <!-- End date -->
-                        <lightning-input
+                    <!-- End date -->
+                    <lightning-input
                         type={timeFormat}
                         name="input2"
                         lwc:ref="absenceEndDateTimeInput"
                         label={endTimeInputLabel}
                         value={initialAbsenceEnd}
                         onchange={handleDateEndChange}
-                        ></lightning-input>
-                    </div>
-          
+                    ></lightning-input>
+                </div>
 
                 <!-- Absence button container -->
                 <div class="button-container">
                     <!-- Info check if user wants to delete -->
                     <template lwc:if={isEdit}>
-
-        <!-- <div class="navno-dekorator alertstripe navno-dekorator alertstripe--advarsel" role="alert">
+                        <!-- <div class="navno-dekorator alertstripe navno-dekorator alertstripe--advarsel" role="alert">
           <img class="navno-dekorator alertstripe__ikon" src={warningicon} alt="" />
           <div class="alertstripe__innhold">
             <div class="typo-normal alertstripe__tekst">
@@ -355,27 +349,15 @@
                             mobile-style="justify-content: center;"
                             onbuttonclick={handleDeleteAbsence}
                         ></c-button>
-                        
-                        <!-- Edit absence button -->
-                        <c-button
+                    </template>
+                    <!-- Register and edit absence button -->
+                    <c-button
                         button-label={registerButtonText}
                         button-styling="primary"
                         desktop-style="width: 6rem; justify-content: center;"
                         mobile-style="justify-content: center;"
                         onbuttonclick={handleOkay}
                     ></c-button>
-                    </template>
-                    <template lwc:else>
-
-                        <!-- Register absence button -->
-                        <c-button
-                        button-label={registerButtonText}
-                        button-styling="primary"
-                        desktop-style="width: 6rem; justify-content: center;"
-                        mobile-style="justify-content: center;"
-                        onbuttonclick={handleOkay}
-                        ></c-button>
-                    </template>
                 </div>
             </div>
         </dialog>
