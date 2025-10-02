@@ -39,7 +39,12 @@ export default class hot_personHighlightPanelTop extends LightningElement {
     }
 
     get formattedPersonInfo() {
-        return [this.personDetails?.age, this.personDetails?.citizenship, this.personDetails?.legalStatus]
+        return [
+            this.personDetails?.age,
+            this.personDetails?.vedtak,
+            this.personDetails?.citizenship,
+            this.personDetails?.legalStatus
+        ]
             .filter((x) => x != null)
             .join(' / ');
     }

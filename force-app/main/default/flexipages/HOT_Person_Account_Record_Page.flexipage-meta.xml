@@ -29,16 +29,6 @@
                 <identifier>hot_warningBannerAccount</identifier>
             </componentInstance>
         </itemInstances>
-        <itemInstances>
-            <componentInstance>
-                <componentInstanceProperties>
-                    <name>relationshipField</name>
-                    <value>CRM_Person__c</value>
-                </componentInstanceProperties>
-                <componentName>hot_personHighlightPanel</componentName>
-                <identifier>c_hot_personHighlightPanel</identifier>
-            </componentInstance>
-        </itemInstances>
         <mode>Replace</mode>
         <name>header</name>
         <type>Region</type>

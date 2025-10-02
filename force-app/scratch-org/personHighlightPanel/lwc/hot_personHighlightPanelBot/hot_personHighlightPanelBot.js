@@ -1,11 +1,54 @@
 import { LightningElement, api } from 'lwc';
+import { NavigationMixin } from 'lightning/navigation';
 
-export default class hot_personHighlightPanelBot extends LightningElement {
+export default class hot_personHighlightPanelBot extends NavigationMixin(LightningElement) {
+    @api recordId;
     @api personDetails;
+    @api modalTitle = '';
 
-    actorId;
+    isModalOpen = false;
+    currentFlow;
     fnr;
 
+    handleFlowButton(event) {
+        this.currentFlow = event.target.dataset.flow;
+        this.modalTitle = `Run ${this.currentFlow}`;
+        this.isModalOpen = true;
+
+        setTimeout(() => {
+            const flow = this.template.querySelector('lightning-flow');
+            if (flow) {
+                flow.startFlow(this.currentFlow, [
+                    {
+                        name: 'recordId',
+                        type: 'String',
+                        value: this.recordId
+                    }
+                ]);
+            }
+        }, 0);
+    }
+
+    closeModal() {
+        this.isModalOpen = false;
+        this.currentFlow = null;
+    }
+
+    handleStatusChange(event) {
+        if (event.detail.status === 'FINISHED' || event.detail.status === 'FINISHED_SCREEN') {
+            this.closeModal();
+        }
+    }
+
+    handleEditRecord() {
+        this[NavigationMixin.Navigate]({
+            type: 'standard__recordPage',
+            attributes: {
+                recordId: this.recordId,
+                actionName: 'edit'
+            }
+        });
+    }
     get isDisabledButtons() {
         return !this.personDetails?.fullName;
     }

@@ -1,7 +1,6 @@
 import { LightningElement, api, track, wire } from 'lwc';
 import { getFieldValue, getRecord } from 'lightning/uiRecordApi';
 import { resolve } from 'c/hot_componentsUtils';
-import { NavigationMixin } from 'lightning/navigation';
 
 import PERSON_ACTORID_FIELD from '@salesforce/schema/Person__c.INT_ActorId__c';
 import PERSON_FIRST_NAME from '@salesforce/schema/Person__c.INT_FirstName__c';
@@ -13,15 +12,11 @@ import AGE_FIELD from '@salesforce/schema/Person__c.CRM_Age__c';
 import CITIZENSHIP_FIELD from '@salesforce/schema/Person__c.INT_Citizenships__c';
 import LEGAL_STATUS_FIELD from '@salesforce/schema/Person__c.INT_LegalStatus__c';
 import MUNICIPALITY_NAME__FIELD from '@salesforce/schema/Person__c.CRM_Municipality__r.Name';
-//import MUNICIPALITY_URL__FIELD from '@salesforce/schema/Person__c.CRM_Municipality__r.HOT_Url__c';
 import DISTRICT_NAME_FIELD from '@salesforce/schema/Person__c.CRM_District__r.Name';
-//import DISTRICT_URL_FIELD from '@salesforce/schema/Person__c.CRM_District__r.HOT_Url__c';
+import VEDTAK_FIELD from '@salesforce/schema/Person__c.HOT_DegreeOfHearingAndVisualImpairment__c';
 
 import NAV_ICONS from '@salesforce/resourceUrl/HOT_navIcons';
 
-import getPersonAccessBadges from '@salesforce/apex/HOT_PersonAccessBadgesController.getPersonAccessBadges';
-import getPersonBadgesAndInfo from '@salesforce/apex/HOT_PersonBadgesController.getPersonBadgesAndInfo';
-import getHistorikk from '@salesforce/apex/HOT_FullmaktController.getHistorikk';
 import getRelatedRecord from '@salesforce/apex/HOT_RecordInfoController.getRelatedRecord';
 import hasAccess from '@salesforce/apex/HOT_AccessErrorController.hasAccess';
 
@@ -36,91 +31,30 @@ const PERSON_FIELDS = [
     CITIZENSHIP_FIELD,
     LEGAL_STATUS_FIELD,
     MUNICIPALITY_NAME__FIELD,
-    //MUNICIPALITY_URL__FIELD,
-    DISTRICT_NAME_FIELD
-    //DISTRICT_URL_FIELD
+    DISTRICT_NAME_FIELD,
+    VEDTAK_FIELD
 ];
 
-export default class hot_personHighlightPanel extends NavigationMixin(LightningElement) {
+export default class hot_personHighlightPanel extends LightningElement {
     @api recordId;
     @api objectApiName;
     @api relationshipField;
-    @api modalTitle = '';
-
-    isModalOpen = false;
-    currentFlow;
-
-    // Handle Flow buttons
-    handleFlowButton(event) {
-        this.currentFlow = event.target.dataset.flow;
-        this.modalTitle = `Run ${this.currentFlow}`;
-        this.isModalOpen = true;
-
-        // Wait for modal to render, then start Flow
-        setTimeout(() => {
-            const flow = this.template.querySelector('lightning-flow');
-            if (flow) {
-                flow.startFlow(this.currentFlow, [
-                    {
-                        name: 'recordId',
-                        type: 'String',
-                        value: this.recordId
-                    }
-                ]);
-            }
-        }, 0);
-    }
-
-    closeModal() {
-        this.isModalOpen = false;
-        this.currentFlow = null;
-    }
-
-    handleStatusChange(event) {
-        if (event.detail.status === 'FINISHED' || event.detail.status === 'FINISHED_SCREEN') {
-            this.closeModal();
-        }
-    }
-
-    handleEditRecord() {
-        this[NavigationMixin.Navigate]({
-            type: 'standard__recordPage',
-            attributes: {
-                recordId: this.recordId,
-                actionName: 'edit'
-            }
-        });
-    }
-
-    @track loadingStates = {
-        getPersonBadgesAndInfo: true,
-        getPersonAccessBadges: true,
-        getHistorikk: true,
-        getRecordPerson: true
-    };
 
     noPerson = false;
-    shownBadge;
     personId;
     wireFields;
-    wiredBadge;
-    historikkWiredData;
-    isLoaded;
     actorId;
     fullName;
     firstName;
     personIdent;
-
-    badges;
-    dateOfDeath;
-    badgeContent;
     errorMessageList = {};
     errorMessages;
-    erNasjonalOppfolging = false;
-
     personDetails = {};
-
     uuAlertText = '';
+
+    @track loadingStates = {
+        getRecordPerson: true
+    };
 
     connectedCallback() {
         this.wireFields = [`${this.objectApiName}.Id`];
@@ -136,129 +70,6 @@ export default class hot_personHighlightPanel extends NavigationMixin(LightningE
         });
     }
 
-    @wire(getPersonBadgesAndInfo, {
-        field: '$relationshipField',
-        parentObject: '$objectApiName',
-        parentRecordId: '$recordId',
-        filterOpenSTO: true
-    })
-    wiredBadgeInfo(value) {
-        this.wiredBadge = value;
-        const { data, error } = value;
-        this.loadingStates.getPersonBadgesAndInfo = !(error || data);
-        this.setWiredBadge();
-    }
-
-    setWiredBadge() {
-        if (this.wiredBadge == null || this.historikkWiredData == null) return;
-        const { data, error } = this.wiredBadge;
-        const { data: historikkData } = this.historikkWiredData;
-
-        if (data) {
-            let badges = [];
-            badges = [...badges, ...data.badges];
-            if (historikkData && historikkData.length > 0) {
-                badges.push({
-                    name: 'historicalGuardianship',
-                    label: 'Historiske fullmakter',
-                    styling: 'slds-m-left_x-small slds-m-vertical_xx-small pointer greyBadge',
-                    clickable: true,
-                    tabindex: '0',
-                    badgeContent: historikkData,
-                    badgeContentType: 'historicalPowerOfAttorney'
-                });
-            }
-            this.badges = badges;
-
-            // this.entitlements = data.entitlements;
-            if (data.errors && data.errors.length > 0) {
-                this.addErrorMessage('setWiredBadge', data.errors);
-            }
-            this.dateOfDeath = data.dateOfDeath;
-            this.setUuAlertText();
-        }
-        if (error) {
-            this.addErrorMessage('setWiredBadge', error);
-            console.error(error);
-        }
-    }
-
-    @wire(getPersonAccessBadges, {
-        field: '$relationshipField',
-        parentObject: '$objectApiName',
-        parentRecordId: '$recordId'
-    })
-    wiredPersonBadgeInfo(value) {
-        this.wiredPersonAccessBadge = value;
-        try {
-            this.setWiredPersonAccessBadge();
-        } catch (error) {
-            console.error('There was problem to fetch data from wire-function: ' + error);
-        } finally {
-            this.loadingStates.getPersonAccessBadges = false;
-        }
-    }
-
-    @wire(getHistorikk, {
-        recordId: '$recordId',
-        objectApiName: '$objectApiName'
-    })
-    wiredHistorikk(value) {
-        this.historikkWiredData = value;
-        const { data, error } = this.historikkWiredData;
-        // data is null if there is no historic data
-        this.loadingStates.getHistorikk = !(error || data || data === null);
-        if (data) {
-            this.setWiredBadge();
-        } else if (error) {
-            this.addErrorMessage('getHistorikk', error);
-            console.error(error);
-        }
-    }
-
-    setWiredPersonAccessBadge() {
-        const { data, error } = this.wiredPersonAccessBadge;
-
-        if (data) {
-            this.isNavEmployee = data.some((element) => element.name === 'isNavEmployee');
-            this.isConfidential = data.some((element) => element.name === 'isConfidential');
-            this.personAccessBadges = data;
-            this.setUuAlertText();
-        } else if (error) {
-            this.addErrorMessage('setWiredPersonAccessBadge', error);
-            console.error(error);
-        }
-    }
-
-    onKeyPressHandler(event) {
-        if (event.key === 'Enter' || event.key === ' ') {
-            this.onClickHandler(event);
-        }
-    }
-
-    onClickHandler(event) {
-        const selectedBadge = event.target.dataset.id;
-        const cmp = this.template.querySelector(
-            `lightning-layout-item[data-id="${selectedBadge}"] c-hot_person-panel-badge-content`
-        );
-        if (cmp == null) return;
-        this.handleSelectedBadge(cmp.dataset.id, selectedBadge);
-    }
-
-    handleSelectedBadge(selectedBadge, badge) {
-        if (this.shownBadge === selectedBadge) {
-            this.closeBadge();
-            return;
-        }
-        this.shownBadge = selectedBadge;
-        this.setExpanded(badge);
-    }
-
-    closeBadge() {
-        this.shownBadge = '';
-        this.setExpanded(null);
-    }
-
     capitalizeFirstLetter(str) {
         if (!str || typeof str !== 'string') {
             return '';
@@ -271,19 +82,6 @@ export default class hot_personHighlightPanel extends NavigationMixin(LightningE
             return str;
         }
         return str.replace(/_/g, ' ').replace(' eller enkemann', '/-mann');
-    }
-
-    setExpanded(selectedBadge) {
-        const badges = this.template.querySelectorAll('.slds-badge');
-        badges.forEach((badge) => {
-            if (badge instanceof HTMLElement && badge.dataset.id === selectedBadge && badge.ariaExpanded === 'false') {
-                // eslint-disable-next-line @locker/locker/distorted-element-set-attribute
-                badge.setAttribute('aria-expanded', 'true');
-            } else if (badge.role === 'button') {
-                // eslint-disable-next-line @locker/locker/distorted-element-set-attribute
-                badge.setAttribute('aria-expanded', 'false');
-            }
-        });
     }
 
     getRelatedRecordId(relationshipField, objectApiName) {
@@ -327,9 +125,8 @@ export default class hot_personHighlightPanel extends NavigationMixin(LightningE
                 citizenship: this.capitalizeFirstLetter(getFieldValue(data, CITIZENSHIP_FIELD)),
                 legalStatus: getFieldValue(data, LEGAL_STATUS_FIELD),
                 municipalityName: getFieldValue(data, MUNICIPALITY_NAME__FIELD),
-                //municipalityUrl: getFieldValue(data, MUNICIPALITY_URL__FIELD),
-                districtName: getFieldValue(data, DISTRICT_NAME_FIELD)
-                //districtUrl: getFieldValue(data, DISTRICT_URL_FIELD)
+                districtName: getFieldValue(data, DISTRICT_NAME_FIELD),
+                vedtak: getFieldValue(data, VEDTAK_FIELD)
             };
             this.loadingStates.getRecordPerson = false;
             this.handleBackgroundColor();
@@ -433,7 +230,6 @@ export default class hot_personHighlightPanel extends NavigationMixin(LightningE
 
     get isLoading() {
         return Object.keys(this.loadingStates).some((key) => this.loadingStates[key]);
-        //return Object.values(this.loadingStates).some((isLoading) => isLoading);
     }
 
     get isPersonDetailsLoaded() {
