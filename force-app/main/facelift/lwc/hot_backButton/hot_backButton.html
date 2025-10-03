@@ -1,20 +1,26 @@
 <template>
-    <div>
+    <div class="button-container">
         <button
-            class="back-button"
+            class="navigation-button"
             onclick={goBack}
-            onkeydown={handleKeyDown}
+            onkeydown={handleKeyDownHome}
             type="button"
             aria-label={computedAriaLabel}
             title={computedAriaLabel}
         >
-            <lightning-icon
-                icon-name="utility:back"
-                alternative-text=""
-                class="back-icon"
-                size="x-small"
-                aria-hidden="true"
-            ></lightning-icon>
+            <img src={homeIcon} alt="" aria-hidden="true" />
+            <span class="back-label">Forsiden</span>
+            <span class="slds-assistive-text">til forsiden</span>
+        </button>
+        <button
+            class="navigation-button"
+            onclick={goBack}
+            onkeydown={handleKeyDownBack}
+            type="button"
+            aria-label={computedAriaLabel}
+            title={computedAriaLabel}
+        >
+            <img src={leftArrowIcon} alt="" aria-hidden="true" />
             <span class="back-label">Tilbake</span>
             <span class="slds-assistive-text">til {computedDestinationLabel}</span>
         </button>

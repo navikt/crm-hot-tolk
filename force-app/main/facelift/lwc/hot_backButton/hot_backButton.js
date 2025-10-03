@@ -1,5 +1,6 @@
 import { LightningElement, api } from 'lwc';
 import { NavigationMixin } from 'lightning/navigation';
+import icons from '@salesforce/resourceUrl/ikoner';
 
 const PAGE_LABELS = {
     home: 'Hjem',
@@ -19,6 +20,8 @@ function pageLabel(name) {
 }
 
 export default class Hot_backButton extends NavigationMixin(LightningElement) {
+    homeIcon = icons + '/Home/Home.svg';
+    leftArrowIcon = icons + '/Left/Left.svg';
     @api ariaLabel;
     @api destinationLabel;
     @api fallbackUrl;
@@ -131,12 +134,15 @@ export default class Hot_backButton extends NavigationMixin(LightningElement) {
         }
     };
 
-    handleKeyDown = (e) => {
+    handleKeyDownBack = (e) => {
         if (e.key === 'Enter' || e.key === ' ' || e.keyCode === 13 || e.keyCode === 32) {
             e.preventDefault();
             this.goBack();
         }
     };
+    handleKeyDownHome() {
+        this.navigateHome();
+    }
 
     navigateHome() {
         this[NavigationMixin.Navigate]({
