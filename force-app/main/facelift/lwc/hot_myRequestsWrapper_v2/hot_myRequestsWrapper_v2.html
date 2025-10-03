@@ -1,0 +1,314 @@
+<template>
+    <main class="mainContent" role="main" aria-label="Bestillinger">
+        <div class="mine-bestillinger-wrapper">
+            <div class="back-button-info">
+                <c-hot_back-button is-series={isSeries}></c-hot_back-button>
+            </div>
+            <h1 class="header">{headerToShow}</h1>
+            <div class="header-buttons">
+                <c-button
+                    if:false={urlStateParameters.id}
+                    button-label="Ny bestilling"
+                    aria-label="Ny bestilling"
+                    button-styling="primary"
+                    class="button-padding"
+                    desktop-style="width: 7em; height: 3em; justify-content: center"
+                    mobile-style="justify-content: center; width: 7em; min-height: 2.5em;"
+                    onbuttonclick={goToNewRequest}
+                ></c-button>
+                <c-list-filters-button
+                    if:false={isWorkOrderDetails}
+                    header="Filtrer søket"
+                    filters={filters}
+                    onapplyfilter={applyFilter}
+                    ongetfilteredrecordslength={sendFilteredRecordsLength}
+                ></c-list-filters-button>
+            </div>
+            <div lwc:if={isRequestDetails}>
+                <div class="record-details-container">
+                    <p>
+                        <strong>Gjelder periode: </strong><span>{requestSeriesStartDate} - {requestSeriesEndDate}</span>
+                    </p>
+                    <br />
+                    <p><strong>Adresse: </strong><span>{requestAddressToShow}</span></p>
+                    <p lwc:if={requestInterpretationAddressToShow}>
+                        <strong>Oppmøteadresse: </strong><span>{requestInterpretationAddressToShow}</span>
+                    </p>
+                    <br />
+                    <p lwc:if={request.OwnerName__c}><strong>Sentral: </strong><span>{request.OwnerName__c}</span></p>
+                    <p><strong>Bestillingsnummer: </strong><span>{request.Name}</span></p>
+                    <p lwc:if={request.OrdererName__c}>
+                        <strong>Bestiller: </strong><span>{request.OrdererName__c}</span>
+                    </p>
+                    <p lwc:if={request.UserName__c}>
+                        <strong>Tolkebrukers navn: </strong><span>{request.UserName__c}</span>
+                    </p>
+                    <p>
+                        <strong>Varsel ved statusendring på bestillingen: </strong
+                        ><span>{isOrdererWantStatusUpdateOnSMS}</span>
+                    </p>
+                    <br />
+                    <p lwc:if={request.UserPreferredInterpreter__c}>
+                        <strong>Ønsket tolk: </strong><span>{request.UserPreferredInterpreter__c}</span>
+                    </p>
+                    <p lwc:if={request.UserInterpretationMethod__c}>
+                        <strong>Foretrukket tolkemetode: </strong><span>{request.UserInterpretationMethod__c}</span>
+                    </p>
+                    <p lwc:if={request.InterpretationMethodName__c}>
+                        <strong>Tolkemetode: </strong><span>{request.InterpretationMethodName__c}</span>
+                    </p>
+                    <p lwc:if={request.AssignmentType__c}>
+                        <strong>Anledning: </strong><span>{request.AssignmentType__c}</span>
+                    </p>
+                    <br />
+                    <p lwc:if={request.CompanyName__c}>
+                        <strong>Virksomhet: </strong><span>{request.CompanyName__c}</span>
+                    </p>
+                    <p lwc:if={request.PaymentLiability__c}>
+                        <strong>Betalingsansvar: </strong><span>{request.PaymentLiability__c}</span>
+                    </p>
+                    <br lwc:if={request.Description__c} />
+                    <p lwc:if={request.Description__c}>
+                        <strong>Tilleggsopplysninger: </strong><span>{request.Description__c}</span>
+                    </p>
+                </div>
+                <c-record-files-without-sharing
+                    record-id={request.Id}
+                    is-get-all={isGetAllFiles}
+                    is-delete-option="true"
+                    title="Vedlegg"
+                    delete-file-on-button-click="true"
+                ></c-record-files-without-sharing>
+                <br />
+            </div>
+            <div lwc:if={isWorkOrderDetails}>
+                <div class="record-details-container">
+                    <p><strong>Fra dato: </strong><span>{workOrderStartDate}</span></p>
+                    <p><strong>Til dato: </strong><span>{workOrderEndDate}</span></p>
+                    <br />
+                    <p><strong>Adresse: </strong><span>{workOrder.HOT_AddressFormated__c}</span></p>
+                    <p lwc:if={workOrderInterpretationAddressToShow}>
+                        <strong>Oppmøteadresse: </strong><span>{workOrderInterpretationAddressToShow}</span>
+                    </p>
+                    <br />
+                    <p><strong>Status: </strong><span>{workOrder.HOT_ExternalWorkOrderStatus__c}</span></p>
+                    <br />
+                    <p lwc:if={request.OwnerName__c}><strong>Sentral: </strong><span>{request.OwnerName__c}</span></p>
+                    <p><strong>Bestillingsnummer: </strong><span>{workOrder.HOT_RequestName__c}</span></p>
+                    <p lwc:if={request.OrdererName__c}>
+                        <strong>Bestiller: </strong><span>{request.OrdererName__c}</span>
+                    </p>
+                    <p lwc:if={request.UserName__c}>
+                        <strong>Tolkebrukers navn: </strong><span>{request.UserName__c}</span>
+                    </p>
+                    <p>
+                        <strong>Varsel ved statusendring på bestillingen: </strong
+                        ><span>{isOrdererWantStatusUpdateOnSMS}</span>
+                    </p>
+                    <p><strong>Sende varsler til bruker: </strong><span>{IsNotNotifyAccount}</span></p>
+                    <br />
+                    <p lwc:if={request.UserPreferredInterpreter__c}>
+                        <strong>Ønsket tolk: </strong><span>{request.UserPreferredInterpreter__c}</span>
+                    </p>
+                    <p lwc:if={workOrder.HOT_Interpreters__c}>
+                        <strong>{interpreter}: </strong><span>{workOrder.HOT_Interpreters__c}</span>
+                    </p>
+                    <p lwc:if={request.UserInterpretationMethod__c}>
+                        <strong>Foretrukket tolkemetode: </strong><span>{request.UserInterpretationMethod__c}</span>
+                    </p>
+                    <p lwc:if={request.InterpretationMethodName__c}>
+                        <strong>Tolkemetode: </strong><span>{request.InterpretationMethodName__c}</span>
+                    </p>
+                    <p lwc:if={request.AssignmentType__c}>
+                        <strong>Anledning: </strong><span>{request.AssignmentType__c}</span>
+                    </p>
+                    <br />
+                    <p lwc:if={request.CompanyName__c}>
+                        <strong>Virksomhet: </strong><span>{request.CompanyName__c}</span>
+                    </p>
+                    <p lwc:if={request.PaymentLiability__c}>
+                        <strong>Betalingsansvar: </strong><span>{request.PaymentLiability__c}</span>
+                    </p>
+                    <br lwc:if={request.Description__c} />
+                    <p lwc:if={request.Description__c}>
+                        <strong>Tilleggsopplysninger: </strong><span>{request.Description__c}</span>
+                    </p>
+                </div>
+                <c-record-files-without-sharing
+                    record-id={workOrder.Id}
+                    is-get-all={isGetAllFiles}
+                    is-delete-option="true"
+                    title="Vedlegg"
+                    delete-file-on-button-click="true"
+                ></c-record-files-without-sharing>
+                <br />
+            </div>
+            <!-- Buttons Section -->
+            <div class="buttonRow" lwc:if={isRequestOrWorkOrderDetails}>
+                <c-button
+                    button-label={editButtonLabel}
+                    button-styling="secondary"
+                    style="padding-right: 1vw; padding-bottom: 1vw"
+                    desktop-style="width: 8rem; justify-content: center; border-radius: 6px"
+                    mobile-style="width: 8rem; justify-content: center; border-radius: 6px"
+                    onbuttonclick={editOrder}
+                    disabled={isRequestEditButtonDisabled}
+                ></c-button>
+                <c-button
+                    button-label={copyButtonLabel}
+                    button-styling="secondary"
+                    style="padding-right: 1vw; padding-bottom: 1vw"
+                    desktop-style="width: 8rem; justify-content: center; border-radius: 6px"
+                    mobile-style="width: 8rem; justify-content: center; border-radius: 6px"
+                    onbuttonclick={cloneOrder}
+                ></c-button>
+                <c-button
+                    button-label={cancelButtonLabel}
+                    button-styling="secondary"
+                    style="padding-right: 1vw; padding-bottom: 1vw"
+                    desktop-style="width: 8rem; justify-content: center; border-radius: 6px"
+                    mobile-style="width: 8rem; justify-content: center; border-radius: 6px"
+                    onbuttonclick={cancelOrder}
+                    disabled={isRequestCancelButtonDisabled}
+                ></c-button>
+                <c-button
+                    button-label="Legg til filer"
+                    button-styling="primary"
+                    style="padding-right: 1vw; padding-bottom: 1vw"
+                    desktop-style="width: 8rem; justify-content: center; border-radius: 6px"
+                    mobile-style="width: 8rem; justify-content: center; border-radius: 6px"
+                    onbuttonclick={addFiles}
+                    disabled={isRequestAddFilesButtonDisabled}
+                ></c-button>
+                <c-button
+                    button-label="Samtale med formidler"
+                    button-styling="primary"
+                    style="padding-right: 1vw; padding-bottom: 1vw"
+                    desktop-style="justify-content: center; border-radius: 6px"
+                    mobile-style="justify-content: center; border-radius: 6px"
+                    onbuttonclick={goToThread}
+                    disabled={isThreadButtonDisabled}
+                    aria-disabled={isThreadButtonDisabled}
+                ></c-button>
+                <c-button
+                    lwc:if={isUserAccount}
+                    button-label="Samtale med tolk"
+                    button-styling="primary"
+                    style="padding-right: 1vw; padding-bottom: 1vw"
+                    desktop-style="justify-content: center; border-radius: 6px"
+                    mobile-style="justify-content: center; border-radius: 6px"
+                    onbuttonclick={goToThreadInterpreter}
+                    disabled={isInterpreterThreadButtonDisabled}
+                    aria-disabled={isInterpreterThreadButtonDisabled}
+                ></c-button>
+            </div>
+            <!-- Common Table Section -->
+            <div class="record-details-container" if:false={noWorkOrders}>
+                <c-hot_common-table-requests
+                    if:false={isWorkOrderDetails}
+                    columns={columns}
+                    records={records}
+                    label-map={labelMap}
+                    aria-label="Bestillingstabell"
+                    onrowclick={goToRecordDetails}
+                ></c-hot_common-table-requests>
+            </div>
+            <div lwc:if={noWorkOrders} style="text-align: center">
+                <br />
+                <p>Du har ingen bestillinger. Når du sender inn en ny bestilling vil den vises her.</p>
+                <br />
+            </div>
+            <div lwc:if={noFilteredRecords} style="text-align: center">
+                <br />
+                <p>
+                    Det finnes ingen bestillinger med denne filtreringen. Du kan endre filteret for å se andre
+                    bestillinger
+                </p>
+                <br />
+            </div>
+        </div>
+    </main>
+
+    <!-- Upload Modal Section -->
+    <c-alertdialog
+        header={modalHeader}
+        content={modalContent}
+        desktop-style="text-align: center; white-space: pre-line; width: 50%"
+        mobile-style="text-align: center; white-space: pre-line; width: 100%; max-width: 100%;"
+        center-buttons="true"
+        no-cancel-button={noCancelButton}
+        onbuttonclick={handleAlertDialogClick}
+    >
+    </c-alertdialog>
+    <div
+        class="ReactModal__Overlay ReactModal__Overlay--after-open modal__overlay hidden"
+        style="z-index: 9999; background-color: rgba(38, 38, 38, 0.7)"
+        tabindex="-1"
+        aria-modal="true"
+        role="dialog"
+        aria-labelledby="details-header-id"
+    >
+        <div
+            class="ReactModal__Content ReactModal__Content--after-open comments-dialog-container"
+            role="dialog"
+            aria-labelledby="details-header-id"
+        >
+            <div class="loader hidden"></div>
+            <div lwc:if={showUploadFilesComponent}>
+                <h2 style="font-size: 1.25rem; text-align: center">Legg ved filer til denne bestillingen</h2>
+                <br />
+                <div class="fileUploader">
+                    <div lwc:if={isOwnRequest}>
+                        <lightning-file-upload
+                            record-id={uploadTargetId}
+                            name="fileUploader"
+                            class="file-selector-large"
+                            label="Ved å laste opp filer er jeg klar over at filene vil bli delt med formidler og tolken(e) jeg får. Opplastingen vil starte umiddelbart. Maks filstørelse: 2 GB."
+                            title="Maks filstørrelse: 2 GB."
+                            onuploadfinished={handleUploadFinished}
+                            multiple
+                        >
+                        </lightning-file-upload>
+                    </div>
+                    <div if:false={isOwnRequest}>
+                        <lightning-file-upload
+                            record-id={uploadTargetId}
+                            file-field-name="HOT_RelatedRecordId_fileupload__c"
+                            file-field-value={uploadTargetId}
+                            name="fileUploader"
+                            class="file-selector-large"
+                            label="Ved å laste opp filer er jeg klar over at filene vil bli delt med formidler og tolken(e) jeg får. Opplastingen vil starte umiddelbart. Maks filstørelse: 2 GB."
+                            title="Maks filstørrelse: 2 GB."
+                            onuploadfinished={handleUploadFinished}
+                            multiple
+                        >
+                        </lightning-file-upload>
+                    </div>
+                    <br />
+                    <p class="typo-undertittel">{fileUploadMessage}</p>
+                </div>
+            </div>
+            <br />
+            <br />
+            <div style="text-align: center" aria-live="polite">
+                <c-button
+                    lwc:if={hasFiles}
+                    button-styling="primary"
+                    button-label="Lagre"
+                    onbuttonclick={uploadFilesOnSave}
+                    style="padding-right: 1vw"
+                    desktop-style="width: 8rem; justify-content: center; border-radius: 6px"
+                    mobile-style="width: 8rem; justify-content: center; border-radius: 6px"
+                ></c-button>
+                <c-button
+                    lwc:if={showCancelUploadButton}
+                    button-styling="secondary"
+                    button-label="Lukk"
+                    onbuttonclick={cancelUploadFiles}
+                    desktop-style="width: 8rem; justify-content: center; border-radius: 6px"
+                    mobile-style="width: 8rem; justify-content: center; border-radius: 6px"
+                ></c-button>
+            </div>
+        </div>
+    </div>
+</template>
