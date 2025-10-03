@@ -322,22 +322,11 @@ public without sharing class HOT_MessageHelper {
     @AuraEnabled(cacheable=false)
     public static Thread__c createThreadInterpreter(Id recordId) {
         User currentUser = [SELECT Id, AccountId FROM User WHERE Id = :UserInfo.getUserId()];
-        /*
-        List<ServiceResource> serviceResourceList = [
-            SELECT Id, HOT_IsEmployedInterpreter__c
-            FROM ServiceResource
-            WHERE RelatedRecordId = :currentUser.Id
-        ];
-        */
+
         Set<Id> srIdList = new Map<ID, ServiceResource>(
                 [SELECT Id, HOT_IsEmployedInterpreter__c FROM ServiceResource WHERE RelatedRecordId = :currentUser.Id]
             )
-            .keySet(); //new Set<Id>();
-        /*
-        for (ServiceResource sr : serviceResourceList) {
-            srIdList.add(sr.Id);
-        }
-        */
+            .keySet();
         Thread__c thread = new Thread__c();
         thread.RecordTypeId = HOT_MessageHelper.getHOTThreadRecordType();
         String objectType = String.valueOf(recordId.getsobjecttype());
