@@ -50,6 +50,18 @@
     margin-bottom: 0.5rem;
     margin-left: 0%;
 }
+.navds-div {
+    display: inline-flex;
+    background-color: #525962;
+    color: #ffffff;
+    margin: 0;
+    text-align: center;
+    text-decoration: none;
+    border-radius: 2px;
+    min-height: 48px;
+    align-items: center;
+    padding: calc(0.75rem - 2px) 0.75rem;
+}
 
 .header-buttons {
     display: flex;

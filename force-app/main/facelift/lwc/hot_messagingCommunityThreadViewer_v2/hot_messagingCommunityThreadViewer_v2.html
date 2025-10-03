@@ -9,15 +9,7 @@
 
                 <!-- Conversation with -->
                 <div class="header-buttons">
-                    <c-button
-                        button-label={threadType}
-                        type="button"
-                        readonly
-                        aria-disabled="true"
-                        aria-label={threadType}
-                        desktop-style="background-color: #525962; color: #fffff; pointer-events: none;"
-                        mobile-style="background-color: #525962; color: #fffff; pointer-events: none;"
-                    ></c-button>
+                    <div class="navds-div" tabindex="0" aria-label={threadType}>{threadType}</div>
 
                     <c-button
                         button-label="Vis personer i samtalen"
