@@ -73,7 +73,6 @@
                     </p>
                 </div>
                 <c-record-files-without-sharing
-                    lwc:if={isSeries}
                     record-id={request.Id}
                     is-get-all={isGetAllFiles}
                     is-delete-option="true"
@@ -136,8 +135,7 @@
                     </p>
                 </div>
                 <c-record-files-without-sharing
-                    if:false={isSeries}
-                    record-id={request.Id}
+                    record-id={workOrder.Id}
                     is-get-all={isGetAllFiles}
                     is-delete-option="true"
                     title="Vedlegg"
@@ -262,7 +260,7 @@
                 <div class="fileUploader">
                     <div lwc:if={isOwnRequest}>
                         <lightning-file-upload
-                            record-id={recordId}
+                            record-id={uploadTargetId}
                             name="fileUploader"
                             class="file-selector-large"
                             label="Ved å laste opp filer er jeg klar over at filene vil bli delt med formidler og tolken(e) jeg får. Opplastingen vil starte umiddelbart. Maks filstørelse: 2 GB."
@@ -274,8 +272,9 @@
                     </div>
                     <div if:false={isOwnRequest}>
                         <lightning-file-upload
+                            record-id={uploadTargetId}
                             file-field-name="HOT_RelatedRecordId_fileupload__c"
-                            file-field-value={getRelatedRecord}
+                            file-field-value={uploadTargetId}
                             name="fileUploader"
                             class="file-selector-large"
                             label="Ved å laste opp filer er jeg klar over at filene vil bli delt med formidler og tolken(e) jeg får. Opplastingen vil starte umiddelbart. Maks filstørelse: 2 GB."
