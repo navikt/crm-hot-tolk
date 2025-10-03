@@ -134,13 +134,7 @@ export default class Hot_backButton extends NavigationMixin(LightningElement) {
         }
     };
 
-    handleKeyDownBack = (e) => {
-        if (e.key === 'Enter' || e.key === ' ' || e.keyCode === 13 || e.keyCode === 32) {
-            e.preventDefault();
-            this.goBack();
-        }
-    };
-    handleKeyDownHome() {
+    goBackHome() {
         this.navigateHome();
     }
 
