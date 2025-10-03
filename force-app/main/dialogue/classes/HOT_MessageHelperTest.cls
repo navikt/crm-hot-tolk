@@ -1411,7 +1411,7 @@ private class HOT_MessageHelperTest {
         System.runAs(u) {
             HOT_MessageHelper.markAsReadByNav(t.Id);
         }
-            Test.stopTest();
+        Test.stopTest();
         Message__c got = [
             SELECT CRM_Read_By_Nav__c, CRM_Read_By_Nav_Datetime__c
             FROM Message__c
@@ -1419,37 +1419,22 @@ private class HOT_MessageHelperTest {
             LIMIT 1
         ];
         System.assertNotEquals(null, got, 'Message should still exist after helper call.');
-                System.assertNotEquals(null, got.CRM_Read_By_Nav_Datetime__c, 'Timestamp should be set when marked.');
+        System.assertNotEquals(null, got.CRM_Read_By_Nav_Datetime__c, 'Timestamp should be set when marked.');
     }
     @IsTest
     static void markAsReadByNavTestAccSA() {
-        Account acc = new Account();
-        acc.Name = 'Newly created account';
-        insert acc;
-
-        WorkType workType = HOT_TestDataFactory.createWorkType();
-        insert workType;
-
-        HOT_Request__c request = HOT_TestDataFactory.createRequest('TEST', workType);
-        insert request;
-
-        WorkOrder workOrder = HOT_TestDataFactory.createWorkOrder(request, workType);
-        workOrder.AccountId = acc.Id;
-        insert workOrder;
-
-        WorkOrderLineItem workOrderLineItem = HOT_TestDataFactory.createWorkOrderLineItem(workOrder, workType);
-        insert workOrderLineItem;
-
-        User currentUser = [SELECT Id, AccountId FROM User WHERE Id = :UserInfo.getUserId()];
-        ServiceResource resource = HOT_TestDataFactory.createServiceResource(currentUser.Id);
-        resource.AccountId = acc.Id;
-        insert resource;
-
-        ServiceAppointment sa = HOT_TestDataFactory.createServiceAppointment(workOrderLineItem);
-        sa.HOT_Request__c = request.Id;
-        sa.Subject = 'Hei';
-        sa.HOT_Account__c = acc.Id;
-        insert sa;
+        ServiceAppointment sa = [
+            SELECT Id, HOT_Account__c, HOT_WorkOrderLineItem__r.WorkOrderId
+            FROM ServiceAppointment
+            WHERE Subject = 'TEST'
+            LIMIT 1
+        ];
+        ServiceResource resource = [
+            SELECT Id, AccountId
+            FROM ServiceResource
+            WHERE Account.Name = 'Test account'
+            LIMIT 1
+        ];
 
         Thread__c t = HOT_TestDataFactory.createThread();
         t.CRM_Related_Object__c = resource.Id;
@@ -1466,7 +1451,9 @@ private class HOT_MessageHelperTest {
         insert m;
 
         Test.startTest();
-        HOT_MessageHelper.markAsReadByNav(t.Id);
+        System.runAs([SELECT Id FROM User WHERE Name = 'user' LIMIT 1][0]) {
+            HOT_MessageHelper.markAsReadByNav(t.Id);
+        }
         Test.stopTest();
         Message__c msg = [SELECT CRM_Read_By_Nav__c FROM Message__c WHERE CRM_Thread__c = :t.Id LIMIT 1];
         System.assertEquals(true, msg.CRM_Read_By_Nav__c, 'Should be true');
