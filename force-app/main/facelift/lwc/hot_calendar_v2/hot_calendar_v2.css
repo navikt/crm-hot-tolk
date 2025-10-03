@@ -334,6 +334,10 @@ dialog.modal-container .close-btn:hover {
         position: relative;
     }
 
+    .fc-button {
+        margin-bottom: 0.5rem;;
+    }
+
     dialog.modal-container {
         width: 100%;
         max-width: 100%;

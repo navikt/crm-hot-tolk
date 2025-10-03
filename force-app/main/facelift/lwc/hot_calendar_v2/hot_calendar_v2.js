@@ -9,8 +9,6 @@ import { formatDatetimeinterval, formatDatetime } from 'c/datetimeFormatterNorwe
 import icons from '@salesforce/resourceUrl/ikoner';
 import icons2 from '@salesforce/resourceUrl/icons';
 
-import Hot_Calendar_Absence_Modal from 'c/hot_calendar_absence_modal';
-
 import HOT_ConfirmationModal from 'c/hot_confirmationModal';
 import retractAvailability from '@salesforce/apex/HOT_WageClaimListController.retractAvailability';
 import getWageClaimDetails from '@salesforce/apex/HOT_WageClaimListController.getWageClaimDetails';
@@ -25,10 +23,7 @@ import createThread from '@salesforce/apex/HOT_MessageHelper.createThread';
 import createThreadInterpreter from '@salesforce/apex/HOT_MessageHelper.createThreadInterpreter';
 import createThreadInterpreters from '@salesforce/apex/HOT_MessageHelper.createThreadInterpreters';
 
-// Absence imports WIP
-import LightningModal from 'lightning/modal';
-import ConfimationModal from 'c/hot_calendar_absence_modal_confirmation';
-import DeleteConfimationModal from 'c/hot_calendar_absence_modal_confirmation_delete';
+// Absence imports
 import getConflictsForTimePeriod from '@salesforce/apex/HOT_FreelanceAbsenceController.getConflictsForTimePeriod';
 import createAbsenceAndResolveConflicts from '@salesforce/apex/HOT_FreelanceAbsenceController.createAbsenceAndResolveConflicts';
 import deleteAbsence from '@salesforce/apex/HOT_FreelanceAbsenceController.deleteAbsence';
@@ -54,6 +49,7 @@ export default class LibsFullCalendarV2 extends NavigationMixin(LightningElement
     cachedEventIds = new Set();
     error;
     calendar;
+    errorText = '';
 
     @api records;
     @api recordId;
@@ -83,12 +79,8 @@ export default class LibsFullCalendarV2 extends NavigationMixin(LightningElement
     // Wageclaim
     wcIsNotRetractable = false;
     wcIsDisabledGoToThread = false;
-
-    noCancelButton = false;
-    modalHeader = 'Varsel';
-    modalContent =
+    modalWageContent =
         'Er du sikker på at du vil fjerne tilgjengeligheten din for dette tidspunktet? Du vil da ikke ha krav på lønn.';
-    confirmButtonLabel = 'Ja';
 
     isSADetails = false;
     hasAccess = false;
@@ -456,6 +448,11 @@ export default class LibsFullCalendarV2 extends NavigationMixin(LightningElement
         dialogAbsence.close();
 
         this.isInformationModalOpen = false;
+        this.isAlertAbsenceEdit = false;
+        this.isNotRetractableDelete = false;
+        this.isNotRetractableEdit = false;
+        this.isAlertWageClaimEdit = false;
+
         this.dispatchEvent(new CustomEvent('closemodal'));
     }
 
@@ -469,20 +466,19 @@ export default class LibsFullCalendarV2 extends NavigationMixin(LightningElement
         window.open('http://maps.apple.com/?q=' + this.serviceAppointment.HOT_AddressFormated__c);
     }
 
+    isAlertWageClaimEdit = false;
+    retractWageClaimClicked() {
+        this.isAlertWageClaimEdit = true;
+    }
+
+    retractWageClaimCancel() {
+        this.isAlertWageClaimEdit = false;
+    }
+
     async showModalRetract() {
-        this.closeModal();
-        const result = await HOT_ConfirmationModal.open({
-            size: 'small',
-            headline: 'Varsel',
-            message:
-                'Er du sikker på at du vil fjerne tilgjengeligheten din for dette tidspunktet? Du vil da ikke ha krav på lønn.',
-            primaryLabel: 'Ja',
-            showSecondButton: true,
-            secondaryLabel: 'Avbryt'
-        });
-        if (result === 'primary') {
-            this.retractAvailability();
-        }
+        this.isAlertWageClaimEdit = false;
+
+        this.retractAvailability();
         this.showInformationModalDetails();
     }
 
@@ -1168,21 +1164,6 @@ export default class LibsFullCalendarV2 extends NavigationMixin(LightningElement
             this.initialAbsenceEnd = initialAbsenceEnd;
 
             this.currentEventRecordId = event.extendedProps.recordId;
-
-            console.log(
-                'Existing event:\n' +
-                    'Absence type: ' +
-                    this.absenceType +
-                    '\n' +
-                    'Initial absence start event: ' +
-                    this.initialAbsenceStart +
-                    '\n' +
-                    'Initial absence end event: ' +
-                    this.initialAbsenceEnd +
-                    '\n' +
-                    'is all day absence: ' +
-                    this.isAllDayAbsence
-            );
         } else {
             const now = new Date();
             const startTime = new Date(now.getTime() + (60 - now.getMinutes()) * 60000);
@@ -1196,21 +1177,6 @@ export default class LibsFullCalendarV2 extends NavigationMixin(LightningElement
             this.initialAbsenceEnd = initialAbsenceEnd;
             this.isAllDayAbsence = false;
             this.timeFormat = 'datetime';
-
-            console.log(
-                'New event:\n' +
-                    'Absence type: ' +
-                    this.absenceType +
-                    '\n' +
-                    'Initial absence start no event: ' +
-                    this.initialAbsenceStart +
-                    '\n' +
-                    'Initial absence end no event: ' +
-                    this.initialAbsenceEnd +
-                    '\n' +
-                    'is all day absence: ' +
-                    this.isAllDayAbsence
-            );
         }
         this.syncAllDayCheckbox();
         this.applyAbsenceTypeToRadios();
@@ -1356,9 +1322,26 @@ export default class LibsFullCalendarV2 extends NavigationMixin(LightningElement
         this.initialAbsenceEnd = event.detail.value;
     }
 
-    isNotRetractable = false;
-    retractAvailability() {
-        this.isNotRetractable = true;
+    isAlertAbsenceEdit = false;
+    isNotRetractableDelete = false;
+    isNotRetractableEdit = false;
+    alertAbsenceBannerText = '';
+    retractDeleteAbsense() {
+        this.alertAbsenceBannerText = 'Er du sikker på at du vil slette dette fraværet?';
+        this.isAlertAbsenceEdit = true; 
+        this.isNotRetractableDelete = true;
+    }
+
+    retractAbsenseCancel() {
+        this.isAlertAbsenceEdit = false;
+        this.isNotRetractableDelete = false;
+        this.isNotRetractableEdit = false;
+    }
+
+    retractEditAbsense() {
+        this.alertAbsenceBannerText = 'Har du lagt inn de riktige opplysningene før du lagrer endringen?';
+        this.isAlertAbsenceEdit = true; 
+        this.isNotRetractableEdit = true;
     }
 
     async handleDeleteAbsence() {
@@ -1368,7 +1351,6 @@ export default class LibsFullCalendarV2 extends NavigationMixin(LightningElement
                 throw new Error('No recordId found for event');
             }
 
-            // this.isInformationModalOpen = false;
             this.closeModal();
             await deleteAbsence({ recordId: this.currentEventRecordId });
 
@@ -1392,26 +1374,21 @@ export default class LibsFullCalendarV2 extends NavigationMixin(LightningElement
             );
         }
 
+        this.isAlertAbsenceEdit = false;
+        this.isNotRetractableDelete = false;
+        this.isNotRetractableEdit = false;
         this.isLoading = false;
     }
-
-    errorText = '';
 
     async handleOkay() {
         // Fetch radio button value
         let validInputs = true;
-        // const radioGroup = this.refs.absenceTypeRadioGroup;
         let absenceType = this.absenceType;
         if (!this.validateAbsenceType(absenceType)) {
-            // radioGroup.setCustomValidity('Velg en type');
-            // radioGroup.reportValidity();
-            // radioGroup.focus();
             validInputs = false;
             this.errorText = 'Velg en type fravær';
             console.log('No absence type selected');
         } else {
-            // radioGroup.setCustomValidity('');
-            // radioGroup.reportValidity();
             this.errorText = '';
         }
         console.log('Selected absence type:', absenceType);
@@ -1455,13 +1432,6 @@ export default class LibsFullCalendarV2 extends NavigationMixin(LightningElement
             return;
         }
 
-        // const confirmation = await ConfimationModal.open({
-        //     content: result,
-        //     absenceType: absenceType,
-        //     absenceStartDateTime: absenceStartDateTime,
-        //     absenceEndDateTime: absenceEndDateTime
-        // });
-        // if (confirmation) {
         this.isLoading = true;
         try {
             this.closeModal();
@@ -1506,12 +1476,15 @@ export default class LibsFullCalendarV2 extends NavigationMixin(LightningElement
             this.dispatchEvent(event);
             this.refreshCalendar(false);
         }
+
+        this.isAlertAbsenceEdit = false;
+        this.isNotRetractableDelete = false;
+        this.isNotRetractableEdit = false;
         this.isLoading = false;
         this.currentEventRecordId = null;
         this.isAllDayAbsence = false;
         absenceType = null;
         this.clearCheckedRadios();
         this.closeModal();
-        // }
     }
 }

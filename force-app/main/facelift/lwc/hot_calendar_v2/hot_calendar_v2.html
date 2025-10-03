@@ -34,45 +34,32 @@
                                         <p>Tema: <span>{serviceAppointment.Subject}</span></p>
                                         <p>
                                             Tid:
-                                            <span
-                                                >{serviceAppointment.weekday} {serviceAppointment.StartAndEndDate}</span
-                                            >
+                                            <span>{serviceAppointment.weekday}
+                                                {serviceAppointment.StartAndEndDate}</span>
                                         </p>
                                         <p lwc:if={serviceAppointment.HOT_AddressFormated__c}>
                                             Adresse: <span>{serviceAppointment.HOT_AddressFormated__c}</span>
                                         </p>
-                                        <div
-                                            lwc:if={serviceAppointment.HOT_AddressFormated__c}
-                                            style="display: inline-block; padding-right: 1vw"
-                                        >
+                                        <div lwc:if={serviceAppointment.HOT_AddressFormated__c}
+                                            style="display: inline-block; padding-right: 1vw">
                                             <p>Åpne adressen i en karttjeneste (ekstern):</p>
-                                            <div
-                                                style="
+                                            <div style="
                                                     display: inline-block;
                                                     padding-right: 1vw;
                                                     padding-bottom: 1vw;
                                                     padding-top: 1vw;
-                                                "
-                                            >
-                                                <c-button
-                                                    button-styling="secondary"
-                                                    button-label="Google maps"
-                                                    onbuttonclick={openGoogleMaps}
-                                                ></c-button>
+                                                ">
+                                                <c-button button-styling="secondary" button-label="Google maps"
+                                                    onbuttonclick={openGoogleMaps}></c-button>
                                             </div>
-                                            <div
-                                                style="
+                                            <div style="
                                                     display: inline-block;
                                                     padding-right: 1vw;
                                                     padding-bottom: 1vw;
                                                     padding-top: 1vw;
-                                                "
-                                            >
-                                                <c-button
-                                                    button-styling="secondary"
-                                                    button-label="Apple maps"
-                                                    onbuttonclick={openAppleMaps}
-                                                ></c-button>
+                                                ">
+                                                <c-button button-styling="secondary" button-label="Apple maps"
+                                                    onbuttonclick={openAppleMaps}></c-button>
                                             </div>
                                         </div>
 
@@ -128,77 +115,48 @@
                                         </p>
 
                                         <div class="files-container">
-                                            <c-record-files-with-sharing
-                                                record-id={serviceAppointment.Id}
-                                                is-get-all="true"
-                                                is-delete-option="false"
-                                                title="Vedlegg"
-                                                delete-file-on-button-click="false"
-                                            ></c-record-files-with-sharing>
+                                            <c-record-files-with-sharing record-id={serviceAppointment.Id}
+                                                is-get-all="true" is-delete-option="false" title="Vedlegg"
+                                                delete-file-on-button-click="false"></c-record-files-with-sharing>
                                         </div>
                                     </div>
 
-                                    <div
-                                        style="
+                                    <div style="
                                             display: inline-block;
                                             padding-right: 1vw;
                                             padding-bottom: 1vw;
                                             padding-top: 1vw;
-                                        "
-                                    >
-                                        <c-button
-                                            disabled={saIsEditButtonDisabled}
-                                            hidden={saIsEditButtonHidden}
-                                            onbuttonclick={changeStatus}
-                                            button-styling="Primary"
-                                            type="Submit"
-                                            button-label="Endre status"
-                                        >
+                                        ">
+                                        <c-button disabled={saIsEditButtonDisabled} hidden={saIsEditButtonHidden}
+                                            onbuttonclick={changeStatus} button-styling="Primary" type="Submit"
+                                            button-label="Endre status">
                                         </c-button>
-                                        <c-button
-                                            hidden={saIsCancelButtonHidden}
-                                            onbuttonclick={cancelStatusFlow}
-                                            button-styling="Secondary"
-                                            type="Submit"
-                                            button-label="Avbryt"
-                                        >
+                                        <c-button hidden={saIsCancelButtonHidden} onbuttonclick={cancelStatusFlow}
+                                            button-styling="Secondary" type="Submit" button-label="Avbryt">
                                         </c-button>
                                     </div>
                                     <div lwc:if={saIsflow} class="flow-container">
-                                        <lightning-flow
-                                            flow-api-name="HOT_ChangeServiceAppointmentStatus_V1"
+                                        <lightning-flow flow-api-name="HOT_ChangeServiceAppointmentStatus_V1"
                                             flow-input-variables={flowVariables}
-                                            onstatuschange={handleStatusChange}
-                                        ></lightning-flow>
+                                            onstatuschange={handleStatusChange}></lightning-flow>
                                     </div>
                                     <p>Samtale med:</p>
                                     <div class="button-container">
                                         <div class="button-wrapper">
-                                            <c-button
-                                                button-styling="Primary"
-                                                type="Submit"
-                                                onbuttonclick={goToThreadFreelance}
-                                                button-label="Bruker"
-                                                disabled={isGoToThreadButtonDisabled}
-                                            ></c-button>
+                                            <c-button button-styling="Primary" type="Submit"
+                                                onbuttonclick={goToThreadFreelance} button-label="Bruker"
+                                                disabled={isGoToThreadButtonDisabled}></c-button>
                                         </div>
                                         <div class="button-wrapper">
-                                            <c-button
-                                                button-styling="Primary"
-                                                type="Submit"
+                                            <c-button button-styling="Primary" type="Submit"
                                                 onbuttonclick={goToThreadInterpreters}
                                                 disabled={isGoToThreadInterpretersButtonDisabled}
-                                                button-label="Medtolker"
-                                            ></c-button>
+                                                button-label="Medtolker"></c-button>
                                         </div>
                                         <div class="button-wrapper">
-                                            <c-button
-                                                button-styling="Primary"
-                                                type="Submit"
-                                                onbuttonclick={goToThreadServiceAppointment}
-                                                button-label="Formidler"
-                                                disabled={isGoToThreadServiceAppointmentButtonDisabled}
-                                            ></c-button>
+                                            <c-button button-styling="Primary" type="Submit"
+                                                onbuttonclick={goToThreadServiceAppointment} button-label="Formidler"
+                                                disabled={isGoToThreadServiceAppointmentButtonDisabled}></c-button>
                                         </div>
                                     </div>
                                 </template>
@@ -224,33 +182,46 @@
                                     <p>Døv/døvblind: <span>{wageClaim.DegreeOfHearingAndVisualImpairment__c}</span></p>
                                     <p>Status: <span>{wageClaim.Status__c}</span></p>
                                 </div>
-                                <div
-                                    style="
+
+                                <!-- Alert Wage Claim confirmation -->
+                                <template lwc:if={isAlertWageClaimEdit}>
+                                    <div class="navno-dekorator alertstripe navno-dekorator alertstripe--advarsel"
+                                        role="alert">
+                                        <img class="navno-dekorator alertstripe__ikon" src={warningicon} alt="" />
+                                        <div class="alertstripe__innhold">
+                                            <div class="typo-normal alertstripe__tekst">
+                                                {modalWageContent}
+                                            </div>
+                                            <div class="alertstripe__knapper">
+                                                <c-button button-styling="danger"
+                                                    button-label="Tilbaketrekk tilgjengelighet"
+                                                    onbuttonclick={showModalRetract}></c-button>
+                                                <c-button button-styling="Secondary" button-label="Avbryt"
+                                                    onbuttonclick={retractWageClaimCancel}></c-button>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </template>
+                                <template lwc:else>
+                                    <div style="
                                         display: inline-block;
                                         padding-right: 1vw;
                                         padding-bottom: 1vw;
                                         padding-top: 1vw;
-                                    "
-                                >
-                                    <c-button
-                                        disabled={wcIsNotRetractable}
-                                        button-styling="primary"
-                                        button-label="Tilbaketrekk tilgjengelighet"
-                                        aria-label="Tilbaketrekk tilgjengelighet"
-                                        onbuttonclick={showModalRetract}
-                                    >
-                                    </c-button>
-                                </div>
-                                <div style="display: inline-block; padding-bottom: 1vw">
-                                    <c-button
-                                        disabled={wcIsDisabledGoToThread}
-                                        button-styling="primary"
-                                        button-label="Samtale med ressurskontor"
-                                        aria-label="Samtale med ressurskontor"
-                                        onbuttonclick={goToWageClaimThread}
-                                    >
-                                    </c-button>
-                                </div>
+                                    ">
+                                        <c-button disabled={wcIsNotRetractable} button-styling="primary"
+                                            button-label="Tilbaketrekk tilgjengelighet"
+                                            aria-label="Tilbaketrekk tilgjengelighet"
+                                            onbuttonclick={retractWageClaimClicked}>
+                                        </c-button>
+                                    </div>
+                                    <div style="display: inline-block; padding-bottom: 1vw">
+                                        <c-button disabled={wcIsDisabledGoToThread} button-styling="primary"
+                                            button-label="Samtale med ressurskontor"
+                                            aria-label="Samtale med ressurskontor" onbuttonclick={goToWageClaimThread}>
+                                        </c-button>
+                                    </div>
+                                </template>
                             </div>
                         </section>
                     </template>
@@ -259,7 +230,7 @@
         </div>
 
         <!-- Absence modal -->
-        <dialog class="modal-absence modal-container" aria-label="Register nytt fravær">
+        <dialog class="modal-absence modal-container" aria-label={headerAbsenceText}>
             <div class="modal-header">
                 <!-- Dynamic header shows "Endre/Slett fravær" || "Registrer nytt fravær" -->
                 <h2>{headerAbsenceText}</h2>
@@ -270,94 +241,88 @@
             <div class="modal-body">
                 <!-- Radio buttons -->
                 <h2 class="sub-header-absence">Type fravær</h2>
-                <c-radiobuttons
-                    radiobuttons={radiobuttons}
-                    group-name="absenceType"
-                    onradiobuttonsclick={handleRequestTypeChange}
-                    error-text={errorTextRadio}
-                ></c-radiobuttons>
+                <c-radiobuttons radiobuttons={radiobuttons} group-name="absenceType"
+                    onradiobuttonsclick={handleRequestTypeChange} error-text={errorTextRadio}></c-radiobuttons>
 
                 <template lwc:if={errorText}>
                     <p class="error-message">{errorText}</p>
                 </template>
 
                 <!-- Checkbox whole day -->
-                <c-checkbox
-                    label="Heldags"
-                    default-val={isAllDayAbsence}
-                    oncheckboxclick={handleAllDayEventSet}
+                <c-checkbox label="Heldags" default-val={isAllDayAbsence} oncheckboxclick={handleAllDayEventSet}
                     desktop-style="margin-top: 0.15rem; margin-bottom: 0.25rem"
-                    mobile-style="margin-top: 0.25rem; margin-bottom: 0.25rem"
-                ></c-checkbox>
+                    mobile-style="margin-top: 0.25rem; margin-bottom: 0.25rem"></c-checkbox>
 
                 <!-- Whole day hidden container until AllDay is checked-->
                 <div class="whole-day-hidden-container">
                     <!-- Start date -->
-                    <lightning-input
-                        type={timeFormat}
-                        name="input1"
-                        lwc:ref="absenceStartDateTimeInput"
-                        label={startTimeInputLabel}
-                        value={initialAbsenceStart}
-                        onchange={handleDateStartChange}
-                    ></lightning-input>
+                    <lightning-input type={timeFormat} name="input1" lwc:ref="absenceStartDateTimeInput"
+                        label={startTimeInputLabel} value={initialAbsenceStart}
+                        onchange={handleDateStartChange}></lightning-input>
 
                     <!-- End date -->
-                    <lightning-input
-                        type={timeFormat}
-                        name="input2"
-                        lwc:ref="absenceEndDateTimeInput"
-                        label={endTimeInputLabel}
-                        value={initialAbsenceEnd}
-                        onchange={handleDateEndChange}
-                    ></lightning-input>
+                    <lightning-input type={timeFormat} name="input2" lwc:ref="absenceEndDateTimeInput"
+                        label={endTimeInputLabel} value={initialAbsenceEnd}
+                        onchange={handleDateEndChange}></lightning-input>
                 </div>
 
                 <!-- Absence button container -->
                 <div class="button-container">
-                    <!-- Info check if user wants to delete -->
                     <template lwc:if={isEdit}>
-                        <!-- <div class="navno-dekorator alertstripe navno-dekorator alertstripe--advarsel" role="alert">
-          <img class="navno-dekorator alertstripe__ikon" src={warningicon} alt="" />
-          <div class="alertstripe__innhold">
-            <div class="typo-normal alertstripe__tekst">
-              Er du sikker på at du vil fjerne slette dette fraværet?
-            </div>
-            <div class="alertstripe__knapper">
-              <c-button
-                disabled={isNotRetractable}
-                button-styling="danger"
-                button-label="Slett 1"
-                aria-label="Slett"
-                onbuttonclick={retractAvailability}
-              ></c-button>
-              <c-button
-                disabled={isDisabledGoToThread}
-                button-styling="primary"
-                button-label="Avbryt"
-                aria-label="Avbryt"
-                onbuttonclick={cancelRetraction}
-              ></c-button>
-            </div>
-          </div>
-        </div> -->
-                        <!-- Delete button -->
-                        <c-button
-                            button-label="Slett"
-                            button-styling="Danger"
-                            desktop-style="width: 6rem; justify-content: center; margin-right: 0.25rem"
-                            mobile-style="justify-content: center;"
-                            onbuttonclick={handleDeleteAbsence}
-                        ></c-button>
+
+                        <!-- Alert Absence confirmation -->
+                        <template lwc:if={isAlertAbsenceEdit}>
+                            <div class="navno-dekorator alertstripe navno-dekorator alertstripe--advarsel" role="alert">
+                                <img class="navno-dekorator alertstripe__ikon" src={warningicon} alt="" />
+                                <div class="alertstripe__innhold">
+                                    <div class="typo-normal alertstripe__tekst">
+                                        {alertAbsenceBannerText}
+                                    </div>
+                                    <div class="alertstripe__knapper">
+                                        <template lwc:if={isNotRetractableDelete}>
+                                            <c-button button-label="Slett" button-styling="Danger"
+                                                desktop-style="width: 6rem; justify-content: center; margin-right: 0.25rem"
+                                                mobile-style="justify-content: center;"
+                                                onbuttonclick={handleDeleteAbsence}></c-button>
+
+                                            <c-button button-label="Avbryt" button-styling="Secondary"
+                                                desktop-style="width: 6rem; justify-content: center;"
+                                                mobile-style="justify-content: center;"
+                                                onbuttonclick={retractAbsenseCancel}></c-button>
+                                        </template>
+
+                                        <template lwc:if={isNotRetractableEdit}>
+                                            <c-button button-label={registerButtonText} button-styling="primary"
+                                                desktop-style="width: 6rem; justify-content: center; margin-right: 0.25rem"
+                                                mobile-style="justify-content: center;"
+                                                onbuttonclick={handleOkay}></c-button>
+
+                                            <c-button button-label="Avbryt" button-styling="Secondary"
+                                                desktop-style="width: 6rem; justify-content: center;"
+                                                mobile-style="justify-content: center;"
+                                                onbuttonclick={retractAbsenseCancel}></c-button>
+                                        </template>
+                                    </div>
+                                </div>
+                            </div>
+                        </template>
+                        <template lwc:else>
+                            <c-button button-label="Slett" button-styling="Danger"
+                                desktop-style="width: 6rem; justify-content: center; margin-right: 0.25rem"
+                                mobile-style="justify-content: center;" onbuttonclick={retractDeleteAbsense}></c-button>
+
+                            <c-button button-styling="primary" button-label="Endre"
+                                desktop-style="width: 6rem; justify-content: center;"
+                                onbuttonclick={retractEditAbsense}></c-button>
+                        </template>
+
                     </template>
-                    <!-- Register and edit absence button -->
-                    <c-button
-                        button-label={registerButtonText}
-                        button-styling="primary"
-                        desktop-style="width: 6rem; justify-content: center;"
-                        mobile-style="justify-content: center;"
-                        onbuttonclick={handleOkay}
-                    ></c-button>
+                    <template lwc:else>
+                        <!-- Register absence button -->
+                        <c-button button-label={registerButtonText} button-styling="primary"
+                            desktop-style="width: 6rem; justify-content: center;"
+                            mobile-style="justify-content: center;" onbuttonclick={handleOkay}></c-button>
+                    </template>
                 </div>
             </div>
         </dialog>
