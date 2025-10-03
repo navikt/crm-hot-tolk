@@ -192,11 +192,13 @@
                                             <div class="typo-normal alertstripe__tekst">
                                                 {modalWageContent}
                                             </div>
-                                            <div class="alertstripe__knapper">
+                                            <div class="alertstripe__knapper alerts-wage-buttons">
                                                 <c-button button-styling="danger"
                                                     button-label="Tilbaketrekk tilgjengelighet"
                                                     onbuttonclick={showModalRetract}></c-button>
+
                                                 <c-button button-styling="Secondary" button-label="Avbryt"
+                                                    desktop-style="width: 5rem; justify-content: center;"
                                                     onbuttonclick={retractWageClaimCancel}></c-button>
                                             </div>
                                         </div>
@@ -282,24 +284,24 @@
                                         <template lwc:if={isNotRetractableDelete}>
                                             <c-button button-label="Slett" button-styling="Danger"
                                                 desktop-style="width: 6rem; justify-content: center; margin-right: 0.25rem"
-                                                mobile-style="justify-content: center;"
+                                                mobile-style="width: 5rem; justify-content: center;"
                                                 onbuttonclick={handleDeleteAbsence}></c-button>
 
                                             <c-button button-label="Avbryt" button-styling="Secondary"
                                                 desktop-style="width: 6rem; justify-content: center;"
-                                                mobile-style="justify-content: center;"
+                                                mobile-style="width: 5rem; justify-content: center;"
                                                 onbuttonclick={retractAbsenseCancel}></c-button>
                                         </template>
 
                                         <template lwc:if={isNotRetractableEdit}>
                                             <c-button button-label={registerButtonText} button-styling="primary"
                                                 desktop-style="width: 6rem; justify-content: center; margin-right: 0.25rem"
-                                                mobile-style="justify-content: center;"
+                                                mobile-style="width: 5rem; justify-content: center;"
                                                 onbuttonclick={handleOkay}></c-button>
 
                                             <c-button button-label="Avbryt" button-styling="Secondary"
                                                 desktop-style="width: 6rem; justify-content: center;"
-                                                mobile-style="justify-content: center;"
+                                                mobile-style="width: 5rem; justify-content: center;"
                                                 onbuttonclick={retractAbsenseCancel}></c-button>
                                         </template>
                                     </div>
@@ -308,11 +310,12 @@
                         </template>
                         <template lwc:else>
                             <c-button button-label="Slett" button-styling="Danger"
-                                desktop-style="width: 6rem; justify-content: center; margin-right: 0.25rem"
-                                mobile-style="justify-content: center;" onbuttonclick={retractDeleteAbsense}></c-button>
+                                desktop-style="width: 6rem; justify-content: center; margin-right: 0.25rem;"
+                                mobile-style="width: 5rem; justify-content: center; margin-right: 0.25rem;" onbuttonclick={retractDeleteAbsense}></c-button>
 
                             <c-button button-styling="primary" button-label="Endre"
                                 desktop-style="width: 6rem; justify-content: center;"
+                                mobile-style="width: 5rem; justify-content: center;"
                                 onbuttonclick={retractEditAbsense}></c-button>
                         </template>
 

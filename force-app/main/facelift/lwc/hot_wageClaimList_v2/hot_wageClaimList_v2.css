@@ -175,3 +175,8 @@ c-alertdialog {
     display: flex;
     gap: 1rem;
 }
+
+.alerts-wage-buttons {
+    flex-wrap: wrap;
+    gap: 0.5rem;
+}

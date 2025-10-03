@@ -354,4 +354,9 @@ dialog.modal-container .close-btn:hover {
     dialog.modal-container .modal-footer {
         padding: 1rem;
     }
+
+    .alerts-wage-buttons {
+        flex-wrap: wrap;
+        gap: 0.5rem;
+    }
 }
