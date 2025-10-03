@@ -322,15 +322,22 @@ public without sharing class HOT_MessageHelper {
     @AuraEnabled(cacheable=false)
     public static Thread__c createThreadInterpreter(Id recordId) {
         User currentUser = [SELECT Id, AccountId FROM User WHERE Id = :UserInfo.getUserId()];
+        /*
         List<ServiceResource> serviceResourceList = [
             SELECT Id, HOT_IsEmployedInterpreter__c
             FROM ServiceResource
             WHERE RelatedRecordId = :currentUser.Id
         ];
-        Set<Id> srIdList = new Set<Id>();
+        */
+        Set<Id> srIdList = new Map<ID, ServiceResource>(
+                [SELECT Id, HOT_IsEmployedInterpreter__c FROM ServiceResource WHERE RelatedRecordId = :currentUser.Id]
+            )
+            .keySet(); //new Set<Id>();
+        /*
         for (ServiceResource sr : serviceResourceList) {
             srIdList.add(sr.Id);
         }
+        */
         Thread__c thread = new Thread__c();
         thread.RecordTypeId = HOT_MessageHelper.getHOTThreadRecordType();
         String objectType = String.valueOf(recordId.getsobjecttype());
@@ -365,7 +372,7 @@ public without sharing class HOT_MessageHelper {
                     ServiceAppointment__r.Subject,
                     ServiceAppointment__r.HOT_Request__r.Dispatcher__c
                 FROM HOT_InterestedResource__c
-                WHERE ServiceResource__c IN :serviceResourceList AND ServiceAppointment__c = :recordId
+                WHERE ServiceResource__c IN :srIdList AND ServiceAppointment__c = :recordId
             ];
             if (interestedResource.Status__c == 'Assigned') {
                 ServiceAppointment sr = [
@@ -835,11 +842,7 @@ public without sharing class HOT_MessageHelper {
 
         // Users: include Formidler as "Formidler", exclude System Administrators
         if (!userIdSet.isEmpty()) {
-            for (User u : [
-                SELECT Id, Name, Profile.Name, NKS_FullName__c
-                FROM User
-                WHERE Id IN :userIdSet
-            ]) {
+            for (User u : [SELECT Id, Name, Profile.Name, NKS_FullName__c FROM User WHERE Id IN :userIdSet]) {
                 Boolean isAdmin = (u.Profile != null && u.Profile.Name == 'System Administrator');
                 if (isAdmin)
                     continue;
@@ -857,11 +860,7 @@ public without sharing class HOT_MessageHelper {
 
         // Contacts: show contact name
         if (!contactIdSet.isEmpty()) {
-            for (Contact c : [
-                SELECT Id, Name
-                FROM Contact
-                WHERE Id IN :contactIdSet
-            ]) {
+            for (Contact c : [SELECT Id, Name FROM Contact WHERE Id IN :contactIdSet]) {
                 results.add(new ReadByEntry(c.Id, c.Name, false, false));
             }
         }
@@ -870,12 +869,7 @@ public without sharing class HOT_MessageHelper {
 
     @AuraEnabled(cacheable=false)
     public static List<ReadByEntry> buildReadByEntriesForThread(Id threadId) {
-        Thread__c t = [
-            SELECT HOT_Thread_read_by__c
-            FROM Thread__c
-            WHERE Id = :threadId
-            LIMIT 1
-        ];
+        Thread__c t = [SELECT HOT_Thread_read_by__c FROM Thread__c WHERE Id = :threadId LIMIT 1];
 
         // Use HOT_Thread_read_by__c to build the list
         List<Id> parsedIds = new List<Id>();
