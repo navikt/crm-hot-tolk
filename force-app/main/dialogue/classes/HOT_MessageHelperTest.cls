@@ -323,19 +323,13 @@ private class HOT_MessageHelperTest {
     }
     @IsTest
     static void createThreadDispatcherWorkOrder() {
-        Account acc = new Account();
-        acc.Name = 'Newly created account';
-        insert acc;
-        WorkType workType = HOT_TestDataFactory.createWorkType();
-        workType.Name = 'Work Type Name';
-        insert workType;
-        HOT_Request__c request = HOT_TestDataFactory.createRequest('Subject', workType);
-        insert request;
-        WorkOrder workOrder = HOT_TestDataFactory.createWorkOrder(request, workType);
-        workOrder.AccountId = acc.Id;
-        insert workOrder;
+        WorkOrder workOrder = [SELECT Id, AccountId FROM WorkOrder WHERE HOT_Request__r.Subject__c = 'TEST' LIMIT 1];
         Test.startTest();
-        Thread__c thread = HOT_MessageHelper.createThreadDispatcher(workOrder.Id, acc.Id, 'HOT_BRUKER-TOLK');
+        Thread__c thread = HOT_MessageHelper.createThreadDispatcher(
+            workOrder.Id,
+            workOrder.AccountId,
+            'HOT_BRUKER-TOLK'
+        );
         Test.stopTest();
         List<Thread__c> tList = [
             SELECT Id, CRM_Account__c, CRM_Type__c
@@ -343,44 +337,19 @@ private class HOT_MessageHelperTest {
             WHERE CRM_Related_Object__c = :workOrder.Id
         ];
         System.assertNotEquals(null, tList);
-        System.assertEquals(tList[0].CRM_Account__c, acc.Id);
+        System.assertEquals(tList[0].CRM_Account__c, workOrder.AccountId);
         System.assertEquals(tList[0].CRM_Type__c, 'HOT_BRUKER-TOLK');
     }
     @IsTest
     static void createThreadDispatcherInterestedResource() {
-        WorkType wt = HOT_TestDataFactory.createWorkType();
-        insert wt;
-        HOT_Request__c req = HOT_TestDataFactory.createRequest('Subject', wt);
-        insert req;
-        WorkOrder wo = HOT_TestDataFactory.createWorkOrder(req, wt);
-        insert wo;
-        WorkOrderLineItem woli = HOT_TestDataFactory.createWorkOrderLineItem(wo, wt);
-        insert woli;
-        Account acc = new Account(Name = 'Newly created account');
-        insert acc;
+        ServiceAppointment sa = [SELECT Id FROM ServiceAppointment WHERE Subject = 'TEST' LIMIT 1];
 
+        ServiceResource sr = [SELECT Id, AccountId FROM ServiceResource LIMIT 1];
         Test.startTest();
-
-        ServiceResource sr = HOT_TestDataFactory.createServiceResource(UserInfo.getUserId());
-        insert sr;
-        sr.AccountId = acc.Id;
-        update sr;
-        OperatingHours oh = HOT_TestDataFactory.createOperatingHours();
-        insert oh;
-        ServiceTerritory st = HOT_TestDataFactory.createServiceTerritory(oh);
-        insert st;
-        insert HOT_TestDataFactory.createServiceTerritoryMember(sr, st);
-
-        ServiceAppointment sa = HOT_TestDataFactory.createSchedulableSA(woli, st);
-        sa.HOT_Request__c = req.Id;
-        sa.Subject = 'TEST';
-        sa.HOT_Account__c = acc.Id;
-        insert sa;
-
         HOT_InterestedResource__c ir = HOT_TestDataFactory.createInterestedResource(sa.Id, sr.Id);
         insert ir;
 
-        Thread__c thread = HOT_MessageHelper.createThreadDispatcher(ir.Id, acc.Id, 'HOT_TOLK-FORMIDLER');
+        Thread__c thread = HOT_MessageHelper.createThreadDispatcher(ir.Id, null, null);
         Test.stopTest();
 
         Thread__c created = [
@@ -390,7 +359,7 @@ private class HOT_MessageHelperTest {
             LIMIT 1
         ];
         System.assertNotEquals(null, created, 'Thread should be created for the Interested Resource');
-        System.assertEquals(acc.Id, created.CRM_Account__c, 'Thread should be stamped with SR.AccountId');
+        System.assertEquals(sr.AccountId, created.CRM_Account__c, 'Thread should be stamped with SR.AccountId');
         System.assertEquals('HOT_TOLK-FORMIDLER', created.CRM_Type__c);
         System.assertEquals(
             ir.Id,
@@ -400,6 +369,7 @@ private class HOT_MessageHelperTest {
     }
     @IsTest
     static void createThreadInterpreterInterestedResource() {
+        /*
         WorkType wt = HOT_TestDataFactory.createWorkType();
         insert wt;
         HOT_Request__c req = HOT_TestDataFactory.createRequest('TEST', wt);
@@ -423,30 +393,36 @@ private class HOT_MessageHelperTest {
         ServiceAppointment sa = HOT_TestDataFactory.createSchedulableSA(woli, st);
         sa.Subject = 'TEST';
         insert sa;
-        HOT_InterestedResource__c ir = HOT_TestDataFactory.createInterestedResource(sa.Id, sr.Id);
-        ir.Status__c = 'Assigned';
-        insert ir;
+        */
+        ServiceAppointment sa = [SELECT Id FROM ServiceAppointment WHERE Subject = 'TEST' LIMIT 1];
 
-        Thread__c t = HOT_MessageHelper.createThreadInterpreter(ir.Id);
+        ServiceResource sr = [SELECT Id, AccountId FROM ServiceResource LIMIT 1];
+
+        HOT_InterestedResource__c ir = HOT_TestDataFactory.createInterestedResource(sa.Id, sr.Id);
+        //ir.Status__c = 'Assigned';
+        insert ir;
+        Test.startTest();
+        System.runAs([SELECT Id FROM User WHERE Name = 'user' LIMIT 1][0]) {
+            Thread__c t = HOT_MessageHelper.createThreadInterpreter(ir.Id);
+        }
         Test.stopTest();
-        System.assertNotEquals(null, t, 'Thread should be created for the Interested Resource');
+        Thread__c created = [
+            SELECT Id, CRM_Type__c, CRM_Related_Object__c, HOT_InterestedResource__c
+            FROM Thread__c
+            WHERE CRM_Related_Object__c = :ir.Id
+            LIMIT 1
+        ];
+        System.assertEquals(ir.id, created.HOT_InterestedResource__c, 'Thread should be stamped with IR id');
+        System.assertEquals('HOT_TOLK-FORMIDLER', created.CRM_Type__c, 'Thread should be of type HOT_TOLK-FORMIDLER');
     }
     @IsTest
     static void getAccountonRequestTest() {
-        WorkType workType = HOT_TestDataFactory.createWorkType();
-        workType.Name = 'Work Type Name';
-        insert workType;
-        HOT_Request__c request = HOT_TestDataFactory.createRequest('Subject', workType);
-        Account personAccount = HOT_TestDataFactory.createAccount(true);
-        insert personAccount;
-        request.Account__c = personAccount.Id;
-        insert request;
-
+        HOT_Request__c request = [SELECT Id, Account__c FROM HOT_Request__c WHERE Subject__c = 'TEST' LIMIT 1];
         Test.startTest();
         Id accountId = HOT_MessageHelper.getAccountOnRequest(request.Id);
         Test.stopTest();
         System.assertNotEquals(null, accountId);
-        System.assertEquals(accountId, personAccount.Id);
+        System.assertEquals(accountId, request.Account__c);
     }
 
     @IsTest
@@ -729,6 +705,7 @@ private class HOT_MessageHelperTest {
             LIMIT 1
         ];
         myTriggers.disable(HOT_ServiceAppointmentHandler.class);
+        myTriggers.disable(HOT_ServiceAppointmentStatusHandler.class);
         sa.SchedStartTime = sa.EarliestStartTime;
         sa.SchedEndTime = sa.DueDate;
         sa.Status = 'Scheduled';
