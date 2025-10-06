@@ -1,7 +1,8 @@
-import { LightningElement } from 'lwc';
+import { LightningElement, api } from 'lwc';
 import icons from '@salesforce/resourceUrl/ikoner';
 
 export default class Hot_freelanceWrapper extends LightningElement {
+    @api numberOfUnreadThreads = 0;
     pageLinks = {};
     calenderIcon = icons + '/Calender/Calender.svg';
     closeIcon = icons + '/Close/Close.svg';
@@ -60,5 +61,11 @@ export default class Hot_freelanceWrapper extends LightningElement {
             showCalender: this.showCalender
         };
         sessionStorage.setItem(Hot_freelanceWrapper.STATE_KEY, JSON.stringify(state));
+    }
+    get unreadThreadsText() {
+        if (!this.numberOfUnreadThreads) {
+            return '';
+        }
+        return this.numberOfUnreadThreads + ' ' + (this.numberOfUnreadThreads === 1 ? 'ulest' : 'uleste');
     }
 }
