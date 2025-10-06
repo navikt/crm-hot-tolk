@@ -334,6 +334,10 @@ dialog.modal-container .close-btn:hover {
         position: relative;
     }
 
+    .fc-toolbar-title {
+        font-size: 1.25rem;
+    }
+
     .fc-button {
         margin-bottom: 0.5rem;;
     }
