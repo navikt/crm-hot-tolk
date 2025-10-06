@@ -171,49 +171,7 @@
                     </div>
                 </section>
 
-                <!-- Varslingsinnstillinger - visning -->
-                <section class="sub-form" lwc:if={viewUserNotificationSettings}>
-                    <h2 id="notification-settings-header" style="text-align: center">Varslingsinnstillinger</h2>
-                    <div class="my-grid">
-                        <div class="my-col-half">
-                            <label for="notificationChannel" class="output-label">Varslingskanal</label>
-                            <select
-                                id="notificationChannel"
-                                class="custom-select"
-                                disabled
-                                aria-disabled="true"
-                                onchange={selectionChangeHandler}
-                            >
-                                <option selected value={selectedOption}>{selectedOption}</option>
-                                <template for:each={options} for:item="option">
-                                    <option key={option.value} value={option.value}>{option.value}</option>
-                                </template>
-                            </select>
-                        </div>
-                        <div class="my-col-half">
-                            <c-checkbox
-                                label="Reserver mot alle varsler fra tolketjenesten"
-                                default-value={isReservedAgainstNotifications}
-                                class="checkbox-inline"
-                                disabled
-                            ></c-checkbox>
-                        </div>
-                    </div>
-                    <template if:false={showSuccess}>
-                        <div class="button-class">
-                            <c-button
-                                button-label="Rediger varslingsinnstillinger"
-                                button-styling="primary"
-                                desktop-style="width: 20rem; justify-content: center"
-                                mobile-style="width: 16rem; justify-content: center"
-                                onclick={editUserNotificationBtn}
-                            ></c-button>
-                        </div>
-                    </template>
-                </section>
-
-                <!-- Varslingsinnstillinger - redigering -->
-                <template lwc:if={editUserNotification}>
+                <!-- Varslingsinnstillinger -->
                     <section class="sub-form" aria-live="polite">
                         <h2 id="notification-settings-edit-header" style="text-align: center">
                             Rediger varslingsinnstillinger
@@ -224,35 +182,11 @@
                                     master-label="Velg hvor du vil få varsler"
                                     choices={picklistOptions}
                                     onpicklistvaluechange={selectionChangeHandler}
+                                    onclick={handleCloseSuccess}
                                 ></c-picklist>
                             </div>
-                            <div class="my-col-half">
-                                <c-checkbox
-                                    label="Reserver mot alle varsler fra tolketjenesten"
-                                    default-value={isReservedAgainstNotifications}
-                                    oncheckboxclick={handleOptionalCheckbox}
-                                ></c-checkbox>
-                            </div>
-                        </div>
-
-                        <div class="button-class">
-                            <c-button
-                                button-label="Lagre"
-                                button-styling="primary"
-                                desktop-style="width: 8rem; justify-content: center"
-                                mobile-style="width: 8rem; justify-content: center"
-                                onbuttonclick={handleSubmit}
-                            ></c-button>
-                            <c-button
-                                button-label="Avbryt"
-                                button-styling="secondary"
-                                desktop-style="width: 8rem; justify-content: center"
-                                mobile-style="width: 8rem; justify-content: center"
-                                onbuttonclick={handleAbort}
-                            ></c-button>
                         </div>
                     </section>
-                </template>
             </section>
 
             <!-- Success message -->
@@ -261,9 +195,12 @@
                 class="navno-dekorator alertstripe navno-dekorator alertstripe--success"
                 role="status"
                 aria-live="polite"
+                aria-atomic="true"
             >
                 <img class="navno-dekorator alertstripe__ikon" src={successicon} alt="" aria-hidden="true" />
-                <div class="typo-normal alertstripe__tekst">Endringene ble lagret</div>
+                <div class="typo-normal alertstripe__tekst">
+                    <p>{successMessage}</p>
+                </div>
                 <button
                     class="navno-dekorator close-success-button"
                     onclick={handleCloseSuccess}
