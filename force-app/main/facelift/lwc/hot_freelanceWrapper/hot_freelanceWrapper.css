@@ -12,6 +12,17 @@
 .boxDescription {
     display: block;
 }
+.unreadThreadsTag {
+    background-color: #ffd799;
+    width: fit-content;
+    border-radius: 4px;
+    padding-top: 0.1rem;
+    padding-bottom: 0.1rem;
+    padding-left: 0.7rem;
+    padding-right: 0.7rem;
+    font-size: 1.125rem;
+    margin-top: 0.5rem;
+}
 .sr-only {
     position: absolute;
     width: 1px;

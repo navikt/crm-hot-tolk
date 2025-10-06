@@ -297,8 +297,9 @@ export default class Hot_wantedServiceAppointmentsList extends LightningElement 
     registerInterestChecked() {
         this.showServiceAppointmentDetailsModal = true;
         this.isDetails = false;
-        this.showModalHeader = false;
         this.processMessage = 'Melder interesse...';
+        this.showServiceAppointmentDetails();
+        this.showModalHeader = false;
         this.spin = true;
         this.showSubmittedLoading = true;
         this.checkedServiceAppointments = this.template.querySelector('c-hot_freelance-common-table').getCheckedRows();
@@ -335,6 +336,7 @@ export default class Hot_wantedServiceAppointmentsList extends LightningElement 
     declineInterestChecked() {
         this.showServiceAppointmentDetailsModal = true;
         this.isDetails = false;
+        this.showServiceAppointmentDetails();
         this.showModalHeader = false;
         this.checkedServiceAppointments = this.template.querySelector('c-hot_freelance-common-table').getCheckedRows();
 
