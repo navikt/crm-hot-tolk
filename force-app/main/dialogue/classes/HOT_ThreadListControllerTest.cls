@@ -1,4 +1,4 @@
-@IsTest
+@IsTest(IsParallel=true)
 public class HOT_ThreadListControllerTest {
     @TestSetup
     static void makeData() {
@@ -120,5 +120,60 @@ public class HOT_ThreadListControllerTest {
         List<Thread__c> threadList = HOT_ThreadListController.getMyThreadsFreelance();
 
         System.assertEquals(1, threadList.size(), 'Could not get my threads'); // Can't get current running user in test
+    }
+    @isTest
+    static void testGetAllMyThreadsForBadge_RunMethod() {
+        Test.startTest();
+        HOT_ThreadListController.getAllMyThreadsForBadge(true);
+
+        HOT_ThreadListController.getAllMyThreadsForBadge(false);
+
+        Test.stopTest();
+    }
+     @IsTest
+    public static void getMyThreadsFreelanceServiceResourceTest2() {
+        User admin = [SELECT Id, UserRoleId FROM User WHERE Id = :UserInfo.getUserId() LIMIT 1];
+
+        ServiceResource serviceResource = HOT_TestDataFactory.createServiceResource(admin.Id);
+        insert serviceResource;
+
+        WorkType workType = HOT_TestDataFactory.createWorkType();
+        insert workType;
+        HOT_Request__c request = HOT_TestDataFactory.createRequest('TEST', workType);
+        insert request;
+        WorkOrder workOrder = HOT_TestDataFactory.createWorkOrder(request, workType);
+        insert workOrder;
+        WorkOrderLineItem woli = HOT_TestDataFactory.createWorkOrderLineItem(workOrder, workType);
+        insert woli;
+        ServiceAppointment sa = HOT_TestDataFactory.createServiceAppointment(woli);
+        sa.Subject = 'TEST';
+        insert sa;
+
+        HOT_InterestedResource__c ir = HOT_TestDataFactory.createInterestedResource(sa.Id, serviceResource.Id);
+
+        insert ir;
+
+        AssignedResource ar = HOT_TestDataFactory.createAssignedResource(sa.Id, serviceResource.Id);
+        insert ar;
+        ir.Status__c = 'Assigned';
+        update ir;
+        Thread__c t = new Thread__c();
+        t.RecordTypeId = HOT_MessageHelper.getHOTThreadRecordType();
+        t.CRM_Related_Object__c = workOrder.Id;
+        insert t;
+        Message__c message = new Message__c();
+        message.CRM_Thread__c = t.Id;
+        message.CRM_Message_Text__c = 'Dette er en testmelding';
+        insert message;
+
+        List<Thread__c> threadList = HOT_ThreadListController.getMyThreadsFreelance2();
+
+        System.assertEquals(1, threadList.size(), 'Could not get my threads'); // Can't get current running user in test
+    }
+    @IsTest
+    public static void getMyThreadsTest2() {
+        List<Thread__c> threadList = HOT_ThreadListController.getMyThreads2();
+
+        System.assertEquals(0, threadList.size(), 'Could not get my threads'); // Can't get current running user in test
     }
 }

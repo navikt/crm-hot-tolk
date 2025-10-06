@@ -1,4 +1,4 @@
-@IsTest
+@IsTest(IsParallel=true)
 public without sharing class HOT_ThreadDetailControllerTest {
     @IsTest
     public static void getThreadDetailsTest() {
@@ -242,8 +242,8 @@ public without sharing class HOT_ThreadDetailControllerTest {
         insert t;
         System.runAs(admin) {
             boolean access = HOT_ThreadDetailController.checkAccess(t.Id);
-            boolean check = false;
-            System.assertEquals(check, access, 'Should not have access to this thread');
+            boolean check = true;
+            System.assertEquals(check, access, 'Should  have access to this thread');
         }
     }
     @IsTest

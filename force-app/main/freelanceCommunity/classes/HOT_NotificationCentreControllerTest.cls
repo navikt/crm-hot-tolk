@@ -1,4 +1,4 @@
-@IsTest
+@IsTest(IsParallel=true)
 private class HOT_NotificationCentreControllerTest {
     @IsTest
     public static void getMyNotifications() {

@@ -9,27 +9,6 @@ public without sharing class HOT_MessageHelper {
     public static string getUserContactId() {
         return [SELECT Id, ContactId FROM User WHERE Id = :UserInfo.getUserId()]?.ContactId;
     }
-    @AuraEnabled
-    public static String getAccountOnThread(Id recordId) {
-        String result;
-        if (HOT_ThreadDetailController.checkAccess(recordId)) {
-            Thread__c thread = [
-                SELECT CRM_Account__r.Name, CRM_Related_Object__c
-                FROM Thread__c
-                WHERE Id = :recordId
-                LIMIT 1
-            ];
-            Id search = thread.CRM_Related_Object__c;
-            String objectType = String.valueOf(search.getsobjecttype());
-            if (objectType == 'WorkOrder') {
-                WorkOrder wo = [SELECT Id, HOT_Interpreters__c FROM WorkOrder WHERE Id = :search];
-                result = wo.HOT_Interpreters__c;
-            } else {
-                result = thread.CRM_Account__r.Name;
-            }
-        }
-        return result;
-    }
 
     @AuraEnabled(cacheable=true)
     public static Id getAccountOnRequest(Id recordId) {
@@ -484,7 +463,9 @@ public without sharing class HOT_MessageHelper {
                         CRM_Event_Type__c,
                         CRM_Sent_date__c,
                         CRM_From_User__c,
+                        CRM_From_User__r.Name,
                         CRM_From_Contact__c,
+                        CRM_From_Contact__r.Name,
                         CRM_From_First_Name__c,
                         CRM_External_Message__c,
                         CRM_From_Label__c,
@@ -539,7 +520,10 @@ public without sharing class HOT_MessageHelper {
             Thread__c thread = [SELECT Id, HOT_Thread_read_by__c FROM Thread__c WHERE Id = :threadId];
             if (thread.HOT_Thread_read_by__c.contains(userContactId)) {
             } else {
-                thread.HOT_Thread_read_by__c = thread.HOT_Thread_read_by__c + userContactId + ';';
+                thread.HOT_Thread_read_by__c =
+                    (thread.HOT_Thread_read_by__c == null ? '' : thread.HOT_Thread_read_by__c) +
+                    userContactId +
+                    ';';
             }
             try {
                 update thread;
@@ -550,12 +534,16 @@ public without sharing class HOT_MessageHelper {
     }
     @AuraEnabled
     public static void markThreadAsReadEmployee(Id threadId) {
-        User user = [SELECT Id FROM User WHERE Id = :UserInfo.getUserId()];
+        User user = [SELECT Id, Profile.Name FROM User WHERE Id = :UserInfo.getUserId()];
         Thread__c thread = [
             SELECT Id, HOT_Thread_read_by__c, HOT_ParticipantIds__c
             FROM Thread__c
             WHERE Id = :threadId
         ];
+
+        if (!thread.HOT_Thread_read_by__c.contains(user.Id) && user.Profile.Name == 'HOT Tolk Formidler') {
+            thread.HOT_Thread_read_by__c = thread.HOT_Thread_read_by__c + user.Id + ';';
+        }
         if (!thread.HOT_Thread_read_by__c.contains(user.Id) && thread.HOT_ParticipantIds__c.contains(user.Id)) {
             thread.HOT_Thread_read_by__c = thread.HOT_Thread_read_by__c + user.Id + ';';
         }
@@ -746,73 +734,52 @@ public without sharing class HOT_MessageHelper {
     @AuraEnabled
     public static Map<String, String> getRelatedObjectDetails(Id relatedRecordId) {
         Map<String, String> navigationhelp = new Map<String, String>();
-        String workorderId;
         String objectType = String.valueOf(relatedRecordId.getsobjecttype());
         if (objectType == 'WorkOrder') {
             User currentUser = [SELECT Id, AccountId FROM User WHERE Id = :UserInfo.getUserId()];
-            List<ServiceResource> serviceResource = [
-                SELECT Id, AccountId
-                FROM ServiceResource
-                WHERE AccountId = :currentUser.AccountId
-            ];
-            if (serviceResource.size() > 0) {
-                List<ServiceAppointment> sa = [
-                    SELECT Id
-                    FROM ServiceAppointment
-                    WHERE HOT_WorkOrderLineItem__r.WorkOrderId = :relatedRecordId
-                ];
-                if (sa.size() > 0) {
-                    Boolean irFound = false;
-                    for (ServiceAppointment serviceappointment : sa) {
-                        List<HOT_InterestedResource__c> ir = [
-                            SELECT Id, ServiceAppointment__c
-                            FROM HOT_InterestedResource__c
-                            WHERE
-                                ServiceAppointment__c = :serviceappointment.Id
-                                AND ServiceResource__c IN :serviceResource
-                        ];
-                        if (ir.size() > 0) {
-                            irFound = true;
-                            navigationhelp.put(serviceappointment.Id, 'SA');
-                        }
-                    }
-                    if (!irFound) {
-                        workorderId = relatedRecordId;
-                        navigationhelp.put(workorderId, 'WO');
-                    }
-                } else {
-                    workorderId = relatedRecordId;
-                    navigationhelp.put(workorderId, 'WO');
-                }
-            } else {
-                workorderId = relatedRecordId;
-                navigationhelp.put(workorderId, 'WO');
+            for (HOT_InterestedResource__c ir : [
+                SELECT Id, ServiceAppointment__c
+                FROM HOT_InterestedResource__c
+                WHERE
+                    ServiceAppointment__c IN (
+                        SELECT Id
+                        FROM ServiceAppointment
+                        WHERE HOT_WorkOrderLineItem__r.WorkOrderId = :relatedRecordId
+                    )
+                    AND ServiceResource__r.AccountId = :currentUser.AccountId
+            ]) {
+                navigationhelp.put(ir.ServiceAppointment__c, 'SA');
+            }
+            if (navigationhelp.size() == 0) {
+                navigationhelp.put(relatedRecordId, 'WO');
             }
         }
         if (objectType == 'HOT_Request__c') {
             User currentUser = [SELECT Id, AccountId FROM User WHERE Id = :UserInfo.getUserId()];
             WorkOrder workOrder = [
-                SELECT Id, HOT_Request__r.IsAccountEqualOrderer__c, HOT_Request__r.Orderer__c
+                SELECT
+                    Id,
+                    HOT_Request__r.IsAccountEqualOrderer__c,
+                    HOT_Request__r.Orderer__c,
+                    HOT_Request__r.IsSerieoppdrag__c
                 FROM WorkOrder
                 WHERE HOT_Request__c = :relatedRecordId
                 LIMIT 1
             ];
-            HOT_Request__c request = [SELECT IsSerieoppdrag__c FROM HOT_Request__c WHERE Id = :relatedRecordId LIMIT 1];
-            workorderId = workOrder.Id;
             if (
                 workOrder.HOT_Request__r.IsAccountEqualOrderer__c == false &&
                 workOrder.HOT_Request__r.Orderer__c == currentUser.AccountId
             ) {
-                if (request.IsSerieoppdrag__c == false) {
-                    navigationhelp.put(workorderId, 'Andre-WO');
+                if (workOrder.HOT_Request__r.IsSerieoppdrag__c == false) {
+                    navigationhelp.put(workOrder.Id, 'Andre-WO');
                 } else {
-                    navigationhelp.put(workorderId, 'Andre-R');
+                    navigationhelp.put(workOrder.Id, 'Andre-R');
                 }
             } else {
-                if (request.IsSerieoppdrag__c == false) {
-                    navigationhelp.put(workorderId, 'WO');
+                if (workOrder.HOT_Request__r.IsSerieoppdrag__c == false) {
+                    navigationhelp.put(workOrder.Id, 'WO');
                 } else {
-                    navigationhelp.put(workorderId, 'R');
+                    navigationhelp.put(workOrder.Id, 'R');
                 }
             }
         }
@@ -831,5 +798,96 @@ public without sharing class HOT_MessageHelper {
             navigationhelp.put(relatedRecordId, 'WC');
         }
         return navigationhelp;
+    }
+
+    public class ReadByEntry {
+        @AuraEnabled
+        public Id threadId;
+        @AuraEnabled
+        public String displayName;
+        @AuraEnabled
+        public Boolean isSystemAdmin;
+        @AuraEnabled
+        public Boolean isFormidlerRole;
+
+        public ReadByEntry(Id threadId, String displayName, Boolean isSystemAdmin, Boolean isFormidlerRole) {
+            this.threadId = threadId;
+            this.displayName = displayName;
+            this.isSystemAdmin = isSystemAdmin;
+            this.isFormidlerRole = isFormidlerRole;
+        }
+    }
+
+    @AuraEnabled(cacheable=false)
+    public static List<ReadByEntry> resolveReadByEntries(List<Id> threadIds) {
+        List<ReadByEntry> results = new List<ReadByEntry>();
+        if (threadIds == null || threadIds.isEmpty())
+            return results;
+
+        Set<Id> userIdSet = new Set<Id>();
+        Set<Id> contactIdSet = new Set<Id>();
+        for (Id pid : threadIds) {
+            if (pid == null)
+                continue;
+            String s = String.valueOf(pid);
+            if (s.startsWith('005'))
+                userIdSet.add(pid);
+            else if (s.startsWith('003'))
+                contactIdSet.add(pid);
+        }
+
+        // Users: include Formidler as "Formidler", exclude System Administrators
+        if (!userIdSet.isEmpty()) {
+            for (User u : [
+                SELECT Id, Name, Profile.Name, NKS_FullName__c
+                FROM User
+                WHERE Id IN :userIdSet
+            ]) {
+                Boolean isAdmin = (u.Profile != null && u.Profile.Name == 'System Administrator');
+                if (isAdmin)
+                    continue;
+
+                Boolean isFormidler = (u.Profile != null && u.Profile.Name == 'HOT Tolk Formidler');
+                if (isFormidler) {
+                    // Show as "Formidler" instead of personal name
+                    results.add(new ReadByEntry(u.Id, 'Formidler', false, true));
+                } else {
+                    String display = !String.isBlank(u.NKS_FullName__c) ? u.NKS_FullName__c : u.Name;
+                    results.add(new ReadByEntry(u.Id, display, false, false));
+                }
+            }
+        }
+
+        // Contacts: show contact name
+        if (!contactIdSet.isEmpty()) {
+            for (Contact c : [
+                SELECT Id, Name
+                FROM Contact
+                WHERE Id IN :contactIdSet
+            ]) {
+                results.add(new ReadByEntry(c.Id, c.Name, false, false));
+            }
+        }
+        return results;
+    }
+
+    @AuraEnabled(cacheable=false)
+    public static List<ReadByEntry> buildReadByEntriesForThread(Id threadId) {
+        Thread__c t = [
+            SELECT HOT_Thread_read_by__c
+            FROM Thread__c
+            WHERE Id = :threadId
+            LIMIT 1
+        ];
+
+        // Use HOT_Thread_read_by__c to build the list
+        List<Id> parsedIds = new List<Id>();
+        if (!String.isBlank(t.HOT_Thread_read_by__c)) {
+            for (String s : t.HOT_Thread_read_by__c.split(';')) {
+                if (!String.isBlank(s))
+                    parsedIds.add((Id) s);
+            }
+        }
+        return resolveReadByEntries(parsedIds);
     }
 }

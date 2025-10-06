@@ -1,4 +1,4 @@
-@IsTest
+@IsTest(IsParallel=true)
 private class HOT_MySAListControllerTest {
     @testSetup
     static void setup() {
@@ -137,12 +137,6 @@ private class HOT_MySAListControllerTest {
         ServiceAppointment serviceAppointment = [SELECT Id FROM ServiceAppointment];
         Boolean access = HOT_MyServiceAppointmentListController.checkAccessToSA(serviceAppointment.Id);
         System.assertEquals(true, access, 'Should have access to this sa');
-    }
-    @IsTest
-    static void getOwnerName() {
-        ServiceAppointment serviceAppointment = [SELECT Id FROM ServiceAppointment];
-        String owner = HOT_MyServiceAppointmentListController.getOwnerName(serviceAppointment.Id);
-        System.assertEquals('HoT Tolk Admin', owner, 'Could not get owner name');
     }
     @IsTest
     static void getServiceAppointmentDetailsTest() {

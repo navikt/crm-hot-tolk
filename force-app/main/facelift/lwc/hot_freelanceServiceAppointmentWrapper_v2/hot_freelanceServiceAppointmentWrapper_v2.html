@@ -1,0 +1,171 @@
+<template>
+    <div class="page-background">
+        <div class="tab-content-wrapper">
+            <div class="list">
+                <div class="back-button-info">
+                    <c-hot_back-button></c-hot_back-button>
+                </div>
+                <h1 class="header">Oppdrag</h1>
+                <div class="header-buttons">
+                    <!-- Desktop: Release today button -->
+                    <template lwc:if={showOpenTabReleaseButton}>
+                        <div class="release-button-wrapper-desktop">
+                            <c-button
+                                hidden={isReleasedTodayButtonHidden}
+                                button-label="Frigitt idag"
+                                button-styling="primary"
+                                class="release-button"
+                                desktop-style="height: 3.4rem; white-space: nowrap; background-color: #FFFFFF; border: 3px solid #0067C5; color: #0067C5;"
+                                mobile-style="height: 3.4rem; white-space: nowrap; background-color: #FFFFFF; border: 3px solid #0067C5; color: #0067C5;"
+                                onbuttonclick={releasedTodayFilter}
+                            ></c-button>
+                            <c-button
+                                hidden={isRemoveReleasedTodayButtonHidden}
+                                button-label="Fjern frigitt idag filter"
+                                button-styling="primary"
+                                class="remove-released-today-button"
+                                desktop-style="height: 3.4rem; white-space: nowrap; background-color: #FFFFFF; border: 3px solid #0067C5; color: #0067C5;"
+                                mobile-style="height: 3.4rem; white-space: nowrap; background-color: #FFFFFF; border: 3px solid #0067C5; color: #0067C5;"
+                                onbuttonclick={removeReleasedTodayFilter}
+                            ></c-button>
+                        </div>
+                    </template>
+
+                    <!-- Filter button -->
+                    <template lwc:if={showFilterButton}>
+                        <div class="filter-button-wrapper">
+                            <c-list-filters-button
+                                header="Filtrer søket"
+                                class="filter-button-styling"
+                                filters={filters}
+                                onapplyfilter={applyFilter}
+                                ongetfilteredrecordslength={sendFilteredRecordsLength}
+                            ></c-list-filters-button>
+                        </div>
+                    </template>
+                </div>
+
+                <!-- Tab section for the freelance tables-->
+                <template lwc:if={showTabsAndLineBreak}>
+                    <div class="tabset desktop-only" role="tablist">
+                        <template for:each={tabMap} for:item="tab">
+                            <button
+                                key={tab.name}
+                                class="tab tab-button"
+                                data-id={tab.name}
+                                onclick={setActiveTab}
+                                role="tab"
+                                aria-selected={tab.ariaSelected}
+                                aria-controls={tab.ariaControls}
+                                id={tab.ariaId}
+                                aria-label={tab.ariaLabel}
+                            >
+                                {tab.label}
+                            </button>
+                        </template>
+                    </div>
+                    <br />
+                </template>
+
+                <!-- Mobile: picklist-->
+                <div class="tabset picklist-service mobile-only">
+                    <c-picklist choices={tabs} onpicklistvaluechange={setActiveTabMobile}></c-picklist>
+                </div>
+
+                <!-- Mobile: Release button -->
+                <template lwc:if={showOpenTabReleaseButton}>
+                    <div class="release-button-wrapper-mobile">
+                        <c-button
+                            hidden={isReleasedTodayButtonHidden}
+                            button-label="Frigitt idag"
+                            button-styling="primary"
+                            class="release-button"
+                            desktop-style="white-space: nowrap; height: 3.4rem; background-color: #FFFFFF; border: 3px solid #0067C5; color: #0067C5;"
+                            mobile-style="white-space: nowrap; background-color: #FFFFFF; border: 3px solid #0067C5; color: #0067C5;"
+                            onbuttonclick={releasedTodayFilter}
+                        ></c-button>
+                        <c-button
+                            hidden={isRemoveReleasedTodayButtonHidden}
+                            button-label="Fjern frigitt idag filter"
+                            button-styling="primary"
+                            class="remove-released-today-button"
+                            desktop-style="height: 3.4rem; white-space: nowrap; background-color: #FFFFFF; border: 3px solid #0067C5; color: #0067C5;"
+                            mobile-style="background-color: #FFFFFF; white-space: nowrap; border: 3px solid #0067C5; color: #0067C5;"
+                            onbuttonclick={removeReleasedTodayFilter}
+                        ></c-button>
+                    </div>
+                </template>
+                <!-- Open Service Appointment table -->
+                <template lwc:if={isOpenTab}>
+                    <div class="tab-content">
+                        <c-hot_open-service-appointments-list_v2
+                            record-id={recordId}
+                            data-name="open"
+                            onsendfilters={handleFilters}
+                            onsendrecords={handleRecords}
+                            onsenddetail={handleDetails}
+                            onsendcheckedrows={handleRowChecked}
+                        >
+                        </c-hot_open-service-appointments-list_v2>
+                    </div>
+                </template>
+
+                <!-- Interested Resources List table -->
+                <template lwc:if={isInterestedTab}>
+                    <div class="tab-content">
+                        <c-hot_interested-resources-list_v2
+                            record-id={recordId}
+                            data-name="interested"
+                            onsendfilters={handleFilters}
+                            onsendrecords={handleRecords}
+                            onsenddetail={handleDetails}
+                        >
+                        </c-hot_interested-resources-list_v2>
+                    </div>
+                </template>
+
+                <!-- My Service Appointments table -->
+                <template lwc:if={isMyTab}>
+                    <div class="tab-content">
+                        <c-hot_my-service-appointments-list_v2
+                            record-id={recordId}
+                            data-name="my"
+                            onsendfilters={handleFilters}
+                            onsendrecords={handleRecords}
+                            onsenddetail={handleDetails}
+                        >
+                        </c-hot_my-service-appointments-list_v2>
+                    </div>
+                </template>
+
+                <!-- Wage Claim List table -->
+                <template lwc:if={isWageClaimTab}>
+                    <div class="tab-content">
+                        <c-hot_wage-claim-list_v2
+                            record-id={recordId}
+                            data-name="wageClaim"
+                            onsendfilters={handleFilters}
+                            onsendrecords={handleRecords}
+                            onsenddetail={handleDetails}
+                        >
+                        </c-hot_wage-claim-list_v2>
+                    </div>
+                </template>
+
+                <!-- Wanted Service Appointments List table -->
+                <template lwc:if={isWantedTab}>
+                    <div class="tab-content">
+                        <c-hot_wanted-service-appointments-list_v2
+                            record-id={recordId}
+                            data-name="wanted"
+                            onsendfilters={handleFilters}
+                            onsendrecords={handleRecords}
+                            onsenddetail={handleDetails}
+                        >
+                        </c-hot_wanted-service-appointments-list_v2>
+                    </div>
+                </template>
+            </div>
+        </div>
+    </div>
+</template>

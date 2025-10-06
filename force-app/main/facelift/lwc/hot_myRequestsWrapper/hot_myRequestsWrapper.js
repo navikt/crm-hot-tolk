@@ -17,18 +17,20 @@ import REQUEST_ID from '@salesforce/schema/HOT_Request__c.Id';
 import WORKORDER_NOTIFY_DISPATCHER from '@salesforce/schema/WorkOrder.HOT_IsNotifyDispatcher__c';
 import WORKORDER_STATUS from '@salesforce/schema/WorkOrder.Status';
 import WORKORDER_ID from '@salesforce/schema/WorkOrder.Id';
-
 import USER_ID from '@salesforce/user/Id';
 import USER_ACCOUNT_ID from '@salesforce/schema/User.AccountId';
 
 import { formatRecord, formatDatetime, formatDate } from 'c/datetimeFormatterNorwegianTime';
+import icons from '@salesforce/resourceUrl/ikoner';
 
 export default class Hot_myRequestsWrapper extends NavigationMixin(LightningElement) {
+    exitCrossIcon = icons + '/Close/Close.svg';
     @api header;
     @api isAccount;
     recordId;
     filters = [];
     labelMap = labelMap;
+    showLoader = false;
     get isMobile() {
         return window.screen.width < 768;
     }
@@ -76,19 +78,18 @@ export default class Hot_myRequestsWrapper extends NavigationMixin(LightningElem
 
     records = [];
     allRecords = [];
+    viewRows = [];
     noWorkOrders = false;
     wiredgetWorkOrdersResult;
     @wire(getMyWorkOrdersAndRelatedRequest, { isAccount: '$isAccount' })
     wiredgetWorkOrdersHandler(result) {
         this.wiredgetWorkOrdersResult = result;
         if (result.data) {
-            let tempRecords = [];
-            for (let record of result.data) {
-                tempRecords.push(formatRecord(Object.assign({}, record), this.datetimeFields));
-            }
+            const tempRecords = result.data.map((rec) => formatRecord({ ...rec }, this.datetimeFields));
             this.records = tempRecords;
             this.noWorkOrders = this.records.length === 0;
             this.allRecords = [...tempRecords];
+            this.viewRows = this.flattenRecords(this.records);
             this.refresh(false);
         }
     }
@@ -121,20 +122,12 @@ export default class Hot_myRequestsWrapper extends NavigationMixin(LightningElem
 
     getRecords() {
         this.resetRequestAndWorkOrder();
-        let recordId = this.urlStateParameters.id;
+        const recordId = this.urlStateParameters.id;
         for (let record of this.records) {
             if (recordId === record.Id) {
                 this.workOrder = record;
                 this.request = record.HOT_Request__r;
                 this.recordId = record.HOT_Request__r.Id;
-
-                getThreadInterpreterId({ workOrderId: this.workOrder.Id }).then((result) => {
-                    if (result != '') {
-                        this.workOrderThreadId = result;
-                    } else {
-                        this.workOrderThreadId = undefined;
-                    }
-                });
             }
         }
         if (this.request.Id !== undefined) {
@@ -147,10 +140,10 @@ export default class Hot_myRequestsWrapper extends NavigationMixin(LightningElem
         return records.map((record) => ({
             Id: record.Id,
             StartAndEndDate: record.StartAndEndDate,
-            Status: record.Status,
+            Status: record?.HOT_ExternalWorkOrderStatus__c ?? record.Status,
             Subject: record.HOT_Request__r?.Subject__c,
-            HOT_Request__r: record.HOT_Request__r,
-            HOT_ExternalWorkOrderStatus__c: record.WorkOrder.HOT_ExternalWorkOrderStatus__c
+            HOT_AddressFormated__c: record.HOT_AddressFormated__c,
+            HOT_Interpreters__c: record.HOT_Interpreters__c
         }));
     }
 
@@ -188,7 +181,7 @@ export default class Hot_myRequestsWrapper extends NavigationMixin(LightningElem
     isWOCancelButtonDisabled = false;
     isWOAddFilesButtonDisabled = false;
     setButtonStates() {
-        let tempEndDate = this.isRequestDetails
+        const tempEndDate = this.isRequestDetails
             ? new Date(this.request.SeriesEndDate__c)
             : new Date(this.workOrder.EndDate);
         const oneYearAgo = new Date(new Date().setFullYear(new Date().getFullYear() - 1));
@@ -222,14 +215,18 @@ export default class Hot_myRequestsWrapper extends NavigationMixin(LightningElem
 
     goToRecordDetails(event) {
         window.scrollTo(0, 0);
-        const record = event.detail;
-        let recordId = record.Id;
-        let level = record.HOT_Request__r.IsSerieoppdrag__c ? 'R' : 'WO';
+        const record = event?.detail?.row ?? event?.detail ?? {};
+        const recordId = record.Id;
+        const fullRecord = this.records.find((r) => r.Id === recordId);
+        if (!fullRecord) {
+            return;
+        }
+
+        let level = fullRecord?.HOT_Request__r?.IsSerieoppdrag__c ? 'R' : 'WO';
         if (this.urlStateParameters.level === 'R') {
             level = 'WO';
         }
-        this.urlStateParameters.id = recordId;
-        this.urlStateParameters.level = level;
+        this.urlStateParameters = { ...this.urlStateParameters, id: recordId, level };
         this.refresh(true);
     }
 
@@ -255,11 +252,7 @@ export default class Hot_myRequestsWrapper extends NavigationMixin(LightningElem
             this.copyButtonLabel = 'Kopier';
             this.cancelButtonLabel = 'Avlys';
             this.isThreadButtonDisabled = false;
-            if (this.workOrder.HOT_Interpreters__c != null) {
-                this.isInterpreterThreadButtonDisabled = false;
-            } else {
-                this.isInterpreterThreadButtonDisabled = true;
-            }
+            this.isInterpreterThreadButtonDisabled = this.workOrder.HOT_Interpreters__c == null;
         }
         if (this.request.IsAccountEqualOrderer__c == false && this.request.Orderer__c == this.userAccountId) {
             this.threadOrdererUserButtonLabel = 'Samtale med bruker';
@@ -335,11 +328,11 @@ export default class Hot_myRequestsWrapper extends NavigationMixin(LightningElem
     filteredRecordsLength = 0;
     noFilteredRecords = false;
     applyFilter(event) {
-        let setRecords = event.detail.setRecords;
+        const setRecords = event.detail.setRecords;
         this.filters = event.detail.filterArray;
 
-        let filteredRecords = [];
-        let recordsToFilter = this.isRequestDetails ? this.workOrders : this.allRecords;
+        const filteredRecords = [];
+        const recordsToFilter = this.isRequestDetails ? this.workOrders : this.allRecords;
 
         for (let record of recordsToFilter) {
             let includeRecord = true;
@@ -354,8 +347,8 @@ export default class Hot_myRequestsWrapper extends NavigationMixin(LightningElem
         this.noFilteredRecords = recordsToFilter.length > 0 && filteredRecords.length === 0;
 
         if (setRecords) {
-            this.records = filteredRecords;
-            this.records = this.flattenRecords(filteredRecords);
+            this.records = filteredRecords.map((r) => ({ ...r }));
+            this.viewRows = this.flattenRecords(filteredRecords);
         }
     }
 
@@ -409,7 +402,8 @@ export default class Hot_myRequestsWrapper extends NavigationMixin(LightningElem
     }
 
     cancelOrder() {
-        let tempEndDate = this.isRequestDetails
+        this.isRequestCancelButtonDisabled = true;
+        const tempEndDate = this.isRequestDetails
             ? new Date(this.request.SeriesEndDate__c)
             : new Date(this.workOrder.EndDate);
         if (
@@ -424,11 +418,12 @@ export default class Hot_myRequestsWrapper extends NavigationMixin(LightningElem
                     'Er du sikker på at du vil avlyse bestillingen?\nDato: ' + this.workOrder.StartAndEndDate;
             }
             this.isCancel = true;
-            this.noCancelButton = false;
+            this.isCancelButton = true;
+            this.showModalContent = true;
             this.showModal();
         } else {
             this.modalContent = 'Du kan ikke avlyse denne bestillingen.';
-            this.noCancelButton = true;
+            this.isCancelButton = false;
             this.showModal();
         }
     }
@@ -447,49 +442,54 @@ export default class Hot_myRequestsWrapper extends NavigationMixin(LightningElem
         });
     }
 
-    cancelAndRefreshApex() {
+    async cancelAndRefreshApex() {
+        this.isNotSubmitted = false;
         this.showCancelUploadButton = false;
-        this.template.querySelector('.ReactModal__Overlay').classList.remove('hidden');
-        this.template.querySelector('.loader').classList.remove('hidden');
+        this.showSubmittedLoading = true;
+        this.showModalContent = false;
         const fields = {};
         if (this.urlStateParameters.level === 'R') {
-            updateRelatedWorkOrders({ requestId: this.request.Id })
-                .then(() => {
-                    refreshApex(this.wiredgetWorkOrdersResult);
-                    this.noCancelButton = true;
-                    this.template.querySelector('.ReactModal__Overlay').classList.add('hidden');
-                    this.template.querySelector('.loader').classList.add('hidden');
-                    this.modalContent = 'Bestillingen er avlyst.';
-                    this.showModal();
-                })
-                .catch(() => {
-                    this.noCancelButton = true;
-                    this.template.querySelector('.ReactModal__Overlay').classList.add('hidden');
-                    this.template.querySelector('.loader').classList.add('hidden');
-                    this.modalContent = 'Kunne ikke avlyse denne bestillingen.';
-                    this.showModal();
-                });
+            try {
+                await updateRelatedWorkOrders({ requestId: this.request.Id });
+                await refreshApex(this.wiredgetWorkOrdersResult);
+                this.refresh(false);
+                this.isCancelButton = false;
+                this.showSubmittedLoading = false;
+                this.showSubmittedTrue = true;
+                this.showModalContent = true;
+                this.modalContent = 'Bestillingen er avlyst.';
+                this.showModal();
+            } catch (e) {
+                this.isCancelButton = false;
+                this.showSubmittedLoading = false;
+                this.showModalContent = true;
+                this.showSubmittedError = true;
+                this.modalContent = 'Kunne ikke avlyse denne bestillingen.';
+                this.showModal();
+            }
         } else {
             fields[WORKORDER_ID.fieldApiName] = this.workOrder.Id;
             fields[WORKORDER_STATUS.fieldApiName] = 'Canceled';
             fields[WORKORDER_NOTIFY_DISPATCHER.fieldApiName] = true;
             const recordInput = { fields };
-            updateRecord(recordInput)
-                .then(() => {
-                    refreshApex(this.wiredgetWorkOrdersResult);
-                    this.noCancelButton = true;
-                    this.template.querySelector('.ReactModal__Overlay').classList.add('hidden');
-                    this.template.querySelector('.loader').classList.add('hidden');
-                    this.modalContent = 'Bestillingen er avlyst.';
-                    this.showModal();
-                })
-                .catch(() => {
-                    this.noCancelButton = true;
-                    this.template.querySelector('.ReactModal__Overlay').classList.add('hidden');
-                    this.template.querySelector('.loader').classList.add('hidden');
-                    this.modalContent = 'Kunne ikke avlyse denne bestillingen.';
-                    this.showModal();
-                });
+            try {
+                await updateRecord(recordInput);
+                await refreshApex(this.wiredgetWorkOrdersResult);
+                this.refresh(false);
+                this.isCancelButton = false;
+                this.showSubmittedLoading = false;
+                this.showModalContent = true;
+                this.showSubmittedTrue = true;
+                this.modalContent = 'Bestillingen er avlyst.';
+                this.showModal();
+            } catch (e) {
+                this.isCancelButton = false;
+                this.showSubmittedLoading = false;
+                this.showModalContent = true;
+                this.showSubmittedError = true;
+                this.modalContent = 'Kunne ikke avlyse denne bestillingen.';
+                this.showModal();
+            }
         }
     }
 
@@ -501,7 +501,7 @@ export default class Hot_myRequestsWrapper extends NavigationMixin(LightningElem
         this.checkboxValue = false;
         this.isAddFiles = true;
         this.showUploadFilesComponent = true;
-        let detailPage = this.template.querySelector('.ReactModal__Overlay');
+        const detailPage = this.template.querySelector('.ReactModal__Overlay');
         detailPage.classList.remove('hidden');
         detailPage.focus();
     }
@@ -534,7 +534,7 @@ export default class Hot_myRequestsWrapper extends NavigationMixin(LightningElem
         if (this.template.querySelector('c-record-files-without-sharing') !== null) {
             this.template.querySelector('c-record-files-without-sharing').refreshContentDocuments();
         }
-        this.template.querySelector('.loader').classList.add('hidden');
+        this.showLoader = false;
         this.modalHeader = 'Suksess!';
         // Only show pop-up modal if in add files window
         if (this.isAddFiles) {
@@ -544,7 +544,7 @@ export default class Hot_myRequestsWrapper extends NavigationMixin(LightningElem
     }
 
     onUploadError(err) {
-        this.template.querySelector('.loader').classList.add('hidden');
+        this.showLoader = false;
         this.modalHeader = 'Noe gikk galt';
         this.modalContent = 'Kunne ikke laste opp fil(er). Feilmelding: ' + err;
         this.showModal();
@@ -561,13 +561,13 @@ export default class Hot_myRequestsWrapper extends NavigationMixin(LightningElem
     }
 
     uploadFilesOnSave() {
-        let file = this.fileLength > 1 ? 'Filene' : 'Filen';
+        const file = this.fileLength > 1 ? 'Filene' : 'Filen';
         this.modalContent = file + ' ble lagt til i bestillingen.';
         this.validateCheckbox();
         // Show spinner
         if (this.checkboxValue) {
             this.showCancelUploadButton = false;
-            this.template.querySelector('.loader').classList.remove('hidden');
+            this.showLoader = true;
             this.showUploadFilesComponent = false;
         }
         this.handleFileUpload();
@@ -575,35 +575,46 @@ export default class Hot_myRequestsWrapper extends NavigationMixin(LightningElem
     }
 
     setFileConsent() {
-        let fields = {};
+        const fields = {};
         fields[REQUEST_ID.fieldApiName] = this.request.Id;
         fields[FILE_CONSENT.fieldApiName] = this.checkboxValue;
         const recordInput = { fields };
         updateRecord(recordInput);
     }
 
+    showSubmittedLoading = false;
+    showSubmittedError = false;
+    showSubmittedTrue = false;
+    showModalContent = false;
+    isNotSubmitted = true;
+
     isCancel = false;
-    noCancelButton = true;
+    isCancelButton = false;
     modalHeader = 'Varsel';
     modalContent = 'Noe gikk galt';
     isAlertdialogConfirm = false;
-    handleAlertDialogClick(event) {
-        if (event.detail === 'confirm' && this.isCancel) {
+    alertButtonLabelConfirm = 'Ja';
+
+    handleAlertDialogClick() {
+        if (this.isCancel) {
             this.cancelAndRefreshApex();
             this.isCancel = false;
+            this.alertButtonLabelConfirm = 'Ok';
+        } else {
+            this.alertButtonLabelConfirm = 'Ja';
+            this.closeModal();
         }
-        if (event.detail === 'confirm' && this.modalContent === 'Bestillingen er avlyst.') {
-            this[NavigationMixin.Navigate]({
-                type: 'comm__namedPage',
-                attributes: {
-                    pageName: 'mine-bestillinger'
-                }
-            });
-        }
+    }
+    closeModal() {
+        this.setButtonStates();
+        const dialog = this.template.querySelector('dialog');
+        dialog.close();
     }
 
     showModal() {
-        this.template.querySelector('c-alertdialog').showModal();
+        const dialog = this.template.querySelector('dialog');
+        dialog.showModal();
+        dialog.focus();
     }
 
     deleteMarkedFiles() {
@@ -651,14 +662,15 @@ export default class Hot_myRequestsWrapper extends NavigationMixin(LightningElem
                     this.navigateToThread(this.threadDispatcherId);
                 } else {
                     createThread({ recordId: this.request.Id, accountId: this.request.Orderer__c })
-                        .then((result) => {
+                        .then(async (result) => {
                             this.navigateToThread(result.Id);
-                            refreshApex(this.wiredgetWorkOrdersResult);
+                            await refreshApex(this.wiredgetWorkOrdersResult);
+                            this.refresh(false);
                         })
                         .catch((error) => {
                             this.modalHeader = 'Noe gikk galt';
                             this.modalContent = 'Kunne ikke åpne samtale. Feilmelding: ' + error;
-                            this.noCancelButton = true;
+                            this.isCancelButton = false;
                             this.showModal();
                         });
                 }
@@ -671,14 +683,15 @@ export default class Hot_myRequestsWrapper extends NavigationMixin(LightningElem
                     this.navigateToThread(this.threadDispatcherId);
                 } else {
                     createThread({ recordId: this.request.Id, accountId: this.request.Account__c })
-                        .then((result) => {
+                        .then(async (result) => {
                             this.navigateToThread(result.Id);
-                            refreshApex(this.wiredgetWorkOrdersResult);
+                            await refreshApex(this.wiredgetWorkOrdersResult);
+                            this.refresh(false);
                         })
                         .catch((error) => {
                             this.modalHeader = 'Noe gikk galt';
                             this.modalContent = 'Kunne ikke åpne samtale. Feilmelding: ' + error;
-                            this.noCancelButton = true;
+                            this.isCancelButton = false;
                             this.showModal();
                         });
                 }
@@ -691,14 +704,15 @@ export default class Hot_myRequestsWrapper extends NavigationMixin(LightningElem
                     this.navigateToThread(this.threadDispatcherId);
                 } else {
                     createThread({ recordId: this.request.Id, accountId: this.request.Account__c })
-                        .then((result) => {
+                        .then(async (result) => {
                             this.navigateToThread(result.Id);
-                            refreshApex(this.wiredgetWorkOrdersResult);
+                            await refreshApex(this.wiredgetWorkOrdersResult);
+                            this.refresh(false);
                         })
                         .catch((error) => {
                             this.modalHeader = 'Noe gikk galt';
                             this.modalContent = 'Kunne ikke åpne samtale. Feilmelding: ' + error;
-                            this.noCancelButton = true;
+                            this.isCancelButton = false;
                             this.showModal();
                         });
                 }
@@ -707,23 +721,27 @@ export default class Hot_myRequestsWrapper extends NavigationMixin(LightningElem
     }
     goToThreadInterpreter() {
         this.isInterpreterThreadButtonDisabled = true;
-        if (this.workOrderThreadId !== undefined) {
-            this.navigateToThread(this.workOrderThreadId);
-        } else {
-            createThread({ recordId: this.workOrder.Id, accountId: this.request.Account__c })
-                .then((result) => {
-                    this.navigateToThread(result.Id);
-                    refreshApex(this.wiredgetWorkOrdersResult);
-                    this.workOrderThreadId = result.Id;
-                })
-                .catch((error) => {
-                    this.modalHeader = 'Noe gikk galt';
-                    this.modalContent = 'Kunne ikke åpne samtale. Feilmelding: ' + error;
-                    this.noCancelButton = true;
-                    this.isThreadButtonDisabled = false;
-                    this.showModal();
-                });
-        }
+        getThreadInterpreterId({ workOrderId: this.workOrder.Id }).then((result) => {
+            if (result != '') {
+                this.workOrderThreadId = result;
+                this.navigateToThread(this.workOrderThreadId);
+            } else {
+                createThread({ recordId: this.workOrder.Id, accountId: this.request.Account__c })
+                    .then(async (result) => {
+                        this.navigateToThread(result.Id);
+                        await refreshApex(this.wiredgetWorkOrdersResult);
+                        this.refresh(false);
+                        this.workOrderThreadId = result.Id;
+                    })
+                    .catch((error) => {
+                        this.modalHeader = 'Noe gikk galt';
+                        this.modalContent = 'Kunne ikke åpne samtale. Feilmelding: ' + error;
+                        this.isCancelButton = false;
+                        this.isThreadButtonDisabled = false;
+                        this.showModal();
+                    });
+            }
+        });
     }
     goToThreadOrdererUser() {
         getThreadRequestId({ requestId: this.request.Id, type: 'HOT_BRUKER-BESTILLER' }).then((result) => {
@@ -732,15 +750,16 @@ export default class Hot_myRequestsWrapper extends NavigationMixin(LightningElem
                 this.navigateToThread(this.threadDispatcherId);
             } else {
                 createThreadOrdererUser({ recordId: this.request.Id, accountId: this.request.Account__c })
-                    .then((result) => {
+                    .then(async (result) => {
                         this.navigateToThread(result.Id);
-                        refreshApex(this.wiredgetWorkOrdersResult);
+                        await refreshApex(this.wiredgetWorkOrdersResult);
+                        this.refresh(false);
                         this.workOrderThreadId = result.Id;
                     })
                     .catch((error) => {
                         this.modalHeader = 'Noe gikk galt';
                         this.modalContent = 'Kunne ikke åpne samtale. Feilmelding: ' + error;
-                        this.noCancelButton = true;
+                        this.isCancelButton = false;
                         this.isThreadButtonDisabled = false;
                         this.showModal();
                     });

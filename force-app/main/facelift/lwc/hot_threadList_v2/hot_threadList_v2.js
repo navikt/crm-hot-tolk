@@ -16,6 +16,9 @@ export default class Hot_threadList_v2 extends NavigationMixin(LightningElement)
     searchValue;
 
     sortedThreads = [];
+    wiredThreadsResult;
+    unreadThreadsCount;
+
 
     get headerText() {
         if (this.isFreelanceView) {
@@ -24,28 +27,26 @@ export default class Hot_threadList_v2 extends NavigationMixin(LightningElement)
             return 'Mine samtaler';
         }
     }
-
-    @wire(getMyThreads, { isFreelance: '$isFreelanceView' })
-    wiredThreads({ data, error }) {
-        if (data) {
-            this.threads = data;
-            this.error = undefined;
-            this.tryMapAndSortThreads();
-        } else if (error) {
-            this.error = error;
-            this.threads = undefined;
-        }
-        console.log('wire error:', error);
+    connectedCallback() {
+        this.loadData();
     }
-    @wire(getContactId, {})
-    wiredContactId({ data, error }) {
-        if (data) {
-            this.userContactId = data;
-            this.tryMapAndSortThreads();
-        } else if (error) {
-            this.error = error;
-        }
-        console.log('contactid feil', error);
+
+    loadData() {
+        getContactId()
+            .then((contactId) => {
+                this.userContactId = contactId;
+                return getMyThreads({ isFreelance: this.isFreelanceView });
+            })
+            .then((threadData) => {
+                this.threads = threadData;
+                this.error = undefined;
+                this.tryMapAndSortThreads();
+            })
+            .catch((error) => {
+                this.error = error;
+                this.threads = [];
+                console.error('Feil i henting av data:', error);
+            });
     }
     handleFilterButtonClick(event) {
         this.filterValue = event.detail;
@@ -99,6 +100,9 @@ export default class Hot_threadList_v2 extends NavigationMixin(LightningElement)
                 if (a.isRead !== b.isRead) return a.isRead ? 1 : -1; // ulest først
                 return b.latestMessageSent - a.latestMessageSent; // nyeste først
             });
+
+        this.unreadThreadsCount = this.sortedThreads.filter((t) => !t.isRead).length;
+
         if (this.sortedThreads.length == 0) {
             this.noTreads = true;
             this.hasThreads = false;
@@ -173,6 +177,11 @@ export default class Hot_threadList_v2 extends NavigationMixin(LightningElement)
                     recordId: event.detail,
                     objectApiName: 'Thread__c',
                     actionName: 'view'
+                },
+                state: {
+                    from: 'mine-samtaler',
+                    recordId: event.detail,
+                    level: 'WO'
                 }
             });
         }

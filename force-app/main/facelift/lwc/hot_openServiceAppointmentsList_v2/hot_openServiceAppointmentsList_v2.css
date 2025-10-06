@@ -1,0 +1,181 @@
+.main-content {
+    background-color: #fff;
+    border-radius: 0.5rem;
+    width: 100%;
+    font-family: 'Source Sans Pro', Arial, sans-serif;
+    align-items: center;
+    padding-top: 0.5rem;
+    text-align: end;
+}
+
+.submit,
+.submitted-error,
+.submitted-loading,
+.submitted-true {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-direction: column;
+    text-align: center;
+    padding: 2rem;
+}
+
+span {
+    font-weight: normal;
+}
+
+lightning-input-field.ikke-sensitive-opplysninger > lightning-textarea > label:after {
+    content: ' (ingen sensitive opplysninger)';
+}
+
+.no-padding form {
+    padding: 0;
+}
+
+.comment-form > form {
+    padding: 25px 0;
+}
+
+@media (max-width: 576px) {
+    .main-content {
+        background-color: #fff;
+        border-radius: 0.5rem;
+        max-width: 100%;
+        margin: 0 auto;
+        overflow-x: hidden;
+        font-family: 'Source Sans Pro', Arial, sans-serif;
+        align-items: center;
+        padding-top: 0.5rem;
+        text-align: end;
+    }
+}
+
+.meld-interesse-overlay {
+    position: fixed;
+    height: 100px;
+    width: 100%;
+    bottom: 0;
+    left: 0;
+    border-top: 2px solid #2c2c2c8e;
+    z-index: 1;
+
+    background-color: white;
+}
+.meld-interesse-content {
+    width: 100%;
+    height: 100%;
+    display: flex;
+    justify-content: end;
+    align-items: center;
+    padding-right: 2rem;
+}
+.loader-container {
+    display: flex;
+    justify-content: center;
+    align-items: flex-start;
+    padding-top: 5rem;
+}
+
+dialog.modal-container h2 {
+    font-family: 'Source Sans Pro', Arial, sans-serif;
+}
+dialog::backdrop {
+    background-color: rgba(0, 0, 0, 0.6);
+    z-index: 10000;
+}
+
+/* Selve dialogen (default skjult) */
+dialog.modal-container {
+    z-index: 10001;
+    background: white;
+    border-radius: 0.5rem;
+    max-width: 40rem;
+    width: 90%;
+    max-height: 90vh;
+    overflow-y: auto;
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.3);
+
+    padding: 0;
+    border: none;
+    display: none;
+    flex-direction: column;
+
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    margin: auto;
+}
+
+/* Når dialogen er åpen */
+dialog[open].modal-container {
+    display: flex;
+}
+
+dialog.modal-container .modal-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 2rem;
+    font-size: 1.5rem;
+}
+
+dialog.modal-container .modal-body {
+    padding: 0 2rem 2rem;
+}
+
+dialog.modal-container .modal-footer {
+    padding: 2rem;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 1rem;
+    justify-content: flex-start;
+}
+
+dialog.modal-container .close-btn {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: none;
+    border: 4px solid transparent;
+    border-radius: 4px;
+    cursor: pointer;
+}
+
+dialog.modal-container .close-btn:focus {
+    border-color: #0067c5;
+    outline: none;
+}
+
+dialog.modal-container .close-btn:hover {
+    background-color: #e1e3e6;
+}
+
+@media (max-width: 600px) {
+    dialog.modal-container {
+        width: 100%;
+        max-width: 100%;
+        height: 100vh;
+        max-height: 100vh;
+        border-radius: 0;
+        padding: 1rem;
+        top: 0;
+        left: 0;
+        transform: none;
+    }
+    dialog.modal-container .close-btn {
+        background-color: #e0e3e6;
+    }
+
+    dialog.modal-container .modal-header,
+    dialog.modal-container .modal-body,
+    dialog.modal-container .modal-footer {
+        padding: 1rem;
+    }
+}
+.modal-container {
+    z-index: 1000;
+}
+
+/* MODAL CSS SLUTT */

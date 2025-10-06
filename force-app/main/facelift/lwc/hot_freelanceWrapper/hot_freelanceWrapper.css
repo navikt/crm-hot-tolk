@@ -8,6 +8,32 @@
     border-radius: 7px;
     margin-bottom: 3vh;
 }
+.boxLabel,
+.boxDescription {
+    display: block;
+}
+.unreadThreadsTag {
+    background-color: #ffd799;
+    width: fit-content;
+    border-radius: 4px;
+    padding-top: 0.1rem;
+    padding-bottom: 0.1rem;
+    padding-left: 0.7rem;
+    padding-right: 0.7rem;
+    font-size: 1.125rem;
+    margin-top: 0.5rem;
+}
+.sr-only {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    padding: 0;
+    margin: -1px;
+    overflow: hidden;
+    clip: rect(0, 0, 0, 0);
+    white-space: nowrap;
+    border: 0;
+}
 
 .freelanceHeader {
     color: #005b82;

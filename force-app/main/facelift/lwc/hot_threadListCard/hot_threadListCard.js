@@ -7,15 +7,19 @@ export default class Hot_threadListCard extends LightningElement {
         const threadId = event.currentTarget.value;
         this.dispatchEvent(new CustomEvent('threadbuttonclick', { detail: threadId }));
     }
-    get lastMessageAria() {
-        return 'Siste melding sendt: ${this.thread.lastMessageSentFormatted}';
-    }
-
-    get appointmentStartAria() {
-        return 'Oppdragsstart: ${this.thread.appointmentStartFormatted}';
-    }
-
-    get threadTypeAria() {
-        return 'Samtale ${this.thread.threadTypeName}';
+    get fullAriaLabel() {
+        return (
+            this.thread.statusText +
+            '. Samtale ' +
+            this.thread.threadTypeName +
+            '. Tema: ' +
+            this.thread.HOT_Subject__c +
+            '. ' +
+            'Siste melding sendt: ' +
+            this.thread.lastMessageSentFormatted +
+            '. Oppdragsstart: ' +
+            this.thread.appointmentStartFormatted +
+            '.'
+        );
     }
 }

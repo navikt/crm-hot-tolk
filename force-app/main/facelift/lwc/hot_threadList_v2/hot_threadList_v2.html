@@ -18,6 +18,18 @@
             </div>
             <div class="threadList">
                 <div class="left">
+                    <!-- Skjermleser-informasjon om antall samtaler -->
+                    <div class="sr-only" tabindex="0" aria-live="polite" role="status">
+                        <template lwc:if={hasThreads}>
+                            <p>
+                                Du har {sortedThreads.length} samtaler i listen med dette filteret. {unreadThreadsCount}
+                                uleste samtaler
+                            </p>
+                        </template>
+                        <template lwc:if={noTreads}>
+                            <p>Ingen samtaler</p>
+                        </template>
+                    </div>
                     <div class="leftSpacer"></div>
                     <c-hot_thread-list-filter-buttons
                         is-freelance-view={isFreelanceView}
@@ -34,8 +46,10 @@
                         <p class="left-text"></p>
                         <p lwc:if={hasThreads} class="right-text">Siste melding sendt</p>
                     </div>
-                    <div lwc:if={noTreads} class="noThreads">
-                        <p>Ingen samtaler</p>
+                    <div class="noThreads">
+                        <template lwc:if={noTreads}>
+                            <p>Ingen samtaler</p>
+                        </template>
                     </div>
                     <template for:each={sortedThreads} for:item="thread">
                         <c-hot_thread-list-card
