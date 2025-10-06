@@ -1,4 +1,4 @@
-import { LightningElement, wire, api } from 'lwc';
+import { LightningElement, api } from 'lwc';
 import FULL_CALENDAR from '@salesforce/resourceUrl/FullCalendar';
 import { loadScript, loadStyle } from 'lightning/platformResourceLoader';
 import getCalendarEvents from '@salesforce/apex/HOT_FullCalendarController.getCalendarEvents';
@@ -41,7 +41,6 @@ export default class LibsFullCalendarV2 extends NavigationMixin(LightningElement
     exitCrossIcon = icons + '/Close/Close.svg';
     warningicon = icons2 + '/warningicon.svg';
 
-    showDetails = false;
     isLoading = false;
     isMobileSize = false;
     earliestTime;
