@@ -1,5 +1,5 @@
 <template>
-    <article role="article">
+    <article role="article" aria-label={ariaLabelText}>
         <div class="body-wrapper">
             <div class="snakkeboble snakkeboble--venstre">
                 <lightning-layout class="slds-m-top_x-small slds-p-top_small layout-container" multiple-rows="false">
@@ -10,7 +10,7 @@
                         flexibility="auto"
                     >
                         <div class="panel snakkeboble-panel">
-                            <div class="snakkeboble-panel__tekst" aria-label="Melding fra NAV ansatt">
+                            <div class="snakkeboble-panel__tekst">
                                 <h2 class="message-from inline-block">{message.HOT_User_Role__c}</h2>
                                 <div class="datewrapper inline-block">
                                     <c-hot_nav-formatted-date

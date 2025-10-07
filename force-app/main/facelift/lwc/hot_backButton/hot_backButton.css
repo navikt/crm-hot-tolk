@@ -1,70 +1,47 @@
-.full-width-container {
-    background-color: transparent;
-    padding: 2vw;
-    font-family: 'Source Sans 3', 'Source Sans Pro', Arial, sans-serif;
-    box-sizing: border-box;
-}
-
-.inline-container {
-    background-color: transparent;
-    font-family: 'Source Sans 3', 'Source Sans Pro', Arial, sans-serif;
-    box-sizing: border-box;
-}
-
-.back-button {
-    all: unset;
+.navigation-button {
     display: inline-flex;
     align-items: center;
-    gap: 0.4rem;
-    font-size: 1.2rem;
-    font-weight: 600;
-    line-height: 1.4;
-    color: #000000;
+    gap: 0.5rem;
+    padding: 0.5rem 0.8rem;
+    margin: 0;
+    border: 4px solid #f2f3f5;
+    border-radius: 4px;
     cursor: pointer;
+    background-color: #f2f3f5;
     user-select: none;
+    -webkit-user-select: none;
+    -ms-user-select: none;
+}
+
+.back-label {
+    font-size: 0.9rem;
+    font-weight: bold;
+    font-family: 'Source Sans 3', 'Source Sans Pro', Arial, sans-serif;
+}
+.navigation-button img {
+    width: 16px;
+    height: 16px;
+}
+.button-container {
+    display: flex;
+    gap: 1rem;
     padding-top: 1rem;
+    padding-bottom: 1rem;
     padding-left: 0.5rem;
-    border-radius: 0.25rem;
-    margin-left: 0.5rem;
 }
-
-.back-button:hover .back-label,
-.back-button:focus .back-label {
-    text-decoration: underline;
+.navigation-button:hover,
+.navigation-button:focus {
+    border-color: #0067c5;
+    background-color: #ffffff;
 }
-
-.back-button:focus {
-    outline: 2px solid #005fcc;
-    outline-offset: 3px;
-}
-
-.back-button:focus:not(:focus-visible) {
-    outline: none;
-}
-.back-button:focus-visible {
-    outline: 2px solid #005fcc;
-    outline-offset: 3px;
-}
-
-.back-icon {
-    --slds-c-icon-color-foreground-default: #000000;
-    margin-right: 0.2rem;
-    width: 1.2rem;
-    height: 1.2rem;
-}
-
 @media (max-width: 768px) {
-    .full-width-container {
-        padding: 1rem;
-    }
-    .inline-container {
-        padding: 0.5rem;
-    }
-
-    .back-button {
+    .navigation-button {
         font-size: 1rem;
-        padding: 0.5rem;
-        background-color: #f2f3f5;
+        padding: 0.5rem 0.75rem;
         margin-top: 0.5rem;
+    }
+    .button-container {
+        padding-top: 0.5rem;
+        padding-bottom: 0.5rem;
     }
 }

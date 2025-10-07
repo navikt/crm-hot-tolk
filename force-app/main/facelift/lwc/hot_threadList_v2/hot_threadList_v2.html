@@ -18,6 +18,18 @@
             </div>
             <div class="threadList">
                 <div class="left">
+                    <!-- Skjermleser-informasjon om antall samtaler -->
+                    <div class="sr-only" tabindex="0" aria-live="polite" role="status">
+                        <template lwc:if={hasThreads}>
+                            <p>
+                                Du har {sortedThreads.length} samtaler i listen med dette filteret. {unreadThreadsCount}
+                                uleste samtaler
+                            </p>
+                        </template>
+                        <template lwc:if={noTreads}>
+                            <p>Ingen samtaler</p>
+                        </template>
+                    </div>
                     <div class="leftSpacer"></div>
                     <c-hot_thread-list-filter-buttons
                         is-freelance-view={isFreelanceView}
@@ -28,15 +40,6 @@
                         helptext-hovertext={threadSearchHelpText}
                         onsearchchange={handleSearchChange}
                     ></c-hot_thread-list-search>
-                    <!-- Skjermleser-informasjon om antall samtaler -->
-                    <div class="sr-only" tabindex="0" aria-live="polite" role="status">
-                        <template lwc:if={hasThreads}>
-                            <p>Du har {sortedThreads.length} samtaler i listen med dette filteret</p>
-                        </template>
-                        <template lwc:if={noTreads}>
-                            <p>Ingen samtaler</p>
-                        </template>
-                    </div>
                 </div>
                 <div class="right">
                     <div class="rightHeader desktop-only">
