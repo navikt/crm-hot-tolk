@@ -8,39 +8,36 @@ export default class Hot_requestListCard extends LightningElement {
 
     recordMap = {};
 
+    // Decide middle/left/right columns based on labels/field names
     get fieldPlan() {
         const cols = Array.isArray(this.columns) ? this.columns : [];
-        const norm = (s) => (s || '').toString().trim().toLowerCase();
+        const lc = (s) => (s || '').toString().trim().toLowerCase();
+        const byLabel = (label) => cols.find((c) => lc(c.label) === lc(label));
+        const byField = (name) => cols.find((c) => lc(c.fieldName) === lc(name));
+        const labelIncludes = (frags) => cols.find((c) => frags.some((f) => lc(c.label).includes(f)));
 
-        const findByExactLabel = (label) => cols.find((c) => norm(c.label) === norm(label));
-        const findByLabelIncludes = (frags) =>
-            cols.find((c) => {
-                const l = norm(c.label);
-                return frags.some((f) => l.includes(f));
-            });
-        const findByFieldName = (name) => cols.find((c) => norm(c.fieldName) === norm(name));
-
-        const temaCol = findByExactLabel('Tema') || findByFieldName('Subject');
-        const tolkCol = findByExactLabel('Tolk') || findByFieldName('HOT_Interpreters__c');
+        const temaCol = byLabel('Tema') || byField('Subject');
+        const tolkCol = byLabel('Tolk') || byField('HOT_Interpreters__c');
 
         let primary =
             temaCol?.fieldName ||
             tolkCol?.fieldName ||
-            findByFieldName('Subject')?.fieldName ||
+            byField('Subject')?.fieldName ||
             cols.find((c) => c.fieldName !== 'StartAndEndDate')?.fieldName ||
             cols[0]?.fieldName;
 
         let secondary =
-            findByFieldName('StartAndEndDate')?.fieldName ||
-            findByLabelIncludes(['tid', 'time', 'dato', 'kl'])?.fieldName ||
+            byField('StartAndEndDate')?.fieldName ||
+            labelIncludes(['tid', 'time', 'dato', 'kl'])?.fieldName ||
             cols.find((c) => c.fieldName !== primary)?.fieldName;
 
         let tertiary =
-            findByExactLabel('Adresse')?.fieldName ||
-            findByLabelIncludes(['adresse', 'address'])?.fieldName ||
+            byLabel('Adresse')?.fieldName ||
+            labelIncludes(['adresse', 'address'])?.fieldName ||
             cols.find((c) => c.fieldName !== primary && c.fieldName !== secondary)?.fieldName ||
             null;
 
+        // De-duplicate
         if (secondary === primary) {
             secondary = cols.find((c) => c.fieldName !== primary)?.fieldName || secondary;
         }
@@ -48,28 +45,28 @@ export default class Hot_requestListCard extends LightningElement {
             const alt = cols.find((c) => c.fieldName !== primary && c.fieldName !== secondary)?.fieldName;
             tertiary = alt || tertiary;
         }
-
         return { primary, secondary, tertiary };
     }
 
     get recordsToShow() {
-        const processed = [];
+        const out = [];
         this.recordMap = {};
-
-        if (!Array.isArray(this.records) || !Array.isArray(this.columns)) return processed;
+        if (!Array.isArray(this.records) || !Array.isArray(this.columns)) return out;
 
         const { primary, secondary, tertiary } = this.fieldPlan;
+        const lc = (s) => (s || '').toString().trim().toLowerCase();
 
         for (const record of this.records) {
+            // Build normalized field list (apply labelMap for label/cssClass)
             const fields = this.columns.map((col) => {
-                const rawValue = record[col.fieldName];
-                const mapping = this.labelMap[col.fieldName]?.[rawValue];
+                const raw = record[col.fieldName];
+                const map = this.labelMap[col.fieldName]?.[raw];
                 return {
                     name: col.fieldName,
                     label: col.label,
-                    value: rawValue,
-                    displayLabel: mapping?.label ?? rawValue ?? '',
-                    cssClass: mapping?.cssClass ?? ''
+                    value: raw,
+                    displayLabel: map?.label ?? raw ?? '',
+                    cssClass: map?.cssClass ?? ''
                 };
             });
 
@@ -84,13 +81,14 @@ export default class Hot_requestListCard extends LightningElement {
 
             const fPrimary = getField(primary);
             const fSecondary = getField(secondary);
-            const fTertiary = tertiary ? getField(tertiary) : { displayLabel: '' };
+            const fTertiary = tertiary ? getField(tertiary) : { displayLabel: '', label: '' };
 
-            const lowerNames = ['status', 'status__c', 'hot_externalworkorderstatus__c', 'hot_status__c'];
-            let statusField = fields.find((f) => (f.label || '').trim().toLowerCase() === 'status') ||
-                fields.find((f) => lowerNames.includes((f.name || '').toLowerCase())) ||
+            // Status detection: by label, field name, or css class hints; fallback to record.Status
+            const statusNameCandidates = ['status', 'status__c', 'hot_externalworkorderstatus__c', 'hot_status__c'];
+            const statusField = fields.find((f) => lc(f.label) === 'status') ||
+                fields.find((f) => statusNameCandidates.includes(lc(f.name))) ||
                 fields.find((f) => {
-                    const cls = (f.cssClass || '').toLowerCase();
+                    const cls = lc(f.cssClass);
                     return (
                         cls.startsWith('label-') ||
                         cls.includes('status') ||
@@ -105,94 +103,67 @@ export default class Hot_requestListCard extends LightningElement {
                     cssClass: this.labelMap?.Status?.[record?.Status]?.cssClass ?? ''
                 };
 
-            const statusClassCombined = ['status-label', statusField.cssClass].filter(Boolean).join(' ');
+            const statusClass = ['status-label', statusField.cssClass].filter(Boolean).join(' ');
 
-            const tagFields = fields.filter((f) => {
-                if (!f.displayLabel) return false;
-                const isCore =
-                    f.name === fPrimary.name ||
-                    f.name === fSecondary.name ||
-                    f.name === fTertiary.name ||
-                    f === statusField;
-                return !isCore;
-            });
-
-            const isTolkField = (f) =>
-                (f.label || '').trim().toLowerCase() === 'tolk' ||
-                (f.name || '').trim().toLowerCase() === 'hot_interpreters__c';
-
-            const isEmptyValue = (f) => {
+            // Helpers
+            const isTolkField = lc(fPrimary.label) === 'tolk' || lc(fPrimary.name) === 'hot_interpreters__c';
+            const isEmpty = (f) => {
                 const v = f.displayLabel ?? f.value;
                 if (v === undefined || v === null) return true;
                 if (Array.isArray(v)) return v.length === 0;
                 return String(v).trim().length === 0;
             };
 
-            const primaryDisplayLabel = isTolkField(fPrimary)
-                ? isEmptyValue(fPrimary)
+            const primaryDisplayLabel = isTolkField
+                ? isEmpty(fPrimary)
                     ? 'Tolk: Ingen tolk er tildelt enda'
                     : `Tolk: ${fPrimary.displayLabel}`
                 : fPrimary.displayLabel;
 
+            const tagFields = fields.filter((f) => {
+                if (!f.displayLabel) return false;
+                const core = [fPrimary.name, fSecondary.name, fTertiary.name];
+                return !core.includes(f.name) && f !== statusField;
+            });
+
+            // ARIA
             const temaField =
-                fields.find((f) => (f.label || '').trim().toLowerCase() === 'tema') ||
-                fields.find((f) => (f.name || '').trim().toLowerCase() === 'subject');
+                fields.find((f) => lc(f.label) === 'tema') || fields.find((f) => lc(f.name) === 'subject');
 
-            const temaSpoken =
-                temaField && (temaField.displayLabel || temaField.value)
-                    ? `Tema: ${temaField.displayLabel || temaField.value}.`
-                    : '';
+            const pieces = [];
+            if (fSecondary.displayLabel) pieces.push(`${fSecondary.label || 'Tid'}: ${fSecondary.displayLabel}.`);
+            if (statusField.displayLabel) pieces.push(`Status: ${statusField.displayLabel}.`);
 
-            const secondarySpokenLabel = fSecondary.label || 'Tid';
-            const tertiarySpokenLabel = fTertiary.label || 'Adresse';
+            if (temaField && (temaField.displayLabel || temaField.value)) {
+                pieces.push(`Tema: ${temaField.displayLabel || temaField.value}.`);
+            } else if (isTolkField) {
+                pieces.push(`Tolk: ${isEmpty(fPrimary) ? 'Ingen tolk er tildelt enda' : fPrimary.displayLabel}.`);
+            } else if (fPrimary.displayLabel) {
+                pieces.push(`${fPrimary.label || 'Detalj'}: ${fPrimary.displayLabel}.`);
+            }
 
-            const primarySpokenLabel = fPrimary.label || (isTolkField(fPrimary) ? 'Tolk' : 'Detalj');
-            const primarySpokenValue =
-                isTolkField(fPrimary) && isEmptyValue(fPrimary)
-                    ? 'Ingen tolk er tildelt enda'
-                    : fPrimary.displayLabel || '';
+            if (fTertiary.displayLabel) pieces.push(`${fTertiary.label || 'Adresse'}: ${fTertiary.displayLabel}.`);
+            if (tagFields.length) pieces.push(`Andre detaljer: ${tagFields.map((t) => t.displayLabel).join(', ')}.`);
 
-            const dateFirst = fSecondary.displayLabel ? `${secondarySpokenLabel}: ${fSecondary.displayLabel}.` : '';
-            const statusSpoken = statusField.displayLabel ? `Status: ${statusField.displayLabel}.` : '';
-            const primaryOrTema =
-                temaSpoken || (primarySpokenValue ? `${primarySpokenLabel}: ${primarySpokenValue}.` : '');
-            const addressSpoken = fTertiary.displayLabel ? `${tertiarySpokenLabel}: ${fTertiary.displayLabel}.` : '';
+            const fullAriaLabel = pieces.join(' ');
 
-            const fullAriaLabel = [
-                dateFirst,
-                statusSpoken,
-                primaryOrTema,
-                addressSpoken,
-                tagFields.length ? `Andre detaljer: ${tagFields.map((t) => t.displayLabel).join(', ')}.` : ''
-            ]
-                .filter(Boolean)
-                .join(' ');
-
-            processed.push({
+            out.push({
                 id: record.Id,
                 original: record,
                 fields,
                 fullAriaLabel,
-
                 primary: fPrimary,
                 primaryDisplayLabel,
                 secondary: fSecondary,
                 tertiary: fTertiary,
-
-                secondaryMobilePrefix: fSecondary.label ? `${fSecondary.label}:` : '',
-                tertiaryPrefixDesktop: fTertiary.label ? `(${fTertiary.label}):` : '',
-                tertiaryPrefixMobile: fTertiary.label ? `${fTertiary.label}:` : '',
-
                 status: statusField,
-                statusClass: statusClassCombined,
-
-                tagFields
+                statusClass
             });
 
             this.recordMap[record.Id] = record;
         }
 
-        return processed;
+        return out;
     }
 
     get hasData() {
