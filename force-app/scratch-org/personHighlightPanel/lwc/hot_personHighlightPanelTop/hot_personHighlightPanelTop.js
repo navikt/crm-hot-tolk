@@ -1,10 +1,15 @@
-import { LightningElement, api } from 'lwc';
+import { LightningElement, api, wire } from 'lwc';
 import { ShowToastEvent } from 'lightning/platformShowToastEvent';
 
 import NAV_ICONS from '@salesforce/resourceUrl/HOT_navIcons';
 
+import getTolketjenesten from '@salesforce/apex/HOT_GetTolketjeneste.getTolketjeneste';
+
 export default class hot_personHighlightPanelTop extends LightningElement {
+    @api recordId;
     @api personDetails;
+    navUnitName;
+    error;
 
     handleCopy(event) {
         const eventValue = event.currentTarget.value;
@@ -38,12 +43,28 @@ export default class hot_personHighlightPanelTop extends LightningElement {
         this.dispatchEvent(evt);
     }
 
+    @wire(getTolketjenesten, {
+        recordId: '$recordId',
+        objectApiName: 'Account'
+    })
+    wiredTolketjenesten({ error, data }) {
+        if (data) {
+            this.navUnitName = data;
+            this.error = undefined;
+        } else if (error) {
+            this.error = error;
+            this.name = undefined;
+            console.error('getTolketjenesten error:', error);
+        }
+    }
+
     get formattedPersonInfo() {
         return [
             this.personDetails?.age,
             this.personDetails?.vedtak,
             this.personDetails?.citizenship,
-            this.personDetails?.legalStatus
+            this.personDetails?.legalStatus,
+            this.navUnitName
         ]
             .filter((x) => x != null)
             .join(' / ');
@@ -79,17 +100,5 @@ export default class hot_personHighlightPanelTop extends LightningElement {
 
     get personIdent() {
         return this.personDetails?.personIdent;
-    }
-    get municipalityName() {
-        return this.personDetails?.municipalityName;
-    }
-    get municipalityUrl() {
-        return this.personDetails?.municipalityUrl;
-    }
-    get districtName() {
-        return this.personDetails?.districtName;
-    }
-    get districtUrl() {
-        return this.personDetails?.districtUrl;
     }
 }

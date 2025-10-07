@@ -12,8 +12,12 @@
         </lightning-layout-item>
         <lightning-layout-item class="custom-padding-around-small custom-grid-vertical-align-center">
             <lightning-button label="Edit" onclick={handleEditRecord}> </lightning-button>
+        </lightning-layout-item>
+        <lightning-layout-item class="custom-padding-around-small custom-grid-vertical-align-center">
             <lightning-button label="Send SMS" onclick={handleFlowButton} data-flow="HOT_SendSMSToAccount">
             </lightning-button>
+        </lightning-layout-item>
+        <lightning-layout-item class="custom-padding-around-small custom-grid-vertical-align-center">
             <lightning-button
                 label="Styr tilgang til Mobil App"
                 onclick={handleFlowButton}
