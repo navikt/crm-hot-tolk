@@ -15,6 +15,7 @@ import getWageClaimDetails from '@salesforce/apex/HOT_WageClaimListController.ge
 import checkAccessToSA from '@salesforce/apex/HOT_MyServiceAppointmentListController.checkAccessToSA';
 import getInterestedResourceDetails from '@salesforce/apex/HOT_InterestedResourcesListController.getInterestedResourceDetails';
 import getThreadServiceAppointmentId from '@salesforce/apex/HOT_MyServiceAppointmentListController.getThreadServiceAppointmentId';
+import getServiceAppointment from '@salesforce/apex/HOT_MyServiceAppointmentListController.getServiceAppointment';
 import getServiceAppointmentDetails from '@salesforce/apex/HOT_MyServiceAppointmentListController.getServiceAppointmentDetails';
 import getThreadIdWC from '@salesforce/apex/HOT_WageClaimListController.getThreadId';
 import getThreadFreelanceId from '@salesforce/apex/HOT_MyServiceAppointmentListController.getThreadFreelanceId';
@@ -53,7 +54,6 @@ export default class LibsFullCalendarV2 extends NavigationMixin(LightningElement
     @api records;
     @api recordId;
     @api type;
-    @api fromUrlRedirect;
 
     // Service appointment properties
     saFreelanceThreadId;
@@ -184,7 +184,7 @@ export default class LibsFullCalendarV2 extends NavigationMixin(LightningElement
                 if (!event.extendedProps.isMultiDay && !event.extendedProps.isPseudoEvent) {
                     return;
                 } else if (event.extendedProps.isPseudoEvent) {
-                    // Has to hide a pseuo event if it is on the first day of the current view due to a conflict with
+                    // Has to hide a pseudo event if it is on the first day of the current view due to a conflict with
                     // an event injected by fullcalendar
                     const shouldHideFirstPseudoEventOfMonth =
                         event.start.getDate() == view.activeStart.getDate() &&
@@ -451,6 +451,7 @@ export default class LibsFullCalendarV2 extends NavigationMixin(LightningElement
         this.isNotRetractableDelete = false;
         this.isNotRetractableEdit = false;
         this.isAlertWageClaimEdit = false;
+        this.cancelStatusFlow();
 
         this.dispatchEvent(new CustomEvent('closemodal'));
     }
@@ -802,7 +803,7 @@ export default class LibsFullCalendarV2 extends NavigationMixin(LightningElement
                 if (data.HOT_CanceledByInterpreter__c) {
                     this.saIsflow = false;
                     this.saIsCancelButtonHidden = true;
-                    this.serviceAppointment.Status = 'Avlyst';
+                    this.serviceAppointment.Status = 'Tolk tar seg av';
                 }
             });
             this.refreshApexCallout();

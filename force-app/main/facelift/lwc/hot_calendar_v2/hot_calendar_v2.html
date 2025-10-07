@@ -135,11 +135,13 @@
                                             button-styling="Secondary" type="Submit" button-label="Avbryt">
                                         </c-button>
                                     </div>
-                                    <div lwc:if={saIsflow} class="flow-container">
-                                        <lightning-flow flow-api-name="HOT_ChangeServiceAppointmentStatus_V1"
+                                    <template lwc:if={saIsflow}>
+                                        <div class="flow-container">
+                                            <lightning-flow flow-api-name="HOT_ChangeServiceAppointmentStatus_V1"
                                             flow-input-variables={flowVariables}
                                             onstatuschange={handleStatusChange}></lightning-flow>
-                                    </div>
+                                        </div>
+                                    </template>
                                     <p>Samtale med:</p>
                                     <div class="button-container">
                                         <div class="button-wrapper">
