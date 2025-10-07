@@ -106,7 +106,7 @@ export default class Hot_userInformation_v2 extends LightningElement {
                         (!this.isReservedAgainstNotifications && option.name === this.selectedOption)
                 }));
             });
-            if (this.person.INT_SecurityMeasures__c != null || this.person.INT_SecurityMeasures__c != '') {
+            if (this.person.INT_SecurityMeasures__c != null && this.person.INT_SecurityMeasures__c !== '') {
                 this.hasSecurityMeasures = true;
                 let secMeasures = JSON.parse(this.person.INT_SecurityMeasures__c);
                 let securityMeasuresFormatted = [];
@@ -179,10 +179,20 @@ export default class Hot_userInformation_v2 extends LightningElement {
             // Show success message
             this.successMessage = 'Endringen har blitt lagret';
             this.showSuccess = true;
+
+            const newMessage = 'Endringen har blitt lagret';
+            if (this.ariaMessage === newMessage) {
+                this.ariaMessage = newMessage + ' '; 
+            } else {
+                this.ariaMessage = newMessage;
+            }
         });
     }
 
+    ariaMessage = '';
     handleCloseSuccess() {
         this.showSuccess = false;
+        this.successMessage = '';
+        this.ariaMessage = '';
     }
 }
