@@ -1,14 +1,26 @@
 echo "Oppretter scratch org"
 call sf org create scratch --definition-file config\project-scratch-def.json --alias %1 --duration-days %2 --set-default --json --wait 30
 
-echo "Installer crm-platform-base ver. 0.279"
-call sf package install --package 04tQC000000uij7YAA --no-prompt --installation-key %3 --wait 30 --publish-wait 30
+echo "Installer crm-platform-base ver. 0.289"
+call sf package install --package 04tQC000000yAe1YAE --no-prompt --installation-key %3 --wait 30 --publish-wait 30
 
 echo "Installer crm-shared-flowComponents ver. 0.4"
 call sf package install --package 04t7U0000008qz4QAA --no-prompt --installation-key %3 --wait 30 --publish-wait 30
 
 echo "Installer crm-henvendelse-base ver. 0.36"
 call sf package install --package 04tQC000000uSXtYAM --no-prompt --installation-key %3 --wait 30 --publish-wait 30
+
+echo "Installing platform-data-model ver. 0.1.2"
+call sf package install --package 04tQC000000oHLpYAM --no-prompt --wait 30 --publish-wait 30
+
+echo "Installing custom-metadata-dao ver. 1.2"
+call sf package install --package 04tQC000000oHKDYA2 --no-prompt --wait 30 --publish-wait 30
+
+echo "Installing custom-permission-helper ver. 0.1.2"
+call sf package install --package 04tQC000000oGw2YAE --no-prompt --wait 30 --publish-wait 30
+
+echo "Installing feature-toggle ver. 0.1.3"
+call sf package install --package 04tQC000000oHP3YAM --no-prompt --wait 30 --publish-wait 30
 
 echo "Installer crm-platform-integration ver. 0.162"
 call sf package install --package 04tQC000000xwmMYAQ --no-prompt --installation-key %3 --wait 30 --publish-wait 30
