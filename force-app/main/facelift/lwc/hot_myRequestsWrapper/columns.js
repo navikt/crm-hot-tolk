@@ -1,40 +1,15 @@
 export let workOrderColumns = [
-    {
-        label: 'Tid',
-        fieldName: 'StartAndEndDate'
-    },
-    {
-        label: 'Status',
-        fieldName: 'Status'
-    },
-    {
-        label: 'Adresse',
-        fieldName: 'HOT_AddressFormated__c'
-    },
-    {
-        label: 'Tolk',
-        fieldName: 'HOT_Interpreters__c'
-    }
+    { label: 'Tid', fieldName: 'StartAndEndDate' },
+    { label: 'Tolk', fieldName: 'HOT_Interpreters__c' },
+    { label: 'Status', fieldName: 'Status' },
+    { label: 'Adresse', fieldName: 'HOT_AddressFormated__c' }
 ];
 
 export let columns = [
-    {
-        label: 'Tid',
-        fieldName: 'StartAndEndDate'
-    },
-    {
-        label: 'Tema',
-        fieldName: 'Subject'
-    },
-    {
-        label: 'Status',
-        fieldName: 'Status'
-    },
-
-    {
-        label: 'Adresse',
-        fieldName: 'HOT_AddressFormated__c'
-    }
+    { label: 'Tid', fieldName: 'StartAndEndDate' },
+    { label: 'Tema', fieldName: 'Subject' },
+    { label: 'Status', fieldName: 'Status' },
+    { label: 'Adresse', fieldName: 'HOT_AddressFormated__c' }
 ];
 
 export let labelMap = {
