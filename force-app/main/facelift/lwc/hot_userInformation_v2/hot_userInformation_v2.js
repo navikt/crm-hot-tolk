@@ -66,7 +66,7 @@ export default class Hot_userInformation_v2 extends LightningElement {
             this.degreeOfImpairment = data.fields.HOT_DegreeOfHearingAndVisualImpairment__c.displayValue;
             this.sipAddress = data.fields.HOT_SIPAddress__c.value;
         } else if (error) {
-            console.error(error);
+            console.error('feil' + error);
         }
     }
 
@@ -105,7 +105,7 @@ export default class Hot_userInformation_v2 extends LightningElement {
                     }
                 });
             });
-            if (this.person.INT_SecurityMeasures__c != null || this.person.INT_SecurityMeasures__c != '') {
+            if (this.person.INT_SecurityMeasures__c != null && this.person.INT_SecurityMeasures__c !== '') {
                 this.hasSecurityMeasures = true;
                 let secMeasures = JSON.parse(this.person.INT_SecurityMeasures__c);
                 let securityMeasuresFormatted = [];
