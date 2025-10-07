@@ -7,6 +7,7 @@ public without sharing class HOT_ContentDocumentLinkHandler extends MyTriggers {
         createContentDocumentLinksToWO((List<ContentDocumentLink>) records);
         createContentDocumentLinksToSA((List<ContentDocumentLink>) records);
         createContentDocumentLinksToAccount((List<ContentDocumentLink>) records);
+        createContentDocumentLinksFromWOtoSA((List<ContentDocumentLink>) records);
     }
 
     public static void createContentDocumentLinksToWO(List<ContentDocumentLink> contentDocumentLinks) {
@@ -44,6 +45,44 @@ public without sharing class HOT_ContentDocumentLinkHandler extends MyTriggers {
         }
     }
 
+    private static Map<Id, List<ContentDocumentLink>> getContentDocumentLinksByWorkOrder(
+        List<ContentDocumentLink> contentDocumentLinks
+    ) {
+        Map<Id, List<ContentDocumentLink>> linkedEntityMap = new Map<Id, List<ContentDocumentLink>>();
+        WorkOrder woObj = new WorkOrder();
+        for (ContentDocumentLink cdl : contentDocumentLinks) {
+            if (cdl.LinkedEntityId != null && cdl.LinkedEntityId.getSObjectType() == woObj.getSObjectType()) {
+                if (!linkedEntityMap.containsKey(cdl.LinkedEntityId)) {
+                    linkedEntityMap.put(cdl.LinkedEntityId, new List<ContentDocumentLink>{ cdl });
+                } else {
+                    linkedEntityMap.get(cdl.LinkedEntityId).add(cdl);
+                }
+            }
+        }
+        return linkedEntityMap;
+    }
+    public static void createContentDocumentLinksFromWOToSA(List<ContentDocumentLink> contentDocumentLinks) {
+        Map<Id, List<ContentDocumentLink>> linkedEntityMap = getContentDocumentLinksByWorkOrder(contentDocumentLinks);
+
+        List<ServiceAppointment> serviceAppointments = [
+            SELECT Id, HOT_WorkOrderLineItem__r.WorkOrderId
+            FROM ServiceAppointment
+            WHERE HOT_WorkOrderLineItem__r.WorkOrderId IN :linkedEntityMap.keySet()
+        ];
+
+        Map<Id, List<ContentDocumentLink>> contentDocumentLinksByServiceAppointment = new Map<Id, List<ContentDocumentLink>>();
+        for (ServiceAppointment sa : serviceAppointments) {
+            contentDocumentLinksByServiceAppointment.put(
+                sa.Id,
+                linkedEntityMap.get(sa.HOT_WorkOrderLineItem__r.WorkOrderId)
+            );
+        }
+
+        if (!contentDocumentLinksByServiceAppointment.isEmpty()) {
+            HOT_ContentDocumentLinkService.setContentDocumentLinks(contentDocumentLinksByServiceAppointment);
+        }
+    }
+
     public static void createContentDocumentLinksToAccount(List<ContentDocumentLink> contentDocumentLinks) {
         Map<Id, List<ContentDocumentLink>> linkedEntityMap = getContentDocumentLinksByRequest(contentDocumentLinks);
         List<HOT_Request__c> requests = [
@@ -74,6 +113,7 @@ public without sharing class HOT_ContentDocumentLinkHandler extends MyTriggers {
     public static void confirmVisibilitySettings(List<ContentDocumentLink> contentDocumentLinks) {
         SObjectType requestType = new HOT_Request__c().getSObjectType();
         SObjectType serviceAppointmentType = new ServiceAppointment().getSObjectType();
+        SObjectType woT = WorkOrder.SObjectType;
 
         for (ContentDocumentLink contentDocumentLink : contentDocumentLinks) {
             SObjectType cdiLinkedEntityIdType = contentDocumentLink.LinkedEntityId.getSobjectType();
