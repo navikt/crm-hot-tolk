@@ -35,6 +35,7 @@ public with sharing class HOT_GetTolketjeneste {
                 wrappers,
                 'Person__c'
             );
+            system.debug('map: ' + queueMap);
 
             //Use QueueId to collect the Tolketjenesten queue name and return as output to be used on personHighlightPanel
             if (queueMap.size() > 0) {

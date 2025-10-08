@@ -5,7 +5,7 @@ public without sharing class HOT_GetTolketjenesteTest {
         Person__c p = (Person__c) HOT_TestDataFactory.createPerson();
         p.INT_ActorId__c = '100003000120';
         p.INT_IsNavEmployee__c = true;
-        p.INT_MunicipalityNumber__c = '1578';
+        p.INT_MunicipalityNumber__c = '1573';
         p.INT_RegionNumber__c = '15';
         insert p;
     }
