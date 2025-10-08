@@ -40,7 +40,7 @@ public without sharing class HOT_InterestedResourceNotification {
 
                     //creating notification object
                     HOT_Notification__c notification = new HOT_Notification__c();
-                    notification.HOT_Account__c = wantedIr.ServiceResource__r.AccountId;
+                    notification.HOT_ServiceResource__c = wantedIr.ServiceResource__c;
                     notification.HOT_NotificationChannel__c = 'Push-varsel i appen';
                     notification.HOT_Subject__c =
                         'Du er ønsket til et oppdrag. ' + wantedIr.ServiceAppointment__r.AppointmentNumber;

@@ -68,7 +68,7 @@ export default class Hot_userInformation_v2 extends LightningElement {
             this.degreeOfImpairment = data.fields.HOT_DegreeOfHearingAndVisualImpairment__c.displayValue;
             this.sipAddress = data.fields.HOT_SIPAddress__c.value;
         } else if (error) {
-            console.error(error);
+            console.error('feil' + error);
         }
     }
 

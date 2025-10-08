@@ -9,22 +9,12 @@
 
                 <!-- Conversation with -->
                 <div class="header-buttons">
-                    <c-button
-                        button-label={threadType}
-                        type="button"
-                        readonly
-                        aria-disabled="true"
-                        aria-label={threadType}
-                        desktop-style="background-color: #F2F3F5; color: #23262a; pointer-events: none;"
-                        mobile-style="background-color: #F2F3F5; color: #23262a; pointer-events: none;"
-                    ></c-button>
+                    <div class="navds-div" tabindex="0" aria-label={threadType}>{threadType}</div>
 
                     <c-button
                         button-label="Vis personer i samtalen"
                         type="button"
                         onbuttonclick={handleShowParticipants}
-                        desktop-style="background-color: #F2F3F5; color: #23262a;"
-                        mobile-style="background-color: #F2F3F5; color: #23262a;"
                     ></c-button>
                 </div>
 
@@ -71,8 +61,8 @@
                         class="show-details-button"
                         type="button"
                         onbuttonclick={goToDetails}
-                        desktop-style="background-color: #525962 !important; justify-content: center; width: 7.1rem; margin-right: 0.5rem;"
-                        mobile-style="background-color: #525962 !important; justify-content: center; width: 7.1rem; margin-right: 0.5rem;"
+                        desktop-style="margin-right: 0.5rem;"
+                        mobile-style="margin-right: 0.5rem;"
                     ></c-button>
 
                     <template lwc:if={showScrollButton}>
@@ -82,8 +72,6 @@
                             type="button"
                             aria-label="Til bunnen"
                             onbuttonclick={scrollToLatestMessage}
-                            desktop-style=""
-                            mobile-style=""
                         ></c-button>
                     </template>
                 </div>
