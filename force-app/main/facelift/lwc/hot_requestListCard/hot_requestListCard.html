@@ -1,0 +1,32 @@
+<template>
+    <template lwc:if={hasData}>
+        <div role="region" aria-label={ariaLabel}>
+            <template for:each={recordsToShow} for:item="row">
+                <button
+                    key={row.id}
+                    class="threadCard"
+                    value={row.id}
+                    onclick={handleCardClick}
+                    aria-label={row.fullAriaLabel}
+                >
+                    <div class="requestGrid" aria-hidden="true">
+                        <div class="col-left">
+                            <p class="muted">{row.secondary.displayLabel}</p>
+                            <template lwc:if={row.status.displayLabel}>
+                                <span class={row.statusClass}> {row.status.displayLabel} </span>
+                            </template>
+                        </div>
+
+                        <div class="col-middle">
+                            <p class="tema">{row.primaryDisplayLabel}</p>
+                        </div>
+
+                        <div class="col-right">
+                            <p class="address">{row.tertiary.displayLabel}</p>
+                        </div>
+                    </div>
+                </button>
+            </template>
+        </div>
+    </template>
+</template>
