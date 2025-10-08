@@ -1,0 +1,114 @@
+button.threadCard {
+    appearance: none;
+    -webkit-appearance: none;
+    font: inherit;
+    line-height: inherit;
+    display: block;
+    width: 100%;
+    text-align: left;
+    cursor: pointer;
+}
+.threadCard {
+    background-color: #f2f3f5;
+    padding: 1rem 2rem;
+    margin-bottom: 0.5rem;
+    border-radius: 0.5rem;
+    border: 4px solid #f2f3f5;
+}
+.threadCard:hover {
+    border-color: #e9edf1;
+    background-color: #e9edf1;
+}
+.threadCard:focus {
+    outline: none;
+    background-color: #e9edf1;
+    border-color: #0067c5;
+}
+
+.requestGrid {
+    display: grid;
+    grid-template-columns: 1fr 2fr 1fr;
+    gap: 1rem;
+    align-items: start;
+}
+
+.col-left {
+    display: flex;
+    flex-direction: column;
+    gap: 0.375rem;
+}
+.col-middle {
+    min-width: 0;
+}
+.col-right {
+    text-align: left;
+    white-space: normal;
+}
+
+p {
+    font-size: 1.25rem;
+    margin: 0;
+}
+.muted {
+    color: #2f2f2f;
+    /* font-weight: 600; */
+}
+
+.tema {
+    font-size: 1.25rem;
+    /* font-weight: 400; */
+    overflow-wrap: anywhere;
+}
+
+.address {
+    font-size: 1.25rem;
+    overflow-wrap: anywhere;
+}
+
+.status-label {
+    display: inline-flex;
+    align-items: center;
+    padding: 0.5rem 1rem;
+    border-radius: 0.25rem;
+    font-size: 1.25rem;
+    line-height: 1.2;
+    /* font-weight: 600; */
+    width: -moz-fit-content;
+    width: fit-content;
+    max-width: 100%;
+    white-space: nowrap;
+}
+
+/* Only colors live on these classes — no sizing here */
+.label-green {
+    background-color: #99deae;
+    color: #000;
+}
+.label-gray {
+    background-color: #e0e3e6;
+    color: #000;
+}
+.label-red {
+    background-color: #f48684;
+    color: #000;
+}
+.label-orange {
+    background-color: #fcda9d;
+    color: #000;
+}
+.label-blue {
+    background-color: #00bfff;
+    color: #000;
+}
+
+/* Responsive: stack vertically on small screens */
+@media (max-width: 768px) {
+    .threadCard {
+        margin: 0 0 1rem 0;
+        padding: 0.75rem;
+    }
+    .requestGrid {
+        grid-template-columns: 1fr;
+        gap: 0.5rem;
+    }
+}

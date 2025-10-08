@@ -204,7 +204,7 @@
                     aria-disabled={isInterpreterThreadButtonDisabled}
                 ></c-button>
             </div>
-            <!-- Common Table Section -->
+            <!-- Common Table Section
             <div class="record-details-container" if:false={noWorkOrders}>
                 <c-hot_common-table-requests
                     if:false={isWorkOrderDetails}
@@ -214,6 +214,18 @@
                     aria-label="Bestillingstabell"
                     onrowclick={goToRecordDetails}
                 ></c-hot_common-table-requests>
+            </div> -->
+
+            <!-- Request Cards Section -->
+            <div class="record-details-container" if:false={noWorkOrders}>
+                <c-hot_request-list-card
+                    if:false={isWorkOrderDetails}
+                    columns={columns}
+                    records={viewRows}
+                    label-map={labelMap}
+                    aria-label="Bestillingskort"
+                    onrowclick={goToRecordDetails}
+                ></c-hot_request-list-card>
             </div>
             <div lwc:if={noWorkOrders} style="text-align: center">
                 <br />
