@@ -177,7 +177,7 @@ export default class Hot_userInformation_v2 extends LightningElement {
                 this.isReservedAgainstNotifications = this.newIsReservedAgainstNotifications;
             }
             // Show success message
-            this.successMessage = 'Endringen har blitt lagret';
+            this.successMessage = 'Endringen har blitt lagret.';
             this.showSuccess = true;
 
             const newMessage = 'Endringen har blitt lagret';
