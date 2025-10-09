@@ -1109,11 +1109,17 @@ export default class LibsFullCalendarV2 extends NavigationMixin(LightningElement
 
         if (this.isMobileSize) {
             config.headerToolbar = {
-                start: 'today dayGridMonth',
-                center: 'title',
-                end: 'prev,next'
+                start: 'title',
+                center: '',
+                end: 'today dayGridMonth'
             };
-            config.titleFormat = { year: 'numeric', month: 'short' };
+            config.footerToolbar = {
+                left: 'prev,next',
+                center: '',
+                right: 'absence refresh'
+            };
+            config.height = 'auto';
+            config.titleFormat = { year: 'numeric', month: 'long' };
             config.views.dayGridMonth.dayMaxEventRows = 10;
         }
 
@@ -1328,7 +1334,7 @@ export default class LibsFullCalendarV2 extends NavigationMixin(LightningElement
     alertAbsenceBannerText = '';
     retractDeleteAbsense() {
         this.alertAbsenceBannerText = 'Er du sikker på at du vil slette dette fraværet?';
-        this.isAlertAbsenceEdit = true; 
+        this.isAlertAbsenceEdit = true;
         this.isNotRetractableDelete = true;
     }
 
@@ -1340,7 +1346,7 @@ export default class LibsFullCalendarV2 extends NavigationMixin(LightningElement
 
     retractEditAbsense() {
         this.alertAbsenceBannerText = 'Har du lagt inn de riktige opplysningene før du lagrer endringen?';
-        this.isAlertAbsenceEdit = true; 
+        this.isAlertAbsenceEdit = true;
         this.isNotRetractableEdit = true;
     }
 
