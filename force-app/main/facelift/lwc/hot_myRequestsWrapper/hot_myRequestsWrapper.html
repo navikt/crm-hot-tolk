@@ -4,7 +4,7 @@
             <div class="back-button-info">
                 <c-hot_back-button is-series={isSeries} url-state-parameters={urlStateParameters}></c-hot_back-button>
             </div>
-            <h1 class="header">{headerToShow}</h1>
+            <h1 class="header" id="details-header-id" tabindex="-1">{headerToShow}</h1>
             <div class="header-buttons">
                 <c-button
                     if:false={urlStateParameters.id}
@@ -202,17 +202,6 @@
                     aria-disabled={isInterpreterThreadButtonDisabled}
                 ></c-button>
             </div>
-            <!-- Common Table Section
-            <div class="record-details-container" if:false={noWorkOrders}>
-                <c-hot_common-table-requests
-                    if:false={isWorkOrderDetails}
-                    columns={columns}
-                    records={viewRows}
-                    label-map={labelMap}
-                    aria-label="Bestillingstabell"
-                    onrowclick={goToRecordDetails}
-                ></c-hot_common-table-requests>
-            </div> -->
 
             <!-- Request Cards Section -->
             <div class="record-details-container" if:false={noWorkOrders}>

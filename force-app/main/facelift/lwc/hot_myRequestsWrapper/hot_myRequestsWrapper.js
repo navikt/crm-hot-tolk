@@ -31,6 +31,7 @@ export default class Hot_myRequestsWrapper extends NavigationMixin(LightningElem
     filters = [];
     labelMap = labelMap;
     showLoader = false;
+    shouldFocusHeader = false;
     get isMobile() {
         return window.screen.width < 768;
     }
@@ -57,6 +58,18 @@ export default class Hot_myRequestsWrapper extends NavigationMixin(LightningElem
         if (this.urlStateParameters.id === '' && this.urlStateParameters.level === '') {
             refreshApex(this.wiredgetWorkOrdersResult);
         }
+        if (this.shouldFocusHeader) {
+            this.shouldFocusHeader = false;
+            this.focusHeader();
+        }
+    }
+    focusHeader() {
+        requestAnimationFrame(() => {
+            const el = this.template?.querySelector('.header');
+            if (el) {
+                el.focus();
+            }
+        });
     }
 
     fileUploadMessage = '';
@@ -227,6 +240,7 @@ export default class Hot_myRequestsWrapper extends NavigationMixin(LightningElem
             level = 'WO';
         }
         this.urlStateParameters = { ...this.urlStateParameters, id: recordId, level };
+        this.shouldFocusHeader = true;
         this.refresh(true);
     }
 
