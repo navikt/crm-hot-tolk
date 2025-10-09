@@ -4,7 +4,7 @@
             <div class="back-button-info">
                 <c-hot_back-button is-series={isSeries} url-state-parameters={urlStateParameters}></c-hot_back-button>
             </div>
-            <h1 class="header">{headerToShow}</h1>
+            <h1 class="header" id="details-header-id" tabindex="-1">{headerToShow}</h1>
             <div class="header-buttons">
                 <c-button
                     if:false={urlStateParameters.id}
@@ -73,7 +73,6 @@
                     </p>
                 </div>
                 <c-record-files-without-sharing
-                    lwc:if={isSeries}
                     record-id={request.Id}
                     is-get-all={isGetAllFiles}
                     is-delete-option="true"
@@ -136,8 +135,7 @@
                     </p>
                 </div>
                 <c-record-files-without-sharing
-                    if:false={isSeries}
-                    record-id={request.Id}
+                    record-id={workOrder.Id}
                     is-get-all={isGetAllFiles}
                     is-delete-option="true"
                     title="Vedlegg"
@@ -204,17 +202,6 @@
                     aria-disabled={isInterpreterThreadButtonDisabled}
                 ></c-button>
             </div>
-            <!-- Common Table Section
-            <div class="record-details-container" if:false={noWorkOrders}>
-                <c-hot_common-table-requests
-                    if:false={isWorkOrderDetails}
-                    columns={columns}
-                    records={viewRows}
-                    label-map={labelMap}
-                    aria-label="Bestillingstabell"
-                    onrowclick={goToRecordDetails}
-                ></c-hot_common-table-requests>
-            </div> -->
 
             <!-- Request Cards Section -->
             <div class="record-details-container" if:false={noWorkOrders}>
@@ -276,7 +263,7 @@
                 <div class="fileUploader">
                     <div lwc:if={isOwnRequest}>
                         <lightning-file-upload
-                            record-id={recordId}
+                            record-id={uploadTargetId}
                             name="fileUploader"
                             class="file-selector-large"
                             label="Ved å laste opp filer er jeg klar over at filene vil bli delt med formidler og tolken(e) jeg får. Opplastingen vil starte umiddelbart. Maks filstørelse: 2 GB."
@@ -288,8 +275,9 @@
                     </div>
                     <div if:false={isOwnRequest}>
                         <lightning-file-upload
+                            record-id={uploadTargetId}
                             file-field-name="HOT_RelatedRecordId_fileupload__c"
-                            file-field-value={getRelatedRecord}
+                            file-field-value={uploadTargetId}
                             name="fileUploader"
                             class="file-selector-large"
                             label="Ved å laste opp filer er jeg klar over at filene vil bli delt med formidler og tolken(e) jeg får. Opplastingen vil starte umiddelbart. Maks filstørelse: 2 GB."
