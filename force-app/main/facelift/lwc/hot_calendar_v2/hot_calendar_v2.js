@@ -446,8 +446,10 @@ export default class LibsFullCalendarV2 extends NavigationMixin(LightningElement
         const dialogAbsence = this.template.querySelector('.modal-absence');
         dialogAbsence.close();
 
+        this.errorText = '';
         this.isInformationModalOpen = false;
         this.isAlertAbsenceEdit = false;
+        this.isNewAlertAbsenceRegistered = false;
         this.isNotRetractableDelete = false;
         this.isNotRetractableEdit = false;
         this.isAlertWageClaimEdit = false;
@@ -1329,6 +1331,7 @@ export default class LibsFullCalendarV2 extends NavigationMixin(LightningElement
     }
 
     isAlertAbsenceEdit = false;
+    isNewAlertAbsenceRegistered = false;
     isNotRetractableDelete = false;
     isNotRetractableEdit = false;
     alertAbsenceBannerText = '';
@@ -1342,12 +1345,18 @@ export default class LibsFullCalendarV2 extends NavigationMixin(LightningElement
         this.isAlertAbsenceEdit = false;
         this.isNotRetractableDelete = false;
         this.isNotRetractableEdit = false;
+        this.isNewAlertAbsenceRegistered = false;
     }
 
     retractEditAbsense() {
         this.alertAbsenceBannerText = 'Har du lagt inn de riktige opplysningene før du lagrer endringen?';
         this.isAlertAbsenceEdit = true;
         this.isNotRetractableEdit = true;
+    }
+
+    retractRegisteredAbsense() {
+        this.alertAbsenceBannerText = 'Har du lagt inn de riktige opplysningene før du registerer fraværet?';
+        this.isNewAlertAbsenceRegistered = true;
     }
 
     async handleDeleteAbsence() {
@@ -1489,6 +1498,7 @@ export default class LibsFullCalendarV2 extends NavigationMixin(LightningElement
         this.isLoading = false;
         this.currentEventRecordId = null;
         this.isAllDayAbsence = false;
+        this.isNewAlertAbsenceRegistered = false;
         absenceType = null;
         this.clearCheckedRadios();
         this.closeModal();

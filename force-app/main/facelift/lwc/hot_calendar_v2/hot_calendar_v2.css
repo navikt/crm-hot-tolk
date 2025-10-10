@@ -342,6 +342,12 @@ dialog.modal-container .close-btn:hover {
         margin-bottom: 0.5rem;;
     }
 
+    .date-input {
+        flex: 1 1 auto;
+        width: 90%; 
+        max-width: 300px; 
+    }
+
     dialog.modal-container {
         width: 100%;
         max-width: 100%;
