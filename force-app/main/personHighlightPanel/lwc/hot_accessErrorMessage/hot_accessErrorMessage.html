@@ -1,0 +1,14 @@
+<template>
+    <template if:true={text}>
+        <div class="slds-scoped-notification slds-media slds-media_center slds-theme_warning" role="alert">
+            <lightning-icon
+                icon-name="utility:warning"
+                size="small"
+                title="Advarsel"
+                alternative-text="Advarsel"
+            ></lightning-icon>
+            &nbsp;
+            <h2>{text}</h2>
+        </div>
+    </template>
+</template>

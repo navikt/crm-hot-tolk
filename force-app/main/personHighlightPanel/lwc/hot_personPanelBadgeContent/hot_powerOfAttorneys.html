@@ -1,0 +1,43 @@
+<template>
+    <div class="slds-m-left_x-small backgroundStyling" lwc:if={showBadge}>
+        <div class="headerLine"></div>
+        <div class="slds-m-around_medium">
+            <p><strong>Fullmakt</strong></p>
+            <div class="flexWithGap">
+                <template for:each={badgeData} for:item="powerOfAttorney">
+                    <div key={powerOfAttorney}>
+                        <p>
+                            {powerOfAttorney.motpartsRolle}: {powerOfAttorney.motpartsNavn}
+                            {powerOfAttorney.motpartsPersonident}
+                        </p>
+                        <p>
+                            Gyldig:&nbsp;
+                            <lightning-formatted-date-time
+                                value={powerOfAttorney.gyldigFraOgMed}
+                                year="numeric"
+                                month="numeric"
+                                day="numeric"
+                            >
+                            </lightning-formatted-date-time>
+                            &nbsp;-&nbsp;
+                            <lightning-formatted-date-time
+                                value={powerOfAttorney.gyldigTilOgMed}
+                                year="numeric"
+                                month="numeric"
+                                day="numeric"
+                            ></lightning-formatted-date-time>
+                        </p>
+                        <div class="slds-p-top_x-small">
+                            <p>Områder:</p>
+                            <template for:each={powerOfAttorney.formattedOmraadeListByThemeGroup} for:item="omraade">
+                                <p key={omraade.themeGroup}>
+                                    <strong>{omraade.themeGroup}</strong>: {omraade.temaString}
+                                </p>
+                            </template>
+                        </div>
+                    </div>
+                </template>
+            </div>
+        </div>
+    </div>
+</template>

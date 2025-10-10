@@ -1,0 +1,93 @@
+.icon {
+    width: 3rem;
+    height: 3rem;
+    background-color: #ecebea;
+    border-radius: 0.25rem;
+    margin-right: 0.75rem;
+    display: inline-block;
+}
+
+.icon-round-large {
+    width: 3rem;
+    height: 3rem;
+    border-radius: 50%;
+}
+.text-body-top {
+    height: 5.5rem;
+    display: flex;
+    justify-content: flex-start;
+    align-items: center;
+    gap: 20px;
+    width: 100%;
+}
+.text-body-mid {
+    height: 3rem;
+    display: flex;
+    justify-content: flex-start;
+    align-items: center;
+    width: 100%;
+}
+
+.text {
+    border-radius: 15rem;
+    display: block;
+    background-color: #ecebea;
+    height: 0.5rem;
+}
+
+.text-size {
+    height: 10px;
+}
+
+.text-large {
+    width: 80%;
+}
+.text-medium {
+    width: 70%;
+}
+.text-short {
+    width: 30%;
+}
+.body,
+.card {
+    background-color: #fff;
+}
+.icon,
+.text {
+    background-color: #ecebea;
+    background-image: linear-gradient(90deg, #ecebea 0px, #d1d1d1 40px, #ecebea 100px);
+    background-size: 900px;
+    animation: shine-lines 1.5s infinite linear;
+}
+.card {
+    border: 1px solid #f3f2f2;
+    border-radius: 0.25rem;
+    width: 100%;
+}
+.flex-grid {
+    display: flex;
+    gap: 10px;
+}
+
+.flex-v-center {
+    align-items: center;
+    padding-left: 1rem;
+}
+
+.boarder {
+    border-top: 0.125rem solid #f3f2f2;
+}
+
+.margin-area {
+    min-width: 5.3rem;
+    max-width: 6rem;
+}
+
+@keyframes shine-lines {
+    0% {
+        background-position: -20px;
+    }
+    100% {
+        background-position: 800px;
+    }
+}
