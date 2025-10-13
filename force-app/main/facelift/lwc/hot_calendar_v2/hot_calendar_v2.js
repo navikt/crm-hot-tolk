@@ -43,6 +43,7 @@ export default class LibsFullCalendarV2 extends NavigationMixin(LightningElement
     warningicon = icons2 + '/warningicon.svg';
 
     isLoading = false;
+    isSpinning = false;
     isMobileSize = false;
     earliestTime;
     latestTime;
@@ -215,7 +216,7 @@ export default class LibsFullCalendarV2 extends NavigationMixin(LightningElement
     }
 
     async refreshCalendar(shouldSpin = true) {
-        this.isLoading = true && shouldSpin;
+        this.isSpinning = true && shouldSpin;
         const minLoadingTime = new Promise((resolve) => setTimeout(resolve, 2500));
 
         this.cachedEventIds.clear();
@@ -239,7 +240,7 @@ export default class LibsFullCalendarV2 extends NavigationMixin(LightningElement
         if (shouldSpin) {
             await minLoadingTime;
         }
-        this.isLoading = false;
+        this.isSpinning = false;
     }
 
     async updateEventsFromDateRange(earliestDateInView, latestDateInView) {
@@ -357,17 +358,18 @@ export default class LibsFullCalendarV2 extends NavigationMixin(LightningElement
         this.isSADetails = false;
         this.isWCDetails = false;
         this.hasAccess = false;
+        this.isLoading = true;
 
         switch (props.type) {
             case 'COMPLETED_SERVICE_APPOINTMENT':
             case 'SERVICE_APPOINTMENT':
-                await this.loadServiceAppointment(props.recordId, true); // wait for data
                 this.showInformationModalDetails(props.recordId, 'SA');
+                await this.loadServiceAppointment(props.recordId); // wait for data
                 break;
 
             case 'OPEN_WAGE_CLAIM':
-                await this.loadWageClaim(props.recordId, true);
                 this.showInformationModalDetails(props.recordId, 'WC');
+                await this.loadWageClaim(props.recordId);
                 break;
 
             case 'RESOURCE_ABSENCE':
@@ -969,9 +971,7 @@ export default class LibsFullCalendarV2 extends NavigationMixin(LightningElement
         }
     }
 
-    async loadServiceAppointment(recordId, suppressLoader = false) {
-        if (!suppressLoader) this.isLoading = true;
-
+    async loadServiceAppointment(recordId) {
         try {
             const access = await checkAccessToSA({ saId: recordId });
             this.hasAccess = !!access;
@@ -999,14 +999,12 @@ export default class LibsFullCalendarV2 extends NavigationMixin(LightningElement
             console.error('Error loading service appointment', error);
             this.hasAccess = false;
         } finally {
-            if (!suppressLoader) this.isLoading = false;
+            this.isLoading = false;
             this.isSADetails = true;
         }
     }
 
-    async loadWageClaim(recordId, suppressLoader = false) {
-        if (!suppressLoader) this.isLoading = true;
-
+    async loadWageClaim(recordId) {
         try {
             const wc = await getWageClaimDetails({ recordId });
             this.wageClaim = wc;
@@ -1015,7 +1013,7 @@ export default class LibsFullCalendarV2 extends NavigationMixin(LightningElement
         } catch (error) {
             console.error('Error loading wage claim', error);
         } finally {
-            if (!suppressLoader) this.isLoading = false;
+            this.isLoading = false;
         }
     }
 
