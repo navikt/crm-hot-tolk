@@ -1,6 +1,14 @@
 <template>
     <!-- <template lwc:if={showContent}> -->
     <div class="page-background">
+        <!-- User has no access to the thread -->
+        <template lwc:if={showError}>
+            <div class="error-content">
+                <p>Du har ikke tilgang til denne samtalen.</p>
+                <br />
+                <c-button button-styling="Primary" button-label="Gå til hjem" onbuttonclick={goToHome}></c-button>
+            </div>
+        </template>
         <template lwc:if={isContentReady}>
             <div class="header-content">
                 <div class="back-button-info">
@@ -316,13 +324,4 @@
             </div>
         </template>
     </div>
-
-    <!-- User has no access to the thread -->
-    <template lwc:if={showError}>
-        <div class="error-content">
-            <p>Du har ikke tilgang til denne samtalen.</p>
-            <br />
-            <c-button button-styling="Primary" button-label="Gå til hjem" onbuttonclick={goToHome}></c-button>
-        </div>
-    </template>
 </template>
