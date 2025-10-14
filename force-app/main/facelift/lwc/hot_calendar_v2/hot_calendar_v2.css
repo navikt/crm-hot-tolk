@@ -369,4 +369,15 @@ dialog.modal-container .close-btn:hover {
         flex-wrap: wrap;
         gap: 0.5rem;
     }
+
+    .whole-day-hidden-container {
+        flex-direction: column;
+        align-items: center;
+    }
+
+    .date-input {
+        flex: 1 1 auto;
+        width: 90%; 
+        max-width: 300px; 
+    }
 }
