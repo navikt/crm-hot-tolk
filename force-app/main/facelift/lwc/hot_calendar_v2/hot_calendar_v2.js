@@ -1453,17 +1453,23 @@ export default class LibsFullCalendarV2 extends NavigationMixin(LightningElement
 
         const currentHeaderText = this.headerAbsenceText;
         let shouldProceed = false;
-        this.closeModal();
 
         if (currentHeaderText === 'Registrer nytt fravær') {
+            const dialogAbsence = this.template.querySelector('.modal-absence');
+            dialogAbsence.close();
+
             const confirmation = await ConfimationModal.open({
                 content: result,
                 absenceType: this.absenceTypeToNorwegianLabel,
                 absenceStartDateTime,
                 absenceEndDateTime
             });
+            dialogAbsence.showModal();
+            dialogAbsence.focus();
 
-            if (!confirmation) {
+            if(confirmation) {
+                dialogAbsence.close();
+            } else {
                 return;
             }
         }
