@@ -10,6 +10,7 @@ import icons from '@salesforce/resourceUrl/ikoner';
 import icons2 from '@salesforce/resourceUrl/icons';
 
 import HOT_ConfirmationModal from 'c/hot_confirmationModal';
+import ConfimationModal from 'c/hot_calendar_absence_modal_confirmation';
 import retractAvailability from '@salesforce/apex/HOT_WageClaimListController.retractAvailability';
 import getWageClaimDetails from '@salesforce/apex/HOT_WageClaimListController.getWageClaimDetails';
 import checkAccessToSA from '@salesforce/apex/HOT_MyServiceAppointmentListController.checkAccessToSA';
@@ -700,7 +701,7 @@ export default class LibsFullCalendarV2 extends NavigationMixin(LightningElement
                         } else if (
                             this.serviceAppointment.HOT_Request__r.Account__r.CRM_Person__r.INT_Sex__c !== undefined &&
                             this.serviceAppointment.HOT_Request__r.Account__r.CRM_Person__r.CRM_AgeNumber__c !==
-                                undefined
+                            undefined
                         ) {
                             this.accountAgeGender =
                                 this.serviceAppointment.HOT_Request__r.Account__r.CRM_Person__r.INT_Sex__c +
@@ -1393,6 +1394,11 @@ export default class LibsFullCalendarV2 extends NavigationMixin(LightningElement
         this.isLoading = false;
     }
 
+    get absenceTypeToNorwegianLabel() {
+        const selected = this.radiobuttons.find(btn => btn.value === this.absenceType);
+        return selected ? selected.label : '';
+    }
+
     async handleOkay() {
         // Fetch radio button value
         let validInputs = true;
@@ -1445,60 +1451,79 @@ export default class LibsFullCalendarV2 extends NavigationMixin(LightningElement
             return;
         }
 
-        this.isLoading = true;
-        try {
-            this.closeModal();
-            await createAbsenceAndResolveConflicts({
-                absenceType: this.absenceType,
-                startTimeInMilliseconds: new Date(absenceStartDateTime).getTime(),
-                endTimeInMilliseconds: new Date(absenceEndDateTime).getTime(),
-                isAllDayAbsence: this.isAllDayAbsence
+        const currentHeaderText = this.headerAbsenceText;
+        let shouldProceed = false;
+        this.closeModal();
+
+        if (currentHeaderText === 'Registrer nytt fravær') {
+            const confirmation = await ConfimationModal.open({
+                content: result,
+                absenceType: this.absenceTypeToNorwegianLabel,
+                absenceStartDateTime,
+                absenceEndDateTime
             });
-        } catch (error) {
-            const event = new ShowToastEvent({
-                title: 'Kunne ikke legge til fravær',
-                message: 'Det oppstod en feil, prøv igjen senere',
-                variant: 'error'
-            });
-            this.dispatchEvent(event);
+
+            if (!confirmation) {
+                return;
+            }
         }
-        if (this.isEdit) {
+        shouldProceed = true;
+
+        if (shouldProceed) {
+            this.isSpinning = true;
             try {
-                await deleteAbsence({ recordId: this.currentEventRecordId });
-                const event = new ShowToastEvent({
-                    title: 'Fravær endret',
-                    message: 'Fravær ble endret, og eventuelle konflikter ble løst',
-                    variant: 'success'
+                await createAbsenceAndResolveConflicts({
+                    absenceType: this.absenceType,
+                    startTimeInMilliseconds: new Date(absenceStartDateTime).getTime(),
+                    endTimeInMilliseconds: new Date(absenceEndDateTime).getTime(),
+                    isAllDayAbsence: this.isAllDayAbsence
                 });
-                this.dispatchEvent(event);
-                this.refreshCalendar(false);
-            } catch {
+            } catch (error) {
                 const event = new ShowToastEvent({
-                    title: 'Det oppsto en feil',
-                    message: 'Feil ved endring av avtale, prøv igjen senere.',
+                    title: 'Kunne ikke legge til fravær',
+                    message: 'Det oppstod en feil, prøv igjen senere',
                     variant: 'error'
                 });
                 this.dispatchEvent(event);
             }
-        } else {
-            const event = new ShowToastEvent({
-                title: 'Fravær lagt til',
-                message: 'Fravær lagt til, og eventuelle konflikter ble løst',
-                variant: 'success'
-            });
-            this.dispatchEvent(event);
-            this.refreshCalendar(false);
-        }
+            if (this.isEdit) {
+                try {
+                    await deleteAbsence({ recordId: this.currentEventRecordId });
+                    const event = new ShowToastEvent({
+                        title: 'Fravær endret',
+                        message: 'Fravær ble endret, og eventuelle konflikter ble løst',
+                        variant: 'success'
+                    });
+                    this.dispatchEvent(event);
+                    this.refreshCalendar(false);
+                } catch {
+                    const event = new ShowToastEvent({
+                        title: 'Det oppsto en feil',
+                        message: 'Feil ved endring av avtale, prøv igjen senere.',
+                        variant: 'error'
+                    });
+                    this.dispatchEvent(event);
+                }
+            } else {
+                const event = new ShowToastEvent({
+                    title: 'Fravær lagt til',
+                    message: 'Fravær lagt til, og eventuelle konflikter ble løst',
+                    variant: 'success'
+                });
+                this.dispatchEvent(event);
+                this.refreshCalendar(false);
+            }
 
-        this.isAlertAbsenceEdit = false;
-        this.isNotRetractableDelete = false;
-        this.isNotRetractableEdit = false;
-        this.isLoading = false;
-        this.currentEventRecordId = null;
-        this.isAllDayAbsence = false;
-        this.isNewAlertAbsenceRegistered = false;
-        absenceType = null;
-        this.clearCheckedRadios();
-        this.closeModal();
+            this.isAlertAbsenceEdit = false;
+            this.isNotRetractableDelete = false;
+            this.isNotRetractableEdit = false;
+            this.isLoading = false;
+            this.currentEventRecordId = null;
+            this.isAllDayAbsence = false;
+            this.isNewAlertAbsenceRegistered = false;
+            absenceType = null;
+            this.clearCheckedRadios();
+            this.closeModal();
+        }
     }
 }
