@@ -19,7 +19,6 @@ export default class Hot_threadList_v2 extends NavigationMixin(LightningElement)
     wiredThreadsResult;
     unreadThreadsCount;
 
-
     get headerText() {
         if (this.isFreelanceView) {
             return 'Mine samtaler som frilans';
@@ -152,7 +151,7 @@ export default class Hot_threadList_v2 extends NavigationMixin(LightningElement)
             return 'Med ressurskontor';
         }
         if (threadTypeValue === 'HOT_TOLK-TOLK') {
-            return 'Med bare medtolker';
+            return 'Med medtolk';
         } else {
             return '';
         }
