@@ -1468,6 +1468,9 @@ export default class LibsFullCalendarV2 extends NavigationMixin(LightningElement
         shouldProceed = true;
 
         if (shouldProceed) {
+            const dialogProceed = this.template.querySelector('.modal-absence');
+            dialogProceed.close();
+            
             this.isSpinning = true;
             try {
                 await createAbsenceAndResolveConflicts({
