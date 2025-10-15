@@ -700,7 +700,7 @@ export default class LibsFullCalendarV2 extends NavigationMixin(LightningElement
                         } else if (
                             this.serviceAppointment.HOT_Request__r.Account__r.CRM_Person__r.INT_Sex__c !== undefined &&
                             this.serviceAppointment.HOT_Request__r.Account__r.CRM_Person__r.CRM_AgeNumber__c !==
-                            undefined
+                                undefined
                         ) {
                             this.accountAgeGender =
                                 this.serviceAppointment.HOT_Request__r.Account__r.CRM_Person__r.INT_Sex__c +
@@ -1351,7 +1351,7 @@ export default class LibsFullCalendarV2 extends NavigationMixin(LightningElement
     }
 
     async handleDeleteAbsence() {
-        this.isLoading = true;
+        this.isSpinning = true;
         try {
             if (!this.currentEventRecordId) {
                 throw new Error('No recordId found for event');
@@ -1383,11 +1383,11 @@ export default class LibsFullCalendarV2 extends NavigationMixin(LightningElement
         this.isAlertAbsenceEdit = false;
         this.isNotRetractableDelete = false;
         this.isNotRetractableEdit = false;
-        this.isLoading = false;
+        this.isSpinning = false;
     }
 
     get absenceTypeToNorwegianLabel() {
-        const selected = this.radiobuttons.find(btn => btn.value === this.absenceType);
+        const selected = this.radiobuttons.find((btn) => btn.value === this.absenceType);
         return selected ? selected.label : '';
     }
 
@@ -1459,7 +1459,7 @@ export default class LibsFullCalendarV2 extends NavigationMixin(LightningElement
             dialogAbsence.showModal();
             dialogAbsence.focus();
 
-            if(confirmation) {
+            if (confirmation) {
                 dialogAbsence.close();
             } else {
                 return;
@@ -1470,7 +1470,6 @@ export default class LibsFullCalendarV2 extends NavigationMixin(LightningElement
         if (shouldProceed) {
             const dialogProceed = this.template.querySelector('.modal-absence');
             dialogProceed.close();
-            
             this.isSpinning = true;
             try {
                 await createAbsenceAndResolveConflicts({
@@ -1518,7 +1517,7 @@ export default class LibsFullCalendarV2 extends NavigationMixin(LightningElement
             this.isAlertAbsenceEdit = false;
             this.isNotRetractableDelete = false;
             this.isNotRetractableEdit = false;
-            this.isLoading = false;
+            this.isSpinning = false;
             this.currentEventRecordId = null;
             this.isAllDayAbsence = false;
             absenceType = null;
