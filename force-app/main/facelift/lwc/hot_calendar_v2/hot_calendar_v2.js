@@ -1191,9 +1191,6 @@ export default class LibsFullCalendarV2 extends NavigationMixin(LightningElement
         this.endTimeInputLabel = `Legg inn${this.isEdit ? ' ny' : ''} sluttdato/tid`;
         this.registerButtonText = this.isEdit ? 'Endre' : 'Registrer';
 
-        const absenceDialog = this.template.querySelector('.modal-absence');
-        if (!absenceDialog) return;
-
         const startInput = this.refs?.absenceStartDateTimeInput;
         const endInput = this.refs?.absenceEndDateTimeInput;
         if (startInput) {
@@ -1204,6 +1201,10 @@ export default class LibsFullCalendarV2 extends NavigationMixin(LightningElement
             endInput.setCustomValidity('');
             endInput.reportValidity();
         }
+        this.endHasBeenSet = false;
+
+        const absenceDialog = this.template.querySelector('.modal-absence');
+        if (!absenceDialog) return;
 
         absenceDialog.returnValue = ''; // reset state
 
@@ -1316,16 +1317,20 @@ export default class LibsFullCalendarV2 extends NavigationMixin(LightningElement
 
     handleDateStartChange(event) {
         const startTime = new Date(event.detail.value);
-        const endTime = new Date(this.refs.absenceEndDateTimeInput.value);
-        if (!this.endHasBeenSet) {
-            this.initialAbsenceEnd = this.formatLocalDateTime(new Date(startTime.getTime() + 60 * 60 * 1000));
-        }
+        const endInput = this.refs.absenceEndDateTimeInput;
 
-        const startInput = this.refs.absenceStartDateTimeInput;
-        startInput.setCustomValidity(
-            startTime >= endTime && this.endHasBeenSet ? 'Sluttid må komme etter starttid' : ''
-        );
-        startInput.reportValidity();
+        if (!endInput || !endInput.value) {
+            const newEnd = new Date(startTime.getTime() + 60 * 60 * 1000);
+            this.initialAbsenceEnd = this.formatLocalDateTime(newEnd);
+            if (endInput) endInput.value = this.initialAbsenceEnd;
+        } else {
+            const currentEnd = new Date(endInput.value);
+            if (!(currentEnd.getTime() > startTime.getTime())) {
+                const newEnd = new Date(startTime.getTime() + 60 * 60 * 1000);
+                this.initialAbsenceEnd = this.formatLocalDateTime(newEnd);
+                endInput.value = this.initialAbsenceEnd;
+            }
+        }
         this.initialAbsenceStart = event.detail.value;
     }
 
@@ -1333,7 +1338,9 @@ export default class LibsFullCalendarV2 extends NavigationMixin(LightningElement
         const startInput = this.refs.absenceStartDateTimeInput;
         const startTime = new Date(startInput.value);
         const newEndDate = new Date(event.detail.value);
-        startInput.setCustomValidity(startTime >= newEndDate ? 'Sluttid må komme etter starttid' : '');
+        startInput.setCustomValidity(
+            startTime.getTime() < newEndDate.getTime() ? '' : 'Sluttid må komme etter starttid'
+        );
         startInput.reportValidity();
         this.endHasBeenSet = true;
         this.initialAbsenceEnd = event.detail.value;
@@ -1423,8 +1430,10 @@ export default class LibsFullCalendarV2 extends NavigationMixin(LightningElement
             absenceEndDateTime = this.formatLocalDateTime(new Date(absenceEndDateTime), '23', '59');
         }
 
+        const startMs = new Date(absenceStartDateTime).getTime();
+        const endMs = new Date(absenceEndDateTime).getTime();
         const absenceStartElement = this.refs.absenceStartDateTimeInput;
-        if (absenceEndDateTime <= absenceStartDateTime) {
+        if (!(startMs < endMs)) {
             absenceStartElement.setCustomValidity('Sluttid må komme etter starttid');
             absenceStartElement.reportValidity();
             validInputs = false;
