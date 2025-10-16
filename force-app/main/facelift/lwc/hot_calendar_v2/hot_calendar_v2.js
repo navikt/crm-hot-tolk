@@ -1191,9 +1191,6 @@ export default class LibsFullCalendarV2 extends NavigationMixin(LightningElement
         this.endTimeInputLabel = `Legg inn${this.isEdit ? ' ny' : ''} sluttdato/tid`;
         this.registerButtonText = this.isEdit ? 'Endre' : 'Registrer';
 
-        // Validate once values are set so message shows immediately if invalid
-        setTimeout(() => this.validateStartEnd(), 0);
-
         const absenceDialog = this.template.querySelector('.modal-absence');
         if (!absenceDialog) return;
 
@@ -1275,36 +1272,6 @@ export default class LibsFullCalendarV2 extends NavigationMixin(LightningElement
     times = [];
     timesBackup;
 
-    // Centralized validation
-    validateStartEnd() {
-        const startDateTime = this.refs?.absenceStartDateTimeInput;
-        const endDateTime = this.refs?.absenceEndDateTimeInput;
-
-        if (!startDateTime || !endDateTime || !startDateTime.value || !endDateTime.value) {
-            if (startDateTime) startDateTime.setCustomValidity('');
-            if (endDateTime) endDateTime.setCustomValidity('');
-            return true;
-        }
-
-        let start = new Date(startDateTime.value);
-        let end = new Date(endDateTime.value);
-
-        if (this.isAllDayAbsence) {
-            start = new Date(this.formatLocalDateTime(start, '00', '00'));
-            end = new Date(this.formatLocalDateTime(end, '23', '59'));
-        }
-
-        const invalid = end.getTime() <= start.getTime();
-        const msg = invalid ? 'Sluttid må komme etter starttid' : '';
-
-        startDateTime.setCustomValidity(msg);
-        endDateTime.setCustomValidity(msg);
-        startDateTime.reportValidity();
-        endDateTime.reportValidity();
-
-        return !invalid;
-    }
-
     handleAllDayEventSet(event) {
         this.isAllDayAbsence = event.detail;
         this.timeFormat = this.isAllDayAbsence ? 'date' : 'datetime';
@@ -1319,7 +1286,6 @@ export default class LibsFullCalendarV2 extends NavigationMixin(LightningElement
             this.initialAbsenceStart = this.formatLocalDateTime(new Date(startTime), hoursString, '00');
             this.initialAbsenceEnd = this.formatLocalDateTime(new Date(endTime), hoursString, '00');
         }
-        this.validateStartEnd();
     }
 
     // Hjelper metode for å få dato i riktig tidsone for dateTime input felt
@@ -1350,9 +1316,6 @@ export default class LibsFullCalendarV2 extends NavigationMixin(LightningElement
         );
         startInput.reportValidity();
         this.initialAbsenceStart = event.detail.value;
-
-        // also run central check to keep both inputs in sync
-        this.validateStartEnd();
     }
 
     handleDateEndChange(event) {
@@ -1363,9 +1326,6 @@ export default class LibsFullCalendarV2 extends NavigationMixin(LightningElement
         startInput.reportValidity();
         this.endHasBeenSet = true;
         this.initialAbsenceEnd = event.detail.value;
-
-        // also run central check to keep both inputs in sync
-        this.validateStartEnd();
     }
 
     isAlertAbsenceEdit = false;
@@ -1452,9 +1412,15 @@ export default class LibsFullCalendarV2 extends NavigationMixin(LightningElement
             absenceEndDateTime = this.formatLocalDateTime(new Date(absenceEndDateTime), '23', '59');
         }
 
-        // Centralized date validation
-        const datesOk = this.validateStartEnd();
-        validInputs = validInputs && datesOk;
+        const absenceStartElement = this.refs.absenceStartDateTimeInput;
+        if (absenceEndDateTime <= absenceStartDateTime) {
+            absenceStartElement.setCustomValidity('Sluttid må komme etter starttid');
+            absenceStartElement.reportValidity();
+            validInputs = false;
+        } else {
+            absenceStartElement.setCustomValidity('');
+            absenceStartElement.reportValidity();
+        }
 
         if (!validInputs) {
             return;
