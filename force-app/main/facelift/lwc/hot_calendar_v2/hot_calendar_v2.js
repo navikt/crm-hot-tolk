@@ -1194,6 +1194,17 @@ export default class LibsFullCalendarV2 extends NavigationMixin(LightningElement
         const absenceDialog = this.template.querySelector('.modal-absence');
         if (!absenceDialog) return;
 
+        const startInput = this.refs?.absenceStartDateTimeInput;
+        const endInput = this.refs?.absenceEndDateTimeInput;
+        if (startInput) {
+            startInput.setCustomValidity('');
+            startInput.reportValidity();
+        }
+        if (endInput) {
+            endInput.setCustomValidity('');
+            endInput.reportValidity();
+        }
+
         absenceDialog.returnValue = ''; // reset state
 
         absenceDialog.showModal();
@@ -1307,7 +1318,7 @@ export default class LibsFullCalendarV2 extends NavigationMixin(LightningElement
         const startTime = new Date(event.detail.value);
         const endTime = new Date(this.refs.absenceEndDateTimeInput.value);
         if (!this.endHasBeenSet) {
-            this.initialAbsenceEnd = this.formatLocalDateTime(new Date(startTime.getTime() + 60 * 60 * 1000 * 24));
+            this.initialAbsenceEnd = this.formatLocalDateTime(new Date(startTime.getTime() + 60 * 60 * 1000));
         }
 
         const startInput = this.refs.absenceStartDateTimeInput;
