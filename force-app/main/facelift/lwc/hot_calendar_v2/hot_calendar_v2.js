@@ -1331,6 +1331,18 @@ export default class LibsFullCalendarV2 extends NavigationMixin(LightningElement
                 endInput.value = this.initialAbsenceEnd;
             }
         }
+        const startInput = this.refs.absenceStartDateTimeInput;
+        if (endInput && endInput.value) {
+            const endTime = new Date(endInput.value);
+            startInput.setCustomValidity(
+                startTime.getTime() < endTime.getTime() ? '' : 'Sluttid må komme etter starttid'
+            );
+            startInput.reportValidity();
+        } else {
+            startInput.setCustomValidity('');
+            startInput.reportValidity();
+        }
+
         this.initialAbsenceStart = event.detail.value;
     }
 
