@@ -12,62 +12,65 @@ public without sharing class HOT_EventController {
         Set<Id> serviceAppointmentIdsToDeleteEvents = new Set<Id>();
         Set<Id> serviceAppointmentIdsToCreateEvents = new Set<Id>();
         for (ServiceAppointment serviceAppointment : serviceAppointments) {
-            if (serviceAppointment.HOT_IsEmployedInterpreter__c) {
-                ServiceAppointment oldServiceAppointment = (ServiceAppointment) triggerOldMap.get(
-                    serviceAppointment.Id
-                );
-                //Når ny tolk er tildelt eller om tolk er endret
-                if (
-                    (serviceAppointment.HOT_AssignedResourceId__c != null &&
-                    oldServiceAppointment.Status != serviceAppointment.Status &&
-                    serviceAppointment.Status == 'Dispatched') ||
-                    (serviceAppointment.HOT_AssignedResourceId__c != null &&
-                    oldServiceAppointment.HOT_AssignedResourceId__c != null &&
-                    serviceAppointment.HOT_AssignedResourceId__c != oldServiceAppointment.HOT_AssignedResourceId__c &&
-                    serviceAppointment.Status == 'Dispatched')
-                ) {
-                    serviceAppointmentIdsToDeleteEvents.add(serviceAppointment.Id);
+            ServiceAppointment oldServiceAppointment = (ServiceAppointment) triggerOldMap.get(serviceAppointment.Id);
+            //Når ny tolk er tildelt eller om tolk er endret
+            if (
+                (serviceAppointment.HOT_AssignedResourceId__c != null &&
+                oldServiceAppointment.Status != serviceAppointment.Status &&
+                serviceAppointment.Status == 'Dispatched') ||
+                (serviceAppointment.HOT_AssignedResourceId__c != null &&
+                oldServiceAppointment.HOT_AssignedResourceId__c != null &&
+                serviceAppointment.HOT_AssignedResourceId__c != oldServiceAppointment.HOT_AssignedResourceId__c &&
+                serviceAppointment.Status == 'Dispatched')
+            ) {
+                serviceAppointmentIdsToDeleteEvents.add(serviceAppointment.Id);
+                if (serviceAppointment.HOT_IsEmployedInterpreter__c) {
                     serviceAppointmentIdsToCreateEvents.add(serviceAppointment.Id);
                 }
-                //Når tolk tas av
+            }
+            //Når tolk tas av
+            if (
+                ((oldServiceAppointment.Status == 'Completed' ||
+                oldServiceAppointment.Status == 'Dispatched' ||
+                oldServiceAppointment.Status == 'In Progress') &&
+                (serviceAppointment.Status == null ||
+                serviceAppointment.Status == 'Scheduled' ||
+                serviceAppointment.Status == 'None')) ||
+                (oldServiceAppointment.HOT_AssignedResourceId__c != null &&
+                serviceAppointment.HOT_AssignedResourceId__c == null)
+            ) {
+                serviceAppointmentIdsToDeleteEvents.add(serviceAppointment.Id);
+            }
+
+            if (serviceAppointment.HOT_AssignedResourceId__c != null && serviceAppointment.Status == 'Dispatched') {
+                //Når tidspunkt eller adresse endres
                 if (
-                    ((oldServiceAppointment.Status == 'Completed' ||
-                    oldServiceAppointment.Status == 'Dispatched' ||
-                    oldServiceAppointment.Status == 'In Progress') &&
-                    (serviceAppointment.Status == null ||
-                    serviceAppointment.Status == 'Scheduled' ||
-                    serviceAppointment.Status == 'None')) ||
-                    (oldServiceAppointment.HOT_AssignedResourceId__c != null &&
-                    serviceAppointment.HOT_AssignedResourceId__c == null)
+                    ((serviceAppointment.EarliestStartTime != oldServiceAppointment.EarliestStartTime ||
+                    serviceAppointment.DueDate != oldServiceAppointment.DueDate) &&
+                    serviceAppointment.EarliestStartTime != null &&
+                    oldServiceAppointment.DueDate != null) ||
+                    (serviceAppointment.HOT_AddressFormated__c != oldServiceAppointment.HOT_AddressFormated__c &&
+                    serviceAppointment.SchedStartTime >= Date.today())
                 ) {
                     serviceAppointmentIdsToDeleteEvents.add(serviceAppointment.Id);
-                }
-
-                if (serviceAppointment.HOT_AssignedResourceId__c != null && serviceAppointment.Status == 'Dispatched') {
-                    //Når tidspunkt eller adresse endres
-                    if (
-                        ((serviceAppointment.EarliestStartTime != oldServiceAppointment.EarliestStartTime ||
-                        serviceAppointment.DueDate != oldServiceAppointment.DueDate) &&
-                        serviceAppointment.EarliestStartTime != null &&
-                        oldServiceAppointment.DueDate != null) ||
-                        (serviceAppointment.HOT_AddressFormated__c != oldServiceAppointment.HOT_AddressFormated__c &&
-                        serviceAppointment.SchedStartTime >= Date.today())
-                    ) {
-                        serviceAppointmentIdsToDeleteEvents.add(serviceAppointment.Id);
+                    if (serviceAppointment.HOT_IsEmployedInterpreter__c) {
                         serviceAppointmentIdsToCreateEvents.add(serviceAppointment.Id);
                     }
                 }
-                //Når oppdraget er ferdig og faktisk start og slutt endres
-                if (
-                    (serviceAppointment.HOT_AssignedResourceId__c == oldServiceAppointment.HOT_AssignedResourceId__c) &&
-                    (serviceAppointment.ActualStartTime != oldServiceAppointment.ActualStartTime ||
-                    serviceAppointment.ActualEndTime != oldServiceAppointment.ActualEndTime)
-                ) {
-                    serviceAppointmentIdsToDeleteEvents.add(serviceAppointment.Id);
+            }
+            //Når oppdraget er ferdig og faktisk start og slutt endres
+            if (
+                (serviceAppointment.HOT_AssignedResourceId__c == oldServiceAppointment.HOT_AssignedResourceId__c) &&
+                (serviceAppointment.ActualStartTime != oldServiceAppointment.ActualStartTime ||
+                serviceAppointment.ActualEndTime != oldServiceAppointment.ActualEndTime)
+            ) {
+                serviceAppointmentIdsToDeleteEvents.add(serviceAppointment.Id);
+                if (serviceAppointment.HOT_IsEmployedInterpreter__c) {
                     serviceAppointmentIdsToCreateEvents.add(serviceAppointment.Id);
                 }
             }
         }
+
         if (!serviceAppointmentIdsToDeleteEvents.isEmpty()) {
             deleteExistingEvent(serviceAppointmentIdsToDeleteEvents);
         }

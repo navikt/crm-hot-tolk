@@ -39,7 +39,7 @@ export default class Hot_threadListFilterButtons extends LightningElement {
             selected: false
         },
         {
-            label: 'Med medtolk og bruker',
+            label: 'Med medtolk',
             name: 'HOT_TOLK-TOLK',
             value: 'HOT_TOLK-TOLK',
             selected: false
