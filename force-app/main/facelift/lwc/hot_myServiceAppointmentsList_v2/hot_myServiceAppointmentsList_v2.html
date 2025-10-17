@@ -105,13 +105,13 @@
                     <p lwc:if={dispatcher}><strong>Formidler:</strong> {dispatcher}</p>
 
                     <div class="files-container">
-                        <c-record-files-with-sharing
+                        <c-record-files-without-sharing
                             record-id={serviceAppointment.Id}
                             is-get-all="true"
                             is-delete-option="false"
                             title="Vedlegg"
                             delete-file-on-button-click="false"
-                        ></c-record-files-with-sharing>
+                        ></c-record-files-without-sharing>
                     </div>
                     <div class="button-container">
                         <c-button
