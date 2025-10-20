@@ -14,7 +14,7 @@ private class HOT_MessageHelperTest {
         Profile profile = [SELECT Id FROM Profile WHERE Name = 'Standard User' OR Name = 'Standardbruker' LIMIT 1];
         User user = HOT_TestDataFactory.createUser('user', profile);
         insert new List<User>{ user };
-        // [SELECT Id FROM User WHERE Name = 'user' LIMIT 1][0]
+        // User u =[SELECT Id FROM User WHERE Name = 'user' LIMIT 1][0]
         ServiceResource serviceResource = HOT_TestDataFactory.createServiceResource(user.Id);
         serviceResource.AccountId = acc.Id;
         insert serviceResource;
@@ -1011,19 +1011,6 @@ private class HOT_MessageHelperTest {
     }
     @IsTest
     static void getRelatedObjectDetailsSA2() {
-        /*
-        WorkType workType = HOT_TestDataFactory.createWorkType();
-        insert workType;
-        HOT_Request__c request = HOT_TestDataFactory.createRequest('TEST', workType);
-        insert request;
-        WorkOrder workOrder = HOT_TestDataFactory.createWorkOrder(request, workType);
-        insert workOrder;
-        WorkOrderLineItem woli = HOT_TestDataFactory.createWorkOrderLineItem(workOrder, workType);
-        insert woli;
-        ServiceAppointment sa = HOT_TestDataFactory.createServiceAppointment(woli);
-        sa.Subject = 'TEST';
-        insert sa;
-        */
         ServiceAppointment sa = [SELECT Id FROM ServiceAppointment WHERE Subject = 'TEST' LIMIT 1];
         Test.startTest();
         Map<String, String> navigationhelp2 = new Map<String, String>();
@@ -1089,39 +1076,25 @@ private class HOT_MessageHelperTest {
 
     @IsTest
     static void createThreadWhenIRIsNotAssignedTest() {
-        WorkType wt = HOT_TestDataFactory.createWorkType();
-        insert wt;
-        HOT_Request__c req = HOT_TestDataFactory.createRequest('Subject', wt);
-        insert req;
-        WorkOrder wo = HOT_TestDataFactory.createWorkOrder(req, wt);
-        insert wo;
-        WorkOrderLineItem woli = HOT_TestDataFactory.createWorkOrderLineItem(wo, wt);
-        insert woli;
-        Account acc = new Account(Name = 'IR Not Assigned Acc');
-        insert acc;
-        wo.AccountId = acc.Id;
-        update wo;
-
-        Test.startTest();
-        User me = [SELECT Id FROM User WHERE Id = :UserInfo.getUserId()];
-        ServiceResource sr = HOT_TestDataFactory.createServiceResource(me.Id);
+        Account acc = [SELECT Id, FirstName, LastName, PersonContactId FROM Account WHERE Name = 'Test User' LIMIT 1];
+        ServiceResource sr = HOT_TestDataFactory.createServiceResource(UserInfo.getUserId());
         insert sr;
         sr.AccountId = acc.Id;
         update sr;
-        OperatingHours oh = HOT_TestDataFactory.createOperatingHours();
-        insert oh;
-        ServiceTerritory st = HOT_TestDataFactory.createServiceTerritory(oh);
-        insert st;
-        insert HOT_TestDataFactory.createServiceTerritoryMember(sr, st);
 
-        ServiceAppointment sa = HOT_TestDataFactory.createSchedulableSA(woli, st);
-        sa.HOT_Request__c = req.Id;
+        ServiceAppointment sa = [SELECT Id FROM ServiceAppointment WHERE Subject = 'TEST' LIMIT 1];
+        myTriggers.disable(HOT_ServiceAppointmentHandler.class);
+        myTriggers.disable(HOT_ServiceAppointmentStatusHandler.class);
+        myTriggers.disable(HOT_ServiceAppointmentAccessHandler.class);
+
         sa.Subject = 'Hei';
-        sa.HOT_Account__c = acc.Id;
-        insert sa;
+        sa.HOT_Account__c = sr.AccountId;
+        update sa;
 
         HOT_InterestedResource__c ir = HOT_TestDataFactory.createInterestedResource(sa.Id, sr.Id);
         insert ir;
+
+        Test.startTest();
         insert HOT_TestDataFactory.createAssignedResource(sa.Id, sr.Id);
 
         ir.Status__c = 'Canceled by Interpreter';
@@ -1135,9 +1108,7 @@ private class HOT_MessageHelperTest {
             thread.CRM_Related_Object__c,
             'Should have created a thread related to the Interested Resource when it is not assigned.'
         );
-        if (thread.CRM_Thread_Type__c != null) {
-            System.assertEquals('HOT_TOLK-FORMIDLER', thread.CRM_Thread_Type__c);
-        }
+        System.assertEquals('HOT_TOLK-FORMIDLER', thread.CRM_Thread_Type__c);
     }
 
     @IsTest
@@ -1175,14 +1146,8 @@ private class HOT_MessageHelperTest {
     }
     @IsTest
     static void getMessagesFromThreadTestAcc() {
-        Account acc = new Account();
-        acc.Name = 'Newly created account';
-        insert acc;
-
-        User currentUser = [SELECT Id, AccountId FROM User WHERE Id = :UserInfo.getUserId()];
-        ServiceResource resource = HOT_TestDataFactory.createServiceResource(currentUser.Id);
-        resource.AccountId = acc.Id;
-        insert resource;
+        User u = [SELECT Id FROM User WHERE Name = 'user' LIMIT 1];
+        ServiceResource resource = [SELECT Id, AccountId FROM ServiceResource LIMIT 1];
 
         Thread__c t = HOT_TestDataFactory.createThread();
         t.CRM_Related_Object__c = resource.Id;
@@ -1197,9 +1162,13 @@ private class HOT_MessageHelperTest {
         insert m;
 
         Test.startTest();
-        List<Message__c> msgList = HOT_MessageHelper.getMessagesFromThread(t.id);
+        List<Message__c> msgList;
+        System.runAs(u) {
+            msgList = HOT_MessageHelper.getMessagesFromThread(t.id);
+        }
         Test.stopTest();
-        assert.isNotNull(msgList, 'Should have got  messages because it should have access');
+        System.assertNotEquals(null, msgList, 'Should have got  messages because it should have access');
+        System.assertEquals(m.id, msgList[0].id, 'Should contain related message id');
     }
 
     @IsTest
@@ -1217,14 +1186,8 @@ private class HOT_MessageHelperTest {
 
     @IsTest
     static void markasreadTestAcc() {
-        Account acc = new Account();
-        acc.Name = 'Newly created account';
-        insert acc;
-
-        User currentUser = [SELECT Id, AccountId FROM User WHERE Id = :UserInfo.getUserId()];
-        ServiceResource resource = HOT_TestDataFactory.createServiceResource(currentUser.Id);
-        resource.AccountId = acc.Id;
-        insert resource;
+        User u = [SELECT Id FROM User WHERE Name = 'user' LIMIT 1];
+        ServiceResource resource = [SELECT Id, AccountId FROM ServiceResource LIMIT 1];
 
         Thread__c t = HOT_TestDataFactory.createThread();
         t.CRM_Related_Object__c = resource.Id;
@@ -1239,7 +1202,9 @@ private class HOT_MessageHelperTest {
         insert m;
 
         Test.startTest();
-        HOT_MessageHelper.markAsRead(t.Id);
+        System.runAs(u) {
+            HOT_MessageHelper.markAsRead(t.Id);
+        }
         Test.stopTest();
         Message__c msg = [SELECT CRM_Read__c FROM Message__c WHERE CRM_Thread__c = :t.Id LIMIT 1];
         System.assertEquals(true, msg.CRM_Read__c, 'Should be marked as read because user has access');
@@ -1247,14 +1212,8 @@ private class HOT_MessageHelperTest {
 
     @IsTest
     static void markThreadAsReadTestAcc() {
-        Account acc = new Account();
-        acc.Name = 'Newly created account';
-        insert acc;
-
-        User currentUser = [SELECT Id, AccountId FROM User WHERE Id = :UserInfo.getUserId()];
-        ServiceResource resource = HOT_TestDataFactory.createServiceResource(currentUser.Id);
-        resource.AccountId = acc.Id;
-        insert resource;
+        User u = [SELECT Id FROM User WHERE Name = 'user' LIMIT 1];
+        ServiceResource resource = [SELECT Id, AccountId FROM ServiceResource LIMIT 1];
 
         Thread__c t = HOT_TestDataFactory.createThread();
         t.CRM_Related_Object__c = resource.Id;
@@ -1272,7 +1231,9 @@ private class HOT_MessageHelperTest {
         String contactId = '123456';
 
         Test.startTest();
-        HOT_MessageHelper.markThreadAsRead(t.Id, contactId);
+        System.runAs(u) {
+            HOT_MessageHelper.markThreadAsRead(t.Id, contactId);
+        }
         Test.stopTest();
         Thread__c th = [SELECT HOT_Thread_read_by__c FROM Thread__c WHERE id = :t.Id LIMIT 1];
         System.assertEquals('007123456;', th.HOT_Thread_read_by__c, 'Should be HOT Thread Read By + contactid + ;');
