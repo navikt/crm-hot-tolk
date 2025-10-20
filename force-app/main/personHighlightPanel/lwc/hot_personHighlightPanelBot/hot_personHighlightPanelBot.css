@@ -1,0 +1,20 @@
+.custom-padding-around-small {
+    padding: 0.5rem;
+}
+
+.custom-padding-left {
+    padding-left: 1.875rem;
+}
+
+.custom-padding-left-small {
+    padding-left: 0.5rem;
+}
+
+.custom-grid-vertical-align-center {
+    display: flex;
+    align-items: center;
+}
+
+.button-container {
+    flex-wrap: wrap;
+}

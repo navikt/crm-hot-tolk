@@ -1,0 +1,22 @@
+.flexWithGap {
+    padding-top: 1rem;
+    display: flex;
+    gap: 1rem;
+    flex-direction: column;
+}
+
+.backgroundStyling {
+    position: absolute;
+    z-index: 1001;
+    width: max-content;
+    max-width: 800px;
+    top: 3rem;
+    left: 0rem;
+    background-color: var(--secondaryBackgroundColor, #0056b4);
+}
+
+.headerLine {
+    width: 100%;
+    height: 0.5rem;
+    background: var(--badge-line, #ffaa33);
+}
