@@ -195,8 +195,9 @@
     }
 }
 
-@media (min-width: 576px) {
-    .mobile-only {
+@media (min-width: 768px) {
+    .mobile {
         display: none;
+        visibility: hidden;
     }
 }
