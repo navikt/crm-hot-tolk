@@ -215,12 +215,10 @@ tr.row:hover {
     }
     thead .checkbox-column {
         position: absolute !important;
-        top: 0.25rem !important;
         right: 0.5rem !important;
         width: auto !important;
         margin: 0 !important;
         border-bottom: none !important;
-        z-index: 1200 !important;
         background: transparent !important;
         text-align: right !important;
         display: block !important;
