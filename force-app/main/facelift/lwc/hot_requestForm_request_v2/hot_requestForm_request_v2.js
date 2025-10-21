@@ -100,8 +100,6 @@ export default class hot_requestForm_request_v2 extends LightningElement {
         }
     }
 
-
-
     removeTPAFromAssignmentList() {
         let index = this.componentValues.assignmentChoices.findIndex((assignment) => {
             return assignment.name === 'Interpreter at Work';
