@@ -37,6 +37,26 @@
                 value={fieldValues.MeetingStreet__c}
                 error-text="Oppmøteadresse må fylles ut."
             ></c-input>
+                  <!--Testing postal City START -->
+                    <div>
+                    <c-input
+                        label="Postnummer test"
+                        name="MeetingPostalCode__c"
+                        form="tolk-skjema-input"
+                        value={postalCodeSearch}
+                        oninput={handlePostalCity}
+                        max-length="4"
+                    ></c-input>
+
+                     <c-input
+                        label="Poststed test"
+                        name="MeetingPostalCity__c"
+                        form="tolk-skjema-input"
+                        value={postalCityText}
+                        disabled
+                    ></c-input>
+                      </div>
+                       <!--Testing postal City Stop -->
             <br />
             <div class="slds-grid slds-gutters">
                 <div class="slds-col slds-size_2-of-5">

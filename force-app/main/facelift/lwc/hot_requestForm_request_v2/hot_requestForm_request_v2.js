@@ -1,4 +1,6 @@
 import { LightningElement, track, api } from 'lwc';
+import getPostalCity from '@salesforce/apex/HOT_RequestListController.getPostalCity';
+
 
 export default class hot_requestForm_request_v2 extends LightningElement {
     @track fieldValues = {
@@ -72,6 +74,33 @@ export default class hot_requestForm_request_v2 extends LightningElement {
             this.clearInterpretationFields();
         }
     }
+
+    postalCodeSearch = '';
+    postalCityName = '';
+
+    handlePostalCity(event) {
+        this.postalCodeSearch = event.detail?.value || event.target?.value;
+
+        if (this.postalCodeSearch && this.postalCodeSearch.length === 4) {
+            this.postalCityName = 'Henter poststed...';
+            getPostalCity({ postalCode: this.postalCodeSearch })
+                .then((result) => {
+                    if (result && result.length === 1) {
+                        this.postalCityName = result[0].Name;
+                    } else {
+                        this.postalCityName = 'Kunne ikke finne poststed';
+                    }
+                })
+                .catch((error) => {
+                    console.error(error);
+                    this.postalCityName = 'Feil ved henting av poststed';
+                });
+        } else {
+            this.postalCityName = 'Feltet fylles automatisk';
+        }
+    }
+
+
 
     removeTPAFromAssignmentList() {
         let index = this.componentValues.assignmentChoices.findIndex((assignment) => {
