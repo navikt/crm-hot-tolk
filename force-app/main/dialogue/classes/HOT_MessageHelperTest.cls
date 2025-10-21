@@ -885,8 +885,7 @@ private class HOT_MessageHelperTest {
     }
     @IsTest
     static void getRelatedObjectDetailsNoSA() {
-        WorkType workType = HOT_TestDataFactory.createWorkType();
-        insert workType;
+        WorkType workType = [SELECT Id FROM WorkType LIMIT 1];
 
         System.runAs([SELECT Id FROM User WHERE Id = :UserInfo.getUserId() LIMIT 1][0]) {
             UserRole testRole = new UserRole(Name = 'Test Rolle', DeveloperName = 'Test_Rolle');
@@ -1241,21 +1240,15 @@ private class HOT_MessageHelperTest {
 
     @IsTest
     static void markThreadAsReadEmployeeTestAcc() {
-        Account acc = new Account();
-        acc.Name = 'Newly created account';
-        insert acc;
-
-        User currentUser = [SELECT Id, AccountId FROM User WHERE Id = :UserInfo.getUserId()];
-        ServiceResource resource = HOT_TestDataFactory.createServiceResource(currentUser.Id);
-        resource.AccountId = acc.Id;
-        insert resource;
+        User u = [SELECT Id FROM User WHERE Name = 'user' LIMIT 1];
+        ServiceResource resource = [SELECT Id, AccountId FROM ServiceResource LIMIT 1];
 
         Thread__c t = HOT_TestDataFactory.createThread();
         t.CRM_Related_Object__c = resource.Id;
         t.CRM_Type__c = 'HOT_BRUKER-FORMIDLER';
         t.HOT_ServiceResource__c = resource.Id;
         t.HOT_Thread_read_by__c = '007';
-        t.HOT_ParticipantIds__c = currentUser.id;
+        t.HOT_ParticipantIds__c = u.id;
         insert t;
 
         Message__c m = new Message__c();
@@ -1265,16 +1258,12 @@ private class HOT_MessageHelperTest {
         insert m;
 
         Test.startTest();
-        HOT_MessageHelper.markThreadAsReadEmployee(t.Id);
+        System.runAs(u) {
+            HOT_MessageHelper.markThreadAsReadEmployee(t.Id);
+        }
         Test.stopTest();
         Thread__c th = [SELECT HOT_Thread_read_by__c FROM Thread__c WHERE id = :t.Id LIMIT 1];
-        System.assertEquals(
-            '007' +
-            currentUser.id +
-            ';',
-            th.HOT_Thread_read_by__c,
-            'Should be HOT Thread Read By + user id + ;'
-        );
+        System.assertEquals('007' + u.id + ';', th.HOT_Thread_read_by__c, 'Should be HOT Thread Read By + user id + ;');
     }
 
     @IsTest
@@ -1392,23 +1381,17 @@ private class HOT_MessageHelperTest {
 
     @IsTest
     static void createMessageAcc() {
-        Account acc = new Account();
-        acc.Name = 'Newly created account';
-        insert acc;
-
         contact c = [SELECT id FROM Contact LIMIT 1];
 
-        User currentUser = [SELECT Id, AccountId FROM User WHERE Id = :UserInfo.getUserId()];
-        ServiceResource resource = HOT_TestDataFactory.createServiceResource(currentUser.Id);
-        resource.AccountId = acc.Id;
-        insert resource;
+        User u = [SELECT Id FROM User WHERE Name = 'user' LIMIT 1];
+        ServiceResource resource = [SELECT Id, AccountId FROM ServiceResource LIMIT 1];
 
         Thread__c t = HOT_TestDataFactory.createThread();
         t.CRM_Related_Object__c = resource.Id;
         t.CRM_Type__c = 'HOT_BRUKER-FORMIDLER';
         t.HOT_ServiceResource__c = resource.Id;
         t.HOT_Thread_read_by__c = '007';
-        t.HOT_ParticipantIds__c = currentUser.id;
+        t.HOT_ParticipantIds__c = u.id;
         t.CRM_isActive__c = true;
         insert t;
 
@@ -1417,7 +1400,7 @@ private class HOT_MessageHelperTest {
         t2.CRM_Type__c = 'HOT_BRUKER-FORMIDLER';
         t2.HOT_ServiceResource__c = resource.Id;
         t2.HOT_Thread_read_by__c = '007';
-        t2.HOT_ParticipantIds__c = currentUser.id;
+        t2.HOT_ParticipantIds__c = u.id;
         t2.CRM_isActive__c = false;
         insert t2;
 
@@ -1430,10 +1413,16 @@ private class HOT_MessageHelperTest {
         m.HOT_User_Role__c = HOT_MessageHelper.getUserProfileAndName();
         insert m;
 
+        Boolean r;
+        Boolean r2;
+        Boolean r3;
+
         Test.startTest();
-        Boolean r = HOT_MessageHelper.createMessage(t.Id, 'Test', c.id);
-        Boolean r2 = HOT_MessageHelper.createMessage(t2.Id, 'Test', c.id);
-        Boolean r3 = HOT_MessageHelper.createMessage(t3.Id, 'Test', c.id);
+        System.runAs(u) {
+            r = HOT_MessageHelper.createMessage(t.Id, 'Test', c.id);
+            r2 = HOT_MessageHelper.createMessage(t2.Id, 'Test', c.id);
+            r3 = HOT_MessageHelper.createMessage(t3.Id, 'Test', c.id);
+        }
         Test.stopTest();
         System.assertEquals(true, r, 'Should be True because crm_isactive__c');
         System.assertEquals(false, r2, 'Should be False because crm_isactive__c');
