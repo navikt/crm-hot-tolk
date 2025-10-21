@@ -307,4 +307,94 @@ private class HOT_ContentDocumentLinkHandlerTest {
         ];
         System.assertEquals(0, linksAfterDelete.size(), 'ContentDocumentLink should be deleted');
     }
+
+    @IsTest
+    public static void addContentDocumentLinkToServiceAppointment_FromWorkOrder() {
+        // Base data
+        Person__c person = HOT_TestDataFactory.createPerson();
+        person.Name = '12015678999';
+        insert person;
+
+        Account personAccount = HOT_TestDataFactory.createAccount(true);
+        personAccount.INT_PersonIdent__c = '12015678999';
+        personAccount.CRM_Person__c = person.Id;
+        insert personAccount;
+
+        WorkType workType = HOT_TestDataFactory.createWorkType();
+        insert workType;
+
+        // 1) Create a Work Order via the WO handler request
+        HOT_Request__c requestWO = HOT_TestDataFactory.createRequest('HOT_WorkOrderHandler', workType);
+        insert requestWO;
+        requestWO.Status__c = 'Godkjent';
+        update requestWO;
+
+        WorkOrder wo = [
+            SELECT Id
+            FROM WorkOrder
+            WHERE HOT_Request__c = :requestWO.Id
+            LIMIT 1
+        ];
+
+        // Minimal WOLI (no Product/Quantity to avoid org validations)
+        WorkOrderLineItem woli = new WorkOrderLineItem(WorkOrderId = wo.Id);
+        insert woli;
+
+        // 2) Create a Service Appointment via the existing SA flow
+        HOT_Request__c requestSA = HOT_TestDataFactory.createRequest('HOT_ServiceAppointmentHandler', workType);
+        insert requestSA;
+        requestSA.Status__c = 'Godkjent';
+        update requestSA;
+
+        ServiceAppointment sa = [
+            SELECT Id
+            FROM ServiceAppointment
+            WHERE HOT_Request__c = :requestSA.Id
+            LIMIT 1
+        ];
+
+        // Link that SA to the WOLI so the WO→SA logic picks it up
+        sa.HOT_WorkOrderLineItem__c = woli.Id;
+        update sa;
+
+        // 3) Create the file ON THE WORK ORDER (not on the request)
+        ContentVersion cv = new ContentVersion(
+            Title = 'WO file',
+            PathOnClient = 'wo-file.jpg',
+            VersionData = Blob.valueOf('Test content on WO'),
+            IsMajorVersion = true
+        );
+        insert cv;
+
+        ContentDocument cd = [SELECT Id FROM ContentDocument LIMIT 1];
+
+        ContentDocumentLink cdlOnWO = new ContentDocumentLink(ContentDocumentId = cd.Id, LinkedEntityId = wo.Id);
+
+        Test.startTest();
+        insert cdlOnWO; // onAfterInsert should call createContentDocumentLinksFromWOToSA
+        Test.stopTest();
+
+        // 4) Assert the same doc is now linked to the Service Appointment
+        Id woDocId = [
+            SELECT ContentDocumentId
+            FROM ContentDocumentLink
+            WHERE LinkedEntityId = :wo.Id
+            LIMIT 1
+        ]
+        .ContentDocumentId;
+
+        Id saDocId = [
+            SELECT ContentDocumentId
+            FROM ContentDocumentLink
+            WHERE LinkedEntityId = :sa.Id
+            LIMIT 1
+        ]
+        .ContentDocumentId;
+
+        System.assertEquals(
+            woDocId,
+            saDocId,
+            'ContentDocumentId fra WorkOrder og ServiceAppointment stemmer ikke overens.'
+        );
+    }
 }

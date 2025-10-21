@@ -1,6 +1,14 @@
 <template>
     <!-- <template lwc:if={showContent}> -->
     <div class="page-background">
+        <!-- User has no access to the thread -->
+        <template lwc:if={showError}>
+            <div class="error-content">
+                <p>Du har ikke tilgang til denne samtalen.</p>
+                <br />
+                <c-button button-styling="Primary" button-label="Gå til hjem" onbuttonclick={goToHome}></c-button>
+            </div>
+        </template>
         <template lwc:if={isContentReady}>
             <div class="header-content">
                 <div class="back-button-info">
@@ -9,22 +17,12 @@
 
                 <!-- Conversation with -->
                 <div class="header-buttons">
-                    <c-button
-                        button-label={threadType}
-                        type="button"
-                        readonly
-                        aria-disabled="true"
-                        aria-label={threadType}
-                        desktop-style="background-color: #F2F3F5; color: #23262a; pointer-events: none;"
-                        mobile-style="background-color: #F2F3F5; color: #23262a; pointer-events: none;"
-                    ></c-button>
+                    <div class="navds-div" tabindex="0" aria-label={threadType}>{threadType}</div>
 
                     <c-button
                         button-label="Vis personer i samtalen"
                         type="button"
                         onbuttonclick={handleShowParticipants}
-                        desktop-style="background-color: #F2F3F5; color: #23262a;"
-                        mobile-style="background-color: #F2F3F5; color: #23262a;"
                     ></c-button>
                 </div>
 
@@ -71,8 +69,8 @@
                         class="show-details-button"
                         type="button"
                         onbuttonclick={goToDetails}
-                        desktop-style="background-color: #525962 !important; justify-content: center; width: 7.1rem; margin-right: 0.5rem;"
-                        mobile-style="background-color: #525962 !important; justify-content: center; width: 7.1rem; margin-right: 0.5rem;"
+                        desktop-style="margin-right: 0.5rem;"
+                        mobile-style="margin-right: 0.5rem;"
                     ></c-button>
 
                     <template lwc:if={showScrollButton}>
@@ -82,8 +80,6 @@
                             type="button"
                             aria-label="Til bunnen"
                             onbuttonclick={scrollToLatestMessage}
-                            desktop-style=""
-                            mobile-style=""
                         ></c-button>
                     </template>
                 </div>
@@ -328,13 +324,4 @@
             </div>
         </template>
     </div>
-
-    <!-- User has no access to the thread -->
-    <template lwc:if={showError}>
-        <div class="error-content">
-            <p>Du har ikke tilgang til denne samtalen.</p>
-            <br />
-            <c-button button-styling="Primary" button-label="Gå til hjem" onbuttonclick={goToHome}></c-button>
-        </div>
-    </template>
 </template>

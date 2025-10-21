@@ -7,11 +7,11 @@
             "path": "force-app",
             "default": true,
             "package": "crm-hot-tolk",
-            "versionNumber": "1.343.0.NEXT",
+            "versionNumber": "1.346.0.NEXT",
             "dependencies": [
                 {
                     "package": "crm-platform-base",
-                    "versionNumber": "0.279.0.LATEST"
+                    "versionNumber": "0.287.0.LATEST"
                 },
                 {
                     "package": "crm-shared-flowComponents",
@@ -22,8 +22,24 @@
                     "versionNumber": "0.36.0.LATEST"
                 },
                 {
+                    "package": "platform-data-model",
+                    "versionNumber": "0.1.2.LATEST"
+                },
+                {
+                    "package": "custom-metadata-dao",
+                    "versionNumber": "0.1.2.LATEST"
+                },
+                {
+                    "package": "custom-permission-helper",
+                    "versionNumber": "0.1.2.LATEST"
+                },
+                {
+                    "package": "feature-toggle",
+                    "versionNumber": "0.1.3.LATEST"
+                },
+                {
                     "package": "crm-platform-integration",
-                    "versionNumber": "0.158.0.LATEST"
+                    "versionNumber": "0.162.0.LATEST"
                 },
                 {
                     "package": "crm-platform-access-control",
@@ -44,10 +60,20 @@
         "crm-platform-base": "0Ho2o0000008ORmCAM",
         "crm-platform-access-control": "0Ho2o0000008OR3CAM",
         "crm-hot-tolk": "0Ho2o0000008OSVCA2",
+        "custom-metadata-dao": "0HoKB000000000B0AQ",
+        "custom-permission-helper": "0HoKB000000000f0AA",
+        "feature-toggle": "0HoKB000000000V0AQ",
+        "platform-data-model": "0HoKB00000000010AA",
         "crm-community-base": "0Ho2o0000008OSzCAM",
         "crm-platform-reporting": "0Ho2o0000008OSfCAM",
         "crm-platform-integration": "0Ho2o0000008ORrCAM",
         "crm-henvendelse-base": "0Ho7U000000000kSAA",
         "crm-shared-flowComponents": "0Ho2o000000fxYJCAY"
+    },
+    "packageKeyConfig": {
+        "platform-data-model": false,
+        "custom-metadata-dao": false,
+        "custom-permission-helper": false,
+        "feature-toggle": false
     }
 }

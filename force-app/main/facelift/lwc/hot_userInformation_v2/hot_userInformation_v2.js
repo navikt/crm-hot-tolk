@@ -1,6 +1,7 @@
 import { LightningElement, wire, api } from 'lwc';
 import { getRecord } from 'lightning/uiRecordApi';
 import { formatDate } from 'c/datetimeFormatter';
+import { refreshApex } from '@salesforce/apex';
 
 import updateKrrStatus from '@salesforce/apex/HOT_UserInformationController.updateKrrStatus';
 import getPerson from '@salesforce/apex/HOT_UserInformationController.getPerson';
@@ -48,14 +49,15 @@ export default class Hot_userInformation_v2 extends LightningElement {
     escort = false;
 
     viewUserNotificationSettings = true;
-    editUserNotification = false;
+    successMessage = '';
     showSuccess = false;
     securityMeasures;
     hasSecurityMeasures = false;
 
     picklistOptions = [
         { name: 'SMS', label: 'SMS', selected: false },
-        { name: 'Push-varsel i appen', label: 'Push-varsel i appen', selected: false }
+        { name: 'Push-varsel i appen', label: 'Push-varsel i appen', selected: false },
+        { name: 'Reserver mot alle varsler', label: 'Reserver mot alle varsler', selected: false }
     ];
 
     @wire(getRecord, { recordId: '$recordId', fields: FIELDS })
@@ -66,7 +68,7 @@ export default class Hot_userInformation_v2 extends LightningElement {
             this.degreeOfImpairment = data.fields.HOT_DegreeOfHearingAndVisualImpairment__c.displayValue;
             this.sipAddress = data.fields.HOT_SIPAddress__c.value;
         } else if (error) {
-            console.error(error);
+            console.error('feil' + error);
         }
     }
 
@@ -97,15 +99,14 @@ export default class Hot_userInformation_v2 extends LightningElement {
                 chosen: this.selectedOption
             }).then((data) => {
                 this.options = data;
-                this.picklistOptions.forEach((element) => {
-                    if (element.name === this.selectedOption) {
-                        element.selected = true;
-                    } else {
-                        element.selected = false;
-                    }
-                });
+                this.picklistOptions = this.picklistOptions.map((option) => ({
+                    ...option,
+                    selected:
+                        (this.isReservedAgainstNotifications && option.name === "Reserver mot alle varsler") ||
+                        (!this.isReservedAgainstNotifications && option.name === this.selectedOption)
+                }));
             });
-            if (this.person.INT_SecurityMeasures__c != null || this.person.INT_SecurityMeasures__c != '') {
+            if (this.person.INT_SecurityMeasures__c != null && this.person.INT_SecurityMeasures__c !== '') {
                 this.hasSecurityMeasures = true;
                 let secMeasures = JSON.parse(this.person.INT_SecurityMeasures__c);
                 let securityMeasuresFormatted = [];
@@ -113,12 +114,12 @@ export default class Hot_userInformation_v2 extends LightningElement {
                     console.log(sm.tiltaksType);
                     securityMeasuresFormatted.push(
                         sm.beskrivelse +
-                            ' (' +
-                            sm.tiltaksType +
-                            '), gyldig: ' +
-                            formatDate(sm.gyldigFraOgMed) +
-                            ' - ' +
-                            formatDate(sm.gyldigTilOgMed)
+                        ' (' +
+                        sm.tiltaksType +
+                        '), gyldig: ' +
+                        formatDate(sm.gyldigFraOgMed) +
+                        ' - ' +
+                        formatDate(sm.gyldigTilOgMed)
                     );
                 });
                 this.securityMeasures = securityMeasuresFormatted;
@@ -141,40 +142,31 @@ export default class Hot_userInformation_v2 extends LightningElement {
     }
 
     selectionChangeHandler(event) {
-        this.newSelectedOption = event.detail.name;
-        this.picklistOptions.forEach((element) => {
-            if (element.name === event.detail.name) {
-                element.selected = true;
-            } else {
-                element.selected = false;
-            }
+        const selected =
+            event.detail.value ||
+            event.detail.name ||
+            event.detail.selectedValue ||
+            event.detail;
+
+        this.newSelectedOption = selected;
+
+        // Update picklist state
+        this.picklistOptions = this.picklistOptions.map((option) => {
+            const isSelected = option.name === this.newSelectedOption;
+            return { ...option, selected: isSelected };
         });
+
+        if (this.newSelectedOption === "Reserver mot alle varsler") {
+            this.newIsReservedAgainstNotifications = true;
+            this.newSelectedOption = null;
+        } else {
+            this.newIsReservedAgainstNotifications = false;
+        }
+
+        this.saveNotificationSettings();
     }
 
-    editUserNotificationBtn() {
-        this.viewUserNotificationSettings = false;
-        this.editUserNotification = true;
-    }
-
-    handleAbort() {
-        this.viewUserNotificationSettings = true;
-        this.editUserNotification = false;
-        this.picklistOptions.forEach((element) => {
-            if (element.name === this.selectedOption) {
-                element.selected = true;
-            } else {
-                element.selected = false;
-            }
-        });
-    }
-
-    handleOptionalCheckbox(event) {
-        this.newIsReservedAgainstNotifications = event.detail;
-    }
-
-    handleSubmit() {
-        this.viewUserNotificationSettings = true;
-        this.editUserNotification = false;
+    saveNotificationSettings() {
         changeUserNotificationSetting({
             personId: this.recordId,
             newNotificationValue: this.newSelectedOption,
@@ -185,11 +177,22 @@ export default class Hot_userInformation_v2 extends LightningElement {
                 this.isReservedAgainstNotifications = this.newIsReservedAgainstNotifications;
             }
             // Show success message
+            this.successMessage = 'Endringen har blitt lagret.';
             this.showSuccess = true;
+
+            const newMessage = 'Endringen har blitt lagret';
+            if (this.ariaMessage === newMessage) {
+                this.ariaMessage = newMessage + ' '; 
+            } else {
+                this.ariaMessage = newMessage;
+            }
         });
     }
 
+    ariaMessage = '';
     handleCloseSuccess() {
         this.showSuccess = false;
+        this.successMessage = '';
+        this.ariaMessage = '';
     }
 }
