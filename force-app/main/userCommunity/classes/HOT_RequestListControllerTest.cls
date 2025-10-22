@@ -225,8 +225,8 @@ private class HOT_RequestListControllerTest {
         List<Common_Code__c> result = HOT_RequestListController.getPostalCity('8110');
         System.Test.stopTest();
 
-        System.assertNotEquals(0, result.size(), 'Should return at one record');
-        System.assertEquals('Test Postal Code', result[0].Name, 'Postal City should match');
+        System.assertNotEquals(0, result.size(), 'Should return at least one record');
+        System.assertEquals('Test Postal Code', result[0].Name, 'Expected postal city to match');
         System.assertEquals('8110', result[0].CRM_Code__c, 'Postal code should match');
     }
 
