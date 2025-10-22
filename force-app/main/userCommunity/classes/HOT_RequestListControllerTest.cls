@@ -208,4 +208,34 @@ private class HOT_RequestListControllerTest {
             System.assertEquals(timeMap.get('id'), wo.Id);
         }
     }
+
+    @IsTest
+    static void testGetPostalCity() {
+
+        Common_Code__c commonCode = new Common_Code__c(
+            Name = 'Test Postal Code',
+            CRM_Active__c = true,
+            CRM_Code_Set__c = 'Postnummer',
+            CRM_Code__c = '8110',
+            CRM_UniqueKey__c = 'Postnummer8110'
+        );
+        insert commonCode;
+
+        System.Test.startTest();
+        List<Common_Code__c> result = HOT_RequestListController.getPostalCity('8110');
+        System.Test.stopTest();
+
+        System.assertNotEquals(0, result.size(), 'Should return at one record');
+        System.assertEquals('Test Postal Code', result[0].Name, 'Postal City should match');
+        System.assertEquals('8110', result[0].CRM_Code__c, 'Postal code should match');
+    }
+
+    @IsTest
+    static void testGetPostalCityNotFound() {
+        System.Test.startTest();
+        List<Common_Code__c> result = HOT_RequestListController.getPostalCity('9999');
+        System.Test.stopTest();
+
+        System.assertEquals(0, result.size(), 'Expected no records for postalCode');
+    }
 }
