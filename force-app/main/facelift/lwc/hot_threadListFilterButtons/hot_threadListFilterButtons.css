@@ -6,7 +6,7 @@
 }
 
 .mobile-only {
-    display: none;
+    display: none !important;
 }
 
 @media (max-width: 768px) {
@@ -14,7 +14,8 @@
         display: none;
     }
     .mobile-only {
-        display: block;
+        display: block !important;
+        visibility: visible !important;
     }
 }
 .tab-button {
@@ -27,7 +28,9 @@
     align-items: center;
     gap: 0.5rem;
     cursor: pointer;
-    transition: background-color 0.2s ease, color 0.2s ease;
+    transition:
+        background-color 0.2s ease,
+        color 0.2s ease;
     border: 1.5px solid #bcc1c9;
     background-color: #edeef0;
     color: #24262a;
