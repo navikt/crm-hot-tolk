@@ -75,29 +75,43 @@ export default class hot_requestForm_request_v2 extends LightningElement {
         }
     }
 
-    postalCodeSearch = '';
-    postalCityName = '';
+    /**
+    * Fetches the postal city based on the postal code.
+    * @param {Event} event - Input event from the postal code field.
+    * @param {string} postalField - Field name for the postal code.
+    * @param {string} cityField - Field name for the postal city to update.
+    */
+    handlePostalCity(event, postalField, cityField) {
+        const postalCode = event.detail?.value || event.target?.value;
+        this.fieldValues[postalField] = postalCode;
 
-    handlePostalCity(event) {
-        this.postalCodeSearch = event.detail?.value || event.target?.value;
-
-        if (this.postalCodeSearch && this.postalCodeSearch.length === 4) {
-            this.postalCityName = 'Henter poststed...';
-            getPostalCity({ postalCode: this.postalCodeSearch })
-                .then((result) => {
-                    if (result && result.length === 1) {
-                        this.postalCityName = result[0].Name;
-                    } else {
-                        this.postalCityName = 'Kunne ikke finne poststed';
-                    }
-                })
-                .catch((error) => {
-                    console.error(error);
-                    this.postalCityName = 'Feil ved henting av poststed';
-                });
-        } else {
-            this.postalCityName = 'Feltet fylles automatisk';
+        if (!postalCode || postalCode.length !== 4) {
+            this.fieldValues[cityField] = 'Feltet fylles automatisk';
+            return;
         }
+
+        this.fieldValues[cityField] = 'Henter poststed...';
+
+        getPostalCity({ postalCode })
+            .then((result) => {
+                if (result && result.length === 1) {
+                    this.fieldValues[cityField] = result[0].Name;
+                } else {
+                    this.fieldValues[cityField] = 'Kunne ikke finne poststed';
+                }
+            })
+            .catch((error) => {
+                console.error(error);
+                this.fieldValues[cityField] = 'Feil ved henting av poststed';
+            });
+    }
+
+    handleMeetingPostalChange(event) {
+        this.handlePostalCity(event, 'MeetingPostalCode__c', 'MeetingPostalCity__c');
+    }
+
+    handleInterpretationPostalChange(event) {
+        this.handlePostalCity(event, 'InterpretationPostalCode__c', 'InterpretationPostalCity__c');
     }
 
     removeTPAFromAssignmentList() {
