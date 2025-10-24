@@ -476,6 +476,14 @@ export default class Hot_messagingCommunityThreadViewer_v2 extends NavigationMix
     accountAgeGender;
     accountName;
 
+    yesOrNo(boolean) {
+        if (boolean) {
+            return 'Ja';
+        } else {
+            return 'Nei';
+        }
+    }
+
     goToDetails() {
         this.isLoading = true;
         this.showServiceAppointmentDetails();
@@ -503,6 +511,9 @@ export default class Hot_messagingCommunityThreadViewer_v2 extends NavigationMix
                             );
                             this.serviceAppointment.ActualStartTime = formatDatetime(result.ActualStartTime);
                             this.serviceAppointment.ActualEndTime = formatDatetime(result.ActualEndTime);
+                            this.serviceAppointment.HOT_HapticCommunication__c = this.yesOrNo(
+                                this.serviceAppointment.HOT_HapticCommunication__c
+                            );
                             if (
                                 this.serviceAppointment &&
                                 this.serviceAppointment.HOT_Request__r &&
