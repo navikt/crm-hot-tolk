@@ -144,8 +144,7 @@ public class HOT_TestDataFactory {
 
     public static Account createAccount(boolean isPersonAccount) {
         if (isPersonAccount) {
-            String personAccountRecordTypeId = Schema.getGlobalDescribe()
-                .get('Account')
+            String personAccountRecordTypeId = Account.getSObjectType()
                 .getDescribe()
                 .getRecordTypeInfosByDeveloperName()
                 .get('PersonAccount')
@@ -158,8 +157,7 @@ public class HOT_TestDataFactory {
             );
             return account;
         } else {
-            String businessAccountRecordTypeId = Schema.getGlobalDescribe()
-                .get('Account')
+            String businessAccountRecordTypeId = Account.getSObjectType()
                 .getDescribe()
                 .getRecordTypeInfosByDeveloperName()
                 .get('Employer')
