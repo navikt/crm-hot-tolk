@@ -24,16 +24,19 @@ export default class Hot_requestWarningToast extends LightningElement {
     checkStartTime(recordData) {
         const startTime = recordData.fields.StartTime__c.value;
         const createdDate = recordData.fields.CreatedDate.value;
+        const source = recordData.fields.Source__c.value;
         const now = new Date();
 
         const created = new Date(createdDate);
-        const timeDiff = (now - created) / 1000;
+        const timeDiffSeconds = (now - created) / 1000;
 
-        if (startTime < now.toISOString() && timeDiff < 10 && source === 'Community') {
+
+        if (!this.toastDisplayed && startTime < now.toISOString() && timeDiffSeconds < 5 && source === 'Dispatcher') {
             this.showToast();
-            this.warningShown = true;
+            this.toastDisplayed = true;
         }
     }
+
 
     showToast() {
         const event = new ShowToastEvent({
