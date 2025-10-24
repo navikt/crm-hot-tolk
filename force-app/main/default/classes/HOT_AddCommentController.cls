@@ -13,7 +13,7 @@ public without sharing class HOT_AddCommentController {
             if (record.get(fieldName) == null) {
                 record.put(fieldName, newComment);
             } else {
-                record.put(fieldName, record.get(fieldName) + '\n\n' + newComment);
+                record.put(fieldName, newComment + '\n\n' + record.get(fieldName));
             }
             update record;
         }
