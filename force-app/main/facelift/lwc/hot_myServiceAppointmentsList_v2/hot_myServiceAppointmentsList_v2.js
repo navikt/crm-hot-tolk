@@ -100,8 +100,6 @@ export default class Hot_myServiceAppointmentsList_v2 extends NavigationMixin(Li
 
     interestedResource;
     serviceAppointment;
-    accountAgeGender;
-    accountName;
     termsOfAgreement;
     isGoToThreadInterpretersButtonDisabled = false;
     isGoToThreadButtonDisabled = false;
@@ -253,7 +251,7 @@ export default class Hot_myServiceAppointmentsList_v2 extends NavigationMixin(Li
         if (!person) return '';
 
         const age = person.CRM_AgeNumber__c;
-        const gender = person.HOT_Gender__c;
+        const gender = person.INT_Sex__c;
 
         if (age && gender) {
             return `${gender} ${age} år`;
@@ -287,8 +285,12 @@ export default class Hot_myServiceAppointmentsList_v2 extends NavigationMixin(Li
     }
 
     get hapticCommunication() {
-        return this.serviceAppointment?.HOT_HapticCommunication__c ?? '';
+        const value = this.serviceAppointment?.HOT_HapticCommunication__c;
+        if (value === true) return 'Ja';
+        if (value === false) return 'Nei';
+        return '';
     }
+
     get escort() {
         return this.serviceAppointment?.HOT_Escort__c ?? '';
     }

@@ -1,7 +1,6 @@
 import { LightningElement, track, api } from 'lwc';
 import getPostalCity from '@salesforce/apex/HOT_RequestListController.getPostalCity';
 
-
 export default class hot_requestForm_request_v2 extends LightningElement {
     @track fieldValues = {
         Subject__c: '',
@@ -76,12 +75,15 @@ export default class hot_requestForm_request_v2 extends LightningElement {
     }
 
     /**
-    * Fetches the postal city based on the postal code.
-    * @param {Event} event - Input event from the postal code field.
-    * @param {string} postalField - Field name for the postal code.
-    * @param {string} cityField - Field name for the postal city to update.
-    */
+     * Fetches the postal city based on the postal code.
+     * @param {Event} event - Input event from the postal code field.
+     * @param {string} postalField - Field name for the postal code.
+     * @param {string} cityField - Field name for the postal city to update.
+     */
+    ariaPostalStatus = '.';
+
     handlePostalCity(event, postalField, cityField) {
+        this.ariaPostalStatus = '';
         const postalCode = event.detail?.value || event.target?.value;
         this.fieldValues[postalField] = postalCode;
 
@@ -94,15 +96,24 @@ export default class hot_requestForm_request_v2 extends LightningElement {
 
         getPostalCity({ postalCode })
             .then((result) => {
+                let message;
                 if (result && result.length === 1) {
                     this.fieldValues[cityField] = result[0].Name;
+                    message = result[0].Name;
                 } else {
                     this.fieldValues[cityField] = 'Kunne ikke finne poststed';
+                    message = 'Kunne ikke finne poststed';
                 }
+                setTimeout(() => {
+                    this.ariaPostalStatus = message;
+                }, 1000);
             })
             .catch((error) => {
                 console.error(error);
                 this.fieldValues[cityField] = 'Feil ved henting av poststed';
+                setTimeout(() => {
+                    this.ariaPostalStatus = 'Feil ved henting av poststed';
+                }, 1000);
             });
     }
 

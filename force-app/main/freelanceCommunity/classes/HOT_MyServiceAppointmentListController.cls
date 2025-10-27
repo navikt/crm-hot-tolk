@@ -96,7 +96,7 @@ public without sharing class HOT_MyServiceAppointmentListController {
                     HOT_Request__r.IsOtherEconomicProvicer__c,
                     SchedEndTime,
                     SchedStartTime,
-                    Status,
+                    toLabel(Status),
                     Subject,
                     HOT_Interpreters__c,
                     HOT_TotalNumberOfInterpreters__c

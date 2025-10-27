@@ -179,6 +179,13 @@ export default class LibsFullCalendarV2 extends NavigationMixin(LightningElement
             el.innerHTML = `<img src="${LibsFullCalendarV2.REFRESH_ICON}" alt="Refresh Icon" style="width:16px; color:white; height:16px;" />`;
         }
     }
+    yesOrNo(boolean) {
+        if (boolean) {
+            return 'Ja';
+        } else {
+            return 'Nei';
+        }
+    }
 
     async updatePseudoEventsDisplay(view) {
         this.calendar?.batchRendering(() => {
@@ -983,6 +990,9 @@ export default class LibsFullCalendarV2 extends NavigationMixin(LightningElement
                 this.serviceAppointment.StartAndEndDate = formatDatetimeinterval(sa.EarliestStartTime, sa.DueDate);
                 this.serviceAppointment.ActualStartTime = formatDatetime(sa.ActualStartTime);
                 this.serviceAppointment.ActualEndTime = formatDatetime(sa.ActualEndTime);
+                this.serviceAppointment.HOT_HapticCommunication__c = this.yesOrNo(
+                    this.serviceAppointment.HOT_HapticCommunication__c
+                );
 
                 const crmPerson = sa.HOT_Request__r?.Account__r?.CRM_Person__r;
                 if (crmPerson) {
