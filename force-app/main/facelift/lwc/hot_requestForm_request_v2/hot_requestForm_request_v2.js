@@ -96,18 +96,24 @@ export default class hot_requestForm_request_v2 extends LightningElement {
 
         getPostalCity({ postalCode })
             .then((result) => {
+                let message;
                 if (result && result.length === 1) {
                     this.fieldValues[cityField] = result[0].Name;
-                    this.ariaPostalStatus = result[0].Name;
+                    message = result[0].Name;
                 } else {
                     this.fieldValues[cityField] = 'Kunne ikke finne poststed';
-                    this.ariaPostalStatus = 'Kunne ikke finne poststed';
+                    message = 'Kunne ikke finne poststed';
                 }
+                setTimeout(() => {
+                    this.ariaPostalStatus = message;
+                }, 1000);
             })
             .catch((error) => {
                 console.error(error);
                 this.fieldValues[cityField] = 'Feil ved henting av poststed';
-                this.ariaPostalStatus = 'Feil ved henting av poststed';
+                setTimeout(() => {
+                    this.ariaPostalStatus = 'Feil ved henting av poststed';
+                }, 1000);
             });
     }
 
