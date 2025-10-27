@@ -29,6 +29,12 @@
         <br />
 
         <div if:false={fieldValues.IsScreenInterpreter__c}>
+            <c-checkbox
+                label="Bruk min hjemmeadresse som oppmøteadresse"
+                name="UseOrdererAddressAsMeetingAddress__c"
+                oncheckboxclick={handleUseOrdererAddressCheckbox}
+            ></c-checkbox>
+            <br />
             <c-input
                 id="oppmoteAdresse"
                 label="Oppmøteadresse"
