@@ -83,7 +83,7 @@ export default class hot_requestForm_request_v2 extends LightningElement {
     ariaPostalStatus = '.';
 
     handlePostalCity(event, postalField, cityField) {
-        this.ariaMeetingPostalStatus = '';
+        this.ariaPostalStatus = '';
         const postalCode = event.detail?.value || event.target?.value;
         this.fieldValues[postalField] = postalCode;
 
