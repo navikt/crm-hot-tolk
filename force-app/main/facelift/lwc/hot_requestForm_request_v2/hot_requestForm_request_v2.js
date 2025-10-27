@@ -1,7 +1,6 @@
 import { LightningElement, track, api } from 'lwc';
 import getPostalCity from '@salesforce/apex/HOT_RequestListController.getPostalCity';
 
-
 export default class hot_requestForm_request_v2 extends LightningElement {
     @track fieldValues = {
         Subject__c: '',
@@ -76,12 +75,15 @@ export default class hot_requestForm_request_v2 extends LightningElement {
     }
 
     /**
-    * Fetches the postal city based on the postal code.
-    * @param {Event} event - Input event from the postal code field.
-    * @param {string} postalField - Field name for the postal code.
-    * @param {string} cityField - Field name for the postal city to update.
-    */
+     * Fetches the postal city based on the postal code.
+     * @param {Event} event - Input event from the postal code field.
+     * @param {string} postalField - Field name for the postal code.
+     * @param {string} cityField - Field name for the postal city to update.
+     */
+    ariaPostalStatus = '.';
+
     handlePostalCity(event, postalField, cityField) {
+        this.ariaMeetingPostalStatus = '';
         const postalCode = event.detail?.value || event.target?.value;
         this.fieldValues[postalField] = postalCode;
 
@@ -96,13 +98,16 @@ export default class hot_requestForm_request_v2 extends LightningElement {
             .then((result) => {
                 if (result && result.length === 1) {
                     this.fieldValues[cityField] = result[0].Name;
+                    this.ariaPostalStatus = result[0].Name;
                 } else {
                     this.fieldValues[cityField] = 'Kunne ikke finne poststed';
+                    this.ariaPostalStatus = 'Kunne ikke finne poststed';
                 }
             })
             .catch((error) => {
                 console.error(error);
                 this.fieldValues[cityField] = 'Feil ved henting av poststed';
+                this.ariaPostalStatus = 'Feil ved henting av poststed';
             });
     }
 
