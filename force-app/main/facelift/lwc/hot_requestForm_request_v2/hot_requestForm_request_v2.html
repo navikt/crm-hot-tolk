@@ -29,15 +29,14 @@
         <br />
 
         <div if:false={fieldValues.IsScreenInterpreter__c}>
-            <c-checkbox
-                label="Bruk min hjemmeadresse som oppmøteadresse"
+            <c-button
+                button-label="Bruk hjemmeadresse som oppmøteadresse"
                 name="UseOrdererAddressAsMeetingAddress__c"
-                oncheckboxclick={handleUseOrdererAddressCheckbox}
-            ></c-checkbox>
+                onclick={handleUseOrdererAddressButton}
+            ></c-button>
             <br />
             <c-input
                 id="oppmoteAdresse"
-                label="Oppmøteadresse"
                 name="MeetingStreet__c"
                 form="tolk-skjema-input"
                 value={fieldValues.MeetingStreet__c}
