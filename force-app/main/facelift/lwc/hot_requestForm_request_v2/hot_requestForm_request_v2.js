@@ -1,5 +1,6 @@
 import { LightningElement, track, api } from 'lwc';
 import getPostalCity from '@salesforce/apex/HOT_RequestListController.getPostalCity';
+import getUserHomeAddress from '@salesforce/apex/HOT_RequestListController.getUserHomeAddress';
 
 export default class hot_requestForm_request_v2 extends LightningElement {
     @track fieldValues = {
@@ -261,6 +262,17 @@ export default class hot_requestForm_request_v2 extends LightningElement {
         }
     }
 
+    async handleUseOrdererAddressButton() {
+        try {
+            const addressMap = await getUserHomeAddress();
+            console.log('ID: ', addressMap.Id);
+            this.fieldValues.MeetingStreet__c = addressMap.street;
+            this.fieldValues.MeetingPostalCode__c = addressMap.postalCode;
+            // Oppdater poststed basert på postnummer
+        } catch (error) {
+            console.error('Error fetching user home address:', error);
+        }
+    }
     handleOptionalCheckbox(event) {
         this.componentValues.isOptionalFields = event.detail;
     }
