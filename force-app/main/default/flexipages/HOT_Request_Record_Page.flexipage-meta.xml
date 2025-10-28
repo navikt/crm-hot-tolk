@@ -354,6 +354,16 @@
                 <identifier>RecordMeetingPostalCity__cField</identifier>
             </fieldInstance>
         </itemInstances>
+        <itemInstances>
+            <fieldInstance>
+                <fieldInstanceProperties>
+                    <name>uiBehavior</name>
+                    <value>none</value>
+                </fieldInstanceProperties>
+                <fieldItem>Record.HOT_IsMeetingAddressSameAsHome__c</fieldItem>
+                <identifier>RecordHOT_IsMeetingAddressSameAsHome_cField</identifier>
+            </fieldInstance>
+        </itemInstances>
         <name>Facet-5ac94f05-c841-4dc0-8081-b34c6e9b6deb</name>
         <type>Facet</type>
     </flexiPageRegions>
