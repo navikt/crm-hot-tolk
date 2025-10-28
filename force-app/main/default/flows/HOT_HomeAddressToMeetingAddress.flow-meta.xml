@@ -8,7 +8,8 @@
         <locationY>0</locationY>
         <customErrorMessages>
             <errorMessage>Kan ikke finne adresse for brukeren. Se om bruker har adresse.</errorMessage>
-            <isFieldError>false</isFieldError>
+            <fieldSelection>HOT_IsMeetingAddressSameAsHome__c</fieldSelection>
+            <isFieldError>true</isFieldError>
         </customErrorMessages>
     </customErrors>
     <decisions>
@@ -191,7 +192,7 @@
             </value>
         </filters>
         <object>HOT_Request__c</object>
-        <recordTriggerType>Create</recordTriggerType>
+        <recordTriggerType>CreateAndUpdate</recordTriggerType>
         <triggerType>RecordAfterSave</triggerType>
     </start>
     <status>Active</status>
