@@ -995,8 +995,12 @@ export default class LibsFullCalendarV2 extends NavigationMixin(LightningElement
                 this.serviceAppointment.HOT_HapticCommunication__c = this.yesOrNo(
                     this.serviceAppointment.HOT_HapticCommunication__c
                 );
+
                 this.isOtherProvider = this.serviceAppointment.HOT_Request__r.IsOtherEconomicProvicer__c ? 'Ja' : 'Nei';
-                this.termsOfAgreement = this.serviceAppointment.HOT_TermsOfAgreement__c;
+                getInterestedResourceDetails({ recordId: recordId }).then((result) => {
+                    this.interestedResource = result;
+                    this.termsOfAgreement = this.interestedResource.HOT_TermsOfAgreement__c;
+                });
                 this.ordererPhoneNumber = sa.HOT_Request__r?.Orderer__r?.CRM_Person__r?.INT_KrrMobilePhone__c ?? '';
                 const crmPerson = sa.HOT_Request__r?.Account__r?.CRM_Person__r;
                 if (crmPerson) {
