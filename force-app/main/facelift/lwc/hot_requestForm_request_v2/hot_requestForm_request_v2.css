@@ -162,7 +162,10 @@ lightning-record-edit-form section {
     align-items: center;
     justify-content: center;
     font-weight: 600;
-    font-family: Source Sans Pro, Arial, sans-serif;
+    font-family:
+        Source Sans Pro,
+        Arial,
+        sans-serif;
     font-size: 1em;
     white-space: nowrap;
     border-radius: 0.125em;
@@ -246,7 +249,10 @@ section {
     letter-spacing: 0;
     line-height: 1.5rem;
     margin: 0;
-    font-family: Source Sans Pro, Arial, sans-serif;
+    font-family:
+        Source Sans Pro,
+        Arial,
+        sans-serif;
     color: #262626;
 }
 
@@ -263,4 +269,11 @@ section {
     clip: rect(0, 0, 0, 0);
     white-space: nowrap;
     border: 0;
+}
+
+.home-address-error {
+    color: red;
+    font-size: 1rem;
+    margin-top: -0.5rem;
+    margin-bottom: 1rem;
 }

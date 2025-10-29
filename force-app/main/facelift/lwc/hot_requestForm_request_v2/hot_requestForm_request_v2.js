@@ -21,6 +21,8 @@ export default class hot_requestForm_request_v2 extends LightningElement {
         UserInterpretationMethod__c: '',
         Type__c: ''
     };
+    errorMessageHomeAddress = 'Fant ikke hjemmeadresse.';
+    displayError = false;
     isRequestTypeMe = false;
     @api isGetAll;
     @api requestIds;
@@ -119,19 +121,31 @@ export default class hot_requestForm_request_v2 extends LightningElement {
     }
 
     async handleUseOrdererAddressButton() {
+        this.displayError = false;
         try {
             const person = await getUserHomeAddress();
-            const postalCode = person.INT_ResidentialZipCode__c || '';
-            
-            this.fieldValues.MeetingStreet__c = person.INT_ResidentialAddress__c || '';
-            this.fieldValues.MeetingPostalCode__c = postalCode;
+            const postalCode = person.INT_ResidentialZipCode__c;
 
-            if (postalCode) {
-                this.handlePostalCity({ target: { value: postalCode } }, 'MeetingPostalCode__c', 'MeetingPostalCity__c');
+            if (person.INT_ResidentialAddress__c != null && postalCode != null) {
+                this.fieldValues.MeetingStreet__c = person.INT_ResidentialAddress__c;
+                this.fieldValues.MeetingPostalCode__c = postalCode;
+            } else {
+                setTimeout(() => {
+                    this.displayError = true;
+                }, 500);
+                return;
             }
 
+            if (postalCode) {
+                this.handlePostalCity(
+                    { target: { value: postalCode } },
+                    'MeetingPostalCode__c',
+                    'MeetingPostalCity__c'
+                );
+            }
         } catch (error) {
             console.error('Error fetching user home address:', error);
+            this.displayError = true;
         }
     }
 
@@ -278,7 +292,6 @@ export default class hot_requestForm_request_v2 extends LightningElement {
             this.sameLocation = false;
         }
     }
-
 
     handleOptionalCheckbox(event) {
         this.componentValues.isOptionalFields = event.detail;

@@ -36,6 +36,10 @@
                 desktop-style="margin-bottom: 1rem"
                 mobile-style="margin-bottom: 1rem"
             ></c-button>
+            <template lwc:if={displayError}>
+                <div class="sr-only" aria-live="polite" role="alert">{errorMessageHomeAddress}</div>
+                <div class="home-address-error">{errorMessageHomeAddress}</div>
+            </template>
             <br />
             <c-input
                 id="oppmoteAdresse"
