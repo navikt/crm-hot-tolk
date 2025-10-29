@@ -14,7 +14,7 @@
             </value>
         </assignmentItems>
         <connector>
-            <targetReference>Oppdater_poster_3</targetReference>
+            <targetReference>Oppdater_Meeting_Address</targetReference>
         </connector>
     </assignments>
     <customErrors>
@@ -61,7 +61,7 @@
             <connector>
                 <targetReference>Update_Interpretation_Address</targetReference>
             </connector>
-            <label>Input blank</label>
+            <label>Interpretation fields are blank</label>
         </rules>
     </decisions>
     <decisions>
@@ -74,8 +74,51 @@
         </defaultConnector>
         <defaultConnectorLabel>Default Outcome</defaultConnectorLabel>
         <rules>
+            <name>Meeting_Address_changed</name>
+            <conditionLogic>(1 OR 2) AND (3 OR 4 OR 5)</conditionLogic>
+            <conditions>
+                <leftValueReference>$Record.MeetingStreet__c</leftValueReference>
+                <operator>NotEqualTo</operator>
+                <rightValue>
+                    <elementReference>$Record.Person__r.INT_ResidentialAddress__c</elementReference>
+                </rightValue>
+            </conditions>
+            <conditions>
+                <leftValueReference>$Record.MeetingPostalCity__c</leftValueReference>
+                <operator>NotEqualTo</operator>
+                <rightValue>
+                    <elementReference>$Record.Person__r.INT_ResidentialZipCode__c</elementReference>
+                </rightValue>
+            </conditions>
+            <conditions>
+                <leftValueReference>$Record.MeetingStreet__c</leftValueReference>
+                <operator>IsChanged</operator>
+                <rightValue>
+                    <booleanValue>true</booleanValue>
+                </rightValue>
+            </conditions>
+            <conditions>
+                <leftValueReference>$Record.MeetingPostalCity__c</leftValueReference>
+                <operator>IsChanged</operator>
+                <rightValue>
+                    <booleanValue>true</booleanValue>
+                </rightValue>
+            </conditions>
+            <conditions>
+                <leftValueReference>$Record.MeetingPostalCode__c</leftValueReference>
+                <operator>IsChanged</operator>
+                <rightValue>
+                    <booleanValue>true</booleanValue>
+                </rightValue>
+            </conditions>
+            <connector>
+                <targetReference>Change</targetReference>
+            </connector>
+            <label>Meeting Address Changed</label>
+        </rules>
+        <rules>
             <name>Person_Address_Exist</name>
-            <conditionLogic>and</conditionLogic>
+            <conditionLogic>(1 AND 2) AND (3 OR 4)</conditionLogic>
             <conditions>
                 <leftValueReference>$Record.Person__r.INT_ResidentialAddress__c</leftValueReference>
                 <operator>IsBlank</operator>
@@ -91,21 +134,14 @@
                 </rightValue>
             </conditions>
             <conditions>
-                <leftValueReference>$Record.MeetingStreet__c</leftValueReference>
+                <leftValueReference>$Record__Prior.MeetingStreet__c</leftValueReference>
                 <operator>IsBlank</operator>
                 <rightValue>
                     <booleanValue>true</booleanValue>
                 </rightValue>
             </conditions>
             <conditions>
-                <leftValueReference>$Record.MeetingPostalCode__c</leftValueReference>
-                <operator>IsBlank</operator>
-                <rightValue>
-                    <booleanValue>true</booleanValue>
-                </rightValue>
-            </conditions>
-            <conditions>
-                <leftValueReference>$Record.MeetingPostalCity__c</leftValueReference>
+                <leftValueReference>$Record__Prior.MeetingPostalCode__c</leftValueReference>
                 <operator>IsBlank</operator>
                 <rightValue>
                     <booleanValue>true</booleanValue>
@@ -115,35 +151,6 @@
                 <targetReference>GET_Postal_City</targetReference>
             </connector>
             <label>Person Address Exist</label>
-        </rules>
-        <rules>
-            <name>Meeting_Address_changed</name>
-            <conditionLogic>or</conditionLogic>
-            <conditions>
-                <leftValueReference>$Record.MeetingStreet__c</leftValueReference>
-                <operator>IsChanged</operator>
-                <rightValue>
-                    <booleanValue>true</booleanValue>
-                </rightValue>
-            </conditions>
-            <conditions>
-                <leftValueReference>$Record.MeetingPostalCode__c</leftValueReference>
-                <operator>IsChanged</operator>
-                <rightValue>
-                    <booleanValue>true</booleanValue>
-                </rightValue>
-            </conditions>
-            <conditions>
-                <leftValueReference>$Record.MeetingPostalCity__c</leftValueReference>
-                <operator>IsChanged</operator>
-                <rightValue>
-                    <booleanValue>true</booleanValue>
-                </rightValue>
-            </conditions>
-            <connector>
-                <targetReference>Change</targetReference>
-            </connector>
-            <label>Meeting Address Changed</label>
         </rules>
     </decisions>
     <description>When HOT_IsMeetingAddressSameAsHome is checked, add the Home address from the user to the meeting address</description>
@@ -191,8 +198,8 @@
         <storeOutputAutomatically>true</storeOutputAutomatically>
     </recordLookups>
     <recordUpdates>
-        <name>Oppdater_poster_3</name>
-        <label>Oppdater poster 3</label>
+        <name>Oppdater_Meeting_Address</name>
+        <label>Oppdater Meeting Address</label>
         <locationX>0</locationX>
         <locationY>0</locationY>
         <inputAssignments>
@@ -236,6 +243,12 @@
         <connector>
             <targetReference>Check_Interpretation_Address</targetReference>
         </connector>
+        <inputAssignments>
+            <field>HOT_IsMeetingAddressSameAsHome__c</field>
+            <value>
+                <booleanValue>true</booleanValue>
+            </value>
+        </inputAssignments>
         <inputAssignments>
             <field>MeetingPostalCity__c</field>
             <value>
