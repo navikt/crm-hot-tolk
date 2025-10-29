@@ -118,6 +118,23 @@ export default class hot_requestForm_request_v2 extends LightningElement {
             });
     }
 
+    async handleUseOrdererAddressButton() {
+        try {
+            const person = await getUserHomeAddress();
+            const postalCode = person.INT_ResidentialZipCode__c || '';
+            
+            this.fieldValues.MeetingStreet__c = person.INT_ResidentialAddress__c || '';
+            this.fieldValues.MeetingPostalCode__c = postalCode;
+
+            if (postalCode) {
+                this.handlePostalCity({ target: { value: postalCode } }, 'MeetingPostalCode__c', 'MeetingPostalCity__c');
+            }
+
+        } catch (error) {
+            console.error('Error fetching user home address:', error);
+        }
+    }
+
     handleMeetingPostalChange(event) {
         this.handlePostalCity(event, 'MeetingPostalCode__c', 'MeetingPostalCity__c');
     }
@@ -262,17 +279,7 @@ export default class hot_requestForm_request_v2 extends LightningElement {
         }
     }
 
-    async handleUseOrdererAddressButton() {
-        try {
-            const addressMap = await getUserHomeAddress();
-            console.log('ID: ', addressMap.Id);
-            this.fieldValues.MeetingStreet__c = addressMap.street;
-            this.fieldValues.MeetingPostalCode__c = addressMap.postalCode;
-            // Oppdater poststed basert på postnummer
-        } catch (error) {
-            console.error('Error fetching user home address:', error);
-        }
-    }
+
     handleOptionalCheckbox(event) {
         this.componentValues.isOptionalFields = event.detail;
     }

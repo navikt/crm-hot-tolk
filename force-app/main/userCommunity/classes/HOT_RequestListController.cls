@@ -251,19 +251,25 @@ public without sharing class HOT_RequestListController {
     }
 
     @AuraEnabled(cacheable=true)
-    public static Map<String, String> getUserHomeAddress() {
-        Id userId = UserInfo.getUserId(); // Må finne ut hvilken userId som hentes
-        System.debug('UserId: ' + userId);
-        Person__c user = [
-            SELECT Id, INT_ResidentialAddress__c, INT_ResidentialZipCode__c
-            FROM Person__c
-            WHERE CRM_Account__c = :userId
+    public static Person__c getUserHomeAddress() {
+        User currentUser = [
+            SELECT Id, AccountId, Account.CRM_Person__c 
+            FROM User 
+            WHERE Id = :UserInfo.getUserId()
             LIMIT 1
         ];
-        Map<String, String> addressMap = new Map<String, String>();
-        addressMap.put('Id', user.Id);
-        addressMap.put('street', user.INT_ResidentialAddress__c);
-        addressMap.put('postalCode', user.INT_ResidentialZipCode__c);
-        return addressMap;
+
+        List<Person__c> persons = [
+            SELECT Id, INT_ResidentialAddress__c, INT_ResidentialZipCode__c
+            FROM Person__c
+            WHERE Id = :currentUser.Account.CRM_Person__c
+            LIMIT 1
+        ];
+       
+        if (persons.isEmpty()) {
+            return null; 
+        }
+
+        return persons[0];
     }
 }
