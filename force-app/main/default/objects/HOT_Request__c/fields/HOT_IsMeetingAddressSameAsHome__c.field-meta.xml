@@ -2,8 +2,9 @@
 <CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
     <fullName>HOT_IsMeetingAddressSameAsHome__c</fullName>
     <defaultValue>false</defaultValue>
+    <deprecated>false</deprecated>
     <externalId>false</externalId>
-    <inlineHelpText>Oppmøteadresse fylles ut automatisk.</inlineHelpText>
+    <inlineHelpText>Oppmøteadresse skal være tomt og fylles ut automatisk med hjemmeadresse først når det trykkes Lagre.</inlineHelpText>
     <label>Meeting Address Same As Home</label>
     <trackHistory>false</trackHistory>
     <trackTrending>false</trackTrending>
