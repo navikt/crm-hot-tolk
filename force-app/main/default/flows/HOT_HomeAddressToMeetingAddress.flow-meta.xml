@@ -35,7 +35,7 @@
         <locationY>0</locationY>
         <defaultConnectorLabel>Default Outcome</defaultConnectorLabel>
         <rules>
-            <name>Blank</name>
+            <name>Interpretation_fields_are_blank</name>
             <conditionLogic>and</conditionLogic>
             <conditions>
                 <leftValueReference>$Record.InterpretationStreet__c</leftValueReference>
@@ -199,7 +199,7 @@
     </recordLookups>
     <recordUpdates>
         <name>Oppdater_Meeting_Address</name>
-        <label>Oppdater Meeting Address</label>
+        <label>Update IsMeetingasHome Checkbox</label>
         <locationX>0</locationX>
         <locationY>0</locationY>
         <inputAssignments>
