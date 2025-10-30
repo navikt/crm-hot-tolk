@@ -6,6 +6,36 @@ public without sharing class HOT_ThreadParticipants {
         public String role;
         @AuraEnabled
         public Id userId;
+        public Participant(ServiceAppointment sa) {
+            this.name = sa.HOT_ServiceResource__r.Name;
+            this.role = 'Tolk';
+            this.userId = sa.HOT_ServiceResource__r.RelatedRecordId;
+        }
+        public Participant(WorkOrder wo, User user) {
+            this.name = wo.Account.Name;
+            this.role = 'Tolkebruker';
+            this.userId = user.Id;
+        }
+        public Participant(HOT_InterestedResource__c ir) {
+            this.name = ir.ServiceResource__r.Name;
+            this.role = 'Tolk';
+            this.userId = ir.ServiceResource__r.RelatedRecordId;
+        }
+        public Participant(HOT_WageClaim__c wc) {
+            this.name = wc.ServiceResource__r.Name;
+            this.role = 'Tolk';
+            this.userId = wc.ServiceResource__r.RelatedRecordId;
+        }
+        public Participant(HOT_Request__c req, User user) {
+            this.name = req.Account__r.Name;
+            this.role = 'Tolkebruker';
+            this.userId = user.Id;
+        }
+        public Participant() {
+        }
+        public Participant(String name) {
+            this.name = name;
+        }
     }
 
     @AuraEnabled(cacheable=true)
@@ -23,8 +53,9 @@ public without sharing class HOT_ThreadParticipants {
     }
 
     public static List<Participant> getAssignedServiceResources(Thread__c thread) {
-        List<Participant> participantList = new List<Participant>();
-        List<ServiceAppointment> assignedServiceAppointments = [
+        List<Participant> participants = new List<Participant>();
+
+        for (ServiceAppointment sa : [
             SELECT
                 Id,
                 HOT_ServiceResource__r.RelatedRecordId,
@@ -34,17 +65,10 @@ public without sharing class HOT_ThreadParticipants {
             WHERE
                 HOT_WorkOrderLineItem__r.WorkOrderId = :thread.CRM_Related_Object__c
                 AND HOT_ServiceResource__r.Name != NULL
-        ];
-        if (assignedServiceAppointments.size() > 0) {
-            for (ServiceAppointment serviceAppointment : assignedServiceAppointments) {
-                Participant participant = new Participant();
-                participant.name = formatName(serviceAppointment.HOT_ServiceResource__r.Name);
-                participant.role = 'Tolk';
-                participant.userId = serviceAppointment.HOT_ServiceResource__r.RelatedRecordId;
-                participantList.add(participant);
-            }
+        ]) {
+            participants.add(new Participant(sa));
         }
-        return participantList;
+        return participants;
     }
     public static List<Participant> getAccountParticipants(Thread__c thread) {
         List<Participant> participantList = new List<Participant>();
@@ -60,11 +84,7 @@ public without sharing class HOT_ThreadParticipants {
             User user = [SELECT Id, AccountId FROM User WHERE AccountId = :workOrder.AccountId];
 
             if (workOrder.AccountId != null && user.Id != null) {
-                Participant participant = new Participant();
-                participant.name = formatName(workOrder.Account.Name);
-                participant.role = 'Tolkebruker';
-                participant.userId = user.Id;
-                participantList.add(participant);
+                participantList.add(new Participant(workOrder, user));
             }
         }
         if (objectType == 'ServiceAppointment') {
@@ -78,11 +98,7 @@ public without sharing class HOT_ThreadParticipants {
                 serviceAppointment.HOT_ServiceResource__r.Name != null &&
                 serviceAppointment.HOT_ServiceResource__r.RelatedRecordId != null
             ) {
-                Participant participant = new Participant();
-                participant.name = formatName(serviceAppointment.HOT_ServiceResource__r.Name);
-                participant.role = 'Tolk';
-                participant.userId = serviceAppointment.HOT_ServiceResource__r.RelatedRecordId;
-                participantList.add(participant);
+                participantList.add(new Participant(serviceAppointment));
             }
         }
         if (objectType == 'HOT_InterestedResource__c') {
@@ -96,11 +112,7 @@ public without sharing class HOT_ThreadParticipants {
                 interestedReource.ServiceResource__r.Name != null &&
                 interestedReource.ServiceResource__r.RelatedRecordId != null
             ) {
-                Participant participant = new Participant();
-                participant.name = formatName(interestedReource.ServiceResource__r.Name);
-                participant.role = 'Tolk';
-                participant.userId = interestedReource.ServiceResource__r.RelatedRecordId;
-                participantList.add(participant);
+                participantList.add(new Participant(interestedReource));
             }
         }
         if (objectType == 'HOT_Wageclaim__c') {
@@ -111,11 +123,7 @@ public without sharing class HOT_ThreadParticipants {
                 LIMIT 1
             ];
             if (wageClaim.ServiceResource__r.Name != null && wageClaim.ServiceResource__r.RelatedRecordId != null) {
-                Participant participant = new Participant();
-                participant.name = formatName(wageClaim.ServiceResource__r.Name);
-                participant.role = 'Tolk';
-                participant.userId = wageClaim.ServiceResource__r.RelatedRecordId;
-                participantList.add(participant);
+                participantList.add(new Participant(wageClaim));
             }
         }
         if (objectType == 'HOT_Request__c') {
@@ -126,24 +134,14 @@ public without sharing class HOT_ThreadParticipants {
             ];
             User user = [SELECT Id, AccountId FROM User WHERE AccountId = :request.Account__r.Id LIMIT 1];
             if (request.Account__r.Name != null && user != null) {
-                Participant participant = new Participant();
-                participant.name = formatName(request.Account__r.Name);
-                participant.role = 'Tolkebruker';
-                participant.userId = user.Id;
-                participantList.add(participant);
+                participantList.add(new Participant(request, user));
             }
         }
         if (thread.CRM_Thread_Type__c == 'HOT_TOLK-FORMIDLER' || thread.CRM_Thread_Type__c == 'HOT_BRUKER-FORMIDLER') {
-            Participant participant = new Participant();
-            participant.name = 'Formidler';
-            participant.role = null;
-            participantList.add(participant);
+            participantList.add(new Participant('Formidler'));
         }
         if (thread.CRM_Thread_Type__c == 'HOT_TOLK-RESSURSKONTOR') {
-            Participant participant = new Participant();
-            participant.name = 'Ressurskontor';
-            participant.role = null;
-            participantList.add(participant);
+            participantList.add(new Participant('Ressurskontor'));
         }
         return participantList;
     }
