@@ -673,23 +673,18 @@ public without sharing class HOT_MessageHelper {
             FROM Thread__c
             WHERE
                 Id = :threadId
-                AND (CRM_Type__c = 'HOT_BRUKER-FORMIDLER'
-                OR CRM_Type__c = 'HOT_BRUKER-TOLK'
-                OR CRM_Type__c = 'HOT_BESTILLER-FORMIDLER'
-                OR CRM_Type__c = 'HOT_TOLK-FORMIDLER'
-                OR CRM_Type__c = 'HOT_TOLK-RESSURSKONTOR'
-                OR CRM_Type__c = 'HOT_BRUKER-BESTILLER'
-                OR CRM_Type__c = 'HOT_TOLK-TOLK')
+                AND CRM_Type__c IN :new Set<String>{
+                    'HOT_BRUKER-FORMIDLER',
+                    'HOT_BRUKER-TOLK',
+                    'HOT_BESTILLER-FORMIDLER',
+                    'HOT_TOLK-FORMIDLER',
+                    'HOT_TOLK-RESSURSKONTOR',
+                    'HOT_BRUKER-BESTILLER',
+                    'HOT_TOLK-TOLK'
+                }
         ];
-        if (fromContactId == 'ansatt/formidler') {
-            t.HOT_Thread_read_by__c = null;
-            t.HOT_Thread_read_by__c = UserInfo.getUserId() + ';';
-            t.CRM_Latest_Message_Datetime__c = Datetime.now();
-        } else {
-            t.HOT_Thread_read_by__c = null;
-            t.HOT_Thread_read_by__c = fromContactId + ';';
-            t.CRM_Latest_Message_Datetime__c = Datetime.now();
-        }
+        t.CRM_Latest_Message_Datetime__c = Datetime.now();
+        t.HOT_Thread_read_by__c = ((fromContactId == 'ansatt/formidler') ? UserInfo.getUserId() : fromContactId) + ';';
         update t;
     }
     @AuraEnabled
