@@ -513,8 +513,7 @@ public without sharing class HOT_MessageHelper {
     public static void markThreadAsRead(Id threadId, String userContactId) {
         if (HOT_ThreadDetailController.checkAccess(threadId)) {
             Thread__c thread = [SELECT Id, HOT_Thread_read_by__c FROM Thread__c WHERE Id = :threadId];
-            if (thread.HOT_Thread_read_by__c.contains(userContactId)) {
-            } else {
+            if (!thread.HOT_Thread_read_by__c.contains(userContactId)) {
                 thread.HOT_Thread_read_by__c =
                     (thread.HOT_Thread_read_by__c == null ? '' : thread.HOT_Thread_read_by__c) +
                     userContactId +
@@ -536,10 +535,10 @@ public without sharing class HOT_MessageHelper {
             WHERE Id = :threadId
         ];
 
-        if (!thread.HOT_Thread_read_by__c.contains(user.Id) && user.Profile.Name == 'HOT Tolk Formidler') {
-            thread.HOT_Thread_read_by__c = thread.HOT_Thread_read_by__c + user.Id + ';';
-        }
-        if (!thread.HOT_Thread_read_by__c.contains(user.Id) && thread.HOT_ParticipantIds__c.contains(user.Id)) {
+        if (
+            !thread.HOT_Thread_read_by__c.contains(user.Id) &&
+            (user.Profile.Name == 'HOT Tolk Formidler' || thread.HOT_ParticipantIds__c.contains(user.Id))
+        ) {
             thread.HOT_Thread_read_by__c = thread.HOT_Thread_read_by__c + user.Id + ';';
         }
         try {
