@@ -2,35 +2,35 @@
 private class HOT_ServiceAppointmentHandlerTest {
     @TestSetup
     static void makeData() {
-        TestDataFactory.getPublicGroup('HMS Møre og Romsdal', 'group_4715');
-        TestDataFactory.getQueue('HMS Møre og Romsdal', 'queue_4715', 'Thread__c');
-        QueuesObject qso = new QueueSObject(
-            QueueID = TestDataFactory.getQueue('HMS Møre og Romsdal', 'queue_4715', 'Thread__c').id,
-            SobjectType = 'HOT_Request__c'
-        );
-        insert qso;
-        qso = new QueueSObject(
-            QueueID = TestDataFactory.getQueue('HMS Møre og Romsdal', 'queue_4715', 'Thread__c').id,
-            SobjectType = 'WorkOrder'
-        );
-        insert qso;
-        qso = new QueueSObject(
-            QueueID = TestDataFactory.getQueue('HMS Møre og Romsdal', 'queue_4715', 'Thread__c').id,
-            SobjectType = 'ServiceAppointment'
-        );
-        insert qso;
+        System.runAs([SELECT Id FROM User WHERE Id = :UserInfo.getUserId() LIMIT 1][0]) {
+            // Creating Queues and Public Groups
 
-        TestDataFactory.getPublicGroup('HMS Øst-Viken', 'group_4701');
-        TestDataFactory.getQueue('HMS Øst-Viken', 'queue_4701', 'Thread__c');
-        qso = new QueueSObject(
-            QueueID = TestDataFactory.getQueue('HMS Øst-Viken', 'queue_4701', 'Thread__c').Id,
-            SobjectType = 'ServiceAppointment'
-        );
-        insert qso;
-    }
+            TestDataFactory.getPublicGroup('HMS Møre og Romsdal', 'group_4715');
+            TestDataFactory.getQueue('HMS Møre og Romsdal', 'queue_4715', 'Thread__c');
+            QueuesObject qso = new QueueSObject(
+                QueueID = TestDataFactory.getQueue('HMS Møre og Romsdal', 'queue_4715', 'Thread__c').id,
+                SobjectType = 'HOT_Request__c'
+            );
+            insert qso;
+            qso = new QueueSObject(
+                QueueID = TestDataFactory.getQueue('HMS Møre og Romsdal', 'queue_4715', 'Thread__c').id,
+                SobjectType = 'WorkOrder'
+            );
+            insert qso;
+            qso = new QueueSObject(
+                QueueID = TestDataFactory.getQueue('HMS Møre og Romsdal', 'queue_4715', 'Thread__c').id,
+                SobjectType = 'ServiceAppointment'
+            );
+            insert qso;
 
-    @IsTest
-    static void setStatusDefaultTest() {
+            TestDataFactory.getPublicGroup('HMS Øst-Viken', 'group_4701');
+            TestDataFactory.getQueue('HMS Øst-Viken', 'queue_4701', 'Thread__c');
+            qso = new QueueSObject(
+                QueueID = TestDataFactory.getQueue('HMS Øst-Viken', 'queue_4701', 'Thread__c').Id,
+                SobjectType = 'ServiceAppointment'
+            );
+            insert qso;
+        }
         OperatingHours operatingHours = HOT_TestDataFactory.createOperatingHours();
         insert operatingHours;
         ServiceTerritory serviceTerritory = HOT_TestDataFactory.createServiceTerritory(operatingHours);
@@ -39,9 +39,16 @@ private class HOT_ServiceAppointmentHandlerTest {
         Profile profile = [SELECT Id FROM Profile WHERE Name = 'Standard User' OR Name = 'Standardbruker' LIMIT 1];
         User user = HOT_TestDataFactory.createUser('user', profile);
         insert user;
+        // User u =[SELECT Id FROM User WHERE Name = 'user' LIMIT 1][0]
+        Account acc = new Account();
+        acc.Name = 'Test account';
+        insert acc;
+        // Account acc = [SELECT Id FROM Account WHERE Name = 'Test account' LIMIT 1];
         ServiceResource serviceResource = HOT_TestDataFactory.createServiceResource(user.Id);
         serviceResource.HOT_IsFreelanceInterpreter__c = true;
+        serviceResource.AccountId = acc.Id;
         insert serviceResource;
+        // ServiceResource resource = [SELECT Id, AccountId FROM ServiceResource LIMIT 1];
         ServiceTerritoryMember serviceTerritoryMember = HOT_TestDataFactory.createServiceTerritoryMember(
             serviceResource,
             serviceTerritory
@@ -60,67 +67,56 @@ private class HOT_ServiceAppointmentHandlerTest {
 
         WorkType workType = HOT_TestDataFactory.createWorkType();
         insert WorkType;
-        HOT_Request__c request = HOT_TestDataFactory.createRequest('HOT_ServiceAppointmentHandler', workType);
+        HOT_Request__c request = HOT_TestDataFactory.createRequest('TEST', workType);
         request.PreferredResource1__c = resource.Id;
-        request.NumberOfInterpreters__c = 3;
         insert request;
+        // HOT_Request__c request = [SELECT Id FROM HOT_Request__c WHERE Subject__c = 'TEST' LIMIT 1];
+        //WorkOrder workOrder = HOT_TestDataFactory.createWorkOrder(request, workType);
+        // WorkOrder workOrder = [SELECT Id FROM WorkOrder WHERE HOT_Request__r.Subject__c = 'TEST' LIMIT 1];
+        /*
+        ServiceAppointment sa = [
+            SELECT Id, HOT_Account__c, HOT_WorkOrderLineItem__r.WorkOrderId
+            FROM ServiceAppointment
+            WHERE Subject = 'TEST'
+            LIMIT 1
+        ];
+        */
+    }
 
+    @IsTest
+    static void setStatusDefaultTest() {
+        HOT_Request__c request = [SELECT Id FROM HOT_Request__c WHERE Subject__c = 'TEST' LIMIT 1];
         request.Status__c = 'Godkjent';
         update request;
-
-        ServiceAppointment serviceAppointment = [
-            SELECT Status
+        ServiceAppointment sa = [
+            SELECT Id, Status, HOT_PreferredResource__c
             FROM ServiceAppointment
-            WHERE HOT_PreferredResource__c != NULL
+            WHERE Subject = 'TEST'
+            LIMIT 1
         ];
-        System.assertEquals('None', serviceAppointment.Status, 'Default status was not set on ServiceAppointment.');
+
+        System.assertNotEquals(null, sa.HOT_PreferredResource__c, 'Preferred Resource is null on ServiceAppointment.');
+        System.assertEquals('None', sa.Status, 'Default status was not set on ServiceAppointment.');
     }
 
     @IsTest
     static void setOwnerTest() {
         Group moreQueue = TestDataFactory.getQueue('HMS Møre og Romsdal', 'queue_4715', 'HOT_Request__c');
-        OperatingHours operatingHours = HOT_TestDataFactory.createOperatingHours();
-        insert operatingHours;
-        ServiceTerritory serviceTerritory = HOT_TestDataFactory.createServiceTerritory(operatingHours);
-        insert serviceTerritory;
 
-        Profile profile = [SELECT Id FROM Profile WHERE Name = 'Standard User' OR Name = 'Standardbruker' LIMIT 1];
-        User user = HOT_TestDataFactory.createUser('user', profile);
-        insert user;
-        ServiceResource serviceResource = HOT_TestDataFactory.createServiceResource(user.Id);
-        serviceResource.HOT_IsFreelanceInterpreter__c = true;
-        insert serviceResource;
-        ServiceTerritoryMember serviceTerritoryMember = HOT_TestDataFactory.createServiceTerritoryMember(
-            serviceResource,
-            serviceTerritory
-        );
-        insert serviceTerritoryMember;
-
-        HOT_Resource__c resource = new HOT_Resource__c();
-        resource.Name = 'Test';
-        resource.Service_Resource__c = serviceResource.Id;
-        insert resource;
-
-        HOT_ResourceMember__c resourceMember = new HOT_ResourceMember__c();
-        resourceMember.Resource__c = resource.Id;
-        resourceMember.Service_Resource__c = serviceResource.Id;
-        insert resourceMember;
-
-        WorkType workType = HOT_TestDataFactory.createWorkType();
-        insert WorkType;
-        HOT_Request__c request = HOT_TestDataFactory.createRequest('HOT_ServiceAppointmentHandler', workType);
-        request.PreferredResource1__c = resource.Id;
-        request.NumberOfInterpreters__c = 3;
+        HOT_Request__c request = [SELECT Id FROM HOT_Request__c WHERE Subject__c = 'TEST' LIMIT 1];
+        myTriggers.disable(HOT_RequestHandler.class);
         request.OwnerId = moreQueue.Id;
-        insert request;
-
+        request.NumberOfInterpreters__c = 3;
+        update request;
+        myTriggers.enable(HOT_RequestHandler.class);
         request.Status__c = 'Godkjent';
         update request;
 
         ServiceAppointment serviceAppointment = [
-            SELECT OwnerId
+            SELECT Id, OwnerId
             FROM ServiceAppointment
-            WHERE HOT_PreferredResource__c != NULL
+            WHERE Subject = 'TEST'
+            LIMIT 1
         ];
         System.assertEquals(
             request.OwnerId,
@@ -134,11 +130,7 @@ private class HOT_ServiceAppointmentHandlerTest {
         Group moreQueue = TestDataFactory.getQueue('HMS Møre og Romsdal', 'queue_4715', 'Thread__c');
         Group vikenQueue = TestDataFactory.getQueue('HMS Øst-Viken', 'queue_4701', 'Thread__c');
 
-        WorkType workType = HOT_TestDataFactory.createWorkType();
-        insert WorkType;
-
-        HOT_Request__c request = HOT_TestDataFactory.createRequest('TEST', workType);
-        insert request;
+        HOT_Request__c request = [SELECT Id, OwnerId FROM HOT_Request__c WHERE Subject__c = 'TEST' LIMIT 1];
         request.Status__c = 'Godkjent';
         request.OwnerId = moreQueue.Id;
         update request;
@@ -186,12 +178,7 @@ private class HOT_ServiceAppointmentHandlerTest {
         ];
         User admin = HOT_TestDataFactory.createUser('admin', adminProfile);
         insert admin;
-
-        WorkType workType = HOT_TestDataFactory.createWorkType();
-        insert workType;
-
-        HOT_Request__c request = HOT_TestDataFactory.createRequest('TEST', workType);
-        insert request;
+        HOT_Request__c request = [SELECT Id, OwnerId FROM HOT_Request__c WHERE Subject__c = 'TEST' LIMIT 1];
         request.Status__c = 'Godkjent';
         update request;
 
@@ -240,10 +227,7 @@ private class HOT_ServiceAppointmentHandlerTest {
 
     @IsTest
     static void cancelServiceAppointment() {
-        WorkType workType = HOT_TestDataFactory.createWorkType();
-        insert WorkType;
-        HOT_Request__c request = HOT_TestDataFactory.createRequest('HOT_ServiceAppointmentHandler', workType);
-        insert request;
+        HOT_Request__c request = [SELECT Id, OwnerId FROM HOT_Request__c WHERE Subject__c = 'TEST' LIMIT 1];
 
         request.Status__c = 'Godkjent';
         update request;
@@ -259,16 +243,7 @@ private class HOT_ServiceAppointmentHandlerTest {
         //Checking if SA is cancelled etc
         system.assertEquals(true, sa.HOT_CanceledByInterpreter__c, 'Could not set CancelledByInterpreter to true');
 
-        Profile profile = [
-            SELECT Id, Name
-            FROM Profile
-            WHERE Name = 'System Administrator' OR Name = 'Systemadministrator'
-        ];
-        User user2 = HOT_TestDataFactory.createUser('User2', profile);
-        insert user2;
-
-        ServiceResource sr = HOT_TestDataFactory.createServiceResource(user2.Id);
-        insert sr;
+        ServiceResource sr = [SELECT Id FROM ServiceResource LIMIT 1];
 
         AssignedResource ar = HOT_TestDataFactory.createAssignedResource(sa.Id, sr.Id);
         insert ar;
@@ -286,45 +261,13 @@ private class HOT_ServiceAppointmentHandlerTest {
 
     @IsTest
     static void testRemoveAssignedResourceCancel() {
-        OperatingHours operatingHours = HOT_TestDataFactory.createOperatingHours();
-        insert operatingHours;
-        ServiceTerritory serviceTerritory = HOT_TestDataFactory.createServiceTerritory(operatingHours);
-        insert serviceTerritory;
-
-        Profile profile = [SELECT Id FROM Profile WHERE Name = 'Standard User' OR Name = 'Standardbruker' LIMIT 1];
-        User user = HOT_TestDataFactory.createUser('user', profile);
-        insert user;
-        ServiceResource serviceResource = HOT_TestDataFactory.createServiceResource(user.Id);
-        serviceResource.HOT_IsFreelanceInterpreter__c = true;
-        insert serviceResource;
-        ServiceTerritoryMember serviceTerritoryMember = HOT_TestDataFactory.createServiceTerritoryMember(
-            serviceResource,
-            serviceTerritory
-        );
-        insert serviceTerritoryMember;
-
-        HOT_Resource__c resource = new HOT_Resource__c();
-        resource.Name = 'Test';
-        resource.Service_Resource__c = serviceResource.Id;
-        insert resource;
-
-        HOT_ResourceMember__c resourceMember = new HOT_ResourceMember__c();
-        resourceMember.Resource__c = resource.Id;
-        resourceMember.Service_Resource__c = serviceResource.Id;
-        insert resourceMember;
-
-        WorkType workType = HOT_TestDataFactory.createWorkType();
-        insert WorkType;
-        HOT_Request__c request = HOT_TestDataFactory.createRequest('HOT_ServiceAppointmentHandler', workType);
-        request.PreferredResource1__c = resource.Id;
+        HOT_Request__c request = [SELECT Id FROM HOT_Request__c WHERE Subject__c = 'TEST' LIMIT 1];
         request.NumberOfInterpreters__c = 3;
-        insert request;
-
         request.Status__c = 'Godkjent';
         update request;
         Test.startTest();
-        ServiceAppointment sa = [SELECT Id FROM ServiceAppointment LIMIT 1];
-
+        ServiceAppointment sa = [SELECT Id FROM ServiceAppointment WHERE Subject = 'TEST' LIMIT 1];
+        ServiceResource serviceResource = [SELECT Id FROM ServiceResource LIMIT 1];
         AssignedResource ar = HOT_TestDataFactory.createAssignedResource(sa.Id, serviceResource.Id);
         insert ar;
 
@@ -338,46 +281,14 @@ private class HOT_ServiceAppointmentHandlerTest {
     }
     @IsTest
     static void testRemoveAssignedResourceNone() {
-        OperatingHours operatingHours = HOT_TestDataFactory.createOperatingHours();
-        insert operatingHours;
-        ServiceTerritory serviceTerritory = HOT_TestDataFactory.createServiceTerritory(operatingHours);
-        insert serviceTerritory;
-
-        Profile profile = [SELECT Id FROM Profile WHERE Name = 'Standard User' OR Name = 'Standardbruker' LIMIT 1];
-        User user = HOT_TestDataFactory.createUser('user', profile);
-        insert user;
-        ServiceResource serviceResource = HOT_TestDataFactory.createServiceResource(user.Id);
-        serviceResource.HOT_IsFreelanceInterpreter__c = true;
-        insert serviceResource;
-        ServiceTerritoryMember serviceTerritoryMember = HOT_TestDataFactory.createServiceTerritoryMember(
-            serviceResource,
-            serviceTerritory
-        );
-        insert serviceTerritoryMember;
-
-        HOT_Resource__c resource = new HOT_Resource__c();
-        resource.Name = 'Test';
-        resource.Service_Resource__c = serviceResource.Id;
-        insert resource;
-
-        HOT_ResourceMember__c resourceMember = new HOT_ResourceMember__c();
-        resourceMember.Resource__c = resource.Id;
-        resourceMember.Service_Resource__c = serviceResource.Id;
-        insert resourceMember;
-
-        WorkType workType = HOT_TestDataFactory.createWorkType();
-        insert WorkType;
-        HOT_Request__c request = HOT_TestDataFactory.createRequest('HOT_ServiceAppointmentHandler', workType);
-        request.PreferredResource1__c = resource.Id;
+        HOT_Request__c request = [SELECT Id FROM HOT_Request__c WHERE Subject__c = 'TEST' LIMIT 1];
         request.NumberOfInterpreters__c = 3;
-        insert request;
-
         request.Status__c = 'Godkjent';
         update request;
 
         Test.startTest();
-        ServiceAppointment sa = [SELECT Id FROM ServiceAppointment LIMIT 1];
-
+        ServiceAppointment sa = [SELECT Id FROM ServiceAppointment WHERE Subject = 'TEST' LIMIT 1];
+        ServiceResource serviceResource = [SELECT Id FROM ServiceResource LIMIT 1];
         AssignedResource ar = HOT_TestDataFactory.createAssignedResource(sa.Id, serviceResource.Id);
         insert ar;
 
@@ -395,23 +306,13 @@ private class HOT_ServiceAppointmentHandlerTest {
 
     @IsTest
     private static void testCreateHistoricallyAssignedResources_addResource() {
-        WorkType workType = HOT_TestDataFactory.createWorkType();
-        insert workType;
-
-        HOT_Request__c request = HOT_TestDataFactory.createRequest('TEST', workType);
-        insert request;
+        HOT_Request__c request = [SELECT Id FROM HOT_Request__c WHERE Subject__c = 'TEST' LIMIT 1];
         request.Status__c = 'Godkjent';
         update request;
 
         ServiceAppointment serviceAppointment = [SELECT Id FROM ServiceAppointment WHERE HOT_Request__c = :request.Id];
 
-        Profile profile = [SELECT Id FROM Profile WHERE Name = 'Standard User' OR Name = 'Standardbruker' LIMIT 1];
-        User user = HOT_TestDataFactory.createUser('TEST', profile);
-        insert user;
-
-        ServiceResource resource = HOT_TestDataFactory.createServiceResource(user.Id);
-        insert resource;
-
+        ServiceResource resource = [SELECT Id, AccountId FROM ServiceResource LIMIT 1];
         Test.startTest();
         AssignedResource assignedResource = HOT_TestDataFactory.createAssignedResource(
             serviceAppointment.Id,
@@ -433,50 +334,18 @@ private class HOT_ServiceAppointmentHandlerTest {
             harList[0].ServiceAppointment__c,
             'HAR ble ikke knyttet til korrekt oppdrag'
         );
-
-        HOT_HistoricallyAssignedResource__c prevHAR = harList[0];
     }
 
     @IsTest
     private static void testCreateHistoricallyAssignedResources_statusChange() {
-        OperatingHours operatingHours = HOT_TestDataFactory.createOperatingHours();
-        insert operatingHours;
-        ServiceTerritory serviceTerritory = HOT_TestDataFactory.createServiceTerritory(operatingHours);
-        insert serviceTerritory;
-
-        Profile profile = [SELECT Id FROM Profile WHERE Name = 'Standard User' OR Name = 'Standardbruker' LIMIT 1];
-        User user = HOT_TestDataFactory.createUser('user', profile);
-        insert user;
-        ServiceResource serviceResource = HOT_TestDataFactory.createServiceResource(user.Id);
-        serviceResource.HOT_IsFreelanceInterpreter__c = true;
-        insert serviceResource;
-        ServiceTerritoryMember serviceTerritoryMember = HOT_TestDataFactory.createServiceTerritoryMember(
-            serviceResource,
-            serviceTerritory
-        );
-        insert serviceTerritoryMember;
-
-        HOT_Resource__c resource = new HOT_Resource__c();
-        resource.Name = 'Test';
-        resource.Service_Resource__c = serviceResource.Id;
-        insert resource;
-
-        HOT_ResourceMember__c resourceMember = new HOT_ResourceMember__c();
-        resourceMember.Resource__c = resource.Id;
-        resourceMember.Service_Resource__c = serviceResource.Id;
-        insert resourceMember;
-
-        WorkType workType = HOT_TestDataFactory.createWorkType();
-        insert WorkType;
-        HOT_Request__c request = HOT_TestDataFactory.createRequest('HOT_ServiceAppointmentHandler', workType);
-        request.PreferredResource1__c = resource.Id;
+        HOT_Request__c request = [SELECT Id FROM HOT_Request__c WHERE Subject__c = 'TEST' LIMIT 1];
         request.NumberOfInterpreters__c = 3;
-        insert request;
-
         request.Status__c = 'Godkjent';
         update request;
 
-        ServiceAppointment serviceAppointment = [SELECT Id FROM ServiceAppointment LIMIT 1];
+        ServiceAppointment serviceAppointment = [SELECT Id FROM ServiceAppointment WHERE Subject = 'TEST' LIMIT 1];
+
+        ServiceResource serviceResource = [SELECT Id, AccountId FROM ServiceResource LIMIT 1];
 
         AssignedResource assignedResource = HOT_TestDataFactory.createAssignedResource(
             serviceAppointment.Id,
@@ -510,44 +379,14 @@ private class HOT_ServiceAppointmentHandlerTest {
     }
     @IsTest
     private static void testCreateHistoricallyAssignedResources_resourceChange() {
-        OperatingHours operatingHours = HOT_TestDataFactory.createOperatingHours();
-        insert operatingHours;
-        ServiceTerritory serviceTerritory = HOT_TestDataFactory.createServiceTerritory(operatingHours);
-        insert serviceTerritory;
-
-        Profile profile = [SELECT Id FROM Profile WHERE Name = 'Standard User' OR Name = 'Standardbruker' LIMIT 1];
-        User user = HOT_TestDataFactory.createUser('user', profile);
-        insert user;
-        ServiceResource serviceResource = HOT_TestDataFactory.createServiceResource(user.Id);
-        serviceResource.HOT_IsFreelanceInterpreter__c = true;
-        insert serviceResource;
-        ServiceTerritoryMember serviceTerritoryMember = HOT_TestDataFactory.createServiceTerritoryMember(
-            serviceResource,
-            serviceTerritory
-        );
-        insert serviceTerritoryMember;
-
-        HOT_Resource__c resource = new HOT_Resource__c();
-        resource.Name = 'Test';
-        resource.Service_Resource__c = serviceResource.Id;
-        insert resource;
-
-        HOT_ResourceMember__c resourceMember = new HOT_ResourceMember__c();
-        resourceMember.Resource__c = resource.Id;
-        resourceMember.Service_Resource__c = serviceResource.Id;
-        insert resourceMember;
-
-        WorkType workType = HOT_TestDataFactory.createWorkType();
-        insert WorkType;
-        HOT_Request__c request = HOT_TestDataFactory.createRequest('HOT_ServiceAppointmentHandler', workType);
-        request.PreferredResource1__c = resource.Id;
+        HOT_Request__c request = [SELECT Id FROM HOT_Request__c WHERE Subject__c = 'TEST' LIMIT 1];
         request.NumberOfInterpreters__c = 3;
-        insert request;
-
         request.Status__c = 'Godkjent';
         update request;
 
-        ServiceAppointment serviceAppointment = [SELECT Id FROM ServiceAppointment LIMIT 1];
+        ServiceAppointment serviceAppointment = [SELECT Id FROM ServiceAppointment WHERE Subject = 'TEST' LIMIT 1];
+
+        ServiceResource serviceResource = [SELECT Id, AccountId FROM ServiceResource LIMIT 1];
 
         AssignedResource assignedResource = HOT_TestDataFactory.createAssignedResource(
             serviceAppointment.Id,
@@ -555,7 +394,9 @@ private class HOT_ServiceAppointmentHandlerTest {
         );
         insert assignedResource;
 
-        user = HOT_TestDataFactory.createUser('user2', profile);
+        Profile profile = [SELECT Id FROM Profile WHERE Name = 'Standard User' OR Name = 'Standardbruker' LIMIT 1];
+
+        User user = HOT_TestDataFactory.createUser('user2', profile);
         insert user;
         ServiceResource resource2 = HOT_TestDataFactory.createServiceResource(user.Id);
         insert resource2;
@@ -611,44 +452,14 @@ private class HOT_ServiceAppointmentHandlerTest {
 
     @IsTest
     private static void testCreateHistoricallyAssignedResources_removedResource() {
-        OperatingHours operatingHours = HOT_TestDataFactory.createOperatingHours();
-        insert operatingHours;
-        ServiceTerritory serviceTerritory = HOT_TestDataFactory.createServiceTerritory(operatingHours);
-        insert serviceTerritory;
-
-        Profile profile = [SELECT Id FROM Profile WHERE Name = 'Standard User' OR Name = 'Standardbruker' LIMIT 1];
-        User user = HOT_TestDataFactory.createUser('user', profile);
-        insert user;
-        ServiceResource serviceResource = HOT_TestDataFactory.createServiceResource(user.Id);
-        serviceResource.HOT_IsFreelanceInterpreter__c = true;
-        insert serviceResource;
-        ServiceTerritoryMember serviceTerritoryMember = HOT_TestDataFactory.createServiceTerritoryMember(
-            serviceResource,
-            serviceTerritory
-        );
-        insert serviceTerritoryMember;
-
-        HOT_Resource__c resource = new HOT_Resource__c();
-        resource.Name = 'Test';
-        resource.Service_Resource__c = serviceResource.Id;
-        insert resource;
-
-        HOT_ResourceMember__c resourceMember = new HOT_ResourceMember__c();
-        resourceMember.Resource__c = resource.Id;
-        resourceMember.Service_Resource__c = serviceResource.Id;
-        insert resourceMember;
-
-        WorkType workType = HOT_TestDataFactory.createWorkType();
-        insert WorkType;
-        HOT_Request__c request = HOT_TestDataFactory.createRequest('HOT_ServiceAppointmentHandler', workType);
-        request.PreferredResource1__c = resource.Id;
+        HOT_Request__c request = [SELECT Id FROM HOT_Request__c WHERE Subject__c = 'TEST' LIMIT 1];
         request.NumberOfInterpreters__c = 3;
-        insert request;
-
         request.Status__c = 'Godkjent';
         update request;
 
-        ServiceAppointment serviceAppointment = [SELECT Id FROM ServiceAppointment LIMIT 1];
+        ServiceAppointment serviceAppointment = [SELECT Id FROM ServiceAppointment WHERE Subject = 'TEST' LIMIT 1];
+
+        ServiceResource serviceResource = [SELECT Id, AccountId FROM ServiceResource LIMIT 1];
 
         AssignedResource assignedResource = HOT_TestDataFactory.createAssignedResource(
             serviceAppointment.Id,
@@ -687,23 +498,13 @@ private class HOT_ServiceAppointmentHandlerTest {
     @IsTest
     private static void testDoNotCreateHAR() {
         Test.startTest();
-        WorkType workType = HOT_TestDataFactory.createWorkType();
-        insert workType;
 
-        HOT_Request__c request = HOT_TestDataFactory.createRequest('TEST', workType);
-        insert request;
+        HOT_Request__c request = [SELECT Id FROM HOT_Request__c WHERE Subject__c = 'TEST' LIMIT 1];
         request.Status__c = 'Godkjent';
         update request;
-
         ServiceAppointment serviceAppointment = [SELECT Id FROM ServiceAppointment WHERE HOT_Request__c = :request.Id];
 
-        Profile profile = [SELECT Id FROM Profile WHERE Name = 'Standard User' OR Name = 'Standardbruker' LIMIT 1];
-        User user = HOT_TestDataFactory.createUser('TEST', profile);
-        insert user;
-
-        ServiceResource resource = HOT_TestDataFactory.createServiceResource(user.Id);
-        insert resource;
-
+        ServiceResource resource = [SELECT Id, AccountId FROM ServiceResource LIMIT 1];
         AssignedResource assignedResource = HOT_TestDataFactory.createAssignedResource(
             serviceAppointment.Id,
             resource.Id
@@ -747,10 +548,7 @@ private class HOT_ServiceAppointmentHandlerTest {
     }
     @IsTest
     static void preserveScheduledTimes_onUpdate() {
-        WorkType workType = HOT_TestDataFactory.createWorkType();
-        insert WorkType;
-        HOT_Request__c request = HOT_TestDataFactory.createRequest('HOT_ServiceAppointmentHandler', workType);
-        insert request;
+        HOT_Request__c request = [SELECT Id FROM HOT_Request__c WHERE Subject__c = 'TEST' LIMIT 1];
 
         request.Status__c = 'Godkjent';
         update request;
@@ -758,6 +556,7 @@ private class HOT_ServiceAppointmentHandlerTest {
         ServiceAppointment sa = [
             SELECT Id, Status, SchedEndTime, SchedStartTime, EarliestStartTime, DueDate
             FROM ServiceAppointment
+            WHERE HOT_Request__c = :request.Id
             LIMIT 1
         ];
         datetime startTime = Datetime.now().addHours(1);
@@ -787,16 +586,13 @@ private class HOT_ServiceAppointmentHandlerTest {
 
     @IsTest
     static void updateScheduledTimes_onUpdate() {
-        WorkType workType = HOT_TestDataFactory.createWorkType();
-        insert WorkType;
-        HOT_Request__c request = HOT_TestDataFactory.createRequest('HOT_ServiceAppointmentHandler', workType);
-        insert request;
-
+        HOT_Request__c request = [SELECT Id FROM HOT_Request__c WHERE Subject__c = 'TEST' LIMIT 1];
         request.Status__c = 'Godkjent';
         update request;
         ServiceAppointment sa = [
             SELECT Id, EarliestStartTime, DueDate, SchedEndTime, SchedStartTime
             FROM ServiceAppointment
+            WHERE HOT_Request__c = :request.Id
             LIMIT 1
         ];
         sa.EarliestStartTime = Datetime.now().addHours(2);
@@ -814,46 +610,13 @@ private class HOT_ServiceAppointmentHandlerTest {
 
     @IsTest
     private static void testReleaseToFreelance() {
-        OperatingHours operatingHours = HOT_TestDataFactory.createOperatingHours();
-        insert operatingHours;
-        ServiceTerritory serviceTerritory = HOT_TestDataFactory.createServiceTerritory(operatingHours);
-        insert serviceTerritory;
-
-        Profile profile = [SELECT Id FROM Profile WHERE Name = 'Standard User' OR Name = 'Standardbruker' LIMIT 1];
-        User user = HOT_TestDataFactory.createUser('user', profile);
-        insert user;
-        ServiceResource serviceResource = HOT_TestDataFactory.createServiceResource(user.Id);
-        serviceResource.HOT_IsFreelanceInterpreter__c = true;
-        insert serviceResource;
-        ServiceTerritoryMember serviceTerritoryMember = HOT_TestDataFactory.createServiceTerritoryMember(
-            serviceResource,
-            serviceTerritory
-        );
-        insert serviceTerritoryMember;
-
-        HOT_Resource__c resource = new HOT_Resource__c();
-        resource.Name = 'Test';
-        resource.Service_Resource__c = serviceResource.Id;
-        insert resource;
-
-        HOT_ResourceMember__c resourceMember = new HOT_ResourceMember__c();
-        resourceMember.Resource__c = resource.Id;
-        resourceMember.Service_Resource__c = serviceResource.Id;
-        insert resourceMember;
-
-        WorkType workType = HOT_TestDataFactory.createWorkType();
-        insert WorkType;
-        HOT_Request__c request = HOT_TestDataFactory.createRequest('HOT_ServiceAppointmentHandler', workType);
-        insert request;
-
+        HOT_Request__c request = [SELECT Id FROM HOT_Request__c WHERE Subject__c = 'TEST' LIMIT 1];
         request.Status__c = 'Godkjent';
         update request;
+        ServiceAppointment serviceAppointment = [SELECT Id FROM ServiceAppointment WHERE HOT_Request__c = :request.Id];
 
-        ServiceAppointment serviceAppointment = [
-            SELECT Id, Status, SchedStartTime, Street, HOT_PreferredResource__c
-            FROM ServiceAppointment
-            LIMIT 1
-        ];
+        ServiceResource serviceResource = [SELECT Id, AccountId FROM ServiceResource LIMIT 1];
+
         HOT_InterestedResource__c interestedResource = HOT_TestDataFactory.createInterestedResource(
             serviceAppointment.Id,
             serviceResource.Id
@@ -938,10 +701,7 @@ private class HOT_ServiceAppointmentHandlerTest {
 
     @IsTest
     public static void imageInterpreterWithoutAddressTest() {
-        WorkType workType = HOT_TestDataFactory.createWorkType();
-        insert WorkType;
-
-        workType = HOT_TestDataFactory.createWorkType('BTV');
+        WorkType workType = HOT_TestDataFactory.createWorkType('BTV');
         workType.HOT_DeveloperName__c = 'BTV';
         insert WorkType;
 
@@ -970,39 +730,11 @@ private class HOT_ServiceAppointmentHandlerTest {
 
     @IsTest
     public static void serviceAppointmentCompletedWithoutActualTimes() {
-        OperatingHours operatingHours = HOT_TestDataFactory.createOperatingHours();
-        insert operatingHours;
-        ServiceTerritory serviceTerritory = HOT_TestDataFactory.createServiceTerritory(operatingHours);
-        insert serviceTerritory;
-
-        Profile profile = [SELECT Id FROM Profile WHERE Name = 'Standard User' OR Name = 'Standardbruker' LIMIT 1];
-        User user = HOT_TestDataFactory.createUser('user', profile);
-        insert user;
-        ServiceResource serviceResource = HOT_TestDataFactory.createServiceResource(user.Id);
-        serviceResource.HOT_IsFreelanceInterpreter__c = true;
-        insert serviceResource;
-        ServiceTerritoryMember serviceTerritoryMember = HOT_TestDataFactory.createServiceTerritoryMember(
-            serviceResource,
-            serviceTerritory
-        );
-        insert serviceTerritoryMember;
-
-        HOT_Resource__c resource = new HOT_Resource__c();
-        resource.Name = 'Test';
-        resource.Service_Resource__c = serviceResource.Id;
-        insert resource;
-
-        HOT_ResourceMember__c resourceMember = new HOT_ResourceMember__c();
-        resourceMember.Resource__c = resource.Id;
-        resourceMember.Service_Resource__c = serviceResource.Id;
-        insert resourceMember;
-
-        WorkType workType = HOT_TestDataFactory.createWorkType();
-        insert WorkType;
-
-        workType = HOT_TestDataFactory.createWorkType('BTV');
+        WorkType workType = HOT_TestDataFactory.createWorkType('BTV');
         workType.HOT_DeveloperName__c = 'BTV';
         insert WorkType;
+
+        HOT_Resource__c resource = [SELECT Id FROM HOT_Resource__c WHERE Name = 'Test' LIMIT 1];
 
         HOT_Request__c request = HOT_TestDataFactory.createRequest('HOT_ServiceAppointmentHandler', workType);
         request.PreferredResource1__c = resource.Id;
@@ -1036,11 +768,7 @@ private class HOT_ServiceAppointmentHandlerTest {
 
     @IsTest
     public static void startHourAndEndHourSameTimeAsScheduledDateTimes() {
-        WorkType workType = HOT_TestDataFactory.createWorkType();
-        insert WorkType;
-        HOT_Request__c request = HOT_TestDataFactory.createRequest('HOT_ServiceAppointmentHandler', workType);
-        insert request;
-
+        HOT_Request__c request = [SELECT Id FROM HOT_Request__c WHERE Subject__c = 'TEST' LIMIT 1];
         request.Status__c = 'Godkjent';
         update request;
 
@@ -1071,11 +799,7 @@ private class HOT_ServiceAppointmentHandlerTest {
 
     @IsTest
     public static void addContentDocumentLinkToServiceAppointment() {
-        WorkType workType = HOT_TestDataFactory.createWorkType();
-        insert WorkType;
-        HOT_Request__c request = HOT_TestDataFactory.createRequest('HOT_ServiceAppointmentHandler', workType);
-        insert request;
-
+        HOT_Request__c request = [SELECT Id FROM HOT_Request__c WHERE Subject__c = 'TEST' LIMIT 1];
         request.Status__c = 'Godkjent';
         update request;
 
@@ -1126,11 +850,7 @@ private class HOT_ServiceAppointmentHandlerTest {
 
     @IsTest
     public static void actualTimeChanged() {
-        WorkType workType = HOT_TestDataFactory.createWorkType();
-        insert WorkType;
-        HOT_Request__c request = HOT_TestDataFactory.createRequest('HOT_ServiceAppointmentHandler', workType);
-        insert request;
-
+        HOT_Request__c request = [SELECT Id FROM HOT_Request__c WHERE Subject__c = 'TEST' LIMIT 1];
         request.Status__c = 'Godkjent';
         update request;
 
@@ -1163,11 +883,7 @@ private class HOT_ServiceAppointmentHandlerTest {
 
     @IsTest
     public static void setArchiveAsOwnerTest() {
-        WorkType workType = HOT_TestDataFactory.createWorkType();
-        insert WorkType;
-        HOT_Request__c request = HOT_TestDataFactory.createRequest('HOT_ServiceAppointmentHandler', workType);
-        insert request;
-
+        HOT_Request__c request = [SELECT Id FROM HOT_Request__c WHERE Subject__c = 'TEST' LIMIT 1];
         request.Status__c = 'Godkjent';
         update request;
 
@@ -1200,11 +916,7 @@ private class HOT_ServiceAppointmentHandlerTest {
 
     @IsTest
     public static void checkIfHOTAccountFieldIsEqualToAccountOnInsert() {
-        WorkType workType = HOT_TestDataFactory.createWorkType();
-        insert WorkType;
-        HOT_Request__c request = HOT_TestDataFactory.createRequest('HOT_ServiceAppointmentHandler', workType);
-        insert request;
-
+        HOT_Request__c request = [SELECT Id FROM HOT_Request__c WHERE Subject__c = 'TEST' LIMIT 1];
         request.Status__c = 'Godkjent';
         update request;
 
@@ -1218,11 +930,7 @@ private class HOT_ServiceAppointmentHandlerTest {
 
     @IsTest
     public static void actualStartTimesShouldBeSchedStartTimesTest() {
-        WorkType workType = HOT_TestDataFactory.createWorkType();
-        insert WorkType;
-        HOT_Request__c request = HOT_TestDataFactory.createRequest('HOT_ServiceAppointmentHandler', workType);
-        insert request;
-
+        HOT_Request__c request = [SELECT Id FROM HOT_Request__c WHERE Subject__c = 'TEST' LIMIT 1];
         request.Status__c = 'Godkjent';
         update request;
 

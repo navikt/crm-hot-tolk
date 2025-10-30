@@ -311,9 +311,6 @@ export default class Hot_myServiceAppointmentsList_v2 extends NavigationMixin(Li
         return this.serviceAppointment?.HOT_Dispatcher__c ?? '';
     }
 
-    get showTermsOfAgreement() {
-        return this.termsOfAgreement ?? '';
-    }
     get actualStartTime() {
         return this.serviceAppointment?.ActualStartTime ?? '';
     }
