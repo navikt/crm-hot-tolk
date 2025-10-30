@@ -120,20 +120,43 @@ public without sharing class HOT_ThreadParticipants {
         }
         if (objectType == 'HOT_Request__c') {
             HOT_Request__c request = [
-                SELECT Id, Account__r.Name, Account__r.Id
+                SELECT Id, Account__r.Name, Account__r.Id, Orderer__c, Orderer__r.Id, Orderer__r.Name, Account__c
                 FROM HOT_Request__c
                 WHERE Id = :thread.CRM_Related_Object__c
             ];
-            User user = [SELECT Id, AccountId FROM User WHERE AccountId = :request.Account__r.Id LIMIT 1];
-            if (request.Account__r.Name != null && user != null) {
+            String participantName;
+            String participantRole;
+            Id participantUserId;
+
+            // Sjekk type thread
+            if (thread.CRM_Thread_Type__c == 'HOT_BRUKER-FORMIDLER') {
+                // Bruk Account
+                participantName = request.Account__r.Name;
+                participantRole = 'Tolkebruker';
+                User user = [SELECT Id FROM User WHERE AccountId = :request.Account__r.Id LIMIT 1];
+                participantUserId = user != null ? user.Id : null;
+            } else if (thread.CRM_Thread_Type__c == 'HOT_BESTILLER-FORMIDLER') {
+                // Bruk Orderer
+                participantName = request.Orderer__r.Name;
+                participantRole = 'Bestiller';
+                User user = [SELECT Id FROM User WHERE AccountId = :request.Orderer__r.Id LIMIT 1];
+                participantUserId = user != null ? user.Id : null;
+            }
+
+            // Legg til participant hvis navn og userId finnes
+            if (participantName != null && participantUserId != null) {
                 Participant participant = new Participant();
-                participant.name = formatName(request.Account__r.Name);
-                participant.role = 'Tolkebruker';
-                participant.userId = user.Id;
+                participant.name = formatName(participantName);
+                participant.role = participantRole;
+                participant.userId = participantUserId;
                 participantList.add(participant);
             }
         }
-        if (thread.CRM_Thread_Type__c == 'HOT_TOLK-FORMIDLER' || thread.CRM_Thread_Type__c == 'HOT_BRUKER-FORMIDLER') {
+        if (
+            thread.CRM_Thread_Type__c == 'HOT_TOLK-FORMIDLER' ||
+            thread.CRM_Thread_Type__c == 'HOT_BRUKER-FORMIDLER' ||
+            thread.CRM_Thread_Type__c == 'HOT_BESTILLER-FORMIDLER'
+        ) {
             Participant participant = new Participant();
             participant.name = 'Formidler';
             participant.role = null;

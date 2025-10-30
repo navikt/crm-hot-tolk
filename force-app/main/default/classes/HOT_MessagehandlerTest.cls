@@ -29,7 +29,7 @@ private class HOT_MessagehandlerTest {
         message.CRM_Thread__c = thread.Id;
         message.CRM_From_Contact__c = account.PersonContactId;
         message.CRM_Message_Text__c = 'Dette er en testmelding';
-        message.HOT_User_Role__c = HOT_MessageHelper.getUserProfileAndName();
+        message.HOT_User_Role__c = HOT_MessageHelper.getUserProfileAndName('');
 
         test.startTest();
         insert message;
@@ -51,7 +51,7 @@ private class HOT_MessagehandlerTest {
         message.CRM_Thread__c = thread.Id;
         message.CRM_From_Contact__c = account.PersonContactId;
         message.CRM_Message_Text__c = 'Dette er en testmelding';
-        message.HOT_User_Role__c = HOT_MessageHelper.getUserProfileAndName();
+        message.HOT_User_Role__c = HOT_MessageHelper.getUserProfileAndName('');
 
         test.startTest();
         insert message;
@@ -74,7 +74,7 @@ private class HOT_MessagehandlerTest {
         message.CRM_Thread__c = thread.Id;
         message.CRM_From_Contact__c = account.PersonContactId;
         message.CRM_Message_Text__c = 'Dette er en testmelding';
-        message.HOT_User_Role__c = HOT_MessageHelper.getUserProfileAndName();
+        message.HOT_User_Role__c = HOT_MessageHelper.getUserProfileAndName('HOT_TOLK-RESSURSKONTOR');
 
         test.startTest();
         insert message;
@@ -97,7 +97,7 @@ private class HOT_MessagehandlerTest {
         message.CRM_Thread__c = thread.Id;
         message.CRM_From_Contact__c = account.PersonContactId;
         message.CRM_Message_Text__c = 'Dette er en testmelding';
-        message.HOT_User_Role__c = HOT_MessageHelper.getUserProfileAndName();
+        message.HOT_User_Role__c = HOT_MessageHelper.getUserProfileAndName('HOT_TOLK-RESSURSKONTOR');
 
         test.startTest();
         insert message;
