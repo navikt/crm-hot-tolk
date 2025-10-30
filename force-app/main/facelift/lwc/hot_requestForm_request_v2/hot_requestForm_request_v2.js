@@ -124,11 +124,15 @@ export default class hot_requestForm_request_v2 extends LightningElement {
         this.displayError = false;
         try {
             const person = await getUserHomeAddress();
+            const adress = person.INT_ResidentialAddress__c;
             const postalCode = person.INT_ResidentialZipCode__c;
 
-            if (person.INT_ResidentialAddress__c != null && postalCode != null) {
-                this.fieldValues.MeetingStreet__c = person.INT_ResidentialAddress__c;
-                this.fieldValues.MeetingPostalCode__c = postalCode;
+            if (adress && postalCode) {
+                this.fieldValues = {
+                    ...this.fieldValues,
+                    MeetingStreet__c: adress,
+                    MeetingPostalCode__c: postalCode
+                };
             } else {
                 setTimeout(() => {
                     this.displayError = true;
@@ -147,6 +151,11 @@ export default class hot_requestForm_request_v2 extends LightningElement {
             console.error('Error fetching user home address:', error);
             this.displayError = true;
         }
+    }
+
+    handleAddressChange(event) {
+        const val = event.target.value;
+        this.fieldValues = { ...this.fieldValues, MeetingStreet__c: val };
     }
 
     handleMeetingPostalChange(event) {

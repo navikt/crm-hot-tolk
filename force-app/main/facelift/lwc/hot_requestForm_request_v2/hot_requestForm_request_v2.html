@@ -47,6 +47,7 @@
                 label="Oppmøteadresse"
                 form="tolk-skjema-input"
                 value={fieldValues.MeetingStreet__c}
+                oninput={handleAddressChange}
                 error-text="Oppmøteadresse må fylles ut."
             ></c-input>
             <br />
