@@ -6,6 +6,8 @@ public without sharing class HOT_ThreadParticipants {
         public String role;
         @AuraEnabled
         public Id userId;
+        @AuraEnabled
+        public Boolean hasRead = false;
         public Participant(ServiceAppointment sa) {
             this.name = sa.HOT_ServiceResource__r.Name;
             this.role = 'Tolk';
