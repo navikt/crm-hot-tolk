@@ -9,34 +9,38 @@ public without sharing class HOT_ThreadParticipants {
         @AuraEnabled
         public Boolean hasRead = false;
         public Participant(ServiceAppointment sa) {
-            this.name = sa.HOT_ServiceResource__r.Name;
+            this.name = formatName(sa.HOT_ServiceResource__r.Name);
             this.role = 'Tolk';
             this.userId = sa.HOT_ServiceResource__r.RelatedRecordId;
         }
         public Participant(WorkOrder wo, User user) {
-            this.name = wo.Account.Name;
+            this.name = formatName(wo.Account.Name);
             this.role = 'Tolkebruker';
             this.userId = user.Id;
         }
         public Participant(HOT_InterestedResource__c ir) {
-            this.name = ir.ServiceResource__r.Name;
+            this.name = formatName(ir.ServiceResource__r.Name);
             this.role = 'Tolk';
             this.userId = ir.ServiceResource__r.RelatedRecordId;
         }
         public Participant(HOT_WageClaim__c wc) {
-            this.name = wc.ServiceResource__r.Name;
+            this.name = formatName(wc.ServiceResource__r.Name);
             this.role = 'Tolk';
             this.userId = wc.ServiceResource__r.RelatedRecordId;
-        }
-        public Participant(HOT_Request__c req, User user) {
-            this.name = req.Account__r.Name;
-            this.role = 'Tolkebruker';
-            this.userId = user.Id;
         }
         public Participant() {
         }
         public Participant(String name) {
-            this.name = name;
+            this.name = formatName(name);
+        }
+        public Participant(String name, String role, Id userId) {
+            this.name = formatName(name);
+            this.role = role;
+            this.userId = userId;
+        }
+        public Participant setHasRead() {
+            this.hasRead = true;
+            return this;
         }
     }
 
@@ -130,16 +134,39 @@ public without sharing class HOT_ThreadParticipants {
         }
         if (objectType == 'HOT_Request__c') {
             HOT_Request__c request = [
-                SELECT Id, Account__r.Name, Account__r.Id
+                SELECT Id, Account__r.Name, Account__r.Id, Orderer__c, Orderer__r.Id, Orderer__r.Name, Account__c
                 FROM HOT_Request__c
                 WHERE Id = :thread.CRM_Related_Object__c
             ];
-            User user = [SELECT Id, AccountId FROM User WHERE AccountId = :request.Account__r.Id LIMIT 1];
-            if (request.Account__r.Name != null && user != null) {
-                participantList.add(new Participant(request, user));
+            String participantName;
+            String participantRole;
+            Id participantUserId;
+
+            // Sjekk type thread
+            if (thread.CRM_Thread_Type__c == 'HOT_BRUKER-FORMIDLER') {
+                // Bruk Account
+                participantName = request.Account__r.Name;
+                participantRole = 'Tolkebruker';
+                User user = [SELECT Id FROM User WHERE AccountId = :request.Account__r.Id LIMIT 1];
+                participantUserId = user != null ? user.Id : null;
+            } else if (thread.CRM_Thread_Type__c == 'HOT_BESTILLER-FORMIDLER') {
+                // Bruk Orderer
+                participantName = request.Orderer__r.Name;
+                participantRole = 'Bestiller';
+                User user = [SELECT Id FROM User WHERE AccountId = :request.Orderer__r.Id LIMIT 1];
+                participantUserId = user != null ? user.Id : null;
+            }
+
+            // Legg til participant hvis navn og userId finnes
+            if (participantName != null && participantUserId != null) {
+                participantList.add(new Participant(participantName, participantRole, participantUserId));
             }
         }
-        if (thread.CRM_Thread_Type__c == 'HOT_TOLK-FORMIDLER' || thread.CRM_Thread_Type__c == 'HOT_BRUKER-FORMIDLER') {
+        if (
+            thread.CRM_Thread_Type__c == 'HOT_TOLK-FORMIDLER' ||
+            thread.CRM_Thread_Type__c == 'HOT_BRUKER-FORMIDLER' ||
+            thread.CRM_Thread_Type__c == 'HOT_BESTILLER-FORMIDLER'
+        ) {
             participantList.add(new Participant('Formidler'));
         }
         if (thread.CRM_Thread_Type__c == 'HOT_TOLK-RESSURSKONTOR') {
