@@ -183,7 +183,7 @@ public without sharing class HOT_InterestedResourcesListController {
                 ServiceAppointmentAddress__c,
                 WorkTypeName__c,
                 AssignmentType__c,
-                Status__c,
+                toLabel(Status__c),
                 ServiceAppointment__r.HOT_ReleaseDate__c,
                 ServiceAppointment__r.HOT_ReleasedBy__c,
                 ServiceAppointment__r.HOT_Request__r.OwnerName__c,

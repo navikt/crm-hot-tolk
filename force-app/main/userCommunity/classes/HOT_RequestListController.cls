@@ -239,4 +239,16 @@ public without sharing class HOT_RequestListController {
         }
         return Id;
     }
+
+    @AuraEnabled(cacheable=true)
+    public static List<Common_Code__c> getPostalCity(String postalCode){
+        List<Common_Code__c> postalCommonCode =  [
+            SELECT CRM_Active__c, CRM_Code_Set__c, CRM_Code__c, Name, CRM_UniqueKey__c 
+            from Common_Code__c 
+            where CRM_Code_Set__c ='Postnummer'
+            AND CRM_Active__c = true
+            AND CRM_Code__c = :postalCode
+        ]; 
+        return postalCommonCode;
+    }
 }
