@@ -74,7 +74,7 @@ private class HOT_MessageHelperTest {
         Message__c m = new Message__c();
         m.CRM_Thread__c = t.Id;
         m.CRM_Message_Text__c = 'Lorem Ipsum Dolor Si Amet';
-        m.HOT_User_Role__c = HOT_MessageHelper.getUserProfileAndName();
+        m.HOT_User_Role__c = HOT_MessageHelper.getUserProfileAndName('HOT_BRUKER-TOLK');
         insert m;
         /*
         Profile std = [SELECT Id FROM Profile WHERE Name IN ('Standard User', 'Standardbruker') LIMIT 1];
@@ -480,7 +480,7 @@ private class HOT_MessageHelperTest {
         Message__c msg = new Message__c();
         msg.CRM_Thread__c = thread.Id;
         msg.CRM_Message_Text__c = 'Lorem Ipsum Dolor Si Amet';
-        msg.HOT_User_Role__c = HOT_MessageHelper.getUserProfileAndName();
+        msg.HOT_User_Role__c = HOT_MessageHelper.getUserProfileAndName('HOT_TOLK-FORMIDLER');
         insert msg;
         Test.startTest();
         System.runAs(navReader) {
@@ -1068,7 +1068,7 @@ private class HOT_MessageHelperTest {
     @IsTest
     static void getUserProfileAndNameTest() {
         Test.startTest();
-        String result = HOT_MessageHelper.getUserProfileAndName();
+        String result = HOT_MessageHelper.getUserProfileAndName('');
         Test.stopTest();
         System.assertNotEquals('', result, 'Did not get Profile and Name');
     }
@@ -1157,7 +1157,7 @@ private class HOT_MessageHelperTest {
         Message__c m = new Message__c();
         m.CRM_Thread__c = t.Id;
         m.CRM_Message_Text__c = 'Lorem Ipsum Dolor Si Amet';
-        m.HOT_User_Role__c = HOT_MessageHelper.getUserProfileAndName();
+        m.HOT_User_Role__c = HOT_MessageHelper.getUserProfileAndName('HOT_BRUKER-FORMIDLER');
         insert m;
 
         Test.startTest();
@@ -1197,7 +1197,7 @@ private class HOT_MessageHelperTest {
         Message__c m = new Message__c();
         m.CRM_Thread__c = t.Id;
         m.CRM_Message_Text__c = 'Lorem Ipsum Dolor Si Amet';
-        m.HOT_User_Role__c = HOT_MessageHelper.getUserProfileAndName();
+        m.HOT_User_Role__c = HOT_MessageHelper.getUserProfileAndName('HOT_BRUKER-FORMIDLER');
         insert m;
 
         Test.startTest();
@@ -1224,7 +1224,7 @@ private class HOT_MessageHelperTest {
         Message__c m = new Message__c();
         m.CRM_Thread__c = t.Id;
         m.CRM_Message_Text__c = 'Lorem Ipsum Dolor Si Amet';
-        m.HOT_User_Role__c = HOT_MessageHelper.getUserProfileAndName();
+        m.HOT_User_Role__c = HOT_MessageHelper.getUserProfileAndName('HOT_BRUKER-FORMIDLER');
         insert m;
 
         String contactId = '123456';
@@ -1254,7 +1254,7 @@ private class HOT_MessageHelperTest {
         Message__c m = new Message__c();
         m.CRM_Thread__c = t.Id;
         m.CRM_Message_Text__c = 'Lorem Ipsum Dolor Si Amet';
-        m.HOT_User_Role__c = HOT_MessageHelper.getUserProfileAndName();
+        m.HOT_User_Role__c = HOT_MessageHelper.getUserProfileAndName('HOT_BRUKER-FORMIDLER');
         insert m;
 
         Test.startTest();
@@ -1307,7 +1307,7 @@ private class HOT_MessageHelperTest {
         Message__c m = new Message__c(
             CRM_Thread__c = t.Id,
             CRM_Message_Text__c = 'Lorem Ipsum Dolor Si Amet',
-            HOT_User_Role__c = HOT_MessageHelper.getUserProfileAndName()
+            HOT_User_Role__c = HOT_MessageHelper.getUserProfileAndName('HOT_TOLK-FORMIDLER')
         );
         insert m;
         Boolean threwExpected = false;
@@ -1352,7 +1352,7 @@ private class HOT_MessageHelperTest {
         Message__c m = new Message__c();
         m.CRM_Thread__c = t.Id;
         m.CRM_Message_Text__c = 'Lorem Ipsum Dolor Si Amet';
-        m.HOT_User_Role__c = HOT_MessageHelper.getUserProfileAndName();
+        m.HOT_User_Role__c = HOT_MessageHelper.getUserProfileAndName('HOT_BRUKER-FORMIDLER');
         insert m;
 
         Test.startTest();
@@ -1410,7 +1410,7 @@ private class HOT_MessageHelperTest {
         Message__c m = new Message__c();
         m.CRM_Thread__c = t.Id;
         m.CRM_Message_Text__c = 'Lorem Ipsum Dolor Si Amet';
-        m.HOT_User_Role__c = HOT_MessageHelper.getUserProfileAndName();
+        m.HOT_User_Role__c = HOT_MessageHelper.getUserProfileAndName('HOT_BRUKER-FORMIDLER');
         insert m;
 
         Boolean r;
