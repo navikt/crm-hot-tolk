@@ -370,9 +370,6 @@ public without sharing class HOT_ServiceAppointmentNotification {
 
                 HOT_NotificationHandler.sendNotification(notification, recipients, (SObject) serviceAppointment);
                 //creating notification object
-                if (serviceAppointment.HOT_ServiceResource__c == null) {
-                    return;
-                }
                 HOT_Notification__c newNotification = new HOT_Notification__c();
                 newNotification.HOT_ServiceResource__c = serviceAppointment.HOT_ServiceResource__c;
                 newNotification.HOT_NotificationChannel__c = 'Push-varsel i appen';
@@ -393,9 +390,6 @@ public without sharing class HOT_ServiceAppointmentNotification {
                 notificationList.add(newNotification);
             } else {
                 //creating notification object
-                if (serviceAppointment.HOT_ServiceResource__c == null) {
-                    return;
-                }
                 HOT_Notification__c newNotification = new HOT_Notification__c();
                 newNotification.HOT_ServiceResource__c = serviceAppointment.HOT_ServiceResource__c;
                 newNotification.HOT_NotificationChannel__c = 'SMS';
@@ -456,9 +450,6 @@ public without sharing class HOT_ServiceAppointmentNotification {
 
                 HOT_NotificationHandler.sendNotification(notification, recipients, (SObject) serviceAppointment);
                 //creating notification object
-                if (serviceAppointment.HOT_ServiceResource__c == null) {
-                    return;
-                }
                 HOT_Notification__c newNotification = new HOT_Notification__c();
                 newNotification.HOT_ServiceResource__c = serviceAppointment.HOT_ServiceResource__c;
                 newNotification.HOT_NotificationChannel__c = 'Push-varsel i appen';
@@ -474,9 +465,6 @@ public without sharing class HOT_ServiceAppointmentNotification {
 
                 notificationList.add(newNotification);
             } else {
-                if (serviceAppointment.HOT_ServiceResource__c == null) {
-                    return;
-                }
                 //creating notification object
                 HOT_Notification__c newNotification = new HOT_Notification__c();
                 newNotification.HOT_ServiceResource__c = serviceAppointment.HOT_ServiceResource__c;
@@ -538,9 +526,6 @@ public without sharing class HOT_ServiceAppointmentNotification {
 
                 HOT_NotificationHandler.sendNotification(notification, recipients, (SObject) serviceAppointment);
                 //creating notification object
-                if (serviceAppointment.HOT_ServiceResource__c == null) {
-                    return;
-                }
                 HOT_Notification__c newNotification = new HOT_Notification__c();
                 newNotification.HOT_ServiceResource__c = serviceAppointment.HOT_ServiceResource__c;
                 newNotification.HOT_NotificationChannel__c = 'Push-varsel i appen';
@@ -557,9 +542,6 @@ public without sharing class HOT_ServiceAppointmentNotification {
                 notificationList.add(newNotification);
             } else {
                 //creating notification object
-                if (serviceAppointment.HOT_ServiceResource__c == null) {
-                    return;
-                }
                 HOT_Notification__c newNotification = new HOT_Notification__c();
                 newNotification.HOT_ServiceResource__c = serviceAppointment.HOT_ServiceResource__c;
                 newNotification.HOT_NotificationChannel__c = 'SMS';
@@ -627,9 +609,6 @@ public without sharing class HOT_ServiceAppointmentNotification {
 
                 HOT_NotificationHandler.sendNotification(notification, recipients, (SObject) serviceAppointment);
                 //creating notification object
-                if (serviceAppointment.HOT_ServiceResource__c == null) {
-                    return;
-                }
                 HOT_Notification__c newNotification = new HOT_Notification__c();
                 newNotification.HOT_ServiceResource__c = serviceAppointment.HOT_ServiceResource__c;
                 newNotification.HOT_NotificationChannel__c = 'Push-varsel i appen';
@@ -649,9 +628,6 @@ public without sharing class HOT_ServiceAppointmentNotification {
 
                 notificationList.add(newNotification);
             } else {
-                if (serviceAppointment.HOT_ServiceResource__c == null) {
-                    return;
-                }
                 HOT_Notification__c newNotification = new HOT_Notification__c();
                 newNotification.HOT_ServiceResource__c = serviceAppointment.HOT_ServiceResource__c;
                 newNotification.HOT_NotificationChannel__c = 'SMS';
@@ -687,12 +663,11 @@ public without sharing class HOT_ServiceAppointmentNotification {
         Set<String> recipients,
         String isScreenInterpreterString
     ) {
-        Set<Id> saSMS = new Set<Id>();
         ServiceAppointment serviceAppointment = this.getUpdatedSAMap().get(saId);
-        //creating notification object list
-        List<HOT_Notification__c> notificationList = new List<HOT_Notification__c>();
 
         if (serviceAppointment?.HOT_ServiceResource__r?.HOT_NotificationChannel__c != null) {
+            //creating notification object list
+            List<HOT_Notification__c> notificationList = new List<HOT_Notification__c>();
             if (
                 serviceAppointment.HOT_ServiceResource__r.HOT_NotificationChannel__c.contains('Push') ||
                 serviceAppointment.HOT_IsEmployedInterpreter__c
@@ -720,9 +695,6 @@ public without sharing class HOT_ServiceAppointmentNotification {
                 notification.setTargetId(serviceAppointment.Id);
 
                 HOT_NotificationHandler.sendNotification(notification, recipients, (SObject) serviceAppointment);
-                if (serviceAppointment.HOT_ServiceResource__c == null) {
-                    return;
-                }
                 //creating notification object
                 HOT_Notification__c newNotification = new HOT_Notification__c();
                 newNotification.HOT_ServiceResource__c = serviceAppointment.HOT_ServiceResource__c;
@@ -748,9 +720,6 @@ public without sharing class HOT_ServiceAppointmentNotification {
 
                 notificationList.add(newNotification);
             } else {
-                if (serviceAppointment.HOT_ServiceResource__c == null) {
-                    return;
-                }
                 //creating notification object
                 HOT_Notification__c newNotification = new HOT_Notification__c();
                 newNotification.HOT_ServiceResource__c = serviceAppointment.HOT_ServiceResource__c;
@@ -772,12 +741,12 @@ public without sharing class HOT_ServiceAppointmentNotification {
 
                 HOT_ReminderSMSService.sendSMSToInterpreterOnScreenInterpretation(new Set<Id>{ serviceAppointment.Id });
             }
-        }
-        //inserting notifications
-        try {
-            HOT_NotificationCentreController.createNotification(notificationList);
-        } catch (Exception e) {
-            handleException(e);
+            //inserting notifications
+            try {
+                HOT_NotificationCentreController.createNotification(notificationList);
+            } catch (Exception e) {
+                handleException(e);
+            }
         }
     }
     public static String formatTimePeriod(Datetime startDate, Datetime endDate) {
@@ -1223,9 +1192,6 @@ public without sharing class HOT_ServiceAppointmentNotification {
                     (SObject) serviceAppointment
                 );
                 //creating notification object
-                if (serviceAppointment.HOT_ServiceResource__c == null) {
-                    return;
-                }
                 HOT_Notification__c newNotification = new HOT_Notification__c();
                 newNotification.HOT_ServiceResource__c = serviceAppointment.HOT_ServiceResource__c;
                 newNotification.HOT_NotificationChannel__c = 'Push-varsel i appen';
