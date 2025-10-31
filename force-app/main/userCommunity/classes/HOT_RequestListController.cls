@@ -249,4 +249,27 @@ public without sharing class HOT_RequestListController {
         ];
         return postalCommonCode;
     }
+
+    @AuraEnabled(cacheable=true)
+    public static Person__c getUserHomeAddress() {
+        User currentUser = [
+            SELECT Id, AccountId, Account.CRM_Person__c
+            FROM User
+            WHERE Id = :UserInfo.getUserId()
+            LIMIT 1
+        ];
+
+        List<Person__c> persons = [
+            SELECT Id, INT_ResidentialAddress__c, INT_ResidentialZipCode__c
+            FROM Person__c
+            WHERE Id = :currentUser.Account.CRM_Person__c
+            LIMIT 1
+        ];
+
+        if (persons.isEmpty()) {
+            return null;
+        }
+
+        return persons[0];
+    }
 }
