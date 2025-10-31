@@ -21,9 +21,11 @@
     "type" : "region"
   }, {
     "components" : [ {
-      "componentAttributes" : { },
-      "componentName" : "c:hot_tolketjenestenHovedBanner",
-      "id" : "6b18af07-1023-4fd3-ae0b-7b22f64ea0a9",
+      "componentAttributes" : {
+        "isFreelanceView" : true
+      },
+      "componentName" : "c:hot_threadList_v2",
+      "id" : "ea3aaacc-e2df-437b-9ecf-3ce81a717607",
       "renderPriority" : "NEUTRAL",
       "renditionMap" : { },
       "type" : "component"
@@ -33,13 +35,6 @@
     "type" : "region"
   }, {
     "components" : [ {
-      "componentAttributes" : { },
-      "componentName" : "c:hot_frilanstolkThreadList",
-      "id" : "3202fad1-b666-41c4-9f1c-ac13f7bfaad6",
-      "renderPriority" : "NEUTRAL",
-      "renditionMap" : { },
-      "type" : "component"
-    }, {
       "componentAttributes" : { },
       "componentName" : "c:decoratorFooter",
       "id" : "54cea4c9-f0d6-4f99-9e89-77bd27414f21",

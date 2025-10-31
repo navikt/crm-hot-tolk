@@ -21,16 +21,11 @@
     "type" : "region"
   }, {
     "components" : [ {
-      "componentAttributes" : { },
-      "componentName" : "c:hot_tolketjenestenHovedBanner",
-      "id" : "6b208694-d94a-4bb0-a98d-d7bb33016c78",
-      "renderPriority" : "NEUTRAL",
-      "renditionMap" : { },
-      "type" : "component"
-    }, {
-      "componentAttributes" : { },
-      "componentName" : "c:hot_threadList",
-      "id" : "0559acfc-e110-4cd2-95e1-40f3e6ccd446",
+      "componentAttributes" : {
+        "isFreelanceView" : false
+      },
+      "componentName" : "c:hot_threadList_v2",
+      "id" : "f69c2063-82c8-4319-93a9-78e365c017cb",
       "renderPriority" : "NEUTRAL",
       "renditionMap" : { },
       "type" : "component"

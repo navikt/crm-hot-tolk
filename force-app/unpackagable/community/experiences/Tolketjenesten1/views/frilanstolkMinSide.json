@@ -37,15 +37,8 @@
           "type" : "component"
         }, {
           "componentAttributes" : { },
-          "componentName" : "c:hot_tolketjenestenHovedBanner",
-          "id" : "f63664da-7455-4d5f-99cf-ec8c24122821",
-          "renderPriority" : "NEUTRAL",
-          "renditionMap" : { },
-          "type" : "component"
-        }, {
-          "componentAttributes" : { },
-          "componentName" : "c:hot_freelanceProfileWrapper",
-          "id" : "94a25bf1-9ab6-40d5-9ade-807595d54563",
+          "componentName" : "c:hot_freelanceUserInformation_v2",
+          "id" : "324c3dac-bf15-4aa3-ba0a-9404192ee402",
           "renderPriority" : "NEUTRAL",
           "renditionMap" : { },
           "type" : "component"

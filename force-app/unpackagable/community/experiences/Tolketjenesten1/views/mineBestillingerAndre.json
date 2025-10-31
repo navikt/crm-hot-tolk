@@ -36,19 +36,12 @@
           "renditionMap" : { },
           "type" : "component"
         }, {
-          "componentAttributes" : { },
-          "componentName" : "c:hot_tolketjenestenHovedBanner",
-          "id" : "7e0d1e93-bc16-46a2-b3d7-825fed747d4b",
-          "renderPriority" : "NEUTRAL",
-          "renditionMap" : { },
-          "type" : "component"
-        }, {
           "componentAttributes" : {
-            "header" : "Bestillinger på vegne av andre",
+            "header" : "Mine Bestillinger på vegne av andre",
             "isAccount" : false
           },
-          "componentName" : "c:mineBestillingerWrapper",
-          "id" : "f734acdd-6b77-4d2d-ba38-c51130269b21",
+          "componentName" : "c:hot_myRequestsWrapper",
+          "id" : "6154c6c5-e61e-4874-9668-a71c465ed8ba",
           "renderPriority" : "NEUTRAL",
           "renditionMap" : { },
           "type" : "component"
