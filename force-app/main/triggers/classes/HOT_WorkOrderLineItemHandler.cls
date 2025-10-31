@@ -39,7 +39,6 @@ public without sharing class HOT_WorkOrderLineItemHandler extends MyTriggers {
                     HOT_Request__c,
                     HOT_Request__r.PreferredResource1__c,
                     HOT_Request__r.PreferredResource2__c,
-                    HOT_Request__r.PreferredResource3__c,
                     HOT_Request__r.InterpretationMethod__c,
                     HOT_Request__r.IsScreenInterpreter__c,
                     HOT_Request__r.Company__c
@@ -82,12 +81,6 @@ public without sharing class HOT_WorkOrderLineItemHandler extends MyTriggers {
                     workOrders.get(workOrderLineItem.WorkOrderId).HOT_Request__r.InterpretationMethod__c
                 ) {
                     if (
-                        numberOfInterpreters == 2 &&
-                        workOrders.get(workOrderLineItem.WorkOrderId).HOT_Request__r.PreferredResource3__c != null
-                    ) {
-                        serviceAppointment.HOT_PreferredResource__c = workOrders.get(workOrderLineItem.WorkOrderId)
-                            .HOT_Request__r.PreferredResource3__c;
-                    } else if (
                         numberOfInterpreters == 1 &&
                         workOrders.get(workOrderLineItem.WorkOrderId).HOT_Request__r.PreferredResource2__c != null
                     ) {
