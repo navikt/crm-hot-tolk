@@ -608,7 +608,7 @@ public without sharing class HOT_RequestHandler extends MyTriggers {
                 request.MeetingPostalCode__c = request.InterpretationPostalCode__c;
             }
 
-            if (request.InterpretationStreet__c == null && request.MeetingStreet__c != null) {
+            if (request.InterpretationStreet__c == null && request.MeetingStreet__c != null && request.HOT_IsMeetingAddressSameAsHome__c == false) {
                 request.InterpretationStreet__c = request.MeetingStreet__c;
                 request.InterpretationPostalCity__c = request.MeetingPostalCity__c;
                 request.InterpretationPostalCode__c = request.MeetingPostalCode__c;

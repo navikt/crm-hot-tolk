@@ -270,13 +270,43 @@ export default class hot_requestForm_request_v2 extends LightningElement {
     @api
     validateFields() {
         let hasErrors = false;
+
         this.template.querySelectorAll('c-input').forEach((element) => {
             if (element.validationHandler()) {
                 hasErrors += 1;
             }
+
+            // Postal code validation
+            if (
+                element.name === 'MeetingPostalCode__c' ||
+                element.name === 'InterpretationPostalCode__c'
+            ) {
+                const postalCode = element.getValue() || '';
+                const cityField = element.name === 'MeetingPostalCode__c'
+                    ? this.fieldValues.MeetingPostalCity__c
+                    : this.fieldValues.InterpretationPostalCity__c;
+
+                if (!postalCode) {
+                    element.sendErrorMessage('Postnummer må fylles ut.');
+                    hasErrors += 1;
+                } else if (postalCode.length !== 4) {
+                    element.sendErrorMessage('Postnummer må være 4 siffer.');
+                    hasErrors += 1;
+                } else if (
+                    cityField === 'Kunne ikke finne poststed' ||
+                    cityField === 'Feil ved henting av poststed'
+                ) {
+                    element.sendErrorMessage('Vennligst tast inn gyldig postnummer.');
+                    hasErrors += 1;
+                } else {
+                    element.sendErrorMessage(''); 
+                }
+            }
         });
+
         hasErrors += this.validateCheckbox();
         hasErrors += this.template.querySelector('c-hot_recurring-time-input_v2').validateFields();
+
         return hasErrors;
     }
 

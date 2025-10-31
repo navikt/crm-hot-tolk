@@ -59,6 +59,7 @@
                         name="MeetingPostalCode__c"
                         form="tolk-skjema-input"
                         value={fieldValues.MeetingPostalCode__c}
+                        error-text="Postnummer må fylles ut."
                         oninput={handleMeetingPostalChange}
                         max-length="4"
                     ></c-input>
@@ -104,6 +105,7 @@
                             form="tolk-skjema-input"
                             value={fieldValues.InterpretationPostalCode__c}
                             oninput={handleInterpretationPostalChange}
+                            error-text="Postnummer må fylles ut."
                             max-length="4"
                         ></c-input>
                     </div>
