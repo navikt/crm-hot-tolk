@@ -143,7 +143,6 @@
         display: block;
         margin-left: 0%;
         margin-top: 0.5rem;
-        margin-bottom: 0.5rem;
     }
     .release-button {
         margin-left: 0%;
@@ -195,8 +194,9 @@
     }
 }
 
-@media (min-width: 576px) {
-    .mobile-only {
+@media (min-width: 768px) {
+    .mobile {
         display: none;
+        visibility: hidden;
     }
 }

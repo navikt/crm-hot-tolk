@@ -73,7 +73,7 @@ public class HOT_ThreadListControllerTest {
         Message__c message = new Message__c();
         message.CRM_Thread__c = t.Id;
         message.CRM_Message_Text__c = 'Dette er en testmelding';
-        message.HOT_User_Role__c = HOT_MessageHelper.getUserProfileAndName();
+        message.HOT_User_Role__c = HOT_MessageHelper.getUserProfileAndName('HOT_TOLK-FORMIDLER');
         insert message;
         Test.stopTest();
 
@@ -130,7 +130,7 @@ public class HOT_ThreadListControllerTest {
 
         Test.stopTest();
     }
-     @IsTest
+    @IsTest
     public static void getMyThreadsFreelanceServiceResourceTest2() {
         User admin = [SELECT Id, UserRoleId FROM User WHERE Id = :UserInfo.getUserId() LIMIT 1];
 

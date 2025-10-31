@@ -90,14 +90,14 @@
                         <strong>Vedtak:</strong> {degreeOfHearingAndVisualImpairment}
                     </p>
 
-                    <p lwc:if={showTermsOfAgreement}><strong>Avtalte betingelser:</strong> {showTermsOfAgreement}</p>
+                    <p lwc:if={termsOfAgreement}><strong>Avtalte betingelser:</strong> {termsOfAgreement}</p>
 
                     <p lwc:if={interpreters}><strong>(Med)tolk:</strong> {interpreters}</p>
 
                     <p lwc:if={description}><strong>Tilleggsopplysninger:</strong> {description}</p>
 
-                    <p lwc:if={showOrdererPhoneNumber}>
-                        <strong>Telefonnummer til bestiller:</strong> {showOrdererPhoneNumber}
+                    <p lwc:if={ordererPhoneNumber}>
+                        <strong>Telefonnummer til bestiller:</strong> {ordererPhoneNumber}
                     </p>
 
                     <p><strong>Annen betaler:</strong> {isOtherProvider}</p>

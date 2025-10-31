@@ -115,11 +115,15 @@ tr.row:hover {
 }
 
 @media (max-width: 768px) {
-    .checkbox-column {
-        position: absolute;
-        margin-top: -13%;
-        margin-left: 80.5%;
-        border-bottom: none;
+    .table-wrapper {
+        overflow-x: auto;
+        max-width: 1200px;
+        position: relative;
+    }
+    .table-wrapper::before {
+        content: '';
+        display: block;
+        height: 3rem;
     }
 
     .column-th-desktop {
@@ -139,26 +143,7 @@ tr.row:hover {
         font-size: 1.5rem !important;
     }
 
-    .checkbox-mobile-right {
-        position: absolute;
-        margin-top: -4%;
-        margin-left: 84%;
-    }
-
-    tr.row {
-        position: relative;
-    }
-
-    .table-wrapper {
-        overflow-x: auto;
-        padding: 0;
-        max-width: 1200px;
-    }
-
-    .mobile-only {
-        display: inline;
-    }
-
+    /* Card rows */
     tr.row {
         display: block;
         margin-bottom: 1rem;
@@ -169,6 +154,7 @@ tr.row:hover {
         height: auto;
         border: none;
         position: relative;
+        padding-right: 3rem;
     }
 
     tr.row td {
@@ -215,5 +201,28 @@ tr.row:hover {
 
     .desktop-status-label {
         display: none;
+    }
+    td.checkbox-column.checkbox-mobile-right {
+        position: absolute !important;
+        top: 0.75rem !important;
+        right: 0.75rem !important;
+        margin: 0 !important;
+        width: auto !important;
+        z-index: 1 !important;
+    }
+    td.checkbox-column::before {
+        content: none !important;
+    }
+    thead .checkbox-column {
+        position: absolute !important;
+        right: 0.5rem !important;
+        width: auto !important;
+        margin: 0 !important;
+        border-bottom: none !important;
+        background: transparent !important;
+        text-align: right !important;
+        display: block !important;
+        visibility: visible !important;
+        pointer-events: auto !important;
     }
 }

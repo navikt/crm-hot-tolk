@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomFieldTranslation xmlns="http://soap.sforce.com/2006/04/metadata">
+    <help><!-- Oppmøteadresse fylles ut automatisk med hjemmeadresse først når det trykkes Lagre. --></help>
+    <label>Oppmøteadresse er lik hjemmeadresse</label>
+    <name>HOT_IsMeetingAddressSameAsHome__c</name>
+</CustomFieldTranslation>

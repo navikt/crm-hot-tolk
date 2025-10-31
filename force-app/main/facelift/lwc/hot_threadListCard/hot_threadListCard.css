@@ -107,6 +107,7 @@ p {
         display: none;
     }
     .mobile-only {
-        display: block;
+        display: block !important;
+        visibility: visible !important;
     }
 }
