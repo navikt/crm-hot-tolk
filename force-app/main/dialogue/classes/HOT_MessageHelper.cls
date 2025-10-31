@@ -652,8 +652,8 @@ public without sharing class HOT_MessageHelper {
             return user.FirstName + ', Formidler';
         } else if (user.Profile.Name == 'HOT Tolk Ansatt') {
             return user.FirstName + ', Tolk';
-        } else if (user.Profile.Name == 'NAV Samhandler') {
-            return user.FirstName + ', Tolk';
+        } else if (user.Profile.Name == 'NAV Samhandler' && threadType == 'HOT_BESTILLER-FORMIDLER') {
+            return user.FirstName + ', Bestiller';
         } else if (user.Profile.Name == 'NAV Bruker' && threadType == 'HOT_BRUKER-FORMIDLER') {
             return user.FirstName + ', Tolkebruker';
         } else if (user.Profile.Name == 'NAV Bruker' && threadType == 'HOT_BESTILLER-FORMIDLER') {
@@ -662,7 +662,10 @@ public without sharing class HOT_MessageHelper {
             return user.FirstName + ', Tolkebruker';
         } else if (user.Profile.Name == 'NAV Bruker Plus' && threadType == 'HOT_BESTILLER-FORMIDLER') {
             return user.FirstName + ', Bestiller';
-        } else {
+        } 
+        else if (user.Profile.Name == 'NAV Samhandler') {
+            return user.FirstName + ', Tolk';
+        }else {
             return user.FirstName + ', Administrator';
         }
     }
