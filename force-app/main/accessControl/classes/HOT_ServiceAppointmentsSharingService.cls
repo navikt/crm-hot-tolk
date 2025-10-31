@@ -203,4 +203,86 @@ public without sharing class HOT_ServiceAppointmentsSharingService {
             handleException(e);
         }
     }
+
+    @future
+    public static void removeAccessForHiddenServiceAppointments(Set<Id> serviceAppointmentIds) {
+        if (serviceAppointmentIds == null || serviceAppointmentIds.isEmpty())
+            return;
+
+        try {
+            Map<Id, Id> woBySa = getWorkOrderIds(new List<Id>(serviceAppointmentIds));
+            Set<Id> workOrderIds = new Set<Id>();
+            for (Id saId : woBySa.keySet()) {
+                Id woId = woBySa.get(saId);
+                if (woId != null)
+                    workOrderIds.add(woId);
+            }
+
+            Map<Id, Id> accountBySa = getAccountIdByServiceAppointmentId(new List<Id>(serviceAppointmentIds));
+            Set<Id> accountIds = new Set<Id>();
+            for (Id saId : accountBySa.keySet()) {
+                Id accId = accountBySa.get(saId);
+                if (accId != null)
+                    accountIds.add(accId);
+            }
+
+            List<ServiceAppointmentShare> saSharesToDelete = new List<ServiceAppointmentShare>();
+            if (!serviceAppointmentIds.isEmpty()) {
+                saSharesToDelete = [
+                    SELECT Id
+                    FROM ServiceAppointmentShare
+                    WHERE RowCause = 'Manual' AND ParentId IN :serviceAppointmentIds
+                ];
+            }
+
+            List<WorkOrderShare> woSharesToDelete = new List<WorkOrderShare>();
+            if (!workOrderIds.isEmpty()) {
+                woSharesToDelete = [
+                    SELECT Id
+                    FROM WorkOrderShare
+                    WHERE RowCause = 'Manual' AND ParentId IN :workOrderIds
+                ];
+            }
+
+            Set<Id> accountsWithVisibleSharedSAs = new Set<Id>();
+            if (!accountIds.isEmpty()) {
+                for (AggregateResult ar : [
+                    SELECT AccountId accId
+                    FROM ServiceAppointment
+                    WHERE
+                        AccountId IN :accountIds
+                        AND HOT_DelPol_IsHideRecord__c = FALSE
+                        AND Id IN (
+                            SELECT ParentId
+                            FROM ServiceAppointmentShare
+                            WHERE RowCause = 'Manual'
+                        )
+                    GROUP BY AccountId
+                ]) {
+                    accountsWithVisibleSharedSAs.add((Id) ar.get('accId'));
+                }
+            }
+
+            Set<Id> accountsToRemoveShares = new Set<Id>(accountIds);
+            accountsToRemoveShares.removeAll(accountsWithVisibleSharedSAs);
+
+            List<AccountShare> accountSharesToDelete = new List<AccountShare>();
+            if (!accountsToRemoveShares.isEmpty()) {
+                accountSharesToDelete = [
+                    SELECT Id
+                    FROM AccountShare
+                    WHERE RowCause = 'Manual' AND AccountId IN :accountsToRemoveShares
+                ];
+            }
+
+            if (!saSharesToDelete.isEmpty())
+                delete saSharesToDelete;
+            if (!woSharesToDelete.isEmpty())
+                delete woSharesToDelete;
+            if (!accountSharesToDelete.isEmpty())
+                delete accountSharesToDelete;
+        } catch (Exception e) {
+            handleException(e);
+        }
+    }
 }
