@@ -9,7 +9,7 @@ private class HOT_RequestListControllerTest {
             update admin;
         }
 
-        Profile communityProfile = [SELECT Id FROM Profile WHERE Name = 'NAV Samhandler' LIMIT 1];
+        Profile communityProfile = [SELECT Id FROM Profile WHERE Name = 'Customer Community Plus User' LIMIT 1];
         Person__c person = HOT_TestDataFactory.createPerson();
         person.INT_FirstName__c = 'Tolk';
         person.INT_LastName__c = 'BrukerAddresseTest';
