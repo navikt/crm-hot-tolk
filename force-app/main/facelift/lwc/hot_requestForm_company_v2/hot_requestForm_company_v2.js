@@ -24,21 +24,24 @@ export default class hot_requestForm_company_v2 extends LightningElement {
 
     handleOrgNumberInputChange(event) {
         this.organizationNumberSearch = event.detail;
+
         if (this.organizationNumberSearch.length == 9) {
             this.fieldValues.OrganizationName__c = 'Henter organisasjon...';
-            try {
-                getOrganizationInfo({
-                    organizationNumber: this.organizationNumberSearch
-                }).then((result) => {
-                    if (result.length == 1) {
+
+            getOrganizationInfo({
+                organizationNumber: this.organizationNumberSearch
+            })
+                .then((result) => {
+                    if (result.length === 1) {
                         this.fieldValues.OrganizationName__c = result[0].Name;
                     } else {
                         this.fieldValues.OrganizationName__c = 'Kunne ikke finne organisasjon';
                     }
+                })
+                .catch((error) => {
+                    console.error('Feil ved henting av organisasjon:', error);
+                    this.fieldValues.OrganizationName__c = 'Feil ved henting av organisasjon';
                 });
-            } catch (error) {
-                this.fieldValues.OrganizationName__c = error;
-            }
         } else {
             this.fieldValues.OrganizationName__c = '';
         }
