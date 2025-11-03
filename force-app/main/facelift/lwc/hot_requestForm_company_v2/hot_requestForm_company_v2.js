@@ -1,13 +1,16 @@
 import { LightningElement, track, api } from 'lwc';
+import getOrganizationInfo from '@salesforce/apex/HOT_RequestListController.getOrganizationInfo';
 export default class hot_requestForm_company_v2 extends LightningElement {
     @api isEditOrCopyMode = false;
     @track fieldValues = {
         OrganizationNumber__c: '',
+        OrganizationName__c: '',
         InvoiceReference__c: '',
         IsOtherEconomicProvicer__c: false,
         AdditionalInvoiceText__c: '',
         UserName__c: '' // Get UserName from Wrapper on edit/copy. Deleted in getFieldValues() and handled in requestForm_user afterwards.
     };
+
     @api parentCompanyComponentValues;
     @track componentValues = {
         choices: [
@@ -17,6 +20,29 @@ export default class hot_requestForm_company_v2 extends LightningElement {
         ],
         checkboxValue: true
     };
+    organizationNumberSearch;
+
+    handleOrgNumberInputChange(event) {
+        this.organizationNumberSearch = event.detail;
+        if (this.organizationNumberSearch.length == 9) {
+            this.fieldValues.OrganizationName__c = 'Henter organisasjon...';
+            try {
+                getOrganizationInfo({
+                    organizationNumber: this.organizationNumberSearch
+                }).then((result) => {
+                    if (result.length == 1) {
+                        this.fieldValues.OrganizationName__c = result[0].Name;
+                    } else {
+                        this.fieldValues.OrganizationName__c = 'Kunne ikke finne organisasjon';
+                    }
+                });
+            } catch (error) {
+                this.fieldValues.OrganizationName__c = error;
+            }
+        } else {
+            this.fieldValues.OrganizationName__c = '';
+        }
+    }
 
     setComponentValuesOnEditAndCopy() {
         this.componentValues.choices.forEach((element) => {
@@ -66,6 +92,9 @@ export default class hot_requestForm_company_v2 extends LightningElement {
         if (this.template.querySelectorAll('c-input')[0].validateOrgNumber()) {
             hasErrors += 1;
         }
+        if (this.validateOrganizationName()) {
+            hasErrors += 1;
+        }
         if (this.template.querySelector('c-picklist').validationHandler()) {
             hasErrors += 1;
         }
@@ -96,5 +125,20 @@ export default class hot_requestForm_company_v2 extends LightningElement {
         if (this.isEditOrCopyMode) {
             this.setComponentValuesOnEditAndCopy();
         }
+    }
+    validateOrganizationName() {
+        let hasErrors = false;
+        this.template.querySelectorAll('[data-id="organizationName"]').forEach((element) => {
+            if (element.value === '' || element.value === 'Kunne ikke finne organisasjon') {
+                hasErrors = true;
+                this.showErrorOrganizationNumber();
+            }
+        });
+        return hasErrors;
+    }
+    showErrorOrganizationNumber() {
+        this.template.querySelectorAll('[data-id="organizationNumber"]').forEach((element) => {
+            element.sendErrorMessage('Fyll inn en gyldig organisasjonsnummer');
+        });
     }
 }
