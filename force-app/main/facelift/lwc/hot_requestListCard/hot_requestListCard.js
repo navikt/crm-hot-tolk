@@ -83,6 +83,10 @@ export default class Hot_requestListCard extends LightningElement {
             const fSecondary = getField(secondary);
             const fTertiary = tertiary ? getField(tertiary) : { displayLabel: '', label: '' };
 
+            if (fSecondary?.displayLabel) {
+                fSecondary.displayLabel = String(fSecondary.displayLabel).replace(/\s*-\s*/g, ' – ');
+            }
+
             // Status detection: by label, field name, or css class hints; fallback to record.Status
             const statusNameCandidates = ['status', 'status__c', 'hot_externalworkorderstatus__c', 'hot_status__c'];
             const statusField = fields.find((f) => lc(f.label) === 'status') ||
@@ -126,12 +130,13 @@ export default class Hot_requestListCard extends LightningElement {
                 return !core.includes(f.name) && f !== statusField;
             });
 
-            // ARIA
+            const formatHyphen = (text) => String(text).replace(/\s*-\s*/g, ' – ');
+
             const temaField =
                 fields.find((f) => lc(f.label) === 'tema') || fields.find((f) => lc(f.name) === 'subject');
 
             const pieces = [];
-            if (fSecondary.displayLabel) pieces.push(`${fSecondary.label || 'Tid'}: ${fSecondary.displayLabel}.`);
+            if (fSecondary.displayLabel) pieces.push(`${formatHyphen(fSecondary.displayLabel)}.`);
             if (statusField.displayLabel) pieces.push(`Status: ${statusField.displayLabel}.`);
 
             if (temaField && (temaField.displayLabel || temaField.value)) {

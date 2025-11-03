@@ -31,6 +31,7 @@ export default class Hot_myRequestsWrapper extends NavigationMixin(LightningElem
     filters = [];
     labelMap = labelMap;
     showLoader = false;
+    shouldFocusHeader = false;
     get isMobile() {
         return window.screen.width < 768;
     }
@@ -57,14 +58,28 @@ export default class Hot_myRequestsWrapper extends NavigationMixin(LightningElem
         if (this.urlStateParameters.id === '' && this.urlStateParameters.level === '') {
             refreshApex(this.wiredgetWorkOrdersResult);
         }
+        if (this.shouldFocusHeader) {
+            this.shouldFocusHeader = false;
+            this.focusHeader();
+        }
+    }
+    focusHeader() {
+        requestAnimationFrame(() => {
+            const el = this.template?.querySelector('.header');
+            if (el) {
+                el.focus();
+            }
+        });
     }
 
     fileUploadMessage = '';
     handleUploadFinished(event) {
-        const uploadedFiles = event.detail.files;
+        const uploadedFiles = event.detail?.files || [];
         if (uploadedFiles.length > 0) {
             this.fileUploadMessage = 'Filen(e) ble lastet opp';
-            this.template.querySelector('c-record-files-without-sharing').refreshContentDocuments();
+            this.template
+                .querySelectorAll('c-record-files-without-sharing')
+                .forEach((cmp) => cmp.refreshContentDocuments());
         }
     }
 
@@ -148,8 +163,13 @@ export default class Hot_myRequestsWrapper extends NavigationMixin(LightningElem
     get isOwnRequest() {
         return this.request.Orderer__c === this.userAccountId;
     }
+
+    get uploadTargetId() {
+        return this.urlStateParameters?.level === 'WO' ? this.workOrder?.Id : this.request?.Id;
+    }
+
     get getRelatedRecord() {
-        return this.recordId;
+        return this.uploadTargetId;
     }
 
     resetRequestAndWorkOrder() {
@@ -220,6 +240,7 @@ export default class Hot_myRequestsWrapper extends NavigationMixin(LightningElem
             level = 'WO';
         }
         this.urlStateParameters = { ...this.urlStateParameters, id: recordId, level };
+        this.shouldFocusHeader = true;
         this.refresh(true);
     }
 
@@ -502,18 +523,18 @@ export default class Hot_myRequestsWrapper extends NavigationMixin(LightningElem
     showCancelUploadButton = true;
     cancelUploadFiles() {
         this.template.querySelector('.ReactModal__Overlay').classList.add('hidden');
-        this.template.querySelector('c-upload-files').clearFileData();
+        this.template.querySelector('c-upload-files')?.clearFileData();
         this.showUploadFilesComponent = false;
     }
 
     handleFileUpload() {
-        if (this.hasFiles) {
-            this.template.querySelector('c-upload-files').handleFileUpload(this.request.Id);
+        if (this.hasFiles && this.uploadTargetId) {
+            this.template.querySelector('c-upload-files')?.handleFileUpload(this.uploadTargetId);
         }
     }
 
     clearFileData() {
-        this.template.querySelector('c-upload-files').clearFileData();
+        this.template.querySelector('c-upload-files')?.clearFileData();
     }
 
     hasFiles = false;
@@ -545,7 +566,7 @@ export default class Hot_myRequestsWrapper extends NavigationMixin(LightningElem
     }
 
     validateCheckbox() {
-        this.template.querySelector('c-upload-files').validateCheckbox();
+        this.template.querySelector('c-upload-files')?.validateCheckbox();
     }
 
     checkboxValue = false;

@@ -90,14 +90,14 @@
                         <strong>Vedtak:</strong> {degreeOfHearingAndVisualImpairment}
                     </p>
 
-                    <p lwc:if={showTermsOfAgreement}><strong>Avtalte betingelser:</strong> {showTermsOfAgreement}</p>
+                    <p lwc:if={termsOfAgreement}><strong>Avtalte betingelser:</strong> {termsOfAgreement}</p>
 
                     <p lwc:if={interpreters}><strong>(Med)tolk:</strong> {interpreters}</p>
 
                     <p lwc:if={description}><strong>Tilleggsopplysninger:</strong> {description}</p>
 
-                    <p lwc:if={showOrdererPhoneNumber}>
-                        <strong>Telefonnummer til bestiller:</strong> {showOrdererPhoneNumber}
+                    <p lwc:if={ordererPhoneNumber}>
+                        <strong>Telefonnummer til bestiller:</strong> {ordererPhoneNumber}
                     </p>
 
                     <p><strong>Annen betaler:</strong> {isOtherProvider}</p>
@@ -105,13 +105,13 @@
                     <p lwc:if={dispatcher}><strong>Formidler:</strong> {dispatcher}</p>
 
                     <div class="files-container">
-                        <c-record-files-with-sharing
+                        <c-record-files-without-sharing
                             record-id={serviceAppointment.Id}
                             is-get-all="true"
                             is-delete-option="false"
                             title="Vedlegg"
                             delete-file-on-button-click="false"
-                        ></c-record-files-with-sharing>
+                        ></c-record-files-without-sharing>
                     </div>
                     <div class="button-container">
                         <c-button

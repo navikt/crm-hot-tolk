@@ -1,19 +1,59 @@
 @IsTest
 public with sharing class HOT_ServiceAppointmentImageStatusTest {
-    @IsTest
-    public static void todaysServiceAppointmentsAreSupposedtoBeChanged() {
+    @TestSetup
+    static void makeData() {
         WorkType workType = HOT_TestDataFactory.createWorkType('BTV - Bildetolkvakt');
         workType.HOT_DeveloperName__c = 'BTV';
         insert workType;
+        List<HOT_Request__c> requests = new List<HOT_Request__c>();
+        List<Account> accounts = new List<Account>();
+        List<WorkOrder> workOrders = new List<WorkOrder>();
+        List<WorkOrderLineItem> workOrderLineItems = new List<WorkOrderLineItem>();
+        List<ServiceAppointment> serviceAppointments = new List<ServiceAppointment>();
+        Integer numOfRecords = 3;
+        for (Integer i = 0; i < numOfRecords; i++) {
+            HOT_Request__c request = HOT_TestDataFactory.createRequest('TEST', workType);
+            request.InterpretationMethod__c = workType.Id;
+            requests.add(request);
+            Account account = HOT_TestDataFactory.createAccount(true);
+            accounts.add(account);
+        }
+        insert requests;
+        insert accounts;
 
-        for (Integer i = 0; i < 3; i++) {
+        for (Integer i = 0; i < numOfRecords; i++) {
+            WorkOrder workOrder = HOT_TestDataFactory.createWorkOrder(requests[i], workType);
+            workOrder.AccountId = accounts[i].Id;
+            workOrders.add(workOrder);
+        }
+        insert workOrders;
+        for (Integer i = 0; i < numOfRecords; i++) {
+            WorkOrderLineItem workOrderLineItem = HOT_TestDataFactory.createWorkOrderLineItem(workOrders[i], workType);
+            workOrderLineItems.add(workOrderLineItem);
+        }
+        insert workOrderLineItems;
+        for (Integer i = 0; i < numOfRecords; i++) {
+            ServiceAppointment sa = HOT_TestDataFactory.createServiceAppointment(workOrderLineItems[i]);
+            sa.HOT_Request__c = requests[i].Id;
+            serviceAppointments.add(sa);
+        }
+        insert serviceAppointments;
+    }
+    @IsTest
+    public static void todaysServiceAppointmentsAreSupposedtoBeChanged() {
+        WorkType workType = [SELECT Id FROM WorkType WHERE HOT_DeveloperName__c = 'BTV' LIMIT 1];
+        Integer numOfRecords = 3;
+        HOT_Request__c[] requestsToUpdate = new HOT_Request__c[0];
+        for (Integer i = 0; i < numOfRecords; i++) {
             HOT_Request__c request = HOT_TestDataFactory.createRequest('TEST', workType);
             request.Type__c = 'ImageInterpreter';
-            insert request;
-            request.Status__c = 'Godkjent';
-            update request;
+            requestsToUpdate.add(request);
         }
-        List<HOT_Request__c> requestlist = [SELECT Id, Type__c FROM HOT_Request__c];
+        insert requestsToUpdate;
+        for (HOT_Request__c request : requestsToUpdate) {
+            request.Status__c = 'Godkjent';
+        }
+        update requestsToUpdate;
 
         List<ServiceAppointment> salist = [
             SELECT Id, Status, HOT_IsImageInterpreter__c
@@ -53,24 +93,6 @@ public with sharing class HOT_ServiceAppointmentImageStatusTest {
 
     @IsTest
     public static void futureServiceAppointmentsAreNotSupposedToBeChanged() {
-        for (Integer i = 0; i < 3; i++) {
-            WorkType workType = HOT_TestDataFactory.createWorkType('BTV - Bildetolkvakt');
-            workType.HOT_DeveloperName__c = 'BTV';
-            insert workType;
-            HOT_Request__c request = HOT_TestDataFactory.createRequest('TEST', workType);
-            request.InterpretationMethod__c = workType.Id;
-            insert request;
-            Account account = HOT_TestDataFactory.createAccount(true);
-            insert account;
-            WorkOrder workOrder = HOT_TestDataFactory.createWorkOrder(request, workType);
-            workOrder.AccountId = account.Id;
-            insert workOrder;
-            WorkOrderLineItem workOrderLineItem = HOT_TestDataFactory.createWorkOrderLineItem(workOrder, workType);
-            insert workOrderLineItem;
-            ServiceAppointment sa = HOT_TestDataFactory.createServiceAppointment(workOrderLineItem);
-            sa.HOT_Request__c = request.Id;
-            insert sa;
-        }
         List<HOT_Request__c> requestlist = [SELECT Id, Type__c FROM HOT_Request__c];
         for (HOT_Request__c request : requestlist) {
             request.Type__c = 'ImageInterpreter';
@@ -104,28 +126,6 @@ public with sharing class HOT_ServiceAppointmentImageStatusTest {
 
     @IsTest
     public static void wrongStatusButOldIsNotSupposedToChange() {
-        for (Integer i = 0; i < 3; i++) {
-            WorkType workType = HOT_TestDataFactory.createWorkType('BTV - Bildetolkvakt');
-            workType.HOT_DeveloperName__c = 'BTV';
-            insert workType;
-            HOT_Request__c request = HOT_TestDataFactory.createRequest('TEST', workType);
-            request.InterpretationMethod__c = workType.Id;
-            insert request;
-            Account account = HOT_TestDataFactory.createAccount(true);
-            insert account;
-            WorkOrder workOrder = HOT_TestDataFactory.createWorkOrder(request, workType);
-            workOrder.AccountId = account.Id;
-            insert workOrder;
-            WorkOrderLineItem workOrderLineItem = HOT_TestDataFactory.createWorkOrderLineItem(workOrder, workType);
-            insert workOrderLineItem;
-            ServiceAppointment sa = HOT_TestDataFactory.createServiceAppointment(workOrderLineItem);
-            sa.HOT_Request__c = request.Id;
-            insert sa;
-        }
-        List<HOT_Request__c> requestlist = [SELECT Id, Type__c FROM HOT_Request__c];
-        for (HOT_Request__c request : requestlist) {
-            request.Type__c = 'ImageInterpreter';
-        }
         Test.startTest();
 
         List<ServiceAppointment> salist = [SELECT Id, Status FROM ServiceAppointment];

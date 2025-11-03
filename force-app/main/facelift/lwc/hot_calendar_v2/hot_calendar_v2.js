@@ -10,6 +10,7 @@ import icons from '@salesforce/resourceUrl/ikoner';
 import icons2 from '@salesforce/resourceUrl/icons';
 
 import HOT_ConfirmationModal from 'c/hot_confirmationModal';
+import ConfimationModal from 'c/hot_calendar_absence_modal_confirmation';
 import retractAvailability from '@salesforce/apex/HOT_WageClaimListController.retractAvailability';
 import getWageClaimDetails from '@salesforce/apex/HOT_WageClaimListController.getWageClaimDetails';
 import checkAccessToSA from '@salesforce/apex/HOT_MyServiceAppointmentListController.checkAccessToSA';
@@ -43,6 +44,7 @@ export default class LibsFullCalendarV2 extends NavigationMixin(LightningElement
     warningicon = icons2 + '/warningicon.svg';
 
     isLoading = false;
+    isSpinning = false;
     isMobileSize = false;
     earliestTime;
     latestTime;
@@ -177,6 +179,13 @@ export default class LibsFullCalendarV2 extends NavigationMixin(LightningElement
             el.innerHTML = `<img src="${LibsFullCalendarV2.REFRESH_ICON}" alt="Refresh Icon" style="width:16px; color:white; height:16px;" />`;
         }
     }
+    yesOrNo(boolean) {
+        if (boolean) {
+            return 'Ja';
+        } else {
+            return 'Nei';
+        }
+    }
 
     async updatePseudoEventsDisplay(view) {
         this.calendar?.batchRendering(() => {
@@ -215,7 +224,7 @@ export default class LibsFullCalendarV2 extends NavigationMixin(LightningElement
     }
 
     async refreshCalendar(shouldSpin = true) {
-        this.isLoading = true && shouldSpin;
+        this.isSpinning = true && shouldSpin;
         const minLoadingTime = new Promise((resolve) => setTimeout(resolve, 2500));
 
         this.cachedEventIds.clear();
@@ -239,7 +248,7 @@ export default class LibsFullCalendarV2 extends NavigationMixin(LightningElement
         if (shouldSpin) {
             await minLoadingTime;
         }
-        this.isLoading = false;
+        this.isSpinning = false;
     }
 
     async updateEventsFromDateRange(earliestDateInView, latestDateInView) {
@@ -357,17 +366,18 @@ export default class LibsFullCalendarV2 extends NavigationMixin(LightningElement
         this.isSADetails = false;
         this.isWCDetails = false;
         this.hasAccess = false;
+        this.isLoading = true;
 
         switch (props.type) {
             case 'COMPLETED_SERVICE_APPOINTMENT':
             case 'SERVICE_APPOINTMENT':
-                await this.loadServiceAppointment(props.recordId, true); // wait for data
                 this.showInformationModalDetails(props.recordId, 'SA');
+                await this.loadServiceAppointment(props.recordId); // wait for data
                 break;
 
             case 'OPEN_WAGE_CLAIM':
-                await this.loadWageClaim(props.recordId, true);
                 this.showInformationModalDetails(props.recordId, 'WC');
+                await this.loadWageClaim(props.recordId);
                 break;
 
             case 'RESOURCE_ABSENCE':
@@ -446,6 +456,7 @@ export default class LibsFullCalendarV2 extends NavigationMixin(LightningElement
         const dialogAbsence = this.template.querySelector('.modal-absence');
         dialogAbsence.close();
 
+        this.errorText = '';
         this.isInformationModalOpen = false;
         this.isAlertAbsenceEdit = false;
         this.isNotRetractableDelete = false;
@@ -494,269 +505,271 @@ export default class LibsFullCalendarV2 extends NavigationMixin(LightningElement
         }
     }
 
-    @api
-    goToRecordDetailsWCFromId(recordId) {
-        this.isAListView = false;
-        this.isWCDetails = true;
-        this.isLoading = true;
-        getWageClaimDetails({ recordId: recordId }).then((result) => {
-            this.wageClaim = result;
-            this.wageClaim.StartAndEndDate = formatDatetimeinterval(
-                this.wageClaim.StartTime__c,
-                this.wageClaim.EndTime__c
-            );
-            this.isWCDetails = true;
-            this.isLoading = false;
-        });
-    }
+    // @api
+    // goToRecordDetailsWCFromId(recordId) {
+    //     this.isAListView = false;
+    //     this.isWCDetails = true;
+    //     this.isLoading = true;
+    //     getWageClaimDetails({ recordId: recordId }).then((result) => {
+    //         this.wageClaim = result;
+    //         this.wageClaim.StartAndEndDate = formatDatetimeinterval(
+    //             this.wageClaim.StartTime__c,
+    //             this.wageClaim.EndTime__c
+    //         );
+    //         this.isWCDetails = true;
+    //         this.isLoading = false;
+    //     });
+    // }
 
-    @api
-    goToRecordDetailsSA(saID, recordsArray) {
-        let recordId = saID;
-        this.serviceAppointment = undefined;
-        this.interestedResource = undefined;
-        this.saIsEditButtonHidden = false;
-        this.saIsCancelButtonHidden = true;
-        this.saIsEditButtonDisabled = false;
-        this.isLoading = true;
-        for (let serviceAppointment of recordsArray) {
-            if (recordId === serviceAppointment.Id) {
-                this.accountPhoneNumber = '';
-                this.accountAgeGender = '';
-                this.accountName = '';
-                this.ordererPhoneNumber = '';
-                this.ownerName = '';
-                this.serviceAppointment = { ...serviceAppointment };
-                this.serviceAppointment.weekday = this.getDayOfWeek(this.serviceAppointment.EarliestStartTime);
-                this.interestedResource = serviceAppointment?.InterestedResources__r[0];
-                this.termsOfAgreement = this.interestedResource.HOT_TermsOfAgreement__c;
-                this.isOtherProvider = this.serviceAppointment.HOT_Request__r.IsOtherEconomicProvicer__c ? 'Ja' : 'Nei';
+    // @api
+    // goToRecordDetailsSA(saID, recordsArray) {
+    //     console.log('22222');
+    //     let recordId = saID;
+    //     this.serviceAppointment = undefined;
+    //     this.interestedResource = undefined;
+    //     this.saIsEditButtonHidden = false;
+    //     this.saIsCancelButtonHidden = true;
+    //     this.saIsEditButtonDisabled = false;
+    //     this.isLoading = true;
+    //     for (let serviceAppointment of recordsArray) {
+    //         if (recordId === serviceAppointment.Id) {
+    //             this.accountPhoneNumber = '';
+    //             this.accountAgeGender = '';
+    //             this.accountName = '';
+    //             this.ordererPhoneNumber = '';
+    //             this.ownerName = '';
+    //             this.serviceAppointment = { ...serviceAppointment };
+    //             this.serviceAppointment.weekday = this.getDayOfWeek(this.serviceAppointment.EarliestStartTime);
+    //             this.interestedResource = serviceAppointment?.InterestedResources__r[0];
+    //             this.termsOfAgreement = this.interestedResource.HOT_TermsOfAgreement__c;
+    //             this.isOtherProvider = this.serviceAppointment.HOT_Request__r.IsOtherEconomicProvicer__c ? 'Ja' : 'Nei';
 
-                if (this.serviceAppointment.HOT_Request__r && this.serviceAppointment.HOT_Request__r.Account__r) {
-                    if (
-                        this.serviceAppointment.HOT_Request__r.Account__r.Name == null ||
-                        this.serviceAppointment.HOT_Request__r.Account__r.Name == ''
-                    ) {
-                        this.isGoToThreadButtonDisabled = true;
-                    } else {
-                        this.isGoToThreadButtonDisabled = false;
-                    }
-                } else {
-                    this.isGoToThreadButtonDisabled = true;
-                }
-                if (this.serviceAppointment.Status == 'Completed') {
-                    this.saIsEditButtonDisabled = true;
-                }
-                if (this.serviceAppointment.HOT_TotalNumberOfInterpreters__c <= 1) {
-                    this.isGoToThreadInterpretersButtonDisabled = true;
-                }
-                if (this.serviceAppointment.HOT_Request__r.IsNotNotifyAccount__c == true) {
-                    this.isGoToThreadButtonDisabled = true;
-                }
-                if (
-                    this.serviceAppointment &&
-                    this.serviceAppointment.HOT_Request__r &&
-                    this.serviceAppointment.HOT_Request__r.Account__r &&
-                    this.serviceAppointment.HOT_Request__r.Account__r.CRM_Person__r.INT_Confidential == 'UGRADERT'
-                ) {
-                    this.accountName = this.serviceAppointment.HOT_Request__r.Account__r.Name;
-                }
-                if (
-                    this.serviceAppointment &&
-                    this.serviceAppointment.HOT_Request__r &&
-                    this.serviceAppointment.HOT_Request__r.Account__r &&
-                    this.serviceAppointment.HOT_Request__r.Account__r.CRM_Person__r.INT_Confidential != 'FORTROLIG'
-                ) {
-                    this.accountName = this.serviceAppointment.HOT_NavEmployeeName__c;
-                }
-                if (this.serviceAppointment && this.serviceAppointment.HOT_Request__r) {
-                    this.ownerName = this.serviceAppointment.HOT_Request__r.OwnerName__c;
-                }
-                if (
-                    this.serviceAppointment &&
-                    this.serviceAppointment.HOT_Request__r &&
-                    this.serviceAppointment.HOT_Request__r.Account__r &&
-                    this.serviceAppointment.HOT_Request__r.Account__r.CRM_Person__r
-                ) {
-                    if (this.serviceAppointment.HOT_Request__r.Account__r.CRM_Person__r.CRM_AgeNumber__c == undefined) {
-                        if (this.serviceAppointment.HOT_Request__r.Account__r.CRM_Person__r.INT_Sex__c !== undefined) {
-                            this.accountAgeGender =
-                                this.serviceAppointment.HOT_Request__r.Account__r.CRM_Person__r.INT_Sex__c;
-                        }
-                    } else if (
-                        this.serviceAppointment.HOT_Request__r.Account__r.CRM_Person__r.INT_Sex__c == undefined
-                    ) {
-                        if (
-                            this.serviceAppointment.HOT_Request__r.Account__r.CRM_Person__r.CRM_AgeNumber__c !==
-                            undefined
-                        ) {
-                            this.accountAgeGender =
-                                this.serviceAppointment.HOT_Request__r.Account__r.CRM_Person__r.CRM_AgeNumber__c +
-                                ' år';
-                        }
-                    } else if (
-                        this.serviceAppointment.HOT_Request__r.Account__r.CRM_Person__r.INT_Sex__c !== undefined &&
-                        this.serviceAppointment.HOT_Request__r.Account__r.CRM_Person__r.CRM_AgeNumber__c !== undefined
-                    ) {
-                        this.accountAgeGender =
-                            this.serviceAppointment.HOT_Request__r.Account__r.CRM_Person__r.INT_Sex__c +
-                            ' ' +
-                            this.serviceAppointment.HOT_Request__r.Account__r.CRM_Person__r.CRM_AgeNumber__c +
-                            ' år';
-                    }
-                    if (
-                        this.serviceAppointment.HOT_Request__r.Account__r.CRM_Person__r.INT_KrrMobilePhone__c !==
-                        undefined
-                    ) {
-                        this.accountPhoneNumber =
-                            this.serviceAppointment.HOT_Request__r.Account__r.CRM_Person__r.INT_KrrMobilePhone__c;
-                    }
-                }
-                if (
-                    this.serviceAppointment &&
-                    this.serviceAppointment.HOT_Request__r &&
-                    this.serviceAppointment.HOT_Request__r.Orderer__r &&
-                    this.serviceAppointment.HOT_Request__r.Orderer__r.CRM_Person__r
-                ) {
-                    if (
-                        this.serviceAppointment.HOT_Request__r.Orderer__r.CRM_Person__r.INT_KrrMobilePhone__c !==
-                        undefined
-                    ) {
-                        this.ordererPhoneNumber =
-                            this.serviceAppointment.HOT_Request__r.Orderer__r.CRM_Person__r.INT_KrrMobilePhone__c;
-                    }
-                }
-                this.isLoading = false;
-                this.isSADetails = true;
-                this.hasAccess = true;
-            }
-        }
-        this.updateURL();
-    }
+    //             if (this.serviceAppointment.HOT_Request__r && this.serviceAppointment.HOT_Request__r.Account__r) {
+    //                 if (
+    //                     this.serviceAppointment.HOT_Request__r.Account__r.Name == null ||
+    //                     this.serviceAppointment.HOT_Request__r.Account__r.Name == ''
+    //                 ) {
+    //                     this.isGoToThreadButtonDisabled = true;
+    //                 } else {
+    //                     this.isGoToThreadButtonDisabled = false;
+    //                 }
+    //             } else {
+    //                 this.isGoToThreadButtonDisabled = true;
+    //             }
+    //             if (this.serviceAppointment.Status == 'Completed') {
+    //                 this.saIsEditButtonDisabled = true;
+    //             }
+    //             if (this.serviceAppointment.HOT_TotalNumberOfInterpreters__c <= 1) {
+    //                 this.isGoToThreadInterpretersButtonDisabled = true;
+    //             }
+    //             if (this.serviceAppointment.HOT_Request__r.IsNotNotifyAccount__c == true) {
+    //                 this.isGoToThreadButtonDisabled = true;
+    //             }
+    //             if (
+    //                 this.serviceAppointment &&
+    //                 this.serviceAppointment.HOT_Request__r &&
+    //                 this.serviceAppointment.HOT_Request__r.Account__r &&
+    //                 this.serviceAppointment.HOT_Request__r.Account__r.CRM_Person__r.INT_Confidential == 'UGRADERT'
+    //             ) {
+    //                 this.accountName = this.serviceAppointment.HOT_Request__r.Account__r.Name;
+    //             }
+    //             if (
+    //                 this.serviceAppointment &&
+    //                 this.serviceAppointment.HOT_Request__r &&
+    //                 this.serviceAppointment.HOT_Request__r.Account__r &&
+    //                 this.serviceAppointment.HOT_Request__r.Account__r.CRM_Person__r.INT_Confidential != 'FORTROLIG'
+    //             ) {
+    //                 this.accountName = this.serviceAppointment.HOT_NavEmployeeName__c;
+    //             }
+    //             if (this.serviceAppointment && this.serviceAppointment.HOT_Request__r) {
+    //                 this.ownerName = this.serviceAppointment.HOT_Request__r.OwnerName__c;
+    //             }
+    //             if (
+    //                 this.serviceAppointment &&
+    //                 this.serviceAppointment.HOT_Request__r &&
+    //                 this.serviceAppointment.HOT_Request__r.Account__r &&
+    //                 this.serviceAppointment.HOT_Request__r.Account__r.CRM_Person__r
+    //             ) {
+    //                 if (this.serviceAppointment.HOT_Request__r.Account__r.CRM_Person__r.CRM_AgeNumber__c == undefined) {
+    //                     if (this.serviceAppointment.HOT_Request__r.Account__r.CRM_Person__r.INT_Sex__c !== undefined) {
+    //                         this.accountAgeGender =
+    //                             this.serviceAppointment.HOT_Request__r.Account__r.CRM_Person__r.INT_Sex__c;
+    //                     }
+    //                 } else if (
+    //                     this.serviceAppointment.HOT_Request__r.Account__r.CRM_Person__r.INT_Sex__c == undefined
+    //                 ) {
+    //                     if (
+    //                         this.serviceAppointment.HOT_Request__r.Account__r.CRM_Person__r.CRM_AgeNumber__c !==
+    //                         undefined
+    //                     ) {
+    //                         this.accountAgeGender =
+    //                             this.serviceAppointment.HOT_Request__r.Account__r.CRM_Person__r.CRM_AgeNumber__c +
+    //                             ' år';
+    //                     }
+    //                 } else if (
+    //                     this.serviceAppointment.HOT_Request__r.Account__r.CRM_Person__r.INT_Sex__c !== undefined &&
+    //                     this.serviceAppointment.HOT_Request__r.Account__r.CRM_Person__r.CRM_AgeNumber__c !== undefined
+    //                 ) {
+    //                     this.accountAgeGender =
+    //                         this.serviceAppointment.HOT_Request__r.Account__r.CRM_Person__r.INT_Sex__c +
+    //                         ' ' +
+    //                         this.serviceAppointment.HOT_Request__r.Account__r.CRM_Person__r.CRM_AgeNumber__c +
+    //                         ' år';
+    //                 }
+    //                 if (
+    //                     this.serviceAppointment.HOT_Request__r.Account__r.CRM_Person__r.INT_KrrMobilePhone__c !==
+    //                     undefined
+    //                 ) {
+    //                     this.accountPhoneNumber =
+    //                         this.serviceAppointment.HOT_Request__r.Account__r.CRM_Person__r.INT_KrrMobilePhone__c;
+    //                 }
+    //             }
+    //             if (
+    //                 this.serviceAppointment &&
+    //                 this.serviceAppointment.HOT_Request__r &&
+    //                 this.serviceAppointment.HOT_Request__r.Orderer__r &&
+    //                 this.serviceAppointment.HOT_Request__r.Orderer__r.CRM_Person__r
+    //             ) {
+    //                 if (
+    //                     this.serviceAppointment.HOT_Request__r.Orderer__r.CRM_Person__r.INT_KrrMobilePhone__c !==
+    //                     undefined
+    //                 ) {
+    //                     this.ordererPhoneNumber =
+    //                         this.serviceAppointment.HOT_Request__r.Orderer__r.CRM_Person__r.INT_KrrMobilePhone__c;
+    //                 }
+    //             }
+    //             this.isLoading = false;
+    //             this.isSADetails = true;
+    //             this.hasAccess = true;
+    //         }
+    //     }
+    //     this.updateURL();
+    // }
 
-    @api
-    goToRecordDetailsSAFromId(recordId) {
-        this.isSADetails = true;
-        this.isAListView = false;
-        if (this.type == null) {
-            this.isLoading = true;
-        }
-        checkAccessToSA({ saId: recordId }).then((result) => {
-            if (result != false) {
-                getServiceAppointmentDetails({ recordId: recordId }).then((result) => {
-                    this.accountPhoneNumber = '';
-                    this.accountAgeGender = '';
-                    this.accountName = '';
-                    this.ordererPhoneNumber = '';
-                    this.ownerName = '';
-                    this.serviceAppointment = result;
-                    this.serviceAppointment.StartAndEndDate = formatDatetimeinterval(
-                        result.EarliestStartTime,
-                        result.DueDate
-                    );
-                    this.isOtherProvider = this.serviceAppointment.HOT_Request__r.IsOtherEconomicProvicer__c
-                        ? 'Ja'
-                        : 'Nei';
-                    this.serviceAppointment.ActualStartTime = formatDatetime(result.ActualStartTime);
-                    this.serviceAppointment.ActualEndTime = formatDatetime(result.ActualEndTime);
-                    if (
-                        this.serviceAppointment &&
-                        this.serviceAppointment.HOT_Request__r &&
-                        this.serviceAppointment.HOT_Request__r.Account__r
-                    ) {
-                        this.accountName = this.serviceAppointment.HOT_Request__r.Account__r.Name;
-                    }
-                    if (
-                        this.serviceAppointment &&
-                        this.serviceAppointment.HOT_Request__r &&
-                        this.serviceAppointment.HOT_Request__r.Account__r &&
-                        this.serviceAppointment.HOT_Request__r.Account__r.CRM_Person__r
-                    ) {
-                        if (
-                            this.serviceAppointment.HOT_Request__r.Account__r.CRM_Person__r.CRM_AgeNumber__c ==
-                            undefined
-                        ) {
-                            if (
-                                this.serviceAppointment.HOT_Request__r.Account__r.CRM_Person__r.INT_Sex__c !== undefined
-                            ) {
-                                this.accountAgeGender =
-                                    this.serviceAppointment.HOT_Request__r.Account__r.CRM_Person__r.INT_Sex__c;
-                            }
-                        } else if (
-                            this.serviceAppointment.HOT_Request__r.Account__r.CRM_Person__r.INT_Sex__c == undefined
-                        ) {
-                            if (
-                                this.serviceAppointment.HOT_Request__r.Account__r.CRM_Person__r.CRM_AgeNumber__c !==
-                                undefined
-                            ) {
-                                this.accountAgeGender =
-                                    this.serviceAppointment.HOT_Request__r.Account__r.CRM_Person__r.CRM_AgeNumber__c +
-                                    ' år';
-                            }
-                        } else if (
-                            this.serviceAppointment.HOT_Request__r.Account__r.CRM_Person__r.INT_Sex__c !== undefined &&
-                            this.serviceAppointment.HOT_Request__r.Account__r.CRM_Person__r.CRM_AgeNumber__c !==
-                                undefined
-                        ) {
-                            this.accountAgeGender =
-                                this.serviceAppointment.HOT_Request__r.Account__r.CRM_Person__r.INT_Sex__c +
-                                ' ' +
-                                this.serviceAppointment.HOT_Request__r.Account__r.CRM_Person__r.CRM_AgeNumber__c +
-                                ' år';
-                        }
-                        if (
-                            this.serviceAppointment.HOT_Request__r.Account__r.CRM_Person__r.INT_KrrMobilePhone__c !==
-                            undefined
-                        ) {
-                            this.accountPhoneNumber =
-                                this.serviceAppointment.HOT_Request__r.Account__r.CRM_Person__r.INT_KrrMobilePhone__c;
-                        }
-                        if (this.serviceAppointment && this.serviceAppointment.HOT_Request__r) {
-                            this.ownerName = this.serviceAppointment.HOT_Request__r.OwnerName__c;
-                        }
-                    }
-                    if (
-                        this.serviceAppointment &&
-                        this.serviceAppointment.HOT_Request__r &&
-                        this.serviceAppointment.HOT_Request__r.Orderer__r &&
-                        this.serviceAppointment.HOT_Request__r.Orderer__r.CRM_Person__r
-                    ) {
-                        if (
-                            this.serviceAppointment.HOT_Request__r.Orderer__r.CRM_Person__r.INT_KrrMobilePhone__c !==
-                            undefined
-                        ) {
-                            this.ordererPhoneNumber =
-                                this.serviceAppointment.HOT_Request__r.Orderer__r.CRM_Person__r.INT_KrrMobilePhone__c;
-                        }
-                    }
-                    getInterestedResourceDetails({ recordId: recordId }).then((result) => {
-                        this.interestedResource = result;
-                        this.termsOfAgreement = this.interestedResource.HOT_TermsOfAgreement__c;
-                    });
+    // @api
+    // goToRecordDetailsSAFromId(recordId) {
+    //     console.log('bblksdgforefkrwd');
+    //     this.isSADetails = true;
+    //     this.isAListView = false;
+    //     if (this.type == null) {
+    //         this.isLoading = true;
+    //     }
+    //     checkAccessToSA({ saId: recordId }).then((result) => {
+    //         if (result != false) {
+    //             getServiceAppointmentDetails({ recordId: recordId }).then((result) => {
+    //                 this.accountPhoneNumber = '';
+    //                 this.accountAgeGender = '';
+    //                 this.accountName = '';
+    //                 this.ordererPhoneNumber = '';
+    //                 this.ownerName = '';
+    //                 this.serviceAppointment = result;
+    //                 this.serviceAppointment.StartAndEndDate = formatDatetimeinterval(
+    //                     result.EarliestStartTime,
+    //                     result.DueDate
+    //                 );
+    //                 this.isOtherProvider = this.serviceAppointment.HOT_Request__r.IsOtherEconomicProvicer__c
+    //                     ? 'Ja'
+    //                     : 'Nei';
+    //                 this.serviceAppointment.ActualStartTime = formatDatetime(result.ActualStartTime);
+    //                 this.serviceAppointment.ActualEndTime = formatDatetime(result.ActualEndTime);
+    //                 if (
+    //                     this.serviceAppointment &&
+    //                     this.serviceAppointment.HOT_Request__r &&
+    //                     this.serviceAppointment.HOT_Request__r.Account__r
+    //                 ) {
+    //                     this.accountName = this.serviceAppointment.HOT_Request__r.Account__r.Name;
+    //                 }
+    //                 if (
+    //                     this.serviceAppointment &&
+    //                     this.serviceAppointment.HOT_Request__r &&
+    //                     this.serviceAppointment.HOT_Request__r.Account__r &&
+    //                     this.serviceAppointment.HOT_Request__r.Account__r.CRM_Person__r
+    //                 ) {
+    //                     if (
+    //                         this.serviceAppointment.HOT_Request__r.Account__r.CRM_Person__r.CRM_AgeNumber__c ==
+    //                         undefined
+    //                     ) {
+    //                         if (
+    //                             this.serviceAppointment.HOT_Request__r.Account__r.CRM_Person__r.INT_Sex__c !== undefined
+    //                         ) {
+    //                             this.accountAgeGender =
+    //                                 this.serviceAppointment.HOT_Request__r.Account__r.CRM_Person__r.INT_Sex__c;
+    //                         }
+    //                     } else if (
+    //                         this.serviceAppointment.HOT_Request__r.Account__r.CRM_Person__r.INT_Sex__c == undefined
+    //                     ) {
+    //                         if (
+    //                             this.serviceAppointment.HOT_Request__r.Account__r.CRM_Person__r.CRM_AgeNumber__c !==
+    //                             undefined
+    //                         ) {
+    //                             this.accountAgeGender =
+    //                                 this.serviceAppointment.HOT_Request__r.Account__r.CRM_Person__r.CRM_AgeNumber__c +
+    //                                 ' år';
+    //                         }
+    //                     } else if (
+    //                         this.serviceAppointment.HOT_Request__r.Account__r.CRM_Person__r.INT_Sex__c !== undefined &&
+    //                         this.serviceAppointment.HOT_Request__r.Account__r.CRM_Person__r.CRM_AgeNumber__c !==
+    //                             undefined
+    //                     ) {
+    //                         this.accountAgeGender =
+    //                             this.serviceAppointment.HOT_Request__r.Account__r.CRM_Person__r.INT_Sex__c +
+    //                             ' ' +
+    //                             this.serviceAppointment.HOT_Request__r.Account__r.CRM_Person__r.CRM_AgeNumber__c +
+    //                             ' år';
+    //                     }
+    //                     if (
+    //                         this.serviceAppointment.HOT_Request__r.Account__r.CRM_Person__r.INT_KrrMobilePhone__c !==
+    //                         undefined
+    //                     ) {
+    //                         this.accountPhoneNumber =
+    //                             this.serviceAppointment.HOT_Request__r.Account__r.CRM_Person__r.INT_KrrMobilePhone__c;
+    //                     }
+    //                     if (this.serviceAppointment && this.serviceAppointment.HOT_Request__r) {
+    //                         this.ownerName = this.serviceAppointment.HOT_Request__r.OwnerName__c;
+    //                     }
+    //                 }
+    //                 if (
+    //                     this.serviceAppointment &&
+    //                     this.serviceAppointment.HOT_Request__r &&
+    //                     this.serviceAppointment.HOT_Request__r.Orderer__r &&
+    //                     this.serviceAppointment.HOT_Request__r.Orderer__r.CRM_Person__r
+    //                 ) {
+    //                     if (
+    //                         this.serviceAppointment.HOT_Request__r.Orderer__r.CRM_Person__r.INT_KrrMobilePhone__c !==
+    //                         undefined
+    //                     ) {
+    //                         this.ordererPhoneNumber =
+    //                             this.serviceAppointment.HOT_Request__r.Orderer__r.CRM_Person__r.INT_KrrMobilePhone__c;
+    //                     }
+    //                 }
+    //                 getInterestedResourceDetails({ recordId: recordId }).then((result) => {
+    //                     this.interestedResource = result;
+    //                     this.termsOfAgreement = this.interestedResource.HOT_TermsOfAgreement__c;
+    //                 });
 
-                    this.saIsEditButtonHidden = false;
-                    this.saIsCancelButtonHidden = true;
-                    this.saIsEditButtonDisabled = false;
-                    this.serviceAppointment.weekday = this.getDayOfWeek(this.serviceAppointment.EarliestStartTime);
-                    let duedate = new Date(this.serviceAppointment.DueDate);
-                    if (this.serviceAppointment.Status == 'Completed') {
-                        this.saIsEditButtonDisabled = true;
-                    }
-                    if (this.serviceAppointment.HOT_TotalNumberOfInterpreters__c <= 1) {
-                        this.isGoToThreadInterpretersButtonDisabled = true;
-                    }
-                    if (this.serviceAppointment.HOT_Request__r.IsNotNotifyAccount__c == true) {
-                        this.isGoToThreadButtonDisabled = true;
-                    }
-                    this.hasAccess = true;
-                    this.isLoading = false;
-                });
-            } else {
-                this.isLoading = false;
-                this.hasAccess = false;
-            }
-        });
-    }
+    //                 this.saIsEditButtonHidden = false;
+    //                 this.saIsCancelButtonHidden = true;
+    //                 this.saIsEditButtonDisabled = false;
+    //                 this.serviceAppointment.weekday = this.getDayOfWeek(this.serviceAppointment.EarliestStartTime);
+    //                 let duedate = new Date(this.serviceAppointment.DueDate);
+    //                 if (this.serviceAppointment.Status == 'Completed') {
+    //                     this.saIsEditButtonDisabled = true;
+    //                 }
+    //                 if (this.serviceAppointment.HOT_TotalNumberOfInterpreters__c <= 1) {
+    //                     this.isGoToThreadInterpretersButtonDisabled = true;
+    //                 }
+    //                 if (this.serviceAppointment.HOT_Request__r.IsNotNotifyAccount__c == true) {
+    //                     this.isGoToThreadButtonDisabled = true;
+    //                 }
+    //                 this.hasAccess = true;
+    //                 this.isLoading = false;
+    //             });
+    //         } else {
+    //             this.isLoading = false;
+    //             this.hasAccess = false;
+    //         }
+    //     });
+    // }
 
     // Serviceappointment endre status flow
     changeStatus() {
@@ -967,9 +980,7 @@ export default class LibsFullCalendarV2 extends NavigationMixin(LightningElement
         }
     }
 
-    async loadServiceAppointment(recordId, suppressLoader = false) {
-        if (!suppressLoader) this.isLoading = true;
-
+    async loadServiceAppointment(recordId) {
         try {
             const access = await checkAccessToSA({ saId: recordId });
             this.hasAccess = !!access;
@@ -981,7 +992,16 @@ export default class LibsFullCalendarV2 extends NavigationMixin(LightningElement
                 this.serviceAppointment.StartAndEndDate = formatDatetimeinterval(sa.EarliestStartTime, sa.DueDate);
                 this.serviceAppointment.ActualStartTime = formatDatetime(sa.ActualStartTime);
                 this.serviceAppointment.ActualEndTime = formatDatetime(sa.ActualEndTime);
+                this.serviceAppointment.HOT_HapticCommunication__c = this.yesOrNo(
+                    this.serviceAppointment.HOT_HapticCommunication__c
+                );
 
+                this.isOtherProvider = this.serviceAppointment.HOT_Request__r.IsOtherEconomicProvicer__c ? 'Ja' : 'Nei';
+                getInterestedResourceDetails({ recordId: recordId }).then((result) => {
+                    this.interestedResource = result;
+                    this.termsOfAgreement = this.interestedResource.HOT_TermsOfAgreement__c;
+                });
+                this.ordererPhoneNumber = sa.HOT_Request__r?.Orderer__r?.CRM_Person__r?.INT_KrrMobilePhone__c ?? '';
                 const crmPerson = sa.HOT_Request__r?.Account__r?.CRM_Person__r;
                 if (crmPerson) {
                     this.accountAgeGender =
@@ -997,14 +1017,12 @@ export default class LibsFullCalendarV2 extends NavigationMixin(LightningElement
             console.error('Error loading service appointment', error);
             this.hasAccess = false;
         } finally {
-            if (!suppressLoader) this.isLoading = false;
+            this.isLoading = false;
             this.isSADetails = true;
         }
     }
 
-    async loadWageClaim(recordId, suppressLoader = false) {
-        if (!suppressLoader) this.isLoading = true;
-
+    async loadWageClaim(recordId) {
         try {
             const wc = await getWageClaimDetails({ recordId });
             this.wageClaim = wc;
@@ -1013,7 +1031,7 @@ export default class LibsFullCalendarV2 extends NavigationMixin(LightningElement
         } catch (error) {
             console.error('Error loading wage claim', error);
         } finally {
-            if (!suppressLoader) this.isLoading = false;
+            this.isLoading = false;
         }
     }
 
@@ -1109,11 +1127,17 @@ export default class LibsFullCalendarV2 extends NavigationMixin(LightningElement
 
         if (this.isMobileSize) {
             config.headerToolbar = {
-                start: 'today dayGridMonth',
-                center: 'title',
-                end: 'prev,next'
+                start: 'title',
+                center: '',
+                end: 'today dayGridMonth'
             };
-            config.titleFormat = { year: 'numeric', month: 'short' };
+            config.footerToolbar = {
+                left: 'prev,next',
+                center: '',
+                right: 'absence refresh'
+            };
+            config.height = 'auto';
+            config.titleFormat = { year: 'numeric', month: 'long' };
             config.views.dayGridMonth.dayMaxEventRows = 10;
         }
 
@@ -1184,6 +1208,18 @@ export default class LibsFullCalendarV2 extends NavigationMixin(LightningElement
         this.startTimeInputLabel = `Legg inn${this.isEdit ? ' ny' : ''} startdato/tid`;
         this.endTimeInputLabel = `Legg inn${this.isEdit ? ' ny' : ''} sluttdato/tid`;
         this.registerButtonText = this.isEdit ? 'Endre' : 'Registrer';
+
+        const startInput = this.refs?.absenceStartDateTimeInput;
+        const endInput = this.refs?.absenceEndDateTimeInput;
+        if (startInput) {
+            startInput.setCustomValidity('');
+            startInput.reportValidity();
+        }
+        if (endInput) {
+            endInput.setCustomValidity('');
+            endInput.reportValidity();
+        }
+        this.endHasBeenSet = false;
 
         const absenceDialog = this.template.querySelector('.modal-absence');
         if (!absenceDialog) return;
@@ -1299,16 +1335,32 @@ export default class LibsFullCalendarV2 extends NavigationMixin(LightningElement
 
     handleDateStartChange(event) {
         const startTime = new Date(event.detail.value);
-        const endTime = new Date(this.refs.absenceEndDateTimeInput.value);
-        if (!this.endHasBeenSet) {
-            this.initialAbsenceEnd = this.formatLocalDateTime(new Date(startTime.getTime() + 60 * 60 * 1000 * 24));
+        const endInput = this.refs.absenceEndDateTimeInput;
+
+        if (!endInput || !endInput.value) {
+            const newEnd = new Date(startTime.getTime() + 60 * 60 * 1000);
+            this.initialAbsenceEnd = this.formatLocalDateTime(newEnd);
+            if (endInput) endInput.value = this.initialAbsenceEnd;
+        } else {
+            const currentEnd = new Date(endInput.value);
+            if (!(currentEnd.getTime() > startTime.getTime())) {
+                const newEnd = new Date(startTime.getTime() + 60 * 60 * 1000);
+                this.initialAbsenceEnd = this.formatLocalDateTime(newEnd);
+                endInput.value = this.initialAbsenceEnd;
+            }
+        }
+        const startInput = this.refs.absenceStartDateTimeInput;
+        if (endInput && endInput.value) {
+            const endTime = new Date(endInput.value);
+            startInput.setCustomValidity(
+                startTime.getTime() < endTime.getTime() ? '' : 'Sluttid må komme etter starttid'
+            );
+            startInput.reportValidity();
+        } else {
+            startInput.setCustomValidity('');
+            startInput.reportValidity();
         }
 
-        const startInput = this.refs.absenceStartDateTimeInput;
-        startInput.setCustomValidity(
-            startTime >= endTime && this.endHasBeenSet ? 'Sluttid må komme etter starttid' : ''
-        );
-        startInput.reportValidity();
         this.initialAbsenceStart = event.detail.value;
     }
 
@@ -1316,7 +1368,9 @@ export default class LibsFullCalendarV2 extends NavigationMixin(LightningElement
         const startInput = this.refs.absenceStartDateTimeInput;
         const startTime = new Date(startInput.value);
         const newEndDate = new Date(event.detail.value);
-        startInput.setCustomValidity(startTime >= newEndDate ? 'Sluttid må komme etter starttid' : '');
+        startInput.setCustomValidity(
+            startTime.getTime() < newEndDate.getTime() ? '' : 'Sluttid må komme etter starttid'
+        );
         startInput.reportValidity();
         this.endHasBeenSet = true;
         this.initialAbsenceEnd = event.detail.value;
@@ -1328,7 +1382,7 @@ export default class LibsFullCalendarV2 extends NavigationMixin(LightningElement
     alertAbsenceBannerText = '';
     retractDeleteAbsense() {
         this.alertAbsenceBannerText = 'Er du sikker på at du vil slette dette fraværet?';
-        this.isAlertAbsenceEdit = true; 
+        this.isAlertAbsenceEdit = true;
         this.isNotRetractableDelete = true;
     }
 
@@ -1340,12 +1394,12 @@ export default class LibsFullCalendarV2 extends NavigationMixin(LightningElement
 
     retractEditAbsense() {
         this.alertAbsenceBannerText = 'Har du lagt inn de riktige opplysningene før du lagrer endringen?';
-        this.isAlertAbsenceEdit = true; 
+        this.isAlertAbsenceEdit = true;
         this.isNotRetractableEdit = true;
     }
 
     async handleDeleteAbsence() {
-        this.isLoading = true;
+        this.isSpinning = true;
         try {
             if (!this.currentEventRecordId) {
                 throw new Error('No recordId found for event');
@@ -1377,7 +1431,12 @@ export default class LibsFullCalendarV2 extends NavigationMixin(LightningElement
         this.isAlertAbsenceEdit = false;
         this.isNotRetractableDelete = false;
         this.isNotRetractableEdit = false;
-        this.isLoading = false;
+        this.isSpinning = false;
+    }
+
+    get absenceTypeToNorwegianLabel() {
+        const selected = this.radiobuttons.find((btn) => btn.value === this.absenceType);
+        return selected ? selected.label : '';
     }
 
     async handleOkay() {
@@ -1401,8 +1460,10 @@ export default class LibsFullCalendarV2 extends NavigationMixin(LightningElement
             absenceEndDateTime = this.formatLocalDateTime(new Date(absenceEndDateTime), '23', '59');
         }
 
+        const startMs = new Date(absenceStartDateTime).getTime();
+        const endMs = new Date(absenceEndDateTime).getTime();
         const absenceStartElement = this.refs.absenceStartDateTimeInput;
-        if (absenceEndDateTime <= absenceStartDateTime) {
+        if (!(startMs < endMs)) {
             absenceStartElement.setCustomValidity('Sluttid må komme etter starttid');
             absenceStartElement.reportValidity();
             validInputs = false;
@@ -1432,59 +1493,86 @@ export default class LibsFullCalendarV2 extends NavigationMixin(LightningElement
             return;
         }
 
-        this.isLoading = true;
-        try {
-            this.closeModal();
-            await createAbsenceAndResolveConflicts({
-                absenceType: this.absenceType,
-                startTimeInMilliseconds: new Date(absenceStartDateTime).getTime(),
-                endTimeInMilliseconds: new Date(absenceEndDateTime).getTime(),
-                isAllDayAbsence: this.isAllDayAbsence
+        const currentHeaderText = this.headerAbsenceText;
+        let shouldProceed = false;
+
+        if (currentHeaderText === 'Registrer nytt fravær') {
+            const dialogAbsence = this.template.querySelector('.modal-absence');
+            dialogAbsence.close();
+
+            const confirmation = await ConfimationModal.open({
+                content: result,
+                absenceType: this.absenceTypeToNorwegianLabel,
+                absenceStartDateTime,
+                absenceEndDateTime
             });
-        } catch (error) {
-            const event = new ShowToastEvent({
-                title: 'Kunne ikke legge til fravær',
-                message: 'Det oppstod en feil, prøv igjen senere',
-                variant: 'error'
-            });
-            this.dispatchEvent(event);
+            dialogAbsence.showModal();
+            dialogAbsence.focus();
+
+            if (confirmation) {
+                dialogAbsence.close();
+            } else {
+                return;
+            }
         }
-        if (this.isEdit) {
+        shouldProceed = true;
+
+        if (shouldProceed) {
+            const dialogProceed = this.template.querySelector('.modal-absence');
+            dialogProceed.close();
+            this.isSpinning = true;
             try {
-                await deleteAbsence({ recordId: this.currentEventRecordId });
-                const event = new ShowToastEvent({
-                    title: 'Fravær endret',
-                    message: 'Fravær ble endret, og eventuelle konflikter ble løst',
-                    variant: 'success'
+                await createAbsenceAndResolveConflicts({
+                    absenceType: this.absenceType,
+                    startTimeInMilliseconds: new Date(absenceStartDateTime).getTime(),
+                    endTimeInMilliseconds: new Date(absenceEndDateTime).getTime(),
+                    isAllDayAbsence: this.isAllDayAbsence
                 });
-                this.dispatchEvent(event);
-                this.refreshCalendar(false);
-            } catch {
+            } catch (error) {
                 const event = new ShowToastEvent({
-                    title: 'Det oppsto en feil',
-                    message: 'Feil ved endring av avtale, prøv igjen senere.',
+                    title: 'Kunne ikke legge til fravær',
+                    message: 'Det oppstod en feil, prøv igjen senere',
                     variant: 'error'
                 });
                 this.dispatchEvent(event);
             }
-        } else {
-            const event = new ShowToastEvent({
-                title: 'Fravær lagt til',
-                message: 'Fravær lagt til, og eventuelle konflikter ble løst',
-                variant: 'success'
-            });
-            this.dispatchEvent(event);
-            this.refreshCalendar(false);
-        }
+            if (this.isEdit) {
+                try {
+                    await deleteAbsence({ recordId: this.currentEventRecordId });
+                    const event = new ShowToastEvent({
+                        title: 'Fravær endret',
+                        message: 'Fravær ble endret, og eventuelle konflikter ble løst',
+                        variant: 'success'
+                    });
+                    this.dispatchEvent(event);
+                    this.refreshCalendar(false);
+                } catch {
+                    const event = new ShowToastEvent({
+                        title: 'Det oppsto en feil',
+                        message: 'Feil ved endring av avtale, prøv igjen senere.',
+                        variant: 'error'
+                    });
+                    this.dispatchEvent(event);
+                }
+            } else {
+                const event = new ShowToastEvent({
+                    title: 'Fravær lagt til',
+                    message: 'Fravær lagt til, og eventuelle konflikter ble løst',
+                    variant: 'success'
+                });
+                this.dispatchEvent(event);
+                this.refreshCalendar(false);
+            }
 
-        this.isAlertAbsenceEdit = false;
-        this.isNotRetractableDelete = false;
-        this.isNotRetractableEdit = false;
-        this.isLoading = false;
-        this.currentEventRecordId = null;
-        this.isAllDayAbsence = false;
-        absenceType = null;
-        this.clearCheckedRadios();
-        this.closeModal();
+            this.isAlertAbsenceEdit = false;
+            this.isNotRetractableDelete = false;
+            this.isNotRetractableEdit = false;
+            this.isSpinning = false;
+            this.currentEventRecordId = null;
+            this.isAllDayAbsence = false;
+            absenceType = null;
+            this.clearCheckedRadios();
+            this.closeModal();
+        }
     }
 }
