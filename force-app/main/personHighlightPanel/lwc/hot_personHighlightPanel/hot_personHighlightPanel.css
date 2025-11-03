@@ -59,19 +59,6 @@
     flex-wrap: wrap;
 }
 
-.greenBadge + lightning-layout-item c-hot_person-panel-badge-content {
-    --badge-line: #66c786;
-}
-.yellowBadge + lightning-layout-item c-hot_person-panel-badge-content {
-    --badge-line: #ffaa33;
-}
-.redBadge + lightning-layout-item c-hot_person-panel-badge-content {
-    --badge-line: #ad0000;
-}
-.greyBadge + lightning-layout-item c-hot_person-panel-badge-content {
-    --badge-line: #c6c6c6;
-}
-
 .custom-padding-left {
     padding-left: 1.875rem;
 }
