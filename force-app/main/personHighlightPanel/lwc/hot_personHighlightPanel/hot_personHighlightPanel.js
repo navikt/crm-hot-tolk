@@ -60,16 +60,6 @@ export default class hot_personHighlightPanel extends LightningElement {
         this.wireFields = [`${this.objectApiName}.Id`];
     }
 
-    handleActionClick(event) {
-        const apiName = event.target.dataset.apiname;
-        this[NavigationMixin.Navigate]({
-            type: 'standard__quickAction',
-            attributes: {
-                apiName
-            }
-        });
-    }
-
     capitalizeFirstLetter(str) {
         if (!str || typeof str !== 'string') {
             return '';
