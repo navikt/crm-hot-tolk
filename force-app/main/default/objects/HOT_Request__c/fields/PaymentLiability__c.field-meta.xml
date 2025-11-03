@@ -1,9 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
     <fullName>PaymentLiability__c</fullName>
-    <deprecated>false</deprecated>
     <externalId>false</externalId>
-    <formula>IF( $User.ContactId !=  Orderer__r.PersonContactId, 
+    <formula>IF( $User.ContactId =  Orderer__r.PersonContactId, 
 &apos;&apos;,
 IF(IsOtherEconomicProvicer__c, &quot;Annen betaler&quot;, &quot;NAV betaler&quot;)
 )</formula>
