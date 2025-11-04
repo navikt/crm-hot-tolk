@@ -271,5 +271,13 @@ public without sharing class HOT_RequestListController {
         }
 
         return persons[0];
+    @AuraEnabled(cacheable=true)
+    public static List<Account> getOrganizationInfo(String organizationNumber) {
+        List<Account> account = [
+            SELECT Id, Name, INT_OrganizationNumber__c
+            FROM Account
+            WHERE INT_OrganizationNumber__c = :organizationNumber
+        ];
+        return account;
     }
 }

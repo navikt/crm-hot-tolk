@@ -227,6 +227,15 @@ private class HOT_RequestListControllerTest {
 
     @IsTest
     static void testGetPostalCity() {
+        Common_Code__c commonCode = new Common_Code__c(
+            Name = 'Test Postal Code',
+            CRM_Active__c = true,
+            CRM_Code_Set__c = 'Postnummer',
+            CRM_Code__c = '8110',
+            CRM_UniqueKey__c = 'Postnummer8110'
+        );
+        insert commonCode;
+
         System.Test.startTest();
         List<Common_Code__c> result = HOT_RequestListController.getPostalCity('8110');
         System.Test.stopTest();
@@ -290,5 +299,16 @@ private class HOT_RequestListControllerTest {
             System.assertEquals(null, result, 'Should return a person record');
         }
         System.Test.stopTest();
+    @IsTest
+    static void getOrganizationInfoTest() {
+        Account acc = new Account();
+        acc.Name = 'Team HOT CRM';
+        acc.INT_OrganizationNumber__c = '987654321';
+        insert acc;
+
+        Test.startTest();
+        List<Account> accounts = HOT_RequestListController.getOrganizationInfo('987654321');
+        Test.stopTest();
+        System.assertEquals(1, accounts.size());
     }
 }
