@@ -48,7 +48,11 @@ private class HOT_RequestListControllerTest {
         request3.Orderer__c = account.Id;
         request3.StartTime__c = request3.StartTime__c.addDays(-8);
         request3.EndTime__c = request3.EndTime__c.addDays(-8);
+        request3.Status__c = 'Godkjent';
         insert request3;
+
+        WorkOrder workOrder = HOT_TestDataFactory.createWorkOrder(request3, workType);
+        insert workOrder;
 
         Common_Code__c commonCode = new Common_Code__c(
             Name = 'Test Postal Code',
@@ -84,8 +88,6 @@ private class HOT_RequestListControllerTest {
 
         Test.startTest();
         HOT_Request__c request = [SELECT Id FROM HOT_Request__c WHERE Subject__c = 'Subject 3' LIMIT 1];
-        request.Status__c = 'Godkjent';
-        update request;
 
         System.runAs(user) {
             List<HOT_Request__c> requests = HOT_RequestListController.getRequestList();
