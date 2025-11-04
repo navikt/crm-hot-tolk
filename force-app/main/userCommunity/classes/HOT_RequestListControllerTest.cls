@@ -7,25 +7,26 @@ private class HOT_RequestListControllerTest {
         person.INT_LastName__c = 'BrukerAddresseTest';
         person.INT_ResidentialAddress__c = 'Testveien 1';
         person.INT_ResidentialZipCode__c = '1234';
-        insert person;
 
         Person__c person2 = HOT_TestDataFactory.createPerson();
         person2.INT_FirstName__c = 'Tolk2';
         person2.INT_LastName__c = 'BrukerAddresseTest2';
         person2.INT_ResidentialAddress__c = 'Testveien 2';
         person2.INT_ResidentialZipCode__c = '2234';
-        insert person2;
+
+        List<Person__c> persons = new List<Person__c>{ person, person2 };
+        insert persons;
 
         Account account = [
             SELECT Id, LastName, OwnerId, CRM_Person__c, PersonContactId
             FROM Account
-            WHERE LastName = :person.INT_LastName__c
+            WHERE LastName = :persons[0].INT_LastName__c
         ];
 
         Account account2 = [
             SELECT Id, LastName, OwnerId, CRM_Person__c, PersonContactId
             FROM Account
-            WHERE LastName = :person2.INT_LastName__c
+            WHERE LastName = :persons[1].INT_LastName__c
         ];
 
         WorkType workType = HOT_TestDataFactory.createWorkType();
@@ -34,21 +35,21 @@ private class HOT_RequestListControllerTest {
         HOT_Request__c request = HOT_TestDataFactory.createRequest('Subject', workType);
         request.Account__c = account.Id;
         request.Orderer__c = account.Id;
-        insert request;
 
         HOT_Request__c request2 = HOT_TestDataFactory.createRequest('Subject 2', workType);
         request2.Account__c = account2.Id;
         request2.Orderer__c = account.Id;
         request2.StartTime__c = request2.StartTime__c.addDays(-8);
         request2.EndTime__c = request2.EndTime__c.addDays(-8);
-        insert request2;
 
         HOT_Request__c request3 = HOT_TestDataFactory.createRequest('Subject 3', workType);
         request3.Account__c = account2.Id;
         request3.Orderer__c = account.Id;
         request3.StartTime__c = request3.StartTime__c.addDays(-8);
         request3.EndTime__c = request3.EndTime__c.addDays(-8);
-        insert request3;
+
+        List<HOT_Request__c> requests = new List<HOT_Request__c>{ request, request2, request3 };
+        insert requests;
 
         Common_Code__c commonCode = new Common_Code__c(
             Name = 'Test Postal Code',
