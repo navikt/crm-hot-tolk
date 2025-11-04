@@ -6,10 +6,21 @@
             id="organisasjonsnummer"
             label="Organisasjonsnummer"
             name="OrganizationNumber__c"
-            max-length="11"
+            max-length="9"
             form="tolk-skjema-input"
             value={fieldValues.OrganizationNumber__c}
             error-text="Ikke gyldig format for organisasjonsnummer."
+            ongetvalueonchange={handleOrgNumberInputChange}
+            data-id="organizationNumber"
+        ></c-input>
+        <br />
+        <c-input
+            id="organisasjonsnavn"
+            label="Organisasjonsnavn"
+            value={fieldValues.OrganizationName__c}
+            data-id="organizationName"
+            disabled
+            placeholder="Feltet fylles automatisk."
         ></c-input>
         <br />
         <c-picklist

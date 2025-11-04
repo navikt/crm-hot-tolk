@@ -241,14 +241,21 @@ public without sharing class HOT_RequestListController {
     }
 
     @AuraEnabled(cacheable=true)
-    public static List<Common_Code__c> getPostalCity(String postalCode){
-        List<Common_Code__c> postalCommonCode =  [
-            SELECT CRM_Active__c, CRM_Code_Set__c, CRM_Code__c, Name, CRM_UniqueKey__c 
-            from Common_Code__c 
-            where CRM_Code_Set__c ='Postnummer'
-            AND CRM_Active__c = true
-            AND CRM_Code__c = :postalCode
-        ]; 
+    public static List<Common_Code__c> getPostalCity(String postalCode) {
+        List<Common_Code__c> postalCommonCode = [
+            SELECT CRM_Active__c, CRM_Code_Set__c, CRM_Code__c, Name, CRM_UniqueKey__c
+            FROM Common_Code__c
+            WHERE CRM_Code_Set__c = 'Postnummer' AND CRM_Active__c = TRUE AND CRM_Code__c = :postalCode
+        ];
         return postalCommonCode;
+    }
+    @AuraEnabled(cacheable=true)
+    public static List<Account> getOrganizationInfo(String organizationNumber) {
+        List<Account> account = [
+            SELECT Id, Name, INT_OrganizationNumber__c
+            FROM Account
+            WHERE INT_OrganizationNumber__c = :organizationNumber
+        ];
+        return account;
     }
 }
