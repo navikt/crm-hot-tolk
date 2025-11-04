@@ -2,14 +2,6 @@
 private class HOT_RequestListControllerTest {
     @testSetup
     static void setup() {
-        User admin = [SELECT Id, UserRoleId FROM User WHERE Id = :UserInfo.getUserId() LIMIT 1];
-        if (admin.UserRoleId == null) {
-            UserRole role = [SELECT Id FROM UserRole WHERE Name = 'Default' LIMIT 1];
-            admin.UserRoleId = role.Id;
-            update admin;
-        }
-
-        Profile communityProfile = [SELECT Id FROM Profile WHERE Name = 'Customer Community Plus User' LIMIT 1];
         Person__c person = HOT_TestDataFactory.createPerson();
         person.INT_FirstName__c = 'Tolk';
         person.INT_LastName__c = 'BrukerAddresseTest';
@@ -29,25 +21,16 @@ private class HOT_RequestListControllerTest {
             FROM Account
             WHERE LastName = :person.INT_LastName__c
         ];
-        account.OwnerId = admin.Id;
-        update account;
 
         Account account2 = [
             SELECT Id, LastName, OwnerId, CRM_Person__c, PersonContactId
             FROM Account
             WHERE LastName = :person2.INT_LastName__c
         ];
-        account2.OwnerId = admin.Id;
-        update account2;
-
-        User user = HOT_TestDataFactory.createUser(communityProfile, account);
-        user.Alias = 'userTest';
-        user.Username = 'HOT_testuser1@nav.hot.no';
-        user.CommunityNickname = 'userTest';
-        insert user;
 
         WorkType workType = HOT_TestDataFactory.createWorkType();
         insert workType;
+
         HOT_Request__c request = HOT_TestDataFactory.createRequest('Subject', workType);
         request.Account__c = account.Id;
         request.Orderer__c = account.Id;
@@ -79,8 +62,26 @@ private class HOT_RequestListControllerTest {
 
     @IsTest
     private static void getRequestListTest() {
-        System.debug('Kom hit');
-        User user = [SELECT Id FROM User WHERE Username = 'HOT_testuser1@nav.hot.no' LIMIT 1];
+        Profile communityProfile = [SELECT Id FROM Profile WHERE Name = 'Customer Community Plus User' LIMIT 1];
+
+        User admin = [SELECT Id, UserRoleId FROM User WHERE Id = :UserInfo.getUserId() LIMIT 1];
+        if (admin.UserRoleId == null) {
+            UserRole role = [SELECT Id FROM UserRole WHERE Name = 'Default' LIMIT 1];
+            admin.UserRoleId = role.Id;
+            update admin;
+        }
+        Account account = [
+            SELECT Id, LastName, OwnerId, CRM_Person__c, PersonContactId
+            FROM Account
+            WHERE LastName = 'BrukerAddresseTest'
+        ];
+
+        User user = HOT_TestDataFactory.createUser(communityProfile, account);
+        user.Alias = 'userTest';
+        user.Username = 'HOT_testuser1@nav.hot.no';
+        user.CommunityNickname = 'userTest';
+        insert user;
+
         Test.startTest();
         HOT_Request__c request = [SELECT Id FROM HOT_Request__c WHERE Subject__c = 'Subject 3' LIMIT 1];
         request.Status__c = 'Godkjent';
@@ -243,33 +244,48 @@ private class HOT_RequestListControllerTest {
 
     @IsTest
     static void testGetUserHomeAddress() {
-        User user = [SELECT Id FROM User WHERE Alias = 'userTest' LIMIT 1];
-        Person__c result;
+        Profile communityProfile = [SELECT Id FROM Profile WHERE Name = 'Customer Community Plus User' LIMIT 1];
+
+        User admin = [SELECT Id, UserRoleId FROM User WHERE Id = :UserInfo.getUserId() LIMIT 1];
+        if (admin.UserRoleId == null) {
+            UserRole role = [SELECT Id FROM UserRole WHERE Name = 'Default' LIMIT 1];
+            admin.UserRoleId = role.Id;
+            update admin;
+        }
+
+        Account account = [
+            SELECT Id, LastName, OwnerId, CRM_Person__c, PersonContactId
+            FROM Account
+            WHERE LastName = 'BrukerAddresseTest'
+        ];
+
+        User user = HOT_TestDataFactory.createUser(communityProfile, account);
+        user.Alias = 'userTest';
+        user.Username = 'HOT_testuser1@nav.hot.no';
+        user.CommunityNickname = 'userTest';
+        insert user;
 
         System.Test.startTest();
 
         System.runAs(user) {
-            result = HOT_RequestListController.getUserHomeAddress();
+            Person__c result = HOT_RequestListController.getUserHomeAddress();
+            System.assertNotEquals(null, result, 'Should return a person record');
+            System.assertEquals('Testveien 1', result.INT_ResidentialAddress__c, 'Expected address to match');
+            System.assertEquals('1234', result.INT_ResidentialZipCode__c, 'Expected zip code to match');
         }
         System.Test.stopTest();
-
-        System.assertNotEquals(null, result, 'Should return a person record');
-        System.assertEquals('Testveien 1', result.INT_ResidentialAddress__c, 'Expected address to match');
-        System.assertEquals('1234', result.INT_ResidentialZipCode__c, 'Expected zip code to match');
     }
 
     @IsTest
     static void testGetUserHomeAddressEmptyPersons() {
         User user = [SELECT Id FROM User WHERE Id = :UserInfo.getUserId()];
-        Person__c result;
 
         System.Test.startTest();
 
         System.runAs(user) {
-            result = HOT_RequestListController.getUserHomeAddress();
+            Person__c result = HOT_RequestListController.getUserHomeAddress();
+            System.assertEquals(null, result, 'Should return a person record');
         }
         System.Test.stopTest();
-
-        System.assertEquals(null, result, 'Should return a person record');
     }
 }
