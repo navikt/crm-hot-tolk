@@ -299,6 +299,8 @@ private class HOT_RequestListControllerTest {
             System.assertEquals(null, result, 'Should return a person record');
         }
         System.Test.stopTest();
+    }
+
     @IsTest
     static void getOrganizationInfoTest() {
         Account acc = new Account();
