@@ -271,6 +271,8 @@ public without sharing class HOT_RequestListController {
         }
 
         return persons[0];
+    }
+
     @AuraEnabled(cacheable=true)
     public static List<Account> getOrganizationInfo(String organizationNumber) {
         List<Account> account = [
