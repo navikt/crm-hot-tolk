@@ -6,7 +6,7 @@
     <fields>Subject__c</fields>
     <fields>Status__c</fields>
     <fields>InterpretationMethod__c</fields>
-    <fields>IsSerieoppdrag__c</fields>
     <fields>StartTime__c</fields>
+    <fields>IsSerieoppdrag__c</fields>
     <label>HOT_Request_Compact_Layout</label>
 </CompactLayout>
