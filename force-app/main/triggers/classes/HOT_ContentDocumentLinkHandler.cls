@@ -40,8 +40,12 @@ public without sharing class HOT_ContentDocumentLinkHandler extends MyTriggers {
                 linkedEntityMap.get(serviceAppointment.HOT_Request__c)
             );
         }
-        if (!contentDocumentLinksByServiceAppointment.isEmpty()) {
-            HOT_ContentDocumentLinkService.setContentDocumentLinks(contentDocumentLinksByServiceAppointment);
+        Map<Id, List<ContentDocumentLink>> filtered = filterExistingSAContentLinks(
+            contentDocumentLinksByServiceAppointment
+        );
+
+        if (!filtered.isEmpty()) {
+            HOT_ContentDocumentLinkService.setContentDocumentLinks(filtered);
         }
     }
 
@@ -78,8 +82,12 @@ public without sharing class HOT_ContentDocumentLinkHandler extends MyTriggers {
             );
         }
 
-        if (!contentDocumentLinksByServiceAppointment.isEmpty()) {
-            HOT_ContentDocumentLinkService.setContentDocumentLinks(contentDocumentLinksByServiceAppointment);
+        Map<Id, List<ContentDocumentLink>> filtered = filterExistingSAContentLinks(
+            contentDocumentLinksByServiceAppointment
+        );
+
+        if (!filtered.isEmpty()) {
+            HOT_ContentDocumentLinkService.setContentDocumentLinks(filtered);
         }
     }
 
@@ -138,5 +146,60 @@ public without sharing class HOT_ContentDocumentLinkHandler extends MyTriggers {
             }
         }
         return linkedEntityMap;
+    }
+    private static Map<Id, List<ContentDocumentLink>> filterExistingSAContentLinks(
+        Map<Id, List<ContentDocumentLink>> saToCdls
+    ) {
+        Map<Id, List<ContentDocumentLink>> result = new Map<Id, List<ContentDocumentLink>>();
+        if (saToCdls == null || saToCdls.isEmpty())
+            return result;
+
+        Set<Id> saIds = new Set<Id>();
+        Set<Id> docIds = new Set<Id>();
+        for (Id saId : saToCdls.keySet()) {
+            saIds.add(saId);
+            List<ContentDocumentLink> srcList = saToCdls.get(saId);
+            if (srcList == null)
+                continue;
+            for (ContentDocumentLink src : srcList) {
+                if (src != null && src.ContentDocumentId != null) {
+                    docIds.add(src.ContentDocumentId);
+                }
+            }
+        }
+
+        if (saIds.isEmpty() || docIds.isEmpty())
+            return saToCdls;
+
+        Set<String> existingKeys = new Set<String>();
+        for (ContentDocumentLink existing : [
+            SELECT ContentDocumentId, LinkedEntityId
+            FROM ContentDocumentLink
+            WHERE LinkedEntityId IN :saIds AND ContentDocumentId IN :docIds
+        ]) {
+            existingKeys.add(
+                String.valueOf(existing.ContentDocumentId) + '_' + String.valueOf(existing.LinkedEntityId)
+            );
+        }
+
+        for (Id saId : saToCdls.keySet()) {
+            List<ContentDocumentLink> keep = new List<ContentDocumentLink>();
+            List<ContentDocumentLink> srcList = saToCdls.get(saId);
+            if (srcList == null)
+                continue;
+
+            for (ContentDocumentLink src : srcList) {
+                if (src == null || src.ContentDocumentId == null)
+                    continue;
+                String key = String.valueOf(src.ContentDocumentId) + '_' + String.valueOf(saId);
+                if (!existingKeys.contains(key)) {
+                    keep.add(src);
+                }
+            }
+            if (!keep.isEmpty()) {
+                result.put(saId, keep);
+            }
+        }
+        return result;
     }
 }
