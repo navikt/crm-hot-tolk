@@ -211,7 +211,6 @@ private class HOT_RequestListControllerTest {
 
     @IsTest
     static void testGetPostalCity() {
-
         Common_Code__c commonCode = new Common_Code__c(
             Name = 'Test Postal Code',
             CRM_Active__c = true,
@@ -237,5 +236,17 @@ private class HOT_RequestListControllerTest {
         System.Test.stopTest();
 
         System.assertEquals(0, result.size(), 'Expected no records for postalCode');
+    }
+    @IsTest
+    static void getOrganizationInfoTest() {
+        Account acc = new Account();
+        acc.Name = 'Team HOT CRM';
+        acc.INT_OrganizationNumber__c = '987654321';
+        insert acc;
+
+        Test.startTest();
+        List<Account> accounts = HOT_RequestListController.getOrganizationInfo('987654321');
+        Test.stopTest();
+        System.assertEquals(1, accounts.size());
     }
 }
