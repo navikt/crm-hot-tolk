@@ -227,15 +227,6 @@ private class HOT_RequestListControllerTest {
 
     @IsTest
     static void testGetPostalCity() {
-        Common_Code__c commonCode = new Common_Code__c(
-            Name = 'Test Postal Code',
-            CRM_Active__c = true,
-            CRM_Code_Set__c = 'Postnummer',
-            CRM_Code__c = '8110',
-            CRM_UniqueKey__c = 'Postnummer8110'
-        );
-        insert commonCode;
-
         System.Test.startTest();
         List<Common_Code__c> result = HOT_RequestListController.getPostalCity('8110');
         System.Test.stopTest();
