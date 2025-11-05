@@ -1,0 +1,122 @@
+.highlightPanel,
+.highlightPanelConfidential {
+    font-size: 16px;
+    line-height: 1.5rem;
+    width: 100%;
+}
+
+.highlightPanel {
+    color: white;
+}
+
+.highlightPanelConfidential {
+    color: black;
+}
+
+.highlightPanelTop {
+    min-height: 5.5rem;
+    height: auto;
+    display: flex;
+    justify-content: flex-start;
+    align-items: center;
+}
+
+.pointer {
+    cursor: pointer;
+}
+
+.relativePosition {
+    position: relative;
+}
+
+.greenBadge,
+.yellowBadge,
+.redBadge,
+.greyBadge {
+    border: 2px white solid;
+    padding-right: 1rem;
+    padding-left: 1rem;
+    font-size: 0.875rem;
+    font-weight: normal;
+}
+
+.greenBadge {
+    background-color: #66c786 !important;
+}
+.yellowBadge {
+    background-color: #ffaa33 !important;
+    color: black !important;
+}
+.redBadge {
+    background-color: #ad0000 !important;
+    color: rgb(255, 255, 255) !important;
+}
+.greyBadge {
+    background-color: #c6c6c6 !important;
+}
+
+.nowrap-selector {
+    flex-wrap: wrap;
+}
+
+.custom-padding-left {
+    padding-left: 1.875rem;
+}
+
+.maleBackground {
+    --primaryBackgroundColor: #0056b4;
+    --secondaryBackgroundColor: #00459c;
+    --borderColor: #66a5f4;
+}
+
+.femaleBackground {
+    --primaryBackgroundColor: #993366;
+    --secondaryBackgroundColor: #993366;
+    --borderColor: #c95c93;
+}
+
+.unknownBackground {
+    --primaryBackgroundColor: #6d5431;
+    --secondaryBackgroundColor: #4d3c23;
+    --borderColor: #858585;
+}
+
+.deadBackground {
+    --primaryBackgroundColor: #484848;
+    --secondaryBackgroundColor: #363636;
+    --borderColor: #858585;
+}
+
+.confidentialBackground {
+    --primaryBackgroundColor: #cbcfd5;
+    --secondaryBackgroundColor: #b9bcbf;
+    --borderColor: #eeeded;
+}
+
+.panelBackground {
+    background-color: var(--primaryBackgroundColor, #0056b4);
+}
+
+.errorPanel {
+    background-color: #ad0000;
+    width: 100%;
+    height: 2.5rem;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    font-size: 14px;
+}
+
+.errorBorder {
+    border-bottom: 1px solid white;
+}
+
+.warningIcon {
+    padding-top: 0.8rem;
+}
+
+.xMarkIcon {
+    padding-top: 0.6rem;
+    position: absolute;
+    right: 0;
+}
