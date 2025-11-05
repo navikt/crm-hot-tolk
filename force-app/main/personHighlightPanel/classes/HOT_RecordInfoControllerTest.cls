@@ -2,7 +2,7 @@
 public class HOT_RecordInfoControllerTest {
     @TestSetup
     static void makeData() {
-        HOT_ST_TestDataFactory.createRecord(new LiveChatTranscript());
+        HOT_TestDataFactory.createRecord(new LiveChatTranscript());
     }
 
     @IsTest

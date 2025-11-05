@@ -2,7 +2,7 @@
 private without sharing class HOT_AccessErrorControllerTest {
     @TestSetup
     static void makeData() {
-        Person__c p = (Person__c) HOT_ST_TestDataFactory.createRecord(
+        Person__c p = (Person__c) HOT_TestDataFactory.createRecord(
             new Person__c(
                 INT_ActorId__c = '100003000120',
                 INT_Confidential__c = 'FORTROLIG',
