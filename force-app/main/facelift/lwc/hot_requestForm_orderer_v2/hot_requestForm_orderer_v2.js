@@ -56,9 +56,7 @@ export default class Hot_requestForm_orderer extends LightningElement {
                 hasErrors += 1;
             }
         });
-        if (this.fieldValues.IsOrdererWantStatusUpdateOnSMS__c) {
-            hasErrors = this.template.querySelectorAll('c-input')[2].validatePhone(this.ordererPhoneError);
-        }
+        hasErrors = this.template.querySelectorAll('c-input')[2].validatePhone(this.ordererPhoneError);
         return hasErrors;
     }
 
