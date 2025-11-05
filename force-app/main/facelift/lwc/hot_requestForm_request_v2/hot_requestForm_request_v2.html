@@ -30,9 +30,10 @@
 
         <div if:false={fieldValues.IsScreenInterpreter__c}>
             <c-button
-                button-label="Bruk hjemmeadresse som oppmøteadresse"
+                button-label="Bruk hjemmeadresse"
                 name="UseOrdererAddressAsMeetingAddress__c"
                 onbuttonclick={handleUseOrdererAddressButton}
+                aria-label="Bruk hjemmeadresse som oppmøteadresse"
                 desktop-style="margin-bottom: 1rem"
                 mobile-style="margin-bottom: 1rem"
             ></c-button>
