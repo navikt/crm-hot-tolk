@@ -646,18 +646,24 @@ public without sharing class HOT_MessageHelper {
         return userNameRole;
     }
     @AuraEnabled
-    public static String getUserProfileAndName() {
+    public static String getUserProfileAndName(String threadType) {
         User user = [SELECT Id, FirstName, Profile.Name FROM User WHERE Id = :UserInfo.getUserId()];
         if (user.Profile.Name == 'HOT Tolk Formidler') {
             return user.FirstName + ', Formidler';
         } else if (user.Profile.Name == 'HOT Tolk Ansatt') {
             return user.FirstName + ', Tolk';
+        } else if (user.Profile.Name == 'NAV Samhandler' && threadType == 'HOT_BESTILLER-FORMIDLER') {
+            return user.FirstName + ', Bestiller';
+        } else if (user.Profile.Name == 'NAV Bruker' && threadType == 'HOT_BRUKER-FORMIDLER') {
+            return user.FirstName + ', Tolkebruker';
+        } else if (user.Profile.Name == 'NAV Bruker' && threadType == 'HOT_BESTILLER-FORMIDLER') {
+            return user.FirstName + ', Bestiller';
+        } else if (user.Profile.Name == 'NAV Bruker Plus' && threadType == 'HOT_BRUKER-FORMIDLER') {
+            return user.FirstName + ', Tolkebruker';
+        } else if (user.Profile.Name == 'NAV Bruker Plus' && threadType == 'HOT_BESTILLER-FORMIDLER') {
+            return user.FirstName + ', Bestiller';
         } else if (user.Profile.Name == 'NAV Samhandler') {
             return user.FirstName + ', Tolk';
-        } else if (user.Profile.Name == 'NAV Bruker') {
-            return user.FirstName + ', Tolkebruker';
-        } else if (user.Profile.Name == 'NAV Bruker Plus') {
-            return user.FirstName + ', Tolkebruker';
         } else {
             return user.FirstName + ', Administrator';
         }
@@ -665,15 +671,20 @@ public without sharing class HOT_MessageHelper {
     @AuraEnabled
     public static Boolean createMessage(Id threadId, String messageText, Id fromContactId) {
         if (HOT_ThreadDetailController.checkAccess(threadId)) {
+            Thread__c t = [
+                SELECT Id, CRM_isActive__c, CRM_Thread_Type__c
+                FROM Thread__c
+                WHERE Id = :threadId
+                LIMIT 1
+            ][0];
             Message__c m = new Message__c();
             m.CRM_Message_Text__c = messageText;
             m.CRM_Thread__c = threadId;
             m.CRM_From_Contact__c = fromContactId;
             m.CRM_Read__c = false;
-            m.HOT_User_Role__c = getUserProfileAndName();
+            m.HOT_User_Role__c = getUserProfileAndName(t.CRM_Thread_Type__c);
             m.CRM_Read_Datetime__c = DateTime.now();
 
-            Thread__c t = [SELECT Id, CRM_isActive__c FROM Thread__c WHERE Id = :threadId LIMIT 1][0];
             if (!t.CRM_isActive__c) {
                 return false;
             }
@@ -689,13 +700,15 @@ public without sharing class HOT_MessageHelper {
         }
     }
     public static Message__c createMessages(Id threadId, String messageText, Id fromContactId) {
+        Thread__c t = [SELECT Id, CRM_Thread_Type__c FROM Thread__c WHERE Id = :threadId LIMIT 1][0];
+
         Message__c m = new Message__c();
         m.CRM_Message_Text__c = messageText;
         m.CRM_Thread__c = threadId;
         m.CRM_From_Contact__c = fromContactId;
         m.CRM_Read__c = false;
         m.CRM_Read_Datetime__c = DateTime.now();
-        m.HOT_User_Role__c = getUserProfileAndName();
+        m.HOT_User_Role__c = getUserProfileAndName(t.CRM_Thread_Type__c);
         return m;
     }
     @AuraEnabled
