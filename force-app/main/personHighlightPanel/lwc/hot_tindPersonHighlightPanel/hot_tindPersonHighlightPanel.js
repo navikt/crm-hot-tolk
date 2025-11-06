@@ -1,6 +1,6 @@
 import { LightningElement, api, track, wire } from 'lwc';
 import { getFieldValue, getRecord } from 'lightning/uiRecordApi';
-import { resolve } from 'c/hot_componentsUtils';
+import { resolve } from 'c/hot_tindComponentsUtils';
 
 import PERSON_ACTORID_FIELD from '@salesforce/schema/Person__c.INT_ActorId__c';
 import PERSON_FIRST_NAME from '@salesforce/schema/Person__c.INT_FirstName__c';
@@ -15,10 +15,10 @@ import MUNICIPALITY_NAME__FIELD from '@salesforce/schema/Person__c.CRM_Municipal
 import DISTRICT_NAME_FIELD from '@salesforce/schema/Person__c.CRM_District__r.Name';
 import VEDTAK_FIELD from '@salesforce/schema/Person__c.HOT_DegreeOfHearingAndVisualImpairment__c';
 
-import NAV_ICONS from '@salesforce/resourceUrl/HOT_navIcons';
+import NAV_ICONS from '@salesforce/resourceUrl/HOT_tindIcons';
 
-import getRelatedRecord from '@salesforce/apex/HOT_RecordInfoController.getRelatedRecord';
-import hasAccess from '@salesforce/apex/HOT_AccessErrorController.hasAccess';
+import getRelatedRecord from '@salesforce/apex/HOT_TindRecordInfoController.getRelatedRecord';
+import hasAccess from '@salesforce/apex/HOT_TindAccessErrorController.hasAccess';
 
 const PERSON_FIELDS = [
     PERSON_FIRST_NAME,

@@ -1,4 +1,4 @@
-public with sharing class HOT_RecordInfoController {
+public with sharing class HOT_TindRecordInfoController {
     /**
      * @description
      * @param parentId [Id of the object to query to relation from]

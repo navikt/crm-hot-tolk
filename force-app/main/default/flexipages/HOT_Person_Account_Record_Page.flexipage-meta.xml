@@ -13,8 +13,8 @@
                     <name>relationshipField</name>
                     <value>CRM_Person__c</value>
                 </componentInstanceProperties>
-                <componentName>hot_personHighlightPanel</componentName>
-                <identifier>c_hot_personHighlightPanel</identifier>
+                <componentName>hot_tindPersonHighlightPanel</componentName>
+                <identifier>c_hot_tindPersonHighlightPanel</identifier>
             </componentInstance>
         </itemInstances>
         <mode>Replace</mode>
