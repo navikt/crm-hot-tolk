@@ -1,5 +1,5 @@
 @isTest
-private without sharing class HOT_AccessErrorControllerTest {
+private without sharing class HOT_TindAccessErrorControllerTest {
     @TestSetup
     static void makeData() {
         Person__c p = (Person__c) HOT_TestDataFactory.createRecord(
@@ -30,7 +30,7 @@ private without sharing class HOT_AccessErrorControllerTest {
         String result;
 
         Test.startTest();
-        result = HOT_AccessErrorController.checkAccess('CRM_Person__c', 'Account', p.CRM_Account__c);
+        result = HOT_TindAccessErrorController.checkAccess('CRM_Person__c', 'Account', p.CRM_Account__c);
         Test.stopTest();
 
         System.assertEquals(null, result, 'null');
@@ -43,7 +43,7 @@ private without sharing class HOT_AccessErrorControllerTest {
         String result;
 
         Test.startTest();
-        result = HOT_AccessErrorController.checkAccess('CRM_Person__c', 'Account', p.id);
+        result = HOT_TindAccessErrorController.checkAccess('CRM_Person__c', 'Account', p.id);
         Test.stopTest();
 
         System.assertEquals(null, result, 'null');
@@ -56,7 +56,7 @@ private without sharing class HOT_AccessErrorControllerTest {
         String result;
 
         Test.startTest();
-        result = HOT_AccessErrorController.checkAccess('Account.CRM_Person__r.id', 'Case', c.id);
+        result = HOT_TindAccessErrorController.checkAccess('Account.CRM_Person__r.id', 'Case', c.id);
         Test.stopTest();
 
         System.assertEquals(null, result, 'null');

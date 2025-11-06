@@ -1,5 +1,5 @@
 @IsTest
-public class HOT_RecordInfoControllerTest {
+public class HOT_TindRecordInfoControllerTest {
     @TestSetup
     static void makeData() {
         HOT_TestDataFactory.createRecord(new LiveChatTranscript());
@@ -10,7 +10,7 @@ public class HOT_RecordInfoControllerTest {
         LiveChatTranscript trans = [SELECT Id FROM LiveChatTranscript LIMIT 1];
 
         Test.startTest();
-        trans = (LiveChatTranscript) HOT_RecordInfoController.getRelatedRecord(
+        trans = (LiveChatTranscript) HOT_TindRecordInfoController.getRelatedRecord(
             String.valueOf(trans.Id),
             'LiveChatVisitorId',
             'LiveChatTranscript'
@@ -25,7 +25,7 @@ public class HOT_RecordInfoControllerTest {
         LiveChatVisitor vis = [SELECT Id FROM LiveChatVisitor LIMIT 1];
         List<LiveChatTranscript> trans;
         Test.startTest();
-        trans = (List<LiveChatTranscript>) HOT_RecordInfoController.getReverseRelatedRecord(
+        trans = (List<LiveChatTranscript>) HOT_TindRecordInfoController.getReverseRelatedRecord(
             String.valueOf(vis.Id),
             'Id',
             'LiveChatTranscript',

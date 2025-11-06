@@ -1,7 +1,7 @@
 import { LightningElement, api, wire } from 'lwc';
 import { ShowToastEvent } from 'lightning/platformShowToastEvent';
 
-import NAV_ICONS from '@salesforce/resourceUrl/HOT_navIcons';
+import NAV_ICONS from '@salesforce/resourceUrl/HOT_tindIcons';
 
 import getTolketjenesten from '@salesforce/apex/HOT_GetTolketjeneste.getTolketjeneste';
 

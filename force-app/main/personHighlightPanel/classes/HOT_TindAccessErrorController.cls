@@ -1,4 +1,4 @@
-public without sharing class HOT_AccessErrorController {
+public without sharing class HOT_TindAccessErrorController {
     @AuraEnabled
     public static String checkAccess(String field, String parentObject, String parentRecordId) {
         Id personId = getPersonId(field, parentObject, parentRecordId);
