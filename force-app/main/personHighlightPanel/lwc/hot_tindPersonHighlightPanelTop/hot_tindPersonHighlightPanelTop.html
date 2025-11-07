@@ -1,0 +1,38 @@
+<template>
+    <lightning-layout class="custom-padding-left-small person-info-container">
+        <lightning-layout-item class="custom-padding-around-small custom-grid-vertical-align-center" aria-hidden="true">
+            <c-hot_tind-custom-svg size="large" src={genderIconSrc} alt-text={genderText}></c-hot_tind-custom-svg>
+        </lightning-layout-item>
+
+        <template lwc:if={formattedFullName}>
+            <lightning-layout-item
+                class="custom-padding-left-small slds-page-header__title custom-grid-vertical-align-center"
+            >
+                <p class="fullName">{formattedFullName}</p>
+                <p class="sr-only">{genderText}</p>
+            </lightning-layout-item>
+        </template>
+
+        <template lwc:if={personIdent}>
+            <lightning-layout-item class="custom-padding-left custom-grid-vertical-align-center">
+                <span>{personIdent}</span>
+                <!-- sldsValidatorIgnoreNextLine -->
+                <lightning-button-icon
+                    value={personIdent}
+                    icon-name="utility:copy"
+                    variant="bare-inverse"
+                    onclick={handleCopy}
+                    alternative-text="Kopier fødselsnummer"
+                    title="Kopier fødselsnummer"
+                    class="copy-icon"
+                >
+                </lightning-button-icon>
+            </lightning-layout-item>
+        </template>
+        <template lwc:if={formattedPersonInfo}>
+            <lightning-layout-item class="custom-padding-left custom-grid-vertical-align-center">
+                <p>{formattedPersonInfo}</p>
+            </lightning-layout-item>
+        </template>
+    </lightning-layout>
+</template>
