@@ -19,6 +19,14 @@
         </lightning-layout-item>
         <lightning-layout-item class="custom-padding-around-small custom-grid-vertical-align-center">
             <lightning-button
+                label="Oppgrader bruker til frilanstolk"
+                onclick={handleFlowButton}
+                data-flow="HOT_CreateFreelanceUser"
+            >
+            </lightning-button>
+        </lightning-layout-item>
+        <lightning-layout-item class="custom-padding-around-small custom-grid-vertical-align-center">
+            <lightning-button
                 label="Styr tilgang til Mobil App"
                 onclick={handleFlowButton}
                 data-flow="HOT_MobileAppAccess"
