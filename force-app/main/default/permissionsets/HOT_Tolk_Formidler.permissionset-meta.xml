@@ -21,6 +21,10 @@
         <enabled>true</enabled>
     </classAccesses>
     <classAccesses>
+        <apexClass>HOT_GetTolketjeneste</apexClass>
+        <enabled>true</enabled>
+    </classAccesses>
+    <classAccesses>
         <apexClass>HOT_InterestedResourceBannerController</apexClass>
         <enabled>true</enabled>
     </classAccesses>
@@ -34,6 +38,14 @@
     </classAccesses>
     <classAccesses>
         <apexClass>HOT_ThreadParticipants</apexClass>
+        <enabled>true</enabled>
+    </classAccesses>
+    <classAccesses>
+        <apexClass>HOT_TindAccessErrorController</apexClass>
+        <enabled>true</enabled>
+    </classAccesses>
+    <classAccesses>
+        <apexClass>HOT_TindRecordInfoController</apexClass>
         <enabled>true</enabled>
     </classAccesses>
     <classAccesses>
@@ -1075,6 +1087,11 @@
         <readable>true</readable>
     </fieldPermissions>
     <fieldPermissions>
+        <editable>false</editable>
+        <field>SMS__c.ServiceResource__c</field>
+        <readable>true</readable>
+    </fieldPermissions>
+    <fieldPermissions>
         <editable>true</editable>
         <field>SMS__c.SourceAlternative__c</field>
         <readable>true</readable>
@@ -1082,11 +1099,6 @@
     <fieldPermissions>
         <editable>false</editable>
         <field>SMS__c.Status__c</field>
-        <readable>true</readable>
-    </fieldPermissions>
-    <fieldPermissions>
-        <editable>false</editable>
-        <field>SMS__c.ServiceResource__c</field>
         <readable>true</readable>
     </fieldPermissions>
     <fieldPermissions>
