@@ -122,7 +122,7 @@
                 <br />
                 <div if:true={showUploadFileModule}>
                     <div class="fileUploader">
-                        <h2 class="typo-undertittel">Legg ved filer til denne bestillingen</h2>
+                        <h2 class="typo-undertittel">Legg ved filer til denne bestillingen.</h2>
                         <label class="slds-form-element__label" id="uploadLabel">
                             <lightning-formatted-text value={uploadFileFormLabel}></lightning-formatted-text>
                         </label>
@@ -130,7 +130,7 @@
                             record-id={recordId}
                             name="fileUploader"
                             class="file-selector-large"
-                            label="Når du laster opp filer her vil filene bli lagt til på alle tidspunkt i din bestilling. Ved å laste opp filer er jeg klar over at filene vil bli delt med formidler og tolken(e) jeg får. Opplastingen vil starte umiddelbart. Maks filstørelse: 2 GB."
+                            label="Når du laster opp filer her, vil filene bli lagt til på alle tidspunkt i din bestilling. Ved å laste opp filer er jeg klar over at filene vil bli delt med formidler og tolken(e) jeg får. Opplastingen vil starte umiddelbart. Maks filstørrelse: 2 GB. "
                             title="Maks filstørrelse: 2 GB."
                             onuploadfinished={handleUploadFinished}
                             multiple

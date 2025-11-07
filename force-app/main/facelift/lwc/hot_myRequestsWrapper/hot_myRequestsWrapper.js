@@ -266,8 +266,7 @@ export default class Hot_myRequestsWrapper extends NavigationMixin(LightningElem
             this.uploadFileButtonLabel = 'Legg til filer på serie';
             this.uploadFileTitle = 'Legg ved filer til hele bestillingen.';
             this.uploadFileFormLabel =
-                'Når du laster opp filer her vil filen bli lagt til på alle tidspunkt i din bestilling. \n' +
-                'Ved å laste opp filer er jeg klar over at filene vil bli delt med formidler og tolken(e) jeg får. Opplastingen vil starte umiddelbart. Maks filstørelse: 2 GB.';
+                'Når du laster opp filer her, vil filene bli lagt til på alle tidspunkt i din bestilling. Ved å laste opp filer er jeg klar over at filene vil bli delt med formidler og tolken(e) jeg får. Opplastingen vil starte umiddelbart. Maks filstørrelse: 2 GB.';
             this.isThreadButtonDisabled = false;
             this.isInterpreterThreadButtonDisabled = true;
         } else {
@@ -277,8 +276,7 @@ export default class Hot_myRequestsWrapper extends NavigationMixin(LightningElem
             this.uploadFileButtonLabel = 'Legg til filer';
             this.uploadFileTitle = 'Legg ved filer til denne bestillingen.';
             this.uploadFileFormLabel =
-                'Når du laster opp filer her, vil filen bli tilgjengelig på det tidspunkt du har bestilt tolk til. Om bestillingen inneholder flere tidspunkt (serie), vil filen bare bli tilgjengelig på det tidspunkt du har valgt.  \n' +
-                'Ved å laste opp filer er jeg klar over at filene vil bli delt med formidler og tolken(e) jeg får. Opplastingen vil starte umiddelbart. Maks filstørelse: 2 GB.';
+                'Filene du laster opp her, blir kun tilgjengelig på det tidspunkt du har valgt. Ved å laste opp filer er jeg klar over at filene vil bli delt med formidler og tolken(e) jeg får. Opplastingen vil starte umiddelbart. Maks filstørrelse: 2 GB.';
             this.isThreadButtonDisabled = false;
             this.isInterpreterThreadButtonDisabled = this.workOrder.HOT_Interpreters__c == null;
         }
