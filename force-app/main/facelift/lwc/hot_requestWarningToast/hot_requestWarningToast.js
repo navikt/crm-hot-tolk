@@ -3,9 +3,9 @@ import { ShowToastEvent } from 'lightning/platformShowToastEvent';
 import { getRecord } from 'lightning/uiRecordApi';
 
 const FIELDS = [
-    'Request__c.StartTime__c',
-    'Request__c.CreatedDate',
-    'Request__c.Source__c'
+    'HOT_Request__c.StartTime__c',
+    'HOT_Request__c.CreatedDate',
+    'HOT_Request__c.Source__c'
 ];
 
 export default class Hot_requestWarningToast extends LightningElement {
@@ -43,7 +43,7 @@ export default class Hot_requestWarningToast extends LightningElement {
             title: 'Advarsel',
             message: 'Du har registrert en dato i fortiden. Kontroller at dette stemmer.',
             variant: 'warning',
-            mode: 'dismissable'
+            mode: 'sticky'
         });
         this.dispatchEvent(event);
     }
