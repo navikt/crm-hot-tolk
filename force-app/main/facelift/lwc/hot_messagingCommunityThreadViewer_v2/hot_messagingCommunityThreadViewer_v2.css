@@ -257,7 +257,6 @@ dialog.modal-container .close-btn:hover {
     .header {
         text-align: left;
         padding-left: 0;
-        font-size: 2rem;
         margin-top: 0.5rem;
         margin-bottom: 0.5rem;
     }
@@ -284,4 +283,6 @@ dialog.modal-container .close-btn:hover {
     .helpText {
         margin-bottom: -0.5rem;
     }
+
+    /* Dialog test */
 }
