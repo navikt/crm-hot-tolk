@@ -5,7 +5,6 @@ import { getRecord } from 'lightning/uiRecordApi';
 const FIELDS = [
     'HOT_Request__c.StartTime__c',
     'HOT_Request__c.CreatedDate',
-    'HOT_Request__c.Source__c'
 ];
 
 export default class Hot_requestWarningToast extends LightningElement {
@@ -24,14 +23,13 @@ export default class Hot_requestWarningToast extends LightningElement {
     checkStartTime(recordData) {
         const startTime = recordData.fields.StartTime__c.value;
         const createdDate = recordData.fields.CreatedDate.value;
-        const source = recordData.fields.Source__c.value;
         const now = new Date();
 
         const created = new Date(createdDate);
         const timeDiffSeconds = (now - created) / 1000;
 
 
-        if (!this.toastDisplayed && startTime < now.toISOString() && timeDiffSeconds < 5 && source === 'Dispatcher') {
+        if (!this.toastDisplayed && startTime < now.toISOString() && timeDiffSeconds < 5) {
             this.showToast();
             this.toastDisplayed = true;
         }
