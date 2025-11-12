@@ -1,5 +1,6 @@
-import { LightningElement, api } from 'lwc';
+import { LightningElement, api, wire } from 'lwc';
 import { NavigationMixin } from 'lightning/navigation';
+import hasPermission from '@salesforce/apex/HOT_CheckPermissions.hasFreelancePermission';
 
 export default class hot_personHighlightPanelBot extends NavigationMixin(LightningElement) {
     @api recordId;
@@ -9,6 +10,7 @@ export default class hot_personHighlightPanelBot extends NavigationMixin(Lightni
     isModalOpen = false;
     currentFlow;
     fnr;
+    hasPermission = false;
 
     handleFlowButton(event) {
         this.currentFlow = event.target.dataset.flow;
@@ -40,17 +42,29 @@ export default class hot_personHighlightPanelBot extends NavigationMixin(Lightni
         }
     }
 
-    handleEditRecord() {
-        this[NavigationMixin.Navigate]({
-            type: 'standard__recordPage',
-            attributes: {
-                recordId: this.recordId,
-                actionName: 'edit'
-            }
-        });
-    }
+    // handleEditRecord() {
+    //     this[NavigationMixin.Navigate]({
+    //         type: 'standard__recordPage',
+    //         attributes: {
+    //             recordId: this.recordId,
+    //             actionName: 'edit'
+    //         }
+    //     });
+    // }
+
     get isDisabledButtons() {
         return !this.personDetails?.fullName;
+    }
+
+    @wire(hasPermission)
+    wiredPermission({ error, data }) {
+        if (data) {
+            this.hasPermission = data;
+        }
+        if (error) {
+            this.addErrorMessage('Error Checking permission set', error);
+            console.error(error);
+        }
     }
 
     handleButtonClick(event) {
