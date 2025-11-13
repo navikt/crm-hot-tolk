@@ -30,7 +30,6 @@ private class HOT_WorkOrderLineItemHandlerTest {
         request.NumberOfInterpreters__c = 5;
         request.PreferredResource1__c = resource1.Id;
         request.PreferredResource2__c = resource2.Id;
-        request.PreferredResource3__c = resource3.Id;
         insert request;
         WorkOrder workOrder = HOT_TestDataFactory.createWorkOrder(request, workType);
         insert workOrder;
