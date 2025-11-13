@@ -472,6 +472,7 @@ export default class Hot_messagingCommunityThreadViewer_v2 extends NavigationMix
     interestedResource;
     address;
     ordererPhoneNumber;
+    isOtherProvider;
     accountPhoneNumber;
     accountAgeGender;
     accountName;
@@ -496,6 +497,7 @@ export default class Hot_messagingCommunityThreadViewer_v2 extends NavigationMix
                         this.accountAgeGender = '';
                         this.accountName = '';
                         this.ordererPhoneNumber = '';
+                        this.isOtherProvider = '';
                         this.interestedResource = false;
 
                         getInterestedResourceDetails({ recordId: key }).then((result) => {
@@ -586,6 +588,9 @@ export default class Hot_messagingCommunityThreadViewer_v2 extends NavigationMix
                                         this.serviceAppointment.HOT_Request__r.Orderer__r.CRM_Person__r.INT_KrrMobilePhone__c;
                                 }
                             }
+                            this.isOtherProvider = this.serviceAppointment.HOT_Request__r.IsOtherEconomicProvicer__c
+                                ? 'Ja'
+                                : 'Nei';
                             this.isDetailsContent = true;
                             this.isDetails = true;
                             this.hasAccess = true;
