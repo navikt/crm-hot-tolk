@@ -664,6 +664,10 @@ public without sharing class HOT_MessageHelper {
             return user.FirstName + ', Bestiller';
         } else if (user.Profile.Name == 'NAV Samhandler') {
             return user.FirstName + ', Tolk';
+        } else if (user.Profile.Name == 'NAV Bruker') {
+            return user.FirstName + ', Tolkebruker';
+        } else if (user.Profile.Name == 'NAV Bruker Plus') {
+            return user.FirstName + ', Tolkebruker';
         } else {
             return user.FirstName + ', Administrator';
         }
