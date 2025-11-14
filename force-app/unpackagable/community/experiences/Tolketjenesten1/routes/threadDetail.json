@@ -6,7 +6,7 @@
   "id" : "6d2cb09f-68af-412c-bb75-f0289a20dbc3",
   "label" : "Thread Detail",
   "objectApiName" : "Thread__c",
-  "routeType" : "detail-a1f",
+  "routeType" : "detail-a0L",
   "type" : "route",
   "urlPrefix" : "thread"
 }

@@ -21,20 +21,14 @@
     "type" : "region"
   }, {
     "components" : [ {
-      "componentAttributes" : { },
-      "componentName" : "c:hot_tolketjenestenHovedBanner",
-      "id" : "4879493f-a9aa-49f4-866e-dd522a50d25e",
-      "renderPriority" : "NEUTRAL",
-      "renditionMap" : { },
-      "type" : "component"
-    }, {
       "componentAttributes" : {
         "alertopen" : "",
         "alerttext" : "Dialogen er lukket",
-        "maxLength" : 0
+        "maxLength" : 0,
+        "recordId" : "{!recordId}"
       },
-      "componentName" : "c:hot_messagingCommunityThreadViewer",
-      "id" : "560b0c5a-1e27-4c9c-98ef-f7896f2ac05e",
+      "componentName" : "c:hot_messagingCommunityThreadViewer_v2",
+      "id" : "7f3194b7-3126-4d51-bb6d-f71d0217d568",
       "renderPriority" : "NEUTRAL",
       "renditionMap" : { },
       "type" : "component"
