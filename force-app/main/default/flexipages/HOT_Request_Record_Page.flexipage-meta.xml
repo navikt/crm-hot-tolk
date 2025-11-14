@@ -35,6 +35,12 @@
                 <identifier>c_hot_requestWarningToast</identifier>
             </componentInstance>
         </itemInstances>
+        <itemInstances>
+            <componentInstance>
+                <componentName>hot_otherPayerNotification</componentName>
+                <identifier>c_hot_otherPayerNotification</identifier>
+            </componentInstance>
+        </itemInstances>
         <mode>Replace</mode>
         <name>header</name>
         <type>Region</type>
