@@ -1,6 +1,6 @@
-<?xml version="1.0" encoding="UTF-8" ?>
+<?xml version="1.0" encoding="UTF-8"?>
 <CustomFieldTranslation xmlns="http://soap.sforce.com/2006/04/metadata">
-    <label>Begrunnelse for avlysning av bruker</label>
+    <label>Begrunnelse for avlysning</label>
     <name>HOT_CancelComment__c</name>
     <picklistValues>
         <masterLabel>Annet</masterLabel>

@@ -41,7 +41,6 @@ public without sharing class HOT_wantedSRListController {
                 HOT_ServiceTerritoryName__c,
                 HOT_ReleaseDate__c,
                 City,
-                HOT_IsUrgent__c,
                 Street,
                 PostalCode,
                 HOT_AssignmentType__c,

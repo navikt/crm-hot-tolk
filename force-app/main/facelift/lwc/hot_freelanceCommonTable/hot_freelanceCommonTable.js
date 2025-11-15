@@ -40,8 +40,7 @@ export default class Hot_freelanceCommonTable extends LightningElement {
     // Maps aria-label from message icons to CSS badge classes
     statusBadgeIconByAriaLabel = {
         'Ulest melding': 'badge-yellow',
-        'Ingen nye meldinger': 'badge-green',
-        'Høyt prioritert': 'badge-orange'
+        'Ingen nye meldinger': 'badge-green'
     };
 
     recordMap = {};
@@ -106,7 +105,7 @@ export default class Hot_freelanceCommonTable extends LightningElement {
 
         field.icon = iconData.icon;
         field.iconFill = iconData.fill;
-        field.iconAriaLabel = iconData.ariaLabel === 'Høyt prioritert' ? 'Prioritert' : iconData.ariaLabel;
+        field.iconAriaLabel = iconData.ariaLabel;
 
         // Assign a CSS class based on the ariaLabel
         field.badgeClass = this.getBadgeClassByAriaLabel(iconData.ariaLabel || '');
