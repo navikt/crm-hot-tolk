@@ -232,16 +232,6 @@
                 <identifier>RecordPreferredResource2__cField</identifier>
             </fieldInstance>
         </itemInstances>
-        <itemInstances>
-            <fieldInstance>
-                <fieldInstanceProperties>
-                    <name>uiBehavior</name>
-                    <value>none</value>
-                </fieldInstanceProperties>
-                <fieldItem>Record.PreferredResource3__c</fieldItem>
-                <identifier>RecordPreferredResource3__cField</identifier>
-            </fieldInstance>
-        </itemInstances>
         <name>Facet-7a69e729-d7de-4731-b714-4d6878395460</name>
         <type>Facet</type>
     </flexiPageRegions>
