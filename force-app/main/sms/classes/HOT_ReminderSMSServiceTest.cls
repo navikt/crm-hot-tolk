@@ -174,6 +174,7 @@ private class HOT_ReminderSMSServiceTest {
         insert thread;
         ServiceResource serviceResource = HOT_TestDataFactory.createServiceResource(currentUser.Id);
         serviceResource.HOT_MobilePhoneOverride__c = '12345678';
+        serviceResource.HOT_NotificationChannel__c = 'Push-varsel i appen';
         insert serviceResource;
 
         Map<ServiceResource, List<Thread__c>> serviceResourceToThreadMap = new Map<ServiceResource, List<Thread__c>>{
