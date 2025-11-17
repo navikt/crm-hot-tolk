@@ -284,30 +284,30 @@ public without sharing class HOT_ReminderSMSService {
         }
     }
 
-    public static void sendSMSOnNewMessageInterpreter(Map<User, List<Thread__c>> userIdToThreadMap) {
-        List<ServiceResource> srList = [
-            SELECT RelatedRecordId, HOT_MobilePhone__c
-            FROM ServiceResource
-            WHERE RelatedRecordId IN :userIdToThreadMap.keySet()
-        ];
-        Map<Id, String> phoneNumberByUserIdMap = new Map<Id, String>();
-        for (ServiceResource sr : srList) {
-            phoneNumberByUserIdMap.put(sr.RelatedRecordId, sr.HOT_MobilePhone__c);
+    public static void sendSMSOnNewMessageInterpreter(
+        Map<ServiceResource, List<Thread__c>> serviceResourceToThreadsMap
+    ) {
+        if (serviceResourceToThreadsMap.isEmpty()) {
+            return;
         }
+
         List<SMS__c> smsList = new List<SMS__c>();
-        for (User user : userIdToThreadMap.keySet()) {
-            for (Thread__c thread : userIdToThreadMap.get(user)) {
+
+        for (ServiceResource sr : serviceResourceToThreadsMap.keySet()) {
+            String phoneNumber = sr.HOT_MobilePhone__c;
+            if (phoneNumber == null)
+                continue;
+
+            for (Thread__c thread : serviceResourceToThreadsMap.get(sr)) {
                 SMS__c sms = new SMS__c();
                 sms.Domain__c = 'HOT';
                 sms.Type__c = 'Message';
-                sms.Account__c = user.AccountId;
+                sms.Account__c = thread.CRM_Account__c;
                 sms.Thread__c = thread.Id;
-                sms.Recipient__c = phoneNumberByUserIdMap.get(user.Id);
+                sms.Recipient__c = phoneNumber;
                 sms.Message__c = constructOnNewMessage();
 
-                if (sms.Recipient__c != null) {
-                    smsList.add(sms);
-                }
+                smsList.add(sms);
             }
         }
 
