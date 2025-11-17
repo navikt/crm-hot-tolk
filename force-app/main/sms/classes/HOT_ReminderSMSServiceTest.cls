@@ -163,35 +163,33 @@ private class HOT_ReminderSMSServiceTest {
     @IsTest
     static void sendSMSOnNewMessageInterpreterTest() {
         User currentUser = [SELECT Id, AccountId FROM User WHERE Id = :UserInfo.getUserId()];
-        // startTest flyttet hit på grunn av limits
         Test.startTest();
         WorkType workType = HOT_TestDataFactory.createWorkType();
         insert workType;
         HOT_Request__c request = HOT_TestDataFactory.createRequest('TEST', workType);
         insert request;
-
         Thread__c thread = HOT_TestDataFactory.createThread();
         thread.CRM_Account__c = currentUser.AccountId;
         thread.CRM_Related_Object__c = request.Id;
         insert thread;
+        ServiceResource serviceResource = HOT_TestDataFactory.createServiceResource(currentUser.Id);
+        serviceResource.HOT_MobilePhoneOverride__c = '12345678';
+        insert serviceResource;
 
-        ServiceResource resource = HOT_TestDataFactory.createServiceResource(currentUser.Id);
-        resource.HOT_MobilePhoneOverride__c = '12345678';
-        insert resource;
-
-        ServiceResource sr = [
-            SELECT RelatedRecordId, HOT_MobilePhone__c
-            FROM ServiceResource
-            WHERE RelatedRecordId = :currentUser.Id
-        ];
-        Map<User, List<Thread__c>> userIdToThreadMapSMS = new Map<User, List<Thread__c>>{
-            currentUser => new List<Thread__c>{ thread }
+        Map<ServiceResource, List<Thread__c>> serviceResourceToThreadMap = new Map<ServiceResource, List<Thread__c>>{
+            serviceResource => new List<Thread__c>{ thread }
         };
-        HOT_ReminderSMSService.sendSMSOnNewMessageInterpreter(userIdToThreadMapSMS);
+        HOT_ReminderSMSService.sendSMSOnNewMessageInterpreter(serviceResourceToThreadMap);
+
         Test.stopTest();
-        List<SMS__c> smsList = [SELECT Id, Message__c FROM SMS__c];
-        System.assertEquals(1, smsList.size(), 'Could not create sms-record');
+
+        List<SMS__c> smsList = [SELECT Id, Message__c, Recipient__c, Thread__c FROM SMS__c];
+
+        System.assertEquals(1, smsList.size(), 'Expected exactly one SMS record');
+        System.assertEquals('12345678', smsList[0].Recipient__c, 'Wrong recipient');
+        System.assertEquals(thread.Id, smsList[0].Thread__c, 'Thread not linked correctly');
     }
+
     @IsTest
     static void sendSMSToInterpreterCancelledByUserTest() {
         Test.startTest();
