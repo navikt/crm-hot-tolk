@@ -18,6 +18,16 @@
         </connector>
     </assignments>
     <customErrors>
+        <name>Address_not_found</name>
+        <label>Address not found</label>
+        <locationX>0</locationX>
+        <locationY>0</locationY>
+        <customErrorMessages>
+            <errorMessage>Fant ingen adresse på bruker.</errorMessage>
+            <isFieldError>false</isFieldError>
+        </customErrorMessages>
+    </customErrors>
+    <customErrors>
         <name>Fields_has_to_be_empty</name>
         <label>Fields has to be empty</label>
         <locationX>0</locationX>
@@ -119,6 +129,28 @@
                 <targetReference>Fields_has_to_be_empty</targetReference>
             </connector>
             <label>Fields has to be empty</label>
+        </rules>
+        <rules>
+            <name>Person_Address_does_not_exist</name>
+            <conditionLogic>and</conditionLogic>
+            <conditions>
+                <leftValueReference>$Record.Person__r.INT_ResidentialAddress__c</leftValueReference>
+                <operator>IsBlank</operator>
+                <rightValue>
+                    <booleanValue>true</booleanValue>
+                </rightValue>
+            </conditions>
+            <conditions>
+                <leftValueReference>$Record.Person__r.INT_ResidentialZipCode__c</leftValueReference>
+                <operator>IsBlank</operator>
+                <rightValue>
+                    <booleanValue>true</booleanValue>
+                </rightValue>
+            </conditions>
+            <connector>
+                <targetReference>Address_not_found</targetReference>
+            </connector>
+            <label>Person Address does not exist</label>
         </rules>
     </decisions>
     <decisions>
