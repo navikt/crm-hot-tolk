@@ -156,7 +156,6 @@ export default class Hot_openServiceAppointmentsList_v2 extends LightningElement
             this.error = undefined;
             this.allServiceAppointmentsWired = result.data.map((x) => ({
                 ...x,
-                isUrgent: x.HOT_IsUrgent__c,
                 startAndEndDateWeekday: this.formatDatetime(x.EarliestStartTime, x.DueDate),
                 weekday: getDayOfWeek(x.EarliestStartTime),
                 isOtherProvider: x.HOT_Request__r?.IsOtherEconomicProvicer__c ? 'Ja' : 'Nei'

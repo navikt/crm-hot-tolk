@@ -506,6 +506,11 @@
     </fieldPermissions>
     <fieldPermissions>
         <editable>true</editable>
+        <field>HOT_Request__c.InterpretationMethodType__c</field>
+        <readable>true</readable>
+    </fieldPermissions>
+    <fieldPermissions>
+        <editable>true</editable>
         <field>HOT_Request__c.InterpretationMethod__c</field>
         <readable>true</readable>
     </fieldPermissions>
@@ -1245,11 +1250,6 @@
         <readable>true</readable>
     </fieldPermissions>
     <fieldPermissions>
-        <editable>false</editable>
-        <field>SMS__c.ServiceResource__c</field>
-        <readable>true</readable>
-    </fieldPermissions>
-    <fieldPermissions>
         <editable>true</editable>
         <field>SMS__c.Sender__c</field>
         <readable>true</readable>
@@ -1257,6 +1257,11 @@
     <fieldPermissions>
         <editable>false</editable>
         <field>SMS__c.ServiceAppointment__c</field>
+        <readable>true</readable>
+    </fieldPermissions>
+    <fieldPermissions>
+        <editable>false</editable>
+        <field>SMS__c.ServiceResource__c</field>
         <readable>true</readable>
     </fieldPermissions>
     <fieldPermissions>
@@ -1562,11 +1567,6 @@
     <fieldPermissions>
         <editable>false</editable>
         <field>ServiceAppointment.HOT_IsSerieoppdrag__c</field>
-        <readable>true</readable>
-    </fieldPermissions>
-    <fieldPermissions>
-        <editable>true</editable>
-        <field>ServiceAppointment.HOT_IsUrgent__c</field>
         <readable>true</readable>
     </fieldPermissions>
     <fieldPermissions>

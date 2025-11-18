@@ -18,12 +18,6 @@ export let columns = [
         label: 'Tema',
         name: 'HOT_FreelanceSubject__c',
         type: 'String'
-    },
-    {
-        label: 'Merknad',
-        name: 'isUrgent',
-        type: 'boolean',
-        svg: true
     }
 ];
 export let inDetailsColumns = [
@@ -54,12 +48,6 @@ export let mobileColumns = [
         label: 'Dag',
         name: 'weekday',
         type: 'String'
-    },
-    {
-        label: '',
-        name: 'isUrgent',
-        type: 'boolean',
-        svg: true
     },
     {
         label: 'Info',
