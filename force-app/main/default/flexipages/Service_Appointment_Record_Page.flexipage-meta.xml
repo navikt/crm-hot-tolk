@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="UTF-8" ?>
+<?xml version="1.0" encoding="UTF-8"?>
 <FlexiPage xmlns="http://soap.sforce.com/2006/04/metadata">
     <flexiPageRegions>
         <itemInstances>
@@ -272,46 +272,6 @@
                     <name>uiBehavior</name>
                     <value>readonly</value>
                 </fieldInstanceProperties>
-                <fieldItem>Record.HOT_HapticCommunication__c</fieldItem>
-                <identifier>RecordHOT_HapticCommunication_cField</identifier>
-            </fieldInstance>
-        </itemInstances>
-        <itemInstances>
-            <fieldInstance>
-                <fieldInstanceProperties>
-                    <name>uiBehavior</name>
-                    <value>readonly</value>
-                </fieldInstanceProperties>
-                <fieldItem>Record.HOT_IsSerieoppdrag__c</fieldItem>
-                <identifier>RecordHOT_IsSerieoppdrag_cField</identifier>
-            </fieldInstance>
-        </itemInstances>
-        <itemInstances>
-            <fieldInstance>
-                <fieldInstanceProperties>
-                    <name>uiBehavior</name>
-                    <value>readonly</value>
-                </fieldInstanceProperties>
-                <fieldItem>Record.HOT_IsOtherEconomicProvicer__c</fieldItem>
-                <identifier>RecordHOT_IsOtherEconomicProvicer_cField</identifier>
-            </fieldInstance>
-        </itemInstances>
-        <itemInstances>
-            <fieldInstance>
-                <fieldInstanceProperties>
-                    <name>uiBehavior</name>
-                    <value>readonly</value>
-                </fieldInstanceProperties>
-                <fieldItem>Record.HOT_IsImageInterpreter__c</fieldItem>
-                <identifier>RecordHOT_IsImageInterpreter_cField</identifier>
-            </fieldInstance>
-        </itemInstances>
-        <itemInstances>
-            <fieldInstance>
-                <fieldInstanceProperties>
-                    <name>uiBehavior</name>
-                    <value>readonly</value>
-                </fieldInstanceProperties>
                 <fieldItem>Record.HOT_TotalNumberOfInterpreters__c</fieldItem>
                 <identifier>RecordHOT_TotalNumberOfInterpreters_cField</identifier>
             </fieldInstance>
@@ -366,16 +326,6 @@
                     <name>uiBehavior</name>
                     <value>none</value>
                 </fieldInstanceProperties>
-                <fieldItem>Record.HOT_IsUrgent__c</fieldItem>
-                <identifier>RecordHOT_IsUrgent_cField</identifier>
-            </fieldInstance>
-        </itemInstances>
-        <itemInstances>
-            <fieldInstance>
-                <fieldInstanceProperties>
-                    <name>uiBehavior</name>
-                    <value>none</value>
-                </fieldInstanceProperties>
                 <fieldItem>Record.HOT_CancelComment__c</fieldItem>
                 <identifier>RecordHOT_CancelComment_cField</identifier>
             </fieldInstance>
@@ -404,16 +354,6 @@
             <fieldInstance>
                 <fieldInstanceProperties>
                     <name>uiBehavior</name>
-                    <value>readonly</value>
-                </fieldInstanceProperties>
-                <fieldItem>Record.HOT_DegreeOfHearingAndVisualImpairment__c</fieldItem>
-                <identifier>RecordHOT_DegreeOfHearingAndVisualImpairment_cField</identifier>
-            </fieldInstance>
-        </itemInstances>
-        <itemInstances>
-            <fieldInstance>
-                <fieldInstanceProperties>
-                    <name>uiBehavior</name>
                     <value>none</value>
                 </fieldInstanceProperties>
                 <fieldItem>Record.HOT_IsScreenInterpreterNew__c</fieldItem>
@@ -424,10 +364,30 @@
             <fieldInstance>
                 <fieldInstanceProperties>
                     <name>uiBehavior</name>
-                    <value>none</value>
+                    <value>readonly</value>
                 </fieldInstanceProperties>
-                <fieldItem>Record.HOT_PreferredResource__c</fieldItem>
-                <identifier>RecordHOT_PreferredResource_cField</identifier>
+                <fieldItem>Record.HOT_IsSerieoppdrag__c</fieldItem>
+                <identifier>RecordHOT_IsSerieoppdrag_cField</identifier>
+            </fieldInstance>
+        </itemInstances>
+        <itemInstances>
+            <fieldInstance>
+                <fieldInstanceProperties>
+                    <name>uiBehavior</name>
+                    <value>readonly</value>
+                </fieldInstanceProperties>
+                <fieldItem>Record.HOT_IsOtherEconomicProvicer__c</fieldItem>
+                <identifier>RecordHOT_IsOtherEconomicProvicer_cField</identifier>
+            </fieldInstance>
+        </itemInstances>
+        <itemInstances>
+            <fieldInstance>
+                <fieldInstanceProperties>
+                    <name>uiBehavior</name>
+                    <value>readonly</value>
+                </fieldInstanceProperties>
+                <fieldItem>Record.HOT_IsImageInterpreter__c</fieldItem>
+                <identifier>RecordHOT_IsImageInterpreter_cField</identifier>
             </fieldInstance>
         </itemInstances>
         <itemInstances>
@@ -690,6 +650,20 @@
                 <identifier>RecordHOT_FreelanceSubject_cField</identifier>
             </fieldInstance>
         </itemInstances>
+        <name>Facet-4218a8ed-d3e6-4d8c-852b-c954f5b9abae</name>
+        <type>Facet</type>
+    </flexiPageRegions>
+    <flexiPageRegions>
+        <itemInstances>
+            <fieldInstance>
+                <fieldInstanceProperties>
+                    <name>uiBehavior</name>
+                    <value>none</value>
+                </fieldInstanceProperties>
+                <fieldItem>Record.HOT_Processed__c</fieldItem>
+                <identifier>RecordHOT_Processed_cField</identifier>
+            </fieldInstance>
+        </itemInstances>
         <itemInstances>
             <fieldInstance>
                 <fieldInstanceProperties>
@@ -708,20 +682,6 @@
                 </fieldInstanceProperties>
                 <fieldItem>Record.HOT_ReleaseDate__c</fieldItem>
                 <identifier>RecordHOT_ReleaseDate_cField</identifier>
-            </fieldInstance>
-        </itemInstances>
-        <name>Facet-4218a8ed-d3e6-4d8c-852b-c954f5b9abae</name>
-        <type>Facet</type>
-    </flexiPageRegions>
-    <flexiPageRegions>
-        <itemInstances>
-            <fieldInstance>
-                <fieldInstanceProperties>
-                    <name>uiBehavior</name>
-                    <value>none</value>
-                </fieldInstanceProperties>
-                <fieldItem>Record.HOT_Processed__c</fieldItem>
-                <identifier>RecordHOT_Processed_cField</identifier>
             </fieldInstance>
         </itemInstances>
         <name>Facet-45f6f7de-a19c-4066-b266-fab85c4bb763</name>
@@ -865,7 +825,7 @@
                 </componentInstanceProperties>
                 <componentInstanceProperties>
                     <name>label</name>
-                    <value>Time Constraints</value>
+                    <value>Bestilt tid</value>
                 </componentInstanceProperties>
                 <componentName>flexipage:fieldSection</componentName>
                 <identifier>flexipage_fieldSection2</identifier>
@@ -883,7 +843,7 @@
                 </componentInstanceProperties>
                 <componentInstanceProperties>
                     <name>label</name>
-                    <value>@@@SFDCActual_TimesSFDC@@@</value>
+                    <value>Faktisk tid</value>
                 </componentInstanceProperties>
                 <componentName>flexipage:fieldSection</componentName>
                 <identifier>flexipage_fieldSection3</identifier>
@@ -901,7 +861,7 @@
                 </componentInstanceProperties>
                 <componentInstanceProperties>
                     <name>label</name>
-                    <value>Address</value>
+                    <value>Adresse</value>
                 </componentInstanceProperties>
                 <componentName>flexipage:fieldSection</componentName>
                 <identifier>flexipage_fieldSection4</identifier>

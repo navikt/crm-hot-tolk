@@ -124,7 +124,6 @@ export default class Hot_wantedServiceAppointmentsList extends LightningElement 
             this.allServiceAppointmentsWired = result.data.map((x) => ({
                 ...x,
                 weekday: getDayOfWeek(x.EarliestStartTime),
-                isUrgent: x.HOT_IsUrgent__c,
                 startAndEndDateWeekday: formatDatetimeinterval(x.EarliestStartTime, x.DueDate),
                 isOtherProvider: x.HOT_Request__r?.IsOtherEconomicProvicer__c ? 'Ja' : 'Nei'
             }));
