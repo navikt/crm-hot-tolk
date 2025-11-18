@@ -302,7 +302,7 @@ public without sharing class HOT_ReminderSMSService {
                 SMS__c sms = new SMS__c();
                 sms.Domain__c = 'HOT';
                 sms.Type__c = 'Message';
-                sms.Account__c = thread.CRM_Account__c;
+                sms.Account__c = sr.AccountId;
                 sms.Thread__c = thread.Id;
                 sms.Recipient__c = phoneNumber;
                 sms.Message__c = constructOnNewMessage();
