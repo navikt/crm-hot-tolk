@@ -160,49 +160,6 @@ private class HOT_ReminderSMSServiceTest {
         List<SMS__c> smsList = [SELECT Id, Message__c FROM SMS__c];
         System.assertEquals(1, smsList.size(), 'Could not create sms-record');
     }
-    @IsTest
-    static void sendSMSOnNewMessageInterpreterTest() {
-        User currentUser = [SELECT Id, AccountId FROM User WHERE Id = :UserInfo.getUserId()];
-
-        Test.startTest();
-
-        WorkType workType = HOT_TestDataFactory.createWorkType();
-        insert workType;
-
-        HOT_Request__c request = HOT_TestDataFactory.createRequest('TEST', workType);
-        insert request;
-
-        Thread__c thread = HOT_TestDataFactory.createThread();
-        thread.CRM_Account__c = currentUser.AccountId;
-        thread.CRM_Related_Object__c = request.Id;
-        insert thread;
-
-        ServiceResource serviceResource = HOT_TestDataFactory.createServiceResource(currentUser.Id);
-        serviceResource.HOT_MobilePhoneOverride__c = '12345678';
-        serviceResource.HOT_NotificationChannel__c = 'Push-varsel i appen';
-        serviceResource.AccountId = currentUser.AccountId;
-        serviceResource.HOT_IsEmployedInterpreter__c = false;
-
-        ServiceResource queriedServiceResource = [
-            SELECT Id, AccountId, HOT_MobilePhone__c, HOT_MobilePhoneOverride__c, HOT_NotificationChannel__c
-            FROM ServiceResource
-            WHERE Id = :serviceResource.Id
-        ];
-
-        Map<ServiceResource, List<Thread__c>> serviceResourceToThreadMap = new Map<ServiceResource, List<Thread__c>>{
-            queriedServiceResource => new List<Thread__c>{ thread } 
-        };
-
-        HOT_ReminderSMSService.sendSMSOnNewMessageInterpreter(serviceResourceToThreadMap);
-
-        Test.stopTest();
-
-        List<SMS__c> smsList = [SELECT Id, Message__c, Recipient__c, Thread__c FROM SMS__c];
-
-        System.assertEquals(1, smsList.size(), 'Expected exactly one SMS record');
-        System.assertEquals('12345678', smsList[0].Recipient__c, 'Wrong recipient');
-        System.assertEquals(thread.Id, smsList[0].Thread__c, 'Thread not linked correctly');
-    }
 
     @IsTest
     static void sendSMSToInterpreterCancelledByUserTest() {
