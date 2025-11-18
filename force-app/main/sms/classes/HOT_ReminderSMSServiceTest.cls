@@ -163,24 +163,36 @@ private class HOT_ReminderSMSServiceTest {
     @IsTest
     static void sendSMSOnNewMessageInterpreterTest() {
         User currentUser = [SELECT Id, AccountId FROM User WHERE Id = :UserInfo.getUserId()];
+
         Test.startTest();
+
         WorkType workType = HOT_TestDataFactory.createWorkType();
         insert workType;
+
         HOT_Request__c request = HOT_TestDataFactory.createRequest('TEST', workType);
         insert request;
+
         Thread__c thread = HOT_TestDataFactory.createThread();
         thread.CRM_Account__c = currentUser.AccountId;
         thread.CRM_Related_Object__c = request.Id;
         insert thread;
+
         ServiceResource serviceResource = HOT_TestDataFactory.createServiceResource(currentUser.Id);
         serviceResource.HOT_MobilePhoneOverride__c = '12345678';
         serviceResource.HOT_NotificationChannel__c = 'Push-varsel i appen';
         serviceResource.AccountId = currentUser.AccountId;
-        insert serviceResource;
+        serviceResource.HOT_IsEmployedInterpreter__c = false;
+
+        ServiceResource queriedServiceResource = [
+            SELECT Id, AccountId, HOT_MobilePhone__c, HOT_MobilePhoneOverride__c, HOT_NotificationChannel__c
+            FROM ServiceResource
+            WHERE Id = :serviceResource.Id
+        ];
 
         Map<ServiceResource, List<Thread__c>> serviceResourceToThreadMap = new Map<ServiceResource, List<Thread__c>>{
-            serviceResource => new List<Thread__c>{ thread }
+            queriedServiceResource => new List<Thread__c>{ thread } 
         };
+
         HOT_ReminderSMSService.sendSMSOnNewMessageInterpreter(serviceResourceToThreadMap);
 
         Test.stopTest();
