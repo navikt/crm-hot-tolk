@@ -172,11 +172,11 @@
                     disabled={isRequestCancelButtonDisabled}
                 ></c-button>
                 <c-button
-                    button-label="Legg til filer"
+                    button-label={uploadFileButtonLabel}
                     button-styling="primary"
                     style="padding-right: 1vw; padding-bottom: 1vw"
-                    desktop-style="width: 8rem; justify-content: center"
-                    mobile-style="width: 8rem; justify-content: center"
+                    desktop-style="justify-content: center"
+                    mobile-style="justify-content: center"
                     onbuttonclick={addFiles}
                     disabled={isRequestAddFilesButtonDisabled}
                 ></c-button>
@@ -258,7 +258,7 @@
                 <c-hot_loader size="3xlarge"></c-hot_loader>
             </div>
             <div lwc:if={showUploadFilesComponent}>
-                <h2 style="font-size: 1.25rem; text-align: center">Legg ved filer til denne bestillingen</h2>
+                <h2 style="font-size: 1.25rem; text-align: center">{uploadFileTitle}</h2>
                 <br />
                 <div class="fileUploader">
                     <div lwc:if={isOwnRequest}>
@@ -266,7 +266,7 @@
                             record-id={uploadTargetId}
                             name="fileUploader"
                             class="file-selector-large"
-                            label="Ved å laste opp filer er jeg klar over at filene vil bli delt med formidler og tolken(e) jeg får. Opplastingen vil starte umiddelbart. Maks filstørelse: 2 GB."
+                            label={uploadFileFormLabel}
                             title="Maks filstørrelse: 2 GB."
                             onuploadfinished={handleUploadFinished}
                             multiple
@@ -280,7 +280,7 @@
                             file-field-value={uploadTargetId}
                             name="fileUploader"
                             class="file-selector-large"
-                            label="Ved å laste opp filer er jeg klar over at filene vil bli delt med formidler og tolken(e) jeg får. Opplastingen vil starte umiddelbart. Maks filstørelse: 2 GB."
+                            label={uploadFileFormLabel}
                             title="Maks filstørrelse: 2 GB."
                             onuploadfinished={handleUploadFinished}
                             multiple

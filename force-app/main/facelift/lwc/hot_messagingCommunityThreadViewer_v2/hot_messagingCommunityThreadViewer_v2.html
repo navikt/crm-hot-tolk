@@ -177,12 +177,15 @@
                                                 <span>{interestedResource.HOT_TermsOfAgreement__c}</span>
                                             </p>
                                         </template>
-
+                                        <template lwc:if={serviceAppointment.HOT_Interpreters__c}>
+                                            <p>(Med)tolk: <span>{serviceAppointment.HOT_Interpreters__c}</span></p>
+                                        </template>
                                         <p>Tilleggsopplysninger: <span>{serviceAppointment.Description}</span></p>
 
                                         <template lwc:if={ordererPhoneNumber}>
                                             <p>Telefonnummer til bestiller:&nbsp;<span>{ordererPhoneNumber}</span></p>
                                         </template>
+                                        <p>Annen betaler: <span>{isOtherProvider}</span></p>
 
                                         <template lwc:if={serviceAppointment.HOT_Dispatcher__c}>
                                             <p>Formidler: <span>{serviceAppointment.HOT_Dispatcher__c}</span></p>

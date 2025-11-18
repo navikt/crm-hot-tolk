@@ -241,14 +241,45 @@ public without sharing class HOT_RequestListController {
     }
 
     @AuraEnabled(cacheable=true)
-    public static List<Common_Code__c> getPostalCity(String postalCode){
-        List<Common_Code__c> postalCommonCode =  [
-            SELECT CRM_Active__c, CRM_Code_Set__c, CRM_Code__c, Name, CRM_UniqueKey__c 
-            from Common_Code__c 
-            where CRM_Code_Set__c ='Postnummer'
-            AND CRM_Active__c = true
-            AND CRM_Code__c = :postalCode
-        ]; 
+    public static List<Common_Code__c> getPostalCity(String postalCode) {
+        List<Common_Code__c> postalCommonCode = [
+            SELECT CRM_Active__c, CRM_Code_Set__c, CRM_Code__c, Name, CRM_UniqueKey__c
+            FROM Common_Code__c
+            WHERE CRM_Code_Set__c = 'Postnummer' AND CRM_Active__c = TRUE AND CRM_Code__c = :postalCode
+        ];
         return postalCommonCode;
+    }
+
+    @AuraEnabled(cacheable=true)
+    public static Person__c getUserHomeAddress() {
+        User currentUser = [
+            SELECT Id, AccountId, Account.CRM_Person__c
+            FROM User
+            WHERE Id = :UserInfo.getUserId()
+            LIMIT 1
+        ];
+
+        List<Person__c> persons = [
+            SELECT Id, INT_ResidentialAddress__c, INT_ResidentialZipCode__c
+            FROM Person__c
+            WHERE Id = :currentUser.Account.CRM_Person__c
+            LIMIT 1
+        ];
+
+        if (persons.isEmpty()) {
+            return null;
+        }
+
+        return persons[0];
+    }
+
+    @AuraEnabled(cacheable=true)
+    public static List<Account> getOrganizationInfo(String organizationNumber) {
+        List<Account> account = [
+            SELECT Id, Name, INT_OrganizationNumber__c
+            FROM Account
+            WHERE INT_OrganizationNumber__c = :organizationNumber
+        ];
+        return account;
     }
 }
