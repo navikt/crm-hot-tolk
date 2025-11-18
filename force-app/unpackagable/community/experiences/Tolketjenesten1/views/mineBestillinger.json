@@ -36,19 +36,12 @@
           "renditionMap" : { },
           "type" : "component"
         }, {
-          "componentAttributes" : { },
-          "componentName" : "c:hot_tolketjenestenHovedBanner",
-          "id" : "6bd37e7e-3b55-44b6-9271-b52294c48e66",
-          "renderPriority" : "NEUTRAL",
-          "renditionMap" : { },
-          "type" : "component"
-        }, {
           "componentAttributes" : {
-            "header" : "Mine Bestillinger ",
+            "header" : "Mine Bestillinger",
             "isAccount" : true
           },
-          "componentName" : "c:mineBestillingerWrapper",
-          "id" : "1eb443f1-02ed-41d7-ad51-96a95cb20e26",
+          "componentName" : "c:hot_myRequestsWrapper",
+          "id" : "31d986a1-a846-4d95-badf-9e1fe751b8bf",
           "renderPriority" : "NEUTRAL",
           "renditionMap" : { },
           "type" : "component"
