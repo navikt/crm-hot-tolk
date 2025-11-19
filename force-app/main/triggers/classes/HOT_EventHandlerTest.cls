@@ -1,4 +1,4 @@
-@IsTest(IsParallel=true)
+@IsTest(IsParallel=false)
 private class HOT_EventHandlerTest {
     // ---------- Test Utilities ----------
     private static Event makeEvent(
@@ -56,8 +56,10 @@ private class HOT_EventHandlerTest {
 
         List<Event> allToInsert = new List<Event>{ shouldDelete, wrongSubject, hasWhat, wrongDesc, blankDesc };
 
-        Test.startTest();
         insert allToInsert;
+
+        Test.startTest();
+        HOT_FaultyEventCleanupBatch.run(50);
         Test.stopTest();
 
         Set<Id> allIds = new Set<Id>();
@@ -66,7 +68,7 @@ private class HOT_EventHandlerTest {
 
         Map<Id, Event> remaining = new Map<Id, Event>([SELECT Id FROM Event WHERE Id IN :allIds]);
 
-        System.assert(!remaining.containsKey(shouldDelete.Id), 'Matching event should be deleted by the trigger.');
+        System.assert(!remaining.containsKey(shouldDelete.Id), 'Matching event should be deleted by the batch job.');
         System.assert(remaining.containsKey(wrongSubject.Id), 'Non SA- subject should remain.');
         System.assert(remaining.containsKey(hasWhat.Id), 'Events with WhatId should remain.');
         System.assert(remaining.containsKey(wrongDesc.Id), 'Events w/o required link should remain.');
@@ -208,5 +210,42 @@ private class HOT_EventHandlerTest {
         Test.stopTest();
 
         System.assert(true, 'Delete failure path executed (already-deleted record).');
+    }
+
+    @IsTest
+    static void scheduleHelperCreatesQuarterHourlyJobs() {
+        Test.startTest();
+        List<String> jobIds = HOT_FaultyEventCleanupScheduler.scheduleEvery15Minutes(
+            'Test HOT Faulty Event Cleanup ' + String.valueOf(DateTime.now().getTime())
+        );
+        Test.stopTest();
+
+        System.assertEquals(4, jobIds.size(), 'Helper should return the four scheduled job Ids.');
+        for (String jobId : jobIds) {
+            System.assertNotEquals(null, jobId, 'Each scheduled job should return a non-null Id.');
+            System.abortJob(jobId);
+        }
+    }
+
+    @IsTest
+    static void schedulerLaunchesBatch() {
+        String jobName = 'Test HOT Faulty Event Cleanup ' + String.valueOf(DateTime.now().getTime());
+
+        Test.startTest();
+        String jobId = System.schedule(
+            jobName,
+            '0 0 0 1 1 ? 2050',
+            new HOT_FaultyEventCleanupScheduler()
+        );
+        Test.stopTest();
+
+        CronTrigger scheduledTrigger = [
+            SELECT Id, CronJobDetail.Name, State
+            FROM CronTrigger
+            WHERE CronJobDetail.Name = :jobName
+            LIMIT 1
+        ];
+
+        System.assertEquals('WAITING', scheduledTrigger.State, 'Scheduler should create a waiting CronTrigger record.');
     }
 }
