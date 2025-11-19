@@ -107,6 +107,9 @@ export default class Hot_openServiceAppointmentsList_v2 extends LightningElement
     numberTimesCalled = 0;
     connectedCallback() {
         this.updateURL();
+        sessionStorage.removeItem('openSessionFilter');
+        sessionStorage.removeItem('openfilters');
+
         if (sessionStorage.getItem('checkedrowsSavedForRefresh')) {
             this.checkedServiceAppointments = JSON.parse(sessionStorage.getItem('checkedrowsSavedForRefresh'));
             sessionStorage.removeItem('checkedrowsSavedForRefresh');
@@ -181,8 +184,11 @@ export default class Hot_openServiceAppointmentsList_v2 extends LightningElement
     }
 
     refresh() {
-        let filterFromSessionStorage = JSON.parse(sessionStorage.getItem('openSessionFilter'));
-        this.filters = filterFromSessionStorage === null ? defaultFilters() : filterFromSessionStorage;
+        if (this.serviceResource) {
+            this.filters = setDefaultFilters(this.serviceResource.HOT_PreferredRegions__c);
+        } else {
+            this.filters = defaultFilters();
+        }
 
         this.sendRecords();
         this.sendFilters();
