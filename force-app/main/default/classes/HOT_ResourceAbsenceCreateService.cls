@@ -16,12 +16,12 @@ public without sharing class HOT_ResourceAbsenceCreateService implements Databas
             this.timeScope = Datetime.now().addHours(-1);
         }
         System.debug('timeScope: ' + timeScope);
-        this.query = 'SELECT Id, OwnerId, StartDateTime, EndDateTime, ShowAs, Subject FROM Event WHERE RecordType.DeveloperName = \'HOT_Events\' AND What.Type != \'ServiceAppointment\' AND LastModifiedDate > :timeScope AND ShowAs != \'Free\'';
+        this.query = 'SELECT Id, OwnerId, StartDateTime, EndDateTime, ShowAs, Subject FROM Event WHERE RecordType.DeveloperName = \'HOT_Events\' AND What.Type != \'ServiceAppointment\' AND What.Type != \'ResourceAbsence\' AND LastModifiedDate > :timeScope AND ShowAs != \'Free\'';
     }
 
     public HOT_ResourceAbsenceCreateService(Datetime timeScope) {
         this.timeScope = timeScope;
-        this.query = 'SELECT Id, OwnerId, StartDateTime, EndDateTime, ShowAs, Subject FROM Event WHERE RecordType.DeveloperName = \'HOT_Events\' AND What.Type != \'ServiceAppointment\' AND LastModifiedDate > :timeScope AND ShowAs != \'Free\'';
+        this.query = 'SELECT Id, OwnerId, StartDateTime, EndDateTime, ShowAs, Subject FROM Event WHERE RecordType.DeveloperName = \'HOT_Events\' AND What.Type != \'ServiceAppointment\' AND What.Type != \'ResourceAbsence\' AND LastModifiedDate > :timeScope AND ShowAs != \'Free\'';
     }
 
     public HOT_ResourceAbsenceCreateService(String query) {
