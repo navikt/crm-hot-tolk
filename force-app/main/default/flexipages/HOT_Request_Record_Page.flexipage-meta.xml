@@ -288,8 +288,8 @@
                     <name>uiBehavior</name>
                     <value>none</value>
                 </fieldInstanceProperties>
-                <fieldItem>Record.InterpretationMethodType__c</fieldItem>
-                <identifier>RecordInterpretationMethodType_cField</identifier>
+                <fieldItem>Record.InterpretationMethod__c</fieldItem>
+                <identifier>RecordInterpretationMethod__cField</identifier>
             </fieldInstance>
         </itemInstances>
         <itemInstances>
