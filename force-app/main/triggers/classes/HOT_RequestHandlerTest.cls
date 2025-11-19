@@ -253,7 +253,6 @@ private class HOT_RequestHandlerTest {
 
         HOT_Request__c request = HOT_TestDataFactory.createRequest('TEST', workType);
         request.Source__c = 'Dispatcher';
-        request.UserInterpretationMethod__c = 'SK';
         Account acc = HOT_TestDataFactory.createAccount(true);
         insert acc;
         request.Orderer__c = acc.Id;
