@@ -68,6 +68,7 @@ public with sharing class HOT_FreelanceAbsenceController {
         absence.End = endTime;
         absence.ResourceId = getUserServiceResourceId();
         absence.Type = absenceType;
+        absence.FSL__Approved__c=true;
 
         try {
             resolveConflictsForTimePeriod(absence.Start, absence.End, 'Fravær');
