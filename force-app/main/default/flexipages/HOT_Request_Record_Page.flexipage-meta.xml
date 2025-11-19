@@ -35,6 +35,12 @@
                 <identifier>c_hot_requestWarningToast</identifier>
             </componentInstance>
         </itemInstances>
+        <itemInstances>
+            <componentInstance>
+                <componentName>hot_otherPayerNotification</componentName>
+                <identifier>c_hot_otherPayerNotification</identifier>
+            </componentInstance>
+        </itemInstances>
         <mode>Replace</mode>
         <name>header</name>
         <type>Region</type>
@@ -352,6 +358,16 @@
                 </fieldInstanceProperties>
                 <fieldItem>Record.MeetingPostalCity__c</fieldItem>
                 <identifier>RecordMeetingPostalCity__cField</identifier>
+            </fieldInstance>
+        </itemInstances>
+        <itemInstances>
+            <fieldInstance>
+                <fieldInstanceProperties>
+                    <name>uiBehavior</name>
+                    <value>none</value>
+                </fieldInstanceProperties>
+                <fieldItem>Record.HOT_IsMeetingAddressSameAsHome__c</fieldItem>
+                <identifier>RecordHOT_IsMeetingAddressSameAsHome_cField</identifier>
             </fieldInstance>
         </itemInstances>
         <name>Facet-5ac94f05-c841-4dc0-8081-b34c6e9b6deb</name>

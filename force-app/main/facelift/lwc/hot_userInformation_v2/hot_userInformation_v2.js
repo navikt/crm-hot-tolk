@@ -72,8 +72,10 @@ export default class Hot_userInformation_v2 extends LightningElement {
         }
     }
 
+    personWireResult;
     @wire(getPerson)
     wiredGetPerson(result) {
+        this.personWireResult = result;
         if (result.data) {
             this.person = result.data;
             this.recordId = this.person.Id;
@@ -171,22 +173,29 @@ export default class Hot_userInformation_v2 extends LightningElement {
             personId: this.recordId,
             newNotificationValue: this.newSelectedOption,
             isReservedAgainstNotifications: this.newIsReservedAgainstNotifications
-        }).then(() => {
-            this.selectedOption = this.newSelectedOption;
-            if (typeof this.newIsReservedAgainstNotifications == 'boolean') {
-                this.isReservedAgainstNotifications = this.newIsReservedAgainstNotifications;
-            }
-            // Show success message
-            this.successMessage = 'Endringen har blitt lagret.';
-            this.showSuccess = true;
+        })
+            .then(() => {
+                return refreshApex(this.personWireResult);
+            })
+            .then(() => {
+                // Update local state with refreshed data
+                this.selectedOption = this.person.HOT_NotificationChannel__c;
+                this.isReservedAgainstNotifications = this.person.HOT_IsReservationAgainstNotifications__c;
 
-            const newMessage = 'Endringen har blitt lagret';
-            if (this.ariaMessage === newMessage) {
-                this.ariaMessage = newMessage + ' '; 
-            } else {
-                this.ariaMessage = newMessage;
-            }
-        });
+                this.picklistOptions = this.picklistOptions.map(option => ({
+                    ...option,
+                    selected:
+                        (this.isReservedAgainstNotifications && option.name === "Reserver mot alle varsler") ||
+                        (!this.isReservedAgainstNotifications && option.name === this.selectedOption)
+                }));
+
+                // Show success message
+                this.successMessage = 'Endringen har blitt lagret.';
+                this.showSuccess = true;
+
+                const newMessage = 'Endringen har blitt lagret';
+                this.ariaMessage = (this.ariaMessage === newMessage ? newMessage + ' ' : newMessage);
+            });
     }
 
     ariaMessage = '';
