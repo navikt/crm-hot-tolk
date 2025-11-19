@@ -1,16 +1,16 @@
 public class HOT_UpdateExistingRecords implements Database.Batchable<sObject> {
     public Database.QueryLocator start(Database.BatchableContext bc) {
         return Database.getQueryLocator(
-            'SELECT Id, Subject,  Street, City, PostalCode FROM ServiceAppointment WHERE HOT_AssignmentType__c = \'Bildetolkvakt\' AND (Street = \'\' OR City = \'\' OR PostalCode = \'\') AND CreatedDate >= LAST_N_DAYS:365'
+            'SELECT Id, InterpretationMethod__c, InterpretationMethodName__c, InterpretationMethodType__c, InterpretationMethodSecondary__c FROM HOT_Request__c WHERE InterpretationMethod__c != null OR InterpretationMethodSecondary__c != null'
         );
     }
 
-    public void execute(Database.BatchableContext bc, List<ServiceAppointment> records) {
-        for (ServiceAppointment sa : records) {
-            sa.Country = 'Norge';
-            sa.City = 'N/A';
-            sa.Street = 'N/A';
-            sa.PostalCode = 'N/A';
+    public void execute(Database.BatchableContext bc, List<HOT_Request__c> records) {
+
+        for(HOT_Request__c req : records) {
+            if(req.InterpretationMethodType__c == null) {
+                req.InterpretationMethodName__c = req.InterpretationMethodType__c;
+            }
         }
         update records;
     }
