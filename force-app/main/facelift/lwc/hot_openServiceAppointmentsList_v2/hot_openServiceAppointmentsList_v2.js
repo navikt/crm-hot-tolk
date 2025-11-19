@@ -115,17 +115,29 @@ export default class Hot_openServiceAppointmentsList_v2 extends LightningElement
             sessionStorage.removeItem('checkedrowsSavedForRefresh');
         }
         this.setColumns();
+
+        if (this.wiredServiceResourceResult) {
+            refreshApex(this.wiredServiceResourceResult);
+        }
         refreshApex(this.wiredAllServiceAppointmentsResult);
     }
 
+    wiredServiceResourceResult;
     serviceResource;
     serviceResourceId;
     @wire(getServiceResource)
     wiredServiceresource(result) {
         if (result.data) {
+            this.wiredServiceResourceResult = result;
             this.serviceResource = result.data;
             this.serviceResourceId = this.serviceResource.Id;
             this.filters = setDefaultFilters(this.serviceResource.HOT_PreferredRegions__c);
+
+            sessionStorage.removeItem('openfilters');
+            sessionStorage.removeItem('openSessionFilter');
+
+            this.applyFilter({ detail: { filterArray: this.filters, setRecords: true } });
+
             if (this.wiredAllServiceAppointmentsResult !== null) {
                 this.refresh();
             }
@@ -184,12 +196,6 @@ export default class Hot_openServiceAppointmentsList_v2 extends LightningElement
     }
 
     refresh() {
-        if (this.serviceResource) {
-            this.filters = setDefaultFilters(this.serviceResource.HOT_PreferredRegions__c);
-        } else {
-            this.filters = defaultFilters();
-        }
-
         this.sendRecords();
         this.sendFilters();
         this.sendCheckedRows();
