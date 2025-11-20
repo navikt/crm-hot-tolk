@@ -2,41 +2,34 @@ public without sharing class HOT_MessageHandler extends MyTriggers {
     public override void onAfterInsert() {
         List<Id> threadIdsToNotifyDispatcherOnNewMessage = new List<Id>();
         List<Id> threadIdsToNotifyUserOnNewMessage = new List<Id>();
-        List<Id> threadIdsToNotifyInterpretersOnNewMessage = new List<Id>();
 
-        Set<String> threadType = new Set<String>{
+        Set<String> allFormidlerThreadType = new Set<String>{
             'HOT_BRUKER-FORMIDLER',
             'HOT_BESTILLER-FORMIDLER',
             'HOT_TOLK-RESSURSKONTOR',
             'HOT_TOLK-FORMIDLER'
         };
 
+        Set<String> allHotThreadTypes = new Set<String>{
+            'HOT_BRUKER-FORMIDLER',
+            'HOT_BESTILLER-FORMIDLER',
+            'HOT_TOLK-RESSURSKONTOR',
+            'HOT_TOLK-FORMIDLER',
+            'HOT_TOLK-TOLK',
+            'HOT_BRUKER-TOLK'
+        };
+
         for (Message__c message : (List<Message__c>) records) {
             String type = message.CRM_Thread_Type__c;
             String role = message.HOT_User_Role__c;
 
-            if (threadType.contains(type)) {
+            if (allFormidlerThreadType.contains(type)) {
                 if (role != null && !role.contains(', Formidler')) {
                     threadIdsToNotifyDispatcherOnNewMessage.add(message.CRM_Thread__c);
-                } else {
-                    if (type == 'HOT_TOLK-FORMIDLER') {
-                        threadIdsToNotifyInterpretersOnNewMessage.add(message.CRM_Thread__c);
-                    } else {
-                        threadIdsToNotifyUserOnNewMessage.add(message.CRM_Thread__c);
-                    }
                 }
-            } else {
-                switch on type {
-                    when 'HOT_TOLK-TOLK' {
-                        threadIdsToNotifyInterpretersOnNewMessage.add(message.CRM_Thread__c);
-                    }
-                    when 'HOT_BRUKER-TOLK' {
-                        threadIdsToNotifyInterpretersOnNewMessage.add(message.CRM_Thread__c);
-                        if (role != null && (!role.contains(', Tolkebruker') && !role.contains(', Bestiller'))) {
-                            threadIdsToNotifyUserOnNewMessage.add(message.CRM_Thread__c);
-                        }
-                    }
-                }
+            }
+            if (allHotThreadTypes.contains(type)) {
+                threadIdsToNotifyUserOnNewMessage.add(message.CRM_Thread__c);
             }
         }
 
@@ -45,10 +38,7 @@ public without sharing class HOT_MessageHandler extends MyTriggers {
         }
 
         if (!threadIdsToNotifyUserOnNewMessage.isEmpty()) {
-            HOT_MessagesNotification.NotifyUser(threadIdsToNotifyUserOnNewMessage);
-        }
-        if (!threadIdsToNotifyInterpretersOnNewMessage.isEmpty()) {
-            HOT_MessagesNotification.NotifyInterpreter(threadIdsToNotifyInterpretersOnNewMessage);
+            HOT_MessagesNotification.NotifyUserOnNewMessage(threadIdsToNotifyUserOnNewMessage);
         }
     }
 }
