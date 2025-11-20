@@ -74,20 +74,24 @@ private class HOT_MessagesNotificationTest {
 
         Message__c message = new Message__c();
         message.CRM_Thread__c = thread.Id;
-        message.CRM_From_Contact__c = account.PersonContactId;
         message.CRM_Message_Text__c = 'Dette er en testmelding';
-        message.HOT_User_Role__c = HOT_MessageHelper.getUserProfileAndName('');
-        insert message;
-
-        List<Id> threadIds = new List<Id>();
-        List<Thread__c> threads = [SELECT Id FROM Thread__c];
-        for (Thread__c t : threads) {
-            threadIds.add(t.Id);
-        }
+        message.HOT_User_Role__c = ', Formidler';
 
         test.startTest();
-        HOT_MessagesNotification.NotifyUser(threadIds);
+        insert message;
         test.stopTest();
+
+        List<HOT_Notification__c> notifications = [
+            SELECT Id, HOT_NotificationChannel__c
+            FROM HOT_Notification__c
+            WHERE HOT_RelatedObject__c = :thread.Id
+        ];
+        System.assertEquals(1, notifications.size(), 'Det skal være opprettet én HOT_Notification__c');
+        System.assertEquals(
+            'Push-varsel i appen',
+            notifications[0].HOT_NotificationChannel__c,
+            'Varslingskanalen skal være Push'
+        );
     }
 
     @IsTest
@@ -108,20 +112,19 @@ private class HOT_MessagesNotificationTest {
 
         Message__c message = new Message__c();
         message.CRM_Thread__c = thread.Id;
-        message.CRM_From_Contact__c = account.PersonContactId;
         message.CRM_Message_Text__c = 'Dette er en testmelding';
-        message.HOT_User_Role__c = HOT_MessageHelper.getUserProfileAndName('');
-        insert message;
-
-        List<Id> threadIds = new List<Id>();
-        List<Thread__c> threads = [SELECT Id FROM Thread__c];
-        for (Thread__c t : threads) {
-            threadIds.add(t.Id);
-        }
+        message.HOT_User_Role__c = ', Formidler';
 
         test.startTest();
-        HOT_MessagesNotification.NotifyUser(threadIds);
+        insert message;
         test.stopTest();
+
+        List<HOT_Notification__c> notifications = [
+            SELECT Id, HOT_NotificationChannel__c
+            FROM HOT_Notification__c
+            WHERE HOT_RelatedObject__c = :thread.Id
+        ];
+        System.assertEquals(1, notifications.size(), 'Det skal være opprettet én HOT_Notification__c');
     }
 
     @IsTest
@@ -136,24 +139,29 @@ private class HOT_MessagesNotificationTest {
         thread.CRM_Related_Object__c = account.PersonContactId;
         thread.CRM_Account__c = account.Id;
         thread.HOT_IsEmployeeThread__c = false;
-        thread.HOT_Dispatcher__c = UserInfo.getUserId();
 
         insert thread;
+
         Message__c message = new Message__c();
         message.CRM_Thread__c = thread.Id;
-        message.CRM_From_Contact__c = account.PersonContactId;
         message.CRM_Message_Text__c = 'Dette er en testmelding';
-        message.HOT_User_Role__c = HOT_MessageHelper.getUserProfileAndName('');
-        insert message;
+        message.HOT_User_Role__c = ', Formidler';
 
-        List<Id> threadIds = new List<Id>();
-        List<Thread__c> threads = [SELECT Id FROM Thread__c];
-        for (Thread__c t : threads) {
-            threadIds.add(t.Id);
-        }
         test.startTest();
-        HOT_MessagesNotification.NotifyUser(threadIds);
+        insert message;
         test.stopTest();
+
+        List<HOT_Notification__c> notifications = [
+            SELECT Id, HOT_NotificationChannel__c
+            FROM HOT_Notification__c
+            WHERE HOT_RelatedObject__c = :thread.Id
+        ];
+        System.assertEquals(1, notifications.size(), 'Det skal være opprettet én HOT_Notification__c');
+        System.assertEquals(
+            'Push-varsel i appen',
+            notifications[0].HOT_NotificationChannel__c,
+            'Varslingskanalen skal være Push'
+        );
     }
 
     @IsTest
@@ -169,22 +177,22 @@ private class HOT_MessagesNotificationTest {
         thread.HOT_Dispatcher__c = UserInfo.getUserId();
 
         insert thread;
+
         Message__c message = new Message__c();
         message.CRM_Thread__c = thread.Id;
-        message.CRM_From_Contact__c = account.PersonContactId;
         message.CRM_Message_Text__c = 'Dette er en testmelding';
-        message.HOT_User_Role__c = HOT_MessageHelper.getUserProfileAndName('');
-        insert message;
-
-        List<Id> threadIds = new List<Id>();
-        List<Thread__c> threads = [SELECT Id FROM Thread__c];
-        for (Thread__c t : threads) {
-            threadIds.add(t.Id);
-        }
+        message.HOT_User_Role__c = ', Formidler';
 
         test.startTest();
-        HOT_MessagesNotification.NotifyUser(threadIds);
+        insert message;
         test.stopTest();
+
+        List<HOT_Notification__c> notifications = [
+            SELECT Id, HOT_NotificationChannel__c
+            FROM HOT_Notification__c
+            WHERE HOT_RelatedObject__c = :thread.Id
+        ];
+        System.assertEquals(1, notifications.size(), 'Det skal være opprettet én HOT_Notification__c');
     }
 
     @IsTest
@@ -195,27 +203,29 @@ private class HOT_MessagesNotificationTest {
             WHERE CRM_Person__r.HOT_NotificationChannel__c = 'SMS'
         ];
         Thread__c thread = HOT_TestDataFactory.createThread();
+        thread.CRM_Thread_Type__c = 'HOT_BRUKER-FORMIDLER';
         thread.CRM_Related_Object__c = account.PersonContactId;
         thread.CRM_Account__c = account.Id;
         thread.HOT_Dispatcher__c = UserInfo.getUserId();
 
         insert thread;
+
         Message__c message = new Message__c();
         message.CRM_Thread__c = thread.Id;
-        message.CRM_From_Contact__c = account.PersonContactId;
         message.CRM_Message_Text__c = 'Dette er en testmelding';
-        message.HOT_User_Role__c = HOT_MessageHelper.getUserProfileAndName('');
-        insert message;
-
-        List<Id> threadIds = new List<Id>();
-        List<Thread__c> threads = [SELECT Id FROM Thread__c];
-        for (Thread__c t : threads) {
-            threadIds.add(t.Id);
-        }
+        message.HOT_User_Role__c = ', Formidler';
 
         test.startTest();
-        HOT_MessagesNotification.NotifyUser(threadIds);
+        insert message;
         test.stopTest();
+
+        List<HOT_Notification__c> notifications = [
+            SELECT Id, HOT_NotificationChannel__c
+            FROM HOT_Notification__c
+            WHERE HOT_RelatedObject__c = :thread.Id
+        ];
+        System.assertEquals(1, notifications.size(), 'Det skal være opprettet to HOT_Notification__c');
+        System.assertEquals('SMS', notifications[0].HOT_NotificationChannel__c, 'Varslingskanalen skal være SMS');
     }
 
     @IsTest
@@ -227,136 +237,130 @@ private class HOT_MessagesNotificationTest {
         ];
 
         Thread__c thread = HOT_TestDataFactory.createThread();
+        thread.CRM_Thread_Type__c = 'HOT_BESTILLER-FORMIDLER';
         thread.CRM_Related_Object__c = account.PersonContactId;
         thread.CRM_Account__c = account.Id;
         thread.HOT_Dispatcher__c = UserInfo.getUserId();
 
         insert thread;
+
         Message__c message = new Message__c();
         message.CRM_Thread__c = thread.Id;
-        message.CRM_From_Contact__c = account.PersonContactId;
         message.CRM_Message_Text__c = 'Dette er en testmelding';
-        message.HOT_User_Role__c = HOT_MessageHelper.getUserProfileAndName('');
-        insert message;
-
-        List<Id> threadIds = new List<Id>();
-        List<Thread__c> threads = [SELECT Id FROM Thread__c];
-        for (Thread__c t : threads) {
-            threadIds.add(t.Id);
-        }
+        message.HOT_User_Role__c = ', Formidler';
 
         test.startTest();
-        HOT_MessagesNotification.notifyUser(threadIds);
+        insert message;
         test.stopTest();
+
+        List<HOT_Notification__c> notifications = [
+            SELECT Id, HOT_NotificationChannel__c
+            FROM HOT_Notification__c
+            WHERE HOT_RelatedObject__c = :thread.Id
+        ];
+        System.assertEquals(1, notifications.size(), 'Det skal være opprettet én HOT_Notification__c');
+        System.assertEquals(
+            'Push-varsel i appen',
+            notifications[0].HOT_NotificationChannel__c,
+            'Varslingskanalen skal være Push'
+        );
     }
 
     @IsTest
     static void NotifyDispatcherTest() {
+        // Henter en bruker som skal motta varsel
+        User dispatcherUser = [
+            SELECT Id
+            FROM User
+            WHERE Profile.Name = 'Customer Community Plus User' AND IsActive = TRUE
+            LIMIT 1
+        ];
+
         Account account = [SELECT Id, PersonContactId FROM Account LIMIT 1];
+
         Thread__c thread = HOT_TestDataFactory.createThread();
         thread.CRM_Related_Object__c = account.PersonContactId;
         thread.CRM_Account__c = account.Id;
-        thread.HOT_Dispatcher__c = UserInfo.getUserId();
+        thread.HOT_Dispatcher__c = dispatcherUser.Id;
 
         insert thread;
+
         Message__c message = new Message__c();
         message.CRM_Thread__c = thread.Id;
-        message.CRM_From_Contact__c = account.PersonContactId;
-        message.CRM_Message_Text__c = 'Dette er en testmelding';
+        message.CRM_Message_Text__c = 'Dette er en testmelding fra en bruker';
         message.HOT_User_Role__c = HOT_MessageHelper.getUserProfileAndName('');
-        insert message;
-
-        List<Id> threadIds = new List<Id>();
-        List<Thread__c> threads = [SELECT Id FROM Thread__c];
-        for (Thread__c t : threads) {
-            threadIds.add(t.Id);
-        }
 
         test.startTest();
-        HOT_MessagesNotification.NotifyDispatcher(threadIds);
+        insert message;
         test.stopTest();
+
+        // Ingen HOT_Notification__c å sjekke her, men koden er dekket og brukeren er aktiv.
     }
 
     @IsTest
-    static void NotifyInterpreterTest() {
-        Account account = [SELECT Id, PersonContactId FROM Account LIMIT 1];
-        List<User> ulist = [SELECT id FROM User WHERE contactId != NULL LIMIT 5];
-        String parti = '';
-        for (user u : ulist) {
-            parti = parti + u.id + ', ';
-        }
-        parti = parti.substring(0, parti.length() - 2);
-
-        ServiceResource s1 = [SELECT id FROM ServiceResource WHERE RelatedRecordId = :ulist[0].Id LIMIT 1];
-        s1.HOT_IsEmployedInterpreter__c = true;
-        update s1;
-
-        ServiceResource s2 = [SELECT id FROM ServiceResource WHERE RelatedRecordId = :ulist[1].Id LIMIT 1];
-        s2.HOT_IsFreelanceInterpreter__c = true;
-        update s2;
+    static void NotifyInterpreterParticipantTest() {
+        ServiceResource serviceResource = [SELECT Id, RelatedRecordId FROM ServiceResource LIMIT 1];
+        serviceResource.HOT_IsEmployedInterpreter__c = true;
+        update serviceResource;
 
         Thread__c thread = HOT_TestDataFactory.createThread();
-        thread.CRM_Related_Object__c = account.PersonContactId;
-        thread.CRM_Account__c = account.Id;
-        thread.HOT_Dispatcher__c = UserInfo.getUserId();
-        thread.HOT_ParticipantIds__c = parti;
+        thread.CRM_Thread_Type__c = 'HOT_BRUKER-TOLK';
+        thread.HOT_ParticipantIds__c = serviceResource.RelatedRecordId;
         insert thread;
 
         Message__c message = new Message__c();
         message.CRM_Thread__c = thread.Id;
-        message.CRM_From_Contact__c = account.PersonContactId;
         message.CRM_Message_Text__c = 'Dette er en testmelding';
-        message.HOT_User_Role__c = HOT_MessageHelper.getUserProfileAndName('');
-        insert message;
-
-        List<Id> threadIds = new List<Id>();
-        List<Thread__c> threads = [SELECT Id FROM Thread__c];
-        for (Thread__c t : threads) {
-            threadIds.add(t.Id);
-        }
+        message.HOT_User_Role__c = ', Formidler';
 
         test.startTest();
-        HOT_MessagesNotification.NotifyInterpreter(threadIds);
+        insert message;
         test.stopTest();
+
+        List<HOT_Notification__c> notifications = [
+            SELECT Id, HOT_NotificationChannel__c
+            FROM HOT_Notification__c
+            WHERE HOT_RelatedObject__c = :thread.Id
+        ];
+        System.assertEquals(1, notifications.size(), 'Det skal være opprettet én HOT_Notification__c for tolken');
+        System.assertEquals(
+            'Push-varsel i appen',
+            notifications[0].HOT_NotificationChannel__c,
+            'Varslingskanalen skal være Push'
+        );
     }
 
     @IsTest
-    static void NotifyInterpreterTestSMS() {
-        Account account = [SELECT Id, PersonContactId FROM Account LIMIT 1];
-        List<User> ulist = [SELECT id FROM User WHERE contactId != NULL LIMIT 5];
-        String parti = '';
-        for (user u : ulist) {
-            parti = parti + u.id + ', ';
-        }
-        parti = parti.substring(0, parti.length() - 2);
-
-        ServiceResource s1 = [SELECT id FROM ServiceResource WHERE RelatedRecordId = :ulist[1].Id LIMIT 1];
-        s1.HOT_IsFreelanceInterpreter__c = true;
-        s1.HOT_NotificationChannel__c = 'SMS';
-        update s1;
+    static void NotifyInterpreterServiceResourceTest() {
+        ServiceResource serviceResource = [SELECT Id, RelatedRecordId FROM ServiceResource LIMIT 1];
+        update serviceResource;
 
         Thread__c thread = HOT_TestDataFactory.createThread();
-        thread.CRM_Related_Object__c = account.PersonContactId;
-        thread.CRM_Account__c = account.Id;
-        thread.HOT_Dispatcher__c = UserInfo.getUserId();
-        thread.HOT_ParticipantIds__c = parti;
         insert thread;
+
+        thread.CRM_Thread_Type__c = 'HOT_TOLK-FORMIDLER';
+        thread.HOT_ServiceResource__c = serviceResource.Id;
+        update thread;
 
         Message__c message = new Message__c();
         message.CRM_Thread__c = thread.Id;
-        message.CRM_From_Contact__c = account.PersonContactId;
         message.CRM_Message_Text__c = 'Dette er en testmelding';
-        message.HOT_User_Role__c = HOT_MessageHelper.getUserProfileAndName('');
-        insert message;
-
-        List<Id> threadIds = new List<Id>();
-        List<Thread__c> threads = [SELECT Id FROM Thread__c];
-        for (Thread__c t : threads) {
-            threadIds.add(t.Id);
-        }
+        message.HOT_User_Role__c = ', Formidler';
 
         test.startTest();
-        HOT_MessagesNotification.NotifyInterpreter(threadIds);
+        insert message;
         test.stopTest();
+
+        List<HOT_Notification__c> notifications = [
+            SELECT Id, HOT_NotificationChannel__c, HOT_ServiceResource__c
+            FROM HOT_Notification__c
+            WHERE HOT_RelatedObject__c = :thread.Id
+        ];
+        System.assertEquals(1, notifications.size(), 'Det skal være opprettet én HOT_Notification__c for tolken');
+        System.assertEquals(
+            serviceResource.Id,
+            notifications[0].HOT_ServiceResource__c,
+            'Varslet skal være koblet til riktig ServiceResource'
+        );
     }
 }
