@@ -178,21 +178,33 @@ export let filterArray = [
         ]
     }
 ];
+
 export function setDefaultFilters(regions) {
     filterArray[0].value[0].value = new Date().toISOString().split('T')[0];
     let localTimeValue = filterArray[1].value[0].localTimeValue;
     localTimeValue = new Date().toLocaleString();
     filterArray[0].value[0].localTimeValue = localTimeValue.substring(0, localTimeValue.length - 10);
+
+    // Reset all regions first
     filterArray[4].value.forEach((element) => {
-        if (regions?.includes(element.name)) {
-            element.value = true;
-            element.checked = true;
-        }
+        element.value = false;
+        element.checked = false;
     });
+
+    regions?.split(';').forEach((region) => {
+        filterArray[4].value.forEach((element) => {
+            if (element.name === region.trim()) {
+                element.value = true;
+                element.checked = true;
+            }
+        });
+    });
+
     filterArray[6].searchTerm = '';
 
     return filterArray;
 }
+
 
 export function defaultFilters() {
     filterArray[0].value[0].value = new Date().toISOString().split('T')[0];
