@@ -1,6 +1,6 @@
 public without sharing class HOT_EventHandler extends MyTriggers {
     public override void onAfterInsert() {
-        deleteFaultyOutlookSyncEvents(records);
+        // Sletting nå håndtert av scheduled batch HOT_FaultyEventCleanupBatch.
     }
 
     public static void deleteFaultyOutlookSyncEvents(List<Event> records) {
