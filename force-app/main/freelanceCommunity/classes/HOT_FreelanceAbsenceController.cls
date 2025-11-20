@@ -63,13 +63,16 @@ public with sharing class HOT_FreelanceAbsenceController {
             }
         }
 
+        Map<String, SObjectField> fieldsMap = Schema.SObjectType.ResourceAbsence.fields.getMap();
+
         ResourceAbsence absence = new ResourceAbsence();
         absence.Start = startTime;
         absence.End = endTime;
         absence.ResourceId = getUserServiceResourceId();
         absence.Type = absenceType;
-        if (Schema.SObjectType.ResourceAbsence.fields.getMap().containsKey('FSL__Approved__c')) {
-            absence.FSL__Approved__c = true;
+
+        if (fieldsMap.containsKey('FSL__Approved__c')) {
+            absence.put('FSL__Approved__c', true);
         }
 
         try {
