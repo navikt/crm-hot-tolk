@@ -63,9 +63,9 @@ export default class Hot_otherPayerNotification extends LightningElement {
 
     showToast() {
         const event = new ShowToastEvent({
-            title: 'Annen Betaler',
+            title: 'Annen betaler',
             message:
-                'Virksomhet er fylt ut, men Annen betaler ikke er huket av. Vennligst vurder hvem som skal betale.',
+                'Virksomhet er fylt ut, men Annen betaler er ikke huket av. Vennligst vurder hvem som skal betale.',
             variant: 'warning',
             mode: 'sticky'
         });
