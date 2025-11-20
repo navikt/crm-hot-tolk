@@ -332,6 +332,7 @@ private class HOT_ReminderSMSServiceTest {
     @IsTest
     static void sendSMSOnNewWantedSRTest() {
         ServiceAppointment sa = [SELECT Id FROM ServiceAppointment WHERE Subject = 'TEST' LIMIT 1];
+        Test.startTest();
         ServiceResource sr = [SELECT Id FROM ServiceResource LIMIT 1];
         HOT_InterestedResource__c ir = HOT_TestDataFactory.createInterestedResource(sa.Id, sr.Id);
         insert ir;
@@ -339,7 +340,6 @@ private class HOT_ReminderSMSServiceTest {
         Set<Id> irIds = (new Map<Id, HOT_InterestedResource__c>([SELECT Id FROM HOT_InterestedResource__c LIMIT 1]))
             .keySet();
 
-        Test.startTest();
         HOT_ReminderSMSService.sendSMSOnNewWantedSR(irIds);
         Test.stopTest();
     }
