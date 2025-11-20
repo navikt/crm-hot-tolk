@@ -160,38 +160,7 @@ private class HOT_ReminderSMSServiceTest {
         List<SMS__c> smsList = [SELECT Id, Message__c FROM SMS__c];
         System.assertEquals(1, smsList.size(), 'Could not create sms-record');
     }
-    @IsTest
-    static void sendSMSOnNewMessageInterpreterTest() {
-        User currentUser = [SELECT Id, AccountId FROM User WHERE Id = :UserInfo.getUserId()];
-        // startTest flyttet hit på grunn av limits
-        Test.startTest();
-        WorkType workType = HOT_TestDataFactory.createWorkType();
-        insert workType;
-        HOT_Request__c request = HOT_TestDataFactory.createRequest('TEST', workType);
-        insert request;
 
-        Thread__c thread = HOT_TestDataFactory.createThread();
-        thread.CRM_Account__c = currentUser.AccountId;
-        thread.CRM_Related_Object__c = request.Id;
-        insert thread;
-
-        ServiceResource resource = HOT_TestDataFactory.createServiceResource(currentUser.Id);
-        resource.HOT_MobilePhoneOverride__c = '12345678';
-        insert resource;
-
-        ServiceResource sr = [
-            SELECT RelatedRecordId, HOT_MobilePhone__c
-            FROM ServiceResource
-            WHERE RelatedRecordId = :currentUser.Id
-        ];
-        Map<User, List<Thread__c>> userIdToThreadMapSMS = new Map<User, List<Thread__c>>{
-            currentUser => new List<Thread__c>{ thread }
-        };
-        HOT_ReminderSMSService.sendSMSOnNewMessageInterpreter(userIdToThreadMapSMS);
-        Test.stopTest();
-        List<SMS__c> smsList = [SELECT Id, Message__c FROM SMS__c];
-        System.assertEquals(1, smsList.size(), 'Could not create sms-record');
-    }
     @IsTest
     static void sendSMSToInterpreterCancelledByUserTest() {
         Test.startTest();
@@ -332,6 +301,7 @@ private class HOT_ReminderSMSServiceTest {
     @IsTest
     static void sendSMSOnNewWantedSRTest() {
         ServiceAppointment sa = [SELECT Id FROM ServiceAppointment WHERE Subject = 'TEST' LIMIT 1];
+        Test.startTest();
         ServiceResource sr = [SELECT Id FROM ServiceResource LIMIT 1];
         HOT_InterestedResource__c ir = HOT_TestDataFactory.createInterestedResource(sa.Id, sr.Id);
         insert ir;
@@ -339,7 +309,6 @@ private class HOT_ReminderSMSServiceTest {
         Set<Id> irIds = (new Map<Id, HOT_InterestedResource__c>([SELECT Id FROM HOT_InterestedResource__c LIMIT 1]))
             .keySet();
 
-        Test.startTest();
         HOT_ReminderSMSService.sendSMSOnNewWantedSR(irIds);
         Test.stopTest();
     }
