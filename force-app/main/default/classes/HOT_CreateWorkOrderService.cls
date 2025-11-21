@@ -70,7 +70,8 @@ public without sharing class HOT_CreateWorkOrderService {
 
         if (
             (input.recurringType == 'Weekly' ||
-            input.recurringType == 'Biweekly') &&
+            input.recurringType == 'Biweekly' ||
+            input.recurringType == 'Every4Weeks') &&
             !input.monday &&
             !input.tuesday &&
             !input.wednesday &&
@@ -206,6 +207,53 @@ public without sharing class HOT_CreateWorkOrderService {
                 }
                 if (dayOfWeek == 'Sunday') {
                     i = i + 7;
+                }
+            }
+
+            if (workOrders.size() > maxNumberOfRecurrences) {
+                errors.add('Kan ikke opprette mer enn 200 arbeidsordre av gangen');
+                return errors;
+            }
+
+            try {
+                insert workOrders;
+            } catch (Exception e) {
+                errors.add('Opprettelsen av arbeidsordrene feilet.');
+                logger.exception(e, request, CRM_ApplicationDomain.Domain.HOT);
+                logger.publishSynch();
+            }
+
+            return errors;
+        } else if (input.recurringType == 'Every4Weeks') {
+            List<WorkOrder> workOrders = new List<WorkOrder>();
+            Integer numberOfRecurrences = input.startDate.date().daysBetween(input.recurringEndDate);
+
+            for (Integer i = 0; i <= numberOfRecurrences; i++) {
+                Datetime startDate = input.startDate.addDays(i);
+                Datetime endDate = input.endDate.addDays(i);
+                String dayOfWeek = startDate.format('EEEE');
+                Integer os = tz.getOffset(startDate) - tz.getOffset(oldStartDate);
+                startDate = startDate.addHours(-os / 3600000);
+                endDate = endDate.addHours(-os / 3600000);
+                System.debug('dayOfWeek: ' + dayOfWeek);
+                if (
+                    input.monday && dayOfWeek == 'Monday' ||
+                    input.tuesday && dayOfWeek == 'Tuesday' ||
+                    input.wednesday && dayOfWeek == 'Wednesday' ||
+                    input.thursday && dayOfWeek == 'Thursday' ||
+                    input.friday && dayOfWeek == 'Friday' ||
+                    input.saturday && dayOfWeek == 'Saturday' ||
+                    input.sunday && dayOfWeek == 'Sunday'
+                ) {
+                    WorkOrder workOrder = new workOrder(
+                        HOT_Request__c = input.requestId,
+                        StartDate = startDate,
+                        EndDate = endDate
+                    );
+                    workOrders.add(workOrder);
+                }
+                if (dayOfWeek == 'Sunday') {
+                    i = i + 21;
                 }
             }
 
