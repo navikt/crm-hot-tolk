@@ -63,11 +63,17 @@ public with sharing class HOT_FreelanceAbsenceController {
             }
         }
 
+        Map<String, SObjectField> fieldsMap = Schema.SObjectType.ResourceAbsence.fields.getMap();
+
         ResourceAbsence absence = new ResourceAbsence();
         absence.Start = startTime;
         absence.End = endTime;
         absence.ResourceId = getUserServiceResourceId();
         absence.Type = absenceType;
+
+        if (fieldsMap.containsKey('FSL__Approved__c')) {
+            absence.put('FSL__Approved__c', true);
+        }
 
         try {
             resolveConflictsForTimePeriod(absence.Start, absence.End, 'Fravær');
@@ -283,12 +289,7 @@ public with sharing class HOT_FreelanceAbsenceController {
     @AuraEnabled
     public static void deleteAbsence(Id recordId) {
         Id serviceResource = getUserServiceResourceId();
-        ResourceAbsence[] absences = [
-            SELECT Id, ResourceId
-            FROM ResourceAbsence
-            WHERE Id = :recordId
-            LIMIT 1
-        ];
+        ResourceAbsence[] absences = [SELECT Id, ResourceId FROM ResourceAbsence WHERE Id = :recordId LIMIT 1];
 
         if (absences.size() != 1) {
             prepareAndThrowAuraException(ERROR_RESOURCE_ABSENCE_NOT_FOUND);

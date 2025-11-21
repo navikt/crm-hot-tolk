@@ -422,7 +422,7 @@ public class HOT_TestDataFactory {
         for (Integer i = 1; i <= numberOfUsers; i++) {
             String firstName = 'User';
             String lastName = String.valueOf(i);
-            String email = firstName + lastName + '@nav.apextest';
+            String email = firstName + lastName + '@uathot.nav.no';
             User user = new User(
                 FirstName = firstName,
                 LastName = lastName,
@@ -436,7 +436,7 @@ public class HOT_TestDataFactory {
                 ProfileId = profile.Id
             );
             if (assignRole) {
-                UserRole role = [SELECT Id FROM UserRole WHERE Name = 'Default'];
+                UserRole role = [SELECT Id FROM UserRole WHERE Name = 'Default' LIMIT 1];
                 user.UserRoleId = role.Id;
             }
             users.add(user);
