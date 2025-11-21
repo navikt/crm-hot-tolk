@@ -31,6 +31,18 @@
         <locationY>0</locationY>
         <defaultConnectorLabel>Default Outcome</defaultConnectorLabel>
         <rules>
+            <name>Interpretation_value_has_not_been_changed</name>
+            <conditionLogic>and</conditionLogic>
+            <conditions>
+                <leftValueReference>$Record.InterpretationMethodSecondaryType__c</leftValueReference>
+                <operator>EqualTo</operator>
+                <rightValue>
+                    <elementReference>$Record.InterpretationMethodSecondary__r.Name</elementReference>
+                </rightValue>
+            </conditions>
+            <label>Interpretation value has not been changed</label>
+        </rules>
+        <rules>
             <name>Yes</name>
             <conditionLogic>and</conditionLogic>
             <conditions>
@@ -110,21 +122,6 @@
         <connector>
             <targetReference>Does_the_interpretation_secondary_have_value</targetReference>
         </connector>
-        <filterLogic>or</filterLogic>
-        <filters>
-            <field>InterpretationMethodSecondaryType__c</field>
-            <operator>IsNull</operator>
-            <value>
-                <booleanValue>false</booleanValue>
-            </value>
-        </filters>
-        <filters>
-            <field>InterpretationMethodSecondaryType__c</field>
-            <operator>EqualTo</operator>
-            <value>
-                <stringValue></stringValue>
-            </value>
-        </filters>
         <object>HOT_Request__c</object>
         <recordTriggerType>CreateAndUpdate</recordTriggerType>
         <triggerType>RecordBeforeSave</triggerType>

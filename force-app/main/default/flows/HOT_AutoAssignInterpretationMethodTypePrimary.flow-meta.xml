@@ -32,6 +32,18 @@
         <locationY>0</locationY>
         <defaultConnectorLabel>Default Outcome</defaultConnectorLabel>
         <rules>
+            <name>No_changes_in_interpretation</name>
+            <conditionLogic>and</conditionLogic>
+            <conditions>
+                <leftValueReference>$Record.InterpretationMethodType__c</leftValueReference>
+                <operator>EqualTo</operator>
+                <rightValue>
+                    <elementReference>$Record.InterpretationMethod__r.Name</elementReference>
+                </rightValue>
+            </conditions>
+            <label>No changes in interpretation</label>
+        </rules>
+        <rules>
             <name>Yes</name>
             <conditionLogic>and</conditionLogic>
             <conditions>
