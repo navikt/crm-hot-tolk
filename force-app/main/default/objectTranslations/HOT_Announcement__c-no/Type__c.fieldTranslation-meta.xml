@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomFieldTranslation xmlns="http://soap.sforce.com/2006/04/metadata">
+    <help><!-- Velg måten denne meldingen skal vises som. Skal det være til informasjon eller varsel om noe mer kritisk --></help>
+    <label>Type melding</label>
+    <name>Type__c</name>
+    <picklistValues>
+        <masterLabel>Information</masterLabel>
+        <translation>Til informasjon</translation>
+    </picklistValues>
+    <picklistValues>
+        <masterLabel>Warning</masterLabel>
+        <translation>Varsel</translation>
+    </picklistValues>
+</CustomFieldTranslation>
