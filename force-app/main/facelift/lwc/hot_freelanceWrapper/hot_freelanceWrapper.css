@@ -1,138 +1,6 @@
-.freelanceWrapper {
-    background-color: #cce2f0;
-    width: 100%;
-    padding: 2vw;
-    padding-top: 3vh;
-    padding-bottom: 6vh;
+.wrapper {
     font-family: 'Source Sans 3', 'Source Sans Pro', Arial, sans-serif;
-    border-radius: 7px;
-    margin-bottom: 3vh;
 }
-.boxLabel,
-.boxDescription {
-    display: block;
-}
-.unreadThreadsTag {
-    background-color: #ffd799;
-    width: fit-content;
-    border-radius: 4px;
-    padding-top: 0.1rem;
-    padding-bottom: 0.1rem;
-    padding-left: 0.7rem;
-    padding-right: 0.7rem;
-    font-size: 1.125rem;
-    margin-top: 0.5rem;
-}
-.sr-only {
-    position: absolute;
-    width: 1px;
-    height: 1px;
-    padding: 0;
-    margin: -1px;
-    overflow: hidden;
-    clip: rect(0, 0, 0, 0);
-    white-space: nowrap;
-    border: 0;
-}
-
-.freelanceHeader {
-    color: #005b82;
-    font-size: 1.75rem;
-    text-align: left;
-}
-.spacer {
-    height: 1rem;
-    width: 4rem;
-    background-color: #005b82;
-    margin-top: 1rem;
-}
-.buttonFlexContainer {
-    display: flex;
-    gap: 16px;
-    justify-content: space-between;
-    padding-top: 2rem;
-}
-
-.box {
-    box-sizing: border-box;
-    width: calc(33.333% - (2% * 2 / 3));
-    background-color: #ffffff;
-    padding: 20px;
-    border-radius: 7px;
-    border: 4px solid #ffffff;
-    text-align: left;
-    cursor: pointer;
-    display: block;
-    text-decoration: none;
-    color: inherit;
-}
-.boxContent {
-    padding: 1rem;
-}
-.boxLabel {
-    font-size: 1.25rem;
-    font-weight: bold;
-    color: #0056b4;
-}
-.boxDescription {
-    font-size: 1.125rem;
-}
-.row {
-    display: flex;
-    justify-content: flex-start;
-    align-items: center;
-    gap: 1rem;
-}
-
-.calenderButton {
-    background-color: #ffffff;
-    border: 4px solid #ffffff;
-    cursor: pointer;
-    border-radius: 10px;
-    padding: 1rem 1.2rem;
-}
-.calenderButton:hover,
-.calenderButton:focus,
-.box:hover,
-.box:focus {
-    border-color: #0067c5;
-    background-color: #ffffff;
-}
-
-.box:hover .boxLabel,
-.box:focus .boxLabel {
-    text-decoration: underline;
-}
-
-@media (max-width: 768px) {
-    .freelanceWrapper {
-        padding: 0.5rem;
-    }
-    .buttonFlexContainer {
-        flex-direction: column;
-        gap: 1rem;
-    }
-
-    .box {
-        max-width: none;
-        flex: none;
-        width: 100%;
-    }
-
-    .row {
-        flex-direction: column;
-        align-items: flex-start;
-    }
-}
-.calenderModalContent {
-    background-color: #ffffff;
-    width: 100%;
-    border-radius: 10px;
-    font-size: 18px;
-    padding: 2vw;
-    background-color: #ffffff;
-}
-
 .navno-dekorator.alertstripe {
     padding: 1rem 1rem 1rem 0rem;
     border-radius: 4px;
@@ -159,17 +27,7 @@
     height: 24px;
     width: 24px;
 }
-@media (max-width: 768px) {
-    .wrapper {
-        padding: 0;
-    }
-    .calenderModalContent {
-        padding: 0vw;
-        width: 100%;
-    }
-}
 
-/*<<<<<<<< CSS for custom lukke kalender >>>>>>>*/
 .navds-button {
     display: inline-flex;
     cursor: pointer;
@@ -200,4 +58,152 @@
     border-color: #0067c5;
     background-color: #cce1ff;
     /*<<<<<<------->>>>>>>*/
+}
+.boxContent {
+    padding: 2rem;
+    display: flex;
+    flex-direction: column;
+}
+.boxLabel {
+    font-size: 1.25rem;
+    font-weight: bold;
+    color: #0056b4;
+}
+.boxDescription {
+    font-size: 1.125rem;
+}
+.unreadThreadsTag {
+    background-color: #ffd799;
+    width: fit-content;
+    border-radius: 4px;
+    padding-top: 0.1rem;
+    padding-bottom: 0.1rem;
+    padding-left: 0.7rem;
+    padding-right: 0.7rem;
+    font-size: 1.125rem;
+    margin-top: 0.5rem;
+}
+.sr-only {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    padding: 0;
+    margin: -1px;
+    overflow: hidden;
+    clip: rect(0, 0, 0, 0);
+    white-space: nowrap;
+    border: 0;
+}
+.row {
+    display: flex;
+    flex-direction: row;
+    align-items: center; /* viktig for vertikal sentrering */
+    gap: 1rem;
+}
+
+.row .freelanceHeader {
+    color: #005b82;
+    font-size: 1.75rem;
+    text-align: left;
+    margin: 0; /* fjern bottom margin */
+}
+
+.spacer {
+    height: 1rem;
+    width: 4rem;
+    background-color: #005b82;
+    margin-top: 1rem;
+}
+
+/*  */
+.boxRow {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: clamp(1rem, 0.75rem + 1vw, 1.5rem);
+
+    @media (width < 768px) {
+        grid-template-columns: 1fr;
+    }
+}
+.calenderModalContent {
+    background-color: #ffffff;
+    width: 100%;
+    border-radius: 1ch;
+    font-size: 18px;
+    padding: 2vw;
+    background-color: #ffffff;
+}
+.box {
+    display: block;
+    border: 4px solid var(--card-bg, #ffffff);
+    background: var(--card-bg, #cce2f0);
+    min-block-size: 8lh;
+    border-radius: 1ch;
+    display: block;
+    text-decoration: none;
+    color: inherit;
+
+    &:hover {
+        border-color: #0067c5;
+    }
+}
+
+@layer extras {
+    body {
+        padding: 2lh 1em;
+        max-inline-size: 1200px;
+        margin-inline: auto;
+    }
+    .wrapper {
+        padding: 5ch;
+
+        &:not(:first-of-type) {
+            @media (width > 768px) {
+                padding: 0;
+            }
+        }
+
+        &:first-of-type {
+            border-radius: 1ch;
+            background: #cce2f0;
+
+            .box {
+                background: #cce2f0;
+            }
+        }
+    }
+    :where(body, .wrapper) > div + div {
+        margin-block-start: 2lh;
+    }
+}
+.calenderButton {
+    border: 4px solid #ffffff;
+    background-color: #ffffff;
+    border-radius: 1ch;
+    padding: 1rem 1.2rem;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    padding: 0.5rem 1rem;
+    cursor: pointer;
+}
+.calenderButton img {
+    display: block;
+}
+.calenderButton:hover,
+.calenderButton:focus {
+    border-color: #0067c5;
+}
+@media (max-width: 768px) {
+    .row {
+        flex-direction: column;
+        align-items: flex-start;
+    }
+    .calenderModalContent {
+        padding: 0vw;
+        width: 100%;
+    }
+    .wrapper {
+        padding: 1ch !important;
+    }
 }

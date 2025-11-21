@@ -1,5 +1,5 @@
 <template>
-    <section class="freelanceWrapper">
+    <nav aria-label="Frilanstolk meny" class="wrapper" style="--card-bg: white">
         <div class="row">
             <h2 class="freelanceHeader">For deg som er frilanstolk</h2>
             <button
@@ -40,30 +40,27 @@
                 </template>
             </div>
         </template>
-        <nav aria-label="Frilanstolk meny">
-            <div class="buttonFlexContainer">
-                <a class="box" href={pageLinks.freelanceMyServiceAppointments}>
-                    <div class="boxContent">
-                        <span class="boxLabel">Mine oppdrag</span>
-                        <span class="boxDescription">Se oversikt over dine oppdrag</span>
-                    </div>
-                </a>
-                <a class="box" href={pageLinks.freelanceMyThreads}>
-                    <div class="boxContent">
-                        <span class="boxLabel">Mine samtaler</span>
-                        <span class="boxDescription">Se alle dine samtaler</span>
-                        <div lwc:if={unreadThreadsText} class="unreadThreadsTag">{unreadThreadsText}</div>
-                    </div>
-                </a>
-                <a class="box" href={pageLinks.freelanceMyUserInformation}>
-                    <div class="boxContent">
-                        <span class="boxLabel">Min side</span>
-                        <span class="boxDescription">Rediger kontaktinformasjon og kvalifikasjoner</span>
-                    </div>
-                </a>
-            </div>
-        </nav>
-    </section>
-    <!-- Frilans Kalender -->
-    <!-- Slutt Frilans Kalender -->
+
+        <div class="boxRow">
+            <a class="box" href={pageLinks.freelanceMyServiceAppointments}>
+                <div class="boxContent">
+                    <span class="boxLabel">Mine oppdrag</span>
+                    <span class="boxDescription">Se oversikt over dine oppdrag</span>
+                </div>
+            </a>
+            <a class="box" href={pageLinks.freelanceMyThreads}>
+                <div class="boxContent">
+                    <span class="boxLabel">Mine samtaler</span>
+                    <span class="boxDescription">Se alle dine samtaler</span>
+                    <div lwc:if={unreadThreadsText} class="unreadThreadsTag">{unreadThreadsText}</div>
+                </div>
+            </a>
+            <a class="box" href={pageLinks.freelanceMyUserInformation}>
+                <div class="boxContent">
+                    <span class="boxLabel">Min side frilanstolk</span>
+                    <span class="boxDescription">Rediger kontaktinformasjon og kvalifikasjoner</span>
+                </div>
+            </a>
+        </div>
+    </nav>
 </template>
