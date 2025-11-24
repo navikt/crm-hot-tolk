@@ -1,0 +1,79 @@
+<template>
+    <lightning-layout class="custom-padding-left-small button-container">
+        <lightning-layout-item class="custom-padding-around-small custom-grid-vertical-align-center">
+            <lightning-button
+                data-id="gosys"
+                label="Gosys"
+                title="Gosys"
+                onclick={handleButtonClick}
+                class="slds-m-left_x-medium"
+                disabled={isDisabledButtons}
+            ></lightning-button>
+        </lightning-layout-item>
+        <!-- Commented out as a trial run with the new Highligtpanel in TOLK-3009 on request by Svenn Terje -->
+        <!-- <lightning-layout-item class="custom-padding-around-small custom-grid-vertical-align-center">
+            <lightning-button label="Edit" onclick={handleEditRecord}> </lightning-button>
+        </lightning-layout-item> -->
+        <lightning-layout-item class="custom-padding-aro und-small custom-grid-vertical-align-center">
+            <lightning-button
+                data-id="SMS"
+                label="Send SMS"
+                title="Send SMS"
+                onclick={handleFlowButton}
+                data-flow="HOT_SendSMSToAccount"
+                class="slds-m-left_x-medium"
+                disabled={isDisabledButtons}
+            ></lightning-button>
+        </lightning-layout-item>
+        <lightning-layout-item
+            lwc:if={hasPermission}
+            class="custom-padding-around-small custom-grid-vertical-align-center"
+        >
+            <lightning-button
+                data-id="freelance"
+                label="Oppgrader bruker til frilanstolk"
+                title="Oppgrader bruker til frilanstolk"
+                onclick={handleFlowButton}
+                data-flow="HOT_CreateFreelanceUser"
+                class="slds-m-left_x-medium"
+                disabled={isDisabledButtons}
+            ></lightning-button>
+        </lightning-layout-item>
+        <lightning-layout-item class="custom-padding-around-small custom-grid-vertical-align-center">
+            <lightning-button
+                data-id="tilgangApp"
+                label="Styr tilgang til Mobil App"
+                title="Styr tilgang til Mobil App"
+                onclick={handleFlowButton}
+                data-flow="HOT_MobileAppAccess"
+                class="slds-m-left_x-medium"
+                disabled={isDisabledButtons}
+            ></lightning-button>
+            <template lwc:if={isModalOpen}>
+                <section role="dialog" tabindex="-1" class="slds-modal slds-fade-in-open">
+                    <div class="slds-modal__container">
+                        <header class="slds-modal__header">
+                            <button
+                                class="slds-button slds-button_icon slds-modal__close slds-button_icon-inverse"
+                                title="Close"
+                                onclick={closeModal}
+                            >
+                                <lightning-icon
+                                    icon-name="utility:close"
+                                    alternative-text="close"
+                                    size="small"
+                                ></lightning-icon>
+                            </button>
+                            <h2 class="slds-text-heading_medium">{modalTitle}</h2>
+                        </header>
+                        <div class="slds-modal__content slds-p-around_medium slds-theme_default">
+                            <lightning-flow flow-api-name={currentFlow} onstatuschange={handleStatusChange}>
+                            </lightning-flow>
+                        </div>
+                    </div>
+                </section>
+                <div class="slds-backdrop slds-backdrop_open"></div>
+            </template>
+        </lightning-layout-item>
+    </lightning-layout>
+</template>

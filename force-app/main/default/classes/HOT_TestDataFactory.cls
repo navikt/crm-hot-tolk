@@ -422,7 +422,7 @@ public class HOT_TestDataFactory {
         for (Integer i = 1; i <= numberOfUsers; i++) {
             String firstName = 'User';
             String lastName = String.valueOf(i);
-            String email = firstName + lastName + '@nav.apextest';
+            String email = firstName + lastName + '@uathot.nav.no';
             User user = new User(
                 FirstName = firstName,
                 LastName = lastName,
@@ -436,7 +436,7 @@ public class HOT_TestDataFactory {
                 ProfileId = profile.Id
             );
             if (assignRole) {
-                UserRole role = [SELECT Id FROM UserRole WHERE Name = 'Default'];
+                UserRole role = [SELECT Id FROM UserRole WHERE Name = 'Default' LIMIT 1];
                 user.UserRoleId = role.Id;
             }
             users.add(user);
@@ -475,5 +475,154 @@ public class HOT_TestDataFactory {
     private static OperatingHours insertAndReturn(OperatingHours oh) {
         insert oh;
         return oh;
+    }
+
+    /* This method is used for creating a record. The record is inserted before it's returned,
+     * and default fields are populated.
+     * @param record [sObject: the record]
+     * @return       [sObject: the record, inserted and with defualt fields populated]
+     */
+    public static sObject createRecord(sObject record) {
+        return createRecord(record, true);
+    }
+
+    /* This method is used for creating a record using a dynamic reference. The record id is returned.
+     * Use this when implementing field defaults for child objects that have required parent relationships
+     * so that the framework stays independent of the database model
+     * @param record [sObject: the record]
+     * @return       [sObject: the record, inserted and with defualt fields populated]
+     */
+    public static Id createRecord(String objectName, String recordType) {
+        sObject record = Schema.getGlobalDescribe().get(ObjectName).newSObject();
+        if (String.isNotBlank(recordType)) {
+            record.put(
+                'RecordTypeId',
+                Schema.getGlobalDescribe()
+                    .get(objectName)
+                    .getDescribe()
+                    .getRecordTypeInfosByDeveloperName()
+                    .get(recordType)
+                    .getRecordTypeId()
+            );
+        }
+        return (Id) createRecord(record, true).get('Id');
+    }
+
+    /* This method is used for creating a record. Default fields are populated before it's returned
+     * @param record    [sObject: the record]
+     * @param doInsert  [Boolean: true if the record is to be inserted, false otherwise]
+     * @return          [sObject: the record, with defualt fields populate]
+     */
+    public static sObject createRecord(sObject record, Boolean doInsert) {
+        Type t = getDefaultClassName(record);
+        if (t != null) {
+            FieldDefaults defaults = (FieldDefaults) t.newInstance();
+            addFieldDefaults(record, defaults);
+        }
+        if (doInsert)
+            insert record;
+        return record;
+    }
+
+    /* This method is used for retrieving the type that corresponds to the class we want to use. The class
+     * is used to set default field values.
+     * @param record    [sObject: a record]
+     * @return          [Type: the type that corresponds to the class]
+     */
+    public static Type getDefaultClassName(sObject record) {
+        String objectName = String.valueOf(record.getSObjectType());
+        String namespacePrefix = '';
+        String className =
+            'HOT_TestDataFactory.' +
+            objectName.replaceAll('__c|__|_|' + namespacePrefix, '') +
+            'Defaults';
+        return Type.forName(className);
+    }
+
+    /* This method adds default fields to the record if they are blank
+     * @param record    [sObject: the record]
+     * @param defaults  [Map<String,Object>: map between defualt field names and values]
+     */
+    public static void addFieldDefaults(sObject record, FieldDefaults defaults) {
+        Map<String, Object> fieldDefaults = defaults.getFieldDefaults();
+        for (String field : fieldDefaults.keySet()) {
+            if (record.get(field) == null) {
+                record.put(field, fieldDefaults.get(field));
+            }
+        }
+    }
+
+    /* This method adds defaults and handles bulkifyification when a set of records are created that also
+     * requires the creation of related records
+     * @param record    [sObject: the record]
+     * @param defaults  [Map<String,Object>: map between defualt field names and values]
+     */
+    public static void addFieldDefaults(
+        sObject record,
+        FieldDefaults defaults,
+        Integer index,
+        Map<String, List<sObject>> relationListMap
+    ) {
+        Map<String, Object> fieldDefaults = defaults.getFieldDefaults(true);
+        for (String field : fieldDefaults.keySet()) {
+            if (record.get(field) == null) {
+                if (defaults.getDmlFields().containsKey(field) && relationListMap.containsKey(field)) {
+                    List<sObject> relationList = relationListMap.get(field);
+                    record.put(field, (Id) relationList[index].get('Id'));
+                } else {
+                    record.put(field, fieldDefaults.get(field));
+                }
+            }
+        }
+    }
+    /**
+     * @description: Generates a string of random numbers of given length
+     * Used for i.e. generating random person idents.
+     * @author Stian Ruud Schikora | 10-12-2020
+     * @param len
+     * @return String
+     **/
+    public static String generateRandomNumberString(Integer len) {
+        final String chars = '0123456789';
+        String randStr = '';
+        while (randStr.length() < len) {
+            Integer idx = Math.mod(Math.abs(Crypto.getRandomInteger()), chars.length());
+            randStr += chars.substring(idx, idx + 1);
+        }
+        return randStr;
+    }
+
+    // Field defaults for all objects
+    public interface FieldDefaults {
+        Map<String, Object> getFieldDefaults(Boolean bulkify); //When bulkify is true, the name of the object should be returned instead of direct creation to enable recursive bulkification
+        Map<String, Object> getFieldDefaults();
+        Map<String, String> getDmlFields(); //Mapping the field name to the object type for the default
+    }
+
+    public class PersonDefaults implements FieldDefaults {
+        public Map<String, Object> getFieldDefaults() {
+            return getFieldDefaults(false);
+        }
+        public Map<String, Object> getFieldDefaults(Boolean bulkify) {
+            return new Map<String, Object>{ 'Name' => generateRandomNumberString(11) };
+        }
+        public Map<String, String> getDmlFields() {
+            return new Map<String, String>{};
+            //No dml fields
+        }
+    }
+
+    public class LiveChatTranscriptDefaults implements FieldDefaults {
+        public Map<String, Object> getFieldDefaults() {
+            return getFieldDefaults(false);
+        }
+        public Map<String, Object> getFieldDefaults(Boolean bulkify) {
+            return new Map<String, Object>{
+                'LiveChatVisitorId' => bulkify ? 'LiveChatVisitor' : createRecord('LiveChatVisitor', null)
+            };
+        }
+        public Map<String, String> getDmlFields() {
+            return new Map<String, String>{ 'LiveChatVisitorId' => 'LiveChatVisitor' };
+        }
     }
 }

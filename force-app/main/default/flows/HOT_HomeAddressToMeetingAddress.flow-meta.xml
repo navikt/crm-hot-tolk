@@ -2,7 +2,7 @@
 <Flow xmlns="http://soap.sforce.com/2006/04/metadata">
     <apiVersion>65.0</apiVersion>
     <assignments>
-        <name>Change</name>
+        <name>Change_HOT_IsMeetingAddressSameAsHome_to_false</name>
         <label>Change HOT_IsMeetingAddressSameAsHome to false</label>
         <locationX>0</locationX>
         <locationY>0</locationY>
@@ -14,18 +14,27 @@
             </value>
         </assignmentItems>
         <connector>
-            <targetReference>Oppdater_Meeting_Address</targetReference>
+            <targetReference>Update_IsMeetingasHome_Checkbox</targetReference>
         </connector>
     </assignments>
     <customErrors>
-        <name>Missing_Person_Address</name>
-        <label>Missing Person Address</label>
+        <name>Address_not_found</name>
+        <label>Address not found</label>
         <locationX>0</locationX>
         <locationY>0</locationY>
         <customErrorMessages>
-            <errorMessage>Kan ikke finne adresse for brukeren. Se om bruker har adresse.</errorMessage>
-            <fieldSelection>HOT_IsMeetingAddressSameAsHome__c</fieldSelection>
-            <isFieldError>true</isFieldError>
+            <errorMessage>Fant ingen adresse på bruker.</errorMessage>
+            <isFieldError>false</isFieldError>
+        </customErrorMessages>
+    </customErrors>
+    <customErrors>
+        <name>Fields_has_to_be_empty</name>
+        <label>Fields has to be empty</label>
+        <locationX>0</locationX>
+        <locationY>0</locationY>
+        <customErrorMessages>
+            <errorMessage>Oppmøteadresse må være tom.</errorMessage>
+            <isFieldError>false</isFieldError>
         </customErrorMessages>
     </customErrors>
     <decisions>
@@ -69,56 +78,10 @@
         <label>Check Person Address Exists</label>
         <locationX>0</locationX>
         <locationY>0</locationY>
-        <defaultConnector>
-            <targetReference>Missing_Person_Address</targetReference>
-        </defaultConnector>
         <defaultConnectorLabel>Default Outcome</defaultConnectorLabel>
         <rules>
-            <name>Meeting_Address_changed</name>
-            <conditionLogic>(1 OR 2) AND (3 OR 4 OR 5)</conditionLogic>
-            <conditions>
-                <leftValueReference>$Record.MeetingStreet__c</leftValueReference>
-                <operator>NotEqualTo</operator>
-                <rightValue>
-                    <elementReference>$Record.Person__r.INT_ResidentialAddress__c</elementReference>
-                </rightValue>
-            </conditions>
-            <conditions>
-                <leftValueReference>$Record.MeetingPostalCity__c</leftValueReference>
-                <operator>NotEqualTo</operator>
-                <rightValue>
-                    <elementReference>$Record.Person__r.INT_ResidentialZipCode__c</elementReference>
-                </rightValue>
-            </conditions>
-            <conditions>
-                <leftValueReference>$Record.MeetingStreet__c</leftValueReference>
-                <operator>IsChanged</operator>
-                <rightValue>
-                    <booleanValue>true</booleanValue>
-                </rightValue>
-            </conditions>
-            <conditions>
-                <leftValueReference>$Record.MeetingPostalCity__c</leftValueReference>
-                <operator>IsChanged</operator>
-                <rightValue>
-                    <booleanValue>true</booleanValue>
-                </rightValue>
-            </conditions>
-            <conditions>
-                <leftValueReference>$Record.MeetingPostalCode__c</leftValueReference>
-                <operator>IsChanged</operator>
-                <rightValue>
-                    <booleanValue>true</booleanValue>
-                </rightValue>
-            </conditions>
-            <connector>
-                <targetReference>Change</targetReference>
-            </connector>
-            <label>Meeting Address Changed</label>
-        </rules>
-        <rules>
             <name>Person_Address_Exist</name>
-            <conditionLogic>(1 AND 2) AND (3 OR 4)</conditionLogic>
+            <conditionLogic>and</conditionLogic>
             <conditions>
                 <leftValueReference>$Record.Person__r.INT_ResidentialAddress__c</leftValueReference>
                 <operator>IsBlank</operator>
@@ -133,24 +96,114 @@
                     <booleanValue>false</booleanValue>
                 </rightValue>
             </conditions>
+            <connector>
+                <targetReference>Meeting_Address_not_equal_Home_Address</targetReference>
+            </connector>
+            <label>Person Address Exist</label>
+        </rules>
+        <rules>
+            <name>Meeting_Address_has_to_be_empty</name>
+            <conditionLogic>and</conditionLogic>
             <conditions>
-                <leftValueReference>$Record__Prior.MeetingStreet__c</leftValueReference>
+                <leftValueReference>$Record.MeetingStreet__c</leftValueReference>
+                <operator>IsBlank</operator>
+                <rightValue>
+                    <booleanValue>false</booleanValue>
+                </rightValue>
+            </conditions>
+            <conditions>
+                <leftValueReference>$Record.MeetingPostalCode__c</leftValueReference>
+                <operator>IsBlank</operator>
+                <rightValue>
+                    <booleanValue>false</booleanValue>
+                </rightValue>
+            </conditions>
+            <conditions>
+                <leftValueReference>$Record.MeetingPostalCity__c</leftValueReference>
+                <operator>IsBlank</operator>
+                <rightValue>
+                    <booleanValue>false</booleanValue>
+                </rightValue>
+            </conditions>
+            <connector>
+                <targetReference>Fields_has_to_be_empty</targetReference>
+            </connector>
+            <label>Fields has to be empty</label>
+        </rules>
+        <rules>
+            <name>Person_Address_does_not_exist</name>
+            <conditionLogic>and</conditionLogic>
+            <conditions>
+                <leftValueReference>$Record.Person__r.INT_ResidentialAddress__c</leftValueReference>
                 <operator>IsBlank</operator>
                 <rightValue>
                     <booleanValue>true</booleanValue>
                 </rightValue>
             </conditions>
             <conditions>
-                <leftValueReference>$Record__Prior.MeetingPostalCode__c</leftValueReference>
+                <leftValueReference>$Record.Person__r.INT_ResidentialZipCode__c</leftValueReference>
                 <operator>IsBlank</operator>
                 <rightValue>
                     <booleanValue>true</booleanValue>
                 </rightValue>
             </conditions>
             <connector>
-                <targetReference>GET_Postal_City</targetReference>
+                <targetReference>Address_not_found</targetReference>
             </connector>
-            <label>Person Address Exist</label>
+            <label>Person Address does not exist</label>
+        </rules>
+    </decisions>
+    <decisions>
+        <name>Meeting_Address_not_equal_Home_Address</name>
+        <label>Meeting Address not equal Home Address</label>
+        <locationX>0</locationX>
+        <locationY>0</locationY>
+        <defaultConnector>
+            <targetReference>GET_Postal_City</targetReference>
+        </defaultConnector>
+        <defaultConnectorLabel>Standardutfall</defaultConnectorLabel>
+        <rules>
+            <name>MeetingAddressnotequalHomeAddress</name>
+            <conditionLogic>(1 OR 2) AND (3 OR 4 OR 5)</conditionLogic>
+            <conditions>
+                <leftValueReference>$Record.Person__r.INT_ResidentialAddress__c</leftValueReference>
+                <operator>NotEqualTo</operator>
+                <rightValue>
+                    <elementReference>$Record.MeetingStreet__c</elementReference>
+                </rightValue>
+            </conditions>
+            <conditions>
+                <leftValueReference>$Record.Person__r.INT_ResidentialZip__c</leftValueReference>
+                <operator>NotEqualTo</operator>
+                <rightValue>
+                    <elementReference>$Record.MeetingPostalCode__c</elementReference>
+                </rightValue>
+            </conditions>
+            <conditions>
+                <leftValueReference>$Record.MeetingStreet__c</leftValueReference>
+                <operator>IsChanged</operator>
+                <rightValue>
+                    <booleanValue>true</booleanValue>
+                </rightValue>
+            </conditions>
+            <conditions>
+                <leftValueReference>$Record.MeetingPostalCode__c</leftValueReference>
+                <operator>IsChanged</operator>
+                <rightValue>
+                    <booleanValue>true</booleanValue>
+                </rightValue>
+            </conditions>
+            <conditions>
+                <leftValueReference>$Record.MeetingPostalCity__c</leftValueReference>
+                <operator>IsChanged</operator>
+                <rightValue>
+                    <booleanValue>true</booleanValue>
+                </rightValue>
+            </conditions>
+            <connector>
+                <targetReference>Change_HOT_IsMeetingAddressSameAsHome_to_false</targetReference>
+            </connector>
+            <label>Meeting Address not equal Home Address</label>
         </rules>
     </decisions>
     <description>When HOT_IsMeetingAddressSameAsHome is checked, add the Home address from the user to the meeting address</description>
@@ -198,19 +251,6 @@
         <storeOutputAutomatically>true</storeOutputAutomatically>
     </recordLookups>
     <recordUpdates>
-        <name>Oppdater_Meeting_Address</name>
-        <label>Update IsMeetingasHome Checkbox</label>
-        <locationX>0</locationX>
-        <locationY>0</locationY>
-        <inputAssignments>
-            <field>HOT_IsMeetingAddressSameAsHome__c</field>
-            <value>
-                <elementReference>$Record.HOT_IsMeetingAddressSameAsHome__c</elementReference>
-            </value>
-        </inputAssignments>
-        <inputReference>$Record</inputReference>
-    </recordUpdates>
-    <recordUpdates>
         <name>Update_Interpretation_Address</name>
         <label>Update Interpretation Address</label>
         <locationX>0</locationX>
@@ -231,6 +271,19 @@
             <field>InterpretationStreet__c</field>
             <value>
                 <elementReference>$Record.Person__r.INT_ResidentialAddress__c</elementReference>
+            </value>
+        </inputAssignments>
+        <inputReference>$Record</inputReference>
+    </recordUpdates>
+    <recordUpdates>
+        <name>Update_IsMeetingasHome_Checkbox</name>
+        <label>Update IsMeetingasHome Checkbox</label>
+        <locationX>0</locationX>
+        <locationY>0</locationY>
+        <inputAssignments>
+            <field>HOT_IsMeetingAddressSameAsHome__c</field>
+            <value>
+                <elementReference>$Record.HOT_IsMeetingAddressSameAsHome__c</elementReference>
             </value>
         </inputAssignments>
         <inputReference>$Record</inputReference>

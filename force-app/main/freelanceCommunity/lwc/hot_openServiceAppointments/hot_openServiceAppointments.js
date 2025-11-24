@@ -155,7 +155,6 @@ export default class Hot_openServiceAppointments extends LightningElement {
             this.error = undefined;
             this.allServiceAppointmentsWired = result.data.map((x) => ({
                 ...x,
-                isUrgent: x.HOT_IsUrgent__c,
                 startAndEndDateWeekday:
                     formatDatetimeinterval(x.EarliestStartTime, x.DueDate) +
                     ' ' +
