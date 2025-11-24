@@ -5,7 +5,7 @@
     padding: 0.5rem 0.8rem;
     margin: 0;
     border: 2px solid #6d7686;
-    border-radius: 8px;
+    border-radius: 4px;
     cursor: pointer;
     background-color: #ffffff;
     user-select: none;
@@ -21,6 +21,7 @@
 .navigation-button img {
     width: 16px;
     height: 16px;
+    display: block;
 }
 .button-container {
     display: flex;
