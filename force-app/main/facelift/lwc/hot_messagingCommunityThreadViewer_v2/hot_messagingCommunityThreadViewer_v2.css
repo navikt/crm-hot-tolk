@@ -52,21 +52,22 @@
 }
 .navds-div {
     display: inline-flex;
-    background-color: #525962;
-    color: #ffffff;
+    background-color: #edecef;
+    color: #000000;
     margin: 0;
+    width: fit-content;
     text-align: center;
     text-decoration: none;
-    border-radius: 2px;
-    min-height: 48px;
+    border-radius: 4px;
     align-items: center;
-    padding: calc(0.75rem - 2px) 0.75rem;
+    padding: 0.4rem;
 }
 
 .header-buttons {
     display: flex;
     margin-top: 1rem;
     gap: 1rem;
+    flex-wrap: wrap;
 }
 
 .header-content {
@@ -102,6 +103,7 @@
 
 .textarea-container {
     display: block;
+    margin-top: 2rem;
 }
 
 .send-button-container {
@@ -110,9 +112,19 @@
     margin-top: 1.5rem;
     margin-bottom: 3rem;
 }
+.link-button {
+    color: #006cff;
+    cursor: pointer;
+    text-decoration: underline;
+    margin-right: 0.5rem;
+    display: inline-block;
+    white-space: nowrap; /* Hindrer at teksten brytes over flere linjer inne i knappen */
+    margin-bottom: 0.5rem; /* Legg til litt plass under knappene hvis de går under */
+    min-width: 150px; /* Sett en minimum bredde på knappene */
+}
 
-.show-service-assignment-text {
-    color: #ffffff;
+.link-button:hover {
+    text-decoration: none;
 }
 
 .thread-dialog {
