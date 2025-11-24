@@ -65,9 +65,10 @@
 
 .header-buttons {
     display: flex;
-    margin-top: 1rem;
+    flex-direction: row;
     gap: 1rem;
     flex-wrap: wrap;
+    margin-top: 1rem;
 }
 
 .header-content {
@@ -120,7 +121,6 @@
     display: inline-block;
     white-space: nowrap; /* Hindrer at teksten brytes over flere linjer inne i knappen */
     margin-bottom: 0.5rem; /* Legg til litt plass under knappene hvis de går under */
-    min-width: 150px; /* Sett en minimum bredde på knappene */
 }
 
 .link-button:hover {
@@ -274,10 +274,6 @@ dialog.modal-container .close-btn:hover {
         margin-bottom: 0.5rem;
     }
 
-    .header-buttons {
-        margin-top: 1rem;
-    }
-
     .back-button-info {
         margin-top: 0rem;
         margin-left: -0.5rem;
@@ -295,5 +291,14 @@ dialog.modal-container .close-btn:hover {
 
     .helpText {
         margin-bottom: -0.5rem;
+    }
+    .header-buttons {
+        flex-direction: column;
+        align-items: flex-start;
+    }
+
+    .link-button {
+        min-width: unset;
+        width: 100%;
     }
 }
