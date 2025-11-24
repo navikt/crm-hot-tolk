@@ -11,21 +11,15 @@
                 >
                     <div class="requestGrid" aria-hidden="true">
                         <div class="col-left">
-                            <!-- <p class="muted">{row.secondary.displayLabel}, {row.tertiary.displayLabel}</p> -->
                             <p class="muted">{row.secondary.displayLabel}</p>
                             <p class="tema">{row.primaryDisplayLabel}</p>
                             <p class="address">{row.tertiary.displayLabel}</p>
-                            <!-- <template lwc:if={row.status.displayLabel}>
-                                <span class={row.statusClass}> {row.status.displayLabel} </span>
-                            </template> -->
                         </div>
 
                         <div class="col-middle">
-                            <!-- <p class="tema">{row.primaryDisplayLabel}</p> -->
                         </div>
 
                         <div class="col-right">
-                            <!-- <p class="address">{row.tertiary.displayLabel}</p> -->
                             <template lwc:if={row.status.displayLabel}>
                                 <span class={row.statusClass}> {row.status.displayLabel} </span>
                             </template>
