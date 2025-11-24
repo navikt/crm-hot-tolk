@@ -136,6 +136,7 @@ span {
     .header-buttons {
         justify-content: flex-start;
         margin-top: -1rem;
+        gap: 0.5rem;
     }
 }
 /* MODAL CSS */
