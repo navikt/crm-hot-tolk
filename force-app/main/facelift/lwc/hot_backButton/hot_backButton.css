@@ -4,10 +4,10 @@
     gap: 0.5rem;
     padding: 0.5rem 0.8rem;
     margin: 0;
-    border: 4px solid #f2f3f5;
+    border: 2px solid #6d7686;
     border-radius: 4px;
     cursor: pointer;
-    background-color: #f2f3f5;
+    background-color: #ffffff;
     user-select: none;
     -webkit-user-select: none;
     -ms-user-select: none;
@@ -21,6 +21,7 @@
 .navigation-button img {
     width: 16px;
     height: 16px;
+    display: block;
 }
 .button-container {
     display: flex;
@@ -30,12 +31,12 @@
     padding-left: 0.5rem;
 }
 .navigation-button:hover {
-    background-color: #e1e3e6;
-    border-color: #e1e3e6;
+    background-color: #e0e3e7;
+    /* background-color: #e1e3e6;
+    border-color: #e1e3e6; */
 }
 .navigation-button:focus {
-    border-color: #0067c5;
-    background-color: #e1e3e6;
+    background-color: #e0e3e7;
     outline: none;
 }
 @media (max-width: 768px) {
