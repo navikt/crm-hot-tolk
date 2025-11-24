@@ -1,9 +1,4 @@
 .wrapper {
-    width: 100%;
-    /* padding-left: 2vw;
-    padding-right: 2vw; */
-    padding-top: 0;
-    padding-bottom: 6vh;
     font-family: 'Source Sans 3', 'Source Sans Pro', Arial, sans-serif;
 }
 .boxLabel,
@@ -27,38 +22,13 @@
     width: 4rem;
     background-color: #005b82;
     margin-top: 1rem;
-}
-.buttonFlexContainer {
-    padding-top: 2rem;
-}
-
-.boxRow {
-    display: flex;
-    flex-wrap: wrap;
-    gap: 2%;
-    width: 100%;
-}
-
-.rowSpacing {
-    margin-top: 2%;
-}
-
-.box {
-    box-sizing: border-box;
-    width: calc(33.333% - (2% * 2 / 3));
-    background-color: #ffffff;
-    padding: 20px;
-    border-radius: 7px;
-    border: 4px solid #cbcfd5;
-    text-align: left;
-    cursor: pointer;
-    display: block;
-    text-decoration: none;
-    color: inherit;
+    margin-bottom: 1rem;
 }
 
 .boxContent {
-    padding: 1rem;
+    padding: 2rem;
+    display: flex;
+    flex-direction: column;
 }
 .boxLabel {
     font-size: 1.25rem;
@@ -68,33 +38,47 @@
 .boxDescription {
     font-size: 1.125rem;
 }
+/*  */
 
-.box:hover,
-.box:focus {
-    border-color: #0067c5;
+.boxRow {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: clamp(1rem, 0.75rem + 1vw, 1.5rem);
+
+    @media (width < 768px) {
+        grid-template-columns: 1fr;
+    }
 }
-.box:hover .boxLabel,
-.box:focus .boxLabel {
-    text-decoration: underline;
+.box {
+    display: block;
+    border: 4px solid var(--card-bg, #cbcfd5);
+    background: var(--card-bg, #ffffff);
+    min-block-size: 8lh;
+    border-radius: 1ch;
+    text-decoration: none;
+    color: inherit;
+
+    &:hover {
+        border-color: #0067c5;
+    }
 }
 
-@media (max-width: 768px) {
+@layer extras {
+    body {
+        padding: 2lh 1em;
+        max-inline-size: 1200px;
+        margin-inline: auto;
+    }
     .wrapper {
-        padding: 1rem;
-    }
-    .buttonFlexContainer {
-        flex-direction: column;
-        gap: 1rem;
-    }
+        padding-top: 1rem;
+        padding-bottom: 1rem;
 
-    .box {
-        width: 100%;
+        /* @media (width > 768px) {
+            padding-top: 1rem;
+            padding-bottom: 1rem;
+        } */
     }
-    .boxRow {
-        flex-direction: column;
-        gap: 1rem;
-    }
-    .rowSpacing {
-        margin-top: 1rem;
+    :where(body, .wrapper) > div + div {
+        margin-block-start: 1lh;
     }
 }
