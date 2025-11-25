@@ -1,0 +1,82 @@
+/* Container */
+.information {
+    background-color: #ffd799; /* ny bakgrunnsfarge */
+    color: #000000; /* svart tekst */
+    border-radius: 6px;
+    max-width: 70%;
+    width: 100%;
+    box-sizing: border-box;
+    padding: 1rem;
+    margin-top: 1rem;
+    margin-bottom: 1rem;
+    cursor: default; /* ikke klikkbar */
+}
+
+/* HEADER */
+.header {
+    display: flex;
+    align-items: center; /* vertikal sentrering */
+    justify-content: flex-start; /* ikon og tittel starter fra venstre */
+    gap: 1rem; /* mellom ikon og tittel */
+}
+
+/* Ikon */
+.icon {
+    height: 36px;
+    width: 36px;
+    flex-shrink: 0; /* hindrer at ikonet krymper */
+}
+
+/* Tittel */
+.title {
+    margin: 0; /* fjern default <p> margin */
+    font-weight: 500;
+    font-size: 1.25rem;
+    line-height: 1.3; /* sikrer bedre vertikal balanse */
+    flex: 1; /* tar tilgjengelig plass om nødvendig */
+}
+
+/* BESKRIVELSE – alltid synlig */
+.description-wrapper {
+    max-height: none; /* fjern begrensning */
+    opacity: 1;
+    overflow: visible;
+    transition: none;
+    margin-top: 0.5rem; /* litt avstand fra header */
+}
+
+.description-inner {
+    padding-left: calc(36px + 1rem); /* justering for ikonens bredde + gap */
+    padding-right: 36px;
+    padding-top: 0.5rem;
+    padding-bottom: 1rem;
+}
+
+.description {
+    font-weight: 400;
+    margin: 0;
+    opacity: 0.9;
+    white-space: pre-line; /* beholder linjeskift */
+}
+@media (max-width: 768px) {
+    .information {
+        max-width: 100%; /* fyller hele bredden */
+        width: 100%;
+        padding: 0.5rem; /* litt padding rundt */
+        margin-left: 0; /* fjern eventuelle marginer */
+        margin-right: 0;
+        border-radius: 6px; /* beholder avrunding */
+        box-sizing: border-box; /* sikrer at padding teller med i bredden */
+    }
+
+    .description-inner {
+        padding-left: 0.5rem; /* justerer padding for mobil */
+        padding-right: 0.5rem;
+        padding-top: 0.5rem;
+        padding-bottom: 0.5rem;
+    }
+    .information {
+        margin-top: 0.5rem;
+        margin-bottom: 0.5rem;
+    }
+}

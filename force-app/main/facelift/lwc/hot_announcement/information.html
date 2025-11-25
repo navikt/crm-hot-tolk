@@ -1,0 +1,17 @@
+<template>
+    <div class="information" role="button" tabindex="0" onclick={toggleExpand} onkeydown={handleKeydown}>
+        <!-- HEADER -->
+        <div class="header">
+            <img src={ExclamationmarkWhiteIcon} alt="" aria-hidden="true" class="icon left" />
+            <p class="title">{title}</p>
+            <img src={chevronIcon} alt="" aria-hidden="true" class="icon right" />
+        </div>
+
+        <!-- BESKRIVELSE -->
+        <div class={descriptionClass}>
+            <div class="description-inner">
+                <p class="description">{description}</p>
+            </div>
+        </div>
+    </div>
+</template>
