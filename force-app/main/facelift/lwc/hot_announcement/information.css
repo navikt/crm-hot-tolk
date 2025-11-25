@@ -1,4 +1,3 @@
-/* Container */
 .information {
     background-color: #015176;
     color: white;
@@ -11,27 +10,22 @@
     margin-top: 1rem;
     margin-bottom: 1rem;
     transition: background-color 0.2s ease;
-    padding: 1rem; /* padding rundt hele boksen */
+    padding: 1rem;
 }
-
-/* Hover på hele boksen */
 .information:hover {
 }
 
-/* Fokusmarkering for tastaturbrukere */
 .information:focus,
 .information:focus-visible {
     outline: 2px solid #fff;
     outline-offset: 2px;
 }
 
-/* HEADER */
 .header {
     display: flex;
     align-items: center;
     justify-content: space-between;
     cursor: pointer;
-    /* Ingen ekstra padding her, bruker margin på ikon */
 }
 
 .icon {
@@ -40,7 +34,7 @@
 }
 
 .icon.left {
-    margin-right: 1rem; /* avstand mellom ikon og tittel */
+    margin-right: 1rem;
 }
 
 .title {
@@ -50,7 +44,6 @@
     flex: 1;
 }
 
-/* BESKRIVELSE */
 .description-wrapper {
     overflow: hidden;
     transition: max-height 0.4s ease, opacity 0.3s ease;
@@ -63,33 +56,32 @@
     opacity: 1;
 }
 
-/* Inner container for beskrivelsen, flukter med tittel */
 .description-inner {
-    padding-left: calc(36px + 1rem); /* matcher ikon + margin */
+    padding-left: calc(36px + 1rem);
     padding-right: 36px;
-    padding-top: 0.5rem; /* litt luft mellom tittel og beskrivelse */
-    padding-bottom: 1rem; /* litt luft nederst */
+    padding-top: 0.5rem;
+    padding-bottom: 1rem;
 }
 
 .description {
     font-weight: 400;
     margin: 0;
     opacity: 0.9;
-    white-space: pre-line; /* behold linjeskift fra JS-streng */
+    white-space: pre-line;
 }
 @media (max-width: 768px) {
     .information {
-        max-width: 100%; /* fyller hele bredden */
+        max-width: 100%;
         width: 100%;
-        padding: 0.5rem; /* litt padding rundt */
-        margin-left: 0; /* fjern eventuelle marginer */
+        padding: 0.5rem;
+        margin-left: 0;
         margin-right: 0;
-        border-radius: 6px; /* beholder avrunding */
-        box-sizing: border-box; /* sikrer at padding teller med i bredden */
+        border-radius: 6px;
+        box-sizing: border-box;
     }
 
     .description-inner {
-        padding-left: 0.5rem; /* justerer padding for mobil */
+        padding-left: 0.5rem;
         padding-right: 0.5rem;
         padding-top: 0.5rem;
         padding-bottom: 0.5rem;
