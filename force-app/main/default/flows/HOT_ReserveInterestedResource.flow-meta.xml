@@ -152,7 +152,7 @@
         <allowPause>false</allowPause>
         <fields>
             <name>Error_message</name>
-            <fieldText>&lt;p&gt;Du kan kun tildele én ressurs per oppdrag, og ressursen kan ikke ha overlappende oppdrag.&lt;/p&gt;</fieldText>
+            <fieldText>&lt;p&gt;Du kan kun reservere én ressurs per oppdrag, og ressursen kan ikke ha overlappende oppdrag.&lt;/p&gt;</fieldText>
             <fieldType>DisplayText</fieldType>
         </fields>
         <showFooter>true</showFooter>
