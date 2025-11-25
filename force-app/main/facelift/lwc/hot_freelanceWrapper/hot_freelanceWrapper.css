@@ -194,6 +194,37 @@
 .calenderButton:focus {
     border-color: #0067c5;
 }
+.calendar-legend-wrapper {
+    display: flex;
+    justify-content: center;
+    width: 100%;
+}
+
+.calendar-legend {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 20px;
+    max-width: 100%;
+    font-family: Arial, sans-serif;
+    font-size: 1.125rem;
+    padding-top: 1rem;
+}
+
+.legend-item {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    white-space: nowrap;
+}
+
+.legend-dot {
+    width: 14px;
+    height: 14px;
+    border-radius: 50%;
+    display: inline-block;
+}
+
 @media (max-width: 768px) {
     .row {
         flex-direction: column;
@@ -205,5 +236,9 @@
     }
     .wrapper {
         padding: 1ch !important;
+    }
+    .calendar-legend {
+        padding-left: 0.5rem;
+        justify-content: left;
     }
 }
