@@ -196,7 +196,7 @@ input[type='reset'] {
     align-items: center;
     justify-content: center;
     padding: calc(0.75rem - 2px) 1rem;
-    border-radius: 5px;
+    border-radius: 8px;
     z-index: 1002;
 }
 .navds-body-short {
