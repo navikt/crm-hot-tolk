@@ -275,14 +275,9 @@
                         </template>
                     </div>
                 </div>
-
-                <!-- Helptext -->
-                <template lwc:if={isHelpText}>
-                    <c-helptext class="helpText" text={helptextContent} hover-text={helptextHovertext}></c-helptext>
-                </template>
-
                 <div class="textarea-container">
                     <c-textarea
+                        helptext-content={helptextContent}
                         label="Ny melding"
                         max-length={maxLength}
                         ongetvalueontextareachange={handleTextChange}
