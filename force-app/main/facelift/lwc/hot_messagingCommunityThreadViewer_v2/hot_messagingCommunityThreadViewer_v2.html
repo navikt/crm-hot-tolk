@@ -276,10 +276,14 @@
                     </div>
                 </div>
 
+                <!-- Helptext -->
+                <template lwc:if={isHelpText}>
+                    <c-helptext class="helpText" text={helptextContent} hover-text={helptextHovertext}></c-helptext>
+                </template>
+
                 <div class="textarea-container">
                     <c-textarea
                         label="Ny melding"
-                        description={helptextContent}
                         max-length={maxLength}
                         ongetvalueontextareachange={handleTextChange}
                         desktop-style="width: 100%; height: 100%;"
