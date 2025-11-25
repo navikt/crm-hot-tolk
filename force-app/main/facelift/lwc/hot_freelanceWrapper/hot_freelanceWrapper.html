@@ -1,5 +1,5 @@
 <template>
-    <section class="freelanceWrapper">
+    <nav aria-label="Frilanstolk meny" class="wrapper" style="--card-bg: white">
         <div class="row">
             <h2 class="freelanceHeader">For deg som er frilanstolk</h2>
             <button
@@ -28,6 +28,35 @@
             <div class="calenderModalContent" aria-live="polite" role="region" aria-labelledby="calenderHeading">
                 <h2 id="calenderHeading" class="sr-only">Kalender for frilanstolk</h2>
                 <template lwc:if={isUserInNorwegianTimeZone}>
+                    <div class="calendar-legend-wrapper">
+                        <div class="calendar-legend">
+                            <div class="legend-item">
+                                <span class="legend-dot" style="background-color: #fe7b7f"></span>
+                                Tildelte oppdrag, men ikke satt til dekket
+                            </div>
+
+                            <div class="legend-item">
+                                <span class="legend-dot" style="background-color: #8fc4ff"></span>
+                                Tildelte oppdrag i fremtiden
+                            </div>
+
+                            <div class="legend-item">
+                                <span class="legend-dot" style="background-color: #36cb80"></span>
+                                Dekket oppdrag
+                            </div>
+
+                            <div class="legend-item">
+                                <span class="legend-dot" style="background-color: #febe53"></span>
+                                Ledig på lønn
+                            </div>
+
+                            <div class="legend-item">
+                                <span class="legend-dot" style="background-color: #8668a7"></span>
+                                Fravær
+                            </div>
+                        </div>
+                    </div>
+
                     <c-hot_calendar_v2></c-hot_calendar_v2>
                 </template>
                 <template lwc:else>
@@ -40,30 +69,27 @@
                 </template>
             </div>
         </template>
-        <nav aria-label="Frilanstolk meny">
-            <div class="buttonFlexContainer">
-                <a class="box" href={pageLinks.freelanceMyServiceAppointments}>
-                    <div class="boxContent">
-                        <span class="boxLabel">Mine oppdrag</span>
-                        <span class="boxDescription">Se oversikt over dine oppdrag</span>
-                    </div>
-                </a>
-                <a class="box" href={pageLinks.freelanceMyThreads}>
-                    <div class="boxContent">
-                        <span class="boxLabel">Mine samtaler</span>
-                        <span class="boxDescription">Se alle dine samtaler</span>
-                        <div lwc:if={unreadThreadsText} class="unreadThreadsTag">{unreadThreadsText}</div>
-                    </div>
-                </a>
-                <a class="box" href={pageLinks.freelanceMyUserInformation}>
-                    <div class="boxContent">
-                        <span class="boxLabel">Min side</span>
-                        <span class="boxDescription">Rediger kontaktinformasjon og kvalifikasjoner</span>
-                    </div>
-                </a>
-            </div>
-        </nav>
-    </section>
-    <!-- Frilans Kalender -->
-    <!-- Slutt Frilans Kalender -->
+
+        <div class="boxRow">
+            <a class="box" href={pageLinks.freelanceMyServiceAppointments}>
+                <div class="boxContent">
+                    <span class="boxLabel">Mine oppdrag</span>
+                    <span class="boxDescription">Se oversikt over dine oppdrag</span>
+                </div>
+            </a>
+            <a class="box" href={pageLinks.freelanceMyThreads}>
+                <div class="boxContent">
+                    <span class="boxLabel">Mine samtaler</span>
+                    <span class="boxDescription">Se alle dine samtaler som frilanstolk</span>
+                    <div lwc:if={unreadThreadsText} class="unreadThreadsTag">{unreadThreadsText}</div>
+                </div>
+            </a>
+            <a class="box" href={pageLinks.freelanceMyUserInformation}>
+                <div class="boxContent">
+                    <span class="boxLabel">Min profil</span>
+                    <span class="boxDescription">Rediger kontaktinformasjon og kvalifikasjoner</span>
+                </div>
+            </a>
+        </div>
+    </nav>
 </template>
