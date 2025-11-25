@@ -284,15 +284,22 @@ public without sharing class HOT_UserNotificationService {
         String title = 'Ny melding fra Tolketjenesten';
         String body = 'Du har fått en melding fra Tolketjenesten.';
 
-        Id notificationTypeId = notificationType.Id;
-        String targetPageRef = getTargetPageRefThread(thread, isFreelanceInterpreter);
         Messaging.CustomNotification notification = new Messaging.CustomNotification();
         notification.setTitle(title);
         notification.setBody(body);
-        notification.setNotificationTypeId(notificationTypeId);
-        notification.setTargetPageRef(targetPageRef);
+        notification.setNotificationTypeId(notificationType.Id);
+
+        if (isFreelanceInterpreter) {
+            // --- FREELANCE: bruker targetPageRef ---
+            String targetPageRef = getTargetPageRefThread(thread, true);
+            notification.setTargetPageRef(targetPageRef);
+        } else {
+            // --- ANSATT: bruker targetId ---
+            notification.setTargetId(thread.Id);
+        }
+
         try {
-            notification.send(recipients);
+            HOT_NotificationHandler.sendNotification(notification, recipients, (SObject) thread);
         } catch (Exception e) {
             handleException(e);
         }

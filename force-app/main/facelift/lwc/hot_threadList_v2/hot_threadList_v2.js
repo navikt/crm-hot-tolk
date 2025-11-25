@@ -21,7 +21,7 @@ export default class Hot_threadList_v2 extends NavigationMixin(LightningElement)
 
     get headerText() {
         if (this.isFreelanceView) {
-            return 'Mine samtaler som frilans';
+            return 'Mine samtaler som frilanstolk';
         } else {
             return 'Mine samtaler';
         }
