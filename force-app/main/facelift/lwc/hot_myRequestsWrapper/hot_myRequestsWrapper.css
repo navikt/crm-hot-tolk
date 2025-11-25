@@ -30,7 +30,6 @@
     width: 100%;
     font-size: 2rem;
     font-weight: 600;
-    text-align: center;
     padding-bottom: 1.5rem;
 }
 .back-button-info {
@@ -43,8 +42,7 @@
 
 .header-buttons {
     display: flex;
-    justify-content: flex-end;
-    margin-top: -3rem;
+    justify-content: flex-start;
     position: relative;
     z-index: 1;
 }
@@ -138,6 +136,7 @@ span {
     .header-buttons {
         justify-content: flex-start;
         margin-top: -1rem;
+        gap: 0.5rem;
     }
 }
 /* MODAL CSS */
