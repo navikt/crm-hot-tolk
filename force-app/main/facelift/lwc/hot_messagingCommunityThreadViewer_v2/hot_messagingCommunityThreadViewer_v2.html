@@ -275,11 +275,10 @@
                         </template>
                     </div>
                 </div>
-
                 <div class="textarea-container">
                     <c-textarea
+                        helptext-content={helptextContent}
                         label="Ny melding"
-                        description={helptextContent}
                         max-length={maxLength}
                         ongetvalueontextareachange={handleTextChange}
                         desktop-style="width: 100%; height: 100%;"
