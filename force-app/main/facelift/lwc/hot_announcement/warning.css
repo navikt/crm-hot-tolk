@@ -1,4 +1,4 @@
-.information {
+.warning {
     background-color: #ffc166;
     color: #000000;
     border-radius: 6px;
@@ -8,9 +8,12 @@
     padding: 1rem;
     margin-top: 1rem;
     margin-bottom: 1rem;
-    cursor: default;
+    cursor: pointer;
+    font-family: 'Source Sans 3', 'Source Sans Pro', Arial, sans-serif;
+    font-size: 1.125rem;
 }
 
+/* HEADER */
 .header {
     display: flex;
     align-items: center;
@@ -32,36 +35,55 @@
     flex: 1;
 }
 
+/* COLLAPSE / EXPAND */
 .description-wrapper {
-    max-height: none;
-    opacity: 1;
-    overflow: visible;
-    transition: none;
-    margin-top: 0.5rem;
+    overflow: hidden;
+    transition: max-height 0.4s ease, opacity 0.3s ease;
+    max-height: 0;
+    opacity: 0;
 }
 
+.description-wrapper.expanded {
+    max-height: 1000px;
+    opacity: 1;
+}
+
+/* CONTENT */
 .description-inner {
     padding-left: calc(36px + 1rem);
     padding-right: 36px;
     padding-top: 0.5rem;
-    padding-bottom: 1rem;
 }
 
+/* SINGLE announcement */
 .description {
     font-weight: 400;
     margin: 0;
     opacity: 0.9;
     white-space: pre-line;
 }
+
+/* GROUP MODE */
+.single-announcement {
+    margin-bottom: 1.5rem; /* samme spacing som info */
+}
+
+.announcement-title {
+    font-weight: 600;
+    margin-bottom: 0.25rem;
+}
+
+/* removed divider */
+
+/* MOBILE */
 @media (max-width: 768px) {
-    .information {
+    .warning {
         max-width: 100%;
         width: 100%;
         padding: 0.5rem;
         margin-left: 0;
         margin-right: 0;
         border-radius: 6px;
-        box-sizing: border-box;
     }
 
     .description-inner {
@@ -70,7 +92,8 @@
         padding-top: 0.5rem;
         padding-bottom: 0.5rem;
     }
-    .information {
+
+    .warning {
         margin-top: 0.5rem;
         margin-bottom: 0.5rem;
     }

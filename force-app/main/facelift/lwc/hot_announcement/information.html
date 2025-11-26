@@ -3,15 +3,31 @@
         <!-- HEADER -->
         <div class="header">
             <img src={ExclamationmarkWhiteIcon} alt="" aria-hidden="true" class="icon left" />
-            <p class="title">{title}</p>
+            <p class="title">{headerTitle}</p>
             <img src={chevronIcon} alt="" aria-hidden="true" class="icon right" />
         </div>
 
-        <!-- BESKRIVELSE -->
-        <div class={descriptionClass}>
-            <div class="description-inner">
-                <p class="description">{description}</p>
-            </div>
+        <!-- BODY -->
+        <div if:true={expanded} class="content">
+            <!-- SINGLE MODE (bare 1 announcement) -->
+            <template if:true={isSingle}>
+                <div class="description-inner">
+                    <p class="description">{singleItem.Description__c}</p>
+                </div>
+            </template>
+
+            <!-- GROUP MODE (flere announcements) -->
+            <template if:true={isGroup}>
+                <div class="description-inner">
+                    <template for:each={announcements} for:item="a">
+                        <div key={a.Title__c} class="single-announcement">
+                            <p class="announcement-title">{a.Title__c}</p>
+                            <p class="description">{a.Description__c}</p>
+                            <div class="divider"></div>
+                        </div>
+                    </template>
+                </div>
+            </template>
         </div>
     </div>
 </template>

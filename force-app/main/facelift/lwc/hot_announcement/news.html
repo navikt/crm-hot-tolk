@@ -1,6 +1,6 @@
 <template>
-    <div class="message">
-        <p class="created-date">{createdDate}</p>
+    <div class="message" role="article" tabindex="0" aria-label={title} data-index={index}>
+        <p class="created-date">Publisert: {createdDate}</p>
         <p class="title">{title}</p>
         <p class="description">{description}</p>
     </div>

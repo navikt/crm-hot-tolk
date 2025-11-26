@@ -4,10 +4,26 @@
 .list {
     max-width: 800px;
     margin: 0 auto;
-    padding-top: 2rem;
     padding-bottom: 2rem;
+}
+.button-container {
+    padding-top: 2rem;
 }
 
 .title {
     font-size: 1.75rem;
+}
+.back-button-info {
+    margin-top: 0rem;
+    margin-left: -0.5rem;
+}
+@media (max-width: 768px) {
+    .wrapper {
+        margin-left: 0.5rem;
+        margin-right: 0.5rem;
+    }
+    .back-button-info {
+        margin-top: 0rem;
+        margin-left: -0.5rem;
+    }
 }

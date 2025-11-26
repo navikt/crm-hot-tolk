@@ -8,18 +8,27 @@ import ICON_Exclamationmark from '@salesforce/resourceUrl/Exclamationmark';
 import ICON_ExclamationmarkTriangleWhite from '@salesforce/resourceUrl/ExclamationmarkTriangleWhite';
 import ICON_ChevronUpWhite from '@salesforce/resourceUrl/ChevronUpWhite';
 import ICON_ChevronDownWhite from '@salesforce/resourceUrl/ChevronDownWhite';
+import ICON_ChevronUp from '@salesforce/resourceUrl/ChevronUp';
+import ICON_ChevronDown from '@salesforce/resourceUrl/ChevronDown';
 
 export default class Hot_announcement extends LightningElement {
+    // icons
     ExclamationmarkIcon = ICON_Exclamationmark;
     ExclamationmarkWhiteIcon = ICON_ExclamationmarkWhite;
     ExclamationmarkTriangleWhiteIcon = ICON_ExclamationmarkTriangleWhite;
     ChevronUpWhiteIcon = ICON_ChevronUpWhite;
     ChevronDownWhiteIcon = ICON_ChevronDownWhite;
+    ChevronUpIcon = ICON_ChevronUp;
+    ChevronDownIcon = ICON_ChevronDown;
 
-    @api announcement;
+    // props
+    @api announcement = null; // brukes for News
+    @api announcements = []; // liste for Information/Warning
+    @api type; // "Information" / "Warning" / "News"
 
     expanded = false;
 
+    // ----- NEWS MODE -----
     get title() {
         return this.announcement?.Title__c || '';
     }
@@ -27,13 +36,54 @@ export default class Hot_announcement extends LightningElement {
     get description() {
         return this.announcement?.Description__c || '';
     }
-
-    get chevronIcon() {
-        return this.expanded ? this.ChevronUpWhiteIcon : this.ChevronDownWhiteIcon;
+    get createdDate() {
+        return this.announcement?.CreatedDate || '';
     }
 
-    get descriptionClass() {
-        return `description-wrapper ${this.expanded ? 'expanded' : 'collapsed'}`;
+    // ----- GROUPING LOGIC -----
+    get isGroup() {
+        return this.announcements && this.announcements.length > 1;
+    }
+
+    get isSingle() {
+        return this.announcements && this.announcements.length === 1;
+    }
+
+    get singleItem() {
+        return this.isSingle ? this.announcements[0] : null;
+    }
+
+    // Header title for Information/Warning
+    get headerTitle() {
+        // NEWS → use original
+        // if (this.announcement && this.announcement.Type__c === 'News') {
+        //     return this.announcement.Title__c;
+        // }
+
+        // SINGLE Information/Warning → use actual title
+        if (this.isSingle) {
+            return this.singleItem.Title__c;
+        }
+
+        // MULTIPLE Information/Warning → use group title
+        switch (this.type) {
+            case 'Information':
+                return 'Viktig informasjon';
+            case 'Warning':
+                return 'Viktig informasjon';
+            default:
+                return '';
+        }
+    }
+
+    get chevronIcon() {
+        if (this.type === 'Warning') {
+            // bruk de ikke-hvite iconene
+            return this.expanded ? this.ChevronUpIcon : this.ChevronDownIcon;
+        }
+
+        // default (Information + News)
+        return this.expanded ? this.ChevronUpWhiteIcon : this.ChevronDownWhiteIcon;
     }
 
     toggleExpand() {
@@ -41,28 +91,27 @@ export default class Hot_announcement extends LightningElement {
     }
 
     handleKeydown(event) {
-        // Lar brukeren utvide/lukke med Enter eller Space
         if (event.key === 'Enter' || event.key === ' ') {
             event.preventDefault();
             this.toggleExpand();
         }
     }
 
+    // TEMPLATE SELECTION
     render() {
-        if (!this.announcement || !this.announcement.Type__c) {
-            // fallback hvis announcement mangler
-            return informationTemplate;
+        // NEWS behaves exactly as before
+        if (this.announcement && this.announcement.Type__c === 'News') {
+            return newsTemplate;
         }
 
-        switch (this.announcement.Type__c) {
-            case 'Information':
-                return informationTemplate;
-            case 'Warning':
-                return warningTemplate;
-            case 'News':
-                return newsTemplate;
-            default:
-                return informationTemplate; // fallback
+        // GROUP INFO/WARNING
+        if (this.type === 'Information') {
+            return informationTemplate;
         }
+        if (this.type === 'Warning') {
+            return warningTemplate;
+        }
+
+        return informationTemplate;
     }
 }
