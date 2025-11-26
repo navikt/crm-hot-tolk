@@ -27,6 +27,8 @@ export default class Hot_freelanceUserInformation_v2 extends LightningElement {
     viewUserInformation = true;
     editUserInformation = false;
 
+    buttonLoading = false;
+
     userData = {
         nameValue: '',
         emailValue: '',
@@ -286,10 +288,12 @@ export default class Hot_freelanceUserInformation_v2 extends LightningElement {
 
         this.viewUserInformation = true;
         this.editUserInformation = false;
+        this.buttonLoading = false;
     }
 
     // Submits updated user data and refreshes the UI
     handleSubmit() {
+        this.buttonLoading = true;
         updateServiceResourceName({
             newName: this.userData.nameValue,
             newEmail: this.userData.emailValue,
@@ -315,6 +319,9 @@ export default class Hot_freelanceUserInformation_v2 extends LightningElement {
             })
             .catch((error) => {
                 console.error('Error in handleSubmit process:', error);
+            })
+            .finally(() => {
+                this.buttonLoading = false;
             });
     }
 
