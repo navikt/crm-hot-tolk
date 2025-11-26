@@ -1,6 +1,7 @@
 import { LightningElement, api } from 'lwc';
 import informationTemplate from './information.html';
 import warningTemplate from './warning.html';
+import newsTemplate from './news.html';
 
 import ICON_ExclamationmarkWhite from '@salesforce/resourceUrl/ExclamationmarkWhite';
 import ICON_Exclamationmark from '@salesforce/resourceUrl/Exclamationmark';
@@ -58,6 +59,8 @@ export default class Hot_announcement extends LightningElement {
                 return informationTemplate;
             case 'Warning':
                 return warningTemplate;
+            case 'News':
+                return newsTemplate;
             default:
                 return informationTemplate; // fallback
         }

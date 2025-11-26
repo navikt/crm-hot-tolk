@@ -7,7 +7,6 @@
     box-sizing: border-box;
     overflow: hidden;
     cursor: pointer;
-    margin-top: 1rem;
     margin-bottom: 1rem;
     transition: background-color 0.2s ease;
     padding: 1rem;

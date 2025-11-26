@@ -1,0 +1,10 @@
+<template>
+    <div class="wrapper">
+        <div class="list">
+            <h1 class="title">Meldinger fra Tolketjenesten</h1>
+            <template for:each={announcements} for:item="announcement">
+                <c-hot_announcement key={announcement.Title__c} announcement={announcement}> </c-hot_announcement>
+            </template>
+        </div>
+    </div>
+</template>

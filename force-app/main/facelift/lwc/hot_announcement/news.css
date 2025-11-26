@@ -1,0 +1,28 @@
+.message {
+    border: 2px solid #000;
+    border-radius: 8px;
+    padding: 1rem;
+    margin-bottom: 1rem;
+    background: #fff;
+    max-width: 800px;
+    margin: auto;
+    margin-top: 1.5rem;
+}
+
+.created-date {
+    font-size: 0.8rem;
+    color: #555;
+    margin-bottom: 0.5rem;
+}
+
+.title {
+    font-weight: 600;
+    font-size: 1rem;
+    margin-bottom: 0.5rem;
+}
+
+.description {
+    font-size: 0.95rem;
+    color: #333;
+    white-space: pre-line;
+}
