@@ -4,7 +4,7 @@
         <name>CreateWorkOrderService</name>
         <label>Create Work Order Service</label>
         <locationX>182</locationX>
-        <locationY>398</locationY>
+        <locationY>350</locationY>
         <actionName>HOT_CreateWorkOrderService</actionName>
         <actionType>apex</actionType>
         <connector>
@@ -83,6 +83,7 @@
                 <elementReference>Onsdag</elementReference>
             </value>
         </inputParameters>
+        <nameSegment>HOT_CreateWorkOrderService</nameSegment>
         <outputParameters>
             <assignToReference>Error</assignToReference>
             <name>output</name>
@@ -95,6 +96,14 @@
         <dataType>String</dataType>
         <value>
             <stringValue>Never</stringValue>
+        </value>
+    </choices>
+    <choices>
+        <name>Hver_4_uke</name>
+        <choiceText>Hver 4 uke</choiceText>
+        <dataType>String</dataType>
+        <value>
+            <stringValue>Every4Weeks</stringValue>
         </value>
     </choices>
     <choices>
@@ -133,7 +142,7 @@
         <name>Error_Decision</name>
         <label>Error?</label>
         <locationX>182</locationX>
-        <locationY>518</locationY>
+        <locationY>458</locationY>
         <defaultConnectorLabel>No</defaultConnectorLabel>
         <rules>
             <name>Yes_Outcome</name>
@@ -151,6 +160,7 @@
             <label>Yes</label>
         </rules>
     </decisions>
+    <environments>Default</environments>
     <formulas>
         <name>RecurringEndDateAfterStart</name>
         <dataType>Boolean</dataType>
@@ -186,7 +196,7 @@
         <name>getRequest</name>
         <label>getRequest</label>
         <locationX>182</locationX>
-        <locationY>158</locationY>
+        <locationY>134</locationY>
         <assignNullValuesIfNoRecordsFound>false</assignNullValuesIfNoRecordsFound>
         <connector>
             <targetReference>Start_Screen</targetReference>
@@ -210,7 +220,7 @@
         <name>Error_Screen</name>
         <label>Feilmelding</label>
         <locationX>50</locationX>
-        <locationY>637</locationY>
+        <locationY>566</locationY>
         <allowBack>true</allowBack>
         <allowFinish>true</allowFinish>
         <allowPause>false</allowPause>
@@ -226,7 +236,7 @@
         <name>Start_Screen</name>
         <label>Start</label>
         <locationX>182</locationX>
-        <locationY>278</locationY>
+        <locationY>242</locationY>
         <allowBack>true</allowBack>
         <allowFinish>true</allowFinish>
         <allowPause>false</allowPause>
@@ -241,6 +251,7 @@
             </defaultValue>
             <fieldText>Start</fieldText>
             <fieldType>InputField</fieldType>
+            <inputsOnNextNavToAssocScrn>UseStoredValues</inputsOnNextNavToAssocScrn>
             <isRequired>true</isRequired>
         </fields>
         <fields>
@@ -251,6 +262,7 @@
             </defaultValue>
             <fieldText>Slutt</fieldText>
             <fieldType>InputField</fieldType>
+            <inputsOnNextNavToAssocScrn>UseStoredValues</inputsOnNextNavToAssocScrn>
             <isRequired>true</isRequired>
         </fields>
         <fields>
@@ -259,10 +271,12 @@
             <choiceReferences>Hver_dag</choiceReferences>
             <choiceReferences>Hver_uke</choiceReferences>
             <choiceReferences>Hver_andre_uke</choiceReferences>
+            <choiceReferences>Hver_4_uke</choiceReferences>
             <dataType>String</dataType>
             <defaultSelectedChoiceReference>Aldri</defaultSelectedChoiceReference>
             <fieldText>Gjenta</fieldText>
             <fieldType>DropdownBox</fieldType>
+            <inputsOnNextNavToAssocScrn>UseStoredValues</inputsOnNextNavToAssocScrn>
             <isRequired>true</isRequired>
         </fields>
         <fields>
@@ -292,6 +306,7 @@
             <dataType>Boolean</dataType>
             <fieldText>Mandag</fieldText>
             <fieldType>InputField</fieldType>
+            <inputsOnNextNavToAssocScrn>UseStoredValues</inputsOnNextNavToAssocScrn>
             <isRequired>true</isRequired>
             <visibilityRule>
                 <conditionLogic>or</conditionLogic>
@@ -307,6 +322,13 @@
                     <operator>EqualTo</operator>
                     <rightValue>
                         <elementReference>Hver_andre_uke</elementReference>
+                    </rightValue>
+                </conditions>
+                <conditions>
+                    <leftValueReference>Gjenta</leftValueReference>
+                    <operator>EqualTo</operator>
+                    <rightValue>
+                        <elementReference>Hver_4_uke</elementReference>
                     </rightValue>
                 </conditions>
             </visibilityRule>
@@ -316,6 +338,7 @@
             <dataType>Boolean</dataType>
             <fieldText>Tirsdag</fieldText>
             <fieldType>InputField</fieldType>
+            <inputsOnNextNavToAssocScrn>UseStoredValues</inputsOnNextNavToAssocScrn>
             <isRequired>true</isRequired>
             <visibilityRule>
                 <conditionLogic>or</conditionLogic>
@@ -331,6 +354,13 @@
                     <operator>EqualTo</operator>
                     <rightValue>
                         <elementReference>Hver_andre_uke</elementReference>
+                    </rightValue>
+                </conditions>
+                <conditions>
+                    <leftValueReference>Gjenta</leftValueReference>
+                    <operator>EqualTo</operator>
+                    <rightValue>
+                        <elementReference>Hver_4_uke</elementReference>
                     </rightValue>
                 </conditions>
             </visibilityRule>
@@ -340,6 +370,7 @@
             <dataType>Boolean</dataType>
             <fieldText>Onsdag</fieldText>
             <fieldType>InputField</fieldType>
+            <inputsOnNextNavToAssocScrn>UseStoredValues</inputsOnNextNavToAssocScrn>
             <isRequired>true</isRequired>
             <visibilityRule>
                 <conditionLogic>or</conditionLogic>
@@ -355,6 +386,13 @@
                     <operator>EqualTo</operator>
                     <rightValue>
                         <elementReference>Hver_andre_uke</elementReference>
+                    </rightValue>
+                </conditions>
+                <conditions>
+                    <leftValueReference>Gjenta</leftValueReference>
+                    <operator>EqualTo</operator>
+                    <rightValue>
+                        <elementReference>Hver_4_uke</elementReference>
                     </rightValue>
                 </conditions>
             </visibilityRule>
@@ -364,6 +402,7 @@
             <dataType>Boolean</dataType>
             <fieldText>Torsdag</fieldText>
             <fieldType>InputField</fieldType>
+            <inputsOnNextNavToAssocScrn>UseStoredValues</inputsOnNextNavToAssocScrn>
             <isRequired>true</isRequired>
             <visibilityRule>
                 <conditionLogic>or</conditionLogic>
@@ -379,6 +418,13 @@
                     <operator>EqualTo</operator>
                     <rightValue>
                         <elementReference>Hver_andre_uke</elementReference>
+                    </rightValue>
+                </conditions>
+                <conditions>
+                    <leftValueReference>Gjenta</leftValueReference>
+                    <operator>EqualTo</operator>
+                    <rightValue>
+                        <elementReference>Hver_4_uke</elementReference>
                     </rightValue>
                 </conditions>
             </visibilityRule>
@@ -388,6 +434,7 @@
             <dataType>Boolean</dataType>
             <fieldText>Fredag</fieldText>
             <fieldType>InputField</fieldType>
+            <inputsOnNextNavToAssocScrn>UseStoredValues</inputsOnNextNavToAssocScrn>
             <isRequired>true</isRequired>
             <visibilityRule>
                 <conditionLogic>or</conditionLogic>
@@ -403,6 +450,13 @@
                     <operator>EqualTo</operator>
                     <rightValue>
                         <elementReference>Hver_andre_uke</elementReference>
+                    </rightValue>
+                </conditions>
+                <conditions>
+                    <leftValueReference>Gjenta</leftValueReference>
+                    <operator>EqualTo</operator>
+                    <rightValue>
+                        <elementReference>Hver_4_uke</elementReference>
                     </rightValue>
                 </conditions>
             </visibilityRule>
@@ -412,6 +466,7 @@
             <dataType>Boolean</dataType>
             <fieldText>Lørdag</fieldText>
             <fieldType>InputField</fieldType>
+            <inputsOnNextNavToAssocScrn>UseStoredValues</inputsOnNextNavToAssocScrn>
             <isRequired>true</isRequired>
             <visibilityRule>
                 <conditionLogic>or</conditionLogic>
@@ -427,6 +482,13 @@
                     <operator>EqualTo</operator>
                     <rightValue>
                         <elementReference>Hver_andre_uke</elementReference>
+                    </rightValue>
+                </conditions>
+                <conditions>
+                    <leftValueReference>Gjenta</leftValueReference>
+                    <operator>EqualTo</operator>
+                    <rightValue>
+                        <elementReference>Hver_4_uke</elementReference>
                     </rightValue>
                 </conditions>
             </visibilityRule>
@@ -436,6 +498,7 @@
             <dataType>Boolean</dataType>
             <fieldText>Søndag</fieldText>
             <fieldType>InputField</fieldType>
+            <inputsOnNextNavToAssocScrn>UseStoredValues</inputsOnNextNavToAssocScrn>
             <isRequired>true</isRequired>
             <visibilityRule>
                 <conditionLogic>or</conditionLogic>
@@ -453,6 +516,13 @@
                         <elementReference>Hver_andre_uke</elementReference>
                     </rightValue>
                 </conditions>
+                <conditions>
+                    <leftValueReference>Gjenta</leftValueReference>
+                    <operator>EqualTo</operator>
+                    <rightValue>
+                        <elementReference>Hver_4_uke</elementReference>
+                    </rightValue>
+                </conditions>
             </visibilityRule>
         </fields>
         <fields>
@@ -460,6 +530,7 @@
             <dataType>Date</dataType>
             <fieldText>Sluttdato</fieldText>
             <fieldType>InputField</fieldType>
+            <inputsOnNextNavToAssocScrn>UseStoredValues</inputsOnNextNavToAssocScrn>
             <isRequired>true</isRequired>
             <visibilityRule>
                 <conditionLogic>and</conditionLogic>
