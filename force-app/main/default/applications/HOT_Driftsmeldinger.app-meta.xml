@@ -11,7 +11,7 @@
     <isNavTabPersistenceDisabled>false</isNavTabPersistenceDisabled>
     <label>HOT Driftsmeldinger</label>
     <navType>Standard</navType>
+    <tabs>HOT_Driftsmeldinger_App_page</tabs>
     <tabs>HOT_Announcement__c</tabs>
     <uiType>Lightning</uiType>
-    <utilityBar>HOT_Driftsmeldinger_UtilityBar</utilityBar>
 </CustomApplication>
