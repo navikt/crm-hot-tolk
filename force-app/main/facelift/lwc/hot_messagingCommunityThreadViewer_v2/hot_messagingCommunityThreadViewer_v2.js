@@ -50,6 +50,7 @@ export default class Hot_messagingCommunityThreadViewer_v2 extends NavigationMix
     latestSenderUserId;
     hideReadBy = false;
     isLoading = false;
+    buttonLoading = false;
 
     @api recordId;
     @api requestId;
@@ -406,8 +407,10 @@ export default class Hot_messagingCommunityThreadViewer_v2 extends NavigationMix
     createMessage(validation) {
         if (validation !== true) {
             this.buttonisdisabled = false;
+            this.buttonLoading = false;
             return;
         }
+        this.buttonLoading = true;
 
         createmsg({ threadId: this.recordId, messageText: this.msgVal, fromContactId: this.userContactId })
             .then((result) => {
@@ -418,7 +421,10 @@ export default class Hot_messagingCommunityThreadViewer_v2 extends NavigationMix
                     this.handleMessageFailed();
                 }
             })
-            .catch((error) => console.log(error));
+            .catch((error) => console.log(error))
+            .finally(() => {
+                this.buttonLoading = false;
+            });
     }
 
     handleSendButtonClick() {
@@ -428,6 +434,7 @@ export default class Hot_messagingCommunityThreadViewer_v2 extends NavigationMix
         this.readByText = '';
 
         if (this.overrideValidation === true) {
+            this.buttonLoading = true;
             const validationEvent = new CustomEvent('validationevent', {
                 msg: this.msgVal,
                 maxLength: this.maxLength
@@ -435,7 +442,15 @@ export default class Hot_messagingCommunityThreadViewer_v2 extends NavigationMix
             this.dispatchEvent(validationEvent);
         } else {
             // Using default validation
-            this.createMessage(this.valid());
+            const isValid = this.valid();
+            if (!isValid) {
+                this.buttonisdisabled = false;
+                this.buttonLoading = false;
+                return;
+            }
+
+            this.buttonLoading = true;
+            this.createMessage(true);
         }
     }
 
