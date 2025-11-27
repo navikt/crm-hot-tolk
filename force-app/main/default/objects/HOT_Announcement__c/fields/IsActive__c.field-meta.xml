@@ -6,11 +6,11 @@
     IsPublished__c,
     OR(
         ISBLANK(ValidFrom__c),
-        NOW() &gt;= ValidFrom__c
+        TODAY() &gt;= ValidFrom__c
     ),
     OR(
         ISBLANK(ValidTo__c),
-        NOW() &lt;= ValidTo__c
+        TODAY() &lt;= (ValidTo__c)
     )
 )</formula>
     <formulaTreatBlanksAs>BlankAsZero</formulaTreatBlanksAs>
