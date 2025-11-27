@@ -1,6 +1,7 @@
 import { LightningElement, api, wire } from 'lwc';
 import { getRecord } from 'lightning/uiRecordApi';
 import { ShowToastEvent } from 'lightning/platformShowToastEvent';
+import USER_ID from '@salesforce/user/Id';
 
 const FIELDS = ['HOT_Request__c.Company__c', 'HOT_Request__c.IsOtherEconomicProvicer__c', 'HOT_Request__c.CreatedDate'];
 
@@ -12,6 +13,24 @@ export default class Hot_otherPayerNotification extends LightningElement {
     _prevCompany = null;
     _prevOtherPayerChecked = null;
     _prevConditionMet = false;
+
+    get dismissedKey() {
+        return `otherPayerToastDismissed_${this.recordId}_${USER_ID}`;
+    }
+
+    isDismissedOnLoad() {
+        try {
+            return window.localStorage.getItem(this.dismissedKey) === '1';
+        } catch (e) {
+            return false;
+        }
+    }
+
+    markDismissedOnLoad() {
+        try {
+            window.localStorage.setItem(this.dismissedKey, '1');
+        } catch (e) {}
+    }
 
     @wire(getRecord, { recordId: '$recordId', fields: FIELDS })
     wiredRecord({ data, error }) {
@@ -30,13 +49,27 @@ export default class Hot_otherPayerNotification extends LightningElement {
         if (!this._initialized) {
             this._initialized = true;
 
-            if (createdDate && conditionNow) {
-                const now = new Date();
-                const created = new Date(createdDate);
-                const timeDiffSeconds = (now - created) / 1000;
+            if (conditionNow) {
+                let shouldShowOnFirstLoad = false;
 
-                if (timeDiffSeconds < 5) {
-                    this.showToast();
+                if (createdDate) {
+                    const now = new Date();
+                    const created = new Date(createdDate);
+                    const timeDiffSeconds = (now - created) / 1000;
+
+                    const justCreated = timeDiffSeconds < 5;
+
+                    if (justCreated || !this.isDismissedOnLoad()) {
+                        shouldShowOnFirstLoad = true;
+                    }
+                } else {
+                    if (!this.isDismissedOnLoad()) {
+                        shouldShowOnFirstLoad = true;
+                    }
+                }
+
+                if (shouldShowOnFirstLoad) {
+                    this.showToast({ fromLoad: true });
                 }
             }
 
@@ -53,7 +86,7 @@ export default class Hot_otherPayerNotification extends LightningElement {
         const conditionBecameTrue = !this._prevConditionMet && conditionNow;
 
         if ((companyChanged || otherChanged) && conditionBecameTrue) {
-            this.showToast();
+            this.showToast({ fromLoad: false });
         }
 
         this._prevCompany = company;
@@ -61,7 +94,7 @@ export default class Hot_otherPayerNotification extends LightningElement {
         this._prevConditionMet = conditionNow;
     }
 
-    showToast() {
+    showToast({ fromLoad = false } = {}) {
         const event = new ShowToastEvent({
             title: 'Annen betaler',
             message:
@@ -70,5 +103,9 @@ export default class Hot_otherPayerNotification extends LightningElement {
             mode: 'sticky'
         });
         this.dispatchEvent(event);
+
+        if (fromLoad) {
+            this.markDismissedOnLoad();
+        }
     }
 }
