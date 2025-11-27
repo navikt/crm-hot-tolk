@@ -115,7 +115,7 @@
             <fieldInstance>
                 <fieldInstanceProperties>
                     <name>uiBehavior</name>
-                    <value>required</value>
+                    <value>none</value>
                 </fieldInstanceProperties>
                 <fieldItem>Record.ValidFrom__c</fieldItem>
                 <identifier>RecordValidFrom_cField</identifier>
@@ -125,7 +125,7 @@
             <fieldInstance>
                 <fieldInstanceProperties>
                     <name>uiBehavior</name>
-                    <value>required</value>
+                    <value>none</value>
                 </fieldInstanceProperties>
                 <fieldItem>Record.ValidTo__c</fieldItem>
                 <identifier>RecordValidTo_cField</identifier>
