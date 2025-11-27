@@ -1,5 +1,5 @@
 @IsTest(IsParallel=false)
-private class HOT_EventHandlerTest {
+private class HOT_FaultyEventCleanupBatchTest {
     // ---------- Test Utilities ----------
     private static Event makeEvent(
         Id recordTypeId,
@@ -80,7 +80,7 @@ private class HOT_EventHandlerTest {
     @IsTest
     static void returnsEarlyOnNullList() {
         Test.startTest();
-        HOT_EventHandler.deleteFaultyOutlookSyncEvents(null); // should just return
+        HOT_FaultyEventCleanupBatch.deleteFaultyOutlookSyncEvents(null); // should just return
         Test.stopTest();
         System.assert(true, 'Method should return without exceptions when list is null.');
     }
@@ -88,7 +88,7 @@ private class HOT_EventHandlerTest {
     @IsTest
     static void returnsEarlyOnEmptyList() {
         Test.startTest();
-        HOT_EventHandler.deleteFaultyOutlookSyncEvents(new List<Event>()); // should just return
+        HOT_FaultyEventCleanupBatch.deleteFaultyOutlookSyncEvents(new List<Event>()); // should just return
         Test.stopTest();
         System.assert(true, 'Method should return without exceptions when list is empty.');
     }
@@ -98,7 +98,7 @@ private class HOT_EventHandlerTest {
         // Covers: e == null, e.Id == null
         List<Event> input = new List<Event>{ null, new Event() };
         Test.startTest();
-        HOT_EventHandler.deleteFaultyOutlookSyncEvents(input);
+        HOT_FaultyEventCleanupBatch.deleteFaultyOutlookSyncEvents(input);
         Test.stopTest();
         System.assert(true, 'Null record and record without Id should be skipped.');
     }
@@ -123,7 +123,7 @@ private class HOT_EventHandlerTest {
         );
 
         Test.startTest();
-        HOT_EventHandler.deleteFaultyOutlookSyncEvents(new List<Event>{ noRt, unknownRt });
+        HOT_FaultyEventCleanupBatch.deleteFaultyOutlookSyncEvents(new List<Event>{ noRt, unknownRt });
         Test.stopTest();
         System.assert(true, 'Events with missing or unknown RecordTypeId should be skipped.');
     }
@@ -158,7 +158,7 @@ private class HOT_EventHandlerTest {
         );
 
         Test.startTest();
-        HOT_EventHandler.deleteFaultyOutlookSyncEvents(new List<Event>{ badSubject, hasWhat, badDesc1, badDesc2 });
+        HOT_FaultyEventCleanupBatch.deleteFaultyOutlookSyncEvents(new List<Event>{ badSubject, hasWhat, badDesc1, badDesc2 });
         Test.stopTest();
         System.assert(true, 'Events failing subject/WhatId/description checks should be skipped.');
     }
@@ -174,7 +174,7 @@ private class HOT_EventHandlerTest {
         insert victim;
 
         Test.startTest();
-        HOT_EventHandler.deleteFaultyOutlookSyncEvents(new List<Event>{ victim });
+        HOT_FaultyEventCleanupBatch.deleteFaultyOutlookSyncEvents(new List<Event>{ victim });
         Test.stopTest();
 
         // Should be deleted
@@ -206,7 +206,7 @@ private class HOT_EventHandlerTest {
 
         // Call the method with the *original* in-memory record (still has fields & Id)
         Test.startTest();
-        HOT_EventHandler.deleteFaultyOutlookSyncEvents(new List<Event>{ victim });
+        HOT_FaultyEventCleanupBatch.deleteFaultyOutlookSyncEvents(new List<Event>{ victim });
         Test.stopTest();
 
         System.assert(true, 'Delete failure path executed (already-deleted record).');
@@ -215,7 +215,7 @@ private class HOT_EventHandlerTest {
     @IsTest
     static void scheduleHelperCreatesQuarterHourlyJobs() {
         Test.startTest();
-        List<String> jobIds = HOT_FaultyEventCleanupScheduler.scheduleEvery15Minutes(
+        List<String> jobIds = HOT_FaultyEventCleanupBatch.scheduleEvery15Minutes(
             'Test HOT Faulty Event Cleanup ' + String.valueOf(DateTime.now().getTime())
         );
         Test.stopTest();
@@ -235,7 +235,7 @@ private class HOT_EventHandlerTest {
         String jobId = System.schedule(
             jobName,
             '0 0 0 1 1 ? 2050',
-            new HOT_FaultyEventCleanupScheduler()
+            new HOT_FaultyEventCleanupBatch()
         );
         Test.stopTest();
 
