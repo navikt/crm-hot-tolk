@@ -4,7 +4,7 @@
     <externalId>false</externalId>
     <inlineHelpText>Velg måten denne meldingen skal vises som. Skal det være til informasjon eller varsel om noe mer kritisk</inlineHelpText>
     <label>Type</label>
-    <required>false</required>
+    <required>true</required>
     <trackTrending>false</trackTrending>
     <type>Picklist</type>
     <valueSet>
@@ -20,6 +20,11 @@
                 <fullName>Warning</fullName>
                 <default>false</default>
                 <label>Warning</label>
+            </value>
+            <value>
+                <fullName>News</fullName>
+                <default>false</default>
+                <label>News</label>
             </value>
         </valueSetDefinition>
     </valueSet>
