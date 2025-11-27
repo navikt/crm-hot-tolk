@@ -5,7 +5,11 @@
     <name>Type__c</name>
     <picklistValues>
         <masterLabel>Information</masterLabel>
-        <translation>Til informasjon</translation>
+        <translation>Informasjon</translation>
+    </picklistValues>
+    <picklistValues>
+        <masterLabel>News</masterLabel>
+        <translation>Nyhet</translation>
     </picklistValues>
     <picklistValues>
         <masterLabel>Warning</masterLabel>
