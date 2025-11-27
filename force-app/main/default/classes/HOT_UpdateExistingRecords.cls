@@ -29,7 +29,7 @@ public class HOT_UpdateExistingRecords implements Database.Batchable<sObject> {
             update requestsToUpdateMap.values();
         }
     }
+
     public void finish(Database.BatchableContext bc) {
-        // execute any post-processing operations
     }
 }
