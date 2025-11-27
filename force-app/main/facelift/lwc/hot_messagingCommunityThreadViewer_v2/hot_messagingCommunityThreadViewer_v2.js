@@ -50,6 +50,7 @@ export default class Hot_messagingCommunityThreadViewer_v2 extends NavigationMix
     latestSenderUserId;
     hideReadBy = false;
     isLoading = false;
+    buttonLoading = false;
 
     @api recordId;
     @api requestId;
@@ -331,38 +332,37 @@ export default class Hot_messagingCommunityThreadViewer_v2 extends NavigationMix
             case 'HOT_BRUKER-FORMIDLER':
             case 'HOT_BESTILLER-FORMIDLER':
                 this.helptextContent =
-                    'Meldingen kan leses av tolkeformidlere ved din tolketjeneste. Den vil bli slettet etter ett år.';
+                    'Her kan du sende en melding til tolkeformidlingen som er relevant for din bestilling.  Det du skriver her, kan tolkeformidlere ved din tolketjeneste se.  Meldingen vil bli slettet etter ett år.';
                 return 'Samtale med formidler';
 
             case 'HOT_BRUKER-TOLK': {
+                this.helptextContent =
+                    'Her kan du sende en melding som er relevant for din bestilling.  Det du skriver her, kan tolkeformidlere, NAV-ansatte tolker og eventuelt frilanstolker ved din tolketjeneste se.  Meldingen vil bli slettet etter ett år.';
                 if (this.isFreelance === true || this.navigationBaseList !== '') {
-                    this.helptextContent =
-                        'Meldingen kan leses av tolkeformidlere, tolkebruker og eventuelt andre tildelte tolker. Den vil bli slettet etter ett år.';
                     return 'Samtale mellom tolk og bruker';
                 } else {
-                    this.helptextContent =
-                        'Meldingen kan leses av tolkeformidlere og tildelte tolker. Den vil bli slettet etter ett år.';
                     return 'Samtale med tolk';
                 }
             }
 
             case 'HOT_BRUKER-BESTILLER':
-                this.helptextContent = '';
+                this.helptextContent =
+                    'Her kan du sende en melding som er relevant for din bestilling.  Det du skriver her, kan tolkeformidlere, bruker og bestiller av bestillingen se.  Meldingen vil bli slettet etter ett år.';
                 return 'Samtale med formidler';
 
             case 'HOT_TOLK-FORMIDLER':
                 this.helptextContent =
-                    'Meldingen kan leses av tolkeformidlere ved din tolketjeneste. Den vil bli slettet etter ett år.';
+                    'Her kan du sende en melding som er relevant for oppdraget.  Det du skriver her, kan tolkeformidlere ved din tolketjeneste se.  Meldingen vil bli slettet etter ett år.';
                 return 'Samtale med formidler';
 
             case 'HOT_TOLK-RESSURSKONTOR':
                 this.helptextContent =
-                    'Meldingen kan leses av ressurskontoret ved din tolketjeneste. Den vil bli slettet etter ett år.';
+                    'Her kan du sende en melding som er relevant for oppdraget.  Det du skriver her, kan ressurskontoret ved din tolketjeneste se.  Meldingen vil bli slettet etter ett år.';
                 return 'Samtale med ressurskontor';
 
             case 'HOT_TOLK-TOLK':
                 this.helptextContent =
-                    'Meldingen kan leses av tolkeformidlere og andre tolker som er tildelt oppdraget. Den vil bli slettet etter ett år.';
+                    'Her kan du sende en melding som er relevant for oppdraget.  Det du skriver her, kan tolkeformidlere og andre tolker som er tildelt oppdraget ved din tolketjeneste se.  Meldingen vil bli slettet etter ett år.';
                 return 'Samtale med medtolker';
 
             default:
@@ -407,8 +407,10 @@ export default class Hot_messagingCommunityThreadViewer_v2 extends NavigationMix
     createMessage(validation) {
         if (validation !== true) {
             this.buttonisdisabled = false;
+            this.buttonLoading = false;
             return;
         }
+        this.buttonLoading = true;
 
         createmsg({ threadId: this.recordId, messageText: this.msgVal, fromContactId: this.userContactId })
             .then((result) => {
@@ -419,7 +421,10 @@ export default class Hot_messagingCommunityThreadViewer_v2 extends NavigationMix
                     this.handleMessageFailed();
                 }
             })
-            .catch((error) => console.log(error));
+            .catch((error) => console.log(error))
+            .finally(() => {
+                this.buttonLoading = false;
+            });
     }
 
     handleSendButtonClick() {
@@ -429,6 +434,7 @@ export default class Hot_messagingCommunityThreadViewer_v2 extends NavigationMix
         this.readByText = '';
 
         if (this.overrideValidation === true) {
+            this.buttonLoading = true;
             const validationEvent = new CustomEvent('validationevent', {
                 msg: this.msgVal,
                 maxLength: this.maxLength
@@ -436,7 +442,15 @@ export default class Hot_messagingCommunityThreadViewer_v2 extends NavigationMix
             this.dispatchEvent(validationEvent);
         } else {
             // Using default validation
-            this.createMessage(this.valid());
+            const isValid = this.valid();
+            if (!isValid) {
+                this.buttonisdisabled = false;
+                this.buttonLoading = false;
+                return;
+            }
+
+            this.buttonLoading = true;
+            this.createMessage(true);
         }
     }
 
