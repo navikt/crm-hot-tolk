@@ -1,9 +1,26 @@
 @isTest
 public without sharing class HOT_RemoveAccessForHiddenSABatchTest {
-    @IsTest
-    public static void testRemoveAccessForHiddenServiceAppointments_NoOtherVisibleSAs() {
+    @TestSetup
+    static void makeData() {
+        Profile profile = [SELECT Id FROM Profile LIMIT 1];
+        User user = HOT_TestDataFactory.createUser('user', profile);
+        insert user;
+
+        ServiceResource resource = HOT_TestDataFactory.createServiceResource(user.Id);
+        insert resource;
+
         WorkType wt = HOT_TestDataFactory.createWorkType();
         insert wt;
+
+        OperatingHours operatingHours = HOT_TestDataFactory.createOperatingHours();
+        insert operatingHours;
+        ServiceTerritory serviceTerritory = HOT_TestDataFactory.createServiceTerritory(operatingHours);
+        insert serviceTerritory;
+    }
+
+    @IsTest
+    public static void testRemoveAccessForHiddenServiceAppointments_NoOtherVisibleSAs() {
+        WorkType wt = [SELECT Id FROM WorkType LIMIT 1];
         Account acc = HOT_TestDataFactory.createAccount(true);
         insert acc;
         HOT_Request__c req = HOT_TestDataFactory.createRequest('TestRequest1', wt);
@@ -66,8 +83,7 @@ public without sharing class HOT_RemoveAccessForHiddenSABatchTest {
     // SAME Service Resource: Account share should stay
     @IsTest
     public static void testRemoveAccessForHiddenServiceAppointments_HasOtherVisibleSharedSAs() {
-        WorkType wt = HOT_TestDataFactory.createWorkType();
-        insert wt;
+        WorkType wt = [SELECT Id FROM WorkType LIMIT 1];
         Account acc = HOT_TestDataFactory.createAccount(true);
         insert acc;
         HOT_Request__c req = HOT_TestDataFactory.createRequest('TestRequest', wt);
@@ -181,10 +197,10 @@ public without sharing class HOT_RemoveAccessForHiddenSABatchTest {
         ServiceResource sr2 = HOT_TestDataFactory.createServiceResource(user2.Id);
         insert sr2;
 
+        WorkType wt = [SELECT Id FROM WorkType LIMIT 1];
         ServiceResource sr1 = [SELECT Id, RelatedRecordId FROM ServiceResource ORDER BY CreatedDate ASC LIMIT 1];
+        ServiceTerritory st = [SELECT Id FROM ServiceTerritory LIMIT 1];
 
-        WorkType wt = HOT_TestDataFactory.createWorkType();
-        insert wt;
         Account acc = HOT_TestDataFactory.createAccount(true);
         insert acc;
         HOT_Request__c req = HOT_TestDataFactory.createRequest('DifferentSR', wt);
@@ -221,6 +237,11 @@ public without sharing class HOT_RemoveAccessForHiddenSABatchTest {
         saVisible.ArrivalWindowEndTime = t0900.addHours(2);
 
         insert new List<ServiceAppointment>{ saHidden, saVisible };
+
+        ServiceTerritoryMember serviceTerritoryMember1 = HOT_TestDataFactory.createServiceTerritoryMember(sr1, st);
+        ServiceTerritoryMember serviceTerritoryMember2 = HOT_TestDataFactory.createServiceTerritoryMember(sr2, st);
+
+        insert new List<ServiceTerritoryMember>{ serviceTerritoryMember1, serviceTerritoryMember2 };
 
         AssignedResource arHidden = new AssignedResource(
             ServiceAppointmentId = saHidden.Id,
