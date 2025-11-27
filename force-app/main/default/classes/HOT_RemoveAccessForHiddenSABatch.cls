@@ -29,7 +29,7 @@ public without sharing class HOT_RemoveAccessForHiddenSABatch implements Databas
             return;
 
         try {
-            Map<Id, Id> woBySA = HOT_ServiceAppointmentsSharingService.getWorkOrderIds(new List<Id>(scopesaIds));
+            Map<Id, Id> woBySA = HOT_ServiceAppointmentsSharingService.getWorkOrderIds(new List<Id>(saIds));
             Set<Id> woIds = new Set<Id>();
             for (Id saId : woBySA.keySet()) {
                 if (woBySA.get(saId) != null)
@@ -37,7 +37,7 @@ public without sharing class HOT_RemoveAccessForHiddenSABatch implements Databas
             }
 
             Map<Id, Id> accBySa = HOT_ServiceAppointmentsSharingService.getAccountIdByServiceAppointmentId(
-                new List<Id>(scopesaIds)
+                new List<Id>(saIds)
             );
             Set<Id> accountIds = new Set<Id>();
             for (Id saId : accBySa.keySet()) {
@@ -59,16 +59,15 @@ public without sharing class HOT_RemoveAccessForHiddenSABatch implements Databas
                       WHERE RowCause = 'Manual' AND ParentId IN :woIds
                   ];
 
-            // --- Hidden SA Data ---
             Map<Id, ServiceAppointment> hiddenSAs = new Map<Id, ServiceAppointment>(
                 [
                     SELECT Id, AccountId, HOT_ServiceResource__r.RelatedRecordId
                     FROM ServiceAppointment
-                    WHERE Id IN :scopesaIds
+                    WHERE Id IN :saIds
                 ]
             );
 
-            Set<String> hiddenPairs = new Set<String>();
+            Set<String> hiddenAccountUserPairs = new Set<String>();
             Set<Id> hiddenUserIds = new Set<Id>();
             for (ServiceAppointment sa : hiddenSAs.values()) {
                 if (
@@ -78,86 +77,98 @@ public without sharing class HOT_RemoveAccessForHiddenSABatch implements Databas
                 ) {
                     Id uid = sa.HOT_ServiceResource__r.RelatedRecordId;
                     hiddenUserIds.add(uid);
-                    hiddenPairs.add(sa.AccountId + ':' + uid);
+                    hiddenAccountUserPairs.add(String.valueOf(sa.AccountId) + ':' + String.valueOf(uid));
                 }
             }
 
-            // --- Visible SAs & Their Shares ---
-            Map<Id, ServiceAppointment> visibleSAs = new Map<Id, ServiceAppointment>();
-            Set<Id> visiblesaIds = new Set<Id>();
+            Map<Id, ServiceAppointment> visibleSAsById = new Map<Id, ServiceAppointment>();
+            Set<Id> visibleSAIds = new Set<Id>();
 
             if (!accountIds.isEmpty()) {
-                for (ServiceAppointment visSa : [
+                for (ServiceAppointment visSA : [
                     SELECT Id, AccountId, HOT_ServiceResource__r.RelatedRecordId, HOT_DelPol_IsHideRecord__c
                     FROM ServiceAppointment
                     WHERE AccountId IN :accountIds AND HOT_DelPol_IsHideRecord__c = FALSE
                 ]) {
-                    visibleSAs.put(visSa.Id, visSa);
-                    visiblesaIds.add(visSa.Id);
+                    visibleSAsById.put(visSA.Id, visSA);
+                    visibleSAIds.add(visSA.Id);
                 }
             }
-
-            Map<Id, Set<Id>> visibleSaSharedUsers = new Map<Id, Set<Id>>();
-            if (!visiblesaIds.isEmpty()) {
+            Map<Id, Set<Id>> shareUsersByVisibleSA = new Map<Id, Set<Id>>();
+            if (!visibleSAIds.isEmpty()) {
                 for (ServiceAppointmentShare share : [
-                    SELECT ParentId, UserOrGroupId
+                    SELECT Id, ParentId, UserOrGroupId
                     FROM ServiceAppointmentShare
-                    WHERE RowCause = 'Manual' AND ParentId IN :visiblesaIds
+                    WHERE RowCause = 'Manual' AND ParentId IN :visibleSAIds
                 ]) {
-                    visibleSaSharedUsers.putIfAbsent(share.ParentId, new Set<Id>());
-                    visibleSaSharedUsers.get(share.ParentId).add(share.UserOrGroupId);
+                    if (!shareUsersByVisibleSA.containsKey(share.ParentId)) {
+                        shareUsersByVisibleSA.put(share.ParentId, new Set<Id>());
+                    }
+                    shareUsersByVisibleSA.get(share.ParentId).add(share.UserOrGroupId);
                 }
             }
 
-            // --- Determine account-user pairs to keep ---
-            Set<String> keepPairs = new Set<String>();
-            for (ServiceAppointment vis : visibleSAs.values()) {
-                Id uid = (vis.HOT_ServiceResource__r != null) ? vis.HOT_ServiceResource__r.RelatedRecordId : null;
+            Set<String> accountUserPairsToKeep = new Set<String>();
+            for (ServiceAppointment sa : visibleSAsById.values()) {
+                Id uid = (sa.HOT_ServiceResource__r != null) ? sa.HOT_ServiceResource__r.RelatedRecordId : null;
 
-                if (vis.AccountId != null && uid != null) {
-                    if (visibleSaSharedUsers.containsKey(vis.Id) && visibleSaSharedUsers.get(vis.Id).contains(uid)) {
-                        keepPairs.add(vis.AccountId + ':' + uid);
+                if (sa.AccountId != null && uid != null) {
+                    if (shareUsersByVisibleSA.containsKey(sa.Id) && shareUsersByVisibleSA.get(sa.Id).contains(uid)) {
+                        accountUserPairsToKeep.add(sa.AccountId + ':' + uid);
                     }
                 }
             }
 
-            // --- Account shares to delete ---
-            List<AccountShare> accSharesToDelete = new List<AccountShare>();
+            List<AccountShare> accountSharesToDelete = new List<AccountShare>();
             if (!accountIds.isEmpty() && !hiddenUserIds.isEmpty()) {
-                List<AccountShare> candidates = [
+                List<AccountShare> accShares = [
                     SELECT Id, AccountId, UserOrGroupId
                     FROM AccountShare
                     WHERE RowCause = 'Manual' AND AccountId IN :accountIds AND UserOrGroupId IN :hiddenUserIds
                 ];
 
-                for (AccountShare s : candidates) {
-                    String key = s.AccountId + ':' + s.UserOrGroupId;
-                    if (hiddenPairs.contains(key) && !keepPairs.contains(key)) {
-                        accSharesToDelete.add(s);
+                for (AccountShare share : accShares) {
+                    String key = share.AccountId + ':' + share.UserOrGroupId;
+                    if (hiddenAccountUserPairs.contains(key) && !accountUserPairsToKeep.contains(key)) {
+                        accountSharesToDelete.add(share);
                     }
                 }
             }
 
-            // --- Perform Deletes ---
             if (!saSharesToDelete.isEmpty())
                 delete saSharesToDelete;
             if (!woSharesToDelete.isEmpty())
                 delete woSharesToDelete;
-            if (!accSharesToDelete.isEmpty())
-                delete accSharesToDelete;
+            if (!accountSharesToDelete.isEmpty())
+                delete accountSharesToDelete;
 
-            // --- Mark processed SAs ---
             List<ServiceAppointment> updates = new List<ServiceAppointment>();
-            for (ServiceAppointment sa : scope) {
+            for (ServiceAppointment sa : records) {
                 sa.HOT_DelPol_ProcessedHidden__c = true;
                 updates.add(sa);
             }
             update updates;
-        } catch (Exception ex) {
-            YourUtilityClass.handleException(ex);
+        } catch (Exception e) {
+            LoggerUtility logger = new LoggerUtility();
+            logger.exception(e, CRM_ApplicationDomain.Domain.HOT);
+            logger.publishSynch();
         }
     }
 
     public void finish(Database.BatchableContext bc) {
+        if (!Test.isRunningTest()) {
+            try {
+                System.scheduleBatch(
+                    new HOT_RemoveAccessForHiddenSABatch(),
+                    'HOT_RemoveAccessForHiddenSABatch',
+                    1440,
+                    10
+                );
+            } catch (Exception e) {
+                LoggerUtility logger = new LoggerUtility();
+                logger.exception(e, CRM_ApplicationDomain.Domain.HOT);
+                logger.publishSynch();
+            }
+        }
     }
 }

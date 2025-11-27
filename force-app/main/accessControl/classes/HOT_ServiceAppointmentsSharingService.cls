@@ -134,7 +134,7 @@ public without sharing class HOT_ServiceAppointmentsSharingService {
         return new Map<Id, User>([SELECT Id, IsPortalEnabled FROM User WHERE Id IN :userIds]);
     }
 
-    private static Map<Id, Id> getWorkOrderIds(List<Id> serviceApponntmentIds) {
+    public static Map<Id, Id> getWorkOrderIds(List<Id> serviceApponntmentIds) {
         Map<Id, Id> workOrderLineByServiceAppointment = new Map<Id, Id>();
         for (ServiceAppointment sa : [
             SELECT Id, ParentRecordId
