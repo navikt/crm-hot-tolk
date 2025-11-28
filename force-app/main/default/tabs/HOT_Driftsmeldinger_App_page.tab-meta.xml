@@ -2,6 +2,6 @@
 <CustomTab xmlns="http://soap.sforce.com/2006/04/metadata">
     <description>Created by Lightning App Builder</description>
     <flexiPage>HOT_Driftsmeldinger_App_page</flexiPage>
-    <label>HOT Driftsmeldinger App page</label>
-    <motif>Custom9: Lightning</motif>
+    <label>Tolketjenesten publisering</label>
+    <motif>Custom83: Pencil</motif>
 </CustomTab>
