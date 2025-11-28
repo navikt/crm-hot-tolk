@@ -35,17 +35,17 @@ export default class Hot_announcementPopup extends LightningElement {
     }
 
     handleShowAnnouncements() {
-        this.isLoading = true;
+        // this.isLoading = true;
 
         const dialog = this.template.querySelector('.modal-announcements');
         dialog.showModal();
         dialog.focus();
 
         // loading kun til test
-        setTimeout(() => {
-            this.visibleAnnouncements = this.announcements.slice(0, this.announcementsToShow);
-            this.isLoading = false;
-        }, 200);
+        // setTimeout(() => {
+        //     this.visibleAnnouncements = this.announcements.slice(0, this.announcementsToShow);
+        //     this.isLoading = false;
+        // }, 200);
     }
 
     handleShowMore() {
@@ -64,5 +64,8 @@ export default class Hot_announcementPopup extends LightningElement {
     closeModal() {
         const dialog = this.template.querySelector('.modal-announcements');
         dialog.close();
+    }
+    get isEmpty() {
+        return !this.announcements || this.announcements.length === 0;
     }
 }
