@@ -1,15 +1,18 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <CustomApplication xmlns="http://soap.sforce.com/2006/04/metadata">
     <brand>
-        <headerColor>#0070D2</headerColor>
+        <headerColor>#FE0A0E</headerColor>
+        <logo>Ikon</logo>
+        <logoVersion>1</logoVersion>
         <shouldOverrideOrgTheme>false</shouldOverrideOrgTheme>
     </brand>
+    <description>App som brukes til å publisere driftsmeldinger, varsler og nyheter som vil vises for frilans og tolkebrukere på tolkebestilling.nav.no</description>
     <formFactors>Small</formFactors>
     <formFactors>Large</formFactors>
     <isNavAutoTempTabsDisabled>false</isNavAutoTempTabsDisabled>
     <isNavPersonalizationDisabled>false</isNavPersonalizationDisabled>
     <isNavTabPersistenceDisabled>false</isNavTabPersistenceDisabled>
-    <label>HOT Driftsmeldinger</label>
+    <label>Tolketjenesten publisering</label>
     <navType>Standard</navType>
     <tabs>HOT_Driftsmeldinger_App_page</tabs>
     <tabs>HOT_Announcement__c</tabs>
