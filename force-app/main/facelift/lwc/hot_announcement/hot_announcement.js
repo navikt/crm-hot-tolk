@@ -28,7 +28,7 @@ export default class Hot_announcement extends LightningElement {
     expanded = false;
 
     get title() {
-        return this.isNews ? this.announcement?.Title__c : '';
+        return this.announcement?.Title__c || '';
     }
 
     get description() {
@@ -84,6 +84,6 @@ export default class Hot_announcement extends LightningElement {
             return newsTemplate;
         }
 
-        return this.type === 'Warning' ? warningTemplate : informationTemplate;
+        return this.type === 'Warning' ? warningTemplate : informationTemplate; // default
     }
 }
