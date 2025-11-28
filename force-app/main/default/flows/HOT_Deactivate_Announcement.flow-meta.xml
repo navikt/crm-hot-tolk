@@ -29,7 +29,7 @@
         <locationX>0</locationX>
         <locationY>0</locationY>
         <connector>
-            <targetReference>Finish_screen_deactive</targetReference>
+            <targetReference>Finish_screen_deactivated</targetReference>
         </connector>
         <filterLogic>and</filterLogic>
         <filters>
@@ -48,15 +48,15 @@
         <object>HOT_Announcement__c</object>
     </recordUpdates>
     <screens>
-        <name>Finish_screen_deactive</name>
-        <label>Finish screen deactive</label>
+        <name>Finish_screen_deactivated</name>
+        <label>Finish screen deactivated</label>
         <locationX>0</locationX>
         <locationY>0</locationY>
         <allowBack>false</allowBack>
         <allowFinish>true</allowFinish>
         <allowPause>false</allowPause>
         <fields>
-            <name>Display_text_deactivate</name>
+            <name>Display_text_deactivated</name>
             <fieldText>&lt;p&gt;&lt;span style=&quot;font-size: 20px;&quot;&gt;Meldingen ble deaktivert og er ikke lenger synlig for brukere&lt;/span&gt;&lt;/p&gt;</fieldText>
             <fieldType>DisplayText</fieldType>
         </fields>
