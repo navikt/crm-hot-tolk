@@ -52,12 +52,4 @@ public without sharing class HOT_AnnouncementController {
             WHERE Id = :UserInfo.getUserId()
         ];
     }
-
-    public static User getCurrentUser() {
-        return [
-            SELECT Id, Profile.Name, Account.CRM_Person__r.CRM_Region__r.CRM_Code__c
-            FROM User
-            WHERE Id = :UserInfo.getUserId()
-        ];
-    }
 }
