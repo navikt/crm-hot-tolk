@@ -20,6 +20,8 @@
     </actionOverrides>
     <brand>
         <headerColor>#FE0A0E</headerColor>
+        <logo>Ikon1</logo>
+        <logoVersion>1</logoVersion>
         <shouldOverrideOrgTheme>false</shouldOverrideOrgTheme>
     </brand>
     <description>App som brukes til å publisere driftsmeldinger, varsler og nyheter som vil vises
