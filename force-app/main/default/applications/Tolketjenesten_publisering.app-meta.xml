@@ -20,11 +20,10 @@
     </actionOverrides>
     <brand>
         <headerColor>#FE0A0E</headerColor>
-        <logo>Ikon</logo>
-        <logoVersion>1</logoVersion>
         <shouldOverrideOrgTheme>false</shouldOverrideOrgTheme>
     </brand>
-    <description>App som brukes til å publisere driftsmeldinger, varsler og nyheter som vil vises for frilans og tolkebrukere på tolkebestilling.nav.no</description>
+    <description>App som brukes til å publisere driftsmeldinger, varsler og nyheter som vil vises
+        for frilans og tolkebrukere på tolkebestilling.nav.no</description>
     <formFactors>Small</formFactors>
     <formFactors>Large</formFactors>
     <isNavAutoTempTabsDisabled>false</isNavAutoTempTabsDisabled>
