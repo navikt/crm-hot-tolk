@@ -2,9 +2,9 @@
     <div class="warning" role="button" tabindex="0" onclick={toggleExpand} onkeydown={handleKeydown}>
         <!-- HEADER -->
         <div class="header">
-            <img src={ExclamationmarkIcon} alt="" aria-hidden="true" class="icon left" />
+            <img src={ExclamationmarkIcon} aria-hidden="true" class="icon left" />
             <p class="title">{headerTitle}</p>
-            <img src={chevronIcon} alt="" aria-hidden="true" class="icon right" />
+            <img src={chevronIcon} aria-hidden="true" class="icon right" />
         </div>
 
         <!-- BODY -->
@@ -23,7 +23,6 @@
                         <div key={a.Title__c} class="single-announcement">
                             <p class="announcement-title">{a.Title__c}</p>
                             <p class="description">{a.Description__c}</p>
-                            <div class="divider"></div>
                         </div>
                     </template>
                 </div>

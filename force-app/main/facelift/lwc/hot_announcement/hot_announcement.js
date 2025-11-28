@@ -12,7 +12,7 @@ import ICON_ChevronUp from '@salesforce/resourceUrl/ChevronUp';
 import ICON_ChevronDown from '@salesforce/resourceUrl/ChevronDown';
 
 export default class Hot_announcement extends LightningElement {
-    // icons
+    // Ikoner
     ExclamationmarkIcon = ICON_Exclamationmark;
     ExclamationmarkWhiteIcon = ICON_ExclamationmarkWhite;
     ExclamationmarkTriangleWhiteIcon = ICON_ExclamationmarkTriangleWhite;
@@ -21,16 +21,14 @@ export default class Hot_announcement extends LightningElement {
     ChevronUpIcon = ICON_ChevronUp;
     ChevronDownIcon = ICON_ChevronDown;
 
-    // props
     @api announcement = null; // brukes for News
     @api announcements = []; // liste for Information/Warning
     @api type; // "Information" / "Warning" / "News"
 
     expanded = false;
 
-    // ----- NEWS MODE -----
     get title() {
-        return this.announcement?.Title__c || '';
+        return this.isNews ? this.announcement?.Title__c : '';
     }
 
     get description() {
@@ -40,49 +38,32 @@ export default class Hot_announcement extends LightningElement {
         return this.announcement?.CreatedDate || '';
     }
 
-    // ----- GROUPING LOGIC -----
-    get isGroup() {
-        return this.announcements && this.announcements.length > 1;
+    // ----- GRUPPERING LOGIKK -----
+    get isSingle() {
+        return this.announcements.length === 1;
     }
 
-    get isSingle() {
-        return this.announcements && this.announcements.length === 1;
+    get isGroup() {
+        return this.announcements.length > 1;
     }
 
     get singleItem() {
         return this.isSingle ? this.announcements[0] : null;
     }
 
-    // Header title for Information/Warning
+    // FINNER HEADER/TITTEL PÅ BOKS BASERT PÅ OM DET ER FLERE AV SAMME TYPE VARSLER SAMTIDIG ELLER IKKE
     get headerTitle() {
-        // NEWS → use original
-        // if (this.announcement && this.announcement.Type__c === 'News') {
-        //     return this.announcement.Title__c;
-        // }
-
-        // SINGLE Information/Warning → use actual title
         if (this.isSingle) {
             return this.singleItem.Title__c;
         }
 
-        // MULTIPLE Information/Warning → use group title
-        switch (this.type) {
-            case 'Information':
-                return 'Viktig informasjon';
-            case 'Warning':
-                return 'Viktig informasjon';
-            default:
-                return '';
-        }
+        return this.type === 'Information' || this.type === 'Warning' ? 'Viktig informasjon' : '';
     }
 
     get chevronIcon() {
         if (this.type === 'Warning') {
-            // bruk de ikke-hvite iconene
             return this.expanded ? this.ChevronUpIcon : this.ChevronDownIcon;
         }
-
-        // default (Information + News)
         return this.expanded ? this.ChevronUpWhiteIcon : this.ChevronDownWhiteIcon;
     }
 
@@ -97,21 +78,12 @@ export default class Hot_announcement extends LightningElement {
         }
     }
 
-    // TEMPLATE SELECTION
+    // TEMPLATE
     render() {
-        // NEWS behaves exactly as before
-        if (this.announcement && this.announcement.Type__c === 'News') {
+        if (this.announcement?.Type__c === 'News') {
             return newsTemplate;
         }
 
-        // GROUP INFO/WARNING
-        if (this.type === 'Information') {
-            return informationTemplate;
-        }
-        if (this.type === 'Warning') {
-            return warningTemplate;
-        }
-
-        return informationTemplate;
+        return this.type === 'Warning' ? warningTemplate : informationTemplate;
     }
 }
