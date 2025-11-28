@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ListView xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>Alle_aktive_nyhetssaker_tolk</fullName>
+    <columns>NAME</columns>
+    <columns>Title__c</columns>
+    <columns>RegionAudience__c</columns>
+    <columns>CREATED_DATE</columns>
+    <filterScope>Everything</filterScope>
+    <filters>
+        <field>TargetSite__c</field>
+        <operation>equals</operation>
+        <value>Tolkebestilling</value>
+    </filters>
+    <filters>
+        <field>Type__c</field>
+        <operation>equals</operation>
+        <value>News</value>
+    </filters>
+    <filters>
+        <field>IsPublished__c</field>
+        <operation>equals</operation>
+        <value>1</value>
+    </filters>
+    <filters>
+        <field>Audience__c</field>
+        <operation>equals</operation>
+        <value>Bare frilanstolk</value>
+    </filters>
+    <label>Alle aktive nyhetssaker tolk</label>
+</ListView>

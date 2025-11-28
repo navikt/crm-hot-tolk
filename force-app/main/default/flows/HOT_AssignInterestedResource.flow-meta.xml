@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="UTF-8" ?>
+<?xml version="1.0" encoding="UTF-8"?>
 <Flow xmlns="http://soap.sforce.com/2006/04/metadata">
     <apiVersion>49.0</apiVersion>
     <assignments>
@@ -136,8 +136,7 @@
         <allowPause>false</allowPause>
         <fields>
             <name>alreadyAssignedText</name>
-            <fieldText
-            >&lt;p&gt;&lt;span style=&quot;background-color: rgb(255, 255, 255); font-size: 16px; font-family: Calibri; color: rgb(0, 0, 0);&quot;&gt;Du kan ikke sette opp flere ressurser på et oppdrag.&lt;/span&gt;&lt;/p&gt;</fieldText>
+            <fieldText>&lt;p&gt;&lt;span style=&quot;background-color: rgb(255, 255, 255); font-size: 16px; font-family: Calibri; color: rgb(0, 0, 0);&quot;&gt;Du kan ikke sette opp flere ressurser på et oppdrag.&lt;/span&gt;&lt;/p&gt;</fieldText>
             <fieldType>DisplayText</fieldType>
         </fields>
         <showFooter>true</showFooter>
@@ -153,8 +152,7 @@
         <allowPause>false</allowPause>
         <fields>
             <name>Error_message</name>
-            <fieldText
-            >&lt;p&gt;Du kan kun tildele én ressurs per oppdrag, og ressursen kan ikke ha overlappende oppdrag.&lt;/p&gt;</fieldText>
+            <fieldText>&lt;p&gt;Du kan kun tildele én ressurs per oppdrag, og ressursen kan ikke ha overlappende oppdrag.&lt;/p&gt;</fieldText>
             <fieldType>DisplayText</fieldType>
         </fields>
         <showFooter>true</showFooter>
