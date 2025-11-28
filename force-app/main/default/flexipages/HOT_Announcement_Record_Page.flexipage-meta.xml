@@ -42,6 +42,31 @@
         <itemInstances>
             <componentInstance>
                 <componentInstanceProperties>
+                    <name>actionNames</name>
+                    <valueList>
+                        <valueListItems>
+                            <value>HOT_Announcement__c.Avpubliser</value>
+                            <visibilityRule>
+                                <criteria>
+                                    <leftValue>{!Record.IsPublished__c}</leftValue>
+                                    <operator>EQUAL</operator>
+                                    <rightValue>true</rightValue>
+                                </criteria>
+                            </visibilityRule>
+                        </valueListItems>
+                        <valueListItems>
+                            <value>HOT_Announcement__c.Aktiver</value>
+                            <visibilityRule>
+                                <criteria>
+                                    <leftValue>{!Record.IsPublished__c}</leftValue>
+                                    <operator>EQUAL</operator>
+                                    <rightValue>false</rightValue>
+                                </criteria>
+                            </visibilityRule>
+                        </valueListItems>
+                    </valueList>
+                </componentInstanceProperties>
+                <componentInstanceProperties>
                     <name>numVisibleActions</name>
                     <value>3</value>
                 </componentInstanceProperties>
@@ -119,6 +144,13 @@
                 </fieldInstanceProperties>
                 <fieldItem>Record.ValidFrom__c</fieldItem>
                 <identifier>RecordValidFrom_cField</identifier>
+                <visibilityRule>
+                    <criteria>
+                        <leftValue>{!Record.Type__c}</leftValue>
+                        <operator>NE</operator>
+                        <rightValue>News</rightValue>
+                    </criteria>
+                </visibilityRule>
             </fieldInstance>
         </itemInstances>
         <itemInstances>
@@ -129,6 +161,13 @@
                 </fieldInstanceProperties>
                 <fieldItem>Record.ValidTo__c</fieldItem>
                 <identifier>RecordValidTo_cField</identifier>
+                <visibilityRule>
+                    <criteria>
+                        <leftValue>{!Record.Type__c}</leftValue>
+                        <operator>NE</operator>
+                        <rightValue>News</rightValue>
+                    </criteria>
+                </visibilityRule>
             </fieldInstance>
         </itemInstances>
         <name>Facet-cc351964-0d03-49ca-b863-8aeb33eaa8fd</name>
