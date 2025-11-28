@@ -5,9 +5,7 @@ export default class Hot_userHome extends LightningElement {
     @api numberOfUnreadThreads = 0;
 
     setPageLinks() {
-        let baseURLArray = window.location.pathname.split('/');
-        baseURLArray.pop();
-        let baseURL = baseURLArray.join('/');
+        let baseURL = window.location.origin + '/s';
         this.pageLinks = {
             newRequest: baseURL + '/ny-bestilling',
             myRequests: baseURL + '/mine-bestillinger',
