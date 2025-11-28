@@ -8,16 +8,16 @@
         </div>
 
         <!-- BODY -->
-        <div if:true={expanded} class="content">
+        <div lwc:if={expanded} class="content">
             <!-- SINGLE MODE -->
-            <template if:true={isSingle}>
+            <template lwc:if={isSingle}>
                 <div class="description-inner">
                     <p class="description">{singleItem.Description__c}</p>
                 </div>
             </template>
 
             <!-- GROUP MODE -->
-            <template if:true={isGroup}>
+            <template lwc:if={isGroup}>
                 <div class="description-inner">
                     <template for:each={announcements} for:item="a">
                         <div key={a.Title__c} class="single-announcement">

@@ -31,7 +31,7 @@
                 </div>
 
                 <div class="modal-body">
-                    <template if:true={isEmpty}>
+                    <template lwc:if={isEmpty}>
                         <p>Ingen nyheter publisert enda.</p>
                     </template>
                     <template for:each={visibleAnnouncements} for:item="announcement">
