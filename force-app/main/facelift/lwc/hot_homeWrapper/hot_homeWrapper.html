@@ -1,10 +1,7 @@
 <template>
     <div class="wrapper">
         <div class="content">
-            <c-hot_announcement-wrapper
-                person-details={personDetails}
-                is-freelance={isFreelance}
-            ></c-hot_announcement-wrapper>
+            <c-hot_announcement-wrapper></c-hot_announcement-wrapper>
             <c-hot_welcome-banner person-details={personDetails}></c-hot_welcome-banner>
             <c-hot_freelance-wrapper
                 lwc:if={isFreelance}
