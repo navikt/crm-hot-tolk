@@ -1,0 +1,49 @@
+<template>
+    <div class="news-center">
+        <button
+            class="navds-button navds-body-short"
+            onclick={handleShowAnnouncements}
+            aria-haspopup="dialog"
+            aria-expanded={showAnnouncements}
+        >
+            <img src={newspaperIcon} alt="" aria-hidden="true" style="padding-right: 0.5rem" />
+            Nyheter fra Tolketjenesten
+        </button>
+
+        <!-- Modal -->
+        <dialog
+            class="modal-announcements modal-container"
+            aria-label="Nyhetssenter for tolketjenesten"
+            onclose={closeModal}
+        >
+            <template lwc:if={isLoading}>
+                <div class="loader-container">
+                    <c-hot_loader size="3xlarge"></c-hot_loader>
+                </div>
+            </template>
+
+            <template lwc:else>
+                <div class="modal-header">
+                    <h2>Nyheter fra Tolketjenesten</h2>
+                    <button class="close-btn" onclick={closeModal} aria-label="Lukk nyhetssenter">
+                        <img src={exitCrossIcon} alt="" aria-hidden="true" />
+                    </button>
+                </div>
+
+                <div class="modal-body">
+                    <template for:each={visibleAnnouncements} for:item="announcement">
+                        <c-hot_announcement key={announcement.Title__c} announcement={announcement}>
+                        </c-hot_announcement>
+                    </template>
+                </div>
+
+                <div class="modal-footer">
+                    <template if:true={hasMore}>
+                        <c-button button-styling="secondary" button-label="Vis flere" onclick={handleShowMore}>
+                        </c-button>
+                    </template>
+                </div>
+            </template>
+        </dialog>
+    </div>
+</template>
