@@ -3,16 +3,18 @@
     <actionCalls>
         <name>Auto_Schedule_Service</name>
         <label>Auto Schedule Service</label>
-        <locationX>775</locationX>
-        <locationY>374</locationY>
+        <locationX>182</locationX>
+        <locationY>242</locationY>
         <actionName>HOT_AutoScheduleService</actionName>
         <actionType>apex</actionType>
         <connector>
             <targetReference>Has_error</targetReference>
         </connector>
         <faultConnector>
+            <isGoTo>true</isGoTo>
             <targetReference>Error_Screen</targetReference>
         </faultConnector>
+        <flowTransactionModel>CurrentTransaction</flowTransactionModel>
         <inputParameters>
             <name>parentRecordId</name>
             <value>
@@ -25,16 +27,18 @@
                 <elementReference>parentRecordType</elementReference>
             </value>
         </inputParameters>
+        <nameSegment>HOT_AutoScheduleService</nameSegment>
         <outputParameters>
             <assignToReference>error</assignToReference>
             <name>output</name>
         </outputParameters>
     </actionCalls>
+    <apiVersion>49.0</apiVersion>
     <decisions>
         <name>Has_error</name>
         <label>Has error?</label>
-        <locationX>775</locationX>
-        <locationY>494</locationY>
+        <locationX>182</locationX>
+        <locationY>350</locationY>
         <defaultConnector>
             <targetReference>Success_Screen</targetReference>
         </defaultConnector>
@@ -55,6 +59,7 @@
             <label>Yes</label>
         </rules>
     </decisions>
+    <environments>Default</environments>
     <formulas>
         <name>isWorkOrder</name>
         <dataType>Boolean</dataType>
@@ -76,7 +81,7 @@
     <processMetadataValues>
         <name>CanvasMode</name>
         <value>
-            <stringValue>FREE_FORM_CANVAS</stringValue>
+            <stringValue>AUTO_LAYOUT_CANVAS</stringValue>
         </value>
     </processMetadataValues>
     <processMetadataValues>
@@ -87,10 +92,29 @@
     </processMetadataValues>
     <processType>Flow</processType>
     <screens>
+        <name>confirmationScreen</name>
+        <label>confirmationScreen</label>
+        <locationX>182</locationX>
+        <locationY>134</locationY>
+        <allowBack>false</allowBack>
+        <allowFinish>true</allowFinish>
+        <allowPause>false</allowPause>
+        <connector>
+            <targetReference>Auto_Schedule_Service</targetReference>
+        </connector>
+        <fields>
+            <name>confirmationDisplayText</name>
+            <fieldText>&lt;p&gt;Ønsker du å fortsette med automatisk planlegging?&lt;/p&gt;</fieldText>
+            <fieldType>DisplayText</fieldType>
+        </fields>
+        <showFooter>true</showFooter>
+        <showHeader>true</showHeader>
+    </screens>
+    <screens>
         <name>Error_Screen</name>
         <label>Feilmelding</label>
-        <locationX>643</locationX>
-        <locationY>614</locationY>
+        <locationX>50</locationX>
+        <locationY>458</locationY>
         <allowBack>false</allowBack>
         <allowFinish>true</allowFinish>
         <allowPause>false</allowPause>
@@ -105,8 +129,8 @@
     <screens>
         <name>Success_Screen</name>
         <label>Vellykket</label>
-        <locationX>907</locationX>
-        <locationY>614</locationY>
+        <locationX>314</locationX>
+        <locationY>458</locationY>
         <allowBack>false</allowBack>
         <allowFinish>true</allowFinish>
         <allowPause>false</allowPause>
@@ -119,10 +143,10 @@
         <showHeader>false</showHeader>
     </screens>
     <start>
-        <locationX>649</locationX>
-        <locationY>50</locationY>
+        <locationX>56</locationX>
+        <locationY>0</locationY>
         <connector>
-            <targetReference>Auto_Schedule_Service</targetReference>
+            <targetReference>confirmationScreen</targetReference>
         </connector>
     </start>
     <status>Active</status>
