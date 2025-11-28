@@ -24,8 +24,8 @@
     </processMetadataValues>
     <processType>Flow</processType>
     <recordUpdates>
-        <name>Deactive_announcement</name>
-        <label>Deactive announcement</label>
+        <name>Deactivate_announcement</name>
+        <label>Deactivate announcement</label>
         <locationX>0</locationX>
         <locationY>0</locationY>
         <connector>
@@ -68,7 +68,7 @@
         <locationX>0</locationX>
         <locationY>0</locationY>
         <connector>
-            <targetReference>Deactive_announcement</targetReference>
+            <targetReference>Deactivate_announcement</targetReference>
         </connector>
     </start>
     <status>Active</status>
