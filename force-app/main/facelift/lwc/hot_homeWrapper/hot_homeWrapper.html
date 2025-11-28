@@ -1,8 +1,11 @@
 <template>
     <div class="wrapper">
         <div class="content">
-            <c-hot_announcement-wrapper></c-hot_announcement-wrapper>
-            <c-hot_welcome-banner person-details={personDetails}></c-hot_welcome-banner>
+            <c-hot_announcement-wrapper announcements={infoWarningAnnouncements}></c-hot_announcement-wrapper>
+            <c-hot_welcome-banner
+                person-details={personDetails}
+                announcements={newsAnnouncements}
+            ></c-hot_welcome-banner>
             <c-hot_freelance-wrapper
                 lwc:if={isFreelance}
                 number-of-unread-threads={unreadFreelanceThreads}
