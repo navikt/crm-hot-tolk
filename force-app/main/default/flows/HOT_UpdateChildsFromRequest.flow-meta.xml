@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="UTF-8" ?>
+<?xml version="1.0" encoding="UTF-8"?>
 <Flow xmlns="http://soap.sforce.com/2006/04/metadata">
     <actionCalls>
         <name>UpdateChildRecords</name>
@@ -21,6 +21,12 @@
             </value>
         </inputParameters>
         <inputParameters>
+            <name>isDateChoice</name>
+            <value>
+                <elementReference>isDate</elementReference>
+            </value>
+        </inputParameters>
+        <inputParameters>
             <name>isDescriptionChoice</name>
             <value>
                 <elementReference>isDescription</elementReference>
@@ -39,9 +45,21 @@
             </value>
         </inputParameters>
         <inputParameters>
+            <name>isOwnerChoice</name>
+            <value>
+                <elementReference>isOwner</elementReference>
+            </value>
+        </inputParameters>
+        <inputParameters>
             <name>isScreenInterpreterChoice</name>
             <value>
                 <elementReference>isScreenInterpreter</elementReference>
+            </value>
+        </inputParameters>
+        <inputParameters>
+            <name>isServiceTerritoryChoice</name>
+            <value>
+                <elementReference>isServiceTerritory</elementReference>
             </value>
         </inputParameters>
         <inputParameters>
@@ -58,7 +76,6 @@
         </inputParameters>
         <nameSegment>HOT_UpdateChildRecordsService</nameSegment>
         <storeOutputAutomatically>true</storeOutputAutomatically>
-        <versionSegment>1</versionSegment>
     </actionCalls>
     <apiVersion>52.0</apiVersion>
     <assignments>
@@ -147,6 +164,14 @@
         </value>
     </choices>
     <choices>
+        <name>Date</name>
+        <choiceText>Tid</choiceText>
+        <dataType>String</dataType>
+        <value>
+            <stringValue>Tid</stringValue>
+        </value>
+    </choices>
+    <choices>
         <name>Description</name>
         <choiceText>Tilleggsopplysninger</choiceText>
         <dataType>String</dataType>
@@ -171,11 +196,27 @@
         </value>
     </choices>
     <choices>
+        <name>Owner</name>
+        <choiceText>Eier</choiceText>
+        <dataType>String</dataType>
+        <value>
+            <stringValue>Eier</stringValue>
+        </value>
+    </choices>
+    <choices>
         <name>ScreenInterpreter</name>
         <choiceText>Skjermtolk</choiceText>
         <dataType>String</dataType>
         <value>
             <stringValue>ScreenInterpreter</stringValue>
+        </value>
+    </choices>
+    <choices>
+        <name>ServiceTerritory</name>
+        <choiceText>Tjenesterområdet</choiceText>
+        <dataType>String</dataType>
+        <value>
+            <stringValue>Tjenesterområdet</stringValue>
         </value>
     </choices>
     <choices>
@@ -295,6 +336,11 @@
         <expression>CONTAINS({!ChosenFields}, {!Address})</expression>
     </formulas>
     <formulas>
+        <name>isDate</name>
+        <dataType>Boolean</dataType>
+        <expression>CONTAINS({!ChosenDateField}, {!Date})</expression>
+    </formulas>
+    <formulas>
         <name>isDescription</name>
         <dataType>Boolean</dataType>
         <expression>CONTAINS({!ChosenFields}, {!Description})</expression>
@@ -310,9 +356,19 @@
         <expression>CONTAINS({!ChosenFields}, {!InterpretationMethod})</expression>
     </formulas>
     <formulas>
+        <name>isOwner</name>
+        <dataType>Boolean</dataType>
+        <expression>CONTAINS({!ChosenFields}, {!Owner})</expression>
+    </formulas>
+    <formulas>
         <name>isScreenInterpreter</name>
         <dataType>Boolean</dataType>
         <expression>CONTAINS({!ChosenFields}, {!ScreenInterpreter})</expression>
+    </formulas>
+    <formulas>
+        <name>isServiceTerritory</name>
+        <dataType>Boolean</dataType>
+        <expression>CONTAINS({!ChosenFields}, {!ServiceTerritory})</expression>
     </formulas>
     <formulas>
         <name>isSubject</name>
@@ -392,8 +448,7 @@
         <allowPause>false</allowPause>
         <fields>
             <name>cannotUpdateText</name>
-            <fieldText
-            >&lt;p&gt;Denne funksjonaliteten kan IKKE benyttes når forespørselen har status Avlyst eller Annullert.&lt;/p&gt;</fieldText>
+            <fieldText>&lt;p&gt;Denne funksjonaliteten kan IKKE benyttes når forespørselen har status Avlyst eller Annullert.&lt;/p&gt;</fieldText>
             <fieldType>DisplayText</fieldType>
         </fields>
         <showFooter>true</showFooter>
@@ -411,6 +466,11 @@
             <targetReference>NewValuesScreen</targetReference>
         </connector>
         <fields>
+            <name>Display_warning_text</name>
+            <fieldText>&lt;p&gt;&lt;span style=&quot;background-color: rgb(255, 255, 255); font-size: 16px; font-family: &amp;quot;Source Sans Pro&amp;quot;, Arial, sans-serif; color: rgb(92, 92, 92);&quot;&gt;OBS! Ved å endre verdiene her så endrer du verdiene på alle underliggende arbeidsordre, arbeidsordrelinjer og oppdrag.&lt;/span&gt;&lt;/p&gt;</fieldText>
+            <fieldType>DisplayText</fieldType>
+        </fields>
+        <fields>
             <name>ChosenFields</name>
             <choiceReferences>Address</choiceReferences>
             <choiceReferences>Subject</choiceReferences>
@@ -419,11 +479,36 @@
             <choiceReferences>Dispatcher</choiceReferences>
             <choiceReferences>Account</choiceReferences>
             <choiceReferences>InterpretationMethod</choiceReferences>
+            <choiceReferences>ServiceTerritory</choiceReferences>
+            <choiceReferences>Owner</choiceReferences>
             <dataType>String</dataType>
             <fieldText>Velg felter</fieldText>
             <fieldType>MultiSelectCheckboxes</fieldType>
             <inputsOnNextNavToAssocScrn>UseStoredValues</inputsOnNextNavToAssocScrn>
             <isRequired>true</isRequired>
+        </fields>
+        <fields>
+            <name>displayDateText</name>
+            <fieldText>&lt;p&gt;Tid kan kun endres når alle arbeidsordrer, arbeidsordrelinjer og oppdrag har status &quot;Åpen&quot;.&lt;/p&gt;</fieldText>
+            <fieldType>DisplayText</fieldType>
+        </fields>
+        <fields>
+            <name>ChosenDateField</name>
+            <choiceReferences>Date</choiceReferences>
+            <dataType>String</dataType>
+            <fieldType>MultiSelectCheckboxes</fieldType>
+            <inputsOnNextNavToAssocScrn>UseStoredValues</inputsOnNextNavToAssocScrn>
+            <isRequired>false</isRequired>
+            <visibilityRule>
+                <conditionLogic>and</conditionLogic>
+                <conditions>
+                    <leftValueReference>getRequest.Status__c</leftValueReference>
+                    <operator>EqualTo</operator>
+                    <rightValue>
+                        <stringValue>Åpen</stringValue>
+                    </rightValue>
+                </conditions>
+            </visibilityRule>
         </fields>
         <showFooter>true</showFooter>
         <showHeader>true</showHeader>
@@ -649,7 +734,7 @@
                     <inputParameters>
                         <name>required</name>
                         <value>
-                            <booleanValue>true</booleanValue>
+                            <booleanValue>false</booleanValue>
                         </value>
                     </inputParameters>
                     <inputsOnNextNavToAssocScrn>UseStoredValues</inputsOnNextNavToAssocScrn>
@@ -791,6 +876,137 @@
                     <operator>Contains</operator>
                     <rightValue>
                         <elementReference>InterpretationMethod</elementReference>
+                    </rightValue>
+                </conditions>
+            </visibilityRule>
+        </fields>
+        <fields>
+            <name>NewValuesScreen_Section8</name>
+            <fieldType>RegionContainer</fieldType>
+            <fields>
+                <name>NewValuesScreen_Section8_Column1</name>
+                <fieldType>Region</fieldType>
+                <fields>
+                    <fieldType>ObjectProvided</fieldType>
+                    <inputsOnNextNavToAssocScrn>UseStoredValues</inputsOnNextNavToAssocScrn>
+                    <isRequired>false</isRequired>
+                    <objectFieldReference>getRequest.ServiceTerritory__c</objectFieldReference>
+                </fields>
+                <inputParameters>
+                    <name>width</name>
+                    <value>
+                        <stringValue>12</stringValue>
+                    </value>
+                </inputParameters>
+                <isRequired>false</isRequired>
+            </fields>
+            <isRequired>false</isRequired>
+            <regionContainerType>SectionWithoutHeader</regionContainerType>
+            <visibilityRule>
+                <conditionLogic>and</conditionLogic>
+                <conditions>
+                    <leftValueReference>ChosenFields</leftValueReference>
+                    <operator>EqualTo</operator>
+                    <rightValue>
+                        <elementReference>ServiceTerritory</elementReference>
+                    </rightValue>
+                </conditions>
+            </visibilityRule>
+        </fields>
+        <fields>
+            <name>NewValuesScreen_Section9</name>
+            <fieldType>RegionContainer</fieldType>
+            <fields>
+                <name>NewValuesScreen_Section9_Column1</name>
+                <fieldType>Region</fieldType>
+                <fields>
+                    <name>OwnerIdLookup</name>
+                    <extensionName>flowruntime:lookup</extensionName>
+                    <fieldType>ComponentInstance</fieldType>
+                    <inputParameters>
+                        <name>fieldApiName</name>
+                        <value>
+                            <stringValue>OwnerId</stringValue>
+                        </value>
+                    </inputParameters>
+                    <inputParameters>
+                        <name>objectApiName</name>
+                        <value>
+                            <stringValue>HOT_Request__c</stringValue>
+                        </value>
+                    </inputParameters>
+                    <inputParameters>
+                        <name>label</name>
+                        <value>
+                            <stringValue>Eier</stringValue>
+                        </value>
+                    </inputParameters>
+                    <inputParameters>
+                        <name>recordId</name>
+                        <value>
+                            <elementReference>getRequest.OwnerId</elementReference>
+                        </value>
+                    </inputParameters>
+                    <inputsOnNextNavToAssocScrn>UseStoredValues</inputsOnNextNavToAssocScrn>
+                    <isRequired>true</isRequired>
+                    <storeOutputAutomatically>true</storeOutputAutomatically>
+                </fields>
+                <inputParameters>
+                    <name>width</name>
+                    <value>
+                        <stringValue>12</stringValue>
+                    </value>
+                </inputParameters>
+                <isRequired>false</isRequired>
+            </fields>
+            <isRequired>false</isRequired>
+            <regionContainerType>SectionWithoutHeader</regionContainerType>
+            <visibilityRule>
+                <conditionLogic>and</conditionLogic>
+                <conditions>
+                    <leftValueReference>ChosenFields</leftValueReference>
+                    <operator>EqualTo</operator>
+                    <rightValue>
+                        <elementReference>Owner</elementReference>
+                    </rightValue>
+                </conditions>
+            </visibilityRule>
+        </fields>
+        <fields>
+            <name>NewValuesScreen_Section10</name>
+            <fieldType>RegionContainer</fieldType>
+            <fields>
+                <name>NewValuesScreen_Section10_Column1</name>
+                <fieldType>Region</fieldType>
+                <fields>
+                    <fieldType>ObjectProvided</fieldType>
+                    <inputsOnNextNavToAssocScrn>UseStoredValues</inputsOnNextNavToAssocScrn>
+                    <isRequired>false</isRequired>
+                    <objectFieldReference>getRequest.StartTime__c</objectFieldReference>
+                </fields>
+                <fields>
+                    <fieldType>ObjectProvided</fieldType>
+                    <inputsOnNextNavToAssocScrn>UseStoredValues</inputsOnNextNavToAssocScrn>
+                    <isRequired>false</isRequired>
+                    <objectFieldReference>getRequest.EndTime__c</objectFieldReference>
+                </fields>
+                <inputParameters>
+                    <name>width</name>
+                    <value>
+                        <stringValue>12</stringValue>
+                    </value>
+                </inputParameters>
+                <isRequired>false</isRequired>
+            </fields>
+            <isRequired>false</isRequired>
+            <regionContainerType>SectionWithoutHeader</regionContainerType>
+            <visibilityRule>
+                <conditionLogic>and</conditionLogic>
+                <conditions>
+                    <leftValueReference>ChosenDateField</leftValueReference>
+                    <operator>EqualTo</operator>
+                    <rightValue>
+                        <elementReference>Date</elementReference>
                     </rightValue>
                 </conditions>
             </visibilityRule>

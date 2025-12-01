@@ -17,6 +17,12 @@ public without sharing class HOT_UpdateChildRecordsService {
     public Boolean isDispatcherChoice;
     @InvocableVariable
     public Boolean isInterpreterMethodChoice;
+    @invocableVariable
+    public Boolean isServiceTerritoryChoice;
+    @InvocableVariable
+    public Boolean isOwnerChoice;
+    @InvocableVariable
+    public Boolean isDateChoice;
 
     @InvocableMethod
     public static List<String> updateChildRecords(List<HOT_UpdateChildRecordsService> inputVariables) {
