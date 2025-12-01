@@ -14,6 +14,8 @@
             <property name="alerttext" type="String" label="Alert text when closed"
                 description="Alert text shown when the thread is closed. HTML formatted"
                 default="Dialogen er lukket" />
+            <property name="errorText" type="String" label="Error text"
+                description="Deprecated – kept for compatibility" />
             <property name="alertopen" type="String" label="Alert text when still open"
                 description="Alert text shown when the thread is closed. HTML formatted" default="" />
             <property name="maxLength" type="Integer" label="Max length"
