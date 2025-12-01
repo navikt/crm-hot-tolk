@@ -3,8 +3,8 @@
     <actionCalls>
         <name>UpdateChildRecords</name>
         <label>UpdateChildRecords</label>
-        <locationX>314</locationX>
-        <locationY>1274</locationY>
+        <locationX>182</locationX>
+        <locationY>1874</locationY>
         <actionName>HOT_UpdateChildRecordsService</actionName>
         <actionType>apex</actionType>
         <flowTransactionModel>Automatic</flowTransactionModel>
@@ -57,12 +57,6 @@
             </value>
         </inputParameters>
         <inputParameters>
-            <name>isServiceTerritoryChoice</name>
-            <value>
-                <elementReference>isServiceTerritory</elementReference>
-            </value>
-        </inputParameters>
-        <inputParameters>
             <name>isSubjectChoice</name>
             <value>
                 <elementReference>isSubject</elementReference>
@@ -81,8 +75,8 @@
     <assignments>
         <name>Store_Account_Value</name>
         <label>Store Account Value</label>
-        <locationX>314</locationX>
-        <locationY>782</locationY>
+        <locationX>50</locationX>
+        <locationY>1382</locationY>
         <assignmentItems>
             <assignToReference>getRequest.Account__c</assignToReference>
             <operator>Assign</operator>
@@ -119,7 +113,7 @@
         <name>Store_Dispatcher_Value</name>
         <label>Store Dispatcher Value</label>
         <locationX>50</locationX>
-        <locationY>674</locationY>
+        <locationY>974</locationY>
         <assignmentItems>
             <assignToReference>getRequest.Dispatcher__c</assignToReference>
             <operator>Assign</operator>
@@ -128,14 +122,14 @@
             </value>
         </assignmentItems>
         <connector>
-            <targetReference>isInterpreterMethodCheck</targetReference>
+            <targetReference>Is_Account</targetReference>
         </connector>
     </assignments>
     <assignments>
         <name>Store_Interpreter_method_value</name>
         <label>Store Interpreter method value</label>
-        <locationX>182</locationX>
-        <locationY>1082</locationY>
+        <locationX>50</locationX>
+        <locationY>1682</locationY>
         <assignmentItems>
             <assignToReference>getRequest.InterpretationMethod__c</assignToReference>
             <operator>Assign</operator>
@@ -230,8 +224,8 @@
     <decisions>
         <name>Check_Request</name>
         <label>Check Request</label>
-        <locationX>534</locationX>
-        <locationY>242</locationY>
+        <locationX>336</locationX>
+        <locationY>542</locationY>
         <defaultConnector>
             <targetReference>Cannot_update_Screen</targetReference>
         </defaultConnector>
@@ -260,12 +254,37 @@
         </rules>
     </decisions>
     <decisions>
-        <name>Is_Dispatcher</name>
-        <label>Is Dispatcher?</label>
-        <locationX>314</locationX>
-        <locationY>566</locationY>
+        <name>Is_Account</name>
+        <label>Is Account?</label>
+        <locationX>182</locationX>
+        <locationY>1166</locationY>
         <defaultConnector>
             <targetReference>isInterpreterMethodCheck</targetReference>
+        </defaultConnector>
+        <defaultConnectorLabel>Not Account</defaultConnectorLabel>
+        <rules>
+            <name>Is_Account_Check</name>
+            <conditionLogic>and</conditionLogic>
+            <conditions>
+                <leftValueReference>isAccount</leftValueReference>
+                <operator>EqualTo</operator>
+                <rightValue>
+                    <booleanValue>true</booleanValue>
+                </rightValue>
+            </conditions>
+            <connector>
+                <targetReference>getPerson</targetReference>
+            </connector>
+            <label>IsAccountCheck</label>
+        </rules>
+    </decisions>
+    <decisions>
+        <name>Is_Dispatcher</name>
+        <label>Is Dispatcher?</label>
+        <locationX>182</locationX>
+        <locationY>866</locationY>
+        <defaultConnector>
+            <targetReference>Is_Account</targetReference>
         </defaultConnector>
         <defaultConnectorLabel>Not Dispatcher</defaultConnectorLabel>
         <rules>
@@ -283,27 +302,37 @@
             </connector>
             <label>isDispatcherCheck</label>
         </rules>
+    </decisions>
+    <decisions>
+        <name>Is_the_request_approved</name>
+        <label>Is the request approved?</label>
+        <locationX>336</locationX>
+        <locationY>242</locationY>
+        <defaultConnector>
+            <targetReference>Check_Request</targetReference>
+        </defaultConnector>
+        <defaultConnectorLabel>No</defaultConnectorLabel>
         <rules>
-            <name>isAccountCheck</name>
+            <name>Yes</name>
             <conditionLogic>and</conditionLogic>
             <conditions>
-                <leftValueReference>isAccount</leftValueReference>
+                <leftValueReference>getRequest.Status__c</leftValueReference>
                 <operator>EqualTo</operator>
                 <rightValue>
-                    <booleanValue>true</booleanValue>
+                    <stringValue>Godkjent</stringValue>
                 </rightValue>
             </conditions>
             <connector>
-                <targetReference>getPerson</targetReference>
+                <targetReference>getServiceAppointment</targetReference>
             </connector>
-            <label>isAccountCheck</label>
+            <label>Yes</label>
         </rules>
     </decisions>
     <decisions>
         <name>isInterpreterMethodCheck</name>
         <label>isInterpreterMethodCheck</label>
-        <locationX>314</locationX>
-        <locationY>974</locationY>
+        <locationX>182</locationX>
+        <locationY>1574</locationY>
         <defaultConnector>
             <targetReference>UpdateChildRecords</targetReference>
         </defaultConnector>
@@ -325,6 +354,11 @@
         </rules>
     </decisions>
     <environments>Default</environments>
+    <formulas>
+        <name>disableDateIfStatusIsOpen</name>
+        <dataType>Boolean</dataType>
+        <expression>NOT(ISPICKVAL({!getServiceAppointment.Status}, &apos;None&apos;))</expression>
+    </formulas>
     <formulas>
         <name>isAccount</name>
         <dataType>Boolean</dataType>
@@ -366,11 +400,6 @@
         <expression>CONTAINS({!ChosenFields}, {!ScreenInterpreter})</expression>
     </formulas>
     <formulas>
-        <name>isServiceTerritory</name>
-        <dataType>Boolean</dataType>
-        <expression>CONTAINS({!ChosenFields}, {!ServiceTerritory})</expression>
-    </formulas>
-    <formulas>
         <name>isSubject</name>
         <dataType>Boolean</dataType>
         <expression>CONTAINS({!ChosenFields}, {!Subject})</expression>
@@ -399,8 +428,8 @@
     <recordLookups>
         <name>getPerson</name>
         <label>getPerson</label>
-        <locationX>314</locationX>
-        <locationY>674</locationY>
+        <locationX>50</locationX>
+        <locationY>1274</locationY>
         <assignNullValuesIfNoRecordsFound>false</assignNullValuesIfNoRecordsFound>
         <connector>
             <targetReference>Store_Account_Value</targetReference>
@@ -420,11 +449,11 @@
     <recordLookups>
         <name>getRequest</name>
         <label>getRequest</label>
-        <locationX>534</locationX>
+        <locationX>336</locationX>
         <locationY>134</locationY>
         <assignNullValuesIfNoRecordsFound>false</assignNullValuesIfNoRecordsFound>
         <connector>
-            <targetReference>Check_Request</targetReference>
+            <targetReference>Is_the_request_approved</targetReference>
         </connector>
         <filterLogic>and</filterLogic>
         <filters>
@@ -438,11 +467,32 @@
         <object>HOT_Request__c</object>
         <storeOutputAutomatically>true</storeOutputAutomatically>
     </recordLookups>
+    <recordLookups>
+        <name>getServiceAppointment</name>
+        <label>getServiceAppointment</label>
+        <locationX>204</locationX>
+        <locationY>350</locationY>
+        <assignNullValuesIfNoRecordsFound>false</assignNullValuesIfNoRecordsFound>
+        <connector>
+            <targetReference>Check_Request</targetReference>
+        </connector>
+        <filterLogic>and</filterLogic>
+        <filters>
+            <field>HOT_Request__c</field>
+            <operator>EqualTo</operator>
+            <value>
+                <elementReference>getRequest.Id</elementReference>
+            </value>
+        </filters>
+        <getFirstRecordOnly>true</getFirstRecordOnly>
+        <object>ServiceAppointment</object>
+        <storeOutputAutomatically>true</storeOutputAutomatically>
+    </recordLookups>
     <screens>
         <name>Cannot_update_Screen</name>
         <label>Cannot update Screen</label>
-        <locationX>754</locationX>
-        <locationY>350</locationY>
+        <locationX>490</locationX>
+        <locationY>650</locationY>
         <allowBack>false</allowBack>
         <allowFinish>true</allowFinish>
         <allowPause>false</allowPause>
@@ -457,8 +507,8 @@
     <screens>
         <name>ChooseFieldScreen</name>
         <label>ChooseFieldScreen</label>
-        <locationX>314</locationX>
-        <locationY>350</locationY>
+        <locationX>182</locationX>
+        <locationY>650</locationY>
         <allowBack>false</allowBack>
         <allowFinish>true</allowFinish>
         <allowPause>false</allowPause>
@@ -479,7 +529,6 @@
             <choiceReferences>Dispatcher</choiceReferences>
             <choiceReferences>Account</choiceReferences>
             <choiceReferences>InterpretationMethod</choiceReferences>
-            <choiceReferences>ServiceTerritory</choiceReferences>
             <choiceReferences>Owner</choiceReferences>
             <dataType>String</dataType>
             <fieldText>Velg felter</fieldText>
@@ -488,27 +537,20 @@
             <isRequired>true</isRequired>
         </fields>
         <fields>
-            <name>displayDateText</name>
-            <fieldText>&lt;p&gt;Tid kan kun endres når alle arbeidsordrer, arbeidsordrelinjer og oppdrag har status &quot;Åpen&quot;.&lt;/p&gt;</fieldText>
-            <fieldType>DisplayText</fieldType>
-        </fields>
-        <fields>
             <name>ChosenDateField</name>
             <choiceReferences>Date</choiceReferences>
             <dataType>String</dataType>
             <fieldType>MultiSelectCheckboxes</fieldType>
             <inputsOnNextNavToAssocScrn>UseStoredValues</inputsOnNextNavToAssocScrn>
+            <isDisabled>
+                <elementReference>disableDateIfStatusIsOpen</elementReference>
+            </isDisabled>
             <isRequired>false</isRequired>
-            <visibilityRule>
-                <conditionLogic>and</conditionLogic>
-                <conditions>
-                    <leftValueReference>getRequest.Status__c</leftValueReference>
-                    <operator>EqualTo</operator>
-                    <rightValue>
-                        <stringValue>Åpen</stringValue>
-                    </rightValue>
-                </conditions>
-            </visibilityRule>
+        </fields>
+        <fields>
+            <name>displayDateText</name>
+            <fieldText>&lt;p&gt;Tid kan kun endres når oppdrag &lt;/p&gt;&lt;p&gt;har status &quot;Åpen&quot;.&lt;/p&gt;</fieldText>
+            <fieldType>DisplayText</fieldType>
         </fields>
         <showFooter>true</showFooter>
         <showHeader>true</showHeader>
@@ -516,8 +558,8 @@
     <screens>
         <name>NewValuesScreen</name>
         <label>NewValuesScreen</label>
-        <locationX>314</locationX>
-        <locationY>458</locationY>
+        <locationX>182</locationX>
+        <locationY>758</locationY>
         <allowBack>true</allowBack>
         <allowFinish>true</allowFinish>
         <allowPause>false</allowPause>
@@ -887,39 +929,6 @@
                 <name>NewValuesScreen_Section8_Column1</name>
                 <fieldType>Region</fieldType>
                 <fields>
-                    <fieldType>ObjectProvided</fieldType>
-                    <inputsOnNextNavToAssocScrn>UseStoredValues</inputsOnNextNavToAssocScrn>
-                    <isRequired>false</isRequired>
-                    <objectFieldReference>getRequest.ServiceTerritory__c</objectFieldReference>
-                </fields>
-                <inputParameters>
-                    <name>width</name>
-                    <value>
-                        <stringValue>12</stringValue>
-                    </value>
-                </inputParameters>
-                <isRequired>false</isRequired>
-            </fields>
-            <isRequired>false</isRequired>
-            <regionContainerType>SectionWithoutHeader</regionContainerType>
-            <visibilityRule>
-                <conditionLogic>and</conditionLogic>
-                <conditions>
-                    <leftValueReference>ChosenFields</leftValueReference>
-                    <operator>EqualTo</operator>
-                    <rightValue>
-                        <elementReference>ServiceTerritory</elementReference>
-                    </rightValue>
-                </conditions>
-            </visibilityRule>
-        </fields>
-        <fields>
-            <name>NewValuesScreen_Section9</name>
-            <fieldType>RegionContainer</fieldType>
-            <fields>
-                <name>NewValuesScreen_Section9_Column1</name>
-                <fieldType>Region</fieldType>
-                <fields>
                     <name>OwnerIdLookup</name>
                     <extensionName>flowruntime:lookup</extensionName>
                     <fieldType>ComponentInstance</fieldType>
@@ -973,10 +982,10 @@
             </visibilityRule>
         </fields>
         <fields>
-            <name>NewValuesScreen_Section10</name>
+            <name>NewValuesScreen_Section9</name>
             <fieldType>RegionContainer</fieldType>
             <fields>
-                <name>NewValuesScreen_Section10_Column1</name>
+                <name>NewValuesScreen_Section9_Column1</name>
                 <fieldType>Region</fieldType>
                 <fields>
                     <fieldType>ObjectProvided</fieldType>
@@ -1015,13 +1024,13 @@
         <showHeader>true</showHeader>
     </screens>
     <start>
-        <locationX>408</locationX>
+        <locationX>210</locationX>
         <locationY>0</locationY>
         <connector>
             <targetReference>getRequest</targetReference>
         </connector>
     </start>
-    <status>Active</status>
+    <status>Draft</status>
     <variables>
         <name>recordId</name>
         <dataType>String</dataType>

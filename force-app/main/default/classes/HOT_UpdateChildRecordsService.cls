@@ -17,8 +17,6 @@ public without sharing class HOT_UpdateChildRecordsService {
     public Boolean isDispatcherChoice;
     @InvocableVariable
     public Boolean isInterpreterMethodChoice;
-    @invocableVariable
-    public Boolean isServiceTerritoryChoice;
     @InvocableVariable
     public Boolean isOwnerChoice;
     @InvocableVariable
@@ -57,7 +55,8 @@ public without sharing class HOT_UpdateChildRecordsService {
                     PostalCode,
                     City,
                     Subject,
-                    Description
+                    Description,
+                    OwnerId
                 FROM WorkOrder
                 WHERE HOT_Request__c = :request.Id AND Status IN :woStatuses
             ]
@@ -97,7 +96,8 @@ public without sharing class HOT_UpdateChildRecordsService {
                     HOT_Account__c,
                     HOT_IsScreenInterpreterNew__c,
                     HOT_DispatcherNew__c,
-                    WorkTypeId
+                    WorkTypeId,
+                    OwnerId
                 FROM ServiceAppointment
                 WHERE HOT_Request__c = :request.Id AND Status IN :saStatuses
             ]
@@ -150,7 +150,8 @@ public without sharing class HOT_UpdateChildRecordsService {
                 input.isDescriptionChoice,
                 input.isScreenInterpreterChoice,
                 input.isDispatcherChoice,
-                input.isInterpreterMethodChoice
+                input.isInterpreterMethodChoice,
+                input.isDateChoice
             );
             if (error != null) {
                 errorOutput = error;
@@ -268,7 +269,8 @@ public without sharing class HOT_UpdateChildRecordsService {
         Boolean isDescriptionChoice,
         Boolean isScreenInterpreterChoice,
         Boolean isDispatcherChoice,
-        Boolean isInterpreterMethodChoice
+        Boolean isInterpreterMethodChoice,
+        Boolean isDateChoice
     ) {
         HOT_Request__c requestToUpdate = new HOT_Request__c(Id = request.Id);
         String error;
@@ -299,6 +301,10 @@ public without sharing class HOT_UpdateChildRecordsService {
         }
         if (isInterpreterMethodChoice) {
             requestToUpdate.InterpretationMethod__c = request.InterpretationMethod__c;
+        }
+        if(isDateChoice) {
+            requestToUpdate.StartTime__c = request.StartTime__c;
+            requestToUpdate.EndTime__c = request.EndTime__c;
         }
 
         try {
