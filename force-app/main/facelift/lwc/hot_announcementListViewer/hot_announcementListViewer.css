@@ -138,6 +138,12 @@ dialog::backdrop {
     padding: 3rem 0;
 }
 @media (max-width: 600px) {
+    .navds-button {
+        display: flex;
+        width: 100%;
+        white-space: nowrap;
+    }
+
     .modal-announcements.modal-container {
         width: 100%;
         max-width: 100%;
