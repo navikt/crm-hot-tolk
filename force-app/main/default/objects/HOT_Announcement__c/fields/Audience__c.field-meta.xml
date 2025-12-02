@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>Audience__c</fullName>
+    <externalId>false</externalId>
+    <label>Audience</label>
+    <required>false</required>
+    <trackTrending>false</trackTrending>
+    <type>Picklist</type>
+    <valueSet>
+        <controllingField>TargetSite__c</controllingField>
+        <restricted>true</restricted>
+        <valueSetDefinition>
+            <sorted>false</sorted>
+            <value>
+                <fullName>Bare frilanstolk</fullName>
+                <default>false</default>
+                <label>Bare frilanstolk</label>
+            </value>
+            <value>
+                <fullName>Bare tolkebruker</fullName>
+                <default>false</default>
+                <label>Bare tolkebruker</label>
+            </value>
+            <value>
+                <fullName>Alle</fullName>
+                <default>false</default>
+                <label>Alle</label>
+            </value>
+        </valueSetDefinition>
+        <valueSettings>
+            <controllingFieldValue>Tolkebestilling</controllingFieldValue>
+            <valueName>Bare frilanstolk</valueName>
+        </valueSettings>
+        <valueSettings>
+            <controllingFieldValue>Tolkebestilling</controllingFieldValue>
+            <valueName>Bare tolkebruker</valueName>
+        </valueSettings>
+        <valueSettings>
+            <controllingFieldValue>Tolkebestilling</controllingFieldValue>
+            <valueName>Alle</valueName>
+        </valueSettings>
+    </valueSet>
+</CustomField>

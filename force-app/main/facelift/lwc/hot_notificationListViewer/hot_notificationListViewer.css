@@ -209,6 +209,12 @@ input[type='reset'] {
 .navds-button:focus {
     border-color: #0067c5;
 }
+.navds-button {
+    -webkit-user-select: none;
+    -moz-user-select: none;
+    -ms-user-select: none;
+    user-select: none;
+}
 
 @media (max-width: 600px), (max-height: 600px) {
     .notification-center {

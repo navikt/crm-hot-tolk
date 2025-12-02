@@ -4,6 +4,7 @@ export default class Hot_welcomebannerV2 extends LightningElement {
     showNotificationList = false;
 
     @api personDetails;
+    @api announcements;
 
     get personFirstName() {
         if (!this.personDetails || !this.personDetails.FirstName) {
