@@ -56,7 +56,8 @@ public without sharing class HOT_UpdateChildRecordsService {
                     City,
                     Subject,
                     Description,
-                    OwnerId
+                    StartDate,
+                    EndDate
                 FROM WorkOrder
                 WHERE HOT_Request__c = :request.Id AND Status IN :woStatuses
             ]
@@ -97,7 +98,8 @@ public without sharing class HOT_UpdateChildRecordsService {
                     HOT_IsScreenInterpreterNew__c,
                     HOT_DispatcherNew__c,
                     WorkTypeId,
-                    OwnerId
+                    EarliestStartTime,
+                    DueDate
                 FROM ServiceAppointment
                 WHERE HOT_Request__c = :request.Id AND Status IN :saStatuses
             ]
@@ -163,7 +165,8 @@ public without sharing class HOT_UpdateChildRecordsService {
                 input.isAddressChoice,
                 input.isSubjectChoice,
                 input.isDescriptionChoice,
-                input.isInterpreterMethodChoice
+                input.isInterpreterMethodChoice,
+                input.isDateChoice
             );
             if (error != null) {
                 if (errorOutput == null || errorOutput == '') {
@@ -196,7 +199,8 @@ public without sharing class HOT_UpdateChildRecordsService {
                 input.isDescriptionChoice,
                 input.isScreenInterpreterChoice,
                 input.isDispatcherChoice,
-                input.isInterpreterMethodChoice
+                input.isInterpreterMethodChoice,
+                input.isDateChoice
             );
             if (error != null) {
                 if (errorOutput == null || errorOutput == '') {
@@ -214,7 +218,8 @@ public without sharing class HOT_UpdateChildRecordsService {
                 input.isAddressChoice,
                 input.isSubjectChoice,
                 input.isDescriptionChoice,
-                input.isInterpreterMethodChoice
+                input.isInterpreterMethodChoice,
+                input.isDateChoice
             );
             if (error != null) {
                 errorOutput = error;
@@ -243,7 +248,8 @@ public without sharing class HOT_UpdateChildRecordsService {
                 input.isDescriptionChoice,
                 input.isScreenInterpreterChoice,
                 input.isDispatcherChoice,
-                input.isInterpreterMethodChoice
+                input.isInterpreterMethodChoice,
+                input.isDateChoice
             );
             if (error != null) {
                 if (errorOutput == null || errorOutput == '') {
@@ -307,6 +313,7 @@ public without sharing class HOT_UpdateChildRecordsService {
             requestToUpdate.EndTime__c = request.EndTime__c;
         }
 
+
         try {
             update requestToUpdate;
         } catch (Exception e) {
@@ -325,7 +332,8 @@ public without sharing class HOT_UpdateChildRecordsService {
         Boolean isAddressChoice,
         Boolean isSubjectChoice,
         Boolean isDescriptionChoice,
-        Boolean isInterpreterMethodChoice
+        Boolean isInterpreterMethodChoice,
+        Boolean isDateChoice
     ) {
         String error;
         for (WorkOrder workOrder : workOrders) {
@@ -349,6 +357,10 @@ public without sharing class HOT_UpdateChildRecordsService {
             }
             if (isInterpreterMethodChoice) {
                 workOrder.WorkTypeId = request.InterpretationMethod__c;
+            }
+            if(isDateChoice) {
+                workOrder.StartDate = request.StartTime__c;
+                workOrder.EndDate = request.EndTime__c;
             }
         }
         try {
@@ -411,7 +423,8 @@ public without sharing class HOT_UpdateChildRecordsService {
         Boolean isDescriptionChoice,
         Boolean isScreenInterpreterChoice,
         Boolean isDispatcherChoice,
-        Boolean isInterpreterMethodChoice
+        Boolean isInterpreterMethodChoice,
+        Boolean isDateChoice
     ) {
         String error;
         for (ServiceAppointment serviceAppointment : serviceAppointments) {
@@ -441,6 +454,10 @@ public without sharing class HOT_UpdateChildRecordsService {
             }
             if (isInterpreterMethodChoice) {
                 serviceAppointment.WorkTypeId = request.InterpretationMethod__c;
+            }
+            if(isDateChoice) {
+                serviceAppointment.EarliestStartTime = request.StartTime__c;
+                serviceAppointment.DueDate = request.EndTime__c;
             }
         }
 
