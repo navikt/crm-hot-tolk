@@ -1,0 +1,92 @@
+.information {
+    background-color: #015176;
+    color: white;
+    border-radius: 6px;
+    /* max-width: 70%; */
+    width: 100%;
+    box-sizing: border-box;
+    overflow: hidden;
+    cursor: pointer;
+    margin-bottom: 1rem;
+    padding: 1rem;
+    font-family: 'Source Sans 3', 'Source Sans Pro', Arial, sans-serif;
+}
+
+.information:hover {
+    background-color: #004766;
+}
+
+.information:focus,
+.information:focus-visible {
+    outline: 2px solid #fff;
+    outline-offset: 2px;
+}
+
+/* HEADER */
+.header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+}
+
+.icon {
+    height: 36px;
+    width: 36px;
+}
+
+.icon.left {
+    margin-right: 1rem;
+}
+
+.title {
+    font-weight: 500;
+    font-size: 1.2rem;
+    margin: 0;
+    flex: 1;
+}
+
+/* CONTENT */
+.description-inner {
+    padding-left: calc(36px + 1rem);
+    padding-right: 36px;
+    padding-top: 0.5rem;
+}
+
+/* SINGLE announcement */
+.description {
+    font-weight: 400;
+    margin: 0;
+    opacity: 0.9;
+    white-space: pre-line;
+}
+
+/* GROUP MODE */
+.single-announcement {
+    margin-bottom: 1.5rem; /* større mellomrom mellom items */
+}
+
+.announcement-title {
+    font-weight: 600;
+    margin-bottom: 0.25rem;
+}
+
+/* MOBILE */
+@media (max-width: 768px) {
+    .information {
+        max-width: 100%;
+        width: 100%;
+        padding: 0.5rem;
+        margin-left: 0;
+        margin-right: 0;
+        border-radius: 6px;
+        margin-top: 0.5rem;
+        margin-bottom: 0.5rem;
+    }
+
+    .description-inner {
+        padding-left: 0.5rem;
+        padding-right: 0.5rem;
+        padding-top: 0.5rem;
+        padding-bottom: 0.5rem;
+    }
+}

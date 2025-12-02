@@ -1,6 +1,7 @@
 import { LightningElement, wire } from 'lwc';
 import { refreshApex } from '@salesforce/apex';
 import icons from '@salesforce/resourceUrl/ikoner';
+import ICON_Bell from '@salesforce/resourceUrl/Bell';
 import { NavigationMixin } from 'lightning/navigation';
 import getMyNotifications from '@salesforce/apex/HOT_NotificationCentreController.getMyNotifications';
 import getNotificationType from '@salesforce/apex/HOT_NotificationCentreController.getNotificationType';
@@ -8,7 +9,7 @@ import checkAccess from '@salesforce/apex/HOT_ThreadDetailController.checkAccess
 import getTargetPage from '@salesforce/apex/HOT_NotificationCentreController.getTargetPage';
 
 export default class Hot_notificationListViewer extends NavigationMixin(LightningElement) {
-    notificationIcon = icons + '/Bell/Bell.svg';
+    notificationIcon = ICON_Bell;
     exitCrossIcon = icons + '/Close/Close.svg';
     showNotifications = false;
     notifications;
