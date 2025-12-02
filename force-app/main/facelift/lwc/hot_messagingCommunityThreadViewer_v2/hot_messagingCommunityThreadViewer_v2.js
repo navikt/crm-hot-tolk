@@ -55,6 +55,7 @@ export default class Hot_messagingCommunityThreadViewer_v2 extends NavigationMix
     @api recordId;
     @api requestId;
     @api alerttext;
+    @api errorText;
     @api header;
     @api secondheader;
     @api alertopen;

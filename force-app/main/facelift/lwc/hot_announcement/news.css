@@ -1,0 +1,28 @@
+.news-card {
+    font-family: 'Source Sans 3', 'Source Sans Pro', Arial, sans-serif;
+    font-size: 1.125rem;
+
+    margin: 0.5rem 0;
+    padding: 0.75rem 1rem;
+    background: #ffffff;
+    display: flex;
+    flex-direction: column;
+    border-radius: 6px;
+}
+
+.created-date {
+    font-size: 1rem;
+    color: #6b6b6b;
+    margin-bottom: 0.25rem;
+}
+
+.title {
+    font-weight: 600;
+    font-size: 1.25rem;
+    margin-bottom: 0.5rem;
+}
+
+.description {
+    color: #333;
+    white-space: pre-line;
+}
