@@ -305,27 +305,41 @@
     </decisions>
     <decisions>
         <name>Is_the_request_approved</name>
-        <label>Is the request approved?</label>
+        <label>Is the request status none?</label>
         <locationX>336</locationX>
         <locationY>242</locationY>
         <defaultConnector>
             <targetReference>Check_Request</targetReference>
         </defaultConnector>
-        <defaultConnectorLabel>No</defaultConnectorLabel>
+        <defaultConnectorLabel>Yes</defaultConnectorLabel>
         <rules>
-            <name>Yes</name>
+            <name>No</name>
             <conditionLogic>and</conditionLogic>
             <conditions>
                 <leftValueReference>getRequest.Status__c</leftValueReference>
-                <operator>EqualTo</operator>
+                <operator>NotEqualTo</operator>
                 <rightValue>
-                    <stringValue>Godkjent</stringValue>
+                    <stringValue>Åpen</stringValue>
+                </rightValue>
+            </conditions>
+            <conditions>
+                <leftValueReference>getRequest.Status__c</leftValueReference>
+                <operator>NotEqualTo</operator>
+                <rightValue>
+                    <stringValue>Avlyst</stringValue>
+                </rightValue>
+            </conditions>
+            <conditions>
+                <leftValueReference>getRequest.Status__c</leftValueReference>
+                <operator>NotEqualTo</operator>
+                <rightValue>
+                    <stringValue>Annullert</stringValue>
                 </rightValue>
             </conditions>
             <connector>
                 <targetReference>getServiceAppointment</targetReference>
             </connector>
-            <label>Yes</label>
+            <label>No</label>
         </rules>
     </decisions>
     <decisions>
@@ -362,47 +376,74 @@
     <formulas>
         <name>isAccount</name>
         <dataType>Boolean</dataType>
-        <expression>CONTAINS({!ChosenFields}, {!Account})</expression>
+        <expression>OR(
+    CONTAINS({!ChosenFields}, {!Account}),
+    CONTAINS({!ChosenFieldsTime}, {!Account})
+)</expression>
     </formulas>
     <formulas>
         <name>isAddress</name>
         <dataType>Boolean</dataType>
-        <expression>CONTAINS({!ChosenFields}, {!Address})</expression>
+        <expression>OR(
+    CONTAINS({!ChosenFields}, {!Address}),
+    CONTAINS({!ChosenFieldsTime}, {!Address})
+)</expression>
     </formulas>
     <formulas>
         <name>isDate</name>
         <dataType>Boolean</dataType>
-        <expression>CONTAINS({!ChosenDateField}, {!Date})</expression>
+        <expression>OR(
+    CONTAINS({!ChosenFields}, {!Date}),
+    CONTAINS({!ChosenFieldsTime}, {!Date})
+)</expression>
     </formulas>
     <formulas>
         <name>isDescription</name>
         <dataType>Boolean</dataType>
-        <expression>CONTAINS({!ChosenFields}, {!Description})</expression>
+        <expression>OR(
+    CONTAINS({!ChosenFields}, {!Description}),
+    CONTAINS({!ChosenFieldsTime}, {!Description})
+)</expression>
     </formulas>
     <formulas>
         <name>isDispatcher</name>
         <dataType>Boolean</dataType>
-        <expression>CONTAINS({!ChosenFields}, {!Dispatcher})</expression>
+        <expression>OR(
+    CONTAINS({!ChosenFields}, {!Dispatcher}),
+    CONTAINS({!ChosenFieldsTime}, {!Dispatcher})
+)</expression>
     </formulas>
     <formulas>
         <name>isInterpreterMethod</name>
         <dataType>Boolean</dataType>
-        <expression>CONTAINS({!ChosenFields}, {!InterpretationMethod})</expression>
+        <expression>OR(
+    CONTAINS({!ChosenFields}, {!InterpretationMethod}),
+    CONTAINS({!ChosenFieldsTime}, {!InterpretationMethod})
+)</expression>
     </formulas>
     <formulas>
         <name>isOwner</name>
         <dataType>Boolean</dataType>
-        <expression>CONTAINS({!ChosenFields}, {!Owner})</expression>
+        <expression>OR(
+    CONTAINS({!ChosenFields}, {!Owner}),
+    CONTAINS({!ChosenFieldsTime}, {!Owner})
+)</expression>
     </formulas>
     <formulas>
         <name>isScreenInterpreter</name>
         <dataType>Boolean</dataType>
-        <expression>CONTAINS({!ChosenFields}, {!ScreenInterpreter})</expression>
+        <expression>OR(
+    CONTAINS({!ChosenFields}, {!ScreenInterpreter}),
+    CONTAINS({!ChosenFieldsTime}, {!ScreenInterpreter})
+)</expression>
     </formulas>
     <formulas>
         <name>isSubject</name>
         <dataType>Boolean</dataType>
-        <expression>CONTAINS({!ChosenFields}, {!Subject})</expression>
+        <expression>OR(
+    CONTAINS({!ChosenFields}, {!Subject}),
+    CONTAINS({!ChosenFieldsTime}, {!Subject})
+)</expression>
     </formulas>
     <interviewLabel>HOT_UpdateChildsFromRequest {!$Flow.CurrentDateTime}</interviewLabel>
     <label>HOT_UpdateChildsFromRequest</label>
@@ -517,7 +558,7 @@
         </connector>
         <fields>
             <name>Display_warning_text</name>
-            <fieldText>&lt;p&gt;&lt;span style=&quot;background-color: rgb(255, 255, 255); font-size: 16px; font-family: &amp;quot;Source Sans Pro&amp;quot;, Arial, sans-serif; color: rgb(92, 92, 92);&quot;&gt;OBS! Ved å endre verdiene her så endrer du verdiene på alle underliggende arbeidsordre, arbeidsordrelinjer og oppdrag.&lt;/span&gt;&lt;/p&gt;</fieldText>
+            <fieldText>&lt;p&gt;&lt;span style=&quot;background-color: rgb(255, 255, 255); font-size: 16px; color: rgb(24, 24, 24);&quot;&gt;OBS! Ved å endre verdiene her så endrer du verdiene på alle underliggende arbeidsordre, arbeidsordrelinjer og oppdrag.&lt;/span&gt;&lt;/p&gt;&lt;p&gt;&lt;br&gt;&lt;/p&gt;&lt;p&gt;&lt;span style=&quot;background-color: rgb(255, 255, 255); font-size: 14px; color: rgb(24, 24, 24);&quot;&gt;Feltet tid vises bare fram når oppdrag har status &quot;Åpen&quot; eller &quot;Frigitt til frilanstolk&quot;.&lt;/span&gt;&lt;/p&gt;</fieldText>
             <fieldType>DisplayText</fieldType>
         </fields>
         <fields>
@@ -535,22 +576,71 @@
             <fieldType>MultiSelectCheckboxes</fieldType>
             <inputsOnNextNavToAssocScrn>UseStoredValues</inputsOnNextNavToAssocScrn>
             <isRequired>true</isRequired>
+            <visibilityRule>
+                <conditionLogic>and</conditionLogic>
+                <conditions>
+                    <leftValueReference>getServiceAppointment.Status</leftValueReference>
+                    <operator>NotEqualTo</operator>
+                    <rightValue>
+                        <stringValue>None</stringValue>
+                    </rightValue>
+                </conditions>
+                <conditions>
+                    <leftValueReference>getServiceAppointment.Status</leftValueReference>
+                    <operator>NotEqualTo</operator>
+                    <rightValue>
+                        <stringValue>Released to Freelance</stringValue>
+                    </rightValue>
+                </conditions>
+                <conditions>
+                    <leftValueReference>getRequest.Status__c</leftValueReference>
+                    <operator>NotEqualTo</operator>
+                    <rightValue>
+                        <stringValue>Åpen</stringValue>
+                    </rightValue>
+                </conditions>
+            </visibilityRule>
         </fields>
         <fields>
-            <name>ChosenDateField</name>
+            <name>ChosenFieldsTime</name>
+            <choiceReferences>Address</choiceReferences>
+            <choiceReferences>Subject</choiceReferences>
+            <choiceReferences>Description</choiceReferences>
+            <choiceReferences>ScreenInterpreter</choiceReferences>
+            <choiceReferences>Dispatcher</choiceReferences>
+            <choiceReferences>Account</choiceReferences>
+            <choiceReferences>InterpretationMethod</choiceReferences>
+            <choiceReferences>Owner</choiceReferences>
             <choiceReferences>Date</choiceReferences>
             <dataType>String</dataType>
+            <fieldText>Velg felter</fieldText>
             <fieldType>MultiSelectCheckboxes</fieldType>
             <inputsOnNextNavToAssocScrn>UseStoredValues</inputsOnNextNavToAssocScrn>
-            <isDisabled>
-                <elementReference>disableDateIfStatusIsOpen</elementReference>
-            </isDisabled>
-            <isRequired>false</isRequired>
-        </fields>
-        <fields>
-            <name>displayDateText</name>
-            <fieldText>&lt;p&gt;Tid kan kun endres når oppdrag &lt;/p&gt;&lt;p&gt;har status &quot;Åpen&quot;.&lt;/p&gt;</fieldText>
-            <fieldType>DisplayText</fieldType>
+            <isRequired>true</isRequired>
+            <visibilityRule>
+                <conditionLogic>or</conditionLogic>
+                <conditions>
+                    <leftValueReference>getServiceAppointment.Status</leftValueReference>
+                    <operator>EqualTo</operator>
+                    <rightValue>
+                        <stringValue>None</stringValue>
+                    </rightValue>
+                </conditions>
+                <conditions>
+                    <leftValueReference>getServiceAppointment.Status</leftValueReference>
+                    <operator>EqualTo</operator>
+                    <rightValue>
+                        <stringValue>Released to Freelance</stringValue>
+                    </rightValue>
+                </conditions>
+                <conditions>
+                    <leftValueReference>getRequest.Status__c</leftValueReference>
+                    <operator>EqualTo</operator>
+                    <rightValue>
+                        <stringValue>Åpen</stringValue>
+                    </rightValue>
+                </conditions>
+            </visibilityRule>
         </fields>
         <showFooter>true</showFooter>
         <showHeader>true</showHeader>
@@ -630,10 +720,17 @@
             <isRequired>false</isRequired>
             <regionContainerType>SectionWithoutHeader</regionContainerType>
             <visibilityRule>
-                <conditionLogic>and</conditionLogic>
+                <conditionLogic>or</conditionLogic>
                 <conditions>
                     <leftValueReference>ChosenFields</leftValueReference>
                     <operator>Contains</operator>
+                    <rightValue>
+                        <elementReference>Address</elementReference>
+                    </rightValue>
+                </conditions>
+                <conditions>
+                    <leftValueReference>ChosenFieldsTime</leftValueReference>
+                    <operator>EqualTo</operator>
                     <rightValue>
                         <elementReference>Address</elementReference>
                     </rightValue>
@@ -663,10 +760,17 @@
             <isRequired>false</isRequired>
             <regionContainerType>SectionWithoutHeader</regionContainerType>
             <visibilityRule>
-                <conditionLogic>and</conditionLogic>
+                <conditionLogic>or</conditionLogic>
                 <conditions>
                     <leftValueReference>ChosenFields</leftValueReference>
                     <operator>Contains</operator>
+                    <rightValue>
+                        <elementReference>Subject</elementReference>
+                    </rightValue>
+                </conditions>
+                <conditions>
+                    <leftValueReference>ChosenFieldsTime</leftValueReference>
+                    <operator>EqualTo</operator>
                     <rightValue>
                         <elementReference>Subject</elementReference>
                     </rightValue>
@@ -729,10 +833,17 @@
             <isRequired>false</isRequired>
             <regionContainerType>SectionWithoutHeader</regionContainerType>
             <visibilityRule>
-                <conditionLogic>and</conditionLogic>
+                <conditionLogic>or</conditionLogic>
                 <conditions>
                     <leftValueReference>ChosenFields</leftValueReference>
                     <operator>Contains</operator>
+                    <rightValue>
+                        <elementReference>ScreenInterpreter</elementReference>
+                    </rightValue>
+                </conditions>
+                <conditions>
+                    <leftValueReference>ChosenFieldsTime</leftValueReference>
+                    <operator>EqualTo</operator>
                     <rightValue>
                         <elementReference>ScreenInterpreter</elementReference>
                     </rightValue>
@@ -794,10 +905,17 @@
             <isRequired>false</isRequired>
             <regionContainerType>SectionWithoutHeader</regionContainerType>
             <visibilityRule>
-                <conditionLogic>and</conditionLogic>
+                <conditionLogic>or</conditionLogic>
                 <conditions>
                     <leftValueReference>ChosenFields</leftValueReference>
                     <operator>Contains</operator>
+                    <rightValue>
+                        <elementReference>Dispatcher</elementReference>
+                    </rightValue>
+                </conditions>
+                <conditions>
+                    <leftValueReference>ChosenFieldsTime</leftValueReference>
+                    <operator>EqualTo</operator>
                     <rightValue>
                         <elementReference>Dispatcher</elementReference>
                     </rightValue>
@@ -853,10 +971,17 @@
             <isRequired>false</isRequired>
             <regionContainerType>SectionWithoutHeader</regionContainerType>
             <visibilityRule>
-                <conditionLogic>and</conditionLogic>
+                <conditionLogic>or</conditionLogic>
                 <conditions>
                     <leftValueReference>ChosenFields</leftValueReference>
                     <operator>Contains</operator>
+                    <rightValue>
+                        <elementReference>Account</elementReference>
+                    </rightValue>
+                </conditions>
+                <conditions>
+                    <leftValueReference>ChosenFieldsTime</leftValueReference>
+                    <operator>EqualTo</operator>
                     <rightValue>
                         <elementReference>Account</elementReference>
                     </rightValue>
@@ -912,10 +1037,17 @@
             <isRequired>false</isRequired>
             <regionContainerType>SectionWithoutHeader</regionContainerType>
             <visibilityRule>
-                <conditionLogic>and</conditionLogic>
+                <conditionLogic>or</conditionLogic>
                 <conditions>
                     <leftValueReference>ChosenFields</leftValueReference>
                     <operator>Contains</operator>
+                    <rightValue>
+                        <elementReference>InterpretationMethod</elementReference>
+                    </rightValue>
+                </conditions>
+                <conditions>
+                    <leftValueReference>ChosenFieldsTime</leftValueReference>
+                    <operator>EqualTo</operator>
                     <rightValue>
                         <elementReference>InterpretationMethod</elementReference>
                     </rightValue>
@@ -971,9 +1103,16 @@
             <isRequired>false</isRequired>
             <regionContainerType>SectionWithoutHeader</regionContainerType>
             <visibilityRule>
-                <conditionLogic>and</conditionLogic>
+                <conditionLogic>or</conditionLogic>
                 <conditions>
                     <leftValueReference>ChosenFields</leftValueReference>
+                    <operator>EqualTo</operator>
+                    <rightValue>
+                        <elementReference>Owner</elementReference>
+                    </rightValue>
+                </conditions>
+                <conditions>
+                    <leftValueReference>ChosenFieldsTime</leftValueReference>
                     <operator>EqualTo</operator>
                     <rightValue>
                         <elementReference>Owner</elementReference>
@@ -1012,7 +1151,7 @@
             <visibilityRule>
                 <conditionLogic>and</conditionLogic>
                 <conditions>
-                    <leftValueReference>ChosenDateField</leftValueReference>
+                    <leftValueReference>ChosenFieldsTime</leftValueReference>
                     <operator>EqualTo</operator>
                     <rightValue>
                         <elementReference>Date</elementReference>
