@@ -35,7 +35,15 @@ export default class Hot_announcement extends LightningElement {
         return this.announcement?.Description__c || '';
     }
     get createdDate() {
-        return this.announcement?.CreatedDate || '';
+        if (!this.announcement?.CreatedDate) return '';
+        const date = new Date(this.announcement.CreatedDate);
+
+        // dd.mm.yyyy format
+        const day = String(date.getDate()).padStart(2, '0');
+        const month = String(date.getMonth() + 1).padStart(2, '0');
+        const year = date.getFullYear();
+
+        return `${day}.${month}.${year}`;
     }
 
     // ----- GRUPPERING LOGIKK -----
