@@ -8,20 +8,20 @@ public without sharing class HOT_ServiceAppointmentAccessHandler extends MyTrigg
             if (sa.Status != oldRecord.Status && sa.Status == 'Dispatched' && !system.isBatch()) {
                 serviceAppointmentsWithUpdatedStatusDispatched.add(sa.Id);
             }
-            Boolean oldHidden = (oldRecord.HOT_DelPol_IsHideRecord__c == true);
-            if (!oldHidden && sa.HOT_DelPol_IsHideRecord__c == true) {
-                serviceAppointmentsHiddenNow.add(sa.Id);
-            }
+            // Boolean oldHidden = (oldRecord.HOT_DelPol_IsHideRecord__c == true);
+            // if (!oldHidden && sa.HOT_DelPol_IsHideRecord__c == true) {
+            //     serviceAppointmentsHiddenNow.add(sa.Id);
+            // }
         }
 
         if (serviceAppointmentsWithUpdatedStatusDispatched.size() > 0) {
             recalculateManualSharingFlagOnServiceAppointment(serviceAppointmentsWithUpdatedStatusDispatched);
         }
-        if (!serviceAppointmentsHiddenNow.isEmpty()) {
-            HOT_ServiceAppointmentsSharingService.removeAccessForHiddenServiceAppointments(
-                serviceAppointmentsHiddenNow
-            );
-        }
+        // if (!serviceAppointmentsHiddenNow.isEmpty()) {
+        //     HOT_ServiceAppointmentsSharingService.removeAccessForHiddenServiceAppointments(
+        //         serviceAppointmentsHiddenNow
+        //     );
+        // }
     }
 
     @Future
