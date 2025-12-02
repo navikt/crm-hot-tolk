@@ -2,13 +2,13 @@
     background-color: #015176;
     color: white;
     border-radius: 6px;
-    /* max-width: 70%; */
-    width: 100%;
+    max-width: 70%;
+    /* width: 100%; */
     box-sizing: border-box;
     overflow: hidden;
     cursor: pointer;
     margin-bottom: 1rem;
-    padding: 1rem;
+    padding: 0.8rem;
     font-family: 'Source Sans 3', 'Source Sans Pro', Arial, sans-serif;
 }
 

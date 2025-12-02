@@ -2,10 +2,10 @@
     background-color: #ffc166;
     color: #000000;
     border-radius: 6px;
-    /* max-width: 70%; */
-    width: 100%;
+    max-width: 70%;
+    /* width: 100%; */
     box-sizing: border-box;
-    padding: 1rem;
+    padding: 0.8rem;
     margin-top: 1rem;
     margin-bottom: 1rem;
     cursor: pointer;

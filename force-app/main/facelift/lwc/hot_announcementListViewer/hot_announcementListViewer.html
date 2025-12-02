@@ -35,8 +35,7 @@
                         <p>Ingen nyheter publisert enda.</p>
                     </template>
                     <template for:each={visibleAnnouncements} for:item="announcement">
-                        <c-hot_announcement key={announcement.Title__c} announcement={announcement}>
-                        </c-hot_announcement>
+                        <c-hot_announcement key={announcement.Id} announcement={announcement}> </c-hot_announcement>
                     </template>
                 </div>
 

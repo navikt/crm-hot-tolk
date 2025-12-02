@@ -82,6 +82,10 @@ dialog::backdrop {
     border-radius: 6px;
     box-shadow: 0 0.1vw 0.2vw rgba(0, 0, 0, 0.06);
 }
+.navds-button:hover,
+.navds-button:focus {
+    border-color: #0067c5;
+}
 
 .news-date {
     font-size: 1rem;
@@ -137,7 +141,19 @@ dialog::backdrop {
     align-items: flex-start;
     padding: 3rem 0;
 }
+.navds-button {
+    -webkit-user-select: none;
+    -moz-user-select: none;
+    -ms-user-select: none;
+    user-select: none;
+}
 @media (max-width: 600px) {
+    .navds-button {
+        display: flex;
+        width: 100%;
+        white-space: nowrap;
+    }
+
     .modal-announcements.modal-container {
         width: 100%;
         max-width: 100%;
