@@ -62,6 +62,7 @@ export default class Hot_messagingCommunityThreadViewer_v2 extends NavigationMix
     @api alertopen;
     @api maxLength;
     @api overrideValidation = false;
+    @api errorList = { title: '', errors: [] };
     @api helptextContent;
     @api helptextHovertext;
 
@@ -391,6 +392,18 @@ export default class Hot_messagingCommunityThreadViewer_v2 extends NavigationMix
     handleMessageFailed() {
         this.buttonisdisabled = true;
         refreshApex(this._mySendForSplitting);
+        this.errorList = {
+            title: 'Denne samtalen har blitt avsluttet.',
+            errors: [
+                {
+                    Id: 1,
+                    EventItem: '',
+                    Text: 'Vil du <a href="https://www.nav.no/person/kontakt-oss/nb/skriv-til-oss">sende en ny melding</a>, kan du gjøre det her. Husk å kopiere det du har skrevet.'
+                }
+            ]
+        };
+        let errorSummary = this.template.querySelector('.errorSummary');
+        errorSummary.focusHeader();
     }
 
     @api
@@ -446,6 +459,8 @@ export default class Hot_messagingCommunityThreadViewer_v2 extends NavigationMix
 
     valid() {
         // Reset error state
+        // eslint-disable-next-line @lwc/lwc/no-api-reassignments
+        this.errorList = { title: '', errors: [] };
         this.textareaErrorText = '';
 
         const textareaCmp = this.template.querySelector('c-textarea');
@@ -498,6 +513,11 @@ export default class Hot_messagingCommunityThreadViewer_v2 extends NavigationMix
                 textareaCmp.validationHandler();
             }
         }
+    }
+
+    handleErrorClick(event) {
+        let item = this.template.querySelector(event.detail);
+        item.focus();
     }
 
     serviceAppointment;
