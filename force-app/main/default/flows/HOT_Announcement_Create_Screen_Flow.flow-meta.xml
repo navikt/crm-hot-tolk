@@ -69,6 +69,20 @@
                 <stringValue>Tolkebestilling</stringValue>
             </value>
         </assignmentItems>
+        <assignmentItems>
+            <assignToReference>newAnnouncement.Url__c</assignToReference>
+            <operator>Assign</operator>
+            <value>
+                <elementReference>Url</elementReference>
+            </value>
+        </assignmentItems>
+        <assignmentItems>
+            <assignToReference>newAnnouncement.UrlLabel__c</assignToReference>
+            <operator>Assign</operator>
+            <value>
+                <elementReference>Url_label</elementReference>
+            </value>
+        </assignmentItems>
         <connector>
             <targetReference>Create_Announcement</targetReference>
         </connector>
@@ -345,6 +359,47 @@
                     <inputsOnNextNavToAssocScrn>UseStoredValues</inputsOnNextNavToAssocScrn>
                     <isRequired>true</isRequired>
                 </fields>
+                <fields>
+                    <name>Url</name>
+                    <dataType>String</dataType>
+                    <fieldText>Url</fieldText>
+                    <fieldType>InputField</fieldType>
+                    <inputsOnNextNavToAssocScrn>UseStoredValues</inputsOnNextNavToAssocScrn>
+                    <isRequired>false</isRequired>
+                    <visibilityRule>
+                        <conditionLogic>and</conditionLogic>
+                        <conditions>
+                            <leftValueReference>Velg_type_melding</leftValueReference>
+                            <operator>EqualTo</operator>
+                            <rightValue>
+                                <stringValue>News</stringValue>
+                            </rightValue>
+                        </conditions>
+                    </visibilityRule>
+                </fields>
+                <fields>
+                    <name>Url_label</name>
+                    <dataType>String</dataType>
+                    <fieldText>Url tekst</fieldText>
+                    <fieldType>InputField</fieldType>
+                    <helpText>&lt;p&gt;Her må du skrive hva teksten over url skal være. For eksempel: &quot;Les mer her&quot;, &quot;Se mer her&quot;, eller &quot;Se video her&quot;&lt;/p&gt;</helpText>
+                    <inputsOnNextNavToAssocScrn>UseStoredValues</inputsOnNextNavToAssocScrn>
+                    <isRequired>true</isRequired>
+                    <visibilityRule>
+                        <conditionLogic>and</conditionLogic>
+                        <conditions>
+                            <leftValueReference>Velg_type_melding</leftValueReference>
+                            <operator>EqualTo</operator>
+                            <rightValue>
+                                <stringValue>News</stringValue>
+                            </rightValue>
+                        </conditions>
+                        <conditions>
+                            <leftValueReference>Url</leftValueReference>
+                            <operator>NotEqualTo</operator>
+                        </conditions>
+                    </visibilityRule>
+                </fields>
                 <inputParameters>
                     <name>width</name>
                     <value>
@@ -358,7 +413,7 @@
                 <fieldType>Region</fieldType>
                 <fields>
                     <name>Driftmeldingsstyper</name>
-                    <fieldText>&lt;p&gt;&lt;strong&gt;Nyhet:&lt;/strong&gt;&lt;/p&gt;&lt;p&gt;Du kan publisere nyheter til tolker og tolkebrukere som vil være synlig på en egen nyhetsside. Du velger hvem som kan se den og i hvilket fylke.&lt;/p&gt;&lt;p&gt;&lt;br&gt;&lt;/p&gt;&lt;p&gt;&lt;strong&gt;Driftsmeldinger:&lt;/strong&gt;&lt;/p&gt;&lt;p&gt;&lt;span style=&quot;background-color: rgb(255, 255, 255);&quot;&gt;Driftsmeldinger har en blå farge og vil bli vist på forsiden av Tolkebestilling i en bestemt periode. Kan typisk brukes for viktige driftsmeldinger. Du velger hvem som kan se den og i hvilket fylke.&lt;/span&gt;&lt;/p&gt;&lt;p&gt;&lt;img src=&quot;https://agility-customization-8662.scratch.file.force.com/sfc/servlet.shepherd/version/download/068JW00000Cupc1?asPdf=false&amp;amp;operationContext=CHATTER&quot; alt=&quot;Skjermbilde 2025-11-26 kl. 16.56.33.png&quot;&gt;&lt;/p&gt;&lt;p&gt;&lt;strong&gt;Varsel:&lt;/strong&gt;&lt;/p&gt;&lt;p&gt;Et varsel kan brukes til å varsle om uforutsette hendelser som pågår og som berører brukere. Vil ha en gul farge og vises på forsiden. &lt;span style=&quot;background-color: rgb(255, 255, 255);&quot;&gt;Du velger hvem som kan se den og i hvilket fylke.&lt;/span&gt;&lt;/p&gt;&lt;p&gt;&lt;br&gt;&lt;/p&gt;&lt;p&gt;&lt;img src=&quot;https://agility-customization-8662.scratch.file.force.com/sfc/servlet.shepherd/version/download/068JW00000Cu54Y?asPdf=false&amp;amp;operationContext=CHATTER&quot; alt=&quot;Skjermbilde 2025-11-26 kl. 16.58.03.png&quot;&gt;&lt;/p&gt;</fieldText>
+                    <fieldText>&lt;p&gt;&lt;strong&gt;Nyhet:&lt;/strong&gt;&lt;/p&gt;&lt;p&gt;Du kan publisere nyheter til tolker og tolkebrukere som vil være synlig på forsiden under knappen &quot;Nyheter fra Tolketjenesten&quot;. Du velger hvem som kan se den og i hvilket fylke.&lt;/p&gt;&lt;p&gt;&lt;br&gt;&lt;/p&gt;&lt;p&gt;&lt;strong&gt;Driftsmeldinger:&lt;/strong&gt;&lt;/p&gt;&lt;p&gt;&lt;span style=&quot;background-color: rgb(255, 255, 255);&quot;&gt;Driftsmeldinger har en blå farge og vil bli vist på forsiden av Tolkebestilling i en bestemt periode. Kan typisk brukes for viktige driftsmeldinger. Du velger hvem som kan se den og i hvilket fylke.&lt;/span&gt;&lt;/p&gt;&lt;p&gt;&lt;img src=&quot;https://agility-customization-8662.scratch.file.force.com/sfc/servlet.shepherd/version/download/068JW00000Cupc1?asPdf=false&amp;amp;operationContext=CHATTER&quot; alt=&quot;Skjermbilde 2025-11-26 kl. 16.56.33.png&quot;&gt;&lt;/p&gt;&lt;p&gt;&lt;strong&gt;Varsel:&lt;/strong&gt;&lt;/p&gt;&lt;p&gt;Et varsel kan brukes til å varsle om uforutsette hendelser som pågår og som berører brukere. Vil ha en gul farge og vises på forsiden. &lt;span style=&quot;background-color: rgb(255, 255, 255);&quot;&gt;Du velger hvem som kan se den og i hvilket fylke.&lt;/span&gt;&lt;/p&gt;&lt;p&gt;&lt;br&gt;&lt;/p&gt;&lt;p&gt;&lt;img src=&quot;https://agility-customization-8662.scratch.file.force.com/sfc/servlet.shepherd/version/download/068JW00000Cu54Y?asPdf=false&amp;amp;operationContext=CHATTER&quot; alt=&quot;Skjermbilde 2025-11-26 kl. 16.58.03.png&quot;&gt;&lt;/p&gt;</fieldText>
                     <fieldType>DisplayText</fieldType>
                 </fields>
                 <inputParameters>

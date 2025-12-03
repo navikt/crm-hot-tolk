@@ -19,7 +19,7 @@
         <pageOrSobjectType>HOT_Announcement__c</pageOrSobjectType>
     </actionOverrides>
     <brand>
-        <headerColor>#FE0A0E</headerColor>
+        <headerColor>#84D18E</headerColor>
         <shouldOverrideOrgTheme>false</shouldOverrideOrgTheme>
     </brand>
     <description>App som brukes til å publisere driftsmeldinger, varsler og nyheter som vil vises
@@ -32,6 +32,5 @@
     <label>Tolketjenesten publisering</label>
     <navType>Standard</navType>
     <tabs>HOT_Tolketjenesten_publisering</tabs>
-    <tabs>HOT_Announcement__c</tabs>
     <uiType>Lightning</uiType>
 </CustomApplication>
