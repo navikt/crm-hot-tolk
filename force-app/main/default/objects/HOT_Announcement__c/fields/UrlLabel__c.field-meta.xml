@@ -2,6 +2,7 @@
 <CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
     <fullName>UrlLabel__c</fullName>
     <externalId>false</externalId>
+    <inlineHelpText>Her må du skrive hva teksten over url skal være. For eksempel: &quot;Les mer her&quot;, &quot;Se mer her&quot;, eller &quot;Se video her&quot;</inlineHelpText>
     <label>UrlLabel</label>
     <length>255</length>
     <required>false</required>
