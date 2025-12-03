@@ -2,6 +2,7 @@ import { LightningElement } from 'lwc';
 import getUserInformation from '@salesforce/apex/HOT_UserInformationController.getUserInformation';
 import getAllMyThreadsForBadge from '@salesforce/apex/HOT_ThreadListController.getAllMyThreadsForBadge';
 import getContactId from '@salesforce/apex/HOT_MessageHelper.getUserContactId';
+import getAnnouncements from '@salesforce/apex/HOT_AnnouncementController.getAnnouncements';
 
 export default class Hot_homeWrapper extends LightningElement {
     personDetails;
@@ -10,6 +11,10 @@ export default class Hot_homeWrapper extends LightningElement {
 
     myThreads = [];
     freelanceThreads = [];
+    announcements = [];
+    infoWarningAnnouncements = [];
+    newsAnnouncements = [];
+
     unreadMyThreads = 0;
     unreadFreelanceThreads = 0;
 
@@ -42,6 +47,19 @@ export default class Hot_homeWrapper extends LightningElement {
                 console.error('Feil:', error);
                 this.myThreads = [];
                 this.freelanceThreads = [];
+            });
+        getAnnouncements()
+            .then((announcements) => {
+                // Array for Information + Warning
+                this.infoWarningAnnouncements = announcements.filter(
+                    (ann) => ann.Type__c === 'Information' || ann.Type__c === 'Warning'
+                );
+
+                // Array for News
+                this.newsAnnouncements = announcements.filter((ann) => ann.Type__c === 'News');
+            })
+            .catch((error) => {
+                console.error('Error fetching announcements:', error);
             });
     }
 
