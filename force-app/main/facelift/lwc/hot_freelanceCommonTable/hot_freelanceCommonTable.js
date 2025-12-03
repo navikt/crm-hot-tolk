@@ -10,7 +10,6 @@ export default class Hot_freelanceCommonTable extends LightningElement {
     @api checkedRows = [];
     selectedRowId;
 
-    // WIP: return badge css will be changed when we have a decided on design colors
     statusBadgeMap = {
         'badge-gray': ['Åpen', 'Open'],
         'badge-blue': ['Reserved', 'Reservert', 'Assigned', 'Tildelt'],
