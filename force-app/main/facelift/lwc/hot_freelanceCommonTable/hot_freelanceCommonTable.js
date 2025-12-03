@@ -9,7 +9,6 @@ export default class Hot_freelanceCommonTable extends LightningElement {
     @api checkbox = false;
     @api checkedRows = [];
 
-    // WIP: return badge css will be changed when we have a decided on design colors
     statusBadgeMap = {
         'badge-gray': ['Åpen', 'Open'],
         'badge-blue': ['Reserved', 'Reservert', 'Assigned', 'Tildelt'],
@@ -134,16 +133,16 @@ export default class Hot_freelanceCommonTable extends LightningElement {
     }
 
     handleOnRowKeyDown(event) {
-    if (event.code === 'Space') {
-        const focusElement = event.target; 
+        if (event.code === 'Space') {
+            const focusElement = event.target;
 
-        // If the focused element is a checkbox, do not trigger row click
-        if ( focusElement.type === 'checkbox' || focusElement.closest('c-checkbox')) {
-            return; 
-        }
+            // If the focused element is a checkbox, do not trigger row click
+            if (focusElement.type === 'checkbox' || focusElement.closest('c-checkbox')) {
+                return;
+            }
 
-        event.preventDefault(); 
-        this.handleOnRowClick(event);
+            event.preventDefault();
+            this.handleOnRowClick(event);
         }
     }
 
