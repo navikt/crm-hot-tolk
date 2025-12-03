@@ -8,6 +8,7 @@ export default class Hot_freelanceCommonTable extends LightningElement {
 
     @api checkbox = false;
     @api checkedRows = [];
+    selectedRowId;
 
     // WIP: return badge css will be changed when we have a decided on design colors
     statusBadgeMap = {
@@ -85,15 +86,17 @@ export default class Hot_freelanceCommonTable extends LightningElement {
 
                 fields.push(field);
             }
+            const id = record.Id;
 
             // Store processed record and track checked state
             records.push({
-                id: record.Id,
-                checked: this.checkedRows.includes(record.Id),
+                id,
+                checked: this.checkedRows.includes(id),
                 fields: fields,
-                ariaLabelTheme: ariaLabelTheme ? `Velg ${ariaLabelTheme}` : ''
+                ariaLabelTheme: ariaLabelTheme ? `Velg ${ariaLabelTheme}` : '',
+                rowClass: `row${this.selectedRowId === id ? ' selected-row' : ''}`
             });
-            this.recordMap[record.Id] = record;
+            this.recordMap[id] = record;
         }
 
         return records;
@@ -127,23 +130,26 @@ export default class Hot_freelanceCommonTable extends LightningElement {
     }
 
     handleOnRowClick(event) {
+        const rowId = event.currentTarget.dataset.id;
+        this.selectedRowId = rowId;
+
         const eventToSend = new CustomEvent('rowclick', {
-            detail: this.recordMap[event.currentTarget.dataset.id]
+            detail: this.recordMap[rowId]
         });
         this.dispatchEvent(eventToSend);
     }
 
     handleOnRowKeyDown(event) {
-    if (event.code === 'Space') {
-        const focusElement = event.target; 
+        if (event.code === 'Space') {
+            const focusElement = event.target;
 
-        // If the focused element is a checkbox, do not trigger row click
-        if ( focusElement.type === 'checkbox' || focusElement.closest('c-checkbox')) {
-            return; 
-        }
+            // If the focused element is a checkbox, do not trigger row click
+            if (focusElement.type === 'checkbox' || focusElement.closest('c-checkbox')) {
+                return;
+            }
 
-        event.preventDefault(); 
-        this.handleOnRowClick(event);
+            event.preventDefault();
+            this.handleOnRowClick(event);
         }
     }
 
