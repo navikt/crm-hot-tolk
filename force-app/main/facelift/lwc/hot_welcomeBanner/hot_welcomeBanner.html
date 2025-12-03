@@ -1,7 +1,12 @@
 <template>
     <div class="banner">
         <div class="banner-left">
-            <h1>Tolketjenesten</h1>
+            <template lwc:if={isNotMobilePublisher}>
+                <h1>Tolketjenesten</h1>
+            </template>
+            <template lwc:else>
+                <h1>Hei, {personFirstName}</h1>
+            </template>
             <c-hot_notification-list-viewer></c-hot_notification-list-viewer>
             <c-hot_announcement-list-viewer announcements={announcements}></c-hot_announcement-list-viewer>
         </div>

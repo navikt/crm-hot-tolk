@@ -36,7 +36,7 @@
                 <field>Audience__c</field>
             </layoutItems>
             <layoutItems>
-                <behavior>Edit</behavior>
+                <behavior>Required</behavior>
                 <field>Type__c</field>
             </layoutItems>
             <layoutItems>
@@ -54,6 +54,14 @@
             <layoutItems>
                 <behavior>Edit</behavior>
                 <field>ValidTo__c</field>
+            </layoutItems>
+            <layoutItems>
+                <behavior>Edit</behavior>
+                <field>Url__c</field>
+            </layoutItems>
+            <layoutItems>
+                <behavior>Edit</behavior>
+                <field>UrlLabel__c</field>
             </layoutItems>
         </layoutColumns>
         <layoutColumns>
