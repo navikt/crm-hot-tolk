@@ -69,6 +69,20 @@
                 <stringValue>Tolkebestilling</stringValue>
             </value>
         </assignmentItems>
+        <assignmentItems>
+            <assignToReference>newAnnouncement.Url__c</assignToReference>
+            <operator>Assign</operator>
+            <value>
+                <elementReference>Url</elementReference>
+            </value>
+        </assignmentItems>
+        <assignmentItems>
+            <assignToReference>newAnnouncement.UrlLabel__c</assignToReference>
+            <operator>Assign</operator>
+            <value>
+                <elementReference>Url_label</elementReference>
+            </value>
+        </assignmentItems>
         <connector>
             <targetReference>Create_Announcement</targetReference>
         </connector>
@@ -344,6 +358,47 @@
                     <fieldType>LargeTextArea</fieldType>
                     <inputsOnNextNavToAssocScrn>UseStoredValues</inputsOnNextNavToAssocScrn>
                     <isRequired>true</isRequired>
+                </fields>
+                <fields>
+                    <name>Url</name>
+                    <dataType>String</dataType>
+                    <fieldText>Url</fieldText>
+                    <fieldType>InputField</fieldType>
+                    <inputsOnNextNavToAssocScrn>UseStoredValues</inputsOnNextNavToAssocScrn>
+                    <isRequired>false</isRequired>
+                    <visibilityRule>
+                        <conditionLogic>and</conditionLogic>
+                        <conditions>
+                            <leftValueReference>Velg_type_melding</leftValueReference>
+                            <operator>EqualTo</operator>
+                            <rightValue>
+                                <stringValue>News</stringValue>
+                            </rightValue>
+                        </conditions>
+                    </visibilityRule>
+                </fields>
+                <fields>
+                    <name>Url_label</name>
+                    <dataType>String</dataType>
+                    <fieldText>Url tekst</fieldText>
+                    <fieldType>InputField</fieldType>
+                    <helpText>&lt;p&gt;Her må du skrive hva teksten over url skal være. For eksempel: &quot;Les mer her&quot;, &quot;Se mer her&quot;, eller &quot;Se video her&quot;&lt;/p&gt;</helpText>
+                    <inputsOnNextNavToAssocScrn>UseStoredValues</inputsOnNextNavToAssocScrn>
+                    <isRequired>true</isRequired>
+                    <visibilityRule>
+                        <conditionLogic>and</conditionLogic>
+                        <conditions>
+                            <leftValueReference>Velg_type_melding</leftValueReference>
+                            <operator>EqualTo</operator>
+                            <rightValue>
+                                <stringValue>News</stringValue>
+                            </rightValue>
+                        </conditions>
+                        <conditions>
+                            <leftValueReference>Url</leftValueReference>
+                            <operator>NotEqualTo</operator>
+                        </conditions>
+                    </visibilityRule>
                 </fields>
                 <inputParameters>
                     <name>width</name>

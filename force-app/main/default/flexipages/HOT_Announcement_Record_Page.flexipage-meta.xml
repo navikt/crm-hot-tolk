@@ -170,6 +170,29 @@
                 </visibilityRule>
             </fieldInstance>
         </itemInstances>
+        <itemInstances>
+            <fieldInstance>
+                <fieldInstanceProperties>
+                    <name>uiBehavior</name>
+                    <value>none</value>
+                </fieldInstanceProperties>
+                <fieldItem>Record.Url__c</fieldItem>
+                <identifier>RecordUrl__cField</identifier>
+                <visibilityRule>
+                    <criteria>
+                        <leftValue>{!Record.Type__c}</leftValue>
+                        <operator>EQUAL</operator>
+                        <rightValue>News</rightValue>
+                    </criteria>
+                </visibilityRule>
+            </fieldInstance>
+        </itemInstances>
+        <itemInstances>
+            <fieldInstance>
+                <fieldItem>Record.UrlLabel__c</fieldItem>
+                <identifier>RecordUrlLabel__cField</identifier>
+            </fieldInstance>
+        </itemInstances>
         <name>Facet-cc351964-0d03-49ca-b863-8aeb33eaa8fd</name>
         <type>Facet</type>
     </flexiPageRegions>

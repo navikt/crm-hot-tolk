@@ -34,6 +34,12 @@ export default class Hot_announcement extends LightningElement {
     get description() {
         return this.announcement?.Description__c || '';
     }
+    get url() {
+        return this.announcement?.Url__c || '';
+    }
+    get urlLabel() {
+        return this.announcement?.UrlLabel__c || '';
+    }
     get createdDate() {
         if (!this.announcement?.CreatedDate) return '';
         const date = new Date(this.announcement.CreatedDate);
