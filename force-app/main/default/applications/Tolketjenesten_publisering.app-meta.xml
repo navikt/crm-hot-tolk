@@ -19,7 +19,9 @@
         <pageOrSobjectType>HOT_Announcement__c</pageOrSobjectType>
     </actionOverrides>
     <brand>
-        <headerColor>#FE0A0E</headerColor>
+        <headerColor>#84D18E</headerColor>
+        <logo>TindPubliseringIkon</logo>
+        <logoVersion>1</logoVersion>
         <shouldOverrideOrgTheme>false</shouldOverrideOrgTheme>
     </brand>
     <description>App som brukes til å publisere driftsmeldinger, varsler og nyheter som vil vises
