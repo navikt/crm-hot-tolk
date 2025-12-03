@@ -51,7 +51,7 @@ dialog::backdrop {
     color: #111;
 }
 
-.close-btn {
+dialog.modal-container .close-btn {
     display: flex;
     align-items: center;
     justify-content: center;
@@ -61,12 +61,12 @@ dialog::backdrop {
     cursor: pointer;
 }
 
-.close-btn:focus {
+dialog.modal-container .close-btn:focus {
     border-color: #0067c5;
     outline: none;
 }
 
-.close-btn:hover {
+dialog.modal-container .close-btn:hover {
     background-color: #e1e3e6;
 }
 .modal-body {
@@ -162,8 +162,11 @@ dialog::backdrop {
         border-radius: 0;
         padding: 1rem;
         top: 0;
-        left: 0;
-        transform: none;
+        bottom: auto;
+        margin: 0;
+    }
+    dialog.modal-container .close-btn {
+        background-color: #e0e3e6;
     }
 
     .modal-header,

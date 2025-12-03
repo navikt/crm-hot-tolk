@@ -20,7 +20,18 @@ public without sharing class HOT_AnnouncementController {
 
         // Hent alle aktive announcements
         List<HOT_Announcement__c> announcements = [
-            SELECT Id, IsActive__c, Title__c, Description__c, RegionAudience__c, TargetSite__c, Type__c, Audience__c, CreatedDate
+            SELECT
+                Id,
+                IsActive__c,
+                Title__c,
+                Description__c,
+                RegionAudience__c,
+                TargetSite__c,
+                Type__c,
+                Audience__c,
+                CreatedDate,
+                Url__c,
+                UrlLabel__c
             FROM HOT_Announcement__c
             WHERE IsActive__c = TRUE
         ];
