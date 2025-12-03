@@ -281,9 +281,15 @@ public without sharing class HOT_UpdateChildRecordsService {
         HOT_Request__c requestToUpdate = new HOT_Request__c(Id = request.Id);
         String error;
         if (isAccountChoice) {
-            requestToUpdate.Account__c = request.Account__c;
-            requestToUpdate.UserPersonNumber__c = request.UserPersonNumber__c;
-            requestToUpdate.UserName__c = request.UserName__c;
+            if (String.isBlank(request.Account__c)) {
+                requestToUpdate.Account__c = null;
+                requestToUpdate.UserPersonNumber__c = null;
+                requestToUpdate.UserName__c = null;
+            } else {
+                requestToUpdate.Account__c = request.Account__c;
+                requestToUpdate.UserPersonNumber__c = request.UserPersonNumber__c;
+                requestToUpdate.UserName__c = request.UserName__c;
+            }
         }
         if (isAddressChoice) {
             requestToUpdate.InterpretationStreet__c = request.InterpretationStreet__c;
