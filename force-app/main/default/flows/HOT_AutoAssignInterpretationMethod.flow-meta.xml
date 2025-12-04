@@ -229,35 +229,17 @@
         <connector>
             <targetReference>Primary_Interpretation_method_changed</targetReference>
         </connector>
-        <filterLogic>(1 OR 2) OR (3 OR 4)</filterLogic>
-        <filters>
-            <field>InterpretationMethodType__c</field>
-            <operator>IsNull</operator>
-            <value>
-                <booleanValue>false</booleanValue>
-            </value>
-        </filters>
-        <filters>
-            <field>InterpretationMethodType__c</field>
-            <operator>IsChanged</operator>
-            <value>
-                <booleanValue>true</booleanValue>
-            </value>
-        </filters>
-        <filters>
-            <field>InterpretationMethodSecondaryType__c</field>
-            <operator>IsNull</operator>
-            <value>
-                <booleanValue>false</booleanValue>
-            </value>
-        </filters>
-        <filters>
-            <field>InterpretationMethodSecondaryType__c</field>
-            <operator>IsChanged</operator>
-            <value>
-                <booleanValue>true</booleanValue>
-            </value>
-        </filters>
+        <filterFormula>OR(
+    AND(
+        ISNULL({!$Record__Prior.Id}),
+        OR(
+            NOT(ISBLANK(TEXT({!$Record.InterpretationMethodType__c}))),
+            NOT(ISBLANK(TEXT({!$Record.InterpretationMethodSecondaryType__c})))
+        )
+    ),
+    TEXT({!$Record.InterpretationMethodType__c}) &lt;&gt; TEXT({!$Record__Prior.InterpretationMethodType__c}),
+    TEXT({!$Record.InterpretationMethodSecondaryType__c}) &lt;&gt; TEXT({!$Record__Prior.InterpretationMethodSecondaryType__c})
+)</filterFormula>
         <object>HOT_Request__c</object>
         <recordTriggerType>CreateAndUpdate</recordTriggerType>
         <triggerType>RecordBeforeSave</triggerType>
