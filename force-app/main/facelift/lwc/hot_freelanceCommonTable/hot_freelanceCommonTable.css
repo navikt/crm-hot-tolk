@@ -24,6 +24,11 @@ tr.row:hover {
     background-color: #f1f1f1;
 }
 
+tr.row.selected-row,
+tr.row.selected-row:hover {
+    background-color: #e0e3e7;
+}
+
 .first-column {
     font-weight: normal;
 }
@@ -155,6 +160,10 @@ tr.row:hover {
         border: none;
         position: relative;
         padding-right: 3rem;
+    }
+
+    tr.row.selected-row {
+        background-color: #cbcfd5 !important;
     }
 
     tr.row td {
