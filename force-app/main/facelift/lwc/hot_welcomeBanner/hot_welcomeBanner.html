@@ -1,6 +1,16 @@
 <template>
     <div class="banner">
-        <h1>Tolketjenesten</h1>
-        <c-hot_notification-list-viewer></c-hot_notification-list-viewer>
+        <div class="banner-left">
+            <template lwc:if={isNotMobilePublisher}>
+                <h1>Tolketjenesten</h1>
+            </template>
+            <template lwc:else>
+                <h1>Hei, {personFirstName}</h1>
+            </template>
+            <c-hot_notification-list-viewer></c-hot_notification-list-viewer>
+            <c-hot_announcement-list-viewer announcements={announcements}></c-hot_announcement-list-viewer>
+        </div>
+
+        <div class="banner-right"></div>
     </div>
 </template>
