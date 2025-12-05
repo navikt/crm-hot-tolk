@@ -22,8 +22,6 @@ private class HOT_AnnouncementControllerTest {
         );
         insert frilansPerson;
 
-        update frilansPerson;
-
         Profile communityProfile = [SELECT Id FROM Profile WHERE Name = 'NAV Samhandler' LIMIT 1];
 
         String timestamp = String.valueOf(System.currentTimeMillis());
