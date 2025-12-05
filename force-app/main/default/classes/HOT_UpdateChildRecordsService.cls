@@ -206,6 +206,7 @@ public without sharing class HOT_UpdateChildRecordsService {
                 input.isScreenInterpreterChoice,
                 input.isDispatcherChoice,
                 input.isInterpreterMethodChoice,
+                input.isOwnerChoice,
                 input.isDateChoice
             );
             if (error != null) {
@@ -256,6 +257,7 @@ public without sharing class HOT_UpdateChildRecordsService {
                 input.isScreenInterpreterChoice,
                 input.isDispatcherChoice,
                 input.isInterpreterMethodChoice,
+                input.isOwnerChoice,
                 input.isDateChoice
             );
             if (error != null) {
@@ -374,7 +376,7 @@ public without sharing class HOT_UpdateChildRecordsService {
             }
             if(isOwnerChoice) {
                 workOrder.OwnerId = request.OwnerId;
-                workOrder.ServiceTerritoryId = request.ServiceTerritory__c;
+                // workOrder.ServiceTerritoryId = request.ServiceTerritory__c;
             }
             if(isDateChoice) {
                 workOrder.StartDate = request.StartTime__c;
@@ -442,6 +444,7 @@ public without sharing class HOT_UpdateChildRecordsService {
         Boolean isScreenInterpreterChoice,
         Boolean isDispatcherChoice,
         Boolean isInterpreterMethodChoice,
+        Boolean isOwnerChoice,
         Boolean isDateChoice
     ) {
         String error;
@@ -472,6 +475,9 @@ public without sharing class HOT_UpdateChildRecordsService {
             }
             if (isInterpreterMethodChoice) {
                 serviceAppointment.WorkTypeId = request.InterpretationMethod__c;
+            }
+            if(isOwnerChoice) {
+                serviceAppointment.OwnerId = request.OwnerId;
             }
             if(isDateChoice) {
                 serviceAppointment.EarliestStartTime = request.StartTime__c;
