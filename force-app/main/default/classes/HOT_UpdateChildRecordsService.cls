@@ -171,6 +171,7 @@ public without sharing class HOT_UpdateChildRecordsService {
                 input.isSubjectChoice,
                 input.isDescriptionChoice,
                 input.isInterpreterMethodChoice,
+                input.isOwnerChoice,
                 input.isDateChoice
             );
             if (error != null) {
@@ -224,6 +225,7 @@ public without sharing class HOT_UpdateChildRecordsService {
                 input.isSubjectChoice,
                 input.isDescriptionChoice,
                 input.isInterpreterMethodChoice,
+                input.isOwnerChoice,
                 input.isDateChoice
             );
             if (error != null) {
@@ -317,7 +319,6 @@ public without sharing class HOT_UpdateChildRecordsService {
         if (isOwnerChoice) {
             requestToUpdate.OwnerId = request.OwnerId;
             requestToUpdate = setServiceTerritory(requestToUpdate);
-
         }
         if(isDateChoice) {
             requestToUpdate.StartTime__c = request.StartTime__c;
@@ -345,6 +346,7 @@ public without sharing class HOT_UpdateChildRecordsService {
         Boolean isSubjectChoice,
         Boolean isDescriptionChoice,
         Boolean isInterpreterMethodChoice,
+        Boolean isOwnerChoice,
         Boolean isDateChoice
     ) {
         String error;
@@ -369,6 +371,10 @@ public without sharing class HOT_UpdateChildRecordsService {
             }
             if (isInterpreterMethodChoice) {
                 workOrder.WorkTypeId = request.InterpretationMethod__c;
+            }
+            if(isOwnerChoice) {
+                workOrder.OwnerId = request.OwnerId;
+                workOrder.ServiceTerritoryId = request.ServiceTerritory__c;
             }
             if(isDateChoice) {
                 workOrder.StartDate = request.StartTime__c;
@@ -509,11 +515,6 @@ public without sharing class HOT_UpdateChildRecordsService {
                 }
             }
         }
-        // for (HOT_Request__c request : requests) {
-        //     if (serviceTerritoryIdByQueueId.get(request.OwnerId) != null) {
-        //         request.ServiceTerritory__c = serviceTerritoryIdByQueueId.get(request.OwnerId);
-        //     }
-        // }
         request.ServiceTerritory__c = serviceTerritoryIdByQueueId.get(request.OwnerId);
 
         return request;
