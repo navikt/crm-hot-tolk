@@ -57,7 +57,9 @@ public without sharing class HOT_UpdateChildRecordsService {
                     Subject,
                     Description,
                     StartDate,
-                    EndDate
+                    EndDate,
+                    OwnerId,
+                    ServiceTerritoryId
                 FROM WorkOrder
                 WHERE HOT_Request__c = :request.Id AND Status IN :woStatuses
             ]
@@ -99,7 +101,9 @@ public without sharing class HOT_UpdateChildRecordsService {
                     HOT_DispatcherNew__c,
                     WorkTypeId,
                     EarliestStartTime,
-                    DueDate
+                    DueDate,
+                    OwnerId,
+                    ServiceTerritoryId
                 FROM ServiceAppointment
                 WHERE HOT_Request__c = :request.Id AND Status IN :saStatuses
             ]
@@ -153,6 +157,7 @@ public without sharing class HOT_UpdateChildRecordsService {
                 input.isScreenInterpreterChoice,
                 input.isDispatcherChoice,
                 input.isInterpreterMethodChoice,
+                input.isOwnerChoice,
                 input.isDateChoice
             );
             if (error != null) {
@@ -276,6 +281,7 @@ public without sharing class HOT_UpdateChildRecordsService {
         Boolean isScreenInterpreterChoice,
         Boolean isDispatcherChoice,
         Boolean isInterpreterMethodChoice,
+        Boolean isOwnerChoice,
         Boolean isDateChoice
     ) {
         HOT_Request__c requestToUpdate = new HOT_Request__c(Id = request.Id);
@@ -308,6 +314,11 @@ public without sharing class HOT_UpdateChildRecordsService {
         if (isInterpreterMethodChoice) {
             requestToUpdate.InterpretationMethod__c = request.InterpretationMethod__c;
         }
+        if (isOwnerChoice) {
+            requestToUpdate.OwnerId = request.OwnerId;
+            requestToUpdate = setServiceTerritory(requestToUpdate);
+
+        }
         if(isDateChoice) {
             requestToUpdate.StartTime__c = request.StartTime__c;
             requestToUpdate.EndTime__c = request.EndTime__c;
@@ -316,6 +327,7 @@ public without sharing class HOT_UpdateChildRecordsService {
 
         try {
             update requestToUpdate;
+
         } catch (Exception e) {
             LoggerUtility logger = new LoggerUtility();
             logger.exception(e, CRM_ApplicationDomain.Domain.HOT);
@@ -471,4 +483,40 @@ public without sharing class HOT_UpdateChildRecordsService {
         }
         return error;
     }
+
+    public static HOT_Request__c setServiceTerritory(HOT_Request__c request) {
+        List<HOT_ServiceTerritoryByQueue__mdt> serviceTerritoryByQueueList = HOT_ServiceTerritoryByQueue__mdt.getAll()
+            .values();
+        Map<String, String> serviceTerritoryByQueue = new Map<String, String>();
+        for (HOT_ServiceTerritoryByQueue__mdt STbyQ : serviceTerritoryByQueueList) {
+            serviceTerritoryByQueue.put(STbyQ.Queue__c, STbyQ.ServiceTerritory__c);
+        }
+        List<Group> queues = [
+            SELECT Id, Name, DeveloperName
+            FROM Group
+            WHERE Type = 'Queue' AND DeveloperName IN :serviceTerritoryByQueue.keySet()
+        ];
+        List<ServiceTerritory> serviceTerritories = [
+            SELECT Id, Name, HOT_DeveloperName__c
+            FROM ServiceTerritory
+            WHERE HOT_DeveloperName__c IN :serviceTerritoryByQueue.values()
+        ];
+        Map<Id, Id> serviceTerritoryIdByQueueId = new Map<Id, Id>();
+        for (Group queue : queues) {
+            for (ServiceTerritory serviceTerritory : serviceTerritories) {
+                if (serviceTerritoryByQueue.get(queue.DeveloperName) == serviceTerritory.HOT_DeveloperName__c) {
+                    serviceTerritoryIdByQueueId.put(queue.Id, serviceTerritory.Id);
+                }
+            }
+        }
+        // for (HOT_Request__c request : requests) {
+        //     if (serviceTerritoryIdByQueueId.get(request.OwnerId) != null) {
+        //         request.ServiceTerritory__c = serviceTerritoryIdByQueueId.get(request.OwnerId);
+        //     }
+        // }
+        request.ServiceTerritory__c = serviceTerritoryIdByQueueId.get(request.OwnerId);
+
+        return request;
+    }
+
 }
