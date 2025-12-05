@@ -78,7 +78,7 @@ private class HOT_AnnouncementControllerTest {
         Test.startTest();
         System.runAs(frilansUser) {
             List<HOT_Announcement__c> result = HOT_AnnouncementController.getAnnouncements();
-            System.assertEquals(2, result.size(), 'Frilans bør se 2 annonser for Oslo-regionen');
+            System.assertEquals(2, result.size(), 'Frilans bør se 2 nyheter for Oslo-regionen');
             Set<String> titles = new Set<String>();
             for (HOT_Announcement__c a : result)
                 titles.add(a.Title__c);
