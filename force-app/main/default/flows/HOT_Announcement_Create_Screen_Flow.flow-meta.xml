@@ -14,13 +14,6 @@
             </value>
         </assignmentItems>
         <assignmentItems>
-            <assignToReference>newAnnouncement.RegionAudience__c</assignToReference>
-            <operator>Assign</operator>
-            <value>
-                <elementReference>I_hvilket_fylker_skal_meldingen_v_re_synlig</elementReference>
-            </value>
-        </assignmentItems>
-        <assignmentItems>
             <assignToReference>newAnnouncement.Type__c</assignToReference>
             <operator>Assign</operator>
             <value>
@@ -87,6 +80,38 @@
             <targetReference>Create_Announcement</targetReference>
         </connector>
     </assignments>
+    <assignments>
+        <name>setChoosenRegionAudience</name>
+        <label>setChoosenRegionAudience</label>
+        <locationX>0</locationX>
+        <locationY>0</locationY>
+        <assignmentItems>
+            <assignToReference>newAnnouncement.RegionAudience__c</assignToReference>
+            <operator>Assign</operator>
+            <value>
+                <elementReference>I_hvilket_fylker_skal_meldingen_v_re_synlig</elementReference>
+            </value>
+        </assignmentItems>
+        <connector>
+            <targetReference>assignNewAnnouncementFields</targetReference>
+        </connector>
+    </assignments>
+    <assignments>
+        <name>setFullNorwayRegionAudience</name>
+        <label>setFullNorwayRegionAudience</label>
+        <locationX>0</locationX>
+        <locationY>0</locationY>
+        <assignmentItems>
+            <assignToReference>newAnnouncement.RegionAudience__c</assignToReference>
+            <operator>Assign</operator>
+            <value>
+                <stringValue>Agder;Akershus;Buskerud;Finnmark;Innlandet;Møre og Romsdal;Nordland;Oslo;Rogaland;Telemark;Troms;Trøndelag;Vestfold;Vestland;Østfold</stringValue>
+            </value>
+        </assignmentItems>
+        <connector>
+            <targetReference>assignNewAnnouncementFields</targetReference>
+        </connector>
+    </assignments>
     <choices>
         <name>Alle</name>
         <choiceText>Alle</choiceText>
@@ -126,6 +151,31 @@
         <choiceText>Varsel</choiceText>
         <dataType>String</dataType>
     </choices>
+    <decisions>
+        <name>setAudienceRegion</name>
+        <label>setAudienceRegion</label>
+        <locationX>0</locationX>
+        <locationY>0</locationY>
+        <defaultConnector>
+            <targetReference>setChoosenRegionAudience</targetReference>
+        </defaultConnector>
+        <defaultConnectorLabel>Default Outcome</defaultConnectorLabel>
+        <rules>
+            <name>fullNorway</name>
+            <conditionLogic>and</conditionLogic>
+            <conditions>
+                <leftValueReference>synlig_hele_landet</leftValueReference>
+                <operator>EqualTo</operator>
+                <rightValue>
+                    <booleanValue>true</booleanValue>
+                </rightValue>
+            </conditions>
+            <connector>
+                <targetReference>setFullNorwayRegionAudience</targetReference>
+            </connector>
+            <label>fullNorway</label>
+        </rules>
+    </decisions>
     <dynamicChoiceSets>
         <name>Audience</name>
         <dataType>Picklist</dataType>
@@ -245,7 +295,7 @@
         <allowFinish>true</allowFinish>
         <allowPause>false</allowPause>
         <connector>
-            <targetReference>assignNewAnnouncementFields</targetReference>
+            <targetReference>setAudienceRegion</targetReference>
         </connector>
         <fields>
             <name>Opprettnymelding</name>
@@ -278,13 +328,34 @@
                     <isRequired>true</isRequired>
                 </fields>
                 <fields>
+                    <name>synlig_hele_landet</name>
+                    <dataType>Boolean</dataType>
+                    <fieldText>Skal være synlig for hele landet?</fieldText>
+                    <fieldType>InputField</fieldType>
+                    <inputsOnNextNavToAssocScrn>UseStoredValues</inputsOnNextNavToAssocScrn>
+                    <isRequired>true</isRequired>
+                </fields>
+                <fields>
                     <name>I_hvilket_fylker_skal_meldingen_v_re_synlig</name>
                     <choiceReferences>Regions</choiceReferences>
                     <dataType>String</dataType>
-                    <fieldText>I hvilket fylker skal meldingen være synlig?</fieldText>
+                    <fieldText>Velg fylker meldingen være synlig?</fieldText>
                     <fieldType>MultiSelectCheckboxes</fieldType>
                     <inputsOnNextNavToAssocScrn>UseStoredValues</inputsOnNextNavToAssocScrn>
+                    <isDisabled>
+                        <elementReference>synlig_hele_landet</elementReference>
+                    </isDisabled>
                     <isRequired>true</isRequired>
+                    <visibilityRule>
+                        <conditionLogic>and</conditionLogic>
+                        <conditions>
+                            <leftValueReference>synlig_hele_landet</leftValueReference>
+                            <operator>EqualTo</operator>
+                            <rightValue>
+                                <booleanValue>false</booleanValue>
+                            </rightValue>
+                        </conditions>
+                    </visibilityRule>
                 </fields>
                 <fields>
                     <name>ValidFrom</name>
@@ -426,6 +497,23 @@
             </fields>
             <isRequired>false</isRequired>
             <regionContainerType>SectionWithHeader</regionContainerType>
+        </fields>
+        <fields>
+            <name>opprett_ny_melding_Section2</name>
+            <fieldType>RegionContainer</fieldType>
+            <fields>
+                <name>opprett_ny_melding_Section2_Column1</name>
+                <fieldType>Region</fieldType>
+                <inputParameters>
+                    <name>width</name>
+                    <value>
+                        <stringValue>12</stringValue>
+                    </value>
+                </inputParameters>
+                <isRequired>false</isRequired>
+            </fields>
+            <isRequired>false</isRequired>
+            <regionContainerType>SectionWithoutHeader</regionContainerType>
         </fields>
         <nextOrFinishButtonLabel>Send inn</nextOrFinishButtonLabel>
         <showFooter>true</showFooter>
