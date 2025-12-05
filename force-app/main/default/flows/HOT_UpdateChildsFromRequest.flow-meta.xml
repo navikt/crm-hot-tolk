@@ -4,7 +4,7 @@
         <name>UpdateChildRecords</name>
         <label>UpdateChildRecords</label>
         <locationX>182</locationX>
-        <locationY>1874</locationY>
+        <locationY>2282</locationY>
         <actionName>HOT_UpdateChildRecordsService</actionName>
         <actionType>apex</actionType>
         <flowTransactionModel>Automatic</flowTransactionModel>
@@ -73,6 +73,22 @@
     </actionCalls>
     <apiVersion>52.0</apiVersion>
     <assignments>
+        <name>Owner_list_assign_to_ownerId</name>
+        <label>Owner list assign to ownerId</label>
+        <locationX>50</locationX>
+        <locationY>1790</locationY>
+        <assignmentItems>
+            <assignToReference>getRequest.OwnerId</assignToReference>
+            <operator>Assign</operator>
+            <value>
+                <elementReference>Get_Group_From_Owner_List.Id</elementReference>
+            </value>
+        </assignmentItems>
+        <connector>
+            <targetReference>isInterpreterMethodCheck</targetReference>
+        </connector>
+    </assignments>
+    <assignments>
         <name>Store_Account_Value</name>
         <label>Store Account Value</label>
         <locationX>50</locationX>
@@ -106,7 +122,7 @@
             </value>
         </assignmentItems>
         <connector>
-            <targetReference>isInterpreterMethodCheck</targetReference>
+            <targetReference>isOwnerCheck</targetReference>
         </connector>
     </assignments>
     <assignments>
@@ -129,7 +145,7 @@
         <name>Store_Interpreter_method_value</name>
         <label>Store Interpreter method value</label>
         <locationX>50</locationX>
-        <locationY>1682</locationY>
+        <locationY>2090</locationY>
         <assignmentItems>
             <assignToReference>getRequest.InterpretationMethod__c</assignToReference>
             <operator>Assign</operator>
@@ -259,7 +275,7 @@
         <locationX>182</locationX>
         <locationY>1166</locationY>
         <defaultConnector>
-            <targetReference>isInterpreterMethodCheck</targetReference>
+            <targetReference>isOwnerCheck</targetReference>
         </defaultConnector>
         <defaultConnectorLabel>Not Account</defaultConnectorLabel>
         <rules>
@@ -346,7 +362,7 @@
         <name>isInterpreterMethodCheck</name>
         <label>isInterpreterMethodCheck</label>
         <locationX>182</locationX>
-        <locationY>1574</locationY>
+        <locationY>1982</locationY>
         <defaultConnector>
             <targetReference>UpdateChildRecords</targetReference>
         </defaultConnector>
@@ -365,6 +381,31 @@
                 <targetReference>Store_Interpreter_method_value</targetReference>
             </connector>
             <label>isInterpretermethodChecked</label>
+        </rules>
+    </decisions>
+    <decisions>
+        <name>isOwnerCheck</name>
+        <label>isOwnerCheck</label>
+        <locationX>182</locationX>
+        <locationY>1574</locationY>
+        <defaultConnector>
+            <targetReference>isInterpreterMethodCheck</targetReference>
+        </defaultConnector>
+        <defaultConnectorLabel>No</defaultConnectorLabel>
+        <rules>
+            <name>Yes</name>
+            <conditionLogic>and</conditionLogic>
+            <conditions>
+                <leftValueReference>isOwner</leftValueReference>
+                <operator>EqualTo</operator>
+                <rightValue>
+                    <booleanValue>true</booleanValue>
+                </rightValue>
+            </conditions>
+            <connector>
+                <targetReference>Get_Group_From_Owner_List</targetReference>
+            </connector>
+            <label>Yes</label>
         </rules>
     </decisions>
     <environments>Default</environments>
@@ -466,6 +507,34 @@
         </value>
     </processMetadataValues>
     <processType>Flow</processType>
+    <recordLookups>
+        <name>Get_Group_From_Owner_List</name>
+        <label>Get Group From Owner List</label>
+        <locationX>50</locationX>
+        <locationY>1682</locationY>
+        <assignNullValuesIfNoRecordsFound>false</assignNullValuesIfNoRecordsFound>
+        <connector>
+            <targetReference>Owner_list_assign_to_ownerId</targetReference>
+        </connector>
+        <filterLogic>and</filterLogic>
+        <filters>
+            <field>Name</field>
+            <operator>EqualTo</operator>
+            <value>
+                <elementReference>getRequest.Owner_List__c</elementReference>
+            </value>
+        </filters>
+        <filters>
+            <field>Type</field>
+            <operator>EqualTo</operator>
+            <value>
+                <stringValue>Queue</stringValue>
+            </value>
+        </filters>
+        <getFirstRecordOnly>true</getFirstRecordOnly>
+        <object>Group</object>
+        <storeOutputAutomatically>true</storeOutputAutomatically>
+    </recordLookups>
     <recordLookups>
         <name>getPerson</name>
         <label>getPerson</label>
@@ -570,7 +639,6 @@
             <choiceReferences>Dispatcher</choiceReferences>
             <choiceReferences>Account</choiceReferences>
             <choiceReferences>InterpretationMethod</choiceReferences>
-            <choiceReferences>Owner</choiceReferences>
             <dataType>String</dataType>
             <fieldText>Velg felter</fieldText>
             <fieldType>MultiSelectCheckboxes</fieldType>
@@ -1061,36 +1129,15 @@
                 <name>NewValuesScreen_Section8_Column1</name>
                 <fieldType>Region</fieldType>
                 <fields>
-                    <name>OwnerIdLookup</name>
-                    <extensionName>flowruntime:lookup</extensionName>
-                    <fieldType>ComponentInstance</fieldType>
-                    <inputParameters>
-                        <name>fieldApiName</name>
-                        <value>
-                            <stringValue>OwnerId</stringValue>
-                        </value>
-                    </inputParameters>
-                    <inputParameters>
-                        <name>objectApiName</name>
-                        <value>
-                            <stringValue>HOT_Request__c</stringValue>
-                        </value>
-                    </inputParameters>
-                    <inputParameters>
-                        <name>label</name>
-                        <value>
-                            <stringValue>Eier</stringValue>
-                        </value>
-                    </inputParameters>
-                    <inputParameters>
-                        <name>recordId</name>
-                        <value>
-                            <elementReference>getRequest.OwnerId</elementReference>
-                        </value>
-                    </inputParameters>
+                    <name>ownerText</name>
+                    <fieldText>&lt;p&gt;Eier: {!getRequest.OwnerName__c} &lt;/p&gt;&lt;p&gt;&lt;br&gt;&lt;/p&gt;</fieldText>
+                    <fieldType>DisplayText</fieldType>
+                </fields>
+                <fields>
+                    <fieldType>ObjectProvided</fieldType>
                     <inputsOnNextNavToAssocScrn>UseStoredValues</inputsOnNextNavToAssocScrn>
-                    <isRequired>true</isRequired>
-                    <storeOutputAutomatically>true</storeOutputAutomatically>
+                    <isRequired>false</isRequired>
+                    <objectFieldReference>getRequest.Owner_List__c</objectFieldReference>
                 </fields>
                 <inputParameters>
                     <name>width</name>
