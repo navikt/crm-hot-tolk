@@ -77,7 +77,8 @@ public without sharing class HOT_UpdateChildRecordsService {
                     PostalCode,
                     City,
                     Subject,
-                    Description
+                    Description,
+                    ServiceTerritoryId
                 FROM WorkOrderLineItem
                 WHERE WorkOrder.HOT_Request__c = :request.Id AND Status IN :woliStatuses
             ]

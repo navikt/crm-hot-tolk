@@ -144,7 +144,7 @@
             </value>
         </assignmentItems>
         <connector>
-            <targetReference>UpdateChildRecords</targetReference>
+            <targetReference>isDate_check</targetReference>
         </connector>
     </assignments>
     <assignments>
@@ -373,12 +373,37 @@
         </rules>
     </decisions>
     <decisions>
+        <name>isDate_check</name>
+        <label>isDate check</label>
+        <locationX>0</locationX>
+        <locationY>0</locationY>
+        <defaultConnector>
+            <targetReference>UpdateChildRecords</targetReference>
+        </defaultConnector>
+        <defaultConnectorLabel>Default Outcome</defaultConnectorLabel>
+        <rules>
+            <name>Yes</name>
+            <conditionLogic>and</conditionLogic>
+            <conditions>
+                <leftValueReference>isDate</leftValueReference>
+                <operator>EqualTo</operator>
+                <rightValue>
+                    <booleanValue>true</booleanValue>
+                </rightValue>
+            </conditions>
+            <connector>
+                <targetReference>UpdateChildRecords</targetReference>
+            </connector>
+            <label>Yes</label>
+        </rules>
+    </decisions>
+    <decisions>
         <name>isInterpreterMethodCheck</name>
         <label>isInterpreterMethodCheck</label>
         <locationX>0</locationX>
         <locationY>0</locationY>
         <defaultConnector>
-            <targetReference>UpdateChildRecords</targetReference>
+            <targetReference>isDate_check</targetReference>
         </defaultConnector>
         <defaultConnectorLabel>Not Interpreter</defaultConnectorLabel>
         <rules>
