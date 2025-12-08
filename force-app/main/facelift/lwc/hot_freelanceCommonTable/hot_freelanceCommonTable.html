@@ -9,7 +9,7 @@
 
                 <!-- Column headers -->
                 <template for:each={columns} for:item="col">
-                    <th key={col.fieldName} scope="col" tabindex="0" class="column-th-desktop">{col.label}</th>
+                    <th key={col.fieldName} scope="col" class="column-th-desktop">{col.label}</th>
                 </template>
             </tr>
         </thead>
@@ -35,7 +35,7 @@
 
                     <!-- Show Conversation and status badges -->
                     <template for:each={record.fields} for:item="field">
-                        <td key={field.name} tabindex="0" class={field.cssClass}>
+                        <td key={field.name} tabindex="0" role="button" class={field.cssClass}>
                             <template lwc:if={field.badgeClass}>
                                 <span class={field.badgeClass} aria-label={field.iconAriaLabel}
                                     >{field.iconAriaLabel}</span
