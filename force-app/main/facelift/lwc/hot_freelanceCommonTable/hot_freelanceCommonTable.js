@@ -8,8 +8,8 @@ export default class Hot_freelanceCommonTable extends LightningElement {
 
     @api checkbox = false;
     @api checkedRows = [];
+    selectedRowId;
 
-    // WIP: return badge css will be changed when we have a decided on design colors
     statusBadgeMap = {
         'badge-gray': ['Åpen', 'Open'],
         'badge-blue': ['Reserved', 'Reservert', 'Assigned', 'Tildelt'],
@@ -86,6 +86,7 @@ export default class Hot_freelanceCommonTable extends LightningElement {
 
                 fields.push(field);
             }
+            const id = record.Id;
 
             let ariaLabelTheme = '';
             if (subjectForAria) {
@@ -96,12 +97,13 @@ export default class Hot_freelanceCommonTable extends LightningElement {
 
             // Store processed record and track checked state
             records.push({
-                id: record.Id,
-                checked: this.checkedRows.includes(record.Id),
-                fields,
-                ariaLabelTheme
+                id,
+                checked: this.checkedRows.includes(id),
+                fields: fields,
+                ariaLabelTheme: ariaLabelTheme ? `Velg ${ariaLabelTheme}` : '',
+                rowClass: `row${this.selectedRowId === id ? ' selected-row' : ''}`
             });
-            this.recordMap[record.Id] = record;
+            this.recordMap[id] = record;
         }
 
         return records;
@@ -135,8 +137,11 @@ export default class Hot_freelanceCommonTable extends LightningElement {
     }
 
     handleOnRowClick(event) {
+        const rowId = event.currentTarget.dataset.id;
+        this.selectedRowId = rowId;
+
         const eventToSend = new CustomEvent('rowclick', {
-            detail: this.recordMap[event.currentTarget.dataset.id]
+            detail: this.recordMap[rowId]
         });
         this.dispatchEvent(eventToSend);
     }

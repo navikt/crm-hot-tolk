@@ -36,17 +36,32 @@ public without sharing class HOT_AnnouncementController {
             WHERE IsActive__c = TRUE
         ];
 
-        // Filtrer announcements som matcher brukerens region
         List<HOT_Announcement__c> filteredAnnouncements = new List<HOT_Announcement__c>();
 
-        for (HOT_Announcement__c ann : announcements) {
-            if (String.isNotBlank(ann.RegionAudience__c)) {
-                List<String> fylker = ann.RegionAudience__c.split(';');
+        for (HOT_Announcement__c announcement : announcements) {
+            //Finne announcements basert på audience
+            Boolean audienceMatches =
+                (isInterpreter &&
+                (announcement.Audience__c == 'Bare frilanstolk' ||
+                announcement.Audience__c == 'Alle')) ||
+                (!isInterpreter &&
+                (announcement.Audience__c == 'Bare tolkebruker' ||
+                announcement.Audience__c == 'Alle'));
+
+            if (!audienceMatches) {
+                continue; // hopp over denne announcement
+            }
+
+            // Filtrer på region
+            if (String.isNotBlank(announcement.RegionAudience__c)) {
+                List<String> fylker = announcement.RegionAudience__c.split(';');
+
                 for (String fylke : fylker) {
                     fylke = fylke.trim();
+
                     if (regionMap.containsKey(fylke) && regionMap.get(fylke) == userRegion) {
-                        filteredAnnouncements.add(ann);
-                        break; // allerede lagt til, gå til neste announcement
+                        filteredAnnouncements.add(announcement);
+                        break; // gå til neste announcement
                     }
                 }
             }
@@ -55,7 +70,6 @@ public without sharing class HOT_AnnouncementController {
         return filteredAnnouncements;
     }
 
-    // Hent nåværende bruker
     public static User getCurrentUser() {
         return [
             SELECT Id, Profile.Name, Account.CRM_Person__r.CRM_Region__r.CRM_Code__c

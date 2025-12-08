@@ -18,7 +18,7 @@
             <!-- Row rendering -->
             <template for:each={recordsToShow} for:item="record">
                 <tr
-                    class="row"
+                    class={record.rowClass}
                     key={record.id}
                     data-id={record.id}
                     onclick={handleOnRowClick}
