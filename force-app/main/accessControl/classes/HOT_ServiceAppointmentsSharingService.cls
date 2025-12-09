@@ -134,7 +134,7 @@ public without sharing class HOT_ServiceAppointmentsSharingService {
         return new Map<Id, User>([SELECT Id, IsPortalEnabled FROM User WHERE Id IN :userIds]);
     }
 
-    private static Map<Id, Id> getWorkOrderIds(List<Id> serviceApponntmentIds) {
+    public static Map<Id, Id> getWorkOrderIds(List<Id> serviceApponntmentIds) {
         Map<Id, Id> workOrderLineByServiceAppointment = new Map<Id, Id>();
         for (ServiceAppointment sa : [
             SELECT Id, ParentRecordId
@@ -160,7 +160,7 @@ public without sharing class HOT_ServiceAppointmentsSharingService {
         return workOrderByServiceAppointment;
     }
 
-    private static Map<Id, Id> getAccountIdByServiceAppointmentId(List<Id> serviceApponntmentIds) {
+    public static Map<Id, Id> getAccountIdByServiceAppointmentId(List<Id> serviceApponntmentIds) {
         Map<Id, Id> accountIdByServiceAppointmentId = new Map<Id, Id>();
         for (ServiceAppointment sa : [
             SELECT Id, AccountId
@@ -204,134 +204,134 @@ public without sharing class HOT_ServiceAppointmentsSharingService {
         }
     }
 
-    @future
-    public static void removeAccessForHiddenServiceAppointments(Set<Id> serviceAppointmentIds) {
-        if (serviceAppointmentIds == null || serviceAppointmentIds.isEmpty())
-            return;
+    // @future
+    // public static void removeAccessForHiddenServiceAppointments(Set<Id> serviceAppointmentIds) {
+    //     if (serviceAppointmentIds == null || serviceAppointmentIds.isEmpty())
+    //         return;
 
-        try {
-            Map<Id, Id> woBySa = getWorkOrderIds(new List<Id>(serviceAppointmentIds));
-            Set<Id> workOrderIds = new Set<Id>();
-            for (Id saId : woBySa.keySet()) {
-                Id woId = woBySa.get(saId);
-                if (woId != null)
-                    workOrderIds.add(woId);
-            }
+    //     try {
+    //         Map<Id, Id> woBySa = getWorkOrderIds(new List<Id>(serviceAppointmentIds));
+    //         Set<Id> workOrderIds = new Set<Id>();
+    //         for (Id saId : woBySa.keySet()) {
+    //             Id woId = woBySa.get(saId);
+    //             if (woId != null)
+    //                 workOrderIds.add(woId);
+    //         }
 
-            Map<Id, Id> accountBySa = getAccountIdByServiceAppointmentId(new List<Id>(serviceAppointmentIds));
-            Set<Id> accountIds = new Set<Id>();
-            for (Id saId : accountBySa.keySet()) {
-                Id accId = accountBySa.get(saId);
-                if (accId != null)
-                    accountIds.add(accId);
-            }
+    //         Map<Id, Id> accountBySa = getAccountIdByServiceAppointmentId(new List<Id>(serviceAppointmentIds));
+    //         Set<Id> accountIds = new Set<Id>();
+    //         for (Id saId : accountBySa.keySet()) {
+    //             Id accId = accountBySa.get(saId);
+    //             if (accId != null)
+    //                 accountIds.add(accId);
+    //         }
 
-            List<ServiceAppointmentShare> saSharesToDelete = new List<ServiceAppointmentShare>();
-            if (!serviceAppointmentIds.isEmpty()) {
-                saSharesToDelete = [
-                    SELECT Id
-                    FROM ServiceAppointmentShare
-                    WHERE RowCause = 'Manual' AND ParentId IN :serviceAppointmentIds
-                ];
-            }
+    //         List<ServiceAppointmentShare> saSharesToDelete = new List<ServiceAppointmentShare>();
+    //         if (!serviceAppointmentIds.isEmpty()) {
+    //             saSharesToDelete = [
+    //                 SELECT Id
+    //                 FROM ServiceAppointmentShare
+    //                 WHERE RowCause = 'Manual' AND ParentId IN :serviceAppointmentIds
+    //             ];
+    //         }
 
-            List<WorkOrderShare> woSharesToDelete = new List<WorkOrderShare>();
-            if (!workOrderIds.isEmpty()) {
-                woSharesToDelete = [
-                    SELECT Id
-                    FROM WorkOrderShare
-                    WHERE RowCause = 'Manual' AND ParentId IN :workOrderIds
-                ];
-            }
+    //         List<WorkOrderShare> woSharesToDelete = new List<WorkOrderShare>();
+    //         if (!workOrderIds.isEmpty()) {
+    //             woSharesToDelete = [
+    //                 SELECT Id
+    //                 FROM WorkOrderShare
+    //                 WHERE RowCause = 'Manual' AND ParentId IN :workOrderIds
+    //             ];
+    //         }
 
-            Map<Id, ServiceAppointment> hiddenSAs = new Map<Id, ServiceAppointment>(
-                [
-                    SELECT Id, AccountId, HOT_ServiceResource__r.RelatedRecordId
-                    FROM ServiceAppointment
-                    WHERE Id IN :serviceAppointmentIds
-                ]
-            );
+    //         Map<Id, ServiceAppointment> hiddenSAs = new Map<Id, ServiceAppointment>(
+    //             [
+    //                 SELECT Id, AccountId, HOT_ServiceResource__r.RelatedRecordId
+    //                 FROM ServiceAppointment
+    //                 WHERE Id IN :serviceAppointmentIds
+    //             ]
+    //         );
 
-            Set<String> hiddenAccountUserPairs = new Set<String>();
-            Set<Id> hiddenUserIds = new Set<Id>();
-            for (ServiceAppointment sa : hiddenSAs.values()) {
-                if (
-                    sa.AccountId != null &&
-                    sa.HOT_ServiceResource__r != null &&
-                    sa.HOT_ServiceResource__r.RelatedRecordId != null
-                ) {
-                    Id uid = sa.HOT_ServiceResource__r.RelatedRecordId;
-                    hiddenUserIds.add(uid);
-                    hiddenAccountUserPairs.add(String.valueOf(sa.AccountId) + ':' + String.valueOf(uid));
-                }
-            }
+    //         Set<String> hiddenAccountUserPairs = new Set<String>();
+    //         Set<Id> hiddenUserIds = new Set<Id>();
+    //         for (ServiceAppointment sa : hiddenSAs.values()) {
+    //             if (
+    //                 sa.AccountId != null &&
+    //                 sa.HOT_ServiceResource__r != null &&
+    //                 sa.HOT_ServiceResource__r.RelatedRecordId != null
+    //             ) {
+    //                 Id uid = sa.HOT_ServiceResource__r.RelatedRecordId;
+    //                 hiddenUserIds.add(uid);
+    //                 hiddenAccountUserPairs.add(String.valueOf(sa.AccountId) + ':' + String.valueOf(uid));
+    //             }
+    //         }
 
-            Set<Id> visibleSAAccountIds = new Set<Id>(accountIds);
-            Set<Id> visibleSAIds = new Set<Id>();
-            Map<Id, ServiceAppointment> visibleSAsById = new Map<Id, ServiceAppointment>();
-            if (!visibleSAAccountIds.isEmpty()) {
-                for (ServiceAppointment visSa : [
-                    SELECT Id, AccountId, HOT_ServiceResource__r.RelatedRecordId, HOT_DelPol_IsHideRecord__c
-                    FROM ServiceAppointment
-                    WHERE AccountId IN :visibleSAAccountIds AND HOT_DelPol_IsHideRecord__c = FALSE
-                ]) {
-                    visibleSAsById.put(visSa.Id, visSa);
-                    visibleSAIds.add(visSa.Id);
-                }
-            }
+    //         Set<Id> visibleSAAccountIds = new Set<Id>(accountIds);
+    //         Set<Id> visibleSAIds = new Set<Id>();
+    //         Map<Id, ServiceAppointment> visibleSAsById = new Map<Id, ServiceAppointment>();
+    //         if (!visibleSAAccountIds.isEmpty()) {
+    //             for (ServiceAppointment visSa : [
+    //                 SELECT Id, AccountId, HOT_ServiceResource__r.RelatedRecordId, HOT_DelPol_IsHideRecord__c
+    //                 FROM ServiceAppointment
+    //                 WHERE AccountId IN :visibleSAAccountIds AND HOT_DelPol_IsHideRecord__c = FALSE
+    //             ]) {
+    //                 visibleSAsById.put(visSa.Id, visSa);
+    //                 visibleSAIds.add(visSa.Id);
+    //             }
+    //         }
 
-            Map<Id, Set<Id>> shareUsersByVisibleSA = new Map<Id, Set<Id>>();
-            if (!visibleSAIds.isEmpty()) {
-                for (ServiceAppointmentShare share : [
-                    SELECT Id, ParentId, UserOrGroupId
-                    FROM ServiceAppointmentShare
-                    WHERE RowCause = 'Manual' AND ParentId IN :visibleSAIds
-                ]) {
-                    if (!shareUsersByVisibleSA.containsKey(share.ParentId)) {
-                        shareUsersByVisibleSA.put(share.ParentId, new Set<Id>());
-                    }
-                    shareUsersByVisibleSA.get(share.ParentId).add(share.UserOrGroupId);
-                }
-            }
+    //         Map<Id, Set<Id>> shareUsersByVisibleSA = new Map<Id, Set<Id>>();
+    //         if (!visibleSAIds.isEmpty()) {
+    //             for (ServiceAppointmentShare share : [
+    //                 SELECT Id, ParentId, UserOrGroupId
+    //                 FROM ServiceAppointmentShare
+    //                 WHERE RowCause = 'Manual' AND ParentId IN :visibleSAIds
+    //             ]) {
+    //                 if (!shareUsersByVisibleSA.containsKey(share.ParentId)) {
+    //                     shareUsersByVisibleSA.put(share.ParentId, new Set<Id>());
+    //                 }
+    //                 shareUsersByVisibleSA.get(share.ParentId).add(share.UserOrGroupId);
+    //             }
+    //         }
 
-            Set<String> accountUserPairsToKeep = new Set<String>();
-            for (ServiceAppointment visSa : visibleSAsById.values()) {
-                Id assignedUser = (visSa.HOT_ServiceResource__r != null)
-                    ? visSa.HOT_ServiceResource__r.RelatedRecordId
-                    : null;
-                if (visSa.AccountId != null && assignedUser != null) {
-                    Set<Id> shareUsers = shareUsersByVisibleSA.get(visSa.Id);
-                    if (shareUsers != null && shareUsers.contains(assignedUser)) {
-                        accountUserPairsToKeep.add(
-                            String.valueOf(visSa.AccountId) + ':' + String.valueOf(assignedUser)
-                        );
-                    }
-                }
-            }
+    //         Set<String> accountUserPairsToKeep = new Set<String>();
+    //         for (ServiceAppointment visSa : visibleSAsById.values()) {
+    //             Id assignedUser = (visSa.HOT_ServiceResource__r != null)
+    //                 ? visSa.HOT_ServiceResource__r.RelatedRecordId
+    //                 : null;
+    //             if (visSa.AccountId != null && assignedUser != null) {
+    //                 Set<Id> shareUsers = shareUsersByVisibleSA.get(visSa.Id);
+    //                 if (shareUsers != null && shareUsers.contains(assignedUser)) {
+    //                     accountUserPairsToKeep.add(
+    //                         String.valueOf(visSa.AccountId) + ':' + String.valueOf(assignedUser)
+    //                     );
+    //                 }
+    //             }
+    //         }
 
-            List<AccountShare> accountSharesToDelete = new List<AccountShare>();
-            if (!accountIds.isEmpty() && !hiddenUserIds.isEmpty()) {
-                List<AccountShare> candidateAccountShares = [
-                    SELECT Id, AccountId, UserOrGroupId
-                    FROM AccountShare
-                    WHERE RowCause = 'Manual' AND AccountId IN :accountIds AND UserOrGroupId IN :hiddenUserIds
-                ];
-                for (AccountShare accShare : candidateAccountShares) {
-                    String key = String.valueOf(accShare.AccountId) + ':' + String.valueOf(accShare.UserOrGroupId);
-                    if (hiddenAccountUserPairs.contains(key) && !accountUserPairsToKeep.contains(key)) {
-                        accountSharesToDelete.add(accShare);
-                    }
-                }
-            }
+    //         List<AccountShare> accountSharesToDelete = new List<AccountShare>();
+    //         if (!accountIds.isEmpty() && !hiddenUserIds.isEmpty()) {
+    //             List<AccountShare> candidateAccountShares = [
+    //                 SELECT Id, AccountId, UserOrGroupId
+    //                 FROM AccountShare
+    //                 WHERE RowCause = 'Manual' AND AccountId IN :accountIds AND UserOrGroupId IN :hiddenUserIds
+    //             ];
+    //             for (AccountShare accShare : candidateAccountShares) {
+    //                 String key = String.valueOf(accShare.AccountId) + ':' + String.valueOf(accShare.UserOrGroupId);
+    //                 if (hiddenAccountUserPairs.contains(key) && !accountUserPairsToKeep.contains(key)) {
+    //                     accountSharesToDelete.add(accShare);
+    //                 }
+    //             }
+    //         }
 
-            if (!saSharesToDelete.isEmpty())
-                delete saSharesToDelete;
-            if (!woSharesToDelete.isEmpty())
-                delete woSharesToDelete;
-            if (!accountSharesToDelete.isEmpty())
-                delete accountSharesToDelete;
-        } catch (Exception e) {
-            handleException(e);
-        }
-    }
+    //         if (!saSharesToDelete.isEmpty())
+    //             delete saSharesToDelete;
+    //         if (!woSharesToDelete.isEmpty())
+    //             delete woSharesToDelete;
+    //         if (!accountSharesToDelete.isEmpty())
+    //             delete accountSharesToDelete;
+    //     } catch (Exception e) {
+    //         handleException(e);
+    //     }
+    // }
 }
