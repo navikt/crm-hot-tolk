@@ -122,7 +122,8 @@ public without sharing class HOT_UpdateChildRecordsService {
                     PostalCode,
                     City,
                     Subject,
-                    Description
+                    Description,
+                    ServiceTerritoryId
                 FROM WorkOrderLineItem
                 WHERE WorkOrderId = :singleWO.Id AND Status IN :woliStatuses
             ];
@@ -188,7 +189,8 @@ public without sharing class HOT_UpdateChildRecordsService {
                 input.isAddressChoice,
                 input.isSubjectChoice,
                 input.isDescriptionChoice,
-                input.isInterpreterMethodChoice
+                input.isInterpreterMethodChoice,
+                input.isOwnerChoice
             );
             if (error != null) {
                 if (errorOutput == null || errorOutput == '') {
@@ -239,7 +241,8 @@ public without sharing class HOT_UpdateChildRecordsService {
                 input.isAddressChoice,
                 input.isSubjectChoice,
                 input.isDescriptionChoice,
-                input.isInterpreterMethodChoice
+                input.isInterpreterMethodChoice,
+                input.isOwnerChoice
             );
             if (error != null) {
                 if (errorOutput == null || errorOutput == '') {
@@ -292,9 +295,9 @@ public without sharing class HOT_UpdateChildRecordsService {
         HOT_Request__c requestToUpdate = new HOT_Request__c(Id = request.Id);
         String error;
         if (isAccountChoice) {
-                requestToUpdate.Account__c = request.Account__c;
-                requestToUpdate.UserPersonNumber__c = request.UserPersonNumber__c;
-                requestToUpdate.UserName__c = request.UserName__c;
+            requestToUpdate.Account__c = request.Account__c;
+            requestToUpdate.UserPersonNumber__c = request.UserPersonNumber__c;
+            requestToUpdate.UserName__c = request.UserName__c;
         }
         if (isAddressChoice) {
             requestToUpdate.InterpretationStreet__c = request.InterpretationStreet__c;
@@ -322,16 +325,15 @@ public without sharing class HOT_UpdateChildRecordsService {
         if (isOwnerChoice) {
             requestToUpdate.OwnerId = request.OwnerId;
             requestToUpdate = setServiceTerritory(requestToUpdate);
+            request.ServiceTerritory__c = requestToUpdate.ServiceTerritory__c;
         }
-        if(isDateChoice) {
+        if (isDateChoice) {
             requestToUpdate.StartTime__c = request.StartTime__c;
             requestToUpdate.EndTime__c = request.EndTime__c;
         }
 
-
         try {
             update requestToUpdate;
-
         } catch (Exception e) {
             LoggerUtility logger = new LoggerUtility();
             logger.exception(e, CRM_ApplicationDomain.Domain.HOT);
@@ -375,11 +377,11 @@ public without sharing class HOT_UpdateChildRecordsService {
             if (isInterpreterMethodChoice) {
                 workOrder.WorkTypeId = request.InterpretationMethod__c;
             }
-            if(isOwnerChoice) {
+            if (isOwnerChoice) {
                 workOrder.OwnerId = request.OwnerId;
-                // workOrder.ServiceTerritoryId = request.ServiceTerritory__c;
+                workOrder.ServiceTerritoryId = request.ServiceTerritory__c;
             }
-            if(isDateChoice) {
+            if (isDateChoice) {
                 workOrder.StartDate = request.StartTime__c;
                 workOrder.EndDate = request.EndTime__c;
             }
@@ -401,7 +403,8 @@ public without sharing class HOT_UpdateChildRecordsService {
         Boolean isAddressChoice,
         Boolean isSubjectChoice,
         Boolean isDescriptionChoice,
-        Boolean isInterpreterMethodChoice
+        Boolean isInterpreterMethodChoice,
+        Boolean isOwnerChoice
     ) {
         String error;
         for (WorkOrderLineItem workOrderLineItem : workOrderLineItems) {
@@ -421,6 +424,9 @@ public without sharing class HOT_UpdateChildRecordsService {
             }
             if (isInterpreterMethodChoice) {
                 workOrderLineItem.WorkTypeId = request.InterpretationMethod__c;
+            }
+            if (isOwnerChoice) {
+                workOrderLineItem.ServiceTerritoryId = request.ServiceTerritory__c;
             }
         }
 
@@ -477,10 +483,11 @@ public without sharing class HOT_UpdateChildRecordsService {
             if (isInterpreterMethodChoice) {
                 serviceAppointment.WorkTypeId = request.InterpretationMethod__c;
             }
-            if(isOwnerChoice) {
+            if (isOwnerChoice) {
                 serviceAppointment.OwnerId = request.OwnerId;
+                serviceAppointment.ServiceTerritoryId = request.ServiceTerritory__c;
             }
-            if(isDateChoice) {
+            if (isDateChoice) {
                 serviceAppointment.EarliestStartTime = request.StartTime__c;
                 serviceAppointment.DueDate = request.EndTime__c;
             }
@@ -526,5 +533,4 @@ public without sharing class HOT_UpdateChildRecordsService {
 
         return request;
     }
-
 }
