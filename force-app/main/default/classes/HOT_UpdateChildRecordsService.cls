@@ -29,6 +29,22 @@ public without sharing class HOT_UpdateChildRecordsService {
         List<String> saStatuses = new List<String>{ 'None', 'Released to Freelance', 'Scheduled', 'Dispatched' };
         HOT_UpdateChildRecordsService input = inputVariables[0];
         HOT_Request__c request = input.request;
+
+        // ---- Null-safe defaults for boolean flags (prevents NPE when Flow omits them) ----
+        input.isAccountChoice = (input.isAccountChoice == null) ? false : input.isAccountChoice;
+        input.isAddressChoice = (input.isAddressChoice == null) ? false : input.isAddressChoice;
+        input.isSubjectChoice = (input.isSubjectChoice == null) ? false : input.isSubjectChoice;
+        input.isDescriptionChoice = (input.isDescriptionChoice == null) ? false : input.isDescriptionChoice;
+        input.isScreenInterpreterChoice = (input.isScreenInterpreterChoice == null)
+            ? false
+            : input.isScreenInterpreterChoice;
+        input.isDispatcherChoice = (input.isDispatcherChoice == null) ? false : input.isDispatcherChoice;
+        input.isInterpreterMethodChoice = (input.isInterpreterMethodChoice == null)
+            ? false
+            : input.isInterpreterMethodChoice;
+        input.isOwnerChoice = (input.isOwnerChoice == null) ? false : input.isOwnerChoice;
+        input.isDateChoice = (input.isDateChoice == null) ? false : input.isDateChoice;
+
         List<String> errors = new List<String>();
         String error;
         String errorOutput;
