@@ -15,15 +15,19 @@
                     <c-hot_back-button></c-hot_back-button>
                 </div>
 
-                <!-- Conversation with -->
-                <div class="header-buttons">
-                    <div class="navds-div" tabindex="0" aria-label={threadType}>{threadType}</div>
+                <!-- Header -->
+                <div>
+                    <h1 class="header" role="heading" aria-level="1">{subject}</h1>
+                </div>
+                <div class="navds-div" tabindex="0" aria-label={threadType}>{threadType}</div>
 
-                    <c-button
-                        button-label="Vis personer i samtalen"
-                        type="button"
-                        onbuttonclick={handleShowParticipants}
-                    ></c-button>
+                <div class="header-buttons">
+                    <div class="link-button" onclick={goToDetails}>Vis oppdrag</div>
+
+                    <div class="link-button" onclick={handleShowParticipants}>Vis personer i samtalen</div>
+                    <template lwc:if={showScrollButton}>
+                        <div class="link-button" onclick={scrollToLatestMessage}>Til siste melding</div>
+                    </template>
                 </div>
 
                 <!-- Participants modal -->
@@ -55,33 +59,6 @@
                             </div>
                         </template>
                     </dialog>
-                </div>
-
-                <!-- Header -->
-                <div>
-                    <h1 class="header" role="heading" aria-level="1">{subject}</h1>
-                </div>
-
-                <!-- Show Service appointment button -->
-                <div class="show-service-assignment">
-                    <c-button
-                        button-label="Vis oppdrag"
-                        class="show-details-button"
-                        type="button"
-                        onbuttonclick={goToDetails}
-                        desktop-style="margin-right: 0.5rem;"
-                        mobile-style="margin-right: 0.5rem;"
-                    ></c-button>
-
-                    <template lwc:if={showScrollButton}>
-                        <c-button
-                            button-label="Til siste melding"
-                            button-styling="Primary"
-                            type="button"
-                            aria-label="Til bunnen"
-                            onbuttonclick={scrollToLatestMessage}
-                        ></c-button>
-                    </template>
                 </div>
 
                 <!-- Show Service appointment modal -->
@@ -298,15 +275,12 @@
                         </template>
                     </div>
                 </div>
-
-                <!-- Helptext -->
-                <template lwc:if={isHelpText}>
-                    <c-helptext class="helpText" text={helptextContent} hover-text={helptextHovertext}></c-helptext>
-                </template>
-
                 <div class="textarea-container">
                     <c-textarea
+                        helptext-content={helptextContent}
+                        label="Ny melding"
                         max-length={maxLength}
+                        error-text={textareaErrorText}
                         ongetvalueontextareachange={handleTextChange}
                         desktop-style="width: 100%; height: 100%;"
                         mobile-style=""
@@ -320,6 +294,7 @@
                         button-label="Send melding"
                         type="submit"
                         button-styling="primary"
+                        is-loading={buttonLoading}
                         desktop-style="width: 10rem; justify-content: center;"
                         mobile-style="width: 9rem; justify-content: center;"
                     ></c-button>

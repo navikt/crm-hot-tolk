@@ -196,7 +196,7 @@ input[type='reset'] {
     align-items: center;
     justify-content: center;
     padding: calc(0.75rem - 2px) 1rem;
-    border-radius: 5px;
+    border-radius: 8px;
     z-index: 1002;
 }
 .navds-body-short {
@@ -208,6 +208,12 @@ input[type='reset'] {
 .navds-button:hover,
 .navds-button:focus {
     border-color: #0067c5;
+}
+.navds-button {
+    -webkit-user-select: none;
+    -moz-user-select: none;
+    -ms-user-select: none;
+    user-select: none;
 }
 
 @media (max-width: 600px), (max-height: 600px) {

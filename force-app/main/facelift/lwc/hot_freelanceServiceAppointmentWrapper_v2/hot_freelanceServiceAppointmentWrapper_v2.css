@@ -34,7 +34,7 @@
     position: relative;
     width: 100%;
     font-size: 2rem;
-    text-align: center;
+    text-align: left;
     font-weight: 600;
     margin-left: 0%;
     padding-left: 0;
@@ -54,9 +54,7 @@
     align-items: center;
     gap: 0.5rem;
     cursor: pointer;
-    transition:
-        background-color 0.2s ease,
-        color 0.2s ease;
+    transition: background-color 0.2s ease, color 0.2s ease;
     border: 1.5px solid #b7c3d5;
     background-color: #e6f0ff;
     color: #00347d;
