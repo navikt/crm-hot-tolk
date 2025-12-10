@@ -17,7 +17,7 @@
         <value>News</value>
     </filters>
     <filters>
-        <field>IsPublished__c</field>
+        <field>IsActive__c</field>
         <operation>equals</operation>
         <value>1</value>
     </filters>
