@@ -1,4 +1,4 @@
-// @IsTest
+@IsTest
 private class HOT_AnnouncementControllerTest {
     //     @TestSetup
     //     private static void setup() {
