@@ -12,7 +12,7 @@ export default class Hot_threadListFilterButtons extends LightningElement {
             return {
                 ...btn,
                 ariaSelected: btn.value === active ? 'true' : 'false',
-                ariaControls: 'tabpanel-' + btn.value,
+                ariaControls: 'tab-' + btn.value,
                 ariaId: 'tab-' + btn.value,
                 ariaLabel: 'Vis samtaler ' + btn.label.toLowerCase()
             };
