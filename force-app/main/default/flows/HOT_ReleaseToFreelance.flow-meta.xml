@@ -1,10 +1,11 @@
-<?xml version="1.0" encoding="UTF-8" ?>
+<?xml version="1.0" encoding="UTF-8"?>
 <Flow xmlns="http://soap.sforce.com/2006/04/metadata">
+    <apiVersion>49.0</apiVersion>
     <assignments>
         <name>AssignFieldValues</name>
         <label>AssignFieldValues</label>
         <locationX>314</locationX>
-        <locationY>1430</locationY>
+        <locationY>1274</locationY>
         <assignmentItems>
             <assignToReference>CurrentServiceAppointment.HOT_DeadlineDate__c</assignToReference>
             <operator>Assign</operator>
@@ -34,7 +35,7 @@
         <name>Set_Deadline_Date_to_Start_Date</name>
         <label>Set Deadline Date to Start Date</label>
         <locationX>776</locationX>
-        <locationY>854</locationY>
+        <locationY>758</locationY>
         <assignmentItems>
             <assignToReference>deadlineDate_Old</assignToReference>
             <operator>Assign</operator>
@@ -50,7 +51,7 @@
         <name>Set_Freelance_Subject_to_Subject</name>
         <label>Set Freelance Subject to Subject</label>
         <locationX>776</locationX>
-        <locationY>518</locationY>
+        <locationY>458</locationY>
         <assignmentItems>
             <assignToReference>freelanceSubject_Old</assignToReference>
             <operator>Assign</operator>
@@ -66,7 +67,7 @@
         <name>Set_Old_Deadline_Date</name>
         <label>Set Old Deadline Date</label>
         <locationX>512</locationX>
-        <locationY>854</locationY>
+        <locationY>758</locationY>
         <assignmentItems>
             <assignToReference>deadlineDate_Old</assignToReference>
             <operator>Assign</operator>
@@ -82,7 +83,7 @@
         <name>Set_Old_Freelance_Subject</name>
         <label>Set Old Freelance Subject</label>
         <locationX>512</locationX>
-        <locationY>518</locationY>
+        <locationY>458</locationY>
         <assignmentItems>
             <assignToReference>freelanceSubject_Old</assignToReference>
             <operator>Assign</operator>
@@ -115,7 +116,7 @@
         <name>Check_Allowence_To_Release</name>
         <label>Check_Allowence_To_Release</label>
         <locationX>644</locationX>
-        <locationY>1070</locationY>
+        <locationY>950</locationY>
         <defaultConnector>
             <targetReference>Not_allowed_to_release</targetReference>
         </defaultConnector>
@@ -161,7 +162,7 @@
         <name>Check_Status</name>
         <label>Check Status</label>
         <locationX>446</locationX>
-        <locationY>1190</locationY>
+        <locationY>1058</locationY>
         <defaultConnector>
             <targetReference>AlreadyScheduled</targetReference>
         </defaultConnector>
@@ -193,7 +194,7 @@
         <name>checkIfFoundRecord</name>
         <label>checkIfFoundRecord</label>
         <locationX>347</locationX>
-        <locationY>278</locationY>
+        <locationY>242</locationY>
         <defaultConnector>
             <targetReference>Freelance_Subject_hasValue</targetReference>
         </defaultConnector>
@@ -215,7 +216,7 @@
         <name>Deadline_Date_has_value</name>
         <label>Deadline Date has value?</label>
         <locationX>644</locationX>
-        <locationY>734</locationY>
+        <locationY>650</locationY>
         <defaultConnector>
             <targetReference>Set_Deadline_Date_to_Start_Date</targetReference>
         </defaultConnector>
@@ -237,7 +238,7 @@
         <name>Freelance_Subject_hasValue</name>
         <label>Freelance Subject has Value?</label>
         <locationX>644</locationX>
-        <locationY>398</locationY>
+        <locationY>350</locationY>
         <defaultConnector>
             <targetReference>Set_Freelance_Subject_to_Subject</targetReference>
         </defaultConnector>
@@ -255,6 +256,7 @@
             <label>Yes</label>
         </rules>
     </decisions>
+    <environments>Default</environments>
     <interviewLabel>Release To Freelance {!$Flow.CurrentDateTime}</interviewLabel>
     <label>Release To Freelance</label>
     <processMetadataValues>
@@ -280,11 +282,12 @@
         <name>GetCurrentServiceAppointment</name>
         <label>GetCurrentServiceAppointment</label>
         <locationX>347</locationX>
-        <locationY>158</locationY>
+        <locationY>134</locationY>
         <assignNullValuesIfNoRecordsFound>true</assignNullValuesIfNoRecordsFound>
         <connector>
             <targetReference>checkIfFoundRecord</targetReference>
         </connector>
+        <filterLogic>and</filterLogic>
         <filters>
             <field>Id</field>
             <operator>EqualTo</operator>
@@ -311,7 +314,7 @@
         <name>UpdateServiceAppointment</name>
         <label>UpdateServiceAppointment</label>
         <locationX>314</locationX>
-        <locationY>1550</locationY>
+        <locationY>1382</locationY>
         <connector>
             <targetReference>SuccessScreen</targetReference>
         </connector>
@@ -321,7 +324,7 @@
         <name>AlreadyScheduled</name>
         <label>AlreadyScheduled</label>
         <locationX>578</locationX>
-        <locationY>1310</locationY>
+        <locationY>1166</locationY>
         <allowBack>false</allowBack>
         <allowFinish>true</allowFinish>
         <allowPause>false</allowPause>
@@ -337,7 +340,7 @@
         <name>Not_allowed_to_release</name>
         <label>Not allowed to release</label>
         <locationX>842</locationX>
-        <locationY>1190</locationY>
+        <locationY>1058</locationY>
         <allowBack>false</allowBack>
         <allowFinish>true</allowFinish>
         <allowPause>false</allowPause>
@@ -353,14 +356,13 @@
         <name>recordNOTfoundScreen</name>
         <label>recordNOTfoundScreen</label>
         <locationX>50</locationX>
-        <locationY>398</locationY>
+        <locationY>350</locationY>
         <allowBack>false</allowBack>
         <allowFinish>true</allowFinish>
         <allowPause>false</allowPause>
         <fields>
             <name>CloseWindowText</name>
-            <fieldText
-            >&lt;p&gt;&lt;span style=&quot;color: rgb(23, 43, 77); font-family: &amp;quot;Segoe UI&amp;quot;, sans-serif; font-size: 11pt;&quot;&gt;Oppdatert, lukk vinduet&lt;/span&gt;&lt;/p&gt;</fieldText>
+            <fieldText>&lt;p&gt;&lt;span style=&quot;color: rgb(23, 43, 77); font-family: &amp;quot;Segoe UI&amp;quot;, sans-serif; font-size: 11pt;&quot;&gt;Oppdatert, lukk vinduet&lt;/span&gt;&lt;/p&gt;</fieldText>
             <fieldType>DisplayText</fieldType>
         </fields>
         <showFooter>false</showFooter>
@@ -370,7 +372,7 @@
         <name>Sett_frist_for_pamelding</name>
         <label>Sett frist for påmelding</label>
         <locationX>314</locationX>
-        <locationY>1310</locationY>
+        <locationY>1166</locationY>
         <allowBack>true</allowBack>
         <allowFinish>true</allowFinish>
         <allowPause>true</allowPause>
@@ -379,8 +381,7 @@
         </connector>
         <fields>
             <name>InformationField</name>
-            <fieldText
-            >&lt;p&gt;&lt;b&gt;Følgende informasjon vil bli vist til frilanstolker.&lt;/b&gt;&lt;/p&gt;&lt;p&gt;{!CurrentServiceAppointment.HOT_Information__c}&lt;/p&gt;</fieldText>
+            <fieldText>&lt;p&gt;&lt;b&gt;Følgende informasjon vil bli vist til frilanstolker.&lt;/b&gt;&lt;/p&gt;&lt;p&gt;{!CurrentServiceAppointment.HOT_Information__c}&lt;/p&gt;</fieldText>
             <fieldType>DisplayText</fieldType>
         </fields>
         <fields>
@@ -391,6 +392,7 @@
             </defaultValue>
             <fieldText>Frist dato</fieldText>
             <fieldType>InputField</fieldType>
+            <inputsOnNextNavToAssocScrn>UseStoredValues</inputsOnNextNavToAssocScrn>
             <isRequired>true</isRequired>
         </fields>
         <fields>
@@ -401,8 +403,8 @@
             </defaultValue>
             <fieldText>Opplysninger (ingen sensitive)</fieldText>
             <fieldType>InputField</fieldType>
-            <helpText
-            >&lt;p&gt;Feltet skal benyttes til relevante opplysninger om oppdragets art, til bruk for frilanstolk når de skal vurdere sin interesse for oppdraget. Dette kan være f.eks. tolking fra engelsk, krav til antrekk, antall deltakere etc.&lt;/p&gt;</helpText>
+            <helpText>&lt;p&gt;Feltet skal benyttes til relevante opplysninger om oppdragets art, til bruk for frilanstolk når de skal vurdere sin interesse for oppdraget. Dette kan være f.eks. tolking fra engelsk, krav til antrekk, antall deltakere etc.&lt;/p&gt;</helpText>
+            <inputsOnNextNavToAssocScrn>UseStoredValues</inputsOnNextNavToAssocScrn>
             <isRequired>true</isRequired>
         </fields>
         <showFooter>true</showFooter>
@@ -412,7 +414,7 @@
         <name>SuccessScreen</name>
         <label>SuccessScreen</label>
         <locationX>314</locationX>
-        <locationY>1670</locationY>
+        <locationY>1490</locationY>
         <allowBack>false</allowBack>
         <allowFinish>true</allowFinish>
         <allowPause>false</allowPause>
@@ -420,6 +422,26 @@
             <name>Success</name>
             <fieldText>&lt;p&gt;Oppdraget ble frigitt til frilanstolker.&lt;/p&gt;</fieldText>
             <fieldType>DisplayText</fieldType>
+        </fields>
+        <fields>
+            <name>Navigate_To_Same_Page</name>
+            <extensionName>c:fcFlowRecordNavigator</extensionName>
+            <fieldType>ComponentInstance</fieldType>
+            <inputParameters>
+                <name>objectApiName</name>
+                <value>
+                    <stringValue>ServiceAppointment</stringValue>
+                </value>
+            </inputParameters>
+            <inputParameters>
+                <name>recordId</name>
+                <value>
+                    <elementReference>CurrentServiceAppointment.Id</elementReference>
+                </value>
+            </inputParameters>
+            <inputsOnNextNavToAssocScrn>UseStoredValues</inputsOnNextNavToAssocScrn>
+            <isRequired>true</isRequired>
+            <storeOutputAutomatically>true</storeOutputAutomatically>
         </fields>
         <showFooter>false</showFooter>
         <showHeader>false</showHeader>

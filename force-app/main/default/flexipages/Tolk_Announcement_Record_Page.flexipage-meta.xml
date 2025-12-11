@@ -189,6 +189,10 @@
         </itemInstances>
         <itemInstances>
             <fieldInstance>
+                <fieldInstanceProperties>
+                    <name>uiBehavior</name>
+                    <value>none</value>
+                </fieldInstanceProperties>
                 <fieldItem>Record.UrlLabel__c</fieldItem>
                 <identifier>RecordUrlLabel__cField</identifier>
             </fieldInstance>
@@ -266,7 +270,7 @@
         <name>main</name>
         <type>Region</type>
     </flexiPageRegions>
-    <masterLabel>HOT_Announcement_Record_Page</masterLabel>
+    <masterLabel>Tolk_Announcement_Record_Page</masterLabel>
     <sobjectType>HOT_Announcement__c</sobjectType>
     <template>
         <name>flexipage:recordHomeSimpleViewTemplate</name>

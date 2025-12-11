@@ -3,6 +3,7 @@
     <fullName>UrlLabel_must_be_filled_when_url</fullName>
     <active>true</active>
     <errorConditionFormula>AND(
+    $RecordType.Name = &quot;Tolk Ekstern&quot;,
     NOT(ISBLANK(Url__c)),
     ISBLANK(UrlLabel__c)
 )</errorConditionFormula>
