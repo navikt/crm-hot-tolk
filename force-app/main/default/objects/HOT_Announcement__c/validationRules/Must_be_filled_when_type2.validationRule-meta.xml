@@ -4,6 +4,7 @@
     <active>true</active>
     <description>Må være fult ut når typen er warning eller information</description>
     <errorConditionFormula>AND(
+    $RecordType.Name = &quot;Tolk Ekstern&quot;,
     OR(
         ISPICKVAL(Type__c, &quot;Warning&quot;),
         ISPICKVAL(Type__c, &quot;Information&quot;)

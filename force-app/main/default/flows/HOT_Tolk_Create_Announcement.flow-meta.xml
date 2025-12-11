@@ -76,6 +76,13 @@
                 <elementReference>Url_label</elementReference>
             </value>
         </assignmentItems>
+        <assignmentItems>
+            <assignToReference>newAnnouncement.RecordTypeId</assignToReference>
+            <operator>Assign</operator>
+            <value>
+                <elementReference>getRecordType.Id</elementReference>
+            </value>
+        </assignmentItems>
         <connector>
             <targetReference>Create_Announcement</targetReference>
         </connector>
@@ -93,7 +100,7 @@
             </value>
         </assignmentItems>
         <connector>
-            <targetReference>assignNewAnnouncementFields</targetReference>
+            <targetReference>getRecordType</targetReference>
         </connector>
     </assignments>
     <assignments>
@@ -109,7 +116,7 @@
             </value>
         </assignmentItems>
         <connector>
-            <targetReference>assignNewAnnouncementFields</targetReference>
+            <targetReference>getRecordType</targetReference>
         </connector>
     </assignments>
     <choices>
@@ -238,8 +245,8 @@
         <dataType>String</dataType>
         <expression>{!Velg_type_melding}</expression>
     </formulas>
-    <interviewLabel>HOT Announcement Create Screen Flow {!$Flow.CurrentDateTime}</interviewLabel>
-    <label>HOT Announcement Create Screen Flow</label>
+    <interviewLabel>HOT Tolk Create Announcement {!$Flow.CurrentDateTime}</interviewLabel>
+    <label>HOT Tolk Create Announcement</label>
     <processMetadataValues>
         <name>BuilderType</name>
         <value>
@@ -269,6 +276,27 @@
         </connector>
         <inputReference>newAnnouncement</inputReference>
     </recordCreates>
+    <recordLookups>
+        <name>getRecordType</name>
+        <label>getRecordType</label>
+        <locationX>0</locationX>
+        <locationY>0</locationY>
+        <assignNullValuesIfNoRecordsFound>false</assignNullValuesIfNoRecordsFound>
+        <connector>
+            <targetReference>assignNewAnnouncementFields</targetReference>
+        </connector>
+        <filterLogic>and</filterLogic>
+        <filters>
+            <field>Name</field>
+            <operator>EqualTo</operator>
+            <value>
+                <stringValue>Tolk Ekstern</stringValue>
+            </value>
+        </filters>
+        <getFirstRecordOnly>true</getFirstRecordOnly>
+        <object>RecordType</object>
+        <storeOutputAutomatically>true</storeOutputAutomatically>
+    </recordLookups>
     <screens>
         <name>Finish_Screen_Create</name>
         <label>Finish Screen Create</label>

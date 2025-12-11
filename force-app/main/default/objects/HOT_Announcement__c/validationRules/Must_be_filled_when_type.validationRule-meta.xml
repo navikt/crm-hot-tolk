@@ -2,8 +2,9 @@
 <ValidationRule xmlns="http://soap.sforce.com/2006/04/metadata">
     <fullName>Must_be_filled_when_type</fullName>
     <active>true</active>
-    <description>Må være fult ut når typen er warning eller information</description>
+    <description>Må være fult ut når record type er Tolk Ekstern og typen er warning eller information</description>
     <errorConditionFormula>AND(
+    $RecordType.Name = &quot;Tolk Ekstern&quot;,
     OR(
         ISPICKVAL(Type__c, &quot;Warning&quot;),
         ISPICKVAL(Type__c, &quot;Information&quot;)
