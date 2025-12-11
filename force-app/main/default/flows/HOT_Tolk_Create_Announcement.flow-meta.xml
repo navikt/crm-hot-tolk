@@ -245,8 +245,8 @@
         <dataType>String</dataType>
         <expression>{!Velg_type_melding}</expression>
     </formulas>
-    <interviewLabel>HOT Announcement Create Screen Flow {!$Flow.CurrentDateTime}</interviewLabel>
-    <label>HOT Announcement Create Screen Flow</label>
+    <interviewLabel>HOT Tolk Create Announcement {!$Flow.CurrentDateTime}</interviewLabel>
+    <label>HOT Tolk Create Announcement</label>
     <processMetadataValues>
         <name>BuilderType</name>
         <value>
@@ -554,7 +554,7 @@
             <targetReference>opprett_ny_melding</targetReference>
         </connector>
     </start>
-    <status>Draft</status>
+    <status>Active</status>
     <variables>
         <name>newAnnouncement</name>
         <dataType>SObject</dataType>
