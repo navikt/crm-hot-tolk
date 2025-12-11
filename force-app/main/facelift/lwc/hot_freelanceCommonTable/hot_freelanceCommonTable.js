@@ -47,12 +47,13 @@ export default class Hot_freelanceCommonTable extends LightningElement {
     get recordsToShow() {
         const records = [];
         this.recordMap = {};
-        let ariaLabelTheme = '';
+        const subjectCount = {};
 
         if (!this.records || !this.columns) return records;
 
         for (const record of this.records) {
             const fields = [];
+            let subjectForAria = '';
 
             for (const column of this.columns) {
                 const value = record?.[column.name];
@@ -80,12 +81,19 @@ export default class Hot_freelanceCommonTable extends LightningElement {
 
                 // Name of the theme aria label, this will be used for the checboxes
                 if (column.name === 'HOT_FreelanceSubject__c' && value) {
-                    ariaLabelTheme = value;
+                    subjectForAria = value;
                 }
 
                 fields.push(field);
             }
             const id = record.Id;
+
+            let ariaLabelTheme = '';
+            if (subjectForAria) {
+                subjectCount[subjectForAria] = (subjectCount[subjectForAria] || 0) + 1;
+                const partNumber = subjectCount[subjectForAria];
+                ariaLabelTheme = `Velg ${subjectForAria}, del ${partNumber} av serien`;
+            }
 
             // Store processed record and track checked state
             records.push({
@@ -102,7 +110,7 @@ export default class Hot_freelanceCommonTable extends LightningElement {
     }
 
     applyIconDataToField(value, field) {
-        const iconData = this.iconByValue[value];
+        const iconData = this.iconByValue && this.iconByValue[value];
         if (!iconData) return;
 
         field.icon = iconData.icon;
