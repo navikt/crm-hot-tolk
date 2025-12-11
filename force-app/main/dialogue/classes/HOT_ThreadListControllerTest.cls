@@ -150,7 +150,7 @@ public class HOT_ThreadListControllerTest {
         ServiceAppointment sa = HOT_TestDataFactory.createServiceAppointment(woli);
         sa.Subject = 'TEST';
         insert sa;
-
+        Test.startTest();
         HOT_InterestedResource__c ir = HOT_TestDataFactory.createInterestedResource(sa.Id, serviceResource.Id);
 
         insert ir;
@@ -167,6 +167,7 @@ public class HOT_ThreadListControllerTest {
         message.CRM_Thread__c = t.Id;
         message.CRM_Message_Text__c = 'Dette er en testmelding';
         insert message;
+        Test.stopTest();
 
         List<Thread__c> threadList = HOT_ThreadListController.getMyThreadsFreelance2();
 
