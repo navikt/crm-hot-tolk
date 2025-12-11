@@ -26,5 +26,10 @@
         <operation>equals</operation>
         <value>Bare tolkebruker</value>
     </filters>
+    <filters>
+        <field>RECORDTYPE</field>
+        <operation>equals</operation>
+        <value>HOT_Announcement__c.TolkEkstern</value>
+    </filters>
     <label>Alle aktive nyhetssaker tolkebruker</label>
 </ListView>
