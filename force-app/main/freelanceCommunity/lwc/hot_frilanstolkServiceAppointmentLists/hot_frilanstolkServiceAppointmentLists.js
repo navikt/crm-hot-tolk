@@ -98,7 +98,7 @@ export default class Hot_frilanstolkServiceAppointmentLists extends NavigationMi
         { name: 'open', label: 'Ledige oppdrag', selected: false },
         { name: 'interested', label: 'Påmeldte oppdrag', selected: false },
         { name: 'my', label: 'Mine oppdrag', selected: false },
-        { name: 'wageClaim', label: 'Ledig på lønn', selected: false },
+        // { name: 'wageClaim', label: 'Ledig på lønn', selected: false },
         { name: 'wanted', label: 'Oppdrag du er ønsket til', selected: false }
     ];
 
@@ -106,7 +106,7 @@ export default class Hot_frilanstolkServiceAppointmentLists extends NavigationMi
         open: false,
         interested: false,
         my: false,
-        wageClaim: false,
+        // wageClaim: false,
         wanted: false
     };
 

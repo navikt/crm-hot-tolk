@@ -13,7 +13,7 @@ export default class Hot_freelanceServiceAppointmentWrapper_v2 extends Navigatio
         { name: 'open', label: 'Ledige oppdrag' },
         { name: 'interested', label: 'Påmeldte oppdrag' },
         { name: 'my', label: 'Mine oppdrag' },
-        { name: 'wageClaim', label: 'Ledig på lønn' },
+        // { name: 'wageClaim', label: 'Ledig på lønn' },
         { name: 'wanted', label: 'Oppdrag du er ønsket til' }
     ];
 
@@ -115,9 +115,9 @@ export default class Hot_freelanceServiceAppointmentWrapper_v2 extends Navigatio
         return this.activeTab === 'my';
     }
 
-    get isWageClaimTab() {
-        return this.activeTab === 'wageClaim';
-    }
+    // get isWageClaimTab() {
+    //     return this.activeTab === 'wageClaim';
+    // }
 
     get isWantedTab() {
         return this.activeTab === 'wanted';
