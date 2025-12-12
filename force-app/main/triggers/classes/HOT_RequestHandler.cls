@@ -527,7 +527,7 @@ public without sharing class HOT_RequestHandler extends MyTriggers {
     public static void setCancelDate(List<HOT_Request__c> requests) {
         for (HOT_Request__c request : requests) {
             if (request.CanceledDate__c == null) {
-                request.CanceledDate__c = Datetime.now();
+                request.CanceledDate__c = Date.today();
             }
         }
     }
@@ -599,49 +599,53 @@ public without sharing class HOT_RequestHandler extends MyTriggers {
             request.IsNotifyUserOnOrder__c = true;
         }
     }
-
     public static void setMeetingStreet(List<HOT_Request__c> requests) {
-        for (HOT_Request__C request : requests) {
-            if (request.MeetingStreet__c == null && request.InterpretationStreet__c != null) {
-                request.MeetingStreet__c = request.InterpretationStreet__c;
-                request.MeetingPostalCity__c = request.InterpretationPostalCity__c;
-                request.MeetingPostalCode__c = request.InterpretationPostalCode__c;
+        for (HOT_Request__c request : requests) {
+            // 1) Kopier InterpretationAddress → MeetingAddress hvis MeetingAddress mangler
+            if (request.MeetingAddress__Street__s == null && request.InterpretationAddress__Street__s != null) {
+                request.MeetingAddress__Street__s = request.InterpretationAddress__Street__s;
+                request.MeetingAddress__City__s = request.InterpretationAddress__City__s;
+                request.MeetingAddress__PostalCode__s = request.InterpretationAddress__PostalCode__s;
+                request.MeetingAddress__CountryCode__s = request.InterpretationAddress__CountryCode__s;
             }
 
+            // 2) Kopier MeetingAddress → InterpretationAddress hvis InterpretationAddress mangler
             if (
-                request.InterpretationStreet__c == null &&
-                request.MeetingStreet__c != null &&
-                request.HOT_IsMeetingAddressSameAsHome__c == false
+                request.InterpretationAddress__Street__s == null &&
+                request.MeetingAddress__Street__s != null &&
+                !request.HOT_IsMeetingAddressSameAsHome__c
             ) {
-                request.InterpretationStreet__c = request.MeetingStreet__c;
-                request.InterpretationPostalCity__c = request.MeetingPostalCity__c;
-                request.InterpretationPostalCode__c = request.MeetingPostalCode__c;
+                request.InterpretationAddress__Street__s = request.MeetingAddress__Street__s;
+                request.InterpretationAddress__City__s = request.MeetingAddress__City__s;
+                request.InterpretationAddress__PostalCode__s = request.MeetingAddress__PostalCode__s;
+                request.InterpretationAddress__CountryCode__s = request.MeetingAddress__CountryCode__s;
             }
         }
     }
+
     @AuraEnabled
-    public static Boolean isErrorOnRequestCreate(String requestId) {
+    public static boolean isErrorOnRequestCreate(String requestId) {
+        Boolean isError = false;
         HOT_Request__c createdRequest = [
             SELECT Id, StartTime__c, EndTime__c, NumberOfWorkOrders__c
             FROM HOT_Request__c
             WHERE Id = :requestId
         ];
-
-        List<WorkOrder> createdWorkOrders = [SELECT Id FROM WorkOrder WHERE HOT_Request__c = :requestId];
-
-        Boolean isError = false;
-
         if (createdRequest.StartTime__c == null || createdRequest.EndTime__c == null) {
             isError = true;
-        } else if (createdRequest.NumberOfWorkOrders__c != createdWorkOrders.size()) {
-            isError = true;
+        } else {
+            List<WorkOrder> createdWorkOrders = [SELECT Id FROM WorkOrder WHERE HOT_Request__c = :requestId];
+            if (createdRequest.NumberOfWorkOrders__c != createdWorkOrders.size()) {
+                isError = true;
+                try {
+                    delete createdWorkOrders;
+                } catch (Exception e) {
+                    handleException(e);
+                }
+            }
         }
-
         if (isError) {
             try {
-                if (!createdWorkOrders.isEmpty()) {
-                    delete createdWorkOrders;
-                }
                 delete createdRequest;
             } catch (Exception e) {
                 handleException(e);
