@@ -9,11 +9,30 @@ public without sharing class HOT_EventController {
         List<ServiceAppointment> serviceAppointments,
         Map<Id, sObject> triggerOldMap
     ) {
-        Set<Id> serviceAppointmentIdsToDeleteEvents = new Set<Id>();
-        Set<Id> serviceAppointmentIdsToCreateEvents = new Set<Id>();
+        Map<Id, ServiceAppointment> saToUpdateMap = new Map<Id, ServiceAppointment>();
+        Set<Id> toDelete = new Set<Id>();
+        Set<Id> toCreate = new Set<Id>();
+
+        Set<Id> saIds = new Set<Id>();
+        for (ServiceAppointment sa : serviceAppointments) {
+            saIds.add(sa.Id);
+        }
+
+        //hent eksisterende events først
+        Map<Id, Event> existingEvents = new Map<Id, Event>();
+        for (Event ev : [
+            SELECT Id, WhatId, Location, StartDateTime, EndDateTime, Subject
+            FROM Event
+            WHERE WhatId IN :saIds
+        ]) {
+            existingEvents.put(ev.WhatId, ev);
+        }
+
         for (ServiceAppointment serviceAppointment : serviceAppointments) {
             ServiceAppointment oldServiceAppointment = (ServiceAppointment) triggerOldMap.get(serviceAppointment.Id);
-            //Når ny tolk er tildelt eller om tolk er endret
+            Boolean eventExists = existingEvents.containsKey(serviceAppointment.Id);
+
+            //Når ny tolk er tildelt eller om tolk er endret. skal slette og opprette nytt event
             if (
                 (serviceAppointment.HOT_AssignedResourceId__c != null &&
                 oldServiceAppointment.Status != serviceAppointment.Status &&
@@ -23,12 +42,15 @@ public without sharing class HOT_EventController {
                 serviceAppointment.HOT_AssignedResourceId__c != oldServiceAppointment.HOT_AssignedResourceId__c &&
                 serviceAppointment.Status == 'Dispatched')
             ) {
-                serviceAppointmentIdsToDeleteEvents.add(serviceAppointment.Id);
+                if (eventExists) {
+                    toDelete.add(serviceAppointment.Id);
+                }
                 if (serviceAppointment.HOT_IsEmployedInterpreter__c) {
-                    serviceAppointmentIdsToCreateEvents.add(serviceAppointment.Id);
+                    toCreate.add(serviceAppointment.Id);
                 }
             }
-            //Når tolk tas av
+
+            //Når tolk tas av. skal slette event
             if (
                 ((oldServiceAppointment.Status == 'Completed' ||
                 oldServiceAppointment.Status == 'Dispatched' ||
@@ -39,11 +61,13 @@ public without sharing class HOT_EventController {
                 (oldServiceAppointment.HOT_AssignedResourceId__c != null &&
                 serviceAppointment.HOT_AssignedResourceId__c == null)
             ) {
-                serviceAppointmentIdsToDeleteEvents.add(serviceAppointment.Id);
+                if (eventExists) {
+                    toDelete.add(serviceAppointment.Id);
+                }
             }
 
             if (serviceAppointment.HOT_AssignedResourceId__c != null && serviceAppointment.Status == 'Dispatched') {
-                //Når tidspunkt eller adresse endres
+                //Når tidspunkt eller adresse endres. skal oppdatere event.
                 if (
                     ((serviceAppointment.EarliestStartTime != oldServiceAppointment.EarliestStartTime ||
                     serviceAppointment.DueDate != oldServiceAppointment.DueDate) &&
@@ -52,42 +76,62 @@ public without sharing class HOT_EventController {
                     (serviceAppointment.HOT_AddressFormated__c != oldServiceAppointment.HOT_AddressFormated__c &&
                     serviceAppointment.SchedStartTime >= Date.today())
                 ) {
-                    serviceAppointmentIdsToDeleteEvents.add(serviceAppointment.Id);
                     if (serviceAppointment.HOT_IsEmployedInterpreter__c) {
-                        serviceAppointmentIdsToCreateEvents.add(serviceAppointment.Id);
+                        if (eventExists) {
+                            saToUpdateMap.put(serviceAppointment.Id, serviceAppointment);
+                        } else {
+                            toCreate.add(serviceAppointment.Id);
+                        }
                     }
                 }
             }
-            //Når oppdraget er ferdig og faktisk start og slutt endres
+
+            //Når oppdraget er ferdig og faktisk start og slutt endres. skal oppdatere event
             if (
                 (serviceAppointment.HOT_AssignedResourceId__c == oldServiceAppointment.HOT_AssignedResourceId__c) &&
                 (serviceAppointment.ActualStartTime != oldServiceAppointment.ActualStartTime ||
                 serviceAppointment.ActualEndTime != oldServiceAppointment.ActualEndTime)
             ) {
-                serviceAppointmentIdsToDeleteEvents.add(serviceAppointment.Id);
                 if (serviceAppointment.HOT_IsEmployedInterpreter__c) {
-                    serviceAppointmentIdsToCreateEvents.add(serviceAppointment.Id);
+                    if (eventExists) {
+                        saToUpdateMap.put(serviceAppointment.Id, serviceAppointment);
+                    } else {
+                        toCreate.add(serviceAppointment.Id);
+                    }
                 }
             }
         }
-
-        if (!serviceAppointmentIdsToDeleteEvents.isEmpty()) {
-            deleteExistingEvent(serviceAppointmentIdsToDeleteEvents);
+        if (!saToUpdateMap.isEmpty()) {
+            updateExistingEvents(existingEvents, saToUpdateMap);
         }
-        if (!serviceAppointmentIdsToCreateEvents.isEmpty()) {
-            createNewEvent(serviceAppointmentIdsToCreateEvents);
+
+        if (!toDelete.isEmpty()) {
+            deleteExistingEvent(existingEvents, toDelete);
+        }
+        if (!toCreate.isEmpty()) {
+            createNewEvent(toCreate);
         }
     }
-    public static void deleteExistingEvent(Set<Id> serviceAppointmentsIds) {
-        if (!serviceAppointmentsIds.isEmpty()) {
-            List<Event> eventsToDelete = [SELECT Id FROM Event WHERE WhatId IN :serviceAppointmentsIds];
+
+    public static void deleteExistingEvent(Map<Id, Event> existingEvents, Set<Id> saIdsToDelete) {
+        if (!saIdsToDelete.isEmpty()) {
             try {
-                delete eventsToDelete;
+                List<Event> eventsToDelete = new List<Event>();
+                for (Id saId : saIdsToDelete) {
+                    Event ev = existingEvents.get(saId);
+                    if (ev != null) {
+                        eventsToDelete.add(ev);
+                    }
+                }
+                if (!eventsToDelete.isEmpty()) {
+                    delete eventsToDelete;
+                }
             } catch (Exception e) {
                 handleException(e);
             }
         }
     }
+
     public static void createNewEvent(Set<Id> serviceAppointmentsIds) {
         String hotEventRecordTypeId = Event.sObjectType.getDescribe()
             .getRecordTypeInfosByDeveloperName()
@@ -126,9 +170,34 @@ public without sharing class HOT_EventController {
             newEvent.ReminderDateTime = newEvent.StartDateTime.addHours(-1);
             createdEvents.add(newEvent);
         }
-        if (createdEvents.size() != null) {
+        if (!createdEvents.isEmpty()) {
             try {
                 insert createdEvents;
+            } catch (Exception e) {
+                handleException(e);
+            }
+        }
+    }
+    public static void updateExistingEvents(Map<Id, Event> existingEvents, Map<Id, ServiceAppointment> updatedSA) {
+        List<Event> eventsToUpdate = new List<Event>();
+
+        for (Id saId : updatedSA.keySet()) {
+            Event ev = existingEvents.get(saId);
+            if (ev == null)
+                continue;
+
+            ServiceAppointment sa = updatedSA.get(saId);
+
+            ev.Location = sa.HOT_AddressFormated__c;
+            ev.StartDateTime = sa.ActualStartTime != null ? sa.ActualStartTime : sa.EarliestStartTime;
+            ev.EndDateTime = sa.ActualEndTime != null ? sa.ActualEndTime : sa.DueDate;
+
+            eventsToUpdate.add(ev);
+        }
+
+        if (!eventsToUpdate.isEmpty()) {
+            try {
+                update eventsToUpdate;
             } catch (Exception e) {
                 handleException(e);
             }

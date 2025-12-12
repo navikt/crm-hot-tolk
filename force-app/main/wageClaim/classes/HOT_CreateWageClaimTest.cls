@@ -33,9 +33,9 @@ private class HOT_CreateWageClaimTest {
 
     @IsTest
     static void createWageClaimTest_saStatusNone() {
+        Test.startTest();
         AssignedResource assignedResource = [SELECT Id, ServiceAppointmentId FROM AssignedResource];
 
-        Test.startTest();
         update new ServiceAppointment(Id = assignedResource.ServiceAppointmentId, Status = 'None');
         Test.stopTest();
 
@@ -44,9 +44,9 @@ private class HOT_CreateWageClaimTest {
     }
     @IsTest
     static void createWageClaimTest_saStatusCanceled() {
+        Test.startTest();
         AssignedResource assignedResource = [SELECT Id, ServiceAppointmentId FROM AssignedResource];
 
-        Test.startTest();
         update new ServiceAppointment(Id = assignedResource.ServiceAppointmentId, Status = 'Canceled');
         Test.stopTest();
 
@@ -72,9 +72,10 @@ private class HOT_CreateWageClaimTest {
 
     @IsTest
     static void createWageClaimTest_arDeleted() {
+        Test.startTest();
+
         AssignedResource assignedResource = [SELECT Id, ServiceAppointmentId FROM AssignedResource];
 
-        Test.startTest();
         delete assignedResource;
         Test.stopTest();
 
@@ -105,9 +106,9 @@ private class HOT_CreateWageClaimTest {
 
     @IsTest
     static void createWageClaimTest_negative_Completed() {
+        Test.startTest();
         AssignedResource assignedResource = [SELECT Id, ServiceAppointmentId FROM AssignedResource];
 
-        Test.startTest();
         update new ServiceAppointment(Id = assignedResource.ServiceAppointmentId, Status = 'Completed');
         Test.stopTest();
 
@@ -129,8 +130,8 @@ private class HOT_CreateWageClaimTest {
     }
 
     private static Integer testTimeChange(Integer startOffsetInMinutes, Integer endOffsetInMinutes) {
-        ServiceAppointment serviceAppointment = [SELECT Id, SchedStartTime, SchedEndTime FROM ServiceAppointment];
         Test.startTest();
+        ServiceAppointment serviceAppointment = [SELECT Id, SchedStartTime, SchedEndTime FROM ServiceAppointment];
         serviceAppointment.SchedStartTime = serviceAppointment.SchedStartTime.addMinutes(startOffsetInMinutes);
         serviceAppointment.SchedEndTime = serviceAppointment.SchedEndTime.addMinutes(endOffsetInMinutes);
         update serviceAppointment;

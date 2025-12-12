@@ -393,7 +393,7 @@ private class HOT_ServiceAppointmentHandlerTest {
             serviceResource.Id
         );
         insert assignedResource;
-
+        Test.startTest();
         Profile profile = [SELECT Id FROM Profile WHERE Name = 'Standard User' OR Name = 'Standardbruker' LIMIT 1];
 
         User user = HOT_TestDataFactory.createUser('user2', profile);
@@ -408,7 +408,6 @@ private class HOT_ServiceAppointmentHandlerTest {
         ];
         assignedResource.ServiceResourceId = resource2.Id;
 
-        Test.startTest();
         update assignedResource;
         Test.stopTest();
 
