@@ -5,11 +5,11 @@
         <enabled>true</enabled>
     </classAccesses>
     <classAccesses>
-        <apexClass>HOT_CreateWorkOrderService</apexClass>
+        <apexClass>HOT_CheckPermissions</apexClass>
         <enabled>true</enabled>
     </classAccesses>
     <classAccesses>
-        <apexClass>HOT_DuplicateHandler</apexClass>
+        <apexClass>HOT_CreateWorkOrderService</apexClass>
         <enabled>true</enabled>
     </classAccesses>
     <classAccesses>
@@ -481,6 +481,11 @@
     <fieldPermissions>
         <editable>true</editable>
         <field>HOT_Request__c.OrganizationNumber__c</field>
+        <readable>true</readable>
+    </fieldPermissions>
+    <fieldPermissions>
+        <editable>true</editable>
+        <field>HOT_Request__c.Owner_List__c</field>
         <readable>true</readable>
     </fieldPermissions>
     <fieldPermissions>
