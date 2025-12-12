@@ -1,11 +1,11 @@
-<?xml version="1.0" encoding="UTF-8" ?>
+<?xml version="1.0" encoding="UTF-8"?>
 <CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
     <fullName>IsNotNotifyAccount__c</fullName>
     <defaultValue>false</defaultValue>
     <deprecated>false</deprecated>
     <externalId>false</externalId>
-    <inlineHelpText
-    >Om det er huket av her, er bestillingen skult for bruker. Bruker får heller ingen varsel om bestillingen.</inlineHelpText>
+    <inlineHelpText>Om det er huket av her, er bestillingen skjult for bruker. Bruker får heller
+        ingen varsel om bestillingen.</inlineHelpText>
     <label>Not Notify Account?</label>
     <trackHistory>false</trackHistory>
     <trackTrending>false</trackTrending>
