@@ -29,5 +29,10 @@
         <operation>equals</operation>
         <value>Information,Warning</value>
     </filters>
+    <filters>
+        <field>RECORDTYPE</field>
+        <operation>equals</operation>
+        <value>HOT_Announcement__c.TolkEkstern</value>
+    </filters>
     <label>Nordland</label>
 </ListView>

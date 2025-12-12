@@ -66,6 +66,10 @@
         <object>HOT_Announcement__c</object>
         <viewAllRecords>true</viewAllRecords>
     </objectPermissions>
+    <recordTypeVisibilities>
+        <recordType>HOT_Announcement__c.TolkEkstern</recordType>
+        <visible>true</visible>
+    </recordTypeVisibilities>
     <tabSettings>
         <tab>HOT_Announcement__c</tab>
         <visibility>Visible</visibility>
