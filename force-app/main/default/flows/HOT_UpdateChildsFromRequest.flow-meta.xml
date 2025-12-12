@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="UTF-8" ?>
+<?xml version="1.0" encoding="UTF-8"?>
 <Flow xmlns="http://soap.sforce.com/2006/04/metadata">
     <actionCalls>
         <name>UpdateChildRecords</name>
@@ -58,9 +58,8 @@
         </inputParameters>
         <nameSegment>HOT_UpdateChildRecordsService</nameSegment>
         <storeOutputAutomatically>true</storeOutputAutomatically>
-        <versionSegment>1</versionSegment>
     </actionCalls>
-    <apiVersion>52.0</apiVersion>
+    <apiVersion>54.0</apiVersion>
     <assignments>
         <name>Store_Account_Value</name>
         <label>Store Account Value</label>
@@ -392,8 +391,7 @@
         <allowPause>false</allowPause>
         <fields>
             <name>cannotUpdateText</name>
-            <fieldText
-            >&lt;p&gt;Denne funksjonaliteten kan IKKE benyttes når forespørselen har status Avlyst eller Annullert.&lt;/p&gt;</fieldText>
+            <fieldText>&lt;p&gt;Denne funksjonaliteten kan IKKE benyttes når forespørselen har status Avlyst eller Annullert.&lt;/p&gt;</fieldText>
             <fieldType>DisplayText</fieldType>
         </fields>
         <showFooter>true</showFooter>
@@ -449,19 +447,7 @@
                     <fieldType>ObjectProvided</fieldType>
                     <inputsOnNextNavToAssocScrn>UseStoredValues</inputsOnNextNavToAssocScrn>
                     <isRequired>false</isRequired>
-                    <objectFieldReference>getRequest.MeetingStreet__c</objectFieldReference>
-                </fields>
-                <fields>
-                    <fieldType>ObjectProvided</fieldType>
-                    <inputsOnNextNavToAssocScrn>UseStoredValues</inputsOnNextNavToAssocScrn>
-                    <isRequired>false</isRequired>
-                    <objectFieldReference>getRequest.MeetingPostalCode__c</objectFieldReference>
-                </fields>
-                <fields>
-                    <fieldType>ObjectProvided</fieldType>
-                    <inputsOnNextNavToAssocScrn>UseStoredValues</inputsOnNextNavToAssocScrn>
-                    <isRequired>false</isRequired>
-                    <objectFieldReference>getRequest.MeetingPostalCity__c</objectFieldReference>
+                    <objectFieldReference>getRequest.MeetingAddress__c</objectFieldReference>
                 </fields>
                 <inputParameters>
                     <name>width</name>
@@ -478,19 +464,7 @@
                     <fieldType>ObjectProvided</fieldType>
                     <inputsOnNextNavToAssocScrn>UseStoredValues</inputsOnNextNavToAssocScrn>
                     <isRequired>false</isRequired>
-                    <objectFieldReference>getRequest.InterpretationStreet__c</objectFieldReference>
-                </fields>
-                <fields>
-                    <fieldType>ObjectProvided</fieldType>
-                    <inputsOnNextNavToAssocScrn>UseStoredValues</inputsOnNextNavToAssocScrn>
-                    <isRequired>false</isRequired>
-                    <objectFieldReference>getRequest.InterpretationPostalCode__c</objectFieldReference>
-                </fields>
-                <fields>
-                    <fieldType>ObjectProvided</fieldType>
-                    <inputsOnNextNavToAssocScrn>UseStoredValues</inputsOnNextNavToAssocScrn>
-                    <isRequired>false</isRequired>
-                    <objectFieldReference>getRequest.InterpretationPostalCity__c</objectFieldReference>
+                    <objectFieldReference>getRequest.InterpretationAddress__c</objectFieldReference>
                 </fields>
                 <inputParameters>
                     <name>width</name>
