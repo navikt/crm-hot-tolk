@@ -142,7 +142,6 @@ public without sharing class HOT_EventController {
                 Id,
                 AppointmentNumber,
                 WorkType.Name,
-                HOT_WorkTypeName__c,
                 HOT_AddressFormated__c,
                 EarliestStartTime,
                 ActualStartTime,
@@ -158,7 +157,7 @@ public without sharing class HOT_EventController {
             newEvent.WhatId = sa.Id;
             newEvent.OwnerId = sa.HOT_AssignedResourceId__c;
             newEvent.RecordTypeId = hotEventRecordTypeId;
-            newEvent.Subject = sa.AppointmentNumber + ': ' + sa.HOT_WorkTypeName__c;
+            newEvent.Subject = sa.AppointmentNumber + ': ' + sa.WorkType.Name;
             newEvent.Location = sa.HOT_AddressFormated__c;
             newEvent.StartDateTime = sa.ActualStartTime != null ? sa.ActualStartTime : sa.EarliestStartTime;
             newEvent.EndDateTime = sa.ActualEndTime != null ? sa.ActualEndTime : sa.DueDate;
