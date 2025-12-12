@@ -599,22 +599,30 @@ public without sharing class HOT_RequestHandler extends MyTriggers {
             request.IsNotifyUserOnOrder__c = true;
         }
     }
-
     public static void setMeetingStreet(List<HOT_Request__c> requests) {
-        for (HOT_Request__C request : requests) {
-            if (request.MeetingStreet__c == null && request.InterpretationStreet__c != null) {
-                request.MeetingStreet__c = request.InterpretationStreet__c;
-                request.MeetingPostalCity__c = request.InterpretationPostalCity__c;
-                request.MeetingPostalCode__c = request.InterpretationPostalCode__c;
+        for (HOT_Request__c request : requests) {
+            // 1) Kopier InterpretationAddress → MeetingAddress hvis MeetingAddress mangler
+            if (request.MeetingAddress__Street__s == null && request.InterpretationAddress__Street__s != null) {
+                request.MeetingAddress__Street__s = request.InterpretationAddress__Street__s;
+                request.MeetingAddress__City__s = request.InterpretationAddress__City__s;
+                request.MeetingAddress__PostalCode__s = request.InterpretationAddress__PostalCode__s;
+                request.MeetingAddress__CountryCode__s = request.InterpretationAddress__CountryCode__s;
             }
 
-            if (request.InterpretationStreet__c == null && request.MeetingStreet__c != null && request.HOT_IsMeetingAddressSameAsHome__c == false) {
-                request.InterpretationStreet__c = request.MeetingStreet__c;
-                request.InterpretationPostalCity__c = request.MeetingPostalCity__c;
-                request.InterpretationPostalCode__c = request.MeetingPostalCode__c;
+            // 2) Kopier MeetingAddress → InterpretationAddress hvis InterpretationAddress mangler
+            if (
+                request.InterpretationAddress__Street__s == null &&
+                request.MeetingAddress__Street__s != null &&
+                !request.HOT_IsMeetingAddressSameAsHome__c
+            ) {
+                request.InterpretationAddress__Street__s = request.MeetingAddress__Street__s;
+                request.InterpretationAddress__City__s = request.MeetingAddress__City__s;
+                request.InterpretationAddress__PostalCode__s = request.MeetingAddress__PostalCode__s;
+                request.InterpretationAddress__CountryCode__s = request.MeetingAddress__CountryCode__s;
             }
         }
     }
+
     @AuraEnabled
     public static boolean isErrorOnRequestCreate(String requestId) {
         Boolean isError = false;

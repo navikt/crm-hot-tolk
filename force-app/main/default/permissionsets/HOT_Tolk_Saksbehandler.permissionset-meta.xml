@@ -197,6 +197,11 @@
     </fieldPermissions>
     <fieldPermissions>
         <editable>false</editable>
+        <field>HOT_Request__c.InterpretationAddress__c</field>
+        <readable>true</readable>
+    </fieldPermissions>
+    <fieldPermissions>
+        <editable>false</editable>
         <field>HOT_Request__c.InterpretationMethodSecondary__c</field>
         <readable>true</readable>
     </fieldPermissions>
@@ -253,6 +258,11 @@
     <fieldPermissions>
         <editable>false</editable>
         <field>HOT_Request__c.IsSerieoppdrag__c</field>
+        <readable>true</readable>
+    </fieldPermissions>
+    <fieldPermissions>
+        <editable>false</editable>
+        <field>HOT_Request__c.MeetingAddress__c</field>
         <readable>true</readable>
     </fieldPermissions>
     <fieldPermissions>
@@ -542,12 +552,12 @@
     </fieldPermissions>
     <fieldPermissions>
         <editable>false</editable>
-        <field>ServiceAppointment.HOT_CanceledDaysBefore__c</field>
+        <field>ServiceAppointment.HOT_CanceledByInterpreter__c</field>
         <readable>true</readable>
     </fieldPermissions>
     <fieldPermissions>
         <editable>false</editable>
-        <field>ServiceAppointment.HOT_CanceledByInterpreter__c</field>
+        <field>ServiceAppointment.HOT_CanceledDaysBefore__c</field>
         <readable>true</readable>
     </fieldPermissions>
     <fieldPermissions>
@@ -583,6 +593,11 @@
     <fieldPermissions>
         <editable>false</editable>
         <field>ServiceAppointment.HOT_HapticCommunication__c</field>
+        <readable>true</readable>
+    </fieldPermissions>
+    <fieldPermissions>
+        <editable>false</editable>
+        <field>ServiceAppointment.HOT_InterpretationAddress__c</field>
         <readable>true</readable>
     </fieldPermissions>
     <fieldPermissions>
@@ -797,6 +812,11 @@
     </fieldPermissions>
     <fieldPermissions>
         <editable>false</editable>
+        <field>WorkOrder.HOT_InterpretationAddress__c</field>
+        <readable>true</readable>
+    </fieldPermissions>
+    <fieldPermissions>
+        <editable>false</editable>
         <field>WorkOrder.HOT_InterpretationPostalCity__c</field>
         <readable>true</readable>
     </fieldPermissions>
@@ -858,6 +878,11 @@
     <fieldPermissions>
         <editable>false</editable>
         <field>WorkOrderLineItem.Description</field>
+        <readable>true</readable>
+    </fieldPermissions>
+    <fieldPermissions>
+        <editable>false</editable>
+        <field>WorkOrderLineItem.HOT_InterpretationAddress__c</field>
         <readable>true</readable>
     </fieldPermissions>
     <fieldPermissions>

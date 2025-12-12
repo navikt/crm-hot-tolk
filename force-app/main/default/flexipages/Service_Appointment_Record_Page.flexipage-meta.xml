@@ -578,28 +578,8 @@
                     <name>uiBehavior</name>
                     <value>none</value>
                 </fieldInstanceProperties>
-                <fieldItem>Record.HOT_InterpretationStreet__c</fieldItem>
-                <identifier>RecordHOT_InterpretationStreet_cField</identifier>
-            </fieldInstance>
-        </itemInstances>
-        <itemInstances>
-            <fieldInstance>
-                <fieldInstanceProperties>
-                    <name>uiBehavior</name>
-                    <value>none</value>
-                </fieldInstanceProperties>
-                <fieldItem>Record.HOT_InterpretationPostalCode__c</fieldItem>
-                <identifier>RecordHOT_InterpretationPostalCode_cField</identifier>
-            </fieldInstance>
-        </itemInstances>
-        <itemInstances>
-            <fieldInstance>
-                <fieldInstanceProperties>
-                    <name>uiBehavior</name>
-                    <value>none</value>
-                </fieldInstanceProperties>
-                <fieldItem>Record.HOT_InterpretationPostalCity__c</fieldItem>
-                <identifier>RecordHOT_InterpretationPostalCity_cField</identifier>
+                <fieldItem>Record.HOT_InterpretationAddress__c</fieldItem>
+                <identifier>RecordHOT_InterpretationAddress_cField</identifier>
             </fieldInstance>
         </itemInstances>
         <name>Facet-adc23aab-2d65-4072-aa28-2be8b9fc6271</name>
