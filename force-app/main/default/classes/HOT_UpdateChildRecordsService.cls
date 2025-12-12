@@ -44,9 +44,7 @@ public without sharing class HOT_UpdateChildRecordsService {
                     Status,
                     AccountId,
                     ContactId,
-                    HOT_InterpretationStreet__c,
-                    HOT_InterpretationPostalCode__c,
-                    HOT_InterpretationPostalCity__c,
+                    HOT_InterpretationAddress__c,
                     Street,
                     PostalCode,
                     City,
@@ -61,9 +59,7 @@ public without sharing class HOT_UpdateChildRecordsService {
                 SELECT
                     Id,
                     Status,
-                    HOT_InterpretationPostalStreet__c,
-                    HOT_InterpretationPostalCode__c,
-                    HOT_InterpretationPostalCity__c,
+                    HOT_InterpretationAddress__c,
                     WorkTypeId,
                     Street,
                     PostalCode,
@@ -79,9 +75,7 @@ public without sharing class HOT_UpdateChildRecordsService {
                 SELECT
                     Id,
                     Status,
-                    HOT_InterpretationStreet__c,
-                    HOT_InterpretationPostalCode__c,
-                    HOT_InterpretationPostalCity__c,
+                    HOT_InterpretationAddress__c,
                     Street,
                     PostalCode,
                     City,
@@ -101,9 +95,7 @@ public without sharing class HOT_UpdateChildRecordsService {
                 SELECT
                     Id,
                     Status,
-                    HOT_InterpretationPostalStreet__c,
-                    HOT_InterpretationPostalCode__c,
-                    HOT_InterpretationPostalCity__c,
+                    HOT_InterpretationAddress__c,
                     WorkTypeId,
                     Street,
                     PostalCode,
@@ -272,12 +264,13 @@ public without sharing class HOT_UpdateChildRecordsService {
             requestToUpdate.UserName__c = request.UserName__c;
         }
         if (isAddressChoice) {
-            requestToUpdate.InterpretationStreet__c = request.InterpretationStreet__c;
-            requestToUpdate.InterpretationPostalCode__c = request.InterpretationPostalCode__c;
-            requestToUpdate.InterpretationPostalCity__c = request.InterpretationPostalCity__c;
-            requestToUpdate.MeetingStreet__c = request.MeetingStreet__c;
-            requestToUpdate.MeetingPostalCode__c = request.MeetingPostalCode__c;
-            requestToUpdate.MeetingPostalCity__c = request.MeetingPostalCity__c;
+            requestToUpdate.InterpretationAddress__Street__s = request.InterpretationAddress__Street__s;
+            requestToUpdate.InterpretationAddress__PostalCode__s = request.InterpretationAddress__PostalCode__s;
+            requestToUpdate.InterpretationAddress__City__s = request.InterpretationAddress__City__s;
+
+            requestToUpdate.MeetingAddress__Street__s = request.MeetingAddress__Street__s;
+            requestToUpdate.MeetingAddress__PostalCode__s = request.MeetingAddress__PostalCode__s;
+            requestToUpdate.MeetingAddress__City__s = request.MeetingAddress__City__s;
         }
         if (isSubjectChoice) {
             requestToUpdate.Subject__c = request.Subject__c;
@@ -322,12 +315,12 @@ public without sharing class HOT_UpdateChildRecordsService {
                 workOrder.ContactId = request.HOT_PersonContactId__c;
             }
             if (isAddressChoice) {
-                workOrder.HOT_InterpretationStreet__c = request.InterpretationStreet__c;
-                workOrder.HOT_InterpretationPostalCode__c = request.InterpretationPostalCode__c;
-                workOrder.HOT_InterpretationPostalCity__c = request.InterpretationPostalCity__c;
-                workOrder.Street = request.MeetingStreet__c;
-                workOrder.PostalCode = request.MeetingPostalCode__c;
-                workOrder.City = request.MeetingPostalCity__c;
+                workOrder.HOT_InterpretationAddress__Street__s = request.InterpretationAddress__Street__s;
+                workOrder.HOT_InterpretationAddress__PostalCode__s = request.InterpretationAddress__PostalCode__s;
+                workOrder.HOT_InterpretationAddress__City__s = request.InterpretationAddress__City__s;
+                workOrder.Street = request.MeetingAddress__Street__s;
+                workOrder.PostalCode = request.MeetingAddress__PostalCode__s;
+                workOrder.City = request.MeetingAddress__City__s;
             }
             if (isSubjectChoice) {
                 workOrder.Subject = request.Subject__c;
@@ -361,12 +354,13 @@ public without sharing class HOT_UpdateChildRecordsService {
         String error;
         for (WorkOrderLineItem workOrderLineItem : workOrderLineItems) {
             if (isAddressChoice) {
-                workOrderLineItem.HOT_InterpretationPostalStreet__c = request.InterpretationStreet__c;
-                workOrderLineItem.HOT_InterpretationPostalCode__c = request.InterpretationPostalCode__c;
-                workOrderLineItem.HOT_InterpretationPostalCity__c = request.InterpretationPostalCity__c;
-                workOrderLineItem.Street = request.MeetingStreet__c;
-                workOrderLineItem.PostalCode = request.MeetingPostalCode__c;
-                workOrderLineItem.City = request.MeetingPostalCity__c;
+                workOrderLineItem.HOT_InterpretationAddress__Street__s = request.InterpretationAddress__Street__s;
+                workOrderLineItem.HOT_InterpretationAddress__PostalCode__s = request.InterpretationAddress__PostalCode__s;
+                workOrderLineItem.HOT_InterpretationAddress__City__s = request.InterpretationAddress__City__s;
+                workOrderLineItem.HOT_InterpretationAddress__CountryCode__s = request.InterpretationAddress__CountryCode__s;
+                workOrderLineItem.Street = request.MeetingAddress__Street__s;
+                workOrderLineItem.PostalCode = request.MeetingAddress__PostalCode__s;
+                workOrderLineItem.City = request.MeetingAddress__City__s;
             }
             if (isSubjectChoice) {
                 workOrderLineItem.Subject = request.Subject__c;
@@ -408,12 +402,13 @@ public without sharing class HOT_UpdateChildRecordsService {
                 serviceAppointment.ContactId = request.HOT_PersonContactId__c;
             }
             if (isAddressChoice) {
-                serviceAppointment.HOT_InterpretationStreet__c = request.InterpretationStreet__c;
-                serviceAppointment.HOT_InterpretationPostalCode__c = request.InterpretationPostalCode__c;
-                serviceAppointment.HOT_InterpretationPostalCity__c = request.InterpretationPostalCity__c;
-                serviceAppointment.Street = request.MeetingStreet__c;
-                serviceAppointment.PostalCode = request.MeetingPostalCode__c;
-                serviceAppointment.City = request.MeetingPostalCity__c;
+                serviceAppointment.HOT_InterpretationAddress__Street__s = request.InterpretationAddress__Street__s;
+                serviceAppointment.HOT_InterpretationAddress__PostalCode__s = request.InterpretationAddress__PostalCode__s;
+                serviceAppointment.HOT_InterpretationAddress__City__s = request.InterpretationAddress__City__s;
+
+                serviceAppointment.Street = request.MeetingAddress__Street__s;
+                serviceAppointment.PostalCode = request.MeetingAddress__PostalCode__s;
+                serviceAppointment.City = request.MeetingAddress__City__s;
             }
             if (isSubjectChoice) {
                 serviceAppointment.Subject = request.Subject__c;
