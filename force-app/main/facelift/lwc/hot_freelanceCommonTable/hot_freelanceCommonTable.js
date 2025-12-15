@@ -8,8 +8,8 @@ export default class Hot_freelanceCommonTable extends LightningElement {
 
     @api checkbox = false;
     @api checkedRows = [];
+    selectedRowId;
 
-    // WIP: return badge css will be changed when we have a decided on design colors
     statusBadgeMap = {
         'badge-gray': ['Åpen', 'Open'],
         'badge-blue': ['Reserved', 'Reservert', 'Assigned', 'Tildelt'],
@@ -47,12 +47,13 @@ export default class Hot_freelanceCommonTable extends LightningElement {
     get recordsToShow() {
         const records = [];
         this.recordMap = {};
-        let ariaLabelTheme = '';
+        const subjectCount = {};
 
         if (!this.records || !this.columns) return records;
 
         for (const record of this.records) {
             const fields = [];
+            let subjectForAria = '';
 
             for (const column of this.columns) {
                 const value = record?.[column.name];
@@ -80,27 +81,36 @@ export default class Hot_freelanceCommonTable extends LightningElement {
 
                 // Name of the theme aria label, this will be used for the checboxes
                 if (column.name === 'HOT_FreelanceSubject__c' && value) {
-                    ariaLabelTheme = value;
+                    subjectForAria = value;
                 }
 
                 fields.push(field);
             }
+            const id = record.Id;
+
+            let ariaLabelTheme = '';
+            if (subjectForAria) {
+                subjectCount[subjectForAria] = (subjectCount[subjectForAria] || 0) + 1;
+                const partNumber = subjectCount[subjectForAria];
+                ariaLabelTheme = `Velg ${subjectForAria}, del ${partNumber} av serien`;
+            }
 
             // Store processed record and track checked state
             records.push({
-                id: record.Id,
-                checked: this.checkedRows.includes(record.Id),
+                id,
+                checked: this.checkedRows.includes(id),
                 fields: fields,
-                ariaLabelTheme: ariaLabelTheme ? `Velg ${ariaLabelTheme}` : ''
+                ariaLabelTheme: ariaLabelTheme ? `Velg ${ariaLabelTheme}` : '',
+                rowClass: `row${this.selectedRowId === id ? ' selected-row' : ''}`
             });
-            this.recordMap[record.Id] = record;
+            this.recordMap[id] = record;
         }
 
         return records;
     }
 
     applyIconDataToField(value, field) {
-        const iconData = this.iconByValue[value];
+        const iconData = this.iconByValue && this.iconByValue[value];
         if (!iconData) return;
 
         field.icon = iconData.icon;
@@ -127,23 +137,26 @@ export default class Hot_freelanceCommonTable extends LightningElement {
     }
 
     handleOnRowClick(event) {
+        const rowId = event.currentTarget.dataset.id;
+        this.selectedRowId = rowId;
+
         const eventToSend = new CustomEvent('rowclick', {
-            detail: this.recordMap[event.currentTarget.dataset.id]
+            detail: this.recordMap[rowId]
         });
         this.dispatchEvent(eventToSend);
     }
 
     handleOnRowKeyDown(event) {
-    if (event.code === 'Space') {
-        const focusElement = event.target; 
+        if (event.code === 'Space') {
+            const focusElement = event.target;
 
-        // If the focused element is a checkbox, do not trigger row click
-        if ( focusElement.type === 'checkbox' || focusElement.closest('c-checkbox')) {
-            return; 
-        }
+            // If the focused element is a checkbox, do not trigger row click
+            if (focusElement.type === 'checkbox' || focusElement.closest('c-checkbox')) {
+                return;
+            }
 
-        event.preventDefault(); 
-        this.handleOnRowClick(event);
+            event.preventDefault();
+            this.handleOnRowClick(event);
         }
     }
 

@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="UTF-8" ?>
+<?xml version="1.0" encoding="UTF-8"?>
 <Flow xmlns="http://soap.sforce.com/2006/04/metadata">
     <apiVersion>49.0</apiVersion>
     <assignments>
@@ -22,6 +22,29 @@
         </assignmentItems>
         <connector>
             <targetReference>createAssignedResource</targetReference>
+        </connector>
+    </assignments>
+    <assignments>
+        <name>SetServiceAppointmentToDispatched</name>
+        <label>SetServiceAppointmentToDispatched</label>
+        <locationX>50</locationX>
+        <locationY>674</locationY>
+        <assignmentItems>
+            <assignToReference>getServiceAppointment.Status</assignToReference>
+            <operator>Assign</operator>
+            <value>
+                <stringValue>Dispatched</stringValue>
+            </value>
+        </assignmentItems>
+        <assignmentItems>
+            <assignToReference>getServiceAppointment.HOT_AssignedResourceId__c</assignToReference>
+            <operator>Assign</operator>
+            <value>
+                <elementReference>getInterestedResource.ServiceResource__r.RelatedRecordId</elementReference>
+            </value>
+        </assignmentItems>
+        <connector>
+            <targetReference>UpdateServiceAppointment</targetReference>
         </connector>
     </assignments>
     <decisions>
@@ -77,7 +100,7 @@
         <locationX>50</locationX>
         <locationY>566</locationY>
         <connector>
-            <targetReference>Success</targetReference>
+            <targetReference>SetServiceAppointmentToDispatched</targetReference>
         </connector>
         <faultConnector>
             <targetReference>Error</targetReference>
@@ -126,6 +149,16 @@
         <object>ServiceAppointment</object>
         <storeOutputAutomatically>true</storeOutputAutomatically>
     </recordLookups>
+    <recordUpdates>
+        <name>UpdateServiceAppointment</name>
+        <label>UpdateServiceAppointment</label>
+        <locationX>50</locationX>
+        <locationY>782</locationY>
+        <connector>
+            <targetReference>Copy_1_of_Success</targetReference>
+        </connector>
+        <inputReference>getServiceAppointment</inputReference>
+    </recordUpdates>
     <screens>
         <name>AlreadyAssignedScreen</name>
         <label>AlreadyAssignedScreen</label>
@@ -136,8 +169,26 @@
         <allowPause>false</allowPause>
         <fields>
             <name>alreadyAssignedText</name>
-            <fieldText
-            >&lt;p&gt;&lt;span style=&quot;background-color: rgb(255, 255, 255); font-size: 16px; font-family: Calibri; color: rgb(0, 0, 0);&quot;&gt;Du kan ikke sette opp flere ressurser på et oppdrag.&lt;/span&gt;&lt;/p&gt;</fieldText>
+            <fieldText>&lt;p&gt;&lt;span style=&quot;background-color: rgb(255, 255, 255); font-size: 16px; font-family: Calibri; color: rgb(0, 0, 0);&quot;&gt;Du kan ikke sette opp flere ressurser på et oppdrag.&lt;/span&gt;&lt;/p&gt;</fieldText>
+            <fieldType>DisplayText</fieldType>
+        </fields>
+        <showFooter>true</showFooter>
+        <showHeader>false</showHeader>
+    </screens>
+    <screens>
+        <name>Copy_1_of_Success</name>
+        <label>Copy 1 of Success</label>
+        <locationX>50</locationX>
+        <locationY>890</locationY>
+        <allowBack>false</allowBack>
+        <allowFinish>true</allowFinish>
+        <allowPause>false</allowPause>
+        <connector>
+            <targetReference>Success</targetReference>
+        </connector>
+        <fields>
+            <name>Copy_1_of_Success_message</name>
+            <fieldText>&lt;h3 style=&quot;text-align: center;&quot;&gt;Ressursen ble tildelt oppdraget.&lt;/h3&gt;</fieldText>
             <fieldType>DisplayText</fieldType>
         </fields>
         <showFooter>true</showFooter>
@@ -153,8 +204,7 @@
         <allowPause>false</allowPause>
         <fields>
             <name>Error_message</name>
-            <fieldText
-            >&lt;p&gt;Du kan kun tildele én ressurs per oppdrag, og ressursen kan ikke ha overlappende oppdrag.&lt;/p&gt;</fieldText>
+            <fieldText>&lt;p&gt;Du kan kun tildele én ressurs per oppdrag, og ressursen kan ikke ha overlappende oppdrag.&lt;/p&gt;</fieldText>
             <fieldType>DisplayText</fieldType>
         </fields>
         <showFooter>true</showFooter>
@@ -164,7 +214,7 @@
         <name>Success</name>
         <label>Success</label>
         <locationX>50</locationX>
-        <locationY>674</locationY>
+        <locationY>998</locationY>
         <allowBack>false</allowBack>
         <allowFinish>true</allowFinish>
         <allowPause>false</allowPause>
@@ -172,6 +222,26 @@
             <name>Success_message</name>
             <fieldText>&lt;p&gt;Ressursen ble reservert til oppdraget.&lt;/p&gt;</fieldText>
             <fieldType>DisplayText</fieldType>
+        </fields>
+        <fields>
+            <name>Navigate_To_SA</name>
+            <extensionName>c:fcFlowRecordNavigator</extensionName>
+            <fieldType>ComponentInstance</fieldType>
+            <inputParameters>
+                <name>objectApiName</name>
+                <value>
+                    <stringValue>ServiceAppointment</stringValue>
+                </value>
+            </inputParameters>
+            <inputParameters>
+                <name>recordId</name>
+                <value>
+                    <elementReference>getServiceAppointment.Id</elementReference>
+                </value>
+            </inputParameters>
+            <inputsOnNextNavToAssocScrn>UseStoredValues</inputsOnNextNavToAssocScrn>
+            <isRequired>true</isRequired>
+            <storeOutputAutomatically>true</storeOutputAutomatically>
         </fields>
         <showFooter>true</showFooter>
         <showHeader>false</showHeader>
