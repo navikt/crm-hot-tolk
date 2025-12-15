@@ -1,0 +1,29 @@
+.scroller {
+    height: 30vh;
+    overflow-y: scroll;
+}
+.stickyfooter {
+}
+
+.backdrop {
+    position: fixed;
+    z-index: 999;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+}
+.fakeModalContainer {
+    position: absolute;
+    inset-block-start: 0;
+    inset-inline-end: 0;
+    inset-block-end: 0;
+    inset-inline-start: 0;
+    z-index: 1;
+    background-color: color-mix(in oklab, #c8c8c8, transparent 25%);
+    visibility: visible;
+    opacity: 1;
+    transition: opacity 0.2s ease, visibility 0s;
+    transition-delay: 0s, 0.3s;
+    align-content: center;
+}
