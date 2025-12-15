@@ -419,7 +419,8 @@
         <dataType>Boolean</dataType>
         <expression>OR(
     CONTAINS({!ChosenFields}, {!Account}),
-    CONTAINS({!ChosenFieldsTime}, {!Account})
+    CONTAINS({!ChosenFieldsTime}, {!Account}),
+    CONTAINS({!ChosenFieldsOwner}, {!Account})
 )</expression>
     </formulas>
     <formulas>
@@ -427,7 +428,8 @@
         <dataType>Boolean</dataType>
         <expression>OR(
     CONTAINS({!ChosenFields}, {!Address}),
-    CONTAINS({!ChosenFieldsTime}, {!Address})
+    CONTAINS({!ChosenFieldsTime}, {!Address}),
+    CONTAINS({!ChosenFieldsOwner}, {!Address})
 )</expression>
     </formulas>
     <formulas>
@@ -435,7 +437,8 @@
         <dataType>Boolean</dataType>
         <expression>OR(
     CONTAINS({!ChosenFields}, {!Date}),
-    CONTAINS({!ChosenFieldsTime}, {!Date})
+    CONTAINS({!ChosenFieldsTime}, {!Date}),
+CONTAINS({!ChosenFieldsOwner}, {!Date})
 )</expression>
     </formulas>
     <formulas>
@@ -443,7 +446,9 @@
         <dataType>Boolean</dataType>
         <expression>OR(
     CONTAINS({!ChosenFields}, {!Description}),
-    CONTAINS({!ChosenFieldsTime}, {!Description})
+    CONTAINS({!ChosenFieldsTime}, {!Description}),
+CONTAINS({!ChosenFieldsOwner}, {!Description})
+
 )</expression>
     </formulas>
     <formulas>
@@ -451,7 +456,8 @@
         <dataType>Boolean</dataType>
         <expression>OR(
     CONTAINS({!ChosenFields}, {!Dispatcher}),
-    CONTAINS({!ChosenFieldsTime}, {!Dispatcher})
+    CONTAINS({!ChosenFieldsTime}, {!Dispatcher}),
+CONTAINS({!ChosenFieldsTime}, {!Dispatcher})
 )</expression>
     </formulas>
     <formulas>
@@ -459,7 +465,8 @@
         <dataType>Boolean</dataType>
         <expression>OR(
     CONTAINS({!ChosenFields}, {!InterpretationMethod}),
-    CONTAINS({!ChosenFieldsTime}, {!InterpretationMethod})
+    CONTAINS({!ChosenFieldsTime}, {!InterpretationMethod}),
+CONTAINS({!ChosenFieldsOwner}, {!InterpretationMethod})
 )</expression>
     </formulas>
     <formulas>
@@ -467,7 +474,8 @@
         <dataType>Boolean</dataType>
         <expression>OR(
     CONTAINS({!ChosenFields}, {!Owner}),
-    CONTAINS({!ChosenFieldsTime}, {!Owner})
+    CONTAINS({!ChosenFieldsTime}, {!Owner}),
+CONTAINS({!ChosenFieldsOwner}, {!Owner})
 )</expression>
     </formulas>
     <formulas>
@@ -475,7 +483,8 @@
         <dataType>Boolean</dataType>
         <expression>OR(
     CONTAINS({!ChosenFields}, {!ScreenInterpreter}),
-    CONTAINS({!ChosenFieldsTime}, {!ScreenInterpreter})
+    CONTAINS({!ChosenFieldsTime}, {!ScreenInterpreter}),
+CONTAINS({!ChosenFieldsOwner}, {!ScreenInterpreter})
 )</expression>
     </formulas>
     <formulas>
@@ -483,7 +492,8 @@
         <dataType>Boolean</dataType>
         <expression>OR(
     CONTAINS({!ChosenFields}, {!Subject}),
-    CONTAINS({!ChosenFieldsTime}, {!Subject})
+    CONTAINS({!ChosenFieldsTime}, {!Subject}),
+CONTAINS({!ChosenFieldsOwner}, {!Subject})
 )</expression>
     </formulas>
     <interviewLabel>HOT_UpdateChildsFromRequest {!$Flow.CurrentDateTime}</interviewLabel>
@@ -686,7 +696,7 @@
             <inputsOnNextNavToAssocScrn>UseStoredValues</inputsOnNextNavToAssocScrn>
             <isRequired>true</isRequired>
             <visibilityRule>
-                <conditionLogic>or</conditionLogic>
+                <conditionLogic>(1 OR 2 OR 3) AND 4</conditionLogic>
                 <conditions>
                     <leftValueReference>getServiceAppointment.Status</leftValueReference>
                     <operator>EqualTo</operator>
@@ -706,6 +716,60 @@
                     <operator>EqualTo</operator>
                     <rightValue>
                         <stringValue>Åpen</stringValue>
+                    </rightValue>
+                </conditions>
+                <conditions>
+                    <leftValueReference>getRequest.IsSerieoppdrag__c</leftValueReference>
+                    <operator>EqualTo</operator>
+                    <rightValue>
+                        <booleanValue>false</booleanValue>
+                    </rightValue>
+                </conditions>
+            </visibilityRule>
+        </fields>
+        <fields>
+            <name>ChosenFieldsOwner</name>
+            <choiceReferences>Address</choiceReferences>
+            <choiceReferences>Subject</choiceReferences>
+            <choiceReferences>Description</choiceReferences>
+            <choiceReferences>ScreenInterpreter</choiceReferences>
+            <choiceReferences>Dispatcher</choiceReferences>
+            <choiceReferences>Account</choiceReferences>
+            <choiceReferences>InterpretationMethod</choiceReferences>
+            <choiceReferences>Owner</choiceReferences>
+            <dataType>String</dataType>
+            <fieldText>Velg felter</fieldText>
+            <fieldType>MultiSelectCheckboxes</fieldType>
+            <inputsOnNextNavToAssocScrn>UseStoredValues</inputsOnNextNavToAssocScrn>
+            <isRequired>true</isRequired>
+            <visibilityRule>
+                <conditionLogic>(1 OR 2 OR 3) AND 4</conditionLogic>
+                <conditions>
+                    <leftValueReference>getServiceAppointment.Status</leftValueReference>
+                    <operator>EqualTo</operator>
+                    <rightValue>
+                        <stringValue>None</stringValue>
+                    </rightValue>
+                </conditions>
+                <conditions>
+                    <leftValueReference>getServiceAppointment.Status</leftValueReference>
+                    <operator>EqualTo</operator>
+                    <rightValue>
+                        <stringValue>Released to Freelance</stringValue>
+                    </rightValue>
+                </conditions>
+                <conditions>
+                    <leftValueReference>getRequest.Status__c</leftValueReference>
+                    <operator>EqualTo</operator>
+                    <rightValue>
+                        <stringValue>Åpen</stringValue>
+                    </rightValue>
+                </conditions>
+                <conditions>
+                    <leftValueReference>getRequest.IsSerieoppdrag__c</leftValueReference>
+                    <operator>EqualTo</operator>
+                    <rightValue>
+                        <booleanValue>true</booleanValue>
                     </rightValue>
                 </conditions>
             </visibilityRule>
@@ -803,6 +867,13 @@
                         <elementReference>Address</elementReference>
                     </rightValue>
                 </conditions>
+                <conditions>
+                    <leftValueReference>ChosenFieldsOwner</leftValueReference>
+                    <operator>EqualTo</operator>
+                    <rightValue>
+                        <elementReference>Address</elementReference>
+                    </rightValue>
+                </conditions>
             </visibilityRule>
         </fields>
         <fields>
@@ -843,6 +914,13 @@
                         <elementReference>Subject</elementReference>
                     </rightValue>
                 </conditions>
+                <conditions>
+                    <leftValueReference>ChosenFieldsOwner</leftValueReference>
+                    <operator>EqualTo</operator>
+                    <rightValue>
+                        <elementReference>Subject</elementReference>
+                    </rightValue>
+                </conditions>
             </visibilityRule>
         </fields>
         <fields>
@@ -872,6 +950,20 @@
                 <conditions>
                     <leftValueReference>ChosenFields</leftValueReference>
                     <operator>Contains</operator>
+                    <rightValue>
+                        <elementReference>Description</elementReference>
+                    </rightValue>
+                </conditions>
+                <conditions>
+                    <leftValueReference>ChosenFieldsOwner</leftValueReference>
+                    <operator>EqualTo</operator>
+                    <rightValue>
+                        <elementReference>Description</elementReference>
+                    </rightValue>
+                </conditions>
+                <conditions>
+                    <leftValueReference>ChosenFieldsTime</leftValueReference>
+                    <operator>EqualTo</operator>
                     <rightValue>
                         <elementReference>Description</elementReference>
                     </rightValue>
@@ -911,6 +1003,13 @@
                 </conditions>
                 <conditions>
                     <leftValueReference>ChosenFieldsTime</leftValueReference>
+                    <operator>EqualTo</operator>
+                    <rightValue>
+                        <elementReference>ScreenInterpreter</elementReference>
+                    </rightValue>
+                </conditions>
+                <conditions>
+                    <leftValueReference>ChosenFieldsOwner</leftValueReference>
                     <operator>EqualTo</operator>
                     <rightValue>
                         <elementReference>ScreenInterpreter</elementReference>
@@ -988,6 +1087,13 @@
                         <elementReference>Dispatcher</elementReference>
                     </rightValue>
                 </conditions>
+                <conditions>
+                    <leftValueReference>ChosenFieldsOwner</leftValueReference>
+                    <operator>EqualTo</operator>
+                    <rightValue>
+                        <elementReference>Dispatcher</elementReference>
+                    </rightValue>
+                </conditions>
             </visibilityRule>
         </fields>
         <fields>
@@ -1049,6 +1155,13 @@
                 </conditions>
                 <conditions>
                     <leftValueReference>ChosenFieldsTime</leftValueReference>
+                    <operator>EqualTo</operator>
+                    <rightValue>
+                        <elementReference>Account</elementReference>
+                    </rightValue>
+                </conditions>
+                <conditions>
+                    <leftValueReference>ChosenFieldsOwner</leftValueReference>
                     <operator>EqualTo</operator>
                     <rightValue>
                         <elementReference>Account</elementReference>
@@ -1120,6 +1233,13 @@
                         <elementReference>InterpretationMethod</elementReference>
                     </rightValue>
                 </conditions>
+                <conditions>
+                    <leftValueReference>ChosenFieldsOwner</leftValueReference>
+                    <operator>EqualTo</operator>
+                    <rightValue>
+                        <elementReference>InterpretationMethod</elementReference>
+                    </rightValue>
+                </conditions>
             </visibilityRule>
         </fields>
         <fields>
@@ -1160,6 +1280,13 @@
                 </conditions>
                 <conditions>
                     <leftValueReference>ChosenFieldsTime</leftValueReference>
+                    <operator>EqualTo</operator>
+                    <rightValue>
+                        <elementReference>Owner</elementReference>
+                    </rightValue>
+                </conditions>
+                <conditions>
+                    <leftValueReference>ChosenFieldsOwner</leftValueReference>
                     <operator>EqualTo</operator>
                     <rightValue>
                         <elementReference>Owner</elementReference>
