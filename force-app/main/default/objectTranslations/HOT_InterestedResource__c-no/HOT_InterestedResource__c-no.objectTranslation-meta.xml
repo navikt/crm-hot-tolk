@@ -38,9 +38,7 @@
             <section>Comments</section>
         </sections>
         <sections>
-            <label>
-                <!-- Custom Links -->
-            </label>
+            <label><!-- Custom Links --></label>
             <section>Custom Links</section>
         </sections>
         <sections>
@@ -50,7 +48,13 @@
     </layouts>
     <nameFieldLabel>Interessert ressurs</nameFieldLabel>
     <quickActions>
+        <aspect>Master</aspect>
+        <label>Tildel oppdraget til ressursen</label>
+        <name>Assign_Resource</name>
+    </quickActions>
+    <quickActions>
+        <aspect>Master</aspect>
         <label>Reserver oppdraget til ressursen</label>
-        <name>AssignResource</name>
+        <name>Reserve_Resource</name>
     </quickActions>
 </CustomObjectTranslation>

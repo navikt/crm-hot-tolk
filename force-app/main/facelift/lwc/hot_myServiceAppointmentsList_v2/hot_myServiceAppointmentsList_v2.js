@@ -330,12 +330,11 @@ export default class Hot_myServiceAppointmentsList_v2 extends NavigationMixin(Li
     }
 
     get startAndEndTime() {
-        const weekday = this.serviceAppointment?.weekday ?? '';
-        const time = this.serviceAppointment?.StartAndEndDate ?? '';
-        if (weekday || time) {
-            return `${weekday} ${time}`.trim();
-        }
-        return '';
+        return (
+            formatDatetimeinterval(this.serviceAppointment.SchedStartTime, this.serviceAppointment.SchedEndTime) +
+            ' ' +
+            getDayOfWeek(this.serviceAppointment.SchedStartTime)
+        );
     }
 
     get address() {
