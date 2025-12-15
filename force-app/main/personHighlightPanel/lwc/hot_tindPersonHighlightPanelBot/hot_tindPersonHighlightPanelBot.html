@@ -1,5 +1,8 @@
 <template>
-    <lightning-layout class="custom-padding-left-small button-container">
+    <lightning-layout lwc:if={isAnsatt} class="custom-padding-left-small button-container">
+        <!-- Empty box, because ansatt tolk should not have buttons TOLK-3364 -->
+    </lightning-layout>
+    <lightning-layout lwc:else class="custom-padding-left-small button-container">
         <lightning-layout-item class="custom-padding-around-small custom-grid-vertical-align-center">
             <lightning-button
                 data-id="gosys"

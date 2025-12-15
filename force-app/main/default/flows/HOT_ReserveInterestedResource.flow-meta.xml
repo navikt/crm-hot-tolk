@@ -24,29 +24,6 @@
             <targetReference>createAssignedResource</targetReference>
         </connector>
     </assignments>
-    <assignments>
-        <name>SetServiceAppointmentToDispatched</name>
-        <label>SetServiceAppointmentToDispatched</label>
-        <locationX>50</locationX>
-        <locationY>674</locationY>
-        <assignmentItems>
-            <assignToReference>getServiceAppointment.Status</assignToReference>
-            <operator>Assign</operator>
-            <value>
-                <stringValue>Dispatched</stringValue>
-            </value>
-        </assignmentItems>
-        <assignmentItems>
-            <assignToReference>getServiceAppointment.HOT_AssignedResourceId__c</assignToReference>
-            <operator>Assign</operator>
-            <value>
-                <elementReference>getInterestedResource.ServiceResource__r.RelatedRecordId</elementReference>
-            </value>
-        </assignmentItems>
-        <connector>
-            <targetReference>UpdateServiceAppointment</targetReference>
-        </connector>
-    </assignments>
     <decisions>
         <name>checkIfAlreadyAssigned</name>
         <label>checkIfAlreadyAssigned</label>
@@ -73,8 +50,8 @@
         </rules>
     </decisions>
     <environments>Default</environments>
-    <interviewLabel>HOT_AssignInterestedResource {!$Flow.CurrentDateTime}</interviewLabel>
-    <label>HOT_AssignInterestedResource</label>
+    <interviewLabel>HOT_ReserveInterestedResource {!$Flow.CurrentDateTime}</interviewLabel>
+    <label>HOT_ReserveInterestedResource</label>
     <processMetadataValues>
         <name>BuilderType</name>
         <value>
@@ -100,7 +77,7 @@
         <locationX>50</locationX>
         <locationY>566</locationY>
         <connector>
-            <targetReference>SetServiceAppointmentToDispatched</targetReference>
+            <targetReference>Success_Confirmation</targetReference>
         </connector>
         <faultConnector>
             <targetReference>Error</targetReference>
@@ -149,16 +126,6 @@
         <object>ServiceAppointment</object>
         <storeOutputAutomatically>true</storeOutputAutomatically>
     </recordLookups>
-    <recordUpdates>
-        <name>UpdateServiceAppointment</name>
-        <label>UpdateServiceAppointment</label>
-        <locationX>50</locationX>
-        <locationY>782</locationY>
-        <connector>
-            <targetReference>Copy_1_of_Success</targetReference>
-        </connector>
-        <inputReference>getServiceAppointment</inputReference>
-    </recordUpdates>
     <screens>
         <name>AlreadyAssignedScreen</name>
         <label>AlreadyAssignedScreen</label>
@@ -176,25 +143,6 @@
         <showHeader>false</showHeader>
     </screens>
     <screens>
-        <name>Copy_1_of_Success</name>
-        <label>Copy 1 of Success</label>
-        <locationX>50</locationX>
-        <locationY>890</locationY>
-        <allowBack>false</allowBack>
-        <allowFinish>true</allowFinish>
-        <allowPause>false</allowPause>
-        <connector>
-            <targetReference>Success</targetReference>
-        </connector>
-        <fields>
-            <name>Copy_1_of_Success_message</name>
-            <fieldText>&lt;h3 style=&quot;text-align: center;&quot;&gt;Ressursen ble tildelt oppdraget.&lt;/h3&gt;</fieldText>
-            <fieldType>DisplayText</fieldType>
-        </fields>
-        <showFooter>true</showFooter>
-        <showHeader>false</showHeader>
-    </screens>
-    <screens>
         <name>Error</name>
         <label>Error</label>
         <locationX>314</locationX>
@@ -204,7 +152,7 @@
         <allowPause>false</allowPause>
         <fields>
             <name>Error_message</name>
-            <fieldText>&lt;p&gt;Du kan kun tildele én ressurs per oppdrag, og ressursen kan ikke ha overlappende oppdrag.&lt;/p&gt;</fieldText>
+            <fieldText>&lt;p&gt;Du kan kun reservere én ressurs per oppdrag, og ressursen kan ikke ha overlappende oppdrag.&lt;/p&gt;</fieldText>
             <fieldType>DisplayText</fieldType>
         </fields>
         <showFooter>true</showFooter>
@@ -214,15 +162,10 @@
         <name>Success</name>
         <label>Success</label>
         <locationX>50</locationX>
-        <locationY>998</locationY>
+        <locationY>782</locationY>
         <allowBack>false</allowBack>
         <allowFinish>true</allowFinish>
         <allowPause>false</allowPause>
-        <fields>
-            <name>Success_message</name>
-            <fieldText>&lt;p&gt;Ressursen ble reservert til oppdraget.&lt;/p&gt;</fieldText>
-            <fieldType>DisplayText</fieldType>
-        </fields>
         <fields>
             <name>Navigate_To_SA</name>
             <extensionName>c:fcFlowRecordNavigator</extensionName>
@@ -243,6 +186,26 @@
             <isRequired>true</isRequired>
             <storeOutputAutomatically>true</storeOutputAutomatically>
         </fields>
+        <showFooter>true</showFooter>
+        <showHeader>false</showHeader>
+    </screens>
+    <screens>
+        <name>Success_Confirmation</name>
+        <label>Success_Confirmation</label>
+        <locationX>50</locationX>
+        <locationY>674</locationY>
+        <allowBack>false</allowBack>
+        <allowFinish>true</allowFinish>
+        <allowPause>false</allowPause>
+        <connector>
+            <targetReference>Success</targetReference>
+        </connector>
+        <fields>
+            <name>Success_message</name>
+            <fieldText>&lt;h3 style=&quot;text-align: center;&quot;&gt;Ressursen ble reservert til oppdraget.&lt;/h3&gt;</fieldText>
+            <fieldType>DisplayText</fieldType>
+        </fields>
+        <nextOrFinishButtonLabel>Fullfør</nextOrFinishButtonLabel>
         <showFooter>true</showFooter>
         <showHeader>false</showHeader>
     </screens>
