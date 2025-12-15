@@ -109,9 +109,9 @@ public without sharing class HOT_UpdateChildRecordsService {
                 SELECT
                     Id,
                     Status,
-                    HOT_InterpretationStreet__c,
-                    HOT_InterpretationPostalCode__c,
-                    HOT_InterpretationPostalCity__c,
+                    HOT_InterpretationAddress__Street__s,
+                    HOT_InterpretationAddress__PostalCode__s,
+                    HOT_InterpretationAddress__City__s,
                     Street,
                     PostalCode,
                     City,
