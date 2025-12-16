@@ -110,7 +110,7 @@
                     <p lwc:if={request.UserPreferredInterpreter__c}>
                         <strong>Ønsket tolk: </strong><span>{request.UserPreferredInterpreter__c}</span>
                     </p>
-                    <p lwc:if={workOrder.HOT_Interpreters__c}>
+                    <p lwc:if={showInterpretes}>
                         <strong>{interpreter}: </strong><span>{workOrder.HOT_Interpreters__c}</span>
                     </p>
                     <p lwc:if={request.UserInterpretationMethod__c}>

@@ -36,6 +36,13 @@
                 <stringValue>Dispatched</stringValue>
             </value>
         </assignmentItems>
+        <assignmentItems>
+            <assignToReference>getServiceAppointment.HOT_AssignedResourceId__c</assignToReference>
+            <operator>Assign</operator>
+            <value>
+                <elementReference>getInterestedResource.ServiceResource__r.RelatedRecordId</elementReference>
+            </value>
+        </assignmentItems>
         <connector>
             <targetReference>UpdateServiceAppointment</targetReference>
         </connector>
