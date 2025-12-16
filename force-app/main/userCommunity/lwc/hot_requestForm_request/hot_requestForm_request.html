@@ -25,9 +25,9 @@
         <div if:false={fieldValues.IsScreenInterpreter__c}>
             <c-input
                 label="Oppmøteadresse"
-                name="MeetingStreet__c"
+                name="MeetingAddress__Street__s"
                 form="tolk-skjema-input"
-                value={fieldValues.MeetingStreet__c}
+                value={fieldValues.MeetingAddress__Street__s}
                 error-text="Oppmøteadresse må fylles ut."
             ></c-input>
             <br />
@@ -35,18 +35,18 @@
                 <div class="slds-col slds-size_2-of-5">
                     <c-input
                         label="Postnummer"
-                        name="MeetingPostalCode__c"
+                        name="MeetingAddress__PostalCode__s"
                         form="tolk-skjema-input"
-                        value={fieldValues.MeetingPostalCode__c}
+                        value={fieldValues.MeetingAddress__PostalCode__s}
                         max-length="4"
                     ></c-input>
                 </div>
                 <div class="slds-col slds-size_3-of-5">
                     <c-input
                         label="Poststed"
-                        name="MeetingPostalCity__c"
+                        name="MeetingAddress__City__s"
                         form="tolk-skjema-input"
-                        value={fieldValues.MeetingPostalCity__c}
+                        value={fieldValues.MeetingAddress__City__s}
                     ></c-input>
                 </div>
             </div>
@@ -62,9 +62,9 @@
             <div if:false={sameLocation}>
                 <c-input
                     label="Tolkeadresse"
-                    name="InterpretationStreet__c"
+                    name="InterpretationAddress__Street__s"
                     form="tolk-skjema-input"
-                    value={fieldValues.InterpretationStreet__c}
+                    value={fieldValues.InterpretationAddress__Street__s}
                     error-text="Tolkeadresse må fylles ut."
                 ></c-input>
                 <br />
@@ -72,18 +72,18 @@
                     <div class="slds-col slds-size_2-of-5">
                         <c-input
                             label="Postnummer"
-                            name="InterpretationPostalCode__c"
+                            name="InterpretationAddress__PostalCode__s"
                             form="tolk-skjema-input"
-                            value={fieldValues.InterpretationPostalCode__c}
+                            value={fieldValues.InterpretationAddress__PostalCode__s}
                             max-length="4"
                         ></c-input>
                     </div>
                     <div class="slds-col slds-size_3-of-5">
                         <c-input
                             label="Poststed"
-                            name="InterpretationPostalCity__c"
+                            name="InterpretationAddress__City__s"
                             form="tolk-skjema-input"
-                            value={fieldValues.InterpretationPostalCity__c}
+                            value={fieldValues.InterpretationAddress__City__s}
                         ></c-input>
                     </div>
                 </div>

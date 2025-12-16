@@ -16,12 +16,12 @@ private class HOT_WorkOrderHandlerTest {
         request.Account__c = account.Id;
         request.ServiceTerritory__c = serviceTerritory.Id;
         request.Description__c = 'Description';
-        request.InterpretationStreet__c = 'Street 1';
-        request.InterpretationPostalCode__c = '1111';
-        request.InterpretationPostalCity__c = 'City 1';
-        request.MeetingStreet__c = 'Street 2';
-        request.MeetingPostalCode__c = '2222';
-        request.MeetingPostalCity__c = 'City 2';
+        request.InterpretationAddress__Street__s = 'Street 1';
+        request.InterpretationAddress__PostalCode__s = '1111';
+        request.InterpretationAddress__City__s = 'City 1';
+        request.MeetingAddress__Street__s = 'Street 2';
+        request.MeetingAddress__PostalCode__s = '2222';
+        request.MeetingAddress__City__s = 'City 2';
         insert request;
         WorkOrder workOrder = HOT_TestDataFactory.createWorkOrder(request, workType);
         workOrder.Status = 'Canceled';
@@ -39,7 +39,7 @@ private class HOT_WorkOrderHandlerTest {
         System.assertEquals(request.Id, workOrder.HOT_Request__c, 'Could not set HOT_Request__c');
         System.assertEquals(account.Id, workOrder.AccountId, 'Could not set AccountId');
         System.assertEquals(serviceTerritory.Id, workOrder.ServiceTerritoryId, 'Could not set ServiceTerritoryId');
-        System.assertEquals(request.MeetingStreet__c, workOrder.Street, 'Could not set Street');
+        System.assertEquals(request.MeetingAddress__Street__s, workOrder.Street, 'Could not set Street');
         System.assertEquals('New', workOrder.Status, 'Could not set Status to New');
     }
 

@@ -44,10 +44,10 @@
             <br />
             <c-input
                 id="oppmoteAdresse"
-                name="MeetingStreet__c"
+                name="MeetingAddress__Street__s"
                 label="Oppmøteadresse"
                 form="tolk-skjema-input"
-                value={fieldValues.MeetingStreet__c}
+                value={fieldValues.MeetingAddress__Street__s}
                 oninput={handleAddressChange}
                 error-text="Oppmøteadresse må fylles ut."
             ></c-input>
@@ -57,9 +57,9 @@
                     <c-input
                         id="postnummer"
                         label="Postnummer"
-                        name="MeetingPostalCode__c"
+                        name="MeetingAddress__PostalCode__s"
                         form="tolk-skjema-input"
-                        value={fieldValues.MeetingPostalCode__c}
+                        value={fieldValues.MeetingAddress__PostalCode__s}
                         error-text="Postnummer må fylles ut."
                         oninput={handleMeetingPostalChange}
                         max-length="4"
@@ -70,9 +70,9 @@
                     <c-input
                         id="poststed"
                         label="Poststed"
-                        name="MeetingPostalCity__c"
+                        name="MeetingAddress__City__s"
                         form="tolk-skjema-input"
-                        value={fieldValues.MeetingPostalCity__c}
+                        value={fieldValues.MeetingAddress__City__s}
                         placeholder="Feltet fylles automatisk"
                         disabled
                     ></c-input>
@@ -91,9 +91,9 @@
                 <c-input
                     id="tolkeAdresse"
                     label="Tolkeadresse"
-                    name="InterpretationStreet__c"
+                    name="InterpretationAddress__Street__s"
                     form="tolk-skjema-input"
-                    value={fieldValues.InterpretationStreet__c}
+                    value={fieldValues.InterpretationAddress__Street__s}
                     error-text="Tolkeadresse må fylles ut."
                 ></c-input>
                 <br />
@@ -102,9 +102,9 @@
                         <c-input
                             id="tolkePostnummer"
                             label="Postnummer"
-                            name="InterpretationPostalCode__c"
+                            name="InterpretationAddress__PostalCode__s"
                             form="tolk-skjema-input"
-                            value={fieldValues.InterpretationPostalCode__c}
+                            value={fieldValues.InterpretationAddress__PostalCode__s}
                             oninput={handleInterpretationPostalChange}
                             error-text="Postnummer må fylles ut."
                             max-length="4"
@@ -114,9 +114,9 @@
                         <c-input
                             id="tolkePoststed"
                             label="Poststed"
-                            name="InterpretationPostalCity__c"
+                            name="InterpretationAddress__City__s"
                             form="tolk-skjema-input"
-                            value={fieldValues.InterpretationPostalCity__c}
+                            value={fieldValues.InterpretationAddress__City__s}
                             placeholder="Feltet fylles automatisk"
                             disabled
                         ></c-input>

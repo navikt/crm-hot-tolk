@@ -162,7 +162,7 @@
             </value>
         </assignmentItems>
         <assignmentItems>
-            <assignToReference>getRequest.MeetingPostalCode__c</assignToReference>
+            <assignToReference>getRequest.MeetingAddress__PostalCode__s</assignToReference>
             <operator>Assign</operator>
             <value>
                 <elementReference>recordId.PostalCode</elementReference>
