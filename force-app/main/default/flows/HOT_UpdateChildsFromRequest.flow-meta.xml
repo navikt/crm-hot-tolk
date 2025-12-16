@@ -3,8 +3,8 @@
     <actionCalls>
         <name>UpdateChildRecords</name>
         <label>UpdateChildRecords</label>
-        <locationX>314</locationX>
-        <locationY>1274</locationY>
+        <locationX>182</locationX>
+        <locationY>2282</locationY>
         <actionName>HOT_UpdateChildRecordsService</actionName>
         <actionType>apex</actionType>
         <flowTransactionModel>Automatic</flowTransactionModel>
@@ -18,6 +18,12 @@
             <name>isAddressChoice</name>
             <value>
                 <elementReference>isAddress</elementReference>
+            </value>
+        </inputParameters>
+        <inputParameters>
+            <name>isDateChoice</name>
+            <value>
+                <elementReference>isDate</elementReference>
             </value>
         </inputParameters>
         <inputParameters>
@@ -36,6 +42,12 @@
             <name>isInterpreterMethodChoice</name>
             <value>
                 <elementReference>isInterpreterMethod</elementReference>
+            </value>
+        </inputParameters>
+        <inputParameters>
+            <name>isOwnerChoice</name>
+            <value>
+                <elementReference>isOwner</elementReference>
             </value>
         </inputParameters>
         <inputParameters>
@@ -61,10 +73,26 @@
     </actionCalls>
     <apiVersion>54.0</apiVersion>
     <assignments>
+        <name>Owner_list_assign_to_ownerId</name>
+        <label>Owner list assign to ownerId</label>
+        <locationX>50</locationX>
+        <locationY>1790</locationY>
+        <assignmentItems>
+            <assignToReference>getRequest.OwnerId</assignToReference>
+            <operator>Assign</operator>
+            <value>
+                <elementReference>Get_Group_From_Owner_List.Id</elementReference>
+            </value>
+        </assignmentItems>
+        <connector>
+            <targetReference>isInterpreterMethodCheck</targetReference>
+        </connector>
+    </assignments>
+    <assignments>
         <name>Store_Account_Value</name>
         <label>Store Account Value</label>
-        <locationX>314</locationX>
-        <locationY>782</locationY>
+        <locationX>50</locationX>
+        <locationY>1382</locationY>
         <assignmentItems>
             <assignToReference>getRequest.Account__c</assignToReference>
             <operator>Assign</operator>
@@ -94,14 +122,14 @@
             </value>
         </assignmentItems>
         <connector>
-            <targetReference>isInterpreterMethodCheck</targetReference>
+            <targetReference>isOwnerCheck</targetReference>
         </connector>
     </assignments>
     <assignments>
         <name>Store_Dispatcher_Value</name>
         <label>Store Dispatcher Value</label>
         <locationX>50</locationX>
-        <locationY>674</locationY>
+        <locationY>974</locationY>
         <assignmentItems>
             <assignToReference>getRequest.Dispatcher__c</assignToReference>
             <operator>Assign</operator>
@@ -110,14 +138,14 @@
             </value>
         </assignmentItems>
         <connector>
-            <targetReference>isInterpreterMethodCheck</targetReference>
+            <targetReference>Is_Account</targetReference>
         </connector>
     </assignments>
     <assignments>
         <name>Store_Interpreter_method_value</name>
         <label>Store Interpreter method value</label>
-        <locationX>182</locationX>
-        <locationY>1082</locationY>
+        <locationX>50</locationX>
+        <locationY>2090</locationY>
         <assignmentItems>
             <assignToReference>getRequest.InterpretationMethod__c</assignToReference>
             <operator>Assign</operator>
@@ -146,6 +174,14 @@
         </value>
     </choices>
     <choices>
+        <name>Date</name>
+        <choiceText>Tid</choiceText>
+        <dataType>String</dataType>
+        <value>
+            <stringValue>Tid</stringValue>
+        </value>
+    </choices>
+    <choices>
         <name>Description</name>
         <choiceText>Tilleggsopplysninger</choiceText>
         <dataType>String</dataType>
@@ -170,11 +206,27 @@
         </value>
     </choices>
     <choices>
+        <name>Owner</name>
+        <choiceText>Eier</choiceText>
+        <dataType>String</dataType>
+        <value>
+            <stringValue>Eier</stringValue>
+        </value>
+    </choices>
+    <choices>
         <name>ScreenInterpreter</name>
         <choiceText>Skjermtolk</choiceText>
         <dataType>String</dataType>
         <value>
             <stringValue>ScreenInterpreter</stringValue>
+        </value>
+    </choices>
+    <choices>
+        <name>ServiceTerritory</name>
+        <choiceText>Tjenesterområdet</choiceText>
+        <dataType>String</dataType>
+        <value>
+            <stringValue>Tjenesterområdet</stringValue>
         </value>
     </choices>
     <choices>
@@ -188,8 +240,8 @@
     <decisions>
         <name>Check_Request</name>
         <label>Check Request</label>
-        <locationX>534</locationX>
-        <locationY>242</locationY>
+        <locationX>336</locationX>
+        <locationY>542</locationY>
         <defaultConnector>
             <targetReference>Cannot_update_Screen</targetReference>
         </defaultConnector>
@@ -218,12 +270,37 @@
         </rules>
     </decisions>
     <decisions>
+        <name>Is_Account</name>
+        <label>Is Account?</label>
+        <locationX>182</locationX>
+        <locationY>1166</locationY>
+        <defaultConnector>
+            <targetReference>isOwnerCheck</targetReference>
+        </defaultConnector>
+        <defaultConnectorLabel>Not Account</defaultConnectorLabel>
+        <rules>
+            <name>Is_Account_Check</name>
+            <conditionLogic>and</conditionLogic>
+            <conditions>
+                <leftValueReference>isAccount</leftValueReference>
+                <operator>EqualTo</operator>
+                <rightValue>
+                    <booleanValue>true</booleanValue>
+                </rightValue>
+            </conditions>
+            <connector>
+                <targetReference>getPerson</targetReference>
+            </connector>
+            <label>IsAccountCheck</label>
+        </rules>
+    </decisions>
+    <decisions>
         <name>Is_Dispatcher</name>
         <label>Is Dispatcher?</label>
-        <locationX>314</locationX>
-        <locationY>566</locationY>
+        <locationX>182</locationX>
+        <locationY>866</locationY>
         <defaultConnector>
-            <targetReference>isInterpreterMethodCheck</targetReference>
+            <targetReference>Is_Account</targetReference>
         </defaultConnector>
         <defaultConnectorLabel>Not Dispatcher</defaultConnectorLabel>
         <rules>
@@ -241,27 +318,51 @@
             </connector>
             <label>isDispatcherCheck</label>
         </rules>
+    </decisions>
+    <decisions>
+        <name>Is_the_request_approved</name>
+        <label>Is the request status none?</label>
+        <locationX>336</locationX>
+        <locationY>242</locationY>
+        <defaultConnector>
+            <targetReference>Check_Request</targetReference>
+        </defaultConnector>
+        <defaultConnectorLabel>Yes</defaultConnectorLabel>
         <rules>
-            <name>isAccountCheck</name>
+            <name>No</name>
             <conditionLogic>and</conditionLogic>
             <conditions>
-                <leftValueReference>isAccount</leftValueReference>
-                <operator>EqualTo</operator>
+                <leftValueReference>getRequest.Status__c</leftValueReference>
+                <operator>NotEqualTo</operator>
                 <rightValue>
-                    <booleanValue>true</booleanValue>
+                    <stringValue>Åpen</stringValue>
+                </rightValue>
+            </conditions>
+            <conditions>
+                <leftValueReference>getRequest.Status__c</leftValueReference>
+                <operator>NotEqualTo</operator>
+                <rightValue>
+                    <stringValue>Avlyst</stringValue>
+                </rightValue>
+            </conditions>
+            <conditions>
+                <leftValueReference>getRequest.Status__c</leftValueReference>
+                <operator>NotEqualTo</operator>
+                <rightValue>
+                    <stringValue>Annullert</stringValue>
                 </rightValue>
             </conditions>
             <connector>
-                <targetReference>getPerson</targetReference>
+                <targetReference>getServiceAppointment</targetReference>
             </connector>
-            <label>isAccountCheck</label>
+            <label>No</label>
         </rules>
     </decisions>
     <decisions>
         <name>isInterpreterMethodCheck</name>
         <label>isInterpreterMethodCheck</label>
-        <locationX>314</locationX>
-        <locationY>974</locationY>
+        <locationX>182</locationX>
+        <locationY>1982</locationY>
         <defaultConnector>
             <targetReference>UpdateChildRecords</targetReference>
         </defaultConnector>
@@ -282,41 +383,118 @@
             <label>isInterpretermethodChecked</label>
         </rules>
     </decisions>
+    <decisions>
+        <name>isOwnerCheck</name>
+        <label>isOwnerCheck</label>
+        <locationX>182</locationX>
+        <locationY>1574</locationY>
+        <defaultConnector>
+            <targetReference>isInterpreterMethodCheck</targetReference>
+        </defaultConnector>
+        <defaultConnectorLabel>No</defaultConnectorLabel>
+        <rules>
+            <name>Yes</name>
+            <conditionLogic>and</conditionLogic>
+            <conditions>
+                <leftValueReference>isOwner</leftValueReference>
+                <operator>EqualTo</operator>
+                <rightValue>
+                    <booleanValue>true</booleanValue>
+                </rightValue>
+            </conditions>
+            <connector>
+                <targetReference>Get_Group_From_Owner_List</targetReference>
+            </connector>
+            <label>Yes</label>
+        </rules>
+    </decisions>
     <environments>Default</environments>
+    <formulas>
+        <name>disableDateIfStatusIsOpen</name>
+        <dataType>Boolean</dataType>
+        <expression>NOT(ISPICKVAL({!getServiceAppointment.Status}, &apos;None&apos;))</expression>
+    </formulas>
     <formulas>
         <name>isAccount</name>
         <dataType>Boolean</dataType>
-        <expression>CONTAINS({!ChosenFields}, {!Account})</expression>
+        <expression>OR(
+    CONTAINS({!ChosenFields}, {!Account}),
+    CONTAINS({!ChosenFieldsTime}, {!Account}),
+    CONTAINS({!ChosenFieldsOwner}, {!Account})
+)</expression>
     </formulas>
     <formulas>
         <name>isAddress</name>
         <dataType>Boolean</dataType>
-        <expression>CONTAINS({!ChosenFields}, {!Address})</expression>
+        <expression>OR(
+    CONTAINS({!ChosenFields}, {!Address}),
+    CONTAINS({!ChosenFieldsTime}, {!Address}),
+    CONTAINS({!ChosenFieldsOwner}, {!Address})
+)</expression>
+    </formulas>
+    <formulas>
+        <name>isDate</name>
+        <dataType>Boolean</dataType>
+        <expression>OR(
+    CONTAINS({!ChosenFields}, {!Date}),
+    CONTAINS({!ChosenFieldsTime}, {!Date}),
+CONTAINS({!ChosenFieldsOwner}, {!Date})
+)</expression>
     </formulas>
     <formulas>
         <name>isDescription</name>
         <dataType>Boolean</dataType>
-        <expression>CONTAINS({!ChosenFields}, {!Description})</expression>
+        <expression>OR(
+    CONTAINS({!ChosenFields}, {!Description}),
+    CONTAINS({!ChosenFieldsTime}, {!Description}),
+CONTAINS({!ChosenFieldsOwner}, {!Description})
+
+)</expression>
     </formulas>
     <formulas>
         <name>isDispatcher</name>
         <dataType>Boolean</dataType>
-        <expression>CONTAINS({!ChosenFields}, {!Dispatcher})</expression>
+        <expression>OR(
+    CONTAINS({!ChosenFields}, {!Dispatcher}),
+    CONTAINS({!ChosenFieldsTime}, {!Dispatcher}),
+CONTAINS({!ChosenFieldsTime}, {!Dispatcher})
+)</expression>
     </formulas>
     <formulas>
         <name>isInterpreterMethod</name>
         <dataType>Boolean</dataType>
-        <expression>CONTAINS({!ChosenFields}, {!InterpretationMethod})</expression>
+        <expression>OR(
+    CONTAINS({!ChosenFields}, {!InterpretationMethod}),
+    CONTAINS({!ChosenFieldsTime}, {!InterpretationMethod}),
+CONTAINS({!ChosenFieldsOwner}, {!InterpretationMethod})
+)</expression>
+    </formulas>
+    <formulas>
+        <name>isOwner</name>
+        <dataType>Boolean</dataType>
+        <expression>OR(
+    CONTAINS({!ChosenFields}, {!Owner}),
+    CONTAINS({!ChosenFieldsTime}, {!Owner}),
+CONTAINS({!ChosenFieldsOwner}, {!Owner})
+)</expression>
     </formulas>
     <formulas>
         <name>isScreenInterpreter</name>
         <dataType>Boolean</dataType>
-        <expression>CONTAINS({!ChosenFields}, {!ScreenInterpreter})</expression>
+        <expression>OR(
+    CONTAINS({!ChosenFields}, {!ScreenInterpreter}),
+    CONTAINS({!ChosenFieldsTime}, {!ScreenInterpreter}),
+CONTAINS({!ChosenFieldsOwner}, {!ScreenInterpreter})
+)</expression>
     </formulas>
     <formulas>
         <name>isSubject</name>
         <dataType>Boolean</dataType>
-        <expression>CONTAINS({!ChosenFields}, {!Subject})</expression>
+        <expression>OR(
+    CONTAINS({!ChosenFields}, {!Subject}),
+    CONTAINS({!ChosenFieldsTime}, {!Subject}),
+CONTAINS({!ChosenFieldsOwner}, {!Subject})
+)</expression>
     </formulas>
     <interviewLabel>HOT_UpdateChildsFromRequest {!$Flow.CurrentDateTime}</interviewLabel>
     <label>HOT_UpdateChildsFromRequest</label>
@@ -340,10 +518,38 @@
     </processMetadataValues>
     <processType>Flow</processType>
     <recordLookups>
+        <name>Get_Group_From_Owner_List</name>
+        <label>Get Group From Owner List</label>
+        <locationX>50</locationX>
+        <locationY>1682</locationY>
+        <assignNullValuesIfNoRecordsFound>false</assignNullValuesIfNoRecordsFound>
+        <connector>
+            <targetReference>Owner_list_assign_to_ownerId</targetReference>
+        </connector>
+        <filterLogic>and</filterLogic>
+        <filters>
+            <field>Name</field>
+            <operator>EqualTo</operator>
+            <value>
+                <elementReference>getRequest.Owner_List__c</elementReference>
+            </value>
+        </filters>
+        <filters>
+            <field>Type</field>
+            <operator>EqualTo</operator>
+            <value>
+                <stringValue>Queue</stringValue>
+            </value>
+        </filters>
+        <getFirstRecordOnly>true</getFirstRecordOnly>
+        <object>Group</object>
+        <storeOutputAutomatically>true</storeOutputAutomatically>
+    </recordLookups>
+    <recordLookups>
         <name>getPerson</name>
         <label>getPerson</label>
-        <locationX>314</locationX>
-        <locationY>674</locationY>
+        <locationX>50</locationX>
+        <locationY>1274</locationY>
         <assignNullValuesIfNoRecordsFound>false</assignNullValuesIfNoRecordsFound>
         <connector>
             <targetReference>Store_Account_Value</targetReference>
@@ -363,11 +569,11 @@
     <recordLookups>
         <name>getRequest</name>
         <label>getRequest</label>
-        <locationX>534</locationX>
+        <locationX>336</locationX>
         <locationY>134</locationY>
         <assignNullValuesIfNoRecordsFound>false</assignNullValuesIfNoRecordsFound>
         <connector>
-            <targetReference>Check_Request</targetReference>
+            <targetReference>Is_the_request_approved</targetReference>
         </connector>
         <filterLogic>and</filterLogic>
         <filters>
@@ -381,11 +587,32 @@
         <object>HOT_Request__c</object>
         <storeOutputAutomatically>true</storeOutputAutomatically>
     </recordLookups>
+    <recordLookups>
+        <name>getServiceAppointment</name>
+        <label>getServiceAppointment</label>
+        <locationX>204</locationX>
+        <locationY>350</locationY>
+        <assignNullValuesIfNoRecordsFound>false</assignNullValuesIfNoRecordsFound>
+        <connector>
+            <targetReference>Check_Request</targetReference>
+        </connector>
+        <filterLogic>and</filterLogic>
+        <filters>
+            <field>HOT_Request__c</field>
+            <operator>EqualTo</operator>
+            <value>
+                <elementReference>getRequest.Id</elementReference>
+            </value>
+        </filters>
+        <getFirstRecordOnly>true</getFirstRecordOnly>
+        <object>ServiceAppointment</object>
+        <storeOutputAutomatically>true</storeOutputAutomatically>
+    </recordLookups>
     <screens>
         <name>Cannot_update_Screen</name>
         <label>Cannot update Screen</label>
-        <locationX>754</locationX>
-        <locationY>350</locationY>
+        <locationX>490</locationX>
+        <locationY>650</locationY>
         <allowBack>false</allowBack>
         <allowFinish>true</allowFinish>
         <allowPause>false</allowPause>
@@ -400,14 +627,19 @@
     <screens>
         <name>ChooseFieldScreen</name>
         <label>ChooseFieldScreen</label>
-        <locationX>314</locationX>
-        <locationY>350</locationY>
+        <locationX>182</locationX>
+        <locationY>650</locationY>
         <allowBack>false</allowBack>
         <allowFinish>true</allowFinish>
         <allowPause>false</allowPause>
         <connector>
             <targetReference>NewValuesScreen</targetReference>
         </connector>
+        <fields>
+            <name>Display_warning_text</name>
+            <fieldText>&lt;p&gt;&lt;span style=&quot;background-color: rgb(255, 255, 255); font-size: 16px; color: rgb(24, 24, 24);&quot;&gt;OBS! Ved å endre verdiene her så endrer du verdiene på alle underliggende arbeidsordre, arbeidsordrelinjer og oppdrag.&lt;/span&gt;&lt;/p&gt;&lt;p&gt;&lt;br&gt;&lt;/p&gt;&lt;p&gt;Tid (Kan bare endres om status på oppdrag er åpen eller frigitt til frilanstolk).&lt;/p&gt;</fieldText>
+            <fieldType>DisplayText</fieldType>
+        </fields>
         <fields>
             <name>ChosenFields</name>
             <choiceReferences>Address</choiceReferences>
@@ -422,6 +654,125 @@
             <fieldType>MultiSelectCheckboxes</fieldType>
             <inputsOnNextNavToAssocScrn>UseStoredValues</inputsOnNextNavToAssocScrn>
             <isRequired>true</isRequired>
+            <visibilityRule>
+                <conditionLogic>and</conditionLogic>
+                <conditions>
+                    <leftValueReference>getServiceAppointment.Status</leftValueReference>
+                    <operator>NotEqualTo</operator>
+                    <rightValue>
+                        <stringValue>None</stringValue>
+                    </rightValue>
+                </conditions>
+                <conditions>
+                    <leftValueReference>getServiceAppointment.Status</leftValueReference>
+                    <operator>NotEqualTo</operator>
+                    <rightValue>
+                        <stringValue>Released to Freelance</stringValue>
+                    </rightValue>
+                </conditions>
+                <conditions>
+                    <leftValueReference>getRequest.Status__c</leftValueReference>
+                    <operator>NotEqualTo</operator>
+                    <rightValue>
+                        <stringValue>Åpen</stringValue>
+                    </rightValue>
+                </conditions>
+            </visibilityRule>
+        </fields>
+        <fields>
+            <name>ChosenFieldsTime</name>
+            <choiceReferences>Address</choiceReferences>
+            <choiceReferences>Subject</choiceReferences>
+            <choiceReferences>Description</choiceReferences>
+            <choiceReferences>ScreenInterpreter</choiceReferences>
+            <choiceReferences>Dispatcher</choiceReferences>
+            <choiceReferences>Account</choiceReferences>
+            <choiceReferences>InterpretationMethod</choiceReferences>
+            <choiceReferences>Owner</choiceReferences>
+            <choiceReferences>Date</choiceReferences>
+            <dataType>String</dataType>
+            <fieldText>Velg felter</fieldText>
+            <fieldType>MultiSelectCheckboxes</fieldType>
+            <inputsOnNextNavToAssocScrn>UseStoredValues</inputsOnNextNavToAssocScrn>
+            <isRequired>true</isRequired>
+            <visibilityRule>
+                <conditionLogic>(1 OR 2 OR 3) AND 4</conditionLogic>
+                <conditions>
+                    <leftValueReference>getServiceAppointment.Status</leftValueReference>
+                    <operator>EqualTo</operator>
+                    <rightValue>
+                        <stringValue>None</stringValue>
+                    </rightValue>
+                </conditions>
+                <conditions>
+                    <leftValueReference>getServiceAppointment.Status</leftValueReference>
+                    <operator>EqualTo</operator>
+                    <rightValue>
+                        <stringValue>Released to Freelance</stringValue>
+                    </rightValue>
+                </conditions>
+                <conditions>
+                    <leftValueReference>getRequest.Status__c</leftValueReference>
+                    <operator>EqualTo</operator>
+                    <rightValue>
+                        <stringValue>Åpen</stringValue>
+                    </rightValue>
+                </conditions>
+                <conditions>
+                    <leftValueReference>getRequest.IsSerieoppdrag__c</leftValueReference>
+                    <operator>EqualTo</operator>
+                    <rightValue>
+                        <booleanValue>false</booleanValue>
+                    </rightValue>
+                </conditions>
+            </visibilityRule>
+        </fields>
+        <fields>
+            <name>ChosenFieldsOwner</name>
+            <choiceReferences>Address</choiceReferences>
+            <choiceReferences>Subject</choiceReferences>
+            <choiceReferences>Description</choiceReferences>
+            <choiceReferences>ScreenInterpreter</choiceReferences>
+            <choiceReferences>Dispatcher</choiceReferences>
+            <choiceReferences>Account</choiceReferences>
+            <choiceReferences>InterpretationMethod</choiceReferences>
+            <choiceReferences>Owner</choiceReferences>
+            <dataType>String</dataType>
+            <fieldText>Velg felter</fieldText>
+            <fieldType>MultiSelectCheckboxes</fieldType>
+            <inputsOnNextNavToAssocScrn>UseStoredValues</inputsOnNextNavToAssocScrn>
+            <isRequired>true</isRequired>
+            <visibilityRule>
+                <conditionLogic>(1 OR 2 OR 3) AND 4</conditionLogic>
+                <conditions>
+                    <leftValueReference>getServiceAppointment.Status</leftValueReference>
+                    <operator>EqualTo</operator>
+                    <rightValue>
+                        <stringValue>None</stringValue>
+                    </rightValue>
+                </conditions>
+                <conditions>
+                    <leftValueReference>getServiceAppointment.Status</leftValueReference>
+                    <operator>EqualTo</operator>
+                    <rightValue>
+                        <stringValue>Released to Freelance</stringValue>
+                    </rightValue>
+                </conditions>
+                <conditions>
+                    <leftValueReference>getRequest.Status__c</leftValueReference>
+                    <operator>EqualTo</operator>
+                    <rightValue>
+                        <stringValue>Åpen</stringValue>
+                    </rightValue>
+                </conditions>
+                <conditions>
+                    <leftValueReference>getRequest.IsSerieoppdrag__c</leftValueReference>
+                    <operator>EqualTo</operator>
+                    <rightValue>
+                        <booleanValue>true</booleanValue>
+                    </rightValue>
+                </conditions>
+            </visibilityRule>
         </fields>
         <showFooter>true</showFooter>
         <showHeader>true</showHeader>
@@ -429,8 +780,8 @@
     <screens>
         <name>NewValuesScreen</name>
         <label>NewValuesScreen</label>
-        <locationX>314</locationX>
-        <locationY>458</locationY>
+        <locationX>182</locationX>
+        <locationY>758</locationY>
         <allowBack>true</allowBack>
         <allowFinish>true</allowFinish>
         <allowPause>false</allowPause>
@@ -477,10 +828,24 @@
             <isRequired>false</isRequired>
             <regionContainerType>SectionWithoutHeader</regionContainerType>
             <visibilityRule>
-                <conditionLogic>and</conditionLogic>
+                <conditionLogic>or</conditionLogic>
                 <conditions>
                     <leftValueReference>ChosenFields</leftValueReference>
                     <operator>Contains</operator>
+                    <rightValue>
+                        <elementReference>Address</elementReference>
+                    </rightValue>
+                </conditions>
+                <conditions>
+                    <leftValueReference>ChosenFieldsTime</leftValueReference>
+                    <operator>EqualTo</operator>
+                    <rightValue>
+                        <elementReference>Address</elementReference>
+                    </rightValue>
+                </conditions>
+                <conditions>
+                    <leftValueReference>ChosenFieldsOwner</leftValueReference>
+                    <operator>EqualTo</operator>
                     <rightValue>
                         <elementReference>Address</elementReference>
                     </rightValue>
@@ -510,10 +875,24 @@
             <isRequired>false</isRequired>
             <regionContainerType>SectionWithoutHeader</regionContainerType>
             <visibilityRule>
-                <conditionLogic>and</conditionLogic>
+                <conditionLogic>or</conditionLogic>
                 <conditions>
                     <leftValueReference>ChosenFields</leftValueReference>
                     <operator>Contains</operator>
+                    <rightValue>
+                        <elementReference>Subject</elementReference>
+                    </rightValue>
+                </conditions>
+                <conditions>
+                    <leftValueReference>ChosenFieldsTime</leftValueReference>
+                    <operator>EqualTo</operator>
+                    <rightValue>
+                        <elementReference>Subject</elementReference>
+                    </rightValue>
+                </conditions>
+                <conditions>
+                    <leftValueReference>ChosenFieldsOwner</leftValueReference>
+                    <operator>EqualTo</operator>
                     <rightValue>
                         <elementReference>Subject</elementReference>
                     </rightValue>
@@ -551,6 +930,20 @@
                         <elementReference>Description</elementReference>
                     </rightValue>
                 </conditions>
+                <conditions>
+                    <leftValueReference>ChosenFieldsOwner</leftValueReference>
+                    <operator>EqualTo</operator>
+                    <rightValue>
+                        <elementReference>Description</elementReference>
+                    </rightValue>
+                </conditions>
+                <conditions>
+                    <leftValueReference>ChosenFieldsTime</leftValueReference>
+                    <operator>EqualTo</operator>
+                    <rightValue>
+                        <elementReference>Description</elementReference>
+                    </rightValue>
+                </conditions>
             </visibilityRule>
         </fields>
         <fields>
@@ -576,10 +969,24 @@
             <isRequired>false</isRequired>
             <regionContainerType>SectionWithoutHeader</regionContainerType>
             <visibilityRule>
-                <conditionLogic>and</conditionLogic>
+                <conditionLogic>or</conditionLogic>
                 <conditions>
                     <leftValueReference>ChosenFields</leftValueReference>
                     <operator>Contains</operator>
+                    <rightValue>
+                        <elementReference>ScreenInterpreter</elementReference>
+                    </rightValue>
+                </conditions>
+                <conditions>
+                    <leftValueReference>ChosenFieldsTime</leftValueReference>
+                    <operator>EqualTo</operator>
+                    <rightValue>
+                        <elementReference>ScreenInterpreter</elementReference>
+                    </rightValue>
+                </conditions>
+                <conditions>
+                    <leftValueReference>ChosenFieldsOwner</leftValueReference>
+                    <operator>EqualTo</operator>
                     <rightValue>
                         <elementReference>ScreenInterpreter</elementReference>
                     </rightValue>
@@ -623,7 +1030,7 @@
                     <inputParameters>
                         <name>required</name>
                         <value>
-                            <booleanValue>true</booleanValue>
+                            <booleanValue>false</booleanValue>
                         </value>
                     </inputParameters>
                     <inputsOnNextNavToAssocScrn>UseStoredValues</inputsOnNextNavToAssocScrn>
@@ -641,10 +1048,24 @@
             <isRequired>false</isRequired>
             <regionContainerType>SectionWithoutHeader</regionContainerType>
             <visibilityRule>
-                <conditionLogic>and</conditionLogic>
+                <conditionLogic>or</conditionLogic>
                 <conditions>
                     <leftValueReference>ChosenFields</leftValueReference>
                     <operator>Contains</operator>
+                    <rightValue>
+                        <elementReference>Dispatcher</elementReference>
+                    </rightValue>
+                </conditions>
+                <conditions>
+                    <leftValueReference>ChosenFieldsTime</leftValueReference>
+                    <operator>EqualTo</operator>
+                    <rightValue>
+                        <elementReference>Dispatcher</elementReference>
+                    </rightValue>
+                </conditions>
+                <conditions>
+                    <leftValueReference>ChosenFieldsOwner</leftValueReference>
+                    <operator>EqualTo</operator>
                     <rightValue>
                         <elementReference>Dispatcher</elementReference>
                     </rightValue>
@@ -700,10 +1121,24 @@
             <isRequired>false</isRequired>
             <regionContainerType>SectionWithoutHeader</regionContainerType>
             <visibilityRule>
-                <conditionLogic>and</conditionLogic>
+                <conditionLogic>or</conditionLogic>
                 <conditions>
                     <leftValueReference>ChosenFields</leftValueReference>
                     <operator>Contains</operator>
+                    <rightValue>
+                        <elementReference>Account</elementReference>
+                    </rightValue>
+                </conditions>
+                <conditions>
+                    <leftValueReference>ChosenFieldsTime</leftValueReference>
+                    <operator>EqualTo</operator>
+                    <rightValue>
+                        <elementReference>Account</elementReference>
+                    </rightValue>
+                </conditions>
+                <conditions>
+                    <leftValueReference>ChosenFieldsOwner</leftValueReference>
+                    <operator>EqualTo</operator>
                     <rightValue>
                         <elementReference>Account</elementReference>
                     </rightValue>
@@ -759,12 +1194,117 @@
             <isRequired>false</isRequired>
             <regionContainerType>SectionWithoutHeader</regionContainerType>
             <visibilityRule>
-                <conditionLogic>and</conditionLogic>
+                <conditionLogic>or</conditionLogic>
                 <conditions>
                     <leftValueReference>ChosenFields</leftValueReference>
                     <operator>Contains</operator>
                     <rightValue>
                         <elementReference>InterpretationMethod</elementReference>
+                    </rightValue>
+                </conditions>
+                <conditions>
+                    <leftValueReference>ChosenFieldsTime</leftValueReference>
+                    <operator>EqualTo</operator>
+                    <rightValue>
+                        <elementReference>InterpretationMethod</elementReference>
+                    </rightValue>
+                </conditions>
+                <conditions>
+                    <leftValueReference>ChosenFieldsOwner</leftValueReference>
+                    <operator>EqualTo</operator>
+                    <rightValue>
+                        <elementReference>InterpretationMethod</elementReference>
+                    </rightValue>
+                </conditions>
+            </visibilityRule>
+        </fields>
+        <fields>
+            <name>NewValuesScreen_Section8</name>
+            <fieldType>RegionContainer</fieldType>
+            <fields>
+                <name>NewValuesScreen_Section8_Column1</name>
+                <fieldType>Region</fieldType>
+                <fields>
+                    <name>ownerText</name>
+                    <fieldText>&lt;p&gt;Eier: {!getRequest.OwnerName__c} &lt;/p&gt;&lt;p&gt;&lt;br&gt;&lt;/p&gt;</fieldText>
+                    <fieldType>DisplayText</fieldType>
+                </fields>
+                <fields>
+                    <fieldType>ObjectProvided</fieldType>
+                    <inputsOnNextNavToAssocScrn>UseStoredValues</inputsOnNextNavToAssocScrn>
+                    <isRequired>false</isRequired>
+                    <objectFieldReference>getRequest.Owner_List__c</objectFieldReference>
+                </fields>
+                <inputParameters>
+                    <name>width</name>
+                    <value>
+                        <stringValue>12</stringValue>
+                    </value>
+                </inputParameters>
+                <isRequired>false</isRequired>
+            </fields>
+            <isRequired>false</isRequired>
+            <regionContainerType>SectionWithoutHeader</regionContainerType>
+            <visibilityRule>
+                <conditionLogic>or</conditionLogic>
+                <conditions>
+                    <leftValueReference>ChosenFields</leftValueReference>
+                    <operator>EqualTo</operator>
+                    <rightValue>
+                        <elementReference>Owner</elementReference>
+                    </rightValue>
+                </conditions>
+                <conditions>
+                    <leftValueReference>ChosenFieldsTime</leftValueReference>
+                    <operator>EqualTo</operator>
+                    <rightValue>
+                        <elementReference>Owner</elementReference>
+                    </rightValue>
+                </conditions>
+                <conditions>
+                    <leftValueReference>ChosenFieldsOwner</leftValueReference>
+                    <operator>EqualTo</operator>
+                    <rightValue>
+                        <elementReference>Owner</elementReference>
+                    </rightValue>
+                </conditions>
+            </visibilityRule>
+        </fields>
+        <fields>
+            <name>NewValuesScreen_Section9</name>
+            <fieldType>RegionContainer</fieldType>
+            <fields>
+                <name>NewValuesScreen_Section9_Column1</name>
+                <fieldType>Region</fieldType>
+                <fields>
+                    <fieldType>ObjectProvided</fieldType>
+                    <inputsOnNextNavToAssocScrn>UseStoredValues</inputsOnNextNavToAssocScrn>
+                    <isRequired>false</isRequired>
+                    <objectFieldReference>getRequest.StartTime__c</objectFieldReference>
+                </fields>
+                <fields>
+                    <fieldType>ObjectProvided</fieldType>
+                    <inputsOnNextNavToAssocScrn>UseStoredValues</inputsOnNextNavToAssocScrn>
+                    <isRequired>false</isRequired>
+                    <objectFieldReference>getRequest.EndTime__c</objectFieldReference>
+                </fields>
+                <inputParameters>
+                    <name>width</name>
+                    <value>
+                        <stringValue>12</stringValue>
+                    </value>
+                </inputParameters>
+                <isRequired>false</isRequired>
+            </fields>
+            <isRequired>false</isRequired>
+            <regionContainerType>SectionWithoutHeader</regionContainerType>
+            <visibilityRule>
+                <conditionLogic>and</conditionLogic>
+                <conditions>
+                    <leftValueReference>ChosenFieldsTime</leftValueReference>
+                    <operator>EqualTo</operator>
+                    <rightValue>
+                        <elementReference>Date</elementReference>
                     </rightValue>
                 </conditions>
             </visibilityRule>
@@ -773,7 +1313,7 @@
         <showHeader>true</showHeader>
     </screens>
     <start>
-        <locationX>408</locationX>
+        <locationX>210</locationX>
         <locationY>0</locationY>
         <connector>
             <targetReference>getRequest</targetReference>

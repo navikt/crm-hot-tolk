@@ -24,6 +24,12 @@
             </value>
         </inputParameters>
         <inputParameters>
+            <name>isDateChoice</name>
+            <value>
+                <elementReference>isDate</elementReference>
+            </value>
+        </inputParameters>
+        <inputParameters>
             <name>isDescriptionChoice</name>
             <value>
                 <elementReference>isDescription</elementReference>
@@ -138,7 +144,7 @@
             </value>
         </assignmentItems>
         <connector>
-            <targetReference>UpdateChildRecords</targetReference>
+            <targetReference>isDate_check</targetReference>
         </connector>
     </assignments>
     <assignments>
@@ -229,6 +235,14 @@
         <dataType>String</dataType>
         <value>
             <stringValue>Address</stringValue>
+        </value>
+    </choices>
+    <choices>
+        <name>Date</name>
+        <choiceText>Tid</choiceText>
+        <dataType>String</dataType>
+        <value>
+            <stringValue>Tid</stringValue>
         </value>
     </choices>
     <choices>
@@ -366,12 +380,37 @@
         </rules>
     </decisions>
     <decisions>
+        <name>isDate_check</name>
+        <label>isDate check</label>
+        <locationX>0</locationX>
+        <locationY>0</locationY>
+        <defaultConnector>
+            <targetReference>UpdateChildRecords</targetReference>
+        </defaultConnector>
+        <defaultConnectorLabel>Default Outcome</defaultConnectorLabel>
+        <rules>
+            <name>Yes</name>
+            <conditionLogic>and</conditionLogic>
+            <conditions>
+                <leftValueReference>isDate</leftValueReference>
+                <operator>EqualTo</operator>
+                <rightValue>
+                    <booleanValue>true</booleanValue>
+                </rightValue>
+            </conditions>
+            <connector>
+                <targetReference>UpdateChildRecords</targetReference>
+            </connector>
+            <label>Yes</label>
+        </rules>
+    </decisions>
+    <decisions>
         <name>isInterpreterMethodCheck</name>
         <label>isInterpreterMethodCheck</label>
         <locationX>0</locationX>
         <locationY>0</locationY>
         <defaultConnector>
-            <targetReference>UpdateChildRecords</targetReference>
+            <targetReference>isDate_check</targetReference>
         </defaultConnector>
         <defaultConnectorLabel>Not Interpreter</defaultConnectorLabel>
         <rules>
@@ -390,6 +429,45 @@
             <label>isInterpretermethodChecked</label>
         </rules>
     </decisions>
+    <decisions>
+        <name>Request_status_none</name>
+        <label>Request status none?</label>
+        <locationX>0</locationX>
+        <locationY>0</locationY>
+        <defaultConnector>
+            <targetReference>CheckRequestState</targetReference>
+        </defaultConnector>
+        <defaultConnectorLabel>Yes</defaultConnectorLabel>
+        <rules>
+            <name>No</name>
+            <conditionLogic>and</conditionLogic>
+            <conditions>
+                <leftValueReference>getRequest.Status__c</leftValueReference>
+                <operator>NotEqualTo</operator>
+                <rightValue>
+                    <stringValue>Åpen</stringValue>
+                </rightValue>
+            </conditions>
+            <conditions>
+                <leftValueReference>getRequest.Status__c</leftValueReference>
+                <operator>NotEqualTo</operator>
+                <rightValue>
+                    <stringValue>Avlyst</stringValue>
+                </rightValue>
+            </conditions>
+            <conditions>
+                <leftValueReference>getRequest.Status__c</leftValueReference>
+                <operator>NotEqualTo</operator>
+                <rightValue>
+                    <stringValue>Annullert</stringValue>
+                </rightValue>
+            </conditions>
+            <connector>
+                <targetReference>getServiceAppointment</targetReference>
+            </connector>
+            <label>No</label>
+        </rules>
+    </decisions>
     <description>In this version we removed the Dispatcher and Tolk method options from the screen,
         but we kept the paths with decisions. This was done because this is going to be a version
         0.5, so it is easier to re-add when the users decides they want it. If they don&apos;t want
@@ -400,37 +478,66 @@ Version two adds in Subject and uses workOrder for values on the screen instead 
     <formulas>
         <name>isAccount</name>
         <dataType>Boolean</dataType>
-        <expression>CONTAINS({!ChosenFields}, {!Account})</expression>
+        <expression>OR(
+    CONTAINS({!ChosenFields}, {!Account}),
+    CONTAINS({!ChosenFieldsTime}, {!Account})
+)</expression>
     </formulas>
     <formulas>
         <name>isAddress</name>
         <dataType>Boolean</dataType>
-        <expression>CONTAINS({!ChosenFields}, {!Address})</expression>
+        <expression>OR(
+    CONTAINS({!ChosenFields}, {!Address}),
+    CONTAINS({!ChosenFieldsTime}, {!Address})
+)</expression>
+    </formulas>
+    <formulas>
+        <name>isDate</name>
+        <dataType>Boolean</dataType>
+        <expression>OR(
+    CONTAINS({!ChosenFields}, {!Date}),
+    CONTAINS({!ChosenFieldsTime}, {!Date})
+)</expression>
     </formulas>
     <formulas>
         <name>isDescription</name>
         <dataType>Boolean</dataType>
-        <expression>CONTAINS({!ChosenFields}, {!Description})</expression>
+        <expression>OR(
+    CONTAINS({!ChosenFields}, {!Description}),
+    CONTAINS({!ChosenFieldsTime}, {!Description})
+)</expression>
     </formulas>
     <formulas>
         <name>isDispatcher</name>
         <dataType>Boolean</dataType>
-        <expression>CONTAINS({!ChosenFields}, {!Dispatcher})</expression>
+        <expression>OR(
+    CONTAINS({!ChosenFields}, {!Dispatcher}),
+    CONTAINS({!ChosenFieldsTime}, {!Dispatcher})
+)</expression>
     </formulas>
     <formulas>
         <name>isInterpreterMethod</name>
         <dataType>Boolean</dataType>
-        <expression>CONTAINS({!ChosenFields}, {!InterpretationMethod})</expression>
+        <expression>OR(
+    CONTAINS({!ChosenFields}, {!InterpretationMethod}),
+    CONTAINS({!ChosenFieldsTime}, {!InterpretationMethod})
+)</expression>
     </formulas>
     <formulas>
         <name>isScreenInterpreter</name>
         <dataType>Boolean</dataType>
-        <expression>CONTAINS({!ChosenFields}, {!ScreenInterpreter})</expression>
+        <expression>OR(
+    CONTAINS({!ChosenFields}, {!ScreenInterpreter}),
+    CONTAINS({!ChosenFieldsTime}, {!ScreenInterpreter})
+)</expression>
     </formulas>
     <formulas>
         <name>isSubject</name>
         <dataType>Boolean</dataType>
-        <expression>CONTAINS({!ChosenFields}, {!Subject})</expression>
+        <expression>OR(
+    CONTAINS({!ChosenFields}, {!Subject}),
+    CONTAINS({!ChosenFieldsTime}, {!Subject})
+)</expression>
     </formulas>
     <interviewLabel>HOT_UpdateChildsFromWorkOrder {!$Flow.CurrentDateTime}</interviewLabel>
     <label>HOT_UpdateChildsFromWorkOrder</label>
@@ -483,7 +590,7 @@ Version two adds in Subject and uses workOrder for values on the screen instead 
         <locationY>0</locationY>
         <assignNullValuesIfNoRecordsFound>false</assignNullValuesIfNoRecordsFound>
         <connector>
-            <targetReference>CheckRequestState</targetReference>
+            <targetReference>Request_status_none</targetReference>
         </connector>
         <filterLogic>and</filterLogic>
         <filters>
@@ -495,6 +602,27 @@ Version two adds in Subject and uses workOrder for values on the screen instead 
         </filters>
         <getFirstRecordOnly>true</getFirstRecordOnly>
         <object>HOT_Request__c</object>
+        <storeOutputAutomatically>true</storeOutputAutomatically>
+    </recordLookups>
+    <recordLookups>
+        <name>getServiceAppointment</name>
+        <label>getServiceAppointment</label>
+        <locationX>0</locationX>
+        <locationY>0</locationY>
+        <assignNullValuesIfNoRecordsFound>false</assignNullValuesIfNoRecordsFound>
+        <connector>
+            <targetReference>CheckRequestState</targetReference>
+        </connector>
+        <filterLogic>and</filterLogic>
+        <filters>
+            <field>HOT_Request__c</field>
+            <operator>EqualTo</operator>
+            <value>
+                <elementReference>getRequest.Id</elementReference>
+            </value>
+        </filters>
+        <getFirstRecordOnly>true</getFirstRecordOnly>
+        <object>ServiceAppointment</object>
         <storeOutputAutomatically>true</storeOutputAutomatically>
     </recordLookups>
     <screens>
@@ -537,6 +665,67 @@ Version two adds in Subject and uses workOrder for values on the screen instead 
             <fieldType>MultiSelectCheckboxes</fieldType>
             <inputsOnNextNavToAssocScrn>UseStoredValues</inputsOnNextNavToAssocScrn>
             <isRequired>true</isRequired>
+            <visibilityRule>
+                <conditionLogic>and</conditionLogic>
+                <conditions>
+                    <leftValueReference>getServiceAppointment.Status</leftValueReference>
+                    <operator>NotEqualTo</operator>
+                    <rightValue>
+                        <stringValue>None</stringValue>
+                    </rightValue>
+                </conditions>
+                <conditions>
+                    <leftValueReference>getServiceAppointment.Status</leftValueReference>
+                    <operator>NotEqualTo</operator>
+                    <rightValue>
+                        <stringValue>Released to Freelance</stringValue>
+                    </rightValue>
+                </conditions>
+                <conditions>
+                    <leftValueReference>getRequest.Status__c</leftValueReference>
+                    <operator>NotEqualTo</operator>
+                    <rightValue>
+                        <stringValue>Åpen</stringValue>
+                    </rightValue>
+                </conditions>
+            </visibilityRule>
+        </fields>
+        <fields>
+            <name>ChosenFieldsTime</name>
+            <choiceReferences>Address</choiceReferences>
+            <choiceReferences>Description</choiceReferences>
+            <choiceReferences>Subject</choiceReferences>
+            <choiceReferences>ScreenInterpreter</choiceReferences>
+            <choiceReferences>Date</choiceReferences>
+            <dataType>String</dataType>
+            <fieldText>Velg felter</fieldText>
+            <fieldType>MultiSelectCheckboxes</fieldType>
+            <inputsOnNextNavToAssocScrn>UseStoredValues</inputsOnNextNavToAssocScrn>
+            <isRequired>true</isRequired>
+            <visibilityRule>
+                <conditionLogic>or</conditionLogic>
+                <conditions>
+                    <leftValueReference>getServiceAppointment.Status</leftValueReference>
+                    <operator>EqualTo</operator>
+                    <rightValue>
+                        <stringValue>None</stringValue>
+                    </rightValue>
+                </conditions>
+                <conditions>
+                    <leftValueReference>getServiceAppointment.Status</leftValueReference>
+                    <operator>EqualTo</operator>
+                    <rightValue>
+                        <stringValue>Released to Freelance</stringValue>
+                    </rightValue>
+                </conditions>
+                <conditions>
+                    <leftValueReference>getRequest.Status__c</leftValueReference>
+                    <operator>EqualTo</operator>
+                    <rightValue>
+                        <stringValue>Åpen</stringValue>
+                    </rightValue>
+                </conditions>
+            </visibilityRule>
         </fields>
         <showFooter>true</showFooter>
         <showHeader>false</showHeader>
@@ -897,6 +1086,45 @@ Version two adds in Subject and uses workOrder for values on the screen instead 
                     <operator>EqualTo</operator>
                     <rightValue>
                         <elementReference>InterpretationMethod</elementReference>
+                    </rightValue>
+                </conditions>
+            </visibilityRule>
+        </fields>
+        <fields>
+            <name>NewValuesScreen_Section8</name>
+            <fieldType>RegionContainer</fieldType>
+            <fields>
+                <name>NewValuesScreen_Section8_Column1</name>
+                <fieldType>Region</fieldType>
+                <fields>
+                    <fieldType>ObjectProvided</fieldType>
+                    <inputsOnNextNavToAssocScrn>UseStoredValues</inputsOnNextNavToAssocScrn>
+                    <isRequired>false</isRequired>
+                    <objectFieldReference>getRequest.StartTime__c</objectFieldReference>
+                </fields>
+                <fields>
+                    <fieldType>ObjectProvided</fieldType>
+                    <inputsOnNextNavToAssocScrn>UseStoredValues</inputsOnNextNavToAssocScrn>
+                    <isRequired>false</isRequired>
+                    <objectFieldReference>getRequest.EndTime__c</objectFieldReference>
+                </fields>
+                <inputParameters>
+                    <name>width</name>
+                    <value>
+                        <stringValue>12</stringValue>
+                    </value>
+                </inputParameters>
+                <isRequired>false</isRequired>
+            </fields>
+            <isRequired>false</isRequired>
+            <regionContainerType>SectionWithoutHeader</regionContainerType>
+            <visibilityRule>
+                <conditionLogic>and</conditionLogic>
+                <conditions>
+                    <leftValueReference>ChosenFieldsTime</leftValueReference>
+                    <operator>EqualTo</operator>
+                    <rightValue>
+                        <elementReference>Date</elementReference>
                     </rightValue>
                 </conditions>
             </visibilityRule>
