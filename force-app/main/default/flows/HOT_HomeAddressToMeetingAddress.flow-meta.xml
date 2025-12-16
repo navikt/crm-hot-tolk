@@ -169,14 +169,14 @@
                 <leftValueReference>$Record.Person__r.INT_ResidentialAddress__c</leftValueReference>
                 <operator>NotEqualTo</operator>
                 <rightValue>
-                    <elementReference>$Record.MeetingStreet__c</elementReference>
+                    <elementReference>$Record.MeetingAddress__Street__s</elementReference>
                 </rightValue>
             </conditions>
             <conditions>
                 <leftValueReference>$Record.Person__r.INT_ResidentialZip__c</leftValueReference>
                 <operator>NotEqualTo</operator>
                 <rightValue>
-                    <elementReference>$Record.MeetingPostalCode__c</elementReference>
+                    <elementReference>$Record.MeetingAddress__PostalCode__s</elementReference>
                 </rightValue>
             </conditions>
             <conditions>
@@ -206,7 +206,8 @@
             <label>Meeting Address not equal Home Address</label>
         </rules>
     </decisions>
-    <description>When HOT_IsMeetingAddressSameAsHome is checked, add the Home address from the user to the meeting address</description>
+    <description>When HOT_IsMeetingAddressSameAsHome is checked, add the Home address from the user
+        to the meeting address</description>
     <environments>Default</environments>
     <interviewLabel>HOT_HomeToMeetingAddress_Flow {!$Flow.CurrentDateTime}</interviewLabel>
     <label>HOT_HomeAddressToMeetingAddress</label>

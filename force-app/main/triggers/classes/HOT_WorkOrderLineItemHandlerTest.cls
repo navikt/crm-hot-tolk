@@ -21,12 +21,12 @@ private class HOT_WorkOrderLineItemHandlerTest {
         HOT_Request__c request = HOT_TestDataFactory.createRequest('TEST', workType);
         request.ServiceTerritory__c = serviceTerritory.Id;
         request.Description__c = 'Description';
-        request.InterpretationStreet__c = 'Street 1';
-        request.InterpretationPostalCode__c = '1111';
-        request.InterpretationPostalCity__c = 'City 1';
-        request.MeetingStreet__c = 'Street 2';
-        request.MeetingPostalCode__c = '2222';
-        request.MeetingPostalCity__c = 'City 2';
+        request.InterpretationAddress__Street__s = 'Street 1';
+        request.InterpretationAddress__PostalCode__s = '1111';
+        request.InterpretationAddress__City__s = 'City 1';
+        request.MeetingAddress__Street__s = 'Street 2';
+        request.MeetingAddress__PostalCode__s = '2222';
+        request.MeetingAddress__City__s = 'City 2';
         request.NumberOfInterpreters__c = 5;
         request.PreferredResource1__c = resource1.Id;
         request.PreferredResource2__c = resource2.Id;
@@ -61,12 +61,12 @@ private class HOT_WorkOrderLineItemHandlerTest {
         insert workType;
         HOT_Request__c request = HOT_TestDataFactory.createRequest('TEST', workType);
         request.Description__c = 'Description';
-        request.InterpretationStreet__c = 'Street 1';
-        request.InterpretationPostalCode__c = '1111';
-        request.InterpretationPostalCity__c = 'City 1';
-        request.MeetingStreet__c = 'Street 2';
-        request.MeetingPostalCode__c = '2222';
-        request.MeetingPostalCity__c = 'City 2';
+        request.InterpretationAddress__Street__s = 'Street 1';
+        request.InterpretationAddress__PostalCode__s = '1111';
+        request.InterpretationAddress__City__s = 'City 1';
+        request.MeetingAddress__Street__s = 'Street 2';
+        request.MeetingAddress__PostalCode__s = '2222';
+        request.MeetingAddress__City__s = 'City 2';
         insert request;
         WorkOrder workOrder = HOT_TestDataFactory.createWorkOrder(request, workType);
         workOrder.Street = 'Street 2';
@@ -93,11 +93,11 @@ private class HOT_WorkOrderLineItemHandlerTest {
 
         System.assertEquals(request.Subject__c, workOrderLineItem.Subject, 'Could not set Subject');
         System.assertEquals(request.Description__c, workOrderLineItem.Description, 'Could not set Description');
-        System.assertEquals(request.MeetingStreet__c, workOrderLineItem.Street, 'Could not set Street');
+        System.assertEquals(request.MeetingAddress__Street__s, workOrderLineItem.Street, 'Could not set Street');
         System.assertEquals(
-            request.InterpretationStreet__c,
-            workOrderLineItem.HOT_InterpretationPostalStreet__c,
-            'Could not set HOT_InterpretationPostalStreet__c'
+            request.InterpretationAddress__Street__s,
+            workOrderLineItem.HOT_InterpretationAddress__Street__s,
+            'Could not set HOT_InterpretationAddress__Street__s'
         );
         System.assertEquals('New', workOrderLineItem.Status, 'Could not set default Status');
     }

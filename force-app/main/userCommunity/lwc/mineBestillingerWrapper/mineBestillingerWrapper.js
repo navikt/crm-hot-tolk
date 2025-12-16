@@ -116,7 +116,7 @@ export default class MineBestillingerWrapper extends NavigationMixin(LightningEl
             this.urlStateParameters = { level: '', id: '' };
         }
     }
-    @track request = { MeetingStreet__c: '', Subject__c: '' };
+    @track request = { MeetingAddress__Street__s: '', Subject__c: '' };
     @track workOrder = { HOT_AddressFormated__c: '', Subject: '' };
     @track workOrders = [];
     @track workOrderThreadId;
@@ -152,7 +152,7 @@ export default class MineBestillingerWrapper extends NavigationMixin(LightningEl
     }
 
     resetRequestAndWorkOrder() {
-        this.request = { MeetingStreet__c: '', Subject__c: '' };
+        this.request = { MeetingAddress__Street__s: '', Subject__c: '' };
         this.workOrder = { HOT_AddressFormated__c: '', Subject: '' };
     }
 
@@ -282,25 +282,25 @@ export default class MineBestillingerWrapper extends NavigationMixin(LightningEl
     setAddressFormat() {
         this.requestAddressToShow = this.request.IsScreenInterpreter__c
             ? 'Digitalt oppmøte'
-            : this.request.MeetingStreet__c +
+            : this.request.MeetingAddress__Street__s +
               ', ' +
-              this.request.MeetingPostalCode__c +
+              this.request.MeetingAddress__PostalCode__s +
               ' ' +
-              this.request.MeetingPostalCity__c;
+              this.request.MeetingAddress__City__s;
         this.requestInterpretationAddressToShow = this.request.IsScreenInterpreter__c
             ? 'Digitalt oppmøte'
-            : this.request.InterpretationStreet__c +
+            : this.request.InterpretationAddress__Street__s +
               ', ' +
-              this.request.InterpretationPostalCode__c +
+              this.request.InterpretationAddress__PostalCode__s +
               ' ' +
-              this.request.InterpretationPostalCity__c;
+              this.request.InterpretationAddress__City__s;
         this.workOrderInterpretationAddressToShow = this.request.IsScreenInterpreter__c
             ? 'Digitalt oppmøte'
-            : this.workOrder.HOT_InterpretationStreet__c +
+            : this.workOrder.HOT_InterpretationAddress__Street__s +
               ', ' +
-              this.workOrder.HOT_InterpretationPostalCode__c +
+              this.workOrder.HOT_InterpretationAddress__PostalCode__s +
               ' ' +
-              this.workOrder.HOT_InterpretationPostalCity__c;
+              this.workOrder.HOT_InterpretationAddress__City__s;
     }
 
     goBack() {

@@ -1,23 +1,14 @@
 import { LightningElement, track, api } from 'lwc';
 
-const INTERPRETATION_TYPE_MAP = {
-    SK: 'SK - Skrivetolking',
-    TS: 'TS - Tegnspråk',
-    TSBS: 'TSBS - Tegnspråk i begrenset synsfelt',
-    TSS: 'TSS - Tegn som støtte til munnavlesning',
-    TT: 'TT - Taletolking',
-    TTS: 'TTS - Taktilt tegnspråk'
-};
-
 export default class Hot_requestForm_request extends LightningElement {
     @track fieldValues = {
         Subject__c: '',
-        MeetingStreet__c: '',
-        MeetingPostalCity__c: '',
-        MeetingPostalCode__c: '',
-        InterpretationStreet__c: '',
-        InterpretationPostalCode__c: '',
-        InterpretationPostalCity__c: '',
+        MeetingAddress__Street__s: '',
+        MeetingAddress__City__s: '',
+        MeetingAddress__PostalCode__s: '',
+        InterpretationAddress__Street__s: '',
+        InterpretationAddress__PostalCode__s: '',
+        InterpretationAddress__City__s: '',
         Description__c: '',
         IsFileConsent__c: false,
         Source__c: 'Community',
@@ -26,7 +17,6 @@ export default class Hot_requestForm_request extends LightningElement {
         UserPreferredInterpreter__c: '',
         AssignmentType__c: '',
         UserInterpretationMethod__c: '',
-        InterpretationMethodType__c: '',
         Type__c: ''
     };
     isRequestTypeMe = false;
@@ -56,11 +46,6 @@ export default class Hot_requestForm_request extends LightningElement {
             if (this.componentValues[field] != null) {
                 this.componentValues[field] = JSON.parse(JSON.stringify(this.parentRequestComponentValues[field]));
             }
-        }
-        // Make sure that the field InterpretationMethodType__c is set to the same value as the field UserInterpretationMethod__c
-        if (this.fieldValues.UserInterpretationMethod__c) {
-            this.fieldValues.InterpretationMethodType__c =
-                INTERPRETATION_TYPE_MAP[this.fieldValues.UserInterpretationMethod__c] || null;
         }
         this.isRequestTypeMe = this.fieldValues.Type__c === 'Me';
         if (this.fieldValues.Type__c !== 'Company') {
@@ -120,7 +105,7 @@ export default class Hot_requestForm_request extends LightningElement {
         this.componentValues.physicalOrDigitalRadiobuttons[0].checked = !this.fieldValues.IsScreenInterpreter__c;
         this.componentValues.physicalOrDigitalRadiobuttons[1].checked = this.fieldValues.IsScreenInterpreter__c;
         this.componentValues.sameAddressRadioButtons[1].checked =
-            this.fieldValues.InterpretationStreet__c !== this.fieldValues.MeetingStreet__c;
+            this.fieldValues.InterpretationAddress__Street__s !== this.fieldValues.MeetingAddress__Street__s;
         this.componentValues.sameAddressRadioButtons[0].checked =
             !this.componentValues.sameAddressRadioButtons[1].checked;
         this.componentValues.isOptionalFields =
@@ -178,9 +163,9 @@ export default class Hot_requestForm_request extends LightningElement {
 
     setDependentFields() {
         if (this.sameLocation) {
-            this.fieldValues.InterpretationStreet__c = this.fieldValues.MeetingStreet__c;
-            this.fieldValues.InterpretationPostalCode__c = this.fieldValues.MeetingPostalCode__c;
-            this.fieldValues.InterpretationPostalCity__c = this.fieldValues.MeetingPostalCity__c;
+            this.fieldValues.InterpretationAddress__Street__s = this.fieldValues.MeetingAddress__Street__s;
+            this.fieldValues.InterpretationAddress__PostalCode__s = this.fieldValues.MeetingAddress__PostalCode__s;
+            this.fieldValues.InterpretationAddress__City__s = this.fieldValues.MeetingAddress__City__s;
         }
     }
 
@@ -236,12 +221,12 @@ export default class Hot_requestForm_request extends LightningElement {
 
     clearPhysicalAddressFields() {
         if (this.fieldValues.IsScreenInterpreter__c) {
-            this.fieldValues.MeetingStreet__c = '';
-            this.fieldValues.MeetingPostalCity__c = '';
-            this.fieldValues.MeetingPostalCode__c = '';
-            this.fieldValues.InterpretationStreet__c = '';
-            this.fieldValues.InterpretationPostalCode__c = '';
-            this.fieldValues.InterpretationPostalCity__c = '';
+            this.fieldValues.MeetingAddress__Street__s = '';
+            this.fieldValues.MeetingAddress__City__s = '';
+            this.fieldValues.MeetingAddress__PostalCode__s = '';
+            this.fieldValues.InterpretationAddress__Street__s = '';
+            this.fieldValues.InterpretationAddress__PostalCode__s = '';
+            this.fieldValues.InterpretationAddress__City__s = '';
             this.componentValues.sameAddressRadioButtons[0].checked = true;
             this.componentValues.sameAddressRadioButtons[1].checked = false;
             this.sameLocation = true;
@@ -249,19 +234,17 @@ export default class Hot_requestForm_request extends LightningElement {
     }
 
     clearInterpretationFields() {
-        this.fieldValues.InterpretationStreet__c = '';
-        this.fieldValues.InterpretationPostalCode__c = '';
-        this.fieldValues.InterpretationPostalCity__c = '';
+        this.fieldValues.InterpretationAddress__Street__s = '';
+        this.fieldValues.InterpretationAddress__PostalCode__s = '';
+        this.fieldValues.InterpretationAddress__City__s = '';
     }
 
     handleInterpretationPicklist(event) {
-        const selectedValue = event.detail.name;
         this.setFieldAndElementSelected(
             this.componentValues.interpretationChoices,
-            selectedValue,
+            event.detail.name,
             'UserInterpretationMethod__c'
         );
-        this.fieldValues.InterpretationMethodType__c = INTERPRETATION_TYPE_MAP[selectedValue] || null;
     }
 
     handleAssignmentPicklist(event) {
