@@ -24,5 +24,15 @@
         <operation>equals</operation>
         <value>Information,Warning</value>
     </filters>
+    <filters>
+        <field>IsActive__c</field>
+        <operation>equals</operation>
+        <value>1</value>
+    </filters>
+    <filters>
+        <field>RECORDTYPE</field>
+        <operation>equals</operation>
+        <value>HOT_Announcement__c.TolkEkstern</value>
+    </filters>
     <label>Alle aktive driftsmeldinger og varsler</label>
 </ListView>
