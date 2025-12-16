@@ -862,14 +862,14 @@ CONTAINS({!ChosenFieldsOwner}, {!Subject})
                 </conditions>
                 <conditions>
                     <leftValueReference>ChosenFieldsTime</leftValueReference>
-                    <operator>EqualTo</operator>
+                    <operator>Contains</operator>
                     <rightValue>
                         <elementReference>Address</elementReference>
                     </rightValue>
                 </conditions>
                 <conditions>
                     <leftValueReference>ChosenFieldsOwner</leftValueReference>
-                    <operator>EqualTo</operator>
+                    <operator>Contains</operator>
                     <rightValue>
                         <elementReference>Address</elementReference>
                     </rightValue>
@@ -909,14 +909,14 @@ CONTAINS({!ChosenFieldsOwner}, {!Subject})
                 </conditions>
                 <conditions>
                     <leftValueReference>ChosenFieldsTime</leftValueReference>
-                    <operator>EqualTo</operator>
+                    <operator>Contains</operator>
                     <rightValue>
                         <elementReference>Subject</elementReference>
                     </rightValue>
                 </conditions>
                 <conditions>
                     <leftValueReference>ChosenFieldsOwner</leftValueReference>
-                    <operator>EqualTo</operator>
+                    <operator>Contains</operator>
                     <rightValue>
                         <elementReference>Subject</elementReference>
                     </rightValue>
@@ -946,7 +946,7 @@ CONTAINS({!ChosenFieldsOwner}, {!Subject})
             <isRequired>false</isRequired>
             <regionContainerType>SectionWithoutHeader</regionContainerType>
             <visibilityRule>
-                <conditionLogic>and</conditionLogic>
+                <conditionLogic>or</conditionLogic>
                 <conditions>
                     <leftValueReference>ChosenFields</leftValueReference>
                     <operator>Contains</operator>
@@ -956,14 +956,14 @@ CONTAINS({!ChosenFieldsOwner}, {!Subject})
                 </conditions>
                 <conditions>
                     <leftValueReference>ChosenFieldsOwner</leftValueReference>
-                    <operator>EqualTo</operator>
+                    <operator>Contains</operator>
                     <rightValue>
                         <elementReference>Description</elementReference>
                     </rightValue>
                 </conditions>
                 <conditions>
                     <leftValueReference>ChosenFieldsTime</leftValueReference>
-                    <operator>EqualTo</operator>
+                    <operator>Contains</operator>
                     <rightValue>
                         <elementReference>Description</elementReference>
                     </rightValue>
@@ -1003,14 +1003,14 @@ CONTAINS({!ChosenFieldsOwner}, {!Subject})
                 </conditions>
                 <conditions>
                     <leftValueReference>ChosenFieldsTime</leftValueReference>
-                    <operator>EqualTo</operator>
+                    <operator>Contains</operator>
                     <rightValue>
                         <elementReference>ScreenInterpreter</elementReference>
                     </rightValue>
                 </conditions>
                 <conditions>
                     <leftValueReference>ChosenFieldsOwner</leftValueReference>
-                    <operator>EqualTo</operator>
+                    <operator>Contains</operator>
                     <rightValue>
                         <elementReference>ScreenInterpreter</elementReference>
                     </rightValue>
@@ -1082,14 +1082,14 @@ CONTAINS({!ChosenFieldsOwner}, {!Subject})
                 </conditions>
                 <conditions>
                     <leftValueReference>ChosenFieldsTime</leftValueReference>
-                    <operator>EqualTo</operator>
+                    <operator>Contains</operator>
                     <rightValue>
                         <elementReference>Dispatcher</elementReference>
                     </rightValue>
                 </conditions>
                 <conditions>
                     <leftValueReference>ChosenFieldsOwner</leftValueReference>
-                    <operator>EqualTo</operator>
+                    <operator>Contains</operator>
                     <rightValue>
                         <elementReference>Dispatcher</elementReference>
                     </rightValue>
@@ -1155,14 +1155,14 @@ CONTAINS({!ChosenFieldsOwner}, {!Subject})
                 </conditions>
                 <conditions>
                     <leftValueReference>ChosenFieldsTime</leftValueReference>
-                    <operator>EqualTo</operator>
+                    <operator>Contains</operator>
                     <rightValue>
                         <elementReference>Account</elementReference>
                     </rightValue>
                 </conditions>
                 <conditions>
                     <leftValueReference>ChosenFieldsOwner</leftValueReference>
-                    <operator>EqualTo</operator>
+                    <operator>Contains</operator>
                     <rightValue>
                         <elementReference>Account</elementReference>
                     </rightValue>
@@ -1228,14 +1228,14 @@ CONTAINS({!ChosenFieldsOwner}, {!Subject})
                 </conditions>
                 <conditions>
                     <leftValueReference>ChosenFieldsTime</leftValueReference>
-                    <operator>EqualTo</operator>
+                    <operator>Contains</operator>
                     <rightValue>
                         <elementReference>InterpretationMethod</elementReference>
                     </rightValue>
                 </conditions>
                 <conditions>
                     <leftValueReference>ChosenFieldsOwner</leftValueReference>
-                    <operator>EqualTo</operator>
+                    <operator>Contains</operator>
                     <rightValue>
                         <elementReference>InterpretationMethod</elementReference>
                     </rightValue>
@@ -1273,21 +1273,21 @@ CONTAINS({!ChosenFieldsOwner}, {!Subject})
                 <conditionLogic>or</conditionLogic>
                 <conditions>
                     <leftValueReference>ChosenFields</leftValueReference>
-                    <operator>EqualTo</operator>
+                    <operator>Contains</operator>
                     <rightValue>
                         <elementReference>Owner</elementReference>
                     </rightValue>
                 </conditions>
                 <conditions>
                     <leftValueReference>ChosenFieldsTime</leftValueReference>
-                    <operator>EqualTo</operator>
+                    <operator>Contains</operator>
                     <rightValue>
                         <elementReference>Owner</elementReference>
                     </rightValue>
                 </conditions>
                 <conditions>
                     <leftValueReference>ChosenFieldsOwner</leftValueReference>
-                    <operator>EqualTo</operator>
+                    <operator>Contains</operator>
                     <rightValue>
                         <elementReference>Owner</elementReference>
                     </rightValue>
@@ -1326,7 +1326,7 @@ CONTAINS({!ChosenFieldsOwner}, {!Subject})
                 <conditionLogic>and</conditionLogic>
                 <conditions>
                     <leftValueReference>ChosenFieldsTime</leftValueReference>
-                    <operator>EqualTo</operator>
+                    <operator>Contains</operator>
                     <rightValue>
                         <elementReference>Date</elementReference>
                     </rightValue>
