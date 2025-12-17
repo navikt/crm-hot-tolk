@@ -362,7 +362,7 @@ export default class MineBestillingerWrapper extends NavigationMixin(LightningEl
         this.isRequestOrWorkOrderDetails = this.isWorkOrderDetails || this.isRequestDetails;
         this.isSeries = this.workOrder?.HOT_Request__r?.IsSerieoppdrag__c;
         this.interpreter = this.workOrder?.HOT_Interpreters__c?.length > 1 ? 'Tolker' : 'Tolk';
-        this.showInterpretes =
+        this.showInterpreters =
             this.workOrder?.Status === 'Completed' ||
             this.workOrder?.Status === 'Partially Complete' ||
             this.workOrder?.Status === 'Dispatched';
