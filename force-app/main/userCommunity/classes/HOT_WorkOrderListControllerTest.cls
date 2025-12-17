@@ -156,11 +156,11 @@ private class HOT_WorkOrderListControllerTest {
             serviceAppointment.Id,
             serviceResource.Id
         );
+        Test.startTest();
         insert assignedResource;
         serviceAppointment.Status = 'Dispatched';
         update serviceAppointment;
 
-        Test.startTest();
         Profile communityProfile = [
             SELECT Name
             FROM Profile
