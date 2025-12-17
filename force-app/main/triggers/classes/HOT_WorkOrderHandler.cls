@@ -352,7 +352,8 @@ public without sharing class HOT_WorkOrderHandler extends MyTriggers {
                     InterpretationAddress__Street__s,
                     InterpretationAddress__PostalCode__s,
                     InterpretationAddress__City__s,
-                    OwnerId Subject__c,
+                    OwnerId,
+                    Subject__c,
                     ServiceTerritory__c
                 FROM HOT_Request__c
                 WHERE Id IN :requestIds
