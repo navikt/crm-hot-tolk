@@ -542,9 +542,9 @@ public without sharing class HOT_ServiceAppointmentHandler extends MyTriggers {
                     Street,
                     City,
                     PostalCode,
-                    HOT_InterpretationPostalCity__c,
-                    HOT_InterpretationPostalCode__c,
-                    HOT_InterpretationPostalStreet__c,
+                    HOT_InterpretationAddress__City__s,
+                    HOT_InterpretationAddress__PostalCode__s,
+                    HOT_InterpretationAddress__Street__s,
                     ServiceTerritoryId
                 FROM WorkOrderLineItem
                 WHERE Id IN :workOrderLineItemIds
@@ -580,31 +580,33 @@ public without sharing class HOT_ServiceAppointmentHandler extends MyTriggers {
                         .Description;
                 }
                 if (
-                    serviceAppointment.HOT_InterpretationPostalCity__c == null &&
-                    workOrderLineItems.get(serviceAppointment.ParentRecordId).HOT_InterpretationPostalCity__c != null
+                    serviceAppointment.HOT_InterpretationAddress__City__s == null &&
+                    workOrderLineItems.get(serviceAppointment.ParentRecordId).HOT_InterpretationAddress__City__s != null
                 ) {
-                    serviceAppointment.HOT_InterpretationPostalCity__c = workOrderLineItems.get(
+                    serviceAppointment.HOT_InterpretationAddress__City__s = workOrderLineItems.get(
                             serviceAppointment.ParentRecordId
                         )
-                        .HOT_InterpretationPostalCity__c;
+                        .HOT_InterpretationAddress__City__s;
                 }
                 if (
-                    serviceAppointment.HOT_InterpretationPostalCode__c == null &&
-                    workOrderLineItems.get(serviceAppointment.ParentRecordId).HOT_InterpretationPostalCode__c != null
+                    serviceAppointment.HOT_InterpretationAddress__PostalCode__s == null &&
+                    workOrderLineItems.get(serviceAppointment.ParentRecordId)
+                        .HOT_InterpretationAddress__PostalCode__s != null
                 ) {
-                    serviceAppointment.HOT_InterpretationPostalCode__c = workOrderLineItems.get(
+                    serviceAppointment.HOT_InterpretationAddress__PostalCode__s = workOrderLineItems.get(
                             serviceAppointment.ParentRecordId
                         )
-                        .HOT_InterpretationPostalCode__c;
+                        .HOT_InterpretationAddress__PostalCode__s;
                 }
                 if (
-                    serviceAppointment.HOT_InterpretationStreet__c == null &&
-                    workOrderLineItems.get(serviceAppointment.ParentRecordId).HOT_InterpretationPostalStreet__c != null
+                    serviceAppointment.HOT_InterpretationAddress__Street__s == null &&
+                    workOrderLineItems.get(serviceAppointment.ParentRecordId).HOT_InterpretationAddress__Street__s !=
+                    null
                 ) {
-                    serviceAppointment.HOT_InterpretationStreet__c = workOrderLineItems.get(
+                    serviceAppointment.HOT_InterpretationAddress__Street__s = workOrderLineItems.get(
                             serviceAppointment.ParentRecordId
                         )
-                        .HOT_InterpretationPostalStreet__c;
+                        .HOT_InterpretationAddress__Street__s;
                 }
                 if (
                     serviceAppointment.HOT_AssignmentType__c == 'Bildetolkvakt' ||
