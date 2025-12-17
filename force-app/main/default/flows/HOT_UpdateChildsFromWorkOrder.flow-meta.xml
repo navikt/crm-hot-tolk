@@ -815,10 +815,17 @@ Version two adds in Subject and uses workOrder for values on the screen instead 
             <isRequired>false</isRequired>
             <regionContainerType>SectionWithoutHeader</regionContainerType>
             <visibilityRule>
-                <conditionLogic>and</conditionLogic>
+                <conditionLogic>or</conditionLogic>
                 <conditions>
                     <leftValueReference>ChosenFields</leftValueReference>
-                    <operator>EqualTo</operator>
+                    <operator>Contains</operator>
+                    <rightValue>
+                        <elementReference>Address</elementReference>
+                    </rightValue>
+                </conditions>
+                <conditions>
+                    <leftValueReference>ChosenFieldsTime</leftValueReference>
+                    <operator>Contains</operator>
                     <rightValue>
                         <elementReference>Address</elementReference>
                     </rightValue>
@@ -848,10 +855,17 @@ Version two adds in Subject and uses workOrder for values on the screen instead 
             <isRequired>false</isRequired>
             <regionContainerType>SectionWithoutHeader</regionContainerType>
             <visibilityRule>
-                <conditionLogic>and</conditionLogic>
+                <conditionLogic>or</conditionLogic>
                 <conditions>
                     <leftValueReference>ChosenFields</leftValueReference>
-                    <operator>EqualTo</operator>
+                    <operator>Contains</operator>
+                    <rightValue>
+                        <elementReference>Subject</elementReference>
+                    </rightValue>
+                </conditions>
+                <conditions>
+                    <leftValueReference>ChosenFieldsTime</leftValueReference>
+                    <operator>Contains</operator>
                     <rightValue>
                         <elementReference>Subject</elementReference>
                     </rightValue>
@@ -881,10 +895,17 @@ Version two adds in Subject and uses workOrder for values on the screen instead 
             <isRequired>false</isRequired>
             <regionContainerType>SectionWithoutHeader</regionContainerType>
             <visibilityRule>
-                <conditionLogic>and</conditionLogic>
+                <conditionLogic>or</conditionLogic>
                 <conditions>
                     <leftValueReference>ChosenFields</leftValueReference>
-                    <operator>EqualTo</operator>
+                    <operator>Contains</operator>
+                    <rightValue>
+                        <elementReference>Description</elementReference>
+                    </rightValue>
+                </conditions>
+                <conditions>
+                    <leftValueReference>ChosenFieldsTime</leftValueReference>
+                    <operator>Contains</operator>
                     <rightValue>
                         <elementReference>Description</elementReference>
                     </rightValue>
@@ -914,10 +935,17 @@ Version two adds in Subject and uses workOrder for values on the screen instead 
             <isRequired>false</isRequired>
             <regionContainerType>SectionWithoutHeader</regionContainerType>
             <visibilityRule>
-                <conditionLogic>and</conditionLogic>
+                <conditionLogic>or</conditionLogic>
                 <conditions>
                     <leftValueReference>ChosenFields</leftValueReference>
-                    <operator>EqualTo</operator>
+                    <operator>Contains</operator>
+                    <rightValue>
+                        <elementReference>ScreenInterpreter</elementReference>
+                    </rightValue>
+                </conditions>
+                <conditions>
+                    <leftValueReference>ChosenFieldsTime</leftValueReference>
+                    <operator>Contains</operator>
                     <rightValue>
                         <elementReference>ScreenInterpreter</elementReference>
                     </rightValue>
@@ -979,10 +1007,17 @@ Version two adds in Subject and uses workOrder for values on the screen instead 
             <isRequired>false</isRequired>
             <regionContainerType>SectionWithoutHeader</regionContainerType>
             <visibilityRule>
-                <conditionLogic>and</conditionLogic>
+                <conditionLogic>or</conditionLogic>
                 <conditions>
                     <leftValueReference>ChosenFields</leftValueReference>
-                    <operator>EqualTo</operator>
+                    <operator>Contains</operator>
+                    <rightValue>
+                        <elementReference>Dispatcher</elementReference>
+                    </rightValue>
+                </conditions>
+                <conditions>
+                    <leftValueReference>ChosenFieldsTime</leftValueReference>
+                    <operator>Contains</operator>
                     <rightValue>
                         <elementReference>Dispatcher</elementReference>
                     </rightValue>
@@ -1038,10 +1073,17 @@ Version two adds in Subject and uses workOrder for values on the screen instead 
             <isRequired>false</isRequired>
             <regionContainerType>SectionWithoutHeader</regionContainerType>
             <visibilityRule>
-                <conditionLogic>and</conditionLogic>
+                <conditionLogic>or</conditionLogic>
                 <conditions>
                     <leftValueReference>ChosenFields</leftValueReference>
-                    <operator>EqualTo</operator>
+                    <operator>Contains</operator>
+                    <rightValue>
+                        <elementReference>Account</elementReference>
+                    </rightValue>
+                </conditions>
+                <conditions>
+                    <leftValueReference>ChosenFieldsTime</leftValueReference>
+                    <operator>Contains</operator>
                     <rightValue>
                         <elementReference>Account</elementReference>
                     </rightValue>
@@ -1097,10 +1139,17 @@ Version two adds in Subject and uses workOrder for values on the screen instead 
             <isRequired>false</isRequired>
             <regionContainerType>SectionWithoutHeader</regionContainerType>
             <visibilityRule>
-                <conditionLogic>and</conditionLogic>
+                <conditionLogic>or</conditionLogic>
                 <conditions>
                     <leftValueReference>ChosenFields</leftValueReference>
-                    <operator>EqualTo</operator>
+                    <operator>Contains</operator>
+                    <rightValue>
+                        <elementReference>InterpretationMethod</elementReference>
+                    </rightValue>
+                </conditions>
+                <conditions>
+                    <leftValueReference>ChosenFieldsTime</leftValueReference>
+                    <operator>Contains</operator>
                     <rightValue>
                         <elementReference>InterpretationMethod</elementReference>
                     </rightValue>
@@ -1136,10 +1185,17 @@ Version two adds in Subject and uses workOrder for values on the screen instead 
             <isRequired>false</isRequired>
             <regionContainerType>SectionWithoutHeader</regionContainerType>
             <visibilityRule>
-                <conditionLogic>and</conditionLogic>
+                <conditionLogic>or</conditionLogic>
                 <conditions>
                     <leftValueReference>ChosenFieldsTime</leftValueReference>
-                    <operator>EqualTo</operator>
+                    <operator>Contains</operator>
+                    <rightValue>
+                        <elementReference>Date</elementReference>
+                    </rightValue>
+                </conditions>
+                <conditions>
+                    <leftValueReference>ChosenFieldsTime</leftValueReference>
+                    <operator>Contains</operator>
                     <rightValue>
                         <elementReference>Date</elementReference>
                     </rightValue>
