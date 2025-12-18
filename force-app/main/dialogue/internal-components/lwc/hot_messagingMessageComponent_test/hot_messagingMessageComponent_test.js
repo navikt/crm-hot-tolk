@@ -124,7 +124,7 @@ export default class CrmMessagingMessageComponent extends LightningElement {
     renderedCallback() {}
     connectedCallback() {
         this.relatedObjectId = this.recordId;
-        if (this.objectApiName == 'HOT_Request__c') {
+        if (this.objectApiName === 'HOT_Request__c') {
             getRequestInformation({ recordId: this.recordId })
                 .then((result) => {
                     if (result[0].IsAccountEqualOrderer__c == true) {
@@ -153,7 +153,7 @@ export default class CrmMessagingMessageComponent extends LightningElement {
                 .catch((error) => {
                     console.log(error);
                 });
-        } else if (this.objectApiName == 'HOT_WorkOrder__c') {
+        } else if (this.objectApiName === 'WorkOrder') {
             getWorkOrderInformation({ recordId: this.recordId })
                 .then((result) => {
                     if (result[0].HOT_TotalNumberOfInterpreters__c > 1) {
@@ -170,11 +170,11 @@ export default class CrmMessagingMessageComponent extends LightningElement {
                 .catch((error) => {
                     console.log(error);
                 });
-        } else if (this.objectApiName == 'HOT_WageClaim__c') {
+        } else if (this.objectApiName === 'HOT_WageClaim__c') {
             this.showOfficeThreadbutton = true;
             this.threadTypesOfInterest = ['HOT_TOLK-RESSURSKONTOR'];
             this.getThreadAndParticipants();
-        } else if (this.objectApiName == 'ServiceAppointment' || this.objectApiName == 'HOT_InterestedResource__c') {
+        } else if (this.objectApiName === 'ServiceAppointment' || this.objectApiName === 'HOT_InterestedResource__c') {
             this.showInterpreterThreadbutton = true;
             this.threadTypesOfInterest = ['HOT_TOLK-FORMIDLER'];
             this.getThreadAndParticipants();
