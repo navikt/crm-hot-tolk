@@ -544,6 +544,10 @@ export default class CrmMessagingMessageComponent extends LightningElement {
     tabLabelByType(threadType) {
         return this.openThreadsByType(threadType) ? this.tabLabels[threadType].open : this.tabLabels[threadType].new;
     }
+    summaryTabHandler() {
+        console.log('summaryTabHandler');
+        this.getThreadAndParticipants();
+    }
     userThreadTabHandler() {
         console.log('userThreadTabHandler');
         this.tabHandlerByType('HOT_BRUKER-FORMIDLER');

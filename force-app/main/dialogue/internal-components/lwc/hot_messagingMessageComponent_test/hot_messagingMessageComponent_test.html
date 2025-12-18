@@ -46,7 +46,7 @@
         </template>
 
         <lightning-tabset variant="scoped" active-tab-value="tab1" onactive={handleTabChange} heading-label="Samtaler">
-            <lightning-tab label="Oppsummering" value="tab1" data-tab="tab1">
+            <lightning-tab label="Oppsummering" value="tab1" data-tab="tab1" onactive={summaryTabHandler}>
                 <template for:each={threadsAndParticipantsByType} for:item="threadsForType">
                     <div key={threadsForType.key} class="conversationCard slds-p-around_small slds-m-bottom_small">
                         <h3 class="slds-p-around_small conversationTitle">{threadsForType.label}</h3>
