@@ -1,7 +1,7 @@
 import { LightningElement, api, wire, track } from 'lwc';
 import createThread from '@salesforce/apex/HOT_MessageHelper.createThreadDispatcher';
 import getUserContactId from '@salesforce/apex/HOT_MessageHelper.getUserContactId';
-import getThreadsAndParticipants from '@salesforce/apex/HOT_ThreadParticipants_dev.getParticipantsByRelatedObjectAndThreadTypes';
+import getThreadsAndParticipants from '@salesforce/apex/HOT_ThreadParticipants.getParticipantsByRelatedObjectAndThreadTypes';
 import getAccountOnRequest from '@salesforce/apex/HOT_MessageHelper.getAccountOnRequest';
 import getRequestInformation from '@salesforce/apex/HOT_MessageHelper.getRequestInformation';
 import getWorkOrderInformation from '@salesforce/apex/HOT_MessageHelper.getWorkOrderInformation';
