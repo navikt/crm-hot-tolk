@@ -128,7 +128,7 @@
                     <p if:true={request.UserPreferredInterpreter__c}>
                         <strong>Ønsket tolk: </strong><span>{request.UserPreferredInterpreter__c}</span>
                     </p>
-                    <p if:true={workOrder.HOT_Interpreters__c}>
+                    <p if:true={showInterpreters}>
                         <strong>{interpreter}: </strong><span>{workOrder.HOT_Interpreters__c}</span>
                     </p>
                     <p if:true={request.UserInterpretationMethod__c}>
