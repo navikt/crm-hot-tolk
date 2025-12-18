@@ -54,7 +54,7 @@
                 <identifier>c_hot_messagingMessageComponent_v2</identifier>
                 <visibilityRule>
                     <criteria>
-                        <leftValue>{!$Permission.CustomPermission.HOT_Beta}</leftValue>
+                        <leftValue>{!$Permission.CustomPermission.HOT_Tolk_Beta}</leftValue>
                         <operator>EQUAL</operator>
                         <rightValue>true</rightValue>
                     </criteria>
@@ -75,7 +75,7 @@
                 <identifier>c_hot_messagingMessageComponent1</identifier>
                 <visibilityRule>
                     <criteria>
-                        <leftValue>{!$Permission.CustomPermission.HOT_Beta}</leftValue>
+                        <leftValue>{!$Permission.CustomPermission.HOT_Tolk_Beta}</leftValue>
                         <operator>EQUAL</operator>
                         <rightValue>false</rightValue>
                     </criteria>
