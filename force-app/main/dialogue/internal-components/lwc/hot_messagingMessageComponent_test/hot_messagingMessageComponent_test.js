@@ -6,8 +6,10 @@ import getAccountOnRequest from '@salesforce/apex/HOT_MessageHelper.getAccountOn
 import getRequestInformation from '@salesforce/apex/HOT_MessageHelper.getRequestInformation';
 import getWorkOrderInformation from '@salesforce/apex/HOT_MessageHelper.getWorkOrderInformation';
 import getAccountOnWorkOrder from '@salesforce/apex/HOT_MessageHelper.getAccountOnWorkOrder';
+import getThreadInformation from '@salesforce/apex/HOT_MessageHelper.getThreadFromThreadId';
 
 export default class CrmMessagingMessageComponent extends LightningElement {
+    relatedObjectId;
     showUserThreadbutton = false;
     showOrderThreadbutton = false;
     showUserOrdererThreadbutton = false;
@@ -121,6 +123,7 @@ export default class CrmMessagingMessageComponent extends LightningElement {
     }
     renderedCallback() {}
     connectedCallback() {
+        this.relatedObjectId = this.recordId;
         if (this.objectApiName == 'HOT_Request__c') {
             getRequestInformation({ recordId: this.recordId })
                 .then((result) => {
@@ -175,6 +178,39 @@ export default class CrmMessagingMessageComponent extends LightningElement {
             this.showInterpreterThreadbutton = true;
             this.threadTypesOfInterest = ['HOT_TOLK-FORMIDLER'];
             this.getThreadAndParticipants();
+        } else if (this.objectApiName === 'Thread__c') {
+            //single thread mode
+            getThreadInformation({ recordId: this.recordId })
+                .then((result) => {
+                    switch (result[0].CRM_Thread_Type__c) {
+                        case 'HOT_BRUKER-FORMIDLER':
+                            this.showUserThreadbutton = true;
+                            break;
+                        case 'HOT_BESTILLER-FORMIDLER':
+                            this.showOrderThreadbutton = true;
+                            break;
+                        case 'HOT_BRUKER-TOLK':
+                            this.showUserInterpreterThreadbutton = true;
+                            break;
+                        case 'HOT_TOLK-TOLK':
+                            this.showInterpreterInterpreterThreadbutton = true;
+                            break;
+                        case 'HOT_TOLK-FORMIDLER':
+                            this.showInterpreterThreadbutton = true;
+                            break;
+                        case 'HOT_TOLK-RESSURSKONTOR':
+                            this.showOfficeThreadbutton = true;
+                            break;
+                        default:
+                            break;
+                    }
+                    this.relatedObjectId = result[0].CRM_Related_Object__c;
+                    this.threadTypesOfInterest = [result[0].CRM_Thread_Type__c];
+                    this.getThreadAndParticipants();
+                })
+                .catch((error) => {
+                    console.log(error);
+                });
         } else {
             console.log('Not supportet object for messaging component');
         }
@@ -182,7 +218,7 @@ export default class CrmMessagingMessageComponent extends LightningElement {
 
     getThreadAndParticipants() {
         getThreadsAndParticipants({
-            relatedObjectId: this.recordId,
+            relatedObjectId: this.relatedObjectId,
             threadTypesOfInterest: this.threadTypesOfInterest
         })
             .then((result) => {
