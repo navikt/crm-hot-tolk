@@ -40,8 +40,7 @@ export default class messagingThreadViewer extends LightningElement {
     @api textTemplate; //Support for conditional text template as input
     //Constructor, called onload
     @api focusOnInput() {
-        //this.template.querySelector('c-hot_messaging-quick-text_test').focusOnInput();
-        let qtext = this.template.querySelector('c-hot_messaging-quick-text_test');
+        let qtext = this.template.querySelector('c-hot_messaging-quick-text');
         if (qtext) {
             qtext.focusOnInput();
         }
@@ -256,7 +255,7 @@ export default class messagingThreadViewer extends LightningElement {
     }
 
     get quickTextCmp() {
-        return this.template.querySelector('c-hot_messaging-quick-text_test');
+        return this.template.querySelector('c-hot_messaging-quick-text');
     }
 
     get text() {

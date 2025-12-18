@@ -24,6 +24,10 @@ export default class crmQuickText extends LightningElement {
 
     @track data = [];
 
+    @api focusOnInput() {
+        let inputField = this.textArea;
+        inputField.focus();
+    }
     get textArea() {
         return this.template.querySelector('.conversationNoteTextArea');
     }
