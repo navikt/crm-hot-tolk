@@ -249,7 +249,7 @@ public without sharing class HOT_ThreadParticipants_dev {
         }
         for (Id threadId : this.threadIds) {
             Map<Id, User> usersInThread = new Map<Id, User>();
-            for (Id userOrContactId : userOrContactIdsByThreadId.get(threadId)) {
+            for (Id userOrContactId : userOrContactIdsByThreadId.get(threadId) ?? new Set<Id>()) {
                 if (usersByUserId.containsKey(userOrContactId)) {
                     usersInThread.put(userOrContactId, usersByUserId.get(userOrContactId));
                 } else if (usersByContactId.containsKey(userOrContactId)) {
