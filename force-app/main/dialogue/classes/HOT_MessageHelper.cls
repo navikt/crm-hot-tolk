@@ -511,14 +511,15 @@ public without sharing class HOT_MessageHelper {
     }
     @AuraEnabled
     public static void markThreadAsRead(Id threadId, String userContactId) {
-        if (HOT_ThreadDetailController.checkAccess(threadId)) {
-            Thread__c thread = [SELECT Id, HOT_Thread_read_by__c FROM Thread__c WHERE Id = :threadId];
-            if (!thread.HOT_Thread_read_by__c.contains(userContactId)) {
-                thread.HOT_Thread_read_by__c =
-                    (thread.HOT_Thread_read_by__c == null ? '' : thread.HOT_Thread_read_by__c) +
-                    userContactId +
-                    ';';
-            }
+        if (threadId == null || String.isBlank(userContactId)) {
+            return;
+        }
+        if (!HOT_ThreadDetailController.checkAccess(threadId)) {
+            return;
+        }
+        Thread__c thread = [SELECT Id, HOT_Thread_read_by__c FROM Thread__c WHERE Id = :threadId];
+        if (String.isBlank(thread.HOT_Thread_read_by__c) || !thread.HOT_Thread_read_by__c.contains(userContactId)) {
+            thread.HOT_Thread_read_by__c = (thread.HOT_Thread_read_by__c ?? '') + userContactId + ';';
             try {
                 update thread;
             } catch (Exception e) {
@@ -526,6 +527,7 @@ public without sharing class HOT_MessageHelper {
             }
         }
     }
+
     @AuraEnabled
     public static void markThreadAsReadEmployee(Id threadId) {
         User user = [SELECT Id, Profile.Name FROM User WHERE Id = :UserInfo.getUserId()];
@@ -536,47 +538,57 @@ public without sharing class HOT_MessageHelper {
         ];
 
         if (
-            !thread.HOT_Thread_read_by__c.contains(user.Id) &&
-            (user.Profile.Name == 'HOT Tolk Formidler' || thread.HOT_ParticipantIds__c.contains(user.Id))
+            (String.isBlank(thread.HOT_Thread_read_by__c) || !thread.HOT_Thread_read_by__c.contains(user.Id)) &&
+            (user.Profile.Name == 'HOT Tolk Formidler' ||
+            (!String.isBlank(thread.HOT_ParticipantIds__c) && thread.HOT_ParticipantIds__c.contains(user.Id)))
         ) {
-            thread.HOT_Thread_read_by__c = thread.HOT_Thread_read_by__c + user.Id + ';';
-        }
-        try {
-            update thread;
-        } catch (Exception e) {
-            throw new AuraHandledException(e.getMessage());
+            thread.HOT_Thread_read_by__c = (thread.HOT_Thread_read_by__c ?? '') + user.Id + ';';
+            try {
+                update thread;
+            } catch (Exception e) {
+                throw new AuraHandledException(e.getMessage());
+            }
         }
     }
+
     @AuraEnabled
     public static void markAsReadByNav(Id threadId) {
-        if (HOT_ThreadDetailController.checkAccess(threadId)) {
-            List<Thread__c> thread = [
-                SELECT Id, CRM_Related_Object__c, HOT_ServiceAppointment__c, HOT_ParticipantIds__c
-                FROM Thread__c
-                WHERE Id = :threadId
-            ];
-            if (thread.size() == 0) {
-                return;
-            }
-            if (thread[0].HOT_ServiceAppointment__c == null) {
-                markMessagesAsReadByNav(threadId);
-                return;
-            }
-            if (thread[0].HOT_ParticipantIds__c.contains(UserInfo.getUserId())) {
-                return;
-            }
-            List<AssignedResource> ar = [
-                SELECT ServiceAppointmentId, ServiceResourceId
-                FROM AssignedResource
-                WHERE
-                    ServiceAppointmentId = :thread[0].CRM_Related_Object__c
-                    AND ServiceResource.RelatedRecordId = :UserInfo.getUserId()
-            ];
-            if (ar.size() == 0) {
-                markMessagesAsReadByNav(threadId);
-            }
+        if (!HOT_ThreadDetailController.checkAccess(threadId)) {
+            return;
         }
+        List<Thread__c> thread = [
+            SELECT Id, CRM_Related_Object__c, HOT_ServiceAppointment__c, HOT_ParticipantIds__c
+            FROM Thread__c
+            WHERE Id = :threadId
+        ];
+        if (thread.size() == 0) {
+            return;
+        }
+        Thread__c t = thread[0];
+        if (t.HOT_ServiceAppointment__c == null) {
+            markMessagesAsReadByNav(threadId);
+            return;
+        }
+
+        List<AssignedResource> ar = [
+            SELECT ServiceAppointmentId, ServiceResourceId
+            FROM AssignedResource
+            WHERE
+                ServiceAppointmentId = :t.CRM_Related_Object__c
+                AND ServiceResource.RelatedRecordId = :UserInfo.getUserId()
+        ];
+        if (ar.size() != 0) {
+            return;
+        }
+        Boolean isParticipant =
+            t.HOT_ParticipantIds__c != null && t.HOT_ParticipantIds__c.contains(UserInfo.getUserId());
+        if (isParticipant) {
+            return;
+        }
+
+        markMessagesAsReadByNav(threadId);
     }
+
     public static void markMessagesAsReadByNav(Id threadId) {
         List<Message__c> msgList = [
             SELECT Id, CRM_Read_By_Nav__c, CRM_Read_By_Nav_Datetime__c
