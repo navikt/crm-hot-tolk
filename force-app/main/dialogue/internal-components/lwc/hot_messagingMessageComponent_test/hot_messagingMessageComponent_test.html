@@ -48,7 +48,7 @@
         <lightning-tabset variant="scoped" active-tab-value="tab1" onactive={handleTabChange} heading-label="Samtaler">
             <lightning-tab label="Oppsummering" value="tab1" data-tab="tab1">
                 <template for:each={threadsAndParticipantsByType} for:item="threadsForType">
-                    <div key={threadsForType} class="conversationCard slds-p-around_small slds-m-bottom_small">
+                    <div key={threadsForType.key} class="conversationCard slds-p-around_small slds-m-bottom_small">
                         <h3 class="slds-p-around_small conversationTitle">{threadsForType.label}</h3>
 
                         <template lwc:if={threadsForType.hasThreads}>
@@ -139,7 +139,7 @@
                                 text-template={textTemplate}
                                 thread={thread}
                                 show-close={showClose}
-                                key={thread}
+                                key={thread.Id}
                                 set-input-in-focus-on-render
                                 data-user-thread
                                 ontoolbaraction={userToolbarAction}
@@ -195,7 +195,7 @@
                                 text-template={textTemplate}
                                 thread={thread}
                                 show-close={showClose}
-                                key={thread}
+                                key={thread.Id}
                                 set-input-in-focus-on-render
                                 data-orderer-thread
                                 ontoolbaraction={ordererToolbarAction}
@@ -251,7 +251,7 @@
                                 text-template={textTemplate}
                                 thread={thread}
                                 show-close={showClose}
-                                key={thread}
+                                key={thread.Id}
                                 set-input-in-focus-on-render
                                 data-user-int-thread
                                 ontoolbaraction={userInterpreterToolbarAction}
@@ -307,7 +307,7 @@
                                 text-template={textTemplate}
                                 thread={thread}
                                 show-close={showClose}
-                                key={thread}
+                                key={thread.Id}
                                 set-input-in-focus-on-render
                                 data-int-int-thread
                                 ontoolbaraction={interpreterInterpreterToolbarAction}
@@ -363,7 +363,7 @@
                                 text-template={textTemplate}
                                 thread={thread}
                                 show-close={showClose}
-                                key={thread}
+                                key={thread.Id}
                                 set-input-in-focus-on-render
                                 data-int-thread
                                 ontoolbaraction={interpreterToolbarAction}
@@ -419,7 +419,7 @@
                                 text-template={textTemplate}
                                 thread={thread}
                                 show-close={showClose}
-                                key={thread}
+                                key={thread.Id}
                                 set-input-in-focus-on-render
                                 data-office-thread
                                 ontoolbaraction={officeToolbarAction}
