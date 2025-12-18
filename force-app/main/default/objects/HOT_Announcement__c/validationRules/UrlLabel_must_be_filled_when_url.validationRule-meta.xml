@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ValidationRule xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>UrlLabel_must_be_filled_when_url</fullName>
+    <active>true</active>
+    <errorConditionFormula>AND(
+    $RecordType.Name = &quot;Tolk Ekstern&quot;,
+    NOT(ISBLANK(Url__c)),
+    ISBLANK(UrlLabel__c)
+)</errorConditionFormula>
+    <errorDisplayField>UrlLabel__c</errorDisplayField>
+    <errorMessage>Url tekst må fylles ut når du har skrevet inn en url</errorMessage>
+</ValidationRule>
