@@ -103,7 +103,7 @@ public without sharing class HOT_MessageHelper {
 
             return t;
         } catch (Exception e) {
-            return new List<Thread__c>();;
+            return new List<Thread__c>();
         }
     }
     /**
