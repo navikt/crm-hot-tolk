@@ -172,7 +172,6 @@ export default class CrmMessagingMessageComponent extends LightningElement {
             this.threadTypesOfInterest = ['HOT_TOLK-RESSURSKONTOR'];
             this.getThreadAndParticipants();
         } else if (this.objectApiName == 'ServiceAppointment' || this.objectApiName == 'HOT_InterestedResource__c') {
-            console.log('ServiceAppointment object for messaging component');
             this.showInterpreterThreadbutton = true;
             this.threadTypesOfInterest = ['HOT_TOLK-FORMIDLER'];
             this.getThreadAndParticipants();
@@ -187,7 +186,6 @@ export default class CrmMessagingMessageComponent extends LightningElement {
             threadTypesOfInterest: this.threadTypesOfInterest
         })
             .then((result) => {
-                console.log('threads and participants result: ' + JSON.stringify(result));
                 this.threadsAndParticipants = result;
             })
             .catch((error) => {
@@ -349,11 +347,9 @@ export default class CrmMessagingMessageComponent extends LightningElement {
         if (this.threadParticipants) {
             return this.threadParticipants
                 .filter((participant) => {
-                    console.log(participant);
                     return participant.hasRead;
                 })
                 .map((participant) => {
-                    console.log(participant);
                     return {
                         label: participant.name + (participant.role ? ' (' + participant.role + ')' : ''),
                         iconName: 'standard:account',
@@ -403,7 +399,6 @@ export default class CrmMessagingMessageComponent extends LightningElement {
                           };
                       })
             };
-            console.log('getter  result: ' + JSON.stringify(result));
             return result;
         });
     }
@@ -466,48 +461,35 @@ export default class CrmMessagingMessageComponent extends LightningElement {
         return this.openThreadsByType(threadType) ? this.tabLabels[threadType].open : this.tabLabels[threadType].new;
     }
     summaryTabHandler() {
-        console.log('summaryTabHandler');
         this.getThreadAndParticipants();
     }
     userThreadTabHandler() {
-        console.log('userThreadTabHandler');
         this.tabHandlerByType('HOT_BRUKER-FORMIDLER');
     }
     ordererThreadTabHandler() {
-        console.log('ordererThreadTabHandler');
         this.tabHandlerByType('HOT_BESTILLER-FORMIDLER');
     }
     userInterpreterThreadTabHandler() {
-        console.log('userInterpreterThreadTabHandler');
         this.tabHandlerByType('HOT_BRUKER-TOLK');
     }
     interpreterInterpreterThreadTabHandler() {
-        console.log('interpreterInterpreterThreadTabHandler');
         this.tabHandlerByType('HOT_TOLK-TOLK');
     }
     interpreterThreadTabHandler() {
-        console.log('interpreterThreadTabHandler');
         this.tabHandlerByType('HOT_TOLK-FORMIDLER');
     }
     officeThreadTabHandler() {
-        console.log('officeThreadTabHandler');
         this.tabHandlerByType('HOT_TOLK-RESSURSKONTOR');
     }
     tabHandlerByType(threadType) {
-        console.log('tabHandlerByType for type: ' + threadType);
-        this.runningThreadCreate = true; // this one for test
         if (this.openThreadsByType(threadType)) {
             this.runningThreadCreate = false;
             let threadCmp = this.template.querySelector(this.threadCmpMap[threadType]);
             if (threadCmp) {
-                console.log('thread component found');
                 threadCmp.focusOnInput();
-            } else {
-                console.log('thread component not found');
             }
         } else {
             this.runningThreadCreate = true;
-            console.log('create new thread here.');
             this.newThreadWithType(threadType);
         }
     }
@@ -555,8 +537,5 @@ export default class CrmMessagingMessageComponent extends LightningElement {
                     this.runningThreadCreate = false;
                 });
         }
-    }
-    handleTabChange() {
-        console.log('handleTabChange');
     }
 }

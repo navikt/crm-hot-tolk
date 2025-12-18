@@ -33,7 +33,6 @@ export default class crmQuickText extends LightningElement {
     }
 
     renderedCallback() {
-        console.log('quicktext rendered');
         if (this.initialRender === true) {
             let inputField = this.textArea;
             inputField.focus();
@@ -48,7 +47,6 @@ export default class crmQuickText extends LightningElement {
     disconnectedCallback() {
         document.removeEventListener('click', this.outsideClickListener);
         this.initialRender = true;
-        console.log('quicktext disconnected');
     }
 
     @api

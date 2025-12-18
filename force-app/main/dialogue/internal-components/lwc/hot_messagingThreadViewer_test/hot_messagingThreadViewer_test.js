@@ -162,7 +162,6 @@ export default class messagingThreadViewer extends LightningElement {
     //Enriching the toolbar event with reference to the thread id
     //A custom toolbaraction event can be passed from the component in the toolbar slot that the thread viewer enrich with the thread id
     handleToolbarAction(event) {
-        console.log('Handling toolbar action in ThreadView');
         let threadId = this.threadid;
         let eventDetails = event.detail;
         eventDetails.threadId = threadId;
