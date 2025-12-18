@@ -34,16 +34,6 @@
     <flexiPageRegions>
         <itemInstances>
             <componentInstance>
-                <componentName>hot_matchingServiceAppointments</componentName>
-                <identifier>hot_matchingServiceAppointments</identifier>
-            </componentInstance>
-        </itemInstances>
-        <name>Facet-7983d986-5d9d-4019-9069-93a2a89a32e7</name>
-        <type>Facet</type>
-    </flexiPageRegions>
-    <flexiPageRegions>
-        <itemInstances>
-            <componentInstance>
                 <componentInstanceProperties>
                     <name>showClose</name>
                     <value>false</value>
@@ -60,20 +50,6 @@
         <type>Facet</type>
     </flexiPageRegions>
     <flexiPageRegions>
-        <itemInstances>
-            <componentInstance>
-                <componentInstanceProperties>
-                    <name>body</name>
-                    <value>Facet-7983d986-5d9d-4019-9069-93a2a89a32e7</value>
-                </componentInstanceProperties>
-                <componentInstanceProperties>
-                    <name>title</name>
-                    <value>Overlappende oppdrag</value>
-                </componentInstanceProperties>
-                <componentName>flexipage:tab</componentName>
-                <identifier>customTab</identifier>
-            </componentInstance>
-        </itemInstances>
         <itemInstances>
             <componentInstance>
                 <componentInstanceProperties>
