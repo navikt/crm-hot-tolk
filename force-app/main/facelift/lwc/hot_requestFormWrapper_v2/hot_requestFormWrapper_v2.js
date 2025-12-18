@@ -16,6 +16,7 @@ export default class hot_requestFormWrapper_v2 extends NavigationMixin(Lightning
     @track fieldValues = {};
     @track componentValues = {};
     @track personAccount = { Id: '', Name: '' };
+    @track refreshToken = null;
     @wire(getPersonAccount)
     wiredGetPersonAccount(result) {
         if (result.data) {
@@ -324,6 +325,10 @@ export default class hot_requestFormWrapper_v2 extends NavigationMixin(Lightning
         this.isEditOrCopyMode = parsed_params.edit != null || parsed_params.copy != null;
         this.requestTypeChosen = this.isEditOrCopyMode;
         this.isEditModeAndTypeMe = this.fieldValues.Type__c === 'Me' && this.isEditOrCopyMode;
+
+        if (this.isEditOrCopyMode) {
+            this.refreshToken = Date.now();
+        }
     }
 
     isGetAll = false;

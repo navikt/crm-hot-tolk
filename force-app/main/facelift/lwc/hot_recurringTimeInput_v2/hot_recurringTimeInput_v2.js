@@ -14,6 +14,7 @@ export default class hot_recurringTimeInput_v2 extends LightningElement {
     @track times = [];
     @track isOnlyOneTime = true;
     @track isAdvancedTimes;
+    @api refreshToken;
     uniqueIdCounter = 0;
 
     setTimesValue(timeObject) {
@@ -331,7 +332,7 @@ export default class hot_recurringTimeInput_v2 extends LightningElement {
 
     // Move up one level?
     @api requestIds = [];
-    @wire(getTimes, { requestIds: '$requestIds' })
+    @wire(getTimes, { requestIds: '$requestIds', refreshToken: '$refreshToken' })
     wiredTimes(result) {
         if (result.data) {
             if (result.data.length === 0) {
