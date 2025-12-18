@@ -97,8 +97,8 @@ List<HOT_Request__c> userRequests = testData.getUserRequests(
 insert userRequests;
 System.debug(userRequests);
 
-meRequests[0].Status__c = 'Godkjent';
-update meRequests[0];
+// meRequests[0].Status__c = 'Godkjent';
+// update meRequests[0];
 
 List<HOT_Request__c> companyRequests = testData.getCompanyRequests(
     personAccounts,
