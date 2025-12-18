@@ -90,7 +90,12 @@ public without sharing class HOT_MessageHelper {
     public static List<Thread__c> getThreadFromThreadId(Id recordId) {
         try {
             List<Thread__c> t = [
-                SELECT Id, CRM_Number_of_External_Messages__c, CRM_Related_Object__c, CRM_isActive__c
+                SELECT
+                    Id,
+                    CRM_Number_of_External_Messages__c,
+                    CRM_Related_Object__c,
+                    CRM_Thread_Type__c,
+                    CRM_isActive__c
                 FROM Thread__c
                 WHERE Id = :recordId
                 LIMIT 1
@@ -98,7 +103,7 @@ public without sharing class HOT_MessageHelper {
 
             return t;
         } catch (Exception e) {
-            return null;
+            return new List<Thread__c>();;
         }
     }
     /**
