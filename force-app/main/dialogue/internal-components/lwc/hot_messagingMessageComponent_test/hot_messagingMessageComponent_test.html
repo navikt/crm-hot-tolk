@@ -29,21 +29,6 @@
                 <span>Tolk er tildelt oppdraget. Se/start samtalen med tolk inne på Oppdraget</span>
             </div>
         </template>
-        <template if:true={noThreadExist}>
-            <div class="slds-notify slds-notify_alert slds-alert_warning" role="alert">
-                <span class="slds-assistive-text">Advarsel</span>
-                <lightning-icon
-                    icon-name="utility:warning"
-                    size="x-small"
-                    class="slds-m-right--x-small"
-                    variant="inverse"
-                >
-                </lightning-icon>
-                <span
-                    >Det finnes ingen samtale mellom bruker og bestiller. Du kan ikke starte denne typen samtale.</span
-                >
-            </div>
-        </template>
 
         <lightning-tabset variant="scoped" active-tab-value="tab1" onactive={handleTabChange} heading-label="Samtaler">
             <lightning-tab label="Oppsummering" value="tab1" data-tab="tab1" onactive={summaryTabHandler}>

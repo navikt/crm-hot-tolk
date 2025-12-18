@@ -1,23 +1,13 @@
 import { LightningElement, api, wire, track } from 'lwc';
-import getThreads from '@salesforce/apex/HOT_MessageHelper.getThreadsCollection';
 import createThread from '@salesforce/apex/HOT_MessageHelper.createThreadDispatcher';
-import markAsReadByNav from '@salesforce/apex/HOT_MessageHelper.markAsReadByNav';
-import markThreadAsRead from '@salesforce/apex/HOT_MessageHelper.markThreadAsRead';
-import markThreadAsReadEmployee from '@salesforce/apex/HOT_MessageHelper.markThreadAsReadEmployee';
 import getUserContactId from '@salesforce/apex/HOT_MessageHelper.getUserContactId';
-import getThreadParticipants from '@salesforce/apex/HOT_ThreadParticipants_dev.getParticipants';
 import getThreadsAndParticipants from '@salesforce/apex/HOT_ThreadParticipants_dev.getParticipantsByRelatedObjectAndThreadTypes';
 import getAccountOnRequest from '@salesforce/apex/HOT_MessageHelper.getAccountOnRequest';
 import getRequestInformation from '@salesforce/apex/HOT_MessageHelper.getRequestInformation';
 import getWorkOrderInformation from '@salesforce/apex/HOT_MessageHelper.getWorkOrderInformation';
 import getAccountOnWorkOrder from '@salesforce/apex/HOT_MessageHelper.getAccountOnWorkOrder';
-import { refreshApex } from '@salesforce/apex';
 
 export default class CrmMessagingMessageComponent extends LightningElement {
-    showmodal = false;
-    messageType = ''; //?
-    _threadsforRefresh;
-    showtaskmodal = false;
     showUserThreadbutton = false;
     showOrderThreadbutton = false;
     showUserOrdererThreadbutton = false;
@@ -25,9 +15,6 @@ export default class CrmMessagingMessageComponent extends LightningElement {
     showInterpreterInterpreterThreadbutton = false;
     showInterpreterThreadbutton = false;
     showOfficeThreadbutton = false;
-    activeSectionMessage = '';
-    threads;
-    hasError = false;
     //show flows
     userSetToRedactionFlow = false;
     ordererSetToRedactionFlow = false;
@@ -116,39 +103,6 @@ export default class CrmMessagingMessageComponent extends LightningElement {
         if (data) this.userContactId = data;
     }
 
-    @wire(getThreads, { recordId: '$recordId', singleThread: '$singleThread', type: '$messageType' }) //Calls apex and extracts messages related to this record
-    wiredThreads(result) {
-        this._threadsforRefresh = result;
-        if (result.error) {
-            this.error = result.error;
-            this.errorMessage = this.error.body.message;
-            this.hasError = true;
-        } else if (result.data) {
-            this.threads = result.data;
-            if (this.threads.length == 1) {
-                //this.showSetToRedactionBtn = true;
-                getThreadParticipants({ threadId: this.threads[0].Id })
-                    .then((result) => {
-                        this.threadParticipants = result;
-                    })
-                    .catch((error) => {
-                        console.error(error);
-                    });
-            }
-
-            try {
-                (this.threads || []).forEach((t) => {
-                    if (!t?.Id) return;
-                    markAsReadByNav({ threadId: t.Id }).catch(() => {});
-                    markThreadAsReadEmployee({ threadId: t.Id }).catch(() => {});
-                    if (this.userContactId) {
-                        markThreadAsRead({ threadId: t.Id, userContactId: this.userContactId }).catch(() => {});
-                    }
-                });
-            } catch (e) {}
-        }
-    }
-
     accountId;
     accountResult;
     @wire(getAccountOnRequest, { recordId: '$recordId' })
@@ -157,9 +111,6 @@ export default class CrmMessagingMessageComponent extends LightningElement {
         if (result.data) {
             this.accountId = result.data;
         }
-    }
-    get showSpinner() {
-        return !this.threads && !this.hasError;
     }
 
     handleEnglishEvent(event) {
@@ -170,7 +121,6 @@ export default class CrmMessagingMessageComponent extends LightningElement {
     }
     renderedCallback() {}
     connectedCallback() {
-        this.userSetToRedactionFlow = false;
         if (this.objectApiName == 'HOT_Request__c') {
             getRequestInformation({ recordId: this.recordId })
                 .then((result) => {
@@ -195,18 +145,7 @@ export default class CrmMessagingMessageComponent extends LightningElement {
                         this.showUserOrdererThreadbutton = true;
                         this.threadTypesOfInterest = ['HOT_BRUKER-FORMIDLER', 'HOT_BESTILLER-FORMIDLER'];
                     }
-                    getThreadsAndParticipants({
-                        relatedObjectId: this.recordId,
-                        threadTypesOfInterest: this.threadTypesOfInterest
-                    })
-                        .then((result) => {
-                            console.log('threads and participants result: ' + JSON.stringify(result));
-                            this.threadsAndParticipants = result;
-                        })
-                        .catch((error) => {
-                            console.log('Error getting threads and participants: ');
-                            console.log(error);
-                        });
+                    this.getThreadAndParticipants();
                 })
                 .catch((error) => {
                     console.log(error);
@@ -223,18 +162,7 @@ export default class CrmMessagingMessageComponent extends LightningElement {
                         this.showUserInterpreterThreadbutton = true;
                         this.threadTypesOfInterest = ['HOT_BRUKER-TOLK'];
                     }
-                    getThreadsAndParticipants({
-                        relatedObjectId: this.recordId,
-                        threadTypesOfInterest: this.threadTypesOfInterest
-                    })
-                        .then((result) => {
-                            console.log('threads and participants result: ' + JSON.stringify(result));
-                            this.threadsAndParticipants = result;
-                        })
-                        .catch((error) => {
-                            console.log('Error getting threads and participants: ');
-                            console.log(error);
-                        });
+                    this.getThreadAndParticipants();
                 })
                 .catch((error) => {
                     console.log(error);
@@ -242,37 +170,30 @@ export default class CrmMessagingMessageComponent extends LightningElement {
         } else if (this.objectApiName == 'HOT_WageClaim__c') {
             this.showOfficeThreadbutton = true;
             this.threadTypesOfInterest = ['HOT_TOLK-RESSURSKONTOR'];
-            getThreadsAndParticipants({
-                relatedObjectId: this.recordId,
-                threadTypesOfInterest: this.threadTypesOfInterest
-            })
-                .then((result) => {
-                    console.log('threads and participants result: ' + JSON.stringify(result));
-                    this.threadsAndParticipants = result;
-                })
-                .catch((error) => {
-                    console.log('Error getting threads and participants: ');
-                    console.log(error);
-                });
+            this.getThreadAndParticipants();
         } else if (this.objectApiName == 'ServiceAppointment' || this.objectApiName == 'HOT_InterestedResource__c') {
             console.log('ServiceAppointment object for messaging component');
             this.showInterpreterThreadbutton = true;
             this.threadTypesOfInterest = ['HOT_TOLK-FORMIDLER'];
-            getThreadsAndParticipants({
-                relatedObjectId: this.recordId,
-                threadTypesOfInterest: this.threadTypesOfInterest
-            })
-                .then((result) => {
-                    console.log('threads and participants result: ' + JSON.stringify(result));
-                    this.threadsAndParticipants = result;
-                })
-                .catch((error) => {
-                    console.log('Error getting threads and participants: ');
-                    console.log(error);
-                });
+            this.getThreadAndParticipants();
         } else {
             console.log('Not supportet object for messaging component');
         }
+    }
+
+    getThreadAndParticipants() {
+        getThreadsAndParticipants({
+            relatedObjectId: this.recordId,
+            threadTypesOfInterest: this.threadTypesOfInterest
+        })
+            .then((result) => {
+                console.log('threads and participants result: ' + JSON.stringify(result));
+                this.threadsAndParticipants = result;
+            })
+            .catch((error) => {
+                console.log('Error getting threads and participants: ');
+                console.log(error);
+            });
     }
     setToRedaction(event, name) {
         event.stopPropagation();
@@ -597,25 +518,22 @@ export default class CrmMessagingMessageComponent extends LightningElement {
                     this.accountId = result;
                     createThread({ recordId: this.recordId, accountId: this.accountId, type: threadType })
                         .then(() => {
-                            getThreadsAndParticipants({
-                                relatedObjectId: this.recordId,
-                                threadTypesOfInterest: this.threadTypesOfInterest
-                            })
-                                .then((result) => {
-                                    console.log('threads and participants result: ' + JSON.stringify(result));
-                                    this.threadsAndParticipants = result;
-                                })
-                                .catch((error) => {
-                                    console.log('Error getting threads and participants: ');
-                                    console.log(error);
-                                });
+                            this.getThreadAndParticipants();
                             // TODO: what shoudl trigges here?
                         })
                         .catch((error) => {
-                            if (this.objectApiName === 'HOT_InterestedResource__c') {
+                            if (
+                                this.objectApiName === 'HOT_InterestedResource__c' &&
+                                error.body.message === 'thread exist'
+                            ) {
                                 this.interestedResourceIsAssigned = true;
-                            } else {
+                            } else if (
+                                this.objectApiName === 'ServiceAppointment' &&
+                                error.body.message === 'no employee'
+                            ) {
                                 this.noAssignedResource = true;
+                            } else {
+                                console.log(error);
                             }
                         });
                 })
@@ -628,20 +546,7 @@ export default class CrmMessagingMessageComponent extends LightningElement {
         } else {
             createThread({ recordId: this.recordId, accountId: this.accountId, type: threadType })
                 .then(() => {
-                    getThreadsAndParticipants({
-                        relatedObjectId: this.recordId,
-                        threadTypesOfInterest: this.threadTypesOfInterest
-                    })
-                        .then((result) => {
-                            console.log('threads and participants result: ' + JSON.stringify(result));
-                            this.threadsAndParticipants = result;
-                            this.runningThreadCreate = false;
-                        })
-                        .catch((error) => {
-                            console.log('Error getting threads and participants: ');
-                            console.log(error);
-                        });
-                    // TODO: What trigges here?
+                    this.getThreadAndParticipants();
                 })
                 .catch((error) => {
                     console.log(error);
