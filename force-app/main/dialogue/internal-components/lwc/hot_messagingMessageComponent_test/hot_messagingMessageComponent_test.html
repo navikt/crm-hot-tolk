@@ -118,7 +118,7 @@
                     </template>
                     <template lwc:if={openUserThreads}>
                         <template for:each={openUserThreads} for:item="thread">
-                            <c-hot_messaging-thread-viewer_test
+                            <c-hot_messaging-thread-viewer
                                 onenglishevent={handleEnglishEvent}
                                 english-text-template={englishTextTemplate}
                                 text-template={textTemplate}
@@ -144,7 +144,7 @@
                                         ></lightning-menu-item>
                                     </lightning-button-menu>
                                 </div>
-                            </c-hot_messaging-thread-viewer_test>
+                            </c-hot_messaging-thread-viewer>
                         </template>
                         <div class="fakeModalContainer" lwc:if={userSetToRedactionFlow}>
                             <div class="flowContainer slds-p-around_small">
@@ -174,7 +174,7 @@
                     </template>
                     <template lwc:if={openOrdererThreads}>
                         <template for:each={openOrdererThreads} for:item="thread">
-                            <c-hot_messaging-thread-viewer_test
+                            <c-hot_messaging-thread-viewer
                                 onenglishevent={handleEnglishEvent}
                                 english-text-template={englishTextTemplate}
                                 text-template={textTemplate}
@@ -200,7 +200,7 @@
                                         ></lightning-menu-item>
                                     </lightning-button-menu>
                                 </div>
-                            </c-hot_messaging-thread-viewer_test>
+                            </c-hot_messaging-thread-viewer>
                         </template>
                         <div class="fakeModalContainer" lwc:if={ordererSetToRedactionFlow}>
                             <div class="flowContainer">
@@ -230,7 +230,7 @@
                     </template>
                     <template lwc:if={openUserInterpreterThreads}>
                         <template for:each={openUserInterpreterThreads} for:item="thread">
-                            <c-hot_messaging-thread-viewer_test
+                            <c-hot_messaging-thread-viewer
                                 onenglishevent={handleEnglishEvent}
                                 english-text-template={englishTextTemplate}
                                 text-template={textTemplate}
@@ -256,7 +256,7 @@
                                         ></lightning-menu-item>
                                     </lightning-button-menu>
                                 </div>
-                            </c-hot_messaging-thread-viewer_test>
+                            </c-hot_messaging-thread-viewer>
                         </template>
                         <div class="fakeModalContainer" lwc:if={userInterpreterSetToRedactionFlow}>
                             <div class="flowContainer">
@@ -286,7 +286,7 @@
                     </template>
                     <template lwc:if={openInterpreterInterpreterThreads}>
                         <template for:each={openInterpreterInterpreterThreads} for:item="thread">
-                            <c-hot_messaging-thread-viewer_test
+                            <c-hot_messaging-thread-viewer
                                 onenglishevent={handleEnglishEvent}
                                 english-text-template={englishTextTemplate}
                                 text-template={textTemplate}
@@ -312,7 +312,7 @@
                                         ></lightning-menu-item>
                                     </lightning-button-menu>
                                 </div>
-                            </c-hot_messaging-thread-viewer_test>
+                            </c-hot_messaging-thread-viewer>
                         </template>
                         <div class="fakeModalContainer" lwc:if={interpreterInterpreterSetToRedactionFlow}>
                             <div class="flowContainer">
@@ -342,7 +342,7 @@
                     </template>
                     <template lwc:if={openInterpreterThreads}>
                         <template for:each={openInterpreterThreads} for:item="thread">
-                            <c-hot_messaging-thread-viewer_test
+                            <c-hot_messaging-thread-viewer
                                 onenglishevent={handleEnglishEvent}
                                 english-text-template={englishTextTemplate}
                                 text-template={textTemplate}
@@ -368,7 +368,7 @@
                                         ></lightning-menu-item>
                                     </lightning-button-menu>
                                 </div>
-                            </c-hot_messaging-thread-viewer_test>
+                            </c-hot_messaging-thread-viewer>
                         </template>
                         <div class="fakeModalContainer" lwc:if={interpreterSetToRedactionFlow}>
                             <div class="flowContainer">
@@ -398,7 +398,7 @@
                     </template>
                     <template lwc:if={openOfficeThreads}>
                         <template for:each={openOfficeThreads} for:item="thread">
-                            <c-hot_messaging-thread-viewer_test
+                            <c-hot_messaging-thread-viewer
                                 onenglishevent={handleEnglishEvent}
                                 english-text-template={englishTextTemplate}
                                 text-template={textTemplate}
@@ -424,7 +424,7 @@
                                         ></lightning-menu-item>
                                     </lightning-button-menu>
                                 </div>
-                            </c-hot_messaging-thread-viewer_test>
+                            </c-hot_messaging-thread-viewer>
                         </template>
                         <div class="fakeModalContainer" lwc:if={officeSetToRedactionFlow}>
                             <div class="flowContainer">
