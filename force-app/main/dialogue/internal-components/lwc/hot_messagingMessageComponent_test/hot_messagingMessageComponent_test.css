@@ -15,11 +15,14 @@
     background-color: color-mix(in oklab, #c8c8c8, transparent 25%);
     visibility: visible;
     opacity: 1;
-    transition: opacity 0.2s ease, visibility 0s;
+    transition:
+        opacity 0.2s ease,
+        visibility 0s;
     transition-delay: 0s, 0.3s;
     align-content: center;
 }
 .flowContainer {
+    background-color: WHITE;
     display: block;
     border-radius: 1.25rem;
     box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
