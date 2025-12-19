@@ -50,6 +50,7 @@ public without sharing class HOT_ThreadParticipants {
     Map<Id, Set<Id>> threadIdsByRelatedObjectId = new Map<Id, Set<Id>>();
     Id relatedObjectId;
     List<String> threadTypesOfInterest;
+    
     public HOT_ThreadParticipants(Id threadId) {
         this.threadIds.add(threadId);
         this.getThreads();

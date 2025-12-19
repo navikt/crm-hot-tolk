@@ -144,6 +144,55 @@ private class HOT_ThreadParticipantsTest {
         System.assert(participantNames.contains('Formidler'), 'Mangler deltaker "Formidler"');
     }
     @IsTest
+    private static void getParticipantByRelatedInterestedResource() {
+        HOT_InterestedResource__c interestedResource = [SELECT Id FROM HOT_InterestedResource__c LIMIT 1];
+        Thread__c thread = HOT_TestDataFactory.createThread('HOT_TOLK-FORMIDLER');
+        thread.CRM_Related_Object__c = interestedResource.Id;
+        insert thread;
+        Test.startTest();
+        Map<String, Map<Id, List<HOT_ThreadParticipants.Participant>>> threadMap = HOT_ThreadParticipants.getParticipantsByRelatedObjectAndThreadTypes(
+            interestedResource.Id,
+            new List<String>{ 'HOT_TOLK-FORMIDLER' }
+        );
+        Test.stopTest();
+        System.assert(
+            threadMap.containsKey('HOT_TOLK-FORMIDLER'),
+            'Deltakere for trådtypen "HOT_TOLK-FORMIDLER" mangler'
+        );
+        System.assert(threadMap.get('HOT_TOLK-FORMIDLER').containsKey(thread.Id), 'Tråden mangler');
+    }
+    @IsTest
+    private static void getParticipantByRelatedWageClaim() {
+        ServiceAppointment serviceAppointment = [SELECT Id FROM ServiceAppointment LIMIT 1];
+
+        Test.startTest();
+        Datetime startT = System.now().addHours(1);
+        Datetime endT = startT.addHours(1);
+        serviceAppointment.SchedStartTime = startT;
+        serviceAppointment.SchedEndTime = endT;
+        serviceAppointment.Status = 'Dispatched';
+        update serviceAppointment;
+
+        ServiceAppointment saAfterUpdate = [SELECT Id FROM ServiceAppointment WHERE Id = :serviceAppointment.Id];
+        saAfterUpdate.Status = 'Canceled';
+        update saAfterUpdate;
+
+        HOT_WageClaim__c wageClaim = [SELECT Id FROM HOT_WageClaim__c LIMIT 1];
+        Thread__c thread = HOT_TestDataFactory.createThread('HOT_TOLK-RESSURSKONTOR');
+        thread.CRM_Related_Object__c = wageClaim.Id;
+        insert thread;
+        Map<String, Map<Id, List<HOT_ThreadParticipants.Participant>>> threadMap = HOT_ThreadParticipants.getParticipantsByRelatedObjectAndThreadTypes(
+            wageClaim.Id,
+            new List<String>{ 'HOT_TOLK-RESSURSKONTOR' }
+        );
+        Test.stopTest();
+        System.assert(
+            threadMap.containsKey('HOT_TOLK-RESSURSKONTOR'),
+            'Deltakere for trådtypen "HOT_TOLK-RESSURSKONTOR" mangler'
+        );
+        System.assert(threadMap.get('HOT_TOLK-RESSURSKONTOR').containsKey(thread.Id), 'Tråden mangler');
+    }
+    @IsTest
     private static void getParticipantByRelatedWorkOrder() {
         WorkOrder workOrder = [SELECT Id FROM WorkOrder LIMIT 1];
         Thread__c thread = HOT_TestDataFactory.createThread('HOT_BRUKER-TOLK');
