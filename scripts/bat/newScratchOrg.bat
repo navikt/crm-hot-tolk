@@ -34,6 +34,9 @@ call sf package install --package 04tQC0000012ZXNYA2 --no-prompt --installation-
 echo "Installer crm-platform-reporting ver. 0.41"
 call sf package install --package 04tKB000000YAWDYA4 --no-prompt --installation-key %3 --wait 30 --publish-wait 30
 
+echo "Installer crm-hot-felles ver. 0.3"
+call sf package install --package 04tQC0000012m9dYAA --no-prompt --installation-key %3 --wait 30 --publish-wait 30
+
 echo "Dytter kildekoden til scratch org'en"
 call sf project deploy start
 
