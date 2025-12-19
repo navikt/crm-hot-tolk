@@ -30,6 +30,7 @@ export default class hot_requestForm_request_v2 extends LightningElement {
     @api parentFieldValues;
     @api parentRequestComponentValues;
     @api isEditOrCopyMode = false;
+    @api refreshToken;
 
     // Dont want to use this because focus will move to top on re-rendrering which happens on "Additional information"
     // renderedCallback() {
