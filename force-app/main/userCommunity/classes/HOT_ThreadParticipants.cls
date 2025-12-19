@@ -50,30 +50,7 @@ public without sharing class HOT_ThreadParticipants {
     Map<Id, Set<Id>> threadIdsByRelatedObjectId = new Map<Id, Set<Id>>();
     Id relatedObjectId;
     List<String> threadTypesOfInterest;
-    
-    public HOT_ThreadParticipants(Id threadId) {
-        this.threadIds.add(threadId);
-        this.getThreads();
-        this.mapThreadIdsByRelatedObjectIds();
-        this.initParticipantsByThreadId();
-    }
-    public HOT_ThreadParticipants(List<Id> threadIds) {
-        this.threadIds = new Set<Id>(threadIds);
-        this.getThreads();
-        this.mapThreadIdsByRelatedObjectIds();
-        this.initParticipantsByThreadId();
-    }
-    public HOT_ThreadParticipants(Thread__c thread) {
-        this.threadIds.add(thread.Id);
-        this.threads.add(thread);
-        this.mapThreadIdsByRelatedObjectIds();
-        this.initParticipantsByThreadId();
-    }
-    public HOT_ThreadParticipants(List<Thread__c> threads) {
-        this.threadIds = new Map<Id, Thread__c>(threads).keySet();
-        this.threads = threads;
-        this.mapThreadIdsByRelatedObjectIds();
-        this.initParticipantsByThreadId();
+
     }
     public HOT_ThreadParticipants(Id relatedObjectId, List<String> threadTypesOfInterest) {
         this.relatedObjectId = relatedObjectId;
@@ -83,13 +60,7 @@ public without sharing class HOT_ThreadParticipants {
         this.mapThreadIdsByRelatedObjectIds();
         this.initParticipantsByThreadId();
     }
-    private void getThreads() {
-        this.threads = [
-            SELECT Id, CRM_Related_Object__c, CRM_Thread_Type__c, HOT_IsEmployeeThread__c, HOT_Thread_read_by__c
-            FROM Thread__c
-            WHERE Id IN :threadIds
-        ];
-    }
+
     private void getThreadsForRelatedObject() {
         this.threads = [
             SELECT Id, CRM_Related_Object__c, CRM_Thread_Type__c, HOT_IsEmployeeThread__c, HOT_Thread_read_by__c
@@ -142,18 +113,6 @@ public without sharing class HOT_ThreadParticipants {
         participantList.addAll(getAccountParticipants(thread));
         setReadStatus(participantList, thread);
         return participantList;
-    }
-    @AuraEnabled
-    public static Map<Id, List<Participant>> getParticipantsByThreads(List<Id> threadIds) {
-        try {
-            return new HOT_ThreadParticipants(threadIds)
-                .getAssignedServiceResourceParticipants()
-                .getRelatedObjectParticipants()
-                .setReadStatus()
-                .participantsByThreadId;
-        } catch (Exception e) {
-            throw new AuraHandledException(e.getMessage());
-        }
     }
     @AuraEnabled
     public static Map<String, Map<Id, List<Participant>>> getParticipantsByRelatedObjectAndThreadTypes(
