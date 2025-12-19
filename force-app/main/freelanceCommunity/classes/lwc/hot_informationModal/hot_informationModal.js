@@ -11,7 +11,6 @@ import createThreadInterpreter from '@salesforce/apex/HOT_MessageHelper.createTh
 import createThreadInterpreters from '@salesforce/apex/HOT_MessageHelper.createThreadInterpreters';
 import getServiceAppointment from '@salesforce/apex/HOT_MyServiceAppointmentListController.getServiceAppointment';
 import { NavigationMixin } from 'lightning/navigation';
-import retractAvailability from '@salesforce/apex/HOT_WageClaimListController.retractAvailability';
 import getThreadIdWC from '@salesforce/apex/HOT_WageClaimListController.getThreadId';
 import getServiceResource from '@salesforce/apex/HOT_Utility.getServiceResource';
 import getWageClaimDetails from '@salesforce/apex/HOT_WageClaimListController.getWageClaimDetails';
@@ -48,8 +47,6 @@ export default class Hot_informationModal extends NavigationMixin(LightningModal
     isGoToThreadServiceAppointmentButtonDisabled = false;
 
     //wageclaim
-
-    wcIsNotRetractable = false;
     wcIsDisabledGoToThread = false;
 
     noCancelButton = false;
@@ -95,35 +92,6 @@ export default class Hot_informationModal extends NavigationMixin(LightningModal
         document.body.style.overflow = '';
     }
 
-    async showModalRetract() {
-        const result = await HOT_ConfirmationModal.open({
-            size: 'small',
-            headline: 'Varsel',
-            message:
-                'Er du sikker på at du vil fjerne tilgjengeligheten din for dette tidspunktet? Du vil da ikke ha krav på lønn.',
-            primaryLabel: 'Ja',
-            showSecondButton: true,
-            secondaryLabel: 'Avbryt'
-        });
-        if (result === 'primary') {
-            this.retractAvailability();
-        }
-    }
-
-    retractAvailability() {
-        //this.isLoading = true;
-        try {
-            retractAvailability({ recordId: this.wageClaim.Id }).then(() => {
-                this.wcIsNotRetractable = true;
-                this.wageClaim.Status__c = 'Tilbaketrukket tilgjengelighet';
-                this.refreshApexCallout();
-            });
-        } catch (error) {
-            alert(JSON.stringify(error));
-        }
-        //this.isLoading = false;
-    }
-
     closeModal() {
         this.saIsflow = false;
         this.recordId = undefined;
@@ -148,11 +116,6 @@ export default class Hot_informationModal extends NavigationMixin(LightningModal
             if (recordId === wageClaim.Id) {
                 this.wageClaim = { ...wageClaim };
                 this.wageClaim.weekday = this.getDayOfWeek(this.wageClaim.StartTime__c);
-                if (this.wageClaim.Status__c == 'Åpen' || this.wageClaim.Status__c == 'Open') {
-                    this.wcIsNotRetractable = false;
-                } else {
-                    this.wcIsNotRetractable = true;
-                }
             }
         }
         this.isLoading = false;

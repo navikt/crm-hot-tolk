@@ -199,16 +199,6 @@
                             <p>Døv/døvblind: <span>{wageClaim.DegreeOfHearingAndVisualImpairment__c}</span></p>
                             <p>Status: <span>{wageClaim.Status__c}</span></p>
                         </div>
-                        <div style="display: inline-block; padding-right: 1vw; padding-bottom: 1vw; padding-top: 1vw">
-                            <c-button
-                                disabled={wcIsNotRetractable}
-                                button-styling="primary"
-                                button-label="Tilbaketrekk tilgjengelighet"
-                                aria-label="Tilbaketrekk tilgjengelighet"
-                                onbuttonclick={showModalRetract}
-                            >
-                            </c-button>
-                        </div>
                         <div style="display: inline-block; padding-bottom: 1vw">
                             <c-button
                                 disabled={wcIsDisabledGoToThread}
