@@ -94,8 +94,6 @@ export default class CrmMessagingMessageComponent extends LightningElement {
     userContactId;
 
     @api recordId;
-    @api singleThread;
-    @api showClose;
     @api englishTextTemplate;
     @api textTemplate;
     @api objectApiName;
@@ -179,7 +177,6 @@ export default class CrmMessagingMessageComponent extends LightningElement {
             this.threadTypesOfInterest = ['HOT_TOLK-FORMIDLER'];
             this.getThreadAndParticipants();
         } else if (this.objectApiName === 'Thread__c') {
-            //single thread mode
             getThreadInformation({ recordId: this.recordId })
                 .then((result) => {
                     switch (result[0].CRM_Thread_Type__c) {

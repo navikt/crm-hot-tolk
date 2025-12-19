@@ -6,16 +6,11 @@
     <targets>
         <target>lightning__AppPage</target>
         <target>lightning__RecordPage</target>
-        <target>lightning__HomePage</target>
+        <target>
+        lightning__HomePage</target>
     </targets>
     <targetConfigs>
-        <targetConfig targets="lightning__HomePage">
-            <property name="singleThread" type="Boolean" default="true" label="Single Thread Mode enabled" />
-            <property name="showClose" type="Boolean" default="false" label="Display the 'Close thread' button" />
-        </targetConfig>
         <targetConfig targets="lightning__RecordPage">
-            <property name="singleThread" type="Boolean" default="true" label="Single Thread Mode enabled" />
-            <property name="showClose" type="Boolean" default="false" label="Display the 'Close thread' button" />
             <supportedFormFactors>
                 <supportedFormFactor type="Large" />
                 <supportedFormFactor type="Small" />
