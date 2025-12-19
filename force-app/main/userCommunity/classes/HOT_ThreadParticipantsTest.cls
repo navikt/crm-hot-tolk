@@ -107,7 +107,50 @@ private class HOT_ThreadParticipantsTest {
         );
         insert assignedResource;
     }
+    @IsTest
+    private static void getParticipantByRelatedRequest() {
+        HOT_Request__c request = [SELECT Id FROM HOT_Request__c LIMIT 1];
+        Thread__c thread = HOT_TestDataFactory.createThread('HOT_BRUKER-FORMIDLER');
+        thread.CRM_Related_Object__c = request.Id;
+        insert thread;
 
+        Test.startTest();
+        Map<String, Map<Id, List<HOT_ThreadParticipants.Participant>>> threadMap = HOT_ThreadParticipants.getParticipantsByRelatedObjectAndThreadTypes(
+            request.Id,
+            new List<String>{ 'HOT_BRUKER-FORMIDLER' }
+        );
+        Test.stopTest();
+        System.assert(
+            threadMap.containsKey('HOT_BRUKER-FORMIDLER'),
+            'Deltakere for trådtypen "HOT_BRUKER-FORMIDLER" mangler'
+        );
+        System.assert(threadMap.get('HOT_BRUKER-FORMIDLER').containsKey(thread.Id), 'Tråden mangler');
+
+        List<HOT_ThreadParticipants.Participant> participants = threadMap.get('HOT_BRUKER-FORMIDLER').get(thread.Id);
+
+        List<String> participantNames = new List<String>();
+        for (HOT_ThreadParticipants.Participant p : participants) {
+            participantNames.add(p.name);
+        }
+
+        System.assert(participantNames.contains('Person 1'), 'Mangler deltaker "Person 1"');
+        System.assert(participantNames.contains('Formidler'), 'Mangler deltaker "Formidler"');
+    }
+    @IsTest
+    private static void getParticipantByRelatedWorkOrder() {
+        WorkOrder workOrder = [SELECT Id FROM WorkOrder LIMIT 1];
+        Thread__c thread = HOT_TestDataFactory.createThread('HOT_BRUKER-TOLK');
+        thread.CRM_Related_Object__c = workOrder.Id;
+        insert thread;
+        Test.startTest();
+        Map<String, Map<Id, List<HOT_ThreadParticipants.Participant>>> threadMap = HOT_ThreadParticipants.getParticipantsByRelatedObjectAndThreadTypes(
+            workOrder.Id,
+            new List<String>{ 'HOT_BRUKER-TOLK' }
+        );
+        Test.stopTest();
+        System.assert(threadMap.containsKey('HOT_BRUKER-TOLK'), 'Deltakere for trådtypen "HOT_BRUKER-TOLK" mangler');
+        System.assert(threadMap.get('HOT_BRUKER-TOLK').containsKey(thread.Id), 'Tråden mangler');
+    }
     @IsTest
     private static void getRequestThreadParticipants() {
         HOT_Request__c request = [SELECT Id FROM HOT_Request__c LIMIT 1];
