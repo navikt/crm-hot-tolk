@@ -47,21 +47,21 @@
             <name>Interpretation_fields_are_blank</name>
             <conditionLogic>and</conditionLogic>
             <conditions>
-                <leftValueReference>$Record.InterpretationStreet__c</leftValueReference>
+                <leftValueReference>$Record.InterpretationAddress__Street__s</leftValueReference>
                 <operator>IsBlank</operator>
                 <rightValue>
                     <booleanValue>true</booleanValue>
                 </rightValue>
             </conditions>
             <conditions>
-                <leftValueReference>$Record.InterpretationPostalCode__c</leftValueReference>
+                <leftValueReference>$Record.InterpretationAddress__PostalCode__s</leftValueReference>
                 <operator>IsBlank</operator>
                 <rightValue>
                     <booleanValue>true</booleanValue>
                 </rightValue>
             </conditions>
             <conditions>
-                <leftValueReference>$Record.InterpretationPostalCity__c</leftValueReference>
+                <leftValueReference>$Record.InterpretationAddress__City__s</leftValueReference>
                 <operator>IsBlank</operator>
                 <rightValue>
                     <booleanValue>true</booleanValue>
@@ -105,21 +105,21 @@
             <name>Meeting_Address_has_to_be_empty</name>
             <conditionLogic>and</conditionLogic>
             <conditions>
-                <leftValueReference>$Record.MeetingStreet__c</leftValueReference>
+                <leftValueReference>$Record.MeetingAddress__Street__s</leftValueReference>
                 <operator>IsBlank</operator>
                 <rightValue>
                     <booleanValue>false</booleanValue>
                 </rightValue>
             </conditions>
             <conditions>
-                <leftValueReference>$Record.MeetingPostalCode__c</leftValueReference>
+                <leftValueReference>$Record.MeetingAddress__PostalCode__s</leftValueReference>
                 <operator>IsBlank</operator>
                 <rightValue>
                     <booleanValue>false</booleanValue>
                 </rightValue>
             </conditions>
             <conditions>
-                <leftValueReference>$Record.MeetingPostalCity__c</leftValueReference>
+                <leftValueReference>$Record.MeetingAddress__City__s</leftValueReference>
                 <operator>IsBlank</operator>
                 <rightValue>
                     <booleanValue>false</booleanValue>
@@ -159,7 +159,7 @@
         <locationX>0</locationX>
         <locationY>0</locationY>
         <defaultConnector>
-            <targetReference>GET_Postal_City</targetReference>
+            <targetReference>Update_Meeting_Address</targetReference>
         </defaultConnector>
         <defaultConnectorLabel>Standardutfall</defaultConnectorLabel>
         <rules>
@@ -169,32 +169,32 @@
                 <leftValueReference>$Record.Person__r.INT_ResidentialAddress__c</leftValueReference>
                 <operator>NotEqualTo</operator>
                 <rightValue>
-                    <elementReference>$Record.MeetingStreet__c</elementReference>
+                    <elementReference>$Record.MeetingAddress__Street__s</elementReference>
                 </rightValue>
             </conditions>
             <conditions>
                 <leftValueReference>$Record.Person__r.INT_ResidentialZip__c</leftValueReference>
                 <operator>NotEqualTo</operator>
                 <rightValue>
-                    <elementReference>$Record.MeetingPostalCode__c</elementReference>
+                    <elementReference>$Record.MeetingAddress__PostalCode__s</elementReference>
                 </rightValue>
             </conditions>
             <conditions>
-                <leftValueReference>$Record.MeetingStreet__c</leftValueReference>
+                <leftValueReference>$Record.MeetingAddress__Street__s</leftValueReference>
                 <operator>IsChanged</operator>
                 <rightValue>
                     <booleanValue>true</booleanValue>
                 </rightValue>
             </conditions>
             <conditions>
-                <leftValueReference>$Record.MeetingPostalCode__c</leftValueReference>
+                <leftValueReference>$Record.MeetingAddress__PostalCode__s</leftValueReference>
                 <operator>IsChanged</operator>
                 <rightValue>
                     <booleanValue>true</booleanValue>
                 </rightValue>
             </conditions>
             <conditions>
-                <leftValueReference>$Record.MeetingPostalCity__c</leftValueReference>
+                <leftValueReference>$Record.MeetingAddress__City__s</leftValueReference>
                 <operator>IsChanged</operator>
                 <rightValue>
                     <booleanValue>true</booleanValue>
@@ -206,7 +206,8 @@
             <label>Meeting Address not equal Home Address</label>
         </rules>
     </decisions>
-    <description>When HOT_IsMeetingAddressSameAsHome is checked, add the Home address from the user to the meeting address</description>
+    <description>When HOT_IsMeetingAddressSameAsHome is checked, add the Home address from the user
+        to the meeting address</description>
     <environments>Default</environments>
     <interviewLabel>HOT_HomeToMeetingAddress_Flow {!$Flow.CurrentDateTime}</interviewLabel>
     <label>HOT_HomeAddressToMeetingAddress</label>
@@ -229,46 +230,25 @@
         </value>
     </processMetadataValues>
     <processType>AutoLaunchedFlow</processType>
-    <recordLookups>
-        <name>GET_Postal_City</name>
-        <label>GET Postal City</label>
-        <locationX>0</locationX>
-        <locationY>0</locationY>
-        <assignNullValuesIfNoRecordsFound>false</assignNullValuesIfNoRecordsFound>
-        <connector>
-            <targetReference>Update_Meeting_Address</targetReference>
-        </connector>
-        <filterLogic>and</filterLogic>
-        <filters>
-            <field>CRM_Code__c</field>
-            <operator>EqualTo</operator>
-            <value>
-                <elementReference>$Record.Person__r.INT_ResidentialZipCode__c</elementReference>
-            </value>
-        </filters>
-        <getFirstRecordOnly>true</getFirstRecordOnly>
-        <object>Common_Code__c</object>
-        <storeOutputAutomatically>true</storeOutputAutomatically>
-    </recordLookups>
     <recordUpdates>
         <name>Update_Interpretation_Address</name>
         <label>Update Interpretation Address</label>
         <locationX>0</locationX>
         <locationY>0</locationY>
         <inputAssignments>
-            <field>InterpretationPostalCity__c</field>
+            <field>InterpretationAddress__City__s</field>
             <value>
-                <elementReference>GET_Postal_City.Name</elementReference>
+                <elementReference>$Record.Person__r.INT_ResidentialPlace__c</elementReference>
             </value>
         </inputAssignments>
         <inputAssignments>
-            <field>InterpretationPostalCode__c</field>
+            <field>InterpretationAddress__PostalCode__s</field>
             <value>
                 <elementReference>$Record.Person__r.INT_ResidentialZipCode__c</elementReference>
             </value>
         </inputAssignments>
         <inputAssignments>
-            <field>InterpretationStreet__c</field>
+            <field>InterpretationAddress__Street__s</field>
             <value>
                 <elementReference>$Record.Person__r.INT_ResidentialAddress__c</elementReference>
             </value>
@@ -303,19 +283,19 @@
             </value>
         </inputAssignments>
         <inputAssignments>
-            <field>MeetingPostalCity__c</field>
+            <field>MeetingAddress__City__s</field>
             <value>
-                <elementReference>GET_Postal_City.Name</elementReference>
+                <elementReference>$Record.Person__r.INT_ResidentialPlace__c</elementReference>
             </value>
         </inputAssignments>
         <inputAssignments>
-            <field>MeetingPostalCode__c</field>
+            <field>MeetingAddress__PostalCode__s</field>
             <value>
                 <elementReference>$Record.Person__r.INT_ResidentialZipCode__c</elementReference>
             </value>
         </inputAssignments>
         <inputAssignments>
-            <field>MeetingStreet__c</field>
+            <field>MeetingAddress__Street__s</field>
             <value>
                 <elementReference>$Record.Person__r.INT_ResidentialAddress__c</elementReference>
             </value>

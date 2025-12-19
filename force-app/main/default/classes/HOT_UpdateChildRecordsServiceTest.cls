@@ -5,6 +5,7 @@ public with sharing class HOT_UpdateChildRecordsServiceTest {
         Person__c person = HOT_TestDataFactory.createPerson();
         person.Name = '12015678999';
         insert person;
+
         Account personAccount = HOT_TestDataFactory.createAccount(true);
         personAccount.INT_PersonIdent__c = '12015678999';
         personAccount.CRM_Person__c = person.Id;
@@ -12,31 +13,33 @@ public with sharing class HOT_UpdateChildRecordsServiceTest {
 
         WorkType workType = HOT_TestDataFactory.createWorkType();
         insert workType;
+
         HOT_Request__c request = HOT_TestDataFactory.createRequest('Old Subject', workType);
-        request.InterpretationPostalCode__c = '0000';
-        request.MeetingPostalCode__c = '0000';
         request.Account__c = personAccount.Id;
+        request.InterpretationAddress__PostalCode__s = '0166';
+        request.MeetingAddress__PostalCode__s = '0166';
         insert request;
+
         request.Status__c = 'Godkjent';
         update request;
-
-        HOT_UpdateChildRecordsService input = new HOT_UpdateChildRecordsService();
 
         request = [
             SELECT
                 Id,
                 Account__c,
-                InterpretationStreet__c,
-                InterpretationPostalCode__c,
-                InterpretationPostalCity__c,
-                MeetingStreet__c,
-                MeetingPostalCode__c,
-                MeetingPostalCity__c,
-                Subject__c,
                 UserPersonNumber__c,
                 UserName__c,
-                Description__c,
                 HOT_PersonContactId__c,
+                InterpretationAddress__Street__s,
+                InterpretationAddress__PostalCode__s,
+                InterpretationAddress__City__s,
+                InterpretationAddress__CountryCode__s,
+                MeetingAddress__Street__s,
+                MeetingAddress__PostalCode__s,
+                MeetingAddress__City__s,
+                MeetingAddress__CountryCode__s,
+                Subject__c,
+                Description__c,
                 IsScreenInterpreter__c,
                 Dispatcher__c,
                 InterpretationMethod__c
@@ -44,20 +47,20 @@ public with sharing class HOT_UpdateChildRecordsServiceTest {
             WHERE Id = :request.Id
         ];
 
-        request.InterpretationStreet__c = 'New interpretationStreet';
-        request.InterpretationPostalCode__c = '1111';
-        request.InterpretationPostalCity__c = 'New interpretationPostalCity';
-        request.MeetingStreet__c = 'New meetingStreet';
-        request.MeetingPostalCode__c = '1111';
-        request.MeetingPostalCity__c = 'New meetingPostalCity';
+        request.InterpretationAddress__Street__s = 'Storgata 1';
+        request.InterpretationAddress__PostalCode__s = '0166';
+        request.InterpretationAddress__City__s = 'Oslo';
+        request.InterpretationAddress__CountryCode__s = 'NO';
+        request.MeetingAddress__Street__s = 'Karl Johans gate 1';
+        request.MeetingAddress__PostalCode__s = '0166';
+        request.MeetingAddress__City__s = 'Oslo';
         request.Subject__c = 'New subject';
         request.Description__c = 'New description';
         request.IsScreenInterpreter__c = true;
-        request.Account__c = personAccount.Id;
         request.InterpretationMethod__c = workType.Id;
 
+        HOT_UpdateChildRecordsService input = new HOT_UpdateChildRecordsService();
         input.request = request;
-
         input.isAccountChoice = true;
         input.isAddressChoice = true;
         input.isSubjectChoice = true;
@@ -72,88 +75,92 @@ public with sharing class HOT_UpdateChildRecordsServiceTest {
 
         request = [
             SELECT
-                Id,
-                InterpretationStreet__c,
-                InterpretationPostalCode__c,
-                InterpretationPostalCity__c,
-                MeetingStreet__c,
-                MeetingPostalCode__c,
-                MeetingPostalCity__c,
                 Subject__c,
-                Description__c,
-                IsScreenInterpreter__c,
-                Dispatcher__c
+                InterpretationAddress__Street__s,
+                InterpretationAddress__PostalCode__s,
+                InterpretationAddress__City__s,
+                InterpretationAddress__CountryCode__s,
+                MeetingAddress__Street__s,
+                MeetingAddress__PostalCode__s,
+                MeetingAddress__City__s,
+                MeetingAddress__CountryCode__s
             FROM HOT_Request__c
             WHERE Id = :request.Id
         ];
-        Map<Id, WorkOrder> workOrders = new Map<Id, WorkOrder>(
-            [
-                SELECT
-                    Id,
-                    HOT_InterpretationStreet__c,
-                    HOT_InterpretationPostalCode__c,
-                    HOT_InterpretationPostalCity__c,
-                    Street,
-                    PostalCode,
-                    City,
-                    Subject,
-                    Description
-                FROM WorkOrder
-                WHERE HOT_Request__c = :request.Id
-            ]
-        );
-        Map<Id, WorkOrderLineItem> workOrderLineItems = new Map<Id, WorkOrderLineItem>(
-            [
-                SELECT
-                    Id,
-                    HOT_InterpretationPostalStreet__c,
-                    HOT_InterpretationPostalCode__c,
-                    HOT_InterpretationPostalCity__c,
-                    Street,
-                    PostalCode,
-                    City,
-                    Subject,
-                    Description
-                FROM WorkOrderLineItem
-                WHERE WorkOrderId IN :workOrders.keySet()
-            ]
-        );
-        Map<Id, ServiceAppointment> serviceAppointments = new Map<Id, ServiceAppointment>(
-            [
-                SELECT
-                    Id,
-                    HOT_InterpretationStreet__c,
-                    HOT_InterpretationPostalCode__c,
-                    HOT_InterpretationPostalCity__c,
-                    Street,
-                    PostalCode,
-                    City,
-                    Subject,
-                    Description,
-                    HOT_IsScreenInterpreterNew__c,
-                    HOT_DispatcherNew__c
-                FROM ServiceAppointment
-                WHERE HOT_Request__c = :request.Id
-            ]
-        );
 
-        System.assertEquals('New subject', request.Subject__c, 'Could not update Subject on Request');
-        System.assertEquals('New subject', workOrders.values()[0].Subject, 'Could not update Subject on WorkOrder');
-        System.assertEquals(
-            'New subject',
-            workOrderLineItems.values()[0].Subject,
-            'Could not update Subject on WorkOrderLineItem'
-        );
-        System.assertEquals(
-            'New subject',
-            serviceAppointments.values()[0].Subject,
-            'Could not update Subject on ServiceAppointment'
-        );
-        System.assertEquals(
-            request.Dispatcher__c,
-            serviceAppointments.values()[0].HOT_DispatcherNew__c,
-            'Could not update Dispatcher on Request'
-        );
+        WorkOrder wo = [
+            SELECT
+                Subject,
+                HOT_InterpretationAddress__Street__s,
+                HOT_InterpretationAddress__PostalCode__s,
+                HOT_InterpretationAddress__City__s,
+                Street,
+                PostalCode,
+                City
+            FROM WorkOrder
+            WHERE HOT_Request__c = :request.Id
+            LIMIT 1
+        ];
+
+        WorkOrderLineItem woli = [
+            SELECT
+                Subject,
+                HOT_InterpretationAddress__Street__s,
+                HOT_InterpretationAddress__PostalCode__s,
+                HOT_InterpretationAddress__City__s,
+                Street,
+                PostalCode,
+                City
+            FROM WorkOrderLineItem
+            WHERE WorkOrderId = :wo.Id
+            LIMIT 1
+        ];
+
+        ServiceAppointment sa = [
+            SELECT
+                Subject,
+                HOT_InterpretationAddress__Street__s,
+                HOT_InterpretationAddress__PostalCode__s,
+                HOT_InterpretationAddress__City__s,
+                Street,
+                PostalCode,
+                City
+            FROM ServiceAppointment
+            WHERE HOT_Request__c = :request.Id
+            LIMIT 1
+        ];
+
+        System.assertEquals('New subject', request.Subject__c);
+        System.assertEquals('Storgata 1', request.InterpretationAddress__Street__s);
+        System.assertEquals('0166', request.InterpretationAddress__PostalCode__s);
+        System.assertEquals('Oslo', request.InterpretationAddress__City__s);
+        System.assertEquals('Karl Johans gate 1', request.MeetingAddress__Street__s);
+        System.assertEquals('0166', request.MeetingAddress__PostalCode__s);
+        System.assertEquals('Oslo', request.MeetingAddress__City__s);
+
+        System.assertEquals('New subject', wo.Subject);
+        System.assertEquals('Storgata 1', wo.HOT_InterpretationAddress__Street__s);
+        System.assertEquals('0166', wo.HOT_InterpretationAddress__PostalCode__s);
+        System.assertEquals('Oslo', wo.HOT_InterpretationAddress__City__s);
+        System.assertEquals('Karl Johans gate 1', wo.Street);
+        System.assertEquals('0166', wo.PostalCode);
+        System.assertEquals('Oslo', wo.City);
+
+        System.assertEquals('New subject', woli.Subject);
+        System.assertEquals('Storgata 1', woli.HOT_InterpretationAddress__Street__s);
+        System.assertEquals('0166', woli.HOT_InterpretationAddress__PostalCode__s);
+        System.assertEquals('Oslo', woli.HOT_InterpretationAddress__City__s);
+        System.assertEquals('Karl Johans gate 1', woli.Street);
+        System.assertEquals('0166', woli.PostalCode);
+        System.assertEquals('Oslo', woli.City);
+
+        System.assertEquals('New subject', sa.Subject);
+        System.assertEquals('Storgata 1', sa.HOT_InterpretationAddress__Street__s);
+        System.assertEquals('0166', sa.HOT_InterpretationAddress__PostalCode__s);
+        System.assertEquals('Oslo', sa.HOT_InterpretationAddress__City__s);
+        System.assertEquals('Karl Johans gate 1', sa.Street);
+        System.assertEquals('0166', sa.PostalCode);
+        System.assertEquals('Oslo', sa.City);
     }
 
     @IsTest
@@ -161,6 +168,7 @@ public with sharing class HOT_UpdateChildRecordsServiceTest {
         Person__c person = HOT_TestDataFactory.createPerson();
         person.Name = '12015678999';
         insert person;
+
         Account personAccount = HOT_TestDataFactory.createAccount(true);
         personAccount.INT_PersonIdent__c = '12015678999';
         personAccount.CRM_Person__c = person.Id;
@@ -168,31 +176,33 @@ public with sharing class HOT_UpdateChildRecordsServiceTest {
 
         WorkType workType = HOT_TestDataFactory.createWorkType();
         insert workType;
+
         HOT_Request__c request = HOT_TestDataFactory.createRequest('Old Subject', workType);
-        request.InterpretationPostalCode__c = '0000';
-        request.MeetingPostalCode__c = '0000';
         request.Account__c = personAccount.Id;
+        request.InterpretationAddress__PostalCode__s = '0166';
+        request.MeetingAddress__PostalCode__s = '0166';
         insert request;
+
         request.Status__c = 'Godkjent';
         update request;
-
-        HOT_UpdateChildRecordsService input = new HOT_UpdateChildRecordsService();
 
         request = [
             SELECT
                 Id,
                 Account__c,
-                InterpretationStreet__c,
-                InterpretationPostalCode__c,
-                InterpretationPostalCity__c,
-                MeetingStreet__c,
-                MeetingPostalCode__c,
-                MeetingPostalCity__c,
-                Subject__c,
                 UserPersonNumber__c,
                 UserName__c,
-                Description__c,
                 HOT_PersonContactId__c,
+                InterpretationAddress__Street__s,
+                InterpretationAddress__PostalCode__s,
+                InterpretationAddress__City__s,
+                InterpretationAddress__CountryCode__s,
+                MeetingAddress__Street__s,
+                MeetingAddress__PostalCode__s,
+                MeetingAddress__City__s,
+                MeetingAddress__CountryCode__s,
+                Subject__c,
+                Description__c,
                 IsScreenInterpreter__c,
                 Dispatcher__c,
                 InterpretationMethod__c
@@ -200,40 +210,35 @@ public with sharing class HOT_UpdateChildRecordsServiceTest {
             WHERE Id = :request.Id
         ];
 
-        WorkOrder workOrder = [
+        WorkOrder wo = [
             SELECT
                 Id,
-                Status,
-                AccountId,
-                ContactId,
-                HOT_InterpretationStreet__c,
-                HOT_InterpretationPostalCode__c,
-                HOT_InterpretationPostalCity__c,
+                Subject,
+                HOT_InterpretationAddress__Street__s,
+                HOT_InterpretationAddress__PostalCode__s,
+                HOT_InterpretationAddress__City__s,
                 Street,
                 PostalCode,
-                City,
-                Subject,
-                Description
+                City
             FROM WorkOrder
             WHERE HOT_Request__c = :request.Id
             LIMIT 1
         ];
 
-        request.InterpretationStreet__c = 'New interpretationStreet';
-        request.InterpretationPostalCode__c = '1111';
-        request.InterpretationPostalCity__c = 'New interpretationPostalCity';
-        request.MeetingStreet__c = 'New meetingStreet';
-        request.MeetingPostalCode__c = '1111';
-        request.MeetingPostalCity__c = 'New meetingPostalCity';
+        request.InterpretationAddress__Street__s = 'Storgata 1';
+        request.InterpretationAddress__PostalCode__s = '0166';
+        request.InterpretationAddress__City__s = 'Oslo';
+        request.MeetingAddress__Street__s = 'Karl Johans gate 1';
+        request.MeetingAddress__PostalCode__s = '0166';
+        request.MeetingAddress__City__s = 'Oslo';
         request.Subject__c = 'New subject';
         request.Description__c = 'New description';
         request.IsScreenInterpreter__c = true;
-        request.Account__c = personAccount.Id;
         request.InterpretationMethod__c = workType.Id;
 
+        HOT_UpdateChildRecordsService input = new HOT_UpdateChildRecordsService();
         input.request = request;
-        input.workOrder = workOrder;
-
+        input.workOrder = wo;
         input.isAccountChoice = true;
         input.isAddressChoice = true;
         input.isSubjectChoice = true;
@@ -246,84 +251,69 @@ public with sharing class HOT_UpdateChildRecordsServiceTest {
         HOT_UpdateChildRecordsService.updateChildRecords(new List<HOT_UpdateChildRecordsService>{ input });
         Test.stopTest();
 
-        request = [
+        wo = [
             SELECT
-                Id,
-                InterpretationStreet__c,
-                InterpretationPostalCode__c,
-                InterpretationPostalCity__c,
-                MeetingStreet__c,
-                MeetingPostalCode__c,
-                MeetingPostalCity__c,
-                Subject__c,
-                Description__c,
-                IsScreenInterpreter__c,
-                Dispatcher__c
-            FROM HOT_Request__c
-            WHERE Id = :request.Id
-        ];
-        workOrder = [
-            SELECT
-                Id,
-                Status,
-                AccountId,
-                ContactId,
-                HOT_InterpretationStreet__c,
-                HOT_InterpretationPostalCode__c,
-                HOT_InterpretationPostalCity__c,
+                Subject,
+                HOT_InterpretationAddress__Street__s,
+                HOT_InterpretationAddress__PostalCode__s,
+                HOT_InterpretationAddress__City__s,
                 Street,
                 PostalCode,
-                City,
-                Subject,
-                Description
+                City
             FROM WorkOrder
-            WHERE HOT_Request__c = :request.Id
+            WHERE Id = :wo.Id
         ];
-        Map<Id, WorkOrderLineItem> workOrderLineItems = new Map<Id, WorkOrderLineItem>(
-            [
-                SELECT
-                    Id,
-                    HOT_InterpretationPostalStreet__c,
-                    HOT_InterpretationPostalCode__c,
-                    HOT_InterpretationPostalCity__c,
-                    Street,
-                    PostalCode,
-                    City,
-                    Subject,
-                    Description
-                FROM WorkOrderLineItem
-                WHERE WorkOrderId = :workOrder.id
-            ]
-        );
-        Map<Id, ServiceAppointment> serviceAppointments = new Map<Id, ServiceAppointment>(
-            [
-                SELECT
-                    Id,
-                    HOT_InterpretationStreet__c,
-                    HOT_InterpretationPostalCode__c,
-                    HOT_InterpretationPostalCity__c,
-                    Street,
-                    PostalCode,
-                    City,
-                    Subject,
-                    Description,
-                    HOT_IsScreenInterpreterNew__c,
-                    HOT_DispatcherNew__c
-                FROM ServiceAppointment
-                WHERE HOT_Request__c = :request.Id
-            ]
-        );
 
-        System.assertEquals('New subject', workOrder.Subject, 'Could not update Subject on WorkOrder');
-        System.assertEquals(
-            'New subject',
-            workOrderLineItems.values()[0].Subject,
-            'Could not update Subject on WorkOrderLineItem'
-        );
-        System.assertEquals(
-            'New subject',
-            serviceAppointments.values()[0].Subject,
-            'Could not update Subject on ServiceAppointment'
-        );
+        WorkOrderLineItem woli = [
+            SELECT
+                Subject,
+                HOT_InterpretationAddress__Street__s,
+                HOT_InterpretationAddress__PostalCode__s,
+                HOT_InterpretationAddress__City__s,
+                Street,
+                PostalCode,
+                City
+            FROM WorkOrderLineItem
+            WHERE WorkOrderId = :wo.Id
+            LIMIT 1
+        ];
+
+        ServiceAppointment sa = [
+            SELECT
+                Subject,
+                HOT_InterpretationAddress__Street__s,
+                HOT_InterpretationAddress__PostalCode__s,
+                HOT_InterpretationAddress__City__s,
+                Street,
+                PostalCode,
+                City
+            FROM ServiceAppointment
+            WHERE HOT_Request__c = :request.Id
+            LIMIT 1
+        ];
+
+        System.assertEquals('New subject', wo.Subject);
+        System.assertEquals('Storgata 1', wo.HOT_InterpretationAddress__Street__s);
+        System.assertEquals('0166', wo.HOT_InterpretationAddress__PostalCode__s);
+        System.assertEquals('Oslo', wo.HOT_InterpretationAddress__City__s);
+        System.assertEquals('Karl Johans gate 1', wo.Street);
+        System.assertEquals('0166', wo.PostalCode);
+        System.assertEquals('Oslo', wo.City);
+
+        System.assertEquals('New subject', woli.Subject);
+        System.assertEquals('Storgata 1', woli.HOT_InterpretationAddress__Street__s);
+        System.assertEquals('0166', woli.HOT_InterpretationAddress__PostalCode__s);
+        System.assertEquals('Oslo', woli.HOT_InterpretationAddress__City__s);
+        System.assertEquals('Karl Johans gate 1', woli.Street);
+        System.assertEquals('0166', woli.PostalCode);
+        System.assertEquals('Oslo', woli.City);
+
+        System.assertEquals('New subject', sa.Subject);
+        System.assertEquals('Storgata 1', sa.HOT_InterpretationAddress__Street__s);
+        System.assertEquals('0166', sa.HOT_InterpretationAddress__PostalCode__s);
+        System.assertEquals('Oslo', sa.HOT_InterpretationAddress__City__s);
+        System.assertEquals('Karl Johans gate 1', sa.Street);
+        System.assertEquals('0166', sa.PostalCode);
+        System.assertEquals('Oslo', sa.City);
     }
 }

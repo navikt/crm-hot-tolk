@@ -336,28 +336,8 @@
                     <name>uiBehavior</name>
                     <value>none</value>
                 </fieldInstanceProperties>
-                <fieldItem>Record.MeetingStreet__c</fieldItem>
-                <identifier>RecordMeetingStreet__cField</identifier>
-            </fieldInstance>
-        </itemInstances>
-        <itemInstances>
-            <fieldInstance>
-                <fieldInstanceProperties>
-                    <name>uiBehavior</name>
-                    <value>none</value>
-                </fieldInstanceProperties>
-                <fieldItem>Record.MeetingPostalCode__c</fieldItem>
-                <identifier>RecordMeetingPostalCode__cField</identifier>
-            </fieldInstance>
-        </itemInstances>
-        <itemInstances>
-            <fieldInstance>
-                <fieldInstanceProperties>
-                    <name>uiBehavior</name>
-                    <value>none</value>
-                </fieldInstanceProperties>
-                <fieldItem>Record.MeetingPostalCity__c</fieldItem>
-                <identifier>RecordMeetingPostalCity__cField</identifier>
+                <fieldItem>Record.MeetingAddress__c</fieldItem>
+                <identifier>RecordMeetingAddress_cField</identifier>
             </fieldInstance>
         </itemInstances>
         <itemInstances>
@@ -380,28 +360,8 @@
                     <name>uiBehavior</name>
                     <value>none</value>
                 </fieldInstanceProperties>
-                <fieldItem>Record.InterpretationStreet__c</fieldItem>
-                <identifier>RecordInterpretationStreet__cField</identifier>
-            </fieldInstance>
-        </itemInstances>
-        <itemInstances>
-            <fieldInstance>
-                <fieldInstanceProperties>
-                    <name>uiBehavior</name>
-                    <value>none</value>
-                </fieldInstanceProperties>
-                <fieldItem>Record.InterpretationPostalCode__c</fieldItem>
-                <identifier>RecordInterpretationPostalCode__cField</identifier>
-            </fieldInstance>
-        </itemInstances>
-        <itemInstances>
-            <fieldInstance>
-                <fieldInstanceProperties>
-                    <name>uiBehavior</name>
-                    <value>none</value>
-                </fieldInstanceProperties>
-                <fieldItem>Record.InterpretationPostalCity__c</fieldItem>
-                <identifier>RecordInterpretationPostalCity__cField</identifier>
+                <fieldItem>Record.InterpretationAddress__c</fieldItem>
+                <identifier>RecordInterpretationAddress_cField</identifier>
             </fieldInstance>
         </itemInstances>
         <name>Facet-bd767cb7-4d63-42aa-8105-5256a1606e16</name>

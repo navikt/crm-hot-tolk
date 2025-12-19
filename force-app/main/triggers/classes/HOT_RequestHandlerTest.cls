@@ -304,9 +304,9 @@ private class HOT_RequestHandlerTest {
         WorkType workType = HOT_TestDataFactory.createWorkType();
         insert workType;
         HOT_Request__c request1 = HOT_TestDataFactory.createRequest('Request 1', workType);
-        request1.MeetingStreet__c = 'Sommerveien 2';
-        request1.MeetingPostalCity__c = 'Oslo';
-        request1.MeetingPostalCode__c = '0166';
+        request1.MeetingAddress__Street__s = 'Sommerveien 2';
+        request1.MeetingAddress__City__s = 'Oslo';
+        request1.MeetingAddress__PostalCode__s = '0166';
 
         person = [SELECT Id, CRM_Account__c FROM Person__c WHERE Id = :person.Id];
 
@@ -314,7 +314,10 @@ private class HOT_RequestHandlerTest {
         insert request1;
 
         List<HOT_Request__c> requester = [
-            SELECT InterpretationStreet__c, InterpretationPostalCode__c, InterpretationPostalCity__c
+            SELECT
+                InterpretationAddress__Street__s,
+                InterpretationAddress__PostalCode__s,
+                InterpretationAddress__City__s
             FROM HOT_Request__c
             WHERE Id = :request1.Id
             LIMIT 1
@@ -322,17 +325,17 @@ private class HOT_RequestHandlerTest {
 
         System.assertEquals(
             'Sommerveien 2',
-            requester[0].InterpretationStreet__c,
+            requester[0].InterpretationAddress__Street__s,
             'Interpetration and Meeting street is not the same'
         );
         System.assertEquals(
             'Oslo',
-            requester[0].InterpretationPostalCity__c,
+            requester[0].InterpretationAddress__City__s,
             'Interpetration and Meeting postalcity is not the same'
         );
         System.assertEquals(
             '0166',
-            requester[0].InterpretationPostalCode__c,
+            requester[0].InterpretationAddress__PostalCode__s,
             'Interpetration and Meeting postalcode is not the same'
         );
     }
@@ -343,9 +346,9 @@ private class HOT_RequestHandlerTest {
         WorkType workType = HOT_TestDataFactory.createWorkType();
         insert workType;
         HOT_Request__c request1 = HOT_TestDataFactory.createRequest('Request 1', workType);
-        request1.InterpretationStreet__c = 'Sommerveien 2';
-        request1.InterpretationPostalCity__c = 'Oslo';
-        request1.InterpretationPostalCode__c = '0166';
+        request1.InterpretationAddress__Street__s = 'Sommerveien 2';
+        request1.InterpretationAddress__City__s = 'Oslo';
+        request1.InterpretationAddress__PostalCode__s = '0166';
 
         person = [SELECT Id, CRM_Account__c FROM Person__c WHERE Id = :person.Id];
 
@@ -353,7 +356,7 @@ private class HOT_RequestHandlerTest {
         insert request1;
 
         List<HOT_Request__c> requester = [
-            SELECT MeetingPostalCity__c, MeetingPostalCode__c, MeetingStreet__c
+            SELECT MeetingAddress__City__s, MeetingAddress__PostalCode__s, MeetingAddress__Street__s
             FROM HOT_Request__c
             WHERE Id = :request1.Id
             LIMIT 1
@@ -361,17 +364,17 @@ private class HOT_RequestHandlerTest {
 
         System.assertEquals(
             'Sommerveien 2',
-            requester[0].MeetingStreet__c,
+            requester[0].MeetingAddress__Street__s,
             'Interpetration and Meeting street is not the same'
         );
         System.assertEquals(
             'Oslo',
-            requester[0].MeetingPostalCity__c,
+            requester[0].MeetingAddress__City__s,
             'Interpetration and Meeting postalcity is not the same'
         );
         System.assertEquals(
             '0166',
-            requester[0].MeetingPostalCode__c,
+            requester[0].MeetingAddress__PostalCode__s,
             'Interpetration and Meeting postalcode is not the same'
         );
     }
@@ -382,12 +385,12 @@ private class HOT_RequestHandlerTest {
         WorkType workType = HOT_TestDataFactory.createWorkType();
         insert workType;
         HOT_Request__c request1 = HOT_TestDataFactory.createRequest('Request 1', workType);
-        request1.InterpretationStreet__c = 'Sommerveien 2';
-        request1.InterpretationPostalCity__c = 'Oslo';
-        request1.InterpretationPostalCode__c = '0166';
-        request1.MeetingStreet__c = 'Tromsø 8';
-        request1.MeetingPostalCity__c = 'Tromsø';
-        request1.MeetingPostalCode__c = '8888';
+        request1.InterpretationAddress__Street__s = 'Sommerveien 2';
+        request1.InterpretationAddress__City__s = 'Oslo';
+        request1.InterpretationAddress__PostalCode__s = '0166';
+        request1.MeetingAddress__Street__s = 'Tromsø 8';
+        request1.MeetingAddress__City__s = 'Tromsø';
+        request1.MeetingAddress__PostalCode__s = '8888';
 
         person = [SELECT Id, CRM_Account__c FROM Person__c WHERE Id = :person.Id];
 
@@ -396,12 +399,12 @@ private class HOT_RequestHandlerTest {
 
         List<HOT_Request__c> requester = [
             SELECT
-                MeetingPostalCity__c,
-                MeetingPostalCode__c,
-                MeetingStreet__c,
-                InterpretationStreet__c,
-                InterpretationPostalCode__c,
-                InterpretationPostalCity__c
+                MeetingAddress__Street__s,
+                MeetingAddress__PostalCode__s,
+                MeetingAddress__City__s,
+                InterpretationAddress__Street__s,
+                InterpretationAddress__PostalCode__s,
+                InterpretationAddress__City__s
             FROM HOT_Request__c
             WHERE Id = :request1.Id
             LIMIT 1
@@ -409,22 +412,30 @@ private class HOT_RequestHandlerTest {
 
         System.assertNotEquals(
             'Tromsø 8',
-            requester[0].InterpretationStreet__c,
+            requester[0].InterpretationAddress__Street__s,
             'Both adresses was changed to the same'
         );
         System.assertNotEquals(
             'Tromsø',
-            requester[0].InterpretationPostalCity__c,
+            requester[0].InterpretationAddress__Street__s,
             'Both adresses was changed to the same'
         );
         System.assertNotEquals(
             '8888',
-            requester[0].InterpretationPostalCode__c,
+            requester[0].InterpretationAddress__PostalCode__s,
             'Both adresses was changed to the same'
         );
-        System.assertNotEquals('Sommerveien 2', requester[0].MeetingStreet__c, 'Both adresses was changed to the same');
-        System.assertNotEquals('Oslo', requester[0].MeetingPostalCity__c, 'Both adresses was changed to the same');
-        System.assertNotEquals('0166', requester[0].MeetingPostalCode__c, 'Both adresses was changed to the same');
+        System.assertNotEquals(
+            'Sommerveien 2',
+            requester[0].MeetingAddress__Street__s,
+            'Both adresses was changed to the same'
+        );
+        System.assertNotEquals('Oslo', requester[0].MeetingAddress__City__s, 'Both adresses was changed to the same');
+        System.assertNotEquals(
+            '0166',
+            requester[0].MeetingAddress__PostalCode__s,
+            'Both adresses was changed to the same'
+        );
     }
     @IsTest
     public static void shouldOnlyChangeStatusToCannotCompleteIfAllSAIsReleased() {
@@ -879,9 +890,9 @@ private class HOT_RequestHandlerTest {
         WorkOrder workOrder = HOT_TestDataFactory.createWorkOrder(request, workType);
         insert workOrder;
 
-        request.MeetingStreet__c = 'Fyrstikkaleen 1';
-        request.MeetingPostalCity__c = 'Oslo';
-        request.MeetingPostalCode__c = '0166';
+        request.MeetingAddress__Street__s = 'Fyrstikkaleen 1';
+        request.MeetingAddress__City__s = 'Oslo';
+        request.MeetingAddress__PostalCode__s = '0166';
         update request;
 
         WorkOrder workorderResult = [
@@ -904,24 +915,31 @@ private class HOT_RequestHandlerTest {
         WorkOrder workOrder = HOT_TestDataFactory.createWorkOrder(request, workType);
         insert workOrder;
 
-        request.InterpretationPostalCode__c = '0166';
-        request.InterpretationPostalCity__c = 'Oslo';
-        request.InterpretationStreet__c = 'Fyrstikkaleen 1';
+        request.InterpretationAddress__PostalCode__s = '0166';
+        request.InterpretationAddress__City__s = 'Oslo';
+        request.InterpretationAddress__Street__s = 'Fyrstikkaleen 1';
         update request;
 
         WorkOrder workorderResult = [
-            SELECT HOT_InterpretationPostalCode__c, HOT_InterpretationPostalCity__c, HOT_InterpretationStreet__c
+            SELECT
+                HOT_InterpretationAddress__PostalCode__s,
+                HOT_InterpretationAddress__City__s,
+                HOT_InterpretationAddress__Street__s
             FROM WorkOrder
             WHERE HOT_Request__c = :request.Id
         ];
         Test.stopTest();
         System.AssertEquals(
             'Fyrstikkaleen 1',
-            workorderResult.HOT_InterpretationStreet__c,
+            workorderResult.HOT_InterpretationAddress__Street__s,
             'Street did not get updated'
         );
-        System.AssertEquals('Oslo', workorderResult.HOT_InterpretationPostalCity__c, 'City did not get updated');
-        System.AssertEquals('0166', workorderResult.HOT_InterpretationPostalCode__c, 'Postalcode did not get updated');
+        System.AssertEquals('Oslo', workorderResult.HOT_InterpretationAddress__City__s, 'City did not get updated');
+        System.AssertEquals(
+            '0166',
+            workorderResult.HOT_InterpretationAddress__PostalCode__s,
+            'Postalcode did not get updated'
+        );
     }
     @IsTest
     public static void checkIfRequestCreatedCorrectlyTrueTest() {

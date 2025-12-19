@@ -71,7 +71,7 @@
         <nameSegment>HOT_UpdateChildRecordsService</nameSegment>
         <storeOutputAutomatically>true</storeOutputAutomatically>
     </actionCalls>
-    <apiVersion>52.0</apiVersion>
+    <apiVersion>54.0</apiVersion>
     <assignments>
         <name>Owner_list_assign_to_ownerId</name>
         <label>Owner list assign to ownerId</label>
@@ -834,19 +834,7 @@ CONTAINS({!ChosenFieldsOwner}, {!Subject})
                     <fieldType>ObjectProvided</fieldType>
                     <inputsOnNextNavToAssocScrn>UseStoredValues</inputsOnNextNavToAssocScrn>
                     <isRequired>false</isRequired>
-                    <objectFieldReference>getRequest.MeetingStreet__c</objectFieldReference>
-                </fields>
-                <fields>
-                    <fieldType>ObjectProvided</fieldType>
-                    <inputsOnNextNavToAssocScrn>UseStoredValues</inputsOnNextNavToAssocScrn>
-                    <isRequired>false</isRequired>
-                    <objectFieldReference>getRequest.MeetingPostalCode__c</objectFieldReference>
-                </fields>
-                <fields>
-                    <fieldType>ObjectProvided</fieldType>
-                    <inputsOnNextNavToAssocScrn>UseStoredValues</inputsOnNextNavToAssocScrn>
-                    <isRequired>false</isRequired>
-                    <objectFieldReference>getRequest.MeetingPostalCity__c</objectFieldReference>
+                    <objectFieldReference>getRequest.MeetingAddress__c</objectFieldReference>
                 </fields>
                 <inputParameters>
                     <name>width</name>
@@ -863,19 +851,7 @@ CONTAINS({!ChosenFieldsOwner}, {!Subject})
                     <fieldType>ObjectProvided</fieldType>
                     <inputsOnNextNavToAssocScrn>UseStoredValues</inputsOnNextNavToAssocScrn>
                     <isRequired>false</isRequired>
-                    <objectFieldReference>getRequest.InterpretationStreet__c</objectFieldReference>
-                </fields>
-                <fields>
-                    <fieldType>ObjectProvided</fieldType>
-                    <inputsOnNextNavToAssocScrn>UseStoredValues</inputsOnNextNavToAssocScrn>
-                    <isRequired>false</isRequired>
-                    <objectFieldReference>getRequest.InterpretationPostalCode__c</objectFieldReference>
-                </fields>
-                <fields>
-                    <fieldType>ObjectProvided</fieldType>
-                    <inputsOnNextNavToAssocScrn>UseStoredValues</inputsOnNextNavToAssocScrn>
-                    <isRequired>false</isRequired>
-                    <objectFieldReference>getRequest.InterpretationPostalCity__c</objectFieldReference>
+                    <objectFieldReference>getRequest.InterpretationAddress__c</objectFieldReference>
                 </fields>
                 <inputParameters>
                     <name>width</name>

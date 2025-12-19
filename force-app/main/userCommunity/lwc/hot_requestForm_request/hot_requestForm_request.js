@@ -3,12 +3,12 @@ import { LightningElement, track, api } from 'lwc';
 export default class Hot_requestForm_request extends LightningElement {
     @track fieldValues = {
         Subject__c: '',
-        MeetingStreet__c: '',
-        MeetingPostalCity__c: '',
-        MeetingPostalCode__c: '',
-        InterpretationStreet__c: '',
-        InterpretationPostalCode__c: '',
-        InterpretationPostalCity__c: '',
+        MeetingAddress__Street__s: '',
+        MeetingAddress__City__s: '',
+        MeetingAddress__PostalCode__s: '',
+        InterpretationAddress__Street__s: '',
+        InterpretationAddress__PostalCode__s: '',
+        InterpretationAddress__City__s: '',
         Description__c: '',
         IsFileConsent__c: false,
         Source__c: 'Community',
@@ -105,9 +105,9 @@ export default class Hot_requestForm_request extends LightningElement {
         this.componentValues.physicalOrDigitalRadiobuttons[0].checked = !this.fieldValues.IsScreenInterpreter__c;
         this.componentValues.physicalOrDigitalRadiobuttons[1].checked = this.fieldValues.IsScreenInterpreter__c;
         this.componentValues.sameAddressRadioButtons[1].checked =
-            this.fieldValues.InterpretationStreet__c !== this.fieldValues.MeetingStreet__c;
-        this.componentValues.sameAddressRadioButtons[0].checked = !this.componentValues.sameAddressRadioButtons[1]
-            .checked;
+            this.fieldValues.InterpretationAddress__Street__s !== this.fieldValues.MeetingAddress__Street__s;
+        this.componentValues.sameAddressRadioButtons[0].checked =
+            !this.componentValues.sameAddressRadioButtons[1].checked;
         this.componentValues.isOptionalFields =
             this.fieldValues.UserInterpretationMethod__c !== '' ||
             this.fieldValues.UserPreferredInterpreter__c !== '' ||
@@ -163,9 +163,9 @@ export default class Hot_requestForm_request extends LightningElement {
 
     setDependentFields() {
         if (this.sameLocation) {
-            this.fieldValues.InterpretationStreet__c = this.fieldValues.MeetingStreet__c;
-            this.fieldValues.InterpretationPostalCode__c = this.fieldValues.MeetingPostalCode__c;
-            this.fieldValues.InterpretationPostalCity__c = this.fieldValues.MeetingPostalCity__c;
+            this.fieldValues.InterpretationAddress__Street__s = this.fieldValues.MeetingAddress__Street__s;
+            this.fieldValues.InterpretationAddress__PostalCode__s = this.fieldValues.MeetingAddress__PostalCode__s;
+            this.fieldValues.InterpretationAddress__City__s = this.fieldValues.MeetingAddress__City__s;
         }
     }
 
@@ -221,12 +221,12 @@ export default class Hot_requestForm_request extends LightningElement {
 
     clearPhysicalAddressFields() {
         if (this.fieldValues.IsScreenInterpreter__c) {
-            this.fieldValues.MeetingStreet__c = '';
-            this.fieldValues.MeetingPostalCity__c = '';
-            this.fieldValues.MeetingPostalCode__c = '';
-            this.fieldValues.InterpretationStreet__c = '';
-            this.fieldValues.InterpretationPostalCode__c = '';
-            this.fieldValues.InterpretationPostalCity__c = '';
+            this.fieldValues.MeetingAddress__Street__s = '';
+            this.fieldValues.MeetingAddress__City__s = '';
+            this.fieldValues.MeetingAddress__PostalCode__s = '';
+            this.fieldValues.InterpretationAddress__Street__s = '';
+            this.fieldValues.InterpretationAddress__PostalCode__s = '';
+            this.fieldValues.InterpretationAddress__City__s = '';
             this.componentValues.sameAddressRadioButtons[0].checked = true;
             this.componentValues.sameAddressRadioButtons[1].checked = false;
             this.sameLocation = true;
@@ -234,9 +234,9 @@ export default class Hot_requestForm_request extends LightningElement {
     }
 
     clearInterpretationFields() {
-        this.fieldValues.InterpretationStreet__c = '';
-        this.fieldValues.InterpretationPostalCode__c = '';
-        this.fieldValues.InterpretationPostalCity__c = '';
+        this.fieldValues.InterpretationAddress__Street__s = '';
+        this.fieldValues.InterpretationAddress__PostalCode__s = '';
+        this.fieldValues.InterpretationAddress__City__s = '';
     }
 
     handleInterpretationPicklist(event) {

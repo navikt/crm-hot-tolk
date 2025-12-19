@@ -60,9 +60,9 @@ public without sharing class HOT_WorkOrderLineItemHandler extends MyTriggers {
                 serviceAppointment.City = workOrderLineItem.City;
                 serviceAppointment.Description = workOrderLineItem.Description;
                 serviceAppointment.DueDate = workOrderLineItem.EndDate;
-                serviceAppointment.HOT_InterpretationPostalCity__c = workOrderLineItem.HOT_InterpretationPostalCity__c;
-                serviceAppointment.HOT_InterpretationPostalCode__c = workOrderLineItem.HOT_InterpretationPostalCode__c;
-                serviceAppointment.HOT_InterpretationStreet__c = workOrderLineItem.HOT_InterpretationPostalStreet__c;
+                serviceAppointment.HOT_InterpretationAddress__City__s = workOrderLineItem.HOT_InterpretationAddress__City__s;
+                serviceAppointment.HOT_InterpretationAddress__PostalCode__s = workOrderLineItem.HOT_InterpretationAddress__PostalCode__s;
+                serviceAppointment.HOT_InterpretationAddress__Street__s = workOrderLineItem.HOT_InterpretationAddress__Street__s;
                 serviceAppointment.OwnerId = workOrders.get(workOrderLineItem.WorkOrderId).OwnerId;
                 serviceAppointment.PostalCode = workOrderLineItem.PostalCode;
                 serviceAppointment.EarliestStartTime = workOrderLineItem.StartDate;
@@ -115,9 +115,9 @@ public without sharing class HOT_WorkOrderLineItemHandler extends MyTriggers {
                     Street,
                     City,
                     PostalCode,
-                    HOT_InterpretationPostalCity__c,
-                    HOT_InterpretationPostalCode__c,
-                    HOT_InterpretationStreet__c
+                    HOT_InterpretationAddress__City__s,
+                    HOT_InterpretationAddress__PostalCode__s,
+                    HOT_InterpretationAddress__Street__s
                 FROM WorkOrder
                 WHERE Id IN :workOrderIds
             ]
@@ -150,25 +150,27 @@ public without sharing class HOT_WorkOrderLineItemHandler extends MyTriggers {
                     workOrderLineItem.EndDate = workOrders.get(workOrderLineItem.WorkOrderId).EndDate;
                 }
                 if (
-                    workOrderLineItem.HOT_InterpretationPostalCity__c == null &&
-                    workOrders.get(workOrderLineItem.WorkOrderId).HOT_InterpretationPostalCity__c != null
+                    workOrderLineItem.HOT_InterpretationAddress__City__s == null &&
+                    workOrders.get(workOrderLineItem.WorkOrderId).HOT_InterpretationAddress__City__s != null
                 ) {
-                    workOrderLineItem.HOT_InterpretationPostalCity__c = workOrders.get(workOrderLineItem.WorkOrderId)
-                        .HOT_InterpretationPostalCity__c;
+                    workOrderLineItem.HOT_InterpretationAddress__City__s = workOrders.get(workOrderLineItem.WorkOrderId)
+                        .HOT_InterpretationAddress__City__s;
                 }
                 if (
-                    workOrderLineItem.HOT_InterpretationPostalCode__c == null &&
-                    workOrders.get(workOrderLineItem.WorkOrderId).HOT_InterpretationPostalCode__c != null
+                    workOrderLineItem.HOT_InterpretationAddress__PostalCode__s == null &&
+                    workOrders.get(workOrderLineItem.WorkOrderId).HOT_InterpretationAddress__PostalCode__s != null
                 ) {
-                    workOrderLineItem.HOT_InterpretationPostalCode__c = workOrders.get(workOrderLineItem.WorkOrderId)
-                        .HOT_InterpretationPostalCode__c;
+                    workOrderLineItem.HOT_InterpretationAddress__PostalCode__s = workOrders.get(
+                            workOrderLineItem.WorkOrderId
+                        )
+                        .HOT_InterpretationAddress__PostalCode__s;
                 }
                 if (
                     workOrderLineItem.HOT_InterpretationPostalStreet__c == null &&
-                    workOrders.get(workOrderLineItem.WorkOrderId).HOT_InterpretationStreet__c != null
+                    workOrders.get(workOrderLineItem.WorkOrderId).HOT_InterpretationAddress__Street__s != null
                 ) {
                     workOrderLineItem.HOT_InterpretationPostalStreet__c = workOrders.get(workOrderLineItem.WorkOrderId)
-                        .HOT_InterpretationStreet__c;
+                        .HOT_InterpretationAddress__Street__s;
                 }
             }
         }

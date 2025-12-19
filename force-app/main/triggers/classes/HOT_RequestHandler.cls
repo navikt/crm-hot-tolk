@@ -152,17 +152,20 @@ public without sharing class HOT_RequestHandler extends MyTriggers {
                 requestsWithUpdatedCompany.add(request);
             }
             if (
-                triggerOldMap.get(request.Id).get('MeetingStreet__c') !== request.MeetingStreet__c ||
-                triggerOldMap.get(request.Id).get('MeetingPostalCode__c') !== request.MeetingPostalCode__c ||
-                triggerOldMap.get(request.Id).get('MeetingPostalCity__c') !== request.MeetingPostalCity__c
+                triggerOldMap.get(request.Id).get('MeetingAddress__Street__s') !== request.MeetingAddress__Street__s ||
+                triggerOldMap.get(request.Id).get('MeetingAddress__PostalCode__s') !==
+                request.MeetingAddress__PostalCode__s ||
+                triggerOldMap.get(request.Id).get('MeetingAddress__City__s') !== request.MeetingAddress__City__s
             ) {
                 requestsWithUpdatedMeetingAddress.add(request);
             }
             if (
-                triggerOldMap.get(request.Id).get('InterpretationStreet__c') !== request.InterpretationStreet__c ||
-                triggerOldMap.get(request.Id).get('InterpretationPostalCode__c') !==
-                request.InterpretationPostalCode__c ||
-                triggerOldMap.get(request.Id).get('InterpretationPostalCity__c') !== request.InterpretationPostalCity__c
+                triggerOldMap.get(request.Id).get('InterpretationAddress__Street__s') !==
+                request.InterpretationAddress__Street__s ||
+                triggerOldMap.get(request.Id).get('InterpretationAddress__PostalCode__s') !==
+                request.InterpretationAddress__PostalCode__s ||
+                triggerOldMap.get(request.Id).get('InterpretationAddress__City__s') !==
+                request.InterpretationAddress__City__s
             ) {
                 requestsWithUpdatedInterpretationAddress.add(request);
             }
@@ -195,16 +198,16 @@ public without sharing class HOT_RequestHandler extends MyTriggers {
     }
     private static void updateMeetingAddress(List<HOT_Request__c> requestsWithNewAddress) {
         List<WorkOrder> WorkOrders = [
-            SELECT Address, HOT_Request__c
+            SELECT Id, Street, PostalCode, City, HOT_Request__c
             FROM WorkOrder
             WHERE HOT_Request__c IN :requestsWithNewAddress
         ];
         for (WorkOrder wo : WorkOrders) {
             for (HOT_Request__c request : requestsWithNewAddress) {
                 if (wo.HOT_Request__c == request.Id) {
-                    wo.Street = request.MeetingStreet__c;
-                    wo.City = request.MeetingPostalCity__c;
-                    wo.PostalCode = request.MeetingPostalCode__c;
+                    wo.Street = request.MeetingAddress__Street__s;
+                    wo.PostalCode = request.MeetingAddress__PostalCode__s;
+                    wo.City = request.MeetingAddress__City__s;
                 }
             }
         }
@@ -213,9 +216,9 @@ public without sharing class HOT_RequestHandler extends MyTriggers {
     private static void updateInterpretationAddress(List<HOT_Request__c> requestsWithNewAddress) {
         List<WorkOrder> WorkOrders = [
             SELECT
-                HOT_InterpretationPostalCode__c,
-                HOT_InterpretationPostalCity__c,
-                HOT_InterpretationStreet__c,
+                HOT_InterpretationAddress__Street__s,
+                HOT_InterpretationAddress__PostalCode__s,
+                HOT_InterpretationAddress__City__s,
                 HOT_Request__c
             FROM WorkOrder
             WHERE HOT_Request__c IN :requestsWithNewAddress
@@ -223,9 +226,9 @@ public without sharing class HOT_RequestHandler extends MyTriggers {
         for (WorkOrder wo : WorkOrders) {
             for (HOT_Request__c request : requestsWithNewAddress) {
                 if (wo.HOT_Request__c == request.Id) {
-                    wo.HOT_InterpretationPostalCode__c = request.InterpretationPostalCode__c;
-                    wo.HOT_InterpretationPostalCity__c = request.InterpretationPostalCity__c;
-                    wo.HOT_InterpretationStreet__c = request.InterpretationStreet__c;
+                    wo.HOT_InterpretationAddress__Street__s = request.InterpretationAddress__Street__s;
+                    wo.HOT_InterpretationAddress__PostalCode__s = request.InterpretationAddress__PostalCode__s;
+                    wo.HOT_InterpretationAddress__City__s = request.InterpretationAddress__City__s;
                 }
             }
         }
@@ -378,9 +381,9 @@ public without sharing class HOT_RequestHandler extends MyTriggers {
                 PostalCode,
                 Street,
                 LineItemCount,
-                HOT_InterpretationPostalCity__c,
-                HOT_InterpretationPostalCode__c,
-                HOT_InterpretationStreet__c,
+                HOT_InterpretationAddress__Street__s,
+                HOT_InterpretationAddress__PostalCode__s,
+                HOT_InterpretationAddress__City__s,
                 HOT_NumberOfInterpreters__c,
                 WorkTypeId
             FROM WorkOrder
@@ -405,12 +408,12 @@ public without sharing class HOT_RequestHandler extends MyTriggers {
                 ServiceTerritory__c,
                 InterpretationMethod__c,
                 NumberOfInterpreters__c,
-                MeetingPostalCity__c,
-                MeetingPostalCode__c,
-                MeetingStreet__c,
-                InterpretationPostalCity__c,
-                InterpretationPostalCode__c,
-                InterpretationStreet__c,
+                MeetingAddress__Street__s,
+                MeetingAddress__PostalCode__s,
+                MeetingAddress__City__s,
+                InterpretationAddress__Street__s,
+                InterpretationAddress__PostalCode__s,
+                InterpretationAddress__City__s,
                 HOT_PersonContactId__c,
                 Subject__c,
                 Description__c,
@@ -472,19 +475,19 @@ public without sharing class HOT_RequestHandler extends MyTriggers {
             WorkOrder workOrder = new WorkOrder();
 
             workOrder.AccountId = request.Account__c;
-            workOrder.City = request.MeetingPostalCity__c;
             workOrder.ContactId = request.HOT_PersonContactId__c;
             workOrder.Description = request.Description__c;
             workOrder.EndDate = request.EndTime__c;
-            workOrder.HOT_InterpretationPostalCity__c = request.InterpretationPostalCity__c;
-            workOrder.HOT_InterpretationPostalCode__c = request.InterpretationPostalCode__c;
-            workOrder.HOT_InterpretationStreet__c = request.InterpretationStreet__c;
+            workOrder.HOT_InterpretationAddress__Street__s = request.InterpretationAddress__Street__s;
+            workOrder.HOT_InterpretationAddress__PostalCode__s = request.InterpretationAddress__PostalCode__s;
+            workOrder.HOT_InterpretationAddress__City__s = request.InterpretationAddress__City__s;
             workOrder.HOT_Request__c = request.Id;
             workOrder.OwnerId = request.OwnerId;
-            workOrder.PostalCode = request.MeetingPostalCode__c;
             workOrder.StartDate = request.StartTime__c;
-            workOrder.Street = request.MeetingStreet__c;
             workOrder.Subject = request.Subject__c;
+            workOrder.Street = request.MeetingAddress__Street__s;
+            workOrder.PostalCode = request.MeetingAddress__PostalCode__s;
+            workOrder.City = request.MeetingAddress__City__s;
             workOrder.ServiceTerritoryId = request.ServiceTerritory__c;
 
             workOrders.add(workOrder);
@@ -599,22 +602,30 @@ public without sharing class HOT_RequestHandler extends MyTriggers {
             request.IsNotifyUserOnOrder__c = true;
         }
     }
-
     public static void setMeetingStreet(List<HOT_Request__c> requests) {
-        for (HOT_Request__C request : requests) {
-            if (request.MeetingStreet__c == null && request.InterpretationStreet__c != null) {
-                request.MeetingStreet__c = request.InterpretationStreet__c;
-                request.MeetingPostalCity__c = request.InterpretationPostalCity__c;
-                request.MeetingPostalCode__c = request.InterpretationPostalCode__c;
+        for (HOT_Request__c request : requests) {
+            // 1) Kopier InterpretationAddress → MeetingAddress hvis MeetingAddress mangler
+            if (request.MeetingAddress__Street__s == null && request.InterpretationAddress__Street__s != null) {
+                request.MeetingAddress__Street__s = request.InterpretationAddress__Street__s;
+                request.MeetingAddress__City__s = request.InterpretationAddress__City__s;
+                request.MeetingAddress__PostalCode__s = request.InterpretationAddress__PostalCode__s;
+                request.MeetingAddress__CountryCode__s = request.InterpretationAddress__CountryCode__s;
             }
 
-            if (request.InterpretationStreet__c == null && request.MeetingStreet__c != null && request.HOT_IsMeetingAddressSameAsHome__c == false) {
-                request.InterpretationStreet__c = request.MeetingStreet__c;
-                request.InterpretationPostalCity__c = request.MeetingPostalCity__c;
-                request.InterpretationPostalCode__c = request.MeetingPostalCode__c;
+            // 2) Kopier MeetingAddress → InterpretationAddress hvis InterpretationAddress mangler
+            if (
+                request.InterpretationAddress__Street__s == null &&
+                request.MeetingAddress__Street__s != null &&
+                !request.HOT_IsMeetingAddressSameAsHome__c
+            ) {
+                request.InterpretationAddress__Street__s = request.MeetingAddress__Street__s;
+                request.InterpretationAddress__City__s = request.MeetingAddress__City__s;
+                request.InterpretationAddress__PostalCode__s = request.MeetingAddress__PostalCode__s;
+                request.InterpretationAddress__CountryCode__s = request.MeetingAddress__CountryCode__s;
             }
         }
     }
+
     @AuraEnabled
     public static boolean isErrorOnRequestCreate(String requestId) {
         Boolean isError = false;
