@@ -109,9 +109,16 @@ private class HOT_ThreadParticipantsTest {
     }
     @IsTest
     private static void getParticipantByRelatedRequest() {
-        HOT_Request__c request = [SELECT Id FROM HOT_Request__c LIMIT 1];
+        HOT_Request__c request = [SELECT Id, Account__r.PersonContactId FROM HOT_Request__c LIMIT 1];
+        User personUser = [
+            SELECT Id, ContactId
+            FROM User
+            WHERE ContactId = :request.Account__r.PersonContactId
+            LIMIT 1
+        ];
         Thread__c thread = HOT_TestDataFactory.createThread('HOT_BRUKER-FORMIDLER');
         thread.CRM_Related_Object__c = request.Id;
+        thread.HOT_Thread_read_by__c = personUser.Id + ';';
         insert thread;
 
         Test.startTest();
@@ -150,6 +157,24 @@ private class HOT_ThreadParticipantsTest {
         Test.stopTest();
         System.assert(threadMap.containsKey('HOT_BRUKER-TOLK'), 'Deltakere for trådtypen "HOT_BRUKER-TOLK" mangler');
         System.assert(threadMap.get('HOT_BRUKER-TOLK').containsKey(thread.Id), 'Tråden mangler');
+    }
+    @IsTest
+    private static void getParticipantByRelatedServiceAppointment() {
+        ServiceAppointment serviceAppointment = [SELECT Id FROM ServiceAppointment LIMIT 1];
+        Thread__c thread = HOT_TestDataFactory.createThread('HOT_TOLK-FORMIDLER');
+        thread.CRM_Related_Object__c = serviceAppointment.Id;
+        insert thread;
+        Test.startTest();
+        Map<String, Map<Id, List<HOT_ThreadParticipants.Participant>>> threadMap = HOT_ThreadParticipants.getParticipantsByRelatedObjectAndThreadTypes(
+            serviceAppointment.Id,
+            new List<String>{ 'HOT_TOLK-FORMIDLER' }
+        );
+        Test.stopTest();
+        System.assert(
+            threadMap.containsKey('HOT_TOLK-FORMIDLER'),
+            'Deltakere for trådtypen "HOT_TOLK-FORMIDLER" mangler'
+        );
+        System.assert(threadMap.get('HOT_TOLK-FORMIDLER').containsKey(thread.Id), 'Tråden mangler');
     }
     @IsTest
     private static void getRequestThreadParticipants() {
