@@ -51,7 +51,6 @@ public without sharing class HOT_ThreadParticipants {
     Id relatedObjectId;
     List<String> threadTypesOfInterest;
 
-    }
     public HOT_ThreadParticipants(Id relatedObjectId, List<String> threadTypesOfInterest) {
         this.relatedObjectId = relatedObjectId;
         this.threadTypesOfInterest = threadTypesOfInterest;
@@ -111,7 +110,6 @@ public without sharing class HOT_ThreadParticipants {
         ];
         participantList.addAll(getAssignedServiceResources(thread));
         participantList.addAll(getAccountParticipants(thread));
-        setReadStatus(participantList, thread);
         return participantList;
     }
     @AuraEnabled
@@ -135,42 +133,6 @@ public without sharing class HOT_ThreadParticipants {
                 .put(threadId, this.participantsByThreadId.get(threadId));
         }
         return result;
-    }
-    private static List<Participant> setReadStatus(List<Participant> participants, Thread__c thread) {
-        Set<Id> userOrContactIds = new Set<Id>();
-        if (!String.isBlank(thread.HOT_Thread_read_by__c)) {
-            userOrContactIds.addAll(new List<Id>((List<Id>) thread.HOT_Thread_read_by__c.split(';')));
-        }
-
-        Boolean hasFormidler = false;
-        Boolean hasResssurskontor = false;
-        Set<Id> userIds = new Set<Id>();
-        for (User u : [
-            SELECT Id, Profile.Name
-            FROM User
-            WHERE ContactId IN :userOrContactIds OR Id IN :userOrContactIds
-        ]) {
-            userIds.add(u.Id);
-            if (u.Profile.Name == 'HOT Tolk Formidler') {
-                hasFormidler = true;
-            }
-            if (u.Profile.Name == 'HOT Tolk Saksbehandler') {
-                hasResssurskontor = true;
-            }
-        }
-
-        for (Participant p : participants) {
-            if (userIds.contains(p.userId)) {
-                p.setHasRead();
-            } else if (p.userId == null && p.name == 'Formidler' && hasFormidler) {
-                // Set Formidler as read for all users
-                p.setHasRead();
-            } else if (p.userId == null && p.name == 'Ressurskontor' && hasResssurskontor) {
-                // Set Ressurskontor as read for all users
-                p.setHasRead();
-            }
-        }
-        return participants;
     }
     private Boolean hasObjectTypeRelations(String relatedObjectType) {
         for (Thread__c thread : this.threads) {
