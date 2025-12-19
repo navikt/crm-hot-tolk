@@ -17,7 +17,10 @@
             helptext-content="Beskriv hva du trenger tolk til og hvor, f.eks. legetime ved xx-legesenter, forelesning ved xx-universitet osv."
         ></c-input>
         <br />
-        <c-hot_recurring-time-input_v2 request-ids={requestIds}></c-hot_recurring-time-input_v2>
+        <c-hot_recurring-time-input_v2
+            request-ids={requestIds}
+            refresh-token={refreshToken}
+        ></c-hot_recurring-time-input_v2>
         <br />
         <c-radiobuttons
             radiobuttons={componentValues.physicalOrDigitalRadiobuttons}
