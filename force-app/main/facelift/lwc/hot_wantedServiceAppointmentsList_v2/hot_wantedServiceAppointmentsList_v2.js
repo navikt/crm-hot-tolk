@@ -1,10 +1,11 @@
-import { LightningElement, wire, api } from 'lwc';
+import { LightningElement, wire, api, track } from 'lwc';
 import getWantedServiceAppointments from '@salesforce/apex/HOT_wantedSRListController.getWantedServiceAppointments';
 import updateInterestedResource from '@salesforce/apex/HOT_wantedSRListController.updateInterestedResource';
 import updateInterestedResourceChecked from '@salesforce/apex/HOT_wantedSRListController.updateInterestedResourceChecked';
 import declineInterestedResourceChecked from '@salesforce/apex/HOT_wantedSRListController.declineInterestedResourceChecked';
 import declineInterestedResource from '@salesforce/apex/HOT_wantedSRListController.declineInterestedResource';
 import getServiceResource from '@salesforce/apex/HOT_Utility.getServiceResource';
+import getWantedInterestedResource from '@salesforce/apex/HOT_wantedSRListController.getWantedInterestedResource';
 import { columns, inDetailsColumns, mobileColumns } from './columns';
 import { refreshApex } from '@salesforce/apex';
 import { defaultFilters, compare, setDefaultFilters } from './filters';
@@ -160,6 +161,34 @@ export default class Hot_wantedServiceAppointmentsList extends LightningElement 
     serviceAppointment;
     isDetails = false;
     showTable = true;
+    @track wantedBy;
+    @track wantedByError;
+
+    get wantedMessage() {
+        const raw = (this.wantedBy || '').trim().toLowerCase();
+        if (raw === 'formidler') return 'Du er ønsket til dette oppdraget av formidler.';
+        if (raw === 'tolkebruker') return 'Du er ønsket til dette oppdraget av tolkebruker.';
+        return 'Du er ønsket til dette oppdraget.';
+    }
+
+    async loadWantedByForDetails() {
+        this.wantedBy = null;
+        this.wantedByError = null;
+
+        // Need SA and SR ids
+        const saId = this.serviceAppointment?.Id;
+        const srId = this.serviceResourceId;
+        if (!saId || !srId) return;
+
+        try {
+            const ir = await getWantedInterestedResource({ saId, srId });
+            this.wantedBy = ir?.HOT_Wanted_by__c || null;
+        } catch (e) {
+            this.wantedBy = null;
+            this.wantedByError = e?.body?.message || e?.message;
+        }
+    }
+
     goToRecordDetails(result) {
         this.serviceAppointment = undefined;
         let recordId = result.detail.Id;
@@ -171,6 +200,7 @@ export default class Hot_wantedServiceAppointmentsList extends LightningElement 
                 this.serviceAppointment.weekday = getDayOfWeek(this.serviceAppointment.EarliestStartTime);
             }
         }
+        this.loadWantedByForDetails();
         this.showServiceAppointmentDetails();
     }
 
