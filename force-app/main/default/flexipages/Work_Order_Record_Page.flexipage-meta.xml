@@ -176,6 +176,19 @@
     <flexiPageRegions>
         <itemInstances>
             <componentInstance>
+                <componentName>hot_messagingMessageComponent_v2</componentName>
+                <identifier>c_hot_messagingMessageComponent_v2</identifier>
+                <visibilityRule>
+                    <criteria>
+                        <leftValue>{!$Permission.CustomPermission.HOT_Tolk_Beta}</leftValue>
+                        <operator>EQUAL</operator>
+                        <rightValue>true</rightValue>
+                    </criteria>
+                </visibilityRule>
+            </componentInstance>
+        </itemInstances>
+        <itemInstances>
+            <componentInstance>
                 <componentInstanceProperties>
                     <name>showClose</name>
                     <value>false</value>
@@ -186,6 +199,13 @@
                 </componentInstanceProperties>
                 <componentName>hot_messagingMessageComponent</componentName>
                 <identifier>c_hot_messagingMessageComponent</identifier>
+                <visibilityRule>
+                    <criteria>
+                        <leftValue>{!$Permission.CustomPermission.HOT_Tolk_Beta}</leftValue>
+                        <operator>EQUAL</operator>
+                        <rightValue>false</rightValue>
+                    </criteria>
+                </visibilityRule>
             </componentInstance>
         </itemInstances>
         <name>Facet-a6df1faf-8b86-4812-bbf5-093f1e021b8c</name>
