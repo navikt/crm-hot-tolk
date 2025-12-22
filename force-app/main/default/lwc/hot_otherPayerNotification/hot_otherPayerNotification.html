@@ -1,3 +1,18 @@
 <template>
-    
+    <template if:true={showBanner}>
+        <div class="slds-notify slds-notify_alert slds-alert_warning" role="alert">
+            <span class="slds-assistive-text">Warning</span>
+
+            <h2 class="slds-text-heading_small">
+                Virksomhet er fylt ut, men Annen betaler er ikke huket av. Vennligst vurder hvem som skal betale.
+            </h2>
+
+            <div class="slds-notify__close">
+                <button class="slds-button slds-button_icon slds-button_icon-small" title="Close" onclick={handleClose}>
+                    <lightning-icon icon-name="utility:close" size="x-small"></lightning-icon>
+                    <span class="slds-assistive-text">Close</span>
+                </button>
+            </div>
+        </div>
+    </template>
 </template>
