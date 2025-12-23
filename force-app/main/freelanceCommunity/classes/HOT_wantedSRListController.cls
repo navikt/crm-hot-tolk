@@ -287,10 +287,7 @@ public without sharing class HOT_wantedSRListController {
         List<HOT_InterestedResource__c> existingInterestedIR = [
             SELECT Id, ServiceResource__c, Status__c
             FROM HOT_InterestedResource__c
-            WHERE
-                ServiceResource__c = :serviceResource.Id
-                AND ServiceAppointment__r.HOT_WorkOrderLineItem__r.WorkOrderId = :sa[0]
-                    .HOT_WorkOrderLineItem__r.WorkOrderId
+            WHERE ServiceResource__c = :serviceResource.Id AND ServiceAppointment__c = :sa[0].Id
         ];
 
         List<HOT_InterestedResource__c> assignedInterestedResources = [
