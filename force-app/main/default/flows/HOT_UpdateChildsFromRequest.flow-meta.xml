@@ -4,7 +4,7 @@
         <name>UpdateChildRecords</name>
         <label>UpdateChildRecords</label>
         <locationX>182</locationX>
-        <locationY>2282</locationY>
+        <locationY>2390</locationY>
         <actionName>HOT_UpdateChildRecordsService</actionName>
         <actionType>apex</actionType>
         <flowTransactionModel>Automatic</flowTransactionModel>
@@ -145,12 +145,12 @@
         <name>Store_Interpreter_method_value</name>
         <label>Store Interpreter method value</label>
         <locationX>50</locationX>
-        <locationY>2090</locationY>
+        <locationY>2198</locationY>
         <assignmentItems>
             <assignToReference>getRequest.InterpretationMethod__c</assignToReference>
             <operator>Assign</operator>
             <value>
-                <elementReference>InterpretationMethodLookup.recordId</elementReference>
+                <elementReference>Get_New_Interpretation_Method.Id</elementReference>
             </value>
         </assignmentItems>
         <connector>
@@ -378,7 +378,7 @@
                 </rightValue>
             </conditions>
             <connector>
-                <targetReference>Store_Interpreter_method_value</targetReference>
+                <targetReference>Get_New_Interpretation_Method</targetReference>
             </connector>
             <label>isInterpretermethodChecked</label>
         </rules>
@@ -543,6 +543,27 @@ CONTAINS({!ChosenFieldsOwner}, {!Subject})
         </filters>
         <getFirstRecordOnly>true</getFirstRecordOnly>
         <object>Group</object>
+        <storeOutputAutomatically>true</storeOutputAutomatically>
+    </recordLookups>
+    <recordLookups>
+        <name>Get_New_Interpretation_Method</name>
+        <label>Get New Interpretation Method</label>
+        <locationX>50</locationX>
+        <locationY>2090</locationY>
+        <assignNullValuesIfNoRecordsFound>false</assignNullValuesIfNoRecordsFound>
+        <connector>
+            <targetReference>Store_Interpreter_method_value</targetReference>
+        </connector>
+        <filterLogic>and</filterLogic>
+        <filters>
+            <field>Name</field>
+            <operator>EqualTo</operator>
+            <value>
+                <elementReference>getRequest.InterpretationMethodType__c</elementReference>
+            </value>
+        </filters>
+        <getFirstRecordOnly>true</getFirstRecordOnly>
+        <object>WorkType</object>
         <storeOutputAutomatically>true</storeOutputAutomatically>
     </recordLookups>
     <recordLookups>
@@ -1212,36 +1233,10 @@ CONTAINS({!ChosenFieldsOwner}, {!Subject})
                 <name>NewValuesScreen_Section7_Column1</name>
                 <fieldType>Region</fieldType>
                 <fields>
-                    <name>InterpretationMethodLookup</name>
-                    <extensionName>flowruntime:lookup</extensionName>
-                    <fieldType>ComponentInstance</fieldType>
-                    <inputParameters>
-                        <name>objectApiName</name>
-                        <value>
-                            <stringValue>HOT_Request__c</stringValue>
-                        </value>
-                    </inputParameters>
-                    <inputParameters>
-                        <name>fieldApiName</name>
-                        <value>
-                            <stringValue>InterpretationMethod__c</stringValue>
-                        </value>
-                    </inputParameters>
-                    <inputParameters>
-                        <name>label</name>
-                        <value>
-                            <stringValue>Tolkemetode</stringValue>
-                        </value>
-                    </inputParameters>
-                    <inputParameters>
-                        <name>recordId</name>
-                        <value>
-                            <elementReference>getRequest.InterpretationMethod__c</elementReference>
-                        </value>
-                    </inputParameters>
+                    <fieldType>ObjectProvided</fieldType>
                     <inputsOnNextNavToAssocScrn>UseStoredValues</inputsOnNextNavToAssocScrn>
-                    <isRequired>true</isRequired>
-                    <storeOutputAutomatically>true</storeOutputAutomatically>
+                    <isRequired>false</isRequired>
+                    <objectFieldReference>getRequest.InterpretationMethodType__c</objectFieldReference>
                 </fields>
                 <inputParameters>
                     <name>width</name>
