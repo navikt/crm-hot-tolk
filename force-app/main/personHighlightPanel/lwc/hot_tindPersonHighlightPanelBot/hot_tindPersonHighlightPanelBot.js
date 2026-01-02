@@ -1,6 +1,7 @@
 import { LightningElement, api, wire } from 'lwc';
 import { NavigationMixin } from 'lightning/navigation';
 import hasPermission from '@salesforce/apex/HOT_CheckPermissions.hasFreelancePermission';
+import isAnsatt from '@salesforce/apex/HOT_CheckPermissions.hasAnsattTolkPermission';
 
 export default class hot_personHighlightPanelBot extends NavigationMixin(LightningElement) {
     @api recordId;
@@ -11,6 +12,7 @@ export default class hot_personHighlightPanelBot extends NavigationMixin(Lightni
     currentFlow;
     fnr;
     hasPermission = false;
+    isAnsatt = false;
 
     handleFlowButton(event) {
         this.currentFlow = event.target.dataset.flow;
@@ -60,9 +62,22 @@ export default class hot_personHighlightPanelBot extends NavigationMixin(Lightni
     wiredPermission({ error, data }) {
         if (data) {
             this.hasPermission = data;
+            console.log('Frilans: ', this.hasPermission);
         }
         if (error) {
             this.addErrorMessage('Error Checking permission set', error);
+            console.error(error);
+        }
+    }
+
+    @wire(isAnsatt)
+    wiredAnsatt({ error, data }) {
+        if (data) {
+            this.isAnsatt = data;
+            console.log('Ansatt: ', this.isAnsatt);
+        }
+        if (error) {
+            this.addErrorMessage('Error Checking permission set for Ansatt', error);
             console.error(error);
         }
     }

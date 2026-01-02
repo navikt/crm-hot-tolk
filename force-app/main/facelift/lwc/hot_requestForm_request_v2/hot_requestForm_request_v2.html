@@ -5,7 +5,7 @@
         ondrop={uploadFilesDropHandler}
         ondragover={dragOverHandler}
     >
-        <h2 class="header" tabindex="0" autofocus>Informasjon om behov for tolk</h2>
+        <h2 id="header" class="header">Informasjon om behov for tolk</h2>
         <br />
         <c-input
             id="temaOgSted"
@@ -17,7 +17,10 @@
             helptext-content="Beskriv hva du trenger tolk til og hvor, f.eks. legetime ved xx-legesenter, forelesning ved xx-universitet osv."
         ></c-input>
         <br />
-        <c-hot_recurring-time-input_v2 request-ids={requestIds}></c-hot_recurring-time-input_v2>
+        <c-hot_recurring-time-input_v2
+            request-ids={requestIds}
+            refresh-token={refreshToken}
+        ></c-hot_recurring-time-input_v2>
         <br />
         <c-radiobuttons
             radiobuttons={componentValues.physicalOrDigitalRadiobuttons}

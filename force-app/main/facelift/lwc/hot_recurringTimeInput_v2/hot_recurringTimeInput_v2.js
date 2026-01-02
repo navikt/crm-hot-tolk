@@ -14,6 +14,7 @@ export default class hot_recurringTimeInput_v2 extends LightningElement {
     @track times = [];
     @track isOnlyOneTime = true;
     @track isAdvancedTimes;
+    @api refreshToken;
     uniqueIdCounter = 0;
 
     setTimesValue(timeObject) {
@@ -67,15 +68,21 @@ export default class hot_recurringTimeInput_v2 extends LightningElement {
     setStartTime(index) {
         let dateTime = new Date();
         let timeString = this.dateTimeToTimeString(dateTime, false);
-        let combinedDateTime = this.combineDateTimes(this.times[index].dateMilliseconds, dateTime);
-        this.times[index].startTime = combinedDateTime.getTime();
 
         if (this.times[index].startTimeString === null) {
+            let combinedDateTime = this.combineDateTimes(this.times[index].dateMilliseconds, dateTime);
+            this.times[index].startTime = combinedDateTime.getTime();
+
             this.times[index].startTimeString = timeString;
             let startTimeElements = this.template.querySelectorAll('[data-id="startTime"]');
             startTimeElements[index].setValue(this.times[index].startTimeString);
             this.setEndTimeBasedOnStartTime(index);
         } else {
+            let startDateTime = this.timeStringToDateTime(
+                this.times[index].dateMilliseconds,
+                this.times[index].startTimeString
+            );
+            this.times[index].startTime = startDateTime.getTime();
             this.updateEndTimeBasedOnDate(index);
         }
     }
@@ -119,7 +126,7 @@ export default class hot_recurringTimeInput_v2 extends LightningElement {
     }
     combineDateTimes(date, time) {
         let dateTime = new Date(date);
-        dateTime.setHours(time.getHours());
+        dateTime.setHours(time.getHours(), time.getMinutes(), 0, 0);
         return dateTime;
     }
 
@@ -257,7 +264,7 @@ export default class hot_recurringTimeInput_v2 extends LightningElement {
         this.template.querySelectorAll('[data-id="endTime"]').forEach((element, index) => {
             errorMessage = requireInput(element.getValue(), 'Sluttid');
             if (errorMessage === '') {
-                errorMessage = startBeforeEnd(this.times[0].endTime, this.times[0].startTime);
+                errorMessage = startBeforeEnd(this.times[index].endTime, this.times[index].startTime);
             }
             element.sendErrorMessage(errorMessage);
             hasErrors += errorMessage !== '';
@@ -325,7 +332,7 @@ export default class hot_recurringTimeInput_v2 extends LightningElement {
 
     // Move up one level?
     @api requestIds = [];
-    @wire(getTimes, { requestIds: '$requestIds' })
+    @wire(getTimes, { requestIds: '$requestIds', refreshToken: '$refreshToken' })
     wiredTimes(result) {
         if (result.data) {
             if (result.data.length === 0) {

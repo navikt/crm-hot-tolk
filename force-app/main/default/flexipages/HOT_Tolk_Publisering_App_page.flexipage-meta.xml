@@ -1867,7 +1867,7 @@
                 </componentInstanceProperties>
                 <componentInstanceProperties>
                     <name>flowName</name>
-                    <value>HOT_Announcement_Create_Screen_Flow</value>
+                    <value>HOT_Tolk_Create_Announcement</value>
                 </componentInstanceProperties>
                 <componentName>flowruntime:interview</componentName>
                 <identifier>flowruntime_interview</identifier>
