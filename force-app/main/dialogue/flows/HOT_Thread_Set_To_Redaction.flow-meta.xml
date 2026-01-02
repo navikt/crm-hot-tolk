@@ -5,7 +5,7 @@
         <name>Set_Thread_For_Redaction</name>
         <label>Set Thread For Redaction</label>
         <locationX>446</locationX>
-        <locationY>458</locationY>
+        <locationY>566</locationY>
         <assignmentItems>
             <assignToReference>Get_Thread.STO_Sensitive_Information__c</assignToReference>
             <operator>Assign</operator>
@@ -51,7 +51,7 @@
     <decisions>
         <name>Check_If_Sensitive_Information_Is_True</name>
         <label>Check If Sensitive Information Is True</label>
-        <locationX>248</locationX>
+        <locationX>347</locationX>
         <locationY>242</locationY>
         <defaultConnector>
             <targetReference>Set_Thread_to_Redaction</targetReference>
@@ -77,7 +77,7 @@
         <name>Check_If_Thead_Is_Set_To_Redaction</name>
         <label>Check If Thead Is Set To Redaction</label>
         <locationX>446</locationX>
-        <locationY>674</locationY>
+        <locationY>782</locationY>
         <defaultConnector>
             <targetReference>Error_Screen</targetReference>
         </defaultConnector>
@@ -105,6 +105,28 @@
             <label>IsSetToRedaction</label>
         </rules>
     </decisions>
+    <decisions>
+        <name>Should_Send_To_Redaction</name>
+        <label>Should Send To Redaction</label>
+        <locationX>644</locationX>
+        <locationY>458</locationY>
+        <defaultConnectorLabel>Cancel</defaultConnectorLabel>
+        <rules>
+            <name>Send_To_Redaction</name>
+            <conditionLogic>and</conditionLogic>
+            <conditions>
+                <leftValueReference>Sensitive_Toggle.value</leftValueReference>
+                <operator>EqualTo</operator>
+                <rightValue>
+                    <booleanValue>true</booleanValue>
+                </rightValue>
+            </conditions>
+            <connector>
+                <targetReference>Set_Thread_For_Redaction</targetReference>
+            </connector>
+            <label>Send To Redaction</label>
+        </rules>
+    </decisions>
     <environments>Default</environments>
     <interviewLabel>HOT Thread Set To Redaction {!$Flow.CurrentDateTime}</interviewLabel>
     <label>HOT_ThreadSetToRedaction</label>
@@ -130,7 +152,7 @@
     <recordLookups>
         <name>Get_Thread</name>
         <label>Get Thread</label>
-        <locationX>248</locationX>
+        <locationX>347</locationX>
         <locationY>134</locationY>
         <assignNullValuesIfNoRecordsFound>false</assignNullValuesIfNoRecordsFound>
         <connector>
@@ -152,7 +174,7 @@
         <name>Update_Thread</name>
         <label>Update Thread</label>
         <locationX>446</locationX>
-        <locationY>566</locationY>
+        <locationY>674</locationY>
         <connector>
             <targetReference>Check_If_Thead_Is_Set_To_Redaction</targetReference>
         </connector>
@@ -163,7 +185,7 @@
         <name>Error_Screen</name>
         <label>Error Screen</label>
         <locationX>578</locationX>
-        <locationY>782</locationY>
+        <locationY>890</locationY>
         <allowBack>true</allowBack>
         <allowFinish>true</allowFinish>
         <allowPause>true</allowPause>
@@ -212,7 +234,7 @@
         <name>Finish_Screen</name>
         <label>Finish Screen</label>
         <locationX>314</locationX>
-        <locationY>782</locationY>
+        <locationY>890</locationY>
         <allowBack>true</allowBack>
         <allowFinish>true</allowFinish>
         <allowPause>true</allowPause>
@@ -277,13 +299,13 @@
     <screens>
         <name>Set_Thread_to_Redaction</name>
         <label>Set Thread to Redaction</label>
-        <locationX>446</locationX>
+        <locationX>644</locationX>
         <locationY>350</locationY>
         <allowBack>false</allowBack>
         <allowFinish>true</allowFinish>
         <allowPause>false</allowPause>
         <connector>
-            <targetReference>Set_Thread_For_Redaction</targetReference>
+            <targetReference>Should_Send_To_Redaction</targetReference>
         </connector>
         <fields>
             <name>Sensitive_Toggle</name>
@@ -344,7 +366,7 @@
         <showHeader>false</showHeader>
     </screens>
     <start>
-        <locationX>122</locationX>
+        <locationX>221</locationX>
         <locationY>0</locationY>
         <connector>
             <targetReference>Get_Thread</targetReference>

@@ -1,0 +1,44 @@
+.spinnerType {
+    position: relative;
+    height: 80px;
+}
+.tabContainer {
+    position: relative;
+}
+.fakeModalContainer {
+    position: absolute;
+    inset-block-start: 0;
+    inset-inline-end: 0;
+    inset-block-end: 0;
+    inset-inline-start: 0;
+    z-index: 1;
+    background-color: color-mix(in oklab, #c8c8c8, transparent 25%);
+    visibility: visible;
+    opacity: 1;
+    transition:
+        opacity 0.2s ease,
+        visibility 0s;
+    transition-delay: 0s, 0.3s;
+    align-content: center;
+}
+.flowContainer {
+    background-color: WHITE;
+    display: block;
+    border-radius: 1.25rem;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+    border-color: lightgray;
+    border-style: solid;
+}
+.conversationCard {
+    border-radius: var(--slds-g-radius-border-2);
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+    border-color: lightgray;
+    border-style: solid;
+}
+.conversationParticipants {
+    border-bottom: 1px solid lightgray;
+}
+.conversationTitle {
+    font-size: 1rem;
+    line-height: 1.25;
+}
