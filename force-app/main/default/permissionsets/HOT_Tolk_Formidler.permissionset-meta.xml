@@ -246,6 +246,11 @@
         <readable>true</readable>
     </fieldPermissions>
     <fieldPermissions>
+        <editable>true</editable>
+        <field>HOT_InterestedResource__c.HOT_Wanted_by__c</field>
+        <readable>true</readable>
+    </fieldPermissions>
+    <fieldPermissions>
         <editable>false</editable>
         <field>HOT_InterestedResource__c.NumberOfInterestedResources__c</field>
         <readable>true</readable>
@@ -1062,17 +1067,17 @@
     </fieldPermissions>
     <fieldPermissions>
         <editable>false</editable>
+        <field>Person__c.INT_ResidentialPlace__c</field>
+        <readable>true</readable>
+    </fieldPermissions>
+    <fieldPermissions>
+        <editable>false</editable>
         <field>Person__c.INT_ResidentialZipCode__c</field>
         <readable>true</readable>
     </fieldPermissions>
     <fieldPermissions>
         <editable>false</editable>
         <field>Person__c.INT_ResidentialZip__c</field>
-        <readable>true</readable>
-    </fieldPermissions>
-    <fieldPermissions>
-        <editable>false</editable>
-        <field>Person__c.INT_ResidentialPlace__c</field>
         <readable>true</readable>
     </fieldPermissions>
     <fieldPermissions>
