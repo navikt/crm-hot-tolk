@@ -161,8 +161,8 @@ export default class Hot_wantedServiceAppointmentsList extends LightningElement 
     serviceAppointment;
     isDetails = false;
     showTable = true;
-    @track wantedBy;
-    @track wantedByError;
+    wantedBy;
+    wantedByError;
 
     get wantedMessage() {
         const raw = (this.wantedBy || '').trim().toLowerCase();
