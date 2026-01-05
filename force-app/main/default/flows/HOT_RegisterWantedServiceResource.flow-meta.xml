@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="UTF-8" ?>
+<?xml version="1.0" encoding="UTF-8"?>
 <Flow xmlns="http://soap.sforce.com/2006/04/metadata">
     <actionCalls>
         <name>check_for_overlap_and_interested_ir</name>
@@ -28,7 +28,6 @@
             <assignToReference>overlappingSA</assignToReference>
             <name>output</name>
         </outputParameters>
-        <versionSegment>1</versionSegment>
     </actionCalls>
     <apiVersion>58.0</apiVersion>
     <assignments>
@@ -47,6 +46,22 @@
             <targetReference>update_IR</targetReference>
         </connector>
     </assignments>
+    <choices>
+        <name>Formidler</name>
+        <choiceText>Formidler</choiceText>
+        <dataType>String</dataType>
+        <value>
+            <stringValue>Formidler</stringValue>
+        </value>
+    </choices>
+    <choices>
+        <name>Tolkebruker</name>
+        <choiceText>Tolkebruker</choiceText>
+        <dataType>String</dataType>
+        <value>
+            <stringValue>Tolkebruker</stringValue>
+        </value>
+    </choices>
     <decisions>
         <name>check_if_sr_is_freelance</name>
         <label>check if sr is freelance</label>
@@ -197,6 +212,12 @@
         <locationX>842</locationX>
         <locationY>1106</locationY>
         <inputAssignments>
+            <field>HOT_Wanted_by__c</field>
+            <value>
+                <elementReference>Onsket_av</elementReference>
+            </value>
+        </inputAssignments>
+        <inputAssignments>
             <field>ServiceAppointment__c</field>
             <value>
                 <elementReference>recordId</elementReference>
@@ -304,8 +325,7 @@
         <allowPause>false</allowPause>
         <fields>
             <name>existingText</name>
-            <fieldText
-            >&lt;p&gt;Tolken har allerede en interessert ressurs på oppdrag som tilhører samme arbeidsordre.&lt;/p&gt;</fieldText>
+            <fieldText>&lt;p&gt;Tolken har allerede en interessert ressurs på oppdrag som tilhører samme arbeidsordre.&lt;/p&gt;</fieldText>
             <fieldType>DisplayText</fieldType>
         </fields>
         <showFooter>true</showFooter>
@@ -321,8 +341,7 @@
         <allowPause>false</allowPause>
         <fields>
             <name>NoFreelanceMessage</name>
-            <fieldText
-            >&lt;p&gt;Ønsket tolk &lt;strong&gt;må&lt;/strong&gt; være en frilanstolk og ha en aktiv tjenesteressurs. Trykk på tilbake og velg en annen&lt;/p&gt;</fieldText>
+            <fieldText>&lt;p&gt;Ønsket tolk &lt;strong&gt;må&lt;/strong&gt; være en frilanstolk og ha en aktiv tjenesteressurs. Trykk på tilbake og velg en annen&lt;/p&gt;</fieldText>
             <fieldType>DisplayText</fieldType>
         </fields>
         <showFooter>true</showFooter>
@@ -338,8 +357,7 @@
         <allowPause>false</allowPause>
         <fields>
             <name>notReleasedText</name>
-            <fieldText
-            >&lt;p&gt;Oppdraget må være frigitt til frilans før du kan registrere ønsket frilanstolk.&lt;/p&gt;</fieldText>
+            <fieldText>&lt;p&gt;Oppdraget må være frigitt til frilans før du kan registrere ønsket frilanstolk.&lt;/p&gt;</fieldText>
             <fieldType>DisplayText</fieldType>
         </fields>
         <showFooter>true</showFooter>
@@ -355,8 +373,7 @@
         <allowPause>false</allowPause>
         <fields>
             <name>textoverlap</name>
-            <fieldText
-            >&lt;p&gt;Tolken har overlappende oppdrag og kan derfor ikke registreres som ønsket på dette oppdraget.&lt;/p&gt;</fieldText>
+            <fieldText>&lt;p&gt;Tolken har overlappende oppdrag og kan derfor ikke registreres som ønsket på dette oppdraget.&lt;/p&gt;</fieldText>
             <fieldType>DisplayText</fieldType>
         </fields>
         <showFooter>true</showFooter>
@@ -375,8 +392,7 @@
         </connector>
         <fields>
             <name>infotext</name>
-            <fieldText
-            >&lt;p&gt;Når en ønsket tolk er registrert vil tolken få mulighet til å avslå eller melde interesse for oppdraget.&lt;/p&gt;</fieldText>
+            <fieldText>&lt;p&gt;Når en ønsket tolk er registrert vil tolken få mulighet til å avslå eller melde interesse for oppdraget.&lt;/p&gt;</fieldText>
             <fieldType>DisplayText</fieldType>
         </fields>
         <fields>
@@ -411,6 +427,16 @@
             <isRequired>true</isRequired>
             <storeOutputAutomatically>true</storeOutputAutomatically>
         </fields>
+        <fields>
+            <name>Onsket_av</name>
+            <choiceReferences>Tolkebruker</choiceReferences>
+            <choiceReferences>Formidler</choiceReferences>
+            <dataType>String</dataType>
+            <fieldText>Ønsket av</fieldText>
+            <fieldType>DropdownBox</fieldType>
+            <inputsOnNextNavToAssocScrn>UseStoredValues</inputsOnNextNavToAssocScrn>
+            <isRequired>false</isRequired>
+        </fields>
         <showFooter>true</showFooter>
         <showHeader>false</showHeader>
     </screens>
@@ -421,7 +447,7 @@
             <targetReference>getSA</targetReference>
         </connector>
     </start>
-    <status>Active</status>
+    <status>Draft</status>
     <variables>
         <name>existingWantedIRCount</name>
         <dataType>Number</dataType>
