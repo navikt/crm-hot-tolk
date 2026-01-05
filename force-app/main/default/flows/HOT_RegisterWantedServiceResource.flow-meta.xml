@@ -447,7 +447,7 @@
             <targetReference>getSA</targetReference>
         </connector>
     </start>
-    <status>Draft</status>
+    <status>Active</status>
     <variables>
         <name>existingWantedIRCount</name>
         <dataType>Number</dataType>
