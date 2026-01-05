@@ -324,6 +324,16 @@ public without sharing class HOT_wantedSRListController {
         return status;
     }
 
+    @AuraEnabled(cacheable=true)
+    public static HOT_InterestedResource__c getWantedInterestedResource(Id saId, Id srId) {
+        return [
+            SELECT Id, HOT_Wanted_by__c, Status__c, ServiceAppointment__c, ServiceResource__c
+            FROM HOT_InterestedResource__c
+            WHERE ServiceAppointment__c = :saId AND ServiceResource__c = :srId AND Status__c = 'Wanted'
+            LIMIT 1
+        ];
+    }
+
     public class Request {
         @InvocableVariable(label='sa Id' description='return based on result' required=false)
         public String saID;
