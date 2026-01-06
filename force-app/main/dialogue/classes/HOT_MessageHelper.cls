@@ -251,7 +251,7 @@ public without sharing class HOT_MessageHelper {
                     }
                 }
                 ServiceAppointment sa = [
-                    SELECT Id, Subject, HOT_Request__r.Dispatcher__c, HOT_ServiceResource__c
+                    SELECT Id, Subject, HOT_Request__r.Dispatcher__c, HOT_ServiceResource__c, HOT_Request__r.Account__c
                     FROM ServiceAppointment
                     WHERE Id = :ar.ServiceAppointmentId
                 ];
