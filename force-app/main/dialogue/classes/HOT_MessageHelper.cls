@@ -283,6 +283,7 @@ public without sharing class HOT_MessageHelper {
                     ServiceAppointment__r.Subject,
                     ServiceResource__r.AccountId,
                     ServiceAppointment__r.HOT_Request__r.Dispatcher__c,
+                    ServiceAppointment__r.HOT_Request__r.Account__c,
                     ServiceAppointment__c
                 FROM HOT_InterestedResource__c
                 WHERE Id = :recordId AND Status__c != 'Assigned' AND Status__c != 'Reserved'
@@ -301,6 +302,7 @@ public without sharing class HOT_MessageHelper {
                 thread.HOT_InterestedResource__c = recordId;
                 thread.HOT_Title__c = ir.ServiceAppointment__r.Subject;
                 thread.HOT_Dispatcher__c = ir.ServiceAppointment__r.HOT_Request__r.Dispatcher__c;
+                thread.HOT_Account__c = ir.ServiceAppointment__r.HOT_Request__r.Account__c;
                 HOT_DatabaseOperations.insertRecords(thread);
             } else {
                 throw new AuraHandledException('thread exist');
