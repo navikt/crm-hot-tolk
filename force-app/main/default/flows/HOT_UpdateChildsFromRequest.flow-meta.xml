@@ -531,7 +531,7 @@ CONTAINS({!ChosenFieldsOwner}, {!Subject})
             <field>Name</field>
             <operator>EqualTo</operator>
             <value>
-                <elementReference>getRequest.Owner_List__c</elementReference>
+                <elementReference>getRequest.OwnerList__c</elementReference>
             </value>
         </filters>
         <filters>
@@ -1288,7 +1288,7 @@ CONTAINS({!ChosenFieldsOwner}, {!Subject})
                     <fieldType>ObjectProvided</fieldType>
                     <inputsOnNextNavToAssocScrn>UseStoredValues</inputsOnNextNavToAssocScrn>
                     <isRequired>false</isRequired>
-                    <objectFieldReference>getRequest.Owner_List__c</objectFieldReference>
+                    <objectFieldReference>getRequest.OwnerList__c</objectFieldReference>
                 </fields>
                 <inputParameters>
                     <name>width</name>
@@ -1374,7 +1374,7 @@ CONTAINS({!ChosenFieldsOwner}, {!Subject})
             <targetReference>getRequest</targetReference>
         </connector>
     </start>
-    <status>Active</status>
+    <status>Draft</status>
     <variables>
         <name>recordId</name>
         <dataType>String</dataType>
