@@ -1,0 +1,53 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomFieldTranslation xmlns="http://soap.sforce.com/2006/04/metadata">
+    <label>Eier</label>
+    <name>OwnerList__c</name>
+    <picklistValues>
+        <masterLabel>Nav Tolketjeneste Agder</masterLabel>
+        <translation><!-- Nav Tolketjeneste Agder --></translation>
+    </picklistValues>
+    <picklistValues>
+        <masterLabel>Nav Tolketjeneste Innlandet</masterLabel>
+        <translation><!-- Nav Tolketjeneste Innlandet --></translation>
+    </picklistValues>
+    <picklistValues>
+        <masterLabel>Nav Tolketjeneste Møre og Romsdal</masterLabel>
+        <translation><!-- Nav Tolketjeneste Møre og Romsdal --></translation>
+    </picklistValues>
+    <picklistValues>
+        <masterLabel>Nav Tolketjeneste Nordland</masterLabel>
+        <translation><!-- Nav Tolketjeneste Nordland --></translation>
+    </picklistValues>
+    <picklistValues>
+        <masterLabel>Nav Tolketjeneste Oslo</masterLabel>
+        <translation><!-- Nav Tolketjeneste Oslo --></translation>
+    </picklistValues>
+    <picklistValues>
+        <masterLabel>Nav Tolketjeneste Rogaland</masterLabel>
+        <translation><!-- Nav Tolketjeneste Rogaland --></translation>
+    </picklistValues>
+    <picklistValues>
+        <masterLabel>Nav Tolketjeneste Troms og Finnmark</masterLabel>
+        <translation><!-- Nav Tolketjeneste Troms og Finnmark --></translation>
+    </picklistValues>
+    <picklistValues>
+        <masterLabel>Nav Tolketjeneste Trøndelag</masterLabel>
+        <translation><!-- Nav Tolketjeneste Trøndelag --></translation>
+    </picklistValues>
+    <picklistValues>
+        <masterLabel>Nav Tolketjeneste Vest-Viken</masterLabel>
+        <translation><!-- Nav Tolketjeneste Vest-Viken --></translation>
+    </picklistValues>
+    <picklistValues>
+        <masterLabel>Nav Tolketjeneste Vestfold og Telemark</masterLabel>
+        <translation><!-- Nav Tolketjeneste Vestfold og Telemark --></translation>
+    </picklistValues>
+    <picklistValues>
+        <masterLabel>Nav Tolketjeneste Vestland</masterLabel>
+        <translation><!-- Nav Tolketjeneste Vestland --></translation>
+    </picklistValues>
+    <picklistValues>
+        <masterLabel>Nav Tolketjeneste Øst-Viken</masterLabel>
+        <translation><!-- Nav Tolketjeneste Øst-Viken --></translation>
+    </picklistValues>
+</CustomFieldTranslation>
