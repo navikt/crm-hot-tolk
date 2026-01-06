@@ -217,7 +217,8 @@ public without sharing class HOT_MessageHelper {
                     Id,
                     ServiceAppointment__r.Subject,
                     ServiceResource__r.AccountId,
-                    ServiceAppointment__r.HOT_Request__r.Dispatcher__c
+                    ServiceAppointment__r.HOT_Request__r.Dispatcher__c,
+                    ServiceAppointment__r.HOT_Request__r.Account__c
                 FROM HOT_InterestedResource__c
                 WHERE
                     (ServiceAppointment__c = :recordId
@@ -257,6 +258,7 @@ public without sharing class HOT_MessageHelper {
                 thread.CRM_Related_Object__c = recordId;
                 thread.CRM_Thread_Type__c = 'HOT_TOLK-FORMIDLER';
                 thread.HOT_Dispatcher__c = sa.HOT_Request__r.Dispatcher__c;
+                thread.HOT_Account__c = sa.HOT_Request__r.Account__c;
                 thread.HOT_IsEmployeeThread__c = true;
                 thread.HOT_ServiceResource__c = sa.HOT_ServiceResource__c;
                 thread.HOT_ServiceAppointment__c = recordId;
@@ -267,6 +269,7 @@ public without sharing class HOT_MessageHelper {
                 thread.CRM_Related_Object__c = recordId;
                 thread.CRM_Thread_Type__c = 'HOT_TOLK-FORMIDLER';
                 thread.CRM_Account__c = irList[0].ServiceResource__r.AccountId;
+                thread.HOT_Account__c = irList[0].ServiceAppointment__r.HOT_Request__r.Account__c;
                 thread.HOT_ServiceAppointment__c = recordId;
                 thread.HOT_Title__c = irList[0].ServiceAppointment__r.Subject;
                 thread.HOT_Dispatcher__c = irList[0].ServiceAppointment__r.HOT_Request__r.Dispatcher__c;
