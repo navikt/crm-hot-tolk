@@ -16,6 +16,10 @@
                 <field>CRM_Account__c</field>
             </layoutItems>
             <layoutItems>
+                <behavior>Edit</behavior>
+                <field>HOT_Account__c</field>
+            </layoutItems>
+            <layoutItems>
                 <behavior>Readonly</behavior>
                 <field>CRM_Related_Record_Link__c</field>
             </layoutItems>

@@ -6,25 +6,209 @@ public without sharing class HOT_ThreadParticipants {
         public String role;
         @AuraEnabled
         public Id userId;
+        @AuraEnabled
+        public Boolean hasRead = false;
+        public Participant(ServiceAppointment sa) {
+            this.name = formatName(sa.HOT_ServiceResource__r.Name);
+            this.role = 'Tolk';
+            this.userId = sa.HOT_ServiceResource__r.RelatedRecordId;
+        }
+        public Participant(WorkOrder wo, User user) {
+            this.name = formatName(wo.Account.Name);
+            this.role = 'Tolkebruker';
+            this.userId = user.Id;
+        }
+        public Participant(HOT_InterestedResource__c ir) {
+            this.name = formatName(ir.ServiceResource__r.Name);
+            this.role = 'Tolk';
+            this.userId = ir.ServiceResource__r.RelatedRecordId;
+        }
+        public Participant(HOT_WageClaim__c wc) {
+            this.name = formatName(wc.ServiceResource__r.Name);
+            this.role = 'Tolk';
+            this.userId = wc.ServiceResource__r.RelatedRecordId;
+        }
+        public Participant() {
+        }
+        public Participant(String name) {
+            this.name = formatName(name);
+        }
+        public Participant(String name, String role, Id userId) {
+            this.name = formatName(name);
+            this.role = role;
+            this.userId = userId;
+        }
+        public Participant setHasRead() {
+            this.hasRead = true;
+            return this;
+        }
     }
 
+    Set<Id> threadIds = new Set<Id>();
+    List<Thread__c> threads = new List<Thread__c>();
+    Map<Id, List<Participant>> participantsByThreadId = new Map<Id, List<Participant>>();
+    Map<Id, Set<Id>> threadIdsByRelatedObjectId = new Map<Id, Set<Id>>();
+    Id relatedObjectId;
+    List<String> threadTypesOfInterest;
+
+    public HOT_ThreadParticipants(Id relatedObjectId, List<String> threadTypesOfInterest) {
+        this.relatedObjectId = relatedObjectId;
+        this.threadTypesOfInterest = threadTypesOfInterest;
+        this.getThreadsForRelatedObject();
+        this.threadIds = new Map<Id, Thread__c>(this.threads).keySet();
+        this.mapThreadIdsByRelatedObjectIds();
+        this.initParticipantsByThreadId();
+    }
+
+    private void getThreadsForRelatedObject() {
+        this.threads = [
+            SELECT Id, CRM_Related_Object__c, CRM_Thread_Type__c, HOT_IsEmployeeThread__c, HOT_Thread_read_by__c
+            FROM Thread__c
+            WHERE CRM_Related_Object__c = :this.relatedObjectId AND CRM_Thread_Type__c IN :this.threadTypesOfInterest
+        ];
+    }
+
+    private void mapThreadIdsByRelatedObjectIds() {
+        for (Thread__c thread : threads) {
+            if (this.threadIdsByRelatedObjectId.get(thread.CRM_Related_Object__c) == null) {
+                this.threadIdsByRelatedObjectId.put(thread.CRM_Related_Object__c, new Set<Id>());
+            }
+            this.threadIdsByRelatedObjectId.get(thread.CRM_Related_Object__c).add(thread.Id);
+        }
+    }
+
+    private void initParticipantsByThreadId() {
+        for (Id threadId : this.threadIds) {
+            this.participantsByThreadId.put(threadId, new List<Participant>());
+        }
+    }
+    private HOT_ThreadParticipants getAssignedServiceResourceParticipants() {
+        for (ServiceAppointment sa : [
+            SELECT
+                Id,
+                HOT_ServiceResource__r.RelatedRecordId,
+                HOT_ServiceResource__r.Name,
+                HOT_WorkOrderLineItem__r.WorkOrderId
+            FROM ServiceAppointment
+            WHERE
+                HOT_WorkOrderLineItem__r.WorkOrderId IN :this.threadIdsByRelatedObjectId.keySet()
+                AND HOT_ServiceResource__r.Name != NULL
+        ]) {
+            for (Id threadId : this.threadIdsByRelatedObjectId.get(sa.HOT_WorkOrderLineItem__r.WorkOrderId)) {
+                this.participantsByThreadId.get(threadId).add(new Participant(sa));
+            }
+        }
+        return this;
+    }
     @AuraEnabled(cacheable=true)
     public static List<Participant> getParticipants(String threadId) {
         List<Participant> participantList = new List<Participant>();
         Thread__c thread = [
-            SELECT Id, CRM_Related_Object__c, CRM_Thread_Type__c, HOT_IsEmployeeThread__c
+            SELECT Id, CRM_Related_Object__c, CRM_Thread_Type__c, HOT_IsEmployeeThread__c, HOT_Thread_read_by__c
             FROM Thread__c
             WHERE Id = :threadId
         ];
         participantList.addAll(getAssignedServiceResources(thread));
         participantList.addAll(getAccountParticipants(thread));
-
         return participantList;
+    }
+    @AuraEnabled
+    public static Map<String, Map<Id, List<Participant>>> getParticipantsByRelatedObjectAndThreadTypes(
+        Id relatedObjectId,
+        List<String> threadTypesOfInterest
+    ) {
+        return new HOT_ThreadParticipants(relatedObjectId, threadTypesOfInterest)
+            .getAssignedServiceResourceParticipants()
+            .getRelatedObjectParticipants()
+            .setReadStatus()
+            .getParticipantsByRelatedObjectAndThreadId();
+    }
+    private Map<String, Map<Id, List<Participant>>> getParticipantsByRelatedObjectAndThreadId() {
+        Map<String, Map<Id, List<Participant>>> result = new Map<String, Map<Id, List<Participant>>>();
+        for (String threadType : this.threadTypesOfInterest) {
+            result.put(threadType, new Map<Id, List<Participant>>());
+        }
+        for (Id threadId : this.participantsByThreadId.keySet()) {
+            result.get(new Map<Id, Thread__c>(this.threads).get(threadId).CRM_Thread_Type__c)
+                .put(threadId, this.participantsByThreadId.get(threadId));
+        }
+        return result;
+    }
+    private Boolean hasObjectTypeRelations(String relatedObjectType) {
+        for (Thread__c thread : this.threads) {
+            if (String.valueOf(((Id) (thread.CRM_Related_Object__c)).getSObjectType()) == relatedObjectType) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    private HOT_ThreadParticipants setReadStatus() {
+        Map<Id, Set<Id>> userOrContactIdsByThreadId = new Map<Id, Set<Id>>();
+        Set<Id> userOrContactIds = new Set<Id>();
+        for (Thread__c thread : this.threads) {
+            if (!String.isBlank(thread.HOT_Thread_read_by__c)) {
+                Set<Id> threadUserOrContactIds = new Set<Id>((List<Id>) (thread.HOT_Thread_read_by__c.split(';')));
+                userOrContactIds.addAll(threadUserOrContactIds);
+                userOrContactIdsByThreadId.put(thread.Id, threadUserOrContactIds);
+            }
+        }
+        if (userOrContactIds.size() == 0) {
+            return this;
+        }
+        Map<Id, User> usersByUserId = new Map<Id, User>(
+            [
+                SELECT Id, ContactId, Profile.Name
+                FROM User
+                WHERE ContactId IN :userOrContactIds OR Id IN :userOrContactIds
+            ]
+        );
+        Map<Id, User> usersByContactId = new Map<Id, User>();
+        for (User u : usersByUserId.values()) {
+            if (u.ContactId != null) {
+                usersByContactId.put(u.ContactId, u);
+            }
+        }
+        for (Id threadId : this.threadIds) {
+            Map<Id, User> usersInThread = new Map<Id, User>();
+            for (Id userOrContactId : userOrContactIdsByThreadId.get(threadId) ?? new Set<Id>()) {
+                if (usersByUserId.containsKey(userOrContactId)) {
+                    usersInThread.put(userOrContactId, usersByUserId.get(userOrContactId));
+                } else if (usersByContactId.containsKey(userOrContactId)) {
+                    User u = usersByContactId.get(userOrContactId);
+                    usersInThread.put(u.Id, u);
+                }
+            }
+            Boolean hasFormidler = false;
+            Boolean hasResssurskontor = false;
+            for (User u : usersInThread.values()) {
+                if (u.Profile.Name == 'HOT Tolk Formidler') {
+                    hasFormidler = true;
+                }
+                if (u.Profile.Name == 'HOT Tolk Saksbehandler') {
+                    hasResssurskontor = true;
+                }
+            }
+            for (Participant p : this.participantsByThreadId.get(threadId)) {
+                if (usersInThread.containsKey(p.userId)) {
+                    p.setHasRead();
+                } else if (p.userId == null) {
+                    // Check for Formidler and Ressurskontor
+                    if (p.name == 'Formidler' && hasFormidler) {
+                        p.setHasRead();
+                    } else if (p.name == 'Ressurskontor' && hasResssurskontor) {
+                        p.setHasRead();
+                    }
+                }
+            }
+        }
+        return this;
     }
 
     public static List<Participant> getAssignedServiceResources(Thread__c thread) {
-        List<Participant> participantList = new List<Participant>();
-        List<ServiceAppointment> assignedServiceAppointments = [
+        List<Participant> participants = new List<Participant>();
+
+        for (ServiceAppointment sa : [
             SELECT
                 Id,
                 HOT_ServiceResource__r.RelatedRecordId,
@@ -34,18 +218,171 @@ public without sharing class HOT_ThreadParticipants {
             WHERE
                 HOT_WorkOrderLineItem__r.WorkOrderId = :thread.CRM_Related_Object__c
                 AND HOT_ServiceResource__r.Name != NULL
-        ];
-        if (assignedServiceAppointments.size() > 0) {
-            for (ServiceAppointment serviceAppointment : assignedServiceAppointments) {
-                Participant participant = new Participant();
-                participant.name = formatName(serviceAppointment.HOT_ServiceResource__r.Name);
-                participant.role = 'Tolk';
-                participant.userId = serviceAppointment.HOT_ServiceResource__r.RelatedRecordId;
-                participantList.add(participant);
+        ]) {
+            participants.add(new Participant(sa));
+        }
+        return participants;
+    }
+
+    private HOT_ThreadParticipants getRelatedObjectParticipants() {
+        if (this.hasObjectTypeRelations('WorkOrder')) {
+            Set<Id> workOrdersOfInterest = new Set<Id>();
+            for (Thread__c thread : this.threads) {
+                if (
+                    String.valueOf(((Id) thread.CRM_Related_Object__c).getSObjectType()) == 'WorkOrder' &&
+                    thread.CRM_Thread_Type__c == 'HOT_BRUKER-TOLK'
+                ) {
+                    workOrdersOfInterest.add(thread.CRM_Related_Object__c);
+                }
+            }
+            if (workOrdersOfInterest.size() > 0) {
+                this.getParticipantsFromWorkOrders(workOrdersOfInterest);
             }
         }
-        return participantList;
+        if (this.hasObjectTypeRelations('ServiceAppointment')) {
+            this.getParticipantsFromServiceAppointments();
+        }
+        if (this.hasObjectTypeRelations('HOT_InterestedResource__c')) {
+            this.getParticipantsFromInterestedResources();
+        }
+        if (this.hasObjectTypeRelations('HOT_WageClaim__c')) {
+            this.getParticipantsFromWageClaims();
+        }
+        if (this.hasObjectTypeRelations('HOT_Request__c')) {
+            this.getParticipansFromRequests();
+        }
+        for (Thread__c thread : this.threads) {
+            if (
+                thread.CRM_Thread_Type__c == 'HOT_TOLK-FORMIDLER' ||
+                thread.CRM_Thread_Type__c == 'HOT_BRUKER-FORMIDLER' ||
+                thread.CRM_Thread_Type__c == 'HOT_BESTILLER-FORMIDLER'
+            ) {
+                this.participantsByThreadId.get(thread.Id).add(new Participant('Formidler'));
+            }
+            if (thread.CRM_Thread_Type__c == 'HOT_TOLK-RESSURSKONTOR') {
+                this.participantsByThreadId.get(thread.Id).add(new Participant('Ressurskontor'));
+            }
+        }
+        return this;
     }
+    private void getParticipantsFromInterestedResources() {
+        List<HOT_InterestedResource__c> interestedResources = [
+            SELECT Id, ServiceResource__r.Name, ServiceResource__r.RelatedRecordId
+            FROM HOT_InterestedResource__c
+            WHERE Id IN :this.threadIdsByRelatedObjectId.keySet()
+        ];
+        for (HOT_InterestedResource__c ir : interestedResources) {
+            if (ir.ServiceResource__r.Name != null && ir.ServiceResource__r.RelatedRecordId != null) {
+                for (Id threadId : this.threadIdsByRelatedObjectId.get(ir.Id)) {
+                    this.participantsByThreadId.get(threadId).add(new Participant(ir));
+                }
+            }
+        }
+    }
+    private void getParticipantsFromWageClaims() {
+        List<HOT_WageClaim__c> wageClaims = [
+            SELECT Id, ServiceResource__r.Name, ServiceResource__r.RelatedRecordId
+            FROM HOT_WageClaim__c
+            WHERE Id IN :this.threadIdsByRelatedObjectId.keySet()
+        ];
+        for (HOT_WageClaim__c wc : wageClaims) {
+            if (wc.ServiceResource__r.Name != null && wc.ServiceResource__r.RelatedRecordId != null) {
+                for (Id threadId : this.threadIdsByRelatedObjectId.get(wc.Id)) {
+                    this.participantsByThreadId.get(threadId).add(new Participant(wc));
+                }
+            }
+        }
+    }
+    private void getParticipansFromRequests() {
+        List<HOT_Request__c> requests = [
+            SELECT Id, Account__r.Name, Account__r.Id, Orderer__c, Orderer__r.Id, Orderer__r.Name, Account__c
+            FROM HOT_Request__c
+            WHERE Id IN :this.threadIdsByRelatedObjectId.keySet()
+        ];
+        Set<Id> userIds = new Set<Id>();
+        for (HOT_Request__c req : requests) {
+            userIds.add(req.Orderer__c);
+            userIds.add(req.Account__c);
+        }
+        List<User> users = [SELECT Id, AccountId FROM User WHERE AccountId IN :userIds];
+        Map<Id, User> userByAccountId = new Map<Id, User>();
+        for (User u : users) {
+            userByAccountId.put(u.AccountId, u);
+        }
+        for (HOT_Request__c req : requests) {
+            String participantName;
+            String participantRole;
+            Id participantUserId;
+
+            for (Id threadId : this.threadIdsByRelatedObjectId.get(req.Id)) {
+                Thread__c thread = new Map<Id, Thread__c>(this.threads).get(threadId);
+                //this.threadsMap().get(this.threadIdsByRelatedObjectId(req.Id));
+                // Sjekk type thread
+                if (thread.CRM_Thread_Type__c == 'HOT_BRUKER-FORMIDLER') {
+                    // Bruk Account
+                    participantName = req.Account__r.Name;
+                    participantRole = 'Tolkebruker';
+                    User user = userByAccountId.get(req.Account__r.Id);
+                    participantUserId = user != null ? user.Id : null;
+                } else if (thread.CRM_Thread_Type__c == 'HOT_BESTILLER-FORMIDLER') {
+                    // Bruk Orderer
+                    participantName = req.Orderer__r.Name;
+                    participantRole = 'Bestiller';
+                    User user = userByAccountId.get(req.Orderer__r.Id);
+                    participantUserId = user != null ? user.Id : null;
+                }
+                // Legg til participant hvis navn og userId finnes
+                if (participantName != null && participantUserId != null) {
+                    this.participantsByThreadId.get(threadId)
+                        .add(new Participant(participantName, participantRole, participantUserId));
+                }
+            }
+        }
+    }
+    private void getParticipantsFromServiceAppointments() {
+        List<ServiceAppointment> serviceAppointments = [
+            SELECT Id, HOT_ServiceResource__r.Name, HOT_ServiceResource__r.RelatedRecordId
+            FROM ServiceAppointment
+            WHERE Id IN :this.threadIdsByRelatedObjectId.keySet()
+        ];
+        for (ServiceAppointment sa : serviceAppointments) {
+            if (sa.HOT_ServiceResource__r.Name != null && sa.HOT_ServiceResource__r.RelatedRecordId != null) {
+                for (Id threadId : this.threadIdsByRelatedObjectId.get(sa.Id)) {
+                    this.participantsByThreadId.get(threadId).add(new Participant(sa));
+                }
+            }
+        }
+    }
+    private void getParticipantsFromWorkOrders(Set<Id> workOrderIds) {
+        List<WorkOrder> workOrders = [SELECT Id, AccountId, Account.Name FROM WorkOrder WHERE Id IN :workOrderIds];
+        if (workOrders.size() == 0) {
+            return;
+        }
+        Set<Id> accountIds = new Set<Id>();
+        for (WorkOrder wo : workOrders) {
+            accountIds.add(wo.AccountId);
+        }
+        if (accountIds.size() == 0) {
+            return;
+        }
+        List<User> users = [SELECT Id, AccountId FROM User WHERE AccountId IN :accountIds];
+        if (users.size() == 0) {
+            return;
+        }
+        Map<Id, User> usersByAccountId = new Map<Id, User>();
+        for (User u : users) {
+            usersByAccountId.put(u.AccountId, u);
+        }
+        for (WorkOrder wo : workOrders) {
+            User user = usersByAccountId.get(wo.AccountId);
+            if (user != null) {
+                for (Id threadId : this.threadIdsByRelatedObjectId.get(wo.Id)) {
+                    this.participantsByThreadId.get(threadId).add(new Participant(wo, user));
+                }
+            }
+        }
+    }
+
     public static List<Participant> getAccountParticipants(Thread__c thread) {
         List<Participant> participantList = new List<Participant>();
         Id search = thread.CRM_Related_Object__c;
@@ -60,11 +397,7 @@ public without sharing class HOT_ThreadParticipants {
             User user = [SELECT Id, AccountId FROM User WHERE AccountId = :workOrder.AccountId];
 
             if (workOrder.AccountId != null && user.Id != null) {
-                Participant participant = new Participant();
-                participant.name = formatName(workOrder.Account.Name);
-                participant.role = 'Tolkebruker';
-                participant.userId = user.Id;
-                participantList.add(participant);
+                participantList.add(new Participant(workOrder, user));
             }
         }
         if (objectType == 'ServiceAppointment') {
@@ -78,11 +411,7 @@ public without sharing class HOT_ThreadParticipants {
                 serviceAppointment.HOT_ServiceResource__r.Name != null &&
                 serviceAppointment.HOT_ServiceResource__r.RelatedRecordId != null
             ) {
-                Participant participant = new Participant();
-                participant.name = formatName(serviceAppointment.HOT_ServiceResource__r.Name);
-                participant.role = 'Tolk';
-                participant.userId = serviceAppointment.HOT_ServiceResource__r.RelatedRecordId;
-                participantList.add(participant);
+                participantList.add(new Participant(serviceAppointment));
             }
         }
         if (objectType == 'HOT_InterestedResource__c') {
@@ -96,11 +425,7 @@ public without sharing class HOT_ThreadParticipants {
                 interestedReource.ServiceResource__r.Name != null &&
                 interestedReource.ServiceResource__r.RelatedRecordId != null
             ) {
-                Participant participant = new Participant();
-                participant.name = formatName(interestedReource.ServiceResource__r.Name);
-                participant.role = 'Tolk';
-                participant.userId = interestedReource.ServiceResource__r.RelatedRecordId;
-                participantList.add(participant);
+                participantList.add(new Participant(interestedReource));
             }
         }
         if (objectType == 'HOT_Wageclaim__c') {
@@ -111,11 +436,7 @@ public without sharing class HOT_ThreadParticipants {
                 LIMIT 1
             ];
             if (wageClaim.ServiceResource__r.Name != null && wageClaim.ServiceResource__r.RelatedRecordId != null) {
-                Participant participant = new Participant();
-                participant.name = formatName(wageClaim.ServiceResource__r.Name);
-                participant.role = 'Tolk';
-                participant.userId = wageClaim.ServiceResource__r.RelatedRecordId;
-                participantList.add(participant);
+                participantList.add(new Participant(wageClaim));
             }
         }
         if (objectType == 'HOT_Request__c') {
@@ -145,11 +466,7 @@ public without sharing class HOT_ThreadParticipants {
 
             // Legg til participant hvis navn og userId finnes
             if (participantName != null && participantUserId != null) {
-                Participant participant = new Participant();
-                participant.name = formatName(participantName);
-                participant.role = participantRole;
-                participant.userId = participantUserId;
-                participantList.add(participant);
+                participantList.add(new Participant(participantName, participantRole, participantUserId));
             }
         }
         if (
@@ -157,16 +474,10 @@ public without sharing class HOT_ThreadParticipants {
             thread.CRM_Thread_Type__c == 'HOT_BRUKER-FORMIDLER' ||
             thread.CRM_Thread_Type__c == 'HOT_BESTILLER-FORMIDLER'
         ) {
-            Participant participant = new Participant();
-            participant.name = 'Formidler';
-            participant.role = null;
-            participantList.add(participant);
+            participantList.add(new Participant('Formidler'));
         }
         if (thread.CRM_Thread_Type__c == 'HOT_TOLK-RESSURSKONTOR') {
-            Participant participant = new Participant();
-            participant.name = 'Ressurskontor';
-            participant.role = null;
-            participantList.add(participant);
+            participantList.add(new Participant('Ressurskontor'));
         }
         return participantList;
     }
