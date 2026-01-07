@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ValidationRule xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>PreventCompleteWhenStartTimeInFuture</fullName>
+    <active>true</active>
+    <description>Oppdrag fram i tid skal ikke bli endret til status dekket</description>
+    <errorConditionFormula>AND(
+    ISPICKVAL(Status, &quot;Completed&quot;),
+    PRIORVALUE(Status) &lt;&gt; &quot;Completed&quot;,
+    EarliestStartTime &gt; NOW()
+)</errorConditionFormula>
+    <errorMessage>Status can ikke bli endret til dekket når starttid på oppdrag er satt fram i tid.</errorMessage>
+</ValidationRule>
