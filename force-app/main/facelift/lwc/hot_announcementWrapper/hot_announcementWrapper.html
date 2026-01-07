@@ -1,7 +1,20 @@
 <template>
-    <div class="wrapper">
-        <template for:each={groupedAnnouncements} for:item="group">
-            <c-hot_announcement key={group.type} type={group.type} announcements={group.items}> </c-hot_announcement>
-        </template>
-    </div>
+    <template if:true={hasAnnouncements}>
+        <div
+            class="wrapper"
+            role="region"
+            aria-live="polite"
+            aria-label="Viktige hendelser og informasjon"
+            tabindex="0"
+        >
+            <template for:each={groupedAnnouncements} for:item="group">
+                <c-hot_announcement key={group.type} type={group.type} announcements={group.items}>
+                </c-hot_announcement>
+            </template>
+        </div>
+    </template>
+
+    <template if:false={hasAnnouncements}>
+        <div class="wrapper"></div>
+    </template>
 </template>
