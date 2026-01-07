@@ -56,7 +56,9 @@ export default class Hot_homeWrapper extends LightningElement {
                 );
 
                 // Array for News
-                this.newsAnnouncements = announcements.filter((ann) => ann.Type__c === 'News');
+                this.newsAnnouncements = announcements
+                    .filter((ann) => ann.Type__c === 'News')
+                    .sort((a, b) => new Date(b.CreatedDate) - new Date(a.CreatedDate));
             })
             .catch((error) => {
                 console.error('Error fetching announcements:', error);
