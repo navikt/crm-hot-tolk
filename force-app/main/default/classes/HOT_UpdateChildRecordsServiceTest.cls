@@ -39,7 +39,8 @@ public with sharing class HOT_UpdateChildRecordsServiceTest {
                 HOT_PersonContactId__c,
                 IsScreenInterpreter__c,
                 Dispatcher__c,
-                InterpretationMethod__c
+                InterpretationMethod__c,
+                InterpretationMethodType__c 
             FROM HOT_Request__c
             WHERE Id = :request.Id
         ];
