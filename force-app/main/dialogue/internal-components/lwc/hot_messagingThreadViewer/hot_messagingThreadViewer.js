@@ -30,6 +30,7 @@ export default class messagingThreadViewer extends LightningElement {
     hideModal = true;
     @api showClose;
     @api englishTextTemplate;
+    @api setInputInFocusOnRender;
     @track langBtnLock = false;
     langBtnAriaToggle = false;
     newMessage = false;
@@ -38,6 +39,12 @@ export default class messagingThreadViewer extends LightningElement {
 
     @api textTemplate; //Support for conditional text template as input
     //Constructor, called onload
+    @api focusOnInput() {
+        let qtext = this.template.querySelector('c-hot_messaging-quick-text');
+        if (qtext) {
+            qtext.focusOnInput();
+        }
+    }
     connectedCallback() {
         if (this.thread) {
             this.threadid = this.thread.Id;
@@ -68,7 +75,9 @@ export default class messagingThreadViewer extends LightningElement {
             this.newMessage = false;
         }
         this.scrolltobottom();
-        const test = this.template.querySelector('.cancelButton');
+        if (this.setInputInFocusOnRender) {
+            this.focusOnInput();
+        }
     }
 
     //Handles subscription to streaming API for listening to changes to auth status
