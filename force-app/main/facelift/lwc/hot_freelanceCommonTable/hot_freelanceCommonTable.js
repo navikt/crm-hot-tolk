@@ -74,6 +74,11 @@ export default class Hot_freelanceCommonTable extends LightningElement {
                     field.statusBadgeLabel = value;
                 }
 
+                if (column.name === 'HOT_PreparationTime__c' && value) {
+                    field.statusBadgeClass = 'badge-blue';
+                    field.statusBadgeLabel = 'Forberedelsestid';
+                }
+
                 // Apply bold font weight and size to date columns
                 if (column.name === 'StartAndEndDate' || column.name === 'startAndEndDateWeekday') {
                     field.cssClass = 'bold-date';
