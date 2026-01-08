@@ -6,7 +6,13 @@
     <errorConditionFormula>AND(
     ISPICKVAL(Status, &quot;Completed&quot;),
     PRIORVALUE(Status) &lt;&gt; &quot;Completed&quot;,
-    EarliestStartTime &gt; NOW()
+    EarliestStartTime &gt; NOW(),
+    NOT(
+        OR(
+            $Permission.Validation_Override,
+            $Profile.Name = &quot;System Administrator&quot;
+        )
+    )
 )</errorConditionFormula>
     <errorMessage>Status can ikke bli endret til dekket når starttid på oppdrag er satt fram i tid.</errorMessage>
 </ValidationRule>
