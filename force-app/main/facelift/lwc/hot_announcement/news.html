@@ -1,10 +1,14 @@
 <template>
-    <div class="news-card" role="article" tabindex="0" data-index={index}>
-        <p class="created-date">Publisert {createdDate}</p>
-        <p class="title">{title}</p>
-        <p class="description">{description}</p>
-        <p lwc:if={url}>
-            <a href={url} target="_blank" rel="noopener noreferrer">{urlLabel}</a>
-        </p>
+    <div class="news-card" role="article" tabindex="0" aria-labelledby={titleId} aria-describedby={descId}>
+        <p id={dateId} class="created-date">Publisert {createdDate}</p>
+        <p id={titleId} class="title">{title}</p>
+
+        <p id={descId} class="description">{description}</p>
+
+        <template lwc:if={url}>
+            <p>
+                <a href={url} target="_blank" rel="noopener noreferrer"> {urlLabel} </a>
+            </p>
+        </template>
     </div>
 </template>

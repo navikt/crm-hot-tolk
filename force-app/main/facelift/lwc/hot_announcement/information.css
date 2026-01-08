@@ -1,43 +1,48 @@
+/* CONTAINER */
 .information {
     background-color: #015176;
     color: white;
     border-radius: 6px;
     max-width: 70%;
-    /* width: 100%; */
     box-sizing: border-box;
     overflow: hidden;
-    cursor: pointer;
     margin-bottom: 1rem;
     padding: 0.8rem;
     font-family: 'Source Sans 3', 'Source Sans Pro', Arial, sans-serif;
 }
 
+/* Hover på hele banneret */
 .information:hover {
     background-color: #004766;
 }
 
-.information:focus,
-.information:focus-visible {
+/* HEADER */
+.header {
+    all: unset;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    width: 100%;
+    cursor: pointer;
+}
+
+.header:focus-visible {
     outline: 2px solid #fff;
     outline-offset: 2px;
 }
 
-/* HEADER */
-.header {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-}
-
+/* IKONER */
 .icon {
     height: 36px;
     width: 36px;
+    flex-shrink: 0;
 }
 
 .icon.left {
     margin-right: 1rem;
 }
 
+/* TITTEL */
 .title {
     font-weight: 500;
     font-size: 1.2rem;
@@ -52,7 +57,7 @@
     padding-top: 0.5rem;
 }
 
-/* SINGLE announcement */
+/* BESKRIVELSE */
 .description {
     font-weight: 400;
     margin: 0;
@@ -62,12 +67,23 @@
 
 /* GROUP MODE */
 .single-announcement {
-    margin-bottom: 1.5rem; /* større mellomrom mellom items */
+    margin-bottom: 1.5rem;
 }
 
 .announcement-title {
     font-weight: 600;
     margin-bottom: 0.25rem;
+}
+
+.information a {
+    color: #ffffff !important;
+    text-decoration: underline !important;
+}
+
+.information a:hover,
+.information a:focus {
+    color: #ffffff !important;
+    text-decoration: underline;
 }
 
 /* MOBILE */
@@ -76,17 +92,11 @@
         max-width: 100%;
         width: 100%;
         padding: 0.5rem;
-        margin-left: 0;
-        margin-right: 0;
-        border-radius: 6px;
         margin-top: 0.5rem;
         margin-bottom: 0.5rem;
     }
 
     .description-inner {
-        padding-left: 0.5rem;
-        padding-right: 0.5rem;
-        padding-top: 0.5rem;
-        padding-bottom: 0.5rem;
+        padding: 0.5rem;
     }
 }

@@ -1,23 +1,10 @@
 import { LightningElement, api } from 'lwc';
 
 export default class hot_announcementWrapper extends LightningElement {
-    // announcements = [
-    //     {
-    //         Type__c: 'Information',
-    //         Title__c: 'Ingen tolker tilgjengelig fredag',
-    //         Description__c: 'Dette er en informasjon til brukerne.\nVennligst les nøye.'
-    //     },
-    //     {
-    //         Type__c: 'Warning',
-    //         Title__c: 'Feil under utsendelse av SMS',
-    //         Description__c: 'En feil gjør at det ikke vil bli utsendt sms.\nVennligst les nøye.'
-    //     },
-    //     {
-    //         Type__c: 'Information',
-    //         Title__c: 'Ingen tolker tilgjengelig mandag',
-    //         Description__c: 'Dette er en informasjon til brukerne.\nVennligst les nøye.'
-    //     }
-    // ];
+    get hasAnnouncements() {
+        return this.groupedAnnouncements && this.groupedAnnouncements.length > 0;
+    }
+
     @api announcements;
     get groupedAnnouncements() {
         const groups = {};

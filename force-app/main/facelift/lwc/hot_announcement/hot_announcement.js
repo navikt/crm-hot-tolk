@@ -51,6 +51,21 @@ export default class Hot_announcement extends LightningElement {
 
         return `${day}.${month}.${year}`;
     }
+    get baseId() {
+        return `announcement-${this.announcement?.Id || Math.random().toString(36).slice(2)}`;
+    }
+
+    get titleId() {
+        return `${this.baseId}-title`;
+    }
+
+    get dateId() {
+        return `${this.baseId}-date`;
+    }
+
+    get descId() {
+        return `${this.baseId}-desc`;
+    }
 
     // ----- GRUPPERING LOGIKK -----
     get isSingle() {
