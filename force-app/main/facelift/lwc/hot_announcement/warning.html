@@ -1,26 +1,31 @@
 <template>
-    <div
-        class="warning"
-        role="button"
-        tabindex="0"
-        onclick={toggleExpand}
-        onkeydown={handleKeydown}
-        aria-expanded={expanded}
-        aria-controls="announcement-content"
-    >
-        <!-- HEADER -->
-        <div class="header">
+    <div class="warning" role="region" aria-labelledby="warning-header">
+        <!-- HEADER / TOGGLE -->
+        <button
+            id="warning-header"
+            class="header"
+            onclick={toggleExpand}
+            aria-expanded={expanded}
+            aria-controls="warning-content"
+        >
             <img src={ExclamationmarkIcon} aria-hidden="true" class="icon left" />
-            <p class="title">{headerTitle}</p>
+
+            <span class="title">{headerTitle}</span>
+
             <img src={chevronIcon} aria-hidden="true" class="icon right" />
-        </div>
+        </button>
 
         <!-- BODY -->
-        <div lwc:if={expanded} class="content" aria-live="polite" id="announcement-content">
+        <div lwc:if={expanded} class="content" id="warning-content" aria-live="polite">
             <!-- SINGLE MODE -->
             <template lwc:if={isSingle}>
                 <div class="description-inner">
                     <p class="description">{singleItem.Description__c}</p>
+                    <p lwc:if={singleItem.Url__c}>
+                        <a href={singleItem.Url__c} target="_blank" rel="noopener noreferrer"
+                            >{singleItem.UrlLabel__c}</a
+                        >
+                    </p>
                 </div>
             </template>
 
@@ -31,6 +36,9 @@
                         <div key={a.Title__c} class="single-announcement">
                             <p class="announcement-title">{a.Title__c}</p>
                             <p class="description">{a.Description__c}</p>
+                            <p lwc:if={a.Url__c}>
+                                <a href={a.Url__c} target="_blank" rel="noopener noreferrer">{a.UrlLabel__c}</a>
+                            </p>
                         </div>
                     </template>
                 </div>
