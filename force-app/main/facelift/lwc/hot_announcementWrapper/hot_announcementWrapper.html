@@ -1,5 +1,5 @@
 <template>
-    <template if:true={hasAnnouncements}>
+    <template lwc:if={hasAnnouncements}>
         <div
             class="wrapper"
             role="region"
@@ -14,7 +14,7 @@
         </div>
     </template>
 
-    <template if:false={hasAnnouncements}>
+    <template lwc:else>
         <div class="wrapper"></div>
     </template>
 </template>
