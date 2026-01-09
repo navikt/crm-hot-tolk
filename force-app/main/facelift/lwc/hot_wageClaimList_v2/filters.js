@@ -66,11 +66,14 @@ export let filterArray = [
 ];
 
 export function defaultFilters() {
-    filterArray[1].value[0].value = new Date().toISOString().split('T')[0];
-    let localTimeValue = filterArray[1].value[0].localTimeValue;
-    localTimeValue = new Date().toLocaleString();
-    filterArray[1].value[0].localTimeValue = localTimeValue.substring(0, localTimeValue.length - 10);
-    return filterArray;
+    return filterArray.map((filter) => ({
+        ...filter,
+        value: filter.value.map((v) => ({
+            ...v,
+            value: '',
+            localTimeValue: ''
+        }))
+    }));
 }
 
 export function compare(filter, record) {

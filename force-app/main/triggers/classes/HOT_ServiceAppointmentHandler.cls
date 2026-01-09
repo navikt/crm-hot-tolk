@@ -27,9 +27,6 @@ public without sharing class HOT_ServiceAppointmentHandler extends MyTriggers {
         List<ServiceAppointment> serviceAppointmentsToChangeOwnerToArchive = new List<ServiceAppointment>();
         List<ServiceAppointment> serviceAppointmentsWithStatusNone = new List<ServiceAppointment>();
 
-        Map<Id, Id> resourceByAppointmentCreateWageClaim = new Map<Id, Id>();
-        Map<Id, Id> resourceByAppointmentUpdateWageClaim = new Map<Id, Id>();
-
         for (ServiceAppointment serviceAppointment : (List<ServiceAppointment>) records) {
             if (
                 triggerOldMap.get(serviceAppointment.Id).get('EarliestStartTime') !=
@@ -95,45 +92,6 @@ public without sharing class HOT_ServiceAppointmentHandler extends MyTriggers {
                 serviceAppointment.Status == 'Annul'
             ) {
                 annulServiceAppointments.add(serviceAppointment);
-            }
-
-            if (
-                (serviceAppointment.Status != triggerOldMap.get(serviceAppointment.Id).get('Status') ||
-                serviceAppointment.HOT_ServiceResource__c !=
-                triggerOldMap.get(serviceAppointment.Id).get('HOT_ServiceResource__c')) &&
-                serviceAppointment.Status == 'Dispatched' &&
-                serviceAppointment.HOT_IsReleasedToFreelance__c == true
-            ) {
-                resourceByAppointmentUpdateWageClaim.put(
-                    serviceAppointment.Id,
-                    serviceAppointment.HOT_ServiceResource__c
-                );
-            }
-            if (
-                serviceAppointment.HOT_ServiceResource__c !=
-                triggerOldMap.get(serviceAppointment.Id).get('HOT_ServiceResource__c') &&
-                triggerOldMap.get(serviceAppointment.Id).get('HOT_ServiceResource__c') != null &&
-                serviceAppointment.Status == 'Dispatched'
-            ) {
-                resourceByAppointmentCreateWageClaim.put(
-                    serviceAppointment.Id,
-                    (Id) triggerOldMap.get(serviceAppointment.Id).get('HOT_ServiceResource__c')
-                );
-            }
-            if (
-                serviceAppointment.Status != triggerOldMap.get(serviceAppointment.Id).get('Status') &&
-                triggerOldMap.get(serviceAppointment.Id).get('Status') == 'Dispatched' &&
-                (serviceAppointment.Status == null ||
-                serviceAppointment.Status == 'Canceled' ||
-                serviceAppointment.Status == 'Annul' ||
-                serviceAppointment.Status == 'Scheduled' ||
-                serviceAppointment.Status == 'None') &&
-                serviceAppointment.HOT_CanceledByInterpreter__c == false
-            ) {
-                resourceByAppointmentCreateWageClaim.put(
-                    serviceAppointment.Id,
-                    (Id) triggerOldMap.get(serviceAppointment.Id).get('HOT_ServiceResource__c')
-                );
             }
 
             if (serviceAppointment.Status != triggerOldMap.get(serviceAppointment.Id).get('Status')) {
@@ -221,12 +179,6 @@ public without sharing class HOT_ServiceAppointmentHandler extends MyTriggers {
 
         if (serviceAppointmentsToSetToDefault.size() > 0) {
             setDefaultFields(serviceAppointmentsToSetToDefault);
-        }
-        if (!resourceByAppointmentCreateWageClaim.isEmpty()) {
-            HOT_WageClaimService.createWageClaims(resourceByAppointmentCreateWageClaim);
-        }
-        if (!resourceByAppointmentUpdateWageClaim.isEmpty()) {
-            HOT_WageClaimService.updateWageClaimsFuture(resourceByAppointmentUpdateWageClaim.keySet());
         }
         if (serviceAppointmentsWithActualTimeSet.size() > 0) {
             setScheduledTimeBasedOnActualTime(serviceAppointmentsWithActualTimeSet);
@@ -398,40 +350,6 @@ public without sharing class HOT_ServiceAppointmentHandler extends MyTriggers {
                     WHERE Id IN :serviceResourceByServiceAppointmentSchedTimeChanged.values()
                 ]
             );
-
-            Map<Id, ServiceAppointment> oldServiceAppointmentsWithRequestFields = getServiceAppointmnetsWithAgreementFieldsFromRequest(
-                oldServiceAppointmentsSchedTimeChanged
-            );
-            setScheduledTimesToOldValues(
-                oldServiceAppointmentsWithRequestFields,
-                oldServiceAppointmentsSchedTimeChanged
-            );
-            List<HOT_WageClaim__c> wageClaims = HOT_WageClaimService.createWageClaimsFromServiceAppointments(
-                oldServiceAppointmentsWithRequestFields,
-                serviceResourceByServiceAppointmentSchedTimeChanged,
-                serviceResources
-            );
-
-            HOT_WageClaim__c[] claimsWithNoConflicts = new List<HOT_WageClaim__c>();
-            HOT_WageClaim__c[] claimsWithConflicts = new List<HOT_WageClaim__c>();
-
-            for (HOT_WageClaim__c wc : wageClaims) {
-                Boolean isConflict = false;
-                for (ServiceAppointment sa : newServiceAppointmentsSchedTimeChanged.values()) {
-                    if (sa.SchedStartTime < wc.EndTime__c && sa.SchedEndTime > wc.StartTime__c) {
-                        isConflict = true;
-                    }
-                }
-                if (isConflict) {
-                    claimsWithConflicts.add(wc);
-                } else {
-                    claimsWithNoConflicts.add(wc);
-                }
-            }
-
-            HOT_DatabaseOperations.insertRecords(claimsWithNoConflicts);
-            HOT_WageClaimService.updateWageClaims(newServiceAppointmentsSchedTimeChanged, claimsWithConflicts, false);
-            HOT_WageClaimService.updateWageClaimsFuture(serviceResourceByServiceAppointmentSchedTimeChanged.keySet());
         }
 
         if (serviceAppointmentsWithUpdatedOwnerOrDispatcher.size() > 0) {
@@ -471,16 +389,6 @@ public without sharing class HOT_ServiceAppointmentHandler extends MyTriggers {
             }
         }
         update threadList;
-    }
-
-    private static void setScheduledTimesToOldValues(
-        Map<Id, ServiceAppointment> serviceAppointments,
-        Map<Id, ServiceAppointment> oldServiceAppointments
-    ) {
-        for (ServiceAppointment sa : serviceAppointments.values()) {
-            sa.SchedStartTime = oldServiceAppointments.get(sa.Id).SchedStartTime;
-            sa.SchedEndTime = oldServiceAppointments.get(sa.Id).SchedEndTime;
-        }
     }
 
     private static Map<Id, ServiceAppointment> getServiceAppointmnetsWithAgreementFieldsFromRequest(
