@@ -12,14 +12,15 @@ export default class Hot_requestForm_type_v2 extends NavigationMixin(LightningEl
 
     @track radiobuttons = [
         { label: 'For meg selv', value: 'Me', checked: true, helptext: null },
-        { label: 'For en bruker', value: 'User', helptext: this.user },
-        { label: 'På vegne av en virksomhet/arrangement/annet', value: 'Company', helptext: this.company }
+        { label: 'For en bruker', value: 'User', description: this.user },
+        { label: 'På vegne av en virksomhet/arrangement/annet', value: 'Company', description: this.company }
     ];
 
     get radioWrappers() {
         return this.radiobuttons.map((rb) => ({
             singleRadioArray: [rb],
             helptext: rb.helptext,
+            description: rb.description,
             value: rb.value
         }));
     }

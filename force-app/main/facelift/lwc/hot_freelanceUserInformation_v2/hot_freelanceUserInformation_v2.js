@@ -8,7 +8,7 @@ import editServiceResourceSkill from '@salesforce/apex/HOT_FreelanceQualificatio
 import getAllSkillsList from '@salesforce/apex/HOT_FreelanceQualificationsController.getAllSkillsList';
 
 export default class Hot_freelanceUserInformation_v2 extends LightningElement {
-    helpText =
+    descriptionTextarea =
         'Her kan du skrive inn tilleggsinformasjon om dine kvalifikasjoner, samt annen viktig informasjon som formidlere kan ta hensyn til (fobier, allergier etc.). Maksimalt 255 tegn.';
 
     serviceResource;
