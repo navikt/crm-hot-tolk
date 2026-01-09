@@ -1394,6 +1394,11 @@
         <readable>true</readable>
     </fieldPermissions>
     <fieldPermissions>
+        <editable>false</editable>
+        <field>ServiceAppointment.HOT_PreparationTime__c</field>
+        <readable>true</readable>
+    </fieldPermissions>
+    <fieldPermissions>
         <editable>true</editable>
         <field>ServiceAppointment.HOT_Processed__c</field>
         <readable>true</readable>
@@ -2386,6 +2391,11 @@
     <fieldPermissions>
         <editable>true</editable>
         <field>WorkOrder.HOT_NumberOfInterpreters__c</field>
+        <readable>true</readable>
+    </fieldPermissions>
+    <fieldPermissions>
+        <editable>true</editable>
+        <field>WorkOrder.HOT_PreparationTime__c</field>
         <readable>true</readable>
     </fieldPermissions>
     <fieldPermissions>

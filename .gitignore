@@ -586,3 +586,4 @@ force-app/main/default/classes/CommunitiesLoginControllerTest.cls-meta.xml
 force-app/main/default/classes/CommunitiesLoginControllerTest.cls
 force-app/main/default/classes/CommunitiesLoginController.cls-meta.xml
 force-app/main/default/classes/CommunitiesLoginController.cls
+force-app/main/default/permissionsets/sfdcInternalInt__sfdc_fieldservice.permissionset-meta.xml

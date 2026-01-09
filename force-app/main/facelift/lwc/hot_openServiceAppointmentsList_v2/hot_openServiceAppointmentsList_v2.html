@@ -79,6 +79,10 @@
                             <p><strong>Annen betaler:</strong> {it.isOtherProvider}</p>
                             <p><strong>Region:</strong> {it.value.HOT_ServiceTerritoryName__c}</p>
                             <p><strong>Frist dato:</strong> {it.value.HOT_DeadlineDate__c}</p>
+                            <p lwc:if={it.value.HOT_PreparationTime__c}>
+                                <strong>Forberedelsestid:</strong> {it.value.HOT_PreparationTime__c}
+                            </p>
+
                             <label for="Comments__c">Start samtale med formidler</label>
                             <lightning-input-field
                                 class="ikke-sensitive-opplysninger comment-field"
@@ -184,6 +188,9 @@
                 <p><strong>Annen betaler:</strong> {serviceAppointment.isOtherProvider}</p>
                 <p><strong>Eier:</strong> {serviceAppointment.HOT_Request__r.OwnerName__c}</p>
                 <p><strong>Frist dato:</strong> {serviceAppointment.HOT_DeadlineDate__c}</p>
+                <p lwc:if={serviceAppointment.HOT_PreparationTime__c}>
+                    <strong>Forberedelsestid:</strong> {serviceAppointment.HOT_PreparationTime__c}
+                </p>
                 <br />
                 <div lwc:if={isSeries}>
                     <c-button
