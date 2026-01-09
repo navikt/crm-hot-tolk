@@ -1,9 +1,10 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
-    <fullName>TargetSite__c</fullName>
+    <fullName>HOT_Wanted_by__c</fullName>
     <externalId>false</externalId>
-    <label>Target Site</label>
+    <label>HOT Wanted by</label>
     <required>false</required>
+    <trackHistory>false</trackHistory>
     <trackTrending>false</trackTrending>
     <type>Picklist</type>
     <valueSet>
@@ -11,9 +12,14 @@
         <valueSetDefinition>
             <sorted>false</sorted>
             <value>
-                <fullName>Tolkebestilling</fullName>
+                <fullName>Tolkebruker</fullName>
                 <default>false</default>
-                <label>Tolkebestilling</label>
+                <label>Tolkebruker</label>
+            </value>
+            <value>
+                <fullName>Formidler</fullName>
+                <default>false</default>
+                <label>Formidler</label>
             </value>
         </valueSetDefinition>
     </valueSet>

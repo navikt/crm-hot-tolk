@@ -336,6 +336,7 @@ public without sharing class HOT_UpdateChildRecordsService {
             requestToUpdate.Dispatcher__c = request.Dispatcher__c;
         }
         if (isInterpreterMethodChoice) {
+            requestToUpdate.InterpretationMethodType__c = request.InterpretationMethodType__c;
             requestToUpdate.InterpretationMethod__c = request.InterpretationMethod__c;
         }
         if (isOwnerChoice) {
@@ -549,4 +550,5 @@ public without sharing class HOT_UpdateChildRecordsService {
 
         return request;
     }
+
 }

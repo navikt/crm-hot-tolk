@@ -16,6 +16,7 @@ export default class hot_requestFormWrapper_v2 extends NavigationMixin(Lightning
     @track fieldValues = {};
     @track componentValues = {};
     @track personAccount = { Id: '', Name: '' };
+    @track refreshToken = null;
     @wire(getPersonAccount)
     wiredGetPersonAccount(result) {
         if (result.data) {
@@ -241,31 +242,34 @@ export default class hot_requestFormWrapper_v2 extends NavigationMixin(Lightning
                         recurringType: timeInput.repeatingOptionChosen,
                         recurringDays: timeInput.chosenDays,
                         recurringEndDate: new Date(timeInput.repeatingEndDate).getTime()
-                    }).then(() => {
-                        this.spin = false;
-                        if (this.isCreatedCorrectly(this.requestId)) {
+                    }).then(async () => {
+                        const isCreatedCorrectly = await this.checkIfCreatedCorrectly(this.requestId);
+                        if (isCreatedCorrectly) {
                             this.hideFormAndShowSuccess();
                         } else {
                             this.hideFormAndShowError();
                         }
+                        this.spin = false;
                     });
                 } catch (error) {
                     console.log(JSON.stringify(error));
                     this.hideFormAndShowError();
                 }
             } else {
-                createAndUpdateWorkOrders({ requestId: this.recordId, times: timeInput.times }).then(() => {
-                    this.spin = false;
-                    if (this.isCreatedCorrectly(this.requestId)) {
+                createAndUpdateWorkOrders({ requestId: this.recordId, times: timeInput.times }).then(async () => {
+                    const isCreatedCorrectly = await this.checkIfCreatedCorrectly(this.requestId);
+                    if (isCreatedCorrectly) {
                         this.hideFormAndShowSuccess();
                     } else {
                         this.hideFormAndShowError();
                     }
+                    this.spin = false;
                 });
             }
         }
     }
-    isCreatedCorrectly(recordId) {
+
+    checkIfCreatedCorrectly(recordId) {
         return isErrorOnRequestCreate({
             requestId: recordId
         }).then((result) => {
@@ -275,6 +279,10 @@ export default class hot_requestFormWrapper_v2 extends NavigationMixin(Lightning
                 return false;
             }
         });
+    }
+
+    reloadPage() {
+        location.reload();
     }
 
     @track previousPage = 'home';
@@ -324,6 +332,10 @@ export default class hot_requestFormWrapper_v2 extends NavigationMixin(Lightning
         this.isEditOrCopyMode = parsed_params.edit != null || parsed_params.copy != null;
         this.requestTypeChosen = this.isEditOrCopyMode;
         this.isEditModeAndTypeMe = this.fieldValues.Type__c === 'Me' && this.isEditOrCopyMode;
+
+        if (this.isEditOrCopyMode) {
+            this.refreshToken = Date.now();
+        }
     }
 
     isGetAll = false;

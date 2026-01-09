@@ -22,17 +22,17 @@
                         >
                             <lightning-layout>
                                 <!-- Toolbar -->
-                                <lightning-layout-item size="8">
-                                    <lightning-layout horizontal-align="start">
+                                <lightning-layout-item flexibility="auto">
+                                    <lightning-layout horizontal-align="spread">
                                         <lightning-button-icon
                                             icon-name="utility:quick_text"
                                             alternative-text="Hurtigtekst"
                                             onclick={showQuickText}
                                         >
                                         </lightning-button-icon>
-                                        <lightning-button-group ontoolbaraction={handleToolbarAction}>
+                                        <lightning-layout ontoolbaraction={handleToolbarAction}>
                                             <slot name="toolbar"></slot>
-                                        </lightning-button-group>
+                                        </lightning-layout>
                                         <template if:true={hasEnglishTemplate}>
                                             <lightning-button
                                                 role="switch"
@@ -96,12 +96,7 @@
                                             <div class="panel-footer">
                                                 <div class="slds-grid slds-grid_align-end">
                                                     <div
-                                                        class="
-                                                            right
-                                                            slds-var-m-top_medium
-                                                            slds-var-m-right_large
-                                                            slds-var-m-bottom_large
-                                                        "
+                                                        class="right slds-var-m-top_medium slds-var-m-right_large slds-var-m-bottom_large"
                                                     >
                                                         <div tabindex="0" onfocus={trapFocusStart}></div>
                                                         <button

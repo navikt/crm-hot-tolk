@@ -241,31 +241,34 @@ export default class Hot_requestFormWrapper extends NavigationMixin(LightningEle
                         recurringType: timeInput.repeatingOptionChosen,
                         recurringDays: timeInput.chosenDays,
                         recurringEndDate: new Date(timeInput.repeatingEndDate).getTime()
-                    }).then(() => {
-                        this.spin = false;
-                        if (this.isCreatedCorrectly(this.requestId)) {
+                    }).then(async () => {
+                        const isCreatedCorrectly = await this.checkIfCreatedCorrectly(this.requestId);
+                        if (isCreatedCorrectly) {
                             this.hideFormAndShowSuccess();
                         } else {
                             this.hideFormAndShowError();
                         }
+                        this.spin = false;
                     });
                 } catch (error) {
                     console.log(JSON.stringify(error));
                     this.hideFormAndShowError();
                 }
             } else {
-                createAndUpdateWorkOrders({ requestId: this.recordId, times: timeInput.times }).then(() => {
-                    this.spin = false;
-                    if (this.isCreatedCorrectly(this.requestId)) {
+                createAndUpdateWorkOrders({ requestId: this.recordId, times: timeInput.times }).then(async () => {
+                    const isCreatedCorrectly = await this.checkIfCreatedCorrectly(this.requestId);
+                    if (isCreatedCorrectly) {
                         this.hideFormAndShowSuccess();
                     } else {
                         this.hideFormAndShowError();
                     }
+                    this.spin = false;
                 });
             }
         }
     }
-    isCreatedCorrectly(recordId) {
+
+    checkIfCreatedCorrectly(recordId) {
         return isErrorOnRequestCreate({
             requestId: recordId
         }).then((result) => {
@@ -302,6 +305,10 @@ export default class Hot_requestFormWrapper extends NavigationMixin(LightningEle
         if (uploadedFiles.length > 0) {
             this.template.querySelector('c-record-files-with-sharing').refreshContentDocuments();
         }
+    }
+
+    reloadPage() {
+        location.reload();
     }
 
     submitButtonLabel = 'Send inn';

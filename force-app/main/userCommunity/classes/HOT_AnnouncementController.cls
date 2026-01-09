@@ -33,7 +33,7 @@ public without sharing class HOT_AnnouncementController {
                 Url__c,
                 UrlLabel__c
             FROM HOT_Announcement__c
-            WHERE IsActive__c = TRUE
+            WHERE IsActive__c = TRUE AND TargetSite__c = 'Tolkebestilling' AND RecordType.DeveloperName = 'TolkEkstern'
         ];
 
         List<HOT_Announcement__c> filteredAnnouncements = new List<HOT_Announcement__c>();
