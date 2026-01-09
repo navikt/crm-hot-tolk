@@ -114,39 +114,82 @@ public without sharing class HOT_OpenServiceAppointmentListController {
     public static void createInterestedResources(List<String> serviceAppointmentIds, List<String> comments) {
         Id userId = UserInfo.getUserId();
 
-        ServiceResource serviceResource = [SELECT Id FROM ServiceResource WHERE RelatedRecordId = :userId];
+        ServiceResource serviceResource = [SELECT Id FROM ServiceResource WHERE RelatedRecordId = :userId LIMIT 1];
 
-        List<HOT_InterestedResource__c> interestedResources = new List<Hot_InterestedResource__c>();
+        /* Mappe ServiceAppointment med Comment */
+        Map<Id, String> appointmentToComment = new Map<Id, String>();
         for (Integer i = 0; i < serviceAppointmentIds.size(); i++) {
-            HOT_InterestedResource__c IR = new HOT_InterestedResource__c(
-                ServiceAppointment__c = serviceAppointmentIds[i],
-                ServiceResource__c = serviceResource.Id,
-                Status__c = 'Interested'
+            appointmentToComment.put(
+                (Id) serviceAppointmentIds[i],
+                comments != null && comments.size() > i ? comments[i] : null
             );
-            interestedResources.add(IR);
         }
-        insert interestedResources;
-        List<Thread__c> threadListToInsert = new List<Thread__c>();
-        List<Message__c> messageListToInsert = new List<Message__c>();
-        Map<Thread__c, String> stringToThreadMap = new Map<Thread__c, String>();
-        Id userContactId = HOT_MessageHelper.getUserContactId();
-        for (Integer i = 0; i < serviceAppointmentIds.size(); i++) {
-            if (!String.isEmpty(comments[i])) {
-                Thread__c thread = HOT_InterestedResourcesListController.startAThreadAndAddComment(
-                    interestedResources[i].Id,
-                    comments[i],
-                    userContactId
+
+        Set<Id> serviceAppointmentIdSet = appointmentToComment.keySet();
+
+        /* Finn eksisterende InterestedResources */
+        Set<Id> existingServiceAppointments = new Set<Id>();
+        for (HOT_InterestedResource__c ir : [
+            SELECT ServiceAppointment__c
+            FROM HOT_InterestedResource__c
+            WHERE ServiceResource__c = :serviceResource.Id AND ServiceAppointment__c IN :serviceAppointmentIdSet
+        ]) {
+            existingServiceAppointments.add(ir.ServiceAppointment__c);
+        }
+
+        /* Opprett kun nye InterestedResources */
+        List<HOT_InterestedResource__c> interestedResourcesToInsert = new List<HOT_InterestedResource__c>();
+        Map<Id, HOT_InterestedResource__c> serviceAppointmentToIR = new Map<Id, HOT_InterestedResource__c>();
+
+        for (Id serviceAppointmentId : serviceAppointmentIdSet) {
+            if (!existingServiceAppointments.contains(serviceAppointmentId)) {
+                HOT_InterestedResource__c ir = new HOT_InterestedResource__c(
+                    ServiceAppointment__c = serviceAppointmentId,
+                    ServiceResource__c = serviceResource.Id,
+                    Status__c = 'Interested'
                 );
-                threadListToInsert.add(thread);
-                stringToThreadMap.put(thread, comments[i]);
+                interestedResourcesToInsert.add(ir);
+                serviceAppointmentToIR.put(serviceAppointmentId, ir);
             }
         }
-        insert threadListToInsert;
-        for (Thread__c thread : stringToThreadMap.keySet()) {
-            String comment = stringToThreadMap.get(thread);
-            Message__c message = HOT_MessageHelper.createMessages(thread.Id, comment, userContactId);
-            messageListToInsert.add(message);
+
+        if (!interestedResourcesToInsert.isEmpty()) {
+            insert interestedResourcesToInsert;
         }
-        insert messageListToInsert;
+
+        /* Opprett samtale med til hver ir ved kommentar */
+        Id userContactId = HOT_MessageHelper.getUserContactId();
+
+        List<Thread__c> threadsToInsert = new List<Thread__c>();
+        Map<Thread__c, String> threadToComment = new Map<Thread__c, String>();
+
+        for (Id serviceAppointmentId : serviceAppointmentToIR.keySet()) {
+            String comment = appointmentToComment.get(serviceAppointmentId);
+
+            if (!String.isBlank(comment)) {
+                Thread__c thread = HOT_InterestedResourcesListController.startAThreadAndAddComment(
+                    serviceAppointmentToIR.get(serviceAppointmentId).Id,
+                    comment,
+                    userContactId
+                );
+                threadsToInsert.add(thread);
+                threadToComment.put(thread, comment);
+            }
+        }
+
+        if (!threadsToInsert.isEmpty()) {
+            insert threadsToInsert;
+        }
+
+        List<Message__c> messagesToInsert = new List<Message__c>();
+        for (Thread__c thread : threadToComment.keySet()) {
+            messagesToInsert.add(
+                HOT_MessageHelper.createMessages(thread.Id, threadToComment.get(thread), userContactId)
+            );
+        }
+
+        if (!messagesToInsert.isEmpty()) {
+            insert messagesToInsert;
+        }
     }
 }
