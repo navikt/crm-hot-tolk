@@ -3,10 +3,10 @@
     <fullName>SeriesPeriod__c</fullName>
     <deprecated>false</deprecated>
     <externalId>false</externalId>
-    <formula>TEXT(DAY(SeriesStartDate__c)) &amp; &quot;-&quot; &amp;
-TEXT(MONTH(SeriesStartDate__c)) &amp; &quot;-&quot; &amp;
-TEXT(YEAR(SeriesStartDate__c)) + &quot; - &quot; + TEXT(DAY(SeriesEndDate__c)) &amp; &quot;-&quot; &amp;
-TEXT(MONTH(SeriesEndDate__c)) &amp; &quot;-&quot; &amp;
+    <formula>TEXT(DAY(SeriesStartDate__c)) &amp; &quot;.&quot; &amp;
+TEXT(MONTH(SeriesStartDate__c)) &amp; &quot;.&quot; &amp;
+TEXT(YEAR(SeriesStartDate__c)) + &quot; - &quot; + TEXT(DAY(SeriesEndDate__c)) &amp; &quot;.&quot; &amp;
+TEXT(MONTH(SeriesEndDate__c)) &amp; &quot;.&quot; &amp;
 TEXT(YEAR(SeriesEndDate__c))</formula>
     <label>Series Period</label>
     <required>false</required>
