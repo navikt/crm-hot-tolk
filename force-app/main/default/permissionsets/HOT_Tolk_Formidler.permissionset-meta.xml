@@ -1402,6 +1402,11 @@
     </fieldPermissions>
     <fieldPermissions>
         <editable>false</editable>
+        <field>ServiceAppointment.HOT_LateCancellation__c</field>
+        <readable>true</readable>
+    </fieldPermissions>
+    <fieldPermissions>
+        <editable>false</editable>
         <field>ServiceAppointment.HOT_NavEmployeeName__c</field>
         <readable>true</readable>
     </fieldPermissions>
@@ -1732,11 +1737,6 @@
     </fieldPermissions>
     <fieldPermissions>
         <editable>false</editable>
-        <field>Thread__c.HOT_Account__c</field>
-        <readable>true</readable>
-    </fieldPermissions>
-    <fieldPermissions>
-        <editable>false</editable>
         <field>Thread__c.CRM_Is_Closed__c</field>
         <readable>true</readable>
     </fieldPermissions>
@@ -1798,6 +1798,11 @@
     <fieldPermissions>
         <editable>true</editable>
         <field>Thread__c.CRM_isActive__c</field>
+        <readable>true</readable>
+    </fieldPermissions>
+    <fieldPermissions>
+        <editable>false</editable>
+        <field>Thread__c.HOT_Account__c</field>
         <readable>true</readable>
     </fieldPermissions>
     <fieldPermissions>
