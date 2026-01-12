@@ -347,7 +347,11 @@ private class HOT_ThreadParticipantsTest {
     }
     @IsTest
     private static void getWageClaimThreadParticipants() {
-        ServiceAppointment serviceAppointment = [SELECT Id FROM ServiceAppointment LIMIT 1];
+        ServiceAppointment serviceAppointment = [
+            SELECT Id, ServiceTerritoryId, WorkTypeId, SchedStartTime, SchedEndTime
+            FROM ServiceAppointment
+            LIMIT 1
+        ];
 
         Test.startTest();
         Datetime startT = System.now().addHours(1);
