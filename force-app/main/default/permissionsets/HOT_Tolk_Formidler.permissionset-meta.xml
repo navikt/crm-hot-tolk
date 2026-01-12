@@ -61,10 +61,6 @@
         <enabled>true</enabled>
     </classAccesses>
     <classAccesses>
-        <apexClass>HOT_WageClaimService</apexClass>
-        <enabled>true</enabled>
-    </classAccesses>
-    <classAccesses>
         <apexClass>RecordFilesControllerWithSharing</apexClass>
         <enabled>true</enabled>
     </classAccesses>
@@ -1426,6 +1422,11 @@
         <readable>true</readable>
     </fieldPermissions>
     <fieldPermissions>
+        <editable>false</editable>
+        <field>ServiceAppointment.HOT_PreparationTime__c</field>
+        <readable>true</readable>
+    </fieldPermissions>
+    <fieldPermissions>
         <editable>true</editable>
         <field>ServiceAppointment.HOT_ReleaseDate__c</field>
         <readable>true</readable>
@@ -2003,6 +2004,11 @@
     <fieldPermissions>
         <editable>true</editable>
         <field>WorkOrder.HOT_NumberOfInterpreters__c</field>
+        <readable>true</readable>
+    </fieldPermissions>
+    <fieldPermissions>
+        <editable>true</editable>
+        <field>WorkOrder.HOT_PreparationTime__c</field>
         <readable>true</readable>
     </fieldPermissions>
     <fieldPermissions>
