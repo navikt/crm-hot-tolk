@@ -121,7 +121,7 @@ export let interestedResourceFieldLabels = {
     AppointmentDeadlineDate__c: { label: 'Fristdato', type: 'date' },
     AppointmentServiceTerritory__c: { label: 'Region', type: 'string' },
     ServiceAppointmentFreelanceSubject__c: { label: 'Tema', type: 'string' },
-    WorkOrderCanceledDate__c: { label: 'Avlystdato', type: 'date' },
+    WorkOrderCanceledDate__c: { label: 'Avlystdato', type: 'datetime' },
     HOT_TermsOfAgreement__c: { label: 'Avtalte betingelser', type: 'string' }
 };
 
