@@ -276,12 +276,6 @@
                 <identifier>RecordHOT_TotalNumberOfInterpreters_cField</identifier>
             </fieldInstance>
         </itemInstances>
-        <itemInstances>
-            <fieldInstance>
-                <fieldItem>Record.HOT_LateCancellation__c</fieldItem>
-                <identifier>RecordHOT_LateCancellation__cField</identifier>
-            </fieldInstance>
-        </itemInstances>
         <name>Facet-3144a2d9-fdd4-4dc4-8a47-b8670d89aed4</name>
         <type>Facet</type>
     </flexiPageRegions>
@@ -404,6 +398,16 @@
                 </fieldInstanceProperties>
                 <fieldItem>Record.HOT_IsRecieptRecieved__c</fieldItem>
                 <identifier>RecordHOT_IsRecieptRecieved__cField</identifier>
+            </fieldInstance>
+        </itemInstances>
+        <itemInstances>
+            <fieldInstance>
+                <fieldInstanceProperties>
+                    <name>uiBehavior</name>
+                    <value>none</value>
+                </fieldInstanceProperties>
+                <fieldItem>Record.HOT_LateCancellation__c</fieldItem>
+                <identifier>RecordHOT_LateCancellation__cField</identifier>
             </fieldInstance>
         </itemInstances>
         <name>Facet-9076d0db-a5a7-442a-b012-cb35bc98b822</name>
@@ -801,6 +805,60 @@
         <type>Facet</type>
     </flexiPageRegions>
     <flexiPageRegions>
+        <itemInstances>
+            <componentInstance>
+                <componentInstanceProperties>
+                    <name>decorate</name>
+                    <value>true</value>
+                </componentInstanceProperties>
+                <componentInstanceProperties>
+                    <name>richTextValue</name>
+                    <value>&lt;p style=&quot;text-align: center;&quot;&gt;&lt;strong style=&quot;font-size: 14px; color: rgb(0, 0, 255);&quot;&gt;INFO: Oppdraget ble avlyst mindre enn 48 timer før start.&lt;/strong&gt;&lt;/p&gt;</value>
+                </componentInstanceProperties>
+                <componentName>flexipage:richText</componentName>
+                <identifier>flexipage_richText</identifier>
+                <visibilityRule>
+                    <booleanFilter>1 AND 2</booleanFilter>
+                    <criteria>
+                        <leftValue>{!Record.HOT_LateCancellation__c}</leftValue>
+                        <operator>EQUAL</operator>
+                        <rightValue>true</rightValue>
+                    </criteria>
+                    <criteria>
+                        <leftValue>{!Record.HOT_IsScreenInterpreterNew__c}</leftValue>
+                        <operator>EQUAL</operator>
+                        <rightValue>false</rightValue>
+                    </criteria>
+                </visibilityRule>
+            </componentInstance>
+        </itemInstances>
+        <itemInstances>
+            <componentInstance>
+                <componentInstanceProperties>
+                    <name>decorate</name>
+                    <value>true</value>
+                </componentInstanceProperties>
+                <componentInstanceProperties>
+                    <name>richTextValue</name>
+                    <value>&lt;p style=&quot;text-align: center;&quot;&gt;&lt;strong style=&quot;font-size: 14px; color: rgb(0, 0, 255);&quot;&gt;INFO: Oppdraget ble avlyst mindre enn 30 minutter før start.&lt;/strong&gt;&lt;/p&gt;</value>
+                </componentInstanceProperties>
+                <componentName>flexipage:richText</componentName>
+                <identifier>flexipage_richText2</identifier>
+                <visibilityRule>
+                    <booleanFilter>1 AND 2</booleanFilter>
+                    <criteria>
+                        <leftValue>{!Record.HOT_LateCancellation__c}</leftValue>
+                        <operator>EQUAL</operator>
+                        <rightValue>true</rightValue>
+                    </criteria>
+                    <criteria>
+                        <leftValue>{!Record.HOT_IsScreenInterpreterNew__c}</leftValue>
+                        <operator>EQUAL</operator>
+                        <rightValue>true</rightValue>
+                    </criteria>
+                </visibilityRule>
+            </componentInstance>
+        </itemInstances>
         <itemInstances>
             <componentInstance>
                 <componentInstanceProperties>
