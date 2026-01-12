@@ -3,17 +3,13 @@
     <actionCalls>
         <name>Auto_Schedule_Service</name>
         <label>Auto Schedule Service</label>
-        <locationX>182</locationX>
-        <locationY>242</locationY>
+        <locationX>446</locationX>
+        <locationY>650</locationY>
         <actionName>HOT_AutoScheduleService</actionName>
         <actionType>apex</actionType>
         <connector>
             <targetReference>Has_error</targetReference>
         </connector>
-        <faultConnector>
-            <isGoTo>true</isGoTo>
-            <targetReference>Error_Screen</targetReference>
-        </faultConnector>
         <flowTransactionModel>CurrentTransaction</flowTransactionModel>
         <inputParameters>
             <name>parentRecordId</name>
@@ -34,11 +30,51 @@
         </outputParameters>
     </actionCalls>
     <apiVersion>49.0</apiVersion>
+    <choices>
+        <name>continue_without_preferred_resource_choice</name>
+        <choiceText>Forsett uten foretrukket ressurs?</choiceText>
+        <dataType>String</dataType>
+        <value>
+            <elementReference>without_preferred_resource_check</elementReference>
+        </value>
+    </choices>
+    <decisions>
+        <name>Decision_3</name>
+        <label>Preferred resource checkbox checked?</label>
+        <locationX>248</locationX>
+        <locationY>542</locationY>
+        <defaultConnector>
+            <targetReference>Auto_Schedule_Service</targetReference>
+        </defaultConnector>
+        <defaultConnectorLabel>Default Outcome</defaultConnectorLabel>
+        <rules>
+            <name>No_preffered_resource</name>
+            <conditionLogic>and</conditionLogic>
+            <conditions>
+                <leftValueReference>continue_without_preferred_resource_choice</leftValueReference>
+                <operator>EqualTo</operator>
+                <rightValue>
+                    <booleanValue>false</booleanValue>
+                </rightValue>
+            </conditions>
+            <conditions>
+                <leftValueReference>Get_Request_record.PreferredInterpreter1__c</leftValueReference>
+                <operator>IsNull</operator>
+                <rightValue>
+                    <booleanValue>true</booleanValue>
+                </rightValue>
+            </conditions>
+            <connector>
+                <targetReference>Automatisk_planlegging_avsluttet</targetReference>
+            </connector>
+            <label>No</label>
+        </rules>
+    </decisions>
     <decisions>
         <name>Has_error</name>
         <label>Has error?</label>
-        <locationX>182</locationX>
-        <locationY>350</locationY>
+        <locationX>446</locationX>
+        <locationY>758</locationY>
         <defaultConnector>
             <targetReference>Success_Screen</targetReference>
         </defaultConnector>
@@ -55,6 +91,31 @@
             </conditions>
             <connector>
                 <targetReference>Error_Screen</targetReference>
+            </connector>
+            <label>Yes</label>
+        </rules>
+    </decisions>
+    <decisions>
+        <name>Is_it_a_WorkOrder</name>
+        <label>Is it a WorkOrder?</label>
+        <locationX>248</locationX>
+        <locationY>134</locationY>
+        <defaultConnector>
+            <targetReference>Get_Request_record</targetReference>
+        </defaultConnector>
+        <defaultConnectorLabel>No</defaultConnectorLabel>
+        <rules>
+            <name>Yes</name>
+            <conditionLogic>and</conditionLogic>
+            <conditions>
+                <leftValueReference>recordId</leftValueReference>
+                <operator>StartsWith</operator>
+                <rightValue>
+                    <stringValue>0WO</stringValue>
+                </rightValue>
+            </conditions>
+            <connector>
+                <targetReference>confirmationScreen</targetReference>
             </connector>
             <label>Yes</label>
         </rules>
@@ -91,20 +152,83 @@
         </value>
     </processMetadataValues>
     <processType>Flow</processType>
+    <recordLookups>
+        <name>Get_Request_record</name>
+        <label>Get Request record</label>
+        <locationX>336</locationX>
+        <locationY>242</locationY>
+        <assignNullValuesIfNoRecordsFound>false</assignNullValuesIfNoRecordsFound>
+        <connector>
+            <targetReference>confirmationScreen</targetReference>
+        </connector>
+        <filterLogic>and</filterLogic>
+        <filters>
+            <field>Id</field>
+            <operator>EqualTo</operator>
+            <value>
+                <elementReference>recordId</elementReference>
+            </value>
+        </filters>
+        <getFirstRecordOnly>true</getFirstRecordOnly>
+        <object>HOT_Request__c</object>
+        <storeOutputAutomatically>true</storeOutputAutomatically>
+    </recordLookups>
+    <screens>
+        <name>Automatisk_planlegging_avsluttet</name>
+        <label>Automatisk planlegging avsluttet</label>
+        <locationX>50</locationX>
+        <locationY>650</locationY>
+        <allowBack>true</allowBack>
+        <allowFinish>true</allowFinish>
+        <allowPause>true</allowPause>
+        <fields>
+            <name>auto_scheduled_ended</name>
+            <fieldText>&lt;p&gt;&lt;span style=&quot;font-size: 14px;&quot;&gt;Automatisk planlegging har blitt avsluttet på grunn av foretrukket ressurs har ikke blitt tildelt.&lt;/span&gt;&lt;/p&gt;</fieldText>
+            <fieldType>DisplayText</fieldType>
+        </fields>
+        <showFooter>true</showFooter>
+        <showHeader>true</showHeader>
+    </screens>
     <screens>
         <name>confirmationScreen</name>
         <label>confirmationScreen</label>
-        <locationX>182</locationX>
-        <locationY>134</locationY>
+        <locationX>248</locationX>
+        <locationY>434</locationY>
         <allowBack>false</allowBack>
         <allowFinish>true</allowFinish>
         <allowPause>false</allowPause>
         <connector>
-            <targetReference>Auto_Schedule_Service</targetReference>
+            <targetReference>Decision_3</targetReference>
         </connector>
         <fields>
+            <name>preferred_resource_is_empty</name>
+            <choiceReferences>continue_without_preferred_resource_choice</choiceReferences>
+            <dataType>String</dataType>
+            <fieldText>Foretrukket ressurs har ikke blitt valgt!</fieldText>
+            <fieldType>MultiSelectCheckboxes</fieldType>
+            <inputsOnNextNavToAssocScrn>UseStoredValues</inputsOnNextNavToAssocScrn>
+            <isRequired>false</isRequired>
+            <visibilityRule>
+                <conditionLogic>and</conditionLogic>
+                <conditions>
+                    <leftValueReference>Get_Request_record.PreferredResource1__c</leftValueReference>
+                    <operator>IsNull</operator>
+                    <rightValue>
+                        <booleanValue>true</booleanValue>
+                    </rightValue>
+                </conditions>
+                <conditions>
+                    <leftValueReference>Get_Request_record.Id</leftValueReference>
+                    <operator>IsNull</operator>
+                    <rightValue>
+                        <booleanValue>false</booleanValue>
+                    </rightValue>
+                </conditions>
+            </visibilityRule>
+        </fields>
+        <fields>
             <name>confirmationDisplayText</name>
-            <fieldText>&lt;p&gt;Ønsker du å fortsette med automatisk planlegging?&lt;/p&gt;</fieldText>
+            <fieldText>&lt;p&gt;&lt;span style=&quot;font-size: 14px;&quot;&gt;Ønsker du å fortsette med automatisk planlegging?&lt;/span&gt;&lt;/p&gt;</fieldText>
             <fieldType>DisplayText</fieldType>
         </fields>
         <showFooter>true</showFooter>
@@ -113,8 +237,8 @@
     <screens>
         <name>Error_Screen</name>
         <label>Feilmelding</label>
-        <locationX>50</locationX>
-        <locationY>458</locationY>
+        <locationX>314</locationX>
+        <locationY>866</locationY>
         <allowBack>false</allowBack>
         <allowFinish>true</allowFinish>
         <allowPause>false</allowPause>
@@ -129,8 +253,8 @@
     <screens>
         <name>Success_Screen</name>
         <label>Vellykket</label>
-        <locationX>314</locationX>
-        <locationY>458</locationY>
+        <locationX>578</locationX>
+        <locationY>866</locationY>
         <allowBack>false</allowBack>
         <allowFinish>true</allowFinish>
         <allowPause>false</allowPause>
@@ -143,10 +267,10 @@
         <showHeader>false</showHeader>
     </screens>
     <start>
-        <locationX>56</locationX>
+        <locationX>122</locationX>
         <locationY>0</locationY>
         <connector>
-            <targetReference>confirmationScreen</targetReference>
+            <targetReference>Is_it_a_WorkOrder</targetReference>
         </connector>
     </start>
     <status>Active</status>
@@ -163,5 +287,15 @@
         <isCollection>false</isCollection>
         <isInput>true</isInput>
         <isOutput>false</isOutput>
+    </variables>
+    <variables>
+        <name>without_preferred_resource_check</name>
+        <dataType>Boolean</dataType>
+        <isCollection>false</isCollection>
+        <isInput>false</isInput>
+        <isOutput>false</isOutput>
+        <value>
+            <booleanValue>false</booleanValue>
+        </value>
     </variables>
 </Flow>
