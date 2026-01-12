@@ -193,7 +193,7 @@ export default class Hot_interestedResourcesList_v2 extends NavigationMixin(Ligh
             start: 'ServiceAppointmentStartTime__c',
             end: 'ServiceAppointmentEndTime__c'
         },
-        { name: 'WorkOrderCanceledDate__c', type: 'date' },
+        { name: 'WorkOrderCanceledDate__c', type: 'datetime' },
         { name: 'HOT_ReleaseDate__c', type: 'date' },
         { name: 'AppointmentDeadlineDate__c', type: 'date' }
     ];

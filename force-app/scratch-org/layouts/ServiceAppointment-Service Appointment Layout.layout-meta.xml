@@ -68,6 +68,10 @@
             </layoutItems>
             <layoutItems>
                 <behavior>Readonly</behavior>
+                <field>HOT_LateCancellation__c</field>
+            </layoutItems>
+            <layoutItems>
+                <behavior>Readonly</behavior>
                 <field>HOT_PreparationTime__c</field>
             </layoutItems>
         </layoutColumns>
