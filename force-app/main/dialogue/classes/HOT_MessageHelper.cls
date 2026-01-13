@@ -347,6 +347,7 @@ public without sharing class HOT_MessageHelper {
                     ServiceAppointment__r.Subject,
                     ServiceResource__c,
                     ServiceResource__r.AccountId,
+                    ServiceAppointment__r.HOT_Request__r.Account__c,
                     ServiceAppointment__r.HOT_Request__r.Dispatcher__c
                 FROM HOT_InterestedResource__c
                 WHERE Id = :recordId
@@ -355,6 +356,7 @@ public without sharing class HOT_MessageHelper {
                 thread.CRM_Related_Object__c = recordId;
                 thread.CRM_Thread_Type__c = 'HOT_TOLK-FORMIDLER';
                 thread.CRM_Account__c = ir.ServiceResource__r.AccountId;
+                thread.HOT_Account__c = ir.ServiceAppointment__r.HOT_Request__r.Account__c;
                 thread.HOT_InterestedResource__c = recordId;
                 thread.HOT_Title__c = ir.ServiceAppointment__r.Subject;
                 thread.HOT_Dispatcher__c = ir.ServiceAppointment__r.HOT_Request__r.Dispatcher__c;
@@ -370,18 +372,20 @@ public without sharing class HOT_MessageHelper {
                     ServiceAppointment__c,
                     ServiceAppointment__r.Subject,
                     ServiceAppointment__r.HOT_Request__r.Dispatcher__c
+                    ServiceAppointment__r.HOT_Request__r.Account__c
                 FROM HOT_InterestedResource__c
                 WHERE ServiceResource__c IN :srIdList AND ServiceAppointment__c = :recordId
             ];
             if (interestedResource.Status__c == 'Assigned') {
                 ServiceAppointment sr = [
-                    SELECT Subject, HOT_Request__r.Dispatcher__c
+                    SELECT Subject, HOT_Request__r.Dispatcher__c, HOT_Request__r.Account__c
                     FROM ServiceAppointment
                     WHERE Id = :recordId
                 ];
                 thread.CRM_Related_Object__c = recordId;
                 thread.CRM_Thread_Type__c = 'HOT_TOLK-FORMIDLER';
                 thread.CRM_Account__c = currentUser.AccountId;
+                thread.HOT_Account__c = sr.HOT_Request__r.Account__c;
                 thread.HOT_ServiceAppointment__c = recordId;
                 thread.HOT_Title__c = sr.Subject;
                 thread.HOT_Dispatcher__c = sr.HOT_Request__r.Dispatcher__c;
@@ -390,6 +394,7 @@ public without sharing class HOT_MessageHelper {
                 thread.CRM_Related_Object__c = interestedResource.Id;
                 thread.CRM_Thread_Type__c = 'HOT_TOLK-FORMIDLER';
                 thread.CRM_Account__c = currentUser.AccountId;
+                thread.HOT_Account__c = sr.HOT_Request__c.Account__c;
                 thread.HOT_InterestedResource__c = interestedResource.Id;
                 thread.HOT_Title__c = interestedResource.ServiceAppointment__r.Subject;
                 thread.HOT_Dispatcher__c = interestedResource.ServiceAppointment__r.HOT_Request__r.Dispatcher__c;
