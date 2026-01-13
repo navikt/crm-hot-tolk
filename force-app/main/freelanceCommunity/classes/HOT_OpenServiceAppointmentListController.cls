@@ -146,7 +146,8 @@ public without sharing class HOT_OpenServiceAppointmentListController {
                 HOT_InterestedResource__c ir = new HOT_InterestedResource__c(
                     ServiceAppointment__c = serviceAppointmentId,
                     ServiceResource__c = serviceResource.Id,
-                    Status__c = 'Interested'
+                    Status__c = 'Interested',
+                    Comments__c = appointmentToComment.get(serviceAppointmentId)
                 );
                 interestedResourcesToInsert.add(ir);
                 serviceAppointmentToIR.put(serviceAppointmentId, ir);
