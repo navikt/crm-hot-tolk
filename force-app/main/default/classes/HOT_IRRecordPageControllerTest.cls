@@ -51,4 +51,19 @@ private class HOT_IRRecordPageControllerTest {
         }
         Test.stopTest();
     }
+    @isTest
+    static void getRelevantInterestedResourcesTest() {
+        ServiceAppointment serviceAppointment = [
+            SELECT Id
+            FROM ServiceAppointment
+            WHERE HOT_NumberOfInterestedResources__c = 0
+            LIMIT 1
+        ];
+        Test.startTest();
+        List<HOT_InterestedResource__c> relevantInterestedResources = HOT_IRRecordPageController.getRelevantInterestedResources(
+            serviceAppointment.Id
+        );
+        System.assertEquals(relevantInterestedResources.size(), 1, 'Should be 1 relevant interested resource');
+        Test.stopTest();
+    }
 }
