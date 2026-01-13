@@ -129,7 +129,7 @@ public without sharing class HOT_InterestedResourcesListController {
         Thread__c thread = new Thread__c();
         thread.CRM_Thread_Type__c = 'HOT_TOLK-FORMIDLER';
         thread.CRM_Related_Object__c = interestedResourceId;
-        thread.HOT_Title__c = ir.ServiceAppointment__r.Subject + ' piss meg i øret';
+        thread.HOT_Title__c = ir.ServiceAppointment__r.Subject;
         thread.CRM_Account__c = ir.ServiceResource__r.AccountId;
         thread.HOT_InterestedResource__c = interestedResourceId;
         thread.HOT_Account__c = ir.ServiceAppointment__r.HOT_Account__c;
