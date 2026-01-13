@@ -34,10 +34,6 @@
     <layouts>
         <layout>Interested Resource Layout</layout>
         <sections>
-            <label>Samtale</label>
-            <section>Comments</section>
-        </sections>
-        <sections>
             <label><!-- Custom Links --></label>
             <section>Custom Links</section>
         </sections>
