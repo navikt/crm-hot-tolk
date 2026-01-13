@@ -933,6 +933,12 @@
                 <identifier>force_relatedListSingleContainer2</identifier>
             </componentInstance>
         </itemInstances>
+        <itemInstances>
+            <componentInstance>
+                <componentName>hot_relevantInterestedResources</componentName>
+                <identifier>c_hot_relevantInterestedResources</identifier>
+            </componentInstance>
+        </itemInstances>
         <name>Facet-8a2a94a6-277f-43b7-9cb4-b0df6b0dd3cb</name>
         <type>Facet</type>
     </flexiPageRegions>
