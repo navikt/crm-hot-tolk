@@ -4,7 +4,7 @@
         <name>Auto_Schedule_Service</name>
         <label>Auto Schedule Service</label>
         <locationX>446</locationX>
-        <locationY>650</locationY>
+        <locationY>950</locationY>
         <actionName>HOT_AutoScheduleService</actionName>
         <actionType>apex</actionType>
         <connector>
@@ -37,26 +37,51 @@
     </actionCalls>
     <apiVersion>49.0</apiVersion>
     <choices>
-        <name>dispatched</name>
-        <choiceText>Tildel oppdraget til ressursen</choiceText>
-        <dataType>String</dataType>
-        <value>
-            <stringValue>Tildelt</stringValue>
-        </value>
-    </choices>
-    <choices>
-        <name>scheduled</name>
+        <name>Reservert</name>
         <choiceText>Reserver oppdraget til ressursen</choiceText>
         <dataType>String</dataType>
         <value>
             <stringValue>Reservert</stringValue>
         </value>
     </choices>
+    <choices>
+        <name>Tildelt</name>
+        <choiceText>Tildel oppdraget til ressursen</choiceText>
+        <dataType>String</dataType>
+        <value>
+            <stringValue>Tildelt</stringValue>
+        </value>
+    </choices>
+    <decisions>
+        <name>check_if_true_on_formula</name>
+        <label>check if true on formula</label>
+        <locationX>446</locationX>
+        <locationY>650</locationY>
+        <defaultConnector>
+            <targetReference>dfadda</targetReference>
+        </defaultConnector>
+        <defaultConnectorLabel>Default Outcome</defaultConnectorLabel>
+        <rules>
+            <name>Yesdeada</name>
+            <conditionLogic>and</conditionLogic>
+            <conditions>
+                <leftValueReference>IsValueAutoDispatched</leftValueReference>
+                <operator>EqualTo</operator>
+                <rightValue>
+                    <booleanValue>true</booleanValue>
+                </rightValue>
+            </conditions>
+            <connector>
+                <targetReference>daddaw</targetReference>
+            </connector>
+            <label>Yes</label>
+        </rules>
+    </decisions>
     <decisions>
         <name>Has_error</name>
         <label>Has error?</label>
         <locationX>446</locationX>
-        <locationY>758</locationY>
+        <locationY>1058</locationY>
         <defaultConnector>
             <targetReference>Success_Screen</targetReference>
         </defaultConnector>
@@ -152,7 +177,7 @@
     <formulas>
         <name>IsValueAutoDispatched</name>
         <dataType>Boolean</dataType>
-        <expression>CONTAINS({!serviceappointment_checkbox_group}, &quot;Tildelt&quot;)</expression>
+        <expression>CONTAINS({!serviceappointment_checkbox_group}, {!Tildelt})</expression>
     </formulas>
     <formulas>
         <name>isWorkOrder</name>
@@ -252,7 +277,7 @@
         <allowFinish>true</allowFinish>
         <allowPause>false</allowPause>
         <connector>
-            <targetReference>Auto_Schedule_Service</targetReference>
+            <targetReference>check_if_true_on_formula</targetReference>
         </connector>
         <fields>
             <name>confirmationDisplayText</name>
@@ -261,13 +286,51 @@
         </fields>
         <fields>
             <name>serviceappointment_checkbox_group</name>
-            <choiceReferences>scheduled</choiceReferences>
-            <choiceReferences>dispatched</choiceReferences>
+            <choiceReferences>Reservert</choiceReferences>
+            <choiceReferences>Tildelt</choiceReferences>
             <dataType>String</dataType>
             <fieldText>Velg alternativ</fieldText>
-            <fieldType>MultiSelectCheckboxes</fieldType>
+            <fieldType>RadioButtons</fieldType>
             <inputsOnNextNavToAssocScrn>UseStoredValues</inputsOnNextNavToAssocScrn>
             <isRequired>true</isRequired>
+        </fields>
+        <showFooter>true</showFooter>
+        <showHeader>true</showHeader>
+    </screens>
+    <screens>
+        <name>daddaw</name>
+        <label>dad</label>
+        <locationX>314</locationX>
+        <locationY>758</locationY>
+        <allowBack>true</allowBack>
+        <allowFinish>true</allowFinish>
+        <allowPause>true</allowPause>
+        <connector>
+            <targetReference>Auto_Schedule_Service</targetReference>
+        </connector>
+        <fields>
+            <name>fafa</name>
+            <fieldText>&lt;p&gt;Tildelt&lt;/p&gt;</fieldText>
+            <fieldType>DisplayText</fieldType>
+        </fields>
+        <showFooter>true</showFooter>
+        <showHeader>true</showHeader>
+    </screens>
+    <screens>
+        <name>dfadda</name>
+        <label>dfad</label>
+        <locationX>578</locationX>
+        <locationY>758</locationY>
+        <allowBack>true</allowBack>
+        <allowFinish>true</allowFinish>
+        <allowPause>true</allowPause>
+        <connector>
+            <targetReference>Auto_Schedule_Service</targetReference>
+        </connector>
+        <fields>
+            <name>dada</name>
+            <fieldText>&lt;p&gt;Reservert&lt;/p&gt;</fieldText>
+            <fieldType>DisplayText</fieldType>
         </fields>
         <showFooter>true</showFooter>
         <showHeader>true</showHeader>
@@ -276,7 +339,7 @@
         <name>Error_Screen</name>
         <label>Feilmelding</label>
         <locationX>314</locationX>
-        <locationY>866</locationY>
+        <locationY>1166</locationY>
         <allowBack>false</allowBack>
         <allowFinish>true</allowFinish>
         <allowPause>false</allowPause>
@@ -292,7 +355,7 @@
         <name>Success_Screen</name>
         <label>Vellykket</label>
         <locationX>578</locationX>
-        <locationY>866</locationY>
+        <locationY>1166</locationY>
         <allowBack>false</allowBack>
         <allowFinish>true</allowFinish>
         <allowPause>false</allowPause>
