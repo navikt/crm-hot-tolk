@@ -12,6 +12,12 @@
         </connector>
         <flowTransactionModel>CurrentTransaction</flowTransactionModel>
         <inputParameters>
+            <name>isValueAutoDispatched</name>
+            <value>
+                <elementReference>IsValueAutoDispatched</elementReference>
+            </value>
+        </inputParameters>
+        <inputParameters>
             <name>parentRecordId</name>
             <value>
                 <elementReference>recordId</elementReference>
@@ -30,6 +36,22 @@
         </outputParameters>
     </actionCalls>
     <apiVersion>49.0</apiVersion>
+    <choices>
+        <name>dispatched</name>
+        <choiceText>Tildel oppdraget til ressursen</choiceText>
+        <dataType>String</dataType>
+        <value>
+            <stringValue>Tildelt</stringValue>
+        </value>
+    </choices>
+    <choices>
+        <name>scheduled</name>
+        <choiceText>Reserver oppdraget til ressursen</choiceText>
+        <dataType>String</dataType>
+        <value>
+            <stringValue>Reservert</stringValue>
+        </value>
+    </choices>
     <decisions>
         <name>Has_error</name>
         <label>Has error?</label>
@@ -63,7 +85,7 @@
         <defaultConnector>
             <targetReference>Get_Request_record</targetReference>
         </defaultConnector>
-        <defaultConnectorLabel>No</defaultConnectorLabel>
+        <defaultConnectorLabel>Default Outcome</defaultConnectorLabel>
         <rules>
             <name>Yes</name>
             <conditionLogic>and</conditionLogic>
@@ -75,7 +97,7 @@
                 </rightValue>
             </conditions>
             <connector>
-                <targetReference>Preferred_resource_exist</targetReference>
+                <targetReference>Get_WorkOrder_record</targetReference>
             </connector>
             <label>Yes</label>
         </rules>
@@ -91,12 +113,33 @@
         <defaultConnectorLabel>Default Outcome</defaultConnectorLabel>
         <rules>
             <name>No</name>
-            <conditionLogic>and</conditionLogic>
+            <conditionLogic>(1 AND 2) OR (3 AND 4)</conditionLogic>
             <conditions>
                 <leftValueReference>Get_Request_record.PreferredResource1__c</leftValueReference>
                 <operator>IsNull</operator>
                 <rightValue>
                     <booleanValue>true</booleanValue>
+                </rightValue>
+            </conditions>
+            <conditions>
+                <leftValueReference>Get_Request_record.Id</leftValueReference>
+                <operator>IsNull</operator>
+                <rightValue>
+                    <booleanValue>false</booleanValue>
+                </rightValue>
+            </conditions>
+            <conditions>
+                <leftValueReference>Get_WorkOrder_record.HOT_Request__r.PreferredResource1__c</leftValueReference>
+                <operator>IsNull</operator>
+                <rightValue>
+                    <booleanValue>true</booleanValue>
+                </rightValue>
+            </conditions>
+            <conditions>
+                <leftValueReference>Get_WorkOrder_record.HOT_Request__c</leftValueReference>
+                <operator>IsNull</operator>
+                <rightValue>
+                    <booleanValue>false</booleanValue>
                 </rightValue>
             </conditions>
             <connector>
@@ -106,6 +149,11 @@
         </rules>
     </decisions>
     <environments>Default</environments>
+    <formulas>
+        <name>IsValueAutoDispatched</name>
+        <dataType>Boolean</dataType>
+        <expression>CONTAINS({!serviceappointment_checkbox_group}, &quot;Tildelt&quot;)</expression>
+    </formulas>
     <formulas>
         <name>isWorkOrder</name>
         <dataType>Boolean</dataType>
@@ -140,7 +188,7 @@
     <recordLookups>
         <name>Get_Request_record</name>
         <label>Get Request record</label>
-        <locationX>336</locationX>
+        <locationX>380</locationX>
         <locationY>242</locationY>
         <assignNullValuesIfNoRecordsFound>false</assignNullValuesIfNoRecordsFound>
         <connector>
@@ -156,6 +204,27 @@
         </filters>
         <getFirstRecordOnly>true</getFirstRecordOnly>
         <object>HOT_Request__c</object>
+        <storeOutputAutomatically>true</storeOutputAutomatically>
+    </recordLookups>
+    <recordLookups>
+        <name>Get_WorkOrder_record</name>
+        <label>Get WorkOrder record</label>
+        <locationX>116</locationX>
+        <locationY>242</locationY>
+        <assignNullValuesIfNoRecordsFound>false</assignNullValuesIfNoRecordsFound>
+        <connector>
+            <targetReference>Preferred_resource_exist</targetReference>
+        </connector>
+        <filterLogic>and</filterLogic>
+        <filters>
+            <field>Id</field>
+            <operator>EqualTo</operator>
+            <value>
+                <elementReference>recordId</elementReference>
+            </value>
+        </filters>
+        <getFirstRecordOnly>true</getFirstRecordOnly>
+        <object>WorkOrder</object>
         <storeOutputAutomatically>true</storeOutputAutomatically>
     </recordLookups>
     <screens>
@@ -189,6 +258,16 @@
             <name>confirmationDisplayText</name>
             <fieldText>&lt;p&gt;&lt;span style=&quot;font-size: 14px;&quot;&gt;Ønsker du å fortsette med automatisk planlegging?&lt;/span&gt;&lt;/p&gt;</fieldText>
             <fieldType>DisplayText</fieldType>
+        </fields>
+        <fields>
+            <name>serviceappointment_checkbox_group</name>
+            <choiceReferences>scheduled</choiceReferences>
+            <choiceReferences>dispatched</choiceReferences>
+            <dataType>String</dataType>
+            <fieldText>Velg alternativ</fieldText>
+            <fieldType>MultiSelectCheckboxes</fieldType>
+            <inputsOnNextNavToAssocScrn>UseStoredValues</inputsOnNextNavToAssocScrn>
+            <isRequired>true</isRequired>
         </fields>
         <showFooter>true</showFooter>
         <showHeader>true</showHeader>
