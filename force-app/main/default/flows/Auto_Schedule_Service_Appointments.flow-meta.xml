@@ -4,7 +4,7 @@
         <name>Auto_Schedule_Service</name>
         <label>Auto Schedule Service</label>
         <locationX>446</locationX>
-        <locationY>950</locationY>
+        <locationY>650</locationY>
         <actionName>HOT_AutoScheduleService</actionName>
         <actionType>apex</actionType>
         <connector>
@@ -53,35 +53,10 @@
         </value>
     </choices>
     <decisions>
-        <name>check_if_true_on_formula</name>
-        <label>check if true on formula</label>
-        <locationX>446</locationX>
-        <locationY>650</locationY>
-        <defaultConnector>
-            <targetReference>dfadda</targetReference>
-        </defaultConnector>
-        <defaultConnectorLabel>Default Outcome</defaultConnectorLabel>
-        <rules>
-            <name>Yesdeada</name>
-            <conditionLogic>and</conditionLogic>
-            <conditions>
-                <leftValueReference>IsValueAutoDispatched</leftValueReference>
-                <operator>EqualTo</operator>
-                <rightValue>
-                    <booleanValue>true</booleanValue>
-                </rightValue>
-            </conditions>
-            <connector>
-                <targetReference>daddaw</targetReference>
-            </connector>
-            <label>Yes</label>
-        </rules>
-    </decisions>
-    <decisions>
         <name>Has_error</name>
         <label>Has error?</label>
         <locationX>446</locationX>
-        <locationY>1058</locationY>
+        <locationY>758</locationY>
         <defaultConnector>
             <targetReference>Success_Screen</targetReference>
         </defaultConnector>
@@ -277,7 +252,7 @@
         <allowFinish>true</allowFinish>
         <allowPause>false</allowPause>
         <connector>
-            <targetReference>check_if_true_on_formula</targetReference>
+            <targetReference>Auto_Schedule_Service</targetReference>
         </connector>
         <fields>
             <name>confirmationDisplayText</name>
@@ -298,48 +273,10 @@
         <showHeader>true</showHeader>
     </screens>
     <screens>
-        <name>daddaw</name>
-        <label>dad</label>
-        <locationX>314</locationX>
-        <locationY>758</locationY>
-        <allowBack>true</allowBack>
-        <allowFinish>true</allowFinish>
-        <allowPause>true</allowPause>
-        <connector>
-            <targetReference>Auto_Schedule_Service</targetReference>
-        </connector>
-        <fields>
-            <name>fafa</name>
-            <fieldText>&lt;p&gt;Tildelt&lt;/p&gt;</fieldText>
-            <fieldType>DisplayText</fieldType>
-        </fields>
-        <showFooter>true</showFooter>
-        <showHeader>true</showHeader>
-    </screens>
-    <screens>
-        <name>dfadda</name>
-        <label>dfad</label>
-        <locationX>578</locationX>
-        <locationY>758</locationY>
-        <allowBack>true</allowBack>
-        <allowFinish>true</allowFinish>
-        <allowPause>true</allowPause>
-        <connector>
-            <targetReference>Auto_Schedule_Service</targetReference>
-        </connector>
-        <fields>
-            <name>dada</name>
-            <fieldText>&lt;p&gt;Reservert&lt;/p&gt;</fieldText>
-            <fieldType>DisplayText</fieldType>
-        </fields>
-        <showFooter>true</showFooter>
-        <showHeader>true</showHeader>
-    </screens>
-    <screens>
         <name>Error_Screen</name>
         <label>Feilmelding</label>
         <locationX>314</locationX>
-        <locationY>1166</locationY>
+        <locationY>866</locationY>
         <allowBack>false</allowBack>
         <allowFinish>true</allowFinish>
         <allowPause>false</allowPause>
@@ -355,7 +292,7 @@
         <name>Success_Screen</name>
         <label>Vellykket</label>
         <locationX>578</locationX>
-        <locationY>1166</locationY>
+        <locationY>866</locationY>
         <allowBack>false</allowBack>
         <allowFinish>true</allowFinish>
         <allowPause>false</allowPause>
