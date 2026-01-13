@@ -13,9 +13,6 @@
                 <stringValue>Dispatched</stringValue>
             </value>
         </assignmentItems>
-        <connector>
-            <targetReference>Update_Service_appointment</targetReference>
-        </connector>
     </assignments>
     <environments>Default</environments>
     <interviewLabel>HOT_ServiceAppointmentStatusScheduledToDispatched {!$Flow.CurrentDateTime}</interviewLabel>
@@ -39,27 +36,6 @@
         </value>
     </processMetadataValues>
     <processType>AutoLaunchedFlow</processType>
-    <recordUpdates>
-        <name>Update_Service_appointment</name>
-        <label>Update Service appointment</label>
-        <locationX>0</locationX>
-        <locationY>0</locationY>
-        <filterLogic>and</filterLogic>
-        <filters>
-            <field>Status</field>
-            <operator>EqualTo</operator>
-            <value>
-                <stringValue>Dispatched</stringValue>
-            </value>
-        </filters>
-        <inputAssignments>
-            <field>Status</field>
-            <value>
-                <stringValue>Dispatched</stringValue>
-            </value>
-        </inputAssignments>
-        <inputReference>$Record</inputReference>
-    </recordUpdates>
     <start>
         <locationX>0</locationX>
         <locationY>0</locationY>
