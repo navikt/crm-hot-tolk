@@ -8,7 +8,7 @@ export default class Hot_relevantInterestedResources extends LightningElement {
     sortedBy = 'ServiceResourceName';
     noResources = false;
     @api recordId;
-    @track columns = [
+    columns = [
         {
             label: 'Appointment Number',
             fieldName: 'ServiceAppointmentNumber',
@@ -44,7 +44,7 @@ export default class Hot_relevantInterestedResources extends LightningElement {
             }
         }
     ];
-    @track interestedResources;
+    interestedResources;
     @wire(getRelevantInterestedResources, { recordId: '$recordId' })
     wiredInterestedResources(result) {
         if (result.data) {
