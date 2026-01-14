@@ -74,6 +74,7 @@ public without sharing class HOT_AssignedResourceHandler extends MyTriggers {
         List<HOT_InterestedResource__c> interestedResources = updateInterestedResourceStatus(
             (List<AssignedResource>) records
         );
+
         update interestedResources;
 
         Set<Id> potentialSAWithThreadsIds = new Set<Id>();
@@ -319,6 +320,7 @@ public without sharing class HOT_AssignedResourceHandler extends MyTriggers {
         }
         return interestedResources;
     }
+    public static List<HOT_InterestedResource__c> updateAssignedResources 
 
     static public List<HOT_InterestedResource__c> updateInterestedResourceStatus(
         List<AssignedResource> assignedResources
