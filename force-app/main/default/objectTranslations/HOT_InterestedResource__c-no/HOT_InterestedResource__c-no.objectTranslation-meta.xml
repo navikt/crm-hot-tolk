@@ -34,6 +34,10 @@
     <layouts>
         <layout>Interested Resource Layout</layout>
         <sections>
+            <label>Kommentar ved påmelding</label>
+            <section>Comments</section>
+        </sections>
+        <sections>
             <label><!-- Custom Links --></label>
             <section>Custom Links</section>
         </sections>
