@@ -41,7 +41,7 @@
                         <strong>Bestiller: </strong><span>{request.OrdererName__c}</span>
                     </p>
                     <p lwc:if={request.UserName__c}>
-                        <strong>Tolkebrukers navn: </strong><span>{request.UserName__c}</span>
+                        <strong>Tolkebrukers navn: </strong><span>{tolkebrukerName}</span>
                     </p>
                     <p>
                         <strong>Varsel ved statusendring på bestillingen: </strong
@@ -99,7 +99,7 @@
                         <strong>Bestiller: </strong><span>{request.OrdererName__c}</span>
                     </p>
                     <p lwc:if={request.UserName__c}>
-                        <strong>Tolkebrukers navn: </strong><span>{request.UserName__c}</span>
+                        <strong>Tolkebrukers navn: </strong><span>{tolkebrukerName}</span>
                     </p>
                     <p>
                         <strong>Varsel ved statusendring på bestillingen: </strong

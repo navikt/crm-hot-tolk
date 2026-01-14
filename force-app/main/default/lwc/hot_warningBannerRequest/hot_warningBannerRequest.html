@@ -55,4 +55,15 @@
             <span>Denne brukeren er død.</span>
         </div>
     </template>
+    <template if:true={showNameMismatchWarning}>
+        <div class="slds-notify slds-notify_alert slds-theme_alert-texture slds-theme_warning" role="alert">
+            <span class="slds-assistive-text">Advarsel</span>
+            <lightning-icon icon-name="utility:warning" size="x-small" class="slds-m-right--x-small" variant="inverse">
+            </lightning-icon>
+            <span
+                >Navnet som er oppgitt av bestiller stemmer muligens ikke overens med personen fødselsnummeret eller
+                mobilnummeret tilhører. Vennligst dobbeltsjekk dette.</span
+            >
+        </div>
+    </template>
 </template>
