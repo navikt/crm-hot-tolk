@@ -3,6 +3,9 @@ import { getRecord, getFieldValue } from 'lightning/uiRecordApi';
 import securityMeasures from '@salesforce/schema/HOT_Request__c.Account__r.CRM_Person__r.INT_SecurityMeasures__c';
 import reservations from '@salesforce/schema/HOT_Request__c.Account__r.CRM_Person__r.HOT_Reservations__c';
 import isDeceased from '@salesforce/schema/HOT_Request__c.Account__r.CRM_Person__r.INT_IsDeceased__c';
+import inputUserName from '@salesforce/schema/HOT_Request__c.UserName__c';
+import requestAccountName from '@salesforce/schema/HOT_Request__c.ActualUserName__c';
+import isAccountEqualOrderer from '@salesforce/schema/HOT_Request__c.IsAccountEqualOrderer__c';
 import ACCOUNT_ID from '@salesforce/schema/HOT_Request__c.Account__c';
 import getOverlappingRecordsFromRequestId from '@salesforce/apex/HOT_DuplicateHandler.getOverlappingRecordsFromRequestId';
 import { formatDate } from 'c/datetimeFormatter';
@@ -15,7 +18,15 @@ export default class Hot_warningBannerRequest extends LightningElement {
 
     @wire(getRecord, {
         recordId: '$recordId',
-        fields: [securityMeasures, reservations, ACCOUNT_ID, isDeceased]
+        fields: [
+            securityMeasures,
+            reservations,
+            ACCOUNT_ID,
+            isDeceased,
+            inputUserName,
+            requestAccountName,
+            isAccountEqualOrderer
+        ]
     })
     wiredGetRecord(result) {
         this.record = result;
@@ -59,6 +70,27 @@ export default class Hot_warningBannerRequest extends LightningElement {
 
     get hasReservations() {
         return getFieldValue(this.record.data, reservations) != null;
+    }
+
+    get showNameMismatchWarning() {
+        const accountEqualOrderer = getFieldValue(this.record?.data, isAccountEqualOrderer);
+        const userName = getFieldValue(this.record?.data, inputUserName);
+        const accountName = getFieldValue(this.record?.data, requestAccountName);
+
+        // aldri vis banner hvis accountEqualOrderer er true eller data mangler
+        if (accountEqualOrderer || !userName || !accountName) {
+            return false;
+        }
+
+        const normalize = (name) => name.toLowerCase().replace(/\s+/g, ' ').trim();
+
+        const userWords = normalize(userName).split(' ');
+        const accountWords = normalize(accountName).split(' ');
+
+        const matchCount = userWords.filter((word) => accountWords.includes(word)).length;
+
+        // vis banner hvis færre enn 2 ord matcher
+        return matchCount < 2;
     }
 
     @track duplicateRecords = [];

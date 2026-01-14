@@ -6,6 +6,7 @@ import { sortList, getMobileSortingOptions } from 'c/sortController';
 var actions = [{ label: 'Reserver', name: 'assign' }];
 export default class Hot_matchingServiceAppointments extends LightningElement {
     @api recordId;
+    isLoaded = false;
 
     @track columns = [
         {
@@ -84,6 +85,7 @@ export default class Hot_matchingServiceAppointments extends LightningElement {
                 tempServiceAppointments.push(tempRecord);
             });
             this.serviceAppointments = tempServiceAppointments;
+            this.isLoaded = true;
         }
     }
 

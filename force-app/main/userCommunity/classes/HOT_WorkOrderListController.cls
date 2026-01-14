@@ -97,6 +97,7 @@ public without sharing class HOT_WorkOrderListController {
                     HOT_Request__r.OrdererName__c,
                     toLabel(HOT_Request__r.AssignmentType__c),
                     HOT_AssignmentType__c,
+                    HOT_Request__r.Account__r.Name,
                     HOT_Request__r.UserName__c,
                     HOT_Request__r.UserPersonNumber__c,
                     HOT_Request__r.UserPhone__c,

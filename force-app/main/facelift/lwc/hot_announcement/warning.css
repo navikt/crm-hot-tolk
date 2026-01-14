@@ -1,32 +1,52 @@
+/* CONTAINER */
 .warning {
     background-color: #ffc166;
     color: #000000;
     border-radius: 6px;
     max-width: 70%;
-    /* width: 100%; */
     box-sizing: border-box;
     padding: 0.8rem;
     margin-top: 1rem;
     margin-bottom: 1rem;
-    cursor: pointer;
     font-family: 'Source Sans 3', 'Source Sans Pro', Arial, sans-serif;
     font-size: 1.125rem;
 }
 
+.warning a {
+    color: #000000 !important;
+    text-decoration: underline !important;
+}
+
+.warning a:hover,
+.warning a:focus {
+    color: #000000 !important;
+    text-decoration: underline;
+}
+
 /* HEADER */
-.header {
+.warning .header {
+    all: unset;
     display: flex;
     align-items: center;
     justify-content: flex-start;
     gap: 1rem;
+    width: 100%;
+    cursor: pointer;
 }
 
+.warning .header:focus-visible {
+    outline: 2px solid #000;
+    outline-offset: 2px;
+}
+
+/* IKONER */
 .icon {
     height: 36px;
     width: 36px;
     flex-shrink: 0;
 }
 
+/* TITTEL */
 .title {
     margin: 0;
     font-weight: 500;
@@ -42,7 +62,7 @@
     padding-top: 0.5rem;
 }
 
-/* SINGLE announcement */
+/* BESKRIVELSE */
 .description {
     font-weight: 400;
     margin: 0;
@@ -52,7 +72,7 @@
 
 /* GROUP MODE */
 .single-announcement {
-    margin-bottom: 1.5rem; /* samme spacing som info */
+    margin-bottom: 1.5rem;
 }
 
 .announcement-title {
