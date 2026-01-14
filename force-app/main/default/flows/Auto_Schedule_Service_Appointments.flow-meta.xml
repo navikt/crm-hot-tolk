@@ -12,9 +12,9 @@
         </connector>
         <flowTransactionModel>CurrentTransaction</flowTransactionModel>
         <inputParameters>
-            <name>isValueAutoDispatched</name>
+            <name>isAutoDispatched</name>
             <value>
-                <elementReference>IsValueAutoDispatched</elementReference>
+                <elementReference>IsAutoDispatched</elementReference>
             </value>
         </inputParameters>
         <inputParameters>
@@ -150,7 +150,7 @@
     </decisions>
     <environments>Default</environments>
     <formulas>
-        <name>IsValueAutoDispatched</name>
+        <name>IsAutoDispatched</name>
         <dataType>Boolean</dataType>
         <expression>CONTAINS({!serviceappointment_checkbox_group}, {!Tildelt})</expression>
     </formulas>

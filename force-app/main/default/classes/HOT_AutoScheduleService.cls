@@ -4,13 +4,13 @@ public with sharing class HOT_AutoScheduleService {
     @InvocableVariable
     public String parentRecordType;
     @InvocableVariable
-    public Boolean isValueAutoDispatched;
+    public Boolean isAutoDispatched;
 
     @InvocableMethod
     public static List<String> setAutoScheduleOnServiceAppointments(List<HOT_AutoScheduleService> inputVariables) {
         String parentRecordId = inputVariables[0].parentRecordId;
         String parentRecordType = inputVariables[0].parentRecordType;
-        Boolean isValueDispatched = inputVariables[0].isValueAutoDispatched;
+        Boolean isValueDispatched = inputVariables[0].isAutoDispatched;
         List<String> errors = new List<String>();
         String queryString;
         String queryStringFSLPolicy;
