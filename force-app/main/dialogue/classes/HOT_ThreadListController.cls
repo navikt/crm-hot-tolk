@@ -182,18 +182,21 @@ public without sharing class HOT_ThreadListController {
         List<Id> workOrderIds = new List<Id>();
         User user = [SELECT Id, AccountId FROM User WHERE Id = :UserInfo.getUserId()];
         List<ServiceResource> serviceResources = [SELECT Id FROM ServiceResource WHERE AccountId = :user.AccountId];
+
+        Set<Id> serviceResourceIds = new Set<Id>();
+        for (ServiceResource sr : serviceResources) {
+            serviceResourceIds.add(sr.Id);
+        }
+
         if (serviceResources.size() > 0) {
             List<ServiceAppointment> serviceAppointments = [
                 SELECT Id, HOT_WorkOrderLineItem__r.WorkOrderId
                 FROM ServiceAppointment
                 WHERE
                     Id IN (
-                        SELECT ServiceAppointment__c
-                        FROM HOT_InterestedResource__c
-                        WHERE
-                            ServiceResource__c = :serviceResources[0].Id
-                            AND (Status__c = 'Assigned'
-                            OR Status__c = 'Reserved')
+                        SELECT ServiceAppointmentId
+                        FROM AssignedResource
+                        WHERE ServiceResourceId IN :serviceResourceIds
                     )
             ];
 
