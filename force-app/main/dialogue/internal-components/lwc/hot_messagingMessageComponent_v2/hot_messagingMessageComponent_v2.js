@@ -10,6 +10,8 @@ import getThreadInformation from '@salesforce/apex/HOT_MessageHelper.getThreadFr
 
 export default class CrmMessagingMessageComponent extends LightningElement {
     relatedObjectId;
+    isThreadSummaryLoaded = false;
+    /*
     showUserThreadbutton = false;
     showOrderThreadbutton = false;
     showUserOrdererThreadbutton = false;
@@ -17,6 +19,7 @@ export default class CrmMessagingMessageComponent extends LightningElement {
     showInterpreterInterpreterThreadbutton = false;
     showInterpreterThreadbutton = false;
     showOfficeThreadbutton = false;
+    */
     //show flows
     userSetToRedactionFlow = false;
     ordererSetToRedactionFlow = false;
@@ -126,24 +129,12 @@ export default class CrmMessagingMessageComponent extends LightningElement {
             getRequestInformation({ recordId: this.recordId })
                 .then((result) => {
                     if (result[0].IsAccountEqualOrderer__c == true) {
-                        this.showUserThreadbutton = true;
-                        this.showOrderThreadbutton = false;
-                        this.showUserOrdererThreadbutton = false;
                         this.threadTypesOfInterest = ['HOT_BRUKER-FORMIDLER'];
                     } else if (result[0].Account__c == null && result[0].Orderer__c != null) {
-                        this.showUserThreadbutton = false;
-                        this.showOrderThreadbutton = true;
-                        this.showUserOrdererThreadbutton = false;
                         this.threadTypesOfInterest = ['HOT_BESTILLER-FORMIDLER'];
                     } else if (result[0].Account__c != null && result[0].Orderer__c == null) {
-                        this.showUserThreadbutton = true;
-                        this.showOrderThreadbutton = false;
-                        this.showUserOrdererThreadbutton = false;
                         this.threadTypesOfInterest = ['HOT_BRUKER-FORMIDLER'];
                     } else {
-                        this.showUserThreadbutton = true;
-                        this.showOrderThreadbutton = true;
-                        this.showUserOrdererThreadbutton = true;
                         this.threadTypesOfInterest = ['HOT_BRUKER-FORMIDLER', 'HOT_BESTILLER-FORMIDLER'];
                     }
                     this.getThreadAndParticipants();
@@ -155,12 +146,8 @@ export default class CrmMessagingMessageComponent extends LightningElement {
             getWorkOrderInformation({ recordId: this.recordId })
                 .then((result) => {
                     if (result[0].HOT_TotalNumberOfInterpreters__c > 1) {
-                        this.showInterpreterInterpreterThreadbutton = true;
-                        this.showUserInterpreterThreadbutton = true;
                         this.threadTypesOfInterest = ['HOT_TOLK-TOLK', 'HOT_BRUKER-TOLK'];
                     } else {
-                        this.showInterpreterInterpreterThreadbutton = false;
-                        this.showUserInterpreterThreadbutton = true;
                         this.threadTypesOfInterest = ['HOT_BRUKER-TOLK'];
                     }
                     this.getThreadAndParticipants();
@@ -169,38 +156,14 @@ export default class CrmMessagingMessageComponent extends LightningElement {
                     console.log(error);
                 });
         } else if (this.objectApiName === 'HOT_WageClaim__c') {
-            this.showOfficeThreadbutton = true;
             this.threadTypesOfInterest = ['HOT_TOLK-RESSURSKONTOR'];
             this.getThreadAndParticipants();
         } else if (this.objectApiName === 'ServiceAppointment' || this.objectApiName === 'HOT_InterestedResource__c') {
-            this.showInterpreterThreadbutton = true;
             this.threadTypesOfInterest = ['HOT_TOLK-FORMIDLER'];
             this.getThreadAndParticipants();
         } else if (this.objectApiName === 'Thread__c') {
             getThreadInformation({ recordId: this.recordId })
                 .then((result) => {
-                    switch (result[0].CRM_Thread_Type__c) {
-                        case 'HOT_BRUKER-FORMIDLER':
-                            this.showUserThreadbutton = true;
-                            break;
-                        case 'HOT_BESTILLER-FORMIDLER':
-                            this.showOrderThreadbutton = true;
-                            break;
-                        case 'HOT_BRUKER-TOLK':
-                            this.showUserInterpreterThreadbutton = true;
-                            break;
-                        case 'HOT_TOLK-TOLK':
-                            this.showInterpreterInterpreterThreadbutton = true;
-                            break;
-                        case 'HOT_TOLK-FORMIDLER':
-                            this.showInterpreterThreadbutton = true;
-                            break;
-                        case 'HOT_TOLK-RESSURSKONTOR':
-                            this.showOfficeThreadbutton = true;
-                            break;
-                        default:
-                            break;
-                    }
                     this.relatedObjectId = result[0].CRM_Related_Object__c;
                     this.threadTypesOfInterest = [result[0].CRM_Thread_Type__c];
                     this.getThreadAndParticipants();
@@ -220,6 +183,7 @@ export default class CrmMessagingMessageComponent extends LightningElement {
         })
             .then((result) => {
                 this.threadsAndParticipants = result;
+                this.isThreadSummaryLoaded = true;
             })
             .catch((error) => {
                 console.log('Error getting threads and participants: ');
@@ -435,6 +399,25 @@ export default class CrmMessagingMessageComponent extends LightningElement {
             return result;
         });
     }
+
+    get showUserThreadTab() {
+        return this.threadTypesOfInterest.includes('HOT_BRUKER-FORMIDLER') && this.isThreadSummaryLoaded;
+    }
+    get showOrderThreadTab() {
+        return this.threadTypesOfInterest.includes('HOT_BESTILLER-FORMIDLER') && this.isThreadSummaryLoaded;
+    }
+    get showUserInterpreterThreadTab() {
+        return this.threadTypesOfInterest.includes('HOT_BRUKER-TOLK') && this.isThreadSummaryLoaded;
+    }
+    get showInterpreterInterpreterThreadTab() {
+        return this.threadTypesOfInterest.includes('HOT_TOLK-TOLK') && this.isThreadSummaryLoaded;
+    }
+    get showInterpreterThreadTab() {
+        return this.threadTypesOfInterest.includes('HOT_TOLK-FORMIDLER') && this.isThreadSummaryLoaded;
+    }
+    get showOfficeThreadTab() {
+        return this.threadTypesOfInterest.includes('HOT_TOLK-RESSURSKONTOR') && this.isThreadSummaryLoaded;
+    }
     get openUserThreads() {
         return this.openThreadsByType('HOT_BRUKER-FORMIDLER');
     }
@@ -470,6 +453,9 @@ export default class CrmMessagingMessageComponent extends LightningElement {
     }
     get officeThreadTabLabel() {
         return this.tabLabelByType('HOT_TOLK-RESSURSKONTOR');
+    }
+    get summaryLoading() {
+        return !this.isThreadSummaryLoaded;
     }
     openThreadsByType(type) {
         if (!this.threadsAndParticipants) {

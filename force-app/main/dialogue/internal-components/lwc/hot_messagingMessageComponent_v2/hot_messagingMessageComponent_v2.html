@@ -32,52 +32,32 @@
 
         <lightning-tabset variant="scoped" active-tab-value="tab1" heading-label="Samtaler">
             <lightning-tab label="Oppsummering" value="tab1" data-tab="tab1" onactive={summaryTabHandler}>
-                <template for:each={threadsAndParticipantsByType} for:item="threadsForType">
-                    <div key={threadsForType.key} class="conversationCard slds-p-around_small slds-m-bottom_small">
-                        <h3 class="slds-p-around_small conversationTitle">{threadsForType.label}</h3>
+                <template lwc:if={summaryLoading}>
+                    Samtaledata lastes...
+                    <div class="spinnerType">
+                        <lightning-spinner alternative-text="Samtaledata lastes" size="large"></lightning-spinner>
+                    </div>
+                </template>
+                <template lwc:else>
+                    <template for:each={threadsAndParticipantsByType} for:item="threadsForType">
+                        <div key={threadsForType.key} class="conversationCard slds-p-around_small slds-m-bottom_small">
+                            <h3 class="slds-p-around_small conversationTitle">{threadsForType.label}</h3>
 
-                        <template lwc:if={threadsForType.hasThreads}>
-                            <template for:each={threadsForType.threads} for:item="thread">
-                                <div key={thread.threadId}>
-                                    <lightning-layout
-                                        class="conversationParticipants slds-p-bottom_x-small slds-m-bottom_small"
-                                    >
-                                        <lightning-layout-item
-                                            flexibility="auto, no-grow"
-                                            class="slds-m-left_small slds-align_absolute-center"
+                            <template lwc:if={threadsForType.hasThreads}>
+                                <template for:each={threadsForType.threads} for:item="thread">
+                                    <div key={thread.threadId}>
+                                        <lightning-layout
+                                            class="conversationParticipants slds-p-bottom_x-small slds-m-bottom_small"
                                         >
-                                            Deltakere:
-                                        </lightning-layout-item>
-                                        <lightning-layout-item flexibility="auto" class="slds-m-left_small">
-                                            <div>
-                                                <template for:each={thread.participants} for:item="participant">
-                                                    <lightning-badge
-                                                        key={participant.key}
-                                                        label={participant.label}
-                                                        class={participant.theme}
-                                                    >
-                                                        {participant.label}
-                                                    </lightning-badge>
-                                                </template>
-                                            </div>
-                                        </lightning-layout-item>
-                                    </lightning-layout>
-                                    <lightning-layout
-                                        class="conversationParticipants slds-m-bottom_small slds-p-bottom_x-small"
-                                    >
-                                        <lightning-layout-item
-                                            flexibility="auto, no-grow"
-                                            class="slds-m-left_small slds-align_absolute-center"
-                                        >
-                                            Lest av:
-                                        </lightning-layout-item>
-                                        <lightning-layout-item flexibility="auto" class="slds-m-left_small">
-                                            <div>
-                                                <template lwc:if={thread.participantsReadBy.length}>
-                                                    <template
-                                                        for:each={thread.participantsReadBy}
-                                                        for:item="participant"
-                                                    >
+                                            <lightning-layout-item
+                                                flexibility="auto, no-grow"
+                                                class="slds-m-left_small slds-align_absolute-center"
+                                            >
+                                                Deltakere:
+                                            </lightning-layout-item>
+                                            <lightning-layout-item flexibility="auto" class="slds-m-left_small">
+                                                <div>
+                                                    <template for:each={thread.participants} for:item="participant">
                                                         <lightning-badge
                                                             key={participant.key}
                                                             label={participant.label}
@@ -86,30 +66,58 @@
                                                             {participant.label}
                                                         </lightning-badge>
                                                     </template>
-                                                </template>
-                                                <template lwc:else>
-                                                    <lightning-badge label="Ingen"> Ingen </lightning-badge>
-                                                </template>
-                                            </div>
-                                        </lightning-layout-item>
-                                    </lightning-layout>
-                                </div>
+                                                </div>
+                                            </lightning-layout-item>
+                                        </lightning-layout>
+                                        <lightning-layout
+                                            class="conversationParticipants slds-m-bottom_small slds-p-bottom_x-small"
+                                        >
+                                            <lightning-layout-item
+                                                flexibility="auto, no-grow"
+                                                class="slds-m-left_small slds-align_absolute-center"
+                                            >
+                                                Lest av:
+                                            </lightning-layout-item>
+                                            <lightning-layout-item flexibility="auto" class="slds-m-left_small">
+                                                <div>
+                                                    <template lwc:if={thread.participantsReadBy.length}>
+                                                        <template
+                                                            for:each={thread.participantsReadBy}
+                                                            for:item="participant"
+                                                        >
+                                                            <lightning-badge
+                                                                key={participant.key}
+                                                                label={participant.label}
+                                                                class={participant.theme}
+                                                            >
+                                                                {participant.label}
+                                                            </lightning-badge>
+                                                        </template>
+                                                    </template>
+                                                    <template lwc:else>
+                                                        <lightning-badge label="Ingen"> Ingen </lightning-badge>
+                                                    </template>
+                                                </div>
+                                            </lightning-layout-item>
+                                        </lightning-layout>
+                                    </div>
+                                </template>
                             </template>
-                        </template>
-                        <template lwc:else>
-                            <p class="slds-m-around_small">Samtale ikke påbegynt.</p>
-                        </template>
-                    </div>
+                            <template lwc:else>
+                                <p class="slds-m-around_small">Samtale ikke påbegynt.</p>
+                            </template>
+                        </div>
+                    </template>
                 </template>
             </lightning-tab>
             <lightning-tab
-                lwc:if={showUserThreadbutton}
+                lwc:if={showUserThreadTab}
                 label={userThreadTabLabel}
                 value="tab2"
                 data-tab="tab2"
                 onactive={userThreadTabHandler}
             >
-                <div class="tabContainer">
+                <div class="messageComponentTabContainer">
                     <template lwc:if={runningThreadCreate}>
                         Samtale opprettes...
                         <div class="spinnerType">
@@ -158,13 +166,13 @@
                 </div>
             </lightning-tab>
             <lightning-tab
-                lwc:if={showOrderThreadbutton}
+                lwc:if={showOrderThreadTab}
                 label={ordererThreadTabLabel}
                 value="tab3"
                 data-tab="tab3"
                 onactive={ordererThreadTabHandler}
             >
-                <div class="tabContainer">
+                <div class="messageComponentTabContainer">
                     <template lwc:if={runningThreadCreate}>
                         Samtale opprettes...
                         <div class="spinnerType">
@@ -213,13 +221,13 @@
                 </div>
             </lightning-tab>
             <lightning-tab
-                lwc:if={showUserInterpreterThreadbutton}
+                lwc:if={showUserInterpreterThreadTab}
                 label={userInterpreterThreadTabLabel}
                 value="tab4"
                 data-tab="tab4"
                 onactive={userInterpreterThreadTabHandler}
             >
-                <div class="tabContainer">
+                <div class="messageComponentTabContainer">
                     <template lwc:if={runningThreadCreate}>
                         Samtale opprettes...
                         <div class="spinnerType">
@@ -268,13 +276,13 @@
                 </div>
             </lightning-tab>
             <lightning-tab
-                lwc:if={showInterpreterInterpreterThreadbutton}
+                lwc:if={showInterpreterInterpreterThreadTab}
                 label={interpreterInterpreterThreadTabLabel}
                 value="tab5"
                 data-tab="tab5"
                 onactive={interpreterInterpreterThreadTabHandler}
             >
-                <div class="tabContainer">
+                <div class="messageComponentTabContainer">
                     <template lwc:if={runningThreadCreate}>
                         Samtale opprettes...
                         <div class="spinnerType">
@@ -323,13 +331,13 @@
                 </div>
             </lightning-tab>
             <lightning-tab
-                lwc:if={showInterpreterThreadbutton}
+                lwc:if={showInterpreterThreadTab}
                 label={interpreterThreadTabLabel}
                 value="tab6"
                 data-tab="tab6"
                 onactive={interpreterThreadTabHandler}
             >
-                <div class="tabContainer">
+                <div class="messageComponentTabContainer">
                     <template lwc:if={runningThreadCreate}>
                         Samtale opprettes...
                         <div class="spinnerType">
@@ -378,13 +386,13 @@
                 </div>
             </lightning-tab>
             <lightning-tab
-                lwc:if={showOfficeThreadbutton}
+                lwc:if={showOfficeThreadTab}
                 label={officeThreadTabLabel}
                 value="tab7"
                 data-tab="tab7"
                 onactive={officeThreadTabHandler}
             >
-                <div class="tabContainer">
+                <div class="messageComponentTabContainer">
                     <template lwc:if={runningThreadCreate}>
                         Samtale opprettes...
                         <div class="spinnerType">
