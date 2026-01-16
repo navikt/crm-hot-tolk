@@ -177,6 +177,10 @@ export default class CrmMessagingMessageComponent extends LightningElement {
     }
 
     getThreadAndParticipants() {
+        if(this.threadTypesOfInterest == null || this.threadTypesOfInterest.length === 0){
+            console.log('No thread types of interest defined, skipping getThreadsAndParticipants');
+            return;
+        }
         getThreadsAndParticipants({
             relatedObjectId: this.relatedObjectId,
             threadTypesOfInterest: this.threadTypesOfInterest
