@@ -106,8 +106,8 @@ private class HOT_CreateWageClaimTest {
 
     @IsTest
     static void createWageClaimTest_negative_Completed() {
-        Test.startTest();
         AssignedResource assignedResource = [SELECT Id, ServiceAppointmentId FROM AssignedResource];
+        Test.startTest();
 
         update new ServiceAppointment(Id = assignedResource.ServiceAppointmentId, Status = 'Completed');
         Test.stopTest();
@@ -121,8 +121,8 @@ private class HOT_CreateWageClaimTest {
         AssignedResource assignedResource = [SELECT Id, ServiceAppointmentId FROM AssignedResource];
         delete assignedResource;
 
-        Test.startTest();
         update new ServiceAppointment(Id = assignedResource.ServiceAppointmentId, Status = 'None');
+        Test.startTest();
 
         List<HOT_WageClaim__c> wageClaims = [SELECT Id, ServiceResource__c FROM HOT_WageClaim__c LIMIT 1];
         Test.stopTest();
