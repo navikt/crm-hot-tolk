@@ -11,6 +11,7 @@ import getThreadInformation from '@salesforce/apex/HOT_MessageHelper.getThreadFr
 export default class CrmMessagingMessageComponent extends LightningElement {
     relatedObjectId;
     isThreadSummaryLoaded = false;
+    defaultActiveTab = 'tab1';
     /*
     showUserThreadbutton = false;
     showOrderThreadbutton = false;
@@ -86,6 +87,15 @@ export default class CrmMessagingMessageComponent extends LightningElement {
             new: 'Ny samtale med tolk'
         }
     };
+    tabByThreadTypesMap = {
+        'HOT_TOLK-TOLK': 'tab5',
+        'HOT_BRUKER-TOLK': 'tab4',
+        'HOT_BESTILLER-FORMIDLER': 'tab3',
+        'HOT_BRUKER-FORMIDLER': 'tab2',
+        'HOT_TOLK-RESSURSKONTOR': 'tab7',
+        'HOT_TOLK-FORMIDLER': 'tab6'
+    };
+    @track
     threadTypesOfInterest = [];
     @track threadsAndParticipants;
 
@@ -177,6 +187,10 @@ export default class CrmMessagingMessageComponent extends LightningElement {
     }
 
     getThreadAndParticipants() {
+        if (this.threadTypesOfInterest == null || this.threadTypesOfInterest.length === 0) {
+            console.log('No thread types of interest defined, skipping getThreadsAndParticipants');
+            return;
+        }
         getThreadsAndParticipants({
             relatedObjectId: this.relatedObjectId,
             threadTypesOfInterest: this.threadTypesOfInterest
@@ -457,6 +471,22 @@ export default class CrmMessagingMessageComponent extends LightningElement {
     get summaryLoading() {
         return !this.isThreadSummaryLoaded;
     }
+    get activeTab() {
+        const openThreadType = this.findOpenThread();
+        if (openThreadType) {
+            return this.tabByThreadTypesMap[openThreadType];
+        }
+        return this.defaultActiveTab;
+    }
+    findOpenThread() {
+        if (!this.threadsAndParticipants || !this.threadTypesOfInterest) {
+            console.log('threadsAndParticipants or threadTypesOfInterest is null');
+            return null;
+        }
+        return this.threadTypesOfInterest.find((type) => {
+            return this.openThreadsByType(type) != null;
+        });
+    }
     openThreadsByType(type) {
         if (!this.threadsAndParticipants) {
             console.log('threadsAndParticipants is null');
@@ -520,7 +550,6 @@ export default class CrmMessagingMessageComponent extends LightningElement {
                     createThread({ recordId: this.recordId, accountId: this.accountId, type: threadType })
                         .then(() => {
                             this.getThreadAndParticipants();
-                            // TODO: what shoudl trigges here?
                         })
                         .catch((error) => {
                             if (

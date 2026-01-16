@@ -29,16 +29,15 @@
                 <span>Tolk er tildelt oppdraget. Se/start samtalen med tolk inne på Oppdraget</span>
             </div>
         </template>
-
-        <lightning-tabset variant="scoped" active-tab-value="tab1" heading-label="Samtaler">
-            <lightning-tab label="Oppsummering" value="tab1" data-tab="tab1" onactive={summaryTabHandler}>
-                <template lwc:if={summaryLoading}>
-                    Samtaledata lastes...
-                    <div class="spinnerType">
-                        <lightning-spinner alternative-text="Samtaledata lastes" size="large"></lightning-spinner>
-                    </div>
-                </template>
-                <template lwc:else>
+        <template lwc:if={summaryLoading}>
+            Samtaledata lastes...
+            <div class="spinnerType">
+                <lightning-spinner alternative-text="Samtaledata lastes" size="large"></lightning-spinner>
+            </div>
+        </template>
+        <template lwc:else>
+            <lightning-tabset variant="scoped" active-tab-value={activeTab} heading-label="Samtaler">
+                <lightning-tab label="Oppsummering" value="tab1" data-tab="tab1" onactive={summaryTabHandler}>
                     <template for:each={threadsAndParticipantsByType} for:item="threadsForType">
                         <div key={threadsForType.key} class="conversationCard slds-p-around_small slds-m-bottom_small">
                             <h3 class="slds-p-around_small conversationTitle">{threadsForType.label}</h3>
@@ -108,338 +107,356 @@
                             </template>
                         </div>
                     </template>
-                </template>
-            </lightning-tab>
-            <lightning-tab
-                lwc:if={showUserThreadTab}
-                label={userThreadTabLabel}
-                value="tab2"
-                data-tab="tab2"
-                onactive={userThreadTabHandler}
-            >
-                <div class="messageComponentTabContainer">
-                    <template lwc:if={runningThreadCreate}>
-                        Samtale opprettes...
-                        <div class="spinnerType">
-                            <lightning-spinner alternative-text="Samtale opprettes" size="large"></lightning-spinner>
-                        </div>
-                    </template>
-                    <template lwc:if={openUserThreads}>
-                        <template for:each={openUserThreads} for:item="thread">
-                            <c-hot_messaging-thread-viewer
-                                onenglishevent={handleEnglishEvent}
-                                english-text-template={englishTextTemplate}
-                                text-template={textTemplate}
-                                thread={thread}
-                                key={thread.Id}
-                                set-input-in-focus-on-render
-                                data-user-thread
-                                ontoolbaraction={userToolbarAction}
-                            >
-                                <div slot="toolbar">
-                                    <lightning-button-menu
-                                        alternative-text="Show menu"
-                                        variant="border-filled"
-                                        menu-alignment="right"
-                                        icon-size="medium"
-                                        icon-name="utility:settings"
-                                        onselect={userRedaction}
-                                    >
-                                        <lightning-menu-item
-                                            label="Sett til sladding"
-                                            value="userRedaction"
-                                        ></lightning-menu-item>
-                                    </lightning-button-menu>
-                                </div>
-                            </c-hot_messaging-thread-viewer>
-                        </template>
-                        <div class="fakeModalContainer" lwc:if={userSetToRedactionFlow}>
-                            <div class="flowContainer slds-p-around_small">
-                                <lightning-flow
-                                    flow-api-name="HOT_Thread_Set_To_Redaction"
-                                    flow-input-variables={userRedactionFlowVariables}
-                                    onstatuschange={handleUserRedactionFlowStatusChange}
-                                ></lightning-flow>
+                </lightning-tab>
+                <lightning-tab
+                    lwc:if={showUserThreadTab}
+                    label={userThreadTabLabel}
+                    value="tab2"
+                    data-tab="tab2"
+                    onactive={userThreadTabHandler}
+                >
+                    <div class="messageComponentTabContainer">
+                        <template lwc:if={runningThreadCreate}>
+                            Samtale opprettes...
+                            <div class="spinnerType">
+                                <lightning-spinner
+                                    alternative-text="Samtale opprettes"
+                                    size="large"
+                                ></lightning-spinner>
                             </div>
-                        </div>
-                    </template>
-                </div>
-            </lightning-tab>
-            <lightning-tab
-                lwc:if={showOrderThreadTab}
-                label={ordererThreadTabLabel}
-                value="tab3"
-                data-tab="tab3"
-                onactive={ordererThreadTabHandler}
-            >
-                <div class="messageComponentTabContainer">
-                    <template lwc:if={runningThreadCreate}>
-                        Samtale opprettes...
-                        <div class="spinnerType">
-                            <lightning-spinner alternative-text="Samtale opprettes" size="large"></lightning-spinner>
-                        </div>
-                    </template>
-                    <template lwc:if={openOrdererThreads}>
-                        <template for:each={openOrdererThreads} for:item="thread">
-                            <c-hot_messaging-thread-viewer
-                                onenglishevent={handleEnglishEvent}
-                                english-text-template={englishTextTemplate}
-                                text-template={textTemplate}
-                                thread={thread}
-                                key={thread.Id}
-                                set-input-in-focus-on-render
-                                data-orderer-thread
-                                ontoolbaraction={ordererToolbarAction}
-                            >
-                                <div slot="toolbar">
-                                    <lightning-button-menu
-                                        alternative-text="Show menu"
-                                        variant="border-filled"
-                                        menu-alignment="right"
-                                        icon-size="medium"
-                                        icon-name="utility:settings"
-                                        onselect={ordererRedaction}
-                                    >
-                                        <lightning-menu-item
-                                            label="Sett til sladding"
-                                            value="ordererRedaction"
-                                        ></lightning-menu-item>
-                                    </lightning-button-menu>
-                                </div>
-                            </c-hot_messaging-thread-viewer>
                         </template>
-                        <div class="fakeModalContainer" lwc:if={ordererSetToRedactionFlow}>
-                            <div class="flowContainer">
-                                <lightning-flow
-                                    flow-api-name="HOT_Thread_Set_To_Redaction"
-                                    flow-input-variables={ordererRedactionFlowVariables}
-                                    onstatuschange={handleOrdererRedactionFlowStatusChange}
-                                ></lightning-flow>
-                            </div>
-                        </div>
-                    </template>
-                </div>
-            </lightning-tab>
-            <lightning-tab
-                lwc:if={showUserInterpreterThreadTab}
-                label={userInterpreterThreadTabLabel}
-                value="tab4"
-                data-tab="tab4"
-                onactive={userInterpreterThreadTabHandler}
-            >
-                <div class="messageComponentTabContainer">
-                    <template lwc:if={runningThreadCreate}>
-                        Samtale opprettes...
-                        <div class="spinnerType">
-                            <lightning-spinner alternative-text="Samtale opprettes" size="large"></lightning-spinner>
-                        </div>
-                    </template>
-                    <template lwc:if={openUserInterpreterThreads}>
-                        <template for:each={openUserInterpreterThreads} for:item="thread">
-                            <c-hot_messaging-thread-viewer
-                                onenglishevent={handleEnglishEvent}
-                                english-text-template={englishTextTemplate}
-                                text-template={textTemplate}
-                                thread={thread}
-                                key={thread.Id}
-                                set-input-in-focus-on-render
-                                data-user-int-thread
-                                ontoolbaraction={userInterpreterToolbarAction}
-                            >
-                                <div slot="toolbar">
-                                    <lightning-button-menu
-                                        alternative-text="Show menu"
-                                        variant="border-filled"
-                                        menu-alignment="right"
-                                        icon-size="medium"
-                                        icon-name="utility:settings"
-                                        onselect={userInterpreterRedaction}
-                                    >
-                                        <lightning-menu-item
-                                            label="Sett til sladding"
-                                            value="userInterpreterRedaction"
-                                        ></lightning-menu-item>
-                                    </lightning-button-menu>
+                        <template lwc:if={openUserThreads}>
+                            <template for:each={openUserThreads} for:item="thread">
+                                <c-hot_messaging-thread-viewer
+                                    onenglishevent={handleEnglishEvent}
+                                    english-text-template={englishTextTemplate}
+                                    text-template={textTemplate}
+                                    thread={thread}
+                                    key={thread.Id}
+                                    set-input-in-focus-on-render
+                                    data-user-thread
+                                    ontoolbaraction={userToolbarAction}
+                                >
+                                    <div slot="toolbar">
+                                        <lightning-button-menu
+                                            alternative-text="Show menu"
+                                            variant="border-filled"
+                                            menu-alignment="right"
+                                            icon-size="medium"
+                                            icon-name="utility:settings"
+                                            onselect={userRedaction}
+                                        >
+                                            <lightning-menu-item
+                                                label="Sett til sladding"
+                                                value="userRedaction"
+                                            ></lightning-menu-item>
+                                        </lightning-button-menu>
+                                    </div>
+                                </c-hot_messaging-thread-viewer>
+                            </template>
+                            <div class="fakeModalContainer" lwc:if={userSetToRedactionFlow}>
+                                <div class="flowContainer slds-p-around_small">
+                                    <lightning-flow
+                                        flow-api-name="HOT_Thread_Set_To_Redaction"
+                                        flow-input-variables={userRedactionFlowVariables}
+                                        onstatuschange={handleUserRedactionFlowStatusChange}
+                                    ></lightning-flow>
                                 </div>
-                            </c-hot_messaging-thread-viewer>
-                        </template>
-                        <div class="fakeModalContainer" lwc:if={userInterpreterSetToRedactionFlow}>
-                            <div class="flowContainer">
-                                <lightning-flow
-                                    flow-api-name="HOT_Thread_Set_To_Redaction"
-                                    flow-input-variables={userInterpreterRedactionFlowVariables}
-                                    onstatuschange={handleUserInterpreterRedactionFlowStatusChange}
-                                ></lightning-flow>
                             </div>
-                        </div>
-                    </template>
-                </div>
-            </lightning-tab>
-            <lightning-tab
-                lwc:if={showInterpreterInterpreterThreadTab}
-                label={interpreterInterpreterThreadTabLabel}
-                value="tab5"
-                data-tab="tab5"
-                onactive={interpreterInterpreterThreadTabHandler}
-            >
-                <div class="messageComponentTabContainer">
-                    <template lwc:if={runningThreadCreate}>
-                        Samtale opprettes...
-                        <div class="spinnerType">
-                            <lightning-spinner alternative-text="Samtale opprettes" size="large"></lightning-spinner>
-                        </div>
-                    </template>
-                    <template lwc:if={openInterpreterInterpreterThreads}>
-                        <template for:each={openInterpreterInterpreterThreads} for:item="thread">
-                            <c-hot_messaging-thread-viewer
-                                onenglishevent={handleEnglishEvent}
-                                english-text-template={englishTextTemplate}
-                                text-template={textTemplate}
-                                thread={thread}
-                                key={thread.Id}
-                                set-input-in-focus-on-render
-                                data-int-int-thread
-                                ontoolbaraction={interpreterInterpreterToolbarAction}
-                            >
-                                <div slot="toolbar">
-                                    <lightning-button-menu
-                                        alternative-text="Show menu"
-                                        variant="border-filled"
-                                        menu-alignment="right"
-                                        icon-size="medium"
-                                        icon-name="utility:settings"
-                                        onselect={interpreterInterpreterRedaction}
-                                    >
-                                        <lightning-menu-item
-                                            label="Sett til sladding"
-                                            value="interpreterInterpreterRedaction"
-                                        ></lightning-menu-item>
-                                    </lightning-button-menu>
+                        </template>
+                    </div>
+                </lightning-tab>
+                <lightning-tab
+                    lwc:if={showOrderThreadTab}
+                    label={ordererThreadTabLabel}
+                    value="tab3"
+                    data-tab="tab3"
+                    onactive={ordererThreadTabHandler}
+                >
+                    <div class="messageComponentTabContainer">
+                        <template lwc:if={runningThreadCreate}>
+                            Samtale opprettes...
+                            <div class="spinnerType">
+                                <lightning-spinner
+                                    alternative-text="Samtale opprettes"
+                                    size="large"
+                                ></lightning-spinner>
+                            </div>
+                        </template>
+                        <template lwc:if={openOrdererThreads}>
+                            <template for:each={openOrdererThreads} for:item="thread">
+                                <c-hot_messaging-thread-viewer
+                                    onenglishevent={handleEnglishEvent}
+                                    english-text-template={englishTextTemplate}
+                                    text-template={textTemplate}
+                                    thread={thread}
+                                    key={thread.Id}
+                                    set-input-in-focus-on-render
+                                    data-orderer-thread
+                                    ontoolbaraction={ordererToolbarAction}
+                                >
+                                    <div slot="toolbar">
+                                        <lightning-button-menu
+                                            alternative-text="Show menu"
+                                            variant="border-filled"
+                                            menu-alignment="right"
+                                            icon-size="medium"
+                                            icon-name="utility:settings"
+                                            onselect={ordererRedaction}
+                                        >
+                                            <lightning-menu-item
+                                                label="Sett til sladding"
+                                                value="ordererRedaction"
+                                            ></lightning-menu-item>
+                                        </lightning-button-menu>
+                                    </div>
+                                </c-hot_messaging-thread-viewer>
+                            </template>
+                            <div class="fakeModalContainer" lwc:if={ordererSetToRedactionFlow}>
+                                <div class="flowContainer">
+                                    <lightning-flow
+                                        flow-api-name="HOT_Thread_Set_To_Redaction"
+                                        flow-input-variables={ordererRedactionFlowVariables}
+                                        onstatuschange={handleOrdererRedactionFlowStatusChange}
+                                    ></lightning-flow>
                                 </div>
-                            </c-hot_messaging-thread-viewer>
-                        </template>
-                        <div class="fakeModalContainer" lwc:if={interpreterInterpreterSetToRedactionFlow}>
-                            <div class="flowContainer">
-                                <lightning-flow
-                                    flow-api-name="HOT_Thread_Set_To_Redaction"
-                                    flow-input-variables={interpreterInterpreterRedactionFlowVariables}
-                                    onstatuschange={handleInterpreterInterpreterRedactionFlowStatusChange}
-                                ></lightning-flow>
                             </div>
-                        </div>
-                    </template>
-                </div>
-            </lightning-tab>
-            <lightning-tab
-                lwc:if={showInterpreterThreadTab}
-                label={interpreterThreadTabLabel}
-                value="tab6"
-                data-tab="tab6"
-                onactive={interpreterThreadTabHandler}
-            >
-                <div class="messageComponentTabContainer">
-                    <template lwc:if={runningThreadCreate}>
-                        Samtale opprettes...
-                        <div class="spinnerType">
-                            <lightning-spinner alternative-text="Samtale opprettes" size="large"></lightning-spinner>
-                        </div>
-                    </template>
-                    <template lwc:if={openInterpreterThreads}>
-                        <template for:each={openInterpreterThreads} for:item="thread">
-                            <c-hot_messaging-thread-viewer
-                                onenglishevent={handleEnglishEvent}
-                                english-text-template={englishTextTemplate}
-                                text-template={textTemplate}
-                                thread={thread}
-                                key={thread.Id}
-                                set-input-in-focus-on-render
-                                data-int-thread
-                                ontoolbaraction={interpreterToolbarAction}
-                            >
-                                <div slot="toolbar">
-                                    <lightning-button-menu
-                                        alternative-text="Show menu"
-                                        variant="border-filled"
-                                        menu-alignment="right"
-                                        icon-size="medium"
-                                        icon-name="utility:settings"
-                                        onselect={interpreterRedaction}
-                                    >
-                                        <lightning-menu-item
-                                            label="Sett til sladding"
-                                            value="interpreterRedaction"
-                                        ></lightning-menu-item>
-                                    </lightning-button-menu>
+                        </template>
+                    </div>
+                </lightning-tab>
+                <lightning-tab
+                    lwc:if={showUserInterpreterThreadTab}
+                    label={userInterpreterThreadTabLabel}
+                    value="tab4"
+                    data-tab="tab4"
+                    onactive={userInterpreterThreadTabHandler}
+                >
+                    <div class="messageComponentTabContainer">
+                        <template lwc:if={runningThreadCreate}>
+                            Samtale opprettes...
+                            <div class="spinnerType">
+                                <lightning-spinner
+                                    alternative-text="Samtale opprettes"
+                                    size="large"
+                                ></lightning-spinner>
+                            </div>
+                        </template>
+                        <template lwc:if={openUserInterpreterThreads}>
+                            <template for:each={openUserInterpreterThreads} for:item="thread">
+                                <c-hot_messaging-thread-viewer
+                                    onenglishevent={handleEnglishEvent}
+                                    english-text-template={englishTextTemplate}
+                                    text-template={textTemplate}
+                                    thread={thread}
+                                    key={thread.Id}
+                                    set-input-in-focus-on-render
+                                    data-user-int-thread
+                                    ontoolbaraction={userInterpreterToolbarAction}
+                                >
+                                    <div slot="toolbar">
+                                        <lightning-button-menu
+                                            alternative-text="Show menu"
+                                            variant="border-filled"
+                                            menu-alignment="right"
+                                            icon-size="medium"
+                                            icon-name="utility:settings"
+                                            onselect={userInterpreterRedaction}
+                                        >
+                                            <lightning-menu-item
+                                                label="Sett til sladding"
+                                                value="userInterpreterRedaction"
+                                            ></lightning-menu-item>
+                                        </lightning-button-menu>
+                                    </div>
+                                </c-hot_messaging-thread-viewer>
+                            </template>
+                            <div class="fakeModalContainer" lwc:if={userInterpreterSetToRedactionFlow}>
+                                <div class="flowContainer">
+                                    <lightning-flow
+                                        flow-api-name="HOT_Thread_Set_To_Redaction"
+                                        flow-input-variables={userInterpreterRedactionFlowVariables}
+                                        onstatuschange={handleUserInterpreterRedactionFlowStatusChange}
+                                    ></lightning-flow>
                                 </div>
-                            </c-hot_messaging-thread-viewer>
-                        </template>
-                        <div class="fakeModalContainer" lwc:if={interpreterSetToRedactionFlow}>
-                            <div class="flowContainer">
-                                <lightning-flow
-                                    flow-api-name="HOT_Thread_Set_To_Redaction"
-                                    flow-input-variables={interpreterRedactionFlowVariables}
-                                    onstatuschange={handleInterpreterRedactionFlowStatusChange}
-                                ></lightning-flow>
                             </div>
-                        </div>
-                    </template>
-                </div>
-            </lightning-tab>
-            <lightning-tab
-                lwc:if={showOfficeThreadTab}
-                label={officeThreadTabLabel}
-                value="tab7"
-                data-tab="tab7"
-                onactive={officeThreadTabHandler}
-            >
-                <div class="messageComponentTabContainer">
-                    <template lwc:if={runningThreadCreate}>
-                        Samtale opprettes...
-                        <div class="spinnerType">
-                            <lightning-spinner alternative-text="Samtale opprettes" size="large"></lightning-spinner>
-                        </div>
-                    </template>
-                    <template lwc:if={openOfficeThreads}>
-                        <template for:each={openOfficeThreads} for:item="thread">
-                            <c-hot_messaging-thread-viewer
-                                onenglishevent={handleEnglishEvent}
-                                english-text-template={englishTextTemplate}
-                                text-template={textTemplate}
-                                thread={thread}
-                                key={thread.Id}
-                                set-input-in-focus-on-render
-                                data-office-thread
-                                ontoolbaraction={officeToolbarAction}
-                            >
-                                <div slot="toolbar">
-                                    <lightning-button-menu
-                                        alternative-text="Show menu"
-                                        variant="border-filled"
-                                        menu-alignment="right"
-                                        icon-size="medium"
-                                        icon-name="utility:settings"
-                                        onselect={officeRedaction}
-                                    >
-                                        <lightning-menu-item
-                                            label="Sett til sladding"
-                                            value="officeRedaction"
-                                        ></lightning-menu-item>
-                                    </lightning-button-menu>
+                        </template>
+                    </div>
+                </lightning-tab>
+                <lightning-tab
+                    lwc:if={showInterpreterInterpreterThreadTab}
+                    label={interpreterInterpreterThreadTabLabel}
+                    value="tab5"
+                    data-tab="tab5"
+                    onactive={interpreterInterpreterThreadTabHandler}
+                >
+                    <div class="messageComponentTabContainer">
+                        <template lwc:if={runningThreadCreate}>
+                            Samtale opprettes...
+                            <div class="spinnerType">
+                                <lightning-spinner
+                                    alternative-text="Samtale opprettes"
+                                    size="large"
+                                ></lightning-spinner>
+                            </div>
+                        </template>
+                        <template lwc:if={openInterpreterInterpreterThreads}>
+                            <template for:each={openInterpreterInterpreterThreads} for:item="thread">
+                                <c-hot_messaging-thread-viewer
+                                    onenglishevent={handleEnglishEvent}
+                                    english-text-template={englishTextTemplate}
+                                    text-template={textTemplate}
+                                    thread={thread}
+                                    key={thread.Id}
+                                    set-input-in-focus-on-render
+                                    data-int-int-thread
+                                    ontoolbaraction={interpreterInterpreterToolbarAction}
+                                >
+                                    <div slot="toolbar">
+                                        <lightning-button-menu
+                                            alternative-text="Show menu"
+                                            variant="border-filled"
+                                            menu-alignment="right"
+                                            icon-size="medium"
+                                            icon-name="utility:settings"
+                                            onselect={interpreterInterpreterRedaction}
+                                        >
+                                            <lightning-menu-item
+                                                label="Sett til sladding"
+                                                value="interpreterInterpreterRedaction"
+                                            ></lightning-menu-item>
+                                        </lightning-button-menu>
+                                    </div>
+                                </c-hot_messaging-thread-viewer>
+                            </template>
+                            <div class="fakeModalContainer" lwc:if={interpreterInterpreterSetToRedactionFlow}>
+                                <div class="flowContainer">
+                                    <lightning-flow
+                                        flow-api-name="HOT_Thread_Set_To_Redaction"
+                                        flow-input-variables={interpreterInterpreterRedactionFlowVariables}
+                                        onstatuschange={handleInterpreterInterpreterRedactionFlowStatusChange}
+                                    ></lightning-flow>
                                 </div>
-                            </c-hot_messaging-thread-viewer>
-                        </template>
-                        <div class="fakeModalContainer" lwc:if={officeSetToRedactionFlow}>
-                            <div class="flowContainer">
-                                <lightning-flow
-                                    flow-api-name="HOT_Thread_Set_To_Redaction"
-                                    flow-input-variables={officeRedactionFlowVariables}
-                                    onstatuschange={handleOfficeRedactionFlowStatusChange}
-                                ></lightning-flow>
                             </div>
-                        </div>
-                    </template>
-                </div>
-            </lightning-tab>
-        </lightning-tabset>
+                        </template>
+                    </div>
+                </lightning-tab>
+                <lightning-tab
+                    lwc:if={showInterpreterThreadTab}
+                    label={interpreterThreadTabLabel}
+                    value="tab6"
+                    data-tab="tab6"
+                    onactive={interpreterThreadTabHandler}
+                >
+                    <div class="messageComponentTabContainer">
+                        <template lwc:if={runningThreadCreate}>
+                            Samtale opprettes...
+                            <div class="spinnerType">
+                                <lightning-spinner
+                                    alternative-text="Samtale opprettes"
+                                    size="large"
+                                ></lightning-spinner>
+                            </div>
+                        </template>
+                        <template lwc:if={openInterpreterThreads}>
+                            <template for:each={openInterpreterThreads} for:item="thread">
+                                <c-hot_messaging-thread-viewer
+                                    onenglishevent={handleEnglishEvent}
+                                    english-text-template={englishTextTemplate}
+                                    text-template={textTemplate}
+                                    thread={thread}
+                                    key={thread.Id}
+                                    set-input-in-focus-on-render
+                                    data-int-thread
+                                    ontoolbaraction={interpreterToolbarAction}
+                                >
+                                    <div slot="toolbar">
+                                        <lightning-button-menu
+                                            alternative-text="Show menu"
+                                            variant="border-filled"
+                                            menu-alignment="right"
+                                            icon-size="medium"
+                                            icon-name="utility:settings"
+                                            onselect={interpreterRedaction}
+                                        >
+                                            <lightning-menu-item
+                                                label="Sett til sladding"
+                                                value="interpreterRedaction"
+                                            ></lightning-menu-item>
+                                        </lightning-button-menu>
+                                    </div>
+                                </c-hot_messaging-thread-viewer>
+                            </template>
+                            <div class="fakeModalContainer" lwc:if={interpreterSetToRedactionFlow}>
+                                <div class="flowContainer">
+                                    <lightning-flow
+                                        flow-api-name="HOT_Thread_Set_To_Redaction"
+                                        flow-input-variables={interpreterRedactionFlowVariables}
+                                        onstatuschange={handleInterpreterRedactionFlowStatusChange}
+                                    ></lightning-flow>
+                                </div>
+                            </div>
+                        </template>
+                    </div>
+                </lightning-tab>
+                <lightning-tab
+                    lwc:if={showOfficeThreadTab}
+                    label={officeThreadTabLabel}
+                    value="tab7"
+                    data-tab="tab7"
+                    onactive={officeThreadTabHandler}
+                >
+                    <div class="messageComponentTabContainer">
+                        <template lwc:if={runningThreadCreate}>
+                            Samtale opprettes...
+                            <div class="spinnerType">
+                                <lightning-spinner
+                                    alternative-text="Samtale opprettes"
+                                    size="large"
+                                ></lightning-spinner>
+                            </div>
+                        </template>
+                        <template lwc:if={openOfficeThreads}>
+                            <template for:each={openOfficeThreads} for:item="thread">
+                                <c-hot_messaging-thread-viewer
+                                    onenglishevent={handleEnglishEvent}
+                                    english-text-template={englishTextTemplate}
+                                    text-template={textTemplate}
+                                    thread={thread}
+                                    key={thread.Id}
+                                    set-input-in-focus-on-render
+                                    data-office-thread
+                                    ontoolbaraction={officeToolbarAction}
+                                >
+                                    <div slot="toolbar">
+                                        <lightning-button-menu
+                                            alternative-text="Show menu"
+                                            variant="border-filled"
+                                            menu-alignment="right"
+                                            icon-size="medium"
+                                            icon-name="utility:settings"
+                                            onselect={officeRedaction}
+                                        >
+                                            <lightning-menu-item
+                                                label="Sett til sladding"
+                                                value="officeRedaction"
+                                            ></lightning-menu-item>
+                                        </lightning-button-menu>
+                                    </div>
+                                </c-hot_messaging-thread-viewer>
+                            </template>
+                            <div class="fakeModalContainer" lwc:if={officeSetToRedactionFlow}>
+                                <div class="flowContainer">
+                                    <lightning-flow
+                                        flow-api-name="HOT_Thread_Set_To_Redaction"
+                                        flow-input-variables={officeRedactionFlowVariables}
+                                        onstatuschange={handleOfficeRedactionFlowStatusChange}
+                                    ></lightning-flow>
+                                </div>
+                            </div>
+                        </template>
+                    </div>
+                </lightning-tab>
+            </lightning-tabset>
+        </template>
     </div>
 </template>
