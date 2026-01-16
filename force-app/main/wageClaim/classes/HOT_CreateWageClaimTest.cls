@@ -33,9 +33,9 @@ private class HOT_CreateWageClaimTest {
 
     @IsTest
     static void createWageClaimTest_saStatusNone() {
-        Test.startTest();
         AssignedResource assignedResource = [SELECT Id, ServiceAppointmentId FROM AssignedResource];
 
+        Test.startTest();
         update new ServiceAppointment(Id = assignedResource.ServiceAppointmentId, Status = 'None');
         Test.stopTest();
 
@@ -44,9 +44,9 @@ private class HOT_CreateWageClaimTest {
     }
     @IsTest
     static void createWageClaimTest_saStatusCanceled() {
-        Test.startTest();
         AssignedResource assignedResource = [SELECT Id, ServiceAppointmentId FROM AssignedResource];
 
+        Test.startTest();
         update new ServiceAppointment(Id = assignedResource.ServiceAppointmentId, Status = 'Canceled');
         Test.stopTest();
 
@@ -77,9 +77,9 @@ private class HOT_CreateWageClaimTest {
         AssignedResource assignedResource = [SELECT Id, ServiceAppointmentId FROM AssignedResource];
 
         delete assignedResource;
-        Test.stopTest();
 
         List<HOT_WageClaim__c> wageClaims = [SELECT Id, ServiceResource__c FROM HOT_WageClaim__c LIMIT 1];
+        Test.stopTest();
         System.assertEquals(1, wageClaims.size(), 'Could not create Wage Claims when AR Deleted');
     }
     @IsTest
@@ -118,10 +118,10 @@ private class HOT_CreateWageClaimTest {
 
     @IsTest
     static void createWageClaimTest_negative_duplicates() {
-        Test.startTest();
         AssignedResource assignedResource = [SELECT Id, ServiceAppointmentId FROM AssignedResource];
         delete assignedResource;
 
+        Test.startTest();
         update new ServiceAppointment(Id = assignedResource.ServiceAppointmentId, Status = 'None');
 
         List<HOT_WageClaim__c> wageClaims = [SELECT Id, ServiceResource__c FROM HOT_WageClaim__c LIMIT 1];
@@ -130,8 +130,8 @@ private class HOT_CreateWageClaimTest {
     }
 
     private static Integer testTimeChange(Integer startOffsetInMinutes, Integer endOffsetInMinutes) {
-        Test.startTest();
         ServiceAppointment serviceAppointment = [SELECT Id, SchedStartTime, SchedEndTime FROM ServiceAppointment];
+        Test.startTest();
         serviceAppointment.SchedStartTime = serviceAppointment.SchedStartTime.addMinutes(startOffsetInMinutes);
         serviceAppointment.SchedEndTime = serviceAppointment.SchedEndTime.addMinutes(endOffsetInMinutes);
         update serviceAppointment;
