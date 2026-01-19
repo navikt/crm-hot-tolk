@@ -13,6 +13,13 @@
                 <stringValue>Dispatched</stringValue>
             </value>
         </assignmentItems>
+        <assignmentItems>
+            <assignToReference>$Record.HOT_AutoDispatch__c</assignToReference>
+            <operator>Assign</operator>
+            <value>
+                <booleanValue>false</booleanValue>
+            </value>
+        </assignmentItems>
     </assignments>
     <environments>Default</environments>
     <interviewLabel>HOT_ServiceAppointmentStatusScheduledToDispatched {!$Flow.CurrentDateTime}</interviewLabel>
@@ -48,7 +55,7 @@
             <field>Status</field>
             <operator>EqualTo</operator>
             <value>
-                <stringValue>Dispatched</stringValue>
+                <stringValue>Scheduled</stringValue>
             </value>
         </filters>
         <filters>
