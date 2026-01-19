@@ -570,7 +570,7 @@
     </fieldPermissions>
     <fieldPermissions>
         <editable>true</editable>
-        <field>HOT_Request__c.Owner_List__c</field>
+        <field>HOT_Request__c.OwnerList__c</field>
         <readable>true</readable>
     </fieldPermissions>
     <fieldPermissions>
@@ -1831,6 +1831,11 @@
     <fieldPermissions>
         <editable>true</editable>
         <field>Thread__c.CRM_Account__c</field>
+        <readable>true</readable>
+    </fieldPermissions>
+    <fieldPermissions>
+        <editable>false</editable>
+        <field>Thread__c.HOT_Account__c</field>
         <readable>true</readable>
     </fieldPermissions>
     <fieldPermissions>
