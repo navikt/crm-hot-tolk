@@ -344,10 +344,10 @@ export default class Hot_messagingCommunityThreadViewer_v2 extends NavigationMix
         const workOrderAccountId = this.thread.HOT_WorkOrder__r?.AccountId;
         const requestAccountId = this.thread.HOT_Request__r?.Account__c;
         const requestOrdererId = this.thread.HOT_Request__r?.Orderer__c;
-        const bestillingTypes = ['HOT_BRUKER-FORMIDLER', 'HOT_BESTILLER-FORMIDLER', 'HOT_BRUKER-TOLK'];
+        const userOrderTypes = ['HOT_BRUKER-FORMIDLER', 'HOT_BESTILLER-FORMIDLER', 'HOT_BRUKER-TOLK'];
 
         if (
-            bestillingTypes.includes(threadType) &&
+            userOrderTypes.includes(threadType) &&
             (workOrderAccountId === this.userAccountId ||
                 requestAccountId === this.userAccountId ||
                 requestOrdererId === this.userAccountId)
