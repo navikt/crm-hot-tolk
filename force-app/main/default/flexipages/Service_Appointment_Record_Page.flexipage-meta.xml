@@ -25,7 +25,8 @@
                                     <rightValue>Released to Freelance</rightValue>
                                 </criteria>
                                 <criteria>
-                                    <leftValue>{!$Permission.CustomPermission.HOT_ReleaseToFreelance}</leftValue>
+                                    <leftValue>
+                                        {!$Permission.CustomPermission.HOT_ReleaseToFreelance}</leftValue>
                                     <operator>EQUAL</operator>
                                     <rightValue>true</rightValue>
                                 </criteria>
@@ -41,7 +42,8 @@
                                     <rightValue>Released to Freelance</rightValue>
                                 </criteria>
                                 <criteria>
-                                    <leftValue>{!$Permission.CustomPermission.HOT_ReleaseToFreelance}</leftValue>
+                                    <leftValue>
+                                        {!$Permission.CustomPermission.HOT_ReleaseToFreelance}</leftValue>
                                     <operator>EQUAL</operator>
                                     <rightValue>true</rightValue>
                                 </criteria>
@@ -61,7 +63,8 @@
                             <value>ServiceAppointment.HOT_ChangeStatus</value>
                             <visibilityRule>
                                 <criteria>
-                                    <leftValue>{!$Permission.StandardPermission.FieldServiceMobileApp}</leftValue>
+                                    <leftValue>
+                                        {!$Permission.StandardPermission.FieldServiceMobileApp}</leftValue>
                                     <operator>EQUAL</operator>
                                     <rightValue>true</rightValue>
                                 </criteria>
@@ -744,7 +747,8 @@
                         <rightValue>Formidler</rightValue>
                     </criteria>
                     <criteria>
-                        <leftValue>{!Record.CreatedBy.Contact.Account.CRM_Person__r.INT_Confidential__c}</leftValue>
+                        <leftValue>
+                            {!Record.CreatedBy.Contact.Account.CRM_Person__r.INT_Confidential__c}</leftValue>
                         <operator>EQUAL</operator>
                         <rightValue>UGRADERT</rightValue>
                     </criteria>
@@ -819,7 +823,9 @@
                 </componentInstanceProperties>
                 <componentInstanceProperties>
                     <name>richTextValue</name>
-                    <value>&lt;p style=&quot;text-align: center;&quot;&gt;&lt;strong style=&quot;font-size: 14px; color: rgb(0, 0, 255);&quot;&gt;INFO: Oppdraget ble avlyst mindre enn 48 timer før start.&lt;/strong&gt;&lt;/p&gt;</value>
+                    <value>&lt;p style=&quot;text-align: center;&quot;&gt;&lt;strong
+                        style=&quot;font-size: 14px; color: rgb(0, 0, 255);&quot;&gt;INFO: Oppdraget
+                        ble avlyst mindre enn 48 timer før start.&lt;/strong&gt;&lt;/p&gt;</value>
                 </componentInstanceProperties>
                 <componentName>flexipage:richText</componentName>
                 <identifier>flexipage_richText</identifier>
@@ -846,7 +852,9 @@
                 </componentInstanceProperties>
                 <componentInstanceProperties>
                     <name>richTextValue</name>
-                    <value>&lt;p style=&quot;text-align: center;&quot;&gt;&lt;strong style=&quot;font-size: 14px; color: rgb(0, 0, 255);&quot;&gt;INFO: Oppdraget ble avlyst mindre enn 30 minutter før start.&lt;/strong&gt;&lt;/p&gt;</value>
+                    <value>&lt;p style=&quot;text-align: center;&quot;&gt;&lt;strong
+                        style=&quot;font-size: 14px; color: rgb(0, 0, 255);&quot;&gt;INFO: Oppdraget
+                        ble avlyst mindre enn 30 minutter før start.&lt;/strong&gt;&lt;/p&gt;</value>
                 </componentInstanceProperties>
                 <componentName>flexipage:richText</componentName>
                 <identifier>flexipage_richText2</identifier>
@@ -1001,6 +1009,12 @@
                 </componentInstanceProperties>
                 <componentName>force:relatedListSingleContainer</componentName>
                 <identifier>force_relatedListSingleContainer2</identifier>
+            </componentInstance>
+        </itemInstances>
+        <itemInstances>
+            <componentInstance>
+                <componentName>hot_relevantInterestedResources</componentName>
+                <identifier>c_hot_relevantInterestedResources</identifier>
             </componentInstance>
         </itemInstances>
         <name>Facet-8a2a94a6-277f-43b7-9cb4-b0df6b0dd3cb</name>
