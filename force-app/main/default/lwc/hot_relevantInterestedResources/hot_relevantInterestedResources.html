@@ -1,0 +1,25 @@
+<template>
+    <template lwc:if={noResources}></template>
+    <template lwc:else>
+        <div class="relevantResourcesList">
+            <div class="slds-section section slds-is-open">
+                <h3 class="slds-section__title">
+                    <span class="slds-truncate" title="Section Title"
+                        >Frilanstolker som har meldt interesse for andre oppdrag under samme arbeidsordre:</span
+                    >
+                </h3>
+            </div>
+            <lightning-datatable
+                key-field="Id"
+                data={interestedResources}
+                columns={columns}
+                hide-checkbox-column="true"
+                default-sort-direction={defaultSortDirection}
+                sorted-direction={sortDirection}
+                sorted-by={sortedBy}
+                onsort={onHandleSort}
+            >
+            </lightning-datatable>
+        </div>
+    </template>
+</template>
