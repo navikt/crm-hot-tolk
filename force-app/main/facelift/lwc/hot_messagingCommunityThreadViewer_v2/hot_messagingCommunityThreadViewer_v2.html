@@ -22,7 +22,9 @@
                 <div class="navds-div">{threadType}</div>
 
                 <div class="header-buttons">
-                    <div class="link-button" onclick={goToDetails}>Vis oppdrag</div>
+                    <div lwc:if={isThreadGoToDetailsReady} class="link-button" onclick={goToDetails}>
+                        {threadGoToDetailsLabel}
+                    </div>
 
                     <div class="link-button" onclick={handleShowParticipants}>Vis personer i samtalen</div>
                     <template lwc:if={showScrollButton}>
