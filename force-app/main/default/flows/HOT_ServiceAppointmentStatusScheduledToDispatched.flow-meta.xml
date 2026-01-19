@@ -48,7 +48,7 @@
             <field>Status</field>
             <operator>EqualTo</operator>
             <value>
-                <stringValue>Scheduled</stringValue>
+                <stringValue>Dispatched</stringValue>
             </value>
         </filters>
         <filters>
