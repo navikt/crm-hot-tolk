@@ -498,6 +498,11 @@
     </fieldPermissions>
     <fieldPermissions>
         <editable>false</editable>
+        <field>HOT_Request__c.IsAccountEqualOrderer__c</field>
+        <readable>true</readable>
+    </fieldPermissions>
+    <fieldPermissions>
+        <editable>false</editable>
         <field>HOT_Request__c.IsAccountNotNull__c</field>
         <readable>true</readable>
     </fieldPermissions>
@@ -632,12 +637,12 @@
         <readable>true</readable>
     </fieldPermissions>
     <fieldPermissions>
-        <editable>false</editable>
+        <editable>true</editable>
         <field>HOT_Request__c.OwnerName__c</field>
         <readable>true</readable>
     </fieldPermissions>
     <fieldPermissions>
-        <editable>true</editable>
+        <editable>false</editable>
         <field>HOT_Request__c.Owner_List__c</field>
         <readable>true</readable>
     </fieldPermissions>
