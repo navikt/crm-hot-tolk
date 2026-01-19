@@ -228,6 +228,14 @@
         </value>
     </choices>
     <choices>
+        <name>FellesoppdragVestViken</name>
+        <choiceText>&lt;span style=&quot;background-color: rgb(255, 255, 255); color: rgb(22, 50, 92);&quot;&gt;Fellesoppdrag Vest-Viken&lt;/span&gt;</choiceText>
+        <dataType>String</dataType>
+        <value>
+            <stringValue>Fellesoppdrag Vest-Viken</stringValue>
+        </value>
+    </choices>
+    <choices>
         <name>Innlandet</name>
         <choiceText>Nav Tolketjeneste Innlandet</choiceText>
         <dataType>String</dataType>
@@ -249,6 +257,14 @@
         <dataType>String</dataType>
         <value>
             <stringValue>Nav Tolketjeneste Møre og Romsdal</stringValue>
+        </value>
+    </choices>
+    <choices>
+        <name>NavAkuttvaktTolk</name>
+        <choiceText>NAV Akuttvakt Tolk</choiceText>
+        <dataType>String</dataType>
+        <value>
+            <stringValue>NAV Akuttvakt Tolk</stringValue>
         </value>
     </choices>
     <choices>
@@ -1427,6 +1443,8 @@ CONTAINS({!ChosenFieldsOwner}, {!Subject})
                     <choiceReferences>VestfoldOgTelemark</choiceReferences>
                     <choiceReferences>Vestland</choiceReferences>
                     <choiceReferences>Ostviken</choiceReferences>
+                    <choiceReferences>FellesoppdragVestViken</choiceReferences>
+                    <choiceReferences>NavAkuttvaktTolk</choiceReferences>
                     <dataType>String</dataType>
                     <fieldText>Owner list picklist</fieldText>
                     <fieldType>DropdownBox</fieldType>
