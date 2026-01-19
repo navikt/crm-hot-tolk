@@ -2,6 +2,7 @@ import { LightningElement, wire, api } from 'lwc';
 import { NavigationMixin } from 'lightning/navigation';
 import getmessages from '@salesforce/apex/HOT_MessageHelper.getMessagesFromThread';
 import markThreadAsRead from '@salesforce/apex/HOT_MessageHelper.markThreadAsRead';
+import getUserAccountID from '@salesforce/apex/HOT_UserInformationController.getAccountId';
 import getThreadParticipants from '@salesforce/apex/HOT_ThreadParticipants.getParticipants';
 import { refreshApex } from '@salesforce/apex';
 import getContactId from '@salesforce/apex/HOT_MessageHelper.getUserContactId';
@@ -216,6 +217,13 @@ export default class Hot_messagingCommunityThreadViewer_v2 extends NavigationMix
     get isContentReady() {
         return this.showContent && this._threadWire?.data && this._mySendForSplitting?.data && this.userContactId;
     }
+    userAccountId;
+    @wire(getUserAccountID)
+    wiredAccountId({ data }) {
+        if (data) {
+            this.userAccountId = data.AccountId;
+        }
+    }
 
     // Calls apex and extracts messages related to this record
     @wire(getmessages, { threadId: '$recordId' })
@@ -324,6 +332,30 @@ export default class Hot_messagingCommunityThreadViewer_v2 extends NavigationMix
         const dialog = this.template.querySelector('.modal-service-appointment');
         dialog.showModal();
         dialog.focus();
+    }
+    get isThreadGoToDetailsReady() {
+        return !!(this.thread && this.userAccountId);
+    }
+
+    get threadGoToDetailsLabel() {
+        if (!this.thread || !this.userAccountId) return 'Vis oppdrag';
+
+        const threadType = this.thread.CRM_Thread_Type__c;
+        const workOrderAccountId = this.thread.HOT_WorkOrder__r?.AccountId;
+        const requestAccountId = this.thread.HOT_Request__r?.Account__c;
+        const requestOrdererId = this.thread.HOT_Request__r?.Orderer__c;
+        const bestillingTypes = ['HOT_BRUKER-FORMIDLER', 'HOT_BESTILLER-FORMIDLER', 'HOT_BRUKER-TOLK'];
+
+        if (
+            bestillingTypes.includes(threadType) &&
+            (workOrderAccountId === this.userAccountId ||
+                requestAccountId === this.userAccountId ||
+                requestOrdererId === this.userAccountId)
+        ) {
+            return 'Gå til bestilling';
+        }
+
+        return 'Vis oppdrag';
     }
 
     // Set helptextContent based on type and return label
