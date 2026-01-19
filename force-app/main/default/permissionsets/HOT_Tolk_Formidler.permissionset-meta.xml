@@ -29,6 +29,10 @@
         <enabled>true</enabled>
     </classAccesses>
     <classAccesses>
+        <apexClass>HOT_IRRecordPageController</apexClass>
+        <enabled>true</enabled>
+    </classAccesses>
+    <classAccesses>
         <apexClass>HOT_InterestedResourceBannerController</apexClass>
         <enabled>true</enabled>
     </classAccesses>
@@ -637,13 +641,13 @@
         <readable>true</readable>
     </fieldPermissions>
     <fieldPermissions>
-        <editable>true</editable>
+        <editable>false</editable>
         <field>HOT_Request__c.OwnerName__c</field>
         <readable>true</readable>
     </fieldPermissions>
     <fieldPermissions>
-        <editable>false</editable>
-        <field>HOT_Request__c.Owner_List__c</field>
+        <editable>true</editable>
+        <field>HOT_Request__c.OwnerList__c</field>
         <readable>true</readable>
     </fieldPermissions>
     <fieldPermissions>
