@@ -3,11 +3,15 @@ public with sharing class HOT_AutoScheduleService {
     public String parentRecordId;
     @InvocableVariable
     public String parentRecordType;
+    @InvocableVariable
+    public Boolean isAutoDispatched;
+    
 
     @InvocableMethod
     public static List<String> setAutoScheduleOnServiceAppointments(List<HOT_AutoScheduleService> inputVariables) {
         String parentRecordId = inputVariables[0].parentRecordId;
         String parentRecordType = inputVariables[0].parentRecordType;
+        Boolean isValueDispatched = inputVariables[0].isAutoDispatched;
         List<String> errors = new List<String>();
         String queryString;
         String queryStringFSLPolicy;
@@ -32,7 +36,12 @@ public with sharing class HOT_AutoScheduleService {
             }
 
             for (ServiceAppointment serviceAppointment : serviceAppointments) {
-                serviceAppointment.put('FSL__Auto_Schedule__c', true);
+                    serviceAppointment.put('FSL__Auto_Schedule__c', true);
+
+                if (isValueDispatched) {
+                    serviceAppointment.put('HOT_AutoDispatch__c', true);
+                }
+
                 if (
                     serviceAppointment.HOT_Request__r.PreferredResource1__c != null ||
                     serviceAppointment.HOT_PreferredResource__c != null
