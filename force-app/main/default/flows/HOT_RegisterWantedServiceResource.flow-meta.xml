@@ -432,6 +432,7 @@
             <choiceReferences>Tolkebruker</choiceReferences>
             <choiceReferences>Formidler</choiceReferences>
             <dataType>String</dataType>
+            <defaultSelectedChoiceReference>Tolkebruker</defaultSelectedChoiceReference>
             <fieldText>Ønsket av</fieldText>
             <fieldType>DropdownBox</fieldType>
             <inputsOnNextNavToAssocScrn>UseStoredValues</inputsOnNextNavToAssocScrn>
