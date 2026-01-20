@@ -23,7 +23,7 @@ public with sharing class HOT_AutoScheduleService {
                 queryString = 'SELECT Id, FSL__Auto_Schedule__c, HOT_PreferredResource__c, HOT_AutoDispatch__c, HOT_Request__r.PreferredResource1__c FROM ServiceAppointment WHERE HOT_Request__c = :parentRecordId AND HOT_ServiceResource__c = null AND Status IN :statusesToInclude';
             }
             if (parentRecordType == 'workOrder') {
-                queryString = 'SELECT Id, FSL__Auto_Schedule__c, HOT_PreferredResource__c, HOT_Request__r.PreferredResource1__c FROM ServiceAppointment WHERE HOT_WorkOrderLineItem__r.WorkOrderId = :parentRecordId  AND HOT_ServiceResource__c = null AND Status IN :statusesToInclude';
+                queryString = 'SELECT Id, FSL__Auto_Schedule__c, HOT_PreferredResource__c, HOT_AutoDispatch__c, HOT_Request__r.PreferredResource1__c FROM ServiceAppointment WHERE HOT_WorkOrderLineItem__r.WorkOrderId = :parentRecordId  AND HOT_ServiceResource__c = null AND Status IN :statusesToInclude';
             }
             queryStringFSLPolicy = 'SELECT Id FROM FSL__Scheduling_Policy__c WHERE Name = \'Ubegrenset\' LIMIT 1';
 
