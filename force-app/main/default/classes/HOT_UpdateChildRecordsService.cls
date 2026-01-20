@@ -584,10 +584,6 @@ public without sharing class HOT_UpdateChildRecordsService {
         Map<Id, Id> serviceTerritoryIdByQueueId = new Map<Id, Id>();
         for (Group queue : queues) {
             
-            if (queue.Name == 'NAV Akuttvakt Tolk' || queue.Name == 'Fellesoppdrag Vest-Viken') {
-                continue;
-            }
-            
             for (ServiceTerritory serviceTerritory : serviceTerritories) {
                 if (serviceTerritoryByQueue.get(queue.DeveloperName) == serviceTerritory.HOT_DeveloperName__c) {
                     serviceTerritoryIdByQueueId.put(queue.Id, serviceTerritory.Id);
