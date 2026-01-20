@@ -3,6 +3,14 @@
     <label>Eier</label>
     <name>OwnerList__c</name>
     <picklistValues>
+        <masterLabel>Fellesoppdrag Vest-Viken</masterLabel>
+        <translation><!-- Fellesoppdrag Vest-Viken --></translation>
+    </picklistValues>
+    <picklistValues>
+        <masterLabel>NAV Akuttvakt Tolk</masterLabel>
+        <translation><!-- NAV Akuttvakt Tolk --></translation>
+    </picklistValues>
+    <picklistValues>
         <masterLabel>Nav Tolketjeneste Agder</masterLabel>
         <translation><!-- Nav Tolketjeneste Agder --></translation>
     </picklistValues>
