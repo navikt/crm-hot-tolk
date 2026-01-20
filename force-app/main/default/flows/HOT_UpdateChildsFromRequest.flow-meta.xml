@@ -1238,7 +1238,7 @@ CONTAINS({!ChosenFieldsOwner}, {!Subject})
                     <inputParameters>
                         <name>label</name>
                         <value>
-                            <stringValue>Dispatcher</stringValue>
+                            <stringValue>Formidler</stringValue>
                         </value>
                     </inputParameters>
                     <inputParameters>
@@ -1317,7 +1317,7 @@ CONTAINS({!ChosenFieldsOwner}, {!Subject})
                     <inputParameters>
                         <name>label</name>
                         <value>
-                            <stringValue>Account</stringValue>
+                            <stringValue>Bruker</stringValue>
                         </value>
                     </inputParameters>
                     <inputParameters>
@@ -1426,7 +1426,7 @@ CONTAINS({!ChosenFieldsOwner}, {!Subject})
                 <fieldType>Region</fieldType>
                 <fields>
                     <name>ownerText</name>
-                    <fieldText>&lt;p&gt;Eier: {!getRequest.OwnerName__c} &lt;/p&gt;&lt;p&gt;&lt;br&gt;&lt;/p&gt;</fieldText>
+                    <fieldText>&lt;p&gt;Eier: {!getRequest.OwnerName__c}&lt;/p&gt;</fieldText>
                     <fieldType>DisplayText</fieldType>
                 </fields>
                 <fields>
@@ -1446,7 +1446,7 @@ CONTAINS({!ChosenFieldsOwner}, {!Subject})
                     <choiceReferences>FellesoppdragVestViken</choiceReferences>
                     <choiceReferences>NavAkuttvaktTolk</choiceReferences>
                     <dataType>String</dataType>
-                    <fieldText>Owner list picklist</fieldText>
+                    <fieldText>Ny eier:</fieldText>
                     <fieldType>DropdownBox</fieldType>
                     <inputsOnNextNavToAssocScrn>UseStoredValues</inputsOnNextNavToAssocScrn>
                     <isRequired>true</isRequired>
