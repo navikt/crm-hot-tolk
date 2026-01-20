@@ -747,8 +747,7 @@
                         <rightValue>Formidler</rightValue>
                     </criteria>
                     <criteria>
-                        <leftValue>
-                            {!Record.CreatedBy.Contact.Account.CRM_Person__r.INT_Confidential__c}</leftValue>
+                        <leftValue>{!Record.CreatedBy.Contact.Account.CRM_Person__r.INT_Confidential__c}</leftValue>
                         <operator>EQUAL</operator>
                         <rightValue>UGRADERT</rightValue>
                     </criteria>
@@ -774,7 +773,7 @@
                         <operator>CONTAINS</operator>
                         <rightValue>Formidler</rightValue>
                     </criteria>
-                    <criteria>
+                     <criteria>
                         <leftValue>{!Record.Contact.Account.CRM_Person__r.INT_Confidential__c}</leftValue>
                         <operator>EQUAL</operator>
                         <rightValue>UGRADERT</rightValue>
