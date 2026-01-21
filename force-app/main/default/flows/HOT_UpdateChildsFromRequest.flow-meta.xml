@@ -228,6 +228,14 @@
         </value>
     </choices>
     <choices>
+        <name>FellesoppdragVestViken</name>
+        <choiceText>&lt;span style=&quot;background-color: rgb(255, 255, 255); color: rgb(22, 50, 92);&quot;&gt;Fellesoppdrag Vest-Viken&lt;/span&gt;</choiceText>
+        <dataType>String</dataType>
+        <value>
+            <stringValue>Fellesoppdrag Vest-Viken</stringValue>
+        </value>
+    </choices>
+    <choices>
         <name>Innlandet</name>
         <choiceText>Nav Tolketjeneste Innlandet</choiceText>
         <dataType>String</dataType>
@@ -249,6 +257,14 @@
         <dataType>String</dataType>
         <value>
             <stringValue>Nav Tolketjeneste Møre og Romsdal</stringValue>
+        </value>
+    </choices>
+    <choices>
+        <name>NavAkuttvaktTolk</name>
+        <choiceText>NAV Akuttvakt Tolk</choiceText>
+        <dataType>String</dataType>
+        <value>
+            <stringValue>NAV Akuttvakt Tolk</stringValue>
         </value>
     </choices>
     <choices>
@@ -1222,7 +1238,7 @@ CONTAINS({!ChosenFieldsOwner}, {!Subject})
                     <inputParameters>
                         <name>label</name>
                         <value>
-                            <stringValue>Dispatcher</stringValue>
+                            <stringValue>Formidler</stringValue>
                         </value>
                     </inputParameters>
                     <inputParameters>
@@ -1301,7 +1317,7 @@ CONTAINS({!ChosenFieldsOwner}, {!Subject})
                     <inputParameters>
                         <name>label</name>
                         <value>
-                            <stringValue>Account</stringValue>
+                            <stringValue>Bruker</stringValue>
                         </value>
                     </inputParameters>
                     <inputParameters>
@@ -1410,7 +1426,7 @@ CONTAINS({!ChosenFieldsOwner}, {!Subject})
                 <fieldType>Region</fieldType>
                 <fields>
                     <name>ownerText</name>
-                    <fieldText>&lt;p&gt;Eier: {!getRequest.OwnerName__c} &lt;/p&gt;&lt;p&gt;&lt;br&gt;&lt;/p&gt;</fieldText>
+                    <fieldText>&lt;p&gt;Eier: {!getRequest.OwnerName__c}&lt;/p&gt;</fieldText>
                     <fieldType>DisplayText</fieldType>
                 </fields>
                 <fields>
@@ -1427,8 +1443,10 @@ CONTAINS({!ChosenFieldsOwner}, {!Subject})
                     <choiceReferences>VestfoldOgTelemark</choiceReferences>
                     <choiceReferences>Vestland</choiceReferences>
                     <choiceReferences>Ostviken</choiceReferences>
+                    <choiceReferences>FellesoppdragVestViken</choiceReferences>
+                    <choiceReferences>NavAkuttvaktTolk</choiceReferences>
                     <dataType>String</dataType>
-                    <fieldText>Owner list picklist</fieldText>
+                    <fieldText>Ny eier:</fieldText>
                     <fieldType>DropdownBox</fieldType>
                     <inputsOnNextNavToAssocScrn>UseStoredValues</inputsOnNextNavToAssocScrn>
                     <isRequired>true</isRequired>
