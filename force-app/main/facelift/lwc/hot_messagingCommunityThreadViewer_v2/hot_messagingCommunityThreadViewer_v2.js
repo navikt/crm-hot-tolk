@@ -652,10 +652,10 @@ export default class Hot_messagingCommunityThreadViewer_v2 extends NavigationMix
                                 }
                                 if (
                                     this.serviceAppointment.HOT_Request__r.Account__r.CRM_Person__r
-                                        .INT_KrrMobilePhone__c !== undefined
+                                        .HOT_MobilePhone__c !== undefined
                                 ) {
                                     this.accountPhoneNumber =
-                                        this.serviceAppointment.HOT_Request__r.Account__r.CRM_Person__r.INT_KrrMobilePhone__c;
+                                        this.serviceAppointment.HOT_Request__r.Account__r.CRM_Person__r.HOT_MobilePhone__c;
                                 }
                             }
                             if (
@@ -666,10 +666,10 @@ export default class Hot_messagingCommunityThreadViewer_v2 extends NavigationMix
                             ) {
                                 if (
                                     this.serviceAppointment.HOT_Request__r.Orderer__r.CRM_Person__r
-                                        .INT_KrrMobilePhone__c !== undefined
+                                        .HOT_MobilePhone__c !== undefined
                                 ) {
                                     this.ordererPhoneNumber =
-                                        this.serviceAppointment.HOT_Request__r.Orderer__r.CRM_Person__r.INT_KrrMobilePhone__c;
+                                        this.serviceAppointment.HOT_Request__r.Orderer__r.CRM_Person__r.HOT_MobilePhone__c;
                                 }
                             }
                             this.isOtherProvider = this.serviceAppointment.HOT_Request__r.IsOtherEconomicProvicer__c
