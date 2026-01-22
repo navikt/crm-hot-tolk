@@ -278,6 +278,10 @@
         </itemInstances>
         <itemInstances>
             <fieldInstance>
+                <fieldInstanceProperties>
+                    <name>uiBehavior</name>
+                    <value>none</value>
+                </fieldInstanceProperties>
                 <fieldItem>Record.HOT_PreparationTime__c</fieldItem>
                 <identifier>RecordHOT_PreparationTime__cField</identifier>
             </fieldInstance>
@@ -770,7 +774,7 @@
                         <operator>CONTAINS</operator>
                         <rightValue>Formidler</rightValue>
                     </criteria>
-                     <criteria>
+                    <criteria>
                         <leftValue>{!Record.Contact.Account.CRM_Person__r.INT_Confidential__c}</leftValue>
                         <operator>EQUAL</operator>
                         <rightValue>UGRADERT</rightValue>
@@ -814,17 +818,15 @@
         <itemInstances>
             <componentInstance>
                 <componentInstanceProperties>
-                    <name>decorate</name>
-                    <value>true</value>
+                    <name>message</name>
+                    <value>Oppdraget ble avlyst mindre enn 48 timer før start.</value>
                 </componentInstanceProperties>
                 <componentInstanceProperties>
-                    <name>richTextValue</name>
-                    <value>&lt;p style=&quot;text-align: center;&quot;&gt;&lt;strong
-                        style=&quot;font-size: 14px; color: rgb(0, 0, 255);&quot;&gt;INFO: Oppdraget
-                        ble avlyst mindre enn 48 timer før start.&lt;/strong&gt;&lt;/p&gt;</value>
+                    <name>type</name>
+                    <value>Info</value>
                 </componentInstanceProperties>
-                <componentName>flexipage:richText</componentName>
-                <identifier>flexipage_richText</identifier>
+                <componentName>hot_alertBanner</componentName>
+                <identifier>c_hot_alertBanner2</identifier>
                 <visibilityRule>
                     <booleanFilter>1 AND 2</booleanFilter>
                     <criteria>
@@ -843,17 +845,15 @@
         <itemInstances>
             <componentInstance>
                 <componentInstanceProperties>
-                    <name>decorate</name>
-                    <value>true</value>
+                    <name>message</name>
+                    <value>Oppdraget ble avlyst mindre enn 30 minutter før start.</value>
                 </componentInstanceProperties>
                 <componentInstanceProperties>
-                    <name>richTextValue</name>
-                    <value>&lt;p style=&quot;text-align: center;&quot;&gt;&lt;strong
-                        style=&quot;font-size: 14px; color: rgb(0, 0, 255);&quot;&gt;INFO: Oppdraget
-                        ble avlyst mindre enn 30 minutter før start.&lt;/strong&gt;&lt;/p&gt;</value>
+                    <name>type</name>
+                    <value>Info</value>
                 </componentInstanceProperties>
-                <componentName>flexipage:richText</componentName>
-                <identifier>flexipage_richText2</identifier>
+                <componentName>hot_alertBanner</componentName>
+                <identifier>c_hot_alertBanner</identifier>
                 <visibilityRule>
                     <booleanFilter>1 AND 2</booleanFilter>
                     <criteria>
