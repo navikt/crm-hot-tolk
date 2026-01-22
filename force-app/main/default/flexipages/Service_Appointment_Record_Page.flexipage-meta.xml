@@ -823,7 +823,7 @@
                 </componentInstanceProperties>
                 <componentInstanceProperties>
                     <name>type</name>
-                    <value>Info</value>
+                    <value>Warning</value>
                 </componentInstanceProperties>
                 <componentName>hot_alertBanner</componentName>
                 <identifier>c_hot_alertBanner2</identifier>
@@ -850,7 +850,7 @@
                 </componentInstanceProperties>
                 <componentInstanceProperties>
                     <name>type</name>
-                    <value>Info</value>
+                    <value>Warning</value>
                 </componentInstanceProperties>
                 <componentName>hot_alertBanner</componentName>
                 <identifier>c_hot_alertBanner</identifier>
