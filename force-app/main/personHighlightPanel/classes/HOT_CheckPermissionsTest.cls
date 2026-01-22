@@ -21,21 +21,21 @@ public without sharing class HOT_CheckPermissionsTest {
         Test.stopTest();
     }
     @isTest
-    static void HOT_CheckAnsattTest() {
+    static void HOT_CheckFormidlerTest() {
         Boolean hasPermission;
         Test.startTest();
         //Run as system admin user without permission set
-        hasPermission = HOT_CheckPermissions.hasAnsattTolkPermission();
+        hasPermission = HOT_CheckPermissions.hasFormidlerPermission();
         system.assertEquals(false, hasPermission, 'Expected false for user profile.');
 
         //Assign permission set and run again
-        PermissionSet ps = [SELECT Id FROM PermissionSet WHERE Name = 'HOT_Tolk_Ansatt'];
+        PermissionSet ps = [SELECT Id FROM PermissionSet WHERE Name = 'HOT_Tolk_Formidler'];
         PermissionSetAssignment permissionSetAssignment = new PermissionSetAssignment(
             AssigneeId = UserInfo.getUserId(),
             PermissionSetId = ps.Id
         );
         insert permissionSetAssignment;
-        hasPermission = HOT_CheckPermissions.hasAnsattTolkPermission();
+        hasPermission = HOT_CheckPermissions.hasFormidlerPermission();
         system.assertEquals(true, hasPermission, 'Expected true for user profile.');
         Test.stopTest();
     }

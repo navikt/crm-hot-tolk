@@ -3,7 +3,14 @@ public without sharing class HOT_UserInformationController {
     public static Person__c getPersonPhoneEmailAndStatus() {
         User currentUser = [SELECT Id, AccountId, Account.CRM_Person__c FROM User WHERE Id = :UserInfo.getUserId()];
         Person__c person = [
-            SELECT Id, INT_KrrEmail__c, HOT_MobilePhone__c, INT_KrrIntegrationStatus__c
+            SELECT
+                Id,
+                INT_KrrEmail__c,
+                HOT_MobilePhone__c,
+                INT_KrrMobilePhone__c,
+                HOT_MobilePhoneOverrideReason__c,
+                HOT_MobilePhoneOverride__c,
+                INT_KrrIntegrationStatus__c
             FROM Person__c
             WHERE Id = :currentUser.Account.CRM_Person__c
         ];
@@ -45,8 +52,11 @@ public without sharing class HOT_UserInformationController {
                 HOT_NotificationChannel__c,
                 HOT_IsReservationAgainstNotifications__c,
                 INT_KrrEmail__c,
-                HOT_MobilePhone__c, 
-                INT_KrrIntegrationStatus__c
+                HOT_MobilePhone__c,
+                HOT_MobilePhoneOverride__c,
+                INT_KrrIntegrationStatus__c,
+                INT_KrrMobilePhone__c,
+                HOT_MobilePhoneOverrideReason__c
             FROM Person__c
             WHERE Id = :currentUser.Account.CRM_Person__c
         ];
