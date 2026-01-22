@@ -418,6 +418,26 @@
                 </fieldInstanceProperties>
                 <fieldItem>Record.HOT_LateCancellation__c</fieldItem>
                 <identifier>RecordHOT_LateCancellation__cField</identifier>
+                <visibilityRule>
+                    <criteria>
+                        <leftValue>{!Record.HOT_WorkOrderLineItem__r.WorkOrder.Status}</leftValue>
+                        <operator>EQUAL</operator>
+                        <rightValue>Canceled</rightValue>
+                    </criteria>
+                </visibilityRule>
+            </fieldInstance>
+        </itemInstances>
+        <itemInstances>
+            <fieldInstance>
+                <fieldItem>Record.HOT_WorkOrderLineItem__r.WorkOrder.CanceledDate__c</fieldItem>
+                <identifier>RecordHOT_WorkOrderLineItem_rWorkOrderCanceledDate_cField</identifier>
+                <visibilityRule>
+                    <criteria>
+                        <leftValue>{!Record.HOT_WorkOrderLineItem__r.WorkOrder.Status}</leftValue>
+                        <operator>EQUAL</operator>
+                        <rightValue>Canceled</rightValue>
+                    </criteria>
+                </visibilityRule>
             </fieldInstance>
         </itemInstances>
         <name>Facet-9076d0db-a5a7-442a-b012-cb35bc98b822</name>
