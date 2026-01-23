@@ -282,7 +282,6 @@ export default class Hot_interestedResourcesList_v2 extends NavigationMixin(Ligh
                     let relaseDateTimeFormatted = new Date(
                         this.interestedResource.ServiceAppointment__r.HOT_ReleaseDate__c
                     );
-                    this.interestedResource.canceledDate =  
                     this.interestedResource.releasedate =
                         relaseDateTimeFormatted.getDate() +
                         '.' +
@@ -492,7 +491,22 @@ export default class Hot_interestedResourcesList_v2 extends NavigationMixin(Ligh
     }
 
     get canceledDate() {
-        return this.interestedResource?.WorkOrderCanceledDate__c || '';
+        if (!this.interestedResource?.WorkOrderCanceledDate__c) {
+            return '';
+        }
+
+        const d = new Date(this.interestedResource.WorkOrderCanceledDate__c);
+        return (
+            d.getDate() +
+            '.' +
+            (d.getMonth() + 1) +
+            '.' +
+            d.getFullYear() +
+            ', ' +
+            ('0' + d.getHours()).slice(-2) +
+            ':' +
+            ('0' + d.getMinutes()).slice(-2)
+        );
     }
 
     get terms() {
