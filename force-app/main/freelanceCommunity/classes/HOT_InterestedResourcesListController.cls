@@ -181,7 +181,7 @@ public without sharing class HOT_InterestedResourcesListController {
         }
         Id currentUserAccountId = [SELECT AccountId FROM User WHERE Id = :UserInfo.getUserId()].AccountId;
 
-        // Hent siste HistoricalAssignedResource for denne ServiceAppointment
+        // Hent avlys interestedresource for denne ServiceAppointment
         List<HOT_InterestedResource__c> lastAssignedResource = [
             SELECT Id, ServiceResource__r.AccountId
             FROM HOT_InterestedResource__c
@@ -190,8 +190,6 @@ public without sharing class HOT_InterestedResourcesListController {
                 AND ServiceAppointment__r.HOT_LateCancellation__c = TRUE
                 AND ServiceResource__r.AccountId = :currentUserAccountId
                 AND Status__c = 'Canceled'
-            ORDER BY CreatedDate DESC
-            LIMIT 1
         ];
 
         if (!lastAssignedResource.isEmpty()) {
