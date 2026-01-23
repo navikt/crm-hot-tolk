@@ -72,6 +72,9 @@
                             <p><strong>Tid:</strong> {it.value.StartAndEndDate}</p>
                             <p><strong>Adresse:</strong> {it.value.HOT_AddressFormated__c}</p>
                             <p><strong>Tolkemetode:</strong> {it.value.HOT_WorkTypeName__c}</p>
+                            <p lwc:if={it.value.HOT_PreparationTime__c}>
+                                <strong>Forberedelsestid:</strong> {it.value.HOT_PreparationTime__c}
+                            </p>
                             <p><strong>Oppdragstype:</strong> {it.value.HOT_AssignmentType__c}</p>
                             <p><strong>Frigitt av:</strong> {it.value.HOT_ReleasedBy__c}</p>
                             <p><strong>Frigitt dato:</strong> {it.value.ReleaseDate}</p>
@@ -79,9 +82,6 @@
                             <p><strong>Annen betaler:</strong> {it.isOtherProvider}</p>
                             <p><strong>Region:</strong> {it.value.HOT_ServiceTerritoryName__c}</p>
                             <p><strong>Frist dato:</strong> {it.value.HOT_DeadlineDate__c}</p>
-                            <p lwc:if={it.value.HOT_PreparationTime__c}>
-                                <strong>Forberedelsestid:</strong> {it.value.HOT_PreparationTime__c}
-                            </p>
 
                             <label for="Comments__c">Start samtale med formidler</label>
                             <lightning-input-field
@@ -181,6 +181,9 @@
                 <p><strong>Tid:</strong> {serviceAppointment.weekday} {serviceAppointment.StartAndEndDate}</p>
                 <p><strong>Adresse:</strong> {serviceAppointment.HOT_AddressFormated__c}</p>
                 <p><strong>Tolkemetode:</strong> {serviceAppointment.HOT_WorkTypeName__c}</p>
+                <p lwc:if={serviceAppointment.HOT_PreparationTime__c}>
+                    <strong>Forberedelsestid:</strong> {serviceAppointment.HOT_PreparationTime__c}
+                </p>
                 <p><strong>Oppdragstype:</strong> {serviceAppointment.HOT_AssignmentType__c}</p>
                 <p><strong>Frigitt av:</strong> {serviceAppointment.HOT_ReleasedBy__c}</p>
                 <p><strong>Frigitt dato:</strong> {serviceAppointment.ReleaseDate}</p>
@@ -188,9 +191,7 @@
                 <p><strong>Annen betaler:</strong> {serviceAppointment.isOtherProvider}</p>
                 <p><strong>Eier:</strong> {serviceAppointment.HOT_Request__r.OwnerName__c}</p>
                 <p><strong>Frist dato:</strong> {serviceAppointment.HOT_DeadlineDate__c}</p>
-                <p lwc:if={serviceAppointment.HOT_PreparationTime__c}>
-                    <strong>Forberedelsestid:</strong> {serviceAppointment.HOT_PreparationTime__c}
-                </p>
+
                 <br />
                 <div lwc:if={isSeries}>
                     <c-button
