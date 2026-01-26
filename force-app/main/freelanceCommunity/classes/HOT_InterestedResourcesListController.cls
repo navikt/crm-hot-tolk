@@ -179,24 +179,38 @@ public without sharing class HOT_InterestedResourcesListController {
         if (saId == null) {
             return false;
         }
+
         Id currentUserAccountId = [SELECT AccountId FROM User WHERE Id = :UserInfo.getUserId()].AccountId;
 
-        // Hent avlys interestedresource for denne ServiceAppointment
-        List<HOT_InterestedResource__c> lastAssignedResource = [
-            SELECT Id, ServiceResource__r.AccountId
-            FROM HOT_InterestedResource__c
+        List<HOT_HistoricallyAssignedResource__c> historicResources = [
+            SELECT Id, ServiceResource__c
+            FROM HOT_HistoricallyAssignedResource__c
             WHERE
                 ServiceAppointment__c = :saId
                 AND ServiceAppointment__r.HOT_LateCancellation__c = TRUE
                 AND ServiceResource__r.AccountId = :currentUserAccountId
-                AND Status__c = 'Canceled'
+                AND (Status__c = 'Tolk tatt av oppdraget'
+                OR Status__c = 'Avlyst av bruker')
+            ORDER BY CreatedDate DESC
+            LIMIT 1
         ];
 
-        if (!lastAssignedResource.isEmpty()) {
-            return true;
-        } else {
+        if (historicResources.isEmpty()) {
             return false;
         }
+
+        HOT_HistoricallyAssignedResource__c lastHistoric = historicResources[0];
+
+        Integer nonReservedInterestedCount = [
+            SELECT COUNT()
+            FROM HOT_InterestedResource__c
+            WHERE
+                ServiceAppointment__c = :saId
+                AND ServiceResource__c = :lastHistoric.ServiceResource__c
+                AND Status__c != 'Reserved'
+        ];
+
+        return nonReservedInterestedCount > 0;
     }
 
     @AuraEnabled
