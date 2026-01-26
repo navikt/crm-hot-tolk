@@ -648,6 +648,16 @@ Version two adds in Subject and uses workOrder for values on the screen instead 
             <targetReference>NewValuesScreen</targetReference>
         </connector>
         <fields>
+            <name>displayWarningText</name>
+            <fieldText>&lt;p&gt;&lt;span style=&quot;font-size: 16px;&quot;&gt;OBS! Ved å endre verdiene her så endrer du verdiene på alle underliggende arbeidsordrelinjer og oppdrag.&lt;/span&gt;&lt;/p&gt;</fieldText>
+            <fieldType>DisplayText</fieldType>
+        </fields>
+        <fields>
+            <name>displayTimeText</name>
+            <fieldText>&lt;p&gt;&lt;span style=&quot;background-color: rgb(255, 255, 255);&quot;&gt;Tid (Kan bare endres om status på oppdrag er åpen eller frigitt til frilanstolk).&lt;/span&gt;&lt;/p&gt;</fieldText>
+            <fieldType>DisplayText</fieldType>
+        </fields>
+        <fields>
             <name>ChosenFields</name>
             <choiceReferences>Address</choiceReferences>
             <choiceReferences>Description</choiceReferences>

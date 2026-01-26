@@ -20,6 +20,8 @@ public without sharing class HOT_UpdateChildRecordsService {
     @InvocableVariable
     public Boolean isOwnerChoice;
     @InvocableVariable
+    public Boolean isServiceTerritoryChoice; 
+    @InvocableVariable
     public Boolean isDateChoice;
 
     @InvocableMethod
@@ -43,6 +45,7 @@ public without sharing class HOT_UpdateChildRecordsService {
             ? false
             : input.isInterpreterMethodChoice;
         input.isOwnerChoice = (input.isOwnerChoice == null) ? false : input.isOwnerChoice;
+        input.isServiceTerritoryChoice = (input.isServiceTerritoryChoice == null) ? false : input.isServiceTerritoryChoice;
         input.isDateChoice = (input.isDateChoice == null) ? false : input.isDateChoice;
 
         List<String> errors = new List<String>();
@@ -176,6 +179,7 @@ public without sharing class HOT_UpdateChildRecordsService {
                 input.isDispatcherChoice,
                 input.isInterpreterMethodChoice,
                 input.isOwnerChoice,
+                input.isServiceTerritoryChoice,
                 input.isDateChoice
             );
             if (error != null) {
@@ -190,6 +194,7 @@ public without sharing class HOT_UpdateChildRecordsService {
                 input.isDescriptionChoice,
                 input.isInterpreterMethodChoice,
                 input.isOwnerChoice,
+                input.isServiceTerritoryChoice,
                 input.isDateChoice
             );
             if (error != null) {
@@ -206,6 +211,7 @@ public without sharing class HOT_UpdateChildRecordsService {
                 input.isSubjectChoice,
                 input.isDescriptionChoice,
                 input.isInterpreterMethodChoice,
+                input.isServiceTerritoryChoice,
                 input.isOwnerChoice
             );
             if (error != null) {
@@ -226,6 +232,7 @@ public without sharing class HOT_UpdateChildRecordsService {
                 input.isDispatcherChoice,
                 input.isInterpreterMethodChoice,
                 input.isOwnerChoice,
+                input.isServiceTerritoryChoice,
                 input.isDateChoice
             );
             if (error != null) {
@@ -246,6 +253,7 @@ public without sharing class HOT_UpdateChildRecordsService {
                 input.isDescriptionChoice,
                 input.isInterpreterMethodChoice,
                 input.isOwnerChoice,
+                input.isServiceTerritoryChoice,
                 input.isDateChoice
             );
             if (error != null) {
@@ -258,7 +266,8 @@ public without sharing class HOT_UpdateChildRecordsService {
                 input.isSubjectChoice,
                 input.isDescriptionChoice,
                 input.isInterpreterMethodChoice,
-                input.isOwnerChoice
+                input.isOwnerChoice,
+                input.isServiceTerritoryChoice
             );
             if (error != null) {
                 if (errorOutput == null || errorOutput == '') {
@@ -278,6 +287,7 @@ public without sharing class HOT_UpdateChildRecordsService {
                 input.isDispatcherChoice,
                 input.isInterpreterMethodChoice,
                 input.isOwnerChoice,
+                input.isServiceTerritoryChoice,
                 input.isDateChoice
             );
             if (error != null) {
@@ -306,6 +316,7 @@ public without sharing class HOT_UpdateChildRecordsService {
         Boolean isDispatcherChoice,
         Boolean isInterpreterMethodChoice,
         Boolean isOwnerChoice,
+        Boolean isServiceTerritoryChoice,
         Boolean isDateChoice
     ) {
         HOT_Request__c requestToUpdate = new HOT_Request__c(Id = request.Id);
@@ -341,8 +352,14 @@ public without sharing class HOT_UpdateChildRecordsService {
         }
         if (isOwnerChoice) {
             requestToUpdate.OwnerId = request.OwnerId;
-            requestToUpdate = setServiceTerritory(requestToUpdate);
-            request.ServiceTerritory__c = requestToUpdate.ServiceTerritory__c;
+
+            if (!skipServiceTerritoryForSpecificOwners(request.OwnerId)) {
+                requestToUpdate = setServiceTerritory(requestToUpdate);
+                request.ServiceTerritory__c = requestToUpdate.ServiceTerritory__c;
+            }
+        }
+        if(isServiceTerritoryChoice) {
+            requestToUpdate.ServiceTerritory__c = request.ServiceTerritory__c;
         }
         if (isDateChoice) {
             requestToUpdate.StartTime__c = request.StartTime__c;
@@ -369,6 +386,7 @@ public without sharing class HOT_UpdateChildRecordsService {
         Boolean isDescriptionChoice,
         Boolean isInterpreterMethodChoice,
         Boolean isOwnerChoice,
+        Boolean isServiceTerritoryChoice,
         Boolean isDateChoice
     ) {
         String error;
@@ -398,6 +416,9 @@ public without sharing class HOT_UpdateChildRecordsService {
                 workOrder.OwnerId = request.OwnerId;
                 workOrder.ServiceTerritoryId = request.ServiceTerritory__c;
             }
+            if(isServiceTerritoryChoice) {
+                workOrder.ServiceTerritoryId = request.ServiceTerritory__c;
+            }
             if (isDateChoice) {
                 workOrder.StartDate = request.StartTime__c;
                 workOrder.EndDate = request.EndTime__c;
@@ -421,6 +442,7 @@ public without sharing class HOT_UpdateChildRecordsService {
         Boolean isSubjectChoice,
         Boolean isDescriptionChoice,
         Boolean isInterpreterMethodChoice,
+        Boolean isServiceTerritoryChoice,
         Boolean isOwnerChoice
     ) {
         String error;
@@ -443,6 +465,9 @@ public without sharing class HOT_UpdateChildRecordsService {
                 workOrderLineItem.WorkTypeId = request.InterpretationMethod__c;
             }
             if (isOwnerChoice) {
+                workOrderLineItem.ServiceTerritoryId = request.ServiceTerritory__c;
+            }
+            if(isServiceTerritoryChoice) {
                 workOrderLineItem.ServiceTerritoryId = request.ServiceTerritory__c;
             }
         }
@@ -469,6 +494,7 @@ public without sharing class HOT_UpdateChildRecordsService {
         Boolean isDispatcherChoice,
         Boolean isInterpreterMethodChoice,
         Boolean isOwnerChoice,
+        Boolean isServiceTerritoryChoice,
         Boolean isDateChoice
     ) {
         String error;
@@ -504,6 +530,9 @@ public without sharing class HOT_UpdateChildRecordsService {
                 serviceAppointment.OwnerId = request.OwnerId;
                 serviceAppointment.ServiceTerritoryId = request.ServiceTerritory__c;
             }
+            if(isServiceTerritoryChoice) {
+                serviceAppointment.ServiceTerritoryId = request.ServiceTerritory__c;
+            }
             if (isDateChoice) {
                 serviceAppointment.EarliestStartTime = request.StartTime__c;
                 serviceAppointment.DueDate = request.EndTime__c;
@@ -521,6 +550,19 @@ public without sharing class HOT_UpdateChildRecordsService {
         return error;
     }
 
+    // Exclude specific owners from service territory propagation
+    private static Boolean skipServiceTerritoryForSpecificOwners(Id ownerId) {
+        Group owner = [
+            SELECT Name
+            FROM Group
+            WHERE Id = :ownerId
+            LIMIT 1
+        ];
+
+        return owner.Name == 'NAV Akuttvakt Tolk' || owner.Name == 'Fellesoppdrag Vest-Viken';
+    }
+
+
     public static HOT_Request__c setServiceTerritory(HOT_Request__c request) {
         List<HOT_ServiceTerritoryByQueue__mdt> serviceTerritoryByQueueList = HOT_ServiceTerritoryByQueue__mdt.getAll()
             .values();
@@ -533,6 +575,7 @@ public without sharing class HOT_UpdateChildRecordsService {
             FROM Group
             WHERE Type = 'Queue' AND DeveloperName IN :serviceTerritoryByQueue.keySet()
         ];
+
         List<ServiceTerritory> serviceTerritories = [
             SELECT Id, Name, HOT_DeveloperName__c
             FROM ServiceTerritory
@@ -540,6 +583,7 @@ public without sharing class HOT_UpdateChildRecordsService {
         ];
         Map<Id, Id> serviceTerritoryIdByQueueId = new Map<Id, Id>();
         for (Group queue : queues) {
+            
             for (ServiceTerritory serviceTerritory : serviceTerritories) {
                 if (serviceTerritoryByQueue.get(queue.DeveloperName) == serviceTerritory.HOT_DeveloperName__c) {
                     serviceTerritoryIdByQueueId.put(queue.Id, serviceTerritory.Id);
