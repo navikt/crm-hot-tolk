@@ -113,32 +113,23 @@ public without sharing class HOT_InterestedResourcesListController {
         interestedResource.Status__c = 'Interested';
         update interestedResource;
     }
-
     @AuraEnabled
-    public static Thread__c startAThreadAndAddComment(Id interestedResourceId, String newComment, Id userContactId) {
-        HOT_InterestedResource__c ir = [
-            SELECT
-                Id,
-                ServiceResource__r.AccountId,
-                ServiceAppointment__r.Subject,
-                ServiceAppointment__r.HOT_Account__c,
-                ServiceAppointment__r.HOT_Request__r.Dispatcher__c
-            FROM HOT_InterestedResource__c
-            WHERE Id = :interestedResourceId
-        ];
+    public static Thread__c buildThread(HOT_InterestedResource__c ir, Id userContactId) {
         Thread__c thread = new Thread__c();
         thread.CRM_Thread_Type__c = 'HOT_TOLK-FORMIDLER';
-        thread.CRM_Related_Object__c = interestedResourceId;
+        thread.CRM_Related_Object__c = ir.Id;
         thread.HOT_Title__c = ir.ServiceAppointment__r.Subject;
         thread.CRM_Account__c = ir.ServiceResource__r.AccountId;
-        thread.HOT_InterestedResource__c = interestedResourceId;
+        thread.HOT_InterestedResource__c = ir.Id;
         thread.HOT_Account__c = ir.ServiceAppointment__r.HOT_Account__c;
         thread.RecordTypeId = HOT_MessageHelper.getHOTThreadRecordType();
         thread.HOT_Dispatcher__c = ir.ServiceAppointment__r.HOT_Request__r.Dispatcher__c;
+
         if (userContactId != null) {
             thread.HOT_Thread_read_by__c = userContactId + ';';
             thread.CRM_Latest_Message_Datetime__c = Datetime.now();
         }
+
         return thread;
     }
 
