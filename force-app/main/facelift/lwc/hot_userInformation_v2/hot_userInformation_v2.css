@@ -148,11 +148,21 @@ a.lenke:focus {
     border-radius: 0.25rem;
     color: #3e3832;
 }
+.alertstripe__content {
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+}
 
 .navno-dekorator.alertstripe--advarsel {
     border: 1px solid #ff9100;
     background-color: #ffe9cc;
-    margin-bottom: 0.2rem;
+    margin-top: 0.8rem;
+}
+.navno-dekorator.alertstripe--info {
+    border: 1px solid #368da8;
+    background-color: #d8f9ff;
+    margin-bottom: 1rem;
 }
 
 .navno-dekorator.alertstripe--success {
