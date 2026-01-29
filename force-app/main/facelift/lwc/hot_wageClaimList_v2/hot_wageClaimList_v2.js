@@ -1,7 +1,6 @@
 import { LightningElement, wire, api } from 'lwc';
 import { refreshApex } from '@salesforce/apex';
 import getMyWageClaims from '@salesforce/apex/HOT_WageClaimListController.getMyWageClaims';
-import retractAvailability from '@salesforce/apex/HOT_WageClaimListController.retractAvailability';
 import getThreadId from '@salesforce/apex/HOT_WageClaimListController.getThreadId';
 import createThread from '@salesforce/apex/HOT_MessageHelper.createThread';
 import { getParametersFromURL } from 'c/hot_URIDecoder';
@@ -44,9 +43,7 @@ export default class Hot_wageClaimList_v2 extends NavigationMixin(LightningEleme
     }
 
     status;
-    isNotRetractable = false;
     isDisabledGoToThread = false;
-    isRetracting = false;
 
     dataLoader = true;
     noWageClaims = false;
@@ -126,7 +123,6 @@ export default class Hot_wageClaimList_v2 extends NavigationMixin(LightningEleme
     wageClaim;
     isWageClaimDetails = false;
     goToRecordDetails(result) {
-        this.isRetracting = false;
         this.hasAccess = true;
         this.isDisabledGoToThread = false;
         this.showServiceAppointmentDetails();
@@ -134,11 +130,6 @@ export default class Hot_wageClaimList_v2 extends NavigationMixin(LightningEleme
         this.status = result.detail.Status__c;
         let recordId = result.detail.Id;
         this.recordId = recordId;
-        if (result.detail.Status__c == 'Åpen') {
-            this.isNotRetractable = false;
-        } else {
-            this.isNotRetractable = true;
-        }
         this.isWageClaimDetails = !!this.recordId;
         for (let wageClaim of this.wageClaims) {
             if (recordId === wageClaim.Id) {
@@ -156,7 +147,6 @@ export default class Hot_wageClaimList_v2 extends NavigationMixin(LightningEleme
                 this.isDisabledGoToThread = false;
                 this.hasAccess = true;
                 this.showServiceAppointmentDetails();
-                this.isNotRetractable = result.Status__c != 'Open';
                 this.wageClaim = result;
                 this.wageClaim = formatRecord(Object.assign({}, result), this.datetimeFields);
                 this.wageClaim.weekday = this.getDayOfWeek(this.wageClaim.StartTime__c);
@@ -225,22 +215,6 @@ export default class Hot_wageClaimList_v2 extends NavigationMixin(LightningEleme
     showModal() {
         this.template.querySelector('c-alertdialog').showModal();
     }
-    retractAvailability() {
-        try {
-            retractAvailability({ recordId: this.wageClaim.Id }).then(() => {
-                this.isNotRetractable = true;
-                this.isRetracting = false;
-                this.wageClaim.Status__c = 'Tilbaketrukket tilgjengelighet';
-                refreshApex(this.wiredWageClaimsResult);
-            });
-        } catch (error) {
-            alert(JSON.stringify(error));
-            this.modalHeader = 'Noe gikk galt';
-            this.modalContent = 'Kunne tilbaketrekke tilgjengelighet. Feilmelding: ' + error;
-            this.noCancelButton = true;
-            this.showModal();
-        }
-    }
 
     sendFilters() {
         const eventToSend = new CustomEvent('sendfilters', { detail: this.filters });
@@ -295,9 +269,6 @@ export default class Hot_wageClaimList_v2 extends NavigationMixin(LightningEleme
         const dialog = this.template.querySelector('dialog');
         dialog.showModal();
         dialog.focus();
-    }
-    showModalRetract() {
-        this.isRetracting = true;
     }
     showModal() {
         this.template.querySelector('c-alertdialog').showModal();

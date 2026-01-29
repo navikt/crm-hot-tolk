@@ -149,7 +149,7 @@ private class HOT_WorkOrderHandlerTest {
 
         HOT_Request__c request2 = HOT_TestDataFactory.createRequest('TEST', workType);
         insert request2;
-        request2.CanceledDate__c = Date.today().addDays(-1);
+        request2.CanceledDate__c = Datetime.now().addDays(-1);
         update request2;
 
         WorkOrder workOrder2 = HOT_TestDataFactory.createWorkOrder(request2, workType);
@@ -170,7 +170,7 @@ private class HOT_WorkOrderHandlerTest {
 
         System.assertEquals(
             true,
-            workOrders.get(workOrder1.Id).CanceledDate__c == Date.today(),
+            workOrders.get(workOrder1.Id).CanceledDate__c.date() == Date.today(),
             'Could not set CanceledDate'
         );
         System.assertEquals(
@@ -181,7 +181,7 @@ private class HOT_WorkOrderHandlerTest {
         );
         System.assertEquals(
             true,
-            workOrders.get(workOrder2.Id).CanceledDate__c == Date.today().addDays(-1),
+            workOrders.get(workOrder2.Id).CanceledDate__c.date() == Date.today().addDays(-1),
             'Could not set CanceledDate to correct CanceledDate'
         );
     }

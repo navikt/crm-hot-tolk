@@ -55,57 +55,15 @@
             <template lwc:if={wageClaim}>
                 <p><strong>Status:</strong> {wageClaim.Status__c}</p>
             </template>
-
-            <template lwc:if={isRetracting}>
-                <div class="navno-dekorator alertstripe navno-dekorator alertstripe--advarsel" role="alert">
-                    <img class="navno-dekorator alertstripe__ikon" src={warningicon} alt="" />
-                    <div class="alertstripe__innhold">
-                        <div class="typo-normal alertstripe__tekst">
-                            Er du sikker på at du vil fjerne tilgjengeligheten din for dette tidspunktet? Du vil da ikke
-                            ha krav på lønn.
-                        </div>
-                        <div class="alertstripe__knapper alerts-wage-buttons">
-                            <c-button
-                                disabled={isNotRetractable}
-                                button-styling="danger"
-                                button-label="Tilbaketrekk tilgjengelighet"
-                                aria-label="Tilbaketrekk tilgjengelighet"
-                                onbuttonclick={retractAvailability}
-                            ></c-button>
-
-                            <c-button
-                                disabled={isDisabledGoToThread}
-                                button-styling="primary"
-                                button-label="Avbryt"
-                                aria-label="Avbryt"
-                                mobile-style="width: 5rem; justify-content: center;"
-                                onbuttonclick={cancelRetraction}
-                            ></c-button>
-                        </div>
-                    </div>
-                </div>
-            </template>
-            <template lwc:else>
-                <div style="display: inline-block; padding-right: 1vw; padding-top: 1rem">
-                    <c-button
-                        disabled={isNotRetractable}
-                        button-styling="primary"
-                        button-label="Tilbaketrekk tilgjengelighet"
-                        aria-label="Tilbaketrekk tilgjengelighet"
-                        onbuttonclick={showModalRetract}
-                    ></c-button>
-                </div>
-
-                <div style="display: inline-block; padding-top: 1rem">
-                    <c-button
-                        disabled={isDisabledGoToThread}
-                        button-styling="primary"
-                        button-label="Samtale med ressurskontor"
-                        aria-label="Samtale med ressurskontor"
-                        onbuttonclick={goToWageClaimThread}
-                    ></c-button>
-                </div>
-            </template>
+            <div style="display: inline-block; padding-top: 1rem">
+                <c-button
+                    disabled={isDisabledGoToThread}
+                    button-styling="primary"
+                    button-label="Samtale med ressurskontor"
+                    aria-label="Samtale med ressurskontor"
+                    onbuttonclick={goToWageClaimThread}
+                ></c-button>
+            </div>
         </div>
     </dialog>
 

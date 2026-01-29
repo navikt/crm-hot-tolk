@@ -48,8 +48,25 @@
                         <p><strong>Tid:</strong> {time}</p>
                         <p><strong>Adresse:</strong> {address}</p>
                         <p><strong>Tolkemetode:</strong> {workType}</p>
+                        <p lwc:if={preparationTime}><strong>Forberedelsestid: </strong> {preparationTime}</p>
                         <p><strong>Oppdragstype:</strong> {assignmentType}</p>
                         <p><strong>Status:</strong> {status}</p>
+                        <div
+                            lwc:if={isHistoricallyAssignedResourceAndLateCancellation}
+                            class="navno-dekorator alertstripe navno-dekorator alertstripe--info"
+                        >
+                            <img
+                                class="navno-dekorator alertstripe__ikon"
+                                src={informationIcon}
+                                alt=""
+                                aria-hidden="true"
+                            />
+                            <div class="alertstripe__content">
+                                <div class="typo-normal alertstripe__tekst">
+                                    Oppdraget ble avlyst på et tidspunkt som kan medføre rett til honorar.
+                                </div>
+                            </div>
+                        </div>
                         <p><strong>Antall påmeldte:</strong> {numberOfResources}</p>
                         <p><strong>Frigitt dato:</strong> {releaseDate}</p>
                         <p><strong>Frigitt av:</strong> {releasedBy}</p>

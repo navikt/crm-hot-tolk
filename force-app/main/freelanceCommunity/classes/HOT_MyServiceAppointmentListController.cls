@@ -99,7 +99,8 @@ public without sharing class HOT_MyServiceAppointmentListController {
                     toLabel(Status),
                     Subject,
                     HOT_Interpreters__c,
-                    HOT_TotalNumberOfInterpreters__c
+                    HOT_TotalNumberOfInterpreters__c,
+                    HOT_PreparationTime__c
                 FROM ServiceAppointment
                 WHERE Id = :recordId
             ];
@@ -168,6 +169,7 @@ public without sharing class HOT_MyServiceAppointmentListController {
                 SchedStartTime,
                 ServiceTerritory.Name,
                 Subject,
+                HOT_PreparationTime__c,
                 toLabel(Status),
                 (
                     SELECT Id, HOT_TermsOfAgreement__c

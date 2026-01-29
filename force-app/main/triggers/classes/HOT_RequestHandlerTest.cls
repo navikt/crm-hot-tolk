@@ -62,7 +62,7 @@ private class HOT_RequestHandlerTest {
             );
         }
 
-        System.assertEquals(Date.today(), request.CanceledDate__c, 'Cancel data was not set correct');
+        System.assertEquals(Date.today(), request.CanceledDate__c.date(), 'Cancel data was not set correct');
     }
 
     @IsTest
