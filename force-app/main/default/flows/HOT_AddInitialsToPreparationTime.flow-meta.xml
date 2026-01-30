@@ -50,14 +50,7 @@ LEFT({!$User.LastName}, 1)</expression>
         <connector>
             <targetReference>Assign_initials</targetReference>
         </connector>
-        <filterLogic>and</filterLogic>
-        <filters>
-            <field>HOT_PreparationTime__c</field>
-            <operator>IsChanged</operator>
-            <value>
-                <booleanValue>true</booleanValue>
-            </value>
-        </filters>
+        <filterFormula>ISBLANK({!$Record__Prior.HOT_PreparationTime__c}) &amp;&amp; NOT(ISBLANK({!$Record.HOT_PreparationTime__c}))</filterFormula>
         <object>WorkOrder</object>
         <recordTriggerType>Update</recordTriggerType>
         <triggerType>RecordBeforeSave</triggerType>
