@@ -41,6 +41,8 @@ public without sharing class HOT_InterestedResourcesListController {
                 ServiceAppointment__r.HOT_ReleasedBy__c,
                 ServiceAppointment__r.HOT_Request__r.OwnerName__c,
                 ServiceAppointment__r.HOT_Request__r.IsOtherEconomicProvicer__c,
+                ServiceAppointment__r.HOT_LateCancellation__c,
+                ServiceAppointment__r.HOT_PreparationTime__c,
                 AssignmentType__c,
                 AppointmentDeadlineDate__c,
                 AppointmentServiceTerritory__c,
@@ -163,6 +165,45 @@ public without sharing class HOT_InterestedResourcesListController {
         }
         return Id;
     }
+    @AuraEnabled(cacheable=true)
+    public static Boolean checkIfIsLastHistoricallyAssignedResource(Id saId) {
+        if (saId == null) {
+            return false;
+        }
+
+        Id currentUserAccountId = [SELECT AccountId FROM User WHERE Id = :UserInfo.getUserId()].AccountId;
+
+        List<HOT_HistoricallyAssignedResource__c> historicResources = [
+            SELECT Id, ServiceResource__c
+            FROM HOT_HistoricallyAssignedResource__c
+            WHERE
+                ServiceAppointment__c = :saId
+                AND ServiceAppointment__r.HOT_LateCancellation__c = TRUE
+                AND ServiceResource__r.AccountId = :currentUserAccountId
+                AND (Status__c = 'Tolk tatt av oppdraget'
+                OR Status__c = 'Avlyst av bruker')
+            ORDER BY CreatedDate DESC
+            LIMIT 1
+        ];
+
+        if (historicResources.isEmpty()) {
+            return false;
+        }
+
+        HOT_HistoricallyAssignedResource__c lastHistoric = historicResources[0];
+
+        Integer nonReservedInterestedCount = [
+            SELECT COUNT()
+            FROM HOT_InterestedResource__c
+            WHERE
+                ServiceAppointment__c = :saId
+                AND ServiceResource__c = :lastHistoric.ServiceResource__c
+                AND Status__c != 'Reserved'
+        ];
+
+        return nonReservedInterestedCount > 0;
+    }
+
     @AuraEnabled
     public static HOT_InterestedResource__c getInterestedResourceDetails(String recordId) {
         User currentUser = [SELECT Id, AccountId, Account.CRM_Person__c FROM User WHERE Id = :UserInfo.getUserId()];
@@ -181,6 +222,7 @@ public without sharing class HOT_InterestedResourcesListController {
                 ServiceAppointment__r.HOT_ReleasedBy__c,
                 ServiceAppointment__r.HOT_Request__r.OwnerName__c,
                 ServiceAppointment__r.HOT_Request__r.IsOtherEconomicProvicer__c,
+                ServiceAppointment__r.HOT_PreparationTime__c,
                 NumberOfInterestedResources__c,
                 AppointmentDeadlineDate__c,
                 AppointmentServiceTerritory__c,
