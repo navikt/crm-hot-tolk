@@ -1,7 +1,8 @@
 import { LightningElement, api, wire } from 'lwc';
 import { NavigationMixin } from 'lightning/navigation';
 import hasPermission from '@salesforce/apex/HOT_CheckPermissions.hasFreelancePermission';
-import isAnsatt from '@salesforce/apex/HOT_CheckPermissions.hasAnsattTolkPermission';
+import isFormidler from '@salesforce/apex/HOT_CheckPermissions.hasFormidlerPermission';
+import isFormidlerAdmin from '@salesforce/apex/HOT_CheckPermissions.hasFormidlerAdminPermission';
 
 export default class hot_personHighlightPanelBot extends NavigationMixin(LightningElement) {
     @api recordId;
@@ -12,13 +13,13 @@ export default class hot_personHighlightPanelBot extends NavigationMixin(Lightni
     currentFlow;
     fnr;
     hasPermission = false;
-    isAnsatt = false;
+    isFormidler = false;
+    isFormidlerAdmin = false;
 
     handleFlowButton(event) {
         this.currentFlow = event.target.dataset.flow;
         this.modalTitle = `Run ${this.currentFlow}`;
         this.isModalOpen = true;
-
         setTimeout(() => {
             const flow = this.template.querySelector('lightning-flow');
             if (flow) {
@@ -40,7 +41,11 @@ export default class hot_personHighlightPanelBot extends NavigationMixin(Lightni
 
     handleStatusChange(event) {
         if (event.detail.status === 'FINISHED' || event.detail.status === 'FINISHED_SCREEN') {
-            this.closeModal();
+            if (this.currentFlow === 'HOT_OverrideKRRMobilePhoneNumber') {
+                window.location.reload();
+            } else {
+                this.closeModal();
+            }
         }
     }
 
@@ -65,19 +70,28 @@ export default class hot_personHighlightPanelBot extends NavigationMixin(Lightni
             console.log('Frilans: ', this.hasPermission);
         }
         if (error) {
-            this.addErrorMessage('Error Checking permission set', error);
             console.error(error);
         }
     }
 
-    @wire(isAnsatt)
-    wiredAnsatt({ error, data }) {
+    @wire(isFormidler)
+    wiredIsFormidler({ error, data }) {
         if (data) {
-            this.isAnsatt = data;
-            console.log('Ansatt: ', this.isAnsatt);
+            this.isFormidler = data;
+            console.log('Formidler: ', this.isFormidler);
         }
         if (error) {
-            this.addErrorMessage('Error Checking permission set for Ansatt', error);
+            console.error(error);
+        }
+    }
+
+    @wire(isFormidlerAdmin)
+    wiredIsFormidlerAdmin({ error, data }) {
+        if (data) {
+            this.isFormidlerAdmin = data;
+            console.log('Formidler admin: ', this.isFormidlerAdmin);
+        }
+        if (error) {
             console.error(error);
         }
     }

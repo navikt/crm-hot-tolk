@@ -25,6 +25,16 @@
         </itemInstances>
         <itemInstances>
             <componentInstance>
+                <componentInstanceProperties>
+                    <name>relationshipField</name>
+                    <value>CRM_Person__c</value>
+                </componentInstanceProperties>
+                <componentName>hot_tindPersonHighlightPanel</componentName>
+                <identifier>c_hot_tindPersonHighlightPanel</identifier>
+            </componentInstance>
+        </itemInstances>
+        <itemInstances>
+            <componentInstance>
                 <componentName>hot_warningBannerAccount</componentName>
                 <identifier>hot_warningBannerAccount</identifier>
             </componentInstance>
