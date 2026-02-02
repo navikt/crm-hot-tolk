@@ -189,7 +189,7 @@ public without sharing class HOT_OpenServiceAppointmentListController {
 
         if (!interestedResoureIds.isEmpty()) {
             for (Thread__c t : [
-                SELECT Id, CRM_Related_Object__c
+                SELECT Id, CRM_Related_Object__c, CRM_Thread_Type__c
                 FROM Thread__c
                 WHERE CRM_Related_Object__c IN :interestedResoureIds
             ]) {
@@ -211,9 +211,8 @@ public without sharing class HOT_OpenServiceAppointmentListController {
             HOT_InterestedResource__c ir = serviceAppointmentToIR.get(saId);
 
             if (irIdToThread.containsKey(ir.Id)) {
-                messagesToInsert.add(
-                    HOT_MessageHelper.createMessages(irIdToThread.get(ir.Id).Id, comment, userContactId)
-                );
+                Thread__c t = irIdToThread.get(ir.Id);
+                messagesToInsert.add(HOT_MessageHelper.createMessages(t, comment, userContactId));
             } else {
                 Thread__c thread = HOT_InterestedResourcesListController.buildThread(ir, userContactId);
                 newThreads.add(thread);
@@ -226,9 +225,10 @@ public without sharing class HOT_OpenServiceAppointmentListController {
         }
 
         for (Thread__c t : newThreads) {
-            messagesToInsert.add(
-                HOT_MessageHelper.createMessages(t.Id, irIdToComment.get(t.CRM_Related_Object__c), userContactId)
-            );
+            String msg = irIdToComment.get(t.CRM_Related_Object__c);
+            if (String.isBlank(msg))
+                continue;
+            messagesToInsert.add(HOT_MessageHelper.createMessages(t, msg, userContactId));
         }
 
         if (!messagesToInsert.isEmpty()) {
