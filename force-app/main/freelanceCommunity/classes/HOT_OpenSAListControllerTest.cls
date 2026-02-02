@@ -53,7 +53,7 @@ private class HOT_OpenSAListControllerTest {
     }
     @IsTest
     static void createInterestedResourceByUpdatingExistingTest() {
-        ServiceResource serviceResource = [SELECT Id FROM ServiceResource];
+        ServiceResource serviceResource = [SELECT Id FROM ServiceResource LIMIT 1];
         ServiceAppointment serviceAppointment = [SELECT Id, AppointmentNumber FROM ServiceAppointment LIMIT 1];
         HOT_InterestedResource__c interestedResource = new HOT_InterestedResource__c();
         interestedResource.Status__c = null;
@@ -83,7 +83,7 @@ private class HOT_OpenSAListControllerTest {
     }
     @IsTest
     static void createInterestedResourceByUpdatingExistingAndExtistingThreadTest() {
-        ServiceResource serviceResource = [SELECT Id FROM ServiceResource];
+        ServiceResource serviceResource = [SELECT Id FROM ServiceResource LIMIT 1];
         ServiceAppointment serviceAppointment = [SELECT Id, AppointmentNumber FROM ServiceAppointment LIMIT 1];
         HOT_InterestedResource__c interestedResource = new HOT_InterestedResource__c();
         interestedResource.Status__c = null;
