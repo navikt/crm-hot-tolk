@@ -1,4 +1,17 @@
 public without sharing class HOT_MessageHelper {
+    private static User cachedUser;
+
+    private static User getCurrentUser() {
+        if (cachedUser == null) {
+            cachedUser = [
+            SELECT Id, FirstName, Profile.Name
+            FROM User
+            WHERE Id = :UserInfo.getUserId()
+            ];
+        }
+        return cachedUser;
+    }
+
     @AuraEnabled(cacheable=true)
     public static String getRecordObjectType(Id recordId) {
         String objectType = recordId.getSObjectType().getDescribe().getName();
@@ -643,7 +656,7 @@ public without sharing class HOT_MessageHelper {
     }
     @AuraEnabled
     public static String getUserProfileAndName(String threadType) {
-        User user = [SELECT Id, FirstName, Profile.Name FROM User WHERE Id = :UserInfo.getUserId()];
+        User user = getCurrentUser();
         if (user.Profile.Name == 'HOT Tolk Formidler') {
             return user.FirstName + ', Formidler';
         } else if (user.Profile.Name == 'HOT Tolk Ansatt') {
