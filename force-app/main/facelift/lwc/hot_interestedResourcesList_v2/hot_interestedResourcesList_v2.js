@@ -165,7 +165,9 @@ export default class Hot_interestedResourcesList_v2 extends NavigationMixin(Ligh
                     });
                     let tempRecords = [];
                     for (let record of this.allInterestedResourcesWired) {
-                        tempRecords.push(formatRecord(Object.assign({}, record), this.datetimeFields));
+                        let formattedRecord = formatRecord(Object.assign({}, record), this.datetimeFields);
+                        formattedRecord.canceledDateRaw = record.WorkOrderCanceledDate__c; // <-- NY LINJE: Lagrer rådata
+                        tempRecords.push(formattedRecord);
                     }
                     this.records = tempRecords;
                     this.initialInterestedResources = [...this.records];
@@ -491,11 +493,12 @@ export default class Hot_interestedResourcesList_v2 extends NavigationMixin(Ligh
     }
 
     get canceledDate() {
-        if (!this.interestedResource?.WorkOrderCanceledDate__c) {
+        const dateVal = this.interestedResource?.canceledDateRaw || this.interestedResource?.WorkOrderCanceledDate__c;
+        if (!dateVal) {
             return '';
         }
 
-        const d = new Date(this.interestedResource.WorkOrderCanceledDate__c);
+        const d = new Date(dateVal);
         return (
             d.getDate() +
             '.' +
