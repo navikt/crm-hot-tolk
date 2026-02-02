@@ -317,7 +317,7 @@ public without sharing class HOT_ServiceAppointmentHandler extends MyTriggers {
             removeAssignedResource(serviceAppointmentsToRemoveAssignedResource);
         }
         if (releasedServiceAppointments.size() > 0) {
-            updateStatusOnInterestedResources(releasedServiceAppointments, 'Interested');
+            updateStatusOnInterestedResources(releasedServiceAppointments, 'None');
         }
         if (dispatchedServiceAppointments.size() > 0) {
             updateStatusOnInterestedResources(dispatchedServiceAppointments, 'Assigned');
@@ -829,8 +829,16 @@ public without sharing class HOT_ServiceAppointmentHandler extends MyTriggers {
         List<ServiceAppointment> serviceAppointments,
         String newStatus
     ) {
+        Map<Id, Set<Id>> serviceResourceToWorkOrdersMap = new Map<Id, Set<Id>>();
+        Set<Id> alreadyUpdatedInterestedResourceIds = new Set<Id>();
+
         List<HOT_InterestedResource__c> interestedResources = [
-            SELECT Status__c, ServiceAppointment__r.Status, ServiceResource__c
+            SELECT
+                Status__c,
+                ServiceAppointment__r.Status,
+                ServiceResource__c,
+                ServiceResource__r.Id,
+                ServiceAppointment__r.HOT_WorkOrderLineItem__r.WorkOrderId
             FROM HOT_InterestedResource__c
             WHERE ServiceAppointment__c IN :(new Map<Id, ServiceAppointment>(serviceAppointments)).keySet()
         ];
@@ -851,14 +859,15 @@ public without sharing class HOT_ServiceAppointmentHandler extends MyTriggers {
                     interestedResource.Status__c = newStatus;
                 }
             }
-            if (newStatus == 'Interested') {
+            if (newStatus == 'None') {
                 if (
                     interestedResource.ServiceAppointment__r.Status == 'Released to Freelance' &&
                     (interestedResource.Status__c == 'Service Appointment Retracted' ||
+                    interestedResource.Status__c == 'Interested' ||
                     interestedResource.Status__c == 'Not Assigned' ||
                     interestedResource.Status__c == 'Withdrawn')
                 ) {
-                    interestedResource.Status__c = newStatus;
+                    interestedResource.Status__c = null;
                 }
             }
             if (newStatus == 'Assigned') {
@@ -869,13 +878,73 @@ public without sharing class HOT_ServiceAppointmentHandler extends MyTriggers {
                     for (ServiceAppointment serviceAppointment : serviceAppointments) {
                         if (serviceAppointment.HOT_ServiceResource__c == interestedResource.ServiceResource__c) {
                             interestedResource.Status__c = newStatus;
+
+                            //Skal deretter finne og oppdatere status på interessert ressurs som tilhører den tildelte tolken under samme arbeidsordre
+                            Id srId = interestedResource.ServiceResource__r.Id;
+                            Id woId = interestedResource.ServiceAppointment__r.HOT_WorkOrderLineItem__r.WorkOrderId;
+                            //Legger til alle workorder som er tilknyttet ServiceResource
+                            if (!serviceResourceToWorkOrdersMap.containsKey(srId)) {
+                                serviceResourceToWorkOrdersMap.put(srId, new Set<Id>());
+                            }
+                            serviceResourceToWorkOrdersMap.get(srId).add(woId);
+                            //Skal ikke oppdatere interessert ressurs som er tildelt tolk
+                            alreadyUpdatedInterestedResourceIds.add(interestedResource.Id);
+
                             break;
                         }
                     }
                 }
             }
         }
+        List<HOT_InterestedResource__c> updatedRelevantInterestedResources = updateRelevantInterestedResourceOfAssignedResource(
+            serviceResourceToWorkOrdersMap,
+            alreadyUpdatedInterestedResourceIds
+        );
+
+        interestedResources.addAll(updatedRelevantInterestedResources);
         update interestedResources;
+    }
+    public static List<HOT_InterestedResource__c> updateRelevantInterestedResourceOfAssignedResource(
+        Map<Id, Set<Id>> serviceResourceToWorkOrdersMap,
+        Set<Id> excludedInterestedResourceIds
+    ) {
+        List<HOT_InterestedResource__c> result = new List<HOT_InterestedResource__c>();
+        if (serviceResourceToWorkOrdersMap == null || serviceResourceToWorkOrdersMap.isEmpty()) {
+            return result;
+        }
+
+        // Hent alle ServiceResource og WorkOrderId-er
+        Set<Id> serviceResourceIds = serviceResourceToWorkOrdersMap.keySet();
+        Set<Id> workOrderIds = new Set<Id>();
+        for (Set<Id> woSet : serviceResourceToWorkOrdersMap.values()) {
+            workOrderIds.addAll(woSet);
+        }
+
+        // Hent relevante interested resources
+        List<HOT_InterestedResource__c> interestedResources = [
+            SELECT Id, Status__c, ServiceResource__c, ServiceAppointment__r.HOT_WorkOrderLineItem__r.WorkOrderId
+            FROM HOT_InterestedResource__c
+            WHERE
+                Id NOT IN :excludedInterestedResourceIds
+                AND ServiceResource__c IN :serviceResourceIds
+                AND ServiceAppointment__r.HOT_WorkOrderLineItem__r.WorkOrderId IN :workOrderIds
+        ];
+
+        // Finner interestedresource som tilhører serviceresource og endrer status
+        for (HOT_InterestedResource__c ir : interestedResources) {
+            Id srId = ir.ServiceResource__c;
+            Id woId = ir.ServiceAppointment__r.HOT_WorkOrderLineItem__r.WorkOrderId;
+
+            if (
+                serviceResourceToWorkOrdersMap.containsKey(srId) &&
+                serviceResourceToWorkOrdersMap.get(srId).contains(woId)
+            ) {
+                ir.Status__c = 'Not Assigned';
+                result.add(ir);
+            }
+        }
+
+        return result;
     }
 
     private static ServiceAppointment updateDuration(ServiceAppointment serviceAppointment) {
