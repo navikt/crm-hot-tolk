@@ -731,8 +731,9 @@ export default class Hot_messagingCommunityThreadViewer_v2 extends NavigationMix
                                 '.' +
                                 releaseDateTimeFormatted.getFullYear();
                             this.interestedResource.Status__c = this.interestedResource.Status__c
-                                ? null
+                                ? this.interestedResource.Status__c
                                 : 'Frigitt til frilanstolk på nytt';
+
                             this.isDetailsContent = true;
                             this.isIRDetails = true;
                             this.hasAccess = true;
