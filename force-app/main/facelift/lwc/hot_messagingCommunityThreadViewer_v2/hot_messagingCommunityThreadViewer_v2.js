@@ -9,6 +9,7 @@ import getContactId from '@salesforce/apex/HOT_MessageHelper.getUserContactId';
 import getRelatedObjectDetails from '@salesforce/apex/HOT_MessageHelper.getRelatedObjectDetails';
 import { formatDate, formatDatetimeinterval, formatDatetime } from 'c/datetimeFormatterNorwegianTime';
 import getServiceAppointmentDetails from '@salesforce/apex/HOT_MyServiceAppointmentListController.getServiceAppointmentDetails';
+import checkIfIsLastHistoricallyAssignedResource from '@salesforce/apex/HOT_InterestedResourcesListController.checkIfIsLastHistoricallyAssignedResource';
 import getInterestedResourceDetails from '@salesforce/apex/HOT_InterestedResourcesListController.getInterestedResourceDetails';
 import getWageClaimDetails from '@salesforce/apex/HOT_WageClaimListController.getWageClaimDetails';
 import { ShowToastEvent } from 'lightning/platformShowToastEvent';
@@ -16,6 +17,7 @@ import { getRecord, getFieldValue } from 'lightning/uiRecordApi';
 import createmsg from '@salesforce/apex/HOT_MessageHelper.createMessage';
 import { getParametersFromURL } from 'c/hot_URIDecoder';
 import icons from '@salesforce/resourceUrl/ikoner';
+import icons2 from '@salesforce/resourceUrl/icons';
 
 import buildReadByEntriesForThread from '@salesforce/apex/HOT_MessageHelper.buildReadByEntriesForThread';
 import USER_ID from '@salesforce/user/Id';
@@ -25,6 +27,7 @@ import { formatRecord } from 'c/datetimeFormatterNorwegianTime';
 import getThreadDetails from '@salesforce/apex/HOT_ThreadDetailController.getThreadDetails';
 export default class Hot_messagingCommunityThreadViewer_v2 extends NavigationMixin(LightningElement) {
     exitCrossIcon = icons + '/Close/Close.svg';
+    informationIcon = icons2 + '/informationicon.svg';
     _mySendForSplitting;
     messages = [];
     buttonisdisabled = false;
@@ -46,6 +49,7 @@ export default class Hot_messagingCommunityThreadViewer_v2 extends NavigationMix
     readByText = '';
     showReadBy = false;
     hasAccess = true;
+    isHistoricallyAssignedResourceAndLateCancellation = false;
 
     latestSenderContactId;
     latestSenderUserId;
@@ -307,6 +311,7 @@ export default class Hot_messagingCommunityThreadViewer_v2 extends NavigationMix
         const dialogParticipants = this.template.querySelector('.modal-participants');
         dialogParticipants.close();
 
+        this.isHistoricallyAssignedResourceAndLateCancellation = false;
         this.isDetails = false;
         this.isIRDetails = false;
         this.isWCDetails = false;
@@ -684,11 +689,29 @@ export default class Hot_messagingCommunityThreadViewer_v2 extends NavigationMix
 
                     case 'IR':
                         getInterestedResourceDetails({ recordId: key }).then((result) => {
+                            checkIfIsLastHistoricallyAssignedResource({
+                                saId: key
+                            }).then((result) => {
+                                this.isHistoricallyAssignedResourceAndLateCancellation = result;
+                            });
                             this.interestedResource = result;
                             this.interestedResource.StartAndEndDate = formatDatetimeinterval(
                                 result.ServiceAppointmentStartTime__c,
                                 result.ServiceAppointmentEndTime__c
                             );
+                            if (this.interestedResource.WorkOrderCanceledDate__c) {
+                                let canceledDate = new Date(this.interestedResource.WorkOrderCanceledDate__c);
+                                this.interestedResource.WorkOrderCanceledDate__c =
+                                    canceledDate.getDate() +
+                                    '.' +
+                                    (canceledDate.getMonth() + 1) +
+                                    '.' +
+                                    canceledDate.getFullYear() +
+                                    ', ' +
+                                    ('0' + canceledDate.getHours()).slice(-2) +
+                                    ':' +
+                                    ('0' + canceledDate.getMinutes()).slice(-2);
+                            }
                             let DeadlineDateTimeFormatted = new Date(
                                 this.interestedResource.AppointmentDeadlineDate__c
                             );
@@ -707,6 +730,10 @@ export default class Hot_messagingCommunityThreadViewer_v2 extends NavigationMix
                                 (releaseDateTimeFormatted.getMonth() + 1) +
                                 '.' +
                                 releaseDateTimeFormatted.getFullYear();
+                            this.interestedResource.Status__c = this.interestedResource.Status__c
+                                ? this.interestedResource.Status__c
+                                : 'Frigitt til frilanstolk på nytt';
+
                             this.isDetailsContent = true;
                             this.isIRDetails = true;
                             this.hasAccess = true;

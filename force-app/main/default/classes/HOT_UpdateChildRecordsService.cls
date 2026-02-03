@@ -97,7 +97,9 @@ public without sharing class HOT_UpdateChildRecordsService {
                     City,
                     Subject,
                     Description,
-                    ServiceTerritoryId
+                    ServiceTerritoryId,
+                    StartDate,
+                    EndDate
                 FROM WorkOrderLineItem
                 WHERE WorkOrder.HOT_Request__c = :request.Id AND Status IN :woliStatuses
             ]
@@ -212,7 +214,9 @@ public without sharing class HOT_UpdateChildRecordsService {
                 input.isDescriptionChoice,
                 input.isInterpreterMethodChoice,
                 input.isServiceTerritoryChoice,
-                input.isOwnerChoice
+                input.isOwnerChoice,
+                input.isDateChoice
+
             );
             if (error != null) {
                 if (errorOutput == null || errorOutput == '') {
@@ -267,7 +271,8 @@ public without sharing class HOT_UpdateChildRecordsService {
                 input.isDescriptionChoice,
                 input.isInterpreterMethodChoice,
                 input.isOwnerChoice,
-                input.isServiceTerritoryChoice
+                input.isServiceTerritoryChoice,
+                input.isDateChoice
             );
             if (error != null) {
                 if (errorOutput == null || errorOutput == '') {
@@ -443,7 +448,8 @@ public without sharing class HOT_UpdateChildRecordsService {
         Boolean isDescriptionChoice,
         Boolean isInterpreterMethodChoice,
         Boolean isServiceTerritoryChoice,
-        Boolean isOwnerChoice
+        Boolean isOwnerChoice,
+        Boolean isDateChoice
     ) {
         String error;
         for (WorkOrderLineItem workOrderLineItem : workOrderLineItems) {
@@ -469,6 +475,10 @@ public without sharing class HOT_UpdateChildRecordsService {
             }
             if(isServiceTerritoryChoice) {
                 workOrderLineItem.ServiceTerritoryId = request.ServiceTerritory__c;
+            }
+            if(isDateChoice) {
+                workOrderLineItem.StartDate = request.StartTime__c;
+                workOrderLineItem.EndDate = request.EndTime__c;
             }
         }
 

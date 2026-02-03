@@ -163,7 +163,11 @@ private class HOT_ThreadParticipantsTest {
     }
     @IsTest
     private static void getParticipantByRelatedWageClaim() {
-        ServiceAppointment serviceAppointment = [SELECT Id FROM ServiceAppointment LIMIT 1];
+        ServiceAppointment serviceAppointment = [
+            SELECT Id, ServiceTerritoryId, WorkTypeId, SchedStartTime, SchedEndTime
+            FROM ServiceAppointment
+            LIMIT 1
+        ];
 
         Test.startTest();
         Datetime startT = System.now().addHours(1);
@@ -177,7 +181,24 @@ private class HOT_ThreadParticipantsTest {
         saAfterUpdate.Status = 'Canceled';
         update saAfterUpdate;
 
-        HOT_WageClaim__c wageClaim = [SELECT Id FROM HOT_WageClaim__c LIMIT 1];
+        ServiceResource serviceResource = [
+            SELECT Id
+            FROM ServiceResource
+            WHERE HOT_IsFreelanceInterpreter__c = TRUE AND Name = 'Frilans'
+        ];
+        // Oppretter wageclaim manuelt pga fjerning av logikk 1 feb 2026.
+        HOT_WageClaim__c wageClaim = new HOT_WageClaim__c();
+        wageClaim.IsAutomaticallyCreated__c = true;
+        wageClaim.Type__c = 'Available on Wage';
+        wageClaim.Status__c = 'Open';
+        wageClaim.ServiceResource__c = serviceResource.Id;
+        wageClaim.ServiceAppointment__c = serviceAppointment.Id;
+        wageClaim.StartTime__c = serviceAppointment.SchedStartTime;
+        wageClaim.EndTime__c = serviceAppointment.SchedEndTime;
+        wageClaim.WorkType__c = serviceAppointment.WorkTypeId;
+        wageClaim.ServiceTerritory__c = serviceAppointment.ServiceTerritoryId;
+        insert wageClaim;
+
         Thread__c thread = HOT_TestDataFactory.createThread('HOT_TOLK-RESSURSKONTOR');
         thread.CRM_Related_Object__c = wageClaim.Id;
         insert thread;
@@ -326,7 +347,11 @@ private class HOT_ThreadParticipantsTest {
     }
     @IsTest
     private static void getWageClaimThreadParticipants() {
-        ServiceAppointment serviceAppointment = [SELECT Id FROM ServiceAppointment LIMIT 1];
+        ServiceAppointment serviceAppointment = [
+            SELECT Id, ServiceTerritoryId, WorkTypeId, SchedStartTime, SchedEndTime
+            FROM ServiceAppointment
+            LIMIT 1
+        ];
 
         Test.startTest();
         Datetime startT = System.now().addHours(1);
@@ -340,7 +365,23 @@ private class HOT_ThreadParticipantsTest {
         saAfterUpdate.Status = 'Canceled';
         update saAfterUpdate;
 
-        HOT_WageClaim__c wageClaim = [SELECT Id FROM HOT_WageClaim__c LIMIT 1];
+        ServiceResource serviceResource = [
+            SELECT Id
+            FROM ServiceResource
+            WHERE HOT_IsFreelanceInterpreter__c = TRUE AND Name = 'Frilans'
+        ];
+        // Oppretter wageclaim manuelt pga fjerning av logikk 1 feb 2026.
+        HOT_WageClaim__c wageClaim = new HOT_WageClaim__c();
+        wageClaim.IsAutomaticallyCreated__c = true;
+        wageClaim.Type__c = 'Available on Wage';
+        wageClaim.Status__c = 'Open';
+        wageClaim.ServiceResource__c = serviceResource.Id;
+        wageClaim.ServiceAppointment__c = serviceAppointment.Id;
+        wageClaim.StartTime__c = serviceAppointment.SchedStartTime;
+        wageClaim.EndTime__c = serviceAppointment.SchedEndTime;
+        wageClaim.WorkType__c = serviceAppointment.WorkTypeId;
+        wageClaim.ServiceTerritory__c = serviceAppointment.ServiceTerritoryId;
+        insert wageClaim;
 
         Thread__c thread = HOT_TestDataFactory.createThread('HOT_TOLK-RESSURSKONTOR');
         thread.CRM_Related_Object__c = wageClaim.Id;
