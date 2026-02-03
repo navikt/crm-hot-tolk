@@ -22,7 +22,9 @@
                 <div class="navds-div">{threadType}</div>
 
                 <div class="header-buttons">
-                    <div class="link-button" onclick={goToDetails}>Vis oppdrag</div>
+                    <div lwc:if={isThreadGoToDetailsReady} class="link-button" onclick={goToDetails}>
+                        {threadGoToDetailsLabel}
+                    </div>
 
                     <div class="link-button" onclick={handleShowParticipants}>Vis personer i samtalen</div>
                     <template lwc:if={showScrollButton}>
@@ -126,6 +128,9 @@
                                         </template>
 
                                         <p>Tolkemetode: <span>{serviceAppointment.HOT_WorkTypeName__c}</span></p>
+                                        <p lwc:if={serviceAppointment.HOT_PreparationTime__c}>
+                                            Forberedelsestid: <span>{serviceAppointment.HOT_PreparationTime__c}</span>
+                                        </p>
                                         <p>Oppdragstype: <span>{serviceAppointment.HOT_AssignmentType__c}</span></p>
                                         <p>Eier: <span>{serviceAppointment.HOT_Request__r.OwnerName__c}</span></p>
                                         <p>Status: <span>{serviceAppointment.Status}</span></p>
@@ -181,8 +186,31 @@
                                         <p>Tid: <span>{interestedResource.StartAndEndDate}</span></p>
                                         <p>Adresse: <span>{interestedResource.ServiceAppointmentAddress__c}</span></p>
                                         <p>Tolkemetode: <span>{interestedResource.WorkTypeName__c}</span></p>
+                                        <p lwc:if={interestedResource.ServiceAppointment__r.HOT_PreparationTime__c}>
+                                            Forberedelsestid:&nbsp;
+                                            <span>
+                                                {interestedResource.ServiceAppointment__r.HOT_PreparationTime__c}</span
+                                            >
+                                        </p>
                                         <p>Oppdragstype: <span>{interestedResource.AssignmentType__c}</span></p>
                                         <p>Status: <span>{interestedResource.Status__c}</span></p>
+                                        <div
+                                            lwc:if={isHistoricallyAssignedResourceAndLateCancellation}
+                                            class="navno-dekorator alertstripe navno-dekorator alertstripe--info"
+                                        >
+                                            <img
+                                                class="navno-dekorator alertstripe__ikon"
+                                                src={informationIcon}
+                                                alt=""
+                                                aria-hidden="true"
+                                            />
+                                            <div class="alertstripe__content">
+                                                <div class="typo-normal alertstripe__tekst">
+                                                    Oppdraget ble avlyst på et tidspunkt som kan medføre rett til
+                                                    honorar.
+                                                </div>
+                                            </div>
+                                        </div>
                                         <p>
                                             Antall påmeldte:
                                             <span> {interestedResource.NumberOfInterestedResources__c}</span>
@@ -199,7 +227,7 @@
                                         <p>Frist dato:<span> {interestedResource.AppointmentDeadlineDate__c}</span></p>
                                         <p>Region:<span> {interestedResource.AppointmentServiceTerritory__c}</span></p>
                                         <p>
-                                            Eier:
+                                            Eier:&nbsp;
                                             <span>
                                                 {interestedResource.ServiceAppointment__r.HOT_Request__r.OwnerName__c}</span
                                             >

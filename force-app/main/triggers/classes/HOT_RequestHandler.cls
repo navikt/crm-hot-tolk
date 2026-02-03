@@ -527,7 +527,7 @@ public without sharing class HOT_RequestHandler extends MyTriggers {
     public static void setCancelDate(List<HOT_Request__c> requests) {
         for (HOT_Request__c request : requests) {
             if (request.CanceledDate__c == null) {
-                request.CanceledDate__c = Date.today();
+                request.CanceledDate__c = Datetime.now();
             }
         }
     }
@@ -608,7 +608,11 @@ public without sharing class HOT_RequestHandler extends MyTriggers {
                 request.MeetingPostalCode__c = request.InterpretationPostalCode__c;
             }
 
-            if (request.InterpretationStreet__c == null && request.MeetingStreet__c != null && request.HOT_IsMeetingAddressSameAsHome__c == false) {
+            if (
+                request.InterpretationStreet__c == null &&
+                request.MeetingStreet__c != null &&
+                request.HOT_IsMeetingAddressSameAsHome__c == false
+            ) {
                 request.InterpretationStreet__c = request.MeetingStreet__c;
                 request.InterpretationPostalCity__c = request.MeetingPostalCity__c;
                 request.InterpretationPostalCode__c = request.MeetingPostalCode__c;
@@ -616,28 +620,28 @@ public without sharing class HOT_RequestHandler extends MyTriggers {
         }
     }
     @AuraEnabled
-    public static boolean isErrorOnRequestCreate(String requestId) {
-        Boolean isError = false;
+    public static Boolean isErrorOnRequestCreate(String requestId) {
         HOT_Request__c createdRequest = [
             SELECT Id, StartTime__c, EndTime__c, NumberOfWorkOrders__c
             FROM HOT_Request__c
             WHERE Id = :requestId
         ];
+
+        List<WorkOrder> createdWorkOrders = [SELECT Id FROM WorkOrder WHERE HOT_Request__c = :requestId];
+
+        Boolean isError = false;
+
         if (createdRequest.StartTime__c == null || createdRequest.EndTime__c == null) {
             isError = true;
-        } else {
-            List<WorkOrder> createdWorkOrders = [SELECT Id FROM WorkOrder WHERE HOT_Request__c = :requestId];
-            if (createdRequest.NumberOfWorkOrders__c != createdWorkOrders.size()) {
-                isError = true;
-                try {
-                    delete createdWorkOrders;
-                } catch (Exception e) {
-                    handleException(e);
-                }
-            }
+        } else if (createdRequest.NumberOfWorkOrders__c != createdWorkOrders.size()) {
+            isError = true;
         }
+
         if (isError) {
             try {
+                if (!createdWorkOrders.isEmpty()) {
+                    delete createdWorkOrders;
+                }
                 delete createdRequest;
             } catch (Exception e) {
                 handleException(e);

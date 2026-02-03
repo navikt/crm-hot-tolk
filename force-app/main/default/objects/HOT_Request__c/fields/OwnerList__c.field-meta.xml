@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
-    <fullName>Owner_List__c</fullName>
+    <fullName>OwnerList__c</fullName>
     <externalId>false</externalId>
     <label>Owner List</label>
     <required>false</required>
@@ -70,6 +70,16 @@
                 <fullName>Nav Tolketjeneste Øst-Viken</fullName>
                 <default>false</default>
                 <label>Nav Tolketjeneste Øst-Viken</label>
+            </value>
+            <value>
+                <fullName>Fellesoppdrag Vest-Viken</fullName>
+                <default>false</default>
+                <label>Fellesoppdrag Vest-Viken</label>
+            </value>
+            <value>
+                <fullName>NAV Akuttvakt Tolk</fullName>
+                <default>false</default>
+                <label>NAV Akuttvakt Tolk</label>
             </value>
         </valueSetDefinition>
     </valueSet>

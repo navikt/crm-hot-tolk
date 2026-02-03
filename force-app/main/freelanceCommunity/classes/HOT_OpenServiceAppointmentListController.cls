@@ -18,11 +18,11 @@ public without sharing class HOT_OpenServiceAppointmentListController {
 
         List<Skill> mySkills = [SELECT Id, MasterLabel FROM Skill WHERE Id IN :mySkillIds];
 
-        //Getting ServiceAppointments of interest
+        //Getting ServiceAppointments of interest. Null ettersom det IR får denne status når oppdrag frigis på nytt og skal være mulig å melde seg på på nytt
         List<HOT_InterestedResource__c> interestedResources = [
             SELECT ServiceAppointment__c, ServiceAppointment__r.HOT_WorkOrderLineItem__r.WorkOrder.Id
             FROM HOT_InterestedResource__c
-            WHERE ServiceResource__c IN :serviceResource
+            WHERE ServiceResource__c IN :serviceResource AND Status__c != NULL
         ];
 
         List<Id> interestedServiceAppointmentIds = new List<Id>();
@@ -68,7 +68,8 @@ public without sharing class HOT_OpenServiceAppointmentListController {
                 HOT_IsScreenInterpreterNew__c,
                 HOT_Request__r.IsFellesOppdrag__c,
                 HOT_Request__r.OwnerName__c,
-                HOT_Request__r.IsOtherEconomicProvicer__c
+                HOT_Request__r.IsOtherEconomicProvicer__c,
+                HOT_PreparationTime__c
             FROM ServiceAppointment
             WHERE
                 HOT_IsReleasedToFreelance__c = TRUE
@@ -114,39 +115,124 @@ public without sharing class HOT_OpenServiceAppointmentListController {
     public static void createInterestedResources(List<String> serviceAppointmentIds, List<String> comments) {
         Id userId = UserInfo.getUserId();
 
-        ServiceResource serviceResource = [SELECT Id FROM ServiceResource WHERE RelatedRecordId = :userId];
+        ServiceResource serviceResource = [SELECT Id FROM ServiceResource WHERE RelatedRecordId = :userId LIMIT 1];
 
-        List<HOT_InterestedResource__c> interestedResources = new List<Hot_InterestedResource__c>();
+        /* Mappe ServiceAppointment → Comment */
+        Map<Id, String> appointmentToComment = new Map<Id, String>();
         for (Integer i = 0; i < serviceAppointmentIds.size(); i++) {
-            HOT_InterestedResource__c IR = new HOT_InterestedResource__c(
-                ServiceAppointment__c = serviceAppointmentIds[i],
-                ServiceResource__c = serviceResource.Id,
-                Status__c = 'Interested'
+            appointmentToComment.put(
+                (Id) serviceAppointmentIds[i],
+                comments != null && comments.size() > i ? comments[i] : null
             );
-            interestedResources.add(IR);
         }
-        insert interestedResources;
-        List<Thread__c> threadListToInsert = new List<Thread__c>();
-        List<Message__c> messageListToInsert = new List<Message__c>();
-        Map<Thread__c, String> stringToThreadMap = new Map<Thread__c, String>();
-        Id userContactId = HOT_MessageHelper.getUserContactId();
-        for (Integer i = 0; i < serviceAppointmentIds.size(); i++) {
-            if (!String.isEmpty(comments[i])) {
-                Thread__c thread = HOT_InterestedResourcesListController.startAThreadAndAddComment(
-                    interestedResources[i].Id,
-                    comments[i],
-                    userContactId
+
+        Set<Id> serviceAppointmentIdSet = appointmentToComment.keySet();
+
+        /* Finn eksisterende Interessert ressurs (MED alle felter som trengs for Thread) */
+        Map<Id, HOT_InterestedResource__c> serviceAppointmentToIR = new Map<Id, HOT_InterestedResource__c>();
+
+        for (HOT_InterestedResource__c ir : [
+            SELECT
+                Id,
+                ServiceAppointment__c,
+                Status__c,
+                ServiceResource__r.AccountId,
+                ServiceAppointment__r.Subject,
+                ServiceAppointment__r.HOT_Account__c,
+                ServiceAppointment__r.HOT_Request__r.Dispatcher__c
+            FROM HOT_InterestedResource__c
+            WHERE ServiceResource__c = :serviceResource.Id AND ServiceAppointment__c IN :serviceAppointmentIdSet
+        ]) {
+            serviceAppointmentToIR.put(ir.ServiceAppointment__c, ir);
+        }
+
+        /* Opprett / oppdater Interessert ressurs */
+        List<HOT_InterestedResource__c> irsToInsert = new List<HOT_InterestedResource__c>();
+        List<HOT_InterestedResource__c> irsToUpdate = new List<HOT_InterestedResource__c>();
+
+        for (Id saId : serviceAppointmentIdSet) {
+            if (!serviceAppointmentToIR.containsKey(saId)) {
+                HOT_InterestedResource__c ir = new HOT_InterestedResource__c(
+                    ServiceAppointment__c = saId,
+                    ServiceResource__c = serviceResource.Id,
+                    Status__c = 'Interested'
                 );
-                threadListToInsert.add(thread);
-                stringToThreadMap.put(thread, comments[i]);
+                irsToInsert.add(ir);
+                serviceAppointmentToIR.put(saId, ir);
+            } else {
+                HOT_InterestedResource__c existingIR = serviceAppointmentToIR.get(saId);
+                if (String.isBlank(existingIR.Status__c)) {
+                    existingIR.Status__c = 'Interested';
+                    irsToUpdate.add(existingIR);
+                }
             }
         }
-        insert threadListToInsert;
-        for (Thread__c thread : stringToThreadMap.keySet()) {
-            String comment = stringToThreadMap.get(thread);
-            Message__c message = HOT_MessageHelper.createMessages(thread.Id, comment, userContactId);
-            messageListToInsert.add(message);
+
+        if (!irsToUpdate.isEmpty()) {
+            update irsToUpdate;
         }
-        insert messageListToInsert;
+        if (!irsToInsert.isEmpty()) {
+            insert irsToInsert;
+        }
+
+        Id userContactId = HOT_MessageHelper.getUserContactId();
+
+        /* Hent eksisterende Threads */
+        Set<Id> interestedResoureIds = new Set<Id>();
+        for (HOT_InterestedResource__c ir : serviceAppointmentToIR.values()) {
+            if (ir.Id != null) {
+                interestedResoureIds.add(ir.Id);
+            }
+        }
+
+        Map<Id, Thread__c> irIdToThread = new Map<Id, Thread__c>();
+
+        if (!interestedResoureIds.isEmpty()) {
+            for (Thread__c t : [
+                SELECT Id, CRM_Related_Object__c, CRM_Thread_Type__c
+                FROM Thread__c
+                WHERE CRM_Related_Object__c IN :interestedResoureIds
+            ]) {
+                irIdToThread.put(t.CRM_Related_Object__c, t);
+            }
+        }
+
+        /* Lage nye tråder + Meldinger */
+        List<Thread__c> newThreads = new List<Thread__c>();
+        Map<Id, String> irIdToComment = new Map<Id, String>();
+        List<Message__c> messagesToInsert = new List<Message__c>();
+
+        for (Id saId : serviceAppointmentToIR.keySet()) {
+            String comment = appointmentToComment.get(saId);
+            if (String.isBlank(comment)) {
+                continue;
+            }
+
+            HOT_InterestedResource__c ir = serviceAppointmentToIR.get(saId);
+
+            if (irIdToThread.containsKey(ir.Id)) {
+                Thread__c t = irIdToThread.get(ir.Id);
+                messagesToInsert.add(HOT_MessageHelper.createMessages(t, comment, userContactId));
+            } else {
+                Thread__c thread = HOT_InterestedResourcesListController.buildThread(ir, userContactId);
+                newThreads.add(thread);
+                irIdToComment.put(ir.Id, comment);
+            }
+        }
+
+        if (!newThreads.isEmpty()) {
+            insert newThreads;
+        }
+
+        for (Thread__c t : newThreads) {
+            String msg = irIdToComment.get(t.CRM_Related_Object__c);
+            if (String.isBlank(msg))
+                continue;
+            messagesToInsert.add(HOT_MessageHelper.createMessages(t, msg, userContactId));
+        }
+
+        if (!messagesToInsert.isEmpty()) {
+            insert messagesToInsert;
+        }
     }
 }

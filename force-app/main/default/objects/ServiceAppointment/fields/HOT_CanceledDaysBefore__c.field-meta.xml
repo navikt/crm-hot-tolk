@@ -2,7 +2,7 @@
 <CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
     <fullName>HOT_CanceledDaysBefore__c</fullName>
     <externalId>false</externalId>
-    <formula>DATEVALUE(EarliestStartTime) -  HOT_WorkOrderLineItem__r.WorkOrder.CanceledDate__c</formula>
+    <formula>EarliestStartTime - HOT_WorkOrderLineItem__r.WorkOrder.CanceledDate__c</formula>
     <formulaTreatBlanksAs>BlankAsZero</formulaTreatBlanksAs>
     <label>Avlyst antall dager før</label>
     <precision>18</precision>

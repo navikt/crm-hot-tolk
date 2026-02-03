@@ -1,0 +1,5 @@
+.relevantResourcesList {
+    background-color: var(--slds-g-color-brand-base-90);
+    padding: 1rem;
+    border-radius: var(--slds-g-radius-border-3);
+}

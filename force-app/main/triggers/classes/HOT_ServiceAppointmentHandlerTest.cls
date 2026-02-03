@@ -671,7 +671,7 @@ private class HOT_ServiceAppointmentHandlerTest {
             WHERE Id = :interestedResource.Id
         ];
         System.assertEquals(
-            'Interested',
+            null,
             updatedInterestedResource.Status__c,
             'InterestedResource status was not updated'
         );

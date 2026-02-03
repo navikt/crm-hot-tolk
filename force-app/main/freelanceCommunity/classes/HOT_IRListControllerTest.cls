@@ -105,21 +105,67 @@ private class HOT_IRListControllerTest {
         System.assertEquals(updatedInterestedResource.Status__c, 'Retracted Interest');
     }
     @IsTest
-    static void startAThreadAndAddCommentTest() {
-        HOT_InterestedResource__c interestedResource = [SELECT Id, Status__c FROM HOT_InterestedResource__c];
+    static void testBuildThread() {
+        Person__c person = HOT_TestDataFactory.createPerson();
+        person.Name = '12015678999';
+        insert person;
 
-        String newComment = 'This is a test comment';
+        Account personAccount = HOT_TestDataFactory.createAccount(true);
+        personAccount.INT_PersonIdent__c = '12015678999';
+        personAccount.CRM_Person__c = person.Id;
+        insert personAccount;
+
+        WorkType workType = HOT_TestDataFactory.createWorkType();
+        workType.Name = 'Work Type Name';
+        insert workType;
+
+        HOT_Request__c request = HOT_TestDataFactory.createRequest('Subject', workType);
+        insert request;
+
+        WorkOrder workOrder = HOT_TestDataFactory.createWorkOrder(request, workType);
+        insert workOrder;
+
+        WorkOrderLineItem workOrderLineItem = HOT_TestDataFactory.createWorkOrderLineItem(workOrder, workType);
+        insert workOrderLineItem;
+
+        ServiceAppointment sa = HOT_TestDataFactory.createServiceAppointment(workOrderLineItem);
+        sa.HOT_Request__c = request.Id;
+        sa.Status = 'Released to Freelance';
+        insert sa;
+
+        User currentUser = [
+            SELECT Id, AccountId, Account.CRM_Person__c, ContactId
+            FROM User
+            WHERE Id = :UserInfo.getUserId()
+        ];
+
+        ServiceResource resource = [SELECT Id FROM ServiceResource LIMIT 1];
+
+        HOT_InterestedResource__c interestedResource = HOT_TestDataFactory.createInterestedResource(sa.Id, resource.Id);
+        insert interestedResource;
+
+        HOT_InterestedResource__c newInterestedResource = [
+            SELECT
+                Id,
+                ServiceResource__r.AccountId,
+                ServiceAppointment__r.Subject,
+                ServiceAppointment__r.HOT_Account__c,
+                ServiceAppointment__r.HOT_Request__r.Dispatcher__c
+            FROM HOT_InterestedResource__c
+            WHERE Id = :interestedResource.Id
+        ];
+
+        Id userContactId = currentUser.ContactId;
 
         Test.startTest();
-        Thread__c thread = HOT_InterestedResourcesListController.startAThreadAndAddComment(
-            interestedResource.Id,
-            newComment,
-            null
-        );
+        Thread__c thread = HOT_InterestedResourcesListController.buildThread(newInterestedResource, userContactId);
         Test.stopTest();
 
-        System.assertNotEquals(null, thread, 'Thread was not made');
+        System.assertNotEquals(null, thread, 'Thread skal opprettes');
+        System.assertEquals('HOT_TOLK-FORMIDLER', thread.CRM_Thread_Type__c);
+        System.assertEquals(newInterestedResource.Id, thread.CRM_Related_Object__c);
     }
+
     @IsTest
     static void getIRDetails() {
         ServiceResource serviceResource = [
