@@ -27,9 +27,6 @@ public without sharing class HOT_ServiceAppointmentHandler extends MyTriggers {
         List<ServiceAppointment> serviceAppointmentsToChangeOwnerToArchive = new List<ServiceAppointment>();
         List<ServiceAppointment> serviceAppointmentsWithStatusNone = new List<ServiceAppointment>();
 
-        Map<Id, Id> resourceByAppointmentCreateWageClaim = new Map<Id, Id>();
-        Map<Id, Id> resourceByAppointmentUpdateWageClaim = new Map<Id, Id>();
-
         for (ServiceAppointment serviceAppointment : (List<ServiceAppointment>) records) {
             if (
                 triggerOldMap.get(serviceAppointment.Id).get('EarliestStartTime') !=
@@ -95,45 +92,6 @@ public without sharing class HOT_ServiceAppointmentHandler extends MyTriggers {
                 serviceAppointment.Status == 'Annul'
             ) {
                 annulServiceAppointments.add(serviceAppointment);
-            }
-
-            if (
-                (serviceAppointment.Status != triggerOldMap.get(serviceAppointment.Id).get('Status') ||
-                serviceAppointment.HOT_ServiceResource__c !=
-                triggerOldMap.get(serviceAppointment.Id).get('HOT_ServiceResource__c')) &&
-                serviceAppointment.Status == 'Dispatched' &&
-                serviceAppointment.HOT_IsReleasedToFreelance__c == true
-            ) {
-                resourceByAppointmentUpdateWageClaim.put(
-                    serviceAppointment.Id,
-                    serviceAppointment.HOT_ServiceResource__c
-                );
-            }
-            if (
-                serviceAppointment.HOT_ServiceResource__c !=
-                triggerOldMap.get(serviceAppointment.Id).get('HOT_ServiceResource__c') &&
-                triggerOldMap.get(serviceAppointment.Id).get('HOT_ServiceResource__c') != null &&
-                serviceAppointment.Status == 'Dispatched'
-            ) {
-                resourceByAppointmentCreateWageClaim.put(
-                    serviceAppointment.Id,
-                    (Id) triggerOldMap.get(serviceAppointment.Id).get('HOT_ServiceResource__c')
-                );
-            }
-            if (
-                serviceAppointment.Status != triggerOldMap.get(serviceAppointment.Id).get('Status') &&
-                triggerOldMap.get(serviceAppointment.Id).get('Status') == 'Dispatched' &&
-                (serviceAppointment.Status == null ||
-                serviceAppointment.Status == 'Canceled' ||
-                serviceAppointment.Status == 'Annul' ||
-                serviceAppointment.Status == 'Scheduled' ||
-                serviceAppointment.Status == 'None') &&
-                serviceAppointment.HOT_CanceledByInterpreter__c == false
-            ) {
-                resourceByAppointmentCreateWageClaim.put(
-                    serviceAppointment.Id,
-                    (Id) triggerOldMap.get(serviceAppointment.Id).get('HOT_ServiceResource__c')
-                );
             }
 
             if (serviceAppointment.Status != triggerOldMap.get(serviceAppointment.Id).get('Status')) {
@@ -221,12 +179,6 @@ public without sharing class HOT_ServiceAppointmentHandler extends MyTriggers {
 
         if (serviceAppointmentsToSetToDefault.size() > 0) {
             setDefaultFields(serviceAppointmentsToSetToDefault);
-        }
-        if (!resourceByAppointmentCreateWageClaim.isEmpty()) {
-            HOT_WageClaimService.createWageClaims(resourceByAppointmentCreateWageClaim);
-        }
-        if (!resourceByAppointmentUpdateWageClaim.isEmpty()) {
-            HOT_WageClaimService.updateWageClaimsFuture(resourceByAppointmentUpdateWageClaim.keySet());
         }
         if (serviceAppointmentsWithActualTimeSet.size() > 0) {
             setScheduledTimeBasedOnActualTime(serviceAppointmentsWithActualTimeSet);
@@ -365,7 +317,7 @@ public without sharing class HOT_ServiceAppointmentHandler extends MyTriggers {
             removeAssignedResource(serviceAppointmentsToRemoveAssignedResource);
         }
         if (releasedServiceAppointments.size() > 0) {
-            updateStatusOnInterestedResources(releasedServiceAppointments, 'Interested');
+            updateStatusOnInterestedResources(releasedServiceAppointments, 'None');
         }
         if (dispatchedServiceAppointments.size() > 0) {
             updateStatusOnInterestedResources(dispatchedServiceAppointments, 'Assigned');
@@ -398,40 +350,6 @@ public without sharing class HOT_ServiceAppointmentHandler extends MyTriggers {
                     WHERE Id IN :serviceResourceByServiceAppointmentSchedTimeChanged.values()
                 ]
             );
-
-            Map<Id, ServiceAppointment> oldServiceAppointmentsWithRequestFields = getServiceAppointmnetsWithAgreementFieldsFromRequest(
-                oldServiceAppointmentsSchedTimeChanged
-            );
-            setScheduledTimesToOldValues(
-                oldServiceAppointmentsWithRequestFields,
-                oldServiceAppointmentsSchedTimeChanged
-            );
-            List<HOT_WageClaim__c> wageClaims = HOT_WageClaimService.createWageClaimsFromServiceAppointments(
-                oldServiceAppointmentsWithRequestFields,
-                serviceResourceByServiceAppointmentSchedTimeChanged,
-                serviceResources
-            );
-
-            HOT_WageClaim__c[] claimsWithNoConflicts = new List<HOT_WageClaim__c>();
-            HOT_WageClaim__c[] claimsWithConflicts = new List<HOT_WageClaim__c>();
-
-            for (HOT_WageClaim__c wc : wageClaims) {
-                Boolean isConflict = false;
-                for (ServiceAppointment sa : newServiceAppointmentsSchedTimeChanged.values()) {
-                    if (sa.SchedStartTime < wc.EndTime__c && sa.SchedEndTime > wc.StartTime__c) {
-                        isConflict = true;
-                    }
-                }
-                if (isConflict) {
-                    claimsWithConflicts.add(wc);
-                } else {
-                    claimsWithNoConflicts.add(wc);
-                }
-            }
-
-            HOT_DatabaseOperations.insertRecords(claimsWithNoConflicts);
-            HOT_WageClaimService.updateWageClaims(newServiceAppointmentsSchedTimeChanged, claimsWithConflicts, false);
-            HOT_WageClaimService.updateWageClaimsFuture(serviceResourceByServiceAppointmentSchedTimeChanged.keySet());
         }
 
         if (serviceAppointmentsWithUpdatedOwnerOrDispatcher.size() > 0) {
@@ -471,16 +389,6 @@ public without sharing class HOT_ServiceAppointmentHandler extends MyTriggers {
             }
         }
         update threadList;
-    }
-
-    private static void setScheduledTimesToOldValues(
-        Map<Id, ServiceAppointment> serviceAppointments,
-        Map<Id, ServiceAppointment> oldServiceAppointments
-    ) {
-        for (ServiceAppointment sa : serviceAppointments.values()) {
-            sa.SchedStartTime = oldServiceAppointments.get(sa.Id).SchedStartTime;
-            sa.SchedEndTime = oldServiceAppointments.get(sa.Id).SchedEndTime;
-        }
     }
 
     private static Map<Id, ServiceAppointment> getServiceAppointmnetsWithAgreementFieldsFromRequest(
@@ -922,8 +830,16 @@ public without sharing class HOT_ServiceAppointmentHandler extends MyTriggers {
         List<ServiceAppointment> serviceAppointments,
         String newStatus
     ) {
+        Map<Id, Set<Id>> serviceResourceToWorkOrdersMap = new Map<Id, Set<Id>>();
+        Set<Id> alreadyUpdatedInterestedResourceIds = new Set<Id>();
+
         List<HOT_InterestedResource__c> interestedResources = [
-            SELECT Status__c, ServiceAppointment__r.Status, ServiceResource__c
+            SELECT
+                Status__c,
+                ServiceAppointment__r.Status,
+                ServiceResource__c,
+                ServiceResource__r.Id,
+                ServiceAppointment__r.HOT_WorkOrderLineItem__r.WorkOrderId
             FROM HOT_InterestedResource__c
             WHERE ServiceAppointment__c IN :(new Map<Id, ServiceAppointment>(serviceAppointments)).keySet()
         ];
@@ -944,14 +860,15 @@ public without sharing class HOT_ServiceAppointmentHandler extends MyTriggers {
                     interestedResource.Status__c = newStatus;
                 }
             }
-            if (newStatus == 'Interested') {
+            if (newStatus == 'None') {
                 if (
                     interestedResource.ServiceAppointment__r.Status == 'Released to Freelance' &&
                     (interestedResource.Status__c == 'Service Appointment Retracted' ||
+                    interestedResource.Status__c == 'Interested' ||
                     interestedResource.Status__c == 'Not Assigned' ||
                     interestedResource.Status__c == 'Withdrawn')
                 ) {
-                    interestedResource.Status__c = newStatus;
+                    interestedResource.Status__c = null;
                 }
             }
             if (newStatus == 'Assigned') {
@@ -962,13 +879,73 @@ public without sharing class HOT_ServiceAppointmentHandler extends MyTriggers {
                     for (ServiceAppointment serviceAppointment : serviceAppointments) {
                         if (serviceAppointment.HOT_ServiceResource__c == interestedResource.ServiceResource__c) {
                             interestedResource.Status__c = newStatus;
+
+                            //Skal deretter finne og oppdatere status på interessert ressurs som tilhører den tildelte tolken under samme arbeidsordre
+                            Id srId = interestedResource.ServiceResource__r.Id;
+                            Id woId = interestedResource.ServiceAppointment__r.HOT_WorkOrderLineItem__r.WorkOrderId;
+                            //Legger til alle workorder som er tilknyttet ServiceResource
+                            if (!serviceResourceToWorkOrdersMap.containsKey(srId)) {
+                                serviceResourceToWorkOrdersMap.put(srId, new Set<Id>());
+                            }
+                            serviceResourceToWorkOrdersMap.get(srId).add(woId);
+                            //Skal ikke oppdatere interessert ressurs som er tildelt tolk
+                            alreadyUpdatedInterestedResourceIds.add(interestedResource.Id);
+
                             break;
                         }
                     }
                 }
             }
         }
+        List<HOT_InterestedResource__c> updatedRelevantInterestedResources = updateRelevantInterestedResourceOfAssignedResource(
+            serviceResourceToWorkOrdersMap,
+            alreadyUpdatedInterestedResourceIds
+        );
+
+        interestedResources.addAll(updatedRelevantInterestedResources);
         update interestedResources;
+    }
+    public static List<HOT_InterestedResource__c> updateRelevantInterestedResourceOfAssignedResource(
+        Map<Id, Set<Id>> serviceResourceToWorkOrdersMap,
+        Set<Id> excludedInterestedResourceIds
+    ) {
+        List<HOT_InterestedResource__c> result = new List<HOT_InterestedResource__c>();
+        if (serviceResourceToWorkOrdersMap == null || serviceResourceToWorkOrdersMap.isEmpty()) {
+            return result;
+        }
+
+        // Hent alle ServiceResource og WorkOrderId-er
+        Set<Id> serviceResourceIds = serviceResourceToWorkOrdersMap.keySet();
+        Set<Id> workOrderIds = new Set<Id>();
+        for (Set<Id> woSet : serviceResourceToWorkOrdersMap.values()) {
+            workOrderIds.addAll(woSet);
+        }
+
+        // Hent relevante interested resources
+        List<HOT_InterestedResource__c> interestedResources = [
+            SELECT Id, Status__c, ServiceResource__c, ServiceAppointment__r.HOT_WorkOrderLineItem__r.WorkOrderId
+            FROM HOT_InterestedResource__c
+            WHERE
+                Id NOT IN :excludedInterestedResourceIds
+                AND ServiceResource__c IN :serviceResourceIds
+                AND ServiceAppointment__r.HOT_WorkOrderLineItem__r.WorkOrderId IN :workOrderIds
+        ];
+
+        // Finner interestedresource som tilhører serviceresource og endrer status
+        for (HOT_InterestedResource__c ir : interestedResources) {
+            Id srId = ir.ServiceResource__c;
+            Id woId = ir.ServiceAppointment__r.HOT_WorkOrderLineItem__r.WorkOrderId;
+
+            if (
+                serviceResourceToWorkOrdersMap.containsKey(srId) &&
+                serviceResourceToWorkOrdersMap.get(srId).contains(woId)
+            ) {
+                ir.Status__c = 'Not Assigned';
+                result.add(ir);
+            }
+        }
+
+        return result;
     }
 
     private static ServiceAppointment updateDuration(ServiceAppointment serviceAppointment) {

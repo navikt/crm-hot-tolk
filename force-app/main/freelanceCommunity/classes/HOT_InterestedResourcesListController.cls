@@ -41,6 +41,8 @@ public without sharing class HOT_InterestedResourcesListController {
                 ServiceAppointment__r.HOT_ReleasedBy__c,
                 ServiceAppointment__r.HOT_Request__r.OwnerName__c,
                 ServiceAppointment__r.HOT_Request__r.IsOtherEconomicProvicer__c,
+                ServiceAppointment__r.HOT_LateCancellation__c,
+                ServiceAppointment__r.HOT_PreparationTime__c,
                 AssignmentType__c,
                 AppointmentDeadlineDate__c,
                 AppointmentServiceTerritory__c,
@@ -113,32 +115,23 @@ public without sharing class HOT_InterestedResourcesListController {
         interestedResource.Status__c = 'Interested';
         update interestedResource;
     }
-
     @AuraEnabled
-    public static Thread__c startAThreadAndAddComment(Id interestedResourceId, String newComment, Id userContactId) {
-        HOT_InterestedResource__c ir = [
-            SELECT
-                Id,
-                ServiceResource__r.AccountId,
-                ServiceAppointment__r.Subject,
-                ServiceAppointment__r.HOT_Account__c,
-                ServiceAppointment__r.HOT_Request__r.Dispatcher__c
-            FROM HOT_InterestedResource__c
-            WHERE Id = :interestedResourceId
-        ];
+    public static Thread__c buildThread(HOT_InterestedResource__c ir, Id userContactId) {
         Thread__c thread = new Thread__c();
         thread.CRM_Thread_Type__c = 'HOT_TOLK-FORMIDLER';
-        thread.CRM_Related_Object__c = interestedResourceId;
+        thread.CRM_Related_Object__c = ir.Id;
         thread.HOT_Title__c = ir.ServiceAppointment__r.Subject;
         thread.CRM_Account__c = ir.ServiceResource__r.AccountId;
-        thread.HOT_InterestedResource__c = interestedResourceId;
+        thread.HOT_InterestedResource__c = ir.Id;
         thread.HOT_Account__c = ir.ServiceAppointment__r.HOT_Account__c;
         thread.RecordTypeId = HOT_MessageHelper.getHOTThreadRecordType();
         thread.HOT_Dispatcher__c = ir.ServiceAppointment__r.HOT_Request__r.Dispatcher__c;
+
         if (userContactId != null) {
             thread.HOT_Thread_read_by__c = userContactId + ';';
             thread.CRM_Latest_Message_Datetime__c = Datetime.now();
         }
+
         return thread;
     }
 
@@ -172,6 +165,45 @@ public without sharing class HOT_InterestedResourcesListController {
         }
         return Id;
     }
+    @AuraEnabled(cacheable=true)
+    public static Boolean checkIfIsLastHistoricallyAssignedResource(Id saId) {
+        if (saId == null) {
+            return false;
+        }
+
+        Id currentUserAccountId = [SELECT AccountId FROM User WHERE Id = :UserInfo.getUserId()].AccountId;
+
+        List<HOT_HistoricallyAssignedResource__c> historicResources = [
+            SELECT Id, ServiceResource__c
+            FROM HOT_HistoricallyAssignedResource__c
+            WHERE
+                ServiceAppointment__c = :saId
+                AND ServiceAppointment__r.HOT_LateCancellation__c = TRUE
+                AND ServiceResource__r.AccountId = :currentUserAccountId
+                AND (Status__c = 'Tolk tatt av oppdraget'
+                OR Status__c = 'Avlyst av bruker')
+            ORDER BY CreatedDate DESC
+            LIMIT 1
+        ];
+
+        if (historicResources.isEmpty()) {
+            return false;
+        }
+
+        HOT_HistoricallyAssignedResource__c lastHistoric = historicResources[0];
+
+        Integer nonReservedInterestedCount = [
+            SELECT COUNT()
+            FROM HOT_InterestedResource__c
+            WHERE
+                ServiceAppointment__c = :saId
+                AND ServiceResource__c = :lastHistoric.ServiceResource__c
+                AND Status__c != 'Reserved'
+        ];
+
+        return nonReservedInterestedCount > 0;
+    }
+
     @AuraEnabled
     public static HOT_InterestedResource__c getInterestedResourceDetails(String recordId) {
         User currentUser = [SELECT Id, AccountId, Account.CRM_Person__c FROM User WHERE Id = :UserInfo.getUserId()];
@@ -190,6 +222,7 @@ public without sharing class HOT_InterestedResourcesListController {
                 ServiceAppointment__r.HOT_ReleasedBy__c,
                 ServiceAppointment__r.HOT_Request__r.OwnerName__c,
                 ServiceAppointment__r.HOT_Request__r.IsOtherEconomicProvicer__c,
+                ServiceAppointment__r.HOT_PreparationTime__c,
                 NumberOfInterestedResources__c,
                 AppointmentDeadlineDate__c,
                 AppointmentServiceTerritory__c,
