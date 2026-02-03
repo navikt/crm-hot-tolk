@@ -1,5 +1,6 @@
 import { LightningElement, wire, api } from 'lwc';
 import getMyServiceAppointments from '@salesforce/apex/HOT_MyServiceAppointmentListController.getMyServiceAppointments';
+import getMyLateCancelledServiceAppointments from '@salesforce/apex/HOT_LateCancellationListController.getLateCancellationsForUser';
 import { columns, mobileColumns } from './columns';
 import { formatRecord, formatDatetimeinterval } from 'c/datetimeFormatterNorwegianTime';
 import { refreshApex } from '@salesforce/apex';
@@ -40,7 +41,7 @@ export default class Hot_lateCancellationList extends LightningElement {
     }
 
     wiredMyServiceAppointmentsResult;
-    @wire(getMyServiceAppointments)
+    @wire(getMyLateCancelledServiceAppointments)
     wiredMyServiceAppointments(result) {
         this.wiredMyServiceAppointmentsResult = result;
         if (result.data) {
@@ -213,7 +214,7 @@ export default class Hot_lateCancellationList extends LightningElement {
     }
 
         get canceledDate() {
-        const dateVal = this.interestedResource?.canceledDateRaw || this.interestedResource?.WorkOrderCanceledDate__c;
+        const dateVal = this.interestedResource?.WorkOrderCanceledDate__c;
         if (!dateVal) {
             return '';
         }
