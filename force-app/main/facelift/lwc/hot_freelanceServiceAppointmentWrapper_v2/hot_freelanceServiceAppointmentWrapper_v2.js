@@ -14,6 +14,7 @@ export default class Hot_freelanceServiceAppointmentWrapper_v2 extends Navigatio
         { name: 'interested', label: 'Påmeldte oppdrag' },
         { name: 'my', label: 'Mine oppdrag' },
         { name: 'wageClaim', label: 'Ledig på lønn' },
+        { name:'lateCancellation', label: 'Avlyst - rett på honorar'},
         { name: 'wanted', label: 'Oppdrag du er ønsket til' }
     ];
 
@@ -121,6 +122,10 @@ export default class Hot_freelanceServiceAppointmentWrapper_v2 extends Navigatio
 
     get isWantedTab() {
         return this.activeTab === 'wanted';
+    }
+
+    get isLateCancellationTab() {
+        return this.activeTab === 'lateCancellation';
     }
 
     urlStateParameterList = '';
