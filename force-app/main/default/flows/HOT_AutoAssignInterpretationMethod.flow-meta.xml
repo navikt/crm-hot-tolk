@@ -30,6 +30,9 @@
                 <elementReference>Get_Work_Type_Secondary.Id</elementReference>
             </value>
         </assignmentItems>
+        <connector>
+            <targetReference>Update_Request</targetReference>
+        </connector>
     </assignments>
     <assignments>
         <name>Clear_primary_interpretation_method</name>
@@ -53,6 +56,9 @@
             <assignToReference>$Record.InterpretationMethodSecondary__c</assignToReference>
             <operator>Assign</operator>
         </assignmentItems>
+        <connector>
+            <targetReference>Update_Request</targetReference>
+        </connector>
     </assignments>
     <decisions>
         <name>Primary_Interpretation_method_changed</name>
@@ -113,6 +119,9 @@
         <label>Secondary Interpretation method changed?</label>
         <locationX>0</locationX>
         <locationY>0</locationY>
+        <defaultConnector>
+            <targetReference>Update_Request</targetReference>
+        </defaultConnector>
         <defaultConnectorLabel>Default Outcome</defaultConnectorLabel>
         <rules>
             <name>Yes_update_secondary</name>
@@ -223,6 +232,25 @@
         <object>WorkType</object>
         <storeOutputAutomatically>true</storeOutputAutomatically>
     </recordLookups>
+    <recordUpdates>
+        <name>Update_Request</name>
+        <label>Update Request</label>
+        <locationX>0</locationX>
+        <locationY>0</locationY>
+        <inputAssignments>
+            <field>InterpretationMethodSecondary__c</field>
+            <value>
+                <elementReference>$Record.InterpretationMethodSecondary__c</elementReference>
+            </value>
+        </inputAssignments>
+        <inputAssignments>
+            <field>InterpretationMethod__c</field>
+            <value>
+                <elementReference>$Record.InterpretationMethod__c</elementReference>
+            </value>
+        </inputAssignments>
+        <inputReference>$Record</inputReference>
+    </recordUpdates>
     <start>
         <locationX>0</locationX>
         <locationY>0</locationY>
@@ -242,7 +270,7 @@
 )</filterFormula>
         <object>HOT_Request__c</object>
         <recordTriggerType>CreateAndUpdate</recordTriggerType>
-        <triggerType>RecordBeforeSave</triggerType>
+        <triggerType>RecordAfterSave</triggerType>
     </start>
     <status>Active</status>
 </Flow>
