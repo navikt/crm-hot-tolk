@@ -699,6 +699,19 @@ export default class Hot_messagingCommunityThreadViewer_v2 extends NavigationMix
                                 result.ServiceAppointmentStartTime__c,
                                 result.ServiceAppointmentEndTime__c
                             );
+                            if (this.interestedResource.WorkOrderCanceledDate__c) {
+                                let canceledDate = new Date(this.interestedResource.WorkOrderCanceledDate__c);
+                                this.interestedResource.WorkOrderCanceledDate__c =
+                                    canceledDate.getDate() +
+                                    '.' +
+                                    (canceledDate.getMonth() + 1) +
+                                    '.' +
+                                    canceledDate.getFullYear() +
+                                    ', ' +
+                                    ('0' + canceledDate.getHours()).slice(-2) +
+                                    ':' +
+                                    ('0' + canceledDate.getMinutes()).slice(-2);
+                            }
                             let DeadlineDateTimeFormatted = new Date(
                                 this.interestedResource.AppointmentDeadlineDate__c
                             );
@@ -718,8 +731,9 @@ export default class Hot_messagingCommunityThreadViewer_v2 extends NavigationMix
                                 '.' +
                                 releaseDateTimeFormatted.getFullYear();
                             this.interestedResource.Status__c = this.interestedResource.Status__c
-                                ? null
+                                ? this.interestedResource.Status__c
                                 : 'Frigitt til frilanstolk på nytt';
+
                             this.isDetailsContent = true;
                             this.isIRDetails = true;
                             this.hasAccess = true;
