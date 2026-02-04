@@ -1,14 +1,5 @@
 import { LightningElement, track, api } from 'lwc';
 
-const INTERPRETATION_TYPE_MAP = {
-    SK: 'SK - Skrivetolking',
-    TS: 'TS - Tegnspråk',
-    TSBS: 'TSBS - Tegnspråk i begrenset synsfelt',
-    TSS: 'TSS - Tegn som støtte til munnavlesning',
-    TT: 'TT - Taletolking',
-    TTS: 'TTS - Taktilt tegnspråk'
-};
-
 export default class Hot_requestForm_request extends LightningElement {
     @track fieldValues = {
         Subject__c: '',
@@ -26,7 +17,6 @@ export default class Hot_requestForm_request extends LightningElement {
         UserPreferredInterpreter__c: '',
         AssignmentType__c: '',
         UserInterpretationMethod__c: '',
-        InterpretationMethodType__c: '',
         Type__c: ''
     };
     isRequestTypeMe = false;
@@ -56,11 +46,6 @@ export default class Hot_requestForm_request extends LightningElement {
             if (this.componentValues[field] != null) {
                 this.componentValues[field] = JSON.parse(JSON.stringify(this.parentRequestComponentValues[field]));
             }
-        }
-        // Make sure that the field InterpretationMethodType__c is set to the same value as the field UserInterpretationMethod__c
-        if (this.fieldValues.UserInterpretationMethod__c) {
-            this.fieldValues.InterpretationMethodType__c =
-                INTERPRETATION_TYPE_MAP[this.fieldValues.UserInterpretationMethod__c] || null;
         }
         this.isRequestTypeMe = this.fieldValues.Type__c === 'Me';
         if (this.fieldValues.Type__c !== 'Company') {
@@ -121,8 +106,8 @@ export default class Hot_requestForm_request extends LightningElement {
         this.componentValues.physicalOrDigitalRadiobuttons[1].checked = this.fieldValues.IsScreenInterpreter__c;
         this.componentValues.sameAddressRadioButtons[1].checked =
             this.fieldValues.InterpretationStreet__c !== this.fieldValues.MeetingStreet__c;
-        this.componentValues.sameAddressRadioButtons[0].checked =
-            !this.componentValues.sameAddressRadioButtons[1].checked;
+        this.componentValues.sameAddressRadioButtons[0].checked = !this.componentValues.sameAddressRadioButtons[1]
+            .checked;
         this.componentValues.isOptionalFields =
             this.fieldValues.UserInterpretationMethod__c !== '' ||
             this.fieldValues.UserPreferredInterpreter__c !== '' ||
@@ -255,13 +240,11 @@ export default class Hot_requestForm_request extends LightningElement {
     }
 
     handleInterpretationPicklist(event) {
-        const selectedValue = event.detail.name;
         this.setFieldAndElementSelected(
             this.componentValues.interpretationChoices,
-            selectedValue,
+            event.detail.name,
             'UserInterpretationMethod__c'
         );
-        this.fieldValues.InterpretationMethodType__c = INTERPRETATION_TYPE_MAP[selectedValue] || null;
     }
 
     handleAssignmentPicklist(event) {
