@@ -1,8 +1,11 @@
 <template>
     <template lwc:if={hasResult}>
         <div class="main-content">
-            <c-hot_freelance-common-table records={records} columns={columns}
-                onrowclick={goToRecordDetails}></c-hot_freelance-common-table>
+            <c-hot_freelance-common-table
+                records={records}
+                columns={columns}
+                onrowclick={goToRecordDetails}
+            ></c-hot_freelance-common-table>
         </div>
     </template>
 
@@ -30,30 +33,35 @@
 
     <!-- MODAL -->
     <dialog class="modal-container" aria-label="Informasjon om oppdrag" aria-modal="true" onclose={closeModal}>
-        <div class="modal-header">
-            <h2>Informasjon om oppdraget:</h2>
-            <button class="close-btn" onclick={closeModal} aria-label="Lukk">
-                <img src={exitCrossIcon} alt="" aria-hidden="true" />
-            </button>
-        </div>
-        <div class="modal-body">
-            <template lwc:if={isDetails}>
+        <template lwc:if={isDetails}>
+            <template lwc:if={canceledDate}>
+                <div class="modal-header">
+                    <h2>Informasjon om oppdraget:</h2>
+                    <button class="close-btn" onclick={closeModal} aria-label="Lukk">
+                        <img src={exitCrossIcon} alt="" aria-hidden="true" />
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <p lwc:if={appointmentNumber}><strong>Oppdragsnummer:</strong> {appointmentNumber}</p>
+                    <p lwc:if={subject}><strong>Tema:</strong> {subject}</p>
+                    <p lwc:if={startAndEndTime}><strong>Tid:</strong> {startAndEndTime}</p>
+                    <p lwc:if={appointmentCity}><strong>Poststed:</strong> {appointmentCity}</p>
 
-                <p lwc:if={appointmentNumber}><strong>Oppdragsnummer:</strong> {appointmentNumber}</p>
-                <p lwc:if={subject}><strong>Tema:</strong> {subject}</p>
-                <p lwc:if={startAndEndTime}><strong>Tid:</strong> {startAndEndTime}</p>
-                <p lwc:if={appointmentCity}><strong>Poststed:</strong> {appointmentCity}</p>
+                    <p lwc:if={workType}><strong>Tolkemetode:</strong> {workType}</p>
+                    <p lwc:if={assignmentType}><strong>Oppdragstype:</strong> {assignmentType}</p>
+                    <p lwc:if={ownerName}><strong>Eier:</strong> {ownerName}</p>
 
-                <p lwc:if={workType}><strong>Tolkemetode:</strong> {workType}</p>
-                <p lwc:if={assignmentType}><strong>Oppdragstype:</strong> {assignmentType}</p>
-                <p lwc:if={ownerName}><strong>Eier:</strong> {ownerName}</p>
-
-                <p lwc:if={degreeOfHearingAndVisualImpairment}><strong>Døv/døvblind:</strong>
-                    {degreeOfHearingAndVisualImpairment}</p>
-                <p lwc:if={status}><strong>Status:</strong> {status}</p>
-                <p lwc:if={canceledDate}><strong>Avlyst dato:</strong> {canceledDate}</p>
-
-            </template>
-        </div>
+                    <p lwc:if={degreeOfHearingAndVisualImpairment}>
+                        <strong>Døv/døvblind:</strong> {degreeOfHearingAndVisualImpairment}
+                    </p>
+                    <p lwc:if={status}><strong>Status:</strong> {status}</p>
+                    <p lwc:if={canceledDate}><strong>Avlyst dato:</strong> {canceledDate}</p>
+                </div></template
+            >
+            <template lwc:else
+                ><div class="loader-container-modal">
+                    <c-hot_loader size="3xlarge"></c-hot_loader></div
+            ></template>
+        </template>
     </dialog>
 </template>

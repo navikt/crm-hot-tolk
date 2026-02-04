@@ -88,7 +88,13 @@ dialog.modal-container .close-btn:hover {
     align-items: flex-start;
     padding-top: 5rem;
 }
-
+.loader-container-modal {
+    display: flex;
+    justify-content: center;
+    align-items: flex-start;
+    padding-top: 5rem;
+    padding-bottom: 5rem;
+}
 @media (max-width: 600px) {
     dialog.modal-container {
         width: 100%;
