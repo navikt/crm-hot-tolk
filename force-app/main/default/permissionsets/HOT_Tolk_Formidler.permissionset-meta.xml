@@ -646,10 +646,6 @@
         <readable>true</readable>
     </fieldPermissions>
     <fieldPermissions>
-        <editable>true</editable>
-        <field>HOT_Request__c.Owner_List__c</field>
-    </fieldPermissions>
-    <fieldPermissions>
         <editable>false</editable>
         <field>HOT_Request__c.OwnerName__c</field>
         <readable>true</readable>
