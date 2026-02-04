@@ -1,12 +1,7 @@
 public without sharing class HOT_LateCancellationListController {
     @AuraEnabled(cacheable=true)
     public static List<ServiceAppointment> getLateCancellationsForUser() {
-        Id accountId = [
-            SELECT AccountId
-            FROM User
-            WHERE Id = :UserInfo.getUserId()
-        ]
-        .AccountId;
+        Id accountId = [SELECT AccountId FROM User WHERE Id = :UserInfo.getUserId()].AccountId;
 
         if (accountId == null) {
             return new List<ServiceAppointment>();
@@ -39,7 +34,7 @@ public without sharing class HOT_LateCancellationListController {
         for (HOT_InterestedResource__c ir : [
             SELECT ServiceAppointment__c, ServiceResource__c
             FROM HOT_InterestedResource__c
-            WHERE ServiceAppointment__c IN :lastHistoricBySa.keySet() AND Status__c != 'Reserved'
+            WHERE ServiceAppointment__c IN :lastHistoricBySa.keySet() AND Status__c = 'Canceled'
         ]) {
             HOT_HistoricallyAssignedResource__c lastHar = lastHistoricBySa.get(ir.ServiceAppointment__c);
 
