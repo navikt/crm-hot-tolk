@@ -52,7 +52,7 @@ public without sharing class HOT_LateCancellationListController {
                 Id,
                 AppointmentNumber,
                 Subject,
-                Status,
+                toLabel(Status),
                 EarliestStartTime,
                 DueDate,
                 SchedStartTime,
