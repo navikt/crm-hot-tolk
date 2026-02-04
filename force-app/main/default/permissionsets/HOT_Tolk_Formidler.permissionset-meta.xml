@@ -29,6 +29,10 @@
         <enabled>true</enabled>
     </classAccesses>
     <classAccesses>
+        <apexClass>HOT_IRRecordPageController</apexClass>
+        <enabled>true</enabled>
+    </classAccesses>
+    <classAccesses>
         <apexClass>HOT_InterestedResourceBannerController</apexClass>
         <enabled>true</enabled>
     </classAccesses>
@@ -494,6 +498,11 @@
     <fieldPermissions>
         <editable>true</editable>
         <field>HOT_Request__c.InvoiceStatus__c</field>
+        <readable>true</readable>
+    </fieldPermissions>
+    <fieldPermissions>
+        <editable>false</editable>
+        <field>HOT_Request__c.IsAccountEqualOrderer__c</field>
         <readable>true</readable>
     </fieldPermissions>
     <fieldPermissions>
@@ -2506,9 +2515,9 @@
         <allowDelete>true</allowDelete>
         <allowEdit>true</allowEdit>
         <allowRead>true</allowRead>
-        <modifyAllRecords>false</modifyAllRecords>
+        <modifyAllRecords>true</modifyAllRecords>
         <object>Shift</object>
-        <viewAllRecords>false</viewAllRecords>
+        <viewAllRecords>true</viewAllRecords>
     </objectPermissions>
     <objectPermissions>
         <allowCreate>false</allowCreate>

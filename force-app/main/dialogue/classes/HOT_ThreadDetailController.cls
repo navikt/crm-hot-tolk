@@ -10,7 +10,10 @@ public without sharing class HOT_ThreadDetailController {
                     CRM_Is_Closed__c,
                     CRM_Thread_Type__c,
                     CRM_Related_Object__c,
-                    HOT_Thread_read_by__c
+                    HOT_Thread_read_by__c,
+                    HOT_Request__r.Account__c,
+                    HOT_Request__r.Orderer__c,
+                    HOT_WorkOrder__r.AccountId
                 FROM Thread__c
                 WHERE Id = :recordId
                 LIMIT 1

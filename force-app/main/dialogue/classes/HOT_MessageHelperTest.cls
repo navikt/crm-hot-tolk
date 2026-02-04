@@ -506,9 +506,13 @@ private class HOT_MessageHelperTest {
     }
     @IsTest
     static void createMessagesTest() {
-        List<Thread__c> tList = [SELECT Id FROM Thread__c ORDER BY CRM_Number_of_External_Messages__c DESC];
+        List<Thread__c> tList = [
+            SELECT Id, CRM_Thread_Type__c
+            FROM Thread__c
+            ORDER BY CRM_Number_of_External_Messages__c DESC
+        ];
         Test.startTest();
-        HOT_MessageHelper.createMessages(tList.get(0).Id, 'Some text value', null);
+        HOT_MessageHelper.createMessages(tList[0], 'Some text value', null);
         Test.stopTest();
         List<Message__c> msgList = [SELECT CRM_Read__c FROM Message__c WHERE CRM_Thread__c = :tList.get(0).Id];
         System.assertEquals(msgList.isEmpty(), false);

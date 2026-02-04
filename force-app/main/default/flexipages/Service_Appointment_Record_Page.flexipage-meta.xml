@@ -848,7 +848,6 @@
                 <componentName>hot_alertBanner</componentName>
                 <identifier>c_hot_alertBanner2</identifier>
                 <visibilityRule>
-                    <booleanFilter>1 AND 2</booleanFilter>
                     <criteria>
                         <leftValue>{!Record.HOT_LateCancellation__c}</leftValue>
                         <operator>EQUAL</operator>

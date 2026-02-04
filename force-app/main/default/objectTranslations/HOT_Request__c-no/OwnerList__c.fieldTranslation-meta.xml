@@ -1,7 +1,15 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <CustomFieldTranslation xmlns="http://soap.sforce.com/2006/04/metadata">
     <label>Eier</label>
-    <name>Owner_List__c</name>
+    <name>OwnerList__c</name>
+    <picklistValues>
+        <masterLabel>Fellesoppdrag Vest-Viken</masterLabel>
+        <translation><!-- Fellesoppdrag Vest-Viken --></translation>
+    </picklistValues>
+    <picklistValues>
+        <masterLabel>NAV Akuttvakt Tolk</masterLabel>
+        <translation><!-- NAV Akuttvakt Tolk --></translation>
+    </picklistValues>
     <picklistValues>
         <masterLabel>Nav Tolketjeneste Agder</masterLabel>
         <translation><!-- Nav Tolketjeneste Agder --></translation>

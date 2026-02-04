@@ -2,6 +2,7 @@ import { LightningElement, wire, api } from 'lwc';
 import getInterestedResources from '@salesforce/apex/HOT_InterestedResourcesListController.getInterestedResources';
 import getMyThreads from '@salesforce/apex/HOT_ThreadListController.getMyThreadsIR';
 import getInterestedResourceDetails from '@salesforce/apex/HOT_InterestedResourcesListController.getInterestedResourceDetails';
+import checkIfIsLastHistoricallyAssignedResource from '@salesforce/apex/HOT_InterestedResourcesListController.checkIfIsLastHistoricallyAssignedResource';
 import checkAccessToSA from '@salesforce/apex/HOT_InterestedResourcesListController.checkAccessToSA';
 import retractInterest from '@salesforce/apex/HOT_InterestedResourcesListController.retractInterest';
 import getThreadDispatcherId from '@salesforce/apex/HOT_InterestedResourcesListController.getThreadDispatcherId';
@@ -17,14 +18,17 @@ import { defaultFilters, compare } from './filters';
 import { getDayOfWeek } from 'c/hot_commonUtils';
 import { NavigationMixin } from 'lightning/navigation';
 import icons from '@salesforce/resourceUrl/ikoner';
+import icons2 from '@salesforce/resourceUrl/icons';
 
 export default class Hot_interestedResourcesList_v2 extends NavigationMixin(LightningElement) {
     exitCrossIcon = icons + '/Close/Close.svg';
+    informationIcon = icons2 + '/informationicon.svg';
     columns = [];
     filters = [];
     iconByValue = iconByValue;
     isGoToThreadButtonDisabled = false;
     hasAccess = true;
+    isHistoricallyAssignedResourceAndLateCancellation = false;
 
     setColumns() {
         if (window.screen.width > 576) {
@@ -161,7 +165,9 @@ export default class Hot_interestedResourcesList_v2 extends NavigationMixin(Ligh
                     });
                     let tempRecords = [];
                     for (let record of this.allInterestedResourcesWired) {
-                        tempRecords.push(formatRecord(Object.assign({}, record), this.datetimeFields));
+                        let formattedRecord = formatRecord(Object.assign({}, record), this.datetimeFields);
+                        formattedRecord.canceledDateRaw = record.WorkOrderCanceledDate__c; // <-- NY LINJE: Lagrer rådata
+                        tempRecords.push(formattedRecord);
                     }
                     this.records = tempRecords;
                     this.initialInterestedResources = [...this.records];
@@ -217,6 +223,11 @@ export default class Hot_interestedResourcesList_v2 extends NavigationMixin(Ligh
         for (let interestedResource of this.records) {
             if (recordId === interestedResource.Id) {
                 this.interestedResource = interestedResource;
+                checkIfIsLastHistoricallyAssignedResource({
+                    saId: this.interestedResource.ServiceAppointment__r.Id
+                }).then((result) => {
+                    this.isHistoricallyAssignedResourceAndLateCancellation = result;
+                });
                 let relaseDateTimeFormatted = new Date(
                     this.interestedResource.ServiceAppointment__r.HOT_ReleaseDate__c
                 );
@@ -245,6 +256,9 @@ export default class Hot_interestedResourcesList_v2 extends NavigationMixin(Ligh
         checkAccessToSA({ saId: saId }).then((result) => {
             if (result != false) {
                 getInterestedResourceDetails({ recordId: saId }).then((result) => {
+                    checkIfIsLastHistoricallyAssignedResource({ saId: saId }).then((result) => {
+                        this.isHistoricallyAssignedResourceAndLateCancellation = result;
+                    });
                     this.interestedResource = result;
                     this.isDetails = true;
                     this.isNotRetractable = this.interestedResource?.Status__c !== 'Påmeldt';
@@ -355,6 +369,7 @@ export default class Hot_interestedResourcesList_v2 extends NavigationMixin(Ligh
     }
     closeModal() {
         this.isGoToThreadButtonDisabled = false;
+        this.isHistoricallyAssignedResourceAndLateCancellation = false;
         const dialog = this.template.querySelector('dialog');
         dialog.close();
         this.recordId = undefined;
@@ -441,6 +456,14 @@ export default class Hot_interestedResourcesList_v2 extends NavigationMixin(Ligh
         return this.interestedResource?.AssignmentType__c || '';
     }
 
+    get lateCancellation() {
+        return !!this.interestedResource?.ServiceAppointment__r.HOT_LateCancellation__c;
+    }
+
+    get preparationTime() {
+        return this.interestedResource?.ServiceAppointment__r.HOT_PreparationTime__c || '';
+    }
+
     get status() {
         return this.interestedResource?.Status__c || '';
     }
@@ -470,7 +493,23 @@ export default class Hot_interestedResourcesList_v2 extends NavigationMixin(Ligh
     }
 
     get canceledDate() {
-        return this.interestedResource?.WorkOrderCanceledDate__c || '';
+        const dateVal = this.interestedResource?.canceledDateRaw || this.interestedResource?.WorkOrderCanceledDate__c;
+        if (!dateVal) {
+            return '';
+        }
+
+        const d = new Date(dateVal);
+        return (
+            d.getDate() +
+            '.' +
+            (d.getMonth() + 1) +
+            '.' +
+            d.getFullYear() +
+            ', ' +
+            ('0' + d.getHours()).slice(-2) +
+            ':' +
+            ('0' + d.getMinutes()).slice(-2)
+        );
     }
 
     get terms() {
