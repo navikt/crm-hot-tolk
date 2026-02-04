@@ -64,6 +64,7 @@ public without sharing class HOT_LateCancellationListController {
                 HOT_DegreeOfHearingAndVisualImpairment__c
             FROM ServiceAppointment
             WHERE Id IN :validServiceAppointmentIds
+            ORDER BY EarliestStartTime DESC
         ];
     }
 }
