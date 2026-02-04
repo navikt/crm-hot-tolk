@@ -61,7 +61,8 @@ public without sharing class HOT_LateCancellationListController {
                 HOT_WorkTypeName__c,
                 HOT_AssignmentType__c,
                 HOT_Request__r.OwnerName__c,
-                HOT_DegreeOfHearingAndVisualImpairment__c
+                HOT_DegreeOfHearingAndVisualImpairment__c,
+                HOT_PreparationTime__c
             FROM ServiceAppointment
             WHERE Id IN :validServiceAppointmentIds
             ORDER BY EarliestStartTime DESC

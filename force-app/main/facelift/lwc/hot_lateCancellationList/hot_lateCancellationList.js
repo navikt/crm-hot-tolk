@@ -217,6 +217,10 @@ export default class Hot_lateCancellationList extends LightningElement {
         return this.serviceAppointment?.HOT_DegreeOfHearingAndVisualImpairment__c ?? '';
     }
 
+    get preperationTime() {
+        return this.serviceAppointment?.HOT_PreparationTime__c ?? '';
+    }
+
     get canceledDate() {
         const dateVal = this.interestedResource?.WorkOrderCanceledDate__c;
         if (!dateVal) {
