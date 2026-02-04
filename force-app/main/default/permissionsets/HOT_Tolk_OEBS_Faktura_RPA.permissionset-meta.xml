@@ -321,6 +321,11 @@
     </fieldPermissions>
     <fieldPermissions>
         <editable>false</editable>
+        <field>ServiceAppointment.HOT_LateCancellationScreenInterpreter__c</field>
+        <readable>true</readable>
+    </fieldPermissions>
+    <fieldPermissions>
+        <editable>false</editable>
         <field>ServiceAppointment.HOT_Processed__c</field>
         <readable>true</readable>
     </fieldPermissions>

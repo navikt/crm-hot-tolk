@@ -278,6 +278,10 @@
         </itemInstances>
         <itemInstances>
             <fieldInstance>
+                <fieldInstanceProperties>
+                    <name>uiBehavior</name>
+                    <value>none</value>
+                </fieldInstanceProperties>
                 <fieldItem>Record.HOT_PreparationTime__c</fieldItem>
                 <identifier>RecordHOT_PreparationTime__cField</identifier>
             </fieldInstance>
@@ -414,6 +418,26 @@
                 </fieldInstanceProperties>
                 <fieldItem>Record.HOT_LateCancellation__c</fieldItem>
                 <identifier>RecordHOT_LateCancellation__cField</identifier>
+                <visibilityRule>
+                    <criteria>
+                        <leftValue>{!Record.HOT_WorkOrderLineItem__r.WorkOrder.Status}</leftValue>
+                        <operator>EQUAL</operator>
+                        <rightValue>Canceled</rightValue>
+                    </criteria>
+                </visibilityRule>
+            </fieldInstance>
+        </itemInstances>
+        <itemInstances>
+            <fieldInstance>
+                <fieldItem>Record.HOT_WorkOrderLineItem__r.WorkOrder.CanceledDate__c</fieldItem>
+                <identifier>RecordHOT_WorkOrderLineItem_rWorkOrderCanceledDate_cField</identifier>
+                <visibilityRule>
+                    <criteria>
+                        <leftValue>{!Record.HOT_WorkOrderLineItem__r.WorkOrder.Status}</leftValue>
+                        <operator>EQUAL</operator>
+                        <rightValue>Canceled</rightValue>
+                    </criteria>
+                </visibilityRule>
             </fieldInstance>
         </itemInstances>
         <name>Facet-9076d0db-a5a7-442a-b012-cb35bc98b822</name>
@@ -814,15 +838,15 @@
         <itemInstances>
             <componentInstance>
                 <componentInstanceProperties>
-                    <name>decorate</name>
-                    <value>true</value>
+                    <name>message</name>
+                    <value>Oppdraget ble avlyst mindre enn 48 timer før start.</value>
                 </componentInstanceProperties>
                 <componentInstanceProperties>
-                    <name>richTextValue</name>
-                    <value>&lt;p style=&quot;text-align: center;&quot;&gt;&lt;strong style=&quot;font-size: 14px; color: rgb(0, 0, 255);&quot;&gt;INFO: Oppdraget ble avlyst mindre enn 48 timer før start.&lt;/strong&gt;&lt;/p&gt;</value>
+                    <name>type</name>
+                    <value>Warning</value>
                 </componentInstanceProperties>
-                <componentName>flexipage:richText</componentName>
-                <identifier>flexipage_richText</identifier>
+                <componentName>hot_alertBanner</componentName>
+                <identifier>c_hot_alertBanner2</identifier>
                 <visibilityRule>
                     <booleanFilter>1 AND 2</booleanFilter>
                     <criteria>
@@ -831,7 +855,7 @@
                         <rightValue>true</rightValue>
                     </criteria>
                     <criteria>
-                        <leftValue>{!Record.HOT_IsScreenInterpreterNew__c}</leftValue>
+                        <leftValue>{!Record.HOT_LateCancellationScreenInterpreter__c}</leftValue>
                         <operator>EQUAL</operator>
                         <rightValue>false</rightValue>
                     </criteria>
@@ -841,24 +865,18 @@
         <itemInstances>
             <componentInstance>
                 <componentInstanceProperties>
-                    <name>decorate</name>
-                    <value>true</value>
+                    <name>message</name>
+                    <value>Skjermtolkoppdraget ble avlyst mindre enn 30 minutter før start</value>
                 </componentInstanceProperties>
                 <componentInstanceProperties>
-                    <name>richTextValue</name>
-                    <value>&lt;p style=&quot;text-align: center;&quot;&gt;&lt;strong style=&quot;font-size: 14px; color: rgb(0, 0, 255);&quot;&gt;INFO: Oppdraget ble avlyst mindre enn 30 minutter før start.&lt;/strong&gt;&lt;/p&gt;</value>
+                    <name>type</name>
+                    <value>Warning</value>
                 </componentInstanceProperties>
-                <componentName>flexipage:richText</componentName>
-                <identifier>flexipage_richText2</identifier>
+                <componentName>hot_alertBanner</componentName>
+                <identifier>c_hot_alertBanner</identifier>
                 <visibilityRule>
-                    <booleanFilter>1 AND 2</booleanFilter>
                     <criteria>
-                        <leftValue>{!Record.HOT_LateCancellation__c}</leftValue>
-                        <operator>EQUAL</operator>
-                        <rightValue>true</rightValue>
-                    </criteria>
-                    <criteria>
-                        <leftValue>{!Record.HOT_IsScreenInterpreterNew__c}</leftValue>
+                        <leftValue>{!Record.HOT_LateCancellationScreenInterpreter__c}</leftValue>
                         <operator>EQUAL</operator>
                         <rightValue>true</rightValue>
                     </criteria>
@@ -1001,6 +1019,12 @@
                 </componentInstanceProperties>
                 <componentName>force:relatedListSingleContainer</componentName>
                 <identifier>force_relatedListSingleContainer2</identifier>
+            </componentInstance>
+        </itemInstances>
+        <itemInstances>
+            <componentInstance>
+                <componentName>hot_relevantInterestedResources</componentName>
+                <identifier>c_hot_relevantInterestedResources</identifier>
             </componentInstance>
         </itemInstances>
         <name>Facet-8a2a94a6-277f-43b7-9cb4-b0df6b0dd3cb</name>

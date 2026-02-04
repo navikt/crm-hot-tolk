@@ -887,11 +887,6 @@
     </fieldPermissions>
     <fieldPermissions>
         <editable>false</editable>
-        <field>SMS__c.ServiceResource__c</field>
-        <readable>true</readable>
-    </fieldPermissions>
-    <fieldPermissions>
-        <editable>false</editable>
         <field>SMS__c.Message__c</field>
         <readable>true</readable>
     </fieldPermissions>
@@ -908,6 +903,11 @@
     <fieldPermissions>
         <editable>false</editable>
         <field>SMS__c.ServiceAppointment__c</field>
+        <readable>true</readable>
+    </fieldPermissions>
+    <fieldPermissions>
+        <editable>false</editable>
+        <field>SMS__c.ServiceResource__c</field>
         <readable>true</readable>
     </fieldPermissions>
     <fieldPermissions>
@@ -1023,6 +1023,11 @@
     <fieldPermissions>
         <editable>true</editable>
         <field>ServiceAppointment.HOT_IsRecieptRecieved__c</field>
+        <readable>true</readable>
+    </fieldPermissions>
+    <fieldPermissions>
+        <editable>false</editable>
+        <field>ServiceAppointment.HOT_LateCancellationScreenInterpreter__c</field>
         <readable>true</readable>
     </fieldPermissions>
     <fieldPermissions>
