@@ -126,9 +126,9 @@ export default class Hot_lateCancellationList extends LightningElement {
                 this.isDetails = !!this.recordId;
                 this.showServiceAppointmentDetails();
             }
-                     getInterestedResourceDetails({ recordId: recordId }).then((result) => {
-                                this.interestedResource = result;
-                            });
+            getInterestedResourceDetails({ recordId: recordId }).then((result) => {
+                this.interestedResource = result;
+            });
         }
     }
 
@@ -181,7 +181,7 @@ export default class Hot_lateCancellationList extends LightningElement {
         return this.serviceAppointment?.Subject ?? '';
     }
 
-        get startAndEndTime() {
+    get startAndEndTime() {
         return (
             formatDatetimeinterval(this.serviceAppointment.SchedStartTime, this.serviceAppointment.SchedEndTime) +
             ' ' +
@@ -189,7 +189,7 @@ export default class Hot_lateCancellationList extends LightningElement {
         );
     }
 
-        get appointmentCity() {
+    get appointmentCity() {
         return this.serviceAppointment?.HOT_InterpretationPostalCity__c ?? '';
     }
 
@@ -201,11 +201,11 @@ export default class Hot_lateCancellationList extends LightningElement {
         return this.serviceAppointment?.HOT_AssignmentType__c ?? '';
     }
 
-        get ownerName() {
+    get ownerName() {
         return this.serviceAppointment?.HOT_Request__r?.OwnerName__c ?? '';
     }
 
-        get status() {
+    get status() {
         return this.serviceAppointment?.Status ?? '';
     }
 
@@ -213,7 +213,7 @@ export default class Hot_lateCancellationList extends LightningElement {
         return this.serviceAppointment?.HOT_DegreeOfHearingAndVisualImpairment__c ?? '';
     }
 
-        get canceledDate() {
+    get canceledDate() {
         const dateVal = this.interestedResource?.WorkOrderCanceledDate__c;
         if (!dateVal) {
             return '';
