@@ -9,7 +9,6 @@ import { defaultFilters, compare } from './filters';
 import getInterestedResourceDetails from '@salesforce/apex/HOT_InterestedResourcesListController.getInterestedResourceDetails';
 import icons from '@salesforce/resourceUrl/ikoner';
 
-
 export default class Hot_lateCancellationList extends LightningElement {
     records = [];
     columns = [];
@@ -125,10 +124,10 @@ export default class Hot_lateCancellationList extends LightningElement {
                 this.serviceAppointment.weekday = getDayOfWeek(this.serviceAppointment.EarliestStartTime);
                 this.isDetails = !!this.recordId;
                 this.showServiceAppointmentDetails();
+                getInterestedResourceDetails({ recordId: recordId }).then((result) => {
+                    this.interestedResource = result;
+                });
             }
-            getInterestedResourceDetails({ recordId: recordId }).then((result) => {
-                this.interestedResource = result;
-            });
         }
     }
 
@@ -150,7 +149,12 @@ export default class Hot_lateCancellationList extends LightningElement {
     }
 
     updateURL() {
-        let baseURL = window.location.protocol + '//' + window.location.host + window.location.pathname + '?list=lateCancellation';
+        let baseURL =
+            window.location.protocol +
+            '//' +
+            window.location.host +
+            window.location.pathname +
+            '?list=lateCancellation';
         if (this.recordId) {
             baseURL += '&id=' + this.recordId;
         }
