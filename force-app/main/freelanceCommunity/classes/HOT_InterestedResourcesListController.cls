@@ -198,7 +198,7 @@ public without sharing class HOT_InterestedResourcesListController {
             WHERE
                 ServiceAppointment__c = :saId
                 AND ServiceResource__c = :lastHistoric.ServiceResource__c
-                AND Status__c != 'Reserved'
+                AND Status__c = 'Canceled'
         ];
 
         return nonReservedInterestedCount > 0;
