@@ -51,6 +51,12 @@
             </value>
         </inputParameters>
         <inputParameters>
+            <name>isPreparationTimeChoice</name>
+            <value>
+                <elementReference>isPreparationTime</elementReference>
+            </value>
+        </inputParameters>
+        <inputParameters>
             <name>isScreenInterpreterChoice</name>
             <value>
                 <elementReference>isScreenInterpreter</elementReference>
@@ -297,6 +303,14 @@
         <dataType>String</dataType>
         <value>
             <stringValue>Eier</stringValue>
+        </value>
+    </choices>
+    <choices>
+        <name>PreparationTime</name>
+        <choiceText>Forberedelsestid</choiceText>
+        <dataType>String</dataType>
+        <value>
+            <stringValue>PreparationTime</stringValue>
         </value>
     </choices>
     <choices>
@@ -613,6 +627,15 @@ CONTAINS({!ChosenFieldsOwner}, {!Owner})
 )</expression>
     </formulas>
     <formulas>
+        <name>isPreparationTime</name>
+        <dataType>Boolean</dataType>
+        <expression>OR(
+    CONTAINS({!ChosenFields}, {!PreparationTime}),
+    CONTAINS({!ChosenFieldsTime}, {!PreparationTime}),
+    CONTAINS({!ChosenFieldsOwner}, {!PreparationTime})
+)</expression>
+    </formulas>
+    <formulas>
         <name>isScreenInterpreter</name>
         <dataType>Boolean</dataType>
         <expression>OR(
@@ -849,6 +872,7 @@ CONTAINS({!ChosenFieldsOwner}, {!Subject})
             <choiceReferences>Dispatcher</choiceReferences>
             <choiceReferences>Account</choiceReferences>
             <choiceReferences>InterpretationMethod</choiceReferences>
+            <choiceReferences>PreparationTime</choiceReferences>
             <dataType>String</dataType>
             <fieldText>Velg felter</fieldText>
             <fieldType>MultiSelectCheckboxes</fieldType>
@@ -891,6 +915,7 @@ CONTAINS({!ChosenFieldsOwner}, {!Subject})
             <choiceReferences>Owner</choiceReferences>
             <choiceReferences>ServiceTerritory</choiceReferences>
             <choiceReferences>Date</choiceReferences>
+            <choiceReferences>PreparationTime</choiceReferences>
             <dataType>String</dataType>
             <fieldText>Velg felter</fieldText>
             <fieldType>MultiSelectCheckboxes</fieldType>
@@ -939,6 +964,7 @@ CONTAINS({!ChosenFieldsOwner}, {!Subject})
             <choiceReferences>InterpretationMethod</choiceReferences>
             <choiceReferences>Owner</choiceReferences>
             <choiceReferences>ServiceTerritory</choiceReferences>
+            <choiceReferences>PreparationTime</choiceReferences>
             <dataType>String</dataType>
             <fieldText>Velg felter</fieldText>
             <fieldType>MultiSelectCheckboxes</fieldType>
@@ -1182,6 +1208,53 @@ CONTAINS({!ChosenFieldsOwner}, {!Subject})
                     <fieldType>ObjectProvided</fieldType>
                     <inputsOnNextNavToAssocScrn>UseStoredValues</inputsOnNextNavToAssocScrn>
                     <isRequired>false</isRequired>
+                    <objectFieldReference>getRequest.PreparationTime__c</objectFieldReference>
+                </fields>
+                <inputParameters>
+                    <name>width</name>
+                    <value>
+                        <stringValue>12</stringValue>
+                    </value>
+                </inputParameters>
+                <isRequired>false</isRequired>
+            </fields>
+            <isRequired>false</isRequired>
+            <regionContainerType>SectionWithoutHeader</regionContainerType>
+            <visibilityRule>
+                <conditionLogic>or</conditionLogic>
+                <conditions>
+                    <leftValueReference>ChosenFields</leftValueReference>
+                    <operator>Contains</operator>
+                    <rightValue>
+                        <elementReference>PreparationTime</elementReference>
+                    </rightValue>
+                </conditions>
+                <conditions>
+                    <leftValueReference>ChosenFieldsOwner</leftValueReference>
+                    <operator>Contains</operator>
+                    <rightValue>
+                        <elementReference>PreparationTime</elementReference>
+                    </rightValue>
+                </conditions>
+                <conditions>
+                    <leftValueReference>ChosenFieldsTime</leftValueReference>
+                    <operator>Contains</operator>
+                    <rightValue>
+                        <elementReference>PreparationTime</elementReference>
+                    </rightValue>
+                </conditions>
+            </visibilityRule>
+        </fields>
+        <fields>
+            <name>NewValuesScreen_Section5</name>
+            <fieldType>RegionContainer</fieldType>
+            <fields>
+                <name>NewValuesScreen_Section5_Column1</name>
+                <fieldType>Region</fieldType>
+                <fields>
+                    <fieldType>ObjectProvided</fieldType>
+                    <inputsOnNextNavToAssocScrn>UseStoredValues</inputsOnNextNavToAssocScrn>
+                    <isRequired>false</isRequired>
                     <objectFieldReference>getRequest.IsScreenInterpreter__c</objectFieldReference>
                 </fields>
                 <inputParameters>
@@ -1220,10 +1293,10 @@ CONTAINS({!ChosenFieldsOwner}, {!Subject})
             </visibilityRule>
         </fields>
         <fields>
-            <name>NewValuesScreen_Section5</name>
+            <name>NewValuesScreen_Section6</name>
             <fieldType>RegionContainer</fieldType>
             <fields>
-                <name>NewValuesScreen_Section5_Column1</name>
+                <name>NewValuesScreen_Section6_Column1</name>
                 <fieldType>Region</fieldType>
                 <fields>
                     <name>DispatcherLookup</name>
@@ -1299,10 +1372,10 @@ CONTAINS({!ChosenFieldsOwner}, {!Subject})
             </visibilityRule>
         </fields>
         <fields>
-            <name>NewValuesScreen_Section6</name>
+            <name>NewValuesScreen_Section7</name>
             <fieldType>RegionContainer</fieldType>
             <fields>
-                <name>NewValuesScreen_Section6_Column1</name>
+                <name>NewValuesScreen_Section7_Column1</name>
                 <fieldType>Region</fieldType>
                 <fields>
                     <name>AccountLookup</name>
@@ -1372,10 +1445,10 @@ CONTAINS({!ChosenFieldsOwner}, {!Subject})
             </visibilityRule>
         </fields>
         <fields>
-            <name>NewValuesScreen_Section7</name>
+            <name>NewValuesScreen_Section8</name>
             <fieldType>RegionContainer</fieldType>
             <fields>
-                <name>NewValuesScreen_Section7_Column1</name>
+                <name>NewValuesScreen_Section8_Column1</name>
                 <fieldType>Region</fieldType>
                 <fields>
                     <fieldType>ObjectProvided</fieldType>
@@ -1419,10 +1492,10 @@ CONTAINS({!ChosenFieldsOwner}, {!Subject})
             </visibilityRule>
         </fields>
         <fields>
-            <name>NewValuesScreen_Section8</name>
+            <name>NewValuesScreen_Section9</name>
             <fieldType>RegionContainer</fieldType>
             <fields>
-                <name>NewValuesScreen_Section8_Column1</name>
+                <name>NewValuesScreen_Section9_Column1</name>
                 <fieldType>Region</fieldType>
                 <fields>
                     <name>ownerText</name>
@@ -1487,10 +1560,10 @@ CONTAINS({!ChosenFieldsOwner}, {!Subject})
             </visibilityRule>
         </fields>
         <fields>
-            <name>NewValuesScreen_Section9</name>
+            <name>NewValuesScreen_Section10</name>
             <fieldType>RegionContainer</fieldType>
             <fields>
-                <name>NewValuesScreen_Section9_Column1</name>
+                <name>NewValuesScreen_Section10_Column1</name>
                 <fieldType>Region</fieldType>
                 <fields>
                     <fieldType>ObjectProvided</fieldType>
@@ -1527,10 +1600,10 @@ CONTAINS({!ChosenFieldsOwner}, {!Subject})
             </visibilityRule>
         </fields>
         <fields>
-            <name>NewValuesScreen_Section10</name>
+            <name>NewValuesScreen_Section11</name>
             <fieldType>RegionContainer</fieldType>
             <fields>
-                <name>NewValuesScreen_Section10_Column1</name>
+                <name>NewValuesScreen_Section11_Column1</name>
                 <fieldType>Region</fieldType>
                 <fields>
                     <fieldType>ObjectProvided</fieldType>
@@ -1565,6 +1638,18 @@ CONTAINS({!ChosenFieldsOwner}, {!Subject})
                 </conditions>
             </visibilityRule>
         </fields>
+        <fields>
+            <fieldType>ObjectProvided</fieldType>
+            <inputsOnNextNavToAssocScrn>UseStoredValues</inputsOnNextNavToAssocScrn>
+            <isRequired>false</isRequired>
+            <objectFieldReference>getRequest.PreparationTime__c</objectFieldReference>
+        </fields>
+        <fields>
+            <fieldType>ObjectProvided</fieldType>
+            <inputsOnNextNavToAssocScrn>UseStoredValues</inputsOnNextNavToAssocScrn>
+            <isRequired>false</isRequired>
+            <objectFieldReference>getRequest.PreparationTime__c</objectFieldReference>
+        </fields>
         <showFooter>true</showFooter>
         <showHeader>true</showHeader>
     </screens>
@@ -1575,7 +1660,7 @@ CONTAINS({!ChosenFieldsOwner}, {!Subject})
             <targetReference>getRequest</targetReference>
         </connector>
     </start>
-    <status>Active</status>
+    <status>Draft</status>
     <variables>
         <name>recordId</name>
         <dataType>String</dataType>

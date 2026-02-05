@@ -23,6 +23,8 @@ public without sharing class HOT_UpdateChildRecordsService {
     public Boolean isServiceTerritoryChoice; 
     @InvocableVariable
     public Boolean isDateChoice;
+    @InvocableVariable
+    public Boolean isPreparationTimeChoice;
 
     @InvocableMethod
     public static List<String> updateChildRecords(List<HOT_UpdateChildRecordsService> inputVariables) {
@@ -182,7 +184,8 @@ public without sharing class HOT_UpdateChildRecordsService {
                 input.isInterpreterMethodChoice,
                 input.isOwnerChoice,
                 input.isServiceTerritoryChoice,
-                input.isDateChoice
+                input.isDateChoice,
+                input.isPreparationTimeChoice
             );
             if (error != null) {
                 errorOutput = error;
@@ -197,7 +200,8 @@ public without sharing class HOT_UpdateChildRecordsService {
                 input.isInterpreterMethodChoice,
                 input.isOwnerChoice,
                 input.isServiceTerritoryChoice,
-                input.isDateChoice
+                input.isDateChoice,
+                input.isPreparationTimeChoice
             );
             if (error != null) {
                 if (errorOutput == null || errorOutput == '') {
@@ -258,7 +262,8 @@ public without sharing class HOT_UpdateChildRecordsService {
                 input.isInterpreterMethodChoice,
                 input.isOwnerChoice,
                 input.isServiceTerritoryChoice,
-                input.isDateChoice
+                input.isDateChoice,
+                input.isPreparationTimeChoice
             );
             if (error != null) {
                 errorOutput = error;
@@ -322,7 +327,8 @@ public without sharing class HOT_UpdateChildRecordsService {
         Boolean isInterpreterMethodChoice,
         Boolean isOwnerChoice,
         Boolean isServiceTerritoryChoice,
-        Boolean isDateChoice
+        Boolean isDateChoice,
+        Boolean isPreparationTimeChoice
     ) {
         HOT_Request__c requestToUpdate = new HOT_Request__c(Id = request.Id);
         String error;
@@ -370,6 +376,9 @@ public without sharing class HOT_UpdateChildRecordsService {
             requestToUpdate.StartTime__c = request.StartTime__c;
             requestToUpdate.EndTime__c = request.EndTime__c;
         }
+        if (isPreparationTimeChoice) {
+            requestToUpdate.PreparationTime__c = request.PreparationTime__c;
+        }
 
         try {
             update requestToUpdate;
@@ -392,7 +401,8 @@ public without sharing class HOT_UpdateChildRecordsService {
         Boolean isInterpreterMethodChoice,
         Boolean isOwnerChoice,
         Boolean isServiceTerritoryChoice,
-        Boolean isDateChoice
+        Boolean isDateChoice,
+        Boolean isPreparationTimeChoice
     ) {
         String error;
         for (WorkOrder workOrder : workOrders) {
@@ -427,6 +437,9 @@ public without sharing class HOT_UpdateChildRecordsService {
             if (isDateChoice) {
                 workOrder.StartDate = request.StartTime__c;
                 workOrder.EndDate = request.EndTime__c;
+            }
+            if (isPreparationTimeChoice) {
+                workOrder.HOT_PreparationTime__c = request.PreparationTime__c;
             }
         }
         try {
