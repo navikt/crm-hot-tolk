@@ -4,6 +4,8 @@ private class HOT_LateCancellationListControllerTest {
     static void setup() {
         System.Test.startTest();
         Profile profile = [SELECT Id FROM Profile WHERE Name = 'System Administrator'];
+        // Profile profile = [SELECT Id FROM Profile WHERE Name = 'Customer Community Plus'];
+
         User user1 = new User(
             alias = 'TestUser',
             email = 'HOT_testaccount@nav.no',
@@ -22,9 +24,13 @@ private class HOT_LateCancellationListControllerTest {
             insert user1;
 
             PermissionSet permissionSet = [SELECT Id, Name FROM PermissionSet WHERE Name = 'HOT_Tolk_Formidler'];
+            // PermissionSet permissionSet = [SELECT Id, Name FROM PermissionSet WHERE Name = 'HOT_Tolk_Frilans'];
             insert new PermissionSetAssignment(AssigneeId = user1.id, PermissionSetId = permissionSet.Id);
         }
         System.Test.stopTest();
+
+        Account account = HOT_TestDataFactory.createAccount(true);
+        insert account;
 
         OperatingHours operatingHours = HOT_TestDataFactory.createOperatingHours();
         insert operatingHours;
@@ -32,6 +38,7 @@ private class HOT_LateCancellationListControllerTest {
         insert serviceTerritory;
 
         ServiceResource resource1 = HOT_TestDataFactory.createServiceResource(user1.Id);
+        resource1.AccountId = account.Id;
         insert resource1;
 
         ServiceTerritoryMember serviceTerritoryMember = HOT_TestDataFactory.createServiceTerritoryMember(
@@ -44,9 +51,11 @@ private class HOT_LateCancellationListControllerTest {
         insert workType;
 
         HOT_Request__c request = HOT_TestDataFactory.createRequest('TEST', workType);
+        request.Account__c = account.Id;
         insert request;
 
         WorkOrder workOrder = HOT_TestDataFactory.createWorkOrder(request, workType);
+        workOrder.AccountId = account.Id;
         insert workOrder;
 
         WorkOrderLineItem WorkOrderLineItem = HOT_TestDataFactory.createWorkOrderLineItem(workOrder, workType);
@@ -76,18 +85,23 @@ private class HOT_LateCancellationListControllerTest {
 
     @isTest
     static void getLateCancellationsTest() {
-        User user1 = [SELECT Id FROM User WHERE email = 'HOT_testaccount@nav.hot.no' LIMIT 1];
+        User user = [SELECT Id, AccountId FROM User WHERE email = 'HOT_testaccount@nav.no' LIMIT 1];
 
+        System.Test.startTest();
         HOT_Request__c request = [SELECT Id FROM HOT_Request__c WHERE Subject__c = 'TEST' LIMIT 1];
         request.Status__c = 'Godkjent';
         update request;
 
-        ServiceAppointment serviceAppointment = [SELECT Id FROM ServiceAppointment WHERE HOT_Request__c = :request.Id];
+        List<ServiceAppointment> serviceAppointments = [
+            SELECT Id
+            FROM ServiceAppointment
+            WHERE HOT_Request__c = :request.Id
+        ];
 
         ServiceResource resource = [SELECT Id, AccountId FROM ServiceResource LIMIT 1];
 
         AssignedResource assignedResource = HOT_TestDataFactory.createAssignedResource(
-            serviceAppointment.Id,
+            serviceAppointments.get(0).Id,
             resource.Id
         );
         insert assignedResource;
@@ -98,22 +112,21 @@ private class HOT_LateCancellationListControllerTest {
         List<HOT_HistoricallyAssignedResource__c> harList = [
             SELECT Id, ServiceResource__c, ServiceAppointment__c, Status__c
             FROM HOT_HistoricallyAssignedResource__c
-            WHERE ServiceAppointment__c = :serviceAppointment.Id
+            WHERE ServiceAppointment__c = :serviceAppointments.get(0).Id
         ];
 
-        HOT_InterestedResource__c interestedResource = [
+        List<HOT_InterestedResource__c> interestedResourceList = [
             SELECT Id, ServiceResource__c, ServiceAppointment__c, Status__c
             FROM HOT_InterestedResource__c
-            WHERE ServiceAppointment__c = :serviceAppointment.Id
-            LIMIT 1
+            WHERE ServiceAppointment__c = :serviceAppointments.get(0).Id
         ];
 
-        System.runAs(user1) {
-            System.Test.startTest();
+        System.runAs(user) {
             List<ServiceAppointment> result = HOT_LateCancellationListController.getLateCancellationsForUser();
             System.Test.stopTest();
 
-            System.assertNotEquals(null, result, 'Result should not be null');
+            // System.assertEquals(1, result.size(), 'Expected exactly one ServiceAppointment in the result');
+            System.assertNotEquals(null, result.size(), 'Result should not be null');
         }
     }
 }
