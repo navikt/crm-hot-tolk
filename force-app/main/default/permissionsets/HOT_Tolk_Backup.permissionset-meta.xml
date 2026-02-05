@@ -564,13 +564,13 @@
         <readable>true</readable>
     </fieldPermissions>
     <fieldPermissions>
-        <editable>false</editable>
-        <field>HOT_Request__c.OwnerName__c</field>
+        <editable>true</editable>
+        <field>HOT_Request__c.OwnerList__c</field>
         <readable>true</readable>
     </fieldPermissions>
     <fieldPermissions>
-        <editable>true</editable>
-        <field>HOT_Request__c.OwnerList__c</field>
+        <editable>false</editable>
+        <field>HOT_Request__c.OwnerName__c</field>
         <readable>true</readable>
     </fieldPermissions>
     <fieldPermissions>
@@ -601,6 +601,11 @@
     <fieldPermissions>
         <editable>true</editable>
         <field>HOT_Request__c.PreferredResource2__c</field>
+        <readable>true</readable>
+    </fieldPermissions>
+    <fieldPermissions>
+        <editable>false</editable>
+        <field>HOT_Request__c.PreparationTime__c</field>
         <readable>true</readable>
     </fieldPermissions>
     <fieldPermissions>
@@ -1831,11 +1836,6 @@
     <fieldPermissions>
         <editable>true</editable>
         <field>Thread__c.CRM_Account__c</field>
-        <readable>true</readable>
-    </fieldPermissions>
-    <fieldPermissions>
-        <editable>false</editable>
-        <field>Thread__c.HOT_Account__c</field>
         <readable>true</readable>
     </fieldPermissions>
     <fieldPermissions>

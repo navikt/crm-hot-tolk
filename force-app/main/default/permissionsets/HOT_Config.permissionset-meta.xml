@@ -657,6 +657,11 @@
     </fieldPermissions>
     <fieldPermissions>
         <editable>true</editable>
+        <field>HOT_Request__c.PreparationTime__c</field>
+        <readable>true</readable>
+    </fieldPermissions>
+    <fieldPermissions>
+        <editable>true</editable>
         <field>HOT_Request__c.SeriesEndDate__c</field>
         <readable>true</readable>
     </fieldPermissions>
@@ -887,11 +892,6 @@
     </fieldPermissions>
     <fieldPermissions>
         <editable>false</editable>
-        <field>SMS__c.ServiceResource__c</field>
-        <readable>true</readable>
-    </fieldPermissions>
-    <fieldPermissions>
-        <editable>false</editable>
         <field>SMS__c.Message__c</field>
         <readable>true</readable>
     </fieldPermissions>
@@ -908,6 +908,11 @@
     <fieldPermissions>
         <editable>false</editable>
         <field>SMS__c.ServiceAppointment__c</field>
+        <readable>true</readable>
+    </fieldPermissions>
+    <fieldPermissions>
+        <editable>false</editable>
+        <field>SMS__c.ServiceResource__c</field>
         <readable>true</readable>
     </fieldPermissions>
     <fieldPermissions>
