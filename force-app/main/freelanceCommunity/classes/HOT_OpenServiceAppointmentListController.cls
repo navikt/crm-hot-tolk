@@ -213,7 +213,7 @@ public without sharing class HOT_OpenServiceAppointmentListController {
         Map<Id, Thread__c> irIdToThread = new Map<Id, Thread__c>();
         if (!interestedResourceIds.isEmpty()) {
             for (Thread__c t : [
-                SELECT Id, CRM_Related_Object__c
+                SELECT Id, CRM_Related_Object__c, CRM_Thread_Type__c
                 FROM Thread__c
                 WHERE CRM_Related_Object__c IN :interestedResourceIds
             ]) {
