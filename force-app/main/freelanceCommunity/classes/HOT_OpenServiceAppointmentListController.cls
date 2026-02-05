@@ -164,7 +164,7 @@ public without sharing class HOT_OpenServiceAppointmentListController {
                 HOT_InterestedResource__c existingIR = serviceAppointmentToIR.get(saId);
                 if (String.isBlank(existingIR.Status__c)) {
                     existingIR.Status__c = 'Interested';
-                    existingIR.Status__c = appointmentToComment.get(serviceAppointmentId);
+                    existingIR.Comments__c = appointmentToComment.get(serviceAppointmentId);
                     irsToUpdate.add(existingIR);
                 }
             }
