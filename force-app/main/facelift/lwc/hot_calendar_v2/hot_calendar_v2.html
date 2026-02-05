@@ -98,6 +98,10 @@
                                                 <span>{accountPhoneNumber}</span>
                                             </p>
                                             <p>Tolkemetode: <span>{serviceAppointment.HOT_WorkTypeName__c}</span></p>
+                                            <p lwc:if={serviceAppointment.HOT_PreparationTime__c}>
+                                                Forberedelsestid:
+                                                <span>{serviceAppointment.HOT_PreparationTime__c}</span>
+                                            </p>
                                             <p>Oppdragstype: <span>{serviceAppointment.HOT_AssignmentType__c}</span></p>
                                             <p lwc:if={ownerName}>Eier: <span>{ownerName}</span></p>
 

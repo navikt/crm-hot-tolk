@@ -96,10 +96,17 @@ private class HOT_ThreadParticipantsTest {
         resource1.HOT_ServiceTerritory__c = serviceTerritory.Id;
         resource1.HOT_IsFreelanceInterpreter__c = true;
         resource1.Name = 'Frilans';
-        insert resource1;
+        ServiceResource resource2 = HOT_TestDataFactory.createServiceResource(UserInfo.getUserId());
+        resource2.HOT_ServiceTerritory__c = serviceTerritory.Id;
+        resource2.HOT_IsFreelanceInterpreter__c = false;
+        resource2.Name = 'Ansatt';
+        resource2.CRM_Subdomain__c = 'Tolketjenesten';
+        resource2.CRM_Domain__c = 'HOT';
+        insert new List<ServiceResource>{ resource1, resource2 };
 
         ServiceTerritoryMember stm = HOT_TestDataFactory.createServiceTerritoryMember(resource1, serviceTerritory);
-        insert stm;
+        ServiceTerritoryMember stm2 = HOT_TestDataFactory.createServiceTerritoryMember(resource2, serviceTerritory);
+        insert new List<ServiceTerritoryMember>{ stm, stm2 };
 
         AssignedResource assignedResource = HOT_TestDataFactory.createAssignedResource(
             serviceAppointment.Id,
@@ -403,6 +410,50 @@ private class HOT_ThreadParticipantsTest {
         System.assert(
             participantNames.contains('Frilans'),
             'Mangler deltaker med navn "Frilans". Faktiske deltakere: ' + String.join(participantNames, ', ')
+        );
+    }
+    @IsTest
+    private static void getParticipantsThreadWithoutRelatedObject() {
+        myTriggers.disable(HOT_ThreadHandler.class);
+        Thread__c thread = HOT_TestDataFactory.createThread('HOT_TOLK-FORMIDLER');
+        thread.HOT_ParticipantIds__c = UserInfo.getUserId() + ',';
+        thread.CRM_Related_Object__c = null;
+        insert thread;
+        Test.startTest();
+        Map<String, Map<Id, List<HOT_ThreadParticipants.Participant>>> threadMap = HOT_ThreadParticipants.getParticipantsByRelatedObjectAndThreadTypes(
+            thread.id,
+            new List<String>{ 'HOT_TOLK-FORMIDLER' }
+        );
+        Test.stopTest();
+        System.Assert.isTrue(
+            threadMap.containsKey('HOT_TOLK-FORMIDLER'),
+            'Deltakere for trådtypen "HOT_TOLK-FORMIDLER" mangler'
+        );
+        System.Assert.isTrue(threadMap.get('HOT_TOLK-FORMIDLER').containsKey(thread.Id), 'Tråden mangler');
+        System.Assert.areEqual(
+            2,
+            threadMap.get('HOT_TOLK-FORMIDLER').get(thread.Id).size(),
+            'Feil antall deltakere for tråden'
+        );
+        System.Assert.areEqual(
+            UserInfo.getUserId(),
+            threadMap.get('HOT_TOLK-FORMIDLER').get(thread.Id)[0].userId,
+            'Feil deltaker hentet'
+        );
+        System.Assert.areEqual(
+            'Ansatt',
+            threadMap.get('HOT_TOLK-FORMIDLER').get(thread.Id)[0].name,
+            'Feil deltaker hentet'
+        );
+        System.Assert.areEqual(
+            null,
+            threadMap.get('HOT_TOLK-FORMIDLER').get(thread.Id)[1].userId,
+            'Feil deltaker hentet'
+        );
+        System.Assert.areEqual(
+            'Formidler',
+            threadMap.get('HOT_TOLK-FORMIDLER').get(thread.Id)[1].name,
+            'Feil deltaker hentet'
         );
     }
 }
