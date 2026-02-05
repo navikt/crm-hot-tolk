@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>HOT_LateCancellationScreenInterpreter__c</fullName>
+    <externalId>false</externalId>
+    <formula>AND(
+    HOT_IsScreenInterpreterNew__c = TRUE,
+    HOT_CanceledDaysBefore__c &lt;= (0.5 / 24),
+    HOT_CanceledDaysBefore__c &gt; 0
+)</formula>
+    <formulaTreatBlanksAs>BlankAsZero</formulaTreatBlanksAs>
+    <label>Late Cancellation Screen Interpreter</label>
+    <trackHistory>false</trackHistory>
+    <type>Checkbox</type>
+</CustomField>
