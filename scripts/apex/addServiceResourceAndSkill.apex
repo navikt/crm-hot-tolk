@@ -8,6 +8,7 @@ if (existingSR.isEmpty()) {
         Name = darth.Name,
         RelatedRecordId = darth.Id,
         ResourceType = 'T', // T = Technician (brukes for Tolker i HOT)
+        HOT_IsFreelanceInterpreter__c = true,
         IsActive = true
     );
     insert sr;
