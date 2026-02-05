@@ -51,5 +51,10 @@ sf community publish --name Tolketjenesten
 
 # Opprett testdata
 sf apex run --file scripts/apex/createTestData.apex
+sf apex run --file scripts/apex/updateRequestStatus.apex
+sf apex run --file scripts/apex/assignHOTRole.apex
+sf apex run --file scripts/apex/createUser.apex
+sf apex run --file scripts/apex/addServiceResourceAndSkill.apex
+sf apex run --file scripts/apex/assignServiceAppointmentToServiceResource.apex
 
 # done
