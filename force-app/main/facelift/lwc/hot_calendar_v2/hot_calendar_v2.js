@@ -11,7 +11,6 @@ import icons2 from '@salesforce/resourceUrl/icons';
 
 import HOT_ConfirmationModal from 'c/hot_confirmationModal';
 import ConfimationModal from 'c/hot_calendar_absence_modal_confirmation';
-import retractAvailability from '@salesforce/apex/HOT_WageClaimListController.retractAvailability';
 import getWageClaimDetails from '@salesforce/apex/HOT_WageClaimListController.getWageClaimDetails';
 import checkAccessToSA from '@salesforce/apex/HOT_MyServiceAppointmentListController.checkAccessToSA';
 import getInterestedResourceDetails from '@salesforce/apex/HOT_InterestedResourcesListController.getInterestedResourceDetails';
@@ -78,10 +77,7 @@ export default class LibsFullCalendarV2 extends NavigationMixin(LightningElement
     isGoToThreadServiceAppointmentButtonDisabled = false;
 
     // Wageclaim
-    wcIsNotRetractable = false;
     wcIsDisabledGoToThread = false;
-    modalWageContent =
-        'Er du sikker på at du vil fjerne tilgjengeligheten din for dette tidspunktet? Du vil da ikke ha krav på lønn.';
 
     isSADetails = false;
     hasAccess = false;
@@ -438,9 +434,7 @@ export default class LibsFullCalendarV2 extends NavigationMixin(LightningElement
         this.modalType = type;
         this.isInformationModalOpen = true;
 
-        // Disable retract button only if status is "Tilbaketrukket tilgjengelighet"
         if (type === 'WC' && this.wageClaim) {
-            this.wcIsNotRetractable = this.wageClaim.Status__c === 'Tilbaketrukket tilgjengelighet';
             this.wcIsDisabledGoToThread = this.wageClaim.Status__c === 'Tilbaketrukket tilgjengelighet';
         }
 
@@ -461,7 +455,6 @@ export default class LibsFullCalendarV2 extends NavigationMixin(LightningElement
         this.isAlertAbsenceEdit = false;
         this.isNotRetractableDelete = false;
         this.isNotRetractableEdit = false;
-        this.isAlertWageClaimEdit = false;
         this.cancelStatusFlow();
 
         this.dispatchEvent(new CustomEvent('closemodal'));
@@ -476,300 +469,6 @@ export default class LibsFullCalendarV2 extends NavigationMixin(LightningElement
     openAppleMaps() {
         window.open('http://maps.apple.com/?q=' + this.serviceAppointment.HOT_AddressFormated__c);
     }
-
-    isAlertWageClaimEdit = false;
-    retractWageClaimClicked() {
-        this.isAlertWageClaimEdit = true;
-    }
-
-    retractWageClaimCancel() {
-        this.isAlertWageClaimEdit = false;
-    }
-
-    async showModalRetract() {
-        this.isAlertWageClaimEdit = false;
-
-        this.retractAvailability();
-        this.showInformationModalDetails();
-    }
-
-    retractAvailability() {
-        try {
-            retractAvailability({ recordId: this.wageClaim.Id }).then(() => {
-                this.wcIsNotRetractable = true;
-                this.wageClaim.Status__c = 'Tilbaketrukket tilgjengelighet';
-                this.refreshApexCallout();
-            });
-        } catch (error) {
-            alert(JSON.stringify(error));
-        }
-    }
-
-    // @api
-    // goToRecordDetailsWCFromId(recordId) {
-    //     this.isAListView = false;
-    //     this.isWCDetails = true;
-    //     this.isLoading = true;
-    //     getWageClaimDetails({ recordId: recordId }).then((result) => {
-    //         this.wageClaim = result;
-    //         this.wageClaim.StartAndEndDate = formatDatetimeinterval(
-    //             this.wageClaim.StartTime__c,
-    //             this.wageClaim.EndTime__c
-    //         );
-    //         this.isWCDetails = true;
-    //         this.isLoading = false;
-    //     });
-    // }
-
-    // @api
-    // goToRecordDetailsSA(saID, recordsArray) {
-    //     console.log('22222');
-    //     let recordId = saID;
-    //     this.serviceAppointment = undefined;
-    //     this.interestedResource = undefined;
-    //     this.saIsEditButtonHidden = false;
-    //     this.saIsCancelButtonHidden = true;
-    //     this.saIsEditButtonDisabled = false;
-    //     this.isLoading = true;
-    //     for (let serviceAppointment of recordsArray) {
-    //         if (recordId === serviceAppointment.Id) {
-    //             this.accountPhoneNumber = '';
-    //             this.accountAgeGender = '';
-    //             this.accountName = '';
-    //             this.ordererPhoneNumber = '';
-    //             this.ownerName = '';
-    //             this.serviceAppointment = { ...serviceAppointment };
-    //             this.serviceAppointment.weekday = this.getDayOfWeek(this.serviceAppointment.EarliestStartTime);
-    //             this.interestedResource = serviceAppointment?.InterestedResources__r[0];
-    //             this.termsOfAgreement = this.interestedResource.HOT_TermsOfAgreement__c;
-    //             this.isOtherProvider = this.serviceAppointment.HOT_Request__r.IsOtherEconomicProvicer__c ? 'Ja' : 'Nei';
-
-    //             if (this.serviceAppointment.HOT_Request__r && this.serviceAppointment.HOT_Request__r.Account__r) {
-    //                 if (
-    //                     this.serviceAppointment.HOT_Request__r.Account__r.Name == null ||
-    //                     this.serviceAppointment.HOT_Request__r.Account__r.Name == ''
-    //                 ) {
-    //                     this.isGoToThreadButtonDisabled = true;
-    //                 } else {
-    //                     this.isGoToThreadButtonDisabled = false;
-    //                 }
-    //             } else {
-    //                 this.isGoToThreadButtonDisabled = true;
-    //             }
-    //             if (this.serviceAppointment.Status == 'Completed') {
-    //                 this.saIsEditButtonDisabled = true;
-    //             }
-    //             if (this.serviceAppointment.HOT_TotalNumberOfInterpreters__c <= 1) {
-    //                 this.isGoToThreadInterpretersButtonDisabled = true;
-    //             }
-    //             if (this.serviceAppointment.HOT_Request__r.IsNotNotifyAccount__c == true) {
-    //                 this.isGoToThreadButtonDisabled = true;
-    //             }
-    //             if (
-    //                 this.serviceAppointment &&
-    //                 this.serviceAppointment.HOT_Request__r &&
-    //                 this.serviceAppointment.HOT_Request__r.Account__r &&
-    //                 this.serviceAppointment.HOT_Request__r.Account__r.CRM_Person__r.INT_Confidential == 'UGRADERT'
-    //             ) {
-    //                 this.accountName = this.serviceAppointment.HOT_Request__r.Account__r.Name;
-    //             }
-    //             if (
-    //                 this.serviceAppointment &&
-    //                 this.serviceAppointment.HOT_Request__r &&
-    //                 this.serviceAppointment.HOT_Request__r.Account__r &&
-    //                 this.serviceAppointment.HOT_Request__r.Account__r.CRM_Person__r.INT_Confidential != 'FORTROLIG'
-    //             ) {
-    //                 this.accountName = this.serviceAppointment.HOT_NavEmployeeName__c;
-    //             }
-    //             if (this.serviceAppointment && this.serviceAppointment.HOT_Request__r) {
-    //                 this.ownerName = this.serviceAppointment.HOT_Request__r.OwnerName__c;
-    //             }
-    //             if (
-    //                 this.serviceAppointment &&
-    //                 this.serviceAppointment.HOT_Request__r &&
-    //                 this.serviceAppointment.HOT_Request__r.Account__r &&
-    //                 this.serviceAppointment.HOT_Request__r.Account__r.CRM_Person__r
-    //             ) {
-    //                 if (this.serviceAppointment.HOT_Request__r.Account__r.CRM_Person__r.CRM_AgeNumber__c == undefined) {
-    //                     if (this.serviceAppointment.HOT_Request__r.Account__r.CRM_Person__r.INT_Sex__c !== undefined) {
-    //                         this.accountAgeGender =
-    //                             this.serviceAppointment.HOT_Request__r.Account__r.CRM_Person__r.INT_Sex__c;
-    //                     }
-    //                 } else if (
-    //                     this.serviceAppointment.HOT_Request__r.Account__r.CRM_Person__r.INT_Sex__c == undefined
-    //                 ) {
-    //                     if (
-    //                         this.serviceAppointment.HOT_Request__r.Account__r.CRM_Person__r.CRM_AgeNumber__c !==
-    //                         undefined
-    //                     ) {
-    //                         this.accountAgeGender =
-    //                             this.serviceAppointment.HOT_Request__r.Account__r.CRM_Person__r.CRM_AgeNumber__c +
-    //                             ' år';
-    //                     }
-    //                 } else if (
-    //                     this.serviceAppointment.HOT_Request__r.Account__r.CRM_Person__r.INT_Sex__c !== undefined &&
-    //                     this.serviceAppointment.HOT_Request__r.Account__r.CRM_Person__r.CRM_AgeNumber__c !== undefined
-    //                 ) {
-    //                     this.accountAgeGender =
-    //                         this.serviceAppointment.HOT_Request__r.Account__r.CRM_Person__r.INT_Sex__c +
-    //                         ' ' +
-    //                         this.serviceAppointment.HOT_Request__r.Account__r.CRM_Person__r.CRM_AgeNumber__c +
-    //                         ' år';
-    //                 }
-    //                 if (
-    //                     this.serviceAppointment.HOT_Request__r.Account__r.CRM_Person__r.INT_KrrMobilePhone__c !==
-    //                     undefined
-    //                 ) {
-    //                     this.accountPhoneNumber =
-    //                         this.serviceAppointment.HOT_Request__r.Account__r.CRM_Person__r.INT_KrrMobilePhone__c;
-    //                 }
-    //             }
-    //             if (
-    //                 this.serviceAppointment &&
-    //                 this.serviceAppointment.HOT_Request__r &&
-    //                 this.serviceAppointment.HOT_Request__r.Orderer__r &&
-    //                 this.serviceAppointment.HOT_Request__r.Orderer__r.CRM_Person__r
-    //             ) {
-    //                 if (
-    //                     this.serviceAppointment.HOT_Request__r.Orderer__r.CRM_Person__r.INT_KrrMobilePhone__c !==
-    //                     undefined
-    //                 ) {
-    //                     this.ordererPhoneNumber =
-    //                         this.serviceAppointment.HOT_Request__r.Orderer__r.CRM_Person__r.INT_KrrMobilePhone__c;
-    //                 }
-    //             }
-    //             this.isLoading = false;
-    //             this.isSADetails = true;
-    //             this.hasAccess = true;
-    //         }
-    //     }
-    //     this.updateURL();
-    // }
-
-    // @api
-    // goToRecordDetailsSAFromId(recordId) {
-    //     console.log('bblksdgforefkrwd');
-    //     this.isSADetails = true;
-    //     this.isAListView = false;
-    //     if (this.type == null) {
-    //         this.isLoading = true;
-    //     }
-    //     checkAccessToSA({ saId: recordId }).then((result) => {
-    //         if (result != false) {
-    //             getServiceAppointmentDetails({ recordId: recordId }).then((result) => {
-    //                 this.accountPhoneNumber = '';
-    //                 this.accountAgeGender = '';
-    //                 this.accountName = '';
-    //                 this.ordererPhoneNumber = '';
-    //                 this.ownerName = '';
-    //                 this.serviceAppointment = result;
-    //                 this.serviceAppointment.StartAndEndDate = formatDatetimeinterval(
-    //                     result.EarliestStartTime,
-    //                     result.DueDate
-    //                 );
-    //                 this.isOtherProvider = this.serviceAppointment.HOT_Request__r.IsOtherEconomicProvicer__c
-    //                     ? 'Ja'
-    //                     : 'Nei';
-    //                 this.serviceAppointment.ActualStartTime = formatDatetime(result.ActualStartTime);
-    //                 this.serviceAppointment.ActualEndTime = formatDatetime(result.ActualEndTime);
-    //                 if (
-    //                     this.serviceAppointment &&
-    //                     this.serviceAppointment.HOT_Request__r &&
-    //                     this.serviceAppointment.HOT_Request__r.Account__r
-    //                 ) {
-    //                     this.accountName = this.serviceAppointment.HOT_Request__r.Account__r.Name;
-    //                 }
-    //                 if (
-    //                     this.serviceAppointment &&
-    //                     this.serviceAppointment.HOT_Request__r &&
-    //                     this.serviceAppointment.HOT_Request__r.Account__r &&
-    //                     this.serviceAppointment.HOT_Request__r.Account__r.CRM_Person__r
-    //                 ) {
-    //                     if (
-    //                         this.serviceAppointment.HOT_Request__r.Account__r.CRM_Person__r.CRM_AgeNumber__c ==
-    //                         undefined
-    //                     ) {
-    //                         if (
-    //                             this.serviceAppointment.HOT_Request__r.Account__r.CRM_Person__r.INT_Sex__c !== undefined
-    //                         ) {
-    //                             this.accountAgeGender =
-    //                                 this.serviceAppointment.HOT_Request__r.Account__r.CRM_Person__r.INT_Sex__c;
-    //                         }
-    //                     } else if (
-    //                         this.serviceAppointment.HOT_Request__r.Account__r.CRM_Person__r.INT_Sex__c == undefined
-    //                     ) {
-    //                         if (
-    //                             this.serviceAppointment.HOT_Request__r.Account__r.CRM_Person__r.CRM_AgeNumber__c !==
-    //                             undefined
-    //                         ) {
-    //                             this.accountAgeGender =
-    //                                 this.serviceAppointment.HOT_Request__r.Account__r.CRM_Person__r.CRM_AgeNumber__c +
-    //                                 ' år';
-    //                         }
-    //                     } else if (
-    //                         this.serviceAppointment.HOT_Request__r.Account__r.CRM_Person__r.INT_Sex__c !== undefined &&
-    //                         this.serviceAppointment.HOT_Request__r.Account__r.CRM_Person__r.CRM_AgeNumber__c !==
-    //                             undefined
-    //                     ) {
-    //                         this.accountAgeGender =
-    //                             this.serviceAppointment.HOT_Request__r.Account__r.CRM_Person__r.INT_Sex__c +
-    //                             ' ' +
-    //                             this.serviceAppointment.HOT_Request__r.Account__r.CRM_Person__r.CRM_AgeNumber__c +
-    //                             ' år';
-    //                     }
-    //                     if (
-    //                         this.serviceAppointment.HOT_Request__r.Account__r.CRM_Person__r.INT_KrrMobilePhone__c !==
-    //                         undefined
-    //                     ) {
-    //                         this.accountPhoneNumber =
-    //                             this.serviceAppointment.HOT_Request__r.Account__r.CRM_Person__r.INT_KrrMobilePhone__c;
-    //                     }
-    //                     if (this.serviceAppointment && this.serviceAppointment.HOT_Request__r) {
-    //                         this.ownerName = this.serviceAppointment.HOT_Request__r.OwnerName__c;
-    //                     }
-    //                 }
-    //                 if (
-    //                     this.serviceAppointment &&
-    //                     this.serviceAppointment.HOT_Request__r &&
-    //                     this.serviceAppointment.HOT_Request__r.Orderer__r &&
-    //                     this.serviceAppointment.HOT_Request__r.Orderer__r.CRM_Person__r
-    //                 ) {
-    //                     if (
-    //                         this.serviceAppointment.HOT_Request__r.Orderer__r.CRM_Person__r.INT_KrrMobilePhone__c !==
-    //                         undefined
-    //                     ) {
-    //                         this.ordererPhoneNumber =
-    //                             this.serviceAppointment.HOT_Request__r.Orderer__r.CRM_Person__r.INT_KrrMobilePhone__c;
-    //                     }
-    //                 }
-    //                 getInterestedResourceDetails({ recordId: recordId }).then((result) => {
-    //                     this.interestedResource = result;
-    //                     this.termsOfAgreement = this.interestedResource.HOT_TermsOfAgreement__c;
-    //                 });
-
-    //                 this.saIsEditButtonHidden = false;
-    //                 this.saIsCancelButtonHidden = true;
-    //                 this.saIsEditButtonDisabled = false;
-    //                 this.serviceAppointment.weekday = this.getDayOfWeek(this.serviceAppointment.EarliestStartTime);
-    //                 let duedate = new Date(this.serviceAppointment.DueDate);
-    //                 if (this.serviceAppointment.Status == 'Completed') {
-    //                     this.saIsEditButtonDisabled = true;
-    //                 }
-    //                 if (this.serviceAppointment.HOT_TotalNumberOfInterpreters__c <= 1) {
-    //                     this.isGoToThreadInterpretersButtonDisabled = true;
-    //                 }
-    //                 if (this.serviceAppointment.HOT_Request__r.IsNotNotifyAccount__c == true) {
-    //                     this.isGoToThreadButtonDisabled = true;
-    //                 }
-    //                 this.hasAccess = true;
-    //                 this.isLoading = false;
-    //             });
-    //         } else {
-    //             this.isLoading = false;
-    //             this.hasAccess = false;
-    //         }
-    //     });
-    // }
 
     // Serviceappointment endre status flow
     changeStatus() {

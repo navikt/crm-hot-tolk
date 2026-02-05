@@ -1,0 +1,59 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Flow xmlns="http://soap.sforce.com/2006/04/metadata">
+    <apiVersion>65.0</apiVersion>
+    <assignments>
+        <name>Assign_initials</name>
+        <label>Add initials</label>
+        <locationX>0</locationX>
+        <locationY>0</locationY>
+        <assignmentItems>
+            <assignToReference>$Record.HOT_PreparationTime__c</assignToReference>
+            <operator>Add</operator>
+            <value>
+                <elementReference>UserInitials</elementReference>
+            </value>
+        </assignmentItems>
+    </assignments>
+    <environments>Default</environments>
+    <formulas>
+        <name>UserInitials</name>
+        <dataType>String</dataType>
+        <expression>&quot; -&quot; &amp; 
+LEFT({!$User.FirstName}, 1) &amp; &quot;.&quot; &amp; 
+IF(ISBLANK({!$User.MiddleName}), &quot;&quot;, LEFT({!$User.MiddleName}, 1) &amp; &quot;.&quot;) &amp; 
+LEFT({!$User.LastName}, 1)</expression>
+    </formulas>
+    <interviewLabel>HOT_AddInitialsToPreparationTime {!$Flow.CurrentDateTime}</interviewLabel>
+    <label>HOT Add Initials To PreparationTime</label>
+    <processMetadataValues>
+        <name>BuilderType</name>
+        <value>
+            <stringValue>LightningFlowBuilder</stringValue>
+        </value>
+    </processMetadataValues>
+    <processMetadataValues>
+        <name>CanvasMode</name>
+        <value>
+            <stringValue>AUTO_LAYOUT_CANVAS</stringValue>
+        </value>
+    </processMetadataValues>
+    <processMetadataValues>
+        <name>OriginBuilderType</name>
+        <value>
+            <stringValue>LightningFlowBuilder</stringValue>
+        </value>
+    </processMetadataValues>
+    <processType>AutoLaunchedFlow</processType>
+    <start>
+        <locationX>0</locationX>
+        <locationY>0</locationY>
+        <connector>
+            <targetReference>Assign_initials</targetReference>
+        </connector>
+        <filterFormula>ISBLANK({!$Record__Prior.HOT_PreparationTime__c}) &amp;&amp; NOT(ISBLANK({!$Record.HOT_PreparationTime__c}))</filterFormula>
+        <object>WorkOrder</object>
+        <recordTriggerType>Update</recordTriggerType>
+        <triggerType>RecordBeforeSave</triggerType>
+    </start>
+    <status>Active</status>
+</Flow>
