@@ -493,11 +493,7 @@
         <field>HOT_Request__c.Person__c</field>
         <readable>true</readable>
     </fieldPermissions>
-    <fieldPermissions>
-        <editable>false</editable>
-        <field>HOT_Request__c.PreparationTime__c</field>
-        <readable>true</readable>
-    </fieldPermissions>
+
     <fieldPermissions>
         <editable>true</editable>
         <field>HOT_Request__c.ServiceTerritory__c</field>
