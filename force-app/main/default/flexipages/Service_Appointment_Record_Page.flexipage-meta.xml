@@ -286,6 +286,12 @@
                 <identifier>RecordHOT_PreparationTime__cField</identifier>
             </fieldInstance>
         </itemInstances>
+        <itemInstances>
+            <fieldInstance>
+                <fieldItem>Record.HOT_CanceledDate__c</fieldItem>
+                <identifier>RecordHOT_CancelDate__cField</identifier>
+            </fieldInstance>
+        </itemInstances>
         <name>Facet-3144a2d9-fdd4-4dc4-8a47-b8670d89aed4</name>
         <type>Facet</type>
     </flexiPageRegions>
