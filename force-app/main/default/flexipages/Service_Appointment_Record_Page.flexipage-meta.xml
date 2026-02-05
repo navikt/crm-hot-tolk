@@ -286,12 +286,6 @@
                 <identifier>RecordHOT_PreparationTime__cField</identifier>
             </fieldInstance>
         </itemInstances>
-        <itemInstances>
-            <fieldInstance>
-                <fieldItem>Record.HOT_CanceledDate__c</fieldItem>
-                <identifier>RecordHOT_CancelDate__cField</identifier>
-            </fieldInstance>
-        </itemInstances>
         <name>Facet-3144a2d9-fdd4-4dc4-8a47-b8670d89aed4</name>
         <type>Facet</type>
     </flexiPageRegions>
@@ -424,26 +418,16 @@
                 </fieldInstanceProperties>
                 <fieldItem>Record.HOT_LateCancellation__c</fieldItem>
                 <identifier>RecordHOT_LateCancellation__cField</identifier>
-                <visibilityRule>
-                    <criteria>
-                        <leftValue>{!Record.HOT_WorkOrderLineItem__r.WorkOrder.Status}</leftValue>
-                        <operator>EQUAL</operator>
-                        <rightValue>Canceled</rightValue>
-                    </criteria>
-                </visibilityRule>
             </fieldInstance>
         </itemInstances>
         <itemInstances>
             <fieldInstance>
-                <fieldItem>Record.HOT_WorkOrderLineItem__r.WorkOrder.CanceledDate__c</fieldItem>
-                <identifier>RecordHOT_WorkOrderLineItem_rWorkOrderCanceledDate_cField</identifier>
-                <visibilityRule>
-                    <criteria>
-                        <leftValue>{!Record.HOT_WorkOrderLineItem__r.WorkOrder.Status}</leftValue>
-                        <operator>EQUAL</operator>
-                        <rightValue>Canceled</rightValue>
-                    </criteria>
-                </visibilityRule>
+                <fieldInstanceProperties>
+                    <name>uiBehavior</name>
+                    <value>none</value>
+                </fieldInstanceProperties>
+                <fieldItem>Record.HOT_CanceledDate__c</fieldItem>
+                <identifier>RecordHOT_CancelDate__cField</identifier>
             </fieldInstance>
         </itemInstances>
         <name>Facet-9076d0db-a5a7-442a-b012-cb35bc98b822</name>
@@ -871,7 +855,7 @@
             <componentInstance>
                 <componentInstanceProperties>
                     <name>message</name>
-                    <value>Skjermtolkoppdraget ble avlyst mindre enn 30 minutter før start</value>
+                    <value>Skjermtolkoppdraget ble avlyst mindre enn 30 minutter før start.</value>
                 </componentInstanceProperties>
                 <componentInstanceProperties>
                     <name>type</name>
