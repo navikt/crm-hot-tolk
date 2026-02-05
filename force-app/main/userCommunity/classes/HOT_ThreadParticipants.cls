@@ -52,11 +52,27 @@ public without sharing class HOT_ThreadParticipants {
     List<String> threadTypesOfInterest;
 
     public HOT_ThreadParticipants(Id relatedObjectId, List<String> threadTypesOfInterest) {
-        this.relatedObjectId = relatedObjectId;
         this.threadTypesOfInterest = threadTypesOfInterest;
-        this.getThreadsForRelatedObject();
-        this.threadIds = new Map<Id, Thread__c>(this.threads).keySet();
-        this.mapThreadIdsByRelatedObjectIds();
+        this.relatedObjectId = relatedObjectId;
+        if (relatedObjectId.getSobjectType() == Thread__c.SObjectType) {
+            this.threadIds.add(relatedObjectId);
+            this.threads = [
+                SELECT
+                    Id,
+                    CRM_Related_Object__c,
+                    CRM_Thread_Type__c,
+                    HOT_IsEmployeeThread__c,
+                    HOT_Thread_read_by__c,
+                    HOT_ParticipantIds__c
+                FROM Thread__c
+                WHERE Id IN :this.threadIds
+            ];
+            this.threadIdsByRelatedObjectId.put(relatedObjectId, new Set<Id>{ relatedObjectId });
+        } else {
+            this.getThreadsForRelatedObject();
+            this.threadIds = new Map<Id, Thread__c>(this.threads).keySet();
+            this.mapThreadIdsByRelatedObjectIds();
+        }
         this.initParticipantsByThreadId();
     }
 
@@ -118,12 +134,14 @@ public without sharing class HOT_ThreadParticipants {
         List<String> threadTypesOfInterest
     ) {
         return new HOT_ThreadParticipants(relatedObjectId, threadTypesOfInterest)
-            .getAssignedServiceResourceParticipants()
-            .getRelatedObjectParticipants()
-            .setReadStatus()
             .getParticipantsByRelatedObjectAndThreadId();
     }
     private Map<String, Map<Id, List<Participant>>> getParticipantsByRelatedObjectAndThreadId() {
+        if (relatedObjectId.getSobjectType() == Thread__c.SObjectType) {
+            this.getParticipansFromThreads().setReadStatus();
+        } else {
+            this.getAssignedServiceResourceParticipants().getRelatedObjectParticipants().setReadStatus();
+        }
         Map<String, Map<Id, List<Participant>>> result = new Map<String, Map<Id, List<Participant>>>();
         for (String threadType : this.threadTypesOfInterest) {
             result.put(threadType, new Map<Id, List<Participant>>());
@@ -136,7 +154,10 @@ public without sharing class HOT_ThreadParticipants {
     }
     private Boolean hasObjectTypeRelations(String relatedObjectType) {
         for (Thread__c thread : this.threads) {
-            if (String.valueOf(((Id) (thread.CRM_Related_Object__c)).getSObjectType()) == relatedObjectType) {
+            String threadRelatedObjectType = thread.CRM_Related_Object__c != null
+                ? String.valueOf(((Id) (thread.CRM_Related_Object__c)).getSObjectType())
+                : null;
+            if (threadRelatedObjectType == relatedObjectType) {
                 return true;
             }
         }
@@ -261,6 +282,43 @@ public without sharing class HOT_ThreadParticipants {
             }
             if (thread.CRM_Thread_Type__c == 'HOT_TOLK-RESSURSKONTOR') {
                 this.participantsByThreadId.get(thread.Id).add(new Participant('Ressurskontor'));
+            }
+        }
+        return this;
+    }
+    private HOT_ThreadParticipants getParticipansFromThreads() {
+        Map<Id, Set<String>> participantIdsByThreadId = new Map<Id, Set<String>>();
+        Set<String> participantIds = new Set<String>();
+        for (Thread__c thread : this.threads) {
+            Set<String> threadParticipantIds = new Set<String>(
+                thread.HOT_ParticipantIds__c?.split(',') ?? new List<String>()
+            );
+            participantIdsByThreadId.put(thread.Id, threadParticipantIds);
+            participantIds.addAll(threadParticipantIds);
+        }
+        List<ServiceResource> serviceResources = [
+            SELECT Id, Name, RelatedRecordId
+            FROM ServiceResource
+            WHERE RelatedRecordId IN :participantIds AND IsActive = TRUE AND CRM_Subdomain__c = 'Tolketjenesten'
+        ];
+        Map<Id, ServiceResource> serviceResourcesByRelatedRecordId = new Map<Id, ServiceResource>();
+        for (ServiceResource sr : serviceResources) {
+            serviceResourcesByRelatedRecordId.put(sr.RelatedRecordId, sr);
+        }
+        for (Thread__c thread : this.threads) {
+            for (String participantId : participantIdsByThreadId.get(thread.Id)) {
+                ServiceResource sr = serviceResourcesByRelatedRecordId.get(participantId);
+                if (sr != null) {
+                    this.participantsByThreadId.get(thread.Id)
+                        .add(new Participant(sr.Name, 'Tolk', sr.RelatedRecordId));
+                }
+            }
+            if (
+                thread.CRM_Thread_Type__c == 'HOT_TOLK-FORMIDLER' ||
+                thread.CRM_Thread_Type__c == 'HOT_BRUKER-FORMIDLER' ||
+                thread.CRM_Thread_Type__c == 'HOT_BESTILLER-FORMIDLER'
+            ) {
+                this.participantsByThreadId.get(thread.Id).add(new Participant('Formidler'));
             }
         }
         return this;
