@@ -35,6 +35,9 @@
             <p><strong>Tid:</strong> {serviceAppointment.weekday} {serviceAppointment.StartAndEndDate}</p>
             <p><strong>Adresse:</strong> {serviceAppointment.HOT_AddressFormated__c}</p>
             <p><strong>Tolkemetode:</strong> {serviceAppointment.HOT_WorkTypeName__c}</p>
+            <p lwc:if={serviceAppointment.HOT_PreparationTime__c}>
+                <strong>Forberedelsestid: </strong>{serviceAppointment.HOT_PreparationTime__c}
+            </p>
             <p><strong>Oppdragstype:</strong> {serviceAppointment.HOT_AssignmentType__c}</p>
             <p><strong>Frigitt av:</strong> {serviceAppointment.HOT_ReleasedBy__c}</p>
             <p><strong>Frigitt dato:</strong> {serviceAppointment.ReleaseDate}</p>
@@ -43,7 +46,7 @@
             <p><strong>Eier:</strong> {serviceAppointment.HOT_Request__r.OwnerName__c}</p>
             <p><strong>Frist dato:</strong> {serviceAppointment.HOT_DeadlineDate__c}</p>
 
-            <p>Du er ønsket til dette oppdraget.</p>
+            <p>{wantedMessage}</p>
 
             <div style="display: inline-block; padding-bottom: 1vw; padding-top: 1vw">
                 <c-button

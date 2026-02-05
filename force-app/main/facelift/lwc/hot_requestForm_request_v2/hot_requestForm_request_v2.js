@@ -2,6 +2,15 @@ import { LightningElement, track, api } from 'lwc';
 import getPostalCity from '@salesforce/apex/HOT_RequestListController.getPostalCity';
 import getUserHomeAddress from '@salesforce/apex/HOT_RequestListController.getUserHomeAddress';
 
+const INTERPRETATION_TYPE_MAP = {
+    SK: 'SK - Skrivetolking',
+    TS: 'TS - Tegnspråk',
+    TSBS: 'TSBS - Tegnspråk i begrenset synsfelt',
+    TSS: 'TSS - Tegn som støtte til munnavlesning',
+    TT: 'TT - Taletolking',
+    TTS: 'TTS - Taktilt tegnspråk'
+};
+
 export default class hot_requestForm_request_v2 extends LightningElement {
     @track fieldValues = {
         Subject__c: '',
@@ -19,6 +28,7 @@ export default class hot_requestForm_request_v2 extends LightningElement {
         UserPreferredInterpreter__c: '',
         AssignmentType__c: '',
         UserInterpretationMethod__c: '',
+        InterpretationMethodType__c: '',
         Type__c: ''
     };
     errorMessageHomeAddress = 'Fant ikke hjemmeadresse.';
@@ -30,6 +40,7 @@ export default class hot_requestForm_request_v2 extends LightningElement {
     @api parentFieldValues;
     @api parentRequestComponentValues;
     @api isEditOrCopyMode = false;
+    @api refreshToken;
 
     // Dont want to use this because focus will move to top on re-rendrering which happens on "Additional information"
     // renderedCallback() {
@@ -50,6 +61,11 @@ export default class hot_requestForm_request_v2 extends LightningElement {
             if (this.componentValues[field] != null) {
                 this.componentValues[field] = JSON.parse(JSON.stringify(this.parentRequestComponentValues[field]));
             }
+        }
+        // Make sure that the field InterpretationMethodType__c is set to the same value as the field UserInterpretationMethod__c
+        if (this.fieldValues.UserInterpretationMethod__c) {
+            this.fieldValues.InterpretationMethodType__c =
+                INTERPRETATION_TYPE_MAP[this.fieldValues.UserInterpretationMethod__c] || null;
         }
         this.isRequestTypeMe = this.fieldValues.Type__c === 'Me';
         if (this.fieldValues.Type__c !== 'Company') {
@@ -358,11 +374,13 @@ export default class hot_requestForm_request_v2 extends LightningElement {
     }
 
     handleInterpretationPicklist(event) {
+        const selectedValue = event.detail.name;
         this.setFieldAndElementSelected(
             this.componentValues.interpretationChoices,
-            event.detail.name,
+            selectedValue,
             'UserInterpretationMethod__c'
         );
+        this.fieldValues.InterpretationMethodType__c = INTERPRETATION_TYPE_MAP[selectedValue] || null;
     }
 
     handleAssignmentPicklist(event) {

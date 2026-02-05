@@ -4,7 +4,7 @@
         <name>UpdateChildRecords</name>
         <label>UpdateChildRecords</label>
         <locationX>182</locationX>
-        <locationY>2282</locationY>
+        <locationY>2498</locationY>
         <actionName>HOT_UpdateChildRecordsService</actionName>
         <actionType>apex</actionType>
         <flowTransactionModel>Automatic</flowTransactionModel>
@@ -57,6 +57,12 @@
             </value>
         </inputParameters>
         <inputParameters>
+            <name>isServiceTerritoryChoice</name>
+            <value>
+                <elementReference>isServiceTerritory</elementReference>
+            </value>
+        </inputParameters>
+        <inputParameters>
             <name>isSubjectChoice</name>
             <value>
                 <elementReference>isSubject</elementReference>
@@ -73,10 +79,26 @@
     </actionCalls>
     <apiVersion>52.0</apiVersion>
     <assignments>
+        <name>Assign_Owner_list_picklist_to_Request_Ownerlist</name>
+        <label>Assign Owner_list_picklist to Request Ownerlist</label>
+        <locationX>50</locationX>
+        <locationY>1682</locationY>
+        <assignmentItems>
+            <assignToReference>getRequest.OwnerList__c</assignToReference>
+            <operator>Assign</operator>
+            <value>
+                <elementReference>Owner_list_picklist</elementReference>
+            </value>
+        </assignmentItems>
+        <connector>
+            <targetReference>Get_Group_From_Owner_List</targetReference>
+        </connector>
+    </assignments>
+    <assignments>
         <name>Owner_list_assign_to_ownerId</name>
         <label>Owner list assign to ownerId</label>
         <locationX>50</locationX>
-        <locationY>1790</locationY>
+        <locationY>1898</locationY>
         <assignmentItems>
             <assignToReference>getRequest.OwnerId</assignToReference>
             <operator>Assign</operator>
@@ -145,12 +167,12 @@
         <name>Store_Interpreter_method_value</name>
         <label>Store Interpreter method value</label>
         <locationX>50</locationX>
-        <locationY>2090</locationY>
+        <locationY>2306</locationY>
         <assignmentItems>
             <assignToReference>getRequest.InterpretationMethod__c</assignToReference>
             <operator>Assign</operator>
             <value>
-                <elementReference>InterpretationMethodLookup.recordId</elementReference>
+                <elementReference>Get_New_Interpretation_Method.Id</elementReference>
             </value>
         </assignmentItems>
         <connector>
@@ -171,6 +193,14 @@
         <dataType>String</dataType>
         <value>
             <stringValue>Address</stringValue>
+        </value>
+    </choices>
+    <choices>
+        <name>Agder</name>
+        <choiceText>Nav Tolketjeneste Agder</choiceText>
+        <dataType>String</dataType>
+        <value>
+            <stringValue>Nav Tolketjeneste Agder</stringValue>
         </value>
     </choices>
     <choices>
@@ -198,6 +228,22 @@
         </value>
     </choices>
     <choices>
+        <name>FellesoppdragVestViken</name>
+        <choiceText>&lt;span style=&quot;background-color: rgb(255, 255, 255); color: rgb(22, 50, 92);&quot;&gt;Fellesoppdrag Vest-Viken&lt;/span&gt;</choiceText>
+        <dataType>String</dataType>
+        <value>
+            <stringValue>Fellesoppdrag Vest-Viken</stringValue>
+        </value>
+    </choices>
+    <choices>
+        <name>Innlandet</name>
+        <choiceText>Nav Tolketjeneste Innlandet</choiceText>
+        <dataType>String</dataType>
+        <value>
+            <stringValue>Nav Tolketjeneste Innlandet</stringValue>
+        </value>
+    </choices>
+    <choices>
         <name>InterpretationMethod</name>
         <choiceText>Tolkemetode</choiceText>
         <dataType>String</dataType>
@@ -206,11 +252,59 @@
         </value>
     </choices>
     <choices>
+        <name>MoreOgRomsdal</name>
+        <choiceText>Nav Tolketjeneste Møre og Romsdal</choiceText>
+        <dataType>String</dataType>
+        <value>
+            <stringValue>Nav Tolketjeneste Møre og Romsdal</stringValue>
+        </value>
+    </choices>
+    <choices>
+        <name>NavAkuttvaktTolk</name>
+        <choiceText>NAV Akuttvakt Tolk</choiceText>
+        <dataType>String</dataType>
+        <value>
+            <stringValue>NAV Akuttvakt Tolk</stringValue>
+        </value>
+    </choices>
+    <choices>
+        <name>Nordland</name>
+        <choiceText>Nav Tolketjeneste Nordland</choiceText>
+        <dataType>String</dataType>
+        <value>
+            <stringValue>Nav Tolketjeneste Nordland</stringValue>
+        </value>
+    </choices>
+    <choices>
+        <name>Oslo</name>
+        <choiceText>Nav Tolketjeneste Oslo</choiceText>
+        <dataType>String</dataType>
+        <value>
+            <stringValue>Nav Tolketjeneste Oslo</stringValue>
+        </value>
+    </choices>
+    <choices>
+        <name>Ostviken</name>
+        <choiceText>Nav Tolketjeneste Øst-Viken</choiceText>
+        <dataType>String</dataType>
+        <value>
+            <stringValue>Nav Tolketjeneste Øst-Viken</stringValue>
+        </value>
+    </choices>
+    <choices>
         <name>Owner</name>
         <choiceText>Eier</choiceText>
         <dataType>String</dataType>
         <value>
             <stringValue>Eier</stringValue>
+        </value>
+    </choices>
+    <choices>
+        <name>Rogaland</name>
+        <choiceText>Nav Tolketjeneste Rogaland</choiceText>
+        <dataType>String</dataType>
+        <value>
+            <stringValue>Nav Tolketjeneste Rogaland</stringValue>
         </value>
     </choices>
     <choices>
@@ -223,10 +317,10 @@
     </choices>
     <choices>
         <name>ServiceTerritory</name>
-        <choiceText>Tjenesterområdet</choiceText>
+        <choiceText>Tjenesteområde</choiceText>
         <dataType>String</dataType>
         <value>
-            <stringValue>Tjenesterområdet</stringValue>
+            <stringValue>Tjenesteområde</stringValue>
         </value>
     </choices>
     <choices>
@@ -235,6 +329,46 @@
         <dataType>String</dataType>
         <value>
             <stringValue>Subject</stringValue>
+        </value>
+    </choices>
+    <choices>
+        <name>TromsOgFinnmark</name>
+        <choiceText>Nav Tolketjeneste Troms og Finnmark</choiceText>
+        <dataType>String</dataType>
+        <value>
+            <stringValue>Nav Tolketjeneste Troms og Finnmark</stringValue>
+        </value>
+    </choices>
+    <choices>
+        <name>Trondelag</name>
+        <choiceText>Nav Tolketjeneste Trøndelag</choiceText>
+        <dataType>String</dataType>
+        <value>
+            <stringValue>Nav Tolketjeneste Trøndelag</stringValue>
+        </value>
+    </choices>
+    <choices>
+        <name>VestfoldOgTelemark</name>
+        <choiceText>Nav Tolketjeneste Vestfold og Telemark</choiceText>
+        <dataType>String</dataType>
+        <value>
+            <stringValue>Nav Tolketjeneste Vestfold og Telemark</stringValue>
+        </value>
+    </choices>
+    <choices>
+        <name>Vestland</name>
+        <choiceText>Nav Tolketjeneste Vestland</choiceText>
+        <dataType>String</dataType>
+        <value>
+            <stringValue>Nav Tolketjeneste Vestland</stringValue>
+        </value>
+    </choices>
+    <choices>
+        <name>VestViken</name>
+        <choiceText>Nav Tolketjeneste Vest-Viken</choiceText>
+        <dataType>String</dataType>
+        <value>
+            <stringValue>Nav Tolketjeneste Vest-Viken</stringValue>
         </value>
     </choices>
     <decisions>
@@ -362,7 +496,7 @@
         <name>isInterpreterMethodCheck</name>
         <label>isInterpreterMethodCheck</label>
         <locationX>182</locationX>
-        <locationY>1982</locationY>
+        <locationY>2090</locationY>
         <defaultConnector>
             <targetReference>UpdateChildRecords</targetReference>
         </defaultConnector>
@@ -378,7 +512,7 @@
                 </rightValue>
             </conditions>
             <connector>
-                <targetReference>Store_Interpreter_method_value</targetReference>
+                <targetReference>Get_New_Interpretation_Method</targetReference>
             </connector>
             <label>isInterpretermethodChecked</label>
         </rules>
@@ -403,7 +537,7 @@
                 </rightValue>
             </conditions>
             <connector>
-                <targetReference>Get_Group_From_Owner_List</targetReference>
+                <targetReference>Assign_Owner_list_picklist_to_Request_Ownerlist</targetReference>
             </connector>
             <label>Yes</label>
         </rules>
@@ -488,6 +622,15 @@ CONTAINS({!ChosenFieldsOwner}, {!ScreenInterpreter})
 )</expression>
     </formulas>
     <formulas>
+        <name>isServiceTerritory</name>
+        <dataType>Boolean</dataType>
+        <expression>OR(
+    CONTAINS({!ChosenFields}, {!ServiceTerritory}),
+    CONTAINS({!ChosenFieldsTime}, {!ServiceTerritory}),
+CONTAINS({!ChosenFieldsOwner}, {!ServiceTerritory})
+)</expression>
+    </formulas>
+    <formulas>
         <name>isSubject</name>
         <dataType>Boolean</dataType>
         <expression>OR(
@@ -521,7 +664,7 @@ CONTAINS({!ChosenFieldsOwner}, {!Subject})
         <name>Get_Group_From_Owner_List</name>
         <label>Get Group From Owner List</label>
         <locationX>50</locationX>
-        <locationY>1682</locationY>
+        <locationY>1790</locationY>
         <assignNullValuesIfNoRecordsFound>false</assignNullValuesIfNoRecordsFound>
         <connector>
             <targetReference>Owner_list_assign_to_ownerId</targetReference>
@@ -531,7 +674,7 @@ CONTAINS({!ChosenFieldsOwner}, {!Subject})
             <field>Name</field>
             <operator>EqualTo</operator>
             <value>
-                <elementReference>getRequest.Owner_List__c</elementReference>
+                <elementReference>getRequest.OwnerList__c</elementReference>
             </value>
         </filters>
         <filters>
@@ -543,6 +686,27 @@ CONTAINS({!ChosenFieldsOwner}, {!Subject})
         </filters>
         <getFirstRecordOnly>true</getFirstRecordOnly>
         <object>Group</object>
+        <storeOutputAutomatically>true</storeOutputAutomatically>
+    </recordLookups>
+    <recordLookups>
+        <name>Get_New_Interpretation_Method</name>
+        <label>Get New Interpretation Method</label>
+        <locationX>50</locationX>
+        <locationY>2198</locationY>
+        <assignNullValuesIfNoRecordsFound>false</assignNullValuesIfNoRecordsFound>
+        <connector>
+            <targetReference>Store_Interpreter_method_value</targetReference>
+        </connector>
+        <filterLogic>and</filterLogic>
+        <filters>
+            <field>Name</field>
+            <operator>EqualTo</operator>
+            <value>
+                <elementReference>getRequest.InterpretationMethodType__c</elementReference>
+            </value>
+        </filters>
+        <getFirstRecordOnly>true</getFirstRecordOnly>
+        <object>WorkType</object>
         <storeOutputAutomatically>true</storeOutputAutomatically>
     </recordLookups>
     <recordLookups>
@@ -637,8 +801,44 @@ CONTAINS({!ChosenFieldsOwner}, {!Subject})
         </connector>
         <fields>
             <name>Display_warning_text</name>
-            <fieldText>&lt;p&gt;&lt;span style=&quot;background-color: rgb(255, 255, 255); font-size: 16px; color: rgb(24, 24, 24);&quot;&gt;OBS! Ved å endre verdiene her så endrer du verdiene på alle underliggende arbeidsordre, arbeidsordrelinjer og oppdrag.&lt;/span&gt;&lt;/p&gt;&lt;p&gt;&lt;br&gt;&lt;/p&gt;&lt;p&gt;Tid (Kan bare endres om status på oppdrag er åpen eller frigitt til frilanstolk).&lt;/p&gt;</fieldText>
+            <fieldText>&lt;p&gt;&lt;span style=&quot;background-color: rgb(255, 255, 255); font-size: 16px; color: rgb(24, 24, 24);&quot;&gt;OBS! Ved å endre verdiene her så endrer du verdiene på alle underliggende arbeidsordre, arbeidsordrelinjer og oppdrag.&lt;/span&gt;&lt;/p&gt;</fieldText>
             <fieldType>DisplayText</fieldType>
+        </fields>
+        <fields>
+            <name>Display_text</name>
+            <fieldText>&lt;p&gt;&lt;span style=&quot;background-color: rgb(255, 255, 255);&quot;&gt;Tid (Kan bare endres om status på oppdrag er åpen eller frigitt til frilanstolk).&lt;/span&gt;&lt;/p&gt;</fieldText>
+            <fieldType>DisplayText</fieldType>
+            <visibilityRule>
+                <conditionLogic>(1 OR 2 OR 3) AND 4</conditionLogic>
+                <conditions>
+                    <leftValueReference>getRequest.Status__c</leftValueReference>
+                    <operator>EqualTo</operator>
+                    <rightValue>
+                        <stringValue>Åpen</stringValue>
+                    </rightValue>
+                </conditions>
+                <conditions>
+                    <leftValueReference>getServiceAppointment.Status</leftValueReference>
+                    <operator>EqualTo</operator>
+                    <rightValue>
+                        <stringValue>None</stringValue>
+                    </rightValue>
+                </conditions>
+                <conditions>
+                    <leftValueReference>getServiceAppointment.Status</leftValueReference>
+                    <operator>EqualTo</operator>
+                    <rightValue>
+                        <stringValue>Released to Freelance</stringValue>
+                    </rightValue>
+                </conditions>
+                <conditions>
+                    <leftValueReference>getRequest.IsSerieoppdrag__c</leftValueReference>
+                    <operator>EqualTo</operator>
+                    <rightValue>
+                        <booleanValue>false</booleanValue>
+                    </rightValue>
+                </conditions>
+            </visibilityRule>
         </fields>
         <fields>
             <name>ChosenFields</name>
@@ -689,6 +889,7 @@ CONTAINS({!ChosenFieldsOwner}, {!Subject})
             <choiceReferences>Account</choiceReferences>
             <choiceReferences>InterpretationMethod</choiceReferences>
             <choiceReferences>Owner</choiceReferences>
+            <choiceReferences>ServiceTerritory</choiceReferences>
             <choiceReferences>Date</choiceReferences>
             <dataType>String</dataType>
             <fieldText>Velg felter</fieldText>
@@ -737,6 +938,7 @@ CONTAINS({!ChosenFieldsOwner}, {!Subject})
             <choiceReferences>Account</choiceReferences>
             <choiceReferences>InterpretationMethod</choiceReferences>
             <choiceReferences>Owner</choiceReferences>
+            <choiceReferences>ServiceTerritory</choiceReferences>
             <dataType>String</dataType>
             <fieldText>Velg felter</fieldText>
             <fieldType>MultiSelectCheckboxes</fieldType>
@@ -862,14 +1064,14 @@ CONTAINS({!ChosenFieldsOwner}, {!Subject})
                 </conditions>
                 <conditions>
                     <leftValueReference>ChosenFieldsTime</leftValueReference>
-                    <operator>EqualTo</operator>
+                    <operator>Contains</operator>
                     <rightValue>
                         <elementReference>Address</elementReference>
                     </rightValue>
                 </conditions>
                 <conditions>
                     <leftValueReference>ChosenFieldsOwner</leftValueReference>
-                    <operator>EqualTo</operator>
+                    <operator>Contains</operator>
                     <rightValue>
                         <elementReference>Address</elementReference>
                     </rightValue>
@@ -909,14 +1111,14 @@ CONTAINS({!ChosenFieldsOwner}, {!Subject})
                 </conditions>
                 <conditions>
                     <leftValueReference>ChosenFieldsTime</leftValueReference>
-                    <operator>EqualTo</operator>
+                    <operator>Contains</operator>
                     <rightValue>
                         <elementReference>Subject</elementReference>
                     </rightValue>
                 </conditions>
                 <conditions>
                     <leftValueReference>ChosenFieldsOwner</leftValueReference>
-                    <operator>EqualTo</operator>
+                    <operator>Contains</operator>
                     <rightValue>
                         <elementReference>Subject</elementReference>
                     </rightValue>
@@ -946,7 +1148,7 @@ CONTAINS({!ChosenFieldsOwner}, {!Subject})
             <isRequired>false</isRequired>
             <regionContainerType>SectionWithoutHeader</regionContainerType>
             <visibilityRule>
-                <conditionLogic>and</conditionLogic>
+                <conditionLogic>or</conditionLogic>
                 <conditions>
                     <leftValueReference>ChosenFields</leftValueReference>
                     <operator>Contains</operator>
@@ -956,14 +1158,14 @@ CONTAINS({!ChosenFieldsOwner}, {!Subject})
                 </conditions>
                 <conditions>
                     <leftValueReference>ChosenFieldsOwner</leftValueReference>
-                    <operator>EqualTo</operator>
+                    <operator>Contains</operator>
                     <rightValue>
                         <elementReference>Description</elementReference>
                     </rightValue>
                 </conditions>
                 <conditions>
                     <leftValueReference>ChosenFieldsTime</leftValueReference>
-                    <operator>EqualTo</operator>
+                    <operator>Contains</operator>
                     <rightValue>
                         <elementReference>Description</elementReference>
                     </rightValue>
@@ -1003,14 +1205,14 @@ CONTAINS({!ChosenFieldsOwner}, {!Subject})
                 </conditions>
                 <conditions>
                     <leftValueReference>ChosenFieldsTime</leftValueReference>
-                    <operator>EqualTo</operator>
+                    <operator>Contains</operator>
                     <rightValue>
                         <elementReference>ScreenInterpreter</elementReference>
                     </rightValue>
                 </conditions>
                 <conditions>
                     <leftValueReference>ChosenFieldsOwner</leftValueReference>
-                    <operator>EqualTo</operator>
+                    <operator>Contains</operator>
                     <rightValue>
                         <elementReference>ScreenInterpreter</elementReference>
                     </rightValue>
@@ -1036,7 +1238,7 @@ CONTAINS({!ChosenFieldsOwner}, {!Subject})
                     <inputParameters>
                         <name>label</name>
                         <value>
-                            <stringValue>Dispatcher</stringValue>
+                            <stringValue>Formidler</stringValue>
                         </value>
                     </inputParameters>
                     <inputParameters>
@@ -1082,14 +1284,14 @@ CONTAINS({!ChosenFieldsOwner}, {!Subject})
                 </conditions>
                 <conditions>
                     <leftValueReference>ChosenFieldsTime</leftValueReference>
-                    <operator>EqualTo</operator>
+                    <operator>Contains</operator>
                     <rightValue>
                         <elementReference>Dispatcher</elementReference>
                     </rightValue>
                 </conditions>
                 <conditions>
                     <leftValueReference>ChosenFieldsOwner</leftValueReference>
-                    <operator>EqualTo</operator>
+                    <operator>Contains</operator>
                     <rightValue>
                         <elementReference>Dispatcher</elementReference>
                     </rightValue>
@@ -1115,7 +1317,7 @@ CONTAINS({!ChosenFieldsOwner}, {!Subject})
                     <inputParameters>
                         <name>label</name>
                         <value>
-                            <stringValue>Account</stringValue>
+                            <stringValue>Bruker</stringValue>
                         </value>
                     </inputParameters>
                     <inputParameters>
@@ -1155,14 +1357,14 @@ CONTAINS({!ChosenFieldsOwner}, {!Subject})
                 </conditions>
                 <conditions>
                     <leftValueReference>ChosenFieldsTime</leftValueReference>
-                    <operator>EqualTo</operator>
+                    <operator>Contains</operator>
                     <rightValue>
                         <elementReference>Account</elementReference>
                     </rightValue>
                 </conditions>
                 <conditions>
                     <leftValueReference>ChosenFieldsOwner</leftValueReference>
-                    <operator>EqualTo</operator>
+                    <operator>Contains</operator>
                     <rightValue>
                         <elementReference>Account</elementReference>
                     </rightValue>
@@ -1176,36 +1378,10 @@ CONTAINS({!ChosenFieldsOwner}, {!Subject})
                 <name>NewValuesScreen_Section7_Column1</name>
                 <fieldType>Region</fieldType>
                 <fields>
-                    <name>InterpretationMethodLookup</name>
-                    <extensionName>flowruntime:lookup</extensionName>
-                    <fieldType>ComponentInstance</fieldType>
-                    <inputParameters>
-                        <name>objectApiName</name>
-                        <value>
-                            <stringValue>HOT_Request__c</stringValue>
-                        </value>
-                    </inputParameters>
-                    <inputParameters>
-                        <name>fieldApiName</name>
-                        <value>
-                            <stringValue>InterpretationMethod__c</stringValue>
-                        </value>
-                    </inputParameters>
-                    <inputParameters>
-                        <name>label</name>
-                        <value>
-                            <stringValue>Tolkemetode</stringValue>
-                        </value>
-                    </inputParameters>
-                    <inputParameters>
-                        <name>recordId</name>
-                        <value>
-                            <elementReference>getRequest.InterpretationMethod__c</elementReference>
-                        </value>
-                    </inputParameters>
+                    <fieldType>ObjectProvided</fieldType>
                     <inputsOnNextNavToAssocScrn>UseStoredValues</inputsOnNextNavToAssocScrn>
-                    <isRequired>true</isRequired>
-                    <storeOutputAutomatically>true</storeOutputAutomatically>
+                    <isRequired>false</isRequired>
+                    <objectFieldReference>getRequest.InterpretationMethodType__c</objectFieldReference>
                 </fields>
                 <inputParameters>
                     <name>width</name>
@@ -1228,14 +1404,14 @@ CONTAINS({!ChosenFieldsOwner}, {!Subject})
                 </conditions>
                 <conditions>
                     <leftValueReference>ChosenFieldsTime</leftValueReference>
-                    <operator>EqualTo</operator>
+                    <operator>Contains</operator>
                     <rightValue>
                         <elementReference>InterpretationMethod</elementReference>
                     </rightValue>
                 </conditions>
                 <conditions>
                     <leftValueReference>ChosenFieldsOwner</leftValueReference>
-                    <operator>EqualTo</operator>
+                    <operator>Contains</operator>
                     <rightValue>
                         <elementReference>InterpretationMethod</elementReference>
                     </rightValue>
@@ -1250,14 +1426,30 @@ CONTAINS({!ChosenFieldsOwner}, {!Subject})
                 <fieldType>Region</fieldType>
                 <fields>
                     <name>ownerText</name>
-                    <fieldText>&lt;p&gt;Eier: {!getRequest.OwnerName__c} &lt;/p&gt;&lt;p&gt;&lt;br&gt;&lt;/p&gt;</fieldText>
+                    <fieldText>&lt;p&gt;Eier: {!getRequest.OwnerName__c}&lt;/p&gt;</fieldText>
                     <fieldType>DisplayText</fieldType>
                 </fields>
                 <fields>
-                    <fieldType>ObjectProvided</fieldType>
+                    <name>Owner_list_picklist</name>
+                    <choiceReferences>Agder</choiceReferences>
+                    <choiceReferences>Innlandet</choiceReferences>
+                    <choiceReferences>MoreOgRomsdal</choiceReferences>
+                    <choiceReferences>Nordland</choiceReferences>
+                    <choiceReferences>Oslo</choiceReferences>
+                    <choiceReferences>Rogaland</choiceReferences>
+                    <choiceReferences>TromsOgFinnmark</choiceReferences>
+                    <choiceReferences>Trondelag</choiceReferences>
+                    <choiceReferences>VestViken</choiceReferences>
+                    <choiceReferences>VestfoldOgTelemark</choiceReferences>
+                    <choiceReferences>Vestland</choiceReferences>
+                    <choiceReferences>Ostviken</choiceReferences>
+                    <choiceReferences>FellesoppdragVestViken</choiceReferences>
+                    <choiceReferences>NavAkuttvaktTolk</choiceReferences>
+                    <dataType>String</dataType>
+                    <fieldText>Ny eier:</fieldText>
+                    <fieldType>DropdownBox</fieldType>
                     <inputsOnNextNavToAssocScrn>UseStoredValues</inputsOnNextNavToAssocScrn>
-                    <isRequired>false</isRequired>
-                    <objectFieldReference>getRequest.Owner_List__c</objectFieldReference>
+                    <isRequired>true</isRequired>
                 </fields>
                 <inputParameters>
                     <name>width</name>
@@ -1273,21 +1465,21 @@ CONTAINS({!ChosenFieldsOwner}, {!Subject})
                 <conditionLogic>or</conditionLogic>
                 <conditions>
                     <leftValueReference>ChosenFields</leftValueReference>
-                    <operator>EqualTo</operator>
+                    <operator>Contains</operator>
                     <rightValue>
                         <elementReference>Owner</elementReference>
                     </rightValue>
                 </conditions>
                 <conditions>
                     <leftValueReference>ChosenFieldsTime</leftValueReference>
-                    <operator>EqualTo</operator>
+                    <operator>Contains</operator>
                     <rightValue>
                         <elementReference>Owner</elementReference>
                     </rightValue>
                 </conditions>
                 <conditions>
                     <leftValueReference>ChosenFieldsOwner</leftValueReference>
-                    <operator>EqualTo</operator>
+                    <operator>Contains</operator>
                     <rightValue>
                         <elementReference>Owner</elementReference>
                     </rightValue>
@@ -1299,6 +1491,46 @@ CONTAINS({!ChosenFieldsOwner}, {!Subject})
             <fieldType>RegionContainer</fieldType>
             <fields>
                 <name>NewValuesScreen_Section9_Column1</name>
+                <fieldType>Region</fieldType>
+                <fields>
+                    <fieldType>ObjectProvided</fieldType>
+                    <inputsOnNextNavToAssocScrn>UseStoredValues</inputsOnNextNavToAssocScrn>
+                    <isRequired>false</isRequired>
+                    <objectFieldReference>getRequest.ServiceTerritory__c</objectFieldReference>
+                </fields>
+                <inputParameters>
+                    <name>width</name>
+                    <value>
+                        <stringValue>12</stringValue>
+                    </value>
+                </inputParameters>
+                <isRequired>false</isRequired>
+            </fields>
+            <isRequired>false</isRequired>
+            <regionContainerType>SectionWithoutHeader</regionContainerType>
+            <visibilityRule>
+                <conditionLogic>or</conditionLogic>
+                <conditions>
+                    <leftValueReference>ChosenFieldsTime</leftValueReference>
+                    <operator>Contains</operator>
+                    <rightValue>
+                        <elementReference>ServiceTerritory</elementReference>
+                    </rightValue>
+                </conditions>
+                <conditions>
+                    <leftValueReference>ChosenFieldsOwner</leftValueReference>
+                    <operator>Contains</operator>
+                    <rightValue>
+                        <elementReference>ServiceTerritory</elementReference>
+                    </rightValue>
+                </conditions>
+            </visibilityRule>
+        </fields>
+        <fields>
+            <name>NewValuesScreen_Section10</name>
+            <fieldType>RegionContainer</fieldType>
+            <fields>
+                <name>NewValuesScreen_Section10_Column1</name>
                 <fieldType>Region</fieldType>
                 <fields>
                     <fieldType>ObjectProvided</fieldType>
@@ -1326,7 +1558,7 @@ CONTAINS({!ChosenFieldsOwner}, {!Subject})
                 <conditionLogic>and</conditionLogic>
                 <conditions>
                     <leftValueReference>ChosenFieldsTime</leftValueReference>
-                    <operator>EqualTo</operator>
+                    <operator>Contains</operator>
                     <rightValue>
                         <elementReference>Date</elementReference>
                     </rightValue>

@@ -163,6 +163,11 @@ export default class Hot_myRequestsWrapper extends NavigationMixin(LightningElem
     get isOwnRequest() {
         return this.request.Orderer__c === this.userAccountId;
     }
+    get tolkebrukerName() {
+        const isOrderer = this.request?.Orderer__c === this.userAccountId;
+
+        return isOrderer ? this.request?.UserName__c ?? '' : this.request?.Account__r?.Name ?? '';
+    }
 
     get uploadTargetId() {
         return this.urlStateParameters?.level === 'WO' ? this.workOrder?.Id : this.request?.Id;

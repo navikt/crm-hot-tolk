@@ -22,14 +22,23 @@
                         </div>
                     </div>
                     <p>
-                        <a href="https://minprofil.kontaktregisteret.no/" class="lenke" target="_blank"
-                            rel="noopener noreferrer" onclick={setKrrIntegrationStatusToQueued}
-                            aria-label="Endre i Kontakt- og reservasjonsregisteret">
+                        <a
+                            href="https://minprofil.kontaktregisteret.no/"
+                            class="lenke"
+                            target="_blank"
+                            rel="noopener noreferrer"
+                            onclick={setKrrIntegrationStatusToQueued}
+                            aria-label="Endre i Kontakt- og reservasjonsregisteret"
+                        >
                             Endre i Kontakt- og reservasjonsregisteret
                         </a>
                     </p>
-                    <div if:true={isKrrQueued} class="navno-dekorator alertstripe navno-dekorator alertstripe--advarsel"
-                        role="alert" aria-live="polite">
+                    <div
+                        if:true={isKrrQueued}
+                        class="navno-dekorator alertstripe navno-dekorator alertstripe--advarsel"
+                        role="alert"
+                        aria-live="polite"
+                    >
                         <img class="navno-dekorator alertstripe__ikon" src={warningicon} alt="" aria-hidden="true" />
                         <div class="typo-normal alertstripe__tekst">
                             Kontaktinformasjonen vil bli oppdatert innen 24 timer
@@ -40,49 +49,35 @@
                 <!-- Vedtak -->
                 <section class="sub-form">
                     <h3 id="vedtak-header" class="sub-header">Vedtak</h3>
-                    <div class="my-grid">
-                        <div class="my-col-half">
-                            <c-checkbox label="Arbeidsliv" default-value={workplaceInterpreter} class="checkbox-inline"
-                                disabled></c-checkbox>
-                            <c-checkbox label="Dagligliv" default-value={dailyLifeInterpreter} class="checkbox-inline"
-                                disabled></c-checkbox>
-                            <c-checkbox label="Utdanning" default-value={educationInterpreter} class="checkbox-inline"
-                                disabled></c-checkbox>
+                    <template lwc:if={hasVedtak}>
+                        <div class="my-grid">
+                            <div class="my-col-half">
+                                <template for:each={vedtakLabels} for:item="label">
+                                    <p key={label} class="output-value">{label}</p>
+                                </template>
+                            </div>
                         </div>
-                        <div class="my-col-half">
-                            <c-checkbox label="Tolk på arbeidsplass - TPA" default-value={interpreterAW}
-                                class="checkbox-inline" disabled></c-checkbox>
-                            <c-checkbox label="Bildetolk" default-value={remoteInterpreter} class="checkbox-inline"
-                                disabled></c-checkbox>
-                        </div>
-                    </div>
+                    </template>
+                    <template lwc:else>
+                        <p class="output-value">Ingen vedtak registrert.</p>
+                    </template>
                 </section>
 
                 <!-- Tolkemetoder -->
                 <section class="sub-form">
                     <h3 id="tolkemetoder-header" class="sub-header">Tolkemetoder</h3>
-                    <div class="my-grid">
-                        <div class="my-col-half">
-                            <c-checkbox label="Tegnspråk" default-value={signLanguage} class="checkbox-inline"
-                                disabled></c-checkbox>
-                            <c-checkbox label="Skrivetolking" default-value={writtenInterpreter} class="checkbox-inline"
-                                disabled></c-checkbox>
-                            <c-checkbox label="Tegn til støtte som munnavlesning" default-value={supportMouthReading}
-                                class="checkbox-inline" disabled></c-checkbox>
-                            <c-checkbox label="Taletolking" default-value={speechInterpreting} class="checkbox-inline"
-                                disabled></c-checkbox>
+                    <template lwc:if={hasTolkemetoder}>
+                        <div class="my-grid">
+                            <div class="my-col-half">
+                                <template for:each={tolkemetoderLabels} for:item="label">
+                                    <p key={label} class="output-value">{label}</p>
+                                </template>
+                            </div>
                         </div>
-                        <div class="my-col-half">
-                            <c-checkbox label="Taktilt tegnspråk" default-value={tactileSignLanguage}
-                                class="checkbox-inline" disabled></c-checkbox>
-                            <c-checkbox label="Tegnspråk i begrenset synsfelt" default-value={signLimitedView}
-                                class="checkbox-inline" disabled></c-checkbox>
-                            <c-checkbox label="Haptisk kommunikasjon" default-value={hapticCommunication}
-                                class="checkbox-inline" disabled></c-checkbox>
-                            <c-checkbox label="Ledsaging" default-value={escort} class="checkbox-inline"
-                                disabled></c-checkbox>
-                        </div>
-                    </div>
+                    </template>
+                    <template lwc:else>
+                        <p class="output-value">Ingen tolkemetoder registrert.</p>
+                    </template>
                 </section>
 
                 <!-- Annet -->
@@ -117,17 +112,20 @@
                     </h2>
                     <div class="my-grid">
                         <div class="my-col-half">
-                            <c-picklist master-label="Velg hvor du vil få varsler" choices={picklistOptions}
-                                onpicklistvaluechange={selectionChangeHandler} onclick={handleCloseSuccess} onkeydown={handleCloseSuccess}></c-picklist>
+                            <c-picklist
+                                master-label="Velg hvor du vil få varsler"
+                                choices={picklistOptions}
+                                onpicklistvaluechange={selectionChangeHandler}
+                                onclick={handleCloseSuccess}
+                                onkeydown={handleCloseSuccess}
+                            ></c-picklist>
                         </div>
                     </div>
                 </section>
             </section>
 
             <!-- Success message -->
-            <div class="sr-only" aria-live="assertive" role="status">
-                {ariaMessage}.
-            </div>
+            <div class="sr-only" aria-live="assertive" role="status">{ariaMessage}.</div>
 
             <template lwc:if={showSuccess}>
                 <div class="navno-dekorator alertstripe navno-dekorator alertstripe--success">
@@ -135,8 +133,11 @@
                     <div class="typo-normal alertstripe__tekst">
                         <p>{successMessage}</p>
                     </div>
-                    <button class="navno-dekorator close-success-button" onclick={handleCloseSuccess}
-                        aria-label="Lukk melding">
+                    <button
+                        class="navno-dekorator close-success-button"
+                        onclick={handleCloseSuccess}
+                        aria-label="Lukk melding"
+                    >
                         &times;
                     </button>
                 </div>

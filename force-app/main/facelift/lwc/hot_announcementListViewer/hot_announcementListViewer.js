@@ -9,22 +9,15 @@ export default class Hot_announcementListViewer extends LightningElement {
     showAnnouncements = false;
     isLoading = false;
 
-    announcementsToShow = 10;
+    announcementsToShow = 100;
     visibleAnnouncements = [];
 
     handleShowAnnouncements() {
         this.updateVisibleAnnouncements();
-        // this.isLoading = true;
 
         const dialog = this.template.querySelector('.modal-announcements');
         dialog.showModal();
         dialog.focus();
-
-        // loading kun til test
-        // setTimeout(() => {
-        //     this.visibleAnnouncements = this.announcements.slice(0, this.announcementsToShow);
-        //     this.isLoading = false;
-        // }, 200);
     }
 
     handleShowMore() {

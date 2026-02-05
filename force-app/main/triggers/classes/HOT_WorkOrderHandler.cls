@@ -389,7 +389,7 @@ public without sharing class HOT_WorkOrderHandler extends MyTriggers {
                 if (requests.get(workOrder.HOT_Request__c).CanceledDate__c != null) {
                     workOrder.CanceledDate__c = requests.get(workOrder.HOT_Request__c).CanceledDate__c;
                 } else {
-                    workOrder.CanceledDate__c = Date.today();
+                    workOrder.CanceledDate__c = Datetime.now();
                 }
             }
         }

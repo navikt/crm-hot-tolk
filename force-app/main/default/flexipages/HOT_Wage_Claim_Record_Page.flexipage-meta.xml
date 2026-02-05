@@ -34,14 +34,17 @@
     <flexiPageRegions>
         <itemInstances>
             <componentInstance>
-                <componentName>hot_matchingServiceAppointments</componentName>
-                <identifier>hot_matchingServiceAppointments</identifier>
+                <componentName>hot_messagingMessageComponent_v2</componentName>
+                <identifier>c_hot_messagingMessageComponent_v2</identifier>
+                <visibilityRule>
+                    <criteria>
+                        <leftValue>{!$Permission.CustomPermission.HOT_Tolk_Beta}</leftValue>
+                        <operator>EQUAL</operator>
+                        <rightValue>true</rightValue>
+                    </criteria>
+                </visibilityRule>
             </componentInstance>
         </itemInstances>
-        <name>Facet-7983d986-5d9d-4019-9069-93a2a89a32e7</name>
-        <type>Facet</type>
-    </flexiPageRegions>
-    <flexiPageRegions>
         <itemInstances>
             <componentInstance>
                 <componentInstanceProperties>
@@ -54,26 +57,19 @@
                 </componentInstanceProperties>
                 <componentName>hot_messagingMessageComponent</componentName>
                 <identifier>c_hot_messagingMessageComponent</identifier>
+                <visibilityRule>
+                    <criteria>
+                        <leftValue>{!$Permission.CustomPermission.HOT_Tolk_Beta}</leftValue>
+                        <operator>EQUAL</operator>
+                        <rightValue>false</rightValue>
+                    </criteria>
+                </visibilityRule>
             </componentInstance>
         </itemInstances>
         <name>Facet-6791e951-a664-4a62-8edd-dc45a3fa2f79</name>
         <type>Facet</type>
     </flexiPageRegions>
     <flexiPageRegions>
-        <itemInstances>
-            <componentInstance>
-                <componentInstanceProperties>
-                    <name>body</name>
-                    <value>Facet-7983d986-5d9d-4019-9069-93a2a89a32e7</value>
-                </componentInstanceProperties>
-                <componentInstanceProperties>
-                    <name>title</name>
-                    <value>Overlappende oppdrag</value>
-                </componentInstanceProperties>
-                <componentName>flexipage:tab</componentName>
-                <identifier>customTab</identifier>
-            </componentInstance>
-        </itemInstances>
         <itemInstances>
             <componentInstance>
                 <componentInstanceProperties>

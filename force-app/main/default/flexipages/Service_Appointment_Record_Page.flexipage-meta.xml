@@ -276,6 +276,16 @@
                 <identifier>RecordHOT_TotalNumberOfInterpreters_cField</identifier>
             </fieldInstance>
         </itemInstances>
+        <itemInstances>
+            <fieldInstance>
+                <fieldInstanceProperties>
+                    <name>uiBehavior</name>
+                    <value>none</value>
+                </fieldInstanceProperties>
+                <fieldItem>Record.HOT_PreparationTime__c</fieldItem>
+                <identifier>RecordHOT_PreparationTime__cField</identifier>
+            </fieldInstance>
+        </itemInstances>
         <name>Facet-3144a2d9-fdd4-4dc4-8a47-b8670d89aed4</name>
         <type>Facet</type>
     </flexiPageRegions>
@@ -398,6 +408,36 @@
                 </fieldInstanceProperties>
                 <fieldItem>Record.HOT_IsRecieptRecieved__c</fieldItem>
                 <identifier>RecordHOT_IsRecieptRecieved__cField</identifier>
+            </fieldInstance>
+        </itemInstances>
+        <itemInstances>
+            <fieldInstance>
+                <fieldInstanceProperties>
+                    <name>uiBehavior</name>
+                    <value>none</value>
+                </fieldInstanceProperties>
+                <fieldItem>Record.HOT_LateCancellation__c</fieldItem>
+                <identifier>RecordHOT_LateCancellation__cField</identifier>
+                <visibilityRule>
+                    <criteria>
+                        <leftValue>{!Record.HOT_WorkOrderLineItem__r.WorkOrder.Status}</leftValue>
+                        <operator>EQUAL</operator>
+                        <rightValue>Canceled</rightValue>
+                    </criteria>
+                </visibilityRule>
+            </fieldInstance>
+        </itemInstances>
+        <itemInstances>
+            <fieldInstance>
+                <fieldItem>Record.HOT_WorkOrderLineItem__r.WorkOrder.CanceledDate__c</fieldItem>
+                <identifier>RecordHOT_WorkOrderLineItem_rWorkOrderCanceledDate_cField</identifier>
+                <visibilityRule>
+                    <criteria>
+                        <leftValue>{!Record.HOT_WorkOrderLineItem__r.WorkOrder.Status}</leftValue>
+                        <operator>EQUAL</operator>
+                        <rightValue>Canceled</rightValue>
+                    </criteria>
+                </visibilityRule>
             </fieldInstance>
         </itemInstances>
         <name>Facet-9076d0db-a5a7-442a-b012-cb35bc98b822</name>
@@ -798,6 +838,27 @@
         <itemInstances>
             <componentInstance>
                 <componentInstanceProperties>
+                    <name>message</name>
+                    <value>Oppdraget ble avlyst mindre enn 48 timer før start.</value>
+                </componentInstanceProperties>
+                <componentInstanceProperties>
+                    <name>type</name>
+                    <value>Warning</value>
+                </componentInstanceProperties>
+                <componentName>hot_alertBanner</componentName>
+                <identifier>c_hot_alertBanner2</identifier>
+                <visibilityRule>
+                    <criteria>
+                        <leftValue>{!Record.HOT_LateCancellation__c}</leftValue>
+                        <operator>EQUAL</operator>
+                        <rightValue>true</rightValue>
+                    </criteria>
+                </visibilityRule>
+            </componentInstance>
+        </itemInstances>
+        <itemInstances>
+            <componentInstance>
+                <componentInstanceProperties>
                     <name>columns</name>
                     <value>Facet-58d13e61-53bb-4a66-8b3f-6d0a9cf8493e</value>
                 </componentInstanceProperties>
@@ -933,6 +994,12 @@
                 <identifier>force_relatedListSingleContainer2</identifier>
             </componentInstance>
         </itemInstances>
+        <itemInstances>
+            <componentInstance>
+                <componentName>hot_relevantInterestedResources</componentName>
+                <identifier>c_hot_relevantInterestedResources</identifier>
+            </componentInstance>
+        </itemInstances>
         <name>Facet-8a2a94a6-277f-43b7-9cb4-b0df6b0dd3cb</name>
         <type>Facet</type>
     </flexiPageRegions>
@@ -1017,6 +1084,19 @@
     <flexiPageRegions>
         <itemInstances>
             <componentInstance>
+                <componentName>hot_messagingMessageComponent_v2</componentName>
+                <identifier>c_hot_messagingMessageComponent_v2</identifier>
+                <visibilityRule>
+                    <criteria>
+                        <leftValue>{!$Permission.CustomPermission.HOT_Tolk_Beta}</leftValue>
+                        <operator>EQUAL</operator>
+                        <rightValue>true</rightValue>
+                    </criteria>
+                </visibilityRule>
+            </componentInstance>
+        </itemInstances>
+        <itemInstances>
+            <componentInstance>
                 <componentInstanceProperties>
                     <name>showClose</name>
                     <value>false</value>
@@ -1027,6 +1107,13 @@
                 </componentInstanceProperties>
                 <componentName>hot_messagingMessageComponent</componentName>
                 <identifier>c_hot_messagingMessageComponent</identifier>
+                <visibilityRule>
+                    <criteria>
+                        <leftValue>{!$Permission.CustomPermission.HOT_Tolk_Beta}</leftValue>
+                        <operator>EQUAL</operator>
+                        <rightValue>false</rightValue>
+                    </criteria>
+                </visibilityRule>
             </componentInstance>
         </itemInstances>
         <name>Facet-78213d51-8363-40c6-ab40-3a9ea8295431</name>

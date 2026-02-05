@@ -1,6 +1,5 @@
 import { LightningElement, api, wire } from 'lwc';
 import { getRecord } from 'lightning/uiRecordApi';
-import { ShowToastEvent } from 'lightning/platformShowToastEvent';
 import USER_ID from '@salesforce/user/Id';
 
 const FIELDS = ['HOT_Request__c.Company__c', 'HOT_Request__c.IsOtherEconomicProvicer__c', 'HOT_Request__c.CreatedDate'];
@@ -9,16 +8,16 @@ export default class Hot_otherPayerNotification extends LightningElement {
     @api recordId;
     @api objectApiName;
 
+    showBanner = false;
+
     _initialized = false;
-    _prevCompany = null;
-    _prevOtherPayerChecked = null;
     _prevConditionMet = false;
 
     get dismissedKey() {
-        return `otherPayerToastDismissed_${this.recordId}_${USER_ID}`;
+        return `otherPayerBannerDismissed_${this.recordId}_${USER_ID}`;
     }
 
-    isDismissedOnLoad() {
+    isDismissed() {
         try {
             return window.localStorage.getItem(this.dismissedKey) === '1';
         } catch (e) {
@@ -26,10 +25,26 @@ export default class Hot_otherPayerNotification extends LightningElement {
         }
     }
 
-    markDismissedOnLoad() {
+    markDismissed() {
         try {
             window.localStorage.setItem(this.dismissedKey, '1');
         } catch (e) {}
+    }
+
+    clearDismissed() {
+        try {
+            window.localStorage.removeItem(this.dismissedKey);
+        } catch (e) {}
+    }
+
+    handleClose() {
+        this.showBanner = false;
+        this.markDismissed();
+    }
+
+    // When user navigates away, component is destroyed -> banner is gone.
+    disconnectedCallback() {
+        this.showBanner = false;
     }
 
     @wire(getRecord, { recordId: '$recordId', fields: FIELDS })
@@ -46,66 +61,43 @@ export default class Hot_otherPayerNotification extends LightningElement {
 
         const conditionNow = !!company && !otherPayerChecked;
 
+        // If condition is no longer true, hide banner and allow it to show again next time
+        if (!conditionNow) {
+            this.showBanner = false;
+            this.clearDismissed();
+        }
+
         if (!this._initialized) {
             this._initialized = true;
+            this._prevConditionMet = conditionNow;
 
+            let shouldShowOnFirstLoad = false;
             if (conditionNow) {
-                let shouldShowOnFirstLoad = false;
-
                 if (createdDate) {
                     const now = new Date();
                     const created = new Date(createdDate);
-                    const timeDiffSeconds = (now - created) / 1000;
+                    const justCreated = (now - created) / 1000 < 5;
 
-                    const justCreated = timeDiffSeconds < 5;
-
-                    if (justCreated || !this.isDismissedOnLoad()) {
-                        shouldShowOnFirstLoad = true;
-                    }
+                    // show if just created OR not dismissed
+                    shouldShowOnFirstLoad = justCreated || !this.isDismissed();
                 } else {
-                    if (!this.isDismissedOnLoad()) {
-                        shouldShowOnFirstLoad = true;
-                    }
-                }
-
-                if (shouldShowOnFirstLoad) {
-                    this.showToast({ fromLoad: true });
+                    shouldShowOnFirstLoad = !this.isDismissed();
                 }
             }
 
-            this._prevCompany = company;
-            this._prevOtherPayerChecked = otherPayerChecked;
-            this._prevConditionMet = conditionNow;
+            if (shouldShowOnFirstLoad) {
+                this.showBanner = true;
+            }
 
             return;
         }
 
-        const companyChanged = this._prevCompany !== company;
-        const otherChanged = this._prevOtherPayerChecked !== otherPayerChecked;
-
+        // Show when condition becomes true again (unless previously dismissed)
         const conditionBecameTrue = !this._prevConditionMet && conditionNow;
-
-        if ((companyChanged || otherChanged) && conditionBecameTrue) {
-            this.showToast({ fromLoad: false });
+        if (conditionBecameTrue && !this.isDismissed()) {
+            this.showBanner = true;
         }
 
-        this._prevCompany = company;
-        this._prevOtherPayerChecked = otherPayerChecked;
         this._prevConditionMet = conditionNow;
-    }
-
-    showToast({ fromLoad = false } = {}) {
-        const event = new ShowToastEvent({
-            title: 'Annen betaler',
-            message:
-                'Virksomhet er fylt ut, men Annen betaler er ikke huket av. Vennligst vurder hvem som skal betale.',
-            variant: 'warning',
-            mode: 'sticky'
-        });
-        this.dispatchEvent(event);
-
-        if (fromLoad) {
-            this.markDismissedOnLoad();
-        }
     }
 }

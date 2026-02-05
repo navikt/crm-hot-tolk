@@ -104,7 +104,7 @@ export default class Hot_userInformation_v2 extends LightningElement {
                 this.picklistOptions = this.picklistOptions.map((option) => ({
                     ...option,
                     selected:
-                        (this.isReservedAgainstNotifications && option.name === "Reserver mot alle varsler") ||
+                        (this.isReservedAgainstNotifications && option.name === 'Reserver mot alle varsler') ||
                         (!this.isReservedAgainstNotifications && option.name === this.selectedOption)
                 }));
             });
@@ -113,20 +113,51 @@ export default class Hot_userInformation_v2 extends LightningElement {
                 let secMeasures = JSON.parse(this.person.INT_SecurityMeasures__c);
                 let securityMeasuresFormatted = [];
                 secMeasures.forEach((sm) => {
-                    console.log(sm.tiltaksType);
                     securityMeasuresFormatted.push(
                         sm.beskrivelse +
-                        ' (' +
-                        sm.tiltaksType +
-                        '), gyldig: ' +
-                        formatDate(sm.gyldigFraOgMed) +
-                        ' - ' +
-                        formatDate(sm.gyldigTilOgMed)
+                            ' (' +
+                            sm.tiltaksType +
+                            '), gyldig: ' +
+                            formatDate(sm.gyldigFraOgMed) +
+                            ' - ' +
+                            formatDate(sm.gyldigTilOgMed)
                     );
                 });
                 this.securityMeasures = securityMeasuresFormatted;
             }
         }
+    }
+    get vedtakLabels() {
+        const items = [
+            { label: 'Arbeidsliv', value: this.workplaceInterpreter },
+            { label: 'Dagligliv', value: this.dailyLifeInterpreter },
+            { label: 'Utdanning', value: this.educationInterpreter },
+            { label: 'Tolk på arbeidsplass - TPA', value: this.interpreterAW },
+            { label: 'Bildetolk', value: this.remoteInterpreter }
+        ];
+        return items.filter((i) => i.value).map((i) => i.label);
+    }
+
+    get tolkemetoderLabels() {
+        const items = [
+            { label: 'Tegnspråk', value: this.signLanguage },
+            { label: 'Skrivetolking', value: this.writtenInterpreter },
+            { label: 'Tegn til støtte som munnavlesning', value: this.supportMouthReading },
+            { label: 'Taletolking', value: this.speechInterpreting },
+            { label: 'Taktilt tegnspråk', value: this.tactileSignLanguage },
+            { label: 'Tegnspråk i begrenset synsfelt', value: this.signLimitedView },
+            { label: 'Haptisk kommunikasjon', value: this.hapticCommunication },
+            { label: 'Ledsaging', value: this.escort }
+        ];
+        return items.filter((i) => i.value).map((i) => i.label);
+    }
+
+    get hasVedtak() {
+        return this.vedtakLabels.length > 0;
+    }
+
+    get hasTolkemetoder() {
+        return this.tolkemetoderLabels.length > 0;
     }
 
     setKrrIntegrationStatusToQueued() {
@@ -144,11 +175,7 @@ export default class Hot_userInformation_v2 extends LightningElement {
     }
 
     selectionChangeHandler(event) {
-        const selected =
-            event.detail.value ||
-            event.detail.name ||
-            event.detail.selectedValue ||
-            event.detail;
+        const selected = event.detail.value || event.detail.name || event.detail.selectedValue || event.detail;
 
         this.newSelectedOption = selected;
 
@@ -158,7 +185,7 @@ export default class Hot_userInformation_v2 extends LightningElement {
             return { ...option, selected: isSelected };
         });
 
-        if (this.newSelectedOption === "Reserver mot alle varsler") {
+        if (this.newSelectedOption === 'Reserver mot alle varsler') {
             this.newIsReservedAgainstNotifications = true;
             this.newSelectedOption = null;
         } else {
@@ -182,10 +209,10 @@ export default class Hot_userInformation_v2 extends LightningElement {
                 this.selectedOption = this.person.HOT_NotificationChannel__c;
                 this.isReservedAgainstNotifications = this.person.HOT_IsReservationAgainstNotifications__c;
 
-                this.picklistOptions = this.picklistOptions.map(option => ({
+                this.picklistOptions = this.picklistOptions.map((option) => ({
                     ...option,
                     selected:
-                        (this.isReservedAgainstNotifications && option.name === "Reserver mot alle varsler") ||
+                        (this.isReservedAgainstNotifications && option.name === 'Reserver mot alle varsler') ||
                         (!this.isReservedAgainstNotifications && option.name === this.selectedOption)
                 }));
 
@@ -194,7 +221,7 @@ export default class Hot_userInformation_v2 extends LightningElement {
                 this.showSuccess = true;
 
                 const newMessage = 'Endringen har blitt lagret';
-                this.ariaMessage = (this.ariaMessage === newMessage ? newMessage + ' ' : newMessage);
+                this.ariaMessage = this.ariaMessage === newMessage ? newMessage + ' ' : newMessage;
             });
     }
 

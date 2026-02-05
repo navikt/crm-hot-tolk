@@ -98,6 +98,10 @@
                                                 <span>{accountPhoneNumber}</span>
                                             </p>
                                             <p>Tolkemetode: <span>{serviceAppointment.HOT_WorkTypeName__c}</span></p>
+                                            <p lwc:if={serviceAppointment.HOT_PreparationTime__c}>
+                                                Forberedelsestid:
+                                                <span>{serviceAppointment.HOT_PreparationTime__c}</span>
+                                            </p>
                                             <p>Oppdragstype: <span>{serviceAppointment.HOT_AssignmentType__c}</span></p>
                                             <p lwc:if={ownerName}>Eier: <span>{ownerName}</span></p>
 
@@ -238,62 +242,17 @@
                                         </p>
                                         <p>Status: <span>{wageClaim.Status__c}</span></p>
                                     </div>
-
-                                    <!-- Alert Wage Claim confirmation -->
-                                    <template lwc:if={isAlertWageClaimEdit}>
-                                        <div
-                                            class="navno-dekorator alertstripe navno-dekorator alertstripe--advarsel"
-                                            role="alert"
+                                    <div style="display: inline-block; padding-bottom: 1vw">
+                                        <c-button
+                                            disabled={wcIsDisabledGoToThread}
+                                            button-styling="primary"
+                                            button-label="Samtale med ressurskontor"
+                                            aria-label="Samtale med ressurskontor"
+                                            onbuttonclick={goToWageClaimThread}
                                         >
-                                            <img class="navno-dekorator alertstripe__ikon" src={warningicon} alt="" />
-                                            <div class="alertstripe__innhold">
-                                                <div class="typo-normal alertstripe__tekst">{modalWageContent}</div>
-                                                <div class="alertstripe__knapper alerts-wage-buttons">
-                                                    <c-button
-                                                        button-styling="danger"
-                                                        button-label="Tilbaketrekk tilgjengelighet"
-                                                        onbuttonclick={showModalRetract}
-                                                    ></c-button>
-
-                                                    <c-button
-                                                        button-styling="Secondary"
-                                                        button-label="Avbryt"
-                                                        desktop-style="width: 5rem; justify-content: center;"
-                                                        onbuttonclick={retractWageClaimCancel}
-                                                    ></c-button>
-                                                </div>
-                                            </div>
-                                        </div>
-                                    </template>
-                                    <template lwc:else>
-                                        <div
-                                            style="
-                                                display: inline-block;
-                                                padding-right: 1vw;
-                                                padding-bottom: 1vw;
-                                                padding-top: 1vw;
-                                            "
-                                        >
-                                            <c-button
-                                                disabled={wcIsNotRetractable}
-                                                button-styling="primary"
-                                                button-label="Tilbaketrekk tilgjengelighet"
-                                                aria-label="Tilbaketrekk tilgjengelighet"
-                                                onbuttonclick={retractWageClaimClicked}
-                                            >
-                                            </c-button>
-                                        </div>
-                                        <div style="display: inline-block; padding-bottom: 1vw">
-                                            <c-button
-                                                disabled={wcIsDisabledGoToThread}
-                                                button-styling="primary"
-                                                button-label="Samtale med ressurskontor"
-                                                aria-label="Samtale med ressurskontor"
-                                                onbuttonclick={goToWageClaimThread}
-                                            >
-                                            </c-button>
-                                        </div>
-                                    </template>
+                                        </c-button>
+                                    </div>
+                                    <!-- </template> -->
                                 </div>
                             </section>
                         </template>

@@ -1,0 +1,52 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>InterpretationMethodSecondaryType__c</fullName>
+    <deprecated>false</deprecated>
+    <externalId>false</externalId>
+    <label>Interpretation Method Secondary</label>
+    <required>false</required>
+    <trackHistory>false</trackHistory>
+    <trackTrending>false</trackTrending>
+    <type>Picklist</type>
+    <valueSet>
+        <restricted>true</restricted>
+        <valueSetDefinition>
+            <sorted>false</sorted>
+            <value>
+                <fullName>TS - Tegnspråk</fullName>
+                <default>false</default>
+                <label>TS - Tegnspråk</label>
+            </value>
+            <value>
+                <fullName>BTV - Bildetolkvakt</fullName>
+                <default>false</default>
+                <label>BTV - Bildetolkvakt</label>
+            </value>
+            <value>
+                <fullName>SK - Skrivetolking</fullName>
+                <default>false</default>
+                <label>SK - Skrivetolking</label>
+            </value>
+            <value>
+                <fullName>TSBS - Tegnspråk I Begrenset Synsfelt</fullName>
+                <default>false</default>
+                <label>TSBS - Tegnspråk I Begrenset Synsfelt</label>
+            </value>
+            <value>
+                <fullName>TSS - Tegn Som Støtte Til Munnavlesning</fullName>
+                <default>false</default>
+                <label>TSS - Tegn Som Støtte Til Munnavlesning</label>
+            </value>
+            <value>
+                <fullName>TTS - Taktilt Tegnspråk</fullName>
+                <default>false</default>
+                <label>TTS - Taktilt Tegnspråk</label>
+            </value>
+            <value>
+                <fullName>TT - Taletolking</fullName>
+                <default>false</default>
+                <label>TT - Taletolking</label>
+            </value>
+        </valueSetDefinition>
+    </valueSet>
+</CustomField>
