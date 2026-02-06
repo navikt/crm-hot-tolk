@@ -117,7 +117,7 @@ public without sharing class HOT_OpenServiceAppointmentListController {
 
         ServiceResource serviceResource = [SELECT Id FROM ServiceResource WHERE RelatedRecordId = :userId LIMIT 1];
 
-        /* Mappe ServiceAppointment → Comment */
+        /* Map ServiceAppointment → Comment */
         Map<Id, String> appointmentToComment = new Map<Id, String>();
         for (Integer i = 0; i < serviceAppointmentIds.size(); i++) {
             appointmentToComment.put(
@@ -128,9 +128,8 @@ public without sharing class HOT_OpenServiceAppointmentListController {
 
         Set<Id> serviceAppointmentIdSet = appointmentToComment.keySet();
 
-        /* Finn eksisterende Interessert ressurs (MED alle felter som trengs for Thread) */
+        /* Finn eksisterende IR */
         Map<Id, HOT_InterestedResource__c> serviceAppointmentToIR = new Map<Id, HOT_InterestedResource__c>();
-
         for (HOT_InterestedResource__c ir : [
             SELECT
                 Id,
@@ -146,9 +145,10 @@ public without sharing class HOT_OpenServiceAppointmentListController {
             serviceAppointmentToIR.put(ir.ServiceAppointment__c, ir);
         }
 
-        /* Opprett / oppdater Interessert ressurs */
+        /* Opprett / oppdater IR */
         List<HOT_InterestedResource__c> irsToInsert = new List<HOT_InterestedResource__c>();
         List<HOT_InterestedResource__c> irsToUpdate = new List<HOT_InterestedResource__c>();
+        List<HOT_InterestedResource__c> newInsertedIRs = new List<HOT_InterestedResource__c>();
 
         for (Id saId : serviceAppointmentIdSet) {
             if (!serviceAppointmentToIR.containsKey(saId)) {
@@ -156,15 +156,16 @@ public without sharing class HOT_OpenServiceAppointmentListController {
                     ServiceAppointment__c = saId,
                     ServiceResource__c = serviceResource.Id,
                     Status__c = 'Interested',
-                    Comments__c = appointmentToComment.get(serviceAppointmentId)
+                    Comments__c = appointmentToComment.get(saId)
                 );
                 irsToInsert.add(ir);
+                newInsertedIRs.add(ir);
                 serviceAppointmentToIR.put(saId, ir);
             } else {
                 HOT_InterestedResource__c existingIR = serviceAppointmentToIR.get(saId);
                 if (String.isBlank(existingIR.Status__c)) {
                     existingIR.Status__c = 'Interested';
-                    existingIR.Comments__c = appointmentToComment.get(serviceAppointmentId);
+                    existingIR.Comments__c = appointmentToComment.get(saId);
                     irsToUpdate.add(existingIR);
                 }
             }
@@ -177,44 +178,63 @@ public without sharing class HOT_OpenServiceAppointmentListController {
             insert irsToInsert;
         }
 
-        Id userContactId = HOT_MessageHelper.getUserContactId();
+        /*
+         * RE-QUERY kun de nyinnsatte IR-ene slik at relasjoner er lastet
+         */
+        if (!newInsertedIRs.isEmpty()) {
+            Map<Id, HOT_InterestedResource__c> reQueriedIRs = new Map<Id, HOT_InterestedResource__c>(
+                [
+                    SELECT
+                        Id,
+                        ServiceAppointment__c,
+                        ServiceResource__r.AccountId,
+                        ServiceAppointment__r.Subject,
+                        ServiceAppointment__r.HOT_Account__c,
+                        ServiceAppointment__r.HOT_Request__r.Dispatcher__c
+                    FROM HOT_InterestedResource__c
+                    WHERE Id IN :newInsertedIRs
+                ]
+            );
 
-        /* Hent eksisterende Threads */
-        Set<Id> interestedResoureIds = new Set<Id>();
-        for (HOT_InterestedResource__c ir : serviceAppointmentToIR.values()) {
-            if (ir.Id != null) {
-                interestedResoureIds.add(ir.Id);
+            for (HOT_InterestedResource__c ir : reQueriedIRs.values()) {
+                serviceAppointmentToIR.put(ir.ServiceAppointment__c, ir);
             }
         }
 
-        Map<Id, Thread__c> irIdToThread = new Map<Id, Thread__c>();
+        Id userContactId = HOT_MessageHelper.getUserContactId();
 
-        if (!interestedResoureIds.isEmpty()) {
+        /* Hent eksisterende Threads */
+        Set<Id> interestedResourceIds = new Set<Id>();
+        for (HOT_InterestedResource__c ir : serviceAppointmentToIR.values()) {
+            if (ir.Id != null)
+                interestedResourceIds.add(ir.Id);
+        }
+
+        Map<Id, Thread__c> irIdToThread = new Map<Id, Thread__c>();
+        if (!interestedResourceIds.isEmpty()) {
             for (Thread__c t : [
                 SELECT Id, CRM_Related_Object__c, CRM_Thread_Type__c
                 FROM Thread__c
-                WHERE CRM_Related_Object__c IN :interestedResoureIds
+                WHERE CRM_Related_Object__c IN :interestedResourceIds
             ]) {
                 irIdToThread.put(t.CRM_Related_Object__c, t);
             }
         }
 
-        /* Lage nye tråder + Meldinger */
+        /* Lag tråder + meldinger */
         List<Thread__c> newThreads = new List<Thread__c>();
         Map<Id, String> irIdToComment = new Map<Id, String>();
         List<Message__c> messagesToInsert = new List<Message__c>();
 
         for (Id saId : serviceAppointmentToIR.keySet()) {
             String comment = appointmentToComment.get(saId);
-            if (String.isBlank(comment)) {
+            if (String.isBlank(comment))
                 continue;
-            }
 
             HOT_InterestedResource__c ir = serviceAppointmentToIR.get(saId);
 
             if (irIdToThread.containsKey(ir.Id)) {
-                Thread__c t = irIdToThread.get(ir.Id);
-                messagesToInsert.add(HOT_MessageHelper.createMessages(t, comment, userContactId));
+                messagesToInsert.add(HOT_MessageHelper.createMessages(irIdToThread.get(ir.Id), comment, userContactId));
             } else {
                 Thread__c thread = HOT_InterestedResourcesListController.buildThread(ir, userContactId);
                 newThreads.add(thread);
@@ -228,9 +248,9 @@ public without sharing class HOT_OpenServiceAppointmentListController {
 
         for (Thread__c t : newThreads) {
             String msg = irIdToComment.get(t.CRM_Related_Object__c);
-            if (String.isBlank(msg))
-                continue;
-            messagesToInsert.add(HOT_MessageHelper.createMessages(t, msg, userContactId));
+            if (!String.isBlank(msg)) {
+                messagesToInsert.add(HOT_MessageHelper.createMessages(t, msg, userContactId));
+            }
         }
 
         if (!messagesToInsert.isEmpty()) {
