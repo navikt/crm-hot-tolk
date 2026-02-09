@@ -177,32 +177,17 @@ public without sharing class HOT_WageClaimService {
             ) {
                 if (newSA.SchedStartTime >= oldSA.SchedEndTime || newSA.SchedEndTime <= oldSA.SchedStartTime) {
                     wageClaims.add(
-                        createWageClaimFromSARecord(
-                            oldSA,
-                            resourceId,
-                            oldSA.SchedStartTime,
-                            oldSA.SchedEndTime
-                        )
+                        createWageClaimFromSARecord(oldSA, resourceId, oldSA.SchedStartTime, oldSA.SchedEndTime)
                     );
                 } else {
                     if (newSA.SchedStartTime > oldSA.SchedStartTime) {
                         wageClaims.add(
-                            createWageClaimFromSARecord(
-                                oldSA,
-                                resourceId,
-                                oldSA.SchedStartTime,
-                                newSA.SchedStartTime
-                            )
+                            createWageClaimFromSARecord(oldSA, resourceId, oldSA.SchedStartTime, newSA.SchedStartTime)
                         );
                     }
                     if (newSA.SchedEndTime < oldSA.SchedEndTime) {
                         wageClaims.add(
-                            createWageClaimFromSARecord(
-                                oldSA,
-                                resourceId,
-                                newSA.SchedEndTime,
-                                oldSA.SchedEndTime
-                            )
+                            createWageClaimFromSARecord(oldSA, resourceId, newSA.SchedEndTime, oldSA.SchedEndTime)
                         );
                     }
                 }
