@@ -74,7 +74,6 @@ private class HOT_WageClaimServiceTest {
 
     @IsTest
     static void SAWithARTimesChanged() {
-        Test.startTest();
         AssignedResource assignedResource = [SELECT Id, ServiceAppointmentId, ServiceResourceId FROM AssignedResource];
 
         ServiceAppointment serviceAppointment = [
@@ -84,6 +83,7 @@ private class HOT_WageClaimServiceTest {
             LIMIT 1
         ];
 
+        Test.startTest();
         serviceAppointment.ActualStartTime = serviceAppointment.SchedStartTime.addMinutes(15);
         serviceAppointment.ActualEndTime = serviceAppointment.SchedEndTime.addMinutes(-15);
         serviceAppointment.Status = 'Completed';
