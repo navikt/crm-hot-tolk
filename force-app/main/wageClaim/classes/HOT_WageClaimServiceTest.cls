@@ -57,9 +57,9 @@ private class HOT_WageClaimServiceTest {
 
     @IsTest
     static void getServiceAppointmentsTest() {
-        Test.startTest();
         AssignedResource assignedResource = [SELECT Id, ServiceAppointmentId FROM AssignedResource];
         update new ServiceAppointment(Id = assignedResource.ServiceAppointmentId, Status = 'None');
+        Test.startTest();
 
         HOT_WageClaim__c wageClaim = [SELECT Id, ServiceResource__c FROM HOT_WageClaim__c LIMIT 1];
         List<ServiceAppointment> serviceAppointments = HOT_WageClaimService.getServiceAppointments(wageClaim.Id);
@@ -157,6 +157,7 @@ private class HOT_WageClaimServiceTest {
     @IsTest
     static void shouldNotCreateWageClaimWhenStartTimeIsMoreThan48HoursAway() {
         // Hent eksisterende testdata fra @testSetup
+        Test.startTest();
         ServiceAppointment sa = [SELECT Id, SchedStartTime, SchedEndTime, Status FROM ServiceAppointment LIMIT 1];
 
         // Flytt starttid til 49 timer frem i tid (utenfor 48t-vinduet)
@@ -167,7 +168,6 @@ private class HOT_WageClaimServiceTest {
         sa.SchedEndTime = endDt;
         update sa;
 
-        Test.startTest();
         // Trigger wage-claim-logikk via statusendring
         update new ServiceAppointment(Id = sa.Id, Status = 'Dispatched');
         Test.stopTest();
