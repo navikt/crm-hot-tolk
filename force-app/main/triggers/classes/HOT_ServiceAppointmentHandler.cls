@@ -28,7 +28,6 @@ public without sharing class HOT_ServiceAppointmentHandler extends MyTriggers {
         List<ServiceAppointment> serviceAppointmentsWithStatusNone = new List<ServiceAppointment>();
 
         Map<Id, Id> resourceByAppointmentCreateWageClaim = new Map<Id, Id>();
-        Map<Id, Id> resourceByAppointmentUpdateWageClaim = new Map<Id, Id>();
 
         for (ServiceAppointment serviceAppointment : (List<ServiceAppointment>) records) {
             if (
@@ -95,19 +94,6 @@ public without sharing class HOT_ServiceAppointmentHandler extends MyTriggers {
                 serviceAppointment.Status == 'Annul'
             ) {
                 annulServiceAppointments.add(serviceAppointment);
-            }
-
-            if (
-                (serviceAppointment.Status != triggerOldMap.get(serviceAppointment.Id).get('Status') ||
-                serviceAppointment.HOT_ServiceResource__c !=
-                triggerOldMap.get(serviceAppointment.Id).get('HOT_ServiceResource__c')) &&
-                serviceAppointment.Status == 'Dispatched' &&
-                serviceAppointment.HOT_IsReleasedToFreelance__c == true
-            ) {
-                resourceByAppointmentUpdateWageClaim.put(
-                    serviceAppointment.Id,
-                    serviceAppointment.HOT_ServiceResource__c
-                );
             }
             if (
                 serviceAppointment.HOT_ServiceResource__c !=
@@ -225,9 +211,6 @@ public without sharing class HOT_ServiceAppointmentHandler extends MyTriggers {
         if (!resourceByAppointmentCreateWageClaim.isEmpty()) {
             HOT_WageClaimService.createWageClaims(resourceByAppointmentCreateWageClaim);
         }
-        // if (!resourceByAppointmentUpdateWageClaim.isEmpty()) {
-        //     HOT_WageClaimService.updateWageClaimsFuture(resourceByAppointmentUpdateWageClaim.keySet());
-        // }
         if (serviceAppointmentsWithActualTimeSet.size() > 0) {
             setScheduledTimeBasedOnActualTime(serviceAppointmentsWithActualTimeSet);
         }
