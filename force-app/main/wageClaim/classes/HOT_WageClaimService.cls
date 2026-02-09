@@ -119,28 +119,37 @@ public without sharing class HOT_WageClaimService {
         Map<Id, ServiceResource> serviceResources
     ) {
         List<HOT_WageClaim__c> wageClaims = new List<HOT_WageClaim__c>();
-        Date criticalDate = Date.today().addDays(14);
 
-        for (ServiceAppointment serviceAppointment : serviceAppointments.values()) {
+        Datetime nowDt = System.now();
+        Datetime criticalDt = nowDt.addHours(48);
+
+        for (ServiceAppointment sa : serviceAppointments.values()) {
+            Id resourceId = resourceByAppointment.get(sa.Id);
+            ServiceResource sr = serviceResources.get(resourceId);
+
             if (
-                serviceResources.get(resourceByAppointment.get(serviceAppointment.Id)) != null &&
-                criticalDate >= serviceAppointment.SchedStartTime.date() &&
-                serviceResources.get(resourceByAppointment.get(serviceAppointment.Id)).HOT_IsFreelanceInterpreter__c &&
-                !isAgreement(serviceResources.get(resourceByAppointment.get(serviceAppointment.Id)), serviceAppointment)
+                sr != null &&
+                sa.SchedStartTime != null &&
+                sa.SchedStartTime > nowDt &&
+                sa.SchedStartTime <= criticalDt &&
+                sr.HOT_IsFreelanceInterpreter__c &&
+                !isAgreement(sr, sa)
             ) {
                 HOT_WageClaim__c wageClaim = new HOT_WageClaim__c();
                 wageClaim.IsAutomaticallyCreated__c = true;
                 wageClaim.Type__c = 'Available on Wage';
                 wageClaim.Status__c = 'Open';
-                wageClaim.ServiceResource__c = resourceByAppointment.get(serviceAppointment.Id);
-                wageClaim.ServiceAppointment__c = serviceAppointment.Id;
-                wageClaim.StartTime__c = serviceAppointment.SchedStartTime;
-                wageClaim.EndTime__c = serviceAppointment.SchedEndTime;
-                wageClaim.WorkType__c = serviceAppointment.WorkTypeId;
-                wageClaim.ServiceTerritory__c = serviceAppointment.ServiceTerritoryId;
+                wageClaim.ServiceResource__c = resourceId;
+                wageClaim.ServiceAppointment__c = sa.Id;
+                wageClaim.StartTime__c = sa.SchedStartTime;
+                wageClaim.EndTime__c = sa.SchedEndTime;
+                wageClaim.WorkType__c = sa.WorkTypeId;
+                wageClaim.ServiceTerritory__c = sa.ServiceTerritoryId;
+
                 wageClaims.add(wageClaim);
             }
         }
+
         return wageClaims;
     }
 
