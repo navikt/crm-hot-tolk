@@ -670,11 +670,7 @@ private class HOT_ServiceAppointmentHandlerTest {
             FROM HOT_InterestedResource__c
             WHERE Id = :interestedResource.Id
         ];
-        System.assertEquals(
-            null,
-            updatedInterestedResource.Status__c,
-            'InterestedResource status was not updated'
-        );
+        System.assertEquals(null, updatedInterestedResource.Status__c, 'InterestedResource status was not updated');
 
         //Test Retract
         releasedServiceAppointment.Status = 'None';
@@ -928,7 +924,6 @@ private class HOT_ServiceAppointmentHandlerTest {
     }
 
     @IsTest
-    @IsTest
     static void testCreateWageClaimForChangedAppointment() {
         HOT_Request__c request = [SELECT Id FROM HOT_Request__c WHERE Subject__c = 'TEST' LIMIT 1];
         request.Status__c = 'Godkjent';
@@ -983,11 +978,7 @@ private class HOT_ServiceAppointmentHandlerTest {
         sa_shorten_start.SchedStartTime = shortenedStartTime;
         update sa_shorten_start;
 
-        wageClaims = [
-            SELECT Id, StartTime__c, EndTime__c
-            FROM HOT_WageClaim__c
-            WHERE ServiceAppointment__c = :sa.Id
-        ];
+        wageClaims = [SELECT Id, StartTime__c, EndTime__c FROM HOT_WageClaim__c WHERE ServiceAppointment__c = :sa.Id];
         System.assertEquals(1, wageClaims.size(), 'Expected 1 wage claim for shortened start time');
         System.assertEquals(
             startTime,
@@ -1003,7 +994,11 @@ private class HOT_ServiceAppointmentHandlerTest {
         delete wageClaims;
 
         // Scenario 3: Shorten Both Ends
-        ServiceAppointment sa_shorten_both = [SELECT Id, SchedStartTime, SchedEndTime FROM ServiceAppointment WHERE Id = :sa.Id];
+        ServiceAppointment sa_shorten_both = [
+            SELECT Id, SchedStartTime, SchedEndTime
+            FROM ServiceAppointment
+            WHERE Id = :sa.Id
+        ];
         sa_shorten_both.SchedStartTime = startTime.addMinutes(30);
         sa_shorten_both.SchedEndTime = endTime.addMinutes(-30);
         update sa_shorten_both;
@@ -1015,11 +1010,7 @@ private class HOT_ServiceAppointmentHandlerTest {
             ORDER BY StartTime__c
         ];
         System.assertEquals(2, wageClaims.size(), 'Expected 2 wage claims for shortening both ends');
-        System.assertEquals(
-            startTime,
-            wageClaims[0].StartTime__c,
-            'First wage claim should start at old start time'
-        );
+        System.assertEquals(startTime, wageClaims[0].StartTime__c, 'First wage claim should start at old start time');
         System.assertEquals(
             startTime.addMinutes(30),
             wageClaims[0].EndTime__c,
@@ -1035,17 +1026,17 @@ private class HOT_ServiceAppointmentHandlerTest {
         delete wageClaims;
 
         // Scenario 4: Move to a different time slot
-        ServiceAppointment sa_move = [SELECT Id, SchedStartTime, SchedEndTime FROM ServiceAppointment WHERE Id = :sa.Id];
+        ServiceAppointment sa_move = [
+            SELECT Id, SchedStartTime, SchedEndTime
+            FROM ServiceAppointment
+            WHERE Id = :sa.Id
+        ];
         Datetime newStartTime = startTime.addHours(5);
         sa_move.SchedStartTime = newStartTime;
         sa_move.SchedEndTime = newStartTime.addHours(2);
         update sa_move;
 
-        wageClaims = [
-            SELECT Id, StartTime__c, EndTime__c
-            FROM HOT_WageClaim__c
-            WHERE ServiceAppointment__c = :sa.Id
-        ];
+        wageClaims = [SELECT Id, StartTime__c, EndTime__c FROM HOT_WageClaim__c WHERE ServiceAppointment__c = :sa.Id];
         System.assertEquals(1, wageClaims.size(), 'Expected 1 wage claim for moved appointment');
         System.assertEquals(startTime, wageClaims[0].StartTime__c, 'Wage claim should cover the old appointment time');
         System.assertEquals(endTime, wageClaims[0].EndTime__c, 'Wage claim should cover the old appointment time');
