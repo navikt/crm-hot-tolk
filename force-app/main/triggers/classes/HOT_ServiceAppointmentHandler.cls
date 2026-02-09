@@ -406,32 +406,13 @@ public without sharing class HOT_ServiceAppointmentHandler extends MyTriggers {
                 oldServiceAppointmentsWithRequestFields,
                 oldServiceAppointmentsSchedTimeChanged
             );
-            List<HOT_WageClaim__c> wageClaims = HOT_WageClaimService.createWageClaimsFromServiceAppointments(
+            List<HOT_WageClaim__c> wageClaims = HOT_WageClaimService.createWageClaimsForChangedAppointment(
                 oldServiceAppointmentsWithRequestFields,
+                newServiceAppointmentsSchedTimeChanged,
                 serviceResourceByServiceAppointmentSchedTimeChanged,
                 serviceResources
             );
-
-            HOT_WageClaim__c[] claimsWithNoConflicts = new List<HOT_WageClaim__c>();
-            HOT_WageClaim__c[] claimsWithConflicts = new List<HOT_WageClaim__c>();
-
-            for (HOT_WageClaim__c wc : wageClaims) {
-                Boolean isConflict = false;
-                for (ServiceAppointment sa : newServiceAppointmentsSchedTimeChanged.values()) {
-                    if (sa.SchedStartTime < wc.EndTime__c && sa.SchedEndTime > wc.StartTime__c) {
-                        isConflict = true;
-                    }
-                }
-                if (isConflict) {
-                    claimsWithConflicts.add(wc);
-                } else {
-                    claimsWithNoConflicts.add(wc);
-                }
-            }
-
-            HOT_DatabaseOperations.insertRecords(claimsWithNoConflicts);
-            // HOT_WageClaimService.updateWageClaims(newServiceAppointmentsSchedTimeChanged, claimsWithConflicts, false);
-            // HOT_WageClaimService.updateWageClaimsFuture(serviceResourceByServiceAppointmentSchedTimeChanged.keySet());
+            insert wageClaims;
         }
 
         if (serviceAppointmentsWithUpdatedOwnerOrDispatcher.size() > 0) {

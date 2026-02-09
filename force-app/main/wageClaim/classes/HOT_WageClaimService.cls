@@ -153,6 +153,83 @@ public without sharing class HOT_WageClaimService {
         return wageClaims;
     }
 
+    public static List<HOT_WageClaim__c> createWageClaimsForChangedAppointment(
+        Map<Id, ServiceAppointment> oldServiceAppointments,
+        Map<Id, ServiceAppointment> newServiceAppointments,
+        Map<Id, Id> resourceByAppointment,
+        Map<Id, ServiceResource> serviceResources
+    ) {
+        List<HOT_WageClaim__c> wageClaims = new List<HOT_WageClaim__c>();
+        Datetime nowDt = System.now();
+        Datetime criticalDt = nowDt.addHours(48);
+
+        for (ServiceAppointment oldSA : oldServiceAppointments.values()) {
+            ServiceAppointment newSA = newServiceAppointments.get(oldSA.Id);
+            Id resourceId = resourceByAppointment.get(oldSA.Id);
+            ServiceResource sr = serviceResources.get(resourceId);
+            if (
+                sr != null &&
+                oldSA.SchedStartTime != null &&
+                oldSA.SchedStartTime > nowDt &&
+                oldSA.SchedStartTime <= criticalDt &&
+                sr.HOT_IsFreelanceInterpreter__c &&
+                !isAgreement(sr, oldSA)
+            ) {
+                if (newSA.SchedStartTime >= oldSA.SchedEndTime || newSA.SchedEndTime <= oldSA.SchedStartTime) {
+                    wageClaims.add(
+                        createWageClaimFromSARecord(
+                            oldSA,
+                            resourceId,
+                            oldSA.SchedStartTime,
+                            oldSA.SchedEndTime
+                        )
+                    );
+                } else {
+                    if (newSA.SchedStartTime > oldSA.SchedStartTime) {
+                        wageClaims.add(
+                            createWageClaimFromSARecord(
+                                oldSA,
+                                resourceId,
+                                oldSA.SchedStartTime,
+                                newSA.SchedStartTime
+                            )
+                        );
+                    }
+                    if (newSA.SchedEndTime < oldSA.SchedEndTime) {
+                        wageClaims.add(
+                            createWageClaimFromSARecord(
+                                oldSA,
+                                resourceId,
+                                newSA.SchedEndTime,
+                                oldSA.SchedEndTime
+                            )
+                        );
+                    }
+                }
+            }
+        }
+        return wageClaims;
+    }
+
+    private static HOT_WageClaim__c createWageClaimFromSARecord(
+        ServiceAppointment sa,
+        Id resourceId,
+        Datetime startTime,
+        Datetime endTime
+    ) {
+        HOT_WageClaim__c wageClaim = new HOT_WageClaim__c();
+        wageClaim.IsAutomaticallyCreated__c = true;
+        wageClaim.Type__c = 'Claim on Wage';
+        wageClaim.Status__c = null;
+        wageClaim.ServiceResource__c = resourceId;
+        wageClaim.ServiceAppointment__c = sa.Id;
+        wageClaim.StartTime__c = startTime;
+        wageClaim.EndTime__c = endTime;
+        wageClaim.WorkType__c = sa.WorkTypeId;
+        wageClaim.ServiceTerritory__c = sa.ServiceTerritoryId;
+        return wageClaim;
+    }
+
     private static Boolean isAgreement(ServiceResource serviceResource, ServiceAppointment serviceAppointment) {
         return serviceResource.HOT_AgreementFreelance__c == true &&
             (serviceResource.Id == serviceAppointment.HOT_Request__r.ServiceResourceWithAgreement1__c ||

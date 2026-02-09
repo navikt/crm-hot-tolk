@@ -928,40 +928,128 @@ private class HOT_ServiceAppointmentHandlerTest {
     }
 
     @IsTest
-    public static void actualStartTimesShouldBeSchedStartTimesTest() {
+    @IsTest
+    static void testCreateWageClaimForChangedAppointment() {
         HOT_Request__c request = [SELECT Id FROM HOT_Request__c WHERE Subject__c = 'TEST' LIMIT 1];
         request.Status__c = 'Godkjent';
         update request;
 
-        ServiceAppointment serviceAppointment = [
-            SELECT Id, AccountId, ActualStartTime, ActualEndTime, SchedStartTime, SchedEndTime, Status
+        ServiceAppointment sa = [
+            SELECT Id, EarliestStartTime, DueDate, SchedEndTime, SchedStartTime, Status, WorkTypeId, ServiceTerritoryId
             FROM ServiceAppointment
+            WHERE HOT_Request__c = :request.Id
             LIMIT 1
         ];
 
-        serviceAppointment.ActualStartTime = null;
-        serviceAppointment.ActualEndTime = null;
-        serviceAppointment.Status = 'Completed';
+        ServiceResource sr = [SELECT Id, HOT_IsFreelanceInterpreter__c FROM ServiceResource LIMIT 1];
+        sr.HOT_IsFreelanceInterpreter__c = true;
+        update sr;
+
+        AssignedResource ar = HOT_TestDataFactory.createAssignedResource(sa.Id, sr.Id);
+        insert ar;
+        sa.Status = 'Dispatched';
+        Datetime startTime = Datetime.now().addHours(24);
+        Datetime endTime = startTime.addHours(2);
+        sa.SchedStartTime = startTime;
+        sa.SchedEndTime = endTime;
+        update sa;
 
         Test.startTest();
-        update serviceAppointment;
-        Test.stopTest();
 
-        serviceAppointment = [
-            SELECT Id, SchedStartTime, SchedEndTime, ActualStartTime, ActualEndTime, Status
-            FROM serviceAppointment
-            WHERE Id = :serviceAppointment.Id
+        // Scenario 1: Shorten End Time
+        Datetime shortenedEndTime = endTime.addMinutes(-30);
+        ServiceAppointment sa_shorten_end = [SELECT Id, SchedEndTime FROM ServiceAppointment WHERE Id = :sa.Id];
+        sa_shorten_end.SchedEndTime = shortenedEndTime;
+        update sa_shorten_end;
+
+        List<HOT_WageClaim__c> wageClaims = [
+            SELECT Id, StartTime__c, EndTime__c
+            FROM HOT_WageClaim__c
+            WHERE ServiceAppointment__c = :sa.Id
         ];
+        System.assertEquals(1, wageClaims.size(), 'Expected 1 wage claim for shortened end time');
+        System.assertEquals(
+            shortenedEndTime,
+            wageClaims[0].StartTime__c,
+            'Wage claim start time should be the new end time'
+        );
+        System.assertEquals(endTime, wageClaims[0].EndTime__c, 'Wage claim end time should be the old end time');
 
+        delete wageClaims;
+
+        // Scenario 2: Shorten Start Time
+        Datetime shortenedStartTime = startTime.addMinutes(30);
+        ServiceAppointment sa_shorten_start = [SELECT Id, SchedStartTime FROM ServiceAppointment WHERE Id = :sa.Id];
+        sa_shorten_start.SchedStartTime = shortenedStartTime;
+        update sa_shorten_start;
+
+        wageClaims = [
+            SELECT Id, StartTime__c, EndTime__c
+            FROM HOT_WageClaim__c
+            WHERE ServiceAppointment__c = :sa.Id
+        ];
+        System.assertEquals(1, wageClaims.size(), 'Expected 1 wage claim for shortened start time');
         System.assertEquals(
-            serviceAppointment.SchedStartTime,
-            serviceAppointment.ActualStartTime,
-            'Expected SchedStartTime and ActualStartTime to be the same'
+            startTime,
+            wageClaims[0].StartTime__c,
+            'Wage claim start time should be the old start time'
         );
         System.assertEquals(
-            serviceAppointment.SchedEndTime,
-            serviceAppointment.ActualEndTime,
-            'Expected SchedEndTime and ActualEndTime to be the same'
+            shortenedStartTime,
+            wageClaims[0].EndTime__c,
+            'Wage claim end time should be the new start time'
         );
+
+        delete wageClaims;
+
+        // Scenario 3: Shorten Both Ends
+        ServiceAppointment sa_shorten_both = [SELECT Id, SchedStartTime, SchedEndTime FROM ServiceAppointment WHERE Id = :sa.Id];
+        sa_shorten_both.SchedStartTime = startTime.addMinutes(30);
+        sa_shorten_both.SchedEndTime = endTime.addMinutes(-30);
+        update sa_shorten_both;
+
+        wageClaims = [
+            SELECT Id, StartTime__c, EndTime__c
+            FROM HOT_WageClaim__c
+            WHERE ServiceAppointment__c = :sa.Id
+            ORDER BY StartTime__c
+        ];
+        System.assertEquals(2, wageClaims.size(), 'Expected 2 wage claims for shortening both ends');
+        System.assertEquals(
+            startTime,
+            wageClaims[0].StartTime__c,
+            'First wage claim should start at old start time'
+        );
+        System.assertEquals(
+            startTime.addMinutes(30),
+            wageClaims[0].EndTime__c,
+            'First wage claim should end at new start time'
+        );
+        System.assertEquals(
+            endTime.addMinutes(-30),
+            wageClaims[1].StartTime__c,
+            'Second wage claim should start at new end time'
+        );
+        System.assertEquals(endTime, wageClaims[1].EndTime__c, 'Second wage claim should end at old end time');
+
+        delete wageClaims;
+
+        // Scenario 4: Move to a different time slot
+        ServiceAppointment sa_move = [SELECT Id, SchedStartTime, SchedEndTime FROM ServiceAppointment WHERE Id = :sa.Id];
+        Datetime newStartTime = startTime.addHours(5);
+        sa_move.SchedStartTime = newStartTime;
+        sa_move.SchedEndTime = newStartTime.addHours(2);
+        update sa_move;
+
+        wageClaims = [
+            SELECT Id, StartTime__c, EndTime__c
+            FROM HOT_WageClaim__c
+            WHERE ServiceAppointment__c = :sa.Id
+        ];
+        System.assertEquals(1, wageClaims.size(), 'Expected 1 wage claim for moved appointment');
+        System.assertEquals(startTime, wageClaims[0].StartTime__c, 'Wage claim should cover the old appointment time');
+        System.assertEquals(endTime, wageClaims[0].EndTime__c, 'Wage claim should cover the old appointment time');
+
+        Test.stopTest();
     }
 }
