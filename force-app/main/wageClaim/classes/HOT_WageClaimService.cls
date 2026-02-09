@@ -137,8 +137,8 @@ public without sharing class HOT_WageClaimService {
             ) {
                 HOT_WageClaim__c wageClaim = new HOT_WageClaim__c();
                 wageClaim.IsAutomaticallyCreated__c = true;
-                wageClaim.Type__c = 'Available on Wage';
-                wageClaim.Status__c = 'Open';
+                wageClaim.Type__c = 'Claim on Wage';
+                wageClaim.Status__c = null;
                 wageClaim.ServiceResource__c = resourceId;
                 wageClaim.ServiceAppointment__c = sa.Id;
                 wageClaim.StartTime__c = sa.SchedStartTime;
