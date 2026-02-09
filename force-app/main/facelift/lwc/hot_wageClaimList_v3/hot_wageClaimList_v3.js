@@ -161,7 +161,11 @@ export default class Hot_wageClaimList_v3 extends NavigationMixin(LightningEleme
     @api recordId;
     updateURL() {
         let baseURL =
-            window.location.protocol + '//' + window.location.host + window.location.pathname + '?list=wageClaim';
+            window.location.protocol +
+            '//' +
+            window.location.host +
+            window.location.pathname +
+            '?list=wageClaimsOfNewType';
         if (this.recordId) {
             baseURL += '&id=' + this.recordId;
         }
