@@ -225,9 +225,9 @@ public without sharing class HOT_ServiceAppointmentHandler extends MyTriggers {
         if (!resourceByAppointmentCreateWageClaim.isEmpty()) {
             HOT_WageClaimService.createWageClaims(resourceByAppointmentCreateWageClaim);
         }
-        if (!resourceByAppointmentUpdateWageClaim.isEmpty()) {
-            HOT_WageClaimService.updateWageClaimsFuture(resourceByAppointmentUpdateWageClaim.keySet());
-        }
+        // if (!resourceByAppointmentUpdateWageClaim.isEmpty()) {
+        //     HOT_WageClaimService.updateWageClaimsFuture(resourceByAppointmentUpdateWageClaim.keySet());
+        // }
         if (serviceAppointmentsWithActualTimeSet.size() > 0) {
             setScheduledTimeBasedOnActualTime(serviceAppointmentsWithActualTimeSet);
         }
@@ -430,8 +430,8 @@ public without sharing class HOT_ServiceAppointmentHandler extends MyTriggers {
             }
 
             HOT_DatabaseOperations.insertRecords(claimsWithNoConflicts);
-            HOT_WageClaimService.updateWageClaims(newServiceAppointmentsSchedTimeChanged, claimsWithConflicts, false);
-            HOT_WageClaimService.updateWageClaimsFuture(serviceResourceByServiceAppointmentSchedTimeChanged.keySet());
+            // HOT_WageClaimService.updateWageClaims(newServiceAppointmentsSchedTimeChanged, claimsWithConflicts, false);
+            // HOT_WageClaimService.updateWageClaimsFuture(serviceResourceByServiceAppointmentSchedTimeChanged.keySet());
         }
 
         if (serviceAppointmentsWithUpdatedOwnerOrDispatcher.size() > 0) {
