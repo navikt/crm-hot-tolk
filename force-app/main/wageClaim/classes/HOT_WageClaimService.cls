@@ -130,7 +130,6 @@ public without sharing class HOT_WageClaimService {
             if (
                 sr != null &&
                 sa.SchedStartTime != null &&
-                sa.SchedStartTime > nowDt &&
                 sa.SchedStartTime <= criticalDt &&
                 sr.HOT_IsFreelanceInterpreter__c &&
                 !isAgreement(sr, sa)
@@ -170,7 +169,6 @@ public without sharing class HOT_WageClaimService {
             if (
                 sr != null &&
                 oldSA.SchedStartTime != null &&
-                oldSA.SchedStartTime > nowDt &&
                 oldSA.SchedStartTime <= criticalDt &&
                 sr.HOT_IsFreelanceInterpreter__c &&
                 !isAgreement(sr, oldSA)
