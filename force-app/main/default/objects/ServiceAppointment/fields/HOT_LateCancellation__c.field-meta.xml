@@ -3,10 +3,7 @@
     <fullName>HOT_LateCancellation__c</fullName>
     <deprecated>false</deprecated>
     <externalId>false</externalId>
-    <formula>AND(
-    HOT_CanceledDaysBefore__c &lt;= 2,
-    HOT_CanceledDaysBefore__c &gt; 0
-)</formula>
+    <formula>HOT_CanceledDaysBefore__c &lt;= 2</formula>
     <formulaTreatBlanksAs>BlankAsZero</formulaTreatBlanksAs>
     <label>Late Cancellation</label>
     <trackHistory>false</trackHistory>
