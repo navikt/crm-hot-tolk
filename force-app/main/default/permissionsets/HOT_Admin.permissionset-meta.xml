@@ -70,6 +70,10 @@
     </customPermissions>
     <customPermissions>
         <enabled>true</enabled>
+        <name>HOT_CanceledBanner</name>
+    </customPermissions>
+    <customPermissions>
+        <enabled>true</enabled>
         <name>HOT_Config</name>
     </customPermissions>
     <customPermissions>

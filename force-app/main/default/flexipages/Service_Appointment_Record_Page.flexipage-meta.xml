@@ -838,6 +838,7 @@
                 <componentName>hot_alertBanner</componentName>
                 <identifier>c_hot_alertBanner2</identifier>
                 <visibilityRule>
+                    <booleanFilter>1 AND 2 AND 3</booleanFilter>
                     <criteria>
                         <leftValue>{!Record.HOT_LateCancellation__c}</leftValue>
                         <operator>EQUAL</operator>
@@ -847,6 +848,11 @@
                         <leftValue>{!Record.HOT_LateCancellationScreenInterpreter__c}</leftValue>
                         <operator>EQUAL</operator>
                         <rightValue>false</rightValue>
+                    </criteria>
+                    <criteria>
+                        <leftValue>{!$Permission.CustomPermission.HOT_CanceledBanner}</leftValue>
+                        <operator>EQUAL</operator>
+                        <rightValue>true</rightValue>
                     </criteria>
                 </visibilityRule>
             </componentInstance>
@@ -864,8 +870,14 @@
                 <componentName>hot_alertBanner</componentName>
                 <identifier>c_hot_alertBanner</identifier>
                 <visibilityRule>
+                    <booleanFilter>1 AND 2</booleanFilter>
                     <criteria>
                         <leftValue>{!Record.HOT_LateCancellationScreenInterpreter__c}</leftValue>
+                        <operator>EQUAL</operator>
+                        <rightValue>true</rightValue>
+                    </criteria>
+                    <criteria>
+                        <leftValue>{!$Permission.CustomPermission.HOT_CanceledBanner}</leftValue>
                         <operator>EQUAL</operator>
                         <rightValue>true</rightValue>
                     </criteria>
