@@ -74,6 +74,10 @@
                 <behavior>Readonly</behavior>
                 <field>HOT_PreparationTime__c</field>
             </layoutItems>
+            <layoutItems>
+                <behavior>Edit</behavior>
+                <field>HOT_CanceledDate__c</field>
+            </layoutItems>
         </layoutColumns>
         <layoutColumns>
             <layoutItems>
