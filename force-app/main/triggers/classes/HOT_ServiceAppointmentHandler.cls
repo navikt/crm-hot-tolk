@@ -998,38 +998,80 @@ public without sharing class HOT_ServiceAppointmentHandler extends MyTriggers {
             }
         }
     }
-    public static void createContentDocumentLinks(List<ServiceAppointment> serviceAppointments) {
-        List<Id> requestIds = new List<Id>();
 
-        for (ServiceAppointment serviceAppointment : serviceAppointments) {
-            requestIds.add(serviceAppointment.HOT_Request__c);
+    public static void createContentDocumentLinks(List<ServiceAppointment> serviceAppointments) {
+        // Collect ServiceAppointment Ids
+        Set<Id> saIds = new Set<Id>();
+        for (ServiceAppointment sa : serviceAppointments) {
+            if (sa.Id != null) {
+                saIds.add(sa.Id);
+            }
         }
 
-        Map<Id, Hot_Request__c> requestMap = new Map<Id, HOT_Request__c>(
+        if (saIds.isEmpty()) {
+            return;
+        }
+
+        // Query ServiceAppointments with WorkOrderId
+        List<ServiceAppointment> saWithWorkOrderId = [
+            SELECT Id, HOT_Request__c, HOT_WorkOrderLineItem__r.WorkOrderId
+            FROM ServiceAppointment
+            WHERE Id IN :saIds
+        ];
+
+        // Collect WorkOrder Ids
+        Set<Id> workOrderIds = new Set<Id>();
+        for (ServiceAppointment sa : saWithWorkOrderId) {
+            if (sa.HOT_WorkOrderLineItem__r != null && sa.HOT_WorkOrderLineItem__r.WorkOrderId != null) {
+                workOrderIds.add(sa.HOT_WorkOrderLineItem__r.WorkOrderId);
+            }
+        }
+
+        if (workOrderIds.isEmpty()) {
+            return;
+        }
+
+        // Query WorkOrders with ContentDocumentLinks
+        Map<Id, WorkOrder> workOrderMap = new Map<Id, WorkOrder>(
             [
                 SELECT
                     Id,
                     (
                         SELECT ContentDocumentId, LinkedEntityId, ShareType, Visibility
-                        FROM HOT_Request__c.ContentDocumentLinks
+                        FROM ContentDocumentLinks
                     )
-                FROM HOT_Request__C
-                WHERE Id IN :requestIds
+                FROM WorkOrder
+                WHERE Id IN :workOrderIds
             ]
         );
 
         Map<Id, List<ContentDocumentLink>> serviceAppointmentMap = new Map<Id, List<ContentDocumentLink>>();
 
-        for (ServiceAppointment serviceAppointment : serviceAppointments) {
-            if (requestMap.get(serviceAppointment.HOT_Request__c).ContentDocumentLinks.size() > 0) {
-                serviceAppointmentMap.put(
-                    serviceAppointment.Id,
-                    requestMap.get(serviceAppointment.HOT_Request__c).ContentDocumentLinks
-                );
+        // Map WorkOrder files to ServiceAppointments
+        for (ServiceAppointment sa : saWithWorkOrderId) {
+            if (sa.HOT_WorkOrderLineItem__r == null) {
+                continue;
+            }
+
+            Id woId = sa.HOT_WorkOrderLineItem__r.WorkOrderId;
+            if (woId == null) {
+                continue;
+            }
+
+            if (!workOrderMap.containsKey(woId)) {
+                continue;
+            }
+
+            WorkOrder wo = workOrderMap.get(woId);
+
+            if (wo.ContentDocumentLinks != null && !wo.ContentDocumentLinks.isEmpty()) {
+                serviceAppointmentMap.put(sa.Id, wo.ContentDocumentLinks);
             }
         }
 
-        HOT_ContentDocumentLinkService.setContentDocumentLinks(serviceAppointmentMap);
+        if (!serviceAppointmentMap.isEmpty()) {
+            HOT_ContentDocumentLinkService.setContentDocumentLinks(serviceAppointmentMap);
+        }
     }
 
     public static void setScheduledTimeBasedOnActualTime(List<ServiceAppointment> serviceAppointments) {
