@@ -2,28 +2,21 @@
 <Flow xmlns="http://soap.sforce.com/2006/04/metadata">
     <apiVersion>65.0</apiVersion>
     <assignments>
-        <name>Assign_Status_To_Dispatched</name>
-        <label>Assign Status To Dispatched</label>
+        <name>Set_Canceled_Date</name>
+        <label>Set Canceled Date</label>
         <locationX>0</locationX>
         <locationY>0</locationY>
         <assignmentItems>
-            <assignToReference>$Record.Status</assignToReference>
+            <assignToReference>$Record.HOT_CanceledDate__c</assignToReference>
             <operator>Assign</operator>
             <value>
-                <stringValue>Dispatched</stringValue>
-            </value>
-        </assignmentItems>
-        <assignmentItems>
-            <assignToReference>$Record.HOT_AutoDispatch__c</assignToReference>
-            <operator>Assign</operator>
-            <value>
-                <booleanValue>false</booleanValue>
+                <elementReference>$Flow.CurrentDateTime</elementReference>
             </value>
         </assignmentItems>
     </assignments>
     <environments>Default</environments>
-    <interviewLabel>HOT_ServiceAppointmentStatusScheduledToDispatched {!$Flow.CurrentDateTime}</interviewLabel>
-    <label>HOT_ServiceAppointmentStatusScheduledToDispatched</label>
+    <interviewLabel>HOT_SetCanceledDateOnCancelation {!$Flow.CurrentDateTime}</interviewLabel>
+    <label>HOT_SetCanceledDateOnServiceAppointment</label>
     <processMetadataValues>
         <name>BuilderType</name>
         <value>
@@ -47,7 +40,7 @@
         <locationX>0</locationX>
         <locationY>0</locationY>
         <connector>
-            <targetReference>Assign_Status_To_Dispatched</targetReference>
+            <targetReference>Set_Canceled_Date</targetReference>
         </connector>
         <doesRequireRecordChangedToMeetCriteria>true</doesRequireRecordChangedToMeetCriteria>
         <filterLogic>and</filterLogic>
@@ -55,14 +48,7 @@
             <field>Status</field>
             <operator>EqualTo</operator>
             <value>
-                <stringValue>Scheduled</stringValue>
-            </value>
-        </filters>
-        <filters>
-            <field>HOT_AutoDispatch__c</field>
-            <operator>EqualTo</operator>
-            <value>
-                <booleanValue>true</booleanValue>
+                <stringValue>Canceled</stringValue>
             </value>
         </filters>
         <object>ServiceAppointment</object>
