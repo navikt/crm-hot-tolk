@@ -1638,18 +1638,6 @@ CONTAINS({!ChosenFieldsOwner}, {!Subject})
                 </conditions>
             </visibilityRule>
         </fields>
-        <fields>
-            <fieldType>ObjectProvided</fieldType>
-            <inputsOnNextNavToAssocScrn>UseStoredValues</inputsOnNextNavToAssocScrn>
-            <isRequired>false</isRequired>
-            <objectFieldReference>getRequest.PreparationTime__c</objectFieldReference>
-        </fields>
-        <fields>
-            <fieldType>ObjectProvided</fieldType>
-            <inputsOnNextNavToAssocScrn>UseStoredValues</inputsOnNextNavToAssocScrn>
-            <isRequired>false</isRequired>
-            <objectFieldReference>getRequest.PreparationTime__c</objectFieldReference>
-        </fields>
         <showFooter>true</showFooter>
         <showHeader>true</showHeader>
     </screens>
@@ -1660,7 +1648,7 @@ CONTAINS({!ChosenFieldsOwner}, {!Subject})
             <targetReference>getRequest</targetReference>
         </connector>
     </start>
-    <status>Draft</status>
+    <status>Active</status>
     <variables>
         <name>recordId</name>
         <dataType>String</dataType>
