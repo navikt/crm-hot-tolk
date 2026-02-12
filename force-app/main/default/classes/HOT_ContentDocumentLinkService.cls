@@ -1,10 +1,4 @@
 public without sharing class HOT_ContentDocumentLinkService {
-    private static void handleException(Exception e) {
-        LoggerUtility logger = new LoggerUtility();
-        logger.exception(e, CRM_ApplicationDomain.Domain.HOT);
-        logger.publishSynch();
-    }
-
     public static void setContentDocumentLinks(
         Map<Id, List<ContentDocumentLink>> contentDocumentLinksByServiceAppointment
     ) {
@@ -26,12 +20,7 @@ public without sharing class HOT_ContentDocumentLinkService {
                 contentDocumentLinks.add(contentDocumentLinkCopy);
             }
         }
-
-        try {
-            HOT_DatabaseOperations.insertRecords(contentDocumentLinks);
-        } catch (Exception e) {
-            handleException(e);
-        }
+        HOT_DatabaseOperations.insertRecords(contentDocumentLinks);
         HOT_ServiceAppointmentNotification.notifyInterpretersOnNewFiles(serviceAppointmentIds);
     }
 
