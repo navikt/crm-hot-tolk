@@ -28,7 +28,6 @@ public without sharing class HOT_ServiceAppointmentHandler extends MyTriggers {
         List<ServiceAppointment> serviceAppointmentsWithStatusNone = new List<ServiceAppointment>();
 
         Map<Id, Id> resourceByAppointmentCreateWageClaim = new Map<Id, Id>();
-        Map<Id, Id> resourceByAppointmentUpdateWageClaim = new Map<Id, Id>();
 
         for (ServiceAppointment serviceAppointment : (List<ServiceAppointment>) records) {
             if (
@@ -95,19 +94,6 @@ public without sharing class HOT_ServiceAppointmentHandler extends MyTriggers {
                 serviceAppointment.Status == 'Annul'
             ) {
                 annulServiceAppointments.add(serviceAppointment);
-            }
-
-            if (
-                (serviceAppointment.Status != triggerOldMap.get(serviceAppointment.Id).get('Status') ||
-                serviceAppointment.HOT_ServiceResource__c !=
-                triggerOldMap.get(serviceAppointment.Id).get('HOT_ServiceResource__c')) &&
-                serviceAppointment.Status == 'Dispatched' &&
-                serviceAppointment.HOT_IsReleasedToFreelance__c == true
-            ) {
-                resourceByAppointmentUpdateWageClaim.put(
-                    serviceAppointment.Id,
-                    serviceAppointment.HOT_ServiceResource__c
-                );
             }
             if (
                 serviceAppointment.HOT_ServiceResource__c !=
@@ -224,9 +210,6 @@ public without sharing class HOT_ServiceAppointmentHandler extends MyTriggers {
         }
         if (!resourceByAppointmentCreateWageClaim.isEmpty()) {
             HOT_WageClaimService.createWageClaims(resourceByAppointmentCreateWageClaim);
-        }
-        if (!resourceByAppointmentUpdateWageClaim.isEmpty()) {
-            HOT_WageClaimService.updateWageClaimsFuture(resourceByAppointmentUpdateWageClaim.keySet());
         }
         if (serviceAppointmentsWithActualTimeSet.size() > 0) {
             setScheduledTimeBasedOnActualTime(serviceAppointmentsWithActualTimeSet);
@@ -365,7 +348,7 @@ public without sharing class HOT_ServiceAppointmentHandler extends MyTriggers {
             removeAssignedResource(serviceAppointmentsToRemoveAssignedResource);
         }
         if (releasedServiceAppointments.size() > 0) {
-            updateStatusOnInterestedResources(releasedServiceAppointments, 'Interested');
+            updateStatusOnInterestedResources(releasedServiceAppointments, 'None');
         }
         if (dispatchedServiceAppointments.size() > 0) {
             updateStatusOnInterestedResources(dispatchedServiceAppointments, 'Assigned');
@@ -406,32 +389,13 @@ public without sharing class HOT_ServiceAppointmentHandler extends MyTriggers {
                 oldServiceAppointmentsWithRequestFields,
                 oldServiceAppointmentsSchedTimeChanged
             );
-            List<HOT_WageClaim__c> wageClaims = HOT_WageClaimService.createWageClaimsFromServiceAppointments(
+            List<HOT_WageClaim__c> wageClaims = HOT_WageClaimService.createWageClaimsForChangedAppointment(
                 oldServiceAppointmentsWithRequestFields,
+                newServiceAppointmentsSchedTimeChanged,
                 serviceResourceByServiceAppointmentSchedTimeChanged,
                 serviceResources
             );
-
-            HOT_WageClaim__c[] claimsWithNoConflicts = new List<HOT_WageClaim__c>();
-            HOT_WageClaim__c[] claimsWithConflicts = new List<HOT_WageClaim__c>();
-
-            for (HOT_WageClaim__c wc : wageClaims) {
-                Boolean isConflict = false;
-                for (ServiceAppointment sa : newServiceAppointmentsSchedTimeChanged.values()) {
-                    if (sa.SchedStartTime < wc.EndTime__c && sa.SchedEndTime > wc.StartTime__c) {
-                        isConflict = true;
-                    }
-                }
-                if (isConflict) {
-                    claimsWithConflicts.add(wc);
-                } else {
-                    claimsWithNoConflicts.add(wc);
-                }
-            }
-
-            HOT_DatabaseOperations.insertRecords(claimsWithNoConflicts);
-            HOT_WageClaimService.updateWageClaims(newServiceAppointmentsSchedTimeChanged, claimsWithConflicts, false);
-            HOT_WageClaimService.updateWageClaimsFuture(serviceResourceByServiceAppointmentSchedTimeChanged.keySet());
+            insert wageClaims;
         }
 
         if (serviceAppointmentsWithUpdatedOwnerOrDispatcher.size() > 0) {
@@ -944,14 +908,15 @@ public without sharing class HOT_ServiceAppointmentHandler extends MyTriggers {
                     interestedResource.Status__c = newStatus;
                 }
             }
-            if (newStatus == 'Interested') {
+            if (newStatus == 'None') {
                 if (
                     interestedResource.ServiceAppointment__r.Status == 'Released to Freelance' &&
                     (interestedResource.Status__c == 'Service Appointment Retracted' ||
+                    interestedResource.Status__c == 'Interested' ||
                     interestedResource.Status__c == 'Not Assigned' ||
                     interestedResource.Status__c == 'Withdrawn')
                 ) {
-                    interestedResource.Status__c = newStatus;
+                    interestedResource.Status__c = null;
                 }
             }
             if (newStatus == 'Assigned') {

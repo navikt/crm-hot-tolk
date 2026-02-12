@@ -119,29 +119,98 @@ public without sharing class HOT_WageClaimService {
         Map<Id, ServiceResource> serviceResources
     ) {
         List<HOT_WageClaim__c> wageClaims = new List<HOT_WageClaim__c>();
-        Date criticalDate = Date.today().addDays(14);
 
-        for (ServiceAppointment serviceAppointment : serviceAppointments.values()) {
+        Datetime nowDt = System.now();
+        Datetime criticalDt = nowDt.addHours(48);
+
+        for (ServiceAppointment sa : serviceAppointments.values()) {
+            Id resourceId = resourceByAppointment.get(sa.Id);
+            ServiceResource sr = serviceResources.get(resourceId);
+
             if (
-                serviceResources.get(resourceByAppointment.get(serviceAppointment.Id)) != null &&
-                criticalDate >= serviceAppointment.SchedStartTime.date() &&
-                serviceResources.get(resourceByAppointment.get(serviceAppointment.Id)).HOT_IsFreelanceInterpreter__c &&
-                !isAgreement(serviceResources.get(resourceByAppointment.get(serviceAppointment.Id)), serviceAppointment)
+                sr != null &&
+                sa.SchedStartTime != null &&
+                sa.SchedStartTime <= criticalDt &&
+                sr.HOT_IsFreelanceInterpreter__c &&
+                !isAgreement(sr, sa)
             ) {
                 HOT_WageClaim__c wageClaim = new HOT_WageClaim__c();
                 wageClaim.IsAutomaticallyCreated__c = true;
-                wageClaim.Type__c = 'Available on Wage';
-                wageClaim.Status__c = 'Open';
-                wageClaim.ServiceResource__c = resourceByAppointment.get(serviceAppointment.Id);
-                wageClaim.ServiceAppointment__c = serviceAppointment.Id;
-                wageClaim.StartTime__c = serviceAppointment.SchedStartTime;
-                wageClaim.EndTime__c = serviceAppointment.SchedEndTime;
-                wageClaim.WorkType__c = serviceAppointment.WorkTypeId;
-                wageClaim.ServiceTerritory__c = serviceAppointment.ServiceTerritoryId;
+                wageClaim.Type__c = 'Claim on Wage';
+                wageClaim.Status__c = null;
+                wageClaim.ServiceResource__c = resourceId;
+                wageClaim.ServiceAppointment__c = sa.Id;
+                wageClaim.StartTime__c = sa.SchedStartTime;
+                wageClaim.EndTime__c = sa.SchedEndTime;
+                wageClaim.WorkType__c = sa.WorkTypeId;
+                wageClaim.ServiceTerritory__c = sa.ServiceTerritoryId;
+
                 wageClaims.add(wageClaim);
             }
         }
+
         return wageClaims;
+    }
+
+    public static List<HOT_WageClaim__c> createWageClaimsForChangedAppointment(
+        Map<Id, ServiceAppointment> oldServiceAppointments,
+        Map<Id, ServiceAppointment> newServiceAppointments,
+        Map<Id, Id> resourceByAppointment,
+        Map<Id, ServiceResource> serviceResources
+    ) {
+        List<HOT_WageClaim__c> wageClaims = new List<HOT_WageClaim__c>();
+        Datetime nowDt = System.now();
+        Datetime criticalDt = nowDt.addHours(48);
+
+        for (ServiceAppointment oldSA : oldServiceAppointments.values()) {
+            ServiceAppointment newSA = newServiceAppointments.get(oldSA.Id);
+            Id resourceId = resourceByAppointment.get(oldSA.Id);
+            ServiceResource sr = serviceResources.get(resourceId);
+            if (
+                sr != null &&
+                oldSA.SchedStartTime != null &&
+                oldSA.SchedStartTime <= criticalDt &&
+                sr.HOT_IsFreelanceInterpreter__c &&
+                !isAgreement(sr, oldSA)
+            ) {
+                if (newSA.SchedStartTime >= oldSA.SchedEndTime || newSA.SchedEndTime <= oldSA.SchedStartTime) {
+                    wageClaims.add(
+                        createWageClaimFromSARecord(oldSA, resourceId, oldSA.SchedStartTime, oldSA.SchedEndTime)
+                    );
+                } else {
+                    if (newSA.SchedStartTime > oldSA.SchedStartTime) {
+                        wageClaims.add(
+                            createWageClaimFromSARecord(oldSA, resourceId, oldSA.SchedStartTime, newSA.SchedStartTime)
+                        );
+                    }
+                    if (newSA.SchedEndTime < oldSA.SchedEndTime) {
+                        wageClaims.add(
+                            createWageClaimFromSARecord(oldSA, resourceId, newSA.SchedEndTime, oldSA.SchedEndTime)
+                        );
+                    }
+                }
+            }
+        }
+        return wageClaims;
+    }
+
+    private static HOT_WageClaim__c createWageClaimFromSARecord(
+        ServiceAppointment sa,
+        Id resourceId,
+        Datetime startTime,
+        Datetime endTime
+    ) {
+        HOT_WageClaim__c wageClaim = new HOT_WageClaim__c();
+        wageClaim.IsAutomaticallyCreated__c = true;
+        wageClaim.Type__c = 'Claim on Wage';
+        wageClaim.Status__c = null;
+        wageClaim.ServiceResource__c = resourceId;
+        wageClaim.ServiceAppointment__c = sa.Id;
+        wageClaim.StartTime__c = startTime;
+        wageClaim.EndTime__c = endTime;
+        wageClaim.WorkType__c = sa.WorkTypeId;
+        wageClaim.ServiceTerritory__c = sa.ServiceTerritoryId;
+        return wageClaim;
     }
 
     private static Boolean isAgreement(ServiceResource serviceResource, ServiceAppointment serviceAppointment) {
@@ -149,105 +218,6 @@ public without sharing class HOT_WageClaimService {
             (serviceResource.Id == serviceAppointment.HOT_Request__r.ServiceResourceWithAgreement1__c ||
             serviceResource.Id == serviceAppointment.HOT_Request__r.ServiceResourceWithAgreement2__c ||
             serviceResource.Id == serviceAppointment.HOT_Request__r.ServiceResourceWithAgreement3__c);
-    }
-
-    @Future
-    public static void updateWageClaimsFuture(Set<Id> serviceAppointmentIds) {
-        Map<Id, ServiceAppointment> serviceAppointments = new Map<Id, ServiceAppointment>(
-            [
-                SELECT Id, SchedStartTime, SchedEndTime, HOT_IsReleasedToFreelance__c, HOT_ServiceResource__c
-                FROM ServiceAppointment
-                WHERE Id IN :serviceAppointmentIds
-            ]
-        );
-        List<HOT_WageClaim__c> wageClaims = getWageClaimsFromServiceAppointments(serviceAppointments.values());
-        updateWageClaims(serviceAppointments, wageClaims, true);
-    }
-    public static void updateWageClaims(
-        Map<Id, ServiceAppointment> serviceAppointments,
-        List<HOT_WageClaim__c> wageClaims,
-        Boolean isUpsert
-    ) {
-        Map<Id, List<HOT_WageClaim__c>> wageClaimsByServiceResourceId = getWageClaimsByServiceResourceId(wageClaims);
-
-        List<HOT_WageClaim__c> newWageClaims = new List<HOT_WageClaim__c>();
-        Map<Id, HOT_WageClaim__c> updatedWageClaims = new Map<Id, HOT_WageClaim__c>();
-
-        for (ServiceAppointment serviceAppointment : serviceAppointments.values()) {
-            if (wageClaimsByServiceResourceId.get(serviceAppointment.HOT_ServiceResource__c) != null) {
-                for (
-                    HOT_WageClaim__c wageClaim : wageClaimsByServiceResourceId.get(
-                        serviceAppointment.HOT_ServiceResource__c
-                    )
-                ) {
-                    Boolean isWageClaimChanged = false;
-                    HOT_WageClaim__c updatedWageClaim = wageClaim;
-                    if (updatedWageClaim?.Status__c == 'Covered') {
-                        continue;
-                    }
-
-                    Datetime serviceAppointmentStartTime = serviceAppointment.SchedStartTime;
-                    Datetime serviceAppointmentEndTime = serviceAppointment.SchedEndTime;
-                    //Completely covered
-                    if (
-                        serviceAppointmentStartTime <= updatedWageClaim.StartTime__c &&
-                        serviceAppointmentEndTime >= updatedWageClaim.EndTime__c
-                    ) {
-                        updatedWageClaim.Status__c = 'Covered';
-                        isWageClaimChanged = true;
-                    }
-                    if (
-                        serviceAppointmentEndTime > updatedWageClaim.StartTime__c &&
-                        serviceAppointmentEndTime < updatedWageClaim.EndTime__c
-                    ) {
-                        //lower
-                        HOT_WageClaim__c newWageClaim = createWageClaim(
-                            updatedWageClaim,
-                            serviceAppointmentEndTime,
-                            updatedWageClaim.EndTime__c,
-                            isUpsert
-                        );
-                        newWageClaims.add(newWageClaim);
-                        updatedWageClaim.Status__c = 'Covered';
-                        updatedWageClaim.EndTime__c = serviceAppointmentEndTime;
-                        isWageClaimChanged = true;
-                    }
-                    if (
-                        serviceAppointmentStartTime < updatedWageClaim.EndTime__c &&
-                        serviceAppointmentStartTime > updatedWageClaim.StartTime__c
-                    ) {
-                        //upper
-                        HOT_WageClaim__c newWageClaim = createWageClaim(
-                            updatedWageClaim,
-                            updatedWageClaim.StartTime__c,
-                            serviceAppointmentStartTime,
-                            isUpsert
-                        );
-                        newWageClaims.add(newWageClaim);
-                        updatedWageClaim.Status__c = 'Covered';
-                        updatedWageClaim.StartTime__c = serviceAppointmentStartTime;
-                        isWageClaimChanged = true;
-                    }
-
-                    if (isWageClaimChanged) {
-                        updatedWageClaims.put(updatedWageClaim.Id, updatedWageClaim);
-                    }
-                }
-            }
-        }
-        List<HOT_WageClaim__c> wageClaimsToUpsert = new List<HOT_WageClaim__c>();
-        wageClaimsToUpsert.addAll(newWageClaims);
-        if (isUpsert) {
-            wageClaimsToUpsert.addAll(updatedWageClaims.values());
-        }
-        try {
-            upsert wageClaimsToUpsert;
-        } catch (Exception e) {
-            handleException(e);
-        }
-        if (newWageClaims.size() > 0) {
-            updateWageClaims(serviceAppointments, newWageClaims, isUpsert);
-        }
     }
 
     private static HOT_WageClaim__c createWageClaim(

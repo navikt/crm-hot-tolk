@@ -18,6 +18,11 @@ export let columns = [
         label: 'Tema',
         name: 'HOT_FreelanceSubject__c',
         type: 'String'
+    },
+    {
+        label: 'Forberedelsestid',
+        name: 'HOT_PreparationTime__c',
+        type: 'String'
     }
 ];
 export let inDetailsColumns = [
@@ -59,6 +64,11 @@ export let mobileColumns = [
     {
         label: 'Tema',
         name: 'HOT_FreelanceSubject__c',
+        type: 'String'
+    },
+       {
+        label: 'Forberedelsestid',
+        name: 'HOT_PreparationTime__c',
         type: 'String'
     }
 ];

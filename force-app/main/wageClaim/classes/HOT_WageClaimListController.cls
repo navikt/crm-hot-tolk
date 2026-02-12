@@ -25,6 +25,28 @@ public without sharing class HOT_WageClaimListController {
         ];
         return wageClaims;
     }
+    @AuraEnabled(cacheable=true)
+    public static List<HOT_WageClaim__c> getMyWageClaimsOfNewType() {
+        List<HOT_WageClaim__c> wageClaims = [
+            SELECT
+                Id,
+                StartTime__c,
+                EndTime__c,
+                AssignmentType__c,
+                ServiceAppointmentName__c,
+                WorkTypeName__c,
+                ServiceTerritoryName__c,
+                ServiceAppointmentCity__c,
+                ParentWageClaim__c,
+                ServiceResource__r.AccountId,
+                ServiceAppointment__r.HOT_Request__r.OwnerName__c,
+                DegreeOfHearingAndVisualImpairment__c
+            FROM HOT_WageClaim__c
+            WHERE Type__c = 'Claim on Wage' AND ServiceResource__r.RelatedRecordId = :UserInfo.getUserId()
+            ORDER BY StartTime__c ASC
+        ];
+        return wageClaims;
+    }
 
     @AuraEnabled
     public static void retractAvailability(Id recordId) {

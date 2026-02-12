@@ -97,7 +97,9 @@ public without sharing class HOT_UpdateChildRecordsService {
                     City,
                     Subject,
                     Description,
-                    ServiceTerritoryId
+                    ServiceTerritoryId,
+                    StartDate,
+                    EndDate
                 FROM WorkOrderLineItem
                 WHERE WorkOrder.HOT_Request__c = :request.Id AND Status IN :woliStatuses
             ]
@@ -212,7 +214,9 @@ public without sharing class HOT_UpdateChildRecordsService {
                 input.isDescriptionChoice,
                 input.isInterpreterMethodChoice,
                 input.isServiceTerritoryChoice,
-                input.isOwnerChoice
+                input.isOwnerChoice,
+                input.isDateChoice
+
             );
             if (error != null) {
                 if (errorOutput == null || errorOutput == '') {
@@ -267,7 +271,8 @@ public without sharing class HOT_UpdateChildRecordsService {
                 input.isDescriptionChoice,
                 input.isInterpreterMethodChoice,
                 input.isOwnerChoice,
-                input.isServiceTerritoryChoice
+                input.isServiceTerritoryChoice,
+                input.isDateChoice
             );
             if (error != null) {
                 if (errorOutput == null || errorOutput == '') {
@@ -352,8 +357,11 @@ public without sharing class HOT_UpdateChildRecordsService {
         }
         if (isOwnerChoice) {
             requestToUpdate.OwnerId = request.OwnerId;
-            requestToUpdate = setServiceTerritory(requestToUpdate);
-            request.ServiceTerritory__c = requestToUpdate.ServiceTerritory__c;
+
+            if (!skipServiceTerritoryForSpecificOwners(request.OwnerId)) {
+                requestToUpdate = setServiceTerritory(requestToUpdate);
+                request.ServiceTerritory__c = requestToUpdate.ServiceTerritory__c;
+            }
         }
         if(isServiceTerritoryChoice) {
             requestToUpdate.ServiceTerritory__c = request.ServiceTerritory__c;
@@ -440,7 +448,8 @@ public without sharing class HOT_UpdateChildRecordsService {
         Boolean isDescriptionChoice,
         Boolean isInterpreterMethodChoice,
         Boolean isServiceTerritoryChoice,
-        Boolean isOwnerChoice
+        Boolean isOwnerChoice,
+        Boolean isDateChoice
     ) {
         String error;
         for (WorkOrderLineItem workOrderLineItem : workOrderLineItems) {
@@ -466,6 +475,10 @@ public without sharing class HOT_UpdateChildRecordsService {
             }
             if(isServiceTerritoryChoice) {
                 workOrderLineItem.ServiceTerritoryId = request.ServiceTerritory__c;
+            }
+            if(isDateChoice) {
+                workOrderLineItem.StartDate = request.StartTime__c;
+                workOrderLineItem.EndDate = request.EndTime__c;
             }
         }
 
@@ -547,6 +560,19 @@ public without sharing class HOT_UpdateChildRecordsService {
         return error;
     }
 
+    // Exclude specific owners from service territory propagation
+    private static Boolean skipServiceTerritoryForSpecificOwners(Id ownerId) {
+        Group owner = [
+            SELECT Name
+            FROM Group
+            WHERE Id = :ownerId
+            LIMIT 1
+        ];
+
+        return owner.Name == 'NAV Akuttvakt Tolk' || owner.Name == 'Fellesoppdrag Vest-Viken';
+    }
+
+
     public static HOT_Request__c setServiceTerritory(HOT_Request__c request) {
         List<HOT_ServiceTerritoryByQueue__mdt> serviceTerritoryByQueueList = HOT_ServiceTerritoryByQueue__mdt.getAll()
             .values();
@@ -559,6 +585,7 @@ public without sharing class HOT_UpdateChildRecordsService {
             FROM Group
             WHERE Type = 'Queue' AND DeveloperName IN :serviceTerritoryByQueue.keySet()
         ];
+
         List<ServiceTerritory> serviceTerritories = [
             SELECT Id, Name, HOT_DeveloperName__c
             FROM ServiceTerritory
@@ -566,6 +593,7 @@ public without sharing class HOT_UpdateChildRecordsService {
         ];
         Map<Id, Id> serviceTerritoryIdByQueueId = new Map<Id, Id>();
         for (Group queue : queues) {
+            
             for (ServiceTerritory serviceTerritory : serviceTerritories) {
                 if (serviceTerritoryByQueue.get(queue.DeveloperName) == serviceTerritory.HOT_DeveloperName__c) {
                     serviceTerritoryIdByQueueId.put(queue.Id, serviceTerritory.Id);

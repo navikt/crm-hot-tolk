@@ -1,4 +1,17 @@
 public without sharing class HOT_MessageHelper {
+    private static User cachedUser;
+
+    private static User getCurrentUser() {
+        if (cachedUser == null) {
+            cachedUser = [
+            SELECT Id, FirstName, Profile.Name
+            FROM User
+            WHERE Id = :UserInfo.getUserId()
+            ];
+        }
+        return cachedUser;
+    }
+
     @AuraEnabled(cacheable=true)
     public static String getRecordObjectType(Id recordId) {
         String objectType = recordId.getSObjectType().getDescribe().getName();
@@ -643,7 +656,7 @@ public without sharing class HOT_MessageHelper {
     }
     @AuraEnabled
     public static String getUserProfileAndName(String threadType) {
-        User user = [SELECT Id, FirstName, Profile.Name FROM User WHERE Id = :UserInfo.getUserId()];
+        User user = getCurrentUser();
         if (user.Profile.Name == 'HOT Tolk Formidler') {
             return user.FirstName + ', Formidler';
         } else if (user.Profile.Name == 'HOT Tolk Ansatt') {
@@ -699,12 +712,10 @@ public without sharing class HOT_MessageHelper {
             return false;
         }
     }
-    public static Message__c createMessages(Id threadId, String messageText, Id fromContactId) {
-        Thread__c t = [SELECT Id, CRM_Thread_Type__c FROM Thread__c WHERE Id = :threadId LIMIT 1][0];
-
+    public static Message__c createMessages(Thread__c t, String messageText, Id fromContactId) {
         Message__c m = new Message__c();
         m.CRM_Message_Text__c = messageText;
-        m.CRM_Thread__c = threadId;
+        m.CRM_Thread__c = t.Id;
         m.CRM_From_Contact__c = fromContactId;
         m.CRM_Read__c = false;
         m.CRM_Read_Datetime__c = DateTime.now();

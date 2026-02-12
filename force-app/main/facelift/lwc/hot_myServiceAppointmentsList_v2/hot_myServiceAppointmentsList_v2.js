@@ -276,6 +276,10 @@ export default class Hot_myServiceAppointmentsList_v2 extends NavigationMixin(Li
         return this.serviceAppointment?.HOT_WorkTypeName__c ?? '';
     }
 
+    get preparationTime() {
+        return this.serviceAppointment?.HOT_PreparationTime__c || '';
+    }
+
     get assignmentType() {
         return this.serviceAppointment?.HOT_AssignmentType__c ?? '';
     }

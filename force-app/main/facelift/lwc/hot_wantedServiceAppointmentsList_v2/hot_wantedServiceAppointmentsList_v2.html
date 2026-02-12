@@ -35,6 +35,9 @@
             <p><strong>Tid:</strong> {serviceAppointment.weekday} {serviceAppointment.StartAndEndDate}</p>
             <p><strong>Adresse:</strong> {serviceAppointment.HOT_AddressFormated__c}</p>
             <p><strong>Tolkemetode:</strong> {serviceAppointment.HOT_WorkTypeName__c}</p>
+            <p lwc:if={serviceAppointment.HOT_PreparationTime__c}>
+                <strong>Forberedelsestid: </strong>{serviceAppointment.HOT_PreparationTime__c}
+            </p>
             <p><strong>Oppdragstype:</strong> {serviceAppointment.HOT_AssignmentType__c}</p>
             <p><strong>Frigitt av:</strong> {serviceAppointment.HOT_ReleasedBy__c}</p>
             <p><strong>Frigitt dato:</strong> {serviceAppointment.ReleaseDate}</p>
