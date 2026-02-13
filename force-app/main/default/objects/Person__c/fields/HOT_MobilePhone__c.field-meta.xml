@@ -4,9 +4,9 @@
     <description>Om alternativt mobilnummer er satt, skal dette brukes. Ellers bruke nummeret fra KRR</description>
     <externalId>false</externalId>
     <formula>IF(
-    NOT(ISBLANK(HOT_MobilePhoneOverride__c)),
-    RIGHT(HOT_MobilePhoneOverride__c, 8),
-    RIGHT(INT_KrrMobilePhone__c, 8)
+  NOT(ISBLANK(HOT_MobilePhoneOverride__c)),
+  HOT_MobilePhoneOverride__c,
+  INT_KrrMobilePhone__c
 )</formula>
     <formulaTreatBlanksAs>BlankAsZero</formulaTreatBlanksAs>
     <label>Mobile Phone</label>
