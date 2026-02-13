@@ -1,8 +1,7 @@
-<?xml version="1.0" encoding="UTF-8" ?>
+<?xml version="1.0" encoding="UTF-8"?>
 <Flow xmlns="http://soap.sforce.com/2006/04/metadata">
     <apiVersion>63.0</apiVersion>
-    <description
-    >Det skjer ofte at SMS proxy failer og da vil ikke systemet prøve å sende sms&apos;ene en gang til. For å løse det skal flowen da kjøre etter en stund og endre status tilbake til Pending. Det vil trigge SMSHandler triggeren som da vil prøve å sende den ut på nytt</description>
+    <description>Det skjer ofte at SMS proxy failer og da vil ikke systemet prøve å sende sms&apos;ene en gang til. For å løse det skal flowen da kjøre etter en stund og endre status tilbake til Pending. Det vil trigge SMSHandler triggeren som da vil prøve å sende den ut på nytt</description>
     <environments>Default</environments>
     <formulas>
         <name>xHoursAgo</name>
@@ -55,7 +54,7 @@
         <locationX>50</locationX>
         <locationY>0</locationY>
         <doesRequireRecordChangedToMeetCriteria>true</doesRequireRecordChangedToMeetCriteria>
-        <filterLogic>1 AND 2 AND 3 AND (4 OR 5 OR 6 OR 7 OR 8 OR 9 OR 10 OR 11 OR 12)</filterLogic>
+        <filterLogic>1 AND 2 AND 3 AND (4 OR 5 OR 6 OR 7 OR 8 OR 9 OR 10 OR 11 OR 12 OR 13)</filterLogic>
         <filters>
             <field>Status__c</field>
             <operator>EqualTo</operator>
@@ -138,6 +137,13 @@
             <operator>EqualTo</operator>
             <value>
                 <stringValue>LOS Manually Created</stringValue>
+            </value>
+        </filters>
+        <filters>
+            <field>Type__c</field>
+            <operator>EqualTo</operator>
+            <value>
+                <stringValue>ST Manually Created</stringValue>
             </value>
         </filters>
         <object>SMS__c</object>
