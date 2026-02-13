@@ -55,6 +55,11 @@
         <dataType>String</dataType>
         <expression>{!$User.Id}</expression>
     </formulas>
+    <formulas>
+        <name>hasMobilePhoneOverride</name>
+        <dataType>Boolean</dataType>
+        <expression>NOT(ISBLANK({!getPersonRecord2.HOT_MobilePhoneOverride__c}))</expression>
+    </formulas>
     <interviewLabel>HOT_OverrideKRRMobilePhoneNumber {!$Flow.CurrentDateTime}</interviewLabel>
     <label>HOT_OverrideKRRMobilePhoneNumber</label>
     <processMetadataValues>
@@ -184,9 +189,36 @@
             <targetReference>assignNewMobilePhoneNumber2</targetReference>
         </connector>
         <fields>
-            <name>testred</name>
-            <fieldText>&lt;p&gt;ID: {!recordId}&lt;/p&gt;</fieldText>
-            <fieldType>DisplayText</fieldType>
+            <name>useOverrideOrNotToggle</name>
+            <extensionName>flowruntime:toggle</extensionName>
+            <fieldType>ComponentInstance</fieldType>
+            <inputParameters>
+                <name>label</name>
+                <value>
+                    <stringValue>Overstyre mobilnummer fra KRR?</stringValue>
+                </value>
+            </inputParameters>
+            <inputParameters>
+                <name>messageToggleActive</name>
+                <value>
+                    <stringValue>Ja</stringValue>
+                </value>
+            </inputParameters>
+            <inputParameters>
+                <name>messageToggleInactive</name>
+                <value>
+                    <stringValue>Nei</stringValue>
+                </value>
+            </inputParameters>
+            <inputParameters>
+                <name>value</name>
+                <value>
+                    <elementReference>hasMobilePhoneOverride</elementReference>
+                </value>
+            </inputParameters>
+            <inputsOnNextNavToAssocScrn>UseStoredValues</inputsOnNextNavToAssocScrn>
+            <isRequired>true</isRequired>
+            <storeOutputAutomatically>true</storeOutputAutomatically>
         </fields>
         <fields>
             <name>newMobilePhoneNumberOverride</name>
@@ -198,18 +230,47 @@
                     <booleanValue>true</booleanValue>
                 </value>
             </inputParameters>
+            <inputParameters>
+                <name>value</name>
+                <value>
+                    <elementReference>getPersonRecord2.HOT_MobilePhoneOverride__c</elementReference>
+                </value>
+            </inputParameters>
             <inputsOnNextNavToAssocScrn>UseStoredValues</inputsOnNextNavToAssocScrn>
             <isRequired>true</isRequired>
             <storeOutputAutomatically>true</storeOutputAutomatically>
+            <visibilityRule>
+                <conditionLogic>and</conditionLogic>
+                <conditions>
+                    <leftValueReference>useOverrideOrNotToggle.value</leftValueReference>
+                    <operator>EqualTo</operator>
+                    <rightValue>
+                        <booleanValue>true</booleanValue>
+                    </rightValue>
+                </conditions>
+            </visibilityRule>
         </fields>
         <fields>
             <name>overrideReason</name>
+            <defaultValue>
+                <stringValue>{!getPersonRecord2.HOT_MobilePhoneOverrideReason__c}</stringValue>
+            </defaultValue>
             <fieldText>Årsak</fieldText>
             <fieldType>LargeTextArea</fieldType>
             <helpText>&lt;p&gt;Vennligst oppgi en årsak for hvorfor man skal overstyr mobilnummer
                 fra KRR&lt;/p&gt;</helpText>
             <inputsOnNextNavToAssocScrn>UseStoredValues</inputsOnNextNavToAssocScrn>
             <isRequired>true</isRequired>
+            <visibilityRule>
+                <conditionLogic>and</conditionLogic>
+                <conditions>
+                    <leftValueReference>useOverrideOrNotToggle.value</leftValueReference>
+                    <operator>EqualTo</operator>
+                    <rightValue>
+                        <booleanValue>true</booleanValue>
+                    </rightValue>
+                </conditions>
+            </visibilityRule>
         </fields>
         <showFooter>true</showFooter>
         <showHeader>false</showHeader>
