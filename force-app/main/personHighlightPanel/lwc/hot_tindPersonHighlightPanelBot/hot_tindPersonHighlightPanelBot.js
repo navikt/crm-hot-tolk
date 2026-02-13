@@ -1,6 +1,6 @@
 import { LightningElement, api, wire } from 'lwc';
 import { NavigationMixin } from 'lightning/navigation';
-import hasPermission from '@salesforce/apex/HOT_CheckPermissions.hasFreelancePermission';
+import hasPermissionToCreateAFreelance from '@salesforce/apex/HOT_CheckPermissions.hasFreelancePermission';
 import isFormidler from '@salesforce/apex/HOT_CheckPermissions.hasFormidlerPermission';
 import isFormidlerAdmin from '@salesforce/apex/HOT_CheckPermissions.hasFormidlerAdminPermission';
 
@@ -12,7 +12,7 @@ export default class hot_personHighlightPanelBot extends NavigationMixin(Lightni
     isModalOpen = false;
     currentFlow;
     fnr;
-    hasPermission = false;
+    hasPermissionToCreateFreelance = false;
     isFormidler = false;
     isFormidlerAdmin = false;
 
@@ -63,11 +63,11 @@ export default class hot_personHighlightPanelBot extends NavigationMixin(Lightni
         return !this.personDetails?.fullName;
     }
 
-    @wire(hasPermission)
+    @wire(hasPermissionToCreateAFreelance)
     wiredPermission({ error, data }) {
         if (data) {
-            this.hasPermission = data;
-            console.log('Frilans: ', this.hasPermission);
+            this.hasPermissionToCreateFreelance = data;
+            console.log('Frilans: ', this.hasPermissionToCreateFreelance);
         }
         if (error) {
             console.error(error);
