@@ -3,18 +3,20 @@
     <actionCalls>
         <name>Auto_Schedule_Service</name>
         <label>Auto Schedule Service</label>
-        <locationX>182</locationX>
-        <locationY>242</locationY>
+        <locationX>446</locationX>
+        <locationY>650</locationY>
         <actionName>HOT_AutoScheduleService</actionName>
         <actionType>apex</actionType>
         <connector>
             <targetReference>Has_error</targetReference>
         </connector>
-        <faultConnector>
-            <isGoTo>true</isGoTo>
-            <targetReference>Error_Screen</targetReference>
-        </faultConnector>
         <flowTransactionModel>CurrentTransaction</flowTransactionModel>
+        <inputParameters>
+            <name>isAutoDispatched</name>
+            <value>
+                <elementReference>IsAutoDispatched</elementReference>
+            </value>
+        </inputParameters>
         <inputParameters>
             <name>parentRecordId</name>
             <value>
@@ -34,11 +36,27 @@
         </outputParameters>
     </actionCalls>
     <apiVersion>49.0</apiVersion>
+    <choices>
+        <name>Reservert</name>
+        <choiceText>Reserver oppdraget til ressursen</choiceText>
+        <dataType>String</dataType>
+        <value>
+            <stringValue>Reservert</stringValue>
+        </value>
+    </choices>
+    <choices>
+        <name>Tildelt</name>
+        <choiceText>Tildel oppdraget til ressursen</choiceText>
+        <dataType>String</dataType>
+        <value>
+            <stringValue>Tildelt</stringValue>
+        </value>
+    </choices>
     <decisions>
         <name>Has_error</name>
         <label>Has error?</label>
-        <locationX>182</locationX>
-        <locationY>350</locationY>
+        <locationX>446</locationX>
+        <locationY>758</locationY>
         <defaultConnector>
             <targetReference>Success_Screen</targetReference>
         </defaultConnector>
@@ -59,7 +77,83 @@
             <label>Yes</label>
         </rules>
     </decisions>
+    <decisions>
+        <name>Is_it_a_WorkOrder</name>
+        <label>Is it a WorkOrder?</label>
+        <locationX>248</locationX>
+        <locationY>134</locationY>
+        <defaultConnector>
+            <targetReference>Get_Request_record</targetReference>
+        </defaultConnector>
+        <defaultConnectorLabel>Default Outcome</defaultConnectorLabel>
+        <rules>
+            <name>Yes</name>
+            <conditionLogic>and</conditionLogic>
+            <conditions>
+                <leftValueReference>recordId</leftValueReference>
+                <operator>StartsWith</operator>
+                <rightValue>
+                    <stringValue>0WO</stringValue>
+                </rightValue>
+            </conditions>
+            <connector>
+                <targetReference>Get_WorkOrder_record</targetReference>
+            </connector>
+            <label>Yes</label>
+        </rules>
+    </decisions>
+    <decisions>
+        <name>Preferred_resource_exist</name>
+        <label>Preferred resource exist?</label>
+        <locationX>248</locationX>
+        <locationY>434</locationY>
+        <defaultConnector>
+            <targetReference>confirmationScreen</targetReference>
+        </defaultConnector>
+        <defaultConnectorLabel>Default Outcome</defaultConnectorLabel>
+        <rules>
+            <name>No</name>
+            <conditionLogic>(1 AND 2) OR (3 AND 4)</conditionLogic>
+            <conditions>
+                <leftValueReference>Get_Request_record.PreferredResource1__c</leftValueReference>
+                <operator>IsNull</operator>
+                <rightValue>
+                    <booleanValue>true</booleanValue>
+                </rightValue>
+            </conditions>
+            <conditions>
+                <leftValueReference>Get_Request_record.Id</leftValueReference>
+                <operator>IsNull</operator>
+                <rightValue>
+                    <booleanValue>false</booleanValue>
+                </rightValue>
+            </conditions>
+            <conditions>
+                <leftValueReference>Get_WorkOrder_record.HOT_Request__r.PreferredResource1__c</leftValueReference>
+                <operator>IsNull</operator>
+                <rightValue>
+                    <booleanValue>true</booleanValue>
+                </rightValue>
+            </conditions>
+            <conditions>
+                <leftValueReference>Get_WorkOrder_record.HOT_Request__c</leftValueReference>
+                <operator>IsNull</operator>
+                <rightValue>
+                    <booleanValue>false</booleanValue>
+                </rightValue>
+            </conditions>
+            <connector>
+                <targetReference>Automatisk_planlegging_avsluttet</targetReference>
+            </connector>
+            <label>No</label>
+        </rules>
+    </decisions>
     <environments>Default</environments>
+    <formulas>
+        <name>IsAutoDispatched</name>
+        <dataType>Boolean</dataType>
+        <expression>CONTAINS({!serviceappointment_checkbox_group}, {!Tildelt})</expression>
+    </formulas>
     <formulas>
         <name>isWorkOrder</name>
         <dataType>Boolean</dataType>
@@ -91,11 +185,69 @@
         </value>
     </processMetadataValues>
     <processType>Flow</processType>
+    <recordLookups>
+        <name>Get_Request_record</name>
+        <label>Get Request record</label>
+        <locationX>380</locationX>
+        <locationY>242</locationY>
+        <assignNullValuesIfNoRecordsFound>false</assignNullValuesIfNoRecordsFound>
+        <connector>
+            <targetReference>Preferred_resource_exist</targetReference>
+        </connector>
+        <filterLogic>and</filterLogic>
+        <filters>
+            <field>Id</field>
+            <operator>EqualTo</operator>
+            <value>
+                <elementReference>recordId</elementReference>
+            </value>
+        </filters>
+        <getFirstRecordOnly>true</getFirstRecordOnly>
+        <object>HOT_Request__c</object>
+        <storeOutputAutomatically>true</storeOutputAutomatically>
+    </recordLookups>
+    <recordLookups>
+        <name>Get_WorkOrder_record</name>
+        <label>Get WorkOrder record</label>
+        <locationX>116</locationX>
+        <locationY>242</locationY>
+        <assignNullValuesIfNoRecordsFound>false</assignNullValuesIfNoRecordsFound>
+        <connector>
+            <targetReference>Preferred_resource_exist</targetReference>
+        </connector>
+        <filterLogic>and</filterLogic>
+        <filters>
+            <field>Id</field>
+            <operator>EqualTo</operator>
+            <value>
+                <elementReference>recordId</elementReference>
+            </value>
+        </filters>
+        <getFirstRecordOnly>true</getFirstRecordOnly>
+        <object>WorkOrder</object>
+        <storeOutputAutomatically>true</storeOutputAutomatically>
+    </recordLookups>
+    <screens>
+        <name>Automatisk_planlegging_avsluttet</name>
+        <label>Automatisk planlegging avsluttet</label>
+        <locationX>50</locationX>
+        <locationY>542</locationY>
+        <allowBack>true</allowBack>
+        <allowFinish>true</allowFinish>
+        <allowPause>true</allowPause>
+        <fields>
+            <name>auto_scheduled_ended</name>
+            <fieldText>&lt;p&gt;&lt;span style=&quot;font-size: 16px;&quot;&gt;Automatisk planlegging har blitt avsluttet på grunn av foretrukket ressurs har ikke blitt tildelt.&lt;/span&gt;&lt;/p&gt;</fieldText>
+            <fieldType>DisplayText</fieldType>
+        </fields>
+        <showFooter>true</showFooter>
+        <showHeader>true</showHeader>
+    </screens>
     <screens>
         <name>confirmationScreen</name>
         <label>confirmationScreen</label>
-        <locationX>182</locationX>
-        <locationY>134</locationY>
+        <locationX>446</locationX>
+        <locationY>542</locationY>
         <allowBack>false</allowBack>
         <allowFinish>true</allowFinish>
         <allowPause>false</allowPause>
@@ -104,8 +256,18 @@
         </connector>
         <fields>
             <name>confirmationDisplayText</name>
-            <fieldText>&lt;p&gt;Ønsker du å fortsette med automatisk planlegging?&lt;/p&gt;</fieldText>
+            <fieldText>&lt;p&gt;&lt;span style=&quot;font-size: 14px;&quot;&gt;Ønsker du å fortsette med automatisk planlegging?&lt;/span&gt;&lt;/p&gt;</fieldText>
             <fieldType>DisplayText</fieldType>
+        </fields>
+        <fields>
+            <name>serviceappointment_checkbox_group</name>
+            <choiceReferences>Reservert</choiceReferences>
+            <choiceReferences>Tildelt</choiceReferences>
+            <dataType>String</dataType>
+            <fieldText>Velg alternativ</fieldText>
+            <fieldType>RadioButtons</fieldType>
+            <inputsOnNextNavToAssocScrn>UseStoredValues</inputsOnNextNavToAssocScrn>
+            <isRequired>true</isRequired>
         </fields>
         <showFooter>true</showFooter>
         <showHeader>true</showHeader>
@@ -113,8 +275,8 @@
     <screens>
         <name>Error_Screen</name>
         <label>Feilmelding</label>
-        <locationX>50</locationX>
-        <locationY>458</locationY>
+        <locationX>314</locationX>
+        <locationY>866</locationY>
         <allowBack>false</allowBack>
         <allowFinish>true</allowFinish>
         <allowPause>false</allowPause>
@@ -129,8 +291,8 @@
     <screens>
         <name>Success_Screen</name>
         <label>Vellykket</label>
-        <locationX>314</locationX>
-        <locationY>458</locationY>
+        <locationX>578</locationX>
+        <locationY>866</locationY>
         <allowBack>false</allowBack>
         <allowFinish>true</allowFinish>
         <allowPause>false</allowPause>
@@ -143,10 +305,10 @@
         <showHeader>false</showHeader>
     </screens>
     <start>
-        <locationX>56</locationX>
+        <locationX>122</locationX>
         <locationY>0</locationY>
         <connector>
-            <targetReference>confirmationScreen</targetReference>
+            <targetReference>Is_it_a_WorkOrder</targetReference>
         </connector>
     </start>
     <status>Active</status>
