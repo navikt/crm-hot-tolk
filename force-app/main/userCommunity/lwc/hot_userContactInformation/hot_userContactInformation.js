@@ -2,8 +2,10 @@ import { LightningElement, wire, track } from 'lwc';
 import { NavigationMixin } from 'lightning/navigation';
 import getPersonPhoneEmailAndStatus from '@salesforce/apex/HOT_UserInformationController.getPersonPhoneEmailAndStatus';
 import updateKrrStatus from '@salesforce/apex/HOT_UserInformationController.updateKrrStatus';
+import icons from '@salesforce/resourceUrl/icons';
 
 export default class hot_userContactInformation extends NavigationMixin(LightningElement) {
+    informationIcon = icons + '/informationicon.svg';
     @track person;
     @track recordId;
     @wire(getPersonPhoneEmailAndStatus)
@@ -21,6 +23,16 @@ export default class hot_userContactInformation extends NavigationMixin(Lightnin
                 pageName: 'home'
             }
         });
+    }
+    get alternativePhoneNumberText() {
+        return 'Du har registrert et alternativ nummer som benyttes til all SMS varsling fra Tolketjenesten. Ta kontakt med din lokale tolketjeneste om du ønsker å endre dette.';
+    }
+    get isAlternativeNumber() {
+        if (this.person != null && this.person.HOT_MobilePhoneOverride__c != null) {
+            return true;
+        } else {
+            return false;
+        }
     }
     setKrrIntegrationStatusToQueued() {
         var personCloned = JSON.parse(JSON.stringify(this.person));
