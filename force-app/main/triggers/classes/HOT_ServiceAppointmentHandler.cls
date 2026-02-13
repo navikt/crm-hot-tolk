@@ -1017,7 +1017,7 @@ public without sharing class HOT_ServiceAppointmentHandler extends MyTriggers {
             SELECT Id, HOT_Request__c, HOT_WorkOrderLineItem__r.WorkOrderId
             FROM ServiceAppointment
             WHERE Id IN :saIds
-            LIMIT 50
+            LIMIT 10
         ];
 
         // Collect WorkOrder Ids
