@@ -1000,38 +1000,11 @@ public without sharing class HOT_ServiceAppointmentHandler extends MyTriggers {
     }
 
     public static void createContentDocumentLinks(List<ServiceAppointment> serviceAppointments) {
-        // Collect ServiceAppointment Ids
-        Set<Id> saIds = new Set<Id>();
+        List<Id> workOrderIds = new List<Id>();
+
         for (ServiceAppointment sa : serviceAppointments) {
-            if (sa.Id != null) {
-                saIds.add(sa.Id);
-            }
+            workOrderIds.add(sa.HOT_WorkOrderID__c);
         }
-
-        if (saIds.isEmpty()) {
-            return;
-        }
-
-        // Query ServiceAppointments with WorkOrderId
-        List<ServiceAppointment> saWithWorkOrderId = [
-            SELECT Id, HOT_Request__c, HOT_WorkOrderLineItem__r.WorkOrderId
-            FROM ServiceAppointment
-            WHERE Id IN :saIds
-            LIMIT 10
-        ];
-
-        // Collect WorkOrder Ids
-        Set<Id> workOrderIds = new Set<Id>();
-        for (ServiceAppointment sa : saWithWorkOrderId) {
-            if (sa.HOT_WorkOrderLineItem__r != null && sa.HOT_WorkOrderLineItem__r.WorkOrderId != null) {
-                workOrderIds.add(sa.HOT_WorkOrderLineItem__r.WorkOrderId);
-            }
-        }
-
-        if (workOrderIds.isEmpty()) {
-            return;
-        }
-
         // Query WorkOrders with ContentDocumentLinks
         Map<Id, WorkOrder> workOrderMap = new Map<Id, WorkOrder>(
             [
@@ -1049,24 +1022,9 @@ public without sharing class HOT_ServiceAppointmentHandler extends MyTriggers {
         Map<Id, List<ContentDocumentLink>> serviceAppointmentMap = new Map<Id, List<ContentDocumentLink>>();
 
         // Map WorkOrder files to ServiceAppointments
-        for (ServiceAppointment sa : saWithWorkOrderId) {
-            if (sa.HOT_WorkOrderLineItem__r == null) {
-                continue;
-            }
-
-            Id woId = sa.HOT_WorkOrderLineItem__r.WorkOrderId;
-            if (woId == null) {
-                continue;
-            }
-
-            if (!workOrderMap.containsKey(woId)) {
-                continue;
-            }
-
-            WorkOrder wo = workOrderMap.get(woId);
-
-            if (wo.ContentDocumentLinks != null && !wo.ContentDocumentLinks.isEmpty()) {
-                serviceAppointmentMap.put(sa.Id, wo.ContentDocumentLinks);
+        for (ServiceAppointment sa : serviceAppointments) {
+            if (workOrderMap.get(sa.HOT_WorkOrderID__c).ContentDocumentLinks.size() > 0) {
+                serviceAppointmentMap.put(sa.Id, workOrderMap.get(sa.HOT_WorkOrderID__c).ContentDocumentLinks);
             }
         }
 
