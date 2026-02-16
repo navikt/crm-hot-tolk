@@ -360,9 +360,7 @@ public without sharing class HOT_ServiceAppointmentHandler extends MyTriggers {
             HOT_InterpreterOnWorkOrderService.setInterpreterOnWorkOrderFromServiceAppointment(
                 serviceAppointmentWithNewAssignedResource.keySet()
             );
-            HOT_ThreadHandler.setInterpreterOnThreadFromServiceAppointment(
-                serviceAppointmentWithNewAssignedResource.keySet()
-            );
+            HOT_ThreadHandler.setInterpreterOnThreadFromServiceAppointment(serviceAppointmentWithNewAssignedResource);
         }
         if (serviceAppointmentsOwnerChangedWithAssignedResource.size() > 0) {
             Map<String, Map<Id, Id>> appointmentAndResourceByAssignment = getAppointmentAndResourceByAssignment(
