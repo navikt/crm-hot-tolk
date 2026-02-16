@@ -1,8 +1,5 @@
 <template>
-    <lightning-layout lwc:if={isAnsatt} class="custom-padding-left-small button-container">
-        <!-- Empty box, because ansatt tolk should not have buttons TOLK-3364 -->
-    </lightning-layout>
-    <lightning-layout lwc:else class="custom-padding-left-small button-container">
+    <lightning-layout lwc:if={isFormidler} class="custom-padding-left-small button-container">
         <lightning-layout-item class="custom-padding-around-small custom-grid-vertical-align-center">
             <lightning-button
                 data-id="gosys"
@@ -29,7 +26,7 @@
             ></lightning-button>
         </lightning-layout-item>
         <lightning-layout-item
-            lwc:if={hasPermission}
+            lwc:if={hasPermissionToCreateFreelance}
             class="custom-padding-around-small custom-grid-vertical-align-center"
         >
             <lightning-button
@@ -70,13 +67,29 @@
                             <h2 class="slds-text-heading_medium">{modalTitle}</h2>
                         </header>
                         <div class="slds-modal__content slds-p-around_medium slds-theme_default">
-                            <lightning-flow flow-api-name={currentFlow} onstatuschange={handleStatusChange}>
-                            </lightning-flow>
+                            <lightning-flow onstatuschange={handleStatusChange}></lightning-flow>
                         </div>
                     </div>
                 </section>
                 <div class="slds-backdrop slds-backdrop_open"></div>
             </template>
         </lightning-layout-item>
+        <lightning-layout-item
+            lwc:if={isFormidlerAdmin}
+            class="custom-padding-around-small custom-grid-vertical-align-center"
+        >
+            <lightning-button
+                data-id="overrideKRRMobilePhoneNumber"
+                label="Overstyr KRR mobilnummer"
+                title="Overstyr KRR mobilnummer"
+                onclick={handleFlowButton}
+                data-flow="HOT_OverrideKRRMobilePhoneNumber"
+                class="slds-m-left_x-medium"
+                disabled={isDisabledButtons}
+            ></lightning-button>
+        </lightning-layout-item>
+    </lightning-layout>
+    <lightning-layout lwc:else class="custom-padding-left-small button-container">
+        <!-- Empty box, because ansatt tolk should not have buttons TOLK-3364 -->
     </lightning-layout>
 </template>
