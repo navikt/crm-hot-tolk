@@ -1,0 +1,78 @@
+<template>
+    <template lwc:if={hasResult}>
+        <div class="main-content">
+            <c-hot_freelance-common-table
+                records={wageClaims}
+                columns={columns}
+                onrowclick={goToRecordDetails}
+            ></c-hot_freelance-common-table>
+        </div>
+    </template>
+
+    <template lwc:elseif={noWageClaimsResult}>
+        <div style="text-align: center" aria-live="polite">
+            <br />
+            <p>Du har ingen oppdrag med rett på honorar.</p>
+            <br />
+        </div>
+    </template>
+    <template lwc:if={dataLoader}>
+        <div class="loader-container">
+            <c-hot_loader size="3xlarge"></c-hot_loader>
+        </div>
+    </template>
+    <template lwc:elseif={noFilteredRecordsResult}>
+        <div style="text-align: center" aria-live="polite">
+            <br />
+            <p>
+                Det finnes ingen oppdrag med rett på honorar med denne filtreringen. Du kan endre filteret for å se
+                andre oppdrag
+            </p>
+            <br />
+        </div>
+    </template>
+    <!-- MODAL -->
+    <dialog class="modal-container" aria-label="Informasjon om oppdrag" aria-modal="true" onclose={closeModal}>
+        <div class="modal-header">
+            <h2>Informasjon om oppdraget:</h2>
+            <button class="close-btn" onclick={closeModal} aria-label="Lukk">
+                <img src={exitCrossIcon} alt="" aria-hidden="true" />
+            </button>
+        </div>
+
+        <div if:false={hasAccess} class="modal-body">
+            <p>Du er ikke tildelt oppdraget lenger.</p>
+        </div>
+
+        <div if:true={hasAccess} class="modal-body">
+            <p><strong>Oppdragsnummer:</strong> {appointmentNumber}</p>
+            <p><strong>Tid:</strong> {appointmentTime}</p>
+            <p><strong>Poststed:</strong> {appointmentCity}</p>
+            <p><strong>Tolkemetode:</strong> {workType}</p>
+            <p><strong>Oppdragstype:</strong> {assignmentType}</p>
+            <p><strong>Eier:</strong> {ownerName}</p>
+            <p><strong>Døv/døvblind:</strong> {degreeOfHearingAndVisualImpairment}</p>
+            <div style="display: inline-block; padding-top: 1rem">
+                <c-button
+                    disabled={isDisabledGoToThread}
+                    button-styling="primary"
+                    button-label="Samtale med ressurskontor"
+                    aria-label="Samtale med ressurskontor"
+                    onbuttonclick={goToWageClaimThread}
+                ></c-button>
+            </div>
+        </div>
+    </dialog>
+
+    <c-alertdialog
+        header={modalHeader}
+        content={modalContent}
+        desktop-style="text-align: center; white-space: pre-line; width: 50%"
+        mobile-style="text-align: center; white-space: pre-line; width: 100%; max-width: 100%;"
+        center-buttons="true"
+        no-cancel-button={noCancelButton}
+        confirm-button-label={confirmButtonLabel}
+        onbuttonclick={handleAlertDialogClick}
+    >
+    </c-alertdialog>
+</template>

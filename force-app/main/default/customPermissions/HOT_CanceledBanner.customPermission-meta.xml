@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomPermission xmlns="http://soap.sforce.com/2006/04/metadata">
+    <description>Gir permission til avlyst banner på service resource</description>
+    <isLicensed>false</isLicensed>
+    <label>HOT Canceled Banner</label>
+</CustomPermission>

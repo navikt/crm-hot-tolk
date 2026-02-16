@@ -174,7 +174,7 @@ export default class CrmMessagingMessageComponent extends LightningElement {
         } else if (this.objectApiName === 'Thread__c') {
             getThreadInformation({ recordId: this.recordId })
                 .then((result) => {
-                    this.relatedObjectId = result[0].CRM_Related_Object__c;
+                    this.relatedObjectId = result[0].CRM_Related_Object__c ?? result[0].Id;
                     this.threadTypesOfInterest = [result[0].CRM_Thread_Type__c];
                     this.getThreadAndParticipants();
                 })
