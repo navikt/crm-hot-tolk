@@ -1002,9 +1002,6 @@
                     <name>actionNames</name>
                     <valueList>
                         <valueListItems>
-                            <value>MassChangeOwner</value>
-                        </valueListItems>
-                        <valueListItems>
                             <value>New</value>
                         </valueListItems>
                     </valueList>

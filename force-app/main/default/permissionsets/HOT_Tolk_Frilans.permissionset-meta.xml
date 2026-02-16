@@ -33,10 +33,6 @@
         <enabled>true</enabled>
     </classAccesses>
     <classAccesses>
-        <apexClass>HOT_LateCancellationListController</apexClass>
-        <enabled>true</enabled>
-    </classAccesses>
-    <classAccesses>
         <apexClass>HOT_MessageHelper</apexClass>
         <enabled>true</enabled>
     </classAccesses>
