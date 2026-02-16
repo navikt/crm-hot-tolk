@@ -17,7 +17,7 @@ public without sharing class HOT_ReminderSMSService {
             sms.Type__c = '24 Hour Scheduled Reminder';
             sms.Account__c = workOrder.AccountId;
             sms.WorkOrder__c = workOrder.Id;
-            sms.Recipient__c = workOrder.Account.CRM_Person__r.HOT_MobilePhone__c;
+            sms.Recipient__c = workOrder.Account.CRM_Person__r.INT_KrrMobilePhone__c;
             sms.Message__c = constructReminderMessage(workOrder, interpreterNames.get(workOrder.Id));
             if (sms.Recipient__c != null) {
                 smsList.add(sms);
@@ -79,7 +79,7 @@ public without sharing class HOT_ReminderSMSService {
             sms.Domain__c = 'HOT';
             sms.Type__c = 'Orderer On Status Update';
             sms.Account__c = request.Account__c;
-            sms.Recipient__c = request.Account__r.CRM_Person__r.HOT_MobilePhone__c;
+            sms.Recipient__c = request.Account__r.CRM_Person__r.INT_KrrMobilePhone__c;
             sms.Message__c = constructOnOrdererMessage(request);
             if (sms.Recipient__c != null) {
                 smsList.add(sms);
@@ -259,7 +259,7 @@ public without sharing class HOT_ReminderSMSService {
             SELECT
                 CRM_Account__c,
                 CRM_Thread_Type__c,
-                CRM_Account__r.CRM_Person__r.HOT_MobilePhone__c,
+                CRM_Account__r.CRM_Person__r.INT_KrrMobilePhone__c,
                 CRM_Related_Object__c
             FROM Thread__c
             WHERE Id IN :threadIds
@@ -385,7 +385,7 @@ public without sharing class HOT_ReminderSMSService {
                 HOT_Request__r.Type__c,
                 HOT_Request__r.Orderer__c,
                 HOT_Request__r.OrdererPhone__c,
-                Account.CRM_Person__r.HOT_MobilePhone__c
+                Account.CRM_Person__r.INT_KrrMobilePhone__c
             FROM WorkOrder
             WHERE Id IN :workOrderIds
         ];
@@ -872,7 +872,7 @@ public without sharing class HOT_ReminderSMSService {
         if (workOrder.HOT_Request__r.Type__c != 'Me') {
             return workOrder.HOT_Request__r.OrdererPhone__c;
         }
-        return workOrder.Account.CRM_Person__r.HOT_MobilePhone__c;
+        return workOrder.Account.CRM_Person__r.INT_KrrMobilePhone__c;
     }
     @TestVisible
     private static Map<Id, String> getRecipientByThreadIdMap(List<Thread__c> threads) {
@@ -898,7 +898,7 @@ public without sharing class HOT_ReminderSMSService {
         }
         if (accountRecipients.size() > 0) {
             for (Thread__c thread : accountRecipients) {
-                threadMap.put(thread.Id, thread.CRM_Account__r.CRM_Person__r.HOT_MobilePhone__c);
+                threadMap.put(thread.Id, thread.CRM_Account__r.CRM_Person__r.INT_KrrMobilePhone__c);
             }
         }
         if (srRecipients.size() > 0) {
