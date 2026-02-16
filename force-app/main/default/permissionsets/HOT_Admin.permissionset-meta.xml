@@ -1803,6 +1803,11 @@
         <readable>true</readable>
     </fieldPermissions>
     <fieldPermissions>
+        <editable>false</editable>
+        <field>ServiceAppointment.HOT_WorkOrderID__c</field>
+        <readable>true</readable>
+    </fieldPermissions>
+    <fieldPermissions>
         <editable>true</editable>
         <field>ServiceAppointment.HOT_WorkOrderLineItem__c</field>
         <readable>true</readable>

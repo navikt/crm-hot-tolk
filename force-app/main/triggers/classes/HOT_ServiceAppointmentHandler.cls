@@ -997,38 +997,39 @@ public without sharing class HOT_ServiceAppointmentHandler extends MyTriggers {
             }
         }
     }
+
     public static void createContentDocumentLinks(List<ServiceAppointment> serviceAppointments) {
-        List<Id> requestIds = new List<Id>();
+        List<Id> workOrderIds = new List<Id>();
 
-        for (ServiceAppointment serviceAppointment : serviceAppointments) {
-            requestIds.add(serviceAppointment.HOT_Request__c);
+        for (ServiceAppointment sa : serviceAppointments) {
+            workOrderIds.add(sa.HOT_WorkOrderID__c);
         }
-
-        Map<Id, Hot_Request__c> requestMap = new Map<Id, HOT_Request__c>(
+        // Query WorkOrders with ContentDocumentLinks
+        Map<Id, WorkOrder> workOrderMap = new Map<Id, WorkOrder>(
             [
                 SELECT
                     Id,
                     (
                         SELECT ContentDocumentId, LinkedEntityId, ShareType, Visibility
-                        FROM HOT_Request__c.ContentDocumentLinks
+                        FROM ContentDocumentLinks
                     )
-                FROM HOT_Request__C
-                WHERE Id IN :requestIds
+                FROM WorkOrder
+                WHERE Id IN :workOrderIds
             ]
         );
 
         Map<Id, List<ContentDocumentLink>> serviceAppointmentMap = new Map<Id, List<ContentDocumentLink>>();
 
-        for (ServiceAppointment serviceAppointment : serviceAppointments) {
-            if (requestMap.get(serviceAppointment.HOT_Request__c).ContentDocumentLinks.size() > 0) {
-                serviceAppointmentMap.put(
-                    serviceAppointment.Id,
-                    requestMap.get(serviceAppointment.HOT_Request__c).ContentDocumentLinks
-                );
+        // Map WorkOrder files to ServiceAppointments
+        for (ServiceAppointment sa : serviceAppointments) {
+            if (workOrderMap.get(sa.HOT_WorkOrderID__c).ContentDocumentLinks.size() > 0) {
+                serviceAppointmentMap.put(sa.Id, workOrderMap.get(sa.HOT_WorkOrderID__c).ContentDocumentLinks);
             }
         }
 
-        HOT_ContentDocumentLinkService.setContentDocumentLinks(serviceAppointmentMap);
+        if (!serviceAppointmentMap.isEmpty()) {
+            HOT_ContentDocumentLinkService.setContentDocumentLinks(serviceAppointmentMap);
+        }
     }
 
     public static void setScheduledTimeBasedOnActualTime(List<ServiceAppointment> serviceAppointments) {
