@@ -16,6 +16,11 @@
                 <default>true</default>
                 <label>Available on Wage</label>
             </value>
+            <value>
+                <fullName>Claim on Wage</fullName>
+                <default>false</default>
+                <label>Claim on Wage</label>
+            </value>
         </valueSetDefinition>
     </valueSet>
 </CustomField>

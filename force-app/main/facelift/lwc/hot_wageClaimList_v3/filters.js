@@ -5,19 +5,19 @@ export let filterArray = [
         isDateInterval: true,
         value: [
             {
-                name: 'EarliestStartTime',
+                name: 'StartTime__c',
                 label: 'Start dato',
                 labelprefix: 'Fra: '
             },
             {
-                name: 'DueDate',
+                name: 'EndTime__c',
                 label: 'Slutt dato',
                 labelprefix: 'Til: '
             }
         ]
     },
     {
-        name: 'HOT_AssignmentType__c',
+        name: 'AssignmentType__c',
         label: 'Anledning',
         isCheckboxgroup: true,
         showMarkAllCheckbox: true,
@@ -43,7 +43,7 @@ export let filterArray = [
                 label: 'Tolk på arbeidsplass - TPA'
             }
         ]
-    },
+    }
 ];
 
 export function defaultFilters() {

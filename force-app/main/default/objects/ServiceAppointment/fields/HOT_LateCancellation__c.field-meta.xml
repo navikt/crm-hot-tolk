@@ -1,13 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
     <fullName>HOT_LateCancellation__c</fullName>
-    <deprecated>false</deprecated>
     <externalId>false</externalId>
-    <formula>AND(
-    HOT_CanceledDaysBefore__c &lt;= 2,
-    HOT_CanceledDaysBefore__c &gt; 0
-)</formula>
-    <formulaTreatBlanksAs>BlankAsZero</formulaTreatBlanksAs>
+    <formula>HOT_CanceledDaysBefore__c &lt;= 2</formula>
     <label>Late Cancellation</label>
     <trackHistory>false</trackHistory>
     <type>Checkbox</type>
