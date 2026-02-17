@@ -66,7 +66,7 @@ export default class hot_personHighlightPanelTop extends LightningElement {
             this.personDetails?.legalStatus,
             this.navUnitName
         ]
-            .filter((x) => x != null)
+            .filter(Boolean)
             .join(' / ');
     }
 
