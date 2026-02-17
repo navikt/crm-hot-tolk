@@ -58,6 +58,10 @@ export default class hot_personHighlightPanelTop extends LightningElement {
         }
     }
 
+    get showPersonInfo() {
+        return this.personDetails?.fullName;
+    }
+
     get formattedPersonInfo() {
         return [
             this.personDetails?.age,
