@@ -3,7 +3,7 @@ import { NavigationMixin } from 'lightning/navigation';
 import hasPermissionToCreateAFreelance from '@salesforce/apex/HOT_CheckPermissions.hasFreelancePermission';
 import isFormidler from '@salesforce/apex/HOT_CheckPermissions.hasFormidlerPermission';
 import isFormidlerAdmin from '@salesforce/apex/HOT_CheckPermissions.hasFormidlerAdminPermission';
-
+import isAdmin from '@salesforce/apex/HOT_CheckPermissions.hasHotAdminPermission';
 export default class hot_personHighlightPanelBot extends NavigationMixin(LightningElement) {
     @api recordId;
     @api personDetails;
@@ -15,6 +15,7 @@ export default class hot_personHighlightPanelBot extends NavigationMixin(Lightni
     hasPermissionToCreateFreelance = false;
     isFormidler = false;
     isFormidlerAdmin = false;
+    isAdmin = false;
 
     handleFlowButton(event) {
         this.currentFlow = event.target.dataset.flow;
@@ -60,9 +61,19 @@ export default class hot_personHighlightPanelBot extends NavigationMixin(Lightni
     // }
 
     get showButtons() {
-        return this.personDetails?.fullName && isFormidler;
+        return (this.personDetails?.fullName && isFormidler) || this.isAdmin;
     }
 
+    @wire(isAdmin)
+    wiredIsAdmin({ error, data }) {
+        if (data) {
+            this.isAdmin = data;
+            console.log('Admin: ', this.isAdmin);
+        }
+        if (error) {
+            console.error(error);
+        }
+    }
     @wire(hasPermissionToCreateAFreelance)
     wiredPermission({ error, data }) {
         if (data) {
