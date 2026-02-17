@@ -266,11 +266,11 @@ export default class Hot_myServiceAppointmentsList_v2 extends NavigationMixin(Li
     }
 
     get accountPhoneNumber() {
-        return this.serviceAppointment?.HOT_Request__r?.Account__r?.CRM_Person__r?.HOT_MobilePhone__c ?? '';
+        return this.serviceAppointment?.HOT_Request__r?.Account__r?.CRM_Person__r?.INT_KrrMobilePhone__c ?? '';
     }
 
     get ordererPhoneNumber() {
-        return this.serviceAppointment?.HOT_Request__r?.Orderer__r?.CRM_Person__r?.HOT_MobilePhone__c ?? '';
+        return this.serviceAppointment?.HOT_Request__r?.Orderer__r?.CRM_Person__r?.INT_KrrMobilePhone__c ?? '';
     }
     get workType() {
         return this.serviceAppointment?.HOT_WorkTypeName__c ?? '';
