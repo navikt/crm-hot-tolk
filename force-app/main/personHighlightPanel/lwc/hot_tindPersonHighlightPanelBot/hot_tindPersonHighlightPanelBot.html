@@ -1,5 +1,5 @@
 <template>
-    <lightning-layout lwc:if={isFormidler} class="custom-padding-left-small button-container">
+    <lightning-layout lwc:if={showButtons} class="custom-padding-left-small button-container">
         <lightning-layout-item class="custom-padding-around-small custom-grid-vertical-align-center">
             <lightning-button
                 data-id="gosys"
@@ -7,7 +7,6 @@
                 title="Gosys"
                 onclick={handleButtonClick}
                 class="slds-m-left_x-medium"
-                disabled={isDisabledButtons}
             ></lightning-button>
         </lightning-layout-item>
         <!-- Commented out as a trial run with the new Highligtpanel in TOLK-3009 on request by Svenn Terje -->
@@ -22,7 +21,6 @@
                 onclick={handleFlowButton}
                 data-flow="HOT_SendSMSToAccount"
                 class="slds-m-left_x-medium"
-                disabled={isDisabledButtons}
             ></lightning-button>
         </lightning-layout-item>
         <lightning-layout-item
@@ -36,7 +34,6 @@
                 onclick={handleFlowButton}
                 data-flow="HOT_CreateFreelanceUser"
                 class="slds-m-left_x-medium"
-                disabled={isDisabledButtons}
             ></lightning-button>
         </lightning-layout-item>
         <lightning-layout-item class="custom-padding-around-small custom-grid-vertical-align-center">
@@ -47,7 +44,6 @@
                 onclick={handleFlowButton}
                 data-flow="HOT_MobileAppAccess"
                 class="slds-m-left_x-medium"
-                disabled={isDisabledButtons}
             ></lightning-button>
             <template lwc:if={isModalOpen}>
                 <section role="dialog" tabindex="-1" class="slds-modal slds-fade-in-open">
@@ -85,7 +81,6 @@
                 onclick={handleFlowButton}
                 data-flow="HOT_OverrideKRRMobilePhoneNumber"
                 class="slds-m-left_x-medium"
-                disabled={isDisabledButtons}
             ></lightning-button>
         </lightning-layout-item>
     </lightning-layout>

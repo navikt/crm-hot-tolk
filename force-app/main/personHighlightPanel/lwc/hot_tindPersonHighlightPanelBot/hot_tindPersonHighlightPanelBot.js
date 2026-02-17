@@ -59,8 +59,8 @@ export default class hot_personHighlightPanelBot extends NavigationMixin(Lightni
     //     });
     // }
 
-    get isDisabledButtons() {
-        return !this.personDetails?.fullName;
+    get showButtons() {
+        return this.personDetails?.fullName && isFormidler;
     }
 
     @wire(hasPermissionToCreateAFreelance)
