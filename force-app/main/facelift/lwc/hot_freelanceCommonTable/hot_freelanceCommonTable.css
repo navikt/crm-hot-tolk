@@ -2,6 +2,11 @@
     width: 100%;
 }
 
+/* NY: wrapper rundt tabellen */
+.table-scroll {
+    width: 100%;
+}
+
 tr.row {
     height: 60px;
     border-top: 1px solid #2c2c2c8e;
@@ -60,6 +65,7 @@ tr.row.selected-row:hover {
 
 .checkbox-column {
     width: 5%;
+    flex-shrink: 0;
 }
 
 /* Badge colors and styling */
@@ -120,15 +126,23 @@ tr.row.selected-row:hover {
 }
 
 @media (max-width: 768px) {
-    .table-wrapper {
+    /* Flyttet overflow fra table -> wrapper */
+    .table-scroll {
         overflow-x: auto;
-        max-width: 1200px;
         position: relative;
+        box-sizing: border-box;
+        width: 100%;
     }
-    .table-wrapper::before {
+
+    .table-scroll::before {
         content: '';
         display: block;
         height: 3rem;
+    }
+
+    /* Table skal ikke ha overflow på mobil */
+    .table-wrapper {
+        max-width: none;
     }
 
     .column-th-desktop {
@@ -159,7 +173,7 @@ tr.row.selected-row:hover {
         height: auto;
         border: none;
         position: relative;
-        padding-right: 3rem;
+        padding-right: 3.5rem;
     }
 
     tr.row.selected-row {
@@ -188,6 +202,10 @@ tr.row.selected-row:hover {
         padding: 0 0;
         position: relative;
         box-sizing: border-box;
+
+        /* (anbefalt) hindrer lange ord/ID/URL i å presse layout ut */
+        overflow-wrap: anywhere;
+        word-break: break-word;
     }
 
     td::before {
@@ -211,6 +229,7 @@ tr.row.selected-row:hover {
     .desktop-status-label {
         display: none;
     }
+
     td.checkbox-column.checkbox-mobile-right {
         position: absolute !important;
         top: 0.75rem !important;
@@ -219,9 +238,11 @@ tr.row.selected-row:hover {
         width: auto !important;
         z-index: 1 !important;
     }
+
     td.checkbox-column::before {
         content: none !important;
     }
+
     thead .checkbox-column {
         position: absolute !important;
         right: 0.5rem !important;

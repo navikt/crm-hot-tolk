@@ -1,55 +1,59 @@
 <template>
-    <table class="table-wrapper" role="region" aria-label={ariaLabel} tabindex="0">
-        <thead>
-            <tr>
-                <!-- Select all checkbox-->
-                <th lwc:if={checkbox} class="checkbox-column">
-                    <c-checkbox title="Merk alle" oncheckboxclick={handleAllCheckboxesClick}></c-checkbox>
-                </th>
+    <div class="table-scroll" role="region" aria-label={ariaLabel} tabindex="0">
+        <table class="table-wrapper">
+            <thead>
+                <tr>
+                    <!-- Select all checkbox-->
+                    <th lwc:if={checkbox} class="checkbox-column">
+                        <c-checkbox title="Merk alle" oncheckboxclick={handleAllCheckboxesClick}></c-checkbox>
+                    </th>
 
-                <!-- Column headers -->
-                <template for:each={columns} for:item="col">
-                    <th key={col.fieldName} scope="col" class="column-th-desktop">{col.label}</th>
-                </template>
-            </tr>
-        </thead>
-
-        <tbody>
-            <!-- Row rendering -->
-            <template for:each={recordsToShow} for:item="record">
-                <tr
-                    class={record.rowClass}
-                    key={record.id}
-                    data-id={record.id}
-                    onclick={handleOnRowClick}
-                    onkeydown={handleOnRowKeyDown}
-                >
-                    <!-- Row checkboxes-->
-                    <td lwc:if={checkbox} class="checkbox-column checkbox-mobile-right">
-                        <c-checkbox
-                            default-value={record.checked}
-                            oncheckboxclick={handleSingleCheckboxClick}
-                            aria-label={record.ariaLabelTheme}
-                        ></c-checkbox>
-                    </td>
-
-                    <!-- Show Conversation and status badges -->
-                    <template for:each={record.fields} for:item="field">
-                        <td key={field.name} tabindex="0" role="button" class={field.cssClass}>
-                            <template lwc:if={field.badgeClass}>
-                                <span class={field.badgeClass} aria-label={field.iconAriaLabel}
-                                    >{field.iconAriaLabel}</span
-                                >
-                            </template>
-                            <!-- status badges -->
-                            <template lwc:elseif={field.statusBadgeClass}>
-                                <span class={field.statusBadgeClass}> {field.statusBadgeLabel} </span>
-                            </template>
-                            <template lwc:else> {field.value} </template>
-                        </td>
+                    <!-- Column headers -->
+                    <template for:each={columns} for:item="col">
+                        <th key={col.fieldName} scope="col" class="column-th-desktop">{col.label}</th>
                     </template>
                 </tr>
-            </template>
-        </tbody>
-    </table>
+            </thead>
+
+            <tbody>
+                <!-- Row rendering -->
+                <template for:each={recordsToShow} for:item="record">
+                    <tr
+                        class={record.rowClass}
+                        key={record.id}
+                        data-id={record.id}
+                        onclick={handleOnRowClick}
+                        onkeydown={handleOnRowKeyDown}
+                    >
+                        <!-- Row checkboxes-->
+                        <td lwc:if={checkbox} class="checkbox-column checkbox-mobile-right">
+                            <c-checkbox
+                                default-value={record.checked}
+                                oncheckboxclick={handleSingleCheckboxClick}
+                                aria-label={record.ariaLabelTheme}
+                            ></c-checkbox>
+                        </td>
+
+                        <!-- Show Conversation and status badges -->
+                        <template for:each={record.fields} for:item="field">
+                            <td key={field.name} tabindex="0" role="button" class={field.cssClass}>
+                                <template lwc:if={field.badgeClass}>
+                                    <span class={field.badgeClass} aria-label={field.iconAriaLabel}>
+                                        {field.iconAriaLabel}
+                                    </span>
+                                </template>
+
+                                <!-- status badges -->
+                                <template lwc:elseif={field.statusBadgeClass}>
+                                    <span class={field.statusBadgeClass}> {field.statusBadgeLabel} </span>
+                                </template>
+
+                                <template lwc:else> {field.value} </template>
+                            </td>
+                        </template>
+                    </tr>
+                </template>
+            </tbody>
+        </table>
+    </div>
 </template>
