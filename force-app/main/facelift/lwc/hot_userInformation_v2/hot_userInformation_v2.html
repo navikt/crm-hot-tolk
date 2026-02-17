@@ -11,38 +11,16 @@
                 <!-- Kontaktinformasjon -->
                 <section class="sub-form">
                     <h2 id="contact-info-header" style="text-align: center">Kontaktinformasjon</h2>
-                    <div
-                        if:true={isAlternativeNumber}
-                        class="navno-dekorator alertstripe navno-dekorator alertstripe--info"
-                    >
-                        <img
-                            class="navno-dekorator alertstripe__ikon"
-                            src={informationIcon}
-                            alt=""
-                            aria-hidden="true"
-                        />
-                        <div class="alertstripe__content">
-                            <div class="typo-normal alertstripe__tekst">{alternativePhoneNumberText}</div>
-                            <div class="typo-normal alertstripe__tekst">
-                                Mobilnummeret du vil bli varslet på nå: {mobilePhoneOverride}
-                            </div>
-                            <div class="typo-normal alertstripe__tekst">Årsak: {mobilePhoneOverrideReason}</div>
-                        </div>
-                    </div>
-
                     <div class="my-grid">
                         <div class="my-col-half">
-                            <label class="output-label" for="mobilePhone"
-                                >Mobilnummer fra Kontakt- og reservasjonsregisteret</label
-                            >
-                            <p id="mobilePhone" class="output-value">{mobilePhoneKRR}</p>
+                            <label class="output-label" for="mobilePhone">Mobilnummer</label>
+                            <p id="mobilePhone" class="output-value">{mobilePhone}</p>
                         </div>
                         <div class="my-col-half">
                             <label class="output-label" for="email">E-postadresse</label>
                             <p id="email" class="output-value">{email}</p>
                         </div>
                     </div>
-
                     <p>
                         <a
                             href="https://minprofil.kontaktregisteret.no/"

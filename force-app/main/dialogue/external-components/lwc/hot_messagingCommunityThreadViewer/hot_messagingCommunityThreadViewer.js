@@ -438,11 +438,11 @@ export default class hot_messagingCommunityThreadViewer extends NavigationMixin(
                                     ' år';
                             }
                             if (
-                                this.serviceAppointment.HOT_Request__r.Account__r.CRM_Person__r.HOT_MobilePhone__c !==
-                                undefined
+                                this.serviceAppointment.HOT_Request__r.Account__r.CRM_Person__r
+                                    .INT_KrrMobilePhone__c !== undefined
                             ) {
                                 this.accountPhoneNumber =
-                                    this.serviceAppointment.HOT_Request__r.Account__r.CRM_Person__r.HOT_MobilePhone__c;
+                                    this.serviceAppointment.HOT_Request__r.Account__r.CRM_Person__r.INT_KrrMobilePhone__c;
                             }
                         }
                         if (
@@ -452,11 +452,11 @@ export default class hot_messagingCommunityThreadViewer extends NavigationMixin(
                             this.serviceAppointment.HOT_Request__r.Orderer__r.CRM_Person__r
                         ) {
                             if (
-                                this.serviceAppointment.HOT_Request__r.Orderer__r.CRM_Person__r.HOT_MobilePhone__c !==
-                                undefined
+                                this.serviceAppointment.HOT_Request__r.Orderer__r.CRM_Person__r
+                                    .INT_KrrMobilePhone__c !== undefined
                             ) {
                                 this.ordererPhoneNumber =
-                                    this.serviceAppointment.HOT_Request__r.Orderer__r.CRM_Person__r.HOT_MobilePhone__c;
+                                    this.serviceAppointment.HOT_Request__r.Orderer__r.CRM_Person__r.INT_KrrMobilePhone__c;
                             }
                         }
                         this.isDetails = true;
