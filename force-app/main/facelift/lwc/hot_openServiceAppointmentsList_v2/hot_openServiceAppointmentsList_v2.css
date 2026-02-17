@@ -38,15 +38,9 @@ lightning-input-field.ikke-sensitive-opplysninger > lightning-textarea > label:a
 
 @media (max-width: 576px) {
     .main-content {
-        background-color: #fff;
-        border-radius: 0.5rem;
         max-width: 100%;
-        margin: 0 auto;
-        overflow-x: hidden;
-        font-family: 'Source Sans Pro', Arial, sans-serif;
-        align-items: center;
-        padding-top: 0.5rem;
-        text-align: end;
+        box-sizing: border-box;
+        overflow-x: visible;
     }
 }
 
