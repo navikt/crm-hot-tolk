@@ -1,0 +1,29 @@
+<template>
+    <template lwc:if={showBanner}>
+        <div class="slds-scoped-notification slds-media slds-media_center slds-theme_info" role="status">
+            
+            <div class="slds-media__figure">
+                <lightning-icon 
+                    icon-name="utility:info" 
+                    size="small" 
+                    title="Advarsel">
+                </lightning-icon>
+            </div>
+
+            <div class="slds-media__body">
+                <p>
+                    <strong class="slds-text-heading_small">Melding til formidler:</strong>
+                    <br/>
+                    <span class="slds-text-body_regular slds-font-weight_regular">{messageToDispatcher}</span>
+                </p>
+            </div>
+
+            <div class="slds-shrink-none">
+                <button class="slds-button slds-button_icon slds-button_icon-small" title="Lukk" onclick={handleClose}>
+                    <lightning-icon icon-name="utility:close" size="x-small"></lightning-icon>
+                    <span class="slds-assistive-text">Lukk</span>
+                </button>
+            </div>
+        </div>
+    </template>
+</template>
