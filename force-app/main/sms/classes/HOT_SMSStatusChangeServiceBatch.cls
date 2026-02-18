@@ -12,7 +12,7 @@ public without sharing class HOT_SMSStatusChangeServiceBatch implements Database
     public Database.QueryLocator start(Database.BatchableContext bc) {
         Datetime now = Datetime.now();
         String query = 'SELECT ';
-        query += 'Id, HOT_Request__r.Orderer__c, HOT_Request__r.Orderer__r.CRM_Person__r.HOT_IsReservationAgainstNotifications__c, HOT_Request__r.IsNotNotifyAccount__c, HOT_Interpreters__c, HOT_Request__r.OrdererPhone__c, HOT_Request__r.Type__c, Status, StartDate, EndDate, HOT_Request__r.IsOrdererWantStatusUpdateOnSMS__c, AccountId, Account.CRM_Person__c, Account.CRM_Person__r.HOT_MobilePhone__c, HOT_Request__r.Orderer__r.CRM_Person__r.HOT_NotificationChannel__c ';
+        query += 'Id, HOT_Request__r.Orderer__c, HOT_Request__r.Orderer__r.CRM_Person__r.HOT_IsReservationAgainstNotifications__c, HOT_Request__r.IsNotNotifyAccount__c, HOT_Interpreters__c, HOT_Request__r.OrdererPhone__c, HOT_Request__r.Type__c, Status, StartDate, EndDate, HOT_Request__r.IsOrdererWantStatusUpdateOnSMS__c, AccountId, Account.CRM_Person__c, Account.CRM_Person__r.INT_KrrMobilePhone__c, HOT_Request__r.Orderer__r.CRM_Person__r.HOT_NotificationChannel__c ';
         query += 'FROM WorkOrder ';
         query += 'WHERE HOT_SendSMSNotificationOnStatusChanged__c = TRUE ';
         query += 'AND (Status = \'Dispatched\' OR Status = \'Cannot Complete\')';
