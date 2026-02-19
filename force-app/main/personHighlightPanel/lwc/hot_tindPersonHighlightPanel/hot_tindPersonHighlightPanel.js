@@ -1,5 +1,5 @@
 import { LightningElement, api, track, wire } from 'lwc';
-import { getFieldValue, getRecord } from 'lightning/uiRecordApi';
+import { getFieldValue, getRecord, getFieldDisplayValue } from 'lightning/uiRecordApi';
 import { resolve } from 'c/hot_tindComponentsUtils';
 
 import PERSON_ACTORID_FIELD from '@salesforce/schema/Person__c.INT_ActorId__c';
@@ -113,10 +113,10 @@ export default class hot_personHighlightPanel extends LightningElement {
                 isDeceased: getFieldValue(data, IS_DECEASED_FIELD),
                 age: getFieldValue(data, AGE_FIELD),
                 citizenship: this.capitalizeFirstLetter(getFieldValue(data, CITIZENSHIP_FIELD)),
-                legalStatus: getFieldValue(data, LEGAL_STATUS_FIELD),
+                legalStatus: getFieldDisplayValue(data, LEGAL_STATUS_FIELD),
                 municipalityName: getFieldValue(data, MUNICIPALITY_NAME__FIELD),
                 districtName: getFieldValue(data, DISTRICT_NAME_FIELD),
-                vedtak: getFieldValue(data, VEDTAK_FIELD)
+                vedtak: getFieldDisplayValue(data, VEDTAK_FIELD)
             };
             this.loadingStates.getRecordPerson = false;
             this.handleBackgroundColor();
@@ -154,12 +154,12 @@ export default class hot_personHighlightPanel extends LightningElement {
         const className = !this.personDetails?.fullName
             ? 'confidentialBackground'
             : this.personDetails?.isDeceased
-              ? 'deadBackground'
-              : this.personDetails?.gender === 'Kvinne'
-                ? 'femaleBackground'
-                : this.personDetails?.gender === 'Mann'
-                  ? 'maleBackground'
-                  : 'unknownBackground';
+            ? 'deadBackground'
+            : this.personDetails?.gender === 'Kvinne'
+            ? 'femaleBackground'
+            : this.personDetails?.gender === 'Mann'
+            ? 'maleBackground'
+            : 'unknownBackground';
         genderWrapper.className = 'gender-wrapper ' + className;
     }
 
