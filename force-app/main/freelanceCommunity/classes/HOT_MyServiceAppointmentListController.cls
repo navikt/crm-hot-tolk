@@ -217,7 +217,7 @@ public without sharing class HOT_MyServiceAppointmentListController {
         String Id = '';
         try {
             HOT_InterestedResource__c interestedResource = [
-                SELECT Id, Status__c, ServiceResource__c, ServiceAppointment__c
+                SELECT Id, Status__c
                 FROM HOT_InterestedResource__c
                 WHERE
                     ServiceResource__c IN (SELECT Id FROM ServiceResource WHERE RelatedRecordId = :UserInfo.getUserId())
