@@ -206,7 +206,7 @@ public without sharing class HOT_InterestedResourcesListController {
 
     @AuraEnabled
     public static HOT_InterestedResource__c getInterestedResourceDetails(String recordId) {
-        User currentUser = [SELECT Id, AccountId, Account.CRM_Person__c FROM User WHERE Id = :UserInfo.getUserId()];
+        User currentUser = [SELECT Id, AccountId FROM User WHERE Id = :UserInfo.getUserId()];
         HOT_InterestedResource__c interestedResource = [
             SELECT
                 Id,

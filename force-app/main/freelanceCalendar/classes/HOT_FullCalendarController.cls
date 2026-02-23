@@ -112,7 +112,7 @@ public with sharing class HOT_FullCalendarController {
     ) {
         Id resourceId = getUserServiceResourceId();
         return [
-            SELECT Id, StartTime__c, EndTime__c, ServiceResource__r.Id, Status__c, ServiceAppointmentName__c
+            SELECT Id, StartTime__c, EndTime__c, ServiceAppointmentName__c
             FROM HOT_WageClaim__c
             WHERE
                 ServiceResource__r.Id = :resourceId
@@ -129,7 +129,7 @@ public with sharing class HOT_FullCalendarController {
     ) {
         Id resourceId = getUserServiceResourceId();
         return [
-            SELECT Id, Start, End, Type, ResourceId
+            SELECT Id, Start, End, Type
             FROM ResourceAbsence
             WHERE ResourceId = :resourceId AND Start < :latestAbsenceStart AND End > :earliestAbsenceStart
         ];

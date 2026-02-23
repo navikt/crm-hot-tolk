@@ -269,7 +269,7 @@ public with sharing class HOT_FreelanceAbsenceController {
 
         Id resourceId = getUserServiceResourceId();
         return [
-            SELECT Id, StartTime__c, EndTime__c, Status__c, ServiceAppointmentName__c, ServiceResource__r.Id
+            SELECT Id, StartTime__c, EndTime__c, Status__c, ServiceAppointmentName__c
             FROM HOT_WageClaim__c
             WHERE
                 ServiceResource__r.Id = :resourceId
