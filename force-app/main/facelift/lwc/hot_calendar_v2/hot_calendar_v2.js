@@ -160,7 +160,7 @@ export default class LibsFullCalendarV2 extends NavigationMixin(LightningElement
         const newNode = document.createElement('p');
         const oldNode = context.el.childNodes[0].childNodes[0];
         if (context.view.type === 'timeGridDay') {
-            newNode.textContent = oldNode.textContent + ` ${this.calendar?.getDate().getDate()}.`;
+            newNode.textContent = ` ${this.calendar?.getDate().getDate()}.`;
         } else {
             newNode.textContent = oldNode.textContent;
         }
@@ -174,7 +174,49 @@ export default class LibsFullCalendarV2 extends NavigationMixin(LightningElement
             const el = elements[0];
             el.innerHTML = `<img src="${LibsFullCalendarV2.REFRESH_ICON}" alt="Refresh Icon" style="width:16px; color:white; height:16px;" />`;
         }
+        this.updateVisibleHoursForDay();
     }
+
+    updateVisibleHoursForDay() {
+        if (!this.calendar || this.calendar.view.type !== 'timeGridDay') {
+            return;
+        }
+
+        const events = this.calendar.getEvents();
+
+        if (!events.length) {
+            return;
+        }
+
+        let minHour = 23;
+        let maxHour = 0;
+
+        const viewDate = this.calendar.getDate().toDateString();
+
+        events.forEach((evt) => {
+            if (!evt.start) return;
+
+            if (evt.start.toDateString() !== viewDate) return;
+
+            const startHour = evt.start.getHours();
+            const endHour = evt.end ? evt.end.getHours() : startHour + 1;
+
+            if (startHour < minHour) minHour = startHour;
+            if (endHour > maxHour) maxHour = endHour;
+        });
+
+        minHour = Math.max(minHour - 1, 0);
+        maxHour = Math.min(maxHour + 1, 24);
+
+        const minTime = String(minHour).padStart(2, '0') + ':00:00';
+        const maxTime = String(maxHour).padStart(2, '0') + ':00:00';
+
+        this.calendar.batchRendering(() => {
+            this.calendar.setOption('slotMinTime', minTime);
+            this.calendar.setOption('slotMaxTime', maxTime);
+        });
+    }
+
     yesOrNo(boolean) {
         if (boolean) {
             return 'Ja';
@@ -744,10 +786,17 @@ export default class LibsFullCalendarV2 extends NavigationMixin(LightningElement
                 this.updatePseudoEventsDisplay(context.view);
             },
             datesSet: (dateInfo) => {
+                // Get and insert new events for the view
                 this.updateEventsFromDateRange(dateInfo.start, dateInfo.end).then(() => {
                     this.updatePseudoEventsDisplay(dateInfo.view);
+
+                    // Update visible hours for day grid
+                    requestAnimationFrame(() => {
+                        this.updateVisibleHoursForDay();
+                    });
                 });
             },
+
             dayHeaderDidMount: (context) => {
                 this.onDayHeaderMount(context);
             },
@@ -827,16 +876,16 @@ export default class LibsFullCalendarV2 extends NavigationMixin(LightningElement
         if (this.isMobileSize) {
             config.headerToolbar = {
                 start: 'title',
-                center: '',
-                end: 'today dayGridMonth'
+                center: 'today dayGridMonth',
+                end: 'prev,next'
             };
             config.footerToolbar = {
-                left: 'prev,next',
+                left: 'absence',
                 center: '',
-                right: 'absence refresh'
+                right: 'refresh'
             };
             config.height = 'auto';
-            config.titleFormat = { year: 'numeric', month: 'long' };
+            config.titleFormat = { year: 'numeric', month: 'short' };
             config.views.dayGridMonth.dayMaxEventRows = 10;
         }
 

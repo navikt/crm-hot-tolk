@@ -108,40 +108,40 @@ span {
 }
 
 .navno-dekorator.alertstripe {
-  display: block;
-  padding: 1rem 1rem 1rem 0rem;
-  border-radius: 4px;
-  display: flex;
-  align-content: center;
-  border-radius: 0.25rem;
-  color: #3E3832;
-  max-width: 100%;
+    display: block;
+    padding: 1rem 1rem 1rem 0rem;
+    border-radius: 4px;
+    display: flex;
+    align-content: center;
+    border-radius: 0.25rem;
+    color: #3e3832;
+    max-width: 100%;
 }
 .navno-dekorator.alertstripe--advarsel {
-  border: 1px solid #FF9100;
-  background-color: #FFE9CC;
-  margin-bottom: 0.2rem;
+    border: 1px solid #ff9100;
+    background-color: #ffe9cc;
+    margin-bottom: 0.2rem;
 }
 .navno-dekorator.alertstripe__ikon {
-  margin-right: 0.75rem;
-  margin-left: 0.75rem;
-  display: flex;
-  top: 1rem;
-  flex-shrink: 0;
-  height: 24px;
-  width: 24px;
+    margin-right: 0.75rem;
+    margin-left: 0.75rem;
+    display: flex;
+    top: 1rem;
+    flex-shrink: 0;
+    height: 24px;
+    width: 24px;
 }
 .alertstripe__innhold {
-  display: flex;
-  flex-direction: column;
-  flex: 1;
+    display: flex;
+    flex-direction: column;
+    flex: 1;
 }
 .alertstripe__tekst {
-  margin-bottom: 1rem;
+    margin-bottom: 1rem;
 }
 .alertstripe__knapper {
-  display: flex;
-  gap: 1rem;
+    display: flex;
+    gap: 1rem;
 }
 
 @media only screen and (min-width: 768px) {
@@ -347,17 +347,17 @@ dialog.modal-container .close-btn:hover {
     }
 
     .fc-toolbar-title {
-        font-size: 1.25rem;
+        font-size: 1rem;
     }
 
     .fc-button {
-        margin-bottom: 0.5rem;;
+        margin-bottom: 0.5rem;
     }
 
     .date-input {
         flex: 1 1 auto;
-        width: 90%; 
-        max-width: 300px; 
+        width: 90%;
+        max-width: 300px;
     }
 
     dialog.modal-container {
@@ -389,7 +389,7 @@ dialog.modal-container .close-btn:hover {
 
     .date-input {
         flex: 1 1 auto;
-        width: 90%; 
-        max-width: 300px; 
+        width: 90%;
+        max-width: 300px;
     }
 }

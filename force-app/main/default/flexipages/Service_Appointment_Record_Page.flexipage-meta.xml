@@ -1282,6 +1282,12 @@
     <flexiPageRegions>
         <itemInstances>
             <componentInstance>
+                <componentName>hot_dispatcherMessageBanner</componentName>
+                <identifier>c_hot_dispatcherMessageBanner</identifier>
+            </componentInstance>
+        </itemInstances>
+        <itemInstances>
+            <componentInstance>
                 <componentInstanceProperties>
                     <name>tabs</name>
                     <value>Facet-87d76a61-4535-4189-be09-0e5377b76f56</value>
