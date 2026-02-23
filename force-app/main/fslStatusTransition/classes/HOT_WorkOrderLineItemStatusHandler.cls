@@ -69,9 +69,7 @@ public without sharing class HOT_WorkOrderLineItemStatusHandler extends MyTrigge
         List<ServiceAppointment> serviceAppointments = [
             SELECT ParentRecordId, Status
             FROM ServiceAppointment
-            WHERE
-                ParentRecordId IN :(new Map<Id, WorkOrderLineItem>(workOrderLineItems)).keySet()
-                AND Status NOT IN ('Annul')
+            WHERE ParentRecordId IN :(new Map<Id, WorkOrderLineItem>(workOrderLineItems)).keySet() AND Status != 'Annul'
         ];
         Map<Id, List<ServiceAppointment>> serviceAppointmentMaps = new Map<Id, List<ServiceAppointment>>();
 
@@ -197,8 +195,8 @@ public without sharing class HOT_WorkOrderLineItemStatusHandler extends MyTrigge
             WHERE
                 ParentRecordId IN :changedWorkOrderLineItems
                 AND Status != :newStatus
-                AND Status NOT IN ('Annul')
-                AND Status NOT IN ('Completed')
+                AND Status != 'Annul'
+                AND Status != 'Completed'
         ];
 
         for (ServiceAppointment serviceAppointment : serviceAppointments) {

@@ -276,7 +276,7 @@ public without sharing class HOT_WorkOrderHandler extends MyTriggers {
                 (
                     SELECT Id, StartDate, EndDate, Status
                     FROM HOT_Request__c.Work_Orders__r
-                    WHERE Status NOT IN ('Annul')
+                    WHERE Status != 'Annul'
                     ORDER BY StartDate ASC
                 )
             FROM HOT_Request__c

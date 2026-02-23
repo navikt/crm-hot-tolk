@@ -112,7 +112,7 @@ public without sharing class HOT_WorkOrderListController {
                 WHERE
                     (HOT_Request__r.Account__c = :user.AccountId
                     OR HOT_Request__r.Orderer__c = :user.AccountId)
-                    AND Status NOT IN ('Annul')
+                    AND Status != 'Annul'
                 ORDER BY StartDate
             ]
         );
