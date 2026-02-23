@@ -4,17 +4,35 @@ public without sharing class HOT_RequestListController {
         logger.exception(e, CRM_ApplicationDomain.Domain.HOT);
         logger.publishSynch();
     }
+
     @AuraEnabled
     public static void uploadFile(Map<String, String> files, String recordId) {
         List<ContentVersion> cvList = new List<ContentVersion>();
         List<ContentDocumentLink> cdlList = new List<ContentDocumentLink>();
+
         for (String base64 : files.keySet()) {
             cvList.add(createContentVersion(base64, files.get(base64)));
         }
         insertContentVersions(cvList);
-        for (ContentVersion cv : cvList) {
-            cdlList.add(createContentDocumentLink(cv.Id, recordId));
+
+        Map<Id, Id> contentDocumentMap = new Map<Id, Id>();
+
+        for (ContentVersion cv : [
+            SELECT Id, ContentDocumentId
+            FROM ContentVersion
+            WHERE Id IN :cvList
+        ]) {
+            contentDocumentMap.put(cv.Id, cv.ContentDocumentId);
         }
+
+        for (ContentVersion cv : cvList) {
+            ContentDocumentLink cdl = createContentDocumentLink(contentDocumentMap.get(cv.Id), recordId);
+
+            if (cdl != null) {
+                cdlList.add(cdl);
+            }
+        }
+
         insertContentDocumentLinks(cdlList);
     }
 
@@ -42,16 +60,17 @@ public without sharing class HOT_RequestListController {
         return cv;
     }
 
-    private static ContentDocumentLink createContentDocumentLink(String contentVersionId, String recordId) {
-        if (contentVersionId == null || recordId == null) {
+    private static ContentDocumentLink createContentDocumentLink(Id contentDocumentId, String recordId) {
+        if (contentDocumentId == null || recordId == null) {
             return null;
         }
+
         ContentDocumentLink cdl = new ContentDocumentLink();
-        ContentVersion cv = [SELECT ContentDocumentId FROM ContentVersion WHERE Id = :contentVersionId];
-        cdl.ContentDocumentId = cv.ContentDocumentId;
+        cdl.ContentDocumentId = contentDocumentId;
         cdl.LinkedEntityId = recordId;
         cdl.ShareType = 'V'; // V = Viewer, C = Collaborator, I = Inferred
         cdl.Visibility = 'AllUsers';
+
         return cdl;
     }
 
