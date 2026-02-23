@@ -112,7 +112,7 @@ public without sharing class HOT_WorkOrderListController {
                 WHERE
                     (HOT_Request__r.Account__c = :user.AccountId
                     OR HOT_Request__r.Orderer__c = :user.AccountId)
-                    AND Status != 'Annul'
+                    AND Status NOT IN ('Annul')
                 ORDER BY StartDate
             ]
         );
@@ -197,7 +197,7 @@ public without sharing class HOT_WorkOrderListController {
     @AuraEnabled
     public static String getThreadInterpreterId(String workOrderId) {
         List<Thread__c> thread = [
-            SELECT Id, CRM_Thread_Type__c
+            SELECT Id
             FROM Thread__c
             WHERE CRM_Related_Object__c = :workOrderId AND CRM_Thread_Type__c = 'HOT_BRUKER-TOLK'
             LIMIT 1

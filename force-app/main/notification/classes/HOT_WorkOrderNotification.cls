@@ -66,7 +66,7 @@ public without sharing class HOT_WorkOrderNotification {
         List<ServiceAppointment> serviceAppointments = [
             SELECT Id, Status, HOT_WorkOrderLineItem__r.WorkOrderId
             FROM ServiceAppointment
-            WHERE HOT_WorkOrderLineItem__r.WorkOrderId IN :workOrders.keySet() AND Status != 'Annul'
+            WHERE HOT_WorkOrderLineItem__r.WorkOrderId IN :workOrders.keySet() AND Status NOT IN ('Annul')
         ];
         Map<Id, List<ServiceAppointment>> serviceAppointmentsByWorkOrderId = new Map<Id, List<ServiceAppointment>>();
         for (ServiceAppointment serviceAppointment : serviceAppointments) {
