@@ -1,19 +1,14 @@
 <template>
     <template lwc:if={showBanner}>
         <div class="slds-scoped-notification slds-media slds-media_center slds-theme_info" role="status">
-            
             <div class="slds-media__figure">
-                <lightning-icon 
-                    icon-name="utility:info" 
-                    size="small" 
-                    title="Advarsel">
-                </lightning-icon>
+                <lightning-icon icon-name="utility:info" size="small" title="Advarsel"> </lightning-icon>
             </div>
 
             <div class="slds-media__body">
                 <p>
-                    <strong class="slds-text-heading_small">Melding til formidler:</strong>
-                    <br/>
+                    <strong class="slds-text-heading_small">Beskjed til formidler:</strong>
+                    <br />
                     <span class="slds-text-body_regular slds-font-weight_regular">{messageToDispatcher}</span>
                 </p>
             </div>
