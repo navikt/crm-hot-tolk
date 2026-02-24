@@ -49,7 +49,7 @@ public class HOT_RequestRoutingHandler extends MyTriggers {
         Map<String, String> queueNamesByDepartment = HOT_GroupMembersService.getGroupNames(null, null, 'queue');
 
         List<Group> queues = [
-            SELECT Id, DeveloperName
+            SELECT Id, DeveloperName, Type
             FROM Group
             WHERE
                 DeveloperName IN :queueNamesByDepartment.values()
