@@ -91,11 +91,29 @@ public without sharing class HOT_AssignedResourceHandler extends MyTriggers {
         for (Thread__c thread : exisitingThreadsToBeTransferred) {
             accountIds.add(thread.CRM_Account__c);
         }
-        List<HOT_InterestedResource__c> irList = [
-            SELECT Id, ServiceAppointment__c
+
+        List<HOT_InterestedResource__c> irList = new List<HOT_InterestedResource__c>();
+        List<HOT_InterestedResource__c> potentialIRWithThreads = new List<HOT_InterestedResource__c>();
+
+        List<HOT_InterestedResource__c> mergedIRList = [
+            SELECT Id, ServiceAppointment__c, Status__c, ServiceResource__r.AccountId
             FROM HOT_InterestedResource__c
-            WHERE ServiceResource__r.AccountId IN :accountIds AND ServiceAppointment__c IN :potentialSAWithThreadsIds
+            WHERE
+                (Status__c = 'Reserved'
+                OR Status__c = 'Assigned'
+                OR ServiceResource__r.AccountId IN :accountIds)
+                AND ServiceAppointment__c IN :potentialSAWithThreadsIds
         ];
+
+        for (HOT_InterestedResource__c ir : mergedIRList) {
+            if (ir.ServiceResource__r != null && accountIds.contains(ir.ServiceResource__r.AccountId)) {
+                irList.add(ir);
+            }
+            if (ir.Status__c == 'Reserved' || ir.Status__c == 'Assigned') {
+                potentialIRWithThreads.add(ir);
+            }
+        }
+
         //LOOP om threads sin related record er samme serviceappointmentId. Så sett ir sin id som related object
         Map<Id, List<Id>> saIdToIrIdListMap = new Map<Id, List<Id>>();
         for (HOT_InterestedResource__c ir : irList) {
@@ -121,14 +139,7 @@ public without sharing class HOT_AssignedResourceHandler extends MyTriggers {
             }
             update exisitingThreadsToBeTransferred;
         }
-        List<HOT_InterestedResource__c> potentialIRWithThreads = [
-            SELECT Id, ServiceAppointment__c
-            FROM HOT_InterestedResource__c
-            WHERE
-                (Status__c = 'Reserved'
-                OR Status__c = 'Assigned')
-                AND ServiceAppointment__c IN :potentialSAWithThreadsIds
-        ];
+
         if (potentialIRWithThreads.size() != 0) {
             Map<Id, HOT_InterestedResource__c> threadMap = new Map<Id, HOT_InterestedResource__c>(
                 potentialIRWithThreads
