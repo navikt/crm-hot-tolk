@@ -20,14 +20,14 @@ public without sharing class HOT_AssignedResourceHandler extends MyTriggers {
         for (AssignedResource ar : (List<AssignedResource>) records) {
             potentialSAWithThreadsIds.add(ar.ServiceAppointmentId);
         }
-        List<Thread__c> exisitingThreadsToBeTransferred = [
+        List<Thread__c> existingThreadsToBeTransferred = [
             SELECT Id, HOT_IsEmployeeThread__c, CRM_Account__c, CRM_Related_Object__c, HOT_ServiceAppointment__c
             FROM Thread__c
             WHERE CRM_Related_Object__c IN :potentialSAWithThreadsIds AND CRM_Thread_Type__c = 'HOT_TOLK-FORMIDLER'
         ];
         //Finn ir hvor accountid og serviceappointment id er samme
         Set<Id> accountIds = new Set<Id>();
-        for (Thread__c thread : exisitingThreadsToBeTransferred) {
+        for (Thread__c thread : existingThreadsToBeTransferred) {
             accountIds.add(thread.CRM_Account__c);
         }
         List<HOT_InterestedResource__c> irList = [
@@ -45,8 +45,8 @@ public without sharing class HOT_AssignedResourceHandler extends MyTriggers {
             }
         }
 
-        if (exisitingThreadsToBeTransferred.size() != 0) {
-            for (Thread__c thread : exisitingThreadsToBeTransferred) {
+        if (existingThreadsToBeTransferred.size() != 0) {
+            for (Thread__c thread : existingThreadsToBeTransferred) {
                 if (
                     saIdToIrIdListMap.containsKey(thread.HOT_ServiceAppointment__c) &&
                     thread.HOT_IsEmployeeThread__c == false
@@ -58,7 +58,7 @@ public without sharing class HOT_AssignedResourceHandler extends MyTriggers {
                     thread.CRM_Related_Object__c = null;
                 }
             }
-            update exisitingThreadsToBeTransferred;
+            update existingThreadsToBeTransferred;
         }
     }
 
@@ -80,7 +80,7 @@ public without sharing class HOT_AssignedResourceHandler extends MyTriggers {
         for (ServiceAppointment sa : serviceAppointments) {
             potentialSAWithThreadsIds.add(sa.Id);
         }
-        List<Thread__c> exisitingThreadsToBeTransferred = [
+        List<Thread__c> existingThreadsToBeTransferred = [
             SELECT Id, HOT_IsEmployeeThread__c, CRM_Account__c, CRM_Related_Object__c, HOT_ServiceAppointment__c
             FROM Thread__c
             WHERE CRM_Related_Object__c IN :potentialSAWithThreadsIds AND CRM_Thread_Type__c = 'HOT_TOLK-FORMIDLER'
@@ -88,7 +88,7 @@ public without sharing class HOT_AssignedResourceHandler extends MyTriggers {
 
         //Finn ir hvor accountid og serviceappointment id er samme
         Set<Id> accountIds = new Set<Id>();
-        for (Thread__c thread : exisitingThreadsToBeTransferred) {
+        for (Thread__c thread : existingThreadsToBeTransferred) {
             accountIds.add(thread.CRM_Account__c);
         }
 
@@ -124,8 +124,8 @@ public without sharing class HOT_AssignedResourceHandler extends MyTriggers {
             }
         }
 
-        if (exisitingThreadsToBeTransferred.size() != 0) {
-            for (Thread__c thread : exisitingThreadsToBeTransferred) {
+        if (existingThreadsToBeTransferred.size() != 0) {
+            for (Thread__c thread : existingThreadsToBeTransferred) {
                 if (
                     saIdToIrIdListMap.containsKey(thread.HOT_ServiceAppointment__c) &&
                     thread.HOT_IsEmployeeThread__c == false
@@ -137,7 +137,7 @@ public without sharing class HOT_AssignedResourceHandler extends MyTriggers {
                     thread.CRM_Related_Object__c = null;
                 }
             }
-            update exisitingThreadsToBeTransferred;
+            update existingThreadsToBeTransferred;
         }
 
         if (potentialIRWithThreads.size() != 0) {
