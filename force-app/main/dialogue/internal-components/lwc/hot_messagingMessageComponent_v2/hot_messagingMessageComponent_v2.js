@@ -8,7 +8,7 @@ import getWorkOrderInformation from '@salesforce/apex/HOT_MessageHelper.getWorkO
 import getAccountOnWorkOrder from '@salesforce/apex/HOT_MessageHelper.getAccountOnWorkOrder';
 import getThreadInformation from '@salesforce/apex/HOT_MessageHelper.getThreadFromThreadId';
 
-export default class CrmMessagingMessageComponent extends LightningElement {
+export default class hot_messagingMessageComponent extends LightningElement {
     relatedObjectId;
     isThreadSummaryLoaded = false;
     defaultActiveTab = 'tab1';
