@@ -33,7 +33,7 @@ public without sharing class HOT_WOInterpreterThreadService {
         if (reqs == null) {
             return results;
         }
-        
+
         Set<Id> workOrderIds = new Set<Id>();
         for (Integer i = 0; i < reqs.size(); i++) {
             Input req = reqs[i];
@@ -56,20 +56,20 @@ public without sharing class HOT_WOInterpreterThreadService {
             return results;
         }
 
-        Map<Id, WorkOrder> workOrderById = new Map<Id, WorkOrder>([
-            SELECT Id, Subject, HOT_Request__r.Dispatcher__c, HOT_Request__r.Account__c
-            FROM WorkOrder
-            WHERE Id IN :workOrderIds
-        ]);
+        Map<Id, WorkOrder> workOrderById = new Map<Id, WorkOrder>(
+            [
+                SELECT Id, Subject, HOT_Request__r.Dispatcher__c, HOT_Request__r.Account__c
+                FROM WorkOrder
+                WHERE Id IN :workOrderIds
+            ]
+        );
 
         Map<Id, Set<Id>> workOrderToServiceResourceIds = new Map<Id, Set<Id>>();
 
         for (ServiceAppointment serviceAppointment : [
             SELECT HOT_WorkOrderLineItem__r.WorkOrderId, HOT_ServiceResource__c
             FROM ServiceAppointment
-            WHERE
-                HOT_WorkOrderLineItem__r.WorkOrderId IN :workOrderIds
-                AND HOT_ServiceResource__c != null
+            WHERE HOT_WorkOrderLineItem__r.WorkOrderId IN :workOrderIds AND HOT_ServiceResource__c != NULL
         ]) {
             addServiceResource(
                 workOrderToServiceResourceIds,
@@ -97,11 +97,13 @@ public without sharing class HOT_WOInterpreterThreadService {
 
         Map<Id, ServiceResource> serviceResourceById = new Map<Id, ServiceResource>();
         if (!allServiceResourceIds.isEmpty()) {
-            serviceResourceById = new Map<Id, ServiceResource>([
-                SELECT Id, AccountId, RelatedRecordId, HOT_IsEmployedInterpreter__c
-                FROM ServiceResource
-                WHERE Id IN :allServiceResourceIds
-            ]);
+            serviceResourceById = new Map<Id, ServiceResource>(
+                [
+                    SELECT Id, AccountId, RelatedRecordId, HOT_IsEmployedInterpreter__c
+                    FROM ServiceResource
+                    WHERE Id IN :allServiceResourceIds
+                ]
+            );
         }
 
         Map<Id, Map<Id, ServiceResource>> interpretersByWorkOrder = new Map<Id, Map<Id, ServiceResource>>();
@@ -129,7 +131,8 @@ public without sharing class HOT_WOInterpreterThreadService {
             FROM Thread__c
             WHERE
                 CRM_Thread_Type__c = 'HOT_TOLK-FORMIDLER'
-                AND (HOT_WorkOrder__c IN :workOrderIds OR CRM_Related_Object__c IN :workOrderIds)
+                AND (HOT_WorkOrder__c IN :workOrderIds
+                OR CRM_Related_Object__c IN :workOrderIds)
         ]) {
             Id workOrderId = thread.HOT_WorkOrder__c != null ? thread.HOT_WorkOrder__c : thread.CRM_Related_Object__c;
             if (workOrderId == null) {
@@ -138,7 +141,8 @@ public without sharing class HOT_WOInterpreterThreadService {
             if (!threadsByWorkOrderAndKey.containsKey(workOrderId)) {
                 threadsByWorkOrderAndKey.put(workOrderId, new Map<String, Thread__c>());
             }
-            threadsByWorkOrderAndKey.get(workOrderId).put(getThreadKey(thread.HOT_ServiceResource__c, thread.CRM_Account__c), thread);
+            threadsByWorkOrderAndKey.get(workOrderId)
+                .put(getThreadKey(thread.HOT_ServiceResource__c, thread.CRM_Account__c), thread);
         }
 
         Id threadRecordTypeId = HOT_MessageHelper.getHOTThreadRecordType();
@@ -192,6 +196,7 @@ public without sharing class HOT_WOInterpreterThreadService {
                 if (thread == null) {
                     thread = new Thread__c();
                     thread.RecordTypeId = threadRecordTypeId;
+                    thread.Name = 'SAMTALE MED TOLK: ' + workOrder.Subject;
                     thread.CRM_Related_Object__c = workOrder.Id;
                     thread.HOT_WorkOrder__c = workOrder.Id;
                     thread.CRM_Thread_Type__c = 'HOT_TOLK-FORMIDLER';
@@ -201,6 +206,7 @@ public without sharing class HOT_WOInterpreterThreadService {
                     thread.HOT_Dispatcher__c = workOrder.HOT_Request__r.Dispatcher__c;
                     thread.HOT_Title__c = workOrder.Subject;
                     thread.HOT_IsEmployeeThread__c = serviceResource.HOT_IsEmployedInterpreter__c;
+                    thread.CRM_isActive__c = true;
 
                     if (serviceResource.RelatedRecordId != null) {
                         thread.HOT_ParticipantIds__c = serviceResource.RelatedRecordId;
