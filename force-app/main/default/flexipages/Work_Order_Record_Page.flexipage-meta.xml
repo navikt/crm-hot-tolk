@@ -37,6 +37,9 @@
                             </visibilityRule>
                         </valueListItems>
                         <valueListItems>
+                            <value>WorkOrder.Send_melding_til_tolker</value>
+                        </valueListItems>
+                        <valueListItems>
                             <value>Edit</value>
                             <visibilityRule>
                                 <criteria>
