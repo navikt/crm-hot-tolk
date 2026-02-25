@@ -62,8 +62,9 @@ public class HOT_RequestRoutingHandler extends MyTriggers {
         for (Group queue : queues) {
             if (queue.DeveloperName == 'HOT_Tolk_Admin' && queue.Type == 'Queue') {
                 adminGroup = queue.Id;
+            } else {
+                queueIdByDeveloperName.put(queue.DeveloperName, queue.Id);
             }
-            queueIdByDeveloperName.put(queue.DeveloperName, queue.Id);
         }
 
         for (HOT_Request__c req : imageInterpreterRequests) {
