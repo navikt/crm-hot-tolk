@@ -649,12 +649,12 @@ Version two adds in Subject and uses workOrder for values on the screen instead 
         </connector>
         <fields>
             <name>displayWarningText</name>
-            <fieldText>&lt;p&gt;&lt;span style=&quot;font-size: 16px;&quot;&gt;OBS! Ved å endre verdiene her så endrer du verdiene på alle underliggende arbeidsordrelinjer og oppdrag.&lt;/span&gt;&lt;/p&gt;</fieldText>
+            <fieldText>&lt;p&gt;&lt;strong style=&quot;color: rgb(0, 0, 0); font-size: 16px;&quot;&gt;Du oppdaterer nå felter fra Arbeidsordre&lt;/strong&gt;&lt;/p&gt;</fieldText>
             <fieldType>DisplayText</fieldType>
         </fields>
         <fields>
             <name>displayTimeText</name>
-            <fieldText>&lt;p&gt;&lt;span style=&quot;background-color: rgb(255, 255, 255);&quot;&gt;Tid (Kan bare endres om status på oppdrag er åpen eller frigitt til frilanstolk).&lt;/span&gt;&lt;/p&gt;</fieldText>
+            <fieldText>&lt;p&gt;&lt;span style=&quot;color: rgb(0, 0, 0); font-size: 13px; background-color: rgb(255, 255, 255);&quot;&gt;OBS! Ved å endre verdiene her så endrer du verdiene på alle underliggende arbeidsordrelinjer og oppdrag.&lt;/span&gt;&lt;/p&gt;&lt;p&gt;&lt;span style=&quot;color: rgb(0, 0, 0); background-color: rgb(255, 255, 255);&quot;&gt;Tid (Kan bare endres om status på oppdrag er åpen eller frigitt til frilanstolk).&lt;/span&gt;&lt;/p&gt;</fieldText>
             <fieldType>DisplayText</fieldType>
         </fields>
         <fields>
