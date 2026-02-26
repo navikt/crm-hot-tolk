@@ -10,7 +10,6 @@
             <section>
                 <lightning-record-view-form object-api-name="Person__c" record-id={recordId}>
                     <section class="bruker-info-skjema sub-form">
-                        <h2 style="font-size: 1.25rem">Kontaktinformasjon</h2>
                         <div class="slds-grid slds-gutters">
                             <div class="slds-col slds-size_1-of-2">
                                 <lightning-output-field field-name="INT_KrrMobilePhone__c"> </lightning-output-field>
@@ -21,6 +20,22 @@
                         </div>
                     </section>
                 </lightning-record-view-form>
+                <br />
+                <div
+                    if:true={isAlternativeNumber}
+                    class="navno-dekorator alertstripe navno-dekorator alertstripe--info"
+                >
+                    <img class="navno-dekorator alertstripe__ikon" src={informationIcon} alt="" aria-hidden="true" />
+                    <div class="alertstripe__content">
+                        <div class="typo-normal alertstripe__tekst">{alternativePhoneNumberText}</div>
+                        <div class="typo-normal alertstripe__tekst">
+                            Mobilnummeret du vil bli varslet på nå: {person.HOT_MobilePhoneOverride__c }
+                        </div>
+                        <div class="typo-normal alertstripe__tekst">
+                            Årsak: {person.HOT_MobilePhoneOverrideReason__c }
+                        </div>
+                    </div>
+                </div>
                 <br />
                 <p class="typo-normal">
                     <a

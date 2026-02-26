@@ -76,7 +76,7 @@ public without sharing class HOT_MessagesNotification {
                 HOT_ServiceResource__c,
                 HOT_ServiceResource__r.HOT_MobilePhone__c,
                 CRM_Account__r.INT_KrrMobilePhone__c,
-                CRM_Account__r.CRM_Person__r.INT_KrrMobilePhone__c,
+                CRM_Account__r.CRM_Person__r.HOT_MobilePhone__c,
                 CRM_Account__r.CRM_Person__r.HOT_NotificationChannel__c,
                 CRM_Account__r.CRM_Person__r.HOT_IsReservationAgainstNotifications__c
             FROM Thread__c
