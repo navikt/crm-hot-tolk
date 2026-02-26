@@ -1284,6 +1284,13 @@
             <componentInstance>
                 <componentName>hot_dispatcherMessageBanner</componentName>
                 <identifier>c_hot_dispatcherMessageBanner</identifier>
+                <visibilityRule>
+                    <criteria>
+                        <leftValue>{!$User.Profile.Name}</leftValue>
+                        <operator>EQUAL</operator>
+                        <rightValue>HOT Tolk Formidler</rightValue>
+                    </criteria>
+                </visibilityRule>
             </componentInstance>
         </itemInstances>
         <itemInstances>
