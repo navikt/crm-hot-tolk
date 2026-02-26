@@ -605,13 +605,19 @@ export default class Hot_messagingCommunityThreadViewer_v2 extends NavigationMix
                             this.serviceAppointment.HOT_HapticCommunication__c = this.yesOrNo(
                                 this.serviceAppointment.HOT_HapticCommunication__c
                             );
-                            if (
-                                this.serviceAppointment &&
-                                this.serviceAppointment.HOT_Request__r &&
-                                this.serviceAppointment.HOT_Request__r.Account__r.Name
-                            ) {
-                                this.accountName = this.serviceAppointment.HOT_Request__r.Account__r.Name;
-                            }
+
+                            const sa = this.serviceAppointment;
+                            const acc = sa?.HOT_Request__r?.Account__r;
+                            const confidentiality = acc?.CRM_Person__r?.INT_Confidential__c;
+
+                            const strictlyConfidential = new Set(['STRENGT_FORTROLIG', 'STRENGT_FORTROLIG_UTLAND']);
+
+                            this.accountName =
+                                confidentiality === 'UGRADERT'
+                                    ? acc?.Name || ''
+                                    : strictlyConfidential.has(confidentiality)
+                                    ? ''
+                                    : sa?.HOT_NavEmployeeName__c || '';
 
                             if (
                                 this.serviceAppointment &&

@@ -239,7 +239,21 @@ export default class Hot_myServiceAppointmentsList_v2 extends NavigationMixin(Li
         }
     }
     get accountName() {
-        return this.serviceAppointment?.HOT_Request__r?.Account__r?.Name ?? '';
+        const sa = this.serviceAppointment;
+        const acc = sa?.HOT_Request__r?.Account__r;
+        const confidentiality = acc?.CRM_Person__r?.INT_Confidential__c;
+
+        const strictlyConfidential = new Set(['STRENGT_FORTROLIG', 'STRENGT_FORTROLIG_UTLAND']);
+
+        if (confidentiality === 'UGRADERT') {
+            return acc?.Name ?? '';
+        }
+
+        if (strictlyConfidential.has(confidentiality)) {
+            return '';
+        }
+
+        return sa?.HOT_NavEmployeeName__c ?? '';
     }
 
     get ownerName() {
