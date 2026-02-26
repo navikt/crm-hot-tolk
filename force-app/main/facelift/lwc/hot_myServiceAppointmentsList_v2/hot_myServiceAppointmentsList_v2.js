@@ -243,17 +243,11 @@ export default class Hot_myServiceAppointmentsList_v2 extends NavigationMixin(Li
         const acc = sa?.HOT_Request__r?.Account__r;
         const confidentiality = acc?.CRM_Person__r?.INT_Confidential__c;
 
-        const strictlyConfidential = new Set(['STRENGT_FORTROLIG', 'STRENGT_FORTROLIG_UTLAND']);
-
-        if (confidentiality === 'UGRADERT') {
-            return acc?.Name ?? '';
+        if (confidentiality === 'FORTROLIG') {
+            return sa?.HOT_NavEmployeeName__c ?? '';
         }
 
-        if (strictlyConfidential.has(confidentiality)) {
-            return '';
-        }
-
-        return sa?.HOT_NavEmployeeName__c ?? '';
+        return acc?.Name ?? '';
     }
 
     get ownerName() {

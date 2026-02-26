@@ -610,14 +610,8 @@ export default class Hot_messagingCommunityThreadViewer_v2 extends NavigationMix
                             const acc = sa?.HOT_Request__r?.Account__r;
                             const confidentiality = acc?.CRM_Person__r?.INT_Confidential__c;
 
-                            const strictlyConfidential = new Set(['STRENGT_FORTROLIG', 'STRENGT_FORTROLIG_UTLAND']);
-
                             this.accountName =
-                                confidentiality === 'UGRADERT'
-                                    ? acc?.Name || ''
-                                    : strictlyConfidential.has(confidentiality)
-                                    ? ''
-                                    : sa?.HOT_NavEmployeeName__c || '';
+                                confidentiality === 'FORTROLIG' ? sa?.HOT_NavEmployeeName__c || '' : acc?.Name || '';
 
                             if (
                                 this.serviceAppointment &&

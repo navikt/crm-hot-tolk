@@ -752,15 +752,13 @@ export default class LibsFullCalendarV2 extends NavigationMixin(LightningElement
                     this.accountPhoneNumber = crmPerson.INT_KrrMobilePhone__c || '';
                 }
                 const confidentiality = sa.HOT_Request__r?.Account__r?.CRM_Person__r?.INT_Confidential__c;
-                const strictlyConfidential = new Set(['STRENGT_FORTROLIG', 'STRENGT_FORTROLIG_UTLAND']);
 
-                if (confidentiality === 'UGRADERT') {
-                    this.accountName = sa.HOT_Request__r?.Account__r?.Name || '';
-                } else if (strictlyConfidential.has(confidentiality)) {
-                    this.accountName = '';
-                } else {
+                if (confidentiality === 'FORTROLIG') {
                     this.accountName = sa.HOT_NavEmployeeName__c || '';
+                } else {
+                    this.accountName = sa.HOT_Request__r?.Account__r?.Name || '';
                 }
+
                 this.ownerName = sa.HOT_Request__r?.OwnerName__c || '';
             }
         } catch (error) {
