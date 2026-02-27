@@ -1,0 +1,9 @@
+<template>
+    <c-hot_messaging-message-component_v2
+        lwc:if={isRecordLoaded}
+        record-id={customRecordId}
+        object-api-name={customObjectApiName}
+    >
+    </c-hot_messaging-message-component_v2>
+    <template lwc:if={isError}>{errorMessage}</template>
+</template>
