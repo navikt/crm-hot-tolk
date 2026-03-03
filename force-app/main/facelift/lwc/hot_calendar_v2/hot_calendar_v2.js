@@ -751,7 +751,14 @@ export default class LibsFullCalendarV2 extends NavigationMixin(LightningElement
                         (crmPerson.CRM_AgeNumber__c ? crmPerson.CRM_AgeNumber__c + ' år' : '');
                     this.accountPhoneNumber = crmPerson.INT_KrrMobilePhone__c || '';
                 }
-                this.accountName = sa.HOT_Request__r?.Account__r?.Name || '';
+                const confidentiality = sa.HOT_Request__r?.Account__r?.CRM_Person__r?.INT_Confidential__c;
+
+                if (confidentiality === 'FORTROLIG') {
+                    this.accountName = sa.HOT_NavEmployeeName__c || '';
+                } else {
+                    this.accountName = sa.HOT_Request__r?.Account__r?.Name || '';
+                }
+
                 this.ownerName = sa.HOT_Request__r?.OwnerName__c || '';
             }
         } catch (error) {

@@ -3,31 +3,38 @@
     <label>Tolkemetode (sekundær)</label>
     <name>InterpretationMethodSecondaryType__c</name>
     <picklistValues>
+        <masterLabel>TS - Tegnspråk</masterLabel>
+        <translation><!-- TS -
+            Tegnspråk --></translation>
+    </picklistValues>
+    <picklistValues>
         <masterLabel>BTV - Bildetolkvakt</masterLabel>
-        <translation><!-- BTV - Bildetolkvakt --></translation>
+        <translation><!-- BTV -
+            Bildetolkvakt --></translation>
     </picklistValues>
     <picklistValues>
         <masterLabel>SK - Skrivetolking</masterLabel>
-        <translation><!-- SK - Skrivetolking --></translation>
-    </picklistValues>
-    <picklistValues>
-        <masterLabel>TS - Tegnspråk</masterLabel>
-        <translation><!-- TS - Tegnspråk --></translation>
+        <translation><!-- SK -
+            Skrivetolking --></translation>
     </picklistValues>
     <picklistValues>
         <masterLabel>TSBS - Tegnspråk I Begrenset Synsfelt</masterLabel>
-        <translation><!-- TSBS - Tegnspråk I Begrenset Synsfelt --></translation>
+        <translation><!-- TSBS -
+            Tegnspråk I Begrenset Synsfelt --></translation>
     </picklistValues>
     <picklistValues>
         <masterLabel>TSS - Tegn Som Støtte Til Munnavlesning</masterLabel>
-        <translation><!-- TSS - Tegn Som Støtte Til Munnavlesning --></translation>
-    </picklistValues>
-    <picklistValues>
-        <masterLabel>TT - Taletolking</masterLabel>
-        <translation><!-- TT - Taletolking --></translation>
+        <translation><!-- TSS - Tegn
+            Som Støtte Til Munnavlesning --></translation>
     </picklistValues>
     <picklistValues>
         <masterLabel>TTS - Taktilt Tegnspråk</masterLabel>
-        <translation><!-- TTS - Taktilt Tegnspråk --></translation>
+        <translation><!-- TTS - Taktilt
+            Tegnspråk --></translation>
+    </picklistValues>
+    <picklistValues>
+        <masterLabel>TT - Taletolking</masterLabel>
+        <translation><!-- TT -
+            Taletolking --></translation>
     </picklistValues>
 </CustomFieldTranslation>

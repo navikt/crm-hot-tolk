@@ -162,7 +162,14 @@
                                         <template lwc:if={serviceAppointment.HOT_Interpreters__c}>
                                             <p>(Med)tolk: <span>{serviceAppointment.HOT_Interpreters__c}</span></p>
                                         </template>
-                                        <p>Tilleggsopplysninger: <span>{serviceAppointment.Description}</span></p>
+                                        <p>
+                                            Tilleggsopplysninger:&nbsp;
+                                            <span
+                                                ><lightning-formatted-rich-text
+                                                    value={serviceAppointment.Description}
+                                                ></lightning-formatted-rich-text
+                                            ></span>
+                                        </p>
 
                                         <template lwc:if={ordererPhoneNumber}>
                                             <p>Telefonnummer til bestiller:&nbsp;<span>{ordererPhoneNumber}</span></p>

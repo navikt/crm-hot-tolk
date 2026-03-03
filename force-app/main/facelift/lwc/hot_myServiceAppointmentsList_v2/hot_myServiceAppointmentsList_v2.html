@@ -95,7 +95,10 @@
 
                     <p lwc:if={interpreters}><strong>(Med)tolk:</strong> {interpreters}</p>
 
-                    <p lwc:if={description}><strong>Tilleggsopplysninger:</strong> {description}</p>
+                    <p lwc:if={description}>
+                        <strong>Tilleggsopplysninger: </strong
+                        ><lightning-formatted-rich-text value={description}></lightning-formatted-rich-text>
+                    </p>
 
                     <p lwc:if={ordererPhoneNumber}>
                         <strong>Telefonnummer til bestiller:</strong> {ordererPhoneNumber}
