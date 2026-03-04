@@ -69,7 +69,12 @@
                     </p>
                     <br lwc:if={request.Description__c} />
                     <p lwc:if={request.Description__c}>
-                        <strong>Tilleggsopplysninger: </strong><span>{request.Description__c}</span>
+                        <strong>Tilleggsopplysninger: </strong
+                        ><span
+                            ><lightning-formatted-rich-text
+                                value={request.Description__c}
+                            ></lightning-formatted-rich-text
+                        ></span>
                     </p>
                 </div>
                 <c-record-files-without-sharing
@@ -131,7 +136,12 @@
                     </p>
                     <br lwc:if={request.Description__c} />
                     <p lwc:if={request.Description__c}>
-                        <strong>Tilleggsopplysninger: </strong><span>{request.Description__c}</span>
+                        <strong>Tilleggsopplysninger: </strong
+                        ><span
+                            ><lightning-formatted-rich-text
+                                value={request.Description__c}
+                            ></lightning-formatted-rich-text
+                        ></span>
                     </p>
                 </div>
                 <c-record-files-without-sharing

@@ -14,5 +14,6 @@
         )
     )
 )</errorConditionFormula>
+    <errorDisplayField>Status</errorDisplayField>
     <errorMessage>Status kan ikke endres fra Dekket til Åpent.</errorMessage>
 </ValidationRule>
