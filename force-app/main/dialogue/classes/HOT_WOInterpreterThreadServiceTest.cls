@@ -75,17 +75,42 @@ private class HOT_WOInterpreterThreadServiceTest {
         System.assertEquals('Processed', results[0].statusMessage, 'Expected successful processing status');
 
         List<Thread__c> threads = [
-            SELECT Id, HOT_ServiceResource__c, HOT_ParticipantIds__c
+            SELECT Id, HOT_ServiceResource__c, HOT_ParticipantIds__c, HOT_ServiceAppointment__c, CRM_Related_Object__c
             FROM Thread__c
             WHERE HOT_WorkOrder__c = :workOrder.Id AND CRM_Thread_Type__c = 'HOT_TOLK-FORMIDLER'
         ];
         System.assertEquals(2, threads.size(), 'Expected two one-to-one interpreter threads');
 
         Set<Id> serviceResourceIdsOnThread = new Set<Id>();
+        Set<Id> serviceAppointmentIdsOnThread = new Set<Id>();
         for (Thread__c thread : threads) {
             serviceResourceIdsOnThread.add(thread.HOT_ServiceResource__c);
+            System.assertNotEquals(
+                null,
+                thread.HOT_ServiceAppointment__c,
+                'Expected HOT_ServiceAppointment__c to be set on interpreter thread'
+            );
+            System.assertEquals(
+                thread.HOT_ServiceAppointment__c,
+                thread.CRM_Related_Object__c,
+                'Expected CRM_Related_Object__c to point to the same Service Appointment'
+            );
+            serviceAppointmentIdsOnThread.add(thread.HOT_ServiceAppointment__c);
         }
         System.assertEquals(2, serviceResourceIdsOnThread.size(), 'Expected one unique thread per interpreter');
+        Set<Id> expectedServiceAppointmentIds = new Set<Id>();
+        for (AssignedResource assignedResource : [
+            SELECT ServiceAppointmentId
+            FROM AssignedResource
+            WHERE ServiceAppointment.HOT_WorkOrderLineItem__r.WorkOrderId = :workOrder.Id
+        ]) {
+            expectedServiceAppointmentIds.add(assignedResource.ServiceAppointmentId);
+        }
+        System.assertEquals(
+            expectedServiceAppointmentIds,
+            serviceAppointmentIdsOnThread,
+            'Expected thread Service Appointments to match Assigned Resources'
+        );
 
         Set<Id> threadIds = new Map<Id, Thread__c>(threads).keySet();
         Integer broadcastMessageCount = 0;
@@ -116,10 +141,17 @@ private class HOT_WOInterpreterThreadServiceTest {
             WHERE RelatedRecordId = :interpreterUser1.Id
             LIMIT 1
         ];
+        AssignedResource existingAssignment = [
+            SELECT ServiceAppointmentId
+            FROM AssignedResource
+            WHERE ServiceResourceId = :existingInterpreter.Id
+            LIMIT 1
+        ];
 
         Thread__c existingThread = new Thread__c();
         existingThread.RecordTypeId = HOT_MessageHelper.getHOTThreadRecordType();
-        existingThread.CRM_Related_Object__c = workOrder.Id;
+        existingThread.CRM_Related_Object__c = existingAssignment.ServiceAppointmentId;
+        existingThread.HOT_ServiceAppointment__c = existingAssignment.ServiceAppointmentId;
         existingThread.HOT_WorkOrder__c = workOrder.Id;
         existingThread.CRM_Thread_Type__c = 'HOT_TOLK-FORMIDLER';
         existingThread.HOT_ServiceResource__c = existingInterpreter.Id;
@@ -154,6 +186,25 @@ private class HOT_WOInterpreterThreadServiceTest {
                 AND HOT_ServiceResource__c = :existingInterpreter.Id
         ];
         System.assertEquals(1, existingThreadCount, 'Should not create duplicate thread for same interpreter');
+        Thread__c reusedThread = [
+            SELECT HOT_ServiceAppointment__c, CRM_Related_Object__c
+            FROM Thread__c
+            WHERE
+                HOT_WorkOrder__c = :workOrder.Id
+                AND CRM_Thread_Type__c = 'HOT_TOLK-FORMIDLER'
+                AND HOT_ServiceResource__c = :existingInterpreter.Id
+            LIMIT 1
+        ];
+        System.assertEquals(
+            existingAssignment.ServiceAppointmentId,
+            reusedThread.HOT_ServiceAppointment__c,
+            'Expected reused thread to keep Service Appointment reference'
+        );
+        System.assertEquals(
+            reusedThread.HOT_ServiceAppointment__c,
+            reusedThread.CRM_Related_Object__c,
+            'Expected CRM_Related_Object__c to stay aligned with Service Appointment'
+        );
 
         List<Thread__c> allInterpreterThreads = [
             SELECT Id
