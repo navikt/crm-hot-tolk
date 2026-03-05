@@ -196,7 +196,7 @@ export default class Hot_wageClaimList_v3 extends NavigationMixin(LightningEleme
     }
     navigateToThread(recordId) {
         const baseUrl = '/samtale-frilans';
-        const attributes = `recordId=${recordId}&from=mine-oppdrag&list=wageClaim`;
+        const attributes = `recordId=${recordId}&from=mine-oppdrag&list=wageClaimsOfNewType`;
         const url = `${baseUrl}?${attributes}`;
 
         this[NavigationMixin.Navigate]({
