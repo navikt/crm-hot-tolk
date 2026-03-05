@@ -20,13 +20,6 @@ span {
     font-weight: normal;
 }
 
-@media (max-width: 576px) {
-    .main-content {
-        overflow-y: scroll;
-        max-height: 50vh;
-    }
-}
-
 dialog.modal-container h2 {
     font-family: 'Source Sans Pro', Arial, sans-serif;
 }

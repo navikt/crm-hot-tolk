@@ -60,6 +60,8 @@ export default class Hot_wageClaimList_v3 extends NavigationMixin(LightningEleme
             for (let record of result.data) {
                 tempRecords.push(formatRecord(Object.assign({}, record), this.datetimeFields));
             }
+            tempRecords.sort((a, b) => new Date(b.StartTime__c) - new Date(a.StartTime__c));
+
             this.wageClaims = tempRecords;
             this.allWageClaimsWired = this.wageClaims;
             this.refresh();
@@ -194,7 +196,7 @@ export default class Hot_wageClaimList_v3 extends NavigationMixin(LightningEleme
     }
     navigateToThread(recordId) {
         const baseUrl = '/samtale-frilans';
-        const attributes = `recordId=${recordId}&from=mine-oppdrag&list=wageClaim`;
+        const attributes = `recordId=${recordId}&from=mine-oppdrag&list=wageClaimsOfNewType`;
         const url = `${baseUrl}?${attributes}`;
 
         this[NavigationMixin.Navigate]({
@@ -300,5 +302,30 @@ export default class Hot_wageClaimList_v3 extends NavigationMixin(LightningEleme
 
     get degreeOfHearingAndVisualImpairment() {
         return this.wageClaim?.DegreeOfHearingAndVisualImpairment__c || '';
+    }
+    get cancelledDate() {
+        const dateVal = this.wageClaim?.ServiceAppointment__r?.HOT_CanceledDate__c;
+
+        if (!dateVal) {
+            return '';
+        }
+
+        const d = new Date(dateVal);
+
+        if (isNaN(d.getTime())) {
+            return '';
+        }
+
+        return (
+            ('0' + d.getDate()).substr(-2) +
+            '.' +
+            ('0' + (d.getMonth() + 1)).substr(-2) +
+            '.' +
+            d.getFullYear() +
+            ', ' +
+            ('0' + d.getHours()).substr(-2) +
+            ':' +
+            ('0' + d.getMinutes()).substr(-2)
+        );
     }
 }
