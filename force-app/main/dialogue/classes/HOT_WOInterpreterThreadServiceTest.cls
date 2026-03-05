@@ -114,11 +114,7 @@ private class HOT_WOInterpreterThreadServiceTest {
 
         Set<Id> threadIds = new Map<Id, Thread__c>(threads).keySet();
         Integer broadcastMessageCount = 0;
-        for (Message__c message : [
-            SELECT Id, CRM_Message_Text__c
-            FROM Message__c
-            WHERE CRM_Thread__c IN :threadIds
-        ]) {
+        for (Message__c message : [SELECT Id, CRM_Message_Text__c FROM Message__c WHERE CRM_Thread__c IN :threadIds]) {
             if (message.CRM_Message_Text__c == 'Broadcast to all') {
                 broadcastMessageCount++;
             }
@@ -215,11 +211,7 @@ private class HOT_WOInterpreterThreadServiceTest {
 
         Set<Id> threadIds = new Map<Id, Thread__c>(allInterpreterThreads).keySet();
         Integer messagesCreated = 0;
-        for (Message__c message : [
-            SELECT Id, CRM_Message_Text__c
-            FROM Message__c
-            WHERE CRM_Thread__c IN :threadIds
-        ]) {
+        for (Message__c message : [SELECT Id, CRM_Message_Text__c FROM Message__c WHERE CRM_Thread__c IN :threadIds]) {
             if (message.CRM_Message_Text__c == 'Broadcast with existing thread') {
                 messagesCreated++;
             }
