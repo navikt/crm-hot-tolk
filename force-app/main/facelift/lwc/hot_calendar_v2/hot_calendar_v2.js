@@ -270,9 +270,6 @@ export default class LibsFullCalendarV2 extends NavigationMixin(LightningElement
             this.calendar.setOption('slotMaxTime', maxTime);
         });
     }
-
-    // Other existing code remains unchanged
-
     yesOrNo(boolean) {
         if (boolean) {
             return 'Ja';
@@ -295,7 +292,6 @@ export default class LibsFullCalendarV2 extends NavigationMixin(LightningElement
                     if (isPseudoEvent) {
                         event.setProp('display', 'none');
                     } else {
-                        // Viktig: alltid tving tilbake, så den ikke "blir borte" etter navigasjon
                         event.setProp('display', 'auto');
                     }
                     return;
@@ -440,7 +436,6 @@ export default class LibsFullCalendarV2 extends NavigationMixin(LightningElement
         let cursor = new Date(event.start.getTime() + LibsFullCalendarV2.MILLISECONDS_PER_DAY);
 
         // End: hvis end er eksakt midnatt (00:00) så skal vi IKKE vise prikk på den dagen
-        // (fordi det egentlig ikke er noe varighet på "neste dag").
         let effectiveEnd = new Date(event.end.getTime() + LibsFullCalendarV2.MILLISECONDS_PER_DAY);
 
         const endIsExactMidnight =
@@ -451,7 +446,6 @@ export default class LibsFullCalendarV2 extends NavigationMixin(LightningElement
             event.end.getMilliseconds() === 0;
 
         if (endIsExactMidnight) {
-            // Flytt effectiveEnd tilbake til samme dato som forrige dag, så while-løkken stopper før "siste dag"
             effectiveEnd = new Date(effectiveEnd.getTime() - LibsFullCalendarV2.MILLISECONDS_PER_DAY);
         }
 
