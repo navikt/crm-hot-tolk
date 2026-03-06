@@ -7,17 +7,14 @@ import setLastMessageFrom from '@salesforce/apex/HOT_MessageHelper.setLastMessag
 import getUserNameRole from '@salesforce/apex/HOT_MessageHelper.getUserNameRole';
 import markThreadAsReadEmployee from '@salesforce/apex/HOT_MessageHelper.markThreadAsReadEmployee';
 import userId from '@salesforce/user/Id';
-import { updateRecord, getRecord, getFieldValue } from 'lightning/uiRecordApi';
+import { updateRecord } from 'lightning/uiRecordApi';
+import getThreadById from '@salesforce/apex/HOT_MessageHelper.getThreadById';
 import ACTIVE_FIELD from '@salesforce/schema/Thread__c.CRM_isActive__c';
 import THREAD_ID_FIELD from '@salesforce/schema/Thread__c.Id';
-import CREATED_BY_FIELD from '@salesforce/schema/Thread__c.CreatedById';
-import REGISTERED_DATE from '@salesforce/schema/Thread__c.CRM_Date_Time_Registered__c';
-import FIRSTNAME_FIELD from '@salesforce/schema/Thread__c.CreatedBy.FirstName';
-import LASTNAME_FIELD from '@salesforce/schema/Thread__c.CreatedBy.LastName';
 import { ShowToastEvent } from 'lightning/platformShowToastEvent';
 import { refreshApex } from '@salesforce/apex';
 
-export default class messagingThreadViewer extends LightningElement {
+export default class hot_messagingThreadViewer extends LightningElement {
     createdbyid;
     usertype;
     otheruser;
@@ -37,6 +34,8 @@ export default class messagingThreadViewer extends LightningElement {
     @track hasAccess = false;
     @track showAccessError = false;
 
+    @track wiredThread = {};
+
     @api textTemplate; //Support for conditional text template as input
     //Constructor, called onload
     @api focusOnInput() {
@@ -48,22 +47,28 @@ export default class messagingThreadViewer extends LightningElement {
     connectedCallback() {
         if (this.thread) {
             this.threadid = this.thread.Id;
+            checkAccess({ threadId: this.threadid }).then((result) => {
+                if (result == true) {
+                    this.hasAccess = true;
+                    this.showAccessError = false;
+                    getThreadById({ threadId: this.threadid })
+                        .then((result) => {
+                            this.wiredThread = result;
+                        })
+                        .catch((error) => {
+                            console.log('Error in getThreadById: ' + JSON.stringify(error));
+                        });
+                } else {
+                    this.showAccessError = true;
+                    this.hasAccess = false;
+                }
+            });
+            this.handleSubscribe();
+            this.scrolltobottom();
+            markAsReadByNav({ threadId: this.threadid });
+            markThreadAsReadEmployee({ threadId: this.threadid });
         }
-        checkAccess({ threadId: this.threadid }).then((result) => {
-            if (result == true) {
-                this.hasAccess = true;
-                this.showAccessError = false;
-            } else {
-                this.showAccessError = true;
-                this.hasAccess = false;
-            }
-        });
-        this.handleSubscribe();
-        this.scrolltobottom();
-        markAsReadByNav({ threadId: this.threadid });
-        markThreadAsReadEmployee({ threadId: this.threadid });
     }
-
     disconnectedCallback() {
         this.handleUnsubscribe();
     }
@@ -111,12 +116,6 @@ export default class messagingThreadViewer extends LightningElement {
                 console.log('EMP unsubscribe failed: ' + JSON.stringify(error, null, 2));
             });
     }
-
-    @wire(getRecord, {
-        recordId: '$threadid',
-        fields: [ACTIVE_FIELD, CREATED_BY_FIELD, FIRSTNAME_FIELD, LASTNAME_FIELD, REGISTERED_DATE]
-    })
-    wiredThread;
 
     @wire(getmessages, { threadId: '$threadid' }) //Calls apex and extracts messages related to this record
     wiremessages(result) {
@@ -247,13 +246,12 @@ export default class messagingThreadViewer extends LightningElement {
     //##################################//
 
     get registereddate() {
-        return getFieldValue(this.wiredThread.data, REGISTERED_DATE);
+        return this.wiredThread?.CRM_Date_Time_Registered__c;
     }
 
     get closedThread() {
-        return !getFieldValue(this.wiredThread.data, ACTIVE_FIELD);
+        return !this.wiredThread?.CRM_isActive__c;
     }
-
     get quickTextCmp() {
         return this.template.querySelector('c-hot_messaging-quick-text');
     }

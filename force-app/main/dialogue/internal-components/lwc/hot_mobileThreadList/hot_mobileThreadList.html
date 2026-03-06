@@ -1,0 +1,56 @@
+<template>
+    <div class="threadListWrapper">
+        <div class="content">
+            <div class="threadFilterSearchMobile mobile-only">
+                <c-hot_mobile-thread-list-search onsearchchange={handleSearchChange}></c-hot_mobile-thread-list-search>
+                <div class="space"></div>
+                <c-hot_mobile-thread-list-filter-buttons
+                    onfilterbuttonclick={handleFilterButtonClick}
+                ></c-hot_mobile-thread-list-filter-buttons>
+            </div>
+            <div class="threadList">
+                <!--
+                <div class="left">
+                    <div class="sr-only" tabindex="0" aria-live="polite" role="status">
+                        <template lwc:if={hasThreads}>
+                            <p>
+                                Du har {sortedThreads.length} samtaler i listen med dette filteret. {unreadThreadsCount}
+                                uleste samtaler
+                            </p>
+                        </template>
+                        <template lwc:if={noTreads}>
+                            <p>Ingen samtaler</p>
+                        </template>
+                    </div>
+                    <div class="leftSpacer"></div>
+                    <c-hot_mobile-thread-list-filter-buttons
+                        onfilterbuttonclick={handleFilterButtonClick}
+                    ></c-hot_mobile-thread-list-filter-buttons>
+                    <c-hot_mobile-thread-list-search
+                        helptext-hovertext={threadSearchHelpText}
+                        onsearchchange={handleSearchChange}
+                    ></c-hot_mobile-thread-list-search>
+                </div>
+                -->
+                <div class="right">
+                    <div class="rightHeader desktop-only">
+                        <p class="left-text"></p>
+                        <p lwc:if={hasThreads} class="right-text">Siste melding sendt</p>
+                    </div>
+                    <div class="noThreads">
+                        <template lwc:if={noTreads}>
+                            <p>Ingen samtaler</p>
+                        </template>
+                    </div>
+                    <template for:each={sortedThreads} for:item="thread">
+                        <c-hot_mobile-thread-list-card
+                            key={thread.Id}
+                            thread={thread}
+                            onthreadbuttonclick={goToThread}
+                        ></c-hot_mobile-thread-list-card>
+                    </template>
+                </div>
+            </div>
+        </div>
+    </div>
+</template>

@@ -4,9 +4,9 @@ public without sharing class HOT_MessageHelper {
     private static User getCurrentUser() {
         if (cachedUser == null) {
             cachedUser = [
-            SELECT Id, FirstName, Profile.Name
-            FROM User
-            WHERE Id = :UserInfo.getUserId()
+                SELECT Id, FirstName, Profile.Name
+                FROM User
+                WHERE Id = :UserInfo.getUserId()
             ];
         }
         return cachedUser;
@@ -98,7 +98,25 @@ public without sharing class HOT_MessageHelper {
             return null;
         }
     }
-
+    @AuraEnabled(cacheable=false)
+    public static Thread__c getThreadById(Id threadId) {
+        try {
+            return [
+                SELECT
+                    Id,
+                    CreatedById,
+                    CRM_Date_Time_Registered__c,
+                    CreatedBy.FirstName,
+                    CreatedBy.LastName,
+                    CRM_isActive__c
+                FROM Thread__c
+                WHERE Id = :threadId
+                LIMIT 1
+            ];
+        } catch (Exception e) {
+            throw new AuraHandledException(e.getMessage());
+        }
+    }
     @AuraEnabled(cacheable=true)
     public static List<Thread__c> getThreadFromThreadId(Id recordId) {
         try {
@@ -133,7 +151,12 @@ public without sharing class HOT_MessageHelper {
         thread.RecordTypeId = HOT_MessageHelper.getHOTThreadRecordType();
         String objectType = String.valueOf(recordId.getsobjecttype());
         if (objectType == 'WorkOrder') {
-            WorkOrder wo = [SELECT Subject, HOT_Request__r.Dispatcher__c,HOT_Request__r.Account__c FROM WorkOrder WHERE Id = :recordId LIMIT 1];
+            WorkOrder wo = [
+                SELECT Subject, HOT_Request__r.Dispatcher__c, HOT_Request__r.Account__c
+                FROM WorkOrder
+                WHERE Id = :recordId
+                LIMIT 1
+            ];
             thread.HOT_Title__c = wo.Subject;
             thread.CRM_Account__c = accountId;
             thread.HOT_WorkOrder__c = recordId;
