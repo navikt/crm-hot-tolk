@@ -5,7 +5,7 @@
     <description>Oppdrag fram i tid skal ikke bli endret til status dekket</description>
     <errorConditionFormula>AND(
     ISPICKVAL(Status, &quot;Completed&quot;),
-    PRIORVALUE(Status) &lt;&gt; &quot;Completed&quot;,
+    ISPICKVAL(PRIORVALUE(Status), &quot;Dispatched&quot;),
     EarliestStartTime &gt; NOW(),
     NOT(
         OR(

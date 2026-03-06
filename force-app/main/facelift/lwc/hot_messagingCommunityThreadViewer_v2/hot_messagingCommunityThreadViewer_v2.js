@@ -605,13 +605,13 @@ export default class Hot_messagingCommunityThreadViewer_v2 extends NavigationMix
                             this.serviceAppointment.HOT_HapticCommunication__c = this.yesOrNo(
                                 this.serviceAppointment.HOT_HapticCommunication__c
                             );
-                            if (
-                                this.serviceAppointment &&
-                                this.serviceAppointment.HOT_Request__r &&
-                                this.serviceAppointment.HOT_Request__r.Account__r.Name
-                            ) {
-                                this.accountName = this.serviceAppointment.HOT_Request__r.Account__r.Name;
-                            }
+
+                            const sa = this.serviceAppointment;
+                            const acc = sa?.HOT_Request__r?.Account__r;
+                            const confidentiality = acc?.CRM_Person__r?.INT_Confidential__c;
+
+                            this.accountName =
+                                confidentiality === 'FORTROLIG' ? sa?.HOT_NavEmployeeName__c || '' : acc?.Name || '';
 
                             if (
                                 this.serviceAppointment &&
@@ -747,6 +747,9 @@ export default class Hot_messagingCommunityThreadViewer_v2 extends NavigationMix
                             this.wageClaim.StartAndEndDate = formatDatetimeinterval(
                                 this.wageClaim.StartTime__c,
                                 this.wageClaim.EndTime__c
+                            );
+                            this.wageClaim.cancelledDate = formatDatetime(
+                                this.wageClaim.ServiceAppointment__r.HOT_CanceledDate__c
                             );
                             this.isDetailsContent = true;
                             this.isWCDetails = true;

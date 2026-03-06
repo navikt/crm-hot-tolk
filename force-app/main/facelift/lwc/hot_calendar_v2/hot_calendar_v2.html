@@ -128,7 +128,12 @@
                                                 (Med)tolk: <span>{serviceAppointment.HOT_Interpreters__c}</span>
                                             </p>
                                             <p lwc:if={serviceAppointment.Description}>
-                                                Tilleggsopplysninger: <span>{serviceAppointment.Description}</span>
+                                                Tilleggsopplysninger:&nbsp;
+                                                <span
+                                                    ><lightning-formatted-rich-text
+                                                        value={serviceAppointment.Description}
+                                                    ></lightning-formatted-rich-text
+                                                ></span>
                                             </p>
 
                                             <p lwc:if={ordererPhoneNumber}>

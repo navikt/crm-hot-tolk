@@ -160,38 +160,6 @@
         </value>
     </processMetadataValues>
     <processType>Flow</processType>
-    <recordDeletes>
-        <name>deleteLicense</name>
-        <label>deleteLicense</label>
-        <locationX>842</locationX>
-        <locationY>1754</locationY>
-        <connector>
-            <targetReference>SuccessScreen</targetReference>
-        </connector>
-        <filterLogic>1 AND (2 OR 3)</filterLogic>
-        <filters>
-            <field>AssigneeId</field>
-            <operator>EqualTo</operator>
-            <value>
-                <elementReference>getUser.Id</elementReference>
-            </value>
-        </filters>
-        <filters>
-            <field>PermissionSetLicenseId</field>
-            <operator>EqualTo</operator>
-            <value>
-                <elementReference>getFieldServiceSchedulingPsl.Id</elementReference>
-            </value>
-        </filters>
-        <filters>
-            <field>PermissionSetLicenseId</field>
-            <operator>EqualTo</operator>
-            <value>
-                <elementReference>getFieldServiceMobilePsl.Id</elementReference>
-            </value>
-        </filters>
-        <object>PermissionSetLicenseAssign</object>
-    </recordDeletes>
     <recordLookups>
         <name>GetCurrentResource</name>
         <label>GetCurrentResource</label>
@@ -218,52 +186,6 @@
         <queriedFields>RelatedRecordId</queriedFields>
         <sortField>Id</sortField>
         <sortOrder>Asc</sortOrder>
-    </recordLookups>
-    <recordLookups>
-        <name>getFieldServiceMobilePsl</name>
-        <label>getFieldServiceMobilePsl</label>
-        <locationX>842</locationX>
-        <locationY>1538</locationY>
-        <assignNullValuesIfNoRecordsFound>false</assignNullValuesIfNoRecordsFound>
-        <connector>
-            <targetReference>getFieldServiceSchedulingPsl</targetReference>
-        </connector>
-        <filterLogic>or</filterLogic>
-        <filters>
-            <field>DeveloperName</field>
-            <operator>EqualTo</operator>
-            <value>
-                <stringValue>FieldServiceMobilePsl</stringValue>
-            </value>
-        </filters>
-        <getFirstRecordOnly>true</getFirstRecordOnly>
-        <object>PermissionSetLicense</object>
-        <sortField>Id</sortField>
-        <sortOrder>Asc</sortOrder>
-        <storeOutputAutomatically>true</storeOutputAutomatically>
-    </recordLookups>
-    <recordLookups>
-        <name>getFieldServiceSchedulingPsl</name>
-        <label>getFieldServiceSchedulingPsl</label>
-        <locationX>842</locationX>
-        <locationY>1646</locationY>
-        <assignNullValuesIfNoRecordsFound>false</assignNullValuesIfNoRecordsFound>
-        <connector>
-            <targetReference>deleteLicense</targetReference>
-        </connector>
-        <filterLogic>or</filterLogic>
-        <filters>
-            <field>DeveloperName</field>
-            <operator>EqualTo</operator>
-            <value>
-                <stringValue>FieldServiceSchedulingPsl</stringValue>
-            </value>
-        </filters>
-        <getFirstRecordOnly>true</getFirstRecordOnly>
-        <object>PermissionSetLicense</object>
-        <sortField>Id</sortField>
-        <sortOrder>Asc</sortOrder>
-        <storeOutputAutomatically>true</storeOutputAutomatically>
     </recordLookups>
     <recordLookups>
         <name>getProfile</name>
@@ -323,7 +245,7 @@
         <locationX>842</locationX>
         <locationY>1430</locationY>
         <connector>
-            <targetReference>getFieldServiceMobilePsl</targetReference>
+            <targetReference>SuccessScreen</targetReference>
         </connector>
         <inputReference>getUser</inputReference>
     </recordUpdates>
@@ -434,7 +356,7 @@
         <name>SuccessScreen</name>
         <label>SuccessScreen</label>
         <locationX>842</locationX>
-        <locationY>1862</locationY>
+        <locationY>1538</locationY>
         <allowBack>false</allowBack>
         <allowFinish>true</allowFinish>
         <allowPause>false</allowPause>

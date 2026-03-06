@@ -83,6 +83,9 @@
                         <valueListItems>
                             <value>IsSerieoppdrag__c</value>
                         </valueListItems>
+                        <valueListItems>
+                            <value>IsScreenInterpreter__c</value>
+                        </valueListItems>
                     </valueList>
                 </componentInstanceProperties>
                 <componentInstanceProperties>
@@ -165,6 +168,9 @@
                         </valueListItems>
                         <valueListItems>
                             <value>IsSerieoppdrag__c</value>
+                        </valueListItems>
+                        <valueListItems>
+                            <value>IsScreenInterpreter__c</value>
                         </valueListItems>
                     </valueList>
                 </componentInstanceProperties>
