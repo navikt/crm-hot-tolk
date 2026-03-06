@@ -27,146 +27,103 @@ public without sharing class HOT_WOInterpreterThreadService {
 
         @InvocableVariable(label='Status Message')
         public String statusMessage;
+        
+        public Result(Input req) {
+            this.workOrderId = req != null ? req.workOrderId : null;
+            this.interpreterCount = 0;
+            this.createdThreadCount = 0;
+            this.messageCount = 0;
+            this.statusMessage = 'No action';
+        }
     }
 
+    
     @InvocableMethod(label='Create Missing Interpreter Threads And Broadcast Message')
     public static List<Result> sendMessageToInterpreters(List<Input> reqs) {
-        List<Result> results = initializeResults(reqs);
-        if (reqs == null || reqs.isEmpty()) {
-            return results;
-        }
-
-        Set<Id> workOrderIds = collectWorkOrderIds(reqs);
-        if (workOrderIds.isEmpty()) {
-            return results;
-        }
-
-        Map<Id, WorkOrder> workOrdersById = getWorkOrders(workOrderIds);
-        Map<Id, Map<Id, Id>> saIdByWorkOrderAndServiceResource = getInterpreterTargets(workOrderIds);
-        Map<Id, ServiceResource> serviceResourcesById = getServiceResources(saIdByWorkOrderAndServiceResource);
-        Map<Id, Id> workOrderIdByServiceAppointmentId = getWorkOrderIdByServiceAppointmentId(
-            saIdByWorkOrderAndServiceResource
-        );
-        Map<Id, Map<String, Thread__c>> existingThreadsByWorkOrder = getExistingThreadsByWorkOrder(
-            workOrderIds,
-            workOrderIdByServiceAppointmentId
-        );
-
-        Id threadRecordTypeId = HOT_MessageHelper.getHOTThreadRecordType();
-        List<Thread__c> threadsToInsert = new List<Thread__c>();
-        Map<Integer, List<Thread__c>> threadsByReqIndex = new Map<Integer, List<Thread__c>>();
-
-        for (Integer i = 0; i < reqs.size(); i++) {
-            Input req = reqs[i];
-            Result result = results[i];
-
-            if (!validateReq(req, result, workOrdersById)) {
-                continue;
-            }
-
-            Map<Id, Id> saIdByServiceResource = saIdByWorkOrderAndServiceResource.get(req.workOrderId);
-            if (saIdByServiceResource == null || saIdByServiceResource.isEmpty()) {
-                result.statusMessage = 'No interpreters found on Work Order';
-                continue;
-            }
-
-            if (!existingThreadsByWorkOrder.containsKey(req.workOrderId)) {
-                existingThreadsByWorkOrder.put(req.workOrderId, new Map<String, Thread__c>());
-            }
-
-            Map<String, Thread__c> threadByKey = existingThreadsByWorkOrder.get(req.workOrderId);
-            List<Thread__c> threadsForRequest = new List<Thread__c>();
-            WorkOrder workOrder = workOrdersById.get(req.workOrderId);
-
-            for (Id serviceResourceId : saIdByServiceResource.keySet()) {
-                ServiceResource serviceResource = serviceResourcesById.get(serviceResourceId);
-                if (serviceResource == null) {
-                    continue;
-                }
-
-                String threadKey = getThreadKey(serviceResource.Id);
-                Thread__c thread = threadByKey.get(threadKey);
-
-                if (thread == null) {
-                    thread = buildInterpreterThread(
-                        workOrder,
-                        serviceResource,
-                        saIdByServiceResource.get(serviceResourceId),
-                        threadRecordTypeId
-                    );
-                    threadsToInsert.add(thread);
-                    threadByKey.put(threadKey, thread);
-                    result.createdThreadCount++;
-                }
-
-                threadsForRequest.add(thread);
-            }
-
-            if (threadsForRequest.isEmpty()) {
-                result.statusMessage = 'No interpreters found on Work Order';
-                continue;
-            }
-
-            result.interpreterCount = threadsForRequest.size();
-            threadsByReqIndex.put(i, threadsForRequest);
-        }
-
-        if (!threadsToInsert.isEmpty()) {
-            insert threadsToInsert;
-        }
-
-        createMessages(reqs, results, threadsByReqIndex);
-        return results;
+        HOT_WOInterpreterThreadService threadService = new HOT_WOInterpreterThreadService(reqs);
+        return threadService.process();
     }
 
-    private static List<Result> initializeResults(List<Input> reqs) {
-        List<Result> results = new List<Result>();
-        if (reqs == null) {
-            return results;
-        }
+    private List<Input> reqs;
+    private List<Result> results;
+    private Set<Id> workOrderIds;
+    private Map<Id, WorkOrder> workOrdersById;
+    private Map<Id, Map<Id, Id>> saIdByWorkOrderAndServiceResource;
+    private Map<Id, ServiceResource> serviceResourcesById;
+    private Map<Id, Id> workOrderIdByServiceAppointmentId;
+    private Map<Id, Map<String, Thread__c>> existingThreadsByWorkOrder;
+    
+    private Id threadRecordTypeId;
+    private List<Thread__c> threadsToInsert;
+    private Map<Integer, List<Thread__c>> threadsByReqIndex;
 
-        for (Input req : reqs) {
-            Result result = new Result();
-            result.workOrderId = req != null ? req.workOrderId : null;
-            result.interpreterCount = 0;
-            result.createdThreadCount = 0;
-            result.messageCount = 0;
-            result.statusMessage = 'No action';
-            results.add(result);
-        }
-        return results;
+    public HOT_WOInterpreterThreadService(List<Input> reqs) {
+        this.reqs = reqs;
+        this.results = new List<Result>();
+        this.workOrderIds = new Set<Id>();
+        this.threadsToInsert = new List<Thread__c>();
+        this.threadsByReqIndex = new Map<Integer, List<Thread__c>>();
+        this.threadRecordTypeId = HOT_MessageHelper.getHOTThreadRecordType();
     }
 
-    private static Set<Id> collectWorkOrderIds(List<Input> reqs) {
-        Set<Id> workOrderIds = new Set<Id>();
-        for (Input req : reqs) {
+    public List<Result> process() {
+        initializeResults();
+        
+        if (this.reqs == null || this.reqs.isEmpty()) {
+            return this.results;
+        }
+
+        collectWorkOrderIds();
+        if (this.workOrderIds.isEmpty()) {
+            return this.results;
+        }
+
+        // Henter all nødvendig data og lagrer i instansvariablene
+        loadData();
+        
+        // Klargjør tråder
+        prepareThreads();
+        
+        // Sender meldinger
+        sendMessages();
+
+        return this.results;
+    }
+
+    private void initializeResults() {
+        if (this.reqs == null) return;
+        
+        for (Input req : this.reqs) {
+            this.results.add(new Result(req));
+        }
+    }
+
+    private void collectWorkOrderIds() {
+        for (Input req : this.reqs) {
             if (req != null && req.workOrderId != null) {
-                workOrderIds.add(req.workOrderId);
+                this.workOrderIds.add(req.workOrderId);
             }
         }
-        return workOrderIds;
     }
 
-    private static Map<Id, WorkOrder> getWorkOrders(Set<Id> workOrderIds) {
-        return new Map<Id, WorkOrder>(
-            [
-                SELECT Id, Subject, HOT_Request__r.Dispatcher__c, HOT_Request__r.Account__c
-                FROM WorkOrder
-                WHERE Id IN :workOrderIds
-            ]
-        );
-    }
+    private void loadData() {
+        // Henter WorkOrders
+        this.workOrdersById = new Map<Id, WorkOrder>([
+            SELECT Id, Subject, HOT_Request__r.Dispatcher__c, HOT_Request__r.Account__c
+            FROM WorkOrder
+            WHERE Id IN :this.workOrderIds
+        ]);
 
-    private static Map<Id, Map<Id, Id>> getInterpreterTargets(Set<Id> workOrderIds) {
-        Map<Id, Map<Id, Id>> saIdByWorkOrderAndServiceResource = new Map<Id, Map<Id, Id>>();
-
+        // Henter Interpreter Targets
+        this.saIdByWorkOrderAndServiceResource = new Map<Id, Map<Id, Id>>();
+        
         for (ServiceAppointment serviceAppointment : [
             SELECT Id, HOT_WorkOrderLineItem__r.WorkOrderId, HOT_ServiceResource__c
             FROM ServiceAppointment
-            WHERE HOT_WorkOrderLineItem__r.WorkOrderId IN :workOrderIds AND HOT_ServiceResource__c != NULL
+            WHERE HOT_WorkOrderLineItem__r.WorkOrderId IN :this.workOrderIds 
+            AND HOT_ServiceResource__c != NULL
         ]) {
             addInterpreterTarget(
-                saIdByWorkOrderAndServiceResource,
                 serviceAppointment.HOT_WorkOrderLineItem__r.WorkOrderId,
                 serviceAppointment.HOT_ServiceResource__c,
                 serviceAppointment.Id
@@ -176,80 +133,67 @@ public without sharing class HOT_WOInterpreterThreadService {
         for (AssignedResource assignedResource : [
             SELECT ServiceResourceId, ServiceAppointmentId, ServiceAppointment.HOT_WorkOrderLineItem__r.WorkOrderId
             FROM AssignedResource
-            WHERE ServiceAppointment.HOT_WorkOrderLineItem__r.WorkOrderId IN :workOrderIds AND ServiceResourceId != NULL
+            WHERE ServiceAppointment.HOT_WorkOrderLineItem__r.WorkOrderId IN :this.workOrderIds 
+            AND ServiceResourceId != NULL
         ]) {
             addInterpreterTarget(
-                saIdByWorkOrderAndServiceResource,
                 assignedResource.ServiceAppointment.HOT_WorkOrderLineItem__r.WorkOrderId,
                 assignedResource.ServiceResourceId,
                 assignedResource.ServiceAppointmentId
             );
         }
 
-        return saIdByWorkOrderAndServiceResource;
+        // Setter opp ServiceResources og Mapping for Appointments
+        loadServiceResources();
+        loadWorkOrderIdByServiceAppointmentId();
+        
+        // Henter eksisterende tråder
+        loadExistingThreadsByWorkOrder();
     }
 
-    private static void addInterpreterTarget(
-        Map<Id, Map<Id, Id>> saIdByWorkOrderAndServiceResource,
-        Id workOrderId,
-        Id serviceResourceId,
-        Id serviceAppointmentId
-    ) {
-        if (workOrderId == null || serviceResourceId == null) {
-            return;
+    private void addInterpreterTarget(Id workOrderId, Id serviceResourceId, Id serviceAppointmentId) {
+        if (!this.saIdByWorkOrderAndServiceResource.containsKey(workOrderId)) {
+            this.saIdByWorkOrderAndServiceResource.put(workOrderId, new Map<Id, Id>());
         }
 
-        if (!saIdByWorkOrderAndServiceResource.containsKey(workOrderId)) {
-            saIdByWorkOrderAndServiceResource.put(workOrderId, new Map<Id, Id>());
-        }
-
-        Map<Id, Id> saIdByServiceResource = saIdByWorkOrderAndServiceResource.get(workOrderId);
+        Map<Id, Id> saIdByServiceResource = this.saIdByWorkOrderAndServiceResource.get(workOrderId);
         if (!saIdByServiceResource.containsKey(serviceResourceId) || saIdByServiceResource.get(serviceResourceId) == null) {
             saIdByServiceResource.put(serviceResourceId, serviceAppointmentId);
         }
     }
 
-    private static Map<Id, ServiceResource> getServiceResources(
-        Map<Id, Map<Id, Id>> saIdByWorkOrderAndServiceResource
-    ) {
+    private void loadServiceResources() {
         Set<Id> serviceResourceIds = new Set<Id>();
-        for (Map<Id, Id> saIdByServiceResource : saIdByWorkOrderAndServiceResource.values()) {
+        for (Map<Id, Id> saIdByServiceResource : this.saIdByWorkOrderAndServiceResource.values()) {
             serviceResourceIds.addAll(saIdByServiceResource.keySet());
         }
 
         if (serviceResourceIds.isEmpty()) {
-            return new Map<Id, ServiceResource>();
+            this.serviceResourcesById = new Map<Id, ServiceResource>();
+            return;
         }
 
-        return new Map<Id, ServiceResource>(
-            [
-                SELECT Id, AccountId, RelatedRecordId, HOT_IsEmployedInterpreter__c
-                FROM ServiceResource
-                WHERE Id IN :serviceResourceIds
-            ]
-        );
+        this.serviceResourcesById = new Map<Id, ServiceResource>([
+            SELECT Id, AccountId, RelatedRecordId, HOT_IsEmployedInterpreter__c
+            FROM ServiceResource
+            WHERE Id IN :serviceResourceIds
+        ]);
     }
 
-    private static Map<Id, Id> getWorkOrderIdByServiceAppointmentId(
-        Map<Id, Map<Id, Id>> saIdByWorkOrderAndServiceResource
-    ) {
-        Map<Id, Id> workOrderIdByServiceAppointmentId = new Map<Id, Id>();
-        for (Id workOrderId : saIdByWorkOrderAndServiceResource.keySet()) {
-            for (Id serviceAppointmentId : saIdByWorkOrderAndServiceResource.get(workOrderId).values()) {
-                if (serviceAppointmentId != null && !workOrderIdByServiceAppointmentId.containsKey(serviceAppointmentId)) {
-                    workOrderIdByServiceAppointmentId.put(serviceAppointmentId, workOrderId);
+    private void loadWorkOrderIdByServiceAppointmentId() {
+        this.workOrderIdByServiceAppointmentId = new Map<Id, Id>();
+        for (Id workOrderId : this.saIdByWorkOrderAndServiceResource.keySet()) {
+            for (Id serviceAppointmentId : this.saIdByWorkOrderAndServiceResource.get(workOrderId).values()) {
+                if (serviceAppointmentId != null && !this.workOrderIdByServiceAppointmentId.containsKey(serviceAppointmentId)) {
+                    this.workOrderIdByServiceAppointmentId.put(serviceAppointmentId, workOrderId);
                 }
             }
         }
-        return workOrderIdByServiceAppointmentId;
     }
 
-    private static Map<Id, Map<String, Thread__c>> getExistingThreadsByWorkOrder(
-        Set<Id> workOrderIds,
-        Map<Id, Id> workOrderIdByServiceAppointmentId
-    ) {
-        Map<Id, Map<String, Thread__c>> threadByWorkOrderAndKey = new Map<Id, Map<String, Thread__c>>();
-        Set<Id> serviceAppointmentIds = new Set<Id>(workOrderIdByServiceAppointmentId.keySet());
+    private void loadExistingThreadsByWorkOrder() {
+        this.existingThreadsByWorkOrder = new Map<Id, Map<String, Thread__c>>();
+        Set<Id> serviceAppointmentIds = new Set<Id>(this.workOrderIdByServiceAppointmentId.keySet());
 
         for (Thread__c thread : [
             SELECT
@@ -264,41 +208,99 @@ public without sharing class HOT_WOInterpreterThreadService {
             FROM Thread__c
             WHERE
                 CRM_Thread_Type__c = :INTERPRETER_THREAD_TYPE
-                AND (HOT_WorkOrder__c IN :workOrderIds
+                AND (HOT_WorkOrder__c IN :this.workOrderIds
                 OR HOT_ServiceAppointment__c IN :serviceAppointmentIds
                 OR CRM_Related_Object__c IN :serviceAppointmentIds)
         ]) {
-            Id workOrderId = resolveWorkOrderId(thread, workOrderIdByServiceAppointmentId);
+            Id workOrderId = resolveWorkOrderId(thread);
             if (workOrderId == null) {
                 continue;
             }
 
-            if (!threadByWorkOrderAndKey.containsKey(workOrderId)) {
-                threadByWorkOrderAndKey.put(workOrderId, new Map<String, Thread__c>());
+            if (!this.existingThreadsByWorkOrder.containsKey(workOrderId)) {
+                this.existingThreadsByWorkOrder.put(workOrderId, new Map<String, Thread__c>());
             }
 
             String threadKey = getThreadKey(thread.HOT_ServiceResource__c);
             if (threadKey != null) {
-                threadByWorkOrderAndKey.get(workOrderId).put(threadKey, thread);
+                this.existingThreadsByWorkOrder.get(workOrderId).put(threadKey, thread);
             }
         }
-
-        return threadByWorkOrderAndKey;
     }
 
-    private static Id resolveWorkOrderId(Thread__c thread, Map<Id, Id> workOrderIdByServiceAppointmentId) {
+    private Id resolveWorkOrderId(Thread__c thread) {
         if (thread.HOT_WorkOrder__c != null) {
             return thread.HOT_WorkOrder__c;
         }
 
         if (thread.HOT_ServiceAppointment__c != null) {
-            return workOrderIdByServiceAppointmentId.get(thread.HOT_ServiceAppointment__c);
+            return this.workOrderIdByServiceAppointmentId.get(thread.HOT_ServiceAppointment__c);
         }
 
         return null;
     }
 
-    private static Boolean validateReq(Input req, Result result, Map<Id, WorkOrder> workOrdersById) {
+    private void prepareThreads() {
+        for (Integer i = 0; i < this.reqs.size(); i++) {
+            Input req = this.reqs[i];
+            Result result = this.results[i];
+
+            if (!validateReq(req, result)) {
+                continue;
+            }
+
+            Map<Id, Id> saIdByServiceResource = this.saIdByWorkOrderAndServiceResource.get(req.workOrderId);
+            if (saIdByServiceResource == null || saIdByServiceResource.isEmpty()) {
+                result.statusMessage = 'No interpreters found on Work Order';
+                continue;
+            }
+
+            if (!this.existingThreadsByWorkOrder.containsKey(req.workOrderId)) {
+                this.existingThreadsByWorkOrder.put(req.workOrderId, new Map<String, Thread__c>());
+            }
+
+            Map<String, Thread__c> threadByKey = this.existingThreadsByWorkOrder.get(req.workOrderId);
+            List<Thread__c> threadsForRequest = new List<Thread__c>();
+            WorkOrder workOrder = this.workOrdersById.get(req.workOrderId);
+
+            for (Id serviceResourceId : saIdByServiceResource.keySet()) {
+                ServiceResource serviceResource = this.serviceResourcesById.get(serviceResourceId);
+                if (serviceResource == null) {
+                    continue;
+                }
+
+                String threadKey = getThreadKey(serviceResource.Id);
+                Thread__c thread = threadByKey.get(threadKey);
+
+                if (thread == null) {
+                    thread = buildInterpreterThread(
+                        workOrder,
+                        serviceResource,
+                        saIdByServiceResource.get(serviceResourceId)
+                    );
+                    this.threadsToInsert.add(thread);
+                    threadByKey.put(threadKey, thread);
+                    result.createdThreadCount++;
+                }
+
+                threadsForRequest.add(thread);
+            }
+
+            if (threadsForRequest.isEmpty()) {
+                result.statusMessage = 'No interpreters found on Work Order';
+                continue;
+            }
+
+            result.interpreterCount = threadsForRequest.size();
+            this.threadsByReqIndex.put(i, threadsForRequest);
+        }
+
+        if (!this.threadsToInsert.isEmpty()) {
+            insert this.threadsToInsert;
+        }
+    }
+
+    private Boolean validateReq(Input req, Result result) {
         if (req == null || req.workOrderId == null) {
             result.statusMessage = 'Missing Work Order Id';
             return false;
@@ -307,21 +309,16 @@ public without sharing class HOT_WOInterpreterThreadService {
             result.statusMessage = 'Missing message text';
             return false;
         }
-        if (!workOrdersById.containsKey(req.workOrderId)) {
+        if (!this.workOrdersById.containsKey(req.workOrderId)) {
             result.statusMessage = 'Work Order not found';
             return false;
         }
         return true;
     }
 
-    private static Thread__c buildInterpreterThread(
-        WorkOrder workOrder,
-        ServiceResource serviceResource,
-        Id serviceAppointmentId,
-        Id threadRecordTypeId
-    ) {
+    private Thread__c buildInterpreterThread(WorkOrder workOrder, ServiceResource serviceResource, Id serviceAppointmentId) {
         Thread__c thread = new Thread__c();
-        thread.RecordTypeId = threadRecordTypeId;
+        thread.RecordTypeId = this.threadRecordTypeId;
         thread.Name = 'SAMTALE MED TOLK: ' + workOrder.Subject;
         thread.CRM_Related_Object__c = serviceAppointmentId != null ? serviceAppointmentId : workOrder.Id;
         thread.HOT_ServiceAppointment__c = serviceAppointmentId;
@@ -342,18 +339,14 @@ public without sharing class HOT_WOInterpreterThreadService {
         return thread;
     }
 
-    private static void createMessages(
-        List<Input> reqs,
-        List<Result> results,
-        Map<Integer, List<Thread__c>> threadsByReqIndex
-    ) {
+    private void sendMessages() {
         List<Message__c> messagesToInsert = new List<Message__c>();
 
-        for (Integer index : threadsByReqIndex.keySet()) {
-            Input req = reqs[index];
-            Result result = results[index];
+        for (Integer index : this.threadsByReqIndex.keySet()) {
+            Input req = this.reqs[index];
+            Result result = this.results[index];
 
-            for (Thread__c thread : threadsByReqIndex.get(index)) {
+            for (Thread__c thread : this.threadsByReqIndex.get(index)) {
                 if (thread.CRM_isActive__c == false) {
                     continue;
                 }
@@ -369,7 +362,7 @@ public without sharing class HOT_WOInterpreterThreadService {
         }
     }
 
-    private static String getThreadKey(Id serviceResourceId) {
+    private String getThreadKey(Id serviceResourceId) {
         if (serviceResourceId == null) {
             return null;
         }
