@@ -41,7 +41,7 @@ private class HOT_ReminderSMSServiceTest {
                 Id,
                 Status,
                 Account.CRM_Person__r.HOT_NotificationChannel__c,
-                Account.CRM_Person__r.INT_KrrMobilePhone__c,
+                Account.CRM_Person__r.HOT_MobilePhone__c,
                 StartDate,
                 EndDate,
                 HOT_Request__r.IsNotNotifyAccount__c
@@ -64,7 +64,7 @@ private class HOT_ReminderSMSServiceTest {
     @IsTest
     static void reminderSMSTest() {
         List<WorkOrder> workOrders = [
-            SELECT Id, AccountId, Account.CRM_Person__r.INT_KrrMobilePhone__c, StartDate, EndDate
+            SELECT Id, AccountId, Account.CRM_Person__r.HOT_MobilePhone__c, StartDate, EndDate
             FROM WorkOrder
         ];
         Test.startTest();
@@ -82,7 +82,7 @@ private class HOT_ReminderSMSServiceTest {
                 Account__c,
                 IsSerieoppdrag__c,
                 SeriesPeriod__c,
-                Account__r.CRM_Person__r.INT_KrrMobilePhone__c,
+                Account__r.CRM_Person__r.HOT_MobilePhone__c,
                 IsNotifyUserOnOrder__c,
                 StartTime__c,
                 EndTime__c
@@ -125,7 +125,7 @@ private class HOT_ReminderSMSServiceTest {
                 Account__c,
                 IsSerieoppdrag__c,
                 SeriesPeriod__c,
-                Account__r.CRM_Person__r.INT_KrrMobilePhone__c,
+                Account__r.CRM_Person__r.HOT_MobilePhone__c,
                 IsNotifyUserOnOrder__c,
                 StartTime__c,
                 EndTime__c
@@ -479,7 +479,7 @@ private class HOT_ReminderSMSServiceTest {
                 Status,
                 HOT_Request__r.IsNotNotifyAccount__c,
                 HOT_Request__r.IsOrdererWantStatusUpdateOnSMS__c,
-                Account.CRM_Person__r.INT_KrrMobilePhone__c
+                Account.CRM_Person__r.HOT_MobilePhone__c
             FROM WorkOrder
         ];
         //flyttet pga limits
@@ -519,7 +519,7 @@ private class HOT_ReminderSMSServiceTest {
         List<WorkOrder> workOrders = [
             SELECT
                 Id,
-                Account.CRM_Person__r.INT_KrrMobilePhone__c,
+                Account.CRM_Person__r.HOT_MobilePhone__c,
                 HOT_Request__r.Orderer__c,
                 HOT_Request__r.Type__c,
                 HOT_Request__r.OrdererPhone__c,
@@ -534,7 +534,7 @@ private class HOT_ReminderSMSServiceTest {
             wo.Status = 'Cannot Complete';
         }
         Test.startTest();
-        String personPhoneNumber = workOrders[0].Account.CRM_Person__r.INT_KrrMobilePhone__c;
+        String personPhoneNumber = workOrders[0].Account.CRM_Person__r.HOT_MobilePhone__c;
         update workOrders;
         HOT_ReminderSMSService.sendSMSToOrdererOnStatusUpdate(workOrders);
         Test.stopTest();
@@ -552,7 +552,7 @@ private class HOT_ReminderSMSServiceTest {
         List<WorkOrder> workOrders = [
             SELECT
                 Id,
-                Account.CRM_Person__r.INT_KrrMobilePhone__c,
+                Account.CRM_Person__r.HOT_MobilePhone__c,
                 HOT_Request__r.Orderer__c,
                 HOT_Request__r.Type__c,
                 HOT_Request__r.OrdererPhone__c,

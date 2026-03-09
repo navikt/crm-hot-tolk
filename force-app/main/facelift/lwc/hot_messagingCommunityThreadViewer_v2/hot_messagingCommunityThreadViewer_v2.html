@@ -162,7 +162,14 @@
                                         <template lwc:if={serviceAppointment.HOT_Interpreters__c}>
                                             <p>(Med)tolk: <span>{serviceAppointment.HOT_Interpreters__c}</span></p>
                                         </template>
-                                        <p>Tilleggsopplysninger: <span>{serviceAppointment.Description}</span></p>
+                                        <p>
+                                            Tilleggsopplysninger:&nbsp;
+                                            <span
+                                                ><lightning-formatted-rich-text
+                                                    value={serviceAppointment.Description}
+                                                ></lightning-formatted-rich-text
+                                            ></span>
+                                        </p>
 
                                         <template lwc:if={ordererPhoneNumber}>
                                             <p>Telefonnummer til bestiller:&nbsp;<span>{ordererPhoneNumber}</span></p>
@@ -263,7 +270,10 @@
                                         <p>
                                             Døv/døvblind: <span>{wageClaim.DegreeOfHearingAndVisualImpairment__c}</span>
                                         </p>
-                                        <p>Status: <span>{wageClaim.Status__c}</span></p>
+                                        <p if:true={wageClaim.ServiceAppointment__r.HOT_CanceledDate__c}>
+                                            Avlyst dato:
+                                            <span> {wageClaim.cancelledDate}</span>
+                                        </p>
                                     </div>
                                 </template>
                             </template>

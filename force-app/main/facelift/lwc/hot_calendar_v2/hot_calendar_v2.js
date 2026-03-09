@@ -177,6 +177,7 @@ export default class LibsFullCalendarV2 extends NavigationMixin(LightningElement
         this.updateVisibleHoursForDay();
     }
 
+    // Function to update visible hours for a day in the calendar view
     updateVisibleHoursForDay() {
         if (!this.calendar || this.calendar.view.type !== 'timeGridDay') {
             return;
@@ -184,29 +185,82 @@ export default class LibsFullCalendarV2 extends NavigationMixin(LightningElement
 
         const events = this.calendar.getEvents();
 
-        if (!events.length) {
-            return;
-        }
+        const viewDate = this.calendar.getDate();
+        const viewStart = new Date(viewDate);
+        viewStart.setHours(0, 0, 0, 0);
+
+        const viewEnd = new Date(viewStart);
+        viewEnd.setDate(viewEnd.getDate() + 1);
 
         let minHour = 23;
         let maxHour = 0;
-
-        const viewDate = this.calendar.getDate().toDateString();
+        let foundAny = false;
 
         events.forEach((evt) => {
             if (!evt.start) return;
 
-            if (evt.start.toDateString() !== viewDate) return;
+            const start = evt.start;
+            const end = evt.end ?? evt.start;
 
-            const startHour = evt.start.getHours();
-            const endHour = evt.end ? evt.end.getHours() : startHour + 1;
+            if (!(start < viewEnd && end > viewStart)) {
+                return;
+            }
+
+            foundAny = true;
+
+            const clampedStart = start < viewStart ? viewStart : start;
+            const clampedEnd = end > viewEnd ? viewEnd : end;
+
+            const startHour = clampedStart.getHours();
+
+            const endIsAtDayBoundary = clampedEnd.getTime() === viewEnd.getTime();
+
+            let endHourRaw = clampedEnd.getHours();
+            let endHour = endHourRaw + (clampedEnd.getMinutes() > 0 || clampedEnd.getSeconds() > 0 ? 1 : 0);
+
+            // Hvis eventet går til akkurat midnatt neste dag, unngå maxHour=24
+            if (endIsAtDayBoundary) {
+                endHour = 23;
+            }
 
             if (startHour < minHour) minHour = startHour;
             if (endHour > maxHour) maxHour = endHour;
         });
 
+        const calendarEl = this.template.querySelector('.calendar');
+
+        // Skjul kun timeraden + event-kolonnen, ikke hele timegrid (da kan dato forsvinne på mobil)
+        const slotsEl = calendarEl?.querySelector('.fc-timegrid-slots');
+        const colsEl = calendarEl?.querySelector('.fc-timegrid-cols');
+        const axisEl = calendarEl?.querySelector('.fc-timegrid-axis');
+
+        if (!foundAny) {
+            this.calendar.batchRendering(() => {
+                this.calendar.setOption('slotMinTime', '00:00:00');
+                this.calendar.setOption('slotMaxTime', '24:00:00');
+            });
+
+            if (slotsEl) slotsEl.style.display = 'none';
+            if (colsEl) colsEl.style.display = 'none';
+            if (axisEl) axisEl.style.display = 'none';
+
+            return;
+        }
+
+        if (slotsEl) slotsEl.style.display = '';
+        if (colsEl) colsEl.style.display = '';
+        if (axisEl) axisEl.style.display = '';
+
         minHour = Math.max(minHour - 1, 0);
         maxHour = Math.min(maxHour + 1, 24);
+
+        if (maxHour <= minHour) {
+            this.calendar.batchRendering(() => {
+                this.calendar.setOption('slotMinTime', '00:00:00');
+                this.calendar.setOption('slotMaxTime', '24:00:00');
+            });
+            return;
+        }
 
         const minTime = String(minHour).padStart(2, '0') + ':00:00';
         const maxTime = String(maxHour).padStart(2, '0') + ':00:00';
@@ -216,7 +270,6 @@ export default class LibsFullCalendarV2 extends NavigationMixin(LightningElement
             this.calendar.setOption('slotMaxTime', maxTime);
         });
     }
-
     yesOrNo(boolean) {
         if (boolean) {
             return 'Ja';
@@ -228,27 +281,35 @@ export default class LibsFullCalendarV2 extends NavigationMixin(LightningElement
     async updatePseudoEventsDisplay(view) {
         this.calendar?.batchRendering(() => {
             this.calendar?.getEvents().forEach((event) => {
-                if (!event.extendedProps.isMultiDay && !event.extendedProps.isPseudoEvent) {
+                const isMultiDay = !!(event.extendedProps?.isMultiDay ?? event.isMultiDay);
+                const isPseudoEvent = !!(event.extendedProps?.isPseudoEvent ?? event.isPseudoEvent);
+
+                if (!isMultiDay && !isPseudoEvent) {
                     return;
-                } else if (event.extendedProps.isPseudoEvent) {
-                    // Has to hide a pseudo event if it is on the first day of the current view due to a conflict with
-                    // an event injected by fullcalendar
+                }
+
+                if (view.type === 'timeGridDay') {
+                    if (isPseudoEvent) {
+                        event.setProp('display', 'none');
+                    } else {
+                        event.setProp('display', 'auto');
+                    }
+                    return;
+                }
+
+                if (isPseudoEvent) {
                     const shouldHideFirstPseudoEventOfMonth =
                         event.start.getDate() == view.activeStart.getDate() &&
                         event.start.getMonth() != view.currentStart.getMonth();
-                    if (view.type === 'timeGridDay') {
-                        if (event.display != 'none') {
-                            event.setProp('display', 'none');
-                        }
-                    } else {
-                        event.setProp(
-                            'display',
-                            this.isMobileSize && !shouldHideFirstPseudoEventOfMonth ? 'list-item' : 'none'
-                        );
-                    }
-                } else {
-                    event.setProp('display', this.isMobileSize ? 'list-item' : 'auto');
+
+                    event.setProp(
+                        'display',
+                        this.isMobileSize && !shouldHideFirstPseudoEventOfMonth ? 'list-item' : 'none'
+                    );
+                    return;
                 }
+
+                event.setProp('display', this.isMobileSize ? 'list-item' : 'auto');
             });
         });
     }
@@ -361,33 +422,65 @@ export default class LibsFullCalendarV2 extends NavigationMixin(LightningElement
 
     createPseudoEventsFromApexEvent(event) {
         const pseudoEvents = [];
+
         if (this.isMobileSize) {
             event.display = 'list-item';
         }
+
+        // Behold original-eventet
         pseudoEvents.push(event);
+
         const view = this.calendar?.view;
 
-        var start = new Date(event.start.getTime() + LibsFullCalendarV2.MILLISECONDS_PER_DAY);
-        const end = new Date(event.end.getTime() + LibsFullCalendarV2.MILLISECONDS_PER_DAY);
+        // Start på dagen etter startdato
+        let cursor = new Date(event.start.getTime() + LibsFullCalendarV2.MILLISECONDS_PER_DAY);
 
-        while (start.toLocaleDateString('nb-NO') != end.toLocaleDateString('nb-NO')) {
-            const pseudoEvent = JSON.parse(JSON.stringify(event));
-            pseudoEvent.isPseudoEvent = true;
-            pseudoEvent.start = new Date(start);
-            pseudoEvent.end = new Date(start);
+        // End: hvis end er eksakt midnatt (00:00) så skal vi IKKE vise prikk på den dagen
+        let effectiveEnd = new Date(event.end.getTime() + LibsFullCalendarV2.MILLISECONDS_PER_DAY);
+
+        const endIsExactMidnight =
+            event.end &&
+            event.end.getHours() === 0 &&
+            event.end.getMinutes() === 0 &&
+            event.end.getSeconds() === 0 &&
+            event.end.getMilliseconds() === 0;
+
+        if (endIsExactMidnight) {
+            effectiveEnd = new Date(effectiveEnd.getTime() - LibsFullCalendarV2.MILLISECONDS_PER_DAY);
+        }
+
+        while (cursor.toLocaleDateString('nb-NO') != effectiveEnd.toLocaleDateString('nb-NO')) {
             const shouldHidePseudoEvent =
                 !this.isMobileSize ||
                 (view && view.type === 'timeGridDay') ||
                 (view &&
-                    pseudoEvent.start.getDate() == view.activeStart.getDate() &&
-                    pseudoEvent.start.getMonth() != view.currentStart.getMonth());
-            pseudoEvent.display = shouldHidePseudoEvent ? 'none' : 'list-item';
+                    cursor.getDate() == view.activeStart.getDate() &&
+                    cursor.getMonth() != view.currentStart.getMonth());
+
+            const pseudoEvent = {
+                recordId: event.recordId,
+                type: event.type,
+                title: event.title,
+                saNumber: event.saNumber,
+                description: event.description,
+                start: new Date(cursor),
+                end: new Date(cursor),
+                allDay: true,
+                isPast: event.isPast,
+                isMultiDay: true,
+                isPseudoEvent: true,
+                color: event.color,
+                textColor: event.textColor,
+                display: shouldHidePseudoEvent ? 'none' : 'list-item'
+            };
+
             pseudoEvents.push(pseudoEvent);
-            start = new Date(start.getTime() + LibsFullCalendarV2.MILLISECONDS_PER_DAY);
+
+            cursor = new Date(cursor.getTime() + LibsFullCalendarV2.MILLISECONDS_PER_DAY);
         }
+
         return pseudoEvents;
     }
-
     async navigateToDetailView(event) {
         const props = event.extendedProps;
 
@@ -742,14 +835,14 @@ export default class LibsFullCalendarV2 extends NavigationMixin(LightningElement
                     this.interestedResource = result;
                     this.termsOfAgreement = this.interestedResource.HOT_TermsOfAgreement__c;
                 });
-                this.ordererPhoneNumber = sa.HOT_Request__r?.Orderer__r?.CRM_Person__r?.INT_KrrMobilePhone__c ?? '';
+                this.ordererPhoneNumber = sa.HOT_Request__r?.Orderer__r?.CRM_Person__r?.HOT_MobilePhone__c ?? '';
                 const crmPerson = sa.HOT_Request__r?.Account__r?.CRM_Person__r;
                 if (crmPerson) {
                     this.accountAgeGender =
                         (crmPerson.INT_Sex__c || '') +
                         ' ' +
                         (crmPerson.CRM_AgeNumber__c ? crmPerson.CRM_AgeNumber__c + ' år' : '');
-                    this.accountPhoneNumber = crmPerson.INT_KrrMobilePhone__c || '';
+                    this.accountPhoneNumber = crmPerson.HOT_MobilePhone__c || '';
                 }
                 const confidentiality = sa.HOT_Request__r?.Account__r?.CRM_Person__r?.INT_Confidential__c;
 

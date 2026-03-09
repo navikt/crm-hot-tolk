@@ -39,6 +39,7 @@ public without sharing class HOT_WageClaimListController {
                 ServiceAppointmentCity__c,
                 ParentWageClaim__c,
                 ServiceResource__r.AccountId,
+                ServiceAppointment__r.HOT_CanceledDate__c,
                 ServiceAppointment__r.HOT_Request__r.OwnerName__c,
                 DegreeOfHearingAndVisualImpairment__c
             FROM HOT_WageClaim__c
@@ -86,6 +87,7 @@ public without sharing class HOT_WageClaimListController {
                 toLabel(Status__c),
                 WorkTypeName__c,
                 DegreeOfHearingAndVisualImpairment__c,
+                ServiceAppointment__r.HOT_CanceledDate__c,
                 ServiceAppointment__r.HOT_Request__r.OwnerName__c,
                 AssignmentType__c,
                 ServiceResource__r.AccountId
