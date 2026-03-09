@@ -12,7 +12,7 @@
                 <section class="sub-form">
                     <h2 id="contact-info-header" style="text-align: center">Kontaktinformasjon</h2>
                     <div
-                        if:true={isAlternativeNumber}
+                        lwc:if={isAlternativeNumber}
                         class="navno-dekorator alertstripe navno-dekorator alertstripe--info"
                     >
                         <img
@@ -56,7 +56,7 @@
                         </a>
                     </p>
                     <div
-                        if:true={isKrrQueued}
+                        lwc:if={isKrrQueued}
                         class="navno-dekorator alertstripe navno-dekorator alertstripe--advarsel"
                         role="alert"
                         aria-live="polite"

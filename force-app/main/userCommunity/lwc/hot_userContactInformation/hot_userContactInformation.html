@@ -21,10 +21,7 @@
                     </section>
                 </lightning-record-view-form>
                 <br />
-                <div
-                    if:true={isAlternativeNumber}
-                    class="navno-dekorator alertstripe navno-dekorator alertstripe--info"
-                >
+                <div lwc:if={isAlternativeNumber} class="navno-dekorator alertstripe navno-dekorator alertstripe--info">
                     <img class="navno-dekorator alertstripe__ikon" src={informationIcon} alt="" aria-hidden="true" />
                     <div class="alertstripe__content">
                         <div class="typo-normal alertstripe__tekst">{alternativePhoneNumberText}</div>
