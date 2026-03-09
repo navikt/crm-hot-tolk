@@ -581,53 +581,6 @@ public without sharing class HOT_ReminderSMSService {
             handleException(e);
         }
     }
-    // @Future
-    // public static void sendSMSOnCoInterpreterChange(
-    //     Id serviceResourceId,
-    //     String schedStartEndtime,
-    //     String appointmentNumber,
-    //     String interpreterName
-    // ) {
-    //     List<ServiceResource> serviceresourceList = [
-    //         SELECT Id, Name, AccountId, HOT_MobilePhone__c
-    //         FROM ServiceResource
-    //         WHERE Id = :serviceResourceId
-    //     ];
-    //     List<SMS__c> smsList = new List<SMS__c>();
-    //     //creating notification object list
-    //     List<HOT_Notification__c> notificationList = new List<HOT_Notification__c>();
-    //     for (ServiceResource sr : serviceresourceList) {
-    //         SMS__c sms = new SMS__c();
-    //         sms.Domain__c = 'HOT';
-    //         sms.Type__c = 'Interpreter';
-    //         sms.Account__c = sr.AccountId;
-    //         sms.Recipient__c = sr.HOT_MobilePhone__c;
-    //         String message =
-    //             'INFO\nMedtolk på et oppdrag du er tildelt er blitt endret. ' +
-    //             appointmentNumber +
-    //             ' \nNy tolk er:\n';
-    //         message += interpreterName;
-    //         message += '\nDato: ' + schedStartEndtime;
-    //         message += '\n\nFor mer informasjon, se tolkebestilling.nav.no. Du kan ikke svare på denne meldingen.';
-    //         message += '\nMvh tolketjenesten i Nav';
-
-    //         sms.Message__c = message;
-    //         if (sms.Recipient__c != null) {
-    //             smsList.add(sms);
-    //         }
-    //     }
-    //     try {
-    //         HOT_DatabaseOperations.insertRecords(smsList);
-    //         //inserting notifications
-    //         try {
-    //             HOT_NotificationCentreController.createNotification(notificationList);
-    //         } catch (Exception e) {
-    //             handleException(e);
-    //         }
-    //     } catch (Exception e) {
-    //         handleException(e);
-    //     }
-    // }
 
     public static void sendSMSToInterpreterOnScreenInterpretation(Set<Id> saIds) {
         List<ServiceAppointment> saList = [

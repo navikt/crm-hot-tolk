@@ -1055,6 +1055,11 @@ public without sharing class HOT_ServiceAppointmentNotification {
         Map<Id, String> appointmentNumberMap = new Map<Id, String>();
         Map<Id, String> interpreterNameMap = new Map<Id, String>();
 
+        // Get notification type for notify interpreter
+        CustomNotificationType notifyInterpreterNotificationType = this.getCustomNotificationTypeByName(
+            'HOT_NotifyInterpreter'
+        );
+
         //creating notification object list
         List<HOT_Notification__c> notificationList = new List<HOT_Notification__c>();
         for (ServiceAppointment serviceAppointment : relatedServiceAppointments) {
@@ -1078,7 +1083,7 @@ public without sharing class HOT_ServiceAppointmentNotification {
                         updatedSAWithNewInterpreter.SchedEndTime?.format('HH:mm', 'Europe/Oslo') +
                         '.'
                 );
-                notification.setNotificationTypeId(this.getCustomNotificationTypeByName('HOT_NotifyInterpreter').Id);
+                notification.setNotificationTypeId(notifyInterpreterNotificationType.Id);
                 notification.setTargetId(serviceAppointment.Id);
 
                 HOT_NotificationHandler.sendNotification(
@@ -1339,16 +1344,6 @@ public without sharing class HOT_ServiceAppointmentNotification {
             this.updatedSAMap = HOT_ServiceAppointmentNotification.getUpdatedServiceAppointments(this.originalSaList);
         }
         return this.updatedSAMap;
-    }
-    private Map<Id, ServiceAppointment> getUpdatedSAMapById(Set<Id> saIds) {
-        Map<Id, ServiceAppointment> mapToReturn = new Map<Id, ServiceAppointment>();
-
-        for (ServiceAppointment sa : this.getUpdatedSAMap().values()) {
-            if (saIds.contains(sa.Id)) {
-                mapToReturn.put(sa.Id, sa);
-            }
-        }
-        return mapToReturn;
     }
     private static List<User> getUserByAccountIds(Set<Id> accountIds) {
         List<User> users = [SELECT Id, AccountId FROM User WHERE AccountId IN :accountIds];
