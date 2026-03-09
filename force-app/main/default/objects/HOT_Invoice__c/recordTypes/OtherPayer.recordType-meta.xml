@@ -1,0 +1,928 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<RecordType xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>OtherPayer</fullName>
+    <active>true</active>
+    <compactLayoutAssignment>Other_Payer_Compact_Layout</compactLayoutAssignment>
+    <description>Brukt til faktuering av annen betaler oppdrag på tolketjenesten</description>
+    <label>Other Payer</label>
+    <picklistValues>
+        <picklist>ExpenseTypeA__c</picklist>
+        <values>
+            <fullName>01 Taxi%2C beste kl%2Eskip%2C 1%2Ekl%2Etog%2Fsoveplass %28*kr*%29</fullName>
+            <default>false</default>
+        </values>
+        <values>
+            <fullName>02 Flytog%2C rutebuss%2C båt%2Fferje%2C trikk%2Ft-bane 2%2Ekl%2Etog %28*kr*%29</fullName>
+            <default>false</default>
+        </values>
+        <values>
+            <fullName>03 Parkering %28*kr*%29</fullName>
+            <default>false</default>
+        </values>
+        <values>
+            <fullName>05 Enkeltpassering bom%2Fbro%2Ftunnel%2C piggdekkavgift %28*kr*%29</fullName>
+            <default>false</default>
+        </values>
+        <values>
+            <fullName>06 Hotell %28*kr*%29</fullName>
+            <default>false</default>
+        </values>
+        <values>
+            <fullName>07 Refusjon flybilletter innenlands %28*kr*%29</fullName>
+            <default>false</default>
+        </values>
+        <values>
+            <fullName>08 Refusjon flybilletter utenlands %28*kr*%29</fullName>
+            <default>false</default>
+        </values>
+        <values>
+            <fullName>10 Km%2Egodtgj%2Einnland%2Futland %28*antall*%29</fullName>
+            <default>false</default>
+        </values>
+        <values>
+            <fullName>11 Km%2Egodtj Tromsø %28*antall*%29</fullName>
+            <default>false</default>
+        </values>
+        <values>
+            <fullName>12 Passasjertillegg %28*antall*%29</fullName>
+            <default>false</default>
+        </values>
+        <values>
+            <fullName>15 Km%2Egodtj%2E snøscooter og ATV %28*antall*%29</fullName>
+            <default>false</default>
+        </values>
+        <values>
+            <fullName>16 Km%2Egodtj%2E motorsykkel over 125 ccm %28*antall*%29</fullName>
+            <default>false</default>
+        </values>
+        <values>
+            <fullName>17 Km%2Egodtj%2E båt %28*antall*%29</fullName>
+            <default>false</default>
+        </values>
+        <values>
+            <fullName>18 Tillegg for tilhenger %28*antall*%29</fullName>
+            <default>false</default>
+        </values>
+        <values>
+            <fullName>19 Annet skyssmiddel %28*kr*%29</fullName>
+            <default>false</default>
+        </values>
+        <values>
+            <fullName>21 Leigebil %28*kr*%29</fullName>
+            <default>false</default>
+        </values>
+        <values>
+            <fullName>23 Rekvisita og nødvendig utstyr %28*kr*%29</fullName>
+            <default>false</default>
+        </values>
+        <values>
+            <fullName>50 Deltakeravgifter for kurs og konferanser %28*kr*%29</fullName>
+            <default>false</default>
+        </values>
+        <values>
+            <fullName>67 Måltid etter regning %28*kr*%29</fullName>
+            <default>false</default>
+        </values>
+        <values>
+            <fullName>72 Nattillegg innland%2C privat overnatting</fullName>
+            <default>false</default>
+        </values>
+    </picklistValues>
+    <picklistValues>
+        <picklist>ExpenseTypeB__c</picklist>
+        <values>
+            <fullName>01 Taxi%2C beste kl%2Eskip%2C 1%2Ekl%2Etog%2Fsoveplass %28*kr*%29</fullName>
+            <default>false</default>
+        </values>
+        <values>
+            <fullName>02 Flytog%2C rutebuss%2C båt%2Fferje%2C trikk%2Ft-bane 2%2Ekl%2Etog %28*kr*%29</fullName>
+            <default>false</default>
+        </values>
+        <values>
+            <fullName>03 Parkering %28*kr*%29</fullName>
+            <default>false</default>
+        </values>
+        <values>
+            <fullName>05 Enkeltpassering bom%2Fbro%2Ftunnel%2C piggdekkavgift %28*kr*%29</fullName>
+            <default>false</default>
+        </values>
+        <values>
+            <fullName>06 Hotell %28*kr*%29</fullName>
+            <default>false</default>
+        </values>
+        <values>
+            <fullName>07 Refusjon flybilletter innenlands %28*kr*%29</fullName>
+            <default>false</default>
+        </values>
+        <values>
+            <fullName>08 Refusjon flybilletter utenlands %28*kr*%29</fullName>
+            <default>false</default>
+        </values>
+        <values>
+            <fullName>10 Km%2Egodtgj%2Einnland%2Futland %28*antall*%29</fullName>
+            <default>false</default>
+        </values>
+        <values>
+            <fullName>11 Km%2Egodtj Tromsø %28*antall*%29</fullName>
+            <default>false</default>
+        </values>
+        <values>
+            <fullName>12 Passasjertillegg %28*antall*%29</fullName>
+            <default>false</default>
+        </values>
+        <values>
+            <fullName>15 Km%2Egodtj%2E snøscooter og ATV %28*antall*%29</fullName>
+            <default>false</default>
+        </values>
+        <values>
+            <fullName>16 Km%2Egodtj%2E motorsykkel over 125 ccm %28*antall*%29</fullName>
+            <default>false</default>
+        </values>
+        <values>
+            <fullName>17 Km%2Egodtj%2E båt %28*antall*%29</fullName>
+            <default>false</default>
+        </values>
+        <values>
+            <fullName>18 Tillegg for tilhenger %28*antall*%29</fullName>
+            <default>false</default>
+        </values>
+        <values>
+            <fullName>19 Annet skyssmiddel %28*kr*%29</fullName>
+            <default>false</default>
+        </values>
+        <values>
+            <fullName>21 Leigebil %28*kr*%29</fullName>
+            <default>false</default>
+        </values>
+        <values>
+            <fullName>23 Rekvisita og nødvendig utstyr %28*kr*%29</fullName>
+            <default>false</default>
+        </values>
+        <values>
+            <fullName>50 Deltakeravgifter for kurs og konferanser %28*kr*%29</fullName>
+            <default>false</default>
+        </values>
+        <values>
+            <fullName>67 Måltid etter regning %28*kr*%29</fullName>
+            <default>false</default>
+        </values>
+        <values>
+            <fullName>72 Nattillegg innland%2C privat overnatting</fullName>
+            <default>false</default>
+        </values>
+    </picklistValues>
+    <picklistValues>
+        <picklist>ExpenseTypeC__c</picklist>
+        <values>
+            <fullName>01 Taxi%2C beste kl%2Eskip%2C 1%2Ekl%2Etog%2Fsoveplass %28*kr*%29</fullName>
+            <default>false</default>
+        </values>
+        <values>
+            <fullName>02 Flytog%2C rutebuss%2C båt%2Fferje%2C trikk%2Ft-bane 2%2Ekl%2Etog %28*kr*%29</fullName>
+            <default>false</default>
+        </values>
+        <values>
+            <fullName>03 Parkering %28*kr*%29</fullName>
+            <default>false</default>
+        </values>
+        <values>
+            <fullName>05 Enkeltpassering bom%2Fbro%2Ftunnel%2C piggdekkavgift %28*kr*%29</fullName>
+            <default>false</default>
+        </values>
+        <values>
+            <fullName>06 Hotell %28*kr*%29</fullName>
+            <default>false</default>
+        </values>
+        <values>
+            <fullName>07 Refusjon flybilletter innenlands %28*kr*%29</fullName>
+            <default>false</default>
+        </values>
+        <values>
+            <fullName>08 Refusjon flybilletter utenlands %28*kr*%29</fullName>
+            <default>false</default>
+        </values>
+        <values>
+            <fullName>10 Km%2Egodtgj%2Einnland%2Futland %28*antall*%29</fullName>
+            <default>false</default>
+        </values>
+        <values>
+            <fullName>11 Km%2Egodtj Tromsø %28*antall*%29</fullName>
+            <default>false</default>
+        </values>
+        <values>
+            <fullName>12 Passasjertillegg %28*antall*%29</fullName>
+            <default>false</default>
+        </values>
+        <values>
+            <fullName>15 Km%2Egodtj%2E snøscooter og ATV %28*antall*%29</fullName>
+            <default>false</default>
+        </values>
+        <values>
+            <fullName>16 Km%2Egodtj%2E motorsykkel over 125 ccm %28*antall*%29</fullName>
+            <default>false</default>
+        </values>
+        <values>
+            <fullName>17 Km%2Egodtj%2E båt %28*antall*%29</fullName>
+            <default>false</default>
+        </values>
+        <values>
+            <fullName>18 Tillegg for tilhenger %28*antall*%29</fullName>
+            <default>false</default>
+        </values>
+        <values>
+            <fullName>19 Annet skyssmiddel %28*kr*%29</fullName>
+            <default>false</default>
+        </values>
+        <values>
+            <fullName>21 Leigebil %28*kr*%29</fullName>
+            <default>false</default>
+        </values>
+        <values>
+            <fullName>23 Rekvisita og nødvendig utstyr %28*kr*%29</fullName>
+            <default>false</default>
+        </values>
+        <values>
+            <fullName>50 Deltakeravgifter for kurs og konferanser %28*kr*%29</fullName>
+            <default>false</default>
+        </values>
+        <values>
+            <fullName>67 Måltid etter regning %28*kr*%29</fullName>
+            <default>false</default>
+        </values>
+        <values>
+            <fullName>72 Nattillegg innland%2C privat overnatting</fullName>
+            <default>false</default>
+        </values>
+    </picklistValues>
+    <picklistValues>
+        <picklist>ExpenseTypeD__c</picklist>
+        <values>
+            <fullName>01 Taxi%2C beste kl%2Eskip%2C 1%2Ekl%2Etog%2Fsoveplass %28*kr*%29</fullName>
+            <default>false</default>
+        </values>
+        <values>
+            <fullName>02 Flytog%2C rutebuss%2C båt%2Fferje%2C trikk%2Ft-bane 2%2Ekl%2Etog %28*kr*%29</fullName>
+            <default>false</default>
+        </values>
+        <values>
+            <fullName>03 Parkering %28*kr*%29</fullName>
+            <default>false</default>
+        </values>
+        <values>
+            <fullName>05 Enkeltpassering bom%2Fbro%2Ftunnel%2C piggdekkavgift %28*kr*%29</fullName>
+            <default>false</default>
+        </values>
+        <values>
+            <fullName>06 Hotell %28*kr*%29</fullName>
+            <default>false</default>
+        </values>
+        <values>
+            <fullName>07 Refusjon flybilletter innenlands %28*kr*%29</fullName>
+            <default>false</default>
+        </values>
+        <values>
+            <fullName>08 Refusjon flybilletter utenlands %28*kr*%29</fullName>
+            <default>false</default>
+        </values>
+        <values>
+            <fullName>10 Km%2Egodtgj%2Einnland%2Futland %28*antall*%29</fullName>
+            <default>false</default>
+        </values>
+        <values>
+            <fullName>11 Km%2Egodtj Tromsø %28*antall*%29</fullName>
+            <default>false</default>
+        </values>
+        <values>
+            <fullName>12 Passasjertillegg %28*antall*%29</fullName>
+            <default>false</default>
+        </values>
+        <values>
+            <fullName>15 Km%2Egodtj%2E snøscooter og ATV %28*antall*%29</fullName>
+            <default>false</default>
+        </values>
+        <values>
+            <fullName>16 Km%2Egodtj%2E motorsykkel over 125 ccm %28*antall*%29</fullName>
+            <default>false</default>
+        </values>
+        <values>
+            <fullName>17 Km%2Egodtj%2E båt %28*antall*%29</fullName>
+            <default>false</default>
+        </values>
+        <values>
+            <fullName>18 Tillegg for tilhenger %28*antall*%29</fullName>
+            <default>false</default>
+        </values>
+        <values>
+            <fullName>19 Annet skyssmiddel %28*kr*%29</fullName>
+            <default>false</default>
+        </values>
+        <values>
+            <fullName>21 Leigebil %28*kr*%29</fullName>
+            <default>false</default>
+        </values>
+        <values>
+            <fullName>23 Rekvisita og nødvendig utstyr %28*kr*%29</fullName>
+            <default>false</default>
+        </values>
+        <values>
+            <fullName>50 Deltakeravgifter for kurs og konferanser %28*kr*%29</fullName>
+            <default>false</default>
+        </values>
+        <values>
+            <fullName>67 Måltid etter regning %28*kr*%29</fullName>
+            <default>false</default>
+        </values>
+        <values>
+            <fullName>72 Nattillegg innland%2C privat overnatting</fullName>
+            <default>false</default>
+        </values>
+    </picklistValues>
+    <picklistValues>
+        <picklist>ExpenseTypeE__c</picklist>
+        <values>
+            <fullName>01 Taxi%2C beste kl%2Eskip%2C 1%2Ekl%2Etog%2Fsoveplass %28*kr*%29</fullName>
+            <default>false</default>
+        </values>
+        <values>
+            <fullName>02 Flytog%2C rutebuss%2C båt%2Fferje%2C trikk%2Ft-bane 2%2Ekl%2Etog %28*kr*%29</fullName>
+            <default>false</default>
+        </values>
+        <values>
+            <fullName>03 Parkering %28*kr*%29</fullName>
+            <default>false</default>
+        </values>
+        <values>
+            <fullName>05 Enkeltpassering bom%2Fbro%2Ftunnel%2C piggdekkavgift %28*kr*%29</fullName>
+            <default>false</default>
+        </values>
+        <values>
+            <fullName>06 Hotell %28*kr*%29</fullName>
+            <default>false</default>
+        </values>
+        <values>
+            <fullName>07 Refusjon flybilletter innenlands %28*kr*%29</fullName>
+            <default>false</default>
+        </values>
+        <values>
+            <fullName>08 Refusjon flybilletter utenlands %28*kr*%29</fullName>
+            <default>false</default>
+        </values>
+        <values>
+            <fullName>10 Km%2Egodtgj%2Einnland%2Futland %28*antall*%29</fullName>
+            <default>false</default>
+        </values>
+        <values>
+            <fullName>11 Km%2Egodtj Tromsø %28*antall*%29</fullName>
+            <default>false</default>
+        </values>
+        <values>
+            <fullName>12 Passasjertillegg %28*antall*%29</fullName>
+            <default>false</default>
+        </values>
+        <values>
+            <fullName>15 Km%2Egodtj%2E snøscooter og ATV %28*antall*%29</fullName>
+            <default>false</default>
+        </values>
+        <values>
+            <fullName>16 Km%2Egodtj%2E motorsykkel over 125 ccm %28*antall*%29</fullName>
+            <default>false</default>
+        </values>
+        <values>
+            <fullName>17 Km%2Egodtj%2E båt %28*antall*%29</fullName>
+            <default>false</default>
+        </values>
+        <values>
+            <fullName>18 Tillegg for tilhenger %28*antall*%29</fullName>
+            <default>false</default>
+        </values>
+        <values>
+            <fullName>19 Annet skyssmiddel %28*kr*%29</fullName>
+            <default>false</default>
+        </values>
+        <values>
+            <fullName>21 Leigebil %28*kr*%29</fullName>
+            <default>false</default>
+        </values>
+        <values>
+            <fullName>23 Rekvisita og nødvendig utstyr %28*kr*%29</fullName>
+            <default>false</default>
+        </values>
+        <values>
+            <fullName>50 Deltakeravgifter for kurs og konferanser %28*kr*%29</fullName>
+            <default>false</default>
+        </values>
+        <values>
+            <fullName>67 Måltid etter regning %28*kr*%29</fullName>
+            <default>false</default>
+        </values>
+        <values>
+            <fullName>72 Nattillegg innland%2C privat overnatting</fullName>
+            <default>false</default>
+        </values>
+    </picklistValues>
+    <picklistValues>
+        <picklist>ExpenseTypeF__c</picklist>
+        <values>
+            <fullName>01 Taxi%2C beste kl%2Eskip%2C 1%2Ekl%2Etog%2Fsoveplass %28*kr*%29</fullName>
+            <default>false</default>
+        </values>
+        <values>
+            <fullName>02 Flytog%2C rutebuss%2C båt%2Fferje%2C trikk%2Ft-bane 2%2Ekl%2Etog %28*kr*%29</fullName>
+            <default>false</default>
+        </values>
+        <values>
+            <fullName>03 Parkering %28*kr*%29</fullName>
+            <default>false</default>
+        </values>
+        <values>
+            <fullName>05 Enkeltpassering bom%2Fbro%2Ftunnel%2C piggdekkavgift %28*kr*%29</fullName>
+            <default>false</default>
+        </values>
+        <values>
+            <fullName>06 Hotell %28*kr*%29</fullName>
+            <default>false</default>
+        </values>
+        <values>
+            <fullName>07 Refusjon flybilletter innenlands %28*kr*%29</fullName>
+            <default>false</default>
+        </values>
+        <values>
+            <fullName>08 Refusjon flybilletter utenlands %28*kr*%29</fullName>
+            <default>false</default>
+        </values>
+        <values>
+            <fullName>10 Km%2Egodtgj%2Einnland%2Futland %28*antall*%29</fullName>
+            <default>false</default>
+        </values>
+        <values>
+            <fullName>11 Km%2Egodtj Tromsø %28*antall*%29</fullName>
+            <default>false</default>
+        </values>
+        <values>
+            <fullName>12 Passasjertillegg %28*antall*%29</fullName>
+            <default>false</default>
+        </values>
+        <values>
+            <fullName>15 Km%2Egodtj%2E snøscooter og ATV %28*antall*%29</fullName>
+            <default>false</default>
+        </values>
+        <values>
+            <fullName>16 Km%2Egodtj%2E motorsykkel over 125 ccm %28*antall*%29</fullName>
+            <default>false</default>
+        </values>
+        <values>
+            <fullName>17 Km%2Egodtj%2E båt %28*antall*%29</fullName>
+            <default>false</default>
+        </values>
+        <values>
+            <fullName>18 Tillegg for tilhenger %28*antall*%29</fullName>
+            <default>false</default>
+        </values>
+        <values>
+            <fullName>19 Annet skyssmiddel %28*kr*%29</fullName>
+            <default>false</default>
+        </values>
+        <values>
+            <fullName>21 Leigebil %28*kr*%29</fullName>
+            <default>false</default>
+        </values>
+        <values>
+            <fullName>23 Rekvisita og nødvendig utstyr %28*kr*%29</fullName>
+            <default>false</default>
+        </values>
+        <values>
+            <fullName>50 Deltakeravgifter for kurs og konferanser %28*kr*%29</fullName>
+            <default>false</default>
+        </values>
+        <values>
+            <fullName>67 Måltid etter regning %28*kr*%29</fullName>
+            <default>false</default>
+        </values>
+        <values>
+            <fullName>72 Nattillegg innland%2C privat overnatting</fullName>
+            <default>false</default>
+        </values>
+    </picklistValues>
+    <picklistValues>
+        <picklist>ExpenseTypeG__c</picklist>
+        <values>
+            <fullName>01 Taxi%2C beste kl%2Eskip%2C 1%2Ekl%2Etog%2Fsoveplass %28*kr*%29</fullName>
+            <default>false</default>
+        </values>
+        <values>
+            <fullName>02 Flytog%2C rutebuss%2C båt%2Fferje%2C trikk%2Ft-bane 2%2Ekl%2Etog %28*kr*%29</fullName>
+            <default>false</default>
+        </values>
+        <values>
+            <fullName>03 Parkering %28*kr*%29</fullName>
+            <default>false</default>
+        </values>
+        <values>
+            <fullName>05 Enkeltpassering bom%2Fbro%2Ftunnel%2C piggdekkavgift %28*kr*%29</fullName>
+            <default>false</default>
+        </values>
+        <values>
+            <fullName>06 Hotell %28*kr*%29</fullName>
+            <default>false</default>
+        </values>
+        <values>
+            <fullName>07 Refusjon flybilletter innenlands %28*kr*%29</fullName>
+            <default>false</default>
+        </values>
+        <values>
+            <fullName>08 Refusjon flybilletter utenlands %28*kr*%29</fullName>
+            <default>false</default>
+        </values>
+        <values>
+            <fullName>10 Km%2Egodtgj%2Einnland%2Futland %28*antall*%29</fullName>
+            <default>false</default>
+        </values>
+        <values>
+            <fullName>11 Km%2Egodtj Tromsø %28*antall*%29</fullName>
+            <default>false</default>
+        </values>
+        <values>
+            <fullName>12 Passasjertillegg %28*antall*%29</fullName>
+            <default>false</default>
+        </values>
+        <values>
+            <fullName>15 Km%2Egodtj%2E snøscooter og ATV %28*antall*%29</fullName>
+            <default>false</default>
+        </values>
+        <values>
+            <fullName>16 Km%2Egodtj%2E motorsykkel over 125 ccm %28*antall*%29</fullName>
+            <default>false</default>
+        </values>
+        <values>
+            <fullName>17 Km%2Egodtj%2E båt %28*antall*%29</fullName>
+            <default>false</default>
+        </values>
+        <values>
+            <fullName>18 Tillegg for tilhenger %28*antall*%29</fullName>
+            <default>false</default>
+        </values>
+        <values>
+            <fullName>19 Annet skyssmiddel %28*kr*%29</fullName>
+            <default>false</default>
+        </values>
+        <values>
+            <fullName>21 Leigebil %28*kr*%29</fullName>
+            <default>false</default>
+        </values>
+        <values>
+            <fullName>23 Rekvisita og nødvendig utstyr %28*kr*%29</fullName>
+            <default>false</default>
+        </values>
+        <values>
+            <fullName>50 Deltakeravgifter for kurs og konferanser %28*kr*%29</fullName>
+            <default>false</default>
+        </values>
+        <values>
+            <fullName>67 Måltid etter regning %28*kr*%29</fullName>
+            <default>false</default>
+        </values>
+        <values>
+            <fullName>72 Nattillegg innland%2C privat overnatting</fullName>
+            <default>false</default>
+        </values>
+    </picklistValues>
+    <picklistValues>
+        <picklist>ExpenseTypeH__c</picklist>
+        <values>
+            <fullName>01 Taxi%2C beste kl%2Eskip%2C 1%2Ekl%2Etog%2Fsoveplass %28*kr*%29</fullName>
+            <default>false</default>
+        </values>
+        <values>
+            <fullName>02 Flytog%2C rutebuss%2C båt%2Fferje%2C trikk%2Ft-bane 2%2Ekl%2Etog %28*kr*%29</fullName>
+            <default>false</default>
+        </values>
+        <values>
+            <fullName>03 Parkering %28*kr*%29</fullName>
+            <default>false</default>
+        </values>
+        <values>
+            <fullName>05 Enkeltpassering bom%2Fbro%2Ftunnel%2C piggdekkavgift %28*kr*%29</fullName>
+            <default>false</default>
+        </values>
+        <values>
+            <fullName>06 Hotell %28*kr*%29</fullName>
+            <default>false</default>
+        </values>
+        <values>
+            <fullName>07 Refusjon flybilletter innenlands %28*kr*%29</fullName>
+            <default>false</default>
+        </values>
+        <values>
+            <fullName>08 Refusjon flybilletter utenlands %28*kr*%29</fullName>
+            <default>false</default>
+        </values>
+        <values>
+            <fullName>10 Km%2Egodtgj%2Einnland%2Futland %28*antall*%29</fullName>
+            <default>false</default>
+        </values>
+        <values>
+            <fullName>11 Km%2Egodtj Tromsø %28*antall*%29</fullName>
+            <default>false</default>
+        </values>
+        <values>
+            <fullName>12 Passasjertillegg %28*antall*%29</fullName>
+            <default>false</default>
+        </values>
+        <values>
+            <fullName>15 Km%2Egodtj%2E snøscooter og ATV %28*antall*%29</fullName>
+            <default>false</default>
+        </values>
+        <values>
+            <fullName>16 Km%2Egodtj%2E motorsykkel over 125 ccm %28*antall*%29</fullName>
+            <default>false</default>
+        </values>
+        <values>
+            <fullName>17 Km%2Egodtj%2E båt %28*antall*%29</fullName>
+            <default>false</default>
+        </values>
+        <values>
+            <fullName>18 Tillegg for tilhenger %28*antall*%29</fullName>
+            <default>false</default>
+        </values>
+        <values>
+            <fullName>19 Annet skyssmiddel %28*kr*%29</fullName>
+            <default>false</default>
+        </values>
+        <values>
+            <fullName>21 Leigebil %28*kr*%29</fullName>
+            <default>false</default>
+        </values>
+        <values>
+            <fullName>23 Rekvisita og nødvendig utstyr %28*kr*%29</fullName>
+            <default>false</default>
+        </values>
+        <values>
+            <fullName>50 Deltakeravgifter for kurs og konferanser %28*kr*%29</fullName>
+            <default>false</default>
+        </values>
+        <values>
+            <fullName>67 Måltid etter regning %28*kr*%29</fullName>
+            <default>false</default>
+        </values>
+        <values>
+            <fullName>72 Nattillegg innland%2C privat overnatting</fullName>
+            <default>false</default>
+        </values>
+    </picklistValues>
+    <picklistValues>
+        <picklist>ExpenseTypeI__c</picklist>
+        <values>
+            <fullName>01 Taxi%2C beste kl%2Eskip%2C 1%2Ekl%2Etog%2Fsoveplass %28*kr*%29</fullName>
+            <default>false</default>
+        </values>
+        <values>
+            <fullName>02 Flytog%2C rutebuss%2C båt%2Fferje%2C trikk%2Ft-bane 2%2Ekl%2Etog %28*kr*%29</fullName>
+            <default>false</default>
+        </values>
+        <values>
+            <fullName>03 Parkering %28*kr*%29</fullName>
+            <default>false</default>
+        </values>
+        <values>
+            <fullName>05 Enkeltpassering bom%2Fbro%2Ftunnel%2C piggdekkavgift %28*kr*%29</fullName>
+            <default>false</default>
+        </values>
+        <values>
+            <fullName>06 Hotell %28*kr*%29</fullName>
+            <default>false</default>
+        </values>
+        <values>
+            <fullName>07 Refusjon flybilletter innenlands %28*kr*%29</fullName>
+            <default>false</default>
+        </values>
+        <values>
+            <fullName>08 Refusjon flybilletter utenlands %28*kr*%29</fullName>
+            <default>false</default>
+        </values>
+        <values>
+            <fullName>10 Km%2Egodtgj%2Einnland%2Futland %28*antall*%29</fullName>
+            <default>false</default>
+        </values>
+        <values>
+            <fullName>11 Km%2Egodtj Tromsø %28*antall*%29</fullName>
+            <default>false</default>
+        </values>
+        <values>
+            <fullName>12 Passasjertillegg %28*antall*%29</fullName>
+            <default>false</default>
+        </values>
+        <values>
+            <fullName>15 Km%2Egodtj%2E snøscooter og ATV %28*antall*%29</fullName>
+            <default>false</default>
+        </values>
+        <values>
+            <fullName>16 Km%2Egodtj%2E motorsykkel over 125 ccm %28*antall*%29</fullName>
+            <default>false</default>
+        </values>
+        <values>
+            <fullName>17 Km%2Egodtj%2E båt %28*antall*%29</fullName>
+            <default>false</default>
+        </values>
+        <values>
+            <fullName>18 Tillegg for tilhenger %28*antall*%29</fullName>
+            <default>false</default>
+        </values>
+        <values>
+            <fullName>19 Annet skyssmiddel %28*kr*%29</fullName>
+            <default>false</default>
+        </values>
+        <values>
+            <fullName>21 Leigebil %28*kr*%29</fullName>
+            <default>false</default>
+        </values>
+        <values>
+            <fullName>23 Rekvisita og nødvendig utstyr %28*kr*%29</fullName>
+            <default>false</default>
+        </values>
+        <values>
+            <fullName>50 Deltakeravgifter for kurs og konferanser %28*kr*%29</fullName>
+            <default>false</default>
+        </values>
+        <values>
+            <fullName>67 Måltid etter regning %28*kr*%29</fullName>
+            <default>false</default>
+        </values>
+        <values>
+            <fullName>72 Nattillegg innland%2C privat overnatting</fullName>
+            <default>false</default>
+        </values>
+    </picklistValues>
+    <picklistValues>
+        <picklist>ExpenseTypeJ__c</picklist>
+        <values>
+            <fullName>01 Taxi%2C beste kl%2Eskip%2C 1%2Ekl%2Etog%2Fsoveplass %28*kr*%29</fullName>
+            <default>false</default>
+        </values>
+        <values>
+            <fullName>02 Flytog%2C rutebuss%2C båt%2Fferje%2C trikk%2Ft-bane 2%2Ekl%2Etog %28*kr*%29</fullName>
+            <default>false</default>
+        </values>
+        <values>
+            <fullName>03 Parkering %28*kr*%29</fullName>
+            <default>false</default>
+        </values>
+        <values>
+            <fullName>05 Enkeltpassering bom%2Fbro%2Ftunnel%2C piggdekkavgift %28*kr*%29</fullName>
+            <default>false</default>
+        </values>
+        <values>
+            <fullName>06 Hotell %28*kr*%29</fullName>
+            <default>false</default>
+        </values>
+        <values>
+            <fullName>07 Refusjon flybilletter innenlands %28*kr*%29</fullName>
+            <default>false</default>
+        </values>
+        <values>
+            <fullName>08 Refusjon flybilletter utenlands %28*kr*%29</fullName>
+            <default>false</default>
+        </values>
+        <values>
+            <fullName>10 Km%2Egodtgj%2Einnland%2Futland %28*antall*%29</fullName>
+            <default>false</default>
+        </values>
+        <values>
+            <fullName>11 Km%2Egodtj Tromsø %28*antall*%29</fullName>
+            <default>false</default>
+        </values>
+        <values>
+            <fullName>12 Passasjertillegg %28*antall*%29</fullName>
+            <default>false</default>
+        </values>
+        <values>
+            <fullName>15 Km%2Egodtj%2E snøscooter og ATV %28*antall*%29</fullName>
+            <default>false</default>
+        </values>
+        <values>
+            <fullName>16 Km%2Egodtj%2E motorsykkel over 125 ccm %28*antall*%29</fullName>
+            <default>false</default>
+        </values>
+        <values>
+            <fullName>17 Km%2Egodtj%2E båt %28*antall*%29</fullName>
+            <default>false</default>
+        </values>
+        <values>
+            <fullName>18 Tillegg for tilhenger %28*antall*%29</fullName>
+            <default>false</default>
+        </values>
+        <values>
+            <fullName>19 Annet skyssmiddel %28*kr*%29</fullName>
+            <default>false</default>
+        </values>
+        <values>
+            <fullName>21 Leigebil %28*kr*%29</fullName>
+            <default>false</default>
+        </values>
+        <values>
+            <fullName>23 Rekvisita og nødvendig utstyr %28*kr*%29</fullName>
+            <default>false</default>
+        </values>
+        <values>
+            <fullName>50 Deltakeravgifter for kurs og konferanser %28*kr*%29</fullName>
+            <default>false</default>
+        </values>
+        <values>
+            <fullName>67 Måltid etter regning %28*kr*%29</fullName>
+            <default>false</default>
+        </values>
+        <values>
+            <fullName>72 Nattillegg innland%2C privat overnatting</fullName>
+            <default>false</default>
+        </values>
+    </picklistValues>
+    <picklistValues>
+        <picklist>Status__c</picklist>
+        <values>
+            <fullName>Filled</fullName>
+            <default>false</default>
+        </values>
+        <values>
+            <fullName>New</fullName>
+            <default>true</default>
+        </values>
+        <values>
+            <fullName>Sent in return</fullName>
+            <default>false</default>
+        </values>
+    </picklistValues>
+    <picklistValues>
+        <picklist>SubsistenceAllowanceDay1__c</picklist>
+        <values>
+            <fullName>Reise med overnatting</fullName>
+            <default>false</default>
+        </values>
+        <values>
+            <fullName>Reise u%2F overnatting 6-12 timer</fullName>
+            <default>true</default>
+        </values>
+        <values>
+            <fullName>Reise u%2F overnatting%2C over 12 timer</fullName>
+            <default>false</default>
+        </values>
+    </picklistValues>
+    <picklistValues>
+        <picklist>SubsistenceAllowanceDay2__c</picklist>
+        <values>
+            <fullName>Reise med overnatting</fullName>
+            <default>false</default>
+        </values>
+        <values>
+            <fullName>Reise u%2F overnatting 6-12 timer</fullName>
+            <default>true</default>
+        </values>
+        <values>
+            <fullName>Reise u%2F overnatting%2C over 12 timer</fullName>
+            <default>false</default>
+        </values>
+    </picklistValues>
+    <picklistValues>
+        <picklist>SubsistenceAllowanceDay3__c</picklist>
+        <values>
+            <fullName>Reise med overnatting</fullName>
+            <default>false</default>
+        </values>
+        <values>
+            <fullName>Reise u%2F overnatting 6-12 timer</fullName>
+            <default>true</default>
+        </values>
+        <values>
+            <fullName>Reise u%2F overnatting%2C over 12 timer</fullName>
+            <default>false</default>
+        </values>
+    </picklistValues>
+    <picklistValues>
+        <picklist>SubsistenceAllowanceDay4__c</picklist>
+        <values>
+            <fullName>Reise med overnatting</fullName>
+            <default>false</default>
+        </values>
+        <values>
+            <fullName>Reise u%2F overnatting 6-12 timer</fullName>
+            <default>true</default>
+        </values>
+        <values>
+            <fullName>Reise u%2F overnatting%2C over 12 timer</fullName>
+            <default>false</default>
+        </values>
+    </picklistValues>
+    <picklistValues>
+        <picklist>SubsistenceAllowanceDay5__c</picklist>
+        <values>
+            <fullName>Reise med overnatting</fullName>
+            <default>false</default>
+        </values>
+        <values>
+            <fullName>Reise u%2F overnatting 6-12 timer</fullName>
+            <default>true</default>
+        </values>
+        <values>
+            <fullName>Reise u%2F overnatting%2C over 12 timer</fullName>
+            <default>false</default>
+        </values>
+    </picklistValues>
+</RecordType>
