@@ -1368,29 +1368,7 @@ public without sharing class HOT_ServiceAppointmentNotification {
         List<User> users = [SELECT Id, AccountId FROM User WHERE Id IN :userIds];
         return users;
     }
-    private Map<Id, Id> getAccountIdByUserIdMap() {
-        if (this.accountIdByUserIdMap == null) {
-            Set<Id> userIds = new Set<Id>();
-            for (ServiceAppointment sa : this.getUpdatedSAMap().values()) {
-                if (sa.HOT_AssignedResourceId__c != null) {
-                    userIds.add(sa.HOT_AssignedResourceId__c);
-                }
-            }
-            Map<Id, Id> accountByUserMap = new Map<Id, Id>();
-            for (User u : HOT_ServiceAppointmentNotification.getUsersByUserIds(userIds)) {
-                accountByUserMap.put(u.Id, u.AccountId);
-            }
-            this.accountIdByUserIdMap = accountByUserMap;
-        }
-        return this.accountIdByUSerIdMap;
-    }
-    private Map<Id, Id> getAccountIdByUserIdMap(Set<Id> userIds) {
-        Map<Id, Id> mapToReturn = new Map<Id, Id>();
-        for (Id uId : userIds) {
-            mapToReturn.put(uId, this.getAccountIdByUserIdMap().get(uId));
-        }
-        return mapToReturn;
-    }
+
     private static List<ServiceAppointment> getRelatedServiceAppointments(Set<Id> workOrderIds) {
         return [
             SELECT
