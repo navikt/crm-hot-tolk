@@ -835,14 +835,14 @@ export default class LibsFullCalendarV2 extends NavigationMixin(LightningElement
                     this.interestedResource = result;
                     this.termsOfAgreement = this.interestedResource.HOT_TermsOfAgreement__c;
                 });
-                this.ordererPhoneNumber = sa.HOT_Request__r?.Orderer__r?.CRM_Person__r?.HOT_MobilePhone__c ?? '';
+                this.ordererPhoneNumber = sa.HOT_Request__r?.Orderer__r?.CRM_Person__r?.INT_KrrMobilePhone__c ?? '';
                 const crmPerson = sa.HOT_Request__r?.Account__r?.CRM_Person__r;
                 if (crmPerson) {
                     this.accountAgeGender =
                         (crmPerson.INT_Sex__c || '') +
                         ' ' +
                         (crmPerson.CRM_AgeNumber__c ? crmPerson.CRM_AgeNumber__c + ' år' : '');
-                    this.accountPhoneNumber = crmPerson.HOT_MobilePhone__c || '';
+                    this.accountPhoneNumber = crmPerson.INT_KrrMobilePhone__c || '';
                 }
                 const confidentiality = sa.HOT_Request__r?.Account__r?.CRM_Person__r?.INT_Confidential__c;
 
