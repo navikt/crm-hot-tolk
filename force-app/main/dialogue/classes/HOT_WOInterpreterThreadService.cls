@@ -332,10 +332,6 @@ public without sharing class HOT_WOInterpreterThreadService {
         thread.HOT_IsEmployeeThread__c = serviceResource.HOT_IsEmployedInterpreter__c;
         thread.CRM_isActive__c = true;
 
-        if (serviceResource.RelatedRecordId != null) {
-            thread.HOT_ParticipantIds__c = serviceResource.RelatedRecordId;
-        }
-
         return thread;
     }
 
