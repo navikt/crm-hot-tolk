@@ -19,6 +19,22 @@
         </connector>
     </assignments>
     <assignments>
+        <name>setInvoiceFilledOnSa</name>
+        <label>setInvoiceFilledOnSa</label>
+        <locationX>0</locationX>
+        <locationY>0</locationY>
+        <assignmentItems>
+            <assignToReference>getServiceAppointmentRecord.HOT_IsRecieptRecieved__c</assignToReference>
+            <operator>Assign</operator>
+            <value>
+                <booleanValue>true</booleanValue>
+            </value>
+        </assignmentItems>
+        <connector>
+            <targetReference>updateServiceAppointment</targetReference>
+        </connector>
+    </assignments>
+    <assignments>
         <name>setNullSubsistenceAllowance</name>
         <label>setNullSubsistenceAllowance</label>
         <locationX>0</locationX>
@@ -60,7 +76,7 @@
             </value>
         </assignmentItems>
         <connector>
-            <targetReference>updateInvoice</targetReference>
+            <targetReference>setInvoiceFilledOnSa</targetReference>
         </connector>
     </assignments>
     <assignments>
@@ -632,6 +648,16 @@
             <targetReference>completeScreen</targetReference>
         </connector>
         <inputReference>invoice</inputReference>
+    </recordUpdates>
+    <recordUpdates>
+        <name>updateServiceAppointment</name>
+        <label>updateServiceAppointment</label>
+        <locationX>0</locationX>
+        <locationY>0</locationY>
+        <connector>
+            <targetReference>updateInvoice</targetReference>
+        </connector>
+        <inputReference>getServiceAppointmentRecord</inputReference>
     </recordUpdates>
     <screens>
         <name>completeScreen</name>

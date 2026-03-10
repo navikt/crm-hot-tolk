@@ -1,49 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <Flow xmlns="http://soap.sforce.com/2006/04/metadata">
     <actionCalls>
-        <name>Copy_1_of_sendPushNotification</name>
-        <label>Copy 1 of sendPushNotification</label>
-        <locationX>0</locationX>
-        <locationY>0</locationY>
-        <actionName>customNotificationAction</actionName>
-        <actionType>customNotificationAction</actionType>
-        <connector>
-            <targetReference>clearRecipientList</targetReference>
-        </connector>
-        <flowTransactionModel>CurrentTransaction</flowTransactionModel>
-        <inputParameters>
-            <name>customNotifTypeId</name>
-            <value>
-                <elementReference>getNotificationType.Id</elementReference>
-            </value>
-        </inputParameters>
-        <inputParameters>
-            <name>recipientIds</name>
-            <value>
-                <elementReference>recipientUserIds</elementReference>
-            </value>
-        </inputParameters>
-        <inputParameters>
-            <name>title</name>
-            <value>
-                <elementReference>notifcationTitleText</elementReference>
-            </value>
-        </inputParameters>
-        <inputParameters>
-            <name>body</name>
-            <value>
-                <elementReference>notificationBodyText</elementReference>
-            </value>
-        </inputParameters>
-        <inputParameters>
-            <name>targetPageRef</name>
-            <value>
-                <elementReference>notificationTargetPage</elementReference>
-            </value>
-        </inputParameters>
-        <nameSegment>customNotificationAction</nameSegment>
-    </actionCalls>
-    <actionCalls>
         <name>sendPushNotification</name>
         <label>sendPushNotification</label>
         <locationX>0</locationX>
@@ -101,122 +58,6 @@
         </assignmentItems>
         <connector>
             <targetReference>freelanceOrEmployee</targetReference>
-        </connector>
-    </assignments>
-    <assignments>
-        <name>assignNewNotificationForNotificationList</name>
-        <label>assignNewNotificationForNotificationList</label>
-        <locationX>0</locationX>
-        <locationY>0</locationY>
-        <assignmentItems>
-            <assignToReference>newNotificationRecord.HOT_Account__c</assignToReference>
-            <operator>Assign</operator>
-            <value>
-                <elementReference>loopUnfilledInvoices.ServiceResource__r.AccountId</elementReference>
-            </value>
-        </assignmentItems>
-        <assignmentItems>
-            <assignToReference>newNotificationRecord.HOT_ServiceResource__c</assignToReference>
-            <operator>Assign</operator>
-            <value>
-                <elementReference>loopUnfilledInvoices.ServiceResource__c</elementReference>
-            </value>
-        </assignmentItems>
-        <assignmentItems>
-            <assignToReference>newNotificationRecord.HOT_NotificationChannel__c</assignToReference>
-            <operator>Assign</operator>
-            <value>
-                <elementReference>loopUnfilledInvoices.ServiceResource__r.HOT_NotificationChannel__c</elementReference>
-            </value>
-        </assignmentItems>
-        <assignmentItems>
-            <assignToReference>newNotificationRecord.HOT_Subject__c</assignToReference>
-            <operator>Assign</operator>
-            <value>
-                <elementReference>notifcationTitleText</elementReference>
-            </value>
-        </assignmentItems>
-        <assignmentItems>
-            <assignToReference>newNotificationRecord.HOT_NotificationText__c</assignToReference>
-            <operator>Assign</operator>
-            <value>
-                <elementReference>notificationBodyText</elementReference>
-            </value>
-        </assignmentItems>
-        <assignmentItems>
-            <assignToReference>newNotificationRecord.HOT_RelatedObject__c</assignToReference>
-            <operator>Assign</operator>
-            <value>
-                <elementReference>loopUnfilledInvoices.Id</elementReference>
-            </value>
-        </assignmentItems>
-        <assignmentItems>
-            <assignToReference>newNotificationRecord.HOT_RelatedObjectType__c</assignToReference>
-            <operator>Assign</operator>
-            <value>
-                <stringValue>invoice</stringValue>
-            </value>
-        </assignmentItems>
-        <assignmentItems>
-            <assignToReference>newNotificationList</assignToReference>
-            <operator>Add</operator>
-            <value>
-                <elementReference>newNotificationRecord</elementReference>
-            </value>
-        </assignmentItems>
-        <connector>
-            <targetReference>loopUnfilledInvoices</targetReference>
-        </connector>
-    </assignments>
-    <assignments>
-        <name>assignNewSMSToSmsList</name>
-        <label>assignNewSMSToSmsList</label>
-        <locationX>0</locationX>
-        <locationY>0</locationY>
-        <assignmentItems>
-            <assignToReference>newSmsRecord.Domain__c</assignToReference>
-            <operator>Assign</operator>
-            <value>
-                <stringValue>HOT</stringValue>
-            </value>
-        </assignmentItems>
-        <assignmentItems>
-            <assignToReference>newSmsRecord.Type__c</assignToReference>
-            <operator>Assign</operator>
-            <value>
-                <stringValue>Message</stringValue>
-            </value>
-        </assignmentItems>
-        <assignmentItems>
-            <assignToReference>newSmsRecord.Account__c</assignToReference>
-            <operator>Assign</operator>
-            <value>
-                <elementReference>loopUnfilledInvoices.ServiceResource__r.AccountId</elementReference>
-            </value>
-        </assignmentItems>
-        <assignmentItems>
-            <assignToReference>newSmsRecord.Recipient__c</assignToReference>
-            <operator>Assign</operator>
-            <value>
-                <elementReference>loopUnfilledInvoices.ServiceResource__r.HOT_MobilePhone__c</elementReference>
-            </value>
-        </assignmentItems>
-        <assignmentItems>
-            <assignToReference>newSmsRecord.Message__c</assignToReference>
-            <operator>Assign</operator>
-            <value>
-                <elementReference>smsBodyText</elementReference>
-            </value>
-        </assignmentItems>
-        <assignmentItems>
-            <assignToReference>newSMSForList</assignToReference>
-            <operator>Add</operator>
-            <value>
-                <elementReference>newSmsRecord</elementReference>
-            </value>
-        </assignmentItems>
-        <connector>
-            <targetReference>assignNewNotificationForNotificationList</targetReference>
         </connector>
     </assignments>
     <assignments>
@@ -298,31 +139,6 @@
         </connector>
     </assignments>
     <decisions>
-        <name>checkIfUserHasMobile</name>
-        <label>checkIfUserHasMobile</label>
-        <locationX>0</locationX>
-        <locationY>0</locationY>
-        <defaultConnector>
-            <targetReference>loopUnfilledInvoices</targetReference>
-        </defaultConnector>
-        <defaultConnectorLabel>noMobile</defaultConnectorLabel>
-        <rules>
-            <name>hasMobile</name>
-            <conditionLogic>and</conditionLogic>
-            <conditions>
-                <leftValueReference>loopUnfilledInvoices.ServiceResource__r.HOT_MobilePhone__c</leftValueReference>
-                <operator>IsNull</operator>
-                <rightValue>
-                    <booleanValue>false</booleanValue>
-                </rightValue>
-            </conditions>
-            <connector>
-                <targetReference>assignNewSMSToSmsList</targetReference>
-            </connector>
-            <label>hasMobile</label>
-        </rules>
-    </decisions>
-    <decisions>
         <name>freelanceOrEmployee</name>
         <label>freelanceOrEmployee</label>
         <locationX>0</locationX>
@@ -342,7 +158,7 @@
                 </rightValue>
             </conditions>
             <connector>
-                <targetReference>Copy_1_of_sendPushNotification</targetReference>
+                <targetReference>loopUnfilledInvoices</targetReference>
             </connector>
             <label>isFreelance</label>
         </rules>
@@ -353,7 +169,7 @@
         <locationX>0</locationX>
         <locationY>0</locationY>
         <defaultConnector>
-            <targetReference>checkIfUserHasMobile</targetReference>
+            <targetReference>loopUnfilledInvoices</targetReference>
         </defaultConnector>
         <defaultConnectorLabel>isSMS</defaultConnectorLabel>
         <rules>
