@@ -284,6 +284,10 @@ export default class Hot_wageClaimList_v3 extends NavigationMixin(LightningEleme
         return this.wageClaim?.StartAndEndDate || '';
     }
 
+    get reason() {
+        return this.wageClaim?.Reason__c || '';
+    }
+
     get appointmentCity() {
         return this.wageClaim?.ServiceAppointmentCity__c || '';
     }

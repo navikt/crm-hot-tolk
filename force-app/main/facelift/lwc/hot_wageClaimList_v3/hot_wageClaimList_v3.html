@@ -34,7 +34,7 @@
     <!-- MODAL -->
     <dialog class="modal-container" aria-label="Informasjon om oppdrag" aria-modal="true" onclose={closeModal}>
         <div class="modal-header">
-            <h2>Informasjon om oppdraget:</h2>
+            <h2>Informasjon om rett til honorar:</h2>
             <button class="close-btn" onclick={closeModal} aria-label="Lukk">
                 <img src={exitCrossIcon} alt="" aria-hidden="true" />
             </button>
@@ -47,6 +47,7 @@
         <div if:true={hasAccess} class="modal-body">
             <p><strong>Oppdragsnummer:</strong> {appointmentNumber}</p>
             <p><strong>Tid:</strong> {appointmentTime}</p>
+            <p><strong>Årsak:</strong> {reason}</p>
             <p><strong>Poststed:</strong> {appointmentCity}</p>
             <p><strong>Tolkemetode:</strong> {workType}</p>
             <p><strong>Oppdragstype:</strong> {assignmentType}</p>

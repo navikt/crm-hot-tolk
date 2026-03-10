@@ -41,7 +41,8 @@ public without sharing class HOT_WageClaimListController {
                 ServiceResource__r.AccountId,
                 ServiceAppointment__r.HOT_CanceledDate__c,
                 ServiceAppointment__r.HOT_Request__r.OwnerName__c,
-                DegreeOfHearingAndVisualImpairment__c
+                DegreeOfHearingAndVisualImpairment__c,
+                toLabel(Reason__c)
             FROM HOT_WageClaim__c
             WHERE Type__c = 'Claim on Wage' AND ServiceResource__r.RelatedRecordId = :UserInfo.getUserId()
             ORDER BY StartTime__c ASC

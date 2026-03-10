@@ -143,6 +143,7 @@ public without sharing class HOT_WageClaimService {
                 wageClaim.StartTime__c = sa.SchedStartTime;
                 wageClaim.EndTime__c = sa.SchedEndTime;
                 wageClaim.WorkType__c = sa.WorkTypeId;
+                wageClaim.Reason__c = 'Cancelled';
                 wageClaim.ServiceTerritory__c = sa.ServiceTerritoryId;
 
                 wageClaims.add(wageClaim);
@@ -210,6 +211,7 @@ public without sharing class HOT_WageClaimService {
         wageClaim.EndTime__c = endTime;
         wageClaim.WorkType__c = sa.WorkTypeId;
         wageClaim.ServiceTerritory__c = sa.ServiceTerritoryId;
+        wageClaim.Reason__c = 'Time Changed';
         return wageClaim;
     }
 
