@@ -161,7 +161,7 @@
         <expression>TODAY()</expression>
     </formulas>
     <interviewLabel>HOT_SendSMS {!$Flow.CurrentDateTime}</interviewLabel>
-    <label>Send SMS To Account</label>
+    <label>Send sms til bruker</label>
     <processMetadataValues>
         <name>BuilderType</name>
         <value>
