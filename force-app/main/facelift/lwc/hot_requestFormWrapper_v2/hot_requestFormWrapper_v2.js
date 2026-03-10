@@ -9,14 +9,14 @@ import getPersonAccount from '@salesforce/apex/HOT_Utility.getPersonAccount';
 import { getParametersFromURL } from 'c/hot_URIDecoder';
 
 export default class hot_requestFormWrapper_v2 extends NavigationMixin(LightningElement) {
-    @track submitted = false; // if:false={submitted}
-    @track recordId = null;
-    @track spin = false;
-    @track requestTypeChosen = false;
+    submitted = false; // if:false={submitted}
+    recordId = null;
+    spin = false;
+    requestTypeChosen = false;
     @track fieldValues = {};
     @track componentValues = {};
     @track personAccount = { Id: '', Name: '' };
-    @track refreshToken = null;
+    refreshToken = null;
     @wire(getPersonAccount)
     wiredGetPersonAccount(result) {
         if (result.data) {
@@ -50,30 +50,62 @@ export default class hot_requestFormWrapper_v2 extends NavigationMixin(Lightning
 
     async handleSubmit(event) {
         event.preventDefault();
-        this.spin = true;
-        this.setAccountLookupFieldsBasedOnRequestType();
-        this.getFieldValuesFromSubForms();
-        let status = 'Åpen';
-        if (this.isEditOrCopyMode) {
-            this.deleteMarkedFiles();
-            status = await getRequestStatus({ recordId: this.recordId });
-            if (status !== null && status !== 'Åpen') {
-                this.showModalOnEditNotAllowed();
-            }
+
+        //stopper dobbel submit
+        if (this.submitted) {
+            return;
         }
-        let hasErrors = this.handleValidation();
-        if (!hasErrors && (status === 'Åpen' || status === null)) {
-            this.template.querySelector('[data-id="saveButton"]').disabled = true;
-            this.promptOverlap().then((overlapOk) => {
+        this.submitted = true;
+        this.spin = true;
+
+        // Disable knappen med én gang
+        const saveBtn = this.template.querySelector('[data-id="saveButton"]');
+        if (saveBtn) {
+            saveBtn.disabled = true;
+        }
+
+        try {
+            this.setAccountLookupFieldsBasedOnRequestType();
+            this.getFieldValuesFromSubForms();
+
+            let status = 'Åpen';
+
+            if (this.isEditOrCopyMode) {
+                this.deleteMarkedFiles();
+                status = await getRequestStatus({ recordId: this.recordId });
+
+                if (status !== null && status !== 'Åpen') {
+                    this.showModalOnEditNotAllowed();
+                    this.spin = false;
+                    this.submitted = false;
+                    if (saveBtn) saveBtn.disabled = false;
+                    return;
+                }
+            }
+
+            let hasErrors = this.handleValidation();
+
+            if (!hasErrors && (status === 'Åpen' || status === null)) {
+                const overlapOk = await this.promptOverlap();
+
                 if (overlapOk) {
                     this.hideFormAndShowLoading();
                     this.submitForm();
                 } else {
                     this.spin = false;
+                    this.submitted = false;
+                    if (saveBtn) saveBtn.disabled = false;
                 }
-            });
-        } else {
+            } else {
+                this.spin = false;
+                this.submitted = false;
+                if (saveBtn) saveBtn.disabled = false;
+            }
+        } catch (e) {
+            console.error('handleSubmit error', e);
             this.spin = false;
+            this.submitted = false;
+            if (saveBtn) saveBtn.disabled = false;
         }
     }
     setAccountLookupFieldsBasedOnRequestType() {
@@ -149,11 +181,16 @@ export default class hot_requestFormWrapper_v2 extends NavigationMixin(Lightning
     handleAlertDialogClick(event) {
         if (event.detail === 'confirm' && this.modalHeader === 'Du har allerede bestillinger i dette tidsrommet.') {
             this.spin = true;
+            this.submitted = true;
+            const saveBtn = this.template.querySelector('[data-id="saveButton"]');
+            if (saveBtn) saveBtn.disabled = true;
             this.hideFormAndShowLoading();
             this.submitForm();
         }
         if (event.detail === 'cancel' && this.modalHeader === 'Du har allerede bestillinger i dette tidsrommet.') {
             this.template.querySelector('[data-id="saveButton"]').disabled = false;
+            this.submitted = false;
+            this.spin = false;
         }
         if (event.detail === 'confirm' && this.modalHeader === 'Kunne ikke redigere bestilling') {
             this.goToMyRequests();
@@ -179,11 +216,13 @@ export default class hot_requestFormWrapper_v2 extends NavigationMixin(Lightning
         }
         this.template.querySelector('c-alertdialog').showModal();
         this.spin = false;
+        this.submitted = false;
     }
-    @track requestId;
+    requestId;
 
     handleSuccess(event) {
         const record = event.detail.id;
+        this.submitted = false;
         this.requestId = record;
 
         if (this.editNotAllowed) {
@@ -285,7 +324,7 @@ export default class hot_requestFormWrapper_v2 extends NavigationMixin(Lightning
         location.reload();
     }
 
-    @track previousPage = 'home';
+    previousPage = 'home';
     connectedCallback() {
         let parsed_params = getParametersFromURL();
         if (parsed_params != null) {
