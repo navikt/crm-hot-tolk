@@ -36,7 +36,8 @@ export let mobileColumns = [
     {
         label: 'Årsak',
         name: 'Reason__c',
-        type: 'String'
+        type: 'String',
+        showMobileLabel: true
     },
     {
         name: 'IsUnreadMessage',
