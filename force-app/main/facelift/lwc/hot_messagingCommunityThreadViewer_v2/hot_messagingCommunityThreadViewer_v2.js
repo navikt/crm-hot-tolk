@@ -748,6 +748,9 @@ export default class Hot_messagingCommunityThreadViewer_v2 extends NavigationMix
                                 this.wageClaim.StartTime__c,
                                 this.wageClaim.EndTime__c
                             );
+                            this.wageClaim.cancelledDate = formatDatetime(
+                                this.wageClaim.ServiceAppointment__r.HOT_CanceledDate__c
+                            );
                             this.isDetailsContent = true;
                             this.isWCDetails = true;
                             this.hasAccess = true;

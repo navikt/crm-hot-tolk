@@ -37,6 +37,16 @@
                             </visibilityRule>
                         </valueListItems>
                         <valueListItems>
+                            <value>WorkOrder.Send_melding_til_tolker</value>
+                            <visibilityRule>
+                                <criteria>
+                                    <leftValue>{!$Client.formFactor}</leftValue>
+                                    <operator>EQUAL</operator>
+                                    <rightValue>Large</rightValue>
+                                </criteria>
+                            </visibilityRule>
+                        </valueListItems>
+                        <valueListItems>
                             <value>Edit</value>
                             <visibilityRule>
                                 <criteria>

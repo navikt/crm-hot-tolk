@@ -270,7 +270,10 @@
                                         <p>
                                             Døv/døvblind: <span>{wageClaim.DegreeOfHearingAndVisualImpairment__c}</span>
                                         </p>
-                                        <p>Status: <span>{wageClaim.Status__c}</span></p>
+                                        <p if:true={wageClaim.ServiceAppointment__r.HOT_CanceledDate__c}>
+                                            Avlyst dato:
+                                            <span> {wageClaim.cancelledDate}</span>
+                                        </p>
                                     </div>
                                 </template>
                             </template>
