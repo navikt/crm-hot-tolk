@@ -113,16 +113,8 @@ public without sharing class HOT_ThreadDetailController {
                 }
             }
         }
-        List<GroupMember> groupMembers = [
-            SELECT Id
-            FROM GroupMember
-            WHERE Group.DeveloperName = 'HOT_Tolk_Admin' AND Group.Type = 'Regular' AND UserOrGroupId = :user.Id
-        ];
 
-        if (
-            (user.Profile.Name == 'HOT Tolk Formidler' || groupMembers.size() > 0) &&
-            thread.CRM_Thread_Type__c.startsWith('HOT_')
-        ) {
+        if (isAdminOrFormidler(user) && thread.CRM_Thread_Type__c.startsWith('HOT_')) {
             return true;
         }
         //ansatt tolk tråder tilgang
@@ -131,6 +123,18 @@ public without sharing class HOT_ThreadDetailController {
             return true;
         }
 
+        return false;
+    }
+    public static Boolean isAdminOrFormidler(User user) {
+        List<GroupMember> groupMembers = [
+            SELECT Id
+            FROM GroupMember
+            WHERE Group.DeveloperName = 'HOT_Tolk_Admin' AND Group.Type = 'Regular' AND UserOrGroupId = :user.Id
+        ];
+
+        if (user.Profile.Name == 'HOT Tolk Formidler' || groupMembers.size() > 0) {
+            return true;
+        }
         return false;
     }
 }
