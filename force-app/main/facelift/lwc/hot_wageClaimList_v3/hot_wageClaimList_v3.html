@@ -44,10 +44,10 @@
             <p>Du er ikke tildelt oppdraget lenger.</p>
         </div>
 
-        <div if:true={hasAccess} class="modal-body">
+        <div lwc:if={hasAccess} class="modal-body">
             <p><strong>Oppdragsnummer:</strong> {appointmentNumber}</p>
             <p><strong>Tid:</strong> {appointmentTime}</p>
-            <p><strong>Årsak:</strong> {reason}</p>
+            <p lwc:if={reason}><strong>Årsak:</strong> {reason}</p>
             <p><strong>Poststed:</strong> {appointmentCity}</p>
             <p><strong>Tolkemetode:</strong> {workType}</p>
             <p><strong>Oppdragstype:</strong> {assignmentType}</p>

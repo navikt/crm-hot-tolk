@@ -12,6 +12,7 @@ import icons2 from '@salesforce/resourceUrl/icons';
 import HOT_ConfirmationModal from 'c/hot_confirmationModal';
 import ConfimationModal from 'c/hot_calendar_absence_modal_confirmation';
 import getWageClaimDetails from '@salesforce/apex/HOT_WageClaimListController.getWageClaimDetails';
+import getWageClaimNewTypeDetails from '@salesforce/apex/HOT_WageClaimListController.getWageClaimNewTypeDetails';
 import checkAccessToSA from '@salesforce/apex/HOT_MyServiceAppointmentListController.checkAccessToSA';
 import getInterestedResourceDetails from '@salesforce/apex/HOT_InterestedResourcesListController.getInterestedResourceDetails';
 import getThreadServiceAppointmentId from '@salesforce/apex/HOT_MyServiceAppointmentListController.getThreadServiceAppointmentId';
@@ -82,6 +83,8 @@ export default class LibsFullCalendarV2 extends NavigationMixin(LightningElement
     isSADetails = false;
     hasAccess = false;
     isWCDetails = false;
+    isWageClaimNewTypeDetails = false;
+    wcNewTypeIsDisabledGoToThread = false;
 
     connectedCallback() {
         const state = sessionStorage.getItem(LibsFullCalendarV2.STATE_KEY);
@@ -494,8 +497,10 @@ export default class LibsFullCalendarV2 extends NavigationMixin(LightningElement
         this.interestedResource = null;
         this.termsOfAgreement = null;
         this.wageClaim = null;
+        this.wageClaimNewType = null;
         this.isSADetails = false;
         this.isWCDetails = false;
+        this.isWageClaimNewTypeDetails = false;
         this.hasAccess = false;
         this.isLoading = true;
 
@@ -509,6 +514,10 @@ export default class LibsFullCalendarV2 extends NavigationMixin(LightningElement
             case 'OPEN_WAGE_CLAIM':
                 this.showInformationModalDetails(props.recordId, 'WC');
                 await this.loadWageClaim(props.recordId);
+                break;
+            case 'WAGE_CLAIM_NEW_TYPE':
+                this.showInformationModalDetails(props.recordId, 'WageClaimNewType');
+                await this.loadWageClaimNewType(props.recordId);
                 break;
 
             case 'RESOURCE_ABSENCE':
@@ -571,6 +580,10 @@ export default class LibsFullCalendarV2 extends NavigationMixin(LightningElement
 
         if (type === 'WC' && this.wageClaim) {
             this.wcIsDisabledGoToThread = this.wageClaim.Status__c === 'Tilbaketrukket tilgjengelighet';
+        }
+
+        if (type === 'WageClaimNewType' && this.wageClaimNewType) {
+            this.isWageClaimNewTypeDetails = true;
         }
 
         if (type === 'SA') {
@@ -696,6 +709,9 @@ export default class LibsFullCalendarV2 extends NavigationMixin(LightningElement
         if (this.type == 'WC') {
             list = 'wageClaim';
         }
+        if (this.type == 'WageClaimNewType') {
+            list = 'wageClaimsOfNewType';
+        }
 
         let baseURL =
             window.location.protocol + '//' + window.location.host + window.location.pathname + '?list=' + list;
@@ -800,6 +816,17 @@ export default class LibsFullCalendarV2 extends NavigationMixin(LightningElement
                     url: url
                 }
             });
+        } else if (this.isAListView && this.isWageClaimNewTypeDetails) {
+            const baseUrl = '/samtale-frilans';
+            const attributes = `recordId=${recordId}&from=mine-oppdrag&list=wageClaimsOfNewType`;
+            const url = `${baseUrl}?${attributes}`;
+
+            this[NavigationMixin.Navigate]({
+                type: 'standard__webPage',
+                attributes: {
+                    url: url
+                }
+            });
         } else {
             const baseUrl = '/samtale-frilans';
             const attributes = `recordId=${recordId}&from=kalender`;
@@ -871,6 +898,33 @@ export default class LibsFullCalendarV2 extends NavigationMixin(LightningElement
             this.isWCDetails = true;
         } catch (error) {
             console.error('Error loading wage claim', error);
+        } finally {
+            this.isLoading = false;
+        }
+    }
+
+    wageClaimNewType;
+    async loadWageClaimNewType(recordId) {
+        try {
+            const wcNewType = await getWageClaimNewTypeDetails({ recordId });
+
+            // Clone to make it extensible
+            // this.wageClaimNewType = { ...wcNewType };
+            this.wageClaimNewType = wcNewType;
+            // this.wageClaimNewType = { ...wcNewType };
+
+            // Add formatted property
+            this.wageClaimNewType.StartAndEndDate = formatDatetimeinterval(
+                wcNewType.StartTime__c,
+                wcNewType.EndTime__c
+            );
+
+            // this.wageClaimNewType.AssignmentType = wcNewType.AssignmentType__c;
+            this.isWageClaimNewTypeDetails = true;
+            console.log('WageClaimNewType loaded:', this.wageClaimNewType);
+            console.log('WageClaimNewType loaded:', this.wageClaimNewType.StartAndEndDate);
+        } catch (error) {
+            console.error('Error loading wage claim new type', error);
         } finally {
             this.isLoading = false;
         }

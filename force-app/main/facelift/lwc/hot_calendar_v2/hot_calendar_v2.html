@@ -23,7 +23,12 @@
                 <template lwc:else>
                     <div class="modal-header">
                         <template lwc:if={isInformationModalOpen}>
-                            <h2>Informasjon om oppdraget:</h2>
+                            <template lwc:if={wageClaimNewType}>
+                                <h2>Informasjon om rett på honorar:</h2>
+                            </template>
+                            <template lwc:else>
+                                <h2>Informasjon om oppdraget:</h2>
+                            </template>
                             <button class="close-btn" onclick={closeModal} aria-label="Lukk">
                                 <img src={exitCrossIcon} alt="" aria-hidden="true" />
                             </button>
@@ -257,7 +262,13 @@
                                         >
                                         </c-button>
                                     </div>
-                                    <!-- </template> -->
+                                </div>
+                            </section>
+
+                            <!-- Wage claim new type details -->
+                            <section lwc:if={isWageClaimNewTypeDetails}>
+                                <div lwc:if={wageClaimNewType}>
+                                    <p>Oppdragsnummer: <span>{wageClaimNewType.ServiceAppointmentName__c}</span></p>
                                 </div>
                             </section>
                         </template>
