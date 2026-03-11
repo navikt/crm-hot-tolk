@@ -3,24 +3,21 @@ import createThread from '@salesforce/apex/HOT_MessageHelper.createThreadDispatc
 import getUserContactId from '@salesforce/apex/HOT_MessageHelper.getUserContactId';
 import getThreadsAndParticipants from '@salesforce/apex/HOT_ThreadParticipants.getParticipantsByRelatedObjectAndThreadTypes';
 import getAccountOnRequest from '@salesforce/apex/HOT_MessageHelper.getAccountOnRequest';
-import getRequestInformation from '@salesforce/apex/HOT_MessageHelper.getRequestInformation';
-import getWorkOrderInformation from '@salesforce/apex/HOT_MessageHelper.getWorkOrderInformation';
+import getRequestInformation from '@salesforce/apex/HOT_MessageHelper.getRequestInformationAndAccessCheck';
+import getWorkOrderInformation from '@salesforce/apex/HOT_MessageHelper.getWorkOrderInformationAndAccessCheck';
+import getWageClaimInformation from '@salesforce/apex/HOT_MessageHelper.getWageClaimInformationAndAccessCheck';
+import getServiceAppointmentInformation from '@salesforce/apex/HOT_MessageHelper.getServiceAppointmentInformationAndAccessCheck';
+import getInterestedResourceInformation from '@salesforce/apex/HOT_MessageHelper.getInterestedResourceInformationAndAccessCheck';
 import getAccountOnWorkOrder from '@salesforce/apex/HOT_MessageHelper.getAccountOnWorkOrder';
-import getThreadInformation from '@salesforce/apex/HOT_MessageHelper.getThreadFromThreadId';
+import getThreadInformation from '@salesforce/apex/HOT_ThreadDetailController.getThreadDetails';
+import setLastMessageFrom from '@salesforce/apex/HOT_MessageHelper.setLastMessageFrom';
+import { ShowToastEvent } from 'lightning/platformShowToastEvent';
+import { createRecord } from 'lightning/uiRecordApi';
 
 export default class hot_messagingMessageComponent extends LightningElement {
     relatedObjectId;
     isThreadSummaryLoaded = false;
     defaultActiveTab = 'tab1';
-    /*
-    showUserThreadbutton = false;
-    showOrderThreadbutton = false;
-    showUserOrdererThreadbutton = false;
-    showUserInterpreterThreadbutton = false;
-    showInterpreterInterpreterThreadbutton = false;
-    showInterpreterThreadbutton = false;
-    showOfficeThreadbutton = false;
-    */
     //show flows
     userSetToRedactionFlow = false;
     ordererSetToRedactionFlow = false;
@@ -36,6 +33,17 @@ export default class hot_messagingMessageComponent extends LightningElement {
     interpreterInterpreterRedactionFlowVariables = [];
     interpreterRedactionFlowVariables = [];
     officeRedactionFlowVariables = [];
+    noAccess = false;
+    noAccessMessage = 'Du har ikke tilgang til samtaler';
+
+    messageTemplates = {
+        'HOT_TOLK-TOLK': '',
+        'HOT_BRUKER-TOLK': '',
+        'HOT_BESTILLER-FORMIDLER': '',
+        'HOT_BRUKER-FORMIDLER': '',
+        'HOT_TOLK-RESSURSKONTOR': '',
+        'HOT_TOLK-FORMIDLER': ''
+    };
 
     openThreads = {
         'HOT_TOLK-TOLK': null,
@@ -60,6 +68,14 @@ export default class hot_messagingMessageComponent extends LightningElement {
         'HOT_BRUKER-FORMIDLER': '[data-user-thread]',
         'HOT_TOLK-RESSURSKONTOR': '[data-office-thread]',
         'HOT_TOLK-FORMIDLER': '[data-int-thread]'
+    };
+    threadMockCmpMap = {
+        'HOT_TOLK-TOLK': '[data-int-int-thread-mock]',
+        'HOT_BRUKER-TOLK': '[data-user-int-thread-mock]',
+        'HOT_BESTILLER-FORMIDLER': '[data-orderer-thread-mock]',
+        'HOT_BRUKER-FORMIDLER': '[data-user-thread-mock]',
+        'HOT_TOLK-RESSURSKONTOR': '[data-office-thread-mock]',
+        'HOT_TOLK-FORMIDLER': '[data-int-thread-mock]'
     };
     tabLabels = {
         'HOT_TOLK-TOLK': {
@@ -138,71 +154,128 @@ export default class hot_messagingMessageComponent extends LightningElement {
         if (this.objectApiName === 'HOT_Request__c') {
             getRequestInformation({ recordId: this.recordId })
                 .then((result) => {
-                    if (result[0].IsAccountEqualOrderer__c == true) {
+                    if (result.IsAccountEqualOrderer__c == true) {
                         this.threadTypesOfInterest = ['HOT_BRUKER-FORMIDLER'];
-                    } else if (result[0].Account__c == null && result[0].Orderer__c != null) {
+                    } else if (result.Account__c == null && result.Orderer__c != null) {
                         this.threadTypesOfInterest = ['HOT_BESTILLER-FORMIDLER'];
-                    } else if (result[0].Account__c != null && result[0].Orderer__c == null) {
+                    } else if (result.Account__c != null && result.Orderer__c == null) {
                         this.threadTypesOfInterest = ['HOT_BRUKER-FORMIDLER'];
                     } else {
                         this.threadTypesOfInterest = ['HOT_BRUKER-FORMIDLER', 'HOT_BESTILLER-FORMIDLER'];
                     }
-                    this.getThreadAndParticipants();
                 })
                 .catch((error) => {
+                    if (error?.body?.message == 'No access') {
+                        this.noAccess = true;
+                        this.noAccessMessage = 'Du har ikke tilgang til samtaler på denne forespørselen';
+                    }
                     console.log(error);
+                })
+                .finally(() => {
+                    this.getThreadAndParticipants();
                 });
         } else if (this.objectApiName === 'WorkOrder') {
             getWorkOrderInformation({ recordId: this.recordId })
                 .then((result) => {
-                    if (result[0].HOT_TotalNumberOfInterpreters__c > 1) {
+                    if (result.HOT_TotalNumberOfInterpreters__c > 1) {
                         this.threadTypesOfInterest = ['HOT_TOLK-TOLK', 'HOT_BRUKER-TOLK'];
                     } else {
                         this.threadTypesOfInterest = ['HOT_BRUKER-TOLK'];
                     }
-                    this.getThreadAndParticipants();
                 })
                 .catch((error) => {
+                    if (error?.body?.message == 'No access') {
+                        this.noAccess = true;
+                        this.noAccessMessage = 'Du har ikke tilgang til samtaler på denne arbeidsordren';
+                    }
                     console.log(error);
+                })
+                .finally(() => {
+                    this.getThreadAndParticipants();
                 });
         } else if (this.objectApiName === 'HOT_WageClaim__c') {
-            this.threadTypesOfInterest = ['HOT_TOLK-RESSURSKONTOR'];
-            this.getThreadAndParticipants();
-        } else if (this.objectApiName === 'ServiceAppointment' || this.objectApiName === 'HOT_InterestedResource__c') {
-            this.threadTypesOfInterest = ['HOT_TOLK-FORMIDLER'];
-            this.getThreadAndParticipants();
+            getWageClaimInformation({ recordId: this.recordId })
+                .then(() => {
+                    this.threadTypesOfInterest = ['HOT_TOLK-RESSURSKONTOR'];
+                })
+                .catch((error) => {
+                    if (error?.body?.message == 'No access') {
+                        this.noAccess = true;
+                        this.noAccessMessage = 'Du har ikke tilgang til samtaler på dette lønnskravet';
+                    }
+                    console.log(error);
+                })
+                .finally(() => {
+                    this.getThreadAndParticipants();
+                });
+        } else if (this.objectApiName === 'ServiceAppointment') {
+            getServiceAppointmentInformation({ recordId: this.recordId })
+                .then((result) => {
+                    this.threadTypesOfInterest = ['HOT_TOLK-FORMIDLER'];
+                })
+                .catch((error) => {
+                    if (error?.body?.message == 'No access') {
+                        this.noAccess = true;
+                        this.noAccessMessage = 'Du har ikke tilgang til samtaler på dette oppdraget';
+                    }
+                    console.log(error);
+                })
+                .finally(() => {
+                    this.getThreadAndParticipants();
+                });
+        } else if (this.objectApiName === 'HOT_InterestedResource__c') {
+            getInterestedResourceInformation({ recordId: this.recordId })
+                .then(() => {
+                    this.threadTypesOfInterest = ['HOT_TOLK-FORMIDLER'];
+                })
+                .catch((error) => {
+                    if (error?.body?.message == 'No access') {
+                        this.noAccess = true;
+                        this.noAccessMessage = 'Du har ikke tilgang til samtaler på denne interessente ressursen';
+                    }
+                    console.log(error);
+                })
+                .finally(() => {
+                    this.getThreadAndParticipants();
+                });
         } else if (this.objectApiName === 'Thread__c') {
             getThreadInformation({ recordId: this.recordId })
                 .then((result) => {
-                    this.relatedObjectId = result[0].CRM_Related_Object__c ?? result[0].Id;
-                    this.threadTypesOfInterest = [result[0].CRM_Thread_Type__c];
-                    this.getThreadAndParticipants();
+                    this.relatedObjectId = result.CRM_Related_Object__c ?? result.Id;
+                    this.threadTypesOfInterest = [result.CRM_Thread_Type__c];
                 })
                 .catch((error) => {
+                    if (error?.body?.message == 'No access') {
+                        this.noAccess = true;
+                        this.noAccessMessage = 'Du har ikke tilgang til samtaler på denne samtalen';
+                    }
                     console.log(error);
+                })
+                .finally(() => {
+                    this.getThreadAndParticipants();
                 });
         } else {
             console.log('Not supportet object for messaging component');
         }
     }
 
-    getThreadAndParticipants() {
+    async getThreadAndParticipants() {
         if (this.threadTypesOfInterest == null || this.threadTypesOfInterest.length === 0) {
+            this.isThreadSummaryLoaded = true;
             console.log('No thread types of interest defined, skipping getThreadsAndParticipants');
             return;
         }
-        getThreadsAndParticipants({
-            relatedObjectId: this.relatedObjectId,
-            threadTypesOfInterest: this.threadTypesOfInterest
-        })
-            .then((result) => {
-                this.threadsAndParticipants = result;
-                this.isThreadSummaryLoaded = true;
-            })
-            .catch((error) => {
-                console.log('Error getting threads and participants: ');
-                console.log(error);
+        try {
+            const result = await getThreadsAndParticipants({
+                relatedObjectId: this.relatedObjectId,
+                threadTypesOfInterest: this.threadTypesOfInterest
             });
+            this.threadsAndParticipants = result;
+        } catch (error) {
+            console.log('Error getting threads and participants: ');
+            console.log(error);
+        }
+        this.isThreadSummaryLoaded = true;
     }
     setToRedaction(event, name) {
         event.stopPropagation();
@@ -341,6 +414,24 @@ export default class hot_messagingMessageComponent extends LightningElement {
             this.officeSetToRedactionFlow = false;
         }
     }
+    get userMessageTemplate() {
+        return this.messageTemplates['HOT_BRUKER-FORMIDLER'];
+    }
+    get ordererMessageTemplate() {
+        return this.messageTemplates['HOT_BESTILLER-FORMIDLER'];
+    }
+    get interpreterMessageTemplate() {
+        return this.messageTemplates['HOT_TOLK-FORMIDLER'];
+    }
+    get userInterpreterMessageTemplate() {
+        return this.messageTemplates['HOT_BRUKER-TOLK'];
+    }
+    get interpreterInterpreterMessageTemplate() {
+        return this.messageTemplates['HOT_TOLK-TOLK'];
+    }
+    get officeMessageTemplate() {
+        return this.messageTemplates['HOT_TOLK-RESSURSKONTOR'];
+    }
     get participants() {
         if (this.threadParticipants) {
             return this.threadParticipants.map((participant) => {
@@ -476,6 +567,9 @@ export default class hot_messagingMessageComponent extends LightningElement {
         if (openThreadType) {
             return this.tabByThreadTypesMap[openThreadType];
         }
+        if (this.threadTypesOfInterest && this.threadTypesOfInterest.length > 0) {
+            return this.tabByThreadTypesMap[this.threadTypesOfInterest[0]];
+        }
         return this.defaultActiveTab;
     }
     findOpenThread() {
@@ -532,58 +626,114 @@ export default class hot_messagingMessageComponent extends LightningElement {
     }
     tabHandlerByType(threadType) {
         if (this.openThreadsByType(threadType)) {
-            this.runningThreadCreate = false;
             let threadCmp = this.template.querySelector(this.threadCmpMap[threadType]);
             if (threadCmp) {
                 threadCmp.focusOnInput();
             }
         } else {
-            this.runningThreadCreate = true;
+            let threadMockCmp = this.template.querySelector(this.threadMockCmpMap[threadType]);
+            if (threadMockCmp) {
+                threadMockCmp.focusOnInput();
+            }
+            /*
             this.newThreadWithType(threadType);
+            */
         }
     }
-    newThreadWithType(threadType) {
+    handleCreateUserThreadWithMessage(event) {
+        this.newThreadWithTypeAndMessage('HOT_BRUKER-FORMIDLER', event.detail);
+    }
+    handleCreateOrdererThreadWithMessage(event) {
+        this.newThreadWithTypeAndMessage('HOT_BESTILLER-FORMIDLER', event.detail);
+    }
+    handleCreateUserInterpreterThreadWithMessage(event) {
+        this.newThreadWithTypeAndMessage('HOT_BRUKER-TOLK', event.detail);
+    }
+    handleCreateInterpreterInterpreterThreadWithMessage(event) {
+        this.newThreadWithTypeAndMessage('HOT_TOLK-TOLK', event.detail);
+    }
+    handleCreateInterpreterThreadWithMessage(event) {
+        this.newThreadWithTypeAndMessage('HOT_TOLK-FORMIDLER', event.detail);
+    }
+    handleCreateOfficeThreadWithMessage(event) {
+        this.newThreadWithTypeAndMessage('HOT_TOLK-RESSURSKONTOR', event.detail);
+    }
+    async newThreadWithTypeAndMessage(threadType, message) {
+        this.runningThreadCreate = true;
+        let thread;
         if (this.accountId == undefined) {
-            getAccountOnWorkOrder({ recordId: this.recordId })
-                .then((result) => {
-                    this.accountId = result;
-                    createThread({ recordId: this.recordId, accountId: this.accountId, type: threadType })
-                        .then(() => {
-                            this.getThreadAndParticipants();
-                        })
-                        .catch((error) => {
-                            if (
-                                this.objectApiName === 'HOT_InterestedResource__c' &&
-                                error.body.message === 'thread exist'
-                            ) {
-                                this.interestedResourceIsAssigned = true;
-                            } else if (
-                                this.objectApiName === 'ServiceAppointment' &&
-                                error.body.message === 'no employee'
-                            ) {
-                                this.noAssignedResource = true;
-                            } else {
-                                console.log(error);
-                            }
-                        });
-                })
-                .catch((error) => {
-                    console.log(error);
-                })
-                .finally(() => {
-                    this.runningThreadCreate = false;
-                });
-        } else {
-            createThread({ recordId: this.recordId, accountId: this.accountId, type: threadType })
-                .then(() => {
-                    this.getThreadAndParticipants();
-                })
-                .catch((error) => {
-                    console.log(error);
-                })
-                .finally(() => {
-                    this.runningThreadCreate = false;
-                });
+            try {
+                this.accountId = await getAccountOnWorkOrder({ recordId: this.recordId });
+            } catch (error) {
+                console.error(JSON.stringify(error), error);
+
+                this.dispatchEvent(
+                    new ShowToastEvent({
+                        title: 'Feil ved opprettelse av samtale',
+                        message: 'Samtalen kunne ikke bli opprettet',
+                        variant: 'error'
+                    })
+                );
+                this.runningThreadCreate = false;
+                return;
+            }
         }
+        try {
+            thread = await createThread({
+                recordId: this.recordId,
+                accountId: this.accountId,
+                type: threadType
+            });
+            console.log('Thread created with id: ', JSON.stringify(thread));
+        } catch (error) {
+            if (this.objectApiName === 'HOT_InterestedResource__c' && error.body.message === 'thread exist') {
+                this.interestedResourceIsAssigned = true;
+            } else if (this.objectApiName === 'ServiceAppointment' && error.body.message === 'no employee') {
+                this.noAssignedResource = true;
+            } else {
+                console.error(JSON.stringify(error), error);
+            }
+            this.dispatchEvent(
+                new ShowToastEvent({
+                    title: 'Feil ved opprettelse av samtale',
+                    message: 'Samtalen kunne ikke bli opprettet',
+                    variant: 'error'
+                })
+            );
+            this.runningThreadCreate = false;
+            return;
+        }
+        try {
+            const fields = message;
+            fields.CRM_Thread__c = thread.Id;
+            const messageRecord = await createRecord({
+                apiName: 'Message__c',
+                fields: fields
+            });
+            console.log('Message created with id: ', JSON.stringify(messageRecord));
+        } catch (error) {
+            this.messageTemplates[threadType] = message.CRM_Message_Text__c;
+            this.dispatchEvent(
+                new ShowToastEvent({
+                    title: 'Feil ved sending av melding',
+                    message: 'Meldingen kunne ikke bli sendt',
+                    variant: 'error'
+                })
+            );
+            console.error(JSON.stringify(error), error);
+        }
+        setLastMessageFrom({ threadId: thread.Id, fromContactId: 'ansatt/formidler' })
+            .then(() => {
+                console.log('Last message from set to contact');
+            })
+            .catch((error) => {
+                console.error('Error setting last message from: ', JSON.stringify(error), error);
+            });
+        try {
+            await this.getThreadAndParticipants();
+        } catch (error) {
+            console.error(JSON.stringify(error), error);
+        }
+        this.runningThreadCreate = false;
     }
 }
