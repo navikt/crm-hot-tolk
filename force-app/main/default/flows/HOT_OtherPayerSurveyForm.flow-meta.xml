@@ -15,7 +15,7 @@
             </value>
         </assignmentItems>
         <connector>
-            <targetReference>onlyContinueIfInvoiceWasCreated</targetReference>
+            <targetReference>checkStatusIsNewOrSentInReturn</targetReference>
         </connector>
     </assignments>
     <assignments>
@@ -77,6 +77,50 @@
         </assignmentItems>
         <connector>
             <targetReference>setInvoiceFilledOnSa</targetReference>
+        </connector>
+    </assignments>
+    <assignments>
+        <name>setSubsistenceAllowance</name>
+        <label>setSubsistenceAllowance</label>
+        <locationX>0</locationX>
+        <locationY>0</locationY>
+        <assignmentItems>
+            <assignToReference>invoice.SubsistenceAllowanceDay1__c</assignToReference>
+            <operator>Assign</operator>
+            <value>
+                <elementReference>subsistenceAllowanceDay1Picklist</elementReference>
+            </value>
+        </assignmentItems>
+        <assignmentItems>
+            <assignToReference>invoice.SubsistenceAllowanceDay2__c</assignToReference>
+            <operator>Assign</operator>
+            <value>
+                <elementReference>subsistenceAllowanceDay2Picklist</elementReference>
+            </value>
+        </assignmentItems>
+        <assignmentItems>
+            <assignToReference>invoice.SubsistenceAllowanceDay3__c</assignToReference>
+            <operator>Assign</operator>
+            <value>
+                <elementReference>subsistenceAllowanceDay3Picklist</elementReference>
+            </value>
+        </assignmentItems>
+        <assignmentItems>
+            <assignToReference>invoice.SubsistenceAllowanceDay4__c</assignToReference>
+            <operator>Assign</operator>
+            <value>
+                <elementReference>subsistenceAllowanceDay4Picklist</elementReference>
+            </value>
+        </assignmentItems>
+        <assignmentItems>
+            <assignToReference>invoice.SubsistenceAllowanceDay5__c</assignToReference>
+            <operator>Assign</operator>
+            <value>
+                <elementReference>subsistenceAllowanceDay5Picklist</elementReference>
+            </value>
+        </assignmentItems>
+        <connector>
+            <targetReference>checkIfTravelExpenses</targetReference>
         </connector>
     </assignments>
     <assignments>
@@ -242,7 +286,7 @@
             <operator>Assign</operator>
         </assignmentItems>
         <connector>
-            <targetReference>setStatusInvoice</targetReference>
+            <targetReference>setTravelAndPreparationTime</targetReference>
         </connector>
     </assignments>
     <assignments>
@@ -331,6 +375,227 @@
             <operator>Assign</operator>
         </assignmentItems>
         <connector>
+            <targetReference>setTravelAndPreparationTime</targetReference>
+        </connector>
+    </assignments>
+    <assignments>
+        <name>setToTravelExpenses</name>
+        <label>setToTravelExpenses</label>
+        <locationX>0</locationX>
+        <locationY>0</locationY>
+        <assignmentItems>
+            <assignToReference>invoice.ExpenseTypeAAmount__c</assignToReference>
+            <operator>Assign</operator>
+            <value>
+                <elementReference>expenseTypeAAmount</elementReference>
+            </value>
+        </assignmentItems>
+        <assignmentItems>
+            <assignToReference>invoice.ExpenseTypeBAmount__c</assignToReference>
+            <operator>Assign</operator>
+            <value>
+                <elementReference>expenseTypeBAmount</elementReference>
+            </value>
+        </assignmentItems>
+        <assignmentItems>
+            <assignToReference>invoice.ExpenseTypeCAmount__c</assignToReference>
+            <operator>Assign</operator>
+            <value>
+                <elementReference>expenseTypeCAmount</elementReference>
+            </value>
+        </assignmentItems>
+        <assignmentItems>
+            <assignToReference>invoice.ExpenseTypeDAmount__c</assignToReference>
+            <operator>Assign</operator>
+            <value>
+                <elementReference>expenseTypeDAmount</elementReference>
+            </value>
+        </assignmentItems>
+        <assignmentItems>
+            <assignToReference>invoice.ExpenseTypeEAmount__c</assignToReference>
+            <operator>Assign</operator>
+            <value>
+                <elementReference>expenseTypeEAmount</elementReference>
+            </value>
+        </assignmentItems>
+        <assignmentItems>
+            <assignToReference>invoice.ExpenseTypeFAmount__c</assignToReference>
+            <operator>Assign</operator>
+            <value>
+                <elementReference>expenseTypeFAmount</elementReference>
+            </value>
+        </assignmentItems>
+        <assignmentItems>
+            <assignToReference>invoice.ExpenseTypeGAmount__c</assignToReference>
+            <operator>Assign</operator>
+            <value>
+                <elementReference>expenseTypeGAmount</elementReference>
+            </value>
+        </assignmentItems>
+        <assignmentItems>
+            <assignToReference>invoice.ExpenseTypeHAmount__c</assignToReference>
+            <operator>Assign</operator>
+            <value>
+                <elementReference>expenseTypeHAmount</elementReference>
+            </value>
+        </assignmentItems>
+        <assignmentItems>
+            <assignToReference>invoice.ExpenseTypeIAmount__c</assignToReference>
+            <operator>Assign</operator>
+            <value>
+                <elementReference>expenseTypeIAmount</elementReference>
+            </value>
+        </assignmentItems>
+        <assignmentItems>
+            <assignToReference>invoice.ExpenseTypeJAmount__c</assignToReference>
+            <operator>Assign</operator>
+            <value>
+                <elementReference>expenseTypeJAmount</elementReference>
+            </value>
+        </assignmentItems>
+        <assignmentItems>
+            <assignToReference>invoice.ExpenseTypeA__c</assignToReference>
+            <operator>Assign</operator>
+            <value>
+                <elementReference>expenseTypeAPicklist</elementReference>
+            </value>
+        </assignmentItems>
+        <assignmentItems>
+            <assignToReference>invoice.ExpenseTypeB__c</assignToReference>
+            <operator>Assign</operator>
+            <value>
+                <elementReference>expenseTypeBPicklist</elementReference>
+            </value>
+        </assignmentItems>
+        <assignmentItems>
+            <assignToReference>invoice.ExpenseTypeC__c</assignToReference>
+            <operator>Assign</operator>
+            <value>
+                <elementReference>expenseTypeCPicklist</elementReference>
+            </value>
+        </assignmentItems>
+        <assignmentItems>
+            <assignToReference>invoice.ExpenseTypeD__c</assignToReference>
+            <operator>Assign</operator>
+            <value>
+                <elementReference>expenseTypeDPicklist</elementReference>
+            </value>
+        </assignmentItems>
+        <assignmentItems>
+            <assignToReference>invoice.ExpenseTypeE__c</assignToReference>
+            <operator>Assign</operator>
+            <value>
+                <elementReference>expenseTypeEPicklist</elementReference>
+            </value>
+        </assignmentItems>
+        <assignmentItems>
+            <assignToReference>invoice.ExpenseTypeF__c</assignToReference>
+            <operator>Assign</operator>
+            <value>
+                <elementReference>expenseTypeFPicklist</elementReference>
+            </value>
+        </assignmentItems>
+        <assignmentItems>
+            <assignToReference>invoice.ExpenseTypeG__c</assignToReference>
+            <operator>Assign</operator>
+            <value>
+                <elementReference>expenseTypeGPicklist</elementReference>
+            </value>
+        </assignmentItems>
+        <assignmentItems>
+            <assignToReference>invoice.ExpenseTypeH__c</assignToReference>
+            <operator>Assign</operator>
+            <value>
+                <elementReference>expenseTypeHPicklist</elementReference>
+            </value>
+        </assignmentItems>
+        <assignmentItems>
+            <assignToReference>invoice.ExpenseTypeI__c</assignToReference>
+            <operator>Assign</operator>
+            <value>
+                <elementReference>expenseTypeIPicklist</elementReference>
+            </value>
+        </assignmentItems>
+        <assignmentItems>
+            <assignToReference>invoice.ExpenseTypeJ__c</assignToReference>
+            <operator>Assign</operator>
+            <value>
+                <elementReference>expenseTypeJPicklist</elementReference>
+            </value>
+        </assignmentItems>
+        <connector>
+            <targetReference>setTravelAndPreparationTime</targetReference>
+        </connector>
+    </assignments>
+    <assignments>
+        <name>setTravelAndPreparationTime</name>
+        <label>setTravelAndPreparationTime</label>
+        <locationX>0</locationX>
+        <locationY>0</locationY>
+        <assignmentItems>
+            <assignToReference>invoice.TravelToHours__c</assignToReference>
+            <operator>Assign</operator>
+            <value>
+                <elementReference>numberTravelToHours</elementReference>
+            </value>
+        </assignmentItems>
+        <assignmentItems>
+            <assignToReference>invoice.TravelToMinutes__c</assignToReference>
+            <operator>Assign</operator>
+            <value>
+                <elementReference>numberTravelToMinutes</elementReference>
+            </value>
+        </assignmentItems>
+        <assignmentItems>
+            <assignToReference>invoice.TravelFromHours__c</assignToReference>
+            <operator>Assign</operator>
+            <value>
+                <elementReference>numberTravelFromHours</elementReference>
+            </value>
+        </assignmentItems>
+        <assignmentItems>
+            <assignToReference>invoice.TravelFromMinutes__c</assignToReference>
+            <operator>Assign</operator>
+            <value>
+                <elementReference>numberTravelFromMinutes</elementReference>
+            </value>
+        </assignmentItems>
+        <assignmentItems>
+            <assignToReference>invoice.PreparationTimeHour__c</assignToReference>
+            <operator>Assign</operator>
+            <value>
+                <elementReference>numberPreparationTimeHours</elementReference>
+            </value>
+        </assignmentItems>
+        <assignmentItems>
+            <assignToReference>invoice.PreparationTimeMinutes__c</assignToReference>
+            <operator>Assign</operator>
+            <value>
+                <elementReference>numberPreparationTimeMinutes</elementReference>
+            </value>
+        </assignmentItems>
+        <assignmentItems>
+            <assignToReference>invoice.TravelDepartureLocation__c</assignToReference>
+            <operator>Assign</operator>
+            <value>
+                <elementReference>departureAdressInputField</elementReference>
+            </value>
+        </assignmentItems>
+        <assignmentItems>
+            <assignToReference>invoice.AppointmentAttendanceAddress__c</assignToReference>
+            <operator>Assign</operator>
+            <value>
+                <elementReference>attendanceAddressInputField</elementReference>
+            </value>
+        </assignmentItems>
+        <assignmentItems>
+            <assignToReference>invoice.AlternativeTravel__c</assignToReference>
+            <operator>Assign</operator>
+            <value>
+                <elementReference>alternativeTravelRouteInputField</elementReference>
+            </value>
+        </assignmentItems>
+        <connector>
             <targetReference>setStatusInvoice</targetReference>
         </connector>
     </assignments>
@@ -356,14 +621,14 @@
         <locationX>0</locationX>
         <locationY>0</locationY>
         <defaultConnector>
-            <targetReference>checkIfTravelExpenses</targetReference>
+            <targetReference>setSubsistenceAllowance</targetReference>
         </defaultConnector>
         <defaultConnectorLabel>Default Outcome</defaultConnectorLabel>
         <rules>
             <name>noSubsistanceAllowance</name>
             <conditionLogic>and</conditionLogic>
             <conditions>
-                <leftValueReference>invoice.HasSubsistenceAllowance__c</leftValueReference>
+                <leftValueReference>shouldHaveSubsistenceAllowance</leftValueReference>
                 <operator>EqualTo</operator>
                 <rightValue>
                     <booleanValue>false</booleanValue>
@@ -381,14 +646,14 @@
         <locationX>0</locationX>
         <locationY>0</locationY>
         <defaultConnector>
-            <targetReference>setStatusInvoice</targetReference>
+            <targetReference>setToTravelExpenses</targetReference>
         </defaultConnector>
         <defaultConnectorLabel>Default Outcome</defaultConnectorLabel>
         <rules>
             <name>noTravelExpenses</name>
             <conditionLogic>and</conditionLogic>
             <conditions>
-                <leftValueReference>invoice.HasTravelExpenses__c</leftValueReference>
+                <leftValueReference>didYouHaveTravelExpenses</leftValueReference>
                 <operator>EqualTo</operator>
                 <rightValue>
                     <booleanValue>false</booleanValue>
@@ -398,6 +663,38 @@
                 <targetReference>setToNullTravel</targetReference>
             </connector>
             <label>noTravelExpenses</label>
+        </rules>
+    </decisions>
+    <decisions>
+        <name>checkStatusIsNewOrSentInReturn</name>
+        <label>checkStatusIsNewOrSentInReturn</label>
+        <locationX>0</locationX>
+        <locationY>0</locationY>
+        <defaultConnector>
+            <targetReference>invoiceAlreadyFilled</targetReference>
+        </defaultConnector>
+        <defaultConnectorLabel>Default Outcome</defaultConnectorLabel>
+        <rules>
+            <name>statusIsNewOrSentInReturn</name>
+            <conditionLogic>or</conditionLogic>
+            <conditions>
+                <leftValueReference>invoice.Status__c</leftValueReference>
+                <operator>EqualTo</operator>
+                <rightValue>
+                    <stringValue>New</stringValue>
+                </rightValue>
+            </conditions>
+            <conditions>
+                <leftValueReference>invoice.Status__c</leftValueReference>
+                <operator>EqualTo</operator>
+                <rightValue>
+                    <stringValue>Sent in return</stringValue>
+                </rightValue>
+            </conditions>
+            <connector>
+                <targetReference>onlyContinueIfInvoiceWasCreated</targetReference>
+            </connector>
+            <label>statusIsNewOrSentInReturn</label>
         </rules>
     </decisions>
     <decisions>
@@ -496,6 +793,42 @@
     </dynamicChoiceSets>
     <environments>Default</environments>
     <formulas>
+        <name>numberPreparationTimeHours</name>
+        <dataType>Number</dataType>
+        <expression>VALUE({!preparationTimeHours.value})</expression>
+        <scale>2</scale>
+    </formulas>
+    <formulas>
+        <name>numberPreparationTimeMinutes</name>
+        <dataType>Number</dataType>
+        <expression>VALUE({!preparationTimeMinutes.value})</expression>
+        <scale>2</scale>
+    </formulas>
+    <formulas>
+        <name>numberTravelFromHours</name>
+        <dataType>Number</dataType>
+        <expression>VALUE({!travelFromHours.value})</expression>
+        <scale>2</scale>
+    </formulas>
+    <formulas>
+        <name>numberTravelFromMinutes</name>
+        <dataType>Number</dataType>
+        <expression>VALUE({!travelFromMinutes.value})</expression>
+        <scale>2</scale>
+    </formulas>
+    <formulas>
+        <name>numberTravelToHours</name>
+        <dataType>Number</dataType>
+        <expression>VALUE({!travelToHours.value})</expression>
+        <scale>2</scale>
+    </formulas>
+    <formulas>
+        <name>numberTravelToMinutes</name>
+        <dataType>Number</dataType>
+        <expression>VALUE({!travelToMinutes.value})</expression>
+        <scale>2</scale>
+    </formulas>
+    <formulas>
         <name>txtPreparationTimeHours</name>
         <dataType>String</dataType>
         <expression>TEXT({!invoice.PreparationTimeHour__c})</expression>
@@ -589,7 +922,7 @@
             <field>Id</field>
             <operator>EqualTo</operator>
             <value>
-                <elementReference>recordId</elementReference>
+                <elementReference>getExistingInvoice.ServiceAppointment__c</elementReference>
             </value>
         </filters>
         <getFirstRecordOnly>true</getFirstRecordOnly>
@@ -673,6 +1006,22 @@
             <fieldType>DisplayText</fieldType>
         </fields>
         <showFooter>true</showFooter>
+        <showHeader>true</showHeader>
+    </screens>
+    <screens>
+        <name>invoiceAlreadyFilled</name>
+        <label>invoiceAlreadyFilled</label>
+        <locationX>0</locationX>
+        <locationY>0</locationY>
+        <allowBack>true</allowBack>
+        <allowFinish>true</allowFinish>
+        <allowPause>true</allowPause>
+        <fields>
+            <name>invoiceAlreadyFilledTxt</name>
+            <fieldText>&lt;p&gt;Oppdragskvittering er allerede sendt inn.&lt;/p&gt;</fieldText>
+            <fieldType>DisplayText</fieldType>
+        </fields>
+        <showFooter>false</showFooter>
         <showHeader>true</showHeader>
     </screens>
     <screens>
@@ -1228,6 +1577,61 @@
                 <name>oppdragskvitteringDel2_Section5_Column1</name>
                 <fieldType>Region</fieldType>
                 <fields>
+                    <name>travelRouteTxt</name>
+                    <fieldText>&lt;p&gt;Din reiserute&lt;/p&gt;</fieldText>
+                    <fieldType>DisplayText</fieldType>
+                </fields>
+                <fields>
+                    <name>departureAdressInputField</name>
+                    <dataType>String</dataType>
+                    <defaultValue>
+                        <elementReference>invoice.TravelDepartureLocation__c</elementReference>
+                    </defaultValue>
+                    <fieldText>Avreise sted</fieldText>
+                    <fieldType>InputField</fieldType>
+                    <inputsOnNextNavToAssocScrn>UseStoredValues</inputsOnNextNavToAssocScrn>
+                    <isRequired>false</isRequired>
+                </fields>
+                <fields>
+                    <name>attendanceAddressInputField</name>
+                    <dataType>String</dataType>
+                    <defaultValue>
+                        <elementReference>invoice.AppointmentAttendanceAddress__c</elementReference>
+                    </defaultValue>
+                    <fieldText>Oppmøteadresse</fieldText>
+                    <fieldType>InputField</fieldType>
+                    <inputsOnNextNavToAssocScrn>UseStoredValues</inputsOnNextNavToAssocScrn>
+                    <isRequired>false</isRequired>
+                </fields>
+                <fields>
+                    <name>alternativeTravelRouteInputField</name>
+                    <dataType>String</dataType>
+                    <defaultValue>
+                        <elementReference>invoice.AlternativeTravel__c</elementReference>
+                    </defaultValue>
+                    <fieldText>Hjemreise - om ikke samme som avreisested</fieldText>
+                    <fieldType>InputField</fieldType>
+                    <inputsOnNextNavToAssocScrn>UseStoredValues</inputsOnNextNavToAssocScrn>
+                    <isRequired>false</isRequired>
+                </fields>
+                <inputParameters>
+                    <name>width</name>
+                    <value>
+                        <stringValue>12</stringValue>
+                    </value>
+                </inputParameters>
+                <isRequired>false</isRequired>
+            </fields>
+            <isRequired>false</isRequired>
+            <regionContainerType>SectionWithoutHeader</regionContainerType>
+        </fields>
+        <fields>
+            <name>oppdragskvitteringDel2_Section6</name>
+            <fieldType>RegionContainer</fieldType>
+            <fields>
+                <name>oppdragskvitteringDel2_Section6_Column1</name>
+                <fieldType>Region</fieldType>
+                <fields>
                     <name>shouldHaveSubsistenceAllowance</name>
                     <choiceReferences>yes</choiceReferences>
                     <choiceReferences>no</choiceReferences>
@@ -1252,10 +1656,10 @@
             <regionContainerType>SectionWithoutHeader</regionContainerType>
         </fields>
         <fields>
-            <name>oppdragskvitteringDel2_Section6</name>
+            <name>oppdragskvitteringDel2_Section7</name>
             <fieldType>RegionContainer</fieldType>
             <fields>
-                <name>oppdragskvitteringDel2_Section6_Column1</name>
+                <name>oppdragskvitteringDel2_Section7_Column1</name>
                 <fieldType>Region</fieldType>
                 <fields>
                     <name>subsistenceAllowanceText</name>
@@ -1331,7 +1735,7 @@
                 <isRequired>false</isRequired>
             </fields>
             <fields>
-                <name>oppdragskvitteringDel2_Section6_Column2</name>
+                <name>oppdragskvitteringDel2_Section7_Column2</name>
                 <fieldType>Region</fieldType>
                 <inputParameters>
                     <name>width</name>
@@ -1368,10 +1772,10 @@
             <isRequired>false</isRequired>
         </fields>
         <fields>
-            <name>oppdragskvitteringDel2_Section7</name>
+            <name>oppdragskvitteringDel2_Section8</name>
             <fieldType>RegionContainer</fieldType>
             <fields>
-                <name>oppdragskvitteringDel2_Section7_Column1</name>
+                <name>oppdragskvitteringDel2_Section8_Column1</name>
                 <fieldType>Region</fieldType>
                 <fields>
                     <name>expenseTypeAPicklist</name>
@@ -1502,7 +1906,7 @@
                 <isRequired>false</isRequired>
             </fields>
             <fields>
-                <name>oppdragskvitteringDel2_Section7_Column2</name>
+                <name>oppdragskvitteringDel2_Section8_Column2</name>
                 <fieldType>Region</fieldType>
                 <fields>
                     <name>expenseTypeAAmount</name>
@@ -1634,61 +2038,16 @@
             </fields>
             <isRequired>false</isRequired>
             <regionContainerType>SectionWithoutHeader</regionContainerType>
-        </fields>
-        <fields>
-            <name>oppdragskvitteringDel2_Section8</name>
-            <fieldType>RegionContainer</fieldType>
-            <fields>
-                <name>oppdragskvitteringDel2_Section8_Column1</name>
-                <fieldType>Region</fieldType>
-                <fields>
-                    <name>travelRouteTxt</name>
-                    <fieldText>&lt;p&gt;Din reiserute&lt;/p&gt;</fieldText>
-                    <fieldType>DisplayText</fieldType>
-                </fields>
-                <fields>
-                    <name>departureAdressInputField</name>
-                    <dataType>String</dataType>
-                    <defaultValue>
-                        <elementReference>invoice.TravelDepartureLocation__c</elementReference>
-                    </defaultValue>
-                    <fieldText>Avreise sted</fieldText>
-                    <fieldType>InputField</fieldType>
-                    <inputsOnNextNavToAssocScrn>UseStoredValues</inputsOnNextNavToAssocScrn>
-                    <isRequired>false</isRequired>
-                </fields>
-                <fields>
-                    <name>attendanceAddressInputField</name>
-                    <dataType>String</dataType>
-                    <defaultValue>
-                        <elementReference>invoice.AppointmentAttendanceAddress__c</elementReference>
-                    </defaultValue>
-                    <fieldText>Oppmøteadresse</fieldText>
-                    <fieldType>InputField</fieldType>
-                    <inputsOnNextNavToAssocScrn>UseStoredValues</inputsOnNextNavToAssocScrn>
-                    <isRequired>false</isRequired>
-                </fields>
-                <fields>
-                    <name>alternativeTravelRouteInputField</name>
-                    <dataType>String</dataType>
-                    <defaultValue>
-                        <elementReference>invoice.AlternativeTravel__c</elementReference>
-                    </defaultValue>
-                    <fieldText>Hjemreise - om ikke samme som avreisested</fieldText>
-                    <fieldType>InputField</fieldType>
-                    <inputsOnNextNavToAssocScrn>UseStoredValues</inputsOnNextNavToAssocScrn>
-                    <isRequired>false</isRequired>
-                </fields>
-                <inputParameters>
-                    <name>width</name>
-                    <value>
-                        <stringValue>12</stringValue>
-                    </value>
-                </inputParameters>
-                <isRequired>false</isRequired>
-            </fields>
-            <isRequired>false</isRequired>
-            <regionContainerType>SectionWithoutHeader</regionContainerType>
+            <visibilityRule>
+                <conditionLogic>and</conditionLogic>
+                <conditions>
+                    <leftValueReference>didYouHaveTravelExpenses</leftValueReference>
+                    <operator>EqualTo</operator>
+                    <rightValue>
+                        <booleanValue>true</booleanValue>
+                    </rightValue>
+                </conditions>
+            </visibilityRule>
         </fields>
         <nextOrFinishButtonLabel>Neste</nextOrFinishButtonLabel>
         <showFooter>true</showFooter>
