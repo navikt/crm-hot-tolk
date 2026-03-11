@@ -1,0 +1,86 @@
+<template>
+    <!-- Messages Start-->
+    <section role="log" id="scroller" class="slds-box scroller slds-scrollable_y">
+        <c-hot_messaging-Message-Container message={message}></c-hot_messaging-Message-Container>
+    </section>
+    <!-- Messages End-->
+    <!-- Reply Box Start-->
+    <div slot="footer">
+        <lightning-layout multiple-rows="true" class="stickyfooter">
+            <lightning-layout-item size="12">
+                <div
+                    role="toolbar"
+                    class="slds-rich-text-editor__toolbar slds-shrink-none"
+                    style="display: block; border-radius: 0"
+                >
+                    <lightning-layout>
+                        <!-- Toolbar -->
+                        <lightning-layout-item flexibility="auto">
+                            <lightning-layout horizontal-align="spread">
+                                <lightning-button-icon
+                                    icon-name="utility:quick_text"
+                                    alternative-text="Hurtigtekst"
+                                    onclick={showQuickText}
+                                >
+                                </lightning-button-icon>
+                                <lightning-layout ontoolbaraction={handleToolbarAction}>
+                                    <slot name="toolbar"></slot>
+                                </lightning-layout>
+                                <template if:true={hasEnglishTemplate}>
+                                    <lightning-button
+                                        role="switch"
+                                        type="lang"
+                                        name="lang"
+                                        label="Engelsk"
+                                        variant={langBtnVariant}
+                                        style="min-height: 1rem"
+                                        class="slds-float_left slds-var-m-left_small"
+                                        onclick={handleLangClick}
+                                        title="Endre Språk"
+                                        disabled={langBtnLock}
+                                        aria-disabled={langBtnLock}
+                                        aria-label={langAria}
+                                    >
+                                    </lightning-button>
+                                </template>
+                            </lightning-layout>
+                        </lightning-layout-item>
+                    </lightning-layout>
+                </div>
+                <h2>{showspinnner}</h2>
+                <template if:true={showspinner}>
+                    <div class="spinnerholder">
+                        <lightning-spinner alternative-text="Loading" size="medium"></lightning-spinner>
+                    </div>
+                </template>
+                <c-hot_messaging-quick-text
+                    conversation-note={textTemplate}
+                    reset-text-template={textTemplate}
+                    onlocklang={lockLangBtn}
+                >
+                </c-hot_messaging-quick-text>
+            </lightning-layout-item>
+            <br />
+            <lightning-layout-item size="12">
+                <div class="slds-rich-text-editor__toolbar slds-shrink-none" style="display: block; border-radius: 0">
+                    <lightning-layout>
+                        <lightning-layout-item size="12">
+                            <lightning-button
+                                type="submit"
+                                name="submit"
+                                label="Send"
+                                variant="brand"
+                                style="min-height: 1rem"
+                                class="slds-float_right"
+                                onclick={handlesubmit}
+                            >
+                            </lightning-button>
+                        </lightning-layout-item>
+                    </lightning-layout>
+                </div>
+            </lightning-layout-item>
+        </lightning-layout>
+
+        <!--</div> -->
+    </div>
+</template>
