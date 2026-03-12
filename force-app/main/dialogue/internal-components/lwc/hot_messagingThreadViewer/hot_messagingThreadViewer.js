@@ -137,6 +137,7 @@ export default class hot_messagingThreadViewer extends LightningElement {
             // If messagefield is empty, stop the submit
             textInput.CRM_Thread__c = this.thread.Id;
             textInput.CRM_From_User__c = userId;
+            textInput.CRM_Message_Text__c = this.text;
             //her
             getUserNameRole().then((result) => {
                 textInput.HOT_User_Role__c = result;
