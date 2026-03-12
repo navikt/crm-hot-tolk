@@ -89,18 +89,16 @@ private static Id cachedAccountId {
     }
     @AuraEnabled(cacheable=true)
     public static List<Thread__c> getWageClaimThreads() {
-        User currentUser = [SELECT Id, AccountId, Account.CRM_Person__c FROM User WHERE Id = :UserInfo.getUserId()];
         List<Thread__c> threads = [
             SELECT Id, CRM_Related_Object__c, HOT_Thread_read_by__c, CRM_Related_Object_Type__c, HOT_ServiceResource__c
             FROM Thread__c
-            WHERE CRM_Related_Object_Type__c = 'HOT_WageClaim__c' AND CRM_Account__c = :currentUser.accountId
+            WHERE CRM_Related_Object_Type__c = 'HOT_WageClaim__c' AND CRM_Account__c = :HOT_WageClaimListController.cachedAccountId
         ];
 
         return threads;
     }
     @AuraEnabled
     public static HOT_WageClaim__c getWageClaimDetails(String recordId) {
-        User currentUser = [SELECT Id, AccountId, Account.CRM_Person__c FROM User WHERE Id = :UserInfo.getUserId()];
         HOT_WageClaim__c wageClaim = [
             SELECT
                 Id,
@@ -118,13 +116,12 @@ private static Id cachedAccountId {
                 Type__c,
                 toLabel(Reason__c)
             FROM HOT_WageClaim__c
-            WHERE Id = :recordId AND ServiceResource__r.AccountId = :currentUser.AccountId
+            WHERE Id = :recordId AND ServiceResource__r.AccountId = :HOT_WageClaimListController.cachedAccountId
         ];
         return wageClaim;
     }
     @AuraEnabled
     public static HOT_WageClaim__c getWageClaimNewTypeDetails(String recordId) {
-        User currentUser = [SELECT Id, AccountId, Account.CRM_Person__c FROM User WHERE Id = :UserInfo.getUserId()];
         HOT_WageClaim__c wageClaim = [
             SELECT
                 Id,
@@ -141,7 +138,7 @@ private static Id cachedAccountId {
                 ServiceResource__r.AccountId,
                 toLabel(Reason__c)
             FROM HOT_WageClaim__c
-            WHERE Id = :recordId AND ServiceResource__r.AccountId = :currentUser.AccountId AND Type__c = 'Claim on Wage'
+            WHERE Id = :recordId AND ServiceResource__r.AccountId = :HOT_WageClaimListController.cachedAccountId AND Type__c = 'Claim on Wage'
         ];
         return wageClaim;
     }
