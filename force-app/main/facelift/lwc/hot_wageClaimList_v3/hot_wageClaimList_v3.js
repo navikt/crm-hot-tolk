@@ -76,7 +76,6 @@ export default class Hot_wageClaimList_v3 extends NavigationMixin(LightningEleme
                 getMyThreadsWC().then((result) => {
                     var thread = [];
                     thread = result;
-                    console.log('Threads hentet: ', thread);
                     var map = new Map();
                     thread.forEach((t) => {
                         map.set(t.CRM_Related_Object__c, t.HOT_Thread_read_by__c);
