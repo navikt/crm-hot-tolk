@@ -966,7 +966,6 @@ export default class LibsFullCalendarV2 extends NavigationMixin(LightningElement
 
             this.wageClaimNewType = wcNewType;
 
-            // Add formatted property
             this.wageClaimNewType.StartAndEndDate = formatDatetimeinterval(
                 wcNewType.StartTime__c,
                 wcNewType.EndTime__c
