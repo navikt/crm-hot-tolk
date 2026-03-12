@@ -3,6 +3,7 @@ public with sharing class HOT_FullCalendarController {
         COMPLETED_SERVICE_APPOINTMENT,
         SERVICE_APPOINTMENT,
         OPEN_WAGE_CLAIM,
+        WAGE_CLAIM_NEW_TYPE,
         RESOURCE_ABSENCE
     }
 
@@ -33,6 +34,7 @@ public with sharing class HOT_FullCalendarController {
 
         List<ServiceAppointment> appointments = getUserServiceAppointments(earliestTime, latestTime);
         List<HOT_WageClaim__c> openWageClaims = getUserOpenWageClaims(earliestTime, latestTime);
+        List<HOT_WageClaim__c> newTypeWageClaims = getUserWageClaimsOfNewType(earliestTime, latestTime);
         List<ResourceAbsence> absences = getUserResourceAbsence(earliestTime, latestTime);
 
         for (ServiceAppointment appointment : appointments) {
@@ -56,6 +58,17 @@ public with sharing class HOT_FullCalendarController {
             event.startTime = claim.StartTime__c;
             event.endTime = claim.EndTime__c;
             event.description = 'Ledig på lønn';
+            events.add(event);
+        }
+
+        for (HOT_WageClaim__c claim : newTypeWageClaims) {
+            CalendarEvent event = new CalendarEvent();
+            event.id = claim.Id;
+            event.appointmentNumber = claim.ServiceAppointmentName__c;
+            event.type = EventType.WAGE_CLAIM_NEW_TYPE.toString();
+            event.startTime = claim.StartTime__c;
+            event.endTime = claim.EndTime__c;
+            event.description = 'Ny type lønnskrav';
             events.add(event);
         }
 
@@ -117,6 +130,23 @@ public with sharing class HOT_FullCalendarController {
             WHERE
                 ServiceResource__r.Id = :resourceId
                 AND Status__c = 'Open'
+                AND EndTime__c > :earliestWageClaimEnd
+                AND StartTime__c < :latestWageClaimStart
+        ];
+    }
+
+    @TestVisible
+    private static List<HOT_WageClaim__c> getUserWageClaimsOfNewType(
+        DateTime earliestWageClaimEnd,
+        DateTime latestWageClaimStart
+    ) {
+        Id resourceId = getUserServiceResourceId();
+        return [
+            SELECT Id, StartTime__c, EndTime__c, ServiceResource__r.Id, Status__c, ServiceAppointmentName__c
+            FROM HOT_WageClaim__c
+            WHERE
+                ServiceResource__r.Id = :resourceId
+                AND Type__c = 'Claim on Wage'
                 AND EndTime__c > :earliestWageClaimEnd
                 AND StartTime__c < :latestWageClaimStart
         ];
