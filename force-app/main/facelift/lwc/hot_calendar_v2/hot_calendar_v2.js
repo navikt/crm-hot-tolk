@@ -118,6 +118,14 @@ export default class LibsFullCalendarV2 extends NavigationMixin(LightningElement
         return this.wageClaimNewType?.Reason__c || '';
     }
 
+    get showCancelledDate() {
+        if (this.wageClaimNewType?.Reason__c === 'Endret tid') {
+            return false;
+        } else {
+            return true;
+        }
+    }
+
     get cancelledDate() {
         const dateVal = this.wageClaimNewType?.ServiceAppointment__r?.HOT_CanceledDate__c;
 
@@ -777,7 +785,7 @@ export default class LibsFullCalendarV2 extends NavigationMixin(LightningElement
 
     goToWageClaimNewTypeThread() {
         this.wcNewTypeIsDisabledGoToThread = true;
-        getThreadIdWC({ wageClaimNewTypeId: this.wageClaimNewType.Id }).then((result) => {
+        getThreadIdWC({ wageClaimeId: this.wageClaimNewType.Id }).then((result) => {
             if (result != '') {
                 this.threadId = result;
                 this.navigateToThread(this.threadId);
