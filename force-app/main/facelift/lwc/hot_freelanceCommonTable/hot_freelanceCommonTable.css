@@ -125,6 +125,10 @@ tr.row.selected-row:hover {
     display: none;
 }
 
+.show-mobile-label {
+    display: none;
+}
+
 @media (max-width: 768px) {
     /* Flyttet overflow fra table -> wrapper */
     .table-scroll {
@@ -254,5 +258,8 @@ tr.row.selected-row:hover {
         display: block !important;
         visibility: visible !important;
         pointer-events: auto !important;
+    }
+    .show-mobile-label {
+        display: inline;
     }
 }

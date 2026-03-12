@@ -48,7 +48,14 @@
                                     <span class={field.statusBadgeClass}> {field.statusBadgeLabel} </span>
                                 </template>
 
-                                <template lwc:else> {field.value} </template>
+                                <template lwc:else>
+                                    <template lwc:if={field.showMobileLabel}>
+                                        <template lwc:if={field.value}>
+                                            <span class="mobile-reason-label">{field.label}: </span>
+                                        </template>
+                                    </template>
+                                    {field.value}
+                                </template>
                             </td>
                         </template>
                     </tr>

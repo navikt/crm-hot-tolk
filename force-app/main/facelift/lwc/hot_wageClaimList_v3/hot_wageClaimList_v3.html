@@ -34,7 +34,7 @@
     <!-- MODAL -->
     <dialog class="modal-container" aria-label="Informasjon om oppdrag" aria-modal="true" onclose={closeModal}>
         <div class="modal-header">
-            <h2>Informasjon om oppdraget:</h2>
+            <h2>Informasjon om rett til honorar:</h2>
             <button class="close-btn" onclick={closeModal} aria-label="Lukk">
                 <img src={exitCrossIcon} alt="" aria-hidden="true" />
             </button>
@@ -44,15 +44,16 @@
             <p>Du er ikke tildelt oppdraget lenger.</p>
         </div>
 
-        <div if:true={hasAccess} class="modal-body">
+        <div lwc:if={hasAccess} class="modal-body">
             <p><strong>Oppdragsnummer:</strong> {appointmentNumber}</p>
             <p><strong>Tid:</strong> {appointmentTime}</p>
+            <p lwc:if={reason}><strong>Årsak:</strong> {reason}</p>
+            <p lwc:if={cancelledDate}><strong>Avlyst dato:</strong> {cancelledDate}</p>
             <p><strong>Poststed:</strong> {appointmentCity}</p>
             <p><strong>Tolkemetode:</strong> {workType}</p>
             <p><strong>Oppdragstype:</strong> {assignmentType}</p>
             <p><strong>Eier:</strong> {ownerName}</p>
             <p><strong>Døv/døvblind:</strong> {degreeOfHearingAndVisualImpairment}</p>
-            <p lwc:if={cancelledDate}><strong>Avlyst dato:</strong> {cancelledDate}</p>
             <div style="display: inline-block; padding-top: 1rem">
                 <c-button
                     disabled={isDisabledGoToThread}
