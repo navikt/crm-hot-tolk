@@ -6,7 +6,7 @@
     <!-- Messages End-->
     <!-- Reply Box Start-->
     <div slot="footer">
-        <lightning-layout multiple-rows="true" class="stickyfooter">
+        <lightning-layout multiple-rows="true">
             <lightning-layout-item size="12">
                 <div
                     role="toolbar"
@@ -29,7 +29,7 @@
                 </div>
                 <h2>{showspinnner}</h2>
                 <template if:true={showspinner}>
-                    <div class="spinnerholder">
+                    <div>
                         <lightning-spinner alternative-text="Loading" size="medium"></lightning-spinner>
                     </div>
                 </template>
