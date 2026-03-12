@@ -5,16 +5,19 @@ import getThreadId from '@salesforce/apex/HOT_WageClaimListController.getThreadI
 import createThread from '@salesforce/apex/HOT_MessageHelper.createThread';
 import { getParametersFromURL } from 'c/hot_URIDecoder';
 import getWageClaimDetails from '@salesforce/apex/HOT_WageClaimListController.getWageClaimDetails';
-import { columns, mobileColumns } from './columns';
+import { columns, mobileColumn, iconByValue } from './columns';
 import { NavigationMixin } from 'lightning/navigation';
 import { formatRecord } from 'c/datetimeFormatterNorwegianTime';
 import { defaultFilters, compare } from './filters';
 import icons from '@salesforce/resourceUrl/ikoner';
 import icons2 from '@salesforce/resourceUrl/icons';
+import getMyThreadsWC from '@salesforce/apex/HOT_WageClaimListController.getWageClaimThreads';
+import getContactId from '@salesforce/apex/HOT_MessageHelper.getUserContactId';
 
 export default class Hot_wageClaimList_v3 extends NavigationMixin(LightningElement) {
     exitCrossIcon = icons + '/Close/Close.svg';
     warningicon = icons2 + '/warningicon.svg';
+    iconByValue = iconByValue;
     columns = [];
     filters = [];
     setColumns() {
@@ -66,12 +69,73 @@ export default class Hot_wageClaimList_v3 extends NavigationMixin(LightningEleme
             this.allWageClaimsWired = this.wageClaims;
             this.refresh();
             this.dataLoader = false;
+
+            getContactId({}).then((contactId) => {
+                this.userContactId = contactId;
+
+                getMyThreadsWC().then((result) => {
+                    var thread = [];
+                    thread = result;
+                    console.log('Threads hentet: ', thread);
+                    var map = new Map();
+                    thread.forEach((t) => {
+                        map.set(t.CRM_Related_Object__c, t.HOT_Thread_read_by__c);
+                    });
+                    this.allWageClaimsWired = this.allWageClaimsWired.map((wageClaim) => {
+                        let threadId;
+                        let status = 'noThread';
+
+                        threadId = wageClaim.Id;
+                        if (map.has(threadId)) {
+                            const readBy = map.get(threadId);
+                            if (typeof readBy === 'string' && readBy.includes(this.userContactId)) {
+                                status = 'false';
+                            } else {
+                                status = 'true';
+                            }
+                        }
+                        return {
+                            ...wageClaim,
+                            IsUnreadMessage: status
+                        };
+                    });
+                    let tempRecords = [];
+                    this.records = tempRecords;
+                    this.initialWageClaims = [...this.records];
+
+                    this.refresh();
+                    this.dataLoader = false;
+                });
+            });
         } else if (result.error) {
             this.dataLoader = false;
             this.error = result.error;
             this.allWageClaimsWired = undefined;
         }
     }
+    // @wire(getMyWageClaims)
+    // wiredWageClaims(result) {
+    //     this.wiredWageClaimsResult = result;
+    //     if (result.data) {
+    //         this.allWageClaimsWired = result.data;
+    //         this.noWageClaims = this.allWageClaimsWired.length === 0;
+    //         this.error = undefined;
+    //         let tempRecords = [];
+    //         for (let record of result.data) {
+    //             tempRecords.push(formatRecord(Object.assign({}, record), this.datetimeFields));
+    //         }
+    //         tempRecords.sort((a, b) => new Date(b.StartTime__c) - new Date(a.StartTime__c));
+
+    //         this.wageClaims = tempRecords;
+    //         this.allWageClaimsWired = this.wageClaims;
+    //         this.refresh();
+    //         this.dataLoader = false;
+    //     } else if (result.error) {
+    //         this.dataLoader = false;
+    //         this.error = result.error;
+    //         this.allWageClaimsWired = undefined;
+    //     }
+    // }
 
     getParams() {
         let parsed_params = getParametersFromURL() ?? '';
@@ -174,6 +238,7 @@ export default class Hot_wageClaimList_v3 extends NavigationMixin(LightningEleme
         window.history.pushState({ path: baseURL }, '', baseURL);
     }
     treadId;
+
     goToWageClaimThread() {
         this.isDisabledGoToThread = true;
         getThreadId({ wageClaimeId: this.recordId }).then((result) => {

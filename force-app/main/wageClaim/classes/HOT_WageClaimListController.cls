@@ -75,6 +75,17 @@ public without sharing class HOT_WageClaimListController {
         }
         return Id;
     }
+    @AuraEnabled(cacheable=true)
+    public static List<Thread__c> getWageClaimThreads() {
+        User currentUser = [SELECT Id, AccountId, Account.CRM_Person__c FROM User WHERE Id = :UserInfo.getUserId()];
+        List<Thread__c> threads = [
+            SELECT Id, CRM_Related_Object__c, HOT_Thread_read_by__c, CRM_Related_Object_Type__c, HOT_ServiceResource__c
+            FROM Thread__c
+            WHERE CRM_Related_Object_Type__c = 'HOT_WageClaim__c' AND CRM_Account__c = :currentUser.accountId
+        ];
+
+        return threads;
+    }
     @AuraEnabled
     public static HOT_WageClaim__c getWageClaimDetails(String recordId) {
         User currentUser = [SELECT Id, AccountId, Account.CRM_Person__c FROM User WHERE Id = :UserInfo.getUserId()];
