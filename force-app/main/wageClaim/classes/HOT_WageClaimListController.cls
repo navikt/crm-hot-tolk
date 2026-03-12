@@ -75,6 +75,18 @@ public without sharing class HOT_WageClaimListController {
         }
         return Id;
     }
+}
+private static Id cachedAccountId {
+        get {
+            if (HOT_WageClaimListController.cachedAccountId == null) {
+                HOT_WageClaimListController.cachedAccountId = [SELECT Id, AccountId FROM User WHERE Id = :UserInfo.getUserId() LIMIT 1].AccountId;
+            }
+            return HOT_WageClaimListController.cachedAccountId;
+        }
+        set {
+            HOT_WageClaimListController.cachedAccountId = value;
+        }
+    }
     @AuraEnabled(cacheable=true)
     public static List<Thread__c> getWageClaimThreads() {
         User currentUser = [SELECT Id, AccountId, Account.CRM_Person__c FROM User WHERE Id = :UserInfo.getUserId()];
