@@ -86,6 +86,10 @@
     </customPermissions>
     <customPermissions>
         <enabled>true</enabled>
+        <name>HOT_AccessToFormidlerActions</name>
+    </customPermissions>
+    <customPermissions>
+        <enabled>true</enabled>
         <name>HOT_ReleaseToFreelance</name>
     </customPermissions>
     <fieldPermissions>

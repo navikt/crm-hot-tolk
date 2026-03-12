@@ -74,6 +74,10 @@
     </customPermissions>
     <customPermissions>
         <enabled>true</enabled>
+        <name>HOT_AccessToFormidlerActions</name>
+    </customPermissions>
+    <customPermissions>
+        <enabled>true</enabled>
         <name>HOT_CanceledBanner</name>
     </customPermissions>
     <customPermissions>

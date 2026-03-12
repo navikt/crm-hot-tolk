@@ -164,7 +164,7 @@ public without sharing class HOT_MessagesNotification {
                     )
                 );
                 //Sender ut pushvarsel til appbruker
-                HOT_UserNotificationService.newMessageNotification(notificationType, thread, false, recipients);
+                HOT_UserNotificationService.newMessageNotification(notificationType, thread, false, true, recipients);
             } else {
                 //Ellers sendes det ut sms til bruker
                 //Lager notifikasjon til liste
@@ -341,6 +341,7 @@ public without sharing class HOT_MessagesNotification {
                         notificationType,
                         thread,
                         isFreelance,
+                        false,
                         new Set<String>{ userId }
                     );
                 } else {
