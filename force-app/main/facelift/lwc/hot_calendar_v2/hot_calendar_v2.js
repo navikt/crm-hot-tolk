@@ -114,6 +114,36 @@ export default class LibsFullCalendarV2 extends NavigationMixin(LightningElement
         sessionStorage.setItem(LibsFullCalendarV2.STATE_KEY, JSON.stringify(state));
     }
 
+    get reason() {
+        return this.wageClaimNewType?.Reason__c || '';
+    }
+
+    get cancelledDate() {
+        const dateVal = this.wageClaimNewType?.ServiceAppointment__r?.HOT_CanceledDate__c;
+
+        if (!dateVal) {
+            return '';
+        }
+
+        const d = new Date(dateVal);
+
+        if (isNaN(d.getTime())) {
+            return '';
+        }
+
+        return (
+            ('0' + d.getDate()).slice(-2) +
+            '.' +
+            ('0' + (d.getMonth() + 1)).slice(-2) +
+            '.' +
+            d.getFullYear() +
+            ', ' +
+            ('0' + d.getHours()).slice(-2) +
+            ':' +
+            ('0' + d.getMinutes()).slice(-2)
+        );
+    }
+
     async setupCalendar(sessionState) {
         await this.loadScriptAndStyle();
         const events = await this.fetchUniqueEventsForTimeRegion(this.earliestTime, this.latestTime);

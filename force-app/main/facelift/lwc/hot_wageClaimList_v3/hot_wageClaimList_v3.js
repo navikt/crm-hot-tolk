@@ -321,15 +321,15 @@ export default class Hot_wageClaimList_v3 extends NavigationMixin(LightningEleme
         }
 
         return (
-            ('0' + d.getDate()).substr(-2) +
+            ('0' + d.getDate()).slice(-2) +
             '.' +
-            ('0' + (d.getMonth() + 1)).substr(-2) +
+            ('0' + (d.getMonth() + 1)).slice(-2) +
             '.' +
             d.getFullYear() +
             ', ' +
-            ('0' + d.getHours()).substr(-2) +
+            ('0' + d.getHours()).slice(-2) +
             ':' +
-            ('0' + d.getMinutes()).substr(-2)
+            ('0' + d.getMinutes()).slice(-2)
         );
     }
 }
