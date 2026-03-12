@@ -113,29 +113,6 @@ export default class Hot_wageClaimList_v3 extends NavigationMixin(LightningEleme
             this.allWageClaimsWired = undefined;
         }
     }
-    // @wire(getMyWageClaims)
-    // wiredWageClaims(result) {
-    //     this.wiredWageClaimsResult = result;
-    //     if (result.data) {
-    //         this.allWageClaimsWired = result.data;
-    //         this.noWageClaims = this.allWageClaimsWired.length === 0;
-    //         this.error = undefined;
-    //         let tempRecords = [];
-    //         for (let record of result.data) {
-    //             tempRecords.push(formatRecord(Object.assign({}, record), this.datetimeFields));
-    //         }
-    //         tempRecords.sort((a, b) => new Date(b.StartTime__c) - new Date(a.StartTime__c));
-
-    //         this.wageClaims = tempRecords;
-    //         this.allWageClaimsWired = this.wageClaims;
-    //         this.refresh();
-    //         this.dataLoader = false;
-    //     } else if (result.error) {
-    //         this.dataLoader = false;
-    //         this.error = result.error;
-    //         this.allWageClaimsWired = undefined;
-    //     }
-    // }
 
     getParams() {
         let parsed_params = getParametersFromURL() ?? '';
