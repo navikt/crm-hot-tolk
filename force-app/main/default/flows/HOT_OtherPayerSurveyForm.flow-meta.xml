@@ -59,6 +59,13 @@
             <assignToReference>invoice.SubsistenceAllowanceDay5__c</assignToReference>
             <operator>Assign</operator>
         </assignmentItems>
+        <assignmentItems>
+            <assignToReference>invoice.HasSubsistenceAllowance__c</assignToReference>
+            <operator>Assign</operator>
+            <value>
+                <booleanValue>false</booleanValue>
+            </value>
+        </assignmentItems>
         <connector>
             <targetReference>checkIfTravelExpenses</targetReference>
         </connector>
@@ -117,6 +124,13 @@
             <operator>Assign</operator>
             <value>
                 <elementReference>subsistenceAllowanceDay5Picklist</elementReference>
+            </value>
+        </assignmentItems>
+        <assignmentItems>
+            <assignToReference>invoice.HasSubsistenceAllowance__c</assignToReference>
+            <operator>Assign</operator>
+            <value>
+                <booleanValue>true</booleanValue>
             </value>
         </assignmentItems>
         <connector>
@@ -374,6 +388,13 @@
             <assignToReference>invoice.ExpenseTypeJ__c</assignToReference>
             <operator>Assign</operator>
         </assignmentItems>
+        <assignmentItems>
+            <assignToReference>invoice.HasTravelExpenses__c</assignToReference>
+            <operator>Assign</operator>
+            <value>
+                <booleanValue>false</booleanValue>
+            </value>
+        </assignmentItems>
         <connector>
             <targetReference>setTravelAndPreparationTime</targetReference>
         </connector>
@@ -521,6 +542,13 @@
             <operator>Assign</operator>
             <value>
                 <elementReference>expenseTypeJPicklist</elementReference>
+            </value>
+        </assignmentItems>
+        <assignmentItems>
+            <assignToReference>invoice.HasTravelExpenses__c</assignToReference>
+            <operator>Assign</operator>
+            <value>
+                <booleanValue>true</booleanValue>
             </value>
         </assignmentItems>
         <connector>
@@ -1005,7 +1033,7 @@
             <fieldText>&lt;p&gt;Oppdragskvitteringen ble lagret!&lt;/p&gt;</fieldText>
             <fieldType>DisplayText</fieldType>
         </fields>
-        <showFooter>true</showFooter>
+        <showFooter>false</showFooter>
         <showHeader>true</showHeader>
     </screens>
     <screens>
@@ -1018,7 +1046,7 @@
         <allowPause>true</allowPause>
         <fields>
             <name>invoiceAlreadyFilledTxt</name>
-            <fieldText>&lt;p&gt;Oppdragskvittering er allerede sendt inn.&lt;/p&gt;</fieldText>
+            <fieldText>&lt;p&gt;Oppdragskvittering er fylt ut.&lt;/p&gt;</fieldText>
             <fieldType>DisplayText</fieldType>
         </fields>
         <showFooter>false</showFooter>
