@@ -41,7 +41,8 @@ public without sharing class HOT_WageClaimListController {
                 ServiceResource__r.AccountId,
                 ServiceAppointment__r.HOT_CanceledDate__c,
                 ServiceAppointment__r.HOT_Request__r.OwnerName__c,
-                DegreeOfHearingAndVisualImpairment__c
+                DegreeOfHearingAndVisualImpairment__c,
+                toLabel(Reason__c)
             FROM HOT_WageClaim__c
             WHERE Type__c = 'Claim on Wage' AND ServiceResource__r.RelatedRecordId = :UserInfo.getUserId()
             ORDER BY StartTime__c ASC
@@ -90,9 +91,34 @@ public without sharing class HOT_WageClaimListController {
                 ServiceAppointment__r.HOT_CanceledDate__c,
                 ServiceAppointment__r.HOT_Request__r.OwnerName__c,
                 AssignmentType__c,
-                ServiceResource__r.AccountId
+                ServiceResource__r.AccountId,
+                Type__c,
+                toLabel(Reason__c)
             FROM HOT_WageClaim__c
             WHERE Id = :recordId AND ServiceResource__r.AccountId = :currentUser.AccountId
+        ];
+        return wageClaim;
+    }
+    @AuraEnabled
+    public static HOT_WageClaim__c getWageClaimNewTypeDetails(String recordId) {
+        User currentUser = [SELECT Id, AccountId, Account.CRM_Person__c FROM User WHERE Id = :UserInfo.getUserId()];
+        HOT_WageClaim__c wageClaim = [
+            SELECT
+                Id,
+                ServiceAppointmentName__c,
+                StartTime__c,
+                EndTime__c,
+                ServiceAppointmentCity__c,
+                toLabel(Status__c),
+                WorkTypeName__c,
+                DegreeOfHearingAndVisualImpairment__c,
+                ServiceAppointment__r.HOT_CanceledDate__c,
+                ServiceAppointment__r.HOT_Request__r.OwnerName__c,
+                AssignmentType__c,
+                ServiceResource__r.AccountId,
+                toLabel(Reason__c)
+            FROM HOT_WageClaim__c
+            WHERE Id = :recordId AND ServiceResource__r.AccountId = :currentUser.AccountId AND Type__c = 'Claim on Wage'
         ];
         return wageClaim;
     }
