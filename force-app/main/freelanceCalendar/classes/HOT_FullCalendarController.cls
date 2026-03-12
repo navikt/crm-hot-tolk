@@ -68,7 +68,7 @@ public with sharing class HOT_FullCalendarController {
             event.type = EventType.WAGE_CLAIM_NEW_TYPE.toString();
             event.startTime = claim.StartTime__c;
             event.endTime = claim.EndTime__c;
-            event.description = 'Oppdragstema på lønnskrav';
+            event.description = 'Rett på honorar';
             events.add(event);
         }
 
