@@ -269,6 +269,26 @@
                             <section lwc:if={isWageClaimNewTypeDetails}>
                                 <div lwc:if={wageClaimNewType}>
                                     <p>Oppdragsnummer: <span>{wageClaimNewType.ServiceAppointmentName__c}</span></p>
+                                    <p>
+                                        Tid: <span>{wageClaimNewType.weekday} {wageClaimNewType.StartAndEndDate}</span>
+                                    </p>
+                                    <p lwc:if={wageClaimNewType.Reason__c}>
+                                        Årsak: <span>{wageClaimNewType.Reason__c}</span>
+                                    </p>
+                                    <p>Poststed: <span>{wageClaimNewType.ServiceAppointmentCity__c}</span></p>
+                                    <p>Tolkemetode: <span>{wageClaimNewType.WorkTypeName__c}</span></p>
+                                    <p>Oppdragstype: <span>{wageClaimNewType.AssignmentType__c}</span></p>
+                                    <p>
+                                        Eier:
+                                        <span
+                                            >{wageClaimNewType.ServiceAppointment__r.HOT_Request__r.OwnerName__c}</span
+                                        >
+                                    </p>
+                                    <p>
+                                        Døv/døvblind:&nbsp;
+                                        <span>{wageClaimNewType.DegreeOfHearingAndVisualImpairment__c}</span>
+                                    </p>
+                                    <p lwc:if={cancelledDate}>Avlyst dato: <span>{cancelledDate}</span></p>
                                 </div>
                             </section>
                         </template>

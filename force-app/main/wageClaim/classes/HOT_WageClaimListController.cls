@@ -113,7 +113,8 @@ public without sharing class HOT_WageClaimListController {
                 ServiceAppointment__r.HOT_CanceledDate__c,
                 ServiceAppointment__r.HOT_Request__r.OwnerName__c,
                 AssignmentType__c,
-                ServiceResource__r.AccountId
+                ServiceResource__r.AccountId,
+                toLabel(Reason__c)
             FROM HOT_WageClaim__c
             WHERE Id = :recordId AND ServiceResource__r.AccountId = :currentUser.AccountId AND Type__c = 'Claim on Wage'
         ];
