@@ -973,8 +973,6 @@ export default class LibsFullCalendarV2 extends NavigationMixin(LightningElement
             );
 
             this.isWageClaimNewTypeDetails = true;
-            console.log('WageClaimNewType loaded:', this.wageClaimNewType);
-            console.log('WageClaimNewType loaded:', this.wageClaimNewType.StartAndEndDate);
         } catch (error) {
             console.error('Error loading wage claim new type', error);
         } finally {

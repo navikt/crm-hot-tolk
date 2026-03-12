@@ -279,6 +279,10 @@ export default class Hot_messagingCommunityThreadViewer_v2 extends NavigationMix
             .filter((name) => name);
     }
 
+    get reason() {
+        return this.wageClaim?.Reason__c || '';
+    }
+
     scrollToLatestMessage() {
         const messageContainers = this.template.querySelectorAll('c-hot_messaging-Community-Message-Container_v2');
 
