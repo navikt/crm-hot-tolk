@@ -23,26 +23,6 @@
                                     onclick={showQuickText}
                                 >
                                 </lightning-button-icon>
-                                <lightning-layout ontoolbaraction={handleToolbarAction}>
-                                    <slot name="toolbar"></slot>
-                                </lightning-layout>
-                                <template if:true={hasEnglishTemplate}>
-                                    <lightning-button
-                                        role="switch"
-                                        type="lang"
-                                        name="lang"
-                                        label="Engelsk"
-                                        variant={langBtnVariant}
-                                        style="min-height: 1rem"
-                                        class="slds-float_left slds-var-m-left_small"
-                                        onclick={handleLangClick}
-                                        title="Endre Språk"
-                                        disabled={langBtnLock}
-                                        aria-disabled={langBtnLock}
-                                        aria-label={langAria}
-                                    >
-                                    </lightning-button>
-                                </template>
                             </lightning-layout>
                         </lightning-layout-item>
                     </lightning-layout>
@@ -53,12 +33,7 @@
                         <lightning-spinner alternative-text="Loading" size="medium"></lightning-spinner>
                     </div>
                 </template>
-                <c-hot_messaging-quick-text
-                    conversation-note={textTemplate}
-                    reset-text-template={textTemplate}
-                    onlocklang={lockLangBtn}
-                >
-                </c-hot_messaging-quick-text>
+                <c-hot_messaging-quick-text> </c-hot_messaging-quick-text>
             </lightning-layout-item>
             <br />
             <lightning-layout-item size="12">

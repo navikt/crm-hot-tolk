@@ -56,7 +56,7 @@ export default class hot_messagingThreadViewer extends LightningElement {
                             this.wiredThread = result;
                         })
                         .catch((error) => {
-                            console.log('Error in getThreadById: ' + JSON.stringify(error));
+                            console.log('Error in getThreadById:', error);
                         });
                 } else {
                     this.showAccessError = true;
@@ -106,7 +106,6 @@ export default class hot_messagingThreadViewer extends LightningElement {
 
     handleUnsubscribe() {
         unsubscribe(this.subscription, (response) => {
-            console.log('Unsubscribed: ', JSON.stringify(response));
             // Response is true for successful unsubscribe
         })
             .then((success) => {

@@ -153,8 +153,6 @@
                             <template lwc:if={openUserThreads}>
                                 <template for:each={openUserThreads} for:item="thread">
                                     <c-hot_messaging-thread-viewer
-                                        onenglishevent={handleEnglishEvent}
-                                        english-text-template={englishTextTemplate}
                                         text-template={userMessageTemplate}
                                         thread={thread}
                                         key={thread.Id}
@@ -191,7 +189,6 @@
                             </template>
                             <template lwc:else>
                                 <c-hot_messaging-thread-viewer-mock
-                                    onenglishevent={handleEnglishEvent}
                                     set-input-in-focus-on-render
                                     data-user-thread-mock
                                     oncreatethreadwithmessage={handleCreateUserThreadWithMessage}
@@ -224,8 +221,6 @@
                             <template lwc:if={openOrdererThreads}>
                                 <template for:each={openOrdererThreads} for:item="thread">
                                     <c-hot_messaging-thread-viewer
-                                        onenglishevent={handleEnglishEvent}
-                                        english-text-template={englishTextTemplate}
                                         text-template={ordererMessageTemplate}
                                         thread={thread}
                                         key={thread.Id}
@@ -262,7 +257,6 @@
                             </template>
                             <template lwc:else>
                                 <c-hot_messaging-thread-viewer-mock
-                                    onenglishevent={handleEnglishEvent}
                                     set-input-in-focus-on-render
                                     data-orderer-thread-mock
                                     oncreatethreadwithmessage={handleCreateOrdererThreadWithMessage}
@@ -295,8 +289,6 @@
                             <template lwc:if={openUserInterpreterThreads}>
                                 <template for:each={openUserInterpreterThreads} for:item="thread">
                                     <c-hot_messaging-thread-viewer
-                                        onenglishevent={handleEnglishEvent}
-                                        english-text-template={englishTextTemplate}
                                         text-template={userInterpreterMessageTemplate}
                                         thread={thread}
                                         key={thread.Id}
@@ -333,7 +325,6 @@
                             </template>
                             <template lwc:else>
                                 <c-hot_messaging-thread-viewer-mock
-                                    onenglishevent={handleEnglishEvent}
                                     set-input-in-focus-on-render
                                     data-user-int-thread-mock
                                     oncreatethreadwithmessage={handleCreateUserInterpreterThreadWithMessage}
@@ -366,8 +357,6 @@
                             <template lwc:if={openInterpreterInterpreterThreads}>
                                 <template for:each={openInterpreterInterpreterThreads} for:item="thread">
                                     <c-hot_messaging-thread-viewer
-                                        onenglishevent={handleEnglishEvent}
-                                        english-text-template={englishTextTemplate}
                                         text-template={interpreterInterpreterMessageTemplate}
                                         thread={thread}
                                         key={thread.Id}
@@ -404,7 +393,6 @@
                             </template>
                             <template lwc:else>
                                 <c-hot_messaging-thread-viewer-mock
-                                    onenglishevent={handleEnglishEvent}
                                     set-input-in-focus-on-render
                                     data-int-int-thread-mock
                                     oncreatethreadwithmessage={handleCreateInterpreterInterpreterThreadWithMessage}
@@ -437,8 +425,6 @@
                             <template lwc:if={openInterpreterThreads}>
                                 <template for:each={openInterpreterThreads} for:item="thread">
                                     <c-hot_messaging-thread-viewer
-                                        onenglishevent={handleEnglishEvent}
-                                        english-text-template={englishTextTemplate}
                                         text-template={interpreterMessageTemplate}
                                         thread={thread}
                                         key={thread.Id}
@@ -475,7 +461,6 @@
                             </template>
                             <template lwc:else>
                                 <c-hot_messaging-thread-viewer-mock
-                                    onenglishevent={handleEnglishEvent}
                                     set-input-in-focus-on-render
                                     data-int-thread-mock
                                     oncreatethreadwithmessage={handleCreateInterpreterThreadWithMessage}
@@ -508,8 +493,6 @@
                             <template lwc:if={openOfficeThreads}>
                                 <template for:each={openOfficeThreads} for:item="thread">
                                     <c-hot_messaging-thread-viewer
-                                        onenglishevent={handleEnglishEvent}
-                                        english-text-template={englishTextTemplate}
                                         text-template={officeMessageTemplate}
                                         thread={thread}
                                         key={thread.Id}
@@ -546,7 +529,6 @@
                             </template>
                             <template lwc:else>
                                 <c-hot_messaging-thread-viewer-mock
-                                    onenglishevent={handleEnglishEvent}
                                     set-input-in-focus-on-render
                                     data-office-thread-mock
                                     oncreatethreadwithmessage={handleCreateOfficeThreadWithMessage}

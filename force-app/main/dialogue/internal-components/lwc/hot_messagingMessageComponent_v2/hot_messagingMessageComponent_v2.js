@@ -123,8 +123,6 @@ export default class hot_messagingMessageComponent extends LightningElement {
     userContactId;
 
     @api recordId;
-    @api englishTextTemplate;
-    @api textTemplate;
     @api objectApiName;
 
     @wire(getUserContactId)
@@ -142,12 +140,6 @@ export default class hot_messagingMessageComponent extends LightningElement {
         }
     }
 
-    handleEnglishEvent(event) {
-        const englishEvent = new CustomEvent('englisheventtwo', {
-            detail: event.detail
-        });
-        this.dispatchEvent(englishEvent);
-    }
     renderedCallback() {}
     connectedCallback() {
         this.relatedObjectId = this.recordId;
@@ -684,7 +676,6 @@ export default class hot_messagingMessageComponent extends LightningElement {
                 accountId: this.accountId,
                 type: threadType
             });
-            console.log('Thread created with id: ', JSON.stringify(thread));
         } catch (error) {
             if (this.objectApiName === 'HOT_InterestedResource__c' && error.body.message === 'thread exist') {
                 this.interestedResourceIsAssigned = true;
@@ -706,11 +697,10 @@ export default class hot_messagingMessageComponent extends LightningElement {
         try {
             const fields = message;
             fields.CRM_Thread__c = thread.Id;
-            const messageRecord = await createRecord({
+            await createRecord({
                 apiName: 'Message__c',
                 fields: fields
             });
-            console.log('Message created with id: ', JSON.stringify(messageRecord));
         } catch (error) {
             this.messageTemplates[threadType] = message.CRM_Message_Text__c;
             this.dispatchEvent(
