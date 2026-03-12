@@ -275,7 +275,7 @@
                                     <p lwc:if={wageClaimNewType.Reason__c}>
                                         Årsak: <span>{wageClaimNewType.Reason__c}</span>
                                     </p>
-                                    <p lwc:if={cancelledDate}>Avlyst dato: <span>{cancelledDate}</span></p>
+                                    <p lwc:if={showCancelledDate}>Avlyst dato: <span>{cancelledDate}</span></p>
                                     <p>Poststed: <span>{wageClaimNewType.ServiceAppointmentCity__c}</span></p>
                                     <p>Tolkemetode: <span>{wageClaimNewType.WorkTypeName__c}</span></p>
                                     <p>Oppdragstype: <span>{wageClaimNewType.AssignmentType__c}</span></p>

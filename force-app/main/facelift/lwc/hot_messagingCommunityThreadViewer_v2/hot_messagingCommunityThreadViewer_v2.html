@@ -266,9 +266,8 @@
                                         <p>Oppdragsnummer: <span>{wageClaim.ServiceAppointmentName__c}</span></p>
                                         <p>Tid: <span>{wageClaim.StartAndEndDate}</span></p>
                                         <p lwc:if={reason}>Årsak: <span>{reason}</span></p>
-                                        <p lwc:if={wageClaim.ServiceAppointment__r.HOT_CanceledDate__c}>
-                                            Avlyst dato:&nbsp;
-                                            <span> {wageClaim.cancelledDate}</span>
+                                        <p lwc:if={showCancelledDate}>
+                                            Avlyst dato:&nbsp;<span>{wageClaim.cancelledDate}</span>
                                         </p>
                                         <p>Poststed: <span>{wageClaim.ServiceAppointmentCity__c}</span></p>
                                         <p>Tolkemetode: <span>{wageClaim.WorkTypeName__c}</span></p>
