@@ -775,6 +775,32 @@ export default class LibsFullCalendarV2 extends NavigationMixin(LightningElement
         });
     }
 
+    goToWageClaimNewTypeThread() {
+        this.wcNewTypeIsDisabledGoToThread = true;
+        getThreadIdWC({ wageClaimNewTypeId: this.wageClaimNewType.Id }).then((result) => {
+            if (result != '') {
+                this.threadId = result;
+                this.navigateToThread(this.threadId);
+            } else {
+                createThread({
+                    recordId: this.wageClaimNewType.Id,
+                    accountId: this.wageClaimNewType.ServiceResource__r.AccountId
+                })
+                    .then((result) => {
+                        this.navigateToThread(result.Id);
+                    })
+                    .catch((error) => {
+                        const result = HOT_ConfirmationModal.open({
+                            size: 'small',
+                            headline: 'Noe gikk galt',
+                            message: 'Kunne ikke åpne samtale. Feilmelding: ' + error,
+                            primaryLabel: 'Ok'
+                        });
+                    });
+            }
+        });
+    }
+
     goToThreadFreelance() {
         this.isGoToThreadButtonDisabled = true;
         getThreadFreelanceId({ serviceAppointmentId: this.serviceAppointment.Id }).then((result) => {
@@ -938,10 +964,7 @@ export default class LibsFullCalendarV2 extends NavigationMixin(LightningElement
         try {
             const wcNewType = await getWageClaimNewTypeDetails({ recordId });
 
-            // Clone to make it extensible
-            // this.wageClaimNewType = { ...wcNewType };
             this.wageClaimNewType = wcNewType;
-            // this.wageClaimNewType = { ...wcNewType };
 
             // Add formatted property
             this.wageClaimNewType.StartAndEndDate = formatDatetimeinterval(
@@ -949,7 +972,6 @@ export default class LibsFullCalendarV2 extends NavigationMixin(LightningElement
                 wcNewType.EndTime__c
             );
 
-            // this.wageClaimNewType.AssignmentType = wcNewType.AssignmentType__c;
             this.isWageClaimNewTypeDetails = true;
             console.log('WageClaimNewType loaded:', this.wageClaimNewType);
             console.log('WageClaimNewType loaded:', this.wageClaimNewType.StartAndEndDate);
@@ -1048,8 +1070,11 @@ export default class LibsFullCalendarV2 extends NavigationMixin(LightningElement
                 day: {},
                 dayGridMonth: {
                     fixedWeekCount: false,
-                    dayMaxEventRows: 4
+                    dayMaxEventRows: 3
                 }
+            },
+            moreLinkText: function (num) {
+                return '+' + num + ' flere';
             },
             viewDidMount: (context) => {
                 this.onViewMount(context.view);

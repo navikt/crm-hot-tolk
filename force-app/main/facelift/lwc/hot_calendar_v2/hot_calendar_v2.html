@@ -275,11 +275,12 @@
                                     <p lwc:if={wageClaimNewType.Reason__c}>
                                         Årsak: <span>{wageClaimNewType.Reason__c}</span>
                                     </p>
+                                    <p lwc:if={cancelledDate}>Avlyst dato: <span>{cancelledDate}</span></p>
                                     <p>Poststed: <span>{wageClaimNewType.ServiceAppointmentCity__c}</span></p>
                                     <p>Tolkemetode: <span>{wageClaimNewType.WorkTypeName__c}</span></p>
                                     <p>Oppdragstype: <span>{wageClaimNewType.AssignmentType__c}</span></p>
                                     <p>
-                                        Eier:
+                                        Eier:&nbsp;
                                         <span
                                             >{wageClaimNewType.ServiceAppointment__r.HOT_Request__r.OwnerName__c}</span
                                         >
@@ -288,7 +289,16 @@
                                         Døv/døvblind:&nbsp;
                                         <span>{wageClaimNewType.DegreeOfHearingAndVisualImpairment__c}</span>
                                     </p>
-                                    <p lwc:if={cancelledDate}>Avlyst dato: <span>{cancelledDate}</span></p>
+                                </div>
+                                <div style="display: inline-block; padding-bottom: 1vw">
+                                    <c-button
+                                        disabled={wcNewTypeIsDisabledGoToThread}
+                                        button-styling="primary"
+                                        button-label="Samtale med ressurskontor"
+                                        aria-label="Samtale med ressurskontor"
+                                        onbuttonclick={goToWageClaimNewTypeThread}
+                                    >
+                                    </c-button>
                                 </div>
                             </section>
                         </template>
