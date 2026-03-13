@@ -25,7 +25,6 @@ export default class hot_mobileThreadList extends NavigationMixin(LightningEleme
             .then((threadData) => {
                 this.threads = threadData;
                 this.error = undefined;
-                console.log('Tråder hentet:', JSON.stringify(threadData));
                 this.tryMapAndSortThreads();
             })
             .catch((error) => {
@@ -44,13 +43,11 @@ export default class hot_mobileThreadList extends NavigationMixin(LightningEleme
     }
 
     tryMapAndSortThreads() {
-        console.log('tryMapAndSortThreads');
         if (Array.isArray(this.threads)) {
             this.mapAndSortThreads();
         }
     }
     mapAndSortThreads() {
-        console.log('mapAndSortThreads');
         const uid = userId;
         const fv = this.filterValue;
         const sv = (this.searchValue ?? '').trim().toLowerCase(); // søkestreng
@@ -88,7 +85,6 @@ export default class hot_mobileThreadList extends NavigationMixin(LightningEleme
                 if (a.isRead !== b.isRead) return a.isRead ? 1 : -1; // ulest først
                 return b.latestMessageSent - a.latestMessageSent; // nyeste først
             });
-        console.log('Sorterte tråder:', JSON.stringify(this.sortedThreads));
         this.unreadThreadsCount = this.sortedThreads.filter((t) => !t.isRead).length;
 
         if (this.sortedThreads.length == 0) {
