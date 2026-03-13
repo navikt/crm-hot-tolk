@@ -58,15 +58,15 @@ export default class hot_messagingThreadViewer extends LightningElement {
                         .catch((error) => {
                             console.log('Error in getThreadById:', error);
                         });
+                    this.handleSubscribe();
+                    this.scrolltobottom();
+                    markAsReadByNav({ threadId: this.threadid });
+                    markThreadAsReadEmployee({ threadId: this.threadid });
                 } else {
                     this.showAccessError = true;
                     this.hasAccess = false;
                 }
             });
-            this.handleSubscribe();
-            this.scrolltobottom();
-            markAsReadByNav({ threadId: this.threadid });
-            markThreadAsReadEmployee({ threadId: this.threadid });
         }
     }
     disconnectedCallback() {
