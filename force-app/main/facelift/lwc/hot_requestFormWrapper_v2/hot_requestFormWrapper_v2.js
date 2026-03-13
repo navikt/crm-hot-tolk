@@ -232,7 +232,7 @@ export default class hot_requestFormWrapper_v2 extends NavigationMixin(Lightning
         this.submitted = false;
     }
 
-    @track requestId;
+    requestId;
 
     handleSuccess(event) {
         const record = event.detail.id;
