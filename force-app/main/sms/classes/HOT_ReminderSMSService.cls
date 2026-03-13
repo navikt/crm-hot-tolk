@@ -529,20 +529,27 @@ public without sharing class HOT_ReminderSMSService {
     }
     @Future
     public static void sendSMSOnCoInterpreterChange(
-        Id serviceResourceId,
-        String schedStartEndtime,
-        String appointmentNumber,
-        String interpreterName
+        Map<Id, String> schedStartEndtimeMap,
+        Map<Id, String> appointmentNumberMap,
+        Map<Id, String> interpreterNameMap
     ) {
+        // Get all service resource ids from the map
+        Set<Id> serviceResourceIds = schedStartEndtimeMap.keySet();
+
         List<ServiceResource> serviceresourceList = [
             SELECT Id, Name, AccountId, HOT_MobilePhone__c
             FROM ServiceResource
-            WHERE Id = :serviceResourceId
+            WHERE Id IN :serviceResourceIds
         ];
         List<SMS__c> smsList = new List<SMS__c>();
+
         //creating notification object list
         List<HOT_Notification__c> notificationList = new List<HOT_Notification__c>();
         for (ServiceResource sr : serviceresourceList) {
+            String schedStartEndtime = schedStartEndtimeMap.get(sr.Id);
+            String appointmentNumber = appointmentNumberMap.get(sr.Id);
+            String interpreterName = interpreterNameMap.get(sr.Id);
+
             SMS__c sms = new SMS__c();
             sms.Domain__c = 'HOT';
             sms.Type__c = 'Interpreter';
