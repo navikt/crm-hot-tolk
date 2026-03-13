@@ -94,13 +94,14 @@ public without sharing class HOT_WageClaimListController {
         }
     }
 
-    @AuraEnabled(cacheable=true)
+    @AuraEnabled(cacheable=false)
     public static List<Thread__c> getWageClaimThreads() {
         List<Thread__c> threads = [
             SELECT Id, CRM_Related_Object__c, HOT_Thread_read_by__c, CRM_Related_Object_Type__c, HOT_ServiceResource__c
             FROM Thread__c
             WHERE
                 CRM_Related_Object_Type__c = 'HOT_WageClaim__c'
+                AND CRM_Number_of_Messages__c > 0
                 AND CRM_Account__c = :HOT_WageClaimListController.cachedAccountId
         ];
         return threads;
