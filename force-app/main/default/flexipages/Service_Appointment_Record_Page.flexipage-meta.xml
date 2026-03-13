@@ -70,6 +70,16 @@
                         <valueListItems>
                             <value>ServiceAppointment.HOT_registrerWantedServiceResource</value>
                         </valueListItems>
+                        <valueListItems>
+                            <value>ServiceAppointment.HOT_RegisterInterest</value>
+                            <visibilityRule>
+                                <criteria>
+                                    <leftValue>{!$Client.formFactor}</leftValue>
+                                    <operator>EQUAL</operator>
+                                    <rightValue>Small</rightValue>
+                                </criteria>
+                            </visibilityRule>
+                        </valueListItems>
                     </valueList>
                 </componentInstanceProperties>
                 <componentInstanceProperties>
