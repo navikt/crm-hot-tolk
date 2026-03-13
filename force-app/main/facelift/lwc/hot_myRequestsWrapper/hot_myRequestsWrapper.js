@@ -166,7 +166,7 @@ export default class Hot_myRequestsWrapper extends NavigationMixin(LightningElem
     get tolkebrukerName() {
         const isOrderer = this.request?.Orderer__c === this.userAccountId;
 
-        return isOrderer ? this.request?.UserName__c ?? '' : this.request?.Account__r?.Name ?? '';
+        return isOrderer ? (this.request?.UserName__c ?? '') : (this.request?.Account__r?.Name ?? '');
     }
 
     get uploadTargetId() {
@@ -205,7 +205,10 @@ export default class Hot_myRequestsWrapper extends NavigationMixin(LightningElem
         const oneYearAgo = new Date(new Date().setFullYear(new Date().getFullYear() - 1));
         this.isRequestEditButtonDisabled = this.request.Status__c === 'Åpen' ? false : true;
         this.isRequestCancelButtonDisabled =
-            this.request.Status__c === 'Avlyst' || tempEndDate.getTime() < Date.now() || this.isTheOrderer == false
+            this.request.Status__c === 'Avlyst' ||
+            this.workOrder.HOT_ExternalWorkOrderStatus__c === 'Avlyst' ||
+            tempEndDate.getTime() < Date.now() ||
+            this.isTheOrderer == false
                 ? true
                 : false;
         this.isRequestAddFilesButtonDisabled =
