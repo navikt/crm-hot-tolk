@@ -102,8 +102,6 @@ export default class hot_requestFormWrapper_v2 extends NavigationMixin(Lightning
                 if (saveBtn) saveBtn.disabled = false;
             }
         } catch (e) {
-            // keep console.error as-is for troubleshooting
-            // eslint-disable-next-line no-console
             console.error('handleSubmit error', e);
             this.spin = false;
             this.submitted = false;
