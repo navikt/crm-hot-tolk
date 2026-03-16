@@ -1,47 +1,48 @@
 public with sharing class HOT_CheckPermissions {
     @AuraEnabled(cacheable=true)
     public static Boolean hasFreelancePermission() {
-        string userId = UserInfo.getUserId();
-        string permissionId = [SELECT id FROM permissionSet WHERE Name = 'Create_Community_Plus_User' LIMIT 1].id;
-        if (!String.isBlank(permissionID)) {
-            try {
-                string assignedId = [
-                    SELECT id
-                    FROM permissionSetAssignment
-                    WHERE assigneeId = :userId AND permissionSetId = :permissionId
-                    LIMIT 1
-                ]
-                .id;
-                if (assignedId != null) {
-                    return true;
-                }
-            } catch (exception e) {
-                //Does not have permission
-            }
-        }
-        return false;
+        return [
+                SELECT Id
+                FROM PermissionSetAssignment
+                WHERE AssigneeId = :UserInfo.getUserId() AND PermissionSet.Name = 'Create_Community_Plus_User'
+                LIMIT 1
+            ]
+            .size() > 0;
     }
 
     @AuraEnabled(cacheable=true)
-    public static Boolean hasAnsattTolkPermission() {
-        string userId = UserInfo.getUserId();
-        string permissionId = [SELECT id FROM permissionSet WHERE Name = 'HOT_Tolk_Ansatt' LIMIT 1].id;
-        if (!String.isBlank(permissionID)) {
-            try {
-                string assignedId = [
-                    SELECT id
-                    FROM permissionSetAssignment
-                    WHERE assigneeId = :userId AND permissionSetId = :permissionId
-                    LIMIT 1
-                ]
-                .id;
-                if (assignedId != null) {
-                    return true;
-                }
-            } catch (exception e) {
-                //Does not have permission
-            }
-        }
-        return false;
+    public static Boolean hasFormidlerAdminPermission() {
+        return [
+                SELECT Id
+                FROM PermissionSetAssignment
+                WHERE
+                    AssigneeId = :UserInfo.getUserId()
+                    AND PermissionSetGroup.DeveloperName = 'HOT_Tolk_Formidler_Admin_Gruppe'
+                LIMIT 1
+            ]
+            .size() > 0;
+    }
+
+    @AuraEnabled(cacheable=true)
+    public static Boolean hasFormidlerPermission() {
+        return [
+                SELECT Id
+                FROM PermissionSetAssignment
+                WHERE
+                    AssigneeId = :UserInfo.getUserId()
+                    AND PermissionSetGroup.DeveloperName = 'HOT_Tolk_Formidler_Gruppe'
+                LIMIT 1
+            ]
+            .size() > 0;
+    }
+    @AuraEnabled(cacheable=true)
+    public static Boolean hasHotAdminPermission() {
+        return [
+                SELECT Id
+                FROM PermissionSetAssignment
+                WHERE AssigneeId = :UserInfo.getUserId() AND PermissionSet.Name = 'HOT_Admin'
+                LIMIT 1
+            ]
+            .size() > 0;
     }
 }
