@@ -197,7 +197,6 @@ public without sharing class HOT_ServiceAppointmentNotification {
                 serviceAppointment.HOT_CanceledByInterpreter__c == true
             ) {
                 resourceCanceled(
-                    // saN.getCustomNotificationTypeByName('HOT_NotifyDispatcher'),
                     notifyDispatcherNotificationType,
                     serviceAppointment,
                     recipients,
@@ -208,7 +207,6 @@ public without sharing class HOT_ServiceAppointmentNotification {
             // Varsel ved avlyst på vegne av bruker
             if (serviceAppointment.Status == 'Canceled' && oldServiceAppointment.Status != 'Canceled') {
                 saN.canceledByUser(
-                    // saN.getCustomNotificationTypeByName('HOT_NotifyDispatcher'),
                     notifyDispatcherNotificationType,
                     serviceAppointment,
                     oldServiceAppointment.HOT_ServiceResource__c,
