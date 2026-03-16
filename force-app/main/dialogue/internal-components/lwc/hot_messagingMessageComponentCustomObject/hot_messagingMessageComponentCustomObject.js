@@ -8,12 +8,12 @@ export default class Hot_messagingMessageComponentCustomObject extends Lightning
     fields;
     connectedCallback() {
         if (this.recordId && this.customObjectApiName) {
-            this.fields = fieldMap[this.customObjectApiName];
+            this.fields = [fieldMap[this.customObjectApiName]];
         }
     }
     wiredRecord;
     @wire(getRecord, { recordId: '$recordId', fields: '$fields' })
-    wiredRecord(value) {
+    wiredRecordHandler(value) {
         this.wiredRecord = value;
     }
     get isRecordLoaded() {

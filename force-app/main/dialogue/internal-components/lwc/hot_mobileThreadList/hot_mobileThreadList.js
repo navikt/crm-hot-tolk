@@ -1,5 +1,5 @@
 import { LightningElement } from 'lwc';
-import getMyThreads from '@salesforce/apex/HOT_MobileThreadListController.getThreads';
+import getMyThreads from '@salesforce/apex/HOT_MobileThreadListcontroller.getThreads';
 import { NavigationMixin } from 'lightning/navigation';
 import userId from '@salesforce/user/Id';
 
@@ -123,7 +123,7 @@ export default class hot_mobileThreadList extends NavigationMixin(LightningEleme
             return 'Med bruker';
         }
         if (threadTypeValue === 'HOT_BRUKER-BESTILLER') {
-            return 'Samtale mellom bruker og bestiller)';
+            return 'Samtale mellom bruker og bestiller';
         }
         if (threadTypeValue === 'HOT_TOLK-FORMIDLER') {
             return 'Med formidler';

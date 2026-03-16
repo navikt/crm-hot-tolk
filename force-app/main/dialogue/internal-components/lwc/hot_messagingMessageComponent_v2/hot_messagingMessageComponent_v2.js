@@ -223,7 +223,7 @@ export default class hot_messagingMessageComponent extends LightningElement {
                 .catch((error) => {
                     if (error?.body?.message == 'No access') {
                         this.noAccess = true;
-                        this.noAccessMessage = 'Du har ikke tilgang til samtaler på denne interessente ressursen';
+                        this.noAccessMessage = 'Du har ikke tilgang til samtaler på denne interesserte ressursen';
                     }
                     console.log(error);
                 })

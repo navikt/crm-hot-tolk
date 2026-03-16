@@ -3,7 +3,7 @@
     <apiVersion>64.0</apiVersion>
     <isExposed>true</isExposed>
     <masterLabel>HOT - Mobile Thread list view</masterLabel>
-    <description>dette skal vises i steden for standard thread listvisning i mobile app</description>
+    <description>dette skal vises i stedet for standard thread listvisning i mobile app</description>
     <targets>
         <target>lightning__AppPage</target>
     </targets>
