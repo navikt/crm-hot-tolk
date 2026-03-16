@@ -9,7 +9,7 @@ import getPersonAccount from '@salesforce/apex/HOT_Utility.getPersonAccount';
 import { getParametersFromURL } from 'c/hot_URIDecoder';
 
 export default class hot_requestFormWrapper_v2 extends NavigationMixin(LightningElement) {
-    submitted = false; // if:false={submitted}
+    submitted = false;
     recordId = null;
     spin = false;
     requestTypeChosen = false;
@@ -55,6 +55,7 @@ export default class hot_requestFormWrapper_v2 extends NavigationMixin(Lightning
         if (this.submitted) {
             return;
         }
+
         this.submitted = true;
         this.spin = true;
 
@@ -101,6 +102,8 @@ export default class hot_requestFormWrapper_v2 extends NavigationMixin(Lightning
                 if (saveBtn) saveBtn.disabled = false;
             }
         } catch (e) {
+            // keep console.error as-is for troubleshooting
+            // eslint-disable-next-line no-console
             console.error('handleSubmit error', e);
             this.spin = false;
             this.submitted = false;
@@ -164,17 +167,21 @@ export default class hot_requestFormWrapper_v2 extends NavigationMixin(Lightning
                 accountId: this.personAccount.Id,
                 times: timeInput.times
             });
+
             if (duplicateRequests.length > 0) {
                 this.modalHeader = 'Du har allerede bestillinger i dette tidsrommet.';
                 this.noCancelButton = false;
+
                 for (let request of duplicateRequests) {
                     this.modalContent += '\nTema: ' + request.Subject__c;
                     this.modalContent += '\nPeriode: ' + request.SeriesPeriod__c + '\n';
                 }
+
                 this.template.querySelector('c-alertdialog').showModal();
                 response = false;
             }
         }
+
         return response;
     }
 
@@ -183,6 +190,7 @@ export default class hot_requestFormWrapper_v2 extends NavigationMixin(Lightning
             if (this.submitted) {
                 return;
             }
+
             this.submitted = true;
             this.spin = true;
 
@@ -232,13 +240,7 @@ export default class hot_requestFormWrapper_v2 extends NavigationMixin(Lightning
         this.submitted = false;
     }
 
-    requestId;
-
     handleSuccess(event) {
-        const record = event.detail.id;
-        this.submitted = false;
-        this.requestId = record;
-
         if (this.editNotAllowed) {
             return;
         }
@@ -286,49 +288,57 @@ export default class hot_requestFormWrapper_v2 extends NavigationMixin(Lightning
     }
 
     createWorkOrders() {
-        let timeInput = this.template.querySelector('c-hot_request-form_request_v2').getTimeInput();
-        if (timeInput.times !== {}) {
-            if (timeInput.isAdvancedTimes) {
-                try {
-                    createWorkOrders({
-                        requestId: this.recordId,
-                        times: timeInput.times['0'],
-                        recurringType: timeInput.repeatingOptionChosen,
-                        recurringDays: timeInput.chosenDays,
-                        recurringEndDate: new Date(timeInput.repeatingEndDate).getTime()
-                    }).then(async () => {
-                        const isCreatedCorrectly = await this.checkIfCreatedCorrectly(this.requestId);
-                        if (isCreatedCorrectly) {
-                            this.hideFormAndShowSuccess();
-                        } else {
-                            this.hideFormAndShowError();
-                        }
-                        this.spin = false;
-                    });
-                } catch (error) {
-                    console.log(JSON.stringify(error));
-                    this.hideFormAndShowError();
-                }
+        const timeInput = this.template.querySelector('c-hot_request-form_request_v2').getTimeInput();
+
+        if (!(timeInput?.times && Object.keys(timeInput.times).length > 0)) {
+            this.hideFormAndShowError();
+            this.spin = false;
+            this.submitted = false;
+            const saveBtn = this.template.querySelector('[data-id="saveButton"]');
+            if (saveBtn) saveBtn.disabled = false;
+            return;
+        }
+
+        const finish = async () => {
+            const ok = await this.checkIfCreatedCorrectly(this.recordId);
+            if (ok) {
+                this.hideFormAndShowSuccess();
             } else {
-                createAndUpdateWorkOrders({ requestId: this.recordId, times: timeInput.times }).then(async () => {
-                    const isCreatedCorrectly = await this.checkIfCreatedCorrectly(this.requestId);
-                    if (isCreatedCorrectly) {
-                        this.hideFormAndShowSuccess();
-                    } else {
-                        this.hideFormAndShowError();
-                    }
-                    this.spin = false;
-                });
+                this.hideFormAndShowError();
             }
+        };
+
+        if (timeInput.isAdvancedTimes) {
+            createWorkOrders({
+                requestId: this.recordId,
+                times: timeInput.times['0'],
+                recurringType: timeInput.repeatingOptionChosen,
+                recurringDays: timeInput.chosenDays,
+                recurringEndDate: new Date(timeInput.repeatingEndDate).getTime()
+            })
+                .then(finish)
+                .catch(() => {
+                    this.hideFormAndShowError();
+                })
+                .finally(() => {
+                    this.spin = false;
+                    this.submitted = false;
+                });
+        } else {
+            createAndUpdateWorkOrders({ requestId: this.recordId, times: timeInput.times })
+                .then(finish)
+                .catch(() => {
+                    this.hideFormAndShowError();
+                })
+                .finally(() => {
+                    this.spin = false;
+                    this.submitted = false;
+                });
         }
     }
 
     checkIfCreatedCorrectly(recordId) {
-        return isErrorOnRequestCreate({
-            requestId: recordId
-        }).then((result) => {
-            return result === false;
-        });
+        return isErrorOnRequestCreate({ requestId: recordId }).then((result) => result === false);
     }
 
     reloadPage() {
@@ -381,6 +391,7 @@ export default class hot_requestFormWrapper_v2 extends NavigationMixin(Lightning
             this.submitButtonLabel = 'Send inn';
             this.submitSuccessMessage = 'Bestilling mottatt';
         }
+
         this.isEditOrCopyMode = parsed_params.edit != null || parsed_params.copy != null;
         this.requestTypeChosen = this.isEditOrCopyMode;
         this.isEditModeAndTypeMe = this.fieldValues.Type__c === 'Me' && this.isEditOrCopyMode;
@@ -406,10 +417,9 @@ export default class hot_requestFormWrapper_v2 extends NavigationMixin(Lightning
             delete this.fieldValues.Id;
         } else {
             this.recordId = this.fieldValues.Id;
-            let requestIds = [];
-            requestIds.push(this.fieldValues.Id);
-            this.requestIds = requestIds;
+            this.requestIds = [this.recordId];
         }
+
         this.setCurrentForm();
     }
 
@@ -539,7 +549,9 @@ export default class hot_requestFormWrapper_v2 extends NavigationMixin(Lightning
     scrollToTop() {
         try {
             document.activeElement?.blur?.();
-        } catch (e) {}
+        } catch (e) {
+            // ignore
+        }
 
         const htmlEl = document.documentElement;
         const prevBehavior = htmlEl.style.scrollBehavior;
@@ -557,12 +569,16 @@ export default class hot_requestFormWrapper_v2 extends NavigationMixin(Lightning
         const snapTop = () => {
             try {
                 window.scrollTo(0, 0);
-            } catch (e) {}
+            } catch (e) {
+                // ignore
+            }
             candidates.forEach((el) => {
                 try {
                     el.scrollTop = 0;
                     el.scrollLeft = 0;
-                } catch (e) {}
+                } catch (e) {
+                    // ignore
+                }
             });
         };
 
