@@ -73,11 +73,12 @@
         </fields>
         <fields>
             <name>Message</name>
-            <fieldText>Melding til tolker</fieldText>
+            <fieldText>Melding til tolk</fieldText>
             <fieldType>LargeTextArea</fieldType>
             <inputsOnNextNavToAssocScrn>UseStoredValues</inputsOnNextNavToAssocScrn>
             <isRequired>true</isRequired>
         </fields>
+        <nextOrFinishButtonLabel>Send melding</nextOrFinishButtonLabel>
         <showFooter>true</showFooter>
         <showHeader>false</showHeader>
     </screens>
@@ -91,7 +92,7 @@
         <allowPause>false</allowPause>
         <fields>
             <name>show_result_text</name>
-            <fieldText>&lt;p style=&quot;text-align: center;&quot;&gt;Fant {!Send_melding_til_tolkene.interpreterCount} tolker og sendte melding til hver av disse.&lt;/p&gt;</fieldText>
+            <fieldText>&lt;p style=&quot;text-align: center;&quot;&gt;Sendte denne meldingen til &lt;span style=&quot;background-color: rgb(255, 255, 255);&quot;&gt;{!Send_melding_til_tolkene.interpreterCount}&lt;/span&gt; tildelte tolker.&lt;/p&gt;</fieldText>
             <fieldType>DisplayText</fieldType>
         </fields>
         <nextOrFinishButtonLabel>Ferdig</nextOrFinishButtonLabel>

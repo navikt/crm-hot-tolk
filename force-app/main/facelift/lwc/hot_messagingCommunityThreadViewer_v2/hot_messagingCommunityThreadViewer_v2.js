@@ -279,6 +279,18 @@ export default class Hot_messagingCommunityThreadViewer_v2 extends NavigationMix
             .filter((name) => name);
     }
 
+    get showCancelledDate() {
+        if (this.wageClaim?.Reason__c === 'Endret tid') {
+            return false;
+        } else {
+            return true;
+        }
+    }
+
+    get reason() {
+        return this.wageClaim?.Reason__c || '';
+    }
+
     scrollToLatestMessage() {
         const messageContainers = this.template.querySelectorAll('c-hot_messaging-Community-Message-Container_v2');
 
@@ -657,10 +669,10 @@ export default class Hot_messagingCommunityThreadViewer_v2 extends NavigationMix
                                 }
                                 if (
                                     this.serviceAppointment.HOT_Request__r.Account__r.CRM_Person__r
-                                        .HOT_MobilePhone__c !== undefined
+                                        .INT_KrrMobilePhone__c !== undefined
                                 ) {
                                     this.accountPhoneNumber =
-                                        this.serviceAppointment.HOT_Request__r.Account__r.CRM_Person__r.HOT_MobilePhone__c;
+                                        this.serviceAppointment.HOT_Request__r.Account__r.CRM_Person__r.INT_KrrMobilePhone__c;
                                 }
                             }
                             if (
@@ -671,10 +683,10 @@ export default class Hot_messagingCommunityThreadViewer_v2 extends NavigationMix
                             ) {
                                 if (
                                     this.serviceAppointment.HOT_Request__r.Orderer__r.CRM_Person__r
-                                        .HOT_MobilePhone__c !== undefined
+                                        .INT_KrrMobilePhone__c !== undefined
                                 ) {
                                     this.ordererPhoneNumber =
-                                        this.serviceAppointment.HOT_Request__r.Orderer__r.CRM_Person__r.HOT_MobilePhone__c;
+                                        this.serviceAppointment.HOT_Request__r.Orderer__r.CRM_Person__r.INT_KrrMobilePhone__c;
                                 }
                             }
                             this.isOtherProvider = this.serviceAppointment.HOT_Request__r.IsOtherEconomicProvicer__c

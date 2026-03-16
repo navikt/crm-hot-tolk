@@ -8,26 +8,21 @@ import getPerson from '@salesforce/apex/HOT_UserInformationController.getPerson'
 import getNotificationPickListValues from '@salesforce/apex/HOT_UserInformationController.getNotificationPickListValues';
 import changeUserNotificationSetting from '@salesforce/apex/HOT_UserInformationController.changeUserNotificationSetting';
 
-import MOBILEKRR from '@salesforce/schema/Person__c.INT_KrrMobilePhone__c';
-import MOBILEOVERRIDE from '@salesforce/schema/Person__c.HOT_MobilePhoneOverride__c';
-import MOBILEOVERRIDEREASON from '@salesforce/schema/Person__c.HOT_MobilePhoneOverrideReason__c';
+import MOBILE from '@salesforce/schema/Person__c.INT_KrrMobilePhone__c';
 import EMAIL from '@salesforce/schema/Person__c.INT_KrrEmail__c';
 import DEGREE_OF_IMPAIRMENT from '@salesforce/schema/Person__c.HOT_DegreeOfHearingAndVisualImpairment__c';
 import SIP_ADDRESS from '@salesforce/schema/Person__c.HOT_SIPAddress__c';
 import icons from '@salesforce/resourceUrl/icons';
 
-const FIELDS = [MOBILEKRR, MOBILEOVERRIDE, MOBILEOVERRIDEREASON, EMAIL, DEGREE_OF_IMPAIRMENT, SIP_ADDRESS];
+const FIELDS = [MOBILE, EMAIL, DEGREE_OF_IMPAIRMENT, SIP_ADDRESS];
 
 export default class Hot_userInformation_v2 extends LightningElement {
     warningicon = icons + '/warningicon.svg';
     successicon = icons + '/successicon.svg';
-    informationIcon = icons + '/informationicon.svg';
 
     @api recordId;
 
-    mobilePhoneKRR;
-    mobilePhoneOverride;
-    mobilePhoneOverrideReason;
+    mobilePhone;
     email;
     degreeOfImpairment;
     sipAddress;
@@ -68,9 +63,7 @@ export default class Hot_userInformation_v2 extends LightningElement {
     @wire(getRecord, { recordId: '$recordId', fields: FIELDS })
     wiredPerson({ error, data }) {
         if (data) {
-            this.mobilePhoneOverride = data.fields.HOT_MobilePhoneOverride__c.value;
-            this.mobilePhoneOverrideReason = data.fields.HOT_MobilePhoneOverrideReason__c.value;
-            this.mobilePhoneKRR = data.fields.INT_KrrMobilePhone__c.value;
+            this.mobilePhone = data.fields.INT_KrrMobilePhone__c.value;
             this.email = data.fields.INT_KrrEmail__c.value;
             this.degreeOfImpairment = data.fields.HOT_DegreeOfHearingAndVisualImpairment__c.displayValue;
             this.sipAddress = data.fields.HOT_SIPAddress__c.value;
@@ -134,14 +127,6 @@ export default class Hot_userInformation_v2 extends LightningElement {
             }
         }
     }
-
-    get alternativePhoneNumberText() {
-        return 'Du har registrert et alternativ nummer som benyttes til all SMS varsling fra Tolketjenesten. Ta kontakt med din lokale tolketjeneste om du ønsker å endre dette.';
-    }
-    get isAlternativeNumber() {
-        return !!this.mobilePhoneOverride;
-    }
-
     get vedtakLabels() {
         const items = [
             { label: 'Arbeidsliv', value: this.workplaceInterpreter },
