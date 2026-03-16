@@ -210,6 +210,9 @@ public without sharing class HOT_MessageHelper {
     }
     @AuraEnabled(cacheable=false)
     public static Thread__c getThreadById(Id threadId) {
+        if (!HOT_ThreadDetailController.checkAccess(threadId)) {
+            throw new AuraHandledException('No access');
+        }
         try {
             return [
                 SELECT

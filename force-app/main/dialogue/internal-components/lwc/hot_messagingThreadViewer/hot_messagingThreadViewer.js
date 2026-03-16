@@ -1,7 +1,6 @@
 import { LightningElement, api, wire, track } from 'lwc';
 import getmessages from '@salesforce/apex/HOT_MessageHelper.getMessagesFromThread';
 import markAsReadByNav from '@salesforce/apex/HOT_MessageHelper.markAsReadByNav';
-import checkAccess from '@salesforce/apex/HOT_ThreadDetailController.checkAccess';
 import { subscribe, unsubscribe } from 'lightning/empApi';
 import setLastMessageFrom from '@salesforce/apex/HOT_MessageHelper.setLastMessageFrom';
 import getUserNameRole from '@salesforce/apex/HOT_MessageHelper.getUserNameRole';
@@ -47,26 +46,24 @@ export default class hot_messagingThreadViewer extends LightningElement {
     connectedCallback() {
         if (this.thread) {
             this.threadid = this.thread.Id;
-            checkAccess({ threadId: this.threadid }).then((result) => {
-                if (result == true) {
+            getThreadById({ threadId: this.threadid })
+                .then((result) => {
                     this.hasAccess = true;
                     this.showAccessError = false;
-                    getThreadById({ threadId: this.threadid })
-                        .then((result) => {
-                            this.wiredThread = result;
-                        })
-                        .catch((error) => {
-                            console.log('Error in getThreadById:', error);
-                        });
+                    this.wiredThread = result;
                     this.handleSubscribe();
                     this.scrolltobottom();
                     markAsReadByNav({ threadId: this.threadid });
                     markThreadAsReadEmployee({ threadId: this.threadid });
-                } else {
-                    this.showAccessError = true;
-                    this.hasAccess = false;
-                }
-            });
+                })
+                .catch((error) => {
+                    if (error.body.message === 'No access') {
+                        this.showAccessError = true;
+                        this.hasAccess = false;
+                    } else {
+                        console.log('Error in getThreadById:', error);
+                    }
+                });
         }
     }
     disconnectedCallback() {
