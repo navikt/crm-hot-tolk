@@ -5,7 +5,7 @@ import getThreadId from '@salesforce/apex/HOT_WageClaimListController.getThreadI
 import createThread from '@salesforce/apex/HOT_MessageHelper.createThread';
 import { getParametersFromURL } from 'c/hot_URIDecoder';
 import getWageClaimDetails from '@salesforce/apex/HOT_WageClaimListController.getWageClaimDetails';
-import { columns, mobileColumn, iconByValue } from './columns';
+import { columns, mobileColumns, iconByValue } from './columns';
 import { NavigationMixin } from 'lightning/navigation';
 import { formatRecord } from 'c/datetimeFormatterNorwegianTime';
 import { defaultFilters, compare } from './filters';
