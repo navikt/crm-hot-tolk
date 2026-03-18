@@ -58,6 +58,10 @@ export default class hot_personHighlightPanelTop extends LightningElement {
         }
     }
 
+    get showPersonInfo() {
+        return this.personDetails?.fullName;
+    }
+
     get formattedPersonInfo() {
         return [
             this.personDetails?.age,
@@ -66,7 +70,7 @@ export default class hot_personHighlightPanelTop extends LightningElement {
             this.personDetails?.legalStatus,
             this.navUnitName
         ]
-            .filter((x) => x != null)
+            .filter(Boolean)
             .join(' / ');
     }
 
