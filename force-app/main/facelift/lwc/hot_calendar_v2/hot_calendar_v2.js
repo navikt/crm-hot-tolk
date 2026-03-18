@@ -12,6 +12,7 @@ import icons2 from '@salesforce/resourceUrl/icons';
 import HOT_ConfirmationModal from 'c/hot_confirmationModal';
 import ConfimationModal from 'c/hot_calendar_absence_modal_confirmation';
 import getWageClaimDetails from '@salesforce/apex/HOT_WageClaimListController.getWageClaimDetails';
+import getWageClaimNewTypeDetails from '@salesforce/apex/HOT_WageClaimListController.getWageClaimNewTypeDetails';
 import checkAccessToSA from '@salesforce/apex/HOT_MyServiceAppointmentListController.checkAccessToSA';
 import getInterestedResourceDetails from '@salesforce/apex/HOT_InterestedResourcesListController.getInterestedResourceDetails';
 import getThreadServiceAppointmentId from '@salesforce/apex/HOT_MyServiceAppointmentListController.getThreadServiceAppointmentId';
@@ -82,6 +83,8 @@ export default class LibsFullCalendarV2 extends NavigationMixin(LightningElement
     isSADetails = false;
     hasAccess = false;
     isWCDetails = false;
+    isWageClaimNewTypeDetails = false;
+    wcNewTypeIsDisabledGoToThread = false;
 
     connectedCallback() {
         const state = sessionStorage.getItem(LibsFullCalendarV2.STATE_KEY);
@@ -109,6 +112,44 @@ export default class LibsFullCalendarV2 extends NavigationMixin(LightningElement
             viewType: this.calendar?.view.type
         };
         sessionStorage.setItem(LibsFullCalendarV2.STATE_KEY, JSON.stringify(state));
+    }
+
+    get reason() {
+        return this.wageClaimNewType?.Reason__c || '';
+    }
+
+    get showCancelledDate() {
+        if (this.wageClaimNewType?.Reason__c === 'Endret tid') {
+            return false;
+        } else {
+            return true;
+        }
+    }
+
+    get cancelledDate() {
+        const dateVal = this.wageClaimNewType?.ServiceAppointment__r?.HOT_CanceledDate__c;
+
+        if (!dateVal) {
+            return '';
+        }
+
+        const d = new Date(dateVal);
+
+        if (isNaN(d.getTime())) {
+            return '';
+        }
+
+        return (
+            ('0' + d.getDate()).slice(-2) +
+            '.' +
+            ('0' + (d.getMonth() + 1)).slice(-2) +
+            '.' +
+            d.getFullYear() +
+            ', ' +
+            ('0' + d.getHours()).slice(-2) +
+            ':' +
+            ('0' + d.getMinutes()).slice(-2)
+        );
     }
 
     async setupCalendar(sessionState) {
@@ -177,6 +218,7 @@ export default class LibsFullCalendarV2 extends NavigationMixin(LightningElement
         this.updateVisibleHoursForDay();
     }
 
+    // Function to update visible hours for a day in the calendar view
     updateVisibleHoursForDay() {
         if (!this.calendar || this.calendar.view.type !== 'timeGridDay') {
             return;
@@ -184,29 +226,82 @@ export default class LibsFullCalendarV2 extends NavigationMixin(LightningElement
 
         const events = this.calendar.getEvents();
 
-        if (!events.length) {
-            return;
-        }
+        const viewDate = this.calendar.getDate();
+        const viewStart = new Date(viewDate);
+        viewStart.setHours(0, 0, 0, 0);
+
+        const viewEnd = new Date(viewStart);
+        viewEnd.setDate(viewEnd.getDate() + 1);
 
         let minHour = 23;
         let maxHour = 0;
-
-        const viewDate = this.calendar.getDate().toDateString();
+        let foundAny = false;
 
         events.forEach((evt) => {
             if (!evt.start) return;
 
-            if (evt.start.toDateString() !== viewDate) return;
+            const start = evt.start;
+            const end = evt.end ?? evt.start;
 
-            const startHour = evt.start.getHours();
-            const endHour = evt.end ? evt.end.getHours() : startHour + 1;
+            if (!(start < viewEnd && end > viewStart)) {
+                return;
+            }
+
+            foundAny = true;
+
+            const clampedStart = start < viewStart ? viewStart : start;
+            const clampedEnd = end > viewEnd ? viewEnd : end;
+
+            const startHour = clampedStart.getHours();
+
+            const endIsAtDayBoundary = clampedEnd.getTime() === viewEnd.getTime();
+
+            let endHourRaw = clampedEnd.getHours();
+            let endHour = endHourRaw + (clampedEnd.getMinutes() > 0 || clampedEnd.getSeconds() > 0 ? 1 : 0);
+
+            // Hvis eventet går til akkurat midnatt neste dag, unngå maxHour=24
+            if (endIsAtDayBoundary) {
+                endHour = 23;
+            }
 
             if (startHour < minHour) minHour = startHour;
             if (endHour > maxHour) maxHour = endHour;
         });
 
+        const calendarEl = this.template.querySelector('.calendar');
+
+        // Skjul kun timeraden + event-kolonnen, ikke hele timegrid (da kan dato forsvinne på mobil)
+        const slotsEl = calendarEl?.querySelector('.fc-timegrid-slots');
+        const colsEl = calendarEl?.querySelector('.fc-timegrid-cols');
+        const axisEl = calendarEl?.querySelector('.fc-timegrid-axis');
+
+        if (!foundAny) {
+            this.calendar.batchRendering(() => {
+                this.calendar.setOption('slotMinTime', '00:00:00');
+                this.calendar.setOption('slotMaxTime', '24:00:00');
+            });
+
+            if (slotsEl) slotsEl.style.display = 'none';
+            if (colsEl) colsEl.style.display = 'none';
+            if (axisEl) axisEl.style.display = 'none';
+
+            return;
+        }
+
+        if (slotsEl) slotsEl.style.display = '';
+        if (colsEl) colsEl.style.display = '';
+        if (axisEl) axisEl.style.display = '';
+
         minHour = Math.max(minHour - 1, 0);
         maxHour = Math.min(maxHour + 1, 24);
+
+        if (maxHour <= minHour) {
+            this.calendar.batchRendering(() => {
+                this.calendar.setOption('slotMinTime', '00:00:00');
+                this.calendar.setOption('slotMaxTime', '24:00:00');
+            });
+            return;
+        }
 
         const minTime = String(minHour).padStart(2, '0') + ':00:00';
         const maxTime = String(maxHour).padStart(2, '0') + ':00:00';
@@ -216,7 +311,6 @@ export default class LibsFullCalendarV2 extends NavigationMixin(LightningElement
             this.calendar.setOption('slotMaxTime', maxTime);
         });
     }
-
     yesOrNo(boolean) {
         if (boolean) {
             return 'Ja';
@@ -228,27 +322,35 @@ export default class LibsFullCalendarV2 extends NavigationMixin(LightningElement
     async updatePseudoEventsDisplay(view) {
         this.calendar?.batchRendering(() => {
             this.calendar?.getEvents().forEach((event) => {
-                if (!event.extendedProps.isMultiDay && !event.extendedProps.isPseudoEvent) {
+                const isMultiDay = !!(event.extendedProps?.isMultiDay ?? event.isMultiDay);
+                const isPseudoEvent = !!(event.extendedProps?.isPseudoEvent ?? event.isPseudoEvent);
+
+                if (!isMultiDay && !isPseudoEvent) {
                     return;
-                } else if (event.extendedProps.isPseudoEvent) {
-                    // Has to hide a pseudo event if it is on the first day of the current view due to a conflict with
-                    // an event injected by fullcalendar
+                }
+
+                if (view.type === 'timeGridDay') {
+                    if (isPseudoEvent) {
+                        event.setProp('display', 'none');
+                    } else {
+                        event.setProp('display', 'auto');
+                    }
+                    return;
+                }
+
+                if (isPseudoEvent) {
                     const shouldHideFirstPseudoEventOfMonth =
                         event.start.getDate() == view.activeStart.getDate() &&
                         event.start.getMonth() != view.currentStart.getMonth();
-                    if (view.type === 'timeGridDay') {
-                        if (event.display != 'none') {
-                            event.setProp('display', 'none');
-                        }
-                    } else {
-                        event.setProp(
-                            'display',
-                            this.isMobileSize && !shouldHideFirstPseudoEventOfMonth ? 'list-item' : 'none'
-                        );
-                    }
-                } else {
-                    event.setProp('display', this.isMobileSize ? 'list-item' : 'auto');
+
+                    event.setProp(
+                        'display',
+                        this.isMobileSize && !shouldHideFirstPseudoEventOfMonth ? 'list-item' : 'none'
+                    );
+                    return;
                 }
+
+                event.setProp('display', this.isMobileSize ? 'list-item' : 'auto');
             });
         });
     }
@@ -361,33 +463,65 @@ export default class LibsFullCalendarV2 extends NavigationMixin(LightningElement
 
     createPseudoEventsFromApexEvent(event) {
         const pseudoEvents = [];
+
         if (this.isMobileSize) {
             event.display = 'list-item';
         }
+
+        // Behold original-eventet
         pseudoEvents.push(event);
+
         const view = this.calendar?.view;
 
-        var start = new Date(event.start.getTime() + LibsFullCalendarV2.MILLISECONDS_PER_DAY);
-        const end = new Date(event.end.getTime() + LibsFullCalendarV2.MILLISECONDS_PER_DAY);
+        // Start på dagen etter startdato
+        let cursor = new Date(event.start.getTime() + LibsFullCalendarV2.MILLISECONDS_PER_DAY);
 
-        while (start.toLocaleDateString('nb-NO') != end.toLocaleDateString('nb-NO')) {
-            const pseudoEvent = JSON.parse(JSON.stringify(event));
-            pseudoEvent.isPseudoEvent = true;
-            pseudoEvent.start = new Date(start);
-            pseudoEvent.end = new Date(start);
+        // End: hvis end er eksakt midnatt (00:00) så skal vi IKKE vise prikk på den dagen
+        let effectiveEnd = new Date(event.end.getTime() + LibsFullCalendarV2.MILLISECONDS_PER_DAY);
+
+        const endIsExactMidnight =
+            event.end &&
+            event.end.getHours() === 0 &&
+            event.end.getMinutes() === 0 &&
+            event.end.getSeconds() === 0 &&
+            event.end.getMilliseconds() === 0;
+
+        if (endIsExactMidnight) {
+            effectiveEnd = new Date(effectiveEnd.getTime() - LibsFullCalendarV2.MILLISECONDS_PER_DAY);
+        }
+
+        while (cursor.toLocaleDateString('nb-NO') != effectiveEnd.toLocaleDateString('nb-NO')) {
             const shouldHidePseudoEvent =
                 !this.isMobileSize ||
                 (view && view.type === 'timeGridDay') ||
                 (view &&
-                    pseudoEvent.start.getDate() == view.activeStart.getDate() &&
-                    pseudoEvent.start.getMonth() != view.currentStart.getMonth());
-            pseudoEvent.display = shouldHidePseudoEvent ? 'none' : 'list-item';
+                    cursor.getDate() == view.activeStart.getDate() &&
+                    cursor.getMonth() != view.currentStart.getMonth());
+
+            const pseudoEvent = {
+                recordId: event.recordId,
+                type: event.type,
+                title: event.title,
+                saNumber: event.saNumber,
+                description: event.description,
+                start: new Date(cursor),
+                end: new Date(cursor),
+                allDay: true,
+                isPast: event.isPast,
+                isMultiDay: true,
+                isPseudoEvent: true,
+                color: event.color,
+                textColor: event.textColor,
+                display: shouldHidePseudoEvent ? 'none' : 'list-item'
+            };
+
             pseudoEvents.push(pseudoEvent);
-            start = new Date(start.getTime() + LibsFullCalendarV2.MILLISECONDS_PER_DAY);
+
+            cursor = new Date(cursor.getTime() + LibsFullCalendarV2.MILLISECONDS_PER_DAY);
         }
+
         return pseudoEvents;
     }
-
     async navigateToDetailView(event) {
         const props = event.extendedProps;
 
@@ -401,8 +535,10 @@ export default class LibsFullCalendarV2 extends NavigationMixin(LightningElement
         this.interestedResource = null;
         this.termsOfAgreement = null;
         this.wageClaim = null;
+        this.wageClaimNewType = null;
         this.isSADetails = false;
         this.isWCDetails = false;
+        this.isWageClaimNewTypeDetails = false;
         this.hasAccess = false;
         this.isLoading = true;
 
@@ -416,6 +552,10 @@ export default class LibsFullCalendarV2 extends NavigationMixin(LightningElement
             case 'OPEN_WAGE_CLAIM':
                 this.showInformationModalDetails(props.recordId, 'WC');
                 await this.loadWageClaim(props.recordId);
+                break;
+            case 'WAGE_CLAIM_NEW_TYPE':
+                this.showInformationModalDetails(props.recordId, 'WageClaimNewType');
+                await this.loadWageClaimNewType(props.recordId);
                 break;
 
             case 'RESOURCE_ABSENCE':
@@ -478,6 +618,10 @@ export default class LibsFullCalendarV2 extends NavigationMixin(LightningElement
 
         if (type === 'WC' && this.wageClaim) {
             this.wcIsDisabledGoToThread = this.wageClaim.Status__c === 'Tilbaketrukket tilgjengelighet';
+        }
+
+        if (type === 'WageClaimNewType' && this.wageClaimNewType) {
+            this.isWageClaimNewTypeDetails = true;
         }
 
         if (type === 'SA') {
@@ -603,6 +747,9 @@ export default class LibsFullCalendarV2 extends NavigationMixin(LightningElement
         if (this.type == 'WC') {
             list = 'wageClaim';
         }
+        if (this.type == 'WageClaimNewType') {
+            list = 'wageClaimsOfNewType';
+        }
 
         let baseURL =
             window.location.protocol + '//' + window.location.host + window.location.pathname + '?list=' + list;
@@ -621,6 +768,32 @@ export default class LibsFullCalendarV2 extends NavigationMixin(LightningElement
                 this.navigateToThread(this.threadId);
             } else {
                 createThread({ recordId: this.wageClaim.Id, accountId: this.wageClaim.ServiceResource__r.AccountId })
+                    .then((result) => {
+                        this.navigateToThread(result.Id);
+                    })
+                    .catch((error) => {
+                        const result = HOT_ConfirmationModal.open({
+                            size: 'small',
+                            headline: 'Noe gikk galt',
+                            message: 'Kunne ikke åpne samtale. Feilmelding: ' + error,
+                            primaryLabel: 'Ok'
+                        });
+                    });
+            }
+        });
+    }
+
+    goToWageClaimNewTypeThread() {
+        this.wcNewTypeIsDisabledGoToThread = true;
+        getThreadIdWC({ wageClaimeId: this.wageClaimNewType.Id }).then((result) => {
+            if (result != '') {
+                this.threadId = result;
+                this.navigateToThread(this.threadId);
+            } else {
+                createThread({
+                    recordId: this.wageClaimNewType.Id,
+                    accountId: this.wageClaimNewType.ServiceResource__r.AccountId
+                })
                     .then((result) => {
                         this.navigateToThread(result.Id);
                     })
@@ -707,6 +880,17 @@ export default class LibsFullCalendarV2 extends NavigationMixin(LightningElement
                     url: url
                 }
             });
+        } else if (this.isAListView && this.isWageClaimNewTypeDetails) {
+            const baseUrl = '/samtale-frilans';
+            const attributes = `recordId=${recordId}&from=mine-oppdrag&list=wageClaimsOfNewType`;
+            const url = `${baseUrl}?${attributes}`;
+
+            this[NavigationMixin.Navigate]({
+                type: 'standard__webPage',
+                attributes: {
+                    url: url
+                }
+            });
         } else {
             const baseUrl = '/samtale-frilans';
             const attributes = `recordId=${recordId}&from=kalender`;
@@ -778,6 +962,26 @@ export default class LibsFullCalendarV2 extends NavigationMixin(LightningElement
             this.isWCDetails = true;
         } catch (error) {
             console.error('Error loading wage claim', error);
+        } finally {
+            this.isLoading = false;
+        }
+    }
+
+    wageClaimNewType;
+    async loadWageClaimNewType(recordId) {
+        try {
+            const wcNewType = await getWageClaimNewTypeDetails({ recordId });
+
+            this.wageClaimNewType = wcNewType;
+
+            this.wageClaimNewType.StartAndEndDate = formatDatetimeinterval(
+                wcNewType.StartTime__c,
+                wcNewType.EndTime__c
+            );
+
+            this.isWageClaimNewTypeDetails = true;
+        } catch (error) {
+            console.error('Error loading wage claim new type', error);
         } finally {
             this.isLoading = false;
         }
@@ -871,8 +1075,11 @@ export default class LibsFullCalendarV2 extends NavigationMixin(LightningElement
                 day: {},
                 dayGridMonth: {
                     fixedWeekCount: false,
-                    dayMaxEventRows: 4
+                    dayMaxEventRows: 3
                 }
+            },
+            moreLinkText: function (num) {
+                return '+' + num + ' flere';
             },
             viewDidMount: (context) => {
                 this.onViewMount(context.view);

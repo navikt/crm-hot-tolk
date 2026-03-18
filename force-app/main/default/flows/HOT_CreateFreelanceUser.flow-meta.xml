@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="UTF-8" ?>
+<?xml version="1.0" encoding="UTF-8"?>
 <Flow xmlns="http://soap.sforce.com/2006/04/metadata">
     <actionCalls>
         <name>Create_Community_Plus_User</name>
@@ -19,7 +19,6 @@
         </inputParameters>
         <nameSegment>CommunityUsersService</nameSegment>
         <storeOutputAutomatically>true</storeOutputAutomatically>
-        <versionSegment>1</versionSegment>
     </actionCalls>
     <actionCalls>
         <name>Create_Community_Plus_User2</name>
@@ -40,11 +39,10 @@
         </inputParameters>
         <nameSegment>CommunityUsersService</nameSegment>
         <storeOutputAutomatically>true</storeOutputAutomatically>
-        <versionSegment>1</versionSegment>
     </actionCalls>
     <actionCalls>
-        <description
-        >Creates a service resource for the user depending on the choice from previous screen flow</description>
+        <description>Creates a service resource for the user depending on the choice from previous
+            screen flow</description>
         <name>HOT_Create_Service_Resource_Invocable</name>
         <label>Create Service Resource Invocable</label>
         <locationX>127</locationX>
@@ -69,7 +67,6 @@
         </inputParameters>
         <nameSegment>HOT_ServiceResourceHandler</nameSegment>
         <storeOutputAutomatically>true</storeOutputAutomatically>
-        <versionSegment>1</versionSegment>
     </actionCalls>
     <apiVersion>59.0</apiVersion>
     <decisions>
@@ -195,7 +192,7 @@
         <expression>{!$User.Id}</expression>
     </formulas>
     <interviewLabel>HOT_CreateFreelanceUser {!$Flow.CurrentDateTime}</interviewLabel>
-    <label>Create Freelance User</label>
+    <label>Opprett frilanstolk</label>
     <processMetadataValues>
         <name>BuilderType</name>
         <value>
@@ -452,7 +449,8 @@
         <allowPause>true</allowPause>
         <fields>
             <name>Already_added_as_user_text</name>
-            <fieldText>&lt;p&gt;Tjenesteressursen eksisterte fra før og har blitt satt til aktiv.&lt;/p&gt;</fieldText>
+            <fieldText>&lt;p&gt;Tjenesteressursen eksisterte fra før og har blitt satt til
+                aktiv.&lt;/p&gt;</fieldText>
             <fieldType>DisplayText</fieldType>
         </fields>
         <showFooter>true</showFooter>
@@ -468,8 +466,8 @@
         <allowPause>true</allowPause>
         <fields>
             <name>Success_Message</name>
-            <fieldText
-            >&lt;p&gt;Bruker er nå lagt til som frilanstolk og tjenesteressurs er opprettet. &lt;/p&gt;</fieldText>
+            <fieldText>&lt;p&gt;Bruker er nå lagt til som frilanstolk og tjenesteressurs er
+                opprettet. &lt;/p&gt;</fieldText>
             <fieldType>DisplayText</fieldType>
         </fields>
         <fields>
@@ -491,15 +489,16 @@
         <allowPause>true</allowPause>
         <fields>
             <name>HOT_AlreadyActiveServiceResource</name>
-            <fieldText>&lt;p&gt;Tjenesteressursen er allerede aktiv. Ingen endring er utført.&lt;/p&gt;</fieldText>
+            <fieldText>&lt;p&gt;Tjenesteressursen er allerede aktiv. Ingen endring er
+                utført.&lt;/p&gt;</fieldText>
             <fieldType>DisplayText</fieldType>
         </fields>
         <showFooter>true</showFooter>
         <showHeader>true</showHeader>
     </screens>
     <screens>
-        <description
-        >Lets the user decide which service territory the freelance interpreter is operating in</description>
+        <description>Lets the user decide which service territory the freelance interpreter is
+            operating in</description>
         <name>HOT_Service_Territory_picker</name>
         <label>Service Territory picker</label>
         <locationX>127</locationX>
@@ -516,8 +515,9 @@
             <dataType>String</dataType>
             <fieldText>Service Territory Picklist</fieldText>
             <fieldType>DropdownBox</fieldType>
-            <helpText
-            >&lt;p&gt;&lt;span style=&quot;background-color: rgb(255, 255, 255); color: rgb(68, 68, 68);&quot;&gt;Her velger du hvilket område frilanstolken skal være tilgjengelig i.&lt;/span&gt;&lt;/p&gt;</helpText>
+            <helpText>&lt;p&gt;&lt;span style=&quot;background-color: rgb(255, 255, 255); color:
+                rgb(68, 68, 68);&quot;&gt;Her velger du hvilket område frilanstolken skal være
+                tilgjengelig i.&lt;/span&gt;&lt;/p&gt;</helpText>
             <inputsOnNextNavToAssocScrn>UseStoredValues</inputsOnNextNavToAssocScrn>
             <isRequired>true</isRequired>
         </fields>

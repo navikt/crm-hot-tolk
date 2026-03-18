@@ -279,6 +279,18 @@ export default class Hot_messagingCommunityThreadViewer_v2 extends NavigationMix
             .filter((name) => name);
     }
 
+    get showCancelledDate() {
+        if (this.wageClaim?.Reason__c === 'Endret tid') {
+            return false;
+        } else {
+            return true;
+        }
+    }
+
+    get reason() {
+        return this.wageClaim?.Reason__c || '';
+    }
+
     scrollToLatestMessage() {
         const messageContainers = this.template.querySelectorAll('c-hot_messaging-Community-Message-Container_v2');
 
@@ -747,6 +759,9 @@ export default class Hot_messagingCommunityThreadViewer_v2 extends NavigationMix
                             this.wageClaim.StartAndEndDate = formatDatetimeinterval(
                                 this.wageClaim.StartTime__c,
                                 this.wageClaim.EndTime__c
+                            );
+                            this.wageClaim.cancelledDate = formatDatetime(
+                                this.wageClaim.ServiceAppointment__r.HOT_CanceledDate__c
                             );
                             this.isDetailsContent = true;
                             this.isWCDetails = true;

@@ -77,7 +77,12 @@
                     <template lwc:else>
                         <template lwc:if={hasAccess}>
                             <div class="modal-header">
-                                <h2>Informasjon om oppdraget:</h2>
+                                <template lwc:if={isWCDetails}>
+                                    <h2>Informasjon om rett på honorar:</h2>
+                                </template>
+                                <template lwc:else>
+                                    <h2>Informasjon om oppdraget:</h2>
+                                </template>
                                 <button class="close-btn" onclick={closeModal} aria-label="Lukk">
                                     <img src={exitCrossIcon} alt="" aria-hidden="true" />
                                 </button>
@@ -162,7 +167,14 @@
                                         <template lwc:if={serviceAppointment.HOT_Interpreters__c}>
                                             <p>(Med)tolk: <span>{serviceAppointment.HOT_Interpreters__c}</span></p>
                                         </template>
-                                        <p>Tilleggsopplysninger: <span>{serviceAppointment.Description}</span></p>
+                                        <p>
+                                            Tilleggsopplysninger:&nbsp;
+                                            <span
+                                                ><lightning-formatted-rich-text
+                                                    value={serviceAppointment.Description}
+                                                ></lightning-formatted-rich-text
+                                            ></span>
+                                        </p>
 
                                         <template lwc:if={ordererPhoneNumber}>
                                             <p>Telefonnummer til bestiller:&nbsp;<span>{ordererPhoneNumber}</span></p>
@@ -253,17 +265,20 @@
                                     <div class="modal-body">
                                         <p>Oppdragsnummer: <span>{wageClaim.ServiceAppointmentName__c}</span></p>
                                         <p>Tid: <span>{wageClaim.StartAndEndDate}</span></p>
+                                        <p lwc:if={reason}>Årsak: <span>{reason}</span></p>
+                                        <p lwc:if={showCancelledDate}>
+                                            Avlyst dato:&nbsp;<span>{wageClaim.cancelledDate}</span>
+                                        </p>
                                         <p>Poststed: <span>{wageClaim.ServiceAppointmentCity__c}</span></p>
                                         <p>Tolkemetode: <span>{wageClaim.WorkTypeName__c}</span></p>
                                         <p>Oppdragstype: <span>{wageClaim.AssignmentType__c}</span></p>
                                         <p>
-                                            Eier:
+                                            Eier:&nbsp;
                                             <span>{wageClaim.ServiceAppointment__r.HOT_Request__r.OwnerName__c}</span>
                                         </p>
                                         <p>
                                             Døv/døvblind: <span>{wageClaim.DegreeOfHearingAndVisualImpairment__c}</span>
                                         </p>
-                                        <p>Status: <span>{wageClaim.Status__c}</span></p>
                                     </div>
                                 </template>
                             </template>

@@ -363,4 +363,39 @@ private class HOT_MessagesNotificationTest {
             'Varslet skal være koblet til riktig ServiceResource'
         );
     }
+
+    @IsTest
+    static void NotifyFreelanceInterpreterOnlyOnceWhenThreadMatchesByServiceResourceAndAccount() {
+        ServiceResource serviceResource = [SELECT Id, RelatedRecordId FROM ServiceResource LIMIT 1];
+        Account account = [SELECT Id FROM Account LIMIT 1];
+        serviceResource.AccountId = account.Id;
+        serviceResource.HOT_IsFreelanceInterpreter__c = true;
+        update serviceResource;
+
+        Thread__c thread = HOT_TestDataFactory.createThread();
+        insert thread;
+
+        thread.CRM_Thread_Type__c = 'HOT_TOLK-FORMIDLER';
+        thread.CRM_Account__c = account.Id;
+        thread.HOT_ServiceResource__c = serviceResource.Id;
+        thread.HOT_IsEmployeeThread__c = false;
+        update thread;
+
+        Message__c message = new Message__c();
+        message.CRM_Thread__c = thread.Id;
+        message.CRM_Message_Text__c = 'Dette er en testmelding';
+        message.HOT_User_Role__c = ', Formidler';
+
+        Test.startTest();
+        insert message;
+        Test.stopTest();
+
+        List<HOT_Notification__c> notifications = [
+            SELECT Id, HOT_ServiceResource__c
+            FROM HOT_Notification__c
+            WHERE HOT_RelatedObject__c = :thread.Id
+        ];
+        System.assertEquals(1, notifications.size(), 'Freelance interpreter should only receive one notification');
+        System.assertEquals(serviceResource.Id, notifications[0].HOT_ServiceResource__c);
+    }
 }

@@ -70,6 +70,10 @@
     </customPermissions>
     <customPermissions>
         <enabled>true</enabled>
+        <name>HOT_AccessToFormidlerActions</name>
+    </customPermissions>
+    <customPermissions>
+        <enabled>true</enabled>
         <name>HOT_CanceledBanner</name>
     </customPermissions>
     <customPermissions>
@@ -975,6 +979,11 @@
     <fieldPermissions>
         <editable>true</editable>
         <field>HOT_WageClaim__c.ParentWageClaim__c</field>
+        <readable>true</readable>
+    </fieldPermissions>
+    <fieldPermissions>
+        <editable>true</editable>
+        <field>HOT_WageClaim__c.Reason__c</field>
         <readable>true</readable>
     </fieldPermissions>
     <fieldPermissions>
