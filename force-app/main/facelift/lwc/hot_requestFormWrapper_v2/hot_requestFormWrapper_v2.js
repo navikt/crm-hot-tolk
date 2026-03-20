@@ -307,9 +307,22 @@ export default class hot_requestFormWrapper_v2 extends NavigationMixin(Lightning
         };
 
         if (timeInput.isAdvancedTimes) {
+            const keys = Object.keys(timeInput.times);
+            const firstKey = keys[0];
+            const baseTime = timeInput.times[firstKey];
+
+            if (!baseTime?.startTime || !baseTime?.endTime) {
+                this.hideFormAndShowError();
+                this.spin = false;
+                this.submitted = false;
+                const saveBtn = this.template.querySelector('[data-id="saveButton"]');
+                if (saveBtn) saveBtn.disabled = false;
+                return;
+            }
+
             createWorkOrders({
                 requestId: this.recordId,
-                times: timeInput.times['0'],
+                times: baseTime,
                 recurringType: timeInput.repeatingOptionChosen,
                 recurringDays: timeInput.chosenDays,
                 recurringEndDate: new Date(timeInput.repeatingEndDate).getTime()
