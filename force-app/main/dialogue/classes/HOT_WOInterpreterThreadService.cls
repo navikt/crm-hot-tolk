@@ -27,7 +27,7 @@ public without sharing class HOT_WOInterpreterThreadService {
 
         @InvocableVariable(label='Status Message')
         public String statusMessage;
-        
+
         public Result(Input req) {
             this.workOrderId = req != null ? req.workOrderId : null;
             this.interpreterCount = 0;
@@ -37,7 +37,6 @@ public without sharing class HOT_WOInterpreterThreadService {
         }
     }
 
-    
     @InvocableMethod(label='Create Missing Interpreter Threads And Broadcast Message')
     public static List<Result> sendMessageToInterpreters(List<Input> reqs) {
         HOT_WOInterpreterThreadService threadService = new HOT_WOInterpreterThreadService(reqs);
@@ -51,8 +50,8 @@ public without sharing class HOT_WOInterpreterThreadService {
     private Map<Id, Map<Id, Id>> saIdByWorkOrderAndServiceResource;
     private Map<Id, ServiceResource> serviceResourcesById;
     private Map<Id, Id> workOrderIdByServiceAppointmentId;
-    private Map<Id, Map<String, Thread__c>> existingThreadsByWorkOrder;
-    
+    private Map<Id, Thread__c> existingThreadsByServiceAppointment;
+
     private Id threadRecordTypeId;
     private List<Thread__c> threadsToInsert;
     private Map<Integer, List<Thread__c>> threadsByReqIndex;
@@ -68,7 +67,7 @@ public without sharing class HOT_WOInterpreterThreadService {
 
     public List<Result> process() {
         initializeResults();
-        
+
         if (this.reqs == null || this.reqs.isEmpty()) {
             return this.results;
         }
@@ -80,10 +79,10 @@ public without sharing class HOT_WOInterpreterThreadService {
 
         // Henter all nødvendig data og lagrer i instansvariablene
         loadData();
-        
+
         // Klargjør tråder
         prepareThreads();
-        
+
         // Sender meldinger
         sendMessages();
 
@@ -91,8 +90,9 @@ public without sharing class HOT_WOInterpreterThreadService {
     }
 
     private void initializeResults() {
-        if (this.reqs == null) return;
-        
+        if (this.reqs == null)
+            return;
+
         for (Input req : this.reqs) {
             this.results.add(new Result(req));
         }
@@ -108,20 +108,21 @@ public without sharing class HOT_WOInterpreterThreadService {
 
     private void loadData() {
         // Henter WorkOrders
-        this.workOrdersById = new Map<Id, WorkOrder>([
-            SELECT Id, Subject, HOT_Request__r.Dispatcher__c, HOT_Request__r.Account__c
-            FROM WorkOrder
-            WHERE Id IN :this.workOrderIds
-        ]);
+        this.workOrdersById = new Map<Id, WorkOrder>(
+            [
+                SELECT Id, Subject, HOT_Request__r.Dispatcher__c, HOT_Request__r.Account__c
+                FROM WorkOrder
+                WHERE Id IN :this.workOrderIds
+            ]
+        );
 
         // Henter Interpreter Targets
         this.saIdByWorkOrderAndServiceResource = new Map<Id, Map<Id, Id>>();
-        
+
         for (ServiceAppointment serviceAppointment : [
             SELECT Id, HOT_WorkOrderLineItem__r.WorkOrderId, HOT_ServiceResource__c
             FROM ServiceAppointment
-            WHERE HOT_WorkOrderLineItem__r.WorkOrderId IN :this.workOrderIds 
-            AND HOT_ServiceResource__c != NULL
+            WHERE HOT_WorkOrderLineItem__r.WorkOrderId IN :this.workOrderIds AND HOT_ServiceResource__c != NULL
         ]) {
             addInterpreterTarget(
                 serviceAppointment.HOT_WorkOrderLineItem__r.WorkOrderId,
@@ -133,8 +134,9 @@ public without sharing class HOT_WOInterpreterThreadService {
         for (AssignedResource assignedResource : [
             SELECT ServiceResourceId, ServiceAppointmentId, ServiceAppointment.HOT_WorkOrderLineItem__r.WorkOrderId
             FROM AssignedResource
-            WHERE ServiceAppointment.HOT_WorkOrderLineItem__r.WorkOrderId IN :this.workOrderIds 
-            AND ServiceResourceId != NULL
+            WHERE
+                ServiceAppointment.HOT_WorkOrderLineItem__r.WorkOrderId IN :this.workOrderIds
+                AND ServiceResourceId != NULL
         ]) {
             addInterpreterTarget(
                 assignedResource.ServiceAppointment.HOT_WorkOrderLineItem__r.WorkOrderId,
@@ -146,9 +148,9 @@ public without sharing class HOT_WOInterpreterThreadService {
         // Setter opp ServiceResources og Mapping for Appointments
         loadServiceResources();
         loadWorkOrderIdByServiceAppointmentId();
-        
+
         // Henter eksisterende tråder
-        loadExistingThreadsByWorkOrder();
+        loadExistingThreadsByServiceAppointment();
     }
 
     private void addInterpreterTarget(Id workOrderId, Id serviceResourceId, Id serviceAppointmentId) {
@@ -157,7 +159,10 @@ public without sharing class HOT_WOInterpreterThreadService {
         }
 
         Map<Id, Id> saIdByServiceResource = this.saIdByWorkOrderAndServiceResource.get(workOrderId);
-        if (!saIdByServiceResource.containsKey(serviceResourceId) || saIdByServiceResource.get(serviceResourceId) == null) {
+        if (
+            !saIdByServiceResource.containsKey(serviceResourceId) ||
+            saIdByServiceResource.get(serviceResourceId) == null
+        ) {
             saIdByServiceResource.put(serviceResourceId, serviceAppointmentId);
         }
     }
@@ -173,71 +178,43 @@ public without sharing class HOT_WOInterpreterThreadService {
             return;
         }
 
-        this.serviceResourcesById = new Map<Id, ServiceResource>([
-            SELECT Id, AccountId, RelatedRecordId, HOT_IsEmployedInterpreter__c
-            FROM ServiceResource
-            WHERE Id IN :serviceResourceIds
-        ]);
+        this.serviceResourcesById = new Map<Id, ServiceResource>(
+            [
+                SELECT Id, AccountId, RelatedRecordId, HOT_IsEmployedInterpreter__c
+                FROM ServiceResource
+                WHERE Id IN :serviceResourceIds
+            ]
+        );
     }
 
     private void loadWorkOrderIdByServiceAppointmentId() {
         this.workOrderIdByServiceAppointmentId = new Map<Id, Id>();
         for (Id workOrderId : this.saIdByWorkOrderAndServiceResource.keySet()) {
             for (Id serviceAppointmentId : this.saIdByWorkOrderAndServiceResource.get(workOrderId).values()) {
-                if (serviceAppointmentId != null && !this.workOrderIdByServiceAppointmentId.containsKey(serviceAppointmentId)) {
+                if (
+                    serviceAppointmentId != null &&
+                    !this.workOrderIdByServiceAppointmentId.containsKey(serviceAppointmentId)
+                ) {
                     this.workOrderIdByServiceAppointmentId.put(serviceAppointmentId, workOrderId);
                 }
             }
         }
     }
 
-    private void loadExistingThreadsByWorkOrder() {
-        this.existingThreadsByWorkOrder = new Map<Id, Map<String, Thread__c>>();
+    private void loadExistingThreadsByServiceAppointment() {
+        this.existingThreadsByServiceAppointment = new Map<Id, Thread__c>();
         Set<Id> serviceAppointmentIds = new Set<Id>(this.workOrderIdByServiceAppointmentId.keySet());
+        if (serviceAppointmentIds.isEmpty()) {
+            return;
+        }
 
         for (Thread__c thread : [
-            SELECT
-                Id,
-                HOT_WorkOrder__c,
-                HOT_ServiceAppointment__c,
-                CRM_Related_Object__c,
-                HOT_ServiceResource__c,
-                CRM_Account__c,
-                CRM_Thread_Type__c,
-                CRM_isActive__c
+            SELECT Id, CRM_Related_Object__c, CRM_Account__c, CRM_Thread_Type__c, CRM_isActive__c
             FROM Thread__c
-            WHERE
-                CRM_Thread_Type__c = :INTERPRETER_THREAD_TYPE
-                AND (HOT_WorkOrder__c IN :this.workOrderIds
-                OR HOT_ServiceAppointment__c IN :serviceAppointmentIds
-                OR CRM_Related_Object__c IN :serviceAppointmentIds)
+            WHERE CRM_Thread_Type__c = :INTERPRETER_THREAD_TYPE AND CRM_Related_Object__c IN :serviceAppointmentIds
         ]) {
-            Id workOrderId = resolveWorkOrderId(thread);
-            if (workOrderId == null) {
-                continue;
-            }
-
-            if (!this.existingThreadsByWorkOrder.containsKey(workOrderId)) {
-                this.existingThreadsByWorkOrder.put(workOrderId, new Map<String, Thread__c>());
-            }
-
-            String threadKey = getThreadKey(thread.HOT_ServiceResource__c);
-            if (threadKey != null) {
-                this.existingThreadsByWorkOrder.get(workOrderId).put(threadKey, thread);
-            }
+            this.existingThreadsByServiceAppointment.put(thread.CRM_Related_Object__c, thread);
         }
-    }
-
-    private Id resolveWorkOrderId(Thread__c thread) {
-        if (thread.HOT_WorkOrder__c != null) {
-            return thread.HOT_WorkOrder__c;
-        }
-
-        if (thread.HOT_ServiceAppointment__c != null) {
-            return this.workOrderIdByServiceAppointmentId.get(thread.HOT_ServiceAppointment__c);
-        }
-
-        return null;
     }
 
     private void prepareThreads() {
@@ -255,11 +232,6 @@ public without sharing class HOT_WOInterpreterThreadService {
                 continue;
             }
 
-            if (!this.existingThreadsByWorkOrder.containsKey(req.workOrderId)) {
-                this.existingThreadsByWorkOrder.put(req.workOrderId, new Map<String, Thread__c>());
-            }
-
-            Map<String, Thread__c> threadByKey = this.existingThreadsByWorkOrder.get(req.workOrderId);
             List<Thread__c> threadsForRequest = new List<Thread__c>();
             WorkOrder workOrder = this.workOrdersById.get(req.workOrderId);
 
@@ -269,17 +241,17 @@ public without sharing class HOT_WOInterpreterThreadService {
                     continue;
                 }
 
-                String threadKey = getThreadKey(serviceResource.Id);
-                Thread__c thread = threadByKey.get(threadKey);
+                Id serviceAppointmentId = saIdByServiceResource.get(serviceResourceId);
+                Thread__c thread = serviceAppointmentId == null
+                    ? null
+                    : this.existingThreadsByServiceAppointment.get(serviceAppointmentId);
 
                 if (thread == null) {
-                    thread = buildInterpreterThread(
-                        workOrder,
-                        serviceResource,
-                        saIdByServiceResource.get(serviceResourceId)
-                    );
+                    thread = buildInterpreterThread(workOrder, serviceResource, serviceAppointmentId);
                     this.threadsToInsert.add(thread);
-                    threadByKey.put(threadKey, thread);
+                    if (serviceAppointmentId != null) {
+                        this.existingThreadsByServiceAppointment.put(serviceAppointmentId, thread);
+                    }
                     result.createdThreadCount++;
                 }
 
@@ -316,7 +288,11 @@ public without sharing class HOT_WOInterpreterThreadService {
         return true;
     }
 
-    private Thread__c buildInterpreterThread(WorkOrder workOrder, ServiceResource serviceResource, Id serviceAppointmentId) {
+    private Thread__c buildInterpreterThread(
+        WorkOrder workOrder,
+        ServiceResource serviceResource,
+        Id serviceAppointmentId
+    ) {
         Thread__c thread = new Thread__c();
         thread.RecordTypeId = this.threadRecordTypeId;
         thread.Name = 'SAMTALE MED TOLK: ' + workOrder.Subject;
@@ -356,12 +332,5 @@ public without sharing class HOT_WOInterpreterThreadService {
         if (!messagesToInsert.isEmpty()) {
             insert messagesToInsert;
         }
-    }
-
-    private String getThreadKey(Id serviceResourceId) {
-        if (serviceResourceId == null) {
-            return null;
-        }
-        return 'SR:' + serviceResourceId;
     }
 }
