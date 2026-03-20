@@ -12,6 +12,7 @@ import icons2 from '@salesforce/resourceUrl/icons';
 import HOT_ConfirmationModal from 'c/hot_confirmationModal';
 import ConfimationModal from 'c/hot_calendar_absence_modal_confirmation';
 import getWageClaimDetails from '@salesforce/apex/HOT_WageClaimListController.getWageClaimDetails';
+import getWageClaimNewTypeDetails from '@salesforce/apex/HOT_WageClaimListController.getWageClaimNewTypeDetails';
 import checkAccessToSA from '@salesforce/apex/HOT_MyServiceAppointmentListController.checkAccessToSA';
 import getInterestedResourceDetails from '@salesforce/apex/HOT_InterestedResourcesListController.getInterestedResourceDetails';
 import getThreadServiceAppointmentId from '@salesforce/apex/HOT_MyServiceAppointmentListController.getThreadServiceAppointmentId';
@@ -82,6 +83,8 @@ export default class LibsFullCalendarV2 extends NavigationMixin(LightningElement
     isSADetails = false;
     hasAccess = false;
     isWCDetails = false;
+    isWageClaimNewTypeDetails = false;
+    wcNewTypeIsDisabledGoToThread = false;
 
     connectedCallback() {
         const state = sessionStorage.getItem(LibsFullCalendarV2.STATE_KEY);
@@ -109,6 +112,44 @@ export default class LibsFullCalendarV2 extends NavigationMixin(LightningElement
             viewType: this.calendar?.view.type
         };
         sessionStorage.setItem(LibsFullCalendarV2.STATE_KEY, JSON.stringify(state));
+    }
+
+    get reason() {
+        return this.wageClaimNewType?.Reason__c || '';
+    }
+
+    get showCancelledDate() {
+        if (this.wageClaimNewType?.Reason__c === 'Endret tid') {
+            return false;
+        } else {
+            return true;
+        }
+    }
+
+    get cancelledDate() {
+        const dateVal = this.wageClaimNewType?.ServiceAppointment__r?.HOT_CanceledDate__c;
+
+        if (!dateVal) {
+            return '';
+        }
+
+        const d = new Date(dateVal);
+
+        if (isNaN(d.getTime())) {
+            return '';
+        }
+
+        return (
+            ('0' + d.getDate()).slice(-2) +
+            '.' +
+            ('0' + (d.getMonth() + 1)).slice(-2) +
+            '.' +
+            d.getFullYear() +
+            ', ' +
+            ('0' + d.getHours()).slice(-2) +
+            ':' +
+            ('0' + d.getMinutes()).slice(-2)
+        );
     }
 
     async setupCalendar(sessionState) {
@@ -494,8 +535,10 @@ export default class LibsFullCalendarV2 extends NavigationMixin(LightningElement
         this.interestedResource = null;
         this.termsOfAgreement = null;
         this.wageClaim = null;
+        this.wageClaimNewType = null;
         this.isSADetails = false;
         this.isWCDetails = false;
+        this.isWageClaimNewTypeDetails = false;
         this.hasAccess = false;
         this.isLoading = true;
 
@@ -509,6 +552,10 @@ export default class LibsFullCalendarV2 extends NavigationMixin(LightningElement
             case 'OPEN_WAGE_CLAIM':
                 this.showInformationModalDetails(props.recordId, 'WC');
                 await this.loadWageClaim(props.recordId);
+                break;
+            case 'WAGE_CLAIM_NEW_TYPE':
+                this.showInformationModalDetails(props.recordId, 'WageClaimNewType');
+                await this.loadWageClaimNewType(props.recordId);
                 break;
 
             case 'RESOURCE_ABSENCE':
@@ -571,6 +618,10 @@ export default class LibsFullCalendarV2 extends NavigationMixin(LightningElement
 
         if (type === 'WC' && this.wageClaim) {
             this.wcIsDisabledGoToThread = this.wageClaim.Status__c === 'Tilbaketrukket tilgjengelighet';
+        }
+
+        if (type === 'WageClaimNewType' && this.wageClaimNewType) {
+            this.isWageClaimNewTypeDetails = true;
         }
 
         if (type === 'SA') {
@@ -696,6 +747,9 @@ export default class LibsFullCalendarV2 extends NavigationMixin(LightningElement
         if (this.type == 'WC') {
             list = 'wageClaim';
         }
+        if (this.type == 'WageClaimNewType') {
+            list = 'wageClaimsOfNewType';
+        }
 
         let baseURL =
             window.location.protocol + '//' + window.location.host + window.location.pathname + '?list=' + list;
@@ -714,6 +768,32 @@ export default class LibsFullCalendarV2 extends NavigationMixin(LightningElement
                 this.navigateToThread(this.threadId);
             } else {
                 createThread({ recordId: this.wageClaim.Id, accountId: this.wageClaim.ServiceResource__r.AccountId })
+                    .then((result) => {
+                        this.navigateToThread(result.Id);
+                    })
+                    .catch((error) => {
+                        const result = HOT_ConfirmationModal.open({
+                            size: 'small',
+                            headline: 'Noe gikk galt',
+                            message: 'Kunne ikke åpne samtale. Feilmelding: ' + error,
+                            primaryLabel: 'Ok'
+                        });
+                    });
+            }
+        });
+    }
+
+    goToWageClaimNewTypeThread() {
+        this.wcNewTypeIsDisabledGoToThread = true;
+        getThreadIdWC({ wageClaimeId: this.wageClaimNewType.Id }).then((result) => {
+            if (result != '') {
+                this.threadId = result;
+                this.navigateToThread(this.threadId);
+            } else {
+                createThread({
+                    recordId: this.wageClaimNewType.Id,
+                    accountId: this.wageClaimNewType.ServiceResource__r.AccountId
+                })
                     .then((result) => {
                         this.navigateToThread(result.Id);
                     })
@@ -800,6 +880,17 @@ export default class LibsFullCalendarV2 extends NavigationMixin(LightningElement
                     url: url
                 }
             });
+        } else if (this.isAListView && this.isWageClaimNewTypeDetails) {
+            const baseUrl = '/samtale-frilans';
+            const attributes = `recordId=${recordId}&from=mine-oppdrag&list=wageClaimsOfNewType`;
+            const url = `${baseUrl}?${attributes}`;
+
+            this[NavigationMixin.Navigate]({
+                type: 'standard__webPage',
+                attributes: {
+                    url: url
+                }
+            });
         } else {
             const baseUrl = '/samtale-frilans';
             const attributes = `recordId=${recordId}&from=kalender`;
@@ -871,6 +962,26 @@ export default class LibsFullCalendarV2 extends NavigationMixin(LightningElement
             this.isWCDetails = true;
         } catch (error) {
             console.error('Error loading wage claim', error);
+        } finally {
+            this.isLoading = false;
+        }
+    }
+
+    wageClaimNewType;
+    async loadWageClaimNewType(recordId) {
+        try {
+            const wcNewType = await getWageClaimNewTypeDetails({ recordId });
+
+            this.wageClaimNewType = wcNewType;
+
+            this.wageClaimNewType.StartAndEndDate = formatDatetimeinterval(
+                wcNewType.StartTime__c,
+                wcNewType.EndTime__c
+            );
+
+            this.isWageClaimNewTypeDetails = true;
+        } catch (error) {
+            console.error('Error loading wage claim new type', error);
         } finally {
             this.isLoading = false;
         }
@@ -964,8 +1075,11 @@ export default class LibsFullCalendarV2 extends NavigationMixin(LightningElement
                 day: {},
                 dayGridMonth: {
                     fixedWeekCount: false,
-                    dayMaxEventRows: 4
+                    dayMaxEventRows: 3
                 }
+            },
+            moreLinkText: function (num) {
+                return '+' + num + ' flere';
             },
             viewDidMount: (context) => {
                 this.onViewMount(context.view);

@@ -780,6 +780,11 @@
     </fieldPermissions>
     <fieldPermissions>
         <editable>false</editable>
+        <field>HOT_WageClaim__c.Reason__c</field>
+        <readable>true</readable>
+    </fieldPermissions>
+    <fieldPermissions>
+        <editable>false</editable>
         <field>HOT_WageClaim__c.ServiceAppointmentCity__c</field>
         <readable>true</readable>
     </fieldPermissions>

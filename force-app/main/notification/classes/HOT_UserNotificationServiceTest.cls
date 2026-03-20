@@ -323,7 +323,7 @@ public class HOT_UserNotificationServiceTest {
         Set<String> recipients = new Set<String>{ UserInfo.getUserId() };
 
         Test.startTest();
-        HOT_UserNotificationService.newMessageNotification(notificationType, t, false, recipients);
+        HOT_UserNotificationService.newMessageNotification(notificationType, t, false, true, recipients);
         Test.stopTest();
     }
 
@@ -353,8 +353,8 @@ public class HOT_UserNotificationServiceTest {
         Test.stopTest();
         System.assertEquals(
             '{type: "comm__namedPage",attributes: {pageName: "samtale-frilans"}, state: {recordId: "' +
-                thread.Id +
-                '", from: "mine-samtaler-frilanstolk"}}',
+            thread.Id +
+            '", from: "mine-samtaler-frilanstolk"}}',
             result
         );
     }

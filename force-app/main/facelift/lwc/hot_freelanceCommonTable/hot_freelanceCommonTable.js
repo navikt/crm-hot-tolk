@@ -62,7 +62,8 @@ export default class Hot_freelanceCommonTable extends LightningElement {
                     label: column.label,
                     value: value,
                     type: column.type,
-                    ariaLabel: value
+                    ariaLabel: value,
+                    showMobileLabel: column.showMobileLabel
                 };
 
                 if (column.svg && this.iconByValue) {
