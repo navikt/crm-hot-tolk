@@ -97,10 +97,6 @@
             </layoutItems>
             <layoutItems>
                 <behavior>Edit</behavior>
-                <field>ReadyForProcessing__c</field>
-            </layoutItems>
-            <layoutItems>
-                <behavior>Edit</behavior>
                 <field>Status__c</field>
             </layoutItems>
             <layoutItems>
@@ -170,10 +166,6 @@
             <layoutItems>
                 <behavior>Edit</behavior>
                 <field>Comment__c</field>
-            </layoutItems>
-            <layoutItems>
-                <behavior>Edit</behavior>
-                <field>Is_RPAInvoiced__c</field>
             </layoutItems>
         </layoutColumns>
         <layoutColumns/>
