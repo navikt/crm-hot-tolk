@@ -2,7 +2,7 @@
 <GlobalValueSet xmlns="http://soap.sforce.com/2006/04/metadata">
     <customValue>
         <fullName>Reise u/ overnatting 6-12 timer</fullName>
-        <default>true</default>
+        <default>false</default>
         <label>Reise u/ overnatting 6-12 timer</label>
     </customValue>
     <customValue>
