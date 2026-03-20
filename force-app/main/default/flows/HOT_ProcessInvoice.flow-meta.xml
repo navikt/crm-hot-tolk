@@ -2,8 +2,24 @@
 <Flow xmlns="http://soap.sforce.com/2006/04/metadata">
     <apiVersion>66.0</apiVersion>
     <assignments>
-        <name>assign</name>
-        <label>assign</label>
+        <name>assignManualEdit</name>
+        <label>assignManualEdit</label>
+        <locationX>0</locationX>
+        <locationY>0</locationY>
+        <assignmentItems>
+            <assignToReference>getInvoice.Is_RPAInvoiced__c</assignToReference>
+            <operator>Assign</operator>
+            <value>
+                <booleanValue>false</booleanValue>
+            </value>
+        </assignmentItems>
+        <connector>
+            <targetReference>updateInvoice</targetReference>
+        </connector>
+    </assignments>
+    <assignments>
+        <name>assignSendInReturn</name>
+        <label>assignSendInReturn</label>
         <locationX>0</locationX>
         <locationY>0</locationY>
         <assignmentItems>
@@ -20,17 +36,8 @@
                 <elementReference>Skriv_inn_kommentar_til_rsak</elementReference>
             </value>
         </assignmentItems>
-        <connector>
-            <targetReference>getServiceAppointment</targetReference>
-        </connector>
-    </assignments>
-    <assignments>
-        <name>assignNewStatusServiceAppointment</name>
-        <label>assignNewStatusServiceAppointment</label>
-        <locationX>0</locationX>
-        <locationY>0</locationY>
         <assignmentItems>
-            <assignToReference>getServiceAppointment.HOT_IsRecieptRecieved__c</assignToReference>
+            <assignToReference>getInvoice.Is_RPAInvoiced__c</assignToReference>
             <operator>Assign</operator>
             <value>
                 <booleanValue>false</booleanValue>
@@ -40,6 +47,22 @@
             <targetReference>updateInvoice</targetReference>
         </connector>
     </assignments>
+    <choices>
+        <name>manualEdit</name>
+        <choiceText>Jeg har endret oppdragskvittering her manuelt.&lt;p&gt;&lt;span style=&quot;background-color: rgb(255, 255, 255);&quot;&gt;Slett fakturaen i OeBS for at roboten skal kunne opprette en ny faktura.&lt;/span&gt;&lt;/p&gt;</choiceText>
+        <dataType>String</dataType>
+        <value>
+            <stringValue>manualEdit</stringValue>
+        </value>
+    </choices>
+    <choices>
+        <name>sendInReturn</name>
+        <choiceText>Send oppdragskvittering i retur til tolk for revisjon.&lt;p&gt;Slett fakturaen i OeBS for at roboten skal kunne opprette en ny faktura.&lt;/p&gt;</choiceText>
+        <dataType>String</dataType>
+        <value>
+            <stringValue>sendInReturn</stringValue>
+        </value>
+    </choices>
     <decisions>
         <name>continue_based_on_status</name>
         <label>continue based on status</label>
@@ -80,10 +103,34 @@
             <label>status is sent in return</label>
         </rules>
     </decisions>
-    <description>Send invoice in return to intepreter</description>
+    <decisions>
+        <name>sendInReturnOrManualEdit</name>
+        <label>sendInReturnOrManualEdit</label>
+        <locationX>0</locationX>
+        <locationY>0</locationY>
+        <defaultConnector>
+            <targetReference>assignSendInReturn</targetReference>
+        </defaultConnector>
+        <defaultConnectorLabel>isSendInReturn</defaultConnectorLabel>
+        <rules>
+            <name>isManualEdit</name>
+            <conditionLogic>and</conditionLogic>
+            <conditions>
+                <leftValueReference>WhatToDoPicklist</leftValueReference>
+                <operator>EqualTo</operator>
+                <rightValue>
+                    <elementReference>manualEdit</elementReference>
+                </rightValue>
+            </conditions>
+            <connector>
+                <targetReference>assignManualEdit</targetReference>
+            </connector>
+            <label>isManualEdit</label>
+        </rules>
+    </decisions>
     <environments>Default</environments>
-    <interviewLabel>HOT Send Invoice In Return {!$Flow.CurrentDateTime}</interviewLabel>
-    <label>HOT Send Invoice In Return</label>
+    <interviewLabel>HOT_ {!$Flow.CurrentDateTime}</interviewLabel>
+    <label>HOT_Process Invoice</label>
     <processMetadataValues>
         <name>BuilderType</name>
         <value>
@@ -124,46 +171,15 @@
         <object>HOT_Invoice__c</object>
         <storeOutputAutomatically>true</storeOutputAutomatically>
     </recordLookups>
-    <recordLookups>
-        <name>getServiceAppointment</name>
-        <label>getServiceAppointment</label>
-        <locationX>0</locationX>
-        <locationY>0</locationY>
-        <assignNullValuesIfNoRecordsFound>false</assignNullValuesIfNoRecordsFound>
-        <connector>
-            <targetReference>assignNewStatusServiceAppointment</targetReference>
-        </connector>
-        <filterLogic>and</filterLogic>
-        <filters>
-            <field>Id</field>
-            <operator>EqualTo</operator>
-            <value>
-                <elementReference>getInvoice.ServiceAppointment__c</elementReference>
-            </value>
-        </filters>
-        <getFirstRecordOnly>true</getFirstRecordOnly>
-        <object>ServiceAppointment</object>
-        <storeOutputAutomatically>true</storeOutputAutomatically>
-    </recordLookups>
     <recordUpdates>
         <name>updateInvoice</name>
         <label>updateInvoice</label>
         <locationX>0</locationX>
         <locationY>0</locationY>
         <connector>
-            <targetReference>updateServiceAppointment</targetReference>
-        </connector>
-        <inputReference>getInvoice</inputReference>
-    </recordUpdates>
-    <recordUpdates>
-        <name>updateServiceAppointment</name>
-        <label>updateServiceAppointment</label>
-        <locationX>0</locationX>
-        <locationY>0</locationY>
-        <connector>
             <targetReference>finnishScreen</targetReference>
         </connector>
-        <inputReference>getServiceAppointment</inputReference>
+        <inputReference>getInvoice</inputReference>
     </recordUpdates>
     <screens>
         <name>errorscreen1</name>
@@ -206,9 +222,34 @@
         <allowFinish>true</allowFinish>
         <allowPause>false</allowPause>
         <fields>
-            <name>finnishScreenTxt</name>
+            <name>finnishScreenInReturnTxt</name>
             <fieldText>&lt;p&gt;Oppdragskvitteringen ble sendt i retur til tolken og tolken ble varslet.&lt;/p&gt;</fieldText>
             <fieldType>DisplayText</fieldType>
+            <visibilityRule>
+                <conditionLogic>and</conditionLogic>
+                <conditions>
+                    <leftValueReference>WhatToDoPicklist</leftValueReference>
+                    <operator>EqualTo</operator>
+                    <rightValue>
+                        <elementReference>sendInReturn</elementReference>
+                    </rightValue>
+                </conditions>
+            </visibilityRule>
+        </fields>
+        <fields>
+            <name>finnishScreenManualEditTxt</name>
+            <fieldText>&lt;p&gt;Oppdragskvitteringen ble markert som endret. Husk å slette faktura fra OeBS slik at robot kan lage faktura på nytt.&lt;/p&gt;</fieldText>
+            <fieldType>DisplayText</fieldType>
+            <visibilityRule>
+                <conditionLogic>and</conditionLogic>
+                <conditions>
+                    <leftValueReference>WhatToDoPicklist</leftValueReference>
+                    <operator>EqualTo</operator>
+                    <rightValue>
+                        <elementReference>manualEdit</elementReference>
+                    </rightValue>
+                </conditions>
+            </visibilityRule>
         </fields>
         <showFooter>true</showFooter>
         <showHeader>false</showHeader>
@@ -222,19 +263,39 @@
         <allowFinish>true</allowFinish>
         <allowPause>true</allowPause>
         <connector>
-            <targetReference>assign</targetReference>
+            <targetReference>sendInReturnOrManualEdit</targetReference>
         </connector>
         <fields>
             <name>returnTxt</name>
-            <fieldText>&lt;p&gt;Kvitteringen vil bli sendt i retur til tolken for revisjon. Tolken vil få varsel om dette.&lt;/p&gt;</fieldText>
+            <fieldText>&lt;p&gt;Har du endret oppdragskvittering manuelt eller ønsker å sende hele oppdragskvittering i retur til tolken kan du gjøre det her.&lt;/p&gt;</fieldText>
             <fieldType>DisplayText</fieldType>
         </fields>
         <fields>
+            <name>WhatToDoPicklist</name>
+            <choiceReferences>sendInReturn</choiceReferences>
+            <choiceReferences>manualEdit</choiceReferences>
+            <dataType>String</dataType>
+            <fieldText>Valg</fieldText>
+            <fieldType>RadioButtons</fieldType>
+            <inputsOnNextNavToAssocScrn>UseStoredValues</inputsOnNextNavToAssocScrn>
+            <isRequired>true</isRequired>
+        </fields>
+        <fields>
             <name>Skriv_inn_kommentar_til_rsak</name>
-            <fieldText>Skriv inn kommentar til årsak:</fieldText>
+            <fieldText>Skriv inn kommentar til årsak på hvorfor oppdragskvittering blir sendt i retur til tolk. Tolken vil se dette.</fieldText>
             <fieldType>LargeTextArea</fieldType>
             <inputsOnNextNavToAssocScrn>UseStoredValues</inputsOnNextNavToAssocScrn>
             <isRequired>false</isRequired>
+            <visibilityRule>
+                <conditionLogic>and</conditionLogic>
+                <conditions>
+                    <leftValueReference>WhatToDoPicklist</leftValueReference>
+                    <operator>EqualTo</operator>
+                    <rightValue>
+                        <elementReference>sendInReturn</elementReference>
+                    </rightValue>
+                </conditions>
+            </visibilityRule>
         </fields>
         <showFooter>true</showFooter>
         <showHeader>true</showHeader>
