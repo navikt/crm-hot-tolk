@@ -524,22 +524,12 @@
     </fieldPermissions>
     <fieldPermissions>
         <editable>true</editable>
-        <field>HOT_Invoice__c.Is_RPAInvoiced__c</field>
-        <readable>true</readable>
-    </fieldPermissions>
-    <fieldPermissions>
-        <editable>true</editable>
         <field>HOT_Invoice__c.PreparationTimeHour__c</field>
         <readable>true</readable>
     </fieldPermissions>
     <fieldPermissions>
         <editable>true</editable>
         <field>HOT_Invoice__c.PreparationTimeMinutes__c</field>
-        <readable>true</readable>
-    </fieldPermissions>
-    <fieldPermissions>
-        <editable>true</editable>
-        <field>HOT_Invoice__c.ReadyForProcessing__c</field>
         <readable>true</readable>
     </fieldPermissions>
     <fieldPermissions>
@@ -2450,6 +2440,11 @@
     <fieldPermissions>
         <editable>false</editable>
         <field>WorkOrder.IsGeneratedFromMaintenancePlan</field>
+        <readable>true</readable>
+    </fieldPermissions>
+    <fieldPermissions>
+        <editable>true</editable>
+        <field>WorkOrder.IsRPAInvoiced__c</field>
         <readable>true</readable>
     </fieldPermissions>
     <fieldPermissions>
