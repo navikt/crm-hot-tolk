@@ -88,16 +88,6 @@
                     <name>uiBehavior</name>
                     <value>none</value>
                 </fieldInstanceProperties>
-                <fieldItem>Record.ReadyForProcessing__c</fieldItem>
-                <identifier>RecordReadyForProcessing__cField</identifier>
-            </fieldInstance>
-        </itemInstances>
-        <itemInstances>
-            <fieldInstance>
-                <fieldInstanceProperties>
-                    <name>uiBehavior</name>
-                    <value>none</value>
-                </fieldInstanceProperties>
                 <fieldItem>Record.Status__c</fieldItem>
                 <identifier>RecordStatus__cField</identifier>
             </fieldInstance>
@@ -110,16 +100,6 @@
                 </fieldInstanceProperties>
                 <fieldItem>Record.Comment__c</fieldItem>
                 <identifier>RecordComment__cField</identifier>
-            </fieldInstance>
-        </itemInstances>
-        <itemInstances>
-            <fieldInstance>
-                <fieldInstanceProperties>
-                    <name>uiBehavior</name>
-                    <value>none</value>
-                </fieldInstanceProperties>
-                <fieldItem>Record.Is_RPAInvoiced__c</fieldItem>
-                <identifier>RecordIs_RPAInvoiced__cField</identifier>
             </fieldInstance>
         </itemInstances>
         <name>Facet-43a38987-fe24-448c-bd20-c9dbf578cc15</name>
