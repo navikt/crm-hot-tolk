@@ -409,6 +409,11 @@
     </fieldPermissions>
     <fieldPermissions>
         <editable>true</editable>
+        <field>HOT_Invoice__c.Comment__c</field>
+        <readable>true</readable>
+    </fieldPermissions>
+    <fieldPermissions>
+        <editable>true</editable>
         <field>HOT_Invoice__c.ExpenseTypeAAmount__c</field>
         <readable>true</readable>
     </fieldPermissions>
@@ -515,6 +520,11 @@
     <fieldPermissions>
         <editable>true</editable>
         <field>HOT_Invoice__c.HasTravelExpenses__c</field>
+        <readable>true</readable>
+    </fieldPermissions>
+    <fieldPermissions>
+        <editable>true</editable>
+        <field>HOT_Invoice__c.Is_RPAInvoiced__c</field>
         <readable>true</readable>
     </fieldPermissions>
     <fieldPermissions>
