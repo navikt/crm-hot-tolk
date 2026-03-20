@@ -7,11 +7,8 @@
         <locationX>0</locationX>
         <locationY>0</locationY>
         <assignmentItems>
-            <assignToReference>getInvoice.Is_RPAInvoiced__c</assignToReference>
+            <assignToReference>getWorkOrder.HOT_InvoiceStatus__c</assignToReference>
             <operator>Assign</operator>
-            <value>
-                <booleanValue>false</booleanValue>
-            </value>
         </assignmentItems>
         <connector>
             <targetReference>updateInvoice</targetReference>
@@ -37,11 +34,8 @@
             </value>
         </assignmentItems>
         <assignmentItems>
-            <assignToReference>getInvoice.Is_RPAInvoiced__c</assignToReference>
+            <assignToReference>getWorkOrder.HOT_InvoiceStatus__c</assignToReference>
             <operator>Assign</operator>
-            <value>
-                <booleanValue>false</booleanValue>
-            </value>
         </assignmentItems>
         <connector>
             <targetReference>updateInvoice</targetReference>
@@ -102,6 +96,35 @@
             </connector>
             <label>status is sent in return</label>
         </rules>
+        <rules>
+            <name>workorder_with_manual_invoice_status</name>
+            <conditionLogic>and</conditionLogic>
+            <conditions>
+                <leftValueReference>getWorkOrder.HOT_InvoiceStatus__c</leftValueReference>
+                <operator>EqualTo</operator>
+                <rightValue>
+                    <stringValue>Manuell: Skal ikke faktureres</stringValue>
+                </rightValue>
+            </conditions>
+            <conditions>
+                <leftValueReference>getWorkOrder.HOT_InvoiceStatus__c</leftValueReference>
+                <operator>EqualTo</operator>
+                <rightValue>
+                    <stringValue>Manuell: Avventer fakturering</stringValue>
+                </rightValue>
+            </conditions>
+            <conditions>
+                <leftValueReference>getWorkOrder.HOT_InvoiceStatus__c</leftValueReference>
+                <operator>EqualTo</operator>
+                <rightValue>
+                    <stringValue>Manuell: Faktura sendt</stringValue>
+                </rightValue>
+            </conditions>
+            <connector>
+                <targetReference>errorScreen3</targetReference>
+            </connector>
+            <label>workorder with manual invoice status</label>
+        </rules>
     </decisions>
     <decisions>
         <name>sendInReturnOrManualEdit</name>
@@ -157,7 +180,7 @@
         <locationY>0</locationY>
         <assignNullValuesIfNoRecordsFound>false</assignNullValuesIfNoRecordsFound>
         <connector>
-            <targetReference>continue_based_on_status</targetReference>
+            <targetReference>getWorkOrder</targetReference>
         </connector>
         <filterLogic>and</filterLogic>
         <filters>
@@ -171,15 +194,46 @@
         <object>HOT_Invoice__c</object>
         <storeOutputAutomatically>true</storeOutputAutomatically>
     </recordLookups>
+    <recordLookups>
+        <name>getWorkOrder</name>
+        <label>getWorkOrder</label>
+        <locationX>0</locationX>
+        <locationY>0</locationY>
+        <assignNullValuesIfNoRecordsFound>false</assignNullValuesIfNoRecordsFound>
+        <connector>
+            <targetReference>continue_based_on_status</targetReference>
+        </connector>
+        <filterLogic>and</filterLogic>
+        <filters>
+            <field>Id</field>
+            <operator>EqualTo</operator>
+            <value>
+                <elementReference>getInvoice.WorkOrder__c</elementReference>
+            </value>
+        </filters>
+        <getFirstRecordOnly>true</getFirstRecordOnly>
+        <object>WorkOrder</object>
+        <storeOutputAutomatically>true</storeOutputAutomatically>
+    </recordLookups>
     <recordUpdates>
         <name>updateInvoice</name>
         <label>updateInvoice</label>
         <locationX>0</locationX>
         <locationY>0</locationY>
         <connector>
-            <targetReference>finnishScreen</targetReference>
+            <targetReference>updateWorkOrder</targetReference>
         </connector>
         <inputReference>getInvoice</inputReference>
+    </recordUpdates>
+    <recordUpdates>
+        <name>updateWorkOrder</name>
+        <label>updateWorkOrder</label>
+        <locationX>0</locationX>
+        <locationY>0</locationY>
+        <connector>
+            <targetReference>finnishScreen</targetReference>
+        </connector>
+        <inputReference>getWorkOrder</inputReference>
     </recordUpdates>
     <screens>
         <name>errorscreen1</name>
@@ -208,6 +262,22 @@
         <fields>
             <name>errorScreen2txt</name>
             <fieldText>&lt;p&gt;Oppdragsvitteringen er allerede sent i retur til tolken.&lt;/p&gt;</fieldText>
+            <fieldType>DisplayText</fieldType>
+        </fields>
+        <showFooter>true</showFooter>
+        <showHeader>false</showHeader>
+    </screens>
+    <screens>
+        <name>errorScreen3</name>
+        <label>errorScreen3</label>
+        <locationX>0</locationX>
+        <locationY>0</locationY>
+        <allowBack>false</allowBack>
+        <allowFinish>true</allowFinish>
+        <allowPause>false</allowPause>
+        <fields>
+            <name>errorScreen3txt</name>
+            <fieldText>&lt;p&gt;Arbeidsorderen har en manuell faktura status. &lt;/p&gt;</fieldText>
             <fieldType>DisplayText</fieldType>
         </fields>
         <showFooter>true</showFooter>
