@@ -33,38 +33,29 @@
         <itemInstances>
             <componentInstance>
                 <componentInstanceProperties>
-                    <name>message</name>
-                    <value>Denne oppdragskvitteringen ble sendt i retur. Les kommentar fra ressurskontoret. til deg. .</value>
+                    <name>field</name>
+                    <value>Comment__c</value>
+                </componentInstanceProperties>
+                <componentInstanceProperties>
+                    <name>object</name>
+                    <value>HOT_Invoice__c</value>
+                </componentInstanceProperties>
+                <componentInstanceProperties>
+                    <name>pretext</name>
+                    <value>Ressurskontoret har lagt inn en kommentar:</value>
                 </componentInstanceProperties>
                 <componentInstanceProperties>
                     <name>type</name>
-                    <value>Warning</value>
+                    <value>Info</value>
                 </componentInstanceProperties>
-                <componentName>hot_alertBanner</componentName>
-                <identifier>c_hot_alertBanner</identifier>
-                <visibilityRule>
-                    <criteria>
-                        <leftValue>{!Record.Status__c}</leftValue>
-                        <operator>EQUAL</operator>
-                        <rightValue>Sent in return</rightValue>
-                    </criteria>
-                </visibilityRule>
+                <componentName>hot_dynamicAlertBanner</componentName>
+                <identifier>c_hot_dynamicAlertBanner</identifier>
             </componentInstance>
         </itemInstances>
         <name>header</name>
         <type>Region</type>
     </flexiPageRegions>
     <flexiPageRegions>
-        <itemInstances>
-            <fieldInstance>
-                <fieldInstanceProperties>
-                    <name>uiBehavior</name>
-                    <value>readonly</value>
-                </fieldInstanceProperties>
-                <fieldItem>Record.Comment__c</fieldItem>
-                <identifier>RecordComment__cField</identifier>
-            </fieldInstance>
-        </itemInstances>
         <itemInstances>
             <fieldInstance>
                 <fieldItem>Record.ServiceAppointment__r.AppointmentNumber</fieldItem>
@@ -89,16 +80,6 @@
                 </fieldInstanceProperties>
                 <fieldItem>Record.ServiceResource__c</fieldItem>
                 <identifier>RecordServiceResource__cField</identifier>
-            </fieldInstance>
-        </itemInstances>
-        <itemInstances>
-            <fieldInstance>
-                <fieldInstanceProperties>
-                    <name>uiBehavior</name>
-                    <value>readonly</value>
-                </fieldInstanceProperties>
-                <fieldItem>Record.ReadyForProcessing__c</fieldItem>
-                <identifier>RecordReadyForProcessing__cField</identifier>
             </fieldInstance>
         </itemInstances>
         <itemInstances>

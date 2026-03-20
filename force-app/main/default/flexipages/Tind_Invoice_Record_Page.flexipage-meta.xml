@@ -7,7 +7,7 @@
                     <name>actionNames</name>
                     <valueList>
                         <valueListItems>
-                            <value>HOT_Invoice__c.Send_oppdragskvittering_i_retur</value>
+                            <value>HOT_Invoice__c.ProcessInvoiceButton</value>
                             <visibilityRule>
                                 <criteria>
                                     <leftValue>{!Record.Status__c}</leftValue>
@@ -68,6 +68,16 @@
                     <name>uiBehavior</name>
                     <value>none</value>
                 </fieldInstanceProperties>
+                <fieldItem>Record.WorkOrder__c</fieldItem>
+                <identifier>RecordWorkOrder_cField</identifier>
+            </fieldInstance>
+        </itemInstances>
+        <itemInstances>
+            <fieldInstance>
+                <fieldInstanceProperties>
+                    <name>uiBehavior</name>
+                    <value>none</value>
+                </fieldInstanceProperties>
                 <fieldItem>Record.ServiceResource__c</fieldItem>
                 <identifier>RecordServiceResource__cField</identifier>
             </fieldInstance>
@@ -102,32 +112,20 @@
                 <identifier>RecordComment__cField</identifier>
             </fieldInstance>
         </itemInstances>
-        <name>Facet-43a38987-fe24-448c-bd20-c9dbf578cc15</name>
-        <type>Facet</type>
-    </flexiPageRegions>
-    <flexiPageRegions>
-        <itemInstances>
-            <fieldInstance>
-                <fieldItem>Record.WorkOrder__r.HOT_IsInvoiced__c</fieldItem>
-                <identifier>RecordWorkOrder_rHOT_IsInvoiced_cField</identifier>
-            </fieldInstance>
-        </itemInstances>
         <itemInstances>
             <fieldInstance>
                 <fieldInstanceProperties>
                     <name>uiBehavior</name>
                     <value>none</value>
                 </fieldInstanceProperties>
-                <fieldItem>Record.WorkOrder__c</fieldItem>
-                <identifier>RecordWorkOrder_cField</identifier>
+                <fieldItem>Record.Is_RPAInvoiced__c</fieldItem>
+                <identifier>RecordIs_RPAInvoiced__cField</identifier>
             </fieldInstance>
         </itemInstances>
-        <itemInstances>
-            <fieldInstance>
-                <fieldItem>Record.WorkOrder__r.HOT_InvoiceStatus__c</fieldItem>
-                <identifier>RecordWorkOrder_rHOT_InvoiceStatus_cField</identifier>
-            </fieldInstance>
-        </itemInstances>
+        <name>Facet-43a38987-fe24-448c-bd20-c9dbf578cc15</name>
+        <type>Facet</type>
+    </flexiPageRegions>
+    <flexiPageRegions>
         <name>Facet-a537f06e-1230-42ff-b050-042cf116a1ab</name>
         <type>Facet</type>
     </flexiPageRegions>
