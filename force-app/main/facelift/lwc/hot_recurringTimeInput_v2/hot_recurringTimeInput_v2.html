@@ -57,46 +57,56 @@
             </div>
         </template>
 
-        <c-checkbox
-            label="Gjentagende"
-            oncheckboxclick={advancedTimes}
-            name="Gjentagende"
-            aria-label="Gjentagende bestilling?"
-        ></c-checkbox>
-        <div if:true={isAdvancedTimes} class="time-inputs-container" style="margin-bottom: 0.5rem" aria-live="polite">
-            <c-picklist
-                name="Gjenta"
-                choices={repeatingOptions}
-                onpicklistvaluechange={handleRepeatChoiceMade}
-                master-label="Gjenta"
-                desktop-style="width: 30%"
-                mobile-style="width: 100%"
-                data-id="recurringType"
+        <template lwc:if={hideAdvancedTimesInEditMode}>
+            <!-- Show nothing -->
+        </template>
+        <template lwc:else>
+            <c-checkbox
+                label="Gjentagende"
+                oncheckboxclick={advancedTimes}
+                name="Gjentagende"
+                aria-label="Gjentagende bestilling?"
+            ></c-checkbox>
+            <div
+                if:true={isAdvancedTimes}
+                class="time-inputs-container"
+                style="margin-bottom: 0.5rem"
+                aria-live="polite"
             >
-            </c-picklist>
-            <br />
-            <div if:true={showWeekDays} aria-live="polite">
-                <c-checkboxgroup
-                    data-id="recurringDays"
-                    checkboxes={days}
-                    oncheckboxgroupclick={handleDayChosen}
-                    header="Ukedager"
-                    error-text="Du må velge minst én dag tolkebehovet gjentas."
-                ></c-checkboxgroup>
-            </div>
-            <div aria-live="polite" if:true={isRepeating}>
-                <c-input
-                    label="Sluttdato"
-                    data-id="recurringEndDate"
-                    type="date"
-                    ongetvalueonchange={setRepeatingEndDateDate}
-                    name="recurring End Date"
-                    value={repeatingEndDateString}
-                    error-text="Feltet må fylles ut."
+                <c-picklist
+                    name="Gjenta"
+                    choices={repeatingOptions}
+                    onpicklistvaluechange={handleRepeatChoiceMade}
+                    master-label="Gjenta"
                     desktop-style="width: 30%"
-                ></c-input>
+                    mobile-style="width: 100%"
+                    data-id="recurringType"
+                >
+                </c-picklist>
+                <br />
+                <div if:true={showWeekDays} aria-live="polite">
+                    <c-checkboxgroup
+                        data-id="recurringDays"
+                        checkboxes={days}
+                        oncheckboxgroupclick={handleDayChosen}
+                        header="Ukedager"
+                        error-text="Du må velge minst én dag tolkebehovet gjentas."
+                    ></c-checkboxgroup>
+                </div>
+                <div aria-live="polite" if:true={isRepeating}>
+                    <c-input
+                        label="Sluttdato"
+                        data-id="recurringEndDate"
+                        type="date"
+                        ongetvalueonchange={setRepeatingEndDateDate}
+                        name="recurring End Date"
+                        value={repeatingEndDateString}
+                        error-text="Feltet må fylles ut."
+                        desktop-style="width: 30%"
+                    ></c-input>
+                </div>
             </div>
-        </div>
+        </template>
         <c-button
             if:false={isAdvancedTimes}
             type="button"
