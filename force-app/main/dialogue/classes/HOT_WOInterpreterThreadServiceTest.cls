@@ -147,7 +147,6 @@ private class HOT_WOInterpreterThreadServiceTest {
         Thread__c existingThread = new Thread__c();
         existingThread.RecordTypeId = HOT_MessageHelper.getHOTThreadRecordType();
         existingThread.CRM_Related_Object__c = existingAssignment.ServiceAppointmentId;
-        existingThread.HOT_ServiceAppointment__c = existingAssignment.ServiceAppointmentId;
         existingThread.HOT_WorkOrder__c = workOrder.Id;
         existingThread.CRM_Thread_Type__c = 'HOT_TOLK-FORMIDLER';
         existingThread.HOT_ServiceResource__c = existingInterpreter.Id;
@@ -177,29 +176,20 @@ private class HOT_WOInterpreterThreadServiceTest {
             SELECT COUNT()
             FROM Thread__c
             WHERE
-                HOT_WorkOrder__c = :workOrder.Id
+                CRM_Related_Object__c = :existingAssignment.ServiceAppointmentId
                 AND CRM_Thread_Type__c = 'HOT_TOLK-FORMIDLER'
-                AND HOT_ServiceResource__c = :existingInterpreter.Id
         ];
-        System.assertEquals(1, existingThreadCount, 'Should not create duplicate thread for same interpreter');
+        System.assertEquals(1, existingThreadCount, 'Should not create duplicate thread for same service appointment');
         Thread__c reusedThread = [
             SELECT HOT_ServiceAppointment__c, CRM_Related_Object__c
             FROM Thread__c
-            WHERE
-                HOT_WorkOrder__c = :workOrder.Id
-                AND CRM_Thread_Type__c = 'HOT_TOLK-FORMIDLER'
-                AND HOT_ServiceResource__c = :existingInterpreter.Id
+            WHERE Id = :existingThread.Id
             LIMIT 1
         ];
         System.assertEquals(
             existingAssignment.ServiceAppointmentId,
-            reusedThread.HOT_ServiceAppointment__c,
-            'Expected reused thread to keep Service Appointment reference'
-        );
-        System.assertEquals(
-            reusedThread.HOT_ServiceAppointment__c,
             reusedThread.CRM_Related_Object__c,
-            'Expected CRM_Related_Object__c to stay aligned with Service Appointment'
+            'Expected CRM_Related_Object__c to keep the Service Appointment reference'
         );
 
         List<Thread__c> allInterpreterThreads = [
@@ -217,5 +207,74 @@ private class HOT_WOInterpreterThreadServiceTest {
             }
         }
         System.assertEquals(2, messagesCreated, 'Expected one broadcast message per interpreter thread');
+    }
+
+    @IsTest
+    static void ignoresExistingWorkOrderThreadAndCreatesServiceAppointmentThreads() {
+        WorkOrder workOrder = [
+            SELECT Id, Subject, HOT_Request__r.Dispatcher__c, HOT_Request__r.Account__c
+            FROM WorkOrder
+            WHERE Subject = 'FLOW_THREAD_MSG_WO'
+            LIMIT 1
+        ];
+        User interpreterUser1 = [SELECT Id FROM User WHERE LastName = 'wotint1' LIMIT 1];
+        ServiceResource existingInterpreter = [
+            SELECT Id, AccountId, RelatedRecordId
+            FROM ServiceResource
+            WHERE RelatedRecordId = :interpreterUser1.Id
+            LIMIT 1
+        ];
+
+        Thread__c existingThread = new Thread__c();
+        existingThread.RecordTypeId = HOT_MessageHelper.getHOTThreadRecordType();
+        existingThread.CRM_Related_Object__c = workOrder.Id;
+        existingThread.HOT_WorkOrder__c = workOrder.Id;
+        existingThread.CRM_Thread_Type__c = 'HOT_TOLK-FORMIDLER';
+        existingThread.HOT_ServiceResource__c = existingInterpreter.Id;
+        existingThread.CRM_Account__c = existingInterpreter.AccountId;
+        existingThread.HOT_Account__c = workOrder.HOT_Request__r.Account__c;
+        existingThread.HOT_Dispatcher__c = workOrder.HOT_Request__r.Dispatcher__c;
+        existingThread.HOT_Title__c = workOrder.Subject;
+        existingThread.HOT_ParticipantIds__c = existingInterpreter.RelatedRecordId;
+        insert existingThread;
+
+        HOT_WOInterpreterThreadService.Input request = new HOT_WOInterpreterThreadService.Input();
+        request.workOrderId = workOrder.Id;
+        request.messageText = 'Broadcast should ignore work order thread';
+
+        Test.startTest();
+        List<HOT_WOInterpreterThreadService.Result> results = HOT_WOInterpreterThreadService.sendMessageToInterpreters(
+            new List<HOT_WOInterpreterThreadService.Input>{ request }
+        );
+        Test.stopTest();
+
+        System.assertEquals(1, results.size(), 'Expected exactly one result');
+        System.assertEquals(2, results[0].interpreterCount, 'Expected two interpreters');
+        System.assertEquals(2, results[0].createdThreadCount, 'Expected service appointment threads to be created');
+        System.assertEquals(2, results[0].messageCount, 'Expected message in both service appointment threads');
+
+        Integer serviceAppointmentThreadCount = [
+            SELECT COUNT()
+            FROM Thread__c
+            WHERE
+                HOT_WorkOrder__c = :workOrder.Id
+                AND CRM_Thread_Type__c = 'HOT_TOLK-FORMIDLER'
+                AND HOT_ServiceAppointment__c != NULL
+        ];
+        System.assertEquals(
+            2,
+            serviceAppointmentThreadCount,
+            'Expected two service appointment linked interpreter threads'
+        );
+
+        Integer workOrderOnlyThreadCount = [
+            SELECT COUNT()
+            FROM Thread__c
+            WHERE
+                HOT_WorkOrder__c = :workOrder.Id
+                AND CRM_Thread_Type__c = 'HOT_TOLK-FORMIDLER'
+                AND HOT_ServiceAppointment__c = NULL
+        ];
+        System.assertEquals(1, workOrderOnlyThreadCount, 'Expected legacy work order thread to remain untouched');
     }
 }
