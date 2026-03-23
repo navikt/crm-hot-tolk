@@ -84,7 +84,7 @@
                 >
                 </c-picklist>
                 <br />
-                <div if:true={showWeekDays} aria-live="polite">
+                <div lwc:if={showWeekDays} aria-live="polite">
                     <c-checkboxgroup
                         data-id="recurringDays"
                         checkboxes={days}
