@@ -307,6 +307,12 @@
         <scale>0</scale>
         <transformValues>
             <transformValueActions>
+                <inputParameters>
+                    <name>aggregationValues</name>
+                    <value>
+                        <elementReference>Invoice_ID_Collection</elementReference>
+                    </value>
+                </inputParameters>
                 <transformType>Count</transformType>
             </transformValueActions>
         </transformValues>
@@ -344,6 +350,12 @@
         <scale>0</scale>
         <transformValues>
             <transformValueActions>
+                <inputParameters>
+                    <name>aggregationValues</name>
+                    <value>
+                        <elementReference>SA_ID_Collection</elementReference>
+                    </value>
+                </inputParameters>
                 <transformType>Count</transformType>
             </transformValueActions>
         </transformValues>
