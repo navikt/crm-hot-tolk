@@ -277,4 +277,39 @@ private class HOT_WOInterpreterThreadServiceTest {
         ];
         System.assertEquals(1, workOrderOnlyThreadCount, 'Expected legacy work order thread to remain untouched');
     }
+
+    @IsTest
+    static void truncatesThreadNameWhenWorkOrderSubjectIsTooLong() {
+        WorkOrder workOrder = [
+            SELECT Id, Subject
+            FROM WorkOrder
+            WHERE Subject = 'FLOW_THREAD_MSG_WO'
+            LIMIT 1
+        ];
+        workOrder.Subject =
+            'Medlemsmote med foredrag Nord Trondelag Doveforening Levanger bo og aktivitetssenter';
+        update workOrder;
+
+        HOT_WOInterpreterThreadService.Input request = new HOT_WOInterpreterThreadService.Input();
+        request.workOrderId = workOrder.Id;
+        request.messageText = 'Broadcast to all';
+
+        Test.startTest();
+        List<HOT_WOInterpreterThreadService.Result> results = HOT_WOInterpreterThreadService.sendMessageToInterpreters(
+            new List<HOT_WOInterpreterThreadService.Input>{ request }
+        );
+        Test.stopTest();
+
+        System.assertEquals(1, results.size(), 'Expected exactly one result');
+        System.assertEquals('Processed', results[0].statusMessage, 'Expected successful processing status');
+
+        for (Thread__c thread : [
+            SELECT Name, HOT_Title__c
+            FROM Thread__c
+            WHERE HOT_WorkOrder__c = :workOrder.Id AND CRM_Thread_Type__c = 'HOT_TOLK-FORMIDLER'
+        ]) {
+            System.assert(thread.Name.length() <= 80, 'Expected thread name to be truncated to the field limit');
+            System.assertEquals(workOrder.Subject, thread.HOT_Title__c, 'Expected full subject to remain in HOT_Title__c');
+        }
+    }
 }
