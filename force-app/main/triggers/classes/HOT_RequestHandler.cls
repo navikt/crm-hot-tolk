@@ -1,8 +1,94 @@
 public without sharing class HOT_RequestHandler extends MyTriggers {
+    private static final Map<String, String> SERVICE_TERRITORY_DEV_NAME_BY_QUEUE_DEV_NAME =
+        buildServiceTerritoryDevNameByQueueDevName();
+    private static Map<Id, Id> serviceTerritoryIdByQueueId = new Map<Id, Id>();
+    private static Map<String, Id> serviceTerritoryIdByServiceTerritoryDevName = new Map<String, Id>();
+
     private static void handleException(Exception e) {
         LoggerUtility logger = new LoggerUtility();
         logger.exception(e, CRM_ApplicationDomain.Domain.HOT);
         logger.publishSynch();
+    }
+
+    private static Map<String, String> buildServiceTerritoryDevNameByQueueDevName() {
+        Map<String, String> serviceTerritoryDevNameByQueueDevName = new Map<String, String>();
+        for (HOT_ServiceTerritoryByQueue__mdt serviceTerritoryByQueue : HOT_ServiceTerritoryByQueue__mdt.getAll()
+            .values()) {
+            serviceTerritoryDevNameByQueueDevName.put(
+                serviceTerritoryByQueue.Queue__c,
+                serviceTerritoryByQueue.ServiceTerritory__c
+            );
+        }
+        return serviceTerritoryDevNameByQueueDevName;
+    }
+
+    private static Set<Id> getUncachedQueueIds(Set<Id> queueIds) {
+        Set<Id> uncachedQueueIds = new Set<Id>();
+        for (Id queueId : queueIds) {
+            if (queueId != null && !serviceTerritoryIdByQueueId.containsKey(queueId)) {
+                uncachedQueueIds.add(queueId);
+            }
+        }
+        return uncachedQueueIds;
+    }
+
+    private static Map<Id, Group> getQueuesById(Set<Id> queueIds) {
+        return new Map<Id, Group>([SELECT Id, DeveloperName FROM Group WHERE Type = 'Queue' AND Id IN :queueIds]);
+    }
+
+    private static Set<String> getMissingServiceTerritoryDevNames(List<Group> queues) {
+        Set<String> missingServiceTerritoryDevNames = new Set<String>();
+        for (Group queue : queues) {
+            String serviceTerritoryDevName = SERVICE_TERRITORY_DEV_NAME_BY_QUEUE_DEV_NAME.get(queue.DeveloperName);
+            if (
+                serviceTerritoryDevName != null &&
+                !serviceTerritoryIdByServiceTerritoryDevName.containsKey(serviceTerritoryDevName)
+            ) {
+                missingServiceTerritoryDevNames.add(serviceTerritoryDevName);
+            }
+        }
+        return missingServiceTerritoryDevNames;
+    }
+
+    private static void cacheServiceTerritoryIdsByDevName(Set<String> serviceTerritoryDevNames) {
+        if (serviceTerritoryDevNames.isEmpty()) {
+            return;
+        }
+
+        for (ServiceTerritory serviceTerritory : [
+            SELECT Id, HOT_DeveloperName__c
+            FROM ServiceTerritory
+            WHERE HOT_DeveloperName__c IN :serviceTerritoryDevNames
+        ]) {
+            serviceTerritoryIdByServiceTerritoryDevName.put(serviceTerritory.HOT_DeveloperName__c, serviceTerritory.Id);
+        }
+    }
+
+    private static Id resolveServiceTerritoryId(Group queue) {
+        if (queue == null) {
+            return null;
+        }
+
+        String serviceTerritoryDevName = SERVICE_TERRITORY_DEV_NAME_BY_QUEUE_DEV_NAME.get(queue.DeveloperName);
+        if (serviceTerritoryDevName == null) {
+            return null;
+        }
+
+        return serviceTerritoryIdByServiceTerritoryDevName.get(serviceTerritoryDevName);
+    }
+
+    private static void cacheServiceTerritoryIdsByQueueId(Set<Id> queueIds) {
+        Set<Id> uncachedQueueIds = getUncachedQueueIds(queueIds);
+        if (uncachedQueueIds.isEmpty() || SERVICE_TERRITORY_DEV_NAME_BY_QUEUE_DEV_NAME.isEmpty()) {
+            return;
+        }
+
+        Map<Id, Group> queuesById = getQueuesById(uncachedQueueIds);
+        cacheServiceTerritoryIdsByDevName(getMissingServiceTerritoryDevNames(queuesById.values()));
+
+        for (Id queueId : uncachedQueueIds) {
+            serviceTerritoryIdByQueueId.put(queueId, resolveServiceTerritoryId(queuesById.get(queueId)));
+        }
     }
     public override void onBeforeInsert() {
         setStatusDefault((List<HOT_Request__c>) records);
@@ -493,30 +579,14 @@ public without sharing class HOT_RequestHandler extends MyTriggers {
     }
 
     public static void setServiceTerritory(List<HOT_Request__c> requests) {
-        List<HOT_ServiceTerritoryByQueue__mdt> serviceTerritoryByQueueList = HOT_ServiceTerritoryByQueue__mdt.getAll()
-            .values();
-        Map<String, String> serviceTerritoryByQueue = new Map<String, String>();
-        for (HOT_ServiceTerritoryByQueue__mdt STbyQ : serviceTerritoryByQueueList) {
-            serviceTerritoryByQueue.put(STbyQ.Queue__c, STbyQ.ServiceTerritory__c);
-        }
-        List<Group> queues = [
-            SELECT Id, Name, DeveloperName
-            FROM Group
-            WHERE Type = 'Queue' AND DeveloperName IN :serviceTerritoryByQueue.keySet()
-        ];
-        List<ServiceTerritory> serviceTerritories = [
-            SELECT Id, Name, HOT_DeveloperName__c
-            FROM ServiceTerritory
-            WHERE HOT_DeveloperName__c IN :serviceTerritoryByQueue.values()
-        ];
-        Map<Id, Id> serviceTerritoryIdByQueueId = new Map<Id, Id>();
-        for (Group queue : queues) {
-            for (ServiceTerritory serviceTerritory : serviceTerritories) {
-                if (serviceTerritoryByQueue.get(queue.DeveloperName) == serviceTerritory.HOT_DeveloperName__c) {
-                    serviceTerritoryIdByQueueId.put(queue.Id, serviceTerritory.Id);
-                }
+        Set<Id> queueIds = new Set<Id>();
+        for (HOT_Request__c request : requests) {
+            if (request.OwnerId != null) {
+                queueIds.add(request.OwnerId);
             }
         }
+        cacheServiceTerritoryIdsByQueueId(queueIds);
+
         for (HOT_Request__c request : requests) {
             if (serviceTerritoryIdByQueueId.get(request.OwnerId) != null) {
                 request.ServiceTerritory__c = serviceTerritoryIdByQueueId.get(request.OwnerId);
