@@ -46,3 +46,21 @@ export let mobileColumns = [
         svg: true
     }
 ];
+
+export let iconByValue = {
+    true: {
+        icon: 'Information',
+        fill: '',
+        ariaLabel: 'Ulest melding'
+    },
+    false: {
+        icon: 'SuccessFilled',
+        fill: 'Green',
+        ariaLabel: 'Ingen nye meldinger'
+    },
+    noThread: {
+        icon: '',
+        fill: '',
+        ariaLabel: ''
+    }
+};
