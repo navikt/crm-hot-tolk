@@ -21,6 +21,10 @@
         <enabled>true</enabled>
     </classAccesses>
     <classAccesses>
+        <apexClass>HOT_MobileThreadListcontroller</apexClass>
+        <enabled>true</enabled>
+    </classAccesses>
+    <classAccesses>
         <apexClass>HOT_ThreadDetailController</apexClass>
         <enabled>true</enabled>
     </classAccesses>
@@ -1925,6 +1929,10 @@
     </tabSettings>
     <tabSettings>
         <tab>HOT_Resource__c</tab>
+        <visibility>Visible</visibility>
+    </tabSettings>
+    <tabSettings>
+        <tab>HOT_Tolk_Mobile_Thread_List</tab>
         <visibility>Visible</visibility>
     </tabSettings>
     <tabSettings>

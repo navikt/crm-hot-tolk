@@ -1,17 +1,14 @@
-import { LightningElement, api, wire } from 'lwc';
-import getMyThreads from '@salesforce/apex/HOT_ThreadListController.getAllMyThreads';
-import getContactId from '@salesforce/apex/HOT_MessageHelper.getUserContactId';
+import { LightningElement } from 'lwc';
+import getMyThreads from '@salesforce/apex/HOT_MobileThreadListcontroller.getThreads';
 import { NavigationMixin } from 'lightning/navigation';
+import userId from '@salesforce/user/Id';
 
-export default class Hot_threadList_v2 extends NavigationMixin(LightningElement) {
-    @api isFreelanceView;
-
+export default class hot_mobileThreadList extends NavigationMixin(LightningElement) {
     data;
     error;
     threads;
     noTreads = false;
     hasThreads = false;
-    userContactId;
     filterValue;
     searchValue;
 
@@ -19,23 +16,12 @@ export default class Hot_threadList_v2 extends NavigationMixin(LightningElement)
     wiredThreadsResult;
     unreadThreadsCount;
 
-    get headerText() {
-        if (this.isFreelanceView) {
-            return 'Mine samtaler som frilanstolk';
-        } else {
-            return 'Mine samtaler';
-        }
-    }
     connectedCallback() {
         this.loadData();
     }
 
     loadData() {
-        getContactId()
-            .then((contactId) => {
-                this.userContactId = contactId;
-                return getMyThreads({ isFreelance: this.isFreelanceView });
-            })
+        getMyThreads()
             .then((threadData) => {
                 this.threads = threadData;
                 this.error = undefined;
@@ -57,12 +43,12 @@ export default class Hot_threadList_v2 extends NavigationMixin(LightningElement)
     }
 
     tryMapAndSortThreads() {
-        if (this.userContactId && Array.isArray(this.threads)) {
+        if (Array.isArray(this.threads)) {
             this.mapAndSortThreads();
         }
     }
     mapAndSortThreads() {
-        const uid = this.userContactId;
+        const uid = userId;
         const fv = this.filterValue;
         const sv = (this.searchValue ?? '').trim().toLowerCase(); // søkestreng
 
@@ -99,7 +85,6 @@ export default class Hot_threadList_v2 extends NavigationMixin(LightningElement)
                 if (a.isRead !== b.isRead) return a.isRead ? 1 : -1; // ulest først
                 return b.latestMessageSent - a.latestMessageSent; // nyeste først
             });
-
         this.unreadThreadsCount = this.sortedThreads.filter((t) => !t.isRead).length;
 
         if (this.sortedThreads.length == 0) {
@@ -135,11 +120,7 @@ export default class Hot_threadList_v2 extends NavigationMixin(LightningElement)
             return 'Med formidler';
         }
         if (threadTypeValue === 'HOT_BRUKER-TOLK') {
-            if (this.isFreelanceView == true) {
-                return 'Med bruker';
-            } else {
-                return 'Med tolk';
-            }
+            return 'Med bruker';
         }
         if (threadTypeValue === 'HOT_BRUKER-BESTILLER') {
             return 'Samtale mellom bruker og bestiller';
@@ -158,31 +139,14 @@ export default class Hot_threadList_v2 extends NavigationMixin(LightningElement)
     }
     goToThread(event) {
         // Vi skal lage en record page for alle typer tråder men foreløpig nå må den gå til hver sin.
-        if (this.isFreelanceView) {
-            const baseUrl = '/samtale-frilans';
-            const attributes = `recordId=${event.detail}&from=mine-samtaler-frilanstolk`;
-            const url = `${baseUrl}?${attributes}`;
 
-            this[NavigationMixin.Navigate]({
-                type: 'standard__webPage',
-                attributes: {
-                    url: url
-                }
-            });
-        } else {
-            this[NavigationMixin.Navigate]({
-                type: 'standard__recordPage',
-                attributes: {
-                    recordId: event.detail,
-                    objectApiName: 'Thread__c',
-                    actionName: 'view'
-                },
-                state: {
-                    from: 'mine-samtaler',
-                    recordId: event.detail,
-                    level: 'WO'
-                }
-            });
-        }
+        this[NavigationMixin.Navigate]({
+            type: 'standard__recordPage',
+            attributes: {
+                recordId: event.detail,
+                objectApiName: 'Thread__c',
+                actionName: 'view'
+            }
+        });
     }
 }
