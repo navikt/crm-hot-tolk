@@ -14,8 +14,6 @@ export default class hot_recurringTimeInput_v2 extends LightningElement {
     @track times = [];
     @track isOnlyOneTime = true;
     @track isAdvancedTimes;
-    @api refreshToken;
-    @api hideAdvancedTimesInEditMode = false;
     uniqueIdCounter = 0;
 
     setTimesValue(timeObject) {
