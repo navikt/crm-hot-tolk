@@ -10,7 +10,7 @@
             <assignToReference>Interested_Resource_Record.Status__c</assignToReference>
             <operator>Assign</operator>
             <value>
-                <stringValue>Wanted</stringValue>
+                <stringValue>Interested</stringValue>
             </value>
         </assignmentItems>
         <assignmentItems>
@@ -20,6 +20,16 @@
                 <elementReference>Get_SR.Id</elementReference>
             </value>
         </assignmentItems>
+        <assignmentItems>
+            <assignToReference>Interested_Resource_Record.ServiceAppointment__c</assignToReference>
+            <operator>Assign</operator>
+            <value>
+                <elementReference>Get_SA.Id</elementReference>
+            </value>
+        </assignmentItems>
+        <connector>
+            <targetReference>Create_Intrested_Record</targetReference>
+        </connector>
     </assignments>
     <environments>Default</environments>
     <interviewLabel>HOT Create Interested Resource On SA {!$Flow.CurrentDateTime}</interviewLabel>
@@ -43,6 +53,13 @@
         </value>
     </processMetadataValues>
     <processType>Flow</processType>
+    <recordCreates>
+        <name>Create_Intrested_Record</name>
+        <label>Create Intrested Record</label>
+        <locationX>0</locationX>
+        <locationY>0</locationY>
+        <inputReference>Interested_Resource_Record</inputReference>
+    </recordCreates>
     <recordLookups>
         <name>Get_SA</name>
         <label>Get SA</label>
