@@ -16,6 +16,7 @@ export default class hot_requestFormWrapper_v2 extends NavigationMixin(Lightning
     @track fieldValues = {};
     @track componentValues = {};
     @track personAccount = { Id: '', Name: '' };
+    refreshToken = null;
     @wire(getPersonAccount)
     wiredGetPersonAccount(result) {
         if (result.data) {
@@ -49,15 +50,37 @@ export default class hot_requestFormWrapper_v2 extends NavigationMixin(Lightning
 
     async handleSubmit(event) {
         event.preventDefault();
+
+        //stopper dobbel submit
+        if (this.submitted) {
+            return;
+        }
+        this.submitted = true;
         this.spin = true;
-        this.setAccountLookupFieldsBasedOnRequestType();
-        this.getFieldValuesFromSubForms();
-        let status = 'Åpen';
-        if (this.isEditOrCopyMode) {
-            this.deleteMarkedFiles();
-            status = await getRequestStatus({ recordId: this.recordId });
-            if (status !== null && status !== 'Åpen') {
-                this.showModalOnEditNotAllowed();
+
+        // Disable knappen med én gang
+        const saveBtn = this.template.querySelector('[data-id="saveButton"]');
+        if (saveBtn) {
+            saveBtn.disabled = true;
+        }
+
+        try {
+            this.setAccountLookupFieldsBasedOnRequestType();
+            this.getFieldValuesFromSubForms();
+
+            let status = 'Åpen';
+
+            if (this.isEditOrCopyMode) {
+                this.deleteMarkedFiles();
+                status = await getRequestStatus({ recordId: this.recordId });
+
+                if (status !== null && status !== 'Åpen') {
+                    this.showModalOnEditNotAllowed();
+                    this.spin = false;
+                    this.submitted = false;
+                    if (saveBtn) saveBtn.disabled = false;
+                    return;
+                }
             }
         }
         let hasErrors = this.handleValidation();
@@ -148,11 +171,16 @@ export default class hot_requestFormWrapper_v2 extends NavigationMixin(Lightning
     handleAlertDialogClick(event) {
         if (event.detail === 'confirm' && this.modalHeader === 'Du har allerede bestillinger i dette tidsrommet.') {
             this.spin = true;
+            this.submitted = true;
+            const saveBtn = this.template.querySelector('[data-id="saveButton"]');
+            if (saveBtn) saveBtn.disabled = true;
             this.hideFormAndShowLoading();
             this.submitForm();
         }
         if (event.detail === 'cancel' && this.modalHeader === 'Du har allerede bestillinger i dette tidsrommet.') {
             this.template.querySelector('[data-id="saveButton"]').disabled = false;
+            this.submitted = false;
+            this.spin = false;
         }
         if (event.detail === 'confirm' && this.modalHeader === 'Kunne ikke redigere bestilling') {
             this.goToMyRequests();
@@ -179,7 +207,7 @@ export default class hot_requestFormWrapper_v2 extends NavigationMixin(Lightning
         this.template.querySelector('c-alertdialog').showModal();
         this.spin = false;
     }
-    @track requestId;
+    requestId;
 
     handleSuccess(event) {
         const record = event.detail.id;
