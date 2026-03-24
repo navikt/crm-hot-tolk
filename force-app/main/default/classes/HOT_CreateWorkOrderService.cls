@@ -58,7 +58,6 @@ public without sharing class HOT_CreateWorkOrderService {
 
         TimeZone tz = UserInfo.getTimeZone();
         Datetime oldStartDate = input.startDate;
-
         if (input.endDate <= input.startDate) {
             errors.add('Slutt tid må være etter start tid.');
             return errors;
@@ -85,200 +84,229 @@ public without sharing class HOT_CreateWorkOrderService {
             return errors;
         }
 
-        Map<Date, List<WorkOrder>> existingByDate = new Map<Date, List<WorkOrder>>();
-        for (WorkOrder wo : [
-            SELECT Id, StartDate, EndDate, Status
-            FROM WorkOrder
-            WHERE HOT_Request__c = :input.requestId AND Status != 'Canceled' AND Status != 'Annul'
-        ]) {
-            Date d = wo.StartDate.date();
-            if (!existingByDate.containsKey(d)) {
-                existingByDate.put(d, new List<WorkOrder>());
+        if (input.recurringType == 'Never') {
+            WorkOrder workOrder = new workOrder(
+                HOT_Request__c = input.requestId,
+                StartDate = input.startDate,
+                EndDate = input.endDate
+            );
+
+            try {
+                insert workOrder;
+            } catch (Exception e) {
+                errors.add('Opprettelsen av arbeidsordren feilet.');
+                logger.exception(e, request, CRM_ApplicationDomain.Domain.HOT);
+                logger.publishSynch();
             }
-            existingByDate.get(d).add(wo);
-        }
 
-        List<WorkOrder> workOrdersToInsert = new List<WorkOrder>();
-        List<WorkOrder> workOrdersToCancel = new List<WorkOrder>();
-        Set<Id> cancelIds = new Set<Id>();
-        Set<String> plannedInsertKeys = new Set<String>();
+            return errors;
+        } else if (input.recurringType == 'Daily') {
+            List<WorkOrder> workOrders = new List<WorkOrder>();
+            Integer numberOfRecurrences = input.startDate.date().daysBetween(input.recurringEndDate);
 
-        try {
-            if (input.recurringType == 'Never') {
-                handleOccurrence(
-                    input.requestId,
-                    input.startDate,
-                    input.endDate,
-                    existingByDate,
-                    cancelIds,
-                    workOrdersToCancel,
-                    plannedInsertKeys,
-                    workOrdersToInsert
+            if (numberOfRecurrences > maxNumberOfRecurrences) {
+                errors.add('Kan ikke opprette flere enn 200 arbeidsordre av gangen');
+                return errors;
+            }
+
+            for (Integer i = 0; i <= numberOfRecurrences; i++) {
+                Datetime startDate = input.startDate.addDays(i);
+                Datetime endDate = input.endDate.addDays(i);
+                Integer os = tz.getOffset(startDate) - tz.getOffset(oldStartDate);
+                startDate = startDate.addHours(-os / 3600000);
+                endDate = endDate.addHours(-os / 3600000);
+                WorkOrder workOrder = new workOrder(
+                    HOT_Request__c = input.requestId,
+                    StartDate = startDate,
+                    EndDate = endDate
                 );
-            } else if (input.recurringType == 'Daily') {
-                Integer numberOfRecurrences = input.startDate.date().daysBetween(input.recurringEndDate);
+                workOrders.add(workOrder);
+            }
 
-                if (numberOfRecurrences > maxNumberOfRecurrences) {
-                    errors.add('Kan ikke opprette flere enn 200 arbeidsordre av gangen');
-                    return errors;
-                }
+            try {
+                insert workOrders;
+            } catch (Exception e) {
+                errors.add('Opprettelsen av arbeidsordrene feilet.');
+                logger.exception(e, request, CRM_ApplicationDomain.Domain.HOT);
+                logger.publishSynch();
+            }
 
-                for (Integer i = 0; i <= numberOfRecurrences; i++) {
-                    Datetime startDate = input.startDate.addDays(i);
-                    Datetime endDate = input.endDate.addDays(i);
-                    Integer os = tz.getOffset(startDate) - tz.getOffset(oldStartDate);
-                    startDate = startDate.addHours(-os / 3600000);
-                    endDate = endDate.addHours(-os / 3600000);
+            return errors;
+        } else if (input.recurringType == 'Weekly') {
+            List<WorkOrder> workOrders = new List<WorkOrder>();
+            Integer numberOfRecurrences = input.startDate.date().daysBetween(input.recurringEndDate);
 
-                    handleOccurrence(
-                        input.requestId,
-                        startDate,
-                        endDate,
-                        existingByDate,
-                        cancelIds,
-                        workOrdersToCancel,
-                        plannedInsertKeys,
-                        workOrdersToInsert
+            for (Integer i = 0; i <= numberOfRecurrences; i++) {
+                Datetime startDate = input.startDate.addDays(i);
+                Datetime endDate = input.endDate.addDays(i);
+                String dayOfWeek = startDate.format('EEEE');
+                Integer os = tz.getOffset(startDate) - tz.getOffset(oldStartDate);
+                startDate = startDate.addHours(-os / 3600000);
+                endDate = endDate.addHours(-os / 3600000);
+
+                System.debug('dayOfWeek: ' + dayOfWeek);
+                if (
+                    input.monday && dayOfWeek == 'Monday' ||
+                    input.tuesday && dayOfWeek == 'Tuesday' ||
+                    input.wednesday && dayOfWeek == 'Wednesday' ||
+                    input.thursday && dayOfWeek == 'Thursday' ||
+                    input.friday && dayOfWeek == 'Friday' ||
+                    input.saturday && dayOfWeek == 'Saturday' ||
+                    input.sunday && dayOfWeek == 'Sunday'
+                ) {
+                    WorkOrder workOrder = new workOrder(
+                        HOT_Request__c = input.requestId,
+                        StartDate = startDate,
+                        EndDate = endDate
                     );
-                }
-            } else if (
-                input.recurringType == 'Weekly' ||
-                input.recurringType == 'Biweekly' ||
-                input.recurringType == 'Every4Weeks'
-            ) {
-                Integer numberOfRecurrences = input.startDate.date().daysBetween(input.recurringEndDate);
-
-                Integer jumpAfterSunday = 0;
-                if (input.recurringType == 'Biweekly')
-                    jumpAfterSunday = 7;
-                if (input.recurringType == 'Every4Weeks')
-                    jumpAfterSunday = 21;
-
-                for (Integer i = 0; i <= numberOfRecurrences; i++) {
-                    Datetime startDate = input.startDate.addDays(i);
-                    Datetime endDate = input.endDate.addDays(i);
-                    String dayOfWeek = startDate.format('EEEE');
-                    Integer os = tz.getOffset(startDate) - tz.getOffset(oldStartDate);
-                    startDate = startDate.addHours(-os / 3600000);
-                    endDate = endDate.addHours(-os / 3600000);
-
-                    if (
-                        input.monday && dayOfWeek == 'Monday' ||
-                        input.tuesday && dayOfWeek == 'Tuesday' ||
-                        input.wednesday && dayOfWeek == 'Wednesday' ||
-                        input.thursday && dayOfWeek == 'Thursday' ||
-                        input.friday && dayOfWeek == 'Friday' ||
-                        input.saturday && dayOfWeek == 'Saturday' ||
-                        input.sunday && dayOfWeek == 'Sunday'
-                    ) {
-                        handleOccurrence(
-                            input.requestId,
-                            startDate,
-                            endDate,
-                            existingByDate,
-                            cancelIds,
-                            workOrdersToCancel,
-                            plannedInsertKeys,
-                            workOrdersToInsert
-                        );
-                    }
-
-                    if (jumpAfterSunday > 0 && dayOfWeek == 'Sunday') {
-                        i = i + jumpAfterSunday;
-                    }
-                }
-
-                if (workOrdersToInsert.size() > maxNumberOfRecurrences) {
-                    errors.add('Kan ikke opprette mer enn 200 arbeidsordre av gangen');
-                    return errors;
-                }
-            } else if (input.recurringType == 'Monthly') {
-                Integer numberOfRecurrences = input.startDate.date().monthsBetween(input.recurringEndDate);
-
-                if (numberOfRecurrences > maxNumberOfRecurrences) {
-                    errors.add('Kan ikke opprette mer enn 200 arbeidsordre av gangen');
-                    return errors;
-                }
-
-                for (Integer i = 0; i <= numberOfRecurrences; i++) {
-                    Datetime startDate = input.startDate.addMonths(i);
-                    Datetime endDate = input.endDate.addMonths(i);
-                    Integer os = tz.getOffset(startDate) - tz.getOffset(oldStartDate);
-                    startDate = startDate.addHours(-os / 3600000);
-                    endDate = endDate.addHours(-os / 3600000);
-
-                    if (startDate.date() <= input.recurringEndDate) {
-                        handleOccurrence(
-                            input.requestId,
-                            startDate,
-                            endDate,
-                            existingByDate,
-                            cancelIds,
-                            workOrdersToCancel,
-                            plannedInsertKeys,
-                            workOrdersToInsert
-                        );
-                    }
+                    workOrders.add(workOrder);
                 }
             }
 
-            if (!workOrdersToCancel.isEmpty()) {
-                update workOrdersToCancel;
+            if (workOrders.size() > maxNumberOfRecurrences) {
+                errors.add('Kan ikke opprette mer enn 200 arbeidsordre av gangen');
+                return errors;
             }
-            if (!workOrdersToInsert.isEmpty()) {
-                insert workOrdersToInsert;
+
+            try {
+                insert workOrders;
+            } catch (Exception e) {
+                errors.add('Opprettelsen av arbeidsordrene feilet.');
+                logger.exception(e, request, CRM_ApplicationDomain.Domain.HOT);
+                logger.publishSynch();
             }
-        } catch (Exception e) {
-            errors.add('Opprettelsen av arbeidsordrene feilet.');
-            logger.exception(e, request, CRM_ApplicationDomain.Domain.HOT);
-            logger.publishSynch();
+
+            return errors;
+        } else if (input.recurringType == 'Biweekly') {
+            List<WorkOrder> workOrders = new List<WorkOrder>();
+            Integer numberOfRecurrences = input.startDate.date().daysBetween(input.recurringEndDate);
+
+            for (Integer i = 0; i <= numberOfRecurrences; i++) {
+                Datetime startDate = input.startDate.addDays(i);
+                Datetime endDate = input.endDate.addDays(i);
+                String dayOfWeek = startDate.format('EEEE');
+                Integer os = tz.getOffset(startDate) - tz.getOffset(oldStartDate);
+                startDate = startDate.addHours(-os / 3600000);
+                endDate = endDate.addHours(-os / 3600000);
+                System.debug('dayOfWeek: ' + dayOfWeek);
+                if (
+                    input.monday && dayOfWeek == 'Monday' ||
+                    input.tuesday && dayOfWeek == 'Tuesday' ||
+                    input.wednesday && dayOfWeek == 'Wednesday' ||
+                    input.thursday && dayOfWeek == 'Thursday' ||
+                    input.friday && dayOfWeek == 'Friday' ||
+                    input.saturday && dayOfWeek == 'Saturday' ||
+                    input.sunday && dayOfWeek == 'Sunday'
+                ) {
+                    WorkOrder workOrder = new workOrder(
+                        HOT_Request__c = input.requestId,
+                        StartDate = startDate,
+                        EndDate = endDate
+                    );
+                    workOrders.add(workOrder);
+                }
+                if (dayOfWeek == 'Sunday') {
+                    i = i + 7;
+                }
+            }
+
+            if (workOrders.size() > maxNumberOfRecurrences) {
+                errors.add('Kan ikke opprette mer enn 200 arbeidsordre av gangen');
+                return errors;
+            }
+
+            try {
+                insert workOrders;
+            } catch (Exception e) {
+                errors.add('Opprettelsen av arbeidsordrene feilet.');
+                logger.exception(e, request, CRM_ApplicationDomain.Domain.HOT);
+                logger.publishSynch();
+            }
+
+            return errors;
+        } else if (input.recurringType == 'Every4Weeks') {
+            List<WorkOrder> workOrders = new List<WorkOrder>();
+            Integer numberOfRecurrences = input.startDate.date().daysBetween(input.recurringEndDate);
+
+            for (Integer i = 0; i <= numberOfRecurrences; i++) {
+                Datetime startDate = input.startDate.addDays(i);
+                Datetime endDate = input.endDate.addDays(i);
+                String dayOfWeek = startDate.format('EEEE');
+                Integer os = tz.getOffset(startDate) - tz.getOffset(oldStartDate);
+                startDate = startDate.addHours(-os / 3600000);
+                endDate = endDate.addHours(-os / 3600000);
+                System.debug('dayOfWeek: ' + dayOfWeek);
+                if (
+                    input.monday && dayOfWeek == 'Monday' ||
+                    input.tuesday && dayOfWeek == 'Tuesday' ||
+                    input.wednesday && dayOfWeek == 'Wednesday' ||
+                    input.thursday && dayOfWeek == 'Thursday' ||
+                    input.friday && dayOfWeek == 'Friday' ||
+                    input.saturday && dayOfWeek == 'Saturday' ||
+                    input.sunday && dayOfWeek == 'Sunday'
+                ) {
+                    WorkOrder workOrder = new workOrder(
+                        HOT_Request__c = input.requestId,
+                        StartDate = startDate,
+                        EndDate = endDate
+                    );
+                    workOrders.add(workOrder);
+                }
+                if (dayOfWeek == 'Sunday') {
+                    i = i + 21;
+                }
+            }
+
+            if (workOrders.size() > maxNumberOfRecurrences) {
+                errors.add('Kan ikke opprette mer enn 200 arbeidsordre av gangen');
+                return errors;
+            }
+
+            try {
+                insert workOrders;
+            } catch (Exception e) {
+                errors.add('Opprettelsen av arbeidsordrene feilet.');
+                logger.exception(e, request, CRM_ApplicationDomain.Domain.HOT);
+                logger.publishSynch();
+            }
+
+            return errors;
+        } else if (input.recurringType == 'Monthly') {
+            List<WorkOrder> workOrders = new List<WorkOrder>();
+            Integer numberOfRecurrences = input.startDate.date().monthsBetween(input.recurringEndDate);
+
+            if (numberOfRecurrences > maxNumberOfRecurrences) {
+                errors.add('Kan ikke opprette mer enn 200 arbeidsordre av gangen');
+                return errors;
+            }
+
+            for (Integer i = 0; i <= numberOfRecurrences; i++) {
+                Datetime startDate = input.startDate.addMonths(i);
+                Datetime endDate = input.endDate.addMonths(i);
+                Integer os = tz.getOffset(startDate) - tz.getOffset(oldStartDate);
+                startDate = startDate.addHours(-os / 3600000);
+                endDate = endDate.addHours(-os / 3600000);
+                WorkOrder workOrder = new workOrder(
+                    HOT_Request__c = input.requestId,
+                    StartDate = startDate,
+                    EndDate = endDate
+                );
+                if (startDate.date() <= input.recurringEndDate) {
+                    workOrders.add(workOrder);
+                }
+            }
+
+            try {
+                insert workOrders;
+            } catch (Exception e) {
+                errors.add('Opprettelsen av arbeidsordrene feilet.');
+                logger.exception(e, request, CRM_ApplicationDomain.Domain.HOT);
+                logger.publishSynch();
+            }
+
+            return errors;
         }
 
         return errors;
-    }
-
-    private static void handleOccurrence(
-        String requestId,
-        Datetime startDate,
-        Datetime endDate,
-        Map<Date, List<WorkOrder>> existingByDate,
-        Set<Id> cancelIds,
-        List<WorkOrder> workOrdersToCancel,
-        Set<String> plannedInsertKeys,
-        List<WorkOrder> workOrdersToInsert
-    ) {
-        Date d = startDate.date();
-        String key = startDate.format('yyyy-MM-dd HH:mm') + '|' + endDate.format('yyyy-MM-dd HH:mm');
-
-        if (plannedInsertKeys.contains(key)) {
-            return;
-        }
-
-        List<WorkOrder> existing = existingByDate.get(d);
-        if (existing != null && !existing.isEmpty()) {
-            Boolean hasExact = false;
-            for (WorkOrder ex : existing) {
-                String exKey = ex.StartDate.format('yyyy-MM-dd HH:mm') + '|' + ex.EndDate.format('yyyy-MM-dd HH:mm');
-                if (exKey == key) {
-                    hasExact = true;
-                    break;
-                }
-            }
-
-            if (hasExact) {
-                return;
-            }
-
-            for (WorkOrder ex : existing) {
-                if (!cancelIds.contains(ex.Id)) {
-                    cancelIds.add(ex.Id);
-                    ex.Status = 'Canceled';
-                    workOrdersToCancel.add(ex);
-                }
-            }
-        }
-
-        plannedInsertKeys.add(key);
-        workOrdersToInsert.add(new WorkOrder(HOT_Request__c = requestId, StartDate = startDate, EndDate = endDate));
     }
 }
