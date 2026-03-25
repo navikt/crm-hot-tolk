@@ -1,6 +1,5 @@
 public without sharing class HOT_RequestHandler extends MyTriggers {
-    private static final Map<String, String> SERVICE_TERRITORY_DEV_NAME_BY_QUEUE_DEV_NAME =
-        buildServiceTerritoryDevNameByQueueDevName();
+    private static Map<String, String> serviceTerritoryDevNameByQueueDevName;
     private static Map<Id, Id> serviceTerritoryIdByQueueId = new Map<Id, Id>();
     private static Map<String, Id> serviceTerritoryIdByServiceTerritoryDevName = new Map<String, Id>();
 
@@ -22,6 +21,13 @@ public without sharing class HOT_RequestHandler extends MyTriggers {
         return serviceTerritoryDevNameByQueueDevName;
     }
 
+    private static Map<String, String> getServiceTerritoryDevNameByQueueDevName() {
+        if (serviceTerritoryDevNameByQueueDevName == null) {
+            serviceTerritoryDevNameByQueueDevName = buildServiceTerritoryDevNameByQueueDevName();
+        }
+        return serviceTerritoryDevNameByQueueDevName;
+    }
+
     private static Set<Id> getUncachedQueueIds(Set<Id> queueIds) {
         Set<Id> uncachedQueueIds = new Set<Id>();
         for (Id queueId : queueIds) {
@@ -38,8 +44,9 @@ public without sharing class HOT_RequestHandler extends MyTriggers {
 
     private static Set<String> getMissingServiceTerritoryDevNames(List<Group> queues) {
         Set<String> missingServiceTerritoryDevNames = new Set<String>();
+        Map<String, String> serviceTerritoryDevNamesByQueueDevName = getServiceTerritoryDevNameByQueueDevName();
         for (Group queue : queues) {
-            String serviceTerritoryDevName = SERVICE_TERRITORY_DEV_NAME_BY_QUEUE_DEV_NAME.get(queue.DeveloperName);
+            String serviceTerritoryDevName = serviceTerritoryDevNamesByQueueDevName.get(queue.DeveloperName);
             if (
                 serviceTerritoryDevName != null &&
                 !serviceTerritoryIdByServiceTerritoryDevName.containsKey(serviceTerritoryDevName)
@@ -69,7 +76,7 @@ public without sharing class HOT_RequestHandler extends MyTriggers {
             return null;
         }
 
-        String serviceTerritoryDevName = SERVICE_TERRITORY_DEV_NAME_BY_QUEUE_DEV_NAME.get(queue.DeveloperName);
+        String serviceTerritoryDevName = getServiceTerritoryDevNameByQueueDevName().get(queue.DeveloperName);
         if (serviceTerritoryDevName == null) {
             return null;
         }
@@ -79,7 +86,7 @@ public without sharing class HOT_RequestHandler extends MyTriggers {
 
     private static void cacheServiceTerritoryIdsByQueueId(Set<Id> queueIds) {
         Set<Id> uncachedQueueIds = getUncachedQueueIds(queueIds);
-        if (uncachedQueueIds.isEmpty() || SERVICE_TERRITORY_DEV_NAME_BY_QUEUE_DEV_NAME.isEmpty()) {
+        if (uncachedQueueIds.isEmpty() || getServiceTerritoryDevNameByQueueDevName().isEmpty()) {
             return;
         }
 
