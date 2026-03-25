@@ -341,7 +341,13 @@ public without sharing class HOT_WorkOrderHandler extends MyTriggers {
     }
 
     public static void updateWorkOrders(List<WorkOrder> workOrders) {
-        Map<Id, HOT_Request__c> requests = getRequestsById(workOrders);
+        updateWorkOrders(workOrders, getRequestsById(workOrders));
+    }
+
+    public static void updateWorkOrders(List<WorkOrder> workOrders, Map<Id, HOT_Request__c> requests) {
+        if (requests == null) {
+            requests = new Map<Id, HOT_Request__c>();
+        }
 
         for (WorkOrder workOrder : workOrders) {
             HOT_Request__c request = requests.get(workOrder.HOT_Request__c);

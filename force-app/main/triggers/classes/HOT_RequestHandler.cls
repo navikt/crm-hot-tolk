@@ -457,6 +457,7 @@ public without sharing class HOT_RequestHandler extends MyTriggers {
     }
 
     private static void createWOLI_SA(List<HOT_Request__c> godkjentRequests) {
+        Map<Id, HOT_Request__c> godkjentRequestsById = new Map<Id, HOT_Request__c>(godkjentRequests);
         List<WorkOrder> workOrders = [
             SELECT
                 Id,
@@ -477,10 +478,10 @@ public without sharing class HOT_RequestHandler extends MyTriggers {
                 HOT_NumberOfInterpreters__c,
                 WorkTypeId
             FROM WorkOrder
-            WHERE HOT_Request__c IN :(new Map<Id, HOT_Request__c>(godkjentRequests)).keySet() AND Status = 'New'
+            WHERE HOT_Request__c IN :godkjentRequestsById.keySet() AND Status = 'New'
         ];
         if (workOrders.size() > 0) {
-            HOT_WorkOrderHandler.updateWorkOrders(workOrders);
+            HOT_WorkOrderHandler.updateWorkOrders(workOrders, godkjentRequestsById);
             HOT_WorkOrderHandler.createChildRecords(workOrders);
         } else {
             createChildRecords(godkjentRequests);
