@@ -26,7 +26,7 @@ public without sharing class HOT_ThreadDetailController {
     }
     @AuraEnabled(cacheable=false)
     public static boolean checkAccess(Id threadId) {
-        checkAccess(
+        return checkAccess(
             [
                 SELECT Id, CRM_Related_Object__c, CRM_Thread_Type__c, HOT_ServiceResource__r.RelatedRecordId
                 FROM Thread__c
