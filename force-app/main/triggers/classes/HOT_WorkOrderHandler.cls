@@ -1,14 +1,20 @@
 public without sharing class HOT_WorkOrderHandler extends MyTriggers {
     private static Map<Id, HOT_Request__c> requestById = new Map<Id, HOT_Request__c>();
 
-    private static Set<Id> getRequestIds(List<WorkOrder> workOrders) {
+    private static Map<Id, HOT_Request__c> getRequestsById(List<WorkOrder> workOrders) {
         Set<Id> requestIds = new Set<Id>();
         for (WorkOrder workOrder : workOrders) {
             if (workOrder.HOT_Request__c != null) {
                 requestIds.add(workOrder.HOT_Request__c);
             }
         }
-        return requestIds;
+        cacheRequestsById(requestIds);
+
+        Map<Id, HOT_Request__c> requests = new Map<Id, HOT_Request__c>();
+        for (Id requestId : requestIds) {
+            requests.put(requestId, requestById.get(requestId));
+        }
+        return requests;
     }
 
     private static Set<Id> getUncachedRequestIds(Set<Id> requestIds) {
@@ -102,23 +108,18 @@ public without sharing class HOT_WorkOrderHandler extends MyTriggers {
 
     public override void onAfterInsert() {
         List<Id> workOrdersWithoutRequests = new List<Id>();
-        List<Id> accountIds = new List<Id>();
-        Set<Id> requestIds = getRequestIds((List<WorkOrder>) records);
+        Map<Id, HOT_Request__c> requests = getRequestsById((List<WorkOrder>) records);
 
         for (WorkOrder workOrder : (List<WorkOrder>) records) {
             if (workOrder.HOT_Request__c == null) {
                 workOrdersWithoutRequests.add(workOrder.Id);
             }
-
-            accountIds.add(workOrder.AccountId);
         }
 
-        cacheRequestsById(requestIds);
-
         List<WorkOrder> approvedWorkOrders = new List<WorkOrder>();
-        if (!requestIds.isEmpty()) {
+        if (!requests.isEmpty()) {
             for (WorkOrder workOrder : (List<WorkOrder>) records) {
-                HOT_Request__c request = requestById.get(workOrder.HOT_Request__c);
+                HOT_Request__c request = requests.get(workOrder.HOT_Request__c);
                 if (
                     request != null &&
                     request.Status__c != 'Åpen' &&
@@ -167,12 +168,12 @@ public without sharing class HOT_WorkOrderHandler extends MyTriggers {
     }
 
     public static void createChildRecords(List<WorkOrder> workOrders) {
-        cacheRequestsById(getRequestIds(workOrders));
+        Map<Id, HOT_Request__c> requests = getRequestsById(workOrders);
 
         //Each workOrder should have 1 or more childs (workOrderLineItems)
         List<WorkOrderLineItem> workOrderLineItems = new List<WorkOrderLineItem>();
         for (WorkOrder workOrder : workOrders) {
-            HOT_Request__c request = requestById.get(workOrder.HOT_Request__c);
+            HOT_Request__c request = requests.get(workOrder.HOT_Request__c);
             if (request == null) {
                 continue;
             }
@@ -212,19 +213,18 @@ public without sharing class HOT_WorkOrderHandler extends MyTriggers {
     }
 
     public static void setDefaultFields(List<WorkOrder> workOrders) {
-        cacheRequestsById(getRequestIds(workOrders));
+        Map<Id, HOT_Request__c> requests = getRequestsById(workOrders);
         for (WorkOrder workOrder : workOrders) {
             //Setting default status for WorkOrder
             workOrder.Status = 'New';
             if (workOrder.HOT_Request__c != null) {
-                HOT_Request__c request = requestById.get(workOrder.HOT_Request__c);
+                HOT_Request__c request = requests.get(workOrder.HOT_Request__c);
                 if (request == null) {
                     continue;
                 }
 
                 //Setting owner of WorkOrder based on owner of Request
                 workOrder.OwnerId = workOrder.HOT_RequestOwnerId__c;
-                System.debug('workOrder.OwnerId: ' + workOrder.OwnerId);
 
                 //Setting fields of WorkOrder based on Request, if the fields are not filled in, and the fields on Request have values.
                 if (workOrder.ServiceTerritory == null && request.ServiceTerritory__c != null) {
@@ -341,10 +341,10 @@ public without sharing class HOT_WorkOrderHandler extends MyTriggers {
     }
 
     public static void updateWorkOrders(List<WorkOrder> workOrders) {
-        cacheRequestsById(getRequestIds(workOrders));
+        Map<Id, HOT_Request__c> requests = getRequestsById(workOrders);
 
         for (WorkOrder workOrder : workOrders) {
-            HOT_Request__c request = requestById.get(workOrder.HOT_Request__c);
+            HOT_Request__c request = requests.get(workOrder.HOT_Request__c);
             if (request == null) {
                 continue;
             }
@@ -366,9 +366,9 @@ public without sharing class HOT_WorkOrderHandler extends MyTriggers {
     }
 
     public static void setCancelDate(List<WorkOrder> workorders) {
-        cacheRequestsById(getRequestIds(workorders));
+        Map<Id, HOT_Request__c> requests = getRequestsById(workorders);
         for (WorkOrder workOrder : workorders) {
-            HOT_Request__c request = requestById.get(workOrder.HOT_Request__c);
+            HOT_Request__c request = requests.get(workOrder.HOT_Request__c);
             if (workOrder.CanceledDate__c == null) {
                 if (request != null && request.CanceledDate__c != null) {
                     workOrder.CanceledDate__c = request.CanceledDate__c;
