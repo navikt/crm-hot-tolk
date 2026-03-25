@@ -123,17 +123,12 @@
                                 </template>
                             </lightning-layout>
                         </div>
-                        <h2>{showspinnner}</h2>
                         <template if:true={showspinner}>
                             <div class="spinnerholder">
                                 <lightning-spinner alternative-text="Loading" size="medium"></lightning-spinner>
                             </div>
                         </template>
-                        <c-hot_messaging-quick-text
-                            conversation-note={textTemplate}
-                            reset-text-template={textTemplate}
-                            onlocklang={lockLangBtn}
-                        >
+                        <c-hot_messaging-quick-text conversation-note={textTemplate} onlocklang={lockLangBtn}>
                         </c-hot_messaging-quick-text>
                     </lightning-layout-item>
                     <br />
