@@ -14,12 +14,12 @@ const INTERPRETATION_TYPE_MAP = {
 export default class hot_requestForm_request_v2 extends LightningElement {
     @track fieldValues = {
         Subject__c: '',
-        MeetingStreet__c: '',
-        MeetingPostalCity__c: '',
-        MeetingPostalCode__c: '',
-        InterpretationStreet__c: '',
-        InterpretationPostalCode__c: '',
-        InterpretationPostalCity__c: '',
+        MeetingAddress__Street__s: '',
+        MeetingAddress__City__s: '',
+        MeetingAddress__PostalCode__s: '',
+        InterpretationAddress__Street__s: '',
+        InterpretationAddress__PostalCode__s: '',
+        InterpretationAddress__City__s: '',
         Description__c: '',
         IsFileConsent__c: false,
         Source__c: 'Community',
@@ -146,8 +146,8 @@ export default class hot_requestForm_request_v2 extends LightningElement {
             if (address && postalCode) {
                 this.fieldValues = {
                     ...this.fieldValues,
-                    MeetingStreet__c: address,
-                    MeetingPostalCode__c: postalCode
+                    MeetingAddress__Street__s: address,
+                    MeetingAddress__PostalCode__s: postalCode
                 };
             } else {
                 setTimeout(() => {
@@ -159,8 +159,8 @@ export default class hot_requestForm_request_v2 extends LightningElement {
             if (postalCode) {
                 this.handlePostalCity(
                     { target: { value: postalCode } },
-                    'MeetingPostalCode__c',
-                    'MeetingPostalCity__c'
+                    'MeetingAddress__PostalCode__s',
+                    'MeetingAddress__City__s'
                 );
             }
         } catch (error) {
@@ -171,15 +171,15 @@ export default class hot_requestForm_request_v2 extends LightningElement {
 
     handleAddressChange(event) {
         const val = event.target.value;
-        this.fieldValues = { ...this.fieldValues, MeetingStreet__c: val };
+        this.fieldValues = { ...this.fieldValues, MeetingAddress__Street__s: val };
     }
 
     handleMeetingPostalChange(event) {
-        this.handlePostalCity(event, 'MeetingPostalCode__c', 'MeetingPostalCity__c');
+        this.handlePostalCity(event, 'MeetingAddress__PostalCode__s', 'MeetingAddress__City__s');
     }
 
     handleInterpretationPostalChange(event) {
-        this.handlePostalCity(event, 'InterpretationPostalCode__c', 'InterpretationPostalCity__c');
+        this.handlePostalCity(event, 'InterpretationAddress__PostalCode__s', 'InterpretationAddress__City__s');
     }
 
     removeTPAFromAssignmentList() {
@@ -214,7 +214,7 @@ export default class hot_requestForm_request_v2 extends LightningElement {
         this.componentValues.physicalOrDigitalRadiobuttons[0].checked = !this.fieldValues.IsScreenInterpreter__c;
         this.componentValues.physicalOrDigitalRadiobuttons[1].checked = this.fieldValues.IsScreenInterpreter__c;
         this.componentValues.sameAddressRadioButtons[1].checked =
-            this.fieldValues.InterpretationStreet__c !== this.fieldValues.MeetingStreet__c;
+            this.fieldValues.InterpretationAddress__Street__s !== this.fieldValues.MeetingAddress__Street__s;
         this.componentValues.sameAddressRadioButtons[0].checked =
             !this.componentValues.sameAddressRadioButtons[1].checked;
         this.componentValues.isOptionalFields =
@@ -289,9 +289,9 @@ export default class hot_requestForm_request_v2 extends LightningElement {
 
     setDependentFields() {
         if (this.sameLocation) {
-            this.fieldValues.InterpretationStreet__c = this.fieldValues.MeetingStreet__c;
-            this.fieldValues.InterpretationPostalCode__c = this.fieldValues.MeetingPostalCode__c;
-            this.fieldValues.InterpretationPostalCity__c = this.fieldValues.MeetingPostalCity__c;
+            this.fieldValues.InterpretationAddress__Street__s = this.fieldValues.MeetingAddress__Street__s;
+            this.fieldValues.InterpretationAddress__PostalCode__s = this.fieldValues.MeetingAddress__PostalCode__s;
+            this.fieldValues.InterpretationAddress__City__s = this.fieldValues.MeetingAddress__City__s;
         }
     }
 
@@ -310,12 +310,15 @@ export default class hot_requestForm_request_v2 extends LightningElement {
             }
 
             // Postal code validation
-            if (element.name === 'MeetingPostalCode__c' || element.name === 'InterpretationPostalCode__c') {
+            if (
+                element.name === 'MeetingAddress__PostalCode__s' ||
+                element.name === 'InterpretationAddress__PostalCode__s'
+            ) {
                 const postalCode = element.getValue() || '';
                 const cityField =
-                    element.name === 'MeetingPostalCode__c'
-                        ? this.fieldValues.MeetingPostalCity__c
-                        : this.fieldValues.InterpretationPostalCity__c;
+                    element.name === 'MeetingAddress__PostalCode__s'
+                        ? this.fieldValues.MeetingAddress__City__s
+                        : this.fieldValues.InterpretationAddress__City__s;
 
                 if (!postalCode) {
                     element.sendErrorMessage('Postnummer må fylles ut.');
@@ -372,12 +375,12 @@ export default class hot_requestForm_request_v2 extends LightningElement {
 
     clearPhysicalAddressFields() {
         if (this.fieldValues.IsScreenInterpreter__c) {
-            this.fieldValues.MeetingStreet__c = '';
-            this.fieldValues.MeetingPostalCity__c = '';
-            this.fieldValues.MeetingPostalCode__c = '';
-            this.fieldValues.InterpretationStreet__c = '';
-            this.fieldValues.InterpretationPostalCode__c = '';
-            this.fieldValues.InterpretationPostalCity__c = '';
+            this.fieldValues.MeetingAddress__Street__s = '';
+            this.fieldValues.MeetingAddress__City__s = '';
+            this.fieldValues.MeetingAddress__PostalCode__s = '';
+            this.fieldValues.InterpretationAddress__Street__s = '';
+            this.fieldValues.InterpretationAddress__PostalCode__s = '';
+            this.fieldValues.InterpretationAddress__City__s = '';
             this.componentValues.sameAddressRadioButtons[0].checked = true;
             this.componentValues.sameAddressRadioButtons[1].checked = false;
             this.sameLocation = true;
@@ -385,9 +388,9 @@ export default class hot_requestForm_request_v2 extends LightningElement {
     }
 
     clearInterpretationFields() {
-        this.fieldValues.InterpretationStreet__c = '';
-        this.fieldValues.InterpretationPostalCode__c = '';
-        this.fieldValues.InterpretationPostalCity__c = '';
+        this.fieldValues.InterpretationAddress__Street__s = '';
+        this.fieldValues.InterpretationAddress__PostalCode__s = '';
+        this.fieldValues.InterpretationAddress__City__s = '';
     }
 
     handleInterpretationPicklist(event) {
