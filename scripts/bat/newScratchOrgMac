@@ -1,4 +1,6 @@
- #!/bin/bash
+#!/bin/bash
+
+set -e
 
 # Oppretter scratch org
 sf org create scratch --definition-file config/project-scratch-def.json --alias $1 --duration-days $2 --set-default --json --wait 30
@@ -57,4 +59,5 @@ sf apex run --file scripts/apex/createUser.apex
 sf apex run --file scripts/apex/addServiceResourceAndSkill.apex
 sf apex run --file scripts/apex/assignServiceAppointmentToServiceResource.apex
 
-# done
+# Varsle når scratch org-oppsettet er ferdig
+scripts/bat/helpers/scratchOrgNotification
