@@ -1,0 +1,15 @@
+#!/bin/bash
+
+set -euo pipefail
+
+SOUND_FILE="${2:-/System/Library/Sounds/Glass.aiff}"
+
+say "Scratch org creation finished og Rasmus er klar til å jobbe på"
+
+# Custom sound notification if the file exists.
+if [[ -f "$SOUND_FILE" ]]; then
+  afplay "$SOUND_FILE"
+else
+  echo "Sound file not found: $SOUND_FILE"
+fi
+
