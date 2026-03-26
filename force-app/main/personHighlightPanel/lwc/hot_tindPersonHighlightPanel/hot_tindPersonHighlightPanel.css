@@ -63,6 +63,10 @@
     padding-left: 1rem;
 }
 
+.custom-padding-bottom {
+    padding-bottom: 0.5rem;
+}
+
 .maleBackground {
     --primaryBackgroundColor: #0056b4;
     --secondaryBackgroundColor: #00459c;

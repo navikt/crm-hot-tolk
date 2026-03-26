@@ -21,6 +21,7 @@ import NAV_ICONS from '@salesforce/resourceUrl/HOT_tindIcons';
 
 import getRelatedRecord from '@salesforce/apex/HOT_TindRecordInfoController.getRelatedRecord';
 import hasAccess from '@salesforce/apex/HOT_TindAccessErrorController.hasAccess';
+import getPersonBadges from '@salesforce/apex/HOT_HighlightPanelController.getPerson';
 
 const PERSON_FIELDS = [
     PERSON_FIRST_NAME,
@@ -104,6 +105,17 @@ export default class hot_personHighlightPanel extends LightningElement {
             });
     }
 
+    @wire(getPersonBadges, { recordId: '$personId' })
+    wiredPersonBadges({ error, data }) {
+        if (data) {
+            this.personBadges = data; // INT_Confidential__c, INT_IsNavEmployee__c
+            console.log('Person badges:', this.personBadges);
+        } else if (error) {
+            this.addErrorMessage('getPersonBadges', error);
+            console.error('getPersonBadges error:', error);
+        }
+    }
+
     @wire(getRecord, {
         recordId: '$personId',
         fields: PERSON_FIELDS
@@ -127,9 +139,7 @@ export default class hot_personHighlightPanel extends LightningElement {
                 legalStatus: getFieldDisplayValue(data, LEGAL_STATUS_FIELD),
                 municipalityName: getFieldValue(data, MUNICIPALITY_NAME__FIELD),
                 districtName: getFieldValue(data, DISTRICT_NAME_FIELD),
-                vedtak: getFieldDisplayValue(data, VEDTAK_FIELD),
-                isNavEmployee: getFieldValue(data, IS_NAV_EMPLOYEE_FIELD),
-                confidentialStatus: getFieldValue(data, CONFIDENTIAL_FIELD)
+                vedtak: getFieldDisplayValue(data, VEDTAK_FIELD)
             };
             this.loadingStates.getRecordPerson = false;
             this.handleBackgroundColor();
@@ -254,17 +264,25 @@ export default class hot_personHighlightPanel extends LightningElement {
         return this.personDetails?.personIdent;
     }
 
-    get isNavEmployee() {
-        return this.personDetails?.isNavEmployee;
+    // get isNavEmployee() {
+    //     return this.personDetails?.isNavEmployee;
+    // }
+
+    // get isConfidential() {
+    //     const status = this.personDetails?.confidentialStatus;
+    //     return status && status !== 'UGRADERT';
+    // }
+    get isNavEmployeeBadge() {
+        return this.personBadges?.INT_IsNavEmployee__c;
     }
 
-    get isConfidential() {
-        const status = this.personDetails?.confidentialStatus;
+    get isConfidentialBadge() {
+        const status = this.personBadges?.INT_Confidential__c;
         return status && status !== 'UGRADERT';
     }
 
     get confidentialLabel() {
-        const status = this.personDetails?.confidentialStatus;
+        const status = this.personBadges?.INT_Confidential__c;
         return CONFIDENTIAL_LABELS[status] ?? false;
     }
 }
