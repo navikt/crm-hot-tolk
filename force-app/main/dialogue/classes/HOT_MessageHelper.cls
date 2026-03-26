@@ -345,8 +345,7 @@ public without sharing class HOT_MessageHelper {
             LIMIT 1
         ];
         if (existingThreads.size() > 0) {
-                return existingThreads[0];
-            }
+            return existingThreads[0];
         }
         Thread__c thread = new Thread__c();
         thread.RecordTypeId = HOT_MessageHelper.getHOTThreadRecordType();
