@@ -1,72 +1,113 @@
 @isTest
 public without sharing class HOT_CheckPermissionsTest {
-    private static Id testUserId;
-
     @testSetup
     static void setupTestData() {
-        Profile p = [SELECT Id FROM Profile WHERE Name = 'Standard User' LIMIT 1];
+        Profile p = [SELECT Id FROM Profile WHERE Id = :UserInfo.getProfileId() LIMIT 1];
 
         User user = new User(
-            alias = 'TestUser',
-            email = 'HOT_testaccount@nav.no',
+            alias = 'tuser',
+            email = 'hot_testaccount@nav.no',
             emailencodingkey = 'UTF-8',
             lastname = 'Testing',
             languagelocalekey = 'en_US',
             localesidkey = 'en_US',
             profileid = p.Id,
-            country = 'Norway',
-            IsActive = true,
             timezonesidkey = 'Europe/Paris',
-            username = 'HOT_testaccount@nav.no'
+            username = 'hot_testaccount+' + System.currentTimeMillis() + '@nav.no'
         );
         insert user;
-
-        testUserId = user.Id;
     }
-    @isTest
-    static void HOT_CheckFreelanceTest() {
-        Boolean hasPermission;
-        Test.startTest();
-        //Run as system admin user without permission set
-        hasPermission = HOT_CheckPermissions.getAllPermissions().get('hasFreelancePermission');
-        system.assertEquals(false, hasPermission, 'Expected false for user.');
 
-        //Assign permission set and run again
-        PermissionSet ps = [SELECT Id FROM PermissionSet WHERE Name = 'Create_Community_Plus_User'];
-        PermissionSetAssignment permissionSetAssignment = new PermissionSetAssignment(
-            AssigneeId = UserInfo.getUserId(),
-            PermissionSetId = ps.Id
-        );
-        insert permissionSetAssignment;
-
-        hasPermission = HOT_CheckPermissions.getAllPermissions().get('hasFreelancePermission');
-        system.assertEquals(true, hasPermission, 'Expected true for user.');
-        Test.stopTest();
+    private static User getTestUser() {
+        return [SELECT Id FROM User WHERE Alias = 'tuser' LIMIT 1];
     }
-    @isTest
-    static void HOT_CheckFormidlerTest() {
-        User testUser = [SELECT Id FROM User WHERE Alias = 'TestUser' LIMIT 1];
 
-        System.runAs(testUser) {
+    @isTest
+    static void getAllPermissions_defaultsAreFalse() {
+        User u = getTestUser();
+
+        System.runAs(u) {
             Test.startTest();
-            Boolean hasPermission = HOT_CheckPermissions.getAllPermissions().get('hasFormidlerPermission');
-            System.assertEquals(false, hasPermission, 'Expected false for user.');
+            Map<String, Boolean> perms = HOT_CheckPermissions.getAllPermissions();
+            Test.stopTest();
+
+            System.assertEquals(false, perms.get('hasFreelancePermission'));
+            System.assertEquals(false, perms.get('isFormidler'));
+            System.assertEquals(false, perms.get('isFormidlerAdmin'));
+            System.assertEquals(false, perms.get('isAdmin'));
+        }
+    }
+
+    @isTest
+    static void getAllPermissions_freelancePermissionSet() {
+        User u = getTestUser();
+
+        PermissionSet ps = null;
+        List<PermissionSet> psets = [
+            SELECT Id, Name
+            FROM PermissionSet
+            WHERE Name = 'Create_Community_Plus_User'
+            LIMIT 1
+        ];
+        if (!psets.isEmpty()) {
+            ps = psets[0];
+        }
+
+        System.runAs(u) {
+            Test.startTest();
+
+            Map<String, Boolean> beforePerms = HOT_CheckPermissions.getAllPermissions();
+            System.assertEquals(false, beforePerms.get('hasFreelancePermission'));
+
+            if (ps != null) {
+                insert new PermissionSetAssignment(AssigneeId = u.Id, PermissionSetId = ps.Id);
+
+                Map<String, Boolean> afterPerms = HOT_CheckPermissions.getAllPermissions();
+                System.assertEquals(true, afterPerms.get('hasFreelancePermission'));
+            }
+
             Test.stopTest();
         }
     }
 
     @isTest
-    static void HOT_CheckFormidlerAdminPermissionTest() {
-        User testUser = [SELECT Id FROM User WHERE Alias = 'TestUser'];
+    static void getAllPermissions_adminPermissionSet() {
+        User u = getTestUser();
 
-        System.runAs(testUser) {
-            Boolean hasPermission;
+        PermissionSet ps = null;
+        List<PermissionSet> psets = [SELECT Id, Name FROM PermissionSet WHERE Name = 'HOT_Admin' LIMIT 1];
+        if (!psets.isEmpty()) {
+            ps = psets[0];
+        }
 
+        System.runAs(u) {
             Test.startTest();
 
-            hasPermission = HOT_CheckPermissions.getAllPermissions().get('hasFormidlerAdminPermission');
-            System.assertEquals(false, hasPermission, 'Expected false when user does not have admin permission group');
+            Map<String, Boolean> beforePerms = HOT_CheckPermissions.getAllPermissions();
+            System.assertEquals(false, beforePerms.get('isAdmin'));
+
+            if (ps != null) {
+                insert new PermissionSetAssignment(AssigneeId = u.Id, PermissionSetId = ps.Id);
+
+                Map<String, Boolean> afterPerms = HOT_CheckPermissions.getAllPermissions();
+                System.assertEquals(true, afterPerms.get('isAdmin'));
+            }
+
             Test.stopTest();
+        }
+    }
+
+    @isTest
+    static void getAllPermissions_formidlerGroups_areFalseWhenNotAssigned() {
+        User u = getTestUser();
+
+        System.runAs(u) {
+            Test.startTest();
+            Map<String, Boolean> perms = HOT_CheckPermissions.getAllPermissions();
+            Test.stopTest();
+
+            System.assertEquals(false, perms.get('isFormidler'));
+            System.assertEquals(false, perms.get('isFormidlerAdmin'));
         }
     }
 }
