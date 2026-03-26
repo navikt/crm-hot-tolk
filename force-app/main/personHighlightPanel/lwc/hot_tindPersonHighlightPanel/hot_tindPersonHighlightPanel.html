@@ -29,6 +29,28 @@
                                     record-id={recordId}
                                     person-details={personDetails}
                                 ></c-hot_tind-person-highlight-panel-top>
+
+                                <!-- Badges for confidential and NAV employee status -->
+                                <div class="custom-padding-bottom">
+                                    <lightning-layout-item class="custom-padding-left">
+                                        <template lwc:if={isNavEmployeeBadge}>
+                                            <lightning-badge
+                                                class="slds-theme_error slds-var-m-left_x-small slds-var-m-vertical_xx-small redBadge"
+                                                label={navEmployeeLabel}
+                                                role="heading"
+                                            >
+                                            </lightning-badge>
+                                        </template>
+                                        <template lwc:if={isConfidentialBadge}>
+                                            <lightning-badge
+                                                class="slds-theme_error slds-var-m-left_x-small slds-var-m-vertical_xx-small redBadge"
+                                                label={confidentialLabel}
+                                                role="heading"
+                                            >
+                                            </lightning-badge>
+                                        </template>
+                                    </lightning-layout-item>
+                                </div>
                             </template>
                         </lightning-layout-item>
                         <span lwc:if={uuAlertText} class="slds-assistive-text" role="alert">{uuAlertText}</span>

@@ -1,9 +1,8 @@
 import { LightningElement, api, wire } from 'lwc';
 import { NavigationMixin } from 'lightning/navigation';
-import hasPermissionToCreateAFreelance from '@salesforce/apex/HOT_CheckPermissions.hasFreelancePermission';
-import isFormidler from '@salesforce/apex/HOT_CheckPermissions.hasFormidlerPermission';
-import isFormidlerAdmin from '@salesforce/apex/HOT_CheckPermissions.hasFormidlerAdminPermission';
-import isAdmin from '@salesforce/apex/HOT_CheckPermissions.hasHotAdminPermission';
+
+import getAllPermissions from '@salesforce/apex/HOT_CheckPermissions.getAllPermissions';
+
 export default class hot_personHighlightPanelBot extends NavigationMixin(LightningElement) {
     @api recordId;
     @api personDetails;
@@ -61,49 +60,21 @@ export default class hot_personHighlightPanelBot extends NavigationMixin(Lightni
     // }
 
     get showButtons() {
-        return (this.personDetails?.fullName && isFormidler) || this.isAdmin;
+        return (this.personDetails?.fullName && this.isFormidler) || this.isAdmin;
     }
 
-    @wire(isAdmin)
-    wiredIsAdmin({ error, data }) {
+    @wire(getAllPermissions)
+    wiredPermissions({ error, data }) {
         if (data) {
-            this.isAdmin = data;
-            console.log('Admin: ', this.isAdmin);
-        }
-        if (error) {
-            console.error(error);
-        }
-    }
-    @wire(hasPermissionToCreateAFreelance)
-    wiredPermission({ error, data }) {
-        if (data) {
-            this.hasPermissionToCreateFreelance = data;
-            console.log('Frilans: ', this.hasPermissionToCreateFreelance);
-        }
-        if (error) {
-            console.error(error);
-        }
-    }
+            this.hasPermissionToCreateFreelance = data.hasFreelancePermission;
+            this.isFormidler = data.isFormidler;
+            this.isFormidlerAdmin = data.isFormidlerAdmin;
+            this.isAdmin = data.isAdmin;
 
-    @wire(isFormidler)
-    wiredIsFormidler({ error, data }) {
-        if (data) {
-            this.isFormidler = data;
-            console.log('Formidler: ', this.isFormidler);
+            console.log('Permissions:', data);
         }
         if (error) {
-            console.error(error);
-        }
-    }
-
-    @wire(isFormidlerAdmin)
-    wiredIsFormidlerAdmin({ error, data }) {
-        if (data) {
-            this.isFormidlerAdmin = data;
-            console.log('Formidler admin: ', this.isFormidlerAdmin);
-        }
-        if (error) {
-            console.error(error);
+            console.error('Error fetching permissions:', error);
         }
     }
 
