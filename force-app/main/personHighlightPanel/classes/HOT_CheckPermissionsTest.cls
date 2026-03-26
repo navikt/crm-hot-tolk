@@ -8,7 +8,7 @@ public without sharing class HOT_CheckPermissionsTest {
 
         User user = new User(
             alias = 'TestUser',
-            email = 'HOT_testaccount@nav.hot.no',
+            email = 'HOT_testaccount@nav.no',
             emailencodingkey = 'UTF-8',
             lastname = 'Testing',
             languagelocalekey = 'en_US',
@@ -17,7 +17,7 @@ public without sharing class HOT_CheckPermissionsTest {
             country = 'Norway',
             IsActive = true,
             timezonesidkey = 'Europe/Paris',
-            username = 'HOT_testaccount@nav.hot.no'
+            username = 'HOT_testaccount@nav.no'
         );
         insert user;
 
@@ -28,7 +28,7 @@ public without sharing class HOT_CheckPermissionsTest {
         Boolean hasPermission;
         Test.startTest();
         //Run as system admin user without permission set
-        hasPermission = HOT_CheckPermissions.hasFreelancePermission();
+        hasPermission = HOT_CheckPermissions.getAllPermissions().get('hasFreelancePermission');
         system.assertEquals(false, hasPermission, 'Expected false for user.');
 
         //Assign permission set and run again
@@ -39,7 +39,7 @@ public without sharing class HOT_CheckPermissionsTest {
         );
         insert permissionSetAssignment;
 
-        hasPermission = HOT_CheckPermissions.hasFreelancePermission();
+        hasPermission = HOT_CheckPermissions.getAllPermissions().get('hasFreelancePermission');
         system.assertEquals(true, hasPermission, 'Expected true for user.');
         Test.stopTest();
     }
@@ -49,7 +49,7 @@ public without sharing class HOT_CheckPermissionsTest {
 
         System.runAs(testUser) {
             Test.startTest();
-            Boolean hasPermission = HOT_CheckPermissions.hasFormidlerPermission();
+            Boolean hasPermission = HOT_CheckPermissions.getAllPermissions().get('hasFormidlerPermission');
             System.assertEquals(false, hasPermission, 'Expected false for user.');
             Test.stopTest();
         }
@@ -64,7 +64,7 @@ public without sharing class HOT_CheckPermissionsTest {
 
             Test.startTest();
 
-            hasPermission = HOT_CheckPermissions.hasFormidlerAdminPermission();
+            hasPermission = HOT_CheckPermissions.getAllPermissions().get('hasFormidlerAdminPermission');
             System.assertEquals(false, hasPermission, 'Expected false when user does not have admin permission group');
             Test.stopTest();
         }
