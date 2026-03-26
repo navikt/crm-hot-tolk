@@ -14,6 +14,8 @@ import LEGAL_STATUS_FIELD from '@salesforce/schema/Person__c.INT_LegalStatus__c'
 import MUNICIPALITY_NAME__FIELD from '@salesforce/schema/Person__c.CRM_Municipality__r.Name';
 import DISTRICT_NAME_FIELD from '@salesforce/schema/Person__c.CRM_District__r.Name';
 import VEDTAK_FIELD from '@salesforce/schema/Person__c.HOT_DegreeOfHearingAndVisualImpairment__c';
+import IS_NAV_EMPLOYEE_FIELD from '@salesforce/schema/Person__c.INT_IsNavEmployee__c';
+import CONFIDENTIAL_FIELD from '@salesforce/schema/Person__c.INT_Confidential__c';
 
 import NAV_ICONS from '@salesforce/resourceUrl/HOT_tindIcons';
 
@@ -32,8 +34,16 @@ const PERSON_FIELDS = [
     LEGAL_STATUS_FIELD,
     MUNICIPALITY_NAME__FIELD,
     DISTRICT_NAME_FIELD,
-    VEDTAK_FIELD
+    VEDTAK_FIELD,
+    IS_NAV_EMPLOYEE_FIELD,
+    CONFIDENTIAL_FIELD
 ];
+
+const CONFIDENTIAL_LABELS = {
+    FORTROLIG: 'Skjermet adresse - fortrolig',
+    STRENGT_FORTROLIG: 'Skjermet adresse - strengt fortrolig',
+    STRENGT_FORTROLIG_UTLAND: 'Skjermet adresse - strengt fortrolig'
+};
 
 export default class hot_personHighlightPanel extends LightningElement {
     @api recordId;
@@ -51,6 +61,7 @@ export default class hot_personHighlightPanel extends LightningElement {
     errorMessages;
     personDetails = {};
     uuAlertText = '';
+    navEmployeeLabel = 'Skjermet person (NAV-ansatt)';
 
     @track loadingStates = {
         getRecordPerson: true
@@ -116,7 +127,9 @@ export default class hot_personHighlightPanel extends LightningElement {
                 legalStatus: getFieldDisplayValue(data, LEGAL_STATUS_FIELD),
                 municipalityName: getFieldValue(data, MUNICIPALITY_NAME__FIELD),
                 districtName: getFieldValue(data, DISTRICT_NAME_FIELD),
-                vedtak: getFieldDisplayValue(data, VEDTAK_FIELD)
+                vedtak: getFieldDisplayValue(data, VEDTAK_FIELD),
+                isNavEmployee: getFieldValue(data, IS_NAV_EMPLOYEE_FIELD),
+                confidentialStatus: getFieldValue(data, CONFIDENTIAL_FIELD)
             };
             this.loadingStates.getRecordPerson = false;
             this.handleBackgroundColor();
@@ -154,12 +167,12 @@ export default class hot_personHighlightPanel extends LightningElement {
         const className = !this.personDetails?.fullName
             ? 'confidentialBackground'
             : this.personDetails?.isDeceased
-            ? 'deadBackground'
-            : this.personDetails?.gender === 'Kvinne'
-            ? 'femaleBackground'
-            : this.personDetails?.gender === 'Mann'
-            ? 'maleBackground'
-            : 'unknownBackground';
+              ? 'deadBackground'
+              : this.personDetails?.gender === 'Kvinne'
+                ? 'femaleBackground'
+                : this.personDetails?.gender === 'Mann'
+                  ? 'maleBackground'
+                  : 'unknownBackground';
         genderWrapper.className = 'gender-wrapper ' + className;
     }
 
@@ -235,5 +248,23 @@ export default class hot_personHighlightPanel extends LightningElement {
 
     get xMarkIconSrc() {
         return NAV_ICONS + '/xMarkIcon.svg#xMarkIcon';
+    }
+
+    get personIdent() {
+        return this.personDetails?.personIdent;
+    }
+
+    get isNavEmployee() {
+        return this.personDetails?.isNavEmployee;
+    }
+
+    get isConfidential() {
+        const status = this.personDetails?.confidentialStatus;
+        return status && status !== 'UGRADERT';
+    }
+
+    get confidentialLabel() {
+        const status = this.personDetails?.confidentialStatus;
+        return CONFIDENTIAL_LABELS[status] ?? false;
     }
 }

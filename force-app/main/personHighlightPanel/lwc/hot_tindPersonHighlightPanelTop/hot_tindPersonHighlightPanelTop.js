@@ -64,7 +64,7 @@ export default class hot_personHighlightPanelTop extends LightningElement {
 
     get formattedPersonInfo() {
         return [
-            this.personDetails?.age,
+            this.personDetails?.age ? `${this.personDetails.age} år` : null,
             this.personDetails?.vedtak,
             this.personDetails?.citizenship,
             this.personDetails?.legalStatus,
@@ -100,9 +100,5 @@ export default class hot_personHighlightPanelTop extends LightningElement {
 
     get genderIconSrc() {
         return NAV_ICONS + '/' + this.genderIcon + '.svg#' + this.genderIcon;
-    }
-
-    get personIdent() {
-        return this.personDetails?.personIdent;
     }
 }
