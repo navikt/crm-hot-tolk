@@ -189,13 +189,18 @@
             <targetReference>assignNewMobilePhoneNumber2</targetReference>
         </connector>
         <fields>
+            <name>useOverrideOrNotToggleText</name>
+            <fieldText>&lt;p&gt;Overstyre mobilnummer fra KRR?&lt;/p&gt;</fieldText>
+            <fieldType>DisplayText</fieldType>
+        </fields>
+        <fields>
             <name>useOverrideOrNotToggle</name>
             <extensionName>flowruntime:toggle</extensionName>
             <fieldType>ComponentInstance</fieldType>
             <inputParameters>
                 <name>label</name>
                 <value>
-                    <stringValue>Overstyre mobilnummer fra KRR?</stringValue>
+                    <stringValue>Velg</stringValue>
                 </value>
             </inputParameters>
             <inputParameters>
@@ -234,6 +239,12 @@
                 <name>value</name>
                 <value>
                     <elementReference>getPersonRecord2.HOT_MobilePhoneOverride__c</elementReference>
+                </value>
+            </inputParameters>
+            <inputParameters>
+                <name>label</name>
+                <value>
+                    <stringValue>Mobilnummer</stringValue>
                 </value>
             </inputParameters>
             <inputsOnNextNavToAssocScrn>UseStoredValues</inputsOnNextNavToAssocScrn>

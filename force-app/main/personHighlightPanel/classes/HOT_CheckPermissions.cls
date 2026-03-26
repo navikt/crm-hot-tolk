@@ -1,48 +1,52 @@
 public with sharing class HOT_CheckPermissions {
-    @AuraEnabled(cacheable=true)
-    public static Boolean hasFreelancePermission() {
-        return [
-                SELECT Id
-                FROM PermissionSetAssignment
-                WHERE AssigneeId = :UserInfo.getUserId() AND PermissionSet.Name = 'Create_Community_Plus_User'
-                LIMIT 1
-            ]
-            .size() > 0;
+    // Lazy static user ID
+    private static Id currentUserId;
+    private static Id getCurrentUserId() {
+        if (currentUserId == null) {
+            currentUserId = UserInfo.getUserId();
+        }
+        return currentUserId;
     }
 
     @AuraEnabled(cacheable=true)
-    public static Boolean hasFormidlerAdminPermission() {
-        return [
-                SELECT Id
-                FROM PermissionSetAssignment
-                WHERE
-                    AssigneeId = :UserInfo.getUserId()
-                    AND PermissionSetGroup.DeveloperName = 'HOT_Tolk_Formidler_Admin_Gruppe'
-                LIMIT 1
-            ]
-            .size() > 0;
-    }
+    public static Map<String, Boolean> getAllPermissions() {
+        Id userId = getCurrentUserId();
 
-    @AuraEnabled(cacheable=true)
-    public static Boolean hasFormidlerPermission() {
-        return [
-                SELECT Id
-                FROM PermissionSetAssignment
-                WHERE
-                    AssigneeId = :UserInfo.getUserId()
-                    AND PermissionSetGroup.DeveloperName = 'HOT_Tolk_Formidler_Gruppe'
-                LIMIT 1
-            ]
-            .size() > 0;
-    }
-    @AuraEnabled(cacheable=true)
-    public static Boolean hasHotAdminPermission() {
-        return [
-                SELECT Id
-                FROM PermissionSetAssignment
-                WHERE AssigneeId = :UserInfo.getUserId() AND PermissionSet.Name = 'HOT_Admin'
-                LIMIT 1
-            ]
-            .size() > 0;
+        // Single SOQL to get all assignments for this user
+        List<PermissionSetAssignment> assignments = [
+            SELECT Id, PermissionSet.Name, PermissionSetGroup.DeveloperName
+            FROM PermissionSetAssignment
+            WHERE AssigneeId = :userId
+        ];
+
+        // Initialize result map
+        Map<String, Boolean> permissions = new Map<String, Boolean>{
+            'hasFreelancePermission' => false,
+            'isFormidler' => false,
+            'isFormidlerAdmin' => false,
+            'isAdmin' => false
+        };
+
+        for (PermissionSetAssignment psa : assignments) {
+            if (psa.PermissionSet != null) {
+                if (psa.PermissionSet.Name == 'Create_Community_Plus_User') {
+                    permissions.put('hasFreelancePermission', true);
+                }
+                if (psa.PermissionSet.Name == 'HOT_Admin') {
+                    permissions.put('isAdmin', true);
+                }
+            }
+
+            if (psa.PermissionSetGroup != null) {
+                if (psa.PermissionSetGroup.DeveloperName == 'HOT_Tolk_Formidler_Gruppe') {
+                    permissions.put('isFormidler', true);
+                }
+                if (psa.PermissionSetGroup.DeveloperName == 'HOT_Tolk_Formidler_Admin_Gruppe') {
+                    permissions.put('isFormidlerAdmin', true);
+                }
+            }
+        }
+
+        return permissions;
     }
 }
