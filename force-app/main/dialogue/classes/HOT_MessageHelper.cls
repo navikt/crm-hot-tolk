@@ -338,15 +338,14 @@ public without sharing class HOT_MessageHelper {
     @AuraEnabled(cacheable=false)
     public static Thread__c createThreadDispatcher(Id recordId, Id accountId, String type) {
         List<Thread__c> existingThreads = [
-            SELECT Id, CRM_Related_Object__c, CRM_Thread_Type__c, HOT_ServiceResource__r.RelatedRecordId
+            SELECT Id
             FROM Thread__c
             WHERE CRM_Related_Object__c = :recordId AND CRM_Type__c = :type
+            ORDER BY CreatedDate DESC
+            LIMIT 1
         ];
         if (existingThreads.size() > 0) {
-            if (HOT_ThreadDetailController.checkAccess(existingThreads[0])) {
                 return existingThreads[0];
-            } else {
-                throw new AuraHandledException('No access');
             }
         }
         Thread__c thread = new Thread__c();
