@@ -1,7 +1,10 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <PermissionSetGroup xmlns="http://soap.sforce.com/2006/04/metadata">
     <hasActivationRequired>false</hasActivationRequired>
-    <label>HOT_Tolk_Formidler_Admin_Gruppe</label>
+    <label>HOT Tolk Formidler Admin Gruppe</label>
+    <permissionSets>HOT_Tolk_Deactivate_Freelance_Interpreter</permissionSets>
     <permissionSets>HOT_Tolk_Formidler_Admin</permissionSets>
+    <permissionSets>Redaction_Permission_Set</permissionSets>
+    <permissionSets>Redaction_Permission_unpackagable</permissionSets>
     <status>Updated</status>
 </PermissionSetGroup>

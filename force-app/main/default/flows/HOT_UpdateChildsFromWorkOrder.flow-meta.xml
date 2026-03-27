@@ -445,7 +445,7 @@
                 </rightValue>
             </conditions>
             <connector>
-                <targetReference>getServiceAppointment</targetReference>
+                <targetReference>Get_workorderlineitem</targetReference>
             </connector>
             <label>No</label>
         </rules>
@@ -460,64 +460,56 @@ Version two adds in Subject and uses workOrder for values on the screen instead 
     <formulas>
         <name>isAccount</name>
         <dataType>Boolean</dataType>
-        <expression>OR(
-    CONTAINS({!ChosenFields}, {!Account}),
+        <expression>AND(
     CONTAINS({!ChosenFieldsTime}, {!Account})
 )</expression>
     </formulas>
     <formulas>
         <name>isAddress</name>
         <dataType>Boolean</dataType>
-        <expression>OR(
-    CONTAINS({!ChosenFields}, {!Address}),
+        <expression>AND(
     CONTAINS({!ChosenFieldsTime}, {!Address})
 )</expression>
     </formulas>
     <formulas>
         <name>isDate</name>
         <dataType>Boolean</dataType>
-        <expression>OR(
-    CONTAINS({!ChosenFields}, {!Date}),
+        <expression>AND(
     CONTAINS({!ChosenFieldsTime}, {!Date})
 )</expression>
     </formulas>
     <formulas>
         <name>isDescription</name>
         <dataType>Boolean</dataType>
-        <expression>OR(
-    CONTAINS({!ChosenFields}, {!Description}),
+        <expression>AND(
     CONTAINS({!ChosenFieldsTime}, {!Description})
 )</expression>
     </formulas>
     <formulas>
         <name>isDispatcher</name>
         <dataType>Boolean</dataType>
-        <expression>OR(
-    CONTAINS({!ChosenFields}, {!Dispatcher}),
+        <expression>AND(
     CONTAINS({!ChosenFieldsTime}, {!Dispatcher})
 )</expression>
     </formulas>
     <formulas>
         <name>isInterpreterMethod</name>
         <dataType>Boolean</dataType>
-        <expression>OR(
-    CONTAINS({!ChosenFields}, {!InterpretationMethod}),
+        <expression>AND(
     CONTAINS({!ChosenFieldsTime}, {!InterpretationMethod})
 )</expression>
     </formulas>
     <formulas>
         <name>isScreenInterpreter</name>
         <dataType>Boolean</dataType>
-        <expression>OR(
-    CONTAINS({!ChosenFields}, {!ScreenInterpreter}),
+        <expression>AND(
     CONTAINS({!ChosenFieldsTime}, {!ScreenInterpreter})
 )</expression>
     </formulas>
     <formulas>
         <name>isSubject</name>
         <dataType>Boolean</dataType>
-        <expression>OR(
-    CONTAINS({!ChosenFields}, {!Subject}),
+        <expression>AND(
     CONTAINS({!ChosenFieldsTime}, {!Subject})
 )</expression>
     </formulas>
@@ -542,6 +534,27 @@ Version two adds in Subject and uses workOrder for values on the screen instead 
         </value>
     </processMetadataValues>
     <processType>Flow</processType>
+    <recordLookups>
+        <name>Get_workorderlineitem</name>
+        <label>Get workorderlineitem</label>
+        <locationX>0</locationX>
+        <locationY>0</locationY>
+        <assignNullValuesIfNoRecordsFound>false</assignNullValuesIfNoRecordsFound>
+        <connector>
+            <targetReference>CheckRequestState</targetReference>
+        </connector>
+        <filterLogic>and</filterLogic>
+        <filters>
+            <field>WorkOrderId</field>
+            <operator>EqualTo</operator>
+            <value>
+                <elementReference>recordId.Id</elementReference>
+            </value>
+        </filters>
+        <getFirstRecordOnly>true</getFirstRecordOnly>
+        <object>WorkOrderLineItem</object>
+        <storeOutputAutomatically>true</storeOutputAutomatically>
+    </recordLookups>
     <recordLookups>
         <name>getPerson</name>
         <label>getPerson</label>
@@ -586,27 +599,6 @@ Version two adds in Subject and uses workOrder for values on the screen instead 
         <object>HOT_Request__c</object>
         <storeOutputAutomatically>true</storeOutputAutomatically>
     </recordLookups>
-    <recordLookups>
-        <name>getServiceAppointment</name>
-        <label>getServiceAppointment</label>
-        <locationX>0</locationX>
-        <locationY>0</locationY>
-        <assignNullValuesIfNoRecordsFound>false</assignNullValuesIfNoRecordsFound>
-        <connector>
-            <targetReference>CheckRequestState</targetReference>
-        </connector>
-        <filterLogic>and</filterLogic>
-        <filters>
-            <field>HOT_Request__c</field>
-            <operator>EqualTo</operator>
-            <value>
-                <elementReference>getRequest.Id</elementReference>
-            </value>
-        </filters>
-        <getFirstRecordOnly>true</getFirstRecordOnly>
-        <object>ServiceAppointment</object>
-        <storeOutputAutomatically>true</storeOutputAutomatically>
-    </recordLookups>
     <screens>
         <name>Cannot_update_Screen</name>
         <label>Cannot update Screen</label>
@@ -643,51 +635,8 @@ Version two adds in Subject and uses workOrder for values on the screen instead 
         </fields>
         <fields>
             <name>displayTimeText</name>
-            <fieldText>&lt;p&gt;&lt;span style=&quot;color: rgb(0, 0, 0); font-size: 13px; background-color: rgb(255, 255, 255);&quot;&gt;OBS! Ved å endre verdiene her så endrer du verdiene på alle underliggende arbeidsordrelinjer og oppdrag.&lt;/span&gt;&lt;/p&gt;&lt;p&gt;&lt;span style=&quot;color: rgb(0, 0, 0); background-color: rgb(255, 255, 255);&quot;&gt;Tid (Kan bare endres om status på oppdrag er åpen eller frigitt til frilanstolk).&lt;/span&gt;&lt;/p&gt;</fieldText>
+            <fieldText>&lt;p&gt;&lt;span style=&quot;background-color: rgb(255, 255, 255); color: rgb(0, 0, 0);&quot;&gt;OBS! Ved å endre verdiene her så endrer du verdiene på alle underliggende arbeidsordrelinjer og oppdrag.&lt;/span&gt;&lt;/p&gt;&lt;p&gt;&lt;span style=&quot;background-color: rgb(255, 255, 255); color: rgb(0, 0, 0);&quot;&gt;(Tid endres kun på oppdrag som har status åpen, frigitt til frilanstolk, reservert eller tildelt)&lt;/span&gt;&lt;/p&gt;</fieldText>
             <fieldType>DisplayText</fieldType>
-        </fields>
-        <fields>
-            <name>ChosenFields</name>
-            <choiceReferences>Address</choiceReferences>
-            <choiceReferences>Description</choiceReferences>
-            <choiceReferences>Subject</choiceReferences>
-            <choiceReferences>ScreenInterpreter</choiceReferences>
-            <dataType>String</dataType>
-            <fieldText>Velg felter</fieldText>
-            <fieldType>MultiSelectCheckboxes</fieldType>
-            <inputsOnNextNavToAssocScrn>UseStoredValues</inputsOnNextNavToAssocScrn>
-            <isRequired>true</isRequired>
-            <visibilityRule>
-                <conditionLogic>and</conditionLogic>
-                <conditions>
-                    <leftValueReference>getServiceAppointment.Status</leftValueReference>
-                    <operator>NotEqualTo</operator>
-                    <rightValue>
-                        <stringValue>None</stringValue>
-                    </rightValue>
-                </conditions>
-                <conditions>
-                    <leftValueReference>getServiceAppointment.Status</leftValueReference>
-                    <operator>NotEqualTo</operator>
-                    <rightValue>
-                        <stringValue>Released to Freelance</stringValue>
-                    </rightValue>
-                </conditions>
-                <conditions>
-                    <leftValueReference>getRequest.Status__c</leftValueReference>
-                    <operator>NotEqualTo</operator>
-                    <rightValue>
-                        <stringValue>Åpen</stringValue>
-                    </rightValue>
-                </conditions>
-                <conditions>
-                    <leftValueReference>getRequest.Status__c</leftValueReference>
-                    <operator>NotEqualTo</operator>
-                    <rightValue>
-                        <stringValue>Godkjent</stringValue>
-                    </rightValue>
-                </conditions>
-            </visibilityRule>
         </fields>
         <fields>
             <name>ChosenFieldsTime</name>
@@ -702,33 +651,26 @@ Version two adds in Subject and uses workOrder for values on the screen instead 
             <inputsOnNextNavToAssocScrn>UseStoredValues</inputsOnNextNavToAssocScrn>
             <isRequired>true</isRequired>
             <visibilityRule>
-                <conditionLogic>1 OR 2 OR (3 OR 4)</conditionLogic>
+                <conditionLogic>or</conditionLogic>
                 <conditions>
-                    <leftValueReference>getServiceAppointment.Status</leftValueReference>
+                    <leftValueReference>recordId.Status</leftValueReference>
                     <operator>EqualTo</operator>
                     <rightValue>
-                        <stringValue>None</stringValue>
+                        <stringValue>New</stringValue>
                     </rightValue>
                 </conditions>
                 <conditions>
-                    <leftValueReference>getServiceAppointment.Status</leftValueReference>
+                    <leftValueReference>recordId.Status</leftValueReference>
                     <operator>EqualTo</operator>
                     <rightValue>
-                        <stringValue>Released to Freelance</stringValue>
+                        <stringValue>Scheduled</stringValue>
                     </rightValue>
                 </conditions>
                 <conditions>
-                    <leftValueReference>getRequest.Status__c</leftValueReference>
+                    <leftValueReference>recordId.Status</leftValueReference>
                     <operator>EqualTo</operator>
                     <rightValue>
-                        <stringValue>Åpen</stringValue>
-                    </rightValue>
-                </conditions>
-                <conditions>
-                    <leftValueReference>getRequest.Status__c</leftValueReference>
-                    <operator>EqualTo</operator>
-                    <rightValue>
-                        <stringValue>Godkjent</stringValue>
+                        <stringValue>Dispatched</stringValue>
                     </rightValue>
                 </conditions>
             </visibilityRule>
@@ -828,14 +770,7 @@ Version two adds in Subject and uses workOrder for values on the screen instead 
             <isRequired>false</isRequired>
             <regionContainerType>SectionWithoutHeader</regionContainerType>
             <visibilityRule>
-                <conditionLogic>or</conditionLogic>
-                <conditions>
-                    <leftValueReference>ChosenFields</leftValueReference>
-                    <operator>Contains</operator>
-                    <rightValue>
-                        <elementReference>Address</elementReference>
-                    </rightValue>
-                </conditions>
+                <conditionLogic>and</conditionLogic>
                 <conditions>
                     <leftValueReference>ChosenFieldsTime</leftValueReference>
                     <operator>Contains</operator>
@@ -868,14 +803,7 @@ Version two adds in Subject and uses workOrder for values on the screen instead 
             <isRequired>false</isRequired>
             <regionContainerType>SectionWithoutHeader</regionContainerType>
             <visibilityRule>
-                <conditionLogic>or</conditionLogic>
-                <conditions>
-                    <leftValueReference>ChosenFields</leftValueReference>
-                    <operator>Contains</operator>
-                    <rightValue>
-                        <elementReference>Subject</elementReference>
-                    </rightValue>
-                </conditions>
+                <conditionLogic>and</conditionLogic>
                 <conditions>
                     <leftValueReference>ChosenFieldsTime</leftValueReference>
                     <operator>Contains</operator>
@@ -908,14 +836,7 @@ Version two adds in Subject and uses workOrder for values on the screen instead 
             <isRequired>false</isRequired>
             <regionContainerType>SectionWithoutHeader</regionContainerType>
             <visibilityRule>
-                <conditionLogic>or</conditionLogic>
-                <conditions>
-                    <leftValueReference>ChosenFields</leftValueReference>
-                    <operator>Contains</operator>
-                    <rightValue>
-                        <elementReference>Description</elementReference>
-                    </rightValue>
-                </conditions>
+                <conditionLogic>and</conditionLogic>
                 <conditions>
                     <leftValueReference>ChosenFieldsTime</leftValueReference>
                     <operator>Contains</operator>
@@ -948,14 +869,7 @@ Version two adds in Subject and uses workOrder for values on the screen instead 
             <isRequired>false</isRequired>
             <regionContainerType>SectionWithoutHeader</regionContainerType>
             <visibilityRule>
-                <conditionLogic>or</conditionLogic>
-                <conditions>
-                    <leftValueReference>ChosenFields</leftValueReference>
-                    <operator>Contains</operator>
-                    <rightValue>
-                        <elementReference>ScreenInterpreter</elementReference>
-                    </rightValue>
-                </conditions>
+                <conditionLogic>and</conditionLogic>
                 <conditions>
                     <leftValueReference>ChosenFieldsTime</leftValueReference>
                     <operator>Contains</operator>
@@ -1020,14 +934,7 @@ Version two adds in Subject and uses workOrder for values on the screen instead 
             <isRequired>false</isRequired>
             <regionContainerType>SectionWithoutHeader</regionContainerType>
             <visibilityRule>
-                <conditionLogic>or</conditionLogic>
-                <conditions>
-                    <leftValueReference>ChosenFields</leftValueReference>
-                    <operator>Contains</operator>
-                    <rightValue>
-                        <elementReference>Dispatcher</elementReference>
-                    </rightValue>
-                </conditions>
+                <conditionLogic>and</conditionLogic>
                 <conditions>
                     <leftValueReference>ChosenFieldsTime</leftValueReference>
                     <operator>Contains</operator>
@@ -1086,14 +993,7 @@ Version two adds in Subject and uses workOrder for values on the screen instead 
             <isRequired>false</isRequired>
             <regionContainerType>SectionWithoutHeader</regionContainerType>
             <visibilityRule>
-                <conditionLogic>or</conditionLogic>
-                <conditions>
-                    <leftValueReference>ChosenFields</leftValueReference>
-                    <operator>Contains</operator>
-                    <rightValue>
-                        <elementReference>Account</elementReference>
-                    </rightValue>
-                </conditions>
+                <conditionLogic>and</conditionLogic>
                 <conditions>
                     <leftValueReference>ChosenFieldsTime</leftValueReference>
                     <operator>Contains</operator>
@@ -1152,14 +1052,7 @@ Version two adds in Subject and uses workOrder for values on the screen instead 
             <isRequired>false</isRequired>
             <regionContainerType>SectionWithoutHeader</regionContainerType>
             <visibilityRule>
-                <conditionLogic>or</conditionLogic>
-                <conditions>
-                    <leftValueReference>ChosenFields</leftValueReference>
-                    <operator>Contains</operator>
-                    <rightValue>
-                        <elementReference>InterpretationMethod</elementReference>
-                    </rightValue>
-                </conditions>
+                <conditionLogic>and</conditionLogic>
                 <conditions>
                     <leftValueReference>ChosenFieldsTime</leftValueReference>
                     <operator>Contains</operator>
@@ -1198,14 +1091,7 @@ Version two adds in Subject and uses workOrder for values on the screen instead 
             <isRequired>false</isRequired>
             <regionContainerType>SectionWithoutHeader</regionContainerType>
             <visibilityRule>
-                <conditionLogic>or</conditionLogic>
-                <conditions>
-                    <leftValueReference>ChosenFieldsTime</leftValueReference>
-                    <operator>Contains</operator>
-                    <rightValue>
-                        <elementReference>Date</elementReference>
-                    </rightValue>
-                </conditions>
+                <conditionLogic>and</conditionLogic>
                 <conditions>
                     <leftValueReference>ChosenFieldsTime</leftValueReference>
                     <operator>Contains</operator>
