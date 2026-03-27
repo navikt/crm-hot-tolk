@@ -15,6 +15,8 @@ private class HOT_NotifyUserOnOrderServiceBatchTest {
 
         HOT_Request__c request = new HOT_Request__c();
         request.Account__c = acc;
+        request.StartTime__c = system.today().addDays(2);
+        request.EndTime__c = system.today().addDays(3);
         request.IsNotNotifyAccount__c = false;
         request.IsNotifyUserOnOrder__c = true;
         insert request;
@@ -48,6 +50,8 @@ private class HOT_NotifyUserOnOrderServiceBatchTest {
 
         HOT_Request__c request = new HOT_Request__c();
         request.Account__c = acc;
+        request.StartTime__c = system.today().addDays(2);
+        request.EndTime__c = system.today().addDays(3);
         request.IsNotNotifyAccount__c = false;
         request.IsNotifyUserOnOrder__c = true;
         insert request;
