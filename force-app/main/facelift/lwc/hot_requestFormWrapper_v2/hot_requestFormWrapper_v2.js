@@ -220,22 +220,7 @@ export default class hot_requestFormWrapper_v2 extends NavigationMixin(Lightning
     noCancelButton = true;
 
     handleError(event) {
-        const saveBtn = this.template.querySelector('[data-id="saveButton"]');
-        if (saveBtn) saveBtn.disabled = false;
-
-        this.modalHeader = 'Noe gikk galt under opprettelsen av bestillingen.';
-        this.noCancelButton = true;
-
-        if (event.detail.detail === 'Fant ingen virksomhet med dette organisasjonsnummeret.') {
-            this.modalContent =
-                'Fant ingen virksomhet med organisasjonsnummer ' + this.fieldValues.OrganizationNumber__c + '.';
-        } else {
-            this.modalContent = event.detail.detail;
-        }
-
-        this.template.querySelector('c-alertdialog').showModal();
-        this.spin = false;
-        this.submitted = false;
+        this.hideFormAndShowError();
     }
 
     handleSuccess(event) {
