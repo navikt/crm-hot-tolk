@@ -144,7 +144,7 @@
             </value>
         </assignmentItems>
         <connector>
-            <targetReference>isDate_check</targetReference>
+            <targetReference>UpdateChildRecords</targetReference>
         </connector>
     </assignments>
     <assignments>
@@ -387,37 +387,12 @@
         </rules>
     </decisions>
     <decisions>
-        <name>isDate_check</name>
-        <label>isDate check</label>
-        <locationX>0</locationX>
-        <locationY>0</locationY>
-        <defaultConnector>
-            <targetReference>UpdateChildRecords</targetReference>
-        </defaultConnector>
-        <defaultConnectorLabel>Default Outcome</defaultConnectorLabel>
-        <rules>
-            <name>Yes</name>
-            <conditionLogic>and</conditionLogic>
-            <conditions>
-                <leftValueReference>isDate</leftValueReference>
-                <operator>EqualTo</operator>
-                <rightValue>
-                    <booleanValue>true</booleanValue>
-                </rightValue>
-            </conditions>
-            <connector>
-                <targetReference>UpdateChildRecords</targetReference>
-            </connector>
-            <label>Yes</label>
-        </rules>
-    </decisions>
-    <decisions>
         <name>isInterpreterMethodCheck</name>
         <label>isInterpreterMethodCheck</label>
         <locationX>0</locationX>
         <locationY>0</locationY>
         <defaultConnector>
-            <targetReference>isDate_check</targetReference>
+            <targetReference>UpdateChildRecords</targetReference>
         </defaultConnector>
         <defaultConnectorLabel>Not Interpreter</defaultConnectorLabel>
         <rules>
@@ -705,6 +680,13 @@ Version two adds in Subject and uses workOrder for values on the screen instead 
                         <stringValue>Åpen</stringValue>
                     </rightValue>
                 </conditions>
+                <conditions>
+                    <leftValueReference>getRequest.Status__c</leftValueReference>
+                    <operator>NotEqualTo</operator>
+                    <rightValue>
+                        <stringValue>Godkjent</stringValue>
+                    </rightValue>
+                </conditions>
             </visibilityRule>
         </fields>
         <fields>
@@ -720,7 +702,7 @@ Version two adds in Subject and uses workOrder for values on the screen instead 
             <inputsOnNextNavToAssocScrn>UseStoredValues</inputsOnNextNavToAssocScrn>
             <isRequired>true</isRequired>
             <visibilityRule>
-                <conditionLogic>or</conditionLogic>
+                <conditionLogic>1 OR 2 OR (3 OR 4)</conditionLogic>
                 <conditions>
                     <leftValueReference>getServiceAppointment.Status</leftValueReference>
                     <operator>EqualTo</operator>
@@ -740,6 +722,13 @@ Version two adds in Subject and uses workOrder for values on the screen instead 
                     <operator>EqualTo</operator>
                     <rightValue>
                         <stringValue>Åpen</stringValue>
+                    </rightValue>
+                </conditions>
+                <conditions>
+                    <leftValueReference>getRequest.Status__c</leftValueReference>
+                    <operator>EqualTo</operator>
+                    <rightValue>
+                        <stringValue>Godkjent</stringValue>
                     </rightValue>
                 </conditions>
             </visibilityRule>
