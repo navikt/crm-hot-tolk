@@ -26,16 +26,12 @@ public without sharing class HOT_ThreadDetailController {
     }
     @AuraEnabled(cacheable=false)
     public static boolean checkAccess(Id threadId) {
-        return checkAccess(
-            [
-                SELECT Id, CRM_Related_Object__c, CRM_Thread_Type__c, HOT_ServiceResource__r.RelatedRecordId
-                FROM Thread__c
-                WHERE Id = :threadId
-            ]
-        );
-    }
-    public static boolean checkAccess(Thread__c thread) {
         Boolean grantAccess = false;
+        Thread__c thread = [
+            SELECT Id, CRM_Related_Object__c, CRM_Thread_Type__c, HOT_ServiceResource__r.RelatedRecordId
+            FROM Thread__c
+            WHERE Id = :threadId
+        ];
         User user = [SELECT Id, AccountId, Profile.Name FROM User WHERE Id = :UserInfo.getUserId()];
         if (!String.isBlank(thread.CRM_Related_Object__c)) {
             String objectType = String.valueOf(((Id) thread.CRM_Related_Object__c).getsobjecttype());
