@@ -31,6 +31,31 @@
             <targetReference>Create_Intrested_Record</targetReference>
         </connector>
     </assignments>
+    <decisions>
+        <name>Check_if_interested_resource_exists</name>
+        <label>Check if interested resource exists</label>
+        <locationX>0</locationX>
+        <locationY>0</locationY>
+        <defaultConnector>
+            <targetReference>Already_Registered_Interest_Screen</targetReference>
+        </defaultConnector>
+        <defaultConnectorLabel>Already registered interest</defaultConnectorLabel>
+        <rules>
+            <name>No_existing_interested_resource_before_screen</name>
+            <conditionLogic>and</conditionLogic>
+            <conditions>
+                <leftValueReference>Get_Existing_Interested_Resource.Id</leftValueReference>
+                <operator>IsNull</operator>
+                <rightValue>
+                    <booleanValue>true</booleanValue>
+                </rightValue>
+            </conditions>
+            <connector>
+                <targetReference>Registrer_Interesse_Screen</targetReference>
+            </connector>
+            <label>No existing interested resource before screen</label>
+        </rules>
+    </decisions>
     <environments>Default</environments>
     <interviewLabel>HOT Create Interested Resource On SA {!$Flow.CurrentDateTime}</interviewLabel>
     <label>HOT Create Interested Resource On SA Mobile</label>
@@ -61,6 +86,34 @@
         <inputReference>Interested_Resource_Record</inputReference>
     </recordCreates>
     <recordLookups>
+        <name>Get_Existing_Interested_Resource</name>
+        <label>Get Existing Interested Resource</label>
+        <locationX>0</locationX>
+        <locationY>0</locationY>
+        <assignNullValuesIfNoRecordsFound>false</assignNullValuesIfNoRecordsFound>
+        <connector>
+            <targetReference>Check_if_interested_resource_exists</targetReference>
+        </connector>
+        <filterLogic>and</filterLogic>
+        <filters>
+            <field>ServiceAppointment__c</field>
+            <operator>EqualTo</operator>
+            <value>
+                <elementReference>Get_SA.Id</elementReference>
+            </value>
+        </filters>
+        <filters>
+            <field>ServiceResource__c</field>
+            <operator>EqualTo</operator>
+            <value>
+                <elementReference>Get_SR.Id</elementReference>
+            </value>
+        </filters>
+        <getFirstRecordOnly>true</getFirstRecordOnly>
+        <object>HOT_InterestedResource__c</object>
+        <storeOutputAutomatically>true</storeOutputAutomatically>
+    </recordLookups>
+    <recordLookups>
         <name>Get_SA</name>
         <label>Get SA</label>
         <locationX>0</locationX>
@@ -88,7 +141,7 @@
         <locationY>0</locationY>
         <assignNullValuesIfNoRecordsFound>false</assignNullValuesIfNoRecordsFound>
         <connector>
-            <targetReference>Registrer_Interesse_Screen</targetReference>
+            <targetReference>Get_Existing_Interested_Resource</targetReference>
         </connector>
         <filterLogic>and</filterLogic>
         <filters>
@@ -102,6 +155,22 @@
         <object>ServiceResource</object>
         <storeOutputAutomatically>true</storeOutputAutomatically>
     </recordLookups>
+    <screens>
+        <name>Already_Registered_Interest_Screen</name>
+        <label>Already Registered Interest Screen</label>
+        <locationX>0</locationX>
+        <locationY>0</locationY>
+        <allowBack>false</allowBack>
+        <allowFinish>true</allowFinish>
+        <allowPause>false</allowPause>
+        <fields>
+            <name>Already_Registered_Interest_Message</name>
+            <fieldText>&lt;p&gt;Du har allerde meldt interesse til dette oppdraget.&lt;/p&gt;</fieldText>
+            <fieldType>DisplayText</fieldType>
+        </fields>
+        <showFooter>true</showFooter>
+        <showHeader>false</showHeader>
+    </screens>
     <screens>
         <name>Registrer_Interesse_Screen</name>
         <label>Registrer Interesse Screen</label>
