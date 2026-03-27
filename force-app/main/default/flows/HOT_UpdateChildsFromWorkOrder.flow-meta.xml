@@ -209,6 +209,20 @@
                 <elementReference>recordId.PostalCode</elementReference>
             </value>
         </assignmentItems>
+        <assignmentItems>
+            <assignToReference>getRequest.StartTime__c</assignToReference>
+            <operator>Assign</operator>
+            <value>
+                <elementReference>recordId.StartDate</elementReference>
+            </value>
+        </assignmentItems>
+        <assignmentItems>
+            <assignToReference>getRequest.EndTime__c</assignToReference>
+            <operator>Assign</operator>
+            <value>
+                <elementReference>recordId.EndDate</elementReference>
+            </value>
+        </assignmentItems>
         <connector>
             <targetReference>ChooseFieldScreen</targetReference>
         </connector>
