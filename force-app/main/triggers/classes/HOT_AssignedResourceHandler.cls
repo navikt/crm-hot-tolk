@@ -75,6 +75,10 @@ public without sharing class HOT_AssignedResourceHandler extends MyTriggers {
             (List<AssignedResource>) records
         );
         update interestedResources;
+        List<HOT_InterestedResource__c> relatedInterestedResourcesToUpdate = updateRelatedInterestedResourcesOnSameWorkOrder(
+            (List<AssignedResource>) records
+        );
+        update relatedInterestedResourcesToUpdate;
 
         Set<Id> potentialSAWithThreadsIds = new Set<Id>();
         for (ServiceAppointment sa : serviceAppointments) {
@@ -173,6 +177,10 @@ public without sharing class HOT_AssignedResourceHandler extends MyTriggers {
                 (List<AssignedResource>) records
             );
             update interestedResources;
+            List<HOT_InterestedResource__c> relatedInterestedResourcesToUpdate = updateRelatedInterestedResourcesOnSameWorkOrder(
+                assignedResourcesFiltered
+            );
+            update relatedInterestedResourcesToUpdate;
 
             updateThreads((List<AssignedResource>) records);
         }
@@ -374,6 +382,90 @@ public without sharing class HOT_AssignedResourceHandler extends MyTriggers {
         }
         return interestedResources;
     }
+
+    static public List<HOT_InterestedResource__c> updateRelatedInterestedResourcesOnSameWorkOrder(
+        List<AssignedResource> assignedResources
+    ) {
+        if (assignedResources.isEmpty()) {
+            return new List<HOT_InterestedResource__c>();
+        }
+
+        Set<Id> serviceAppointmentIds = new Set<Id>();
+        Set<Id> serviceResourceIds = new Set<Id>();
+        for (AssignedResource assignedResource : assignedResources) {
+            serviceAppointmentIds.add(assignedResource.ServiceAppointmentId);
+            serviceResourceIds.add(assignedResource.ServiceResourceId);
+        }
+
+        Map<Id, ServiceAppointment> serviceAppointmentsById = new Map<Id, ServiceAppointment>(
+            [
+                SELECT Id, HOT_WorkOrderLineItem__r.WorkOrderId
+                FROM ServiceAppointment
+                WHERE Id IN :serviceAppointmentIds
+            ]
+        );
+
+        Set<Id> workOrderIds = new Set<Id>();
+        Map<String, Set<Id>> serviceAppointmentIdsByResourceAndWorkOrder = new Map<String, Set<Id>>();
+        for (AssignedResource assignedResource : assignedResources) {
+            ServiceAppointment serviceAppointment = serviceAppointmentsById.get(assignedResource.ServiceAppointmentId);
+            Id workOrderId;
+            if (serviceAppointment != null && serviceAppointment.HOT_WorkOrderLineItem__r != null) {
+                workOrderId = serviceAppointment.HOT_WorkOrderLineItem__r.WorkOrderId;
+            }
+            if (workOrderId == null) {
+                continue;
+            }
+
+            workOrderIds.add(workOrderId);
+            String resourceAndWorkOrderKey = getResourceAndWorkOrderKey(assignedResource.ServiceResourceId, workOrderId);
+            if (!serviceAppointmentIdsByResourceAndWorkOrder.containsKey(resourceAndWorkOrderKey)) {
+                serviceAppointmentIdsByResourceAndWorkOrder.put(resourceAndWorkOrderKey, new Set<Id>());
+            }
+            serviceAppointmentIdsByResourceAndWorkOrder.get(resourceAndWorkOrderKey).add(assignedResource.ServiceAppointmentId);
+        }
+
+        if (workOrderIds.isEmpty()) {
+            return new List<HOT_InterestedResource__c>();
+        }
+
+        List<HOT_InterestedResource__c> relatedInterestedResources = [
+            SELECT
+                Id,
+                Status__c,
+                ServiceAppointment__c,
+                ServiceResource__c,
+                ServiceAppointment__r.HOT_WorkOrderLineItem__r.WorkOrderId
+            FROM HOT_InterestedResource__c
+            WHERE
+                ServiceResource__c IN :serviceResourceIds
+                AND Status__c = 'Interested'
+                AND ServiceAppointment__r.HOT_WorkOrderLineItem__r.WorkOrderId IN :workOrderIds
+        ];
+
+        List<HOT_InterestedResource__c> interestedResourcesToUpdate = new List<HOT_InterestedResource__c>();
+        for (HOT_InterestedResource__c interestedResource : relatedInterestedResources) {
+            String resourceAndWorkOrderKey = getResourceAndWorkOrderKey(
+                interestedResource.ServiceResource__c,
+                interestedResource.ServiceAppointment__r.HOT_WorkOrderLineItem__r.WorkOrderId
+            );
+            if (
+                serviceAppointmentIdsByResourceAndWorkOrder.containsKey(resourceAndWorkOrderKey) &&
+                !serviceAppointmentIdsByResourceAndWorkOrder.get(resourceAndWorkOrderKey)
+                    .contains(interestedResource.ServiceAppointment__c)
+            ) {
+                interestedResource.Status__c = 'Not Assigned';
+                interestedResourcesToUpdate.add(interestedResource);
+            }
+        }
+
+        return interestedResourcesToUpdate;
+    }
+
+    private static String getResourceAndWorkOrderKey(Id serviceResourceId, Id workOrderId) {
+        return String.valueOf(serviceResourceId) + '-' + String.valueOf(workOrderId);
+    }
+
     public static void updateThreads(List<AssignedResource> assignedResources) {
         List<Id> serviceAppointmentIds = new List<Id>();
 
