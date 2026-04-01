@@ -29,6 +29,10 @@
         <enabled>true</enabled>
     </classAccesses>
     <classAccesses>
+        <apexClass>HOT_HighlightPanelController</apexClass>
+        <enabled>true</enabled>
+    </classAccesses>
+    <classAccesses>
         <apexClass>HOT_IRRecordPageController</apexClass>
         <enabled>true</enabled>
     </classAccesses>
@@ -82,11 +86,11 @@
     </classAccesses>
     <customPermissions>
         <enabled>true</enabled>
-        <name>HOT_DeleteFiles</name>
+        <name>HOT_AccessToFormidlerActions</name>
     </customPermissions>
     <customPermissions>
         <enabled>true</enabled>
-        <name>HOT_AccessToFormidlerActions</name>
+        <name>HOT_DeleteFiles</name>
     </customPermissions>
     <customPermissions>
         <enabled>true</enabled>
@@ -985,6 +989,21 @@
     <fieldPermissions>
         <editable>true</editable>
         <field>Person__c.HOT_LanguageAndCommunicationMethods__c</field>
+        <readable>true</readable>
+    </fieldPermissions>
+    <fieldPermissions>
+        <editable>false</editable>
+        <field>Person__c.HOT_MobilePhoneOverrideReason__c</field>
+        <readable>true</readable>
+    </fieldPermissions>
+    <fieldPermissions>
+        <editable>false</editable>
+        <field>Person__c.HOT_MobilePhoneOverride__c</field>
+        <readable>true</readable>
+    </fieldPermissions>
+    <fieldPermissions>
+        <editable>false</editable>
+        <field>Person__c.HOT_MobilePhone__c</field>
         <readable>true</readable>
     </fieldPermissions>
     <fieldPermissions>

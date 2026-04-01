@@ -60,7 +60,11 @@
 }
 
 .custom-padding-left {
-    padding-left: 1.875rem;
+    padding-left: 1rem;
+}
+
+.custom-padding-bottom {
+    padding-bottom: 0.5rem;
 }
 
 .maleBackground {
