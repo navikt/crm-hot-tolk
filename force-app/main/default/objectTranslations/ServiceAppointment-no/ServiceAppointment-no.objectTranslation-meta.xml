@@ -32,6 +32,10 @@
     </caseValues>
     <gender>Neuter</gender>
     <quickActions>
+        <label>Reserver eller tildel tolk</label>
+        <name>HOT_AssignOrReserve</name>
+    </quickActions>
+    <quickActions>
         <label>Frigi til frilanstolker</label>
         <name>HOT_ReleaseToFreelance</name>
     </quickActions>
