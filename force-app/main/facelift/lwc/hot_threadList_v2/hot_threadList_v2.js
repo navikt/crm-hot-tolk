@@ -142,7 +142,7 @@ export default class Hot_threadList_v2 extends NavigationMixin(LightningElement)
             }
         }
         if (threadTypeValue === 'HOT_BRUKER-BESTILLER') {
-            return 'Samtale mellom bruker og bestiller)';
+            return 'Samtale mellom bruker og bestiller';
         }
         if (threadTypeValue === 'HOT_TOLK-FORMIDLER') {
             return 'Med formidler';

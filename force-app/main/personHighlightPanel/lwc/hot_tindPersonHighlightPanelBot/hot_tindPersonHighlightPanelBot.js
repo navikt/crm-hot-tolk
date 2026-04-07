@@ -1,7 +1,7 @@
 import { LightningElement, api, wire } from 'lwc';
 import { NavigationMixin } from 'lightning/navigation';
-import hasPermission from '@salesforce/apex/HOT_CheckPermissions.hasFreelancePermission';
-import isAnsatt from '@salesforce/apex/HOT_CheckPermissions.hasAnsattTolkPermission';
+
+import getAllPermissions from '@salesforce/apex/HOT_CheckPermissions.getAllPermissions';
 
 export default class hot_personHighlightPanelBot extends NavigationMixin(LightningElement) {
     @api recordId;
@@ -11,14 +11,15 @@ export default class hot_personHighlightPanelBot extends NavigationMixin(Lightni
     isModalOpen = false;
     currentFlow;
     fnr;
-    hasPermission = false;
-    isAnsatt = false;
+    hasPermissionToCreateFreelance = false;
+    isFormidler = false;
+    isFormidlerAdmin = false;
+    isAdmin = false;
 
     handleFlowButton(event) {
         this.currentFlow = event.target.dataset.flow;
         this.modalTitle = `Run ${this.currentFlow}`;
         this.isModalOpen = true;
-
         setTimeout(() => {
             const flow = this.template.querySelector('lightning-flow');
             if (flow) {
@@ -40,7 +41,11 @@ export default class hot_personHighlightPanelBot extends NavigationMixin(Lightni
 
     handleStatusChange(event) {
         if (event.detail.status === 'FINISHED' || event.detail.status === 'FINISHED_SCREEN') {
-            this.closeModal();
+            if (this.currentFlow === 'HOT_OverrideKRRMobilePhoneNumber') {
+                window.location.reload();
+            } else {
+                this.closeModal();
+            }
         }
     }
 
@@ -54,31 +59,22 @@ export default class hot_personHighlightPanelBot extends NavigationMixin(Lightni
     //     });
     // }
 
-    get isDisabledButtons() {
-        return !this.personDetails?.fullName;
+    get showButtons() {
+        return (this.personDetails?.fullName && this.isFormidler) || this.isAdmin;
     }
 
-    @wire(hasPermission)
-    wiredPermission({ error, data }) {
+    @wire(getAllPermissions)
+    wiredPermissions({ error, data }) {
         if (data) {
-            this.hasPermission = data;
-            console.log('Frilans: ', this.hasPermission);
-        }
-        if (error) {
-            this.addErrorMessage('Error Checking permission set', error);
-            console.error(error);
-        }
-    }
+            this.hasPermissionToCreateFreelance = data.hasFreelancePermission;
+            this.isFormidler = data.isFormidler;
+            this.isFormidlerAdmin = data.isFormidlerAdmin;
+            this.isAdmin = data.isAdmin;
 
-    @wire(isAnsatt)
-    wiredAnsatt({ error, data }) {
-        if (data) {
-            this.isAnsatt = data;
-            console.log('Ansatt: ', this.isAnsatt);
+            console.log('Permissions:', data);
         }
         if (error) {
-            this.addErrorMessage('Error Checking permission set for Ansatt', error);
-            console.error(error);
+            console.error('Error fetching permissions:', error);
         }
     }
 

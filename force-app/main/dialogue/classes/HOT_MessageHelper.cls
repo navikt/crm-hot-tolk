@@ -4,7 +4,7 @@ public without sharing class HOT_MessageHelper {
     private static User getCurrentUser() {
         if (cachedUser == null) {
             cachedUser = [
-                SELECT Id, FirstName, Profile.Name
+                SELECT Id, FirstName, Profile.Name, AccountId
                 FROM User
                 WHERE Id = :UserInfo.getUserId()
             ];
@@ -70,6 +70,27 @@ public without sharing class HOT_MessageHelper {
         return threadList;
     }
     @AuraEnabled(cacheable=true)
+    public static HOT_Request__c getRequestInformationAndAccessCheck(Id recordId) {
+        HOT_Request__c request = [
+            SELECT Id, IsAccountEqualOrderer__c, Account__c, Orderer__c
+            FROM HOT_Request__c
+            WHERE Id = :recordId
+            LIMIT 1
+        ];
+        User user = getCurrentUser();
+        if (
+            (user.AccountId != null &&
+            (request.Account__c == user.AccountId ||
+            request.Orderer__c == user.AccountId)) || HOT_ThreadDetailController.isAdminOrFormidler(user)
+        ) {
+            return request;
+        }
+        throw new AuraHandledException('No access');
+    }
+    /**
+     * deprecated, use getRequestInformationAndAccessCheck instead. This method does not perform access check and should not be used when accessing request information for threads related to HOT_Request__c
+     */
+    @AuraEnabled(cacheable=true)
     public static List<HOT_Request__c> getRequestInformation(Id recordId) {
         //sjekke om det er formidler
         List<HOT_Request__c> request = [
@@ -80,9 +101,98 @@ public without sharing class HOT_MessageHelper {
         return request;
     }
     @AuraEnabled(cacheable=true)
+    public static WorkOrder getWorkOrderInformationAndAccessCheck(Id recordId) {
+        User user = getCurrentUser();
+        WorkOrder wo = [
+            SELECT Id, HOT_TotalNumberOfInterpreters__c, HOT_Request__r.Account__c
+            FROM WorkOrder
+            WHERE Id = :recordId
+            LIMIT 1
+        ];
+        if (wo.HOT_Request__r.Account__c == user.AccountId) {
+            return wo;
+        }
+
+        List<AssignedResource> ar = [
+            SELECT Id
+            FROM AssignedResource
+            WHERE
+                ServiceAppointment.HOT_WorkOrderLineItem__r.WorkOrderId = :recordId
+                AND ServiceResource.RelatedRecordId = :user.Id
+            LIMIT 1
+        ];
+        if (ar.size() > 0) {
+            return wo;
+        }
+
+        if (HOT_ThreadDetailController.isAdminOrFormidler(user)) {
+            return wo;
+        }
+        throw new AuraHandledException('No access');
+    }
+    /**
+     * deprecated, use getWorkOrderInformationAndAccessCheck instead. This method does not perform access check and should not be used when accessing work order information for threads related to WorkOrder
+     */
+    @AuraEnabled(cacheable=true)
     public static List<WorkOrder> getWorkOrderInformation(Id recordId) {
         List<WorkOrder> wo = [SELECT Id, HOT_TotalNumberOfInterpreters__c FROM WorkOrder WHERE Id = :recordId];
         return wo;
+    }
+
+    @AuraEnabled(cacheable=true)
+    public static HOT_WageClaim__c getWageClaimInformationAndAccessCheck(Id recordId) {
+        User user = getCurrentUser();
+        HOT_WageClaim__c wc = [
+            SELECT Id, ServiceResource__r.RelatedRecordId
+            FROM HOT_WageClaim__c
+            WHERE Id = :recordId
+            LIMIT 1
+        ];
+        if (wc.ServiceResource__r.RelatedRecordId == user.Id || HOT_ThreadDetailController.isAdminOrFormidler(user)) {
+            return wc;
+        }
+        throw new AuraHandledException('No access');
+    }
+    @AuraEnabled(cacheable=true)
+    public static ServiceAppointment getServiceAppointmentInformationAndAccessCheck(Id recordId) {
+        User user = getCurrentUser();
+        List<HOT_InterestedResource__c> irList = [
+            SELECT Id
+            FROM HOT_InterestedResource__c
+            WHERE
+                ServiceAppointment__c = :recordId
+                AND ServiceResource__r.RelatedRecordId = :user.Id
+                AND (Status__c = 'Assigned'
+                OR Status__c = 'Canceled'
+                OR Status__c = 'Canceled by Interpreter'
+                OR Status__c = 'Reserved')
+        ];
+        List<AssignedResource> arList = [
+            SELECT Id
+            FROM AssignedResource
+            WHERE ServiceResource.RelatedRecordId = :user.Id AND ServiceAppointmentId = :recordId
+        ];
+        if (irList.size() != 0 || arList.size() != 0) {
+            return new ServiceAppointment(Id = recordId);
+        }
+        if (HOT_ThreadDetailController.isAdminOrFormidler(user)) {
+            return new ServiceAppointment(Id = recordId);
+        }
+        throw new AuraHandledException('No access');
+    }
+    @AuraEnabled(cacheable=true)
+    public static HOT_InterestedResource__c getInterestedResourceInformationAndAccessCheck(Id recordId) {
+        User user = getCurrentUser();
+        HOT_InterestedResource__c ir = [
+            SELECT Id, ServiceResource__r.RelatedRecordId
+            FROM HOT_InterestedResource__c
+            WHERE Id = :recordId
+            LIMIT 1
+        ];
+        if (ir.ServiceResource__r.RelatedRecordId == user.Id || HOT_ThreadDetailController.isAdminOrFormidler(user)) {
+            return ir;
+        }
+        throw new AuraHandledException('No access');
     }
     @AuraEnabled(cacheable=true)
     public static List<Thread__c> getSingleThread(Id recordId, String type) {
@@ -98,7 +208,28 @@ public without sharing class HOT_MessageHelper {
             return null;
         }
     }
-
+    @AuraEnabled(cacheable=false)
+    public static Thread__c getThreadById(Id threadId) {
+        if (!HOT_ThreadDetailController.checkAccess(threadId)) {
+            throw new AuraHandledException('No access');
+        }
+        try {
+            return [
+                SELECT
+                    Id,
+                    CreatedById,
+                    CRM_Date_Time_Registered__c,
+                    CreatedBy.FirstName,
+                    CreatedBy.LastName,
+                    CRM_isActive__c
+                FROM Thread__c
+                WHERE Id = :threadId
+                LIMIT 1
+            ];
+        } catch (Exception e) {
+            throw new AuraHandledException(e.getMessage());
+        }
+    }
     @AuraEnabled(cacheable=true)
     public static List<Thread__c> getThreadFromThreadId(Id recordId) {
         try {

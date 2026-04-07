@@ -2,7 +2,6 @@ public without sharing class HOT_ServiceAppointmentHandler extends MyTriggers {
     public override void onBeforeInsert() {
         setOwnerAndStatus((List<ServiceAppointment>) records);
         setDefaultFields((List<ServiceAppointment>) records);
-        setCompanyOnServiceAppointment((List<ServiceAppointment>) records);
     }
 
     public override void onAfterInsert() {
@@ -498,6 +497,8 @@ public without sharing class HOT_ServiceAppointmentHandler extends MyTriggers {
                     Id,
                     WorkOrder.AccountId,
                     WorkOrder.HOT_Request__c,
+                    WorkOrder.HOT_Request__r.Company__c,
+                    WorkOrder.HOT_Request__r.Dispatcher__c,
                     WorkOrder.OwnerId,
                     Subject,
                     Description,
@@ -529,6 +530,15 @@ public without sharing class HOT_ServiceAppointmentHandler extends MyTriggers {
                 ) {
                     serviceAppointment.HOT_Request__c = workOrderLineItems.get(serviceAppointment.ParentRecordId)
                         .WorkOrder.HOT_Request__c;
+                }
+                if (
+                    serviceAppointment.HOT_DispatcherNew__c == null &&
+                    workOrderLineItems.get(serviceAppointment.ParentRecordId).WorkOrder.HOT_Request__r != null &&
+                    workOrderLineItems.get(serviceAppointment.ParentRecordId).WorkOrder.HOT_Request__r.Dispatcher__c !=
+                    null
+                ) {
+                    serviceAppointment.HOT_DispatcherNew__c = workOrderLineItems.get(serviceAppointment.ParentRecordId)
+                        .WorkOrder.HOT_Request__r.Dispatcher__c;
                 }
                 if (
                     serviceAppointment.Subject == null &&
@@ -653,6 +663,15 @@ public without sharing class HOT_ServiceAppointmentHandler extends MyTriggers {
                     serviceAppointment.HOT_Account__c = workOrderLineItems.get(serviceAppointment.ParentRecordId)
                         .WorkOrder.AccountId;
                 }
+                if (
+                    serviceAppointment.HOT_Company__c == null &&
+                    workOrderLineItems.get(serviceAppointment.ParentRecordId).WorkOrder.HOT_Request__r != null &&
+                    workOrderLineItems.get(serviceAppointment.ParentRecordId).WorkOrder.HOT_Request__r.Company__c !=
+                    null
+                ) {
+                    serviceAppointment.HOT_Company__c = workOrderLineItems.get(serviceAppointment.ParentRecordId)
+                        .WorkOrder.HOT_Request__r.Company__c;
+                }
                 if (workOrderLineItems.get(serviceAppointment.ParentRecordId).ServiceTerritoryId != null) {
                     serviceAppointment.ServiceTerritoryId = workOrderLineItems.get(serviceAppointment.ParentRecordId)
                         .ServiceTerritoryId;
@@ -682,19 +701,8 @@ public without sharing class HOT_ServiceAppointmentHandler extends MyTriggers {
     }
 
     private static void setOwnerAndStatus(List<ServiceAppointment> serviceAppointments) {
-        List<Id> requestIds = new List<Id>();
-
-        for (ServiceAppointment serviceAppointment : serviceAppointments) {
-            requestIds.add(ServiceAppointment.HOT_Request__c);
-        }
-
-        Map<Id, HOT_Request__c> requests = new Map<Id, HOT_Request__c>(
-            [SELECT Id, Dispatcher__C FROM HOT_Request__C WHERE Id IN :requestIds]
-        );
-
         for (ServiceAppointment serviceAppointment : serviceAppointments) {
             serviceAppointment.Status = 'None';
-            serviceAppointment.HOT_DispatcherNew__c = requests.get(serviceAppointment.HOT_Request__C)?.Dispatcher__c;
             if (serviceAppointment.HOT_Request__c != null) {
                 serviceAppointment.OwnerId = serviceAppointment.HOT_RequestOwnerId__c;
             }
@@ -982,23 +990,6 @@ public without sharing class HOT_ServiceAppointmentHandler extends MyTriggers {
         returnMap.put('resource', resourceByAssignment);
         return returnMap;
     }
-    public static void setCompanyOnServiceAppointment(List<ServiceAppointment> serviceAppointments) {
-        Set<Id> requestIds = new Set<Id>();
-        for (ServiceAppointment sa : serviceAppointments) {
-            if (sa.isClone()) {
-                requestIds.add(sa.HOT_Request__c);
-            }
-        }
-        List<HOT_Request__c> requestList = [SELECT Id, Company__c FROM HOT_Request__c WHERE Id IN :requestIds];
-        for (ServiceAppointment sa : serviceAppointments) {
-            for (HOT_Request__c request : requestList) {
-                if (sa.HOT_Request__c == request.Id && request.Company__c != null) {
-                    sa.HOT_Company__c = request.Company__c;
-                }
-            }
-        }
-    }
-
     public static void createContentDocumentLinks(List<ServiceAppointment> serviceAppointments) {
         List<Id> workOrderIds = new List<Id>();
 

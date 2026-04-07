@@ -58,15 +58,19 @@ export default class hot_personHighlightPanelTop extends LightningElement {
         }
     }
 
+    get showPersonInfo() {
+        return this.personDetails?.fullName;
+    }
+
     get formattedPersonInfo() {
         return [
-            this.personDetails?.age,
+            this.personDetails?.age ? `${this.personDetails.age} år` : null,
             this.personDetails?.vedtak,
             this.personDetails?.citizenship,
             this.personDetails?.legalStatus,
             this.navUnitName
         ]
-            .filter((x) => x != null)
+            .filter(Boolean)
             .join(' / ');
     }
 
@@ -96,9 +100,5 @@ export default class hot_personHighlightPanelTop extends LightningElement {
 
     get genderIconSrc() {
         return NAV_ICONS + '/' + this.genderIcon + '.svg#' + this.genderIcon;
-    }
-
-    get personIdent() {
-        return this.personDetails?.personIdent;
     }
 }
