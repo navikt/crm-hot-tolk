@@ -1,4 +1,9 @@
 public without sharing class HOT_RequestNotification {
+    private static void handleException(Exception e) {
+        LoggerUtility logger = new LoggerUtility();
+        logger.exception(e, CRM_ApplicationDomain.Domain.HOT);
+        logger.publishSynch();
+    }
     private static Id notifyDispatcherTypeId;
 
     private static Id getNotifyDispatcherTypeId() {
@@ -70,13 +75,22 @@ public without sharing class HOT_RequestNotification {
         }
 
         HOT_Request__c request = [
-            SELECT Id, Name, OwnerId
+            SELECT Id, Name, Dispatcher__c
             FROM HOT_Request__c
             WHERE Id = :requestId
             LIMIT 1
         ];
 
-        String title = (fileCount == 1) ? 'Nytt vedlegg har blitt lastet opp' : 'Nye vedlegg har blitt lastet opp';
+        String title;
+        if (workOrderId != null) {
+            title = (fileCount == 1)
+                ? 'Nytt vedlegg på arbeidsordre tilhørende ' + request.Name
+                : 'Nye vedlegg på arbeidsordre tilhørende ' + request.Name;
+        } else {
+            title = (fileCount == 1)
+                ? 'Nytt vedlegg på forespørsel ' + request.Name
+                : 'Nye vedlegg på forespørsel ' + request.Name;
+        }
         String body =
             'Det ble lastet opp ' +
             String.valueOf(fileCount) +
@@ -95,14 +109,17 @@ public without sharing class HOT_RequestNotification {
             targetId
         );
 
-        Map<Id, Id> groupByQueue = HOT_NotificationHandler.getGroupIdByQueueId(new List<Id>{ request.OwnerId });
-        Id groupId = groupByQueue.get(request.OwnerId);
-        if (groupId == null) {
-            throw new AuraHandledException(
-                'Queue owner has no mapped group or owner is not a Queue. ownerId=' + request.OwnerId
-            );
+        Set<String> recipients = new Set<String>();
+        if (request.Dispatcher__c != null) {
+            recipients.add(request.Dispatcher__c);
         }
 
-        HOT_NotificationHandler.sendNotification(notification, new Set<String>{ (String) groupId }, (SObject) request);
+        if (!recipients.isEmpty()) {
+            try {
+                HOT_NotificationHandler.sendNotification(notification, recipients, (SObject) request);
+            } catch (Exception e) {
+                handleException(e);
+            }
+        }
     }
 }
