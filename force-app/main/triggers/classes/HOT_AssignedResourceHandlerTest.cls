@@ -32,17 +32,12 @@ private class HOT_AssignedResourceHandlerTest {
         List<ServiceResource> serviceResources = new List<ServiceResource>();
         ServiceResource serviceResourceAdmin = HOT_TestDataFactory.createServiceResource(UserInfo.getUserId());
         serviceResourceAdmin.HOT_IsFreelanceInterpreter__c = true;
-        serviceResourceAdmin.HOT_ServiceTerritory__c = serviceTerritory.Id;
         ServiceResource serviceResource = HOT_TestDataFactory.createServiceResource(user.Id);
         serviceResource.HOT_IsFreelanceInterpreter__c = true;
         serviceResource.HOT_ServiceTerritory__c = serviceTerritory.Id;
         serviceResources.add(serviceResourceAdmin);
         serviceResources.add(serviceResource);
         insert serviceResources;
-        insert new List<ServiceTerritoryMember>{
-            HOT_TestDataFactory.createServiceTerritoryMember(serviceResourceAdmin, serviceTerritory),
-            HOT_TestDataFactory.createServiceTerritoryMember(serviceResource, serviceTerritory)
-        };
 
         ServiceAppointment serviceAppointment = [
             SELECT Id, HOT_ServiceResource__c, HOT_AssignedResourceId__c
@@ -445,7 +440,6 @@ private class HOT_AssignedResourceHandlerTest {
             'Could not set Interested Resource Status to Assigned'
         );
     }
-
     @IsTest
     static void moveExistingThreadBackToIRWhenARIsDeletedTest() {
         Hot_interestedresource__c interestedResource = [
@@ -491,7 +485,6 @@ private class HOT_AssignedResourceHandlerTest {
             FROM ServiceAppointment
             WHERE Id = :interestedResource.ServiceAppointment__c
         ];
-        sa.HOT_PreferredResource__c = null;
         sa.Status = 'Released to Freelance';
         update sa;
 
@@ -520,7 +513,6 @@ private class HOT_AssignedResourceHandlerTest {
             FROM ServiceAppointment
             WHERE Id = :interestedResource.ServiceAppointment__c
         ];
-        sa.HOT_PreferredResource__c = null;
         sa.Status = 'None';
         update sa;
         sa.Status = 'Released to Freelance';
@@ -551,7 +543,6 @@ private class HOT_AssignedResourceHandlerTest {
             FROM ServiceAppointment
             WHERE Id = :interestedResource.ServiceAppointment__c
         ];
-        sa.HOT_PreferredResource__c = null;
         sa.Status = 'None';
         update sa;
         sa.Status = 'Released to Freelance';

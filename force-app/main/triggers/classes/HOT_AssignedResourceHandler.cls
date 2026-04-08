@@ -374,7 +374,6 @@ public without sharing class HOT_AssignedResourceHandler extends MyTriggers {
         }
         return interestedResources;
     }
-
     public static void updateThreads(List<AssignedResource> assignedResources) {
         List<Id> serviceAppointmentIds = new List<Id>();
 
