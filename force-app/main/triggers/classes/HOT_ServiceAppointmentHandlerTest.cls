@@ -83,6 +83,35 @@ private class HOT_ServiceAppointmentHandlerTest {
         */
     }
 
+    private static ServiceAppointment getPrimaryServiceAppointmentForWorkOrderTests() {
+        return [
+            SELECT Id, Status, HOT_ServiceResource__c, HOT_WorkOrderID__c, HOT_WorkOrderLineItem__r.WorkOrderId, HOT_WorkOrderLineItem__r.WorkTypeId
+            FROM ServiceAppointment
+            WHERE Subject = 'TEST'
+            LIMIT 1
+        ];
+    }
+
+    private static ServiceAppointment createServiceAppointmentOnWorkOrder(Id workOrderId, Id workTypeId, String subject) {
+        Datetime startTime = Datetime.now().addHours(6);
+        WorkOrderLineItem workOrderLineItem = new WorkOrderLineItem(
+            WorkOrderId = workOrderId,
+            Status = 'New',
+            Subject = subject,
+            HOT_NumberOfInterpreters__c = 1,
+            StartDate = startTime,
+            EndDate = startTime.addHours(2),
+            WorkTypeId = workTypeId
+        );
+        insert workOrderLineItem;
+
+        ServiceAppointment serviceAppointment = HOT_TestDataFactory.createServiceAppointment(workOrderLineItem);
+        serviceAppointment.Subject = subject;
+        insert serviceAppointment;
+
+        return [SELECT Id, Status FROM ServiceAppointment WHERE Id = :serviceAppointment.Id];
+    }
+
     @IsTest
     static void setStatusDefaultTest() {
         HOT_Request__c request = [SELECT Id FROM HOT_Request__c WHERE Subject__c = 'TEST' LIMIT 1];
@@ -821,11 +850,12 @@ private class HOT_ServiceAppointmentHandlerTest {
         update request;
 
         ServiceAppointment serviceAppointment = [
-            SELECT Id, HOT_Request__c, ParentRecordId
+            SELECT Id, HOT_Request__c, ParentRecordId, HOT_WorkOrderID__c
             FROM ServiceAppointment
             WHERE HOT_Request__c = :request.Id
             LIMIT 1
         ];
+        System.assertEquals(18, serviceAppointment.HOT_WorkOrderID__c.length(), 'Work Order formula should return 18-char id');
 
         ContentVersion contentVersion = new ContentVersion(
             Title = 'a picture',
@@ -895,6 +925,211 @@ private class HOT_ServiceAppointmentHandlerTest {
             serviceAppointment.SchedEndTime,
             serviceAppointment.ActualEndTime,
             'Planlagt sluttid ble ikke satt til faktisk sluttid'
+        );
+    }
+
+    @IsTest
+    public static void updateRelatedInterestedResourcesOnSameWorkOrderOnlyWhenDispatched() {
+        HOT_Request__c request = [SELECT Id FROM HOT_Request__c WHERE Subject__c = 'TEST' LIMIT 1];
+        request.Status__c = 'Godkjent';
+        update request;
+
+        ServiceAppointment primaryServiceAppointment = getPrimaryServiceAppointmentForWorkOrderTests();
+        ServiceAppointment sameWorkOrderServiceAppointment = createServiceAppointmentOnWorkOrder(
+            primaryServiceAppointment.HOT_WorkOrderLineItem__r.WorkOrderId,
+            primaryServiceAppointment.HOT_WorkOrderLineItem__r.WorkTypeId,
+            'same work order dispatch'
+        );
+        ServiceResource serviceResource = [SELECT Id FROM ServiceResource LIMIT 1];
+
+        HOT_InterestedResource__c relatedInterestedResource = HOT_TestDataFactory.createInterestedResource(
+            sameWorkOrderServiceAppointment.Id,
+            serviceResource.Id
+        );
+        relatedInterestedResource.Status__c = 'Interested';
+        insert relatedInterestedResource;
+
+        insert HOT_TestDataFactory.createAssignedResource(primaryServiceAppointment.Id, serviceResource.Id);
+
+        relatedInterestedResource = [
+            SELECT Id, Status__c
+            FROM HOT_InterestedResource__c
+            WHERE Id = :relatedInterestedResource.Id
+        ];
+        System.assertEquals(
+            'Interested',
+            relatedInterestedResource.Status__c,
+            'IR on same Work Order should still be Interested before dispatch'
+        );
+
+        Test.startTest();
+        primaryServiceAppointment.Status = 'Dispatched';
+        update primaryServiceAppointment;
+        Test.stopTest();
+
+        relatedInterestedResource = [
+            SELECT Id, Status__c
+            FROM HOT_InterestedResource__c
+            WHERE Id = :relatedInterestedResource.Id
+        ];
+        System.assertEquals(
+            'Not Assigned',
+            relatedInterestedResource.Status__c,
+            'IR on same Work Order should be set to Not Assigned only when the appointment is Dispatched'
+        );
+    }
+
+    @IsTest
+    public static void updateRelatedInterestedResourcesOnSameWorkOrderDoesNotTouchOtherWorkOrdersOnDispatch() {
+        HOT_Request__c request = [SELECT Id FROM HOT_Request__c WHERE Subject__c = 'TEST' LIMIT 1];
+        request.Status__c = 'Godkjent';
+        update request;
+
+        ServiceAppointment primaryServiceAppointment = getPrimaryServiceAppointmentForWorkOrderTests();
+        ServiceResource serviceResource = [SELECT Id FROM ServiceResource LIMIT 1];
+
+        WorkType workType = [SELECT Id, Name, EstimatedDuration FROM WorkType LIMIT 1];
+        WorkOrder otherWorkOrder = HOT_TestDataFactory.createWorkOrder(request, workType);
+        otherWorkOrder.Subject = 'OTHER WORK ORDER';
+        insert otherWorkOrder;
+
+        ServiceAppointment otherWorkOrderServiceAppointment = createServiceAppointmentOnWorkOrder(
+            otherWorkOrder.Id,
+            workType.Id,
+            'OTHER WORK ORDER APPOINTMENT'
+        );
+
+        HOT_InterestedResource__c otherWorkOrderInterestedResource = HOT_TestDataFactory.createInterestedResource(
+            otherWorkOrderServiceAppointment.Id,
+            serviceResource.Id
+        );
+        otherWorkOrderInterestedResource.Status__c = 'Interested';
+        insert otherWorkOrderInterestedResource;
+
+        Test.startTest();
+        insert HOT_TestDataFactory.createAssignedResource(primaryServiceAppointment.Id, serviceResource.Id);
+        primaryServiceAppointment.Status = 'Dispatched';
+        update primaryServiceAppointment;
+        Test.stopTest();
+
+        otherWorkOrderInterestedResource = [
+            SELECT Id, Status__c
+            FROM HOT_InterestedResource__c
+            WHERE Id = :otherWorkOrderInterestedResource.Id
+        ];
+        System.assertEquals(
+            'Interested',
+            otherWorkOrderInterestedResource.Status__c,
+            'Dispatch on one Work Order should not update IR on other Work Orders'
+        );
+    }
+
+    @IsTest
+    public static void updateRelatedInterestedResourcesOnSameWorkOrderKeepsNonInterestedStatusesOnDispatch() {
+        HOT_Request__c request = [SELECT Id FROM HOT_Request__c WHERE Subject__c = 'TEST' LIMIT 1];
+        request.Status__c = 'Godkjent';
+        update request;
+
+        ServiceAppointment primaryServiceAppointment = getPrimaryServiceAppointmentForWorkOrderTests();
+        ServiceResource serviceResource = [SELECT Id FROM ServiceResource LIMIT 1];
+        List<String> protectedStatuses = new List<String>{
+            'Declined',
+            'Retracted Interest',
+            'Canceled by Interpreter',
+            'Withdrawn',
+            'Assigned',
+            'Reserved'
+        };
+        List<HOT_InterestedResource__c> interestedResourcesToInsert = new List<HOT_InterestedResource__c>();
+        Map<Id, String> expectedStatusByInterestedResourceId = new Map<Id, String>();
+
+        for (String protectedStatus : protectedStatuses) {
+            ServiceAppointment relatedServiceAppointment = createServiceAppointmentOnWorkOrder(
+                primaryServiceAppointment.HOT_WorkOrderLineItem__r.WorkOrderId,
+                primaryServiceAppointment.HOT_WorkOrderLineItem__r.WorkTypeId,
+                'same work order ' + protectedStatus
+            );
+            HOT_InterestedResource__c interestedResource = HOT_TestDataFactory.createInterestedResource(
+                relatedServiceAppointment.Id,
+                serviceResource.Id
+            );
+            interestedResource.Status__c = protectedStatus;
+            interestedResourcesToInsert.add(interestedResource);
+        }
+        insert interestedResourcesToInsert;
+
+        for (HOT_InterestedResource__c interestedResource : [
+            SELECT Id, Status__c
+            FROM HOT_InterestedResource__c
+            WHERE Id IN :new Map<Id, HOT_InterestedResource__c>(interestedResourcesToInsert).keySet()
+        ]) {
+            expectedStatusByInterestedResourceId.put(interestedResource.Id, interestedResource.Status__c);
+        }
+
+        Test.startTest();
+        insert HOT_TestDataFactory.createAssignedResource(primaryServiceAppointment.Id, serviceResource.Id);
+        primaryServiceAppointment.Status = 'Dispatched';
+        update primaryServiceAppointment;
+        Test.stopTest();
+
+        for (HOT_InterestedResource__c interestedResource : [
+            SELECT Id, Status__c
+            FROM HOT_InterestedResource__c
+            WHERE Id IN :expectedStatusByInterestedResourceId.keySet()
+        ]) {
+            System.assertEquals(
+                expectedStatusByInterestedResourceId.get(interestedResource.Id),
+                interestedResource.Status__c,
+                'Statuses other than Interested should not be overwritten on same Work Order'
+            );
+        }
+    }
+
+    @IsTest
+    public static void getInterestedResourcesToUpdateOnDispatchUsesServiceAppointments() {
+        HOT_Request__c request = [SELECT Id FROM HOT_Request__c WHERE Subject__c = 'TEST' LIMIT 1];
+        request.Status__c = 'Godkjent';
+        update request;
+
+        ServiceAppointment primaryServiceAppointment = getPrimaryServiceAppointmentForWorkOrderTests();
+        ServiceAppointment sameWorkOrderServiceAppointment = createServiceAppointmentOnWorkOrder(
+            primaryServiceAppointment.HOT_WorkOrderLineItem__r.WorkOrderId,
+            primaryServiceAppointment.HOT_WorkOrderLineItem__r.WorkTypeId,
+            'same work order service'
+        );
+        ServiceResource serviceResource = [SELECT Id FROM ServiceResource LIMIT 1];
+
+        HOT_InterestedResource__c relatedInterestedResource = HOT_TestDataFactory.createInterestedResource(
+            sameWorkOrderServiceAppointment.Id,
+            serviceResource.Id
+        );
+        relatedInterestedResource.Status__c = 'Interested';
+        insert relatedInterestedResource;
+
+        primaryServiceAppointment = [
+            SELECT Id, HOT_WorkOrderID__c
+            FROM ServiceAppointment
+            WHERE Id = :primaryServiceAppointment.Id
+        ];
+        primaryServiceAppointment.HOT_ServiceResource__c = serviceResource.Id;
+
+        Integer queriesBefore = Limits.getQueries();
+        List<HOT_InterestedResource__c> interestedResourcesToUpdate = HOT_InterestedResourceOnWorkOrderService.getInterestedResourcesToUpdateOnDispatch(
+            new List<ServiceAppointment>{ primaryServiceAppointment }
+        );
+        Integer queriesUsed = Limits.getQueries() - queriesBefore;
+
+        System.assertEquals(1, queriesUsed, 'Service should use a single IR query');
+        System.assertEquals(1, interestedResourcesToUpdate.size(), 'Service should return matching IR on same Work Order');
+        System.assertEquals(
+            relatedInterestedResource.Id,
+            interestedResourcesToUpdate[0].Id,
+            'Service should target the related IR'
+        );
+        System.assertEquals(
+            'Not Assigned',
+            interestedResourcesToUpdate[0].Status__c,
+            'Service should prepare matching IR for Not Assigned'
         );
     }
 
