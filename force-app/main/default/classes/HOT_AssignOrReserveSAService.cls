@@ -1,5 +1,7 @@
 public without sharing class HOT_AssignOrReserveSAService {
-    public class Request {
+    private static final Set<String> SUPPORTED_TARGET_STATUSES = new Set<String>{ 'Scheduled', 'Dispatched' };
+
+    public class Input {
         @InvocableVariable(required=true label='Service Appointment Id')
         public Id serviceAppointmentId;
 
@@ -10,7 +12,7 @@ public without sharing class HOT_AssignOrReserveSAService {
         public String targetStatus;
     }
 
-    public class Response {
+    public class Result {
         @InvocableVariable(label='Success')
         public Boolean success;
 
@@ -20,169 +22,202 @@ public without sharing class HOT_AssignOrReserveSAService {
         @InvocableVariable(label='Service Appointment Id')
         public Id serviceAppointmentId;
 
-        @InvocableVariable(label='Assigned Resource Id')
-        public Id assignedResourceId;
+        public Result(Input req) {
+            this.success = false;
+            this.message = 'Ingen handling ble utført.';
+            this.serviceAppointmentId = req != null ? req.serviceAppointmentId : null;
+        }
     }
 
     @InvocableMethod(
         label='Assign or Reserve Service Appointment'
-        description='Creates or updates the assigned resource on a service appointment and sets it to Scheduled or Dispatched.'
+        description='Creates the first assigned resource on a service appointment and sets it to Scheduled or Dispatched.'
         category='HOT Tolketjeneste'
         iconName='slds:standard:service_appointment'
     )
-    public static List<Response> assignOrReserve(List<Request> requests) {
-        List<Response> responses = new List<Response>();
-        for (Request requestItem : requests) {
-            responses.add(handleRequest(requestItem));
-        }
-        return responses;
+    public static List<Result> assignOrReserve(List<Input> reqs) {
+        HOT_AssignOrReserveSAService service = new HOT_AssignOrReserveSAService(reqs);
+        return service.process();
     }
 
-    private static Response handleRequest(Request requestItem) {
-        Response response = new Response();
-        response.success = false;
+    private List<Input> reqs;
+    private List<Result> results;
+    private Set<Id> serviceAppointmentIds;
+    private Set<Id> serviceResourceIds;
+    private Map<Id, ServiceAppointment> serviceAppointmentsById;
+    private Map<Id, ServiceResource> serviceResourcesById;
+    private Map<Id, List<AssignedResource>> assignedResourcesByServiceAppointmentId;
 
+    public HOT_AssignOrReserveSAService(List<Input> reqs) {
+        this.reqs = reqs;
+        this.results = new List<Result>();
+        this.serviceAppointmentIds = new Set<Id>();
+        this.serviceResourceIds = new Set<Id>();
+        this.assignedResourcesByServiceAppointmentId = new Map<Id, List<AssignedResource>>();
+    }
+
+    public List<Result> process() {
+        initializeResults();
+
+        if (this.reqs == null || this.reqs.isEmpty()) {
+            return this.results;
+        }
+
+        collectIds();
+        loadData();
+        processRequests();
+
+        return this.results;
+    }
+
+    private void initializeResults() {
+        if (this.reqs == null) {
+            return;
+        }
+
+        for (Input req : this.reqs) {
+            this.results.add(new Result(req));
+        }
+    }
+
+    private void collectIds() {
+        for (Input req : this.reqs) {
+            if (req == null) {
+                continue;
+            }
+
+            if (req.serviceAppointmentId != null) {
+                this.serviceAppointmentIds.add(req.serviceAppointmentId);
+            }
+            if (req.serviceResourceId != null) {
+                this.serviceResourceIds.add(req.serviceResourceId);
+            }
+        }
+    }
+
+    private void loadData() {
+        this.serviceAppointmentsById = this.serviceAppointmentIds.isEmpty()
+            ? new Map<Id, ServiceAppointment>()
+            : new Map<Id, ServiceAppointment>(
+                  [
+                      SELECT Id, Status, HOT_ServiceResource__c, HOT_AssignedResourceId__c
+                      FROM ServiceAppointment
+                      WHERE Id IN :this.serviceAppointmentIds
+                  ]
+              );
+
+        this.serviceResourcesById = this.serviceResourceIds.isEmpty()
+            ? new Map<Id, ServiceResource>()
+            : new Map<Id, ServiceResource>(
+                  [SELECT Id, RelatedRecordId FROM ServiceResource WHERE Id IN :this.serviceResourceIds]
+              );
+
+        if (this.serviceAppointmentIds.isEmpty()) {
+            return;
+        }
+
+        for (AssignedResource assignedResource : [
+            SELECT Id, ServiceAppointmentId, ServiceResourceId
+            FROM AssignedResource
+            WHERE ServiceAppointmentId IN :this.serviceAppointmentIds
+        ]) {
+            if (!this.assignedResourcesByServiceAppointmentId.containsKey(assignedResource.ServiceAppointmentId)) {
+                this.assignedResourcesByServiceAppointmentId.put(
+                    assignedResource.ServiceAppointmentId,
+                    new List<AssignedResource>()
+                );
+            }
+            this.assignedResourcesByServiceAppointmentId.get(assignedResource.ServiceAppointmentId)
+                .add(assignedResource);
+        }
+    }
+
+    private void processRequests() {
+        for (Integer i = 0; i < this.reqs.size(); i++) {
+            processRequest(this.reqs[i], this.results[i]);
+        }
+    }
+
+    private void processRequest(Input req, Result result) {
         try {
-            validateRequest(requestItem);
-            response.serviceAppointmentId = requestItem.serviceAppointmentId;
+            validateRequest(req);
 
-            List<AssignedResource> existingAssignedResources = [
-                SELECT Id, ServiceResourceId
-                FROM AssignedResource
-                WHERE ServiceAppointmentId = :requestItem.serviceAppointmentId
-                LIMIT 2
-            ];
-            if (existingAssignedResources.size() > 1) {
-                throw new FlowHandledException('Oppdraget har flere tildelte ressurser enn forventet.');
+            ServiceAppointment serviceAppointment = this.serviceAppointmentsById.get(req.serviceAppointmentId);
+            if (serviceAppointment == null) {
+                throw new FlowHandledException('Oppdraget ble ikke funnet.');
             }
 
-            ServiceAppointment currentServiceAppointment = [
-                SELECT Id, Status, HOT_ServiceResource__c, HOT_AssignedResourceId__c
-                FROM ServiceAppointment
-                WHERE Id = :requestItem.serviceAppointmentId
-                LIMIT 1
-            ];
-            validateServiceAppointment(currentServiceAppointment);
-
-            ServiceResource selectedServiceResource = [
-                SELECT Id, RelatedRecordId, Name
-                FROM ServiceResource
-                WHERE Id = :requestItem.serviceResourceId
-                LIMIT 1
-            ];
-
-            // When downgrading from dispatched to scheduled, do that before AR updates so trigger side effects
-            // keep the related Interested Resource in Reserved instead of Assigned.
-            if (requestItem.targetStatus == 'Scheduled' && currentServiceAppointment.Status == 'Dispatched') {
-                update new ServiceAppointment(
-                    Id = currentServiceAppointment.Id,
-                    Status = 'Scheduled',
-                    HOT_ServiceResource__c = currentServiceAppointment.HOT_ServiceResource__c,
-                    HOT_AssignedResourceId__c = currentServiceAppointment.HOT_AssignedResourceId__c
-                );
+            ServiceResource serviceResource = this.serviceResourcesById.get(req.serviceResourceId);
+            if (serviceResource == null) {
+                throw new FlowHandledException('Valgt tolk ble ikke funnet.');
             }
 
-            AssignedResource assignedResource;
-            if (existingAssignedResources.isEmpty()) {
-                assignedResource = new AssignedResource(
-                    ServiceAppointmentId = requestItem.serviceAppointmentId,
-                    ServiceResourceId = requestItem.serviceResourceId
-                );
-                insert assignedResource;
-            } else {
-                assignedResource = existingAssignedResources[0];
-                if (assignedResource.ServiceResourceId != requestItem.serviceResourceId) {
-                    assignedResource.ServiceResourceId = requestItem.serviceResourceId;
-                    update assignedResource;
-                }
-            }
+            validateServiceAppointment(serviceAppointment, getAssignedResources(req.serviceAppointmentId));
 
-            ServiceAppointment refreshedServiceAppointment = [
-                SELECT Id, Status, HOT_ServiceResource__c, HOT_AssignedResourceId__c
-                FROM ServiceAppointment
-                WHERE Id = :requestItem.serviceAppointmentId
-                LIMIT 1
-            ];
+            AssignedResource assignedResource = new AssignedResource(
+                ServiceAppointmentId = req.serviceAppointmentId,
+                ServiceResourceId = req.serviceResourceId
+            );
+            insert assignedResource;
 
-            ServiceAppointment serviceAppointmentToUpdate = new ServiceAppointment(Id = refreshedServiceAppointment.Id);
-            Boolean shouldUpdateServiceAppointment = false;
+            update new ServiceAppointment(
+                Id = serviceAppointment.Id,
+                Status = req.targetStatus,
+                HOT_ServiceResource__c = serviceResource.Id,
+                HOT_AssignedResourceId__c = serviceResource.RelatedRecordId
+            );
 
-            if (refreshedServiceAppointment.Status != requestItem.targetStatus) {
-                serviceAppointmentToUpdate.Status = requestItem.targetStatus;
-                shouldUpdateServiceAppointment = true;
-            }
-            if (refreshedServiceAppointment.HOT_ServiceResource__c != selectedServiceResource.Id) {
-                serviceAppointmentToUpdate.HOT_ServiceResource__c = selectedServiceResource.Id;
-                shouldUpdateServiceAppointment = true;
-            }
-            if (refreshedServiceAppointment.HOT_AssignedResourceId__c != selectedServiceResource.RelatedRecordId) {
-                serviceAppointmentToUpdate.HOT_AssignedResourceId__c = selectedServiceResource.RelatedRecordId;
-                shouldUpdateServiceAppointment = true;
-            }
-
-            if (shouldUpdateServiceAppointment) {
-                update serviceAppointmentToUpdate;
-            }
-
-            if (requestItem.targetStatus == 'Scheduled') {
-                syncInterestedResourceToReserved(requestItem.serviceAppointmentId, requestItem.serviceResourceId);
-            }
-
-            response.success = true;
-            response.assignedResourceId = assignedResource.Id;
-            response.message = requestItem.targetStatus == 'Dispatched'
+            result.success = true;
+            result.message = req.targetStatus == 'Dispatched'
                 ? 'Tolken ble tildelt oppdraget.'
                 : 'Tolken ble reservert til oppdraget.';
         } catch (Exception ex) {
-            response.message = ex.getMessage();
+            result.message = ex.getMessage();
         }
-
-        return response;
     }
 
-    private static void validateRequest(Request requestItem) {
-        if (requestItem == null) {
+    private static void validateRequest(Input req) {
+        if (req == null) {
             throw new FlowHandledException('Ingen input ble sendt til handlingen.');
         }
-        if (requestItem.serviceAppointmentId == null) {
+        if (req.serviceAppointmentId == null) {
             throw new FlowHandledException('Oppdrag mangler.');
         }
-        if (requestItem.serviceResourceId == null) {
+        if (req.serviceResourceId == null) {
             throw new FlowHandledException('Du må velge en tolk.');
         }
-        if (requestItem.targetStatus != 'Scheduled' && requestItem.targetStatus != 'Dispatched') {
+        if (!SUPPORTED_TARGET_STATUSES.contains(req.targetStatus)) {
             throw new FlowHandledException('Ugyldig målstatus.');
         }
     }
 
-    private static void validateServiceAppointment(ServiceAppointment serviceAppointment) {
-        Set<String> blockedStatuses = new Set<String>{ 'Completed', 'Canceled', 'Annul', 'In Progress', 'Cannot Complete' };
-        if (blockedStatuses.contains(serviceAppointment.Status)) {
-            throw new FlowHandledException('Oppdrag med status ' + serviceAppointment.Status + ' kan ikke endres her.');
+    private static void validateServiceAppointment(
+        ServiceAppointment serviceAppointment,
+        List<AssignedResource> existingAssignedResources
+    ) {
+        if (serviceAppointment.Status != 'None') {
+            throw new FlowHandledException(
+                'Denne handlingen kan bare brukes når oppdraget har status None. Nåværende status er ' +
+                serviceAppointment.Status +
+                '.'
+            );
+        }
+
+        if (
+            serviceAppointment.HOT_ServiceResource__c != null ||
+            serviceAppointment.HOT_AssignedResourceId__c != null ||
+            (existingAssignedResources != null && !existingAssignedResources.isEmpty())
+        ) {
+            throw new FlowHandledException(
+                'Dette oppdraget har allerede en valgt tolk. Endring av eksisterende reservering eller tildeling må gjøres i standardprosessen.'
+            );
         }
     }
 
-    private static void syncInterestedResourceToReserved(Id serviceAppointmentId, Id selectedServiceResourceId) {
-        List<HOT_InterestedResource__c> interestedResourcesToUpdate = new List<HOT_InterestedResource__c>();
-        for (
-            HOT_InterestedResource__c interestedResource : [
-                SELECT Id, Status__c, ServiceResource__c
-                FROM HOT_InterestedResource__c
-                WHERE ServiceAppointment__c = :serviceAppointmentId
-            ]
-        ) {
-            if (
-                interestedResource.ServiceResource__c == selectedServiceResourceId &&
-                interestedResource.Status__c == 'Assigned'
-            ) {
-                interestedResource.Status__c = 'Reserved';
-                interestedResourcesToUpdate.add(interestedResource);
-            }
-        }
-
-        if (!interestedResourcesToUpdate.isEmpty()) {
-            update interestedResourcesToUpdate;
-        }
+    private List<AssignedResource> getAssignedResources(Id serviceAppointmentId) {
+        return this.assignedResourcesByServiceAppointmentId.containsKey(serviceAppointmentId)
+            ? this.assignedResourcesByServiceAppointmentId.get(serviceAppointmentId)
+            : new List<AssignedResource>();
     }
 
     private class FlowHandledException extends Exception {

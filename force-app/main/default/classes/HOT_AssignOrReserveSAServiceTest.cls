@@ -60,18 +60,19 @@ private class HOT_AssignOrReserveSAServiceTest {
     }
 
     @IsTest
-    static void assignDirectlyToDispatched_fromNone() {
+    static void reserveFromNone_createsInitialReservation() {
         ServiceAppointment serviceAppointment = getServiceAppointment();
         ServiceResource firstResource = getServiceResources()[0];
 
-        HOT_AssignOrReserveSAService.Request requestItem = new HOT_AssignOrReserveSAService.Request();
-        requestItem.serviceAppointmentId = serviceAppointment.Id;
-        requestItem.serviceResourceId = firstResource.Id;
-        requestItem.targetStatus = 'Dispatched';
+        HOT_AssignOrReserveSAService.Input requestItem = createRequest(
+            serviceAppointment.Id,
+            firstResource.Id,
+            'Scheduled'
+        );
 
         Test.startTest();
-        HOT_AssignOrReserveSAService.Response response = HOT_AssignOrReserveSAService.assignOrReserve(
-            new List<HOT_AssignOrReserveSAService.Request>{ requestItem }
+        HOT_AssignOrReserveSAService.Result response = HOT_AssignOrReserveSAService.assignOrReserve(
+            new List<HOT_AssignOrReserveSAService.Input>{ requestItem }
         )[0];
         Test.stopTest();
 
@@ -93,41 +94,37 @@ private class HOT_AssignOrReserveSAServiceTest {
         ];
 
         System.assertEquals(true, response.success, 'Flow action should succeed');
-        System.assertEquals('Dispatched', serviceAppointment.Status, 'Service appointment should be dispatched');
+        System.assertEquals('Tolken ble reservert til oppdraget.', response.message);
+        System.assertEquals('Scheduled', serviceAppointment.Status, 'Service appointment should be scheduled');
         System.assertEquals(firstResource.Id, serviceAppointment.HOT_ServiceResource__c, 'Resource should be set');
         System.assertEquals(
             firstResource.RelatedRecordId,
             serviceAppointment.HOT_AssignedResourceId__c,
             'Assigned user should be set'
         );
-        System.assertEquals('Assigned', interestedResource.Status__c, 'Interested resource should be assigned');
+        System.assertEquals('Reserved', interestedResource.Status__c, 'Interested resource should stay reserved');
         System.assertEquals(1, assignedResourceCount, 'Only one assigned resource should exist');
     }
 
     @IsTest
-    static void reserveExistingDispatchedResource_setsInterestedResourceBackToReserved() {
+    static void assignDirectlyToDispatched_fromNone() {
         ServiceAppointment serviceAppointment = getServiceAppointment();
         ServiceResource firstResource = getServiceResources()[0];
 
-        AssignedResource assignedResource = HOT_TestDataFactory.createAssignedResource(serviceAppointment.Id, firstResource.Id);
-        insert assignedResource;
-
-        serviceAppointment.Status = 'Dispatched';
-        update serviceAppointment;
-
-        HOT_AssignOrReserveSAService.Request requestItem = new HOT_AssignOrReserveSAService.Request();
-        requestItem.serviceAppointmentId = serviceAppointment.Id;
-        requestItem.serviceResourceId = firstResource.Id;
-        requestItem.targetStatus = 'Scheduled';
+        HOT_AssignOrReserveSAService.Input requestItem = createRequest(
+            serviceAppointment.Id,
+            firstResource.Id,
+            'Dispatched'
+        );
 
         Test.startTest();
-        HOT_AssignOrReserveSAService.Response response = HOT_AssignOrReserveSAService.assignOrReserve(
-            new List<HOT_AssignOrReserveSAService.Request>{ requestItem }
+        HOT_AssignOrReserveSAService.Result response = HOT_AssignOrReserveSAService.assignOrReserve(
+            new List<HOT_AssignOrReserveSAService.Input>{ requestItem }
         )[0];
         Test.stopTest();
 
         serviceAppointment = [
-            SELECT Status
+            SELECT Status, HOT_ServiceResource__c, HOT_AssignedResourceId__c
             FROM ServiceAppointment
             WHERE Id = :serviceAppointment.Id
         ];
@@ -139,12 +136,19 @@ private class HOT_AssignOrReserveSAServiceTest {
         ];
 
         System.assertEquals(true, response.success, 'Flow action should succeed');
-        System.assertEquals('Scheduled', serviceAppointment.Status, 'Service appointment should be scheduled');
-        System.assertEquals('Reserved', interestedResource.Status__c, 'Interested resource should be reserved again');
+        System.assertEquals('Tolken ble tildelt oppdraget.', response.message);
+        System.assertEquals('Dispatched', serviceAppointment.Status, 'Service appointment should be dispatched');
+        System.assertEquals(firstResource.Id, serviceAppointment.HOT_ServiceResource__c, 'Resource should be set');
+        System.assertEquals(
+            firstResource.RelatedRecordId,
+            serviceAppointment.HOT_AssignedResourceId__c,
+            'Assigned user should be set'
+        );
+        System.assertEquals('Assigned', interestedResource.Status__c, 'Interested resource should be assigned');
     }
 
     @IsTest
-    static void changeResourceAndKeepScheduled_updatesInterestedResources() {
+    static void rejectsWhenInterpreterAlreadyExists() {
         ServiceAppointment serviceAppointment = getServiceAppointment();
         List<ServiceResource> serviceResources = getServiceResources();
         ServiceResource firstResource = serviceResources[0];
@@ -153,53 +157,76 @@ private class HOT_AssignOrReserveSAServiceTest {
         AssignedResource assignedResource = HOT_TestDataFactory.createAssignedResource(serviceAppointment.Id, firstResource.Id);
         insert assignedResource;
 
-        serviceAppointment.Status = 'Scheduled';
-        update serviceAppointment;
-
-        HOT_AssignOrReserveSAService.Request requestItem = new HOT_AssignOrReserveSAService.Request();
-        requestItem.serviceAppointmentId = serviceAppointment.Id;
-        requestItem.serviceResourceId = secondResource.Id;
-        requestItem.targetStatus = 'Scheduled';
+        HOT_AssignOrReserveSAService.Input requestItem = createRequest(
+            serviceAppointment.Id,
+            secondResource.Id,
+            'Scheduled'
+        );
 
         Test.startTest();
-        HOT_AssignOrReserveSAService.Response response = HOT_AssignOrReserveSAService.assignOrReserve(
-            new List<HOT_AssignOrReserveSAService.Request>{ requestItem }
+        HOT_AssignOrReserveSAService.Result response = HOT_AssignOrReserveSAService.assignOrReserve(
+            new List<HOT_AssignOrReserveSAService.Input>{ requestItem }
         )[0];
         Test.stopTest();
 
-        AssignedResource updatedAssignedResource = [
-            SELECT ServiceResourceId
+        List<AssignedResource> assignedResources = [
+            SELECT Id, ServiceResourceId
             FROM AssignedResource
             WHERE ServiceAppointmentId = :serviceAppointment.Id
-            LIMIT 1
         ];
-        Map<Id, HOT_InterestedResource__c> interestedResourcesByServiceResource = new Map<Id, HOT_InterestedResource__c>();
-        for (
-            HOT_InterestedResource__c interestedResource : [
-                SELECT ServiceResource__c, Status__c
-                FROM HOT_InterestedResource__c
-                WHERE ServiceAppointment__c = :serviceAppointment.Id
-            ]
-        ) {
-            interestedResourcesByServiceResource.put(interestedResource.ServiceResource__c, interestedResource);
-        }
 
-        System.assertEquals(true, response.success, 'Flow action should succeed');
+        System.assertEquals(false, response.success, 'Existing resource should block the action');
         System.assertEquals(
-            secondResource.Id,
-            updatedAssignedResource.ServiceResourceId,
-            'Assigned resource should be updated'
+            'Dette oppdraget har allerede en valgt tolk. Endring av eksisterende reservering eller tildeling må gjøres i standardprosessen.',
+            response.message
         );
+        System.assertEquals(1, assignedResources.size(), 'No new assigned resource should be created');
+        System.assertEquals(firstResource.Id, assignedResources[0].ServiceResourceId, 'Original resource should remain');
+    }
+
+    @IsTest
+    static void rejectsWhenStatusIsNotNone() {
+        ServiceAppointment serviceAppointment = getServiceAppointment();
+        ServiceResource firstResource = getServiceResources()[0];
+
+        update new ServiceAppointment(Id = serviceAppointment.Id, Status = 'Scheduled');
+
+        HOT_AssignOrReserveSAService.Input requestItem = createRequest(
+            serviceAppointment.Id,
+            firstResource.Id,
+            'Scheduled'
+        );
+
+        Test.startTest();
+        HOT_AssignOrReserveSAService.Result response = HOT_AssignOrReserveSAService.assignOrReserve(
+            new List<HOT_AssignOrReserveSAService.Input>{ requestItem }
+        )[0];
+        Test.stopTest();
+
+        Integer assignedResourceCount = [
+            SELECT COUNT()
+            FROM AssignedResource
+            WHERE ServiceAppointmentId = :serviceAppointment.Id
+        ];
+
+        System.assertEquals(false, response.success, 'Non-None status should block the action');
         System.assertEquals(
-            'Reserved',
-            interestedResourcesByServiceResource.get(secondResource.Id).Status__c,
-            'New interpreter should be reserved'
+            'Denne handlingen kan bare brukes når oppdraget har status None. Nåværende status er Scheduled.',
+            response.message
         );
-        System.assertEquals(
-            'Not Assigned',
-            interestedResourcesByServiceResource.get(firstResource.Id).Status__c,
-            'Previous interpreter should no longer be assigned'
-        );
+        System.assertEquals(0, assignedResourceCount, 'No assigned resource should be created');
+    }
+
+    private static HOT_AssignOrReserveSAService.Input createRequest(
+        Id serviceAppointmentId,
+        Id serviceResourceId,
+        String targetStatus
+    ) {
+        HOT_AssignOrReserveSAService.Input requestItem = new HOT_AssignOrReserveSAService.Input();
+        requestItem.serviceAppointmentId = serviceAppointmentId;
+        requestItem.serviceResourceId = serviceResourceId;
+        requestItem.targetStatus = targetStatus;
+        return requestItem;
     }
 
     private static ServiceAppointment getServiceAppointment() {

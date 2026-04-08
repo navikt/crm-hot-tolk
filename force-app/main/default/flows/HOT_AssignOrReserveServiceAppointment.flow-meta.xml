@@ -4,7 +4,7 @@
         <name>Assign_Or_Reserve_Service_Appointment</name>
         <label>Assign Or Reserve Service Appointment</label>
         <locationX>176</locationX>
-        <locationY>458</locationY>
+        <locationY>674</locationY>
         <actionName>HOT_AssignOrReserveSAService</actionName>
         <actionType>apex</actionType>
         <connector>
@@ -57,10 +57,56 @@
         </value>
     </choices>
     <decisions>
+        <name>Can_Show_Assignment_Screen</name>
+        <label>Can Show Assignment Screen</label>
+        <locationX>176</locationX>
+        <locationY>350</locationY>
+        <defaultConnector>
+            <targetReference>NotAvailableScreen</targetReference>
+        </defaultConnector>
+        <defaultConnectorLabel>Not Available</defaultConnectorLabel>
+        <rules>
+            <name>Allowed</name>
+            <conditionLogic>and</conditionLogic>
+            <conditions>
+                <leftValueReference>Get_Service_Appointment.Status</leftValueReference>
+                <operator>EqualTo</operator>
+                <rightValue>
+                    <stringValue>None</stringValue>
+                </rightValue>
+            </conditions>
+            <conditions>
+                <leftValueReference>Get_Service_Appointment.HOT_ServiceResource__c</leftValueReference>
+                <operator>IsNull</operator>
+                <rightValue>
+                    <booleanValue>true</booleanValue>
+                </rightValue>
+            </conditions>
+            <conditions>
+                <leftValueReference>Get_Service_Appointment.HOT_AssignedResourceId__c</leftValueReference>
+                <operator>IsNull</operator>
+                <rightValue>
+                    <booleanValue>true</booleanValue>
+                </rightValue>
+            </conditions>
+            <conditions>
+                <leftValueReference>Get_Existing_Assigned_Resource.Id</leftValueReference>
+                <operator>IsNull</operator>
+                <rightValue>
+                    <booleanValue>true</booleanValue>
+                </rightValue>
+            </conditions>
+            <connector>
+                <targetReference>SelectInterpreterAndStatus</targetReference>
+            </connector>
+            <label>Allowed</label>
+        </rules>
+    </decisions>
+    <decisions>
         <name>Was_Action_Successful</name>
         <label>Was Action Successful</label>
         <locationX>176</locationX>
-        <locationY>566</locationY>
+        <locationY>782</locationY>
         <defaultConnector>
             <targetReference>ErrorScreen</targetReference>
         </defaultConnector>
@@ -110,7 +156,7 @@
         <locationY>134</locationY>
         <assignNullValuesIfNoRecordsFound>false</assignNullValuesIfNoRecordsFound>
         <connector>
-            <targetReference>SelectInterpreterAndStatus</targetReference>
+            <targetReference>Get_Existing_Assigned_Resource</targetReference>
         </connector>
         <filterLogic>and</filterLogic>
         <filters>
@@ -124,11 +170,32 @@
         <object>ServiceAppointment</object>
         <storeOutputAutomatically>true</storeOutputAutomatically>
     </recordLookups>
+    <recordLookups>
+        <name>Get_Existing_Assigned_Resource</name>
+        <label>Get Existing Assigned Resource</label>
+        <locationX>176</locationX>
+        <locationY>242</locationY>
+        <assignNullValuesIfNoRecordsFound>false</assignNullValuesIfNoRecordsFound>
+        <connector>
+            <targetReference>Can_Show_Assignment_Screen</targetReference>
+        </connector>
+        <filterLogic>and</filterLogic>
+        <filters>
+            <field>ServiceAppointmentId</field>
+            <operator>EqualTo</operator>
+            <value>
+                <elementReference>recordId</elementReference>
+            </value>
+        </filters>
+        <getFirstRecordOnly>true</getFirstRecordOnly>
+        <object>AssignedResource</object>
+        <storeOutputAutomatically>true</storeOutputAutomatically>
+    </recordLookups>
     <screens>
         <name>SelectInterpreterAndStatus</name>
         <label>Select Interpreter And Status</label>
         <locationX>176</locationX>
-        <locationY>242</locationY>
+        <locationY>566</locationY>
         <allowBack>false</allowBack>
         <allowFinish>true</allowFinish>
         <allowPause>false</allowPause>
@@ -137,7 +204,7 @@
         </connector>
         <fields>
             <name>IntroText</name>
-            <fieldText>&lt;p&gt;Velg tolk og om oppdraget skal settes til &lt;strong&gt;Reservert&lt;/strong&gt; eller &lt;strong&gt;Tildelt&lt;/strong&gt;.&lt;/p&gt;</fieldText>
+            <fieldText>&lt;p&gt;Velg tolk og om oppdraget skal settes til &lt;strong&gt;Reservert&lt;/strong&gt; eller &lt;strong&gt;Tildelt&lt;/strong&gt;.&lt;/p&gt;&lt;p&gt;Denne handlingen kan bare brukes ved første gangs tildeling, før oppdraget har fått tolk.&lt;/p&gt;</fieldText>
             <fieldType>DisplayText</fieldType>
         </fields>
         <fields>
@@ -160,12 +227,6 @@
                 <name>objectApiName</name>
                 <value>
                     <stringValue>AssignedResource</stringValue>
-                </value>
-            </inputParameters>
-            <inputParameters>
-                <name>recordId</name>
-                <value>
-                    <elementReference>Get_Service_Appointment.HOT_ServiceResource__c</elementReference>
                 </value>
             </inputParameters>
             <inputParameters>
@@ -195,7 +256,7 @@
         <name>SuccessScreen</name>
         <label>SuccessScreen</label>
         <locationX>50</locationX>
-        <locationY>674</locationY>
+        <locationY>890</locationY>
         <allowBack>false</allowBack>
         <allowFinish>true</allowFinish>
         <allowPause>false</allowPause>
@@ -231,13 +292,29 @@
         <name>ErrorScreen</name>
         <label>ErrorScreen</label>
         <locationX>302</locationX>
-        <locationY>674</locationY>
+        <locationY>890</locationY>
         <allowBack>true</allowBack>
         <allowFinish>true</allowFinish>
         <allowPause>false</allowPause>
         <fields>
             <name>ErrorText</name>
             <fieldText>&lt;p&gt;{!ActionMessage}&lt;/p&gt;</fieldText>
+            <fieldType>DisplayText</fieldType>
+        </fields>
+        <showFooter>true</showFooter>
+        <showHeader>false</showHeader>
+    </screens>
+    <screens>
+        <name>NotAvailableScreen</name>
+        <label>Not Available Screen</label>
+        <locationX>390</locationX>
+        <locationY>458</locationY>
+        <allowBack>false</allowBack>
+        <allowFinish>true</allowFinish>
+        <allowPause>false</allowPause>
+        <fields>
+            <name>NotAvailableText</name>
+            <fieldText>&lt;p&gt;Det er allerede reservert/tildelt en tolk til dette oppdraget.&lt;/p&gt;</fieldText>
             <fieldType>DisplayText</fieldType>
         </fields>
         <showFooter>true</showFooter>
