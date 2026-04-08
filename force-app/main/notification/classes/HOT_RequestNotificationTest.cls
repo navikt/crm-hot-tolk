@@ -15,13 +15,15 @@ public class HOT_RequestNotificationTest {
         List<HOT_Request__c> requestsToInsert = new List<HOT_Request__c>{ rq, requestNoDispatcher };
         insert requestsToInsert;
 
-        Id currentUser = UserInfo.getUserId();
+        User currentUser = [SELECT Id FROM User WHERE Id = :UserInfo.getUserId()];
+        System.runAs(currentUser) {
+            Group queue = TestDataFactory.getQueue('NAV Tolketjeneste Oslo', 'queue_4703', 'HOT_Request__c');
 
-        rq.Account__c = account.Id;
-        rq.OwnerId = currentUser;
-        rq.Dispatcher__c = currentUser;
-        rq.Status__c = 'Godkjent';
-        update rq;
+            rq.OwnerId = queue.Id;
+            rq.Status__c = 'Godkjent';
+            rq.Dispatcher__c = currentUser.Id;
+            update rq;
+        }
 
         WorkOrder workOrder = HOT_TestDataFactory.createWorkOrder(rq, workType);
         insert workOrder;
