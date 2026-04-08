@@ -2,6 +2,10 @@
 public class HOT_RequestNotificationTest {
     @testSetup
     static void setup() {
+        Person__c person = HOT_TestDataFactory.createPerson();
+        insert person;
+
+        Account account = [SELECT Id FROM Account WHERE CRM_Person__c = :person.Id];
         WorkType workType = HOT_TestDataFactory.createWorkType();
         insert workType;
 
@@ -13,9 +17,10 @@ public class HOT_RequestNotificationTest {
 
         Id currentUser = UserInfo.getUserId();
 
+        rq.Account__c = account.Id;
         rq.OwnerId = currentUser;
-        rq.Status__c = 'Godkjent';
         rq.Dispatcher__c = currentUser;
+        rq.Status__c = 'Godkjent';
         update rq;
 
         WorkOrder workOrder = HOT_TestDataFactory.createWorkOrder(rq, workType);
