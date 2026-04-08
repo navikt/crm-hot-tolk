@@ -10,20 +10,19 @@ public class HOT_RequestNotificationTest {
         insert workType;
 
         HOT_Request__c rq = HOT_TestDataFactory.createRequest('testRequest', workType);
-        HOT_Request__c requestNoDispatcher = HOT_TestDataFactory.createRequest('testRequestNoDispatcher', workType);
 
-        List<HOT_Request__c> requestsToInsert = new List<HOT_Request__c>{ rq, requestNoDispatcher };
-        insert requestsToInsert;
+        insert rq;
 
         User currentUser = [SELECT Id FROM User WHERE Id = :UserInfo.getUserId()];
+        Group queue;
         System.runAs(currentUser) {
-            Group queue = TestDataFactory.getQueue('NAV Tolketjeneste Oslo', 'queue_4703', 'HOT_Request__c');
-
-            rq.OwnerId = queue.Id;
-            rq.Status__c = 'Godkjent';
-            rq.Dispatcher__c = currentUser.Id;
-            update rq;
+            queue = TestDataFactory.getQueue('NAV Tolketjeneste Oslo', 'queue_4703', 'HOT_Request__c');
         }
+
+        rq.OwnerId = queue.Id;
+        rq.Dispatcher__c = currentUser.Id;
+        rq.Status__c = 'Godkjent';
+        update rq;
 
         WorkOrder workOrder = HOT_TestDataFactory.createWorkOrder(rq, workType);
         insert workOrder;
@@ -66,7 +65,7 @@ public class HOT_RequestNotificationTest {
         HOT_RequestNotification.notifyDispatchers_requestChanged(requests);
         System.Test.stopTest();
 
-        System.assertEquals(2, requests.size(), 'Expected exactly two test requests');
+        System.assertEquals(1, requests.size(), 'Expected exactly one test request');
     }
 
     @IsTest
@@ -87,11 +86,11 @@ public class HOT_RequestNotificationTest {
     }
 
     @IsTest
-    static void testNotifyDispatchersFilesUploadedWithoutDispatcher() {
+    static void testNotifyDispatchersFilesUploadedWithoutWorkOrder() {
         HOT_Request__c request = [
-            SELECT Id, Name, Dispatcher__c
+            SELECT Id, Name
             FROM HOT_Request__c
-            WHERE Subject__c = 'testRequestNoDispatcher'
+            WHERE Subject__c = 'testRequest'
             LIMIT 1
         ];
 
