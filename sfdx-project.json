@@ -10,11 +10,6 @@
             "versionNumber": "1.390.0.NEXT",
             "dependencies": [
                 {
-                    "package": "feature-toggle",
-                    "versionNumber": "0.1.48.LATEST",
-                    "branch": ""
-                },
-                {
                     "package": "platform-data-model",
                     "versionNumber": "0.1.33.LATEST",
                     "branch": ""
@@ -27,6 +22,11 @@
                 {
                     "package": "custom-permission-helper",
                     "versionNumber": "0.1.33.LATEST",
+                    "branch": ""
+                },
+                {
+                    "package": "feature-toggle",
+                    "versionNumber": "0.1.48.LATEST",
                     "branch": ""
                 },
                 {
