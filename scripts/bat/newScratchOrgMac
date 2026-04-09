@@ -5,9 +5,6 @@ set -e
 # Oppretter scratch org
 sf org create scratch --definition-file config/project-scratch-def.json --alias $1 --duration-days $2 --set-default --json --wait 30
 
-# Installer feature-toggle ver. 0.1.48
-sf package install --package 04tQC000001C7jVYAS --no-prompt --wait 30 --publish-wait 30
-
 # Installer platform-data-model ver. 0.1.47
 sf package install --package 04tQC000001C7efYAC --no-prompt --wait 30 --publish-wait 30
 
@@ -16,6 +13,9 @@ sf package install --package 04tQC000001C7bRYAS --no-prompt --wait 30 --publish-
 
 # Installer custom-permission-helper ver. 0.1.47
 sf package install --package 04tQC000001C7d3YAC --no-prompt --wait 30 --publish-wait 30
+
+# Installer feature-toggle ver. 0.1.48
+sf package install --package 04tQC000001C7jVYAS --no-prompt --wait 30 --publish-wait 30
 
 # Installer crm-platform-base ver. 0.300
 sf package install --package 04tQC000001AHAHYA4 --no-prompt --installation-key $3 --wait 30 --publish-wait 30
