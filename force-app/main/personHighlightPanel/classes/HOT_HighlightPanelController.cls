@@ -47,7 +47,7 @@ public without sharing class HOT_HighlightPanelController {
             return acc;
         }
 
-        // No access → return masked Person details but keep access flags for badge visibility
+        // No access -> return masked Person details but keep access flags for badge visibility
         Person__c fakePerson = new Person__c();
         fakePerson.Id = personId;
         fakePerson.INT_Confidential__c = (personSafe != null) ? personSafe.INT_Confidential__c : null;
