@@ -10,17 +10,17 @@ call sf package install --package 04t7U0000008qz4QAA --no-prompt --installation-
 echo "Installer crm-henvendelse-base ver. 0.36"
 call sf package install --package 04tQC000000uSXtYAM --no-prompt --installation-key %3 --wait 30 --publish-wait 30
 
-echo "Installing platform-data-model ver. 0.1.2"
-call sf package install --package 04tQC000000oHLpYAM --no-prompt --wait 30 --publish-wait 30
+echo "Installing platform-data-model ver. 0.1.47"
+call sf package install --package 04tQC000001C7efYAC --no-prompt --wait 30 --publish-wait 30
 
-echo "Installing custom-metadata-dao ver. 1.2"
-call sf package install --package 04tQC000000oHKDYA2 --no-prompt --wait 30 --publish-wait 30
+echo "Installing custom-metadata-dao ver. 0.1.47"
+call sf package install --package 04tQC000001C7bRYAS --no-prompt --wait 30 --publish-wait 30
 
-echo "Installing custom-permission-helper ver. 0.1.2"
-call sf package install --package 04tQC000000oGw2YAE --no-prompt --wait 30 --publish-wait 30
+echo "Installing custom-permission-helper ver. 0.1.47"
+call sf package install --package 04tQC000001C7d3YAC --no-prompt --wait 30 --publish-wait 30
 
-echo "Installing feature-toggle ver. 0.1.3"
-call sf package install --package 04tQC000000oHP3YAM --no-prompt --wait 30 --publish-wait 30
+echo "Installing feature-toggle ver. 0.1.48"
+call sf package install --package 04tQC000001C7jVYAS --no-prompt --wait 30 --publish-wait 30
 
 echo "Installer crm-platform-integration ver. 0.162"
 call sf package install --package 04tQC000000xwmMYAQ --no-prompt --installation-key %3 --wait 30 --publish-wait 30
