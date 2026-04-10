@@ -55,12 +55,15 @@
                         </lightning-layout-item>
                         <span lwc:if={uuAlertText} class="slds-assistive-text" role="alert">{uuAlertText}</span>
                     </lightning-layout-item>
-                    <lightning-layout-item>
-                        <c-hot_tind-person-highlight-panel-bot
-                            record-id={recordId}
-                            person-details={personDetails}
-                        ></c-hot_tind-person-highlight-panel-bot>
-                    </lightning-layout-item>
+
+                    <template lwc:if={shouldShowBottomPanel}>
+                        <lightning-layout-item>
+                            <c-hot_tind-person-highlight-panel-bot
+                                record-id={recordId}
+                                person-details={personDetails}
+                            ></c-hot_tind-person-highlight-panel-bot>
+                        </lightning-layout-item>
+                    </template>
                 </div>
             </lightning-layout>
         </template>
