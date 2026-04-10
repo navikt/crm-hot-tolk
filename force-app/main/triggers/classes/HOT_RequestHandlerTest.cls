@@ -950,4 +950,54 @@ private class HOT_RequestHandlerTest {
         //Den sjekker om det ble feil ved opprettelse. True betyr at det er feil
         System.AssertEquals(true, result, 'Should have been shown to be not created correctly');
     }
+
+    @IsTest
+    static void testIsNotNotifyAccountBeforeInsert() {
+        WorkType workType = HOT_TestDataFactory.createWorkType();
+        insert workType;
+
+        HOT_Request__c request = HOT_TestDataFactory.createRequest('TEST', workType);
+        request.IsReminderSMS__c = true;
+        request.IsNotNotifyAccount__c = true;
+
+        System.Test.startTest();
+        insert request;
+        System.Test.stopTest();
+
+        HOT_Request__c requestResult = [
+            SELECT IsReminderSMS__c, IsNotNotifyAccount__c
+            FROM HOT_Request__c
+            WHERE Id = :request.Id
+        ];
+
+        // When IsNotNotifyAccount__c is set to true, IsReminderSMS__c should be set to false
+        System.assertEquals(true, requestResult.IsNotNotifyAccount__c);
+        System.assertEquals(false, requestResult.IsReminderSMS__c);
+    }
+
+    @IsTest
+    static void testIsNotNotifyAccountBeforeUpdate() {
+        WorkType workType = HOT_TestDataFactory.createWorkType();
+        insert workType;
+
+        HOT_Request__c request = HOT_TestDataFactory.createRequest('TEST', workType);
+        request.IsReminderSMS__c = true;
+        request.IsNotNotifyAccount__c = false;
+        insert request;
+
+        System.Test.startTest();
+        request.IsNotNotifyAccount__c = true;
+        update request;
+        System.Test.stopTest();
+
+        HOT_Request__c requestResult = [
+            SELECT IsReminderSMS__c, IsNotNotifyAccount__c
+            FROM HOT_Request__c
+            WHERE Id = :request.Id
+        ];
+
+        // When IsNotNotifyAccount__c is set to true, IsReminderSMS__c should be set to false
+        System.assertEquals(true, requestResult.IsNotNotifyAccount__c);
+        System.assertEquals(false, requestResult.IsReminderSMS__c);
+    }
 }
