@@ -17,6 +17,8 @@ private class HOT_NotifyUserOnOrderServiceBatchTest {
         request.Account__c = acc;
         request.IsNotNotifyAccount__c = false;
         request.IsNotifyUserOnOrder__c = true;
+        request.StartTime__c = system.today().addDays(2);
+        request.EndTime__c = system.today().addDays(3);
         insert request;
 
         request.Status__c = 'Godkjent';
