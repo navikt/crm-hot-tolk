@@ -7,11 +7,31 @@
             "path": "force-app",
             "default": true,
             "package": "crm-hot-tolk",
-            "versionNumber": "1.389.0.NEXT",
+            "versionNumber": "1.390.0.NEXT",
             "dependencies": [
                 {
+                    "package": "platform-data-model",
+                    "versionNumber": "0.1.33.LATEST",
+                    "branch": ""
+                },
+                {
+                    "package": "custom-metadata-dao",
+                    "versionNumber": "0.1.33.LATEST",
+                    "branch": ""
+                },
+                {
+                    "package": "custom-permission-helper",
+                    "versionNumber": "0.1.33.LATEST",
+                    "branch": ""
+                },
+                {
+                    "package": "feature-toggle",
+                    "versionNumber": "0.1.48.LATEST",
+                    "branch": ""
+                },
+                {
                     "package": "crm-platform-base",
-                    "versionNumber": "0.293.0.LATEST"
+                    "versionNumber": "0.300.0.LATEST"
                 },
                 {
                     "package": "crm-shared-flowComponents",
@@ -43,7 +63,7 @@
                 },
                 {
                     "package": "crm-platform-access-control",
-                    "versionNumber": "0.162.0.LATEST"
+                    "versionNumber": "0.177.0.LATEST"
                 },
                 {
                     "package": "crm-community-base",
@@ -55,12 +75,16 @@
                 },
                 {
                     "package": "crm-hot-felles",
-                    "versionNumber": "0.6.0.LATEST"
+                    "versionNumber": "0.8.0.LATEST"
                 }
             ]
         }
     ],
     "packageAliases": {
+        "feature-toggle": "0HoKB000000000V0AQ",
+        "platform-data-model": "0HoKB00000000010AA",
+        "custom-metadata-dao": "0HoKB000000000B0AQ",
+        "custom-permission-helper": "0HoKB000000000f0AA",
         "crm-platform-base": "0Ho2o0000008ORmCAM",
         "crm-platform-access-control": "0Ho2o0000008OR3CAM",
         "crm-hot-tolk": "0Ho2o0000008OSVCA2",
