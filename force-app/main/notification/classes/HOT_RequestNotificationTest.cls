@@ -11,28 +11,26 @@ public class HOT_RequestNotificationTest {
 
         User currentUser = [SELECT Id FROM User WHERE Id = :UserInfo.getUserId()];
 
+        Id queueId;
         System.runAs(currentUser) {
             // queue = TestDataFactory.getQueue('NAV Tolketjeneste Oslo', 'queue_4703', 'HOT_Request__c');
 
             TestDataFactory.getPublicGroup('HMS Møre og Romsdal', 'group_4715');
+            // TestDataFactory.getQueue('HMS Møre og Romsdal', 'queue_4715', 'Thread__c');
 
-            TestDataFactory.getQueue('HMS Møre og Romsdal', 'queue_4715', 'Thread__c');
+            Group queueGroup = TestDataFactory.getQueue('HMS Møre og Romsdal', 'queue_4715', 'Thread__c');
+            queueId = queueGroup.Id;
 
-            QueueSObject qso = new QueueSObject(
-                QueueID = TestDataFactory.getQueue('HMS Møre og Romsdal', 'queue_4715', 'Thread__c').id,
-                SobjectType = 'HOT_Request__c'
-            );
+            QueueSObject qso = new QueueSObject(QueueID = queueId, SobjectType = 'HOT_Request__c');
 
             insert qso;
         }
-        Group queue = TestDataFactory.getQueue('HMS Møre og Romsdal', 'queue_4715', 'Thread__c');
+        // Group queue = TestDataFactory.getQueue('HMS Møre og Romsdal', 'queue_4715', 'Thread__c');
         HOT_Request__c rq = HOT_TestDataFactory.createRequest('testRequest', workType);
 
         insert rq;
 
-        // Group queue;
-
-        rq.OwnerId = queue.Id;
+        rq.OwnerId = queueId;
         rq.Dispatcher__c = currentUser.Id;
         rq.Status__c = 'Godkjent';
         update rq;
