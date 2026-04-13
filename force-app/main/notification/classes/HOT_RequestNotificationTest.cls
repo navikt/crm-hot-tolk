@@ -9,26 +9,29 @@ public class HOT_RequestNotificationTest {
         WorkType workType = HOT_TestDataFactory.createWorkType();
         insert workType;
 
+        Group queue = TestDataFactory.getQueue('NAV Tolketjeneste Oslo', 'queue_4703', 'HOT_Request__c');
+
         HOT_Request__c rq = HOT_TestDataFactory.createRequest('testRequest', workType);
+        rq.OwnerId = queue.Id;
 
         insert rq;
 
         User currentUser = [SELECT Id FROM User WHERE Id = :UserInfo.getUserId()];
-        Group queue;
-        QueueSObject qso;
-        System.runAs(currentUser) {
-            // queue = TestDataFactory.getQueue('NAV Tolketjeneste Oslo', 'queue_4703', 'HOT_Request__c');
-            TestDataFactory.getPublicGroup('NAV Tolketjeneste Oslo', 'queue_4703');
-            queue = TestDataFactory.getQueue('NAV Tolketjeneste Oslo', 'queue_4703', 'HOT_Request__c');
-            qso = new QueueSObject(
-                QueueID = TestDataFactory.getQueue('NAV Tolketjeneste Oslo', 'queue_4703', 'HOT_Request__c').Id,
-                SobjectType = 'HOT_Request__c'
-            );
+        // Group queue;
+        // QueueSObject qso;
+        // System.runAs(currentUser) {
+        //     // queue = TestDataFactory.getQueue('NAV Tolketjeneste Oslo', 'queue_4703', 'HOT_Request__c');
+        //     TestDataFactory.getPublicGroup('NAV Tolketjeneste Oslo', 'queue_4703');
+        //     queue = TestDataFactory.getQueue('NAV Tolketjeneste Oslo', 'queue_4703', 'HOT_Request__c');
+        //     qso = new QueueSObject(
+        //         QueueID = TestDataFactory.getQueue('NAV Tolketjeneste Oslo', 'queue_4703', 'HOT_Request__c').Id,
+        //         SobjectType = 'HOT_Request__c'
+        //     );
 
-            insert qso;
-        }
+        //     insert qso;
+        // }
 
-        rq.OwnerId = queue.Id;
+        // rq.OwnerId = queue.Id;
         rq.Dispatcher__c = currentUser.Id;
         rq.Status__c = 'Godkjent';
         update rq;
