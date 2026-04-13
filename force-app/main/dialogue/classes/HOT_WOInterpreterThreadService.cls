@@ -122,7 +122,10 @@ public without sharing class HOT_WOInterpreterThreadService {
         for (ServiceAppointment serviceAppointment : [
             SELECT Id, HOT_WorkOrderLineItem__r.WorkOrderId, HOT_ServiceResource__c
             FROM ServiceAppointment
-            WHERE HOT_WorkOrderLineItem__r.WorkOrderId IN :this.workOrderIds AND HOT_ServiceResource__c != NULL
+            WHERE
+                HOT_WorkOrderLineItem__r.WorkOrderId IN :this.workOrderIds
+                AND HOT_ServiceResource__c != NULL
+                AND Status = 'Dispatched'
         ]) {
             addInterpreterTarget(
                 serviceAppointment.HOT_WorkOrderLineItem__r.WorkOrderId,
