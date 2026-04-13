@@ -5,8 +5,20 @@ set -e
 # Oppretter scratch org
 sf org create scratch --definition-file config/project-scratch-def.json --alias $1 --duration-days $2 --set-default --json --wait 30
 
-# Installer crm-platform-base ver. 0.293
-sf package install --package 04tQC0000012Y8HYAU --no-prompt --installation-key $3 --wait 30 --publish-wait 30
+# Installer platform-data-model ver. 0.1.47
+sf package install --package 04tQC000001C7efYAC --no-prompt --wait 30 --publish-wait 30
+
+# Installer custom-metadata-dao ver. 0.1.47
+sf package install --package 04tQC000001C7bRYAS --no-prompt --wait 30 --publish-wait 30
+
+# Installer custom-permission-helper ver. 0.1.47
+sf package install --package 04tQC000001C7d3YAC --no-prompt --wait 30 --publish-wait 30
+
+# Installer feature-toggle ver. 0.1.48
+sf package install --package 04tQC000001C7jVYAS --no-prompt --wait 30 --publish-wait 30
+
+# Installer crm-platform-base ver. 0.300
+sf package install --package 04tQC000001AHAHYA4 --no-prompt --installation-key $3 --wait 30 --publish-wait 30
 
 # Installer crm-shared-flowComponents ver. 0.4
 sf package install --package 04t7U0000008qz4QAA --no-prompt --installation-key $3 --wait 30 --publish-wait 30
@@ -14,23 +26,14 @@ sf package install --package 04t7U0000008qz4QAA --no-prompt --installation-key $
 # Installer crm-henvendelse-base ver. 0.36
 sf package install --package 04tQC000000uSXtYAM --no-prompt --installation-key $3 --wait 30 --publish-wait 30
 
-# Installer platform-data-model ver. 0.1.2
-sf package install --package 04tQC000000oHLpYAM --no-prompt --wait 30 --publish-wait 30
-
-# Installer custom-metadata-dao ver. 1.2
-sf package install --package 04tQC000000oHKDYA2 --no-prompt --wait 30 --publish-wait 30
-
-# Installer custom-permission-helper ver. 0.1.2
-sf package install --package 04tQC000000oGw2YAE --no-prompt --wait 30 --publish-wait 30
-
 # Installer feature-toggle ver. 0.1.3
 sf package install --package 04tQC000000oHP3YAM --no-prompt --wait 30 --publish-wait 30
 
 # Installer crm-platform-integration ver. 0.162
 sf package install --package 04tQC000000xwmMYAQ --no-prompt --installation-key $3 --wait 30 --publish-wait 30
 
-# Installer crm-platform-access-control ver. 0.162
-sf package install --package 04tQC000000tlPhYAI --no-prompt --installation-key $3 --wait 30 --publish-wait 30
+# Installer crm-platform-access-control ver. 0.177
+sf package install --package 04tQC000001AGR7YAO --no-prompt --installation-key $3 --wait 30 --publish-wait 30
 
 # Installer crm-community-base ver. 0.133
 sf package install --package 04tQC0000012ZXNYA2 --no-prompt --installation-key $3 --wait 30 --publish-wait 30
@@ -38,8 +41,8 @@ sf package install --package 04tQC0000012ZXNYA2 --no-prompt --installation-key $
 # Installer crm-platform-reporting ver. 0.41
 sf package install --package 04tKB000000YAWDYA4 --no-prompt --installation-key $3 --wait 30 --publish-wait 30
 
-# Installer crm-hot-felles ver. 0.6
-sf package install --package 04tQC0000013ks9YAA --no-prompt --installation-key $3 --wait 30 --publish-wait 30
+# Installer crm-hot-felles ver. 0.7
+sf package install --package 04tQC000001DmflYAC --no-prompt --installation-key $3 --wait 30 --publish-wait 30
 
 # Dytt kildekoden til scratch org'en
 sf project deploy start
