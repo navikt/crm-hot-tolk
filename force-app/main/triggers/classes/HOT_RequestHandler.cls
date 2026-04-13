@@ -208,8 +208,9 @@ public without sharing class HOT_RequestHandler extends MyTriggers {
 
             // Set IsReminderSMS__c to false if IsNotNotifyAccount__c is set to true
             if (
-                request.IsNotNotifyAccount__c != triggerOldMap.get(request.Id).get('IsNotNotifyAccount__c') &&
-                request.IsNotNotifyAccount__c == true
+                (request.IsNotNotifyAccount__c != triggerOldMap.get(request.Id).get('IsNotNotifyAccount__c') &&
+                request.IsNotNotifyAccount__c == true) ||
+                (request.isReminderSMS__c != triggerOldMap.get(request.Id).get('isReminderSMS__c'))
             ) {
                 requestsWithIsNotNotifyAccount.add(request);
             }
@@ -678,7 +679,7 @@ public without sharing class HOT_RequestHandler extends MyTriggers {
 
     public static void setIsNotNotifyAccount(List<HOT_Request__c> requests) {
         for (HOT_Request__c request : requests) {
-            if (request.IsNotNotifyAccount__c != null) {
+            if (request.IsNotNotifyAccount__c == true) {
                 request.IsReminderSMS__c = false;
             }
         }
