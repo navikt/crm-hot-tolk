@@ -15,8 +15,17 @@ public class HOT_RequestNotificationTest {
 
         User currentUser = [SELECT Id FROM User WHERE Id = :UserInfo.getUserId()];
         Group queue;
+        QueueSObject qso;
         System.runAs(currentUser) {
-            queue = HOT_TestDataFactory.getQueue('NAV Tolketjeneste Oslo', 'queue_4703', 'HOT_Request__c');
+            // queue = TestDataFactory.getQueue('NAV Tolketjeneste Oslo', 'queue_4703', 'HOT_Request__c');
+            TestDataFactory.getPublicGroup('NAV Tolketjeneste Oslo', 'queue_4703');
+            queue = TestDataFactory.getQueue('NAV Tolketjeneste Oslo', 'queue_4703', 'HOT_Request__c');
+            qso = new QueueSObject(
+                QueueID = TestDataFactory.getQueue('NAV Tolketjeneste Oslo', 'queue_4703', 'HOT_Request__c').Id,
+                SobjectType = 'HOT_Request__c'
+            );
+
+            insert qso;
         }
 
         rq.OwnerId = queue.Id;
