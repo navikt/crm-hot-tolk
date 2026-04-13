@@ -11,8 +11,10 @@ public without sharing class HOT_RequestHandler extends MyTriggers {
 
     private static Map<String, String> buildServiceTerritoryDevNameByQueueDevName() {
         Map<String, String> serviceTerritoryDevNameByQueueDevName = new Map<String, String>();
-        for (HOT_ServiceTerritoryByQueue__mdt serviceTerritoryByQueue : HOT_ServiceTerritoryByQueue__mdt.getAll()
-            .values()) {
+        for (
+            HOT_ServiceTerritoryByQueue__mdt serviceTerritoryByQueue : HOT_ServiceTerritoryByQueue__mdt.getAll()
+                .values()
+        ) {
             serviceTerritoryDevNameByQueueDevName.put(
                 serviceTerritoryByQueue.Queue__c,
                 serviceTerritoryByQueue.ServiceTerritory__c
@@ -102,6 +104,7 @@ public without sharing class HOT_RequestHandler extends MyTriggers {
         setOrdererField((List<HOT_Request__c>) records);
         setServiceTerritory((List<HOT_Request__c>) records);
         setMeetingStreet((List<HOT_Request__c>) records);
+        setIsNotNotifyAccount((List<HOT_Request__c>) records);
         setFieldsToBlank(
             (List<HOT_Request__c>) records,
             new List<String>{
@@ -114,6 +117,7 @@ public without sharing class HOT_RequestHandler extends MyTriggers {
         );
         List<HOT_Request__c> imageInterpreterRequests = new List<HOT_Request__c>();
         List<HOT_Request__c> requestsWithUserInterpretationMethod = new List<HOT_Request__c>();
+        List<HOT_Request__c> requestsWithIsNotNotifyAccount = new List<HOT_Request__c>();
 
         for (HOT_Request__c request : (List<HOT_Request__c>) records) {
             if (request.Type__c == 'ImageInterpreter') {
@@ -122,12 +126,18 @@ public without sharing class HOT_RequestHandler extends MyTriggers {
             if (request.UserInterpretationMethod__c != null && request.Source__c == 'Community') {
                 requestsWithUserInterpretationMethod.add(request);
             }
+            if (request.IsNotNotifyAccount__c != null) {
+                requestsWithIsNotNotifyAccount.add(request);
+            }
         }
         if (imageInterpreterRequests.size() > 0) {
             setImageInterpreterFields(imageInterpreterRequests);
         }
         if (requestsWithUserInterpretationMethod.size() > 0) {
             setInterpretationMethod(requestsWithUserInterpretationMethod);
+        }
+        if (requestsWithIsNotNotifyAccount.size() > 0) {
+            setIsNotNotifyAccount(requestsWithIsNotNotifyAccount);
         }
     }
 
@@ -162,6 +172,7 @@ public without sharing class HOT_RequestHandler extends MyTriggers {
         List<HOT_Request__c> notifyDispatcherRequests = new List<HOT_Request__c>();
         List<HOT_Request__c> requestsToChangeOwnerToArchive = new List<HOT_Request__c>();
         List<HOT_Request__c> ordererRequestsToNotifyUsers = new List<HOT_Request__c>();
+        List<HOT_Request__c> requestsWithIsNotNotifyAccount = new List<HOT_Request__c>();
 
         for (HOT_Request__c request : (List<HOT_Request__c>) records) {
             // Filter for owner change
@@ -194,6 +205,14 @@ public without sharing class HOT_RequestHandler extends MyTriggers {
             ) {
                 ordererRequestsToNotifyUsers.add(request);
             }
+
+            // Set IsReminderSMS__c to false if IsNotNotifyAccount__c is set to true
+            if (
+                request.IsNotNotifyAccount__c != triggerOldMap.get(request.Id).get('IsNotNotifyAccount__c') &&
+                request.IsNotNotifyAccount__c == true
+            ) {
+                requestsWithIsNotNotifyAccount.add(request);
+            }
         }
         if (ownerChangedRequests.size() > 0) {
             setServiceTerritory(ownerChangedRequests);
@@ -210,6 +229,9 @@ public without sharing class HOT_RequestHandler extends MyTriggers {
         }
         if (ordererRequestsToNotifyUsers.size() > 0) {
             setNotifyOnUser(ordererRequestsToNotifyUsers);
+        }
+        if (requestsWithIsNotNotifyAccount.size() > 0) {
+            setIsNotNotifyAccount(requestsWithIsNotNotifyAccount);
         }
     }
 
@@ -650,6 +672,14 @@ public without sharing class HOT_RequestHandler extends MyTriggers {
             request.AssignmentType__c = 'Image Interpreter';
             if (imageInterpretationMethod != null) {
                 request.InterpretationMethod__c = imageInterpretationMethod.Id;
+            }
+        }
+    }
+
+    public static void setIsNotNotifyAccount(List<HOT_Request__c> requests) {
+        for (HOT_Request__c request : requests) {
+            if (request.IsNotNotifyAccount__c != null) {
+                request.IsReminderSMS__c = false;
             }
         }
     }
