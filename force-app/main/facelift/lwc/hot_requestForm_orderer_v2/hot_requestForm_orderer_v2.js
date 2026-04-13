@@ -56,7 +56,10 @@ export default class Hot_requestForm_orderer extends LightningElement {
                 hasErrors += 1;
             }
         });
-        hasErrors = this.template.querySelectorAll('c-input')[2].validatePhone(this.ordererPhoneError);
+        //Dette sikrer at bare nummervalidering skjer om bestiller vil ha sms varsel
+        if (this.fieldValues.IsOrdererWantStatusUpdateOnSMS__c) {
+            hasErrors = this.template.querySelectorAll('c-input')[2].validatePhone(this.ordererPhoneError);
+        }
         return hasErrors;
     }
 
