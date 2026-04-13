@@ -16,7 +16,7 @@ public class HOT_RequestNotificationTest {
         User currentUser = [SELECT Id FROM User WHERE Id = :UserInfo.getUserId()];
         Group queue;
         System.runAs(currentUser) {
-            queue = TestDataFactory.getQueue('NAV Tolketjeneste Oslo', 'queue_4703', 'HOT_Request__c');
+            queue = HOT_TestDataFactory.getQueue('NAV Tolketjeneste Oslo', 'queue_4703', 'HOT_Request__c');
         }
 
         rq.OwnerId = queue.Id;
