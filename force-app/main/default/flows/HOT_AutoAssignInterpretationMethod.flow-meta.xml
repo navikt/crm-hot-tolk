@@ -270,7 +270,7 @@
 )</filterFormula>
         <object>HOT_Request__c</object>
         <recordTriggerType>CreateAndUpdate</recordTriggerType>
-        <triggerType>RecordBeforeSave</triggerType>
+        <triggerType>RecordAfterSave</triggerType>
     </start>
     <status>Active</status>
 </Flow>
