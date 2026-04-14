@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<PermissionSetGroup xmlns="http://soap.sforce.com/2006/04/metadata">
+    <description>Til eksterne formidlere</description>
+    <hasActivationRequired>false</hasActivationRequired>
+    <label>HOT_Tolk_Tjenesteleverandør Gruppe</label>
+    <permissionSets>FSL_Agent_License</permissionSets>
+    <permissionSets>FSL_Dispatcher_License</permissionSets>
+    <status>Updated</status>
+</PermissionSetGroup>
