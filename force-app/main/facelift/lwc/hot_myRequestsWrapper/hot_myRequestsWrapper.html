@@ -91,9 +91,9 @@
                     <p><strong>Fra dato: </strong><span>{workOrderStartDate}</span></p>
                     <p><strong>Til dato: </strong><span>{workOrderEndDate}</span></p>
                     <br />
-                    <p><strong>Adresse: </strong><span>{workOrder.HOT_AddressFormated__c}</span></p>
+                    <p><strong>Adresse: </strong><span>{workOrderInterpretationAddressToShow}</span></p>
                     <p lwc:if={workOrderInterpretationAddressToShow}>
-                        <strong>Oppmøteadresse: </strong><span>{workOrderInterpretationAddressToShow}</span>
+                        <strong>Oppmøteadresse: </strong><span>{workOrder.HOT_AddressFormated__c}</span>
                     </p>
                     <br />
                     <p><strong>Status: </strong><span>{workOrder.HOT_ExternalWorkOrderStatus__c}</span></p>
