@@ -24,7 +24,7 @@ public without sharing class HOT_MessageHandler extends MyTriggers {
             String role = message.HOT_User_Role__c;
 
             if (allFormidlerThreadType.contains(type)) {
-                if (role != null && !role.contains(', Formidler')) {
+                if (role != null && !role.contains(', Formidler') && (!role.contains(', Administrator') )) {
                     threadIdsToNotifyDispatcherOnNewMessage.add(message.CRM_Thread__c);
                 }
             }
