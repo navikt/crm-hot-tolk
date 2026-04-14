@@ -297,10 +297,10 @@ public without sharing class HOT_WorkOrderHandler extends MyTriggers {
             }
 
             if (request.Status__c != 'Avlyst') {
-                request.StartTime__c = null;
-                request.EndTime__c = null;
-                request.SeriesStartDate__c = null;
-                request.SeriesEndDate__c = null;
+                // request.StartTime__c = null;
+                // request.EndTime__c = null;
+                // request.SeriesStartDate__c = null;
+                // request.SeriesEndDate__c = null;
             }
             for (WorkOrder workOrder : request.Work_Orders__r) {
                 if (workOrder.Status != 'Canceled') {
