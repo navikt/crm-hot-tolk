@@ -54,35 +54,6 @@
         </assignmentItems>
     </assignments>
     <decisions>
-        <name>Does_UserInterpretationMethod_have_value</name>
-        <label>Does UserInterpretationMethod have value?</label>
-        <locationX>0</locationX>
-        <locationY>0</locationY>
-        <defaultConnectorLabel>No</defaultConnectorLabel>
-        <rules>
-            <name>Yes</name>
-            <conditionLogic>and</conditionLogic>
-            <conditions>
-                <leftValueReference>$Record.UserInterpretationMethod__c</leftValueReference>
-                <operator>IsNull</operator>
-                <rightValue>
-                    <booleanValue>true</booleanValue>
-                </rightValue>
-            </conditions>
-            <conditions>
-                <leftValueReference>$Record__Prior.UserInterpretationMethod__c</leftValueReference>
-                <operator>IsNull</operator>
-                <rightValue>
-                    <booleanValue>true</booleanValue>
-                </rightValue>
-            </conditions>
-            <connector>
-                <targetReference>Primary_Interpretation_method_changed</targetReference>
-            </connector>
-            <label>Yes</label>
-        </rules>
-    </decisions>
-    <decisions>
         <name>Primary_Interpretation_method_changed</name>
         <label>Primary Interpretation method changed?</label>
         <locationX>0</locationX>
@@ -255,7 +226,7 @@
         <locationX>0</locationX>
         <locationY>0</locationY>
         <connector>
-            <targetReference>Does_UserInterpretationMethod_have_value</targetReference>
+            <targetReference>Primary_Interpretation_method_changed</targetReference>
         </connector>
         <filterFormula>OR(
     AND(
