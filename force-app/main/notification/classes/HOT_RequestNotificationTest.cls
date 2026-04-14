@@ -12,7 +12,7 @@ public class HOT_RequestNotificationTest {
         User currentUser = [SELECT Id FROM User WHERE Id = :UserInfo.getUserId()];
 
         // Id queueId;
-        // System.runAs(currentUser) {
+        System.runAs(currentUser) {
         // queue = TestDataFactory.getQueue('NAV Tolketjeneste Oslo', 'queue_4703', 'HOT_Request__c');
 
         TestDataFactory.getPublicGroup('NAV Tolketjeneste Oslo', 'group_4703');
@@ -24,7 +24,7 @@ public class HOT_RequestNotificationTest {
         // QueueSObject qso = new QueueSObject(QueueID = queueId, SobjectType = 'HOT_Request__c');
 
         // insert qso;
-        // }
+        }
         // Group queue = TestDataFactory.getQueue('HMS Møre og Romsdal', 'queue_4715', 'Thread__c');
 
         Id queueGroupId = [SELECT Id FROM Group WHERE DeveloperName = 'queue_4703' LIMIT 1].Id;
