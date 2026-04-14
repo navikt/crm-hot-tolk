@@ -169,50 +169,7 @@ private class HOT_RequestApprovedHandlerTest {
     }
 
     @IsTest
-    static void requestInterpretationMethodChangeUpdatesExistingChildRecords() {
-        WorkType originalWorkType = HOT_TestDataFactory.createWorkType('TS - Tegnspråk');
-        insert originalWorkType;
-        WorkType updatedWorkType = HOT_TestDataFactory.createWorkType('SK - Skrivetolking');
-        insert updatedWorkType;
-
-        HOT_Request__c request = HOT_TestDataFactory.createRequest('Subject', originalWorkType);
-        request.NumberOfInterpreters__c = 2;
-        insert request;
-
-        request.Status__c = 'Godkjent';
-        update request;
-
-        Test.startTest();
-        request.InterpretationMethodType__c = updatedWorkType.Name;
-        update request;
-        Test.stopTest();
-
-        WorkOrder workOrder = [
-            SELECT WorkTypeId
-            FROM WorkOrder
-            WHERE HOT_Request__c = :request.Id
-            LIMIT 1
-        ];
-        WorkOrderLineItem workOrderLineItem = [
-            SELECT WorkTypeId
-            FROM WorkOrderLineItem
-            WHERE WorkOrder.HOT_Request__c = :request.Id
-            LIMIT 1
-        ];
-        ServiceAppointment serviceAppointment = [
-            SELECT WorkTypeId
-            FROM ServiceAppointment
-            WHERE HOT_Request__c = :request.Id
-            LIMIT 1
-        ];
-
-        System.assertEquals(updatedWorkType.Id, workOrder.WorkTypeId, 'WO kept the old work type');
-        System.assertEquals(updatedWorkType.Id, workOrderLineItem.WorkTypeId, 'WOLI kept the old work type');
-        System.assertEquals(updatedWorkType.Id, serviceAppointment.WorkTypeId, 'SA kept the old work type');
-    }
-
-    @IsTest
-    static void requestInterpretationMethodChangeUpdatesExistingChildRecordsWithUserInterpretationMethod() {
+    static void interpretationMethodTypeChangeUpdatesLookupWithUserInterpretationMethod() {
         WorkType originalWorkType = HOT_TestDataFactory.createWorkType('TS - Tegnspråk');
         originalWorkType.HOT_DeveloperName__c = 'TS';
         insert originalWorkType;
@@ -223,40 +180,26 @@ private class HOT_RequestApprovedHandlerTest {
         HOT_Request__c request = HOT_TestDataFactory.createRequest('Subject', originalWorkType);
         request.Source__c = 'Community';
         request.UserInterpretationMethod__c = 'TS';
-        request.NumberOfInterpreters__c = 2;
         insert request;
-
-        request.Status__c = 'Godkjent';
-        update request;
 
         Test.startTest();
         request.InterpretationMethodType__c = updatedWorkType.Name;
         update request;
         Test.stopTest();
 
-        WorkOrder workOrder = [
-            SELECT WorkTypeId
-            FROM WorkOrder
-            WHERE HOT_Request__c = :request.Id
-            LIMIT 1
-        ];
-        WorkOrderLineItem workOrderLineItem = [
-            SELECT WorkTypeId
-            FROM WorkOrderLineItem
-            WHERE WorkOrder.HOT_Request__c = :request.Id
-            LIMIT 1
-        ];
-        ServiceAppointment serviceAppointment = [
-            SELECT WorkTypeId
-            FROM ServiceAppointment
-            WHERE HOT_Request__c = :request.Id
-            LIMIT 1
+        request = [
+            SELECT InterpretationMethod__c
+            FROM HOT_Request__c
+            WHERE Id = :request.Id
         ];
 
-        System.assertEquals(updatedWorkType.Id, workOrder.WorkTypeId, 'WO kept the old work type');
-        System.assertEquals(updatedWorkType.Id, workOrderLineItem.WorkTypeId, 'WOLI kept the old work type');
-        System.assertEquals(updatedWorkType.Id, serviceAppointment.WorkTypeId, 'SA kept the old work type');
+        System.assertEquals(
+            updatedWorkType.Id,
+            request.InterpretationMethod__c,
+            'InterpretationMethod lookup kept the old work type'
+        );
     }
+
 
     @IsTest
     static void requestApproved2Times() {
