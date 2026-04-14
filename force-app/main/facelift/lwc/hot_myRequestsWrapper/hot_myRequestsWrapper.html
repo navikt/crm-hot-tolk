@@ -30,9 +30,9 @@
                         <strong>Gjelder periode: </strong><span>{requestSeriesStartDate} - {requestSeriesEndDate}</span>
                     </p>
                     <br />
-                    <p><strong>Adresse: </strong><span>{requestAddressToShow}</span></p>
+                    <p><strong>Adresse: </strong><span>{requestInterpretationAddressToShow}</span></p>
                     <p lwc:if={requestInterpretationAddressToShow}>
-                        <strong>Oppmøteadresse: </strong><span>{requestInterpretationAddressToShow}</span>
+                        <strong>Oppmøteadresse: </strong><span>{requestAddressToShow}</span>
                     </p>
                     <br />
                     <p lwc:if={request.OwnerName__c}><strong>Sentral: </strong><span>{request.OwnerName__c}</span></p>
