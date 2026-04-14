@@ -20,6 +20,8 @@ import WORKORDER_ID from '@salesforce/schema/WorkOrder.Id';
 import USER_ID from '@salesforce/user/Id';
 import USER_ACCOUNT_ID from '@salesforce/schema/User.AccountId';
 
+import notifyDispatchersFilesUploaded from '@salesforce/apex/HOT_RequestNotification.notifyDispatchersFilesUploaded';
+
 import { formatRecord, formatDatetime, formatDate } from 'c/datetimeFormatterNorwegianTime';
 import icons from '@salesforce/resourceUrl/ikoner';
 
@@ -73,13 +75,25 @@ export default class Hot_myRequestsWrapper extends NavigationMixin(LightningElem
     }
 
     fileUploadMessage = '';
-    handleUploadFinished(event) {
+    async handleUploadFinished(event) {
         const uploadedFiles = event.detail?.files || [];
-        if (uploadedFiles.length > 0) {
-            this.fileUploadMessage = 'Filen(e) ble lastet opp';
-            this.template
-                .querySelectorAll('c-record-files-without-sharing')
-                .forEach((cmp) => cmp.refreshContentDocuments());
+        if (uploadedFiles.length === 0) {
+            return;
+        }
+
+        this.fileUploadMessage = 'Filen(e) ble lastet opp';
+        this.template
+            .querySelectorAll('c-record-files-without-sharing')
+            .forEach((cmp) => cmp.refreshContentDocuments());
+
+        try {
+            await notifyDispatchersFilesUploaded({
+                requestId: this.request?.Id ?? this.recordId,
+                workOrderId: this.urlStateParameters?.level === 'WO' ? this.workOrder?.Id : null,
+                fileCount: uploadedFiles.length
+            });
+        } catch (e) {
+            console.error(e);
         }
     }
 
