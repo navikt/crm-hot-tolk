@@ -31,7 +31,7 @@
                     </p>
                     <br />
                     <p><strong>Adresse: </strong><span>{requestInterpretationAddressToShow}</span></p>
-                    <p lwc:if={requestInterpretationAddressToShow}>
+                    <p lwc:if={requestAddressToShow}>
                         <strong>Oppmøteadresse: </strong><span>{requestAddressToShow}</span>
                     </p>
                     <br />
@@ -92,7 +92,7 @@
                     <p><strong>Til dato: </strong><span>{workOrderEndDate}</span></p>
                     <br />
                     <p><strong>Adresse: </strong><span>{workOrderInterpretationAddressToShow}</span></p>
-                    <p lwc:if={workOrderInterpretationAddressToShow}>
+                    <p lwc:if={workOrder.HOT_AddressFormated__c}>
                         <strong>Oppmøteadresse: </strong><span>{workOrder.HOT_AddressFormated__c}</span>
                     </p>
                     <br />
