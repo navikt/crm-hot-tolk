@@ -7,7 +7,7 @@
             "path": "force-app",
             "default": true,
             "package": "crm-hot-tolk",
-            "versionNumber": "1.390.0.NEXT",
+            "versionNumber": "1.393.0.NEXT",
             "dependencies": [
                 {
                     "package": "platform-data-model",
@@ -88,10 +88,6 @@
         "crm-platform-base": "0Ho2o0000008ORmCAM",
         "crm-platform-access-control": "0Ho2o0000008OR3CAM",
         "crm-hot-tolk": "0Ho2o0000008OSVCA2",
-        "custom-metadata-dao": "0HoKB000000000B0AQ",
-        "custom-permission-helper": "0HoKB000000000f0AA",
-        "feature-toggle": "0HoKB000000000V0AQ",
-        "platform-data-model": "0HoKB00000000010AA",
         "crm-community-base": "0Ho2o0000008OSzCAM",
         "crm-platform-reporting": "0Ho2o0000008OSfCAM",
         "crm-platform-integration": "0Ho2o0000008ORrCAM",
