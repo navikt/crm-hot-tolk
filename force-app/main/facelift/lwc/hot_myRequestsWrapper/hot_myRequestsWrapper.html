@@ -30,9 +30,9 @@
                         <strong>Gjelder periode: </strong><span>{requestSeriesStartDate} - {requestSeriesEndDate}</span>
                     </p>
                     <br />
-                    <p><strong>Adresse: </strong><span>{requestAddressToShow}</span></p>
-                    <p lwc:if={requestInterpretationAddressToShow}>
-                        <strong>Oppmøteadresse: </strong><span>{requestInterpretationAddressToShow}</span>
+                    <p><strong>Adresse: </strong><span>{requestInterpretationAddressToShow}</span></p>
+                    <p lwc:if={requestAddressToShow}>
+                        <strong>Oppmøteadresse: </strong><span>{requestAddressToShow}</span>
                     </p>
                     <br />
                     <p lwc:if={request.OwnerName__c}><strong>Sentral: </strong><span>{request.OwnerName__c}</span></p>
@@ -91,9 +91,9 @@
                     <p><strong>Fra dato: </strong><span>{workOrderStartDate}</span></p>
                     <p><strong>Til dato: </strong><span>{workOrderEndDate}</span></p>
                     <br />
-                    <p><strong>Adresse: </strong><span>{workOrder.HOT_AddressFormated__c}</span></p>
-                    <p lwc:if={workOrderInterpretationAddressToShow}>
-                        <strong>Oppmøteadresse: </strong><span>{workOrderInterpretationAddressToShow}</span>
+                    <p><strong>Adresse: </strong><span>{workOrderInterpretationAddressToShow}</span></p>
+                    <p lwc:if={workOrder.HOT_AddressFormated__c}>
+                        <strong>Oppmøteadresse: </strong><span>{workOrder.HOT_AddressFormated__c}</span>
                     </p>
                     <br />
                     <p><strong>Status: </strong><span>{workOrder.HOT_ExternalWorkOrderStatus__c}</span></p>
