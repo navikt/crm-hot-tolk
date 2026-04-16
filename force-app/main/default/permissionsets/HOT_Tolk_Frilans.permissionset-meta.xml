@@ -57,6 +57,10 @@
         <enabled>true</enabled>
     </classAccesses>
     <classAccesses>
+        <apexClass>HOT_RequestNotification</apexClass>
+        <enabled>true</enabled>
+    </classAccesses>
+    <classAccesses>
         <apexClass>HOT_ThreadDetailController</apexClass>
         <enabled>true</enabled>
     </classAccesses>
@@ -657,6 +661,11 @@
     <fieldPermissions>
         <editable>false</editable>
         <field>Person__c.HOT_InterpreterAtWork__c</field>
+        <readable>true</readable>
+    </fieldPermissions>
+    <fieldPermissions>
+        <editable>false</editable>
+        <field>Person__c.HOT_MobilePhone__c</field>
         <readable>true</readable>
     </fieldPermissions>
     <fieldPermissions>

@@ -100,6 +100,28 @@ private class HOT_ServiceAppointmentHandlerTest {
     }
 
     @IsTest
+    static void setDispatcherAndCompanyFromRequestOnInsert() {
+        HOT_Request__c request = [SELECT Id FROM HOT_Request__c WHERE Subject__c = 'TEST' LIMIT 1];
+        Account company = HOT_TestDataFactory.createAccount(false);
+        insert company;
+
+        request.Dispatcher__c = UserInfo.getUserId();
+        request.Company__c = company.Id;
+        request.Status__c = 'Godkjent';
+        update request;
+
+        ServiceAppointment sa = [
+            SELECT HOT_DispatcherNew__c, HOT_Company__c
+            FROM ServiceAppointment
+            WHERE HOT_Request__c = :request.Id
+            LIMIT 1
+        ];
+
+        System.assertEquals(UserInfo.getUserId(), sa.HOT_DispatcherNew__c, 'Dispatcher was not set on ServiceAppointment.');
+        System.assertEquals(company.Id, sa.HOT_Company__c, 'Company was not set on ServiceAppointment.');
+    }
+
+    @IsTest
     static void setOwnerTest() {
         Group moreQueue = TestDataFactory.getQueue('HMS Møre og Romsdal', 'queue_4715', 'HOT_Request__c');
 

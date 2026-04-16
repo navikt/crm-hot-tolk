@@ -17,7 +17,15 @@
         <enabled>true</enabled>
     </classAccesses>
     <classAccesses>
+        <apexClass>HOT_HighlightPanelController</apexClass>
+        <enabled>true</enabled>
+    </classAccesses>
+    <classAccesses>
         <apexClass>HOT_InterestedResourcesListController</apexClass>
+        <enabled>true</enabled>
+    </classAccesses>
+    <classAccesses>
+        <apexClass>HOT_MobileThreadListcontroller</apexClass>
         <enabled>true</enabled>
     </classAccesses>
     <classAccesses>
@@ -892,6 +900,21 @@
     <fieldPermissions>
         <editable>false</editable>
         <field>Person__c.HOT_LanguageAndCommunicationMethods__c</field>
+        <readable>true</readable>
+    </fieldPermissions>
+    <fieldPermissions>
+        <editable>false</editable>
+        <field>Person__c.HOT_MobilePhoneOverrideReason__c</field>
+        <readable>true</readable>
+    </fieldPermissions>
+    <fieldPermissions>
+        <editable>false</editable>
+        <field>Person__c.HOT_MobilePhoneOverride__c</field>
+        <readable>true</readable>
+    </fieldPermissions>
+    <fieldPermissions>
+        <editable>false</editable>
+        <field>Person__c.HOT_MobilePhone__c</field>
         <readable>true</readable>
     </fieldPermissions>
     <fieldPermissions>
@@ -2153,6 +2176,10 @@
     </tabSettings>
     <tabSettings>
         <tab>HOT_Resource__c</tab>
+        <visibility>Visible</visibility>
+    </tabSettings>
+    <tabSettings>
+        <tab>HOT_Tolk_Mobile_Thread_List</tab>
         <visibility>Visible</visibility>
     </tabSettings>
     <tabSettings>

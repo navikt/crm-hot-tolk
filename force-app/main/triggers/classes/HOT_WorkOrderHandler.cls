@@ -1,4 +1,73 @@
 public without sharing class HOT_WorkOrderHandler extends MyTriggers {
+    private static Map<Id, HOT_Request__c> requestById = new Map<Id, HOT_Request__c>();
+
+    private static Map<Id, HOT_Request__c> getRequestsById(List<WorkOrder> workOrders) {
+        Set<Id> requestIds = new Set<Id>();
+        for (WorkOrder workOrder : workOrders) {
+            if (workOrder.HOT_Request__c != null) {
+                requestIds.add(workOrder.HOT_Request__c);
+            }
+        }
+        cacheRequestsById(requestIds);
+
+        Map<Id, HOT_Request__c> requests = new Map<Id, HOT_Request__c>();
+        for (Id requestId : requestIds) {
+            requests.put(requestId, requestById.get(requestId));
+        }
+        return requests;
+    }
+
+    private static Set<Id> getUncachedRequestIds(Set<Id> requestIds) {
+        Set<Id> uncachedRequestIds = new Set<Id>();
+        for (Id requestId : requestIds) {
+            if (!requestById.containsKey(requestId)) {
+                uncachedRequestIds.add(requestId);
+            }
+        }
+        return uncachedRequestIds;
+    }
+
+    private static void cacheRequestsById(Set<Id> requestIds) {
+        Set<Id> uncachedRequestIds = getUncachedRequestIds(requestIds);
+        if (uncachedRequestIds.isEmpty()) {
+            return;
+        }
+
+        Map<Id, HOT_Request__c> requests = new Map<Id, HOT_Request__c>(
+            [
+                SELECT
+                    Id,
+                    Status__c,
+                    InterpretationMethod__c,
+                    InterpretationMethod__r.Id,
+                    InterpretationMethodSecondary__c,
+                    InterpretationMethodSecondary__r.Id,
+                    NumberOfInterpreters__c,
+                    NumberOfInterpretersSecondary__c,
+                    ServiceTerritory__c,
+                    OwnerId,
+                    Subject__c,
+                    Description__c,
+                    Account__c,
+                    Account__r.PersonContactId,
+                    HOT_PersonContactId__c,
+                    InterpretationStreet__c,
+                    InterpretationPostalCode__c,
+                    InterpretationPostalCity__c,
+                    MeetingStreet__c,
+                    MeetingPostalCity__c,
+                    MeetingPostalCode__c,
+                    CanceledDate__c
+                FROM HOT_Request__c
+                WHERE Id IN :uncachedRequestIds
+            ]
+        );
+
+        for (Id requestId : uncachedRequestIds) {
+            requestById.put(requestId, requests.get(requestId));
+        }
+    }
+
     public override void onBeforeInsert() {
         setDefaultFields((List<WorkOrder>) records);
         setDuration((List<WorkOrder>) records);
@@ -39,28 +108,23 @@ public without sharing class HOT_WorkOrderHandler extends MyTriggers {
 
     public override void onAfterInsert() {
         List<Id> workOrdersWithoutRequests = new List<Id>();
-        List<Id> accountIds = new List<Id>();
-        List<Id> requestIds = new List<Id>();
+        Map<Id, HOT_Request__c> requests = getRequestsById((List<WorkOrder>) records);
 
         for (WorkOrder workOrder : (List<WorkOrder>) records) {
             if (workOrder.HOT_Request__c == null) {
                 workOrdersWithoutRequests.add(workOrder.Id);
             }
-
-            requestIds.add(workOrder.HOT_Request__c);
-            accountIds.add(workOrder.AccountId);
         }
 
         List<WorkOrder> approvedWorkOrders = new List<WorkOrder>();
-        Map<Id, HOT_Request__c> requests = new Map<Id, HOT_Request__c>(
-            [SELECT Id, Status__c FROM HOT_Request__c WHERE Id IN :requestIds]
-        );
-        if (requests.size() > 0) {
+        if (!requests.isEmpty()) {
             for (WorkOrder workOrder : (List<WorkOrder>) records) {
+                HOT_Request__c request = requests.get(workOrder.HOT_Request__c);
                 if (
-                    requests.get(workOrder.HOT_Request__c).Status__c != 'Åpen' &&
-                    requests.get(workOrder.HOT_Request__c).Status__c != 'Avlyst' &&
-                    requests.get(workOrder.HOT_Request__c).Status__c != 'Annullert'
+                    request != null &&
+                    request.Status__c != 'Åpen' &&
+                    request.Status__c != 'Avlyst' &&
+                    request.Status__c != 'Annullert'
                 ) {
                     approvedWorkOrders.add(workOrder);
                 }
@@ -104,40 +168,23 @@ public without sharing class HOT_WorkOrderHandler extends MyTriggers {
     }
 
     public static void createChildRecords(List<WorkOrder> workOrders) {
-        //Getting parent requests
-        List<Id> requestIds = new List<Id>();
-        for (WorkOrder workOrder : workOrders) {
-            requestIds.add(workOrder.HOT_Request__c);
-        }
-        Map<Id, HOT_Request__c> requests = new Map<Id, HOT_Request__c>(
-            [
-                SELECT
-                    Id,
-                    InterpretationMethod__r.Id,
-                    InterpretationMethodSecondary__r.Id,
-                    NumberOfInterpreters__c,
-                    NumberOfInterpretersSecondary__c
-                FROM HOT_Request__c
-                WHERE Id IN :requestIds
-            ]
-        );
+        Map<Id, HOT_Request__c> requests = getRequestsById(workOrders);
 
         //Each workOrder should have 1 or more childs (workOrderLineItems)
         List<WorkOrderLineItem> workOrderLineItems = new List<WorkOrderLineItem>();
         for (WorkOrder workOrder : workOrders) {
+            HOT_Request__c request = requests.get(workOrder.HOT_Request__c);
+            if (request == null) {
+                continue;
+            }
+
             //Check if status New
 
             //Fetching the workTypes from parent requests. If the request only has 1 workType, only one child workOrderLineItem should be created
             Map<Id, Decimal> workTypes = new Map<Id, Decimal>();
-            workTypes.put(
-                requests.get(workOrder.HOT_Request__c).InterpretationMethod__r.Id,
-                requests.get(workOrder.HOT_Request__c).NumberOfInterpreters__c
-            );
-            if (requests.get(workOrder.HOT_Request__c).InterpretationMethodSecondary__c != null) {
-                workTypes.put(
-                    requests.get(workOrder.HOT_Request__c).InterpretationMethodSecondary__r.Id,
-                    requests.get(workOrder.HOT_Request__c).NumberOfInterpretersSecondary__c
-                );
+            workTypes.put(request.InterpretationMethod__r.Id, request.NumberOfInterpreters__c);
+            if (request.InterpretationMethodSecondary__c != null) {
+                workTypes.put(request.InterpretationMethodSecondary__r.Id, request.NumberOfInterpretersSecondary__c);
             }
 
             //If there are no child workOrderLineItems for this workOrder, they should be created
@@ -166,94 +213,56 @@ public without sharing class HOT_WorkOrderHandler extends MyTriggers {
     }
 
     public static void setDefaultFields(List<WorkOrder> workOrders) {
-        List<Id> requestIds = new List<Id>();
-        for (WorkOrder workOrder : workOrders) {
-            requestIds.add(workOrder.HOT_Request__c);
-        }
-        Map<Id, HOT_Request__c> requests = new Map<Id, HOT_Request__c>(
-            [
-                SELECT
-                    Id,
-                    ServiceTerritory__c,
-                    Status__c,
-                    OwnerId,
-                    Subject__c,
-                    Description__c,
-                    Account__c,
-                    Account__r.PersonContactId,
-                    InterpretationStreet__c,
-                    InterpretationPostalCode__c,
-                    InterpretationPostalCity__c,
-                    MeetingStreet__c,
-                    MeetingPostalCity__c,
-                    MeetingPostalCode__c
-                FROM HOT_Request__c
-                WHERE Id IN :requestIds
-            ]
-        );
+        Map<Id, HOT_Request__c> requests = getRequestsById(workOrders);
         for (WorkOrder workOrder : workOrders) {
             //Setting default status for WorkOrder
             workOrder.Status = 'New';
             if (workOrder.HOT_Request__c != null) {
+                HOT_Request__c request = requests.get(workOrder.HOT_Request__c);
+                if (request == null) {
+                    continue;
+                }
+
                 //Setting owner of WorkOrder based on owner of Request
                 workOrder.OwnerId = workOrder.HOT_RequestOwnerId__c;
-                System.debug('workOrder.OwnerId: ' + workOrder.OwnerId);
 
                 //Setting fields of WorkOrder based on Request, if the fields are not filled in, and the fields on Request have values.
-                if (
-                    workOrder.ServiceTerritory == null &&
-                    requests.get(workOrder.HOT_Request__c).ServiceTerritory__c != null
-                ) {
-                    workOrder.ServiceTerritoryId = requests.get(workOrder.HOT_Request__c).ServiceTerritory__c;
+                if (workOrder.ServiceTerritory == null && request.ServiceTerritory__c != null) {
+                    workOrder.ServiceTerritoryId = request.ServiceTerritory__c;
                 }
-                if (workOrder.Subject == null && requests.get(workOrder.HOT_Request__c).Subject__c != null) {
-                    workOrder.Subject = requests.get(workOrder.HOT_Request__c).Subject__c;
+                if (workOrder.Subject == null && request.Subject__c != null) {
+                    workOrder.Subject = request.Subject__c;
                 }
-                if (workOrder.Description == null && requests.get(workOrder.HOT_Request__c).Description__c != null) {
-                    workOrder.Description = requests.get(workOrder.HOT_Request__c).Description__c;
+                if (workOrder.Description == null && request.Description__c != null) {
+                    workOrder.Description = request.Description__c;
                 }
-                if (workOrder.AccountId == null && requests.get(workOrder.HOT_Request__c).Account__c != null) {
-                    workOrder.AccountId = requests.get(workOrder.HOT_Request__c).Account__c;
+                if (workOrder.AccountId == null && request.Account__c != null) {
+                    workOrder.AccountId = request.Account__c;
                 }
                 if (
                     workOrder.ContactId == null &&
-                    requests.get(workOrder.HOT_Request__c).Account__c != null &&
-                    requests.get(workOrder.HOT_Request__c).Account__r.PersonContactId != null
+                    request.Account__c != null &&
+                    request.Account__r.PersonContactId != null
                 ) {
-                    workOrder.ContactId = requests.get(workOrder.HOT_Request__c).Account__r.PersonContactId;
+                    workOrder.ContactId = request.Account__r.PersonContactId;
                 }
-                if (
-                    workOrder.HOT_InterpretationStreet__c == null &&
-                    requests.get(workOrder.HOT_Request__c).InterpretationStreet__c != null
-                ) {
-                    workOrder.HOT_InterpretationStreet__c = requests.get(workOrder.HOT_Request__c)
-                        .InterpretationStreet__c;
+                if (workOrder.HOT_InterpretationStreet__c == null && request.InterpretationStreet__c != null) {
+                    workOrder.HOT_InterpretationStreet__c = request.InterpretationStreet__c;
                 }
-                if (
-                    workOrder.HOT_InterpretationPostalCode__c == null &&
-                    requests.get(workOrder.HOT_Request__c).InterpretationPostalCode__c != null
-                ) {
-                    workOrder.HOT_InterpretationPostalCode__c = requests.get(workOrder.HOT_Request__c)
-                        .InterpretationPostalCode__c;
+                if (workOrder.HOT_InterpretationPostalCode__c == null && request.InterpretationPostalCode__c != null) {
+                    workOrder.HOT_InterpretationPostalCode__c = request.InterpretationPostalCode__c;
                 }
-                if (
-                    workOrder.HOT_InterpretationPostalCity__c == null &&
-                    requests.get(workOrder.HOT_Request__c).InterpretationPostalCity__c != null
-                ) {
-                    workOrder.HOT_InterpretationPostalCity__c = requests.get(workOrder.HOT_Request__c)
-                        .InterpretationPostalCity__c;
+                if (workOrder.HOT_InterpretationPostalCity__c == null && request.InterpretationPostalCity__c != null) {
+                    workOrder.HOT_InterpretationPostalCity__c = request.InterpretationPostalCity__c;
                 }
-                if (workOrder.Street == null && requests.get(workOrder.HOT_Request__c).MeetingStreet__c != null) {
-                    workOrder.Street = requests.get(workOrder.HOT_Request__c).MeetingStreet__c;
+                if (workOrder.Street == null && request.MeetingStreet__c != null) {
+                    workOrder.Street = request.MeetingStreet__c;
                 }
-                if (workOrder.City == null && requests.get(workOrder.HOT_Request__c).MeetingPostalCity__c != null) {
-                    workOrder.City = requests.get(workOrder.HOT_Request__c).MeetingPostalCity__c;
+                if (workOrder.City == null && request.MeetingPostalCity__c != null) {
+                    workOrder.City = request.MeetingPostalCity__c;
                 }
-                if (
-                    workOrder.PostalCode == null &&
-                    requests.get(workOrder.HOT_Request__c).MeetingPostalCode__c != null
-                ) {
-                    workOrder.PostalCode = requests.get(workOrder.HOT_Request__c).MeetingPostalCode__c;
+                if (workOrder.PostalCode == null && request.MeetingPostalCode__c != null) {
+                    workOrder.PostalCode = request.MeetingPostalCode__c;
                 }
             }
         }
@@ -261,9 +270,16 @@ public without sharing class HOT_WorkOrderHandler extends MyTriggers {
 
     public static void updateRequests(List<WorkOrder> workOrders) {
         Set<Id> requestIds = new Set<Id>();
-        for (WorkOrder workOrder : workOrders) {
-            requestIds.add(workOrder.HOT_Request__c);
+        for (WorkOrder wo : workOrders) {
+            if (wo.HOT_Request__c != null) {
+                requestIds.add(wo.HOT_Request__c);
+            }
         }
+
+        if (requestIds.isEmpty()) {
+            return;
+        }
+
         List<HOT_Request__c> requests = [
             SELECT
                 Id,
@@ -275,49 +291,70 @@ public without sharing class HOT_WorkOrderHandler extends MyTriggers {
                 Status__c,
                 (
                     SELECT Id, StartDate, EndDate, Status
-                    FROM HOT_Request__c.Work_Orders__r
+                    FROM Work_Orders__r
                     WHERE Status != 'Annul'
                     ORDER BY StartDate ASC
                 )
             FROM HOT_Request__c
             WHERE Id IN :requestIds
         ];
+
         for (HOT_Request__c request : requests) {
             if (request.NumberOfWorkOrders__c != request.Work_Orders__r.size()) {
                 request.NumberOfWorkOrders__c = request.Work_Orders__r.size();
             }
 
-            if (request.Status__c != 'Avlyst') {
-                request.StartTime__c = null;
-                request.EndTime__c = null;
-                request.SeriesStartDate__c = null;
-                request.SeriesEndDate__c = null;
-            }
-            for (WorkOrder workOrder : request.Work_Orders__r) {
-                if (workOrder.Status != 'Canceled') {
-                    if (
-                        workOrder.StartDate != null &&
-                        (workOrder.StartDate < request.StartTime__c ||
-                        request.StartTime__c == null)
-                    ) {
-                        request.StartTime__c = workOrder.StartDate;
-                        request.EndTime__c = workOrder.EndDate;
-                    }
-                    if (
-                        workOrder.StartDate.date() != null &&
-                        (workOrder.StartDate.date() < request.SeriesStartDate__c ||
-                        request.SeriesStartDate__c == null)
-                    ) {
-                        request.SeriesStartDate__c = workOrder.StartDate.date();
-                    }
-                    if (
-                        workOrder.EndDate.date() != null &&
-                        (workOrder.EndDate.date() > request.SeriesEndDate__c ||
-                        request.SeriesEndDate__c == null)
-                    ) {
-                        request.SeriesEndDate__c = workOrder.EndDate.date();
+            Datetime minStart;
+            Datetime maxEnd;
+            Date minDate;
+            Date maxDate;
+
+            for (WorkOrder wo : request.Work_Orders__r) {
+                if (wo.Status == 'Canceled') {
+                    continue;
+                }
+
+                // StartTime (minste datetime)
+                if (wo.StartDate != null && (minStart == null || wo.StartDate < minStart)) {
+                    minStart = wo.StartDate;
+                }
+
+                // EndTime (største datetime)
+                if (wo.EndDate != null && (maxEnd == null || wo.EndDate > maxEnd)) {
+                    maxEnd = wo.EndDate;
+                }
+
+                // SeriesStartDate (minste dato)
+                if (wo.StartDate != null) {
+                    Date startDateOnly = wo.StartDate.date();
+                    if (minDate == null || startDateOnly < minDate) {
+                        minDate = startDateOnly;
                     }
                 }
+
+                // SeriesEndDate (største dato)
+                if (wo.EndDate != null) {
+                    Date endDateOnly = wo.EndDate.date();
+                    if (maxDate == null || endDateOnly > maxDate) {
+                        maxDate = endDateOnly;
+                    }
+                }
+            }
+
+            if (minStart != null) {
+                request.StartTime__c = minStart;
+            }
+
+            if (maxEnd != null) {
+                request.EndTime__c = maxEnd;
+            }
+
+            if (minDate != null) {
+                request.SeriesStartDate__c = minDate;
+            }
+
+            if (maxDate != null) {
+                request.SeriesEndDate__c = maxDate;
             }
         }
         try {
@@ -332,62 +369,43 @@ public without sharing class HOT_WorkOrderHandler extends MyTriggers {
     }
 
     public static void updateWorkOrders(List<WorkOrder> workOrders) {
-        Set<Id> requestIds = new Set<Id>();
-        for (WorkOrder workOrder : workOrders) {
-            requestIds.add(workOrder.HOT_Request__c);
+        updateWorkOrders(workOrders, getRequestsById(workOrders));
+    }
+
+    public static void updateWorkOrders(List<WorkOrder> workOrders, Map<Id, HOT_Request__c> requests) {
+        if (requests == null) {
+            requests = new Map<Id, HOT_Request__c>();
         }
-        Map<Id, HOT_Request__c> requests = new Map<Id, HOT_Request__c>(
-            [
-                SELECT
-                    Id,
-                    Account__c,
-                    MeetingPostalCity__c,
-                    HOT_PersonContactId__c,
-                    Description__c,
-                    InterpretationPostalCity__c,
-                    InterpretationPostalCode__c,
-                    InterpretationStreet__c,
-                    OwnerId,
-                    MeetingPostalCode__c,
-                    MeetingStreet__c,
-                    Subject__c,
-                    ServiceTerritory__c
-                FROM HOT_Request__c
-                WHERE Id IN :requestIds
-            ]
-        );
 
         for (WorkOrder workOrder : workOrders) {
-            workOrder.AccountId = requests.get(workOrder.HOT_Request__c).Account__c;
-            workOrder.City = requests.get(workOrder.HOT_Request__c).MeetingPostalCity__c;
-            workOrder.ContactId = requests.get(workOrder.HOT_Request__c).HOT_PersonContactId__c;
-            workOrder.Description = requests.get(workOrder.HOT_Request__c).Description__c;
-            workOrder.HOT_InterpretationPostalCity__c = requests.get(workOrder.HOT_Request__c)
-                .InterpretationPostalCity__c;
-            workOrder.HOT_InterpretationPostalCode__c = requests.get(workOrder.HOT_Request__c)
-                .InterpretationPostalCode__c;
-            workOrder.HOT_InterpretationStreet__c = requests.get(workOrder.HOT_Request__c).InterpretationStreet__c;
-            workOrder.OwnerId = requests.get(workOrder.HOT_Request__c).OwnerId;
-            workOrder.PostalCode = requests.get(workOrder.HOT_Request__c).MeetingPostalCode__c;
-            workOrder.Street = requests.get(workOrder.HOT_Request__c).MeetingStreet__c;
-            workOrder.Subject = requests.get(workOrder.HOT_Request__c).Subject__c;
-            workOrder.ServiceTerritoryId = requests.get(workOrder.HOT_Request__c).ServiceTerritory__c;
+            HOT_Request__c request = requests.get(workOrder.HOT_Request__c);
+            if (request == null) {
+                continue;
+            }
+
+            workOrder.AccountId = request.Account__c;
+            workOrder.City = request.MeetingPostalCity__c;
+            workOrder.ContactId = request.HOT_PersonContactId__c;
+            workOrder.Description = request.Description__c;
+            workOrder.HOT_InterpretationPostalCity__c = request.InterpretationPostalCity__c;
+            workOrder.HOT_InterpretationPostalCode__c = request.InterpretationPostalCode__c;
+            workOrder.HOT_InterpretationStreet__c = request.InterpretationStreet__c;
+            workOrder.OwnerId = request.OwnerId;
+            workOrder.PostalCode = request.MeetingPostalCode__c;
+            workOrder.Street = request.MeetingStreet__c;
+            workOrder.Subject = request.Subject__c;
+            workOrder.ServiceTerritoryId = request.ServiceTerritory__c;
         }
         update workOrders;
     }
 
     public static void setCancelDate(List<WorkOrder> workorders) {
-        List<Id> requestIds = new List<Id>();
-        for (WorkOrder workOrder : workOrders) {
-            requestIds.add(workOrder.HOT_Request__c);
-        }
-        Map<Id, HOT_Request__c> requests = new Map<Id, HOT_Request__c>(
-            [SELECT Id, CanceledDate__c FROM HOT_Request__c WHERE Id IN :requestIds]
-        );
+        Map<Id, HOT_Request__c> requests = getRequestsById(workorders);
         for (WorkOrder workOrder : workorders) {
+            HOT_Request__c request = requests.get(workOrder.HOT_Request__c);
             if (workOrder.CanceledDate__c == null) {
-                if (requests.get(workOrder.HOT_Request__c).CanceledDate__c != null) {
-                    workOrder.CanceledDate__c = requests.get(workOrder.HOT_Request__c).CanceledDate__c;
+                if (request != null && request.CanceledDate__c != null) {
+                    workOrder.CanceledDate__c = request.CanceledDate__c;
                 } else {
                     workOrder.CanceledDate__c = Datetime.now();
                 }

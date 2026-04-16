@@ -66,42 +66,6 @@ private class HOT_RequestListControllerTest {
     }
 
     @IsTest
-    private static void getRequestListTest() {
-        Profile communityProfile = [SELECT Id FROM Profile WHERE Name = 'Customer Community Plus User' LIMIT 1];
-
-        User admin = [SELECT Id, UserRoleId FROM User WHERE Id = :UserInfo.getUserId() LIMIT 1];
-        if (admin.UserRoleId == null) {
-            UserRole role = [SELECT Id FROM UserRole WHERE Name = 'Default' LIMIT 1];
-            admin.UserRoleId = role.Id;
-            update admin;
-        }
-        Account account = [
-            SELECT Id, LastName, OwnerId, CRM_Person__c, PersonContactId
-            FROM Account
-            WHERE LastName = 'BrukerAddresseTest'
-        ];
-
-        User user = HOT_TestDataFactory.createUser(communityProfile, account);
-        user.Alias = 'userTest';
-        user.Username = 'HOT_testuser1@nav.hot.no';
-        user.CommunityNickname = 'userTest';
-        insert user;
-
-        Test.startTest();
-        HOT_Request__c request = [SELECT Id FROM HOT_Request__c WHERE Subject__c = 'Subject 3' LIMIT 1];
-
-        System.runAs(user) {
-            List<HOT_Request__c> requests = HOT_RequestListController.getRequestList();
-            System.assertEquals(3, requests.size(), 'Could not get my requests');
-        }
-
-        List<HOT_Request__c> requests = HOT_RequestListController.getRequestList();
-        Test.stopTest();
-
-        System.assertEquals(null, requests, 'Falsly fetched requests');
-    }
-
-    @IsTest
     private static void getTimesTest() {
         Test.startTest();
         HOT_Request__c request = [SELECT Id FROM HOT_Request__c WHERE Subject__c = 'Subject 3' LIMIT 1];

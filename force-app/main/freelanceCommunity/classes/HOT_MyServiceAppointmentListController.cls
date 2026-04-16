@@ -81,11 +81,12 @@ public without sharing class HOT_MyServiceAppointmentListController {
                     HOT_ReleaseDate__c,
                     HOT_ServiceResource__c,
                     HOT_ReleasedBy__c,
+                    HOT_Request__r.Account__r.CRM_Person__r.HOT_MobilePhone__c,
                     HOT_CanceledDate__c,
                     HOT_Request__r.Account__r.CRM_Person__r.INT_Confidential__c,
                     HOT_Request__r.Account__r.CRM_Person__r.INT_KrrMobilePhone__c,
                     HOT_Request__r.Account__r.Name,
-                    HOT_Request__r.Orderer__r.CRM_Person__r.INT_KrrMobilePhone__c,
+                    HOT_Request__r.Orderer__r.CRM_Person__r.HOT_MobilePhone__c,
                     HOT_Request__r.OwnerName__c,
                     HOT_Request__r.IsNotNotifyAccount__c,
                     HOT_RequestNumber__c,
@@ -154,8 +155,9 @@ public without sharing class HOT_MyServiceAppointmentListController {
                 HOT_Request__r.IsNotNotifyAccount__c,
                 HOT_RequestNumber__c,
                 HOT_ServiceTerritoryDeveloperName__c,
-                HOT_Request__r.Account__r.CRM_Person__r.INT_KrrMobilePhone__c,
+                HOT_Request__r.Account__r.CRM_Person__r.HOT_MobilePhone__c,
                 HOT_Request__r.Account__r.Name,
+                HOT_Request__r.Orderer__r.CRM_Person__r.HOT_MobilePhone__c,
                 HOT_Request__r.Account__r.CRM_Person__r.INT_Confidential__c,
                 HOT_Request__r.Orderer__r.CRM_Person__r.INT_KrrMobilePhone__c,
                 HOT_Request__r.Account__r.CRM_Person__r.INT_Sex__c,
@@ -221,7 +223,7 @@ public without sharing class HOT_MyServiceAppointmentListController {
         String Id = '';
         try {
             HOT_InterestedResource__c interestedResource = [
-                SELECT Id, Status__c, ServiceResource__c, ServiceAppointment__c
+                SELECT Id, Status__c
                 FROM HOT_InterestedResource__c
                 WHERE
                     ServiceResource__c IN (SELECT Id FROM ServiceResource WHERE RelatedRecordId = :UserInfo.getUserId())

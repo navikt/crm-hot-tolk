@@ -295,7 +295,7 @@ public without sharing class HOT_WOInterpreterThreadService {
     ) {
         Thread__c thread = new Thread__c();
         thread.RecordTypeId = this.threadRecordTypeId;
-        thread.Name = 'SAMTALE MED TOLK: ' + workOrder.Subject;
+        thread.Name = HOT_ThreadHandler.threadSubjectMaker('SAMTALE MED TOLK: ' + workOrder.Subject); // Avkorter teksten med substring og legger til ... hvis navnet blir for langt.
         thread.CRM_Related_Object__c = serviceAppointmentId != null ? serviceAppointmentId : workOrder.Id;
         thread.HOT_ServiceAppointment__c = serviceAppointmentId;
         thread.HOT_WorkOrder__c = workOrder.Id;

@@ -383,15 +383,17 @@ export default class Hot_messagingCommunityThreadViewer_v2 extends NavigationMix
             case 'HOT_BRUKER-FORMIDLER':
             case 'HOT_BESTILLER-FORMIDLER':
                 this.helptextContent =
-                    'Her kan du sende en melding til tolkeformidlingen som er relevant for din bestilling.  Det du skriver her, kan tolkeformidlere ved din tolketjeneste se.  Meldingen vil bli slettet etter ett år.';
+                    'Her kan du sende en melding til tolkeformidlingen som er relevant for din bestilling.  Det du skriver her, kan ansatte ved Nav tolketjeneste se.  Meldingen vil bli slettet etter ett år.';
                 return 'Samtale med formidler';
 
             case 'HOT_BRUKER-TOLK': {
-                this.helptextContent =
-                    'Her kan du sende en melding som er relevant for din bestilling.  Det du skriver her, kan tolkeformidlere, NAV-ansatte tolker og eventuelt frilanstolker ved din tolketjeneste se.  Meldingen vil bli slettet etter ett år.';
                 if (this.isFreelance === true || this.navigationBaseList !== '') {
+                    this.helptextContent =
+                        'Her kan du sende en melding som er relevant for oppdraget. Det du skriver her, kan ansatte ved Nav tolketjeneste, eventuelle medtolker og tolkebruker se. Meldingen vil bli slettet etter ett år.';
                     return 'Samtale mellom tolk og bruker';
                 } else {
+                    this.helptextContent =
+                        'Her kan du sende en melding som er relevant for din bestilling. Det du skriver her, kan ansatte ved Nav tolketjeneste, og tolker som er tildelt oppdraget, se. Meldingen vil bli slettet etter ett år.';
                     return 'Samtale med tolk';
                 }
             }
@@ -403,19 +405,18 @@ export default class Hot_messagingCommunityThreadViewer_v2 extends NavigationMix
 
             case 'HOT_TOLK-FORMIDLER':
                 this.helptextContent =
-                    'Her kan du sende en melding som er relevant for oppdraget.  Det du skriver her, kan tolkeformidlere ved din tolketjeneste se.  Meldingen vil bli slettet etter ett år.';
+                    'Her kan du sende en melding som er relevant for oppdraget. Det du skriver her, kan ansatte ved Nav tolketjeneste se. Meldingen vil bli slettet etter ett år.';
                 return 'Samtale med formidler';
 
             case 'HOT_TOLK-RESSURSKONTOR':
                 this.helptextContent =
-                    'Her kan du sende en melding som er relevant for oppdraget.  Det du skriver her, kan ressurskontoret ved din tolketjeneste se.  Meldingen vil bli slettet etter ett år.';
+                    'Her kan du sende en melding som er relevant for oppdraget.  Det du skriver her, kan ansatte ved Nav tolketjeneste se.  Meldingen vil bli slettet etter ett år.';
                 return 'Samtale med ressurskontor';
 
             case 'HOT_TOLK-TOLK':
                 this.helptextContent =
-                    'Her kan du sende en melding som er relevant for oppdraget.  Det du skriver her, kan tolkeformidlere og andre tolker som er tildelt oppdraget ved din tolketjeneste se.  Meldingen vil bli slettet etter ett år.';
+                    'Her kan du sende en melding som er relevant for oppdraget.  Det du skriver her, kan ansatte ved Nav tolketjeneste og medtolker se.  Meldingen vil bli slettet etter ett år.';
                 return 'Samtale med medtolker';
-
             default:
                 return threadTypeValue;
         }
@@ -669,10 +670,10 @@ export default class Hot_messagingCommunityThreadViewer_v2 extends NavigationMix
                                 }
                                 if (
                                     this.serviceAppointment.HOT_Request__r.Account__r.CRM_Person__r
-                                        .INT_KrrMobilePhone__c !== undefined
+                                        .HOT_MobilePhone__c !== undefined
                                 ) {
                                     this.accountPhoneNumber =
-                                        this.serviceAppointment.HOT_Request__r.Account__r.CRM_Person__r.INT_KrrMobilePhone__c;
+                                        this.serviceAppointment.HOT_Request__r.Account__r.CRM_Person__r.HOT_MobilePhone__c;
                                 }
                             }
                             if (
@@ -683,10 +684,10 @@ export default class Hot_messagingCommunityThreadViewer_v2 extends NavigationMix
                             ) {
                                 if (
                                     this.serviceAppointment.HOT_Request__r.Orderer__r.CRM_Person__r
-                                        .INT_KrrMobilePhone__c !== undefined
+                                        .HOT_MobilePhone__c !== undefined
                                 ) {
                                     this.ordererPhoneNumber =
-                                        this.serviceAppointment.HOT_Request__r.Orderer__r.CRM_Person__r.INT_KrrMobilePhone__c;
+                                        this.serviceAppointment.HOT_Request__r.Orderer__r.CRM_Person__r.HOT_MobilePhone__c;
                                 }
                             }
                             this.isOtherProvider = this.serviceAppointment.HOT_Request__r.IsOtherEconomicProvicer__c
