@@ -86,6 +86,13 @@ export default class Hot_myRequestsWrapper extends NavigationMixin(LightningElem
             .querySelectorAll('c-record-files-without-sharing')
             .forEach((cmp) => cmp.refreshContentDocuments());
 
+        const isRequestApproved = this.request?.Status__c === 'Godkjent';
+        const isWorkOrderInNotifiableState = ['New', 'Scheduled', 'Dispatched'].includes(this.workOrder?.Status);
+
+        if (!isRequestApproved || !isWorkOrderInNotifiableState) {
+            return;
+        }
+
         try {
             await notifyDispatchersFilesUploaded({
                 requestId: this.request?.Id ?? this.recordId,
