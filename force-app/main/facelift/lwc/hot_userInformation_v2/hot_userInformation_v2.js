@@ -136,7 +136,13 @@ export default class Hot_userInformation_v2 extends LightningElement {
     }
 
     get alternativePhoneNumberText() {
-        return 'Du har registrert et alternativ nummer som benyttes til all SMS varsling fra Tolketjenesten. Ta kontakt med din lokale tolketjeneste om du ønsker å endre dette.';
+        return (
+            'Du har registrert et alternativ nummer som benyttes til all SMS varsling fra Tolketjenesten. Ta kontakt med din lokale tolketjeneste om du ønsker å endre dette.\nMobilnummeret du vil bli varslet på nå er ' +
+            this.mobilePhoneOverride +
+            '. \n Årsak: ' +
+            this.mobilePhoneOverrideReason +
+            ''
+        );
     }
     get isAlternativeNumber() {
         return !!this.mobilePhoneOverride;
