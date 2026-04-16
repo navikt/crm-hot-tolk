@@ -23,14 +23,6 @@
             placeholder="Feltet fylles automatisk."
         ></c-input>
         <br />
-        <c-hot_info-card
-            title="Om betalingsansvar"
-            content="Se mer om betalingsansvar på nav.no"
-            url="https://www.nav.no/bestille-tolk#betalingsansvar"
-            show-icon
-            type="info"
-        ></c-hot_info-card>
-        <br />
         <c-picklist
             choices={componentValues.choices}
             master-label="Betalingsansvar"
@@ -38,6 +30,14 @@
             desktop-style="width: 50%;"
             error-text="Du må velge et alternativ for betalingsansvar."
         ></c-picklist>
+        <br />
+        <c-hot_info-card
+            title="Om betalingsansvar"
+            url="https://www.nav.no/bestille-tolk#betalingsansvar"
+            url-text="Les om betalingsansvar på nav.no"
+            show-icon
+            type="info"
+        ></c-hot_info-card>
         <br />
         <div if:true={fieldValues.IsOtherEconomicProvicer__c}>
             <c-input
