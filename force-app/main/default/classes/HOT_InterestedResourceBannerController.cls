@@ -7,4 +7,26 @@ public with sharing class HOT_InterestedResourceBannerController {
        
        return serviceAppointments;
     }
+
+    @AuraEnabled(cacheable=true)
+    public static Boolean hasRegisteredInterest(Id serviceAppointmentId) {
+        if (serviceAppointmentId == null) {
+            return false;
+        }
+
+        Set<Id> serviceResourceIds = new Map<Id, ServiceResource>(
+            [SELECT Id FROM ServiceResource WHERE RelatedRecordId = :UserInfo.getUserId()]
+        ).keySet();
+
+        if (serviceResourceIds.isEmpty()) {
+            return false;
+        }
+
+        return [
+            SELECT COUNT()
+            FROM HOT_InterestedResource__c
+            WHERE ServiceAppointment__c = :serviceAppointmentId
+            AND ServiceResource__c IN :serviceResourceIds
+        ] > 0;
+    }
 }

@@ -3,6 +3,19 @@
     <flexiPageRegions>
         <itemInstances>
             <componentInstance>
+                <componentName>hot_serviceAppointmentInterestBanner</componentName>
+                <identifier>c_hot_serviceAppointmentInterestBanner</identifier>
+                <visibilityRule>
+                    <criteria>
+                        <leftValue>{!$Client.formFactor}</leftValue>
+                        <operator>EQUAL</operator>
+                        <rightValue>Small</rightValue>
+                    </criteria>
+                </visibilityRule>
+            </componentInstance>
+        </itemInstances>
+        <itemInstances>
+            <componentInstance>
                 <componentInstanceProperties>
                     <name>actionNames</name>
                     <valueList>
