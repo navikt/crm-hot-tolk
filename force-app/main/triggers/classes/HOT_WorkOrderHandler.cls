@@ -236,6 +236,9 @@ public without sharing class HOT_WorkOrderHandler extends MyTriggers {
                 if (workOrder.Description == null && request.Description__c != null) {
                     workOrder.Description = request.Description__c;
                 }
+                if (workOrder.WorkTypeId == null && request.InterpretationMethod__c != null) {
+                    workOrder.WorkTypeId = request.InterpretationMethod__c;
+                }
                 if (workOrder.AccountId == null && request.Account__c != null) {
                     workOrder.AccountId = request.Account__c;
                 }
@@ -395,6 +398,7 @@ public without sharing class HOT_WorkOrderHandler extends MyTriggers {
             workOrder.Street = request.MeetingStreet__c;
             workOrder.Subject = request.Subject__c;
             workOrder.ServiceTerritoryId = request.ServiceTerritory__c;
+            workOrder.WorkTypeId = request.InterpretationMethod__c;
         }
         update workOrders;
     }
