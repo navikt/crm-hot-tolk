@@ -3,8 +3,8 @@
     <actionCalls>
         <name>Create_Community_Plus_User</name>
         <label>Create Community Plus User</label>
-        <locationX>127</locationX>
-        <locationY>2114</locationY>
+        <locationX>50</locationX>
+        <locationY>974</locationY>
         <actionName>CommunityUsersService</actionName>
         <actionType>apex</actionType>
         <connector>
@@ -21,62 +21,12 @@
         <offset>0</offset>
         <storeOutputAutomatically>true</storeOutputAutomatically>
     </actionCalls>
-    <actionCalls>
-        <name>Create_Community_Plus_User2</name>
-        <label>Create Community Plus User2</label>
-        <locationX>314</locationX>
-        <locationY>1214</locationY>
-        <actionName>CommunityUsersService</actionName>
-        <actionType>apex</actionType>
-        <connector>
-            <targetReference>Update_Service_Resource</targetReference>
-        </connector>
-        <flowTransactionModel>CurrentTransaction</flowTransactionModel>
-        <inputParameters>
-            <name>personIdents</name>
-            <value>
-                <elementReference>PersonIdent</elementReference>
-            </value>
-        </inputParameters>
-        <nameSegment>CommunityUsersService</nameSegment>
-        <offset>0</offset>
-        <storeOutputAutomatically>true</storeOutputAutomatically>
-    </actionCalls>
-    <actionCalls>
-        <description>Creates a service resource for the user depending on the choice from previous
-            screen flow</description>
-        <name>HOT_Create_Service_Resource_Invocable</name>
-        <label>Create Service Resource Invocable</label>
-        <locationX>127</locationX>
-        <locationY>2438</locationY>
-        <actionName>HOT_ServiceResourceHandler</actionName>
-        <actionType>apex</actionType>
-        <connector>
-            <targetReference>End_Screen</targetReference>
-        </connector>
-        <flowTransactionModel>Automatic</flowTransactionModel>
-        <inputParameters>
-            <name>ServiceTerritory</name>
-            <value>
-                <elementReference>HOT_Service_Territory_Picklist</elementReference>
-            </value>
-        </inputParameters>
-        <inputParameters>
-            <name>UserId</name>
-            <value>
-                <elementReference>Create_Community_Plus_User.Id</elementReference>
-            </value>
-        </inputParameters>
-        <nameSegment>HOT_ServiceResourceHandler</nameSegment>
-        <offset>0</offset>
-        <storeOutputAutomatically>true</storeOutputAutomatically>
-    </actionCalls>
     <apiVersion>59.0</apiVersion>
     <areMetricsLoggedToDataCloud>false</areMetricsLoggedToDataCloud>
     <decisions>
         <name>Access</name>
         <label>Access?</label>
-        <locationX>440</locationX>
+        <locationX>182</locationX>
         <locationY>350</locationY>
         <defaultConnector>
             <targetReference>No_Access_Screen</targetReference>
@@ -101,10 +51,10 @@
     <decisions>
         <name>Existing_User</name>
         <label>Existing User</label>
-        <locationX>127</locationX>
+        <locationX>50</locationX>
         <locationY>674</locationY>
         <defaultConnector>
-            <targetReference>HOT_Get_Service_Resource</targetReference>
+            <targetReference>Get_Person_Account</targetReference>
         </defaultConnector>
         <defaultConnectorLabel>Yes</defaultConnectorLabel>
         <rules>
@@ -130,56 +80,6 @@
             <label>No</label>
         </rules>
     </decisions>
-    <decisions>
-        <name>HOT_Has_Service_Resource</name>
-        <label>Has Service Resource</label>
-        <locationX>380</locationX>
-        <locationY>890</locationY>
-        <defaultConnector>
-            <targetReference>Get_Person_Account</targetReference>
-        </defaultConnector>
-        <defaultConnectorLabel>No</defaultConnectorLabel>
-        <rules>
-            <name>HOT_Has_Service_Resource_Yes</name>
-            <conditionLogic>and</conditionLogic>
-            <conditions>
-                <leftValueReference>HOT_Get_Service_Resource</leftValueReference>
-                <operator>IsNull</operator>
-                <rightValue>
-                    <booleanValue>false</booleanValue>
-                </rightValue>
-            </conditions>
-            <connector>
-                <targetReference>HOT_Is_Service_Resource_Active</targetReference>
-            </connector>
-            <label>Yes</label>
-        </rules>
-    </decisions>
-    <decisions>
-        <name>HOT_Is_Service_Resource_Active</name>
-        <label>Is Service Resource Active?</label>
-        <locationX>182</locationX>
-        <locationY>998</locationY>
-        <defaultConnector>
-            <targetReference>Get_Person_Account2</targetReference>
-        </defaultConnector>
-        <defaultConnectorLabel>No</defaultConnectorLabel>
-        <rules>
-            <name>HOT_Is_Service_Resource_Active_Yes</name>
-            <conditionLogic>and</conditionLogic>
-            <conditions>
-                <leftValueReference>HOT_Get_Service_Resource.IsActive</leftValueReference>
-                <operator>EqualTo</operator>
-                <rightValue>
-                    <booleanValue>true</booleanValue>
-                </rightValue>
-            </conditions>
-            <connector>
-                <targetReference>HOT_Already_Active</targetReference>
-            </connector>
-            <label>Yes</label>
-        </rules>
-    </decisions>
     <dynamicChoiceSets>
         <description>A collections on service territories based on the data</description>
         <name>HOT_ServiceTerritoryChoiceSet</name>
@@ -196,7 +96,7 @@
         <expression>{!$User.Id}</expression>
     </formulas>
     <interviewLabel>Create Tjenesteleverandør User {!$Flow.CurrentDateTime}</interviewLabel>
-    <label>Create Tjenesteleverandør User</label>
+    <label>HOT_CreateTjenesteleverandørUser</label>
     <processMetadataValues>
         <name>BuilderType</name>
         <value>
@@ -219,7 +119,7 @@
     <recordLookups>
         <name>Community_Plus_Profile</name>
         <label>Community Plus Profile</label>
-        <locationX>127</locationX>
+        <locationX>50</locationX>
         <locationY>458</locationY>
         <assignNullValuesIfNoRecordsFound>false</assignNullValuesIfNoRecordsFound>
         <connector>
@@ -240,7 +140,7 @@
     <recordLookups>
         <name>Get_Current_User_Permission_Set_Assignment</name>
         <label>Get Current User Permission Set Assignment</label>
-        <locationX>440</locationX>
+        <locationX>182</locationX>
         <locationY>242</locationY>
         <assignNullValuesIfNoRecordsFound>true</assignNullValuesIfNoRecordsFound>
         <connector>
@@ -272,7 +172,7 @@
     <recordLookups>
         <name>Get_Permission_Set</name>
         <label>Get Permission Set</label>
-        <locationX>440</locationX>
+        <locationX>182</locationX>
         <locationY>134</locationY>
         <assignNullValuesIfNoRecordsFound>false</assignNullValuesIfNoRecordsFound>
         <connector>
@@ -295,8 +195,8 @@
     <recordLookups>
         <name>Get_Person_Account</name>
         <label>Get Person Account</label>
-        <locationX>127</locationX>
-        <locationY>2006</locationY>
+        <locationX>50</locationX>
+        <locationY>866</locationY>
         <assignNullValuesIfNoRecordsFound>true</assignNullValuesIfNoRecordsFound>
         <connector>
             <targetReference>Create_Community_Plus_User</targetReference>
@@ -318,34 +218,9 @@
         <sortOrder>Asc</sortOrder>
     </recordLookups>
     <recordLookups>
-        <name>Get_Person_Account2</name>
-        <label>Get Person Account2</label>
-        <locationX>314</locationX>
-        <locationY>1106</locationY>
-        <assignNullValuesIfNoRecordsFound>true</assignNullValuesIfNoRecordsFound>
-        <connector>
-            <targetReference>Create_Community_Plus_User2</targetReference>
-        </connector>
-        <filterLogic>and</filterLogic>
-        <filters>
-            <field>Id</field>
-            <operator>EqualTo</operator>
-            <value>
-                <elementReference>recordId</elementReference>
-            </value>
-        </filters>
-        <object>Account</object>
-        <outputAssignments>
-            <assignToReference>PersonIdent</assignToReference>
-            <field>INT_PersonIdent__c</field>
-        </outputAssignments>
-        <sortField>Id</sortField>
-        <sortOrder>Asc</sortOrder>
-    </recordLookups>
-    <recordLookups>
         <name>Get_User</name>
         <label>Get User</label>
-        <locationX>127</locationX>
+        <locationX>50</locationX>
         <locationY>566</locationY>
         <assignNullValuesIfNoRecordsFound>true</assignNullValuesIfNoRecordsFound>
         <connector>
@@ -382,11 +257,11 @@
         <description>Gets available service territories from the Service Territory object</description>
         <name>HOT_Get_available_service_territories</name>
         <label>Get available service territories</label>
-        <locationX>127</locationX>
-        <locationY>2222</locationY>
+        <locationX>50</locationX>
+        <locationY>1082</locationY>
         <assignNullValuesIfNoRecordsFound>false</assignNullValuesIfNoRecordsFound>
         <connector>
-            <targetReference>HOT_Service_Territory_picker</targetReference>
+            <targetReference>End_Screen</targetReference>
         </connector>
         <getFirstRecordOnly>false</getFirstRecordOnly>
         <object>ServiceTerritory</object>
@@ -397,82 +272,12 @@
         <sortOrder>Desc</sortOrder>
         <storeOutputAutomatically>true</storeOutputAutomatically>
     </recordLookups>
-    <recordLookups>
-        <name>HOT_Get_Service_Resource</name>
-        <label>Get Service Resource</label>
-        <locationX>380</locationX>
-        <locationY>782</locationY>
-        <assignNullValuesIfNoRecordsFound>false</assignNullValuesIfNoRecordsFound>
-        <connector>
-            <targetReference>HOT_Has_Service_Resource</targetReference>
-        </connector>
-        <filterLogic>and</filterLogic>
-        <filters>
-            <field>AccountId</field>
-            <operator>EqualTo</operator>
-            <value>
-                <elementReference>recordId</elementReference>
-            </value>
-        </filters>
-        <getFirstRecordOnly>true</getFirstRecordOnly>
-        <object>ServiceResource</object>
-        <storeOutputAutomatically>true</storeOutputAutomatically>
-    </recordLookups>
-    <recordUpdates>
-        <name>HOT_Activate_Service_Resource</name>
-        <label>Activate Service Resource</label>
-        <locationX>314</locationX>
-        <locationY>1430</locationY>
-        <connector>
-            <targetReference>Already_added_as_user_screen</targetReference>
-        </connector>
-        <filterLogic>and</filterLogic>
-        <filters>
-            <field>Id</field>
-            <operator>EqualTo</operator>
-            <value>
-                <elementReference>HOT_Get_Service_Resource.Id</elementReference>
-            </value>
-        </filters>
-        <inputAssignments>
-            <field>IsActive</field>
-            <value>
-                <booleanValue>true</booleanValue>
-            </value>
-        </inputAssignments>
-        <object>ServiceResource</object>
-    </recordUpdates>
     <runInMode>SystemModeWithoutSharing</runInMode>
-    <screens>
-        <name>Already_added_as_user_screen</name>
-        <label>Already added as user</label>
-        <locationX>314</locationX>
-        <locationY>1538</locationY>
-        <allowBack>true</allowBack>
-        <allowFinish>true</allowFinish>
-        <allowPause>true</allowPause>
-        <fields>
-            <name>Already_added_as_user_text</name>
-            <fieldText>&lt;p&gt;Tjenesteressursen eksisterte fra før og har blitt satt til
-                aktiv.&lt;/p&gt;</fieldText>
-            <fieldType>DisplayText</fieldType>
-            <styleProperties>
-                <verticalAlignment>
-                    <stringValue>top</stringValue>
-                </verticalAlignment>
-                <width>
-                    <stringValue>12</stringValue>
-                </width>
-            </styleProperties>
-        </fields>
-        <showFooter>true</showFooter>
-        <showHeader>true</showHeader>
-    </screens>
     <screens>
         <name>End_Screen</name>
         <label>End Screen</label>
-        <locationX>127</locationX>
-        <locationY>2546</locationY>
+        <locationX>50</locationX>
+        <locationY>1190</locationY>
         <allowBack>true</allowBack>
         <allowFinish>true</allowFinish>
         <allowPause>true</allowPause>
@@ -492,70 +297,8 @@
         </fields>
         <fields>
             <name>HOT_Fail_Message</name>
-            <fieldText>&lt;p&gt;{!HOT_Create_Service_Resource_Invocable.ErrorMessage}&lt;/p&gt;</fieldText>
+            <fieldText>&lt;p&gt;(Add a fail message here WIP)&lt;/p&gt;</fieldText>
             <fieldType>DisplayText</fieldType>
-            <styleProperties>
-                <verticalAlignment>
-                    <stringValue>top</stringValue>
-                </verticalAlignment>
-                <width>
-                    <stringValue>12</stringValue>
-                </width>
-            </styleProperties>
-        </fields>
-        <showFooter>true</showFooter>
-        <showHeader>true</showHeader>
-    </screens>
-    <screens>
-        <description>This screen wil show if the user already has a active service resource.</description>
-        <name>HOT_Already_Active</name>
-        <label>Already Active</label>
-        <locationX>50</locationX>
-        <locationY>1106</locationY>
-        <allowBack>true</allowBack>
-        <allowFinish>true</allowFinish>
-        <allowPause>true</allowPause>
-        <fields>
-            <name>HOT_AlreadyActiveServiceResource</name>
-            <fieldText>&lt;p&gt;Tjenesteressursen er allerede aktiv. Ingen endring er
-                utført.&lt;/p&gt;</fieldText>
-            <fieldType>DisplayText</fieldType>
-            <styleProperties>
-                <verticalAlignment>
-                    <stringValue>top</stringValue>
-                </verticalAlignment>
-                <width>
-                    <stringValue>12</stringValue>
-                </width>
-            </styleProperties>
-        </fields>
-        <showFooter>true</showFooter>
-        <showHeader>true</showHeader>
-    </screens>
-    <screens>
-        <description>Lets the user decide which service territory the freelance interpreter is
-            operating in</description>
-        <name>HOT_Service_Territory_picker</name>
-        <label>Service Territory picker</label>
-        <locationX>127</locationX>
-        <locationY>2330</locationY>
-        <allowBack>true</allowBack>
-        <allowFinish>true</allowFinish>
-        <allowPause>true</allowPause>
-        <connector>
-            <targetReference>HOT_Create_Service_Resource_Invocable</targetReference>
-        </connector>
-        <fields>
-            <name>HOT_Service_Territory_Picklist</name>
-            <choiceReferences>HOT_ServiceTerritoryChoiceSet</choiceReferences>
-            <dataType>String</dataType>
-            <fieldText>Service Territory Picklist</fieldText>
-            <fieldType>DropdownBox</fieldType>
-            <helpText>&lt;p&gt;&lt;span style=&quot;background-color: rgb(255, 255, 255); color:
-                rgb(68, 68, 68);&quot;&gt;Her velger du hvilket område frilanstolken skal være
-                tilgjengelig i.&lt;/span&gt;&lt;/p&gt;</helpText>
-            <inputsOnNextNavToAssocScrn>UseStoredValues</inputsOnNextNavToAssocScrn>
-            <isRequired>true</isRequired>
             <styleProperties>
                 <verticalAlignment>
                     <stringValue>top</stringValue>
@@ -571,7 +314,7 @@
     <screens>
         <name>No_Access_Screen</name>
         <label>No Access</label>
-        <locationX>754</locationX>
+        <locationX>314</locationX>
         <locationY>458</locationY>
         <allowBack>true</allowBack>
         <allowFinish>true</allowFinish>
@@ -592,35 +335,8 @@
         <showFooter>true</showFooter>
         <showHeader>true</showHeader>
     </screens>
-    <screens>
-        <name>Update_Service_Resource</name>
-        <label>Update Service Resource</label>
-        <locationX>314</locationX>
-        <locationY>1322</locationY>
-        <allowBack>false</allowBack>
-        <allowFinish>true</allowFinish>
-        <allowPause>false</allowPause>
-        <connector>
-            <targetReference>HOT_Activate_Service_Resource</targetReference>
-        </connector>
-        <fields>
-            <name>Update_SR</name>
-            <fieldText>&lt;p&gt;Trykk neste for å oppdatere Service Ressurs &lt;/p&gt;</fieldText>
-            <fieldType>DisplayText</fieldType>
-            <styleProperties>
-                <verticalAlignment>
-                    <stringValue>top</stringValue>
-                </verticalAlignment>
-                <width>
-                    <stringValue>12</stringValue>
-                </width>
-            </styleProperties>
-        </fields>
-        <showFooter>true</showFooter>
-        <showHeader>true</showHeader>
-    </screens>
     <start>
-        <locationX>314</locationX>
+        <locationX>56</locationX>
         <locationY>0</locationY>
         <connector>
             <targetReference>Get_Permission_Set</targetReference>
