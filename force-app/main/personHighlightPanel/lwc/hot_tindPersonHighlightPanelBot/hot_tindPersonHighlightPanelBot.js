@@ -12,6 +12,7 @@ export default class hot_personHighlightPanelBot extends NavigationMixin(Lightni
     currentFlow;
     fnr;
     hasPermissionToCreateFreelance = false;
+    hasPermissionToTjenesteleverandor = false;
     isFormidler = false;
     isFormidlerAdmin = false;
     isAdmin = false;
@@ -67,6 +68,7 @@ export default class hot_personHighlightPanelBot extends NavigationMixin(Lightni
     wiredPermissions({ error, data }) {
         if (data) {
             this.hasPermissionToCreateFreelance = data.hasFreelancePermission;
+            this.hasPermissionToTjenesteleverandor = data.hasTjenesteleverandorPermission;
             this.isFormidler = data.isFormidler;
             this.isFormidlerAdmin = data.isFormidlerAdmin;
             this.isAdmin = data.isAdmin;
