@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ValidationRule xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>StartTime_and_EndTime_has_to_be_filled</fullName>
+    <active>true</active>
+    <description>Forespørsel kan ikke være uten start- og slutt tid</description>
+    <errorConditionFormula>OR(
+    ISBLANK(StartTime__c),
+    ISBLANK(EndTime__c)
+)</errorConditionFormula>
+    <errorMessage>Forespørsel kan ikke være uten start- og slutt tid</errorMessage>
+</ValidationRule>

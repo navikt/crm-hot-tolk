@@ -337,6 +337,16 @@ public without sharing class HOT_MessageHelper {
     //Dispatchers users use this
     @AuraEnabled(cacheable=false)
     public static Thread__c createThreadDispatcher(Id recordId, Id accountId, String type) {
+        List<Thread__c> existingThreads = [
+            SELECT Id
+            FROM Thread__c
+            WHERE CRM_Related_Object__c = :recordId AND CRM_Type__c = :type
+            ORDER BY CreatedDate DESC
+            LIMIT 1
+        ];
+        if (existingThreads.size() > 0) {
+            return existingThreads[0];
+        }
         Thread__c thread = new Thread__c();
         thread.RecordTypeId = HOT_MessageHelper.getHOTThreadRecordType();
         String objectType = String.valueOf(recordId.getsobjecttype());
@@ -579,7 +589,7 @@ public without sharing class HOT_MessageHelper {
     @AuraEnabled(cacheable=false)
     public static Thread__c createThreadInterpreters(Id recordId) {
         List<ServiceResource> serviceResourceList = [
-            SELECT Id, RelatedRecordId
+            SELECT Id
             FROM ServiceResource
             WHERE RelatedRecordId = :UserInfo.getUserId()
         ];
