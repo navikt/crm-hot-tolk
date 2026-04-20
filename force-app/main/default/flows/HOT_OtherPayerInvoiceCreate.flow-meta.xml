@@ -90,13 +90,10 @@
         <label>createInvoiceOrNot</label>
         <locationX>0</locationX>
         <locationY>0</locationY>
-        <defaultConnector>
-            <targetReference>createInvoices</targetReference>
-        </defaultConnector>
         <defaultConnectorLabel>do not create invoice</defaultConnectorLabel>
         <rules>
             <name>shouldCreateAInvoice</name>
-            <conditionLogic>(1 AND 2 AND 3) OR (1 AND 4)</conditionLogic>
+            <conditionLogic>(1 AND 2 AND 3) OR (1 AND 2 AND 4)</conditionLogic>
             <conditions>
                 <leftValueReference>$Record__Prior.Status</leftValueReference>
                 <operator>EqualTo</operator>
