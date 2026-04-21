@@ -213,6 +213,8 @@ public class HOT_TestData {
             serviceResource.IsActive = true;
             serviceResource.RelatedRecordId = user.Id;
             serviceResource.HOT_IsFreelanceInterpreter__c = true;
+            serviceResource.CRM_Domain__c = 'HOT';
+            serviceResource.CRM_Subdomain__c = 'Tolketjenesten';
             serviceResources.add(serviceResource);
         }
         return serviceResources;
