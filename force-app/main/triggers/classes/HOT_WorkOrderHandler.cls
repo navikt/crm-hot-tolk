@@ -319,7 +319,7 @@ public without sharing class HOT_WorkOrderHandler extends MyTriggers {
                     minStart = wo.StartDate;
                 }
 
-                // EndTime (minste datetime) <-- ENDRET
+                // EndTime (minste datetime)
                 if (wo.EndDate != null && (minEnd == null || wo.EndDate < minEnd)) {
                     minEnd = wo.EndDate;
                 }
