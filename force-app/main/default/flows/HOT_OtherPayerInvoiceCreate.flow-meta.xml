@@ -56,6 +56,66 @@
                 <elementReference>$Record.HOT_WorkOrderID__c</elementReference>
             </value>
         </assignmentItems>
+        <assignmentItems>
+            <assignToReference>newInvoiceRecord.SubsistenceAllowanceDay1__c</assignToReference>
+            <operator>Assign</operator>
+        </assignmentItems>
+        <assignmentItems>
+            <assignToReference>newInvoiceRecord.SubsistenceAllowanceDay2__c</assignToReference>
+            <operator>Assign</operator>
+        </assignmentItems>
+        <assignmentItems>
+            <assignToReference>newInvoiceRecord.SubsistenceAllowanceDay3__c</assignToReference>
+            <operator>Assign</operator>
+        </assignmentItems>
+        <assignmentItems>
+            <assignToReference>newInvoiceRecord.SubsistenceAllowanceDay4__c</assignToReference>
+            <operator>Assign</operator>
+        </assignmentItems>
+        <assignmentItems>
+            <assignToReference>newInvoiceRecord.ExpenseTypeA__c</assignToReference>
+            <operator>Assign</operator>
+        </assignmentItems>
+        <assignmentItems>
+            <assignToReference>newInvoiceRecord.ExpenseTypeB__c</assignToReference>
+            <operator>Assign</operator>
+        </assignmentItems>
+        <assignmentItems>
+            <assignToReference>newInvoiceRecord.ExpenseTypeC__c</assignToReference>
+            <operator>Assign</operator>
+        </assignmentItems>
+        <assignmentItems>
+            <assignToReference>newInvoiceRecord.ExpenseTypeD__c</assignToReference>
+            <operator>Assign</operator>
+        </assignmentItems>
+        <assignmentItems>
+            <assignToReference>newInvoiceRecord.ExpenseTypeE__c</assignToReference>
+            <operator>Assign</operator>
+        </assignmentItems>
+        <assignmentItems>
+            <assignToReference>newInvoiceRecord.ExpenseTypeF__c</assignToReference>
+            <operator>Assign</operator>
+        </assignmentItems>
+        <assignmentItems>
+            <assignToReference>newInvoiceRecord.ExpenseTypeG__c</assignToReference>
+            <operator>Assign</operator>
+        </assignmentItems>
+        <assignmentItems>
+            <assignToReference>newInvoiceRecord.ExpenseTypeH__c</assignToReference>
+            <operator>Assign</operator>
+        </assignmentItems>
+        <assignmentItems>
+            <assignToReference>newInvoiceRecord.ExpenseTypeI__c</assignToReference>
+            <operator>Assign</operator>
+        </assignmentItems>
+        <assignmentItems>
+            <assignToReference>newInvoiceRecord.ExpenseTypeJ__c</assignToReference>
+            <operator>Assign</operator>
+        </assignmentItems>
+        <assignmentItems>
+            <assignToReference>newInvoiceRecord.SubsistenceAllowanceDay5__c</assignToReference>
+            <operator>Assign</operator>
+        </assignmentItems>
         <connector>
             <targetReference>createInvoices</targetReference>
         </connector>
