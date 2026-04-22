@@ -589,7 +589,7 @@ public without sharing class HOT_MessageHelper {
     @AuraEnabled(cacheable=false)
     public static Thread__c createThreadInterpreters(Id recordId) {
         List<ServiceResource> serviceResourceList = [
-            SELECT Id, RelatedRecordId
+            SELECT Id
             FROM ServiceResource
             WHERE RelatedRecordId = :UserInfo.getUserId()
         ];

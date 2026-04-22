@@ -308,7 +308,7 @@ public without sharing class HOT_WorkOrderHandler extends MyTriggers {
             }
 
             Datetime minStart;
-            Datetime maxEnd;
+            Datetime minEnd;
             Date minDate;
             Date maxDate;
 
@@ -322,9 +322,9 @@ public without sharing class HOT_WorkOrderHandler extends MyTriggers {
                     minStart = wo.StartDate;
                 }
 
-                // EndTime (største datetime)
-                if (wo.EndDate != null && (maxEnd == null || wo.EndDate > maxEnd)) {
-                    maxEnd = wo.EndDate;
+                // EndTime (minste datetime)
+                if (wo.EndDate != null && (minEnd == null || wo.EndDate < minEnd)) {
+                    minEnd = wo.EndDate;
                 }
 
                 // SeriesStartDate (minste dato)
@@ -348,8 +348,8 @@ public without sharing class HOT_WorkOrderHandler extends MyTriggers {
                 request.StartTime__c = minStart;
             }
 
-            if (maxEnd != null) {
-                request.EndTime__c = maxEnd;
+            if (minEnd != null) {
+                request.EndTime__c = minEnd;
             }
 
             if (minDate != null) {
@@ -360,6 +360,7 @@ public without sharing class HOT_WorkOrderHandler extends MyTriggers {
                 request.SeriesEndDate__c = maxDate;
             }
         }
+
         try {
             update requests;
         } catch (Exception e) {
