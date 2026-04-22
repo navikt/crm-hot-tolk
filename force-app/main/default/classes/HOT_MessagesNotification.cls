@@ -234,6 +234,9 @@ public without sharing class HOT_MessagesNotification {
                     }
                 }
             } else {
+                if (String.isBlank(thread.HOT_ParticipantIds__c)) {
+                    continue;
+                }
                 String[] participantIds = thread.HOT_ParticipantIds__c.split(',');
 
                 for (String participantId : participantIds) {

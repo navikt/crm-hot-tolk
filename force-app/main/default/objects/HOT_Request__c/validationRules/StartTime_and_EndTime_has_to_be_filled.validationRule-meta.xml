@@ -3,9 +3,13 @@
     <fullName>StartTime_and_EndTime_has_to_be_filled</fullName>
     <active>true</active>
     <description>Forespørsel kan ikke være uten start- og slutt tid</description>
-    <errorConditionFormula>OR(
-    ISBLANK(StartTime__c),
-    ISBLANK(EndTime__c)
+    <errorConditionFormula>AND(
+    OR(
+        ISBLANK(StartTime__c),
+        ISBLANK(EndTime__c)
+    ),
+    NOT(HOT_DelPol_ToHideRecord__c),
+    NOT(ISPICKVAL(Status__c, &quot;Annullert&quot;))
 )</errorConditionFormula>
     <errorMessage>Forespørsel kan ikke være uten start- og slutt tid</errorMessage>
 </ValidationRule>
