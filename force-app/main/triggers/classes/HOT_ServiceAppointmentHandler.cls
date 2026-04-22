@@ -341,6 +341,8 @@ public without sharing class HOT_ServiceAppointmentHandler extends MyTriggers {
             (List<ServiceAppointment>) records,
             triggerOldMap
         );
+        HOT_InvoiceController.resourceServiceAppointmentChanged((List<ServiceAppointment>) records, triggerOldMap);
+
         HOT_EventController.updateServiceAppointmentEvents((List<ServiceAppointment>) records, triggerOldMap);
 
         if (serviceAppointmentsToRemoveAssignedResource.size() > 0) {
@@ -999,12 +1001,7 @@ public without sharing class HOT_ServiceAppointmentHandler extends MyTriggers {
         // Query WorkOrders with ContentDocumentLinks
         Map<Id, WorkOrder> workOrderMap = new Map<Id, WorkOrder>(
             [
-                SELECT
-                    Id,
-                    (
-                        SELECT ContentDocumentId, LinkedEntityId, ShareType, Visibility
-                        FROM ContentDocumentLinks
-                    )
+                SELECT Id, (SELECT ContentDocumentId, LinkedEntityId, ShareType, Visibility FROM ContentDocumentLinks)
                 FROM WorkOrder
                 WHERE Id IN :workOrderIds
             ]
