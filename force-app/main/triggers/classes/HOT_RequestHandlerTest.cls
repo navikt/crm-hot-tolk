@@ -234,10 +234,11 @@ private class HOT_RequestHandlerTest {
         Test.stopTest();
 
         request = [
-            SELECT InterpretationMethod__r.HOT_DeveloperName__c, UserInterpretationMethod__c
+            SELECT InterpretationMethod__r.HOT_DeveloperName__c, InterpretationMethodType__c, UserInterpretationMethod__c
             FROM HOT_Request__c
             WHERE Id = :request.Id
         ];
+        System.assertEquals(workType.Name, request.InterpretationMethodType__c, 'InterpretationMethodType__c was not set.');
         System.assertEquals(
             request.InterpretationMethod__r.HOT_DeveloperName__c,
             request.UserInterpretationMethod__c,
@@ -252,6 +253,7 @@ private class HOT_RequestHandlerTest {
         insert workType;
 
         HOT_Request__c request = HOT_TestDataFactory.createRequest('TEST', workType);
+        request.InterpretationMethod__c = null;
         request.Source__c = 'Dispatcher';
         request.UserInterpretationMethod__c = 'SK';
         Account acc = HOT_TestDataFactory.createAccount(true);
@@ -263,14 +265,160 @@ private class HOT_RequestHandlerTest {
         Test.stopTest();
 
         request = [
-            SELECT InterpretationMethod__r.HOT_DeveloperName__c, UserInterpretationMethod__c
+            SELECT InterpretationMethod__c, InterpretationMethodType__c, UserInterpretationMethod__c
             FROM HOT_Request__c
             WHERE Id = :request.Id
         ];
-        System.assertNotEquals(
-            request.InterpretationMethod__r.HOT_DeveloperName__c,
-            request.UserInterpretationMethod__c,
-            'InterpretationMethod__c field should not be equal to UserInterpretationMethod__c field in this case.'
+        System.assertEquals(null, request.InterpretationMethod__c, 'InterpretationMethod__c should not be backfilled.');
+        System.assertEquals(
+            null,
+            request.InterpretationMethodType__c,
+            'InterpretationMethodType__c should not be backfilled in this case.'
+        );
+    }
+
+    @IsTest
+    public static void interpretationMethodTypeUpdateSetsLookup() {
+        WorkType originalWorkType = HOT_TestDataFactory.createWorkType('TS - Tegnspråk');
+        insert originalWorkType;
+        WorkType updatedWorkType = HOT_TestDataFactory.createWorkType('SK - Skrivetolking');
+        insert updatedWorkType;
+
+        HOT_Request__c request = HOT_TestDataFactory.createRequest('TEST', originalWorkType);
+        insert request;
+
+        Test.startTest();
+        request.InterpretationMethodType__c = updatedWorkType.Name;
+        update request;
+        Test.stopTest();
+
+        request = [
+            SELECT InterpretationMethod__c, InterpretationMethodType__c
+            FROM HOT_Request__c
+            WHERE Id = :request.Id
+        ];
+        System.assertEquals(updatedWorkType.Name, request.InterpretationMethodType__c, 'InterpretationMethodType__c was not updated.');
+        System.assertEquals(updatedWorkType.Id, request.InterpretationMethod__c, 'InterpretationMethod__c was not updated.');
+    }
+
+    @IsTest
+    public static void interpretationMethodTypeClearRemovesLookup() {
+        WorkType workType = HOT_TestDataFactory.createWorkType('TS - Tegnspråk');
+        insert workType;
+
+        HOT_Request__c request = HOT_TestDataFactory.createRequest('TEST', workType);
+        insert request;
+
+        request.InterpretationMethodType__c = workType.Name;
+        update request;
+
+        Test.startTest();
+        request.InterpretationMethodType__c = null;
+        update request;
+        Test.stopTest();
+
+        request = [
+            SELECT InterpretationMethod__c, InterpretationMethodType__c
+            FROM HOT_Request__c
+            WHERE Id = :request.Id
+        ];
+        System.assertEquals(null, request.InterpretationMethodType__c, 'InterpretationMethodType__c was not cleared.');
+        System.assertEquals(null, request.InterpretationMethod__c, 'InterpretationMethod__c was not cleared.');
+    }
+
+    @IsTest
+    public static void sameTransactionApprovalUsesUpdatedInterpretationMethod() {
+        WorkType originalWorkType = HOT_TestDataFactory.createWorkType('TS - Tegnspråk');
+        insert originalWorkType;
+        WorkType updatedWorkType = HOT_TestDataFactory.createWorkType('SK - Skrivetolking');
+        insert updatedWorkType;
+
+        HOT_Request__c request = HOT_TestDataFactory.createRequest('TEST', originalWorkType);
+        insert request;
+
+        Test.startTest();
+        request.InterpretationMethodType__c = updatedWorkType.Name;
+        request.Status__c = 'Godkjent';
+        update request;
+        Test.stopTest();
+
+        WorkOrder workOrder = [
+            SELECT WorkTypeId
+            FROM WorkOrder
+            WHERE HOT_Request__c = :request.Id
+            LIMIT 1
+        ];
+        WorkOrderLineItem workOrderLineItem = [
+            SELECT WorkTypeId
+            FROM WorkOrderLineItem
+            WHERE WorkOrder.HOT_Request__c = :request.Id
+            LIMIT 1
+        ];
+        ServiceAppointment serviceAppointment = [
+            SELECT WorkTypeId
+            FROM ServiceAppointment
+            WHERE HOT_Request__c = :request.Id
+            LIMIT 1
+        ];
+
+        System.assertEquals(updatedWorkType.Id, workOrder.WorkTypeId, 'WorkOrder kept the old work type.');
+        System.assertEquals(updatedWorkType.Id, workOrderLineItem.WorkTypeId, 'WorkOrderLineItem kept the old work type.');
+        System.assertEquals(updatedWorkType.Id, serviceAppointment.WorkTypeId, 'ServiceAppointment kept the old work type.');
+    }
+
+    @IsTest
+    public static void interpretationMethodTypeUpdateAfterApprovalDoesNotChangeExistingChildWorkTypes() {
+        WorkType originalWorkType = HOT_TestDataFactory.createWorkType('TS - Tegnspråk');
+        insert originalWorkType;
+        WorkType updatedWorkType = HOT_TestDataFactory.createWorkType('SK - Skrivetolking');
+        insert updatedWorkType;
+
+        HOT_Request__c request = HOT_TestDataFactory.createRequest('TEST', originalWorkType);
+        insert request;
+
+        request.Status__c = 'Godkjent';
+        update request;
+
+        Test.startTest();
+        request.InterpretationMethodType__c = updatedWorkType.Name;
+        update request;
+        Test.stopTest();
+
+        request = [
+            SELECT InterpretationMethod__c
+            FROM HOT_Request__c
+            WHERE Id = :request.Id
+        ];
+        WorkOrder workOrder = [
+            SELECT WorkTypeId
+            FROM WorkOrder
+            WHERE HOT_Request__c = :request.Id
+            LIMIT 1
+        ];
+        WorkOrderLineItem workOrderLineItem = [
+            SELECT WorkTypeId
+            FROM WorkOrderLineItem
+            WHERE WorkOrder.HOT_Request__c = :request.Id
+            LIMIT 1
+        ];
+        ServiceAppointment serviceAppointment = [
+            SELECT WorkTypeId
+            FROM ServiceAppointment
+            WHERE HOT_Request__c = :request.Id
+            LIMIT 1
+        ];
+
+        System.assertEquals(updatedWorkType.Id, request.InterpretationMethod__c, 'Request lookup was not updated.');
+        System.assertEquals(originalWorkType.Id, workOrder.WorkTypeId, 'WorkOrder work type should not be updated.');
+        System.assertEquals(
+            originalWorkType.Id,
+            workOrderLineItem.WorkTypeId,
+            'WorkOrderLineItem work type should not be updated.'
+        );
+        System.assertEquals(
+            originalWorkType.Id,
+            serviceAppointment.WorkTypeId,
+            'ServiceAppointment work type should not be updated.'
         );
     }
 
