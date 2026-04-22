@@ -285,21 +285,32 @@ public without sharing class HOT_wantedSRListController {
 
         ServiceResource serviceResource = [SELECT Id, Name FROM ServiceResource WHERE Id = :srId];
 
-        List<HOT_InterestedResource__c> existingInterestedIR = [
-            SELECT Id, ServiceResource__c, Status__c
-            FROM HOT_InterestedResource__c
-            WHERE ServiceResource__c = :serviceResource.Id AND ServiceAppointment__c = :sa[0].Id
-        ];
-
-        List<HOT_InterestedResource__c> assignedInterestedResources = [
+        List<HOT_InterestedResource__c> interestedResources = [
             SELECT
+                Id,
                 ServiceResource__c,
+                Status__c,
                 ServiceAppointment__c,
                 ServiceAppointmentStartTime__c,
                 ServiceAppointmentEndTime__c
             FROM HOT_InterestedResource__c
-            WHERE ServiceResource__c = :serviceResource.Id AND Status__c = 'Assigned'
+            WHERE
+                ServiceResource__c = :serviceResource.Id
+                AND (ServiceAppointment__c = :sa[0].Id
+                OR Status__c = 'Assigned')
         ];
+
+        List<HOT_InterestedResource__c> existingInterestedIR = new List<HOT_InterestedResource__c>();
+        List<HOT_InterestedResource__c> assignedInterestedResources = new List<HOT_InterestedResource__c>();
+
+        for (HOT_InterestedResource__c ir : interestedResources) {
+            if (ir.ServiceAppointment__c == sa[0].Id) {
+                existingInterestedIR.add(ir);
+            }
+            if (ir.Status__c == 'Assigned') {
+                assignedInterestedResources.add(ir);
+            }
+        }
 
         Integer overlapCount = 0;
         DateTime potentialServiceAppointmentStart = sa[0].EarliestStartTime;

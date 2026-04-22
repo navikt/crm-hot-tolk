@@ -1,8 +1,8 @@
 echo "Oppretter scratch org"
 call sf org create scratch --definition-file config\project-scratch-def.json --alias %1 --duration-days %2 --set-default --json --wait 30
 
-echo "Installer crm-platform-base ver. 0.293"
-call sf package install --package 04tQC0000012Y8HYAU --no-prompt --installation-key %3 --wait 30 --publish-wait 30
+echo "Installer crm-platform-base ver. 0.300"
+call sf package install --package 04tQC000001AHAHYA4 --no-prompt --installation-key %3 --wait 30 --publish-wait 30
 
 echo "Installer crm-shared-flowComponents ver. 0.4"
 call sf package install --package 04t7U0000008qz4QAA --no-prompt --installation-key %3 --wait 30 --publish-wait 30
@@ -10,23 +10,23 @@ call sf package install --package 04t7U0000008qz4QAA --no-prompt --installation-
 echo "Installer crm-henvendelse-base ver. 0.36"
 call sf package install --package 04tQC000000uSXtYAM --no-prompt --installation-key %3 --wait 30 --publish-wait 30
 
-echo "Installing platform-data-model ver. 0.1.2"
-call sf package install --package 04tQC000000oHLpYAM --no-prompt --wait 30 --publish-wait 30
+echo "Installing platform-data-model ver. 0.1.47"
+call sf package install --package 04tQC000001C7efYAC --no-prompt --wait 30 --publish-wait 30
 
-echo "Installing custom-metadata-dao ver. 1.2"
-call sf package install --package 04tQC000000oHKDYA2 --no-prompt --wait 30 --publish-wait 30
+echo "Installing custom-metadata-dao ver. 0.1.47"
+call sf package install --package 04tQC000001C7bRYAS --no-prompt --wait 30 --publish-wait 30
 
-echo "Installing custom-permission-helper ver. 0.1.2"
-call sf package install --package 04tQC000000oGw2YAE --no-prompt --wait 30 --publish-wait 30
+echo "Installing custom-permission-helper ver. 0.1.47"
+call sf package install --package 04tQC000001C7d3YAC --no-prompt --wait 30 --publish-wait 30
 
-echo "Installing feature-toggle ver. 0.1.3"
-call sf package install --package 04tQC000000oHP3YAM --no-prompt --wait 30 --publish-wait 30
+echo "Installing feature-toggle ver. 0.1.48"
+call sf package install --package 04tQC000001C7jVYAS --no-prompt --wait 30 --publish-wait 30
 
 echo "Installer crm-platform-integration ver. 0.162"
 call sf package install --package 04tQC000000xwmMYAQ --no-prompt --installation-key %3 --wait 30 --publish-wait 30
 
-echo "Installer crm-platform-access-control ver. 0.162"
-call sf package install --package 04tQC000000tlPhYAI --no-prompt --installation-key %3 --wait 30 --publish-wait 30
+echo "Installer crm-platform-access-control ver. 0.177"
+call sf package install --package 04tQC000001AGR7YAO --no-prompt --installation-key %3 --wait 30 --publish-wait 30
 
 echo "Installer crm-community-base ver. 0.133"
 call sf package install --package 04tQC0000012ZXNYA2 --no-prompt --installation-key %3 --wait 30 --publish-wait 30
@@ -34,8 +34,8 @@ call sf package install --package 04tQC0000012ZXNYA2 --no-prompt --installation-
 echo "Installer crm-platform-reporting ver. 0.41"
 call sf package install --package 04tKB000000YAWDYA4 --no-prompt --installation-key %3 --wait 30 --publish-wait 30
 
-echo "Installer crm-hot-felles ver. 0.6"
-call sf package install --package 04tQC0000013ks9YAA --no-prompt --installation-key %3 --wait 30 --publish-wait 30
+echo "Installer crm-hot-felles ver. 0.11"
+call sf package install --package 04tQC000001EsHhYAK --no-prompt --installation-key %3 --wait 30 --publish-wait 30
 
 echo "Dytter kildekoden til scratch org'en"
 call sf project deploy start

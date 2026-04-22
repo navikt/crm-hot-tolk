@@ -3,7 +3,7 @@ public without sharing class HOT_OpenServiceAppointmentListController {
     public static List<ServiceAppointment> getOpenServiceAppointments() {
         //Getting the skills of the user --> ServiceResource
         Id userId = UserInfo.getUserId();
-        List<ServiceResource> serviceResource = [SELECT Id, Name FROM ServiceResource WHERE RelatedRecordId = :userId];
+        List<ServiceResource> serviceResource = [SELECT Id FROM ServiceResource WHERE RelatedRecordId = :userId];
 
         List<ServiceResourceSkill> serviceResourceSkills = [
             SELECT SkillId
@@ -16,7 +16,7 @@ public without sharing class HOT_OpenServiceAppointmentListController {
             mySkillIds.add(SRSkill.SkillId);
         }
 
-        List<Skill> mySkills = [SELECT Id, MasterLabel FROM Skill WHERE Id IN :mySkillIds];
+        List<Skill> mySkills = [SELECT Id FROM Skill WHERE Id IN :mySkillIds];
 
         //Getting ServiceAppointments of interest. Null ettersom det IR får denne status når oppdrag frigis på nytt og skal være mulig å melde seg på på nytt
         List<HOT_InterestedResource__c> interestedResources = [

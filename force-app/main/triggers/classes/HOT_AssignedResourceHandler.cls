@@ -20,14 +20,14 @@ public without sharing class HOT_AssignedResourceHandler extends MyTriggers {
         for (AssignedResource ar : (List<AssignedResource>) records) {
             potentialSAWithThreadsIds.add(ar.ServiceAppointmentId);
         }
-        List<Thread__c> exisitingThreadsToBeTransferred = [
+        List<Thread__c> existingThreadsToBeTransferred = [
             SELECT Id, HOT_IsEmployeeThread__c, CRM_Account__c, CRM_Related_Object__c, HOT_ServiceAppointment__c
             FROM Thread__c
             WHERE CRM_Related_Object__c IN :potentialSAWithThreadsIds AND CRM_Thread_Type__c = 'HOT_TOLK-FORMIDLER'
         ];
         //Finn ir hvor accountid og serviceappointment id er samme
         Set<Id> accountIds = new Set<Id>();
-        for (Thread__c thread : exisitingThreadsToBeTransferred) {
+        for (Thread__c thread : existingThreadsToBeTransferred) {
             accountIds.add(thread.CRM_Account__c);
         }
         List<HOT_InterestedResource__c> irList = [
@@ -45,8 +45,8 @@ public without sharing class HOT_AssignedResourceHandler extends MyTriggers {
             }
         }
 
-        if (exisitingThreadsToBeTransferred.size() != 0) {
-            for (Thread__c thread : exisitingThreadsToBeTransferred) {
+        if (existingThreadsToBeTransferred.size() != 0) {
+            for (Thread__c thread : existingThreadsToBeTransferred) {
                 if (
                     saIdToIrIdListMap.containsKey(thread.HOT_ServiceAppointment__c) &&
                     thread.HOT_IsEmployeeThread__c == false
@@ -58,7 +58,7 @@ public without sharing class HOT_AssignedResourceHandler extends MyTriggers {
                     thread.CRM_Related_Object__c = null;
                 }
             }
-            update exisitingThreadsToBeTransferred;
+            update existingThreadsToBeTransferred;
         }
     }
 
@@ -80,7 +80,7 @@ public without sharing class HOT_AssignedResourceHandler extends MyTriggers {
         for (ServiceAppointment sa : serviceAppointments) {
             potentialSAWithThreadsIds.add(sa.Id);
         }
-        List<Thread__c> exisitingThreadsToBeTransferred = [
+        List<Thread__c> existingThreadsToBeTransferred = [
             SELECT Id, HOT_IsEmployeeThread__c, CRM_Account__c, CRM_Related_Object__c, HOT_ServiceAppointment__c
             FROM Thread__c
             WHERE CRM_Related_Object__c IN :potentialSAWithThreadsIds AND CRM_Thread_Type__c = 'HOT_TOLK-FORMIDLER'
@@ -88,14 +88,32 @@ public without sharing class HOT_AssignedResourceHandler extends MyTriggers {
 
         //Finn ir hvor accountid og serviceappointment id er samme
         Set<Id> accountIds = new Set<Id>();
-        for (Thread__c thread : exisitingThreadsToBeTransferred) {
+        for (Thread__c thread : existingThreadsToBeTransferred) {
             accountIds.add(thread.CRM_Account__c);
         }
-        List<HOT_InterestedResource__c> irList = [
-            SELECT Id, ServiceAppointment__c
+
+        List<HOT_InterestedResource__c> irList = new List<HOT_InterestedResource__c>();
+        List<HOT_InterestedResource__c> potentialIRWithThreads = new List<HOT_InterestedResource__c>();
+
+        List<HOT_InterestedResource__c> mergedIRList = [
+            SELECT Id, ServiceAppointment__c, Status__c, ServiceResource__r.AccountId
             FROM HOT_InterestedResource__c
-            WHERE ServiceResource__r.AccountId IN :accountIds AND ServiceAppointment__c IN :potentialSAWithThreadsIds
+            WHERE
+                (Status__c = 'Reserved'
+                OR Status__c = 'Assigned'
+                OR ServiceResource__r.AccountId IN :accountIds)
+                AND ServiceAppointment__c IN :potentialSAWithThreadsIds
         ];
+
+        for (HOT_InterestedResource__c ir : mergedIRList) {
+            if (ir.ServiceResource__r != null && accountIds.contains(ir.ServiceResource__r.AccountId)) {
+                irList.add(ir);
+            }
+            if (ir.Status__c == 'Reserved' || ir.Status__c == 'Assigned') {
+                potentialIRWithThreads.add(ir);
+            }
+        }
+
         //LOOP om threads sin related record er samme serviceappointmentId. Så sett ir sin id som related object
         Map<Id, List<Id>> saIdToIrIdListMap = new Map<Id, List<Id>>();
         for (HOT_InterestedResource__c ir : irList) {
@@ -106,8 +124,8 @@ public without sharing class HOT_AssignedResourceHandler extends MyTriggers {
             }
         }
 
-        if (exisitingThreadsToBeTransferred.size() != 0) {
-            for (Thread__c thread : exisitingThreadsToBeTransferred) {
+        if (existingThreadsToBeTransferred.size() != 0) {
+            for (Thread__c thread : existingThreadsToBeTransferred) {
                 if (
                     saIdToIrIdListMap.containsKey(thread.HOT_ServiceAppointment__c) &&
                     thread.HOT_IsEmployeeThread__c == false
@@ -119,16 +137,9 @@ public without sharing class HOT_AssignedResourceHandler extends MyTriggers {
                     thread.CRM_Related_Object__c = null;
                 }
             }
-            update exisitingThreadsToBeTransferred;
+            update existingThreadsToBeTransferred;
         }
-        List<HOT_InterestedResource__c> potentialIRWithThreads = [
-            SELECT Id, ServiceAppointment__c
-            FROM HOT_InterestedResource__c
-            WHERE
-                (Status__c = 'Reserved'
-                OR Status__c = 'Assigned')
-                AND ServiceAppointment__c IN :potentialSAWithThreadsIds
-        ];
+
         if (potentialIRWithThreads.size() != 0) {
             Map<Id, HOT_InterestedResource__c> threadMap = new Map<Id, HOT_InterestedResource__c>(
                 potentialIRWithThreads
@@ -194,7 +205,7 @@ public without sharing class HOT_AssignedResourceHandler extends MyTriggers {
             WHERE Id IN :assignedResourceByServiceAppointmentId.keySet()
         ];
         Map<Id, ServiceResource> serviceResourceById = new Map<Id, ServiceResource>(
-            [SELECT Id, RelatedRecordId, Name FROM ServiceResource WHERE Id IN :serviceResourceIds]
+            [SELECT Id, RelatedRecordId FROM ServiceResource WHERE Id IN :serviceResourceIds]
         );
 
         //Setting fields on ServiceAppointment

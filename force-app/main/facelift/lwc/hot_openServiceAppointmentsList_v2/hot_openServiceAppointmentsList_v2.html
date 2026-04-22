@@ -73,7 +73,7 @@
                             <p><strong>Adresse:</strong> {it.value.HOT_AddressFormated__c}</p>
                             <p><strong>Tolkemetode:</strong> {it.value.HOT_WorkTypeName__c}</p>
                             <p lwc:if={it.value.HOT_PreparationTime__c}>
-                                <strong>Forberedelsestid:</strong> {it.value.HOT_PreparationTime__c}
+                                <strong>Kompensert forberedelse:</strong> {it.value.HOT_PreparationTime__c}
                             </p>
                             <p><strong>Oppdragstype:</strong> {it.value.HOT_AssignmentType__c}</p>
                             <p><strong>Frigitt av:</strong> {it.value.HOT_ReleasedBy__c}</p>
@@ -182,7 +182,7 @@
                 <p><strong>Adresse:</strong> {serviceAppointment.HOT_AddressFormated__c}</p>
                 <p><strong>Tolkemetode:</strong> {serviceAppointment.HOT_WorkTypeName__c}</p>
                 <p lwc:if={serviceAppointment.HOT_PreparationTime__c}>
-                    <strong>Forberedelsestid:</strong> {serviceAppointment.HOT_PreparationTime__c}
+                    <strong>Kompensert forberedelse:</strong> {serviceAppointment.HOT_PreparationTime__c}
                 </p>
                 <p><strong>Oppdragstype:</strong> {serviceAppointment.HOT_AssignmentType__c}</p>
                 <p><strong>Frigitt av:</strong> {serviceAppointment.HOT_ReleasedBy__c}</p>

@@ -31,7 +31,7 @@
             <assignToReference>newAnnouncement.Description__c</assignToReference>
             <operator>Assign</operator>
             <value>
-                <elementReference>Innhold</elementReference>
+                <elementReference>Innhold2.inputText</elementReference>
             </value>
         </assignmentItems>
         <assignmentItems>
@@ -452,11 +452,24 @@
                     <isRequired>true</isRequired>
                 </fields>
                 <fields>
-                    <name>Innhold</name>
-                    <fieldText>Innhold</fieldText>
-                    <fieldType>LargeTextArea</fieldType>
+                    <name>Innhold2</name>
+                    <extensionName>c:hot_flowTextAreaWithCounter</extensionName>
+                    <fieldType>ComponentInstance</fieldType>
+                    <inputParameters>
+                        <name>maxCharacters</name>
+                        <value>
+                            <numberValue>500.0</numberValue>
+                        </value>
+                    </inputParameters>
+                    <inputParameters>
+                        <name>label</name>
+                        <value>
+                            <stringValue>Innhold</stringValue>
+                        </value>
+                    </inputParameters>
                     <inputsOnNextNavToAssocScrn>UseStoredValues</inputsOnNextNavToAssocScrn>
-                    <isRequired>false</isRequired>
+                    <isRequired>true</isRequired>
+                    <storeOutputAutomatically>true</storeOutputAutomatically>
                 </fields>
                 <fields>
                     <name>urlInformation</name>

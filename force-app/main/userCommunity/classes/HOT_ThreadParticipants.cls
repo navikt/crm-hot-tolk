@@ -431,10 +431,14 @@ public without sharing class HOT_ThreadParticipants {
         for (User u : users) {
             usersByAccountId.put(u.AccountId, u);
         }
+        Map<Id, Thread__c> threadsById = new Map<Id, Thread__c>(this.threads);
         for (WorkOrder wo : workOrders) {
             User user = usersByAccountId.get(wo.AccountId);
-            if (user != null) {
-                for (Id threadId : this.threadIdsByRelatedObjectId.get(wo.Id)) {
+            if (user == null) {
+                continue;
+            }
+            for (Id threadId : this.threadIdsByRelatedObjectId.get(wo.Id)) {
+                if (threadsById.get(threadId).CRM_Thread_Type__c == 'HOT_BRUKER-TOLK') {
                     this.participantsByThreadId.get(threadId).add(new Participant(wo, user));
                 }
             }

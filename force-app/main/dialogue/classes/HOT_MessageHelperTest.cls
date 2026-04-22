@@ -31,15 +31,22 @@ private class HOT_MessageHelperTest {
         HOT_Request__c request = HOT_TestDataFactory.createRequest('TEST', workType);
         request.Account__c = account.Id;
         request.Orderer__c = account.Id;
-        insert request;
+        HOT_Request__c request3 = HOT_TestDataFactory.createRequest('TEST3', workType);
+        request3.Account__c = account.Id;
+        request3.Orderer__c = account.Id;
+        insert new List<HOT_Request__c>{ request, request3 };
         // HOT_Request__c request = [SELECT Id FROM HOT_Request__c WHERE Subject__c = 'TEST' LIMIT 1];
         WorkOrder workOrder = HOT_TestDataFactory.createWorkOrder(request, workType);
         workOrder.AccountId = account.Id;
-        insert workOrder;
+        WorkOrder workOrder3 = HOT_TestDataFactory.createWorkOrder(request3, workType);
+        workOrder3.AccountId = account.Id;
+        insert new List<WorkOrder>{ workOrder, workOrder3 };
         // WorkOrder workOrder = [SELECT Id FROM WorkOrder WHERE HOT_Request__r.Subject__c = 'TEST' LIMIT 1];
 
         WorkOrderLineItem workOrderLineItem = HOT_TestDataFactory.createWorkOrderLineItem(workOrder, workType);
-        insert workOrderLineItem;
+        WorkOrderLineItem workOrderLineItem3 = HOT_TestDataFactory.createWorkOrderLineItem(workOrder3, workType);
+
+        insert new List<WorkOrderLineItem>{ workOrderLineItem, workOrderLineItem3 };
 
         /*
         ServiceAppointment sa = [
@@ -320,7 +327,7 @@ private class HOT_MessageHelperTest {
 
     @IsTest
     static void createThreadDispatcherRequest() {
-        HOT_Request__c request = [SELECT Id, Account__c FROM HOT_Request__c WHERE Subject__c = 'TEST' LIMIT 1];
+        HOT_Request__c request = [SELECT Id, Account__c FROM HOT_Request__c WHERE Subject__c = 'TEST3' LIMIT 1];
         Test.startTest();
         Thread__c thread = HOT_MessageHelper.createThreadDispatcher(
             request.Id,
@@ -336,7 +343,7 @@ private class HOT_MessageHelperTest {
     }
     @IsTest
     static void createThreadDispatcherWorkOrder() {
-        WorkOrder workOrder = [SELECT Id, AccountId FROM WorkOrder WHERE HOT_Request__r.Subject__c = 'TEST' LIMIT 1];
+        WorkOrder workOrder = [SELECT Id, AccountId FROM WorkOrder WHERE HOT_Request__r.Subject__c = 'TEST3' LIMIT 1];
         Test.startTest();
         Thread__c thread = HOT_MessageHelper.createThreadDispatcher(
             workOrder.Id,
@@ -355,7 +362,7 @@ private class HOT_MessageHelperTest {
     }
     @IsTest
     static void createThreadDispatcherInterestedResource() {
-        ServiceAppointment sa = [SELECT Id FROM ServiceAppointment WHERE Subject = 'TEST' LIMIT 1];
+        ServiceAppointment sa = [SELECT Id FROM ServiceAppointment WHERE Subject = 'TEST3' LIMIT 1];
 
         ServiceResource sr = [SELECT Id, AccountId FROM ServiceResource LIMIT 1];
         Test.startTest();
@@ -665,7 +672,7 @@ private class HOT_MessageHelperTest {
         ServiceAppointment sa = [
             SELECT Id, EarliestStartTime, DueDate, HOT_WorkOrderLineItem__r.WorkOrderId
             FROM ServiceAppointment
-            WHERE Subject = 'TEST'
+            WHERE Subject = 'TEST3'
             LIMIT 1
         ];
 
@@ -713,7 +720,7 @@ private class HOT_MessageHelperTest {
         ServiceAppointment sa = [
             SELECT Id, EarliestStartTime, DueDate, HOT_Account__c, HOT_WorkOrderLineItem__r.WorkOrderId
             FROM ServiceAppointment
-            WHERE Subject = 'TEST'
+            WHERE Subject = 'TEST3'
             LIMIT 1
         ];
         myTriggers.disable(HOT_ServiceAppointmentHandler.class);
@@ -739,7 +746,7 @@ private class HOT_MessageHelperTest {
         System.assertEquals('HOT_TOLK-FORMIDLER', created.CRM_Type__c, 'Wrong thread type.');
         System.assert(
             created.CRM_Related_Object__c == sa.Id ||
-            created.CRM_Related_Object__c == sa.HOT_WorkOrderLineItem__r.WorkOrderId,
+                created.CRM_Related_Object__c == sa.HOT_WorkOrderLineItem__r.WorkOrderId,
             'Helper may relate to SA or normalize to WO.'
         );
         if (created.CRM_Account__c != null) {
@@ -755,7 +762,7 @@ private class HOT_MessageHelperTest {
         ServiceAppointment sa = [
             SELECT Id, HOT_Account__c, HOT_WorkOrderLineItem__r.WorkOrderId
             FROM ServiceAppointment
-            WHERE Subject = 'TEST'
+            WHERE Subject = 'TEST3'
             LIMIT 1
         ];
 
@@ -783,7 +790,7 @@ private class HOT_MessageHelperTest {
         System.assertEquals('HOT_TOLK-FORMIDLER', created.CRM_Type__c, 'Wrong thread type.');
         System.assert(
             created.CRM_Related_Object__c == sa.Id ||
-            created.CRM_Related_Object__c == sa.HOT_WorkOrderLineItem__r.WorkOrderId,
+                created.CRM_Related_Object__c == sa.HOT_WorkOrderLineItem__r.WorkOrderId,
             'Helper may relate to SA directly or normalize to WO.'
         );
         System.assertEquals(sr.AccountId, created.CRM_Account__c, 'If stamped, account must match.');
@@ -799,6 +806,26 @@ private class HOT_MessageHelperTest {
             Thread__c t = HOT_MessageHelper.createThread(request.Id, request.Account__c);
             System.assertEquals('HOT_BESTILLER-FORMIDLER', t.CRM_Thread_Type__c, 'Did not create the thread');
         }
+    }
+    @IsTest
+    public static void createThreadDispatcherThreadExists() {
+        User currentUser = [SELECT Id, AccountId, Account.CRM_Person__c FROM User WHERE Id = :UserInfo.getUserId()];
+        myTriggers.disable(HOT_RequestHandler.class);
+        HOT_Request__c request = [SELECT Id, Account__c FROM HOT_Request__c WHERE Subject__c = 'TEST' LIMIT 1];
+        request.Orderer__c = currentUser.AccountId;
+        update request;
+        Thread__c t;
+        System.runAs(currentUser) {
+            t = HOT_MessageHelper.createThread(request.Id, request.Account__c);
+        }
+        System.Test.startTest();
+        Thread__c t2 = HOT_MessageHelper.createThreadDispatcher(
+            request.Id,
+            request.Account__c,
+            'HOT_BESTILLER-FORMIDLER'
+        );
+        System.Test.stopTest();
+        System.assertEquals(t.Id, t2.Id, 'Should have returned the existing thread, not created a new one.');
     }
     @IsTest
     static void createThreadInterpreterDispatcherSA() {

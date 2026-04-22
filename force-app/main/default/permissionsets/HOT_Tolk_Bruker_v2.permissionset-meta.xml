@@ -29,6 +29,10 @@
         <enabled>true</enabled>
     </classAccesses>
     <classAccesses>
+        <apexClass>HOT_RequestNotification</apexClass>
+        <enabled>true</enabled>
+    </classAccesses>
+    <classAccesses>
         <apexClass>HOT_ThreadDetailController</apexClass>
         <enabled>true</enabled>
     </classAccesses>
@@ -359,7 +363,6 @@
         <field>HOT_Request__c.Person__c</field>
         <readable>true</readable>
     </fieldPermissions>
-
     <fieldPermissions>
         <editable>true</editable>
         <field>HOT_Request__c.Source__c</field>
