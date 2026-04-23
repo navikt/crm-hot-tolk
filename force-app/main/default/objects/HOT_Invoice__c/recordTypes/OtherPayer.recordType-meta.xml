@@ -838,6 +838,10 @@
     <picklistValues>
         <picklist>Status__c</picklist>
         <values>
+            <fullName>Discarded</fullName>
+            <default>false</default>
+        </values>
+        <values>
             <fullName>Filled</fullName>
             <default>false</default>
         </values>
