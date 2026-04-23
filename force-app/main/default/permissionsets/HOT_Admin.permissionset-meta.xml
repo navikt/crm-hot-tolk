@@ -2425,12 +2425,14 @@
         <readable>true</readable>
     </fieldPermissions>
     <fieldPermissions>
+        <editable>false</editable>
     <fieldPermissions>
         <editable>true</editable>
         <field>WorkOrder.HOT_NumberOfInterpreters__c</field>
         <readable>true</readable>
     </fieldPermissions>
     <fieldPermissions>
+        <editable>false</editable>
     <fieldPermissions>
         <editable>true</editable>
         <field>WorkOrder.HOT_PreparationTime__c</field>
