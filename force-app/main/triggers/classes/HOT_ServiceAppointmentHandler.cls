@@ -336,11 +336,20 @@ public without sharing class HOT_ServiceAppointmentHandler extends MyTriggers {
             ) {
                 serviceAppointmentsWithUpdatedOwnerOrDispatcher.add(serviceAppointment);
             }
+            /* Når oppdrag endres fra Tildelt til ny status skal tolk varsles om at oppdragskvittering kan fylles ut */
+            if (
+                triggerOldMap.get(serviceAppointment.Id).get('Status') == 'Dispatched' &&
+                (triggerOldMap.get(serviceAppointment.Id).get('Status') != serviceAppointment.Status)
+            ) {
+                HOT_InvoiceController.notifyInterpretersAboutInvoice((List<ServiceAppointment>) records);
+            }
         }
         HOT_ServiceAppointmentNotification.resourceServiceAppointmentChanged(
             (List<ServiceAppointment>) records,
             triggerOldMap
         );
+
+        /* Oppretter/Endrer oppdragskvittering */
         HOT_InvoiceController.resourceServiceAppointmentChanged((List<ServiceAppointment>) records, triggerOldMap);
 
         HOT_EventController.updateServiceAppointmentEvents((List<ServiceAppointment>) records, triggerOldMap);
