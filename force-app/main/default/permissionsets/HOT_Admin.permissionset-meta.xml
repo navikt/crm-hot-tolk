@@ -610,11 +610,6 @@
         <readable>true</readable>
     </fieldPermissions>
     <fieldPermissions>
-        <editable>true</editable>
-        <field>HOT_Invoice__c.WorkOrder__c</field>
-        <readable>true</readable>
-    </fieldPermissions>
-    <fieldPermissions>
         <editable>false</editable>
         <field>HOT_Notification__c.DelPol_ToDeleteRecord__c</field>
         <readable>true</readable>
@@ -2430,10 +2425,12 @@
         <readable>true</readable>
     </fieldPermissions>
     <fieldPermissions>
+    <fieldPermissions>
         <editable>true</editable>
         <field>WorkOrder.HOT_NumberOfInterpreters__c</field>
         <readable>true</readable>
     </fieldPermissions>
+    <fieldPermissions>
     <fieldPermissions>
         <editable>true</editable>
         <field>WorkOrder.HOT_PreparationTime__c</field>
