@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>HOT_NumberOfFilledInvoices__c</fullName>
+    <externalId>false</externalId>
+    <label>HOT_NumberOfFilledInvoices</label>
+    <summaryFilterItems>
+        <field>HOT_Invoice__c.Status__c</field>
+        <operation>equals</operation>
+        <value>Filled</value>
+    </summaryFilterItems>
+    <summaryForeignKey>HOT_Invoice__c.WorkOrder__c</summaryForeignKey>
+    <summaryOperation>count</summaryOperation>
+    <trackHistory>false</trackHistory>
+    <type>Summary</type>
+</CustomField>
