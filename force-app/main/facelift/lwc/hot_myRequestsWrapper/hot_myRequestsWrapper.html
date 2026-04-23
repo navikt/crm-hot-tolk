@@ -97,6 +97,9 @@
                     </p>
                     <br />
                     <p><strong>Status: </strong><span>{workOrder.HOT_ExternalWorkOrderStatus__c}</span></p>
+                    <p lwc:if={showInterpretes}>
+                        <strong>{interpreter}: </strong><span>{workOrder.HOT_Interpreters__c}</span>
+                    </p>
                     <br />
                     <p lwc:if={request.OwnerName__c}><strong>Sentral: </strong><span>{request.OwnerName__c}</span></p>
                     <p><strong>Bestillingsnummer: </strong><span>{workOrder.HOT_RequestName__c}</span></p>
@@ -115,9 +118,7 @@
                     <p lwc:if={request.UserPreferredInterpreter__c}>
                         <strong>Ønsket tolk: </strong><span>{request.UserPreferredInterpreter__c}</span>
                     </p>
-                    <p lwc:if={showInterpretes}>
-                        <strong>{interpreter}: </strong><span>{workOrder.HOT_Interpreters__c}</span>
-                    </p>
+
                     <p lwc:if={request.UserInterpretationMethod__c}>
                         <strong>Foretrukket tolkemetode: </strong><span>{request.UserInterpretationMethod__c}</span>
                     </p>
