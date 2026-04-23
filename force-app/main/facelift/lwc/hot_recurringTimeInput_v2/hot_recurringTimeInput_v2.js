@@ -42,6 +42,11 @@ export default class hot_recurringTimeInput_v2 extends LightningElement {
         return j;
     }
 
+    // If there are more than 1 time entries in edit mode, hide the advanced time options
+    get hideGjentagende() {
+        return this.hideAdvancedTimesInEditMode === true && Array.isArray(this.times) && this.times.length > 1;
+    }
+
     handleDateChange(event) {
         const index = this.getTimesIndex(event.target.name);
         this.times[index].date = event.detail;
