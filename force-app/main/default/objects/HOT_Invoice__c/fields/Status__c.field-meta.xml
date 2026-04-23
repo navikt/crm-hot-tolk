@@ -26,6 +26,11 @@
                 <default>false</default>
                 <label>Filled</label>
             </value>
+            <value>
+                <fullName>Discarded</fullName>
+                <default>false</default>
+                <label>Discarded</label>
+            </value>
         </valueSetDefinition>
     </valueSet>
 </CustomField>
