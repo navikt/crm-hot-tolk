@@ -128,6 +128,11 @@ export default class hot_requestForm_company_v2 extends LightningElement {
         if (this.isEditOrCopyMode) {
             this.setComponentValuesOnEditAndCopy();
         }
+
+        const orgNumber = this.fieldValues.OrganizationNumber__c;
+        if (orgNumber && orgNumber.length === 9) {
+            this.handleOrgNumberInputChange({ detail: orgNumber });
+        }
     }
     validateOrganizationName() {
         let hasErrors = false;

@@ -236,6 +236,9 @@ public without sharing class HOT_WorkOrderHandler extends MyTriggers {
                 if (workOrder.Description == null && request.Description__c != null) {
                     workOrder.Description = request.Description__c;
                 }
+                if (workOrder.WorkTypeId == null && request.InterpretationMethod__c != null) {
+                    workOrder.WorkTypeId = request.InterpretationMethod__c;
+                }
                 if (workOrder.AccountId == null && request.Account__c != null) {
                     workOrder.AccountId = request.Account__c;
                 }
@@ -270,9 +273,16 @@ public without sharing class HOT_WorkOrderHandler extends MyTriggers {
 
     public static void updateRequests(List<WorkOrder> workOrders) {
         Set<Id> requestIds = new Set<Id>();
-        for (WorkOrder workOrder : workOrders) {
-            requestIds.add(workOrder.HOT_Request__c);
+        for (WorkOrder wo : workOrders) {
+            if (wo.HOT_Request__c != null) {
+                requestIds.add(wo.HOT_Request__c);
+            }
         }
+
+        if (requestIds.isEmpty()) {
+            return;
+        }
+
         List<HOT_Request__c> requests = [
             SELECT
                 Id,
@@ -284,51 +294,73 @@ public without sharing class HOT_WorkOrderHandler extends MyTriggers {
                 Status__c,
                 (
                     SELECT Id, StartDate, EndDate, Status
-                    FROM HOT_Request__c.Work_Orders__r
+                    FROM Work_Orders__r
                     WHERE Status != 'Annul'
                     ORDER BY StartDate ASC
                 )
             FROM HOT_Request__c
             WHERE Id IN :requestIds
         ];
+
         for (HOT_Request__c request : requests) {
             if (request.NumberOfWorkOrders__c != request.Work_Orders__r.size()) {
                 request.NumberOfWorkOrders__c = request.Work_Orders__r.size();
             }
 
-            if (request.Status__c != 'Avlyst') {
-                request.StartTime__c = null;
-                request.EndTime__c = null;
-                request.SeriesStartDate__c = null;
-                request.SeriesEndDate__c = null;
-            }
-            for (WorkOrder workOrder : request.Work_Orders__r) {
-                if (workOrder.Status != 'Canceled') {
-                    if (
-                        workOrder.StartDate != null &&
-                        (workOrder.StartDate < request.StartTime__c ||
-                        request.StartTime__c == null)
-                    ) {
-                        request.StartTime__c = workOrder.StartDate;
-                        request.EndTime__c = workOrder.EndDate;
+            Datetime minStart;
+            Datetime minEnd;
+            Date minDate;
+            Date maxDate;
+
+            for (WorkOrder wo : request.Work_Orders__r) {
+                if (wo.Status == 'Canceled') {
+                    continue;
+                }
+
+                // StartTime (minste datetime)
+                if (wo.StartDate != null && (minStart == null || wo.StartDate < minStart)) {
+                    minStart = wo.StartDate;
+                }
+
+                // EndTime (minste datetime)
+                if (wo.EndDate != null && (minEnd == null || wo.EndDate < minEnd)) {
+                    minEnd = wo.EndDate;
+                }
+
+                // SeriesStartDate (minste dato)
+                if (wo.StartDate != null) {
+                    Date startDateOnly = wo.StartDate.date();
+                    if (minDate == null || startDateOnly < minDate) {
+                        minDate = startDateOnly;
                     }
-                    if (
-                        workOrder.StartDate.date() != null &&
-                        (workOrder.StartDate.date() < request.SeriesStartDate__c ||
-                        request.SeriesStartDate__c == null)
-                    ) {
-                        request.SeriesStartDate__c = workOrder.StartDate.date();
-                    }
-                    if (
-                        workOrder.EndDate.date() != null &&
-                        (workOrder.EndDate.date() > request.SeriesEndDate__c ||
-                        request.SeriesEndDate__c == null)
-                    ) {
-                        request.SeriesEndDate__c = workOrder.EndDate.date();
+                }
+
+                // SeriesEndDate (største dato)
+                if (wo.EndDate != null) {
+                    Date endDateOnly = wo.EndDate.date();
+                    if (maxDate == null || endDateOnly > maxDate) {
+                        maxDate = endDateOnly;
                     }
                 }
             }
+
+            if (minStart != null) {
+                request.StartTime__c = minStart;
+            }
+
+            if (minEnd != null) {
+                request.EndTime__c = minEnd;
+            }
+
+            if (minDate != null) {
+                request.SeriesStartDate__c = minDate;
+            }
+
+            if (maxDate != null) {
+                request.SeriesEndDate__c = maxDate;
+            }
         }
+
         try {
             update requests;
         } catch (Exception e) {
@@ -367,6 +399,7 @@ public without sharing class HOT_WorkOrderHandler extends MyTriggers {
             workOrder.Street = request.MeetingStreet__c;
             workOrder.Subject = request.Subject__c;
             workOrder.ServiceTerritoryId = request.ServiceTerritory__c;
+            workOrder.WorkTypeId = request.InterpretationMethod__c;
         }
         update workOrders;
     }

@@ -86,6 +86,13 @@ export default class Hot_myRequestsWrapper extends NavigationMixin(LightningElem
             .querySelectorAll('c-record-files-without-sharing')
             .forEach((cmp) => cmp.refreshContentDocuments());
 
+        const isRequestApproved = this.request?.Status__c === 'Godkjent';
+        const isWorkOrderInNotifiableState = ['New', 'Scheduled', 'Dispatched'].includes(this.workOrder?.Status);
+
+        if (!isRequestApproved || !isWorkOrderInNotifiableState) {
+            return;
+        }
+
         try {
             await notifyDispatchersFilesUploaded({
                 requestId: this.request?.Id ?? this.recordId,
@@ -180,7 +187,7 @@ export default class Hot_myRequestsWrapper extends NavigationMixin(LightningElem
     get tolkebrukerName() {
         const isOrderer = this.request?.Orderer__c === this.userAccountId;
 
-        return isOrderer ? (this.request?.UserName__c ?? '') : (this.request?.Account__r?.Name ?? '');
+        return isOrderer ? this.request?.UserName__c ?? '' : this.request?.Account__r?.Name ?? '';
     }
 
     get uploadTargetId() {
@@ -354,7 +361,13 @@ export default class Hot_myRequestsWrapper extends NavigationMixin(LightningElem
         this.isWorkOrderDetails = this.urlStateParameters.level === 'WO';
         this.isRequestOrWorkOrderDetails = this.isWorkOrderDetails || this.isRequestDetails;
         this.isSeries = this.workOrder?.HOT_Request__r?.IsSerieoppdrag__c;
-        this.interpreter = this.workOrder?.HOT_Interpreters__c?.length > 1 ? 'Tolker' : 'Tolk';
+        const raw = this.workOrder?.HOT_Interpreters__c ?? '';
+        const count = raw
+            .split(',')
+            .map((s) => s.trim())
+            .filter(Boolean).length;
+
+        this.interpreter = count > 1 ? 'Tolker' : 'Tolk';
         this.showInterpretes =
             this.workOrder?.Status === 'Completed' ||
             this.workOrder?.Status === 'Partially Complete' ||
