@@ -5,7 +5,7 @@ public without sharing class HOT_InvoiceReminderBatch implements Database.Batcha
     }
 
     public Database.QueryLocator start(Database.BatchableContext bc) {
-        String query = 'SELECT Id, ServiceAppointment__c, ServiceResource__c FROM HOT_Invoice__c WHERE Status__c = \'Sent In Return\' OR Status__c = \'New\'';
+        String query = 'SELECT Id, ServiceAppointment__c, ServiceAppointment__r.DueDate, ServiceResource__c FROM HOT_Invoice__c WHERE (Status__c = \'Sent In Return\' OR Status__c = \'New\') AND ServiceAppointment__r.DueDate < TODAY';
         return Database.getQueryLocator(query);
     }
 
