@@ -362,6 +362,7 @@ public without sharing class HOT_ServiceAppointmentHandler extends MyTriggers {
         }
         if (dispatchedServiceAppointments.size() > 0) {
             updateStatusOnInterestedResources(dispatchedServiceAppointments, 'Assigned');
+            updateRelatedInterestedResourcesOnSameWorkOrder(dispatchedServiceAppointments);
         }
         if (retractedServiceAppointments.size() > 0) {
             updateStatusOnInterestedResources(retractedServiceAppointments, 'Service Appointment Retracted');
@@ -953,6 +954,15 @@ public without sharing class HOT_ServiceAppointmentHandler extends MyTriggers {
             }
         }
         update interestedResources;
+    }
+
+    public static void updateRelatedInterestedResourcesOnSameWorkOrder(List<ServiceAppointment> serviceAppointments) {
+        List<HOT_InterestedResource__c> interestedResourcesToUpdate = HOT_InterestedResourceOnWorkOrderService.getInterestedResourcesToUpdateOnDispatch(
+            serviceAppointments
+        );
+        if (!interestedResourcesToUpdate.isEmpty()) {
+            update interestedResourcesToUpdate;
+        }
     }
 
     private static ServiceAppointment updateDuration(ServiceAppointment serviceAppointment) {

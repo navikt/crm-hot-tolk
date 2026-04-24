@@ -236,6 +236,9 @@ public without sharing class HOT_WorkOrderHandler extends MyTriggers {
                 if (workOrder.Description == null && request.Description__c != null) {
                     workOrder.Description = request.Description__c;
                 }
+                if (workOrder.WorkTypeId == null && request.InterpretationMethod__c != null) {
+                    workOrder.WorkTypeId = request.InterpretationMethod__c;
+                }
                 if (workOrder.AccountId == null && request.Account__c != null) {
                     workOrder.AccountId = request.Account__c;
                 }
@@ -305,7 +308,7 @@ public without sharing class HOT_WorkOrderHandler extends MyTriggers {
             }
 
             Datetime minStart;
-            Datetime maxEnd;
+            Datetime minEnd;
             Date minDate;
             Date maxDate;
 
@@ -319,9 +322,9 @@ public without sharing class HOT_WorkOrderHandler extends MyTriggers {
                     minStart = wo.StartDate;
                 }
 
-                // EndTime (største datetime)
-                if (wo.EndDate != null && (maxEnd == null || wo.EndDate > maxEnd)) {
-                    maxEnd = wo.EndDate;
+                // EndTime (minste datetime)
+                if (wo.EndDate != null && (minEnd == null || wo.EndDate < minEnd)) {
+                    minEnd = wo.EndDate;
                 }
 
                 // SeriesStartDate (minste dato)
@@ -345,8 +348,8 @@ public without sharing class HOT_WorkOrderHandler extends MyTriggers {
                 request.StartTime__c = minStart;
             }
 
-            if (maxEnd != null) {
-                request.EndTime__c = maxEnd;
+            if (minEnd != null) {
+                request.EndTime__c = minEnd;
             }
 
             if (minDate != null) {
@@ -357,6 +360,7 @@ public without sharing class HOT_WorkOrderHandler extends MyTriggers {
                 request.SeriesEndDate__c = maxDate;
             }
         }
+
         try {
             update requests;
         } catch (Exception e) {
@@ -395,6 +399,7 @@ public without sharing class HOT_WorkOrderHandler extends MyTriggers {
             workOrder.Street = request.MeetingStreet__c;
             workOrder.Subject = request.Subject__c;
             workOrder.ServiceTerritoryId = request.ServiceTerritory__c;
+            workOrder.WorkTypeId = request.InterpretationMethod__c;
         }
         update workOrders;
     }
