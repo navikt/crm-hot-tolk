@@ -459,11 +459,6 @@
     </fieldPermissions>
     <fieldPermissions>
         <editable>false</editable>
-        <field>HOT_Invoice__c.WorkOrder__c</field>
-        <readable>true</readable>
-    </fieldPermissions>
-    <fieldPermissions>
-        <editable>false</editable>
         <field>HOT_Notification__c.HOT_Account__c</field>
         <readable>true</readable>
     </fieldPermissions>
