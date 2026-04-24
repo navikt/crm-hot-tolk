@@ -71,6 +71,9 @@ List<ServiceTerritoryMember> serviceTerritoryMembers = testData.getServiceTerrit
 insert serviceTerritoryMembers;
 System.debug(serviceTerritoryMembers);
 
+Common_Code__c commonCode = testData.getCommonCode();
+insert commonCode;
+
 List<WorkType> requestWorkTypes = new List<WorkType>();
 for (Integer i = 0; i < personAccounts.size(); i++) {
     requestWorkTypes.add(workTypes[math.mod(i, workTypes.size())]);
