@@ -55,6 +55,7 @@
                             if:true={requestTypeResult.requestForm}
                             is-edit-or-copy-mode={isEditOrCopyMode}
                             refresh-token={refreshToken}
+                            is-edit-mode={isEditMode}
                         ></c-hot_request-form_request_v2>
                         <div class="button-container">
                             <c-button
@@ -63,7 +64,8 @@
                                 button-label={submitButtonLabel}
                                 name="Send inn bestilling"
                                 button-styling="primary"
-                                type="submit"
+                                type="button"
+                                onbuttonclick={handleSubmitClick}
                                 style="padding-bottom: 1em"
                                 desktop-style="width: 8rem; justify-content: center"
                                 mobile-style="width: 8rem; justify-content: center"

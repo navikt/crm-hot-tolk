@@ -70,6 +70,16 @@
                         <valueListItems>
                             <value>ServiceAppointment.HOT_registrerWantedServiceResource</value>
                         </valueListItems>
+                        <valueListItems>
+                            <value>ServiceAppointment.HOT_RegisterInterest</value>
+                            <visibilityRule>
+                                <criteria>
+                                    <leftValue>{!$Client.formFactor}</leftValue>
+                                    <operator>EQUAL</operator>
+                                    <rightValue>Small</rightValue>
+                                </criteria>
+                            </visibilityRule>
+                        </valueListItems>
                     </valueList>
                 </componentInstanceProperties>
                 <componentInstanceProperties>
@@ -1154,37 +1164,23 @@
             <componentInstance>
                 <componentName>hot_messagingMessageComponent_v2</componentName>
                 <identifier>c_hot_messagingMessageComponent_v2</identifier>
-                <visibilityRule>
-                    <criteria>
-                        <leftValue>{!$Permission.CustomPermission.HOT_Tolk_Beta}</leftValue>
-                        <operator>EQUAL</operator>
-                        <rightValue>true</rightValue>
-                    </criteria>
-                </visibilityRule>
-            </componentInstance>
-        </itemInstances>
-        <itemInstances>
-            <componentInstance>
-                <componentInstanceProperties>
-                    <name>showClose</name>
-                    <value>false</value>
-                </componentInstanceProperties>
-                <componentInstanceProperties>
-                    <name>singleThread</name>
-                    <value>true</value>
-                </componentInstanceProperties>
-                <componentName>hot_messagingMessageComponent</componentName>
-                <identifier>c_hot_messagingMessageComponent</identifier>
-                <visibilityRule>
-                    <criteria>
-                        <leftValue>{!$Permission.CustomPermission.HOT_Tolk_Beta}</leftValue>
-                        <operator>EQUAL</operator>
-                        <rightValue>false</rightValue>
-                    </criteria>
-                </visibilityRule>
             </componentInstance>
         </itemInstances>
         <name>Facet-78213d51-8363-40c6-ab40-3a9ea8295431</name>
+        <type>Facet</type>
+    </flexiPageRegions>
+    <flexiPageRegions>
+        <itemInstances>
+            <componentInstance>
+                <componentInstanceProperties>
+                    <name>customObjectApiName</name>
+                    <value>WorkOrder</value>
+                </componentInstanceProperties>
+                <componentName>hot_messagingMessageComponentCustomObject</componentName>
+                <identifier>c_hot_messagingMessageComponentCustomObject</identifier>
+            </componentInstance>
+        </itemInstances>
+        <name>Facet-c964c6d9-7349-48dd-b1a7-5a128cd59568</name>
         <type>Facet</type>
     </flexiPageRegions>
     <flexiPageRegions>
@@ -1276,10 +1272,50 @@
                 <identifier>flexipage_tab</identifier>
             </componentInstance>
         </itemInstances>
+        <itemInstances>
+            <componentInstance>
+                <componentInstanceProperties>
+                    <name>body</name>
+                    <value>Facet-c964c6d9-7349-48dd-b1a7-5a128cd59568</value>
+                </componentInstanceProperties>
+                <componentInstanceProperties>
+                    <name>title</name>
+                    <value>Samtale med bruker/medtolk</value>
+                </componentInstanceProperties>
+                <componentName>flexipage:tab</componentName>
+                <identifier>flexipage_tab2</identifier>
+                <visibilityRule>
+                    <booleanFilter>1 AND 2</booleanFilter>
+                    <criteria>
+                        <leftValue>{!$Client.formFactor}</leftValue>
+                        <operator>EQUAL</operator>
+                        <rightValue>Small</rightValue>
+                    </criteria>
+                    <criteria>
+                        <leftValue>{!$User.Profile.Name}</leftValue>
+                        <operator>CONTAINS</operator>
+                        <rightValue>HOT Tolk Ansatt</rightValue>
+                    </criteria>
+                </visibilityRule>
+            </componentInstance>
+        </itemInstances>
         <name>Facet-87d76a61-4535-4189-be09-0e5377b76f56</name>
         <type>Facet</type>
     </flexiPageRegions>
     <flexiPageRegions>
+        <itemInstances>
+            <componentInstance>
+                <componentName>hot_dispatcherMessageBanner</componentName>
+                <identifier>c_hot_dispatcherMessageBanner</identifier>
+                <visibilityRule>
+                    <criteria>
+                        <leftValue>{!$User.Profile.Name}</leftValue>
+                        <operator>EQUAL</operator>
+                        <rightValue>HOT Tolk Formidler</rightValue>
+                    </criteria>
+                </visibilityRule>
+            </componentInstance>
+        </itemInstances>
         <itemInstances>
             <componentInstance>
                 <componentInstanceProperties>

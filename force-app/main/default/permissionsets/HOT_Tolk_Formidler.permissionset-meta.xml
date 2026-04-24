@@ -29,6 +29,10 @@
         <enabled>true</enabled>
     </classAccesses>
     <classAccesses>
+        <apexClass>HOT_HighlightPanelController</apexClass>
+        <enabled>true</enabled>
+    </classAccesses>
+    <classAccesses>
         <apexClass>HOT_IRRecordPageController</apexClass>
         <enabled>true</enabled>
     </classAccesses>
@@ -65,6 +69,10 @@
         <enabled>true</enabled>
     </classAccesses>
     <classAccesses>
+        <apexClass>HOT_WOInterpreterThreadService</apexClass>
+        <enabled>true</enabled>
+    </classAccesses>
+    <classAccesses>
         <apexClass>HOT_WageClaimService</apexClass>
         <enabled>true</enabled>
     </classAccesses>
@@ -76,6 +84,10 @@
         <apexClass>RecordFilesControllerWithoutSharing</apexClass>
         <enabled>true</enabled>
     </classAccesses>
+    <customPermissions>
+        <enabled>true</enabled>
+        <name>HOT_AccessToFormidlerActions</name>
+    </customPermissions>
     <customPermissions>
         <enabled>true</enabled>
         <name>HOT_DeleteFiles</name>
@@ -674,7 +686,6 @@
         <field>HOT_Request__c.PreferredResource2__c</field>
         <readable>true</readable>
     </fieldPermissions>
-    
     <fieldPermissions>
         <editable>false</editable>
         <field>HOT_Request__c.SeriesDurationDays__c</field>
@@ -978,6 +989,21 @@
     <fieldPermissions>
         <editable>true</editable>
         <field>Person__c.HOT_LanguageAndCommunicationMethods__c</field>
+        <readable>true</readable>
+    </fieldPermissions>
+    <fieldPermissions>
+        <editable>false</editable>
+        <field>Person__c.HOT_MobilePhoneOverrideReason__c</field>
+        <readable>true</readable>
+    </fieldPermissions>
+    <fieldPermissions>
+        <editable>false</editable>
+        <field>Person__c.HOT_MobilePhoneOverride__c</field>
+        <readable>true</readable>
+    </fieldPermissions>
+    <fieldPermissions>
+        <editable>false</editable>
+        <field>Person__c.HOT_MobilePhone__c</field>
         <readable>true</readable>
     </fieldPermissions>
     <fieldPermissions>

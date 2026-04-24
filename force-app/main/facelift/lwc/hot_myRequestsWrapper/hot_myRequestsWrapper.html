@@ -30,9 +30,9 @@
                         <strong>Gjelder periode: </strong><span>{requestSeriesStartDate} - {requestSeriesEndDate}</span>
                     </p>
                     <br />
-                    <p><strong>Adresse: </strong><span>{requestAddressToShow}</span></p>
-                    <p lwc:if={requestInterpretationAddressToShow}>
-                        <strong>Oppmøteadresse: </strong><span>{requestInterpretationAddressToShow}</span>
+                    <p><strong>Adresse: </strong><span>{requestInterpretationAddressToShow}</span></p>
+                    <p lwc:if={requestAddressToShow}>
+                        <strong>Oppmøteadresse: </strong><span>{requestAddressToShow}</span>
                     </p>
                     <br />
                     <p lwc:if={request.OwnerName__c}><strong>Sentral: </strong><span>{request.OwnerName__c}</span></p>
@@ -69,7 +69,12 @@
                     </p>
                     <br lwc:if={request.Description__c} />
                     <p lwc:if={request.Description__c}>
-                        <strong>Tilleggsopplysninger: </strong><span>{request.Description__c}</span>
+                        <strong>Tilleggsopplysninger: </strong
+                        ><span
+                            ><lightning-formatted-rich-text
+                                value={request.Description__c}
+                            ></lightning-formatted-rich-text
+                        ></span>
                     </p>
                 </div>
                 <c-record-files-without-sharing
@@ -86,12 +91,15 @@
                     <p><strong>Fra dato: </strong><span>{workOrderStartDate}</span></p>
                     <p><strong>Til dato: </strong><span>{workOrderEndDate}</span></p>
                     <br />
-                    <p><strong>Adresse: </strong><span>{workOrder.HOT_AddressFormated__c}</span></p>
-                    <p lwc:if={workOrderInterpretationAddressToShow}>
-                        <strong>Oppmøteadresse: </strong><span>{workOrderInterpretationAddressToShow}</span>
+                    <p><strong>Adresse: </strong><span>{workOrderInterpretationAddressToShow}</span></p>
+                    <p lwc:if={workOrder.HOT_AddressFormated__c}>
+                        <strong>Oppmøteadresse: </strong><span>{workOrder.HOT_AddressFormated__c}</span>
                     </p>
                     <br />
                     <p><strong>Status: </strong><span>{workOrder.HOT_ExternalWorkOrderStatus__c}</span></p>
+                    <p lwc:if={showInterpretes}>
+                        <strong>{interpreter}: </strong><span>{workOrder.HOT_Interpreters__c}</span>
+                    </p>
                     <br />
                     <p lwc:if={request.OwnerName__c}><strong>Sentral: </strong><span>{request.OwnerName__c}</span></p>
                     <p><strong>Bestillingsnummer: </strong><span>{workOrder.HOT_RequestName__c}</span></p>
@@ -110,9 +118,7 @@
                     <p lwc:if={request.UserPreferredInterpreter__c}>
                         <strong>Ønsket tolk: </strong><span>{request.UserPreferredInterpreter__c}</span>
                     </p>
-                    <p lwc:if={showInterpretes}>
-                        <strong>{interpreter}: </strong><span>{workOrder.HOT_Interpreters__c}</span>
-                    </p>
+
                     <p lwc:if={request.UserInterpretationMethod__c}>
                         <strong>Foretrukket tolkemetode: </strong><span>{request.UserInterpretationMethod__c}</span>
                     </p>
@@ -131,7 +137,12 @@
                     </p>
                     <br lwc:if={request.Description__c} />
                     <p lwc:if={request.Description__c}>
-                        <strong>Tilleggsopplysninger: </strong><span>{request.Description__c}</span>
+                        <strong>Tilleggsopplysninger: </strong
+                        ><span
+                            ><lightning-formatted-rich-text
+                                value={request.Description__c}
+                            ></lightning-formatted-rich-text
+                        ></span>
                     </p>
                 </div>
                 <c-record-files-without-sharing

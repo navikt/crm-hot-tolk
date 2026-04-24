@@ -76,7 +76,7 @@ public without sharing class HOT_MessagesNotification {
                 HOT_ServiceResource__c,
                 HOT_ServiceResource__r.HOT_MobilePhone__c,
                 CRM_Account__r.INT_KrrMobilePhone__c,
-                CRM_Account__r.CRM_Person__r.INT_KrrMobilePhone__c,
+                CRM_Account__r.CRM_Person__r.HOT_MobilePhone__c,
                 CRM_Account__r.CRM_Person__r.HOT_NotificationChannel__c,
                 CRM_Account__r.CRM_Person__r.HOT_IsReservationAgainstNotifications__c
             FROM Thread__c
@@ -164,7 +164,7 @@ public without sharing class HOT_MessagesNotification {
                     )
                 );
                 //Sender ut pushvarsel til appbruker
-                HOT_UserNotificationService.newMessageNotification(notificationType, thread, false, recipients);
+                HOT_UserNotificationService.newMessageNotification(notificationType, thread, false, true, recipients);
             } else {
                 //Ellers sendes det ut sms til bruker
                 //Lager notifikasjon til liste
@@ -234,6 +234,9 @@ public without sharing class HOT_MessagesNotification {
                     }
                 }
             } else {
+                if (String.isBlank(thread.HOT_ParticipantIds__c)) {
+                    continue;
+                }
                 String[] participantIds = thread.HOT_ParticipantIds__c.split(',');
 
                 for (String participantId : participantIds) {
@@ -314,8 +317,14 @@ public without sharing class HOT_MessagesNotification {
             Id accountId = sr.AccountId;
             String notificationChannel = sr.HOT_NotificationChannel__c;
             Boolean isFreelance = sr.HOT_IsFreelanceInterpreter__c;
+            Set<Id> processedThreadIds = new Set<Id>();
 
             for (Thread__c thread : serviceResourceToThreadsMap.get(serviceResourceId)) {
+                if (processedThreadIds.contains(thread.Id)) {
+                    continue;
+                }
+                processedThreadIds.add(thread.Id);
+
                 //Hopp over hvis siste avsender er samme som ServiceResource sin user
                 if (userId != null && threadToLastSender.get(thread.Id) == userId) {
                     continue;
@@ -335,6 +344,7 @@ public without sharing class HOT_MessagesNotification {
                         notificationType,
                         thread,
                         isFreelance,
+                        false,
                         new Set<String>{ userId }
                     );
                 } else {

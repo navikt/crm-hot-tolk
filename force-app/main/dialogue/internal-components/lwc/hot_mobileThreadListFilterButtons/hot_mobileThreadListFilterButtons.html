@@ -1,0 +1,26 @@
+<template>
+    <div class="filterButtons desktop-only" role="tablist">
+        <template for:each={threadFilterButtonType} for:item="filterOption">
+            <button
+                key={filterOption.value}
+                class="tab tab-button"
+                data-id={filterOption.value}
+                onclick={handleFilterButtonClick}
+                value={filterOption.value}
+                role="tab"
+                aria-selected={filterOption.ariaSelected}
+                aria-controls={filterOption.ariaControls}
+                id={filterOption.ariaId}
+                aria-label={filterOption.ariaLabel}
+            >
+                {filterOption.label}
+            </button>
+        </template>
+    </div>
+
+    <c-picklist
+        choices={threadFilterButtonType}
+        class="mobile-only"
+        onpicklistvaluechange={handleFilterSelectChange}
+    ></c-picklist>
+</template>

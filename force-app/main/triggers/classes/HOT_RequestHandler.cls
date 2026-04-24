@@ -1,14 +1,110 @@
 public without sharing class HOT_RequestHandler extends MyTriggers {
+    private static Map<String, String> serviceTerritoryDevNameByQueueDevName;
+    private static Map<Id, Id> serviceTerritoryIdByQueueId = new Map<Id, Id>();
+    private static Map<String, Id> serviceTerritoryIdByServiceTerritoryDevName = new Map<String, Id>();
+
     private static void handleException(Exception e) {
         LoggerUtility logger = new LoggerUtility();
         logger.exception(e, CRM_ApplicationDomain.Domain.HOT);
         logger.publishSynch();
+    }
+
+    private static Map<String, String> buildServiceTerritoryDevNameByQueueDevName() {
+        Map<String, String> serviceTerritoryDevNameByQueueDevName = new Map<String, String>();
+        for (
+            HOT_ServiceTerritoryByQueue__mdt serviceTerritoryByQueue : HOT_ServiceTerritoryByQueue__mdt.getAll()
+                .values()
+        ) {
+            serviceTerritoryDevNameByQueueDevName.put(
+                serviceTerritoryByQueue.Queue__c,
+                serviceTerritoryByQueue.ServiceTerritory__c
+            );
+        }
+        return serviceTerritoryDevNameByQueueDevName;
+    }
+
+    private static Map<String, String> getServiceTerritoryDevNameByQueueDevName() {
+        if (serviceTerritoryDevNameByQueueDevName == null) {
+            serviceTerritoryDevNameByQueueDevName = buildServiceTerritoryDevNameByQueueDevName();
+        }
+        return serviceTerritoryDevNameByQueueDevName;
+    }
+
+    private static Set<Id> getUncachedQueueIds(Set<Id> queueIds) {
+        Set<Id> uncachedQueueIds = new Set<Id>();
+        for (Id queueId : queueIds) {
+            if (queueId != null && !serviceTerritoryIdByQueueId.containsKey(queueId)) {
+                uncachedQueueIds.add(queueId);
+            }
+        }
+        return uncachedQueueIds;
+    }
+
+    private static Map<Id, Group> getQueuesById(Set<Id> queueIds) {
+        return new Map<Id, Group>([SELECT Id, DeveloperName FROM Group WHERE Type = 'Queue' AND Id IN :queueIds]);
+    }
+
+    private static Set<String> getMissingServiceTerritoryDevNames(List<Group> queues) {
+        Set<String> missingServiceTerritoryDevNames = new Set<String>();
+        Map<String, String> serviceTerritoryDevNamesByQueueDevName = getServiceTerritoryDevNameByQueueDevName();
+        for (Group queue : queues) {
+            String serviceTerritoryDevName = serviceTerritoryDevNamesByQueueDevName.get(queue.DeveloperName);
+            if (
+                serviceTerritoryDevName != null &&
+                !serviceTerritoryIdByServiceTerritoryDevName.containsKey(serviceTerritoryDevName)
+            ) {
+                missingServiceTerritoryDevNames.add(serviceTerritoryDevName);
+            }
+        }
+        return missingServiceTerritoryDevNames;
+    }
+
+    private static void cacheServiceTerritoryIdsByDevName(Set<String> serviceTerritoryDevNames) {
+        if (serviceTerritoryDevNames.isEmpty()) {
+            return;
+        }
+
+        for (ServiceTerritory serviceTerritory : [
+            SELECT Id, HOT_DeveloperName__c
+            FROM ServiceTerritory
+            WHERE HOT_DeveloperName__c IN :serviceTerritoryDevNames
+        ]) {
+            serviceTerritoryIdByServiceTerritoryDevName.put(serviceTerritory.HOT_DeveloperName__c, serviceTerritory.Id);
+        }
+    }
+
+    private static Id resolveServiceTerritoryId(Group queue) {
+        if (queue == null) {
+            return null;
+        }
+
+        String serviceTerritoryDevName = getServiceTerritoryDevNameByQueueDevName().get(queue.DeveloperName);
+        if (serviceTerritoryDevName == null) {
+            return null;
+        }
+
+        return serviceTerritoryIdByServiceTerritoryDevName.get(serviceTerritoryDevName);
+    }
+
+    private static void cacheServiceTerritoryIdsByQueueId(Set<Id> queueIds) {
+        Set<Id> uncachedQueueIds = getUncachedQueueIds(queueIds);
+        if (uncachedQueueIds.isEmpty() || getServiceTerritoryDevNameByQueueDevName().isEmpty()) {
+            return;
+        }
+
+        Map<Id, Group> queuesById = getQueuesById(uncachedQueueIds);
+        cacheServiceTerritoryIdsByDevName(getMissingServiceTerritoryDevNames(queuesById.values()));
+
+        for (Id queueId : uncachedQueueIds) {
+            serviceTerritoryIdByQueueId.put(queueId, resolveServiceTerritoryId(queuesById.get(queueId)));
+        }
     }
     public override void onBeforeInsert() {
         setStatusDefault((List<HOT_Request__c>) records);
         setOrdererField((List<HOT_Request__c>) records);
         setServiceTerritory((List<HOT_Request__c>) records);
         setMeetingStreet((List<HOT_Request__c>) records);
+        setIsNotNotifyAccount((List<HOT_Request__c>) records);
         setFieldsToBlank(
             (List<HOT_Request__c>) records,
             new List<String>{
@@ -20,21 +116,22 @@ public without sharing class HOT_RequestHandler extends MyTriggers {
             }
         );
         List<HOT_Request__c> imageInterpreterRequests = new List<HOT_Request__c>();
-        List<HOT_Request__c> requestsWithUserInterpretationMethod = new List<HOT_Request__c>();
+        List<HOT_Request__c> requestsWithIsNotNotifyAccount = new List<HOT_Request__c>();
 
         for (HOT_Request__c request : (List<HOT_Request__c>) records) {
             if (request.Type__c == 'ImageInterpreter') {
                 imageInterpreterRequests.add(request);
             }
-            if (request.UserInterpretationMethod__c != null && request.Source__c == 'Community') {
-                requestsWithUserInterpretationMethod.add(request);
+            if (request.IsNotNotifyAccount__c != null) {
+                requestsWithIsNotNotifyAccount.add(request);
             }
         }
         if (imageInterpreterRequests.size() > 0) {
             setImageInterpreterFields(imageInterpreterRequests);
         }
-        if (requestsWithUserInterpretationMethod.size() > 0) {
-            setInterpretationMethod(requestsWithUserInterpretationMethod);
+        syncInterpretationMethods((List<HOT_Request__c>) records);
+        if (requestsWithIsNotNotifyAccount.size() > 0) {
+            setIsNotNotifyAccount(requestsWithIsNotNotifyAccount);
         }
     }
 
@@ -69,6 +166,9 @@ public without sharing class HOT_RequestHandler extends MyTriggers {
         List<HOT_Request__c> notifyDispatcherRequests = new List<HOT_Request__c>();
         List<HOT_Request__c> requestsToChangeOwnerToArchive = new List<HOT_Request__c>();
         List<HOT_Request__c> ordererRequestsToNotifyUsers = new List<HOT_Request__c>();
+        List<HOT_Request__c> requestsWithIsNotNotifyAccount = new List<HOT_Request__c>();
+
+        syncInterpretationMethods((List<HOT_Request__c>) records, triggerOldMap);
 
         for (HOT_Request__c request : (List<HOT_Request__c>) records) {
             // Filter for owner change
@@ -101,6 +201,15 @@ public without sharing class HOT_RequestHandler extends MyTriggers {
             ) {
                 ordererRequestsToNotifyUsers.add(request);
             }
+
+            // Set IsReminderSMS__c to false if IsNotNotifyAccount__c is set to true
+            if (
+                (request.IsNotNotifyAccount__c != triggerOldMap.get(request.Id).get('IsNotNotifyAccount__c') &&
+                request.IsNotNotifyAccount__c == true) ||
+                (request.isReminderSMS__c != triggerOldMap.get(request.Id).get('isReminderSMS__c'))
+            ) {
+                requestsWithIsNotNotifyAccount.add(request);
+            }
         }
         if (ownerChangedRequests.size() > 0) {
             setServiceTerritory(ownerChangedRequests);
@@ -117,6 +226,9 @@ public without sharing class HOT_RequestHandler extends MyTriggers {
         }
         if (ordererRequestsToNotifyUsers.size() > 0) {
             setNotifyOnUser(ordererRequestsToNotifyUsers);
+        }
+        if (requestsWithIsNotNotifyAccount.size() > 0) {
+            setIsNotNotifyAccount(requestsWithIsNotNotifyAccount);
         }
     }
 
@@ -364,6 +476,7 @@ public without sharing class HOT_RequestHandler extends MyTriggers {
     }
 
     private static void createWOLI_SA(List<HOT_Request__c> godkjentRequests) {
+        Map<Id, HOT_Request__c> godkjentRequestsById = new Map<Id, HOT_Request__c>(godkjentRequests);
         List<WorkOrder> workOrders = [
             SELECT
                 Id,
@@ -384,10 +497,10 @@ public without sharing class HOT_RequestHandler extends MyTriggers {
                 HOT_NumberOfInterpreters__c,
                 WorkTypeId
             FROM WorkOrder
-            WHERE HOT_Request__c IN :(new Map<Id, HOT_Request__c>(godkjentRequests)).keySet() AND Status = 'New'
+            WHERE HOT_Request__c IN :godkjentRequestsById.keySet() AND Status = 'New'
         ];
         if (workOrders.size() > 0) {
-            HOT_WorkOrderHandler.updateWorkOrders(workOrders);
+            HOT_WorkOrderHandler.updateWorkOrders(workOrders, godkjentRequestsById);
             HOT_WorkOrderHandler.createChildRecords(workOrders);
         } else {
             createChildRecords(godkjentRequests);
@@ -493,30 +606,14 @@ public without sharing class HOT_RequestHandler extends MyTriggers {
     }
 
     public static void setServiceTerritory(List<HOT_Request__c> requests) {
-        List<HOT_ServiceTerritoryByQueue__mdt> serviceTerritoryByQueueList = HOT_ServiceTerritoryByQueue__mdt.getAll()
-            .values();
-        Map<String, String> serviceTerritoryByQueue = new Map<String, String>();
-        for (HOT_ServiceTerritoryByQueue__mdt STbyQ : serviceTerritoryByQueueList) {
-            serviceTerritoryByQueue.put(STbyQ.Queue__c, STbyQ.ServiceTerritory__c);
-        }
-        List<Group> queues = [
-            SELECT Id, Name, DeveloperName
-            FROM Group
-            WHERE Type = 'Queue' AND DeveloperName IN :serviceTerritoryByQueue.keySet()
-        ];
-        List<ServiceTerritory> serviceTerritories = [
-            SELECT Id, Name, HOT_DeveloperName__c
-            FROM ServiceTerritory
-            WHERE HOT_DeveloperName__c IN :serviceTerritoryByQueue.values()
-        ];
-        Map<Id, Id> serviceTerritoryIdByQueueId = new Map<Id, Id>();
-        for (Group queue : queues) {
-            for (ServiceTerritory serviceTerritory : serviceTerritories) {
-                if (serviceTerritoryByQueue.get(queue.DeveloperName) == serviceTerritory.HOT_DeveloperName__c) {
-                    serviceTerritoryIdByQueueId.put(queue.Id, serviceTerritory.Id);
-                }
+        Set<Id> queueIds = new Set<Id>();
+        for (HOT_Request__c request : requests) {
+            if (request.OwnerId != null) {
+                queueIds.add(request.OwnerId);
             }
         }
+        cacheServiceTerritoryIdsByQueueId(queueIds);
+
         for (HOT_Request__c request : requests) {
             if (serviceTerritoryIdByQueueId.get(request.OwnerId) != null) {
                 request.ServiceTerritory__c = serviceTerritoryIdByQueueId.get(request.OwnerId);
@@ -576,21 +673,100 @@ public without sharing class HOT_RequestHandler extends MyTriggers {
         }
     }
 
-    public static void setInterpretationMethod(List<HOT_Request__c> requests) {
-        List<String> userInterpretationMethodList = new List<String>();
+    public static void setIsNotNotifyAccount(List<HOT_Request__c> requests) {
         for (HOT_Request__c request : requests) {
-            userInterpretationMethodList.add(request.UserInterpretationMethod__c);
+            if (request.IsNotNotifyAccount__c == true) {
+                request.IsReminderSMS__c = false;
+            }
         }
-        Map<String, Id> workTypeIdByDeveloperName = new Map<String, Id>();
-        for (WorkType workType : [
-            SELECT Id, HOT_DeveloperName__c
-            FROM WorkType
-            WHERE HOT_DeveloperName__c LIKE :userInterpretationMethodList
-        ]) {
-            workTypeIdByDeveloperName.put(workType.HOT_DeveloperName__c, workType.Id);
-        }
+    }
+
+    public static void syncInterpretationMethods(List<HOT_Request__c> requests) {
+        syncInterpretationMethods(requests, null);
+    }
+
+    public static void syncInterpretationMethods(List<HOT_Request__c> requests, Map<Id, sObject> triggerOldMap) {
+        Set<String> workTypeNames = new Set<String>();
+        Set<String> workTypeDeveloperNames = new Set<String>();
+        List<HOT_Request__c> requestsToSyncFromUserField = new List<HOT_Request__c>();
+        List<HOT_Request__c> requestsToSyncPrimaryType = new List<HOT_Request__c>();
+        List<HOT_Request__c> requestsToSyncSecondaryType = new List<HOT_Request__c>();
+
         for (HOT_Request__c request : requests) {
-            request.InterpretationMethod__c = workTypeIdByDeveloperName.get(request.UserInterpretationMethod__c);
+            HOT_Request__c oldRequest = triggerOldMap == null ? null : (HOT_Request__c) triggerOldMap.get(request.Id);
+            Boolean isInsert = oldRequest == null;
+            Boolean shouldSyncFromUserField =
+                isInsert &&
+                request.Source__c == 'Community' &&
+                request.UserInterpretationMethod__c != null &&
+                request.InterpretationMethodType__c == null &&
+                request.InterpretationMethod__c == null;
+            Boolean shouldSyncPrimaryType =
+                isInsert
+                    ? request.InterpretationMethodType__c != null
+                    : request.InterpretationMethodType__c != oldRequest.InterpretationMethodType__c;
+            Boolean shouldSyncSecondaryType =
+                isInsert
+                    ? request.InterpretationMethodSecondaryType__c != null
+                    : request.InterpretationMethodSecondaryType__c != oldRequest.InterpretationMethodSecondaryType__c;
+
+            if (shouldSyncFromUserField) {
+                workTypeDeveloperNames.add(request.UserInterpretationMethod__c);
+                requestsToSyncFromUserField.add(request);
+            }
+            if (shouldSyncPrimaryType) {
+                requestsToSyncPrimaryType.add(request);
+                if (request.InterpretationMethodType__c != null) {
+                    workTypeNames.add(request.InterpretationMethodType__c);
+                }
+            }
+            if (shouldSyncSecondaryType) {
+                requestsToSyncSecondaryType.add(request);
+                if (request.InterpretationMethodSecondaryType__c != null) {
+                    workTypeNames.add(request.InterpretationMethodSecondaryType__c);
+                }
+            }
+        }
+
+        Map<String, WorkType> workTypeByName = new Map<String, WorkType>();
+        Map<String, WorkType> workTypeByDeveloperName = new Map<String, WorkType>();
+        if (!workTypeNames.isEmpty() || !workTypeDeveloperNames.isEmpty()) {
+            for (WorkType workType : [
+                SELECT Id, Name, HOT_DeveloperName__c
+                FROM WorkType
+                WHERE Name IN :workTypeNames OR HOT_DeveloperName__c IN :workTypeDeveloperNames
+            ]) {
+                workTypeByName.put(workType.Name, workType);
+                workTypeByDeveloperName.put(workType.HOT_DeveloperName__c, workType);
+            }
+        }
+
+        for (HOT_Request__c request : requestsToSyncFromUserField) {
+            WorkType workType = workTypeByDeveloperName.get(request.UserInterpretationMethod__c);
+            if (workType != null) {
+                request.InterpretationMethodType__c = workType.Name;
+                request.InterpretationMethod__c = workType.Id;
+            }
+        }
+
+        for (HOT_Request__c request : requestsToSyncPrimaryType) {
+            if (request.InterpretationMethodType__c == null) {
+                request.InterpretationMethod__c = null;
+                continue;
+            }
+
+            WorkType workType = workTypeByName.get(request.InterpretationMethodType__c);
+            request.InterpretationMethod__c = workType == null ? null : workType.Id;
+        }
+
+        for (HOT_Request__c request : requestsToSyncSecondaryType) {
+            if (request.InterpretationMethodSecondaryType__c == null) {
+                request.InterpretationMethodSecondary__c = null;
+                continue;
+            }
+
+            WorkType workType = workTypeByName.get(request.InterpretationMethodSecondaryType__c);
+            request.InterpretationMethodSecondary__c = workType == null ? null : workType.Id;
         }
     }
 

@@ -144,7 +144,7 @@
             </value>
         </assignmentItems>
         <connector>
-            <targetReference>isDate_check</targetReference>
+            <targetReference>UpdateChildRecords</targetReference>
         </connector>
     </assignments>
     <assignments>
@@ -207,6 +207,20 @@
             <operator>Assign</operator>
             <value>
                 <elementReference>recordId.PostalCode</elementReference>
+            </value>
+        </assignmentItems>
+        <assignmentItems>
+            <assignToReference>getRequest.StartTime__c</assignToReference>
+            <operator>Assign</operator>
+            <value>
+                <elementReference>recordId.StartDate</elementReference>
+            </value>
+        </assignmentItems>
+        <assignmentItems>
+            <assignToReference>getRequest.EndTime__c</assignToReference>
+            <operator>Assign</operator>
+            <value>
+                <elementReference>recordId.EndDate</elementReference>
             </value>
         </assignmentItems>
         <connector>
@@ -373,37 +387,12 @@
         </rules>
     </decisions>
     <decisions>
-        <name>isDate_check</name>
-        <label>isDate check</label>
-        <locationX>0</locationX>
-        <locationY>0</locationY>
-        <defaultConnector>
-            <targetReference>UpdateChildRecords</targetReference>
-        </defaultConnector>
-        <defaultConnectorLabel>Default Outcome</defaultConnectorLabel>
-        <rules>
-            <name>Yes</name>
-            <conditionLogic>and</conditionLogic>
-            <conditions>
-                <leftValueReference>isDate</leftValueReference>
-                <operator>EqualTo</operator>
-                <rightValue>
-                    <booleanValue>true</booleanValue>
-                </rightValue>
-            </conditions>
-            <connector>
-                <targetReference>UpdateChildRecords</targetReference>
-            </connector>
-            <label>Yes</label>
-        </rules>
-    </decisions>
-    <decisions>
         <name>isInterpreterMethodCheck</name>
         <label>isInterpreterMethodCheck</label>
         <locationX>0</locationX>
         <locationY>0</locationY>
         <defaultConnector>
-            <targetReference>isDate_check</targetReference>
+            <targetReference>UpdateChildRecords</targetReference>
         </defaultConnector>
         <defaultConnectorLabel>Not Interpreter</defaultConnectorLabel>
         <rules>
@@ -420,45 +409,6 @@
                 <targetReference>Store_Interpreter_method_value</targetReference>
             </connector>
             <label>isInterpretermethodChecked</label>
-        </rules>
-    </decisions>
-    <decisions>
-        <name>Request_status_none</name>
-        <label>Request status none?</label>
-        <locationX>0</locationX>
-        <locationY>0</locationY>
-        <defaultConnector>
-            <targetReference>CheckRequestState</targetReference>
-        </defaultConnector>
-        <defaultConnectorLabel>Yes</defaultConnectorLabel>
-        <rules>
-            <name>No</name>
-            <conditionLogic>and</conditionLogic>
-            <conditions>
-                <leftValueReference>getRequest.Status__c</leftValueReference>
-                <operator>NotEqualTo</operator>
-                <rightValue>
-                    <stringValue>Åpen</stringValue>
-                </rightValue>
-            </conditions>
-            <conditions>
-                <leftValueReference>getRequest.Status__c</leftValueReference>
-                <operator>NotEqualTo</operator>
-                <rightValue>
-                    <stringValue>Avlyst</stringValue>
-                </rightValue>
-            </conditions>
-            <conditions>
-                <leftValueReference>getRequest.Status__c</leftValueReference>
-                <operator>NotEqualTo</operator>
-                <rightValue>
-                    <stringValue>Annullert</stringValue>
-                </rightValue>
-            </conditions>
-            <connector>
-                <targetReference>getServiceAppointment</targetReference>
-            </connector>
-            <label>No</label>
         </rules>
     </decisions>
     <description>In this version we removed the Dispatcher and Tolk method options from the screen,
@@ -583,7 +533,7 @@ Version two adds in Subject and uses workOrder for values on the screen instead 
         <locationY>0</locationY>
         <assignNullValuesIfNoRecordsFound>false</assignNullValuesIfNoRecordsFound>
         <connector>
-            <targetReference>Request_status_none</targetReference>
+            <targetReference>CheckRequestState</targetReference>
         </connector>
         <filterLogic>and</filterLogic>
         <filters>
@@ -595,27 +545,6 @@ Version two adds in Subject and uses workOrder for values on the screen instead 
         </filters>
         <getFirstRecordOnly>true</getFirstRecordOnly>
         <object>HOT_Request__c</object>
-        <storeOutputAutomatically>true</storeOutputAutomatically>
-    </recordLookups>
-    <recordLookups>
-        <name>getServiceAppointment</name>
-        <label>getServiceAppointment</label>
-        <locationX>0</locationX>
-        <locationY>0</locationY>
-        <assignNullValuesIfNoRecordsFound>false</assignNullValuesIfNoRecordsFound>
-        <connector>
-            <targetReference>CheckRequestState</targetReference>
-        </connector>
-        <filterLogic>and</filterLogic>
-        <filters>
-            <field>HOT_Request__c</field>
-            <operator>EqualTo</operator>
-            <value>
-                <elementReference>getRequest.Id</elementReference>
-            </value>
-        </filters>
-        <getFirstRecordOnly>true</getFirstRecordOnly>
-        <object>ServiceAppointment</object>
         <storeOutputAutomatically>true</storeOutputAutomatically>
     </recordLookups>
     <screens>
@@ -649,12 +578,12 @@ Version two adds in Subject and uses workOrder for values on the screen instead 
         </connector>
         <fields>
             <name>displayWarningText</name>
-            <fieldText>&lt;p&gt;&lt;span style=&quot;font-size: 16px;&quot;&gt;OBS! Ved å endre verdiene her så endrer du verdiene på alle underliggende arbeidsordrelinjer og oppdrag.&lt;/span&gt;&lt;/p&gt;</fieldText>
+            <fieldText>&lt;p&gt;&lt;strong style=&quot;color: rgb(0, 0, 0); font-size: 16px;&quot;&gt;Du oppdaterer nå felter fra Arbeidsordre&lt;/strong&gt;&lt;/p&gt;</fieldText>
             <fieldType>DisplayText</fieldType>
         </fields>
         <fields>
             <name>displayTimeText</name>
-            <fieldText>&lt;p&gt;&lt;span style=&quot;background-color: rgb(255, 255, 255);&quot;&gt;Tid (Kan bare endres om status på oppdrag er åpen eller frigitt til frilanstolk).&lt;/span&gt;&lt;/p&gt;</fieldText>
+            <fieldText>&lt;p&gt;&lt;span style=&quot;color: rgb(0, 0, 0); background-color: rgb(255, 255, 255);&quot;&gt;OBS! Ved å endre verdiene her så endrer du verdiene på alle underliggende arbeidsordrelinjer og oppdrag.&lt;/span&gt;&lt;/p&gt;&lt;p&gt;&lt;span style=&quot;color: rgb(0, 0, 0); background-color: rgb(255, 255, 255);&quot;&gt;(Tid kan kun endres på arbeidsordre som har status åpen)&lt;/span&gt;&lt;/p&gt;</fieldText>
             <fieldType>DisplayText</fieldType>
         </fields>
         <fields>
@@ -671,24 +600,10 @@ Version two adds in Subject and uses workOrder for values on the screen instead 
             <visibilityRule>
                 <conditionLogic>and</conditionLogic>
                 <conditions>
-                    <leftValueReference>getServiceAppointment.Status</leftValueReference>
+                    <leftValueReference>recordId.Status</leftValueReference>
                     <operator>NotEqualTo</operator>
                     <rightValue>
-                        <stringValue>None</stringValue>
-                    </rightValue>
-                </conditions>
-                <conditions>
-                    <leftValueReference>getServiceAppointment.Status</leftValueReference>
-                    <operator>NotEqualTo</operator>
-                    <rightValue>
-                        <stringValue>Released to Freelance</stringValue>
-                    </rightValue>
-                </conditions>
-                <conditions>
-                    <leftValueReference>getRequest.Status__c</leftValueReference>
-                    <operator>NotEqualTo</operator>
-                    <rightValue>
-                        <stringValue>Åpen</stringValue>
+                        <stringValue>New</stringValue>
                     </rightValue>
                 </conditions>
             </visibilityRule>
@@ -708,24 +623,10 @@ Version two adds in Subject and uses workOrder for values on the screen instead 
             <visibilityRule>
                 <conditionLogic>or</conditionLogic>
                 <conditions>
-                    <leftValueReference>getServiceAppointment.Status</leftValueReference>
+                    <leftValueReference>recordId.Status</leftValueReference>
                     <operator>EqualTo</operator>
                     <rightValue>
-                        <stringValue>None</stringValue>
-                    </rightValue>
-                </conditions>
-                <conditions>
-                    <leftValueReference>getServiceAppointment.Status</leftValueReference>
-                    <operator>EqualTo</operator>
-                    <rightValue>
-                        <stringValue>Released to Freelance</stringValue>
-                    </rightValue>
-                </conditions>
-                <conditions>
-                    <leftValueReference>getRequest.Status__c</leftValueReference>
-                    <operator>EqualTo</operator>
-                    <rightValue>
-                        <stringValue>Åpen</stringValue>
+                        <stringValue>New</stringValue>
                     </rightValue>
                 </conditions>
             </visibilityRule>

@@ -23,7 +23,12 @@
                 <template lwc:else>
                     <div class="modal-header">
                         <template lwc:if={isInformationModalOpen}>
-                            <h2>Informasjon om oppdraget:</h2>
+                            <template lwc:if={wageClaimNewType}>
+                                <h2>Informasjon om rett på honorar:</h2>
+                            </template>
+                            <template lwc:else>
+                                <h2>Informasjon om oppdraget:</h2>
+                            </template>
                             <button class="close-btn" onclick={closeModal} aria-label="Lukk">
                                 <img src={exitCrossIcon} alt="" aria-hidden="true" />
                             </button>
@@ -99,7 +104,7 @@
                                             </p>
                                             <p>Tolkemetode: <span>{serviceAppointment.HOT_WorkTypeName__c}</span></p>
                                             <p lwc:if={serviceAppointment.HOT_PreparationTime__c}>
-                                                Forberedelsestid:
+                                                Kompensert forberedelse:
                                                 <span>{serviceAppointment.HOT_PreparationTime__c}</span>
                                             </p>
                                             <p>Oppdragstype: <span>{serviceAppointment.HOT_AssignmentType__c}</span></p>
@@ -128,7 +133,12 @@
                                                 (Med)tolk: <span>{serviceAppointment.HOT_Interpreters__c}</span>
                                             </p>
                                             <p lwc:if={serviceAppointment.Description}>
-                                                Tilleggsopplysninger: <span>{serviceAppointment.Description}</span>
+                                                Tilleggsopplysninger:&nbsp;
+                                                <span
+                                                    ><lightning-formatted-rich-text
+                                                        value={serviceAppointment.Description}
+                                                    ></lightning-formatted-rich-text
+                                                ></span>
                                             </p>
 
                                             <p lwc:if={ordererPhoneNumber}>
@@ -252,7 +262,43 @@
                                         >
                                         </c-button>
                                     </div>
-                                    <!-- </template> -->
+                                </div>
+                            </section>
+
+                            <!-- Wage claim new type details -->
+                            <section lwc:if={isWageClaimNewTypeDetails}>
+                                <div lwc:if={wageClaimNewType}>
+                                    <p>Oppdragsnummer: <span>{wageClaimNewType.ServiceAppointmentName__c}</span></p>
+                                    <p>
+                                        Tid: <span>{wageClaimNewType.weekday} {wageClaimNewType.StartAndEndDate}</span>
+                                    </p>
+                                    <p lwc:if={wageClaimNewType.Reason__c}>
+                                        Årsak: <span>{wageClaimNewType.Reason__c}</span>
+                                    </p>
+                                    <p lwc:if={showCancelledDate}>Avlyst dato: <span>{cancelledDate}</span></p>
+                                    <p>Poststed: <span>{wageClaimNewType.ServiceAppointmentCity__c}</span></p>
+                                    <p>Tolkemetode: <span>{wageClaimNewType.WorkTypeName__c}</span></p>
+                                    <p>Oppdragstype: <span>{wageClaimNewType.AssignmentType__c}</span></p>
+                                    <p>
+                                        Eier:&nbsp;
+                                        <span
+                                            >{wageClaimNewType.ServiceAppointment__r.HOT_Request__r.OwnerName__c}</span
+                                        >
+                                    </p>
+                                    <p>
+                                        Døv/døvblind:&nbsp;
+                                        <span>{wageClaimNewType.DegreeOfHearingAndVisualImpairment__c}</span>
+                                    </p>
+                                </div>
+                                <div style="display: inline-block; padding-bottom: 1vw">
+                                    <c-button
+                                        disabled={wcNewTypeIsDisabledGoToThread}
+                                        button-styling="primary"
+                                        button-label="Samtale med ressurskontor"
+                                        aria-label="Samtale med ressurskontor"
+                                        onbuttonclick={goToWageClaimNewTypeThread}
+                                    >
+                                    </c-button>
                                 </div>
                             </section>
                         </template>

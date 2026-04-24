@@ -11,16 +11,29 @@
                 <!-- Kontaktinformasjon -->
                 <section class="sub-form">
                     <h2 id="contact-info-header" style="text-align: center">Kontaktinformasjon</h2>
+                    <div lwc:if={isAlternativeNumber}>
+                        <c-hot_info-card
+                            title="Alternativt mobilnummer i bruk"
+                            content={alternativePhoneNumberText}
+                            show-icon
+                            type="info"
+                        ></c-hot_info-card>
+                        <br></br>
+                    </div>
+
                     <div class="my-grid">
                         <div class="my-col-half">
-                            <label class="output-label" for="mobilePhone">Mobilnummer</label>
-                            <p id="mobilePhone" class="output-value">{mobilePhone}</p>
+                            <h3 class="sub-header" for="mobilePhone"
+                                >Mobilnummer fra Kontakt- og reservasjonsregisteret</h3
+                            >
+                            <p id="mobilePhone" class="output-value">{mobilePhoneKRR}</p>
                         </div>
                         <div class="my-col-half">
-                            <label class="output-label" for="email">E-postadresse</label>
+                            <h3 class="sub-header" for="email">E-postadresse</h3>
                             <p id="email" class="output-value">{email}</p>
                         </div>
                     </div>
+
                     <p>
                         <a
                             href="https://minprofil.kontaktregisteret.no/"
@@ -34,15 +47,16 @@
                         </a>
                     </p>
                     <div
-                        if:true={isKrrQueued}
-                        class="navno-dekorator alertstripe navno-dekorator alertstripe--advarsel"
+                        lwc:if={isKrrQueued}
                         role="alert"
                         aria-live="polite"
                     >
-                        <img class="navno-dekorator alertstripe__ikon" src={warningicon} alt="" aria-hidden="true" />
-                        <div class="typo-normal alertstripe__tekst">
-                            Kontaktinformasjonen vil bli oppdatert innen 24 timer
-                        </div>
+                    <br>
+                        <c-hot_info-card
+                            title="Endring registrert"
+                            content="Kontaktinformasjonen vil bli oppdatert innen 24 timer"
+                            type="neutral"
+                        ></c-hot_info-card>
                     </div>
                 </section>
 
