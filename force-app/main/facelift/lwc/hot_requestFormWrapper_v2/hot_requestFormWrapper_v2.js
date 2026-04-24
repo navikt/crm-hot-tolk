@@ -376,6 +376,7 @@ export default class hot_requestFormWrapper_v2 extends NavigationMixin(Lightning
     isEditOrCopyMode = false;
     showUploadFileModule = true;
     isEditModeAndTypeMe = false;
+    isEditMode = false;
 
     handleEditOrCopyModeRequestType(parsed_params) {
         if (parsed_params.edit != null) {
@@ -383,6 +384,7 @@ export default class hot_requestFormWrapper_v2 extends NavigationMixin(Lightning
             this.submitButtonLabel = 'Lagre';
             this.submitSuccessMessage = 'Dine endringer er lagret';
             this.showUploadFileModule = false;
+            this.isEditMode = true;
         }
         if (parsed_params.copy != null) {
             this.breadcrumbs.push({ label: 'Kopier bestilling' });
