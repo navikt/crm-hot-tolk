@@ -560,6 +560,7 @@
         <readable>true</readable>
     </fieldPermissions>
     <fieldPermissions>
+        <editable>false</editable>
     <fieldPermissions>
         <editable>false</editable>
         <field>WorkOrder.HOT_Request__c</field>
