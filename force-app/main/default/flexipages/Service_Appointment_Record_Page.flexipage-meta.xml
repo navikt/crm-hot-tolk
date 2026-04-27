@@ -414,7 +414,7 @@
             <fieldInstance>
                 <fieldInstanceProperties>
                     <name>uiBehavior</name>
-                    <value>readonly</value>
+                    <value>none</value>
                 </fieldInstanceProperties>
                 <fieldItem>Record.HOT_IsRecieptRecieved__c</fieldItem>
                 <identifier>RecordHOT_IsRecieptRecieved__cField</identifier>
