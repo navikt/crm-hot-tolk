@@ -187,7 +187,7 @@ export default class Hot_myRequestsWrapper extends NavigationMixin(LightningElem
     get tolkebrukerName() {
         const isOrderer = this.request?.Orderer__c === this.userAccountId;
 
-        return isOrderer ? this.request?.UserName__c ?? '' : this.request?.Account__r?.Name ?? '';
+        return isOrderer ? (this.request?.UserName__c ?? '') : (this.request?.Account__r?.Name ?? '');
     }
 
     get uploadTargetId() {
@@ -431,17 +431,27 @@ export default class Hot_myRequestsWrapper extends NavigationMixin(LightningElem
         if (this.request.Orderer__c === this.userRecord.AccountId) {
             this.isGetAllFiles = true;
             if (this.request.Status__c.includes('Åpen')) {
+                const state = {
+                    fieldValues: JSON.stringify(this.request),
+                    fromList: true,
+                    edit: true,
+                    isAccount: JSON.stringify(this.isAccount)
+                };
+
+                if (this.urlStateParameters?.id) {
+                    if (this.urlStateParameters.level === 'WO') {
+                        state.workOrderIdParam = this.urlStateParameters.id;
+                    } else if (this.urlStateParameters.level === 'R') {
+                        state.requestIdParam = this.urlStateParameters.id;
+                    }
+                }
+
                 this[NavigationMixin.Navigate]({
                     type: 'comm__namedPage',
                     attributes: {
                         pageName: 'ny-bestilling'
                     },
-                    state: {
-                        fieldValues: JSON.stringify(this.request),
-                        fromList: true,
-                        edit: true,
-                        isAccount: JSON.stringify(this.isAccount)
-                    }
+                    state
                 });
             }
         } else {
@@ -453,17 +463,28 @@ export default class Hot_myRequestsWrapper extends NavigationMixin(LightningElem
 
     cloneOrder() {
         this.isNavigatingAway = true;
+
+        const state = {
+            fieldValues: JSON.stringify(this.request),
+            fromList: true,
+            copy: true,
+            isAccount: JSON.stringify(this.isAccount)
+        };
+
+        if (this.urlStateParameters?.id) {
+            if (this.urlStateParameters.level === 'WO') {
+                state.workOrderIdParam = this.urlStateParameters.id;
+            } else if (this.urlStateParameters.level === 'R') {
+                state.requestIdParam = this.urlStateParameters.id;
+            }
+        }
+
         this[NavigationMixin.Navigate]({
             type: 'comm__namedPage',
             attributes: {
                 pageName: 'ny-bestilling'
             },
-            state: {
-                fieldValues: JSON.stringify(this.request),
-                fromList: true,
-                copy: true,
-                isAccount: JSON.stringify(this.isAccount)
-            }
+            state
         });
     }
 
