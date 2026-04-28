@@ -99,7 +99,7 @@
         <customLabel>true</customLabel>
         <detailHeading>true</detailHeading>
         <editHeading>true</editHeading>
-        <label>Address</label>
+        <label>Adresse</label>
         <layoutColumns>
             <layoutItems>
                 <behavior>Edit</behavior>
@@ -115,7 +115,7 @@
             </layoutItems>
             <layoutItems>
                 <behavior>Edit</behavior>
-                <field>Addresse</field>
+                <field>Address</field>
             </layoutItems>
         </layoutColumns>
         <style>OneColumn</style>
