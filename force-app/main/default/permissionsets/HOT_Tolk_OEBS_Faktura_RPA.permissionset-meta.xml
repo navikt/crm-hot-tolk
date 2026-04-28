@@ -644,7 +644,7 @@
         <modifyAllRecords>false</modifyAllRecords>
         <object>HOT_Invoice__c</object>
         <viewAllFields>true</viewAllFields>
-        <viewAllRecords>true</viewAllRecords>
+        <viewAllRecords>false</viewAllRecords>
     </objectPermissions>
     <objectPermissions>
         <allowCreate>false</allowCreate>
