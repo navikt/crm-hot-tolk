@@ -3,6 +3,10 @@
     <label>Status</label>
     <name>Status__c</name>
     <picklistValues>
+        <masterLabel>Discarded</masterLabel>
+        <translation>Forkastet</translation>
+    </picklistValues>
+    <picklistValues>
         <masterLabel>Filled</masterLabel>
         <translation>Fylt ut av tolk</translation>
     </picklistValues>
