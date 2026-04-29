@@ -344,8 +344,21 @@ export default class hot_requestFormWrapper_v2 extends NavigationMixin(Lightning
     }
 
     previousPage = 'home';
+
+    previousRequestId = null;
+    previousWorkOrderId = null;
+
     connectedCallback() {
         let parsed_params = getParametersFromURL();
+
+        if (this.previousRequestId == null && parsed_params.requestIdParam) {
+            this.previousRequestId = parsed_params.requestIdParam;
+        }
+
+        if (this.previousWorkOrderId == null && parsed_params.workOrderIdParam) {
+            this.previousWorkOrderId = parsed_params.workOrderIdParam;
+        }
+
         if (parsed_params != null) {
             if (parsed_params.fromList != null) {
                 if (parsed_params.isAccount === 'true') {
@@ -376,6 +389,7 @@ export default class hot_requestFormWrapper_v2 extends NavigationMixin(Lightning
     isEditOrCopyMode = false;
     showUploadFileModule = true;
     isEditModeAndTypeMe = false;
+    isEditMode = false;
 
     handleEditOrCopyModeRequestType(parsed_params) {
         if (parsed_params.edit != null) {
@@ -383,6 +397,7 @@ export default class hot_requestFormWrapper_v2 extends NavigationMixin(Lightning
             this.submitButtonLabel = 'Lagre';
             this.submitSuccessMessage = 'Dine endringer er lagret';
             this.showUploadFileModule = false;
+            this.isEditMode = true;
         }
         if (parsed_params.copy != null) {
             this.breadcrumbs.push({ label: 'Kopier bestilling' });
@@ -435,12 +450,19 @@ export default class hot_requestFormWrapper_v2 extends NavigationMixin(Lightning
 
     goToPreviousPage() {
         window.scrollTo(0, 0);
-        this[NavigationMixin.Navigate]({
-            type: 'comm__namedPage',
-            attributes: {
-                pageName: this.previousPage
-            }
-        });
+
+        if (this.previousRequestId || this.previousWorkOrderId) {
+            window.history.back();
+            return;
+        }
+
+        this[NavigationMixin.Navigate](
+            {
+                type: 'comm__namedPage',
+                attributes: { pageName: this.previousPage }
+            },
+            true
+        );
     }
 
     formArray = [];

@@ -361,7 +361,13 @@ export default class Hot_myRequestsWrapper extends NavigationMixin(LightningElem
         this.isWorkOrderDetails = this.urlStateParameters.level === 'WO';
         this.isRequestOrWorkOrderDetails = this.isWorkOrderDetails || this.isRequestDetails;
         this.isSeries = this.workOrder?.HOT_Request__r?.IsSerieoppdrag__c;
-        this.interpreter = this.workOrder?.HOT_Interpreters__c?.length > 1 ? 'Tolker' : 'Tolk';
+        const raw = this.workOrder?.HOT_Interpreters__c ?? '';
+        const count = raw
+            .split(',')
+            .map((s) => s.trim())
+            .filter(Boolean).length;
+
+        this.interpreter = count > 1 ? 'Tolker' : 'Tolk';
         this.showInterpretes =
             this.workOrder?.Status === 'Completed' ||
             this.workOrder?.Status === 'Partially Complete' ||
@@ -425,17 +431,27 @@ export default class Hot_myRequestsWrapper extends NavigationMixin(LightningElem
         if (this.request.Orderer__c === this.userRecord.AccountId) {
             this.isGetAllFiles = true;
             if (this.request.Status__c.includes('Åpen')) {
+                const state = {
+                    fieldValues: JSON.stringify(this.request),
+                    fromList: true,
+                    edit: true,
+                    isAccount: JSON.stringify(this.isAccount)
+                };
+
+                if (this.urlStateParameters?.id) {
+                    if (this.urlStateParameters.level === 'WO') {
+                        state.workOrderIdParam = this.urlStateParameters.id;
+                    } else if (this.urlStateParameters.level === 'R') {
+                        state.requestIdParam = this.urlStateParameters.id;
+                    }
+                }
+
                 this[NavigationMixin.Navigate]({
                     type: 'comm__namedPage',
                     attributes: {
                         pageName: 'ny-bestilling'
                     },
-                    state: {
-                        fieldValues: JSON.stringify(this.request),
-                        fromList: true,
-                        edit: true,
-                        isAccount: JSON.stringify(this.isAccount)
-                    }
+                    state
                 });
             }
         } else {
@@ -447,17 +463,28 @@ export default class Hot_myRequestsWrapper extends NavigationMixin(LightningElem
 
     cloneOrder() {
         this.isNavigatingAway = true;
+
+        const state = {
+            fieldValues: JSON.stringify(this.request),
+            fromList: true,
+            copy: true,
+            isAccount: JSON.stringify(this.isAccount)
+        };
+
+        if (this.urlStateParameters?.id) {
+            if (this.urlStateParameters.level === 'WO') {
+                state.workOrderIdParam = this.urlStateParameters.id;
+            } else if (this.urlStateParameters.level === 'R') {
+                state.requestIdParam = this.urlStateParameters.id;
+            }
+        }
+
         this[NavigationMixin.Navigate]({
             type: 'comm__namedPage',
             attributes: {
                 pageName: 'ny-bestilling'
             },
-            state: {
-                fieldValues: JSON.stringify(this.request),
-                fromList: true,
-                copy: true,
-                isAccount: JSON.stringify(this.isAccount)
-            }
+            state
         });
     }
 

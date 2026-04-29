@@ -76,6 +76,31 @@ private class HOT_WorkOrderHandlerTest {
     }
 
     @IsTest
+    private static void testApprovalUsesUpdatedInterpretationMethodOnWorkOrder() {
+        WorkType originalWorkType = HOT_TestDataFactory.createWorkType('TS - Tegnspråk');
+        insert originalWorkType;
+        WorkType updatedWorkType = HOT_TestDataFactory.createWorkType('SK - Skrivetolking');
+        insert updatedWorkType;
+
+        HOT_Request__c request = HOT_TestDataFactory.createRequest('TEST', originalWorkType);
+        insert request;
+
+        Test.startTest();
+        request.InterpretationMethodType__c = updatedWorkType.Name;
+        request.Status__c = 'Godkjent';
+        update request;
+        Test.stopTest();
+
+        WorkOrder workOrder = [
+            SELECT WorkTypeId
+            FROM WorkOrder
+            WHERE HOT_Request__c = :request.Id
+            LIMIT 1
+        ];
+        System.assertEquals(updatedWorkType.Id, workOrder.WorkTypeId, 'WorkOrder kept the old work type.');
+    }
+
+    @IsTest
     private static void testUpdateRequests() {
         WorkType workType = HOT_TestDataFactory.createWorkType();
         insert workType;

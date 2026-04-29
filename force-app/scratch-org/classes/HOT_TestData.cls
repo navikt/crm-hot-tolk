@@ -213,6 +213,8 @@ public class HOT_TestData {
             serviceResource.IsActive = true;
             serviceResource.RelatedRecordId = user.Id;
             serviceResource.HOT_IsFreelanceInterpreter__c = true;
+            serviceResource.CRM_Domain__c = 'HOT';
+            serviceResource.CRM_Subdomain__c = 'Tolketjenesten';
             serviceResources.add(serviceResource);
         }
         return serviceResources;
@@ -248,5 +250,15 @@ public class HOT_TestData {
             serviceTerritoryMembers.add(serviceTerritoryMember);
         }
         return serviceTerritoryMembers;
+    }
+
+    public Common_Code__c getCommonCode() {
+        return new Common_Code__c(
+            Name = 'Oslo',
+            CRM_Active__c = true,
+            CRM_Code_Set__c = 'Postnummer',
+            CRM_Code__c = '0001',
+            CRM_UniqueKey__c = 'Postnummer0001'
+        );
     }
 }
