@@ -630,7 +630,9 @@ export default class Hot_messagingCommunityThreadViewer_v2 extends NavigationMix
                             );
                             this.serviceAppointment.ActualStartTime = formatDatetime(result.ActualStartTime);
                             this.serviceAppointment.ActualEndTime = formatDatetime(result.ActualEndTime);
-                            this.serviceAppointment.HOT_CanceledDate__c = formatDatetime(result.HOT_CanceledDate__c);
+                            this.serviceAppointment.HOT_CanceledDate__c = result.HOT_CanceledDate__c
+                                ? formatDatetime(result.HOT_CanceledDate__c)
+                                : null;
                             this.serviceAppointment.HOT_HapticCommunication__c = this.yesOrNo(
                                 this.serviceAppointment.HOT_HapticCommunication__c
                             );
