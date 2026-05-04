@@ -1163,7 +1163,7 @@
             <name>appointmentNumber</name>
             <dataType>String</dataType>
             <defaultValue>
-                <elementReference>invoice.ServiceAppointment__r.AppointmentNumber</elementReference>
+                <elementReference>getServiceAppointmentRecord.AppointmentNumber</elementReference>
             </defaultValue>
             <fieldText>Oppdragsnummer:</fieldText>
             <fieldType>InputField</fieldType>
@@ -1185,7 +1185,7 @@
             <name>appointmentSchedStart</name>
             <dataType>DateTime</dataType>
             <defaultValue>
-                <elementReference>invoice.ServiceAppointment__r.SchedStartTime</elementReference>
+                <elementReference>getServiceAppointmentRecord.SchedStartTime</elementReference>
             </defaultValue>
             <fieldText>Bestilt start-tidspunkt:</fieldText>
             <fieldType>InputField</fieldType>
@@ -1207,7 +1207,7 @@
             <name>appointmentSchedEnd</name>
             <dataType>DateTime</dataType>
             <defaultValue>
-                <elementReference>invoice.ServiceAppointment__r.SchedEndTime</elementReference>
+                <elementReference>getServiceAppointmentRecord.SchedEndTime</elementReference>
             </defaultValue>
             <fieldText>Bestilt slutt-tidspunkt:</fieldText>
             <fieldType>InputField</fieldType>
@@ -1418,6 +1418,16 @@
                     <stringValue>12</stringValue>
                 </width>
             </styleProperties>
+            <visibilityRule>
+                <conditionLogic>and</conditionLogic>
+                <conditions>
+                    <leftValueReference>getServiceAppointmentRecord.Status</leftValueReference>
+                    <operator>EqualTo</operator>
+                    <rightValue>
+                        <stringValue>Completed</stringValue>
+                    </rightValue>
+                </conditions>
+            </visibilityRule>
         </fields>
         <fields>
             <name>actualTimesText</name>
@@ -1431,6 +1441,16 @@
                     <stringValue>12</stringValue>
                 </width>
             </styleProperties>
+            <visibilityRule>
+                <conditionLogic>and</conditionLogic>
+                <conditions>
+                    <leftValueReference>getServiceAppointmentRecord.Status</leftValueReference>
+                    <operator>EqualTo</operator>
+                    <rightValue>
+                        <stringValue>Completed</stringValue>
+                    </rightValue>
+                </conditions>
+            </visibilityRule>
         </fields>
         <fields>
             <name>oppdragskvitteringDel2_Section3</name>
@@ -1559,6 +1579,16 @@
                     <stringValue>12</stringValue>
                 </width>
             </styleProperties>
+            <visibilityRule>
+                <conditionLogic>and</conditionLogic>
+                <conditions>
+                    <leftValueReference>getServiceAppointmentRecord.Status</leftValueReference>
+                    <operator>EqualTo</operator>
+                    <rightValue>
+                        <stringValue>Completed</stringValue>
+                    </rightValue>
+                </conditions>
+            </visibilityRule>
         </fields>
         <fields>
             <name>displayTravelHeader</name>
