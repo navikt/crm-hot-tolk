@@ -3,6 +3,19 @@
     <flexiPageRegions>
         <itemInstances>
             <componentInstance>
+                <componentName>hot_serviceAppointmentInterestBanner</componentName>
+                <identifier>c_hot_serviceAppointmentInterestBanner</identifier>
+                <visibilityRule>
+                    <criteria>
+                        <leftValue>{!$Client.formFactor}</leftValue>
+                        <operator>EQUAL</operator>
+                        <rightValue>Small</rightValue>
+                    </criteria>
+                </visibilityRule>
+            </componentInstance>
+        </itemInstances>
+        <itemInstances>
+            <componentInstance>
                 <componentInstanceProperties>
                     <name>actionNames</name>
                     <valueList>
@@ -105,16 +118,6 @@
                         </valueListItems>
                         <valueListItems>
                             <value>ServiceAppointment.HOT_registrerWantedServiceResource</value>
-                        </valueListItems>
-                        <valueListItems>
-                            <value>ServiceAppointment.HOT_RegisterInterest</value>
-                            <visibilityRule>
-                                <criteria>
-                                    <leftValue>{!$Client.formFactor}</leftValue>
-                                    <operator>EQUAL</operator>
-                                    <rightValue>Small</rightValue>
-                                </criteria>
-                            </visibilityRule>
                         </valueListItems>
                     </valueList>
                 </componentInstanceProperties>
@@ -1354,6 +1357,10 @@
         </itemInstances>
         <itemInstances>
             <componentInstance>
+                <componentInstanceProperties>
+                    <name>label</name>
+                    <value>Tabs</value>
+                </componentInstanceProperties>
                 <componentInstanceProperties>
                     <name>tabs</name>
                     <value>Facet-87d76a61-4535-4189-be09-0e5377b76f56</value>
