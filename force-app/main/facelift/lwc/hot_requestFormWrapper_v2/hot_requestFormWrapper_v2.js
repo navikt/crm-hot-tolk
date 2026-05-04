@@ -351,15 +351,15 @@ export default class hot_requestFormWrapper_v2 extends NavigationMixin(Lightning
     connectedCallback() {
         let parsed_params = getParametersFromURL();
 
-        if (this.previousRequestId == null && parsed_params.requestIdParam) {
-            this.previousRequestId = parsed_params.requestIdParam;
-        }
-
-        if (this.previousWorkOrderId == null && parsed_params.workOrderIdParam) {
-            this.previousWorkOrderId = parsed_params.workOrderIdParam;
-        }
-
         if (parsed_params != null) {
+            if (this.previousRequestId == null && parsed_params.requestIdParam) {
+                this.previousRequestId = parsed_params.requestIdParam;
+            }
+
+            if (this.previousWorkOrderId == null && parsed_params.workOrderIdParam) {
+                this.previousWorkOrderId = parsed_params.workOrderIdParam;
+            }
+
             if (parsed_params.fromList != null) {
                 if (parsed_params.isAccount === 'true') {
                     this.previousPage = 'mine-bestillinger';
