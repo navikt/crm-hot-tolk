@@ -56,12 +56,7 @@ public without sharing class HOT_ThreadDetailController {
                         return true;
                     } else {
                         List<HOT_HistoricallyAssignedResource__c> harList = [
-                            SELECT
-                                Id,
-                                ServiceResource__r.Name,
-                                Status__c,
-                                ServiceAppointment__r.Status,
-                                ServiceAppointment__r.HOT_WorkOrderLineItem__r.WorkOrderId
+                            SELECT Id
                             FROM HOT_HistoricallyAssignedResource__c
                             WHERE
                                 ServiceAppointment__r.HOT_WorkOrderLineItem__r.WorkOrderId = :thread.CRM_Related_Object__c

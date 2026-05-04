@@ -201,12 +201,7 @@ public without sharing class HOT_ThreadListController {
             DateTime twoDaysAgo = System.now().addDays(-2);
 
             for (HOT_HistoricallyAssignedResource__c har : [
-                SELECT
-                    Id,
-                    ServiceResource__r.Name,
-                    Status__c,
-                    ServiceAppointment__r.Status,
-                    ServiceAppointment__r.HOT_WorkOrderLineItem__r.WorkOrderId
+                SELECT Id, ServiceAppointment__r.HOT_WorkOrderLineItem__r.WorkOrderId
                 FROM HOT_HistoricallyAssignedResource__c
                 WHERE
                     ServiceResource__r.RelatedRecordId = :user.Id
