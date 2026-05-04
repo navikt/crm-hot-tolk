@@ -13,7 +13,8 @@ public without sharing class HOT_ThreadDetailController {
                     HOT_Thread_read_by__c,
                     HOT_Request__r.Account__c,
                     HOT_Request__r.Orderer__c,
-                    HOT_WorkOrder__r.AccountId
+                    HOT_WorkOrder__r.AccountId,
+                    HOT_WorkOrder__r.Status
                 FROM Thread__c
                 WHERE Id = :recordId
                 LIMIT 1
@@ -63,7 +64,7 @@ public without sharing class HOT_ThreadDetailController {
                                 AND ServiceResource__r.RelatedRecordId = :user.Id
                                 AND ServiceAppointment__r.Status = 'Canceled'
                                 AND Status__c = 'Avlyst av bruker'
-                                AND CreatedDate >= :twoDaysAgo
+                                AND ServiceAppointment__r.DueDate >= :twoDaysAgo
                         ];
                         if (harList.size() > 0) {
                             return true;

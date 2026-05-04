@@ -185,6 +185,10 @@
                                         <template lwc:if={serviceAppointment.HOT_Dispatcher__c}>
                                             <p>Formidler: <span>{serviceAppointment.HOT_Dispatcher__c}</span></p>
                                         </template>
+
+                                        <template lwc:if={serviceAppointment.HOT_CanceledDate__c}>
+                                            <p>Avlyst dato: <span>{serviceAppointment.HOT_CanceledDate__c}</span></p>
+                                        </template>
                                     </div>
                                 </template>
 
@@ -332,20 +336,28 @@
                             mobile-style=""
                         ></c-textarea>
                     </div>
-                </template>
 
-                <div class="send-button-container">
-                    <c-button
-                        disabled={buttonisdisabled}
-                        onbuttonclick={handleSendButtonClick}
-                        button-label="Send melding"
-                        type="submit"
-                        button-styling="primary"
-                        is-loading={buttonLoading}
-                        desktop-style="width: 10rem; justify-content: center;"
-                        mobile-style="width: 9rem; justify-content: center;"
-                    ></c-button>
-                </div>
+                    <div class="send-button-container">
+                        <c-button
+                            disabled={buttonisdisabled}
+                            onbuttonclick={handleSendButtonClick}
+                            button-label="Send melding"
+                            type="submit"
+                            button-styling="primary"
+                            is-loading={buttonLoading}
+                            desktop-style="width: 10rem; justify-content: center;"
+                            mobile-style="width: 9rem; justify-content: center;"
+                        ></c-button>
+                    </div>
+                </template>
+                <template lwc:else>
+                    <div class="textarea-container">
+                        <p>
+                            Oppdraget er avlyst. Du kan se meldingen i 48 timer fra avlysning. Du kan ikke sende nye
+                            meldinger.
+                        </p>
+                    </div>
+                </template>
             </div>
         </template>
     </div>
