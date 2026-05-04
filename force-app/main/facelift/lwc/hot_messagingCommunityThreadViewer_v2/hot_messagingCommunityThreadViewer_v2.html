@@ -134,7 +134,8 @@
 
                                         <p>Tolkemetode: <span>{serviceAppointment.HOT_WorkTypeName__c}</span></p>
                                         <p lwc:if={serviceAppointment.HOT_PreparationTime__c}>
-                                            Kompensert forberedelse: <span>{serviceAppointment.HOT_PreparationTime__c}</span>
+                                            Kompensert forberedelse:
+                                            <span>{serviceAppointment.HOT_PreparationTime__c}</span>
                                         </p>
                                         <p>Oppdragstype: <span>{serviceAppointment.HOT_AssignmentType__c}</span></p>
                                         <p>Eier: <span>{serviceAppointment.HOT_Request__r.OwnerName__c}</span></p>
@@ -319,17 +320,19 @@
                         </template>
                     </div>
                 </div>
-                <div class="textarea-container">
-                    <c-textarea
-                        helptext-content={helptextContent}
-                        label="Ny melding"
-                        max-length={maxLength}
-                        error-text={textareaErrorText}
-                        ongetvalueontextareachange={handleTextChange}
-                        desktop-style="width: 100%; height: 100%;"
-                        mobile-style=""
-                    ></c-textarea>
-                </div>
+                <template lwc:if={showMessageInput}>
+                    <div class="textarea-container">
+                        <c-textarea
+                            helptext-content={helptextContent}
+                            label="Ny melding"
+                            max-length={maxLength}
+                            error-text={textareaErrorText}
+                            ongetvalueontextareachange={handleTextChange}
+                            desktop-style="width: 100%; height: 100%;"
+                            mobile-style=""
+                        ></c-textarea>
+                    </div>
+                </template>
 
                 <div class="send-button-container">
                     <c-button
