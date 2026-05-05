@@ -104,7 +104,7 @@ public without sharing class HOT_MessageHelper {
     public static WorkOrder getWorkOrderInformationAndAccessCheck(Id recordId) {
         User user = getCurrentUser();
         WorkOrder wo = [
-            SELECT Id, HOT_TotalNumberOfInterpreters__c, HOT_Request__r.Account__c
+            SELECT Id, HOT_TotalNumberOfInterpreters__c, HOT_Request__r.Account__c, Status
             FROM WorkOrder
             WHERE Id = :recordId
             LIMIT 1

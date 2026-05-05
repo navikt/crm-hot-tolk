@@ -27,6 +27,7 @@ export default class hot_messagingThreadViewer extends LightningElement {
     @api showClose;
     @api englishTextTemplate;
     @api setInputInFocusOnRender;
+    @api messageInputShow;
     @track langBtnLock = false;
     langBtnAriaToggle = false;
     newMessage = false;
