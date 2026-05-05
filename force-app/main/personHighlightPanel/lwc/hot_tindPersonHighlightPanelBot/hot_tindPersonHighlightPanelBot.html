@@ -36,6 +36,21 @@
                 class="slds-m-left_x-medium"
             ></lightning-button>
         </lightning-layout-item>
+        <!-- Oppgrader bruker til tjenesteleverandør will show up for admins only -->
+        <lightning-layout-item
+            lwc:if={hasPermissionToTjenesteleverandor}
+            class="custom-padding-around-small custom-grid-vertical-align-center"
+        >
+            <lightning-button
+                data-id="tjenesteleverandor"
+                label="Oppgrader bruker til Tjenesteleverandør"
+                title="Oppgrader bruker til Tjenesteleverandør"
+                onclick={handleFlowButton}
+                data-flow="HOT_CreateTjenesteleverandorUser"
+                class="slds-m-left_x-medium"
+            ></lightning-button>
+        </lightning-layout-item>
+
         <lightning-layout-item class="custom-padding-around-small custom-grid-vertical-align-center">
             <lightning-button
                 data-id="tilgangApp"

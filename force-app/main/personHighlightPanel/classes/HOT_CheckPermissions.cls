@@ -22,6 +22,7 @@ public with sharing class HOT_CheckPermissions {
         // Initialize result map
         Map<String, Boolean> permissions = new Map<String, Boolean>{
             'hasFreelancePermission' => false,
+            'hasTjenesteleverandorPermission' => false,
             'isFormidler' => false,
             'isFormidlerAdmin' => false,
             'isAdmin' => false
@@ -45,6 +46,10 @@ public with sharing class HOT_CheckPermissions {
                     permissions.put('isFormidlerAdmin', true);
                 }
             }
+        }
+
+        if (permissions.get('hasFreelancePermission') && permissions.get('isAdmin')) {
+            permissions.put('hasTjenesteleverandorPermission', true);
         }
 
         return permissions;
