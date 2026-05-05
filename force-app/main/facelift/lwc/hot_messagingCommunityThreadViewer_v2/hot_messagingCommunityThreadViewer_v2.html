@@ -19,6 +19,20 @@
                 <div>
                     <h1 class="header" role="heading" aria-level="1">{subject}</h1>
                 </div>
+                <template lwc:if={showMessageInput}>
+                    <!-- Show nothing -->
+                </template>
+                <template lwc:else>
+                    <div class="textarea-container">
+                        <div class="banner-container">
+                            <c-hot_info-card
+                                title="Oppdraget er avlyst"
+                                content={canceledSABannerText}
+                                type="warning"
+                            ></c-hot_info-card>
+                        </div>
+                    </div>
+                </template>
                 <div class="navds-div">{threadType}</div>
 
                 <div class="header-buttons">
@@ -348,14 +362,6 @@
                             desktop-style="width: 10rem; justify-content: center;"
                             mobile-style="width: 9rem; justify-content: center;"
                         ></c-button>
-                    </div>
-                </template>
-                <template lwc:else>
-                    <div class="textarea-container">
-                        <p>
-                            Oppdraget er avlyst. Du kan se meldingen i 48 timer fra avlysning. Du kan ikke sende nye
-                            meldinger.
-                        </p>
                     </div>
                 </template>
             </div>

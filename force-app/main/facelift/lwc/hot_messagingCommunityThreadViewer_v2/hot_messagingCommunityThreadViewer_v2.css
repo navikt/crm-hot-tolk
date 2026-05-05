@@ -39,6 +39,12 @@
     background-color: #e1e3e6;
 }
 
+.banner-container {
+    width: 80%;
+    margin-top: -2rem;
+    margin-bottom: 1rem;
+}
+
 .header {
     font-family: 'Source Sans Pro', Arial, sans-serif;
     position: relative;

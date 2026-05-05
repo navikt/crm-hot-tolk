@@ -176,9 +176,8 @@
         </template>
         <template lwc:else>
             <div class="slds-m-top_x-small">
-                <p>Oppdraget er avlyst. Du kan se meldingen i 48 timer fra avlysning.</br> 
-                    Du kan ikke sende nye meldinger.</p>
-                </div>
+                <c-hot_alert-banner message={canceledSABannerText} type="Warning"></c-hot_alert-banner>
+            </div>
         </template>
     </section>
     <section if:true={showAccessError}>

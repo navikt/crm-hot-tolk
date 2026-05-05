@@ -58,6 +58,7 @@ export default class Hot_messagingCommunityThreadViewer_v2 extends NavigationMix
     isLoading = false;
     buttonLoading = false;
     textareaErrorText = '';
+    canceledSABannerText = 'Du kan se samtalen i 48 timer etter avlysning. Du kan ikke sende nye meldinger.';
 
     @api recordId;
     @api requestId;
