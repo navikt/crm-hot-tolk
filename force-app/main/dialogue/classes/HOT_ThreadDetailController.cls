@@ -64,7 +64,7 @@ public without sharing class HOT_ThreadDetailController {
                                 AND ServiceResource__r.RelatedRecordId = :user.Id
                                 AND ServiceAppointment__r.Status = 'Canceled'
                                 AND Status__c = 'Avlyst av bruker'
-                                AND ServiceAppointment__r.DueDate >= :twoDaysAgo
+                                AND CreatedDate >= :twoDaysAgo
                         ];
                         if (harList.size() > 0) {
                             return true;
