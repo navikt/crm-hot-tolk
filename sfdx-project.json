@@ -1,13 +1,13 @@
 {
     "namespace": "",
     "sfdcLoginUrl": "https://login.salesforce.com",
-    "sourceApiVersion": "59.0",
+    "sourceApiVersion": "66.0",
     "packageDirectories": [
         {
             "path": "force-app",
             "default": true,
             "package": "crm-hot-tolk",
-            "versionNumber": "1.403.0.NEXT",
+            "versionNumber": "1.404.0.NEXT",
             "dependencies": [
                 {
                     "package": "platform-data-model",
