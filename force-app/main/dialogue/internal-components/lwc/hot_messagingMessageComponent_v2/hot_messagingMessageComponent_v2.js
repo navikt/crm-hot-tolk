@@ -176,8 +176,7 @@ export default class hot_messagingMessageComponent extends LightningElement {
                         this.threadTypesOfInterest = ['HOT_BRUKER-TOLK'];
                     }
 
-                    // work orders with status canceled should not show message input,
-                    // but user should be able to see existing messages for 48 hours after cancellation
+                    // work orders with status canceled should not show message input
                     if (this.threadTypesOfInterest.includes('HOT_BRUKER-TOLK') && result.Status === 'Canceled') {
                         this.messageInputShow = false;
                     }
