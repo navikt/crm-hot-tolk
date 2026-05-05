@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<LightningComponentBundle xmlns="http://soap.sforce.com/2006/04/metadata">
+    <apiVersion>64.0</apiVersion>
+    <isExposed>true</isExposed>
+    <masterLabel>HOT Flow Range Picklist</masterLabel>
+    <targets>
+        <target>lightning__FlowScreen</target>
+    </targets>
+    <targetConfigs>
+        <targetConfig targets="lightning__FlowScreen">
+            <property name="label" type="String" label="Label" />
+            <property name="from" type="String" label="From" />
+            <property name="to" type="String" label="To" required="true" />
+            <property name="defaultValue" type="String" label="Default value" />
+            <property name="required" type="Boolean" label="Required" default="false" />
+            <property name="value" type="String" label="Selected value" />
+        </targetConfig>
+    </targetConfigs>
+</LightningComponentBundle>

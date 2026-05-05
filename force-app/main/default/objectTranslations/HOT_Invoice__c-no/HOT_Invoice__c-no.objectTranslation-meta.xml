@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomObjectTranslation xmlns="http://soap.sforce.com/2006/04/metadata">
+    <caseValues>
+        <article>Definite</article>
+        <plural>false</plural>
+        <value>Oppdragskvitteringen</value>
+    </caseValues>
+    <caseValues>
+        <article>Indefinite</article>
+        <plural>false</plural>
+        <value>Oppdragskvittering</value>
+    </caseValues>
+    <caseValues>
+        <article>None</article>
+        <plural>false</plural>
+        <value>Oppdragskvittering</value>
+    </caseValues>
+    <caseValues>
+        <article>Definite</article>
+        <plural>true</plural>
+        <value>Oppdragskvitteringene</value>
+    </caseValues>
+    <caseValues>
+        <article>Indefinite</article>
+        <plural>true</plural>
+        <value>Oppdragskvitteringer</value>
+    </caseValues>
+    <caseValues>
+        <article>None</article>
+        <plural>true</plural>
+        <value>Oppdragskvitteringer</value>
+    </caseValues>
+    <gender>Neuter</gender>
+    <layouts>
+        <layout>Other payer invoice layout</layout>
+        <sections>
+            <label><!-- Custom Links --></label>
+            <section>Custom Links</section>
+        </sections>
+    </layouts>
+    <nameFieldLabel>Oppdragskvittering</nameFieldLabel>
+    <quickActions>
+        <label><!-- Behandle oppdragskvittering --></label>
+        <name>ProcessInvoiceButton</name>
+    </quickActions>
+    <recordTypes>
+        <description><!-- Brukt til faktuering av annen betaler oppdrag på tolketjenesten --></description>
+        <label><!-- Other Payer --></label>
+        <name>OtherPayer</name>
+    </recordTypes>
+</CustomObjectTranslation>

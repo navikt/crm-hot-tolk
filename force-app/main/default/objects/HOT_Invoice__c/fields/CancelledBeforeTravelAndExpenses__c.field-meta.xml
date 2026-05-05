@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>CancelledBeforeTravelAndExpenses__c</fullName>
+    <defaultValue>false</defaultValue>
+    <description>Velges kun dersom oppdraget ble avlyst før du genererte reise og forberedelse knyttet til dette.</description>
+    <externalId>false</externalId>
+    <label>Cancelled Before Travel And Expenses</label>
+    <trackHistory>true</trackHistory>
+    <trackTrending>false</trackTrending>
+    <type>Checkbox</type>
+</CustomField>

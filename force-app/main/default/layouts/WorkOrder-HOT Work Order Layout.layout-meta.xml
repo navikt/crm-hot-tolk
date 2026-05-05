@@ -47,6 +47,14 @@
                 <behavior>Edit</behavior>
                 <field>CanceledDate__c</field>
             </layoutItems>
+            <layoutItems>
+                <behavior>Readonly</behavior>
+                <field>HOT_NumberOfInvoices__c</field>
+            </layoutItems>
+            <layoutItems>
+                <behavior>Readonly</behavior>
+                <field>HOT_NumberOfFilledInvoices__c</field>
+            </layoutItems>
         </layoutColumns>
         <layoutColumns>
             <layoutItems>

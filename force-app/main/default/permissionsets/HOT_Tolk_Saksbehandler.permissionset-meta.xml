@@ -1056,6 +1056,10 @@
         <viewAllRecords>false</viewAllRecords>
     </objectPermissions>
     <recordTypeVisibilities>
+        <recordType>HOT_Invoice__c.OtherPayer</recordType>
+        <visible>true</visible>
+    </recordTypeVisibilities>
+    <recordTypeVisibilities>
         <recordType>PersonAccount.PersonAccount</recordType>
         <visible>true</visible>
     </recordTypeVisibilities>
@@ -1065,6 +1069,10 @@
     </recordTypeVisibilities>
     <tabSettings>
         <tab>HOT_InterestedResource__c</tab>
+        <visibility>Visible</visibility>
+    </tabSettings>
+    <tabSettings>
+        <tab>HOT_Invoice__c</tab>
         <visibility>Visible</visibility>
     </tabSettings>
     <tabSettings>
