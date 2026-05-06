@@ -137,4 +137,25 @@ public without sharing class HOT_ThreadDetailController {
         }
         return false;
     }
+
+    public static Boolean isAdminOrFormidlerAdmin(User user) {
+        List<GroupMember> groupMembers = [
+            SELECT Id
+            FROM GroupMember
+            WHERE Group.DeveloperName = 'HOT_Tolk_Admin' AND Group.Type = 'Regular' AND UserOrGroupId = :user.Id
+            LIMIT 1
+        ];
+
+        List<PermissionSetAssignment> psgAssignments = [
+            SELECT Id
+            FROM PermissionSetAssignment
+            WHERE AssigneeId = :user.Id AND PermissionSetGroup.DeveloperName = 'HOT_Tolk_Formidler_Admin_Gruppe'
+            LIMIT 1
+        ];
+
+        if (!psgAssignments.isEmpty() || groupMembers.size() > 0) {
+            return true;
+        }
+        return false;
+    }
 }
