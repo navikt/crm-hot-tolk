@@ -46,6 +46,17 @@ export default class hot_personHighlightPanel extends LightningElement {
         return str.replace(/_/g, ' ').replace(' eller enkemann', '/-mann');
     }
 
+    translateVedtakLabel(value) {
+        switch (value) {
+            case 'Hearing impaired or deaf':
+                return 'Hørselshemmet eller døv';
+            case 'Deafblind':
+                return 'Døvblind';
+            default:
+                return value;
+        }
+    }
+
     @wire(getAccountPersonDetails, { recordId: '$recordId' })
     wiredPersonDetails({ error, data }) {
         if (data) {
@@ -70,7 +81,9 @@ export default class hot_personHighlightPanel extends LightningElement {
                 legalStatus: this.personData.CRM_Person__r?.INT_LegalStatus__c,
                 municipalityName: this.personData.CRM_Person__r?.CRM_Municipality__r?.Name,
                 districtName: this.personData.CRM_Person__r?.CRM_District__r?.Name,
-                vedtak: this.personData.CRM_Person__r?.HOT_DegreeOfHearingAndVisualImpairment__c,
+                vedtak: this.translateVedtakLabel(
+                    this.personData.CRM_Person__r?.HOT_DegreeOfHearingAndVisualImpairment__c
+                ),
                 navEmployee: this.personData.CRM_Person__r?.INT_IsNavEmployee__c,
                 confidentialStatus: this.personData.CRM_Person__r?.INT_Confidential__c
             };
