@@ -104,7 +104,7 @@ public without sharing class HOT_MessageHelper {
     public static WorkOrder getWorkOrderInformationAndAccessCheck(Id recordId) {
         User user = getCurrentUser();
         WorkOrder wo = [
-            SELECT Id, HOT_TotalNumberOfInterpreters__c, HOT_Request__r.Account__c
+            SELECT Id, HOT_TotalNumberOfInterpreters__c, HOT_Request__r.Account__c, Status
             FROM WorkOrder
             WHERE Id = :recordId
             LIMIT 1
@@ -123,6 +123,23 @@ public without sharing class HOT_MessageHelper {
         ];
         if (ar.size() > 0) {
             return wo;
+        } else {
+            DateTime twoDaysAgo = System.now().addDays(-2);
+
+            List<HOT_HistoricallyAssignedResource__c> harList = [
+                SELECT Id
+                FROM HOT_HistoricallyAssignedResource__c
+                WHERE
+                    ServiceAppointment__r.HOT_WorkOrderLineItem__r.WorkOrderId = :wo.Id
+                    AND ServiceResource__r.RelatedRecordId = :user.Id
+                    AND ServiceAppointment__r.Status = 'Canceled'
+                    AND Status__c = 'Avlyst av bruker'
+                    AND CreatedDate >= :twoDaysAgo
+            ];
+
+            if (harList.size() > 0) {
+                return wo;
+            }
         }
 
         if (HOT_ThreadDetailController.isAdminOrFormidler(user)) {

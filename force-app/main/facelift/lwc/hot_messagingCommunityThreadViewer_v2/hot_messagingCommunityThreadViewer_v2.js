@@ -50,6 +50,7 @@ export default class Hot_messagingCommunityThreadViewer_v2 extends NavigationMix
     showReadBy = false;
     hasAccess = true;
     isHistoricallyAssignedResourceAndLateCancellation = false;
+    showMessageInput = true;
 
     latestSenderContactId;
     latestSenderUserId;
@@ -57,6 +58,7 @@ export default class Hot_messagingCommunityThreadViewer_v2 extends NavigationMix
     isLoading = false;
     buttonLoading = false;
     textareaErrorText = '';
+    canceledSABannerText = 'Du kan se samtalen i 48 timer etter avlysning. Du kan ikke sende nye meldinger.';
 
     @api recordId;
     @api requestId;
@@ -149,6 +151,20 @@ export default class Hot_messagingCommunityThreadViewer_v2 extends NavigationMix
             this.threadRelatedObjectId = this.thread.CRM_Related_Object__c;
             this.isclosed = this.thread.CRM_Is_Closed__c;
             this.showContent = true;
+
+            this.threadWorkOrderStatus = this.thread.HOT_WorkOrder__r?.Status;
+
+            // Hide message input if work order is canceled, also when
+            // thread type is between interpreter and user
+            if (
+                this.thread.HOT_WorkOrder__r?.Status != null &&
+                this.threadWorkOrderStatus === 'Canceled' &&
+                this.isFreelance === true &&
+                this.threadType === 'Samtale mellom tolk og bruker'
+            ) {
+                this.showMessageInput = false;
+            }
+            console.log('Thread details', this.threadType);
 
             this.ReadByNames();
         } else if (result.error) {
@@ -615,6 +631,9 @@ export default class Hot_messagingCommunityThreadViewer_v2 extends NavigationMix
                             );
                             this.serviceAppointment.ActualStartTime = formatDatetime(result.ActualStartTime);
                             this.serviceAppointment.ActualEndTime = formatDatetime(result.ActualEndTime);
+                            this.serviceAppointment.HOT_CanceledDate__c = result.HOT_CanceledDate__c
+                                ? formatDatetime(result.HOT_CanceledDate__c)
+                                : null;
                             this.serviceAppointment.HOT_HapticCommunication__c = this.yesOrNo(
                                 this.serviceAppointment.HOT_HapticCommunication__c
                             );

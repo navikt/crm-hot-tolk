@@ -27,11 +27,14 @@ export default class hot_messagingThreadViewer extends LightningElement {
     @api showClose;
     @api englishTextTemplate;
     @api setInputInFocusOnRender;
+    @api messageInputShow;
     @track langBtnLock = false;
     langBtnAriaToggle = false;
     newMessage = false;
     @track hasAccess = false;
     @track showAccessError = false;
+    canceledSABannerText =
+        'Oppdraget er avlyst. Du kan se samtalen i 48 timer etter avlysning. Du kan ikke sende nye meldinger.';
 
     @track wiredThread = {};
 
