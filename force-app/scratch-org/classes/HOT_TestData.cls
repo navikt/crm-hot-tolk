@@ -251,4 +251,14 @@ public class HOT_TestData {
         }
         return serviceTerritoryMembers;
     }
+
+    public Common_Code__c getCommonCode() {
+        return new Common_Code__c(
+            Name = 'Oslo',
+            CRM_Active__c = true,
+            CRM_Code_Set__c = 'Postnummer',
+            CRM_Code__c = '0001',
+            CRM_UniqueKey__c = 'Postnummer0001'
+        );
+    }
 }

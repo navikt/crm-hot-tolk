@@ -3,6 +3,19 @@
     <flexiPageRegions>
         <itemInstances>
             <componentInstance>
+                <componentName>hot_serviceAppointmentInterestBanner</componentName>
+                <identifier>c_hot_serviceAppointmentInterestBanner</identifier>
+                <visibilityRule>
+                    <criteria>
+                        <leftValue>{!$Client.formFactor}</leftValue>
+                        <operator>EQUAL</operator>
+                        <rightValue>Small</rightValue>
+                    </criteria>
+                </visibilityRule>
+            </componentInstance>
+        </itemInstances>
+        <itemInstances>
+            <componentInstance>
                 <componentInstanceProperties>
                     <name>actionNames</name>
                     <valueList>
@@ -58,6 +71,42 @@
                             </visibilityRule>
                         </valueListItems>
                         <valueListItems>
+                            <value>ServiceAppointment.HOT_AssignOrReserve</value>
+                            <visibilityRule>
+                                <booleanFilter>1 AND 2 AND 3 AND 4 AND 5 AND 6</booleanFilter>
+                                <criteria>
+                                    <leftValue>{!$Permission.CustomPermission.HOT_AccessToFormidlerActions}</leftValue>
+                                    <operator>EQUAL</operator>
+                                    <rightValue>true</rightValue>
+                                </criteria>
+                                <criteria>
+                                    <leftValue>{!Record.Status}</leftValue>
+                                    <operator>NE</operator>
+                                    <rightValue>Completed</rightValue>
+                                </criteria>
+                                <criteria>
+                                    <leftValue>{!Record.Status}</leftValue>
+                                    <operator>NE</operator>
+                                    <rightValue>Canceled</rightValue>
+                                </criteria>
+                                <criteria>
+                                    <leftValue>{!Record.Status}</leftValue>
+                                    <operator>NE</operator>
+                                    <rightValue>Annul</rightValue>
+                                </criteria>
+                                <criteria>
+                                    <leftValue>{!Record.Status}</leftValue>
+                                    <operator>NE</operator>
+                                    <rightValue>In Progress</rightValue>
+                                </criteria>
+                                <criteria>
+                                    <leftValue>{!Record.Status}</leftValue>
+                                    <operator>NE</operator>
+                                    <rightValue>Cannot Complete</rightValue>
+                                </criteria>
+                            </visibilityRule>
+                        </valueListItems>
+                        <valueListItems>
                             <value>ServiceAppointment.HOT_ChangeStatus</value>
                             <visibilityRule>
                                 <criteria>
@@ -69,16 +118,6 @@
                         </valueListItems>
                         <valueListItems>
                             <value>ServiceAppointment.HOT_registrerWantedServiceResource</value>
-                        </valueListItems>
-                        <valueListItems>
-                            <value>ServiceAppointment.HOT_RegisterInterest</value>
-                            <visibilityRule>
-                                <criteria>
-                                    <leftValue>{!$Client.formFactor}</leftValue>
-                                    <operator>EQUAL</operator>
-                                    <rightValue>Small</rightValue>
-                                </criteria>
-                            </visibilityRule>
                         </valueListItems>
                     </valueList>
                 </componentInstanceProperties>
@@ -1318,6 +1357,10 @@
         </itemInstances>
         <itemInstances>
             <componentInstance>
+                <componentInstanceProperties>
+                    <name>label</name>
+                    <value>Tabs</value>
+                </componentInstanceProperties>
                 <componentInstanceProperties>
                     <name>tabs</name>
                     <value>Facet-87d76a61-4535-4189-be09-0e5377b76f56</value>
