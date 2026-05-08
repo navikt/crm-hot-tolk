@@ -14,7 +14,7 @@
             form="tolk-skjema-input"
             value={fieldValues.Subject__c}
             error-text="Tema og sted må fylles ut."
-            helptext-content="Beskriv hva du trenger tolk til og hvor, f.eks. legetime ved xx-legesenter, forelesning ved xx-universitet osv."
+            description="Beskriv hva du trenger tolk til og hvor, f.eks. legetime ved xx-legesenter, forelesning ved xx-universitet osv."
         ></c-input>
         <br />
         <c-hot_recurring-time-input_v2
@@ -147,12 +147,13 @@
             form="tolk-skjema-input"
             default-value={fieldValues.IsOrdererWantStatusUpdateOnSMS__c}
         ></c-checkbox>
-        <c-checkbox
+        <c-hot_switch
             label="Fyll ut mer informasjon"
-            oncheckboxclick={handleOptionalCheckbox}
+            onchange={handleOptionalCheckbox}
             form="tolk-skjema-input"
-            default-value={componentValues.isOptionalFields}
-        ></c-checkbox>
+            value={componentValues.isOptionalFields}
+        ></c-hot_switch>
+
         <div if:true={componentValues.isOptionalFields}>
             <br />
             <c-input

@@ -362,7 +362,7 @@ export default class hot_requestForm_request_v2 extends LightningElement {
     }
 
     handleOptionalCheckbox(event) {
-        this.componentValues.isOptionalFields = event.detail;
+        this.componentValues.isOptionalFields = event.detail.checked;
     }
 
     handlePhysicalOrDigital(event) {
