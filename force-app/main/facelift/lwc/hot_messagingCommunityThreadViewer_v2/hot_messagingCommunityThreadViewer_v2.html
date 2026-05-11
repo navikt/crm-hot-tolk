@@ -19,6 +19,19 @@
                 <div>
                     <h1 class="header" role="heading" aria-level="1">{subject}</h1>
                 </div>
+                <!-- The banner will be shown when the service appointment is canceled -->
+                <template lwc:if={showMessageInput}>
+                    <!-- Show nothing -->
+                </template>
+                <template lwc:else>
+                    <div class="banner-container">
+                        <c-hot_info-card
+                            title="Oppdraget er avlyst"
+                            content={canceledSABannerText}
+                            type="warning"
+                        ></c-hot_info-card>
+                    </div>
+                </template>
                 <div class="navds-div">{threadType}</div>
 
                 <div class="header-buttons">
@@ -134,7 +147,8 @@
 
                                         <p>Tolkemetode: <span>{serviceAppointment.HOT_WorkTypeName__c}</span></p>
                                         <p lwc:if={serviceAppointment.HOT_PreparationTime__c}>
-                                            Kompensert forberedelse: <span>{serviceAppointment.HOT_PreparationTime__c}</span>
+                                            Kompensert forberedelse:
+                                            <span>{serviceAppointment.HOT_PreparationTime__c}</span>
                                         </p>
                                         <p>Oppdragstype: <span>{serviceAppointment.HOT_AssignmentType__c}</span></p>
                                         <p>Eier: <span>{serviceAppointment.HOT_Request__r.OwnerName__c}</span></p>
@@ -183,6 +197,10 @@
 
                                         <template lwc:if={serviceAppointment.HOT_Dispatcher__c}>
                                             <p>Formidler: <span>{serviceAppointment.HOT_Dispatcher__c}</span></p>
+                                        </template>
+
+                                        <template lwc:if={serviceAppointment.HOT_CanceledDate__c}>
+                                            <p>Avlyst dato: <span>{serviceAppointment.HOT_CanceledDate__c}</span></p>
                                         </template>
                                     </div>
                                 </template>
@@ -319,30 +337,32 @@
                         </template>
                     </div>
                 </div>
-                <div class="textarea-container">
-                    <c-textarea
-                        helptext-content={helptextContent}
-                        label="Ny melding"
-                        max-length={maxLength}
-                        error-text={textareaErrorText}
-                        ongetvalueontextareachange={handleTextChange}
-                        desktop-style="width: 100%; height: 100%;"
-                        mobile-style=""
-                    ></c-textarea>
-                </div>
+                <template lwc:if={showMessageInput}>
+                    <div class="textarea-container">
+                        <c-textarea
+                            helptext-content={helptextContent}
+                            label="Ny melding"
+                            max-length={maxLength}
+                            error-text={textareaErrorText}
+                            ongetvalueontextareachange={handleTextChange}
+                            desktop-style="width: 100%; height: 100%;"
+                            mobile-style=""
+                        ></c-textarea>
+                    </div>
 
-                <div class="send-button-container">
-                    <c-button
-                        disabled={buttonisdisabled}
-                        onbuttonclick={handleSendButtonClick}
-                        button-label="Send melding"
-                        type="submit"
-                        button-styling="primary"
-                        is-loading={buttonLoading}
-                        desktop-style="width: 10rem; justify-content: center;"
-                        mobile-style="width: 9rem; justify-content: center;"
-                    ></c-button>
-                </div>
+                    <div class="send-button-container">
+                        <c-button
+                            disabled={buttonisdisabled}
+                            onbuttonclick={handleSendButtonClick}
+                            button-label="Send melding"
+                            type="submit"
+                            button-styling="primary"
+                            is-loading={buttonLoading}
+                            desktop-style="width: 10rem; justify-content: center;"
+                            mobile-style="width: 9rem; justify-content: center;"
+                        ></c-button>
+                    </div>
+                </template>
             </div>
         </template>
     </div>
