@@ -286,4 +286,11 @@ public without sharing class HOT_ThreadDetailControllerTest {
             System.assertEquals(check, access, 'Should have access to this thread');
         }
     }
+
+    @IsTest
+    private static void checkUserHasAdminOrFormidlerAdminAccessReturnsFalseWhenUserHasNoAccess() {
+        User u = [SELECT Id FROM User WHERE Id = :UserInfo.getUserId() LIMIT 1];
+
+        System.assertEquals(false, HOT_ThreadDetailController.isAdminOrFormidlerAdmin(u));
+    }
 }
