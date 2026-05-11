@@ -178,7 +178,7 @@ export default class hot_messagingMessageComponent extends LightningElement {
 
                     // work orders with status canceled should not show message input
                     if (this.threadTypesOfInterest.includes('HOT_BRUKER-TOLK') && result.Status === 'Canceled') {
-                        this.messageInputShow = false;
+                        this.showMessageInput = false;
                     }
                 })
                 .catch((error) => {
