@@ -406,7 +406,7 @@ export default class hot_requestForm_request_v2 extends LightningElement {
     }
 
     handleSMSCheckbox(event) {
-        this.fieldValues.IsOrdererWantStatusUpdateOnSMS__c = event.detail;
+        this.fieldValues.IsOrdererWantStatusUpdateOnSMS__c = event.detail.checked;
     }
 
     uploadFilesDropHandler(event) {

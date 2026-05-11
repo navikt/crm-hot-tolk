@@ -138,20 +138,23 @@
             helptext-content="Her kan du skrive inn andre opplysninger som er viktige (for eksempel mer informasjon om oppmøtestedet, antall deltagere, krav til antrekk og lignende)."
         ></c-textarea>
         <br />
-        <c-checkbox
-            if:true={isRequestTypeMe}
-            label="Ønsker varsel ved statusendring på bestillingen"
-            helptext-content="Varslingskanal kan endres på Min side."
-            oncheckboxclick={handleSMSCheckbox}
-            name="IsOrdererWantStatusUpdateOnSMS__c"
-            form="tolk-skjema-input"
-            default-value={fieldValues.IsOrdererWantStatusUpdateOnSMS__c}
-        ></c-checkbox>
+        <template lwc:if={isRequestTypeMe}>
+            <c-hot_switch
+                class="switch-container"
+                label="Ønsker varsel ved statusendring på bestillingen"
+                onchange={handleSMSCheckbox}
+                form="tolk-skjema-input"
+                name="IsOrdererWantStatusUpdateOnSMS__c"
+                checked={fieldValues.IsOrdererWantStatusUpdateOnSMS__c}
+                description="Varslingskanal kan endres på Min side."
+            ></c-hot_switch>
+        </template>
         <c-hot_switch
+            class="switch-container"
             label="Fyll ut mer informasjon"
             onchange={handleOptionalCheckbox}
             form="tolk-skjema-input"
-            value={componentValues.isOptionalFields}
+            checked={componentValues.isOptionalFields}
         ></c-hot_switch>
 
         <div if:true={componentValues.isOptionalFields}>
