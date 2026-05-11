@@ -18,7 +18,7 @@ export default class hot_messagingMessageComponent extends LightningElement {
     relatedObjectId;
     isThreadSummaryLoaded = false;
     defaultActiveTab = 'tab1';
-    messageInputShow = true;
+    showMessageInput = true;
     //show flows
     userSetToRedactionFlow = false;
     ordererSetToRedactionFlow = false;
