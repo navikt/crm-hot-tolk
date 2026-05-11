@@ -142,7 +142,7 @@ public without sharing class HOT_MessageHelper {
             }
         }
 
-        if (HOT_ThreadDetailController.isAdminOrFormidler(user)) {
+        if (HOT_ThreadDetailController.isAdminOrFormidlerAdmin(user)) {
             return wo;
         }
         throw new AuraHandledException('No access');
