@@ -130,9 +130,19 @@ public without sharing class HOT_ThreadDetailController {
             }
         }
 
-        if (isAdminOrFormidler(user) && thread.CRM_Thread_Type__c.startsWith('HOT_')) {
+        String threadType = thread.CRM_Thread_Type__c;
+
+        if (
+            threadType != null &&
+            isAdminOrFormidlerAdmin(user) &&
+            (threadType == 'HOT_BRUKER-TOLK' ||
+            threadType == 'HOT_TOLK-TOLK')
+        ) {
+            return true;
+        } else if (threadType != null && isAdminOrFormidler(user) && threadType.startsWith('HOT_')) {
             return true;
         }
+
         //ansatt tolk tråder tilgang
 
         if (user.Id == thread.HOT_ServiceResource__r.RelatedRecordId) {
