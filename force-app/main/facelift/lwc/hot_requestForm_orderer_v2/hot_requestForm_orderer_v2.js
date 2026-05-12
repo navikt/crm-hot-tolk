@@ -21,10 +21,10 @@ export default class Hot_requestForm_orderer extends LightningElement {
     }
 
     handleSMSCheckbox(event) {
-        this.fieldValues.IsOrdererWantStatusUpdateOnSMS__c = event.detail;
+        this.fieldValues.IsOrdererWantStatusUpdateOnSMS__c = event.detail.checked;
     }
     handleDontNotifyUserCheckbox(event) {
-        this.fieldValues.IsNotNotifyAccount__c = event.detail;
+        this.fieldValues.IsNotNotifyAccount__c = event.detail.checked;
     }
 
     @track fieldValues = {
