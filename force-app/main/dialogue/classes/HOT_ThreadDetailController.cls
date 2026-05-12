@@ -13,7 +13,8 @@ public without sharing class HOT_ThreadDetailController {
                     HOT_Thread_read_by__c,
                     HOT_Request__r.Account__c,
                     HOT_Request__r.Orderer__c,
-                    HOT_WorkOrder__r.AccountId
+                    HOT_WorkOrder__r.AccountId,
+                    HOT_WorkOrder__r.Status
                 FROM Thread__c
                 WHERE Id = :recordId
                 LIMIT 1
@@ -44,6 +45,7 @@ public without sharing class HOT_ThreadDetailController {
                 if (wo.HOT_Request__r.Account__c == user.AccountId) {
                     return true;
                 } else {
+                    DateTime twoDaysAgo = System.now().addDays(-2);
                     List<AssignedResource> arList = [
                         SELECT Id
                         FROM AssignedResource
@@ -53,6 +55,20 @@ public without sharing class HOT_ThreadDetailController {
                     ];
                     if (arList.size() > 0) {
                         return true;
+                    } else {
+                        List<HOT_HistoricallyAssignedResource__c> harList = [
+                            SELECT Id
+                            FROM HOT_HistoricallyAssignedResource__c
+                            WHERE
+                                ServiceAppointment__r.HOT_WorkOrderLineItem__r.WorkOrderId = :thread.CRM_Related_Object__c
+                                AND ServiceResource__r.RelatedRecordId = :user.Id
+                                AND ServiceAppointment__r.Status = 'Canceled'
+                                AND Status__c = 'Avlyst av bruker'
+                                AND CreatedDate >= :twoDaysAgo
+                        ];
+                        if (harList.size() > 0) {
+                            return true;
+                        }
                     }
                 }
             }
