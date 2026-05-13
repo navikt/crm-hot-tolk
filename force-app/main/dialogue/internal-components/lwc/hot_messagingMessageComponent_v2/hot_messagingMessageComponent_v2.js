@@ -183,17 +183,9 @@ export default class hot_messagingMessageComponent extends LightningElement {
                             this.threadTypesOfInterest.includes('HOT_TOLK-TOLK')) &&
                         result.Status === 'Canceled'
                     ) {
-                        // this.showMessageInput = false;
                         return checkIsOnlyEmployedInterpreter().then((hasPermission) => {
-                            console.log('checkIsOnlyEmployedInterpreter in workorder thread result: ' + hasPermission);
                             if (hasPermission) {
                                 this.showMessageInput = false;
-                                console.log('Work order thread is canceled, hiding message input: ' + result.Status);
-                                console.log(
-                                    result.Status +
-                                        ' Work order is canceled, hiding message input ' +
-                                        this.threadTypesOfInterest
-                                );
                             }
                         });
                     }
@@ -259,25 +251,13 @@ export default class hot_messagingMessageComponent extends LightningElement {
                     this.relatedObjectId = result.CRM_Related_Object__c ?? result.Id;
                     this.threadTypesOfInterest = [result.CRM_Thread_Type__c];
 
-                    console.log('Thread__c connected callback, thread type is ' + result.CRM_Thread_Type__c);
-
                     if (
                         result.HOT_WorkOrder__r?.Status === 'Canceled' &&
                         result.CRM_Related_Object_Type__c === 'WorkOrder'
                     ) {
                         return checkIsOnlyEmployedInterpreter().then((hasPermission) => {
-                            console.log('checkIsOnlyEmployedInterpreter result: ' + hasPermission);
                             if (hasPermission) {
                                 this.showMessageInput = false;
-                                console.log(
-                                    'Work order thread is canceled, hiding message input: ' +
-                                        result.HOT_WorkOrder__r.Status
-                                );
-                                console.log(
-                                    result.HOT_WorkOrder__r.Status +
-                                        ' Work order is canceled, hiding message input ' +
-                                        this.threadTypesOfInterest
-                                );
                             }
                         });
                     }
