@@ -10,6 +10,7 @@ public without sharing class HOT_ThreadDetailController {
                     CRM_Is_Closed__c,
                     CRM_Thread_Type__c,
                     CRM_Related_Object__c,
+                    CRM_Related_Object_Type__c,
                     HOT_Thread_read_by__c,
                     HOT_Request__r.Account__c,
                     HOT_Request__r.Orderer__c,
@@ -190,10 +191,30 @@ public without sharing class HOT_ThreadDetailController {
         ];
 
         if (!psgAssignments.isEmpty() || !groupMembers.isEmpty()) {
-            System.debug('This is an admin or formidler admin');
             return true;
         }
-        System.debug('This is not a admin or formidler admin');
         return false;
+    }
+
+    @AuraEnabled(cacheable=true)
+    public static Boolean isOnlyEmployedInterpreter() {
+        Set<String> isAllowedGroups = new Set<String>{
+            'HOT_Tolk_Ansatt_Gruppe',
+            'HOT_Tolk_Formidler_Admin_Gruppe',
+            'HOT_Tolk_Formidler_Gruppe'
+        };
+
+        List<PermissionSetAssignment> psgAssignments = [
+            SELECT PermissionSetGroup.DeveloperName
+            FROM PermissionSetAssignment
+            WHERE AssigneeId = :UserInfo.getUserId() AND PermissionSetGroup.DeveloperName IN :isAllowedGroups
+        ];
+
+        Set<String> assignedGroupNames = new Set<String>();
+        for (PermissionSetAssignment assignment : psgAssignments) {
+            assignedGroupNames.add(assignment.PermissionSetGroup.DeveloperName);
+        }
+
+        return assignedGroupNames.size() == 1 && assignedGroupNames.contains('HOT_Tolk_Ansatt_Gruppe');
     }
 }

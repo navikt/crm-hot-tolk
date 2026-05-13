@@ -56,6 +56,7 @@ export default class hot_messagingThreadViewer extends LightningElement {
     set showMessageInput(value) {
         this._showMessageInput = !(value === false || value === 'false');
     }
+
     connectedCallback() {
         if (this.thread) {
             this.threadid = this.thread.Id;

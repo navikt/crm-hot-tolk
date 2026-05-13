@@ -10,6 +10,7 @@ import getServiceAppointmentInformation from '@salesforce/apex/HOT_MessageHelper
 import getInterestedResourceInformation from '@salesforce/apex/HOT_MessageHelper.getInterestedResourceInformationAndAccessCheck';
 import getAccountOnWorkOrder from '@salesforce/apex/HOT_MessageHelper.getAccountOnWorkOrder';
 import getThreadInformation from '@salesforce/apex/HOT_ThreadDetailController.getThreadDetails';
+import checkIsOnlyEmployedInterpreter from '@salesforce/apex/HOT_ThreadDetailController.isOnlyEmployedInterpreter';
 import setLastMessageFrom from '@salesforce/apex/HOT_MessageHelper.setLastMessageFrom';
 import { ShowToastEvent } from 'lightning/platformShowToastEvent';
 import { createRecord } from 'lightning/uiRecordApi';
@@ -177,8 +178,24 @@ export default class hot_messagingMessageComponent extends LightningElement {
                     }
 
                     // work orders with status canceled should not show message input
-                    if (this.threadTypesOfInterest.includes('HOT_BRUKER-TOLK') && result.Status === 'Canceled') {
-                        this.showMessageInput = false;
+                    if (
+                        (this.threadTypesOfInterest.includes('HOT_BRUKER-TOLK') ||
+                            this.threadTypesOfInterest.includes('HOT_TOLK-TOLK')) &&
+                        result.Status === 'Canceled'
+                    ) {
+                        // this.showMessageInput = false;
+                        return checkIsOnlyEmployedInterpreter().then((hasPermission) => {
+                            console.log('checkIsOnlyEmployedInterpreter in workorder thread result: ' + hasPermission);
+                            if (hasPermission) {
+                                this.showMessageInput = false;
+                                console.log('Work order thread is canceled, hiding message input: ' + result.Status);
+                                console.log(
+                                    result.Status +
+                                        ' Work order is canceled, hiding message input ' +
+                                        this.threadTypesOfInterest
+                                );
+                            }
+                        });
                     }
                 })
                 .catch((error) => {
@@ -241,6 +258,31 @@ export default class hot_messagingMessageComponent extends LightningElement {
                 .then((result) => {
                     this.relatedObjectId = result.CRM_Related_Object__c ?? result.Id;
                     this.threadTypesOfInterest = [result.CRM_Thread_Type__c];
+
+                    console.log('Thread__c connected callback, thread type is ' + result.CRM_Thread_Type__c);
+
+                    if (
+                        result.HOT_WorkOrder__r?.Status === 'Canceled' &&
+                        result.CRM_Related_Object_Type__c === 'WorkOrder'
+                    ) {
+                        return checkIsOnlyEmployedInterpreter().then((hasPermission) => {
+                            console.log('checkIsOnlyEmployedInterpreter result: ' + hasPermission);
+                            if (hasPermission) {
+                                this.showMessageInput = false;
+                                console.log(
+                                    'Work order thread is canceled, hiding message input: ' +
+                                        result.HOT_WorkOrder__r.Status
+                                );
+                                console.log(
+                                    result.HOT_WorkOrder__r.Status +
+                                        ' Work order is canceled, hiding message input ' +
+                                        this.threadTypesOfInterest
+                                );
+                            }
+                        });
+                    }
+
+                    return null;
                 })
                 .catch((error) => {
                     if (error?.body?.message == 'No access') {
@@ -251,10 +293,13 @@ export default class hot_messagingMessageComponent extends LightningElement {
                 })
                 .finally(() => {
                     this.getThreadAndParticipants();
+                    console.log('messageinputshow on thread__c connected callback: status is ' + this.showMessageInput);
                 });
         } else {
             console.log('Not supportet object for messaging component');
         }
+
+        console.log('messageinputshow on connected callback: ' + this.showMessageInput);
     }
 
     async getThreadAndParticipants() {
