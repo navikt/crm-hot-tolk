@@ -29,7 +29,12 @@ public without sharing class HOT_ThreadDetailController {
     public static boolean checkAccess(Id threadId) {
         Boolean grantAccess = false;
         Thread__c thread = [
-            SELECT Id, CRM_Related_Object__c, CRM_Thread_Type__c, HOT_ServiceResource__r.RelatedRecordId
+            SELECT
+                Id,
+                CRM_Related_Object__c,
+                CRM_Related_Object_Type__c,
+                CRM_Thread_Type__c,
+                HOT_ServiceResource__r.RelatedRecordId
             FROM Thread__c
             WHERE Id = :threadId
         ];
@@ -70,6 +75,16 @@ public without sharing class HOT_ThreadDetailController {
                             return true;
                         }
                     }
+                }
+                String threadType = thread.CRM_Thread_Type__c;
+
+                if (
+                    threadType != null &&
+                    isAdminOrFormidlerAdmin(user) &&
+                    (threadType == 'HOT_BRUKER-TOLK' ||
+                    threadType == 'HOT_TOLK-TOLK')
+                ) {
+                    return true;
                 }
             }
             if (objectType == 'HOT_WageClaim__c') {
@@ -130,16 +145,11 @@ public without sharing class HOT_ThreadDetailController {
             }
         }
 
-        String threadType = thread.CRM_Thread_Type__c;
-
         if (
-            threadType != null &&
-            isAdminOrFormidlerAdmin(user) &&
-            (threadType == 'HOT_BRUKER-TOLK' ||
-            threadType == 'HOT_TOLK-TOLK')
+            isAdminOrFormidler(user) &&
+            thread.CRM_Thread_Type__c.startsWith('HOT_') &&
+            thread.CRM_Related_Object_Type__c != 'WorkOrder'
         ) {
-            return true;
-        } else if (threadType != null && isAdminOrFormidler(user) && threadType.startsWith('HOT_')) {
             return true;
         }
 
@@ -179,9 +189,11 @@ public without sharing class HOT_ThreadDetailController {
             LIMIT 1
         ];
 
-        if (!psgAssignments.isEmpty() || groupMembers.size() > 0) {
+        if (!psgAssignments.isEmpty() || !groupMembers.isEmpty()) {
+            System.debug('This is an admin or formidler admin');
             return true;
         }
+        System.debug('This is not a admin or formidler admin');
         return false;
     }
 }
