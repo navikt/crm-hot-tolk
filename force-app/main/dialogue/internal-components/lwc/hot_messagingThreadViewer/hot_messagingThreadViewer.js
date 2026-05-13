@@ -27,7 +27,6 @@ export default class hot_messagingThreadViewer extends LightningElement {
     @api showClose;
     @api englishTextTemplate;
     @api setInputInFocusOnRender;
-    @api showMessageInput;
     @track langBtnLock = false;
     langBtnAriaToggle = false;
     newMessage = false;
@@ -46,6 +45,18 @@ export default class hot_messagingThreadViewer extends LightningElement {
             qtext.focusOnInput();
         }
     }
+
+    _showMessageInput = true;
+
+    @api
+    get showMessageInput() {
+        return this._showMessageInput;
+    }
+
+    set showMessageInput(value) {
+        this._showMessageInput = !(value === false || value === 'false');
+    }
+
     connectedCallback() {
         if (this.thread) {
             this.threadid = this.thread.Id;
