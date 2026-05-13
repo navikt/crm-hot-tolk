@@ -273,13 +273,10 @@ export default class hot_messagingMessageComponent extends LightningElement {
                 })
                 .finally(() => {
                     this.getThreadAndParticipants();
-                    console.log('messageinputshow on thread__c connected callback: status is ' + this.showMessageInput);
                 });
         } else {
             console.log('Not supportet object for messaging component');
         }
-
-        console.log('messageinputshow on connected callback: ' + this.showMessageInput);
     }
 
     async getThreadAndParticipants() {
