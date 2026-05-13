@@ -288,9 +288,43 @@ public without sharing class HOT_ThreadDetailControllerTest {
     }
 
     @IsTest
+    private static void checkAccessWorkOrderReturnsTrueForCurrentTestUser() {
+        User admin = [SELECT Id FROM User WHERE Id = :UserInfo.getUserId() LIMIT 1];
+
+        WorkType workType = HOT_TestDataFactory.createWorkType();
+        insert workType;
+
+        HOT_Request__c request = HOT_TestDataFactory.createRequest('TEST', workType);
+        insert request;
+
+        WorkOrder workOrder = HOT_TestDataFactory.createWorkOrder(request, workType);
+        insert workOrder;
+
+        Thread__c threadRecord = new Thread__c();
+        threadRecord.RecordTypeId = HOT_MessageHelper.getHOTThreadRecordType();
+        threadRecord.CRM_Related_Object__c = workOrder.Id;
+        threadRecord.CRM_Related_Object_Type__c = 'WorkOrder';
+        threadRecord.CRM_Thread_Type__c = 'HOT_BRUKER-FORMIDLER';
+        insert threadRecord;
+
+        System.runAs(admin) {
+            System.assertEquals(true, HOT_ThreadDetailController.checkAccess(threadRecord.Id));
+        }
+    }
+
+    @IsTest
     private static void checkUserHasAdminOrFormidlerAdminAccessReturnsFalseWhenUserHasNoAccess() {
         User u = [SELECT Id FROM User WHERE Id = :UserInfo.getUserId() LIMIT 1];
 
         System.assertEquals(false, HOT_ThreadDetailController.isAdminOrFormidlerAdmin(u));
+    }
+
+    @IsTest
+    private static void isOnlyEmployedInterpreterReturnsFalseWhenUserHasNoPermissionSetGroups() {
+        System.Test.startTest();
+        Boolean result = HOT_ThreadDetailController.isOnlyEmployedInterpreter();
+        System.Test.stopTest();
+
+        System.assertEquals(false, result);
     }
 }
