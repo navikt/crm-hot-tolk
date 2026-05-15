@@ -2,12 +2,11 @@ import { LightningElement, api } from 'lwc';
 
 import icons from '@salesforce/resourceUrl/ikoner';
 import ICON_Newspaper from '@salesforce/resourceUrl/Newspaper';
-
-import getUnreadAnnouncementIds from '@salesforce/apex/HOT_AnnouncementController.getUnreadAnnouncementIds';
 import markAnnouncementsAsRead from '@salesforce/apex/HOT_AnnouncementController.markAnnouncementsAsRead';
 
 export default class Hot_announcementListViewer extends LightningElement {
     @api announcements;
+    @api unreadAnnouncementIds = [];
 
     exitCrossIcon = icons + '/Close/Close.svg';
     newspaperIcon = ICON_Newspaper;
@@ -18,22 +17,8 @@ export default class Hot_announcementListViewer extends LightningElement {
     announcementsToShow = 100;
     visibleAnnouncements = [];
 
-    unreadAnnouncementIds = [];
-
-    connectedCallback() {
-        this.loadUnreadAnnouncements();
-    }
-
-    async loadUnreadAnnouncements() {
-        try {
-            this.unreadAnnouncementIds = await getUnreadAnnouncementIds();
-        } catch (error) {
-            console.error('Feil ved henting av uleste nyheter', error);
-        }
-    }
-
     get unreadCount() {
-        return this.unreadAnnouncementIds.length;
+        return (this.unreadAnnouncementIds || []).length;
     }
 
     async handleShowAnnouncements() {
@@ -41,21 +26,21 @@ export default class Hot_announcementListViewer extends LightningElement {
 
         const dialog = this.template.querySelector('.modal-announcements');
 
-        dialog.showModal();
-        dialog.focus();
+        if (dialog) {
+            dialog.showModal();
+            dialog.focus();
+        }
 
         await this.setNewsRead();
     }
 
     async setNewsRead() {
-        if (!this.unreadAnnouncementIds.length) {
+        if (!this.unreadCount) {
             return;
         }
 
         try {
             await markAnnouncementsAsRead();
-
-            // Fjern badge når åpner nyhetslisten, siden alle nyhetene nå er markert som lest
             this.unreadAnnouncementIds = [];
         } catch (error) {
             console.error('Feil ved markering av nyhet som lest', error);
@@ -77,7 +62,7 @@ export default class Hot_announcementListViewer extends LightningElement {
     }
 
     get hasMore() {
-        return this.announcementsToShow < this.announcements.length;
+        return this.announcementsToShow < (this.announcements || []).length;
     }
 
     closeModal() {
@@ -90,5 +75,17 @@ export default class Hot_announcementListViewer extends LightningElement {
 
     get isEmpty() {
         return !this.announcements || this.announcements.length === 0;
+    }
+
+    get announcementButtonLabel() {
+        if (this.unreadCount === 1) {
+            return 'Nyheter fra Tolketjenesten. Du har 1 ulest nyhet';
+        }
+
+        if (this.unreadCount > 1) {
+            return `Nyheter fra Tolketjenesten. Du har ${this.unreadCount} uleste nyheter`;
+        }
+
+        return 'Nyheter fra Tolketjenesten. Du har ingen uleste nyheter';
     }
 }
