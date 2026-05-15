@@ -77,4 +77,77 @@ public without sharing class HOT_AnnouncementController {
             WHERE Id = :UserInfo.getUserId()
         ];
     }
+    @AuraEnabled(cacheable=true)
+    public static List<Id> getUnreadAnnouncementIds() {
+        List<HOT_Announcement__c> announcements = getAnnouncements();
+
+        if (announcements.isEmpty()) {
+            return new List<Id>();
+        }
+
+        Set<Id> announcementIds = new Set<Id>();
+
+        for (HOT_Announcement__c announcement : announcements) {
+            announcementIds.add(announcement.Id);
+        }
+
+        Set<Id> readAnnouncementIds = new Set<Id>();
+
+        for (HOT_ReadReceipt__c receipt : [
+            SELECT Announcement__c
+            FROM HOT_ReadReceipt__c
+            WHERE User__c = :UserInfo.getUserId() AND Announcement__c IN :announcementIds
+        ]) {
+            readAnnouncementIds.add(receipt.Announcement__c);
+        }
+
+        List<Id> unreadAnnouncementIds = new List<Id>();
+
+        for (Id announcementId : announcementIds) {
+            if (!readAnnouncementIds.contains(announcementId)) {
+                unreadAnnouncementIds.add(announcementId);
+            }
+        }
+
+        return unreadAnnouncementIds;
+    }
+
+    @AuraEnabled
+    public static void markAnnouncementsAsRead() {
+        List<HOT_Announcement__c> announcements = getAnnouncements();
+
+        if (announcements.isEmpty()) {
+            return;
+        }
+
+        Set<Id> announcementIds = new Set<Id>();
+
+        for (HOT_Announcement__c announcement : announcements) {
+            announcementIds.add(announcement.Id);
+        }
+
+        Set<Id> existingReceiptAnnouncementIds = new Set<Id>();
+
+        for (HOT_ReadReceipt__c receipt : [
+            SELECT Announcement__c
+            FROM HOT_ReadReceipt__c
+            WHERE User__c = :UserInfo.getUserId() AND Announcement__c IN :announcementIds
+        ]) {
+            existingReceiptAnnouncementIds.add(receipt.Announcement__c);
+        }
+
+        List<HOT_ReadReceipt__c> receiptsToInsert = new List<HOT_ReadReceipt__c>();
+
+        for (Id announcementId : announcementIds) {
+            if (!existingReceiptAnnouncementIds.contains(announcementId)) {
+                receiptsToInsert.add(
+                    new HOT_ReadReceipt__c(User__c = UserInfo.getUserId(), Announcement__c = announcementId)
+                );
+            }
+        }
+
+        if (!receiptsToInsert.isEmpty()) {
+            insert receiptsToInsert;
+        }
+    }
 }

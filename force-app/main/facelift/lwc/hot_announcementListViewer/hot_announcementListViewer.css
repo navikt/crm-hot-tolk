@@ -175,3 +175,32 @@ dialog.modal-container .close-btn:hover {
         padding: 0rem;
     }
 }
+.news-button {
+    position: relative;
+}
+
+.news-badge {
+    position: absolute;
+    top: -6px;
+    right: -6px;
+
+    background-color: #c30000;
+    color: white;
+
+    min-width: 20px;
+    height: 20px;
+
+    padding: 0 6px;
+
+    border-radius: 999px;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    font-size: 0.75rem;
+    font-weight: 700;
+    line-height: 1;
+
+    box-shadow: 0 0 0 2px white;
+}
