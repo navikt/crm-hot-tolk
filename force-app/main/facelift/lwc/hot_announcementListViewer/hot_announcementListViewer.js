@@ -55,10 +55,10 @@ export default class Hot_announcementListViewer extends LightningElement {
         try {
             await markAnnouncementsAsRead();
 
-            // Fjern badge umiddelbart i UI
+            // Fjern badge når åpner nyhetslisten, siden alle nyhetene nå er markert som lest
             this.unreadAnnouncementIds = [];
         } catch (error) {
-            console.error('Feil ved markering av announcements som lest', error);
+            console.error('Feil ved markering av nyhet som lest', error);
         }
     }
 
