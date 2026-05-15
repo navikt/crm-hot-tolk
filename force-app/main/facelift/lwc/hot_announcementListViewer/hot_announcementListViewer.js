@@ -28,7 +28,7 @@ export default class Hot_announcementListViewer extends LightningElement {
         try {
             this.unreadAnnouncementIds = await getUnreadAnnouncementIds();
         } catch (error) {
-            console.error('Feil ved henting av uleste announcements', error);
+            console.error('Feil ved henting av uleste nyheter', error);
         }
     }
 
