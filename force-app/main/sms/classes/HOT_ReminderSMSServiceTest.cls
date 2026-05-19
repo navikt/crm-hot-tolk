@@ -2,6 +2,29 @@
 private class HOT_ReminderSMSServiceTest {
     @testSetup
     static void setup() {
+
+        myTriggers.disable(UserDefaultValuesHandler.class);
+        myTriggers.disable(UserProfileHandler.class);
+        myTriggers.disable(UserRegionHandler.class);
+        myTriggers.disable(UserRoleAssignmentHandler.class);
+        myTriggers.disable(UserPermissionSetAssignmentHandler.class);
+        myTriggers.disable(PersonAccessHandler.class);
+        myTriggers.disable(
+            PersonHandler.class,
+            new List<System.TriggerOperation>{ System.TriggerOperation.BEFORE_INSERT }
+        );
+        myTriggers.disable(
+            PersonHandler.class,
+            new List<System.TriggerOperation>{ System.TriggerOperation.BEFORE_UPDATE }
+        );
+        myTriggers.disable(
+            HOT_RequestHandler.class,
+            new List<System.TriggerOperation>{ System.TriggerOperation.AFTER_INSERT }
+        );
+        myTriggers.disable(
+            HOT_ServiceResourceAccessHandler.class,
+            new List<System.TriggerOperation>{ System.TriggerOperation.AFTER_INSERT }
+        );
         Person__c person = HOT_TestDataFactory.createPerson();
         person.INT_KrrMobilePhone__c = '00000000';
         person.HOT_NotificationChannel__c = 'SMS';
@@ -96,6 +119,14 @@ private class HOT_ReminderSMSServiceTest {
     }
     @IsTest
     static void notifyUserOnOrderSeriesSMSTest() {
+        myTriggers.disable(
+            PersonHandler.class,
+            new List<System.TriggerOperation>{ System.TriggerOperation.BEFORE_INSERT }
+        );
+        myTriggers.disable(
+            HOT_RequestHandler.class,
+            new List<System.TriggerOperation>{ System.TriggerOperation.AFTER_INSERT }
+        );
         Test.startTest();
         Person__c person = HOT_TestDataFactory.createPerson();
         person.INT_KrrMobilePhone__c = '00000000';
@@ -162,6 +193,14 @@ private class HOT_ReminderSMSServiceTest {
 
     @IsTest
     static void sendSMSToInterpreterCancelledByUserTest() {
+        myTriggers.disable(
+            HOT_RequestHandler.class,
+            new List<System.TriggerOperation>{ System.TriggerOperation.AFTER_INSERT }
+        );
+        myTriggers.disable(
+            HOT_ServiceResourceAccessHandler.class,
+            new List<System.TriggerOperation>{ System.TriggerOperation.AFTER_INSERT }
+        );
         Test.startTest();
         User currentUser = [SELECT Id, AccountId FROM User WHERE Id = :UserInfo.getUserId()];
         WorkType workType = HOT_TestDataFactory.createWorkType();
@@ -198,6 +237,21 @@ private class HOT_ReminderSMSServiceTest {
 
     @IsTest
     static void sendSMSToInterpreterOnScreenInterpretationTest() {
+        myTriggers.disable(
+            HOT_ServiceResourceAccessHandler.class,
+            new List<System.TriggerOperation>{
+                System.TriggerOperation.AFTER_INSERT,
+                System.TriggerOperation.AFTER_UPDATE
+            }
+        );
+        myTriggers.disable(
+            HOT_AssignedResourceAccessHandler.class,
+            new List<System.TriggerOperation>{ System.TriggerOperation.AFTER_INSERT }
+        );
+        myTriggers.disable(
+            HOT_ServiceAppointmentAccessHandler.class,
+            new List<System.TriggerOperation>{ System.TriggerOperation.AFTER_UPDATE }
+        );
         Set<Id> saIds = (new Map<Id, ServiceAppointment>([SELECT Id FROM ServiceAppointment LIMIT 1])).keySet();
         Test.startTest();
         User currentUser = [SELECT Id, AccountId FROM User WHERE Id = :UserInfo.getUserId()];
@@ -221,6 +275,18 @@ private class HOT_ReminderSMSServiceTest {
     }
     @IsTest
     static void sendSMSToInterpreterOnTimeChangedTest() {
+        myTriggers.disable(
+            HOT_ServiceResourceAccessHandler.class,
+            new List<System.TriggerOperation>{ System.TriggerOperation.AFTER_INSERT }
+        );
+        myTriggers.disable(
+            HOT_AssignedResourceAccessHandler.class,
+            new List<System.TriggerOperation>{ System.TriggerOperation.AFTER_INSERT }
+        );
+        myTriggers.disable(
+            HOT_ServiceAppointmentAccessHandler.class,
+            new List<System.TriggerOperation>{ System.TriggerOperation.AFTER_UPDATE }
+        );
         Set<Id> saIds = (new Map<Id, ServiceAppointment>([SELECT Id FROM ServiceAppointment LIMIT 1])).keySet();
         Test.startTest();
         User currentUser = [SELECT Id, AccountId FROM User WHERE Id = :UserInfo.getUserId()];
@@ -245,6 +311,18 @@ private class HOT_ReminderSMSServiceTest {
     }
     @IsTest
     static void sendSMSToInterpreterOnAddressChangedTest() {
+        myTriggers.disable(
+            HOT_ServiceResourceAccessHandler.class,
+            new List<System.TriggerOperation>{ System.TriggerOperation.AFTER_INSERT }
+        );
+        myTriggers.disable(
+            HOT_AssignedResourceAccessHandler.class,
+            new List<System.TriggerOperation>{ System.TriggerOperation.AFTER_INSERT }
+        );
+        myTriggers.disable(
+            HOT_ServiceAppointmentAccessHandler.class,
+            new List<System.TriggerOperation>{ System.TriggerOperation.AFTER_UPDATE }
+        );
         Set<Id> saIds = (new Map<Id, ServiceAppointment>([SELECT Id FROM ServiceAppointment LIMIT 1])).keySet();
 
         Test.startTest();
@@ -269,6 +347,18 @@ private class HOT_ReminderSMSServiceTest {
     }
     @IsTest
     static void sendSMSToInterpreterOnAddedOrChangedTest() {
+        myTriggers.disable(
+            HOT_ServiceResourceAccessHandler.class,
+            new List<System.TriggerOperation>{ System.TriggerOperation.AFTER_INSERT }
+        );
+        myTriggers.disable(
+            HOT_AssignedResourceAccessHandler.class,
+            new List<System.TriggerOperation>{ System.TriggerOperation.AFTER_INSERT }
+        );
+        myTriggers.disable(
+            HOT_ServiceAppointmentAccessHandler.class,
+            new List<System.TriggerOperation>{ System.TriggerOperation.AFTER_UPDATE }
+        );
         Set<Id> saIds = (new Map<Id, ServiceAppointment>([SELECT Id FROM ServiceAppointment LIMIT 1])).keySet();
 
         Test.startTest();
@@ -293,6 +383,18 @@ private class HOT_ReminderSMSServiceTest {
     }
     @IsTest
     static void sendSMSToInterpreterOnResourceChangedTest() {
+        myTriggers.disable(
+            HOT_ServiceResourceAccessHandler.class,
+            new List<System.TriggerOperation>{ System.TriggerOperation.AFTER_INSERT }
+        );
+        myTriggers.disable(
+            HOT_AssignedResourceAccessHandler.class,
+            new List<System.TriggerOperation>{ System.TriggerOperation.AFTER_INSERT }
+        );
+        myTriggers.disable(
+            HOT_ServiceAppointmentAccessHandler.class,
+            new List<System.TriggerOperation>{ System.TriggerOperation.AFTER_UPDATE }
+        );
         Set<Id> saIds = (new Map<Id, ServiceAppointment>([SELECT Id FROM ServiceAppointment LIMIT 1])).keySet();
 
         Test.startTest();
@@ -318,6 +420,14 @@ private class HOT_ReminderSMSServiceTest {
 
     @IsTest
     static void sendSMSOnNewFilesAddedTest() {
+        myTriggers.disable(
+            HOT_ServiceAppointmentAccessHandler.class,
+            new List<System.TriggerOperation>{ System.TriggerOperation.AFTER_UPDATE }
+        );
+        myTriggers.disable(
+            HOT_AssignedResourceAccessHandler.class,
+            new List<System.TriggerOperation>{ System.TriggerOperation.AFTER_INSERT }
+        );
         OperatingHours operatingHours = HOT_TestDataFactory.createOperatingHours();
         insert operatingHours;
         ServiceTerritory serviceTerritory = HOT_TestDataFactory.createServiceTerritory(operatingHours);
@@ -339,6 +449,10 @@ private class HOT_ReminderSMSServiceTest {
     }
     @IsTest
     static void sendSMSOnNewWantedSRTest() {
+        myTriggers.disable(
+            HOT_ServiceAppointmentAccessHandler.class,
+            new List<System.TriggerOperation>{ System.TriggerOperation.AFTER_UPDATE }
+        );
         ServiceAppointment sa = [SELECT Id FROM ServiceAppointment WHERE Subject = 'TEST' LIMIT 1];
         Test.startTest();
         ServiceResource sr = [SELECT Id FROM ServiceResource LIMIT 1];
@@ -369,6 +483,22 @@ private class HOT_ReminderSMSServiceTest {
     }
     @IsTest
     static void getRecipientOnThreadTest() {
+        myTriggers.disable(
+            HOT_RequestHandler.class,
+            new List<System.TriggerOperation>{ System.TriggerOperation.AFTER_INSERT }
+        );
+        myTriggers.disable(
+            HOT_ServiceResourceAccessHandler.class,
+            new List<System.TriggerOperation>{ System.TriggerOperation.AFTER_INSERT }
+        );
+        myTriggers.disable(
+            HOT_AssignedResourceAccessHandler.class,
+            new List<System.TriggerOperation>{ System.TriggerOperation.AFTER_INSERT }
+        );
+        myTriggers.disable(
+            HOT_ServiceAppointmentAccessHandler.class,
+            new List<System.TriggerOperation>{ System.TriggerOperation.AFTER_UPDATE }
+        );
         User currentUser = [SELECT Id, AccountId FROM User WHERE Id = :UserInfo.getUserId()];
         Test.startTest();
         WorkType workType = HOT_TestDataFactory.createWorkType();
@@ -413,6 +543,14 @@ private class HOT_ReminderSMSServiceTest {
     }
     @IsTest
     static void getRecipientOnThreadUserTest() {
+        myTriggers.disable(
+            PersonHandler.class,
+            new List<System.TriggerOperation>{ System.TriggerOperation.BEFORE_INSERT }
+        );
+        myTriggers.disable(
+            HOT_RequestHandler.class,
+            new List<System.TriggerOperation>{ System.TriggerOperation.AFTER_INSERT }
+        );
         User currentUser = [SELECT Id, AccountId FROM User WHERE Id = :UserInfo.getUserId()];
         Test.startTest();
         Person__c person = HOT_TestDataFactory.createPerson();
@@ -441,6 +579,14 @@ private class HOT_ReminderSMSServiceTest {
     }
     @IsTest
     static void getRecipientOnThreadOrdererTest() {
+        myTriggers.disable(
+            PersonHandler.class,
+            new List<System.TriggerOperation>{ System.TriggerOperation.BEFORE_INSERT }
+        );
+        myTriggers.disable(
+            HOT_RequestHandler.class,
+            new List<System.TriggerOperation>{ System.TriggerOperation.AFTER_INSERT }
+        );
         User currentUser = [SELECT Id, AccountId FROM User WHERE Id = :UserInfo.getUserId()];
         Test.startTest();
         Person__c person = HOT_TestDataFactory.createPerson();
@@ -513,6 +659,10 @@ private class HOT_ReminderSMSServiceTest {
 
     @IsTest
     static void sendSMSToOrdererOnStatusUpdateTestInterpreterNames() {
+        myTriggers.disable(
+            HOT_ServiceAppointmentAccessHandler.class,
+            new List<System.TriggerOperation>{ System.TriggerOperation.AFTER_UPDATE }
+        );
         List<WorkOrder> workOrders = [
             SELECT
                 Id,
@@ -623,6 +773,18 @@ private class HOT_ReminderSMSServiceTest {
     }
     @IsTest
     public static void testSendSMSOnNewMessage() {
+        myTriggers.disable(
+            PersonHandler.class,
+            new List<System.TriggerOperation>{ System.TriggerOperation.BEFORE_INSERT }
+        );
+        myTriggers.disable(
+            HOT_RequestHandler.class,
+            new List<System.TriggerOperation>{ System.TriggerOperation.AFTER_INSERT }
+        );
+        myTriggers.disable(
+            HOT_ServiceResourceAccessHandler.class,
+            new List<System.TriggerOperation>{ System.TriggerOperation.AFTER_INSERT }
+        );
         Test.startTest();
         Person__c person = HOT_TestDataFactory.createPerson();
         person.Name = '12015678999';
@@ -662,6 +824,27 @@ private class HOT_ReminderSMSServiceTest {
     }
     @IsTest
     static void sendSMSOnCoInterpreterRemoved() {
+        myTriggers.disable(UserDefaultValuesHandler.class);
+        myTriggers.disable(UserProfileHandler.class);
+        myTriggers.disable(UserRegionHandler.class);
+        myTriggers.disable(UserRoleAssignmentHandler.class);
+        myTriggers.disable(UserPermissionSetAssignmentHandler.class);
+        myTriggers.disable(
+            HOT_RequestHandler.class,
+            new List<System.TriggerOperation>{ System.TriggerOperation.AFTER_INSERT }
+        );
+        myTriggers.disable(
+            HOT_ServiceResourceAccessHandler.class,
+            new List<System.TriggerOperation>{ System.TriggerOperation.AFTER_INSERT }
+        );
+        myTriggers.disable(
+            HOT_AssignedResourceAccessHandler.class,
+            new List<System.TriggerOperation>{ System.TriggerOperation.AFTER_INSERT }
+        );
+        myTriggers.disable(
+            HOT_ServiceAppointmentAccessHandler.class,
+            new List<System.TriggerOperation>{ System.TriggerOperation.AFTER_UPDATE }
+        );
         Test.startTest();
         Profile profile = [SELECT Id FROM Profile WHERE Name = 'Standard User' OR Name = 'Standardbruker' LIMIT 1];
         User user = HOT_TestDataFactory.createUser('user2', profile);
