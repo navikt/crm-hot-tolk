@@ -2,7 +2,6 @@
 private class HOT_ReminderSMSServiceTest {
     @testSetup
     static void setup() {
-
         myTriggers.disable(UserDefaultValuesHandler.class);
         myTriggers.disable(UserProfileHandler.class);
         myTriggers.disable(UserRegionHandler.class);
@@ -632,6 +631,14 @@ private class HOT_ReminderSMSServiceTest {
 
     @IsTest
     static void sendSMSToOrdererOnStatusUpdateTest2() {
+        if (Type.forName('FSL_TestStub') != null) {
+            Callable stub = (Callable) Type.forName('FSL_TestStub').newInstance();
+            stub
+                .call(
+                    'addStatusTransition',
+                    new Map<String, Object>{ 'fromStatus' => 'None', 'toStatus' => 'Cannot Complete' }
+                );
+        }
         List<WorkOrder> workOrders = [
             SELECT
                 Id,
@@ -649,8 +656,9 @@ private class HOT_ReminderSMSServiceTest {
         for (WorkOrder wo : workOrders) {
             wo.Status = 'Cannot Complete';
         }
-        Test.startTest();
+
         update workOrders;
+        Test.startTest();
         HOT_ReminderSMSService.sendSMSToOrdererOnStatusUpdate(workOrders);
         Test.stopTest();
         List<SMS__c> smsList = [SELECT Id FROM SMS__c];
@@ -663,6 +671,14 @@ private class HOT_ReminderSMSServiceTest {
             HOT_ServiceAppointmentAccessHandler.class,
             new List<System.TriggerOperation>{ System.TriggerOperation.AFTER_UPDATE }
         );
+        if (Type.forName('FSL_TestStub') != null) {
+            Callable stub = (Callable) Type.forName('FSL_TestStub').newInstance();
+            stub
+                .call(
+                    'addStatusTransition',
+                    new Map<String, Object>{ 'fromStatus' => 'None', 'toStatus' => 'Dispatched' }
+                );
+        }
         List<WorkOrder> workOrders = [
             SELECT
                 Id,
@@ -678,34 +694,38 @@ private class HOT_ReminderSMSServiceTest {
                 Account.CRM_Person__r.HOT_MobilePhone__c
             FROM WorkOrder
         ];
-        //flyttet pga limits
-        Test.startTest();
         ServiceResource interpreter = [SELECT Id, Name FROM ServiceResource LIMIT 1];
         interpreter.Name = 'InterpreterName';
 
-        HOT_DatabaseOperations.updateRecords(interpreter);
-
+        update interpreter;
         List<ServiceAppointment> serviceAppointments = [
             SELECT Id, HOT_ServiceResource__c, Status
             FROM ServiceAppointment
+            WHERE HOT_WorkOrderLineItem__r.WorkOrderId IN :workOrders
         ];
-
         for (ServiceAppointment serviceAppointment : serviceAppointments) {
             serviceAppointment.HOT_ServiceResource__c = interpreter.Id;
             serviceAppointment.Status = 'Dispatched';
         }
-
-        HOT_DatabaseOperations.updateRecords(serviceAppointments);
-
+        update serviceAppointments;
+        Test.startTest();
         HOT_ReminderSMSService.sendSMSToOrdererOnStatusUpdate(workOrders);
-
-        String message = [SELECT Id, Message__c FROM SMS__c LIMIT 1].Message__c;
         Test.stopTest();
+        String message = [SELECT Id, Message__c FROM SMS__c LIMIT 1].Message__c;
+
         System.assert(message.contains('InterpreterName'), 'Could not create sms-record');
     }
 
     @IsTest
     static void sendSMSToOrdererOnStatusUpdateSMSToAccountTest() {
+        if (Type.forName('FSL_TestStub') != null) {
+            Callable stub = (Callable) Type.forName('FSL_TestStub').newInstance();
+            stub
+                .call(
+                    'addStatusTransition',
+                    new Map<String, Object>{ 'fromStatus' => 'None', 'toStatus' => 'Cannot Complete' }
+                );
+        }
         Account account = HOT_TestDataFactory.createAccount(true);
         insert account;
         HOT_Request__c request = [SELECT Id, Type__c FROM HOT_Request__c][0];
@@ -729,9 +749,9 @@ private class HOT_ReminderSMSServiceTest {
         for (WorkOrder wo : workOrders) {
             wo.Status = 'Cannot Complete';
         }
-        Test.startTest();
         String personPhoneNumber = workOrders[0].Account.CRM_Person__r.HOT_MobilePhone__c;
         update workOrders;
+        Test.startTest();
         HOT_ReminderSMSService.sendSMSToOrdererOnStatusUpdate(workOrders);
         Test.stopTest();
         String smsPhoneNumber = [SELECT Id, Recipient__c FROM SMS__c LIMIT 1].Recipient__c;
@@ -740,6 +760,14 @@ private class HOT_ReminderSMSServiceTest {
 
     @IsTest
     static void sendSMSToOrdererOnStatusUpdateSMSToOtherOrdererTest() {
+        if (Type.forName('FSL_TestStub') != null) {
+            Callable stub = (Callable) Type.forName('FSL_TestStub').newInstance();
+            stub
+                .call(
+                    'addStatusTransition',
+                    new Map<String, Object>{ 'fromStatus' => 'None', 'toStatus' => 'Cannot Complete' }
+                );
+        }
         Account account = HOT_TestDataFactory.createAccount(true);
         insert account;
         HOT_Request__c request = [SELECT Id, Type__c FROM HOT_Request__c][0];
@@ -762,9 +790,9 @@ private class HOT_ReminderSMSServiceTest {
         for (WorkOrder wo : workOrders) {
             wo.Status = 'Cannot Complete';
         }
-        Test.startTest();
         String orderPhoneNumber = workOrders[0].HOT_Request__r.OrdererPhone__c;
         update workOrders;
+        Test.startTest();
         HOT_ReminderSMSService.sendSMSToOrdererOnStatusUpdate(workOrders);
         Test.stopTest();
         String smsPhoneNumber = [SELECT Id, Recipient__c FROM SMS__c LIMIT 1].Recipient__c;
