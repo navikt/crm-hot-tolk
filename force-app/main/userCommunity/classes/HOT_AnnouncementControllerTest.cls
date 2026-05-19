@@ -184,15 +184,16 @@ private class HOT_AnnouncementControllerTest {
         user.Username = 'HOT_testuser1@nav.hot.no';
         user.CommunityNickname = 'userTest';
         insert user;
-
+        Test.startTest();
+        PermissionSet permSet = [SELECT Id FROM PermissionSet WHERE Name = 'HOT_Tolk_Bruker_v2' LIMIT 1];
+        PermissionSetAssignment psa = new PermissionSetAssignment(AssigneeId = user.Id, PermissionSetId = permSet.Id);
+        insert psa;
+        Test.stopTest();
         System.runAs(user) {
             List<HOT_Announcement__c> announcements = HOT_AnnouncementController.getAnnouncements();
-
             System.assertEquals(2, announcements.size());
 
-            Test.startTest();
             HOT_AnnouncementController.markAnnouncementsAsRead();
-            Test.stopTest();
 
             List<HOT_ReadReceipt__c> receipts = [
                 SELECT Id, Announcement__c
