@@ -4,7 +4,7 @@ public with sharing class FSL_TestStub implements Callable {
     }
     public Object call(String action, Map<String, Object> args) {
         /**
-         * FSL.GlobalAPIS call shoild be UNCOMMENTED in Sandbox or enviroment where FSL is installed,
+         * FSL.GlobalAPIS call should be UNCOMMENTED in Sandbox or environment where FSL is installed,
          * and should be used to add status transition in order to test the code
          * that relies on status transitions. In production orgs where FSL is not available,
          * this code will not be executed because of the check for the existence of FSL.GlobalAPIS class in the test
