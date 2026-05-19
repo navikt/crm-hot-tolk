@@ -10,6 +10,7 @@ public without sharing class HOT_ThreadDetailController {
                     CRM_Is_Closed__c,
                     CRM_Thread_Type__c,
                     CRM_Related_Object__c,
+                    CRM_Related_Object_Type__c,
                     HOT_Thread_read_by__c,
                     HOT_Request__r.Account__c,
                     HOT_Request__r.Orderer__c,
@@ -29,7 +30,12 @@ public without sharing class HOT_ThreadDetailController {
     public static boolean checkAccess(Id threadId) {
         Boolean grantAccess = false;
         Thread__c thread = [
-            SELECT Id, CRM_Related_Object__c, CRM_Thread_Type__c, HOT_ServiceResource__r.RelatedRecordId
+            SELECT
+                Id,
+                CRM_Related_Object__c,
+                CRM_Related_Object_Type__c,
+                CRM_Thread_Type__c,
+                HOT_ServiceResource__r.RelatedRecordId
             FROM Thread__c
             WHERE Id = :threadId
         ];
@@ -70,6 +76,16 @@ public without sharing class HOT_ThreadDetailController {
                             return true;
                         }
                     }
+                }
+                String threadType = thread.CRM_Thread_Type__c;
+
+                if (
+                    threadType != null &&
+                    isAdminOrFormidlerAdmin(user) &&
+                    (threadType == 'HOT_BRUKER-TOLK' ||
+                    threadType == 'HOT_TOLK-TOLK')
+                ) {
+                    return true;
                 }
             }
             if (objectType == 'HOT_WageClaim__c') {
@@ -130,9 +146,14 @@ public without sharing class HOT_ThreadDetailController {
             }
         }
 
-        if (isAdminOrFormidler(user) && thread.CRM_Thread_Type__c.startsWith('HOT_')) {
+        if (
+            isAdminOrFormidler(user) &&
+            thread.CRM_Thread_Type__c.startsWith('HOT_') &&
+            thread.CRM_Related_Object_Type__c != 'WorkOrder'
+        ) {
             return true;
         }
+
         //ansatt tolk tråder tilgang
 
         if (user.Id == thread.HOT_ServiceResource__r.RelatedRecordId) {
@@ -169,9 +190,31 @@ public without sharing class HOT_ThreadDetailController {
             LIMIT 1
         ];
 
-        if (!psgAssignments.isEmpty() || groupMembers.size() > 0) {
+        if (!psgAssignments.isEmpty() || !groupMembers.isEmpty()) {
             return true;
         }
         return false;
+    }
+
+    @AuraEnabled(cacheable=true)
+    public static Boolean isOnlyEmployedInterpreter() {
+        Set<String> isAllowedGroups = new Set<String>{
+            'HOT_Tolk_Ansatt_Gruppe',
+            'HOT_Tolk_Formidler_Admin_Gruppe',
+            'HOT_Tolk_Formidler_Gruppe'
+        };
+
+        List<PermissionSetAssignment> psgAssignments = [
+            SELECT PermissionSetGroup.DeveloperName
+            FROM PermissionSetAssignment
+            WHERE AssigneeId = :UserInfo.getUserId() AND PermissionSetGroup.DeveloperName IN :isAllowedGroups
+        ];
+
+        Set<String> assignedGroupNames = new Set<String>();
+        for (PermissionSetAssignment assignment : psgAssignments) {
+            assignedGroupNames.add(assignment.PermissionSetGroup.DeveloperName);
+        }
+
+        return assignedGroupNames.size() == 1 && assignedGroupNames.contains('HOT_Tolk_Ansatt_Gruppe');
     }
 }

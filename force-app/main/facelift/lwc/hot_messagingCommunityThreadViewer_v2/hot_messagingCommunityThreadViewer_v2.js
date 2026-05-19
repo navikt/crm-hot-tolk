@@ -148,6 +148,7 @@ export default class Hot_messagingCommunityThreadViewer_v2 extends NavigationMix
             this.thread = result.data;
             this.subject = this.thread.HOT_Subject__c;
             this.threadType = this.threadTypeName();
+            this.crmThreadType = this.thread.CRM_Thread_Type__c;
             this.threadRelatedObjectId = this.thread.CRM_Related_Object__c;
             this.isclosed = this.thread.CRM_Is_Closed__c;
             this.showContent = true;
@@ -160,7 +161,7 @@ export default class Hot_messagingCommunityThreadViewer_v2 extends NavigationMix
                 this.thread.HOT_WorkOrder__r?.Status != null &&
                 this.threadWorkOrderStatus === 'Canceled' &&
                 this.isFreelance === true &&
-                this.threadType === 'Samtale mellom tolk og bruker'
+                (this.crmThreadType === 'HOT_BRUKER-TOLK' || this.crmThreadType === 'HOT_TOLK-TOLK')
             ) {
                 this.showMessageInput = false;
             }
