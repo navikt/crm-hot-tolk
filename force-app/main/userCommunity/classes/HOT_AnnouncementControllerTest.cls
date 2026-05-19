@@ -1,88 +1,208 @@
 @IsTest
 private class HOT_AnnouncementControllerTest {
-    //     @TestSetup
-    //     private static void setup() {
-    //         List<Common_Code__c> regions = new List<Common_Code__c>{
-    //             new Common_Code__c(Name = 'Oslo', CRM_Code__c = '03', CRM_Code_Set__c = 'Fylke', CRM_Active__c = true)
-    //         };
-    //         insert regions;
+    @TestSetup
+    static void setup() {
+        // Announcements
 
-    //         Account frilansAccount = HOT_TestDataFactory.createAccount(true);
-    //         insert frilansAccount;
+        List<Common_Code__c> commonCodes = new List<Common_Code__c>();
 
-    //         frilansAccount = [SELECT Id, PersonContactId FROM Account WHERE Id = :frilansAccount.Id LIMIT 1];
+        Common_Code__c fylke1 = new Common_Code__c(
+            Name = 'Nordland',
+            CRM_Code_Set__c = 'Fylke',
+            CRM_Code__c = '18',
+            CRM_Active__c = true
+        );
+        commonCodes.add(fylke1);
 
-    //         Person__c frilansPerson = new Person__c(
-    //             Name = 'Frilans1',
-    //             INT_FirstName__c = 'Frilans',
-    //             INT_LastName__c = 'Person',
-    //             CRM_Account__c = frilansAccount.Id,
-    //             CRM_Region__c = regions[0].Id,
-    //             INT_MunicipalityNumber__c = '0345'
-    //         );
-    //         insert frilansPerson;
+        Common_Code__c kommune = new Common_Code__c(
+            Name = 'Herøy',
+            CRM_Code_Set__c = 'Kommune',
+            CRM_Code__c = '1822',
+            CRM_Active__c = true
+        );
+        commonCodes.add(kommune);
+        insert commonCodes;
+        RecordType recordType = [
+            SELECT Id
+            FROM RecordType
+            WHERE DeveloperName = 'TolkEkstern' AND SObjectType = 'HOT_Announcement__c'
+            LIMIT 1
+        ];
+        Id recordTypeId = recordType.Id;
+        List<HOT_Announcement__c> announcements = new List<HOT_Announcement__c>{
+            new HOT_Announcement__c(
+                Title__c = 'For frilanstolk',
+                IsPublished__c = true,
+                TargetSite__c = 'Tolkebestilling',
+                Audience__c = 'Bare frilanstolk',
+                Type__c = 'News',
+                RegionAudience__c = 'Nordland',
+                RecordTypeId = recordTypeId
+            ),
+            new HOT_Announcement__c(
+                Title__c = 'For alle',
+                IsPublished__c = true,
+                TargetSite__c = 'Tolkebestilling',
+                Audience__c = 'Alle',
+                Type__c = 'News',
+                RegionAudience__c = 'Nordland',
+                RecordTypeId = recordTypeId
+            ),
+            new HOT_Announcement__c(
+                Title__c = 'Feil region',
+                IsPublished__c = true,
+                TargetSite__c = 'Tolkebestilling',
+                Audience__c = 'Alle',
+                Type__c = 'News',
+                RegionAudience__c = 'Akershus',
+                RecordTypeId = recordTypeId
+            ),
+            new HOT_Announcement__c(
+                Title__c = 'Bare bruker',
+                IsPublished__c = true,
+                TargetSite__c = 'Tolkebestilling',
+                Audience__c = 'Bare tolkebruker',
+                Type__c = 'News',
+                RegionAudience__c = 'Nordland',
+                RecordTypeId = recordTypeId
+            ),
+            // Ikke aktiv
+            new HOT_Announcement__c(
+                Title__c = 'Inaktiv',
+                IsPublished__c = false,
+                TargetSite__c = 'Tolkebestilling',
+                Audience__c = 'Alle',
+                Type__c = 'News',
+                RegionAudience__c = 'Nordland',
+                RecordTypeId = recordTypeId
+            )
+        };
 
-    //         Profile communityProfile = [SELECT Id FROM Profile WHERE Name = 'NAV Samhandler' LIMIT 1];
+        insert announcements;
+    }
 
-    //         String timestamp = String.valueOf(System.currentTimeMillis());
-    //         User frilansUser = new User(
-    //             Username = 'frilans' + timestamp + '@test.com',
-    //             LastName = 'Person',
-    //             Email = 'frilans' + timestamp + '@test.com',
-    //             Alias = 'frlans',
-    //             CommunityNickname = 'Frilans',
-    //             TimeZoneSidKey = 'Europe/Paris',
-    //             LocaleSidKey = 'no_NO',
-    //             EmailEncodingKey = 'UTF-8',
-    //             LanguageLocaleKey = 'no',
-    //             ProfileId = communityProfile.Id,
-    //             ContactId = frilansAccount.PersonContactId
-    //         );
-    //         insert frilansUser;
+    @IsTest
+    static void testGetAnnouncements_All() {
+        Test.startTest();
+        Profile communityProfile = [SELECT Id FROM Profile WHERE Name = 'Customer Community Login User' LIMIT 1];
 
-    //         List<HOT_Announcement__c> announcements = new List<HOT_Announcement__c>{
-    //             new HOT_Announcement__c(
-    //                 Title__c = 'For frilans',
-    //                 IsPublished__c = true,
-    //                 TargetSite__c = 'Tolkebestilling',
-    //                 Audience__c = 'Bare frilanstolk',
-    //                 Type__c = 'News',
-    //                 RegionAudience__c = 'Oslo'
-    //             ),
-    //             new HOT_Announcement__c(
-    //                 Title__c = 'For alle',
-    //                 IsPublished__c = true,
-    //                 TargetSite__c = 'Tolkebestilling',
-    //                 Audience__c = 'Alle',
-    //                 Type__c = 'News',
-    //                 RegionAudience__c = 'Oslo'
-    //             ),
-    //             new HOT_Announcement__c(
-    //                 Title__c = 'Feil region',
-    //                 IsPublished__c = true,
-    //                 TargetSite__c = 'Tolkebestilling',
-    //                 Audience__c = 'Alle',
-    //                 Type__c = 'News',
-    //                 RegionAudience__c = 'Akershus'
-    //             )
-    //         };
-    //         insert announcements;
-    //     }
+        Person__c person = HOT_TestDataFactory.createPerson();
+        person.INT_KrrEmail__c = 'getPersonTest@nav.no';
+        person.HOT_WorkplaceInterpreter__c = true;
+        person.INT_Confidential__c = 'Ugradert';
+        person.INT_FirstName__c = 'Tolk';
+        person.INT_LastName__c = 'Bruker';
+        insert person;
 
-    //     @IsTest
-    //     static void testFrilansSeAnnouncements() {
-    //         User frilansUser = [SELECT Id FROM User WHERE CommunityNickname = 'Frilans' LIMIT 1];
+        person.INT_MunicipalityNumber__c = '1822';
+        person.INT_RegionNumber__c = '18';
+        update person;
 
-    //         Test.startTest();
-    //         System.runAs(frilansUser) {
-    //             List<HOT_Announcement__c> result = HOT_AnnouncementController.getAnnouncements();
-    //             System.assertEquals(2, result.size(), 'Frilans bør se 2 nyheter for Oslo-regionen');
-    //             Set<String> titles = new Set<String>();
-    //             for (HOT_Announcement__c a : result)
-    //                 titles.add(a.Title__c);
-    //             System.assert(titles.contains('For frilans'));
-    //             System.assert(titles.contains('For alle'));
-    //         }
-    //         Test.stopTest();
-    //     }
+        Account account = [
+            SELECT Id, OwnerId, PersonContactId, FirstName, LastName, PersonEmail, CRM_Person__c
+            FROM Account
+            WHERE LastName = :'Bruker'
+        ];
+
+        User user = HOT_TestDataFactory.createUser(communityProfile, account);
+        user.Alias = 'userTest';
+        user.Username = 'HOT_testuser1@nav.hot.no';
+        user.CommunityNickname = 'userTest';
+        insert user;
+        Test.stopTest();
+
+        System.runAs(user) {
+            List<HOT_Announcement__c> result = HOT_AnnouncementController.getAnnouncements();
+            System.assertEquals(2, result.size(), 'Brukeren skal kun se 2 announcements');
+        }
+
+    }
+    @IsTest
+    static void testGetAnnouncementWrapper() {
+        Test.startTest();
+        Profile communityProfile = [SELECT Id FROM Profile WHERE Name = 'Customer Community Login User' LIMIT 1];
+
+        Person__c person = HOT_TestDataFactory.createPerson();
+        person.INT_KrrEmail__c = 'getPersonTest@nav.no';
+        person.HOT_WorkplaceInterpreter__c = true;
+        person.INT_Confidential__c = 'Ugradert';
+        person.INT_FirstName__c = 'Tolk';
+        person.INT_LastName__c = 'Bruker';
+        insert person;
+
+        person.INT_MunicipalityNumber__c = '1822';
+        person.INT_RegionNumber__c = '18';
+        update person;
+
+        Account account = [
+            SELECT Id, OwnerId, PersonContactId, FirstName, LastName, PersonEmail, CRM_Person__c
+            FROM Account
+            WHERE LastName = :'Bruker'
+        ];
+
+        User user = HOT_TestDataFactory.createUser(communityProfile, account);
+        user.Alias = 'userTest';
+        user.Username = 'HOT_testuser1@nav.hot.no';
+        user.CommunityNickname = 'userTest';
+        insert user;
+        Test.stopTest();
+
+        System.runAs(user) {
+            HOT_AnnouncementController.AnnouncementWrapper wrapper = HOT_AnnouncementController.getAnnouncementWrapper();
+
+            System.assert(wrapper != null);
+            System.assertEquals(2, wrapper.newsAnnouncements.size());
+
+            // Ingen receipts enda
+            System.assertEquals(2, wrapper.unreadAnnouncementIds.size());
+        }
+    }
+    @IsTest
+    static void markAnnouncementsAsReadTest() {
+        Profile communityProfile = [SELECT Id FROM Profile WHERE Name = 'Customer Community Login User' LIMIT 1];
+
+        Person__c person = HOT_TestDataFactory.createPerson();
+        person.INT_KrrEmail__c = 'getPersonTest@nav.no';
+        person.HOT_WorkplaceInterpreter__c = true;
+        person.INT_Confidential__c = 'Ugradert';
+        person.INT_FirstName__c = 'Tolk';
+        person.INT_LastName__c = 'Bruker';
+        insert person;
+
+        person.INT_MunicipalityNumber__c = '1822';
+        person.INT_RegionNumber__c = '18';
+        update person;
+
+        Account account = [
+            SELECT Id, OwnerId, PersonContactId, FirstName, LastName, PersonEmail, CRM_Person__c
+            FROM Account
+            WHERE LastName = :'Bruker'
+        ];
+
+        User user = HOT_TestDataFactory.createUser(communityProfile, account);
+        user.Alias = 'userTest';
+        user.Username = 'HOT_testuser1@nav.hot.no';
+        user.CommunityNickname = 'userTest';
+        insert user;
+
+        System.runAs(user) {
+            List<HOT_Announcement__c> announcements = HOT_AnnouncementController.getAnnouncements();
+
+            System.assertEquals(2, announcements.size());
+
+            Test.startTest();
+            HOT_AnnouncementController.markAnnouncementsAsRead();
+            Test.stopTest();
+
+            List<HOT_ReadReceipt__c> receipts = [
+                SELECT Id, Announcement__c
+                FROM HOT_ReadReceipt__c
+                WHERE User__c = :user.Id
+            ];
+
+            System.debug(receipts);
+
+            System.assertEquals(2, receipts.size());
+        }
+    }
 }
