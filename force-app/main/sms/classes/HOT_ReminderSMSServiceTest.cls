@@ -56,6 +56,7 @@ private class HOT_ReminderSMSServiceTest {
         ServiceResource serviceResource = HOT_TestDataFactory.createServiceResource(user.Id);
         serviceResource.HOT_IsFreelanceInterpreter__c = true;
         serviceResource.HOT_MobilePhoneOverride__c = '12345678';
+        serviceResource.ResourceType = 'A';
         insert serviceResource;
     }
 
@@ -201,10 +202,16 @@ private class HOT_ReminderSMSServiceTest {
         Test.startTest();
         User currentUser = [SELECT Id, AccountId FROM User WHERE Id = :UserInfo.getUserId()];
 
+        OperatingHours operatingHours = HOT_TestDataFactory.createOperatingHours();
+        insert operatingHours;
+        ServiceTerritory serviceTerritory = HOT_TestDataFactory.createServiceTerritory(operatingHours);
+        insert serviceTerritory;
+
         ServiceResource resource = HOT_TestDataFactory.createServiceResource(currentUser.Id);
         resource.HOT_MobilePhoneOverride__c = '12345678';
+        resource.HOT_ServiceTerritory__c = serviceTerritory.Id;
         insert resource;
-
+        insert HOT_TestDataFactory.createServiceTerritoryMember(resource, serviceTerritory);
         ServiceAppointment sa = [SELECT Id FROM ServiceAppointment LIMIT 1];
         AssignedResource assignedResource = HOT_TestDataFactory.createAssignedResource(sa.Id, resource.Id);
         insert assignedResource;
@@ -218,9 +225,16 @@ private class HOT_ReminderSMSServiceTest {
         Test.startTest();
         User currentUser = [SELECT Id, AccountId FROM User WHERE Id = :UserInfo.getUserId()];
 
+        OperatingHours operatingHours = HOT_TestDataFactory.createOperatingHours();
+        insert operatingHours;
+        ServiceTerritory serviceTerritory = HOT_TestDataFactory.createServiceTerritory(operatingHours);
+        insert serviceTerritory;
+
         ServiceResource resource = HOT_TestDataFactory.createServiceResource(currentUser.Id);
         resource.HOT_MobilePhoneOverride__c = '12345678';
+        resource.HOT_ServiceTerritory__c = serviceTerritory.Id;
         insert resource;
+        insert HOT_TestDataFactory.createServiceTerritoryMember(resource, serviceTerritory);
 
         ServiceAppointment sa = [SELECT Id FROM ServiceAppointment LIMIT 1];
         AssignedResource assignedResource = HOT_TestDataFactory.createAssignedResource(sa.Id, resource.Id);
@@ -236,9 +250,16 @@ private class HOT_ReminderSMSServiceTest {
         Test.startTest();
         User currentUser = [SELECT Id, AccountId FROM User WHERE Id = :UserInfo.getUserId()];
 
+        OperatingHours operatingHours = HOT_TestDataFactory.createOperatingHours();
+        insert operatingHours;
+        ServiceTerritory serviceTerritory = HOT_TestDataFactory.createServiceTerritory(operatingHours);
+        insert serviceTerritory;
+
         ServiceResource resource = HOT_TestDataFactory.createServiceResource(currentUser.Id);
         resource.HOT_MobilePhoneOverride__c = '12345678';
+        resource.HOT_ServiceTerritory__c = serviceTerritory.Id;
         insert resource;
+        insert HOT_TestDataFactory.createServiceTerritoryMember(resource, serviceTerritory);
 
         ServiceAppointment sa = [SELECT Id FROM ServiceAppointment LIMIT 1];
         AssignedResource assignedResource = HOT_TestDataFactory.createAssignedResource(sa.Id, resource.Id);
@@ -253,10 +274,17 @@ private class HOT_ReminderSMSServiceTest {
         Test.startTest();
         User currentUser = [SELECT Id, AccountId FROM User WHERE Id = :UserInfo.getUserId()];
 
+        OperatingHours operatingHours = HOT_TestDataFactory.createOperatingHours();
+        insert operatingHours;
+        ServiceTerritory serviceTerritory = HOT_TestDataFactory.createServiceTerritory(operatingHours);
+        insert serviceTerritory;
+
         ServiceResource resource = HOT_TestDataFactory.createServiceResource(currentUser.Id);
         resource.HOT_MobilePhoneOverride__c = '12345678';
+        resource.HOT_ServiceTerritory__c = serviceTerritory.Id;
         insert resource;
 
+        insert HOT_TestDataFactory.createServiceTerritoryMember(resource, serviceTerritory);
         ServiceAppointment sa = [SELECT Id FROM ServiceAppointment LIMIT 1];
         AssignedResource assignedResource = HOT_TestDataFactory.createAssignedResource(sa.Id, resource.Id);
         insert assignedResource;
@@ -270,9 +298,16 @@ private class HOT_ReminderSMSServiceTest {
         Test.startTest();
         User currentUser = [SELECT Id, AccountId FROM User WHERE Id = :UserInfo.getUserId()];
 
+        OperatingHours operatingHours = HOT_TestDataFactory.createOperatingHours();
+        insert operatingHours;
+        ServiceTerritory serviceTerritory = HOT_TestDataFactory.createServiceTerritory(operatingHours);
+        insert serviceTerritory;
+
         ServiceResource resource = HOT_TestDataFactory.createServiceResource(currentUser.Id);
         resource.HOT_MobilePhoneOverride__c = '12345678';
+        resource.HOT_ServiceTerritory__c = serviceTerritory.Id;
         insert resource;
+        insert HOT_TestDataFactory.createServiceTerritoryMember(resource, serviceTerritory);
 
         ServiceAppointment sa = [SELECT Id FROM ServiceAppointment LIMIT 1];
         AssignedResource assignedResource = HOT_TestDataFactory.createAssignedResource(sa.Id, resource.Id);
@@ -283,7 +318,13 @@ private class HOT_ReminderSMSServiceTest {
 
     @IsTest
     static void sendSMSOnNewFilesAddedTest() {
+        OperatingHours operatingHours = HOT_TestDataFactory.createOperatingHours();
+        insert operatingHours;
+        ServiceTerritory serviceTerritory = HOT_TestDataFactory.createServiceTerritory(operatingHours);
+        insert serviceTerritory;
+
         ServiceResource sr = [SELECT Id FROM ServiceResource LIMIT 1];
+        insert HOT_TestDataFactory.createServiceTerritoryMember(sr, serviceTerritory);
         Test.startTest();
         ServiceAppointment sa = [
             SELECT Id, AppointmentNumber, HOT_ServiceResource__r.AccountId, HOT_ServiceResource__r.HOT_MobilePhone__c
@@ -342,9 +383,16 @@ private class HOT_ReminderSMSServiceTest {
         serviceAppointment.HOT_Request__c = request.Id;
         insert serviceAppointment;
 
+        OperatingHours operatingHours = HOT_TestDataFactory.createOperatingHours();
+        insert operatingHours;
+        ServiceTerritory serviceTerritory = HOT_TestDataFactory.createServiceTerritory(operatingHours);
+        insert serviceTerritory;
+
         ServiceResource resource = [SELECT Id FROM ServiceResource LIMIT 1];
         resource.HOT_MobilePhoneOverride__c = '12345678';
+        resource.HOT_ServiceTerritory__c = serviceTerritory.Id;
         update resource;
+        insert HOT_TestDataFactory.createServiceTerritoryMember(resource, serviceTerritory);
 
         AssignedResource assignedResource = HOT_TestDataFactory.createAssignedResource(
             serviceAppointment.Id,
@@ -618,11 +666,18 @@ private class HOT_ReminderSMSServiceTest {
         Profile profile = [SELECT Id FROM Profile WHERE Name = 'Standard User' OR Name = 'Standardbruker' LIMIT 1];
         User user = HOT_TestDataFactory.createUser('user2', profile);
         insert user;
+        OperatingHours operatingHours = HOT_TestDataFactory.createOperatingHours();
+        insert operatingHours;
+        ServiceTerritory serviceTerritory = HOT_TestDataFactory.createServiceTerritory(operatingHours);
+        insert serviceTerritory;
+
         ServiceResource serviceResource = HOT_TestDataFactory.createServiceResource(user.Id);
         serviceResource.HOT_IsEmployedInterpreter__c = false;
         serviceResource.HOT_IsFreelanceInterpreter__c = true;
         serviceResource.HOT_MobilePhoneOverride__c = '12345678';
+        serviceResource.HOT_ServiceTerritory__c = serviceTerritory.Id;
         insert serviceResource;
+        insert HOT_TestDataFactory.createServiceTerritoryMember(serviceResource, serviceTerritory);
         WorkType workType = HOT_TestDataFactory.createWorkType();
         insert workType;
         HOT_Request__c request = HOT_TestDataFactory.createRequest('TEST', workType);
