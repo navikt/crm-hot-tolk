@@ -16,11 +16,6 @@ private class HOT_ReminderSMSServiceTest {
         request.OrdererPhone__c = '00000000';
         request.IsOrdererWantStatusUpdateOnSMS__c = true;
         request.Orderer__c = account.Id;
-        insert request;
-
-        // To create child records
-        request.Status__c = 'Godkjent';
-        update request;
 
         HOT_Request__c request2 = HOT_TestDataFactory.createRequest('TEST', workType);
         request2.Account__c = account.Id;
@@ -30,11 +25,14 @@ private class HOT_ReminderSMSServiceTest {
         request2.IsOrdererWantStatusUpdateOnSMS__c = true;
         request2.Orderer__c = account.Id;
         request2.NumberOfInterpreters__c = 3;
-        insert request2;
 
-        // To create child records
+        HOT_Request__c[] requests = new List<HOT_Request__c>{ request, request2 };
+        insert requests;
+
+        request.Status__c = 'Godkjent';
         request2.Status__c = 'Godkjent';
-        update request2;
+
+        update requests;
 
         WorkOrder workOrder = [
             SELECT
