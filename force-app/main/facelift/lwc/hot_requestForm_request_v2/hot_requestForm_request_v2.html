@@ -142,7 +142,7 @@
             <c-hot_switch
                 class="switch-container"
                 label="Ønsker varsel ved statusendring på bestillingen"
-                onchange={handleSMSCheckbox}
+                onchange={handleSMSSwitch}
                 form="tolk-skjema-input"
                 name="IsOrdererWantStatusUpdateOnSMS__c"
                 checked={fieldValues.IsOrdererWantStatusUpdateOnSMS__c}
@@ -152,7 +152,7 @@
         <c-hot_switch
             class="switch-container"
             label="Fyll ut mer informasjon"
-            onchange={handleOptionalCheckbox}
+            onchange={handleOptionalSwitch}
             form="tolk-skjema-input"
             checked={componentValues.isOptionalFields}
         ></c-hot_switch>
