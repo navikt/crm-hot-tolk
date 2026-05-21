@@ -1,4 +1,5 @@
 public without sharing class HOT_AssignOrReserveSAService {
+    private static final Set<String> SUPPORTED_SOURCE_STATUSES = new Set<String>{ 'None', 'Released to Freelance' };
     private static final Set<String> SUPPORTED_TARGET_STATUSES = new Set<String>{ 'Scheduled', 'Dispatched' };
 
     public class Input {
@@ -195,9 +196,9 @@ public without sharing class HOT_AssignOrReserveSAService {
         ServiceAppointment serviceAppointment,
         List<AssignedResource> existingAssignedResources
     ) {
-        if (serviceAppointment.Status != 'None') {
+        if (!SUPPORTED_SOURCE_STATUSES.contains(serviceAppointment.Status)) {
             throw new FlowHandledException(
-                'Denne handlingen kan bare brukes når oppdraget har status None. Nåværende status er ' +
+                'Denne handlingen kan bare brukes når oppdraget har status Åpen eller Frigitt til frilanstolker. Nåværende status er ' +
                 serviceAppointment.Status +
                 '.'
             );

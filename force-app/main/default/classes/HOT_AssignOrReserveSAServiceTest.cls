@@ -33,13 +33,12 @@ private class HOT_AssignOrReserveSAServiceTest {
         secondResource.HOT_IsFreelanceInterpreter__c = true;
         secondResource.HOT_ServiceTerritory__c = serviceTerritory.Id;
         insert new List<ServiceResource>{ firstResource, secondResource };
+        insert new List<ServiceTerritoryMember>{
+            HOT_TestDataFactory.createServiceTerritoryMember(firstResource, serviceTerritory),
+            HOT_TestDataFactory.createServiceTerritoryMember(secondResource, serviceTerritory)
+        };
 
-        WorkOrder workOrder = [
-            SELECT Id
-            FROM WorkOrder
-            WHERE HOT_Request__c = :request.Id
-            LIMIT 1
-        ];
+        WorkOrder workOrder = [SELECT Id FROM WorkOrder WHERE HOT_Request__c = :request.Id LIMIT 1];
         WorkOrderLineItem workOrderLineItem = [
             SELECT Id
             FROM WorkOrderLineItem
@@ -52,6 +51,7 @@ private class HOT_AssignOrReserveSAServiceTest {
             WHERE ParentRecordId = :workOrderLineItem.Id
             LIMIT 1
         ];
+        update new ServiceAppointment(Id = serviceAppointment.Id, ServiceTerritoryId = serviceTerritory.Id);
 
         insert new List<HOT_InterestedResource__c>{
             HOT_TestDataFactory.createInterestedResource(serviceAppointment.Id, firstResource.Id),
@@ -148,14 +148,57 @@ private class HOT_AssignOrReserveSAServiceTest {
     }
 
     @IsTest
+    static void reserveFromReleasedToFreelance_createsInitialReservation() {
+        ServiceAppointment serviceAppointment = createReleasedToFreelanceServiceAppointment();
+        ServiceResource firstResource = getServiceResources()[0];
+
+        HOT_AssignOrReserveSAService.Input requestItem = createRequest(
+            serviceAppointment.Id,
+            firstResource.Id,
+            'Scheduled'
+        );
+
+        Test.startTest();
+        HOT_AssignOrReserveSAService.Result response = HOT_AssignOrReserveSAService.assignOrReserve(
+            new List<HOT_AssignOrReserveSAService.Input>{ requestItem }
+        )[0];
+        Test.stopTest();
+
+        serviceAppointment = [
+            SELECT Status, HOT_ServiceResource__c, HOT_AssignedResourceId__c
+            FROM ServiceAppointment
+            WHERE Id = :serviceAppointment.Id
+        ];
+        Integer assignedResourceCount = [
+            SELECT COUNT()
+            FROM AssignedResource
+            WHERE ServiceAppointmentId = :serviceAppointment.Id
+        ];
+
+        System.assertEquals(true, response.success, 'Released to Freelance status should allow first reservation');
+        System.assertEquals('Tolken ble reservert til oppdraget.', response.message);
+        System.assertEquals('Scheduled', serviceAppointment.Status, 'Service appointment should be scheduled');
+        System.assertEquals(firstResource.Id, serviceAppointment.HOT_ServiceResource__c, 'Resource should be set');
+        System.assertEquals(
+            firstResource.RelatedRecordId,
+            serviceAppointment.HOT_AssignedResourceId__c,
+            'Assigned user should be set'
+        );
+        System.assertEquals(1, assignedResourceCount, 'Only one assigned resource should exist');
+    }
+
+    @IsTest
     static void rejectsWhenInterpreterAlreadyExists() {
         ServiceAppointment serviceAppointment = getServiceAppointment();
         List<ServiceResource> serviceResources = getServiceResources();
         ServiceResource firstResource = serviceResources[0];
         ServiceResource secondResource = serviceResources[1];
 
-        AssignedResource assignedResource = HOT_TestDataFactory.createAssignedResource(serviceAppointment.Id, firstResource.Id);
-        insert assignedResource;
+        update new ServiceAppointment(
+            Id = serviceAppointment.Id,
+            HOT_ServiceResource__c = firstResource.Id,
+            HOT_AssignedResourceId__c = firstResource.RelatedRecordId
+        );
 
         HOT_AssignOrReserveSAService.Input requestItem = createRequest(
             serviceAppointment.Id,
@@ -180,8 +223,7 @@ private class HOT_AssignOrReserveSAServiceTest {
             'Dette oppdraget har allerede en valgt tolk. Endring av eksisterende reservering eller tildeling må gjøres i standardprosessen.',
             response.message
         );
-        System.assertEquals(1, assignedResources.size(), 'No new assigned resource should be created');
-        System.assertEquals(firstResource.Id, assignedResources[0].ServiceResourceId, 'Original resource should remain');
+        System.assertEquals(0, assignedResources.size(), 'No assigned resource should be created');
     }
 
     @IsTest
@@ -209,9 +251,9 @@ private class HOT_AssignOrReserveSAServiceTest {
             WHERE ServiceAppointmentId = :serviceAppointment.Id
         ];
 
-        System.assertEquals(false, response.success, 'Non-None status should block the action');
+        System.assertEquals(false, response.success, 'Unsupported source status should block the action');
         System.assertEquals(
-            'Denne handlingen kan bare brukes når oppdraget har status None. Nåværende status er Scheduled.',
+            'Denne handlingen kan bare brukes når oppdraget har status None eller Released to Freelance. Nåværende status er Scheduled.',
             response.message
         );
         System.assertEquals(0, assignedResourceCount, 'No assigned resource should be created');
@@ -230,19 +272,31 @@ private class HOT_AssignOrReserveSAServiceTest {
     }
 
     private static ServiceAppointment getServiceAppointment() {
-        return [
-            SELECT Id, Status
-            FROM ServiceAppointment
-            WHERE Subject = 'AssignOrReserve'
-            LIMIT 1
-        ];
+        return [SELECT Id, Status FROM ServiceAppointment WHERE Subject = 'AssignOrReserve' LIMIT 1];
     }
 
     private static List<ServiceResource> getServiceResources() {
-        return [
-            SELECT Id, RelatedRecordId
-            FROM ServiceResource
-            ORDER BY Name ASC
+        return [SELECT Id, RelatedRecordId FROM ServiceResource ORDER BY Name ASC];
+    }
+
+    private static ServiceAppointment createReleasedToFreelanceServiceAppointment() {
+        WorkOrderLineItem workOrderLineItem = [
+            SELECT Id
+            FROM WorkOrderLineItem
+            WHERE WorkOrder.HOT_Request__r.Subject__c = 'AssignOrReserve'
+            LIMIT 1
         ];
+        ServiceTerritory serviceTerritory = [SELECT Id FROM ServiceTerritory LIMIT 1];
+
+        ServiceAppointment serviceAppointment = HOT_TestDataFactory.createServiceAppointment(workOrderLineItem);
+        serviceAppointment.Subject = 'ReleasedAssignOrReserve';
+        serviceAppointment.Status = 'Released to Freelance';
+        serviceAppointment.ServiceTerritoryId = serviceTerritory.Id;
+        serviceAppointment.HOT_IsReleasedToFreelance__c = true;
+        serviceAppointment.HOT_FreelanceSubject__c = 'Test release';
+        serviceAppointment.HOT_DeadlineDate__c = Date.today();
+        insert serviceAppointment;
+
+        return serviceAppointment;
     }
 }
