@@ -85,7 +85,7 @@ private class HOT_AnnouncementControllerTest {
     static void testGetAnnouncements_All() {
         List<Group> grp = [SELECT DeveloperName FROM Group WHERE DeveloperName = 'group_4718'];
         if (grp.size() == 0) {
-            Group formidlerGroup = new Group(DeveloperName = 'group_4718');
+            Group formidlerGroup = new Group(DeveloperName = 'group_4718', Name = 'NAV HMS Nordland');
             insert formidlerGroup;
         }
 
@@ -127,7 +127,7 @@ private class HOT_AnnouncementControllerTest {
     static void testGetAnnouncementWrapper() {
         List<Group> grp = [SELECT DeveloperName FROM Group WHERE DeveloperName = 'group_4718'];
         if (grp.size() == 0) {
-            Group formidlerGroup = new Group(DeveloperName = 'group_4718');
+            Group formidlerGroup = new Group(DeveloperName = 'group_4718', Name = 'NAV HMS Nordland');
             insert formidlerGroup;
         }
         Test.startTest();
@@ -172,7 +172,7 @@ private class HOT_AnnouncementControllerTest {
     static void markAnnouncementsAsReadTest() {
         List<Group> grp = [SELECT DeveloperName FROM Group WHERE DeveloperName = 'group_4718'];
         if (grp.size() == 0) {
-            Group formidlerGroup = new Group(DeveloperName = 'group_4718');
+            Group formidlerGroup = new Group(DeveloperName = 'group_4718', Name = 'NAV HMS Nordland');
             insert formidlerGroup;
         }
         Profile communityProfile = [SELECT Id FROM Profile WHERE Name = 'Customer Community Login User' LIMIT 1];
