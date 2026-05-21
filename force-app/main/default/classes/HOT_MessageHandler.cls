@@ -1,4 +1,8 @@
 public without sharing class HOT_MessageHandler extends MyTriggers {
+    public override void onBeforeInsert() {
+        HOT_ThreadReplyPolicy.addErrorsForClosedThreads((List<Message__c>) records);
+    }
+
     public override void onAfterInsert() {
         List<Id> threadIdsToNotifyDispatcherOnNewMessage = new List<Id>();
         List<Id> threadIdsToNotifyUserOnNewMessage = new List<Id>();

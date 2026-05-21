@@ -96,7 +96,12 @@
                                             <div class="panel-footer">
                                                 <div class="slds-grid slds-grid_align-end">
                                                     <div
-                                                        class="right slds-var-m-top_medium slds-var-m-right_large slds-var-m-bottom_large"
+                                                        class="
+                                                            right
+                                                            slds-var-m-top_medium
+                                                            slds-var-m-right_large
+                                                            slds-var-m-bottom_large
+                                                        "
                                                     >
                                                         <div tabindex="0" onfocus={trapFocusStart}></div>
                                                         <button
@@ -128,8 +133,22 @@
                                 <lightning-spinner alternative-text="Loading" size="medium"></lightning-spinner>
                             </div>
                         </template>
-                        <c-hot_messaging-quick-text conversation-note={textTemplate} onlocklang={lockLangBtn}>
-                        </c-hot_messaging-quick-text>
+                        <template if:true={showReplyInput}>
+                            <c-hot_messaging-quick-text conversation-note={textTemplate} onlocklang={lockLangBtn}>
+                            </c-hot_messaging-quick-text>
+                        </template>
+                        <template if:false={showReplyInput}>
+                            <div class="closed-reply-message" role="status" aria-live="polite">
+                                <lightning-icon
+                                    class="closed-reply-message__icon"
+                                    icon-name="utility:lock"
+                                    size="xx-small"
+                                    alternative-text=""
+                                >
+                                </lightning-icon>
+                                <p>{replyClosedText}</p>
+                            </div>
+                        </template>
                     </lightning-layout-item>
                     <br />
                     <lightning-layout-item size="12">

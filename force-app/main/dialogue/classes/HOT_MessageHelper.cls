@@ -1,6 +1,18 @@
 public without sharing class HOT_MessageHelper {
     private static User cachedUser;
 
+    public class ThreadWithReplyPolicy {
+        @AuraEnabled
+        public Thread__c thread;
+        @AuraEnabled
+        public HOT_ThreadReplyPolicy.ReplyPolicy replyPolicy;
+
+        public ThreadWithReplyPolicy(Thread__c thread, HOT_ThreadReplyPolicy.ReplyPolicy replyPolicy) {
+            this.thread = thread;
+            this.replyPolicy = replyPolicy;
+        }
+    }
+
     private static User getCurrentUser() {
         if (cachedUser == null) {
             cachedUser = [
@@ -230,6 +242,16 @@ public without sharing class HOT_MessageHelper {
             throw new AuraHandledException(e.getMessage());
         }
     }
+
+    @AuraEnabled(cacheable=false)
+    public static ThreadWithReplyPolicy getThreadByIdWithReplyPolicy(Id threadId) {
+        Thread__c thread = getThreadById(threadId);
+        return new ThreadWithReplyPolicy(
+            thread,
+            HOT_ThreadReplyPolicy.getReplyPolicies(new Set<Id>{ threadId }).get(threadId)
+        );
+    }
+
     @AuraEnabled(cacheable=true)
     public static List<Thread__c> getThreadFromThreadId(Id recordId) {
         try {
@@ -851,6 +873,11 @@ public without sharing class HOT_MessageHelper {
             try {
                 insert m;
                 return true;
+            } catch (DmlException e) {
+                if (e.getMessage().contains('Denne samtalen er stengt for videre dialog.')) {
+                    return false;
+                }
+                throw new AuraHandledException(e.getMessage());
             } catch (Exception e) {
                 throw new AuraHandledException(e.getMessage());
             }

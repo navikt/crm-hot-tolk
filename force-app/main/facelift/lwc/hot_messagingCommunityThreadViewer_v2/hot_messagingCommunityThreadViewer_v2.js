@@ -24,7 +24,7 @@ import USER_ID from '@salesforce/user/Id';
 import setLastMessageFrom from '@salesforce/apex/HOT_MessageHelper.setLastMessageFrom';
 import { formatRecord } from 'c/datetimeFormatterNorwegianTime';
 
-import getThreadDetails from '@salesforce/apex/HOT_ThreadDetailController.getThreadDetails';
+import getThreadDetailsWithReplyPolicy from '@salesforce/apex/HOT_ThreadDetailController.getThreadDetailsWithReplyPolicy';
 export default class Hot_messagingCommunityThreadViewer_v2 extends NavigationMixin(LightningElement) {
     exitCrossIcon = icons + '/Close/Close.svg';
     informationIcon = icons2 + '/informationicon.svg';
@@ -57,6 +57,7 @@ export default class Hot_messagingCommunityThreadViewer_v2 extends NavigationMix
     isLoading = false;
     buttonLoading = false;
     textareaErrorText = '';
+    canReply = true;
 
     @api recordId;
     @api requestId;
@@ -139,11 +140,12 @@ export default class Hot_messagingCommunityThreadViewer_v2 extends NavigationMix
 
     subject;
     threadType;
-    @wire(getThreadDetails, { recordId: '$recordId' })
+    @wire(getThreadDetailsWithReplyPolicy, { recordId: '$recordId' })
     wireThreads(result) {
         this._threadWire = result;
         if (result.data) {
-            this.thread = result.data;
+            this.thread = result.data.thread;
+            this.canReply = result.data.replyPolicy?.canReply !== false;
             this.subject = this.thread.HOT_Subject__c;
             this.threadType = this.threadTypeName();
             this.threadRelatedObjectId = this.thread.CRM_Related_Object__c;
@@ -220,6 +222,14 @@ export default class Hot_messagingCommunityThreadViewer_v2 extends NavigationMix
 
     get isContentReady() {
         return this.showContent && this._threadWire?.data && this._mySendForSplitting?.data && this.userContactId;
+    }
+
+    get showReplyInput() {
+        return this.canReply;
+    }
+
+    get replyClosedText() {
+        return 'Denne samtalen er stengt for videre dialog.';
     }
     userAccountId;
     @wire(getUserAccountID)
@@ -458,6 +468,12 @@ export default class Hot_messagingCommunityThreadViewer_v2 extends NavigationMix
 
     @api
     createMessage(validation) {
+        if (!this.canReply) {
+            this.buttonisdisabled = true;
+            this.buttonLoading = false;
+            this.handleMessageFailed();
+            return;
+        }
         if (validation !== true) {
             this.buttonisdisabled = false;
             this.buttonLoading = false;

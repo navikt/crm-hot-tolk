@@ -1,29 +1,57 @@
 public without sharing class HOT_ThreadDetailController {
+    public class ThreadDetailsWithReplyPolicy {
+        @AuraEnabled
+        public Thread__c thread;
+        @AuraEnabled
+        public HOT_ThreadReplyPolicy.ReplyPolicy replyPolicy;
+
+        public ThreadDetailsWithReplyPolicy(Thread__c thread, HOT_ThreadReplyPolicy.ReplyPolicy replyPolicy) {
+            this.thread = thread;
+            this.replyPolicy = replyPolicy;
+        }
+    }
+
     @AuraEnabled(cacheable=true)
     public static Thread__c getThreadDetails(Id recordId) {
         Boolean access = checkAccess(recordId);
         if (access == true) {
-            Thread__c thread = [
-                SELECT
-                    Id,
-                    HOT_Subject__c,
-                    CRM_Is_Closed__c,
-                    CRM_Thread_Type__c,
-                    CRM_Related_Object__c,
-                    HOT_Thread_read_by__c,
-                    HOT_Request__r.Account__c,
-                    HOT_Request__r.Orderer__c,
-                    HOT_WorkOrder__r.AccountId
-                FROM Thread__c
-                WHERE Id = :recordId
-                LIMIT 1
-            ];
-
-            return thread;
+            return queryThreadDetails(recordId);
         } else {
             throw new AuraHandledException('No access');
         }
     }
+
+    @AuraEnabled(cacheable=true)
+    public static ThreadDetailsWithReplyPolicy getThreadDetailsWithReplyPolicy(Id recordId) {
+        Boolean access = checkAccess(recordId);
+        if (access == true) {
+            return new ThreadDetailsWithReplyPolicy(
+                queryThreadDetails(recordId),
+                HOT_ThreadReplyPolicy.getReplyPolicies(new Set<Id>{ recordId }).get(recordId)
+            );
+        } else {
+            throw new AuraHandledException('No access');
+        }
+    }
+
+    private static Thread__c queryThreadDetails(Id recordId) {
+        return [
+            SELECT
+                Id,
+                HOT_Subject__c,
+                CRM_Is_Closed__c,
+                CRM_Thread_Type__c,
+                CRM_Related_Object__c,
+                HOT_Thread_read_by__c,
+                HOT_Request__r.Account__c,
+                HOT_Request__r.Orderer__c,
+                HOT_WorkOrder__r.AccountId
+            FROM Thread__c
+            WHERE Id = :recordId
+            LIMIT 1
+        ];
+    }
+
     @AuraEnabled(cacheable=false)
     public static boolean checkAccess(Id threadId) {
         Boolean grantAccess = false;
