@@ -83,9 +83,9 @@ private class HOT_AnnouncementControllerTest {
 
     @IsTest
     static void testGetAnnouncements_All() {
-        List<Group> grp = [SELECT DeveloperName FROM Group WHERE DeveloperName = 'HOT_group_4719_formidler'];
+        List<Group> grp = [SELECT DeveloperName FROM Group WHERE DeveloperName = 'HOT_group_4718_formidler'];
         if (grp.size() == 0) {
-            Group formidlerGroup = new Group(DeveloperName = 'HOT_group_4719_formidler');
+            Group formidlerGroup = new Group(DeveloperName = 'HOT_group_4718_formidler');
             insert formidlerGroup;
         }
 
@@ -125,9 +125,9 @@ private class HOT_AnnouncementControllerTest {
     }
     @IsTest
     static void testGetAnnouncementWrapper() {
-        List<Group> grp = [SELECT DeveloperName FROM Group WHERE DeveloperName = 'HOT_group_4719_formidler'];
+        List<Group> grp = [SELECT DeveloperName FROM Group WHERE DeveloperName = 'HOT_group_4718_formidler'];
         if (grp.size() == 0) {
-            Group formidlerGroup = new Group(DeveloperName = 'HOT_group_4719_formidler');
+            Group formidlerGroup = new Group(DeveloperName = 'HOT_group_4718_formidler');
             insert formidlerGroup;
         }
         Test.startTest();
@@ -170,9 +170,9 @@ private class HOT_AnnouncementControllerTest {
     }
     @IsTest
     static void markAnnouncementsAsReadTest() {
-        List<Group> grp = [SELECT DeveloperName FROM Group WHERE DeveloperName = 'HOT_group_4719_formidler'];
+        List<Group> grp = [SELECT DeveloperName FROM Group WHERE DeveloperName = 'HOT_group_4718_formidler'];
         if (grp.size() == 0) {
-            Group formidlerGroup = new Group(DeveloperName = 'HOT_group_4719_formidler');
+            Group formidlerGroup = new Group(DeveloperName = 'HOT_group_4718_formidler');
             insert formidlerGroup;
         }
         Profile communityProfile = [SELECT Id FROM Profile WHERE Name = 'Customer Community Login User' LIMIT 1];
