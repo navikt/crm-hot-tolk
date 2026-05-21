@@ -253,7 +253,7 @@ private class HOT_AssignOrReserveSAServiceTest {
 
         System.assertEquals(false, response.success, 'Unsupported source status should block the action');
         System.assertEquals(
-            'Denne handlingen kan bare brukes når oppdraget har status None eller Released to Freelance. Nåværende status er Scheduled.',
+            'Denne handlingen kan bare brukes når oppdraget har status Åpen eller Frigitt til frilanstolker. Nåværende status er Scheduled.',
             response.message
         );
         System.assertEquals(0, assignedResourceCount, 'No assigned resource should be created');
