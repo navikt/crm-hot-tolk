@@ -83,6 +83,12 @@ private class HOT_AnnouncementControllerTest {
 
     @IsTest
     static void testGetAnnouncements_All() {
+        List<Group> grp = [SELECT DeveloperName FROM Group WHERE DeveloperName = 'HOT_group_4719_formidler'];
+        if (grp.size() == 0) {
+            Group formidlerGroup = new Group(DeveloperName = 'HOT_group_4719_formidler');
+            insert formidlerGroup;
+        }
+
         Test.startTest();
         Profile communityProfile = [SELECT Id FROM Profile WHERE Name = 'Customer Community Login User' LIMIT 1];
 
@@ -119,6 +125,11 @@ private class HOT_AnnouncementControllerTest {
     }
     @IsTest
     static void testGetAnnouncementWrapper() {
+        List<Group> grp = [SELECT DeveloperName FROM Group WHERE DeveloperName = 'HOT_group_4719_formidler'];
+        if (grp.size() == 0) {
+            Group formidlerGroup = new Group(DeveloperName = 'HOT_group_4719_formidler');
+            insert formidlerGroup;
+        }
         Test.startTest();
         Profile communityProfile = [SELECT Id FROM Profile WHERE Name = 'Customer Community Login User' LIMIT 1];
 
@@ -159,6 +170,11 @@ private class HOT_AnnouncementControllerTest {
     }
     @IsTest
     static void markAnnouncementsAsReadTest() {
+        List<Group> grp = [SELECT DeveloperName FROM Group WHERE DeveloperName = 'HOT_group_4719_formidler'];
+        if (grp.size() == 0) {
+            Group formidlerGroup = new Group(DeveloperName = 'HOT_group_4719_formidler');
+            insert formidlerGroup;
+        }
         Profile communityProfile = [SELECT Id FROM Profile WHERE Name = 'Customer Community Login User' LIMIT 1];
 
         Person__c person = HOT_TestDataFactory.createPerson();
