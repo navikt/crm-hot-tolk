@@ -62,9 +62,36 @@ private class HOT_ThreadReplyPolicyTest {
         return serviceAppointment;
     }
 
+    private static void setRequestEndTime(HOT_Request__c request, Datetime endTime) {
+        request.StartTime__c = endTime.addHours(-1);
+        request.EndTime__c = endTime;
+        update request;
+    }
+
+    private static void setWorkOrderEndTime(WorkOrder workOrder, Datetime endTime) {
+        workOrder.StartDate = endTime.addHours(-1);
+        workOrder.EndDate = endTime;
+        update workOrder;
+    }
+
     private static Thread__c createThread(Id relatedObjectId, String threadType) {
         Thread__c thread = HOT_TestDataFactory.createThread(threadType);
         thread.CRM_Related_Object__c = relatedObjectId;
+        if (relatedObjectId.getSObjectType() == HOT_Request__c.SObjectType) {
+            thread.HOT_Request__c = relatedObjectId;
+        }
+        if (relatedObjectId.getSObjectType() == WorkOrder.SObjectType) {
+            thread.HOT_WorkOrder__c = relatedObjectId;
+        }
+        if (relatedObjectId.getSObjectType() == ServiceAppointment.SObjectType) {
+            thread.HOT_ServiceAppointment__c = relatedObjectId;
+        }
+        if (relatedObjectId.getSObjectType() == HOT_InterestedResource__c.SObjectType) {
+            thread.HOT_InterestedResource__c = relatedObjectId;
+        }
+        if (relatedObjectId.getSObjectType() == HOT_WageClaim__c.SObjectType) {
+            thread.HOT_WageClaim__c = relatedObjectId;
+        }
         insert thread;
         return thread;
     }
@@ -72,7 +99,7 @@ private class HOT_ThreadReplyPolicyTest {
     @IsTest
     static void canReplyBeforeFortyEightHours() {
         TestContext context = createContext();
-        createServiceAppointment(context, System.now().addHours(-47), 'Completed');
+        setRequestEndTime(context.request, System.now().addHours(-47));
         Thread__c thread = createThread(context.request.Id, 'HOT_BRUKER-FORMIDLER');
 
         Test.startTest();
@@ -86,7 +113,7 @@ private class HOT_ThreadReplyPolicyTest {
     @IsTest
     static void cannotReplyAfterFortyEightHours() {
         TestContext context = createContext();
-        createServiceAppointment(context, System.now().addHours(-49), 'Completed');
+        setRequestEndTime(context.request, System.now().addHours(-49));
         Thread__c thread = createThread(context.request.Id, 'HOT_BRUKER-FORMIDLER');
 
         Test.startTest();
@@ -100,7 +127,7 @@ private class HOT_ThreadReplyPolicyTest {
     @IsTest
     static void resourceOfficeThreadCanReplyAfterFortyEightHours() {
         TestContext context = createContext();
-        createServiceAppointment(context, System.now().addHours(-49), 'Completed');
+        setRequestEndTime(context.request, System.now().addHours(-49));
         Thread__c thread = createThread(context.request.Id, 'HOT_TOLK-RESSURSKONTOR');
 
         Test.startTest();
@@ -114,7 +141,7 @@ private class HOT_ThreadReplyPolicyTest {
     @IsTest
     static void directMessageInsertIsRejectedWhenThreadIsClosed() {
         TestContext context = createContext();
-        createServiceAppointment(context, System.now().addHours(-49), 'Completed');
+        setRequestEndTime(context.request, System.now().addHours(-49));
         Thread__c thread = createThread(context.request.Id, 'HOT_BRUKER-FORMIDLER');
 
         Message__c message = new Message__c(
@@ -135,15 +162,10 @@ private class HOT_ThreadReplyPolicyTest {
     }
 
     @IsTest
-    static void requestThreadUsesLatestNonAnnulledServiceAppointment() {
+    static void requestThreadUsesFormulaEndTime() {
         TestContext context = createContext();
-        context.request.StartTime__c = System.now().addHours(-101);
-        context.request.EndTime__c = System.now().addHours(-100);
-        update context.request;
-
-        createServiceAppointment(context, System.now().addHours(-80), 'Completed');
-        createServiceAppointment(context, System.now().addHours(-1), 'Completed');
-        createServiceAppointment(context, System.now().addDays(5), 'Annul');
+        Datetime requestEndTime = System.now().addHours(-100);
+        setRequestEndTime(context.request, requestEndTime);
         Thread__c thread = createThread(context.request.Id, 'HOT_BRUKER-FORMIDLER');
 
         Test.startTest();
@@ -152,13 +174,14 @@ private class HOT_ThreadReplyPolicyTest {
         Test.stopTest();
 
         System.assertEquals(
-            true,
+            false,
             policy.canReply,
-            'Series request threads should use the latest non-annulled ServiceAppointment end, not Request.EndTime__c.'
+            'Request threads should use the formula field on Thread__c, which resolves HOT_Request__r.EndTime__c.'
         );
-        System.assert(
-            policy.appointmentEndTime > System.now().addHours(-2),
-            'The future Annul appointment should be ignored and the recent non-annulled appointment should be used.'
+        System.assertEquals(
+            requestEndTime,
+            policy.appointmentEndTime,
+            'The reply policy should not query child ServiceAppointments when the thread formula has an end time.'
         );
     }
 
@@ -195,9 +218,7 @@ private class HOT_ThreadReplyPolicyTest {
     @IsTest
     static void requestFallbackUsesRequestEndTimeWhenNoServiceAppointmentExists() {
         TestContext context = createContext();
-        context.request.StartTime__c = System.now().addHours(-60);
-        context.request.EndTime__c = System.now().addHours(-49);
-        update context.request;
+        setRequestEndTime(context.request, System.now().addHours(-49));
         Thread__c thread = createThread(context.request.Id, 'HOT_BRUKER-FORMIDLER');
 
         Test.startTest();
@@ -211,9 +232,7 @@ private class HOT_ThreadReplyPolicyTest {
     @IsTest
     static void workOrderFallbackUsesWorkOrderEndDateWhenNoServiceAppointmentExists() {
         TestContext context = createContext();
-        context.workOrder.StartDate = System.now().addHours(-60);
-        context.workOrder.EndDate = System.now().addHours(-49);
-        update context.workOrder;
+        setWorkOrderEndTime(context.workOrder, System.now().addHours(-49));
         Thread__c thread = createThread(context.workOrder.Id, 'HOT_BRUKER-TOLK');
 
         Test.startTest();
@@ -222,6 +241,111 @@ private class HOT_ThreadReplyPolicyTest {
         Test.stopTest();
 
         System.assertEquals(false, policy.canReply, 'WorkOrder EndDate should be fallback when no SA end exists.');
+    }
+
+    @IsTest
+    static void serviceAppointmentThreadUsesScheduledEndTime() {
+        TestContext context = createContext();
+        Datetime appointmentEndTime = System.now().addHours(-49);
+        ServiceAppointment serviceAppointment = createServiceAppointment(context, appointmentEndTime, 'Completed');
+        Thread__c thread = createThread(serviceAppointment.Id, 'HOT_TOLK-FORMIDLER');
+
+        Test.startTest();
+        HOT_ThreadReplyPolicy.ReplyPolicy policy = HOT_ThreadReplyPolicy.getReplyPolicies(new Set<Id>{ thread.Id })
+            .get(thread.Id);
+        Test.stopTest();
+
+        System.assertEquals(false, policy.canReply, 'ServiceAppointment threads should close from SchedEndTime.');
+        System.assertEquals(
+            appointmentEndTime,
+            policy.appointmentEndTime,
+            'The policy should expose the ServiceAppointment SchedEndTime from the formula.'
+        );
+    }
+
+    @IsTest
+    static void serviceAppointmentThreadFallsBackToDueDate() {
+        TestContext context = createContext();
+        Datetime dueDate = System.now().addHours(-49);
+        ServiceAppointment serviceAppointment = createServiceAppointment(context, dueDate, 'Completed');
+        update new ServiceAppointment(Id = serviceAppointment.Id, SchedEndTime = null, DueDate = dueDate);
+        Thread__c thread = createThread(serviceAppointment.Id, 'HOT_TOLK-FORMIDLER');
+
+        Test.startTest();
+        HOT_ThreadReplyPolicy.ReplyPolicy policy = HOT_ThreadReplyPolicy.getReplyPolicies(new Set<Id>{ thread.Id })
+            .get(thread.Id);
+        Test.stopTest();
+
+        System.assertEquals(false, policy.canReply, 'ServiceAppointment threads should close from DueDate if SchedEndTime is blank.');
+        System.assertEquals(
+            dueDate,
+            policy.appointmentEndTime,
+            'The formula should fall back to ServiceAppointment DueDate.'
+        );
+    }
+
+    @IsTest
+    static void interestedResourceThreadUsesServiceAppointmentEndTime() {
+        TestContext context = createContext();
+        Datetime appointmentEndTime = System.now().addHours(-49);
+        ServiceAppointment serviceAppointment = createServiceAppointment(context, appointmentEndTime, 'Completed');
+        ServiceResource serviceResource = HOT_TestDataFactory.createServiceResource(UserInfo.getUserId());
+        insert serviceResource;
+        HOT_InterestedResource__c interestedResource = HOT_TestDataFactory.createInterestedResource(
+            serviceAppointment.Id,
+            serviceResource.Id
+        );
+        insert interestedResource;
+        Thread__c thread = createThread(interestedResource.Id, 'HOT_TOLK-FORMIDLER');
+
+        Test.startTest();
+        HOT_ThreadReplyPolicy.ReplyPolicy policy = HOT_ThreadReplyPolicy.getReplyPolicies(new Set<Id>{ thread.Id })
+            .get(thread.Id);
+        Test.stopTest();
+
+        System.assertEquals(false, policy.canReply, 'InterestedResource threads should close from the related ServiceAppointment.');
+        System.assertEquals(
+            appointmentEndTime,
+            policy.appointmentEndTime,
+            'The formula should traverse InterestedResource to ServiceAppointment end time.'
+        );
+    }
+
+    @IsTest
+    static void threadWithoutCloseDateStaysOpen() {
+        Thread__c thread = HOT_TestDataFactory.createThread('HOT_BRUKER-FORMIDLER');
+        insert thread;
+
+        Test.startTest();
+        HOT_ThreadReplyPolicy.ReplyPolicy policy = HOT_ThreadReplyPolicy.getReplyPolicies(new Set<Id>{ thread.Id })
+            .get(thread.Id);
+        Test.stopTest();
+
+        System.assertEquals(true, policy.canReply, 'Threads with no formula close datetime should stay open.');
+        System.assertEquals(null, policy.appointmentEndTime, 'No close datetime should be exposed when the formula is blank.');
+    }
+
+    @IsTest
+    static void wageClaimDoesNotPopulateCloseDate() {
+        TestContext context = createContext();
+        ServiceAppointment serviceAppointment = createServiceAppointment(context, System.now().addHours(-49), 'Completed');
+        ServiceResource serviceResource = HOT_TestDataFactory.createServiceResource(UserInfo.getUserId());
+        insert serviceResource;
+        HOT_WageClaim__c wageClaim = HOT_TestDataFactory.createWageClaim(serviceResource);
+        wageClaim.ServiceAppointment__c = serviceAppointment.Id;
+        wageClaim.StartTime__c = System.now().addHours(-50);
+        wageClaim.EndTime__c = System.now().addHours(-49);
+        insert wageClaim;
+        Thread__c thread = createThread(wageClaim.Id, 'HOT_BRUKER-FORMIDLER');
+
+        Test.startTest();
+        HOT_ThreadReplyPolicy.ReplyPolicy policy = HOT_ThreadReplyPolicy.getReplyPolicies(new Set<Id>{ thread.Id })
+            .get(thread.Id);
+        Test.stopTest();
+
+        Thread__c savedThread = [SELECT HOT_Close_DateTime__c FROM Thread__c WHERE Id = :thread.Id];
+        System.assertEquals(null, savedThread.HOT_Close_DateTime__c, 'WageClaim should not feed the thread close formula.');
+        System.assertEquals(true, policy.canReply, 'A WageClaim-only close date should not close non-resource-office threads.');
     }
 
     @IsTest
