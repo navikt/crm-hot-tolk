@@ -63,6 +63,10 @@ private class HOT_RequestListControllerTest {
             CRM_UniqueKey__c = 'Postnummer8110'
         );
         insert commonCode;
+        Account acc = new Account();
+        acc.Name = 'Team HOT CRM';
+        acc.INT_OrganizationNumber__c = '987654321';
+        insert acc;
     }
 
     @IsTest
@@ -258,11 +262,6 @@ private class HOT_RequestListControllerTest {
 
     @IsTest
     static void getOrganizationInfoTest() {
-        Account acc = new Account();
-        acc.Name = 'Team HOT CRM';
-        acc.INT_OrganizationNumber__c = '987654321';
-        insert acc;
-
         Test.startTest();
         List<Account> accounts = HOT_RequestListController.getOrganizationInfo('987654321');
         Test.stopTest();
