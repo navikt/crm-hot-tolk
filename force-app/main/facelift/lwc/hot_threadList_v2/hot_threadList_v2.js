@@ -59,10 +59,12 @@ export default class Hot_threadList_v2 extends NavigationMixin(LightningElement)
     }
     handleFilterButtonClick(event) {
         this.filterValue = event.detail;
+        this.updateUrlParams();
         this.tryMapAndSortThreads();
     }
     handleSearchChange(event) {
         this.searchValue = event.detail;
+        this.updateUrlParams();
         this.tryMapAndSortThreads();
     }
 
@@ -120,6 +122,24 @@ export default class Hot_threadList_v2 extends NavigationMixin(LightningElement)
             this.hasThreads = true;
         }
     }
+    updateUrlParams() {
+        const url = new URL(window.location.href);
+
+        if (this.filterValue && this.filterValue !== 'all') {
+            url.searchParams.set('filter', this.filterValue);
+        } else {
+            url.searchParams.delete('filter');
+        }
+
+        if (this.searchValue) {
+            url.searchParams.set('search', this.searchValue);
+        } else {
+            url.searchParams.delete('search');
+        }
+
+        window.history.replaceState({}, '', url);
+    }
+
     formatDateTime(date) {
         let unformatted = new Date(date);
         let formattedTime =
