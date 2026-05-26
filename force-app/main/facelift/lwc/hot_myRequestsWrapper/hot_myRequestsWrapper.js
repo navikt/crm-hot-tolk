@@ -109,6 +109,7 @@ export default class Hot_myRequestsWrapper extends NavigationMixin(LightningElem
     isRequestOrWorkOrderDetails = false;
     urlStateParameters = { level: '', id: '' };
     columns;
+    isLoadingRecords = true;
 
     records = [];
     allRecords = [];
@@ -125,6 +126,9 @@ export default class Hot_myRequestsWrapper extends NavigationMixin(LightningElem
             this.allRecords = [...tempRecords];
             this.viewRows = this.flattenRecords(this.records);
             this.refresh(false);
+            this.isLoadingRecords = false;
+        } else if (result.error) {
+            this.isLoadingRecords = false;
         }
     }
 
