@@ -15,6 +15,10 @@
         <translation>Åpen</translation>
     </picklistValues>
     <picklistValues>
+        <masterLabel>Rejected</masterLabel>
+        <translation>Skal ikke honoreres</translation>
+    </picklistValues>
+    <picklistValues>
         <masterLabel>Retracted Availability</masterLabel>
         <translation>Tilbaketrukket tilgjengelighet</translation>
     </picklistValues>
