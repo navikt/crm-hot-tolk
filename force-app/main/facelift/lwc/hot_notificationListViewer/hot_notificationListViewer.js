@@ -141,6 +141,7 @@ export default class Hot_notificationListViewer extends NavigationMixin(Lightnin
                         } else {
                             this.errorMessage =
                                 'Du trykket på et gammelt varsel til et oppdrag du ikke lenger er tildelt.';
+                            console.log(this.errorMessage);
                             this.template.querySelector('.notificationDetails').classList.remove('hidden');
                             this.template.querySelector('.notificationDetails').focus();
                         }
