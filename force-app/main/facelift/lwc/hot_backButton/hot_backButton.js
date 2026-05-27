@@ -110,7 +110,6 @@ export default class Hot_backButton extends NavigationMixin(LightningElement) {
         const from = this._urlStateParameters?.from || url.searchParams.get('from');
         const fromFilter = this._urlStateParameters?.fromFilter || url.searchParams.get('fromFilter');
         const fromSearch = this._urlStateParameters?.fromSearch || url.searchParams.get('fromSearch');
-        console.log('Navigating back, from:', from, 'fromFilter:', fromFilter, 'fromSearch:', fromSearch);
 
         if (from === 'mine-samtaler' || from === 'mine-samtaler-frilanstolk') {
             const params = new URLSearchParams();

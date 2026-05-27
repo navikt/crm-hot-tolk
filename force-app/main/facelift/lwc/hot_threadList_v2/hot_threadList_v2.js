@@ -46,7 +46,6 @@ export default class Hot_threadList_v2 extends NavigationMixin(LightningElement)
                     this.template.querySelector('c-hot_thread-list-search')?.setValue(this.searchValue);
                 }
                 if (this.filterValue) {
-                    console.log('går den inn her??');
                     this.template.querySelector('c-hot_thread-list-filter-buttons')?.setActiveTab(this.filterValue);
                 }
                 this.tryMapAndSortThreads();
