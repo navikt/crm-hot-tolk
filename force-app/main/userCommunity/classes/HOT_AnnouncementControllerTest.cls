@@ -99,7 +99,7 @@ private class HOT_AnnouncementControllerTest {
         }
 
         Test.startTest();
-        User admin = [SELECT Id FROM User WHERE Name = 'admin' LIMIT 1];
+        User adminNew = [SELECT Id FROM User WHERE Name = 'admin' LIMIT 1];
         Profile communityProfile = [SELECT Id FROM Profile WHERE Name = 'Customer Community Login User' LIMIT 1];
 
         Person__c person = HOT_TestDataFactory.createPerson();
@@ -119,7 +119,7 @@ private class HOT_AnnouncementControllerTest {
             FROM Account
             WHERE LastName = :'Bruker'
         ];
-        account.OwnerId = admin.Id;
+        account.OwnerId = adminNew.Id;
         update account;
 
         User user = HOT_TestDataFactory.createUser(communityProfile, account);
@@ -151,7 +151,7 @@ private class HOT_AnnouncementControllerTest {
             Group formidlerGroup = new Group(DeveloperName = 'group_4718', Name = 'NAV HMS Nordland');
             insert formidlerGroup;
         }
-        User admin = [SELECT Id FROM User WHERE Name = 'admin' LIMIT 1];
+        User adminNew = [SELECT Id FROM User WHERE Name = 'admin' LIMIT 1];
         Test.startTest();
         Profile communityProfile = [SELECT Id FROM Profile WHERE Name = 'Customer Community Login User' LIMIT 1];
 
@@ -172,7 +172,7 @@ private class HOT_AnnouncementControllerTest {
             FROM Account
             WHERE LastName = :'Bruker'
         ];
-        account.OwnerId = admin.Id;
+        account.OwnerId = adminNew.Id;
         update account;
 
         User user = HOT_TestDataFactory.createUser(communityProfile, account);
@@ -208,7 +208,7 @@ private class HOT_AnnouncementControllerTest {
             Group formidlerGroup = new Group(DeveloperName = 'group_4718', Name = 'NAV HMS Nordland');
             insert formidlerGroup;
         }
-        User admin = [SELECT Id FROM User WHERE Name = 'admin' LIMIT 1];
+        User adminNew = [SELECT Id FROM User WHERE Name = 'admin' LIMIT 1];
         Profile communityProfile = [SELECT Id FROM Profile WHERE Name = 'Customer Community Login User' LIMIT 1];
 
         Person__c person = HOT_TestDataFactory.createPerson();
@@ -228,7 +228,7 @@ private class HOT_AnnouncementControllerTest {
             FROM Account
             WHERE LastName = :'Bruker'
         ];
-        account.OwnerId = admin.Id;
+        account.OwnerId = adminNew.Id;
         update account;
 
         User user = HOT_TestDataFactory.createUser(communityProfile, account);
