@@ -2,17 +2,6 @@
 private class HOT_AnnouncementControllerTest {
     @TestSetup
     static void setup() {
-
-        Profile adminProfile = [
-            SELECT Id, Name
-            FROM Profile
-            WHERE Name = 'System Administrator' OR Name = 'Systemadministrator'
-        ];
-        UserRole role = [SELECT Id FROM UserRole WHERE Name = 'Default' LIMIT 1];
-        User admin = HOT_TestDataFactory.createUser('admin', adminProfile);
-        admin.UserRoleId = role.Id;
-        insert admin;
-        
         // Announcements
 
         List<Common_Code__c> commonCodes = new List<Common_Code__c>();
@@ -94,6 +83,15 @@ private class HOT_AnnouncementControllerTest {
 
     @IsTest
     static void testGetAnnouncements_All() {
+        Profile adminProfile = [
+            SELECT Id, Name
+            FROM Profile
+            WHERE Name = 'System Administrator' OR Name = 'Systemadministrator'
+        ];
+        UserRole role = [SELECT Id FROM UserRole WHERE Name = 'Default' LIMIT 1];
+        User admin = HOT_TestDataFactory.createUser('admin', adminProfile);
+        admin.UserRoleId = role.Id;
+        insert admin;
         List<Group> grp = [SELECT DeveloperName FROM Group WHERE DeveloperName = 'group_4718'];
         if (grp.size() == 0) {
             Group formidlerGroup = new Group(DeveloperName = 'group_4718', Name = 'NAV HMS Nordland');
@@ -139,6 +137,15 @@ private class HOT_AnnouncementControllerTest {
     }
     @IsTest
     static void testGetAnnouncementWrapper() {
+        Profile adminProfile = [
+            SELECT Id, Name
+            FROM Profile
+            WHERE Name = 'System Administrator' OR Name = 'Systemadministrator'
+        ];
+        UserRole role = [SELECT Id FROM UserRole WHERE Name = 'Default' LIMIT 1];
+        User admin = HOT_TestDataFactory.createUser('admin', adminProfile);
+        admin.UserRoleId = role.Id;
+        insert admin;
         List<Group> grp = [SELECT DeveloperName FROM Group WHERE DeveloperName = 'group_4718'];
         if (grp.size() == 0) {
             Group formidlerGroup = new Group(DeveloperName = 'group_4718', Name = 'NAV HMS Nordland');
@@ -187,6 +194,15 @@ private class HOT_AnnouncementControllerTest {
     }
     @IsTest
     static void markAnnouncementsAsReadTest() {
+        Profile adminProfile = [
+            SELECT Id, Name
+            FROM Profile
+            WHERE Name = 'System Administrator' OR Name = 'Systemadministrator'
+        ];
+        UserRole role = [SELECT Id FROM UserRole WHERE Name = 'Default' LIMIT 1];
+        User admin = HOT_TestDataFactory.createUser('admin', adminProfile);
+        admin.UserRoleId = role.Id;
+        insert admin;
         List<Group> grp = [SELECT DeveloperName FROM Group WHERE DeveloperName = 'group_4718'];
         if (grp.size() == 0) {
             Group formidlerGroup = new Group(DeveloperName = 'group_4718', Name = 'NAV HMS Nordland');
