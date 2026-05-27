@@ -44,7 +44,10 @@ public without sharing class HOT_WageClaimListController {
                 DegreeOfHearingAndVisualImpairment__c,
                 toLabel(Reason__c)
             FROM HOT_WageClaim__c
-            WHERE Type__c = 'Claim on Wage' AND ServiceResource__r.RelatedRecordId = :UserInfo.getUserId()
+            WHERE
+                Type__c = 'Claim on Wage'
+                AND Status__c != 'Rejected'
+                AND ServiceResource__r.RelatedRecordId = :UserInfo.getUserId()
             ORDER BY StartTime__c ASC
         ];
         return wageClaims;

@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="UTF-8"?>
+<?xml version="1.0" encoding="UTF-8" ?>
 <Flow xmlns="http://soap.sforce.com/2006/04/metadata">
     <actionCalls>
         <name>Assign_Or_Reserve_Service_Appointment</name>
@@ -67,12 +67,19 @@
         <defaultConnectorLabel>Not Available</defaultConnectorLabel>
         <rules>
             <name>Allowed</name>
-            <conditionLogic>and</conditionLogic>
+            <conditionLogic>(1 OR 2) AND 3 AND 4 AND 5</conditionLogic>
             <conditions>
                 <leftValueReference>Get_Service_Appointment.Status</leftValueReference>
                 <operator>EqualTo</operator>
                 <rightValue>
                     <stringValue>None</stringValue>
+                </rightValue>
+            </conditions>
+            <conditions>
+                <leftValueReference>Get_Service_Appointment.Status</leftValueReference>
+                <operator>EqualTo</operator>
+                <rightValue>
+                    <stringValue>Released to Freelance</stringValue>
                 </rightValue>
             </conditions>
             <conditions>
@@ -204,7 +211,8 @@
         </connector>
         <fields>
             <name>IntroText</name>
-            <fieldText>&lt;p&gt;Velg tolk og om oppdraget skal settes til &lt;strong&gt;Reservert&lt;/strong&gt; eller &lt;strong&gt;Tildelt&lt;/strong&gt;.&lt;/p&gt;&lt;p&gt;Denne handlingen kan bare brukes ved første gangs tildeling, før oppdraget har fått tolk.&lt;/p&gt;</fieldText>
+            <fieldText
+            >&lt;p&gt;Velg tolk og om oppdraget skal settes til &lt;strong&gt;Reservert&lt;/strong&gt; eller &lt;strong&gt;Tildelt&lt;/strong&gt;.&lt;/p&gt;&lt;p&gt;Denne handlingen kan bare brukes ved første gangs tildeling, før oppdraget har fått tolk, når status er Åpen eller Frigitt til frilans.&lt;/p&gt;</fieldText>
             <fieldType>DisplayText</fieldType>
         </fields>
         <fields>
@@ -314,7 +322,8 @@
         <allowPause>false</allowPause>
         <fields>
             <name>NotAvailableText</name>
-            <fieldText>&lt;p&gt;Det er allerede reservert/tildelt en tolk til dette oppdraget.&lt;/p&gt;</fieldText>
+            <fieldText
+            >&lt;p&gt;Handlingen kan bare brukes når oppdraget har status Åpen eller Frigitt til frilans, og det ikke allerede er reservert/tildelt en tolk.&lt;/p&gt;</fieldText>
             <fieldType>DisplayText</fieldType>
         </fields>
         <showFooter>true</showFooter>

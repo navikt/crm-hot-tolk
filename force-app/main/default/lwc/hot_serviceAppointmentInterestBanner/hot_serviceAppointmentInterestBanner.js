@@ -1,44 +1,60 @@
 import { LightningElement, api, wire } from 'lwc';
 import { refreshApex } from '@salesforce/apex';
 import hasRegisteredInterest from '@salesforce/apex/HOT_InterestedResourceBannerController.hasRegisteredInterest';
-import { registerRefreshHandler, unregisterRefreshHandler } from 'lightning/refresh';
+import { APPLICATION_SCOPE, MessageContext, subscribe, unsubscribe } from 'lightning/messageService';
+import INTEREST_REGISTERED_CHANNEL from '@salesforce/messageChannel/HOT_ServiceAppointmentInterestRegistered__c';
 
 export default class Hot_serviceAppointmentInterestBanner extends LightningElement {
     @api recordId;
 
-    refreshHandlerId;
     refreshPromise;
+    subscription;
 
     @wire(hasRegisteredInterest, { serviceAppointmentId: '$recordId' })
     interestState;
 
-    connectedCallback() {
-        this.refreshHandlerId = registerRefreshHandler(this, this.refreshInterestState);
-
-        document.addEventListener('visibilitychange', this.refreshWhenVisible);
-        window.addEventListener('pageshow', this.refreshInterestState);
-    }
+    @wire(MessageContext)
+    messageContext;
 
     disconnectedCallback() {
-        if (this.refreshHandlerId) {
-            unregisterRefreshHandler(this.refreshHandlerId);
-        }
-
-        document.removeEventListener('visibilitychange', this.refreshWhenVisible);
-        window.removeEventListener('pageshow', this.refreshInterestState);
+        this.unsubscribeFromInterestRegistered();
     }
 
     get showBanner() {
         return this.interestState?.data === true;
     }
 
-    refreshWhenVisible = () => {
-        if (document.visibilityState === 'visible') {
-            return this.refreshInterestState();
+    renderedCallback() {
+        this.subscribeToInterestRegistered();
+    }
+
+    subscribeToInterestRegistered() {
+        if (this.subscription || !this.messageContext) {
+            return;
         }
 
-        return Promise.resolve(true);
-    };
+        this.subscription = subscribe(
+            this.messageContext,
+            INTEREST_REGISTERED_CHANNEL,
+            (message) => this.handleInterestRegistered(message),
+            { scope: APPLICATION_SCOPE }
+        );
+    }
+
+    unsubscribeFromInterestRegistered() {
+        if (!this.subscription) {
+            return;
+        }
+
+        unsubscribe(this.subscription);
+        this.subscription = undefined;
+    }
+
+    handleInterestRegistered(message) {
+        if (message?.serviceAppointmentId === this.recordId) {
+            this.refreshInterestState();
+        }
+    }
 
     refreshInterestState = () => {
         if (!this.interestState) {
