@@ -146,6 +146,28 @@ public without sharing class HOT_UserNotificationService {
         }
     }
 
+    public static void invoiceNotification(
+        CustomNotificationType notificationType,
+        HOT_Invoice__c invoice,
+        ServiceAppointment serviceAppointment,
+        Set<String> recipients,
+        String subject,
+        String body
+    ) {
+        Id notificationTypeId = notificationType.Id;
+        Messaging.CustomNotification notification = new Messaging.CustomNotification();
+        notification.setTitle(subject);
+        notification.setBody(body);
+        notification.setNotificationTypeId(notificationTypeId);
+        notification.setTargetId(invoice.Id);
+
+        try {
+            notification.send(recipients);
+        } catch (Exception e) {
+            handleException(e);
+        }
+    }
+
     public static void interpreterChangeNotification(
         CustomNotificationType notificationType,
         WorkOrder workOrder,

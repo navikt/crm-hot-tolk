@@ -1,0 +1,17 @@
+<template>
+    <div class="main-content">
+        <lightning-combobox
+            class="custom-combobox"
+            label={label}
+            value={value}
+            placeholder="Velg et tall"
+            options={options}
+            onchange={handleChange}
+        >
+        </lightning-combobox>
+
+        <template if:true={errorMessage}>
+            <div class="error-message">{errorMessage}</div>
+        </template>
+    </div>
+</template>

@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<GlobalValueSet xmlns="http://soap.sforce.com/2006/04/metadata">
+    <customValue>
+        <fullName>Reise u/ overnatting 6-12 timer</fullName>
+        <default>false</default>
+        <label>Reise u/ overnatting 6-12 timer</label>
+    </customValue>
+    <customValue>
+        <fullName>Reise u/ overnatting, over 12 timer</fullName>
+        <default>false</default>
+        <label>Reise u/ overnatting, over 12 timer</label>
+    </customValue>
+    <customValue>
+        <fullName>Reise med overnatting</fullName>
+        <default>false</default>
+        <label>Reise med overnatting</label>
+    </customValue>
+    <description>Valg av kostgodtgjørelse</description>
+    <masterLabel>Subsistence Allowance</masterLabel>
+    <sorted>false</sorted>
+</GlobalValueSet>

@@ -1,0 +1,106 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<GlobalValueSet xmlns="http://soap.sforce.com/2006/04/metadata">
+    <customValue>
+        <fullName>01 Taxi, beste kl.skip, 1.kl.tog/soveplass (*kr*)</fullName>
+        <default>false</default>
+        <label>01 Taxi, beste kl.skip, 1.kl.tog/soveplass (*kr*)</label>
+    </customValue>
+    <customValue>
+        <fullName>02 Flytog, rutebuss, båt/ferje, trikk/t-bane 2.kl.tog (*kr*)</fullName>
+        <default>false</default>
+        <label>02 Flytog, rutebuss, båt/ferje, trikk/t-bane 2.kl.tog (*kr*)</label>
+    </customValue>
+    <customValue>
+        <fullName>03 Parkering (*kr*)</fullName>
+        <default>false</default>
+        <label>03 Parkering (*kr*)</label>
+    </customValue>
+    <customValue>
+        <fullName>05 Enkeltpassering bom/bro/tunnel, piggdekkavgift (*kr*)</fullName>
+        <default>false</default>
+        <label>05 Enkeltpassering bom/bro/tunnel, piggdekkavgift (*kr*)</label>
+    </customValue>
+    <customValue>
+        <fullName>06 Hotell (*kr*)</fullName>
+        <default>false</default>
+        <label>06 Hotell (*kr*)</label>
+    </customValue>
+    <customValue>
+        <fullName>07 Refusjon flybilletter innenlands (*kr*)</fullName>
+        <default>false</default>
+        <label>07 Refusjon flybilletter innenlands (*kr*)</label>
+    </customValue>
+    <customValue>
+        <fullName>08 Refusjon flybilletter utenlands (*kr*)</fullName>
+        <default>false</default>
+        <label>08 Refusjon flybilletter utenlands (*kr*)</label>
+    </customValue>
+    <customValue>
+        <fullName>10 Km.godtgj.innland/utland (*antall*)</fullName>
+        <default>false</default>
+        <label>10 Km.godtgj.innland/utland (*antall*)</label>
+    </customValue>
+    <customValue>
+        <fullName>11 Km.godtj Tromsø (*antall*)</fullName>
+        <default>false</default>
+        <label>11 Km.godtj Tromsø (*antall*)</label>
+    </customValue>
+    <customValue>
+        <fullName>12 Passasjertillegg (*antall*)</fullName>
+        <default>false</default>
+        <label>12 Passasjertillegg (*antall*)</label>
+    </customValue>
+    <customValue>
+        <fullName>15 Km.godtj. snøscooter og ATV (*antall*)</fullName>
+        <default>false</default>
+        <label>15 Km.godtj. snøscooter og ATV (*antall*)</label>
+    </customValue>
+    <customValue>
+        <fullName>16 Km.godtj. motorsykkel over 125 ccm (*antall*)</fullName>
+        <default>false</default>
+        <label>16 Km.godtj. motorsykkel over 125 ccm (*antall*)</label>
+    </customValue>
+    <customValue>
+        <fullName>17 Km.godtj. båt (*antall*)</fullName>
+        <default>false</default>
+        <label>17 Km.godtj. båt (*antall*)</label>
+    </customValue>
+    <customValue>
+        <fullName>18 Tillegg for tilhenger (*antall*)</fullName>
+        <default>false</default>
+        <label>18 Tillegg for tilhenger (*antall*)</label>
+    </customValue>
+    <customValue>
+        <fullName>19 Annet skyssmiddel (*kr*)</fullName>
+        <default>false</default>
+        <label>19 Annet skyssmiddel (*kr*)</label>
+    </customValue>
+    <customValue>
+        <fullName>21 Leigebil (*kr*)</fullName>
+        <default>false</default>
+        <label>21 Leigebil (*kr*)</label>
+    </customValue>
+    <customValue>
+        <fullName>23 Rekvisita og nødvendig utstyr (*kr*)</fullName>
+        <default>false</default>
+        <label>23 Rekvisita og nødvendig utstyr (*kr*)</label>
+    </customValue>
+    <customValue>
+        <fullName>50 Deltakeravgifter for kurs og konferanser (*kr*)</fullName>
+        <default>false</default>
+        <label>50 Deltakeravgifter for kurs og konferanser (*kr*)</label>
+    </customValue>
+    <customValue>
+        <fullName>67 Måltid etter regning (*kr*)</fullName>
+        <default>false</default>
+        <label>67 Måltid etter regning (*kr*)</label>
+    </customValue>
+    <customValue>
+        <fullName>72 Nattillegg innland, privat overnatting</fullName>
+        <default>false</default>
+        <label>72 Nattillegg innland, privat overnatting</label>
+    </customValue>
+    <description>Utleggstyper</description>
+    <masterLabel>Expences</masterLabel>
+    <sorted>false</sorted>
+</GlobalValueSet>
