@@ -87,10 +87,14 @@ private class HOT_AnnouncementControllerTest {
 
         User admin = HOT_TestDataFactory.createUser('admusr', adminProfile);
         admin.Alias = 'admusr';
+        UserRole role = [SELECT Id FROM UserRole WHERE Name = 'Default' LIMIT 1];
+        admin.UserRoleId = role.Id;
         insert admin;
-
         Account account = [SELECT Id, PersonContactId FROM Account WHERE LastName = 'Bruker' LIMIT 1];
-
+        System.runAs([SELECT Id FROM User WHERE Id = :UserInfo.getUserId() LIMIT 1][0]) {
+            account.OwnerId = admin.Id;
+            update account;
+        }
         Profile communityProfile = [SELECT Id FROM Profile WHERE Name = 'Customer Community Login User' LIMIT 1];
 
         User communityUser;
