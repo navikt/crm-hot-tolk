@@ -42,7 +42,7 @@ public without sharing class HOT_AnnouncementController {
         Set<Id> readAnnouncementIds = getReadAnnouncementIds(announcementIds);
 
         for (HOT_Announcement__c announcement : announcements) {
-            if (!readAnnouncementIds.contains(announcement.Id)) {
+            if (announcement.Type__c == 'News' && !readAnnouncementIds.contains(announcement.Id)) {
                 wrapper.unreadAnnouncementIds.add(announcement.Id);
             }
         }
