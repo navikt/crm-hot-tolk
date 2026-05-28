@@ -143,24 +143,24 @@ private class HOT_AnnouncementControllerTest {
         Test.stopTest();
     }
 
-    // @IsTest
-    // static void markAnnouncementsAsReadTest() {
-    //     User u = createCommunityUser('u3');
+    @IsTest
+    static void markAnnouncementsAsReadTest() {
+        User u = createCommunityUser('u3');
 
-    //     Test.startTest();
+        Test.startTest();
 
-    //     System.runAs(u) {
-    //         List<HOT_Announcement__c> announcements = HOT_AnnouncementController.getAnnouncements();
+        System.runAs(u) {
+            List<HOT_Announcement__c> announcements = HOT_AnnouncementController.getAnnouncements();
 
-    //         System.assertEquals(2, announcements.size());
+            System.assertEquals(2, announcements.size());
 
-    //         HOT_AnnouncementController.markAnnouncementsAsRead();
+            HOT_AnnouncementController.markAnnouncementsAsRead();
 
-    //         List<HOT_ReadReceipt__c> receipts = [SELECT Id FROM HOT_ReadReceipt__c WHERE User__c = :u.Id];
+            List<HOT_ReadReceipt__c> receipts = [SELECT Id FROM HOT_ReadReceipt__c WHERE User__c = :u.Id];
 
-    //         System.assertEquals(2, receipts.size());
-    //     }
+            System.assertEquals(2, receipts.size());
+        }
 
-    //     Test.stopTest();
-    // }
+        Test.stopTest();
+    }
 }
