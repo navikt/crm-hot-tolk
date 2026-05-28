@@ -381,4 +381,53 @@ public without sharing class HOT_MessagesNotification {
 
         return notificationTypeCache.get(devName);
     }
+    public class NewMessageNotification {
+        @AuraEnabled
+        public String title { get; set; }
+
+        @AuraEnabled
+        public String body { get; set; }
+
+        public NewMessageNotification(String title, String body) {
+            this.title = title;
+            this.body = body;
+        }
+    }
+
+    @AuraEnabled
+    public static NewMessageNotification createNotification(Thread__c thread) {
+        String roleInThread = HOT_ThreadParticipants.getUserRoleInThread(thread.Id);
+
+        return new NewMessageNotification(
+            notificationHeaderGenerator(roleInThread),
+            notificationBodyGenerator(thread.CRM_Related_Object__c)
+        );
+    }
+
+    public static String notificationHeaderGenerator(String roleInThread) {
+        switch on roleInThread {
+            when 'bruker' {
+                return 'Ny melding fra tolkebruker';
+            }
+            when 'bestiller' {
+                return 'Ny melding fra tolkebestiller';
+            }
+            when 'tolk' {
+                return 'Ny melding fra tolk';
+            }
+            when 'formidler' {
+                return 'Ny melding fra formidler';
+            }
+            when 'ressurskontor' {
+                return 'Ny melding fra ressurskontor';
+            }
+            when else {
+                return 'Ny melding';
+            }
+        }
+    }
+
+    public static String notificationBodyGenerator(Id relatedObjectId) {
+        //Melding gjelder på oppdraget / bestillingen som var klokkeslett osv.
+    }
 }

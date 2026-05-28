@@ -558,4 +558,51 @@ public without sharing class HOT_ThreadParticipants {
         }
         return String.join(capitalizedWords, ' ');
     }
+public static String getUserRoleInThread(String threadId) {
+    if (String.isBlank(threadId)) {
+        return null;
+    }
+
+    Thread__c thread = [
+        SELECT Id, CRM_Thread_Type__c
+        FROM Thread__c
+        WHERE Id = :threadId
+        LIMIT 1
+    ];
+
+    User currentUser = [
+        SELECT Id, Profile.Name
+        FROM User
+        WHERE Id = :UserInfo.getUserId()
+        LIMIT 1
+    ];
+
+    for (Participant participant : getParticipants(threadId)) {
+        if (participant.userId == currentUser.Id) {
+            if (participant.role == 'Tolk') return 'tolk';
+            if (participant.role == 'Tolkebruker') return 'bruker';
+            if (participant.role == 'Bestiller') return 'bestiller';
+        }
+    }
+
+    if (
+        currentUser.Profile.Name == 'HOT Tolk Formidler' &&
+        (
+            thread.CRM_Thread_Type__c == 'HOT_TOLK-FORMIDLER' ||
+            thread.CRM_Thread_Type__c == 'HOT_BRUKER-FORMIDLER' ||
+            thread.CRM_Thread_Type__c == 'HOT_BESTILLER-FORMIDLER'
+        )
+    ) {
+        return 'formidler';
+    }
+
+    if (
+        currentUser.Profile.Name == 'HOT Tolk Saksbehandler' &&
+        thread.CRM_Thread_Type__c == 'HOT_TOLK-RESSURSKONTOR'
+    ) {
+        return 'ressurskontor';
+    }
+
+    return null;
+}
 }
