@@ -157,7 +157,7 @@
     <label>Read Receipt</label>
     <nameField>
         <displayFormat>{0000}</displayFormat>
-        <label>Read Reciept</label>
+        <label>Read Receipt</label>
         <type>AutoNumber</type>
     </nameField>
     <pluralLabel>Read Receipts</pluralLabel>
