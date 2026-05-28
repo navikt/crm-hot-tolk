@@ -460,6 +460,11 @@
     </fieldPermissions>
     <fieldPermissions>
         <editable>true</editable>
+        <field>HOT_ReadReceipt__c.Announcement__c</field>
+        <readable>true</readable>
+    </fieldPermissions>
+    <fieldPermissions>
+        <editable>true</editable>
         <field>HOT_ReadReceipt__c.User__c</field>
         <readable>true</readable>
     </fieldPermissions>
