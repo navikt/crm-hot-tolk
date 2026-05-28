@@ -2,6 +2,7 @@
 private class HOT_AnnouncementControllerTest {
     @TestSetup
     static void setup() {
+        myTriggers.disable(PersonAccessHandler.class);
         createAnnouncementsAndCommonCodes();
 
         Person__c person = HOT_TestDataFactory.createPerson();
