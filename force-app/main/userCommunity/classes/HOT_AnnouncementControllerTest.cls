@@ -13,8 +13,8 @@ private class HOT_AnnouncementControllerTest {
 
         insert person;
 
-        person.INT_MunicipalityNumber__c = '1822';
-        person.INT_RegionNumber__c = '18';
+        person.INT_MunicipalityNumber__c = '5501';
+        person.INT_RegionNumber__c = '55';
 
         update person;
     }
@@ -43,7 +43,7 @@ private class HOT_AnnouncementControllerTest {
                 TargetSite__c = 'Tolkebestilling',
                 Audience__c = 'Alle',
                 Type__c = 'News',
-                RegionAudience__c = 'Nordland',
+                RegionAudience__c = 'Troms',
                 RecordTypeId = rt.Id
             ),
             new HOT_Announcement__c(
@@ -61,7 +61,7 @@ private class HOT_AnnouncementControllerTest {
                 TargetSite__c = 'Tolkebestilling',
                 Audience__c = 'Bare tolkebruker',
                 Type__c = 'News',
-                RegionAudience__c = 'Nordland',
+                RegionAudience__c = 'Troms',
                 RecordTypeId = rt.Id
             ),
             new HOT_Announcement__c(
@@ -70,14 +70,14 @@ private class HOT_AnnouncementControllerTest {
                 TargetSite__c = 'Tolkebestilling',
                 Audience__c = 'Alle',
                 Type__c = 'News',
-                RegionAudience__c = 'Nordland',
+                RegionAudience__c = 'Troms',
                 RecordTypeId = rt.Id
             )
         };
 
         insert new List<Common_Code__c>{
-            new Common_Code__c(Name = 'Nordland', CRM_Code_Set__c = 'Fylke', CRM_Code__c = '18', CRM_Active__c = true),
-            new Common_Code__c(Name = 'Herøy', CRM_Code_Set__c = 'Kommune', CRM_Code__c = '1822', CRM_Active__c = true)
+            new Common_Code__c(Name = 'Troms', CRM_Code_Set__c = 'Fylke', CRM_Code__c = '55', CRM_Active__c = true),
+            new Common_Code__c(Name = 'Tromsø', CRM_Code_Set__c = 'Kommune', CRM_Code__c = '5501', CRM_Active__c = true)
         };
     }
 
