@@ -159,10 +159,8 @@ export default class Hot_notificationListViewer extends NavigationMixin(Lightnin
         this.showNotifications = !this.showNotifications;
         if (this.showNotifications) {
             refreshApex(this.wiredNotificationResult);
-            // after DOM updates, focus first tabbable in dropdown
             setTimeout(() => {
-                const first = this._getTrapElements()[0]; //First notification
-                first && first.focus();
+                this.template.querySelector('.dropdown')?.focus();
             });
         }
     }
