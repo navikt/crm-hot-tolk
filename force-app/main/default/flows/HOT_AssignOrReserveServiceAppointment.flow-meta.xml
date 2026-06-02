@@ -1,10 +1,10 @@
-<?xml version="1.0" encoding="UTF-8" ?>
+<?xml version="1.0" encoding="UTF-8"?>
 <Flow xmlns="http://soap.sforce.com/2006/04/metadata">
     <actionCalls>
         <name>Assign_Or_Reserve_Service_Appointment</name>
         <label>Assign Or Reserve Service Appointment</label>
-        <locationX>176</locationX>
-        <locationY>674</locationY>
+        <locationX>0</locationX>
+        <locationY>0</locationY>
         <actionName>HOT_AssignOrReserveSAService</actionName>
         <actionType>apex</actionType>
         <connector>
@@ -30,6 +30,7 @@
             </value>
         </inputParameters>
         <nameSegment>HOT_AssignOrReserveSAService</nameSegment>
+        <offset>0</offset>
         <outputParameters>
             <assignToReference>ActionMessage</assignToReference>
             <name>message</name>
@@ -40,14 +41,7 @@
         </outputParameters>
     </actionCalls>
     <apiVersion>66.0</apiVersion>
-    <choices>
-        <name>ReserveChoice</name>
-        <choiceText>Reservert</choiceText>
-        <dataType>String</dataType>
-        <value>
-            <stringValue>Scheduled</stringValue>
-        </value>
-    </choices>
+    <areMetricsLoggedToDataCloud>false</areMetricsLoggedToDataCloud>
     <choices>
         <name>AssignChoice</name>
         <choiceText>Tildelt</choiceText>
@@ -56,11 +50,19 @@
             <stringValue>Dispatched</stringValue>
         </value>
     </choices>
+    <choices>
+        <name>ReserveChoice</name>
+        <choiceText>Reservert</choiceText>
+        <dataType>String</dataType>
+        <value>
+            <stringValue>Scheduled</stringValue>
+        </value>
+    </choices>
     <decisions>
         <name>Can_Show_Assignment_Screen</name>
         <label>Can Show Assignment Screen</label>
-        <locationX>176</locationX>
-        <locationY>350</locationY>
+        <locationX>0</locationX>
+        <locationY>0</locationY>
         <defaultConnector>
             <targetReference>NotAvailableScreen</targetReference>
         </defaultConnector>
@@ -112,8 +114,8 @@
     <decisions>
         <name>Was_Action_Successful</name>
         <label>Was Action Successful</label>
-        <locationX>176</locationX>
-        <locationY>782</locationY>
+        <locationX>0</locationX>
+        <locationY>0</locationY>
         <defaultConnector>
             <targetReference>ErrorScreen</targetReference>
         </defaultConnector>
@@ -157,31 +159,10 @@
     </processMetadataValues>
     <processType>Flow</processType>
     <recordLookups>
-        <name>Get_Service_Appointment</name>
-        <label>Get Service Appointment</label>
-        <locationX>176</locationX>
-        <locationY>134</locationY>
-        <assignNullValuesIfNoRecordsFound>false</assignNullValuesIfNoRecordsFound>
-        <connector>
-            <targetReference>Get_Existing_Assigned_Resource</targetReference>
-        </connector>
-        <filterLogic>and</filterLogic>
-        <filters>
-            <field>Id</field>
-            <operator>EqualTo</operator>
-            <value>
-                <elementReference>recordId</elementReference>
-            </value>
-        </filters>
-        <getFirstRecordOnly>true</getFirstRecordOnly>
-        <object>ServiceAppointment</object>
-        <storeOutputAutomatically>true</storeOutputAutomatically>
-    </recordLookups>
-    <recordLookups>
         <name>Get_Existing_Assigned_Resource</name>
         <label>Get Existing Assigned Resource</label>
-        <locationX>176</locationX>
-        <locationY>242</locationY>
+        <locationX>0</locationX>
+        <locationY>0</locationY>
         <assignNullValuesIfNoRecordsFound>false</assignNullValuesIfNoRecordsFound>
         <connector>
             <targetReference>Can_Show_Assignment_Screen</targetReference>
@@ -198,11 +179,80 @@
         <object>AssignedResource</object>
         <storeOutputAutomatically>true</storeOutputAutomatically>
     </recordLookups>
+    <recordLookups>
+        <name>Get_Service_Appointment</name>
+        <label>Get Service Appointment</label>
+        <locationX>0</locationX>
+        <locationY>0</locationY>
+        <assignNullValuesIfNoRecordsFound>false</assignNullValuesIfNoRecordsFound>
+        <connector>
+            <targetReference>Get_Existing_Assigned_Resource</targetReference>
+        </connector>
+        <filterLogic>and</filterLogic>
+        <filters>
+            <field>Id</field>
+            <operator>EqualTo</operator>
+            <value>
+                <elementReference>recordId</elementReference>
+            </value>
+        </filters>
+        <getFirstRecordOnly>true</getFirstRecordOnly>
+        <object>ServiceAppointment</object>
+        <storeOutputAutomatically>true</storeOutputAutomatically>
+    </recordLookups>
+    <screens>
+        <name>ErrorScreen</name>
+        <label>ErrorScreen</label>
+        <locationX>0</locationX>
+        <locationY>0</locationY>
+        <allowBack>true</allowBack>
+        <allowFinish>true</allowFinish>
+        <allowPause>false</allowPause>
+        <fields>
+            <name>ErrorText</name>
+            <fieldText>&lt;p&gt;{!ActionMessage}&lt;/p&gt;</fieldText>
+            <fieldType>DisplayText</fieldType>
+            <styleProperties>
+                <verticalAlignment>
+                    <stringValue>top</stringValue>
+                </verticalAlignment>
+                <width>
+                    <stringValue>12</stringValue>
+                </width>
+            </styleProperties>
+        </fields>
+        <showFooter>true</showFooter>
+        <showHeader>false</showHeader>
+    </screens>
+    <screens>
+        <name>NotAvailableScreen</name>
+        <label>Not Available Screen</label>
+        <locationX>0</locationX>
+        <locationY>0</locationY>
+        <allowBack>false</allowBack>
+        <allowFinish>true</allowFinish>
+        <allowPause>false</allowPause>
+        <fields>
+            <name>NotAvailableText</name>
+            <fieldText>&lt;p&gt;Handlingen kan bare brukes når oppdraget har status Åpen eller Frigitt til frilans, og det ikke allerede er reservert/tildelt en tolk.&lt;/p&gt;</fieldText>
+            <fieldType>DisplayText</fieldType>
+            <styleProperties>
+                <verticalAlignment>
+                    <stringValue>top</stringValue>
+                </verticalAlignment>
+                <width>
+                    <stringValue>12</stringValue>
+                </width>
+            </styleProperties>
+        </fields>
+        <showFooter>true</showFooter>
+        <showHeader>false</showHeader>
+    </screens>
     <screens>
         <name>SelectInterpreterAndStatus</name>
         <label>Select Interpreter And Status</label>
-        <locationX>176</locationX>
-        <locationY>566</locationY>
+        <locationX>0</locationX>
+        <locationY>0</locationY>
         <allowBack>false</allowBack>
         <allowFinish>true</allowFinish>
         <allowPause>false</allowPause>
@@ -211,9 +261,16 @@
         </connector>
         <fields>
             <name>IntroText</name>
-            <fieldText
-            >&lt;p&gt;Velg tolk og om oppdraget skal settes til &lt;strong&gt;Reservert&lt;/strong&gt; eller &lt;strong&gt;Tildelt&lt;/strong&gt;.&lt;/p&gt;&lt;p&gt;Denne handlingen kan bare brukes ved første gangs tildeling, før oppdraget har fått tolk, når status er Åpen eller Frigitt til frilans.&lt;/p&gt;</fieldText>
+            <fieldText>&lt;p&gt;Velg tolk og om oppdraget skal settes til &lt;strong&gt;Reservert&lt;/strong&gt; eller &lt;strong&gt;Tildelt&lt;/strong&gt;.&lt;/p&gt;&lt;p&gt;Denne handlingen kan bare brukes ved første gangs tildeling, før oppdraget har fått tolk, når status er Åpen eller Frigitt til frilans.&lt;/p&gt;</fieldText>
             <fieldType>DisplayText</fieldType>
+            <styleProperties>
+                <verticalAlignment>
+                    <stringValue>top</stringValue>
+                </verticalAlignment>
+                <width>
+                    <stringValue>12</stringValue>
+                </width>
+            </styleProperties>
         </fields>
         <fields>
             <name>SelectedResource</name>
@@ -246,16 +303,32 @@
             <inputsOnNextNavToAssocScrn>UseStoredValues</inputsOnNextNavToAssocScrn>
             <isRequired>true</isRequired>
             <storeOutputAutomatically>true</storeOutputAutomatically>
+            <styleProperties>
+                <verticalAlignment>
+                    <stringValue>top</stringValue>
+                </verticalAlignment>
+                <width>
+                    <stringValue>12</stringValue>
+                </width>
+            </styleProperties>
         </fields>
         <fields>
             <name>DesiredStatus</name>
             <choiceReferences>ReserveChoice</choiceReferences>
             <choiceReferences>AssignChoice</choiceReferences>
             <dataType>String</dataType>
+            <defaultSelectedChoiceReference>AssignChoice</defaultSelectedChoiceReference>
             <fieldText>Ny status</fieldText>
             <fieldType>RadioButtons</fieldType>
-            <inputsOnNextNavToAssocScrn>UseStoredValues</inputsOnNextNavToAssocScrn>
             <isRequired>true</isRequired>
+            <styleProperties>
+                <verticalAlignment>
+                    <stringValue>top</stringValue>
+                </verticalAlignment>
+                <width>
+                    <stringValue>12</stringValue>
+                </width>
+            </styleProperties>
         </fields>
         <showFooter>true</showFooter>
         <showHeader>true</showHeader>
@@ -263,8 +336,8 @@
     <screens>
         <name>SuccessScreen</name>
         <label>SuccessScreen</label>
-        <locationX>50</locationX>
-        <locationY>890</locationY>
+        <locationX>0</locationX>
+        <locationY>0</locationY>
         <allowBack>false</allowBack>
         <allowFinish>true</allowFinish>
         <allowPause>false</allowPause>
@@ -272,6 +345,14 @@
             <name>SuccessText</name>
             <fieldText>&lt;h3&gt;{!ActionMessage}&lt;/h3&gt;</fieldText>
             <fieldType>DisplayText</fieldType>
+            <styleProperties>
+                <verticalAlignment>
+                    <stringValue>top</stringValue>
+                </verticalAlignment>
+                <width>
+                    <stringValue>12</stringValue>
+                </width>
+            </styleProperties>
         </fields>
         <fields>
             <name>Navigate_To_SA</name>
@@ -292,45 +373,20 @@
             <inputsOnNextNavToAssocScrn>UseStoredValues</inputsOnNextNavToAssocScrn>
             <isRequired>true</isRequired>
             <storeOutputAutomatically>true</storeOutputAutomatically>
-        </fields>
-        <showFooter>true</showFooter>
-        <showHeader>false</showHeader>
-    </screens>
-    <screens>
-        <name>ErrorScreen</name>
-        <label>ErrorScreen</label>
-        <locationX>302</locationX>
-        <locationY>890</locationY>
-        <allowBack>true</allowBack>
-        <allowFinish>true</allowFinish>
-        <allowPause>false</allowPause>
-        <fields>
-            <name>ErrorText</name>
-            <fieldText>&lt;p&gt;{!ActionMessage}&lt;/p&gt;</fieldText>
-            <fieldType>DisplayText</fieldType>
-        </fields>
-        <showFooter>true</showFooter>
-        <showHeader>false</showHeader>
-    </screens>
-    <screens>
-        <name>NotAvailableScreen</name>
-        <label>Not Available Screen</label>
-        <locationX>390</locationX>
-        <locationY>458</locationY>
-        <allowBack>false</allowBack>
-        <allowFinish>true</allowFinish>
-        <allowPause>false</allowPause>
-        <fields>
-            <name>NotAvailableText</name>
-            <fieldText
-            >&lt;p&gt;Handlingen kan bare brukes når oppdraget har status Åpen eller Frigitt til frilans, og det ikke allerede er reservert/tildelt en tolk.&lt;/p&gt;</fieldText>
-            <fieldType>DisplayText</fieldType>
+            <styleProperties>
+                <verticalAlignment>
+                    <stringValue>top</stringValue>
+                </verticalAlignment>
+                <width>
+                    <stringValue>12</stringValue>
+                </width>
+            </styleProperties>
         </fields>
         <showFooter>true</showFooter>
         <showHeader>false</showHeader>
     </screens>
     <start>
-        <locationX>50</locationX>
+        <locationX>0</locationX>
         <locationY>0</locationY>
         <connector>
             <targetReference>Get_Service_Appointment</targetReference>
