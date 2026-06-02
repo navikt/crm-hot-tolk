@@ -32,6 +32,7 @@ export default class hot_requestForm_request_v2 extends LightningElement {
         Type__c: ''
     };
     errorMessageHomeAddress = 'Fant ikke hjemmeadresse.';
+    moreInfoTextAreaAriaLabel = 'Hjelpetekst: ' + this.moreInfoTextAreaDescription;
     displayError = false;
     isRequestTypeMe = false;
     @api isGetAll;
@@ -361,8 +362,8 @@ export default class hot_requestForm_request_v2 extends LightningElement {
         }
     }
 
-    handleOptionalCheckbox(event) {
-        this.componentValues.isOptionalFields = event.detail;
+    handleOptionalSwitch(event) {
+        this.componentValues.isOptionalFields = event.detail.checked;
     }
 
     handlePhysicalOrDigital(event) {
@@ -405,8 +406,8 @@ export default class hot_requestForm_request_v2 extends LightningElement {
         this.setFieldAndElementSelected(this.componentValues.assignmentChoices, event.detail.name, 'AssignmentType__c');
     }
 
-    handleSMSCheckbox(event) {
-        this.fieldValues.IsOrdererWantStatusUpdateOnSMS__c = event.detail;
+    handleSMSSwitch(event) {
+        this.fieldValues.IsOrdererWantStatusUpdateOnSMS__c = event.detail.checked;
     }
 
     uploadFilesDropHandler(event) {
