@@ -396,7 +396,7 @@ public without sharing class HOT_MessagesNotification {
 
     @AuraEnabled
     public static NewMessageNotification createNotification(Thread__c thread) {
-        String roleInThread = HOT_ThreadParticipants.getUserRoleInThread(thread.Id);
+        String roleInThread = HOT_ThreadParticipants.getUserSenderRoleInThread(thread.Id);
 
         return new NewMessageNotification(
             notificationHeaderGenerator(roleInThread),

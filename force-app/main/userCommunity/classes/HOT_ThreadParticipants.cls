@@ -558,7 +558,7 @@ public without sharing class HOT_ThreadParticipants {
         }
         return String.join(capitalizedWords, ' ');
     }
-public static String getUserRoleInThread(String threadId) {
+public static String getUserSenderRoleInThread(String threadId) {
     if (String.isBlank(threadId)) {
         return null;
     }
