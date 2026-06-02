@@ -8,7 +8,10 @@
                 <h1>Hei, {personFirstName}</h1>
             </template>
             <c-hot_notification-list-viewer></c-hot_notification-list-viewer>
-            <c-hot_announcement-list-viewer announcements={announcements}></c-hot_announcement-list-viewer>
+            <c-hot_announcement-list-viewer
+                announcements={announcements}
+                unread-announcement-ids={unreadAnnouncementIds}
+            ></c-hot_announcement-list-viewer>
         </div>
 
         <div class="banner-right"></div>
