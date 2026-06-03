@@ -252,19 +252,22 @@ public without sharing class HOT_ReminderSMSService {
         }
     }
 
-    @Future
-    public static void sendSMSOnNewMessage(Set<Id> threadIds) {
+    public static void sendSMSOnNewMessage(List<Thread__c> threadList) {
         List<SMS__c> smsList = new List<SMS__c>();
-        List<Thread__c> threadList = [
-            SELECT
-                CRM_Account__c,
-                CRM_Thread_Type__c,
-                CRM_Account__r.CRM_Person__r.HOT_MobilePhone__c,
-                CRM_Related_Object__c
-            FROM Thread__c
-            WHERE Id IN :threadIds
-        ];
+
         Map<Id, String> recipientByThreadId = HOT_ReminderSMSService.getRecipientByThreadIdMap(threadList);
+        Map<Id, String> smsTextByThreadId = new Map<Id, String>();
+
+        // Bygg SMS-tekst for hver tråd
+        for (Thread__c thread : threadList) {
+            Map<Id, String> threadToSenderRole = HOT_ThreadParticipants.getUserSenderRoleInThread(
+                new List<Thread__c>{ thread },
+                new Map<Id, Id>()
+            );
+            String senderRole = threadToSenderRole.get(thread.Id);
+            smsTextByThreadId.put(thread.Id, HOT_MessageHelper.buildSMSNewMessage(senderRole));
+        }
+
         for (Thread__c thread : threadList) {
             SMS__c sms = new SMS__c();
             sms.Domain__c = 'HOT';
@@ -272,7 +275,8 @@ public without sharing class HOT_ReminderSMSService {
             sms.Account__c = thread.CRM_Account__c;
             sms.Thread__c = thread.Id;
             sms.Recipient__c = recipientByThreadId.get(thread.Id);
-            sms.Message__c = constructOnNewMessage();
+            sms.Message__c = smsTextByThreadId.get(thread.Id);
+
             if (sms.Recipient__c != null) {
                 smsList.add(sms);
             }
@@ -285,14 +289,34 @@ public without sharing class HOT_ReminderSMSService {
     }
 
     public static void sendSMSOnNewMessageInterpreter(
-        Map<ServiceResource, List<Thread__c>> serviceResourceToThreadsMap
+        Map<ServiceResource, List<Thread__c>> serviceResourceToThreadsMap,
+        Map<Id, Id> threadToLastSender
     ) {
         if (serviceResourceToThreadsMap.isEmpty()) {
             return;
         }
 
         List<SMS__c> smsList = new List<SMS__c>();
+        Map<Id, String> smsTextByThreadId = new Map<Id, String>();
 
+        // Samle alle tråder for å hente sender-roller
+        List<Thread__c> allThreads = new List<Thread__c>();
+        for (ServiceResource sr : serviceResourceToThreadsMap.keySet()) {
+            allThreads.addAll(serviceResourceToThreadsMap.get(sr));
+        }
+
+        // Bygg SMS-tekst for hver tråd
+        Map<Id, String> threadToSenderRole = HOT_ThreadParticipants.getUserSenderRoleInThread(
+            allThreads,
+            threadToLastSender
+        );
+
+        for (Thread__c thread : allThreads) {
+            String senderRole = threadToSenderRole.get(thread.Id);
+            smsTextByThreadId.put(thread.Id, HOT_MessageHelper.buildSMSNewMessage(senderRole));
+        }
+
+        // Opprett SMS-records
         for (ServiceResource sr : serviceResourceToThreadsMap.keySet()) {
             String phoneNumber = sr.HOT_MobilePhone__c;
             if (phoneNumber == null)
@@ -305,7 +329,7 @@ public without sharing class HOT_ReminderSMSService {
                 sms.Account__c = sr.AccountId;
                 sms.Thread__c = thread.Id;
                 sms.Recipient__c = phoneNumber;
-                sms.Message__c = constructOnNewMessage();
+                sms.Message__c = smsTextByThreadId.get(thread.Id);
 
                 smsList.add(sms);
             }

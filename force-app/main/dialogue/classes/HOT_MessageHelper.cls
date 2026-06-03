@@ -1052,4 +1052,52 @@ public without sharing class HOT_MessageHelper {
         }
         return resolveReadByEntries(parsedIds);
     }
+
+    public static String buildHeader(String role) {
+        switch on role {
+            when 'bruker' {
+                return 'Ny melding fra tolkebruker';
+            }
+            when 'bestiller' {
+                return 'Ny melding fra tolkebestiller';
+            }
+            when 'tolk' {
+                return 'Ny melding fra tolk';
+            }
+            when 'formidler' {
+                return 'Ny melding fra formidler';
+            }
+            when 'ressurskontor' {
+                return 'Ny melding fra ressurskontor';
+            }
+            when else {
+                return 'Ny melding';
+            }
+        }
+    }
+     public static String buildSMSNewMessage(String role) {
+        String text='INFO\n';
+        switch on role {
+            when 'bruker' {
+                text+= 'Du har fått en melding fra tolkebruker. ';
+            }
+            when 'bestiller' {
+                text+= 'Du har fått en melding fra tolkebestiller. ';
+            }
+            when 'tolk' {
+                text+= 'Du har fått en melding fra tolk. ';
+            }
+            when 'formidler' {
+                text+= 'Du har fått en melding fra formidler. ';
+            }
+            when 'ressurskontor' {
+                text+= 'Du har fått en melding fra ressurskontor. ';
+            }
+            when else {
+                text+= 'Du har fått en ny melding. ';
+            }
+        }
+            text+='\nFor mer informasjon, se tolkebestilling.nav.no. Du kan ikke svare på denne meldingen. Mvh tolketjenesten i Nav.';
+            return text;
+    }
 }

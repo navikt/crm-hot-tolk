@@ -8,14 +8,16 @@ public without sharing class HOT_MessagesNotification {
         Id serviceResourceId,
         Thread__c thread,
         String type,
-        String channel
+        String channel,
+        String notificationSubject,
+        String notificationText
     ) {
         HOT_Notification__c notification = new HOT_Notification__c();
         notification.HOT_Account__c = accountId;
         notification.HOT_ServiceResource__c = serviceResourceId;
         notification.HOT_NotificationChannel__c = channel;
-        notification.HOT_Subject__c = 'Ny melding fra Tolketjenesten';
-        notification.HOT_NotificationText__c = 'Du har fått en melding fra Tolketjenesten.';
+        notification.HOT_Subject__c = notificationSubject;
+        notification.HOT_NotificationText__c = notificationText;
         notification.HOT_RelatedObject__c = thread.Id;
         notification.HOT_RelatedObjectType__c = type;
         return notification;
@@ -61,6 +63,7 @@ public without sharing class HOT_MessagesNotification {
         }
     }
     //Felles metode som sender varsel til enten bruker eller tolk basert på type tråd
+    @Future
     public static void NotifyUserOnNewMessage(List<Id> threadIds) {
         List<Thread__c> threadsToNotifyUsers = new List<Thread__c>();
         List<Thread__c> threadsToNotifyInterpreters = new List<Thread__c>();
@@ -113,6 +116,7 @@ public without sharing class HOT_MessagesNotification {
     public static void notifyUser(List<Thread__c> threadList) {
         Set<Id> accountIds = new Set<Id>();
         Set<Id> threadIds = new Set<Id>();
+        List<Thread__c> threadsForSMS = new List<Thread__c>();
 
         for (Thread__c t : threadList) {
             threadIds.add(t.Id);
@@ -136,6 +140,10 @@ public without sharing class HOT_MessagesNotification {
         CustomNotificationType notificationType = getCustomNotificationType('HOT_NotifyUser');
         //Henter userId til siste som sendte melding i tråder
         Map<Id, Id> threadToLastSender = getLastMessageSenderPerThread(threadIds);
+        Map<Id, String> threadToSenderRole = HOT_ThreadParticipants.getUserSenderRoleInThread(
+            threadList,
+            threadToLastSender
+        );
         Set<Id> threadIdsToSMSNotification = new Set<Id>();
 
         for (Thread__c thread : threadList) {
@@ -146,6 +154,11 @@ public without sharing class HOT_MessagesNotification {
             String notificationChannel = thread.CRM_Account__r.CRM_Person__r.HOT_NotificationChannel__c;
             Id lastSender = threadToLastSender.get(thread.Id);
 
+            //her henter man rollen til den som sendte siste melding
+            String senderRole = threadToSenderRole.get(thread.Id);
+            String notificationHeader = HOT_MessageHelper.buildHeader(senderRole);
+            String notificationText = '';
+
             //Ikke varsle hvis brukeren selv er siste avsender
             if (userId == null || userId == lastSender) {
                 continue;
@@ -154,26 +167,47 @@ public without sharing class HOT_MessagesNotification {
             recipients.add(userId);
             if (notificationChannel.contains('Push')) {
                 //Lager notifikasjon til liste
+                notificationText = 'Trykk for å lese meldingen.';
                 notificationList.add(
                     newMessageNotification(
                         thread.CRM_Account__c,
                         null, // ingen service resource
                         thread,
                         'threadUser',
-                        'Push-varsel i appen'
+                        'Push-varsel i appen',
+                        notificationHeader,
+                        notificationText
                     )
                 );
                 //Sender ut pushvarsel til appbruker
-                HOT_UserNotificationService.newMessageNotification(notificationType, thread, false, true, recipients);
+                HOT_UserNotificationService.newMessageNotification(
+                    notificationType,
+                    thread,
+                    false,
+                    true,
+                    recipients,
+                    notificationHeader,
+                    notificationText
+                );
             } else {
                 //Ellers sendes det ut sms til bruker
                 //Lager notifikasjon til liste
-                notificationList.add(newMessageNotification(thread.CRM_Account__c, null, thread, 'threadUser', 'SMS'));
-                threadIdsToSMSNotification.add(thread.Id);
+                notificationList.add(
+                    newMessageNotification(
+                        thread.CRM_Account__c,
+                        null,
+                        thread,
+                        'threadUser',
+                        'SMS',
+                        notificationHeader,
+                        notificationText
+                    )
+                );
+                threadsForSMS.add(thread);
             }
         }
         //Sender SMS
-        HOT_ReminderSMSService.sendSMSOnNewMessage(threadIdsToSMSNotification);
+        HOT_ReminderSMSService.sendSMSOnNewMessage(threadsForSMS);
         //Innsetter notifikasjonsrecord til varslingsliste
         insertNotifications(notificationList);
     }
@@ -253,8 +287,11 @@ public without sharing class HOT_MessagesNotification {
                 }
             }
         }
-        //Henter userId til siste som sendte melding i tråder
         Map<Id, Id> threadToLastSender = getLastMessageSenderPerThread(threadIds);
+        Map<Id, String> threadToSenderRole = HOT_ThreadParticipants.getUserSenderRoleInThread(
+            threadList,
+            threadToLastSender
+        );
 
         // Sett opp mappings
         Map<Id, List<Thread__c>> serviceResourceToThreadsMap = new Map<Id, List<Thread__c>>();
@@ -306,7 +343,6 @@ public without sharing class HOT_MessagesNotification {
         //LAGER VARSLINGS LISTE TIL INSETTING SENERE
         List<HOT_Notification__c> notificationList = new List<HOT_Notification__c>();
         //ANSATTOLKER VARSEL
-
         Map<ServiceResource, List<Thread__c>> serviceResourceToThreadMapSMS = new Map<ServiceResource, List<Thread__c>>();
         for (Id serviceResourceId : serviceResourceToThreadsMap.keySet()) {
             ServiceResource sr = allRelevantServiceResourcesMap.get(serviceResourceId);
@@ -329,14 +365,23 @@ public without sharing class HOT_MessagesNotification {
                 if (userId != null && threadToLastSender.get(thread.Id) == userId) {
                     continue;
                 }
+                //her henter man rollen til den som sendte siste melding
+                String senderRole = threadToSenderRole.get(thread.Id);
+                String notificationHeader = HOT_MessageHelper.buildHeader(senderRole);
+                // String notificationText = HOT_MessageHelper.buildBody(senderRole);
+                String notificationText = '';
+
                 if (notificationChannel.contains('Push')) {
+                    notificationText = 'Trykk for å lese meldingen.';
                     notificationList.add(
                         newMessageNotification(
                             null, // no accountId
                             sr.Id, // service resource
                             thread,
                             'threadInterpreter',
-                            'Push-varsel i appen'
+                            'Push-varsel i appen',
+                            notificationHeader,
+                            notificationText
                         )
                     );
 
@@ -345,11 +390,24 @@ public without sharing class HOT_MessagesNotification {
                         thread,
                         isFreelance,
                         false,
-                        new Set<String>{ userId }
+                        new Set<String>{ userId },
+                        notificationHeader,
+                        notificationText
                     );
                 } else {
-                    notificationList.add(newMessageNotification(null, sr.Id, thread, 'threadInterpreter', 'SMS'));
+                    String smsText = HOT_MessageHelper.buildSMSNewMessage(senderRole);
 
+                    notificationList.add(
+                        newMessageNotification(
+                            null,
+                            sr.Id,
+                            thread,
+                            'threadInterpreter',
+                            'SMS',
+                            notificationHeader,
+                            smsText
+                        )
+                    );
                     // Legg til i map-en for SMS
                     if (!serviceResourceToThreadMapSMS.containsKey(sr)) {
                         serviceResourceToThreadMapSMS.put(sr, new List<Thread__c>{ thread });
@@ -361,7 +419,7 @@ public without sharing class HOT_MessagesNotification {
         }
         //Innsetter notifikasjonsrecord for varslingsliste
         insertNotifications(notificationList);
-        HOT_ReminderSMSService.sendSMSOnNewMessageInterpreter(serviceResourceToThreadMapSMS);
+        HOT_ReminderSMSService.sendSMSOnNewMessageInterpreter(serviceResourceToThreadMapSMS, threadToLastSender);
     }
 
     public static CustomNotificationType getCustomNotificationType(String devName) {
@@ -380,54 +438,5 @@ public without sharing class HOT_MessagesNotification {
         }
 
         return notificationTypeCache.get(devName);
-    }
-    public class NewMessageNotification {
-        @AuraEnabled
-        public String title { get; set; }
-
-        @AuraEnabled
-        public String body { get; set; }
-
-        public NewMessageNotification(String title, String body) {
-            this.title = title;
-            this.body = body;
-        }
-    }
-
-    @AuraEnabled
-    public static NewMessageNotification createNotification(Thread__c thread) {
-        String roleInThread = HOT_ThreadParticipants.getUserSenderRoleInThread(thread.Id);
-
-        return new NewMessageNotification(
-            notificationHeaderGenerator(roleInThread),
-            notificationBodyGenerator(thread.CRM_Related_Object__c)
-        );
-    }
-
-    public static String notificationHeaderGenerator(String roleInThread) {
-        switch on roleInThread {
-            when 'bruker' {
-                return 'Ny melding fra tolkebruker';
-            }
-            when 'bestiller' {
-                return 'Ny melding fra tolkebestiller';
-            }
-            when 'tolk' {
-                return 'Ny melding fra tolk';
-            }
-            when 'formidler' {
-                return 'Ny melding fra formidler';
-            }
-            when 'ressurskontor' {
-                return 'Ny melding fra ressurskontor';
-            }
-            when else {
-                return 'Ny melding';
-            }
-        }
-    }
-
-    public static String notificationBodyGenerator(Id relatedObjectId) {
-        //Melding gjelder på oppdraget / bestillingen som var klokkeslett osv.
     }
 }

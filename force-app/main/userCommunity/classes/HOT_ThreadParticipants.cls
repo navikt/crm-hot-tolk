@@ -558,51 +558,84 @@ public without sharing class HOT_ThreadParticipants {
         }
         return String.join(capitalizedWords, ' ');
     }
-public static String getUserSenderRoleInThread(String threadId) {
-    if (String.isBlank(threadId)) {
-        return null;
+    public static Map<Id, String> getUserSenderRoleInThread(
+    List<Thread__c> threadList,
+    Map<Id, Id> threadToLastSender
+) {
+    Map<Id, String> rolesByThreadId = new Map<Id, String>();
+
+    if (threadList == null || threadList.isEmpty()) {
+        return rolesByThreadId;
     }
 
-    Thread__c thread = [
-        SELECT Id, CRM_Thread_Type__c
-        FROM Thread__c
-        WHERE Id = :threadId
-        LIMIT 1
-    ];
-
-    User currentUser = [
-        SELECT Id, Profile.Name
-        FROM User
-        WHERE Id = :UserInfo.getUserId()
-        LIMIT 1
-    ];
-
-    for (Participant participant : getParticipants(threadId)) {
-        if (participant.userId == currentUser.Id) {
-            if (participant.role == 'Tolk') return 'tolk';
-            if (participant.role == 'Tolkebruker') return 'bruker';
-            if (participant.role == 'Bestiller') return 'bestiller';
+    Set<Id> senderUserIds = new Set<Id>();
+    for (Id senderUserId : threadToLastSender.values()) {
+        if (senderUserId != null) {
+            senderUserIds.add(senderUserId);
         }
     }
 
-    if (
-        currentUser.Profile.Name == 'HOT Tolk Formidler' &&
-        (
-            thread.CRM_Thread_Type__c == 'HOT_TOLK-FORMIDLER' ||
-            thread.CRM_Thread_Type__c == 'HOT_BRUKER-FORMIDLER' ||
-            thread.CRM_Thread_Type__c == 'HOT_BESTILLER-FORMIDLER'
-        )
-    ) {
-        return 'formidler';
+    Map<Id, User> usersById = senderUserIds.isEmpty()
+        ? new Map<Id, User>()
+        : new Map<Id, User>([
+            SELECT Id, Profile.Name
+            FROM User
+            WHERE Id IN :senderUserIds
+        ]);
+
+    for (Thread__c thread : threadList) {
+        Id threadId = thread.Id;
+        Id senderUserId = threadToLastSender.get(threadId);
+
+        if (senderUserId == null) {
+            rolesByThreadId.put(threadId, null);
+            continue;
+        }
+
+        User senderUser = usersById.get(senderUserId);
+        String senderProfileName = senderUser != null ? senderUser.Profile.Name : null;
+        String role;
+
+        for (Participant participant : getParticipants((String) threadId)) {
+            if (participant.userId == senderUserId) {
+                if (participant.role == 'Tolk') {
+                    role = 'tolk';
+                } else if (participant.role == 'Tolkebruker') {
+                    role = 'bruker';
+                } else if (participant.role == 'Bestiller') {
+                    role = 'bestiller';
+                }
+
+                if (role != null) {
+                    break;
+                }
+            }
+        }
+
+        if (
+            role == null &&
+            senderProfileName == 'HOT Tolk Formidler' &&
+            (
+                thread.CRM_Thread_Type__c == 'HOT_TOLK-FORMIDLER' ||
+                thread.CRM_Thread_Type__c == 'HOT_BRUKER-FORMIDLER' ||
+                thread.CRM_Thread_Type__c == 'HOT_BESTILLER-FORMIDLER'
+            )
+        ) {
+            role = 'formidler';
+        }
+
+        if (
+            role == null &&
+            senderProfileName == 'HOT Tolk Saksbehandler' &&
+            thread.CRM_Thread_Type__c == 'HOT_TOLK-RESSURSKONTOR'
+        ) {
+            role = 'ressurskontor';
+        }
+
+        rolesByThreadId.put(threadId, role);
     }
 
-    if (
-        currentUser.Profile.Name == 'HOT Tolk Saksbehandler' &&
-        thread.CRM_Thread_Type__c == 'HOT_TOLK-RESSURSKONTOR'
-    ) {
-        return 'ressurskontor';
-    }
-
-    return null;
+    return rolesByThreadId;
 }
+
 }
