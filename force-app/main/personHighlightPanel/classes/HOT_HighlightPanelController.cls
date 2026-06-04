@@ -61,4 +61,23 @@ public without sharing class HOT_HighlightPanelController {
 
         return acc;
     }
+    @AuraEnabled(cacheable=true)
+    public static HOT_Request__c getRequestDetails(Id recordId) {
+        HOT_Request__c request = [
+            SELECT
+                Account__r.Name,
+                Account__r.INT_PersonIdent__c,
+                Name,
+                Subject__c,
+                Status__c,
+                InterpretationMethod__r.Name,
+                StartTime__c,
+                IsSerieoppdrag__c
+            FROM HOT_Request__c
+            WHERE Id = :recordId
+            LIMIT 1
+        ];
+
+        return request;
+    }
 }
