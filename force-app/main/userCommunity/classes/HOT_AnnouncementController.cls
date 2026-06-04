@@ -16,7 +16,7 @@ public without sharing class HOT_AnnouncementController {
         }
     }
 
-    @AuraEnabled(cacheable=true)
+    @AuraEnabled
     public static AnnouncementWrapper getAnnouncementWrapper() {
         List<HOT_Announcement__c> announcements = getAnnouncements();
         AnnouncementWrapper wrapper = new AnnouncementWrapper();

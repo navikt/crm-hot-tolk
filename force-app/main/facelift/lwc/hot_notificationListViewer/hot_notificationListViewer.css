@@ -26,7 +26,7 @@ input[type='reset'] {
     position: fixed;
     inset: 0;
     background: rgba(0, 0, 0, 0.5);
-    z-index: 998;
+    z-index: 10000;
 }
 
 .notification-center {
@@ -45,7 +45,7 @@ input[type='reset'] {
     background: #f2f3f5;
     border-radius: 8px;
     box-shadow: 0 1vw 2vw rgba(0, 0, 0, 0.28);
-    z-index: 999;
+    z-index: 10001;
     display: flex;
     flex-direction: column;
     max-height: 80dvh;
@@ -93,6 +93,10 @@ input[type='reset'] {
 }
 
 .close-btn:focus {
+    outline: none;
+}
+
+.close-btn:focus-visible {
     border-color: #0067c5;
     outline: none;
 }
