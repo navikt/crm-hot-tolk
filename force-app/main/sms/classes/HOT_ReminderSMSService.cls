@@ -252,21 +252,17 @@ public without sharing class HOT_ReminderSMSService {
         }
     }
 
-    public static void sendSMSOnNewMessage(List<Thread__c> threadList) {
-        List<SMS__c> smsList = new List<SMS__c>();
-
-        Map<Id, String> recipientByThreadId = HOT_ReminderSMSService.getRecipientByThreadIdMap(threadList);
-        Map<Id, String> smsTextByThreadId = new Map<Id, String>();
-
-        // Bygg SMS-tekst for hver tråd
-        for (Thread__c thread : threadList) {
-            Map<Id, String> threadToSenderRole = HOT_ThreadParticipants.getUserSenderRoleInThread(
-                new List<Thread__c>{ thread },
-                new Map<Id, Id>()
-            );
-            String senderRole = threadToSenderRole.get(thread.Id);
-            smsTextByThreadId.put(thread.Id, HOT_MessageHelper.buildSMSNewMessage(senderRole));
+    public static void sendSMSOnNewMessage(
+        List<Thread__c> threadList,
+        Map<Id, Id> threadToLastSender,
+        Map<Id, String> threadToSenderRole
+    ) {
+        if (threadList == null || threadList.isEmpty()) {
+            return;
         }
+
+        List<SMS__c> smsList = new List<SMS__c>();
+        Map<Id, String> recipientByThreadId = HOT_ReminderSMSService.getRecipientByThreadIdMap(threadList);
 
         for (Thread__c thread : threadList) {
             SMS__c sms = new SMS__c();
@@ -275,12 +271,13 @@ public without sharing class HOT_ReminderSMSService {
             sms.Account__c = thread.CRM_Account__c;
             sms.Thread__c = thread.Id;
             sms.Recipient__c = recipientByThreadId.get(thread.Id);
-            sms.Message__c = smsTextByThreadId.get(thread.Id);
+            sms.Message__c = HOT_MessageHelper.buildSMSNewMessage(threadToSenderRole.get(thread.Id), false);
 
             if (sms.Recipient__c != null) {
                 smsList.add(sms);
             }
         }
+
         try {
             HOT_DatabaseOperations.insertRecords(smsList);
         } catch (Exception e) {
@@ -290,46 +287,35 @@ public without sharing class HOT_ReminderSMSService {
 
     public static void sendSMSOnNewMessageInterpreter(
         Map<ServiceResource, List<Thread__c>> serviceResourceToThreadsMap,
-        Map<Id, Id> threadToLastSender
+        Map<Id, String> threadToSenderRole
     ) {
-        if (serviceResourceToThreadsMap.isEmpty()) {
+        if (serviceResourceToThreadsMap == null || serviceResourceToThreadsMap.isEmpty()) {
             return;
         }
 
         List<SMS__c> smsList = new List<SMS__c>();
-        Map<Id, String> smsTextByThreadId = new Map<Id, String>();
 
-        // Samle alle tråder for å hente sender-roller
-        List<Thread__c> allThreads = new List<Thread__c>();
-        for (ServiceResource sr : serviceResourceToThreadsMap.keySet()) {
-            allThreads.addAll(serviceResourceToThreadsMap.get(sr));
-        }
-
-        // Bygg SMS-tekst for hver tråd
-        Map<Id, String> threadToSenderRole = HOT_ThreadParticipants.getUserSenderRoleInThread(
-            allThreads,
-            threadToLastSender
-        );
-
-        for (Thread__c thread : allThreads) {
-            String senderRole = threadToSenderRole.get(thread.Id);
-            smsTextByThreadId.put(thread.Id, HOT_MessageHelper.buildSMSNewMessage(senderRole));
-        }
-
-        // Opprett SMS-records
         for (ServiceResource sr : serviceResourceToThreadsMap.keySet()) {
             String phoneNumber = sr.HOT_MobilePhone__c;
-            if (phoneNumber == null)
+            if (phoneNumber == null) {
                 continue;
+            }
+
+            Set<Id> processedThreadIds = new Set<Id>();
 
             for (Thread__c thread : serviceResourceToThreadsMap.get(sr)) {
+                if (processedThreadIds.contains(thread.Id)) {
+                    continue;
+                }
+                processedThreadIds.add(thread.Id);
+
                 SMS__c sms = new SMS__c();
                 sms.Domain__c = 'HOT';
                 sms.Type__c = 'Message';
                 sms.Account__c = sr.AccountId;
                 sms.Thread__c = thread.Id;
                 sms.Recipient__c = phoneNumber;
-                sms.Message__c = smsTextByThreadId.get(thread.Id);
+                sms.Message__c = HOT_MessageHelper.buildSMSNewMessage(threadToSenderRole.get(thread.Id), true);
 
                 smsList.add(sms);
             }

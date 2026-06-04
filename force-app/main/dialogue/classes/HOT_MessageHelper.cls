@@ -1053,7 +1053,7 @@ public without sharing class HOT_MessageHelper {
         return resolveReadByEntries(parsedIds);
     }
 
-    public static String buildHeader(String role) {
+    public static String buildHeader(String role, Boolean isInterpreterReciever) {
         switch on role {
             when 'bruker' {
                 return 'Ny melding fra tolkebruker';
@@ -1062,7 +1062,7 @@ public without sharing class HOT_MessageHelper {
                 return 'Ny melding fra tolkebestiller';
             }
             when 'tolk' {
-                return 'Ny melding fra tolk';
+                return isInterpreterReciever ? 'Ny melding fra medtolk' : 'Ny melding fra tolk';
             }
             when 'formidler' {
                 return 'Ny melding fra formidler';
@@ -1075,7 +1075,7 @@ public without sharing class HOT_MessageHelper {
             }
         }
     }
-     public static String buildSMSNewMessage(String role) {
+     public static String buildSMSNewMessage(String role, Boolean isInterpreterReciever) {
         String text='INFO\n';
         switch on role {
             when 'bruker' {
@@ -1085,7 +1085,7 @@ public without sharing class HOT_MessageHelper {
                 text+= 'Du har fått en melding fra tolkebestiller. ';
             }
             when 'tolk' {
-                text+= 'Du har fått en melding fra tolk. ';
+                text+= isInterpreterReciever ? 'Du har fått en melding fra medtolk. ' : 'Du har fått en melding fra tolk. ';
             }
             when 'formidler' {
                 text+= 'Du har fått en melding fra formidler. ';
@@ -1100,4 +1100,8 @@ public without sharing class HOT_MessageHelper {
             text+='\nFor mer informasjon, se tolkebestilling.nav.no. Du kan ikke svare på denne meldingen. Mvh tolketjenesten i Nav.';
             return text;
     }
+    public static String buildPushNewMessageBody() {
+        return 'Trykk for å lese meldingen.';
+    }
 }
+
