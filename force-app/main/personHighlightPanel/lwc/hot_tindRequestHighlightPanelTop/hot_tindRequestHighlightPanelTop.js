@@ -1,11 +1,8 @@
-import { LightningElement, api, wire } from 'lwc';
+import { LightningElement, api } from 'lwc';
 import { ShowToastEvent } from 'lightning/platformShowToastEvent';
 
 export default class hot_tindRequestHighlightPanelTop extends LightningElement {
-    @api recordId;
     @api requestDetails;
-
-    error;
 
     handleCopy(event) {
         const eventValue = event.currentTarget.value;
@@ -52,8 +49,6 @@ export default class hot_tindRequestHighlightPanelTop extends LightningElement {
     }
     get formattedRequestInfo() {
         return [
-            //this.requestDetails?.Account__r.Name,
-            //this.requestDetails?.Account__r.INT_PersonIdent__c,
             this.requestDetails?.Subject__c,
             this.requestDetails?.Status__c,
             this.requestDetails?.InterpretationMethod__r?.Name,

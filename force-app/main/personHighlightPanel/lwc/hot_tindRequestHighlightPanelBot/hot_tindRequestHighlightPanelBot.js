@@ -3,15 +3,10 @@ import { NavigationMixin } from 'lightning/navigation';
 import { getRecordNotifyChange, getRecordUi } from 'lightning/uiRecordApi';
 import Hot_flowModal from 'c/hot_flowModal';
 
-//import getAllPermissions from '@salesforce/apex/HOT_CheckPermissions.getAllPermissions';
-
 import hasFormidlerAccess from '@salesforce/customPermission/HOT_AccessToFormidlerActions';
 
 export default class hot_tindRequestHighlightPanelBot extends NavigationMixin(LightningElement) {
-    //Opprett arbeidsordre  /  Automatisk planlegging  /  Oppdater felter til oppdrag  /  Slett filer  /  Beskjed til formidler  /  Rediger / Klone
-
     @api recordId;
-    //    @api personDetails;
 
     canEdit = false;
     canClone = false;
