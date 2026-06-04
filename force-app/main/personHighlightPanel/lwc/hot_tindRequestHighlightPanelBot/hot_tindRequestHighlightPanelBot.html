@@ -1,0 +1,76 @@
+<template>
+    <lightning-layout class="custom-padding-around-small button-container">
+        <lightning-layout-item>
+            <div class="slds-button-group" role="group">
+                <!-- Flow buttons - only visible with HOT_AccessToFormidlerActions permission -->
+                <template lwc:if={showFormidlerActions}>
+                    <button
+                        data-id="createWorkOrder"
+                        title="Opprett arbeidsordre"
+                        onclick={handleCreateWorkOrder}
+                        class="slds-button slds-button_inverse slds-m-left_x-medium custom-button"
+                    >
+                        Opprett arbeidsordre
+                    </button>
+                    <button
+                        data-id="scheduleServiceAppointments"
+                        title="Automatisk planlegging"
+                        onclick={handleScheduleServiceAppointments}
+                        class="slds-button slds-button_inverse slds-m-left_x-medium custom-button"
+                    >
+                        Automatisk planlegging
+                    </button>
+
+                    <button
+                        data-id="updateChildsFromRequest"
+                        title="Oppdater felter til oppdrag"
+                        onclick={handleUpdateChildsFromRequest}
+                        class="slds-button slds-button_inverse slds-m-left_x-medium custom-button"
+                    >
+                        Oppdater felter til oppdrag
+                    </button>
+
+                    <button
+                        data-id="deleteContentDocument"
+                        title="Slett filer"
+                        onclick={handleDeleteContentDocument}
+                        class="slds-button slds-button_inverse slds-m-left_x-medium custom-button"
+                    >
+                        Slett filer
+                    </button>
+
+                    <button
+                        data-id="messageToDispatcher"
+                        title="Beskjed til formidler"
+                        onclick={handleMessageToDispatcher}
+                        class="slds-button slds-button_inverse slds-m-left_x-medium custom-button"
+                    >
+                        Beskjed til formidler
+                    </button>
+                </template>
+
+                <!-- Edit and Clone buttons - visible based on user permissions -->
+                <template lwc:if={showEditButton}>
+                    <button
+                        data-id="edit"
+                        title="Edit"
+                        onclick={handleEditRequest}
+                        class="slds-button slds-button_inverse slds-m-left_x-medium custom-button"
+                    >
+                        Edit
+                    </button>
+                </template>
+                <template lwc:if={showCloneButton}>
+                    <button
+                        data-id="clone"
+                        title="Clone"
+                        onclick={handleClone}
+                        class="slds-button slds-button_inverse slds-m-left_x-medium custom-button"
+                    >
+                        Clone
+                    </button>
+                </template>
+            </div>
+        </lightning-layout-item>
+    </lightning-layout>
+</template>
