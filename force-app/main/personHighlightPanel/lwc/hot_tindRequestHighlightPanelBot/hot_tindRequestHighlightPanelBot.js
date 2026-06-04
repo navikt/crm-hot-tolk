@@ -81,7 +81,7 @@ export default class hot_tindRequestHighlightPanelBot extends NavigationMixin(Li
 
     async handleCreateWorkOrder() {
         const result = await Hot_flowModal.open({
-            size: 'large',
+            size: 'small',
             flowApiName: 'HOT_CreateWorkOrder',
             flowLabel: 'Opprett arbeidsordre',
             recordId: this.recordId
@@ -94,7 +94,7 @@ export default class hot_tindRequestHighlightPanelBot extends NavigationMixin(Li
     }
     async handleScheduleServiceAppointments() {
         const result = await Hot_flowModal.open({
-            size: 'large',
+            size: 'small',
             flowApiName: 'Auto_Schedule_Service_Appointments',
             flowLabel: 'Automatisk planlegging',
             recordId: this.recordId
@@ -106,7 +106,7 @@ export default class hot_tindRequestHighlightPanelBot extends NavigationMixin(Li
     }
     async handleUpdateChildsFromRequest() {
         const result = await Hot_flowModal.open({
-            size: 'large',
+            size: 'small',
             flowApiName: 'HOT_UpdateChildsFromRequest',
             flowLabel: 'Oppdater felter til oppdrag',
             recordId: this.recordId
@@ -118,7 +118,7 @@ export default class hot_tindRequestHighlightPanelBot extends NavigationMixin(Li
     }
     async handleDeleteContentDocument() {
         const result = await Hot_flowModal.open({
-            size: 'large',
+            size: 'small',
             flowApiName: 'HOT_DeleteContentDocument',
             flowLabel: 'Slett filer',
             recordId: this.recordId
@@ -130,7 +130,7 @@ export default class hot_tindRequestHighlightPanelBot extends NavigationMixin(Li
     }
     async handleMessageToDispatcher() {
         const result = await Hot_flowModal.open({
-            size: 'large',
+            size: 'small',
             flowApiName: 'HOT_AddCommentToRequest',
             flowLabel: 'Beskjed til formidler',
             recordId: this.recordId
