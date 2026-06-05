@@ -157,7 +157,7 @@ public without sharing class HOT_RequestListController {
         return Id;
     }
 
-    @AuraEnabled(cacheable=true)
+    @AuraEnabled
     public static List<Common_Code__c> getPostalCity(String postalCode) {
         List<Common_Code__c> postalCommonCode = [
             SELECT CRM_Active__c, CRM_Code_Set__c, CRM_Code__c, Name, CRM_UniqueKey__c
