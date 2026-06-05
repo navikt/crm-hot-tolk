@@ -456,7 +456,7 @@ public without sharing class HOT_ThreadParticipants {
                 WHERE Id = :thread.CRM_Related_Object__c
                 LIMIT 1
             ];
-            User user = [SELECT Id, AccountId FROM User WHERE AccountId = :workOrder.AccountId];
+            User user = [SELECT Id, AccountId FROM User WHERE AccountId = :workOrder.AccountId LIMIT 1];
 
             if (workOrder.AccountId != null && user.Id != null) {
                 participantList.add(new Participant(workOrder, user));
@@ -506,7 +506,7 @@ public without sharing class HOT_ThreadParticipants {
                 SELECT Id, Account__r.Name, Account__r.Id, Orderer__c, Orderer__r.Id, Orderer__r.Name, Account__c
                 FROM HOT_Request__c
                 WHERE Id = :thread.CRM_Related_Object__c
-            ];
+            LIMIT 1];
             String participantName;
             String participantRole;
             Id participantUserId;
