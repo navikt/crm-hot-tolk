@@ -746,7 +746,7 @@ private class HOT_MessageHelperTest {
         System.assertEquals('HOT_TOLK-FORMIDLER', created.CRM_Type__c, 'Wrong thread type.');
         System.assert(
             created.CRM_Related_Object__c == sa.Id ||
-                created.CRM_Related_Object__c == sa.HOT_WorkOrderLineItem__r.WorkOrderId,
+            created.CRM_Related_Object__c == sa.HOT_WorkOrderLineItem__r.WorkOrderId,
             'Helper may relate to SA or normalize to WO.'
         );
         if (created.CRM_Account__c != null) {
@@ -790,7 +790,7 @@ private class HOT_MessageHelperTest {
         System.assertEquals('HOT_TOLK-FORMIDLER', created.CRM_Type__c, 'Wrong thread type.');
         System.assert(
             created.CRM_Related_Object__c == sa.Id ||
-                created.CRM_Related_Object__c == sa.HOT_WorkOrderLineItem__r.WorkOrderId,
+            created.CRM_Related_Object__c == sa.HOT_WorkOrderLineItem__r.WorkOrderId,
             'Helper may relate to SA directly or normalize to WO.'
         );
         System.assertEquals(sr.AccountId, created.CRM_Account__c, 'If stamped, account must match.');
@@ -1458,5 +1458,68 @@ private class HOT_MessageHelperTest {
         System.assertEquals(true, r, 'Should be True because crm_isactive__c');
         System.assertEquals(false, r2, 'Should be False because crm_isactive__c');
         System.assertEquals(false, r3, 'Should be False because no access');
+    }
+    @IsTest
+    static void buildHeaderTest() {
+        System.assertEquals('Ny melding fra tolkebruker', HOT_MessageHelper.buildHeader('bruker', false));
+
+        System.assertEquals('Ny melding fra tolkebestiller', HOT_MessageHelper.buildHeader('bestiller', false));
+
+        System.assertEquals('Ny melding fra medtolk', HOT_MessageHelper.buildHeader('tolk', true));
+
+        System.assertEquals('Ny melding fra tolk', HOT_MessageHelper.buildHeader('tolk', false));
+
+        System.assertEquals('Ny melding fra formidler', HOT_MessageHelper.buildHeader('formidler', false));
+
+        System.assertEquals('Ny melding fra ressurskontor', HOT_MessageHelper.buildHeader('ressurskontor', false));
+
+        System.assertEquals('Ny melding', HOT_MessageHelper.buildHeader('ukjent', false));
+    }
+
+    @IsTest
+    static void buildSMSNewMessageTest() {
+        String suffix =
+            '\nFor mer informasjon, se tolkebestilling.nav.no. ' +
+            'Du kan ikke svare på denne meldingen. Mvh tolketjenesten i Nav.';
+
+        System.assertEquals(
+            'INFO\nDu har fått en melding fra tolkebruker. ' + suffix,
+            HOT_MessageHelper.buildSMSNewMessage('bruker', false)
+        );
+
+        System.assertEquals(
+            'INFO\nDu har fått en melding fra tolkebestiller. ' + suffix,
+            HOT_MessageHelper.buildSMSNewMessage('bestiller', false)
+        );
+
+        System.assertEquals(
+            'INFO\nDu har fått en melding fra medtolk. ' + suffix,
+            HOT_MessageHelper.buildSMSNewMessage('tolk', true)
+        );
+
+        System.assertEquals(
+            'INFO\nDu har fått en melding fra tolk. ' + suffix,
+            HOT_MessageHelper.buildSMSNewMessage('tolk', false)
+        );
+
+        System.assertEquals(
+            'INFO\nDu har fått en melding fra formidler. ' + suffix,
+            HOT_MessageHelper.buildSMSNewMessage('formidler', false)
+        );
+
+        System.assertEquals(
+            'INFO\nDu har fått en melding fra ressurskontor. ' + suffix,
+            HOT_MessageHelper.buildSMSNewMessage('ressurskontor', false)
+        );
+
+        System.assertEquals(
+            'INFO\nDu har fått en ny melding. ' + suffix,
+            HOT_MessageHelper.buildSMSNewMessage('ukjent', false)
+        );
+    }
+
+    @IsTest
+    static void buildPushNewMessageBodyTest() {
+        System.assertEquals('Trykk for å lese meldingen.', HOT_MessageHelper.buildPushNewMessageBody());
     }
 }
