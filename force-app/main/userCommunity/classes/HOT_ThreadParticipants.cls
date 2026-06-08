@@ -448,7 +448,7 @@ public without sharing class HOT_ThreadParticipants {
     public static List<Participant> getAccountParticipants(Thread__c thread) {
         List<Participant> participantList = new List<Participant>();
         Id search = thread.CRM_Related_Object__c;
-        String objectType = String.valueOf(search.getsobjecttype());
+        String objectType = search != null ? String.valueOf(search.getsobjecttype()) : null;
         if (objectType == 'WorkOrder' && thread.CRM_Thread_Type__c == 'HOT_BRUKER-TOLK') {
             WorkOrder workOrder = [
                 SELECT Id, AccountId, Account.Name

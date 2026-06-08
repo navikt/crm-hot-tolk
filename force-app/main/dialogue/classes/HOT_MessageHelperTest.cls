@@ -2,6 +2,12 @@
 private class HOT_MessageHelperTest {
     @TestSetup
     static void makeData() {
+        Profile profile = [SELECT Id FROM Profile WHERE Name = 'Standard User' OR Name = 'Standardbruker' LIMIT 1];
+        User user = HOT_TestDataFactory.createUser('user', profile);
+        insert new List<User>{ user };
+        HOT_TestDataFactory.ensureFieldServicePermission(user);
+
+        System.runAs(new User(Id = UserInfo.getUserId())) {
         OperatingHours operatingHours = HOT_TestDataFactory.createOperatingHours();
         insert operatingHours;
         ServiceTerritory serviceTerritory = HOT_TestDataFactory.createServiceTerritory(operatingHours);
@@ -11,10 +17,6 @@ private class HOT_MessageHelperTest {
         acc.Name = 'Test account';
         insert acc;
 
-        Profile profile = [SELECT Id FROM Profile WHERE Name = 'Standard User' OR Name = 'Standardbruker' LIMIT 1];
-        User user = HOT_TestDataFactory.createUser('user', profile);
-        insert new List<User>{ user };
-        HOT_TestDataFactory.ensureFieldServicePermission(user);
         // User u =[SELECT Id FROM User WHERE Name = 'user' LIMIT 1][0]
         ServiceResource serviceResource = HOT_TestDataFactory.createServiceResource(user.Id);
         serviceResource.AccountId = acc.Id;
@@ -98,6 +100,7 @@ private class HOT_MessageHelperTest {
         User adminUser = HOT_TestDataFactory.createUser('rbadm', adminProf);
         insert adminUser;
         */
+        }
     }
 
     @IsTest
