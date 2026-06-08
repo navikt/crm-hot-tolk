@@ -37,11 +37,11 @@ export default class hot_tindRequestHighlightPanelTop extends LightningElement {
     }
 
     get formattedFullName() {
-        return this.requestDetails?.Account__r.Name;
+        return this.requestDetails?.Account__r?.Name ?? '';
     }
 
     get personIdent() {
-        return this.requestDetails?.Account__r.INT_PersonIdent__c;
+        return this.requestDetails?.Account__r?.INT_PersonIdent__c ?? '';
     }
 
     get requestName() {
