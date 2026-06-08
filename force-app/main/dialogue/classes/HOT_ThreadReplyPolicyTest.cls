@@ -186,6 +186,74 @@ private class HOT_ThreadReplyPolicyTest {
     }
 
     @IsTest
+    static void seriesRequestThreadUsesLatestServiceAppointmentEndTime() {
+        TestContext context = createContext();
+        Datetime requestEndTime = System.now().addHours(-100);
+        Datetime firstAppointmentEndTime = System.now().addHours(-49);
+        Datetime latestAppointmentEndTime = System.now().addHours(-1);
+        setRequestEndTime(context.request, requestEndTime);
+        context.request.NumberOfWorkOrders__c = 2;
+        update context.request;
+        createServiceAppointment(context, firstAppointmentEndTime, 'Completed');
+        createServiceAppointment(context, latestAppointmentEndTime, 'Completed');
+        Thread__c thread = createThread(context.request.Id, 'HOT_BRUKER-FORMIDLER');
+
+        Test.startTest();
+        Integer queriesBefore = Limits.getQueries();
+        HOT_ThreadReplyPolicy.ReplyPolicy policy = HOT_ThreadReplyPolicy.getReplyPolicies(new Set<Id>{ thread.Id })
+            .get(thread.Id);
+        Integer queriesUsed = Limits.getQueries() - queriesBefore;
+        Test.stopTest();
+
+        System.assertEquals(
+            2,
+            queriesUsed,
+            'Series request threads should use one thread query and one grouped ServiceAppointment query.'
+        );
+        System.assertEquals(
+            true,
+            policy.canReply,
+            'Series request threads should stay open until 48 hours after the last ServiceAppointment ends.'
+        );
+        System.assertEquals(
+            latestAppointmentEndTime,
+            policy.appointmentEndTime,
+            'Series request threads should use the latest ServiceAppointment end time instead of HOT_Request__r.EndTime__c.'
+        );
+    }
+
+    @IsTest
+    static void nonSeriesRequestThreadDoesNotUseServiceAppointmentEndTime() {
+        TestContext context = createContext();
+        Datetime requestEndTime = System.now().addHours(-49);
+        Datetime latestAppointmentEndTime = System.now().addHours(-1);
+        setRequestEndTime(context.request, requestEndTime);
+        context.request.NumberOfWorkOrders__c = 1;
+        update context.request;
+        createServiceAppointment(context, latestAppointmentEndTime, 'Completed');
+        Thread__c thread = createThread(context.request.Id, 'HOT_BRUKER-FORMIDLER');
+
+        Test.startTest();
+        Integer queriesBefore = Limits.getQueries();
+        HOT_ThreadReplyPolicy.ReplyPolicy policy = HOT_ThreadReplyPolicy.getReplyPolicies(new Set<Id>{ thread.Id })
+            .get(thread.Id);
+        Integer queriesUsed = Limits.getQueries() - queriesBefore;
+        Test.stopTest();
+
+        System.assertEquals(1, queriesUsed, 'Non-series request threads should only use the thread query.');
+        System.assertEquals(
+            false,
+            policy.canReply,
+            'Non-series request threads should keep using the formula close date.'
+        );
+        System.assertEquals(
+            requestEndTime,
+            policy.appointmentEndTime,
+            'Non-series request threads should not use child ServiceAppointment end times.'
+        );
+    }
+
+    @IsTest
     static void helperCreateMessageReturnsFalseWhenThreadIsClosed() {
         TestContext context = createContext();
         ServiceAppointment serviceAppointment = createServiceAppointment(
@@ -276,7 +344,11 @@ private class HOT_ThreadReplyPolicyTest {
             .get(thread.Id);
         Test.stopTest();
 
-        System.assertEquals(false, policy.canReply, 'ServiceAppointment threads should close from DueDate if SchedEndTime is blank.');
+        System.assertEquals(
+            false,
+            policy.canReply,
+            'ServiceAppointment threads should close from DueDate if SchedEndTime is blank.'
+        );
         System.assertEquals(
             dueDate,
             policy.appointmentEndTime,
@@ -303,7 +375,11 @@ private class HOT_ThreadReplyPolicyTest {
             .get(thread.Id);
         Test.stopTest();
 
-        System.assertEquals(false, policy.canReply, 'InterestedResource threads should close from the related ServiceAppointment.');
+        System.assertEquals(
+            false,
+            policy.canReply,
+            'InterestedResource threads should close from the related ServiceAppointment.'
+        );
         System.assertEquals(
             appointmentEndTime,
             policy.appointmentEndTime,
@@ -322,13 +398,21 @@ private class HOT_ThreadReplyPolicyTest {
         Test.stopTest();
 
         System.assertEquals(true, policy.canReply, 'Threads with no formula close datetime should stay open.');
-        System.assertEquals(null, policy.appointmentEndTime, 'No close datetime should be exposed when the formula is blank.');
+        System.assertEquals(
+            null,
+            policy.appointmentEndTime,
+            'No close datetime should be exposed when the formula is blank.'
+        );
     }
 
     @IsTest
     static void wageClaimDoesNotPopulateCloseDate() {
         TestContext context = createContext();
-        ServiceAppointment serviceAppointment = createServiceAppointment(context, System.now().addHours(-49), 'Completed');
+        ServiceAppointment serviceAppointment = createServiceAppointment(
+            context,
+            System.now().addHours(-49),
+            'Completed'
+        );
         ServiceResource serviceResource = HOT_TestDataFactory.createServiceResource(UserInfo.getUserId());
         insert serviceResource;
         HOT_WageClaim__c wageClaim = HOT_TestDataFactory.createWageClaim(serviceResource);
@@ -344,8 +428,16 @@ private class HOT_ThreadReplyPolicyTest {
         Test.stopTest();
 
         Thread__c savedThread = [SELECT HOT_Close_DateTime__c FROM Thread__c WHERE Id = :thread.Id];
-        System.assertEquals(null, savedThread.HOT_Close_DateTime__c, 'WageClaim should not feed the thread close formula.');
-        System.assertEquals(true, policy.canReply, 'A WageClaim-only close date should not close non-resource-office threads.');
+        System.assertEquals(
+            null,
+            savedThread.HOT_Close_DateTime__c,
+            'WageClaim should not feed the thread close formula.'
+        );
+        System.assertEquals(
+            true,
+            policy.canReply,
+            'A WageClaim-only close date should not close non-resource-office threads.'
+        );
     }
 
     @IsTest
