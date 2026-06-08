@@ -14,6 +14,7 @@ private class HOT_MessageHelperTest {
         Profile profile = [SELECT Id FROM Profile WHERE Name = 'Standard User' OR Name = 'Standardbruker' LIMIT 1];
         User user = HOT_TestDataFactory.createUser('user', profile);
         insert new List<User>{ user };
+        HOT_TestDataFactory.ensureFieldServicePermission(user);
         // User u =[SELECT Id FROM User WHERE Name = 'user' LIMIT 1][0]
         ServiceResource serviceResource = HOT_TestDataFactory.createServiceResource(user.Id);
         serviceResource.AccountId = acc.Id;

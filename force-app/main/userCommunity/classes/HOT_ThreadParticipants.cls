@@ -456,10 +456,10 @@ public without sharing class HOT_ThreadParticipants {
                 WHERE Id = :thread.CRM_Related_Object__c
                 LIMIT 1
             ];
-            User user = [SELECT Id, AccountId FROM User WHERE AccountId = :workOrder.AccountId LIMIT 1];
+            List<User> users = [SELECT Id, AccountId FROM User WHERE AccountId = :workOrder.AccountId LIMIT 1];
 
-            if (workOrder.AccountId != null && user.Id != null) {
-                participantList.add(new Participant(workOrder, user));
+            if (workOrder.AccountId != null && !users.isEmpty()) {
+                participantList.add(new Participant(workOrder, users[0]));
             }
         }
         if (objectType == 'ServiceAppointment') {
@@ -506,7 +506,20 @@ public without sharing class HOT_ThreadParticipants {
                 SELECT Id, Account__r.Name, Account__r.Id, Orderer__c, Orderer__r.Id, Orderer__r.Name, Account__c
                 FROM HOT_Request__c
                 WHERE Id = :thread.CRM_Related_Object__c
-            LIMIT 1];
+                LIMIT 1
+            ];
+            Set<Id> accountIds = new Set<Id>();
+            if (request.Account__c != null) {
+                accountIds.add(request.Account__c);
+            }
+            if (request.Orderer__c != null) {
+                accountIds.add(request.Orderer__c);
+            }
+            Map<Id, User> usersByAccountId = new Map<Id, User>();
+            for (User userRecord : [SELECT Id, AccountId FROM User WHERE AccountId IN :accountIds]) {
+                usersByAccountId.put(userRecord.AccountId, userRecord);
+            }
+
             String participantName;
             String participantRole;
             Id participantUserId;
@@ -516,13 +529,13 @@ public without sharing class HOT_ThreadParticipants {
                 // Bruk Account
                 participantName = request.Account__r.Name;
                 participantRole = 'Tolkebruker';
-                User user = [SELECT Id FROM User WHERE AccountId = :request.Account__r.Id LIMIT 1];
+                User user = usersByAccountId.get(request.Account__c);
                 participantUserId = user != null ? user.Id : null;
             } else if (thread.CRM_Thread_Type__c == 'HOT_BESTILLER-FORMIDLER') {
                 // Bruk Orderer
                 participantName = request.Orderer__r.Name;
                 participantRole = 'Bestiller';
-                User user = [SELECT Id FROM User WHERE AccountId = :request.Orderer__r.Id LIMIT 1];
+                User user = usersByAccountId.get(request.Orderer__c);
                 participantUserId = user != null ? user.Id : null;
             }
 
