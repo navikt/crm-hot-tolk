@@ -198,6 +198,19 @@ public without sharing class HOT_ThreadListController {
             ];
 
             Map<Id, ServiceAppointment> saMap = new Map<Id, ServiceAppointment>(serviceAppointments);
+            DateTime twoDaysAgo = System.now().addDays(-2);
+
+            for (HOT_HistoricallyAssignedResource__c har : [
+                SELECT Id, ServiceAppointment__r.HOT_WorkOrderLineItem__r.WorkOrderId
+                FROM HOT_HistoricallyAssignedResource__c
+                WHERE
+                    ServiceResource__r.RelatedRecordId = :user.Id
+                    AND ServiceAppointment__r.Status = 'Canceled'
+                    AND Status__c = 'Avlyst av bruker'
+                    AND CreatedDate >= :twoDaysAgo
+            ]) {
+                workOrderIds.add(har.ServiceAppointment__r.HOT_WorkOrderLineItem__r.WorkOrderId);
+            }
 
             for (ServiceAppointment sa : saMap.values()) {
                 workOrderIds.add(sa.HOT_WorkOrderLineItem__r.WorkOrderId);

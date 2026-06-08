@@ -42,10 +42,12 @@ public without sharing class HOT_ThreadDetailController {
                 CRM_Is_Closed__c,
                 CRM_Thread_Type__c,
                 CRM_Related_Object__c,
+                CRM_Related_Object_Type__c,
                 HOT_Thread_read_by__c,
                 HOT_Request__r.Account__c,
                 HOT_Request__r.Orderer__c,
-                HOT_WorkOrder__r.AccountId
+                HOT_WorkOrder__r.AccountId,
+                HOT_WorkOrder__r.Status
             FROM Thread__c
             WHERE Id = :recordId
             LIMIT 1
@@ -56,7 +58,12 @@ public without sharing class HOT_ThreadDetailController {
     public static boolean checkAccess(Id threadId) {
         Boolean grantAccess = false;
         Thread__c thread = [
-            SELECT Id, CRM_Related_Object__c, CRM_Thread_Type__c, HOT_ServiceResource__r.RelatedRecordId
+            SELECT
+                Id,
+                CRM_Related_Object__c,
+                CRM_Related_Object_Type__c,
+                CRM_Thread_Type__c,
+                HOT_ServiceResource__r.RelatedRecordId
             FROM Thread__c
             WHERE Id = :threadId
         ];
@@ -72,6 +79,7 @@ public without sharing class HOT_ThreadDetailController {
                 if (wo.HOT_Request__r.Account__c == user.AccountId) {
                     return true;
                 } else {
+                    DateTime twoDaysAgo = System.now().addDays(-2);
                     List<AssignedResource> arList = [
                         SELECT Id
                         FROM AssignedResource
@@ -81,7 +89,31 @@ public without sharing class HOT_ThreadDetailController {
                     ];
                     if (arList.size() > 0) {
                         return true;
+                    } else {
+                        List<HOT_HistoricallyAssignedResource__c> harList = [
+                            SELECT Id
+                            FROM HOT_HistoricallyAssignedResource__c
+                            WHERE
+                                ServiceAppointment__r.HOT_WorkOrderLineItem__r.WorkOrderId = :thread.CRM_Related_Object__c
+                                AND ServiceResource__r.RelatedRecordId = :user.Id
+                                AND ServiceAppointment__r.Status = 'Canceled'
+                                AND Status__c = 'Avlyst av bruker'
+                                AND CreatedDate >= :twoDaysAgo
+                        ];
+                        if (harList.size() > 0) {
+                            return true;
+                        }
                     }
+                }
+                String threadType = thread.CRM_Thread_Type__c;
+
+                if (
+                    threadType != null &&
+                    isAdminOrFormidlerAdmin(user) &&
+                    (threadType == 'HOT_BRUKER-TOLK' ||
+                    threadType == 'HOT_TOLK-TOLK')
+                ) {
+                    return true;
                 }
             }
             if (objectType == 'HOT_WageClaim__c') {
@@ -142,9 +174,14 @@ public without sharing class HOT_ThreadDetailController {
             }
         }
 
-        if (isAdminOrFormidler(user) && thread.CRM_Thread_Type__c.startsWith('HOT_')) {
+        if (
+            isAdminOrFormidler(user) &&
+            thread.CRM_Thread_Type__c.startsWith('HOT_') &&
+            thread.CRM_Related_Object_Type__c != 'WorkOrder'
+        ) {
             return true;
         }
+
         //ansatt tolk tråder tilgang
 
         if (user.Id == thread.HOT_ServiceResource__r.RelatedRecordId) {
@@ -164,5 +201,48 @@ public without sharing class HOT_ThreadDetailController {
             return true;
         }
         return false;
+    }
+
+    public static Boolean isAdminOrFormidlerAdmin(User user) {
+        List<GroupMember> groupMembers = [
+            SELECT Id
+            FROM GroupMember
+            WHERE Group.DeveloperName = 'HOT_Tolk_Admin' AND Group.Type = 'Regular' AND UserOrGroupId = :user.Id
+            LIMIT 1
+        ];
+
+        List<PermissionSetAssignment> psgAssignments = [
+            SELECT Id
+            FROM PermissionSetAssignment
+            WHERE AssigneeId = :user.Id AND PermissionSetGroup.DeveloperName = 'HOT_Tolk_Formidler_Admin_Gruppe'
+            LIMIT 1
+        ];
+
+        if (!psgAssignments.isEmpty() || !groupMembers.isEmpty()) {
+            return true;
+        }
+        return false;
+    }
+
+    @AuraEnabled(cacheable=true)
+    public static Boolean isOnlyEmployedInterpreter() {
+        Set<String> isAllowedGroups = new Set<String>{
+            'HOT_Tolk_Ansatt_Gruppe',
+            'HOT_Tolk_Formidler_Admin_Gruppe',
+            'HOT_Tolk_Formidler_Gruppe'
+        };
+
+        List<PermissionSetAssignment> psgAssignments = [
+            SELECT PermissionSetGroup.DeveloperName
+            FROM PermissionSetAssignment
+            WHERE AssigneeId = :UserInfo.getUserId() AND PermissionSetGroup.DeveloperName IN :isAllowedGroups
+        ];
+
+        Set<String> assignedGroupNames = new Set<String>();
+        for (PermissionSetAssignment assignment : psgAssignments) {
+            assignedGroupNames.add(assignment.PermissionSetGroup.DeveloperName);
+        }
+
+        return assignedGroupNames.size() == 1 && assignedGroupNames.contains('HOT_Tolk_Ansatt_Gruppe');
     }
 }

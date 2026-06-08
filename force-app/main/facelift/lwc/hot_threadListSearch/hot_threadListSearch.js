@@ -2,6 +2,7 @@ import { LightningElement, api } from 'lwc';
 
 export default class Hot_threadListSearch extends LightningElement {
     @api isFreelanceView = false;
+    @api value = '';
 
     handleSearchChange(event) {
         const eventToSend = new CustomEvent('searchchange', {
@@ -15,5 +16,9 @@ export default class Hot_threadListSearch extends LightningElement {
         } else {
             return 'Søk på tema på bestilling';
         }
+    }
+    @api setValue(value) {
+        this.value = value;
+        this.template.querySelector('c-input')?.setValue(value);
     }
 }

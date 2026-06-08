@@ -33,6 +33,8 @@ export default class hot_messagingThreadViewer extends LightningElement {
     @track hasAccess = false;
     @track showAccessError = false;
     @track canReply = true;
+    canceledSABannerText =
+        'Oppdraget er avlyst. Du kan se samtalen i 48 timer etter avlysning. Du kan ikke sende nye meldinger.';
 
     @track wiredThread = {};
 
@@ -44,6 +46,18 @@ export default class hot_messagingThreadViewer extends LightningElement {
             qtext.focusOnInput();
         }
     }
+
+    _showMessageInput = true;
+
+    @api
+    get showMessageInput() {
+        return this._showMessageInput;
+    }
+
+    set showMessageInput(value) {
+        this._showMessageInput = !(value === false || value === 'false');
+    }
+
     connectedCallback() {
         if (this.thread) {
             this.threadid = this.thread.Id;

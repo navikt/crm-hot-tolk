@@ -50,6 +50,7 @@ export default class Hot_messagingCommunityThreadViewer_v2 extends NavigationMix
     showReadBy = false;
     hasAccess = true;
     isHistoricallyAssignedResourceAndLateCancellation = false;
+    showMessageInput = true;
 
     latestSenderContactId;
     latestSenderUserId;
@@ -58,6 +59,7 @@ export default class Hot_messagingCommunityThreadViewer_v2 extends NavigationMix
     buttonLoading = false;
     textareaErrorText = '';
     canReply = true;
+    canceledSABannerText = 'Du kan se samtalen i 48 timer etter avlysning. Du kan ikke sende nye meldinger.';
 
     @api recordId;
     @api requestId;
@@ -148,9 +150,24 @@ export default class Hot_messagingCommunityThreadViewer_v2 extends NavigationMix
             this.canReply = result.data.replyPolicy?.canReply !== false;
             this.subject = this.thread.HOT_Subject__c;
             this.threadType = this.threadTypeName();
+            this.crmThreadType = this.thread.CRM_Thread_Type__c;
             this.threadRelatedObjectId = this.thread.CRM_Related_Object__c;
             this.isclosed = this.thread.CRM_Is_Closed__c;
             this.showContent = true;
+
+            this.threadWorkOrderStatus = this.thread.HOT_WorkOrder__r?.Status;
+
+            // Hide message input if work order is canceled, also when
+            // thread type is between interpreter and user
+            if (
+                this.thread.HOT_WorkOrder__r?.Status != null &&
+                this.threadWorkOrderStatus === 'Canceled' &&
+                this.isFreelance === true &&
+                (this.crmThreadType === 'HOT_BRUKER-TOLK' || this.crmThreadType === 'HOT_TOLK-TOLK')
+            ) {
+                this.showMessageInput = false;
+            }
+            console.log('Thread details', this.threadType);
 
             this.ReadByNames();
         } else if (result.error) {
@@ -225,7 +242,7 @@ export default class Hot_messagingCommunityThreadViewer_v2 extends NavigationMix
     }
 
     get showReplyInput() {
-        return this.canReply;
+        return this.showMessageInput && this.canReply;
     }
 
     get replyClosedText() {
@@ -399,33 +416,33 @@ export default class Hot_messagingCommunityThreadViewer_v2 extends NavigationMix
             case 'HOT_BRUKER-TOLK': {
                 if (this.isFreelance === true || this.navigationBaseList !== '') {
                     this.helptextContent =
-                        'Her kan du sende en melding som er relevant for oppdraget. Det du skriver her, kan ansatte ved Nav tolketjeneste, eventuelle medtolker og tolkebruker se. Meldingen vil bli slettet etter ett år.';
+                        'Her kan du sende en melding som er relevant for oppdraget. Det du skriver her kan tildelte tolker og tolkebruker se. Meldingen vil bli slettet etter ett år.';
                     return 'Samtale mellom tolk og bruker';
                 } else {
                     this.helptextContent =
-                        'Her kan du sende en melding som er relevant for din bestilling. Det du skriver her, kan ansatte ved Nav tolketjeneste, og tolker som er tildelt oppdraget, se. Meldingen vil bli slettet etter ett år.';
+                        'Her kan du sende en melding som er relevant for din bestilling. Det du skriver her er kan tildelte tolker se. Meldingen vil bli slettet etter ett år.';
                     return 'Samtale med tolk';
                 }
             }
 
             case 'HOT_BRUKER-BESTILLER':
                 this.helptextContent =
-                    'Her kan du sende en melding som er relevant for din bestilling.  Det du skriver her, kan tolkeformidlere, bruker og bestiller av bestillingen se.  Meldingen vil bli slettet etter ett år.';
+                    'Her kan du sende en melding som er relevant for din bestilling.  Det du skriver her kan tolkeformidlere, bruker og bestiller av bestillingen se.  Meldingen vil bli slettet etter ett år.';
                 return 'Samtale med formidler';
 
             case 'HOT_TOLK-FORMIDLER':
                 this.helptextContent =
-                    'Her kan du sende en melding som er relevant for oppdraget. Det du skriver her, kan ansatte ved Nav tolketjeneste se. Meldingen vil bli slettet etter ett år.';
+                    'Her kan du sende en melding som er relevant for oppdraget. Det du skriver her kan ansatte ved Nav tolketjeneste se. Meldingen vil bli slettet etter ett år.';
                 return 'Samtale med formidler';
 
             case 'HOT_TOLK-RESSURSKONTOR':
                 this.helptextContent =
-                    'Her kan du sende en melding som er relevant for oppdraget.  Det du skriver her, kan ansatte ved Nav tolketjeneste se.  Meldingen vil bli slettet etter ett år.';
+                    'Her kan du sende en melding som er relevant for oppdraget.  Det du skriver her kan ansatte ved Nav tolketjeneste se.  Meldingen vil bli slettet etter ett år.';
                 return 'Samtale med ressurskontor';
 
             case 'HOT_TOLK-TOLK':
                 this.helptextContent =
-                    'Her kan du sende en melding som er relevant for oppdraget.  Det du skriver her, kan ansatte ved Nav tolketjeneste og medtolker se.  Meldingen vil bli slettet etter ett år.';
+                    'Her kan du sende en melding som er relevant for oppdraget.  Det du skriver her kan dine medtolker se.  Meldingen vil bli slettet etter ett år.';
                 return 'Samtale med medtolker';
             default:
                 return threadTypeValue;
@@ -631,6 +648,9 @@ export default class Hot_messagingCommunityThreadViewer_v2 extends NavigationMix
                             );
                             this.serviceAppointment.ActualStartTime = formatDatetime(result.ActualStartTime);
                             this.serviceAppointment.ActualEndTime = formatDatetime(result.ActualEndTime);
+                            this.serviceAppointment.HOT_CanceledDate__c = result.HOT_CanceledDate__c
+                                ? formatDatetime(result.HOT_CanceledDate__c)
+                                : null;
                             this.serviceAppointment.HOT_HapticCommunication__c = this.yesOrNo(
                                 this.serviceAppointment.HOT_HapticCommunication__c
                             );

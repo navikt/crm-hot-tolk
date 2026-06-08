@@ -10,6 +10,7 @@ import getServiceAppointmentInformation from '@salesforce/apex/HOT_MessageHelper
 import getInterestedResourceInformation from '@salesforce/apex/HOT_MessageHelper.getInterestedResourceInformationAndAccessCheck';
 import getAccountOnWorkOrder from '@salesforce/apex/HOT_MessageHelper.getAccountOnWorkOrder';
 import getThreadInformation from '@salesforce/apex/HOT_ThreadDetailController.getThreadDetails';
+import checkIsOnlyEmployedInterpreter from '@salesforce/apex/HOT_ThreadDetailController.isOnlyEmployedInterpreter';
 import setLastMessageFrom from '@salesforce/apex/HOT_MessageHelper.setLastMessageFrom';
 import { ShowToastEvent } from 'lightning/platformShowToastEvent';
 import { createRecord } from 'lightning/uiRecordApi';
@@ -18,6 +19,7 @@ export default class hot_messagingMessageComponent extends LightningElement {
     relatedObjectId;
     isThreadSummaryLoaded = false;
     defaultActiveTab = 'tab1';
+    showMessageInput = true;
     //show flows
     userSetToRedactionFlow = false;
     ordererSetToRedactionFlow = false;
@@ -174,6 +176,19 @@ export default class hot_messagingMessageComponent extends LightningElement {
                     } else {
                         this.threadTypesOfInterest = ['HOT_BRUKER-TOLK'];
                     }
+
+                    // work orders with status canceled should not show message input
+                    if (
+                        (this.threadTypesOfInterest.includes('HOT_BRUKER-TOLK') ||
+                            this.threadTypesOfInterest.includes('HOT_TOLK-TOLK')) &&
+                        result.Status === 'Canceled'
+                    ) {
+                        return checkIsOnlyEmployedInterpreter().then((hasPermission) => {
+                            if (hasPermission) {
+                                this.showMessageInput = false;
+                            }
+                        });
+                    }
                 })
                 .catch((error) => {
                     if (error?.body?.message == 'No access') {
@@ -235,6 +250,19 @@ export default class hot_messagingMessageComponent extends LightningElement {
                 .then((result) => {
                     this.relatedObjectId = result.CRM_Related_Object__c ?? result.Id;
                     this.threadTypesOfInterest = [result.CRM_Thread_Type__c];
+
+                    if (
+                        result.HOT_WorkOrder__r?.Status === 'Canceled' &&
+                        result.CRM_Related_Object_Type__c === 'WorkOrder'
+                    ) {
+                        return checkIsOnlyEmployedInterpreter().then((hasPermission) => {
+                            if (hasPermission) {
+                                this.showMessageInput = false;
+                            }
+                        });
+                    }
+
+                    return null;
                 })
                 .catch((error) => {
                     if (error?.body?.message == 'No access') {

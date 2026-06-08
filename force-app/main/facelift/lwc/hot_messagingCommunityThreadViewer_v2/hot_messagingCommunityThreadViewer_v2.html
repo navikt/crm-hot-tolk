@@ -19,6 +19,19 @@
                 <div>
                     <h1 class="header" role="heading" aria-level="1">{subject}</h1>
                 </div>
+                <!-- The banner will be shown when the service appointment is canceled -->
+                <template lwc:if={showMessageInput}>
+                    <!-- Show nothing -->
+                </template>
+                <template lwc:else>
+                    <div class="banner-container">
+                        <c-hot_info-card
+                            title="Oppdraget er avlyst"
+                            content={canceledSABannerText}
+                            type="warning"
+                        ></c-hot_info-card>
+                    </div>
+                </template>
                 <div class="navds-div">{threadType}</div>
 
                 <div class="header-buttons">
@@ -185,6 +198,10 @@
                                         <template lwc:if={serviceAppointment.HOT_Dispatcher__c}>
                                             <p>Formidler: <span>{serviceAppointment.HOT_Dispatcher__c}</span></p>
                                         </template>
+
+                                        <template lwc:if={serviceAppointment.HOT_CanceledDate__c}>
+                                            <p>Avlyst dato: <span>{serviceAppointment.HOT_CanceledDate__c}</span></p>
+                                        </template>
                                     </div>
                                 </template>
 
@@ -346,7 +363,7 @@
                         ></c-button>
                     </div>
                 </template>
-                <template lwc:else>
+                <template lwc:elseif={showMessageInput}>
                     <div class="closed-reply-message" role="status" aria-live="polite">
                         <span class="closed-reply-message__icon" aria-hidden="true">i</span>
                         <p>{replyClosedText}</p>

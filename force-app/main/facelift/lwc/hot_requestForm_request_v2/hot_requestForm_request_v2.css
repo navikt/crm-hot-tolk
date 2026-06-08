@@ -89,6 +89,14 @@ lightning-record-edit-form section {
     font-size: 1rem;
 }
 
+.switch-container {
+    position: relative;
+    display: flex;
+    align-items: center;
+    padding: 0.3rem 0;
+    flex-direction: row;
+}
+
 @media (max-width: 576px) {
     .postnummer label {
         left: -1000px;
