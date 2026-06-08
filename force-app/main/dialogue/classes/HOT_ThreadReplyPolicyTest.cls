@@ -44,8 +44,19 @@ private class HOT_ThreadReplyPolicyTest {
     }
 
     private static ServiceAppointment createServiceAppointment(TestContext context, Datetime endTime, String status) {
-        ServiceAppointment serviceAppointment = HOT_TestDataFactory.createServiceAppointment(context.workOrderLineItem);
+        return createServiceAppointment(context, context.workOrderLineItem, endTime, status);
+    }
+
+    private static ServiceAppointment createServiceAppointment(
+        TestContext context,
+        WorkOrderLineItem workOrderLineItem,
+        Datetime endTime,
+        String status
+    ) {
+        ServiceAppointment serviceAppointment = HOT_TestDataFactory.createServiceAppointment(workOrderLineItem);
         serviceAppointment.HOT_Request__c = context.request.Id;
+        serviceAppointment.ParentRecordId = workOrderLineItem.Id;
+        serviceAppointment.HOT_WorkOrderLineItem__c = workOrderLineItem.Id;
         serviceAppointment.EarliestStartTime = endTime.addHours(-1);
         serviceAppointment.DueDate = endTime;
         serviceAppointment.SchedStartTime = endTime.addHours(-1);
@@ -60,6 +71,21 @@ private class HOT_ThreadReplyPolicyTest {
             Status = status
         );
         return serviceAppointment;
+    }
+
+    private static WorkOrderLineItem createAdditionalWorkOrderLineItem(TestContext context, Datetime endTime) {
+        WorkOrder workOrder = HOT_TestDataFactory.createWorkOrder(context.request, context.workType);
+        workOrder.AccountId = context.workOrder.AccountId;
+        workOrder.StartDate = endTime.addHours(-1);
+        workOrder.EndDate = endTime;
+        insert workOrder;
+
+        WorkOrderLineItem workOrderLineItem = HOT_TestDataFactory.createWorkOrderLineItem(workOrder, context.workType);
+        workOrderLineItem.StartDate = endTime.addHours(-1);
+        workOrderLineItem.EndDate = endTime;
+        insert workOrderLineItem;
+
+        return workOrderLineItem;
     }
 
     private static void setRequestEndTime(HOT_Request__c request, Datetime endTime) {
@@ -191,11 +217,13 @@ private class HOT_ThreadReplyPolicyTest {
         Datetime requestEndTime = System.now().addHours(-100);
         Datetime firstAppointmentEndTime = System.now().addHours(-49);
         Datetime latestAppointmentEndTime = System.now().addHours(-1);
-        setRequestEndTime(context.request, requestEndTime);
-        context.request.NumberOfWorkOrders__c = 2;
-        update context.request;
+        WorkOrderLineItem latestWorkOrderLineItem = createAdditionalWorkOrderLineItem(
+            context,
+            latestAppointmentEndTime
+        );
         createServiceAppointment(context, firstAppointmentEndTime, 'Completed');
-        createServiceAppointment(context, latestAppointmentEndTime, 'Completed');
+        createServiceAppointment(context, latestWorkOrderLineItem, latestAppointmentEndTime, 'Completed');
+        setRequestEndTime(context.request, requestEndTime);
         Thread__c thread = createThread(context.request.Id, 'HOT_BRUKER-FORMIDLER');
 
         Test.startTest();
@@ -227,10 +255,8 @@ private class HOT_ThreadReplyPolicyTest {
         TestContext context = createContext();
         Datetime requestEndTime = System.now().addHours(-49);
         Datetime latestAppointmentEndTime = System.now().addHours(-1);
-        setRequestEndTime(context.request, requestEndTime);
-        context.request.NumberOfWorkOrders__c = 1;
-        update context.request;
         createServiceAppointment(context, latestAppointmentEndTime, 'Completed');
+        setRequestEndTime(context.request, requestEndTime);
         Thread__c thread = createThread(context.request.Id, 'HOT_BRUKER-FORMIDLER');
 
         Test.startTest();
