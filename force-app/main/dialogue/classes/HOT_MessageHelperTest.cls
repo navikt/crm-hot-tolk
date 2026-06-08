@@ -5,7 +5,6 @@ private class HOT_MessageHelperTest {
         Profile profile = [SELECT Id FROM Profile WHERE Name = 'Standard User' OR Name = 'Standardbruker' LIMIT 1];
         User user = HOT_TestDataFactory.createUser('user', profile);
         insert new List<User>{ user };
-        HOT_TestDataFactory.ensureFieldServicePermission(user);
 
         System.runAs(new User(Id = UserInfo.getUserId())) {
         OperatingHours operatingHours = HOT_TestDataFactory.createOperatingHours();
@@ -18,7 +17,7 @@ private class HOT_MessageHelperTest {
         insert acc;
 
         // User u =[SELECT Id FROM User WHERE Name = 'user' LIMIT 1][0]
-        ServiceResource serviceResource = HOT_TestDataFactory.createServiceResource(user.Id);
+        ServiceResource serviceResource = HOT_TestDataFactory.createServiceResource(UserInfo.getUserId());
         serviceResource.AccountId = acc.Id;
         insert serviceResource;
         // ServiceResource resource = [SELECT Id, AccountId FROM ServiceResource LIMIT 1];
