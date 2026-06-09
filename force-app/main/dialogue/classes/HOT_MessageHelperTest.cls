@@ -400,7 +400,7 @@ private class HOT_MessageHelperTest {
         //ir.Status__c = 'Assigned';
         insert ir;
         Test.startTest();
-        System.runAs([SELECT Id FROM User WHERE Name = 'user' LIMIT 1][0]) {
+        System.runAs(new User(Id = UserInfo.getUserId())) {
             Thread__c t = HOT_MessageHelper.createThreadInterpreter(ir.Id);
         }
         Test.stopTest();
@@ -851,7 +851,7 @@ private class HOT_MessageHelperTest {
         AssignedResource ar = HOT_TestDataFactory.createAssignedResource(sa.Id, sr.Id);
         insert ar;
         Thread__c thread;
-        System.runAs([SELECT Id FROM User WHERE Name = 'user' LIMIT 1][0]) {
+        System.runAs(new User(Id = UserInfo.getUserId())) {
             thread = HOT_MessageHelper.createThreadInterpreter(sa.Id);
         }
         Test.stopTest();
@@ -1110,8 +1110,7 @@ private class HOT_MessageHelperTest {
     @IsTest
     static void createThreadWhenIRIsNotAssignedTest() {
         Account acc = [SELECT Id, FirstName, LastName, PersonContactId FROM Account WHERE Name = 'Test User' LIMIT 1];
-        ServiceResource sr = HOT_TestDataFactory.createServiceResource(UserInfo.getUserId());
-        insert sr;
+        ServiceResource sr = [SELECT Id, AccountId FROM ServiceResource LIMIT 1];
         sr.AccountId = acc.Id;
         update sr;
 
@@ -1148,8 +1147,7 @@ private class HOT_MessageHelperTest {
     static void createThreadDispatcherIR() {
         Account acc = new Account(Name = 'Dispatcher IR Acc');
         insert acc;
-        ServiceResource sr = HOT_TestDataFactory.createServiceResource(UserInfo.getUserId());
-        insert sr;
+        ServiceResource sr = [SELECT Id, AccountId FROM ServiceResource LIMIT 1];
         sr.AccountId = acc.Id;
         update sr;
 
@@ -1179,7 +1177,7 @@ private class HOT_MessageHelperTest {
     }
     @IsTest
     static void getMessagesFromThreadTestAcc() {
-        User u = [SELECT Id FROM User WHERE Name = 'user' LIMIT 1];
+        User u = [SELECT Id FROM User WHERE Id = :UserInfo.getUserId() LIMIT 1];
         ServiceResource resource = [SELECT Id, AccountId FROM ServiceResource LIMIT 1];
 
         Thread__c t = HOT_TestDataFactory.createThread();
@@ -1219,7 +1217,7 @@ private class HOT_MessageHelperTest {
 
     @IsTest
     static void markasreadTestAcc() {
-        User u = [SELECT Id FROM User WHERE Name = 'user' LIMIT 1];
+        User u = [SELECT Id FROM User WHERE Id = :UserInfo.getUserId() LIMIT 1];
         ServiceResource resource = [SELECT Id, AccountId FROM ServiceResource LIMIT 1];
 
         Thread__c t = HOT_TestDataFactory.createThread();
@@ -1245,7 +1243,7 @@ private class HOT_MessageHelperTest {
 
     @IsTest
     static void markThreadAsReadTestAcc() {
-        User u = [SELECT Id FROM User WHERE Name = 'user' LIMIT 1];
+        User u = [SELECT Id FROM User WHERE Id = :UserInfo.getUserId() LIMIT 1];
         ServiceResource resource = [SELECT Id, AccountId FROM ServiceResource LIMIT 1];
 
         Thread__c t = HOT_TestDataFactory.createThread();
@@ -1390,7 +1388,7 @@ private class HOT_MessageHelperTest {
         insert m;
 
         Test.startTest();
-        System.runAs([SELECT Id FROM User WHERE Name = 'user' LIMIT 1][0]) {
+        System.runAs(new User(Id = UserInfo.getUserId())) {
             HOT_MessageHelper.markAsReadByNav(t.Id);
         }
         Test.stopTest();
@@ -1417,7 +1415,7 @@ private class HOT_MessageHelperTest {
     static void createMessageAcc() {
         contact c = [SELECT id FROM Contact LIMIT 1];
 
-        User u = [SELECT Id FROM User WHERE Name = 'user' LIMIT 1];
+        User u = [SELECT Id FROM User WHERE Id = :UserInfo.getUserId() LIMIT 1];
         ServiceResource resource = [SELECT Id, AccountId FROM ServiceResource LIMIT 1];
 
         Thread__c t = HOT_TestDataFactory.createThread();
