@@ -1,6 +1,6 @@
 import { LightningElement, api, wire } from 'lwc';
 import { NavigationMixin } from 'lightning/navigation';
-import { getRecordNotifyChange, getRecordUi } from 'lightning/uiRecordApi';
+import { notifyRecordUpdateAvailable, getRecordUi } from 'lightning/uiRecordApi';
 import Hot_flowModal from 'c/hot_flowModal';
 
 import hasFormidlerAccess from '@salesforce/customPermission/HOT_AccessToFormidlerActions';
@@ -66,7 +66,7 @@ export default class hot_tindRequestHighlightPanelBot extends NavigationMixin(Li
     dispatchRefreshEvent() {
         // Notify Lightning Data Service that the record has changed
         // This will refresh all standard components on the record page
-        getRecordNotifyChange([{ recordId: this.recordId }]);
+        notifyRecordUpdateAvailable([{ recordId: this.recordId }]);
 
         // Dispatch custom event to direct parent to refresh data
         // bubbles: false - event doesn't need to bubble beyond parent
