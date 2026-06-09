@@ -1,6 +1,9 @@
 import { LightningElement, api, wire } from 'lwc';
 import { NavigationMixin } from 'lightning/navigation';
-import { notifyRecordUpdateAvailable, getRecordUi } from 'lightning/uiRecordApi';
+import { notifyRecordUpdateAvailable, getRecord } from 'lightning/uiRecordApi';
+import { getObjectInfo } from 'lightning/uiObjectInfoApi';
+import HOT_REQUEST_OBJECT from '@salesforce/schema/HOT_Request__c';
+import IS_DELETED_FIELD from '@salesforce/schema/HOT_Request__c.IsDeleted';
 import Hot_flowModal from 'c/hot_flowModal';
 
 import hasFormidlerAccess from '@salesforce/customPermission/HOT_AccessToFormidlerActions';
@@ -10,29 +13,41 @@ export default class hot_tindRequestHighlightPanelBot extends NavigationMixin(Li
 
     canEdit = false;
     canClone = false;
+    objectInfo;
+    record;
 
-    @wire(getRecordUi, {
-        recordIds: '$recordId',
-        layoutTypes: 'Full',
-        modes: 'View'
-    })
-    wiredRecordUi({ error, data }) {
+    @wire(getObjectInfo, { objectApiName: HOT_REQUEST_OBJECT })
+    wiredObjectInfo({ error, data }) {
         if (data) {
-            const record = data.records[this.recordId];
-            // objectInfos is at the top level, keyed by object API name
-            const objectInfo = data.objectInfos?.['HOT_Request__c'];
-            console.log('Record UI data:', objectInfo);
-            if (record && objectInfo) {
-                // Check if user can edit (updateable and not deleted)
-                this.canEdit = objectInfo.updateable === true && record.fields?.IsDeleted?.value !== true;
-                // Check if user can clone (createable permission)
-                this.canClone = objectInfo.createable === true;
-            }
-        } else {
-            console.error('Error fetching record UI:', error);
+            this.objectInfo = data;
+            this.updateButtonVisibility();
+        } else if (error) {
+            console.error('Error fetching object info:', error);
             this.canEdit = false;
             this.canClone = false;
         }
+    }
+
+    @wire(getRecord, { recordId: '$recordId', fields: [IS_DELETED_FIELD] })
+    wiredRecord({ error, data }) {
+        if (data) {
+            this.record = data;
+            this.updateButtonVisibility();
+        } else if (error) {
+            console.error('Error fetching record:', error);
+            this.canEdit = false;
+            this.canClone = false;
+        }
+    }
+
+    updateButtonVisibility() {
+        if (!this.objectInfo || !this.record) {
+            return;
+        }
+
+        const isDeleted = this.record.fields?.IsDeleted?.value === true;
+        this.canEdit = this.objectInfo.updateable === true && !isDeleted;
+        this.canClone = this.objectInfo.createable === true;
     }
 
     get showEditButton() {
