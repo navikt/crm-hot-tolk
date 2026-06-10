@@ -58,7 +58,7 @@ export default class hot_tindRequestHighlightPanelTop extends LightningElement {
                       timeStyle: 'short'
                   })
                 : null,
-            this.requestDetails?.IsSerieoppdrag__c ? 'Serieoppdrag' : false
+            this.requestDetails?.IsSerieoppdrag__c ? 'Serieoppdrag' : null
         ]
             .filter(Boolean)
             .join(' / ');
