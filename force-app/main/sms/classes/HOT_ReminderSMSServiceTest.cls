@@ -843,12 +843,21 @@ private class HOT_ReminderSMSServiceTest {
         );
         insert thread2;
 
-        Set<Id> threadIds = new Set<Id>{ thread1.Id, thread2.Id };
+        List<Thread__c> threads = new List<Thread__c>{ thread1, thread2 };
 
-        HOT_ReminderSMSService.sendSMSOnNewMessage(threadIds);
+        Map<Id, Id> threadToLastSender = new Map<Id, Id>();
+        Map<Id, String> threadToSenderRole = new Map<Id, String>();
+
+        threadToLastSender.put(thread1.Id, UserInfo.getUserId());
+        threadToLastSender.put(thread2.Id, UserInfo.getUserId());
+
+        threadToSenderRole.put(thread1.Id, 'Ressurskontor');
+        threadToSenderRole.put(thread2.Id, 'Ressurskontor');
+
+        HOT_ReminderSMSService.sendSMSOnNewMessage(threads, threadToLastSender, threadToSenderRole);
         List<SMS__c> smsList = [SELECT Id FROM SMS__c];
         Test.stopTest();
-        System.assertEquals(0, smsList.size(), 'Should not created SMS');
+        System.assertEquals(2, smsList.size(), 'Should not created SMS');
     }
     @IsTest
     static void sendSMSOnCoInterpreterRemoved() {
