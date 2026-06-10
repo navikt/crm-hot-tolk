@@ -82,16 +82,6 @@ export default class hot_tindRequestHighlightPanelBot extends NavigationMixin(Li
         // Notify Lightning Data Service that the record has changed
         // This will refresh all standard components on the record page
         notifyRecordUpdateAvailable([{ recordId: this.recordId }]);
-
-        // Dispatch custom event to direct parent to refresh data
-        // bubbles: false - event doesn't need to bubble beyond parent
-        // composed: false - event doesn't need to cross shadow DOM (parent handles it directly)
-        this.dispatchEvent(
-            new CustomEvent('refreshrequest', {
-                bubbles: false,
-                composed: false
-            })
-        );
     }
 
     async handleCreateWorkOrder() {
