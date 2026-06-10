@@ -252,19 +252,18 @@ public without sharing class HOT_ReminderSMSService {
         }
     }
 
-    @Future
-    public static void sendSMSOnNewMessage(Set<Id> threadIds) {
+    public static void sendSMSOnNewMessage(
+        List<Thread__c> threadList,
+        Map<Id, Id> threadToLastSender,
+        Map<Id, String> threadToSenderRole
+    ) {
+        if (threadList == null || threadList.isEmpty()) {
+            return;
+        }
+
         List<SMS__c> smsList = new List<SMS__c>();
-        List<Thread__c> threadList = [
-            SELECT
-                CRM_Account__c,
-                CRM_Thread_Type__c,
-                CRM_Account__r.CRM_Person__r.HOT_MobilePhone__c,
-                CRM_Related_Object__c
-            FROM Thread__c
-            WHERE Id IN :threadIds
-        ];
         Map<Id, String> recipientByThreadId = HOT_ReminderSMSService.getRecipientByThreadIdMap(threadList);
+
         for (Thread__c thread : threadList) {
             SMS__c sms = new SMS__c();
             sms.Domain__c = 'HOT';
@@ -272,11 +271,13 @@ public without sharing class HOT_ReminderSMSService {
             sms.Account__c = thread.CRM_Account__c;
             sms.Thread__c = thread.Id;
             sms.Recipient__c = recipientByThreadId.get(thread.Id);
-            sms.Message__c = constructOnNewMessage();
+            sms.Message__c = HOT_MessageHelper.buildSMSNewMessage(threadToSenderRole.get(thread.Id), false);
+
             if (sms.Recipient__c != null) {
                 smsList.add(sms);
             }
         }
+
         try {
             HOT_DatabaseOperations.insertRecords(smsList);
         } catch (Exception e) {
@@ -285,9 +286,10 @@ public without sharing class HOT_ReminderSMSService {
     }
 
     public static void sendSMSOnNewMessageInterpreter(
-        Map<ServiceResource, List<Thread__c>> serviceResourceToThreadsMap
+        Map<ServiceResource, List<Thread__c>> serviceResourceToThreadsMap,
+        Map<Id, String> threadToSenderRole
     ) {
-        if (serviceResourceToThreadsMap.isEmpty()) {
+        if (serviceResourceToThreadsMap == null || serviceResourceToThreadsMap.isEmpty()) {
             return;
         }
 
@@ -295,17 +297,25 @@ public without sharing class HOT_ReminderSMSService {
 
         for (ServiceResource sr : serviceResourceToThreadsMap.keySet()) {
             String phoneNumber = sr.HOT_MobilePhone__c;
-            if (phoneNumber == null)
+            if (phoneNumber == null) {
                 continue;
+            }
+
+            Set<Id> processedThreadIds = new Set<Id>();
 
             for (Thread__c thread : serviceResourceToThreadsMap.get(sr)) {
+                if (processedThreadIds.contains(thread.Id)) {
+                    continue;
+                }
+                processedThreadIds.add(thread.Id);
+
                 SMS__c sms = new SMS__c();
                 sms.Domain__c = 'HOT';
                 sms.Type__c = 'Message';
                 sms.Account__c = sr.AccountId;
                 sms.Thread__c = thread.Id;
                 sms.Recipient__c = phoneNumber;
-                sms.Message__c = constructOnNewMessage();
+                sms.Message__c = HOT_MessageHelper.buildSMSNewMessage(threadToSenderRole.get(thread.Id), true);
 
                 smsList.add(sms);
             }

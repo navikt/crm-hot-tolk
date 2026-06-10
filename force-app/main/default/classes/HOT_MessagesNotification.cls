@@ -1,27 +1,41 @@
 public without sharing class HOT_MessagesNotification {
-    //Cacher
     private static Map<String, CustomNotificationType> notificationTypeCache;
 
-    //Felles metode som oppretter en ny meldingsnotifikasjon til varsel liste.
+    private class MessageContent {
+        public String title;
+        public String body;
+
+        public MessageContent(String title, String body) {
+            this.title = title;
+            this.body = body;
+        }
+    }
+
     private static HOT_Notification__c newMessageNotification(
         Id accountId,
         Id serviceResourceId,
         Thread__c thread,
         String type,
-        String channel
+        String channel,
+        String notificationSubject,
+        String notificationText
     ) {
         HOT_Notification__c notification = new HOT_Notification__c();
         notification.HOT_Account__c = accountId;
         notification.HOT_ServiceResource__c = serviceResourceId;
         notification.HOT_NotificationChannel__c = channel;
-        notification.HOT_Subject__c = 'Ny melding fra Tolketjenesten';
-        notification.HOT_NotificationText__c = 'Du har fått en melding fra Tolketjenesten.';
+        notification.HOT_Subject__c = notificationSubject;
+        notification.HOT_NotificationText__c = notificationText;
         notification.HOT_RelatedObject__c = thread.Id;
         notification.HOT_RelatedObjectType__c = type;
         return notification;
     }
 
     private static void insertNotifications(List<HOT_Notification__c> notifications) {
+        if (notifications == null || notifications.isEmpty()) {
+            return;
+        }
+
         try {
             HOT_NotificationCentreController.createNotification(notifications);
         } catch (Exception e) {
@@ -30,7 +44,20 @@ public without sharing class HOT_MessagesNotification {
             logger.publish();
         }
     }
-    //Varsel til formidler
+
+    private static MessageContent getContentForChannel(
+        String senderRole,
+        String channel,
+        Boolean isInterpreterReciever
+    ) {
+        String title = HOT_MessageHelper.buildHeader(senderRole, isInterpreterReciever);
+        String body = channel == 'SMS'
+            ? HOT_MessageHelper.buildSMSNewMessage(senderRole, isInterpreterReciever)
+            : HOT_MessageHelper.buildPushNewMessageBody();
+
+        return new MessageContent(title, body);
+    }
+
     public static void NotifyDispatcher(List<Id> threadIds) {
         List<Thread__c> threads = [
             SELECT Id, Name, OwnerId, HOT_Dispatcher__c, HOT_Subject__c
@@ -42,9 +69,10 @@ public without sharing class HOT_MessagesNotification {
         for (Thread__c thread : threads) {
             ownerIds.add(thread.OwnerId);
         }
-        Map<Id, ID> groupByQueue = HOT_NotificationHandler.getGroupIdByQueueId(ownerIds);
 
+        Map<Id, Id> groupByQueue = HOT_NotificationHandler.getGroupIdByQueueId(ownerIds);
         String notificationTypeID = getCustomNotificationType('HOT_NotifyDispatcher').Id;
+
         for (Thread__c thread : threads) {
             Set<String> recipients = new Set<String>();
             if (thread.HOT_Dispatcher__c != null) {
@@ -52,6 +80,7 @@ public without sharing class HOT_MessagesNotification {
             } else {
                 recipients.add(groupByQueue.get(thread.OwnerId));
             }
+
             Messaging.CustomNotification notification = new Messaging.CustomNotification();
             notification.setTitle('Ny melding');
             notification.setBody(thread.HOT_Subject__c);
@@ -69,6 +98,7 @@ public without sharing class HOT_MessagesNotification {
             SELECT
                 Id,
                 CRM_Account__c,
+                CRM_Related_Object__c,
                 CRM_Thread_Type__c,
                 HOT_ParticipantIds__c,
                 HOT_IsEmployeeThread__c,
@@ -92,6 +122,7 @@ public without sharing class HOT_MessagesNotification {
                 //Ved disse typene er det varsel til bruker som gjelder, og må dermed bruke varslingskanal til bruker.
                 threadsToNotifyUsers.add(thread);
             }
+
             if (
                 thread.CRM_Thread_Type__c == 'HOT_TOLK-TOLK' ||
                 thread.CRM_Thread_Type__c == 'HOT_TOLK-FORMIDLER' ||
@@ -102,9 +133,11 @@ public without sharing class HOT_MessagesNotification {
                 threadsToNotifyInterpreters.add(thread);
             }
         }
+
         if (!threadsToNotifyUsers.isEmpty()) {
             notifyUser(threadsToNotifyUsers);
         }
+
         if (!threadsToNotifyInterpreters.isEmpty()) {
             notifyInterpreter(threadsToNotifyInterpreters);
         }
@@ -114,76 +147,87 @@ public without sharing class HOT_MessagesNotification {
         Set<Id> accountIds = new Set<Id>();
         Set<Id> threadIds = new Set<Id>();
 
-        for (Thread__c t : threadList) {
-            threadIds.add(t.Id);
+        for (Thread__c thread : threadList) {
+            threadIds.add(thread.Id);
+
             if (
-                t.CRM_Account__c != null &&
-                t.CRM_Account__r.CRM_Person__r.HOT_IsReservationAgainstNotifications__c == false
+                thread.CRM_Account__c != null &&
+                thread.CRM_Account__r.CRM_Person__r.HOT_IsReservationAgainstNotifications__c == false
             ) {
-                //Skal kun sende varsel til de som ikke har reservert seg mot varsler
-                accountIds.add(t.CRM_Account__c);
+                accountIds.add(thread.CRM_Account__c);
             }
         }
         //Mapper account til user
         Map<Id, Id> accountToUserId = new Map<Id, Id>();
-
-        for (User u : [SELECT Id, AccountId FROM User WHERE AccountId IN :accountIds]) {
-            accountToUserId.put(u.AccountId, u.Id);
+        for (User userRecord : [SELECT Id, AccountId FROM User WHERE AccountId IN :accountIds]) {
+            accountToUserId.put(userRecord.AccountId, userRecord.Id);
         }
-        //Lager varslingsliste til insetting senere
-        List<HOT_Notification__c> notificationList = new List<HOT_Notification__c>();
+        //Finner hvem som har sendt siste melding i hver tråd
+        Map<Id, Id> threadToLastSender = getLastMessageSenderPerThread(threadIds);
+        //Finner rollen ifht oppdraget/bestillingen til den som har sendt siste melding i hver tråd
+        Map<Id, String> threadToSenderRole = HOT_ThreadParticipants.getUserSenderRoleInThread(
+            threadList,
+            threadToLastSender
+        );
 
         CustomNotificationType notificationType = getCustomNotificationType('HOT_NotifyUser');
-        //Henter userId til siste som sendte melding i tråder
-        Map<Id, Id> threadToLastSender = getLastMessageSenderPerThread(threadIds);
-        Set<Id> threadIdsToSMSNotification = new Set<Id>();
+        List<HOT_Notification__c> notificationList = new List<HOT_Notification__c>();
+        List<Thread__c> threadsForSMS = new List<Thread__c>();
 
         for (Thread__c thread : threadList) {
-            Set<String> recipients = new Set<String>();
-
-            Id accountId = thread.CRM_Account__c;
-            Id userId = accountToUserId.get(accountId);
-            String notificationChannel = thread.CRM_Account__r.CRM_Person__r.HOT_NotificationChannel__c;
+            Id userId = accountToUserId.get(thread.CRM_Account__c);
             Id lastSender = threadToLastSender.get(thread.Id);
-
-            //Ikke varsle hvis brukeren selv er siste avsender
+            //Skal ikke varsle om det er brukeren selv som har sendt siste melding
             if (userId == null || userId == lastSender) {
                 continue;
             }
 
-            recipients.add(userId);
-            if (notificationChannel.contains('Push')) {
-                //Lager notifikasjon til liste
-                notificationList.add(
-                    newMessageNotification(
-                        thread.CRM_Account__c,
-                        null, // ingen service resource
-                        thread,
-                        'threadUser',
-                        'Push-varsel i appen'
-                    )
+            String notificationChannel = thread.CRM_Account__r.CRM_Person__r.HOT_NotificationChannel__c;
+            String channel = notificationChannel != null && notificationChannel.contains('Push')
+                ? 'Push-varsel i appen'
+                : 'SMS';
+            //Bygger varsel innhold basert på kanal
+            MessageContent content = getContentForChannel(threadToSenderRole.get(thread.Id), channel, false);
+
+            //Oppretter varsel record for innsetting i til varslingsliste
+            notificationList.add(
+                newMessageNotification(
+                    thread.CRM_Account__c,
+                    null,
+                    thread,
+                    'threadUser',
+                    channel,
+                    content.title,
+                    content.body
+                )
+            );
+
+            if (channel == 'Push-varsel i appen') {
+                HOT_UserNotificationService.newMessageNotification(
+                    notificationType,
+                    thread,
+                    false,
+                    true,
+                    new Set<String>{ userId },
+                    content.title,
+                    content.body
                 );
-                //Sender ut pushvarsel til appbruker
-                HOT_UserNotificationService.newMessageNotification(notificationType, thread, false, true, recipients);
             } else {
-                //Ellers sendes det ut sms til bruker
-                //Lager notifikasjon til liste
-                notificationList.add(newMessageNotification(thread.CRM_Account__c, null, thread, 'threadUser', 'SMS'));
-                threadIdsToSMSNotification.add(thread.Id);
+                threadsForSMS.add(thread);
             }
         }
-        //Sender SMS
-        HOT_ReminderSMSService.sendSMSOnNewMessage(threadIdsToSMSNotification);
-        //Innsetter notifikasjonsrecord til varslingsliste
+
+        HOT_ReminderSMSService.sendSMSOnNewMessage(threadsForSMS, threadToLastSender, threadToSenderRole);
         insertNotifications(notificationList);
     }
+
     public static Map<Id, Id> getLastMessageSenderPerThread(Set<Id> threadIds) {
         Map<Id, Id> result = new Map<Id, Id>();
 
-        if (threadIds.isEmpty())
+        if (threadIds == null || threadIds.isEmpty()) {
             return result;
+        }
 
-        //Henter siste melding per tråd
         List<Message__c> messages = [
             SELECT Id, CRM_Thread__c, CreatedById, CreatedDate
             FROM Message__c
@@ -191,75 +235,72 @@ public without sharing class HOT_MessagesNotification {
             ORDER BY CRM_Thread__c, CreatedDate DESC
         ];
 
-        for (Message__c msg : messages) {
-            // Legg kun inn første gangen vi ser en tråd = siste melding
-            if (!result.containsKey(msg.CRM_Thread__c)) {
-                result.put(msg.CRM_Thread__c, msg.CreatedById);
+        for (Message__c messageRecord : messages) {
+            if (!result.containsKey(messageRecord.CRM_Thread__c)) {
+                result.put(messageRecord.CRM_Thread__c, messageRecord.CreatedById);
             }
         }
 
         return result;
     }
 
-    public static void NotifyInterpreter(List<Thread__c> threadList) {
+    public static void notifyInterpreter(List<Thread__c> threadList) {
         CustomNotificationType notificationType = getCustomNotificationType('HOT_NotifyInterpreter');
-        //mapping for tolketråder hvor det kun er én-til-én (tolk og formidler, og tolk-ressurskontor)
         Map<Id, List<Thread__c>> accountToThreads = new Map<Id, List<Thread__c>>();
         Map<Id, List<Thread__c>> serviceResourceToThreads = new Map<Id, List<Thread__c>>();
-
-        // participant-tråder (bruker-tolk og medtolk tråder)
         Map<Id, List<Thread__c>> interpretersOnThreadMap = new Map<Id, List<Thread__c>>();
         Set<Id> threadIds = new Set<Id>();
+
         for (Thread__c thread : threadList) {
             threadIds.add(thread.Id);
+
             if (
                 thread.CRM_Thread_Type__c == 'HOT_TOLK-FORMIDLER' ||
                 thread.CRM_Thread_Type__c == 'HOT_TOLK-RESSURSKONTOR'
             ) {
-                // ===== account mapping =====
+                //En til en samtaler
                 if (thread.CRM_Account__c != null) {
                     if (!accountToThreads.containsKey(thread.CRM_Account__c)) {
-                        accountToThreads.put(thread.CRM_Account__c, new List<Thread__c>{ thread });
-                    } else {
-                        accountToThreads.get(thread.CRM_Account__c).add(thread);
+                        accountToThreads.put(thread.CRM_Account__c, new List<Thread__c>());
                     }
+                    accountToThreads.get(thread.CRM_Account__c).add(thread);
                 }
 
-                // ===== service resource mapping =====
                 if (thread.HOT_ServiceResource__c != null) {
                     if (!serviceResourceToThreads.containsKey(thread.HOT_ServiceResource__c)) {
-                        serviceResourceToThreads.put(thread.HOT_ServiceResource__c, new List<Thread__c>{ thread });
-                    } else {
-                        serviceResourceToThreads.get(thread.HOT_ServiceResource__c).add(thread);
+                        serviceResourceToThreads.put(thread.HOT_ServiceResource__c, new List<Thread__c>());
                     }
+                    serviceResourceToThreads.get(thread.HOT_ServiceResource__c).add(thread);
                 }
             } else {
+                //Samtaler med flere deltakere, må mappe ut ifht deltakere
                 if (String.isBlank(thread.HOT_ParticipantIds__c)) {
                     continue;
                 }
-                String[] participantIds = thread.HOT_ParticipantIds__c.split(',');
 
-                for (String participantId : participantIds) {
+                for (String participantId : thread.HOT_ParticipantIds__c.split(',')) {
                     participantId = participantId.trim();
-
                     if (participantId == '') {
                         continue;
                     }
-                    if (interpretersOnThreadMap.containsKey(participantId)) {
-                        interpretersOnThreadMap.get(participantId).add(thread);
-                    } else {
-                        interpretersOnThreadMap.put(participantId, new List<Thread__c>{ thread });
+
+                    Id participantUserId = (Id) participantId;
+
+                    if (!interpretersOnThreadMap.containsKey(participantUserId)) {
+                        interpretersOnThreadMap.put(participantUserId, new List<Thread__c>());
                     }
+                    interpretersOnThreadMap.get(participantUserId).add(thread);
                 }
             }
         }
-        //Henter userId til siste som sendte melding i tråder
+        //Finner hvem som har sendt siste melding i hver tråd
         Map<Id, Id> threadToLastSender = getLastMessageSenderPerThread(threadIds);
+        //Finner rollen ifht oppdraget/bestillingen til den som har sendt siste melding i hver tråd
+        Map<Id, String> threadToSenderRole = HOT_ThreadParticipants.getUserSenderRoleInThread(
+            threadList,
+            threadToLastSender
+        );
 
-        // Sett opp mappings
-        Map<Id, List<Thread__c>> serviceResourceToThreadsMap = new Map<Id, List<Thread__c>>();
-
-        // Skal nå finne alle ServiceResource som er relevante
         Set<Id> participantUserIds = interpretersOnThreadMap.keySet();
         Set<Id> serviceResourceIdsSet = serviceResourceToThreads.keySet();
         Set<Id> accountIdsSet = accountToThreads.keySet();
@@ -278,22 +319,21 @@ public without sharing class HOT_MessagesNotification {
         ];
 
         Map<Id, ServiceResource> allRelevantServiceResourcesMap = new Map<Id, ServiceResource>();
-        // Mapper hver ServiceResource til de trådene den tilhører
+        Map<Id, List<Thread__c>> serviceResourceToThreadsMap = new Map<Id, List<Thread__c>>();
+
         for (ServiceResource sr : allRelevantServiceResources) {
             allRelevantServiceResourcesMap.put(sr.Id, sr);
+
             List<Thread__c> threadsForSR = new List<Thread__c>();
 
-            // 1) Hvis ServiceResource er en ansatt tolk fra participant-tråder
             if (sr.RelatedRecordId != null && interpretersOnThreadMap.containsKey(sr.RelatedRecordId)) {
                 threadsForSR.addAll(interpretersOnThreadMap.get(sr.RelatedRecordId));
             }
 
-            // 2) Hvis ServiceResource er direkte koblet til tråd (serviceResourceToThreads)
-            if (sr.Id != null && serviceResourceToThreads.containsKey(sr.Id)) {
+            if (serviceResourceToThreads.containsKey(sr.Id)) {
                 threadsForSR.addAll(serviceResourceToThreads.get(sr.Id));
             }
 
-            // 3) Hvis ServiceResource tilhører en Account (accountToThreads)
             if (sr.AccountId != null && accountToThreads.containsKey(sr.AccountId)) {
                 threadsForSR.addAll(accountToThreads.get(sr.AccountId));
             }
@@ -303,20 +343,18 @@ public without sharing class HOT_MessagesNotification {
             }
         }
 
-        //LAGER VARSLINGS LISTE TIL INSETTING SENERE
         List<HOT_Notification__c> notificationList = new List<HOT_Notification__c>();
-        //ANSATTOLKER VARSEL
-
         Map<ServiceResource, List<Thread__c>> serviceResourceToThreadMapSMS = new Map<ServiceResource, List<Thread__c>>();
+
         for (Id serviceResourceId : serviceResourceToThreadsMap.keySet()) {
             ServiceResource sr = allRelevantServiceResourcesMap.get(serviceResourceId);
-            if (sr == null)
+            if (sr == null) {
                 continue;
+            }
 
             Id userId = sr.RelatedRecordId;
-            Id accountId = sr.AccountId;
-            String notificationChannel = sr.HOT_NotificationChannel__c;
             Boolean isFreelance = sr.HOT_IsFreelanceInterpreter__c;
+            String notificationChannel = sr.HOT_NotificationChannel__c;
             Set<Id> processedThreadIds = new Set<Id>();
 
             for (Thread__c thread : serviceResourceToThreadsMap.get(serviceResourceId)) {
@@ -325,47 +363,54 @@ public without sharing class HOT_MessagesNotification {
                 }
                 processedThreadIds.add(thread.Id);
 
-                //Hopp over hvis siste avsender er samme som ServiceResource sin user
                 if (userId != null && threadToLastSender.get(thread.Id) == userId) {
                     continue;
                 }
-                if (notificationChannel.contains('Push')) {
-                    notificationList.add(
-                        newMessageNotification(
-                            null, // no accountId
-                            sr.Id, // service resource
-                            thread,
-                            'threadInterpreter',
-                            'Push-varsel i appen'
-                        )
-                    );
 
-                    HOT_UserNotificationService.newMessageNotification(
-                        notificationType,
+                String channel = notificationChannel != null && notificationChannel.contains('Push')
+                    ? 'Push-varsel i appen'
+                    : 'SMS';
+                //Bygger varsel innhold basert på kanal
+                MessageContent content = getContentForChannel(threadToSenderRole.get(thread.Id), channel, true);
+                //Oppretter varsel record for innsetting i til varslingsliste
+                notificationList.add(
+                    newMessageNotification(
+                        null,
+                        sr.Id,
                         thread,
-                        isFreelance,
-                        false,
-                        new Set<String>{ userId }
-                    );
-                } else {
-                    notificationList.add(newMessageNotification(null, sr.Id, thread, 'threadInterpreter', 'SMS'));
+                        'threadInterpreter',
+                        channel,
+                        content.title,
+                        content.body
+                    )
+                );
 
-                    // Legg til i map-en for SMS
-                    if (!serviceResourceToThreadMapSMS.containsKey(sr)) {
-                        serviceResourceToThreadMapSMS.put(sr, new List<Thread__c>{ thread });
-                    } else {
-                        serviceResourceToThreadMapSMS.get(sr).add(thread);
+                if (channel == 'Push-varsel i appen') {
+                    if (userId != null) {
+                        HOT_UserNotificationService.newMessageNotification(
+                            notificationType,
+                            thread,
+                            isFreelance,
+                            false,
+                            new Set<String>{ userId },
+                            content.title,
+                            content.body
+                        );
                     }
+                } else {
+                    if (!serviceResourceToThreadMapSMS.containsKey(sr)) {
+                        serviceResourceToThreadMapSMS.put(sr, new List<Thread__c>());
+                    }
+                    serviceResourceToThreadMapSMS.get(sr).add(thread);
                 }
             }
         }
-        //Innsetter notifikasjonsrecord for varslingsliste
+
         insertNotifications(notificationList);
-        HOT_ReminderSMSService.sendSMSOnNewMessageInterpreter(serviceResourceToThreadMapSMS);
+        HOT_ReminderSMSService.sendSMSOnNewMessageInterpreter(serviceResourceToThreadMapSMS, threadToSenderRole);
     }
 
     public static CustomNotificationType getCustomNotificationType(String devName) {
-        //Cache ved første bruk
         if (notificationTypeCache == null) {
             notificationTypeCache = new Map<String, CustomNotificationType>();
             List<CustomNotificationType> types = [
@@ -374,8 +419,8 @@ public without sharing class HOT_MessagesNotification {
                 WHERE DeveloperName IN ('HOT_NotifyDispatcher', 'HOT_NotifyUser', 'HOT_NotifyInterpreter')
             ];
 
-            for (CustomNotificationType t : types) {
-                notificationTypeCache.put(t.DeveloperName, t);
+            for (CustomNotificationType typeRecord : types) {
+                notificationTypeCache.put(typeRecord.DeveloperName, typeRecord);
             }
         }
 
