@@ -52,10 +52,12 @@ export default class hot_tindRequestHighlightPanelTop extends LightningElement {
             this.requestDetails?.Subject__c,
             this.requestDetails?.Status__c,
             this.requestDetails?.InterpretationMethod__r?.Name,
-            new Date(this.requestDetails?.StartTime__c).toLocaleString('no-NO', {
-                dateStyle: 'short',
-                timeStyle: 'short'
-            }),
+            this.requestDetails?.StartTime__c
+                ? new Date(this.requestDetails.StartTime__c).toLocaleString('no-NO', {
+                      dateStyle: 'short',
+                      timeStyle: 'short'
+                  })
+                : null,
             this.requestDetails?.IsSerieoppdrag__c ? 'Serieoppdrag' : false
         ]
             .filter(Boolean)
