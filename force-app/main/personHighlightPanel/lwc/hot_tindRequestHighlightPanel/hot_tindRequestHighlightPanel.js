@@ -1,39 +1,53 @@
 import { LightningElement, api, track, wire } from 'lwc';
-import { refreshApex } from '@salesforce/apex';
+import { getRecord } from 'lightning/uiRecordApi';
 
-import getRequest from '@salesforce/apex/HOT_HighlightPanelController.getRequestDetails';
+const FIELDS = [
+    'HOT_Request__c.Name',
+    'HOT_Request__c.Subject__c',
+    'HOT_Request__c.Status__c',
+    'HOT_Request__c.StartTime__c',
+    'HOT_Request__c.IsSerieoppdrag__c',
+    'HOT_Request__c.Account__r.Name',
+    'HOT_Request__c.Account__r.INT_PersonIdent__c',
+    'HOT_Request__c.InterpretationMethod__r.Name'
+];
 
 export default class hot_tindRequestHighlightPanel extends LightningElement {
     @api recordId;
     @api objectApiName;
 
     requestData;
-    wiredRequestResult;
 
     @track loadingStates = {
         getRequest: true
     };
 
-    @wire(getRequest, { recordId: '$recordId' })
-    wiredRequestDetails(result) {
-        this.wiredRequestResult = result;
-        const { error, data } = result;
+    @wire(getRecord, { recordId: '$recordId', fields: FIELDS })
+    wiredRecord({ error, data }) {
         if (data) {
-            this.requestData = data;
+            const f = data.fields;
+            this.requestData = {
+                Name: f.Name?.value,
+                Subject__c: f.Subject__c?.value,
+                Status__c: f.Status__c?.value,
+                StartTime__c: f.StartTime__c?.value,
+                IsSerieoppdrag__c: f.IsSerieoppdrag__c?.value,
+                Account__r: {
+                    Name: f.Account__r?.value?.fields?.Name?.value,
+                    INT_PersonIdent__c: f.Account__r?.value?.fields?.INT_PersonIdent__c?.value
+                },
+                InterpretationMethod__r: {
+                    Name: f.InterpretationMethod__r?.value?.fields?.Name?.value
+                }
+            };
             this.loadingStates.getRequest = false;
         } else if (error) {
             this.loadingStates.getRequest = false;
-            console.error('getRequestDetails error:', error);
+            console.error('getRecord error:', error);
         }
     }
 
     get isLoading() {
         return Object.keys(this.loadingStates).some((key) => this.loadingStates[key]);
-    }
-
-    handleRefreshRequest() {
-        if (this.wiredRequestResult) {
-            refreshApex(this.wiredRequestResult);
-        }
     }
 }
