@@ -179,6 +179,10 @@ a.lenke:focus {
     width: 24px;
 }
 
+.success-container {
+    margin-bottom: 0.5rem;
+}
+
 .sub-header {
     font-family: 'Source Sans 3', 'Source Sans Pro', Arial, sans-serif;
     font-size: 1.25rem;
