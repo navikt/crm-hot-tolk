@@ -52,6 +52,16 @@
                                 <span aria-hidden="true"> | </span>
                                 {notification.created}
                             </div>
+                            <template lwc:if={notification.showAccessError}>
+                                <div>
+                                    <c-hot_local-alert
+                                        type="error"
+                                        title={errorMessageBanner}
+                                        content-view="title-only"
+                                        size="small"
+                                    ></c-hot_local-alert>
+                                </div>
+                            </template>
                         </div>
                     </button>
                 </template>
