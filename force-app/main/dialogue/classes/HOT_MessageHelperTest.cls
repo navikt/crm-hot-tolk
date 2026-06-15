@@ -1462,24 +1462,18 @@ private class HOT_MessageHelperTest {
     }
     @IsTest
     static void buildHeaderTest() {
-        System.assertEquals(
-            'Du har fått en melding fra tolkebruker',
-            HOT_MessageHelper.buildHeader('bruker', false)
-        );
+        System.assertEquals('Du har fått en melding fra tolkebruker', HOT_MessageHelper.buildHeader('bruker', false));
 
         System.assertEquals(
             'Du har fått en melding fra tolkebestiller',
             HOT_MessageHelper.buildHeader('bestiller', false)
         );
 
-        System.assertEquals('Du har fått ny melding fra medtolk', HOT_MessageHelper.buildHeader('tolk', true));
+        System.assertEquals('Du har fått en melding fra medtolk', HOT_MessageHelper.buildHeader('tolk', true));
 
-        System.assertEquals('Du har fått ny melding fra tolk', HOT_MessageHelper.buildHeader('tolk', false));
+        System.assertEquals('Du har fått en melding fra tolk', HOT_MessageHelper.buildHeader('tolk', false));
 
-        System.assertEquals(
-            'Du har fått en melding fra formidler',
-            HOT_MessageHelper.buildHeader('formidler', false)
-        );
+        System.assertEquals('Du har fått en melding fra formidler', HOT_MessageHelper.buildHeader('formidler', false));
 
         System.assertEquals(
             'Du har fått en melding fra ressurskontor',
