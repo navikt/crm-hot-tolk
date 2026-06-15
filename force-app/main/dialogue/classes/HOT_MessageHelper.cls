@@ -1083,22 +1083,22 @@ public without sharing class HOT_MessageHelper {
     public static String buildHeader(String role, Boolean isInterpreterReciever) {
         switch on role {
             when 'bruker' {
-                return 'Ny melding fra tolkebruker';
+                return 'Du har fått en melding fra tolkebruker';
             }
             when 'bestiller' {
-                return 'Ny melding fra tolkebestiller';
+                return 'Du har fått en melding fra tolkebestiller';
             }
             when 'tolk' {
-                return isInterpreterReciever ? 'Ny melding fra medtolk' : 'Ny melding fra tolk';
+                return isInterpreterReciever ? 'Du har fått en melding fra medtolk' : 'Du har fått en melding fra tolk';
             }
             when 'formidler' {
-                return 'Ny melding fra formidler';
+                return 'Du har fått en melding fra formidler';
             }
             when 'ressurskontor' {
-                return 'Ny melding fra ressurskontor';
+                return 'Du har fått en melding fra ressurskontor';
             }
             when else {
-                return 'Ny melding';
+                return 'Du har fått en melding';
             }
         }
     }
