@@ -7,50 +7,50 @@ private class HOT_MessageHelperTest {
         insert new List<User>{ user };
 
         System.runAs(new User(Id = UserInfo.getUserId())) {
-        OperatingHours operatingHours = HOT_TestDataFactory.createOperatingHours();
-        insert operatingHours;
-        ServiceTerritory serviceTerritory = HOT_TestDataFactory.createServiceTerritory(operatingHours);
-        insert serviceTerritory;
+            OperatingHours operatingHours = HOT_TestDataFactory.createOperatingHours();
+            insert operatingHours;
+            ServiceTerritory serviceTerritory = HOT_TestDataFactory.createServiceTerritory(operatingHours);
+            insert serviceTerritory;
 
-        Account acc = new Account();
-        acc.Name = 'Test account';
-        insert acc;
+            Account acc = new Account();
+            acc.Name = 'Test account';
+            insert acc;
 
-        // User u =[SELECT Id FROM User WHERE Name = 'user' LIMIT 1][0]
-        ServiceResource serviceResource = HOT_TestDataFactory.createServiceResource(UserInfo.getUserId());
-        serviceResource.AccountId = acc.Id;
-        insert serviceResource;
-        // ServiceResource resource = [SELECT Id, AccountId FROM ServiceResource LIMIT 1];
-        ServiceTerritoryMember serviceTerritoryMember = HOT_TestDataFactory.createServiceTerritoryMember(
-            serviceResource,
-            serviceTerritory
-        );
+            // User u =[SELECT Id FROM User WHERE Name = 'user' LIMIT 1][0]
+            ServiceResource serviceResource = HOT_TestDataFactory.createServiceResource(UserInfo.getUserId());
+            serviceResource.AccountId = acc.Id;
+            insert serviceResource;
+            // ServiceResource resource = [SELECT Id, AccountId FROM ServiceResource LIMIT 1];
+            ServiceTerritoryMember serviceTerritoryMember = HOT_TestDataFactory.createServiceTerritoryMember(
+                serviceResource,
+                serviceTerritory
+            );
 
-        WorkType workType = HOT_TestDataFactory.createWorkType();
-        insert workType;
-        Account account = HOT_TestDataFactory.createAccount(true);
-        insert account;
-        HOT_Request__c request = HOT_TestDataFactory.createRequest('TEST', workType);
-        request.Account__c = account.Id;
-        request.Orderer__c = account.Id;
-        HOT_Request__c request3 = HOT_TestDataFactory.createRequest('TEST3', workType);
-        request3.Account__c = account.Id;
-        request3.Orderer__c = account.Id;
-        insert new List<HOT_Request__c>{ request, request3 };
-        // HOT_Request__c request = [SELECT Id FROM HOT_Request__c WHERE Subject__c = 'TEST' LIMIT 1];
-        WorkOrder workOrder = HOT_TestDataFactory.createWorkOrder(request, workType);
-        workOrder.AccountId = account.Id;
-        WorkOrder workOrder3 = HOT_TestDataFactory.createWorkOrder(request3, workType);
-        workOrder3.AccountId = account.Id;
-        insert new List<WorkOrder>{ workOrder, workOrder3 };
-        // WorkOrder workOrder = [SELECT Id FROM WorkOrder WHERE HOT_Request__r.Subject__c = 'TEST' LIMIT 1];
+            WorkType workType = HOT_TestDataFactory.createWorkType();
+            insert workType;
+            Account account = HOT_TestDataFactory.createAccount(true);
+            insert account;
+            HOT_Request__c request = HOT_TestDataFactory.createRequest('TEST', workType);
+            request.Account__c = account.Id;
+            request.Orderer__c = account.Id;
+            HOT_Request__c request3 = HOT_TestDataFactory.createRequest('TEST3', workType);
+            request3.Account__c = account.Id;
+            request3.Orderer__c = account.Id;
+            insert new List<HOT_Request__c>{ request, request3 };
+            // HOT_Request__c request = [SELECT Id FROM HOT_Request__c WHERE Subject__c = 'TEST' LIMIT 1];
+            WorkOrder workOrder = HOT_TestDataFactory.createWorkOrder(request, workType);
+            workOrder.AccountId = account.Id;
+            WorkOrder workOrder3 = HOT_TestDataFactory.createWorkOrder(request3, workType);
+            workOrder3.AccountId = account.Id;
+            insert new List<WorkOrder>{ workOrder, workOrder3 };
+            // WorkOrder workOrder = [SELECT Id FROM WorkOrder WHERE HOT_Request__r.Subject__c = 'TEST' LIMIT 1];
 
-        WorkOrderLineItem workOrderLineItem = HOT_TestDataFactory.createWorkOrderLineItem(workOrder, workType);
-        WorkOrderLineItem workOrderLineItem3 = HOT_TestDataFactory.createWorkOrderLineItem(workOrder3, workType);
+            WorkOrderLineItem workOrderLineItem = HOT_TestDataFactory.createWorkOrderLineItem(workOrder, workType);
+            WorkOrderLineItem workOrderLineItem3 = HOT_TestDataFactory.createWorkOrderLineItem(workOrder3, workType);
 
-        insert new List<WorkOrderLineItem>{ workOrderLineItem, workOrderLineItem3 };
+            insert new List<WorkOrderLineItem>{ workOrderLineItem, workOrderLineItem3 };
 
-        /*
+            /*
         ServiceAppointment sa = [
             SELECT Id, HOT_Account__c, HOT_WorkOrderLineItem__r.WorkOrderId
             FROM ServiceAppointment
@@ -59,33 +59,33 @@ private class HOT_MessageHelperTest {
         ];
         */
 
-        Thread__c t = HOT_TestDataFactory.createThread();
-        //t.CRM_Related_Object__c = acc.Id;
-        t.CRM_Thread_Type__c = 'HOT_BRUKER-FORMIDLER';
-        t.CRM_Related_Object__c = request.Id;
+            Thread__c t = HOT_TestDataFactory.createThread();
+            //t.CRM_Related_Object__c = acc.Id;
+            t.CRM_Thread_Type__c = 'HOT_BRUKER-FORMIDLER';
+            t.CRM_Related_Object__c = request.Id;
 
-        Thread__c t2 = HOT_TestDataFactory.createThread();
-        t2.CRM_Related_Object__c = acc.Id;
-        t2.CRM_Thread_Type__c = 'HOT_BRUKER-FORMIDLER';
-        //t2.CRM_Related_Object__c = request.Id;
+            Thread__c t2 = HOT_TestDataFactory.createThread();
+            t2.CRM_Related_Object__c = acc.Id;
+            t2.CRM_Thread_Type__c = 'HOT_BRUKER-FORMIDLER';
+            //t2.CRM_Related_Object__c = request.Id;
 
-        Thread__c t3 = HOT_TestDataFactory.createThread();
-        t3.CRM_Related_Object__c = acc.Id;
-        t3.CRM_Thread_Type__c = 'HOT_BRUKER-FORMIDLER';
-        //t3.CRM_Related_Object__c = request.Id;
+            Thread__c t3 = HOT_TestDataFactory.createThread();
+            t3.CRM_Related_Object__c = acc.Id;
+            t3.CRM_Thread_Type__c = 'HOT_BRUKER-FORMIDLER';
+            //t3.CRM_Related_Object__c = request.Id;
 
-        Thread__c t4 = new Thread__c();
-        t4.CRM_Thread_Type__c = 'HOT_BRUKER-TOLK';
-        t4.CRM_Related_Object__c = request.Id;
+            Thread__c t4 = new Thread__c();
+            t4.CRM_Thread_Type__c = 'HOT_BRUKER-TOLK';
+            t4.CRM_Related_Object__c = request.Id;
 
-        insert new List<Thread__c>{ t, t2, t3, t4 };
+            insert new List<Thread__c>{ t, t2, t3, t4 };
 
-        Message__c m = new Message__c();
-        m.CRM_Thread__c = t.Id;
-        m.CRM_Message_Text__c = 'Lorem Ipsum Dolor Si Amet';
-        m.HOT_User_Role__c = HOT_MessageHelper.getUserProfileAndName('HOT_BRUKER-TOLK');
-        insert m;
-        /*
+            Message__c m = new Message__c();
+            m.CRM_Thread__c = t.Id;
+            m.CRM_Message_Text__c = 'Lorem Ipsum Dolor Si Amet';
+            m.HOT_User_Role__c = HOT_MessageHelper.getUserProfileAndName('HOT_BRUKER-TOLK');
+            insert m;
+            /*
         Profile std = [SELECT Id FROM Profile WHERE Name IN ('Standard User', 'Standardbruker') LIMIT 1];
         User stdUser = HOT_TestDataFactory.createUser('rbstd', std);
         insert stdUser;
@@ -1462,19 +1462,31 @@ private class HOT_MessageHelperTest {
     }
     @IsTest
     static void buildHeaderTest() {
-        System.assertEquals('Ny melding fra tolkebruker', HOT_MessageHelper.buildHeader('bruker', false));
+        System.assertEquals(
+            'Du har fått en melding fra tolkebruker',
+            HOT_MessageHelper.buildHeader('bruker', false)
+        );
 
-        System.assertEquals('Ny melding fra tolkebestiller', HOT_MessageHelper.buildHeader('bestiller', false));
+        System.assertEquals(
+            'Du har fått en melding fra tolkebestiller',
+            HOT_MessageHelper.buildHeader('bestiller', false)
+        );
 
-        System.assertEquals('Ny melding fra medtolk', HOT_MessageHelper.buildHeader('tolk', true));
+        System.assertEquals('Du har fått ny melding fra medtolk', HOT_MessageHelper.buildHeader('tolk', true));
 
-        System.assertEquals('Ny melding fra tolk', HOT_MessageHelper.buildHeader('tolk', false));
+        System.assertEquals('Du har fått ny melding fra tolk', HOT_MessageHelper.buildHeader('tolk', false));
 
-        System.assertEquals('Ny melding fra formidler', HOT_MessageHelper.buildHeader('formidler', false));
+        System.assertEquals(
+            'Du har fått en melding fra formidler',
+            HOT_MessageHelper.buildHeader('formidler', false)
+        );
 
-        System.assertEquals('Ny melding fra ressurskontor', HOT_MessageHelper.buildHeader('ressurskontor', false));
+        System.assertEquals(
+            'Du har fått en melding fra ressurskontor',
+            HOT_MessageHelper.buildHeader('ressurskontor', false)
+        );
 
-        System.assertEquals('Ny melding', HOT_MessageHelper.buildHeader('ukjent', false));
+        System.assertEquals('Du har fått en melding', HOT_MessageHelper.buildHeader('ukjent', false));
     }
 
     @IsTest
