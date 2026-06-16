@@ -156,11 +156,25 @@ export default class Hot_notificationListViewer extends NavigationMixin(Lightnin
     }
 
     toggleNotifications() {
+        const wasOpen = this.showNotifications;
+
         this.showNotifications = !this.showNotifications;
+
         if (this.showNotifications) {
             refreshApex(this.wiredNotificationResult);
+
             setTimeout(() => {
-                this.template.querySelector('.dropdown')?.focus();
+                const first = this._getTrapElements()[0];
+                first && first.focus();
+            });
+
+            return;
+        }
+
+        if (wasOpen) {
+            requestAnimationFrame(() => {
+                const notificationButton = this.template.querySelector('.notification-button');
+                notificationButton?.focus();
             });
         }
     }
@@ -168,6 +182,11 @@ export default class Hot_notificationListViewer extends NavigationMixin(Lightnin
     handleKeyDown(e) {
         if (e.key === 'Escape' || e.key === 'Esc') {
             this.showNotifications = false;
+
+            requestAnimationFrame(() => {
+                const notificationButton = this.template.querySelector('.notification-button');
+                notificationButton?.focus();
+            });
         }
         if (e.key !== 'Tab') return;
         const focusables = this._getTrapElements();
