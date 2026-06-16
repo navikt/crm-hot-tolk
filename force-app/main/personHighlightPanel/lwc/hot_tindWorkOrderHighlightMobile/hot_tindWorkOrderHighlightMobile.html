@@ -23,10 +23,10 @@
             </template>
         </div>
         <template lwc:if={error}>
-            <div class="errorState">Kunne ikke hente oppdragsinformasjon.</div>
+            <div class="errorState">Feil oppstått ved henting av oppdragsinformasjon.</div>
         </template>
         <template lwc:elseif={hasNoData}>
-            <div class="errorState">Fant ikke tilknyttet oppdrag for denne avtalen.</div>
+            <div class="errorState">Fant ikke tilknyttet arbeidsorder for dette oppdraget.</div>
         </template>
     </div>
 </template>
