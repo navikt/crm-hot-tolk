@@ -15,7 +15,6 @@
     border-bottom-right-radius: 0;
     background-color: #f5f8fa;
     color: #1f2d3d;
-    font-weight: 500;
     padding: 0.5rem 0.75rem;
     line-height: 1.25;
     cursor: pointer;
@@ -32,9 +31,9 @@
     inset-block-end: -1px;
     background-color: #fff;
     color: #003d6b;
-    border-color: #005a9c;
+    border-color: #939393;
     border-bottom-color: #fff;
-    box-shadow: inset 0px 2px 2px 0 #3171c4;
+    box-shadow: inset 0px 2px 2px 0 #032d60;
     z-index: 1;
     font-weight: bold;
 }
@@ -43,7 +42,7 @@
     margin-top: 0;
     border-style: solid;
     border-width: 1px;
-    border-color: #005a9c;
+    border-color: #939393;
     border-top-left-radius: 0.25rem;
     border-top-right-radius: 0.25rem;
     border-bottom-left-radius: 0.25rem;
