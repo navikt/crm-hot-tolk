@@ -19,6 +19,7 @@ export default class hot_messagingMessageComponent extends LightningElement {
     relatedObjectId;
     isThreadSummaryLoaded = false;
     defaultActiveTab = 'tab1';
+    selectedTab;
     showMessageInput = true;
     //show flows
     userSetToRedactionFlow = false;
@@ -582,7 +583,94 @@ export default class hot_messagingMessageComponent extends LightningElement {
     get summaryLoading() {
         return !this.isThreadSummaryLoaded;
     }
+
+    get isTab1Active() {
+        return this.activeTab === 'tab1';
+    }
+
+    get isTab2Active() {
+        return this.showUserThreadTab && this.activeTab === 'tab2';
+    }
+
+    get isTab3Active() {
+        return this.showOrderThreadTab && this.activeTab === 'tab3';
+    }
+
+    get isTab4Active() {
+        return this.showUserInterpreterThreadTab && this.activeTab === 'tab4';
+    }
+
+    get isTab5Active() {
+        return this.showInterpreterInterpreterThreadTab && this.activeTab === 'tab5';
+    }
+
+    get isTab6Active() {
+        return this.showInterpreterThreadTab && this.activeTab === 'tab6';
+    }
+
+    get isTab7Active() {
+        return this.showOfficeThreadTab && this.activeTab === 'tab7';
+    }
+
+    get tab1Class() {
+        return this.isTab1Active ? 'customTabButton customTabButtonActive' : 'customTabButton';
+    }
+
+    get tab2Class() {
+        return this.isTab2Active ? 'customTabButton customTabButtonActive' : 'customTabButton';
+    }
+
+    get tab3Class() {
+        return this.isTab3Active ? 'customTabButton customTabButtonActive' : 'customTabButton';
+    }
+
+    get tab4Class() {
+        return this.isTab4Active ? 'customTabButton customTabButtonActive' : 'customTabButton';
+    }
+
+    get tab5Class() {
+        return this.isTab5Active ? 'customTabButton customTabButtonActive' : 'customTabButton';
+    }
+
+    get tab6Class() {
+        return this.isTab6Active ? 'customTabButton customTabButtonActive' : 'customTabButton';
+    }
+
+    get tab7Class() {
+        return this.isTab7Active ? 'customTabButton customTabButtonActive' : 'customTabButton';
+    }
+
+    isTabVisible(tabName) {
+        if (tabName === 'tab1') {
+            return true;
+        }
+        if (tabName === 'tab2') {
+            return this.showUserThreadTab;
+        }
+        if (tabName === 'tab3') {
+            return this.showOrderThreadTab;
+        }
+        if (tabName === 'tab4') {
+            return this.showUserInterpreterThreadTab;
+        }
+        if (tabName === 'tab5') {
+            return this.showInterpreterInterpreterThreadTab;
+        }
+        if (tabName === 'tab6') {
+            return this.showInterpreterThreadTab;
+        }
+        if (tabName === 'tab7') {
+            return this.showOfficeThreadTab;
+        }
+
+        return false;
+    }
+
     get activeTab() {
+        if (this.selectedTab && this.isTabVisible(this.selectedTab)) {
+            return this.selectedTab;
+        }
+
         const openThreadType = this.findOpenThread();
         if (openThreadType) {
             return this.tabByThreadTypesMap[openThreadType];
@@ -592,6 +680,31 @@ export default class hot_messagingMessageComponent extends LightningElement {
         }
         return this.defaultActiveTab;
     }
+    handleTabClick(event) {
+        const nextTab = event.currentTarget?.dataset?.tab;
+        if (!nextTab || nextTab === this.activeTab || !this.isTabVisible(nextTab)) {
+            return;
+        }
+
+        this.selectedTab = nextTab;
+
+        if (nextTab === 'tab1') {
+            this.summaryTabHandler();
+        } else if (nextTab === 'tab2') {
+            this.userThreadTabHandler();
+        } else if (nextTab === 'tab3') {
+            this.ordererThreadTabHandler();
+        } else if (nextTab === 'tab4') {
+            this.userInterpreterThreadTabHandler();
+        } else if (nextTab === 'tab5') {
+            this.interpreterInterpreterThreadTabHandler();
+        } else if (nextTab === 'tab6') {
+            this.interpreterThreadTabHandler();
+        } else if (nextTab === 'tab7') {
+            this.officeThreadTabHandler();
+        }
+    }
+
     findOpenThread() {
         if (!this.threadsAndParticipants || !this.threadTypesOfInterest) {
             console.log('threadsAndParticipants or threadTypesOfInterest is null');
