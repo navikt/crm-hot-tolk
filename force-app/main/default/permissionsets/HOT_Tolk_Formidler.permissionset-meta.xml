@@ -9,6 +9,10 @@
         <enabled>true</enabled>
     </classAccesses>
     <classAccesses>
+        <apexClass>HOT_AssignOrReserveSAService</apexClass>
+        <enabled>true</enabled>
+    </classAccesses>
+    <classAccesses>
         <apexClass>HOT_CheckPermissions</apexClass>
         <enabled>true</enabled>
     </classAccesses>
@@ -1584,6 +1588,16 @@
     <fieldPermissions>
         <editable>false</editable>
         <field>ServiceResource.AccountId</field>
+        <readable>true</readable>
+    </fieldPermissions>
+    <fieldPermissions>
+        <editable>false</editable>
+        <field>ServiceResource.CRM_Domain__c</field>
+        <readable>true</readable>
+    </fieldPermissions>
+    <fieldPermissions>
+        <editable>false</editable>
+        <field>ServiceResource.CRM_Subdomain__c</field>
         <readable>true</readable>
     </fieldPermissions>
     <fieldPermissions>

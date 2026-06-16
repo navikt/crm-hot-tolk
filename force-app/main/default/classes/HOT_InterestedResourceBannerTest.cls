@@ -227,4 +227,65 @@ public with sharing class HOT_InterestedResourceBannerTest {
         System.assertEquals(2, result.size(), 'Er 2 oppdrag som skal vises som overlappende');
         Test.stopTest();
     }
+
+    @IsTest
+    static void hasRegisteredInterestReturnsTrueForCurrentUser() {
+        ServiceResource resource = HOT_TestDataFactory.createServiceResource(UserInfo.getUserId());
+        insert resource;
+
+        WorkType workType = HOT_TestDataFactory.createWorkType();
+        insert workType;
+
+        HOT_Request__c request = HOT_TestDataFactory.createRequest('TEST', workType);
+        insert request;
+
+        WorkOrder workOrder = HOT_TestDataFactory.createWorkOrder(request, workType);
+        insert workOrder;
+
+        WorkOrderLineItem workOrderLineItem = HOT_TestDataFactory.createWorkOrderLineItem(workOrder, workType);
+        insert workOrderLineItem;
+
+        ServiceAppointment serviceAppointment = HOT_TestDataFactory.createServiceAppointment(workOrderLineItem);
+        insert serviceAppointment;
+
+        HOT_InterestedResource__c interestedResource = HOT_TestDataFactory.createInterestedResource(
+            serviceAppointment.Id,
+            resource.Id
+        );
+        interestedResource.Status__c = 'Interested';
+        insert interestedResource;
+
+        Test.startTest();
+        Boolean result = HOT_InterestedResourceBannerController.hasRegisteredInterest(serviceAppointment.Id);
+        Test.stopTest();
+
+        System.assertEquals(true, result, 'Current user should see the interest banner for this appointment');
+    }
+
+    @IsTest
+    static void hasRegisteredInterestReturnsFalseWhenNoInterestExists() {
+        ServiceResource resource = HOT_TestDataFactory.createServiceResource(UserInfo.getUserId());
+        insert resource;
+
+        WorkType workType = HOT_TestDataFactory.createWorkType();
+        insert workType;
+
+        HOT_Request__c request = HOT_TestDataFactory.createRequest('TEST', workType);
+        insert request;
+
+        WorkOrder workOrder = HOT_TestDataFactory.createWorkOrder(request, workType);
+        insert workOrder;
+
+        WorkOrderLineItem workOrderLineItem = HOT_TestDataFactory.createWorkOrderLineItem(workOrder, workType);
+        insert workOrderLineItem;
+
+        ServiceAppointment serviceAppointment = HOT_TestDataFactory.createServiceAppointment(workOrderLineItem);
+        insert serviceAppointment;
+
+        Test.startTest();
+        Boolean result = HOT_InterestedResourceBannerController.hasRegisteredInterest(serviceAppointment.Id);
+        Test.stopTest();
+
+        System.assertEquals(false, result, 'Banner should stay hidden when the user has not registered interest');
+    }
 }

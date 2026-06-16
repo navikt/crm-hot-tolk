@@ -128,6 +128,20 @@ public without sharing class HOT_ServiceAppointmentNotification {
                     saN.notifyInterpretersOnCoInterpreterRemoved(serviceAppointment);
                 }
 
+                // Varsel til medtolk når tolk tar seg av
+                if (
+                    (oldServiceAppointment.Status == 'Completed' ||
+                    oldServiceAppointment.Status == 'Dispatched' ||
+                    oldServiceAppointment.Status == 'In Progress') &&
+                    (serviceAppointment.Status == null ||
+                    serviceAppointment.Status == 'Scheduled' ||
+                    serviceAppointment.Status == 'None') &&
+                    oldServiceAppointment.HOT_CanceledByInterpreter__c == false &&
+                    serviceAppointment.HOT_CanceledByInterpreter__c == true
+                ) {
+                    saN.notifyInterpretersOnCoInterpreterRemoved(serviceAppointment);
+                }
+
                 // Varsel ved endring av skjermtolk/oppmøtetolk
                 if (
                     serviceAppointment.HOT_IsScreenInterpreterNew__c !=
