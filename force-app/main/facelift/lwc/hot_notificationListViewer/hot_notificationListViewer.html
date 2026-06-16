@@ -53,7 +53,7 @@
                                 {notification.created}
                             </div>
                             <template lwc:if={notification.showAccessError}>
-                                <div>
+                                <div role="alert">
                                     <c-hot_local-alert
                                         type="error"
                                         title={errorMessageBanner}
