@@ -54,7 +54,7 @@
                     <br>
                         <c-hot_info-card
                             title="Endring registrert"
-                            content="Kontaktinformasjonen vil bli oppdatert innen 24 timer"
+                            content="Kontaktinformasjonen vil bli oppdatert innen 24 timer."
                             type="neutral"
                         ></c-hot_info-card>
                     </div>
@@ -142,18 +142,8 @@
             <div class="sr-only" aria-live="assertive" role="status">{ariaMessage}.</div>
 
             <template lwc:if={showSuccess}>
-                <div class="navno-dekorator alertstripe navno-dekorator alertstripe--success">
-                    <img class="navno-dekorator alertstripe__ikon" src={successicon} alt="" />
-                    <div class="typo-normal alertstripe__tekst">
-                        <p>{successMessage}</p>
-                    </div>
-                    <button
-                        class="navno-dekorator close-success-button"
-                        onclick={handleCloseSuccess}
-                        aria-label="Lukk melding"
-                    >
-                        &times;
-                    </button>
+                <div class="success-container">
+                    <c-hot_local-alert type="success" title={successMessage} size="small" content="Dine varselinnstillinger er oppdatert."></c-hot_local-alert>
                 </div>
             </template>
         </div>

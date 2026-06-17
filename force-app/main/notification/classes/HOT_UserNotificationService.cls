@@ -280,11 +280,10 @@ public without sharing class HOT_UserNotificationService {
         Thread__c thread,
         Boolean isFreelanceInterpreter,
         Boolean isUser,
-        Set<String> recipients
+        Set<String> recipients,
+        String title,
+        String body
     ) {
-        String title = 'Ny melding fra Tolketjenesten';
-        String body = 'Du har fått en melding fra Tolketjenesten.';
-
         Messaging.CustomNotification notification = new Messaging.CustomNotification();
         notification.setTitle(title);
         notification.setBody(body);
