@@ -76,7 +76,7 @@
                 </template>
                 <button class="customTabButton tabMeasureButton tabMeasureMore" type="button">More</button>
             </div>
-            <div class="customTabPanel" role="tabpanel">
+            <div class={tabPanelClass} role="tabpanel">
                 <!-- Oppsummering START-->
                 <template lwc:if={isTab1Active}>
                     <template lwc:if={noAccess}>

@@ -722,25 +722,50 @@ export default class hot_messagingMessageComponent extends LightningElement {
         return tabs;
     }
 
+    getTabColorClass(tabId) {
+        if (tabId === 'tab1') return 'tabColor--summary';
+        if (tabId === 'tab2') return 'tabColor--user';
+        if (tabId === 'tab3') return 'tabColor--orderer';
+        if (tabId === 'tab4') return 'tabColor--userInterpreter';
+        if (tabId === 'tab5') return 'tabColor--interpreterInterpreter';
+        if (tabId === 'tab6') return 'tabColor--interpreter';
+        if (tabId === 'tab7') return 'tabColor--office';
+        return '';
+    }
+
     get visibleTabs() {
         const fallbackTabs = this.allTabs;
         const visibleTabSet = new Set(this.visibleTabIds);
         const tabs = fallbackTabs.filter((tab) => visibleTabSet.has(tab.id));
         const resolvedTabs = tabs.length > 0 ? tabs : fallbackTabs;
 
-        return resolvedTabs.map((tab) => ({
-            ...tab,
-            className: this.activeTab === tab.id ? 'customTabButton customTabButtonActive' : 'customTabButton'
-        }));
+        return resolvedTabs.map((tab) => {
+            const baseClass = this.activeTab === tab.id ? 'customTabButton customTabButtonActive' : 'customTabButton';
+            const colorClass = this.getTabColorClass(tab.id);
+            return {
+                ...tab,
+                className: colorClass ? `${baseClass} ${colorClass}` : baseClass
+            };
+        });
     }
 
     get overflowTabs() {
         const overflowTabSet = new Set(this.overflowTabIds);
-        return this.allTabs.filter((tab) => overflowTabSet.has(tab.id));
+        return this.allTabs
+            .filter((tab) => overflowTabSet.has(tab.id))
+            .map((tab) => ({
+                ...tab,
+                className: this.getTabColorClass(tab.id)
+            }));
     }
 
     get hasOverflowTabs() {
         return this.overflowTabIds.length > 0;
+    }
+
+    get tabPanelClass() {
+        const colorClass = this.getTabColorClass(this.activeTab);
+        return colorClass ? `customTabPanel ${colorClass}` : 'customTabPanel';
     }
 
     get isTab1Active() {
