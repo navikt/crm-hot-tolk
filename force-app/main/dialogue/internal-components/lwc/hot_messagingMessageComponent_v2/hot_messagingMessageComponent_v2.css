@@ -1,9 +1,10 @@
 .customTabHeader {
     display: flex;
-    flex-wrap: wrap;
+    flex-wrap: nowrap;
     gap: 0.25rem;
     padding: 0 0.25rem;
     border-bottom: none;
+    overflow: hidden;
 }
 
 .customTabButton {
@@ -18,6 +19,9 @@
     padding: 0.5rem 0.75rem;
     line-height: 1.25;
     cursor: pointer;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
 }
 
 .customTabButton:hover {
@@ -100,3 +104,24 @@
     font-size: 1rem;
     line-height: 1.25;
 }
+
+.customTabMoreMenu {
+    margin-inline-start: 0.25rem;
+    align-self: flex-end;
+}
+
+.tabMeasureContainer {
+    position: absolute;
+    inset-inline-start: -9999px;
+    inset-block-start: -9999px;
+    visibility: hidden;
+    pointer-events: none;
+    display: inline-flex;
+    gap: 0.25rem;
+    white-space: nowrap;
+}
+
+.tabMeasureButton {
+    inset-block-end: 0;
+}
+

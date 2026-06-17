@@ -20,6 +20,8 @@ export default class hot_messagingMessageComponent extends LightningElement {
     isThreadSummaryLoaded = false;
     defaultActiveTab = 'tab1';
     selectedTab;
+    visibleTabIds = [];
+    overflowTabIds = [];
     showMessageInput = true;
     //show flows
     userSetToRedactionFlow = false;
@@ -143,7 +145,118 @@ export default class hot_messagingMessageComponent extends LightningElement {
         }
     }
 
-    renderedCallback() {}
+    renderedCallback() {
+        this.ensureResizeObserver();
+        this.recalculateTabOverflow();
+    }
+
+    disconnectedCallback() {
+        if (this.resizeObserver) {
+            this.resizeObserver.disconnect();
+            this.resizeObserver = null;
+        }
+    }
+
+    ensureResizeObserver() {
+        if (this.resizeObserver || typeof ResizeObserver === 'undefined') {
+            return;
+        }
+
+        const tabHeader = this.template.querySelector('.customTabHeader');
+        if (!tabHeader) {
+            return;
+        }
+
+        this.resizeObserver = new ResizeObserver(() => {
+            this.recalculateTabOverflow();
+        });
+        this.resizeObserver.observe(tabHeader);
+    }
+
+    recalculateTabOverflow() {
+        const tabHeader = this.template.querySelector('.customTabHeader');
+        const measureContainer = this.template.querySelector('.tabMeasureContainer');
+        const tabs = this.allTabs;
+
+        if (!tabHeader || !measureContainer || tabs.length === 0) {
+            return;
+        }
+
+        const availableWidth = tabHeader.clientWidth;
+        if (!availableWidth) {
+            return;
+        }
+
+        const headerStyles = window.getComputedStyle(tabHeader);
+        const gapSize = parseFloat(headerStyles.columnGap || headerStyles.gap || '0') || 0;
+
+        const tabWidths = new Map();
+        measureContainer.querySelectorAll('[data-measure-tab]').forEach((button) => {
+            const tabId = button.dataset.measureTab;
+            tabWidths.set(tabId, button.offsetWidth);
+        });
+
+        const moreButtonWidth = measureContainer.querySelector('.tabMeasureMore')?.offsetWidth || 88;
+
+        const visible = [];
+        const overflow = [];
+        let usedWidth = 0;
+
+        tabs.forEach((tab) => {
+            const nextWidth = tabWidths.get(tab.id) || 120;
+            const nextUsedWidth = usedWidth + (visible.length > 0 ? gapSize : 0) + nextWidth;
+
+            if (nextUsedWidth <= availableWidth) {
+                visible.push(tab.id);
+                usedWidth = nextUsedWidth;
+            } else {
+                overflow.push(tab.id);
+            }
+        });
+
+        if (overflow.length > 0) {
+            while (
+                visible.length > 1 &&
+                usedWidth + (visible.length > 0 ? gapSize : 0) + moreButtonWidth > availableWidth
+            ) {
+                const movedTabId = visible.pop();
+                overflow.unshift(movedTabId);
+
+                usedWidth = visible.reduce((sum, tabId, index) => {
+                    const width = tabWidths.get(tabId) || 120;
+                    return sum + (index > 0 ? gapSize : 0) + width;
+                }, 0);
+            }
+        }
+
+        const activeTabId = this.activeTab;
+        const activeInOverflow = overflow.includes(activeTabId);
+        if (activeInOverflow && visible.length > 0) {
+            const displaced = visible[visible.length - 1];
+            visible[visible.length - 1] = activeTabId;
+
+            const activeIndex = overflow.indexOf(activeTabId);
+            overflow.splice(activeIndex, 1);
+
+            if (displaced !== activeTabId) {
+                overflow.unshift(displaced);
+            }
+        }
+
+        if (!this.arraysEqual(this.visibleTabIds, visible)) {
+            this.visibleTabIds = visible;
+        }
+        if (!this.arraysEqual(this.overflowTabIds, overflow)) {
+            this.overflowTabIds = overflow;
+        }
+    }
+
+    arraysEqual(left, right) {
+        if (left.length !== right.length) {
+            return false;
+        }
+        return left.every((value, index) => value === right[index]);
+    }
     connectedCallback() {
         this.relatedObjectId = this.recordId;
         if (this.objectApiName === 'HOT_Request__c') {
@@ -584,6 +697,52 @@ export default class hot_messagingMessageComponent extends LightningElement {
         return !this.isThreadSummaryLoaded;
     }
 
+    get allTabs() {
+        const tabs = [{ id: 'tab1', label: 'Oppsummering' }];
+
+        if (this.showUserThreadTab) {
+            tabs.push({ id: 'tab2', label: this.userThreadTabLabel });
+        }
+        if (this.showOrderThreadTab) {
+            tabs.push({ id: 'tab3', label: this.ordererThreadTabLabel });
+        }
+        if (this.showUserInterpreterThreadTab) {
+            tabs.push({ id: 'tab4', label: this.userInterpreterThreadTabLabel });
+        }
+        if (this.showInterpreterInterpreterThreadTab) {
+            tabs.push({ id: 'tab5', label: this.interpreterInterpreterThreadTabLabel });
+        }
+        if (this.showInterpreterThreadTab) {
+            tabs.push({ id: 'tab6', label: this.interpreterThreadTabLabel });
+        }
+        if (this.showOfficeThreadTab) {
+            tabs.push({ id: 'tab7', label: this.officeThreadTabLabel });
+        }
+
+        return tabs;
+    }
+
+    get visibleTabs() {
+        const fallbackTabs = this.allTabs;
+        const visibleTabSet = new Set(this.visibleTabIds);
+        const tabs = fallbackTabs.filter((tab) => visibleTabSet.has(tab.id));
+        const resolvedTabs = tabs.length > 0 ? tabs : fallbackTabs;
+
+        return resolvedTabs.map((tab) => ({
+            ...tab,
+            className: this.activeTab === tab.id ? 'customTabButton customTabButtonActive' : 'customTabButton'
+        }));
+    }
+
+    get overflowTabs() {
+        const overflowTabSet = new Set(this.overflowTabIds);
+        return this.allTabs.filter((tab) => overflowTabSet.has(tab.id));
+    }
+
+    get hasOverflowTabs() {
+        return this.overflowTabIds.length > 0;
+    }
+
     get isTab1Active() {
         return this.activeTab === 'tab1';
     }
@@ -682,6 +841,15 @@ export default class hot_messagingMessageComponent extends LightningElement {
     }
     handleTabClick(event) {
         const nextTab = event.currentTarget?.dataset?.tab;
+        this.selectTab(nextTab);
+    }
+
+    handleMoreTabSelect(event) {
+        const nextTab = event.detail?.value;
+        this.selectTab(nextTab);
+    }
+
+    selectTab(nextTab) {
         if (!nextTab || nextTab === this.activeTab || !this.isTabVisible(nextTab)) {
             return;
         }
@@ -703,6 +871,8 @@ export default class hot_messagingMessageComponent extends LightningElement {
         } else if (nextTab === 'tab7') {
             this.officeThreadTabHandler();
         }
+
+        this.recalculateTabOverflow();
     }
 
     findOpenThread() {

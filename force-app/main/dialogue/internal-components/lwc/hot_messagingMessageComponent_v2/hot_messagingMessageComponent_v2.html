@@ -37,39 +37,44 @@
         </template>
         <template lwc:else>
             <div class="customTabHeader" role="tablist" aria-label="Samtaler">
-                <button class={tab1Class} data-tab="tab1" onclick={handleTabClick} type="button" role="tab">
-                    Oppsummering
-                </button>
-                <template lwc:if={showUserThreadTab}>
-                    <button class={tab2Class} data-tab="tab2" onclick={handleTabClick} type="button" role="tab">
-                        {userThreadTabLabel}
+                <template for:each={visibleTabs} for:item="tab">
+                    <button
+                        key={tab.id}
+                        class={tab.className}
+                        data-tab={tab.id}
+                        onclick={handleTabClick}
+                        type="button"
+                        role="tab"
+                    >
+                        {tab.label}
                     </button>
                 </template>
-                <template lwc:if={showOrderThreadTab}>
-                    <button class={tab3Class} data-tab="tab3" onclick={handleTabClick} type="button" role="tab">
-                        {ordererThreadTabLabel}
+                <template lwc:if={hasOverflowTabs}>
+                    <lightning-button-menu
+                        class="customTabMoreMenu"
+                        variant="container"
+                        alternative-text="Flere samtaler"
+                        menu-alignment="right"
+                        onselect={handleMoreTabSelect}
+                    >
+                        <template for:each={overflowTabs} for:item="tab">
+                            <lightning-menu-item key={tab.id} value={tab.id} label={tab.label}></lightning-menu-item>
+                        </template>
+                    </lightning-button-menu>
+                </template>
+            </div>
+            <div class="tabMeasureContainer" aria-hidden="true">
+                <template for:each={allTabs} for:item="tab">
+                    <button
+                        key={tab.id}
+                        class="customTabButton tabMeasureButton"
+                        type="button"
+                        data-measure-tab={tab.id}
+                    >
+                        {tab.label}
                     </button>
                 </template>
-                <template lwc:if={showUserInterpreterThreadTab}>
-                    <button class={tab4Class} data-tab="tab4" onclick={handleTabClick} type="button" role="tab">
-                        {userInterpreterThreadTabLabel}
-                    </button>
-                </template>
-                <template lwc:if={showInterpreterInterpreterThreadTab}>
-                    <button class={tab5Class} data-tab="tab5" onclick={handleTabClick} type="button" role="tab">
-                        {interpreterInterpreterThreadTabLabel}
-                    </button>
-                </template>
-                <template lwc:if={showInterpreterThreadTab}>
-                    <button class={tab6Class} data-tab="tab6" onclick={handleTabClick} type="button" role="tab">
-                        {interpreterThreadTabLabel}
-                    </button>
-                </template>
-                <template lwc:if={showOfficeThreadTab}>
-                    <button class={tab7Class} data-tab="tab7" onclick={handleTabClick} type="button" role="tab">
-                        {officeThreadTabLabel}
-                    </button>
-                </template>
+                <button class="customTabButton tabMeasureButton tabMeasureMore" type="button">More</button>
             </div>
             <div class="customTabPanel" role="tabpanel">
                 <!-- Oppsummering START-->
