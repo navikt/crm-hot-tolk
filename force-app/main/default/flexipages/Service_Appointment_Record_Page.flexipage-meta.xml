@@ -38,8 +38,7 @@
                                     <rightValue>Released to Freelance</rightValue>
                                 </criteria>
                                 <criteria>
-                                    <leftValue>
-                                        {!$Permission.CustomPermission.HOT_ReleaseToFreelance}</leftValue>
+                                    <leftValue>{!$Permission.CustomPermission.HOT_ReleaseToFreelance}</leftValue>
                                     <operator>EQUAL</operator>
                                     <rightValue>true</rightValue>
                                 </criteria>
@@ -55,8 +54,7 @@
                                     <rightValue>Released to Freelance</rightValue>
                                 </criteria>
                                 <criteria>
-                                    <leftValue>
-                                        {!$Permission.CustomPermission.HOT_ReleaseToFreelance}</leftValue>
+                                    <leftValue>{!$Permission.CustomPermission.HOT_ReleaseToFreelance}</leftValue>
                                     <operator>EQUAL</operator>
                                     <rightValue>true</rightValue>
                                 </criteria>
@@ -77,8 +75,7 @@
                             <visibilityRule>
                                 <booleanFilter>1 AND 2 AND 3 AND 4 AND 5 AND 6</booleanFilter>
                                 <criteria>
-                                    <leftValue>
-                                        {!$Permission.CustomPermission.HOT_AccessToFormidlerActions}</leftValue>
+                                    <leftValue>{!$Permission.CustomPermission.HOT_AccessToFormidlerActions}</leftValue>
                                     <operator>EQUAL</operator>
                                     <rightValue>true</rightValue>
                                 </criteria>
@@ -113,8 +110,7 @@
                             <value>ServiceAppointment.HOT_ChangeStatus</value>
                             <visibilityRule>
                                 <criteria>
-                                    <leftValue>
-                                        {!$Permission.StandardPermission.FieldServiceMobileApp}</leftValue>
+                                    <leftValue>{!$Permission.StandardPermission.FieldServiceMobileApp}</leftValue>
                                     <operator>EQUAL</operator>
                                     <rightValue>true</rightValue>
                                 </criteria>
