@@ -1,5 +1,5 @@
 <template>
-    <section if:true={hasAccess}>
+    <template lwc:if={hasAccess}>
         <!-- Messages Start-->
         <section role="log" id="scroller" class="slds-box scroller slds-scrollable_y">
             <template for:each={messages} for:item="message">
@@ -38,7 +38,7 @@
                                             <lightning-layout ontoolbaraction={handleToolbarAction}>
                                                 <slot name="toolbar"></slot>
                                             </lightning-layout>
-                                            <template if:true={hasEnglishTemplate}>
+                                            <template lwc:if={hasEnglishTemplate}>
                                                 <lightning-button
                                                     role="switch"
                                                     type="lang"
@@ -58,7 +58,7 @@
                                         </lightning-layout>
                                     </lightning-layout-item>
                                     <!-- Avslutt samtalen -->
-                                    <template if:true={showClose}>
+                                    <template lwc:if={showClose}>
                                         <lightning-layout-item size="4">
                                             <lightning-layout horizontal-align="end">
                                                 <lightning-record-edit-form
@@ -133,16 +133,16 @@
                                     </template>
                                 </lightning-layout>
                             </div>
-                            <template if:true={showspinner}>
+                            <template lwc:if={showspinner}>
                                 <div class="spinnerholder">
                                     <lightning-spinner alternative-text="Loading" size="medium"></lightning-spinner>
                                 </div>
                             </template>
-                            <template if:true={showReplyInput}>
+                            <template lwc:if={showReplyInput}>
                                 <c-hot_messaging-quick-text conversation-note={textTemplate} onlocklang={lockLangBtn}>
                                 </c-hot_messaging-quick-text>
                             </template>
-                            <template if:false={showReplyInput}>
+                            <template lwc:else>
                                 <div class="closed-reply-message" role="status" aria-live="polite">
                                     <lightning-icon
                                         class="closed-reply-message__icon"
@@ -198,13 +198,13 @@
                 <c-hot_alert-banner message={canceledSABannerText} type="Warning"></c-hot_alert-banner>
             </div>
         </template>
-    </section>
-    <section if:true={showAccessError}>
+    </template>
+    <template lwc:if={showAccessError}>
         <div class="slds-notify slds-notify_alert slds-theme_alert-texture slds-theme_error" role="alert">
             <span class="slds-assistive-text">Advarsel</span>
             <lightning-icon icon-name="utility:error" size="x-small" class="slds-m-right--x-small" variant="inverse">
             </lightning-icon>
             <h2>Du har ikke tilgang til denne tråden</h2>
         </div>
-    </section>
+    </template>
 </template>

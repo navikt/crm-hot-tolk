@@ -453,10 +453,10 @@ private class HOT_ThreadReplyPolicyTest {
             .get(thread.Id);
         Test.stopTest();
 
-        Thread__c savedThread = [SELECT HOT_Close_DateTime__c FROM Thread__c WHERE Id = :thread.Id];
+        Thread__c savedThread = [SELECT HOT_CloseDateTime__c FROM Thread__c WHERE Id = :thread.Id];
         System.assertEquals(
             null,
-            savedThread.HOT_Close_DateTime__c,
+            savedThread.HOT_CloseDateTime__c,
             'WageClaim should not feed the thread close formula.'
         );
         System.assertEquals(

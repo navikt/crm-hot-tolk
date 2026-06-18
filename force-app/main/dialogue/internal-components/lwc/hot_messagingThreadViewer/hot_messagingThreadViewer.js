@@ -1,4 +1,4 @@
-import { LightningElement, api, wire, track } from 'lwc';
+import { LightningElement, api, wire } from 'lwc';
 import getmessages from '@salesforce/apex/HOT_MessageHelper.getMessagesFromThread';
 import markAsReadByNav from '@salesforce/apex/HOT_MessageHelper.markAsReadByNav';
 import { subscribe, unsubscribe } from 'lightning/empApi';
@@ -27,16 +27,16 @@ export default class hot_messagingThreadViewer extends LightningElement {
     @api showClose;
     @api englishTextTemplate;
     @api setInputInFocusOnRender;
-    @track langBtnLock = false;
+    langBtnLock = false;
     langBtnAriaToggle = false;
     newMessage = false;
-    @track hasAccess = false;
-    @track showAccessError = false;
-    @track canReply = true;
+    hasAccess = false;
+    showAccessError = false;
+    canReply = true;
     canceledSABannerText =
         'Oppdraget er avlyst. Du kan se samtalen i 48 timer etter avlysning. Du kan ikke sende nye meldinger.';
 
-    @track wiredThread = {};
+    wiredThread = {};
 
     @api textTemplate; //Support for conditional text template as input
     //Constructor, called onload

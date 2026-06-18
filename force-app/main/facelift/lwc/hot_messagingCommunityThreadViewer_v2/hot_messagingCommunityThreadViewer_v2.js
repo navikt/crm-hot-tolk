@@ -318,6 +318,46 @@ export default class Hot_messagingCommunityThreadViewer_v2 extends NavigationMix
         return this.wageClaim?.Reason__c || '';
     }
 
+    get hasServiceAppointmentAddress() {
+        return !!this.serviceAppointment?.HOT_AddressFormated__c;
+    }
+
+    get hasServiceAppointmentPreparationTime() {
+        return !!this.serviceAppointment?.HOT_PreparationTime__c;
+    }
+
+    get hasServiceAppointmentEscort() {
+        return !!this.serviceAppointment?.HOT_Escort__c;
+    }
+
+    get hasServiceAppointmentDegreeOfHearingAndVisualImpairment() {
+        return !!this.serviceAppointment?.HOT_DegreeOfHearingAndVisualImpairment__c;
+    }
+
+    get hasServiceAppointmentInterpreters() {
+        return !!this.serviceAppointment?.HOT_Interpreters__c;
+    }
+
+    get hasServiceAppointmentDispatcher() {
+        return !!this.serviceAppointment?.HOT_Dispatcher__c;
+    }
+
+    get hasServiceAppointmentCanceledDate() {
+        return !!this.serviceAppointment?.HOT_CanceledDate__c;
+    }
+
+    get hasInterestedResourcePreparationTime() {
+        return !!this.interestedResource?.ServiceAppointment__r?.HOT_PreparationTime__c;
+    }
+
+    get hasInterestedResourceWorkOrderCanceledDate() {
+        return !!this.interestedResource?.WorkOrderCanceledDate__c;
+    }
+
+    get hasInterestedResourceTermsOfAgreement() {
+        return !!this.interestedResource?.HOT_TermsOfAgreement__c;
+    }
+
     scrollToLatestMessage() {
         const messageContainers = this.template.querySelectorAll('c-hot_messaging-Community-Message-Container_v2');
 
@@ -335,7 +375,10 @@ export default class Hot_messagingCommunityThreadViewer_v2 extends NavigationMix
         this.showParticipantsModalDetails();
         getThreadParticipants({ threadId: this.recordId })
             .then((result) => {
-                this.threadParticipants = result; // lagrer deltakerne
+                this.threadParticipants = (result || []).map((participant) => ({
+                    ...participant,
+                    roleText: participant.role ? ` (${participant.role})` : ''
+                }));
                 this.isLoading = false;
             })
             .catch((error) => {

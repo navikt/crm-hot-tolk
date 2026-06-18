@@ -58,7 +58,7 @@ public without sharing class HOT_ThreadReplyPolicy {
         }
 
         List<Thread__c> threads = [
-            SELECT Id, CRM_Thread_Type__c, HOT_Close_DateTime__c, HOT_Request__c, HOT_Request__r.IsSerieoppdrag__c
+            SELECT Id, CRM_Thread_Type__c, HOT_CloseDateTime__c, HOT_Request__c, HOT_Request__r.IsSerieoppdrag__c
             FROM Thread__c
             WHERE Id IN :validThreadIds
         ];
@@ -136,6 +136,6 @@ public without sharing class HOT_ThreadReplyPolicy {
             return seriesEndTimeByRequestId.get(thread.HOT_Request__c);
         }
 
-        return thread.HOT_Close_DateTime__c;
+        return thread.HOT_CloseDateTime__c;
     }
 }
