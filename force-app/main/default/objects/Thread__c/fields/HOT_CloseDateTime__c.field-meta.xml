@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>HOT_CloseDateTime__c</fullName>
+    <description>This field shows when the thread should close for replies.</description>
+    <externalId>false</externalId>
+    <formula>IF(
+    NOT(ISBLANK(HOT_ServiceAppointment__c)),
+    IF(
+        ISBLANK(HOT_ServiceAppointment__r.SchedEndTime),
+        HOT_ServiceAppointment__r.DueDate,
+        HOT_ServiceAppointment__r.SchedEndTime
+    ),
+    IF(
+        NOT(ISBLANK(HOT_Request__c)),
+        HOT_Request__r.EndTime__c,
+        IF(
+            NOT(ISBLANK(HOT_WorkOrder__c)),
+            HOT_WorkOrder__r.EndDate,
+            IF(
+                NOT(ISBLANK(HOT_InterestedResource__c)),
+                IF(
+                    ISBLANK(HOT_InterestedResource__r.ServiceAppointment__r.SchedEndTime),
+                    HOT_InterestedResource__r.ServiceAppointment__r.DueDate,
+                    HOT_InterestedResource__r.ServiceAppointment__r.SchedEndTime
+                ),
+                NULL
+            )
+        )
+    )
+)</formula>
+    <formulaTreatBlanksAs>BlankAsZero</formulaTreatBlanksAs>
+    <label>Close DateTime</label>
+    <required>false</required>
+    <trackHistory>false</trackHistory>
+    <trackTrending>false</trackTrending>
+    <type>DateTime</type>
+</CustomField>
