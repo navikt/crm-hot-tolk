@@ -3,7 +3,5 @@
     <description>Til eksterne formidlere</description>
     <hasActivationRequired>false</hasActivationRequired>
     <label>HOT Tolk Tjenesteleverandør Gruppe</label>
-    <permissionSets>FSL_Agent_License</permissionSets>
-    <permissionSets>FSL_Dispatcher_License</permissionSets>
     <status>Updated</status>
 </PermissionSetGroup>
