@@ -1,6 +1,18 @@
 public without sharing class HOT_MessageHelper {
     private static User cachedUser;
 
+    public class ThreadWithReplyPolicy {
+        @AuraEnabled
+        public Thread__c thread;
+        @AuraEnabled
+        public HOT_ThreadReplyPolicy.ReplyPolicy replyPolicy;
+
+        public ThreadWithReplyPolicy(Thread__c thread, HOT_ThreadReplyPolicy.ReplyPolicy replyPolicy) {
+            this.thread = thread;
+            this.replyPolicy = replyPolicy;
+        }
+    }
+
     private static User getCurrentUser() {
         if (cachedUser == null) {
             cachedUser = [
@@ -247,6 +259,16 @@ public without sharing class HOT_MessageHelper {
             throw new AuraHandledException(e.getMessage());
         }
     }
+
+    @AuraEnabled(cacheable=false)
+    public static ThreadWithReplyPolicy getThreadByIdWithReplyPolicy(Id threadId) {
+        Thread__c thread = getThreadById(threadId);
+        return new ThreadWithReplyPolicy(
+            thread,
+            HOT_ThreadReplyPolicy.getReplyPolicies(new Set<Id>{ threadId }).get(threadId)
+        );
+    }
+
     @AuraEnabled(cacheable=true)
     public static List<Thread__c> getThreadFromThreadId(Id recordId) {
         try {
@@ -868,6 +890,11 @@ public without sharing class HOT_MessageHelper {
             try {
                 insert m;
                 return true;
+            } catch (DmlException e) {
+                if (e.getMessage().contains('Denne samtalen er stengt for videre dialog.')) {
+                    return false;
+                }
+                throw new AuraHandledException(e.getMessage());
             } catch (Exception e) {
                 throw new AuraHandledException(e.getMessage());
             }
@@ -1056,22 +1083,22 @@ public without sharing class HOT_MessageHelper {
     public static String buildHeader(String role, Boolean isInterpreterReciever) {
         switch on role {
             when 'bruker' {
-                return 'Ny melding fra tolkebruker';
+                return 'Du har fått en melding fra tolkebruker';
             }
             when 'bestiller' {
-                return 'Ny melding fra tolkebestiller';
+                return 'Du har fått en melding fra tolkebestiller';
             }
             when 'tolk' {
-                return isInterpreterReciever ? 'Ny melding fra medtolk' : 'Ny melding fra tolk';
+                return isInterpreterReciever ? 'Du har fått en melding fra medtolk' : 'Du har fått en melding fra tolk';
             }
             when 'formidler' {
-                return 'Ny melding fra formidler';
+                return 'Du har fått en melding fra formidler';
             }
             when 'ressurskontor' {
-                return 'Ny melding fra ressurskontor';
+                return 'Du har fått en melding fra ressurskontor';
             }
             when else {
-                return 'Ny melding';
+                return 'Du har fått en melding';
             }
         }
     }

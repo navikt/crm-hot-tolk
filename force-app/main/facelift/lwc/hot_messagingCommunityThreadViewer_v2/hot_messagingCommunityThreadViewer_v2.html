@@ -67,8 +67,7 @@
                             <div class="modal-body">
                                 <template for:each={threadParticipants} for:item="participant">
                                     <p class="participant-text" key={participant.userId}>
-                                        {participant.name}
-                                        <template if:true={participant.role}> ({participant.role}) </template>
+                                        {participant.name} {participant.roleText}
                                     </p>
                                 </template>
                             </div>
@@ -111,7 +110,7 @@
                                         <p>Adresse: <span>{serviceAppointment.HOT_AddressFormated__c}</span></p>
 
                                         <!-- Show maps if address is present -->
-                                        <template lwc:if={serviceAppointment.HOT_AddressFormated__c}>
+                                        <template lwc:if={hasServiceAppointmentAddress}>
                                             <div style="display: inline-block; padding-right: 1vw">
                                                 <p>Åpne adressen i en karttjeneste (ekstern):</p>
                                                 <div class="maps-button-container">
@@ -146,10 +145,12 @@
                                         </template>
 
                                         <p>Tolkemetode: <span>{serviceAppointment.HOT_WorkTypeName__c}</span></p>
-                                        <p lwc:if={serviceAppointment.HOT_PreparationTime__c}>
-                                            Kompensert forberedelse:
-                                            <span>{serviceAppointment.HOT_PreparationTime__c}</span>
-                                        </p>
+                                        <template lwc:if={hasServiceAppointmentPreparationTime}>
+                                            <p>
+                                                Kompensert forberedelse:
+                                                <span>{serviceAppointment.HOT_PreparationTime__c}</span>
+                                            </p>
+                                        </template>
                                         <p>Oppdragstype: <span>{serviceAppointment.HOT_AssignmentType__c}</span></p>
                                         <p>Eier: <span>{serviceAppointment.HOT_Request__r.OwnerName__c}</span></p>
                                         <p>Status: <span>{serviceAppointment.Status}</span></p>
@@ -159,11 +160,11 @@
                                             <span>{serviceAppointment.HOT_HapticCommunication__c}</span>
                                         </p>
 
-                                        <template lwc:if={serviceAppointment.HOT_Escort__c}>
+                                        <template lwc:if={hasServiceAppointmentEscort}>
                                             <p>Ledsaging: <span>{serviceAppointment.HOT_Escort__c}</span></p>
                                         </template>
 
-                                        <template lwc:if={serviceAppointment.HOT_DegreeOfHearingAndVisualImpairment__c}>
+                                        <template lwc:if={hasServiceAppointmentDegreeOfHearingAndVisualImpairment}>
                                             <p>
                                                 Vedtak:&nbsp;
                                                 <span
@@ -178,7 +179,7 @@
                                                 <span>{interestedResource.HOT_TermsOfAgreement__c}</span>
                                             </p>
                                         </template>
-                                        <template lwc:if={serviceAppointment.HOT_Interpreters__c}>
+                                        <template lwc:if={hasServiceAppointmentInterpreters}>
                                             <p>(Med)tolk: <span>{serviceAppointment.HOT_Interpreters__c}</span></p>
                                         </template>
                                         <p>
@@ -195,11 +196,11 @@
                                         </template>
                                         <p>Annen betaler: <span>{isOtherProvider}</span></p>
 
-                                        <template lwc:if={serviceAppointment.HOT_Dispatcher__c}>
+                                        <template lwc:if={hasServiceAppointmentDispatcher}>
                                             <p>Formidler: <span>{serviceAppointment.HOT_Dispatcher__c}</span></p>
                                         </template>
 
-                                        <template lwc:if={serviceAppointment.HOT_CanceledDate__c}>
+                                        <template lwc:if={hasServiceAppointmentCanceledDate}>
                                             <p>Avlyst dato: <span>{serviceAppointment.HOT_CanceledDate__c}</span></p>
                                         </template>
                                     </div>
@@ -216,12 +217,14 @@
                                         <p>Tid: <span>{interestedResource.StartAndEndDate}</span></p>
                                         <p>Adresse: <span>{interestedResource.ServiceAppointmentAddress__c}</span></p>
                                         <p>Tolkemetode: <span>{interestedResource.WorkTypeName__c}</span></p>
-                                        <p lwc:if={interestedResource.ServiceAppointment__r.HOT_PreparationTime__c}>
-                                            Kompensert forberedelse:&nbsp;
-                                            <span>
-                                                {interestedResource.ServiceAppointment__r.HOT_PreparationTime__c}</span
-                                            >
-                                        </p>
+                                        <template lwc:if={hasInterestedResourcePreparationTime}>
+                                            <p>
+                                                Kompensert forberedelse:&nbsp;
+                                                <span>
+                                                    {interestedResource.ServiceAppointment__r.HOT_PreparationTime__c}</span
+                                                >
+                                            </p>
+                                        </template>
                                         <p>Oppdragstype: <span>{interestedResource.AssignmentType__c}</span></p>
                                         <p>Status: <span>{interestedResource.Status__c}</span></p>
                                         <div
@@ -263,13 +266,13 @@
                                             >
                                         </p>
 
-                                        <template lwc:if={interestedResource.WorkOrderCanceledDate__c}>
+                                        <template lwc:if={hasInterestedResourceWorkOrderCanceledDate}>
                                             <p>
                                                 Avlyst dato: <span>{interestedResource.WorkOrderCanceledDate__c}</span>
                                             </p>
                                         </template>
 
-                                        <template lwc:if={interestedResource.HOT_TermsOfAgreement__c}>
+                                        <template lwc:if={hasInterestedResourceTermsOfAgreement}>
                                             <p>
                                                 Avtalte betingelser:
                                                 <span>{interestedResource.HOT_TermsOfAgreement__c}</span>
@@ -337,10 +340,10 @@
                         </template>
                     </div>
                 </div>
-                <template lwc:if={showMessageInput}>
+                <template lwc:if={showReplyInput}>
                     <div class="textarea-container">
                         <c-textarea
-                            description={helptextContent}
+                            helptext-content={helptextContent}
                             label="Ny melding"
                             max-length={maxLength}
                             error-text={textareaErrorText}
@@ -361,6 +364,12 @@
                             desktop-style="width: 10rem; justify-content: center;"
                             mobile-style="width: 9rem; justify-content: center;"
                         ></c-button>
+                    </div>
+                </template>
+                <template lwc:elseif={showMessageInput}>
+                    <div class="closed-reply-message" role="status" aria-live="polite">
+                        <span class="closed-reply-message__icon" aria-hidden="true">i</span>
+                        <p>{replyClosedText}</p>
                     </div>
                 </template>
             </div>
