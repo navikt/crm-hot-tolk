@@ -13,13 +13,6 @@
                 <elementReference>$Flow.CurrentDateTime</elementReference>
             </value>
         </assignmentItems>
-        <assignmentItems>
-            <assignToReference>$Record.HOT_AcceptedByTjenesteleverandor__c</assignToReference>
-            <operator>Assign</operator>
-            <value>
-                <booleanValue>true</booleanValue>
-            </value>
-        </assignmentItems>
     </assignments>
     <assignments>
         <name>Set_Transferred_To_Tjenesteleverandor_Date</name>
@@ -79,17 +72,17 @@
             <name>Accepted_By_Tjenesteleverandor</name>
             <conditionLogic>and</conditionLogic>
             <conditions>
-                <leftValueReference>$Record.HOT_AcceptedByTjenesteleverandor__c</leftValueReference>
+                <leftValueReference>$Record.HOT_TjenesteleverandorStatus__c</leftValueReference>
                 <operator>EqualTo</operator>
                 <rightValue>
-                    <booleanValue>true</booleanValue>
+                    <stringValue>Accepted</stringValue>
                 </rightValue>
             </conditions>
             <conditions>
-                <leftValueReference>$Record__Prior.HOT_AcceptedByTjenesteleverandor__c</leftValueReference>
+                <leftValueReference>$Record__Prior.HOT_TjenesteleverandorStatus__c</leftValueReference>
                 <operator>NotEqualTo</operator>
                 <rightValue>
-                    <booleanValue>true</booleanValue>
+                    <stringValue>Accepted</stringValue>
                 </rightValue>
             </conditions>
             <connector>
@@ -99,8 +92,8 @@
         </rules>
     </decisions>
     <environments>Default</environments>
-    <interviewLabel>ServiceAppointment Update on Tjenesteleverandør Status {!$Flow.CurrentDateTime}</interviewLabel>
-    <label>ServiceAppointment Update on Tjenesteleverandør Status</label>
+    <interviewLabel>HOT_SAUpdateOnTjenesteleverandorStatus {!$Flow.CurrentDateTime}</interviewLabel>
+    <label>HOT_SAUpdateOnTjenesteleverandorStatus</label>
     <processMetadataValues>
         <name>BuilderType</name>
         <value>
@@ -127,16 +120,9 @@
         <connector>
             <targetReference>Check_Transferred_To_Tjenesteleverandor</targetReference>
         </connector>
-        <filterLogic>1 OR 2</filterLogic>
+        <filterLogic>and</filterLogic>
         <filters>
             <field>HOT_TjenesteleverandorStatus__c</field>
-            <operator>IsChanged</operator>
-            <value>
-                <booleanValue>true</booleanValue>
-            </value>
-        </filters>
-        <filters>
-            <field>HOT_AcceptedByTjenesteleverandor__c</field>
             <operator>IsChanged</operator>
             <value>
                 <booleanValue>true</booleanValue>
