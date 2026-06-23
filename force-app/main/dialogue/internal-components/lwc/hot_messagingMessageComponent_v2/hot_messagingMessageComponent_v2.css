@@ -54,6 +54,14 @@
     padding: 0.75rem;
 }
 
+.tabContent--hidden {
+    display: none;
+}
+
+.tabContent--active {
+    display: block;
+}
+
 .spinnerType {
     position: relative;
     height: 80px;

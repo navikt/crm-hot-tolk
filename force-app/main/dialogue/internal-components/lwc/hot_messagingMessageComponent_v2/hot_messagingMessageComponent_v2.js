@@ -20,6 +20,7 @@ export default class hot_messagingMessageComponent extends LightningElement {
     isThreadSummaryLoaded = false;
     defaultActiveTab = 'tab1';
     selectedTab;
+    loadedTabIds = ['tab1'];
     visibleTabIds = [];
     overflowTabIds = [];
     showMessageInput = true;
@@ -768,6 +769,77 @@ export default class hot_messagingMessageComponent extends LightningElement {
         return colorClass ? `customTabPanel ${colorClass}` : 'customTabPanel';
     }
 
+    isTabLoaded(tabId) {
+        return this.activeTab === tabId || this.loadedTabIds.includes(tabId);
+    }
+
+    loadTab(tabId) {
+        if (!tabId || this.loadedTabIds.includes(tabId)) {
+            return;
+        }
+        this.loadedTabIds = [...this.loadedTabIds, tabId];
+    }
+
+    getTabContentClass(tabId) {
+        return this.activeTab === tabId ? 'tabContent tabContent--active' : 'tabContent tabContent--hidden';
+    }
+
+    get isTab1Loaded() {
+        return this.isTabLoaded('tab1');
+    }
+
+    get isTab2Loaded() {
+        return this.isTabLoaded('tab2');
+    }
+
+    get isTab3Loaded() {
+        return this.isTabLoaded('tab3');
+    }
+
+    get isTab4Loaded() {
+        return this.isTabLoaded('tab4');
+    }
+
+    get isTab5Loaded() {
+        return this.isTabLoaded('tab5');
+    }
+
+    get isTab6Loaded() {
+        return this.isTabLoaded('tab6');
+    }
+
+    get isTab7Loaded() {
+        return this.isTabLoaded('tab7');
+    }
+
+    get tab1ContentClass() {
+        return this.getTabContentClass('tab1');
+    }
+
+    get tab2ContentClass() {
+        return `messageComponentTabContainer ${this.getTabContentClass('tab2')}`;
+    }
+
+    get tab3ContentClass() {
+        return `messageComponentTabContainer ${this.getTabContentClass('tab3')}`;
+    }
+
+    get tab4ContentClass() {
+        return `messageComponentTabContainer ${this.getTabContentClass('tab4')}`;
+    }
+
+    get tab5ContentClass() {
+        return `messageComponentTabContainer ${this.getTabContentClass('tab5')}`;
+    }
+
+    get tab6ContentClass() {
+        return `messageComponentTabContainer ${this.getTabContentClass('tab6')}`;
+    }
+
+    get tab7ContentClass() {
+        return `messageComponentTabContainer ${this.getTabContentClass('tab7')}`;
+    }
+
     get isTab1Active() {
         return this.activeTab === 'tab1';
     }
@@ -879,6 +951,9 @@ export default class hot_messagingMessageComponent extends LightningElement {
             return;
         }
 
+        const currentTab = this.activeTab;
+        this.loadTab(currentTab);
+        this.loadTab(nextTab);
         this.selectedTab = nextTab;
 
         if (nextTab === 'tab1') {
