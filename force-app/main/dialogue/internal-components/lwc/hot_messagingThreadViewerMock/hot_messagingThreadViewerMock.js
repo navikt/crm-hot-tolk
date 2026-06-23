@@ -7,6 +7,7 @@ export default class hot_messagingThreadViewerMock extends LightningElement {
     showspinner = false;
     hideModal = true;
     @api setInputInFocusOnRender;
+    @api initialMessage;
     @api focusOnInput() {
         let qtext = this.template.querySelector('c-hot_messaging-quick-text');
         if (qtext) {
@@ -61,10 +62,11 @@ export default class hot_messagingThreadViewerMock extends LightningElement {
         return this.quickTextCmp ? this.quickTextCmp.conversationNote : '';
     }
     get message() {
+        const messageText = this.initialMessage || 'Samtale er ikke påbegynt enda. Skriv en melding for å starte samtalen.';
         return {
-            CRM_Message_Text__c: 'Samtale er ikke påbegynt enda. Skriv en melding for å starte samtalen.',
+            CRM_Message_Text__c: messageText,
             CRM_Event_Type__c: 'OTHER',
             CRM_Type__c: 'Event'
-        }; //Default message to show in thread viewer mock before conversation starts
+        };
     }
 }

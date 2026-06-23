@@ -229,6 +229,7 @@
                             <template lwc:else>
                                 <c-hot_messaging-thread-viewer-mock
                                     set-input-in-focus-on-render
+                                    initial-message={userThreadInitialMessage}
                                     data-user-thread-mock
                                     oncreatethreadwithmessage={handleCreateUserThreadWithMessage}
                                 >
@@ -291,6 +292,7 @@
                             <template lwc:else>
                                 <c-hot_messaging-thread-viewer-mock
                                     set-input-in-focus-on-render
+                                    initial-message={ordererThreadInitialMessage}
                                     data-orderer-thread-mock
                                     oncreatethreadwithmessage={handleCreateOrdererThreadWithMessage}
                                 >
@@ -354,6 +356,7 @@
                             <template lwc:else>
                                 <c-hot_messaging-thread-viewer-mock
                                     set-input-in-focus-on-render
+                                    initial-message={userInterpreterThreadInitialMessage}
                                     data-user-int-thread-mock
                                     oncreatethreadwithmessage={handleCreateUserInterpreterThreadWithMessage}
                                 >
@@ -417,6 +420,7 @@
                             <template lwc:else>
                                 <c-hot_messaging-thread-viewer-mock
                                     set-input-in-focus-on-render
+                                    initial-message={interpreterInterpreterThreadInitialMessage}
                                     data-int-int-thread-mock
                                     oncreatethreadwithmessage={handleCreateInterpreterInterpreterThreadWithMessage}
                                 >
@@ -479,6 +483,7 @@
                             <template lwc:else>
                                 <c-hot_messaging-thread-viewer-mock
                                     set-input-in-focus-on-render
+                                    initial-message={interpreterThreadInitialMessage}
                                     data-int-thread-mock
                                     oncreatethreadwithmessage={handleCreateInterpreterThreadWithMessage}
                                 >
@@ -541,6 +546,7 @@
                             <template lwc:else>
                                 <c-hot_messaging-thread-viewer-mock
                                     set-input-in-focus-on-render
+                                    initial-message={officeThreadInitialMessage}
                                     data-office-thread-mock
                                     oncreatethreadwithmessage={handleCreateOfficeThreadWithMessage}
                                 >
