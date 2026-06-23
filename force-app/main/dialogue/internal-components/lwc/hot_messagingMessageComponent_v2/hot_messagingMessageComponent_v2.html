@@ -36,7 +36,7 @@
             </div>
         </template>
         <template lwc:else>
-            <div class="customTabHeader" role="tablist" aria-label="Samtaler">
+            <div class={tabHeaderClass} role="tablist" aria-label="Samtaler">
                 <template for:each={visibleTabs} for:item="tab">
                     <button
                         key={tab.id}

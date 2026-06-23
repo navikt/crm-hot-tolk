@@ -14,6 +14,7 @@ import checkIsOnlyEmployedInterpreter from '@salesforce/apex/HOT_ThreadDetailCon
 import setLastMessageFrom from '@salesforce/apex/HOT_MessageHelper.setLastMessageFrom';
 import { ShowToastEvent } from 'lightning/platformShowToastEvent';
 import { createRecord } from 'lightning/uiRecordApi';
+import FORM_FACTOR from '@salesforce/client/formFactor';
 
 export default class hot_messagingMessageComponent extends LightningElement {
     relatedObjectId;
@@ -742,6 +743,19 @@ export default class hot_messagingMessageComponent extends LightningElement {
 
     get visibleTabs() {
         const fallbackTabs = this.allTabs;
+
+        if (this.isMobileFormFactor) {
+            return fallbackTabs.map((tab) => {
+                const baseClass =
+                    this.activeTab === tab.id ? 'customTabButton customTabButtonActive' : 'customTabButton';
+                const colorClass = this.getTabColorClass(tab.id);
+                return {
+                    ...tab,
+                    className: colorClass ? `${baseClass} ${colorClass}` : baseClass
+                };
+            });
+        }
+
         const visibleTabSet = new Set(this.visibleTabIds);
         const tabs = fallbackTabs.filter((tab) => visibleTabSet.has(tab.id));
         const resolvedTabs = tabs.length > 0 ? tabs : fallbackTabs;
@@ -767,7 +781,15 @@ export default class hot_messagingMessageComponent extends LightningElement {
     }
 
     get hasOverflowTabs() {
-        return this.overflowTabIds.length > 0;
+        return !this.isMobileFormFactor && this.overflowTabIds.length > 0;
+    }
+
+    get isMobileFormFactor() {
+        return FORM_FACTOR === 'Small';
+    }
+
+    get tabHeaderClass() {
+        return this.isMobileFormFactor ? 'customTabHeader customTabHeader--mobileScrollable' : 'customTabHeader';
     }
 
     get tabPanelClass() {

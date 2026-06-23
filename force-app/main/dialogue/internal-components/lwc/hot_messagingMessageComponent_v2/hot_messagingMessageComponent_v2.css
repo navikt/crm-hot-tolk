@@ -6,6 +6,17 @@
     border-bottom: none;
 }
 
+.customTabHeader--mobileScrollable {
+    overflow-x: auto;
+    overflow-y: hidden;
+    -webkit-overflow-scrolling: touch;
+    scrollbar-width: none;
+}
+
+.customTabHeader--mobileScrollable::-webkit-scrollbar {
+    display: none;
+}
+
 .customTabButton {
     position: relative;
     border: 1px solid transparent;
@@ -19,8 +30,6 @@
     line-height: 1.25;
     cursor: pointer;
     white-space: nowrap;
-    overflow: hidden;
-    text-overflow: ellipsis;
 }
 
 .customTabButton:hover {
