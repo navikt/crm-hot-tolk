@@ -21,6 +21,7 @@ export default class hot_messagingMessageComponent extends LightningElement {
     defaultActiveTab = 'tab1';
     selectedTab;
     loadedTabIds = ['tab1'];
+    pendingFocusThreadType;
     visibleTabIds = [];
     overflowTabIds = [];
     showMessageInput = true;
@@ -149,6 +150,11 @@ export default class hot_messagingMessageComponent extends LightningElement {
     renderedCallback() {
         this.ensureResizeObserver();
         this.recalculateTabOverflow();
+
+        if (this.pendingFocusThreadType) {
+            this.focusTabInputByType(this.pendingFocusThreadType);
+            this.pendingFocusThreadType = null;
+        }
     }
 
     disconnectedCallback() {
@@ -955,6 +961,7 @@ export default class hot_messagingMessageComponent extends LightningElement {
         this.loadTab(currentTab);
         this.loadTab(nextTab);
         this.selectedTab = nextTab;
+        this.pendingFocusThreadType = null;
 
         if (nextTab === 'tab1') {
             this.summaryTabHandler();
@@ -1027,7 +1034,8 @@ export default class hot_messagingMessageComponent extends LightningElement {
     officeThreadTabHandler() {
         this.tabHandlerByType('HOT_TOLK-RESSURSKONTOR');
     }
-    tabHandlerByType(threadType) {
+
+    focusTabInputByType(threadType) {
         if (this.openThreadsByType(threadType)) {
             let threadCmp = this.template.querySelector(this.threadCmpMap[threadType]);
             if (threadCmp) {
@@ -1038,10 +1046,14 @@ export default class hot_messagingMessageComponent extends LightningElement {
             if (threadMockCmp) {
                 threadMockCmp.focusOnInput();
             }
-            /*
-            this.newThreadWithType(threadType);
-            */
         }
+    }
+
+    tabHandlerByType(threadType) {
+        this.pendingFocusThreadType = threadType;
+        /*
+        this.newThreadWithType(threadType);
+        */
     }
     handleCreateUserThreadWithMessage(event) {
         this.newThreadWithTypeAndMessage('HOT_BRUKER-FORMIDLER', event.detail);
