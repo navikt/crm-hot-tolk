@@ -17,7 +17,7 @@ export default class hot_personHighlightPanelBot extends NavigationMixin(Lightni
     isAdmin = false;
 
     handleFlowButton(event) {
-        this.currentFlow = event.target.dataset.flow;
+        this.currentFlow = event.currentTarget.dataset.flow;
         this.modalTitle = `Run ${this.currentFlow}`;
         this.isModalOpen = true;
         setTimeout(() => {
