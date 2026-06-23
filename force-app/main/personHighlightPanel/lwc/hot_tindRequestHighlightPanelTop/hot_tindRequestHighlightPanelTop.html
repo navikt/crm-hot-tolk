@@ -1,15 +1,20 @@
 <template>
     <lightning-layout class="custom-padding-left-small person-info-container">
         <lightning-layout-item class="custom-padding-around-small custom-grid-vertical-align-center" aria-hidden="true">
-            <c-hot_tind-custom-svg size="large" src={genderIconSrc} alt-text={genderText}></c-hot_tind-custom-svg>
+            <lightning-icon
+                variant="inverse"
+                icon-name="utility:edit_form"
+                alternative-text="Forespørsel"
+            ></lightning-icon>
         </lightning-layout-item>
-
+        <lightning-layout-item
+            class="custom-padding-left-small slds-page-header__title custom-grid-vertical-align-center"
+        >
+            <p class="requestName">{requestName}</p>
+        </lightning-layout-item>
         <template lwc:if={formattedFullName}>
-            <lightning-layout-item
-                class="custom-padding-left-small slds-page-header__title custom-grid-vertical-align-center"
-            >
-                <p class="fullName">{formattedFullName}</p>
-                <p class="sr-only">{genderText}</p>
+            <lightning-layout-item class="custom-padding-left custom-grid-vertical-align-center">
+                <span class="fullName">{formattedFullName}</span>
             </lightning-layout-item>
         </template>
 
@@ -29,10 +34,8 @@
                 </lightning-button-icon>
             </lightning-layout-item>
         </template>
-        <template lwc:if={showPersonInfo}>
-            <lightning-layout-item class="custom-padding-left custom-grid-vertical-align-center">
-                <p class="personInfo">{formattedPersonInfo}</p>
-            </lightning-layout-item>
-        </template>
+        <lightning-layout-item class="custom-padding-left custom-grid-vertical-align-center">
+            <p class="personInfo">{formattedRequestInfo}</p>
+        </lightning-layout-item>
     </lightning-layout>
 </template>
