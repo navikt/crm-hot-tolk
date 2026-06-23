@@ -1,7 +1,8 @@
 import { LightningElement, api } from 'lwc';
 import { ShowToastEvent } from 'lightning/platformShowToastEvent';
+import { NavigationMixin } from 'lightning/navigation';
 
-export default class hot_tindRequestHighlightPanelTop extends LightningElement {
+export default class hot_tindRequestHighlightPanelTop extends NavigationMixin(LightningElement) {
     @api requestDetails;
 
     handleCopy(event) {
@@ -62,5 +63,24 @@ export default class hot_tindRequestHighlightPanelTop extends LightningElement {
         ]
             .filter(Boolean)
             .join(' / ');
+    }
+
+    get accountId() {
+        return this.requestDetails?.Account__c;
+    }
+
+    handleOpenAccount() {
+        if (!this.accountId) {
+            return;
+        }
+
+        this[NavigationMixin.Navigate]({
+            type: 'standard__recordPage',
+            attributes: {
+                recordId: this.accountId,
+                objectApiName: 'Account',
+                actionName: 'view'
+            }
+        });
     }
 }
