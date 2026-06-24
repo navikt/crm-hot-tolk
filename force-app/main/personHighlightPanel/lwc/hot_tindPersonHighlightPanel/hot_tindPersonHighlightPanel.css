@@ -1,6 +1,5 @@
 .highlightPanel,
 .highlightPanelConfidential {
-    font-size: 16px;
     line-height: 1.5rem;
     width: 100%;
 }
@@ -64,7 +63,6 @@
 }
 
 .custom-padding-bottom {
-    padding-bottom: 0.5rem;
 }
 
 .maleBackground {
@@ -99,6 +97,7 @@
 
 .panelBackground {
     background-color: var(--primaryBackgroundColor, #0056b4);
+    border-radius: 0.25rem;
 }
 
 .errorPanel {

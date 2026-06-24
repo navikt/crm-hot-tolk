@@ -3,8 +3,14 @@
     padding-left: 2px;
     float: right;
 }
-.fullName {
+
+.requestName {
     font-size: 1.5rem;
+    color: white;
+}
+
+.fullName {
+    font-size: 1.25rem;
     color: white;
 }
 
@@ -37,13 +43,4 @@
 
 .person-info-container {
     flex-wrap: wrap;
-}
-
-.sr-only {
-    position: absolute;
-    left: -100000px;
-    top: auto;
-    width: 1px;
-    height: 1px;
-    overflow: hidden;
 }
