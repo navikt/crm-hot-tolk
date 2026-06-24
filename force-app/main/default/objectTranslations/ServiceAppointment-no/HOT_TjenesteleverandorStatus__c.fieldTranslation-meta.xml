@@ -3,6 +3,10 @@
     <label>Tjenesteleverandør status</label>
     <name>HOT_TjenesteleverandorStatus__c</name>
     <picklistValues>
+        <masterLabel>Accepted</masterLabel>
+        <translation>Akseptert av tjenesteleverandør</translation>
+    </picklistValues>
+    <picklistValues>
         <masterLabel>Declined</masterLabel>
         <translation>Avslått av tjenesteleverandør</translation>
     </picklistValues>

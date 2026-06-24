@@ -22,6 +22,11 @@
                 <label>Declined</label>
             </value>
             <value>
+                <fullName>Accepted</fullName>
+                <default>false</default>
+                <label>Accepted</label>
+            </value>
+            <value>
                 <fullName>Expired</fullName>
                 <default>false</default>
                 <label>Expired</label>
