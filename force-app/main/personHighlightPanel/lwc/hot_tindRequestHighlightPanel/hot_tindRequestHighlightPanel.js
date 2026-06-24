@@ -3,6 +3,7 @@ import { getRecord } from 'lightning/uiRecordApi';
 
 const FIELDS = [
     'HOT_Request__c.Name',
+    'HOT_Request__c.Account__c',
     'HOT_Request__c.Subject__c',
     'HOT_Request__c.Status__c',
     'HOT_Request__c.StartTime__c',
@@ -28,6 +29,7 @@ export default class hot_tindRequestHighlightPanel extends LightningElement {
             const f = data.fields;
             this.requestData = {
                 Name: f.Name?.value,
+                Account__c: f.Account__c?.value,
                 Subject__c: f.Subject__c?.value,
                 Status__c: f.Status__c?.value,
                 StartTime__c: f.StartTime__c?.value,
