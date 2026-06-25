@@ -949,29 +949,7 @@ export default class hot_messagingMessageComponent extends LightningElement {
     }
 
     isTabVisible(tabName) {
-        if (tabName === 'tab1') {
-            return true;
-        }
-        if (tabName === 'tab2') {
-            return this.showUserThreadTab;
-        }
-        if (tabName === 'tab3') {
-            return this.showOrderThreadTab;
-        }
-        if (tabName === 'tab4') {
-            return this.showUserInterpreterThreadTab;
-        }
-        if (tabName === 'tab5') {
-            return this.showInterpreterInterpreterThreadTab;
-        }
-        if (tabName === 'tab6') {
-            return this.showInterpreterThreadTab;
-        }
-        if (tabName === 'tab7') {
-            return this.showOfficeThreadTab;
-        }
-
-        return false;
+        return this.allTabs.some((tab) => tab.id === tabName);
     }
 
     get activeTab() {
