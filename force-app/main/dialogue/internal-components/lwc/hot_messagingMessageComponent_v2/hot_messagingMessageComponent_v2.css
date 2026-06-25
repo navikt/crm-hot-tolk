@@ -42,9 +42,6 @@
 .customTabButtonActive {
     inset-block-end: -1px;
     color: #003d6b;
-    /*background-color: #fff;
-    border-color: #939393;
-    border-bottom-color: #fff;*/
     box-shadow: inset 0px 2px 2px 0 var(--tab-accent-color, #032d60);
     z-index: 1;
     font-weight: bold;
