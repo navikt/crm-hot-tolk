@@ -4,6 +4,21 @@ import { NavigationMixin } from 'lightning/navigation';
 
 export default class hot_tindRequestHighlightPanelTop extends NavigationMixin(LightningElement) {
     @api requestDetails;
+    accountUrl = '#';
+    connectedCallback() {
+        if (this.requestDetails?.Account__c) {
+            this[NavigationMixin.GenerateUrl]({
+                type: 'standard__recordPage',
+                attributes: {
+                    objectApiName: 'Account',
+                    recordId: this.requestDetails.Account__c,
+                    actionName: 'view'
+                }
+            }).then((url) => {
+                this.accountUrl = url;
+            });
+        }
+    }
 
     handleCopy(event) {
         const eventValue = event.currentTarget.value;
@@ -64,23 +79,7 @@ export default class hot_tindRequestHighlightPanelTop extends NavigationMixin(Li
             .filter(Boolean)
             .join(' / ');
     }
-
-    get accountId() {
-        return this.requestDetails?.Account__c;
-    }
-
-    handleOpenAccount() {
-        if (!this.accountId) {
-            return;
-        }
-
-        this[NavigationMixin.Navigate]({
-            type: 'standard__recordPage',
-            attributes: {
-                recordId: this.accountId,
-                objectApiName: 'Account',
-                actionName: 'view'
-            }
-        });
+    get accountHref() {
+        return this.accountUrl;
     }
 }
