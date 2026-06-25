@@ -702,23 +702,27 @@ export default class hot_messagingMessageComponent extends LightningElement {
         return this.tabLabelByType('HOT_TOLK-RESSURSKONTOR');
     }
 
+    getThreadInitialMessage(target) {
+        return `Samtale med ${target} er ikke påbegynt enda. Skriv en melding for å starte samtalen.`;
+    }
+
     get userThreadInitialMessage() {
-        return `Samtale med bruker er ikke påbegynt enda. Skriv en melding for å starte samtalen.`;
+        return this.getThreadInitialMessage('bruker');
     }
     get ordererThreadInitialMessage() {
-        return `Samtale med bestiller er ikke påbegynt enda. Skriv en melding for å starte samtalen.`;
+        return this.getThreadInitialMessage('bestiller');
     }
     get userInterpreterThreadInitialMessage() {
-        return `Samtale med bruker og tolk er ikke påbegynt enda. Skriv en melding for å starte samtalen.`;
+        return this.getThreadInitialMessage('bruker og tolk');
     }
     get interpreterInterpreterThreadInitialMessage() {
-        return `Samtale med medtolker er ikke påbegynt enda. Skriv en melding for å starte samtalen.`;
+        return this.getThreadInitialMessage('medtolker');
     }
     get interpreterThreadInitialMessage() {
-        return `Samtale med tolk er ikke påbegynt enda. Skriv en melding for å starte samtalen.`;
+        return this.getThreadInitialMessage('tolk');
     }
     get officeThreadInitialMessage() {
-        return `Samtale med ressurskontor er ikke påbegynt enda. Skriv en melding for å starte samtalen.`;
+        return this.getThreadInitialMessage('ressurskontor');
     }
 
     get summaryLoading() {
