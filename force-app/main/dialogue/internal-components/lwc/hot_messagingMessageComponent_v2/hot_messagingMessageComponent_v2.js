@@ -755,14 +755,16 @@ export default class hot_messagingMessageComponent extends LightningElement {
     }
 
     getTabColorClass(tabId) {
-        if (tabId === 'tab1') return 'tabColor--summary';
-        if (tabId === 'tab2') return 'tabColor--user';
-        if (tabId === 'tab3') return 'tabColor--orderer';
-        if (tabId === 'tab4') return 'tabColor--userInterpreter';
-        if (tabId === 'tab5') return 'tabColor--interpreterInterpreter';
-        if (tabId === 'tab6') return 'tabColor--interpreter';
-        if (tabId === 'tab7') return 'tabColor--office';
-        return '';
+        const tabColorMap = {
+            tab1: 'tabColor--summary',
+            tab2: 'tabColor--user',
+            tab3: 'tabColor--orderer',
+            tab4: 'tabColor--userInterpreter',
+            tab5: 'tabColor--interpreterInterpreter',
+            tab6: 'tabColor--interpreter',
+            tab7: 'tabColor--office'
+        };
+        return tabColorMap[tabId] || '';
     }
 
     get visibleTabs() {
