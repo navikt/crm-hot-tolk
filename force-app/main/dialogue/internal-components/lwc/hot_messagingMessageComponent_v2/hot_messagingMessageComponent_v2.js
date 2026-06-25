@@ -987,20 +987,18 @@ export default class hot_messagingMessageComponent extends LightningElement {
         this.selectedTab = nextTab;
         this.pendingFocusThreadType = null;
 
-        if (nextTab === 'tab1') {
-            this.summaryTabHandler();
-        } else if (nextTab === 'tab2') {
-            this.userThreadTabHandler();
-        } else if (nextTab === 'tab3') {
-            this.ordererThreadTabHandler();
-        } else if (nextTab === 'tab4') {
-            this.userInterpreterThreadTabHandler();
-        } else if (nextTab === 'tab5') {
-            this.interpreterInterpreterThreadTabHandler();
-        } else if (nextTab === 'tab6') {
-            this.interpreterThreadTabHandler();
-        } else if (nextTab === 'tab7') {
-            this.officeThreadTabHandler();
+        const tabHandlerMap = {
+            tab1: this.summaryTabHandler,
+            tab2: this.userThreadTabHandler,
+            tab3: this.ordererThreadTabHandler,
+            tab4: this.userInterpreterThreadTabHandler,
+            tab5: this.interpreterInterpreterThreadTabHandler,
+            tab6: this.interpreterThreadTabHandler,
+            tab7: this.officeThreadTabHandler
+        };
+        const tabHandler = tabHandlerMap[nextTab];
+        if (tabHandler) {
+            tabHandler.call(this);
         }
 
         this.recalculateTabOverflow();
