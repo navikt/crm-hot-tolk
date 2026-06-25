@@ -14,7 +14,7 @@
         </lightning-layout-item>
         <template lwc:if={formattedFullName}>
             <lightning-layout-item class="custom-padding-left custom-grid-vertical-align-center">
-                <span class="fullName">{formattedFullName}</span>
+                <a href={accountHref} class="fullName">{formattedFullName}</a>
             </lightning-layout-item>
         </template>
 

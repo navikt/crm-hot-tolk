@@ -1,8 +1,24 @@
 import { LightningElement, api } from 'lwc';
 import { ShowToastEvent } from 'lightning/platformShowToastEvent';
+import { NavigationMixin } from 'lightning/navigation';
 
-export default class hot_tindRequestHighlightPanelTop extends LightningElement {
+export default class hot_tindRequestHighlightPanelTop extends NavigationMixin(LightningElement) {
     @api requestDetails;
+    accountUrl = '#';
+    connectedCallback() {
+        if (this.requestDetails?.Account__c) {
+            this[NavigationMixin.GenerateUrl]({
+                type: 'standard__recordPage',
+                attributes: {
+                    objectApiName: 'Account',
+                    recordId: this.requestDetails.Account__c,
+                    actionName: 'view'
+                }
+            }).then((url) => {
+                this.accountUrl = url;
+            });
+        }
+    }
 
     handleCopy(event) {
         const eventValue = event.currentTarget.value;
@@ -62,5 +78,8 @@ export default class hot_tindRequestHighlightPanelTop extends LightningElement {
         ]
             .filter(Boolean)
             .join(' / ');
+    }
+    get accountHref() {
+        return this.accountUrl;
     }
 }
