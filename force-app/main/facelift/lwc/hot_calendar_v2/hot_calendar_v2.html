@@ -242,6 +242,7 @@
                                             Oppdragsnummer:
                                             <span>&nbsp;{openServiceAppointment.HOT_ServiceAppointmentNumber__c}</span>
                                         </p>
+                                        <p>Tema:<span>&nbsp;{openServiceAppointment.HOT_FreelanceSubject__c}</span></p>
                                         <p>
                                             Tid:&nbsp;
                                             <span
@@ -249,27 +250,36 @@
                                                 {openServiceAppointment.StartAndEndDate}</span
                                             >
                                         </p>
-                                        <p lwc:if={openServiceAppointment.HOT_WorkTypeName__c}>
+                                        <p>Adresse: <span>{openServiceAppointment.HOT_AddressFormated__c}</span></p>
+                                        <p>
                                             Tolkemetode:<span>&nbsp;{openServiceAppointment.HOT_WorkTypeName__c}</span>
+                                        </p>
+                                        <p lwc:if={openServiceAppointment.HOT_PreparationTime__c}>
+                                            <strong>Kompensert forberedelse:</strong
+                                            >&nbsp;{openServiceAppointment.HOT_PreparationTime__c}
                                         </p>
                                         <p lwc:if={openServiceAppointment.HOT_AssignmentType__c}>
                                             Oppdragstype:
                                             <span>&nbsp;{openServiceAppointment.HOT_AssignmentType__c}</span>
                                         </p>
-                                        <p lwc:if={openServiceAppointment.HOT_ServiceTerritoryName__c}>
-                                            Region:
-                                            <span>&nbsp;{openServiceAppointment.HOT_ServiceTerritoryName__c}</span>
+                                        <p lwc:if={openServiceAppointment.HOT_ReleasedBy__c}>
+                                            Frigitt av: <span>&nbsp;{openServiceAppointment.HOT_ReleasedBy__c}</span>
                                         </p>
-                                        <p lwc:if={openServiceAppointment.HOT_Request__r.OwnerName__c}>
+                                        <p>
+                                            Frigitt dato:<span>&nbsp;{openServiceAppointment.HOT_ReleaseDate__c}</span>
+                                        </p>
+                                        <p>
+                                            Antall påmeldte:<span
+                                                >&nbsp;{openServiceAppointment.HOT_NumberOfInterestedResources__c}</span
+                                            >
+                                        </p>
+                                        <p>Annen betaler:<span>&nbsp;{openServiceAppointment.isOtherProvider}</span></p>
+                                        <p>
                                             Eier:
                                             <span>&nbsp;{openServiceAppointment.HOT_Request__r.OwnerName__c}</span>
                                         </p>
-                                        <p>Annen betaler:<span>&nbsp;{openServiceAppointment.isOtherProvider}</span></p>
-                                        <p lwc:if={openServiceAppointment.HOT_FreelanceSubject__c}>
-                                            Tema:<span>&nbsp;{openServiceAppointment.HOT_FreelanceSubject__c}</span>
-                                        </p>
-                                        <p lwc:if={openServiceAppointment.HOT_AddressFormated__c}>
-                                            Adresse: <span>&nbsp;{openServiceAppointment.HOT_AddressFormated__c}</span>
+                                        <p>
+                                            Frist dato:<span>&nbsp;{openServiceAppointment.HOT_DeadlineDate__c}</span>
                                         </p>
                                         <p lwc:if={openServiceAppointment.HOT_Information__c}>
                                             Informasjon:<span>&nbsp;{openServiceAppointment.HOT_Information__c}</span>
