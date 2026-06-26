@@ -236,10 +236,46 @@
 
                             <!-- Open service appointment details-->
                             <section lwc:if={isOpenServiceAppointmentDetails}>
-                                <!-- <div lwc:if={openServiceAppointments}> -->
-
-                                <!-- </div>  -->
-                                <div><p>test ledige oppdrag modal</p></div>
+                                <template lwc:if={openServiceAppointment}>
+                                    <div>
+                                        <p>
+                                            Oppdragsnummer:
+                                            <span>&nbsp;{openServiceAppointment.HOT_ServiceAppointmentNumber__c}</span>
+                                        </p>
+                                        <p>
+                                            Tid:&nbsp;
+                                            <span
+                                                >{openServiceAppointment.weekday}
+                                                {openServiceAppointment.StartAndEndDate}</span
+                                            >
+                                        </p>
+                                        <p lwc:if={openServiceAppointment.HOT_WorkTypeName__c}>
+                                            Tolkemetode:<span>&nbsp;{openServiceAppointment.HOT_WorkTypeName__c}</span>
+                                        </p>
+                                        <p lwc:if={openServiceAppointment.HOT_AssignmentType__c}>
+                                            Oppdragstype:
+                                            <span>&nbsp;{openServiceAppointment.HOT_AssignmentType__c}</span>
+                                        </p>
+                                        <p lwc:if={openServiceAppointment.HOT_ServiceTerritoryName__c}>
+                                            Region:
+                                            <span>&nbsp;{openServiceAppointment.HOT_ServiceTerritoryName__c}</span>
+                                        </p>
+                                        <p lwc:if={openServiceAppointment.HOT_Request__r.OwnerName__c}>
+                                            Eier:
+                                            <span>&nbsp;{openServiceAppointment.HOT_Request__r.OwnerName__c}</span>
+                                        </p>
+                                        <p>Annen betaler:<span>&nbsp;{openServiceAppointment.isOtherProvider}</span></p>
+                                        <p lwc:if={openServiceAppointment.HOT_FreelanceSubject__c}>
+                                            Tema:<span>&nbsp;{openServiceAppointment.HOT_FreelanceSubject__c}</span>
+                                        </p>
+                                        <p lwc:if={openServiceAppointment.HOT_AddressFormated__c}>
+                                            Adresse: <span>&nbsp;{openServiceAppointment.HOT_AddressFormated__c}</span>
+                                        </p>
+                                        <p lwc:if={openServiceAppointment.HOT_Information__c}>
+                                            Informasjon:<span>&nbsp;{openServiceAppointment.HOT_Information__c}</span>
+                                        </p>
+                                    </div>
+                                </template>
                             </section>
 
                             <!-- Wage claim details-->

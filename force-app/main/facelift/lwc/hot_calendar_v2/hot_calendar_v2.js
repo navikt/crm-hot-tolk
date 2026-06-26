@@ -78,6 +78,9 @@ export default class LibsFullCalendarV2 extends NavigationMixin(LightningElement
     isGoToThreadButtonDisabled = false;
     isGoToThreadServiceAppointmentButtonDisabled = false;
 
+    openServiceAppointments = [];
+    openServiceAppointment = null;
+
     // Wageclaim
     wcIsDisabledGoToThread = false;
 
@@ -538,8 +541,8 @@ export default class LibsFullCalendarV2 extends NavigationMixin(LightningElement
 
     async navigateToDetailView(event) {
         const props = event.extendedProps;
+        const recordId = event.id || props.recordId;
 
-        // Clear previous modal data
         this.serviceAppointment = null;
         this.accountPhoneNumber = '';
         this.accountName = '';
@@ -560,23 +563,24 @@ export default class LibsFullCalendarV2 extends NavigationMixin(LightningElement
 
         switch (props.type) {
             case 'OPEN_SERVICE_APPOINTMENT':
-                this.showInformationModalDetails(props.recordId, 'OSA');
-                await this.loadOpenServiceAppointment(props.recordId);
+                this.showInformationModalDetails(recordId, 'OSA');
+                await this.loadOpenServiceAppointment(recordId);
                 break;
 
             case 'COMPLETED_SERVICE_APPOINTMENT':
             case 'SERVICE_APPOINTMENT':
-                this.showInformationModalDetails(props.recordId, 'SA');
-                await this.loadServiceAppointment(props.recordId); // wait for data
+                this.showInformationModalDetails(recordId, 'SA');
+                await this.loadServiceAppointment(recordId);
                 break;
 
             case 'OPEN_WAGE_CLAIM':
-                this.showInformationModalDetails(props.recordId, 'WC');
-                await this.loadWageClaim(props.recordId);
+                this.showInformationModalDetails(recordId, 'WC');
+                await this.loadWageClaim(recordId);
                 break;
+
             case 'WAGE_CLAIM_NEW_TYPE':
-                this.showInformationModalDetails(props.recordId, 'WageClaimNewType');
-                await this.loadWageClaimNewType(props.recordId);
+                this.showInformationModalDetails(recordId, 'WageClaimNewType');
+                await this.loadWageClaimNewType(recordId);
                 break;
 
             case 'RESOURCE_ABSENCE':
@@ -937,9 +941,6 @@ export default class LibsFullCalendarV2 extends NavigationMixin(LightningElement
     }
 
     // wip open service appointment details
-    openServiceAppointments = [];
-    openServiceAppointment = null;
-
     async loadOpenServiceAppointment(recordId) {
         try {
             if (!this.openServiceAppointments.length) {
@@ -952,18 +953,13 @@ export default class LibsFullCalendarV2 extends NavigationMixin(LightningElement
                 }));
             }
 
-            this.openServiceAppointment = this.openServiceAppointments.find((x) => x.Id === recordId) ?? null;
+            this.openServiceAppointment =
+                this.openServiceAppointments.find((appointment) => appointment.Id === recordId) ?? null;
             this.isOpenServiceAppointmentDetails = !!this.openServiceAppointment;
         } catch (error) {
             this.openServiceAppointment = null;
             this.isOpenServiceAppointmentDetails = false;
-            this.dispatchEvent(
-                new ShowToastEvent({
-                    title: 'Det oppsto en feil',
-                    message: 'Kunne ikke hente detaljer for ledig oppdrag.',
-                    variant: 'error'
-                })
-            );
+            console.error('Error loading open service appointment', error);
         } finally {
             this.isLoading = false;
         }
