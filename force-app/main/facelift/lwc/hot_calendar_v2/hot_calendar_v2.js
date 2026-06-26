@@ -18,6 +18,7 @@ import getInterestedResourceDetails from '@salesforce/apex/HOT_InterestedResourc
 import getThreadServiceAppointmentId from '@salesforce/apex/HOT_MyServiceAppointmentListController.getThreadServiceAppointmentId';
 import getServiceAppointment from '@salesforce/apex/HOT_MyServiceAppointmentListController.getServiceAppointment';
 import getServiceAppointmentDetails from '@salesforce/apex/HOT_MyServiceAppointmentListController.getServiceAppointmentDetails';
+import getOpenServiceAppointments from '@salesforce/apex/HOT_OpenServiceAppointmentListController.getOpenServiceAppointments';
 import getThreadIdWC from '@salesforce/apex/HOT_WageClaimListController.getThreadId';
 import getThreadFreelanceId from '@salesforce/apex/HOT_MyServiceAppointmentListController.getThreadFreelanceId';
 import getThreadInterpretersId from '@salesforce/apex/HOT_MyServiceAppointmentListController.getThreadInterpretersId';
@@ -85,6 +86,7 @@ export default class LibsFullCalendarV2 extends NavigationMixin(LightningElement
     isWCDetails = false;
     isWageClaimNewTypeDetails = false;
     wcNewTypeIsDisabledGoToThread = false;
+    isOpenServiceAppointmentDetails = false;
 
     connectedCallback() {
         const state = sessionStorage.getItem(LibsFullCalendarV2.STATE_KEY);
@@ -429,6 +431,17 @@ export default class LibsFullCalendarV2 extends NavigationMixin(LightningElement
                 earliestEventEndTimeInMilliseconds: earliestTime,
                 latestEventStartInMilliseconds: latestTime
             });
+            console.log(
+                'calendar raw data',
+                data?.map((event) => ({
+                    id: event.id,
+                    type: event.type,
+                    appointmentNumber: event.appointmentNumber,
+                    startTime: event.startTime,
+                    endTime: event.endTime,
+                    description: event.description
+                }))
+            );
         } catch {
             const event = new ShowToastEvent({
                 title: 'Det oppsto en feil',
@@ -522,6 +535,7 @@ export default class LibsFullCalendarV2 extends NavigationMixin(LightningElement
 
         return pseudoEvents;
     }
+
     async navigateToDetailView(event) {
         const props = event.extendedProps;
 
@@ -537,12 +551,19 @@ export default class LibsFullCalendarV2 extends NavigationMixin(LightningElement
         this.wageClaim = null;
         this.wageClaimNewType = null;
         this.isSADetails = false;
+        this.isOpenServiceAppointmentDetails = false;
         this.isWCDetails = false;
         this.isWageClaimNewTypeDetails = false;
+
         this.hasAccess = false;
         this.isLoading = true;
 
         switch (props.type) {
+            case 'OPEN_SERVICE_APPOINTMENT':
+                this.showInformationModalDetails(props.recordId, 'OSA');
+                await this.loadOpenServiceAppointment(props.recordId);
+                break;
+
             case 'COMPLETED_SERVICE_APPOINTMENT':
             case 'SERVICE_APPOINTMENT':
                 this.showInformationModalDetails(props.recordId, 'SA');
@@ -616,12 +637,22 @@ export default class LibsFullCalendarV2 extends NavigationMixin(LightningElement
         this.modalType = type;
         this.isInformationModalOpen = true;
 
+        // WIP
+        this.isSADetails = false;
+        this.isWCDetails = false;
+        this.isWageClaimNewTypeDetails = false;
+        this.isOpenServiceAppointmentDetails = false;
+
         if (type === 'WC' && this.wageClaim) {
             this.wcIsDisabledGoToThread = this.wageClaim.Status__c === 'Tilbaketrukket tilgjengelighet';
         }
 
         if (type === 'WageClaimNewType' && this.wageClaimNewType) {
             this.isWageClaimNewTypeDetails = true;
+        }
+
+        if (type === 'OSA') {
+            this.isOpenServiceAppointmentDetails = true;
         }
 
         if (type === 'SA') {
@@ -905,6 +936,40 @@ export default class LibsFullCalendarV2 extends NavigationMixin(LightningElement
         }
     }
 
+    // wip open service appointment details
+    openServiceAppointments = [];
+    openServiceAppointment = null;
+
+    async loadOpenServiceAppointment(recordId) {
+        try {
+            if (!this.openServiceAppointments.length) {
+                const rows = await getOpenServiceAppointments();
+                this.openServiceAppointments = (rows ?? []).map((x) => ({
+                    ...x,
+                    StartAndEndDate: formatDatetimeinterval(x.EarliestStartTime, x.DueDate),
+                    weekday: this.getDayOfWeek(x.EarliestStartTime),
+                    isOtherProvider: x.HOT_Request__r?.IsOtherEconomicProvicer__c ? 'Ja' : 'Nei'
+                }));
+            }
+
+            this.openServiceAppointment = this.openServiceAppointments.find((x) => x.Id === recordId) ?? null;
+            this.isOpenServiceAppointmentDetails = !!this.openServiceAppointment;
+        } catch (error) {
+            this.openServiceAppointment = null;
+            this.isOpenServiceAppointmentDetails = false;
+            this.dispatchEvent(
+                new ShowToastEvent({
+                    title: 'Det oppsto en feil',
+                    message: 'Kunne ikke hente detaljer for ledig oppdrag.',
+                    variant: 'error'
+                })
+            );
+        } finally {
+            this.isLoading = false;
+        }
+    }
+
+    // Loads completed service appointment details and checks access for the current user
     async loadServiceAppointment(recordId) {
         try {
             const access = await checkAccessToSA({ saId: recordId });

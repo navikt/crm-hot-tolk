@@ -1,5 +1,7 @@
-public with sharing class HOT_FullCalendarController {
+// public with sharing class HOT_FullCalendarController {
+public without sharing class HOT_FullCalendarController {
     public enum EventType {
+        OPEN_SERVICE_APPOINTMENT,
         COMPLETED_SERVICE_APPOINTMENT,
         SERVICE_APPOINTMENT,
         OPEN_WAGE_CLAIM,
@@ -32,10 +34,22 @@ public with sharing class HOT_FullCalendarController {
         DateTime earliestTime = DateTime.newInstance(earliestEventEndTimeInMilliseconds);
         DateTime latestTime = DateTime.newInstance(latestEventStartInMilliseconds);
 
+        List<ServiceAppointment> openServiceAppointments = getUserOpenServiceAppointments(earliestTime, latestTime);
         List<ServiceAppointment> appointments = getUserServiceAppointments(earliestTime, latestTime);
         List<HOT_WageClaim__c> openWageClaims = getUserOpenWageClaims(earliestTime, latestTime);
         List<HOT_WageClaim__c> newTypeWageClaims = getUserWageClaimsOfNewType(earliestTime, latestTime);
         List<ResourceAbsence> absences = getUserResourceAbsence(earliestTime, latestTime);
+
+        for (ServiceAppointment appointment : openServiceAppointments) {
+            CalendarEvent event = new CalendarEvent();
+            event.id = appointment.Id;
+            event.appointmentNumber = appointment.AppointmentNumber;
+            event.type = EventType.OPEN_SERVICE_APPOINTMENT.toString();
+            event.startTime = appointment.SchedStartTime;
+            event.endTime = appointment.SchedEndTime;
+            event.description = appointment.Subject;
+            events.add(event);
+        }
 
         for (ServiceAppointment appointment : appointments) {
             CalendarEvent event = new CalendarEvent();
@@ -94,6 +108,22 @@ public with sharing class HOT_FullCalendarController {
         }
 
         return events;
+    }
+
+    @TestVisible
+    private static List<ServiceAppointment> getUserOpenServiceAppointments(
+        DateTime earliestAppointmentEnd,
+        DateTime latestAppointmentStart
+    ) {
+        return [
+            SELECT Id, Subject, AppointmentNumber, SchedStartTime, SchedEndTime, Status
+            FROM ServiceAppointment
+            WHERE
+                Status = 'Released to Freelance'
+                AND SchedEndTime > :earliestAppointmentEnd
+                AND SchedStartTime < :latestAppointmentStart
+            ORDER BY SchedStartTime ASC
+        ];
     }
 
     @TestVisible
