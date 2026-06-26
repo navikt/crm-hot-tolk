@@ -1,6 +1,6 @@
 <template>
     <!-- Messages Start-->
-    <section role="log" id="scroller" class="slds-box scroller slds-scrollable_y">
+    <section role="log" id="scroller" class="slds-box scroller slds-scrollable_y" style="background: #ffffff">
         <c-hot_messaging-Message-Container message={message}></c-hot_messaging-Message-Container>
     </section>
     <!-- Messages End-->
@@ -11,7 +11,7 @@
                 <div
                     role="toolbar"
                     class="slds-rich-text-editor__toolbar slds-shrink-none"
-                    style="display: block; border-radius: 0"
+                    style="display: block; border: none; background: none"
                 >
                     <lightning-layout>
                         <!-- Toolbar -->
@@ -36,7 +36,10 @@
             </lightning-layout-item>
             <br />
             <lightning-layout-item size="12">
-                <div class="slds-rich-text-editor__toolbar slds-shrink-none" style="display: block; border-radius: 0">
+                <div
+                    class="slds-rich-text-editor__toolbar slds-shrink-none"
+                    style="display: block; border: none; background: none"
+                >
                     <lightning-layout>
                         <lightning-layout-item size="12">
                             <lightning-button

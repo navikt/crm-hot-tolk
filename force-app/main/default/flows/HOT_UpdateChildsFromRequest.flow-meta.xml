@@ -1791,7 +1791,7 @@ CONTAINS({!ChosenFieldsOwner}, {!Subject})
             </visibilityRule>
         </fields>
         <showFooter>true</showFooter>
-        <showHeader>true</showHeader>
+        <showHeader>false</showHeader>
     </screens>
     <start>
         <locationX>210</locationX>
