@@ -1,5 +1,4 @@
-// public with sharing class HOT_FullCalendarController {
-public without sharing class HOT_FullCalendarController {
+public with sharing class HOT_FullCalendarController {
     public enum EventType {
         OPEN_SERVICE_APPOINTMENT,
         COMPLETED_SERVICE_APPOINTMENT,
@@ -22,6 +21,23 @@ public without sharing class HOT_FullCalendarController {
         public DateTime endTime;
         @AuraEnabled
         public String appointmentNumber;
+    }
+
+    private without sharing class OpenServiceAppointmentSelector {
+        List<ServiceAppointment> getOpenServiceAppointments(
+            DateTime earliestAppointmentEnd,
+            DateTime latestAppointmentStart
+        ) {
+            return [
+                SELECT Id, Subject, AppointmentNumber, SchedStartTime, SchedEndTime, Status
+                FROM ServiceAppointment
+                WHERE
+                    Status = 'Released to Freelance'
+                    AND SchedEndTime > :earliestAppointmentEnd
+                    AND SchedStartTime < :latestAppointmentStart
+                ORDER BY SchedStartTime ASC
+            ];
+        }
     }
 
     @AuraEnabled(cacheable=false)
@@ -115,15 +131,8 @@ public without sharing class HOT_FullCalendarController {
         DateTime earliestAppointmentEnd,
         DateTime latestAppointmentStart
     ) {
-        return [
-            SELECT Id, Subject, AppointmentNumber, SchedStartTime, SchedEndTime, Status
-            FROM ServiceAppointment
-            WHERE
-                Status = 'Released to Freelance'
-                AND SchedEndTime > :earliestAppointmentEnd
-                AND SchedStartTime < :latestAppointmentStart
-            ORDER BY SchedStartTime ASC
-        ];
+        return new OpenServiceAppointmentSelector()
+            .getOpenServiceAppointments(earliestAppointmentEnd, latestAppointmentStart);
     }
 
     @TestVisible
