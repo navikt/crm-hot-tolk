@@ -1722,11 +1722,6 @@
     </fieldPermissions>
     <fieldPermissions>
         <editable>true</editable>
-        <field>ServiceResource.ShowOpenServiceAppointmentEvents__c</field>
-        <readable>true</readable>
-    </fieldPermissions>
-    <fieldPermissions>
-        <editable>true</editable>
         <field>ServiceTerritory.Address</field>
         <readable>true</readable>
     </fieldPermissions>
