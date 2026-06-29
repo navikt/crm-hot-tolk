@@ -26,6 +26,8 @@ import createThread from '@salesforce/apex/HOT_MessageHelper.createThread';
 import createThreadInterpreter from '@salesforce/apex/HOT_MessageHelper.createThreadInterpreter';
 import createThreadInterpreters from '@salesforce/apex/HOT_MessageHelper.createThreadInterpreters';
 
+import getServiceResource from '@salesforce/apex/HOT_FreelanceUserInformationController.getServiceResource';
+
 // Absence imports
 import getConflictsForTimePeriod from '@salesforce/apex/HOT_FreelanceAbsenceController.getConflictsForTimePeriod';
 import createAbsenceAndResolveConflicts from '@salesforce/apex/HOT_FreelanceAbsenceController.createAbsenceAndResolveConflicts';
@@ -57,6 +59,8 @@ export default class LibsFullCalendarV2 extends NavigationMixin(LightningElement
     @api records;
     @api recordId;
     @api type;
+
+    @api showOpenEvents = false;
 
     // Service appointment properties
     saFreelanceThreadId;
@@ -106,8 +110,10 @@ export default class LibsFullCalendarV2 extends NavigationMixin(LightningElement
             viewDateInMilliseconds +
             LibsFullCalendarV2.DAYS_TO_FETCH_FROM_TODAY * LibsFullCalendarV2.MILLISECONDS_PER_DAY;
 
-        this.setupCalendar(loadedSessionState).then(() => {
-            this.updatePseudoEventsDisplay(this.calendar.view);
+        this.loadOpenEventsPreference().then(() => {
+            this.setupCalendar(loadedSessionState).then(() => {
+                this.updatePseudoEventsDisplay(this.calendar.view);
+            });
         });
     }
 
@@ -455,6 +461,7 @@ export default class LibsFullCalendarV2 extends NavigationMixin(LightningElement
         }
         if (data) {
             return data
+                .filter((event) => this.showOpenEvents || event.type !== 'OPEN_SERVICE_APPOINTMENT')
                 .map((event) => new CalendarEvent(event))
                 .filter((event) => {
                     const isAlreadyCached = this.cachedEventIds.has(event.recordId);
@@ -641,7 +648,6 @@ export default class LibsFullCalendarV2 extends NavigationMixin(LightningElement
         this.modalType = type;
         this.isInformationModalOpen = true;
 
-        // WIP
         this.isSADetails = false;
         this.isWCDetails = false;
         this.isWageClaimNewTypeDetails = false;
@@ -940,7 +946,23 @@ export default class LibsFullCalendarV2 extends NavigationMixin(LightningElement
         }
     }
 
-    // wip open service appointment details
+    // Get freelance preference for showing open service appointment events in the calendar
+    async loadOpenEventsPreference() {
+        try {
+            const serviceResource = await getServiceResource();
+            this.showOpenEvents = serviceResource.HOT_ShowOpenServiceAppointmentEvents__c;
+        } catch (error) {
+            this.showOpenEvents = false;
+        }
+
+        this.dispatchEvent(
+            new CustomEvent('showopeneventschange', {
+                detail: this.showOpenEvents
+            })
+        );
+    }
+
+    // Load open service appointment details
     async loadOpenServiceAppointment(recordId) {
         try {
             if (!this.openServiceAppointments.length) {
