@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>HOT_ShowOpenServiceAppointmentEvents__c</fullName>
+    <defaultValue>true</defaultValue>
+    <description>Show open service appointment events in the calendar. Checked by default.</description>
+    <label>Show Open Service Appointment Events</label>
+    <trackHistory>false</trackHistory>
+    <type>Checkbox</type>
+</CustomField>
