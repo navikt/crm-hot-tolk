@@ -28,15 +28,125 @@ public with sharing class HOT_FullCalendarController {
             DateTime earliestAppointmentEnd,
             DateTime latestAppointmentStart
         ) {
-            return [
-                SELECT Id, Subject, AppointmentNumber, SchedStartTime, SchedEndTime, Status
+            Id userId = UserInfo.getUserId();
+
+            List<ServiceResource> serviceResources = [
+                SELECT Id, HOT_PreferredRegions__c, HOT_ShowOpenServiceAppointmentEvents__c
+                FROM ServiceResource
+                WHERE RelatedRecordId = :userId
+                LIMIT 1
+            ];
+
+            if (serviceResources.isEmpty() || serviceResources[0].HOT_ShowOpenServiceAppointmentEvents__c != true) {
+                return new List<ServiceAppointment>();
+            }
+
+            ServiceResource serviceResource = serviceResources[0];
+
+            Set<String> preferredRegions = new Set<String>();
+            if (String.isNotBlank(serviceResource.HOT_PreferredRegions__c)) {
+                for (String region : serviceResource.HOT_PreferredRegions__c.split(';')) {
+                    preferredRegions.add(region.trim());
+                }
+            }
+
+            List<ServiceResourceSkill> serviceResourceSkills = [
+                SELECT SkillId
+                FROM ServiceResourceSkill
+                WHERE ServiceResourceId = :serviceResource.Id AND (EffectiveEndDate = NULL OR EffectiveEndDate > TODAY)
+            ];
+
+            Set<Id> mySkillIds = new Set<Id>();
+            for (ServiceResourceSkill srSkill : serviceResourceSkills) {
+                mySkillIds.add(srSkill.SkillId);
+            }
+
+            List<HOT_InterestedResource__c> interestedResources = [
+                SELECT ServiceAppointment__c
+                FROM HOT_InterestedResource__c
+                WHERE ServiceResource__c = :serviceResource.Id AND Status__c != NULL
+            ];
+
+            Set<Id> interestedServiceAppointmentIds = new Set<Id>();
+            for (HOT_InterestedResource__c ir : interestedResources) {
+                interestedServiceAppointmentIds.add(ir.ServiceAppointment__c);
+            }
+
+            List<ServiceAppointment> serviceAppointments = [
+                SELECT
+                    Id,
+                    Subject,
+                    AppointmentNumber,
+                    SchedStartTime,
+                    SchedEndTime,
+                    Status,
+                    HOT_DeadlineDate__c,
+                    HOT_ServiceTerritoryName__c,
+                    WorkType.Id
                 FROM ServiceAppointment
                 WHERE
-                    Status = 'Released to Freelance'
+                    HOT_IsReleasedToFreelance__c = TRUE
+                    AND Status = 'Released to Freelance'
+                    AND HOT_DeadlineDate__c >= :DATE.TODAY()
+                    AND Id NOT IN :interestedServiceAppointmentIds
+                    AND ServiceTerritoryId != NULL
                     AND SchedEndTime > :earliestAppointmentEnd
                     AND SchedStartTime < :latestAppointmentStart
                 ORDER BY SchedStartTime ASC
             ];
+
+            List<ServiceAppointment> regionFilteredAppointments = new List<ServiceAppointment>();
+            for (ServiceAppointment sa : serviceAppointments) {
+                if (
+                    preferredRegions.isEmpty() ||
+                    String.isBlank(sa.HOT_ServiceTerritoryName__c) ||
+                    preferredRegions.contains(sa.HOT_ServiceTerritoryName__c)
+                ) {
+                    regionFilteredAppointments.add(sa);
+                }
+            }
+
+            Set<Id> workTypeIds = new Set<Id>();
+            for (ServiceAppointment sa : regionFilteredAppointments) {
+                if (sa.WorkType != null) {
+                    workTypeIds.add(sa.WorkType.Id);
+                }
+            }
+
+            List<SkillRequirement> neededSkillRequirements = [
+                SELECT SkillId, RelatedRecordId
+                FROM SkillRequirement
+                WHERE RelatedRecordId IN :workTypeIds
+            ];
+
+            Map<Id, Set<Id>> workTypeToRequiredSkillIds = new Map<Id, Set<Id>>();
+            for (SkillRequirement requirement : neededSkillRequirements) {
+                if (!workTypeToRequiredSkillIds.containsKey(requirement.RelatedRecordId)) {
+                    workTypeToRequiredSkillIds.put(requirement.RelatedRecordId, new Set<Id>());
+                }
+                workTypeToRequiredSkillIds.get(requirement.RelatedRecordId).add(requirement.SkillId);
+            }
+
+            List<ServiceAppointment> filteredAppointments = new List<ServiceAppointment>();
+            for (ServiceAppointment sa : regionFilteredAppointments) {
+                Set<Id> requiredSkillIds = workTypeToRequiredSkillIds.get(sa.WorkType.Id);
+                Boolean hasAllSkills = true;
+
+                if (requiredSkillIds != null) {
+                    for (Id requiredSkillId : requiredSkillIds) {
+                        if (!mySkillIds.contains(requiredSkillId)) {
+                            hasAllSkills = false;
+                            break;
+                        }
+                    }
+                }
+
+                if (hasAllSkills) {
+                    filteredAppointments.add(sa);
+                }
+            }
+
+            return filteredAppointments;
         }
     }
 

@@ -461,7 +461,6 @@ export default class LibsFullCalendarV2 extends NavigationMixin(LightningElement
         }
         if (data) {
             return data
-                .filter((event) => this.showOpenEvents || event.type !== 'OPEN_SERVICE_APPOINTMENT')
                 .map((event) => new CalendarEvent(event))
                 .filter((event) => {
                     const isAlreadyCached = this.cachedEventIds.has(event.recordId);
