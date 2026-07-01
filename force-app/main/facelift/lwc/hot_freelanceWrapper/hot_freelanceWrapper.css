@@ -206,7 +206,7 @@
     flex-wrap: wrap;
     justify-content: center;
     gap: 20px;
-    max-width: 100%;
+    max-width: 80%;
     font-family: Arial, sans-serif;
     font-size: 1.125rem;
     padding-top: 1rem;
@@ -227,6 +227,9 @@
 }
 
 @media (max-width: 768px) {
+    .calendar-legend {
+        max-width: 100%;
+    }
     .row {
         flex-direction: column;
         align-items: flex-start;
