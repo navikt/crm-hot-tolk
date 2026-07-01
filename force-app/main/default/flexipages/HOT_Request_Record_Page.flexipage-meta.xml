@@ -120,8 +120,8 @@
                     <name>uiBehavior</name>
                     <value>none</value>
                 </fieldInstanceProperties>
-                <fieldItem>Record.OwnerId</fieldItem>
-                <identifier>RecordOwnerIdField</identifier>
+                <fieldItem>Record.HOT_Owner__c</fieldItem>
+                <identifier>RecordHOT_Owner_cField</identifier>
             </fieldInstance>
         </itemInstances>
         <itemInstances>

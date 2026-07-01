@@ -21,6 +21,16 @@ export default class Hot_announcementListViewer extends LightningElement {
         return (this.unreadAnnouncementIds || []).length;
     }
 
+    get modalAriaLabel() {
+        const count = (this.announcements || []).length;
+
+        if (count === 1) {
+            return 'Nyheter fra Tolketjenesten, 1 nyhet';
+        }
+
+        return `Nyheter fra Tolketjenesten, ${count} nyheter`;
+    }
+
     async handleShowAnnouncements() {
         this.updateVisibleAnnouncements();
 
@@ -28,7 +38,6 @@ export default class Hot_announcementListViewer extends LightningElement {
 
         if (dialog) {
             dialog.showModal();
-            dialog.focus();
         }
 
         await this.setNewsRead();

@@ -94,11 +94,12 @@ input[type='reset'] {
 
 .close-btn:focus {
     outline: none;
+    border-color: transparent;
 }
 
 .close-btn:focus-visible {
-    border-color: #0067c5;
     outline: none;
+    border-color: #0067c5;
 }
 
 .close-btn:hover {
@@ -209,8 +210,18 @@ input[type='reset'] {
     line-height: 1.3;
     margin: 0;
 }
-.navds-button:hover,
+
+.navds-button:hover {
+    border-color: #0067c5;
+}
+
 .navds-button:focus {
+    outline: none;
+    border-color: #f2f3f5;
+}
+
+.navds-button:focus-visible {
+    outline: none;
     border-color: #0067c5;
 }
 .navds-button {
