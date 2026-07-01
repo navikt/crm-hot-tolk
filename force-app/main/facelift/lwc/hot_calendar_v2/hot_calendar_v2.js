@@ -440,17 +440,6 @@ export default class LibsFullCalendarV2 extends NavigationMixin(LightningElement
                 earliestEventEndTimeInMilliseconds: earliestTime,
                 latestEventStartInMilliseconds: latestTime
             });
-            console.log(
-                'calendar raw data',
-                data?.map((event) => ({
-                    id: event.id,
-                    type: event.type,
-                    appointmentNumber: event.appointmentNumber,
-                    startTime: event.startTime,
-                    endTime: event.endTime,
-                    description: event.description
-                }))
-            );
         } catch {
             const event = new ShowToastEvent({
                 title: 'Det oppsto en feil',
