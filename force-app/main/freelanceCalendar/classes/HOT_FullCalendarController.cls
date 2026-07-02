@@ -31,7 +31,7 @@ public with sharing class HOT_FullCalendarController {
             Id userId = UserInfo.getUserId();
 
             List<ServiceResource> serviceResources = [
-                SELECT Id, HOT_PreferredRegions__c, HOT_ShowOpenServiceAppointmentEvents__c
+                SELECT Id, toLabel(HOT_PreferredRegions__c), HOT_ShowOpenServiceAppointmentEvents__c
                 FROM ServiceResource
                 WHERE RelatedRecordId = :userId
                 LIMIT 1
