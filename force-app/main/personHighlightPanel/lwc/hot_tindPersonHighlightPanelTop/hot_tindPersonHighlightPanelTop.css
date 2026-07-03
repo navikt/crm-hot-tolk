@@ -8,6 +8,16 @@
     color: white;
 }
 
+.personIdent {
+    font-size: 1rem;
+    color: white;
+}
+
+.personInfo {
+    font-size: 1rem;
+    color: white;
+}
+
 .custom-padding-around-small {
     padding: 0.5rem;
 }

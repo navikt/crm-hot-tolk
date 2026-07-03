@@ -18,12 +18,15 @@ import getInterestedResourceDetails from '@salesforce/apex/HOT_InterestedResourc
 import getThreadServiceAppointmentId from '@salesforce/apex/HOT_MyServiceAppointmentListController.getThreadServiceAppointmentId';
 import getServiceAppointment from '@salesforce/apex/HOT_MyServiceAppointmentListController.getServiceAppointment';
 import getServiceAppointmentDetails from '@salesforce/apex/HOT_MyServiceAppointmentListController.getServiceAppointmentDetails';
+import getOpenServiceAppointments from '@salesforce/apex/HOT_OpenServiceAppointmentListController.getOpenServiceAppointments';
 import getThreadIdWC from '@salesforce/apex/HOT_WageClaimListController.getThreadId';
 import getThreadFreelanceId from '@salesforce/apex/HOT_MyServiceAppointmentListController.getThreadFreelanceId';
 import getThreadInterpretersId from '@salesforce/apex/HOT_MyServiceAppointmentListController.getThreadInterpretersId';
 import createThread from '@salesforce/apex/HOT_MessageHelper.createThread';
 import createThreadInterpreter from '@salesforce/apex/HOT_MessageHelper.createThreadInterpreter';
 import createThreadInterpreters from '@salesforce/apex/HOT_MessageHelper.createThreadInterpreters';
+
+import getServiceResource from '@salesforce/apex/HOT_FreelanceUserInformationController.getServiceResource';
 
 // Absence imports
 import getConflictsForTimePeriod from '@salesforce/apex/HOT_FreelanceAbsenceController.getConflictsForTimePeriod';
@@ -57,6 +60,8 @@ export default class LibsFullCalendarV2 extends NavigationMixin(LightningElement
     @api recordId;
     @api type;
 
+    @api showOpenEvents = false;
+
     // Service appointment properties
     saFreelanceThreadId;
     saThreadId;
@@ -77,6 +82,9 @@ export default class LibsFullCalendarV2 extends NavigationMixin(LightningElement
     isGoToThreadButtonDisabled = false;
     isGoToThreadServiceAppointmentButtonDisabled = false;
 
+    openServiceAppointments = [];
+    openServiceAppointment = null;
+
     // Wageclaim
     wcIsDisabledGoToThread = false;
 
@@ -85,6 +93,7 @@ export default class LibsFullCalendarV2 extends NavigationMixin(LightningElement
     isWCDetails = false;
     isWageClaimNewTypeDetails = false;
     wcNewTypeIsDisabledGoToThread = false;
+    isOpenServiceAppointmentDetails = false;
 
     connectedCallback() {
         const state = sessionStorage.getItem(LibsFullCalendarV2.STATE_KEY);
@@ -101,8 +110,10 @@ export default class LibsFullCalendarV2 extends NavigationMixin(LightningElement
             viewDateInMilliseconds +
             LibsFullCalendarV2.DAYS_TO_FETCH_FROM_TODAY * LibsFullCalendarV2.MILLISECONDS_PER_DAY;
 
-        this.setupCalendar(loadedSessionState).then(() => {
-            this.updatePseudoEventsDisplay(this.calendar.view);
+        this.loadOpenEventsPreference().then(() => {
+            this.setupCalendar(loadedSessionState).then(() => {
+                this.updatePseudoEventsDisplay(this.calendar.view);
+            });
         });
     }
 
@@ -522,10 +533,11 @@ export default class LibsFullCalendarV2 extends NavigationMixin(LightningElement
 
         return pseudoEvents;
     }
+
     async navigateToDetailView(event) {
         const props = event.extendedProps;
+        const recordId = event.id || props.recordId;
 
-        // Clear previous modal data
         this.serviceAppointment = null;
         this.accountPhoneNumber = '';
         this.accountName = '';
@@ -537,25 +549,33 @@ export default class LibsFullCalendarV2 extends NavigationMixin(LightningElement
         this.wageClaim = null;
         this.wageClaimNewType = null;
         this.isSADetails = false;
+        this.isOpenServiceAppointmentDetails = false;
         this.isWCDetails = false;
         this.isWageClaimNewTypeDetails = false;
+
         this.hasAccess = false;
         this.isLoading = true;
 
         switch (props.type) {
+            case 'OPEN_SERVICE_APPOINTMENT':
+                this.showInformationModalDetails(recordId, 'OSA');
+                await this.loadOpenServiceAppointment(recordId);
+                break;
+
             case 'COMPLETED_SERVICE_APPOINTMENT':
             case 'SERVICE_APPOINTMENT':
-                this.showInformationModalDetails(props.recordId, 'SA');
-                await this.loadServiceAppointment(props.recordId); // wait for data
+                this.showInformationModalDetails(recordId, 'SA');
+                await this.loadServiceAppointment(recordId);
                 break;
 
             case 'OPEN_WAGE_CLAIM':
-                this.showInformationModalDetails(props.recordId, 'WC');
-                await this.loadWageClaim(props.recordId);
+                this.showInformationModalDetails(recordId, 'WC');
+                await this.loadWageClaim(recordId);
                 break;
+
             case 'WAGE_CLAIM_NEW_TYPE':
-                this.showInformationModalDetails(props.recordId, 'WageClaimNewType');
-                await this.loadWageClaimNewType(props.recordId);
+                this.showInformationModalDetails(recordId, 'WageClaimNewType');
+                await this.loadWageClaimNewType(recordId);
                 break;
 
             case 'RESOURCE_ABSENCE':
@@ -616,12 +636,21 @@ export default class LibsFullCalendarV2 extends NavigationMixin(LightningElement
         this.modalType = type;
         this.isInformationModalOpen = true;
 
+        this.isSADetails = false;
+        this.isWCDetails = false;
+        this.isWageClaimNewTypeDetails = false;
+        this.isOpenServiceAppointmentDetails = false;
+
         if (type === 'WC' && this.wageClaim) {
             this.wcIsDisabledGoToThread = this.wageClaim.Status__c === 'Tilbaketrukket tilgjengelighet';
         }
 
         if (type === 'WageClaimNewType' && this.wageClaimNewType) {
             this.isWageClaimNewTypeDetails = true;
+        }
+
+        if (type === 'OSA') {
+            this.isOpenServiceAppointmentDetails = true;
         }
 
         if (type === 'SA') {
@@ -905,6 +934,48 @@ export default class LibsFullCalendarV2 extends NavigationMixin(LightningElement
         }
     }
 
+    // Get freelance preference for showing open service appointment events in the calendar
+    async loadOpenEventsPreference() {
+        try {
+            const serviceResource = await getServiceResource();
+            this.showOpenEvents = serviceResource.HOT_ShowOpenServiceAppointmentEvents__c;
+        } catch (error) {
+            this.showOpenEvents = false;
+        }
+
+        this.dispatchEvent(
+            new CustomEvent('showopeneventschange', {
+                detail: this.showOpenEvents
+            })
+        );
+    }
+
+    // Load open service appointment details
+    async loadOpenServiceAppointment(recordId) {
+        try {
+            if (!this.openServiceAppointments.length) {
+                const rows = await getOpenServiceAppointments();
+                this.openServiceAppointments = (rows ?? []).map((x) => ({
+                    ...x,
+                    StartAndEndDate: formatDatetimeinterval(x.EarliestStartTime, x.DueDate),
+                    weekday: this.getDayOfWeek(x.EarliestStartTime),
+                    isOtherProvider: x.HOT_Request__r?.IsOtherEconomicProvicer__c ? 'Ja' : 'Nei'
+                }));
+            }
+
+            this.openServiceAppointment =
+                this.openServiceAppointments.find((appointment) => appointment.Id === recordId) ?? null;
+            this.isOpenServiceAppointmentDetails = !!this.openServiceAppointment;
+        } catch (error) {
+            this.openServiceAppointment = null;
+            this.isOpenServiceAppointmentDetails = false;
+            console.error('Error loading open service appointment', error);
+        } finally {
+            this.isLoading = false;
+        }
+    }
+
+    // Loads completed service appointment details and checks access for the current user
     async loadServiceAppointment(recordId) {
         try {
             const access = await checkAccessToSA({ saId: recordId });
