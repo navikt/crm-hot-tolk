@@ -1,5 +1,13 @@
 <template>
     <lightning-card>
+        <div class="banner-container">
+            <c-hot_info-card
+                title={informationBannerTitle}
+                content={informationBannerContent}
+                type="info"
+                show-icon="true"
+            ></c-hot_info-card>
+        </div>
         <lightning-record-view-form record-id={recordId} object-api-name="ServiceAppointment">
             <div class="slds-p-around_small">
                 <div class="slds-section slds-is-open">
@@ -77,6 +85,11 @@
                                 </div>
                                 <lightning-output-field field-name="HOT_DispatcherNew__c"></lightning-output-field>
                                 <lightning-output-field field-name="Status"></lightning-output-field>
+                                <template lwc:if={showTjenesteleverandorStatus}>
+                                    <lightning-output-field
+                                        field-name="HOT_TjenesteleverandorStatus__c"
+                                    ></lightning-output-field>
+                                </template>
                                 <lightning-output-field field-name="HOT_CancelComment__c"></lightning-output-field>
                                 <lightning-output-field
                                     field-name="HOT_CanceledByInterpreter__c"

@@ -12,6 +12,8 @@ import SERVICE_TERRITORY_FIELD from '@salesforce/schema/ServiceAppointment.Servi
 import ADDRESS_FORMATED_FIELD from '@salesforce/schema/ServiceAppointment.HOT_AddressFormated__c';
 import CREATED_BY_FIELD from '@salesforce/schema/ServiceAppointment.CreatedById';
 import LAST_MODIFIED_BY_FIELD from '@salesforce/schema/ServiceAppointment.LastModifiedById';
+import STATUS_FIELD from '@salesforce/schema/ServiceAppointment.Status';
+import TJENESTELEVERANDOR_STATUS_FIELD from '@salesforce/schema/ServiceAppointment.HOT_TjenesteleverandorStatus__c';
 
 const FIELDS = [
     SUBJECT_FIELD,
@@ -24,12 +26,17 @@ const FIELDS = [
     SERVICE_TERRITORY_FIELD,
     ADDRESS_FORMATED_FIELD,
     CREATED_BY_FIELD,
-    LAST_MODIFIED_BY_FIELD
+    LAST_MODIFIED_BY_FIELD,
+    STATUS_FIELD,
+    TJENESTELEVERANDOR_STATUS_FIELD
 ];
 
 export default class HOT_TjenesteleverandorSAReadOnly extends LightningElement {
     @api recordId;
     lang = LANG;
+
+    informationBannerTitle = 'Status på oppdraget er "Overført til tjenesteleverandør"';
+    informationBannerContent = 'Formidler kan ikke redigere oppdraget når denne statusen er satt.';
 
     @wire(getRecord, { recordId: '$recordId', fields: FIELDS })
     record;
@@ -112,5 +119,14 @@ export default class HOT_TjenesteleverandorSAReadOnly extends LightningElement {
 
     get lastModifiedByLabel() {
         return this.lang && this.lang.toLowerCase().startsWith('no') ? 'Sist endret av' : 'Last Modified By';
+    }
+
+    get statusValue() {
+        return getFieldValue(this.record.data, STATUS_FIELD);
+    }
+
+    get showTjenesteleverandorStatus() {
+        const status = (this.statusValue || '').trim().toLowerCase();
+        return status !== 'none' && status !== '';
     }
 }
