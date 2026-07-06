@@ -1,5 +1,5 @@
 <template>
-    <lightning-card title="Oppdragsdetaljer">
+    <lightning-card>
         <lightning-record-view-form record-id={recordId} object-api-name="ServiceAppointment">
             <div class="slds-p-around_small">
                 <div class="slds-section slds-is-open">
@@ -16,11 +16,32 @@
                                 <lightning-output-field field-name="Subject"></lightning-output-field>
                                 <lightning-output-field field-name="Description"></lightning-output-field>
                                 <lightning-output-field field-name="HOT_Interpreters__c"></lightning-output-field>
-                                <lightning-output-field field-name="AccountId"></lightning-output-field>
-                                <lightning-output-field field-name="ContactId"></lightning-output-field>
+                                <div class="slds-form-element slds-form-element_readonly readonly-field-style">
+                                    <span class="slds-form-element__label">{accountLabel}</span>
+                                    <div class="slds-form-element__control">
+                                        <div class="slds-form-element__static">
+                                            <lightning-formatted-text value={accountId}></lightning-formatted-text>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="slds-form-element slds-form-element_readonly readonly-field-style">
+                                    <span class="slds-form-element__label">{contactLabel}</span>
+                                    <div class="slds-form-element__control">
+                                        <div class="slds-form-element__static">
+                                            <lightning-formatted-text value={contactId}></lightning-formatted-text>
+                                        </div>
+                                    </div>
+                                </div>
                                 <lightning-output-field field-name="HOT_NavEmployeeName__c"></lightning-output-field>
                                 <lightning-output-field field-name="HOT_GenderAge__c"></lightning-output-field>
-                                <lightning-output-field field-name="WorkTypeId"></lightning-output-field>
+                                <div class="slds-form-element slds-form-element_readonly readonly-field-style">
+                                    <span class="slds-form-element__label">{workTypeLabel}</span>
+                                    <div class="slds-form-element__control">
+                                        <div class="slds-form-element__static">
+                                            <lightning-formatted-text value={workTypeId}></lightning-formatted-text>
+                                        </div>
+                                    </div>
+                                </div>
                                 <lightning-output-field field-name="HOT_AssignmentType__c"></lightning-output-field>
                                 <lightning-output-field
                                     field-name="HOT_TotalNumberOfInterpreters__c"

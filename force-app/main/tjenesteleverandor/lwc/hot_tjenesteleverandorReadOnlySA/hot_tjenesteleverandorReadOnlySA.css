@@ -5,3 +5,7 @@
 .slds-truncate {
     color: light-dark(#03234d, #d8e6fe);
 }
+
+.readonly-field-style {
+    padding: 0 0.25rem;
+}
