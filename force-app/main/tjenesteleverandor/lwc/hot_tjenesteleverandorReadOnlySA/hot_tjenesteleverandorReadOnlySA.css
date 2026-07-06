@@ -1,2 +1,7 @@
-main {
+.hot-container {
+    padding: 0.5rem;
+}
+
+.slds-truncate {
+    color: light-dark(#03234d, #d8e6fe);
 }
