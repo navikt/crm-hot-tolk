@@ -13,7 +13,14 @@
                                 <lightning-output-field field-name="HOT_Request__c"></lightning-output-field>
                                 <lightning-output-field field-name="HOT_WorkOrderNumber__c"></lightning-output-field>
                                 <lightning-output-field field-name="ParentRecordId"></lightning-output-field>
-                                <lightning-output-field field-name="Subject"></lightning-output-field>
+                                <div class="slds-form-element slds-form-element_readonly readonly-field-style">
+                                    <span class="slds-form-element__label">{subjectLabel}</span>
+                                    <div class="slds-form-element__control">
+                                        <div class="slds-form-element__static">
+                                            <lightning-formatted-text value={subjectValue}></lightning-formatted-text>
+                                        </div>
+                                    </div>
+                                </div>
                                 <lightning-output-field field-name="Description"></lightning-output-field>
                                 <lightning-output-field field-name="HOT_Interpreters__c"></lightning-output-field>
                                 <div class="slds-form-element slds-form-element_readonly readonly-field-style">
@@ -49,8 +56,25 @@
                                 <lightning-output-field field-name="HOT_PreparationTime__c"></lightning-output-field>
                             </div>
                             <div class="slds-col slds-size_1-of-1 slds-large-size_1-of-2">
-                                <lightning-output-field field-name="OwnerId"></lightning-output-field>
-                                <lightning-output-field field-name="ServiceTerritoryId"></lightning-output-field>
+                                <div class="slds-form-element slds-form-element_readonly readonly-field-style">
+                                    <span class="slds-form-element__label">{ownerLabel}</span>
+                                    <div class="slds-form-element__control">
+                                        <div class="slds-form-element__static">
+                                            <lightning-formatted-text value={ownerId}></lightning-formatted-text>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div class="slds-form-element slds-form-element_readonly readonly-field-style">
+                                    <span class="slds-form-element__label">{serviceTerritoryLabel}</span>
+                                    <div class="slds-form-element__control">
+                                        <div class="slds-form-element__static">
+                                            <lightning-formatted-text
+                                                value={serviceTerritoryId}
+                                            ></lightning-formatted-text>
+                                        </div>
+                                    </div>
+                                </div>
                                 <lightning-output-field field-name="HOT_DispatcherNew__c"></lightning-output-field>
                                 <lightning-output-field field-name="Status"></lightning-output-field>
                                 <lightning-output-field field-name="HOT_CancelComment__c"></lightning-output-field>
@@ -116,7 +140,16 @@
                     <div class="slds-section__content slds-p-top_small">
                         <div class="slds-grid slds-wrap slds-gutters">
                             <div class="slds-col slds-size_1-of-1">
-                                <lightning-output-field field-name="Address"></lightning-output-field>
+                                <div class="slds-form-element slds-form-element_readonly readonly-field-style">
+                                    <span class="slds-form-element__label">{addressFormattedLabel}</span>
+                                    <div class="slds-form-element__control">
+                                        <div class="slds-form-element__static">
+                                            <lightning-formatted-text
+                                                value={addressFormattedValue}
+                                            ></lightning-formatted-text>
+                                        </div>
+                                    </div>
+                                </div>
                                 <lightning-output-field
                                     field-name="HOT_InterpretationStreet__c"
                                 ></lightning-output-field>
@@ -160,10 +193,26 @@
                     <div class="slds-section__content slds-p-top_small">
                         <div class="slds-grid slds-wrap slds-gutters">
                             <div class="slds-col slds-size_1-of-1 slds-large-size_1-of-2">
-                                <lightning-output-field field-name="CreatedById"></lightning-output-field>
+                                <div class="slds-form-element slds-form-element_readonly readonly-field-style">
+                                    <span class="slds-form-element__label">{createdByLabel}</span>
+                                    <div class="slds-form-element__control">
+                                        <div class="slds-form-element__static">
+                                            <lightning-formatted-text value={createdById}></lightning-formatted-text>
+                                        </div>
+                                    </div>
+                                </div>
                             </div>
                             <div class="slds-col slds-size_1-of-1 slds-large-size_1-of-2">
-                                <lightning-output-field field-name="LastModifiedById"></lightning-output-field>
+                                <div class="slds-form-element slds-form-element_readonly readonly-field-style">
+                                    <span class="slds-form-element__label">{lastModifiedByLabel}</span>
+                                    <div class="slds-form-element__control">
+                                        <div class="slds-form-element__static">
+                                            <lightning-formatted-text
+                                                value={lastModifiedById}
+                                            ></lightning-formatted-text>
+                                        </div>
+                                    </div>
+                                </div>
                             </div>
                         </div>
                     </div>
