@@ -151,6 +151,27 @@
                 <identifier>hot_warningBannerServiceAppointment</identifier>
             </componentInstance>
         </itemInstances>
+        <itemInstances>
+            <componentInstance>
+                <componentInstanceProperties>
+                    <name>message</name>
+                    <value>Oppdraget ble avslått av tjenesteleverandør.</value>
+                </componentInstanceProperties>
+                <componentInstanceProperties>
+                    <name>type</name>
+                    <value>Warning</value>
+                </componentInstanceProperties>
+                <componentName>hot_alertBanner</componentName>
+                <identifier>hot_alertBannerTjenesteleverandorDeclined</identifier>
+                <visibilityRule>
+                    <criteria>
+                        <leftValue>{!Record.HOT_TjenesteleverandorStatus__c}</leftValue>
+                        <operator>EQUAL</operator>
+                        <rightValue>Declined</rightValue>
+                    </criteria>
+                </visibilityRule>
+            </componentInstance>
+        </itemInstances>
         <name>header</name>
         <type>Region</type>
     </flexiPageRegions>
