@@ -14,6 +14,9 @@ export default class Hot_notificationListViewer extends NavigationMixin(Lightnin
     showNotifications = false;
     notifications;
 
+    accessErrorNotificationId = null;
+    errorMessageBanner = '';
+
     @wire(getMyNotifications)
     wiredNotifications(result) {
         this.wiredNotificationResult = result;
@@ -39,6 +42,11 @@ export default class Hot_notificationListViewer extends NavigationMixin(Lightnin
     }
 
     async goToNotification(event) {
+        this.errorMessageBanner = '';
+        this.notifications = this.notifications?.map((notification) => ({
+            ...notification,
+            showAccessError: false
+        }));
         const notificationElement = event.currentTarget;
 
         if (notificationElement) {
@@ -141,6 +149,12 @@ export default class Hot_notificationListViewer extends NavigationMixin(Lightnin
                         } else {
                             this.errorMessage =
                                 'Du trykket på et gammelt varsel til et oppdrag du ikke lenger er tildelt.';
+                            this.errorMessageBanner = 'Du har ikke tilgang til denne samtalen lenger.';
+                            this.notifications = this.notifications.map((notification) => ({
+                                ...notification,
+                                showAccessError: notification.Id === notificationId
+                            }));
+
                             this.template.querySelector('.notificationDetails').classList.remove('hidden');
                             this.template.querySelector('.notificationDetails').focus();
                         }
@@ -156,11 +170,25 @@ export default class Hot_notificationListViewer extends NavigationMixin(Lightnin
     }
 
     toggleNotifications() {
+        const wasOpen = this.showNotifications;
+
         this.showNotifications = !this.showNotifications;
+
         if (this.showNotifications) {
             refreshApex(this.wiredNotificationResult);
+
             setTimeout(() => {
-                this.template.querySelector('.dropdown')?.focus();
+                const first = this._getTrapElements()[0];
+                first && first.focus();
+            });
+
+            return;
+        }
+
+        if (wasOpen) {
+            requestAnimationFrame(() => {
+                const notificationButton = this.template.querySelector('.notification-button');
+                notificationButton?.focus();
             });
         }
     }
@@ -168,6 +196,11 @@ export default class Hot_notificationListViewer extends NavigationMixin(Lightnin
     handleKeyDown(e) {
         if (e.key === 'Escape' || e.key === 'Esc') {
             this.showNotifications = false;
+
+            requestAnimationFrame(() => {
+                const notificationButton = this.template.querySelector('.notification-button');
+                notificationButton?.focus();
+            });
         }
         if (e.key !== 'Tab') return;
         const focusables = this._getTrapElements();

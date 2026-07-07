@@ -5,11 +5,11 @@
         <enabled>true</enabled>
     </classAccesses>
     <classAccesses>
-        <apexClass>HOT_AutoScheduleService</apexClass>
+        <apexClass>HOT_AssignOrReserveSAService</apexClass>
         <enabled>true</enabled>
     </classAccesses>
     <classAccesses>
-        <apexClass>HOT_AssignOrReserveSAService</apexClass>
+        <apexClass>HOT_AutoScheduleService</apexClass>
         <enabled>true</enabled>
     </classAccesses>
     <classAccesses>
@@ -468,6 +468,11 @@
     <fieldPermissions>
         <editable>true</editable>
         <field>HOT_Request__c.HOT_IsMeetingAddressSameAsHome__c</field>
+        <readable>true</readable>
+    </fieldPermissions>
+    <fieldPermissions>
+        <editable>false</editable>
+        <field>HOT_Request__c.HOT_Owner__c</field>
         <readable>true</readable>
     </fieldPermissions>
     <fieldPermissions>
@@ -1688,6 +1693,11 @@
     <fieldPermissions>
         <editable>false</editable>
         <field>ServiceResource.HOT_ServiceTerritory__c</field>
+        <readable>true</readable>
+    </fieldPermissions>
+    <fieldPermissions>
+        <editable>true</editable>
+        <field>ServiceResource.HOT_ShowOpenServiceAppointmentEvents__c</field>
         <readable>true</readable>
     </fieldPermissions>
     <fieldPermissions>

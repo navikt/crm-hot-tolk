@@ -1,9 +1,83 @@
+.customTabHeader {
+    display: flex;
+    flex-wrap: nowrap;
+    gap: 0.25rem;
+    padding: 0 0.25rem;
+    border-bottom: none;
+}
+
+.customTabHeader--mobileScrollable {
+    overflow-x: auto;
+    overflow-y: hidden;
+    -webkit-overflow-scrolling: touch;
+    scrollbar-width: none;
+}
+
+.customTabHeader--mobileScrollable::-webkit-scrollbar {
+    display: none;
+}
+
+.customTabButton {
+    position: relative;
+    border: 1px solid transparent;
+    border-top-left-radius: 0.375rem;
+    border-top-right-radius: 0.375rem;
+    border-bottom-left-radius: 0;
+    border-bottom-right-radius: 0;
+    background-color: #f5f8fa;
+    color: #1f2d3d;
+    padding: 0.5rem 0.75rem;
+    line-height: 1.25;
+    cursor: pointer;
+    white-space: nowrap;
+}
+
+.customTabButton:hover {
+    background-color: #eaf2f8;
+}
+.customTabButtonActive:hover {
+    background-color: #fff;
+}
+
+.customTabButtonActive {
+    inset-block-end: -1px;
+    color: #003d6b;
+    box-shadow: inset 0px 2px 2px 0 var(--tab-accent-color, #032d60);
+    z-index: 1;
+    font-weight: bold;
+}
+
+.customTabPanel {
+    margin-top: 0;
+    border-style: solid;
+    border-width: 1px;
+    border-color: #939393;
+    border-top-left-radius: 0.25rem;
+    border-top-right-radius: 0.25rem;
+    border-bottom-left-radius: 0.25rem;
+    border-bottom-right-radius: 0.25rem;
+    background-color: #fff;
+    padding: 0.75rem;
+}
+
+.tabContent--hidden {
+    display: none;
+}
+
+.tabContent--active {
+    display: block;
+}
+
 .spinnerType {
     position: relative;
     height: 80px;
 }
 .messageComponentTabContainer {
     position: relative;
+    background-color: #f3f3f3;
+    border-radius: 8px;
+    padding: 2px;
+    box-shadow: 0px 0px 10px 0px #e5e5e5;
 }
 .fakeModalContainer {
     position: absolute;
@@ -31,9 +105,8 @@
 }
 .conversationCard {
     border-radius: var(--slds-g-radius-border-2);
-    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
-    border-color: lightgray;
-    border-style: solid;
+    background-color: white;
+    box-shadow: inset 0 0 10px 0px #626c7920;
 }
 .conversationParticipants {
     border-bottom: 1px solid lightgray;
@@ -41,4 +114,88 @@
 .conversationTitle {
     font-size: 1rem;
     line-height: 1.25;
+}
+
+.customTabMoreMenu {
+    margin-inline-start: 0.25rem;
+    align-self: flex-end;
+}
+
+.tabMeasureContainer {
+    position: absolute;
+    inset-inline-start: -9999px;
+    inset-block-start: -9999px;
+    visibility: hidden;
+    pointer-events: none;
+    display: inline-flex;
+    gap: 0.25rem;
+    white-space: nowrap;
+}
+
+.tabMeasureButton {
+    inset-block-end: 0;
+}
+
+.tabColor--summary {
+    --tab-bg-color: #626c7914;
+    --tab-bg-opaque-color: #f3f3f4;
+    --tab-border-color: #626c7961;
+    --tab-accent-color: #626c7999;
+}
+
+.tabColor--user {
+    --tab-bg-color: #0070d214;
+    --tab-bg-opaque-color: #ebf4fb;
+    --tab-border-color: #0070d261;
+    --tab-accent-color: #0070d299;
+}
+
+.tabColor--orderer {
+    --tab-bg-color: #57a30014;
+    --tab-bg-opaque-color: #f2f8eb;
+    --tab-border-color: #57a30061;
+    --tab-accent-color: #57a30099;
+}
+
+.tabColor--userInterpreter {
+    --tab-bg-color: #6a31d514;
+    --tab-bg-opaque-color: #f3effc;
+    --tab-border-color: #6a31d561;
+    --tab-accent-color: #6a31d599;
+}
+
+.tabColor--interpreterInterpreter {
+    --tab-bg-color: #ff810014;
+    --tab-bg-opaque-color: #fff5eb;
+    --tab-border-color: #ff810066;
+    --tab-accent-color: #ff810099;
+}
+
+.tabColor--interpreter {
+    --tab-bg-color: #e8109114;
+    --tab-bg-opaque-color: #fdecf6;
+    --tab-border-color: #e8109161;
+    --tab-accent-color: #e8109199;
+}
+
+.tabColor--office {
+    --tab-bg-color: #ffb00014;
+    --tab-bg-opaque-color: #fff9eb;
+    --tab-border-color: #ffb00066;
+    --tab-accent-color: #ffb00099;
+}
+
+.customTabButton[class*='tabColor--'],
+.customTabPanel[class*='tabColor--'] {
+    background-color: var(--tab-bg-color);
+}
+
+.customTabButtonActive[class*='tabColor--'] {
+    border-top-color: var(--tab-border-color);
+    border-left-color: var(--tab-border-color);
+    border-right-color: var(--tab-border-color);
+    border-bottom-color: var(--tab-bg-opaque-color);
+}
+.customTabPanel[class*='tabColor--'] {
+    border-color: var(--tab-border-color);
 }
