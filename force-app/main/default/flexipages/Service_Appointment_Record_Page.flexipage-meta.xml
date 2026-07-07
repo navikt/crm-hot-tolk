@@ -21,6 +21,19 @@
                     <valueList>
                         <valueListItems>
                             <value>Edit</value>
+                            <visibilityRule>
+                                <booleanFilter>1 OR 2</booleanFilter>
+                                <criteria>
+                                    <leftValue>{!Record.HOT_TjenesteleverandorStatus__c}</leftValue>
+                                    <operator>NE</operator>
+                                    <rightValue>Transferred</rightValue>
+                                </criteria>
+                                <criteria>
+                                    <leftValue>{!Record.HOT_TjenesteleverandorStatus__c}</leftValue>
+                                    <operator>NE</operator>
+                                    <rightValue>Accepted</rightValue>
+                                </criteria>
+                            </visibilityRule>
                         </valueListItems>
                         <valueListItems>
                             <value>Clone</value>
@@ -138,6 +151,10 @@
                     <value>false</value>
                 </componentInstanceProperties>
                 <componentInstanceProperties>
+                    <name>hideSlackAction</name>
+                    <value>false</value>
+                </componentInstanceProperties>
+                <componentInstanceProperties>
                     <name>numVisibleActions</name>
                     <value>10</value>
                 </componentInstanceProperties>
@@ -153,6 +170,89 @@
         </itemInstances>
         <name>header</name>
         <type>Region</type>
+    </flexiPageRegions>
+    <flexiPageRegions>
+        <itemInstances>
+            <fieldInstance>
+                <fieldInstanceProperties>
+                    <name>uiBehavior</name>
+                    <value>readonly</value>
+                </fieldInstanceProperties>
+                <fieldItem>Record.CreatedById</fieldItem>
+                <identifier>RecordCreatedByIdField2</identifier>
+                <visibilityRule>
+                    <booleanFilter>1 OR 2</booleanFilter>
+                    <criteria>
+                        <leftValue>{!Record.CreatedBy.Profile.Name}</leftValue>
+                        <operator>CONTAINS</operator>
+                        <rightValue>Formidler</rightValue>
+                    </criteria>
+                    <criteria>
+                        <leftValue>{!Record.CreatedBy.Contact.Account.CRM_Person__r.INT_Confidential__c}</leftValue>
+                        <operator>EQUAL</operator>
+                        <rightValue>UGRADERT</rightValue>
+                    </criteria>
+                </visibilityRule>
+            </fieldInstance>
+        </itemInstances>
+        <name>Facet-9a017f90-3719-4332-9f05-71415f7527f2</name>
+        <type>Facet</type>
+    </flexiPageRegions>
+    <flexiPageRegions>
+        <itemInstances>
+            <fieldInstance>
+                <fieldInstanceProperties>
+                    <name>uiBehavior</name>
+                    <value>readonly</value>
+                </fieldInstanceProperties>
+                <fieldItem>Record.LastModifiedById</fieldItem>
+                <identifier>RecordLastModifiedByIdField2</identifier>
+                <visibilityRule>
+                    <booleanFilter>1 OR 2 OR 3</booleanFilter>
+                    <criteria>
+                        <leftValue>{!Record.LastModifiedBy.Profile.Name}</leftValue>
+                        <operator>CONTAINS</operator>
+                        <rightValue>Formidler</rightValue>
+                    </criteria>
+                    <criteria>
+                        <leftValue>{!Record.Contact.Account.CRM_Person__r.INT_Confidential__c}</leftValue>
+                        <operator>EQUAL</operator>
+                        <rightValue>UGRADERT</rightValue>
+                    </criteria>
+                    <criteria>
+                        <leftValue>{!Record.LastModifiedBy.Profile.Name}</leftValue>
+                        <operator>CONTAINS</operator>
+                        <rightValue>Saksbehandler</rightValue>
+                    </criteria>
+                </visibilityRule>
+            </fieldInstance>
+        </itemInstances>
+        <name>Facet-f3fee4f8-b61a-4cb1-a494-f045cc3c914d</name>
+        <type>Facet</type>
+    </flexiPageRegions>
+    <flexiPageRegions>
+        <itemInstances>
+            <componentInstance>
+                <componentInstanceProperties>
+                    <name>body</name>
+                    <value>Facet-9a017f90-3719-4332-9f05-71415f7527f2</value>
+                </componentInstanceProperties>
+                <componentName>flexipage:column</componentName>
+                <identifier>flexipage_column12</identifier>
+            </componentInstance>
+        </itemInstances>
+        <itemInstances>
+            <componentInstance>
+                <componentInstanceProperties>
+                    <name>body</name>
+                    <value>Facet-f3fee4f8-b61a-4cb1-a494-f045cc3c914d</value>
+                </componentInstanceProperties>
+                <componentName>flexipage:column</componentName>
+                <identifier>flexipage_column13</identifier>
+            </componentInstance>
+        </itemInstances>
+        <name>Facet-4457c95c-b12b-4f9e-bdba-bc2e2ece732b</name>
+        <type>Facet</type>
     </flexiPageRegions>
     <flexiPageRegions>
         <itemInstances>
@@ -377,6 +477,23 @@
                 </fieldInstanceProperties>
                 <fieldItem>Record.Status</fieldItem>
                 <identifier>RecordStatusField</identifier>
+            </fieldInstance>
+        </itemInstances>
+        <itemInstances>
+            <fieldInstance>
+                <fieldInstanceProperties>
+                    <name>uiBehavior</name>
+                    <value>none</value>
+                </fieldInstanceProperties>
+                <fieldItem>Record.HOT_TjenesteleverandorStatus__c</fieldItem>
+                <identifier>RecordHOT_TjenesteleverandorStatus_cField</identifier>
+                <visibilityRule>
+                    <criteria>
+                        <leftValue>{!Record.Status}</leftValue>
+                        <operator>NE</operator>
+                        <rightValue>None</rightValue>
+                    </criteria>
+                </visibilityRule>
             </fieldInstance>
         </itemInstances>
         <itemInstances>
@@ -1357,6 +1474,56 @@
         </itemInstances>
         <itemInstances>
             <componentInstance>
+                <componentName>hot_tjenesteleverandorReadOnlySA</componentName>
+                <identifier>c_hot_tjenesteleverandorReadOnlySA</identifier>
+                <visibilityRule>
+                    <booleanFilter>1 OR 2</booleanFilter>
+                    <criteria>
+                        <leftValue>{!Record.HOT_TjenesteleverandorStatus__c}</leftValue>
+                        <operator>EQUAL</operator>
+                        <rightValue>Transferred</rightValue>
+                    </criteria>
+                    <criteria>
+                        <leftValue>{!Record.HOT_TjenesteleverandorStatus__c}</leftValue>
+                        <operator>EQUAL</operator>
+                        <rightValue>Accepted</rightValue>
+                    </criteria>
+                </visibilityRule>
+            </componentInstance>
+        </itemInstances>
+        <itemInstances>
+            <componentInstance>
+                <componentInstanceProperties>
+                    <name>columns</name>
+                    <value>Facet-4457c95c-b12b-4f9e-bdba-bc2e2ece732b</value>
+                </componentInstanceProperties>
+                <componentInstanceProperties>
+                    <name>horizontalAlignment</name>
+                    <value>false</value>
+                </componentInstanceProperties>
+                <componentInstanceProperties>
+                    <name>label</name>
+                    <value>Systeminformasjon</value>
+                </componentInstanceProperties>
+                <componentName>flexipage:fieldSection</componentName>
+                <identifier>flexipage_fieldSection7</identifier>
+                <visibilityRule>
+                    <booleanFilter>1 OR 2</booleanFilter>
+                    <criteria>
+                        <leftValue>{!Record.HOT_TjenesteleverandorStatus__c}</leftValue>
+                        <operator>EQUAL</operator>
+                        <rightValue>Transferred</rightValue>
+                    </criteria>
+                    <criteria>
+                        <leftValue>{!Record.HOT_TjenesteleverandorStatus__c}</leftValue>
+                        <operator>EQUAL</operator>
+                        <rightValue>Accepted</rightValue>
+                    </criteria>
+                </visibilityRule>
+            </componentInstance>
+        </itemInstances>
+        <itemInstances>
+            <componentInstance>
                 <componentInstanceProperties>
                     <name>label</name>
                     <value>Tabs</value>
@@ -1367,6 +1534,13 @@
                 </componentInstanceProperties>
                 <componentName>flexipage:tabset</componentName>
                 <identifier>flexipage_tabset</identifier>
+                <visibilityRule>
+                    <criteria>
+                        <leftValue>{!Record.Status}</leftValue>
+                        <operator>EQUAL</operator>
+                        <rightValue>None</rightValue>
+                    </criteria>
+                </visibilityRule>
             </componentInstance>
         </itemInstances>
         <name>main</name>
