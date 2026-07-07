@@ -95,7 +95,8 @@ export default class HotTindWorkOrderHighlightMobile extends LightningElement {
     }
 
     get status() {
-        return this.getValue(this.workOrderRecord, ['Status']) || '-';
+        const statusField = this.workOrderRecord?.fields?.Status;
+        return statusField?.displayValue || statusField?.value || '-';
     }
 
     get detailsLine() {
