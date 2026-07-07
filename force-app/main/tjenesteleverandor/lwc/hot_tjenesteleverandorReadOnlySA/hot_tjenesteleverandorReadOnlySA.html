@@ -31,58 +31,21 @@
                                 </div>
                                 <lightning-output-field field-name="Description"></lightning-output-field>
                                 <lightning-output-field field-name="HOT_Interpreters__c"></lightning-output-field>
-                                <div class="slds-form-element slds-form-element_readonly readonly-field-style">
-                                    <span class="slds-form-element__label">{accountLabel}</span>
-                                    <div class="slds-form-element__control">
-                                        <div class="slds-form-element__static">
-                                            <lightning-formatted-text value={accountId}></lightning-formatted-text>
-                                        </div>
-                                    </div>
-                                </div>
-                                <div class="slds-form-element slds-form-element_readonly readonly-field-style">
-                                    <span class="slds-form-element__label">{contactLabel}</span>
-                                    <div class="slds-form-element__control">
-                                        <div class="slds-form-element__static">
-                                            <lightning-formatted-text value={contactId}></lightning-formatted-text>
-                                        </div>
-                                    </div>
-                                </div>
+                                <lightning-output-field field-name="AccountId"></lightning-output-field>
+                                <lightning-output-field field-name="ContactId"></lightning-output-field>
                                 <lightning-output-field field-name="HOT_NavEmployeeName__c"></lightning-output-field>
                                 <lightning-output-field field-name="HOT_GenderAge__c"></lightning-output-field>
-                                <div class="slds-form-element slds-form-element_readonly readonly-field-style">
-                                    <span class="slds-form-element__label">{workTypeLabel}</span>
-                                    <div class="slds-form-element__control">
-                                        <div class="slds-form-element__static">
-                                            <lightning-formatted-text value={workTypeId}></lightning-formatted-text>
-                                        </div>
-                                    </div>
-                                </div>
+                                <lightning-output-field field-name="WorkTypeId"></lightning-output-field>
                                 <lightning-output-field field-name="HOT_AssignmentType__c"></lightning-output-field>
                                 <lightning-output-field
                                     field-name="HOT_TotalNumberOfInterpreters__c"
                                 ></lightning-output-field>
                                 <lightning-output-field field-name="HOT_PreparationTime__c"></lightning-output-field>
                             </div>
-                            <div class="slds-col slds-size_1-of-1 slds-large-size_1-of-2">
-                                <div class="slds-form-element slds-form-element_readonly readonly-field-style">
-                                    <span class="slds-form-element__label">{ownerLabel}</span>
-                                    <div class="slds-form-element__control">
-                                        <div class="slds-form-element__static">
-                                            <lightning-formatted-text value={ownerId}></lightning-formatted-text>
-                                        </div>
-                                    </div>
-                                </div>
 
-                                <div class="slds-form-element slds-form-element_readonly readonly-field-style">
-                                    <span class="slds-form-element__label">{serviceTerritoryLabel}</span>
-                                    <div class="slds-form-element__control">
-                                        <div class="slds-form-element__static">
-                                            <lightning-formatted-text
-                                                value={serviceTerritoryId}
-                                            ></lightning-formatted-text>
-                                        </div>
-                                    </div>
-                                </div>
+                            <div class="slds-col slds-size_1-of-1 slds-large-size_1-of-2">
+                                <lightning-output-field field-name="OwnerId"></lightning-output-field>
+                                <lightning-output-field field-name="ServiceTerritoryId"></lightning-output-field>
                                 <lightning-output-field field-name="HOT_DispatcherNew__c"></lightning-output-field>
                                 <lightning-output-field field-name="Status"></lightning-output-field>
                                 <template lwc:if={showTjenesteleverandorStatus}>
@@ -206,26 +169,10 @@
                     <div class="slds-section__content slds-p-top_small">
                         <div class="slds-grid slds-wrap slds-gutters">
                             <div class="slds-col slds-size_1-of-1 slds-large-size_1-of-2">
-                                <div class="slds-form-element slds-form-element_readonly readonly-field-style">
-                                    <span class="slds-form-element__label">{createdByLabel}</span>
-                                    <div class="slds-form-element__control">
-                                        <div class="slds-form-element__static">
-                                            <lightning-formatted-text value={createdById}></lightning-formatted-text>
-                                        </div>
-                                    </div>
-                                </div>
+                                <lightning-output-field field-name="CreatedById"></lightning-output-field>
                             </div>
                             <div class="slds-col slds-size_1-of-1 slds-large-size_1-of-2">
-                                <div class="slds-form-element slds-form-element_readonly readonly-field-style">
-                                    <span class="slds-form-element__label">{lastModifiedByLabel}</span>
-                                    <div class="slds-form-element__control">
-                                        <div class="slds-form-element__static">
-                                            <lightning-formatted-text
-                                                value={lastModifiedById}
-                                            ></lightning-formatted-text>
-                                        </div>
-                                    </div>
-                                </div>
+                                <lightning-output-field field-name="LastModifiedById"></lightning-output-field>
                             </div>
                         </div>
                     </div>

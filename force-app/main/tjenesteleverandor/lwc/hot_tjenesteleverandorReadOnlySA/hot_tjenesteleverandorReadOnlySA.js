@@ -1,12 +1,9 @@
 import { LightningElement, api, wire } from 'lwc';
-import { getRecord, getFieldValue } from 'lightning/uiRecordApi';
+import { getRecord, getFieldValue, getFieldDisplayValue } from 'lightning/uiRecordApi';
 import LANG from '@salesforce/i18n/lang';
 
 import PARENT_RECORD_FIELD from '@salesforce/schema/ServiceAppointment.ParentRecordId';
 import SUBJECT_FIELD from '@salesforce/schema/ServiceAppointment.Subject';
-import ACCOUNT_FIELD from '@salesforce/schema/ServiceAppointment.AccountId';
-import CONTACT_FIELD from '@salesforce/schema/ServiceAppointment.ContactId';
-import WORK_TYPE_FIELD from '@salesforce/schema/ServiceAppointment.WorkTypeId';
 import OWNER_FIELD from '@salesforce/schema/ServiceAppointment.OwnerId';
 import SERVICE_TERRITORY_FIELD from '@salesforce/schema/ServiceAppointment.ServiceTerritoryId';
 import ADDRESS_FORMATED_FIELD from '@salesforce/schema/ServiceAppointment.HOT_AddressFormated__c';
@@ -18,12 +15,6 @@ import TJENESTELEVERANDOR_STATUS_FIELD from '@salesforce/schema/ServiceAppointme
 const FIELDS = [
     SUBJECT_FIELD,
     PARENT_RECORD_FIELD,
-    ACCOUNT_FIELD,
-    CONTACT_FIELD,
-    WORK_TYPE_FIELD,
-    PARENT_RECORD_FIELD,
-    OWNER_FIELD,
-    SERVICE_TERRITORY_FIELD,
     ADDRESS_FORMATED_FIELD,
     CREATED_BY_FIELD,
     LAST_MODIFIED_BY_FIELD,
@@ -55,46 +46,6 @@ export default class HOT_TjenesteleverandorSAReadOnly extends LightningElement {
 
     get subjectLabel() {
         return this.lang && this.lang.toLowerCase().startsWith('no') ? 'Tema' : 'Subject';
-    }
-
-    get accountId() {
-        return getFieldValue(this.record.data, ACCOUNT_FIELD);
-    }
-
-    get accountLabel() {
-        return this.lang && this.lang.toLowerCase().startsWith('no') ? 'Konto' : 'Account';
-    }
-
-    get contactId() {
-        return getFieldValue(this.record.data, CONTACT_FIELD);
-    }
-
-    get contactLabel() {
-        return this.lang && this.lang.toLowerCase().startsWith('no') ? 'Kontakt' : 'Contact';
-    }
-
-    get workTypeId() {
-        return getFieldValue(this.record.data, WORK_TYPE_FIELD);
-    }
-
-    get workTypeLabel() {
-        return this.lang && this.lang.toLowerCase().startsWith('no') ? 'Tolkemetode' : 'Work Type';
-    }
-
-    get ownerId() {
-        return getFieldValue(this.record.data, OWNER_FIELD);
-    }
-
-    get serviceTerritoryId() {
-        return getFieldValue(this.record.data, SERVICE_TERRITORY_FIELD);
-    }
-
-    get ownerLabel() {
-        return this.lang && this.lang.toLowerCase().startsWith('no') ? 'Eier' : 'Owner';
-    }
-
-    get serviceTerritoryLabel() {
-        return this.lang && this.lang.toLowerCase().startsWith('no') ? 'Tjenesteområde' : 'Service Territory';
     }
 
     get addressFormattedValue() {
