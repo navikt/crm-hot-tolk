@@ -172,6 +172,27 @@
                 </visibilityRule>
             </componentInstance>
         </itemInstances>
+        <itemInstances>
+            <componentInstance>
+                <componentInstanceProperties>
+                    <name>message</name>
+                    <value>Fristen for tjenesteleverandør til å akseptere oppdraget er utløpt.</value>
+                </componentInstanceProperties>
+                <componentInstanceProperties>
+                    <name>type</name>
+                    <value>Warning</value>
+                </componentInstanceProperties>
+                <componentName>hot_alertBanner</componentName>
+                <identifier>hot_alertBannerTjenesteleverandorExpired</identifier>
+                <visibilityRule>
+                    <criteria>
+                        <leftValue>{!Record.HOT_TjenesteleverandorStatus__c}</leftValue>
+                        <operator>EQUAL</operator>
+                        <rightValue>Expired</rightValue>
+                    </criteria>
+                </visibilityRule>
+            </componentInstance>
+        </itemInstances>
         <name>header</name>
         <type>Region</type>
     </flexiPageRegions>
