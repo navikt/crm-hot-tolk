@@ -10,7 +10,7 @@
             <assignToReference>CurrentServiceAppointment.HOT_CancelComment__c</assignToReference>
             <operator>Assign</operator>
             <value>
-                <elementReference>hot_cancel_comment_bruker_picklist.value</elementReference>
+                <elementReference>hot_cancel_comment_bruker_combined</elementReference>
             </value>
         </assignmentItems>
         <assignmentItems>
@@ -418,6 +418,14 @@
         <expression>{!$User.Id}</expression>
     </formulas>
     <formulas>
+        <name>hot_cancel_comment_bruker_combined</name>
+        <dataType>String</dataType>
+        <expression>LEFT(
+            {!hot_cancel_comment_bruker.value} &amp; &quot;: &quot; &amp; {!hot_cancel_comment_bruker.inputText},
+            255
+            )</expression>
+    </formulas>
+    <formulas>
         <name>Validate_actual_end_time</name>
         <dataType>Boolean</dataType>
         <expression>{!New_end_time_dekket} &lt;= ({!CurrentServiceAppointment.SchedEndTime} + (1/2))</expression>
@@ -473,7 +481,7 @@
         <inputAssignments>
             <field>StatusComment__c</field>
             <value>
-                <elementReference>hot_cancel_comment_bruker_picklist.value</elementReference>
+                <elementReference>hot_cancel_comment_bruker_combined</elementReference>
             </value>
         </inputAssignments>
         <inputAssignments>
@@ -877,9 +885,15 @@
             <storeOutputAutomatically>true</storeOutputAutomatically>
         </fields>
         <fields>
-            <name>hot_cancel_comment_bruker_picklist</name>
-            <extensionName>c:hot_flowPicklist</extensionName>
+            <name>hot_cancel_comment_bruker</name>
+            <extensionName>c:hot_flowPicklistTextArea</extensionName>
             <fieldType>ComponentInstance</fieldType>
+            <inputParameters>
+                <name>label</name>
+                <value>
+                    <stringValue>Velg begrunnelse</stringValue>
+                </value>
+            </inputParameters>
             <inputParameters>
                 <name>option1</name>
                 <value>
@@ -899,7 +913,37 @@
                 </value>
             </inputParameters>
             <inputParameters>
-                <name>required</name>
+                <name>textareaLabel</name>
+                <value>
+                    <stringValue>* Kommentar</stringValue>
+                </value>
+            </inputParameters>
+            <inputParameters>
+                <name>requiredPicklist</name>
+                <value>
+                    <booleanValue>true</booleanValue>
+                </value>
+            </inputParameters>
+            <inputParameters>
+                <name>requiredTextarea</name>
+                <value>
+                    <booleanValue>false</booleanValue>
+                </value>
+            </inputParameters>
+            <inputParameters>
+                <name>option1RequiresTextarea</name>
+                <value>
+                    <booleanValue>true</booleanValue>
+                </value>
+            </inputParameters>
+            <inputParameters>
+                <name>option2RequiresTextarea</name>
+                <value>
+                    <booleanValue>true</booleanValue>
+                </value>
+            </inputParameters>
+            <inputParameters>
+                <name>option3RequiresTextarea</name>
                 <value>
                     <booleanValue>true</booleanValue>
                 </value>

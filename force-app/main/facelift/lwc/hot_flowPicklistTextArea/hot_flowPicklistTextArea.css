@@ -1,0 +1,15 @@
+.main-container {
+    font-family: 'Source Sans 3', 'Source Sans Pro', Arial, sans-serif;
+}
+
+.button-container {
+    margin-top: 0.5rem;
+    margin-bottom: 2.8rem;
+}
+
+.error-message {
+    display: block;
+    color: #ba3a26;
+    margin-top: 0.25rem;
+    font-size: 0.875rem;
+}
