@@ -1,32 +1,27 @@
 <template>
     <div class="main-container">
-        <lightning-combobox
-            class="custom-combobox"
-            label={label}
-            value={value}
-            placeholder="Velg et alternativ"
-            options={options}
-            onchange={handlePicklistChange}
-        >
-        </lightning-combobox>
-
-        <template if:true={errorMessagePicklist}>
-            <div class="error-message">{errorMessagePicklist}</div>
-        </template>
-
-        <c-textarea
-            name="textarea"
-            maxlength="255"
-            label={textareaLabel}
-            value={inputText}
-            error-text={errorMessageTextarea}
-            ongetvalueontextareachange={handleTextareaChange}
-        >
-        </c-textarea>
-
-        <template if:true={errorMessageTextarea}>
-            <div class="error-message" aria-live="polite">{errorMessageTextarea}</div>
-        </template>
+        <lightning-layout multiple-rows>
+            <lightning-layout-item size="12" padding="around-small">
+                <c-picklist
+                    master-label={labelValue}
+                    choices={options}
+                    onpicklistvaluechange={handlePicklistChange}
+                    set-default-value={value}
+                    error-text={errorMessagePicklist}
+                >
+                </c-picklist>
+            </lightning-layout-item>
+            <lightning-layout-item size="12" padding="around-small">
+                <c-textarea
+                    label={textareaLabelValue}
+                    maxlength="255"
+                    value={inputText}
+                    error-text={errorMessageTextarea}
+                    ongetvalueontextareachange={handleTextareaChange}
+                >
+                </c-textarea>
+            </lightning-layout-item>
+        </lightning-layout>
     </div>
 
     <div class="button-container">

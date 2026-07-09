@@ -1,6 +1,9 @@
 import { LightningElement, api } from 'lwc';
 import { FlowAttributeChangeEvent, FlowNavigationBackEvent, FlowNavigationNextEvent } from 'lightning/flowSupport';
 
+const PICKLIST_ERROR_MESSAGE = 'Vennligst velg et alternativ for å fortsette.';
+const TEXTAREA_ERROR_MESSAGE = 'Vennligst fyll ut tekstfeltet for å gå videre.';
+
 export default class Hot_flowPicklistTextArea extends LightningElement {
     @api label;
     @api value;
@@ -17,14 +20,13 @@ export default class Hot_flowPicklistTextArea extends LightningElement {
     @api option2RequiresTextarea = false;
     @api option3RequiresTextarea = false;
 
-    errorMessagePicklist = '';
-    errorMessageTextarea = '';
+    textAreaValidationError = false;
 
     get options() {
         return [
-            { label: this.option1, value: this.option1 },
-            { label: this.option2, value: this.option2 },
-            { label: this.option3, value: this.option3 }
+            { label: this.option1, name: this.option1, value: this.option1, selected: this.value === this.option1 },
+            { label: this.option2, name: this.option2, value: this.option2, selected: this.value === this.option2 },
+            { label: this.option3, name: this.option3, value: this.option3, selected: this.value === this.option3 }
         ].filter((option) => option.label);
     }
 
@@ -48,16 +50,38 @@ export default class Hot_flowPicklistTextArea extends LightningElement {
     get isTextareaRequired() {
         return this.requiredTextarea || this.selectedOptionRequiresTextarea;
     }
-
+    get isLabel() {
+        return this.label && this.label.trim() !== '';
+    }
+    get isTextareaLabel() {
+        return this.textareaLabel && this.textareaLabel.trim() !== '';
+    }
+    get labelValue() {
+        return this.isPicklistRequired ? `* ${this.label}` : this.label;
+    }
+    get textareaLabelValue() {
+        return this.isTextareaRequired ? `* ${this.textareaLabel}` : this.textareaLabel;
+    }
     handlePicklistChange(event) {
         this.value = event.detail.value;
-        this.errorMessagePicklist = '';
+        this.resetPicklistError();
+        if (this.textAreaValidationError) {
+            if (this.isTextareaValid()) {
+                this.resetTextareaError();
+            } else {
+                this.setTextareaError(TEXTAREA_ERROR_MESSAGE);
+            }
+        }
         this.dispatchEvent(new FlowAttributeChangeEvent('value', this.value));
     }
 
     handleTextareaChange(event) {
         this.inputText = event.detail;
-        this.errorMessageTextarea = '';
+        if (this.isTextareaValid()) {
+            this.resetTextareaError();
+        } else {
+            this.setTextareaError(TEXTAREA_ERROR_MESSAGE);
+        }
         this.dispatchEvent(new FlowAttributeChangeEvent('inputText', this.inputText));
     }
 
@@ -66,22 +90,56 @@ export default class Hot_flowPicklistTextArea extends LightningElement {
     }
 
     handleNext() {
-        let isValid = true;
+        if (this.isPicklistValid() && this.isTextareaValid()) {
+            this.dispatchEvent(new FlowNavigationNextEvent());
+        }
+        if (!this.isPicklistValid()) {
+            this.setPicklistError(PICKLIST_ERROR_MESSAGE);
+        }
+        if (!this.isTextareaValid()) {
+            this.setTextareaError(TEXTAREA_ERROR_MESSAGE);
+        }
+    }
+    picklistElement() {
+        return this.template.querySelector('c-picklist');
+    }
+    textareaElement() {
+        return this.template.querySelector('c-textarea');
+    }
 
+    setPicklistError(message) {
+        const picklist = this.picklistElement();
+        if (picklist) {
+            picklist.errorText = message;
+            picklist.validationHandler();
+        }
+    }
+    resetPicklistError() {
+        this.setPicklistError('');
+    }
+    setTextareaError(message, validationError = true) {
+        const textarea = this.textareaElement();
+        if (textarea) {
+            textarea.errorText = message;
+            textarea.validationHandler();
+            this.textAreaValidationError = validationError;
+        }
+    }
+    resetTextareaError() {
+        this.setTextareaError('', false);
+    }
+    isPicklistValid() {
         if (this.isPicklistRequired && (!this.value || this.value === '')) {
-            this.errorMessagePicklist = 'Vennligst velg et alternativ for å fortsette.';
-            isValid = false;
+            return false;
+        } else {
+            return true;
         }
-
+    }
+    isTextareaValid() {
         if (this.isTextareaRequired && (!this.inputText || this.inputText.trim() === '')) {
-            this.errorMessageTextarea = 'Vennligst fyll ut tekstfeltet for å gå videre.';
-            isValid = false;
+            return false;
+        } else {
+            return true;
         }
-
-        if (!isValid) {
-            return;
-        }
-
-        this.dispatchEvent(new FlowNavigationNextEvent());
     }
 }
