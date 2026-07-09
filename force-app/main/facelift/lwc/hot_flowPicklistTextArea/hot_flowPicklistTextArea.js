@@ -50,12 +50,6 @@ export default class Hot_flowPicklistTextArea extends LightningElement {
     get isTextareaRequired() {
         return this.requiredTextarea || this.selectedOptionRequiresTextarea;
     }
-    get isLabel() {
-        return this.label && this.label.trim() !== '';
-    }
-    get isTextareaLabel() {
-        return this.textareaLabel && this.textareaLabel.trim() !== '';
-    }
     get labelValue() {
         return this.isPicklistRequired ? `* ${this.label}` : this.label;
     }
@@ -90,13 +84,15 @@ export default class Hot_flowPicklistTextArea extends LightningElement {
     }
 
     handleNext() {
-        if (this.isPicklistValid() && this.isTextareaValid()) {
+        let isPicklistValid = this.isPicklistValid();
+        let isTextareaValid = this.isTextareaValid();
+        if (isPicklistValid && isTextareaValid) {
             this.dispatchEvent(new FlowNavigationNextEvent());
         }
-        if (!this.isPicklistValid()) {
+        if (!isPicklistValid) {
             this.setPicklistError(PICKLIST_ERROR_MESSAGE);
         }
-        if (!this.isTextareaValid()) {
+        if (!isTextareaValid) {
             this.setTextareaError(TEXTAREA_ERROR_MESSAGE);
         }
     }
