@@ -14,6 +14,13 @@
                 <stringValue>Transferred</stringValue>
             </value>
         </assignmentItems>
+        <assignmentItems>
+            <assignToReference>$Record.HOT_TjenesteleverandorTransferDate__c</assignToReference>
+            <operator>Assign</operator>
+            <value>
+                <elementReference>$Flow.CurrentDateTime</elementReference>
+            </value>
+        </assignmentItems>
     </assignments>
     <environments>Default</environments>
     <interviewLabel>HOT_SetSATjenesteleverandorTransferred {!$Flow.CurrentDateTime}</interviewLabel>
