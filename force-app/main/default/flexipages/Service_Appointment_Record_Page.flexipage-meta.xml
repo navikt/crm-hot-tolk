@@ -1239,6 +1239,12 @@
     <flexiPageRegions>
         <itemInstances>
             <componentInstance>
+                <componentName>hot_tindWorkOrderHighlightMobile</componentName>
+                <identifier>c_hot_tindWorkOrderHighlightMobile</identifier>
+            </componentInstance>
+        </itemInstances>
+        <itemInstances>
+            <componentInstance>
                 <componentInstanceProperties>
                     <name>customObjectApiName</name>
                     <value>WorkOrder</value>
