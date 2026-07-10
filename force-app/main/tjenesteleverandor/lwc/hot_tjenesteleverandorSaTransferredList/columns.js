@@ -5,11 +5,6 @@ export let columns = [
         type: 'Datetime'
     },
     {
-        label: 'Dag',
-        name: 'weekday',
-        type: 'String'
-    },
-    {
         label: 'Informasjon',
         name: 'HOT_Information__c',
         type: 'String'
@@ -20,9 +15,14 @@ export let columns = [
         type: 'String'
     },
     {
-        label: 'Overført dato',
-        name: 'HOT_TjenesteleverandorTransferDate__c',
-        type: 'Datetime'
+        label: 'Tolkemetode',
+        name: 'HOT_WorkTypeName__c',
+        type: 'String'
+    },
+    {
+        label: 'Område',
+        name: 'HOT_ServiceTerritoryName__c',
+        type: 'String'
     }
 ];
 
@@ -32,11 +32,6 @@ export let mobileColumns = [
         name: 'startAndEndDateWeekday',
         type: 'String',
         bold: true
-    },
-    {
-        label: 'Dag',
-        name: 'weekday',
-        type: 'String'
     },
     {
         label: 'Info',
@@ -49,8 +44,13 @@ export let mobileColumns = [
         type: 'String'
     },
     {
-        label: 'Overført dato',
-        name: 'HOT_TjenesteleverandorTransferDate__c',
-        type: 'Datetime'
+        label: 'Tolkemetode',
+        name: 'HOT_WorkTypeName__c',
+        type: 'String'
+    },
+    {
+        label: 'Område',
+        name: 'HOT_ServiceTerritoryName__c',
+        type: 'String'
     }
 ];
