@@ -11,7 +11,7 @@
             <assignToReference>CurrentServiceAppointment.HOT_CancelComment__c</assignToReference>
             <operator>Assign</operator>
             <value>
-                <elementReference>hot_cancel_comment_bruker_combined</elementReference>
+                <elementReference>hot_cancel_comment_bruker.value</elementReference>
             </value>
         </assignmentItems>
         <assignmentItems>
@@ -33,6 +33,13 @@
             <operator>Assign</operator>
             <value>
                 <booleanValue>true</booleanValue>
+            </value>
+        </assignmentItems>
+        <assignmentItems>
+            <assignToReference>CurrentServiceAppointment.HOT_CancelCommentExtended__c</assignToReference>
+            <operator>Assign</operator>
+            <value>
+                <elementReference>hot_cancel_comment_bruker.inputText</elementReference>
             </value>
         </assignmentItems>
         <connector>
@@ -422,9 +429,15 @@
         <name>hot_cancel_comment_bruker_combined</name>
         <dataType>String</dataType>
         <expression>LEFT(
-            {!hot_cancel_comment_bruker.value} &amp; &quot;: &quot; &amp; {!hot_cancel_comment_bruker.inputText},
-            255
-            )</expression>
+    {!hot_cancel_comment_bruker.value} &amp; ( 
+        IF(
+            ISBLANK({!hot_cancel_comment_bruker.inputText}),
+            &quot;&quot;,
+            &quot;: &quot; &amp; {!hot_cancel_comment_bruker.inputText}
+        )
+    ),
+    255
+)</expression>
     </formulas>
     <formulas>
         <name>Validate_actual_end_time</name>
