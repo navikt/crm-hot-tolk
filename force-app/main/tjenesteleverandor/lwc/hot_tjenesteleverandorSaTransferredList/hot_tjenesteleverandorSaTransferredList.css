@@ -1,2 +1,24 @@
-main {
+.main-content {
+    background-color: #fff;
+    border-radius: 0.5rem;
+    width: 100%;
+    font-family: 'Source Sans Pro', Arial, sans-serif;
+    align-items: center;
+    padding-top: 0.5rem;
+    text-align: end;
+}
+
+.loader-container {
+    display: flex;
+    justify-content: center;
+    align-items: flex-start;
+    padding-top: 5rem;
+}
+
+@media (max-width: 576px) {
+    .main-content {
+        max-width: 100%;
+        box-sizing: border-box;
+        overflow-x: visible;
+    }
 }

@@ -1,3 +1,21 @@
 <template>
-    <p>test</p>
+    <template lwc:if={hasResult}>
+        <div class="main-content">
+            <c-hot_freelance-common-table records={records} columns={columns}> </c-hot_freelance-common-table>
+        </div>
+    </template>
+
+    <template lwc:elseif={noServiceAppointmentsResult}>
+        <div style="text-align: center" aria-live="polite">
+            <br />
+            <p>Det er ingen oppdrag overført til tjenesteleverandør.</p>
+            <br />
+        </div>
+    </template>
+
+    <template lwc:if={dataLoader}>
+        <div class="loader-container">
+            <c-hot_loader size="3xlarge"></c-hot_loader>
+        </div>
+    </template>
 </template>

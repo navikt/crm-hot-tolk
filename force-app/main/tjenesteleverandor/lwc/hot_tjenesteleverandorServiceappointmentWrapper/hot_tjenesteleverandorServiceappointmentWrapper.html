@@ -1,3 +1,37 @@
 <template>
-    <c-hot_tjenesteleverandor-sa-transferred-list></c-hot_tjenesteleverandor-sa-transferred-list>
+    <div class="page-background">
+        <div class="tab-content-wrapper">
+            <div class="list">
+                <h1 class="header-title">Tjenesteleverandør Oppdrag</h1>
+
+                <div class="tabset desktop-only" role="tablist">
+                    <template for:each={tabMap} for:item="tab">
+                        <button
+                            key={tab.name}
+                            class="tab tab-button"
+                            data-id={tab.name}
+                            onclick={setActiveTab}
+                            role="tab"
+                            aria-selected={tab.ariaSelected}
+                            aria-controls={tab.ariaControls}
+                            id={tab.ariaId}
+                            aria-label={tab.ariaLabel}
+                        >
+                            {tab.label}
+                        </button>
+                    </template>
+                </div>
+
+                <div class="tabset picklist-service mobile">
+                    <c-picklist choices={tabs} onpicklistvaluechange={setActiveTabMobile}></c-picklist>
+                </div>
+
+                <template lwc:if={isTransferredTab}>
+                    <div class="tab-content">
+                        <c-hot_tjenesteleverandor-sa-transferred-list></c-hot_tjenesteleverandor-sa-transferred-list>
+                    </div>
+                </template>
+            </div>
+        </div>
+    </div>
 </template>
