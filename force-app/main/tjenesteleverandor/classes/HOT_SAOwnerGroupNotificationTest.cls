@@ -21,11 +21,25 @@ private class HOT_SAOwnerGroupNotificationTest {
         request.title = 'Tjenesteleverandør';
         request.body = 'Oppdraget krever oppfølging.';
 
+        List<HOT_SAOwnerGroupNotification.Result> synchronousResults =
+            HOT_SAOwnerGroupNotification.processSynchronously(
+                new List<HOT_SAOwnerGroupNotification.Request>{ request }
+            );
+
+        System.assertEquals(1, synchronousResults.size());
+        System.assertEquals('Sent', synchronousResults[0].status);
+        System.assertEquals(true, synchronousResults[0].sent);
+        System.assertEquals(false, synchronousResults[0].missingRecipient);
+
         Test.startTest();
-        HOT_SAOwnerGroupNotification.send(new List<HOT_SAOwnerGroupNotification.Request>{ request });
+        List<HOT_SAOwnerGroupNotification.Result> queuedResults = HOT_SAOwnerGroupNotification.send(
+            new List<HOT_SAOwnerGroupNotification.Request>{ request }
+        );
         Test.stopTest();
 
-        System.assert(true, 'Notification helper should send without throwing.');
+        System.assertEquals(1, queuedResults.size());
+        System.assertEquals('Queued', queuedResults[0].status);
+        System.assertEquals(true, queuedResults[0].queued);
     }
 
     @IsTest
@@ -39,17 +53,22 @@ private class HOT_SAOwnerGroupNotificationTest {
         request.body = 'Oppdraget krever oppfølging.';
 
         Test.startTest();
-        HOT_SAOwnerGroupNotification.send(new List<HOT_SAOwnerGroupNotification.Request>{ request });
+        List<HOT_SAOwnerGroupNotification.Result> results = HOT_SAOwnerGroupNotification.processSynchronously(
+            new List<HOT_SAOwnerGroupNotification.Request>{ request }
+        );
         Test.stopTest();
 
-        System.assert(true, 'Missing owner group should be logged and skipped.');
+        System.assertEquals(1, results.size());
+        System.assertEquals('MissingRecipient', results[0].status);
+        System.assertEquals(true, results[0].missingRecipient);
+        System.assertEquals(false, results[0].sent);
     }
 
     @IsTest
     static void nullAndInvalidRequestsAreIgnored() {
         Test.startTest();
-        HOT_SAOwnerGroupNotification.send(null);
-        HOT_SAOwnerGroupNotification.send(new List<HOT_SAOwnerGroupNotification.Request>());
+        System.assertEquals(0, HOT_SAOwnerGroupNotification.send(null).size());
+        System.assertEquals(0, HOT_SAOwnerGroupNotification.send(new List<HOT_SAOwnerGroupNotification.Request>()).size());
 
         HOT_SAOwnerGroupNotification.Request missingId = new HOT_SAOwnerGroupNotification.Request();
         missingId.title = 'Tjenesteleverandør';
@@ -59,10 +78,43 @@ private class HOT_SAOwnerGroupNotificationTest {
         blankTitle.serviceAppointmentId = UserInfo.getUserId();
         blankTitle.body = 'Oppdraget krever oppfølging.';
 
-        HOT_SAOwnerGroupNotification.send(new List<HOT_SAOwnerGroupNotification.Request>{ missingId, blankTitle });
+        List<HOT_SAOwnerGroupNotification.Result> results = HOT_SAOwnerGroupNotification.send(
+            new List<HOT_SAOwnerGroupNotification.Request>{ missingId, blankTitle }
+        );
         Test.stopTest();
 
-        System.assert(true, 'Invalid notification requests should be ignored.');
+        System.assertEquals(2, results.size());
+        System.assertEquals('Skipped', results[0].status);
+        System.assertEquals(true, results[0].skipped);
+        System.assertEquals('Skipped', results[1].status);
+        System.assertEquals(true, results[1].skipped);
+    }
+
+    @IsTest
+    static void duplicateRequestsAreSkipped() {
+        ServiceAppointment serviceAppointment = createServiceAppointment();
+        insert serviceAppointment;
+
+        HOT_SAOwnerGroupNotification.Request firstRequest = new HOT_SAOwnerGroupNotification.Request();
+        firstRequest.serviceAppointmentId = serviceAppointment.Id;
+        firstRequest.title = 'Tjenesteleverandør';
+        firstRequest.body = 'Oppdraget krever oppfølging.';
+
+        HOT_SAOwnerGroupNotification.Request duplicateRequest = new HOT_SAOwnerGroupNotification.Request();
+        duplicateRequest.serviceAppointmentId = serviceAppointment.Id;
+        duplicateRequest.title = 'Tjenesteleverandør';
+        duplicateRequest.body = 'Oppdraget krever oppfølging.';
+
+        Test.startTest();
+        List<HOT_SAOwnerGroupNotification.Result> results = HOT_SAOwnerGroupNotification.send(
+            new List<HOT_SAOwnerGroupNotification.Request>{ firstRequest, duplicateRequest }
+        );
+        Test.stopTest();
+
+        System.assertEquals(2, results.size());
+        System.assertEquals('Queued', results[0].status);
+        System.assertEquals('Skipped', results[1].status);
+        System.assertEquals('Duplicate notification request.', results[1].message);
     }
 
     private static ServiceAppointment createServiceAppointment() {
