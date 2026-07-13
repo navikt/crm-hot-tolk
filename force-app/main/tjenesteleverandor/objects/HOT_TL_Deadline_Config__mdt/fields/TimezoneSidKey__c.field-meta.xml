@@ -1,6 +1,8 @@
-<?xml version="1.0" encoding="UTF-8"?>
+<?xml version="1.0" encoding="UTF-8" ?>
 <CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
     <fullName>TimezoneSidKey__c</fullName>
+    <description
+    >Salesforce timezone identifier used when interpreting opening hours, for example Europe/Oslo.</description>
     <externalId>false</externalId>
     <fieldManageability>DeveloperControlled</fieldManageability>
     <label>Timezone Sid Key</label>

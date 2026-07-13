@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="UTF-8"?>
+<?xml version="1.0" encoding="UTF-8" ?>
 <Flow xmlns="http://soap.sforce.com/2006/04/metadata">
     <apiVersion>66.0</apiVersion>
     <decisions>
@@ -23,6 +23,8 @@
             <label>Still Transferred</label>
         </rules>
     </decisions>
+    <description
+    >At the configured supplier deadline, rechecks the appointment, marks an unanswered transfer as expired, opens it, and notifies the formidler group.</description>
     <environments>Default</environments>
     <interviewLabel>HOT_Handle_Tjenesteleverandor_Deadline {!$Flow.CurrentDateTime}</interviewLabel>
     <label>HOT_Handle_Tjenesteleverandor_Deadline</label>

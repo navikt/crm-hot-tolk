@@ -35,16 +35,20 @@ public without sharing class HOT_NotificationHandler {
         List<Group> queues = [SELECT Id, DeveloperName FROM Group WHERE Type = 'Queue' AND Id IN :queueIds];
         Map<Id, String> groupNamesByQueueId = new Map<Id, String>();
         for (Group queue : queues) {
-            String groupName = '';
-            //Fellesoppdrag
-            if (queue.DeveloperName.contains('fellesoppdrag')) {
-                groupName = 'HOT_group_' + queue.DeveloperName.split('_')[2] + '_formidler';
+            String groupName;
+            List<String> nameParts = queue.DeveloperName?.split('_');
+
+            // Queue and public-group names share the region segment; malformed names are treated as unresolved.
+            if (queue.DeveloperName?.contains('fellesoppdrag') == true && nameParts.size() > 2) {
+                groupName = 'HOT_group_' + nameParts[2] + '_formidler';
             } else if (queue.DeveloperName.contains('Akuttvakt')) {
                 groupName = 'HOT_Tolk_Akuttvakt';
-            } else {
-                groupName = 'HOT_group_' + queue.DeveloperName.split('_')[1] + '_formidler';
+            } else if (nameParts.size() > 1) {
+                groupName = 'HOT_group_' + nameParts[1] + '_formidler';
             }
-            groupNamesByQueueId.put(queue.Id, groupName);
+            if (String.isNotBlank(groupName)) {
+                groupNamesByQueueId.put(queue.Id, groupName);
+            }
         }
         List<Group> groups = [
             SELECT Id, DeveloperName

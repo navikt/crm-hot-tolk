@@ -1,6 +1,8 @@
-<?xml version="1.0" encoding="UTF-8"?>
+<?xml version="1.0" encoding="UTF-8" ?>
 <Flow xmlns="http://soap.sforce.com/2006/04/metadata">
     <apiVersion>66.0</apiVersion>
+    <description
+    >When a supplier declines an appointment, clears the deadline, opens the appointment, and notifies the formidler group.</description>
     <environments>Default</environments>
     <interviewLabel>HOT_Handle_Tjenesteleverandor_Declined {!$Flow.CurrentDateTime}</interviewLabel>
     <label>HOT_Handle_Tjenesteleverandor_Declined</label>

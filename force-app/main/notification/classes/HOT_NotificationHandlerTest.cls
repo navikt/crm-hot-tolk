@@ -62,6 +62,16 @@ private class HOT_NotificationHandlerTest {
     }
 
     @IsTest
+    static void malformedQueueNameIsReturnedAsUnresolved() {
+        Group queue = new Group(Name = 'Malformed Queue', DeveloperName = 'MalformedQueue', Type = 'Queue');
+        insert queue;
+
+        Map<Id, Id> result = HOT_NotificationHandler.getGroupIdByQueueId(new List<Id>{ queue.Id });
+
+        System.assertEquals(null, result.get(queue.Id));
+    }
+
+    @IsTest
     private static void testNotifyUsers() {
         Test.startTest();
         ServiceAppointment serviceAppointment = [

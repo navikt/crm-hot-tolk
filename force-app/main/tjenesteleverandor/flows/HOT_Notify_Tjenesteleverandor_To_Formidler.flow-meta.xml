@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="UTF-8"?>
+<?xml version="1.0" encoding="UTF-8" ?>
 <Flow xmlns="http://soap.sforce.com/2006/04/metadata">
     <apiVersion>66.0</apiVersion>
     <actionCalls>
@@ -29,16 +29,113 @@
         </inputParameters>
         <nameSegment>HOT_SAOwnerGroupNotification</nameSegment>
     </actionCalls>
+    <assignments>
+        <name>Set_Declined_Notification</name>
+        <label>Set Declined Notification</label>
+        <locationX>0</locationX>
+        <locationY>0</locationY>
+        <assignmentItems>
+            <assignToReference>NotificationBody</assignToReference>
+            <operator>Assign</operator>
+            <value>
+                <elementReference>DeclinedNotificationBody</elementReference>
+            </value>
+        </assignmentItems>
+        <assignmentItems>
+            <assignToReference>NotificationTitle</assignToReference>
+            <operator>Assign</operator>
+            <value>
+                <elementReference>DeclinedNotificationTitle</elementReference>
+            </value>
+        </assignmentItems>
+        <connector>
+            <targetReference>Notify_Formidler_Group</targetReference>
+        </connector>
+    </assignments>
+    <assignments>
+        <name>Set_Expired_Notification</name>
+        <label>Set Expired Notification</label>
+        <locationX>0</locationX>
+        <locationY>0</locationY>
+        <assignmentItems>
+            <assignToReference>NotificationBody</assignToReference>
+            <operator>Assign</operator>
+            <value>
+                <elementReference>ExpiredNotificationBody</elementReference>
+            </value>
+        </assignmentItems>
+        <assignmentItems>
+            <assignToReference>NotificationTitle</assignToReference>
+            <operator>Assign</operator>
+            <value>
+                <elementReference>ExpiredNotificationTitle</elementReference>
+            </value>
+        </assignmentItems>
+        <connector>
+            <targetReference>Notify_Formidler_Group</targetReference>
+        </connector>
+    </assignments>
+    <decisions>
+        <name>Determine_Notification_Reason</name>
+        <label>Determine Notification Reason</label>
+        <locationX>0</locationX>
+        <locationY>0</locationY>
+        <defaultConnectorLabel>Unsupported Reason</defaultConnectorLabel>
+        <rules>
+            <name>Declined</name>
+            <conditionLogic>and</conditionLogic>
+            <conditions>
+                <leftValueReference>Reason</leftValueReference>
+                <operator>EqualTo</operator>
+                <rightValue>
+                    <stringValue>Declined</stringValue>
+                </rightValue>
+            </conditions>
+            <connector>
+                <targetReference>Set_Declined_Notification</targetReference>
+            </connector>
+            <label>Declined</label>
+        </rules>
+        <rules>
+            <name>Expired</name>
+            <conditionLogic>and</conditionLogic>
+            <conditions>
+                <leftValueReference>Reason</leftValueReference>
+                <operator>EqualTo</operator>
+                <rightValue>
+                    <stringValue>Expired</stringValue>
+                </rightValue>
+            </conditions>
+            <connector>
+                <targetReference>Set_Expired_Notification</targetReference>
+            </connector>
+            <label>Expired</label>
+        </rules>
+    </decisions>
+    <description
+    >Builds notification text for supported supplier outcomes and queues a notification to the formidler group derived from the appointment owner. Supported reasons are Declined and Expired.</description>
     <environments>Default</environments>
     <formulas>
-        <name>NotificationBody</name>
+        <name>DeclinedNotificationBody</name>
         <dataType>String</dataType>
-        <expression>IF({!Reason} = &quot;Declined&quot;, &quot;Oppdraget ble avslått av tjenesteleverandør. Oppdraget er satt til åpent.&quot;, &quot;Fristen for å akseptere oppdraget er utløpt. Oppdraget er satt til åpent.&quot;)</expression>
+        <expression>&quot;Oppdraget ble avslått av tjenesteleverandør. Oppdraget er satt til åpent.&quot;</expression>
     </formulas>
     <formulas>
-        <name>NotificationTitle</name>
+        <name>DeclinedNotificationTitle</name>
         <dataType>String</dataType>
-        <expression>IF({!Reason} = &quot;Declined&quot;, &quot;Tjenesteleverandør avslo oppdraget &quot; &amp; {!Get_ServiceAppointment.AppointmentNumber}, &quot;Akseptfrist utløpt for oppdrag &quot; &amp; {!Get_ServiceAppointment.AppointmentNumber})</expression>
+        <expression
+        >&quot;Tjenesteleverandør avslo oppdraget &quot; &amp; {!Get_ServiceAppointment.AppointmentNumber}</expression>
+    </formulas>
+    <formulas>
+        <name>ExpiredNotificationBody</name>
+        <dataType>String</dataType>
+        <expression>&quot;Fristen for å akseptere oppdraget er utløpt. Oppdraget er satt til åpent.&quot;</expression>
+    </formulas>
+    <formulas>
+        <name>ExpiredNotificationTitle</name>
+        <dataType>String</dataType>
+        <expression
+        >&quot;Akseptfrist utløpt for oppdrag &quot; &amp; {!Get_ServiceAppointment.AppointmentNumber}</expression>
     </formulas>
     <interviewLabel>HOT_Notify_Tjenesteleverandor_To_Formidler {!$Flow.CurrentDateTime}</interviewLabel>
     <label>HOT_Notify_Tjenesteleverandor_To_Formidler</label>
@@ -68,7 +165,7 @@
         <locationY>0</locationY>
         <assignNullValuesIfNoRecordsFound>false</assignNullValuesIfNoRecordsFound>
         <connector>
-            <targetReference>Notify_Formidler_Group</targetReference>
+            <targetReference>Determine_Notification_Reason</targetReference>
         </connector>
         <filters>
             <field>Id</field>
@@ -90,6 +187,20 @@
         </connector>
     </start>
     <status>Active</status>
+    <variables>
+        <name>NotificationBody</name>
+        <dataType>String</dataType>
+        <isCollection>false</isCollection>
+        <isInput>false</isInput>
+        <isOutput>false</isOutput>
+    </variables>
+    <variables>
+        <name>NotificationTitle</name>
+        <dataType>String</dataType>
+        <isCollection>false</isCollection>
+        <isInput>false</isInput>
+        <isOutput>false</isOutput>
+    </variables>
     <variables>
         <name>Reason</name>
         <dataType>String</dataType>

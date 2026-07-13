@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="UTF-8"?>
+<?xml version="1.0" encoding="UTF-8" ?>
 <Flow xmlns="http://soap.sforce.com/2006/04/metadata">
     <apiVersion>65.0</apiVersion>
     <assignments>
@@ -12,6 +12,10 @@
             <value>
                 <elementReference>$Flow.CurrentDateTime</elementReference>
             </value>
+        </assignmentItems>
+        <assignmentItems>
+            <assignToReference>$Record.HOT_TjenesteleverandorDeadline__c</assignToReference>
+            <operator>Assign</operator>
         </assignmentItems>
     </assignments>
     <assignments>
@@ -91,6 +95,8 @@
             <label>Accepted By Tjenesteleverandor</label>
         </rules>
     </decisions>
+    <description
+    >Stamps supplier transfer and acceptance dates before save. Acceptance also clears the active supplier deadline.</description>
     <environments>Default</environments>
     <interviewLabel>HOT_SAUpdateOnTjenesteleverandorStatus {!$Flow.CurrentDateTime}</interviewLabel>
     <label>HOT_SAUpdateOnTjenesteleverandorStatus</label>

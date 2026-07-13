@@ -1,5 +1,6 @@
-<?xml version="1.0" encoding="UTF-8"?>
+<?xml version="1.0" encoding="UTF-8" ?>
 <CustomObject xmlns="http://soap.sforce.com/2006/04/metadata">
+    <description>Default opening-hours configuration used to calculate supplier acceptance deadlines.</description>
     <label>Tjenesteleverandor Deadline Config</label>
     <pluralLabel>Tjenesteleverandor Deadline Configs</pluralLabel>
     <visibility>Public</visibility>

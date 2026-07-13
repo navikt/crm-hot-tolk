@@ -7,6 +7,9 @@ public without sharing class HOT_TjenesteleverandorDeadlineService {
     public class Request {
         @InvocableVariable(required=true label='Transfer Date')
         public Datetime transferDate;
+
+        @InvocableVariable(label='Service Appointment Id')
+        public Id serviceAppointmentId;
     }
 
     public class Result {
@@ -27,6 +30,9 @@ public without sharing class HOT_TjenesteleverandorDeadlineService {
         Integer minuteOfDay;
     }
 
+    public class ConfigurationException extends Exception {
+    }
+
     @InvocableMethod(
         label='Calculate Tjenesteleverandor Deadline'
         description='Calculates the supplier acceptance deadline from configurable opening hours.'
@@ -41,18 +47,24 @@ public without sharing class HOT_TjenesteleverandorDeadlineService {
 
         for (Request request : requests) {
             Result result = new Result();
-            result.deadline = request?.transferDate == null ? null : calculateDeadline(request.transferDate);
+            result.deadline = request?.transferDate == null
+                ? null
+                : calculateDeadline(request.transferDate, request.serviceAppointmentId);
             results.add(result);
         }
         return results;
     }
 
     public static Datetime calculateDeadline(Datetime transferDate) {
+        return calculateDeadline(transferDate, null);
+    }
+
+    public static Datetime calculateDeadline(Datetime transferDate, Id serviceAppointmentId) {
         if (transferDate == null) {
             return null;
         }
 
-        Config config = getConfig();
+        Config config = getConfig(serviceAppointmentId);
         LocalMoment current = normalizeToOpenTime(toLocalMoment(transferDate, config.timezoneSidKey), config);
         Integer remainingMinutes = config.deadlineMinutes;
 
@@ -94,44 +106,80 @@ public without sharing class HOT_TjenesteleverandorDeadlineService {
         testConfig = null;
     }
 
-    private static Config getConfig() {
+    private static Config getConfig(Id serviceAppointmentId) {
         if (testConfig != null) {
+            validateConfig(testConfig);
             return testConfig;
         }
 
-        HOT_TL_Deadline_Config__mdt metadata = HOT_TL_Deadline_Config__mdt.getInstance(DEFAULT_CONFIG_NAME);
+        HOT_TL_Deadline_Config__mdt metadata = HOT_TL_Deadline_Config__mdt.getInstance(
+            resolveConfigName(serviceAppointmentId)
+        );
+        if (metadata == null) {
+            throw new ConfigurationException('Missing HOT_TL_Deadline_Config__mdt.Default configuration.');
+        }
+
         Config config = new Config();
-        config.startHour = metadata?.StartHour__c == null ? 8 : Integer.valueOf(metadata.StartHour__c);
-        config.endHour = metadata?.EndHour__c == null ? 16 : Integer.valueOf(metadata.EndHour__c);
-        Decimal deadlineHours = metadata?.DeadlineHours__c == null ? 4 : metadata.DeadlineHours__c;
-        config.deadlineMinutes = Integer.valueOf((deadlineHours * 60).setScale(0));
-        config.timezoneSidKey = String.isBlank(metadata?.TimezoneSidKey__c) ? 'Europe/Oslo' : metadata.TimezoneSidKey__c;
-        config.weekdays = parseWeekdays(String.isBlank(metadata?.Weekdays__c) ? '1,2,3,4,5' : metadata.Weekdays__c);
+        config.startHour = metadata.StartHour__c == null ? null : Integer.valueOf(metadata.StartHour__c);
+        config.endHour = metadata.EndHour__c == null ? null : Integer.valueOf(metadata.EndHour__c);
+        Decimal deadlineHours = metadata.DeadlineHours__c;
+        config.deadlineMinutes = deadlineHours == null ? null : Integer.valueOf((deadlineHours * 60).setScale(0));
+        config.timezoneSidKey = metadata.TimezoneSidKey__c;
+        config.weekdays = parseWeekdays(metadata.Weekdays__c);
 
-        if (config.endHour <= config.startHour) {
-            config.startHour = 8;
-            config.endHour = 16;
-        }
-        if (config.deadlineMinutes <= 0) {
-            config.deadlineMinutes = 240;
-        }
-        if (config.weekdays.isEmpty()) {
-            config.weekdays.addAll(new List<Integer>{ 1, 2, 3, 4, 5 });
-        }
-
+        validateConfig(config);
         return config;
+    }
+
+    private static String resolveConfigName(Id serviceAppointmentId) {
+        // This is the extension point for selecting supplier-specific configuration from the appointment context.
+        return DEFAULT_CONFIG_NAME;
+    }
+
+    private static void validateConfig(Config config) {
+        if (
+            config.startHour == null ||
+            config.endHour == null ||
+            config.startHour < 0 ||
+            config.endHour > 23 ||
+            config.endHour <= config.startHour
+        ) {
+            throw new ConfigurationException('Opening hours must be valid whole hours where start is before end.');
+        }
+        if (config.deadlineMinutes == null || config.deadlineMinutes <= 0) {
+            throw new ConfigurationException('Deadline hours must be greater than zero.');
+        }
+        if (String.isBlank(config.timezoneSidKey)) {
+            throw new ConfigurationException('TimezoneSidKey must be configured.');
+        }
+        if (TimeZone.getTimeZone(config.timezoneSidKey).getID() != config.timezoneSidKey) {
+            throw new ConfigurationException('TimezoneSidKey must be a valid Salesforce timezone identifier.');
+        }
+        if (config.weekdays == null || config.weekdays.isEmpty()) {
+            throw new ConfigurationException('At least one open weekday must be configured.');
+        }
     }
 
     private static Set<Integer> parseWeekdays(String weekdays) {
         Set<Integer> parsedWeekdays = new Set<Integer>();
+        if (String.isBlank(weekdays)) {
+            return parsedWeekdays;
+        }
         for (String token : weekdays.split(',')) {
             String trimmedToken = token.trim();
             if (String.isBlank(trimmedToken)) {
                 continue;
             }
-            Integer weekday = Integer.valueOf(trimmedToken);
+            Integer weekday;
+            try {
+                weekday = Integer.valueOf(trimmedToken);
+            } catch (Exception exceptionThrown) {
+                throw new ConfigurationException('Weekdays must contain comma-separated numbers from 1 through 7.');
+            }
             if (weekday >= 1 && weekday <= 7) {
                 parsedWeekdays.add(weekday);
+            } else {
+                throw new ConfigurationException('Weekdays must contain comma-separated numbers from 1 through 7.');
             }
         }
         return parsedWeekdays;
@@ -192,6 +240,7 @@ public without sharing class HOT_TjenesteleverandorDeadlineService {
         Datetime utc = assumedUtc.addSeconds(-(offset / 1000));
         Integer adjustedOffset = timezone.getOffset(utc);
 
+        // Re-evaluate the offset at the resulting instant so deadlines stay correct across DST boundaries.
         if (adjustedOffset != offset) {
             utc = assumedUtc.addSeconds(-(adjustedOffset / 1000));
         }

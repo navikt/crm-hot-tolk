@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="UTF-8"?>
+<?xml version="1.0" encoding="UTF-8" ?>
 <Flow xmlns="http://soap.sforce.com/2006/04/metadata">
     <apiVersion>66.0</apiVersion>
     <actionCalls>
@@ -13,6 +13,12 @@
         </connector>
         <flowTransactionModel>CurrentTransaction</flowTransactionModel>
         <inputParameters>
+            <name>serviceAppointmentId</name>
+            <value>
+                <elementReference>$Record.Id</elementReference>
+            </value>
+        </inputParameters>
+        <inputParameters>
             <name>transferDate</name>
             <value>
                 <elementReference>$Record.HOT_TjenesteleverandorTransferDate__c</elementReference>
@@ -24,6 +30,8 @@
             <name>deadline</name>
         </outputParameters>
     </actionCalls>
+    <description
+    >Calculates and stores the supplier acceptance deadline when an appointment is transferred to a supplier.</description>
     <environments>Default</environments>
     <interviewLabel>HOT_Set_Tjenesteleverandor_Deadline {!$Flow.CurrentDateTime}</interviewLabel>
     <label>HOT_Set_Tjenesteleverandor_Deadline</label>
