@@ -1,9 +1,9 @@
 import { LightningElement, wire, api } from 'lwc';
+import { refreshApex } from '@salesforce/apex';
 import getTransferredServiceAppointments from '@salesforce/apex/HOT_TjenesteleverandorListController.getTransferredServiceAppointments';
 import { columns, mobileColumns, inDetailsColumns } from './columns';
 import { formatRecord } from 'c/datetimeFormatterNorwegianTime';
 import { getDayOfWeek } from 'c/hot_commonUtils';
-import { refreshApex } from '@salesforce/apex';
 import icons from '@salesforce/resourceUrl/ikoner';
 
 export default class Hot_tjenesteleverandorSaTransferredList extends LightningElement {
