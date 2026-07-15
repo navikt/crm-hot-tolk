@@ -18,7 +18,9 @@ export default class Hot_tjenesteleverandorSaAcceptedList extends LightningEleme
     initialServiceAppointments = [];
 
     datetimeFields = [
-        { name: 'StartAndEndDate', type: 'datetimeinterval', start: 'EarliestStartTime', end: 'DueDate' }
+        { name: 'StartAndEndDate', type: 'datetimeinterval', start: 'EarliestStartTime', end: 'DueDate' },
+        { name: 'HOT_DeadlineDate__c', type: 'date' },
+        { name: 'HOT_ReleaseDate__c', type: 'date', newName: 'ReleaseDate' }
     ];
 
     get hasResult() {
@@ -105,12 +107,7 @@ export default class Hot_tjenesteleverandorSaAcceptedList extends LightningEleme
                 ...record,
                 startAndEndDateWeekday: this.formatDatetime(record.EarliestStartTime, record.DueDate),
                 weekday: getDayOfWeek(record.EarliestStartTime),
-                HOT_TjenesteleverandorTransferDate__c: this.formatSingleDatetime(
-                    record.HOT_TjenesteleverandorTransferDate__c
-                ),
-                HOT_TjenesteleverandorAcceptDate__c: this.formatSingleDatetime(
-                    record.HOT_TjenesteleverandorAcceptDate__c
-                )
+                isOtherProvider: record.HOT_Request__r?.IsOtherEconomicProvicer__c ? 'Ja' : 'Nei'
             }));
 
             let tempRecords = [];
@@ -145,7 +142,6 @@ export default class Hot_tjenesteleverandorSaAcceptedList extends LightningEleme
                 this.serviceAppointment.weekday = getDayOfWeek(this.serviceAppointment.EarliestStartTime);
             }
         }
-
         this.showServiceAppointmentDetails();
     }
 
@@ -164,5 +160,9 @@ export default class Hot_tjenesteleverandorSaAcceptedList extends LightningEleme
         const dialog = this.template.querySelector('dialog');
         dialog.close();
         this.showServiceAppointmentDetailsModal = false;
+    }
+
+    get status() {
+        return this.serviceAppointment?.Status ?? '';
     }
 }

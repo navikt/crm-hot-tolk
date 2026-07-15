@@ -25,6 +25,22 @@
             </div>
             <div lwc:if={isDetails} class="modal-body">
                 <p><strong>Oppdragsnummer:</strong> {serviceAppointment.HOT_ServiceAppointmentNumber__c}</p>
+                <p><strong>Tema:</strong> {serviceAppointment.HOT_FreelanceSubject__c}</p>
+                <p><strong>Tid:</strong> {serviceAppointment.weekday} {serviceAppointment.StartAndEndDate}</p>
+                <p><strong>Adresse:</strong> {serviceAppointment.HOT_AddressFormated__c}</p>
+                <p><strong>Tolkemetode:</strong> {serviceAppointment.HOT_WorkTypeName__c}</p>
+                <p lwc:if={serviceAppointment.HOT_PreparationTime__c}>
+                    <strong>Kompensert forberedelse:</strong> {serviceAppointment.HOT_PreparationTime__c}
+                </p>
+                <p><strong>Oppdragstype:</strong> {serviceAppointment.HOT_AssignmentType__c}</p>
+                <p><strong>Status:</strong> {status}</p>
+                <p><strong>Frigitt av:</strong> {serviceAppointment.HOT_ReleasedBy__c}</p>
+                <p><strong>Frigitt dato:</strong> {serviceAppointment.ReleaseDate}</p>
+                <p><strong>Frist dato:</strong> {serviceAppointment.HOT_DeadlineDate__c}</p>
+                <p><strong>Antall påmeldte:</strong> {serviceAppointment.HOT_NumberOfInterestedResources__c}</p>
+                <p><strong>Annen betaler:</strong> {serviceAppointment.isOtherProvider}</p>
+                <p><strong>Region:</strong> {serviceAppointment.HOT_ServiceTerritoryName__c}</p>
+                <p><strong>Eier:</strong> {serviceAppointment.HOT_Request__r.OwnerName__c}</p>
             </div>
         </div>
     </dialog>

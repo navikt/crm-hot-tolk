@@ -5,8 +5,8 @@ export let columns = [
         type: 'Datetime'
     },
     {
-        label: 'Informasjon',
-        name: 'HOT_Information__c',
+        label: 'Tolkemetode',
+        name: 'HOT_WorkTypeName__c',
         type: 'String'
     },
     {
@@ -15,12 +15,12 @@ export let columns = [
         type: 'String'
     },
     {
-        label: 'Tolkemetode',
-        name: 'HOT_WorkTypeName__c',
+        label: 'Status',
+        name: 'Status',
         type: 'String'
     },
     {
-        label: 'Område',
+        label: 'Region',
         name: 'HOT_ServiceTerritoryName__c',
         type: 'String'
     }
@@ -34,8 +34,8 @@ export let mobileColumns = [
         bold: true
     },
     {
-        label: 'Info',
-        name: 'HOT_Information__c',
+        label: 'Tolkemetode',
+        name: 'HOT_WorkTypeName__c',
         type: 'String'
     },
     {
@@ -44,12 +44,12 @@ export let mobileColumns = [
         type: 'String'
     },
     {
-        label: 'Tolkemetode',
-        name: 'HOT_WorkTypeName__c',
+        label: 'Status',
+        name: 'Status',
         type: 'String'
     },
     {
-        label: 'Område',
+        label: 'Region',
         name: 'HOT_ServiceTerritoryName__c',
         type: 'String'
     }

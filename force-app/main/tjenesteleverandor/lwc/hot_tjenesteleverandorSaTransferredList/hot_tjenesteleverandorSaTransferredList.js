@@ -19,7 +19,9 @@ export default class Hot_tjenesteleverandorSaTransferredList extends LightningEl
     checkedServiceAppointments = [];
 
     datetimeFields = [
-        { name: 'StartAndEndDate', type: 'datetimeinterval', start: 'EarliestStartTime', end: 'DueDate' }
+        { name: 'StartAndEndDate', type: 'datetimeinterval', start: 'EarliestStartTime', end: 'DueDate' },
+        { name: 'HOT_DeadlineDate__c', type: 'date' },
+        { name: 'HOT_ReleaseDate__c', type: 'date', newName: 'ReleaseDate' }
     ];
 
     updateURL() {
@@ -92,7 +94,7 @@ export default class Hot_tjenesteleverandorSaTransferredList extends LightningEl
         const hours = datetime.getHours().toString().padStart(2, '0');
         const minutes = datetime.getMinutes().toString().padStart(2, '0');
 
-        return `${day}.${month}.${year} ${hours}:${minutes}`;
+        return `${day}.${month}.${year}, ${hours}:${minutes}`;
     }
 
     sendRecords() {
@@ -127,40 +129,26 @@ export default class Hot_tjenesteleverandorSaTransferredList extends LightningEl
     wiredAllTransferredServiceAppointmentsResult;
     @wire(getTransferredServiceAppointments)
     wiredTransferredServiceAppointments(result) {
-        console.log('wire result', result);
-
         if (result.data) {
-            console.log('wire data before mapping', result.data);
-
             this.allTransferredServiceAppointmentsWired = result.data.map((record) => ({
                 ...record,
                 startAndEndDateWeekday: this.formatDatetime(record.EarliestStartTime, record.DueDate),
                 weekday: getDayOfWeek(record.EarliestStartTime),
+                isOtherProvider: record.HOT_Request__r?.IsOtherEconomicProvicer__c ? 'Ja' : 'Nei',
                 HOT_TjenesteleverandorTransferDate__c: this.formatSingleDatetime(
                     record.HOT_TjenesteleverandorTransferDate__c
                 )
             }));
-
-            console.log('mapped records', this.allTransferredServiceAppointmentsWired);
 
             let tempRecords = [];
             for (let record of this.allTransferredServiceAppointmentsWired) {
                 tempRecords.push(formatRecord(Object.assign({}, record), this.datetimeFields));
             }
 
-            console.log('formatted tempRecords', tempRecords);
-
             this.records = tempRecords;
             this.initialServiceAppointments = [...this.records];
             this.dataLoader = false;
-
-            console.log('final state', {
-                records: this.records,
-                initialServiceAppointments: this.initialServiceAppointments,
-                dataLoader: this.dataLoader
-            });
         } else if (result.error) {
-            console.log('wire error', result.error);
             this.error = result.error;
             this.records = [];
             this.initialServiceAppointments = [];

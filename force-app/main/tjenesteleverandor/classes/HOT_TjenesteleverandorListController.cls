@@ -5,6 +5,7 @@ public without sharing class HOT_TjenesteleverandorListController {
             SELECT
                 Id,
                 EarliestStartTime,
+                toLabel(Status),
                 DueDate,
                 HOT_FreelanceSubject__c,
                 HOT_AddressFormated__c,
@@ -39,6 +40,7 @@ public without sharing class HOT_TjenesteleverandorListController {
             SELECT
                 Id,
                 EarliestStartTime,
+                toLabel(Status),
                 DueDate,
                 HOT_FreelanceSubject__c,
                 HOT_AddressFormated__c,
@@ -50,7 +52,14 @@ public without sharing class HOT_TjenesteleverandorListController {
                 HOT_ServiceTerritoryName__c,
                 HOT_TjenesteleverandorStatus__c,
                 HOT_TjenesteleverandorTransferDate__c,
-                HOT_TjenesteleverandorAcceptDate__c
+                HOT_TjenesteleverandorAcceptDate__c,
+                HOT_AssignmentType__c,
+                HOT_Request__c,
+                HOT_Request__r.OwnerName__c,
+                HOT_ReleasedBy__c,
+                HOT_ReleaseDate__c,
+                HOT_DeadlineDate__c,
+                HOT_NumberOfInterestedResources__c
             FROM ServiceAppointment
             WHERE HOT_TjenesteleverandorStatus__c = 'Accepted'
             ORDER BY EarliestStartTime ASC

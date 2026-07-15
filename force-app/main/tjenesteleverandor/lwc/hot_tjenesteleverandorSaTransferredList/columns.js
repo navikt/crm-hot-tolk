@@ -20,7 +20,7 @@ export let columns = [
         type: 'String'
     },
     {
-        label: 'Område',
+        label: 'Region',
         name: 'HOT_ServiceTerritoryName__c',
         type: 'String'
     }
@@ -67,7 +67,7 @@ export let mobileColumns = [
         type: 'String'
     },
     {
-        label: 'Område',
+        label: 'Region',
         name: 'HOT_ServiceTerritoryName__c',
         type: 'String'
     }
