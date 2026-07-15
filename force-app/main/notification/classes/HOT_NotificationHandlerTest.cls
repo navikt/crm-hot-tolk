@@ -98,5 +98,8 @@ private class HOT_NotificationHandlerTest {
             notificationType.Id,
             targetId
         );
+
+        System.assertNotEquals(null, notification);
+        HOT_NotificationHandler.sendNotification(notification, new Set<String>(), request);
     }
 }
