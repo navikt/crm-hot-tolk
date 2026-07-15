@@ -1,0 +1,165 @@
+<template>
+    <lightning-card>
+        <div class="banner-container">
+            <c-hot_info-card
+                title={informationBannerTitle}
+                content={informationBannerContent}
+                type="info"
+                show-icon="true"
+            ></c-hot_info-card>
+        </div>
+        <lightning-record-view-form record-id={recordId} object-api-name="ServiceAppointment">
+            <div class="slds-p-around_small">
+                <div class="slds-section slds-is-open">
+                    <h3 class="slds-section__title slds-theme_shade slds-p-horizontal_small slds-p-vertical_x-small">
+                        <span class="slds-truncate" title="Generell informasjon">Generell informasjon</span>
+                    </h3>
+                    <div class="slds-section__content slds-p-top_small">
+                        <div class="slds-grid slds-wrap slds-gutters">
+                            <div class="slds-col slds-size_1-of-1 slds-large-size_1-of-2">
+                                <lightning-output-field field-name="AppointmentNumber"></lightning-output-field>
+                                <lightning-output-field field-name="HOT_Request__c"></lightning-output-field>
+                                <lightning-output-field field-name="HOT_WorkOrderNumber__c"></lightning-output-field>
+                                <lightning-output-field field-name="ParentRecordId"></lightning-output-field>
+                                <div class="slds-form-element slds-form-element_readonly readonly-field-style">
+                                    <span class="slds-form-element__label">{subjectLabel}</span>
+                                    <div class="slds-form-element__control">
+                                        <div class="slds-form-element__static">
+                                            <lightning-formatted-text value={subjectValue}></lightning-formatted-text>
+                                        </div>
+                                    </div>
+                                </div>
+                                <lightning-output-field field-name="Description"></lightning-output-field>
+                                <lightning-output-field field-name="HOT_Interpreters__c"></lightning-output-field>
+                                <lightning-output-field field-name="AccountId"></lightning-output-field>
+                                <lightning-output-field field-name="ContactId"></lightning-output-field>
+                                <lightning-output-field field-name="HOT_NavEmployeeName__c"></lightning-output-field>
+                                <lightning-output-field field-name="HOT_GenderAge__c"></lightning-output-field>
+                                <lightning-output-field field-name="WorkTypeId"></lightning-output-field>
+                                <lightning-output-field field-name="HOT_AssignmentType__c"></lightning-output-field>
+                                <lightning-output-field
+                                    field-name="HOT_TotalNumberOfInterpreters__c"
+                                ></lightning-output-field>
+                                <lightning-output-field field-name="HOT_PreparationTime__c"></lightning-output-field>
+                            </div>
+
+                            <div class="slds-col slds-size_1-of-1 slds-large-size_1-of-2">
+                                <lightning-output-field field-name="OwnerId"></lightning-output-field>
+                                <lightning-output-field field-name="ServiceTerritoryId"></lightning-output-field>
+                                <lightning-output-field field-name="HOT_DispatcherNew__c"></lightning-output-field>
+                                <lightning-output-field field-name="Status"></lightning-output-field>
+                                <lightning-output-field
+                                    field-name="HOT_TjenesteleverandorStatus__c"
+                                ></lightning-output-field>
+                                <lightning-output-field field-name="HOT_CancelComment__c"></lightning-output-field>
+                                <lightning-output-field
+                                    field-name="HOT_CanceledByInterpreter__c"
+                                ></lightning-output-field>
+                                <lightning-output-field field-name="HOT_IsAcute__c"></lightning-output-field>
+                                <lightning-output-field
+                                    field-name="HOT_IsScreenInterpreterNew__c"
+                                ></lightning-output-field>
+                                <lightning-output-field field-name="HOT_IsSerieoppdrag__c"></lightning-output-field>
+                                <lightning-output-field
+                                    field-name="HOT_IsOtherEconomicProvicer__c"
+                                ></lightning-output-field>
+                                <lightning-output-field field-name="HOT_IsImageInterpreter__c"></lightning-output-field>
+                                <lightning-output-field field-name="HOT_IsRecieptRecieved__c"></lightning-output-field>
+                                <lightning-output-field field-name="HOT_LateCancellation__c"></lightning-output-field>
+                                <lightning-output-field field-name="HOT_CanceledDate__c"></lightning-output-field>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="slds-section slds-is-open slds-m-top_medium">
+                    <h3 class="slds-section__title slds-theme_shade slds-p-horizontal_small slds-p-vertical_x-small">
+                        <span class="slds-truncate" title="Bestilt tid">Bestilt tid</span>
+                    </h3>
+                    <div class="slds-section__content slds-p-top_small">
+                        <div class="slds-grid slds-wrap slds-gutters">
+                            <div class="slds-col slds-size_1-of-1 slds-large-size_1-of-2">
+                                <lightning-output-field field-name="EarliestStartTime"></lightning-output-field>
+                                <lightning-output-field field-name="DueDate"></lightning-output-field>
+                            </div>
+                            <div class="slds-col slds-size_1-of-1 slds-large-size_1-of-2">
+                                <lightning-output-field field-name="Duration"></lightning-output-field>
+                                <lightning-output-field field-name="HOT_DayOfWeek__c"></lightning-output-field>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="slds-section slds-is-open slds-m-top_medium">
+                    <h3 class="slds-section__title slds-theme_shade slds-p-horizontal_small slds-p-vertical_x-small">
+                        <span class="slds-truncate" title="Faktisk tid">Faktisk tid</span>
+                    </h3>
+                    <div class="slds-section__content slds-p-top_small">
+                        <div class="slds-grid slds-wrap slds-gutters">
+                            <div class="slds-col slds-size_1-of-1 slds-large-size_1-of-2">
+                                <lightning-output-field field-name="ActualStartTime"></lightning-output-field>
+                                <lightning-output-field field-name="ActualEndTime"></lightning-output-field>
+                            </div>
+                            <div class="slds-col slds-size_1-of-1 slds-large-size_1-of-2">
+                                <lightning-output-field field-name="ActualDuration"></lightning-output-field>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="slds-section slds-is-open slds-m-top_medium">
+                    <h3 class="slds-section__title slds-theme_shade slds-p-horizontal_small slds-p-vertical_x-small">
+                        <span class="slds-truncate" title="Adresse">Adresse</span>
+                    </h3>
+                    <div class="slds-section__content slds-p-top_small">
+                        <div class="slds-grid slds-wrap slds-gutters">
+                            <div class="slds-col slds-size_1-of-1">
+                                <div class="slds-form-element slds-form-element_readonly readonly-field-style">
+                                    <span class="slds-form-element__label">{addressFormattedLabel}</span>
+                                    <div class="slds-form-element__control">
+                                        <div class="slds-form-element__static">
+                                            <lightning-formatted-text
+                                                value={addressFormattedValue}
+                                            ></lightning-formatted-text>
+                                        </div>
+                                    </div>
+                                </div>
+                                <lightning-output-field
+                                    field-name="HOT_InterpretationStreet__c"
+                                ></lightning-output-field>
+                                <lightning-output-field
+                                    field-name="HOT_InterpretationPostalCode__c"
+                                ></lightning-output-field>
+                                <lightning-output-field
+                                    field-name="HOT_InterpretationPostalCity__c"
+                                ></lightning-output-field>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="slds-section slds-is-open slds-m-top_medium">
+                    <h3 class="slds-section__title slds-theme_shade slds-p-horizontal_small slds-p-vertical_x-small">
+                        <span class="slds-truncate" title="Frilanstolk">Frilanstolk</span>
+                    </h3>
+                    <div class="slds-section__content slds-p-top_small">
+                        <div class="slds-grid slds-wrap slds-gutters">
+                            <div class="slds-col slds-size_1-of-1 slds-large-size_1-of-2">
+                                <lightning-output-field
+                                    field-name="HOT_IsReleasedToFreelance__c"
+                                ></lightning-output-field>
+                                <lightning-output-field field-name="HOT_DeadlineDate__c"></lightning-output-field>
+                                <lightning-output-field field-name="HOT_FreelanceSubject__c"></lightning-output-field>
+                            </div>
+                            <div class="slds-col slds-size_1-of-1 slds-large-size_1-of-2">
+                                <lightning-output-field field-name="HOT_Processed__c"></lightning-output-field>
+                                <lightning-output-field field-name="HOT_ReleasedBy__c"></lightning-output-field>
+                                <lightning-output-field field-name="HOT_ReleaseDate__c"></lightning-output-field>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </lightning-record-view-form>
+    </lightning-card>
+</template>

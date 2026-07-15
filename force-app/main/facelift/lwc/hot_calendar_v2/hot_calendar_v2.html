@@ -234,6 +234,60 @@
                                 </template>
                             </section>
 
+                            <!-- Open service appointment details-->
+                            <section lwc:if={isOpenServiceAppointmentDetails}>
+                                <template lwc:if={openServiceAppointment}>
+                                    <div>
+                                        <p>
+                                            Oppdragsnummer:
+                                            <span>&nbsp;{openServiceAppointment.HOT_ServiceAppointmentNumber__c}</span>
+                                        </p>
+                                        <p>Tema:<span>&nbsp;{openServiceAppointment.HOT_FreelanceSubject__c}</span></p>
+                                        <p>
+                                            Tid:&nbsp;
+                                            <span
+                                                >{openServiceAppointment.weekday}
+                                                {openServiceAppointment.StartAndEndDate}</span
+                                            >
+                                        </p>
+                                        <p>Adresse: <span>{openServiceAppointment.HOT_AddressFormated__c}</span></p>
+                                        <p>
+                                            Tolkemetode:<span>&nbsp;{openServiceAppointment.HOT_WorkTypeName__c}</span>
+                                        </p>
+                                        <p lwc:if={openServiceAppointment.HOT_PreparationTime__c}>
+                                            <strong>Kompensert forberedelse:</strong
+                                            >&nbsp;{openServiceAppointment.HOT_PreparationTime__c}
+                                        </p>
+                                        <p lwc:if={openServiceAppointment.HOT_AssignmentType__c}>
+                                            Oppdragstype:
+                                            <span>&nbsp;{openServiceAppointment.HOT_AssignmentType__c}</span>
+                                        </p>
+                                        <p lwc:if={openServiceAppointment.HOT_ReleasedBy__c}>
+                                            Frigitt av: <span>&nbsp;{openServiceAppointment.HOT_ReleasedBy__c}</span>
+                                        </p>
+                                        <p>
+                                            Frigitt dato:<span>&nbsp;{openServiceAppointment.HOT_ReleaseDate__c}</span>
+                                        </p>
+                                        <p>
+                                            Antall påmeldte:<span
+                                                >&nbsp;{openServiceAppointment.HOT_NumberOfInterestedResources__c}</span
+                                            >
+                                        </p>
+                                        <p>Annen betaler:<span>&nbsp;{openServiceAppointment.isOtherProvider}</span></p>
+                                        <p>
+                                            Eier:
+                                            <span>&nbsp;{openServiceAppointment.HOT_Request__r.OwnerName__c}</span>
+                                        </p>
+                                        <p>
+                                            Frist dato:<span>&nbsp;{openServiceAppointment.HOT_DeadlineDate__c}</span>
+                                        </p>
+                                        <p lwc:if={openServiceAppointment.HOT_Information__c}>
+                                            Informasjon:<span>&nbsp;{openServiceAppointment.HOT_Information__c}</span>
+                                        </p>
+                                    </div>
+                                </template>
+                            </section>
+
                             <!-- Wage claim details-->
                             <section lwc:if={isWCDetails}>
                                 <div lwc:if={wageClaim}>

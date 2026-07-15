@@ -1,50 +1,44 @@
 <template>
     <lightning-layout lwc:if={showButtons} class="custom-padding-left-small button-container">
         <lightning-layout-item class="custom-padding-around-small custom-grid-vertical-align-center">
-            <lightning-button
-                data-id="gosys"
-                label="Gosys"
-                title="Gosys"
-                onclick={handleButtonClick}
-                class="slds-m-left_x-medium"
-            ></lightning-button>
-        </lightning-layout-item>
-        <!-- Commented out as a trial run with the new Highligtpanel in TOLK-3009 on request by Svenn Terje -->
-        <!-- <lightning-layout-item class="custom-padding-around-small custom-grid-vertical-align-center">
-            <lightning-button label="Edit" onclick={handleEditRecord}> </lightning-button>
-        </lightning-layout-item> -->
-        <lightning-layout-item class="custom-padding-aro und-small custom-grid-vertical-align-center">
-            <lightning-button
-                data-id="SMS"
-                label="Send SMS"
-                title="Send SMS"
-                onclick={handleFlowButton}
-                data-flow="HOT_SendSMSToAccount"
-                class="slds-m-left_x-medium"
-            ></lightning-button>
-        </lightning-layout-item>
-        <lightning-layout-item
-            lwc:if={hasPermissionToCreateFreelance}
-            class="custom-padding-around-small custom-grid-vertical-align-center"
-        >
-            <lightning-button
-                data-id="freelance"
-                label="Oppgrader bruker til frilanstolk"
-                title="Oppgrader bruker til frilanstolk"
-                onclick={handleFlowButton}
-                data-flow="HOT_CreateFreelanceUser"
-                class="slds-m-left_x-medium"
-            ></lightning-button>
-        </lightning-layout-item>
-        <lightning-layout-item class="custom-padding-around-small custom-grid-vertical-align-center">
-            <lightning-button
-                data-id="tilgangApp"
-                label="Styr tilgang til Mobil App"
-                title="Styr tilgang til Mobil App"
-                onclick={handleFlowButton}
-                data-flow="HOT_MobileAppAccess"
-                class="slds-m-left_x-medium"
-            ></lightning-button>
+            <div class="slds-button-group" role="group">
+                <button
+                    data-id="gosys"
+                    title="Gosys"
+                    onclick={handleButtonClick}
+                    class="slds-button slds-button_inverse slds-m-left_x-medium custom-button"
+                >
+                    Gosys
+                </button>
+                <button
+                    data-id="SMS"
+                    title="Send SMS"
+                    onclick={handleFlowButton}
+                    data-flow="HOT_SendSMSToAccount"
+                    class="slds-button slds-button_inverse slds-m-left_x-medium custom-button"
+                >
+                    Send SMS
+                </button>
+                <button
+                    lwc:if={hasPermissionToCreateFreelance}
+                    data-id="freelance"
+                    title="Oppgrader bruker til frilanstolk"
+                    onclick={handleFlowButton}
+                    data-flow="HOT_CreateFreelanceUser"
+                    class="slds-button slds-button_inverse slds-m-left_x-medium custom-button"
+                >
+                    Oppgrader bruker til frilanstolk
+                </button>
+                <button
+                    data-id="tilgangApp"
+                    title="Styr tilgang til Mobil App"
+                    onclick={handleFlowButton}
+                    data-flow="HOT_MobileAppAccess"
+                    class="slds-button slds-button_inverse slds-m-left_x-medium custom-button"
+                >
+                    Styr tilgang til Mobil App
+                </button>
+            </div>
             <template lwc:if={isModalOpen}>
                 <section role="dialog" tabindex="-1" class="slds-modal slds-fade-in-open">
                     <div class="slds-modal__container">
