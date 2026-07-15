@@ -3,14 +3,14 @@ private class HOT_TjenesteleverandorFlowTest {
     @IsTest
     static void transferredSetsTransferDateAndDeadline() {
         ServiceAppointment serviceAppointment = createServiceAppointment();
-        insert serviceAppointment;
+        serviceAppointment.Status = 'Released to Freelance';
 
         Test.startTest();
-        serviceAppointment.HOT_TjenesteleverandorStatus__c = 'Transferred';
-        update serviceAppointment;
+        insert serviceAppointment;
         Test.stopTest();
 
         ServiceAppointment actual = getServiceAppointment(serviceAppointment.Id);
+        System.assertEquals('Transferred', actual.HOT_TjenesteleverandorStatus__c);
         System.assertNotEquals(null, actual.HOT_TjenesteleverandorTransferDate__c);
         System.assertNotEquals(null, actual.HOT_TjenesteleverandorDeadline__c);
         System.assert(actual.HOT_TjenesteleverandorDeadline__c > actual.HOT_TjenesteleverandorTransferDate__c);
@@ -19,15 +19,13 @@ private class HOT_TjenesteleverandorFlowTest {
     @IsTest
     static void acceptedSetsAcceptanceDateAndClearsDeadline() {
         ServiceAppointment serviceAppointment = createServiceAppointment();
+        serviceAppointment.Status = 'Released to Freelance';
         insert serviceAppointment;
 
-        serviceAppointment.HOT_TjenesteleverandorStatus__c = 'Transferred';
-        update serviceAppointment;
         System.assertNotEquals(null, getServiceAppointment(serviceAppointment.Id).HOT_TjenesteleverandorDeadline__c);
 
         Test.startTest();
-        serviceAppointment.HOT_TjenesteleverandorStatus__c = 'Accepted';
-        update serviceAppointment;
+        update new ServiceAppointment(Id = serviceAppointment.Id, HOT_TjenesteleverandorStatus__c = 'Accepted');
         Test.stopTest();
 
         ServiceAppointment actual = getServiceAppointment(serviceAppointment.Id);
@@ -39,25 +37,22 @@ private class HOT_TjenesteleverandorFlowTest {
     @IsTest
     static void massDeclineOpensAppointmentsAndClearsDeadlines() {
         Group queue = createOwnerQueueAndFormidlerGroup('999010');
-        List<ServiceAppointment> serviceAppointments = new List<ServiceAppointment>();
+        List<ServiceAppointment> serviceAppointments = createServiceAppointments(10);
 
-        for (Integer index = 0; index < 10; index++) {
-            ServiceAppointment serviceAppointment = createServiceAppointment();
+        for (ServiceAppointment serviceAppointment : serviceAppointments) {
             serviceAppointment.OwnerId = queue.Id;
-            serviceAppointments.add(serviceAppointment);
+            serviceAppointment.Status = 'Released to Freelance';
         }
         insert serviceAppointments;
 
-        for (ServiceAppointment serviceAppointment : serviceAppointments) {
-            serviceAppointment.HOT_TjenesteleverandorStatus__c = 'Transferred';
-        }
-        update serviceAppointments;
-
         Test.startTest();
+        List<ServiceAppointment> declinedAppointments = new List<ServiceAppointment>();
         for (ServiceAppointment serviceAppointment : serviceAppointments) {
-            serviceAppointment.HOT_TjenesteleverandorStatus__c = 'Declined';
+            declinedAppointments.add(
+                new ServiceAppointment(Id = serviceAppointment.Id, HOT_TjenesteleverandorStatus__c = 'Declined')
+            );
         }
-        update serviceAppointments;
+        update declinedAppointments;
         Test.stopTest();
 
         Set<Id> serviceAppointmentIds = new Map<Id, ServiceAppointment>(serviceAppointments).keySet();
@@ -100,6 +95,10 @@ private class HOT_TjenesteleverandorFlowTest {
     }
 
     private static ServiceAppointment createServiceAppointment() {
+        return createServiceAppointments(1)[0];
+    }
+
+    private static List<ServiceAppointment> createServiceAppointments(Integer count) {
         WorkType workType = HOT_TestDataFactory.createWorkType();
         insert workType;
         HOT_Request__c request = HOT_TestDataFactory.createRequest('supplier flow', workType);
@@ -108,6 +107,11 @@ private class HOT_TjenesteleverandorFlowTest {
         insert workOrder;
         WorkOrderLineItem workOrderLineItem = HOT_TestDataFactory.createWorkOrderLineItem(workOrder, workType);
         insert workOrderLineItem;
-        return HOT_TestDataFactory.createServiceAppointment(workOrderLineItem);
+
+        List<ServiceAppointment> serviceAppointments = new List<ServiceAppointment>();
+        for (Integer index = 0; index < count; index++) {
+            serviceAppointments.add(HOT_TestDataFactory.createServiceAppointment(workOrderLineItem));
+        }
+        return serviceAppointments;
     }
 }
