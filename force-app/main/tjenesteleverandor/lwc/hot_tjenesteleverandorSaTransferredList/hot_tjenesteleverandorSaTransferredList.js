@@ -23,7 +23,8 @@ export default class Hot_tjenesteleverandorSaTransferredList extends LightningEl
     ];
 
     updateURL() {
-        let baseURL = window.location.protocol + '//' + window.location.host + window.location.pathname + '?list=open';
+        let baseURL =
+            window.location.protocol + '//' + window.location.host + window.location.pathname + '?list=transferred';
         if (this.recordId) {
             baseURL += '&id=' + this.recordId;
         }
@@ -169,13 +170,11 @@ export default class Hot_tjenesteleverandorSaTransferredList extends LightningEl
     }
 
     showServiceAppointmentDetailsModal = false;
-    showCommentsModal = false;
 
     serviceAppointment;
     isDetails = false;
     isSeries = false;
     seriesRecords = [];
-    showTable = true;
     goToRecordDetails(result) {
         this.serviceAppointment = undefined;
         this.seriesRecords = [];

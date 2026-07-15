@@ -44,12 +44,13 @@ public without sharing class HOT_TjenesteleverandorListController {
                 HOT_AddressFormated__c,
                 HOT_WorkTypeName__c,
                 HOT_ServiceAppointmentNumber__c,
-                HOT_TjenesteleverandorStatus__c,
-                HOT_TjenesteleverandorAcceptDate__c,
                 HOT_Information__c,
                 HOT_PreparationTime__c,
                 WorkTypeId,
-                HOT_ServiceTerritoryName__c
+                HOT_ServiceTerritoryName__c,
+                HOT_TjenesteleverandorStatus__c,
+                HOT_TjenesteleverandorTransferDate__c,
+                HOT_TjenesteleverandorAcceptDate__c
             FROM ServiceAppointment
             WHERE HOT_TjenesteleverandorStatus__c = 'Accepted'
             ORDER BY EarliestStartTime ASC

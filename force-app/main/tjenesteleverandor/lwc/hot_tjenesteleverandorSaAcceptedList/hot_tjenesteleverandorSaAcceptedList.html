@@ -1,3 +1,37 @@
 <template>
-    <p>test</p>
+    <template lwc:if={hasResult}>
+        <div class="main-content">
+            <c-hot_freelance-common-table records={records} columns={columns} onrowclick={goToRecordDetails}>
+            </c-hot_freelance-common-table>
+        </div>
+    </template>
+
+    <template lwc:elseif={noServiceAppointmentsResult}>
+        <div style="text-align: center" aria-live="polite">
+            <br />
+            <p>Det finnes ingen aksepterte oppdrag til tjenesteleverandør.</p>
+            <br />
+        </div>
+    </template>
+
+    <!-- MODAL -->
+    <dialog class="modal-container" aria-label="Informasjon om oppdrag" aria-modal="true" onclose={closeModal}>
+        <div lwc:if={showServiceAppointmentDetailsModal}>
+            <div class="modal-header">
+                <h2>Informasjon om oppdraget:</h2>
+                <button class="close-btn" onclick={closeModal} aria-label="Lukk">
+                    <img src={exitCrossIcon} alt="" aria-hidden="true" />
+                </button>
+            </div>
+            <div lwc:if={isDetails} class="modal-body">
+                <p><strong>Oppdragsnummer:</strong> {serviceAppointment.HOT_ServiceAppointmentNumber__c}</p>
+            </div>
+        </div>
+    </dialog>
+
+    <template lwc:if={dataLoader}>
+        <div class="loader-container">
+            <c-hot_loader size="3xlarge"></c-hot_loader>
+        </div>
+    </template>
 </template>
