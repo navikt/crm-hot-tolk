@@ -15,7 +15,15 @@ public without sharing class HOT_TjenesteleverandorListController {
                 HOT_Information__c,
                 HOT_PreparationTime__c,
                 WorkTypeId,
-                HOT_ServiceTerritoryName__c
+                HOT_ServiceTerritoryName__c,
+                HOT_DeadlineDate__c,
+                HOT_IsSerieoppdrag__c,
+                HOT_NumberOfInterestedResources__c,
+                HOT_ReleasedBy__c,
+                HOT_ReleaseDate__c,
+                HOT_AssignmentType__c,
+                HOT_Request__c,
+                HOT_Request__r.OwnerName__c
             FROM ServiceAppointment
             WHERE
                 HOT_TjenesteleverandorStatus__c = 'Transferred'

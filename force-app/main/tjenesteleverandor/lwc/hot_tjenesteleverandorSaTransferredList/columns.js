@@ -26,6 +26,24 @@ export let columns = [
     }
 ];
 
+export let inDetailsColumns = [
+    {
+        label: 'Tid',
+        name: 'StartAndEndDate',
+        type: 'Datetime'
+    },
+    {
+        label: 'Informasjon',
+        name: 'HOT_Information__c',
+        type: 'String'
+    },
+    {
+        label: 'Tema',
+        name: 'HOT_FreelanceSubject__c',
+        type: 'String'
+    }
+];
+
 export let mobileColumns = [
     {
         label: 'Tid',

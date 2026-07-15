@@ -1,28 +1,58 @@
-import { LightningElement, wire } from 'lwc';
+import { LightningElement, wire, api } from 'lwc';
+import { refreshApex } from '@salesforce/apex';
 import getTransferredServiceAppointments from '@salesforce/apex/HOT_TjenesteleverandorListController.getTransferredServiceAppointments';
-import { columns, mobileColumns } from './columns';
+import { columns, mobileColumns, inDetailsColumns } from './columns';
 import { formatRecord } from 'c/datetimeFormatterNorwegianTime';
 import { getDayOfWeek } from 'c/hot_commonUtils';
+import icons from '@salesforce/resourceUrl/ikoner';
 
 export default class Hot_tjenesteleverandorSaTransferredList extends LightningElement {
-    columns = [];
+    @api recordId;
+
+    exitCrossIcon = icons + '/Close/Close.svg';
     dataLoader = true;
+
     records = [];
+    columns = [];
+    inDetailsColumns = [];
     initialServiceAppointments = [];
+    checkedServiceAppointments = [];
 
     datetimeFields = [
         { name: 'StartAndEndDate', type: 'datetimeinterval', start: 'EarliestStartTime', end: 'DueDate' }
     ];
 
+    updateURL() {
+        let baseURL = window.location.protocol + '//' + window.location.host + window.location.pathname + '?list=open';
+        if (this.recordId) {
+            baseURL += '&id=' + this.recordId;
+        }
+        window.history.pushState({ path: baseURL }, '', baseURL);
+    }
+
+    refresh() {
+        this.sendRecords();
+        this.sendCheckedRows();
+    }
+
     connectedCallback() {
+        this.updateURL();
+
+        if (sessionStorage.getItem('checkedrowsSavedForRefresh')) {
+            this.checkedServiceAppointments = JSON.parse(sessionStorage.getItem('checkedrowsSavedForRefresh'));
+            sessionStorage.removeItem('checkedrowsSavedForRefresh');
+        }
         this.setColumns();
+        refreshApex(this.wiredAllTransferredServiceAppointmentsResult);
     }
 
     setColumns() {
         if (window.screen.width > 576) {
             this.columns = columns;
+            this.inDetailsColumns = inDetailsColumns;
         } else {
             this.columns = mobileColumns;
+            this.inDetailsColumns = inDetailsColumns;
         }
     }
 
@@ -64,10 +94,44 @@ export default class Hot_tjenesteleverandorSaTransferredList extends LightningEl
         return `${day}.${month}.${year} ${hours}:${minutes}`;
     }
 
+    sendRecords() {
+        const eventToSend = new CustomEvent('sendrecords', { detail: this.initialServiceAppointments });
+        this.dispatchEvent(eventToSend);
+    }
+    sendDetail() {
+        const eventToSend = new CustomEvent('senddetail', { detail: this.isDetails });
+        this.dispatchEvent(eventToSend);
+    }
+    sendCheckedRows() {
+        const eventToSend = new CustomEvent('sendcheckedrows', { detail: this.checkedServiceAppointments });
+        this.dispatchEvent(eventToSend);
+    }
+    setCheckedRowsOnRefresh() {
+        if (sessionStorage.getItem('checkedrows') && !this.isDetails) {
+            this.checkedServiceAppointments = JSON.parse(sessionStorage.getItem('checkedrows')) || [];
+            sessionStorage.removeItem('checkedrows');
+        }
+        this.sendCheckedRows();
+    }
+    disconnectedCallback() {
+        sessionStorage.setItem('checkedrows', JSON.stringify(this.checkedServiceAppointments || []));
+    }
+    renderedCallback() {
+        this.setCheckedRowsOnRefresh();
+        sessionStorage.setItem('checkedrowsSavedForRefresh', JSON.stringify(this.checkedServiceAppointments));
+    }
+
+    noServiceAppointments = false;
+    allTransferredServiceAppointmentsWired = [];
+    wiredAllTransferredServiceAppointmentsResult;
     @wire(getTransferredServiceAppointments)
     wiredTransferredServiceAppointments(result) {
+        console.log('wire result', result);
+
         if (result.data) {
-            const mappedRecords = result.data.map((record) => ({
+            console.log('wire data before mapping', result.data);
+
+            this.allTransferredServiceAppointmentsWired = result.data.map((record) => ({
                 ...record,
                 startAndEndDateWeekday: this.formatDatetime(record.EarliestStartTime, record.DueDate),
                 weekday: getDayOfWeek(record.EarliestStartTime),
@@ -76,18 +140,83 @@ export default class Hot_tjenesteleverandorSaTransferredList extends LightningEl
                 )
             }));
 
+            console.log('mapped records', this.allTransferredServiceAppointmentsWired);
+
             let tempRecords = [];
-            for (let record of mappedRecords) {
+            for (let record of this.allTransferredServiceAppointmentsWired) {
                 tempRecords.push(formatRecord(Object.assign({}, record), this.datetimeFields));
             }
 
+            console.log('formatted tempRecords', tempRecords);
+
             this.records = tempRecords;
-            this.initialServiceAppointments = [...tempRecords];
+            this.initialServiceAppointments = [...this.records];
             this.dataLoader = false;
+
+            console.log('final state', {
+                records: this.records,
+                initialServiceAppointments: this.initialServiceAppointments,
+                dataLoader: this.dataLoader
+            });
         } else if (result.error) {
+            console.log('wire error', result.error);
+            this.error = result.error;
             this.records = [];
             this.initialServiceAppointments = [];
             this.dataLoader = false;
+            this.allTransferredServiceAppointmentsWired = undefined;
         }
+    }
+
+    showServiceAppointmentDetailsModal = false;
+    showCommentsModal = false;
+
+    serviceAppointment;
+    isDetails = false;
+    isSeries = false;
+    seriesRecords = [];
+    showTable = true;
+    goToRecordDetails(result) {
+        this.serviceAppointment = undefined;
+        this.seriesRecords = [];
+        let recordId = result.detail.Id;
+        this.recordId = recordId;
+        this.isDetails = !!this.recordId;
+        for (let serviceAppointment of this.records) {
+            if (recordId === serviceAppointment.Id) {
+                this.serviceAppointment = serviceAppointment;
+                this.isSeries = this.serviceAppointment.HOT_IsSerieoppdrag__c;
+                this.serviceAppointment.weekday = getDayOfWeek(this.serviceAppointment.EarliestStartTime);
+            }
+        }
+        for (let serviceAppointment of this.records) {
+            if (this.serviceAppointment?.HOT_Request__c === serviceAppointment?.HOT_Request__c) {
+                this.seriesRecords.push(serviceAppointment);
+            }
+        }
+        this.isSeries = this.seriesRecords.length <= 1 ? false : true;
+        this.showServiceAppointmentDetails();
+    }
+
+    showServiceAppointmentDetails() {
+        this.showServiceAppointmentDetailsModal = true;
+        setTimeout(() => {
+            const dialog = this.template.querySelector('dialog');
+            if (dialog) {
+                dialog.showModal();
+                dialog.focus();
+            }
+        }, 0);
+    }
+
+    handleRowChecked(event) {
+        this.checkedServiceAppointments = event.detail.checkedRows;
+        this.sendCheckedRows();
+    }
+
+    closeModal() {
+        const dialog = this.template.querySelector('dialog');
+        dialog.close();
+        this.showServiceAppointmentDetailsModal = false;
     }
 }
