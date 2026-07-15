@@ -26,8 +26,8 @@
     <description
     >At the configured supplier deadline, rechecks the appointment, marks an unanswered transfer as expired, opens it, and notifies the formidler group.</description>
     <environments>Default</environments>
-    <interviewLabel>HOT_Handle_Tjenesteleverandor_Deadline {!$Flow.CurrentDateTime}</interviewLabel>
-    <label>HOT_Handle_Tjenesteleverandor_Deadline</label>
+    <interviewLabel>HOT_HandleTjenesteleverandorDeadline {!$Flow.CurrentDateTime}</interviewLabel>
+    <label>HOT_HandleTjenesteleverandorDeadline</label>
     <processMetadataValues>
         <name>BuilderType</name>
         <value>
@@ -141,7 +141,7 @@
         <label>Notify Formidler</label>
         <locationX>0</locationX>
         <locationY>0</locationY>
-        <flowName>HOT_Notify_Tjenesteleverandor_To_Formidler</flowName>
+        <flowName>HOT_NotifyTjenesteleverandorToFormidler</flowName>
         <inputAssignments>
             <name>Reason</name>
             <value>

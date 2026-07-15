@@ -4,8 +4,8 @@
     <description
     >When a supplier declines an appointment, clears the deadline, opens the appointment, and notifies the formidler group.</description>
     <environments>Default</environments>
-    <interviewLabel>HOT_Handle_Tjenesteleverandor_Declined {!$Flow.CurrentDateTime}</interviewLabel>
-    <label>HOT_Handle_Tjenesteleverandor_Declined</label>
+    <interviewLabel>HOT_HandleTjenesteleverandorDeclined {!$Flow.CurrentDateTime}</interviewLabel>
+    <label>HOT_HandleTjenesteleverandorDeclined</label>
     <processMetadataValues>
         <name>BuilderType</name>
         <value>
@@ -84,7 +84,7 @@
         <label>Notify Formidler</label>
         <locationX>0</locationX>
         <locationY>0</locationY>
-        <flowName>HOT_Notify_Tjenesteleverandor_To_Formidler</flowName>
+        <flowName>HOT_NotifyTjenesteleverandorToFormidler</flowName>
         <inputAssignments>
             <name>Reason</name>
             <value>

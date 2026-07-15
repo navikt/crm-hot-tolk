@@ -33,8 +33,8 @@
     <description
     >Calculates and stores the supplier acceptance deadline when an appointment is transferred to a supplier.</description>
     <environments>Default</environments>
-    <interviewLabel>HOT_Set_Tjenesteleverandor_Deadline {!$Flow.CurrentDateTime}</interviewLabel>
-    <label>HOT_Set_Tjenesteleverandor_Deadline</label>
+    <interviewLabel>HOT_SetTjenesteleverandorDeadline {!$Flow.CurrentDateTime}</interviewLabel>
+    <label>HOT_SetTjenesteleverandorDeadline</label>
     <processMetadataValues>
         <name>BuilderType</name>
         <value>

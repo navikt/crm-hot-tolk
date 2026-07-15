@@ -137,8 +137,8 @@
         <expression
         >&quot;Akseptfrist utløpt for oppdrag &quot; &amp; {!Get_ServiceAppointment.AppointmentNumber}</expression>
     </formulas>
-    <interviewLabel>HOT_Notify_Tjenesteleverandor_To_Formidler {!$Flow.CurrentDateTime}</interviewLabel>
-    <label>HOT_Notify_Tjenesteleverandor_To_Formidler</label>
+    <interviewLabel>HOT_NotifyTjenesteleverandorToFormidler {!$Flow.CurrentDateTime}</interviewLabel>
+    <label>HOT_NotifyTjenesteleverandorToFormidler</label>
     <processMetadataValues>
         <name>BuilderType</name>
         <value>
