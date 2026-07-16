@@ -1830,6 +1830,11 @@
     </fieldPermissions>
     <fieldPermissions>
         <editable>true</editable>
+        <field>ServiceAppointment.HOT_TjenesteleverandorDeadline__c</field>
+        <readable>true</readable>
+    </fieldPermissions>
+    <fieldPermissions>
+        <editable>true</editable>
         <field>ServiceAppointment.HOT_TjenesteleverandorTransferDate__c</field>
         <readable>true</readable>
     </fieldPermissions>
