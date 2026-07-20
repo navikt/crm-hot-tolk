@@ -1,12 +1,13 @@
 import { LightningElement, wire, api } from 'lwc';
-import getTransferredServiceAppointments from '@salesforce/apex/HOT_TjenesteleverandorListController.getTransferredServiceAppointments';
-import { columns, mobileColumns, inDetailsColumns } from './columns';
+import getAcceptedServiceAppointments from '@salesforce/apex/HOT_TjenesteleverandorListController.getAcceptedServiceAppointments';
+
+import { columns, mobileColumns } from './columns';
 import { formatRecord } from 'c/datetimeFormatterNorwegianTime';
 import { getDayOfWeek } from 'c/hot_commonUtils';
 import { refreshApex } from '@salesforce/apex';
 import icons from '@salesforce/resourceUrl/ikoner';
 
-export default class Hot_tjenesteleverandorSaTransferredList extends LightningElement {
+export default class Hot_tjenesteleverandorSaAcceptedList extends LightningElement {
     @api recordId;
 
     exitCrossIcon = icons + '/Close/Close.svg';
@@ -14,9 +15,7 @@ export default class Hot_tjenesteleverandorSaTransferredList extends LightningEl
 
     records = [];
     columns = [];
-    inDetailsColumns = [];
     initialServiceAppointments = [];
-    checkedServiceAppointments = [];
 
     datetimeFields = [
         { name: 'StartAndEndDate', type: 'datetimeinterval', start: 'EarliestStartTime', end: 'DueDate' },
@@ -24,47 +23,34 @@ export default class Hot_tjenesteleverandorSaTransferredList extends LightningEl
         { name: 'HOT_ReleaseDate__c', type: 'date', newName: 'ReleaseDate' }
     ];
 
-    updateURL() {
-        let baseURL =
-            window.location.protocol + '//' + window.location.host + window.location.pathname + '?list=transferred';
-        if (this.recordId) {
-            baseURL += '&id=' + this.recordId;
-        }
-        window.history.pushState({ path: baseURL }, '', baseURL);
-    }
-
-    refresh() {
-        this.sendRecords();
-        this.sendCheckedRows();
-    }
-
-    connectedCallback() {
-        this.updateURL();
-
-        if (sessionStorage.getItem('checkedrowsSavedForRefresh')) {
-            this.checkedServiceAppointments = JSON.parse(sessionStorage.getItem('checkedrowsSavedForRefresh'));
-            sessionStorage.removeItem('checkedrowsSavedForRefresh');
-        }
-        this.setColumns();
-        refreshApex(this.wiredAllTransferredServiceAppointmentsResult);
-    }
-
-    setColumns() {
-        if (window.screen.width > 576) {
-            this.columns = columns;
-            this.inDetailsColumns = inDetailsColumns;
-        } else {
-            this.columns = mobileColumns;
-            this.inDetailsColumns = inDetailsColumns;
-        }
-    }
-
     get hasResult() {
         return !this.dataLoader && this.records && this.records.length > 0;
     }
 
     get noServiceAppointmentsResult() {
         return !this.dataLoader && this.initialServiceAppointments.length === 0;
+    }
+
+    updateURL() {
+        let baseURL =
+            window.location.protocol + '//' + window.location.host + window.location.pathname + '?list=accepted';
+        if (this.recordId) {
+            baseURL += '&id=' + this.recordId;
+        }
+        window.history.pushState({ path: baseURL }, '', baseURL);
+    }
+
+    connectedCallback() {
+        this.updateURL();
+        this.setColumns();
+    }
+
+    setColumns() {
+        if (window.screen.width > 576) {
+            this.columns = columns;
+        } else {
+            this.columns = mobileColumns;
+        }
     }
 
     formatDatetime(Start, DueDate) {
@@ -94,7 +80,7 @@ export default class Hot_tjenesteleverandorSaTransferredList extends LightningEl
         const hours = datetime.getHours().toString().padStart(2, '0');
         const minutes = datetime.getMinutes().toString().padStart(2, '0');
 
-        return `${day}.${month}.${year}, ${hours}:${minutes}`;
+        return `${day}.${month}.${year} ${hours}:${minutes}`;
     }
 
     sendRecords() {
@@ -105,55 +91,39 @@ export default class Hot_tjenesteleverandorSaTransferredList extends LightningEl
         const eventToSend = new CustomEvent('senddetail', { detail: this.isDetails });
         this.dispatchEvent(eventToSend);
     }
-    sendCheckedRows() {
-        const eventToSend = new CustomEvent('sendcheckedrows', { detail: this.checkedServiceAppointments });
-        this.dispatchEvent(eventToSend);
-    }
-    setCheckedRowsOnRefresh() {
-        if (sessionStorage.getItem('checkedrows') && !this.isDetails) {
-            this.checkedServiceAppointments = JSON.parse(sessionStorage.getItem('checkedrows')) || [];
-            sessionStorage.removeItem('checkedrows');
-        }
-        this.sendCheckedRows();
-    }
-    disconnectedCallback() {
-        sessionStorage.setItem('checkedrows', JSON.stringify(this.checkedServiceAppointments || []));
-    }
-    renderedCallback() {
-        this.setCheckedRowsOnRefresh();
-        sessionStorage.setItem('checkedrowsSavedForRefresh', JSON.stringify(this.checkedServiceAppointments));
+
+    refresh() {
+        this.sendRecords();
     }
 
     noServiceAppointments = false;
-    allTransferredServiceAppointmentsWired = [];
-    wiredAllTransferredServiceAppointmentsResult;
-    @wire(getTransferredServiceAppointments)
-    wiredTransferredServiceAppointments(result) {
+    allAcceptedServiceAppointmentsWired = [];
+    wiredAllAcceptedServiceAppointmentsResult;
+
+    @wire(getAcceptedServiceAppointments)
+    wiredAcceptedServiceAppointments(result) {
         if (result.data) {
-            this.allTransferredServiceAppointmentsWired = result.data.map((record) => ({
+            this.allAcceptedServiceAppointmentsWired = result.data.map((record) => ({
                 ...record,
                 startAndEndDateWeekday: this.formatDatetime(record.EarliestStartTime, record.DueDate),
                 weekday: getDayOfWeek(record.EarliestStartTime),
-                isOtherProvider: record.HOT_Request__r?.IsOtherEconomicProvicer__c ? 'Ja' : 'Nei',
-                HOT_TjenesteleverandorTransferDate__c: this.formatSingleDatetime(
-                    record.HOT_TjenesteleverandorTransferDate__c
-                )
+                isOtherProvider: record.HOT_Request__r?.IsOtherEconomicProvicer__c ? 'Ja' : 'Nei'
             }));
 
             let tempRecords = [];
-            for (let record of this.allTransferredServiceAppointmentsWired) {
+            for (let record of this.allAcceptedServiceAppointmentsWired) {
                 tempRecords.push(formatRecord(Object.assign({}, record), this.datetimeFields));
             }
 
             this.records = tempRecords;
-            this.initialServiceAppointments = [...this.records];
+            this.initialServiceAppointments = tempRecords;
             this.dataLoader = false;
         } else if (result.error) {
             this.error = result.error;
             this.records = [];
             this.initialServiceAppointments = [];
             this.dataLoader = false;
-            this.allTransferredServiceAppointmentsWired = undefined;
+            this.allAcceptedServiceAppointmentsWired = undefined;
         }
     }
 
@@ -161,27 +131,17 @@ export default class Hot_tjenesteleverandorSaTransferredList extends LightningEl
 
     serviceAppointment;
     isDetails = false;
-    isSeries = false;
-    seriesRecords = [];
     goToRecordDetails(result) {
         this.serviceAppointment = undefined;
-        this.seriesRecords = [];
         let recordId = result.detail.Id;
         this.recordId = recordId;
         this.isDetails = !!this.recordId;
         for (let serviceAppointment of this.records) {
             if (recordId === serviceAppointment.Id) {
                 this.serviceAppointment = serviceAppointment;
-                this.isSeries = this.serviceAppointment.HOT_IsSerieoppdrag__c;
                 this.serviceAppointment.weekday = getDayOfWeek(this.serviceAppointment.EarliestStartTime);
             }
         }
-        for (let serviceAppointment of this.records) {
-            if (this.serviceAppointment?.HOT_Request__c === serviceAppointment?.HOT_Request__c) {
-                this.seriesRecords.push(serviceAppointment);
-            }
-        }
-        this.isSeries = this.seriesRecords.length <= 1 ? false : true;
         this.showServiceAppointmentDetails();
     }
 
@@ -196,14 +156,13 @@ export default class Hot_tjenesteleverandorSaTransferredList extends LightningEl
         }, 0);
     }
 
-    handleRowChecked(event) {
-        this.checkedServiceAppointments = event.detail.checkedRows;
-        this.sendCheckedRows();
-    }
-
     closeModal() {
         const dialog = this.template.querySelector('dialog');
         dialog.close();
         this.showServiceAppointmentDetailsModal = false;
+    }
+
+    get status() {
+        return this.serviceAppointment?.Status ?? '';
     }
 }

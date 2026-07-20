@@ -25,12 +25,12 @@
                                 <booleanFilter>1 OR 2</booleanFilter>
                                 <criteria>
                                     <leftValue>{!Record.HOT_TjenesteleverandorStatus__c}</leftValue>
-                                    <operator>NE</operator>
+                                    <operator>EQUAL</operator>
                                     <rightValue>Transferred</rightValue>
                                 </criteria>
                                 <criteria>
                                     <leftValue>{!Record.HOT_TjenesteleverandorStatus__c}</leftValue>
-                                    <operator>NE</operator>
+                                    <operator>EQUAL</operator>
                                     <rightValue>Accepted</rightValue>
                                 </criteria>
                             </visibilityRule>

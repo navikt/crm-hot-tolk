@@ -47,10 +47,6 @@ dialog.modal-container {
     margin: auto;
 }
 
-.series-container {
-    padding-top: 0.5rem;
-}
-
 /* Når dialogen er åpen */
 dialog[open].modal-container {
     display: flex;
@@ -121,9 +117,5 @@ dialog.modal-container .close-btn:hover {
     dialog.modal-container .modal-body,
     dialog.modal-container .modal-footer {
         padding: 1rem;
-    }
-
-    .series-container {
-        padding-top: 0rem;
     }
 }
