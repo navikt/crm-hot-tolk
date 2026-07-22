@@ -1,0 +1,55 @@
+{
+    "appPageId": "32056ac8-ab01-4fbe-a9cc-94b1b053ca6d",
+    "componentName": "siteforce:sldsOneColLayout",
+    "dataProviders": [],
+    "id": "c3a4c8a2-3f62-4a0d-a5a3-afa54f56b810",
+    "label": "Home",
+    "regions": [
+        {
+            "id": "88fff9a2-dda3-457b-a77b-36ee6bbb5e4c",
+            "regionName": "header",
+            "type": "region"
+        },
+        {
+            "components": [
+                {
+                    "componentAttributes": {},
+                    "componentName": "c:hot_tjenesteleverandorServiceappointmentWrapper",
+                    "id": "8fcee513-6f3a-4801-966e-dd574fed85af",
+                    "renderPriority": "NEUTRAL",
+                    "renditionMap": {},
+                    "type": "component"
+                }
+            ],
+            "id": "aa37a1c4-976b-4a72-9bfd-815b8094c786",
+            "regionName": "content",
+            "type": "region"
+        },
+        {
+            "id": "36a4e8b8-52f6-4743-af0e-ce01bf57a1d0",
+            "regionName": "footer",
+            "type": "region"
+        },
+        {
+            "components": [
+                {
+                    "componentAttributes": {
+                        "customHeadTags": "",
+                        "description": "",
+                        "title": "Tjenesteleverandør"
+                    },
+                    "componentName": "forceCommunity:seoAssistant",
+                    "id": "b0177ec3-d296-4257-81d9-f4d39913a5c1",
+                    "renditionMap": {},
+                    "type": "component"
+                }
+            ],
+            "id": "8dee8723-44fa-4eee-becd-3d0721804811",
+            "regionName": "sfdcHiddenRegion",
+            "type": "region"
+        }
+    ],
+    "themeLayoutType": "Inner",
+    "type": "view",
+    "viewType": "home"
+}
