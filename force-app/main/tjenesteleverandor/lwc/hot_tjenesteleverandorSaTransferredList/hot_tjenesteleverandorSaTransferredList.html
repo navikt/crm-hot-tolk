@@ -64,12 +64,13 @@
                 </div>
             </div>
             <div lwc:if={isDetails} class="modal-footer">
-                <lightning-button
-                    variant="brand"
-                    label="Vis mer info"
+                <c-button
+                    button-styling="primary"
+                    button-label="Vis mer info"
+                    aria-label="Vis mer informasjon om oppdraget"
                     title="Vis mer info om oppdraget"
-                    onclick={handleViewMoreInfo}
-                ></lightning-button>
+                    onbuttonclick={handleViewMoreInfo}
+                ></c-button>
             </div>
         </div>
     </dialog>

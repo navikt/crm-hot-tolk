@@ -15,8 +15,11 @@ describe('c-hot-tjenesteleverandor-sa-transferred-list details navigation contra
         );
 
         expect(template).toContain('<dialog class="modal-container"');
-        expect(template).toContain('label="Vis mer info"');
-        expect(template).toContain('onclick={handleViewMoreInfo}');
+        expect(template).toContain('<c-button');
+        expect(template).toContain('button-styling="primary"');
+        expect(template).toContain('button-label="Vis mer info"');
+        expect(template).toContain('onbuttonclick={handleViewMoreInfo}');
+        expect(template).not.toContain('<lightning-button');
         expect(controller).toContain("type: 'comm__namedPage'");
         expect(controller).toContain("name: 'Oppdragsdetaljer__c'");
         expect(controller).toContain('c__recordId: this.recordId');
