@@ -1,4 +1,5 @@
 import { LightningElement, wire, api } from 'lwc';
+import { NavigationMixin } from 'lightning/navigation';
 import getAcceptedServiceAppointments from '@salesforce/apex/HOT_TjenesteleverandorListController.getAcceptedServiceAppointments';
 
 import { columns, mobileColumns } from './columns';
@@ -7,7 +8,7 @@ import { getDayOfWeek } from 'c/hot_commonUtils';
 import { refreshApex } from '@salesforce/apex';
 import icons from '@salesforce/resourceUrl/ikoner';
 
-export default class Hot_tjenesteleverandorSaAcceptedList extends LightningElement {
+export default class Hot_tjenesteleverandorSaAcceptedList extends NavigationMixin(LightningElement) {
     @api recordId;
 
     exitCrossIcon = icons + '/Close/Close.svg';
@@ -154,6 +155,22 @@ export default class Hot_tjenesteleverandorSaAcceptedList extends LightningEleme
                 dialog.focus();
             }
         }, 0);
+    }
+
+    handleViewMoreInfo() {
+        if (!this.recordId) {
+            return;
+        }
+
+        this[NavigationMixin.Navigate]({
+            type: 'comm__namedPage',
+            attributes: {
+                name: 'Oppdragsdetaljer__c'
+            },
+            state: {
+                c__recordId: this.recordId
+            }
+        });
     }
 
     closeModal() {

@@ -42,6 +42,14 @@
                 <p><strong>Region:</strong> {serviceAppointment.HOT_ServiceTerritoryName__c}</p>
                 <p><strong>Eier:</strong> {serviceAppointment.HOT_Request__r.OwnerName__c}</p>
             </div>
+            <div lwc:if={isDetails} class="modal-footer">
+                <lightning-button
+                    variant="brand"
+                    label="Vis mer info"
+                    title="Vis mer info om oppdraget"
+                    onclick={handleViewMoreInfo}
+                ></lightning-button>
+            </div>
         </div>
     </dialog>
 

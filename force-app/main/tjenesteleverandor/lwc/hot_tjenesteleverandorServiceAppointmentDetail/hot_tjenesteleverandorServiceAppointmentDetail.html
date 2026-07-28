@@ -1,0 +1,141 @@
+<template>
+    <article class="detail-page">
+        <nav class="slds-m-bottom_medium" aria-label="Navigasjon for oppdragsdetaljer">
+            <lightning-button
+                label="Tilbake til oppdrag"
+                title="Tilbake til oppdrag"
+                icon-name="utility:back"
+                onclick={handleBack}
+            ></lightning-button>
+        </nav>
+
+        <header class="slds-m-bottom_large">
+            <h1 class="slds-text-heading_large">Oppdragsdetaljer</h1>
+            <p class="slds-text-body_regular slds-text-color_weak">Informasjonen er skrivebeskyttet.</p>
+        </header>
+
+        <template if:true={isLoading}>
+            <div class="loading-container" role="status" aria-live="polite">
+                <lightning-spinner alternative-text="Laster oppdragsdetaljer" size="medium"></lightning-spinner>
+                <span class="slds-assistive-text">Laster oppdragsdetaljer</span>
+            </div>
+        </template>
+
+        <template if:true={hasError}>
+            <div class="slds-notify slds-notify_alert slds-alert_error error-message" role="alert">
+                <span class="slds-assistive-text">Feil</span>
+                <lightning-icon
+                    icon-name="utility:error"
+                    alternative-text="Feil"
+                    size="x-small"
+                    variant="inverse"
+                    class="slds-m-right_x-small"
+                ></lightning-icon>
+                <p>Du har ikke tilgang til oppdraget, eller oppdraget finnes ikke.</p>
+            </div>
+        </template>
+
+        <lightning-record-view-form
+            class={recordFormClass}
+            record-id={effectiveRecordId}
+            object-api-name="ServiceAppointment"
+            onload={handleLoad}
+            onerror={handleError}
+        >
+            <section class="detail-section" aria-labelledby="general-heading">
+                <h2 id="general-heading" class="section-heading">Generell informasjon</h2>
+                <div class="slds-grid slds-wrap slds-gutters">
+                    <div class="slds-col slds-size_1-of-1 slds-large-size_1-of-2">
+                        <lightning-output-field field-name="AppointmentNumber"></lightning-output-field>
+                        <lightning-output-field field-name="HOT_FreelanceSubject__c"></lightning-output-field>
+                        <lightning-output-field field-name="HOT_Information__c"></lightning-output-field>
+                        <lightning-output-field field-name="HOT_WorkTypeName__c"></lightning-output-field>
+                        <lightning-output-field field-name="HOT_AssignmentType__c"></lightning-output-field>
+                        <lightning-output-field field-name="HOT_PreparationTime__c"></lightning-output-field>
+                        <lightning-output-field field-name="HOT_TotalNumberOfInterpreters__c"></lightning-output-field>
+                        <lightning-output-field
+                            field-name="HOT_NumberOfInterestedResources__c"
+                        ></lightning-output-field>
+                    </div>
+                    <div class="slds-col slds-size_1-of-1 slds-large-size_1-of-2">
+                        <lightning-output-field field-name="Status"></lightning-output-field>
+                        <lightning-output-field field-name="HOT_TjenesteleverandorStatus__c"></lightning-output-field>
+                        <lightning-output-field field-name="HOT_ServiceTerritoryName__c"></lightning-output-field>
+                        <lightning-output-field field-name="HOT_IsAcute__c"></lightning-output-field>
+                        <lightning-output-field field-name="HOT_IsScreenInterpreterNew__c"></lightning-output-field>
+                        <lightning-output-field field-name="HOT_IsSerieoppdrag__c"></lightning-output-field>
+                        <lightning-output-field field-name="HOT_IsOtherEconomicProvicer__c"></lightning-output-field>
+                        <lightning-output-field field-name="HOT_IsImageInterpreter__c"></lightning-output-field>
+                    </div>
+                </div>
+            </section>
+
+            <section class="detail-section" aria-labelledby="ordered-time-heading">
+                <h2 id="ordered-time-heading" class="section-heading">Bestilt tid</h2>
+                <div class="slds-grid slds-wrap slds-gutters">
+                    <div class="slds-col slds-size_1-of-1 slds-large-size_1-of-2">
+                        <lightning-output-field field-name="EarliestStartTime"></lightning-output-field>
+                        <lightning-output-field field-name="DueDate"></lightning-output-field>
+                    </div>
+                    <div class="slds-col slds-size_1-of-1 slds-large-size_1-of-2">
+                        <lightning-output-field field-name="Duration"></lightning-output-field>
+                        <lightning-output-field field-name="HOT_DayOfWeek__c"></lightning-output-field>
+                    </div>
+                </div>
+            </section>
+
+            <section class="detail-section" aria-labelledby="actual-time-heading">
+                <h2 id="actual-time-heading" class="section-heading">Faktisk tid</h2>
+                <div class="slds-grid slds-wrap slds-gutters">
+                    <div class="slds-col slds-size_1-of-1 slds-large-size_1-of-2">
+                        <lightning-output-field field-name="ActualStartTime"></lightning-output-field>
+                        <lightning-output-field field-name="ActualEndTime"></lightning-output-field>
+                    </div>
+                    <div class="slds-col slds-size_1-of-1 slds-large-size_1-of-2">
+                        <lightning-output-field field-name="ActualDuration"></lightning-output-field>
+                    </div>
+                </div>
+            </section>
+
+            <section class="detail-section" aria-labelledby="address-heading">
+                <h2 id="address-heading" class="section-heading">Adresse</h2>
+                <lightning-output-field field-name="HOT_AddressFormated__c"></lightning-output-field>
+            </section>
+
+            <section class="detail-section" aria-labelledby="release-heading">
+                <h2 id="release-heading" class="section-heading">Frigivelse og tjenesteleverandør</h2>
+                <div class="slds-grid slds-wrap slds-gutters">
+                    <div class="slds-col slds-size_1-of-1 slds-large-size_1-of-2">
+                        <lightning-output-field field-name="HOT_IsReleasedToFreelance__c"></lightning-output-field>
+                        <lightning-output-field field-name="HOT_DeadlineDate__c"></lightning-output-field>
+                        <lightning-output-field field-name="HOT_ReleasedBy__c"></lightning-output-field>
+                        <lightning-output-field field-name="HOT_ReleaseDate__c"></lightning-output-field>
+                    </div>
+                    <div class="slds-col slds-size_1-of-1 slds-large-size_1-of-2">
+                        <lightning-output-field
+                            field-name="HOT_TjenesteleverandorTransferDate__c"
+                        ></lightning-output-field>
+                        <lightning-output-field
+                            field-name="HOT_TjenesteleverandorAcceptDate__c"
+                        ></lightning-output-field>
+                        <lightning-output-field field-name="HOT_TjenesteleverandorDeadline__c"></lightning-output-field>
+                    </div>
+                </div>
+            </section>
+
+            <section class={cancellationSectionClass} aria-labelledby="cancellation-heading">
+                <h2 id="cancellation-heading" class="section-heading">Avlysning</h2>
+                <div class="slds-grid slds-wrap slds-gutters">
+                    <div class="slds-col slds-size_1-of-1 slds-large-size_1-of-2">
+                        <lightning-output-field field-name="HOT_CancelComment__c"></lightning-output-field>
+                        <lightning-output-field field-name="HOT_CanceledByInterpreter__c"></lightning-output-field>
+                    </div>
+                    <div class="slds-col slds-size_1-of-1 slds-large-size_1-of-2">
+                        <lightning-output-field field-name="HOT_CanceledDate__c"></lightning-output-field>
+                        <lightning-output-field field-name="HOT_LateCancellation__c"></lightning-output-field>
+                    </div>
+                </div>
+            </section>
+        </lightning-record-view-form>
+    </article>
+</template>

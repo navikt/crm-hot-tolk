@@ -63,6 +63,14 @@
                     ></c-hot_freelance-common-table>
                 </div>
             </div>
+            <div lwc:if={isDetails} class="modal-footer">
+                <lightning-button
+                    variant="brand"
+                    label="Vis mer info"
+                    title="Vis mer info om oppdraget"
+                    onclick={handleViewMoreInfo}
+                ></lightning-button>
+            </div>
         </div>
     </dialog>
 
