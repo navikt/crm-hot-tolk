@@ -8,6 +8,20 @@
     text-align: end;
 }
 
+.bulk-action-bar {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 1rem;
+    padding: 0.75rem 0;
+    text-align: left;
+}
+
+.bulk-feedback {
+    justify-content: flex-start;
+    margin-bottom: 1rem;
+}
+
 .loader-container {
     display: flex;
     justify-content: center;
@@ -96,6 +110,16 @@ dialog.modal-container .close-btn:hover {
 }
 
 @media (max-width: 600px) {
+    .bulk-action-bar {
+        align-items: stretch;
+        flex-direction: column;
+    }
+
+    .bulk-action-bar c-button {
+        display: block;
+        width: 100%;
+    }
+
     .main-content {
         max-width: 100%;
         box-sizing: border-box;

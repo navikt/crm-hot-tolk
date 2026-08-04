@@ -9,7 +9,10 @@ module.exports = {
         '^lightning/navigation$': '<rootDir>/force-app/test/jest-mocks/lightning/navigation',
         '^lightning/platformShowToastEvent$': '<rootDir>/force-app/test/jest-mocks/lightning/platformShowToastEvent',
         '^lightning/uiRecordApi$': '<rootDir>/force-app/test/jest-mocks/lightning/uiRecordApi',
-        '^lightning/messageService$': '<rootDir>/force-app/test/jest-mocks/lightning/messageService'
+        '^lightning/messageService$': '<rootDir>/force-app/test/jest-mocks/lightning/messageService',
+        '^c/button$': '<rootDir>/force-app/test/jest-mocks/c/button/button',
+        '^c/hot_freelanceCommonTable$':
+            '<rootDir>/force-app/test/jest-mocks/c/hot_freelanceCommonTable/hot_freelanceCommonTable'
     },
     setupFiles: ['jest-canvas-mock'],
     setupFilesAfterEnv,

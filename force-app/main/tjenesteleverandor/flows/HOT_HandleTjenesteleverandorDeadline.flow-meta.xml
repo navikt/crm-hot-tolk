@@ -83,6 +83,13 @@
                 <elementReference>Get_ServiceAppointment.Id</elementReference>
             </value>
         </filters>
+        <filters>
+            <field>HOT_TjenesteleverandorStatus__c</field>
+            <operator>EqualTo</operator>
+            <value>
+                <stringValue>Transferred</stringValue>
+            </value>
+        </filters>
         <inputAssignments>
             <field>HOT_TjenesteleverandorDeadline__c</field>
         </inputAssignments>

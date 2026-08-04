@@ -4,49 +4,42 @@
             <div class="list">
                 <h1 class="header-title">Tjenesteleverandør Oppdrag</h1>
 
-                <template lwc:if={showTabsAndLineBreak}>
-                    <div class="tabset desktop-only" role="tablist">
-                        <template for:each={tabMap} for:item="tab">
-                            <button
-                                key={tab.name}
-                                class="tab tab-button"
-                                data-id={tab.name}
-                                onclick={setActiveTab}
-                                role="tab"
-                                aria-selected={tab.ariaSelected}
-                                aria-controls={tab.ariaControls}
-                                id={tab.ariaId}
-                                aria-label={tab.ariaLabel}
-                            >
-                                {tab.label}
-                            </button>
-                        </template>
-                    </div>
-                </template>
-
-                <div class="tabset picklist-service mobile">
-                    <c-picklist choices={tabs} onpicklistvaluechange={setActiveTabMobile}></c-picklist>
+                <div class="tabset desktop-only" role="tablist">
+                    <template for:each={tabMap} for:item="tab">
+                        <button
+                            key={tab.name}
+                            class={tab.className}
+                            data-id={tab.name}
+                            onclick={setActiveTab}
+                            role="tab"
+                            aria-selected={tab.ariaSelected}
+                            aria-controls={tab.ariaControls}
+                            id={tab.ariaId}
+                            aria-label={tab.ariaLabel}
+                        >
+                            {tab.label}
+                        </button>
+                    </template>
                 </div>
 
-                <template lwc:if={isTransferredTab}>
+                <div class="tabset picklist-service mobile">
+                    <c-picklist choices={tabMap} onpicklistvaluechange={setActiveTabMobile}></c-picklist>
+                </div>
+
+                <template if:true={isTransferredTab}>
                     <div class="tab-content">
                         <c-hot_tjenesteleverandor-sa-transferred-list
                             record-id={recordId}
                             data-name="transferred"
-                            onsendrecords={handleRecords}
-                            onsenddetail={handleDetails}
-                            onsendcheckedrows={handleRowChecked}
                         ></c-hot_tjenesteleverandor-sa-transferred-list>
                     </div>
                 </template>
 
-                <template lwc:if={isAcceptedTab}>
+                <template if:true={isAcceptedTab}>
                     <div class="tab-content">
                         <c-hot_tjenesteleverandor-sa-accepted-list
                             record-id={recordId}
                             data-name="accepted"
-                            onsendrecords={handleRecords}
-                            onsenddetail={handleDetails}
                         ></c-hot_tjenesteleverandor-sa-accepted-list>
                     </div>
                 </template>
