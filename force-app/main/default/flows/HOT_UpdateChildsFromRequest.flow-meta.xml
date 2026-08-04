@@ -844,6 +844,7 @@ CONTAINS({!ChosenFieldsOwner}, {!Subject})
             <choiceReferences>Dispatcher</choiceReferences>
             <choiceReferences>Account</choiceReferences>
             <choiceReferences>InterpretationMethod</choiceReferences>
+            <choiceReferences>Owner</choiceReferences>
             <dataType>String</dataType>
             <fieldText>Velg felter</fieldText>
             <fieldType>MultiSelectCheckboxes</fieldType>
@@ -890,9 +891,9 @@ CONTAINS({!ChosenFieldsOwner}, {!Subject})
             <choiceReferences>Dispatcher</choiceReferences>
             <choiceReferences>Account</choiceReferences>
             <choiceReferences>InterpretationMethod</choiceReferences>
-            <choiceReferences>Owner</choiceReferences>
             <choiceReferences>ServiceTerritory</choiceReferences>
             <choiceReferences>Date</choiceReferences>
+            <choiceReferences>Owner</choiceReferences>
             <dataType>String</dataType>
             <fieldText>Velg felter</fieldText>
             <fieldType>MultiSelectCheckboxes</fieldType>
@@ -946,11 +947,12 @@ CONTAINS({!ChosenFieldsOwner}, {!Subject})
             <choiceReferences>Dispatcher</choiceReferences>
             <choiceReferences>Account</choiceReferences>
             <choiceReferences>InterpretationMethod</choiceReferences>
-            <choiceReferences>Owner</choiceReferences>
             <choiceReferences>ServiceTerritory</choiceReferences>
+            <choiceReferences>Owner</choiceReferences>
             <dataType>String</dataType>
             <fieldText>Velg felter</fieldText>
             <fieldType>MultiSelectCheckboxes</fieldType>
+            <inputsOnNextNavToAssocScrn>UseStoredValues</inputsOnNextNavToAssocScrn>
             <isRequired>true</isRequired>
             <styleProperties>
                 <verticalAlignment>
