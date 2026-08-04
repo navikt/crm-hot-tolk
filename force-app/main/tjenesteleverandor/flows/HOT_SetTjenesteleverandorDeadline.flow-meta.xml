@@ -97,6 +97,13 @@
                 <stringValue>Transferred</stringValue>
             </value>
         </filters>
+        <filters>
+            <field>HOT_TjenesteleverandorTransferDate__c</field>
+            <operator>IsNull</operator>
+            <value>
+                <booleanValue>false</booleanValue>
+            </value>
+        </filters>
         <object>ServiceAppointment</object>
         <recordTriggerType>CreateAndUpdate</recordTriggerType>
         <triggerType>RecordAfterSave</triggerType>

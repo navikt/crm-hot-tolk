@@ -14,14 +14,14 @@
             <p class="slds-text-body_regular slds-text-color_weak">Informasjonen er skrivebeskyttet.</p>
         </header>
 
-        <template if:true={isLoading}>
+        <template lwc:if={isLoading}>
             <div class="loading-container" role="status" aria-live="polite">
                 <lightning-spinner alternative-text="Laster oppdragsdetaljer" size="medium"></lightning-spinner>
                 <span class="slds-assistive-text">Laster oppdragsdetaljer</span>
             </div>
         </template>
 
-        <template if:true={hasError}>
+        <template lwc:if={hasError}>
             <div class="slds-notify slds-notify_alert slds-alert_error error-message" role="alert">
                 <span class="slds-assistive-text">Feil</span>
                 <lightning-icon
@@ -33,6 +33,58 @@
                 ></lightning-icon>
                 <p>Du har ikke tilgang til oppdraget, eller oppdraget finnes ikke.</p>
             </div>
+        </template>
+
+        <template lwc:if={acceptanceFeedback}>
+            <div class={acceptanceFeedback.className} role={acceptanceFeedback.role} aria-live="polite">
+                <lightning-icon
+                    icon-name={acceptanceFeedback.icon}
+                    alternative-text=""
+                    size="x-small"
+                    variant="inverse"
+                    class="slds-m-right_x-small"
+                ></lightning-icon>
+                <p>{acceptanceFeedback.message}</p>
+            </div>
+        </template>
+
+        <template lwc:if={showAcceptanceAction}>
+            <section class="acceptance-panel slds-m-bottom_large" aria-labelledby="acceptance-heading">
+                <div>
+                    <h2 id="acceptance-heading" class="slds-text-heading_small">
+                        Oppdraget er overført til tjenesteleverandør
+                    </h2>
+                    <template lwc:if={acceptanceDeadline}>
+                        <p class="slds-text-body_regular slds-text-color_weak">
+                            Svarfrist:
+                            <lightning-formatted-date-time
+                                value={acceptanceDeadline}
+                                year="numeric"
+                                month="2-digit"
+                                day="2-digit"
+                                hour="2-digit"
+                                minute="2-digit"
+                            ></lightning-formatted-date-time>
+                        </p>
+                    </template>
+                </div>
+                <div class="acceptance-action">
+                    <c-button
+                        data-id="accept-appointment"
+                        button-styling="primary"
+                        button-label="Aksepter oppdrag"
+                        aria-label="Aksepter oppdraget"
+                        disabled={isAccepting}
+                        onbuttonclick={handleAccept}
+                    ></c-button>
+                </div>
+                <template lwc:if={isAccepting}>
+                    <div class="acceptance-spinner" role="status" aria-live="polite">
+                        <lightning-spinner alternative-text="Aksepterer oppdraget" size="small"></lightning-spinner>
+                        <span class="slds-assistive-text">Aksepterer oppdraget</span>
+                    </div>
+                </template>
+            </section>
         </template>
 
         <lightning-record-view-form

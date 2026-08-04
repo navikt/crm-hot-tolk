@@ -39,6 +39,33 @@
     justify-content: flex-start;
 }
 
+.acceptance-message {
+    justify-content: flex-start;
+    margin-bottom: 1rem;
+}
+
+.acceptance-panel {
+    position: relative;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 1rem;
+    padding: 1rem;
+    border: 1px solid var(--slds-g-color-border-base-1, #c9c9c9);
+    border-radius: 0.5rem;
+    background: var(--slds-g-color-neutral-base-95, #f3f3f3);
+}
+
+.acceptance-action {
+    flex-shrink: 0;
+}
+
+.acceptance-spinner {
+    position: absolute;
+    inset: 0;
+    pointer-events: none;
+}
+
 @media (max-width: 48rem) {
     .detail-page {
         padding: 1rem;
@@ -47,5 +74,16 @@
 
     .slds-text-heading_large {
         font-size: 1.75rem;
+    }
+
+    .acceptance-panel {
+        align-items: stretch;
+        flex-direction: column;
+    }
+
+    .acceptance-action,
+    .acceptance-action c-button {
+        display: block;
+        width: 100%;
     }
 }

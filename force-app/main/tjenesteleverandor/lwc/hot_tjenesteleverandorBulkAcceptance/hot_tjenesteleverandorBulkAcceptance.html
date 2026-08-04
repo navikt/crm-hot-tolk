@@ -1,0 +1,76 @@
+<template>
+    <section class="bulk-page" aria-labelledby="bulk-acceptance-heading">
+        <header class="slds-m-bottom_large">
+            <h2 id="bulk-acceptance-heading" class="slds-text-heading_large">Bekreft valgte oppdrag</h2>
+            <p class="slds-text-body_regular slds-text-color_weak">
+                Kontroller oppdragene før du aksepterer. {appointmentCountLabel}
+            </p>
+        </header>
+
+        <template lwc:if={errorMessage}>
+            <div class="slds-notify slds-notify_alert slds-alert_error slds-m-bottom_medium" role="alert">
+                <span class="slds-assistive-text">Feil</span>
+                <lightning-icon
+                    icon-name="utility:error"
+                    alternative-text=""
+                    size="x-small"
+                    variant="inverse"
+                    class="slds-m-right_x-small"
+                ></lightning-icon>
+                <p>{errorMessage}</p>
+            </div>
+        </template>
+
+        <div class="review-table-container" role="region" aria-label="Valgte oppdrag som skal aksepteres" tabindex="0">
+            <table class="slds-table slds-table_cell-buffer slds-table_bordered review-table">
+                <thead>
+                    <tr>
+                        <th scope="col">Oppdragsnummer</th>
+                        <th scope="col">Tid</th>
+                        <th scope="col">Tema</th>
+                        <th scope="col">Tolkemetode</th>
+                        <th scope="col">Region</th>
+                        <th scope="col">Svarfrist</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <template for:each={appointments} for:item="appointment">
+                        <tr key={appointment.Id}>
+                            <td data-label="Oppdragsnummer">{appointment.HOT_ServiceAppointmentNumber__c}</td>
+                            <td data-label="Tid">{appointment.StartAndEndDate}</td>
+                            <td data-label="Tema">{appointment.HOT_FreelanceSubject__c}</td>
+                            <td data-label="Tolkemetode">{appointment.HOT_WorkTypeName__c}</td>
+                            <td data-label="Region">{appointment.HOT_ServiceTerritoryName__c}</td>
+                            <td data-label="Svarfrist">{appointment.TjenesteleverandorDeadline}</td>
+                        </tr>
+                    </template>
+                </tbody>
+            </table>
+        </div>
+
+        <footer class="bulk-footer slds-m-top_large">
+            <c-button
+                button-styling="secondary"
+                button-label="Tilbake"
+                aria-label="Tilbake til overførte oppdrag"
+                disabled={isProcessing}
+                onbuttonclick={handleCancel}
+            ></c-button>
+            <c-button
+                data-id="confirm-bulk-acceptance"
+                button-styling="primary"
+                button-label={acceptButtonLabel}
+                aria-label={acceptButtonAriaLabel}
+                disabled={isAcceptDisabled}
+                onbuttonclick={handleAccept}
+            ></c-button>
+        </footer>
+
+        <template lwc:if={isProcessing}>
+            <div class="processing-overlay" role="status" aria-live="polite">
+                <lightning-spinner alternative-text="Aksepterer valgte oppdrag" size="medium"></lightning-spinner>
+                <span class="slds-assistive-text">Aksepterer valgte oppdrag</span>
+            </div>
+        </template>
+    </section>
+</template>
