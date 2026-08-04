@@ -1,12 +1,14 @@
 import { createElement } from 'lwc';
-import { registerApexTestWireAdapter } from '@salesforce/sfdx-lwc-jest';
 import HotTjenesteleverandorSaAcceptedList from 'c/hot_tjenesteleverandorSaAcceptedList';
 import getAcceptedServiceAppointments from '@salesforce/apex/HOT_TjenesteleverandorListController.getAcceptedServiceAppointments';
 import { Navigate } from 'lightning/navigation';
 
 jest.mock(
     '@salesforce/apex/HOT_TjenesteleverandorListController.getAcceptedServiceAppointments',
-    () => ({ default: jest.fn() }),
+    () => {
+        const { createApexTestWireAdapter } = require('@salesforce/sfdx-lwc-jest');
+        return { default: createApexTestWireAdapter(jest.fn()) };
+    },
     { virtual: true }
 );
 
@@ -22,7 +24,6 @@ const APPOINTMENT = {
     HOT_IsOtherEconomicProvicer__c: true
 };
 
-const acceptedAppointmentsAdapter = registerApexTestWireAdapter(getAcceptedServiceAppointments);
 const flushPromises = () => new Promise((resolve) => setTimeout(resolve, 0));
 
 function createComponent() {
@@ -47,7 +48,7 @@ describe('c-hot-tjenesteleverandor-sa-accepted-list', () => {
 
     it('renders accepted appointments from the wire', async () => {
         const element = createComponent();
-        acceptedAppointmentsAdapter.emit([APPOINTMENT]);
+        getAcceptedServiceAppointments.emit([APPOINTMENT]);
         await flushPromises();
 
         const table = element.shadowRoot.querySelector('c-hot_freelance-common-table');
@@ -58,7 +59,7 @@ describe('c-hot-tjenesteleverandor-sa-accepted-list', () => {
 
     it('opens the existing modal and routes Vis mer info to the separate Experience page', async () => {
         const element = createComponent();
-        acceptedAppointmentsAdapter.emit([APPOINTMENT]);
+        getAcceptedServiceAppointments.emit([APPOINTMENT]);
         await flushPromises();
 
         element.shadowRoot

@@ -1,12 +1,12 @@
 <template>
-    <template if:true={hasResult}>
+    <template lwc:if={hasResult}>
         <div class="main-content">
             <c-hot_freelance-common-table records={records} columns={columns} onrowclick={goToRecordDetails}>
             </c-hot_freelance-common-table>
         </div>
     </template>
 
-    <template if:true={noServiceAppointmentsResult}>
+    <template lwc:if={noServiceAppointmentsResult}>
         <div style="text-align: center" aria-live="polite">
             <br />
             <p>Det finnes ingen aksepterte oppdrag til tjenesteleverandør.</p>
@@ -16,7 +16,7 @@
 
     <!-- MODAL -->
     <dialog class="modal-container" aria-label="Informasjon om oppdrag" aria-modal="true" onclose={closeModal}>
-        <template if:true={showServiceAppointmentDetailsModal}>
+        <template lwc:if={showServiceAppointmentDetailsModal}>
             <div>
                 <div class="modal-header">
                     <h2>Informasjon om oppdraget:</h2>
@@ -24,14 +24,14 @@
                         <img src={exitCrossIcon} alt="" aria-hidden="true" />
                     </button>
                 </div>
-                <template if:true={serviceAppointment}>
+                <template lwc:if={serviceAppointment}>
                     <div class="modal-body">
                         <p><strong>Oppdragsnummer:</strong> {serviceAppointment.HOT_ServiceAppointmentNumber__c}</p>
                         <p><strong>Tema:</strong> {serviceAppointment.HOT_FreelanceSubject__c}</p>
                         <p><strong>Tid:</strong> {serviceAppointment.weekday} {serviceAppointment.StartAndEndDate}</p>
                         <p><strong>Adresse:</strong> {serviceAppointment.HOT_AddressFormated__c}</p>
                         <p><strong>Tolkemetode:</strong> {serviceAppointment.HOT_WorkTypeName__c}</p>
-                        <template if:true={serviceAppointment.HOT_PreparationTime__c}>
+                        <template lwc:if={serviceAppointment.HOT_PreparationTime__c}>
                             <p>
                                 <strong>Kompensert forberedelse:</strong>
                                 {serviceAppointment.HOT_PreparationTime__c}
@@ -63,7 +63,7 @@
         </template>
     </dialog>
 
-    <template if:true={dataLoader}>
+    <template lwc:if={dataLoader}>
         <div class="loader-container">
             <c-hot_loader size="3xlarge"></c-hot_loader>
         </div>

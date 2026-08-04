@@ -26,7 +26,7 @@
                     <c-picklist choices={tabMap} onpicklistvaluechange={setActiveTabMobile}></c-picklist>
                 </div>
 
-                <template if:true={isTransferredTab}>
+                <template lwc:if={isTransferredTab}>
                     <div class="tab-content">
                         <c-hot_tjenesteleverandor-sa-transferred-list
                             record-id={recordId}
@@ -35,7 +35,7 @@
                     </div>
                 </template>
 
-                <template if:true={isAcceptedTab}>
+                <template lwc:if={isAcceptedTab}>
                     <div class="tab-content">
                         <c-hot_tjenesteleverandor-sa-accepted-list
                             record-id={recordId}

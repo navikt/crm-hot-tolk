@@ -14,14 +14,14 @@
             <p class="slds-text-body_regular slds-text-color_weak">Informasjonen er skrivebeskyttet.</p>
         </header>
 
-        <template if:true={isLoading}>
+        <template lwc:if={isLoading}>
             <div class="loading-container" role="status" aria-live="polite">
                 <lightning-spinner alternative-text="Laster oppdragsdetaljer" size="medium"></lightning-spinner>
                 <span class="slds-assistive-text">Laster oppdragsdetaljer</span>
             </div>
         </template>
 
-        <template if:true={hasError}>
+        <template lwc:if={hasError}>
             <div class="slds-notify slds-notify_alert slds-alert_error error-message" role="alert">
                 <span class="slds-assistive-text">Feil</span>
                 <lightning-icon
@@ -35,7 +35,7 @@
             </div>
         </template>
 
-        <template if:true={acceptanceFeedback}>
+        <template lwc:if={acceptanceFeedback}>
             <div class={acceptanceFeedback.className} role={acceptanceFeedback.role} aria-live="polite">
                 <lightning-icon
                     icon-name={acceptanceFeedback.icon}
@@ -48,13 +48,13 @@
             </div>
         </template>
 
-        <template if:true={showAcceptanceAction}>
+        <template lwc:if={showAcceptanceAction}>
             <section class="acceptance-panel slds-m-bottom_large" aria-labelledby="acceptance-heading">
                 <div>
                     <h2 id="acceptance-heading" class="slds-text-heading_small">
                         Oppdraget er overført til tjenesteleverandør
                     </h2>
-                    <template if:true={acceptanceDeadline}>
+                    <template lwc:if={acceptanceDeadline}>
                         <p class="slds-text-body_regular slds-text-color_weak">
                             Svarfrist:
                             <lightning-formatted-date-time
@@ -78,7 +78,7 @@
                         onbuttonclick={handleAccept}
                     ></c-button>
                 </div>
-                <template if:true={isAccepting}>
+                <template lwc:if={isAccepting}>
                     <div class="acceptance-spinner" role="status" aria-live="polite">
                         <lightning-spinner alternative-text="Aksepterer oppdraget" size="small"></lightning-spinner>
                         <span class="slds-assistive-text">Aksepterer oppdraget</span>

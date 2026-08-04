@@ -1,5 +1,4 @@
 import { createElement } from 'lwc';
-import { registerTestWireAdapter } from '@salesforce/sfdx-lwc-jest';
 import HotTjenesteleverandorServiceAppointmentDetail from 'c/hot_tjenesteleverandorServiceAppointmentDetail';
 import { CurrentPageReference, Navigate } from 'lightning/navigation';
 import { notifyRecordUpdateAvailable } from 'lightning/uiRecordApi';
@@ -15,7 +14,6 @@ jest.mock(
 );
 
 const RECORD_ID = '08p000000000001AAA';
-const currentPageReferenceAdapter = registerTestWireAdapter(CurrentPageReference);
 const flushPromises = () => new Promise((resolve) => setTimeout(resolve, 0));
 
 function createComponent() {
@@ -82,7 +80,7 @@ describe('c-hot-tjenesteleverandor-service-appointment-detail', () => {
         });
         document.body.appendChild(element);
 
-        currentPageReferenceAdapter.emit({
+        CurrentPageReference.emit({
             state: {
                 c__recordId: RECORD_ID
             }

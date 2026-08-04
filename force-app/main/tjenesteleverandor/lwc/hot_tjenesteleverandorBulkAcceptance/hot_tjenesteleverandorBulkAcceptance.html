@@ -7,7 +7,7 @@
             </p>
         </header>
 
-        <template if:true={errorMessage}>
+        <template lwc:if={errorMessage}>
             <div class="slds-notify slds-notify_alert slds-alert_error slds-m-bottom_medium" role="alert">
                 <span class="slds-assistive-text">Feil</span>
                 <lightning-icon
@@ -66,7 +66,7 @@
             ></c-button>
         </footer>
 
-        <template if:true={isProcessing}>
+        <template lwc:if={isProcessing}>
             <div class="processing-overlay" role="status" aria-live="polite">
                 <lightning-spinner alternative-text="Aksepterer valgte oppdrag" size="medium"></lightning-spinner>
                 <span class="slds-assistive-text">Aksepterer valgte oppdrag</span>

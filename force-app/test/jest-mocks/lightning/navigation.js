@@ -1,6 +1,8 @@
+import { createTestWireAdapter } from '@salesforce/sfdx-lwc-jest';
+
 export const Navigate = jest.fn();
 export const GenerateUrl = jest.fn(() => Promise.resolve('https://www.example.com'));
-export const CurrentPageReference = jest.fn();
+export const CurrentPageReference = createTestWireAdapter(jest.fn());
 
 const NavigateSymbol = Symbol('Navigate');
 const GenerateUrlSymbol = Symbol('GenerateUrl');

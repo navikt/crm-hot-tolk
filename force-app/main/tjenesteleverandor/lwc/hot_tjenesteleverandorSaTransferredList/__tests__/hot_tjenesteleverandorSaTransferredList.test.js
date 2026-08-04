@@ -1,5 +1,4 @@
 import { createElement } from 'lwc';
-import { registerApexTestWireAdapter } from '@salesforce/sfdx-lwc-jest';
 import HotTjenesteleverandorSaTransferredList from 'c/hot_tjenesteleverandorSaTransferredList';
 import getTransferredServiceAppointments from '@salesforce/apex/HOT_TjenesteleverandorListController.getTransferredServiceAppointments';
 import acceptServiceAppointments from '@salesforce/apex/HOT_TjenesteleverandorAcceptanceService.acceptServiceAppointments';
@@ -11,7 +10,10 @@ jest.mock('@salesforce/customPermission/HOT_AcceptTjenesteleverandorOppdrag', ()
 });
 jest.mock(
     '@salesforce/apex/HOT_TjenesteleverandorListController.getTransferredServiceAppointments',
-    () => ({ default: jest.fn() }),
+    () => {
+        const { createApexTestWireAdapter } = require('@salesforce/sfdx-lwc-jest');
+        return { default: createApexTestWireAdapter(jest.fn()) };
+    },
     { virtual: true }
 );
 jest.mock(
@@ -21,7 +23,6 @@ jest.mock(
 );
 
 const CHECKED_ROWS_STORAGE_KEY = 'tjenesteleverandorTransferredCheckedRows';
-const transferredAppointmentsAdapter = registerApexTestWireAdapter(getTransferredServiceAppointments);
 const flushPromises = () => new Promise((resolve) => setTimeout(resolve, 0));
 
 const APPOINTMENTS = [
@@ -63,7 +64,7 @@ function createComponent() {
 
 async function createLoadedComponent() {
     const element = createComponent();
-    transferredAppointmentsAdapter.emit(APPOINTMENTS);
+    getTransferredServiceAppointments.emit(APPOINTMENTS);
     await flushPromises();
     return element;
 }

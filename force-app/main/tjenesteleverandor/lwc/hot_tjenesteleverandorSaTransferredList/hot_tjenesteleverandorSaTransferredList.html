@@ -1,5 +1,5 @@
 <template>
-    <template if:true={showBulkReview}>
+    <template lwc:if={showBulkReview}>
         <c-hot_tjenesteleverandor-bulk-acceptance
             appointments={bulkReviewRecords}
             oncancel={handleCancelBulkReview}
@@ -7,8 +7,8 @@
         ></c-hot_tjenesteleverandor-bulk-acceptance>
     </template>
 
-    <template if:false={showBulkReview}>
-        <template if:true={bulkFeedback}>
+    <template lwc:else>
+        <template lwc:if={bulkFeedback}>
             <div class={bulkFeedback.className} role={bulkFeedback.role} aria-live="polite">
                 <lightning-icon
                     icon-name={bulkFeedback.icon}
@@ -21,10 +21,10 @@
             </div>
         </template>
 
-        <template if:true={hasResult}>
+        <template lwc:if={hasResult}>
             <div class="bulk-action-bar">
                 <p aria-live="polite">{selectedAppointmentsLabel}</p>
-                <template if:true={canShowBulkAcceptance}>
+                <template lwc:if={canShowBulkAcceptance}>
                     <c-button
                         data-id="start-bulk-acceptance"
                         button-styling="primary"
@@ -48,7 +48,7 @@
             </div>
         </template>
 
-        <template if:true={noServiceAppointmentsResult}>
+        <template lwc:if={noServiceAppointmentsResult}>
             <div style="text-align: center" aria-live="polite">
                 <br />
                 <p>Det finnes ingen overførte oppdrag til tjenesteleverandør.</p>
@@ -58,7 +58,7 @@
 
         <!-- MODAL -->
         <dialog class="modal-container" aria-label="Informasjon om oppdrag" aria-modal="true" onclose={closeModal}>
-            <template if:true={showServiceAppointmentDetailsModal}>
+            <template lwc:if={showServiceAppointmentDetailsModal}>
                 <div>
                     <div class="modal-header">
                         <h2>Informasjon om oppdraget:</h2>
@@ -66,7 +66,7 @@
                             <img src={exitCrossIcon} alt="" aria-hidden="true" />
                         </button>
                     </div>
-                    <template if:true={serviceAppointment}>
+                    <template lwc:if={serviceAppointment}>
                         <div class="modal-body">
                             <p>
                                 <strong>Oppdragsnummer:</strong>
@@ -78,7 +78,7 @@
                             </p>
                             <p><strong>Adresse:</strong> {serviceAppointment.HOT_AddressFormated__c}</p>
                             <p><strong>Tolkemetode:</strong> {serviceAppointment.HOT_WorkTypeName__c}</p>
-                            <template if:true={serviceAppointment.HOT_PreparationTime__c}>
+                            <template lwc:if={serviceAppointment.HOT_PreparationTime__c}>
                                 <p>
                                     <strong>Kompensert forberedelse:</strong>
                                     {serviceAppointment.HOT_PreparationTime__c}
@@ -94,7 +94,7 @@
                             <p><strong>Annen betaler:</strong> {serviceAppointment.isOtherProvider}</p>
                             <p><strong>Region:</strong> {serviceAppointment.HOT_ServiceTerritoryName__c}</p>
                             <p><strong>Frist dato:</strong> {serviceAppointment.HOT_DeadlineDate__c}</p>
-                            <template if:true={serviceAppointment.HOT_TjenesteleverandorTransferDate__c}>
+                            <template lwc:if={serviceAppointment.HOT_TjenesteleverandorTransferDate__c}>
                                 <p>
                                     <strong>Overført tidspunkt:</strong>
                                     &nbsp;{serviceAppointment.HOT_TjenesteleverandorTransferDate__c}
@@ -102,7 +102,7 @@
                             </template>
 
                             <!-- Serviceappointment series -->
-                            <template if:true={isSeries}>
+                            <template lwc:if={isSeries}>
                                 <div class="series-container">
                                     <c-hot_freelance-common-table
                                         records={seriesRecords}
@@ -126,7 +126,7 @@
             </template>
         </dialog>
 
-        <template if:true={dataLoader}>
+        <template lwc:if={dataLoader}>
             <div class="loader-container">
                 <c-hot_loader size="3xlarge"></c-hot_loader>
             </div>
