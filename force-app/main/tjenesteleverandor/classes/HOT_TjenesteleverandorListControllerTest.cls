@@ -2,6 +2,8 @@
 private class HOT_TjenesteleverandorListControllerTest {
     @TestSetup
     static void createAppointments() {
+        assignAdminPermissionSet();
+
         WorkType workType = HOT_TestDataFactory.createWorkType('supplier list');
         insert workType;
         HOT_Request__c request = HOT_TestDataFactory.createRequest('supplier list', workType);
@@ -24,6 +26,31 @@ private class HOT_TjenesteleverandorListControllerTest {
 
         appointments[1].HOT_TjenesteleverandorStatus__c = 'Accepted';
         update appointments[1];
+    }
+
+    private static void assignAdminPermissionSet() {
+        PermissionSet permissionSet = [
+            SELECT Id
+            FROM PermissionSet
+            WHERE Name = 'HOT_Admin'
+            LIMIT 1
+        ];
+        List<PermissionSetAssignment> existingAssignments = [
+            SELECT Id
+            FROM PermissionSetAssignment
+            WHERE AssigneeId = :UserInfo.getUserId() AND PermissionSetId = :permissionSet.Id
+            LIMIT 1
+        ];
+        if (existingAssignments.isEmpty()) {
+            // CI scratch-org users are not guaranteed the FLS required by the production WITH USER_MODE queries.
+            myTriggers.disable(UserPermissionSetAssignmentHandler.class);
+            System.runAs(new User(Id = UserInfo.getUserId())) {
+                insert new PermissionSetAssignment(
+                    AssigneeId = UserInfo.getUserId(),
+                    PermissionSetId = permissionSet.Id
+                );
+            }
+        }
     }
 
     @IsTest
