@@ -1,8 +1,11 @@
 @IsTest
 private class HOT_TjenesteleverandorListControllerTest {
+    private static final String TEST_USERNAME =
+        'tjenesteleverandor-list-' + UserInfo.getOrganizationId() + '@test.nav.no';
+
     @TestSetup
     static void createAppointments() {
-        assignAdminPermissionSet();
+        createTestUser();
 
         WorkType workType = HOT_TestDataFactory.createWorkType('supplier list');
         insert workType;
@@ -28,35 +31,51 @@ private class HOT_TjenesteleverandorListControllerTest {
         update appointments[1];
     }
 
-    private static void assignAdminPermissionSet() {
+    private static void createTestUser() {
+        // USER_MODE keeps the running user's original FLS context in CI, so execute as a newly permissioned user.
+        Profile profile = [SELECT Id FROM Profile WHERE Name = 'System Administrator' LIMIT 1];
+        User testUser = HOT_TestDataFactory.createUser('TLList', profile);
+        testUser.Username = TEST_USERNAME;
+        testUser.Alias = 'tllist';
+        testUser.CommunityNickname = 'tllist' + UserInfo.getOrganizationId();
         PermissionSet permissionSet = [
             SELECT Id
             FROM PermissionSet
             WHERE Name = 'HOT_Admin'
             LIMIT 1
         ];
-        List<PermissionSetAssignment> existingAssignments = [
-            SELECT Id
-            FROM PermissionSetAssignment
-            WHERE AssigneeId = :UserInfo.getUserId() AND PermissionSetId = :permissionSet.Id
-            LIMIT 1
-        ];
-        if (existingAssignments.isEmpty()) {
-            // CI scratch-org users are not guaranteed the FLS required by the production WITH USER_MODE queries.
-            myTriggers.disable(UserPermissionSetAssignmentHandler.class);
-            System.runAs(new User(Id = UserInfo.getUserId())) {
-                insert new PermissionSetAssignment(
-                    AssigneeId = UserInfo.getUserId(),
-                    PermissionSetId = permissionSet.Id
-                );
-            }
+
+        myTriggers.disable(UserPermissionSetAssignmentHandler.class);
+        System.runAs(new User(Id = UserInfo.getUserId())) {
+            insert testUser;
+            insert new PermissionSetAssignment(AssigneeId = testUser.Id, PermissionSetId = permissionSet.Id);
         }
+    }
+
+    private static User getTestUser() {
+        return [SELECT Id FROM User WHERE Username = :TEST_USERNAME LIMIT 1];
+    }
+
+    private static List<ServiceAppointment> getTransferredAppointmentsAsTestUser() {
+        List<ServiceAppointment> appointments;
+        System.runAs(getTestUser()) {
+            appointments = HOT_TjenesteleverandorListController.getTransferredServiceAppointments();
+        }
+        return appointments;
+    }
+
+    private static List<ServiceAppointment> getAcceptedAppointmentsAsTestUser() {
+        List<ServiceAppointment> appointments;
+        System.runAs(getTestUser()) {
+            appointments = HOT_TjenesteleverandorListController.getAcceptedServiceAppointments();
+        }
+        return appointments;
     }
 
     @IsTest
     static void returnsOnlyTransferredAppointments() {
         Test.startTest();
-        List<ServiceAppointment> appointments = HOT_TjenesteleverandorListController.getTransferredServiceAppointments();
+        List<ServiceAppointment> appointments = getTransferredAppointmentsAsTestUser();
         Test.stopTest();
 
         Assert.areEqual(1, appointments.size(), 'Only the transferred appointment should be returned');
@@ -83,7 +102,7 @@ private class HOT_TjenesteleverandorListControllerTest {
     @IsTest
     static void returnsOnlyAcceptedAppointments() {
         Test.startTest();
-        List<ServiceAppointment> appointments = HOT_TjenesteleverandorListController.getAcceptedServiceAppointments();
+        List<ServiceAppointment> appointments = getAcceptedAppointmentsAsTestUser();
         Test.stopTest();
 
         Assert.areEqual(1, appointments.size(), 'Only the accepted appointment should be returned');

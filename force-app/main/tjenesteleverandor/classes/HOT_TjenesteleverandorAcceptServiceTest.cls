@@ -1,34 +1,47 @@
 @IsTest
 private class HOT_TjenesteleverandorAcceptServiceTest {
+    private static final String TEST_USERNAME =
+        'tjenesteleverandor-accept-' + UserInfo.getOrganizationId() + '@test.nav.no';
+
     @TestSetup
     static void createTestAppointments() {
-        assignAdminPermissionSet();
+        createTestUser();
         createTransferredAppointments(5, 'acceptance setup');
     }
 
-    private static void assignAdminPermissionSet() {
+    private static void createTestUser() {
+        // USER_MODE keeps the running user's original FLS context in CI, so execute as a newly permissioned user.
+        Profile profile = [SELECT Id FROM Profile WHERE Name = 'System Administrator' LIMIT 1];
+        User testUser = HOT_TestDataFactory.createUser('TLAccept', profile);
+        testUser.Username = TEST_USERNAME;
+        testUser.Alias = 'tlaccept';
+        testUser.CommunityNickname = 'tlaccept' + UserInfo.getOrganizationId();
         PermissionSet permissionSet = [
             SELECT Id
             FROM PermissionSet
             WHERE Name = 'HOT_Admin'
             LIMIT 1
         ];
-        List<PermissionSetAssignment> existingAssignments = [
-            SELECT Id
-            FROM PermissionSetAssignment
-            WHERE AssigneeId = :UserInfo.getUserId() AND PermissionSetId = :permissionSet.Id
-            LIMIT 1
-        ];
-        if (existingAssignments.isEmpty()) {
-            // CI scratch-org users are not guaranteed the FLS required by the production WITH USER_MODE query.
-            myTriggers.disable(UserPermissionSetAssignmentHandler.class);
-            System.runAs(new User(Id = UserInfo.getUserId())) {
-                insert new PermissionSetAssignment(
-                    AssigneeId = UserInfo.getUserId(),
-                    PermissionSetId = permissionSet.Id
-                );
-            }
+
+        myTriggers.disable(UserPermissionSetAssignmentHandler.class);
+        System.runAs(new User(Id = UserInfo.getUserId())) {
+            insert testUser;
+            insert new PermissionSetAssignment(AssigneeId = testUser.Id, PermissionSetId = permissionSet.Id);
         }
+    }
+
+    private static User getTestUser() {
+        return [SELECT Id FROM User WHERE Username = :TEST_USERNAME LIMIT 1];
+    }
+
+    private static List<HOT_TjenesteleverandorAcceptanceService.AcceptanceResult> acceptAsTestUser(
+        List<Id> serviceAppointmentIds
+    ) {
+        List<HOT_TjenesteleverandorAcceptanceService.AcceptanceResult> results;
+        System.runAs(getTestUser()) {
+            results = HOT_TjenesteleverandorAcceptanceService.acceptServiceAppointments(serviceAppointmentIds);
+        }
+        return results;
     }
 
     @IsTest
@@ -37,7 +50,7 @@ private class HOT_TjenesteleverandorAcceptServiceTest {
         setAcceptancePermission(true);
 
         Test.startTest();
-        List<HOT_TjenesteleverandorAcceptanceService.AcceptanceResult> results = HOT_TjenesteleverandorAcceptanceService.acceptServiceAppointments(
+        List<HOT_TjenesteleverandorAcceptanceService.AcceptanceResult> results = acceptAsTestUser(
             new List<Id>{ appointment.Id }
         );
         Test.stopTest();
@@ -60,9 +73,7 @@ private class HOT_TjenesteleverandorAcceptServiceTest {
         setAcceptancePermission(true);
 
         Test.startTest();
-        List<HOT_TjenesteleverandorAcceptanceService.AcceptanceResult> results = HOT_TjenesteleverandorAcceptanceService.acceptServiceAppointments(
-            appointmentIds
-        );
+        List<HOT_TjenesteleverandorAcceptanceService.AcceptanceResult> results = acceptAsTestUser(appointmentIds);
         Test.stopTest();
 
         Assert.areEqual(200, results.size(), 'Every selected appointment should have a result');
@@ -89,7 +100,7 @@ private class HOT_TjenesteleverandorAcceptServiceTest {
         setAcceptancePermission(true);
 
         Test.startTest();
-        List<HOT_TjenesteleverandorAcceptanceService.AcceptanceResult> results = HOT_TjenesteleverandorAcceptanceService.acceptServiceAppointments(
+        List<HOT_TjenesteleverandorAcceptanceService.AcceptanceResult> results = acceptAsTestUser(
             new List<Id>{ appointment.Id, appointment.Id }
         );
         Test.stopTest();
@@ -117,7 +128,7 @@ private class HOT_TjenesteleverandorAcceptServiceTest {
         setAcceptancePermission(true);
 
         Test.startTest();
-        List<HOT_TjenesteleverandorAcceptanceService.AcceptanceResult> results = HOT_TjenesteleverandorAcceptanceService.acceptServiceAppointments(
+        List<HOT_TjenesteleverandorAcceptanceService.AcceptanceResult> results = acceptAsTestUser(
             new List<Id>{ appointment.Id }
         );
         Test.stopTest();
@@ -144,7 +155,7 @@ private class HOT_TjenesteleverandorAcceptServiceTest {
         setAcceptancePermission(true);
 
         Test.startTest();
-        List<HOT_TjenesteleverandorAcceptanceService.AcceptanceResult> results = HOT_TjenesteleverandorAcceptanceService.acceptServiceAppointments(
+        List<HOT_TjenesteleverandorAcceptanceService.AcceptanceResult> results = acceptAsTestUser(
             new List<Id>{ appointments[0].Id, unrelatedRecord.Id, appointments[1].Id }
         );
         Test.stopTest();
@@ -162,7 +173,7 @@ private class HOT_TjenesteleverandorAcceptServiceTest {
 
         Test.startTest();
         try {
-            HOT_TjenesteleverandorAcceptanceService.acceptServiceAppointments(new List<Id>{ appointment.Id });
+            acceptAsTestUser(new List<Id>{ appointment.Id });
             Assert.fail('A user without the custom permission should be rejected');
         } catch (AuraHandledException expected) {
             Assert.isNotNull(expected, 'The permission failure should be returned as a handled exception');
@@ -182,7 +193,7 @@ private class HOT_TjenesteleverandorAcceptServiceTest {
 
         Test.startTest();
         try {
-            HOT_TjenesteleverandorAcceptanceService.acceptServiceAppointments(new List<Id>());
+            acceptAsTestUser(new List<Id>());
             Assert.fail('An empty selection should be rejected');
         } catch (AuraHandledException expected) {
             Assert.isNotNull(expected, 'The validation failure should be returned as a handled exception');
