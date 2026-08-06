@@ -7,6 +7,7 @@ const DEFAULT_TAB = 'transferred';
 export default class Hot_tjenesteleverandorServiceappointmentWrapper extends NavigationMixin(LightningElement) {
     activeTab = DEFAULT_TAB;
     recordId;
+    filters = [];
 
     tabs = [
         { name: 'transferred', label: 'Overførte oppdrag' },
@@ -43,11 +44,28 @@ export default class Hot_tjenesteleverandorServiceappointmentWrapper extends Nav
         this.selectTab(event.detail.name, true);
     }
 
+    handleFilters(event) {
+        this.filters = event.detail;
+    }
+
+    applyFilter(event) {
+        this.filters = event.detail.filterArray;
+        return this.template.querySelector(`[data-name="${this.activeTab}"]`)?.applyFilter(event) ?? 0;
+    }
+
+    sendFilteredRecordsLength(event) {
+        const filteredRecordsLength = this.applyFilter(event);
+        this.template.querySelector('c-list-filters-button')?.setFilteredRecordsLength(filteredRecordsLength);
+    }
+
     selectTab(tabName, updateUrl = false) {
         if (!this.tabs.some((tab) => tab.name === tabName)) {
             return;
         }
 
+        if (this.activeTab !== tabName) {
+            this.filters = [];
+        }
         this.activeTab = tabName;
         sessionStorage.setItem(ACTIVE_TAB_STORAGE_KEY, tabName);
         if (updateUrl) {
