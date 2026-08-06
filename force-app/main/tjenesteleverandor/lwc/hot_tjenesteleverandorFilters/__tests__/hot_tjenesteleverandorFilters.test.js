@@ -57,4 +57,22 @@ describe('c-hot-tjenesteleverandor-filters', () => {
         expect(filters).toHaveLength(5);
         expect(sessionStorage.getItem('filters')).toBeNull();
     });
+
+    it('restores selections while using the current filter labels', () => {
+        const savedFilters = createDefaultFilters();
+        const savedWorkType = savedFilters
+            .find((filter) => filter.name === 'HOT_WorkTypeName__c')
+            .value.find((workType) => workType.name === 'TSS - Tegn Som Støtte Til Munnavlesning');
+        savedWorkType.label = 'TSS - Tegn Som Støtte Til Munnavlesning';
+        savedWorkType.value = true;
+        savedWorkType.checked = true;
+        sessionStorage.setItem('filters', JSON.stringify(savedFilters));
+
+        const filters = restoreFilters('filters');
+        const restoredWorkType = filters
+            .find((filter) => filter.name === 'HOT_WorkTypeName__c')
+            .value.find((workType) => workType.name === 'TSS - Tegn Som Støtte Til Munnavlesning');
+
+        expect(restoredWorkType).toMatchObject({ label: 'Tegn som støtte', value: true, checked: true });
+    });
 });

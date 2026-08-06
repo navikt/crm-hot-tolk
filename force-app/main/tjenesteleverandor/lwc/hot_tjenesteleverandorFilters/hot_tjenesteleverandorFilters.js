@@ -22,18 +22,18 @@ const FILTER_DEFINITIONS = [
         isCheckboxgroup: true,
         showMarkAllCheckbox: true,
         value: [
-            { name: 'TS - Tegnspråk', label: 'TS - Tegnspråk' },
-            { name: 'SK - Skrivetolking', label: 'SK - Skrivetolking' },
+            { name: 'TS - Tegnspråk', label: 'Tegnspråk' },
+            { name: 'SK - Skrivetolking', label: 'Skrivetolking' },
             {
                 name: 'TSS - Tegn Som Støtte Til Munnavlesning',
-                label: 'TSS - Tegn Som Støtte Til Munnavlesning'
+                label: 'Tegn som støtte'
             },
             {
                 name: 'TSBS - Tegnspråk I Begrenset Synsfelt',
-                label: 'TSBS - Tegnspråk I Begrenset Synsfelt'
+                label: 'Begrenset synsfelt'
             },
-            { name: 'TT - Taletolking', label: 'TT - Taletolking' },
-            { name: 'TTS - Taktilt Tegnspråk', label: 'TTS - Taktilt Tegnspråk' }
+            { name: 'TT - Taletolking', label: 'Taletolking' },
+            { name: 'TTS - Taktilt Tegnspråk', label: 'Taktilt tegnspråk' }
         ]
     },
     {
@@ -46,7 +46,7 @@ const FILTER_DEFINITIONS = [
             { name: 'Arbeidsliv', label: 'Arbeidsliv' },
             { name: 'Helsetjenester', label: 'Helsetjenester' },
             { name: 'Utdanning', label: 'Utdanning' },
-            { name: 'Tolk på arbeidsplass - TPA', label: 'Tolk på arbeidsplass - TPA' }
+            { name: 'Tolk på arbeidsplass - TPA', label: 'Tolk på arbeidsplass' }
         ]
     },
     {
@@ -98,13 +98,44 @@ export function restoreFilters(storageKey) {
 
     try {
         const filters = JSON.parse(storedFilters);
-        return Array.isArray(filters) && filters.length === FILTER_DEFINITIONS.length
-            ? filters
-            : createDefaultFilters();
+        if (!Array.isArray(filters)) {
+            return createDefaultFilters();
+        }
+
+        return createDefaultFilters().map((defaultFilter) => restoreFilterState(defaultFilter, filters));
     } catch {
         sessionStorage.removeItem(storageKey);
         return createDefaultFilters();
     }
+}
+
+function restoreFilterState(defaultFilter, storedFilters) {
+    const storedFilter = storedFilters.find((filter) => filter.name === defaultFilter.name);
+    if (!storedFilter) {
+        return defaultFilter;
+    }
+
+    const restoredFilter = { ...defaultFilter };
+    if (defaultFilter.isSearch && typeof storedFilter.searchTerm === 'string') {
+        restoredFilter.searchTerm = storedFilter.searchTerm;
+    }
+
+    restoredFilter.value = defaultFilter.value.map((defaultValue) => {
+        const storedValue = storedFilter.value?.find((value) => value.name === defaultValue.name);
+        if (!storedValue) {
+            return defaultValue;
+        }
+
+        const restoredValue = { ...defaultValue };
+        ['value', 'checked', 'localTimeValue'].forEach((property) => {
+            if (Object.prototype.hasOwnProperty.call(storedValue, property)) {
+                restoredValue[property] = storedValue[property];
+            }
+        });
+        return restoredValue;
+    });
+
+    return restoredFilter;
 }
 
 export function filterRecords(records, filters) {

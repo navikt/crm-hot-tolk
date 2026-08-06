@@ -4,12 +4,14 @@
             <div class="list">
                 <div class="header-row">
                     <h1 class="header-title">Tjenesteleverandør Oppdrag</h1>
-                    <c-list-filters-button
-                        header="Filtrer søket"
-                        filters={filters}
-                        onapplyfilter={applyFilter}
-                        ongetfilteredrecordslength={sendFilteredRecordsLength}
-                    ></c-list-filters-button>
+                    <div class="filter-anchor">
+                        <c-list-filters-button
+                            header="Filtrer søket"
+                            filters={filters}
+                            onapplyfilter={applyFilter}
+                            ongetfilteredrecordslength={sendFilteredRecordsLength}
+                        ></c-list-filters-button>
+                    </div>
                 </div>
 
                 <div class="tabset desktop-only" role="tablist">
