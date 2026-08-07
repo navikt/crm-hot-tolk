@@ -24,7 +24,12 @@
                     <div class="modal-header">
                         <template lwc:if={isInformationModalOpen}>
                             <h2 hidden={isSubmittingOpenServiceAppointmentInterest}>{informationModalHeading}</h2>
-                            <button class="close-btn" onclick={closeModal} aria-label="Lukk">
+                            <button
+                                class="close-btn"
+                                onclick={closeModal}
+                                aria-label="Lukk"
+                                hidden={isSubmittingOpenServiceAppointmentInterest}
+                            >
                                 <img src={exitCrossIcon} alt="" aria-hidden="true" />
                             </button>
                         </template>

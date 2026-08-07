@@ -202,6 +202,7 @@ describe('c-hot-calendar-v2 open service appointment interest', () => {
 
         await flushPromises();
         expect(element.shadowRoot.querySelector('.modal-header h2').hidden).toBe(true);
+        expect(element.shadowRoot.querySelector('.modal-header .close-btn').hidden).toBe(true);
         expect(element.shadowRoot.querySelector('.interest-status').textContent).toContain('Melder interesse...');
 
         resolveSubmission();
@@ -210,6 +211,7 @@ describe('c-hot-calendar-v2 open service appointment interest', () => {
 
         expect(calendarEvent.remove).toHaveBeenCalled();
         expect(getCalendarEvents).toHaveBeenCalledTimes(2);
+        expect(element.shadowRoot.querySelector('.modal-header .close-btn').hidden).toBe(false);
         expect(element.shadowRoot.querySelector('.interest-status').textContent).toContain('Interesse er meldt.');
     });
 
