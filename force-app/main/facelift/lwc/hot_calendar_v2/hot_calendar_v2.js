@@ -19,6 +19,7 @@ import getThreadServiceAppointmentId from '@salesforce/apex/HOT_MyServiceAppoint
 import getServiceAppointment from '@salesforce/apex/HOT_MyServiceAppointmentListController.getServiceAppointment';
 import getServiceAppointmentDetails from '@salesforce/apex/HOT_MyServiceAppointmentListController.getServiceAppointmentDetails';
 import getOpenServiceAppointments from '@salesforce/apex/HOT_OpenServiceAppointmentListController.getOpenServiceAppointments';
+import createInterestedResources from '@salesforce/apex/HOT_OpenServiceAppointmentListController.createInterestedResources';
 import getThreadIdWC from '@salesforce/apex/HOT_WageClaimListController.getThreadId';
 import getThreadFreelanceId from '@salesforce/apex/HOT_MyServiceAppointmentListController.getThreadFreelanceId';
 import getThreadInterpretersId from '@salesforce/apex/HOT_MyServiceAppointmentListController.getThreadInterpretersId';
@@ -84,6 +85,12 @@ export default class LibsFullCalendarV2 extends NavigationMixin(LightningElement
 
     openServiceAppointments = [];
     openServiceAppointment = null;
+    showOpenServiceAppointmentInterestForm = false;
+    isSubmittingOpenServiceAppointmentInterest = false;
+    hasSubmittedOpenServiceAppointmentInterest = false;
+    openServiceAppointmentInterestError = '';
+    openServiceAppointmentInterestComment = '';
+    openServiceAppointmentInterestRequestId = 0;
 
     // Wageclaim
     wcIsDisabledGoToThread = false;
@@ -161,6 +168,22 @@ export default class LibsFullCalendarV2 extends NavigationMixin(LightningElement
             ':' +
             ('0' + d.getMinutes()).slice(-2)
         );
+    }
+
+    get informationModalHeading() {
+        if (this.isOpenServiceAppointmentDetails && this.hasSubmittedOpenServiceAppointmentInterest) {
+            return 'Meld interesse';
+        }
+        if (this.isOpenServiceAppointmentDetails && this.isSubmittingOpenServiceAppointmentInterest) {
+            return null;
+        }
+        if (this.isOpenServiceAppointmentDetails && this.showOpenServiceAppointmentInterestForm) {
+            return 'Legg inn kommentar til oppdraget:';
+        }
+        if (this.wageClaimNewType) {
+            return 'Informasjon om rett på honorar:';
+        }
+        return 'Informasjon om oppdraget:';
     }
 
     async setupCalendar(sessionState) {
@@ -538,6 +561,7 @@ export default class LibsFullCalendarV2 extends NavigationMixin(LightningElement
         const props = event.extendedProps;
         const recordId = event.id || props.recordId;
 
+        this.resetOpenServiceAppointmentInterestState();
         this.serviceAppointment = null;
         this.accountPhoneNumber = '';
         this.accountName = '';
@@ -670,9 +694,80 @@ export default class LibsFullCalendarV2 extends NavigationMixin(LightningElement
         this.isAlertAbsenceEdit = false;
         this.isNotRetractableDelete = false;
         this.isNotRetractableEdit = false;
+        this.resetOpenServiceAppointmentInterestState();
         this.cancelStatusFlow();
 
         this.dispatchEvent(new CustomEvent('closemodal'));
+    }
+
+    showOpenServiceAppointmentInterest() {
+        this.showOpenServiceAppointmentInterestForm = true;
+        this.hasSubmittedOpenServiceAppointmentInterest = false;
+        this.openServiceAppointmentInterestError = '';
+    }
+
+    handleOpenServiceAppointmentInterestCommentChange(event) {
+        this.openServiceAppointmentInterestComment = event.detail?.value ?? event.target?.value ?? '';
+    }
+
+    async registerOpenServiceAppointmentInterest() {
+        const serviceAppointmentId = this.openServiceAppointment?.Id;
+        if (this.isSubmittingOpenServiceAppointmentInterest || !serviceAppointmentId) {
+            return;
+        }
+
+        const requestId = ++this.openServiceAppointmentInterestRequestId;
+        this.isSubmittingOpenServiceAppointmentInterest = true;
+        this.openServiceAppointmentInterestError = '';
+
+        try {
+            await createInterestedResources({
+                serviceAppointmentIds: [serviceAppointmentId],
+                comments: [this.openServiceAppointmentInterestComment]
+            });
+
+            if (requestId === this.openServiceAppointmentInterestRequestId) {
+                this.hasSubmittedOpenServiceAppointmentInterest = true;
+                this.showOpenServiceAppointmentInterestForm = false;
+            }
+            this.openServiceAppointments = this.openServiceAppointments.filter(
+                (appointment) => appointment.Id !== serviceAppointmentId
+            );
+
+            this.removeCalendarEventsForRecord(serviceAppointmentId);
+
+            try {
+                await this.refreshCalendar(false);
+                this.updatePseudoEventsDisplay(this.calendar?.view);
+            } catch (refreshError) {
+                console.error('Error refreshing calendar after registering interest', refreshError);
+            }
+        } catch (error) {
+            if (requestId === this.openServiceAppointmentInterestRequestId) {
+                this.openServiceAppointmentInterestError =
+                    error?.body?.message || error?.message || 'Ukjent feil ved melding av interesse.';
+            }
+        } finally {
+            if (requestId === this.openServiceAppointmentInterestRequestId) {
+                this.isSubmittingOpenServiceAppointmentInterest = false;
+            }
+        }
+    }
+
+    removeCalendarEventsForRecord(recordId) {
+        this.calendar
+            ?.getEvents()
+            .filter((event) => event.extendedProps?.recordId === recordId)
+            .forEach((event) => event.remove());
+    }
+
+    resetOpenServiceAppointmentInterestState() {
+        this.openServiceAppointmentInterestRequestId += 1;
+        this.showOpenServiceAppointmentInterestForm = false;
+        this.isSubmittingOpenServiceAppointmentInterest = false;
+        this.hasSubmittedOpenServiceAppointmentInterest = false;
+        this.openServiceAppointmentInterestError = '';
+        this.openServiceAppointmentInterestComment = '';
     }
 
     openGoogleMaps() {
