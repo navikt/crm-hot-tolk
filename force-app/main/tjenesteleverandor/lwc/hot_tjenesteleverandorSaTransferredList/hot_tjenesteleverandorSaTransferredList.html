@@ -6,7 +6,7 @@
             onacceptcomplete={handleBulkAcceptComplete}
         ></c-hot_tjenesteleverandor-bulk-acceptance>
     </template>
-
+    
     <template lwc:else>
         <template lwc:if={bulkFeedback}>
             <div class={bulkFeedback.className} role={bulkFeedback.role} aria-live="polite">
@@ -51,7 +51,7 @@
         <template lwc:if={noServiceAppointmentsResult}>
             <div style="text-align: center" aria-live="polite">
                 <br />
-                <p>Det finnes ingen overførte oppdrag til tjenesteleverandør.</p>
+                <p>Det finnes ingen overførte oppdrag til tjenesteleverandør for øyeblikket.</p>
                 <br />
             </div>
         </template>
