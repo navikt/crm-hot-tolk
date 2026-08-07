@@ -255,6 +255,9 @@ dialog.modal-container .close-btn {
     border-radius: 4px;
     cursor: pointer;
 }
+dialog.modal-container .close-btn[hidden] {
+    display: none;
+}
 dialog.modal-container .close-btn:focus {
     border-color: #0067c5;
     outline: none;
