@@ -1,4 +1,6 @@
 public without sharing class HOT_ThreadParticipants {
+    private static final String TJENESTELEVERANDOR_FORMIDLER_THREAD_TYPE = 'HOT_TJENESTELEVERANDOR-FORMIDLER';
+
     public class Participant {
         @AuraEnabled
         public String name;
@@ -124,6 +126,15 @@ public without sharing class HOT_ThreadParticipants {
             FROM Thread__c
             WHERE Id = :threadId
         ];
+        if (thread.CRM_Thread_Type__c == TJENESTELEVERANDOR_FORMIDLER_THREAD_TYPE) {
+            return new HOT_ThreadParticipants(
+                    thread.Id,
+                    new List<String>{ TJENESTELEVERANDOR_FORMIDLER_THREAD_TYPE }
+                )
+                .getParticipantsByRelatedObjectAndThreadId()
+                .get(TJENESTELEVERANDOR_FORMIDLER_THREAD_TYPE)
+                .get(thread.Id);
+        }
         participantList.addAll(getAssignedServiceResources(thread));
         participantList.addAll(getAccountParticipants(thread));
         return participantList;
@@ -138,9 +149,12 @@ public without sharing class HOT_ThreadParticipants {
     }
     private Map<String, Map<Id, List<Participant>>> getParticipantsByRelatedObjectAndThreadId() {
         if (relatedObjectId.getSobjectType() == Thread__c.SObjectType) {
-            this.getParticipansFromThreads().setReadStatus();
+            this.getParticipansFromThreads().setTjenesteleverandorParticipants().setReadStatus();
         } else {
-            this.getAssignedServiceResourceParticipants().getRelatedObjectParticipants().setReadStatus();
+            this.getAssignedServiceResourceParticipants()
+                .getRelatedObjectParticipants()
+                .setTjenesteleverandorParticipants()
+                .setReadStatus();
         }
         Map<String, Map<Id, List<Participant>>> result = new Map<String, Map<Id, List<Participant>>>();
         for (String threadType : this.threadTypesOfInterest) {
@@ -162,6 +176,18 @@ public without sharing class HOT_ThreadParticipants {
             }
         }
         return false;
+    }
+
+    private HOT_ThreadParticipants setTjenesteleverandorParticipants() {
+        for (Thread__c thread : this.threads) {
+            if (thread.CRM_Thread_Type__c == TJENESTELEVERANDOR_FORMIDLER_THREAD_TYPE) {
+                this.participantsByThreadId.put(
+                    thread.Id,
+                    new List<Participant>{ new Participant('Tjenesteleverandør'), new Participant('Formidler') }
+                );
+            }
+        }
+        return this;
     }
 
     private HOT_ThreadParticipants setReadStatus() {
@@ -200,24 +226,23 @@ public without sharing class HOT_ThreadParticipants {
                     usersInThread.put(u.Id, u);
                 }
             }
-            Boolean hasFormidler = false;
-            Boolean hasResssurskontor = false;
+            Set<String> readerProfileNames = new Set<String>();
             for (User u : usersInThread.values()) {
-                if (u.Profile.Name == 'HOT Tolk Formidler') {
-                    hasFormidler = true;
-                }
-                if (u.Profile.Name == 'HOT Tolk Saksbehandler') {
-                    hasResssurskontor = true;
-                }
+                readerProfileNames.add(u.Profile.Name);
             }
             for (Participant p : this.participantsByThreadId.get(threadId)) {
                 if (usersInThread.containsKey(p.userId)) {
                     p.setHasRead();
                 } else if (p.userId == null) {
                     // Check for Formidler and Ressurskontor
-                    if (p.name == 'Formidler' && hasFormidler) {
+                    if (p.name == 'Formidler' && readerProfileNames.contains('HOT Tolk Formidler')) {
                         p.setHasRead();
-                    } else if (p.name == 'Ressurskontor' && hasResssurskontor) {
+                    } else if (p.name == 'Ressurskontor' && readerProfileNames.contains('HOT Tolk Saksbehandler')) {
+                        p.setHasRead();
+                    } else if (
+                        p.name == 'Tjenesteleverandør' &&
+                        readerProfileNames.contains('HOT Tolk Tjenestesteleverandør')
+                    ) {
                         p.setHasRead();
                     }
                 }
