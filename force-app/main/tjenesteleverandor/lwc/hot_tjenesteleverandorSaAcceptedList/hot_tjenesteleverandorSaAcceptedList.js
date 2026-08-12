@@ -1,11 +1,14 @@
 import { LightningElement, wire, api } from 'lwc';
 import { NavigationMixin } from 'lightning/navigation';
+import { refreshApex } from '@salesforce/apex';
 import getAcceptedServiceAppointments from '@salesforce/apex/HOT_TjenesteleverandorListController.getAcceptedServiceAppointments';
 import icons from '@salesforce/resourceUrl/ikoner';
 
 import { columns, mobileColumns } from './columns';
 import { formatRecord } from 'c/datetimeFormatterNorwegianTime';
 import { getDayOfWeek } from 'c/hot_commonUtils';
+
+const LIST_REFRESH_KEY = 'tjenesteleverandorAcceptedListRefresh';
 
 export default class Hot_tjenesteleverandorSaAcceptedList extends NavigationMixin(LightningElement) {
     @api recordId;
@@ -19,6 +22,18 @@ export default class Hot_tjenesteleverandorSaAcceptedList extends NavigationMixi
     showServiceAppointmentDetailsModal = false;
     serviceAppointment;
     selectedRecordId;
+    wiredAcceptedAppointments;
+    isRefreshPending = false;
+
+    handlePageActivation = () => {
+        void this.refreshIfRequested();
+    };
+
+    handleVisibilityChange = () => {
+        if (document.visibilityState === 'visible') {
+            void this.refreshIfRequested();
+        }
+    };
 
     datetimeFields = [
         { name: 'StartAndEndDate', type: 'datetimeinterval', start: 'EarliestStartTime', end: 'DueDate' },
@@ -28,6 +43,16 @@ export default class Hot_tjenesteleverandorSaAcceptedList extends NavigationMixi
 
     connectedCallback() {
         this.columns = window.screen.width > 576 ? columns : mobileColumns;
+        window.addEventListener('popstate', this.handlePageActivation);
+        window.addEventListener('pageshow', this.handlePageActivation);
+        document.addEventListener('visibilitychange', this.handleVisibilityChange);
+        void this.refreshIfRequested();
+    }
+
+    disconnectedCallback() {
+        window.removeEventListener('popstate', this.handlePageActivation);
+        window.removeEventListener('pageshow', this.handlePageActivation);
+        document.removeEventListener('visibilitychange', this.handleVisibilityChange);
     }
 
     get hasResult() {
@@ -40,6 +65,8 @@ export default class Hot_tjenesteleverandorSaAcceptedList extends NavigationMixi
 
     @wire(getAcceptedServiceAppointments)
     wiredAcceptedServiceAppointments(result) {
+        this.wiredAcceptedAppointments = result;
+
         if (result.data) {
             this.records = result.data.map((record) => {
                 const formattedRecord = formatRecord({ ...record }, this.datetimeFields);
@@ -53,9 +80,32 @@ export default class Hot_tjenesteleverandorSaAcceptedList extends NavigationMixi
             });
             this.error = undefined;
             this.dataLoader = false;
+            void this.refreshIfRequested();
         } else if (result.error) {
             this.error = result.error;
             this.records = [];
+            this.dataLoader = false;
+        }
+    }
+
+    async refreshIfRequested() {
+        const marker = sessionStorage.getItem(LIST_REFRESH_KEY);
+        if (!marker || !this.wiredAcceptedAppointments || this.isRefreshPending) {
+            return;
+        }
+
+        this.isRefreshPending = true;
+        this.dataLoader = true;
+        try {
+            await refreshApex(this.wiredAcceptedAppointments);
+            if (sessionStorage.getItem(LIST_REFRESH_KEY) === marker) {
+                sessionStorage.removeItem(LIST_REFRESH_KEY);
+            }
+        } catch (error) {
+            this.error = error;
+            this.records = [];
+        } finally {
+            this.isRefreshPending = false;
             this.dataLoader = false;
         }
     }
@@ -91,6 +141,7 @@ export default class Hot_tjenesteleverandorSaAcceptedList extends NavigationMixi
             return;
         }
 
+        this.closeModal();
         this[NavigationMixin.Navigate]({
             type: 'comm__namedPage',
             attributes: {
@@ -109,6 +160,7 @@ export default class Hot_tjenesteleverandorSaAcceptedList extends NavigationMixi
         }
         this.showServiceAppointmentDetailsModal = false;
         this.serviceAppointment = undefined;
+        this.selectedRecordId = undefined;
     }
 
     get status() {

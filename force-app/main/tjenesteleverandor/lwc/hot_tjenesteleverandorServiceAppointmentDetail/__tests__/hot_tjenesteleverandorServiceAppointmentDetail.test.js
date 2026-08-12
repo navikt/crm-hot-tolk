@@ -3,8 +3,12 @@ import HotTjenesteleverandorServiceAppointmentDetail from 'c/hot_tjenesteleveran
 import { CurrentPageReference, Navigate } from 'lightning/navigation';
 import { notifyRecordUpdateAvailable } from 'lightning/uiRecordApi';
 import acceptServiceAppointments from '@salesforce/apex/HOT_TjenesteleverandorAcceptanceService.acceptServiceAppointments';
+import declineServiceAppointments from '@salesforce/apex/HOT_TjenesteleverandorAcceptanceService.declineServiceAppointments';
 
 jest.mock('@salesforce/customPermission/HOT_AcceptTjenesteleverandorOppdrag', () => ({ default: true }), {
+    virtual: true
+});
+jest.mock('@salesforce/customPermission/HOT_DeclineTjenesteleverandorOppdrag', () => ({ default: true }), {
     virtual: true
 });
 jest.mock(
@@ -12,8 +16,15 @@ jest.mock(
     () => ({ default: jest.fn() }),
     { virtual: true }
 );
+jest.mock(
+    '@salesforce/apex/HOT_TjenesteleverandorAcceptanceService.declineServiceAppointments',
+    () => ({ default: jest.fn() }),
+    { virtual: true }
+);
 
 const RECORD_ID = '08p000000000001AAA';
+const TRANSFERRED_LIST_REFRESH_KEY = 'tjenesteleverandorTransferredListRefresh';
+const ACCEPTED_LIST_REFRESH_KEY = 'tjenesteleverandorAcceptedListRefresh';
 const flushPromises = () => new Promise((resolve) => setTimeout(resolve, 0));
 
 function createComponent() {
@@ -53,6 +64,10 @@ function getCancellationSection(element) {
 }
 
 describe('c-hot-tjenesteleverandor-service-appointment-detail', () => {
+    beforeEach(() => {
+        sessionStorage.clear();
+    });
+
     afterEach(() => {
         while (document.body.firstChild) {
             document.body.removeChild(document.body.firstChild);
@@ -60,6 +75,7 @@ describe('c-hot-tjenesteleverandor-service-appointment-detail', () => {
         Navigate.mockClear();
         notifyRecordUpdateAvailable.mockClear();
         acceptServiceAppointments.mockReset();
+        declineServiceAppointments.mockReset();
         jest.restoreAllMocks();
         delete window.history.length;
     });
@@ -147,6 +163,7 @@ describe('c-hot-tjenesteleverandor-service-appointment-detail', () => {
 
         const acceptButton = element.shadowRoot.querySelector('[data-id="accept-appointment"]');
         expect(acceptButton).not.toBeNull();
+        expect(element.shadowRoot.querySelector('[data-id="decline-appointment"]')).not.toBeNull();
         expect(element.shadowRoot.querySelector('dialog')).toBeNull();
         expect(element.shadowRoot.textContent).toContain('Svarfrist:');
     });
@@ -181,6 +198,43 @@ describe('c-hot-tjenesteleverandor-service-appointment-detail', () => {
         expect(notifyRecordUpdateAvailable).toHaveBeenCalledWith([{ recordId: RECORD_ID }]);
         expect(element.shadowRoot.querySelector('[data-id="accept-appointment"]')).toBeNull();
         expect(element.shadowRoot.textContent).toContain('Oppdraget er akseptert.');
+        expect(sessionStorage.getItem(TRANSFERRED_LIST_REFRESH_KEY)).not.toBeNull();
+        expect(sessionStorage.getItem(ACCEPTED_LIST_REFRESH_KEY)).not.toBeNull();
+    });
+
+    it('declines a single appointment and refreshes the record', async () => {
+        declineServiceAppointments.mockResolvedValue([
+            {
+                recordId: RECORD_ID,
+                success: true,
+                message: 'Oppdraget er avslått.'
+            }
+        ]);
+        const element = createComponent();
+        const form = element.shadowRoot.querySelector('lightning-record-view-form');
+        dispatchLoad(form, {
+            Status: { value: 'Released to Freelance' },
+            HOT_IsReleasedToFreelance__c: { value: true },
+            HOT_TjenesteleverandorStatus__c: { value: 'Transferred' },
+            HOT_TjenesteleverandorDeadline__c: { value: '2099-08-01T12:00:00.000Z' }
+        });
+        await flushPromises();
+
+        element.shadowRoot
+            .querySelector('[data-id="decline-appointment"]')
+            .dispatchEvent(new CustomEvent('buttonclick'));
+        await flushPromises();
+        await flushPromises();
+
+        expect(declineServiceAppointments).toHaveBeenCalledWith({
+            serviceAppointmentIds: [RECORD_ID]
+        });
+        expect(acceptServiceAppointments).not.toHaveBeenCalled();
+        expect(notifyRecordUpdateAvailable).toHaveBeenCalledWith([{ recordId: RECORD_ID }]);
+        expect(element.shadowRoot.querySelector('[data-id="decline-appointment"]')).toBeNull();
+        expect(element.shadowRoot.textContent).toContain('Oppdraget er avslått.');
+        expect(sessionStorage.getItem(TRANSFERRED_LIST_REFRESH_KEY)).not.toBeNull();
+        expect(sessionStorage.getItem(ACCEPTED_LIST_REFRESH_KEY)).toBeNull();
     });
 
     it('keeps the action available when acceptance is rejected by fresh server state', async () => {
@@ -209,6 +263,8 @@ describe('c-hot-tjenesteleverandor-service-appointment-detail', () => {
         expect(element.shadowRoot.querySelector('[data-id="accept-appointment"]')).not.toBeNull();
         expect(element.shadowRoot.textContent).toContain('Svarfristen for oppdraget har utløpt.');
         expect(notifyRecordUpdateAvailable).not.toHaveBeenCalled();
+        expect(sessionStorage.getItem(TRANSFERRED_LIST_REFRESH_KEY)).toBeNull();
+        expect(sessionStorage.getItem(ACCEPTED_LIST_REFRESH_KEY)).toBeNull();
     });
 
     it('shows the same generic message for inaccessible or missing records', async () => {

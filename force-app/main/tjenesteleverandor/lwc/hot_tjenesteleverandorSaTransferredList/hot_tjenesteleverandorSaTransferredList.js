@@ -3,6 +3,7 @@ import { NavigationMixin } from 'lightning/navigation';
 import { refreshApex } from '@salesforce/apex';
 import getTransferredServiceAppointments from '@salesforce/apex/HOT_TjenesteleverandorListController.getTransferredServiceAppointments';
 import canAcceptAppointments from '@salesforce/customPermission/HOT_AcceptTjenesteleverandorOppdrag';
+import canDeclineAppointments from '@salesforce/customPermission/HOT_DeclineTjenesteleverandorOppdrag';
 import icons from '@salesforce/resourceUrl/ikoner';
 
 import { columns, mobileColumns, inDetailsColumns } from './columns';
@@ -10,6 +11,8 @@ import { formatRecord } from 'c/datetimeFormatterNorwegianTime';
 import { getDayOfWeek } from 'c/hot_commonUtils';
 
 const CHECKED_ROWS_STORAGE_KEY = 'tjenesteleverandorTransferredCheckedRows';
+const LIST_REFRESH_KEY = 'tjenesteleverandorTransferredListRefresh';
+const ACCEPTED_LIST_REFRESH_KEY = 'tjenesteleverandorAcceptedListRefresh';
 
 function createFeedback(type, message) {
     const success = type === 'success';
@@ -34,6 +37,7 @@ export default class Hot_tjenesteleverandorSaTransferredList extends NavigationM
     checkedServiceAppointments = [];
     showBulkReview = false;
     bulkReviewRecords = [];
+    bulkAction = 'accept';
     bulkFeedback;
     error;
 
@@ -44,6 +48,17 @@ export default class Hot_tjenesteleverandorSaTransferredList extends NavigationM
     seriesRecords = [];
 
     wiredTransferredAppointments;
+    isRefreshPending = false;
+
+    handlePageActivation = () => {
+        void this.refreshIfRequested();
+    };
+
+    handleVisibilityChange = () => {
+        if (document.visibilityState === 'visible') {
+            void this.refreshIfRequested();
+        }
+    };
 
     datetimeFields = [
         { name: 'StartAndEndDate', type: 'datetimeinterval', start: 'EarliestStartTime', end: 'DueDate' },
@@ -60,10 +75,17 @@ export default class Hot_tjenesteleverandorSaTransferredList extends NavigationM
     connectedCallback() {
         this.restoreCheckedRows();
         this.setColumns();
+        window.addEventListener('popstate', this.handlePageActivation);
+        window.addEventListener('pageshow', this.handlePageActivation);
+        document.addEventListener('visibilitychange', this.handleVisibilityChange);
+        void this.refreshIfRequested();
     }
 
     disconnectedCallback() {
         this.persistCheckedRows();
+        window.removeEventListener('popstate', this.handlePageActivation);
+        window.removeEventListener('pageshow', this.handlePageActivation);
+        document.removeEventListener('visibilitychange', this.handleVisibilityChange);
     }
 
     setColumns() {
@@ -110,7 +132,11 @@ export default class Hot_tjenesteleverandorSaTransferredList extends NavigationM
         return Boolean(canAcceptAppointments);
     }
 
-    get isBulkAcceptDisabled() {
+    get canShowBulkDecline() {
+        return Boolean(canDeclineAppointments);
+    }
+
+    get isBulkResponseDisabled() {
         return this.selectedAppointmentCount === 0;
     }
 
@@ -124,6 +150,18 @@ export default class Hot_tjenesteleverandorSaTransferredList extends NavigationM
         return this.selectedAppointmentCount === 0
             ? 'Velg oppdrag før du aksepterer'
             : `Gå til bekreftelse for ${this.selectedAppointmentCount} valgte oppdrag`;
+    }
+
+    get bulkDeclineButtonLabel() {
+        return this.selectedAppointmentCount === 0
+            ? 'Avslå valgte oppdrag'
+            : `Avslå valgte (${this.selectedAppointmentCount})`;
+    }
+
+    get bulkDeclineButtonAriaLabel() {
+        return this.selectedAppointmentCount === 0
+            ? 'Velg oppdrag før du avslår'
+            : `Gå til bekreftelse for å avslå ${this.selectedAppointmentCount} valgte oppdrag`;
     }
 
     @wire(getTransferredServiceAppointments)
@@ -148,9 +186,32 @@ export default class Hot_tjenesteleverandorSaTransferredList extends NavigationM
             this.persistCheckedRows();
             this.error = undefined;
             this.dataLoader = false;
+            void this.refreshIfRequested();
         } else if (result.error) {
             this.error = result.error;
             this.records = [];
+            this.dataLoader = false;
+        }
+    }
+
+    async refreshIfRequested() {
+        const marker = sessionStorage.getItem(LIST_REFRESH_KEY);
+        if (!marker || !this.wiredTransferredAppointments || this.isRefreshPending) {
+            return;
+        }
+
+        this.isRefreshPending = true;
+        this.dataLoader = true;
+        try {
+            await refreshApex(this.wiredTransferredAppointments);
+            if (sessionStorage.getItem(LIST_REFRESH_KEY) === marker) {
+                sessionStorage.removeItem(LIST_REFRESH_KEY);
+            }
+        } catch (error) {
+            this.error = error;
+            this.records = [];
+        } finally {
+            this.isRefreshPending = false;
             this.dataLoader = false;
         }
     }
@@ -166,10 +227,16 @@ export default class Hot_tjenesteleverandorSaTransferredList extends NavigationM
             ...selectedRecord,
             weekday: getDayOfWeek(selectedRecord.EarliestStartTime)
         };
-        this.seriesRecords = selectedRecord.HOT_Request__c
-            ? this.records.filter((record) => record.HOT_Request__c === selectedRecord.HOT_Request__c)
-            : [selectedRecord];
-        this.isSeries = this.seriesRecords.length > 1;
+        const isSeriesAppointment = selectedRecord.HOT_IsSerieoppdrag__c === true;
+        this.seriesRecords =
+            isSeriesAppointment && selectedRecord.HOT_Request__c
+                ? this.records.filter(
+                      (record) =>
+                          record.HOT_IsSerieoppdrag__c === true &&
+                          record.HOT_Request__c === selectedRecord.HOT_Request__c
+                  )
+                : [selectedRecord];
+        this.isSeries = isSeriesAppointment && this.seriesRecords.length > 1;
         this.showServiceAppointmentDetails();
     }
 
@@ -190,11 +257,20 @@ export default class Hot_tjenesteleverandorSaTransferredList extends NavigationM
         this.persistCheckedRows();
     }
 
-    handleStartBulkReview() {
-        if (this.isBulkAcceptDisabled) {
+    handleStartBulkAcceptReview() {
+        this.startBulkReview('accept');
+    }
+
+    handleStartBulkDeclineReview() {
+        this.startBulkReview('decline');
+    }
+
+    startBulkReview(action) {
+        if (this.isBulkResponseDisabled) {
             return;
         }
 
+        this.bulkAction = action;
         const checkedIds = new Set(this.checkedServiceAppointments);
         this.bulkReviewRecords = this.records.filter((record) => checkedIds.has(record.Id));
         this.showBulkReview = this.bulkReviewRecords.length > 0;
@@ -205,8 +281,11 @@ export default class Hot_tjenesteleverandorSaTransferredList extends NavigationM
         this.bulkReviewRecords = [];
     }
 
-    async handleBulkAcceptComplete(event) {
+    async handleBulkResponseComplete(event) {
         const results = event.detail?.results || [];
+        const action = event.detail?.action || this.bulkAction;
+        const completedAction = action === 'decline' ? 'avslått' : 'akseptert';
+        const failedAction = action === 'decline' ? 'avslås' : 'aksepteres';
         const succeeded = results.filter((result) => result.success);
         const failed = results.filter((result) => !result.success);
 
@@ -215,19 +294,23 @@ export default class Hot_tjenesteleverandorSaTransferredList extends NavigationM
         this.checkedServiceAppointments = failed.map((result) => result.recordId);
         this.persistCheckedRows();
 
+        if (action === 'accept' && succeeded.length > 0) {
+            sessionStorage.setItem(ACCEPTED_LIST_REFRESH_KEY, String(Date.now()));
+        }
+
         if (results.length === 0) {
-            this.bulkFeedback = createFeedback('error', 'Ingen av de valgte oppdragene kunne aksepteres.');
+            this.bulkFeedback = createFeedback('error', `Ingen av de valgte oppdragene kunne ${failedAction}.`);
         } else if (failed.length === 0) {
-            this.bulkFeedback = createFeedback('success', `${succeeded.length} oppdrag ble akseptert.`);
+            this.bulkFeedback = createFeedback('success', `${succeeded.length} oppdrag ble ${completedAction}.`);
         } else if (succeeded.length > 0) {
             this.bulkFeedback = createFeedback(
                 'error',
-                `${succeeded.length} oppdrag ble akseptert. ${failed.length} kunne ikke aksepteres og er fortsatt valgt.`
+                `${succeeded.length} oppdrag ble ${completedAction}. ${failed.length} kunne ikke ${failedAction} og er fortsatt valgt.`
             );
         } else {
             this.bulkFeedback = createFeedback(
                 'error',
-                failed[0]?.message || 'Ingen av de valgte oppdragene kunne aksepteres.'
+                failed[0]?.message || `Ingen av de valgte oppdragene kunne ${failedAction}.`
             );
         }
 
@@ -242,6 +325,7 @@ export default class Hot_tjenesteleverandorSaTransferredList extends NavigationM
             return;
         }
 
+        this.closeModal();
         this[NavigationMixin.Navigate]({
             type: 'comm__namedPage',
             attributes: {
@@ -260,5 +344,8 @@ export default class Hot_tjenesteleverandorSaTransferredList extends NavigationM
         }
         this.showServiceAppointmentDetailsModal = false;
         this.serviceAppointment = undefined;
+        this.selectedRecordId = undefined;
+        this.isSeries = false;
+        this.seriesRecords = [];
     }
 }

@@ -1,7 +1,9 @@
 @IsTest
 private class HOT_TjenesteleverandorAcceptServiceTest {
     private static final String TEST_USERNAME =
-        'tjenesteleverandor-accept-' + UserInfo.getOrganizationId() + '@test.nav.no';
+        'tjenesteleverandor-accept-' +
+        UserInfo.getOrganizationId() +
+        '@test.nav.no';
 
     @TestSetup
     static void createTestAppointments() {
@@ -44,6 +46,16 @@ private class HOT_TjenesteleverandorAcceptServiceTest {
         return results;
     }
 
+    private static List<HOT_TjenesteleverandorAcceptanceService.AcceptanceResult> declineAsTestUser(
+        List<Id> serviceAppointmentIds
+    ) {
+        List<HOT_TjenesteleverandorAcceptanceService.AcceptanceResult> results;
+        System.runAs(getTestUser()) {
+            results = HOT_TjenesteleverandorAcceptanceService.declineServiceAppointments(serviceAppointmentIds);
+        }
+        return results;
+    }
+
     @IsTest
     static void acceptsSingleTransferredAppointment() {
         ServiceAppointment appointment = getTransferredAppointments(1)[0];
@@ -61,6 +73,26 @@ private class HOT_TjenesteleverandorAcceptServiceTest {
         Assert.areEqual('Accepted', actual.HOT_TjenesteleverandorStatus__c, 'Supplier status should be accepted');
         Assert.isNotNull(actual.HOT_TjenesteleverandorAcceptDate__c, 'Acceptance time should be stamped by Flow');
         Assert.isNull(actual.HOT_TjenesteleverandorDeadline__c, 'Acceptance should clear the supplier deadline');
+    }
+
+    @IsTest
+    static void declinesSingleTransferredAppointment() {
+        ServiceAppointment appointment = getTransferredAppointments(1)[0];
+        setAcceptancePermission(true);
+
+        Test.startTest();
+        List<HOT_TjenesteleverandorAcceptanceService.AcceptanceResult> results = declineAsTestUser(
+            new List<Id>{ appointment.Id }
+        );
+        Test.stopTest();
+
+        ServiceAppointment actual = getAppointment(appointment.Id);
+        Assert.areEqual(1, results.size(), 'The service should return one result');
+        Assert.isTrue(results[0].success, 'The transferred appointment should be declined');
+        Assert.areEqual('Declined', actual.HOT_TjenesteleverandorStatus__c, 'Supplier status should be declined');
+        Assert.areEqual('None', actual.Status, 'The decline flow should reopen the appointment');
+        Assert.isFalse(actual.HOT_IsReleasedToFreelance__c, 'The decline flow should retract the appointment');
+        Assert.isNull(actual.HOT_TjenesteleverandorDeadline__c, 'Decline should clear the supplier deadline');
     }
 
     @IsTest
@@ -92,6 +124,34 @@ private class HOT_TjenesteleverandorAcceptServiceTest {
     }
 
     @IsTest
+    static void declinesBulkRequest() {
+        List<ServiceAppointment> appointments = getTransferredAppointments(5);
+        List<Id> appointmentIds = new List<Id>();
+        for (ServiceAppointment appointment : appointments) {
+            appointmentIds.add(appointment.Id);
+        }
+        setAcceptancePermission(true);
+
+        Test.startTest();
+        List<HOT_TjenesteleverandorAcceptanceService.AcceptanceResult> results = declineAsTestUser(appointmentIds);
+        Test.stopTest();
+
+        Assert.areEqual(5, results.size(), 'Every selected appointment should have a result');
+        for (HOT_TjenesteleverandorAcceptanceService.AcceptanceResult result : results) {
+            Assert.isTrue(result.success, 'Every eligible bulk appointment should be declined');
+        }
+        Assert.areEqual(
+            5,
+            [
+                SELECT COUNT()
+                FROM ServiceAppointment
+                WHERE Id IN :appointmentIds AND HOT_TjenesteleverandorStatus__c = 'Declined' AND Status = 'None'
+            ],
+            'All selected appointments should be declined and reopened'
+        );
+    }
+
+    @IsTest
     static void repeatedAcceptanceIsIdempotent() {
         ServiceAppointment appointment = getTransferredAppointments(1)[0];
         appointment.HOT_TjenesteleverandorStatus__c = 'Accepted';
@@ -117,6 +177,28 @@ private class HOT_TjenesteleverandorAcceptServiceTest {
             originalAcceptanceTime,
             actual.HOT_TjenesteleverandorAcceptDate__c,
             'Repeated acceptance must not replace the original acceptance time'
+        );
+    }
+
+    @IsTest
+    static void repeatedDeclineIsIdempotent() {
+        ServiceAppointment appointment = getTransferredAppointments(1)[0];
+        appointment.HOT_TjenesteleverandorStatus__c = 'Declined';
+        update appointment;
+        setAcceptancePermission(true);
+
+        Test.startTest();
+        List<HOT_TjenesteleverandorAcceptanceService.AcceptanceResult> results = declineAsTestUser(
+            new List<Id>{ appointment.Id, appointment.Id }
+        );
+        Test.stopTest();
+
+        Assert.areEqual(1, results.size(), 'Duplicate IDs should be processed once');
+        Assert.isTrue(results[0].success, 'An already declined appointment should be an idempotent success');
+        Assert.areEqual(
+            'Oppdraget er allerede avslått.',
+            results[0].message,
+            'The result should explain the idempotent case'
         );
     }
 
@@ -188,6 +270,27 @@ private class HOT_TjenesteleverandorAcceptServiceTest {
     }
 
     @IsTest
+    static void rejectsUserWithoutDeclinePermission() {
+        ServiceAppointment appointment = getTransferredAppointments(1)[0];
+        setAcceptancePermission(false);
+
+        Test.startTest();
+        try {
+            declineAsTestUser(new List<Id>{ appointment.Id });
+            Assert.fail('A user without the custom permission should be rejected');
+        } catch (AuraHandledException expected) {
+            Assert.isNotNull(expected, 'The permission failure should be returned as a handled exception');
+        }
+        Test.stopTest();
+
+        Assert.areEqual(
+            'Transferred',
+            getAppointment(appointment.Id).HOT_TjenesteleverandorStatus__c,
+            'Permission failure must not change the appointment'
+        );
+    }
+
+    @IsTest
     static void rejectsEmptySelection() {
         setAcceptancePermission(true);
 
@@ -226,6 +329,7 @@ private class HOT_TjenesteleverandorAcceptServiceTest {
         return [
             SELECT
                 Status,
+                HOT_IsReleasedToFreelance__c,
                 HOT_TjenesteleverandorStatus__c,
                 HOT_TjenesteleverandorAcceptDate__c,
                 HOT_TjenesteleverandorDeadline__c

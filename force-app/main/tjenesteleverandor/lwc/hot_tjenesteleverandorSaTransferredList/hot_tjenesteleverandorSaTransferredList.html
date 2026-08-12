@@ -2,8 +2,9 @@
     <template lwc:if={showBulkReview}>
         <c-hot_tjenesteleverandor-bulk-acceptance
             appointments={bulkReviewRecords}
+            action={bulkAction}
             oncancel={handleCancelBulkReview}
-            onacceptcomplete={handleBulkAcceptComplete}
+            onresponsecomplete={handleBulkResponseComplete}
         ></c-hot_tjenesteleverandor-bulk-acceptance>
     </template>
 
@@ -24,16 +25,28 @@
         <template lwc:if={hasResult}>
             <div class="bulk-action-bar">
                 <p aria-live="polite">{selectedAppointmentsLabel}</p>
-                <template lwc:if={canShowBulkAcceptance}>
-                    <c-button
-                        data-id="start-bulk-acceptance"
-                        button-styling="primary"
-                        button-label={bulkAcceptButtonLabel}
-                        aria-label={bulkAcceptButtonAriaLabel}
-                        disabled={isBulkAcceptDisabled}
-                        onbuttonclick={handleStartBulkReview}
-                    ></c-button>
-                </template>
+                <div class="bulk-action-buttons">
+                    <template lwc:if={canShowBulkDecline}>
+                        <c-button
+                            data-id="start-bulk-decline"
+                            button-styling="danger"
+                            button-label={bulkDeclineButtonLabel}
+                            aria-label={bulkDeclineButtonAriaLabel}
+                            disabled={isBulkResponseDisabled}
+                            onbuttonclick={handleStartBulkDeclineReview}
+                        ></c-button>
+                    </template>
+                    <template lwc:if={canShowBulkAcceptance}>
+                        <c-button
+                            data-id="start-bulk-acceptance"
+                            button-styling="primary"
+                            button-label={bulkAcceptButtonLabel}
+                            aria-label={bulkAcceptButtonAriaLabel}
+                            disabled={isBulkResponseDisabled}
+                            onbuttonclick={handleStartBulkAcceptReview}
+                        ></c-button>
+                    </template>
+                </div>
             </div>
             <div class="main-content">
                 <c-hot_freelance-common-table

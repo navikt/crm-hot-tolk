@@ -2,7 +2,7 @@
 <Flow xmlns="http://soap.sforce.com/2006/04/metadata">
     <apiVersion>66.0</apiVersion>
     <description
-    >When a supplier declines an appointment, clears the deadline, opens the appointment, and notifies the formidler group.</description>
+    >When a supplier declines an appointment, clears the deadline, opens and retracts the appointment, and notifies the formidler group.</description>
     <environments>Default</environments>
     <interviewLabel>HOT_HandleTjenesteleverandorDeclined {!$Flow.CurrentDateTime}</interviewLabel>
     <label>HOT_HandleTjenesteleverandorDeclined</label>
@@ -43,6 +43,12 @@
         </filters>
         <inputAssignments>
             <field>HOT_TjenesteleverandorDeadline__c</field>
+        </inputAssignments>
+        <inputAssignments>
+            <field>HOT_IsReleasedToFreelance__c</field>
+            <value>
+                <booleanValue>false</booleanValue>
+            </value>
         </inputAssignments>
         <inputAssignments>
             <field>Status</field>

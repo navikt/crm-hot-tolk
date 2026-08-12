@@ -1,6 +1,7 @@
 import { createElement } from 'lwc';
 import HotTjenesteleverandorSaAcceptedList from 'c/hot_tjenesteleverandorSaAcceptedList';
 import getAcceptedServiceAppointments from '@salesforce/apex/HOT_TjenesteleverandorListController.getAcceptedServiceAppointments';
+import { refreshApex } from '@salesforce/apex';
 import { Navigate } from 'lightning/navigation';
 
 jest.mock(
@@ -23,6 +24,7 @@ const APPOINTMENT = {
     HOT_ServiceTerritoryName__c: 'Oslo',
     HOT_IsOtherEconomicProvicer__c: true
 };
+const LIST_REFRESH_KEY = 'tjenesteleverandorAcceptedListRefresh';
 
 const flushPromises = () => new Promise((resolve) => setTimeout(resolve, 0));
 
@@ -36,6 +38,7 @@ function createComponent() {
 
 describe('c-hot-tjenesteleverandor-sa-accepted-list', () => {
     beforeEach(() => {
+        sessionStorage.clear();
         HTMLDialogElement.prototype.showModal = jest.fn();
     });
 
@@ -44,6 +47,7 @@ describe('c-hot-tjenesteleverandor-sa-accepted-list', () => {
             document.body.removeChild(document.body.firstChild);
         }
         Navigate.mockClear();
+        refreshApex.mockClear();
     });
 
     it('renders accepted appointments from the wire', async () => {
@@ -54,6 +58,21 @@ describe('c-hot-tjenesteleverandor-sa-accepted-list', () => {
         const table = element.shadowRoot.querySelector('c-hot_freelance-common-table');
         expect(table.records).toHaveLength(1);
         expect(table.records[0].isOtherProvider).toBe('Ja');
+        expect(element.shadowRoot.querySelector('c-hot_loader')).toBeNull();
+    });
+
+    it('refreshes the accepted wire after a single acceptance', async () => {
+        const element = createComponent();
+        getAcceptedServiceAppointments.emit([APPOINTMENT]);
+        await flushPromises();
+        refreshApex.mockResolvedValue();
+        sessionStorage.setItem(LIST_REFRESH_KEY, 'single-acceptance');
+
+        window.dispatchEvent(new PopStateEvent('popstate'));
+        await flushPromises();
+
+        expect(refreshApex).toHaveBeenCalledTimes(1);
+        expect(sessionStorage.getItem(LIST_REFRESH_KEY)).toBeNull();
         expect(element.shadowRoot.querySelector('c-hot_loader')).toBeNull();
     });
 
@@ -71,6 +90,7 @@ describe('c-hot-tjenesteleverandor-sa-accepted-list', () => {
         expect(element.shadowRoot.querySelector('.modal-body').textContent).toContain('SA-0001');
 
         element.shadowRoot.querySelector('.modal-footer c-button').dispatchEvent(new CustomEvent('buttonclick'));
+        await flushPromises();
 
         expect(Navigate).toHaveBeenCalledWith(
             {
@@ -80,5 +100,6 @@ describe('c-hot-tjenesteleverandor-sa-accepted-list', () => {
             },
             undefined
         );
+        expect(element.shadowRoot.querySelector('.modal-body')).toBeNull();
     });
 });

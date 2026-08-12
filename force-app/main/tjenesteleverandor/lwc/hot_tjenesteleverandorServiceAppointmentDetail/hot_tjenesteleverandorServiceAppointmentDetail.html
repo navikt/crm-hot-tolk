@@ -35,20 +35,20 @@
             </div>
         </template>
 
-        <template lwc:if={acceptanceFeedback}>
-            <div class={acceptanceFeedback.className} role={acceptanceFeedback.role} aria-live="polite">
+        <template lwc:if={responseFeedback}>
+            <div class={responseFeedback.className} role={responseFeedback.role} aria-live="polite">
                 <lightning-icon
-                    icon-name={acceptanceFeedback.icon}
+                    icon-name={responseFeedback.icon}
                     alternative-text=""
                     size="x-small"
                     variant="inverse"
                     class="slds-m-right_x-small"
                 ></lightning-icon>
-                <p>{acceptanceFeedback.message}</p>
+                <p>{responseFeedback.message}</p>
             </div>
         </template>
 
-        <template lwc:if={showAcceptanceAction}>
+        <template lwc:if={showResponseAction}>
             <section class="acceptance-panel slds-m-bottom_large" aria-labelledby="acceptance-heading">
                 <div>
                     <h2 id="acceptance-heading" class="slds-text-heading_small">
@@ -68,20 +68,32 @@
                         </p>
                     </template>
                 </div>
-                <div class="acceptance-action">
-                    <c-button
-                        data-id="accept-appointment"
-                        button-styling="primary"
-                        button-label="Aksepter oppdrag"
-                        aria-label="Aksepter oppdraget"
-                        disabled={isAccepting}
-                        onbuttonclick={handleAccept}
-                    ></c-button>
+                <div class="acceptance-actions">
+                    <template lwc:if={showDeclineAction}>
+                        <c-button
+                            data-id="decline-appointment"
+                            button-styling="danger"
+                            button-label="Avslå oppdrag"
+                            aria-label="Avslå oppdraget"
+                            disabled={isResponding}
+                            onbuttonclick={handleDecline}
+                        ></c-button>
+                    </template>
+                    <template lwc:if={showAcceptAction}>
+                        <c-button
+                            data-id="accept-appointment"
+                            button-styling="primary"
+                            button-label="Aksepter oppdrag"
+                            aria-label="Aksepter oppdraget"
+                            disabled={isResponding}
+                            onbuttonclick={handleAccept}
+                        ></c-button>
+                    </template>
                 </div>
-                <template lwc:if={isAccepting}>
+                <template lwc:if={isResponding}>
                     <div class="acceptance-spinner" role="status" aria-live="polite">
-                        <lightning-spinner alternative-text="Aksepterer oppdraget" size="small"></lightning-spinner>
-                        <span class="slds-assistive-text">Aksepterer oppdraget</span>
+                        <lightning-spinner alternative-text="Behandler oppdraget" size="small"></lightning-spinner>
+                        <span class="slds-assistive-text">Behandler oppdraget</span>
                     </div>
                 </template>
             </section>
