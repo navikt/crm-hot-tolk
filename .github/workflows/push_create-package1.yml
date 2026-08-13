@@ -17,7 +17,9 @@ jobs:
   install-in-uat:
     name: Install in UAT
     needs: [create-package]
-    uses: navikt/crm-workflows-base/.github/workflows/deployPackage.yml@master
+    # TEMPORARY: Preserve TOLK-3472 metadata in UAT.
+    # Change back to @master when TOLK-3472 is merged.
+    uses: navikt/crm-workflows-base/.github/workflows/deployPackage.yml@TOLK-3472-deprecate-only
     permissions:
       contents: read
     with:
