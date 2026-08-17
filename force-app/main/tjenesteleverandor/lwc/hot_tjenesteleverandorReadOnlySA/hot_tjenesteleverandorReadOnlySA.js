@@ -12,7 +12,7 @@ export default class HOT_TjenesteleverandorSAReadOnly extends LightningElement {
     lang = LANG;
 
     informationBannerTitle = 'Status på oppdraget er "Overført til tjenesteleverandør"';
-    informationBannerContent = 'Formidler kan ikke redigere oppdraget når denne statusen er satt.';
+    informationBannerContent = 'Nav formidler kan ikke lenger redigere detaljer på oppdraget når det er overført til tjenesteleverandør.';
 
     @wire(getRecord, { recordId: '$recordId', fields: FIELDS })
     record;

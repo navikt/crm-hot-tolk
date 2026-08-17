@@ -27,69 +27,123 @@
     font-weight: 600;
     margin-left: 0%;
     padding-left: 0;
+    margin-bottom: 0;
+}
+
+.header-row {
+    display: flex;
+    align-items: flex-start;
+    justify-content: space-between;
+    gap: 1rem;
     margin-bottom: 2rem;
+    position: relative;
+    z-index: 999;
+}
+
+.filter-anchor {
+    display: flex;
+    flex: 0 0 auto;
+    justify-content: flex-end;
+}
+
+/*
+ * listFilters uses 20% of its nearest positioned ancestor for the desktop drawer.
+ * Give only the filter a wider positioning context so the drawer stays usable without
+ * changing the width or alignment of the page content.
+ */
+@media (min-width: 576px) and (min-height: 576px) {
+    .header-row {
+        min-height: 3.375rem;
+    }
+
+    .header-title {
+        box-sizing: border-box;
+        padding-right: 7rem;
+    }
+
+    .filter-anchor {
+        position: absolute;
+        top: 0;
+        right: 0;
+        width: max(150%, 112.5rem);
+        pointer-events: none;
+    }
+
+    .filter-anchor c-list-filters-button {
+        pointer-events: auto;
+    }
+}
+
+.tabset.desktop-only {
+    display: flex;
+    width: 100%;
+    max-width: 33rem;
+    min-height: 3.25rem;
+    margin: 0;
+    overflow: hidden;
+    border: 1px solid #687386;
+    border-radius: 0.625rem;
 }
 
 .tab-button {
     all: unset;
-    margin-bottom: 0.5rem;
-    padding: 0.3rem 1rem;
-    border-radius: 5rem;
-    font-size: 1rem;
-    display: inline-flex;
-    align-items: center;
-    gap: 0.5rem;
-    cursor: pointer;
-    transition:
-        background-color 0.2s ease,
-        color 0.2s ease;
-    border: 1.5px solid #b7c3d5;
-    background-color: #e6f0ff;
-    color: #00347d;
-    margin-left: 0.5rem;
-}
-
-.tab-button:not(.tab-active):hover,
-.tab-button:not(.tab-active):focus {
-    background-color: #cce1ff;
-}
-
-.tab-button::before {
-    content: '◯';
-    font-size: 0.9rem;
-    color: #00347d;
-    display: inline-flex;
+    box-sizing: border-box;
+    position: relative;
+    flex: 1 1 0;
+    min-width: 0;
+    padding: 0.75rem 1rem;
+    font-size: 1.125rem;
+    line-height: 1.5;
+    text-align: center;
+    color: #1f2937;
+    display: flex;
     align-items: center;
     justify-content: center;
-    width: 1.2em;
-    height: 1.2em;
+    cursor: pointer;
+    transition: background-color 0.2s ease, color 0.2s ease;
+}
+
+.tab-button + .tab-button::before {
+    content: '';
+    position: absolute;
+    top: 25%;
+    bottom: 25%;
+    left: 0;
+    width: 1px;
+    background-color: #c9cdd3;
+}
+
+.tab-button:not(.tab-active):hover {
+    background-color: #d7e4ff;
+}
+
+.tab-button:focus-visible {
+    z-index: 2;
+    outline: 2px solid #0067c5;
+    outline-offset: -3px;
+    border-radius: 0.5rem;
 }
 
 .tab-button.tab-active {
-    background-color: #00459c;
+    z-index: 1;
+    border-radius: 0.5rem;
+    background-color: #0067c5;
+    box-shadow: 0 0 0 1px #0067c5;
     color: #ffffff;
-    border: none;
 }
 
-.tab-button.tab-active:hover,
-.tab-button.tab-active:focus {
-    background-color: #00347d;
+.tab-button.tab-active::before,
+.tab-button.tab-active + .tab-button::before {
+    display: none;
 }
 
-.tab-button.tab-active::before {
-    content: '';
-    background-color: #ffffff;
-    background-image: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="4.75 6.75 14.5 10.5"><path fill-rule="evenodd" clip-rule="evenodd" d="M18.9983 6.93945C18.7237 6.66486 18.2784 6.66486 18.0038 6.93945L10.2835 14.6598L6.99617 11.3724C6.72158 11.0978 6.27631 11.0978 6.00172 11.3724C5.72713 11.647 5.72713 12.0923 6.00172 12.3669L9.7891 16.1542C10.0637 16.4288 10.509 16.4288 10.7835 16.1542L18.9983 7.93945C19.2729 7.66486 19.2729 7.21959 18.9983 6.93945Z" fill="%2300347D"/></svg>');
-    background-position: center;
-    background-repeat: no-repeat;
-    background-size: 65%;
-    border-radius: 50%;
-    width: 1.2em;
-    height: 1.2em;
+.tab-button.tab-active:hover {
+    background-color: #0056a8;
+    box-shadow: 0 0 0 1px #0056a8;
 }
 
 @media (max-width: 768px) {
-    .desktop-only {
+    .tabset.desktop-only {
         display: none;
     }
 
@@ -100,6 +154,11 @@
         padding-left: 0;
         margin-top: -0.5rem;
         margin-bottom: -0.5rem;
+    }
+
+    .header-row {
+        align-items: stretch;
+        flex-direction: column;
     }
 
     .list {

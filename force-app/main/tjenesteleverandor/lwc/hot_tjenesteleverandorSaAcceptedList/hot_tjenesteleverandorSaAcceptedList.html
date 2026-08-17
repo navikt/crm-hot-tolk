@@ -6,11 +6,17 @@
         </div>
     </template>
 
-    <template lwc:if={noServiceAppointmentsResult}>
+    <template lwc:elseif={noServiceAppointmentsResult}>
         <div style="text-align: center" aria-live="polite">
             <br />
             <p>Det finnes ingen aksepterte oppdrag til tjenesteleverandør.</p>
             <br />
+        </div>
+    </template>
+
+    <template lwc:elseif={noFilteredRecordsResult}>
+        <div class="empty-state" aria-live="polite">
+            <p>Det finnes ingen oppdrag med denne filtreringen. Du kan endre filteret for å se andre oppdrag.</p>
         </div>
     </template>
 

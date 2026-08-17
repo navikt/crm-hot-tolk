@@ -7,6 +7,9 @@ import icons from '@salesforce/resourceUrl/ikoner';
 import { columns, mobileColumns } from './columns';
 import { formatRecord } from 'c/datetimeFormatterNorwegianTime';
 import { getDayOfWeek } from 'c/hot_commonUtils';
+import { filterRecords, restoreFilters } from 'c/hot_tjenesteleverandorFilters';
+
+const FILTER_STORAGE_KEY = 'tjenesteleverandorAcceptedFilters';
 
 const LIST_REFRESH_KEY = 'tjenesteleverandorAcceptedListRefresh';
 
@@ -15,7 +18,9 @@ export default class Hot_tjenesteleverandorSaAcceptedList extends NavigationMixi
 
     exitCrossIcon = icons + '/Close/Close.svg';
     dataLoader = true;
+    allRecords = [];
     records = [];
+    filters = [];
     columns = [];
     error;
 
@@ -42,10 +47,13 @@ export default class Hot_tjenesteleverandorSaAcceptedList extends NavigationMixi
     ];
 
     connectedCallback() {
+        this.filters = restoreFilters(FILTER_STORAGE_KEY);
         this.columns = window.screen.width > 576 ? columns : mobileColumns;
+        // Keep page visibility listeners for refresh behavior and also emit filters for parent
         window.addEventListener('popstate', this.handlePageActivation);
         window.addEventListener('pageshow', this.handlePageActivation);
         document.addEventListener('visibilitychange', this.handleVisibilityChange);
+        this.sendFilters();
         void this.refreshIfRequested();
     }
 
@@ -60,7 +68,11 @@ export default class Hot_tjenesteleverandorSaAcceptedList extends NavigationMixi
     }
 
     get noServiceAppointmentsResult() {
-        return !this.dataLoader && this.records.length === 0;
+        return !this.dataLoader && this.allRecords.length === 0;
+    }
+
+    get noFilteredRecordsResult() {
+        return !this.dataLoader && this.allRecords.length > 0 && this.records.length === 0;
     }
 
     @wire(getAcceptedServiceAppointments)
@@ -68,7 +80,7 @@ export default class Hot_tjenesteleverandorSaAcceptedList extends NavigationMixi
         this.wiredAcceptedAppointments = result;
 
         if (result.data) {
-            this.records = result.data.map((record) => {
+            this.allRecords = result.data.map((record) => {
                 const formattedRecord = formatRecord({ ...record }, this.datetimeFields);
                 return {
                     ...formattedRecord,
@@ -78,16 +90,20 @@ export default class Hot_tjenesteleverandorSaAcceptedList extends NavigationMixi
                     isOtherProvider: record.HOT_IsOtherEconomicProvicer__c ? 'Ja' : 'Nei'
                 };
             });
+            this.records = filterRecords(this.allRecords, this.filters);
             this.error = undefined;
             this.dataLoader = false;
+            this.sendFilters();
             void this.refreshIfRequested();
         } else if (result.error) {
             this.error = result.error;
+            this.allRecords = [];
             this.records = [];
             this.dataLoader = false;
         }
     }
 
+<<<<<<< HEAD
     async refreshIfRequested() {
         const marker = sessionStorage.getItem(LIST_REFRESH_KEY);
         if (!marker || !this.wiredAcceptedAppointments || this.isRefreshPending) {
@@ -108,6 +124,24 @@ export default class Hot_tjenesteleverandorSaAcceptedList extends NavigationMixi
             this.isRefreshPending = false;
             this.dataLoader = false;
         }
+=======
+    sendFilters() {
+        this.dispatchEvent(new CustomEvent('sendfilters', { detail: this.filters }));
+    }
+
+    @api
+    applyFilter(event) {
+        if (Array.isArray(event.detail?.filterArray)) {
+            this.filters = event.detail.filterArray;
+            sessionStorage.setItem(FILTER_STORAGE_KEY, JSON.stringify(this.filters));
+        }
+
+        const filteredRecords = filterRecords(this.allRecords, this.filters);
+        if (event.detail?.setRecords) {
+            this.records = filteredRecords;
+        }
+        return filteredRecords.length;
+>>>>>>> origin/TOLK-3472-Tjenesteleverandør
     }
 
     goToRecordDetails(event) {

@@ -13,7 +13,9 @@ module.exports = {
         '^c/recordFilesWithSharing$': '<rootDir>/force-app/test/jest-mocks/c/recordFilesWithSharing/recordFilesWithSharing',
         '^c/hot_freelanceCommonTable$': '<rootDir>/force-app/test/jest-mocks/c/hot_freelanceCommonTable/hot_freelanceCommonTable',
         '^c/checkbox$': '<rootDir>/force-app/test/jest-mocks/c/checkbox/checkbox',
-        '^c/radiobuttons$': '<rootDir>/force-app/test/jest-mocks/c/radiobuttons/radiobuttons'
+        '^c/radiobuttons$': '<rootDir>/force-app/test/jest-mocks/c/radiobuttons/radiobuttons',
+        '^c/listFiltersButton$': '<rootDir>/force-app/test/jest-mocks/c/listFiltersButton/listFiltersButton',
+        '^c/picklist$': '<rootDir>/force-app/test/jest-mocks/c/picklist/picklist'
     },
     setupFiles: ['jest-canvas-mock'],
     setupFilesAfterEnv,

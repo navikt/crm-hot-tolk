@@ -10,6 +10,31 @@
         </div>
         <lightning-record-view-form record-id={recordId} object-api-name="ServiceAppointment">
             <div class="slds-p-around_small">
+                <div class="slds-section slds-is-open slds-m-top_medium">
+                    <h3 class="slds-section__title slds-theme_shade slds-p-horizontal_small slds-p-vertical_x-small">
+                        <span class="slds-truncate" title="Frilanstolk">Tjenesteleverandør informasjon</span>
+                    </h3>
+                    <div class="slds-section__content slds-p-top_small">
+                        <div class="slds-grid slds-wrap slds-gutters">
+                            <div class="slds-col slds-size_1-of-1 slds-large-size_1-of-2">
+                                <lightning-output-field
+                                    field-name="HOT_TjenesteleverandorStatus__c"
+                                ></lightning-output-field>
+                                <lightning-output-field
+                                    field-name="HOT_TjenesteleverandorTransferDate__c"
+                                ></lightning-output-field>
+                            </div>
+                            <div class="slds-col slds-size_1-of-1 slds-large-size_1-of-2">
+                                <lightning-output-field
+                                    field-name="HOT_TjenesteleverandorDeadline__c"
+                                ></lightning-output-field>
+                                <lightning-output-field
+                                    field-name="HOT_TjenesteleverandorAcceptDate__c"
+                                ></lightning-output-field>
+                            </div>
+                        </div>
+                    </div>
+                </div>
                 <div class="slds-section slds-is-open">
                     <h3 class="slds-section__title slds-theme_shade slds-p-horizontal_small slds-p-vertical_x-small">
                         <span class="slds-truncate" title="Generell informasjon">Generell informasjon</span>

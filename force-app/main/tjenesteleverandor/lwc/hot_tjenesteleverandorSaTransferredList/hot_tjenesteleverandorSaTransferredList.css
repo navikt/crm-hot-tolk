@@ -28,6 +28,11 @@
     margin-bottom: 1rem;
 }
 
+.empty-state {
+    padding: 1.5rem 0;
+    text-align: center;
+}
+
 .loader-container {
     display: flex;
     justify-content: center;

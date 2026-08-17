@@ -2,7 +2,17 @@
     <div class="page-background">
         <div class="tab-content-wrapper">
             <div class="list">
-                <h1 class="header-title">Tjenesteleverandør Oppdrag</h1>
+                <div class="header-row">
+                    <h1 class="header-title">Tjenesteleverandør Oppdrag</h1>
+                    <div class="filter-anchor">
+                        <c-list-filters-button
+                            header="Filtrer søket"
+                            filters={filters}
+                            onapplyfilter={applyFilter}
+                            ongetfilteredrecordslength={sendFilteredRecordsLength}
+                        ></c-list-filters-button>
+                    </div>
+                </div>
 
                 <div class="tabset desktop-only" role="tablist">
                     <template for:each={tabMap} for:item="tab">
@@ -31,6 +41,7 @@
                         <c-hot_tjenesteleverandor-sa-transferred-list
                             record-id={recordId}
                             data-name="transferred"
+                            onsendfilters={handleFilters}
                         ></c-hot_tjenesteleverandor-sa-transferred-list>
                     </div>
                 </template>
@@ -40,6 +51,7 @@
                         <c-hot_tjenesteleverandor-sa-accepted-list
                             record-id={recordId}
                             data-name="accepted"
+                            onsendfilters={handleFilters}
                         ></c-hot_tjenesteleverandor-sa-accepted-list>
                     </div>
                 </template>
