@@ -90,6 +90,11 @@ sf apex run --file scripts/apex/assignServiceAppointmentToServiceResource.apex
 sf apex run --file scripts/apex/activateCommonCodes.apex
 sf apex run --file scripts/apex/updateMunicipalityPerson.apex
 
+# Package installation, deployment, and Experience Cloud publishing create
+# server-side normalization revisions. Treat the completed setup as the source
+# tracking baseline so the first retrieve only contains later user changes.
+sf project reset tracking --no-prompt
+
 echo "Alt ferdig"
 
 # Varsle når scratch org-oppsettet er ferdig

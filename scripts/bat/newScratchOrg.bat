@@ -50,4 +50,7 @@ call sf community publish --name Tolketjenesten
 echo "Oppretter testdata"
 call sf apex run --file scripts/apex/createTestData.apex
 
+REM Treat the completed scratch-org setup as the source tracking baseline.
+call sf project reset tracking --no-prompt
+
 echo "Ferdig"

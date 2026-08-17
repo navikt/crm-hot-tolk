@@ -286,3 +286,70 @@ force-app/main/default/objects/Event/fields/WhatId.field-meta.xml
 force-app/main/default/objects/Event/fields/WhoId.field-meta.xml
 force-app/main/default/audience/Default_Tolketjenesten.audience-meta.xml
 **sfdcInternalInt__sfdc_scrt2.permissionset-meta.xml
+
+# Installed-package base metadata. This repository owns the HOT_ extensions,
+# not the base objects and fields supplied by dependency packages or Field Service.
+**/objects/ReportingData__c/ReportingData__c.object-meta.xml
+**/objects/ReportingData__c/fields/*
+!**/objects/ReportingData__c/fields/HOT_*.field-meta.xml
+**/objects/Thread__c/Thread__c.object-meta.xml
+**/objects/Thread__c/fields/*
+!**/objects/Thread__c/fields/HOT_*.field-meta.xml
+**/objects/Thread__c/compactLayouts/CRM_*.compactLayout-meta.xml
+**/objects/Thread__c/recordTypes/NKS_*.recordType-meta.xml
+**/objects/Thread__c/recordTypes/TAG_*.recordType-meta.xml
+**/objects/Person__c/fields/*
+!**/objects/Person__c/fields/HOT_*.field-meta.xml
+**/objects/SMS__c/fields/*
+!**/objects/SMS__c/fields/HOT_*.field-meta.xml
+**/objects/ServiceAppointment/fields/*
+!**/objects/ServiceAppointment/fields/HOT_*.field-meta.xml
+**/objects/ServiceResource/fields/*
+!**/objects/ServiceResource/fields/HOT_*.field-meta.xml
+**/objects/Shift/Shift.object-meta.xml
+**/objects/Shift/fields/*
+!**/objects/Shift/fields/HOT_*.field-meta.xml
+**/objects/Shift/listViews/All_Shifts.listView-meta.xml
+**/objects/Shift/listViews/My_Shifts.listView-meta.xml
+**/objects/WorkOrder/fields/*
+!**/objects/WorkOrder/fields/HOT_*.field-meta.xml
+!**/objects/WorkOrder/fields/CanceledDate__c.field-meta.xml
+
+# Custom metadata type definitions supplied by crm-hot-felles. Records for
+# these types remain source-controlled under customMetadata/ in this repository.
+**/objects/HOT_NewRegionNumber/**
+**/objects/HOT_ServiceTerritoryByQueue/**
+**/objects/HOT_TL_Deadline_Config/**
+**/layouts/HOT_NewRegionNumber-HOT New Region Number Layout.layout-meta.xml
+**/layouts/HOT_ServiceTerritoryByQueue-Service Territory By Queue Layout.layout-meta.xml
+
+# Dependency-owned translation fragments. Local HOT_ translation extensions
+# remain retrievable and deployable.
+**/objectTranslations/HOT_HistoricallyAssignedResource-no/**
+**/objectTranslations/HOT_ResourceMember-no/**
+**/objectTranslations/Activity-no/CRM_*.fieldTranslation-meta.xml
+!**/objectTranslations/Activity-no/CRM_NAV_Department__c.fieldTranslation-meta.xml
+**/objectTranslations/ReportingData__c-no/*.fieldTranslation-meta.xml
+!**/objectTranslations/ReportingData__c-no/HOT_*.fieldTranslation-meta.xml
+**/objectTranslations/Person__c-no/*.fieldTranslation-meta.xml
+!**/objectTranslations/Person__c-no/HOT_*.fieldTranslation-meta.xml
+**/objectTranslations/Thread__c-no/*.fieldTranslation-meta.xml
+!**/objectTranslations/Thread__c-no/HOT_*.fieldTranslation-meta.xml
+**/objectTranslations/SMS__c-no/*.fieldTranslation-meta.xml
+!**/objectTranslations/SMS__c-no/HOT_*.fieldTranslation-meta.xml
+**/objectTranslations/ServiceResource-no/CRM_*.fieldTranslation-meta.xml
+!**/objectTranslations/ServiceResource-no/CRM_Domain__c.fieldTranslation-meta.xml
+
+# Queue deployment creates empty queue-scoped list views for every supported object.
+**/objects/*/listViews/queue_*.listView-meta.xml
+**/objects/*/listViews/HOT_queue_*.listView-meta.xml
+**/objects/*/listViews/HOT_Arkiv_*.listView-meta.xml
+**/objects/*/listViews/HOT_Tolk_Akuttvakt_*.listView-meta.xml
+**/objects/*/listViews/HOT_Tolk_Formidler_Admin_*.listView-meta.xml
+**/objects/Thread__c/listViews/HOT_Tolk_Admin_Thread.listView-meta.xml
+**/objects/HOT_Request__c/listViews/HOT_Tolk_Admin_HOT_Request1.listView-meta.xml
+
+# Generated default audience for the scratch Experience Cloud site.
+force-app/main/default/audience/Default_Tjenesteleverandor.audience-meta.xml
+**/audience/Default.audience-meta.xml
+**/audience/Default1.audience-meta.xml

@@ -17,5 +17,8 @@ jsconfig.json
 **/permissionsets/*
 **/permissionsetgroups/*
 
+# Existing invalid LWC markup; keep retrieve normalization from blocking on it.
+force-app/main/facelift/lwc/hot_userInformation_v2/hot_userInformation_v2.html
+
 # Exclude project config (edited by CI workflow)
 sfdx-project.json

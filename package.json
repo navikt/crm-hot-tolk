@@ -8,6 +8,8 @@
         "test:unit:watch": "sfdx-lwc-jest --watch",
         "test:unit:debug": "sfdx-lwc-jest --debug",
         "test:unit:coverage": "sfdx-lwc-jest --coverage",
+        "retrieve": "node scripts/retrieve-source.mjs",
+        "source:normalize": "node scripts/normalize-retrieved-source.mjs",
         "prettier:write": "prettier --write \"**/*.{cls,cmp,component,css,html,js,json,md,page,trigger,xml,yaml,yml}\"",
         "prettier:check": "prettier --check --no-error-on-unmatched-pattern \"**/*.{cls,cmp,component,css,html,js,json,md,page,trigger,xml,yaml,yml}\"",
         "prepare": "husky",
