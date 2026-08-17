@@ -12,7 +12,7 @@ import { defaultFilters, compare } from './filters';
 import getPersonAccount from '@salesforce/apex/HOT_Utility.getPersonAccount';
 import FILE_CONSENT from '@salesforce/schema/HOT_Request__c.IsFileConsent__c';
 import REQUEST_ID from '@salesforce/schema/HOT_Request__c.Id';
-import WORKORDER_NOTIFY_DISPATCHER from '@salesforce/schema/WorkORder.HOT_IsNotifyDispatcher__c';
+import WORKORDER_NOTIFY_DISPATCHER from '@salesforce/schema/WorkOrder.HOT_IsNotifyDispatcher__c';
 import WORKORDER_STATUS from '@salesforce/schema/WorkOrder.Status';
 import WORKORDER_ID from '@salesforce/schema/WorkOrder.Id';
 import { refreshApex } from '@salesforce/apex';
