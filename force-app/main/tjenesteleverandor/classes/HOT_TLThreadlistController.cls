@@ -13,7 +13,8 @@ public with sharing class HOT_TLThreadlistController {
                 CRM_Registered_Datetime_Formula__c,
                 CRM_Latest_Message_Datetime__c,
                 HOT_AppointmentStartTime__c,
-                CRM_Thread_Type__c
+                CRM_Thread_Type__c,
+                HOT_ServiceAppointment__r.HOT_TjenesteleverandorStatus__c
             FROM Thread__c
             WHERE
                 (CRM_Type__c = 'HOT_TJENESTELEVERANDOR-FORMIDLER'

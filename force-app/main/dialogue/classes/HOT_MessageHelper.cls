@@ -771,17 +771,24 @@ public without sharing class HOT_MessageHelper {
         ];
 
         if (
-            (String.isBlank(thread.HOT_Thread_read_by__c) || !thread.HOT_Thread_read_by__c.contains(user.Id)) &&
-            (user.Profile.Name == 'HOT Tolk Formidler' ||
-            (!String.isBlank(thread.HOT_ParticipantIds__c) && thread.HOT_ParticipantIds__c.contains(user.Id)))
-        ) {
-            thread.HOT_Thread_read_by__c = (thread.HOT_Thread_read_by__c ?? '') + user.Id + ';';
-            try {
-                update thread;
-            } catch (Exception e) {
-                throw new AuraHandledException(e.getMessage());
-            }
-        }
+    (String.isBlank(thread.HOT_Thread_read_by__c) ||
+     !thread.HOT_Thread_read_by__c.contains(user.Id)) &&
+    (
+        user.Profile.Name == 'HOT Tolk Formidler' ||
+        user.Profile.Name == 'HOT Tolk Tjenesteleverandor' ||
+        (!String.isBlank(thread.HOT_ParticipantIds__c) &&
+         thread.HOT_ParticipantIds__c.contains(user.Id))
+    )
+) {
+    thread.HOT_Thread_read_by__c =
+        (thread.HOT_Thread_read_by__c ?? '') + user.Id + ';';
+
+    try {
+        update thread;
+    } catch (Exception e) {
+        throw new AuraHandledException(e.getMessage());
+    }
+}
     }
 
     @AuraEnabled
