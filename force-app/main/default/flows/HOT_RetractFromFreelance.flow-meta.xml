@@ -1,6 +1,7 @@
-<?xml version="1.0" encoding="UTF-8"?>
+<?xml version="1.0" encoding="UTF-8" ?>
 <Flow xmlns="http://soap.sforce.com/2006/04/metadata">
     <apiVersion>49.0</apiVersion>
+    <areMetricsLoggedToDataCloud>false</areMetricsLoggedToDataCloud>
     <assignments>
         <name>SetReleasedToFreelanceToFalse</name>
         <label>SetReleasedToFreelanceToFalse</label>
@@ -210,6 +211,14 @@ Status == &quot;Ingen&quot;</description>
             <fieldText>Er du sikker på at du vil tilbaketrekke oppdraget?</fieldText>
             <fieldType>RadioButtons</fieldType>
             <isRequired>true</isRequired>
+            <styleProperties>
+                <verticalAlignment>
+                    <stringValue>top</stringValue>
+                </verticalAlignment>
+                <width>
+                    <stringValue>12</stringValue>
+                </width>
+            </styleProperties>
         </fields>
         <showFooter>true</showFooter>
         <showHeader>false</showHeader>
@@ -224,8 +233,17 @@ Status == &quot;Ingen&quot;</description>
         <allowPause>false</allowPause>
         <fields>
             <name>NotReleasedText</name>
-            <fieldText>&lt;p&gt;Oppdraget er ikke frigitt til frilanstolker, og kan derfor ikke tilbakekalles.&lt;/p&gt;</fieldText>
+            <fieldText
+            >&lt;p&gt;Oppdraget er ikke frigitt til frilanstolker, og kan derfor ikke tilbakekalles.&lt;/p&gt;</fieldText>
             <fieldType>DisplayText</fieldType>
+            <styleProperties>
+                <verticalAlignment>
+                    <stringValue>top</stringValue>
+                </verticalAlignment>
+                <width>
+                    <stringValue>12</stringValue>
+                </width>
+            </styleProperties>
         </fields>
         <showFooter>true</showFooter>
         <showHeader>false</showHeader>
@@ -242,6 +260,14 @@ Status == &quot;Ingen&quot;</description>
             <name>OutMessage</name>
             <fieldText>&lt;p&gt;Oppdrag ble ikke tilbaketrukket.&lt;/p&gt;</fieldText>
             <fieldType>DisplayText</fieldType>
+            <styleProperties>
+                <verticalAlignment>
+                    <stringValue>top</stringValue>
+                </verticalAlignment>
+                <width>
+                    <stringValue>12</stringValue>
+                </width>
+            </styleProperties>
         </fields>
         <showFooter>true</showFooter>
         <showHeader>false</showHeader>
@@ -258,6 +284,14 @@ Status == &quot;Ingen&quot;</description>
             <name>recordNOTfoundScreenText</name>
             <fieldText>&lt;p&gt;Oppdatert, lukk vinduet&lt;/p&gt;</fieldText>
             <fieldType>DisplayText</fieldType>
+            <styleProperties>
+                <verticalAlignment>
+                    <stringValue>top</stringValue>
+                </verticalAlignment>
+                <width>
+                    <stringValue>12</stringValue>
+                </width>
+            </styleProperties>
         </fields>
         <showFooter>false</showFooter>
         <showHeader>false</showHeader>
@@ -274,6 +308,14 @@ Status == &quot;Ingen&quot;</description>
             <name>Success</name>
             <fieldText>&lt;p&gt;Oppdraget ble tilbaketrukket.&lt;/p&gt;</fieldText>
             <fieldType>DisplayText</fieldType>
+            <styleProperties>
+                <verticalAlignment>
+                    <stringValue>top</stringValue>
+                </verticalAlignment>
+                <width>
+                    <stringValue>12</stringValue>
+                </width>
+            </styleProperties>
         </fields>
         <showFooter>true</showFooter>
         <showHeader>false</showHeader>

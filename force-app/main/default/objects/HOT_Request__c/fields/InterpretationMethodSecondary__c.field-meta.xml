@@ -2,7 +2,6 @@
 <CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
     <fullName>InterpretationMethodSecondary__c</fullName>
     <deleteConstraint>SetNull</deleteConstraint>
-    <externalId>false</externalId>
     <label>Interpretation Method Secondary</label>
     <referenceTo>WorkType</referenceTo>
     <relationshipLabel>Requests (Interpretation Method Secondary)</relationshipLabel>

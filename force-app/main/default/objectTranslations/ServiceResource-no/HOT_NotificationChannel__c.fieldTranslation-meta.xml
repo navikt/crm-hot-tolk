@@ -2,4 +2,12 @@
 <CustomFieldTranslation xmlns="http://soap.sforce.com/2006/04/metadata">
     <label>Varslingskanal</label>
     <name>HOT_NotificationChannel__c</name>
+    <picklistValues>
+        <masterLabel>Push-varsel i appen</masterLabel>
+        <translation><!-- Push-varsel i appen --></translation>
+    </picklistValues>
+    <picklistValues>
+        <masterLabel>SMS</masterLabel>
+        <translation><!-- SMS --></translation>
+    </picklistValues>
 </CustomFieldTranslation>

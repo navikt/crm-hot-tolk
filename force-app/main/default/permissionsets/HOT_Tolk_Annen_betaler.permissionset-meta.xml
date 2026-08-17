@@ -35,7 +35,6 @@
         <field>HOT_Request__c.OrganizationNumber__c</field>
         <readable>true</readable>
     </fieldPermissions>
-
     <fieldPermissions>
         <editable>false</editable>
         <field>Thread__c.HOT_AppointmentStartTime__c</field>
@@ -56,6 +55,7 @@
         <allowRead>true</allowRead>
         <modifyAllRecords>false</modifyAllRecords>
         <object>HOT_Request__c</object>
+        <viewAllFields>false</viewAllFields>
         <viewAllRecords>false</viewAllRecords>
     </objectPermissions>
     <tabSettings>

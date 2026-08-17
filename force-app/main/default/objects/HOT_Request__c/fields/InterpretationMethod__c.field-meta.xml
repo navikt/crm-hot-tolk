@@ -3,7 +3,6 @@
     <fullName>InterpretationMethod__c</fullName>
     <deleteConstraint>SetNull</deleteConstraint>
     <description>Lookup to Work Type</description>
-    <externalId>false</externalId>
     <label>Interpretation Method</label>
     <referenceTo>WorkType</referenceTo>
     <relationshipLabel>Requests</relationshipLabel>

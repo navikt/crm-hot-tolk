@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="UTF-8"?>
+<?xml version="1.0" encoding="UTF-8" ?>
 <Flow xmlns="http://soap.sforce.com/2006/04/metadata">
     <actionCalls>
         <name>Auto_Schedule_Service</name>
@@ -34,6 +34,7 @@
         </outputParameters>
     </actionCalls>
     <apiVersion>49.0</apiVersion>
+    <areMetricsLoggedToDataCloud>false</areMetricsLoggedToDataCloud>
     <decisions>
         <name>Has_error</name>
         <label>Has error?</label>
@@ -106,6 +107,14 @@
             <name>confirmationDisplayText</name>
             <fieldText>&lt;p&gt;Ønsker du å fortsette med automatisk planlegging?&lt;/p&gt;</fieldText>
             <fieldType>DisplayText</fieldType>
+            <styleProperties>
+                <verticalAlignment>
+                    <stringValue>top</stringValue>
+                </verticalAlignment>
+                <width>
+                    <stringValue>12</stringValue>
+                </width>
+            </styleProperties>
         </fields>
         <showFooter>true</showFooter>
         <showHeader>false</showHeader>
@@ -120,8 +129,17 @@
         <allowPause>false</allowPause>
         <fields>
             <name>Error_Text</name>
-            <fieldText>&lt;p&gt;&lt;b style=&quot;font-size: 14px;&quot;&gt;Feilmelding&lt;/b&gt;&lt;/p&gt;&lt;p&gt;&lt;br&gt;&lt;/p&gt;&lt;p&gt;&lt;i&gt;{!error}&lt;/i&gt;&lt;/p&gt;&lt;p&gt;&lt;br&gt;&lt;/p&gt;&lt;p&gt;&lt;span class=&quot;ql-cursor&quot;&gt;﻿&lt;/span&gt;{!$Flow.FaultMessage}&lt;/p&gt;</fieldText>
+            <fieldText
+            >&lt;p&gt;&lt;b style=&quot;font-size: 14px;&quot;&gt;Feilmelding&lt;/b&gt;&lt;/p&gt;&lt;p&gt;&lt;br&gt;&lt;/p&gt;&lt;p&gt;&lt;i&gt;{!error}&lt;/i&gt;&lt;/p&gt;&lt;p&gt;&lt;br&gt;&lt;/p&gt;&lt;p&gt;&lt;span class=&quot;ql-cursor&quot;&gt;﻿&lt;/span&gt;{!$Flow.FaultMessage}&lt;/p&gt;</fieldText>
             <fieldType>DisplayText</fieldType>
+            <styleProperties>
+                <verticalAlignment>
+                    <stringValue>top</stringValue>
+                </verticalAlignment>
+                <width>
+                    <stringValue>12</stringValue>
+                </width>
+            </styleProperties>
         </fields>
         <showFooter>true</showFooter>
         <showHeader>false</showHeader>
@@ -136,8 +154,17 @@
         <allowPause>false</allowPause>
         <fields>
             <name>Success_Text</name>
-            <fieldText>&lt;p&gt;Oppdragene på forespørselen ble forsøkt automatisk planlagt. Se resultatet i relatert liste på forespørsel. Det kan ta noen minutter før oppdragene oppdateres.&lt;/p&gt;</fieldText>
+            <fieldText
+            >&lt;p&gt;Oppdragene på forespørselen ble forsøkt automatisk planlagt. Se resultatet i relatert liste på forespørsel. Det kan ta noen minutter før oppdragene oppdateres.&lt;/p&gt;</fieldText>
             <fieldType>DisplayText</fieldType>
+            <styleProperties>
+                <verticalAlignment>
+                    <stringValue>top</stringValue>
+                </verticalAlignment>
+                <width>
+                    <stringValue>12</stringValue>
+                </width>
+            </styleProperties>
         </fields>
         <showFooter>true</showFooter>
         <showHeader>false</showHeader>

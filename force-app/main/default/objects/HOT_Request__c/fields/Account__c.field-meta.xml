@@ -3,7 +3,6 @@
     <fullName>Account__c</fullName>
     <deleteConstraint>SetNull</deleteConstraint>
     <description>The person requesting the interpreter service.</description>
-    <externalId>false</externalId>
     <label>Account</label>
     <lookupFilter>
         <active>true</active>

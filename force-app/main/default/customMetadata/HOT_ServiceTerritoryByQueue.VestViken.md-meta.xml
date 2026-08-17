@@ -4,14 +4,14 @@
     xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
     xmlns:xsd="http://www.w3.org/2001/XMLSchema"
 >
-	<label>Vest-Viken</label>
-	<protected>false</protected>
-	<values>
-		<field>Queue__c</field>
-		<value xsi:type="xsd:string">queue_4706</value>
-	</values>
-	<values>
-		<field>ServiceTerritory__c</field>
-		<value xsi:type="xsd:string">Vest_Viken</value>
-	</values>
+    <label>Vest-Viken</label>
+    <protected>false</protected>
+    <values>
+        <field>Queue__c</field>
+        <value xsi:type="xsd:string">queue_4706</value>
+    </values>
+    <values>
+        <field>ServiceTerritory__c</field>
+        <value xsi:type="xsd:string">Vest_Viken</value>
+    </values>
 </CustomMetadata>

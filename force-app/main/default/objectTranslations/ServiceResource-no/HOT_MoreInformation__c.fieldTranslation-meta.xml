@@ -1,6 +1,7 @@
-<?xml version="1.0" encoding="UTF-8"?>
+<?xml version="1.0" encoding="UTF-8" ?>
 <CustomFieldTranslation xmlns="http://soap.sforce.com/2006/04/metadata">
-    <help></help>
+    <help
+    ><!-- Her kan du skrive inn tilleggsinformasjon om dine kvalifikasjoner, samt annen viktig informasjon som formidlere kan ta hensyn til (fobier, allergier etc.). Maksimalt 255 tegn. --></help>
     <label>Mer informasjon</label>
     <name>HOT_MoreInformation__c</name>
 </CustomFieldTranslation>

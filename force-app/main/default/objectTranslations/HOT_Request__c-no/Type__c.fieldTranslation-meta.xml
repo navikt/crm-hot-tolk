@@ -11,6 +11,10 @@
         <translation><!-- Bestiller på vegne av bruker --></translation>
     </picklistValues>
     <picklistValues>
+        <masterLabel>Bildetolkvakt</masterLabel>
+        <translation><!-- Bildetolkvakt --></translation>
+    </picklistValues>
+    <picklistValues>
         <masterLabel>Bruker på vegne av seg selv</masterLabel>
         <translation><!-- Bruker på vegne av seg selv --></translation>
     </picklistValues>

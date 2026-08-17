@@ -1,5 +1,29 @@
-<?xml version="1.0" encoding="UTF-8"?>
+<?xml version="1.0" encoding="UTF-8" ?>
 <CustomFieldTranslation xmlns="http://soap.sforce.com/2006/04/metadata">
     <label>Status på faktura</label>
     <name>HOT_InvoiceStatus__c</name>
+    <picklistValues>
+        <masterLabel>Manuell: Avventer fakturering</masterLabel>
+        <translation><!-- Manuell: Avventer fakturering --></translation>
+    </picklistValues>
+    <picklistValues>
+        <masterLabel>Manuell: Faktura sendt</masterLabel>
+        <translation><!-- Manuell: Faktura sendt --></translation>
+    </picklistValues>
+    <picklistValues>
+        <masterLabel>Manuell: Skal ikke faktureres</masterLabel>
+        <translation><!-- Manuell: Skal ikke faktureres --></translation>
+    </picklistValues>
+    <picklistValues>
+        <masterLabel>Robot: Avventer fakturering</masterLabel>
+        <translation><!-- Robot: Avventer fakturering --></translation>
+    </picklistValues>
+    <picklistValues>
+        <masterLabel>Robot: Avventer kvittering fra tolk</masterLabel>
+        <translation><!-- Robot: Avventer kvittering fra tolk --></translation>
+    </picklistValues>
+    <picklistValues>
+        <masterLabel>Robot: Faktura lagt til OeBS</masterLabel>
+        <translation><!-- Robot: Faktura lagt til OeBS --></translation>
+    </picklistValues>
 </CustomFieldTranslation>

@@ -1,6 +1,7 @@
-<?xml version="1.0" encoding="UTF-8"?>
+<?xml version="1.0" encoding="UTF-8" ?>
 <Flow xmlns="http://soap.sforce.com/2006/04/metadata">
     <apiVersion>52.0</apiVersion>
+    <areMetricsLoggedToDataCloud>false</areMetricsLoggedToDataCloud>
     <assignments>
         <name>DeactivateFreelance</name>
         <label>DeactivateFreelance</label>
@@ -49,7 +50,7 @@
                 <leftValueReference>CurrentResource.Id</leftValueReference>
                 <operator>EqualTo</operator>
                 <rightValue>
-                    <stringValue></stringValue>
+                    <stringValue />
                 </rightValue>
             </conditions>
             <connector>
@@ -74,7 +75,7 @@
                 <leftValueReference>getUser.Id</leftValueReference>
                 <operator>EqualTo</operator>
                 <rightValue>
-                    <stringValue></stringValue>
+                    <stringValue />
                 </rightValue>
             </conditions>
             <connector>
@@ -265,6 +266,14 @@
             <name>next</name>
             <fieldText>&lt;p&gt;Endrer tilganger på bruker&lt;/p&gt;</fieldText>
             <fieldType>DisplayText</fieldType>
+            <styleProperties>
+                <verticalAlignment>
+                    <stringValue>top</stringValue>
+                </verticalAlignment>
+                <width>
+                    <stringValue>12</stringValue>
+                </width>
+            </styleProperties>
         </fields>
         <showFooter>true</showFooter>
         <showHeader>true</showHeader>
@@ -279,8 +288,17 @@
         <allowPause>true</allowPause>
         <fields>
             <name>No_Access_Text</name>
-            <fieldText>&lt;p&gt;&lt;span style=&quot;background-color: rgb(255, 255, 255); color: rgb(62, 62, 60);&quot;&gt;Du har ikke tilgang til denne funksjonen.&lt;/span&gt;&lt;/p&gt;</fieldText>
+            <fieldText
+            >&lt;p&gt;&lt;span style=&quot;background-color: rgb(255, 255, 255); color: rgb(62, 62, 60);&quot;&gt;Du har ikke tilgang til denne funksjonen.&lt;/span&gt;&lt;/p&gt;</fieldText>
             <fieldType>DisplayText</fieldType>
+            <styleProperties>
+                <verticalAlignment>
+                    <stringValue>top</stringValue>
+                </verticalAlignment>
+                <width>
+                    <stringValue>12</stringValue>
+                </width>
+            </styleProperties>
         </fields>
         <showFooter>true</showFooter>
         <showHeader>true</showHeader>
@@ -295,8 +313,17 @@
         <allowPause>false</allowPause>
         <fields>
             <name>CloseWindowText</name>
-            <fieldText>&lt;p&gt;&lt;span style=&quot;background-color: rgb(255, 255, 255); font-size: 14.6667px; font-family: &amp;quot;Segoe UI&amp;quot;, sans-serif; color: rgb(23, 43, 77);&quot;&gt;En feil oppstod! Fant ikke tjenesteressursen. &lt;/span&gt;&lt;/p&gt;</fieldText>
+            <fieldText
+            >&lt;p&gt;&lt;span style=&quot;background-color: rgb(255, 255, 255); font-size: 14.6667px; font-family: &amp;quot;Segoe UI&amp;quot;, sans-serif; color: rgb(23, 43, 77);&quot;&gt;En feil oppstod! Fant ikke tjenesteressursen. &lt;/span&gt;&lt;/p&gt;</fieldText>
             <fieldType>DisplayText</fieldType>
+            <styleProperties>
+                <verticalAlignment>
+                    <stringValue>top</stringValue>
+                </verticalAlignment>
+                <width>
+                    <stringValue>12</stringValue>
+                </width>
+            </styleProperties>
         </fields>
         <showFooter>true</showFooter>
         <showHeader>true</showHeader>
@@ -313,6 +340,14 @@
             <name>DisplayNotFreelance</name>
             <fieldText>&lt;p&gt;Ressursen er ikke en frilanstolk!&lt;/p&gt;</fieldText>
             <fieldType>DisplayText</fieldType>
+            <styleProperties>
+                <verticalAlignment>
+                    <stringValue>top</stringValue>
+                </verticalAlignment>
+                <width>
+                    <stringValue>12</stringValue>
+                </width>
+            </styleProperties>
         </fields>
         <showFooter>true</showFooter>
         <showHeader>true</showHeader>
@@ -329,6 +364,14 @@
             <name>UserNotFoundText</name>
             <fieldText>&lt;p&gt;Kunne ikke finne brukeren til tolken&lt;/p&gt;</fieldText>
             <fieldType>DisplayText</fieldType>
+            <styleProperties>
+                <verticalAlignment>
+                    <stringValue>top</stringValue>
+                </verticalAlignment>
+                <width>
+                    <stringValue>12</stringValue>
+                </width>
+            </styleProperties>
         </fields>
         <showFooter>true</showFooter>
         <showHeader>true</showHeader>
@@ -348,6 +391,14 @@
             <name>display</name>
             <fieldText>&lt;p&gt;For å deaktivere frilanstolken, trykk &apos;Neste&apos;.&lt;/p&gt;</fieldText>
             <fieldType>DisplayText</fieldType>
+            <styleProperties>
+                <verticalAlignment>
+                    <stringValue>top</stringValue>
+                </verticalAlignment>
+                <width>
+                    <stringValue>12</stringValue>
+                </width>
+            </styleProperties>
         </fields>
         <showFooter>true</showFooter>
         <showHeader>true</showHeader>
@@ -364,6 +415,14 @@
             <name>Success</name>
             <fieldText>&lt;p&gt;Frilanstolken ble deaktivert.&lt;/p&gt;</fieldText>
             <fieldType>DisplayText</fieldType>
+            <styleProperties>
+                <verticalAlignment>
+                    <stringValue>top</stringValue>
+                </verticalAlignment>
+                <width>
+                    <stringValue>12</stringValue>
+                </width>
+            </styleProperties>
         </fields>
         <showFooter>true</showFooter>
         <showHeader>false</showHeader>

@@ -1,6 +1,7 @@
-<?xml version="1.0" encoding="UTF-8"?>
+<?xml version="1.0" encoding="UTF-8" ?>
 <Flow xmlns="http://soap.sforce.com/2006/04/metadata">
     <apiVersion>65.0</apiVersion>
+    <areMetricsLoggedToDataCloud>false</areMetricsLoggedToDataCloud>
     <assignments>
         <name>Change_HOT_IsMeetingAddressSameAsHome_to_false</name>
         <label>Change HOT_IsMeetingAddressSameAsHome to false</label>
@@ -206,7 +207,8 @@
             <label>Meeting Address not equal Home Address</label>
         </rules>
     </decisions>
-    <description>When HOT_IsMeetingAddressSameAsHome is checked, add the Home address from the user to the meeting address</description>
+    <description
+    >When HOT_IsMeetingAddressSameAsHome is checked, add the Home address from the user to the meeting address</description>
     <environments>Default</environments>
     <interviewLabel>HOT_HomeToMeetingAddress_Flow {!$Flow.CurrentDateTime}</interviewLabel>
     <label>HOT_HomeAddressToMeetingAddress</label>

@@ -1,9 +1,8 @@
-<?xml version="1.0" encoding="UTF-8"?>
+<?xml version="1.0" encoding="UTF-8" ?>
 <CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
     <fullName>IsNotifyUserOnOrder__c</fullName>
     <defaultValue>false</defaultValue>
     <description>Brukes til å sjekke om bruker skal varsles om bestilling</description>
-    <externalId>false</externalId>
     <label>Notify User On Order?</label>
     <trackHistory>false</trackHistory>
     <trackTrending>false</trackTrending>

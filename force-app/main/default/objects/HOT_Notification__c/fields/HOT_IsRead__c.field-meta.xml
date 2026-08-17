@@ -3,7 +3,6 @@
     <fullName>HOT_IsRead__c</fullName>
     <defaultValue>false</defaultValue>
     <description>Describes if the notifications is marked as read</description>
-    <externalId>false</externalId>
     <label>IsRead</label>
     <trackTrending>false</trackTrending>
     <type>Checkbox</type>

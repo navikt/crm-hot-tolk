@@ -1,5 +1,6 @@
-<?xml version="1.0" encoding="UTF-8"?>
+<?xml version="1.0" encoding="UTF-8" ?>
 <Queue xmlns="http://soap.sforce.com/2006/04/metadata">
+    <doesIncludeBosses>false</doesIncludeBosses>
     <doesSendEmailToMembers>false</doesSendEmailToMembers>
     <name>Fellesoppdrag Trøndelag</name>
     <queueMembers>
@@ -14,9 +15,9 @@
         <sobjectType>ServiceAppointment</sobjectType>
     </queueSobject>
     <queueSobject>
-        <sobjectType>WorkOrder</sobjectType>
+        <sobjectType>Thread__c</sobjectType>
     </queueSobject>
     <queueSobject>
-        <sobjectType>Thread__c</sobjectType>
+        <sobjectType>WorkOrder</sobjectType>
     </queueSobject>
 </Queue>

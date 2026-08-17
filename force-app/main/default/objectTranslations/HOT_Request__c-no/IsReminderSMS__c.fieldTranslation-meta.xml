@@ -1,5 +1,7 @@
-<?xml version="1.0" encoding="UTF-8"?>
+<?xml version="1.0" encoding="UTF-8" ?>
 <CustomFieldTranslation xmlns="http://soap.sforce.com/2006/04/metadata">
+    <help
+    ><!-- Når denne er huket av, vil bruker få påminnelse dagen før det finner sted. Om bruker har reservert seg for varsler, vil de ikke motta denne påminnelsen. --></help>
     <label>Sende påminnelse?</label>
     <name>IsReminderSMS__c</name>
 </CustomFieldTranslation>

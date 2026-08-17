@@ -1,8 +1,7 @@
-<?xml version="1.0" encoding="UTF-8"?>
+<?xml version="1.0" encoding="UTF-8" ?>
 <CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
     <fullName>ServiceResourceWithAgreement1__c</fullName>
     <deleteConstraint>SetNull</deleteConstraint>
-    <externalId>false</externalId>
     <label>Service Resource With Agreement 1</label>
     <referenceTo>ServiceResource</referenceTo>
     <relationshipLabel>Agreement Requests 1</relationshipLabel>

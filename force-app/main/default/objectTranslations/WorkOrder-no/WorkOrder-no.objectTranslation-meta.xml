@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="UTF-8"?>
+<?xml version="1.0" encoding="UTF-8" ?>
 <CustomObjectTranslation xmlns="http://soap.sforce.com/2006/04/metadata">
     <caseValues>
         <article>Definite</article>
@@ -39,27 +39,31 @@
         </sections>
     </layouts>
     <quickActions>
-        <label>
-            <!-- Automatisk planlegg -->
-        </label>
+        <label><!-- Automatisk planlegg --></label>
         <name>AutoSchedule</name>
     </quickActions>
     <quickActions>
-        <label>
-            <!-- SendEmail -->
-        </label>
+        <label><!-- Delete Files --></label>
+        <name>HOT_DeleteFiles</name>
+    </quickActions>
+    <quickActions>
+        <label><!-- Oppdater felter til oppdrag --></label>
+        <name>HOT_Update_Child_Records</name>
+    </quickActions>
+    <quickActions>
+        <label><!-- SendEmail --></label>
         <name>SendEmail</name>
     </quickActions>
+    <quickActions>
+        <label><!-- Send melding til tolker --></label>
+        <name>Send_melding_til_tolker</name>
+    </quickActions>
     <validationRules>
-        <errorMessage>
-            <!-- Bruker kan ikke endres. -->
-        </errorMessage>
+        <errorMessage><!-- Bruker må være den samme som på forespørsel. --></errorMessage>
         <name>Account_cannot_be_edited</name>
     </validationRules>
     <validationRules>
-        <errorMessage>
-            <!-- En arbeidsordre kan ikke strekke seg over med enn 24 timer. -->
-        </errorMessage>
+        <errorMessage><!-- En arbeidsordre kan ikke strekke seg over med enn 24 timer. --></errorMessage>
         <name>HOT_DurationMax24Hours</name>
     </validationRules>
 </CustomObjectTranslation>

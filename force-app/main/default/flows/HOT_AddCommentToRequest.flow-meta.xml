@@ -11,6 +11,7 @@
             <typeName>T__record</typeName>
             <typeValue>HOT_Request__c</typeValue>
         </dataTypeMappings>
+        <flowTransactionModel>CurrentTransaction</flowTransactionModel>
         <inputParameters>
             <name>fieldName</name>
             <value>
@@ -29,7 +30,10 @@
                 <elementReference>getRequest</elementReference>
             </value>
         </inputParameters>
+        <nameSegment>HOT_AddCommentController</nameSegment>
     </actionCalls>
+    <apiVersion>49.0</apiVersion>
+    <areMetricsLoggedToDataCloud>false</areMetricsLoggedToDataCloud>
     <interviewLabel>HOT_AddCommentToRequest {!$Flow.CurrentDateTime}</interviewLabel>
     <label>HOT_AddCommentToRequest</label>
     <processMetadataValues>
@@ -60,6 +64,7 @@
         <connector>
             <targetReference>Legg_til_ny_kommentar</targetReference>
         </connector>
+        <filterLogic>and</filterLogic>
         <filters>
             <field>Id</field>
             <operator>EqualTo</operator>
@@ -88,6 +93,14 @@
             <fieldText>Beskjed (ingen sensitiv informasjon)</fieldText>
             <fieldType>LargeTextArea</fieldType>
             <isRequired>true</isRequired>
+            <styleProperties>
+                <verticalAlignment>
+                    <stringValue>top</stringValue>
+                </verticalAlignment>
+                <width>
+                    <stringValue>12</stringValue>
+                </width>
+            </styleProperties>
         </fields>
         <showFooter>true</showFooter>
         <showHeader>false</showHeader>

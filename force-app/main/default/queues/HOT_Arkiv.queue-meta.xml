@@ -1,5 +1,6 @@
-<?xml version="1.0" encoding="UTF-8"?>
+<?xml version="1.0" encoding="UTF-8" ?>
 <Queue xmlns="http://soap.sforce.com/2006/04/metadata">
+    <doesIncludeBosses>false</doesIncludeBosses>
     <doesSendEmailToMembers>false</doesSendEmailToMembers>
     <name>HOT Arkiv</name>
     <queueMembers>
@@ -11,15 +12,15 @@
         <sobjectType>HOT_Request__c</sobjectType>
     </queueSobject>
     <queueSobject>
-        <sobjectType>ServiceAppointment</sobjectType>
-    </queueSobject>
-    <queueSobject>
-        <sobjectType>WorkOrder</sobjectType>
-    </queueSobject>
-    <queueSobject>
         <sobjectType>SMS__c</sobjectType>
     </queueSobject>
     <queueSobject>
+        <sobjectType>ServiceAppointment</sobjectType>
+    </queueSobject>
+    <queueSobject>
         <sobjectType>Thread__c</sobjectType>
+    </queueSobject>
+    <queueSobject>
+        <sobjectType>WorkOrder</sobjectType>
     </queueSobject>
 </Queue>

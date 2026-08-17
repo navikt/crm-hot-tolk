@@ -1,6 +1,7 @@
-<?xml version="1.0" encoding="UTF-8"?>
+<?xml version="1.0" encoding="UTF-8" ?>
 <Flow xmlns="http://soap.sforce.com/2006/04/metadata">
     <apiVersion>49.0</apiVersion>
+    <areMetricsLoggedToDataCloud>false</areMetricsLoggedToDataCloud>
     <assignments>
         <name>AssignFieldValues</name>
         <label>AssignFieldValues</label>
@@ -332,6 +333,14 @@
             <name>Info</name>
             <fieldText>&lt;p&gt;Oppdraget kan ikke frigis, ettersom en ressurs er satt opp.&lt;/p&gt;</fieldText>
             <fieldType>DisplayText</fieldType>
+            <styleProperties>
+                <verticalAlignment>
+                    <stringValue>top</stringValue>
+                </verticalAlignment>
+                <width>
+                    <stringValue>12</stringValue>
+                </width>
+            </styleProperties>
         </fields>
         <showFooter>true</showFooter>
         <showHeader>false</showHeader>
@@ -348,6 +357,14 @@
             <name>Error_message</name>
             <fieldText>&lt;p&gt;Du kan ikke frigi dette oppdraget, ettersom det er lukket.&lt;/p&gt;</fieldText>
             <fieldType>DisplayText</fieldType>
+            <styleProperties>
+                <verticalAlignment>
+                    <stringValue>top</stringValue>
+                </verticalAlignment>
+                <width>
+                    <stringValue>12</stringValue>
+                </width>
+            </styleProperties>
         </fields>
         <showFooter>false</showFooter>
         <showHeader>false</showHeader>
@@ -362,8 +379,17 @@
         <allowPause>false</allowPause>
         <fields>
             <name>CloseWindowText</name>
-            <fieldText>&lt;p&gt;&lt;span style=&quot;color: rgb(23, 43, 77); font-family: &amp;quot;Segoe UI&amp;quot;, sans-serif; font-size: 11pt;&quot;&gt;Oppdatert, lukk vinduet&lt;/span&gt;&lt;/p&gt;</fieldText>
+            <fieldText
+            >&lt;p&gt;&lt;span style=&quot;color: rgb(23, 43, 77); font-family: &amp;quot;Segoe UI&amp;quot;, sans-serif; font-size: 11pt;&quot;&gt;Oppdatert, lukk vinduet&lt;/span&gt;&lt;/p&gt;</fieldText>
             <fieldType>DisplayText</fieldType>
+            <styleProperties>
+                <verticalAlignment>
+                    <stringValue>top</stringValue>
+                </verticalAlignment>
+                <width>
+                    <stringValue>12</stringValue>
+                </width>
+            </styleProperties>
         </fields>
         <showFooter>false</showFooter>
         <showHeader>false</showHeader>
@@ -381,8 +407,17 @@
         </connector>
         <fields>
             <name>InformationField</name>
-            <fieldText>&lt;p&gt;&lt;b&gt;Følgende informasjon vil bli vist til frilanstolker.&lt;/b&gt;&lt;/p&gt;&lt;p&gt;{!CurrentServiceAppointment.HOT_Information__c}&lt;/p&gt;</fieldText>
+            <fieldText
+            >&lt;p&gt;&lt;b&gt;Følgende informasjon vil bli vist til frilanstolker.&lt;/b&gt;&lt;/p&gt;&lt;p&gt;{!CurrentServiceAppointment.HOT_Information__c}&lt;/p&gt;</fieldText>
             <fieldType>DisplayText</fieldType>
+            <styleProperties>
+                <verticalAlignment>
+                    <stringValue>top</stringValue>
+                </verticalAlignment>
+                <width>
+                    <stringValue>12</stringValue>
+                </width>
+            </styleProperties>
         </fields>
         <fields>
             <name>Frist_dato</name>
@@ -394,6 +429,14 @@
             <fieldType>InputField</fieldType>
             <inputsOnNextNavToAssocScrn>UseStoredValues</inputsOnNextNavToAssocScrn>
             <isRequired>true</isRequired>
+            <styleProperties>
+                <verticalAlignment>
+                    <stringValue>top</stringValue>
+                </verticalAlignment>
+                <width>
+                    <stringValue>12</stringValue>
+                </width>
+            </styleProperties>
         </fields>
         <fields>
             <name>Frilanstema</name>
@@ -403,9 +446,18 @@
             </defaultValue>
             <fieldText>Opplysninger (ingen sensitive)</fieldText>
             <fieldType>InputField</fieldType>
-            <helpText>&lt;p&gt;Feltet skal benyttes til relevante opplysninger om oppdragets art, til bruk for frilanstolk når de skal vurdere sin interesse for oppdraget. Dette kan være f.eks. tolking fra engelsk, krav til antrekk, antall deltakere etc.&lt;/p&gt;</helpText>
+            <helpText
+            >&lt;p&gt;Feltet skal benyttes til relevante opplysninger om oppdragets art, til bruk for frilanstolk når de skal vurdere sin interesse for oppdraget. Dette kan være f.eks. tolking fra engelsk, krav til antrekk, antall deltakere etc.&lt;/p&gt;</helpText>
             <inputsOnNextNavToAssocScrn>UseStoredValues</inputsOnNextNavToAssocScrn>
             <isRequired>true</isRequired>
+            <styleProperties>
+                <verticalAlignment>
+                    <stringValue>top</stringValue>
+                </verticalAlignment>
+                <width>
+                    <stringValue>12</stringValue>
+                </width>
+            </styleProperties>
         </fields>
         <showFooter>true</showFooter>
         <showHeader>true</showHeader>
@@ -422,6 +474,14 @@
             <name>Success</name>
             <fieldText>&lt;p&gt;Oppdraget ble frigitt til frilanstolker.&lt;/p&gt;</fieldText>
             <fieldType>DisplayText</fieldType>
+            <styleProperties>
+                <verticalAlignment>
+                    <stringValue>top</stringValue>
+                </verticalAlignment>
+                <width>
+                    <stringValue>12</stringValue>
+                </width>
+            </styleProperties>
         </fields>
         <fields>
             <name>Navigate_To_Same_Page</name>
@@ -442,6 +502,14 @@
             <inputsOnNextNavToAssocScrn>UseStoredValues</inputsOnNextNavToAssocScrn>
             <isRequired>true</isRequired>
             <storeOutputAutomatically>true</storeOutputAutomatically>
+            <styleProperties>
+                <verticalAlignment>
+                    <stringValue>top</stringValue>
+                </verticalAlignment>
+                <width>
+                    <stringValue>12</stringValue>
+                </width>
+            </styleProperties>
         </fields>
         <showFooter>false</showFooter>
         <showHeader>false</showHeader>

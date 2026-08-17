@@ -2,7 +2,6 @@
 <CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
     <fullName>PreferredInterpreter1__c</fullName>
     <deleteConstraint>SetNull</deleteConstraint>
-    <externalId>false</externalId>
     <label>Preferred Interpreter 1</label>
     <referenceTo>ServiceResource</referenceTo>
     <relationshipLabel>Requests (Preferred Interpreter 1)</relationshipLabel>

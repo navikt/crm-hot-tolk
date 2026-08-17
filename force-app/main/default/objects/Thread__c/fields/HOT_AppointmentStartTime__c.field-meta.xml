@@ -3,7 +3,6 @@
     <fullName>HOT_AppointmentStartTime__c</fullName>
     <description
     >This field shows when the related appointment are supposed to start. To be used for sorting threads in lists.</description>
-    <externalId>false</externalId>
     <formula>IF(
     NOT(ISBLANK(HOT_WageClaim__c)),
     HOT_WageClaim__r.StartTime__c,

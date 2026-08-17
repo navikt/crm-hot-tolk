@@ -1,8 +1,6 @@
-<?xml version="1.0" encoding="UTF-8"?>
+<?xml version="1.0" encoding="UTF-8" ?>
 <CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
     <fullName>HOT_HasEntitlement__c</fullName>
-    <deprecated>false</deprecated>
-    <externalId>false</externalId>
     <formula>OR(
 HOT_WorkplaceInterpreter__c, HOT_DailyLifeInterpreter__c, HOT_EducationInterpreter__c, HOT_InterpreterAtWork__c, HOT_RemoteInterpreter__c
 )</formula>

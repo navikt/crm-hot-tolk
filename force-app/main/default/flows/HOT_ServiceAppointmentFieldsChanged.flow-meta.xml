@@ -17,6 +17,7 @@
         <nameSegment>HOT_InterpreterOnWorkOrderService</nameSegment>
     </actionCalls>
     <apiVersion>64.0</apiVersion>
+    <areMetricsLoggedToDataCloud>false</areMetricsLoggedToDataCloud>
     <assignments>
         <name>add_to_list_when_changed_screeninterpreter</name>
         <label>add to list when changed screeninterpreter</label>

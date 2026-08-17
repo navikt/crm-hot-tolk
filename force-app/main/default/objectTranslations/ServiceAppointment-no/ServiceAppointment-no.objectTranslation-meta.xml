@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="UTF-8"?>
+<?xml version="1.0" encoding="UTF-8" ?>
 <CustomObjectTranslation xmlns="http://soap.sforce.com/2006/04/metadata">
     <caseValues>
         <article>Definite</article>
@@ -31,16 +31,84 @@
         <value>Oppdrag</value>
     </caseValues>
     <gender>Neuter</gender>
+    <layouts>
+        <layout>Service Appointment Layout</layout>
+        <sections>
+            <label><!-- Adresse --></label>
+            <section>Adresse</section>
+        </sections>
+        <sections>
+            <label><!-- Bestilt tid --></label>
+            <section>Bestilt tid</section>
+        </sections>
+        <sections>
+            <label><!-- Frilanstolk --></label>
+            <section>Frilanstolk</section>
+        </sections>
+    </layouts>
     <quickActions>
+        <label><!-- Delete Files --></label>
+        <name>Delete_Files</name>
+    </quickActions>
+    <quickActions>
+        <aspect>Master</aspect>
         <label>Reserver eller tildel tolk</label>
         <name>HOT_AssignOrReserve</name>
     </quickActions>
     <quickActions>
+        <label><!-- Endre Status --></label>
+        <name>HOT_ChangeStatus</name>
+    </quickActions>
+    <quickActions>
+        <label><!-- Meld interesse --></label>
+        <name>HOT_RegisterInterest</name>
+    </quickActions>
+    <quickActions>
+        <aspect>Master</aspect>
         <label>Frigi til frilanstolker</label>
         <name>HOT_ReleaseToFreelance</name>
     </quickActions>
     <quickActions>
+        <aspect>Master</aspect>
         <label>Tilbaketrekk oppdrag</label>
         <name>HOT_RetractServiceAppointment</name>
     </quickActions>
+    <quickActions>
+        <label><!-- Registrer ønsket frilanstolk --></label>
+        <name>HOT_registrerWantedServiceResource</name>
+    </quickActions>
+    <quickActions>
+        <label><!-- Meld interesse --></label>
+        <name>Register_Interest</name>
+    </quickActions>
+    <quickActions>
+        <label><!-- SendEmail --></label>
+        <name>SendEmail</name>
+    </quickActions>
+    <validationRules>
+        <errorMessage><!-- Bruker må være den samme som på forespørsel. --></errorMessage>
+        <name>Account_cannot_be_edited</name>
+    </validationRules>
+    <validationRules>
+        <errorMessage
+        ><!-- Status can ikke bli endret til dekket når starttid på oppdrag er satt fram i tid. --></errorMessage>
+        <name>PreventCompleteWhenStartTimeInFuture</name>
+    </validationRules>
+    <validationRules>
+        <errorMessage><!-- Status kan ikke endres fra Dekket til Åpent. --></errorMessage>
+        <name>PreventCompletedToNoneStatusChange</name>
+    </validationRules>
+    <validationRules>
+        <errorMessage
+        ><!-- Bruk knappen oppe til høyre når du skal frigi et oppdrag til frilanstolker. --></errorMessage>
+        <name>ReleaseToFreelanceWithButton</name>
+    </validationRules>
+    <validationRules>
+        <errorMessage><!-- Fjern ressursen fra oppdraget før du setter det til &apos;Udekket&apos; --></errorMessage>
+        <name>RemoveARBeforeUpdatingStatus</name>
+    </validationRules>
+    <validationRules>
+        <errorMessage><!-- Kan ikke sette status til Tildelt uten at en tjenesteressurs er satt opp. --></errorMessage>
+        <name>Restrict_Dispatched_Status</name>
+    </validationRules>
 </CustomObjectTranslation>

@@ -1,5 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <CustomFieldTranslation xmlns="http://soap.sforce.com/2006/04/metadata">
+    <help
+    ><!-- Viser adressen fra bruker-konto i Salesforce, med mindre det er fylt inn en egen adresse på tjenesteressursen, da vises denne. --></help>
     <label>Adresse</label>
     <name>HOT_Address__c</name>
 </CustomFieldTranslation>

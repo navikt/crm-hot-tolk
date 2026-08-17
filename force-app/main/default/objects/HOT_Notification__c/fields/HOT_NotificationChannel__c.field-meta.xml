@@ -2,7 +2,6 @@
 <CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
     <fullName>HOT_NotificationChannel__c</fullName>
     <description>Describes if the notification is sent as push notification or sms</description>
-    <externalId>false</externalId>
     <label>Notification Channel</label>
     <required>false</required>
     <trackTrending>false</trackTrending>
