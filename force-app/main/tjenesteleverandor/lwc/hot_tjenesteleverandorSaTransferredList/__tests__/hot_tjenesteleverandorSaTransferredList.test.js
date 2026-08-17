@@ -4,6 +4,7 @@ import getTransferredServiceAppointments from '@salesforce/apex/HOT_Tjenesteleve
 import acceptServiceAppointments from '@salesforce/apex/HOT_TjenesteleverandorAcceptanceService.acceptServiceAppointments';
 import { refreshApex } from '@salesforce/apex';
 import { Navigate } from 'lightning/navigation';
+import { createDefaultFilters } from 'c/hot_tjenesteleverandorFilters';
 
 jest.mock('@salesforce/customPermission/HOT_AcceptTjenesteleverandorOppdrag', () => ({ default: true }), {
     virtual: true
@@ -32,7 +33,9 @@ const APPOINTMENTS = [
         DueDate: '2099-08-01T09:00:00.000Z',
         AppointmentNumber: 'SA-0001',
         HOT_FreelanceSubject__c: 'Tema 1',
-        HOT_WorkTypeName__c: 'Tegnspråk',
+        HOT_WorkTypeName__c: 'TS - Tegnspråk',
+        HOT_AssignmentType__c: 'Helsetjenester',
+        HOT_ServiceTerritoryDeveloperName__c: 'Oslo',
         HOT_ServiceTerritoryName__c: 'Oslo',
         HOT_Request__c: 'a0R000000000001AAA',
         HOT_IsSerieoppdrag__c: true,
@@ -45,7 +48,9 @@ const APPOINTMENTS = [
         DueDate: '2099-08-02T11:00:00.000Z',
         AppointmentNumber: 'SA-0002',
         HOT_FreelanceSubject__c: 'Tema 2',
-        HOT_WorkTypeName__c: 'Skrivetolking',
+        HOT_WorkTypeName__c: 'SK - Skrivetolking',
+        HOT_AssignmentType__c: 'Utdanning',
+        HOT_ServiceTerritoryDeveloperName__c: 'Ost_Viken',
         HOT_ServiceTerritoryName__c: 'Øst-Viken',
         HOT_Request__c: 'a0R000000000001AAA',
         HOT_IsSerieoppdrag__c: true,
@@ -126,6 +131,28 @@ describe('c-hot-tjenesteleverandor-sa-transferred-list', () => {
         expect(JSON.parse(sessionStorage.getItem(CHECKED_ROWS_STORAGE_KEY))).toEqual(
             APPOINTMENTS.map((appointment) => appointment.Id)
         );
+    });
+
+    it('filters transferred appointments by region and removes hidden selections', async () => {
+        const element = await createLoadedComponent();
+        selectRows(
+            element,
+            APPOINTMENTS.map((appointment) => appointment.Id)
+        );
+        const filters = createDefaultFilters();
+        const regionFilter = filters.find((filter) => filter.name === 'HOT_ServiceTerritoryDeveloperName__c');
+        regionFilter.value.find((region) => region.name === 'Oslo').value = true;
+
+        const filteredRecordsLength = element.applyFilter({
+            detail: { filterArray: filters, setRecords: true }
+        });
+        await flushPromises();
+
+        const table = element.shadowRoot.querySelector('c-hot_freelance-common-table');
+        expect(filteredRecordsLength).toBe(1);
+        expect(table.records.map((record) => record.Id)).toEqual([APPOINTMENTS[0].Id]);
+        expect(table.checkedRows).toEqual([APPOINTMENTS[0].Id]);
+        expect(JSON.parse(sessionStorage.getItem(CHECKED_ROWS_STORAGE_KEY))).toEqual([APPOINTMENTS[0].Id]);
     });
 
     it('keeps only failed rows selected after a partial bulk result and refreshes the wire', async () => {

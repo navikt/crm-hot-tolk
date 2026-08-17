@@ -8,8 +8,10 @@ import icons from '@salesforce/resourceUrl/ikoner';
 import { columns, mobileColumns, inDetailsColumns } from './columns';
 import { formatRecord } from 'c/datetimeFormatterNorwegianTime';
 import { getDayOfWeek } from 'c/hot_commonUtils';
+import { filterRecords, restoreFilters } from 'c/hot_tjenesteleverandorFilters';
 
 const CHECKED_ROWS_STORAGE_KEY = 'tjenesteleverandorTransferredCheckedRows';
+const FILTER_STORAGE_KEY = 'tjenesteleverandorTransferredFilters';
 
 function createFeedback(type, message) {
     const success = type === 'success';
@@ -28,7 +30,9 @@ export default class Hot_tjenesteleverandorSaTransferredList extends NavigationM
 
     exitCrossIcon = icons + '/Close/Close.svg';
     dataLoader = true;
+    allRecords = [];
     records = [];
+    filters = [];
     columns = [];
     inDetailsColumns = [];
     checkedServiceAppointments = [];
@@ -59,7 +63,9 @@ export default class Hot_tjenesteleverandorSaTransferredList extends NavigationM
 
     connectedCallback() {
         this.restoreCheckedRows();
+        this.filters = restoreFilters(FILTER_STORAGE_KEY);
         this.setColumns();
+        this.sendFilters();
     }
 
     disconnectedCallback() {
@@ -95,7 +101,11 @@ export default class Hot_tjenesteleverandorSaTransferredList extends NavigationM
     }
 
     get noServiceAppointmentsResult() {
-        return !this.dataLoader && this.records.length === 0;
+        return !this.dataLoader && this.allRecords.length === 0;
+    }
+
+    get noFilteredRecordsResult() {
+        return !this.dataLoader && this.allRecords.length > 0 && this.records.length === 0;
     }
 
     get selectedAppointmentCount() {
@@ -131,7 +141,7 @@ export default class Hot_tjenesteleverandorSaTransferredList extends NavigationM
         this.wiredTransferredAppointments = result;
 
         if (result.data) {
-            this.records = result.data.map((record) => {
+            this.allRecords = result.data.map((record) => {
                 const formattedRecord = formatRecord({ ...record }, this.datetimeFields);
                 return {
                     ...formattedRecord,
@@ -141,18 +151,48 @@ export default class Hot_tjenesteleverandorSaTransferredList extends NavigationM
                     isOtherProvider: record.HOT_IsOtherEconomicProvicer__c ? 'Ja' : 'Nei'
                 };
             });
-            const visibleRecordIds = new Set(this.records.map((record) => record.Id));
-            this.checkedServiceAppointments = this.checkedServiceAppointments.filter((recordId) =>
-                visibleRecordIds.has(recordId)
-            );
-            this.persistCheckedRows();
+            this.applyCurrentFilters();
             this.error = undefined;
             this.dataLoader = false;
+            this.sendFilters();
         } else if (result.error) {
             this.error = result.error;
+            this.allRecords = [];
             this.records = [];
             this.dataLoader = false;
         }
+    }
+
+    sendFilters() {
+        this.dispatchEvent(new CustomEvent('sendfilters', { detail: this.filters }));
+    }
+
+    @api
+    applyFilter(event) {
+        if (Array.isArray(event.detail?.filterArray)) {
+            this.filters = event.detail.filterArray;
+            sessionStorage.setItem(FILTER_STORAGE_KEY, JSON.stringify(this.filters));
+        }
+
+        const filteredRecords = filterRecords(this.allRecords, this.filters);
+        if (event.detail?.setRecords) {
+            this.records = filteredRecords;
+            this.reconcileCheckedRows();
+        }
+        return filteredRecords.length;
+    }
+
+    applyCurrentFilters() {
+        this.records = filterRecords(this.allRecords, this.filters);
+        this.reconcileCheckedRows();
+    }
+
+    reconcileCheckedRows() {
+        const visibleRecordIds = new Set(this.records.map((record) => record.Id));
+        this.checkedServiceAppointments = this.checkedServiceAppointments.filter((recordId) =>
+            visibleRecordIds.has(recordId)
+        );
+        this.persistCheckedRows();
     }
 
     goToRecordDetails(event) {

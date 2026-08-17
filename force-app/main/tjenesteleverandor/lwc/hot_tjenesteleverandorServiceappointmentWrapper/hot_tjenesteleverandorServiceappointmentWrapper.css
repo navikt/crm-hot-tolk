@@ -27,7 +27,51 @@
     font-weight: 600;
     margin-left: 0%;
     padding-left: 0;
+    margin-bottom: 0;
+}
+
+.header-row {
+    display: flex;
+    align-items: flex-start;
+    justify-content: space-between;
+    gap: 1rem;
     margin-bottom: 2rem;
+    position: relative;
+    z-index: 999;
+}
+
+.filter-anchor {
+    display: flex;
+    flex: 0 0 auto;
+    justify-content: flex-end;
+}
+
+/*
+ * listFilters uses 20% of its nearest positioned ancestor for the desktop drawer.
+ * Give only the filter a wider positioning context so the drawer stays usable without
+ * changing the width or alignment of the page content.
+ */
+@media (min-width: 576px) and (min-height: 576px) {
+    .header-row {
+        min-height: 3.375rem;
+    }
+
+    .header-title {
+        box-sizing: border-box;
+        padding-right: 7rem;
+    }
+
+    .filter-anchor {
+        position: absolute;
+        top: 0;
+        right: 0;
+        width: max(150%, 112.5rem);
+        pointer-events: none;
+    }
+
+    .filter-anchor c-list-filters-button {
+        pointer-events: auto;
+    }
 }
 
 .tabset.desktop-only {
@@ -110,6 +154,11 @@
         padding-left: 0;
         margin-top: -0.5rem;
         margin-bottom: -0.5rem;
+    }
+
+    .header-row {
+        align-items: stretch;
+        flex-direction: column;
     }
 
     .list {

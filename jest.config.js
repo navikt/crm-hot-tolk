@@ -10,6 +10,8 @@ module.exports = {
         '^lightning/uiRecordApi$': '<rootDir>/force-app/test/jest-mocks/lightning/uiRecordApi',
         '^lightning/modal$': '<rootDir>/force-app/test/jest-mocks/lightning/modal',
         '^c/button$': '<rootDir>/force-app/test/jest-mocks/c/button/button',
+        '^c/listFiltersButton$': '<rootDir>/force-app/test/jest-mocks/c/listFiltersButton/listFiltersButton',
+        '^c/picklist$': '<rootDir>/force-app/test/jest-mocks/c/picklist/picklist',
         '^c/recordFilesWithSharing$':
             '<rootDir>/force-app/test/jest-mocks/c/recordFilesWithSharing/recordFilesWithSharing',
         '^c/hot_freelanceCommonTable$':
