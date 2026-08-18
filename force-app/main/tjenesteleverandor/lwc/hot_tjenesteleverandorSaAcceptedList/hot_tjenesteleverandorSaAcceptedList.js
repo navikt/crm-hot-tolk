@@ -103,7 +103,7 @@ export default class Hot_tjenesteleverandorSaAcceptedList extends NavigationMixi
         }
     }
 
-<<<<<<< HEAD
+// Keep both behaviours: refresh when signalled, and allow parent-driven filtering
     async refreshIfRequested() {
         const marker = sessionStorage.getItem(LIST_REFRESH_KEY);
         if (!marker || !this.wiredAcceptedAppointments || this.isRefreshPending) {
@@ -124,7 +124,8 @@ export default class Hot_tjenesteleverandorSaAcceptedList extends NavigationMixi
             this.isRefreshPending = false;
             this.dataLoader = false;
         }
-=======
+    }
+
     sendFilters() {
         this.dispatchEvent(new CustomEvent('sendfilters', { detail: this.filters }));
     }
@@ -141,7 +142,6 @@ export default class Hot_tjenesteleverandorSaAcceptedList extends NavigationMixi
             this.records = filteredRecords;
         }
         return filteredRecords.length;
->>>>>>> origin/TOLK-3472-Tjenesteleverandør
     }
 
     goToRecordDetails(event) {

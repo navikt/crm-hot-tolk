@@ -193,11 +193,8 @@ export default class Hot_tjenesteleverandorSaTransferredList extends NavigationM
             this.applyCurrentFilters();
             this.error = undefined;
             this.dataLoader = false;
-<<<<<<< HEAD
-            void this.refreshIfRequested();
-=======
             this.sendFilters();
->>>>>>> origin/TOLK-3472-Tjenesteleverandør
+            void this.refreshIfRequested();
         } else if (result.error) {
             this.error = result.error;
             this.allRecords = [];
