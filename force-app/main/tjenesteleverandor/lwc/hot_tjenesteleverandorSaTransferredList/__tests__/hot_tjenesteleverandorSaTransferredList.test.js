@@ -9,6 +9,9 @@ import { createDefaultFilters } from 'c/hot_tjenesteleverandorFilters';
 jest.mock('@salesforce/customPermission/HOT_AcceptTjenesteleverandorOppdrag', () => ({ default: true }), {
     virtual: true
 });
+jest.mock('@salesforce/customPermission/HOT_DeclineTjenesteleverandorOppdrag', () => ({ default: true }), {
+    virtual: true
+});
 jest.mock(
     '@salesforce/apex/HOT_TjenesteleverandorListController.getTransferredServiceAppointments',
     () => {
@@ -24,6 +27,8 @@ jest.mock(
 );
 
 const CHECKED_ROWS_STORAGE_KEY = 'tjenesteleverandorTransferredCheckedRows';
+const LIST_REFRESH_KEY = 'tjenesteleverandorTransferredListRefresh';
+const ACCEPTED_LIST_REFRESH_KEY = 'tjenesteleverandorAcceptedListRefresh';
 const flushPromises = () => new Promise((resolve) => setTimeout(resolve, 0));
 
 const APPOINTMENTS = [
@@ -106,6 +111,19 @@ describe('c-hot-tjenesteleverandor-sa-transferred-list', () => {
         expect(element.shadowRoot.textContent).toContain('0 oppdrag valgt');
     });
 
+    it('refreshes the cached wire when returning after a single response', async () => {
+        const element = await createLoadedComponent();
+        refreshApex.mockResolvedValue();
+        sessionStorage.setItem(LIST_REFRESH_KEY, 'single-response');
+
+        window.dispatchEvent(new PopStateEvent('popstate'));
+        await flushPromises();
+
+        expect(refreshApex).toHaveBeenCalledTimes(1);
+        expect(sessionStorage.getItem(LIST_REFRESH_KEY)).toBeNull();
+        expect(element.shadowRoot.querySelector('c-hot_loader')).toBeNull();
+    });
+
     it('shows a bulk confirmation and preserves selection when the user goes back', async () => {
         const element = await createLoadedComponent();
         selectRows(
@@ -121,6 +139,7 @@ describe('c-hot-tjenesteleverandor-sa-transferred-list', () => {
 
         const review = element.shadowRoot.querySelector('c-hot_tjenesteleverandor-bulk-acceptance');
         expect(review.appointments).toHaveLength(2);
+        expect(review.action).toBe('accept');
 
         review.dispatchEvent(new CustomEvent('cancel'));
         await flushPromises();
@@ -168,8 +187,9 @@ describe('c-hot-tjenesteleverandor-sa-transferred-list', () => {
         await flushPromises();
 
         element.shadowRoot.querySelector('c-hot_tjenesteleverandor-bulk-acceptance').dispatchEvent(
-            new CustomEvent('acceptcomplete', {
+            new CustomEvent('responsecomplete', {
                 detail: {
+                    action: 'accept',
                     results: [
                         { recordId: APPOINTMENTS[0].Id, success: true },
                         {
@@ -185,8 +205,46 @@ describe('c-hot-tjenesteleverandor-sa-transferred-list', () => {
 
         expect(refreshApex).toHaveBeenCalledTimes(1);
         expect(JSON.parse(sessionStorage.getItem(CHECKED_ROWS_STORAGE_KEY))).toEqual([APPOINTMENTS[1].Id]);
+        expect(sessionStorage.getItem(ACCEPTED_LIST_REFRESH_KEY)).not.toBeNull();
         expect(element.shadowRoot.textContent).toContain('1 oppdrag ble akseptert.');
         expect(element.shadowRoot.textContent).toContain('1 kunne ikke aksepteres');
+    });
+
+    it('shows bulk decline confirmation and reports a successful decline', async () => {
+        const element = await createLoadedComponent();
+        selectRows(
+            element,
+            APPOINTMENTS.map((appointment) => appointment.Id)
+        );
+        await flushPromises();
+
+        element.shadowRoot
+            .querySelector('[data-id="start-bulk-decline"]')
+            .dispatchEvent(new CustomEvent('buttonclick'));
+        await flushPromises();
+
+        const review = element.shadowRoot.querySelector('c-hot_tjenesteleverandor-bulk-acceptance');
+        expect(review.appointments).toHaveLength(2);
+        expect(review.action).toBe('decline');
+
+        review.dispatchEvent(
+            new CustomEvent('responsecomplete', {
+                detail: {
+                    action: 'decline',
+                    results: APPOINTMENTS.map((appointment) => ({
+                        recordId: appointment.Id,
+                        success: true,
+                        message: 'Oppdraget er avslått.'
+                    }))
+                }
+            })
+        );
+        await flushPromises();
+
+        expect(refreshApex).toHaveBeenCalledTimes(1);
+        expect(JSON.parse(sessionStorage.getItem(CHECKED_ROWS_STORAGE_KEY))).toEqual([]);
+        expect(sessionStorage.getItem(ACCEPTED_LIST_REFRESH_KEY)).toBeNull();
+        expect(element.shadowRoot.textContent).toContain('2 oppdrag ble avslått.');
     });
 
     it('opens the existing modal and routes Vis mer info to the separate Experience page', async () => {
@@ -198,8 +256,12 @@ describe('c-hot-tjenesteleverandor-sa-transferred-list', () => {
 
         expect(HTMLDialogElement.prototype.showModal).toHaveBeenCalledTimes(1);
         expect(element.shadowRoot.querySelector('.modal-body').textContent).toContain('SA-0001');
+        expect(element.shadowRoot.querySelector('.series-container c-hot_freelance-common-table').records).toHaveLength(
+            2
+        );
 
         element.shadowRoot.querySelector('.modal-footer c-button').dispatchEvent(new CustomEvent('buttonclick'));
+        await flushPromises();
 
         expect(Navigate).toHaveBeenCalledWith(
             {
@@ -209,5 +271,25 @@ describe('c-hot-tjenesteleverandor-sa-transferred-list', () => {
             },
             undefined
         );
+        expect(element.shadowRoot.querySelector('.modal-body')).toBeNull();
+    });
+
+    it('does not show appointments with the same request as a series when the selected appointment is not a series', async () => {
+        const nonSeriesAppointments = APPOINTMENTS.map((appointment) => ({
+            ...appointment,
+            HOT_IsSerieoppdrag__c: false
+        }));
+        const element = createComponent();
+        getTransferredServiceAppointments.emit(nonSeriesAppointments);
+        await flushPromises();
+
+        element.shadowRoot
+            .querySelector('c-hot_freelance-common-table')
+            .dispatchEvent(new CustomEvent('rowclick', { detail: nonSeriesAppointments[0] }));
+        await flushPromises();
+
+        expect(HTMLDialogElement.prototype.showModal).toHaveBeenCalledTimes(1);
+        expect(element.shadowRoot.querySelector('.modal-body').textContent).toContain('SA-0001');
+        expect(element.shadowRoot.querySelector('.series-container')).toBeNull();
     });
 });

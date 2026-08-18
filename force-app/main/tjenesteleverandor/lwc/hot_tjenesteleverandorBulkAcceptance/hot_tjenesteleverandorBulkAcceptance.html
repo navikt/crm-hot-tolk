@@ -1,10 +1,8 @@
 <template>
-    <section class="bulk-page" aria-labelledby="bulk-acceptance-heading">
+    <section class="bulk-page" aria-labelledby="bulk-response-heading">
         <header class="slds-m-bottom_large">
-            <h2 id="bulk-acceptance-heading" class="slds-text-heading_large">Bekreft valgte oppdrag</h2>
-            <p class="slds-text-body_regular slds-text-color_weak">
-                Kontroller oppdragene før du aksepterer. {appointmentCountLabel}
-            </p>
+            <h2 id="bulk-response-heading" class="slds-text-heading_large">{heading}</h2>
+            <p class="slds-text-body_regular slds-text-color_weak">{instructionText}</p>
         </header>
 
         <template lwc:if={errorMessage}>
@@ -21,7 +19,7 @@
             </div>
         </template>
 
-        <div class="review-table-container" role="region" aria-label="Valgte oppdrag som skal aksepteres" tabindex="0">
+        <div class="review-table-container" role="region" aria-label={reviewTableAriaLabel} tabindex="0">
             <table class="slds-table slds-table_cell-buffer slds-table_bordered review-table">
                 <thead>
                     <tr>
@@ -57,19 +55,19 @@
                 onbuttonclick={handleCancel}
             ></c-button>
             <c-button
-                data-id="confirm-bulk-acceptance"
-                button-styling="primary"
-                button-label={acceptButtonLabel}
-                aria-label={acceptButtonAriaLabel}
-                disabled={isAcceptDisabled}
-                onbuttonclick={handleAccept}
+                data-id="confirm-bulk-response"
+                button-styling={confirmButtonStyling}
+                button-label={confirmButtonLabel}
+                aria-label={confirmButtonAriaLabel}
+                disabled={isConfirmDisabled}
+                onbuttonclick={handleConfirm}
             ></c-button>
         </footer>
 
         <template lwc:if={isProcessing}>
             <div class="processing-overlay" role="status" aria-live="polite">
-                <lightning-spinner alternative-text="Aksepterer valgte oppdrag" size="medium"></lightning-spinner>
-                <span class="slds-assistive-text">Aksepterer valgte oppdrag</span>
+                <lightning-spinner alternative-text={processingText} size="medium"></lightning-spinner>
+                <span class="slds-assistive-text">{processingText}</span>
             </div>
         </template>
     </section>

@@ -1,6 +1,7 @@
 import { createElement } from 'lwc';
 import HotTjenesteleverandorSaAcceptedList from 'c/hot_tjenesteleverandorSaAcceptedList';
 import getAcceptedServiceAppointments from '@salesforce/apex/HOT_TjenesteleverandorListController.getAcceptedServiceAppointments';
+import { refreshApex } from '@salesforce/apex';
 import { Navigate } from 'lightning/navigation';
 import { createDefaultFilters } from 'c/hot_tjenesteleverandorFilters';
 
@@ -43,6 +44,7 @@ const APPOINTMENTS = [
 ];
 
 const APPOINTMENT = APPOINTMENTS[0];
+const LIST_REFRESH_KEY = 'tjenesteleverandorAcceptedListRefresh';
 
 const flushPromises = () => new Promise((resolve) => setTimeout(resolve, 0));
 
@@ -65,6 +67,7 @@ describe('c-hot-tjenesteleverandor-sa-accepted-list', () => {
             document.body.removeChild(document.body.firstChild);
         }
         Navigate.mockClear();
+        refreshApex.mockClear();
     });
 
     it('renders accepted appointments from the wire', async () => {
@@ -96,6 +99,21 @@ describe('c-hot-tjenesteleverandor-sa-accepted-list', () => {
         expect(table.records.map((record) => record.Id)).toEqual([APPOINTMENTS[1].Id]);
     });
 
+    it('refreshes the accepted wire after a single acceptance', async () => {
+        const element = createComponent();
+        getAcceptedServiceAppointments.emit([APPOINTMENT]);
+        await flushPromises();
+        refreshApex.mockResolvedValue();
+        sessionStorage.setItem(LIST_REFRESH_KEY, 'single-acceptance');
+
+        window.dispatchEvent(new PopStateEvent('popstate'));
+        await flushPromises();
+
+        expect(refreshApex).toHaveBeenCalledTimes(1);
+        expect(sessionStorage.getItem(LIST_REFRESH_KEY)).toBeNull();
+        expect(element.shadowRoot.querySelector('c-hot_loader')).toBeNull();
+    });
+
     it('opens the existing modal and routes Vis mer info to the separate Experience page', async () => {
         const element = createComponent();
         getAcceptedServiceAppointments.emit(APPOINTMENTS);
@@ -110,6 +128,7 @@ describe('c-hot-tjenesteleverandor-sa-accepted-list', () => {
         expect(element.shadowRoot.querySelector('.modal-body').textContent).toContain('SA-0001');
 
         element.shadowRoot.querySelector('.modal-footer c-button').dispatchEvent(new CustomEvent('buttonclick'));
+        await flushPromises();
 
         expect(Navigate).toHaveBeenCalledWith(
             {
@@ -119,5 +138,6 @@ describe('c-hot-tjenesteleverandor-sa-accepted-list', () => {
             },
             undefined
         );
+        expect(element.shadowRoot.querySelector('.modal-body')).toBeNull();
     });
 });

@@ -17,6 +17,12 @@
     text-align: left;
 }
 
+.bulk-action-buttons {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 1rem;
+}
+
 .bulk-feedback {
     justify-content: flex-start;
     margin-bottom: 1rem;
@@ -116,6 +122,11 @@ dialog.modal-container .close-btn:hover {
 
 @media (max-width: 600px) {
     .bulk-action-bar {
+        align-items: stretch;
+        flex-direction: column;
+    }
+
+    .bulk-action-buttons {
         align-items: stretch;
         flex-direction: column;
     }

@@ -5,6 +5,11 @@ export default class Button extends LightningElement {
     @api buttonStyling;
     @api ariaLabel;
     @api disabled = false;
+    @api desktopStyle;
+    @api mobileStyle;
+    @api hidden = false;
+    @api title;
+    @api type;
 
     handleClick() {
         if (!this.disabled) {

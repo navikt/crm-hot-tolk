@@ -1,9 +1,15 @@
 import { createElement } from 'lwc';
 import HotTjenesteleverandorBulkAcceptance from 'c/hot_tjenesteleverandorBulkAcceptance';
 import acceptServiceAppointments from '@salesforce/apex/HOT_TjenesteleverandorAcceptanceService.acceptServiceAppointments';
+import declineServiceAppointments from '@salesforce/apex/HOT_TjenesteleverandorAcceptanceService.declineServiceAppointments';
 
 jest.mock(
     '@salesforce/apex/HOT_TjenesteleverandorAcceptanceService.acceptServiceAppointments',
+    () => ({ default: jest.fn() }),
+    { virtual: true }
+);
+jest.mock(
+    '@salesforce/apex/HOT_TjenesteleverandorAcceptanceService.declineServiceAppointments',
     () => ({ default: jest.fn() }),
     { virtual: true }
 );
@@ -31,11 +37,12 @@ const APPOINTMENTS = [
 
 const flushPromises = () => new Promise((resolve) => setTimeout(resolve, 0));
 
-function createComponent(appointments = APPOINTMENTS) {
+function createComponent(appointments = APPOINTMENTS, action = 'accept') {
     const element = createElement('c-hot-tjenesteleverandor-bulk-acceptance', {
         is: HotTjenesteleverandorBulkAcceptance
     });
     element.appointments = appointments;
+    element.action = action;
     document.body.appendChild(element);
     return element;
 }
@@ -46,6 +53,7 @@ describe('c-hot-tjenesteleverandor-bulk-acceptance', () => {
             document.body.removeChild(document.body.firstChild);
         }
         acceptServiceAppointments.mockReset();
+        declineServiceAppointments.mockReset();
     });
 
     it('shows a confirmation table containing the selected appointments', () => {
@@ -79,23 +87,53 @@ describe('c-hot-tjenesteleverandor-bulk-acceptance', () => {
         acceptServiceAppointments.mockResolvedValue(results);
         const element = createComponent();
         const completeHandler = jest.fn();
-        element.addEventListener('acceptcomplete', completeHandler);
+        element.addEventListener('responsecomplete', completeHandler);
 
         element.shadowRoot
-            .querySelector('[data-id="confirm-bulk-acceptance"]')
+            .querySelector('[data-id="confirm-bulk-response"]')
             .dispatchEvent(new CustomEvent('buttonclick'));
         await flushPromises();
 
         expect(acceptServiceAppointments).toHaveBeenCalledWith({
             serviceAppointmentIds: APPOINTMENTS.map((appointment) => appointment.Id)
         });
-        expect(completeHandler).toHaveBeenCalledWith(expect.objectContaining({ detail: { results } }));
+        expect(completeHandler).toHaveBeenCalledWith(
+            expect.objectContaining({ detail: { results, action: 'accept' } })
+        );
+    });
+
+    it('declines all reviewed IDs and returns per-record outcomes to the list', async () => {
+        const results = APPOINTMENTS.map((appointment) => ({
+            recordId: appointment.Id,
+            success: true,
+            message: 'Oppdraget er avslått.'
+        }));
+        declineServiceAppointments.mockResolvedValue(results);
+        const element = createComponent(APPOINTMENTS, 'decline');
+        const completeHandler = jest.fn();
+        element.addEventListener('responsecomplete', completeHandler);
+
+        expect(element.shadowRoot.textContent).toContain('Bekreft avslag på valgte oppdrag');
+        expect(element.shadowRoot.querySelector('[data-id="confirm-bulk-response"]').buttonStyling).toBe('danger');
+
+        element.shadowRoot
+            .querySelector('[data-id="confirm-bulk-response"]')
+            .dispatchEvent(new CustomEvent('buttonclick'));
+        await flushPromises();
+
+        expect(declineServiceAppointments).toHaveBeenCalledWith({
+            serviceAppointmentIds: APPOINTMENTS.map((appointment) => appointment.Id)
+        });
+        expect(acceptServiceAppointments).not.toHaveBeenCalled();
+        expect(completeHandler).toHaveBeenCalledWith(
+            expect.objectContaining({ detail: { results, action: 'decline' } })
+        );
     });
 
     it('disables bulk acceptance when no appointments are provided', () => {
         const element = createComponent([]);
 
-        expect(element.shadowRoot.querySelector('[data-id="confirm-bulk-acceptance"]').disabled).toBe(true);
+        expect(element.shadowRoot.querySelector('[data-id="confirm-bulk-response"]').disabled).toBe(true);
     });
 
     it('shows a handled server error and remains on the confirmation page', async () => {
@@ -105,7 +143,7 @@ describe('c-hot-tjenesteleverandor-bulk-acceptance', () => {
         const element = createComponent();
 
         element.shadowRoot
-            .querySelector('[data-id="confirm-bulk-acceptance"]')
+            .querySelector('[data-id="confirm-bulk-response"]')
             .dispatchEvent(new CustomEvent('buttonclick'));
         await flushPromises();
 

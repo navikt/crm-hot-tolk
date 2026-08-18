@@ -80,6 +80,10 @@
         <enabled>true</enabled>
         <name>HOT_AcceptTjenesteleverandorOppdrag</name>
     </customPermissions>
+    <customPermissions>
+        <enabled>true</enabled>
+        <name>HOT_DeclineTjenesteleverandorOppdrag</name>
+    </customPermissions>
     <fieldPermissions>
         <editable>false</editable>
         <field>Account.CRM_Person__c</field>

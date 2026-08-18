@@ -56,7 +56,10 @@
     background: var(--slds-g-color-neutral-base-95, #f3f3f3);
 }
 
-.acceptance-action {
+.acceptance-actions {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 1rem;
     flex-shrink: 0;
 }
 
@@ -81,8 +84,13 @@
         flex-direction: column;
     }
 
-    .acceptance-action,
-    .acceptance-action c-button {
+    .acceptance-actions {
+        align-items: stretch;
+        flex-direction: column;
+    }
+
+    .acceptance-actions,
+    .acceptance-actions c-button {
         display: block;
         width: 100%;
     }

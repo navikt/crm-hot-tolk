@@ -51,12 +51,26 @@
             <targetReference>Set_Tjenesteleverandor_Transferred</targetReference>
         </connector>
         <doesRequireRecordChangedToMeetCriteria>true</doesRequireRecordChangedToMeetCriteria>
-        <filterLogic>and</filterLogic>
+        <filterLogic>1 AND (2 OR 3)</filterLogic>
         <filters>
             <field>Status</field>
             <operator>EqualTo</operator>
             <value>
                 <stringValue>Released to Freelance</stringValue>
+            </value>
+        </filters>
+        <filters>
+            <field>HOT_TjenesteleverandorStatus__c</field>
+            <operator>IsNull</operator>
+            <value>
+                <booleanValue>true</booleanValue>
+            </value>
+        </filters>
+        <filters>
+            <field>HOT_TjenesteleverandorStatus__c</field>
+            <operator>NotEqualTo</operator>
+            <value>
+                <stringValue>Declined</stringValue>
             </value>
         </filters>
         <object>ServiceAppointment</object>

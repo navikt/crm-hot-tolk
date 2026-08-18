@@ -2,7 +2,9 @@ import { LightningElement, api, wire } from 'lwc';
 import { NavigationMixin, CurrentPageReference } from 'lightning/navigation';
 import { notifyRecordUpdateAvailable } from 'lightning/uiRecordApi';
 import canAcceptAppointments from '@salesforce/customPermission/HOT_AcceptTjenesteleverandorOppdrag';
+import canDeclineAppointments from '@salesforce/customPermission/HOT_DeclineTjenesteleverandorOppdrag';
 import acceptServiceAppointments from '@salesforce/apex/HOT_TjenesteleverandorAcceptanceService.acceptServiceAppointments';
+import declineServiceAppointments from '@salesforce/apex/HOT_TjenesteleverandorAcceptanceService.declineServiceAppointments';
 
 const CANCELLATION_FIELDS = [
     'HOT_CancelComment__c',
@@ -10,6 +12,8 @@ const CANCELLATION_FIELDS = [
     'HOT_CanceledDate__c',
     'HOT_LateCancellation__c'
 ];
+const TRANSFERRED_LIST_REFRESH_KEY = 'tjenesteleverandorTransferredListRefresh';
+const ACCEPTED_LIST_REFRESH_KEY = 'tjenesteleverandorAcceptedListRefresh';
 
 function createFeedback(type, message) {
     const success = type === 'success';
@@ -31,10 +35,10 @@ export default class HotTjenesteleverandorServiceAppointmentDetail extends Navig
     isLoading = true;
     hasError = false;
     hasCancellationDetails = false;
-    isAccepting = false;
+    isResponding = false;
     isAcceptanceEligible = false;
     acceptanceDeadline;
-    acceptanceFeedback;
+    responseFeedback;
 
     @wire(CurrentPageReference)
     handlePageReference(pageReference) {
@@ -53,8 +57,16 @@ export default class HotTjenesteleverandorServiceAppointmentDetail extends Navig
         return this.hasCancellationDetails ? 'detail-section' : 'detail-section detail-section_hidden';
     }
 
-    get showAcceptanceAction() {
+    get showResponseAction() {
+        return this.showAcceptAction || this.showDeclineAction;
+    }
+
+    get showAcceptAction() {
         return Boolean(canAcceptAppointments && this.isAcceptanceEligible);
+    }
+
+    get showDeclineAction() {
+        return Boolean(canDeclineAppointments && this.isAcceptanceEligible);
     }
 
     handleLoad(event) {
@@ -83,36 +95,63 @@ export default class HotTjenesteleverandorServiceAppointmentDetail extends Navig
     }
 
     async handleAccept() {
-        if (!this.showAcceptanceAction || this.isAccepting) {
+        if (!this.showAcceptAction) {
+            return;
+        }
+        await this.respondToAppointment(
+            'accept',
+            acceptServiceAppointments,
+            'Oppdraget kunne ikke aksepteres. Last inn siden og prøv igjen.',
+            'Oppdraget er akseptert.'
+        );
+    }
+
+    async handleDecline() {
+        if (!this.showDeclineAction) {
+            return;
+        }
+        await this.respondToAppointment(
+            'decline',
+            declineServiceAppointments,
+            'Oppdraget kunne ikke avslås. Last inn siden og prøv igjen.',
+            'Oppdraget er avslått.'
+        );
+    }
+
+    async respondToAppointment(action, responseMethod, fallbackErrorMessage, fallbackSuccessMessage) {
+        if (!this.showResponseAction || this.isResponding) {
             return;
         }
 
-        this.isAccepting = true;
-        this.acceptanceFeedback = undefined;
+        this.isResponding = true;
+        this.responseFeedback = undefined;
 
         try {
-            const results = await acceptServiceAppointments({
+            const results = await responseMethod({
                 serviceAppointmentIds: [this.effectiveRecordId]
             });
             const result = results?.[0];
             if (!result?.success) {
-                this.acceptanceFeedback = createFeedback(
-                    'error',
-                    result?.message || 'Oppdraget kunne ikke aksepteres. Last inn siden og prøv igjen.'
-                );
+                this.responseFeedback = createFeedback('error', result?.message || fallbackErrorMessage);
                 return;
             }
 
             this.isAcceptanceEligible = false;
-            this.acceptanceFeedback = createFeedback('success', result.message || 'Oppdraget er akseptert.');
+            this.responseFeedback = createFeedback('success', result.message || fallbackSuccessMessage);
+            this.markListsForRefresh(action);
             await notifyRecordUpdateAvailable([{ recordId: this.effectiveRecordId }]);
         } catch (error) {
-            this.acceptanceFeedback = createFeedback(
-                'error',
-                error?.body?.message || 'Oppdraget kunne ikke aksepteres. Last inn siden og prøv igjen.'
-            );
+            this.responseFeedback = createFeedback('error', error?.body?.message || fallbackErrorMessage);
         } finally {
-            this.isAccepting = false;
+            this.isResponding = false;
+        }
+    }
+
+    markListsForRefresh(action) {
+        const marker = JSON.stringify({ recordId: this.effectiveRecordId, timestamp: Date.now() });
+        sessionStorage.setItem(TRANSFERRED_LIST_REFRESH_KEY, marker);
+        if (action === 'accept') {
+            sessionStorage.setItem(ACCEPTED_LIST_REFRESH_KEY, marker);
         }
     }
 
