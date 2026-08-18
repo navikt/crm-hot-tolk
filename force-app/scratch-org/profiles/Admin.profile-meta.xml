@@ -823,6 +823,11 @@
     </fieldPermissions>
     <fieldPermissions>
         <editable>false</editable>
+        <field>ServiceAppointment.HOT_CancelCommentExtended__c</field>
+        <readable>false</readable>
+    </fieldPermissions>
+    <fieldPermissions>
+        <editable>false</editable>
         <field>ServiceAppointment.HOT_CanceledByInterpreter__c</field>
         <readable>false</readable>
     </fieldPermissions>
