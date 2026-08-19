@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<LightningComponentBundle xmlns="http://soap.sforce.com/2006/04/metadata">
+    <apiVersion>64.0</apiVersion>
+    <isExposed>true</isExposed>
+    <masterLabel>HOT Flow Picklist Text Area</masterLabel>
+    <targets>
+        <target>lightning__FlowScreen</target>
+    </targets>
+    <targetConfigs>
+        <targetConfig targets="lightning__FlowScreen">
+            <property name="label" type="String" label="Combobox Label" />
+            <property name="value" type="String" label="Selected Value" />
+            <property name="option1" type="String" label="Option 1" />
+            <property name="option2" type="String" label="Option 2" />
+            <property name="option3" type="String" label="Option 3" />
+            <property name="textareaLabel" type="String" label="Textarea Label" />
+            <property name="inputText" type="String" label="Textarea Value" />
+            <property name="requiredPicklist" type="Boolean"
+                label="Require picklist before continuing" default="false" />
+            <property name="requiredTextarea" type="Boolean"
+                label="Require textarea before continuing" default="false" />
+            <property name="option1RequiresTextarea" type="Boolean"
+                label="Option 1 requires textarea" default="false" />
+            <property name="option2RequiresTextarea" type="Boolean"
+                label="Option 2 requires textarea" default="false" />
+            <property name="option3RequiresTextarea" type="Boolean"
+                label="Option 3 requires textarea" default="false" />
+        </targetConfig>
+    </targetConfigs>
+</LightningComponentBundle>
