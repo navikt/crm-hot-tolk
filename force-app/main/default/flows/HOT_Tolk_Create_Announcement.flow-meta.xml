@@ -469,13 +469,6 @@
                                 <stringValue>Information</stringValue>
                             </rightValue>
                         </conditions>
-                        <conditions>
-                            <leftValueReference>Velg_type_melding</leftValueReference>
-                            <operator>EqualTo</operator>
-                            <rightValue>
-                                <stringValue>News</stringValue>
-                            </rightValue>
-                        </conditions>
                     </visibilityRule>
                 </fields>
                 <fields>
@@ -513,6 +506,84 @@
                                 <stringValue>Information</stringValue>
                             </rightValue>
                         </conditions>
+                    </visibilityRule>
+                </fields>
+                <fields>
+                    <name>newsDisplayText</name>
+                    <fieldText>&lt;p&gt;Du kan velge om nyheten skal være synlig i en bestemt periode. Lar du disse datofeltene være tomme vil nyheten vises helt til den automatisk slettes etter 1 år.&lt;/p&gt;</fieldText>
+                    <fieldType>DisplayText</fieldType>
+                    <styleProperties>
+                        <verticalAlignment>
+                            <stringValue>top</stringValue>
+                        </verticalAlignment>
+                        <width>
+                            <stringValue>12</stringValue>
+                        </width>
+                    </styleProperties>
+                    <visibilityRule>
+                        <conditionLogic>or</conditionLogic>
+                        <conditions>
+                            <leftValueReference>Velg_type_melding</leftValueReference>
+                            <operator>EqualTo</operator>
+                            <rightValue>
+                                <stringValue>News</stringValue>
+                            </rightValue>
+                        </conditions>
+                    </visibilityRule>
+                </fields>
+                <fields>
+                    <name>ValidFromNews</name>
+                    <dataType>Date</dataType>
+                    <fieldText>Synlig fra og med</fieldText>
+                    <fieldType>InputField</fieldType>
+                    <helpText>&lt;p&gt;&lt;span style=&quot;background-color: rgb(255, 255, 255);&quot;&gt;Du kan velge hvor lenge denne meldingen skal være synlig. Du kan avpublisere den når som helst i ettertid.&lt;/span&gt;&lt;/p&gt;</helpText>
+                    <inputsOnNextNavToAssocScrn>UseStoredValues</inputsOnNextNavToAssocScrn>
+                    <isRequired>false</isRequired>
+                    <styleProperties>
+                        <verticalAlignment>
+                            <stringValue>top</stringValue>
+                        </verticalAlignment>
+                        <width>
+                            <stringValue>12</stringValue>
+                        </width>
+                    </styleProperties>
+                    <validationRule>
+                        <errorMessage>&lt;p&gt;&lt;span style=&quot;background-color: rgb(255, 255, 255);&quot;&gt;Feltet &quot;Synlig til og med&quot; må også fylles ut&lt;/span&gt;&lt;/p&gt;</errorMessage>
+                        <formulaExpression>{!ValidFromNews} != null &amp;&amp; {!Synlig_til_News} != null</formulaExpression>
+                    </validationRule>
+                    <visibilityRule>
+                        <conditionLogic>or</conditionLogic>
+                        <conditions>
+                            <leftValueReference>Velg_type_melding</leftValueReference>
+                            <operator>EqualTo</operator>
+                            <rightValue>
+                                <stringValue>News</stringValue>
+                            </rightValue>
+                        </conditions>
+                    </visibilityRule>
+                </fields>
+                <fields>
+                    <name>Synlig_til_News</name>
+                    <dataType>Date</dataType>
+                    <fieldText>Synlig til og med</fieldText>
+                    <fieldType>InputField</fieldType>
+                    <helpText>&lt;p&gt;&lt;span style=&quot;background-color: rgb(255, 255, 255);&quot;&gt;Du kan velge hvor lenge denne meldingen skal være synlig. Du kan avpublisere den når som helst i ettertid.&lt;/span&gt;&lt;/p&gt;</helpText>
+                    <inputsOnNextNavToAssocScrn>UseStoredValues</inputsOnNextNavToAssocScrn>
+                    <isRequired>false</isRequired>
+                    <styleProperties>
+                        <verticalAlignment>
+                            <stringValue>top</stringValue>
+                        </verticalAlignment>
+                        <width>
+                            <stringValue>12</stringValue>
+                        </width>
+                    </styleProperties>
+                    <validationRule>
+                        <errorMessage>&lt;p&gt;Feltet &quot;Synlig fra og med&quot; må også fylles ut&lt;/p&gt;</errorMessage>
+                        <formulaExpression>{!ValidFromNews} != null &amp;&amp; {!Synlig_til_News} != null</formulaExpression>
+                    </validationRule>
+                    <visibilityRule>
+                        <conditionLogic>or</conditionLogic>
                         <conditions>
                             <leftValueReference>Velg_type_melding</leftValueReference>
                             <operator>EqualTo</operator>
