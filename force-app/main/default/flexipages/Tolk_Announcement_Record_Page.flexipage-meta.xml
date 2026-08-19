@@ -144,13 +144,6 @@
                 </fieldInstanceProperties>
                 <fieldItem>Record.ValidFrom__c</fieldItem>
                 <identifier>RecordValidFrom_cField</identifier>
-                <visibilityRule>
-                    <criteria>
-                        <leftValue>{!Record.Type__c}</leftValue>
-                        <operator>NE</operator>
-                        <rightValue>News</rightValue>
-                    </criteria>
-                </visibilityRule>
             </fieldInstance>
         </itemInstances>
         <itemInstances>
@@ -161,13 +154,6 @@
                 </fieldInstanceProperties>
                 <fieldItem>Record.ValidTo__c</fieldItem>
                 <identifier>RecordValidTo_cField</identifier>
-                <visibilityRule>
-                    <criteria>
-                        <leftValue>{!Record.Type__c}</leftValue>
-                        <operator>NE</operator>
-                        <rightValue>News</rightValue>
-                    </criteria>
-                </visibilityRule>
             </fieldInstance>
         </itemInstances>
         <name>Facet-cc351964-0d03-49ca-b863-8aeb33eaa8fd</name>
