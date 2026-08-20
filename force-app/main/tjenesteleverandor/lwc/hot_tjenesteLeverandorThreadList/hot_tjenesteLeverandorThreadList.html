@@ -39,27 +39,26 @@
                 ></c-hot_chips>
 
                 <div class="conversation-list-region">
-                    <template if:true={isLoadingConversations}>
+                    <template lwc:if={isLoadingConversations}>
                         <div class="conversation-list-loading" role="status">
                             <span class="slds-assistive-text">Laster samtaler</span>
                             <div class="loader"></div>
                         </div>
                     </template>
-                    <template if:false={isLoadingConversations}>
-                        <div class="list-heading" aria-hidden="true">
-                            <span></span>
-                            <span>Siste melding sendt</span>
-                            <span></span>
-                        </div>
-
+                    <template lwc:else>
                         <div id="conversation-list" class="conversation-list" role="tabpanel">
-                            <template if:true={loadError}>
+                            <template lwc:if={loadError}>
                                 <div class="empty-state" role="alert">
                                     <img src={faceCryIcon} alt="" aria-hidden="true" class="empty-state-icon" />
                                     <p>{loadError}</p>
                                 </div>
                             </template>
-                            <template if:true={hasConversations}>
+                            <template lwc:elseif={hasConversations}>
+                                <div class="list-heading" aria-hidden="true">
+                                    <span></span>
+                                    <span>Siste melding sendt</span>
+                                    <span></span>
+                                </div>
                                 <ul>
                                     <template for:each={visibleConversations} for:item="conversation">
                                         <li key={conversation.id}>
@@ -92,7 +91,7 @@
                                                     >{conversation.latestMessage}</span
                                                 >
                                                 <span class="selected-indicator" aria-hidden="true">
-                                                    <template if:true={conversation.isSelected}>
+                                                    <template lwc:if={conversation.isSelected}>
                                                         <lightning-icon
                                                             icon-name="utility:chevronright"
                                                             alternative-text=""
@@ -105,7 +104,7 @@
                                     </template>
                                 </ul>
                             </template>
-                            <template if:true={showEmptyState}>
+                            <template lwc:else>
                                 <p class="empty-state" role="status">Ingen samtaler</p>
                             </template>
                         </div>
@@ -114,15 +113,9 @@
             </div>
         </section>
         <aside class="dialog-right" aria-label="Valgt samtale">
-            <template if:false={hasSelectedConversation}>
-                <div class="conversation-placeholder" role="status">
-                    <p>Trykk på en samtale</p>
-                    <div class="loader"></div>
-                </div>
-            </template>
-            <template if:true={hasSelectedConversation}>
+            <template lwc:if={hasSelectedConversation}>
                 <article class="thread-detail">
-                    <template if:true={isLoadingSelectedConversation}>
+                    <template lwc:if={isLoadingSelectedConversation}>
                         <div class="conversation-list-loading thread-loading-overlay" role="status">
                             <span class="slds-assistive-text">Laster samtale</span>
                             <div class="loader"></div>
@@ -147,19 +140,53 @@
                                     color="danger"
                                 ></c-hot_tag>
                             </div>
+                            <div class="thread-participants">
+                                <span class="thread-participants-label">Deltakere:</span>
+                                <template for:each={threadParticipants} for:item="participant">
+                                    <c-hot_tag
+                                        key={participant.id}
+                                        label={participant.label}
+                                        variant="moderate"
+                                        size="small"
+                                        color="info"
+                                    ></c-hot_tag>
+                                </template>
+                            </div>
+                            <div class="thread-readers">
+                                <span class="thread-readers-label">Lest av:</span>
+                                <template lwc:if={hasReadParticipants}>
+                                    <template for:each={readParticipants} for:item="participant">
+                                        <c-hot_tag
+                                            key={participant.id}
+                                            label={participant.label}
+                                            variant="moderate"
+                                            size="small"
+                                            color="success"
+                                        ></c-hot_tag>
+                                    </template>
+                                </template>
+                                <template lwc:else>
+                                    <c-hot_tag
+                                        label="Ingen"
+                                        variant="moderate"
+                                        size="small"
+                                        color="warning"
+                                    ></c-hot_tag>
+                                </template>
+                            </div>
                         </div>
                         <c-button
                             button-label={serviceAppointmentDetailsButtonLabel}
                             onbuttonclick={showServiceAppointmentDetails}
                             disabled={isLoadingServiceAppointmentDetails}
                         ></c-button>
-                        <template if:true={isLoadingServiceAppointmentDetails}>
+                        <template lwc:if={isLoadingServiceAppointmentDetails}>
                             <p class="service-appointment-status" role="status">Laster oppdragsdetaljer</p>
                         </template>
-                        <template if:true={serviceAppointmentDetailsError}>
+                        <template lwc:if={serviceAppointmentDetailsError}>
                             <p class="service-appointment-error" role="alert">{serviceAppointmentDetailsError}</p>
                         </template>
-                        <template if:true={showServiceAppointmentDetailsModal}>
+                        <template lwc:if={showServiceAppointmentDetailsModal}>
                             <dl class="service-appointment-details">
                                 <template for:each={serviceAppointmentDetails} for:item="detail">
                                     <div key={detail.label} class="service-appointment-detail">
@@ -177,10 +204,17 @@
                                 key={conversation.id}
                                 thread={conversation}
                                 set-input-in-focus-on-render
+                                onthreadread={handleThreadRead}
                             ></c-hot_messaging-thread-viewer>
                         </template>
                     </section>
                 </article>
+            </template>
+            <template lwc:else>
+                <div class="conversation-placeholder" role="status">
+                    <p>Trykk på en samtale</p>
+                    <div class="loader"></div>
+                </div>
             </template>
         </aside>
     </div>

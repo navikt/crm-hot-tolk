@@ -1,9 +1,9 @@
 import { LightningElement } from 'lwc';
 import getAllThreads from '@salesforce/apex/HOT_TLThreadlistController.getAllTjenesteleverandorThreads';
 import getServiceAppointmentDetails from '@salesforce/apex/HOT_TLThreadlistController.getServiceAppointmentDetails';
+import getParticipants from '@salesforce/apex/HOT_ThreadParticipants.getParticipants';
 import { formatDatetimeinterval } from 'c/datetimeFormatterNorwegianTime';
 import userId from '@salesforce/user/Id';
-
 import icons from '@salesforce/resourceUrl/aksel_ikoner';
 
 const VIEW_FILTERS = [
@@ -41,6 +41,9 @@ export default class hot_tjenesteLeverandorThreadList extends LightningElement {
     showServiceAppointmentDetailsModal = false;
     isLoadingServiceAppointmentDetails = false;
     serviceAppointmentDetailsError;
+    threadParticipants = [];
+    readParticipants = [];
+    isLoadingReadParticipants = false;
 
     connectedCallback() {
         this.relativeTimeRefreshInterval = setInterval(() => {
@@ -53,7 +56,9 @@ export default class hot_tjenesteLeverandorThreadList extends LightningElement {
         clearInterval(this.relativeTimeRefreshInterval);
     }
 
-    handleThreadReady() {}
+    handleThreadRead(event) {
+        this.loadThreadParticipants(event.detail.threadId);
+    }
     get filterChips() {
         return this.configuredFilters.map((option) => ({
             label: option.label,
@@ -137,6 +142,10 @@ export default class hot_tjenesteLeverandorThreadList extends LightningElement {
         return this.selectedConversation ? [this.selectedConversation] : [];
     }
 
+    get hasReadParticipants() {
+        return this.readParticipants.length > 0;
+    }
+
     handleFilterToggle(event) {
         this.activeFilter = event.detail.chip.value;
         this.ensureSelectedConversationIsVisible();
@@ -163,6 +172,36 @@ export default class hot_tjenesteLeverandorThreadList extends LightningElement {
         this.serviceAppointment = null;
         this.showServiceAppointmentDetailsModal = false;
         this.serviceAppointmentDetailsError = undefined;
+        this.threadParticipants = [];
+        this.readParticipants = [];
+        this.loadThreadParticipants(conversationId);
+        console.log('Selected conversation:', conversation);
+        console.log('Related record ID:', this.relatedRecordId);    
+        console.log('Service appointment:', this.serviceAppointment);
+    }
+
+    async loadThreadParticipants(threadId) {
+        this.isLoadingReadParticipants = true;
+
+        try {
+            const participants = await getParticipants({ threadId });
+            if (this.selectedConversationId !== threadId) {
+                return;
+            }
+
+            const threadType = this.selectedConversation?.threadType;
+            this.threadParticipants = toThreadParticipantLabels(participants ?? [], threadType);
+            this.readParticipants = toCounterpartyReadParticipants(participants ?? [], threadType);
+        } catch (error) {
+            if (this.selectedConversationId === threadId) {
+                this.threadParticipants = [];
+                this.readParticipants = [];
+            }
+        } finally {
+            if (this.selectedConversationId === threadId) {
+                this.isLoadingReadParticipants = false;
+            }
+        }
     }
 
     handleRefresh() {
@@ -356,6 +395,30 @@ function mapThreadToConversation(thread) {
             thread.HOT_ServiceAppointment__r?.HOT_TjenesteleverandorStatus__c
         )
     };
+}
+
+function toThreadParticipantLabels(participants, threadType) {
+    return participants.map((participant) => ({
+        id: participant.userId || participant.name,
+        label: participant.role ? `${participant.name} (${participant.role})` : participant.name
+    }));
+}
+
+function toCounterpartyReadParticipants(participants, threadType) {
+    const readers = participants.filter((participant) => {
+        if (!participant.hasRead) {
+            return false;
+        }
+
+        return threadType === 'HOT_TJENESTELEVERANDOR-FORMIDLER'
+            ? participant.name === 'Formidler'
+            : participant.role === 'Tolk';
+    });
+
+    return readers.map((participant) => ({
+        id: participant.userId || participant.name,
+        label: participant.role ? `${participant.name} (${participant.role})` : participant.name
+    }));
 }
 
 function getTimestamp(dateTime) {
