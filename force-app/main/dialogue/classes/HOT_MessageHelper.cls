@@ -951,7 +951,9 @@ public without sharing class HOT_MessageHelper {
                     'HOT_TOLK-FORMIDLER',
                     'HOT_TOLK-RESSURSKONTOR',
                     'HOT_BRUKER-BESTILLER',
-                    'HOT_TOLK-TOLK'
+                    'HOT_TOLK-TOLK',
+                    'HOT_TJENESTELEVERANDOR-FORMIDLER',
+                    'HOT_TJENESTELEVERANDOR-TOLK'
                 }
         ];
         t.CRM_Latest_Message_Datetime__c = Datetime.now();
