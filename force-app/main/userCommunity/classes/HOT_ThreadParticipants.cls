@@ -1,5 +1,6 @@
 public without sharing class HOT_ThreadParticipants {
     private static final String TJENESTELEVERANDOR_FORMIDLER_THREAD_TYPE = 'HOT_TJENESTELEVERANDOR-FORMIDLER';
+    private static final String TJENESTELEVERANDOR_TOLK_THREAD_TYPE = 'HOT_TJENESTELEVERANDOR-TOLK';
 
     public class Participant {
         @AuraEnabled
@@ -118,21 +119,30 @@ public without sharing class HOT_ThreadParticipants {
         }
         return this;
     }
-    @AuraEnabled(cacheable=true)
+    @AuraEnabled(cacheable=false)
     public static List<Participant> getParticipants(String threadId) {
         List<Participant> participantList = new List<Participant>();
         Thread__c thread = [
-            SELECT Id, CRM_Related_Object__c, CRM_Thread_Type__c, HOT_IsEmployeeThread__c, HOT_Thread_read_by__c
+            SELECT
+                Id,
+                CRM_Related_Object__c,
+                CRM_Thread_Type__c,
+                HOT_IsEmployeeThread__c,
+                HOT_Thread_read_by__c,
+                HOT_ParticipantIds__c
             FROM Thread__c
             WHERE Id = :threadId
         ];
-        if (thread.CRM_Thread_Type__c == TJENESTELEVERANDOR_FORMIDLER_THREAD_TYPE) {
+        if (
+            thread.CRM_Thread_Type__c == TJENESTELEVERANDOR_FORMIDLER_THREAD_TYPE ||
+            thread.CRM_Thread_Type__c == TJENESTELEVERANDOR_TOLK_THREAD_TYPE
+        ) {
             return new HOT_ThreadParticipants(
                     thread.Id,
-                    new List<String>{ TJENESTELEVERANDOR_FORMIDLER_THREAD_TYPE }
+                    new List<String>{ thread.CRM_Thread_Type__c }
                 )
                 .getParticipantsByRelatedObjectAndThreadId()
-                .get(TJENESTELEVERANDOR_FORMIDLER_THREAD_TYPE)
+                .get(thread.CRM_Thread_Type__c)
                 .get(thread.Id);
         }
         participantList.addAll(getAssignedServiceResources(thread));
@@ -185,6 +195,8 @@ public without sharing class HOT_ThreadParticipants {
                     thread.Id,
                     new List<Participant>{ new Participant('Tjenesteleverandør'), new Participant('Formidler') }
                 );
+            } else if (thread.CRM_Thread_Type__c == TJENESTELEVERANDOR_TOLK_THREAD_TYPE) {
+                this.participantsByThreadId.get(thread.Id).add(new Participant('Tjenesteleverandør'));
             }
         }
         return this;
@@ -301,12 +313,15 @@ public without sharing class HOT_ThreadParticipants {
             if (
                 thread.CRM_Thread_Type__c == 'HOT_TOLK-FORMIDLER' ||
                 thread.CRM_Thread_Type__c == 'HOT_BRUKER-FORMIDLER' ||
-                thread.CRM_Thread_Type__c == 'HOT_BESTILLER-FORMIDLER'
+                thread.CRM_Thread_Type__c == 'HOT_BESTILLER-FORMIDLER' || thread.CRM_Thread_Type__c == 'HOT_TJENESTELEVERANDOR-FORMIDLER'
             ) {
                 this.participantsByThreadId.get(thread.Id).add(new Participant('Formidler'));
             }
             if (thread.CRM_Thread_Type__c == 'HOT_TOLK-RESSURSKONTOR') {
                 this.participantsByThreadId.get(thread.Id).add(new Participant('Ressurskontor'));
+            }
+            if(thread.CRM_Thread_Type__c == 'HOT_TJENESTELEVERANDOR-FORMIDLER' || thread.CRM_Thread_Type__c == 'HOT_TJENESTELEVERANDOR-TOLK') {
+                this.participantsByThreadId.get(thread.Id).add(new Participant('Tjenesteleverandør'));
             }
         }
         return this;
