@@ -1,0 +1,524 @@
+@font-face {
+    font-family: 'Source Sans 3';
+    src: url('/resource/SourceSans3/static/SourceSans3-Regular.ttf') format('truetype');
+    font-display: swap;
+    font-weight: 400;
+    font-style: normal;
+}
+
+@font-face {
+    font-family: 'Source Sans 3';
+    src: url('/resource/SourceSans3/static/SourceSans3-SemiBold.ttf') format('truetype');
+    font-display: swap;
+    font-weight: 600;
+    font-style: normal;
+}
+
+@font-face {
+    font-family: 'Source Sans 3';
+    src: url('/resource/SourceSans3/static/SourceSans3-Bold.ttf') format('truetype');
+    font-display: swap;
+    font-weight: 700;
+    font-style: normal;
+}
+
+:host {
+    --lwc-fontFamily: 'Source Sans 3', Arial, sans-serif;
+    --slds-g-font-family: 'Source Sans 3', Arial, sans-serif;
+    font-family: 'Source Sans 3', Arial, sans-serif !important;
+}
+
+:host * {
+    font-family: 'Source Sans 3', Arial, sans-serif !important;
+}
+
+:host {
+    display: block;
+    color: #1f1f1f;
+}
+
+.main {
+    display: grid;
+    grid-template-columns: minmax(0, 56%) minmax(0, 44%);
+    align-items: stretch;
+    min-height: 100vh;
+    background-color: #ecedef;
+}
+
+.list-left,
+.dialog-right {
+    box-sizing: border-box;
+    min-height: 100vh;
+    align-self: stretch;
+}
+
+.list-left {
+    min-width: 0;
+    min-height: calc(100vh - 3.5rem);
+    margin: 2rem 0.75rem 1.5rem 0.25rem;
+    padding: 0 0.75rem 1.5rem 0.25rem;
+    border-radius: 8px;
+    background-color: #ffffff;
+}
+
+.list-toolbar {
+    display: grid;
+    grid-template-columns: minmax(9rem, 1fr) auto;
+    min-width: 0;
+    align-items: center;
+    gap: 1rem;
+    min-height: 3rem;
+    padding: 1.5rem 1rem 0.75rem 2rem;
+}
+
+.owner-switch {
+    justify-self: start;
+}
+
+.list-actions {
+    display: flex;
+    min-width: 0;
+    align-items: center;
+    justify-content: flex-end;
+    gap: 0.5rem;
+}
+
+.list-content {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr);
+    gap: 1rem;
+    padding: 0 1rem 0 2rem;
+}
+
+.filter-chips {
+    padding-top: 1.5rem;
+}
+
+.refresh-button {
+    flex: 0 0 auto;
+}
+
+.search-input {
+    width: min(14rem, 100%);
+    min-width: 9rem;
+    --slds-c-input-radius-border: 1rem;
+}
+
+.conversation-list-region {
+    min-width: 0;
+    background-color: transparent;
+}
+
+.list-heading,
+.conversation-card {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) 9rem 1.5rem;
+    column-gap: 0.5rem;
+}
+
+.list-heading {
+    min-height: 1.5rem;
+    align-items: center;
+    padding: 0 1rem;
+    font-size: 1rem;
+    text-align: right;
+}
+
+.conversation-list ul {
+    margin: 0;
+    padding: 0;
+    list-style: none;
+}
+
+.conversation-list li + li {
+    margin-top: 0.5rem;
+}
+
+.conversation-card {
+    width: 100%;
+    min-height: 5.5rem;
+    align-items: start;
+    padding: 0.75rem 1rem;
+    border: 2px solid transparent;
+    border-radius: 4px;
+    background-color: #f1f3f5;
+    color: inherit;
+    font: inherit;
+    text-align: left;
+    cursor: pointer;
+}
+
+.conversation-card:hover {
+    /* border-color: #b8c5d6; */
+    background-color: #edeef0;
+}
+
+.conversation-card:focus-visible {
+    border-color: #005eb8;
+    outline: 2px solid #005eb8;
+    /* outline-offset: 2px; */
+}
+
+.conversation-card-selected,
+.conversation-card-selected:hover {
+    background-color: #dce5f8;
+}
+
+.conversation-details {
+    display: flex;
+    min-width: 0;
+    flex-direction: column;
+}
+
+.conversation-subject {
+    max-width: 16rem;
+    min-height: 2.5rem;
+    overflow-wrap: anywhere;
+    font-size: 1.125rem;
+    line-height: 1.25;
+}
+
+.appointment-time {
+    margin-top: 0.125rem;
+    font-size: 1rem;
+    line-height: 1.2;
+}
+
+.conversation-badges {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.5rem;
+    margin-top: 0.35rem;
+}
+
+.latest-message {
+    justify-self: end;
+    font-size: 0.9rem;
+    line-height: 1.2;
+    text-align: right;
+    white-space: nowrap;
+}
+
+.selected-indicator {
+    min-width: 1.5rem;
+    align-self: center;
+    justify-self: end;
+    --slds-c-icon-color-foreground-default: #0067d9;
+}
+
+.empty-state {
+    font-size: 1rem;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 0.75rem;
+    margin: 2rem 0;
+    color: #4a4a4a;
+    text-align: center;
+}
+
+.empty-state-icon {
+    width: 3rem;
+    height: 3rem;
+}
+
+.dialog-right {
+    min-width: 0;
+    padding: 2rem 0.75rem 1.5rem;
+    background-color: #ecedef;
+}
+
+.conversation-placeholder {
+    display: flex;
+    min-height: calc(100vh - 3.5rem);
+    box-sizing: border-box;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 1rem;
+    padding-bottom: 12rem;
+    text-align: center;
+}
+
+.conversation-placeholder p {
+    font-size: 1.125rem;
+    font-weight: 400;
+}
+
+.conversation-placeholder .loader {
+    display: inline-flex;
+    gap: 10px;
+}
+
+.conversation-placeholder .loader:before,
+.conversation-placeholder .loader:after {
+    content: '';
+    height: 20px;
+    aspect-ratio: 1;
+    border-radius: 50%;
+    background: radial-gradient(farthest-side, #000 95%, #0000) 35% 35%/6px 6px no-repeat, #fff;
+    transform: scaleX(var(--s, 1)) rotate(0deg);
+    animation: l6 1s infinite linear;
+}
+
+.conversation-placeholder .loader:after {
+    --s: -1;
+    animation-delay: -0.1s;
+}
+
+@keyframes l6 {
+    100% {
+        transform: scaleX(var(--s, 1)) rotate(360deg);
+    }
+}
+
+.conversation-list-loading {
+    display: flex;
+    min-height: calc(100vh - 4.75rem);
+    box-sizing: border-box;
+    align-items: center;
+    justify-content: center;
+    padding-bottom: 12rem;
+}
+
+.conversation-list-loading .loader {
+    display: grid;
+    width: 50px;
+    aspect-ratio: 1;
+    --c: #cff09e 25%, #79bd9a 0 50%, #0b486b 0 75%, #cff09e 0;
+}
+
+.conversation-list-loading .loader:before,
+.conversation-list-loading .loader:after {
+    content: '';
+    background: linear-gradient(90deg, var(--c)), linear-gradient(-90deg, var(--c));
+    background-size: 400% 52%;
+    background-repeat: no-repeat;
+    animation: l13 2s infinite;
+}
+
+@keyframes l13 {
+    0% {
+        background-position: calc(3 * 100% / 3) 0, calc(0 * 100% / 3) 100%;
+    }
+    23%,
+    33% {
+        background-position: calc(2 * 100% / 3) 0, calc(1 * 100% / 3) 100%;
+    }
+    56%,
+    66% {
+        background-position: calc(1 * 100% / 3) 0, calc(2 * 100% / 3) 100%;
+    }
+    90%,
+    100% {
+        background-position: calc(0 * 100% / 3) 0, calc(3 * 100% / 3) 100%;
+    }
+}
+
+.thread-detail {
+    position: relative;
+    width: 100%;
+}
+
+.thread-loading-overlay {
+    position: absolute;
+    inset: 0;
+    z-index: 1;
+    min-height: 0;
+    border-radius: 8px;
+    background-color: #ffffff;
+}
+
+.thread-header {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) auto;
+    gap: 0.75rem 1rem;
+    align-items: start;
+    padding: 0.9rem 1rem;
+    border-radius: 8px;
+    background-color: #ffffff;
+    color: #000000;
+}
+
+.thread-summary {
+    min-width: 0;
+}
+
+.thread-tags {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.5rem;
+    margin-top: 0.5rem;
+}
+
+.thread-participants,
+.thread-readers {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 0.5rem;
+    margin-top: 0.75rem;
+    font-size: 0.8rem;
+}
+
+.thread-participants-label,
+.thread-readers-label {
+    font-weight: 400;
+    font-size: 1rem;
+}
+
+.thread-summary h2 {
+    overflow-wrap: anywhere;
+    font-size: 1.125rem;
+    font-weight: 600;
+    line-height: 1.3;
+}
+
+.thread-summary p {
+    margin-top: 1.125rem;
+    font-size: 0.8rem;
+    font-weight: 400;
+}
+
+.service-appointment-details,
+.service-appointment-status,
+.service-appointment-error {
+    grid-column: 1 / -1;
+    margin: 0;
+}
+
+.service-appointment-details {
+    display: grid;
+    gap: 0.5rem;
+    padding-top: 0.5rem;
+}
+
+.service-appointment-detail {
+    display: grid;
+    grid-template-columns: minmax(10rem, 14rem) minmax(0, 1fr);
+    gap: 1rem;
+}
+
+.service-appointment-detail dt {
+    font-weight: 700;
+}
+
+.service-appointment-detail dd {
+    min-width: 0;
+    margin: 0;
+    overflow-wrap: anywhere;
+}
+
+.service-appointment-error {
+    color: #ba3a26;
+    font-weight: 600;
+}
+
+.thread-type-badge {
+    display: inline-flex;
+    min-height: 1.75rem;
+    align-items: center;
+    padding: 0.2rem 0.8rem;
+    border-radius: 1rem;
+    background-color: #ffffff;
+    color: #005eb8;
+    font-size: 0.75rem;
+    font-weight: 600;
+    white-space: nowrap;
+}
+
+.message-panel {
+    margin-top: 0.75rem;
+    padding: 1rem;
+    border-radius: 8px;
+    background-color: #ffffff;
+}
+
+@media (max-width: 1200px) {
+    .search-input {
+        width: 100%;
+    }
+
+    .list-heading,
+    .conversation-card {
+        grid-template-columns: minmax(0, 1fr) 7rem 1.5rem;
+    }
+}
+
+@media (max-width: 900px) {
+    .main {
+        grid-template-columns: minmax(0, 1fr);
+    }
+
+    .list-left,
+    .dialog-right {
+        min-height: auto;
+    }
+
+    .list-left {
+        padding-right: 0.5rem;
+        padding-left: 0.5rem;
+    }
+
+    .list-toolbar {
+        grid-template-columns: minmax(0, 1fr);
+        padding-right: 0;
+        padding-left: 0;
+    }
+
+    .list-actions {
+        justify-content: flex-start;
+    }
+
+    .list-content {
+        grid-template-columns: minmax(0, 1fr);
+        gap: 0.75rem;
+        padding-right: 0;
+        padding-left: 0;
+    }
+
+    .filter-tabs {
+        flex-direction: row;
+        flex-wrap: wrap;
+        padding-top: 0;
+    }
+
+    .refresh-button {
+        align-self: flex-start;
+    }
+
+    .search-input {
+        width: 100%;
+        min-width: 0;
+    }
+
+    .list-heading {
+        display: none;
+    }
+
+    .conversation-card {
+        grid-template-columns: minmax(0, 1fr) 1.5rem;
+    }
+
+    .latest-message {
+        grid-column: 1;
+        justify-self: start;
+        margin-top: 0.5rem;
+        text-align: left;
+        white-space: normal;
+    }
+
+    .selected-indicator {
+        grid-column: 2;
+        grid-row: 1 / span 2;
+    }
+
+    .thread-header {
+        grid-template-columns: minmax(0, 1fr);
+    }
+
+    .thread-type-badge {
+        grid-column: 1;
+        justify-self: start;
+    }
+}

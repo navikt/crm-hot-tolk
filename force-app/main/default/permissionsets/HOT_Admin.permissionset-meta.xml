@@ -49,11 +49,11 @@
         <enabled>true</enabled>
     </classAccesses>
     <classAccesses>
-        <apexClass>HOT_TindAccessErrorController</apexClass>
+        <apexClass>HOT_TLThreadlistController</apexClass>
         <enabled>true</enabled>
     </classAccesses>
     <classAccesses>
-        <apexClass>HOT_TjenesteleverandorListController</apexClass>
+        <apexClass>HOT_TindAccessErrorController</apexClass>
         <enabled>true</enabled>
     </classAccesses>
     <classAccesses>
