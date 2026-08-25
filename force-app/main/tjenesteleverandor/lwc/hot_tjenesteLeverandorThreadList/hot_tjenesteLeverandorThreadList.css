@@ -256,7 +256,9 @@
     height: 20px;
     aspect-ratio: 1;
     border-radius: 50%;
-    background: radial-gradient(farthest-side, #000 95%, #0000) 35% 35%/6px 6px no-repeat, #fff;
+    background:
+        radial-gradient(farthest-side, #000 95%, #0000) 35% 35%/6px 6px no-repeat,
+        #fff;
     transform: scaleX(var(--s, 1)) rotate(0deg);
     animation: l6 1s infinite linear;
 }
@@ -299,19 +301,27 @@
 
 @keyframes l13 {
     0% {
-        background-position: calc(3 * 100% / 3) 0, calc(0 * 100% / 3) 100%;
+        background-position:
+            calc(3 * 100% / 3) 0,
+            calc(0 * 100% / 3) 100%;
     }
     23%,
     33% {
-        background-position: calc(2 * 100% / 3) 0, calc(1 * 100% / 3) 100%;
+        background-position:
+            calc(2 * 100% / 3) 0,
+            calc(1 * 100% / 3) 100%;
     }
     56%,
     66% {
-        background-position: calc(1 * 100% / 3) 0, calc(2 * 100% / 3) 100%;
+        background-position:
+            calc(1 * 100% / 3) 0,
+            calc(2 * 100% / 3) 100%;
     }
     90%,
     100% {
-        background-position: calc(0 * 100% / 3) 0, calc(3 * 100% / 3) 100%;
+        background-position:
+            calc(0 * 100% / 3) 0,
+            calc(3 * 100% / 3) 100%;
     }
 }
 
@@ -331,7 +341,6 @@
 
 .thread-header {
     display: grid;
-    grid-template-columns: minmax(0, 1fr) auto;
     gap: 0.75rem 1rem;
     align-items: start;
     padding: 0.9rem 1rem;
@@ -369,14 +378,14 @@
 
 .thread-summary h2 {
     overflow-wrap: anywhere;
-    font-size: 1.125rem;
+    font-size: 1.4rem;
     font-weight: 600;
     line-height: 1.3;
 }
 
 .thread-summary p {
-    margin-top: 1.125rem;
-    font-size: 0.8rem;
+    margin-top: 0.2rem;
+    font-size: 1.125rem;
     font-weight: 400;
 }
 

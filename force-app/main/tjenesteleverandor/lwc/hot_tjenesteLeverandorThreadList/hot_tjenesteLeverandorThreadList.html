@@ -129,24 +129,24 @@
                         </div>
                     </template>
                     <header class="thread-header">
+                        <div class="thread-tags">
+                            <c-hot_tag
+                                label={selectedConversation.threadTypeLabel}
+                                variant="moderate"
+                                size="small"
+                                color="info"
+                            ></c-hot_tag>
+                            <c-hot_tag
+                                lwc:if={selectedConversation.showthreadStatusInTjenesteleverandorContext}
+                                label={selectedConversation.showthreadStatusInTjenesteleverandorContext}
+                                variant="moderate"
+                                size="small"
+                                color="danger"
+                            ></c-hot_tag>
+                        </div>
                         <div class="thread-summary">
                             <h2>{selectedConversation.subject}</h2>
                             <p>{selectedConversation.appointmentTime}</p>
-                            <div class="thread-tags">
-                                <c-hot_tag
-                                    label={selectedConversation.threadTypeLabel}
-                                    variant="moderate"
-                                    size="small"
-                                    color="info"
-                                ></c-hot_tag>
-                                <c-hot_tag
-                                    lwc:if={selectedConversation.showthreadStatusInTjenesteleverandorContext}
-                                    label={selectedConversation.showthreadStatusInTjenesteleverandorContext}
-                                    variant="moderate"
-                                    size="small"
-                                    color="danger"
-                                ></c-hot_tag>
-                            </div>
                             <div class="thread-participants">
                                 <span class="thread-participants-label">Deltakere:</span>
                                 <template for:each={threadParticipants} for:item="participant">
