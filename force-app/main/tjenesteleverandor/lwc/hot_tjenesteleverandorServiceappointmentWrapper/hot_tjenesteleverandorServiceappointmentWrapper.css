@@ -1,5 +1,6 @@
+@import 'c/hot_sharedFonts';
+
 .list {
-    font-family: 'Source Sans Pro', Arial, sans-serif;
     font-size: 18px;
     border-radius: 0.5rem;
     display: flex;
@@ -16,10 +17,10 @@
     height: 100%;
     min-height: 80vh;
     background-color: #ffffff;
+    border-radius: 0.5rem;
 }
 
 .header-title {
-    font-family: 'Source Sans Pro', Arial, sans-serif;
     position: relative;
     width: 100%;
     font-size: 2rem;
