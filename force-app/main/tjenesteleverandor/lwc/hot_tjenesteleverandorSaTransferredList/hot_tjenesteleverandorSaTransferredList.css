@@ -1,8 +1,8 @@
+@import 'c/hot_sharedFonts';
 .main-content {
     background-color: #ffffff;
     border-radius: 0.5rem;
     width: 100%;
-    font-family: 'Source Sans Pro', Arial, sans-serif;
     align-items: center;
     padding-top: 0.5rem;
     text-align: end;
@@ -91,6 +91,10 @@ dialog.modal-container .modal-header {
 
 dialog.modal-container .modal-body {
     padding: 0 2rem 2rem;
+}
+
+dialog.modal-container .modal-body strong {
+    font-weight: 600;
 }
 
 dialog.modal-container .modal-footer {

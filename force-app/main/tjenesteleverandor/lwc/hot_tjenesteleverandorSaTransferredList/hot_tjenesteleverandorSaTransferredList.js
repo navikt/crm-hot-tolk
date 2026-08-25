@@ -66,14 +66,11 @@ export default class Hot_tjenesteleverandorSaTransferredList extends NavigationM
 
     datetimeFields = [
         { name: 'StartAndEndDate', type: 'datetimeinterval', start: 'EarliestStartTime', end: 'DueDate' },
-        { name: 'HOT_DeadlineDate__c', type: 'date' },
         {
             name: 'HOT_TjenesteleverandorDeadline__c',
-            type: 'datetime',
-            newName: 'TjenesteleverandorDeadline'
+            type: 'datetime'
         },
-        { name: 'HOT_TjenesteleverandorTransferDate__c', type: 'datetime' },
-        { name: 'HOT_ReleaseDate__c', type: 'date', newName: 'ReleaseDate' }
+        { name: 'HOT_TjenesteleverandorTransferDate__c', type: 'datetime' }
     ];
 
     connectedCallback() {
@@ -186,8 +183,7 @@ export default class Hot_tjenesteleverandorSaTransferredList extends NavigationM
                     ...formattedRecord,
                     HOT_ServiceAppointmentNumber__c: record.AppointmentNumber,
                     startAndEndDateWeekday: formattedRecord.StartAndEndDate,
-                    weekday: getDayOfWeek(record.EarliestStartTime),
-                    isOtherProvider: record.HOT_IsOtherEconomicProvicer__c ? 'Ja' : 'Nei'
+                    weekday: getDayOfWeek(record.EarliestStartTime)
                 };
             });
             this.applyCurrentFilters();
