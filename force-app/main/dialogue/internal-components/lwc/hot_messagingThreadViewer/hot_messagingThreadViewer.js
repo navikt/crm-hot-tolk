@@ -1,6 +1,7 @@
 import { LightningElement, api, wire } from 'lwc';
 import getmessages from '@salesforce/apex/HOT_MessageHelper.getMessagesFromThread';
 import markAsReadByNav from '@salesforce/apex/HOT_MessageHelper.markAsReadByNav';
+import markMessagesAsTjenesteleverandor from '@salesforce/apex/HOT_MessageHelper.markMessagesAsTjenesteleverandor';
 import { subscribe, unsubscribe } from 'lightning/empApi';
 import setLastMessageFrom from '@salesforce/apex/HOT_MessageHelper.setLastMessageFrom';
 import getUserNameRole from '@salesforce/apex/HOT_MessageHelper.getUserNameRole';
@@ -27,6 +28,7 @@ export default class hot_messagingThreadViewer extends LightningElement {
     @api showClose;
     @api englishTextTemplate;
     @api setInputInFocusOnRender;
+    _isTjenesteLeverandorFormidlerView = false;
     langBtnLock = false;
     langBtnAriaToggle = false;
     newMessage = false;
@@ -58,6 +60,18 @@ export default class hot_messagingThreadViewer extends LightningElement {
         this._showMessageInput = !(value === false || value === 'false');
     }
 
+    @api
+    get isTjenesteLeverandorFormidlerView() {
+        return this._isTjenesteLeverandorFormidlerView;
+    }
+
+    set isTjenesteLeverandorFormidlerView(value) {
+        this._isTjenesteLeverandorFormidlerView = value;
+        if (value && this.messages.length > 0) {
+            this.markMessagesAsTjenesteleverandor(this.messages);
+        }
+    }
+
     connectedCallback() {
         if (this.thread) {
             this.threadid = this.thread.Id;
@@ -70,6 +84,7 @@ export default class hot_messagingThreadViewer extends LightningElement {
                     this.handleSubscribe();
                     this.scrolltobottom();
                     this.markThreadAsRead();
+                    console.log('isTjenesteleverandorFormidlerView result: ', this.isTjenesteLeverandorFormidlerView);
                 })
                 .catch((error) => {
                     if (error.body.message === 'No access') {
@@ -127,6 +142,38 @@ export default class hot_messagingThreadViewer extends LightningElement {
             });
     }
 
+    markMessagesAsTjenesteleverandor(messages) {
+        if (!this.isTjenesteLeverandorFormidlerView) {
+            return;
+        }
+        const messageIds = messages
+            .filter((message) => !message.HOT_IsTjenesteleverandorMessage__c)
+            .map((message) => message.Id);
+
+        if (messageIds.length === 0) {
+            return;
+        }
+
+        markMessagesAsTjenesteleverandor({ messageIds })
+            .then(() => this.refreshMessages())
+            .then(() => {
+                console.log(
+                    'Messages marked as tjenesteleverandor successfully' +
+                        (messageIds.length > 0 ? ` for message IDs: ${messageIds.join(', ')}` : '')
+                );
+                const updatedMessages = this.messages.filter((message) => messageIds.includes(message.Id));
+                const newestMessage = updatedMessages[updatedMessages.length - 1];
+                console.log(
+                    'Newest message marked, HOT_IsTjenesteleverandorMessage__c:',
+                    newestMessage.Id,
+                    newestMessage.HOT_IsTjenesteleverandorMessage__c
+                );
+            })
+            .catch((error) => {
+                console.error('Unable to mark messages as tjenesteleverandor:', error);
+            });
+    }
+
     @wire(getmessages, { threadId: '$threadid' }) //Calls apex and extracts messages related to this record
     wiremessages(result) {
         this._mySendForSplitting = result;
@@ -135,6 +182,7 @@ export default class hot_messagingThreadViewer extends LightningElement {
         } else if (result.data) {
             this.messages = result.data;
             this.showspinner = false;
+            this.markMessagesAsTjenesteleverandor(result.data);
         }
     }
     //If empty, stop submitting.

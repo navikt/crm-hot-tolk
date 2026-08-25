@@ -66,7 +66,7 @@ export default class hot_tjenesteLeverandorThreadList extends LightningElement {
     checkTjenesteleverandorFormidler() {
         isCurrentUserTjenesteleverandor()
             .then((result) => {
-                this.isTjenesteleverandorFormidler = result;
+                this.isTjenesteleverandorFormidler = Boolean(result);
             })
             .catch(() => {
                 this.isTjenesteleverandorFormidler = false;

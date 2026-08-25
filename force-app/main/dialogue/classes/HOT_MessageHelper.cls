@@ -707,7 +707,8 @@ public without sharing class HOT_MessageHelper {
                         CRM_From_First_Name__c,
                         CRM_External_Message__c,
                         CRM_From_Label__c,
-                        HOT_User_Role__c
+                        HOT_User_Role__c,
+                        HOT_IsTjenesteleverandorMessage__c
                     FROM Message__c
                     WHERE CRM_Thread__c = :threadId
                     ORDER BY CRM_Sent_date__c ASC
@@ -724,6 +725,29 @@ public without sharing class HOT_MessageHelper {
             return null;
         }
     }
+    @AuraEnabled
+    public static void markMessagesAsTjenesteleverandor(List<Id> messageIds) {
+        if (messageIds == null || messageIds.isEmpty()) {
+            return;
+        }
+        List<Message__c> messages = [
+            SELECT Id, HOT_IsTjenesteleverandorMessage__c
+            FROM Message__c
+            WHERE Id IN :messageIds AND HOT_IsTjenesteleverandorMessage__c = FALSE
+        ];
+        if (messages.isEmpty()) {
+            return;
+        }
+        for (Message__c m : messages) {
+            m.HOT_IsTjenesteleverandorMessage__c = true;
+        }
+        try {
+            update messages;
+        } catch (Exception e) {
+            throw new AuraHandledException(e.getMessage());
+        }
+    }
+
     @AuraEnabled(cacheable=true)
     public static string getUserLisenceType(Id userId) {
         try {
