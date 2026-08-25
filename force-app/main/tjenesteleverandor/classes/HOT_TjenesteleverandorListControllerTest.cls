@@ -1,7 +1,9 @@
 @IsTest
 private class HOT_TjenesteleverandorListControllerTest {
     private static final String TEST_USERNAME =
-        'tjenesteleverandor-list-' + UserInfo.getOrganizationId() + '@test.nav.no';
+        'tjenesteleverandor-list-' +
+        UserInfo.getOrganizationId() +
+        '@test.nav.no';
 
     @TestSetup
     static void createAppointments() {
@@ -38,12 +40,7 @@ private class HOT_TjenesteleverandorListControllerTest {
         testUser.Username = TEST_USERNAME;
         testUser.Alias = 'tllist';
         testUser.CommunityNickname = 'tllist' + UserInfo.getOrganizationId();
-        PermissionSet permissionSet = [
-            SELECT Id
-            FROM PermissionSet
-            WHERE Name = 'HOT_Admin'
-            LIMIT 1
-        ];
+        PermissionSet permissionSet = [SELECT Id FROM PermissionSet WHERE Name = 'HOT_Admin' LIMIT 1];
 
         myTriggers.disable(UserPermissionSetAssignmentHandler.class);
         System.runAs(new User(Id = UserInfo.getUserId())) {
@@ -70,6 +67,18 @@ private class HOT_TjenesteleverandorListControllerTest {
             appointments = HOT_TjenesteleverandorListController.getAcceptedServiceAppointments();
         }
         return appointments;
+    }
+
+    @IsTest
+    static void returnsTransferredAppointmentsCount() {
+        Integer count;
+        System.runAs(getTestUser()) {
+            Test.startTest();
+            count = HOT_TjenesteleverandorListController.getTransferredServiceAppointmentsCount();
+            Test.stopTest();
+        }
+
+        Assert.areEqual(1, count, 'Only the transferred appointment should be counted');
     }
 
     @IsTest

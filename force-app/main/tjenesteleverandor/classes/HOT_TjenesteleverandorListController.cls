@@ -1,5 +1,18 @@
 public with sharing class HOT_TjenesteleverandorListController {
     @AuraEnabled(cacheable=true)
+    public static Integer getTransferredServiceAppointmentsCount() {
+        return [
+            SELECT COUNT()
+            FROM ServiceAppointment
+            WHERE
+                HOT_TjenesteleverandorStatus__c = 'Transferred'
+                AND Status = 'Released to Freelance'
+                AND HOT_IsReleasedToFreelance__c = TRUE
+            WITH USER_MODE
+        ];
+    }
+
+    @AuraEnabled(cacheable=true)
     public static List<ServiceAppointment> getTransferredServiceAppointments() {
         return [
             SELECT
