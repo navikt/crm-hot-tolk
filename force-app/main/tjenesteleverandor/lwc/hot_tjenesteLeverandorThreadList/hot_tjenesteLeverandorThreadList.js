@@ -2,7 +2,6 @@ import { LightningElement } from 'lwc';
 import getAllThreads from '@salesforce/apex/HOT_TLThreadlistController.getAllTjenesteleverandorThreads';
 import getServiceAppointmentDetails from '@salesforce/apex/HOT_TLThreadlistController.getServiceAppointmentDetails';
 import getParticipants from '@salesforce/apex/HOT_ThreadParticipants.getParticipants';
-import isCurrentUserTjenesteleverandor from '@salesforce/apex/HOT_MessageHelper.isCurrentUserTjenesteleverandor';
 import { formatDatetimeinterval } from 'c/datetimeFormatterNorwegianTime';
 import userId from '@salesforce/user/Id';
 import icons from '@salesforce/resourceUrl/aksel_ikoner';
@@ -45,14 +44,13 @@ export default class hot_tjenesteLeverandorThreadList extends LightningElement {
     threadParticipants = [];
     readParticipants = [];
     isLoadingReadParticipants = false;
-    isTjenesteleverandorFormidler = false;
+    isTjenesteleverandorFormidler = true;
 
     connectedCallback() {
         this.relativeTimeRefreshInterval = setInterval(() => {
             this.currentTimestamp = Date.now();
         }, MILLISECONDS_PER_MINUTE);
         this.loadConversations();
-        this.checkTjenesteleverandorFormidler();
     }
 
     disconnectedCallback() {
@@ -61,16 +59,6 @@ export default class hot_tjenesteLeverandorThreadList extends LightningElement {
 
     handleThreadRead(event) {
         this.loadThreadParticipants(event.detail.threadId);
-    }
-
-    checkTjenesteleverandorFormidler() {
-        isCurrentUserTjenesteleverandor()
-            .then((result) => {
-                this.isTjenesteleverandorFormidler = Boolean(result);
-            })
-            .catch(() => {
-                this.isTjenesteleverandorFormidler = false;
-            });
     }
 
     get filterChips() {

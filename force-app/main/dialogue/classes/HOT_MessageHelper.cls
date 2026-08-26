@@ -725,28 +725,6 @@ public without sharing class HOT_MessageHelper {
             return null;
         }
     }
-    @AuraEnabled
-    public static void markMessagesAsTjenesteleverandor(List<Id> messageIds) {
-        if (messageIds == null || messageIds.isEmpty()) {
-            return;
-        }
-        List<Message__c> messages = [
-            SELECT Id, HOT_IsTjenesteleverandorMessage__c
-            FROM Message__c
-            WHERE Id IN :messageIds AND HOT_IsTjenesteleverandorMessage__c = FALSE
-        ];
-        if (messages.isEmpty()) {
-            return;
-        }
-        for (Message__c m : messages) {
-            m.HOT_IsTjenesteleverandorMessage__c = true;
-        }
-        try {
-            update messages;
-        } catch (Exception e) {
-            throw new AuraHandledException(e.getMessage());
-        }
-    }
 
     @AuraEnabled(cacheable=true)
     public static string getUserLisenceType(Id userId) {
@@ -888,6 +866,8 @@ public without sharing class HOT_MessageHelper {
             userNameRole = user.FirstName + ', Tolkebruker';
         } else if (user.Profile.Name == 'NAV Bruker Plus') {
             userNameRole = user.FirstName + ', Tolkebruker';
+        } else if (user.Profile.Name == 'HOT Tolk Tjenestesteleverandør') {
+            userNameRole = user.FirstName + ', Tjenesteleverandør';
         } else {
             userNameRole = user.FirstName + ', Administrator';
         }
@@ -916,6 +896,8 @@ public without sharing class HOT_MessageHelper {
             return user.FirstName + ', Tolkebruker';
         } else if (user.Profile.Name == 'NAV Bruker Plus') {
             return user.FirstName + ', Tolkebruker';
+        } else if (user.Profile.Name == 'HOT Tolk Tjenestesteleverandør') {
+            return user.FirstName + ', Tjenesteleverandør';
         } else {
             return user.FirstName + ', Administrator';
         }
