@@ -33,6 +33,10 @@
         <enabled>true</enabled>
     </classAccesses>
     <classAccesses>
+        <apexClass>HOT_TLThreadlistController</apexClass>
+        <enabled>true</enabled>
+    </classAccesses>
+    <classAccesses>
         <apexClass>HOT_ThreadDetailController</apexClass>
         <enabled>true</enabled>
     </classAccesses>
@@ -45,11 +49,11 @@
         <enabled>true</enabled>
     </classAccesses>
     <classAccesses>
-        <apexClass>HOT_TjenesteleverandorListController</apexClass>
+        <apexClass>HOT_TjenesteleverandorAcceptanceService</apexClass>
         <enabled>true</enabled>
     </classAccesses>
     <classAccesses>
-        <apexClass>HOT_TjenesteleverandorAcceptanceService</apexClass>
+        <apexClass>HOT_TjenesteleverandorListController</apexClass>
         <enabled>true</enabled>
     </classAccesses>
     <classAccesses>
@@ -458,6 +462,11 @@
     <fieldPermissions>
         <editable>true</editable>
         <field>Message__c.CRM_From_Label__c</field>
+        <readable>true</readable>
+    </fieldPermissions>
+    <fieldPermissions>
+        <editable>true</editable>
+        <field>Message__c.CRM_From_User__c</field>
         <readable>true</readable>
     </fieldPermissions>
     <fieldPermissions>
