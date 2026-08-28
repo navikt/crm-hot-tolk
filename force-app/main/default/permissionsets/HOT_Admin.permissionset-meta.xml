@@ -49,11 +49,11 @@
         <enabled>true</enabled>
     </classAccesses>
     <classAccesses>
-        <apexClass>HOT_TindAccessErrorController</apexClass>
+        <apexClass>HOT_TLThreadlistController</apexClass>
         <enabled>true</enabled>
     </classAccesses>
     <classAccesses>
-        <apexClass>HOT_TjenesteleverandorListController</apexClass>
+        <apexClass>HOT_TindAccessErrorController</apexClass>
         <enabled>true</enabled>
     </classAccesses>
     <classAccesses>
@@ -1085,6 +1085,11 @@
     <fieldPermissions>
         <editable>false</editable>
         <field>Message__c.CRM_From_Label__c</field>
+        <readable>true</readable>
+    </fieldPermissions>
+    <fieldPermissions>
+        <editable>true</editable>
+        <field>Message__c.HOT_IsTjenesteleverandorMessage__c</field>
         <readable>true</readable>
     </fieldPermissions>
     <fieldPermissions>
