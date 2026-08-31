@@ -768,6 +768,9 @@ private class HOT_MessageHelperTest {
             WHERE Subject = 'TEST'
             LIMIT 1
         ];
+        HOT_Request__c request = [SELECT Id FROM HOT_Request__c WHERE Id = :serviceAppointment.HOT_Request__c];
+        request.Dispatcher__c = UserInfo.getUserId();
+        update request;
 
         Test.startTest();
         Thread__c thread = HOT_MessageHelper.createThreadDispatcher(
@@ -783,6 +786,7 @@ private class HOT_MessageHelperTest {
             WHERE Id = :thread.Id
         ];
         System.assertEquals(serviceAppointment.Subject, createdThread.HOT_Title__c);
+        System.assertEquals(UserInfo.getUserId(), createdThread.HOT_Dispatcher__c);
         System.assertEquals(serviceAppointment.Id, createdThread.HOT_ServiceAppointment__c);
         System.assertEquals('HOT_TJENESTELEVERANDOR-FORMIDLER', createdThread.CRM_Type__c);
     }

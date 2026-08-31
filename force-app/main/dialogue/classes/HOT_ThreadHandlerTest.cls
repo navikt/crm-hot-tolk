@@ -63,7 +63,7 @@ public without sharing class HOT_ThreadHandlerTest {
         AssignedResource assignedResource = HOT_TestDataFactory.createAssignedResource(sa.Id, resource.Id);
         insert assignedResource;
         Thread__c thread = HOT_TestDataFactory.createThread();
-        thread.CRM_Thread_Type__c = 'HOT_TOLK-FORMIDLER';
+        thread.CRM_Type__c = 'HOT_TOLK-FORMIDLER';
         thread.CRM_Related_Object__c = sa.Id;
         Test.startTest();
         insert thread;
@@ -395,8 +395,10 @@ public without sharing class HOT_ThreadHandlerTest {
         Test.stopTest();
 
         System.assertEquals(
-            new Set<String>((user.Id + ', ' + user2.Id).split(', ')),
-            new Set<String>(t.HOT_ParticipantIds__c.split(',')),
+            new Set<String>((user.Id +
+            ', ' +
+            user2.Id).split(', ')),
+             new Set<String>(t.HOT_ParticipantIds__c.split(',')),
             'Did not change/add correct participant to thread'
         );
     }
