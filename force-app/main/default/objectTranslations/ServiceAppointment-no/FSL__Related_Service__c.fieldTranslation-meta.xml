@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomFieldTranslation xmlns="http://soap.sforce.com/2006/04/metadata">
+    <label><!-- Related Service --></label>
+    <name>FSL__Related_Service__c</name>
+    <relationshipLabel><!-- Service Appointments --></relationshipLabel>
+</CustomFieldTranslation>
