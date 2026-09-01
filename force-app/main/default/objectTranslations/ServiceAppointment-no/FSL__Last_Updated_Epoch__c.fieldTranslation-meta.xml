@@ -1,5 +1,0 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<CustomFieldTranslation xmlns="http://soap.sforce.com/2006/04/metadata">
-    <label><!-- Last Updated Epoch --></label>
-    <name>FSL__Last_Updated_Epoch__c</name>
-</CustomFieldTranslation>
