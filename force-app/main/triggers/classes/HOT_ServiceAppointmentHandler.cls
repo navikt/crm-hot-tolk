@@ -697,7 +697,6 @@ public without sharing class HOT_ServiceAppointmentHandler extends MyTriggers {
                     serviceAppointment.put('fsl__ganttcolor__c', ganttColorByStatus.get(serviceAppointment.Status));
                 }
             }
-            serviceAppointment.HOT_AutoDispatch__c = true;
         }
     }
 
