@@ -1,7 +1,10 @@
 <template>
     <template lwc:if={hasDuplicates}>
-        <c-hot_universal-alert-banner type="Warning" show-icon items={duplicateRecordItems}>
-            Brukeren har allerede arbeidsordrer i dette tidsrommet
-        </c-hot_universal-alert-banner>
+        <c-hot_universal-alert-banner 
+            type="Warning" 
+            show-icon 
+            items={duplicateRecordItems} 
+            message="Brukeren har allerede arbeidsordrer i dette tidsrommet"
+        ></c-hot_universal-alert-banner>
     </template>
 </template>
