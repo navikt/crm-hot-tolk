@@ -11,29 +11,16 @@
                 <!-- Kontaktinformasjon -->
                 <section class="sub-form">
                     <h2 id="contact-info-header" style="text-align: center">Kontaktinformasjon</h2>
-                    <div lwc:if={isAlternativeNumber}>
-                        <c-hot_info-card
-                            title="Alternativt mobilnummer i bruk"
-                            content={alternativePhoneNumberText}
-                            show-icon
-                            type="info"
-                        ></c-hot_info-card>
-                        <br></br>
-                    </div>
-
                     <div class="my-grid">
                         <div class="my-col-half">
-                            <h3 class="sub-header" for="mobilePhone"
-                                >Mobilnummer fra Kontakt- og reservasjonsregisteret</h3
-                            >
-                            <p id="mobilePhone" class="output-value">{mobilePhoneKRR}</p>
+                            <label class="output-label" for="mobilePhone">Mobilnummer</label>
+                            <p id="mobilePhone" class="output-value">{mobilePhone}</p>
                         </div>
                         <div class="my-col-half">
-                            <h3 class="sub-header" for="email">E-postadresse</h3>
+                            <label class="output-label" for="email">E-postadresse</label>
                             <p id="email" class="output-value">{email}</p>
                         </div>
                     </div>
-
                     <p>
                         <a
                             href="https://minprofil.kontaktregisteret.no/"
@@ -47,16 +34,15 @@
                         </a>
                     </p>
                     <div
-                        lwc:if={isKrrQueued}
+                        if:true={isKrrQueued}
+                        class="navno-dekorator alertstripe navno-dekorator alertstripe--advarsel"
                         role="alert"
                         aria-live="polite"
                     >
-                    <br>
-                        <c-hot_info-card
-                            title="Endring registrert"
-                            content="Kontaktinformasjonen vil bli oppdatert innen 24 timer."
-                            type="neutral"
-                        ></c-hot_info-card>
+                        <img class="navno-dekorator alertstripe__ikon" src={warningicon} alt="" aria-hidden="true" />
+                        <div class="typo-normal alertstripe__tekst">
+                            Kontaktinformasjonen vil bli oppdatert innen 24 timer
+                        </div>
                     </div>
                 </section>
 
@@ -142,8 +128,18 @@
             <div class="sr-only" aria-live="assertive" role="status">{ariaMessage}.</div>
 
             <template lwc:if={showSuccess}>
-                <div class="success-container">
-                    <c-hot_local-alert type="success" title={successMessage} size="small" content="Dine varselinnstillinger er oppdatert."></c-hot_local-alert>
+                <div class="navno-dekorator alertstripe navno-dekorator alertstripe--success">
+                    <img class="navno-dekorator alertstripe__ikon" src={successicon} alt="" />
+                    <div class="typo-normal alertstripe__tekst">
+                        <p>{successMessage}</p>
+                    </div>
+                    <button
+                        class="navno-dekorator close-success-button"
+                        onclick={handleCloseSuccess}
+                        aria-label="Lukk melding"
+                    >
+                        &times;
+                    </button>
                 </div>
             </template>
         </div>

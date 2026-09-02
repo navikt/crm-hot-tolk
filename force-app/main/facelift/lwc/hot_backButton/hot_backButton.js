@@ -106,32 +106,6 @@ export default class Hot_backButton extends NavigationMixin(LightningElement) {
         const notCanceled = this.dispatchEvent(evt);
         if (!notCanceled) return;
 
-        const url = new URL(window.location.href);
-        const from = this._urlStateParameters?.from || url.searchParams.get('from');
-        const fromFilter = this._urlStateParameters?.fromFilter || url.searchParams.get('fromFilter');
-        const fromSearch = this._urlStateParameters?.fromSearch || url.searchParams.get('fromSearch');
-
-        if (from === 'mine-samtaler' || from === 'mine-samtaler-frilanstolk') {
-            const params = new URLSearchParams();
-
-            if (fromFilter) {
-                params.set('filter', fromFilter);
-            }
-            if (fromSearch) {
-                params.set('search', fromSearch);
-            }
-
-            const targetUrl = params.toString() ? `/${from}?${params.toString()}` : `/${from}`;
-
-            this[NavigationMixin.Navigate]({
-                type: 'standard__webPage',
-                attributes: {
-                    url: targetUrl
-                }
-            });
-            return;
-        }
-
         const { pathname = '', search = '', hash = '' } = window.location || {};
         const lowerPath = pathname.toLowerCase();
 
@@ -150,8 +124,11 @@ export default class Hot_backButton extends NavigationMixin(LightningElement) {
                 window.history.back();
                 return;
             }
-        } catch (e) {}
+        } catch (e) {
+            // fall through
+        }
 
+        // Fallback if no history
         if (this.fallbackUrl) {
             window.location.assign(this.fallbackUrl);
         }

@@ -9,15 +9,14 @@ import getPersonAccount from '@salesforce/apex/HOT_Utility.getPersonAccount';
 import { getParametersFromURL } from 'c/hot_URIDecoder';
 
 export default class hot_requestFormWrapper_v2 extends NavigationMixin(LightningElement) {
-    submitted = false;
-    recordId = null;
-    spin = false;
-    requestTypeChosen = false;
+    @track submitted = false; // if:false={submitted}
+    @track recordId = null;
+    @track spin = false;
+    @track requestTypeChosen = false;
     @track fieldValues = {};
     @track componentValues = {};
     @track personAccount = { Id: '', Name: '' };
-    refreshToken = null;
-
+    @track refreshToken = null;
     @wire(getPersonAccount)
     wiredGetPersonAccount(result) {
         if (result.data) {
@@ -27,8 +26,14 @@ export default class hot_requestFormWrapper_v2 extends NavigationMixin(Lightning
     }
 
     breadcrumbs = [
-        { label: 'Tolketjenesten', href: '' },
-        { label: 'Ny bestilling', href: 'ny-bestilling' }
+        {
+            label: 'Tolketjenesten',
+            href: ''
+        },
+        {
+            label: 'Ny bestilling',
+            href: 'ny-bestilling'
+        }
     ];
 
     @track requestTypeResult = {};
@@ -43,72 +48,34 @@ export default class hot_requestFormWrapper_v2 extends NavigationMixin(Lightning
         this.template.querySelector('c-hot_request-form_request_v2').deleteMarkedFiles();
     }
 
-    handleSubmitClick() {
-        this.handleSubmit();
-    }
-
     async handleSubmit(event) {
-        if (event?.preventDefault) {
-            event.preventDefault();
-        }
-
-        if (this.submitted) {
-            return;
-        }
-
-        this.submitted = true;
+        event.preventDefault();
         this.spin = true;
-
-        const saveBtn = this.template.querySelector('[data-id="saveButton"]');
-        if (saveBtn) {
-            saveBtn.disabled = true;
-        }
-
-        try {
-            this.setAccountLookupFieldsBasedOnRequestType();
-            this.getFieldValuesFromSubForms();
-
-            let status = 'Åpen';
-
-            if (this.isEditOrCopyMode) {
-                this.deleteMarkedFiles();
-                status = await getRequestStatus({ recordId: this.recordId });
-
-                if (status !== null && status !== 'Åpen') {
-                    this.showModalOnEditNotAllowed();
-                    this.spin = false;
-                    this.submitted = false;
-                    if (saveBtn) saveBtn.disabled = false;
-                    return;
-                }
+        this.setAccountLookupFieldsBasedOnRequestType();
+        this.getFieldValuesFromSubForms();
+        let status = 'Åpen';
+        if (this.isEditOrCopyMode) {
+            this.deleteMarkedFiles();
+            status = await getRequestStatus({ recordId: this.recordId });
+            if (status !== null && status !== 'Åpen') {
+                this.showModalOnEditNotAllowed();
             }
-
-            let hasErrors = this.handleValidation();
-
-            if (!hasErrors && (status === 'Åpen' || status === null)) {
-                const overlapOk = await this.promptOverlap();
-
+        }
+        let hasErrors = this.handleValidation();
+        if (!hasErrors && (status === 'Åpen' || status === null)) {
+            this.template.querySelector('[data-id="saveButton"]').disabled = true;
+            this.promptOverlap().then((overlapOk) => {
                 if (overlapOk) {
                     this.hideFormAndShowLoading();
                     this.submitForm();
                 } else {
                     this.spin = false;
-                    this.submitted = false;
-                    if (saveBtn) saveBtn.disabled = false;
                 }
-            } else {
-                this.spin = false;
-                this.submitted = false;
-                if (saveBtn) saveBtn.disabled = false;
-            }
-        } catch (e) {
-            console.error('handleSubmit error', e);
+            });
+        } else {
             this.spin = false;
-            this.submitted = false;
-            if (saveBtn) saveBtn.disabled = false;
         }
     }
-
     setAccountLookupFieldsBasedOnRequestType() {
         this.fieldValues.Orderer__c = this.personAccount.Id;
         this.fieldValues.OrdererName__c = this.personAccount.Name;
@@ -165,47 +132,29 @@ export default class hot_requestFormWrapper_v2 extends NavigationMixin(Lightning
                 accountId: this.personAccount.Id,
                 times: timeInput.times
             });
-
             if (duplicateRequests.length > 0) {
                 this.modalHeader = 'Du har allerede bestillinger i dette tidsrommet.';
                 this.noCancelButton = false;
-
                 for (let request of duplicateRequests) {
                     this.modalContent += '\nTema: ' + request.Subject__c;
                     this.modalContent += '\nPeriode: ' + request.SeriesPeriod__c + '\n';
                 }
-
                 this.template.querySelector('c-alertdialog').showModal();
                 response = false;
             }
         }
-
         return response;
     }
 
     handleAlertDialogClick(event) {
         if (event.detail === 'confirm' && this.modalHeader === 'Du har allerede bestillinger i dette tidsrommet.') {
-            if (this.submitted) {
-                return;
-            }
-
-            this.submitted = true;
             this.spin = true;
-
-            const saveBtn = this.template.querySelector('[data-id="saveButton"]');
-            if (saveBtn) saveBtn.disabled = true;
-
             this.hideFormAndShowLoading();
             this.submitForm();
         }
-
         if (event.detail === 'cancel' && this.modalHeader === 'Du har allerede bestillinger i dette tidsrommet.') {
-            const saveBtn = this.template.querySelector('[data-id="saveButton"]');
-            if (saveBtn) saveBtn.disabled = false;
-            this.submitted = false;
-            this.spin = false;
+            this.template.querySelector('[data-id="saveButton"]').disabled = false;
         }
-
         if (event.detail === 'confirm' && this.modalHeader === 'Kunne ikke redigere bestilling') {
             this.goToMyRequests();
         }
@@ -218,31 +167,28 @@ export default class hot_requestFormWrapper_v2 extends NavigationMixin(Lightning
     modalHeader = '';
     modalContent = '';
     noCancelButton = true;
-
     handleError(event) {
-        const saveBtn = this.template.querySelector('[data-id="saveButton"]');
-        if (saveBtn) saveBtn.disabled = false;
-
+        this.template.querySelector('[data-id="saveButton"]').disabled = false;
         this.modalHeader = 'Noe gikk galt under opprettelsen av bestillingen.';
         this.noCancelButton = true;
-
         if (event.detail.detail === 'Fant ingen virksomhet med dette organisasjonsnummeret.') {
             this.modalContent =
                 'Fant ingen virksomhet med organisasjonsnummer ' + this.fieldValues.OrganizationNumber__c + '.';
         } else {
             this.modalContent = event.detail.detail;
         }
-
         this.template.querySelector('c-alertdialog').showModal();
         this.spin = false;
-        this.submitted = false;
     }
+    @track requestId;
 
     handleSuccess(event) {
+        const record = event.detail.id;
+        this.requestId = record;
+
         if (this.editNotAllowed) {
             return;
         }
-
         this.recordId = event.detail.id;
         this.uploadFiles();
         this.createWorkOrders();
@@ -286,80 +232,63 @@ export default class hot_requestFormWrapper_v2 extends NavigationMixin(Lightning
     }
 
     createWorkOrders() {
-        const timeInput = this.template.querySelector('c-hot_request-form_request_v2').getTimeInput();
-
-        if (!(timeInput?.times && Object.keys(timeInput.times).length > 0)) {
-            this.hideFormAndShowError();
-            this.spin = false;
-            this.submitted = false;
-            const saveBtn = this.template.querySelector('[data-id="saveButton"]');
-            if (saveBtn) saveBtn.disabled = false;
-            return;
-        }
-
-        const finish = async () => {
-            const ok = await this.checkIfCreatedCorrectly(this.recordId);
-            if (ok) {
-                this.hideFormAndShowSuccess();
+        let timeInput = this.template.querySelector('c-hot_request-form_request_v2').getTimeInput();
+        if (timeInput.times !== {}) {
+            if (timeInput.isAdvancedTimes) {
+                try {
+                    createWorkOrders({
+                        requestId: this.recordId,
+                        times: timeInput.times['0'],
+                        recurringType: timeInput.repeatingOptionChosen,
+                        recurringDays: timeInput.chosenDays,
+                        recurringEndDate: new Date(timeInput.repeatingEndDate).getTime()
+                    }).then(async () => {
+                        const isCreatedCorrectly = await this.checkIfCreatedCorrectly(this.requestId);
+                        if (isCreatedCorrectly) {
+                            this.hideFormAndShowSuccess();
+                        } else {
+                            this.hideFormAndShowError();
+                        }
+                        this.spin = false;
+                    });
+                } catch (error) {
+                    console.log(JSON.stringify(error));
+                    this.hideFormAndShowError();
+                }
             } else {
-                this.hideFormAndShowError();
+                createAndUpdateWorkOrders({ requestId: this.recordId, times: timeInput.times }).then(async () => {
+                    const isCreatedCorrectly = await this.checkIfCreatedCorrectly(this.requestId);
+                    if (isCreatedCorrectly) {
+                        this.hideFormAndShowSuccess();
+                    } else {
+                        this.hideFormAndShowError();
+                    }
+                    this.spin = false;
+                });
             }
-        };
-
-        if (timeInput.isAdvancedTimes) {
-            createWorkOrders({
-                requestId: this.recordId,
-                times: timeInput.times['0'],
-                recurringType: timeInput.repeatingOptionChosen,
-                recurringDays: timeInput.chosenDays,
-                recurringEndDate: new Date(timeInput.repeatingEndDate).getTime()
-            })
-                .then(finish)
-                .catch(() => {
-                    this.hideFormAndShowError();
-                })
-                .finally(() => {
-                    this.spin = false;
-                    this.submitted = false;
-                });
-        } else {
-            createAndUpdateWorkOrders({ requestId: this.recordId, times: timeInput.times })
-                .then(finish)
-                .catch(() => {
-                    this.hideFormAndShowError();
-                })
-                .finally(() => {
-                    this.spin = false;
-                    this.submitted = false;
-                });
         }
     }
 
     checkIfCreatedCorrectly(recordId) {
-        return isErrorOnRequestCreate({ requestId: recordId }).then((result) => result === false);
+        return isErrorOnRequestCreate({
+            requestId: recordId
+        }).then((result) => {
+            if (result === false) {
+                return true;
+            } else {
+                return false;
+            }
+        });
     }
 
     reloadPage() {
         location.reload();
     }
 
-    previousPage = 'home';
-
-    previousRequestId = null;
-    previousWorkOrderId = null;
-
+    @track previousPage = 'home';
     connectedCallback() {
         let parsed_params = getParametersFromURL();
-
         if (parsed_params != null) {
-            if (this.previousRequestId == null && parsed_params.requestIdParam) {
-                this.previousRequestId = parsed_params.requestIdParam;
-            }
-
-            if (this.previousWorkOrderId == null && parsed_params.workOrderIdParam) {
-                this.previousWorkOrderId = parsed_params.workOrderIdParam;
-            }
-
             if (parsed_params.fromList != null) {
                 if (parsed_params.isAccount === 'true') {
                     this.previousPage = 'mine-bestillinger';
@@ -376,7 +305,6 @@ export default class hot_requestFormWrapper_v2 extends NavigationMixin(Lightning
             }
         }
     }
-
     handleUploadFinished(event) {
         const uploadedFiles = event.detail.files;
         if (uploadedFiles.length > 0) {
@@ -389,22 +317,18 @@ export default class hot_requestFormWrapper_v2 extends NavigationMixin(Lightning
     isEditOrCopyMode = false;
     showUploadFileModule = true;
     isEditModeAndTypeMe = false;
-    isEditMode = false;
-
     handleEditOrCopyModeRequestType(parsed_params) {
         if (parsed_params.edit != null) {
             this.breadcrumbs.push({ label: 'Rediger bestilling' });
             this.submitButtonLabel = 'Lagre';
             this.submitSuccessMessage = 'Dine endringer er lagret';
             this.showUploadFileModule = false;
-            this.isEditMode = true;
         }
         if (parsed_params.copy != null) {
             this.breadcrumbs.push({ label: 'Kopier bestilling' });
             this.submitButtonLabel = 'Send inn';
             this.submitSuccessMessage = 'Bestilling mottatt';
         }
-
         this.isEditOrCopyMode = parsed_params.edit != null || parsed_params.copy != null;
         this.requestTypeChosen = this.isEditOrCopyMode;
         this.isEditModeAndTypeMe = this.fieldValues.Type__c === 'Me' && this.isEditOrCopyMode;
@@ -430,12 +354,12 @@ export default class hot_requestFormWrapper_v2 extends NavigationMixin(Lightning
             delete this.fieldValues.Id;
         } else {
             this.recordId = this.fieldValues.Id;
-            this.requestIds = [this.recordId];
+            let requestIds = [];
+            requestIds.push(this.fieldValues.Id);
+            this.requestIds = requestIds;
         }
-
         this.setCurrentForm();
     }
-
     @track requestIds = [];
 
     goToMyRequests() {
@@ -447,22 +371,14 @@ export default class hot_requestFormWrapper_v2 extends NavigationMixin(Lightning
             }
         });
     }
-
     goToPreviousPage() {
         window.scrollTo(0, 0);
-
-        if (this.previousRequestId || this.previousWorkOrderId) {
-            window.history.back();
-            return;
-        }
-
-        this[NavigationMixin.Navigate](
-            {
-                type: 'comm__namedPage',
-                attributes: { pageName: this.previousPage }
-            },
-            true
-        );
+        this[NavigationMixin.Navigate]({
+            type: 'comm__namedPage',
+            attributes: {
+                pageName: this.previousPage
+            }
+        });
     }
 
     formArray = [];
@@ -537,6 +453,7 @@ export default class hot_requestFormWrapper_v2 extends NavigationMixin(Lightning
             this.formArray[this.formArray.length - 1] === 'userForm' &&
             this.formArray[this.formArray.length - 2] === 'companyForm'
         ) {
+            // Back to ordererForm
             this.requestTypeResult[this.formArray[this.formArray.length - 1]] = false;
             this.requestTypeResult[this.formArray[this.formArray.length - 2]] = false;
             this.requestTypeResult[this.formArray[this.formArray.length - 3]] = true;
@@ -546,6 +463,7 @@ export default class hot_requestFormWrapper_v2 extends NavigationMixin(Lightning
             this.formArray[this.formArray.length - 2] === 'userForm' &&
             this.formArray[this.formArray.length - 3] === 'companyForm'
         ) {
+            // Back to company+userform (checkbox checked)
             this.requestTypeResult[this.formArray[this.formArray.length - 1]] = false;
             this.requestTypeResult[this.formArray[this.formArray.length - 2]] = true;
             this.requestTypeResult[this.formArray[this.formArray.length - 3]] = true;
@@ -569,9 +487,7 @@ export default class hot_requestFormWrapper_v2 extends NavigationMixin(Lightning
     scrollToTop() {
         try {
             document.activeElement?.blur?.();
-        } catch (e) {
-            // ignore
-        }
+        } catch (e) {}
 
         const htmlEl = document.documentElement;
         const prevBehavior = htmlEl.style.scrollBehavior;
@@ -589,16 +505,12 @@ export default class hot_requestFormWrapper_v2 extends NavigationMixin(Lightning
         const snapTop = () => {
             try {
                 window.scrollTo(0, 0);
-            } catch (e) {
-                // ignore
-            }
+            } catch (e) {}
             candidates.forEach((el) => {
                 try {
                     el.scrollTop = 0;
                     el.scrollLeft = 0;
-                } catch (e) {
-                    // ignore
-                }
+                } catch (e) {}
             });
         };
 

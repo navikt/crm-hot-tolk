@@ -30,7 +30,6 @@ private class HOT_FreelanceUserInfoControllerTest {
         Boolean newIsAvailableForAcuteAssignments = true;
         String newPreferredRegions = 'Vest_Viken;Oslo';
         String newPreferences = 'Updated text';
-        Boolean newShowOpenServiceAppointmentEvents = true;
 
         Test.startTest();
         ServiceResource updatedSR = HOT_FreelanceUserInformationController.updateServiceResourceName(
@@ -44,8 +43,7 @@ private class HOT_FreelanceUserInfoControllerTest {
             newIsSkilled,
             newIsAvailableForAcuteAssignments,
             newPreferredRegions,
-            newPreferences,
-            newShowOpenServiceAppointmentEvents
+            newPreferences
         );
         Test.stopTest();
 
@@ -60,8 +58,7 @@ private class HOT_FreelanceUserInfoControllerTest {
                 HOT_Skilled__c,
                 HOT_IsAvailableForAcuteAssignments__c,
                 HOT_PreferredRegions__c,
-                HOT_MoreInformation__c,
-                HOT_ShowOpenServiceAppointmentEvents__c
+                HOT_MoreInformation__c
             FROM ServiceResource
             WHERE Id = :updatedSR.Id
         ];
@@ -76,6 +73,5 @@ private class HOT_FreelanceUserInfoControllerTest {
         System.assertEquals(newIsAvailableForAcuteAssignments, sr.HOT_IsAvailableForAcuteAssignments__c);
         System.assertEquals(newPreferredRegions, sr.HOT_PreferredRegions__c);
         System.assertEquals(newPreferences, sr.HOT_MoreInformation__c);
-        System.assertEquals(newShowOpenServiceAppointmentEvents, sr.HOT_ShowOpenServiceAppointmentEvents__c);
     }
 }

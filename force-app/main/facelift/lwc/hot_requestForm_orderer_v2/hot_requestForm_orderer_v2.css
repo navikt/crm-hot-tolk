@@ -19,13 +19,6 @@
     z-index: 1;
     position: relative;
 }
-.switch-container {
-    position: relative;
-    display: flex;
-    align-items: center;
-    padding: 0.4rem 0;
-    flex-direction: row;
-}
 
 @media (max-width: 576px) {
     .skjema-ikon {

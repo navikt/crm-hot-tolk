@@ -4,8 +4,6 @@ export class CalendarEvent {
     static GREEN_300 = '#66C786';
     static ORANGE_300 = '#FFC166';
     static PURPLE_400 = '#8269A2';
-    static ORANGE_000 = '#FFC000';
-    static PINK_200 = '#FF99FF';
 
     static eventTypeProperties = new Map([
         [
@@ -17,11 +15,9 @@ export class CalendarEvent {
                 pastColor: CalendarEvent.RED_200
             }
         ],
-        ['OPEN_SERVICE_APPOINTMENT', { fontColor: 'black', color: CalendarEvent.PINK_200 }],
+        ['COMPLETED_SERVICE_APPOINTMENT', { fontColor: 'black', color: CalendarEvent.GREEN_300 }],
         ['OPEN_WAGE_CLAIM', { fontColor: 'black', color: CalendarEvent.ORANGE_300 }],
-        ['WAGE_CLAIM_NEW_TYPE', { fontColor: 'black', color: CalendarEvent.ORANGE_000 }],
-        ['RESOURCE_ABSENCE', { fontColor: 'white', color: CalendarEvent.PURPLE_400 }],
-        ['COMPLETED_SERVICE_APPOINTMENT', { fontColor: 'black', color: CalendarEvent.GREEN_300 }]
+        ['RESOURCE_ABSENCE', { fontColor: 'white', color: CalendarEvent.PURPLE_400 }]
     ]);
 
     recordId;

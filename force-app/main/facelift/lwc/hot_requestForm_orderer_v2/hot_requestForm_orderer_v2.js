@@ -20,11 +20,11 @@ export default class Hot_requestForm_orderer extends LightningElement {
         }
     }
 
-    handleSMSSwitch(event) {
-        this.fieldValues.IsOrdererWantStatusUpdateOnSMS__c = event.detail.checked;
+    handleSMSCheckbox(event) {
+        this.fieldValues.IsOrdererWantStatusUpdateOnSMS__c = event.detail;
     }
-    handleDontNotifyUserSwitch(event) {
-        this.fieldValues.IsNotNotifyAccount__c = event.detail.checked;
+    handleDontNotifyUserCheckbox(event) {
+        this.fieldValues.IsNotNotifyAccount__c = event.detail;
     }
 
     @track fieldValues = {
@@ -45,56 +45,18 @@ export default class Hot_requestForm_orderer extends LightningElement {
     }
 
     ordererPhoneError = 'Bestillers telefon må fylles ut.';
-
-    validateOrdererPhone(inputCmp, errMsg, validateStartingNumber) {
-        let num = inputCmp.getValue().replaceAll(' ', '');
-        let hasError = false;
-
-        if (num.substring(0, 4) === '0047' && num.length === 12) {
-            num = num.substring(4, num.length);
-        }
-        if (num.charAt(0) === '+') {
-            hasError = true;
-        }
-        if (num.substring(0, 3) === '+47') {
-            if (num.length < 11) {
-                hasError = true;
-            }
-            num = num.substring(3, num.length);
-        }
-        if (isNaN(num)) {
-            hasError = true;
-        }
-        if (num.length !== 8) {
-            hasError = true;
-        }
-        if (validateStartingNumber && num.charAt(0) !== '4' && num.charAt(0) !== '9') {
-            hasError = true;
-        }
-
-        inputCmp.sendErrorMessage(hasError ? errMsg : '');
-        return hasError;
-    }
-
     @api
     validateFields() {
         this.ordererPhoneError = this.fieldValues.IsOrdererWantStatusUpdateOnSMS__c
-            ? 'Bestillers telefon må være et gyldig mobilnummer hvis ønske om SMS-varsel ved statusendring er valgt.'
-            : 'Bestillers telefon må være et gyldig telefonnummer.';
+            ? 'Bestillers telefon må være et gyldig mobilnummer hvis ønske om SMS-varsel ved statusendring er huket av.'
+            : 'Bestillers telefon må fylles ut.';
         let hasErrors = false;
         this.template.querySelectorAll('c-input').forEach((element) => {
             if (element.validationHandler()) {
                 hasErrors += 1;
             }
         });
-        const ordererPhoneInput = this.template.querySelectorAll('c-input')[2];
-        hasErrors += this.validateOrdererPhone(
-            ordererPhoneInput,
-            this.ordererPhoneError,
-            this.fieldValues.IsOrdererWantStatusUpdateOnSMS__c
-        )
-            ? 1
-            : 0;
+        hasErrors = this.template.querySelectorAll('c-input')[2].validatePhone(this.ordererPhoneError);
         return hasErrors;
     }
 

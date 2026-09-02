@@ -27,9 +27,6 @@ export default class Hot_threadList_v2 extends NavigationMixin(LightningElement)
         }
     }
     connectedCallback() {
-        const url = new URL(window.location.href);
-        this.filterValue = url.searchParams.get('filter') || url.searchParams.get('fromFilter') || 'all';
-        this.searchValue = url.searchParams.get('search') || url.searchParams.get('fromSearch') || '';
         this.loadData();
     }
 
@@ -42,12 +39,6 @@ export default class Hot_threadList_v2 extends NavigationMixin(LightningElement)
             .then((threadData) => {
                 this.threads = threadData;
                 this.error = undefined;
-                if (this.searchValue) {
-                    this.template.querySelector('c-hot_thread-list-search')?.setValue(this.searchValue);
-                }
-                if (this.filterValue) {
-                    this.template.querySelector('c-hot_thread-list-filter-buttons')?.setActiveTab(this.filterValue);
-                }
                 this.tryMapAndSortThreads();
             })
             .catch((error) => {
@@ -58,12 +49,10 @@ export default class Hot_threadList_v2 extends NavigationMixin(LightningElement)
     }
     handleFilterButtonClick(event) {
         this.filterValue = event.detail;
-        this.updateUrlParams();
         this.tryMapAndSortThreads();
     }
     handleSearchChange(event) {
         this.searchValue = event.detail;
-        this.updateUrlParams();
         this.tryMapAndSortThreads();
     }
 
@@ -121,24 +110,6 @@ export default class Hot_threadList_v2 extends NavigationMixin(LightningElement)
             this.hasThreads = true;
         }
     }
-    updateUrlParams() {
-        const url = new URL(window.location.href);
-
-        if (this.filterValue && this.filterValue !== 'all') {
-            url.searchParams.set('filter', this.filterValue);
-        } else {
-            url.searchParams.delete('filter');
-        }
-
-        if (this.searchValue) {
-            url.searchParams.set('search', this.searchValue);
-        } else {
-            url.searchParams.delete('search');
-        }
-
-        window.history.replaceState({}, '', url);
-    }
-
     formatDateTime(date) {
         let unformatted = new Date(date);
         let formattedTime =
@@ -171,7 +142,7 @@ export default class Hot_threadList_v2 extends NavigationMixin(LightningElement)
             }
         }
         if (threadTypeValue === 'HOT_BRUKER-BESTILLER') {
-            return 'Samtale mellom bruker og bestiller';
+            return 'Samtale mellom bruker og bestiller)';
         }
         if (threadTypeValue === 'HOT_TOLK-FORMIDLER') {
             return 'Med formidler';
@@ -189,12 +160,7 @@ export default class Hot_threadList_v2 extends NavigationMixin(LightningElement)
         // Vi skal lage en record page for alle typer tråder men foreløpig nå må den gå til hver sin.
         if (this.isFreelanceView) {
             const baseUrl = '/samtale-frilans';
-            const attributes =
-                `recordId=${event.detail}` +
-                `&from=mine-samtaler-frilanstolk` +
-                `&fromFilter=${this.filterValue || ''}` +
-                `&fromSearch=${this.searchValue || ''}`;
-
+            const attributes = `recordId=${event.detail}&from=mine-samtaler-frilanstolk`;
             const url = `${baseUrl}?${attributes}`;
 
             this[NavigationMixin.Navigate]({
@@ -213,8 +179,8 @@ export default class Hot_threadList_v2 extends NavigationMixin(LightningElement)
                 },
                 state: {
                     from: 'mine-samtaler',
-                    fromFilter: this.filterValue,
-                    fromSearch: this.searchValue
+                    recordId: event.detail,
+                    level: 'WO'
                 }
             });
         }

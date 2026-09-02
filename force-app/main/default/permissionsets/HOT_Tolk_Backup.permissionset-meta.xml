@@ -350,11 +350,6 @@
     </fieldPermissions>
     <fieldPermissions>
         <editable>false</editable>
-        <field>HOT_Request__c.HOT_Owner__c</field>
-        <readable>true</readable>
-    </fieldPermissions>
-    <fieldPermissions>
-        <editable>false</editable>
         <field>HOT_Request__c.HOT_PersonContactId__c</field>
         <readable>true</readable>
     </fieldPermissions>
@@ -608,6 +603,7 @@
         <field>HOT_Request__c.PreferredResource2__c</field>
         <readable>true</readable>
     </fieldPermissions>
+
     <fieldPermissions>
         <editable>false</editable>
         <field>HOT_Request__c.SeriesDurationDays__c</field>
@@ -785,11 +781,6 @@
     </fieldPermissions>
     <fieldPermissions>
         <editable>false</editable>
-        <field>HOT_WageClaim__c.Reason__c</field>
-        <readable>true</readable>
-    </fieldPermissions>
-    <fieldPermissions>
-        <editable>false</editable>
         <field>HOT_WageClaim__c.ServiceAppointmentCity__c</field>
         <readable>true</readable>
     </fieldPermissions>
@@ -921,16 +912,6 @@
     <fieldPermissions>
         <editable>true</editable>
         <field>Person__c.HOT_LanguageAndCommunicationMethods__c</field>
-        <readable>true</readable>
-    </fieldPermissions>
-    <fieldPermissions>
-        <editable>true</editable>
-        <field>Person__c.HOT_MobilePhoneOverrideReason__c</field>
-        <readable>true</readable>
-    </fieldPermissions>
-    <fieldPermissions>
-        <editable>true</editable>
-        <field>Person__c.HOT_MobilePhoneOverride__c</field>
         <readable>true</readable>
     </fieldPermissions>
     <fieldPermissions>
@@ -1181,11 +1162,6 @@
     <fieldPermissions>
         <editable>true</editable>
         <field>ServiceAppointment.HOT_CancelComment__c</field>
-        <readable>true</readable>
-    </fieldPermissions>
-    <fieldPermissions>
-        <editable>true</editable>
-        <field>ServiceAppointment.HOT_CancelCommentExtended__c</field>
         <readable>true</readable>
     </fieldPermissions>
     <fieldPermissions>
@@ -1721,11 +1697,6 @@
     <fieldPermissions>
         <editable>true</editable>
         <field>ServiceResource.HOT_ServiceTerritory__c</field>
-        <readable>true</readable>
-    </fieldPermissions>
-    <fieldPermissions>
-        <editable>false</editable>
-        <field>ServiceResource.HOT_ShowOpenServiceAppointmentEvents__c</field>
         <readable>true</readable>
     </fieldPermissions>
     <fieldPermissions>

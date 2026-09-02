@@ -22,51 +22,23 @@
         <template lwc:else>
             <lightning-layout class="panelBackground">
                 <div class={panelClass}>
-                    <lightning-layout-item class="nowrap-selector">
+                    <lightning-layout-item class="highlightPanelTop nowrap-selector">
                         <lightning-layout-item>
                             <template lwc:if={isPersonDetailsLoaded}>
-                                <lightning-layout-item class="highlightPanelTop">
-                                    <c-hot_tind-person-highlight-panel-top
-                                        record-id={recordId}
-                                        person-details={personDetails}
-                                    ></c-hot_tind-person-highlight-panel-top>
-                                </lightning-layout-item>
-                                <!-- Badges for confidential and NAV employee status -->
-                                <lightning-layout-item class="custom-padding-bottom">
-                                    <template lwc:if={isNavEmployeeBadge}>
-                                        <lightning-layout-item class="custom-padding-left">
-                                            <lightning-badge
-                                                class="slds-theme_error slds-var-m-left_x-small slds-var-m-vertical_xx-small redBadge"
-                                                label={navEmployeeLabel}
-                                                role="heading"
-                                            >
-                                            </lightning-badge>
-                                        </lightning-layout-item>
-                                    </template>
-                                    <template lwc:if={isConfidentialBadge}>
-                                        <lightning-layout-item class="custom-padding-left">
-                                            <lightning-badge
-                                                class="slds-theme_error slds-var-m-left_x-small slds-var-m-vertical_xx-small redBadge"
-                                                label={confidentialLabel}
-                                                role="heading"
-                                            >
-                                            </lightning-badge>
-                                        </lightning-layout-item>
-                                    </template>
-                                </lightning-layout-item>
+                                <c-hot_tind-person-highlight-panel-top
+                                    record-id={recordId}
+                                    person-details={personDetails}
+                                ></c-hot_tind-person-highlight-panel-top>
                             </template>
                         </lightning-layout-item>
                         <span lwc:if={uuAlertText} class="slds-assistive-text" role="alert">{uuAlertText}</span>
                     </lightning-layout-item>
-
-                    <template lwc:if={shouldShowBottomPanel}>
-                        <lightning-layout-item>
-                            <c-hot_tind-person-highlight-panel-bot
-                                record-id={recordId}
-                                person-details={personDetails}
-                            ></c-hot_tind-person-highlight-panel-bot>
-                        </lightning-layout-item>
-                    </template>
+                    <lightning-layout-item>
+                        <c-hot_tind-person-highlight-panel-bot
+                            record-id={recordId}
+                            person-details={personDetails}
+                        ></c-hot_tind-person-highlight-panel-bot>
+                    </lightning-layout-item>
                 </div>
             </lightning-layout>
         </template>

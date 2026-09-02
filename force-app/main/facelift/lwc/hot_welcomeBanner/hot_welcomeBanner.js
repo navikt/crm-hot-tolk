@@ -5,7 +5,6 @@ export default class Hot_welcomebannerV2 extends LightningElement {
 
     @api personDetails;
     @api announcements;
-    @api unreadAnnouncementIds;
 
     get isMobilePublisher() {
         const ua = navigator.userAgent;

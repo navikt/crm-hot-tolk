@@ -23,13 +23,8 @@
                 <template lwc:else>
                     <div class="modal-header">
                         <template lwc:if={isInformationModalOpen}>
-                            <h2 hidden={isSubmittingOpenServiceAppointmentInterest}>{informationModalHeading}</h2>
-                            <button
-                                class="close-btn"
-                                onclick={closeModal}
-                                aria-label="Lukk"
-                                hidden={isSubmittingOpenServiceAppointmentInterest}
-                            >
+                            <h2>Informasjon om oppdraget:</h2>
+                            <button class="close-btn" onclick={closeModal} aria-label="Lukk">
                                 <img src={exitCrossIcon} alt="" aria-hidden="true" />
                             </button>
                         </template>
@@ -104,7 +99,7 @@
                                             </p>
                                             <p>Tolkemetode: <span>{serviceAppointment.HOT_WorkTypeName__c}</span></p>
                                             <p lwc:if={serviceAppointment.HOT_PreparationTime__c}>
-                                                Kompensert forberedelse:
+                                                Forberedelsestid:
                                                 <span>{serviceAppointment.HOT_PreparationTime__c}</span>
                                             </p>
                                             <p>Oppdragstype: <span>{serviceAppointment.HOT_AssignmentType__c}</span></p>
@@ -133,12 +128,7 @@
                                                 (Med)tolk: <span>{serviceAppointment.HOT_Interpreters__c}</span>
                                             </p>
                                             <p lwc:if={serviceAppointment.Description}>
-                                                Tilleggsopplysninger:&nbsp;
-                                                <span
-                                                    ><lightning-formatted-rich-text
-                                                        value={serviceAppointment.Description}
-                                                    ></lightning-formatted-rich-text
-                                                ></span>
+                                                Tilleggsopplysninger: <span>{serviceAppointment.Description}</span>
                                             </p>
 
                                             <p lwc:if={ordererPhoneNumber}>
@@ -234,175 +224,6 @@
                                 </template>
                             </section>
 
-                            <!-- Open service appointment details-->
-                            <section lwc:if={isOpenServiceAppointmentDetails}>
-                                <template lwc:if={hasSubmittedOpenServiceAppointmentInterest}>
-                                    <div class="interest-status" role="status" aria-live="polite">
-                                        <lightning-icon
-                                            icon-name="utility:success"
-                                            alternative-text="Suksess"
-                                            title="Suksess"
-                                            variant="success"
-                                            size="large"
-                                        ></lightning-icon>
-                                        <h2 class="typo-undertittel" tabindex="-1">Interesse er meldt.</h2>
-                                        <c-button
-                                            button-styling="primary"
-                                            button-label="OK"
-                                            onbuttonclick={closeModal}
-                                            desktop-style="width: 8rem; justify-content: center"
-                                            mobile-style="width: 8rem; justify-content: center"
-                                        ></c-button>
-                                    </div>
-                                </template>
-                                <template lwc:elseif={isSubmittingOpenServiceAppointmentInterest}>
-                                    <div class="interest-status" role="status" aria-live="polite">
-                                        <h2 class="typo-undertittel">Melder interesse...</h2>
-                                        <c-hot_loader size="3xlarge" variant="interaction"></c-hot_loader>
-                                    </div>
-                                </template>
-                                <template lwc:elseif={showOpenServiceAppointmentInterestForm}>
-                                    <lightning-record-edit-form
-                                        class="comment-form"
-                                        object-api-name="HOT_InterestedResource__c"
-                                        density="comfy"
-                                    >
-                                        <p>
-                                            Tema:
-                                            <span>&nbsp;{openServiceAppointment.HOT_FreelanceSubject__c}</span>
-                                        </p>
-                                        <p>
-                                            Tid:
-                                            <span
-                                                >&nbsp;{openServiceAppointment.weekday}
-                                                {openServiceAppointment.StartAndEndDate}</span
-                                            >
-                                        </p>
-                                        <p>
-                                            Adresse:
-                                            <span>&nbsp;{openServiceAppointment.HOT_AddressFormated__c}</span>
-                                        </p>
-                                        <p>
-                                            Tolkemetode:
-                                            <span>&nbsp;{openServiceAppointment.HOT_WorkTypeName__c}</span>
-                                        </p>
-                                        <p lwc:if={openServiceAppointment.HOT_PreparationTime__c}>
-                                            Kompensert forberedelse:
-                                            <span>&nbsp;{openServiceAppointment.HOT_PreparationTime__c}</span>
-                                        </p>
-                                        <p>
-                                            Oppdragstype:
-                                            <span>&nbsp;{openServiceAppointment.HOT_AssignmentType__c}</span>
-                                        </p>
-                                        <p>
-                                            Antall påmeldte:
-                                            <span
-                                                >&nbsp;{openServiceAppointment.HOT_NumberOfInterestedResources__c}</span
-                                            >
-                                        </p>
-                                        <p>
-                                            Region:
-                                            <span>&nbsp;{openServiceAppointment.HOT_ServiceTerritoryName__c}</span>
-                                        </p>
-                                        <p>
-                                            Frist dato:
-                                            <span>&nbsp;{openServiceAppointment.HOT_DeadlineDate__c}</span>
-                                        </p>
-
-                                        <label for="open-service-appointment-interest-comment"
-                                            >Start samtale med formidler</label
-                                        >
-                                        <lightning-input-field
-                                            id="open-service-appointment-interest-comment"
-                                            class="ikke-sensitive-opplysninger comment-field"
-                                            field-name="Comments__c"
-                                            variant="label-hidden"
-                                            aria-label="Start samtale med formidler"
-                                            value={openServiceAppointmentInterestComment}
-                                            onchange={handleOpenServiceAppointmentInterestCommentChange}
-                                        ></lightning-input-field>
-                                    </lightning-record-edit-form>
-
-                                    <template lwc:if={openServiceAppointmentInterestError}>
-                                        <div class="interest-error" role="alert" aria-live="assertive">
-                                            <h2>Noe gikk galt under melding av interesse.</h2>
-                                            <p>Feilmelding: {openServiceAppointmentInterestError}</p>
-                                        </div>
-                                    </template>
-
-                                    <div class="slds-m-top_medium">
-                                        <c-button
-                                            button-styling="primary"
-                                            button-label="Send inn"
-                                            type="submit"
-                                            onbuttonclick={registerOpenServiceAppointmentInterest}
-                                            desktop-style="width: 8rem; justify-content: center"
-                                            mobile-style="width: 8rem; justify-content: center"
-                                        ></c-button>
-                                    </div>
-                                </template>
-                                <template lwc:elseif={openServiceAppointment}>
-                                    <div>
-                                        <p>
-                                            Oppdragsnummer:
-                                            <span>&nbsp;{openServiceAppointment.HOT_ServiceAppointmentNumber__c}</span>
-                                        </p>
-                                        <p>Tema:<span>&nbsp;{openServiceAppointment.HOT_FreelanceSubject__c}</span></p>
-                                        <p>
-                                            Tid:&nbsp;
-                                            <span
-                                                >{openServiceAppointment.weekday}
-                                                {openServiceAppointment.StartAndEndDate}</span
-                                            >
-                                        </p>
-                                        <p>Adresse: <span>{openServiceAppointment.HOT_AddressFormated__c}</span></p>
-                                        <p>
-                                            Tolkemetode:<span>&nbsp;{openServiceAppointment.HOT_WorkTypeName__c}</span>
-                                        </p>
-                                        <p lwc:if={openServiceAppointment.HOT_PreparationTime__c}>
-                                            <strong>Kompensert forberedelse:</strong
-                                            >&nbsp;{openServiceAppointment.HOT_PreparationTime__c}
-                                        </p>
-                                        <p lwc:if={openServiceAppointment.HOT_AssignmentType__c}>
-                                            Oppdragstype:
-                                            <span>&nbsp;{openServiceAppointment.HOT_AssignmentType__c}</span>
-                                        </p>
-                                        <p lwc:if={openServiceAppointment.HOT_ReleasedBy__c}>
-                                            Frigitt av: <span>&nbsp;{openServiceAppointment.HOT_ReleasedBy__c}</span>
-                                        </p>
-                                        <p>
-                                            Frigitt dato:<span>&nbsp;{openServiceAppointment.HOT_ReleaseDate__c}</span>
-                                        </p>
-                                        <p>
-                                            Antall påmeldte:<span
-                                                >&nbsp;{openServiceAppointment.HOT_NumberOfInterestedResources__c}</span
-                                            >
-                                        </p>
-                                        <p>Annen betaler:<span>&nbsp;{openServiceAppointment.isOtherProvider}</span></p>
-                                        <p>
-                                            Eier:
-                                            <span>&nbsp;{openServiceAppointment.HOT_Request__r.OwnerName__c}</span>
-                                        </p>
-                                        <p>
-                                            Frist dato:<span>&nbsp;{openServiceAppointment.HOT_DeadlineDate__c}</span>
-                                        </p>
-                                        <p lwc:if={openServiceAppointment.HOT_Information__c}>
-                                            Informasjon:<span>&nbsp;{openServiceAppointment.HOT_Information__c}</span>
-                                        </p>
-                                    </div>
-                                    <div class="slds-m-top_medium">
-                                        <c-button
-                                            button-styling="primary"
-                                            button-label="Meld interesse"
-                                            aria-label="Meld interesse"
-                                            onbuttonclick={showOpenServiceAppointmentInterest}
-                                            desktop-style="width: 10rem; justify-content: center"
-                                            mobile-style="width: 10rem; justify-content: center"
-                                        ></c-button>
-                                    </div>
-                                </template>
-                            </section>
-
                             <!-- Wage claim details-->
                             <section lwc:if={isWCDetails}>
                                 <div lwc:if={wageClaim}>
@@ -431,43 +252,7 @@
                                         >
                                         </c-button>
                                     </div>
-                                </div>
-                            </section>
-
-                            <!-- Wage claim new type details -->
-                            <section lwc:if={isWageClaimNewTypeDetails}>
-                                <div lwc:if={wageClaimNewType}>
-                                    <p>Oppdragsnummer: <span>{wageClaimNewType.ServiceAppointmentName__c}</span></p>
-                                    <p>
-                                        Tid: <span>{wageClaimNewType.weekday} {wageClaimNewType.StartAndEndDate}</span>
-                                    </p>
-                                    <p lwc:if={wageClaimNewType.Reason__c}>
-                                        Årsak: <span>{wageClaimNewType.Reason__c}</span>
-                                    </p>
-                                    <p lwc:if={showCancelledDate}>Avlyst dato: <span>{cancelledDate}</span></p>
-                                    <p>Poststed: <span>{wageClaimNewType.ServiceAppointmentCity__c}</span></p>
-                                    <p>Tolkemetode: <span>{wageClaimNewType.WorkTypeName__c}</span></p>
-                                    <p>Oppdragstype: <span>{wageClaimNewType.AssignmentType__c}</span></p>
-                                    <p>
-                                        Eier:&nbsp;
-                                        <span
-                                            >{wageClaimNewType.ServiceAppointment__r.HOT_Request__r.OwnerName__c}</span
-                                        >
-                                    </p>
-                                    <p>
-                                        Døv/døvblind:&nbsp;
-                                        <span>{wageClaimNewType.DegreeOfHearingAndVisualImpairment__c}</span>
-                                    </p>
-                                </div>
-                                <div style="display: inline-block; padding-bottom: 1vw">
-                                    <c-button
-                                        disabled={wcNewTypeIsDisabledGoToThread}
-                                        button-styling="primary"
-                                        button-label="Samtale med ressurskontor"
-                                        aria-label="Samtale med ressurskontor"
-                                        onbuttonclick={goToWageClaimNewTypeThread}
-                                    >
-                                    </c-button>
+                                    <!-- </template> -->
                                 </div>
                             </section>
                         </template>

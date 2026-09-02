@@ -39,11 +39,6 @@
     background-color: #e1e3e6;
 }
 
-.banner-container {
-    width: 80%;
-    margin-bottom: 1.25rem;
-}
-
 .header {
     font-family: 'Source Sans Pro', Arial, sans-serif;
     position: relative;
@@ -336,11 +331,6 @@ dialog.modal-container .close-btn:hover {
     flex-direction: column;
     flex: 1;
 }
-.alertstripe__content {
-    display: flex;
-    flex-direction: column;
-    gap: 0.25rem;
-}
 .alertstripe__tekst {
     /* margin-bottom: 1rem; */
 }
@@ -348,36 +338,4 @@ dialog.modal-container .close-btn:hover {
     border: 1px solid #368da8;
     background-color: #d8f9ff;
     /* margin-bottom: 1rem; */
-}
-.closed-reply-message {
-    align-items: center;
-    background-color: #f1f3f5;
-    border: 1px solid #d8dde6;
-    border-radius: 4px;
-    color: #3e3832;
-    display: flex;
-    gap: 0.75rem;
-    line-height: 1.5rem;
-    margin-top: 2rem;
-    margin-bottom: 3rem;
-    padding: 0.75rem 1rem;
-}
-
-.closed-reply-message p {
-    margin: 0;
-}
-
-.closed-reply-message__icon {
-    align-items: center;
-    background-color: #6b7280;
-    border-radius: 50%;
-    color: #ffffff;
-    display: inline-flex;
-    flex: 0 0 auto;
-    font-size: 0.875rem;
-    font-weight: 700;
-    height: 1.5rem;
-    justify-content: center;
-    line-height: 1;
-    width: 1.5rem;
 }

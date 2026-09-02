@@ -2,7 +2,7 @@ import { LightningElement, api } from 'lwc';
 
 export default class Hot_threadListFilterButtons extends LightningElement {
     @api isFreelanceView = false;
-    @api activeTab = 'all';
+    activeTab = 'all';
 
     get threadFilterButtonType() {
         const active = this.activeTab;
@@ -74,24 +74,16 @@ export default class Hot_threadListFilterButtons extends LightningElement {
     ];
 
     handleFilterButtonClick(event) {
-        const selectedTab = event.target.dataset.id;
-
-        this.setActiveTab(selectedTab);
-
+        this.setActiveTab(event);
         const eventToSend = new CustomEvent('filterbuttonclick', {
             detail: event.target.value
         });
-
         this.dispatchEvent(eventToSend);
     }
-
     handleFilterSelectChange(event) {
-        this.setActiveTab(event.detail.name);
-
         const eventToSend = new CustomEvent('filterbuttonclick', {
             detail: event.detail.name
         });
-
         this.dispatchEvent(eventToSend);
     }
 
@@ -99,20 +91,17 @@ export default class Hot_threadListFilterButtons extends LightningElement {
         this.updateTabStyle();
     }
 
-    @api
-    setActiveTab(tabName) {
-        if (tabName && this.activeTab !== tabName) {
-            this.activeTab = tabName;
+    setActiveTab(event) {
+        const selected = event.target.dataset.id;
+        if (selected && this.activeTab !== selected) {
+            this.activeTab = selected;
             this.updateTabStyle();
         }
     }
-
     updateTabStyle() {
         const buttons = this.template.querySelectorAll('button.tab-button');
-
         buttons.forEach((button) => {
             const isActive = button.dataset.id === this.activeTab;
-
             button.classList.toggle('tab-active', isActive);
         });
     }

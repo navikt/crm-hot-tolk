@@ -4,14 +4,10 @@
     gap: 0.5rem;
     padding: 0.5rem 0.8rem;
     margin: 0;
-
-    border: none;
+    border: 2px solid #6d7686;
     border-radius: 4px;
-
     cursor: pointer;
-
-    background-color: #f0f1f4;
-
+    background-color: #ffffff;
     user-select: none;
     -webkit-user-select: none;
     -ms-user-select: none;
@@ -22,13 +18,11 @@
     font-weight: bold;
     font-family: 'Source Sans 3', 'Source Sans Pro', Arial, sans-serif;
 }
-
 .navigation-button img {
     width: 16px;
     height: 16px;
     display: block;
 }
-
 .button-container {
     display: flex;
     gap: 1rem;
@@ -36,24 +30,21 @@
     padding-bottom: 1rem;
     padding-left: 0.5rem;
 }
-
 .navigation-button:hover {
     background-color: #e0e3e7;
+    /* background-color: #e1e3e6;
+    border-color: #e1e3e6; */
 }
-
 .navigation-button:focus {
     background-color: #e0e3e7;
-    outline: 2px solid #0067c5;
-    outline-offset: 2px;
+    outline: none;
 }
-
 @media (max-width: 768px) {
     .navigation-button {
         font-size: 1rem;
         padding: 0.5rem 0.75rem;
         margin-top: 0.5rem;
     }
-
     .button-container {
         padding-top: 0.5rem;
         padding-bottom: 0.5rem;

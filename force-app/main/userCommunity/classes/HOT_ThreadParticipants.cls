@@ -431,14 +431,10 @@ public without sharing class HOT_ThreadParticipants {
         for (User u : users) {
             usersByAccountId.put(u.AccountId, u);
         }
-        Map<Id, Thread__c> threadsById = new Map<Id, Thread__c>(this.threads);
         for (WorkOrder wo : workOrders) {
             User user = usersByAccountId.get(wo.AccountId);
-            if (user == null) {
-                continue;
-            }
-            for (Id threadId : this.threadIdsByRelatedObjectId.get(wo.Id)) {
-                if (threadsById.get(threadId).CRM_Thread_Type__c == 'HOT_BRUKER-TOLK') {
+            if (user != null) {
+                for (Id threadId : this.threadIdsByRelatedObjectId.get(wo.Id)) {
                     this.participantsByThreadId.get(threadId).add(new Participant(wo, user));
                 }
             }
@@ -448,7 +444,7 @@ public without sharing class HOT_ThreadParticipants {
     public static List<Participant> getAccountParticipants(Thread__c thread) {
         List<Participant> participantList = new List<Participant>();
         Id search = thread.CRM_Related_Object__c;
-        String objectType = search != null ? String.valueOf(search.getsobjecttype()) : null;
+        String objectType = String.valueOf(search.getsobjecttype());
         if (objectType == 'WorkOrder' && thread.CRM_Thread_Type__c == 'HOT_BRUKER-TOLK') {
             WorkOrder workOrder = [
                 SELECT Id, AccountId, Account.Name
@@ -456,10 +452,10 @@ public without sharing class HOT_ThreadParticipants {
                 WHERE Id = :thread.CRM_Related_Object__c
                 LIMIT 1
             ];
-            List<User> users = [SELECT Id, AccountId FROM User WHERE AccountId = :workOrder.AccountId LIMIT 1];
+            User user = [SELECT Id, AccountId FROM User WHERE AccountId = :workOrder.AccountId];
 
-            if (workOrder.AccountId != null && !users.isEmpty()) {
-                participantList.add(new Participant(workOrder, users[0]));
+            if (workOrder.AccountId != null && user.Id != null) {
+                participantList.add(new Participant(workOrder, user));
             }
         }
         if (objectType == 'ServiceAppointment') {
@@ -506,20 +502,7 @@ public without sharing class HOT_ThreadParticipants {
                 SELECT Id, Account__r.Name, Account__r.Id, Orderer__c, Orderer__r.Id, Orderer__r.Name, Account__c
                 FROM HOT_Request__c
                 WHERE Id = :thread.CRM_Related_Object__c
-                LIMIT 1
             ];
-            Set<Id> accountIds = new Set<Id>();
-            if (request.Account__c != null) {
-                accountIds.add(request.Account__c);
-            }
-            if (request.Orderer__c != null) {
-                accountIds.add(request.Orderer__c);
-            }
-            Map<Id, User> usersByAccountId = new Map<Id, User>();
-            for (User userRecord : [SELECT Id, AccountId FROM User WHERE AccountId IN :accountIds]) {
-                usersByAccountId.put(userRecord.AccountId, userRecord);
-            }
-
             String participantName;
             String participantRole;
             Id participantUserId;
@@ -529,13 +512,13 @@ public without sharing class HOT_ThreadParticipants {
                 // Bruk Account
                 participantName = request.Account__r.Name;
                 participantRole = 'Tolkebruker';
-                User user = usersByAccountId.get(request.Account__c);
+                User user = [SELECT Id FROM User WHERE AccountId = :request.Account__r.Id LIMIT 1];
                 participantUserId = user != null ? user.Id : null;
             } else if (thread.CRM_Thread_Type__c == 'HOT_BESTILLER-FORMIDLER') {
                 // Bruk Orderer
                 participantName = request.Orderer__r.Name;
                 participantRole = 'Bestiller';
-                User user = usersByAccountId.get(request.Orderer__c);
+                User user = [SELECT Id FROM User WHERE AccountId = :request.Orderer__r.Id LIMIT 1];
                 participantUserId = user != null ? user.Id : null;
             }
 
@@ -571,84 +554,4 @@ public without sharing class HOT_ThreadParticipants {
         }
         return String.join(capitalizedWords, ' ');
     }
-    public static Map<Id, String> getUserSenderRoleInThread(
-    List<Thread__c> threadList,
-    Map<Id, Id> threadToLastSender
-) {
-    Map<Id, String> rolesByThreadId = new Map<Id, String>();
-
-    if (threadList == null || threadList.isEmpty()) {
-        return rolesByThreadId;
-    }
-
-    Set<Id> senderUserIds = new Set<Id>();
-    for (Id senderUserId : threadToLastSender.values()) {
-        if (senderUserId != null) {
-            senderUserIds.add(senderUserId);
-        }
-    }
-
-    Map<Id, User> usersById = senderUserIds.isEmpty()
-        ? new Map<Id, User>()
-        : new Map<Id, User>([
-            SELECT Id, Profile.Name
-            FROM User
-            WHERE Id IN :senderUserIds
-        ]);
-
-    for (Thread__c thread : threadList) {
-        Id threadId = thread.Id;
-        Id senderUserId = threadToLastSender.get(threadId);
-
-        if (senderUserId == null) {
-            rolesByThreadId.put(threadId, null);
-            continue;
-        }
-
-        User senderUser = usersById.get(senderUserId);
-        String senderProfileName = senderUser != null ? senderUser.Profile.Name : null;
-        String role;
-
-        for (Participant participant : getParticipants((String) threadId)) {
-            if (participant.userId == senderUserId) {
-                if (participant.role == 'Tolk') {
-                    role = 'tolk';
-                } else if (participant.role == 'Tolkebruker') {
-                    role = 'bruker';
-                } else if (participant.role == 'Bestiller') {
-                    role = 'bestiller';
-                }
-
-                if (role != null) {
-                    break;
-                }
-            }
-        }
-
-        if (
-            role == null &&
-            senderProfileName == 'HOT Tolk Formidler' &&
-            (
-                thread.CRM_Thread_Type__c == 'HOT_TOLK-FORMIDLER' ||
-                thread.CRM_Thread_Type__c == 'HOT_BRUKER-FORMIDLER' ||
-                thread.CRM_Thread_Type__c == 'HOT_BESTILLER-FORMIDLER'
-            )
-        ) {
-            role = 'formidler';
-        }
-
-        if (
-            role == null &&
-            senderProfileName == 'HOT Tolk Saksbehandler' &&
-            thread.CRM_Thread_Type__c == 'HOT_TOLK-RESSURSKONTOR'
-        ) {
-            role = 'ressurskontor';
-        }
-
-        rolesByThreadId.put(threadId, role);
-    }
-
-    return rolesByThreadId;
-}
-
 }

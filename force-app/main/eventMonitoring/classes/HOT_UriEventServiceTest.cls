@@ -11,14 +11,7 @@ private class HOT_UriEventServiceTest {
     @IsTest
     private static void addPersonRelatedRecordsToLog_forHotRequest() {
         Person__c testPerson = [SELECT Id, Name, CRM_Account__c FROM Person__c LIMIT 1][0];
-        Datetime startTime = Datetime.now().addDays(2);
-
-        HOT_Request__c request = new HOT_Request__c(
-            Account__c = testPerson.CRM_Account__c,
-            Person__c = testPerson.Id,
-            StartTime__c = startTime,
-            EndTime__c = startTime.addHours(2)
-        );
+        HOT_Request__c request = new HOT_Request__c(Account__c = testPerson.CRM_Account__c, Person__c = testPerson.Id);
         insert request;
 
         List<UriEvent> uriEvents = new List<UriEvent>();

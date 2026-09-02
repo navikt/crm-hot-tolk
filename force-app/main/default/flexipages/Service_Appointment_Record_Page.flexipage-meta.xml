@@ -3,19 +3,6 @@
     <flexiPageRegions>
         <itemInstances>
             <componentInstance>
-                <componentName>hot_serviceAppointmentInterestBanner</componentName>
-                <identifier>c_hot_serviceAppointmentInterestBanner</identifier>
-                <visibilityRule>
-                    <criteria>
-                        <leftValue>{!$Client.formFactor}</leftValue>
-                        <operator>EQUAL</operator>
-                        <rightValue>Small</rightValue>
-                    </criteria>
-                </visibilityRule>
-            </componentInstance>
-        </itemInstances>
-        <itemInstances>
-            <componentInstance>
                 <componentInstanceProperties>
                     <name>actionNames</name>
                     <valueList>
@@ -67,42 +54,6 @@
                                     <leftValue>{!$Permission.CustomPermission.HOT_DeleteFiles}</leftValue>
                                     <operator>EQUAL</operator>
                                     <rightValue>true</rightValue>
-                                </criteria>
-                            </visibilityRule>
-                        </valueListItems>
-                        <valueListItems>
-                            <value>ServiceAppointment.HOT_AssignOrReserve</value>
-                            <visibilityRule>
-                                <booleanFilter>1 AND 2 AND 3 AND 4 AND 5 AND 6</booleanFilter>
-                                <criteria>
-                                    <leftValue>{!$Permission.CustomPermission.HOT_AccessToFormidlerActions}</leftValue>
-                                    <operator>EQUAL</operator>
-                                    <rightValue>true</rightValue>
-                                </criteria>
-                                <criteria>
-                                    <leftValue>{!Record.Status}</leftValue>
-                                    <operator>NE</operator>
-                                    <rightValue>Completed</rightValue>
-                                </criteria>
-                                <criteria>
-                                    <leftValue>{!Record.Status}</leftValue>
-                                    <operator>NE</operator>
-                                    <rightValue>Canceled</rightValue>
-                                </criteria>
-                                <criteria>
-                                    <leftValue>{!Record.Status}</leftValue>
-                                    <operator>NE</operator>
-                                    <rightValue>Annul</rightValue>
-                                </criteria>
-                                <criteria>
-                                    <leftValue>{!Record.Status}</leftValue>
-                                    <operator>NE</operator>
-                                    <rightValue>In Progress</rightValue>
-                                </criteria>
-                                <criteria>
-                                    <leftValue>{!Record.Status}</leftValue>
-                                    <operator>NE</operator>
-                                    <rightValue>Cannot Complete</rightValue>
                                 </criteria>
                             </visibilityRule>
                         </valueListItems>
@@ -387,34 +338,6 @@
                 </fieldInstanceProperties>
                 <fieldItem>Record.HOT_CancelComment__c</fieldItem>
                 <identifier>RecordHOT_CancelComment_cField</identifier>
-            </fieldInstance>
-        </itemInstances>
-        <itemInstances>
-            <fieldInstance>
-                <fieldInstanceProperties>
-                    <name>uiBehavior</name>
-                    <value>none</value>
-                </fieldInstanceProperties>
-                <fieldItem>Record.HOT_CancelCommentExtended__c</fieldItem>
-                <identifier>RecordHOT_CancelCommentExtended_cField</identifier>
-                <visibilityRule>
-                    <booleanFilter>1 OR 2 OR 3</booleanFilter>
-                    <criteria>
-                        <leftValue>{!Record.HOT_CancelComment__c}</leftValue>
-                        <operator>EQUAL</operator>
-                        <rightValue>Tekniske problemer</rightValue>
-                    </criteria>
-                    <criteria>
-                        <leftValue>{!Record.HOT_CancelComment__c}</leftValue>
-                        <operator>EQUAL</operator>
-                        <rightValue>Bruker ikke møtt</rightValue>
-                    </criteria>
-                    <criteria>
-                        <leftValue>{!Record.HOT_CancelComment__c}</leftValue>
-                        <operator>EQUAL</operator>
-                        <rightValue>Annet</rightValue>
-                    </criteria>
-                </visibilityRule>
             </fieldInstance>
         </itemInstances>
         <itemInstances>
@@ -1121,7 +1044,7 @@
                 </componentInstanceProperties>
                 <componentInstanceProperties>
                     <name>relatedListLabel</name>
-                    <value>Interesserte ressurser</value>
+                    <value>Interested Resources</value>
                 </componentInstanceProperties>
                 <componentInstanceProperties>
                     <name>showActionBar</name>
@@ -1231,29 +1154,37 @@
             <componentInstance>
                 <componentName>hot_messagingMessageComponent_v2</componentName>
                 <identifier>c_hot_messagingMessageComponent_v2</identifier>
-            </componentInstance>
-        </itemInstances>
-        <name>Facet-78213d51-8363-40c6-ab40-3a9ea8295431</name>
-        <type>Facet</type>
-    </flexiPageRegions>
-    <flexiPageRegions>
-        <itemInstances>
-            <componentInstance>
-                <componentName>hot_tindWorkOrderHighlightMobile</componentName>
-                <identifier>c_hot_tindWorkOrderHighlightMobile</identifier>
+                <visibilityRule>
+                    <criteria>
+                        <leftValue>{!$Permission.CustomPermission.HOT_Tolk_Beta}</leftValue>
+                        <operator>EQUAL</operator>
+                        <rightValue>true</rightValue>
+                    </criteria>
+                </visibilityRule>
             </componentInstance>
         </itemInstances>
         <itemInstances>
             <componentInstance>
                 <componentInstanceProperties>
-                    <name>customObjectApiName</name>
-                    <value>WorkOrder</value>
+                    <name>showClose</name>
+                    <value>false</value>
                 </componentInstanceProperties>
-                <componentName>hot_messagingMessageComponentCustomObject</componentName>
-                <identifier>c_hot_messagingMessageComponentCustomObject</identifier>
+                <componentInstanceProperties>
+                    <name>singleThread</name>
+                    <value>true</value>
+                </componentInstanceProperties>
+                <componentName>hot_messagingMessageComponent</componentName>
+                <identifier>c_hot_messagingMessageComponent</identifier>
+                <visibilityRule>
+                    <criteria>
+                        <leftValue>{!$Permission.CustomPermission.HOT_Tolk_Beta}</leftValue>
+                        <operator>EQUAL</operator>
+                        <rightValue>false</rightValue>
+                    </criteria>
+                </visibilityRule>
             </componentInstance>
         </itemInstances>
-        <name>Facet-c964c6d9-7349-48dd-b1a7-5a128cd59568</name>
+        <name>Facet-78213d51-8363-40c6-ab40-3a9ea8295431</name>
         <type>Facet</type>
     </flexiPageRegions>
     <flexiPageRegions>
@@ -1345,56 +1276,12 @@
                 <identifier>flexipage_tab</identifier>
             </componentInstance>
         </itemInstances>
-        <itemInstances>
-            <componentInstance>
-                <componentInstanceProperties>
-                    <name>body</name>
-                    <value>Facet-c964c6d9-7349-48dd-b1a7-5a128cd59568</value>
-                </componentInstanceProperties>
-                <componentInstanceProperties>
-                    <name>title</name>
-                    <value>Samtale med bruker/medtolk</value>
-                </componentInstanceProperties>
-                <componentName>flexipage:tab</componentName>
-                <identifier>flexipage_tab2</identifier>
-                <visibilityRule>
-                    <booleanFilter>1 AND 2</booleanFilter>
-                    <criteria>
-                        <leftValue>{!$Client.formFactor}</leftValue>
-                        <operator>EQUAL</operator>
-                        <rightValue>Small</rightValue>
-                    </criteria>
-                    <criteria>
-                        <leftValue>{!$User.Profile.Name}</leftValue>
-                        <operator>CONTAINS</operator>
-                        <rightValue>HOT Tolk Ansatt</rightValue>
-                    </criteria>
-                </visibilityRule>
-            </componentInstance>
-        </itemInstances>
         <name>Facet-87d76a61-4535-4189-be09-0e5377b76f56</name>
         <type>Facet</type>
     </flexiPageRegions>
     <flexiPageRegions>
         <itemInstances>
             <componentInstance>
-                <componentName>hot_dispatcherMessageBanner</componentName>
-                <identifier>c_hot_dispatcherMessageBanner</identifier>
-                <visibilityRule>
-                    <criteria>
-                        <leftValue>{!$User.Profile.Name}</leftValue>
-                        <operator>EQUAL</operator>
-                        <rightValue>HOT Tolk Formidler</rightValue>
-                    </criteria>
-                </visibilityRule>
-            </componentInstance>
-        </itemInstances>
-        <itemInstances>
-            <componentInstance>
-                <componentInstanceProperties>
-                    <name>label</name>
-                    <value>Tabs</value>
-                </componentInstanceProperties>
                 <componentInstanceProperties>
                     <name>tabs</name>
                     <value>Facet-87d76a61-4535-4189-be09-0e5377b76f56</value>

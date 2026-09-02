@@ -47,26 +47,16 @@ public class HOT_RequestRoutingHandler extends MyTriggers {
         Map<Id, User> users = new Map<Id, User>([SELECT Id, Department FROM User WHERE Id IN :creatorIds]);
         Map<Id, String> departmentNameByUser = HOT_GroupMembersService.getDepartmentNameByUser(users);
         Map<String, String> queueNamesByDepartment = HOT_GroupMembersService.getGroupNames(null, null, 'queue');
-
         List<Group> queues = [
-            SELECT Id, DeveloperName, Type
+            SELECT Id, DeveloperName
             FROM Group
-            WHERE
-                DeveloperName IN :queueNamesByDepartment.values()
-                OR (DeveloperName = 'HOT_Tolk_Admin'
-                AND Type = 'Queue')
+            WHERE DeveloperName IN :queueNamesByDepartment.values()
         ];
-
-        Id adminGroup;
         Map<String, Id> queueIdByDeveloperName = new Map<String, Id>();
         for (Group queue : queues) {
-            if (queue.DeveloperName == 'HOT_Tolk_Admin' && queue.Type == 'Queue') {
-                adminGroup = queue.Id;
-            } else {
-                queueIdByDeveloperName.put(queue.DeveloperName, queue.Id);
-            }
+            queueIdByDeveloperName.put(queue.DeveloperName, queue.Id);
         }
-
+        Group adminGroup = [SELECT Id FROM Group WHERE Type = 'Queue' AND DeveloperName = 'HOT_Tolk_Admin' LIMIT 1];
         for (HOT_Request__c req : imageInterpreterRequests) {
             if (
                 departmentNameByUser.get(req.OwnerId) != null &&
@@ -77,7 +67,7 @@ public class HOT_RequestRoutingHandler extends MyTriggers {
                     queueNamesByDepartment.get(departmentNameByUser.get(req.OwnerId))
                 );
             } else {
-                req.OwnerId = adminGroup;
+                req.OwnerId = adminGroup.Id;
             }
         }
     }

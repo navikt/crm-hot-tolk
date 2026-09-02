@@ -32,7 +32,6 @@ export default class hot_requestForm_request_v2 extends LightningElement {
         Type__c: ''
     };
     errorMessageHomeAddress = 'Fant ikke hjemmeadresse.';
-    moreInfoTextAreaAriaLabel = 'Hjelpetekst: ' + this.moreInfoTextAreaDescription;
     displayError = false;
     isRequestTypeMe = false;
     @api isGetAll;
@@ -41,7 +40,6 @@ export default class hot_requestForm_request_v2 extends LightningElement {
     @api parentFieldValues;
     @api parentRequestComponentValues;
     @api isEditOrCopyMode = false;
-    @api isEditMode = false;
     @api refreshToken;
 
     // Dont want to use this because focus will move to top on re-rendrering which happens on "Additional information"
@@ -261,23 +259,6 @@ export default class hot_requestForm_request_v2 extends LightningElement {
         });
         this.fieldValues.Description__c = this.template.querySelector('c-textarea').getValue();
         this.setDependentFields();
-
-        const timeCmp = this.template.querySelector('c-hot_recurring-time-input_v2');
-        const timeInput = timeCmp?.getTimeInput?.();
-        const times = timeInput?.times;
-
-        this.fieldValues.StartTime__c = null;
-        this.fieldValues.EndTime__c = null;
-
-        if (times && Object.keys(times).length > 0) {
-            const firstKey = Object.keys(times).sort((a, b) => Number(a) - Number(b))[0];
-            const first = firstKey ? times[firstKey] : null;
-
-            if (first?.startTime && first?.endTime) {
-                this.fieldValues.StartTime__c = new Date(first.startTime).toISOString();
-                this.fieldValues.EndTime__c = new Date(first.endTime).toISOString();
-            }
-        }
     }
 
     @api
@@ -362,8 +343,8 @@ export default class hot_requestForm_request_v2 extends LightningElement {
         }
     }
 
-    handleOptionalSwitch(event) {
-        this.componentValues.isOptionalFields = event.detail.checked;
+    handleOptionalCheckbox(event) {
+        this.componentValues.isOptionalFields = event.detail;
     }
 
     handlePhysicalOrDigital(event) {
@@ -406,8 +387,8 @@ export default class hot_requestForm_request_v2 extends LightningElement {
         this.setFieldAndElementSelected(this.componentValues.assignmentChoices, event.detail.name, 'AssignmentType__c');
     }
 
-    handleSMSSwitch(event) {
-        this.fieldValues.IsOrdererWantStatusUpdateOnSMS__c = event.detail.checked;
+    handleSMSCheckbox(event) {
+        this.fieldValues.IsOrdererWantStatusUpdateOnSMS__c = event.detail;
     }
 
     uploadFilesDropHandler(event) {

@@ -218,10 +218,11 @@ export default class Hot_informationModal extends NavigationMixin(LightningModal
                             ' år';
                     }
                     if (
-                        this.serviceAppointment.HOT_Request__r.Account__r.CRM_Person__r.HOT_MobilePhone__c !== undefined
+                        this.serviceAppointment.HOT_Request__r.Account__r.CRM_Person__r.INT_KrrMobilePhone__c !==
+                        undefined
                     ) {
                         this.accountPhoneNumber =
-                            this.serviceAppointment.HOT_Request__r.Account__r.CRM_Person__r.HOT_MobilePhone__c;
+                            this.serviceAppointment.HOT_Request__r.Account__r.CRM_Person__r.INT_KrrMobilePhone__c;
                     }
                 }
                 if (
@@ -231,10 +232,11 @@ export default class Hot_informationModal extends NavigationMixin(LightningModal
                     this.serviceAppointment.HOT_Request__r.Orderer__r.CRM_Person__r
                 ) {
                     if (
-                        this.serviceAppointment.HOT_Request__r.Orderer__r.CRM_Person__r.HOT_MobilePhone__c !== undefined
+                        this.serviceAppointment.HOT_Request__r.Orderer__r.CRM_Person__r.INT_KrrMobilePhone__c !==
+                        undefined
                     ) {
                         this.ordererPhoneNumber =
-                            this.serviceAppointment.HOT_Request__r.Orderer__r.CRM_Person__r.HOT_MobilePhone__c;
+                            this.serviceAppointment.HOT_Request__r.Orderer__r.CRM_Person__r.INT_KrrMobilePhone__c;
                     }
                 }
                 this.isLoading = false;
@@ -332,11 +334,11 @@ export default class Hot_informationModal extends NavigationMixin(LightningModal
                                 ' år';
                         }
                         if (
-                            this.serviceAppointment.HOT_Request__r.Account__r.CRM_Person__r.HOT_MobilePhone__c !==
+                            this.serviceAppointment.HOT_Request__r.Account__r.CRM_Person__r.INT_KrrMobilePhone__c !==
                             undefined
                         ) {
                             this.accountPhoneNumber =
-                                this.serviceAppointment.HOT_Request__r.Account__r.CRM_Person__r.HOT_MobilePhone__c;
+                                this.serviceAppointment.HOT_Request__r.Account__r.CRM_Person__r.INT_KrrMobilePhone__c;
                         }
                         if (this.serviceAppointment && this.serviceAppointment.HOT_Request__r) {
                             this.ownerName = this.serviceAppointment.HOT_Request__r.OwnerName__c;
@@ -349,11 +351,11 @@ export default class Hot_informationModal extends NavigationMixin(LightningModal
                         this.serviceAppointment.HOT_Request__r.Orderer__r.CRM_Person__r
                     ) {
                         if (
-                            this.serviceAppointment.HOT_Request__r.Orderer__r.CRM_Person__r.HOT_MobilePhone__c !==
+                            this.serviceAppointment.HOT_Request__r.Orderer__r.CRM_Person__r.INT_KrrMobilePhone__c !==
                             undefined
                         ) {
                             this.ordererPhoneNumber =
-                                this.serviceAppointment.HOT_Request__r.Orderer__r.CRM_Person__r.HOT_MobilePhone__c;
+                                this.serviceAppointment.HOT_Request__r.Orderer__r.CRM_Person__r.INT_KrrMobilePhone__c;
                         }
                     }
                     getInterestedResourceDetails({ recordId: recordId }).then((result) => {

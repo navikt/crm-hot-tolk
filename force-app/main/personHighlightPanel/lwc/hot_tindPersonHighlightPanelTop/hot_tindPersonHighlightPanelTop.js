@@ -53,24 +53,20 @@ export default class hot_personHighlightPanelTop extends LightningElement {
             this.error = undefined;
         } else if (error) {
             this.error = error;
-            this.navUnitName = undefined;
+            this.name = undefined;
             console.error('getTolketjenesten error:', error);
         }
     }
 
-    get showPersonInfo() {
-        return this.personDetails?.fullName;
-    }
-
     get formattedPersonInfo() {
         return [
-            this.personDetails?.age ? `${this.personDetails.age} år` : null,
+            this.personDetails?.age,
             this.personDetails?.vedtak,
             this.personDetails?.citizenship,
             this.personDetails?.legalStatus,
             this.navUnitName
         ]
-            .filter(Boolean)
+            .filter((x) => x != null)
             .join(' / ');
     }
 
@@ -101,6 +97,7 @@ export default class hot_personHighlightPanelTop extends LightningElement {
     get genderIconSrc() {
         return NAV_ICONS + '/' + this.genderIcon + '.svg#' + this.genderIcon;
     }
+
     get personIdent() {
         return this.personDetails?.personIdent;
     }

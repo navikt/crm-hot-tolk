@@ -20,7 +20,7 @@ export let columns = [
         type: 'String'
     },
     {
-        label: 'Kompensert forberedelse',
+        label: 'Forberedelsestid',
         name: 'HOT_PreparationTime__c',
         type: 'String'
     }
@@ -67,7 +67,7 @@ export let mobileColumns = [
         type: 'String'
     },
        {
-        label: 'Kompensert forberedelse',
+        label: 'Forberedelsestid',
         name: 'HOT_PreparationTime__c',
         type: 'String'
     }

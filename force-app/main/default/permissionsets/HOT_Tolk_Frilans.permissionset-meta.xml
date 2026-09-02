@@ -57,10 +57,6 @@
         <enabled>true</enabled>
     </classAccesses>
     <classAccesses>
-        <apexClass>HOT_RequestNotification</apexClass>
-        <enabled>true</enabled>
-    </classAccesses>
-    <classAccesses>
         <apexClass>HOT_ThreadDetailController</apexClass>
         <enabled>true</enabled>
     </classAccesses>
@@ -493,6 +489,7 @@
         <field>HOT_Request__c.Person__c</field>
         <readable>true</readable>
     </fieldPermissions>
+
     <fieldPermissions>
         <editable>true</editable>
         <field>HOT_Request__c.ServiceTerritory__c</field>
@@ -561,11 +558,6 @@
     <fieldPermissions>
         <editable>false</editable>
         <field>HOT_WageClaim__c.ListViewFilterCondition__c</field>
-        <readable>true</readable>
-    </fieldPermissions>
-    <fieldPermissions>
-        <editable>false</editable>
-        <field>HOT_WageClaim__c.Reason__c</field>
         <readable>true</readable>
     </fieldPermissions>
     <fieldPermissions>
@@ -661,11 +653,6 @@
     <fieldPermissions>
         <editable>false</editable>
         <field>Person__c.HOT_InterpreterAtWork__c</field>
-        <readable>true</readable>
-    </fieldPermissions>
-    <fieldPermissions>
-        <editable>false</editable>
-        <field>Person__c.HOT_MobilePhone__c</field>
         <readable>true</readable>
     </fieldPermissions>
     <fieldPermissions>
@@ -811,11 +798,6 @@
     <fieldPermissions>
         <editable>true</editable>
         <field>ServiceAppointment.HOT_CancelComment__c</field>
-        <readable>true</readable>
-    </fieldPermissions>
-    <fieldPermissions>
-        <editable>true</editable>
-        <field>ServiceAppointment.HOT_CancelCommentExtended__c</field>
         <readable>true</readable>
     </fieldPermissions>
     <fieldPermissions>
@@ -1096,11 +1078,6 @@
     <fieldPermissions>
         <editable>true</editable>
         <field>ServiceResource.HOT_PreferredRegions__c</field>
-        <readable>true</readable>
-    </fieldPermissions>
-    <fieldPermissions>
-        <editable>true</editable>
-        <field>ServiceResource.HOT_ShowOpenServiceAppointmentEvents__c</field>
         <readable>true</readable>
     </fieldPermissions>
     <fieldPermissions>

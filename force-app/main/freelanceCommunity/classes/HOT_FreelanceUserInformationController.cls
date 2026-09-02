@@ -17,9 +17,8 @@ public without sharing class HOT_FreelanceUserInformationController {
                 HOT_MobilePhoneOverride__c,
                 HOT_MobileDevice__c,
                 HOT_NotificationChannel__c,
-                HOT_PreferredRegions__c,
-                HOT_MoreInformation__c,
-                HOT_ShowOpenServiceAppointmentEvents__c
+                HOT_PreferredRegions__c, 
+                HOT_MoreInformation__c
             FROM ServiceResource
             WHERE RelatedRecordId = :userId
         ];
@@ -28,19 +27,18 @@ public without sharing class HOT_FreelanceUserInformationController {
 
     @AuraEnabled
     public static ServiceResource updateServiceResourceName(
-        String newName,
-        String newEmail,
-        String newMobilePhone,
-        String newAddress,
+        String newName, 
+        String newEmail, 
+        String newMobilePhone, 
+        String newAddress, 
         String newAddressFormula,
         String newMobileDevice,
         String newNotificationChannel,
-        Boolean newIsSkilled,
-        Boolean newIsAvailableForAcuteAssignments,
+        Boolean newIsSkilled, 
+        Boolean newIsAvailableForAcuteAssignments, 
         String newPreferredRegions,
-        String newPreferences,
-        Boolean newShowOpenServiceAppointmentEvents
-    ) {
+        String newPreferences
+        ) {
         Id userId = UserInfo.getUserId();
         ServiceResource sr = [
             SELECT
@@ -58,49 +56,46 @@ public without sharing class HOT_FreelanceUserInformationController {
                 HOT_MobilePhoneOverride__c,
                 HOT_MobileDevice__c,
                 HOT_NotificationChannel__c,
-                HOT_PreferredRegions__c,
-                HOT_MoreInformation__c,
-                HOT_ShowOpenServiceAppointmentEvents__c
+                HOT_PreferredRegions__c, 
+                HOT_MoreInformation__c
             FROM ServiceResource
             WHERE RelatedRecordId = :userId
         ];
 
-        if (newName != null) {
+        if(newName != null) {
             sr.Name = newName;
         }
-        if (newEmail != null) {
+        if(newEmail != null) {
             sr.HOT_EmailOverride__c = newEmail;
         }
-        if (newMobilePhone != null) {
+        if(newMobilePhone != null) {
             sr.HOT_MobilePhoneOverride__c = newMobilePhone;
         }
-        if (newAddress != null) {
+        if(newAddress != null) {
             sr.HOT_AddressOverride__c = newAddress;
         }
-        if (newMobileDevice != null) {
+        if(newMobileDevice != null) {
             sr.HOT_MobileDevice__c = newMobileDevice;
         }
-        if (newNotificationChannel != null) {
+        if(newNotificationChannel  != null) {
             sr.HOT_NotificationChannel__c = newNotificationChannel;
         }
-        if (newIsSkilled != null) {
+        if(newIsSkilled != null) {
             sr.HOT_Skilled__c = newIsSkilled;
         }
-        if (newIsAvailableForAcuteAssignments != null) {
+        if(newIsAvailableForAcuteAssignments != null) {
             sr.HOT_IsAvailableForAcuteAssignments__c = newIsAvailableForAcuteAssignments;
         }
-        if (newPreferredRegions != null) {
+        if(newPreferredRegions != null) {
             sr.HOT_PreferredRegions__c = newPreferredRegions;
         }
-        if (newPreferences != null) {
+        if(newPreferences != null) {
             sr.HOT_MoreInformation__c = newPreferences;
-        }
-        if (newShowOpenServiceAppointmentEvents != null) {
-            sr.HOT_ShowOpenServiceAppointmentEvents__c = newShowOpenServiceAppointmentEvents;
         }
 
         update sr;
 
         return sr;
     }
+
 }

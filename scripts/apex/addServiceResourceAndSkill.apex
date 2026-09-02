@@ -9,8 +9,6 @@ if (existingSR.isEmpty()) {
         RelatedRecordId = darth.Id,
         ResourceType = 'T', // T = Technician (brukes for Tolker i HOT)
         HOT_IsFreelanceInterpreter__c = true,
-        CRM_Domain__c = 'HOT',
-        CRM_Subdomain__c = 'Tolketjenesten',
         IsActive = true
     );
     insert sr;

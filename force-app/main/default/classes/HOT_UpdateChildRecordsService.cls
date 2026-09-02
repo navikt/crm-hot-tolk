@@ -20,7 +20,7 @@ public without sharing class HOT_UpdateChildRecordsService {
     @InvocableVariable
     public Boolean isOwnerChoice;
     @InvocableVariable
-    public Boolean isServiceTerritoryChoice;
+    public Boolean isServiceTerritoryChoice; 
     @InvocableVariable
     public Boolean isDateChoice;
 
@@ -45,9 +45,7 @@ public without sharing class HOT_UpdateChildRecordsService {
             ? false
             : input.isInterpreterMethodChoice;
         input.isOwnerChoice = (input.isOwnerChoice == null) ? false : input.isOwnerChoice;
-        input.isServiceTerritoryChoice = (input.isServiceTerritoryChoice == null)
-            ? false
-            : input.isServiceTerritoryChoice;
+        input.isServiceTerritoryChoice = (input.isServiceTerritoryChoice == null) ? false : input.isServiceTerritoryChoice;
         input.isDateChoice = (input.isDateChoice == null) ? false : input.isDateChoice;
 
         List<String> errors = new List<String>();
@@ -218,6 +216,7 @@ public without sharing class HOT_UpdateChildRecordsService {
                 input.isServiceTerritoryChoice,
                 input.isOwnerChoice,
                 input.isDateChoice
+
             );
             if (error != null) {
                 if (errorOutput == null || errorOutput == '') {
@@ -329,6 +328,8 @@ public without sharing class HOT_UpdateChildRecordsService {
         String error;
         if (isAccountChoice) {
             requestToUpdate.Account__c = request.Account__c;
+            requestToUpdate.UserPersonNumber__c = request.UserPersonNumber__c;
+            requestToUpdate.UserName__c = request.UserName__c;
         }
         if (isAddressChoice) {
             requestToUpdate.InterpretationStreet__c = request.InterpretationStreet__c;
@@ -362,7 +363,7 @@ public without sharing class HOT_UpdateChildRecordsService {
                 request.ServiceTerritory__c = requestToUpdate.ServiceTerritory__c;
             }
         }
-        if (isServiceTerritoryChoice) {
+        if(isServiceTerritoryChoice) {
             requestToUpdate.ServiceTerritory__c = request.ServiceTerritory__c;
         }
         if (isDateChoice) {
@@ -420,7 +421,7 @@ public without sharing class HOT_UpdateChildRecordsService {
                 workOrder.OwnerId = request.OwnerId;
                 workOrder.ServiceTerritoryId = request.ServiceTerritory__c;
             }
-            if (isServiceTerritoryChoice) {
+            if(isServiceTerritoryChoice) {
                 workOrder.ServiceTerritoryId = request.ServiceTerritory__c;
             }
             if (isDateChoice) {
@@ -472,10 +473,10 @@ public without sharing class HOT_UpdateChildRecordsService {
             if (isOwnerChoice) {
                 workOrderLineItem.ServiceTerritoryId = request.ServiceTerritory__c;
             }
-            if (isServiceTerritoryChoice) {
+            if(isServiceTerritoryChoice) {
                 workOrderLineItem.ServiceTerritoryId = request.ServiceTerritory__c;
             }
-            if (isDateChoice) {
+            if(isDateChoice) {
                 workOrderLineItem.StartDate = request.StartTime__c;
                 workOrderLineItem.EndDate = request.EndTime__c;
             }
@@ -539,7 +540,7 @@ public without sharing class HOT_UpdateChildRecordsService {
                 serviceAppointment.OwnerId = request.OwnerId;
                 serviceAppointment.ServiceTerritoryId = request.ServiceTerritory__c;
             }
-            if (isServiceTerritoryChoice) {
+            if(isServiceTerritoryChoice) {
                 serviceAppointment.ServiceTerritoryId = request.ServiceTerritory__c;
             }
             if (isDateChoice) {
@@ -561,10 +562,16 @@ public without sharing class HOT_UpdateChildRecordsService {
 
     // Exclude specific owners from service territory propagation
     private static Boolean skipServiceTerritoryForSpecificOwners(Id ownerId) {
-        Group owner = [SELECT Name FROM Group WHERE Id = :ownerId LIMIT 1];
+        Group owner = [
+            SELECT Name
+            FROM Group
+            WHERE Id = :ownerId
+            LIMIT 1
+        ];
 
         return owner.Name == 'NAV Akuttvakt Tolk' || owner.Name == 'Fellesoppdrag Vest-Viken';
     }
+
 
     public static HOT_Request__c setServiceTerritory(HOT_Request__c request) {
         List<HOT_ServiceTerritoryByQueue__mdt> serviceTerritoryByQueueList = HOT_ServiceTerritoryByQueue__mdt.getAll()
@@ -586,6 +593,7 @@ public without sharing class HOT_UpdateChildRecordsService {
         ];
         Map<Id, Id> serviceTerritoryIdByQueueId = new Map<Id, Id>();
         for (Group queue : queues) {
+            
             for (ServiceTerritory serviceTerritory : serviceTerritories) {
                 if (serviceTerritoryByQueue.get(queue.DeveloperName) == serviceTerritory.HOT_DeveloperName__c) {
                     serviceTerritoryIdByQueueId.put(queue.Id, serviceTerritory.Id);
@@ -596,4 +604,5 @@ public without sharing class HOT_UpdateChildRecordsService {
 
         return request;
     }
+
 }

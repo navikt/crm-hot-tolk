@@ -279,20 +279,17 @@ public without sharing class HOT_UserNotificationService {
         CustomNotificationType notificationType,
         Thread__c thread,
         Boolean isFreelanceInterpreter,
-        Boolean isUser,
-        Set<String> recipients,
-        String title,
-        String body
+        Set<String> recipients
     ) {
+        String title = 'Ny melding fra Tolketjenesten';
+        String body = 'Du har fått en melding fra Tolketjenesten.';
+
         Messaging.CustomNotification notification = new Messaging.CustomNotification();
         notification.setTitle(title);
         notification.setBody(body);
         notification.setNotificationTypeId(notificationType.Id);
-        if (isUser) {
-            // --- BRUKER: bruker targetPageRef ---
-            String targetPageRef = getTargetPageRefThread(thread, false);
-            notification.setTargetPageRef(targetPageRef);
-        } else if (isFreelanceInterpreter) {
+
+        if (isFreelanceInterpreter) {
             // --- FREELANCE: bruker targetPageRef ---
             String targetPageRef = getTargetPageRefThread(thread, true);
             notification.setTargetPageRef(targetPageRef);
@@ -367,16 +364,9 @@ public without sharing class HOT_UserNotificationService {
             return pageRef;
         } else {
             String pageRef =
-                '{' +
-                'type: "standard__webPage",' +
-                'attributes: {' +
-                '"url": "/tolketjenesten/s/thread/' +
+                '{type: "comm__namedPage",attributes: {pageName: "mine-samtaler"}, state: {recordId: "' +
                 target.Id +
-                '?recordId=' +
-                target.Id +
-                '"' +
-                '}' +
-                '}';
+                '"}}';
             return pageRef;
         }
     }

@@ -166,7 +166,7 @@ export default class Hot_interestedResourcesList_v2 extends NavigationMixin(Ligh
                     let tempRecords = [];
                     for (let record of this.allInterestedResourcesWired) {
                         let formattedRecord = formatRecord(Object.assign({}, record), this.datetimeFields);
-                        formattedRecord.canceledDateRaw = record.ServiceAppointment__r.HOT_CanceledDate__c;
+                        formattedRecord.canceledDateRaw = record.WorkOrderCanceledDate__c; // <-- NY LINJE: Lagrer rådata
                         tempRecords.push(formattedRecord);
                     }
                     this.records = tempRecords;
@@ -199,9 +199,9 @@ export default class Hot_interestedResourcesList_v2 extends NavigationMixin(Ligh
             start: 'ServiceAppointmentStartTime__c',
             end: 'ServiceAppointmentEndTime__c'
         },
+        { name: 'WorkOrderCanceledDate__c', type: 'datetime' },
         { name: 'HOT_ReleaseDate__c', type: 'date' },
-        { name: 'AppointmentDeadlineDate__c', type: 'date' },
-        { name: 'ServiceAppointment__r.HOT_CanceledDate__c', type: 'datetime' }
+        { name: 'AppointmentDeadlineDate__c', type: 'date' }
     ];
 
     showServiceAppointmentDetails() {
@@ -493,30 +493,22 @@ export default class Hot_interestedResourcesList_v2 extends NavigationMixin(Ligh
     }
 
     get canceledDate() {
-        const dateVal =
-            this.interestedResource?.canceledDateRaw ||
-            this.interestedResource?.ServiceAppointment__r?.HOT_CanceledDate__c;
-
+        const dateVal = this.interestedResource?.canceledDateRaw || this.interestedResource?.WorkOrderCanceledDate__c;
         if (!dateVal) {
             return '';
         }
 
         const d = new Date(dateVal);
-
-        if (isNaN(d.getTime())) {
-            return '';
-        }
-
         return (
-            ('0' + d.getDate()).substr(-2) +
+            d.getDate() +
             '.' +
-            ('0' + (d.getMonth() + 1)).substr(-2) +
+            (d.getMonth() + 1) +
             '.' +
             d.getFullYear() +
             ', ' +
-            ('0' + d.getHours()).substr(-2) +
+            ('0' + d.getHours()).slice(-2) +
             ':' +
-            ('0' + d.getMinutes()).substr(-2)
+            ('0' + d.getMinutes()).slice(-2)
         );
     }
 

@@ -56,6 +56,7 @@
     </fieldPermissions>
     <hasActivationRequired>false</hasActivationRequired>
     <label>HOT Announcement</label>
+    <license>Salesforce</license>
     <objectPermissions>
         <allowCreate>true</allowCreate>
         <allowDelete>false</allowDelete>

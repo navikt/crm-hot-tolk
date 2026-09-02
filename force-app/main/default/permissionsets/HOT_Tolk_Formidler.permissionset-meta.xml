@@ -5,10 +5,6 @@
         <enabled>true</enabled>
     </classAccesses>
     <classAccesses>
-        <apexClass>HOT_AssignOrReserveSAService</apexClass>
-        <enabled>true</enabled>
-    </classAccesses>
-    <classAccesses>
         <apexClass>HOT_AutoScheduleService</apexClass>
         <enabled>true</enabled>
     </classAccesses>
@@ -30,10 +26,6 @@
     </classAccesses>
     <classAccesses>
         <apexClass>HOT_GetTolketjeneste</apexClass>
-        <enabled>true</enabled>
-    </classAccesses>
-    <classAccesses>
-        <apexClass>HOT_HighlightPanelController</apexClass>
         <enabled>true</enabled>
     </classAccesses>
     <classAccesses>
@@ -73,10 +65,6 @@
         <enabled>true</enabled>
     </classAccesses>
     <classAccesses>
-        <apexClass>HOT_WOInterpreterThreadService</apexClass>
-        <enabled>true</enabled>
-    </classAccesses>
-    <classAccesses>
         <apexClass>HOT_WageClaimService</apexClass>
         <enabled>true</enabled>
     </classAccesses>
@@ -88,10 +76,6 @@
         <apexClass>RecordFilesControllerWithoutSharing</apexClass>
         <enabled>true</enabled>
     </classAccesses>
-    <customPermissions>
-        <enabled>true</enabled>
-        <name>HOT_AccessToFormidlerActions</name>
-    </customPermissions>
     <customPermissions>
         <enabled>true</enabled>
         <name>HOT_DeleteFiles</name>
@@ -472,11 +456,6 @@
     </fieldPermissions>
     <fieldPermissions>
         <editable>false</editable>
-        <field>HOT_Request__c.HOT_Owner__c</field>
-        <readable>true</readable>
-    </fieldPermissions>
-    <fieldPermissions>
-        <editable>false</editable>
         <field>HOT_Request__c.HOT_PersonContactId__c</field>
         <readable>true</readable>
     </fieldPermissions>
@@ -695,6 +674,7 @@
         <field>HOT_Request__c.PreferredResource2__c</field>
         <readable>true</readable>
     </fieldPermissions>
+    
     <fieldPermissions>
         <editable>false</editable>
         <field>HOT_Request__c.SeriesDurationDays__c</field>
@@ -1001,21 +981,6 @@
         <readable>true</readable>
     </fieldPermissions>
     <fieldPermissions>
-        <editable>false</editable>
-        <field>Person__c.HOT_MobilePhoneOverrideReason__c</field>
-        <readable>true</readable>
-    </fieldPermissions>
-    <fieldPermissions>
-        <editable>false</editable>
-        <field>Person__c.HOT_MobilePhoneOverride__c</field>
-        <readable>true</readable>
-    </fieldPermissions>
-    <fieldPermissions>
-        <editable>false</editable>
-        <field>Person__c.HOT_MobilePhone__c</field>
-        <readable>true</readable>
-    </fieldPermissions>
-    <fieldPermissions>
         <editable>true</editable>
         <field>Person__c.HOT_NotificationChannel__c</field>
         <readable>true</readable>
@@ -1288,11 +1253,6 @@
     <fieldPermissions>
         <editable>true</editable>
         <field>ServiceAppointment.HOT_CancelComment__c</field>
-        <readable>true</readable>
-    </fieldPermissions>
-    <fieldPermissions>
-        <editable>true</editable>
-        <field>ServiceAppointment.HOT_CancelCommentExtended__c</field>
         <readable>true</readable>
     </fieldPermissions>
     <fieldPermissions>
@@ -1602,16 +1562,6 @@
     </fieldPermissions>
     <fieldPermissions>
         <editable>false</editable>
-        <field>ServiceResource.CRM_Domain__c</field>
-        <readable>true</readable>
-    </fieldPermissions>
-    <fieldPermissions>
-        <editable>false</editable>
-        <field>ServiceResource.CRM_Subdomain__c</field>
-        <readable>true</readable>
-    </fieldPermissions>
-    <fieldPermissions>
-        <editable>false</editable>
         <field>ServiceResource.Description</field>
         <readable>true</readable>
     </fieldPermissions>
@@ -1698,11 +1648,6 @@
     <fieldPermissions>
         <editable>false</editable>
         <field>ServiceResource.HOT_ServiceTerritory__c</field>
-        <readable>true</readable>
-    </fieldPermissions>
-    <fieldPermissions>
-        <editable>true</editable>
-        <field>ServiceResource.HOT_ShowOpenServiceAppointmentEvents__c</field>
         <readable>true</readable>
     </fieldPermissions>
     <fieldPermissions>

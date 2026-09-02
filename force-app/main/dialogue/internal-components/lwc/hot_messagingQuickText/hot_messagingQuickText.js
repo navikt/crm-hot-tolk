@@ -26,7 +26,7 @@ export default class crmQuickText extends LightningElement {
 
     @api focusOnInput() {
         let inputField = this.textArea;
-        inputField.focus({ preventScroll: true });
+        inputField.focus();
     }
     get textArea() {
         return this.template.querySelector('.conversationNoteTextArea');
@@ -35,7 +35,7 @@ export default class crmQuickText extends LightningElement {
     renderedCallback() {
         if (this.initialRender === true) {
             let inputField = this.textArea;
-            inputField.focus({ preventScroll: true });
+            inputField.focus();
             inputField.blur();
             this.initialRender = false;
         }

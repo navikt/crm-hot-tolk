@@ -1,15 +1,39 @@
 import { LightningElement, api, track, wire } from 'lwc';
+import { getFieldValue, getRecord } from 'lightning/uiRecordApi';
+import { resolve } from 'c/hot_tindComponentsUtils';
+
+import PERSON_ACTORID_FIELD from '@salesforce/schema/Person__c.INT_ActorId__c';
+import PERSON_FIRST_NAME from '@salesforce/schema/Person__c.INT_FirstName__c';
+import PERSON_IDENT_FIELD from '@salesforce/schema/Person__c.Name';
+import GENDER_FIELD from '@salesforce/schema/Person__c.INT_Sex__c';
+import IS_DECEASED_FIELD from '@salesforce/schema/Person__c.INT_IsDeceased__c';
+import FULL_NAME_FIELD from '@salesforce/schema/Person__c.NKS_Full_Name__c';
+import AGE_FIELD from '@salesforce/schema/Person__c.CRM_Age__c';
+import CITIZENSHIP_FIELD from '@salesforce/schema/Person__c.INT_Citizenships__c';
+import LEGAL_STATUS_FIELD from '@salesforce/schema/Person__c.INT_LegalStatus__c';
+import MUNICIPALITY_NAME__FIELD from '@salesforce/schema/Person__c.CRM_Municipality__r.Name';
+import DISTRICT_NAME_FIELD from '@salesforce/schema/Person__c.CRM_District__r.Name';
+import VEDTAK_FIELD from '@salesforce/schema/Person__c.HOT_DegreeOfHearingAndVisualImpairment__c';
 
 import NAV_ICONS from '@salesforce/resourceUrl/HOT_tindIcons';
 
-import getAccountPersonDetails from '@salesforce/apex/HOT_HighlightPanelController.getAccountPersonDetails';
+import getRelatedRecord from '@salesforce/apex/HOT_TindRecordInfoController.getRelatedRecord';
 import hasAccess from '@salesforce/apex/HOT_TindAccessErrorController.hasAccess';
 
-const CONFIDENTIAL_LABELS = {
-    FORTROLIG: 'Skjermet adresse - fortrolig',
-    STRENGT_FORTROLIG: 'Skjermet adresse - strengt fortrolig',
-    STRENGT_FORTROLIG_UTLAND: 'Skjermet adresse - strengt fortrolig'
-};
+const PERSON_FIELDS = [
+    PERSON_FIRST_NAME,
+    PERSON_IDENT_FIELD,
+    PERSON_ACTORID_FIELD,
+    GENDER_FIELD,
+    IS_DECEASED_FIELD,
+    FULL_NAME_FIELD,
+    AGE_FIELD,
+    CITIZENSHIP_FIELD,
+    LEGAL_STATUS_FIELD,
+    MUNICIPALITY_NAME__FIELD,
+    DISTRICT_NAME_FIELD,
+    VEDTAK_FIELD
+];
 
 export default class hot_personHighlightPanel extends LightningElement {
     @api recordId;
@@ -18,6 +42,7 @@ export default class hot_personHighlightPanel extends LightningElement {
 
     noPerson = false;
     personId;
+    wireFields;
     actorId;
     fullName;
     firstName;
@@ -26,11 +51,14 @@ export default class hot_personHighlightPanel extends LightningElement {
     errorMessages;
     personDetails = {};
     uuAlertText = '';
-    navEmployeeLabel = 'Skjermet person (NAV-ansatt)';
 
     @track loadingStates = {
         getRecordPerson: true
     };
+
+    connectedCallback() {
+        this.wireFields = [`${this.objectApiName}.Id`];
+    }
 
     capitalizeFirstLetter(str) {
         if (!str || typeof str !== 'string') {
@@ -46,61 +74,77 @@ export default class hot_personHighlightPanel extends LightningElement {
         return str.replace(/_/g, ' ').replace(' eller enkemann', '/-mann');
     }
 
-    translateVedtakLabel(value) {
-        switch (value) {
-            case 'Hearing impaired or deaf':
-                return 'Hørselshemmet eller døv';
-            case 'Deafblind':
-                return 'Døvblind';
-            default:
-                return value;
-        }
+    getRelatedRecordId(relationshipField, objectApiName) {
+        getRelatedRecord({
+            parentId: this.recordId,
+            relationshipField: relationshipField,
+            objectApiName: objectApiName
+        })
+            .then((record) => {
+                this.personId = resolve(relationshipField, record);
+                if (record && !this.personId) {
+                    this.noPerson = true;
+                    this.loadingStates.getRecordPerson = false;
+                }
+            })
+            .catch((error) => {
+                this.addErrorMessage('getRelatedRecord', error);
+                console.error(error);
+            });
     }
 
-    @wire(getAccountPersonDetails, { recordId: '$recordId' })
-    wiredPersonDetails({ error, data }) {
+    @wire(getRecord, {
+        recordId: '$personId',
+        fields: PERSON_FIELDS
+    })
+    wiredPersonInfo({ error, data }) {
         if (data) {
-            this.personData = data;
-            console.log('Person details:', this.personData);
-
-            this.actorId = this.personData.CRM_Person__r?.INT_ActorId__c;
-            this.fullName =
-                this.personData.CRM_Person__r?.INT_FirstName__c + ' ' + this.personData.CRM_Person__r?.INT_LastName__c;
-            this.firstName = this.personData.CRM_Person__r?.INT_FirstName__c;
-            this.personIdent = this.personData.CRM_Person__r?.Name;
+            this.actorId = getFieldValue(data, PERSON_ACTORID_FIELD);
+            this.fullName = getFieldValue(data, FULL_NAME_FIELD);
+            this.firstName = getFieldValue(data, PERSON_FIRST_NAME);
+            this.personIdent = getFieldValue(data, PERSON_IDENT_FIELD);
             this.personDetails = {
-                personId: this.personData.CRM_Person__c,
+                personId: this.personId,
                 firstName: this.firstName,
                 personIdent: this.personIdent,
                 actorId: this.actorId,
                 fullName: this.fullName,
-                gender: this.personData.CRM_Person__r?.INT_Sex__c,
-                isDeceased: this.personData.CRM_Person__r?.INT_IsDeceased__c,
-                age: this.personData.CRM_Person__r?.CRM_Age__c,
-                citizenship: this.capitalizeFirstLetter(this.personData.CRM_Person__r?.INT_Citizenships__c),
-                legalStatus: this.personData.CRM_Person__r?.INT_LegalStatus__c,
-                municipalityName: this.personData.CRM_Person__r?.CRM_Municipality__r?.Name,
-                districtName: this.personData.CRM_Person__r?.CRM_District__r?.Name,
-                vedtak: this.translateVedtakLabel(
-                    this.personData.CRM_Person__r?.HOT_DegreeOfHearingAndVisualImpairment__c
-                ),
-                navEmployee: this.personData.CRM_Person__r?.INT_IsNavEmployee__c,
-                confidentialStatus: this.personData.CRM_Person__r?.INT_Confidential__c
+                gender: getFieldValue(data, GENDER_FIELD),
+                isDeceased: getFieldValue(data, IS_DECEASED_FIELD),
+                age: getFieldValue(data, AGE_FIELD),
+                citizenship: this.capitalizeFirstLetter(getFieldValue(data, CITIZENSHIP_FIELD)),
+                legalStatus: getFieldValue(data, LEGAL_STATUS_FIELD),
+                municipalityName: getFieldValue(data, MUNICIPALITY_NAME__FIELD),
+                districtName: getFieldValue(data, DISTRICT_NAME_FIELD),
+                vedtak: getFieldValue(data, VEDTAK_FIELD)
             };
             this.loadingStates.getRecordPerson = false;
-
-            console.log('is nav employee:', this.personDetails?.navEmployee);
-            console.log('confidential status:', this.personDetails?.confidentialStatus);
             this.handleBackgroundColor();
         } else if (error) {
             this.loadingStates.getRecordPerson = false;
             this.handleBackgroundColor();
             hasAccess(this.personId).then((access) => {
                 if (access) {
-                    this.addErrorMessage('getAccountPersonDetails', error);
-                    console.error('getAccountPersonDetails error:', error);
+                    this.addErrorMessage('getRecord', error);
+                    console.error('Error in wiredPersonInfo:', error);
                 }
             });
+        }
+    }
+
+    @wire(getRecord, {
+        recordId: '$recordId',
+        fields: '$wireFields'
+    })
+    wiredRecordInfo({ error, data }) {
+        if (data) {
+            if (this.relationshipField && this.objectApiName) {
+                this.getRelatedRecordId(this.relationshipField, this.objectApiName);
+            }
+        }
+        if (error) {
+            this.addErrorMessage('wiredRecordInfo', error);
+            console.error(error);
         }
     }
 
@@ -191,26 +235,5 @@ export default class hot_personHighlightPanel extends LightningElement {
 
     get xMarkIconSrc() {
         return NAV_ICONS + '/xMarkIcon.svg#xMarkIcon';
-    }
-
-    get personIdent() {
-        return this.personData?.personIdent;
-    }
-
-    get isNavEmployeeBadge() {
-        return this.personDetails?.navEmployee === true;
-    }
-
-    get isConfidentialBadge() {
-        return this.personDetails?.confidentialStatus && this.personDetails?.confidentialStatus !== 'UGRADERT';
-    }
-
-    get confidentialLabel() {
-        return CONFIDENTIAL_LABELS[this.personDetails?.confidentialStatus] ?? false;
-    }
-
-    // Used to determine whether to show the bottom panel with personal info, or just the name
-    get shouldShowBottomPanel() {
-        return this.personDetails.fullName === 'Skjermet person' ? false : true;
     }
 }

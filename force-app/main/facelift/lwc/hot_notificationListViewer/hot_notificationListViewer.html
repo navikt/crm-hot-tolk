@@ -1,7 +1,7 @@
 <template>
     <div class="notification-center">
         <button
-            class="navds-button navds-body-short notification-button"
+            class="navds-button navds-body-short"
             onclick={toggleNotifications}
             aria-label="Vis varsler fra Tolketjenesten"
             aria-haspopup="dialog"
@@ -52,16 +52,6 @@
                                 <span aria-hidden="true"> | </span>
                                 {notification.created}
                             </div>
-                            <template lwc:if={notification.showAccessError}>
-                                <div role="alert">
-                                    <c-hot_local-alert
-                                        type="error"
-                                        title={errorMessageBanner}
-                                        content-view="title-only"
-                                        size="small"
-                                    ></c-hot_local-alert>
-                                </div>
-                            </template>
                         </div>
                     </button>
                 </template>

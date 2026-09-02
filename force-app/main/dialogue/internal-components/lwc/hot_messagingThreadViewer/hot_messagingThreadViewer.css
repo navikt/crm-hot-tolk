@@ -13,26 +13,3 @@
     right: 0;
     bottom: 0;
 }
-
-.closed-reply-message {
-    align-items: center;
-    background: #f3f2f2;
-    border: 1px solid #dddbda;
-    border-radius: 0.25rem;
-    color: #3e3e3c;
-    display: flex;
-    font-size: 0.875rem;
-    gap: 0.5rem;
-    line-height: 1.25rem;
-    margin-top: 0.75rem;
-    padding: 0.5rem 0.75rem;
-}
-
-.closed-reply-message p {
-    margin: 0;
-}
-
-.closed-reply-message__icon {
-    --slds-c-icon-color-foreground-default: #706e6b;
-    flex: 0 0 auto;
-}

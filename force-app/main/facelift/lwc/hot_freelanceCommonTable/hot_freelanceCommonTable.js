@@ -62,8 +62,7 @@ export default class Hot_freelanceCommonTable extends LightningElement {
                     label: column.label,
                     value: value,
                     type: column.type,
-                    ariaLabel: value,
-                    showMobileLabel: column.showMobileLabel
+                    ariaLabel: value
                 };
 
                 if (column.svg && this.iconByValue) {
@@ -77,7 +76,7 @@ export default class Hot_freelanceCommonTable extends LightningElement {
 
                 if (column.name === 'HOT_PreparationTime__c' && value) {
                     field.statusBadgeClass = 'badge-blue';
-                    field.statusBadgeLabel = 'Kompensert forberedelse';
+                    field.statusBadgeLabel = 'Forberedelsestid';
                 }
 
                 // Apply bold font weight and size to date columns

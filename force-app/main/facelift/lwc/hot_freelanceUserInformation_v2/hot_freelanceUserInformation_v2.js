@@ -91,8 +91,7 @@ export default class Hot_freelanceUserInformation_v2 extends LightningElement {
                 isAvailableForAcuteAssignmentsValue:
                     this.serviceResource.HOT_IsAvailableForAcuteAssignments__c || false,
                 preferredRegionsValue: this.serviceResource.HOT_PreferredRegions__c || '',
-                preferences: this.serviceResource.HOT_MoreInformation__c || '',
-                showOpenServiceAppointmentEvents: this.serviceResource.HOT_ShowOpenServiceAppointmentEvents__c || false
+                preferences: this.serviceResource.HOT_MoreInformation__c || ''
             };
 
             this.handlePreferredNotificationChannel();
@@ -172,10 +171,6 @@ export default class Hot_freelanceUserInformation_v2 extends LightningElement {
 
     get isAvailableForAcuteAssignments() {
         return this.userData && this.userData.isAvailableForAcuteAssignmentsValue ? true : false;
-    }
-
-    get showOpenServiceAppointmentEvents() {
-        return this.userData && this.userData.showOpenServiceAppointmentEvents ? true : false;
     }
 
     get formattedRegions() {
@@ -265,10 +260,6 @@ export default class Hot_freelanceUserInformation_v2 extends LightningElement {
         this.userData.preferences = event.detail;
     }
 
-    handleShowOpenServiceAppointmentEventsChange(event) {
-        this.userData.showOpenServiceAppointmentEvents = event.detail;
-    }
-
     editProfile() {
         // Snapshot only UserData
         this.originalUserData = JSON.parse(JSON.stringify(this.userData));
@@ -314,8 +305,7 @@ export default class Hot_freelanceUserInformation_v2 extends LightningElement {
             newIsSkilled: this.userData.isSkilledValue,
             newIsAvailableForAcuteAssignments: this.userData.isAvailableForAcuteAssignmentsValue,
             newPreferredRegions: this.userData.preferredRegionsValue,
-            newPreferences: this.userData.preferences,
-            newShowOpenServiceAppointmentEvents: this.userData.showOpenServiceAppointmentEvents
+            newPreferences: this.userData.preferences
         })
             .then(() => {
                 return Promise.all([refreshApex(this.wiredServiceResourceResult)]);

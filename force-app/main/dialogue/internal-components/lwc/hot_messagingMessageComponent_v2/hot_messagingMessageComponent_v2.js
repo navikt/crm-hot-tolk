@@ -3,29 +3,24 @@ import createThread from '@salesforce/apex/HOT_MessageHelper.createThreadDispatc
 import getUserContactId from '@salesforce/apex/HOT_MessageHelper.getUserContactId';
 import getThreadsAndParticipants from '@salesforce/apex/HOT_ThreadParticipants.getParticipantsByRelatedObjectAndThreadTypes';
 import getAccountOnRequest from '@salesforce/apex/HOT_MessageHelper.getAccountOnRequest';
-import getRequestInformation from '@salesforce/apex/HOT_MessageHelper.getRequestInformationAndAccessCheck';
-import getWorkOrderInformation from '@salesforce/apex/HOT_MessageHelper.getWorkOrderInformationAndAccessCheck';
-import getWageClaimInformation from '@salesforce/apex/HOT_MessageHelper.getWageClaimInformationAndAccessCheck';
-import getServiceAppointmentInformation from '@salesforce/apex/HOT_MessageHelper.getServiceAppointmentInformationAndAccessCheck';
-import getInterestedResourceInformation from '@salesforce/apex/HOT_MessageHelper.getInterestedResourceInformationAndAccessCheck';
+import getRequestInformation from '@salesforce/apex/HOT_MessageHelper.getRequestInformation';
+import getWorkOrderInformation from '@salesforce/apex/HOT_MessageHelper.getWorkOrderInformation';
 import getAccountOnWorkOrder from '@salesforce/apex/HOT_MessageHelper.getAccountOnWorkOrder';
-import getThreadInformation from '@salesforce/apex/HOT_ThreadDetailController.getThreadDetails';
-import checkIsOnlyEmployedInterpreter from '@salesforce/apex/HOT_ThreadDetailController.isOnlyEmployedInterpreter';
-import setLastMessageFrom from '@salesforce/apex/HOT_MessageHelper.setLastMessageFrom';
-import { ShowToastEvent } from 'lightning/platformShowToastEvent';
-import { createRecord } from 'lightning/uiRecordApi';
-import FORM_FACTOR from '@salesforce/client/formFactor';
+import getThreadInformation from '@salesforce/apex/HOT_MessageHelper.getThreadFromThreadId';
 
-export default class hot_messagingMessageComponent extends LightningElement {
+export default class CrmMessagingMessageComponent extends LightningElement {
     relatedObjectId;
     isThreadSummaryLoaded = false;
     defaultActiveTab = 'tab1';
-    selectedTab;
-    loadedTabIds = ['tab1'];
-    pendingFocusThreadType;
-    visibleTabIds = [];
-    overflowTabIds = [];
-    showMessageInput = true;
+    /*
+    showUserThreadbutton = false;
+    showOrderThreadbutton = false;
+    showUserOrdererThreadbutton = false;
+    showUserInterpreterThreadbutton = false;
+    showInterpreterInterpreterThreadbutton = false;
+    showInterpreterThreadbutton = false;
+    showOfficeThreadbutton = false;
+    */
     //show flows
     userSetToRedactionFlow = false;
     ordererSetToRedactionFlow = false;
@@ -41,17 +36,6 @@ export default class hot_messagingMessageComponent extends LightningElement {
     interpreterInterpreterRedactionFlowVariables = [];
     interpreterRedactionFlowVariables = [];
     officeRedactionFlowVariables = [];
-    noAccess = false;
-    noAccessMessage = 'Du har ikke tilgang til samtaler';
-
-    messageTemplates = {
-        'HOT_TOLK-TOLK': '',
-        'HOT_BRUKER-TOLK': '',
-        'HOT_BESTILLER-FORMIDLER': '',
-        'HOT_BRUKER-FORMIDLER': '',
-        'HOT_TOLK-RESSURSKONTOR': '',
-        'HOT_TOLK-FORMIDLER': ''
-    };
 
     openThreads = {
         'HOT_TOLK-TOLK': null,
@@ -76,14 +60,6 @@ export default class hot_messagingMessageComponent extends LightningElement {
         'HOT_BRUKER-FORMIDLER': '[data-user-thread]',
         'HOT_TOLK-RESSURSKONTOR': '[data-office-thread]',
         'HOT_TOLK-FORMIDLER': '[data-int-thread]'
-    };
-    threadMockCmpMap = {
-        'HOT_TOLK-TOLK': '[data-int-int-thread-mock]',
-        'HOT_BRUKER-TOLK': '[data-user-int-thread-mock]',
-        'HOT_BESTILLER-FORMIDLER': '[data-orderer-thread-mock]',
-        'HOT_BRUKER-FORMIDLER': '[data-user-thread-mock]',
-        'HOT_TOLK-RESSURSKONTOR': '[data-office-thread-mock]',
-        'HOT_TOLK-FORMIDLER': '[data-int-thread-mock]'
     };
     tabLabels = {
         'HOT_TOLK-TOLK': {
@@ -131,6 +107,8 @@ export default class hot_messagingMessageComponent extends LightningElement {
     userContactId;
 
     @api recordId;
+    @api englishTextTemplate;
+    @api textTemplate;
     @api objectApiName;
 
     @wire(getUserContactId)
@@ -148,276 +126,83 @@ export default class hot_messagingMessageComponent extends LightningElement {
         }
     }
 
-    renderedCallback() {
-        this.ensureResizeObserver();
-        this.recalculateTabOverflow();
-
-        if (this.pendingFocusThreadType) {
-            this.focusTabInputByType(this.pendingFocusThreadType);
-            this.pendingFocusThreadType = null;
-        }
-    }
-
-    disconnectedCallback() {
-        if (this.resizeObserver) {
-            this.resizeObserver.disconnect();
-            this.resizeObserver = null;
-        }
-    }
-
-    ensureResizeObserver() {
-        if (this.resizeObserver || typeof ResizeObserver === 'undefined') {
-            return;
-        }
-
-        const tabHeader = this.template.querySelector('.customTabHeader');
-        if (!tabHeader) {
-            return;
-        }
-
-        this.resizeObserver = new ResizeObserver(() => {
-            this.recalculateTabOverflow();
+    handleEnglishEvent(event) {
+        const englishEvent = new CustomEvent('englisheventtwo', {
+            detail: event.detail
         });
-        this.resizeObserver.observe(tabHeader);
+        this.dispatchEvent(englishEvent);
     }
-
-    recalculateTabOverflow() {
-        const tabHeader = this.template.querySelector('.customTabHeader');
-        const measureContainer = this.template.querySelector('.tabMeasureContainer');
-        const tabs = this.allTabs;
-
-        if (!tabHeader || !measureContainer || tabs.length === 0) {
-            return;
-        }
-
-        const availableWidth = tabHeader.clientWidth;
-        if (!availableWidth) {
-            return;
-        }
-
-        const headerStyles = window.getComputedStyle(tabHeader);
-        const gapSize = parseFloat(headerStyles.columnGap || headerStyles.gap || '0') || 0;
-
-        const tabWidths = new Map();
-        measureContainer.querySelectorAll('[data-measure-tab]').forEach((button) => {
-            const tabId = button.dataset.measureTab;
-            tabWidths.set(tabId, button.offsetWidth);
-        });
-
-        const moreButtonWidth = measureContainer.querySelector('.tabMeasureMore')?.offsetWidth || 88;
-
-        const visible = [];
-        const overflow = [];
-        let usedWidth = 0;
-
-        tabs.forEach((tab) => {
-            const nextWidth = tabWidths.get(tab.id) || 120;
-            const nextUsedWidth = usedWidth + (visible.length > 0 ? gapSize : 0) + nextWidth;
-
-            if (nextUsedWidth <= availableWidth) {
-                visible.push(tab.id);
-                usedWidth = nextUsedWidth;
-            } else {
-                overflow.push(tab.id);
-            }
-        });
-
-        if (overflow.length > 0) {
-            while (
-                visible.length > 1 &&
-                usedWidth + (visible.length > 0 ? gapSize : 0) + moreButtonWidth > availableWidth
-            ) {
-                const movedTabId = visible.pop();
-                overflow.unshift(movedTabId);
-
-                usedWidth = visible.reduce((sum, tabId, index) => {
-                    const width = tabWidths.get(tabId) || 120;
-                    return sum + (index > 0 ? gapSize : 0) + width;
-                }, 0);
-            }
-        }
-
-        const activeTabId = this.activeTab;
-        const activeInOverflow = overflow.includes(activeTabId);
-        if (activeInOverflow && visible.length > 0) {
-            const displaced = visible[visible.length - 1];
-            visible[visible.length - 1] = activeTabId;
-
-            const activeIndex = overflow.indexOf(activeTabId);
-            overflow.splice(activeIndex, 1);
-
-            if (displaced !== activeTabId) {
-                overflow.unshift(displaced);
-            }
-        }
-
-        if (!this.arraysEqual(this.visibleTabIds, visible)) {
-            this.visibleTabIds = visible;
-        }
-        if (!this.arraysEqual(this.overflowTabIds, overflow)) {
-            this.overflowTabIds = overflow;
-        }
-    }
-
-    arraysEqual(left, right) {
-        if (left.length !== right.length) {
-            return false;
-        }
-        return left.every((value, index) => value === right[index]);
-    }
+    renderedCallback() {}
     connectedCallback() {
         this.relatedObjectId = this.recordId;
         if (this.objectApiName === 'HOT_Request__c') {
             getRequestInformation({ recordId: this.recordId })
                 .then((result) => {
-                    if (result.IsAccountEqualOrderer__c == true) {
+                    if (result[0].IsAccountEqualOrderer__c == true) {
                         this.threadTypesOfInterest = ['HOT_BRUKER-FORMIDLER'];
-                    } else if (result.Account__c == null && result.Orderer__c != null) {
+                    } else if (result[0].Account__c == null && result[0].Orderer__c != null) {
                         this.threadTypesOfInterest = ['HOT_BESTILLER-FORMIDLER'];
-                    } else if (result.Account__c != null && result.Orderer__c == null) {
+                    } else if (result[0].Account__c != null && result[0].Orderer__c == null) {
                         this.threadTypesOfInterest = ['HOT_BRUKER-FORMIDLER'];
                     } else {
                         this.threadTypesOfInterest = ['HOT_BRUKER-FORMIDLER', 'HOT_BESTILLER-FORMIDLER'];
                     }
+                    this.getThreadAndParticipants();
                 })
                 .catch((error) => {
-                    if (error?.body?.message == 'No access') {
-                        this.noAccess = true;
-                        this.noAccessMessage = 'Du har ikke tilgang til samtaler på denne forespørselen';
-                    }
                     console.log(error);
-                })
-                .finally(() => {
-                    this.getThreadAndParticipants();
                 });
         } else if (this.objectApiName === 'WorkOrder') {
             getWorkOrderInformation({ recordId: this.recordId })
                 .then((result) => {
-                    if (result.HOT_TotalNumberOfInterpreters__c > 1) {
+                    if (result[0].HOT_TotalNumberOfInterpreters__c > 1) {
                         this.threadTypesOfInterest = ['HOT_TOLK-TOLK', 'HOT_BRUKER-TOLK'];
                     } else {
                         this.threadTypesOfInterest = ['HOT_BRUKER-TOLK'];
                     }
-
-                    // work orders with status canceled should not show message input
-                    if (
-                        (this.threadTypesOfInterest.includes('HOT_BRUKER-TOLK') ||
-                            this.threadTypesOfInterest.includes('HOT_TOLK-TOLK')) &&
-                        result.Status === 'Canceled'
-                    ) {
-                        return checkIsOnlyEmployedInterpreter().then((hasPermission) => {
-                            if (hasPermission) {
-                                this.showMessageInput = false;
-                            }
-                        });
-                    }
+                    this.getThreadAndParticipants();
                 })
                 .catch((error) => {
-                    if (error?.body?.message == 'No access') {
-                        this.noAccess = true;
-                        this.noAccessMessage = 'Du har ikke tilgang til samtaler på denne arbeidsordren';
-                    }
                     console.log(error);
-                })
-                .finally(() => {
-                    this.getThreadAndParticipants();
                 });
         } else if (this.objectApiName === 'HOT_WageClaim__c') {
-            getWageClaimInformation({ recordId: this.recordId })
-                .then(() => {
-                    this.threadTypesOfInterest = ['HOT_TOLK-RESSURSKONTOR'];
-                })
-                .catch((error) => {
-                    if (error?.body?.message == 'No access') {
-                        this.noAccess = true;
-                        this.noAccessMessage = 'Du har ikke tilgang til samtaler på dette lønnskravet';
-                    }
-                    console.log(error);
-                })
-                .finally(() => {
-                    this.getThreadAndParticipants();
-                });
-        } else if (this.objectApiName === 'ServiceAppointment') {
-            getServiceAppointmentInformation({ recordId: this.recordId })
-                .then((result) => {
-                    this.threadTypesOfInterest = ['HOT_TOLK-FORMIDLER'];
-                })
-                .catch((error) => {
-                    if (error?.body?.message == 'No access') {
-                        this.noAccess = true;
-                        this.noAccessMessage = 'Du har ikke tilgang til samtaler på dette oppdraget';
-                    }
-                    console.log(error);
-                })
-                .finally(() => {
-                    this.getThreadAndParticipants();
-                });
-        } else if (this.objectApiName === 'HOT_InterestedResource__c') {
-            getInterestedResourceInformation({ recordId: this.recordId })
-                .then(() => {
-                    this.threadTypesOfInterest = ['HOT_TOLK-FORMIDLER'];
-                })
-                .catch((error) => {
-                    if (error?.body?.message == 'No access') {
-                        this.noAccess = true;
-                        this.noAccessMessage = 'Du har ikke tilgang til samtaler på denne interesserte ressursen';
-                    }
-                    console.log(error);
-                })
-                .finally(() => {
-                    this.getThreadAndParticipants();
-                });
+            this.threadTypesOfInterest = ['HOT_TOLK-RESSURSKONTOR'];
+            this.getThreadAndParticipants();
+        } else if (this.objectApiName === 'ServiceAppointment' || this.objectApiName === 'HOT_InterestedResource__c') {
+            this.threadTypesOfInterest = ['HOT_TOLK-FORMIDLER'];
+            this.getThreadAndParticipants();
         } else if (this.objectApiName === 'Thread__c') {
             getThreadInformation({ recordId: this.recordId })
                 .then((result) => {
-                    this.relatedObjectId = result.CRM_Related_Object__c ?? result.Id;
-                    this.threadTypesOfInterest = [result.CRM_Thread_Type__c];
-
-                    if (
-                        result.HOT_WorkOrder__r?.Status === 'Canceled' &&
-                        result.CRM_Related_Object_Type__c === 'WorkOrder'
-                    ) {
-                        return checkIsOnlyEmployedInterpreter().then((hasPermission) => {
-                            if (hasPermission) {
-                                this.showMessageInput = false;
-                            }
-                        });
-                    }
-
-                    return null;
+                    this.relatedObjectId = result[0].CRM_Related_Object__c ?? result[0].Id;
+                    this.threadTypesOfInterest = [result[0].CRM_Thread_Type__c];
+                    this.getThreadAndParticipants();
                 })
                 .catch((error) => {
-                    if (error?.body?.message == 'No access') {
-                        this.noAccess = true;
-                        this.noAccessMessage = 'Du har ikke tilgang til samtaler på denne samtalen';
-                    }
                     console.log(error);
-                })
-                .finally(() => {
-                    this.getThreadAndParticipants();
                 });
         } else {
             console.log('Not supportet object for messaging component');
         }
     }
 
-    async getThreadAndParticipants() {
+    getThreadAndParticipants() {
         if (this.threadTypesOfInterest == null || this.threadTypesOfInterest.length === 0) {
-            this.isThreadSummaryLoaded = true;
             console.log('No thread types of interest defined, skipping getThreadsAndParticipants');
             return;
         }
-        try {
-            const result = await getThreadsAndParticipants({
-                relatedObjectId: this.relatedObjectId,
-                threadTypesOfInterest: this.threadTypesOfInterest
+        getThreadsAndParticipants({
+            relatedObjectId: this.relatedObjectId,
+            threadTypesOfInterest: this.threadTypesOfInterest
+        })
+            .then((result) => {
+                this.threadsAndParticipants = result;
+                this.isThreadSummaryLoaded = true;
+            })
+            .catch((error) => {
+                console.log('Error getting threads and participants: ');
+                console.log(error);
             });
-            this.threadsAndParticipants = result;
-        } catch (error) {
-            console.log('Error getting threads and participants: ');
-            console.log(error);
-        }
-        this.isThreadSummaryLoaded = true;
     }
     setToRedaction(event, name) {
         event.stopPropagation();
@@ -556,24 +341,6 @@ export default class hot_messagingMessageComponent extends LightningElement {
             this.officeSetToRedactionFlow = false;
         }
     }
-    get userMessageTemplate() {
-        return this.messageTemplates['HOT_BRUKER-FORMIDLER'];
-    }
-    get ordererMessageTemplate() {
-        return this.messageTemplates['HOT_BESTILLER-FORMIDLER'];
-    }
-    get interpreterMessageTemplate() {
-        return this.messageTemplates['HOT_TOLK-FORMIDLER'];
-    }
-    get userInterpreterMessageTemplate() {
-        return this.messageTemplates['HOT_BRUKER-TOLK'];
-    }
-    get interpreterInterpreterMessageTemplate() {
-        return this.messageTemplates['HOT_TOLK-TOLK'];
-    }
-    get officeMessageTemplate() {
-        return this.messageTemplates['HOT_TOLK-RESSURSKONTOR'];
-    }
     get participants() {
         if (this.threadParticipants) {
             return this.threadParticipants.map((participant) => {
@@ -701,311 +468,16 @@ export default class hot_messagingMessageComponent extends LightningElement {
     get officeThreadTabLabel() {
         return this.tabLabelByType('HOT_TOLK-RESSURSKONTOR');
     }
-
-    getThreadInitialMessage(target) {
-        return `Samtale med ${target} er ikke påbegynt enda. Skriv en melding for å starte samtalen.`;
-    }
-
-    get userThreadInitialMessage() {
-        return this.getThreadInitialMessage('bruker');
-    }
-    get ordererThreadInitialMessage() {
-        return this.getThreadInitialMessage('bestiller');
-    }
-    get userInterpreterThreadInitialMessage() {
-        return this.getThreadInitialMessage('bruker og tolk');
-    }
-    get interpreterInterpreterThreadInitialMessage() {
-        return this.getThreadInitialMessage('medtolker');
-    }
-    get interpreterThreadInitialMessage() {
-        return this.getThreadInitialMessage('tolk');
-    }
-    get officeThreadInitialMessage() {
-        return this.getThreadInitialMessage('ressurskontor');
-    }
-
     get summaryLoading() {
         return !this.isThreadSummaryLoaded;
     }
-
-    get allTabs() {
-        const tabs = [{ id: 'tab1', label: 'Oppsummering' }];
-
-        if (this.showUserThreadTab) {
-            tabs.push({ id: 'tab2', label: this.userThreadTabLabel });
-        }
-        if (this.showOrderThreadTab) {
-            tabs.push({ id: 'tab3', label: this.ordererThreadTabLabel });
-        }
-        if (this.showUserInterpreterThreadTab) {
-            tabs.push({ id: 'tab4', label: this.userInterpreterThreadTabLabel });
-        }
-        if (this.showInterpreterInterpreterThreadTab) {
-            tabs.push({ id: 'tab5', label: this.interpreterInterpreterThreadTabLabel });
-        }
-        if (this.showInterpreterThreadTab) {
-            tabs.push({ id: 'tab6', label: this.interpreterThreadTabLabel });
-        }
-        if (this.showOfficeThreadTab) {
-            tabs.push({ id: 'tab7', label: this.officeThreadTabLabel });
-        }
-
-        return tabs;
-    }
-
-    getTabColorClass(tabId) {
-        const tabColorMap = {
-            tab1: 'tabColor--summary',
-            tab2: 'tabColor--user',
-            tab3: 'tabColor--orderer',
-            tab4: 'tabColor--userInterpreter',
-            tab5: 'tabColor--interpreterInterpreter',
-            tab6: 'tabColor--interpreter',
-            tab7: 'tabColor--office'
-        };
-        return tabColorMap[tabId] || '';
-    }
-
-    get visibleTabs() {
-        const fallbackTabs = this.allTabs;
-
-        if (this.isMobileFormFactor) {
-            return fallbackTabs.map((tab) => {
-                const baseClass =
-                    this.activeTab === tab.id ? 'customTabButton customTabButtonActive' : 'customTabButton';
-                const colorClass = this.getTabColorClass(tab.id);
-                return {
-                    ...tab,
-                    className: colorClass ? `${baseClass} ${colorClass}` : baseClass
-                };
-            });
-        }
-
-        const visibleTabSet = new Set(this.visibleTabIds);
-        const tabs = fallbackTabs.filter((tab) => visibleTabSet.has(tab.id));
-        const resolvedTabs = tabs.length > 0 ? tabs : fallbackTabs;
-
-        return resolvedTabs.map((tab) => {
-            const baseClass = this.activeTab === tab.id ? 'customTabButton customTabButtonActive' : 'customTabButton';
-            const colorClass = this.getTabColorClass(tab.id);
-            return {
-                ...tab,
-                className: colorClass ? `${baseClass} ${colorClass}` : baseClass
-            };
-        });
-    }
-
-    get overflowTabs() {
-        const overflowTabSet = new Set(this.overflowTabIds);
-        return this.allTabs
-            .filter((tab) => overflowTabSet.has(tab.id))
-            .map((tab) => ({
-                ...tab,
-                className: this.getTabColorClass(tab.id)
-            }));
-    }
-
-    get hasOverflowTabs() {
-        return !this.isMobileFormFactor && this.overflowTabIds.length > 0;
-    }
-
-    get isMobileFormFactor() {
-        return FORM_FACTOR === 'Small';
-    }
-
-    get tabHeaderClass() {
-        return this.isMobileFormFactor ? 'customTabHeader customTabHeader--mobileScrollable' : 'customTabHeader';
-    }
-
-    get tabPanelClass() {
-        const colorClass = this.getTabColorClass(this.activeTab);
-        return colorClass ? `customTabPanel ${colorClass}` : 'customTabPanel';
-    }
-
-    isTabLoaded(tabId) {
-        return this.activeTab === tabId || this.loadedTabIds.includes(tabId);
-    }
-
-    loadTab(tabId) {
-        if (!tabId || this.loadedTabIds.includes(tabId)) {
-            return;
-        }
-        this.loadedTabIds = [...this.loadedTabIds, tabId];
-    }
-
-    getTabContentClass(tabId) {
-        return this.activeTab === tabId ? 'tabContent tabContent--active' : 'tabContent tabContent--hidden';
-    }
-
-    get isTab1Loaded() {
-        return this.isTabLoaded('tab1');
-    }
-
-    get isTab2Loaded() {
-        return this.isTabLoaded('tab2');
-    }
-
-    get isTab3Loaded() {
-        return this.isTabLoaded('tab3');
-    }
-
-    get isTab4Loaded() {
-        return this.isTabLoaded('tab4');
-    }
-
-    get isTab5Loaded() {
-        return this.isTabLoaded('tab5');
-    }
-
-    get isTab6Loaded() {
-        return this.isTabLoaded('tab6');
-    }
-
-    get isTab7Loaded() {
-        return this.isTabLoaded('tab7');
-    }
-
-    get tab1ContentClass() {
-        return this.getTabContentClass('tab1');
-    }
-
-    get tab2ContentClass() {
-        return `messageComponentTabContainer ${this.getTabContentClass('tab2')}`;
-    }
-
-    get tab3ContentClass() {
-        return `messageComponentTabContainer ${this.getTabContentClass('tab3')}`;
-    }
-
-    get tab4ContentClass() {
-        return `messageComponentTabContainer ${this.getTabContentClass('tab4')}`;
-    }
-
-    get tab5ContentClass() {
-        return `messageComponentTabContainer ${this.getTabContentClass('tab5')}`;
-    }
-
-    get tab6ContentClass() {
-        return `messageComponentTabContainer ${this.getTabContentClass('tab6')}`;
-    }
-
-    get tab7ContentClass() {
-        return `messageComponentTabContainer ${this.getTabContentClass('tab7')}`;
-    }
-
-    get isTab1Active() {
-        return this.activeTab === 'tab1';
-    }
-
-    get isTab2Active() {
-        return this.showUserThreadTab && this.activeTab === 'tab2';
-    }
-
-    get isTab3Active() {
-        return this.showOrderThreadTab && this.activeTab === 'tab3';
-    }
-
-    get isTab4Active() {
-        return this.showUserInterpreterThreadTab && this.activeTab === 'tab4';
-    }
-
-    get isTab5Active() {
-        return this.showInterpreterInterpreterThreadTab && this.activeTab === 'tab5';
-    }
-
-    get isTab6Active() {
-        return this.showInterpreterThreadTab && this.activeTab === 'tab6';
-    }
-
-    get isTab7Active() {
-        return this.showOfficeThreadTab && this.activeTab === 'tab7';
-    }
-
-    get tab1Class() {
-        return this.isTab1Active ? 'customTabButton customTabButtonActive' : 'customTabButton';
-    }
-
-    get tab2Class() {
-        return this.isTab2Active ? 'customTabButton customTabButtonActive' : 'customTabButton';
-    }
-
-    get tab3Class() {
-        return this.isTab3Active ? 'customTabButton customTabButtonActive' : 'customTabButton';
-    }
-
-    get tab4Class() {
-        return this.isTab4Active ? 'customTabButton customTabButtonActive' : 'customTabButton';
-    }
-
-    get tab5Class() {
-        return this.isTab5Active ? 'customTabButton customTabButtonActive' : 'customTabButton';
-    }
-
-    get tab6Class() {
-        return this.isTab6Active ? 'customTabButton customTabButtonActive' : 'customTabButton';
-    }
-
-    get tab7Class() {
-        return this.isTab7Active ? 'customTabButton customTabButtonActive' : 'customTabButton';
-    }
-
-    isTabVisible(tabName) {
-        return this.allTabs.some((tab) => tab.id === tabName);
-    }
-
     get activeTab() {
-        if (this.selectedTab && this.isTabVisible(this.selectedTab)) {
-            return this.selectedTab;
-        }
-
         const openThreadType = this.findOpenThread();
         if (openThreadType) {
             return this.tabByThreadTypesMap[openThreadType];
         }
-        if (this.threadTypesOfInterest && this.threadTypesOfInterest.length > 0) {
-            return this.tabByThreadTypesMap[this.threadTypesOfInterest[0]];
-        }
         return this.defaultActiveTab;
     }
-    handleTabClick(event) {
-        const nextTab = event.currentTarget?.dataset?.tab;
-        this.selectTab(nextTab);
-    }
-
-    handleMoreTabSelect(event) {
-        const nextTab = event.detail?.value;
-        this.selectTab(nextTab);
-    }
-
-    selectTab(nextTab) {
-        if (!nextTab || nextTab === this.activeTab || !this.isTabVisible(nextTab)) {
-            return;
-        }
-
-        const currentTab = this.activeTab;
-        this.loadTab(currentTab);
-        this.loadTab(nextTab);
-        this.selectedTab = nextTab;
-        this.pendingFocusThreadType = null;
-
-        const tabHandlerMap = {
-            tab1: this.summaryTabHandler,
-            tab2: this.userThreadTabHandler,
-            tab3: this.ordererThreadTabHandler,
-            tab4: this.userInterpreterThreadTabHandler,
-            tab5: this.interpreterInterpreterThreadTabHandler,
-            tab6: this.interpreterThreadTabHandler,
-            tab7: this.officeThreadTabHandler
-        };
-        const tabHandler = tabHandlerMap[nextTab];
-        if (tabHandler) {
-            tabHandler.call(this);
-        }
-
-        this.recalculateTabOverflow();
-    }
-
     findOpenThread() {
         if (!this.threadsAndParticipants || !this.threadTypesOfInterest) {
             console.log('threadsAndParticipants or threadTypesOfInterest is null');
@@ -1058,119 +530,60 @@ export default class hot_messagingMessageComponent extends LightningElement {
     officeThreadTabHandler() {
         this.tabHandlerByType('HOT_TOLK-RESSURSKONTOR');
     }
-
-    focusTabInputByType(threadType) {
+    tabHandlerByType(threadType) {
         if (this.openThreadsByType(threadType)) {
+            this.runningThreadCreate = false;
             let threadCmp = this.template.querySelector(this.threadCmpMap[threadType]);
             if (threadCmp) {
                 threadCmp.focusOnInput();
             }
         } else {
-            let threadMockCmp = this.template.querySelector(this.threadMockCmpMap[threadType]);
-            if (threadMockCmp) {
-                threadMockCmp.focusOnInput();
-            }
+            this.runningThreadCreate = true;
+            this.newThreadWithType(threadType);
         }
     }
-
-    tabHandlerByType(threadType) {
-        this.pendingFocusThreadType = threadType;
-        /*
-        this.newThreadWithType(threadType);
-        */
-    }
-    handleCreateUserThreadWithMessage(event) {
-        this.newThreadWithTypeAndMessage('HOT_BRUKER-FORMIDLER', event.detail);
-    }
-    handleCreateOrdererThreadWithMessage(event) {
-        this.newThreadWithTypeAndMessage('HOT_BESTILLER-FORMIDLER', event.detail);
-    }
-    handleCreateUserInterpreterThreadWithMessage(event) {
-        this.newThreadWithTypeAndMessage('HOT_BRUKER-TOLK', event.detail);
-    }
-    handleCreateInterpreterInterpreterThreadWithMessage(event) {
-        this.newThreadWithTypeAndMessage('HOT_TOLK-TOLK', event.detail);
-    }
-    handleCreateInterpreterThreadWithMessage(event) {
-        this.newThreadWithTypeAndMessage('HOT_TOLK-FORMIDLER', event.detail);
-    }
-    handleCreateOfficeThreadWithMessage(event) {
-        this.newThreadWithTypeAndMessage('HOT_TOLK-RESSURSKONTOR', event.detail);
-    }
-    async newThreadWithTypeAndMessage(threadType, message) {
-        this.runningThreadCreate = true;
-        let thread;
+    newThreadWithType(threadType) {
         if (this.accountId == undefined) {
-            try {
-                this.accountId = await getAccountOnWorkOrder({ recordId: this.recordId });
-            } catch (error) {
-                console.error(JSON.stringify(error), error);
-
-                this.dispatchEvent(
-                    new ShowToastEvent({
-                        title: 'Feil ved opprettelse av samtale',
-                        message: 'Samtalen kunne ikke bli opprettet',
-                        variant: 'error'
-                    })
-                );
-                this.runningThreadCreate = false;
-                return;
-            }
-        }
-        try {
-            thread = await createThread({
-                recordId: this.recordId,
-                accountId: this.accountId,
-                type: threadType
-            });
-        } catch (error) {
-            if (this.objectApiName === 'HOT_InterestedResource__c' && error.body.message === 'thread exist') {
-                this.interestedResourceIsAssigned = true;
-            } else if (this.objectApiName === 'ServiceAppointment' && error.body.message === 'no employee') {
-                this.noAssignedResource = true;
-            } else {
-                console.error(JSON.stringify(error), error);
-            }
-            this.dispatchEvent(
-                new ShowToastEvent({
-                    title: 'Feil ved opprettelse av samtale',
-                    message: 'Samtalen kunne ikke bli opprettet',
-                    variant: 'error'
+            getAccountOnWorkOrder({ recordId: this.recordId })
+                .then((result) => {
+                    this.accountId = result;
+                    createThread({ recordId: this.recordId, accountId: this.accountId, type: threadType })
+                        .then(() => {
+                            this.getThreadAndParticipants();
+                        })
+                        .catch((error) => {
+                            if (
+                                this.objectApiName === 'HOT_InterestedResource__c' &&
+                                error.body.message === 'thread exist'
+                            ) {
+                                this.interestedResourceIsAssigned = true;
+                            } else if (
+                                this.objectApiName === 'ServiceAppointment' &&
+                                error.body.message === 'no employee'
+                            ) {
+                                this.noAssignedResource = true;
+                            } else {
+                                console.log(error);
+                            }
+                        });
                 })
-            );
-            this.runningThreadCreate = false;
-            return;
-        }
-        try {
-            const fields = message;
-            fields.CRM_Thread__c = thread.Id;
-            await createRecord({
-                apiName: 'Message__c',
-                fields: fields
-            });
-        } catch (error) {
-            this.messageTemplates[threadType] = message.CRM_Message_Text__c;
-            this.dispatchEvent(
-                new ShowToastEvent({
-                    title: 'Feil ved sending av melding',
-                    message: 'Meldingen kunne ikke bli sendt',
-                    variant: 'error'
+                .catch((error) => {
+                    console.log(error);
                 })
-            );
-            console.error(JSON.stringify(error), error);
+                .finally(() => {
+                    this.runningThreadCreate = false;
+                });
+        } else {
+            createThread({ recordId: this.recordId, accountId: this.accountId, type: threadType })
+                .then(() => {
+                    this.getThreadAndParticipants();
+                })
+                .catch((error) => {
+                    console.log(error);
+                })
+                .finally(() => {
+                    this.runningThreadCreate = false;
+                });
         }
-        setLastMessageFrom({ threadId: thread.Id, fromContactId: 'ansatt/formidler' })
-            .then(() => {
-                console.log('Last message from set to contact');
-            })
-            .catch((error) => {
-                console.error('Error setting last message from: ', JSON.stringify(error), error);
-            });
-        try {
-            await this.getThreadAndParticipants();
-        } catch (error) {
-            console.error(JSON.stringify(error), error);
-        }
-        this.runningThreadCreate = false;
     }
 }
