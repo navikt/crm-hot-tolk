@@ -65,6 +65,12 @@
                 <booleanValue>true</booleanValue>
             </value>
         </filters>
+            <field>HOT_ServiceResource__c</field>
+            <operator>IsNull</operator>
+            <value>
+                <booleanValue>false</booleanValue>
+            </value>
+        </filters>
         <object>ServiceAppointment</object>
         <recordTriggerType>Update</recordTriggerType>
         <triggerType>RecordBeforeSave</triggerType>
