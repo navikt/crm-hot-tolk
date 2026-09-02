@@ -15,7 +15,7 @@
 
         <template lwc:if={personIdent}>
             <lightning-layout-item class="custom-padding-left custom-grid-vertical-align-center">
-                <span>{personIdent}</span>
+                <span class="personIdent">{personIdent}</span>
                 <!-- sldsValidatorIgnoreNextLine -->
                 <lightning-button-icon
                     value={personIdent}
@@ -29,9 +29,9 @@
                 </lightning-button-icon>
             </lightning-layout-item>
         </template>
-        <template lwc:if={formattedPersonInfo}>
+        <template lwc:if={showPersonInfo}>
             <lightning-layout-item class="custom-padding-left custom-grid-vertical-align-center">
-                <p>{formattedPersonInfo}</p>
+                <p class="personInfo">{formattedPersonInfo}</p>
             </lightning-layout-item>
         </template>
     </lightning-layout>

@@ -26,6 +26,8 @@ public without sharing class HOT_InterestedResourceNotification {
             //creating notification object list
             List<HOT_Notification__c> notificationList = new List<HOT_Notification__c>();
             CustomNotificationType notificationType = getCustomNotificationType('HOT_NotifyUser');
+
+            Set<Id> wantedIRList = new Set<Id>();
             for (HOT_InterestedResource__c wantedIr : interestedResources) {
                 Set<String> recipients = new Set<String>();
                 if (userIdByAccountId.get(wantedIr.ServiceResource__r.AccountId) != null) {
@@ -50,10 +52,12 @@ public without sharing class HOT_InterestedResourceNotification {
 
                     notificationList.add(notification);
                 } else {
-                    Set<Id> wantedIRList = new Set<Id>();
                     wantedIRList.add(wantedIr.Id);
-                    HOT_ReminderSMSService.sendSMSOnNewWantedSR(wantedIRList);
                 }
+            }
+
+            if (!wantedIRList.isEmpty()) {
+                HOT_ReminderSMSService.sendSMSOnNewWantedSR(wantedIRList);
             }
             //inserting notifications
             try {

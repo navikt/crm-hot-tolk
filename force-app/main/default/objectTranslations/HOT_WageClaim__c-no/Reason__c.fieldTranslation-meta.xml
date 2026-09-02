@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomFieldTranslation xmlns="http://soap.sforce.com/2006/04/metadata">
+    <label>Årsak</label>
+    <name>Reason__c</name>
+    <picklistValues>
+        <masterLabel>Cancelled</masterLabel>
+        <translation>Avlyst</translation>
+    </picklistValues>
+    <picklistValues>
+        <masterLabel>Time Changed</masterLabel>
+        <translation>Endret tid</translation>
+    </picklistValues>
+</CustomFieldTranslation>

@@ -43,6 +43,7 @@ public without sharing class HOT_InterestedResourcesListController {
                 ServiceAppointment__r.HOT_Request__r.IsOtherEconomicProvicer__c,
                 ServiceAppointment__r.HOT_LateCancellation__c,
                 ServiceAppointment__r.HOT_PreparationTime__c,
+                ServiceAppointment__r.HOT_CanceledDate__c,
                 AssignmentType__c,
                 AppointmentDeadlineDate__c,
                 AppointmentServiceTerritory__c,
@@ -206,7 +207,7 @@ public without sharing class HOT_InterestedResourcesListController {
 
     @AuraEnabled
     public static HOT_InterestedResource__c getInterestedResourceDetails(String recordId) {
-        User currentUser = [SELECT Id, AccountId, Account.CRM_Person__c FROM User WHERE Id = :UserInfo.getUserId()];
+        User currentUser = [SELECT Id, AccountId FROM User WHERE Id = :UserInfo.getUserId()];
         HOT_InterestedResource__c interestedResource = [
             SELECT
                 Id,
@@ -223,6 +224,7 @@ public without sharing class HOT_InterestedResourcesListController {
                 ServiceAppointment__r.HOT_Request__r.OwnerName__c,
                 ServiceAppointment__r.HOT_Request__r.IsOtherEconomicProvicer__c,
                 ServiceAppointment__r.HOT_PreparationTime__c,
+                ServiceAppointment__r.HOT_CanceledDate__c,
                 NumberOfInterestedResources__c,
                 AppointmentDeadlineDate__c,
                 AppointmentServiceTerritory__c,

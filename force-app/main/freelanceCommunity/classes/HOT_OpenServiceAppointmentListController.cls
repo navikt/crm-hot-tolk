@@ -3,7 +3,7 @@ public without sharing class HOT_OpenServiceAppointmentListController {
     public static List<ServiceAppointment> getOpenServiceAppointments() {
         //Getting the skills of the user --> ServiceResource
         Id userId = UserInfo.getUserId();
-        List<ServiceResource> serviceResource = [SELECT Id, Name FROM ServiceResource WHERE RelatedRecordId = :userId];
+        List<ServiceResource> serviceResource = [SELECT Id FROM ServiceResource WHERE RelatedRecordId = :userId];
 
         List<ServiceResourceSkill> serviceResourceSkills = [
             SELECT SkillId
@@ -16,20 +16,18 @@ public without sharing class HOT_OpenServiceAppointmentListController {
             mySkillIds.add(SRSkill.SkillId);
         }
 
-        List<Skill> mySkills = [SELECT Id, MasterLabel FROM Skill WHERE Id IN :mySkillIds];
+        List<Skill> mySkills = [SELECT Id FROM Skill WHERE Id IN :mySkillIds];
 
         //Getting ServiceAppointments of interest. Null ettersom det IR får denne status når oppdrag frigis på nytt og skal være mulig å melde seg på på nytt
         List<HOT_InterestedResource__c> interestedResources = [
-            SELECT ServiceAppointment__c, ServiceAppointment__r.HOT_WorkOrderLineItem__r.WorkOrder.Id
+            SELECT ServiceAppointment__c
             FROM HOT_InterestedResource__c
             WHERE ServiceResource__c IN :serviceResource AND Status__c != NULL
         ];
 
         List<Id> interestedServiceAppointmentIds = new List<Id>();
-        List<Id> interestedWOIds = new List<Id>();
         for (HOT_InterestedResource__c ir : interestedResources) {
             interestedServiceAppointmentIds.add(ir.ServiceAppointment__c);
-            interestedWOIds.add(ir.ServiceAppointment__r.HOT_WorkOrderLineItem__r.WorkOrder.Id);
         }
 
         //Getting ServiceAppointments, filtered by isRealeased, Status, DeadlineDate
@@ -76,7 +74,6 @@ public without sharing class HOT_OpenServiceAppointmentListController {
                 AND Status = 'Released To Freelance'
                 AND HOT_DeadlineDate__c >= :DATE.TODAY()
                 AND Id NOT IN :interestedServiceAppointmentIds
-                AND HOT_WorkOrderLineItem__r.WorkOrder.Id NOT IN :interestedWOIds
                 AND ServiceTerritoryId != NULL
             ORDER BY EarliestStartTime ASC
         ];

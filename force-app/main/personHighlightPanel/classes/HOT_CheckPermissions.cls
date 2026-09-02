@@ -1,47 +1,52 @@
 public with sharing class HOT_CheckPermissions {
-    @AuraEnabled(cacheable=true)
-    public static Boolean hasFreelancePermission() {
-        string userId = UserInfo.getUserId();
-        string permissionId = [SELECT id FROM permissionSet WHERE Name = 'Create_Community_Plus_User' LIMIT 1].id;
-        if (!String.isBlank(permissionID)) {
-            try {
-                string assignedId = [
-                    SELECT id
-                    FROM permissionSetAssignment
-                    WHERE assigneeId = :userId AND permissionSetId = :permissionId
-                    LIMIT 1
-                ]
-                .id;
-                if (assignedId != null) {
-                    return true;
-                }
-            } catch (exception e) {
-                //Does not have permission
-            }
+    // Lazy static user ID
+    private static Id currentUserId;
+    private static Id getCurrentUserId() {
+        if (currentUserId == null) {
+            currentUserId = UserInfo.getUserId();
         }
-        return false;
+        return currentUserId;
     }
 
     @AuraEnabled(cacheable=true)
-    public static Boolean hasAnsattTolkPermission() {
-        string userId = UserInfo.getUserId();
-        string permissionId = [SELECT id FROM permissionSet WHERE Name = 'HOT_Tolk_Ansatt' LIMIT 1].id;
-        if (!String.isBlank(permissionID)) {
-            try {
-                string assignedId = [
-                    SELECT id
-                    FROM permissionSetAssignment
-                    WHERE assigneeId = :userId AND permissionSetId = :permissionId
-                    LIMIT 1
-                ]
-                .id;
-                if (assignedId != null) {
-                    return true;
+    public static Map<String, Boolean> getAllPermissions() {
+        Id userId = getCurrentUserId();
+
+        // Single SOQL to get all assignments for this user
+        List<PermissionSetAssignment> assignments = [
+            SELECT Id, PermissionSet.Name, PermissionSetGroup.DeveloperName
+            FROM PermissionSetAssignment
+            WHERE AssigneeId = :userId
+        ];
+
+        // Initialize result map
+        Map<String, Boolean> permissions = new Map<String, Boolean>{
+            'hasFreelancePermission' => false,
+            'isFormidler' => false,
+            'isFormidlerAdmin' => false,
+            'isAdmin' => false
+        };
+
+        for (PermissionSetAssignment psa : assignments) {
+            if (psa.PermissionSet != null) {
+                if (psa.PermissionSet.Name == 'Create_Community_Plus_User') {
+                    permissions.put('hasFreelancePermission', true);
                 }
-            } catch (exception e) {
-                //Does not have permission
+                if (psa.PermissionSet.Name == 'HOT_Admin') {
+                    permissions.put('isAdmin', true);
+                }
+            }
+
+            if (psa.PermissionSetGroup != null) {
+                if (psa.PermissionSetGroup.DeveloperName == 'HOT_Tolk_Formidler_Gruppe') {
+                    permissions.put('isFormidler', true);
+                }
+                if (psa.PermissionSetGroup.DeveloperName == 'HOT_Tolk_Formidler_Admin_Gruppe') {
+                    permissions.put('isFormidlerAdmin', true);
+                }
             }
         }
-        return false;
+
+        return permissions;
     }
 }

@@ -234,10 +234,11 @@ private class HOT_RequestHandlerTest {
         Test.stopTest();
 
         request = [
-            SELECT InterpretationMethod__r.HOT_DeveloperName__c, UserInterpretationMethod__c
+            SELECT InterpretationMethod__r.HOT_DeveloperName__c, InterpretationMethodType__c, UserInterpretationMethod__c
             FROM HOT_Request__c
             WHERE Id = :request.Id
         ];
+        System.assertEquals(workType.Name, request.InterpretationMethodType__c, 'InterpretationMethodType__c was not set.');
         System.assertEquals(
             request.InterpretationMethod__r.HOT_DeveloperName__c,
             request.UserInterpretationMethod__c,
@@ -252,6 +253,7 @@ private class HOT_RequestHandlerTest {
         insert workType;
 
         HOT_Request__c request = HOT_TestDataFactory.createRequest('TEST', workType);
+        request.InterpretationMethod__c = null;
         request.Source__c = 'Dispatcher';
         request.UserInterpretationMethod__c = 'SK';
         Account acc = HOT_TestDataFactory.createAccount(true);
@@ -263,14 +265,160 @@ private class HOT_RequestHandlerTest {
         Test.stopTest();
 
         request = [
-            SELECT InterpretationMethod__r.HOT_DeveloperName__c, UserInterpretationMethod__c
+            SELECT InterpretationMethod__c, InterpretationMethodType__c, UserInterpretationMethod__c
             FROM HOT_Request__c
             WHERE Id = :request.Id
         ];
-        System.assertNotEquals(
-            request.InterpretationMethod__r.HOT_DeveloperName__c,
-            request.UserInterpretationMethod__c,
-            'InterpretationMethod__c field should not be equal to UserInterpretationMethod__c field in this case.'
+        System.assertEquals(null, request.InterpretationMethod__c, 'InterpretationMethod__c should not be backfilled.');
+        System.assertEquals(
+            null,
+            request.InterpretationMethodType__c,
+            'InterpretationMethodType__c should not be backfilled in this case.'
+        );
+    }
+
+    @IsTest
+    public static void interpretationMethodTypeUpdateSetsLookup() {
+        WorkType originalWorkType = HOT_TestDataFactory.createWorkType('TS - Tegnspråk');
+        insert originalWorkType;
+        WorkType updatedWorkType = HOT_TestDataFactory.createWorkType('SK - Skrivetolking');
+        insert updatedWorkType;
+
+        HOT_Request__c request = HOT_TestDataFactory.createRequest('TEST', originalWorkType);
+        insert request;
+
+        Test.startTest();
+        request.InterpretationMethodType__c = updatedWorkType.Name;
+        update request;
+        Test.stopTest();
+
+        request = [
+            SELECT InterpretationMethod__c, InterpretationMethodType__c
+            FROM HOT_Request__c
+            WHERE Id = :request.Id
+        ];
+        System.assertEquals(updatedWorkType.Name, request.InterpretationMethodType__c, 'InterpretationMethodType__c was not updated.');
+        System.assertEquals(updatedWorkType.Id, request.InterpretationMethod__c, 'InterpretationMethod__c was not updated.');
+    }
+
+    @IsTest
+    public static void interpretationMethodTypeClearRemovesLookup() {
+        WorkType workType = HOT_TestDataFactory.createWorkType('TS - Tegnspråk');
+        insert workType;
+
+        HOT_Request__c request = HOT_TestDataFactory.createRequest('TEST', workType);
+        insert request;
+
+        request.InterpretationMethodType__c = workType.Name;
+        update request;
+
+        Test.startTest();
+        request.InterpretationMethodType__c = null;
+        update request;
+        Test.stopTest();
+
+        request = [
+            SELECT InterpretationMethod__c, InterpretationMethodType__c
+            FROM HOT_Request__c
+            WHERE Id = :request.Id
+        ];
+        System.assertEquals(null, request.InterpretationMethodType__c, 'InterpretationMethodType__c was not cleared.');
+        System.assertEquals(null, request.InterpretationMethod__c, 'InterpretationMethod__c was not cleared.');
+    }
+
+    @IsTest
+    public static void sameTransactionApprovalUsesUpdatedInterpretationMethod() {
+        WorkType originalWorkType = HOT_TestDataFactory.createWorkType('TS - Tegnspråk');
+        insert originalWorkType;
+        WorkType updatedWorkType = HOT_TestDataFactory.createWorkType('SK - Skrivetolking');
+        insert updatedWorkType;
+
+        HOT_Request__c request = HOT_TestDataFactory.createRequest('TEST', originalWorkType);
+        insert request;
+
+        Test.startTest();
+        request.InterpretationMethodType__c = updatedWorkType.Name;
+        request.Status__c = 'Godkjent';
+        update request;
+        Test.stopTest();
+
+        WorkOrder workOrder = [
+            SELECT WorkTypeId
+            FROM WorkOrder
+            WHERE HOT_Request__c = :request.Id
+            LIMIT 1
+        ];
+        WorkOrderLineItem workOrderLineItem = [
+            SELECT WorkTypeId
+            FROM WorkOrderLineItem
+            WHERE WorkOrder.HOT_Request__c = :request.Id
+            LIMIT 1
+        ];
+        ServiceAppointment serviceAppointment = [
+            SELECT WorkTypeId
+            FROM ServiceAppointment
+            WHERE HOT_Request__c = :request.Id
+            LIMIT 1
+        ];
+
+        System.assertEquals(updatedWorkType.Id, workOrder.WorkTypeId, 'WorkOrder kept the old work type.');
+        System.assertEquals(updatedWorkType.Id, workOrderLineItem.WorkTypeId, 'WorkOrderLineItem kept the old work type.');
+        System.assertEquals(updatedWorkType.Id, serviceAppointment.WorkTypeId, 'ServiceAppointment kept the old work type.');
+    }
+
+    @IsTest
+    public static void interpretationMethodTypeUpdateAfterApprovalDoesNotChangeExistingChildWorkTypes() {
+        WorkType originalWorkType = HOT_TestDataFactory.createWorkType('TS - Tegnspråk');
+        insert originalWorkType;
+        WorkType updatedWorkType = HOT_TestDataFactory.createWorkType('SK - Skrivetolking');
+        insert updatedWorkType;
+
+        HOT_Request__c request = HOT_TestDataFactory.createRequest('TEST', originalWorkType);
+        insert request;
+
+        request.Status__c = 'Godkjent';
+        update request;
+
+        Test.startTest();
+        request.InterpretationMethodType__c = updatedWorkType.Name;
+        update request;
+        Test.stopTest();
+
+        request = [
+            SELECT InterpretationMethod__c
+            FROM HOT_Request__c
+            WHERE Id = :request.Id
+        ];
+        WorkOrder workOrder = [
+            SELECT WorkTypeId
+            FROM WorkOrder
+            WHERE HOT_Request__c = :request.Id
+            LIMIT 1
+        ];
+        WorkOrderLineItem workOrderLineItem = [
+            SELECT WorkTypeId
+            FROM WorkOrderLineItem
+            WHERE WorkOrder.HOT_Request__c = :request.Id
+            LIMIT 1
+        ];
+        ServiceAppointment serviceAppointment = [
+            SELECT WorkTypeId
+            FROM ServiceAppointment
+            WHERE HOT_Request__c = :request.Id
+            LIMIT 1
+        ];
+
+        System.assertEquals(updatedWorkType.Id, request.InterpretationMethod__c, 'Request lookup was not updated.');
+        System.assertEquals(originalWorkType.Id, workOrder.WorkTypeId, 'WorkOrder work type should not be updated.');
+        System.assertEquals(
+            originalWorkType.Id,
+            workOrderLineItem.WorkTypeId,
+            'WorkOrderLineItem work type should not be updated.'
+        );
+        System.assertEquals(
+            originalWorkType.Id,
+            serviceAppointment.WorkTypeId,
+            'ServiceAppointment work type should not be updated.'
         );
     }
 
@@ -949,5 +1097,163 @@ private class HOT_RequestHandlerTest {
         Boolean result = HOT_RequestHandler.isErrorOnRequestCreate(request.Id);
         //Den sjekker om det ble feil ved opprettelse. True betyr at det er feil
         System.AssertEquals(true, result, 'Should have been shown to be not created correctly');
+    }
+
+    @IsTest
+    static void testIsNotNotifyAccountBeforeInsert() {
+        WorkType workType = HOT_TestDataFactory.createWorkType();
+        insert workType;
+
+        HOT_Request__c request = HOT_TestDataFactory.createRequest('TEST', workType);
+        request.IsReminderSMS__c = true;
+        request.IsNotNotifyAccount__c = true;
+
+        System.Test.startTest();
+        insert request;
+        System.Test.stopTest();
+
+        HOT_Request__c requestResult = [
+            SELECT IsReminderSMS__c, IsNotNotifyAccount__c
+            FROM HOT_Request__c
+            WHERE Id = :request.Id
+        ];
+
+        // When IsNotNotifyAccount__c is set to true, IsReminderSMS__c should be set to false
+        System.assertEquals(true, requestResult.IsNotNotifyAccount__c);
+        System.assertEquals(false, requestResult.IsReminderSMS__c);
+    }
+
+    @IsTest
+    static void testIsNotNotifyAccountBeforeUpdate() {
+        WorkType workType = HOT_TestDataFactory.createWorkType();
+        insert workType;
+
+        HOT_Request__c request = HOT_TestDataFactory.createRequest('TEST', workType);
+        request.IsReminderSMS__c = true;
+        request.IsNotNotifyAccount__c = false;
+        insert request;
+
+        System.Test.startTest();
+        request.IsNotNotifyAccount__c = true;
+        update request;
+        System.Test.stopTest();
+
+        HOT_Request__c requestResult = [
+            SELECT IsReminderSMS__c, IsNotNotifyAccount__c
+            FROM HOT_Request__c
+            WHERE Id = :request.Id
+        ];
+
+        // When IsNotNotifyAccount__c is set to true, IsReminderSMS__c should be set to false
+        System.assertEquals(true, requestResult.IsNotNotifyAccount__c);
+        System.assertEquals(false, requestResult.IsReminderSMS__c);
+    }
+
+    @IsTest
+    static void updateCompanyShouldUpdateServiceAppointments() {
+        WorkType workType = HOT_TestDataFactory.createWorkType();
+        insert workType;
+
+        HOT_Request__c request = HOT_TestDataFactory.createRequest('TEST', workType);
+        insert request;
+
+        WorkOrder wo = HOT_TestDataFactory.createWorkOrder(request, workType);
+        insert wo;
+
+        WorkOrderLineItem woli = HOT_TestDataFactory.createWorkOrderLineItem(wo, workType);
+        insert woli;
+
+        ServiceAppointment sa = HOT_TestDataFactory.createServiceAppointment(woli);
+        sa.HOT_Request__c = request.Id;
+        insert sa;
+
+        Account company = HOT_TestDataFactory.createAccount(false);
+        insert company;
+
+        System.Test.startTest();
+        request.Company__c = company.Id;
+        update request;
+        System.Test.stopTest();
+
+        ServiceAppointment saResult = [
+            SELECT HOT_Company__c
+            FROM ServiceAppointment
+            WHERE Id = :sa.Id
+        ];
+        System.assertEquals(company.Id, saResult.HOT_Company__c);
+    }
+
+    @IsTest
+    static void updateRelatedWorkOrdersStartDiffAndCancelMissing() {
+        WorkType worktype = HOT_TestDataFactory.createWorkType();
+        insert worktype;
+
+        HOT_Request__c req = HOT_TestDataFactory.createRequest('TEST', worktype);
+        insert req;
+
+        WorkOrder toUpdate = HOT_TestDataFactory.createWorkOrder(req, worktype);
+        WorkOrder toCancel = HOT_TestDataFactory.createWorkOrder(req, worktype);
+        insert new List<WorkOrder>{ toUpdate, toCancel };
+
+        Long newStart = toUpdate.StartDate.addHours(1).getTime();
+        Map<String, Map<String, Long>> times = new Map<String, Map<String, Long>>{
+            (String) toUpdate.Id => new Map<String, Long>{
+                'startTime' => newStart,
+                'endTime' => toUpdate.EndDate.getTime(),
+                'isNew' => 0
+            }
+        };
+
+        System.Test.startTest();
+        HOT_RequestHandler.createAndUpdateWorkOrders(req.Id, times);
+        System.Test.stopTest();
+
+        Map<Id, WorkOrder> woById = new Map<Id, WorkOrder>(
+            [
+                SELECT Id, Status, StartDate
+                FROM WorkOrder
+                WHERE Id IN :new List<Id>{ toUpdate.Id, toCancel.Id }
+            ]
+        );
+
+        System.assertEquals(DateTime.newInstance(newStart), woById.get(toUpdate.Id).StartDate);
+        System.assertEquals('Canceled', woById.get(toCancel.Id).Status);
+    }
+
+    @IsTest
+    static void updateRelatedWorkOrdersEndDiffAndCancelMissing() {
+        WorkType worktype = HOT_TestDataFactory.createWorkType();
+        insert worktype;
+
+        HOT_Request__c req = HOT_TestDataFactory.createRequest('TEST', worktype);
+        insert req;
+
+        WorkOrder toUpdate = HOT_TestDataFactory.createWorkOrder(req, worktype);
+        WorkOrder toCancel = HOT_TestDataFactory.createWorkOrder(req, worktype);
+        insert new List<WorkOrder>{ toUpdate, toCancel };
+
+        Long newEnd = toUpdate.EndDate.addHours(1).getTime();
+        Map<String, Map<String, Long>> times = new Map<String, Map<String, Long>>{
+            (String) toUpdate.Id => new Map<String, Long>{
+                'startTime' => toUpdate.StartDate.getTime(),
+                'endTime' => newEnd,
+                'isNew' => 0
+            }
+        };
+
+        System.Test.startTest();
+        HOT_RequestHandler.createAndUpdateWorkOrders(req.Id, times);
+        System.Test.stopTest();
+
+        Map<Id, WorkOrder> woById = new Map<Id, WorkOrder>(
+            [
+                SELECT Id, Status, EndDate
+                FROM WorkOrder
+                WHERE Id IN :new List<Id>{ toUpdate.Id, toCancel.Id }
+            ]
+        );
+
+        System.assertEquals(DateTime.newInstance(newEnd), woById.get(toUpdate.Id).EndDate);
+        System.assertEquals('Canceled', woById.get(toCancel.Id).Status);
     }
 }

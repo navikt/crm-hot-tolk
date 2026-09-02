@@ -28,8 +28,16 @@
             <div class="calenderModalContent" aria-live="polite" role="region" aria-labelledby="calenderHeading">
                 <h2 id="calenderHeading" class="sr-only">Kalender for frilanstolk</h2>
                 <template lwc:if={isUserInNorwegianTimeZone}>
+                    <c-hot_calendar_v2 onshowopeneventschange={handleShowOpenEventsChange}></c-hot_calendar_v2>
+
                     <div class="calendar-legend-wrapper">
                         <div class="calendar-legend">
+                            <template lwc:if={showOpenEvents}>
+                                <div class="legend-item">
+                                    <span class="legend-dot" style="background-color: #ff99ff"></span>
+                                    Ledige oppdrag
+                                </div>
+                            </template>
                             <div class="legend-item">
                                 <span class="legend-dot" style="background-color: #fe7b7f"></span>
                                 Oppdrag i fortiden, men ikke satt til dekket
@@ -46,18 +54,15 @@
                             </div>
 
                             <div class="legend-item">
-                                <span class="legend-dot" style="background-color: #febe53"></span>
-                                Ledig på lønn
-                            </div>
-
-                            <div class="legend-item">
                                 <span class="legend-dot" style="background-color: #8668a7"></span>
                                 Fravær
                             </div>
+                            <div class="legend-item">
+                                <span class="legend-dot" style="background-color: #ffc000"></span>
+                                Rett på honorar
+                            </div>
                         </div>
                     </div>
-
-                    <c-hot_calendar_v2></c-hot_calendar_v2>
                 </template>
                 <template lwc:else>
                     <div class="navno-dekorator alertstripe navno-dekorator alertstripe--advarsel">

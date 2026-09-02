@@ -1,0 +1,28 @@
+.highlightPanel {
+    line-height: 1.5rem;
+    width: 100%;
+    color: white;
+}
+
+.highlightPanelTop {
+    min-height: 5.5rem;
+    height: auto;
+    display: flex;
+    justify-content: flex-start;
+    align-items: center;
+}
+
+.nowrap-selector {
+    flex-wrap: wrap;
+}
+
+.requestBackground {
+    --primaryBackgroundColor: #406e45;
+    --secondaryBackgroundColor: #ffffff;
+    border-radius: 0.25rem;
+    overflow: hidden;
+}
+
+.panelBackground {
+    background-color: var(--primaryBackgroundColor, #0056b4);
+}

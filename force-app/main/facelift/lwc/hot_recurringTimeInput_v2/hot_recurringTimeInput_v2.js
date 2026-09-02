@@ -15,6 +15,7 @@ export default class hot_recurringTimeInput_v2 extends LightningElement {
     @track isOnlyOneTime = true;
     @track isAdvancedTimes;
     @api refreshToken;
+    @api hideAdvancedTimesInEditMode = false;
     uniqueIdCounter = 0;
 
     setTimesValue(timeObject) {
@@ -39,6 +40,11 @@ export default class hot_recurringTimeInput_v2 extends LightningElement {
             }
         }
         return j;
+    }
+
+    // If there are more than 1 time entries in edit mode, hide the advanced time options
+    get hideGjentagende() {
+        return this.hideAdvancedTimesInEditMode === true;
     }
 
     handleDateChange(event) {

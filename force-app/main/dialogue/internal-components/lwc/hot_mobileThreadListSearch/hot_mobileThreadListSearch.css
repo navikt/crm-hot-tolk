@@ -1,0 +1,10 @@
+.searchInputField {
+    margin-top: 1.5rem;
+    width: 70%;
+}
+@media (max-width: 768px) {
+    .searchInputField {
+        margin-top: 0;
+        width: 100%;
+    }
+}

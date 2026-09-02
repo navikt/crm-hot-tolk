@@ -10,6 +10,11 @@ export let columns = [
         type: 'String'
     },
     {
+        label: 'Årsak',
+        name: 'Reason__c',
+        type: 'String'
+    },
+    {
         name: 'IsUnreadMessage',
         label: 'Samtale',
         type: 'String',
@@ -29,9 +34,33 @@ export let mobileColumns = [
         type: 'String'
     },
     {
+        label: 'Årsak',
+        name: 'Reason__c',
+        type: 'String',
+        showMobileLabel: true
+    },
+    {
         name: 'IsUnreadMessage',
         label: 'Samtale',
         type: 'String',
         svg: true
     }
 ];
+
+export let iconByValue = {
+    true: {
+        icon: 'Information',
+        fill: '',
+        ariaLabel: 'Ulest melding'
+    },
+    false: {
+        icon: 'SuccessFilled',
+        fill: 'Green',
+        ariaLabel: 'Ingen nye meldinger'
+    },
+    noThread: {
+        icon: '',
+        fill: '',
+        ariaLabel: ''
+    }
+};

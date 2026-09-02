@@ -1,23 +1,19 @@
-import { LightningElement, api, wire, track } from 'lwc';
+import { LightningElement, api, wire } from 'lwc';
 import getmessages from '@salesforce/apex/HOT_MessageHelper.getMessagesFromThread';
 import markAsReadByNav from '@salesforce/apex/HOT_MessageHelper.markAsReadByNav';
-import checkAccess from '@salesforce/apex/HOT_ThreadDetailController.checkAccess';
 import { subscribe, unsubscribe } from 'lightning/empApi';
 import setLastMessageFrom from '@salesforce/apex/HOT_MessageHelper.setLastMessageFrom';
 import getUserNameRole from '@salesforce/apex/HOT_MessageHelper.getUserNameRole';
 import markThreadAsReadEmployee from '@salesforce/apex/HOT_MessageHelper.markThreadAsReadEmployee';
 import userId from '@salesforce/user/Id';
-import { updateRecord, getRecord, getFieldValue } from 'lightning/uiRecordApi';
+import { updateRecord } from 'lightning/uiRecordApi';
+import getThreadByIdWithReplyPolicy from '@salesforce/apex/HOT_MessageHelper.getThreadByIdWithReplyPolicy';
 import ACTIVE_FIELD from '@salesforce/schema/Thread__c.CRM_isActive__c';
 import THREAD_ID_FIELD from '@salesforce/schema/Thread__c.Id';
-import CREATED_BY_FIELD from '@salesforce/schema/Thread__c.CreatedById';
-import REGISTERED_DATE from '@salesforce/schema/Thread__c.CRM_Date_Time_Registered__c';
-import FIRSTNAME_FIELD from '@salesforce/schema/Thread__c.CreatedBy.FirstName';
-import LASTNAME_FIELD from '@salesforce/schema/Thread__c.CreatedBy.LastName';
 import { ShowToastEvent } from 'lightning/platformShowToastEvent';
 import { refreshApex } from '@salesforce/apex';
 
-export default class messagingThreadViewer extends LightningElement {
+export default class hot_messagingThreadViewer extends LightningElement {
     createdbyid;
     usertype;
     otheruser;
@@ -31,11 +27,16 @@ export default class messagingThreadViewer extends LightningElement {
     @api showClose;
     @api englishTextTemplate;
     @api setInputInFocusOnRender;
-    @track langBtnLock = false;
+    langBtnLock = false;
     langBtnAriaToggle = false;
     newMessage = false;
-    @track hasAccess = false;
-    @track showAccessError = false;
+    hasAccess = false;
+    showAccessError = false;
+    canReply = true;
+    canceledSABannerText =
+        'Oppdraget er avlyst. Du kan se samtalen i 48 timer etter avlysning. Du kan ikke sende nye meldinger.';
+
+    wiredThread = {};
 
     @api textTemplate; //Support for conditional text template as input
     //Constructor, called onload
@@ -45,25 +46,42 @@ export default class messagingThreadViewer extends LightningElement {
             qtext.focusOnInput();
         }
     }
+
+    _showMessageInput = true;
+
+    @api
+    get showMessageInput() {
+        return this._showMessageInput;
+    }
+
+    set showMessageInput(value) {
+        this._showMessageInput = !(value === false || value === 'false');
+    }
+
     connectedCallback() {
         if (this.thread) {
             this.threadid = this.thread.Id;
+            getThreadByIdWithReplyPolicy({ threadId: this.threadid })
+                .then((result) => {
+                    this.hasAccess = true;
+                    this.showAccessError = false;
+                    this.wiredThread = result.thread;
+                    this.canReply = result.replyPolicy?.canReply !== false;
+                    this.handleSubscribe();
+                    this.scrolltobottom();
+                    markAsReadByNav({ threadId: this.threadid });
+                    markThreadAsReadEmployee({ threadId: this.threadid });
+                })
+                .catch((error) => {
+                    if (error.body.message === 'No access') {
+                        this.showAccessError = true;
+                        this.hasAccess = false;
+                    } else {
+                        console.log('Error in getThreadById:', error);
+                    }
+                });
         }
-        checkAccess({ threadId: this.threadid }).then((result) => {
-            if (result == true) {
-                this.hasAccess = true;
-                this.showAccessError = false;
-            } else {
-                this.showAccessError = true;
-                this.hasAccess = false;
-            }
-        });
-        this.handleSubscribe();
-        this.scrolltobottom();
-        markAsReadByNav({ threadId: this.threadid });
-        markThreadAsReadEmployee({ threadId: this.threadid });
     }
-
     disconnectedCallback() {
         this.handleUnsubscribe();
     }
@@ -101,7 +119,6 @@ export default class messagingThreadViewer extends LightningElement {
 
     handleUnsubscribe() {
         unsubscribe(this.subscription, (response) => {
-            console.log('Unsubscribed: ', JSON.stringify(response));
             // Response is true for successful unsubscribe
         })
             .then((success) => {
@@ -111,12 +128,6 @@ export default class messagingThreadViewer extends LightningElement {
                 console.log('EMP unsubscribe failed: ' + JSON.stringify(error, null, 2));
             });
     }
-
-    @wire(getRecord, {
-        recordId: '$threadid',
-        fields: [ACTIVE_FIELD, CREATED_BY_FIELD, FIRSTNAME_FIELD, LASTNAME_FIELD, REGISTERED_DATE]
-    })
-    wiredThread;
 
     @wire(getmessages, { threadId: '$threadid' }) //Calls apex and extracts messages related to this record
     wiremessages(result) {
@@ -132,12 +143,17 @@ export default class messagingThreadViewer extends LightningElement {
     handlesubmit(event) {
         this.lockLangBtn();
         event.preventDefault();
+        if (!this.canReply) {
+            this.showClosedToast();
+            return;
+        }
         if (!this.quickTextCmp.isOpen()) {
             this.showspinner = true;
             const textInput = event.detail.fields;
             // If messagefield is empty, stop the submit
             textInput.CRM_Thread__c = this.thread.Id;
             textInput.CRM_From_User__c = userId;
+            textInput.CRM_Message_Text__c = this.text;
             //her
             getUserNameRole().then((result) => {
                 textInput.HOT_User_Role__c = result;
@@ -247,19 +263,35 @@ export default class messagingThreadViewer extends LightningElement {
     //##################################//
 
     get registereddate() {
-        return getFieldValue(this.wiredThread.data, REGISTERED_DATE);
+        return this.wiredThread?.CRM_Date_Time_Registered__c;
     }
 
     get closedThread() {
-        return !getFieldValue(this.wiredThread.data, ACTIVE_FIELD);
+        return !this.wiredThread?.CRM_isActive__c || !this.canReply;
     }
 
+    get showReplyInput() {
+        return !this.closedThread;
+    }
+
+    get replyClosedText() {
+        return 'Denne samtalen er stengt for videre dialog.';
+    }
     get quickTextCmp() {
         return this.template.querySelector('c-hot_messaging-quick-text');
     }
 
     get text() {
         return this.quickTextCmp ? this.quickTextCmp.conversationNote : '';
+    }
+
+    showClosedToast() {
+        const event = new ShowToastEvent({
+            title: 'Samtalen er stengt',
+            message: this.replyClosedText,
+            variant: 'error'
+        });
+        this.dispatchEvent(event);
     }
 
     get modalClass() {

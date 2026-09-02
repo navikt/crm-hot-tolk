@@ -7,6 +7,36 @@
 .backBtn {
     font-weight: bold;
 }
+.navno-dekorator.alertstripe {
+    padding: 1rem 1rem 1rem 0rem;
+    border-radius: 4px;
+    display: flex;
+    align-content: center;
+    border-radius: 0.25rem;
+    color: #3e3832;
+    max-width: fit-content;
+    margin: auto;
+    margin-top: 0.5rem;
+}
+
+.alertstripe__content {
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+}
+.navno-dekorator.alertstripe--info {
+    border: 1px solid #368da8;
+    background-color: #d8f9ff;
+}
+.navno-dekorator.alertstripe__ikon {
+    margin-right: 0.75rem;
+    margin-left: 0.75rem;
+    display: flex;
+    top: 1rem;
+    flex-shrink: 0;
+    height: 24px;
+    width: 24px;
+}
 
 .user-info-tile {
     background-color: #fff;

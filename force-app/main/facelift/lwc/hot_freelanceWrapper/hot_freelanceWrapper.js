@@ -15,6 +15,12 @@ export default class Hot_freelanceWrapper extends LightningElement {
 
     static STATE_KEY = 'calendarWrapState';
 
+    showOpenEvents = false;
+
+    handleShowOpenEventsChange(event) {
+        this.showOpenEvents = event.detail;
+    }
+
     toggleCalender() {
         this.showCalender = !this.showCalender;
     }

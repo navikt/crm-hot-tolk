@@ -20,6 +20,8 @@ import WORKORDER_ID from '@salesforce/schema/WorkOrder.Id';
 import USER_ID from '@salesforce/user/Id';
 import USER_ACCOUNT_ID from '@salesforce/schema/User.AccountId';
 
+import notifyDispatchersFilesUploaded from '@salesforce/apex/HOT_RequestNotification.notifyDispatchersFilesUploaded';
+
 import { formatRecord, formatDatetime, formatDate } from 'c/datetimeFormatterNorwegianTime';
 import icons from '@salesforce/resourceUrl/ikoner';
 
@@ -73,13 +75,32 @@ export default class Hot_myRequestsWrapper extends NavigationMixin(LightningElem
     }
 
     fileUploadMessage = '';
-    handleUploadFinished(event) {
+    async handleUploadFinished(event) {
         const uploadedFiles = event.detail?.files || [];
-        if (uploadedFiles.length > 0) {
-            this.fileUploadMessage = 'Filen(e) ble lastet opp';
-            this.template
-                .querySelectorAll('c-record-files-without-sharing')
-                .forEach((cmp) => cmp.refreshContentDocuments());
+        if (uploadedFiles.length === 0) {
+            return;
+        }
+
+        this.fileUploadMessage = 'Filen(e) ble lastet opp';
+        this.template
+            .querySelectorAll('c-record-files-without-sharing')
+            .forEach((cmp) => cmp.refreshContentDocuments());
+
+        const isRequestApproved = this.request?.Status__c === 'Godkjent';
+        const isWorkOrderInNotifiableState = ['New', 'Scheduled', 'Dispatched'].includes(this.workOrder?.Status);
+
+        if (!isRequestApproved || !isWorkOrderInNotifiableState) {
+            return;
+        }
+
+        try {
+            await notifyDispatchersFilesUploaded({
+                requestId: this.request?.Id ?? this.recordId,
+                workOrderId: this.urlStateParameters?.level === 'WO' ? this.workOrder?.Id : null,
+                fileCount: uploadedFiles.length
+            });
+        } catch (e) {
+            console.error(e);
         }
     }
 
@@ -88,6 +109,7 @@ export default class Hot_myRequestsWrapper extends NavigationMixin(LightningElem
     isRequestOrWorkOrderDetails = false;
     urlStateParameters = { level: '', id: '' };
     columns;
+    isLoadingRecords = true;
 
     records = [];
     allRecords = [];
@@ -104,6 +126,9 @@ export default class Hot_myRequestsWrapper extends NavigationMixin(LightningElem
             this.allRecords = [...tempRecords];
             this.viewRows = this.flattenRecords(this.records);
             this.refresh(false);
+            this.isLoadingRecords = false;
+        } else if (result.error) {
+            this.isLoadingRecords = false;
         }
     }
 
@@ -166,7 +191,7 @@ export default class Hot_myRequestsWrapper extends NavigationMixin(LightningElem
     get tolkebrukerName() {
         const isOrderer = this.request?.Orderer__c === this.userAccountId;
 
-        return isOrderer ? this.request?.UserName__c ?? '' : this.request?.Account__r?.Name ?? '';
+        return isOrderer ? (this.request?.UserName__c ?? '') : (this.request?.Account__r?.Name ?? '');
     }
 
     get uploadTargetId() {
@@ -205,7 +230,10 @@ export default class Hot_myRequestsWrapper extends NavigationMixin(LightningElem
         const oneYearAgo = new Date(new Date().setFullYear(new Date().getFullYear() - 1));
         this.isRequestEditButtonDisabled = this.request.Status__c === 'Åpen' ? false : true;
         this.isRequestCancelButtonDisabled =
-            this.request.Status__c === 'Avlyst' || tempEndDate.getTime() < Date.now() || this.isTheOrderer == false
+            this.request.Status__c === 'Avlyst' ||
+            this.workOrder.HOT_ExternalWorkOrderStatus__c === 'Avlyst' ||
+            tempEndDate.getTime() < Date.now() ||
+            this.isTheOrderer == false
                 ? true
                 : false;
         this.isRequestAddFilesButtonDisabled =
@@ -337,7 +365,13 @@ export default class Hot_myRequestsWrapper extends NavigationMixin(LightningElem
         this.isWorkOrderDetails = this.urlStateParameters.level === 'WO';
         this.isRequestOrWorkOrderDetails = this.isWorkOrderDetails || this.isRequestDetails;
         this.isSeries = this.workOrder?.HOT_Request__r?.IsSerieoppdrag__c;
-        this.interpreter = this.workOrder?.HOT_Interpreters__c?.length > 1 ? 'Tolker' : 'Tolk';
+        const raw = this.workOrder?.HOT_Interpreters__c ?? '';
+        const count = raw
+            .split(',')
+            .map((s) => s.trim())
+            .filter(Boolean).length;
+
+        this.interpreter = count > 1 ? 'Tolker' : 'Tolk';
         this.showInterpretes =
             this.workOrder?.Status === 'Completed' ||
             this.workOrder?.Status === 'Partially Complete' ||
@@ -401,17 +435,27 @@ export default class Hot_myRequestsWrapper extends NavigationMixin(LightningElem
         if (this.request.Orderer__c === this.userRecord.AccountId) {
             this.isGetAllFiles = true;
             if (this.request.Status__c.includes('Åpen')) {
+                const state = {
+                    fieldValues: JSON.stringify(this.request),
+                    fromList: true,
+                    edit: true,
+                    isAccount: JSON.stringify(this.isAccount)
+                };
+
+                if (this.urlStateParameters?.id) {
+                    if (this.urlStateParameters.level === 'WO') {
+                        state.workOrderIdParam = this.urlStateParameters.id;
+                    } else if (this.urlStateParameters.level === 'R') {
+                        state.requestIdParam = this.urlStateParameters.id;
+                    }
+                }
+
                 this[NavigationMixin.Navigate]({
                     type: 'comm__namedPage',
                     attributes: {
                         pageName: 'ny-bestilling'
                     },
-                    state: {
-                        fieldValues: JSON.stringify(this.request),
-                        fromList: true,
-                        edit: true,
-                        isAccount: JSON.stringify(this.isAccount)
-                    }
+                    state
                 });
             }
         } else {
@@ -423,17 +467,28 @@ export default class Hot_myRequestsWrapper extends NavigationMixin(LightningElem
 
     cloneOrder() {
         this.isNavigatingAway = true;
+
+        const state = {
+            fieldValues: JSON.stringify(this.request),
+            fromList: true,
+            copy: true,
+            isAccount: JSON.stringify(this.isAccount)
+        };
+
+        if (this.urlStateParameters?.id) {
+            if (this.urlStateParameters.level === 'WO') {
+                state.workOrderIdParam = this.urlStateParameters.id;
+            } else if (this.urlStateParameters.level === 'R') {
+                state.requestIdParam = this.urlStateParameters.id;
+            }
+        }
+
         this[NavigationMixin.Navigate]({
             type: 'comm__namedPage',
             attributes: {
                 pageName: 'ny-bestilling'
             },
-            state: {
-                fieldValues: JSON.stringify(this.request),
-                fromList: true,
-                copy: true,
-                isAccount: JSON.stringify(this.isAccount)
-            }
+            state
         });
     }
 

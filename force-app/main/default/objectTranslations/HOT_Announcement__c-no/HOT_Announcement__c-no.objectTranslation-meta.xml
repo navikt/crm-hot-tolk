@@ -1,0 +1,66 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomObjectTranslation xmlns="http://soap.sforce.com/2006/04/metadata">
+    <caseValues>
+        <article>Definite</article>
+        <plural>false</plural>
+        <value>Drifts- og nyhetsmeldingen</value>
+    </caseValues>
+    <caseValues>
+        <article>Indefinite</article>
+        <plural>false</plural>
+        <value>Drifts- og nyhetsmelding</value>
+    </caseValues>
+    <caseValues>
+        <article>None</article>
+        <plural>false</plural>
+        <value>Drifts- og nyhetsmelding</value>
+    </caseValues>
+    <caseValues>
+        <article>Definite</article>
+        <plural>true</plural>
+        <value>Drifts- og nyhetsmeldingene</value>
+    </caseValues>
+    <caseValues>
+        <article>Indefinite</article>
+        <plural>true</plural>
+        <value>Drifts- og nyhetsmeldinger</value>
+    </caseValues>
+    <caseValues>
+        <article>None</article>
+        <plural>true</plural>
+        <value>Drifts- og nyhetsmeldinger</value>
+    </caseValues>
+    <gender>Neuter</gender>
+    <layouts>
+        <layout>Announcement Layout</layout>
+        <sections>
+            <label><!-- Custom Links --></label>
+            <section>Custom Links</section>
+        </sections>
+    </layouts>
+    <nameFieldLabel>Drifts- og nyhetsmelding</nameFieldLabel>
+    <quickActions>
+        <label><!-- Aktiver --></label>
+        <name>Aktiver</name>
+    </quickActions>
+    <quickActions>
+        <label><!-- Avpubliser --></label>
+        <name>Avpubliser</name>
+    </quickActions>
+    <recordTypes>
+        <label><!-- Tolk Ekstern --></label>
+        <name>TolkEkstern</name>
+    </recordTypes>
+    <validationRules>
+        <errorMessage><!-- Dato felt må være fylt ut når det er av typen driftsmelding eller advarsel --></errorMessage>
+        <name>Must_be_filled_when_type</name>
+    </validationRules>
+    <validationRules>
+        <errorMessage><!-- Dato felt må være fylt ut når det er av typen driftsmelding eller advarsel --></errorMessage>
+        <name>Must_be_filled_when_type2</name>
+    </validationRules>
+    <validationRules>
+        <errorMessage><!-- Url tekst må fylles ut når du har skrevet inn en url --></errorMessage>
+        <name>UrlLabel_must_be_filled_when_url</name>
+    </validationRules>
+</CustomObjectTranslation>

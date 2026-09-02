@@ -1,21 +1,32 @@
 public class HOT_UpdateExistingRecords implements Database.Batchable<sObject> {
     public Database.QueryLocator start(Database.BatchableContext bc) {
         return Database.getQueryLocator(
-            'SELECT Id, HOT_IsImageInterpreter__c, HOT_AutoDispatch__c, Status FROM ServiceAppointment WHERE (HOT_AutoDispatch__c = true AND HOT_IsImageInterpreter__c = true) AND (Status NOT IN ((\'Annul\', \'Completed\', \'Cannot Complete\'))'
+            'SELECT Id, InterpretationMethod__c, InterpretationMethod__r.Name, InterpretationMethodType__c, InterpretationMethodSecondary__c, InterpretationMethodSecondary__r.Name, InterpretationMethodSecondaryType__c FROM HOT_Request__c WHERE (InterpretationMethodType__c = null AND (InterpretationMethod__c != null AND InterpretationMethod__r.Name != null)) OR (InterpretationMethodSecondaryType__c = null AND (InterpretationMethodSecondary__c != null AND InterpretationMethodSecondary__r.Name != null))'
         );
     }
 
-    public void execute(Database.BatchableContext bc, List<ServiceAppointment> records) {
+    public void execute(Database.BatchableContext bc, List<HOT_Request__c> records) {
 
-        List<ServiceAppointment> saToUpdate = new List<ServiceAppointment>();
+        Map<Id, HOT_Request__c> requestsToUpdateMap = new Map<Id, HOT_Request__c>();
 
-        for(ServiceAppointment sa : records) {
-            sa.HOT_AutoDispatch__c = false; 
-            saToUpdate.add(sa);
+        for(HOT_Request__c req : records) {
+
+            if(req.interpretationMethod__c != null && req.InterpretationMethodType__c != req.InterpretationMethod__r.Name) {
+
+                req.InterpretationMethodType__c = req.InterpretationMethod__r.Name; 
+                requestsToUpdateMap.put(req.Id, req);
+            }
+
+            if(req.InterpretationMethodSecondary__c != null && req.InterpretationMethodSecondaryType__c != req.InterpretationMethodSecondary__r.Name) {
+
+                req.InterpretationMethodSecondaryType__c = req.InterpretationMethodSecondary__r.Name;
+                requestsToUpdateMap.put(req.Id, req);
+            }
+
         }
 
-        if(!saToUpdate.isEmpty()) {
-            update saToUpdate;
+        if(!requestsToUpdateMap.isEmpty()){
+            update requestsToUpdateMap.values();
         }
     }
 
