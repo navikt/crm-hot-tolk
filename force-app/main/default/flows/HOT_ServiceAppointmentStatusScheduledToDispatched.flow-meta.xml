@@ -65,6 +65,7 @@
                 <booleanValue>true</booleanValue>
             </value>
         </filters>
+        <filters>
             <field>HOT_ServiceResource__c</field>
             <operator>IsNull</operator>
             <value>
