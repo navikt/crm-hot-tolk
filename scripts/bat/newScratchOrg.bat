@@ -28,14 +28,14 @@ call sf package install --package 04tQC000000xwmMYAQ --no-prompt --installation-
 echo "Installer crm-platform-access-control ver. 0.177"
 call sf package install --package 04tQC000001AGR7YAO --no-prompt --installation-key %3 --wait 30 --publish-wait 30
 
-echo "Installer crm-community-base ver. 0.133"
-call sf package install --package 04tQC0000012ZXNYA2 --no-prompt --installation-key %3 --wait 30 --publish-wait 30
+echo "Installer crm-community-base ver. 0.143"
+call sf package install --package 04tQC000001IX9pYAG --no-prompt --installation-key %3 --wait 30 --publish-wait 30
 
 echo "Installer crm-platform-reporting ver. 0.41"
 call sf package install --package 04tKB000000YAWDYA4 --no-prompt --installation-key %3 --wait 30 --publish-wait 30
 
-echo "Installer crm-hot-felles ver. 0.12"
-call sf package install --package 04tQC000001GNjFYAW --no-prompt --installation-key %3 --wait 30 --publish-wait 30
+echo "Installer crm-hot-felles ver. 0.17"
+call sf package install --package 04tQC000001Vx85YAC --no-prompt --installation-key %3 --wait 30 --publish-wait 30
 
 echo "Dytter kildekoden til scratch org'en"
 call sf project deploy start

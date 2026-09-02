@@ -1,6 +1,18 @@
 public without sharing class HOT_MessageHelper {
     private static User cachedUser;
 
+    public class ThreadWithReplyPolicy {
+        @AuraEnabled
+        public Thread__c thread;
+        @AuraEnabled
+        public HOT_ThreadReplyPolicy.ReplyPolicy replyPolicy;
+
+        public ThreadWithReplyPolicy(Thread__c thread, HOT_ThreadReplyPolicy.ReplyPolicy replyPolicy) {
+            this.thread = thread;
+            this.replyPolicy = replyPolicy;
+        }
+    }
+
     private static User getCurrentUser() {
         if (cachedUser == null) {
             cachedUser = [
@@ -104,7 +116,7 @@ public without sharing class HOT_MessageHelper {
     public static WorkOrder getWorkOrderInformationAndAccessCheck(Id recordId) {
         User user = getCurrentUser();
         WorkOrder wo = [
-            SELECT Id, HOT_TotalNumberOfInterpreters__c, HOT_Request__r.Account__c
+            SELECT Id, HOT_TotalNumberOfInterpreters__c, HOT_Request__r.Account__c, Status
             FROM WorkOrder
             WHERE Id = :recordId
             LIMIT 1
@@ -123,9 +135,26 @@ public without sharing class HOT_MessageHelper {
         ];
         if (ar.size() > 0) {
             return wo;
+        } else {
+            DateTime twoDaysAgo = System.now().addDays(-2);
+
+            List<HOT_HistoricallyAssignedResource__c> harList = [
+                SELECT Id
+                FROM HOT_HistoricallyAssignedResource__c
+                WHERE
+                    ServiceAppointment__r.HOT_WorkOrderLineItem__r.WorkOrderId = :wo.Id
+                    AND ServiceResource__r.RelatedRecordId = :user.Id
+                    AND ServiceAppointment__r.Status = 'Canceled'
+                    AND Status__c = 'Avlyst av bruker'
+                    AND CreatedDate >= :twoDaysAgo
+            ];
+
+            if (harList.size() > 0) {
+                return wo;
+            }
         }
 
-        if (HOT_ThreadDetailController.isAdminOrFormidler(user)) {
+        if (HOT_ThreadDetailController.isAdminOrFormidlerAdmin(user)) {
             return wo;
         }
         throw new AuraHandledException('No access');
@@ -230,6 +259,16 @@ public without sharing class HOT_MessageHelper {
             throw new AuraHandledException(e.getMessage());
         }
     }
+
+    @AuraEnabled(cacheable=false)
+    public static ThreadWithReplyPolicy getThreadByIdWithReplyPolicy(Id threadId) {
+        Thread__c thread = getThreadById(threadId);
+        return new ThreadWithReplyPolicy(
+            thread,
+            HOT_ThreadReplyPolicy.getReplyPolicies(new Set<Id>{ threadId }).get(threadId)
+        );
+    }
+
     @AuraEnabled(cacheable=true)
     public static List<Thread__c> getThreadFromThreadId(Id recordId) {
         try {
@@ -851,6 +890,11 @@ public without sharing class HOT_MessageHelper {
             try {
                 insert m;
                 return true;
+            } catch (DmlException e) {
+                if (e.getMessage().contains('Denne samtalen er stengt for videre dialog.')) {
+                    return false;
+                }
+                throw new AuraHandledException(e.getMessage());
             } catch (Exception e) {
                 throw new AuraHandledException(e.getMessage());
             }
@@ -1035,4 +1079,56 @@ public without sharing class HOT_MessageHelper {
         }
         return resolveReadByEntries(parsedIds);
     }
+
+    public static String buildHeader(String role, Boolean isInterpreterReciever) {
+        switch on role {
+            when 'bruker' {
+                return 'Du har fått en melding fra tolkebruker';
+            }
+            when 'bestiller' {
+                return 'Du har fått en melding fra tolkebestiller';
+            }
+            when 'tolk' {
+                return isInterpreterReciever ? 'Du har fått en melding fra medtolk' : 'Du har fått en melding fra tolk';
+            }
+            when 'formidler' {
+                return 'Du har fått en melding fra formidler';
+            }
+            when 'ressurskontor' {
+                return 'Du har fått en melding fra ressurskontor';
+            }
+            when else {
+                return 'Du har fått en melding';
+            }
+        }
+    }
+     public static String buildSMSNewMessage(String role, Boolean isInterpreterReciever) {
+        String text='INFO\n';
+        switch on role {
+            when 'bruker' {
+                text+= 'Du har fått en melding fra tolkebruker. ';
+            }
+            when 'bestiller' {
+                text+= 'Du har fått en melding fra tolkebestiller. ';
+            }
+            when 'tolk' {
+                text+= isInterpreterReciever ? 'Du har fått en melding fra medtolk. ' : 'Du har fått en melding fra tolk. ';
+            }
+            when 'formidler' {
+                text+= 'Du har fått en melding fra formidler. ';
+            }
+            when 'ressurskontor' {
+                text+= 'Du har fått en melding fra ressurskontor. ';
+            }
+            when else {
+                text+= 'Du har fått en ny melding. ';
+            }
+        }
+            text+='\nFor mer informasjon, se tolkebestilling.nav.no. Du kan ikke svare på denne meldingen. Mvh tolketjenesten i Nav.';
+            return text;
+    }
+    public static String buildPushNewMessageBody() {
+        return 'Trykk for å lese meldingen.';
+    }
 }
+

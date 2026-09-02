@@ -2,7 +2,7 @@ import { LightningElement } from 'lwc';
 import getUserInformation from '@salesforce/apex/HOT_UserInformationController.getUserInformation';
 import getAllMyThreadsForBadge from '@salesforce/apex/HOT_ThreadListController.getAllMyThreadsForBadge';
 import getContactId from '@salesforce/apex/HOT_MessageHelper.getUserContactId';
-import getAnnouncements from '@salesforce/apex/HOT_AnnouncementController.getAnnouncements';
+import getAnnouncementWrapper from '@salesforce/apex/HOT_AnnouncementController.getAnnouncementWrapper';
 
 export default class Hot_homeWrapper extends LightningElement {
     personDetails;
@@ -11,9 +11,9 @@ export default class Hot_homeWrapper extends LightningElement {
 
     myThreads = [];
     freelanceThreads = [];
-    announcements = [];
     infoWarningAnnouncements = [];
     newsAnnouncements = [];
+    unreadAnnouncementIds = [];
 
     unreadMyThreads = 0;
     unreadFreelanceThreads = 0;
@@ -23,6 +23,7 @@ export default class Hot_homeWrapper extends LightningElement {
     connectedCallback() {
         this.loadData();
     }
+
     loadData() {
         getUserInformation()
             .then((userInfo) => {
@@ -48,20 +49,18 @@ export default class Hot_homeWrapper extends LightningElement {
                 this.myThreads = [];
                 this.freelanceThreads = [];
             });
-        getAnnouncements()
-            .then((announcements) => {
-                // Array for Information + Warning
-                this.infoWarningAnnouncements = announcements.filter(
-                    (ann) => ann.Type__c === 'Information' || ann.Type__c === 'Warning'
-                );
 
-                // Array for News
-                this.newsAnnouncements = announcements
-                    .filter((ann) => ann.Type__c === 'News')
-                    .sort((a, b) => new Date(b.CreatedDate) - new Date(a.CreatedDate));
+        getAnnouncementWrapper()
+            .then((wrapper) => {
+                this.infoWarningAnnouncements = wrapper.infoWarningAnnouncements || [];
+                this.newsAnnouncements = wrapper.newsAnnouncements || [];
+                this.unreadAnnouncementIds = wrapper.unreadAnnouncementIds || [];
             })
             .catch((error) => {
-                console.error('Error fetching announcements:', error);
+                console.error('Error fetching announcement wrapper:', error);
+                this.infoWarningAnnouncements = [];
+                this.newsAnnouncements = [];
+                this.unreadAnnouncementIds = [];
             });
     }
 

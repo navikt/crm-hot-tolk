@@ -1,21 +1,23 @@
 <template>
     <div class="news-center">
         <button
-            class="navds-button navds-body-short"
+            class="navds-button navds-body-short news-button"
             onclick={handleShowAnnouncements}
             aria-haspopup="dialog"
             aria-expanded={showAnnouncements}
+            aria-label={announcementButtonLabel}
         >
             <img src={newspaperIcon} alt="" aria-hidden="true" style="padding-right: 0.5rem" />
+
             Nyheter fra Tolketjenesten
+
+            <template lwc:if={unreadCount}>
+                <span class="news-badge">{unreadCount}</span>
+            </template>
         </button>
 
         <!-- Modal -->
-        <dialog
-            class="modal-announcements modal-container"
-            aria-label="Nyhetssenter for tolketjenesten"
-            onclose={closeModal}
-        >
+        <dialog class="modal-announcements modal-container" aria-label={modalAriaLabel} onclose={closeModal}>
             <template lwc:if={isLoading}>
                 <div class="loader-container">
                     <c-hot_loader size="3xlarge"></c-hot_loader>

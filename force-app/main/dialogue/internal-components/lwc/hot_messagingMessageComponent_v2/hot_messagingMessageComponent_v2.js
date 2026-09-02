@@ -10,14 +10,22 @@ import getServiceAppointmentInformation from '@salesforce/apex/HOT_MessageHelper
 import getInterestedResourceInformation from '@salesforce/apex/HOT_MessageHelper.getInterestedResourceInformationAndAccessCheck';
 import getAccountOnWorkOrder from '@salesforce/apex/HOT_MessageHelper.getAccountOnWorkOrder';
 import getThreadInformation from '@salesforce/apex/HOT_ThreadDetailController.getThreadDetails';
+import checkIsOnlyEmployedInterpreter from '@salesforce/apex/HOT_ThreadDetailController.isOnlyEmployedInterpreter';
 import setLastMessageFrom from '@salesforce/apex/HOT_MessageHelper.setLastMessageFrom';
 import { ShowToastEvent } from 'lightning/platformShowToastEvent';
 import { createRecord } from 'lightning/uiRecordApi';
+import FORM_FACTOR from '@salesforce/client/formFactor';
 
 export default class hot_messagingMessageComponent extends LightningElement {
     relatedObjectId;
     isThreadSummaryLoaded = false;
     defaultActiveTab = 'tab1';
+    selectedTab;
+    loadedTabIds = ['tab1'];
+    pendingFocusThreadType;
+    visibleTabIds = [];
+    overflowTabIds = [];
+    showMessageInput = true;
     //show flows
     userSetToRedactionFlow = false;
     ordererSetToRedactionFlow = false;
@@ -140,7 +148,123 @@ export default class hot_messagingMessageComponent extends LightningElement {
         }
     }
 
-    renderedCallback() {}
+    renderedCallback() {
+        this.ensureResizeObserver();
+        this.recalculateTabOverflow();
+
+        if (this.pendingFocusThreadType) {
+            this.focusTabInputByType(this.pendingFocusThreadType);
+            this.pendingFocusThreadType = null;
+        }
+    }
+
+    disconnectedCallback() {
+        if (this.resizeObserver) {
+            this.resizeObserver.disconnect();
+            this.resizeObserver = null;
+        }
+    }
+
+    ensureResizeObserver() {
+        if (this.resizeObserver || typeof ResizeObserver === 'undefined') {
+            return;
+        }
+
+        const tabHeader = this.template.querySelector('.customTabHeader');
+        if (!tabHeader) {
+            return;
+        }
+
+        this.resizeObserver = new ResizeObserver(() => {
+            this.recalculateTabOverflow();
+        });
+        this.resizeObserver.observe(tabHeader);
+    }
+
+    recalculateTabOverflow() {
+        const tabHeader = this.template.querySelector('.customTabHeader');
+        const measureContainer = this.template.querySelector('.tabMeasureContainer');
+        const tabs = this.allTabs;
+
+        if (!tabHeader || !measureContainer || tabs.length === 0) {
+            return;
+        }
+
+        const availableWidth = tabHeader.clientWidth;
+        if (!availableWidth) {
+            return;
+        }
+
+        const headerStyles = window.getComputedStyle(tabHeader);
+        const gapSize = parseFloat(headerStyles.columnGap || headerStyles.gap || '0') || 0;
+
+        const tabWidths = new Map();
+        measureContainer.querySelectorAll('[data-measure-tab]').forEach((button) => {
+            const tabId = button.dataset.measureTab;
+            tabWidths.set(tabId, button.offsetWidth);
+        });
+
+        const moreButtonWidth = measureContainer.querySelector('.tabMeasureMore')?.offsetWidth || 88;
+
+        const visible = [];
+        const overflow = [];
+        let usedWidth = 0;
+
+        tabs.forEach((tab) => {
+            const nextWidth = tabWidths.get(tab.id) || 120;
+            const nextUsedWidth = usedWidth + (visible.length > 0 ? gapSize : 0) + nextWidth;
+
+            if (nextUsedWidth <= availableWidth) {
+                visible.push(tab.id);
+                usedWidth = nextUsedWidth;
+            } else {
+                overflow.push(tab.id);
+            }
+        });
+
+        if (overflow.length > 0) {
+            while (
+                visible.length > 1 &&
+                usedWidth + (visible.length > 0 ? gapSize : 0) + moreButtonWidth > availableWidth
+            ) {
+                const movedTabId = visible.pop();
+                overflow.unshift(movedTabId);
+
+                usedWidth = visible.reduce((sum, tabId, index) => {
+                    const width = tabWidths.get(tabId) || 120;
+                    return sum + (index > 0 ? gapSize : 0) + width;
+                }, 0);
+            }
+        }
+
+        const activeTabId = this.activeTab;
+        const activeInOverflow = overflow.includes(activeTabId);
+        if (activeInOverflow && visible.length > 0) {
+            const displaced = visible[visible.length - 1];
+            visible[visible.length - 1] = activeTabId;
+
+            const activeIndex = overflow.indexOf(activeTabId);
+            overflow.splice(activeIndex, 1);
+
+            if (displaced !== activeTabId) {
+                overflow.unshift(displaced);
+            }
+        }
+
+        if (!this.arraysEqual(this.visibleTabIds, visible)) {
+            this.visibleTabIds = visible;
+        }
+        if (!this.arraysEqual(this.overflowTabIds, overflow)) {
+            this.overflowTabIds = overflow;
+        }
+    }
+
+    arraysEqual(left, right) {
+        if (left.length !== right.length) {
+            return false;
+        }
+        return left.every((value, index) => value === right[index]);
+    }
     connectedCallback() {
         this.relatedObjectId = this.recordId;
         if (this.objectApiName === 'HOT_Request__c') {
@@ -173,6 +297,19 @@ export default class hot_messagingMessageComponent extends LightningElement {
                         this.threadTypesOfInterest = ['HOT_TOLK-TOLK', 'HOT_BRUKER-TOLK'];
                     } else {
                         this.threadTypesOfInterest = ['HOT_BRUKER-TOLK'];
+                    }
+
+                    // work orders with status canceled should not show message input
+                    if (
+                        (this.threadTypesOfInterest.includes('HOT_BRUKER-TOLK') ||
+                            this.threadTypesOfInterest.includes('HOT_TOLK-TOLK')) &&
+                        result.Status === 'Canceled'
+                    ) {
+                        return checkIsOnlyEmployedInterpreter().then((hasPermission) => {
+                            if (hasPermission) {
+                                this.showMessageInput = false;
+                            }
+                        });
                     }
                 })
                 .catch((error) => {
@@ -235,6 +372,19 @@ export default class hot_messagingMessageComponent extends LightningElement {
                 .then((result) => {
                     this.relatedObjectId = result.CRM_Related_Object__c ?? result.Id;
                     this.threadTypesOfInterest = [result.CRM_Thread_Type__c];
+
+                    if (
+                        result.HOT_WorkOrder__r?.Status === 'Canceled' &&
+                        result.CRM_Related_Object_Type__c === 'WorkOrder'
+                    ) {
+                        return checkIsOnlyEmployedInterpreter().then((hasPermission) => {
+                            if (hasPermission) {
+                                this.showMessageInput = false;
+                            }
+                        });
+                    }
+
+                    return null;
                 })
                 .catch((error) => {
                     if (error?.body?.message == 'No access') {
@@ -551,10 +701,264 @@ export default class hot_messagingMessageComponent extends LightningElement {
     get officeThreadTabLabel() {
         return this.tabLabelByType('HOT_TOLK-RESSURSKONTOR');
     }
+
+    getThreadInitialMessage(target) {
+        return `Samtale med ${target} er ikke påbegynt enda. Skriv en melding for å starte samtalen.`;
+    }
+
+    get userThreadInitialMessage() {
+        return this.getThreadInitialMessage('bruker');
+    }
+    get ordererThreadInitialMessage() {
+        return this.getThreadInitialMessage('bestiller');
+    }
+    get userInterpreterThreadInitialMessage() {
+        return this.getThreadInitialMessage('bruker og tolk');
+    }
+    get interpreterInterpreterThreadInitialMessage() {
+        return this.getThreadInitialMessage('medtolker');
+    }
+    get interpreterThreadInitialMessage() {
+        return this.getThreadInitialMessage('tolk');
+    }
+    get officeThreadInitialMessage() {
+        return this.getThreadInitialMessage('ressurskontor');
+    }
+
     get summaryLoading() {
         return !this.isThreadSummaryLoaded;
     }
+
+    get allTabs() {
+        const tabs = [{ id: 'tab1', label: 'Oppsummering' }];
+
+        if (this.showUserThreadTab) {
+            tabs.push({ id: 'tab2', label: this.userThreadTabLabel });
+        }
+        if (this.showOrderThreadTab) {
+            tabs.push({ id: 'tab3', label: this.ordererThreadTabLabel });
+        }
+        if (this.showUserInterpreterThreadTab) {
+            tabs.push({ id: 'tab4', label: this.userInterpreterThreadTabLabel });
+        }
+        if (this.showInterpreterInterpreterThreadTab) {
+            tabs.push({ id: 'tab5', label: this.interpreterInterpreterThreadTabLabel });
+        }
+        if (this.showInterpreterThreadTab) {
+            tabs.push({ id: 'tab6', label: this.interpreterThreadTabLabel });
+        }
+        if (this.showOfficeThreadTab) {
+            tabs.push({ id: 'tab7', label: this.officeThreadTabLabel });
+        }
+
+        return tabs;
+    }
+
+    getTabColorClass(tabId) {
+        const tabColorMap = {
+            tab1: 'tabColor--summary',
+            tab2: 'tabColor--user',
+            tab3: 'tabColor--orderer',
+            tab4: 'tabColor--userInterpreter',
+            tab5: 'tabColor--interpreterInterpreter',
+            tab6: 'tabColor--interpreter',
+            tab7: 'tabColor--office'
+        };
+        return tabColorMap[tabId] || '';
+    }
+
+    get visibleTabs() {
+        const fallbackTabs = this.allTabs;
+
+        if (this.isMobileFormFactor) {
+            return fallbackTabs.map((tab) => {
+                const baseClass =
+                    this.activeTab === tab.id ? 'customTabButton customTabButtonActive' : 'customTabButton';
+                const colorClass = this.getTabColorClass(tab.id);
+                return {
+                    ...tab,
+                    className: colorClass ? `${baseClass} ${colorClass}` : baseClass
+                };
+            });
+        }
+
+        const visibleTabSet = new Set(this.visibleTabIds);
+        const tabs = fallbackTabs.filter((tab) => visibleTabSet.has(tab.id));
+        const resolvedTabs = tabs.length > 0 ? tabs : fallbackTabs;
+
+        return resolvedTabs.map((tab) => {
+            const baseClass = this.activeTab === tab.id ? 'customTabButton customTabButtonActive' : 'customTabButton';
+            const colorClass = this.getTabColorClass(tab.id);
+            return {
+                ...tab,
+                className: colorClass ? `${baseClass} ${colorClass}` : baseClass
+            };
+        });
+    }
+
+    get overflowTabs() {
+        const overflowTabSet = new Set(this.overflowTabIds);
+        return this.allTabs
+            .filter((tab) => overflowTabSet.has(tab.id))
+            .map((tab) => ({
+                ...tab,
+                className: this.getTabColorClass(tab.id)
+            }));
+    }
+
+    get hasOverflowTabs() {
+        return !this.isMobileFormFactor && this.overflowTabIds.length > 0;
+    }
+
+    get isMobileFormFactor() {
+        return FORM_FACTOR === 'Small';
+    }
+
+    get tabHeaderClass() {
+        return this.isMobileFormFactor ? 'customTabHeader customTabHeader--mobileScrollable' : 'customTabHeader';
+    }
+
+    get tabPanelClass() {
+        const colorClass = this.getTabColorClass(this.activeTab);
+        return colorClass ? `customTabPanel ${colorClass}` : 'customTabPanel';
+    }
+
+    isTabLoaded(tabId) {
+        return this.activeTab === tabId || this.loadedTabIds.includes(tabId);
+    }
+
+    loadTab(tabId) {
+        if (!tabId || this.loadedTabIds.includes(tabId)) {
+            return;
+        }
+        this.loadedTabIds = [...this.loadedTabIds, tabId];
+    }
+
+    getTabContentClass(tabId) {
+        return this.activeTab === tabId ? 'tabContent tabContent--active' : 'tabContent tabContent--hidden';
+    }
+
+    get isTab1Loaded() {
+        return this.isTabLoaded('tab1');
+    }
+
+    get isTab2Loaded() {
+        return this.isTabLoaded('tab2');
+    }
+
+    get isTab3Loaded() {
+        return this.isTabLoaded('tab3');
+    }
+
+    get isTab4Loaded() {
+        return this.isTabLoaded('tab4');
+    }
+
+    get isTab5Loaded() {
+        return this.isTabLoaded('tab5');
+    }
+
+    get isTab6Loaded() {
+        return this.isTabLoaded('tab6');
+    }
+
+    get isTab7Loaded() {
+        return this.isTabLoaded('tab7');
+    }
+
+    get tab1ContentClass() {
+        return this.getTabContentClass('tab1');
+    }
+
+    get tab2ContentClass() {
+        return `messageComponentTabContainer ${this.getTabContentClass('tab2')}`;
+    }
+
+    get tab3ContentClass() {
+        return `messageComponentTabContainer ${this.getTabContentClass('tab3')}`;
+    }
+
+    get tab4ContentClass() {
+        return `messageComponentTabContainer ${this.getTabContentClass('tab4')}`;
+    }
+
+    get tab5ContentClass() {
+        return `messageComponentTabContainer ${this.getTabContentClass('tab5')}`;
+    }
+
+    get tab6ContentClass() {
+        return `messageComponentTabContainer ${this.getTabContentClass('tab6')}`;
+    }
+
+    get tab7ContentClass() {
+        return `messageComponentTabContainer ${this.getTabContentClass('tab7')}`;
+    }
+
+    get isTab1Active() {
+        return this.activeTab === 'tab1';
+    }
+
+    get isTab2Active() {
+        return this.showUserThreadTab && this.activeTab === 'tab2';
+    }
+
+    get isTab3Active() {
+        return this.showOrderThreadTab && this.activeTab === 'tab3';
+    }
+
+    get isTab4Active() {
+        return this.showUserInterpreterThreadTab && this.activeTab === 'tab4';
+    }
+
+    get isTab5Active() {
+        return this.showInterpreterInterpreterThreadTab && this.activeTab === 'tab5';
+    }
+
+    get isTab6Active() {
+        return this.showInterpreterThreadTab && this.activeTab === 'tab6';
+    }
+
+    get isTab7Active() {
+        return this.showOfficeThreadTab && this.activeTab === 'tab7';
+    }
+
+    get tab1Class() {
+        return this.isTab1Active ? 'customTabButton customTabButtonActive' : 'customTabButton';
+    }
+
+    get tab2Class() {
+        return this.isTab2Active ? 'customTabButton customTabButtonActive' : 'customTabButton';
+    }
+
+    get tab3Class() {
+        return this.isTab3Active ? 'customTabButton customTabButtonActive' : 'customTabButton';
+    }
+
+    get tab4Class() {
+        return this.isTab4Active ? 'customTabButton customTabButtonActive' : 'customTabButton';
+    }
+
+    get tab5Class() {
+        return this.isTab5Active ? 'customTabButton customTabButtonActive' : 'customTabButton';
+    }
+
+    get tab6Class() {
+        return this.isTab6Active ? 'customTabButton customTabButtonActive' : 'customTabButton';
+    }
+
+    get tab7Class() {
+        return this.isTab7Active ? 'customTabButton customTabButtonActive' : 'customTabButton';
+    }
+
+    isTabVisible(tabName) {
+        return this.allTabs.some((tab) => tab.id === tabName);
+    }
+
     get activeTab() {
+        if (this.selectedTab && this.isTabVisible(this.selectedTab)) {
+            return this.selectedTab;
+        }
+
         const openThreadType = this.findOpenThread();
         if (openThreadType) {
             return this.tabByThreadTypesMap[openThreadType];
@@ -564,6 +968,44 @@ export default class hot_messagingMessageComponent extends LightningElement {
         }
         return this.defaultActiveTab;
     }
+    handleTabClick(event) {
+        const nextTab = event.currentTarget?.dataset?.tab;
+        this.selectTab(nextTab);
+    }
+
+    handleMoreTabSelect(event) {
+        const nextTab = event.detail?.value;
+        this.selectTab(nextTab);
+    }
+
+    selectTab(nextTab) {
+        if (!nextTab || nextTab === this.activeTab || !this.isTabVisible(nextTab)) {
+            return;
+        }
+
+        const currentTab = this.activeTab;
+        this.loadTab(currentTab);
+        this.loadTab(nextTab);
+        this.selectedTab = nextTab;
+        this.pendingFocusThreadType = null;
+
+        const tabHandlerMap = {
+            tab1: this.summaryTabHandler,
+            tab2: this.userThreadTabHandler,
+            tab3: this.ordererThreadTabHandler,
+            tab4: this.userInterpreterThreadTabHandler,
+            tab5: this.interpreterInterpreterThreadTabHandler,
+            tab6: this.interpreterThreadTabHandler,
+            tab7: this.officeThreadTabHandler
+        };
+        const tabHandler = tabHandlerMap[nextTab];
+        if (tabHandler) {
+            tabHandler.call(this);
+        }
+
+        this.recalculateTabOverflow();
+    }
+
     findOpenThread() {
         if (!this.threadsAndParticipants || !this.threadTypesOfInterest) {
             console.log('threadsAndParticipants or threadTypesOfInterest is null');
@@ -616,7 +1058,8 @@ export default class hot_messagingMessageComponent extends LightningElement {
     officeThreadTabHandler() {
         this.tabHandlerByType('HOT_TOLK-RESSURSKONTOR');
     }
-    tabHandlerByType(threadType) {
+
+    focusTabInputByType(threadType) {
         if (this.openThreadsByType(threadType)) {
             let threadCmp = this.template.querySelector(this.threadCmpMap[threadType]);
             if (threadCmp) {
@@ -627,10 +1070,14 @@ export default class hot_messagingMessageComponent extends LightningElement {
             if (threadMockCmp) {
                 threadMockCmp.focusOnInput();
             }
-            /*
-            this.newThreadWithType(threadType);
-            */
         }
+    }
+
+    tabHandlerByType(threadType) {
+        this.pendingFocusThreadType = threadType;
+        /*
+        this.newThreadWithType(threadType);
+        */
     }
     handleCreateUserThreadWithMessage(event) {
         this.newThreadWithTypeAndMessage('HOT_BRUKER-FORMIDLER', event.detail);

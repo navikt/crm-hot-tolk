@@ -1,4 +1,4 @@
-import { LightningElement, api, wire, track } from 'lwc';
+import { LightningElement, api, wire } from 'lwc';
 import getmessages from '@salesforce/apex/HOT_MessageHelper.getMessagesFromThread';
 import markAsReadByNav from '@salesforce/apex/HOT_MessageHelper.markAsReadByNav';
 import { subscribe, unsubscribe } from 'lightning/empApi';
@@ -7,7 +7,7 @@ import getUserNameRole from '@salesforce/apex/HOT_MessageHelper.getUserNameRole'
 import markThreadAsReadEmployee from '@salesforce/apex/HOT_MessageHelper.markThreadAsReadEmployee';
 import userId from '@salesforce/user/Id';
 import { updateRecord } from 'lightning/uiRecordApi';
-import getThreadById from '@salesforce/apex/HOT_MessageHelper.getThreadById';
+import getThreadByIdWithReplyPolicy from '@salesforce/apex/HOT_MessageHelper.getThreadByIdWithReplyPolicy';
 import ACTIVE_FIELD from '@salesforce/schema/Thread__c.CRM_isActive__c';
 import THREAD_ID_FIELD from '@salesforce/schema/Thread__c.Id';
 import { ShowToastEvent } from 'lightning/platformShowToastEvent';
@@ -27,13 +27,16 @@ export default class hot_messagingThreadViewer extends LightningElement {
     @api showClose;
     @api englishTextTemplate;
     @api setInputInFocusOnRender;
-    @track langBtnLock = false;
+    langBtnLock = false;
     langBtnAriaToggle = false;
     newMessage = false;
-    @track hasAccess = false;
-    @track showAccessError = false;
+    hasAccess = false;
+    showAccessError = false;
+    canReply = true;
+    canceledSABannerText =
+        'Oppdraget er avlyst. Du kan se samtalen i 48 timer etter avlysning. Du kan ikke sende nye meldinger.';
 
-    @track wiredThread = {};
+    wiredThread = {};
 
     @api textTemplate; //Support for conditional text template as input
     //Constructor, called onload
@@ -43,14 +46,27 @@ export default class hot_messagingThreadViewer extends LightningElement {
             qtext.focusOnInput();
         }
     }
+
+    _showMessageInput = true;
+
+    @api
+    get showMessageInput() {
+        return this._showMessageInput;
+    }
+
+    set showMessageInput(value) {
+        this._showMessageInput = !(value === false || value === 'false');
+    }
+
     connectedCallback() {
         if (this.thread) {
             this.threadid = this.thread.Id;
-            getThreadById({ threadId: this.threadid })
+            getThreadByIdWithReplyPolicy({ threadId: this.threadid })
                 .then((result) => {
                     this.hasAccess = true;
                     this.showAccessError = false;
-                    this.wiredThread = result;
+                    this.wiredThread = result.thread;
+                    this.canReply = result.replyPolicy?.canReply !== false;
                     this.handleSubscribe();
                     this.scrolltobottom();
                     markAsReadByNav({ threadId: this.threadid });
@@ -127,6 +143,10 @@ export default class hot_messagingThreadViewer extends LightningElement {
     handlesubmit(event) {
         this.lockLangBtn();
         event.preventDefault();
+        if (!this.canReply) {
+            this.showClosedToast();
+            return;
+        }
         if (!this.quickTextCmp.isOpen()) {
             this.showspinner = true;
             const textInput = event.detail.fields;
@@ -247,7 +267,15 @@ export default class hot_messagingThreadViewer extends LightningElement {
     }
 
     get closedThread() {
-        return !this.wiredThread?.CRM_isActive__c;
+        return !this.wiredThread?.CRM_isActive__c || !this.canReply;
+    }
+
+    get showReplyInput() {
+        return !this.closedThread;
+    }
+
+    get replyClosedText() {
+        return 'Denne samtalen er stengt for videre dialog.';
     }
     get quickTextCmp() {
         return this.template.querySelector('c-hot_messaging-quick-text');
@@ -255,6 +283,15 @@ export default class hot_messagingThreadViewer extends LightningElement {
 
     get text() {
         return this.quickTextCmp ? this.quickTextCmp.conversationNote : '';
+    }
+
+    showClosedToast() {
+        const event = new ShowToastEvent({
+            title: 'Samtalen er stengt',
+            message: this.replyClosedText,
+            variant: 'error'
+        });
+        this.dispatchEvent(event);
     }
 
     get modalClass() {

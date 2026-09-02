@@ -393,6 +393,34 @@
             <fieldInstance>
                 <fieldInstanceProperties>
                     <name>uiBehavior</name>
+                    <value>none</value>
+                </fieldInstanceProperties>
+                <fieldItem>Record.HOT_CancelCommentExtended__c</fieldItem>
+                <identifier>RecordHOT_CancelCommentExtended_cField</identifier>
+                <visibilityRule>
+                    <booleanFilter>1 OR 2 OR 3</booleanFilter>
+                    <criteria>
+                        <leftValue>{!Record.HOT_CancelComment__c}</leftValue>
+                        <operator>EQUAL</operator>
+                        <rightValue>Tekniske problemer</rightValue>
+                    </criteria>
+                    <criteria>
+                        <leftValue>{!Record.HOT_CancelComment__c}</leftValue>
+                        <operator>EQUAL</operator>
+                        <rightValue>Bruker ikke møtt</rightValue>
+                    </criteria>
+                    <criteria>
+                        <leftValue>{!Record.HOT_CancelComment__c}</leftValue>
+                        <operator>EQUAL</operator>
+                        <rightValue>Annet</rightValue>
+                    </criteria>
+                </visibilityRule>
+            </fieldInstance>
+        </itemInstances>
+        <itemInstances>
+            <fieldInstance>
+                <fieldInstanceProperties>
+                    <name>uiBehavior</name>
                     <value>readonly</value>
                 </fieldInstanceProperties>
                 <fieldItem>Record.HOT_CanceledByInterpreter__c</fieldItem>
@@ -1093,7 +1121,7 @@
                 </componentInstanceProperties>
                 <componentInstanceProperties>
                     <name>relatedListLabel</name>
-                    <value>Interested Resources</value>
+                    <value>Interesserte ressurser</value>
                 </componentInstanceProperties>
                 <componentInstanceProperties>
                     <name>showActionBar</name>
@@ -1209,6 +1237,12 @@
         <type>Facet</type>
     </flexiPageRegions>
     <flexiPageRegions>
+        <itemInstances>
+            <componentInstance>
+                <componentName>hot_tindWorkOrderHighlightMobile</componentName>
+                <identifier>c_hot_tindWorkOrderHighlightMobile</identifier>
+            </componentInstance>
+        </itemInstances>
         <itemInstances>
             <componentInstance>
                 <componentInstanceProperties>

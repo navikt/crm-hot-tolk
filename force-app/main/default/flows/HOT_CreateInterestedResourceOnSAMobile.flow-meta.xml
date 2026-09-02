@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="UTF-8"?>
+<?xml version="1.0" encoding="UTF-8" ?>
 <Flow xmlns="http://soap.sforce.com/2006/04/metadata">
     <apiVersion>66.0</apiVersion>
     <assignments>
@@ -56,6 +56,38 @@
             <label>No existing interested resource before screen</label>
         </rules>
     </decisions>
+    <decisions>
+        <name>Check_Service_Appointment_Status</name>
+        <label>Check Service Appointment Status</label>
+        <locationX>0</locationX>
+        <locationY>0</locationY>
+        <defaultConnector>
+            <targetReference>Invalid_Service_Appointment_Status_Screen</targetReference>
+        </defaultConnector>
+        <defaultConnectorLabel>Invalid service appointment status</defaultConnectorLabel>
+        <rules>
+            <name>Can_register_interest</name>
+            <conditionLogic>or</conditionLogic>
+            <conditions>
+                <leftValueReference>Get_SA.Status</leftValueReference>
+                <operator>EqualTo</operator>
+                <rightValue>
+                    <stringValue>None</stringValue>
+                </rightValue>
+            </conditions>
+            <conditions>
+                <leftValueReference>Get_SA.Status</leftValueReference>
+                <operator>EqualTo</operator>
+                <rightValue>
+                    <stringValue>Released to Freelance</stringValue>
+                </rightValue>
+            </conditions>
+            <connector>
+                <targetReference>Get_SR</targetReference>
+            </connector>
+            <label>Can register interest</label>
+        </rules>
+    </decisions>
     <environments>Default</environments>
     <interviewLabel>HOT Create Interested Resource On SA {!$Flow.CurrentDateTime}</interviewLabel>
     <label>HOT Create Interested Resource On SA Mobile</label>
@@ -83,6 +115,9 @@
         <label>Create Intrested Record</label>
         <locationX>0</locationX>
         <locationY>0</locationY>
+        <connector>
+            <targetReference>Publish_Interest_Registered</targetReference>
+        </connector>
         <inputReference>Interested_Resource_Record</inputReference>
     </recordCreates>
     <recordLookups>
@@ -120,7 +155,7 @@
         <locationY>0</locationY>
         <assignNullValuesIfNoRecordsFound>false</assignNullValuesIfNoRecordsFound>
         <connector>
-            <targetReference>Get_SR</targetReference>
+            <targetReference>Check_Service_Appointment_Status</targetReference>
         </connector>
         <filterLogic>and</filterLogic>
         <filters>
@@ -172,8 +207,50 @@
         <showHeader>false</showHeader>
     </screens>
     <screens>
+        <name>Invalid_Service_Appointment_Status_Screen</name>
+        <label>Invalid Service Appointment Status Screen</label>
+        <locationX>0</locationX>
+        <locationY>0</locationY>
+        <allowBack>false</allowBack>
+        <allowFinish>true</allowFinish>
+        <allowPause>false</allowPause>
+        <fields>
+            <name>Invalid_Service_Appointment_Status_Message</name>
+            <fieldText
+            >&lt;p&gt;Du kan bare melde interesse når oppdraget har status Ingen eller Frigitt til frilanstolker.&lt;/p&gt;</fieldText>
+            <fieldType>DisplayText</fieldType>
+        </fields>
+        <showFooter>true</showFooter>
+        <showHeader>false</showHeader>
+    </screens>
+    <screens>
+        <name>Publish_Interest_Registered</name>
+        <label>Publish Interest Registered</label>
+        <locationX>0</locationX>
+        <locationY>0</locationY>
+        <allowBack>false</allowBack>
+        <allowFinish>true</allowFinish>
+        <allowPause>false</allowPause>
+        <fields>
+            <name>Publish_Service_Appointment_Interest_Registered</name>
+            <extensionName>c:hot_publishServiceAppointmentInterestRegistered</extensionName>
+            <fieldType>ComponentInstance</fieldType>
+            <inputParameters>
+                <name>serviceAppointmentId</name>
+                <value>
+                    <elementReference>Get_SA.Id</elementReference>
+                </value>
+            </inputParameters>
+            <inputsOnNextNavToAssocScrn>UseStoredValues</inputsOnNextNavToAssocScrn>
+            <isRequired>true</isRequired>
+            <storeOutputAutomatically>true</storeOutputAutomatically>
+        </fields>
+        <showFooter>false</showFooter>
+        <showHeader>false</showHeader>
+    </screens>
+    <screens>
         <name>Registrer_Interesse_Screen</name>
-        <label>Registrer Interesse Screen</label>
+        <label>Meld interesse</label>
         <locationX>0</locationX>
         <locationY>0</locationY>
         <allowBack>false</allowBack>
@@ -184,7 +261,8 @@
         </connector>
         <fields>
             <name>Oppdrag_info</name>
-            <fieldText>&lt;p&gt;Oppdrag: {!Get_SA.HOT_ServiceAppointmentNumber__c}&lt;/p&gt;&lt;p&gt;Starttid: {!Get_SA.EarliestStartTime}&lt;/p&gt;&lt;p&gt;Sluttid: {!Get_SA.DueDate}&lt;/p&gt;</fieldText>
+            <fieldText
+            >&lt;p&gt;Oppdrag: {!Get_SA.HOT_ServiceAppointmentNumber__c}&lt;/p&gt;&lt;p&gt;Starttid: {!Get_SA.EarliestStartTime}&lt;/p&gt;&lt;p&gt;Sluttid: {!Get_SA.DueDate}&lt;/p&gt;</fieldText>
             <fieldType>DisplayText</fieldType>
         </fields>
         <fields>

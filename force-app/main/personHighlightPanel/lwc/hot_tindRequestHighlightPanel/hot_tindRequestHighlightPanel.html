@@ -1,0 +1,25 @@
+<template>
+    <div class="requestBackground">
+        <template lwc:if={isLoading}>
+            <c-hot_tind-skeleton-loading-component></c-hot_tind-skeleton-loading-component>
+        </template>
+        <template lwc:else>
+            <lightning-layout class="panelBackground">
+                <div class="highlightPanel">
+                    <lightning-layout-item class="highlightPanelTop nowrap-selector">
+                        <lightning-layout-item>
+                            <c-hot_tind-request-highlight-panel-top
+                                request-details={requestData}
+                            ></c-hot_tind-request-highlight-panel-top>
+                        </lightning-layout-item>
+                    </lightning-layout-item>
+                    <lightning-layout-item>
+                        <c-hot_tind-request-highlight-panel-bot
+                            record-id={recordId}
+                        ></c-hot_tind-request-highlight-panel-bot>
+                    </lightning-layout-item>
+                </div>
+            </lightning-layout>
+        </template>
+    </div>
+</template>

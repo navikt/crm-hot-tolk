@@ -24,7 +24,7 @@ import USER_ID from '@salesforce/user/Id';
 import setLastMessageFrom from '@salesforce/apex/HOT_MessageHelper.setLastMessageFrom';
 import { formatRecord } from 'c/datetimeFormatterNorwegianTime';
 
-import getThreadDetails from '@salesforce/apex/HOT_ThreadDetailController.getThreadDetails';
+import getThreadDetailsWithReplyPolicy from '@salesforce/apex/HOT_ThreadDetailController.getThreadDetailsWithReplyPolicy';
 export default class Hot_messagingCommunityThreadViewer_v2 extends NavigationMixin(LightningElement) {
     exitCrossIcon = icons + '/Close/Close.svg';
     informationIcon = icons2 + '/informationicon.svg';
@@ -50,6 +50,7 @@ export default class Hot_messagingCommunityThreadViewer_v2 extends NavigationMix
     showReadBy = false;
     hasAccess = true;
     isHistoricallyAssignedResourceAndLateCancellation = false;
+    showMessageInput = true;
 
     latestSenderContactId;
     latestSenderUserId;
@@ -57,6 +58,8 @@ export default class Hot_messagingCommunityThreadViewer_v2 extends NavigationMix
     isLoading = false;
     buttonLoading = false;
     textareaErrorText = '';
+    canReply = true;
+    canceledSABannerText = 'Du kan se samtalen i 48 timer etter avlysning. Du kan ikke sende nye meldinger.';
 
     @api recordId;
     @api requestId;
@@ -139,16 +142,32 @@ export default class Hot_messagingCommunityThreadViewer_v2 extends NavigationMix
 
     subject;
     threadType;
-    @wire(getThreadDetails, { recordId: '$recordId' })
+    @wire(getThreadDetailsWithReplyPolicy, { recordId: '$recordId' })
     wireThreads(result) {
         this._threadWire = result;
         if (result.data) {
-            this.thread = result.data;
+            this.thread = result.data.thread;
+            this.canReply = result.data.replyPolicy?.canReply !== false;
             this.subject = this.thread.HOT_Subject__c;
             this.threadType = this.threadTypeName();
+            this.crmThreadType = this.thread.CRM_Thread_Type__c;
             this.threadRelatedObjectId = this.thread.CRM_Related_Object__c;
             this.isclosed = this.thread.CRM_Is_Closed__c;
             this.showContent = true;
+
+            this.threadWorkOrderStatus = this.thread.HOT_WorkOrder__r?.Status;
+
+            // Hide message input if work order is canceled, also when
+            // thread type is between interpreter and user
+            if (
+                this.thread.HOT_WorkOrder__r?.Status != null &&
+                this.threadWorkOrderStatus === 'Canceled' &&
+                this.isFreelance === true &&
+                (this.crmThreadType === 'HOT_BRUKER-TOLK' || this.crmThreadType === 'HOT_TOLK-TOLK')
+            ) {
+                this.showMessageInput = false;
+            }
+            console.log('Thread details', this.threadType);
 
             this.ReadByNames();
         } else if (result.error) {
@@ -221,6 +240,14 @@ export default class Hot_messagingCommunityThreadViewer_v2 extends NavigationMix
     get isContentReady() {
         return this.showContent && this._threadWire?.data && this._mySendForSplitting?.data && this.userContactId;
     }
+
+    get showReplyInput() {
+        return this.showMessageInput && this.canReply;
+    }
+
+    get replyClosedText() {
+        return 'Denne samtalen er stengt for videre dialog.';
+    }
     userAccountId;
     @wire(getUserAccountID)
     wiredAccountId({ data }) {
@@ -291,6 +318,46 @@ export default class Hot_messagingCommunityThreadViewer_v2 extends NavigationMix
         return this.wageClaim?.Reason__c || '';
     }
 
+    get hasServiceAppointmentAddress() {
+        return !!this.serviceAppointment?.HOT_AddressFormated__c;
+    }
+
+    get hasServiceAppointmentPreparationTime() {
+        return !!this.serviceAppointment?.HOT_PreparationTime__c;
+    }
+
+    get hasServiceAppointmentEscort() {
+        return !!this.serviceAppointment?.HOT_Escort__c;
+    }
+
+    get hasServiceAppointmentDegreeOfHearingAndVisualImpairment() {
+        return !!this.serviceAppointment?.HOT_DegreeOfHearingAndVisualImpairment__c;
+    }
+
+    get hasServiceAppointmentInterpreters() {
+        return !!this.serviceAppointment?.HOT_Interpreters__c;
+    }
+
+    get hasServiceAppointmentDispatcher() {
+        return !!this.serviceAppointment?.HOT_Dispatcher__c;
+    }
+
+    get hasServiceAppointmentCanceledDate() {
+        return !!this.serviceAppointment?.HOT_CanceledDate__c;
+    }
+
+    get hasInterestedResourcePreparationTime() {
+        return !!this.interestedResource?.ServiceAppointment__r?.HOT_PreparationTime__c;
+    }
+
+    get hasInterestedResourceWorkOrderCanceledDate() {
+        return !!this.interestedResource?.WorkOrderCanceledDate__c;
+    }
+
+    get hasInterestedResourceTermsOfAgreement() {
+        return !!this.interestedResource?.HOT_TermsOfAgreement__c;
+    }
+
     scrollToLatestMessage() {
         const messageContainers = this.template.querySelectorAll('c-hot_messaging-Community-Message-Container_v2');
 
@@ -308,7 +375,10 @@ export default class Hot_messagingCommunityThreadViewer_v2 extends NavigationMix
         this.showParticipantsModalDetails();
         getThreadParticipants({ threadId: this.recordId })
             .then((result) => {
-                this.threadParticipants = result; // lagrer deltakerne
+                this.threadParticipants = (result || []).map((participant) => ({
+                    ...participant,
+                    roleText: participant.role ? ` (${participant.role})` : ''
+                }));
                 this.isLoading = false;
             })
             .catch((error) => {
@@ -389,33 +459,33 @@ export default class Hot_messagingCommunityThreadViewer_v2 extends NavigationMix
             case 'HOT_BRUKER-TOLK': {
                 if (this.isFreelance === true || this.navigationBaseList !== '') {
                     this.helptextContent =
-                        'Her kan du sende en melding som er relevant for oppdraget. Det du skriver her, kan ansatte ved Nav tolketjeneste, eventuelle medtolker og tolkebruker se. Meldingen vil bli slettet etter ett år.';
+                        'Her kan du sende en melding som er relevant for oppdraget. Det du skriver her kan tildelte tolker og tolkebruker se. Meldingen vil bli slettet etter ett år.';
                     return 'Samtale mellom tolk og bruker';
                 } else {
                     this.helptextContent =
-                        'Her kan du sende en melding som er relevant for din bestilling. Det du skriver her, kan ansatte ved Nav tolketjeneste, og tolker som er tildelt oppdraget, se. Meldingen vil bli slettet etter ett år.';
+                        'Her kan du sende en melding som er relevant for din bestilling. Det du skriver her er kan tildelte tolker se. Meldingen vil bli slettet etter ett år.';
                     return 'Samtale med tolk';
                 }
             }
 
             case 'HOT_BRUKER-BESTILLER':
                 this.helptextContent =
-                    'Her kan du sende en melding som er relevant for din bestilling.  Det du skriver her, kan tolkeformidlere, bruker og bestiller av bestillingen se.  Meldingen vil bli slettet etter ett år.';
+                    'Her kan du sende en melding som er relevant for din bestilling.  Det du skriver her kan tolkeformidlere, bruker og bestiller av bestillingen se.  Meldingen vil bli slettet etter ett år.';
                 return 'Samtale med formidler';
 
             case 'HOT_TOLK-FORMIDLER':
                 this.helptextContent =
-                    'Her kan du sende en melding som er relevant for oppdraget. Det du skriver her, kan ansatte ved Nav tolketjeneste se. Meldingen vil bli slettet etter ett år.';
+                    'Her kan du sende en melding som er relevant for oppdraget. Det du skriver her kan ansatte ved Nav tolketjeneste se. Meldingen vil bli slettet etter ett år.';
                 return 'Samtale med formidler';
 
             case 'HOT_TOLK-RESSURSKONTOR':
                 this.helptextContent =
-                    'Her kan du sende en melding som er relevant for oppdraget.  Det du skriver her, kan ansatte ved Nav tolketjeneste se.  Meldingen vil bli slettet etter ett år.';
+                    'Her kan du sende en melding som er relevant for oppdraget.  Det du skriver her kan ansatte ved Nav tolketjeneste se.  Meldingen vil bli slettet etter ett år.';
                 return 'Samtale med ressurskontor';
 
             case 'HOT_TOLK-TOLK':
                 this.helptextContent =
-                    'Her kan du sende en melding som er relevant for oppdraget.  Det du skriver her, kan ansatte ved Nav tolketjeneste og medtolker se.  Meldingen vil bli slettet etter ett år.';
+                    'Her kan du sende en melding som er relevant for oppdraget.  Det du skriver her kan dine medtolker se.  Meldingen vil bli slettet etter ett år.';
                 return 'Samtale med medtolker';
             default:
                 return threadTypeValue;
@@ -458,6 +528,12 @@ export default class Hot_messagingCommunityThreadViewer_v2 extends NavigationMix
 
     @api
     createMessage(validation) {
+        if (!this.canReply) {
+            this.buttonisdisabled = true;
+            this.buttonLoading = false;
+            this.handleMessageFailed();
+            return;
+        }
         if (validation !== true) {
             this.buttonisdisabled = false;
             this.buttonLoading = false;
@@ -615,6 +691,9 @@ export default class Hot_messagingCommunityThreadViewer_v2 extends NavigationMix
                             );
                             this.serviceAppointment.ActualStartTime = formatDatetime(result.ActualStartTime);
                             this.serviceAppointment.ActualEndTime = formatDatetime(result.ActualEndTime);
+                            this.serviceAppointment.HOT_CanceledDate__c = result.HOT_CanceledDate__c
+                                ? formatDatetime(result.HOT_CanceledDate__c)
+                                : null;
                             this.serviceAppointment.HOT_HapticCommunication__c = this.yesOrNo(
                                 this.serviceAppointment.HOT_HapticCommunication__c
                             );

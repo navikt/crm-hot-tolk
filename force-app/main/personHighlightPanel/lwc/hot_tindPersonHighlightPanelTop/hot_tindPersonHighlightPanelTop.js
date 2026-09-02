@@ -53,7 +53,7 @@ export default class hot_personHighlightPanelTop extends LightningElement {
             this.error = undefined;
         } else if (error) {
             this.error = error;
-            this.name = undefined;
+            this.navUnitName = undefined;
             console.error('getTolketjenesten error:', error);
         }
     }
@@ -100,5 +100,8 @@ export default class hot_personHighlightPanelTop extends LightningElement {
 
     get genderIconSrc() {
         return NAV_ICONS + '/' + this.genderIcon + '.svg#' + this.genderIcon;
+    }
+    get personIdent() {
+        return this.personDetails?.personIdent;
     }
 }
