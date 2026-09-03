@@ -1,13 +1,10 @@
 <template>
     <template if:true={hasDuplicates}>
-        <c-hot_universal-alert-banner type="Warning" show-icon message="Brukeren har allerede arbeidsordrer i dette tidsrommet:">
-            <h2 class="duplicate-links">
-                <template iterator:it={duplicateRecords}>
-                    <span key={it.value.Id}
-                        ><a href={it.value.Link}>{it.value.WorkOrderNumber}</a><span if:false={it.last}>, </span>
-                    </span>
-                </template>
-            </h2>
-        </c-hot_universal-alert-banner>
+        <c-hot_universal-alert-banner 
+            type="Warning" 
+            show-icon 
+            message="Brukeren har allerede arbeidsordrer i dette tidsrommet" 
+            items={duplicateItems}
+        ></c-hot_universal-alert-banner>
     </template>
 </template>

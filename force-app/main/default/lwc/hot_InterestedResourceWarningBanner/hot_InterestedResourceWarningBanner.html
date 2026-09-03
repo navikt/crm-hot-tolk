@@ -4,14 +4,15 @@
             type="Error" 
             message="Tolken har overlappende oppdrag."
             show-icon 
+            item={serviceAppointmentItems}
         >
         </c-hot_universal-alert-banner>
-        <template iterator:it={serviceAppointments}>
+        <!-- <template iterator:it={serviceAppointments}>
             <c-hot_universal-alert-banner type="Error" assistive-text="Advarsel" key={it.value.Id}>
                 <span key={it.value.Id}
                     ><a href={it.value.Link}>{it.value.AppointmentNumber}</a> {it.value.oppdragsInfo}
                 </span>
             </c-hot_universal-alert-banner>
-        </template>
+        </template> -->
     </template>
 </template>

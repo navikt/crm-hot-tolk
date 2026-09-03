@@ -12,21 +12,17 @@
         </c-hot_universal-alert-banner>
     </template>
     <template if:true={hasReservations}>
-        <c-hot_universal-alert-banner type="Error" show-icon>
+        <c-hot_universal-alert-banner type="Error" show-icon >
             <h2 class="slds-text-heading_small">Det er følgende reservasjoner på brukeren: {reservations}</h2>
         </c-hot_universal-alert-banner>
     </template>
     <template if:true={hasDuplicates}>
-        <c-hot_universal-alert-banner type="Warning" show-icon>
-            <h2 class="duplicate-links">
-                <span>Brukeren har allerede forespørsler i dette tidsrommet: </span>
-                <template iterator:it={duplicateRecords}>
-                    <span key={it.value.Id}
-                        ><a href={it.value.Link}>{it.value.Name}</a><span if:false={it.last}>, </span>
-                    </span>
-                </template>
-            </h2>
-        </c-hot_universal-alert-banner>
+        <c-hot_universal-alert-banner 
+            type="Warning" 
+            show-icon 
+            message="Brukeren har allerede forespørsler i dette tidsrommet."
+            items={duplicateItems}
+        ></c-hot_universal-alert-banner>
     </template>
     <template if:true={hasSelfDuplicates}>
         <c-hot_universal-alert-banner type="Warning" show-icon>
@@ -34,16 +30,17 @@
         </c-hot_universal-alert-banner>
     </template>
     <template if:true={isDeceased}>
-        <c-hot_universal-alert-banner type="Error" show-icon>
-            <span>Denne brukeren er død.</span>
-        </c-hot_universal-alert-banner>
+        <c-hot_universal-alert-banner 
+            type="Error" 
+            show-icon 
+            message="Denne brukeren er død."
+        ></c-hot_universal-alert-banner>
     </template>
     <template if:true={showNameMismatchWarning}>
-        <c-hot_universal-alert-banner type="Warning" show-icon>
-            <span
-                >Navnet som er oppgitt av bestiller stemmer muligens ikke overens med personen fødselsnummeret eller
-                mobilnummeret tilhører. Vennligst dobbeltsjekk dette.</span
-            >
-        </c-hot_universal-alert-banner>
+        <c-hot_universal-alert-banner 
+            type="Warning" 
+            show-icon
+            message="Navnet som er oppgitt av bestiller stemmer muligens ikke overens med personen fødselsnummeret eller mobilnummeret tilhører.Vennligst dobbeltsjekk dette."
+        ></c-hot_universal-alert-banner>
     </template>
 </template>

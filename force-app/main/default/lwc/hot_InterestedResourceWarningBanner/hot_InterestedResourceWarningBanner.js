@@ -40,5 +40,15 @@ export default class Hot_InterestedResourceWarningBanner extends LightningElemen
             }
             this.hasOverlap = this.serviceAppointments.length > 0;
         });
+
+    }
+
+    get serviceAppointmentItems() {
+        return this.serviceAppointments.map((record) => ({
+            key: record.Id,
+            url: record.Link,
+            label: record.AppointmentNumber,
+            oppdragsInfo: record.oppdragsInfo
+        }));
     }
 }
