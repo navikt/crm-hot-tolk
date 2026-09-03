@@ -31,4 +31,12 @@ export default class Hot_warningBannerWorkOrder extends LightningElement {
         }
         this.hasDuplicates = this.duplicateRecords.length > 0;
     }
+
+    get duplicateItems() {
+        return this.duplicateRecords.map((record) => ({
+            key: record.Id,
+            url: record.Link,
+            label: record.WorkOrderNumber,
+        }));
+    }
 }
