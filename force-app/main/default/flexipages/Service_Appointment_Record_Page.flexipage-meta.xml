@@ -1360,9 +1360,6 @@
         <itemInstances>
             <componentInstance>
                 <componentInstanceProperties>
-                    <name>assistiveText</name>
-                </componentInstanceProperties>
-                <componentInstanceProperties>
                     <name>closeButton</name>
                     <value>false</value>
                 </componentInstanceProperties>
