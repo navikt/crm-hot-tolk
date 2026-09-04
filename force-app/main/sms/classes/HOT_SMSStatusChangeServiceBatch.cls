@@ -131,13 +131,13 @@ public without sharing class HOT_SMSStatusChangeServiceBatch implements Database
     }
 
     public void finish(Database.BatchableContext bc) {
-        Long minutes = HOT_Utility.getMinutesUntilNextSMSBatch();
+        Integer minutes = 10;
         if (!Test.isRunningTest()) {
             try {
                 System.scheduleBatch(
                     new HOT_SMSStatusChangeServiceBatch(),
                     'HOT_SMSStatusChangeServiceBatch',
-                    (Integer) minutes,
+                    minutes,
                     10
                 );
             } catch (Exception e) {
