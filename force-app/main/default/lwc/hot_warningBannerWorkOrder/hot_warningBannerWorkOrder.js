@@ -1,11 +1,11 @@
-import { LightningElement, wire, api, track } from 'lwc';
+import { LightningElement, wire, api } from 'lwc';
 import { getRecord, getFieldValue } from 'lightning/uiRecordApi';
 import ACCOUNT_ID from '@salesforce/schema/WorkOrder.AccountId';
 import getOverlappingRecordsFromWorkOrderId from '@salesforce/apex/HOT_DuplicateHandler.getOverlappingRecordsFromWorkOrderId';
 
 export default class Hot_warningBannerWorkOrder extends LightningElement {
     @api recordId;
-    @track record;
+    record;
 
     @wire(getRecord, {
         recordId: '$recordId',
@@ -18,8 +18,8 @@ export default class Hot_warningBannerWorkOrder extends LightningElement {
         }
     }
 
-    @track duplicateRecords = [];
-    @track hasDuplicates = false;
+    duplicateRecords = [];
+    hasDuplicates = false;
     async getDuplicates() {
         let workOrderId = this.recordId;
         let accountId = getFieldValue(this.record.data, ACCOUNT_ID);
@@ -30,5 +30,13 @@ export default class Hot_warningBannerWorkOrder extends LightningElement {
             this.duplicateRecords.push(record);
         }
         this.hasDuplicates = this.duplicateRecords.length > 0;
+    }
+
+    get duplicateRecordItems() {
+        return this.duplicateRecords.map((record) => ({
+            key: record.Id,
+            label: record.WorkOrderNumber,
+            url: record.Link
+        }));
     }
 }
