@@ -49,6 +49,10 @@
         <enabled>true</enabled>
     </classAccesses>
     <classAccesses>
+        <apexClass>HOT_TLThreadlistController</apexClass>
+        <enabled>true</enabled>
+    </classAccesses>
+    <classAccesses>
         <apexClass>HOT_TindAccessErrorController</apexClass>
         <enabled>true</enabled>
     </classAccesses>
@@ -1085,6 +1089,11 @@
     </fieldPermissions>
     <fieldPermissions>
         <editable>true</editable>
+        <field>Message__c.HOT_IsTjenesteleverandorMessage__c</field>
+        <readable>true</readable>
+    </fieldPermissions>
+    <fieldPermissions>
+        <editable>true</editable>
         <field>Message__c.HOT_User_Role__c</field>
         <readable>true</readable>
     </fieldPermissions>
@@ -1826,6 +1835,26 @@
     <fieldPermissions>
         <editable>true</editable>
         <field>ServiceAppointment.HOT_TermsOfAgreement__c</field>
+        <readable>true</readable>
+    </fieldPermissions>
+    <fieldPermissions>
+        <editable>true</editable>
+        <field>ServiceAppointment.HOT_TjenesteleverandorAcceptDate__c</field>
+        <readable>true</readable>
+    </fieldPermissions>
+    <fieldPermissions>
+        <editable>true</editable>
+        <field>ServiceAppointment.HOT_TjenesteleverandorDeadline__c</field>
+        <readable>true</readable>
+    </fieldPermissions>
+    <fieldPermissions>
+        <editable>true</editable>
+        <field>ServiceAppointment.HOT_TjenesteleverandorTransferDate__c</field>
+        <readable>true</readable>
+    </fieldPermissions>
+    <fieldPermissions>
+        <editable>true</editable>
+        <field>ServiceAppointment.HOT_TjenesteleverandorStatus__c</field>
         <readable>true</readable>
     </fieldPermissions>
     <fieldPermissions>

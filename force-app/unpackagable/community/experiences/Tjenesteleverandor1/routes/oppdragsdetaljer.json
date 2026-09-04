@@ -1,0 +1,12 @@
+{
+    "activeViewId": "30e5de4a-28c4-4a6a-bbc9-9ef5d92ef153",
+    "appPageId": "32056ac8-ab01-4fbe-a9cc-94b1b053ca6d",
+    "configurationTags": [],
+    "devName": "Oppdragsdetaljer__c",
+    "id": "6288f345-f919-45a7-aadf-7bf311c60a5e",
+    "label": "Oppdragsdetaljer",
+    "pageAccess": "UseParent",
+    "routeType": "custom-oppdragsdetaljer",
+    "type": "route",
+    "urlPrefix": "oppdragsdetaljer"
+}
