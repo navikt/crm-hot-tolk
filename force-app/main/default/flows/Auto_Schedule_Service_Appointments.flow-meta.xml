@@ -3,8 +3,8 @@
     <actionCalls>
         <name>Auto_Schedule_Service</name>
         <label>Auto Schedule Service</label>
-        <locationX>1238</locationX>
-        <locationY>3158</locationY>
+        <locationX>1106</locationX>
+        <locationY>3458</locationY>
         <actionName>HOT_AutoScheduleService</actionName>
         <actionType>apex</actionType>
         <connector>
@@ -50,6 +50,13 @@
                 <elementReference>Resource1WarningText</elementReference>
             </value>
         </assignmentItems>
+        <assignmentItems>
+            <assignToReference>isPreferredResource1Unavailable</assignToReference>
+            <operator>Assign</operator>
+            <value>
+                <booleanValue>true</booleanValue>
+            </value>
+        </assignmentItems>
         <connector>
             <targetReference>Loop_Resource1_Appointments</targetReference>
         </connector>
@@ -64,6 +71,13 @@
             <operator>Add</operator>
             <value>
                 <elementReference>Resource2WarningText</elementReference>
+            </value>
+        </assignmentItems>
+        <assignmentItems>
+            <assignToReference>isPreferredResource2Unavailable</assignToReference>
+            <operator>Assign</operator>
+            <value>
+                <booleanValue>true</booleanValue>
             </value>
         </assignmentItems>
         <connector>
@@ -91,6 +105,38 @@
         </assignmentItems>
         <connector>
             <targetReference>Loop_Preferred_Resource_Warnings</targetReference>
+        </connector>
+    </assignments>
+    <assignments>
+        <name>Set_Resource1_Available</name>
+        <label>Set Resource1 Available</label>
+        <locationX>1898</locationX>
+        <locationY>1898</locationY>
+        <assignmentItems>
+            <assignToReference>isFreelanceInterpreterAvailable</assignToReference>
+            <operator>Assign</operator>
+            <value>
+                <booleanValue>true</booleanValue>
+            </value>
+        </assignmentItems>
+        <connector>
+            <targetReference>Loop_Resource1_Appointments</targetReference>
+        </connector>
+    </assignments>
+    <assignments>
+        <name>Set_Resource2_Available</name>
+        <label>Set Resource2 Available</label>
+        <locationX>1898</locationX>
+        <locationY>2390</locationY>
+        <assignmentItems>
+            <assignToReference>isFreelanceInterpreterAvailable</assignToReference>
+            <operator>Assign</operator>
+            <value>
+                <booleanValue>true</booleanValue>
+            </value>
+        </assignmentItems>
+        <connector>
+            <targetReference>Loop_Resource2_Appointments</targetReference>
         </connector>
     </assignments>
     <choices>
@@ -167,10 +213,17 @@
         <defaultConnector>
             <targetReference>Auto_Schedule_Service</targetReference>
         </defaultConnector>
-        <defaultConnectorLabel>No</defaultConnectorLabel>
+        <defaultConnectorLabel>Default outcome</defaultConnectorLabel>
         <rules>
-            <name>Yes_Has_Warning</name>
-            <conditionLogic>and</conditionLogic>
+            <name>X1_Partial_warning</name>
+            <conditionLogic>1 AND 2</conditionLogic>
+            <conditions>
+                <leftValueReference>isFreelanceInterpreterAvailable</leftValueReference>
+                <operator>EqualTo</operator>
+                <rightValue>
+                    <booleanValue>true</booleanValue>
+                </rightValue>
+            </conditions>
             <conditions>
                 <leftValueReference>warningDisplayText</leftValueReference>
                 <operator>IsNull</operator>
@@ -179,9 +232,39 @@
                 </rightValue>
             </conditions>
             <connector>
+                <targetReference>Preferred_Resource_Warning_With_Availability_Screen</targetReference>
+            </connector>
+            <label>1. Partial warning</label>
+        </rules>
+        <rules>
+            <name>X2_Preferred_available</name>
+            <conditionLogic>and</conditionLogic>
+            <conditions>
+                <leftValueReference>isFreelanceInterpreterAvailable</leftValueReference>
+                <operator>EqualTo</operator>
+                <rightValue>
+                    <booleanValue>true</booleanValue>
+                </rightValue>
+            </conditions>
+            <connector>
+                <targetReference>Auto_Schedule_Service</targetReference>
+            </connector>
+            <label>2. Preferred available</label>
+        </rules>
+        <rules>
+            <name>No_preferred_available</name>
+            <conditionLogic>and</conditionLogic>
+            <conditions>
+                <leftValueReference>noFreelanceInterpreterAvailable</leftValueReference>
+                <operator>EqualTo</operator>
+                <rightValue>
+                    <booleanValue>true</booleanValue>
+                </rightValue>
+            </conditions>
+            <connector>
                 <targetReference>Preferred_Resource_Warning_Screen</targetReference>
             </connector>
-            <label>Yes</label>
+            <label>No preferred available</label>
         </rules>
     </decisions>
     <decisions>
@@ -215,7 +298,7 @@
         <locationX>1766</locationX>
         <locationY>1790</locationY>
         <defaultConnector>
-            <targetReference>Loop_Resource1_Appointments</targetReference>
+            <targetReference>Set_Resource1_Available</targetReference>
         </defaultConnector>
         <defaultConnectorLabel>No</defaultConnectorLabel>
         <rules>
@@ -247,7 +330,7 @@
         <locationX>1766</locationX>
         <locationY>2282</locationY>
         <defaultConnector>
-            <targetReference>Loop_Resource2_Appointments</targetReference>
+            <targetReference>Set_Resource2_Available</targetReference>
         </defaultConnector>
         <defaultConnectorLabel>No</defaultConnectorLabel>
         <rules>
@@ -313,6 +396,11 @@
         <name>isWorkOrder</name>
         <dataType>Boolean</dataType>
         <expression>BEGINS({!recordId}, &quot;0WO&quot;)</expression>
+    </formulas>
+    <formulas>
+        <name>noFreelanceInterpreterAvailable</name>
+        <dataType>Boolean</dataType>
+        <expression>AND(OR(ISBLANK({!preferredResource1Id}), {!isPreferredResource1Unavailable}), OR(ISBLANK({!preferredResource2Id}), {!isPreferredResource2Unavailable}), OR(NOT(ISBLANK({!preferredResource1Id})), NOT(ISBLANK({!preferredResource2Id}))))</expression>
     </formulas>
     <formulas>
         <name>parentRecordType</name>
@@ -644,8 +732,8 @@
     <screens>
         <name>AutomatiskPlanleggingSuccess</name>
         <label>Automatisk planlegging success</label>
-        <locationX>1238</locationX>
-        <locationY>3266</locationY>
+        <locationX>1106</locationX>
+        <locationY>3566</locationY>
         <allowBack>false</allowBack>
         <allowFinish>true</allowFinish>
         <allowPause>false</allowPause>
@@ -713,14 +801,41 @@
     <screens>
         <name>Preferred_Resource_Warning_Screen</name>
         <label>Foretrukket ressurs opptatt</label>
-        <locationX>974</locationX>
+        <locationX>1194</locationX>
         <locationY>3158</locationY>
         <allowBack>false</allowBack>
         <allowFinish>true</allowFinish>
         <allowPause>false</allowPause>
         <fields>
             <name>preferredResourceWarningText</name>
-            <fieldText>&lt;p&gt;&lt;span style=&quot;font-size: 14px;&quot;&gt;OBS: Følgende foretrukne ressurser er opptatt i det aktuelle tidsrommet:&lt;/span&gt;&lt;/p&gt;&lt;p&gt;{!warningDisplayText}&lt;/p&gt;</fieldText>
+            <fieldText>&lt;p&gt;&lt;strong style=&quot;font-size: 14px;&quot;&gt;OBS: Følgende foretrukne ressurser er opptatt i det aktuelle tidsrommet:&lt;/strong&gt;&lt;/p&gt;&lt;p&gt;{!warningDisplayText}&lt;/p&gt;</fieldText>
+            <fieldType>DisplayText</fieldType>
+            <styleProperties>
+                <verticalAlignment>
+                    <stringValue>top</stringValue>
+                </verticalAlignment>
+                <width>
+                    <stringValue>12</stringValue>
+                </width>
+            </styleProperties>
+        </fields>
+        <showFooter>true</showFooter>
+        <showHeader>false</showHeader>
+    </screens>
+    <screens>
+        <name>Preferred_Resource_Warning_With_Availability_Screen</name>
+        <label>Foretrukket ressurs delvis opptatt</label>
+        <locationX>754</locationX>
+        <locationY>3158</locationY>
+        <allowBack>false</allowBack>
+        <allowFinish>true</allowFinish>
+        <allowPause>false</allowPause>
+        <connector>
+            <targetReference>Auto_Schedule_Service</targetReference>
+        </connector>
+        <fields>
+            <name>preferredResourceWarningWithAvailabilityText</name>
+            <fieldText>&lt;p&gt;&lt;strong style=&quot;font-size: 14px;&quot;&gt;OBS: Følgende foretrukne ressurser er opptatt i det aktuelle tidsrommet:&lt;/strong&gt;&lt;/p&gt;&lt;p&gt;{!warningDisplayText}&lt;/p&gt;&lt;p&gt;&lt;strong&gt;Foretrukket ressurs vil bli satt på oppdrag hvor ressursen er tilgjengelig.&lt;/strong&gt;&lt;/p&gt;</fieldText>
             <fieldType>DisplayText</fieldType>
             <styleProperties>
                 <verticalAlignment>
@@ -745,6 +860,27 @@
     <variables>
         <name>error</name>
         <dataType>String</dataType>
+        <isCollection>false</isCollection>
+        <isInput>false</isInput>
+        <isOutput>false</isOutput>
+    </variables>
+    <variables>
+        <name>isFreelanceInterpreterAvailable</name>
+        <dataType>Boolean</dataType>
+        <isCollection>false</isCollection>
+        <isInput>false</isInput>
+        <isOutput>false</isOutput>
+    </variables>
+    <variables>
+        <name>isPreferredResource1Unavailable</name>
+        <dataType>Boolean</dataType>
+        <isCollection>false</isCollection>
+        <isInput>false</isInput>
+        <isOutput>false</isOutput>
+    </variables>
+    <variables>
+        <name>isPreferredResource2Unavailable</name>
+        <dataType>Boolean</dataType>
         <isCollection>false</isCollection>
         <isInput>false</isInput>
         <isOutput>false</isOutput>
