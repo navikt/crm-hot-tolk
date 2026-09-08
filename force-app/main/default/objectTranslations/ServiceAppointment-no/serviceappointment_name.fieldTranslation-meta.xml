@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomFieldTranslation xmlns="http://soap.sforce.com/2006/04/metadata">
+    <caseValues>
+        <article>None</article>
+        <plural>false</plural>
+        <value>Oppdragsnummer</value>
+    </caseValues>
+    <caseValues>
+        <article>None</article>
+        <plural>true</plural>
+        <value>Oppdragsnumre</value>
+    </caseValues>
+    <gender>Neuter</gender>
+    <name>serviceappointment_name</name>
+</CustomFieldTranslation>
