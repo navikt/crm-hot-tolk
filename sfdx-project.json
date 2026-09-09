@@ -31,7 +31,7 @@
                 },
                 {
                     "package": "crm-platform-base",
-                    "versionNumber": "0.300.0.LATEST"
+                    "versionNumber": "0.308.0.LATEST"
                 },
                 {
                     "package": "crm-thread-view",
@@ -74,12 +74,20 @@
                     "versionNumber": "0.27.0.LATEST"
                 },
                 {
+                    "package": "crm-platform-oppgave",
+                    "versionNumber": "0.84.0.LATEST"
+                },
+                {
                     "package": "crm-platform-access-control",
                     "versionNumber": "0.177.0.LATEST"
                 },
                 {
                     "package": "crm-community-base",
                     "versionNumber": "0.133.0.LATEST"
+                },
+                {
+                    "package": "crm-henvendelse",
+                    "versionNumber": "0.208.0.LATEST"
                 },
                 {
                     "package": "crm-platform-reporting",
@@ -106,7 +114,9 @@
         "crm-platform-reporting": "0Ho2o0000008OSfCAM",
         "crm-platform-integration": "0Ho2o0000008ORrCAM",
         "crm-shared-user-notification": "0Ho2o000000fxY4CAI",
+        "crm-platform-oppgave": "0Ho2o000000fxXzCAI",
         "crm-henvendelse-base": "0Ho7U000000000kSAA",
+        "crm-henvendelse": "0Ho2o000000fxXfCAI",
         "crm-shared-flowComponents": "0Ho2o000000fxYJCAY",
         "crm-hot-felles": "0HoQC00000005qv0AA"
     },
