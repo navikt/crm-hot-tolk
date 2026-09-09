@@ -21,7 +21,7 @@ sf package install --package 04tQC000001C7jVYAS --no-prompt --wait 30 --publish-
 sf package install --package 04tQC000001AHAHYA4 --no-prompt --installation-key $3 --wait 30 --publish-wait 30
 
 # Installer crm-thread-view ver. 0.9
-sf package install --package 04tQC0000011athYAA --no-prompt --installation-key $3 --wait 30 --publish-wait 30
+sf package install --package 04tQC000000nfmnYAA --no-prompt --installation-key $3 --wait 30 --publish-wait 30
 
 # Installer crm-journal-utilities ver. 0.55
 sf package install --package 04tQC0000012pVhYAI --no-prompt --installation-key $3 --wait 30 --publish-wait 30
