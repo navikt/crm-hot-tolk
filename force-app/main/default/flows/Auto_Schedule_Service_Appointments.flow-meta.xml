@@ -245,6 +245,21 @@
         </defaultConnector>
         <defaultConnectorLabel>Default outcome</defaultConnectorLabel>
         <rules>
+            <name>X0_No_warning</name>
+            <conditionLogic>and</conditionLogic>
+            <conditions>
+                <leftValueReference>warningDisplayText</leftValueReference>
+                <operator>IsNull</operator>
+                <rightValue>
+                    <booleanValue>true</booleanValue>
+                </rightValue>
+            </conditions>
+            <connector>
+                <targetReference>Auto_Schedule_Service</targetReference>
+            </connector>
+            <label>0. No warning</label>
+        </rules>
+        <rules>
             <name>X1_Partial_warning</name>
             <conditionLogic>1 AND 2 AND 3</conditionLogic>
             <conditions>
@@ -441,11 +456,55 @@
             <label>Yes</label>
         </rules>
     </decisions>
+    <decisions>
+        <name>Preferred_resource_exist_WorkOrder</name>
+        <label>Preferred resource exist WorkOrder?</label>
+        <locationX>380</locationX>
+        <locationY>434</locationY>
+        <defaultConnector>
+            <targetReference>Automatisk_planlegging_avsluttet</targetReference>
+        </defaultConnector>
+        <defaultConnectorLabel>Default Outcome</defaultConnectorLabel>
+        <rules>
+            <name>Yes_has_preferredresource_workorder</name>
+            <conditionLogic>1 AND 2 AND 3</conditionLogic>
+            <conditions>
+                <leftValueReference>hasPreferredResource</leftValueReference>
+                <operator>EqualTo</operator>
+                <rightValue>
+                    <booleanValue>true</booleanValue>
+                </rightValue>
+            </conditions>
+            <conditions>
+                <leftValueReference>isAutoScheduleStatusValid</leftValueReference>
+                <operator>EqualTo</operator>
+                <rightValue>
+                    <booleanValue>true</booleanValue>
+                </rightValue>
+            </conditions>
+            <conditions>
+                <leftValueReference>hasWorkOrderStartAndEndDate</leftValueReference>
+                <operator>EqualTo</operator>
+                <rightValue>
+                    <booleanValue>true</booleanValue>
+                </rightValue>
+            </conditions>
+            <connector>
+                <targetReference>confirmationScreen</targetReference>
+            </connector>
+            <label>Yes - WorkOrder</label>
+        </rules>
+    </decisions>
     <environments>Default</environments>
     <formulas>
         <name>hasPreferredResource</name>
         <dataType>Boolean</dataType>
         <expression>AND(OR(NOT(ISBLANK({!preferredResource1Id})), NOT(ISBLANK({!preferredResource2Id}))), OR(NOT(ISBLANK({!Get_Request_record.Id})), NOT(ISBLANK({!Get_WorkOrder_record.Id}))))</expression>
+    </formulas>
+    <formulas>
+        <name>hasWorkOrderStartAndEndDate</name>
+        <dataType>Boolean</dataType>
+        <expression>AND(NOT(ISBLANK({!Get_WorkOrder_record.StartDate})), NOT(ISBLANK({!Get_WorkOrder_record.EndDate})))</expression>
     </formulas>
     <formulas>
         <name>IsAutoDispatched</name>
@@ -813,7 +872,7 @@
         <locationY>242</locationY>
         <assignNullValuesIfNoRecordsFound>false</assignNullValuesIfNoRecordsFound>
         <connector>
-            <targetReference>Preferred_resource_exist</targetReference>
+            <targetReference>Preferred_resource_exist_WorkOrder</targetReference>
         </connector>
         <filterLogic>and</filterLogic>
         <filters>
