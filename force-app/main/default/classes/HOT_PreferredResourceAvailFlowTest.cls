@@ -106,7 +106,8 @@ private class HOT_PreferredResourceAvailFlowTest {
 
         WorkOrderLineItem woli1 = HOT_TestDataFactory.createWorkOrderLineItem(workOrder1, workType);
         WorkOrderLineItem woli2 = HOT_TestDataFactory.createWorkOrderLineItem(workOrder2, workType);
-        insert new List<WorkOrderLineItem>{ woli1, woli2 };
+        WorkOrderLineItem woli3 = HOT_TestDataFactory.createWorkOrderLineItem(workOrder2, workType);
+        insert new List<WorkOrderLineItem>{ woli1, woli2, woli3 };
 
         ServiceAppointment overlapForResource1 = HOT_TestDataFactory.createServiceAppointment(woli1);
         overlapForResource1.HOT_ServiceResource__c = serviceResource1.Id;
@@ -120,7 +121,7 @@ private class HOT_PreferredResourceAvailFlowTest {
         nonOverlapForResource1.EarliestStartTime = Datetime.newInstance(2026, 1, 10, 16, 0, 0);
         nonOverlapForResource1.DueDate = Datetime.newInstance(2026, 1, 10, 17, 0, 0);
 
-        ServiceAppointment overlapForResource2 = HOT_TestDataFactory.createServiceAppointment(woli2);
+        ServiceAppointment overlapForResource2 = HOT_TestDataFactory.createServiceAppointment(woli3);
         overlapForResource2.HOT_ServiceResource__c = serviceResource2.Id;
         overlapForResource2.Status = 'Scheduled';
         overlapForResource2.EarliestStartTime = Datetime.newInstance(2026, 1, 10, 13, 30, 0);
