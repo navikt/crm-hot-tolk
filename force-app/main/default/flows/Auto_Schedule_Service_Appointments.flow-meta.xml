@@ -4,7 +4,7 @@
         <name>Auto_Schedule_Service</name>
         <label>Auto Schedule Service</label>
         <locationX>270</locationX>
-        <locationY>3698</locationY>
+        <locationY>3806</locationY>
         <actionName>HOT_AutoScheduleService</actionName>
         <actionType>apex</actionType>
         <connector>
@@ -883,7 +883,7 @@
         <name>AutomatiskPlanleggingSuccess</name>
         <label>Automatisk planlegging success</label>
         <locationX>270</locationX>
-        <locationY>3806</locationY>
+        <locationY>3914</locationY>
         <allowBack>false</allowBack>
         <allowFinish>true</allowFinish>
         <allowPause>false</allowPause>
@@ -956,9 +956,6 @@
         <allowBack>false</allowBack>
         <allowFinish>true</allowFinish>
         <allowPause>true</allowPause>
-        <connector>
-            <targetReference>Auto_Schedule_Service</targetReference>
-        </connector>
         <fields>
             <name>UnavailableScreenText</name>
             <fieldText>&lt;p&gt;&lt;strong style=&quot;font-size: 14px;&quot;&gt;OBS: Følgende foretrukne ressurser er opptatt i det aktuelle tidsrommet:&lt;/strong&gt;&lt;/p&gt;&lt;p&gt;&lt;br&gt;&lt;/p&gt;&lt;p&gt;{!warningDisplayText} &lt;/p&gt;</fieldText>
