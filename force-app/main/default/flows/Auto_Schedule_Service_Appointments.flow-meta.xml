@@ -41,7 +41,7 @@
         <label>Check Preferred Resource Availability</label>
         <locationX>270</locationX>
         <locationY>1790</locationY>
-        <actionName>HOT_PreferredResourceAvailabilityFlow</actionName>
+        <actionName>HOT_PreferredResourceAvailFlow</actionName>
         <actionType>apex</actionType>
         <connector>
             <targetReference>Has_Preferred_Resource_Warning</targetReference>
@@ -53,7 +53,7 @@
                 <elementReference>recordId</elementReference>
             </value>
         </inputParameters>
-        <nameSegment>HOT_PreferredResourceAvailabilityFlow</nameSegment>
+        <nameSegment>HOT_PreferredResourceAvailFlow</nameSegment>
         <offset>0</offset>
         <outputParameters>
             <assignToReference>warningDisplayText</assignToReference>

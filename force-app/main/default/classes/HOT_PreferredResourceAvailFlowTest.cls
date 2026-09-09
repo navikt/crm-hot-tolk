@@ -1,5 +1,5 @@
 @IsTest(IsParallel=true)
-private class HOT_PreferredResourceAvailabilityFlowTest {
+private class HOT_PreferredResourceAvailFlowTest {
     private class TestContext {
         public Id requestId;
     }
@@ -8,12 +8,12 @@ private class HOT_PreferredResourceAvailabilityFlowTest {
     private static void checkAvailabilityBuildsWarningsAndAvailability() {
         TestContext contextItem = createAvailabilityScenario();
 
-        HOT_PreferredResourceAvailabilityFlow.Request inputItem = new HOT_PreferredResourceAvailabilityFlow.Request();
+        HOT_PreferredResourceAvailFlow.Request inputItem = new HOT_PreferredResourceAvailFlow.Request();
         inputItem.parentRecordId = contextItem.requestId;
 
         Test.startTest();
-        List<HOT_PreferredResourceAvailabilityFlow.Response> responses = HOT_PreferredResourceAvailabilityFlow.checkAvailability(
-            new List<HOT_PreferredResourceAvailabilityFlow.Request>{ inputItem }
+        List<HOT_PreferredResourceAvailFlow.Response> responses = HOT_PreferredResourceAvailFlow.checkAvailability(
+            new List<HOT_PreferredResourceAvailFlow.Request>{ inputItem }
         );
         Test.stopTest();
 
@@ -46,11 +46,11 @@ private class HOT_PreferredResourceAvailabilityFlowTest {
 
     @IsTest
     private static void checkAvailabilityHandlesMissingInput() {
-        HOT_PreferredResourceAvailabilityFlow.Request inputItem = new HOT_PreferredResourceAvailabilityFlow.Request();
+        HOT_PreferredResourceAvailFlow.Request inputItem = new HOT_PreferredResourceAvailFlow.Request();
 
         Test.startTest();
-        List<HOT_PreferredResourceAvailabilityFlow.Response> responses = HOT_PreferredResourceAvailabilityFlow.checkAvailability(
-            new List<HOT_PreferredResourceAvailabilityFlow.Request>{ inputItem }
+        List<HOT_PreferredResourceAvailFlow.Response> responses = HOT_PreferredResourceAvailFlow.checkAvailability(
+            new List<HOT_PreferredResourceAvailFlow.Request>{ inputItem }
         );
         Test.stopTest();
 

@@ -1,7 +1,7 @@
 /**
  * Calculates preferred resource warnings for auto scheduling in one invocable call.
  */
-public without sharing class HOT_PreferredResourceAvailabilityFlow {
+public without sharing class HOT_PreferredResourceAvailFlow {
     private static final String NORWAY_TIMEZONE = 'Europe/Oslo';
     private static final String DATE_PATTERN = 'dd.MM.yyyy HH:mm';
 
