@@ -241,7 +241,7 @@
         <locationX>270</locationX>
         <locationY>3398</locationY>
         <defaultConnector>
-            <targetReference>Auto_Schedule_Service</targetReference>
+            <targetReference>Foretrukne_ressurs_er_opptatt</targetReference>
         </defaultConnector>
         <defaultConnectorLabel>Default outcome</defaultConnectorLabel>
         <rules>
@@ -292,7 +292,7 @@
     <decisions>
         <name>Is_it_a_WorkOrder</name>
         <label>Is it a WorkOrder?</label>
-        <locationX>468</locationX>
+        <locationX>512</locationX>
         <locationY>134</locationY>
         <defaultConnector>
             <targetReference>Get_Request_record</targetReference>
@@ -412,7 +412,7 @@
     <decisions>
         <name>Preferred_resource_exist</name>
         <label>Preferred resource exist?</label>
-        <locationX>468</locationX>
+        <locationX>512</locationX>
         <locationY>434</locationY>
         <defaultConnector>
             <targetReference>Automatisk_planlegging_avsluttet</targetReference>
@@ -788,7 +788,7 @@
     <recordLookups>
         <name>Get_Request_record</name>
         <label>Get Request record</label>
-        <locationX>600</locationX>
+        <locationX>644</locationX>
         <locationY>242</locationY>
         <assignNullValuesIfNoRecordsFound>false</assignNullValuesIfNoRecordsFound>
         <connector>
@@ -809,7 +809,7 @@
     <recordLookups>
         <name>Get_WorkOrder_record</name>
         <label>Get WorkOrder record</label>
-        <locationX>336</locationX>
+        <locationX>380</locationX>
         <locationY>242</locationY>
         <assignNullValuesIfNoRecordsFound>false</assignNullValuesIfNoRecordsFound>
         <connector>
@@ -858,7 +858,7 @@
     <screens>
         <name>Automatisk_planlegging_avsluttet</name>
         <label>Auto Schedule</label>
-        <locationX>666</locationX>
+        <locationX>754</locationX>
         <locationY>542</locationY>
         <allowBack>false</allowBack>
         <allowFinish>true</allowFinish>
@@ -949,6 +949,33 @@
         <showHeader>false</showHeader>
     </screens>
     <screens>
+        <name>Foretrukne_ressurs_er_opptatt</name>
+        <label>Foretrukne ressurs er opptatt</label>
+        <locationX>490</locationX>
+        <locationY>3506</locationY>
+        <allowBack>false</allowBack>
+        <allowFinish>true</allowFinish>
+        <allowPause>true</allowPause>
+        <connector>
+            <targetReference>Auto_Schedule_Service</targetReference>
+        </connector>
+        <fields>
+            <name>UnavailableScreenText</name>
+            <fieldText>&lt;p&gt;&lt;strong style=&quot;font-size: 14px;&quot;&gt;OBS: Følgende foretrukne ressurser er opptatt i det aktuelle tidsrommet:&lt;/strong&gt;&lt;/p&gt;&lt;p&gt;&lt;br&gt;&lt;/p&gt;&lt;p&gt;{!warningDisplayText} &lt;/p&gt;</fieldText>
+            <fieldType>DisplayText</fieldType>
+            <styleProperties>
+                <verticalAlignment>
+                    <stringValue>top</stringValue>
+                </verticalAlignment>
+                <width>
+                    <stringValue>12</stringValue>
+                </width>
+            </styleProperties>
+        </fields>
+        <showFooter>true</showFooter>
+        <showHeader>false</showHeader>
+    </screens>
+    <screens>
         <name>Preferred_Resource_Warning_With_Availability_Screen</name>
         <label>Foretrukket ressurs delvis opptatt</label>
         <locationX>50</locationX>
@@ -976,7 +1003,7 @@
         <showHeader>false</showHeader>
     </screens>
     <start>
-        <locationX>342</locationX>
+        <locationX>386</locationX>
         <locationY>0</locationY>
         <connector>
             <targetReference>Is_it_a_WorkOrder</targetReference>
