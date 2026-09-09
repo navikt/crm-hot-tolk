@@ -47,8 +47,8 @@ sf package install --package 04tQC000001Ms4PYAS --no-prompt --installation-key $
 # Installer crm-shared-user-notification ver. 0.27
 sf package install --package 04tQC0000012h6jYAA --no-prompt --installation-key $3 --wait 30 --publish-wait 30
 
-# Installer crm-platform-access-control ver. 0.177
-sf package install --package 04tQC000001AGR7YAO --no-prompt --installation-key $3 --wait 30 --publish-wait 30
+# Installer crm-platform-access-control ver. 0.178
+sf package install --package 04tQC000001WWfJYAW --no-prompt --installation-key $3 --wait 30 --publish-wait 30
 
 # Installer crm-community-base ver. 0.133
 sf package install --package 04tQC0000012ZXNYA2 --no-prompt --installation-key $3 --wait 30 --publish-wait 30
