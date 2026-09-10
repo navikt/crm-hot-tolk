@@ -1,4 +1,4 @@
-@IsTest(IsParallel=true)
+@IsTest
 private class HOT_PreferredResourceAvailFlowTest {
     private class TestContext {
         public Id requestId;
@@ -80,9 +80,19 @@ private class HOT_PreferredResourceAvailFlowTest {
         HOT_Request__c requestRecord = HOT_TestDataFactory.createRequest('TEST', workType);
         insert requestRecord;
 
+        Profile profile = [
+            SELECT Id
+            FROM Profile
+            WHERE Name = 'System Administrator' OR Name = 'Systemadministrator'
+            LIMIT 1
+        ];
+        String userSuffix = String.valueOf(Math.abs(Crypto.getRandomInteger())).left(6);
+        User secondUser = HOT_TestDataFactory.createUser('PR' + userSuffix, profile);
+        insert secondUser;
+
         ServiceResource serviceResource1 = HOT_TestDataFactory.createServiceResource(UserInfo.getUserId());
         serviceResource1.Name = 'SR-1';
-        ServiceResource serviceResource2 = HOT_TestDataFactory.createServiceResource(UserInfo.getUserId());
+        ServiceResource serviceResource2 = HOT_TestDataFactory.createServiceResource(secondUser.Id);
         serviceResource2.Name = 'SR-2';
         insert new List<ServiceResource>{ serviceResource1, serviceResource2 };
 
