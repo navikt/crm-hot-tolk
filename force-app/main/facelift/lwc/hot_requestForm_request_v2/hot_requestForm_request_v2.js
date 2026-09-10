@@ -108,12 +108,12 @@ export default class hot_requestForm_request_v2 extends LightningElement {
         const postalCode = event.detail?.value || event.target?.value;
         this.fieldValues[postalField] = postalCode;
 
-        if (!postalCode || postalCode.length !== 4) {
-            this.fieldValues[cityField] = 'Feltet fylles automatisk';
-            return;
-        }
+        // if (!postalCode || postalCode.length !== 4) {
+        //     this.fieldValues[cityField] = 'Feltet fylles automatisk';
+        //     return;
+        // }
 
-        this.fieldValues[cityField] = 'Henter poststed...';
+        // this.fieldValues[cityField] = 'Henter poststed...';
 
         getPostalCity({ postalCode })
             .then((result) => {
@@ -121,9 +121,6 @@ export default class hot_requestForm_request_v2 extends LightningElement {
                 if (result && result.length === 1) {
                     this.fieldValues[cityField] = result[0].Name;
                     message = result[0].Name;
-                } else {
-                    this.fieldValues[cityField] = 'Kunne ikke finne poststed';
-                    message = 'Kunne ikke finne poststed';
                 }
                 setTimeout(() => {
                     this.ariaPostalStatus = message;
@@ -131,10 +128,6 @@ export default class hot_requestForm_request_v2 extends LightningElement {
             })
             .catch((error) => {
                 console.error(error);
-                this.fieldValues[cityField] = 'Feil ved henting av poststed';
-                setTimeout(() => {
-                    this.ariaPostalStatus = 'Feil ved henting av poststed';
-                }, 1000);
             });
     }
 
