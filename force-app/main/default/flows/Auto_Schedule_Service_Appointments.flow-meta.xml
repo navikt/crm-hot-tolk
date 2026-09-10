@@ -3,8 +3,8 @@
     <actionCalls>
         <name>Auto_Schedule_Service</name>
         <label>Auto Schedule Service</label>
-        <locationX>1238</locationX>
-        <locationY>3158</locationY>
+        <locationX>270</locationX>
+        <locationY>3806</locationY>
         <actionName>HOT_AutoScheduleService</actionName>
         <actionType>apex</actionType>
         <connector>
@@ -36,63 +36,44 @@
             <name>output</name>
         </outputParameters>
     </actionCalls>
+    <actionCalls>
+        <name>Check_Preferred_Resource_Availability</name>
+        <label>Check Preferred Resource Availability</label>
+        <locationX>270</locationX>
+        <locationY>1790</locationY>
+        <actionName>HOT_PreferredResourceAvailFlow</actionName>
+        <actionType>apex</actionType>
+        <connector>
+            <targetReference>Has_Preferred_Resource_Warning</targetReference>
+        </connector>
+        <flowTransactionModel>CurrentTransaction</flowTransactionModel>
+        <inputParameters>
+            <name>parentRecordId</name>
+            <value>
+                <elementReference>recordId</elementReference>
+            </value>
+        </inputParameters>
+        <nameSegment>HOT_PreferredResourceAvailFlow</nameSegment>
+        <offset>0</offset>
+        <outputParameters>
+            <assignToReference>warningDisplayText</assignToReference>
+            <name>warningDisplayText</name>
+        </outputParameters>
+        <outputParameters>
+            <assignToReference>isFreelanceInterpreterAvailable</assignToReference>
+            <name>isFreelanceInterpreterAvailable</name>
+        </outputParameters>
+        <outputParameters>
+            <assignToReference>isPreferredResource1Unavailable</assignToReference>
+            <name>isPreferredResource1Unavailable</name>
+        </outputParameters>
+        <outputParameters>
+            <assignToReference>isPreferredResource2Unavailable</assignToReference>
+            <name>isPreferredResource2Unavailable</name>
+        </outputParameters>
+    </actionCalls>
     <apiVersion>49.0</apiVersion>
     <areMetricsLoggedToDataCloud>false</areMetricsLoggedToDataCloud>
-    <assignments>
-        <name>Add_Resource1_Warning</name>
-        <label>Add Resource1 Warning</label>
-        <locationX>1634</locationX>
-        <locationY>1898</locationY>
-        <assignmentItems>
-            <assignToReference>warningMessages</assignToReference>
-            <operator>Add</operator>
-            <value>
-                <elementReference>Resource1WarningText</elementReference>
-            </value>
-        </assignmentItems>
-        <connector>
-            <targetReference>Loop_Resource1_Appointments</targetReference>
-        </connector>
-    </assignments>
-    <assignments>
-        <name>Add_Resource2_Warning</name>
-        <label>Add Resource2 Warning</label>
-        <locationX>1634</locationX>
-        <locationY>2390</locationY>
-        <assignmentItems>
-            <assignToReference>warningMessages</assignToReference>
-            <operator>Add</operator>
-            <value>
-                <elementReference>Resource2WarningText</elementReference>
-            </value>
-        </assignmentItems>
-        <connector>
-            <targetReference>Loop_Resource2_Appointments</targetReference>
-        </connector>
-    </assignments>
-    <assignments>
-        <name>Append_Warning_Text</name>
-        <label>Append Warning Text</label>
-        <locationX>1194</locationX>
-        <locationY>2858</locationY>
-        <assignmentItems>
-            <assignToReference>warningDisplayText</assignToReference>
-            <operator>Add</operator>
-            <value>
-                <elementReference>Loop_Preferred_Resource_Warnings</elementReference>
-            </value>
-        </assignmentItems>
-        <assignmentItems>
-            <assignToReference>warningDisplayText</assignToReference>
-            <operator>Add</operator>
-            <value>
-                <stringValue>&lt;br/&gt;</stringValue>
-            </value>
-        </assignmentItems>
-        <connector>
-            <targetReference>Loop_Preferred_Resource_Warnings</targetReference>
-        </connector>
-    </assignments>
     <choices>
         <name>Reservert</name>
         <choiceText>Reserver oppdraget til ressursen</choiceText>
@@ -112,7 +93,7 @@
     <decisions>
         <name>Has_Preferred_Resource1</name>
         <label>Has preferred resource 1?</label>
-        <locationX>1106</locationX>
+        <locationX>270</locationX>
         <locationY>758</locationY>
         <defaultConnector>
             <targetReference>Has_Preferred_Resource2</targetReference>
@@ -137,10 +118,10 @@
     <decisions>
         <name>Has_Preferred_Resource2</name>
         <label>Has preferred resource 2?</label>
-        <locationX>1106</locationX>
-        <locationY>1166</locationY>
+        <locationX>270</locationX>
+        <locationY>1058</locationY>
         <defaultConnector>
-            <targetReference>Loop_WorkOrders</targetReference>
+            <targetReference>Get_First_WorkOrder_To_Schedule</targetReference>
         </defaultConnector>
         <defaultConnectorLabel>No</defaultConnectorLabel>
         <rules>
@@ -162,15 +143,37 @@
     <decisions>
         <name>Has_Preferred_Resource_Warning</name>
         <label>Has preferred resource warning?</label>
-        <locationX>1106</locationX>
-        <locationY>3050</locationY>
+        <locationX>270</locationX>
+        <locationY>3398</locationY>
         <defaultConnector>
-            <targetReference>Auto_Schedule_Service</targetReference>
+            <targetReference>Foretrukne_ressurs_er_opptatt</targetReference>
         </defaultConnector>
-        <defaultConnectorLabel>No</defaultConnectorLabel>
+        <defaultConnectorLabel>Default outcome</defaultConnectorLabel>
         <rules>
-            <name>Yes_Has_Warning</name>
+            <name>X0_No_warning</name>
             <conditionLogic>and</conditionLogic>
+            <conditions>
+                <leftValueReference>warningDisplayText</leftValueReference>
+                <operator>IsNull</operator>
+                <rightValue>
+                    <booleanValue>true</booleanValue>
+                </rightValue>
+            </conditions>
+            <connector>
+                <targetReference>Auto_Schedule_Service</targetReference>
+            </connector>
+            <label>0. No warning</label>
+        </rules>
+        <rules>
+            <name>X1_Partial_warning</name>
+            <conditionLogic>1 AND 2 AND 3</conditionLogic>
+            <conditions>
+                <leftValueReference>isFreelanceInterpreterAvailable</leftValueReference>
+                <operator>EqualTo</operator>
+                <rightValue>
+                    <booleanValue>true</booleanValue>
+                </rightValue>
+            </conditions>
             <conditions>
                 <leftValueReference>warningDisplayText</leftValueReference>
                 <operator>IsNull</operator>
@@ -178,16 +181,38 @@
                     <booleanValue>false</booleanValue>
                 </rightValue>
             </conditions>
+            <conditions>
+                <leftValueReference>noFreelanceInterpreterAvailable</leftValueReference>
+                <operator>EqualTo</operator>
+                <rightValue>
+                    <booleanValue>false</booleanValue>
+                </rightValue>
+            </conditions>
             <connector>
-                <targetReference>Preferred_Resource_Warning_Screen</targetReference>
+                <targetReference>Preferred_Resource_Warning_With_Availability_Screen</targetReference>
             </connector>
-            <label>Yes</label>
+            <label>1. Partial warning</label>
+        </rules>
+        <rules>
+            <name>X2_Preferred_available</name>
+            <conditionLogic>and</conditionLogic>
+            <conditions>
+                <leftValueReference>isFreelanceInterpreterAvailable</leftValueReference>
+                <operator>EqualTo</operator>
+                <rightValue>
+                    <booleanValue>true</booleanValue>
+                </rightValue>
+            </conditions>
+            <connector>
+                <targetReference>Auto_Schedule_Service</targetReference>
+            </connector>
+            <label>2. Preferred available</label>
         </rules>
     </decisions>
     <decisions>
         <name>Is_it_a_WorkOrder</name>
         <label>Is it a WorkOrder?</label>
-        <locationX>578</locationX>
+        <locationX>512</locationX>
         <locationY>134</locationY>
         <defaultConnector>
             <targetReference>Get_Request_record</targetReference>
@@ -210,92 +235,74 @@
         </rules>
     </decisions>
     <decisions>
-        <name>Is_Overlapping_Resource1</name>
-        <label>Is overlapping with resource 1?</label>
-        <locationX>1766</locationX>
-        <locationY>1790</locationY>
-        <defaultConnector>
-            <targetReference>Loop_Resource1_Appointments</targetReference>
-        </defaultConnector>
-        <defaultConnectorLabel>No</defaultConnectorLabel>
-        <rules>
-            <name>Yes_Overlap_Resource1</name>
-            <conditionLogic>1 AND 2</conditionLogic>
-            <conditions>
-                <leftValueReference>Loop_WorkOrders.StartDate</leftValueReference>
-                <operator>LessThan</operator>
-                <rightValue>
-                    <elementReference>Loop_Resource1_Appointments.DueDate</elementReference>
-                </rightValue>
-            </conditions>
-            <conditions>
-                <leftValueReference>Loop_WorkOrders.EndDate</leftValueReference>
-                <operator>GreaterThan</operator>
-                <rightValue>
-                    <elementReference>Loop_Resource1_Appointments.EarliestStartTime</elementReference>
-                </rightValue>
-            </conditions>
-            <connector>
-                <targetReference>Add_Resource1_Warning</targetReference>
-            </connector>
-            <label>Yes</label>
-        </rules>
-    </decisions>
-    <decisions>
-        <name>Is_Overlapping_Resource2</name>
-        <label>Is overlapping with resource 2?</label>
-        <locationX>1766</locationX>
-        <locationY>2282</locationY>
-        <defaultConnector>
-            <targetReference>Loop_Resource2_Appointments</targetReference>
-        </defaultConnector>
-        <defaultConnectorLabel>No</defaultConnectorLabel>
-        <rules>
-            <name>Yes_Overlap_Resource2</name>
-            <conditionLogic>1 AND 2</conditionLogic>
-            <conditions>
-                <leftValueReference>Loop_WorkOrders.StartDate</leftValueReference>
-                <operator>LessThan</operator>
-                <rightValue>
-                    <elementReference>Loop_Resource2_Appointments.DueDate</elementReference>
-                </rightValue>
-            </conditions>
-            <conditions>
-                <leftValueReference>Loop_WorkOrders.EndDate</leftValueReference>
-                <operator>GreaterThan</operator>
-                <rightValue>
-                    <elementReference>Loop_Resource2_Appointments.EarliestStartTime</elementReference>
-                </rightValue>
-            </conditions>
-            <connector>
-                <targetReference>Add_Resource2_Warning</targetReference>
-            </connector>
-            <label>Yes</label>
-        </rules>
-    </decisions>
-    <decisions>
         <name>Preferred_resource_exist</name>
         <label>Preferred resource exist?</label>
-        <locationX>578</locationX>
+        <locationX>512</locationX>
         <locationY>434</locationY>
         <defaultConnector>
-            <targetReference>confirmationScreen</targetReference>
+            <targetReference>Automatisk_planlegging_avsluttet</targetReference>
         </defaultConnector>
         <defaultConnectorLabel>Default Outcome</defaultConnectorLabel>
         <rules>
-            <name>No</name>
+            <name>Yes_has_preferredresource</name>
             <conditionLogic>and</conditionLogic>
             <conditions>
                 <leftValueReference>hasPreferredResource</leftValueReference>
                 <operator>EqualTo</operator>
                 <rightValue>
-                    <booleanValue>false</booleanValue>
+                    <booleanValue>true</booleanValue>
+                </rightValue>
+            </conditions>
+            <conditions>
+                <leftValueReference>isAutoScheduleStatusValid</leftValueReference>
+                <operator>EqualTo</operator>
+                <rightValue>
+                    <booleanValue>true</booleanValue>
                 </rightValue>
             </conditions>
             <connector>
-                <targetReference>Automatisk_planlegging_avsluttet</targetReference>
+                <targetReference>confirmationScreen</targetReference>
             </connector>
-            <label>No</label>
+            <label>Yes</label>
+        </rules>
+    </decisions>
+    <decisions>
+        <name>Preferred_resource_exist_WorkOrder</name>
+        <label>Preferred resource exist WorkOrder?</label>
+        <locationX>380</locationX>
+        <locationY>434</locationY>
+        <defaultConnector>
+            <targetReference>Automatisk_planlegging_avsluttet</targetReference>
+        </defaultConnector>
+        <defaultConnectorLabel>Default Outcome</defaultConnectorLabel>
+        <rules>
+            <name>Yes_has_preferredresource_workorder</name>
+            <conditionLogic>1 AND 2 AND 3</conditionLogic>
+            <conditions>
+                <leftValueReference>hasPreferredResource</leftValueReference>
+                <operator>EqualTo</operator>
+                <rightValue>
+                    <booleanValue>true</booleanValue>
+                </rightValue>
+            </conditions>
+            <conditions>
+                <leftValueReference>isAutoScheduleStatusValid</leftValueReference>
+                <operator>EqualTo</operator>
+                <rightValue>
+                    <booleanValue>true</booleanValue>
+                </rightValue>
+            </conditions>
+            <conditions>
+                <leftValueReference>hasWorkOrderStartAndEndDate</leftValueReference>
+                <operator>EqualTo</operator>
+                <rightValue>
+                    <booleanValue>true</booleanValue>
+                </rightValue>
+            </conditions>
+            <connector>
+                <targetReference>confirmationScreen</targetReference>
+            </connector>
+            <label>Yes - WorkOrder</label>
         </rules>
     </decisions>
     <environments>Default</environments>
@@ -305,14 +312,29 @@
         <expression>AND(OR(NOT(ISBLANK({!preferredResource1Id})), NOT(ISBLANK({!preferredResource2Id}))), OR(NOT(ISBLANK({!Get_Request_record.Id})), NOT(ISBLANK({!Get_WorkOrder_record.Id}))))</expression>
     </formulas>
     <formulas>
+        <name>hasWorkOrderStartAndEndDate</name>
+        <dataType>Boolean</dataType>
+        <expression>AND(NOT(ISBLANK({!Get_WorkOrder_record.StartDate})), NOT(ISBLANK({!Get_WorkOrder_record.EndDate})))</expression>
+    </formulas>
+    <formulas>
         <name>IsAutoDispatched</name>
         <dataType>Boolean</dataType>
         <expression>CONTAINS({!serviceappointment_checkbox_group}, {!Tildelt})</expression>
     </formulas>
     <formulas>
+        <name>isAutoScheduleStatusValid</name>
+        <dataType>Boolean</dataType>
+        <expression>IF({!isWorkOrder}, TEXT({!Get_WorkOrder_record.HOT_Request__r.Status__c}) = &quot;Godkjent&quot;, TEXT({!Get_Request_record.Status__c}) = &quot;Godkjent&quot;)</expression>
+    </formulas>
+    <formulas>
         <name>isWorkOrder</name>
         <dataType>Boolean</dataType>
         <expression>BEGINS({!recordId}, &quot;0WO&quot;)</expression>
+    </formulas>
+    <formulas>
+        <name>noFreelanceInterpreterAvailable</name>
+        <dataType>Boolean</dataType>
+        <expression>AND(NOT({!isFreelanceInterpreterAvailable}), OR(ISBLANK({!preferredResource1Id}), {!isPreferredResource1Unavailable}), OR(ISBLANK({!preferredResource2Id}), {!isPreferredResource2Unavailable}), OR(NOT(ISBLANK({!preferredResource1Id})), NOT(ISBLANK({!preferredResource2Id}))))</expression>
     </formulas>
     <formulas>
         <name>parentRecordType</name>
@@ -329,79 +351,8 @@
         <dataType>String</dataType>
         <expression>IF(ISBLANK({!Get_Request_record.Id}), {!Get_WorkOrder_record.HOT_Request__r.PreferredResource2__c}, {!Get_Request_record.PreferredResource2__c})</expression>
     </formulas>
-    <formulas>
-        <name>Resource1WarningText</name>
-        <dataType>String</dataType>
-        <expression>&apos;Foretrukket ressurs 1 (&apos; &amp; {!Get_PreferredResource1_Resource.Name} &amp; &apos;) er opptatt i tidsrommet oppdraget er satt til: &apos; &amp; {!WorkOrderTimeRangeText} &amp; &apos;.&apos;</expression>
-    </formulas>
-    <formulas>
-        <name>Resource2WarningText</name>
-        <dataType>String</dataType>
-        <expression>&apos;Foretrukket ressurs 2 (&apos; &amp; {!Get_PreferredResource2_Resource.Name} &amp; &apos;) er opptatt i tidsrommet oppdraget er satt til: &apos; &amp; {!WorkOrderTimeRangeText} &amp; &apos;.&apos;</expression>
-    </formulas>
-    <formulas>
-        <name>WorkOrderTimeRangeText</name>
-        <dataType>String</dataType>
-        <expression>MID(TEXT({!Loop_WorkOrders.StartDate}), 9, 2) &amp; &apos;.&apos; &amp; MID(TEXT({!Loop_WorkOrders.StartDate}), 6, 2) &amp; &apos;.&apos; &amp; LEFT(TEXT({!Loop_WorkOrders.StartDate}), 4) &amp; &apos; &apos; &amp; MID(TEXT({!Loop_WorkOrders.StartDate}), 12, 5) &amp; &apos; - &apos; &amp; MID(TEXT({!Loop_WorkOrders.EndDate}), 12, 5)</expression>
-    </formulas>
     <interviewLabel>Auto Schedule Service Appointments {!$Flow.CurrentDateTime}</interviewLabel>
     <label>Auto Schedule Service Appointments</label>
-    <loops>
-        <name>Loop_Preferred_Resource_Warnings</name>
-        <label>Loop Preferred Resource Warnings</label>
-        <locationX>1106</locationX>
-        <locationY>2750</locationY>
-        <collectionReference>warningMessages</collectionReference>
-        <iterationOrder>Asc</iterationOrder>
-        <nextValueConnector>
-            <targetReference>Append_Warning_Text</targetReference>
-        </nextValueConnector>
-        <noMoreValuesConnector>
-            <targetReference>Has_Preferred_Resource_Warning</targetReference>
-        </noMoreValuesConnector>
-    </loops>
-    <loops>
-        <name>Loop_Resource1_Appointments</name>
-        <label>Loop Resource1 Appointments</label>
-        <locationX>1546</locationX>
-        <locationY>1682</locationY>
-        <collectionReference>Get_ServiceAppointments_For_Resource1</collectionReference>
-        <iterationOrder>Asc</iterationOrder>
-        <nextValueConnector>
-            <targetReference>Is_Overlapping_Resource1</targetReference>
-        </nextValueConnector>
-        <noMoreValuesConnector>
-            <targetReference>Loop_Resource2_Appointments</targetReference>
-        </noMoreValuesConnector>
-    </loops>
-    <loops>
-        <name>Loop_Resource2_Appointments</name>
-        <label>Loop Resource2 Appointments</label>
-        <locationX>1546</locationX>
-        <locationY>2174</locationY>
-        <collectionReference>Get_ServiceAppointments_For_Resource2</collectionReference>
-        <iterationOrder>Asc</iterationOrder>
-        <nextValueConnector>
-            <targetReference>Is_Overlapping_Resource2</targetReference>
-        </nextValueConnector>
-        <noMoreValuesConnector>
-            <targetReference>Loop_WorkOrders</targetReference>
-        </noMoreValuesConnector>
-    </loops>
-    <loops>
-        <name>Loop_WorkOrders</name>
-        <label>Loop WorkOrders</label>
-        <locationX>1106</locationX>
-        <locationY>1574</locationY>
-        <collectionReference>Get_WorkOrders_To_Schedule</collectionReference>
-        <iterationOrder>Asc</iterationOrder>
-        <nextValueConnector>
-            <targetReference>Loop_Resource1_Appointments</targetReference>
-        </nextValueConnector>
-        <noMoreValuesConnector>
-            <targetReference>Loop_Preferred_Resource_Warnings</targetReference>
-        </noMoreValuesConnector>
-    </loops>
     <processMetadataValues>
         <name>BuilderType</name>
         <value>
@@ -422,57 +373,15 @@
     </processMetadataValues>
     <processType>Flow</processType>
     <recordLookups>
-        <name>Get_PreferredResource1_Resource</name>
-        <label>Get PreferredResource1 Resource</label>
-        <locationX>974</locationX>
-        <locationY>866</locationY>
+        <name>Get_First_WorkOrder_To_Schedule</name>
+        <label>Get First WorkOrder To Schedule</label>
+        <locationX>270</locationX>
+        <locationY>1358</locationY>
         <assignNullValuesIfNoRecordsFound>false</assignNullValuesIfNoRecordsFound>
         <connector>
-            <targetReference>Get_ServiceAppointments_For_Resource1</targetReference>
+            <targetReference>Get_Last_WorkOrder_To_Schedule</targetReference>
         </connector>
-        <filterLogic>and</filterLogic>
-        <filters>
-            <field>Id</field>
-            <operator>EqualTo</operator>
-            <value>
-                <elementReference>preferredResource1Id</elementReference>
-            </value>
-        </filters>
-        <getFirstRecordOnly>true</getFirstRecordOnly>
-        <object>HOT_Resource__c</object>
-        <storeOutputAutomatically>true</storeOutputAutomatically>
-    </recordLookups>
-    <recordLookups>
-        <name>Get_PreferredResource2_Resource</name>
-        <label>Get PreferredResource2 Resource</label>
-        <locationX>974</locationX>
-        <locationY>1274</locationY>
-        <assignNullValuesIfNoRecordsFound>false</assignNullValuesIfNoRecordsFound>
-        <connector>
-            <targetReference>Get_ServiceAppointments_For_Resource2</targetReference>
-        </connector>
-        <filterLogic>and</filterLogic>
-        <filters>
-            <field>Id</field>
-            <operator>EqualTo</operator>
-            <value>
-                <elementReference>preferredResource2Id</elementReference>
-            </value>
-        </filters>
-        <getFirstRecordOnly>true</getFirstRecordOnly>
-        <object>HOT_Resource__c</object>
-        <storeOutputAutomatically>true</storeOutputAutomatically>
-    </recordLookups>
-    <recordLookups>
-        <name>Get_Request_record</name>
-        <label>Get Request record</label>
-        <locationX>710</locationX>
-        <locationY>242</locationY>
-        <assignNullValuesIfNoRecordsFound>false</assignNullValuesIfNoRecordsFound>
-        <connector>
-            <targetReference>Preferred_resource_exist</targetReference>
-        </connector>
-        <filterLogic>and</filterLogic>
+        <filterLogic>1 OR 2</filterLogic>
         <filters>
             <field>Id</field>
             <operator>EqualTo</operator>
@@ -480,20 +389,59 @@
                 <elementReference>recordId</elementReference>
             </value>
         </filters>
+        <filters>
+            <field>HOT_Request__c</field>
+            <operator>EqualTo</operator>
+            <value>
+                <elementReference>recordId</elementReference>
+            </value>
+        </filters>
         <getFirstRecordOnly>true</getFirstRecordOnly>
-        <object>HOT_Request__c</object>
+        <object>WorkOrder</object>
+        <sortField>StartDate</sortField>
+        <sortOrder>Asc</sortOrder>
         <storeOutputAutomatically>true</storeOutputAutomatically>
     </recordLookups>
     <recordLookups>
-        <name>Get_ServiceAppointments_For_Resource1</name>
-        <label>Get ServiceAppointments For Resource1</label>
-        <locationX>974</locationX>
-        <locationY>974</locationY>
+        <name>Get_Last_WorkOrder_To_Schedule</name>
+        <label>Get Last WorkOrder To Schedule</label>
+        <locationX>270</locationX>
+        <locationY>1466</locationY>
         <assignNullValuesIfNoRecordsFound>false</assignNullValuesIfNoRecordsFound>
         <connector>
-            <targetReference>Has_Preferred_Resource2</targetReference>
+            <targetReference>Get_Overlapping_ServiceAppointment_Resource1</targetReference>
         </connector>
-        <filterLogic>1 AND 2 AND 3 AND 4</filterLogic>
+        <filterLogic>1 OR 2</filterLogic>
+        <filters>
+            <field>Id</field>
+            <operator>EqualTo</operator>
+            <value>
+                <elementReference>recordId</elementReference>
+            </value>
+        </filters>
+        <filters>
+            <field>HOT_Request__c</field>
+            <operator>EqualTo</operator>
+            <value>
+                <elementReference>recordId</elementReference>
+            </value>
+        </filters>
+        <getFirstRecordOnly>true</getFirstRecordOnly>
+        <object>WorkOrder</object>
+        <sortField>EndDate</sortField>
+        <sortOrder>Desc</sortOrder>
+        <storeOutputAutomatically>true</storeOutputAutomatically>
+    </recordLookups>
+    <recordLookups>
+        <name>Get_Overlapping_ServiceAppointment_Resource1</name>
+        <label>Get Overlapping ServiceAppointment Resource1</label>
+        <locationX>270</locationX>
+        <locationY>1574</locationY>
+        <assignNullValuesIfNoRecordsFound>false</assignNullValuesIfNoRecordsFound>
+        <connector>
+            <targetReference>Get_Overlapping_ServiceAppointment_Resource2</targetReference>
+        </connector>
+        <filterLogic>1 AND 2 AND 3 AND 4 AND 5 AND 6</filterLogic>
         <filters>
             <field>HOT_ServiceResource__c</field>
             <operator>EqualTo</operator>
@@ -522,20 +470,34 @@
                 <stringValue>Completed</stringValue>
             </value>
         </filters>
+        <filters>
+            <field>EarliestStartTime</field>
+            <operator>LessThan</operator>
+            <value>
+                <elementReference>Get_Last_WorkOrder_To_Schedule.EndDate</elementReference>
+            </value>
+        </filters>
+        <filters>
+            <field>DueDate</field>
+            <operator>GreaterThan</operator>
+            <value>
+                <elementReference>Get_First_WorkOrder_To_Schedule.StartDate</elementReference>
+            </value>
+        </filters>
         <getFirstRecordOnly>false</getFirstRecordOnly>
         <object>ServiceAppointment</object>
         <storeOutputAutomatically>true</storeOutputAutomatically>
     </recordLookups>
     <recordLookups>
-        <name>Get_ServiceAppointments_For_Resource2</name>
-        <label>Get ServiceAppointments For Resource2</label>
-        <locationX>974</locationX>
-        <locationY>1382</locationY>
+        <name>Get_Overlapping_ServiceAppointment_Resource2</name>
+        <label>Get Overlapping ServiceAppointment Resource2</label>
+        <locationX>270</locationX>
+        <locationY>1682</locationY>
         <assignNullValuesIfNoRecordsFound>false</assignNullValuesIfNoRecordsFound>
         <connector>
-            <targetReference>Loop_WorkOrders</targetReference>
+            <targetReference>Check_Preferred_Resource_Availability</targetReference>
         </connector>
-        <filterLogic>1 AND 2 AND 3 AND 4</filterLogic>
+        <filterLogic>1 AND 2 AND 3 AND 4 AND 5 AND 6</filterLogic>
         <filters>
             <field>HOT_ServiceResource__c</field>
             <operator>EqualTo</operator>
@@ -564,18 +526,95 @@
                 <stringValue>Completed</stringValue>
             </value>
         </filters>
+        <filters>
+            <field>EarliestStartTime</field>
+            <operator>LessThan</operator>
+            <value>
+                <elementReference>Get_Last_WorkOrder_To_Schedule.EndDate</elementReference>
+            </value>
+        </filters>
+        <filters>
+            <field>DueDate</field>
+            <operator>GreaterThan</operator>
+            <value>
+                <elementReference>Get_First_WorkOrder_To_Schedule.StartDate</elementReference>
+            </value>
+        </filters>
         <getFirstRecordOnly>false</getFirstRecordOnly>
         <object>ServiceAppointment</object>
         <storeOutputAutomatically>true</storeOutputAutomatically>
     </recordLookups>
     <recordLookups>
-        <name>Get_WorkOrder_record</name>
-        <label>Get WorkOrder record</label>
-        <locationX>446</locationX>
+        <name>Get_PreferredResource1_Resource</name>
+        <label>Get PreferredResource1 Resource</label>
+        <locationX>138</locationX>
+        <locationY>866</locationY>
+        <assignNullValuesIfNoRecordsFound>false</assignNullValuesIfNoRecordsFound>
+        <connector>
+            <targetReference>Has_Preferred_Resource2</targetReference>
+        </connector>
+        <filterLogic>and</filterLogic>
+        <filters>
+            <field>Id</field>
+            <operator>EqualTo</operator>
+            <value>
+                <elementReference>preferredResource1Id</elementReference>
+            </value>
+        </filters>
+        <getFirstRecordOnly>true</getFirstRecordOnly>
+        <object>HOT_Resource__c</object>
+        <storeOutputAutomatically>true</storeOutputAutomatically>
+    </recordLookups>
+    <recordLookups>
+        <name>Get_PreferredResource2_Resource</name>
+        <label>Get PreferredResource2 Resource</label>
+        <locationX>138</locationX>
+        <locationY>1166</locationY>
+        <assignNullValuesIfNoRecordsFound>false</assignNullValuesIfNoRecordsFound>
+        <connector>
+            <targetReference>Get_First_WorkOrder_To_Schedule</targetReference>
+        </connector>
+        <filterLogic>and</filterLogic>
+        <filters>
+            <field>Id</field>
+            <operator>EqualTo</operator>
+            <value>
+                <elementReference>preferredResource2Id</elementReference>
+            </value>
+        </filters>
+        <getFirstRecordOnly>true</getFirstRecordOnly>
+        <object>HOT_Resource__c</object>
+        <storeOutputAutomatically>true</storeOutputAutomatically>
+    </recordLookups>
+    <recordLookups>
+        <name>Get_Request_record</name>
+        <label>Get Request record</label>
+        <locationX>644</locationX>
         <locationY>242</locationY>
         <assignNullValuesIfNoRecordsFound>false</assignNullValuesIfNoRecordsFound>
         <connector>
             <targetReference>Preferred_resource_exist</targetReference>
+        </connector>
+        <filterLogic>and</filterLogic>
+        <filters>
+            <field>Id</field>
+            <operator>EqualTo</operator>
+            <value>
+                <elementReference>recordId</elementReference>
+            </value>
+        </filters>
+        <getFirstRecordOnly>true</getFirstRecordOnly>
+        <object>HOT_Request__c</object>
+        <storeOutputAutomatically>true</storeOutputAutomatically>
+    </recordLookups>
+    <recordLookups>
+        <name>Get_WorkOrder_record</name>
+        <label>Get WorkOrder record</label>
+        <locationX>380</locationX>
+        <locationY>242</locationY>
+        <assignNullValuesIfNoRecordsFound>false</assignNullValuesIfNoRecordsFound>
+        <connector>
+            <targetReference>Preferred_resource_exist_WorkOrder</targetReference>
         </connector>
         <filterLogic>and</filterLogic>
         <filters>
@@ -592,7 +631,7 @@
     <recordLookups>
         <name>Get_WorkOrders_To_Schedule</name>
         <label>Get WorkOrders To Schedule</label>
-        <locationX>1106</locationX>
+        <locationX>270</locationX>
         <locationY>650</locationY>
         <assignNullValuesIfNoRecordsFound>false</assignNullValuesIfNoRecordsFound>
         <connector>
@@ -620,14 +659,14 @@
     <screens>
         <name>Automatisk_planlegging_avsluttet</name>
         <label>Auto Schedule</label>
-        <locationX>50</locationX>
+        <locationX>754</locationX>
         <locationY>542</locationY>
         <allowBack>false</allowBack>
         <allowFinish>true</allowFinish>
         <allowPause>false</allowPause>
         <fields>
             <name>auto_scheduled_ended</name>
-            <fieldText>&lt;p&gt;&lt;span style=&quot;font-size: 16px;&quot;&gt;Automatisk planlegging har blitt avsluttet på grunn av foretrukket ressurs har ikke blitt tildelt.&lt;/span&gt;&lt;/p&gt;</fieldText>
+            <fieldText>&lt;p&gt;&lt;span style=&quot;font-size: 16px;&quot;&gt;Automatisk planlegging har blitt avsluttet på grunn av at foretrukket ressurs ikke er blitt valgt eller status på forespørsel ikke er satt til godkjent.&lt;/span&gt;&lt;/p&gt;</fieldText>
             <fieldType>DisplayText</fieldType>
             <styleProperties>
                 <verticalAlignment>
@@ -644,8 +683,8 @@
     <screens>
         <name>AutomatiskPlanleggingSuccess</name>
         <label>Automatisk planlegging success</label>
-        <locationX>1238</locationX>
-        <locationY>3266</locationY>
+        <locationX>270</locationX>
+        <locationY>3914</locationY>
         <allowBack>false</allowBack>
         <allowFinish>true</allowFinish>
         <allowPause>false</allowPause>
@@ -668,7 +707,7 @@
     <screens>
         <name>confirmationScreen</name>
         <label>confirmationScreen</label>
-        <locationX>1106</locationX>
+        <locationX>270</locationX>
         <locationY>542</locationY>
         <allowBack>false</allowBack>
         <allowFinish>true</allowFinish>
@@ -711,16 +750,43 @@
         <showHeader>false</showHeader>
     </screens>
     <screens>
-        <name>Preferred_Resource_Warning_Screen</name>
-        <label>Foretrukket ressurs opptatt</label>
-        <locationX>974</locationX>
-        <locationY>3158</locationY>
+        <name>Foretrukne_ressurs_er_opptatt</name>
+        <label>Foretrukne ressurs er opptatt</label>
+        <locationX>490</locationX>
+        <locationY>3506</locationY>
+        <allowBack>false</allowBack>
+        <allowFinish>true</allowFinish>
+        <allowPause>true</allowPause>
+        <fields>
+            <name>UnavailableScreenText</name>
+            <fieldText>&lt;p&gt;&lt;strong style=&quot;font-size: 14px;&quot;&gt;OBS: Følgende foretrukne ressurser er opptatt i det aktuelle tidsrommet:&lt;/strong&gt;&lt;/p&gt;&lt;p&gt;&lt;br&gt;&lt;/p&gt;&lt;p&gt;{!warningDisplayText} &lt;/p&gt;</fieldText>
+            <fieldType>DisplayText</fieldType>
+            <styleProperties>
+                <verticalAlignment>
+                    <stringValue>top</stringValue>
+                </verticalAlignment>
+                <width>
+                    <stringValue>12</stringValue>
+                </width>
+            </styleProperties>
+        </fields>
+        <showFooter>true</showFooter>
+        <showHeader>false</showHeader>
+    </screens>
+    <screens>
+        <name>Preferred_Resource_Warning_With_Availability_Screen</name>
+        <label>Foretrukket ressurs delvis opptatt</label>
+        <locationX>50</locationX>
+        <locationY>3506</locationY>
         <allowBack>false</allowBack>
         <allowFinish>true</allowFinish>
         <allowPause>false</allowPause>
+        <connector>
+            <targetReference>Auto_Schedule_Service</targetReference>
+        </connector>
         <fields>
-            <name>preferredResourceWarningText</name>
-            <fieldText>&lt;p&gt;&lt;span style=&quot;font-size: 14px;&quot;&gt;OBS: Følgende foretrukne ressurser er opptatt i det aktuelle tidsrommet:&lt;/span&gt;&lt;/p&gt;&lt;p&gt;{!warningDisplayText}&lt;/p&gt;</fieldText>
+            <name>preferredResourceWarningWithAvailabilityText</name>
+            <fieldText>&lt;p&gt;&lt;strong style=&quot;font-size: 14px;&quot;&gt;OBS: Følgende foretrukne ressurser er opptatt i det aktuelle tidsrommet:&lt;/strong&gt;&lt;/p&gt;&lt;p&gt;&lt;br&gt;&lt;/p&gt;&lt;p&gt;{!warningDisplayText}&lt;/p&gt;&lt;p&gt;&lt;br&gt;&lt;/p&gt;&lt;p&gt;&lt;strong&gt;Planleggingen fortsetter på de andre oppdragene om foretrukket ressurs er ledig.&lt;/strong&gt;&lt;/p&gt;</fieldText>
             <fieldType>DisplayText</fieldType>
             <styleProperties>
                 <verticalAlignment>
@@ -735,7 +801,7 @@
         <showHeader>false</showHeader>
     </screens>
     <start>
-        <locationX>452</locationX>
+        <locationX>386</locationX>
         <locationY>0</locationY>
         <connector>
             <targetReference>Is_it_a_WorkOrder</targetReference>
@@ -745,6 +811,27 @@
     <variables>
         <name>error</name>
         <dataType>String</dataType>
+        <isCollection>false</isCollection>
+        <isInput>false</isInput>
+        <isOutput>false</isOutput>
+    </variables>
+    <variables>
+        <name>isFreelanceInterpreterAvailable</name>
+        <dataType>Boolean</dataType>
+        <isCollection>false</isCollection>
+        <isInput>false</isInput>
+        <isOutput>false</isOutput>
+    </variables>
+    <variables>
+        <name>isPreferredResource1Unavailable</name>
+        <dataType>Boolean</dataType>
+        <isCollection>false</isCollection>
+        <isInput>false</isInput>
+        <isOutput>false</isOutput>
+    </variables>
+    <variables>
+        <name>isPreferredResource2Unavailable</name>
+        <dataType>Boolean</dataType>
         <isCollection>false</isCollection>
         <isInput>false</isInput>
         <isOutput>false</isOutput>
@@ -760,13 +847,6 @@
         <name>warningDisplayText</name>
         <dataType>String</dataType>
         <isCollection>false</isCollection>
-        <isInput>false</isInput>
-        <isOutput>false</isOutput>
-    </variables>
-    <variables>
-        <name>warningMessages</name>
-        <dataType>String</dataType>
-        <isCollection>true</isCollection>
         <isInput>false</isInput>
         <isOutput>false</isOutput>
     </variables>
