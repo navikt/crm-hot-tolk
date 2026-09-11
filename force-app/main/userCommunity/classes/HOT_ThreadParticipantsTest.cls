@@ -66,6 +66,15 @@ private class HOT_ThreadParticipantsTest {
             }
         }
 
+        Profile formidlerProfile = [SELECT Id FROM Profile WHERE Name = 'HOT Tolk Formidler' LIMIT 1];
+        Profile tjenesteleverandorProfile = [
+            SELECT Id
+            FROM Profile
+            WHERE Name = 'HOT Tolk Tjenestesteleverandør'
+            LIMIT 1
+        ];
+        usersToInsert.add(HOT_TestDataFactory.createUser('tpform', formidlerProfile));
+        usersToInsert.add(HOT_TestDataFactory.createUser('tptjen', tjenesteleverandorProfile));
         insert usersToInsert;
 
         System.runAs([SELECT Id FROM User WHERE Id = :UserInfo.getUserId() LIMIT 1][0]) {
@@ -353,6 +362,41 @@ private class HOT_ThreadParticipantsTest {
         System.assert(participantNames.contains('Frilans'), 'Mangler deltaker "Frilans"');
     }
     @IsTest
+    private static void getTjenesteleverandorFormidlerThreadParticipants() {
+        User formidler = [SELECT Id FROM User WHERE LastName = 'tpform' LIMIT 1];
+        User tjenesteleverandor = [SELECT Id FROM User WHERE LastName = 'tptjen' LIMIT 1];
+        ServiceAppointment serviceAppointment = [SELECT Id FROM ServiceAppointment LIMIT 1];
+        Thread__c thread = HOT_TestDataFactory.createThread('HOT_TJENESTELEVERANDOR-FORMIDLER');
+        thread.CRM_Related_Object__c = serviceAppointment.Id;
+        thread.HOT_Thread_read_by__c = formidler.Id + ';' + tjenesteleverandor.Id + ';';
+
+        System.runAs(formidler) {
+            insert thread;
+
+            Test.startTest();
+            List<HOT_ThreadParticipants.Participant> directParticipants = HOT_ThreadParticipants.getParticipants(
+                thread.Id
+            );
+            Map<String, Map<Id, List<HOT_ThreadParticipants.Participant>>> participantsByServiceAppointment = HOT_ThreadParticipants.getParticipantsByRelatedObjectAndThreadTypes(
+                serviceAppointment.Id,
+                new List<String>{ 'HOT_TJENESTELEVERANDOR-FORMIDLER' }
+            );
+            Map<String, Map<Id, List<HOT_ThreadParticipants.Participant>>> participantsByThread = HOT_ThreadParticipants.getParticipantsByRelatedObjectAndThreadTypes(
+                thread.Id,
+                new List<String>{ 'HOT_TJENESTELEVERANDOR-FORMIDLER' }
+            );
+            Test.stopTest();
+
+            assertTjenesteleverandorParticipants(directParticipants);
+            assertTjenesteleverandorParticipants(
+                participantsByServiceAppointment.get('HOT_TJENESTELEVERANDOR-FORMIDLER').get(thread.Id)
+            );
+            assertTjenesteleverandorParticipants(
+                participantsByThread.get('HOT_TJENESTELEVERANDOR-FORMIDLER').get(thread.Id)
+            );
+        }
+    }
+    @IsTest
     private static void getWageClaimThreadParticipants() {
         ServiceAppointment serviceAppointment = [
             SELECT Id, ServiceTerritoryId, WorkTypeId, SchedStartTime, SchedEndTime
@@ -455,5 +499,19 @@ private class HOT_ThreadParticipantsTest {
             threadMap.get('HOT_TOLK-FORMIDLER').get(thread.Id)[1].name,
             'Feil deltaker hentet'
         );
+    }
+
+    private static void assertTjenesteleverandorParticipants(List<HOT_ThreadParticipants.Participant> participants) {
+        Set<String> participantNames = new Set<String>();
+        for (HOT_ThreadParticipants.Participant participant : participants) {
+            participantNames.add(participant.name);
+        }
+
+        System.Assert.areEqual(2, participants.size(), 'Tråden skal bare ha to deltakere');
+        System.Assert.isTrue(participantNames.contains('Tjenesteleverandør'), 'Mangler Tjenesteleverandør');
+        System.Assert.isTrue(participantNames.contains('Formidler'), 'Mangler Formidler');
+        for (HOT_ThreadParticipants.Participant participant : participants) {
+            System.Assert.isTrue(participant.hasRead, participant.name + ' skal være markert som lest');
+        }
     }
 }

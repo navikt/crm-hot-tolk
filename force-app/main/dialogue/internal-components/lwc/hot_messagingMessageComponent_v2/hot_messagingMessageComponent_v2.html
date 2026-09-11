@@ -555,6 +555,69 @@
                         </template>
                     </div>
                 </template>
+                <!-- Office Thread END-->
+                <!-- Tjenesteleverandor Formidler Thread START-->
+                <template lwc:if={isTab8Loaded}>
+                    <div class={tab8ContentClass}>
+                        <template lwc:if={runningThreadCreate}>
+                            Samtale opprettes...
+                            <div class="spinnerType">
+                                <lightning-spinner
+                                    alternative-text="Samtale opprettes"
+                                    size="large"
+                                ></lightning-spinner>
+                            </div>
+                        </template>
+                        <template lwc:else>
+                            <template lwc:if={openTjenesteleverandorFormidlerThreads}>
+                                <template for:each={openTjenesteleverandorFormidlerThreads} for:item="thread">
+                                    <c-hot_messaging-thread-viewer
+                                        text-template={tjenesteleverandorFormidlerMessageTemplate}
+                                        thread={thread}
+                                        key={thread.Id}
+                                        set-input-in-focus-on-render
+                                        data-tjenesteleverandor-formidler-thread
+                                        ontoolbaraction={tjenesteleverandorFormidlerToolbarAction}
+                                    >
+                                        <div slot="toolbar">
+                                            <lightning-button-menu
+                                                alternative-text="Show menu"
+                                                variant="border-filled"
+                                                menu-alignment="right"
+                                                icon-size="medium"
+                                                icon-name="utility:settings"
+                                                onselect={tjenesteleverandorFormidlerRedaction}
+                                            >
+                                                <lightning-menu-item
+                                                    label="Sett til sladding"
+                                                    value="tjenesteleverandorFormidlerRedaction"
+                                                ></lightning-menu-item>
+                                            </lightning-button-menu>
+                                        </div>
+                                    </c-hot_messaging-thread-viewer>
+                                </template>
+                                <div class="fakeModalContainer" lwc:if={tjenesteleverandorFormidlerSetToRedactionFlow}>
+                                    <div class="flowContainer">
+                                        <lightning-flow
+                                            flow-api-name="HOT_Thread_Set_To_Redaction"
+                                            flow-input-variables={tjenesteleverandorFormidlerRedactionFlowVariables}
+                                            onstatuschange={handleTjenesteleverandorFormidlerRedactionFlowStatusChange}
+                                        ></lightning-flow>
+                                    </div>
+                                </div>
+                            </template>
+                            <template lwc:else>
+                                <c-hot_messaging-thread-viewer-mock
+                                    set-input-in-focus-on-render
+                                    initial-message={tjenesteleverandorFormidlerThreadInitialMessage}
+                                    data-tjenesteleverandor-formidler-thread-mock
+                                    oncreatethreadwithmessage={handleCreateTjenesteleverandorFormidlerThreadWithMessage}
+                                >
+                                </c-hot_messaging-thread-viewer-mock>
+                            </template>
+                        </template>
+                    </div>
+                </template>
             </div>
         </template>
     </div>

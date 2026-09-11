@@ -761,6 +761,36 @@ private class HOT_MessageHelperTest {
         }
     }
     @IsTest
+    static void createThreadDispatcherServiceProviderTest() {
+        ServiceAppointment serviceAppointment = [
+            SELECT Id, Subject, HOT_Request__c
+            FROM ServiceAppointment
+            WHERE Subject = 'TEST'
+            LIMIT 1
+        ];
+        HOT_Request__c request = [SELECT Id FROM HOT_Request__c WHERE Id = :serviceAppointment.HOT_Request__c];
+        request.Dispatcher__c = UserInfo.getUserId();
+        update request;
+
+        Test.startTest();
+        Thread__c thread = HOT_MessageHelper.createThreadDispatcher(
+            serviceAppointment.Id,
+            null,
+            'HOT_TJENESTELEVERANDOR-FORMIDLER'
+        );
+        Test.stopTest();
+
+        Thread__c createdThread = [
+            SELECT HOT_Title__c, HOT_Dispatcher__c, HOT_ServiceAppointment__c, CRM_Type__c
+            FROM Thread__c
+            WHERE Id = :thread.Id
+        ];
+        System.assertEquals(serviceAppointment.Subject, createdThread.HOT_Title__c);
+        System.assertEquals(UserInfo.getUserId(), createdThread.HOT_Dispatcher__c);
+        System.assertEquals(serviceAppointment.Id, createdThread.HOT_ServiceAppointment__c);
+        System.assertEquals('HOT_TJENESTELEVERANDOR-FORMIDLER', createdThread.CRM_Type__c);
+    }
+    @IsTest
     static void createThreadInterpreterDispatcher() {
         ServiceAppointment sa = [
             SELECT Id, HOT_Account__c, HOT_WorkOrderLineItem__r.WorkOrderId

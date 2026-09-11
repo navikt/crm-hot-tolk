@@ -226,6 +226,103 @@ private class HOT_ServiceAppointmentsSharingSrvTest {
         );
     }
 
+    @IsTest
+    private static void testGrantAccessToTjenesteleverandorGroup() {
+        Group tjenesteleverandorGroup = getTjenesteleverandorGroup();
+        ServiceAppointment serviceAppointment = createServiceAppointment();
+
+        Test.startTest();
+        HOT_ServiceAppointmentsSharingService.grantAccessToTjenesteleverandorGroup(
+            new Set<Id>{ serviceAppointment.Id }
+        );
+        HOT_ServiceAppointmentsSharingService.grantAccessToTjenesteleverandorGroup(
+            new Set<Id>{ serviceAppointment.Id }
+        );
+        Test.stopTest();
+
+        System.assertEquals(
+            1,
+            [
+                SELECT COUNT()
+                FROM ServiceAppointmentShare
+                WHERE
+                    UserOrGroupId = :tjenesteleverandorGroup.Id
+                    AND ParentId = :serviceAppointment.Id
+                    AND AccessLevel = 'Read'
+                    AND RowCause = 'Manual'
+            ],
+            'Service Appointment should be shared once with tjenesteleverandor group'
+        );
+    }
+
+    @IsTest
+    private static void testRemoveAccessFromTjenesteleverandorGroupOnlyRemovesGroupShare() {
+        Group tjenesteleverandorGroup = getTjenesteleverandorGroup();
+        ServiceAppointment serviceAppointment = createServiceAppointment();
+        ServiceResource serviceResource = [SELECT RelatedRecordId FROM ServiceResource LIMIT 1];
+
+        insert new ServiceAppointmentShare(
+            ParentId = serviceAppointment.Id,
+            AccessLevel = 'Edit',
+            RowCause = 'Manual',
+            UserOrGroupId = serviceResource.RelatedRecordId
+        );
+        HOT_ServiceAppointmentsSharingService.grantAccessToTjenesteleverandorGroup(
+            new Set<Id>{ serviceAppointment.Id }
+        );
+
+        Test.startTest();
+        HOT_ServiceAppointmentsSharingService.removeAccessFromTjenesteleverandorGroup(
+            new Set<Id>{ serviceAppointment.Id }
+        );
+        Test.stopTest();
+
+        System.assertEquals(
+            0,
+            [
+                SELECT COUNT()
+                FROM ServiceAppointmentShare
+                WHERE UserOrGroupId = :tjenesteleverandorGroup.Id AND ParentId = :serviceAppointment.Id
+            ],
+            'Tjenesteleverandor group share should be removed'
+        );
+        System.assertEquals(
+            1,
+            [
+                SELECT COUNT()
+                FROM ServiceAppointmentShare
+                WHERE UserOrGroupId = :serviceResource.RelatedRecordId AND ParentId = :serviceAppointment.Id
+            ],
+            'Assigned resource manual share should not be removed'
+        );
+    }
+
+    private static Group getTjenesteleverandorGroup() {
+        List<Group> groups = [
+            SELECT Id
+            FROM Group
+            WHERE DeveloperName = 'HOT_Tolk_Tjenesteleverandor' AND Type = 'Regular'
+            LIMIT 1
+        ];
+        System.assertEquals(1, groups.size(), 'Tjenesteleverandor group metadata must be deployed');
+        return groups[0];
+    }
+
+    private static ServiceAppointment createServiceAppointment() {
+        WorkType workType = HOT_TestDataFactory.createWorkType();
+        insert workType;
+        HOT_Request__c request = HOT_TestDataFactory.createRequest('TEST', workType);
+        insert request;
+        WorkOrder workOrder = HOT_TestDataFactory.createWorkOrder(request, workType);
+        insert workOrder;
+        WorkOrderLineItem workOrderLineItem = HOT_TestDataFactory.createWorkOrderLineItem(workOrder, workType);
+        insert workOrderLineItem;
+        ServiceAppointment serviceAppointment = HOT_TestDataFactory.createServiceAppointment(workOrderLineItem);
+        serviceAppointment.HOT_Request__c = request.Id;
+        insert serviceAppointment;
+        return serviceAppointment;
+    }
+
     // @IsTest
     // private static void testRemoveAccessForHiddenServiceAppointments_NoOtherVisibleSAs() {
     //     WorkType wt = HOT_TestDataFactory.createWorkType();

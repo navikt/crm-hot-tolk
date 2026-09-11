@@ -1,6 +1,20 @@
 public without sharing class HOT_MessageHandler extends MyTriggers {
     public override void onBeforeInsert() {
         HOT_ThreadReplyPolicy.addErrorsForClosedThreads((List<Message__c>) records);
+
+        validateTjenesteleverandorMessages((List<Message__c>) records);
+    }
+
+    private void validateTjenesteleverandorMessages(List<Message__c> messages) {
+        for (Message__c message : messages) {
+            if (
+                message.HOT_User_Role__c != null &&
+                message.HOT_User_Role__c.contains('Tjenesteleverandør') &&
+                message.CRM_From_User__c != null
+            ) {
+                message.HOT_IsTjenesteleverandorMessage__c = true;
+            }
+        }
     }
 
     public override void onAfterInsert() {

@@ -6,7 +6,7 @@
     "plugins": ["prettier-plugin-apex"],
     "overrides": [
         {
-            "files": ["**/lwc/**/*.html", "force-app/test/jest-mocks/c/**/*.html"],
+            "files": ["**/lwc/**/*.html", "force-app/test/jest-mocks/c/**/*.html", "**/jest-mocks/c/**/*.html"],
             "options": {
                 "parser": "lwc"
             }

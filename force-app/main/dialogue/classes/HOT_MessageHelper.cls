@@ -25,6 +25,12 @@ public without sharing class HOT_MessageHelper {
     }
 
     @AuraEnabled(cacheable=true)
+    public static Boolean isCurrentUserTjenesteleverandor() {
+        Boolean isTjenesteleverandor = getCurrentUser().Profile.Name == 'HOT Tolk Tjenestesteleverandør';
+        return isTjenesteleverandor;
+    }
+
+    @AuraEnabled(cacheable=true)
     public static String getRecordObjectType(Id recordId) {
         String objectType = recordId.getSObjectType().getDescribe().getName();
         return objectType;
@@ -201,11 +207,13 @@ public without sharing class HOT_MessageHelper {
             FROM AssignedResource
             WHERE ServiceResource.RelatedRecordId = :user.Id AND ServiceAppointmentId = :recordId
         ];
-        if (irList.size() != 0 || arList.size() != 0) {
-            return new ServiceAppointment(Id = recordId);
-        }
-        if (HOT_ThreadDetailController.isAdminOrFormidler(user)) {
-            return new ServiceAppointment(Id = recordId);
+        if (irList.size() != 0 || arList.size() != 0 || HOT_ThreadDetailController.isAdminOrFormidler(user)) {
+            return [
+                SELECT Id, HOT_IsReleasedToFreelance__c
+                FROM ServiceAppointment
+                WHERE Id = :recordId
+                LIMIT 1
+            ];
         }
         throw new AuraHandledException('No access');
     }
@@ -417,67 +425,87 @@ public without sharing class HOT_MessageHelper {
             HOT_DatabaseOperations.insertRecords(thread);
         }
         if (objectType == 'ServiceAppointment') {
-            List<HOT_InterestedResource__c> irList = [
-                SELECT
-                    Id,
-                    ServiceAppointment__r.Subject,
-                    ServiceResource__r.AccountId,
-                    ServiceAppointment__r.HOT_Request__r.Dispatcher__c,
-                    ServiceAppointment__r.HOT_Request__r.Account__c
-                FROM HOT_InterestedResource__c
-                WHERE
-                    (ServiceAppointment__c = :recordId
-                    AND ServiceAppointment__r.Status = 'Dispatched'
-                    AND Status__c = 'Assigned')
-                    OR (ServiceAppointment__c = :recordId
-                    AND ServiceAppointment__r.Status = 'Completed'
-                    AND Status__c = 'Assigned')
-            ];
-            if (irList.isEmpty()) {
-                //=Ansatt-tolk
-                List<HOT_InterestedResource__c> existingIrNoEmployeeList = [
+            if (type == 'HOT_TOLK-FORMIDLER') {
+                List<HOT_InterestedResource__c> irList = [
                     SELECT
                         Id,
                         ServiceAppointment__r.Subject,
-                        ServiceResource__c,
-                        ServiceAppointment__r.HOT_Request__r.Dispatcher__c
+                        ServiceResource__r.AccountId,
+                        ServiceAppointment__r.HOT_Request__r.Dispatcher__c,
+                        ServiceAppointment__r.HOT_Request__r.Account__c
                     FROM HOT_InterestedResource__c
-                    WHERE ServiceAppointment__c = :recordId
+                    WHERE
+                        (ServiceAppointment__c = :recordId
+                        AND ServiceAppointment__r.Status = 'Dispatched'
+                        AND Status__c = 'Assigned')
+                        OR (ServiceAppointment__c = :recordId
+                        AND ServiceAppointment__r.Status = 'Completed'
+                        AND Status__c = 'Assigned')
                 ];
+                if (irList.isEmpty()) {
+                    //=Ansatt-tolk
+                    List<HOT_InterestedResource__c> existingIrNoEmployeeList = [
+                        SELECT
+                            Id,
+                            ServiceAppointment__r.Subject,
+                            ServiceResource__c,
+                            ServiceAppointment__r.HOT_Request__r.Dispatcher__c
+                        FROM HOT_InterestedResource__c
+                        WHERE ServiceAppointment__c = :recordId
+                    ];
 
-                AssignedResource ar = [
-                    SELECT Id, ServiceAppointmentId, ServiceResourceId
-                    FROM AssignedResource
-                    WHERE ServiceAppointmentId = :recordId
-                ];
-                for (HOT_InterestedResource__c ir : existingIrNoEmployeeList) {
-                    if (ir.ServiceResource__c == ar.ServiceResourceId) {
-                        throw new AuraHandledException('no employee');
+                    AssignedResource ar = [
+                        SELECT Id, ServiceAppointmentId, ServiceResourceId
+                        FROM AssignedResource
+                        WHERE ServiceAppointmentId = :recordId
+                    ];
+                    for (HOT_InterestedResource__c ir : existingIrNoEmployeeList) {
+                        if (ir.ServiceResource__c == ar.ServiceResourceId) {
+                            throw new AuraHandledException('no employee');
+                        }
                     }
+                    ServiceAppointment sa = [
+                        SELECT
+                            Id,
+                            Subject,
+                            HOT_Request__r.Dispatcher__c,
+                            HOT_ServiceResource__c,
+                            HOT_Request__r.Account__c
+                        FROM ServiceAppointment
+                        WHERE Id = :ar.ServiceAppointmentId
+                    ];
+                    thread.CRM_Related_Object__c = recordId;
+                    thread.CRM_Thread_Type__c = 'HOT_TOLK-FORMIDLER';
+                    thread.HOT_Dispatcher__c = sa.HOT_Request__r.Dispatcher__c;
+                    thread.HOT_Account__c = sa.HOT_Request__r.Account__c;
+                    thread.HOT_IsEmployeeThread__c = true;
+                    thread.HOT_ServiceResource__c = sa.HOT_ServiceResource__c;
+                    thread.HOT_ServiceAppointment__c = recordId;
+                    thread.HOT_Title__c = sa.Subject;
+
+                    HOT_DatabaseOperations.insertRecords(thread);
+                } else {
+                    thread.CRM_Related_Object__c = recordId;
+                    thread.CRM_Thread_Type__c = 'HOT_TOLK-FORMIDLER';
+                    thread.CRM_Account__c = irList[0].ServiceResource__r.AccountId;
+                    thread.HOT_Account__c = irList[0].ServiceAppointment__r.HOT_Request__r.Account__c;
+                    thread.HOT_ServiceAppointment__c = recordId;
+                    thread.HOT_Title__c = irList[0].ServiceAppointment__r.Subject;
+                    thread.HOT_Dispatcher__c = irList[0].ServiceAppointment__r.HOT_Request__r.Dispatcher__c;
+                    HOT_DatabaseOperations.insertRecords(thread);
                 }
-                ServiceAppointment sa = [
-                    SELECT Id, Subject, HOT_Request__r.Dispatcher__c, HOT_ServiceResource__c, HOT_Request__r.Account__c
+            } else if (type == 'HOT_TJENESTELEVERANDOR-FORMIDLER') {
+                ServiceAppointment serviceAppointment = [
+                    SELECT Subject, HOT_Request__r.Dispatcher__c
                     FROM ServiceAppointment
-                    WHERE Id = :ar.ServiceAppointmentId
+                    WHERE Id = :recordId
+                    LIMIT 1
                 ];
                 thread.CRM_Related_Object__c = recordId;
-                thread.CRM_Thread_Type__c = 'HOT_TOLK-FORMIDLER';
-                thread.HOT_Dispatcher__c = sa.HOT_Request__r.Dispatcher__c;
-                thread.HOT_Account__c = sa.HOT_Request__r.Account__c;
-                thread.HOT_IsEmployeeThread__c = true;
-                thread.HOT_ServiceResource__c = sa.HOT_ServiceResource__c;
+                thread.CRM_Thread_Type__c = 'HOT_TJENESTELEVERANDOR-FORMIDLER';
                 thread.HOT_ServiceAppointment__c = recordId;
-                thread.HOT_Title__c = sa.Subject;
-
-                HOT_DatabaseOperations.insertRecords(thread);
-            } else {
-                thread.CRM_Related_Object__c = recordId;
-                thread.CRM_Thread_Type__c = 'HOT_TOLK-FORMIDLER';
-                thread.CRM_Account__c = irList[0].ServiceResource__r.AccountId;
-                thread.HOT_Account__c = irList[0].ServiceAppointment__r.HOT_Request__r.Account__c;
-                thread.HOT_ServiceAppointment__c = recordId;
-                thread.HOT_Title__c = irList[0].ServiceAppointment__r.Subject;
-                thread.HOT_Dispatcher__c = irList[0].ServiceAppointment__r.HOT_Request__r.Dispatcher__c;
+                thread.HOT_Title__c = serviceAppointment.Subject;
+                thread.HOT_Dispatcher__c = serviceAppointment.HOT_Request__r.Dispatcher__c;
                 HOT_DatabaseOperations.insertRecords(thread);
             }
         }
@@ -679,7 +707,8 @@ public without sharing class HOT_MessageHelper {
                         CRM_From_First_Name__c,
                         CRM_External_Message__c,
                         CRM_From_Label__c,
-                        HOT_User_Role__c
+                        HOT_User_Role__c,
+                        HOT_IsTjenesteleverandorMessage__c
                     FROM Message__c
                     WHERE CRM_Thread__c = :threadId
                     ORDER BY CRM_Sent_date__c ASC
@@ -696,6 +725,7 @@ public without sharing class HOT_MessageHelper {
             return null;
         }
     }
+
     @AuraEnabled(cacheable=true)
     public static string getUserLisenceType(Id userId) {
         try {
@@ -755,9 +785,11 @@ public without sharing class HOT_MessageHelper {
         if (
             (String.isBlank(thread.HOT_Thread_read_by__c) || !thread.HOT_Thread_read_by__c.contains(user.Id)) &&
             (user.Profile.Name == 'HOT Tolk Formidler' ||
+            user.Profile.Name == 'HOT Tolk Tjenestesteleverandør' ||
             (!String.isBlank(thread.HOT_ParticipantIds__c) && thread.HOT_ParticipantIds__c.contains(user.Id)))
         ) {
             thread.HOT_Thread_read_by__c = (thread.HOT_Thread_read_by__c ?? '') + user.Id + ';';
+
             try {
                 update thread;
             } catch (Exception e) {
@@ -834,6 +866,8 @@ public without sharing class HOT_MessageHelper {
             userNameRole = user.FirstName + ', Tolkebruker';
         } else if (user.Profile.Name == 'NAV Bruker Plus') {
             userNameRole = user.FirstName + ', Tolkebruker';
+        } else if (user.Profile.Name == 'HOT Tolk Tjenestesteleverandør') {
+            userNameRole = user.FirstName + ', Tjenesteleverandør';
         } else {
             userNameRole = user.FirstName + ', Administrator';
         }
@@ -862,6 +896,8 @@ public without sharing class HOT_MessageHelper {
             return user.FirstName + ', Tolkebruker';
         } else if (user.Profile.Name == 'NAV Bruker Plus') {
             return user.FirstName + ', Tolkebruker';
+        } else if (user.Profile.Name == 'HOT Tolk Tjenestesteleverandør') {
+            return user.FirstName + ', Tjenesteleverandør';
         } else {
             return user.FirstName + ', Administrator';
         }
@@ -926,7 +962,9 @@ public without sharing class HOT_MessageHelper {
                     'HOT_TOLK-FORMIDLER',
                     'HOT_TOLK-RESSURSKONTOR',
                     'HOT_BRUKER-BESTILLER',
-                    'HOT_TOLK-TOLK'
+                    'HOT_TOLK-TOLK',
+                    'HOT_TJENESTELEVERANDOR-FORMIDLER',
+                    'HOT_TJENESTELEVERANDOR-TOLK'
                 }
         ];
         t.CRM_Latest_Message_Datetime__c = Datetime.now();
@@ -1102,33 +1140,34 @@ public without sharing class HOT_MessageHelper {
             }
         }
     }
-     public static String buildSMSNewMessage(String role, Boolean isInterpreterReciever) {
-        String text='INFO\n';
+    public static String buildSMSNewMessage(String role, Boolean isInterpreterReciever) {
+        String text = 'INFO\n';
         switch on role {
             when 'bruker' {
-                text+= 'Du har fått en melding fra tolkebruker. ';
+                text += 'Du har fått en melding fra tolkebruker. ';
             }
             when 'bestiller' {
-                text+= 'Du har fått en melding fra tolkebestiller. ';
+                text += 'Du har fått en melding fra tolkebestiller. ';
             }
             when 'tolk' {
-                text+= isInterpreterReciever ? 'Du har fått en melding fra medtolk. ' : 'Du har fått en melding fra tolk. ';
+                text += isInterpreterReciever
+                    ? 'Du har fått en melding fra medtolk. '
+                    : 'Du har fått en melding fra tolk. ';
             }
             when 'formidler' {
-                text+= 'Du har fått en melding fra formidler. ';
+                text += 'Du har fått en melding fra formidler. ';
             }
             when 'ressurskontor' {
-                text+= 'Du har fått en melding fra ressurskontor. ';
+                text += 'Du har fått en melding fra ressurskontor. ';
             }
             when else {
-                text+= 'Du har fått en ny melding. ';
+                text += 'Du har fått en ny melding. ';
             }
         }
-            text+='\nFor mer informasjon, se tolkebestilling.nav.no. Du kan ikke svare på denne meldingen. Mvh tolketjenesten i Nav.';
-            return text;
+        text += '\nFor mer informasjon, se tolkebestilling.nav.no. Du kan ikke svare på denne meldingen. Mvh tolketjenesten i Nav.';
+        return text;
     }
     public static String buildPushNewMessageBody() {
         return 'Trykk for å lese meldingen.';
     }
 }
-

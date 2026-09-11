@@ -11,6 +11,7 @@
 !**/profiles/NAV Administrator.profile-meta.xml
 !**/profiles/HOT Tolk Ansatt.profile-meta.xml
 !**/profiles/HOT Tolk Formidler.profile-meta.xml
+!**/profiles/HOT Tolk Tjenestesteleverandør.profile-meta.xml
 **/profilePasswordPolicies/*
 **/profileSessionSettings/*
 
@@ -20,6 +21,7 @@
 
 # LWC Jest
 **/__tests__/**
+force-app/test/**
 
 # community classes
 #          **/classes/ChangePasswordController.cls
