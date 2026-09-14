@@ -26,7 +26,7 @@ public without sharing class HOT_MessageHelper {
 
     @AuraEnabled(cacheable=true)
     public static Boolean isCurrentUserTjenesteleverandor() {
-        Boolean isTjenesteleverandor = getCurrentUser().Profile.Name == 'HOT Tolk Tjenestesteleverandør';
+        Boolean isTjenesteleverandor = getCurrentUser().Profile.Name == 'HOT Tolk Tjenesteleverandør';
         return isTjenesteleverandor;
     }
 
@@ -785,7 +785,7 @@ public without sharing class HOT_MessageHelper {
         if (
             (String.isBlank(thread.HOT_Thread_read_by__c) || !thread.HOT_Thread_read_by__c.contains(user.Id)) &&
             (user.Profile.Name == 'HOT Tolk Formidler' ||
-            user.Profile.Name == 'HOT Tolk Tjenestesteleverandør' ||
+            user.Profile.Name == 'HOT Tolk Tjenesteleverandør' ||
             (!String.isBlank(thread.HOT_ParticipantIds__c) && thread.HOT_ParticipantIds__c.contains(user.Id)))
         ) {
             thread.HOT_Thread_read_by__c = (thread.HOT_Thread_read_by__c ?? '') + user.Id + ';';
@@ -866,7 +866,7 @@ public without sharing class HOT_MessageHelper {
             userNameRole = user.FirstName + ', Tolkebruker';
         } else if (user.Profile.Name == 'NAV Bruker Plus') {
             userNameRole = user.FirstName + ', Tolkebruker';
-        } else if (user.Profile.Name == 'HOT Tolk Tjenestesteleverandør') {
+        } else if (user.Profile.Name == 'HOT Tolk Tjenesteleverandør') {
             userNameRole = user.FirstName + ', Tjenesteleverandør';
         } else {
             userNameRole = user.FirstName + ', Administrator';
@@ -896,7 +896,7 @@ public without sharing class HOT_MessageHelper {
             return user.FirstName + ', Tolkebruker';
         } else if (user.Profile.Name == 'NAV Bruker Plus') {
             return user.FirstName + ', Tolkebruker';
-        } else if (user.Profile.Name == 'HOT Tolk Tjenestesteleverandør') {
+        } else if (user.Profile.Name == 'HOT Tolk Tjenesteleverandør') {
             return user.FirstName + ', Tjenesteleverandør';
         } else {
             return user.FirstName + ', Administrator';

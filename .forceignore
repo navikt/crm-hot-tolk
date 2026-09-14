@@ -11,7 +11,7 @@
 !**/profiles/NAV Administrator.profile-meta.xml
 !**/profiles/HOT Tolk Ansatt.profile-meta.xml
 !**/profiles/HOT Tolk Formidler.profile-meta.xml
-!**/profiles/HOT Tolk Tjenestesteleverandør.profile-meta.xml
+!**/profiles/HOT Tolk Tjenesteleverandør.profile-meta.xml
 **/profilePasswordPolicies/*
 **/profileSessionSettings/*
 
