@@ -253,7 +253,7 @@ public without sharing class HOT_ThreadParticipants {
                         p.setHasRead();
                     } else if (
                         p.name == 'Tjenesteleverandør' &&
-                        readerProfileNames.contains('HOT Tolk Tjenestesteleverandør')
+                        readerProfileNames.contains('HOT Tolk Tjenesteleverandør')
                     ) {
                         p.setHasRead();
                     }

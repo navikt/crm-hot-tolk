@@ -9,7 +9,7 @@ User darth = [
 Profile supplierProfile = [
     SELECT Id
     FROM Profile
-    WHERE Name = 'HOT Tolk Tjenestesteleverandør'
+    WHERE Name = 'HOT Tolk Tjenesteleverandør'
     LIMIT 1
 ];
 
