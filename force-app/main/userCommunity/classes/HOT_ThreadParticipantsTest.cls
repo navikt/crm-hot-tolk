@@ -70,7 +70,7 @@ private class HOT_ThreadParticipantsTest {
         Profile tjenesteleverandorProfile = [
             SELECT Id
             FROM Profile
-            WHERE Name = 'HOT Tolk Tjenestesteleverandør'
+            WHERE Name = 'HOT Tolk Tjenesteleverandør'
             LIMIT 1
         ];
         usersToInsert.add(HOT_TestDataFactory.createUser('tpform', formidlerProfile));
