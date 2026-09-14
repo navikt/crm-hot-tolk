@@ -30,17 +30,269 @@
         <plural>true</plural>
         <value>Oppdrag</value>
     </caseValues>
+    <fieldSets>
+        <label><!-- Bundle Members --></label>
+        <name>FSL__Bundle_Members</name>
+    </fieldSets>
+    <fieldSets>
+        <label><!-- Bundle Members Siblings --></label>
+        <name>FSL__Bundle_Members_Siblings</name>
+    </fieldSets>
+    <fieldSets>
+        <label><!-- Bundler Lightbox --></label>
+        <name>FSL__Bundler_Lightbox</name>
+    </fieldSets>
+    <fieldSets>
+        <label><!-- Capacity Service Columns --></label>
+        <name>FSL__Capacity_Service_Columns</name>
+    </fieldSets>
+    <fieldSets>
+        <label><!-- Complex Work Lookup Fields --></label>
+        <name>FSL__Complex_Work_Lookups_Fields</name>
+    </fieldSets>
+    <fieldSets>
+        <label><!-- Crew Management --></label>
+        <name>FSL__CrewManagement</name>
+    </fieldSets>
+    <fieldSets>
+        <label><!-- Crew Management Tooltip --></label>
+        <name>FSL__CrewManagementTooltip</name>
+    </fieldSets>
+    <fieldSets>
+        <label><!-- Designated Work Fields --></label>
+        <name>FSL__Designated_Work_Fields</name>
+    </fieldSets>
+    <fieldSets>
+        <label><!-- Deprecated --></label>
+        <name>FSL__Emergency_Current_Service_Fields</name>
+    </fieldSets>
+    <fieldSets>
+        <label><!-- Gantt Filter --></label>
+        <name>FSL__Gantt_Filter</name>
+    </fieldSets>
+    <fieldSets>
+        <label><!-- InDay and Global Optim Keep Sched Filter --></label>
+        <name>FSL__InDay_Global_Optim_Keep_Sched_Filter</name>
+    </fieldSets>
+    <fieldSets>
+        <label><!-- InDay and Global Optim Scope Filter --></label>
+        <name>FSL__InDay_Global_Optim_Scope_Filter</name>
+    </fieldSets>
+    <fieldSets>
+        <label><!-- Service Appointment Optimization Criteria --></label>
+        <name>FSL__Optimization_Filter_By_Booleans</name>
+    </fieldSets>
+    <fieldSets>
+        <label><!-- RSO Keep Scheduled Filter --></label>
+        <name>FSL__RSO_Keep_Scheduled_Filter</name>
+    </fieldSets>
+    <fieldSets>
+        <label><!-- RSO Optimization Scope Filter --></label>
+        <name>FSL__RSO_Optimization_Scope_Filter</name>
+    </fieldSets>
+    <fieldSets>
+        <label><!-- Service Appointment Expanded --></label>
+        <name>FSL__Service_Appointment_Expanded</name>
+    </fieldSets>
+    <fieldSets>
+        <label><!-- Service Appointment List Columns --></label>
+        <name>FSL__Service_Appointment_List_Columns</name>
+    </fieldSets>
+    <fieldSets>
+        <label><!-- Service Appointment List Preview --></label>
+        <name>FSL__Service_Appointment_List_Preview</name>
+    </fieldSets>
+    <fieldSets>
+        <label><!-- Service Appt Resource Calendar Display --></label>
+        <name>FSL__Service_Appt_Resource_Calendar_Display</name>
+    </fieldSets>
+    <fieldSets>
+        <label><!-- Service Appt Resource Calendar Tooltip --></label>
+        <name>FSL__Service_Appt_Resource_Calendar_Tooltip</name>
+    </fieldSets>
+    <fieldSets>
+        <label><!-- Service Info Window Map --></label>
+        <name>FSL__Service_Info_Window_Map</name>
+    </fieldSets>
+    <fieldSets>
+        <label><!-- Service Lightbox --></label>
+        <name>FSL__Service_Lightbox</name>
+    </fieldSets>
+    <fieldSets>
+        <label><!-- Service Lightbox Address --></label>
+        <name>FSL__Service_Lightbox_Address</name>
+    </fieldSets>
+    <fieldSets>
+        <label><!-- Service Lightbox Time --></label>
+        <name>FSL__Service_Lightbox_Time</name>
+    </fieldSets>
+    <fieldSets>
+        <label><!-- Service Tooltip Gantt --></label>
+        <name>FSL__Service_Tooltip_Gantt</name>
+    </fieldSets>
     <gender>Neuter</gender>
+    <layouts>
+        <layout>FSL Service Appointment Layout</layout>
+        <sections>
+            <label>Adresse</label>
+            <section>Address</section>
+        </sections>
+        <sections>
+            <label>Utsendingskonsoll</label>
+            <section>Dispatcher Console</section>
+        </sections>
+        <sections>
+            <label>Tidsbegrensninger</label>
+            <section>Time Constraints</section>
+        </sections>
+    </layouts>
+    <layouts>
+        <layout>HOT Service Appointment Layout</layout>
+        <sections>
+            <label><!-- Adresse --></label>
+            <section>Adresse</section>
+        </sections>
+        <sections>
+            <label><!-- Bestilt tid --></label>
+            <section>Bestilt tid</section>
+        </sections>
+        <sections>
+            <label>Ressursplanlegger</label>
+            <section>Dispatcher Console</section>
+        </sections>
+        <sections>
+            <label><!-- Frilanstolk --></label>
+            <section>Frilanstolk</section>
+        </sections>
+    </layouts>
+    <layouts>
+        <layout>HOT Tolk Service Appointment Layout</layout>
+        <sections>
+            <label>Adresse</label>
+            <section>Address</section>
+        </sections>
+        <sections>
+            <label>Ressursplanlegger</label>
+            <section>Dispatcher Console</section>
+        </sections>
+        <sections>
+            <label><!-- Frilanstolk --></label>
+            <section>Frilanstolk</section>
+        </sections>
+        <sections>
+            <label>Bestilt tidsrom</label>
+            <section>Time Constraints</section>
+        </sections>
+    </layouts>
     <quickActions>
+        <label><!-- Delete Files --></label>
+        <name>Delete_Files</name>
+    </quickActions>
+    <quickActions>
+        <label><!-- Change Status --></label>
+        <name>FSL__Change_Status</name>
+    </quickActions>
+    <quickActions>
+        <aspect>Master</aspect>
         <label>Reserver eller tildel tolk</label>
         <name>HOT_AssignOrReserve</name>
     </quickActions>
     <quickActions>
+        <label><!-- Endre Status --></label>
+        <name>HOT_ChangeStatus</name>
+    </quickActions>
+    <quickActions>
+        <label><!-- Meld interesse --></label>
+        <name>HOT_RegisterInterest</name>
+    </quickActions>
+    <quickActions>
+        <aspect>Master</aspect>
         <label>Frigi til frilanstolker</label>
         <name>HOT_ReleaseToFreelance</name>
     </quickActions>
     <quickActions>
+        <aspect>Master</aspect>
         <label>Tilbaketrekk oppdrag</label>
         <name>HOT_RetractServiceAppointment</name>
     </quickActions>
+    <quickActions>
+        <label><!-- Registrer ønsket frilanstolk --></label>
+        <name>HOT_registrerWantedServiceResource</name>
+    </quickActions>
+    <quickActions>
+        <label><!-- Meld interesse --></label>
+        <name>Register_Interest</name>
+    </quickActions>
+    <quickActions>
+        <label><!-- SendEmail --></label>
+        <name>SendEmail</name>
+    </quickActions>
+    <validationRules>
+        <errorMessage><!-- Bruker må være den samme som på forespørsel. --></errorMessage>
+        <name>Account_cannot_be_edited</name>
+    </validationRules>
+    <validationRules>
+        <errorMessage><!-- New service appointment cannot be created in scheduled or  dispatched statuses. --></errorMessage>
+        <name>FSL__Dont_allow_scheduled_or_dispatched</name>
+    </validationRules>
+    <validationRules>
+        <errorMessage><!-- Select a valid dependency type. If the appointments must be assigned to the same resource, the dependency type can’t be Same Start. --></errorMessage>
+        <name>FSL__Related_Service_with_time_dependency</name>
+    </validationRules>
+    <validationRules>
+        <errorMessage><!-- Resource dependency is invalid. Time Dependency can&apos;t be Same Start when same resource is required. --></errorMessage>
+        <name>FSL__Same_Resource_Same_Start</name>
+    </validationRules>
+    <validationRules>
+        <errorMessage><!-- Both scheduled start and end are required --></errorMessage>
+        <name>FSL__Schedule_End_Required</name>
+    </validationRules>
+    <validationRules>
+        <errorMessage><!-- Both scheduled start and end are required --></errorMessage>
+        <name>FSL__Schedule_Start_Required</name>
+    </validationRules>
+    <validationRules>
+        <errorMessage><!-- Gantt color must be in hexadecimal format: (for example: #ffffff) --></errorMessage>
+        <name>FSL__Service_Color_HEX_Format</name>
+    </validationRules>
+    <validationRules>
+        <errorMessage><!-- Please select Related Service. --></errorMessage>
+        <name>FSL__Time_dependency_with_related_service</name>
+    </validationRules>
+    <validationRules>
+        <errorMessage><!-- DueDate field is required --></errorMessage>
+        <name>FSL__isDueDateExist</name>
+    </validationRules>
+    <validationRules>
+        <errorMessage><!-- Duration field is required --></errorMessage>
+        <name>FSL__isDurationExist</name>
+    </validationRules>
+    <validationRules>
+        <errorMessage><!-- EarliestStartTime field is required --></errorMessage>
+        <name>FSL__isEarliestStartTimeExist</name>
+    </validationRules>
+    <validationRules>
+        <errorMessage><!-- The Scheduled Start must be earlier than the Scheduled End. --></errorMessage>
+        <name>FSL__startTimeShouldPrecedeEndTime</name>
+    </validationRules>
+    <validationRules>
+        <errorMessage><!-- Status can ikke bli endret til dekket når starttid på oppdrag er satt fram i tid. --></errorMessage>
+        <name>PreventCompleteWhenStartTimeInFuture</name>
+    </validationRules>
+    <validationRules>
+        <errorMessage><!-- Status kan ikke endres fra Dekket til Åpent. --></errorMessage>
+        <name>PreventCompletedToNoneStatusChange</name>
+    </validationRules>
+    <validationRules>
+        <errorMessage><!-- Bruk knappen oppe til høyre når du skal frigi et oppdrag til frilanstolker. --></errorMessage>
+        <name>ReleaseToFreelanceWithButton</name>
+    </validationRules>
+    <validationRules>
+        <errorMessage><!-- Fjern ressursen fra oppdraget før du setter det til &apos;Udekket&apos; --></errorMessage>
+        <name>RemoveARBeforeUpdatingStatus</name>
+    </validationRules>
+    <validationRules>
+        <errorMessage><!-- Kan ikke sette status til Tildelt uten at en tjenesteressurs er satt opp. --></errorMessage>
+        <name>Restrict_Dispatched_Status</name>
+    </validationRules>
 </CustomObjectTranslation>

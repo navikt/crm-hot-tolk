@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomFieldTranslation xmlns="http://soap.sforce.com/2006/04/metadata">
+    <label><!-- User --></label>
+    <lookupFilter>
+        <errorMessage><!-- Formidler må være en tjenesteleverandør --></errorMessage>
+        <informationalMessage><!-- Søk på en tjenesteleverandør formidler --></informationalMessage>
+    </lookupFilter>
+    <name>User__c</name>
+    <relationshipLabel><!-- Service Appointments (User) --></relationshipLabel>
+</CustomFieldTranslation>
