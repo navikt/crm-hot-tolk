@@ -27,6 +27,7 @@ export default class hot_messagingThreadViewer extends LightningElement {
     @api showClose;
     @api englishTextTemplate;
     @api setInputInFocusOnRender;
+    @api isTjenesteLeverandorFormidlerView;
     langBtnLock = false;
     langBtnAriaToggle = false;
     newMessage = false;
@@ -69,8 +70,7 @@ export default class hot_messagingThreadViewer extends LightningElement {
                     this.canReply = result.replyPolicy?.canReply !== false;
                     this.handleSubscribe();
                     this.scrolltobottom();
-                    markAsReadByNav({ threadId: this.threadid });
-                    markThreadAsReadEmployee({ threadId: this.threadid });
+                    this.markThreadAsRead();
                 })
                 .catch((error) => {
                     if (error.body.message === 'No access') {
@@ -88,8 +88,7 @@ export default class hot_messagingThreadViewer extends LightningElement {
     renderedCallback() {
         this.refreshMessages();
         if (this.newMessage) {
-            markAsReadByNav({ threadId: this.threadid });
-            markThreadAsReadEmployee({ threadId: this.threadid });
+            this.markThreadAsRead();
             this.newMessage = false;
         }
         this.scrolltobottom();
@@ -137,6 +136,7 @@ export default class hot_messagingThreadViewer extends LightningElement {
         } else if (result.data) {
             this.messages = result.data;
             this.showspinner = false;
+            console.log('Newest message istjenesteleverandor: ', this.messages[0]?.HOT_IsTjenesteleverandorMessage__c);
         }
     }
     //If empty, stop submitting.
@@ -240,6 +240,22 @@ export default class hot_messagingThreadViewer extends LightningElement {
     }
     refreshMessages() {
         return refreshApex(this._mySendForSplitting);
+    }
+
+    async markThreadAsRead() {
+        try {
+            await Promise.all([
+                markAsReadByNav({ threadId: this.threadid }),
+                markThreadAsReadEmployee({ threadId: this.threadid })
+            ]);
+            this.dispatchEvent(
+                new CustomEvent('threadread', {
+                    detail: { threadId: this.threadid }
+                })
+            );
+        } catch (error) {
+            console.log('Unable to mark thread as read:', error);
+        }
     }
 
     showQuickText(event) {

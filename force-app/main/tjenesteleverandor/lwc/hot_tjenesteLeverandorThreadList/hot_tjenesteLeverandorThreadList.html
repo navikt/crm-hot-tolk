@@ -1,0 +1,229 @@
+<template>
+    <div class="main">
+        <section class="list-left" aria-label="Samtaleliste">
+            <div class="list-toolbar">
+                <c-hot_switch
+                    class="owner-switch"
+                    label="Bare mine samtaler"
+                    size="small"
+                    checked={showOnlyMine}
+                    onchange={handleMineSwitchChange}
+                ></c-hot_switch>
+                <div class="list-actions">
+                    <lightning-button-icon
+                        icon-name="utility:refresh"
+                        alternative-text="Oppdater samtalelisten"
+                        title="Oppdater samtalelisten"
+                        variant="filled"
+                        class="refresh-button"
+                        onclick={handleRefresh}
+                        disabled={isLoadingConversations}
+                    ></lightning-button-icon>
+                    <lightning-input
+                        class="search-input"
+                        type="search"
+                        label="Søk i samtaler"
+                        variant="label-hidden"
+                        placeholder="Søk..."
+                        value={searchTerm}
+                        onchange={handleSearchChange}
+                    ></lightning-input>
+                </div>
+            </div>
+            <div class="list-content">
+                <c-hot_chips
+                    class="filter-chips"
+                    size="small"
+                    items={filterChips}
+                    ontoggle={handleFilterToggle}
+                ></c-hot_chips>
+
+                <div class="conversation-list-region">
+                    <template lwc:if={isLoadingConversations}>
+                        <div class="conversation-list-loading" role="status">
+                            <span class="slds-assistive-text">Laster samtaler</span>
+                            <div class="loader"></div>
+                        </div>
+                    </template>
+                    <template lwc:else>
+                        <div id="conversation-list" class="conversation-list" role="tabpanel">
+                            <template lwc:if={loadError}>
+                                <div class="empty-state" role="alert">
+                                    <img src={faceCryIcon} alt="" aria-hidden="true" class="empty-state-icon" />
+                                    <p>{loadError}</p>
+                                </div>
+                            </template>
+                            <template lwc:elseif={hasConversations}>
+                                <div class="list-heading" aria-hidden="true">
+                                    <span></span>
+                                    <span>Siste melding sendt</span>
+                                    <span></span>
+                                </div>
+                                <ul>
+                                    <template for:each={visibleConversations} for:item="conversation">
+                                        <li key={conversation.id}>
+                                            <button
+                                                class={conversation.rowClass}
+                                                data-id={conversation.id}
+                                                onclick={handleConversationSelect}
+                                                aria-label={conversation.ariaLabel}
+                                                aria-pressed={conversation.ariaPressed}
+                                            >
+                                                <span class="conversation-details" aria-hidden="true">
+                                                    <span class="conversation-subject">{conversation.subject}</span>
+                                                    <span class="appointment-time">{conversation.appointmentTime}</span>
+                                                    <span class="conversation-badges">
+                                                        <c-hot_tag
+                                                            label={conversation.statusLabel}
+                                                            variant="moderate"
+                                                            size="xsmall"
+                                                            color={conversation.statusColor}
+                                                        ></c-hot_tag>
+                                                        <c-hot_tag
+                                                            label={conversation.participantLabel}
+                                                            variant="moderate"
+                                                            size="xsmall"
+                                                            color="info"
+                                                        ></c-hot_tag>
+                                                        <c-hot_tag
+                                                            lwc:if={conversation.showthreadStatusInTjenesteleverandorContext}
+                                                            label={conversation.showthreadStatusInTjenesteleverandorContext}
+                                                            variant="moderate"
+                                                            size="xsmall"
+                                                            color="danger"
+                                                        ></c-hot_tag>
+                                                    </span>
+                                                </span>
+                                                <span class="latest-message" aria-hidden="true"
+                                                    >{conversation.latestMessage}</span
+                                                >
+                                                <span class="selected-indicator" aria-hidden="true">
+                                                    <template lwc:if={conversation.isSelected}>
+                                                        <lightning-icon
+                                                            icon-name="utility:chevronright"
+                                                            alternative-text=""
+                                                            size="small"
+                                                        ></lightning-icon>
+                                                    </template>
+                                                </span>
+                                            </button>
+                                        </li>
+                                    </template>
+                                </ul>
+                            </template>
+                            <template lwc:else>
+                                <p class="empty-state" role="status">Ingen samtaler</p>
+                            </template>
+                        </div>
+                    </template>
+                </div>
+            </div>
+        </section>
+        <aside class="dialog-right" aria-label="Valgt samtale">
+            <template lwc:if={hasSelectedConversation}>
+                <article class="thread-detail">
+                    <template lwc:if={isLoadingSelectedConversation}>
+                        <div class="conversation-list-loading thread-loading-overlay" role="status">
+                            <span class="slds-assistive-text">Laster samtale</span>
+                            <div class="loader"></div>
+                        </div>
+                    </template>
+                    <header class="thread-header">
+                        <div class="thread-tags">
+                            <c-hot_tag
+                                label={selectedConversation.threadTypeLabel}
+                                variant="moderate"
+                                size="small"
+                                color="info"
+                            ></c-hot_tag>
+                            <c-hot_tag
+                                lwc:if={selectedConversation.showthreadStatusInTjenesteleverandorContext}
+                                label={selectedConversation.showthreadStatusInTjenesteleverandorContext}
+                                variant="moderate"
+                                size="small"
+                                color="danger"
+                            ></c-hot_tag>
+                        </div>
+                        <div class="thread-summary">
+                            <h2>{selectedConversation.subject}</h2>
+                            <p>{selectedConversation.appointmentTime}</p>
+                            <div class="thread-participants">
+                                <span class="thread-participants-label">Deltakere:</span>
+                                <template for:each={threadParticipants} for:item="participant">
+                                    <c-hot_tag
+                                        key={participant.id}
+                                        label={participant.label}
+                                        variant="moderate"
+                                        size="small"
+                                        color="info"
+                                    ></c-hot_tag>
+                                </template>
+                            </div>
+                            <div class="thread-readers">
+                                <span class="thread-readers-label">Lest av:</span>
+                                <template lwc:if={hasReadParticipants}>
+                                    <template for:each={readParticipants} for:item="participant">
+                                        <c-hot_tag
+                                            key={participant.id}
+                                            label={participant.label}
+                                            variant="moderate"
+                                            size="small"
+                                            color="success"
+                                        ></c-hot_tag>
+                                    </template>
+                                </template>
+                                <template lwc:else>
+                                    <c-hot_tag
+                                        label="Ingen"
+                                        variant="moderate"
+                                        size="small"
+                                        color="warning"
+                                    ></c-hot_tag>
+                                </template>
+                            </div>
+                        </div>
+                        <c-button
+                            button-label={serviceAppointmentDetailsButtonLabel}
+                            onbuttonclick={showServiceAppointmentDetails}
+                            disabled={isLoadingServiceAppointmentDetails}
+                        ></c-button>
+                        <template lwc:if={isLoadingServiceAppointmentDetails}>
+                            <p class="service-appointment-status" role="status">Laster oppdragsdetaljer</p>
+                        </template>
+                        <template lwc:if={serviceAppointmentDetailsError}>
+                            <p class="service-appointment-error" role="alert">{serviceAppointmentDetailsError}</p>
+                        </template>
+                        <template lwc:if={showServiceAppointmentDetailsModal}>
+                            <dl class="service-appointment-details">
+                                <template for:each={serviceAppointmentDetails} for:item="detail">
+                                    <div key={detail.label} class="service-appointment-detail">
+                                        <dt>{detail.label}:</dt>
+                                        <dd>{detail.value}</dd>
+                                    </div>
+                                </template>
+                            </dl>
+                        </template>
+                    </header>
+
+                    <section class="message-panel" aria-label="Meldinger">
+                        <template for:each={selectedConversationList} for:item="conversation">
+                            <c-hot_messaging-thread-viewer
+                                key={conversation.id}
+                                thread={conversation}
+                                set-input-in-focus-on-render
+                                is-tjeneste-leverandor-formidler-view={isTjenesteleverandorFormidler}
+                                onthreadread={handleThreadRead}
+                            ></c-hot_messaging-thread-viewer>
+                        </template>
+                    </section>
+                </article>
+            </template>
+            <template lwc:else>
+                <div class="conversation-placeholder" role="status">
+                    <p>Trykk på en samtale</p>
+                    <div class="loader"></div>
+                </div>
+            </template>
+        </aside>
+    </div>
+</template>

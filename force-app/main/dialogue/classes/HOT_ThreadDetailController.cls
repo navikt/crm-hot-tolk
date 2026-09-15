@@ -187,7 +187,29 @@ public without sharing class HOT_ThreadDetailController {
         if (user.Id == thread.HOT_ServiceResource__r.RelatedRecordId) {
             return true;
         }
+        if (
+            (thread.CRM_Thread_Type__c == 'HOT_TJENESTELEVERANDOR-FORMIDLER' ||
+            thread.CRM_Thread_Type__c == 'HOT_TJENESTELEVERANDOR-TOLK') && isTjenesteleverandor(user)
+        ) {
+            return true;
+        }
 
+        return false;
+    }
+
+    public static Boolean isTjenesteleverandor(User user) {
+        List<GroupMember> groupMembers = [
+            SELECT Id
+            FROM GroupMember
+            WHERE
+                Group.DeveloperName = 'HOT_Tolk_Tjenesteleverandor'
+                AND Group.Type = 'Regular'
+                AND UserOrGroupId = :user.Id
+        ];
+
+        if (groupMembers.size() > 0) {
+            return true;
+        }
         return false;
     }
     public static Boolean isAdminOrFormidler(User user) {

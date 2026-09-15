@@ -749,7 +749,7 @@ private class HOT_MessageHelperTest {
         System.assertEquals('HOT_TOLK-FORMIDLER', created.CRM_Type__c, 'Wrong thread type.');
         System.assert(
             created.CRM_Related_Object__c == sa.Id ||
-            created.CRM_Related_Object__c == sa.HOT_WorkOrderLineItem__r.WorkOrderId,
+                created.CRM_Related_Object__c == sa.HOT_WorkOrderLineItem__r.WorkOrderId,
             'Helper may relate to SA or normalize to WO.'
         );
         if (created.CRM_Account__c != null) {
@@ -760,6 +760,7 @@ private class HOT_MessageHelperTest {
             );
         }
     }
+
     @IsTest
     static void createThreadInterpreterDispatcher() {
         ServiceAppointment sa = [
@@ -793,7 +794,7 @@ private class HOT_MessageHelperTest {
         System.assertEquals('HOT_TOLK-FORMIDLER', created.CRM_Type__c, 'Wrong thread type.');
         System.assert(
             created.CRM_Related_Object__c == sa.Id ||
-            created.CRM_Related_Object__c == sa.HOT_WorkOrderLineItem__r.WorkOrderId,
+                created.CRM_Related_Object__c == sa.HOT_WorkOrderLineItem__r.WorkOrderId,
             'Helper may relate to SA directly or normalize to WO.'
         );
         System.assertEquals(sr.AccountId, created.CRM_Account__c, 'If stamped, account must match.');

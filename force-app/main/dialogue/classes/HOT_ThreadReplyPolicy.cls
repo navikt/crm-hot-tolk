@@ -1,5 +1,6 @@
 public without sharing class HOT_ThreadReplyPolicy {
     private static final String RESOURCE_OFFICE_THREAD_TYPE = 'HOT_TOLK-RESSURSKONTOR';
+    private static final String TJENESTELEVERANDOR_THREAD_TYPE = 'HOT_TJENESTELEVERANDOR-FORMIDLER';
     private static final Integer REPLY_WINDOW_HOURS = 48;
 
     public class ReplyPolicy {
@@ -77,6 +78,7 @@ public without sharing class HOT_ThreadReplyPolicy {
         for (Thread__c thread : threads) {
             if (
                 thread.CRM_Thread_Type__c != RESOURCE_OFFICE_THREAD_TYPE &&
+                thread.CRM_Thread_Type__c != TJENESTELEVERANDOR_THREAD_TYPE &&
                 thread.HOT_Request__c != null &&
                 thread.HOT_Request__r.IsSerieoppdrag__c == true
             ) {
@@ -115,6 +117,9 @@ public without sharing class HOT_ThreadReplyPolicy {
 
     private static ReplyPolicy buildPolicy(Thread__c thread, Map<Id, Datetime> seriesEndTimeByRequestId) {
         if (thread.CRM_Thread_Type__c == RESOURCE_OFFICE_THREAD_TYPE) {
+            return new ReplyPolicy(thread.Id, true, null, null);
+        }
+        if (thread.CRM_Thread_Type__c == TJENESTELEVERANDOR_THREAD_TYPE) {
             return new ReplyPolicy(thread.Id, true, null, null);
         }
 
