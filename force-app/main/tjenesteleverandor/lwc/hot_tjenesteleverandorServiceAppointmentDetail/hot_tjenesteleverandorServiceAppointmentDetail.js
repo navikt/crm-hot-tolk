@@ -1,10 +1,30 @@
 import { LightningElement, api, wire } from 'lwc';
+import { getRecord, getFieldValue } from 'lightning/uiRecordApi'; 
 import { NavigationMixin, CurrentPageReference } from 'lightning/navigation';
 import { notifyRecordUpdateAvailable } from 'lightning/uiRecordApi';
 import canAcceptAppointments from '@salesforce/customPermission/HOT_AcceptTjenesteleverandorOppdrag';
 import canDeclineAppointments from '@salesforce/customPermission/HOT_DeclineTjenesteleverandorOppdrag';
 import acceptServiceAppointments from '@salesforce/apex/HOT_TjenesteleverandorAcceptanceService.acceptServiceAppointments';
 import declineServiceAppointments from '@salesforce/apex/HOT_TjenesteleverandorAcceptanceService.declineServiceAppointments';
+
+import APPOINTMENT_NUMBER_FIELD from '@salesforce/schema/ServiceAppointment.AppointmentNumber';
+import HOT_FREELANCE_SUBJECT_FIELD from '@salesforce/schema/ServiceAppointment.HOT_FreelanceSubject__c';
+import HOT_INFORMATION_FIELD from '@salesforce/schema/ServiceAppointment.HOT_Information__c';
+import HOT_WORK_TYPE_NAME_FIELD from '@salesforce/schema/ServiceAppointment.HOT_WorkTypeName__c';
+import HOT_ASSIGNMENT_TYPE_FIELD from '@salesforce/schema/ServiceAppointment.HOT_AssignmentType__c';
+import HOT_PREPARATION_TIME_FIELD from '@salesforce/schema/ServiceAppointment.HOT_PreparationTime__c';
+import HOT_TOTAL_NUMBER_OF_INTERPRETERS_FIELD from '@salesforce/schema/ServiceAppointment.HOT_TotalNumberOfInterpreters__c';
+import HOT_NUMBER_OF_INTERESTED_RESOURCES_FIELD from '@salesforce/schema/ServiceAppointment.HOT_NumberOfInterestedResources__c';
+import STATUS_FIELD from '@salesforce/schema/ServiceAppointment.Status';
+import HOT_TJENESTELEVERANDOR_STATUS_FIELD from '@salesforce/schema/ServiceAppointment.HOT_TjenesteleverandorStatus__c';
+import HOT_SERVICE_TERRITORY_NAME_FIELD from '@salesforce/schema/ServiceAppointment.HOT_ServiceTerritoryName__c';
+import HOT_IS_ACUTE_FIELD from '@salesforce/schema/ServiceAppointment.HOT_IsAcute__c';
+import HOT_IS_SCREEN_INTERPRETER_NEW_FIELD from '@salesforce/schema/ServiceAppointment.HOT_IsScreenInterpreterNew__c';
+import HOT_IS_SERIEOPPDRAG_FIELD from '@salesforce/schema/ServiceAppointment.HOT_IsSerieoppdrag__c';
+import HOT_IS_OTHER_ECONOMIC_PROVICER_FIELD from '@salesforce/schema/ServiceAppointment.HOT_IsOtherEconomicProvicer__c';
+import HOT_IS_IMAGE_INTERPRETER_FIELD from '@salesforce/schema/ServiceAppointment.HOT_IsImageInterpreter__c';
+
+
 
 const CANCELLATION_FIELDS = [
     'HOT_CancelComment__c',
@@ -27,6 +47,24 @@ function createFeedback(type, message) {
     };
 }
 
+const FIELDS = [
+    APPOINTMENT_NUMBER_FIELD,
+    HOT_FREELANCE_SUBJECT_FIELD,
+    HOT_INFORMATION_FIELD,
+    HOT_WORK_TYPE_NAME_FIELD,
+    HOT_ASSIGNMENT_TYPE_FIELD,
+    HOT_PREPARATION_TIME_FIELD,
+    HOT_TOTAL_NUMBER_OF_INTERPRETERS_FIELD,
+    HOT_NUMBER_OF_INTERESTED_RESOURCES_FIELD,
+    STATUS_FIELD,
+    HOT_TJENESTELEVERANDOR_STATUS_FIELD,
+    HOT_SERVICE_TERRITORY_NAME_FIELD,
+    HOT_IS_ACUTE_FIELD,
+    HOT_IS_SCREEN_INTERPRETER_NEW_FIELD,
+    HOT_IS_SERIEOPPDRAG_FIELD,
+    HOT_IS_OTHER_ECONOMIC_PROVICER_FIELD,
+    HOT_IS_IMAGE_INTERPRETER_FIELD
+];
 export default class HotTjenesteleverandorServiceAppointmentDetail extends NavigationMixin(LightningElement) {
     @api recordId;
 
@@ -43,6 +81,17 @@ export default class HotTjenesteleverandorServiceAppointmentDetail extends Navig
     @wire(CurrentPageReference)
     handlePageReference(pageReference) {
         this.routeRecordId = pageReference?.state?.c__recordId;
+    }
+
+    @wire(getRecord, { recordId: '$crecordId', fields: FIELDS })
+    record;
+
+    connectedCallback() {
+        console.log(this.record.data);
+    }
+
+    get recordData() {
+        return this.record?.data;
     }
 
     get effectiveRecordId() {
