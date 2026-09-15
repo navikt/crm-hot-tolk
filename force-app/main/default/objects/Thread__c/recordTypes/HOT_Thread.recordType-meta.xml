@@ -42,6 +42,14 @@
             <default>false</default>
         </values>
         <values>
+            <fullName>HOT_TJENESTELEVERANDOR-FORMIDLER</fullName>
+            <default>false</default>
+        </values>
+        <values>
+            <fullName>HOT_TJENESTELEVERANDOR-TOLK</fullName>
+            <default>false</default>
+        </values>
+        <values>
             <fullName>HOT_TOLK-FORMIDLER</fullName>
             <default>false</default>
         </values>
