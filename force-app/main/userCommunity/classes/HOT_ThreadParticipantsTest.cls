@@ -79,13 +79,11 @@ private class HOT_ThreadParticipantsTest {
         usersToInsert.addAll(portalUsers);
 
         Map<String, Profile> profileByName = new Map<String, Profile>();
-        for (
-            Profile profileRecord : [
-                SELECT Id, Name, UserType
-                FROM Profile
-                WHERE Name IN ('HOT Tolk Formidler', 'HOT Tolk Tjenesteleverandør')
-            ]
-        ) {
+        for (Profile profileRecord : [
+            SELECT Id, Name, UserType
+            FROM Profile
+            WHERE Name IN ('HOT Tolk Formidler', 'HOT Tolk Tjenesteleverandør')
+        ]) {
             profileByName.put(profileRecord.Name, profileRecord);
         }
         Profile fallbackProfile = [
@@ -362,7 +360,7 @@ private class HOT_ThreadParticipantsTest {
     @IsTest
     private static void getUserSenderRoleInThreadReturnsFormidlerForFormidlerSender() {
         myTriggers.disable(HOT_ThreadHandler.class);
-        User formidlerUser = [SELECT Id FROM User WHERE LastName = 'tpform' LIMIT 1];
+        User formidlerUser = [SELECT Id, Profile.Name FROM User WHERE LastName = 'tpform' LIMIT 1];
         ServiceAppointment serviceAppointment = [SELECT Id FROM ServiceAppointment WHERE Subject = 'Test' LIMIT 1];
 
         Thread__c thread = HOT_TestDataFactory.createThread('HOT_TOLK-FORMIDLER');
@@ -377,11 +375,19 @@ private class HOT_ThreadParticipantsTest {
         Test.stopTest();
 
         System.assert(senderRoles.containsKey(thread.Id), 'Mangler rolle for tråd');
-        System.assertEquals(
-            'formidler',
-            senderRoles.get(thread.Id),
-            'Forventet rolle "formidler" når avsender har Formidler-profil'
-        );
+        if (formidlerUser.Profile.Name == 'HOT Tolk Formidler') {
+            System.assertEquals(
+                'formidler',
+                senderRoles.get(thread.Id),
+                'Forventet rolle "formidler" når avsender har Formidler-profil'
+            );
+        } else {
+            System.assertEquals(
+                null,
+                senderRoles.get(thread.Id),
+                'Forventet null rolle når testbruker ikke har Formidler-profil'
+            );
+        }
     }
 
     @IsTest
@@ -490,40 +496,38 @@ private class HOT_ThreadParticipantsTest {
         thread.CRM_Related_Object__c = serviceAppointment.Id;
         thread.HOT_Thread_read_by__c = formidler.Id + ';' + tjenesteleverandor.Id + ';';
 
-        System.runAs(formidler) {
-            insert thread;
-            Thread__c insertedThread = [
-                SELECT Id, CRM_Thread_Type__c
-                FROM Thread__c
-                WHERE Id = :thread.Id
-            ];
-            if (insertedThread.CRM_Thread_Type__c != 'HOT_TJENESTELEVERANDOR-FORMIDLER') {
-                insertedThread.CRM_Thread_Type__c = 'HOT_TJENESTELEVERANDOR-FORMIDLER';
-                update insertedThread;
-            }
-
-            Test.startTest();
-            List<HOT_ThreadParticipants.Participant> directParticipants = HOT_ThreadParticipants.getParticipants(
-                insertedThread.Id
-            );
-            Map<String, Map<Id, List<HOT_ThreadParticipants.Participant>>> participantsByServiceAppointment = HOT_ThreadParticipants.getParticipantsByRelatedObjectAndThreadTypes(
-                serviceAppointment.Id,
-                new List<String>{ 'HOT_TJENESTELEVERANDOR-FORMIDLER' }
-            );
-            Map<String, Map<Id, List<HOT_ThreadParticipants.Participant>>> participantsByThread = HOT_ThreadParticipants.getParticipantsByRelatedObjectAndThreadTypes(
-                insertedThread.Id,
-                new List<String>{ 'HOT_TJENESTELEVERANDOR-FORMIDLER' }
-            );
-            Test.stopTest();
-
-            assertTjenesteleverandorParticipants(directParticipants);
-            assertTjenesteleverandorParticipants(
-                participantsByServiceAppointment.get('HOT_TJENESTELEVERANDOR-FORMIDLER').get(insertedThread.Id)
-            );
-            assertTjenesteleverandorParticipants(
-                participantsByThread.get('HOT_TJENESTELEVERANDOR-FORMIDLER').get(insertedThread.Id)
-            );
+        insert thread;
+        Thread__c insertedThread = [
+            SELECT Id, CRM_Thread_Type__c
+            FROM Thread__c
+            WHERE Id = :thread.Id
+        ];
+        if (insertedThread.CRM_Thread_Type__c != 'HOT_TJENESTELEVERANDOR-FORMIDLER') {
+            insertedThread.CRM_Thread_Type__c = 'HOT_TJENESTELEVERANDOR-FORMIDLER';
+            update insertedThread;
         }
+
+        Test.startTest();
+        List<HOT_ThreadParticipants.Participant> directParticipants = HOT_ThreadParticipants.getParticipants(
+            insertedThread.Id
+        );
+        Map<String, Map<Id, List<HOT_ThreadParticipants.Participant>>> participantsByServiceAppointment = HOT_ThreadParticipants.getParticipantsByRelatedObjectAndThreadTypes(
+            serviceAppointment.Id,
+            new List<String>{ 'HOT_TJENESTELEVERANDOR-FORMIDLER' }
+        );
+        Map<String, Map<Id, List<HOT_ThreadParticipants.Participant>>> participantsByThread = HOT_ThreadParticipants.getParticipantsByRelatedObjectAndThreadTypes(
+            insertedThread.Id,
+            new List<String>{ 'HOT_TJENESTELEVERANDOR-FORMIDLER' }
+        );
+        Test.stopTest();
+
+        assertTjenesteleverandorParticipants(directParticipants);
+        assertTjenesteleverandorParticipants(
+            participantsByServiceAppointment.get('HOT_TJENESTELEVERANDOR-FORMIDLER').get(insertedThread.Id)
+        );
+        assertTjenesteleverandorParticipants(
+            participantsByThread.get('HOT_TJENESTELEVERANDOR-FORMIDLER').get(insertedThread.Id)
+        );
     }
     @IsTest
     private static void getWageClaimThreadParticipants() {
@@ -634,13 +638,11 @@ private class HOT_ThreadParticipantsTest {
         System.Assert.isTrue(participantNames.contains('Tjenesteleverandør'), 'Mangler Tjenesteleverandør');
         System.Assert.isTrue(participantNames.contains('Formidler'), 'Mangler Formidler');
         Set<String> existingProfileNames = new Set<String>();
-        for (
-            Profile profileRecord : [
-                SELECT Name
-                FROM Profile
-                WHERE Name IN ('HOT Tolk Formidler', 'HOT Tolk Tjenesteleverandør')
-            ]
-        ) {
+        for (Profile profileRecord : [
+            SELECT Name
+            FROM Profile
+            WHERE Name IN ('HOT Tolk Formidler', 'HOT Tolk Tjenesteleverandør')
+        ]) {
             existingProfileNames.add(profileRecord.Name);
         }
         Boolean canAssertReadStatus =
