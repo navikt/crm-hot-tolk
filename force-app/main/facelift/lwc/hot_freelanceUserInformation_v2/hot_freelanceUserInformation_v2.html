@@ -9,6 +9,20 @@
 
                 <!-- Header -->
                 <h1 class="header center-text header" role="heading" aria-level="1">Min profil</h1>
+                <template lwc:if={viewUserInformation}>
+                    <div class="button-container-header">
+                        <c-hot_button
+                            type="Submit"
+                            class="btn-edit"
+                            button-styling="Primary"
+                            onbuttonclick={editProfile}
+                            button-label="Rediger"
+                            aria-label="Rediger"
+                            desktop-style="width: 8rem; justify-content: center"
+                            mobile-style="width: 8rem; justify-content: center "
+                        ></c-hot_button>
+                    </div>
+                </template>
                 <h2 class="heading-contact heading-medium center-text" role="heading" aria-level="2" id="kontaktinfo">
                     Kontaktinformasjon
                 </h2>
@@ -120,19 +134,6 @@
                                             <p class="heading-more-info">Mer informasjon:</p>
                                             <p class="label-form-small preference-info-box">{userPreferences}</p>
                                         </div>
-                                    </div>
-
-                                    <div class="button-container">
-                                        <c-button
-                                            type="Submit"
-                                            class="btn-edit"
-                                            button-styling="Primary"
-                                            onbuttonclick={editProfile}
-                                            button-label="Rediger"
-                                            aria-label="Rediger"
-                                            desktop-style="width: 8rem; justify-content: center"
-                                            mobile-style="width: 8rem; justify-content: center "
-                                        ></c-button>
                                     </div>
                                 </div>
                             </template>
@@ -334,7 +335,7 @@
 
                         <!-- Cancel and save buttons -->
                         <div class="button-container">
-                            <c-button
+                            <c-hot_button
                                 type="Submit"
                                 onbuttonclick={handleSubmit}
                                 button-label="Lagre"
@@ -343,15 +344,15 @@
                                 is-loading={buttonLoading}
                                 desktop-style="width: 8rem; justify-content: center"
                                 mobile-style="width: 8rem; justify-content: center"
-                            ></c-button>
-                            <c-button
+                            ></c-hot_button>
+                            <c-hot_button
                                 type="Reset"
                                 onbuttonclick={handleAbort}
                                 button-label="Avbryt"
                                 button-styling="Secondary"
                                 desktop-style="width: 8rem; justify-content: center"
                                 mobile-style="width: 8rem; justify-content: center"
-                            ></c-button>
+                            ></c-hot_button>
                         </div>
                     </section>
                 </main>
