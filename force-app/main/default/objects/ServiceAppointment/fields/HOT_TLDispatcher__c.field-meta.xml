@@ -3,6 +3,17 @@
     <fullName>HOT_TLDispatcher__c</fullName>
     <deleteConstraint>SetNull</deleteConstraint>
     <label>Tjenesteleverandor Dispatcher</label>
+    <lookupFilter>
+        <active>true</active>
+        <errorMessage>Bruker må være en tjenesteleverandør</errorMessage>
+        <filterItems>
+            <field>User.Profile.Name</field>
+            <operation>equals</operation>
+            <value>HOT Tolk Tjenestesteleverandør</value>
+        </filterItems>
+        <infoMessage>Velg en tjenesteleverandør</infoMessage>
+        <isOptional>false</isOptional>
+    </lookupFilter>
     <referenceTo>User</referenceTo>
     <relationshipName>Service_Appointments1</relationshipName>
     <required>false</required>
