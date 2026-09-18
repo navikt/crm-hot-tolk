@@ -53,9 +53,9 @@ dialog.modal-container {
     z-index: 10001;
     background: white;
     border-radius: 0.5rem;
-    max-width: 40rem;
+    max-width: 50rem;
     width: 90%;
-    max-height: 90vh;
+    max-height: 95vh;
     overflow-y: auto;
     box-shadow: 0 2px 10px rgba(0, 0, 0, 0.3);
 
@@ -75,6 +75,9 @@ dialog.modal-container {
 .series-container {
     padding-top: 0.5rem;
 }
+.thread-card {
+    padding: 0 2rem 0 2rem;
+}
 
 /* Når dialogen er åpen */
 dialog[open].modal-container {
@@ -85,12 +88,12 @@ dialog.modal-container .modal-header {
     display: flex;
     justify-content: space-between;
     align-items: center;
-    padding: 2rem;
+    padding: 1.5rem 2rem 1.5rem 2rem;
     font-size: 1.5rem;
 }
 
 dialog.modal-container .modal-body {
-    padding: 0 2rem 2rem;
+    padding: 0 2rem 1.5rem 2rem;
 }
 
 dialog.modal-container .modal-body strong {
@@ -98,7 +101,7 @@ dialog.modal-container .modal-body strong {
 }
 
 dialog.modal-container .modal-footer {
-    padding: 2rem;
+    padding: 1.5rem 2rem;
     display: flex;
     flex-wrap: wrap;
     gap: 1rem;

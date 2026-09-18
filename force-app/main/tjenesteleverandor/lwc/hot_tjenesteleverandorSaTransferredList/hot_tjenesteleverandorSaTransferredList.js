@@ -1,7 +1,14 @@
 import { LightningElement, wire, api } from 'lwc';
 import { NavigationMixin } from 'lightning/navigation';
 import { refreshApex } from '@salesforce/apex';
+import { createRecord } from 'lightning/uiRecordApi';
+import { ShowToastEvent } from 'lightning/platformShowToastEvent';
+import userId from '@salesforce/user/Id';
 import getTransferredServiceAppointments from '@salesforce/apex/HOT_TjenesteleverandorListController.getTransferredServiceAppointments';
+import getSARelatedThreads from '@salesforce/apex/HOT_TLThreadlistController.getSARelatedThreads';
+import getParticipants from '@salesforce/apex/HOT_ThreadParticipants.getParticipants';
+import createThread from '@salesforce/apex/HOT_MessageHelper.createThreadDispatcher';
+import setLastMessageFrom from '@salesforce/apex/HOT_MessageHelper.setLastMessageFrom';
 import canAcceptAppointments from '@salesforce/customPermission/HOT_AcceptTjenesteleverandorOppdrag';
 import canDeclineAppointments from '@salesforce/customPermission/HOT_DeclineTjenesteleverandorOppdrag';
 import icons from '@salesforce/resourceUrl/ikoner';
@@ -50,6 +57,9 @@ export default class Hot_tjenesteleverandorSaTransferredList extends NavigationM
     selectedRecordId;
     isSeries = false;
     seriesRecords = [];
+    navTLThread = null;
+    navTLParticipants = [];
+    navTLReadParticipants = [];
 
     wiredTransferredAppointments;
     isRefreshPending = false;
@@ -118,6 +128,18 @@ export default class Hot_tjenesteleverandorSaTransferredList extends NavigationM
 
     get hasResult() {
         return !this.dataLoader && this.records.length > 0;
+    }
+
+    get hasNavTLThread() {
+        return Boolean(this.navTLThread);
+    }
+
+    get hasNavTLReadParticipants() {
+        return this.navTLReadParticipants.length > 0;
+    }
+
+    get NavTLInitialMessage() {
+        return 'Samtale med Nav er ikke påbegynt enda. Skriv en melding for å starte samtalen.';
     }
 
     get noServiceAppointmentsResult() {
@@ -275,7 +297,96 @@ export default class Hot_tjenesteleverandorSaTransferredList extends NavigationM
                   )
                 : [selectedRecord];
         this.isSeries = isSeriesAppointment && this.seriesRecords.length > 1;
+        this.fetchNavTLThread();
         this.showServiceAppointmentDetails();
+    }
+
+    async fetchNavTLThread() {
+        if (!this.selectedRecordId) {
+            this.navTLThread = null;
+            this.navTLParticipants = [];
+            this.navTLReadParticipants = [];
+            return;
+        }
+
+        try {
+            const threads = await getSARelatedThreads({ serviceAppointmentId: this.selectedRecordId });
+            const navThread = (threads ?? []).find(
+                (thread) => (thread.CRM_Thread_Type__c || thread.CRM_Type__c) === 'HOT_TJENESTELEVERANDOR-FORMIDLER'
+            );
+            this.navTLThread = navThread || null;
+
+            if (!navThread) {
+                this.navTLParticipants = [];
+                this.navTLReadParticipants = [];
+                return;
+            }
+
+            const participants = await getParticipants({ threadId: navThread.Id });
+            this.navTLParticipants = this.toParticipantLabels(participants ?? []);
+            this.navTLReadParticipants = this.toReadParticipantLabels(participants ?? []);
+        } catch (error) {
+            console.error('Could not load Nav/Tjenesteleverandør thread', JSON.stringify(error), error);
+            this.navTLThread = null;
+            this.navTLParticipants = [];
+            this.navTLReadParticipants = [];
+        }
+    }
+
+    toParticipantLabels(participants) {
+        return participants.map((participant) => ({
+            id: participant.userId || participant.name || participant.role || `${participant.name}-${Date.now()}`,
+            label: participant.role ? `${participant.name} (${participant.role})` : participant.name
+        }));
+    }
+
+    toReadParticipantLabels(participants) {
+        return participants
+            .filter((participant) => participant.hasRead)
+            .map((participant) => ({
+                id: participant.userId || participant.name || participant.role || `${participant.name}-${Date.now()}`,
+                label: participant.role ? `${participant.name} (${participant.role})` : participant.name
+            }));
+    }
+
+    async handleCreateNavTLThreadWithMessage(event) {
+        const details = event?.detail || {};
+        if (!this.selectedRecordId) {
+            return;
+        }
+
+        try {
+            const thread = await createThread({
+                recordId: this.selectedRecordId,
+                accountId: userId,
+                type: 'HOT_TJENESTELEVERANDOR-FORMIDLER'
+            });
+
+            const fields = {
+                ...details,
+                CRM_Thread__c: thread?.Id
+            };
+
+            await createRecord({
+                apiName: 'Message__c',
+                fields
+            });
+
+            setLastMessageFrom({ threadId: thread.Id, fromContactId: 'ansatt/formidler' }).catch((error) => {
+                console.error('Error setting last message from: ', JSON.stringify(error), error);
+            });
+
+            await this.fetchNavTLThread();
+        } catch (error) {
+            console.error('Could not create Nav/Tjenesteleverandør thread', JSON.stringify(error), error);
+            this.dispatchEvent(
+                new ShowToastEvent({
+                    title: 'Feil ved opprettelse av samtale',
+                    message: 'Samtalen kunne ikke bli opprettet',
+                    variant: 'error'
+                })
+            );
+        }
     }
 
     showServiceAppointmentDetails() {
@@ -383,6 +494,9 @@ export default class Hot_tjenesteleverandorSaTransferredList extends NavigationM
         this.showServiceAppointmentDetailsModal = false;
         this.serviceAppointment = undefined;
         this.selectedRecordId = undefined;
+        this.navTLThread = null;
+        this.navTLParticipants = [];
+        this.navTLReadParticipants = [];
         this.isSeries = false;
         this.seriesRecords = [];
     }
