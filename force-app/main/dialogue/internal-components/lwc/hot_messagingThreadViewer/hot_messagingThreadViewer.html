@@ -6,6 +6,7 @@
                 <c-hot_messaging-Message-Container
                     message={message}
                     key={message.Id}
+                    is-tjeneste-leverandor-view={isTjenesteLeverandorFormidlerView}
                 ></c-hot_messaging-Message-Container>
             </template>
         </section>
@@ -101,12 +102,7 @@
                                                 <div class="panel-footer">
                                                     <div class="slds-grid slds-grid_align-end">
                                                         <div
-                                                            class="
-                                                                right
-                                                                slds-var-m-top_medium
-                                                                slds-var-m-right_large
-                                                                slds-var-m-bottom_large
-                                                            "
+                                                            class="right slds-var-m-top_medium slds-var-m-right_large slds-var-m-bottom_large"
                                                         >
                                                             <div tabindex="0" onfocus={trapFocusStart}></div>
                                                             <button

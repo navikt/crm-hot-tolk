@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomMetadata
+    xmlns="http://soap.sforce.com/2006/04/metadata"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xmlns:xsd="http://www.w3.org/2001/XMLSchema"
+>
+    <label>Default</label>
+    <protected>false</protected>
+    <values>
+        <field>StartHour__c</field>
+        <value xsi:type="xsd:double">8</value>
+    </values>
+    <values>
+        <field>EndHour__c</field>
+        <value xsi:type="xsd:double">16</value>
+    </values>
+    <values>
+        <field>DeadlineHours__c</field>
+        <value xsi:type="xsd:double">4</value>
+    </values>
+    <values>
+        <field>TimezoneSidKey__c</field>
+        <value xsi:type="xsd:string">Europe/Oslo</value>
+    </values>
+    <values>
+        <field>Weekdays__c</field>
+        <value xsi:type="xsd:string">1,2,3,4,5</value>
+    </values>
+</CustomMetadata>
