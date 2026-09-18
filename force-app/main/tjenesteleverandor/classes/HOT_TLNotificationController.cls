@@ -12,7 +12,7 @@ public without sharing class HOT_TLNotificationController {
                 CreatedDate
             FROM HOT_Notification__c
             WHERE Tjenesteleverandor__c = :UserInfo.getUserId()
-            ORDER BY CreatedDate DESC
+            ORDER BY CreatedDate ASC
         ];
     }
 
