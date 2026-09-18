@@ -79,6 +79,7 @@ public without sharing class HOT_TjenesteleverandorAcceptanceService {
             }
 
             appointment.HOT_TjenesteleverandorStatus__c = targetStatus;
+            appointment.HOT_TLDispatcher__c = UserInfo.getUserId();
             appointmentsToUpdate.add(appointment);
             updateResults.add(result);
         }
