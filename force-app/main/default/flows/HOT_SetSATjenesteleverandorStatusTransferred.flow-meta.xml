@@ -21,6 +21,10 @@
                 <elementReference>$Flow.CurrentDateTime</elementReference>
             </value>
         </assignmentItems>
+        <assignmentItems>
+            <assignToReference>$Record.HOT_DispatcherNew__c</assignToReference>
+            <operator>Assign</operator>
+        </assignmentItems>
     </assignments>
     <environments>Default</environments>
     <interviewLabel>HOT_SetSATjenesteleverandorTransferred {!$Flow.CurrentDateTime}</interviewLabel>
