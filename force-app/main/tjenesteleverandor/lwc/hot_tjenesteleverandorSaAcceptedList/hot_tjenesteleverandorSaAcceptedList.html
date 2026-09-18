@@ -55,6 +55,143 @@
                         <p><strong>Annen betaler:</strong> {serviceAppointment.isOtherProvider}</p>
                         <p><strong>Region:</strong> {serviceAppointment.HOT_ServiceTerritoryName__c}</p>
                     </div>
+
+                    <div class="thread-card-nav">
+                        <c-hot_expansion-card>
+                            <span slot="title">Samtale med Nav</span>
+                            <div slot="description">
+                                <template lwc:if={hasNavTLThread}>
+                                    <div class="thread-participants">
+                                        <span class="thread-participants-label">Deltakere:</span>
+                                        <template for:each={navTLParticipants} for:item="participant">
+                                            <c-hot_tag
+                                                key={participant.id}
+                                                label={participant.label}
+                                                variant="moderate"
+                                                size="small"
+                                                color="info"
+                                            ></c-hot_tag>
+                                        </template>
+                                    </div>
+                                    <div class="thread-readers">
+                                        <span class="thread-readers-label">Lest av:</span>
+                                        <template lwc:if={hasNavTLReadParticipants}>
+                                            <template for:each={navTLReadParticipants} for:item="participant">
+                                                <c-hot_tag
+                                                    key={participant.id}
+                                                    label={participant.label}
+                                                    variant="moderate"
+                                                    size="small"
+                                                    color="success"
+                                                ></c-hot_tag>
+                                            </template>
+                                        </template>
+                                        <template lwc:else>
+                                            <c-hot_tag
+                                                label="Ingen"
+                                                variant="moderate"
+                                                size="small"
+                                                color="warning"
+                                            ></c-hot_tag>
+                                        </template>
+                                    </div>
+                                </template>
+                                <template lwc:else>
+                                    <c-hot_tag
+                                        label="Samtale er ikke opprettet"
+                                        variant="moderate"
+                                        size="small"
+                                        color="warning"
+                                    ></c-hot_tag>
+                                </template>
+                            </div>
+
+                            <template lwc:if={hasNavTLThread}>
+                                <c-hot_messaging-thread-viewer
+                                    thread={navTLThread}
+                                    set-input-in-focus-on-render
+                                    is-tjeneste-leverandor-formidler-view
+                                ></c-hot_messaging-thread-viewer>
+                            </template>
+                            <template lwc:else>
+                                <c-hot_messaging-thread-viewer-mock
+                                    set-input-in-focus-on-render
+                                    initial-message={navTLInitialMessage}
+                                    data-user-thread-mock
+                                    oncreatethreadwithmessage={handleCreateNavTLThreadWithMessage}
+                                ></c-hot_messaging-thread-viewer-mock>
+                            </template>
+                        </c-hot_expansion-card>
+                    </div>
+
+                    <div class="thread-card-tolk">
+                        <c-hot_expansion-card>
+                            <span slot="title">Samtale med tolk</span>
+                            <div slot="description">
+                                <template lwc:if={hasTolkTLThread}>
+                                    <div class="thread-participants">
+                                        <span class="thread-participants-label">Deltakere:</span>
+                                        <template for:each={tolkTLParticipants} for:item="participant">
+                                            <c-hot_tag
+                                                key={participant.id}
+                                                label={participant.label}
+                                                variant="moderate"
+                                                size="small"
+                                                color="info"
+                                            ></c-hot_tag>
+                                        </template>
+                                    </div>
+                                    <div class="thread-readers">
+                                        <span class="thread-readers-label">Lest av:</span>
+                                        <template lwc:if={hasTolkTLReadParticipants}>
+                                            <template for:each={tolkTLReadParticipants} for:item="participant">
+                                                <c-hot_tag
+                                                    key={participant.id}
+                                                    label={participant.label}
+                                                    variant="moderate"
+                                                    size="small"
+                                                    color="success"
+                                                ></c-hot_tag>
+                                            </template>
+                                        </template>
+                                        <template lwc:else>
+                                            <c-hot_tag
+                                                label="Ingen"
+                                                variant="moderate"
+                                                size="small"
+                                                color="warning"
+                                            ></c-hot_tag>
+                                        </template>
+                                    </div>
+                                </template>
+                                <template lwc:else>
+                                    <c-hot_tag
+                                        label="Samtale er ikke opprettet"
+                                        variant="moderate"
+                                        size="small"
+                                        color="warning"
+                                    ></c-hot_tag>
+                                </template>
+                            </div>
+
+                            <template lwc:if={hasTolkTLThread}>
+                                <c-hot_messaging-thread-viewer
+                                    thread={tolkTLThread}
+                                    set-input-in-focus-on-render
+                                    is-tjeneste-leverandor-formidler-view
+                                ></c-hot_messaging-thread-viewer>
+                            </template>
+                            <template lwc:else>
+                                <c-hot_messaging-thread-viewer-mock
+                                    set-input-in-focus-on-render
+                                    initial-message={tolkTLInitialMessage}
+                                    data-user-thread-mock
+                                    oncreatethreadwithmessage={handleCreateTolkTLThreadWithMessage}
+                                ></c-hot_messaging-thread-viewer-mock>
+                            </template>
+                        </c-hot_expansion-card>
+                    </div>
+
                     <div class="modal-footer">
                         <c-button
                             button-styling="primary"
