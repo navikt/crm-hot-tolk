@@ -85,14 +85,24 @@ private class HOT_ServiceAppointmentHandlerTest {
 
     private static ServiceAppointment getPrimaryServiceAppointmentForWorkOrderTests() {
         return [
-            SELECT Id, Status, HOT_ServiceResource__c, HOT_WorkOrderID__c, HOT_WorkOrderLineItem__r.WorkOrderId, HOT_WorkOrderLineItem__r.WorkTypeId
+            SELECT
+                Id,
+                Status,
+                HOT_ServiceResource__c,
+                HOT_WorkOrderID__c,
+                HOT_WorkOrderLineItem__r.WorkOrderId,
+                HOT_WorkOrderLineItem__r.WorkTypeId
             FROM ServiceAppointment
             WHERE Subject = 'TEST'
             LIMIT 1
         ];
     }
 
-    private static ServiceAppointment createServiceAppointmentOnWorkOrder(Id workOrderId, Id workTypeId, String subject) {
+    private static ServiceAppointment createServiceAppointmentOnWorkOrder(
+        Id workOrderId,
+        Id workTypeId,
+        String subject
+    ) {
         Datetime startTime = Datetime.now().addHours(6);
         WorkOrderLineItem workOrderLineItem = new WorkOrderLineItem(
             WorkOrderId = workOrderId,
@@ -146,7 +156,11 @@ private class HOT_ServiceAppointmentHandlerTest {
             LIMIT 1
         ];
 
-        System.assertEquals(UserInfo.getUserId(), sa.HOT_DispatcherNew__c, 'Dispatcher was not set on ServiceAppointment.');
+        System.assertEquals(
+            UserInfo.getUserId(),
+            sa.HOT_DispatcherNew__c,
+            'Dispatcher was not set on ServiceAppointment.'
+        );
         System.assertEquals(company.Id, sa.HOT_Company__c, 'Company was not set on ServiceAppointment.');
     }
 
@@ -274,6 +288,63 @@ private class HOT_ServiceAppointmentHandlerTest {
             thread.HOT_Dispatcher__c,
             'Dispatcher was not set correctly'
         );
+    }
+
+    @IsTest
+    public static void tjenesteleverandorOnThreadChangeServiceAppointmentTest() {
+        Profile standardProfile = [
+            SELECT Id
+            FROM Profile
+            WHERE Name = 'Standard User' OR Name = 'Standardbruker'
+            LIMIT 1
+        ];
+        User tlDispatcher = HOT_TestDataFactory.createUser('tldispatcher', standardProfile);
+        insert tlDispatcher;
+
+        HOT_Request__c request = [SELECT Id FROM HOT_Request__c WHERE Subject__c = 'TEST' LIMIT 1];
+        request.Status__c = 'Godkjent';
+        update request;
+
+        ServiceAppointment serviceAppointment = [
+            SELECT Id, HOT_TLDispatcher__c
+            FROM ServiceAppointment
+            WHERE HOT_Request__c = :request.Id
+            LIMIT 1
+        ];
+
+        Thread__c formidlerThread = new Thread__c(
+            RecordTypeId = HOT_MessageHelper.getHOTThreadRecordType(),
+            CRM_Related_Object__c = serviceAppointment.Id,
+            CRM_Thread_Type__c = 'HOT_TJENESTELEVERANDOR-FORMIDLER',
+            HOT_TLDispatcher__c = UserInfo.getUserId()
+        );
+        Thread__c tolkThread = new Thread__c(
+            RecordTypeId = HOT_MessageHelper.getHOTThreadRecordType(),
+            CRM_Related_Object__c = serviceAppointment.Id,
+            CRM_Thread_Type__c = 'HOT_TJENESTELEVERANDOR-TOLK',
+            HOT_TLDispatcher__c = UserInfo.getUserId()
+        );
+        insert new List<Thread__c>{ formidlerThread, tolkThread };
+
+        Test.startTest();
+        serviceAppointment.HOT_TLDispatcher__c = tlDispatcher.Id;
+        update serviceAppointment;
+        Test.stopTest();
+
+        List<Thread__c> updatedThreads = [
+            SELECT Id, HOT_TLDispatcher__c
+            FROM Thread__c
+            WHERE Id IN :new Set<Id>{ formidlerThread.Id, tolkThread.Id }
+        ];
+
+        System.assertEquals(2, updatedThreads.size(), 'Expected two tjenesteleverandor threads to be updated');
+        for (Thread__c thread : updatedThreads) {
+            System.assertEquals(
+                tlDispatcher.Id,
+                thread.HOT_TLDispatcher__c,
+                'HOT_TLDispatcher__c was not updated from ServiceAppointment'
+            );
+        }
     }
 
     @IsTest
@@ -855,7 +926,11 @@ private class HOT_ServiceAppointmentHandlerTest {
             WHERE HOT_Request__c = :request.Id
             LIMIT 1
         ];
-        System.assertEquals(18, serviceAppointment.HOT_WorkOrderID__c.length(), 'Work Order formula should return 18-char id');
+        System.assertEquals(
+            18,
+            serviceAppointment.HOT_WorkOrderID__c.length(),
+            'Work Order formula should return 18-char id'
+        );
 
         ContentVersion contentVersion = new ContentVersion(
             Title = 'a picture',
@@ -1120,7 +1195,11 @@ private class HOT_ServiceAppointmentHandlerTest {
         Integer queriesUsed = Limits.getQueries() - queriesBefore;
 
         System.assertEquals(1, queriesUsed, 'Service should use a single IR query');
-        System.assertEquals(1, interestedResourcesToUpdate.size(), 'Service should return matching IR on same Work Order');
+        System.assertEquals(
+            1,
+            interestedResourcesToUpdate.size(),
+            'Service should return matching IR on same Work Order'
+        );
         System.assertEquals(
             relatedInterestedResource.Id,
             interestedResourcesToUpdate[0].Id,
