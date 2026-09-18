@@ -1,4 +1,4 @@
-public without sharing class HOT_TLThreadlistController {
+public with sharing class HOT_TLThreadlistController {
     @AuraEnabled(cacheable=false)
     public static List<Thread__c> getAllTjenesteleverandorThreads() {
         List<Thread__c> threads = [
