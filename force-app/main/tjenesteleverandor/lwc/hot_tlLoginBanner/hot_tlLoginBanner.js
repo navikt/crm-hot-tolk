@@ -1,5 +1,4 @@
 import { LightningElement, wire } from 'lwc';
-import { NavigationMixin } from 'lightning/navigation';
 import USER_ID from '@salesforce/user/Id';
 import { getRecord, getFieldValue } from 'lightning/uiRecordApi';
 import FIRST_NAME_FIELD from '@salesforce/schema/User.FirstName';
@@ -11,7 +10,7 @@ import { formatDatetime } from 'c/datetimeFormatterNorwegianTime';
 
 const USER_FIELDS = [FIRST_NAME_FIELD, LAST_NAME_FIELD];
 
-export default class Hot_tlLoginBanner extends NavigationMixin(LightningElement) {
+export default class Hot_tlLoginBanner extends LightningElement {
     LeaveIcon = icons + '/Law_and_security/Leave.svg';
     PeopleIcon = icons + '/People/Person.svg';
     ChevronUpIcon = icons + '/Arrows/ChevronUp.svg';
@@ -55,20 +54,17 @@ export default class Hot_tlLoginBanner extends NavigationMixin(LightningElement)
         {
             id: '1',
             label: 'Oppdrag',
-            url: '/s/mine-oppdrag',
-            pageName: 'mine-oppdrag'
+            url: '#'
         },
         {
             id: '2',
             label: 'Ressursplanlegger',
-            url: '/s/ressursplanlegger',
-            pageName: 'ressursplanlegger'
+            url: '#'
         },
         {
             id: '4',
             label: 'Samtaler',
-            url: '/s/samtaler',
-            pageName: 'samtaler'
+            url: '#'
         }
     ];
 
@@ -150,23 +146,6 @@ export default class Hot_tlLoginBanner extends NavigationMixin(LightningElement)
         this.isDropdownOpen = false;
         this.isNotificationDropdownOpen = false;
         this.isNavDropdownOpen = !this.isNavDropdownOpen;
-    }
-
-    handleNavLinkClick(event) {
-        const pageName = event.currentTarget?.dataset?.pageName;
-        if (!pageName) {
-            return;
-        }
-
-        event.preventDefault();
-        this.isNavDropdownOpen = false;
-
-        this[NavigationMixin.Navigate]({
-            type: 'comm__namedPage',
-            attributes: {
-                pageName
-            }
-        });
     }
 
     toggleDropdown() {
