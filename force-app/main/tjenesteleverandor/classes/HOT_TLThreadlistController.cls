@@ -1,4 +1,4 @@
-public with sharing class HOT_TLThreadlistController {
+public without sharing class HOT_TLThreadlistController {
     @AuraEnabled(cacheable=false)
     public static List<Thread__c> getAllTjenesteleverandorThreads() {
         List<Thread__c> threads = [
@@ -14,7 +14,9 @@ public with sharing class HOT_TLThreadlistController {
                 CRM_Latest_Message_Datetime__c,
                 HOT_AppointmentStartTime__c,
                 CRM_Thread_Type__c,
-                HOT_ServiceAppointment__r.HOT_TjenesteleverandorStatus__c
+                HOT_ServiceAppointment__r.HOT_TjenesteleverandorStatus__c,
+                HOT_ReadByTjenesteleverandor__c,
+                HOT_TLDispatcher__c
             FROM Thread__c
             WHERE
                 (CRM_Type__c = 'HOT_TJENESTELEVERANDOR-FORMIDLER'
@@ -25,6 +27,39 @@ public with sharing class HOT_TLThreadlistController {
 
         return threads;
     }
+
+    @AuraEnabled
+    public static void markThreadAsReadByTL(Id threadId) {
+        if (threadId == null) {
+            return;
+        }
+
+        if (!HOT_ThreadDetailController.checkAccess(threadId)) {
+            return;
+        }
+
+        try {
+            Thread__c thread = [
+                SELECT Id, HOT_ReadByTjenesteleverandor__c
+                FROM Thread__c
+                WHERE Id = :threadId
+                LIMIT 1
+            ];
+
+            if (thread.HOT_ReadByTjenesteleverandor__c) {
+                return;
+            }
+
+            thread.HOT_ReadByTjenesteleverandor__c = true;
+            update thread;
+        } catch (Exception e) {
+            LoggerUtility logger = new LoggerUtility();
+            logger.exception(e, CRM_ApplicationDomain.Domain.HOT);
+            logger.publishSynch();
+            throw new AuraHandledException(e.getMessage());
+        }
+    }
+
     @AuraEnabled(cacheable=false)
     public static ServiceAppointment getServiceAppointmentDetails(String recordId) {
         if (recordId != null) {

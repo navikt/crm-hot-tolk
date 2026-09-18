@@ -472,6 +472,32 @@ private class HOT_MessageHelperTest {
         List<Thread__c> tList2 = [SELECT Id, HOT_Thread_read_by__c FROM Thread__c WHERE Id = :tList.get(0).Id];
         System.assertEquals(tList2[0].HOT_Thread_read_by__c, account.Id + ';');
     }
+
+    @IsTest
+    static void setLastMessageFromResetsReadByTjenesteleverandor() {
+        Account relatedAccount = HOT_TestDataFactory.createAccount(true);
+        insert relatedAccount;
+
+        Thread__c thread = HOT_TestDataFactory.createThread('HOT_TJENESTELEVERANDOR-FORMIDLER');
+        thread.CRM_Type__c = 'HOT_TJENESTELEVERANDOR-FORMIDLER';
+        thread.CRM_Related_Object__c = relatedAccount.Id;
+        thread.CRM_isActive__c = true;
+        thread.HOT_ReadByTjenesteleverandor__c = true;
+        insert thread;
+
+        System.Test.startTest();
+        HOT_MessageHelper.setLastMessageFrom(thread.Id, relatedAccount.Id);
+        System.Test.stopTest();
+
+        Thread__c updatedThread = [
+            SELECT HOT_ReadByTjenesteleverandor__c
+            FROM Thread__c
+            WHERE Id = :thread.Id
+            LIMIT 1
+        ];
+        System.assertEquals(false, updatedThread.HOT_ReadByTjenesteleverandor__c);
+    }
+
     @IsTest
     static void markAsReadByNavTest() {
         Profile stdProf = [SELECT Id FROM Profile WHERE Name IN ('Standardbruker', 'Standard User') LIMIT 1];

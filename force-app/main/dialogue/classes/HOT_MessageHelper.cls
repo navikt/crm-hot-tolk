@@ -951,7 +951,13 @@ public without sharing class HOT_MessageHelper {
     @AuraEnabled
     public static void setLastMessageFrom(String threadId, String fromContactId) {
         Thread__c t = [
-            SELECT Id, CRM_Related_Object__c, HOT_Thread_read_by__c, CRM_Latest_Message_Datetime__c
+            SELECT
+                Id,
+                CRM_Related_Object__c,
+                HOT_Thread_read_by__c,
+                CRM_Latest_Message_Datetime__c,
+                CRM_Type__c,
+                HOT_ReadByTjenesteleverandor__c
             FROM Thread__c
             WHERE
                 Id = :threadId
@@ -969,6 +975,16 @@ public without sharing class HOT_MessageHelper {
         ];
         t.CRM_Latest_Message_Datetime__c = Datetime.now();
         t.HOT_Thread_read_by__c = ((fromContactId == 'ansatt/formidler') ? UserInfo.getUserId() : fromContactId) + ';';
+
+        Boolean isTjenesteleverandorThread =
+            t.CRM_Type__c == 'HOT_TJENESTELEVERANDOR-FORMIDLER' ||
+            t.CRM_Type__c == 'HOT_TJENESTELEVERANDOR-TOLK';
+        Boolean isMessageFromTjenesteleverandor = getCurrentUser().Profile.Name == 'HOT Tolk Tjenesteleverandør';
+
+        if (isTjenesteleverandorThread && !isMessageFromTjenesteleverandor) {
+            t.HOT_ReadByTjenesteleverandor__c = false;
+        }
+
         update t;
     }
     @AuraEnabled
