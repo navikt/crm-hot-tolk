@@ -298,7 +298,7 @@ private class HOT_ServiceAppointmentHandlerTest {
             WHERE Name = 'Standard User' OR Name = 'Standardbruker'
             LIMIT 1
         ];
-        User tlDispatcher = HOT_TestDataFactory.createUser('tldispatcher', standardProfile);
+        User tlDispatcher = HOT_TestDataFactory.createUser('tldisp', standardProfile);
         insert tlDispatcher;
 
         HOT_Request__c request = [SELECT Id FROM HOT_Request__c WHERE Subject__c = 'TEST' LIMIT 1];
