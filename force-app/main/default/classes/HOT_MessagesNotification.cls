@@ -58,7 +58,6 @@ public without sharing class HOT_MessagesNotification {
         return new MessageContent(title, body);
     }
     public static void NotifyTjenesteleverandorOnNewMessage(List<Id> threadIds) {
-        System.debug('går inn her også');
         List<HOT_Notification__c> notificationsToInsert = new List<HOT_Notification__c>();
         Set<Id> threadIdsSet = new Set<Id>();
         for (Id thread : threadIds) {
@@ -87,21 +86,15 @@ public without sharing class HOT_MessagesNotification {
             FROM Thread__c
             WHERE Id IN :threadIdsSet
         ];
-        System.debug('Threads hentet: ' + threads);
         //Finner hvem som har sendt siste melding i hver tråd
         Map<Id, Id> threadToLastSender = getLastMessageSenderPerThread(threadIdsSet);
-        System.debug('Thread to last sender mapping: ' + threadToLastSender);
         //Finner rollen ifht oppdraget/bestillingen til den som har sendt siste melding i hver tråd
         Map<Id, String> threadToSenderRole = HOT_ThreadParticipants.getUserSenderRoleInThread(
             threads,
             threadToLastSender
         );
         for (Thread__c thread : threads) {
-            System.debug(
-                'Thread to sender role mapping for thread ' + thread.Id + ': ' + threadToSenderRole.get(thread.Id)
-            );
             MessageContent content = getContentForChannel(threadToSenderRole.get(thread.Id), 'push', false);
-            System.debug('Message content for thread ' + thread.Id + ': ' + content);
             HOT_Notification__c notification = new HOT_Notification__c();
             notification.HOT_Subject__c = content.title;
             notification.HOT_NotificationText__c = content.body;
