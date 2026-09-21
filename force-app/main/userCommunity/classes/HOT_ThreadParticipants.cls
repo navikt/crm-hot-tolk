@@ -137,10 +137,7 @@ public without sharing class HOT_ThreadParticipants {
             thread.CRM_Thread_Type__c == TJENESTELEVERANDOR_FORMIDLER_THREAD_TYPE ||
             thread.CRM_Thread_Type__c == TJENESTELEVERANDOR_TOLK_THREAD_TYPE
         ) {
-            return new HOT_ThreadParticipants(
-                    thread.Id,
-                    new List<String>{ thread.CRM_Thread_Type__c }
-                )
+            return new HOT_ThreadParticipants(thread.Id, new List<String>{ thread.CRM_Thread_Type__c })
                 .getParticipantsByRelatedObjectAndThreadId()
                 .get(thread.CRM_Thread_Type__c)
                 .get(thread.Id);
@@ -252,8 +249,7 @@ public without sharing class HOT_ThreadParticipants {
                     } else if (p.name == 'Ressurskontor' && readerProfileNames.contains('HOT Tolk Saksbehandler')) {
                         p.setHasRead();
                     } else if (
-                        p.name == 'Tjenesteleverandør' &&
-                        readerProfileNames.contains('HOT Tolk Tjenesteleverandør')
+                        p.name == 'Tjenesteleverandør' && readerProfileNames.contains('HOT Tolk Tjenesteleverandør')
                     ) {
                         p.setHasRead();
                     }
@@ -313,14 +309,18 @@ public without sharing class HOT_ThreadParticipants {
             if (
                 thread.CRM_Thread_Type__c == 'HOT_TOLK-FORMIDLER' ||
                 thread.CRM_Thread_Type__c == 'HOT_BRUKER-FORMIDLER' ||
-                thread.CRM_Thread_Type__c == 'HOT_BESTILLER-FORMIDLER' || thread.CRM_Thread_Type__c == 'HOT_TJENESTELEVERANDOR-FORMIDLER'
+                thread.CRM_Thread_Type__c == 'HOT_BESTILLER-FORMIDLER' ||
+                thread.CRM_Thread_Type__c == 'HOT_TJENESTELEVERANDOR-FORMIDLER'
             ) {
                 this.participantsByThreadId.get(thread.Id).add(new Participant('Formidler'));
             }
             if (thread.CRM_Thread_Type__c == 'HOT_TOLK-RESSURSKONTOR') {
                 this.participantsByThreadId.get(thread.Id).add(new Participant('Ressurskontor'));
             }
-            if(thread.CRM_Thread_Type__c == 'HOT_TJENESTELEVERANDOR-FORMIDLER' || thread.CRM_Thread_Type__c == 'HOT_TJENESTELEVERANDOR-TOLK') {
+            if (
+                thread.CRM_Thread_Type__c == 'HOT_TJENESTELEVERANDOR-FORMIDLER' ||
+                thread.CRM_Thread_Type__c == 'HOT_TJENESTELEVERANDOR-TOLK'
+            ) {
                 this.participantsByThreadId.get(thread.Id).add(new Participant('Tjenesteleverandør'));
             }
         }
@@ -612,83 +612,108 @@ public without sharing class HOT_ThreadParticipants {
         return String.join(capitalizedWords, ' ');
     }
     public static Map<Id, String> getUserSenderRoleInThread(
-    List<Thread__c> threadList,
-    Map<Id, Id> threadToLastSender
-) {
-    Map<Id, String> rolesByThreadId = new Map<Id, String>();
+        List<Thread__c> threadList,
+        Map<Id, Id> threadToLastSender
+    ) {
+        Map<Id, String> rolesByThreadId = new Map<Id, String>();
 
-    if (threadList == null || threadList.isEmpty()) {
-        return rolesByThreadId;
-    }
-
-    Set<Id> senderUserIds = new Set<Id>();
-    for (Id senderUserId : threadToLastSender.values()) {
-        if (senderUserId != null) {
-            senderUserIds.add(senderUserId);
-        }
-    }
-
-    Map<Id, User> usersById = senderUserIds.isEmpty()
-        ? new Map<Id, User>()
-        : new Map<Id, User>([
-            SELECT Id, Profile.Name
-            FROM User
-            WHERE Id IN :senderUserIds
-        ]);
-
-    for (Thread__c thread : threadList) {
-        Id threadId = thread.Id;
-        Id senderUserId = threadToLastSender.get(threadId);
-
-        if (senderUserId == null) {
-            rolesByThreadId.put(threadId, null);
-            continue;
+        if (threadList == null || threadList.isEmpty()) {
+            return rolesByThreadId;
         }
 
-        User senderUser = usersById.get(senderUserId);
-        String senderProfileName = senderUser != null ? senderUser.Profile.Name : null;
-        String role;
-
-        for (Participant participant : getParticipants((String) threadId)) {
-            if (participant.userId == senderUserId) {
-                if (participant.role == 'Tolk') {
-                    role = 'tolk';
-                } else if (participant.role == 'Tolkebruker') {
-                    role = 'bruker';
-                } else if (participant.role == 'Bestiller') {
-                    role = 'bestiller';
-                }
-
-                if (role != null) {
-                    break;
-                }
+        Set<Id> senderUserIds = new Set<Id>();
+        for (Id senderUserId : threadToLastSender.values()) {
+            if (senderUserId != null) {
+                senderUserIds.add(senderUserId);
             }
         }
 
-        if (
-            role == null &&
-            senderProfileName == 'HOT Tolk Formidler' &&
-            (
-                thread.CRM_Thread_Type__c == 'HOT_TOLK-FORMIDLER' ||
+        Map<Id, User> usersById = senderUserIds.isEmpty()
+            ? new Map<Id, User>()
+            : new Map<Id, User>(
+                  [
+                      SELECT Id, Profile.Name
+                      FROM User
+                      WHERE Id IN :senderUserIds
+                  ]
+              );
+
+        for (Thread__c thread : threadList) {
+            Id threadId = thread.Id;
+            Id senderUserId = threadToLastSender.get(threadId);
+
+            if (senderUserId == null) {
+                rolesByThreadId.put(threadId, null);
+                continue;
+            }
+
+            User senderUser = usersById.get(senderUserId);
+            String senderProfileName = senderUser != null ? senderUser.Profile.Name : null;
+            String role;
+
+            if (thread.CRM_Thread_Type__c == TJENESTELEVERANDOR_FORMIDLER_THREAD_TYPE) {
+                if (senderProfileName == 'HOT Tolk Formidler') {
+                    rolesByThreadId.put(threadId, 'formidler');
+                    continue;
+                }
+                if (senderProfileName == 'System Administrator' || senderProfileName == 'Systemadministrator') {
+                    rolesByThreadId.put(threadId, 'systemadministrator');
+                    continue;
+                }
+                if (senderProfileName == 'HOT Tolk Tjenesteleverandør') {
+                    rolesByThreadId.put(threadId, 'tjenesteleverandør');
+                    continue;
+                }
+            }
+
+            for (Participant participant : getParticipants((String) threadId)) {
+                if (participant.userId == senderUserId) {
+                    if (participant.role == 'Tolk') {
+                        role = 'tolk';
+                    } else if (participant.role == 'Tolkebruker') {
+                        role = 'bruker';
+                    } else if (participant.role == 'Bestiller') {
+                        role = 'bestiller';
+                    }
+
+                    if (role != null) {
+                        break;
+                    }
+                }
+            }
+
+            if (
+                role == null &&
+                (senderProfileName == 'HOT Tolk Formidler' ||
+                senderProfileName == 'System Administrator' ||
+                senderProfileName == 'Systemadministrator') &&
+                (thread.CRM_Thread_Type__c == 'HOT_TOLK-FORMIDLER' ||
                 thread.CRM_Thread_Type__c == 'HOT_BRUKER-FORMIDLER' ||
-                thread.CRM_Thread_Type__c == 'HOT_BESTILLER-FORMIDLER'
-            )
-        ) {
-            role = 'formidler';
+                thread.CRM_Thread_Type__c == 'HOT_BESTILLER-FORMIDLER' ||
+                thread.CRM_Thread_Type__c == 'HOT_TJENESTELEVERANDOR-FORMIDLER')
+            ) {
+                role = 'formidler';
+            }
+            if (
+                role == null &&
+                senderProfileName == 'HOT Tolk Tjenesteleverandør' &&
+                (thread.CRM_Thread_Type__c == 'HOT_TJENESTELEVERANDOR-TOLK' ||
+                thread.CRM_Thread_Type__c == 'HOT_TJENESTELEVERANDOR-FORMIDLER')
+            ) {
+                role = 'tjenesteleverandør';
+            }
+
+            if (
+                role == null &&
+                senderProfileName == 'HOT Tolk Saksbehandler' &&
+                thread.CRM_Thread_Type__c == 'HOT_TOLK-RESSURSKONTOR'
+            ) {
+                role = 'ressurskontor';
+            }
+
+            rolesByThreadId.put(threadId, role);
         }
 
-        if (
-            role == null &&
-            senderProfileName == 'HOT Tolk Saksbehandler' &&
-            thread.CRM_Thread_Type__c == 'HOT_TOLK-RESSURSKONTOR'
-        ) {
-            role = 'ressurskontor';
-        }
-
-        rolesByThreadId.put(threadId, role);
+        return rolesByThreadId;
     }
-
-    return rolesByThreadId;
-}
-
 }

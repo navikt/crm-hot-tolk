@@ -4,7 +4,15 @@
         <nav class="navigation">
             <div class="desktop-navigation">
                 <template for:each={navLinks} for:item="link">
-                    <a key={link.id} href={link.url} class="nav-link"> {link.label} </a>
+                    <a
+                        key={link.id}
+                        href={link.url}
+                        data-page-name={link.pageName}
+                        onclick={handleNavLinkClick}
+                        class="nav-link"
+                    >
+                        {link.label}
+                    </a>
                 </template>
             </div>
 
@@ -22,7 +30,15 @@
 
                 <div class={navDropdownClass}>
                     <template for:each={navLinks} for:item="link">
-                        <a key={link.id} href={link.url} class="dropdown-link">{link.label}</a>
+                        <a
+                            key={link.id}
+                            href={link.url}
+                            data-page-name={link.pageName}
+                            onclick={handleNavLinkClick}
+                            class="dropdown-link"
+                        >
+                            {link.label}
+                        </a>
                     </template>
                 </div>
             </div>
