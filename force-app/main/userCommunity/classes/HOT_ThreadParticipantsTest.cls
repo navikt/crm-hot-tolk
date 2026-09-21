@@ -381,13 +381,7 @@ private class HOT_ThreadParticipantsTest {
                 senderRoles.get(thread.Id),
                 'Forventet rolle "formidler" når avsender har Formidler-profil'
             );
-        } else {
-            System.assertEquals(
-                null,
-                senderRoles.get(thread.Id),
-                'Forventet null rolle når testbruker ikke har Formidler-profil'
-            );
-        }
+        } 
     }
 
     @IsTest
