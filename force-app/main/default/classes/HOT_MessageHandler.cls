@@ -72,7 +72,6 @@ public without sharing class HOT_MessageHandler extends MyTriggers {
             HOT_MessagesNotification.NotifyUserOnNewMessage(threadIdsToNotifyUserOnNewMessage);
         }
         if (!threadIdsToNotifyTjenesteleverandorOnNewMessage.isEmpty()) {
-            System.debug('Går inn her');
             HOT_MessagesNotification.NotifyTjenesteleverandorOnNewMessage(
                 threadIdsToNotifyTjenesteleverandorOnNewMessage
             );
