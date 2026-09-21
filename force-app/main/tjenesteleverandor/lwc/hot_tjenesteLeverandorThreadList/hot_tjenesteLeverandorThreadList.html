@@ -182,11 +182,12 @@
                                 </template>
                             </div>
                         </div>
-                        <c-button
+                        <c-hot_button
                             button-label={serviceAppointmentDetailsButtonLabel}
                             onbuttonclick={showServiceAppointmentDetails}
                             disabled={isLoadingServiceAppointmentDetails}
-                        ></c-button>
+                            size="xsmall"
+                        ></c-hot_button>
                         <template lwc:if={isLoadingServiceAppointmentDetails}>
                             <p class="service-appointment-status" role="status">Laster oppdragsdetaljer</p>
                         </template>
