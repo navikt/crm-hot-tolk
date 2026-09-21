@@ -1135,6 +1135,9 @@ public without sharing class HOT_MessageHelper {
             when 'ressurskontor' {
                 return 'Du har fått en melding fra ressurskontor';
             }
+            when 'tjenesteleverandør' {
+                return 'Du har fått en melding fra tjenesteleverandør';
+            }
             when else {
                 return 'Du har fått en melding';
             }

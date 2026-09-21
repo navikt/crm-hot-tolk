@@ -1,4 +1,5 @@
 import { LightningElement, wire } from 'lwc';
+import { NavigationMixin } from 'lightning/navigation';
 import USER_ID from '@salesforce/user/Id';
 import { getRecord, getFieldValue } from 'lightning/uiRecordApi';
 import FIRST_NAME_FIELD from '@salesforce/schema/User.FirstName';
@@ -10,7 +11,7 @@ import { formatDatetime } from 'c/datetimeFormatterNorwegianTime';
 
 const USER_FIELDS = [FIRST_NAME_FIELD, LAST_NAME_FIELD];
 
-export default class Hot_tlLoginBanner extends LightningElement {
+export default class Hot_tlLoginBanner extends NavigationMixin(LightningElement) {
     LeaveIcon = icons + '/Law_and_security/Leave.svg';
     PeopleIcon = icons + '/People/Person.svg';
     ChevronUpIcon = icons + '/Arrows/ChevronUp.svg';
@@ -54,17 +55,20 @@ export default class Hot_tlLoginBanner extends LightningElement {
         {
             id: '1',
             label: 'Oppdrag',
-            url: '#'
+            url: '/s/mine-oppdrag',
+            pageName: 'mine-oppdrag'
         },
         {
             id: '2',
             label: 'Ressursplanlegger',
-            url: '#'
+            url: '/s/ressursplanlegger',
+            pageName: 'ressursplanlegger'
         },
         {
             id: '4',
             label: 'Samtaler',
-            url: '#'
+            url: '/s/samtaler',
+            pageName: 'samtaler'
         }
     ];
 
@@ -146,6 +150,23 @@ export default class Hot_tlLoginBanner extends LightningElement {
         this.isDropdownOpen = false;
         this.isNotificationDropdownOpen = false;
         this.isNavDropdownOpen = !this.isNavDropdownOpen;
+    }
+
+    handleNavLinkClick(event) {
+        const pageName = event.currentTarget?.dataset?.pageName;
+        if (!pageName) {
+            return;
+        }
+
+        event.preventDefault();
+        this.isNavDropdownOpen = false;
+
+        this[NavigationMixin.Navigate]({
+            type: 'comm__namedPage',
+            attributes: {
+                pageName
+            }
+        });
     }
 
     toggleDropdown() {
