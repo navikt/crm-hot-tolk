@@ -1,6 +1,7 @@
 import { LightningElement } from 'lwc';
 import getAllThreads from '@salesforce/apex/HOT_TLThreadlistController.getAllTjenesteleverandorThreads';
 import getServiceAppointmentDetails from '@salesforce/apex/HOT_TLThreadlistController.getServiceAppointmentDetails';
+import markThreadAsReadByTL from '@salesforce/apex/HOT_TLThreadlistController.markThreadAsReadByTL';
 import getParticipants from '@salesforce/apex/HOT_ThreadParticipants.getParticipants';
 import { formatDatetimeinterval } from 'c/datetimeFormatterNorwegianTime';
 import userId from '@salesforce/user/Id';
@@ -83,7 +84,7 @@ export default class hot_tjenesteLeverandorThreadList extends LightningElement {
         return this.conversations
             .filter((conversation) => {
                 const matchesFilter = activeFilter.threadTypes.includes(conversation.threadType);
-                const matchesOwner = !this.showOnlyMine || conversation.ownerId === userId;
+                const matchesOwner = !this.showOnlyMine || conversation.dispatcherId === userId;
                 const matchesSearch =
                     normalizedSearchTerm.length === 0 ||
                     conversation.subject.toLowerCase().includes(normalizedSearchTerm);
@@ -167,6 +168,8 @@ export default class hot_tjenesteLeverandorThreadList extends LightningElement {
         const conversationId = event.currentTarget.dataset.id;
 
         this.selectedConversationId = conversationId;
+        this.markConversationAsRead(conversationId);
+        void this.persistConversationAsRead(conversationId);
 
         const conversation = this.conversations.find(({ id }) => id === conversationId);
 
@@ -180,6 +183,20 @@ export default class hot_tjenesteLeverandorThreadList extends LightningElement {
         console.log('Selected conversation:', conversation);
         console.log('Related record ID:', this.relatedRecordId);
         console.log('Service appointment:', this.serviceAppointment);
+    }
+
+    markConversationAsRead(conversationId) {
+        this.conversations = this.conversations.map((conversation) =>
+            conversation.id === conversationId ? { ...conversation, isRead: true } : conversation
+        );
+    }
+
+    async persistConversationAsRead(conversationId) {
+        try {
+            await markThreadAsReadByTL({ threadId: conversationId });
+        } catch (error) {
+            console.error('Could not update HOT_ReadByTjenesteleverandor__c:', error);
+        }
     }
 
     async loadThreadParticipants(threadId) {
@@ -386,10 +403,11 @@ function mapThreadToConversation(thread) {
         ...thread,
         id: thread.Id,
         ownerId: thread.OwnerId,
+        dispatcherId: thread.HOT_TLDispatcher__c,
         subject: thread.HOT_Subject__c || '',
         appointmentTime: formatSalesforceDateTime(thread.HOT_AppointmentStartTime__c),
         latestMessageDateTime: thread.CRM_Latest_Message_Datetime__c || thread.CRM_Registered_Datetime_Formula__c,
-        isRead: Number(thread.CRM_Number_of_unread_Messages__c || 0) === 0,
+        isRead: Boolean(thread.HOT_ReadByTjenesteleverandor__c),
         threadType,
         participantLabel: threadType === 'HOT_TJENESTELEVERANDOR-FORMIDLER' ? 'Med Nav' : 'Med tolk',
         relatedRecordId: thread.CRM_Related_Object__c,
