@@ -551,6 +551,21 @@ public without sharing class HOT_MessageHelper {
                 thread.HOT_Title__c = serviceAppointment.Subject;
                 thread.HOT_Dispatcher__c = serviceAppointment.HOT_Request__r.Dispatcher__c;
                 HOT_DatabaseOperations.insertRecords(thread);
+            } else if (type == 'HOT_TJENESTELEVERANDOR-TOLK') {
+                ServiceAppointment serviceAppointment = [
+                    SELECT Subject, HOT_Request__r.Dispatcher__c, HOT_ServiceResource__c, HOT_ServiceResource__r.AccountId
+                    FROM ServiceAppointment
+                    WHERE Id = :recordId
+                    LIMIT 1
+                ];
+                thread.CRM_Related_Object__c = recordId;
+                thread.CRM_Thread_Type__c = 'HOT_TJENESTELEVERANDOR-TOLK';
+                thread.HOT_ServiceAppointment__c = recordId;
+                thread.HOT_ServiceResource__c = serviceAppointment.HOT_ServiceResource__c;
+                thread.CRM_Account__c = serviceAppointment.HOT_ServiceResource__r.AccountId;
+                thread.HOT_Title__c = serviceAppointment.Subject;
+                thread.HOT_Dispatcher__c = serviceAppointment.HOT_Request__r.Dispatcher__c;
+                HOT_DatabaseOperations.insertRecords(thread);
             }
         }
         if (objectType == 'HOT_InterestedResource__c') {
@@ -595,7 +610,7 @@ public without sharing class HOT_MessageHelper {
             thread.CRM_Thread_Type__c = 'HOT_TJENESTELEVERANDOR-HONORAR';
             thread.CRM_Account__c = wageClaim.ServiceResource__r.AccountId;
             thread.HOT_WageClaim__c = recordId;
-            thread.HOT_Title__c = wageClaim.ServiceAppointment__r.Subject;
+            thread.HOT_Title__c = wageClaim.ServiceAppointment__r?.Subject;
             HOT_DatabaseOperations.insertRecords(thread);
         }
         return thread;
@@ -1023,7 +1038,8 @@ public without sharing class HOT_MessageHelper {
 
         Boolean isTjenesteleverandorThread =
             t.CRM_Type__c == 'HOT_TJENESTELEVERANDOR-FORMIDLER' ||
-            t.CRM_Type__c == 'HOT_TJENESTELEVERANDOR-TOLK';
+            t.CRM_Type__c == 'HOT_TJENESTELEVERANDOR-TOLK' ||
+            t.CRM_Type__c == 'HOT_TJENESTELEVERANDOR-HONORAR';
         Boolean isMessageFromTjenesteleverandor = getCurrentUser().Profile.Name == 'HOT Tolk Tjenesteleverandør';
 
         if (isTjenesteleverandorThread && !isMessageFromTjenesteleverandor) {
