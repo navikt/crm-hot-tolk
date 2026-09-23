@@ -12,6 +12,7 @@ export default class Hot_tjenesteleverandorSaThreads extends LightningElement {
     _threadConfigurations = [];
     requestId = 0;
     threadCards = [];
+    isLoading = false;
 
     @api
     get serviceAppointmentId() {
@@ -37,6 +38,7 @@ export default class Hot_tjenesteleverandorSaThreads extends LightningElement {
         const serviceAppointmentId = this.serviceAppointmentId;
         const configurations = this.threadConfigurations;
         const currentRequestId = ++this.requestId;
+        this.isLoading = Boolean(serviceAppointmentId && configurations.length > 0);
 
         if (!serviceAppointmentId || configurations.length === 0) {
             this.threadCards = [];
@@ -58,10 +60,12 @@ export default class Hot_tjenesteleverandorSaThreads extends LightningElement {
 
             if (currentRequestId === this.requestId) {
                 this.threadCards = cards;
+                this.isLoading = false;
             }
         } catch (error) {
             if (currentRequestId === this.requestId) {
                 this.threadCards = configurations.map((configuration) => this.toThreadCard(configuration, null, []));
+                this.isLoading = false;
             }
             console.error('Could not load related threads', JSON.stringify(error), error);
         }
