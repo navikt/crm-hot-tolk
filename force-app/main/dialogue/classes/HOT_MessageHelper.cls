@@ -181,12 +181,12 @@ public without sharing class HOT_MessageHelper {
     public static HOT_WageClaim__c getWageClaimInformationAndAccessCheck(Id recordId) {
         User user = getCurrentUser();
         HOT_WageClaim__c wc = [
-            SELECT Id, ServiceResource__r.RelatedRecordId
+            SELECT Id
             FROM HOT_WageClaim__c
             WHERE Id = :recordId
             LIMIT 1
         ];
-        if (wc.ServiceResource__r.RelatedRecordId == user.Id || HOT_ThreadDetailController.isAdminOrFormidler(user)) {
+        if (HOT_ThreadDetailController.isAdmin(user)) {
             return wc;
         }
         throw new AuraHandledException('No access');
@@ -210,6 +210,7 @@ public without sharing class HOT_MessageHelper {
             FROM AssignedResource
             WHERE ServiceResource.RelatedRecordId = :user.Id AND ServiceAppointmentId = :recordId
         ];
+        //Om det er formidler og oppdraget er overført skal det ikke vises. Fikse denne
         if (irList.size() != 0 || arList.size() != 0 || HOT_ThreadDetailController.isAdminOrFormidler(user)) {
             return [
                 SELECT Id, HOT_IsReleasedToFreelance__c
@@ -220,6 +221,46 @@ public without sharing class HOT_MessageHelper {
         }
         throw new AuraHandledException('No access');
     }
+    @AuraEnabled(cacheable=true)
+    public static List<String> getThreadTypesOfInterest(Id recordId) {
+        ServiceAppointment sa = [
+            SELECT Id, HOT_TjenesteleverandorStatus__c
+            FROM ServiceAppointment
+            WHERE Id = :recordId
+            LIMIT 1
+        ];
+        Boolean isAdmin = HOT_ThreadDetailController.isAdmin(getCurrentUser());
+        Boolean isTransferredToServiceProvider =
+            sa.HOT_TjenesteleverandorStatus__c == 'Transferred' ||
+            sa.HOT_TjenesteleverandorStatus__c == 'Accepted';
+
+        Set<String> threadTypesToShow = new Set<String>();
+
+        if (isAdmin) {
+            threadTypesToShow.add('HOT_TOLK-FORMIDLER');
+            threadTypesToShow.add('HOT_TJENESTELEVERANDOR-FORMIDLER');
+            threadTypesToShow.add('HOT_TJENESTELEVERANDOR-TOLK');
+        } else if (isTransferredToServiceProvider) {
+            threadTypesToShow.add('HOT_TJENESTELEVERANDOR-FORMIDLER');
+        } else {
+            threadTypesToShow.add('HOT_TOLK-FORMIDLER');
+            // Om status er satt men ikke overført lenger, behold en evt. eksisterende TJENESTELEVERANDOR-FORMIDLER-tråd
+            if (sa.HOT_TjenesteleverandorStatus__c != null) {
+                List<Thread__c> existingTjenesteleverandorThreads = [
+                    SELECT Id
+                    FROM Thread__c
+                    WHERE CRM_Related_Object__c = :recordId AND CRM_Thread_Type__c = 'HOT_TJENESTELEVERANDOR-FORMIDLER'
+                    LIMIT 1
+                ];
+                if (!existingTjenesteleverandorThreads.isEmpty()) {
+                    threadTypesToShow.add('HOT_TJENESTELEVERANDOR-FORMIDLER');
+                }
+            }
+        }
+
+        return new List<String>(threadTypesToShow);
+    }
+
     @AuraEnabled(cacheable=true)
     public static HOT_InterestedResource__c getInterestedResourceInformationAndAccessCheck(Id recordId) {
         User user = getCurrentUser();
@@ -954,7 +995,13 @@ public without sharing class HOT_MessageHelper {
     @AuraEnabled
     public static void setLastMessageFrom(String threadId, String fromContactId) {
         Thread__c t = [
-            SELECT Id, CRM_Related_Object__c, HOT_Thread_read_by__c, CRM_Latest_Message_Datetime__c
+            SELECT
+                Id,
+                CRM_Related_Object__c,
+                HOT_Thread_read_by__c,
+                CRM_Latest_Message_Datetime__c,
+                CRM_Type__c,
+                HOT_ReadByTjenesteleverandor__c
             FROM Thread__c
             WHERE
                 Id = :threadId
@@ -973,6 +1020,16 @@ public without sharing class HOT_MessageHelper {
         ];
         t.CRM_Latest_Message_Datetime__c = Datetime.now();
         t.HOT_Thread_read_by__c = ((fromContactId == 'ansatt/formidler') ? UserInfo.getUserId() : fromContactId) + ';';
+
+        Boolean isTjenesteleverandorThread =
+            t.CRM_Type__c == 'HOT_TJENESTELEVERANDOR-FORMIDLER' ||
+            t.CRM_Type__c == 'HOT_TJENESTELEVERANDOR-TOLK';
+        Boolean isMessageFromTjenesteleverandor = getCurrentUser().Profile.Name == 'HOT Tolk Tjenesteleverandør';
+
+        if (isTjenesteleverandorThread && !isMessageFromTjenesteleverandor) {
+            t.HOT_ReadByTjenesteleverandor__c = false;
+        }
+
         update t;
     }
     @AuraEnabled
@@ -1139,7 +1196,10 @@ public without sharing class HOT_MessageHelper {
             when 'ressurskontor' {
                 return 'Du har fått en melding fra ressurskontor';
             }
-            when 'leverandor' {
+            when 'tjenesteleverandør' {
+                return 'Du har fått en melding fra tjenesteleverandør';
+            }
+            when 'tjenesteleverandør-honorar' {
                 return 'Du har fått en melding fra leverandør';
             }
             when else {
@@ -1167,7 +1227,7 @@ public without sharing class HOT_MessageHelper {
             when 'ressurskontor' {
                 text += 'Du har fått en melding fra ressurskontor. ';
             }
-            when 'leverandor' {
+            when 'tjenesteleverandør-honorar' {
                 text += 'Du har fått en melding fra leverandør. ';
             }
             when else {
