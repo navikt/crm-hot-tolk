@@ -199,6 +199,71 @@ private class HOT_MessageHelperTest {
         Test.stopTest();
         System.assertEquals(t.size(), 2);
     }
+
+    @IsTest
+    static void getThreadTypesOfInterestAlwaysIncludesInterpreterDispatcherThread() {
+        ServiceAppointment serviceAppointment = [SELECT Id FROM ServiceAppointment WHERE Subject = 'TEST' LIMIT 1];
+
+        Test.startTest();
+        List<String> threadTypes = HOT_MessageHelper.getThreadTypesOfInterest(serviceAppointment.Id);
+        Test.stopTest();
+
+        System.assert(
+            threadTypes.contains('HOT_TOLK-FORMIDLER'),
+            'Interpreter dispatcher thread should always be shown.'
+        );
+        System.assert(
+            !threadTypes.contains('HOT_TJENESTELEVERANDOR-FORMIDLER'),
+            'Service provider thread should not be shown before transfer or acceptance.'
+        );
+    }
+
+    @IsTest
+    static void getThreadTypesOfInterestIncludesServiceProviderThreadWhenTransferredOrAccepted() {
+        ServiceAppointment serviceAppointment = [SELECT Id FROM ServiceAppointment WHERE Subject = 'TEST' LIMIT 1];
+        myTriggers.disable(HOT_ServiceAppointmentHandler.class);
+        myTriggers.disable(HOT_ServiceAppointmentStatusHandler.class);
+        myTriggers.disable(HOT_ServiceAppointmentAccessHandler.class);
+
+        List<String> transferredThreadTypes;
+        List<String> acceptedThreadTypes;
+
+        Test.startTest();
+        update new ServiceAppointment(Id = serviceAppointment.Id, HOT_TjenesteleverandorStatus__c = 'Transferred');
+        transferredThreadTypes = HOT_MessageHelper.getThreadTypesOfInterest(serviceAppointment.Id);
+
+        update new ServiceAppointment(Id = serviceAppointment.Id, HOT_TjenesteleverandorStatus__c = 'Accepted');
+        acceptedThreadTypes = HOT_MessageHelper.getThreadTypesOfInterest(serviceAppointment.Id);
+        Test.stopTest();
+
+        System.assert(
+            transferredThreadTypes.contains('HOT_TJENESTELEVERANDOR-FORMIDLER'),
+            'Service provider thread should be shown after transfer.'
+        );
+
+        System.assert(
+            acceptedThreadTypes.contains('HOT_TJENESTELEVERANDOR-FORMIDLER'),
+            'Service provider thread should be shown after acceptance.'
+        );
+    }
+
+    @IsTest
+    static void getThreadTypesOfInterestPreservesExistingThreadTypes() {
+        ServiceAppointment serviceAppointment = [SELECT Id FROM ServiceAppointment WHERE Subject = 'TEST' LIMIT 1];
+        Thread__c existingThread = HOT_TestDataFactory.createThread();
+        existingThread.CRM_Related_Object__c = serviceAppointment.Id;
+        existingThread.CRM_Thread_Type__c = 'HOT_BRUKER-TOLK';
+        insert existingThread;
+
+        Test.startTest();
+        List<String> threadTypes = HOT_MessageHelper.getThreadTypesOfInterest(serviceAppointment.Id);
+        Test.stopTest();
+
+        System.assertEquals(2, threadTypes.size(), 'Existing and mandatory thread types should be returned.');
+        System.assert(threadTypes.contains('HOT_BRUKER-TOLK'), 'Existing thread type should be preserved.');
+        System.assert(threadTypes.contains('HOT_TOLK-FORMIDLER'), 'Mandatory thread type should be included.');
+    }
+
     @IsTest
     static void createThread() {
         HOT_Request__c request = [SELECT Id, Account__c FROM HOT_Request__c WHERE Subject__c = 'TEST' LIMIT 1];

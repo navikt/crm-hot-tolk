@@ -207,6 +207,7 @@ public without sharing class HOT_MessageHelper {
             FROM AssignedResource
             WHERE ServiceResource.RelatedRecordId = :user.Id AND ServiceAppointmentId = :recordId
         ];
+        //Om det er formidler og oppdraget er overført skal det ikke vises. Fikse denne
         if (irList.size() != 0 || arList.size() != 0 || HOT_ThreadDetailController.isAdminOrFormidler(user)) {
             return [
                 SELECT Id, HOT_IsReleasedToFreelance__c
@@ -217,6 +218,45 @@ public without sharing class HOT_MessageHelper {
         }
         throw new AuraHandledException('No access');
     }
+    @AuraEnabled(cacheable=true)
+    public static List<String> getThreadTypesOfInterest(Id recordId) {
+        ServiceAppointment sa = [
+            SELECT Id, HOT_TjenesteleverandorStatus__c
+            FROM ServiceAppointment
+            WHERE Id = :recordId
+            LIMIT 1
+        ];
+
+        Boolean isTransferredToServiceProvider =
+            sa.HOT_TjenesteleverandorStatus__c == 'Transferred' ||
+            sa.HOT_TjenesteleverandorStatus__c == 'Accepted';
+
+        Set<String> threadTypesToShow = new Set<String>();
+
+        // Finn alle eksisterende trådtyper
+        List<Thread__c> existingThreads = [
+            SELECT Id, CRM_Thread_Type__c
+            FROM Thread__c
+            WHERE CRM_Related_Object__c = :recordId
+        ];
+
+        for (Thread__c thread : existingThreads) {
+            if (thread.CRM_Thread_Type__c != null) {
+                threadTypesToShow.add(thread.CRM_Thread_Type__c);
+            }
+        }
+
+        // HOT_TOLK-FORMIDLER skal alltid vises
+        threadTypesToShow.add('HOT_TOLK-FORMIDLER');
+
+        // Disse skal vises når SA er overført/akseptert
+        if (isTransferredToServiceProvider) {
+            threadTypesToShow.add('HOT_TJENESTELEVERANDOR-FORMIDLER');
+        }
+
+        return new List<String>(threadTypesToShow);
+    }
+
     @AuraEnabled(cacheable=true)
     public static HOT_InterestedResource__c getInterestedResourceInformationAndAccessCheck(Id recordId) {
         User user = getCurrentUser();
