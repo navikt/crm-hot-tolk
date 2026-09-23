@@ -317,12 +317,6 @@ public without sharing class HOT_ThreadParticipants {
             if (thread.CRM_Thread_Type__c == 'HOT_TOLK-RESSURSKONTOR') {
                 this.participantsByThreadId.get(thread.Id).add(new Participant('Ressurskontor'));
             }
-            if (
-                thread.CRM_Thread_Type__c == 'HOT_TJENESTELEVERANDOR-FORMIDLER' ||
-                thread.CRM_Thread_Type__c == 'HOT_TJENESTELEVERANDOR-TOLK'
-            ) {
-                this.participantsByThreadId.get(thread.Id).add(new Participant('Tjenesteleverandør'));
-            }
         }
         return this;
     }
