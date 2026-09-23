@@ -51,4 +51,22 @@ public with sharing class HOT_TLThreadlistController {
             return null;
         }
     }
+    @AuraEnabled
+    public static Map<String, Integer> getNumberOfUnreadThreads() {
+        Id currentUserId = UserInfo.getUserId();
+        List<Thread__c> allUnreadThreads = [
+            SELECT Id, HOT_TLDispatcher__c
+            FROM Thread__c
+            WHERE HOT_ReadByTjenesteleverandor__c = FALSE
+        ];
+
+        Integer myUnreadCount = 0;
+
+        for (Thread__c thread : allUnreadThreads) {
+            if (thread.HOT_TLDispatcher__c == currentUserId) {
+                myUnreadCount++;
+            }
+        }
+        return new Map<String, Integer>{ 'allUnread' => allUnreadThreads.size(), 'myUnread' => myUnreadCount };
+    }
 }
