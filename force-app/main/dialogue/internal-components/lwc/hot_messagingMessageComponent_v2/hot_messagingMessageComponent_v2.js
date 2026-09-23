@@ -7,6 +7,7 @@ import getRequestInformation from '@salesforce/apex/HOT_MessageHelper.getRequest
 import getWorkOrderInformation from '@salesforce/apex/HOT_MessageHelper.getWorkOrderInformationAndAccessCheck';
 import getWageClaimInformation from '@salesforce/apex/HOT_MessageHelper.getWageClaimInformationAndAccessCheck';
 import getServiceAppointmentInformation from '@salesforce/apex/HOT_MessageHelper.getServiceAppointmentInformationAndAccessCheck';
+import getThreadTypesOfInterest from '@salesforce/apex/HOT_MessageHelper.getThreadTypesOfInterest';
 import getInterestedResourceInformation from '@salesforce/apex/HOT_MessageHelper.getInterestedResourceInformationAndAccessCheck';
 import getAccountOnWorkOrder from '@salesforce/apex/HOT_MessageHelper.getAccountOnWorkOrder';
 import getThreadInformation from '@salesforce/apex/HOT_ThreadDetailController.getThreadDetails';
@@ -34,6 +35,7 @@ export default class hot_messagingMessageComponent extends LightningElement {
     interpreterSetToRedactionFlow = false;
     officeSetToRedactionFlow = false;
     tjenesteleverandorFormidlerSetToRedactionFlow = false;
+    tjenesteleverandorTolkSetToRedactionFlow = false;
     runningThreadCreate = false;
     //flow variables
     userRedactionFlowVariables = [];
@@ -43,6 +45,7 @@ export default class hot_messagingMessageComponent extends LightningElement {
     interpreterRedactionFlowVariables = [];
     officeRedactionFlowVariables = [];
     tjenesteleverandorFormidlerRedactionFlowVariables = [];
+    tjenesteleverandorTolkRedactionFlowVariables = [];
     noAccess = false;
     noAccessMessage = 'Du har ikke tilgang til samtaler';
 
@@ -53,7 +56,8 @@ export default class hot_messagingMessageComponent extends LightningElement {
         'HOT_BRUKER-FORMIDLER': '',
         'HOT_TOLK-RESSURSKONTOR': '',
         'HOT_TOLK-FORMIDLER': '',
-        'HOT_TJENESTELEVERANDOR-FORMIDLER': ''
+        'HOT_TJENESTELEVERANDOR-FORMIDLER': '',
+        'HOT_TJENESTELEVERANDOR-TOLK': ''
     };
 
     openThreads = {
@@ -63,7 +67,8 @@ export default class hot_messagingMessageComponent extends LightningElement {
         'HOT_BRUKER-FORMIDLER': null,
         'HOT_TOLK-RESSURSKONTOR': null,
         'HOT_TOLK-FORMIDLER': null,
-        'HOT_TJENESTELEVERANDOR-FORMIDLER': null
+        'HOT_TJENESTELEVERANDOR-FORMIDLER': null,
+        'HOT_TJENESTELEVERANDOR-TOLK': null
     };
     threadLabels = {
         'HOT_TOLK-TOLK': 'Samtale med medtolker',
@@ -72,7 +77,8 @@ export default class hot_messagingMessageComponent extends LightningElement {
         'HOT_BRUKER-FORMIDLER': 'Samtale med bruker',
         'HOT_TOLK-RESSURSKONTOR': 'Samtale med tolk',
         'HOT_TOLK-FORMIDLER': 'Samtale med tolk',
-        'HOT_TJENESTELEVERANDOR-FORMIDLER': 'Samtale med tjenesteleverandør'
+        'HOT_TJENESTELEVERANDOR-FORMIDLER': 'Samtale med tjenesteleverandør',
+        'HOT_TJENESTELEVERANDOR-TOLK': 'Samtale mellom tjenesteleverandør og tolk'
     };
     threadCmpMap = {
         'HOT_TOLK-TOLK': '[data-int-int-thread]',
@@ -81,7 +87,8 @@ export default class hot_messagingMessageComponent extends LightningElement {
         'HOT_BRUKER-FORMIDLER': '[data-user-thread]',
         'HOT_TOLK-RESSURSKONTOR': '[data-office-thread]',
         'HOT_TOLK-FORMIDLER': '[data-int-thread]',
-        'HOT_TJENESTELEVERANDOR-FORMIDLER': '[data-tjenesteleverandor-formidler-thread]'
+        'HOT_TJENESTELEVERANDOR-FORMIDLER': '[data-tjenesteleverandor-formidler-thread]',
+        'HOT_TJENESTELEVERANDOR-TOLK': '[data-tjenesteleverandor-tolk-thread]'
     };
     threadMockCmpMap = {
         'HOT_TOLK-TOLK': '[data-int-int-thread-mock]',
@@ -90,7 +97,8 @@ export default class hot_messagingMessageComponent extends LightningElement {
         'HOT_BRUKER-FORMIDLER': '[data-user-thread-mock]',
         'HOT_TOLK-RESSURSKONTOR': '[data-office-thread-mock]',
         'HOT_TOLK-FORMIDLER': '[data-int-thread-mock]',
-        'HOT_TJENESTELEVERANDOR-FORMIDLER': '[data-tjenesteleverandor-formidler-thread-mock]'
+        'HOT_TJENESTELEVERANDOR-FORMIDLER': '[data-tjenesteleverandor-formidler-thread-mock]',
+        'HOT_TJENESTELEVERANDOR-TOLK': '[data-tjenesteleverandor-tolk-thread-mock]'
     };
     tabLabels = {
         'HOT_TOLK-TOLK': {
@@ -120,6 +128,10 @@ export default class hot_messagingMessageComponent extends LightningElement {
         'HOT_TJENESTELEVERANDOR-FORMIDLER': {
             open: 'Tjenesteleverandør',
             new: 'Ny samtale med tjenesteleverandør'
+        },
+        'HOT_TJENESTELEVERANDOR-TOLK': {
+            open: 'Tjenesteleverandør og tolk',
+            new: 'Ny samtale med tjenesteleverandør og tolk'
         }
     };
     tabByThreadTypesMap = {
@@ -129,7 +141,8 @@ export default class hot_messagingMessageComponent extends LightningElement {
         'HOT_BRUKER-FORMIDLER': 'tab2',
         'HOT_TOLK-RESSURSKONTOR': 'tab7',
         'HOT_TOLK-FORMIDLER': 'tab6',
-        'HOT_TJENESTELEVERANDOR-FORMIDLER': 'tab8'
+        'HOT_TJENESTELEVERANDOR-FORMIDLER': 'tab8',
+        'HOT_TJENESTELEVERANDOR-TOLK': 'tab9'
     };
     @track
     threadTypesOfInterest = [];
@@ -278,7 +291,6 @@ export default class hot_messagingMessageComponent extends LightningElement {
         return left.every((value, index) => value === right[index]);
     }
     connectedCallback() {
-        console.log('går inn her');
         this.relatedObjectId = this.recordId;
         if (this.objectApiName === 'HOT_Request__c') {
             getRequestInformation({ recordId: this.recordId })
@@ -352,10 +364,10 @@ export default class hot_messagingMessageComponent extends LightningElement {
                 });
         } else if (this.objectApiName === 'ServiceAppointment') {
             getServiceAppointmentInformation({ recordId: this.recordId })
-                .then((result) => {
-                    this.threadTypesOfInterest = [
-                        result.HOT_IsReleasedToFreelance__c ? 'HOT_TJENESTELEVERANDOR-FORMIDLER' : 'HOT_TOLK-FORMIDLER'
-                    ];
+                .then(() => {
+                    return getThreadTypesOfInterest({ recordId: this.recordId }).then((threadTypes) => {
+                        this.threadTypesOfInterest = threadTypes;
+                    });
                 })
                 .catch((error) => {
                     if (error?.body?.message == 'No access') {
@@ -550,6 +562,18 @@ export default class hot_messagingMessageComponent extends LightningElement {
             this.tjenesteleverandorFormidlerSetToRedactionFlow = true;
         }
     }
+    tjenesteleverandorTolkToolbarAction(event) {
+        if (event.detail.name === 'tjenesteleverandortolkredactionclicked' && event.detail.threadId) {
+            this.tjenesteleverandorTolkRedactionFlowVariables = [
+                {
+                    name: 'recordId',
+                    type: 'String',
+                    value: event.detail.threadId
+                }
+            ];
+            this.tjenesteleverandorTolkSetToRedactionFlow = true;
+        }
+    }
     handleUserRedactionFlowStatusChange(event) {
         if (event.detail.status === 'FINISHED') {
             this.userRedactionFlowVariables = [];
@@ -592,6 +616,12 @@ export default class hot_messagingMessageComponent extends LightningElement {
             this.tjenesteleverandorFormidlerSetToRedactionFlow = false;
         }
     }
+    handleTjenesteleverandorTolkRedactionFlowStatusChange(event) {
+        if (event.detail.status === 'FINISHED') {
+            this.tjenesteleverandorTolkRedactionFlowVariables = [];
+            this.tjenesteleverandorTolkSetToRedactionFlow = false;
+        }
+    }
     get userMessageTemplate() {
         return this.messageTemplates['HOT_BRUKER-FORMIDLER'];
     }
@@ -612,6 +642,9 @@ export default class hot_messagingMessageComponent extends LightningElement {
     }
     get tjenesteleverandorFormidlerMessageTemplate() {
         return this.messageTemplates['HOT_TJENESTELEVERANDOR-FORMIDLER'];
+    }
+    get tjenesteleverandorTolkMessageTemplate() {
+        return this.messageTemplates['HOT_TJENESTELEVERANDOR-TOLK'];
     }
     get participants() {
         if (this.threadParticipants) {
@@ -709,6 +742,10 @@ export default class hot_messagingMessageComponent extends LightningElement {
         return this.threadTypesOfInterest.includes('HOT_TJENESTELEVERANDOR-FORMIDLER') && this.isThreadSummaryLoaded;
     }
 
+    get showTjenesteleverandorTolkThreadTab() {
+        return this.threadTypesOfInterest.includes('HOT_TJENESTELEVERANDOR-TOLK') && this.isThreadSummaryLoaded;
+    }
+
     get openUserThreads() {
         return this.openThreadsByType('HOT_BRUKER-FORMIDLER');
     }
@@ -751,6 +788,12 @@ export default class hot_messagingMessageComponent extends LightningElement {
     get tjenesteleverandorFormidlerThreadTabLabel() {
         return this.tabLabelByType('HOT_TJENESTELEVERANDOR-FORMIDLER');
     }
+    get openTjenesteleverandorTolkThreads() {
+        return this.openThreadsByType('HOT_TJENESTELEVERANDOR-TOLK');
+    }
+    get tjenesteleverandorTolkThreadTabLabel() {
+        return this.tabLabelByType('HOT_TJENESTELEVERANDOR-TOLK');
+    }
     getThreadInitialMessage(target) {
         return `Samtale med ${target} er ikke påbegynt enda. Skriv en melding for å starte samtalen.`;
     }
@@ -775,6 +818,9 @@ export default class hot_messagingMessageComponent extends LightningElement {
     }
     get tjenesteleverandorFormidlerThreadInitialMessage() {
         return this.getThreadInitialMessage('tjenesteleverandør');
+    }
+    get tjenesteleverandorTolkThreadInitialMessage() {
+        return this.getThreadInitialMessage('tjenesteleverandør og tolk');
     }
 
     get summaryLoading() {
@@ -805,6 +851,9 @@ export default class hot_messagingMessageComponent extends LightningElement {
         if (this.showTjenesteleverandorFormidlerThreadTab) {
             tabs.push({ id: 'tab8', label: this.tjenesteleverandorFormidlerThreadTabLabel });
         }
+        if (this.showTjenesteleverandorTolkThreadTab) {
+            tabs.push({ id: 'tab9', label: this.tjenesteleverandorTolkThreadTabLabel });
+        }
 
         return tabs;
     }
@@ -817,7 +866,9 @@ export default class hot_messagingMessageComponent extends LightningElement {
             tab4: 'tabColor--userInterpreter',
             tab5: 'tabColor--interpreterInterpreter',
             tab6: 'tabColor--interpreter',
-            tab7: 'tabColor--office'
+            tab7: 'tabColor--office',
+            tab8: 'tabColor--tjenesteleverandorFormidler',
+            tab9: 'tabColor--tjenesteleverandorInterpreter'
         };
         return tabColorMap[tabId] || '';
     }
@@ -924,6 +975,9 @@ export default class hot_messagingMessageComponent extends LightningElement {
     get isTab8Loaded() {
         return this.isTabLoaded('tab8');
     }
+    get isTab9Loaded() {
+        return this.isTabLoaded('tab9');
+    }
 
     get tab1ContentClass() {
         return this.getTabContentClass('tab1');
@@ -954,6 +1008,9 @@ export default class hot_messagingMessageComponent extends LightningElement {
     }
     get tab8ContentClass() {
         return `messageComponentTabContainer ${this.getTabContentClass('tab8')}`;
+    }
+    get tab9ContentClass() {
+        return `messageComponentTabContainer ${this.getTabContentClass('tab9')}`;
     }
 
     get isTab1Active() {
@@ -988,6 +1045,14 @@ export default class hot_messagingMessageComponent extends LightningElement {
         return this.showTjenesteleverandorFormidlerThreadTab && this.activeTab === 'tab8';
     }
 
+    get isTab9Active() {
+        return this.showTjenesteleverandorTolkThreadTab && this.activeTab === 'tab9';
+    }
+
+    get isTab10Active() {
+        return this.showNewThreadTab && this.activeTab === 'tab10';
+    }
+
     get tab1Class() {
         return this.isTab1Active ? 'customTabButton customTabButtonActive' : 'customTabButton';
     }
@@ -1018,6 +1083,14 @@ export default class hot_messagingMessageComponent extends LightningElement {
 
     get tab8Class() {
         return this.isTab8Active ? 'customTabButton customTabButtonActive' : 'customTabButton';
+    }
+
+    get tab9Class() {
+        return this.isTab9Active ? 'customTabButton customTabButtonActive' : 'customTabButton';
+    }
+
+    get tab10Class() {
+        return this.isTab10Active ? 'customTabButton customTabButtonActive' : 'customTabButton';
     }
 
     isTabVisible(tabName) {
@@ -1067,7 +1140,8 @@ export default class hot_messagingMessageComponent extends LightningElement {
             tab5: this.interpreterInterpreterThreadTabHandler,
             tab6: this.interpreterThreadTabHandler,
             tab7: this.officeThreadTabHandler,
-            tab8: this.tjenesteleverandorFormidlerThreadTabHandler
+            tab8: this.tjenesteleverandorFormidlerThreadTabHandler,
+            tab9: this.tjenesteleverandorTolkThreadTabHandler
         };
         const tabHandler = tabHandlerMap[nextTab];
         if (tabHandler) {
@@ -1132,6 +1206,9 @@ export default class hot_messagingMessageComponent extends LightningElement {
     tjenesteleverandorFormidlerThreadTabHandler() {
         this.tabHandlerByType('HOT_TJENESTELEVERANDOR-FORMIDLER');
     }
+    tjenesteleverandorTolkThreadTabHandler() {
+        this.tabHandlerByType('HOT_TJENESTELEVERANDOR-TOLK');
+    }
 
     focusTabInputByType(threadType) {
         if (this.openThreadsByType(threadType)) {
@@ -1174,6 +1251,9 @@ export default class hot_messagingMessageComponent extends LightningElement {
     handleCreateTjenesteleverandorFormidlerThreadWithMessage(event) {
         console.log('går inn her');
         this.newThreadWithTypeAndMessage('HOT_TJENESTELEVERANDOR-FORMIDLER', event.detail);
+    }
+    handleCreateTjenesteleverandorTolkThreadWithMessage(event) {
+        this.newThreadWithTypeAndMessage('HOT_TJENESTELEVERANDOR-TOLK', event.detail);
     }
     async newThreadWithTypeAndMessage(threadType, message) {
         this.runningThreadCreate = true;
