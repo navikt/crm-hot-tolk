@@ -212,6 +212,18 @@ public without sharing class HOT_ThreadDetailController {
         }
         return false;
     }
+    public static Boolean isAdmin(User user) {
+        List<GroupMember> groupMembers = [
+            SELECT Id
+            FROM GroupMember
+            WHERE Group.DeveloperName = 'HOT_Tolk_Admin' AND Group.Type = 'Regular' AND UserOrGroupId = :user.Id
+        ];
+
+        if (groupMembers.size() > 0) {
+            return true;
+        }
+        return false;
+    }
     public static Boolean isAdminOrFormidler(User user) {
         List<GroupMember> groupMembers = [
             SELECT Id
