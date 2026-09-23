@@ -755,9 +755,9 @@ private class HOT_MessageHelperTest {
         ];
         System.assertEquals(1, threads.size(), 'Expected at one thread related to the Wage Claim.');
         System.assertEquals(
-            'HOT_TOLK-RESSURSKONTOR',
+            'HOT_TJENESTELEVERANDOR-HONORAR',
             threads[0].CRM_Type__c,
-            'Thread type should be HOT_TOLK-RESSURSKONTOR'
+            'Thread type should be HOT_TJENESTELEVERANDOR-HONORAR'
         );
     }
     @IsTest
@@ -786,9 +786,9 @@ private class HOT_MessageHelperTest {
         ];
         System.assertEquals(1, tList.size(), 'Expected  one thread related to the Wage Claim.');
         System.assertEquals(
-            'HOT_TOLK-RESSURSKONTOR',
+            'HOT_TJENESTELEVERANDOR-HONORAR',
             tList[0].CRM_Type__c,
-            'Thread type should be HOT_TOLK-RESSURSKONTOR'
+            'Thread type should be HOT_TJENESTELEVERANDOR-HONORAR'
         );
     }
     @IsTest
@@ -1568,8 +1568,8 @@ private class HOT_MessageHelperTest {
         System.assertEquals('Du har fått en melding fra formidler', HOT_MessageHelper.buildHeader('formidler', false));
 
         System.assertEquals(
-            'Du har fått en melding fra ressurskontor',
-            HOT_MessageHelper.buildHeader('ressurskontor', false)
+            'Du har fått en melding fra leverandør',
+            HOT_MessageHelper.buildHeader('leverandor', false)
         );
 
         System.assertEquals('Du har fått en melding', HOT_MessageHelper.buildHeader('ukjent', false));
@@ -1607,8 +1607,8 @@ private class HOT_MessageHelperTest {
         );
 
         System.assertEquals(
-            'INFO\nDu har fått en melding fra ressurskontor. ' + suffix,
-            HOT_MessageHelper.buildSMSNewMessage('ressurskontor', false)
+            'INFO\nDu har fått en melding fra leverandør. ' + suffix,
+            HOT_MessageHelper.buildSMSNewMessage('leverandor', false)
         );
 
         System.assertEquals(
