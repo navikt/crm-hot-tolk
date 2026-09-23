@@ -1,14 +1,7 @@
 import { LightningElement, wire, api } from 'lwc';
 import { NavigationMixin } from 'lightning/navigation';
 import { refreshApex } from '@salesforce/apex';
-import { createRecord } from 'lightning/uiRecordApi';
-import { ShowToastEvent } from 'lightning/platformShowToastEvent';
-import userId from '@salesforce/user/Id';
 import getAcceptedServiceAppointments from '@salesforce/apex/HOT_TjenesteleverandorListController.getAcceptedServiceAppointments';
-import getSARelatedThreads from '@salesforce/apex/HOT_TLThreadlistController.getSARelatedThreads';
-import getParticipants from '@salesforce/apex/HOT_ThreadParticipants.getParticipants';
-import createThread from '@salesforce/apex/HOT_MessageHelper.createThreadDispatcher';
-import setLastMessageFrom from '@salesforce/apex/HOT_MessageHelper.setLastMessageFrom';
 import icons from '@salesforce/resourceUrl/ikoner';
 
 import { columns, mobileColumns } from './columns';
@@ -19,6 +12,19 @@ import { filterRecords, restoreFilters } from 'c/hot_tjenesteleverandorFilters';
 const FILTER_STORAGE_KEY = 'tjenesteleverandorAcceptedFilters';
 
 const LIST_REFRESH_KEY = 'tjenesteleverandorAcceptedListRefresh';
+
+const THREAD_CONFIGURATIONS = [
+    {
+        type: 'HOT_TJENESTELEVERANDOR-FORMIDLER',
+        title: 'Samtale med Nav',
+        initialMessage: 'Samtale med Nav er ikke påbegynt enda. Skriv en melding for å starte samtalen.'
+    },
+    {
+        type: 'HOT_TJENESTELEVERANDOR-TOLK',
+        title: 'Samtale med tolk',
+        initialMessage: 'Samtale med tolk er ikke påbegynt enda. Skriv en melding for å starte samtalen.'
+    }
+];
 
 export default class Hot_tjenesteleverandorSaAcceptedList extends NavigationMixin(LightningElement) {
     @api recordId;
@@ -34,12 +40,6 @@ export default class Hot_tjenesteleverandorSaAcceptedList extends NavigationMixi
     showServiceAppointmentDetailsModal = false;
     serviceAppointment;
     selectedRecordId;
-    navTLThread = null;
-    navTLParticipants = [];
-    navTLReadParticipants = [];
-    tolkTLThread = null;
-    tolkTLParticipants = [];
-    tolkTLReadParticipants = [];
     wiredAcceptedAppointments;
     isRefreshPending = false;
 
@@ -80,28 +80,8 @@ export default class Hot_tjenesteleverandorSaAcceptedList extends NavigationMixi
         return !this.dataLoader && this.records.length > 0;
     }
 
-    get hasNavTLThread() {
-        return Boolean(this.navTLThread);
-    }
-
-    get hasNavTLReadParticipants() {
-        return this.navTLReadParticipants.length > 0;
-    }
-
-    get hasTolkTLThread() {
-        return Boolean(this.tolkTLThread);
-    }
-
-    get hasTolkTLReadParticipants() {
-        return this.tolkTLReadParticipants.length > 0;
-    }
-
-    get navTLInitialMessage() {
-        return 'Samtale med Nav er ikke påbegynt enda. Skriv en melding for å starte samtalen.';
-    }
-
-    get tolkTLInitialMessage() {
-        return 'Samtale med tolk er ikke påbegynt enda. Skriv en melding for å starte samtalen.';
+    get threadConfigurations() {
+        return THREAD_CONFIGURATIONS;
     }
 
     get noServiceAppointmentsResult() {
@@ -192,112 +172,7 @@ export default class Hot_tjenesteleverandorSaAcceptedList extends NavigationMixi
             ...selectedRecord,
             weekday: getDayOfWeek(selectedRecord.EarliestStartTime)
         };
-        this.fetchRelatedThreads();
         this.showServiceAppointmentDetails();
-    }
-
-    async fetchRelatedThreads() {
-        if (!this.selectedRecordId) {
-            this.navTLThread = null;
-            this.navTLParticipants = [];
-            this.navTLReadParticipants = [];
-            this.tolkTLThread = null;
-            this.tolkTLParticipants = [];
-            this.tolkTLReadParticipants = [];
-            return;
-        }
-
-        try {
-            const threads = await getSARelatedThreads({ serviceAppointmentId: this.selectedRecordId });
-            const navThread = (threads ?? []).find(
-                (thread) => (thread.CRM_Thread_Type__c || thread.CRM_Type__c) === 'HOT_TJENESTELEVERANDOR-FORMIDLER'
-            );
-            const tolkThread = (threads ?? []).find(
-                (thread) => (thread.CRM_Thread_Type__c || thread.CRM_Type__c) === 'HOT_TJENESTELEVERANDOR-TOLK'
-            );
-
-            this.navTLThread = navThread || null;
-            this.tolkTLThread = tolkThread || null;
-
-            const [navParticipants, tolkParticipants] = await Promise.all([
-                navThread ? getParticipants({ threadId: navThread.Id }) : Promise.resolve([]),
-                tolkThread ? getParticipants({ threadId: tolkThread.Id }) : Promise.resolve([])
-            ]);
-
-            this.navTLParticipants = this.toParticipantLabels(navParticipants ?? []);
-            this.navTLReadParticipants = this.toReadParticipantLabels(navParticipants ?? []);
-            this.tolkTLParticipants = this.toParticipantLabels(tolkParticipants ?? []);
-            this.tolkTLReadParticipants = this.toReadParticipantLabels(tolkParticipants ?? []);
-        } catch (error) {
-            console.error('Could not load related threads', JSON.stringify(error), error);
-            this.navTLThread = null;
-            this.navTLParticipants = [];
-            this.navTLReadParticipants = [];
-            this.tolkTLThread = null;
-            this.tolkTLParticipants = [];
-            this.tolkTLReadParticipants = [];
-        }
-    }
-
-    toParticipantLabels(participants) {
-        return (participants ?? []).map((participant) => ({
-            id: participant.userId || participant.name || participant.role || `${participant.name}-${Date.now()}`,
-            label: participant.role ? `${participant.name} (${participant.role})` : participant.name
-        }));
-    }
-
-    toReadParticipantLabels(participants) {
-        return (participants ?? [])
-            .filter((participant) => participant.hasRead)
-            .map((participant) => ({
-                id: participant.userId || participant.name || participant.role || `${participant.name}-${Date.now()}`,
-                label: participant.role ? `${participant.name} (${participant.role})` : participant.name
-            }));
-    }
-
-    async handleCreateThreadWithMessage(event, threadType) {
-        if (!this.selectedRecordId) {
-            return;
-        }
-
-        try {
-            const thread = await createThread({
-                recordId: this.selectedRecordId,
-                accountId: userId,
-                type: threadType
-            });
-
-            await createRecord({
-                apiName: 'Message__c',
-                fields: {
-                    ...event?.detail,
-                    CRM_Thread__c: thread?.Id
-                }
-            });
-
-            setLastMessageFrom({ threadId: thread.Id, fromContactId: userId }).catch((error) => {
-                console.error('Error setting last message from: ', JSON.stringify(error), error);
-            });
-
-            await this.fetchRelatedThreads();
-        } catch (error) {
-            console.error('Could not create related thread', JSON.stringify(error), error);
-            this.dispatchEvent(
-                new ShowToastEvent({
-                    title: 'Feil ved opprettelse av samtale',
-                    message: 'Samtalen kunne ikke bli opprettet',
-                    variant: 'error'
-                })
-            );
-        }
-    }
-
-    handleCreateNavTLThreadWithMessage(event) {
-        return this.handleCreateThreadWithMessage(event, 'HOT_TJENESTELEVERANDOR-FORMIDLER');
-    }
-
-    handleCreateTolkTLThreadWithMessage(event) {
-        return this.handleCreateThreadWithMessage(event, 'HOT_TJENESTELEVERANDOR-TOLK');
     }
 
     showServiceAppointmentDetails() {
@@ -337,12 +212,6 @@ export default class Hot_tjenesteleverandorSaAcceptedList extends NavigationMixi
         this.showServiceAppointmentDetailsModal = false;
         this.serviceAppointment = undefined;
         this.selectedRecordId = undefined;
-        this.navTLThread = null;
-        this.navTLParticipants = [];
-        this.navTLReadParticipants = [];
-        this.tolkTLThread = null;
-        this.tolkTLParticipants = [];
-        this.tolkTLReadParticipants = [];
     }
 
     get status() {

@@ -1,0 +1,67 @@
+<template>
+    <template for:each={threadCards} for:item="card">
+        <div class="thread-card" key={card.type}>
+            <c-hot_expansion-card>
+                <span slot="title">{card.title}</span>
+                <div slot="description">
+                    <template lwc:if={card.hasThread}>
+                        <div class="thread-participants">
+                            <span class="thread-participants-label">Deltakere:</span>
+                            <template for:each={card.participants} for:item="participant">
+                                <c-hot_tag
+                                    key={participant.id}
+                                    label={participant.label}
+                                    variant="moderate"
+                                    size="small"
+                                    color="info"
+                                ></c-hot_tag>
+                            </template>
+                        </div>
+                        <div class="thread-readers">
+                            <span class="thread-readers-label">Lest av:</span>
+                            <template lwc:if={card.hasReadParticipants}>
+                                <template for:each={card.readParticipants} for:item="participant">
+                                    <c-hot_tag
+                                        key={participant.id}
+                                        label={participant.label}
+                                        variant="moderate"
+                                        size="small"
+                                        color="success"
+                                    ></c-hot_tag>
+                                </template>
+                            </template>
+                            <template lwc:else>
+                                <c-hot_tag label="Ingen" variant="moderate" size="small" color="warning"></c-hot_tag>
+                            </template>
+                        </div>
+                    </template>
+                    <template lwc:else>
+                        <c-hot_tag
+                            label="Samtale er ikke opprettet"
+                            variant="moderate"
+                            size="small"
+                            color="warning"
+                        ></c-hot_tag>
+                    </template>
+                </div>
+
+                <template lwc:if={card.hasThread}>
+                    <c-hot_messaging-thread-viewer
+                        thread={card.thread}
+                        set-input-in-focus-on-render
+                        is-tjeneste-leverandor-formidler-view
+                    ></c-hot_messaging-thread-viewer>
+                </template>
+                <template lwc:else>
+                    <c-hot_messaging-thread-viewer-mock
+                        data-thread-type={card.type}
+                        set-input-in-focus-on-render
+                        initial-message={card.initialMessage}
+                        data-user-thread-mock
+                        oncreatethreadwithmessage={handleCreateThreadWithMessage}
+                    ></c-hot_messaging-thread-viewer-mock>
+                </template>
+            </c-hot_expansion-card>
+        </div>
+    </template>
+</template>

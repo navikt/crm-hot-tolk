@@ -75,10 +75,6 @@ dialog.modal-container {
 .series-container {
     padding-top: 0.5rem;
 }
-.thread-card {
-    padding: 0 2rem 0 2rem;
-}
-
 /* Når dialogen er åpen */
 dialog[open].modal-container {
     display: flex;

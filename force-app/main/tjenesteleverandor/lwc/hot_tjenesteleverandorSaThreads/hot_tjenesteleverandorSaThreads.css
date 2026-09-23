@@ -1,0 +1,7 @@
+.thread-card {
+    padding: 0 2rem 1rem;
+}
+
+.thread-card:last-child {
+    padding-bottom: 0;
+}

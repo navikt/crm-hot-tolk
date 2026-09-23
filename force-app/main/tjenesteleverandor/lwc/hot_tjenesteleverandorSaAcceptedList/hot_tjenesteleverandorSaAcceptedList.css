@@ -53,13 +53,6 @@ dialog.modal-container {
     margin: auto;
 }
 
-.thread-card-nav {
-    padding: 0 2rem 0.5rem 2rem;
-}
-.thread-card-tolk {
-    padding: 0.5rem 2rem 0 2rem;
-}
-
 /* Når dialogen er åpen */
 dialog[open].modal-container {
     display: flex;
