@@ -1,5 +1,6 @@
 import { LightningElement, wire } from 'lwc';
 import getTransferredServiceAppointmentsCount from '@salesforce/apex/HOT_TjenesteleverandorListController.getTransferredServiceAppointmentsCount';
+import getNumberOfUnreadThreads from '@salesforce/apex/HOT_TLThreadlistController.getNumberOfUnreadThreads';
 
 const ANIMATION_DURATION_MS = 1000;
 
@@ -13,13 +14,32 @@ export default class Hot_tjenesteleverandorStatistics extends LightningElement {
         },
         {
             id: 'unreadMessages',
-            value: 6767,
+            value: 0,
             displayValue: 0,
-            label: 'Uleste meldinger'
+            label: 'uleste meldinger, og 0 samtaler er dine'
         }
     ];
 
     connectedCallback() {
+        this.animateStatistic('unreadMessages');
+    }
+    @wire(getNumberOfUnreadThreads)
+    wiredUnreadThreads({ data, error }) {
+        if (data === undefined && error === undefined) {
+            return;
+        }
+        const allUnreadCount = error ? 0 : (data.allUnread ?? 0);
+        const myUnreadCount = error ? 0 : (data.myUnread ?? 0);
+
+        this.statistics = this.statistics.map((statistic) =>
+            statistic.id === 'unreadMessages'
+                ? {
+                      ...statistic,
+                      value: allUnreadCount,
+                      label: `uleste meldinger, og ${myUnreadCount} samtaler er dine`
+                  }
+                : statistic
+        );
         this.animateStatistic('unreadMessages');
     }
 
