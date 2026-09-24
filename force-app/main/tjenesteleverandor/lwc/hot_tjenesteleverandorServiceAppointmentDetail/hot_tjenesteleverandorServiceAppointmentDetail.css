@@ -130,7 +130,7 @@
     border-radius: var(--ax-radius-4, 4px);
     background: #faece4;
     color: #602019;
-    font-size: var(--ax-font-size-heading-medium, 1.5rem);
+    font-size: var(--ax-font-size-heading-medium, 1.125rem);
     line-height: var(--ax-font-line-height-xlarge, 1.75rem);
     padding: 0 var(--ax-space-4, 0.25rem);
     overflow-wrap: anywhere;
@@ -161,7 +161,7 @@
 .data-row dt {
     margin: 0;
     color: #111827;
-    font-size: var(--ax-font-size-heading-medium, 1.5rem);
+    font-size: var(--ax-font-size-heading-medium, 1.25rem);
     font-weight: var(--ax-font-weight-bold, 600);
     line-height: var(--ax-font-line-height-heading-small, 1.75rem);
     overflow-wrap: anywhere;
@@ -169,7 +169,7 @@
 
 .data-row dd {
     color: #1f2937;
-    font-size: var(--ax-font-size-xlarge, 1.25rem);
+    font-size: var(--ax-font-size-xlarge, 1.125rem);
     line-height: var(--ax-font-line-height-xlarge, 1.75rem);
     margin: 0;
     overflow-wrap: anywhere;
