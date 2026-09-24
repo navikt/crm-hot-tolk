@@ -1,15 +1,19 @@
 <template>
     <article class="detail-page">
         <nav class="slds-m-bottom_medium" aria-label="Navigasjon for oppdragsdetaljer">
-            <lightning-button
-                label="Tilbake til oppdrag"
-                title="Tilbake til oppdrag"
-                icon-name="utility:back"
-                onclick={handleBack}
-            ></lightning-button>
+            <button class="back-button" type="button" onclick={handleBack}>
+                <lightning-icon
+                    class="back-button-icon"
+                    icon-name="utility:back"
+                    size="small"
+                    alternative-text=""
+                    aria-hidden="true"
+                ></lightning-icon>
+                <span>Tilbake til oppdrag</span>
+            </button>
         </nav>
 
-        <header class="slds-m-bottom_large">
+        <header class="slds-assistive-text">
             <h1 class="slds-text-heading_large">Oppdragsdetaljer</h1>
             <p class="slds-text-body_regular slds-text-color_weak">Informasjonen er skrivebeskyttet.</p>
         </header>
@@ -99,40 +103,167 @@
             </section>
         </template>
 
-        <lightning-record-view-form
-            class={recordFormClass}
-            record-id={effectiveRecordId}
-            object-api-name="ServiceAppointment"
-            onload={handleLoad}
-            onerror={handleError}
-        >
-            <section class="detail-section" aria-labelledby="general-heading">
-                <h2 id="general-heading" class="section-heading">Generell informasjon</h2>
-                <div class="slds-grid slds-wrap slds-gutters">
-                    <div class="slds-col slds-size_1-of-1 slds-large-size_1-of-2">
-                        <lightning-output-field field-name="AppointmentNumber"></lightning-output-field>
-                        <lightning-output-field field-name="HOT_FreelanceSubject__c"></lightning-output-field>
-                        <lightning-output-field field-name="HOT_Information__c"></lightning-output-field>
-                        <lightning-output-field field-name="HOT_WorkTypeName__c"></lightning-output-field>
-                        <lightning-output-field field-name="HOT_AssignmentType__c"></lightning-output-field>
-                        <lightning-output-field field-name="HOT_PreparationTime__c"></lightning-output-field>
-                        <lightning-output-field field-name="HOT_TotalNumberOfInterpreters__c"></lightning-output-field>
-                        <lightning-output-field
-                            field-name="HOT_NumberOfInterestedResources__c"
-                        ></lightning-output-field>
+        <template lwc:if={hasRecordData}>
+            <div class="detail-layout">
+                <section class="detail-card assignment-card" aria-labelledby="assignment-details-heading">
+                    <h2 id="assignment-details-heading" class="card-heading">Oppdragsdetaljer</h2>
+                    <template lwc:if={hasAppointmentTags}>
+                        <ul class="tag-list" aria-label="Oppdragsmerkinger">
+                            <template for:each={appointmentTags} for:item="tag">
+                                <li key={tag.id} class="tag-item">{tag.label}</li>
+                            </template>
+                        </ul>
+                    </template>
+
+                    <div class="detail-columns">
+                        <dl class="data-list">
+                            <div class="data-row">
+                                <dt>Oppdragsnummer</dt>
+                                <dd>{appointmentNumber}</dd>
+                            </div>
+                            <div class="data-row">
+                                <dt>Tema for frilanstolker</dt>
+                                <dd>{freelanceSubject}</dd>
+                            </div>
+                            <div class="data-row">
+                                <dt>Informasjon</dt>
+                                <dd class="multiline-value">{information}</dd>
+                            </div>
+                            <div class="data-row">
+                                <dt>Arbeidstype</dt>
+                                <dd>{workTypeName}</dd>
+                            </div>
+                            <div class="data-row">
+                                <dt>Oppdragstype</dt>
+                                <dd>{assignmentType}</dd>
+                            </div>
+                            <div class="data-row">
+                                <dt>Kompensert forberedelse</dt>
+                                <dd>{preparationTime}</dd>
+                            </div>
+                            <div class="data-row">
+                                <dt>Totalt antall tolker</dt>
+                                <dd>{totalInterpreters}</dd>
+                            </div>
+                            <div class="data-row">
+                                <dt>Adresse</dt>
+                                <dd class="multiline-value">{addressFormatted}</dd>
+                            </div>
+                        </dl>
+
+                        <dl class="data-list">
+                            <div class="data-row">
+                                <dt>Status</dt>
+                                <dd>{status}</dd>
+                            </div>
+                            <div class="data-row">
+                                <dt>Tjenesteleverandør status</dt>
+                                <dd>{providerStatus}</dd>
+                            </div>
+                            <div class="data-row">
+                                <dt>Region</dt>
+                                <dd>{serviceTerritory}</dd>
+                            </div>
+                            <div class="data-row">
+                                <dt>Annen økonomisk leverandør</dt>
+                                <dd>{isOtherEconomicProvider}</dd>
+                            </div>
+                            <div class="data-row">
+                                <dt>Antall interesserte ressurser</dt>
+                                <dd>{interestedResources}</dd>
+                            </div>
+                        </dl>
                     </div>
-                    <div class="slds-col slds-size_1-of-1 slds-large-size_1-of-2">
-                        <lightning-output-field field-name="Status"></lightning-output-field>
-                        <lightning-output-field field-name="HOT_TjenesteleverandorStatus__c"></lightning-output-field>
-                        <lightning-output-field field-name="HOT_ServiceTerritoryName__c"></lightning-output-field>
-                        <lightning-output-field field-name="HOT_IsAcute__c"></lightning-output-field>
-                        <lightning-output-field field-name="HOT_IsScreenInterpreterNew__c"></lightning-output-field>
-                        <lightning-output-field field-name="HOT_IsSerieoppdrag__c"></lightning-output-field>
-                        <lightning-output-field field-name="HOT_IsOtherEconomicProvicer__c"></lightning-output-field>
-                        <lightning-output-field field-name="HOT_IsImageInterpreter__c"></lightning-output-field>
+                </section>
+
+                <aside class="side-column">
+                    <section class="detail-card compact-card" aria-labelledby="ordered-time-heading">
+                        <h2 id="ordered-time-heading" class="card-heading">Bestilt tid</h2>
+                        <dl class="time-grid">
+                            <div class="data-row">
+                                <dt>Bestilt starttid</dt>
+                                <dd>
+                                    <template lwc:if={earliestStartTime}>
+                                        <lightning-formatted-date-time
+                                            value={earliestStartTime}
+                                            year="numeric"
+                                            month="2-digit"
+                                            day="2-digit"
+                                            hour="2-digit"
+                                            minute="2-digit"
+                                        ></lightning-formatted-date-time>
+                                    </template>
+                                    <template lwc:else>—</template>
+                                </dd>
+                            </div>
+                            <div class="data-row">
+                                <dt>Bestilt sluttid</dt>
+                                <dd>
+                                    <template lwc:if={dueDate}>
+                                        <lightning-formatted-date-time
+                                            value={dueDate}
+                                            year="numeric"
+                                            month="2-digit"
+                                            day="2-digit"
+                                            hour="2-digit"
+                                            minute="2-digit"
+                                        ></lightning-formatted-date-time>
+                                    </template>
+                                    <template lwc:else>—</template>
+                                </dd>
+                            </div>
+                            <div class="data-row">
+                                <dt>Varighet</dt>
+                                <dd>{durationText}</dd>
+                            </div>
+                            <div class="data-row">
+                                <dt>Ukedag</dt>
+                                <dd>{dayOfWeek}</dd>
+                            </div>
+                        </dl>
+                    </section>
+                </aside>
+            </div>
+
+            <template lwc:if={hasCancellationDetails}>
+                <section class="detail-card cancellation-card" aria-labelledby="cancellation-heading">
+                    <h2 id="cancellation-heading" class="card-heading">Avlysning</h2>
+                    <div class="detail-columns">
+                        <dl class="data-list">
+                            <div class="data-row">
+                                <dt>Kommentar</dt>
+                                <dd>{cancellationComment}</dd>
+                            </div>
+                            <div class="data-row">
+                                <dt>Avlyst av tolk</dt>
+                                <dd>{canceledByInterpreter}</dd>
+                            </div>
+                        </dl>
+                        <dl class="data-list">
+                            <div class="data-row">
+                                <dt>Avlyst dato</dt>
+                                <dd>
+                                    <template lwc:if={canceledDate}>
+                                        <lightning-formatted-date-time
+                                            value={canceledDate}
+                                            year="numeric"
+                                            month="2-digit"
+                                            day="2-digit"
+                                            hour="2-digit"
+                                            minute="2-digit"
+                                        ></lightning-formatted-date-time>
+                                    </template>
+                                    <template lwc:else>—</template>
+                                </dd>
+                            </div>
+                            <div class="data-row">
+                                <dt>Sen avlysning</dt>
+                                <dd>{lateCancellation}</dd>
+                            </div>
+                        </dl>
                     </div>
-                </div>
-            </section>
-        </lightning-record-view-form>
+                </section>
+            </template>
+        </template>
     </article>
 </template>
