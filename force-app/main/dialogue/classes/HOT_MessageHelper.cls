@@ -553,7 +553,11 @@ public without sharing class HOT_MessageHelper {
                 HOT_DatabaseOperations.insertRecords(thread);
             } else if (type == 'HOT_TJENESTELEVERANDOR-TOLK') {
                 ServiceAppointment serviceAppointment = [
-                    SELECT Subject, HOT_Request__r.Dispatcher__c, HOT_ServiceResource__c, HOT_ServiceResource__r.AccountId
+                    SELECT
+                        Subject,
+                        HOT_Request__r.Dispatcher__c,
+                        HOT_ServiceResource__c,
+                        HOT_ServiceResource__r.AccountId
                     FROM ServiceAppointment
                     WHERE Id = :recordId
                     LIMIT 1
@@ -690,6 +694,83 @@ public without sharing class HOT_MessageHelper {
         }
         return thread;
     }
+
+    //Threads between interpreters and tjenesteleverandør. Interpreter use this
+    @AuraEnabled(cacheable=false)
+    public static Thread__c createThreadInterpreterForTL(Id recordId) {
+        User currentUser = [SELECT Id, AccountId FROM User WHERE Id = :UserInfo.getUserId()];
+
+        Set<Id> srIdList = new Map<ID, ServiceResource>(
+                [SELECT Id, HOT_IsEmployedInterpreter__c FROM ServiceResource WHERE RelatedRecordId = :currentUser.Id]
+            )
+            .keySet();
+        Thread__c thread = new Thread__c();
+        thread.RecordTypeId = HOT_MessageHelper.getHOTThreadRecordType();
+        String objectType = String.valueOf(recordId.getsobjecttype());
+        if (objectType == 'HOT_InterestedResource__c') {
+            HOT_InterestedResource__c ir = [
+                SELECT
+                    Id,
+                    ServiceResource__c,
+                    ServiceResource__r.AccountId,
+                    ServiceAppointment__r.Subject,
+                    ServiceAppointment__r.HOT_Account__c,
+                    ServiceAppointment__r.HOT_Request__r.Dispatcher__c
+                FROM HOT_InterestedResource__c
+                WHERE Id = :recordId
+            ];
+            if (srIdList.contains(ir.ServiceResource__c)) {
+                thread.CRM_Related_Object__c = recordId;
+                thread.HOT_InterestedResource__c = recordId;
+                thread.CRM_Thread_Type__c = 'HOT_TJENESTELEVERANDOR-TOLK';
+                thread.HOT_Title__c = ir.ServiceAppointment__r.Subject;
+                thread.CRM_Account__c = ir.ServiceResource__r.AccountId;
+                thread.HOT_Account__c = ir.ServiceAppointment__r.HOT_Account__c;
+                thread.HOT_Dispatcher__c = ir.ServiceAppointment__r.HOT_Request__r.Dispatcher__c;
+                HOT_DatabaseOperations.insertRecords(thread);
+            }
+        }
+        if (objectType == 'ServiceAppointment') {
+            HOT_InterestedResource__c interestedResource = [
+                SELECT
+                    Id,
+                    Status__c,
+                    ServiceResource__c,
+                    ServiceAppointment__c,
+                    ServiceAppointment__r.Subject,
+                    ServiceAppointment__r.HOT_Account__c,
+                    ServiceAppointment__r.HOT_Request__r.Dispatcher__c
+                FROM HOT_InterestedResource__c
+                WHERE ServiceResource__c IN :srIdList AND ServiceAppointment__c = :recordId
+            ];
+            if (interestedResource.Status__c == 'Assigned') {
+                ServiceAppointment sr = [
+                    SELECT Subject, HOT_Request__r.Dispatcher__c, HOT_Account__c
+                    FROM ServiceAppointment
+                    WHERE Id = :recordId
+                ];
+                thread.HOT_Title__c = sr.Subject;
+                thread.CRM_Related_Object__c = recordId;
+                thread.HOT_Account__c = sr.HOT_Account__c;
+                thread.HOT_ServiceAppointment__c = recordId;
+                thread.CRM_Account__c = currentUser.AccountId;
+                thread.CRM_Thread_Type__c = 'HOT_TJENESTELEVERANDOR-TOLK';
+                thread.HOT_Dispatcher__c = sr.HOT_Request__r.Dispatcher__c;
+                HOT_DatabaseOperations.insertRecords(thread);
+            } else {
+                thread.CRM_Account__c = currentUser.AccountId;
+                thread.CRM_Thread_Type__c = 'HOT_TJENESTELEVERANDOR-TOLK';
+                thread.CRM_Related_Object__c = interestedResource.Id;
+                thread.HOT_InterestedResource__c = interestedResource.Id;
+                thread.HOT_Title__c = interestedResource.ServiceAppointment__r.Subject;
+                thread.HOT_Account__c = interestedResource.ServiceAppointment__r.HOT_Account__c;
+                thread.HOT_Dispatcher__c = interestedResource.ServiceAppointment__r.HOT_Request__r.Dispatcher__c;
+                HOT_DatabaseOperations.insertRecords(thread);
+            }
+        }
+        return thread;
+    }
+
     //Threads between user and orderer
     //DENNE DIALOGTYPEN ER IKKE I BRUK MEN LIGGER KLAR.
     @AuraEnabled(cacheable=false)
