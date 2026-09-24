@@ -1,10 +1,9 @@
 @import 'c/hot_sharedFonts';
 
 :host {
-    /* The Experience page does not load Aksel's token stylesheet. */
-    --detail-card-radius: calc(var(--ax-radius-16, 1rem) + var(--ax-radius-4, 0.25rem));
+    --detail-card-radius: calc(1rem + 0.25rem);
     display: block;
-    background: var(--ax-bg-sunken, #ecedef);
+    background: #ecedef;
 }
 
 :host *,
@@ -16,48 +15,48 @@
 .detail-page {
     max-width: 96rem;
     margin: 0 auto;
-    padding: var(--ax-space-20, 1.25rem);
-    font-family: var(--ax-font-family, 'Source Sans 3', 'Source Sans Pro', Arial, sans-serif);
+    padding: 1.25rem;
+    font-family: 'Source Sans 3', 'Source Sans Pro', Arial, sans-serif;
 }
 
 .back-button {
     display: inline-flex;
     align-items: center;
     justify-content: center;
-    gap: var(--ax-space-8, 0.5rem);
+    gap: 0.5rem;
     max-width: 100%;
-    min-height: var(--ax-space-48, 3rem);
+    min-height: 3rem;
     margin: 0;
-    padding: var(--ax-space-12, 0.75rem) var(--ax-space-20, 1.25rem);
+    padding: 0.75rem 1.25rem;
     border: 0;
-    border-radius: var(--ax-radius-8, 8px);
+    border-radius: 8px;
     background: transparent;
-    color: var(--ax-text-accent-subtle, #005bb6);
+    color: #005bb6;
     font: inherit;
-    font-size: var(--ax-font-size-large, 1.125rem);
-    font-weight: var(--ax-font-weight-bold, 600);
-    line-height: var(--ax-font-line-height-large, 1.5rem);
+    font-size: 1.125rem;
+    font-weight: 600;
+    line-height: 1.5rem;
     text-align: left;
     cursor: pointer;
 }
 
 .back-button:hover {
-    background: var(--ax-bg-accent-moderate-hoverA, #0165f42b);
+    background: #0165f42b;
 }
 
 .back-button:active {
-    background: var(--ax-bg-accent-moderate-pressedA, #0064f145);
+    background: #0064f145;
 }
 
 .back-button:focus-visible {
-    outline: 3px solid var(--ax-border-focus, #005bb6);
+    outline: 3px solid #005bb6;
     outline-offset: 3px;
 }
 
 .back-button-icon {
     --slds-c-icon-color-foreground-default: currentColor;
     flex-shrink: 0;
-    margin-inline-start: calc(-1 * var(--ax-space-4, 0.25rem));
+    margin-inline-start: calc(-1 * 0.25rem);
 }
 
 @media (forced-colors: active) {
@@ -75,15 +74,15 @@
     display: grid;
     grid-template-columns: repeat(2, minmax(0, 1fr));
     align-items: start;
-    gap: var(--ax-space-28, 1.75rem);
+    gap: 1.75rem;
 }
 
 .detail-card {
     min-width: 0;
-    padding: var(--ax-space-24, 1.5rem);
+    padding: 1.5rem;
     border: 0;
     border-radius: var(--detail-card-radius);
-    background: var(--ax-bg-default, #ffffff);
+    background: #ffffff;
 }
 
 .assignment-card {
@@ -91,31 +90,31 @@
 }
 
 .compact-card {
-    padding: var(--ax-space-16, 1rem);
+    padding: 1rem;
 }
 
 .compact-card .card-heading {
-    margin-bottom: var(--ax-space-16, 1rem);
+    margin-bottom: 1rem;
 }
 
 .cancellation-card {
-    margin-top: var(--ax-space-28, 1.75rem);
+    margin-top: 1.75rem;
 }
 
 .card-heading {
-    margin: 0 0 var(--ax-space-8, 0.5rem);
+    margin: 0 0 0.5rem;
     color: #1f2937;
-    font-size: var(--ax-font-size-heading-large, 1.75rem);
-    font-weight: var(--ax-font-weight-bold, 600);
-    line-height: var(--ax-font-line-height-heading-large, 2.25rem);
+    font-size: 1.75rem;
+    font-weight: 600;
+    line-height: 2.25rem;
     overflow-wrap: anywhere;
 }
 
 .tag-list {
     display: flex;
     flex-wrap: wrap;
-    gap: var(--ax-space-8, 0.5rem) var(--ax-space-12, 0.75rem);
-    margin: 0 0 var(--ax-space-20, 1.25rem);
+    gap: 0.5rem 0.75rem;
+    margin: 0 0 1.25rem;
     padding: 0;
     list-style: none;
 }
@@ -125,21 +124,21 @@
     align-items: center;
     flex: 0 1 13rem;
     max-width: 100%;
-    min-height: var(--ax-space-32, 2rem);
-    border: 1px solid var(--ax-border-brand-beige, #ad634a);
-    border-radius: var(--ax-radius-4, 4px);
+    min-height: 2rem;
+    border: 1px solid #ad634a;
+    border-radius: 4px;
     background: #faece4;
     color: #602019;
-    font-size: var(--ax-font-size-heading-medium, 1.125rem);
-    line-height: var(--ax-font-line-height-xlarge, 1.75rem);
-    padding: 0 var(--ax-space-4, 0.25rem);
+    font-size: 1.125rem;
+    line-height: 1.75rem;
+    padding: 0 0.25rem;
     overflow-wrap: anywhere;
 }
 
 .detail-columns {
     display: grid;
     grid-template-columns: repeat(2, minmax(0, 1fr));
-    gap: var(--ax-space-24, 1.5rem);
+    gap: 1.5rem;
 }
 
 .side-column {
@@ -149,7 +148,7 @@
 .data-list {
     display: flex;
     flex-direction: column;
-    gap: var(--ax-space-4, 0.25rem);
+    gap: 0.25rem;
     margin: 0;
 }
 
@@ -161,16 +160,16 @@
 .data-row dt {
     margin: 0;
     color: #111827;
-    font-size: var(--ax-font-size-heading-medium, 1.25rem);
-    font-weight: var(--ax-font-weight-bold, 600);
-    line-height: var(--ax-font-line-height-heading-small, 1.75rem);
+    font-size: 1.25rem;
+    font-weight: 600;
+    line-height: 1.75rem;
     overflow-wrap: anywhere;
 }
 
 .data-row dd {
     color: #1f2937;
-    font-size: var(--ax-font-size-xlarge, 1.125rem);
-    line-height: var(--ax-font-line-height-xlarge, 1.75rem);
+    font-size: 1.125rem;
+    line-height: 1.75rem;
     margin: 0;
     overflow-wrap: anywhere;
 }
@@ -182,7 +181,7 @@
 .time-grid {
     display: grid;
     grid-template-columns: repeat(2, minmax(0, 1fr));
-    gap: 0 var(--ax-space-24, 1.5rem);
+    gap: 0 1.5rem;
     margin: 0;
 }
 
@@ -228,7 +227,7 @@
 @media (max-width: 64rem) {
     .detail-layout {
         grid-template-columns: 1fr;
-        gap: var(--ax-space-20, 1.25rem);
+        gap: 1.25rem;
     }
 
     .assignment-card {
@@ -239,31 +238,31 @@
 @media (max-width: 40rem) {
     .detail-page,
     .detail-card {
-        padding: var(--ax-space-16, 1rem);
+        padding: 1rem;
     }
 
     .detail-columns,
     .time-grid {
         grid-template-columns: 1fr;
-        gap: var(--ax-space-16, 1rem);
+        gap: 1rem;
     }
 
     .card-heading {
-        font-size: var(--ax-font-size-heading-medium, 1.5rem);
-        line-height: var(--ax-font-line-height-heading-medium, 2rem);
+        font-size: 1.5rem;
+        line-height: 2rem;
     }
 
     .data-row dt {
-        font-size: var(--ax-font-size-heading-small, 1.25rem);
+        font-size: 1.25rem;
     }
 
     .data-row dd {
-        font-size: var(--ax-font-size-large, 1.125rem);
+        font-size: 1.125rem;
     }
 
     .tag-item {
         flex-basis: auto;
-        font-size: var(--ax-font-size-xlarge, 1.25rem);
+        font-size: 1.25rem;
     }
 
     .acceptance-panel {
