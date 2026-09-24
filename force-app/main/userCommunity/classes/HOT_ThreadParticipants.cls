@@ -1,6 +1,7 @@
 public without sharing class HOT_ThreadParticipants {
     private static final String TJENESTELEVERANDOR_FORMIDLER_THREAD_TYPE = 'HOT_TJENESTELEVERANDOR-FORMIDLER';
     private static final String TJENESTELEVERANDOR_TOLK_THREAD_TYPE = 'HOT_TJENESTELEVERANDOR-TOLK';
+    private static final String TJENESTELEVERANDOR_HONORAR_THREAD_TYPE = 'HOT_TJENESTELEVERANDOR-HONORAR';
 
     public class Participant {
         @AuraEnabled
@@ -135,7 +136,8 @@ public without sharing class HOT_ThreadParticipants {
         ];
         if (
             thread.CRM_Thread_Type__c == TJENESTELEVERANDOR_FORMIDLER_THREAD_TYPE ||
-            thread.CRM_Thread_Type__c == TJENESTELEVERANDOR_TOLK_THREAD_TYPE
+            thread.CRM_Thread_Type__c == TJENESTELEVERANDOR_TOLK_THREAD_TYPE ||
+            thread.CRM_Thread_Type__c == TJENESTELEVERANDOR_HONORAR_THREAD_TYPE
         ) {
             return new HOT_ThreadParticipants(thread.Id, new List<String>{ thread.CRM_Thread_Type__c })
                 .getParticipantsByRelatedObjectAndThreadId()
@@ -200,7 +202,10 @@ public without sharing class HOT_ThreadParticipants {
                     thread.Id,
                     new List<Participant>{ new Participant('Tjenesteleverandør'), new Participant('Formidler') }
                 );
-            } else if (thread.CRM_Thread_Type__c == TJENESTELEVERANDOR_TOLK_THREAD_TYPE) {
+            } else if (
+                thread.CRM_Thread_Type__c == TJENESTELEVERANDOR_TOLK_THREAD_TYPE ||
+                thread.CRM_Thread_Type__c == TJENESTELEVERANDOR_HONORAR_THREAD_TYPE
+            ) {
                 this.participantsByThreadId.get(thread.Id).add(new Participant('Tjenesteleverandør'));
             }
         }
@@ -324,6 +329,12 @@ public without sharing class HOT_ThreadParticipants {
             }
             if (thread.CRM_Thread_Type__c == 'HOT_TOLK-RESSURSKONTOR') {
                 this.participantsByThreadId.get(thread.Id).add(new Participant('Ressurskontor'));
+            }
+            if (
+                thread.CRM_Thread_Type__c == 'HOT_TJENESTELEVERANDOR-FORMIDLER' ||
+                thread.CRM_Thread_Type__c == 'HOT_TJENESTELEVERANDOR-TOLK'
+            ) {
+                this.participantsByThreadId.get(thread.Id).add(new Participant('Tjenesteleverandør'));
             }
         }
         return this;
@@ -653,21 +664,6 @@ public without sharing class HOT_ThreadParticipants {
             String senderProfileName = senderUser != null ? senderUser.Profile.Name : null;
             String role;
 
-            if (thread.CRM_Thread_Type__c == TJENESTELEVERANDOR_FORMIDLER_THREAD_TYPE) {
-                if (senderProfileName == 'HOT Tolk Formidler') {
-                    rolesByThreadId.put(threadId, 'formidler');
-                    continue;
-                }
-                if (senderProfileName == 'System Administrator' || senderProfileName == 'Systemadministrator') {
-                    rolesByThreadId.put(threadId, 'systemadministrator');
-                    continue;
-                }
-                if (senderProfileName == 'HOT Tolk Tjenesteleverandør') {
-                    rolesByThreadId.put(threadId, 'tjenesteleverandør');
-                    continue;
-                }
-            }
-
             for (Participant participant : getParticipants((String) threadId)) {
                 if (participant.userId == senderUserId) {
                     if (participant.role == 'Tolk') {
@@ -686,23 +682,12 @@ public without sharing class HOT_ThreadParticipants {
 
             if (
                 role == null &&
-                (senderProfileName == 'HOT Tolk Formidler' ||
-                senderProfileName == 'System Administrator' ||
-                senderProfileName == 'Systemadministrator') &&
+                senderProfileName == 'HOT Tolk Formidler' &&
                 (thread.CRM_Thread_Type__c == 'HOT_TOLK-FORMIDLER' ||
                 thread.CRM_Thread_Type__c == 'HOT_BRUKER-FORMIDLER' ||
-                thread.CRM_Thread_Type__c == 'HOT_BESTILLER-FORMIDLER' ||
-                thread.CRM_Thread_Type__c == 'HOT_TJENESTELEVERANDOR-FORMIDLER')
+                thread.CRM_Thread_Type__c == 'HOT_BESTILLER-FORMIDLER')
             ) {
                 role = 'formidler';
-            }
-            if (
-                role == null &&
-                senderProfileName == 'HOT Tolk Tjenesteleverandør' &&
-                (thread.CRM_Thread_Type__c == 'HOT_TJENESTELEVERANDOR-TOLK' ||
-                thread.CRM_Thread_Type__c == 'HOT_TJENESTELEVERANDOR-FORMIDLER')
-            ) {
-                role = 'tjenesteleverandør';
             }
 
             if (
