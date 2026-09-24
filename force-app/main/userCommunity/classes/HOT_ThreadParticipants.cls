@@ -156,7 +156,15 @@ public without sharing class HOT_ThreadParticipants {
     }
     private Map<String, Map<Id, List<Participant>>> getParticipantsByRelatedObjectAndThreadId() {
         if (relatedObjectId.getSobjectType() == Thread__c.SObjectType) {
-            this.getParticipansFromThreads().setTjenesteleverandorParticipants().setReadStatus();
+            this.getParticipansFromThreads();
+            if (
+                this.threads[0].CRM_Thread_Type__c == TJENESTELEVERANDOR_HONORAR_THREAD_TYPE &&
+                this.hasObjectTypeRelations('HOT_WageClaim__c')
+            ) {
+                this.mapThreadIdsByRelatedObjectIds();
+                this.getParticipantsFromWageClaims();
+            }
+            this.setTjenesteleverandorParticipants().setReadStatus();
         } else {
             this.getAssignedServiceResourceParticipants()
                 .getRelatedObjectParticipants()
