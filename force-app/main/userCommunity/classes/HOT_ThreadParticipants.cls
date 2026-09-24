@@ -332,7 +332,8 @@ public without sharing class HOT_ThreadParticipants {
             }
             if (
                 thread.CRM_Thread_Type__c == 'HOT_TJENESTELEVERANDOR-FORMIDLER' ||
-                thread.CRM_Thread_Type__c == 'HOT_TJENESTELEVERANDOR-TOLK'
+                thread.CRM_Thread_Type__c == 'HOT_TJENESTELEVERANDOR-TOLK' ||
+                thread.CRM_Thread_Type__c == 'HOT_TJENESTELEVERANDOR-HONORAR'
             ) {
                 this.participantsByThreadId.get(thread.Id).add(new Participant('Tjenesteleverandør'));
             }
@@ -624,6 +625,7 @@ public without sharing class HOT_ThreadParticipants {
         }
         return String.join(capitalizedWords, ' ');
     }
+
     public static Map<Id, String> getUserSenderRoleInThread(
         List<Thread__c> threadList,
         Map<Id, Id> threadToLastSender
@@ -664,6 +666,21 @@ public without sharing class HOT_ThreadParticipants {
             String senderProfileName = senderUser != null ? senderUser.Profile.Name : null;
             String role;
 
+            if (thread.CRM_Thread_Type__c == TJENESTELEVERANDOR_FORMIDLER_THREAD_TYPE) {
+                if (senderProfileName == 'HOT Tolk Formidler') {
+                    rolesByThreadId.put(threadId, 'formidler');
+                    continue;
+                }
+                if (senderProfileName == 'System Administrator' || senderProfileName == 'Systemadministrator') {
+                    rolesByThreadId.put(threadId, 'systemadministrator');
+                    continue;
+                }
+                if (senderProfileName == 'HOT Tolk Tjenesteleverandør') {
+                    rolesByThreadId.put(threadId, 'tjenesteleverandør');
+                    continue;
+                }
+            }
+
             for (Participant participant : getParticipants((String) threadId)) {
                 if (participant.userId == senderUserId) {
                     if (participant.role == 'Tolk') {
@@ -682,12 +699,24 @@ public without sharing class HOT_ThreadParticipants {
 
             if (
                 role == null &&
-                senderProfileName == 'HOT Tolk Formidler' &&
+                (senderProfileName == 'HOT Tolk Formidler' ||
+                senderProfileName == 'System Administrator' ||
+                senderProfileName == 'Systemadministrator') &&
                 (thread.CRM_Thread_Type__c == 'HOT_TOLK-FORMIDLER' ||
                 thread.CRM_Thread_Type__c == 'HOT_BRUKER-FORMIDLER' ||
-                thread.CRM_Thread_Type__c == 'HOT_BESTILLER-FORMIDLER')
+                thread.CRM_Thread_Type__c == 'HOT_BESTILLER-FORMIDLER' ||
+                thread.CRM_Thread_Type__c == 'HOT_TJENESTELEVERANDOR-FORMIDLER')
             ) {
                 role = 'formidler';
+            }
+            if (
+                role == null &&
+                senderProfileName == 'HOT Tolk Tjenesteleverandør' &&
+                (thread.CRM_Thread_Type__c == 'HOT_TJENESTELEVERANDOR-TOLK' ||
+                thread.CRM_Thread_Type__c == 'HOT_TJENESTELEVERANDOR-FORMIDLER' ||
+                thread.CRM_Thread_Type__c == 'HOT_TJENESTELEVERANDOR-HONORAR')
+            ) {
+                role = 'tjenesteleverandør';
             }
 
             if (
