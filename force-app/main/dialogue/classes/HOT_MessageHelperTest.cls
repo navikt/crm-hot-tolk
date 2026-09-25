@@ -851,9 +851,9 @@ private class HOT_MessageHelperTest {
         System.assertEquals(wage.Id, threads[0].HOT_WageClaim__c, 'The thread should reference the wage claim.');
         System.assertEquals(sr.AccountId, threads[0].CRM_Account__c, 'The thread should belong to the interpreter.');
         System.assertEquals(
-            'HOT_TJENESTELEVERANDOR-HONORAR',
+            'HOT_TOLK-RESSURSKONTOR',
             threads[0].CRM_Type__c,
-            'Thread type should be HOT_TJENESTELEVERANDOR-HONORAR'
+            'Thread type should be HOT_TOLK-RESSURSKONTOR'
         );
     }
     @IsTest
@@ -885,9 +885,9 @@ private class HOT_MessageHelperTest {
         System.assertEquals(wageclaim.Id, tList[0].HOT_WageClaim__c, 'The thread should reference the wage claim.');
         System.assertEquals(sr.AccountId, tList[0].CRM_Account__c, 'The thread should belong to the interpreter.');
         System.assertEquals(
-            'HOT_TJENESTELEVERANDOR-HONORAR',
+            'HOT_TOLK-RESSURSKONTOR',
             tList[0].CRM_Type__c,
-            'Thread type should be HOT_TJENESTELEVERANDOR-HONORAR'
+            'Thread type should be HOT_TOLK-RESSURSKONTOR'
         );
     }
     @IsTest
