@@ -822,7 +822,6 @@ private class HOT_MessageHelperTest {
     }
     @IsTest
     static void createThreadWageClaim() {
-        //TODO: OK
         ServiceAppointment sa = [
             SELECT Id, EarliestStartTime, DueDate, HOT_WorkOrderLineItem__r.WorkOrderId
             FROM ServiceAppointment
@@ -841,12 +840,16 @@ private class HOT_MessageHelperTest {
         Thread__c created = HOT_MessageHelper.createThread(wage.Id, sr.AccountId);
 
         Test.stopTest();
+        System.assertNotEquals(null, created.Id, 'The wage-claim thread should be inserted.');
         List<Thread__c> threads = [
-            SELECT Id, CRM_Account__c, CRM_Type__c
+            SELECT Id, CRM_Account__c, CRM_Type__c, HOT_WageClaim__c
             FROM Thread__c
             WHERE CRM_Related_Object__c = :wage.Id
         ];
-        System.assertEquals(1, threads.size(), 'Expected at one thread related to the Wage Claim.');
+        System.assertEquals(1, threads.size(), 'Expected one thread related to the Wage Claim.');
+        System.assertEquals(created.Id, threads[0].Id, 'The helper should return the inserted thread.');
+        System.assertEquals(wage.Id, threads[0].HOT_WageClaim__c, 'The thread should reference the wage claim.');
+        System.assertEquals(sr.AccountId, threads[0].CRM_Account__c, 'The thread should belong to the interpreter.');
         System.assertEquals(
             'HOT_TJENESTELEVERANDOR-HONORAR',
             threads[0].CRM_Type__c,
@@ -855,7 +858,6 @@ private class HOT_MessageHelperTest {
     }
     @IsTest
     static void createThreadWageClaimDispatcher() {
-        //TODO: OK
         ServiceAppointment sa = [
             SELECT Id, EarliestStartTime, DueDate, HOT_WorkOrderLineItem__r.WorkOrderId
             FROM ServiceAppointment
@@ -872,12 +874,16 @@ private class HOT_MessageHelperTest {
         Test.startTest();
         Thread__c created = HOT_MessageHelper.createThreadDispatcher(wageclaim.Id, sr.AccountId, null);
         Test.stopTest();
+        System.assertNotEquals(null, created.Id, 'The dispatcher wage-claim thread should be inserted.');
         List<Thread__c> tList = [
-            SELECT Id, CRM_Account__c, CRM_Type__c
+            SELECT Id, CRM_Account__c, CRM_Type__c, HOT_WageClaim__c
             FROM Thread__c
             WHERE CRM_Related_Object__c = :wageclaim.Id
         ];
-        System.assertEquals(1, tList.size(), 'Expected  one thread related to the Wage Claim.');
+        System.assertEquals(1, tList.size(), 'Expected one thread related to the Wage Claim.');
+        System.assertEquals(created.Id, tList[0].Id, 'The helper should return the inserted thread.');
+        System.assertEquals(wageclaim.Id, tList[0].HOT_WageClaim__c, 'The thread should reference the wage claim.');
+        System.assertEquals(sr.AccountId, tList[0].CRM_Account__c, 'The thread should belong to the interpreter.');
         System.assertEquals(
             'HOT_TJENESTELEVERANDOR-HONORAR',
             tList[0].CRM_Type__c,
