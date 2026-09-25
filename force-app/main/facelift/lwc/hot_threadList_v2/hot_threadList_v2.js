@@ -163,6 +163,9 @@ export default class Hot_threadList_v2 extends NavigationMixin(LightningElement)
         if (threadTypeValue === 'HOT_BESTILLER-FORMIDLER') {
             return 'Med formidler';
         }
+        if (threadTypeValue === 'HOT_TJENESTELEVERANDOR-TOLK') {
+            return 'Med leverandør';
+        }
         if (threadTypeValue === 'HOT_BRUKER-TOLK') {
             if (this.isFreelanceView == true) {
                 return 'Med bruker';
@@ -178,6 +181,9 @@ export default class Hot_threadList_v2 extends NavigationMixin(LightningElement)
         }
         if (threadTypeValue === 'HOT_TOLK-RESSURSKONTOR') {
             return 'Med ressurskontor';
+        }
+        if (threadTypeValue === 'HOT_TJENESTELEVERANDOR-HONORAR') {
+            return 'Med leverandør og honorar';
         }
         if (threadTypeValue === 'HOT_TOLK-TOLK') {
             return 'Med medtolk';
