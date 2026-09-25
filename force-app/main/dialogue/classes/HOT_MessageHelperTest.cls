@@ -479,6 +479,99 @@ private class HOT_MessageHelperTest {
         System.assertEquals('HOT_TOLK-FORMIDLER', created.CRM_Type__c, 'Thread should be of type HOT_TOLK-FORMIDLER');
     }
     @IsTest
+    static void createThreadForTLIrTest() {
+        ServiceAppointment sa = [SELECT Id FROM ServiceAppointment WHERE Subject = 'TEST' LIMIT 1];
+
+        ServiceResource sr = [SELECT Id, AccountId FROM ServiceResource LIMIT 1];
+
+        HOT_InterestedResource__c ir = HOT_TestDataFactory.createInterestedResource(sa.Id, sr.Id);
+        insert ir;
+
+        System.Test.startTest();
+        System.runAs(new User(Id = UserInfo.getUserId())) {
+            Thread__c t = HOT_MessageHelper.createThreadInterpreterForTL(ir.Id);
+        }
+        System.Test.stopTest();
+
+        Thread__c created = [
+            SELECT Id, CRM_Type__c, CRM_Related_Object__c, HOT_InterestedResource__c
+            FROM Thread__c
+            WHERE CRM_Related_Object__c = :ir.Id
+            LIMIT 1
+        ];
+        System.assertEquals(ir.id, created.HOT_InterestedResource__c, 'Thread should be stamped with IR id');
+        System.assertEquals(
+            'HOT_TJENESTELEVERANDOR-TOLK',
+            created.CRM_Type__c,
+            'Thread should be of type HOT_TJENESTELEVERANDOR-TOLK'
+        );
+    }
+    @IsTest
+    static void createThreadForTLAssignedTest() {
+        ServiceAppointment sa = [SELECT Id FROM ServiceAppointment WHERE Subject = 'TEST' LIMIT 1];
+
+        myTriggers.disable(HOT_ServiceAppointmentHandler.class);
+        myTriggers.disable(HOT_ServiceAppointmentStatusHandler.class);
+        sa.Status = 'Dispatched';
+        update sa;
+
+        ServiceResource sr = [SELECT Id, AccountId FROM ServiceResource LIMIT 1];
+
+        System.Test.startTest();
+        HOT_InterestedResource__c ir = HOT_TestDataFactory.createInterestedResource(sa.Id, sr.Id);
+        ir.Status__c = 'Assigned';
+        insert ir;
+
+        AssignedResource ar = HOT_TestDataFactory.createAssignedResource(sa.Id, sr.Id);
+        insert ar;
+
+        Thread__c thread;
+
+        System.runAs(new User(Id = UserInfo.getUserId())) {
+            thread = HOT_MessageHelper.createThreadInterpreterForTL(sa.Id);
+        }
+        System.Test.stopTest();
+
+        System.assertNotEquals(null, thread, 'Interpreter thread should be created.');
+        System.assertEquals('HOT_TJENESTELEVERANDOR-TOLK', thread.CRM_Thread_Type__c, 'Wrong thread type.');
+    }
+    @IsTest
+    static void createThreadForTLNotAssignedTest() {
+        Account acc = [SELECT Id, FirstName, LastName, PersonContactId FROM Account WHERE Name = 'Test User' LIMIT 1];
+
+        ServiceResource sr = [SELECT Id, AccountId FROM ServiceResource LIMIT 1];
+        sr.AccountId = acc.Id;
+        update sr;
+
+        ServiceAppointment sa = [SELECT Id FROM ServiceAppointment WHERE Subject = 'TEST' LIMIT 1];
+        myTriggers.disable(HOT_ServiceAppointmentHandler.class);
+        myTriggers.disable(HOT_ServiceAppointmentStatusHandler.class);
+        myTriggers.disable(HOT_ServiceAppointmentAccessHandler.class);
+
+        sa.Subject = 'Hello test';
+        sa.HOT_Account__c = sr.AccountId;
+        update sa;
+
+        HOT_InterestedResource__c ir = HOT_TestDataFactory.createInterestedResource(sa.Id, sr.Id);
+        insert ir;
+
+        System.Test.startTest();
+        insert HOT_TestDataFactory.createAssignedResource(sa.Id, sr.Id);
+
+        ir.Status__c = 'Canceled by Interpreter';
+        update ir;
+        Thread__c thread = HOT_MessageHelper.createThreadInterpreterForTL(sa.Id);
+        System.Test.stopTest();
+
+        System.assertNotEquals(null, thread, 'Thread should be created.');
+        System.assertEquals(
+            ir.Id,
+            thread.CRM_Related_Object__c,
+            'Should have created a thread related to the Interested Resource when it is not assigned.'
+        );
+        System.assertEquals('HOT_TJENESTELEVERANDOR-TOLK', thread.CRM_Thread_Type__c);
+    }
+    @IsTest
     static void getAccountonRequestTest() {
         HOT_Request__c request = [SELECT Id, Account__c FROM HOT_Request__c WHERE Subject__c = 'TEST' LIMIT 1];
         Test.startTest();
@@ -755,9 +848,9 @@ private class HOT_MessageHelperTest {
         ];
         System.assertEquals(1, threads.size(), 'Expected at one thread related to the Wage Claim.');
         System.assertEquals(
-            'HOT_TOLK-RESSURSKONTOR',
+            'HOT_TJENESTELEVERANDOR-HONORAR',
             threads[0].CRM_Type__c,
-            'Thread type should be HOT_TOLK-RESSURSKONTOR'
+            'Thread type should be HOT_TJENESTELEVERANDOR-HONORAR'
         );
     }
     @IsTest
@@ -786,9 +879,9 @@ private class HOT_MessageHelperTest {
         ];
         System.assertEquals(1, tList.size(), 'Expected  one thread related to the Wage Claim.');
         System.assertEquals(
-            'HOT_TOLK-RESSURSKONTOR',
+            'HOT_TJENESTELEVERANDOR-HONORAR',
             tList[0].CRM_Type__c,
-            'Thread type should be HOT_TOLK-RESSURSKONTOR'
+            'Thread type should be HOT_TJENESTELEVERANDOR-HONORAR'
         );
     }
     @IsTest
@@ -1568,8 +1661,8 @@ private class HOT_MessageHelperTest {
         System.assertEquals('Du har fått en melding fra formidler', HOT_MessageHelper.buildHeader('formidler', false));
 
         System.assertEquals(
-            'Du har fått en melding fra ressurskontor',
-            HOT_MessageHelper.buildHeader('ressurskontor', false)
+            'Du har fått en melding fra leverandør',
+            HOT_MessageHelper.buildHeader('tjenesteleverandør', false)
         );
 
         System.assertEquals('Du har fått en melding', HOT_MessageHelper.buildHeader('ukjent', false));
@@ -1607,8 +1700,8 @@ private class HOT_MessageHelperTest {
         );
 
         System.assertEquals(
-            'INFO\nDu har fått en melding fra ressurskontor. ' + suffix,
-            HOT_MessageHelper.buildSMSNewMessage('ressurskontor', false)
+            'INFO\nDu har fått en melding fra leverandør. ' + suffix,
+            HOT_MessageHelper.buildSMSNewMessage('tjenesteleverandør', false)
         );
 
         System.assertEquals(
