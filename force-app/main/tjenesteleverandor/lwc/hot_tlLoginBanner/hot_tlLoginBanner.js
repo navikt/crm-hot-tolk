@@ -54,9 +54,9 @@ export default class Hot_tlLoginBanner extends NavigationMixin(LightningElement)
     navLinks = [
         {
             id: '1',
-            label: 'Oppdrag',
-            url: '/s/mine-oppdrag',
-            pageName: 'mine-oppdrag'
+            label: 'Hjem',
+            url: '/s',
+            pageName: 'home'
         },
         {
             id: '2',
