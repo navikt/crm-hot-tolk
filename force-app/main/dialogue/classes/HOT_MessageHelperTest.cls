@@ -1663,7 +1663,7 @@ private class HOT_MessageHelperTest {
 
         System.assertEquals(
             'Du har fått en melding fra leverandør',
-            HOT_MessageHelper.buildHeader('leverandør', false)
+            HOT_MessageHelper.buildHeader('tjenesteleverandør', false)
         );
 
         System.assertEquals('Du har fått en melding', HOT_MessageHelper.buildHeader('ukjent', false));
@@ -1702,7 +1702,7 @@ private class HOT_MessageHelperTest {
 
         System.assertEquals(
             'INFO\nDu har fått en melding fra leverandør. ' + suffix,
-            HOT_MessageHelper.buildSMSNewMessage('leverandør', false)
+            HOT_MessageHelper.buildSMSNewMessage('tjenesteleverandør', false)
         );
 
         System.assertEquals(
