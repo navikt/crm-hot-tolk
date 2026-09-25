@@ -15,6 +15,13 @@ const CHECKED_ROWS_STORAGE_KEY = 'tjenesteleverandorTransferredCheckedRows';
 const LIST_REFRESH_KEY = 'tjenesteleverandorTransferredListRefresh';
 const ACCEPTED_LIST_REFRESH_KEY = 'tjenesteleverandorAcceptedListRefresh';
 const FILTER_STORAGE_KEY = 'tjenesteleverandorTransferredFilters';
+const THREAD_CONFIGURATIONS = [
+    {
+        type: 'HOT_TJENESTELEVERANDOR-FORMIDLER',
+        title: 'Samtale med Nav',
+        initialMessage: 'Samtale med Nav er ikke påbegynt enda. Skriv en melding for å starte samtalen.'
+    }
+];
 
 function createFeedback(type, message) {
     const success = type === 'success';
@@ -118,6 +125,10 @@ export default class Hot_tjenesteleverandorSaTransferredList extends NavigationM
 
     get hasResult() {
         return !this.dataLoader && this.records.length > 0;
+    }
+
+    get threadConfigurations() {
+        return THREAD_CONFIGURATIONS;
     }
 
     get noServiceAppointmentsResult() {

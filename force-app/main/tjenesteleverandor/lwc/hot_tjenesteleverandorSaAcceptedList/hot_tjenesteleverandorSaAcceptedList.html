@@ -55,6 +55,12 @@
                         <p><strong>Annen betaler:</strong> {serviceAppointment.isOtherProvider}</p>
                         <p><strong>Region:</strong> {serviceAppointment.HOT_ServiceTerritoryName__c}</p>
                     </div>
+
+                    <c-hot_tjenesteleverandor-sa-threads
+                        service-appointment-id={selectedRecordId}
+                        thread-configurations={threadConfigurations}
+                    ></c-hot_tjenesteleverandor-sa-threads>
+
                     <div class="modal-footer">
                         <c-button
                             button-styling="primary"

@@ -1,0 +1,22 @@
+.loader-container {
+    display: flex;
+    justify-content: center;
+    padding: 1.5rem 0;
+}
+.card-loader-title {
+    padding-left: 1rem;
+    color: darkgray;
+    animation: 0.5s cubic-bezier(0.4, 0, 0.6, 1) infinite loaderAnimation;
+}
+.thread-card {
+    padding: 0 2rem 1rem;
+}
+
+.thread-card:last-child {
+    padding-bottom: 0;
+}
+@keyframes loaderAnimation {
+    50% {
+        opacity: 0.5;
+    }
+}

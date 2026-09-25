@@ -13,6 +13,19 @@ const FILTER_STORAGE_KEY = 'tjenesteleverandorAcceptedFilters';
 
 const LIST_REFRESH_KEY = 'tjenesteleverandorAcceptedListRefresh';
 
+const THREAD_CONFIGURATIONS = [
+    {
+        type: 'HOT_TJENESTELEVERANDOR-FORMIDLER',
+        title: 'Samtale med Nav',
+        initialMessage: 'Samtale med Nav er ikke påbegynt enda. Skriv en melding for å starte samtalen.'
+    },
+    {
+        type: 'HOT_TJENESTELEVERANDOR-TOLK',
+        title: 'Samtale med tolk',
+        initialMessage: 'Samtale med tolk er ikke påbegynt enda. Skriv en melding for å starte samtalen.'
+    }
+];
+
 export default class Hot_tjenesteleverandorSaAcceptedList extends NavigationMixin(LightningElement) {
     @api recordId;
 
@@ -67,6 +80,10 @@ export default class Hot_tjenesteleverandorSaAcceptedList extends NavigationMixi
         return !this.dataLoader && this.records.length > 0;
     }
 
+    get threadConfigurations() {
+        return THREAD_CONFIGURATIONS;
+    }
+
     get noServiceAppointmentsResult() {
         return !this.dataLoader && this.allRecords.length === 0;
     }
@@ -103,7 +120,7 @@ export default class Hot_tjenesteleverandorSaAcceptedList extends NavigationMixi
         }
     }
 
-// Keep both behaviours: refresh when signalled, and allow parent-driven filtering
+    // Keep both behaviours: refresh when signalled, and allow parent-driven filtering
     async refreshIfRequested() {
         const marker = sessionStorage.getItem(LIST_REFRESH_KEY);
         if (!marker || !this.wiredAcceptedAppointments || this.isRefreshPending) {
