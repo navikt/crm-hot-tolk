@@ -1,4 +1,4 @@
-@IsTest(IsParallel=true)
+@IsTest(IsParallel=false)
 public without sharing class HOT_ThreadDetailControllerTest {
     @IsTest
     public static void getThreadDetailsTest() {
