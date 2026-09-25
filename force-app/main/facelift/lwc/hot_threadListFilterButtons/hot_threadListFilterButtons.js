@@ -57,7 +57,7 @@ export default class Hot_threadListFilterButtons extends LightningElement {
         //     selected: false
         // }
         {
-            label: 'Med honorar',
+            label: 'Med leverandør og honorar',
             name: 'HOT_TJENESTELEVERANDOR-HONORAR',
             value: 'HOT_TJENESTELEVERANDOR-HONORAR',
             selected: false

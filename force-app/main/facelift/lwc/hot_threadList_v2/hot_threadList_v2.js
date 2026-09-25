@@ -183,7 +183,7 @@ export default class Hot_threadList_v2 extends NavigationMixin(LightningElement)
             return 'Med ressurskontor';
         }
         if (threadTypeValue === 'HOT_TJENESTELEVERANDOR-HONORAR') {
-            return 'Med honorar';
+            return 'Med leverandør og honorar';
         }
         if (threadTypeValue === 'HOT_TOLK-TOLK') {
             return 'Med medtolk';
