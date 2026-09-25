@@ -1293,10 +1293,7 @@ public without sharing class HOT_MessageHelper {
             when 'ressurskontor' {
                 return 'Du har fått en melding fra ressurskontor';
             }
-            when 'tjenesteleverandør' {
-                return 'Du har fått en melding fra tjenesteleverandør';
-            }
-            when 'tjenesteleverandør-honorar' {
+            when 'leverandør' {
                 return 'Du har fått en melding fra leverandør';
             }
             when else {
@@ -1324,7 +1321,7 @@ public without sharing class HOT_MessageHelper {
             when 'ressurskontor' {
                 text += 'Du har fått en melding fra ressurskontor. ';
             }
-            when 'tjenesteleverandør-honorar' {
+            when 'leverandør' {
                 text += 'Du har fått en melding fra leverandør. ';
             }
             when else {
