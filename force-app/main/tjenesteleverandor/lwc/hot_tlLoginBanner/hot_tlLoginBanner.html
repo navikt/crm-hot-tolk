@@ -1,0 +1,114 @@
+<template>
+    <header class="banner">
+        <!-- VENSTRE SIDE -->
+        <nav class="navigation">
+            <div class="desktop-navigation">
+                <template for:each={navLinks} for:item="link">
+                    <a
+                        key={link.id}
+                        href={link.url}
+                        data-page-name={link.pageName}
+                        onclick={handleNavLinkClick}
+                        class="nav-link"
+                    >
+                        {link.label}
+                    </a>
+                </template>
+            </div>
+
+            <div class="menu-section mobile-navigation">
+                <button
+                    class="user-button menu-button"
+                    onclick={toggleNavDropdown}
+                    aria-haspopup="true"
+                    aria-expanded={isNavDropdownOpen}
+                >
+                    <span class="menu-icon">
+                        <img src={MenuIcon} alt="Meny" />
+                    </span>
+                </button>
+
+                <div class={navDropdownClass}>
+                    <template for:each={navLinks} for:item="link">
+                        <a
+                            key={link.id}
+                            href={link.url}
+                            data-page-name={link.pageName}
+                            onclick={handleNavLinkClick}
+                            class="dropdown-link"
+                        >
+                            {link.label}
+                        </a>
+                    </template>
+                </div>
+            </div>
+        </nav>
+
+        <!-- HØYRE SIDE -->
+        <div class="user-section">
+            <div class="menu-section notification-menu-section">
+                <button
+                    class="user-button notification-button"
+                    onclick={toggleNotificationDropdown}
+                    aria-haspopup="true"
+                    aria-expanded={isNotificationDropdownOpen}
+                >
+                    <span class="notification-label">Varsler</span>
+
+                    <template if:true={unreadCount}>
+                        <span class="unread-badge" aria-live="polite">{unreadCount}</span>
+                    </template>
+                </button>
+
+                <div class={notificationDropdownClass}>
+                    <template if:true={hasNotifications}>
+                        <template for:each={notifications} for:item="notification">
+                            <div key={notification.id} class="notification-item">
+                                <span class="notification-title">{notification.title}</span>
+                                <span class="notification-text">{notification.text}</span>
+                                <span class="notification-meta">{notification.createdDate}</span>
+                            </div>
+                        </template>
+                    </template>
+
+                    <template if:false={hasNotifications}>
+                        <div class="notification-empty">Ingen varsler</div>
+                    </template>
+                </div>
+            </div>
+
+            <div class="menu-section">
+                <button
+                    class="user-button"
+                    onclick={toggleDropdown}
+                    aria-haspopup="true"
+                    aria-expanded={isDropdownOpen}
+                >
+                    <span>{userName}</span>
+
+                    <span class="chevron">
+                        <img src={ChevronDownIcon} alt="" />
+                    </span>
+                </button>
+
+                <div class={dropdownClass}>
+                    <button class="dropdown-item" onclick={handleThemeToggle}>
+                        <span class="icon">
+                            <img src={PeopleIcon} alt="" />
+                        </span>
+
+                        <span>Min side</span>
+                    </button>
+
+                    <button class="dropdown-item" onclick={handleLogout}>
+                        <span class="icon">
+                            <img src={LeaveIcon} alt="" />
+                        </span>
+
+                        <span>Logout</span>
+                    </button>
+                </div>
+            </div>
+        </div>
+    </header>
+</template>

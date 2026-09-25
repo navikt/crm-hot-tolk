@@ -1,0 +1,269 @@
+<template>
+    <article class="detail-page">
+        <nav class="slds-m-bottom_medium" aria-label="Navigasjon for oppdragsdetaljer">
+            <button class="back-button" type="button" onclick={handleBack}>
+                <lightning-icon
+                    class="back-button-icon"
+                    icon-name="utility:back"
+                    size="small"
+                    alternative-text=""
+                    aria-hidden="true"
+                ></lightning-icon>
+                <span>Tilbake til oppdrag</span>
+            </button>
+        </nav>
+
+        <header class="slds-assistive-text">
+            <h1 class="slds-text-heading_large">Oppdragsdetaljer</h1>
+            <p class="slds-text-body_regular slds-text-color_weak">Informasjonen er skrivebeskyttet.</p>
+        </header>
+
+        <template lwc:if={isLoading}>
+            <div class="loading-container" role="status" aria-live="polite">
+                <lightning-spinner alternative-text="Laster oppdragsdetaljer" size="medium"></lightning-spinner>
+                <span class="slds-assistive-text">Laster oppdragsdetaljer</span>
+            </div>
+        </template>
+
+        <template lwc:if={hasError}>
+            <div class="slds-notify slds-notify_alert slds-alert_error error-message" role="alert">
+                <span class="slds-assistive-text">Feil</span>
+                <lightning-icon
+                    icon-name="utility:error"
+                    alternative-text="Feil"
+                    size="x-small"
+                    variant="inverse"
+                    class="slds-m-right_x-small"
+                ></lightning-icon>
+                <p>Du har ikke tilgang til oppdraget, eller oppdraget finnes ikke.</p>
+            </div>
+        </template>
+
+        <template lwc:if={responseFeedback}>
+            <div class={responseFeedback.className} role={responseFeedback.role} aria-live="polite">
+                <lightning-icon
+                    icon-name={responseFeedback.icon}
+                    alternative-text=""
+                    size="x-small"
+                    variant="inverse"
+                    class="slds-m-right_x-small"
+                ></lightning-icon>
+                <p>{responseFeedback.message}</p>
+            </div>
+        </template>
+
+        <template lwc:if={showResponseAction}>
+            <section class="acceptance-panel slds-m-bottom_large" aria-labelledby="acceptance-heading">
+                <div>
+                    <h2 id="acceptance-heading" class="slds-text-heading_small">
+                        Oppdraget er overført til tjenesteleverandør
+                    </h2>
+                    <template lwc:if={acceptanceDeadline}>
+                        <p class="slds-text-body_regular slds-text-color_weak">
+                            Svarfrist:
+                            <lightning-formatted-date-time
+                                value={acceptanceDeadline}
+                                year="numeric"
+                                month="2-digit"
+                                day="2-digit"
+                                hour="2-digit"
+                                minute="2-digit"
+                            ></lightning-formatted-date-time>
+                        </p>
+                    </template>
+                </div>
+                <div class="acceptance-actions">
+                    <template lwc:if={showDeclineAction}>
+                        <c-button
+                            data-id="decline-appointment"
+                            button-styling="danger"
+                            button-label="Avslå oppdrag"
+                            aria-label="Avslå oppdraget"
+                            disabled={isResponding}
+                            onbuttonclick={handleDecline}
+                        ></c-button>
+                    </template>
+                    <template lwc:if={showAcceptAction}>
+                        <c-button
+                            data-id="accept-appointment"
+                            button-styling="primary"
+                            button-label="Aksepter oppdrag"
+                            aria-label="Aksepter oppdraget"
+                            disabled={isResponding}
+                            onbuttonclick={handleAccept}
+                        ></c-button>
+                    </template>
+                </div>
+                <template lwc:if={isResponding}>
+                    <div class="acceptance-spinner" role="status" aria-live="polite">
+                        <lightning-spinner alternative-text="Behandler oppdraget" size="small"></lightning-spinner>
+                        <span class="slds-assistive-text">Behandler oppdraget</span>
+                    </div>
+                </template>
+            </section>
+        </template>
+
+        <template lwc:if={hasRecordData}>
+            <div class="detail-layout">
+                <section class="detail-card assignment-card" aria-labelledby="assignment-details-heading">
+                    <h2 id="assignment-details-heading" class="card-heading">Oppdragsdetaljer</h2>
+                    <template lwc:if={hasAppointmentTags}>
+                        <ul class="tag-list" aria-label="Oppdragsmerkinger">
+                            <template for:each={appointmentTags} for:item="tag">
+                                <li key={tag.id} class="tag-item">{tag.label}</li>
+                            </template>
+                        </ul>
+                    </template>
+
+                    <div class="detail-columns">
+                        <dl class="data-list">
+                            <div class="data-row">
+                                <dt>Oppdragsnummer</dt>
+                                <dd>{appointmentNumber}</dd>
+                            </div>
+                            <div class="data-row">
+                                <dt>Tema for frilanstolker</dt>
+                                <dd>{freelanceSubject}</dd>
+                            </div>
+                            <div class="data-row">
+                                <dt>Informasjon</dt>
+                                <dd class="multiline-value">{information}</dd>
+                            </div>
+                            <div class="data-row">
+                                <dt>Arbeidstype</dt>
+                                <dd>{workTypeName}</dd>
+                            </div>
+                            <div class="data-row">
+                                <dt>Oppdragstype</dt>
+                                <dd>{assignmentType}</dd>
+                            </div>
+                            <div class="data-row">
+                                <dt>Kompensert forberedelse</dt>
+                                <dd>{preparationTime}</dd>
+                            </div>
+                            <div class="data-row">
+                                <dt>Totalt antall tolker</dt>
+                                <dd>{totalInterpreters}</dd>
+                            </div>
+                            <div class="data-row">
+                                <dt>Adresse</dt>
+                                <dd class="multiline-value">{addressFormatted}</dd>
+                            </div>
+                        </dl>
+
+                        <dl class="data-list">
+                            <div class="data-row">
+                                <dt>Status</dt>
+                                <dd>{status}</dd>
+                            </div>
+                            <div class="data-row">
+                                <dt>Tjenesteleverandør status</dt>
+                                <dd>{providerStatus}</dd>
+                            </div>
+                            <div class="data-row">
+                                <dt>Region</dt>
+                                <dd>{serviceTerritory}</dd>
+                            </div>
+                            <div class="data-row">
+                                <dt>Annen økonomisk leverandør</dt>
+                                <dd>{isOtherEconomicProvider}</dd>
+                            </div>
+                            <div class="data-row">
+                                <dt>Antall interesserte ressurser</dt>
+                                <dd>{interestedResources}</dd>
+                            </div>
+                        </dl>
+                    </div>
+                </section>
+
+                <aside class="side-column">
+                    <section class="detail-card compact-card" aria-labelledby="ordered-time-heading">
+                        <h2 id="ordered-time-heading" class="card-heading">Bestilt tid</h2>
+                        <dl class="time-grid">
+                            <div class="data-row">
+                                <dt>Bestilt starttid</dt>
+                                <dd>
+                                    <template lwc:if={earliestStartTime}>
+                                        <lightning-formatted-date-time
+                                            value={earliestStartTime}
+                                            year="numeric"
+                                            month="2-digit"
+                                            day="2-digit"
+                                            hour="2-digit"
+                                            minute="2-digit"
+                                        ></lightning-formatted-date-time>
+                                    </template>
+                                    <template lwc:else>—</template>
+                                </dd>
+                            </div>
+                            <div class="data-row">
+                                <dt>Bestilt sluttid</dt>
+                                <dd>
+                                    <template lwc:if={dueDate}>
+                                        <lightning-formatted-date-time
+                                            value={dueDate}
+                                            year="numeric"
+                                            month="2-digit"
+                                            day="2-digit"
+                                            hour="2-digit"
+                                            minute="2-digit"
+                                        ></lightning-formatted-date-time>
+                                    </template>
+                                    <template lwc:else>—</template>
+                                </dd>
+                            </div>
+                            <div class="data-row">
+                                <dt>Varighet</dt>
+                                <dd>{durationText}</dd>
+                            </div>
+                            <div class="data-row">
+                                <dt>Ukedag</dt>
+                                <dd>{dayOfWeek}</dd>
+                            </div>
+                        </dl>
+                    </section>
+                </aside>
+            </div>
+
+            <template lwc:if={hasCancellationDetails}>
+                <section class="detail-card cancellation-card" aria-labelledby="cancellation-heading">
+                    <h2 id="cancellation-heading" class="card-heading">Avlysning</h2>
+                    <div class="detail-columns">
+                        <dl class="data-list">
+                            <div class="data-row">
+                                <dt>Kommentar</dt>
+                                <dd>{cancellationComment}</dd>
+                            </div>
+                            <div class="data-row">
+                                <dt>Avlyst av tolk</dt>
+                                <dd>{canceledByInterpreter}</dd>
+                            </div>
+                        </dl>
+                        <dl class="data-list">
+                            <div class="data-row">
+                                <dt>Avlyst dato</dt>
+                                <dd>
+                                    <template lwc:if={canceledDate}>
+                                        <lightning-formatted-date-time
+                                            value={canceledDate}
+                                            year="numeric"
+                                            month="2-digit"
+                                            day="2-digit"
+                                            hour="2-digit"
+                                            minute="2-digit"
+                                        ></lightning-formatted-date-time>
+                                    </template>
+                                    <template lwc:else>—</template>
+                                </dd>
+                            </div>
+                            <div class="data-row">
+                                <dt>Sen avlysning</dt>
+                                <dd>{lateCancellation}</dd>
+                            </div>
+                        </dl>
+                    </div>
+                </section>
+            </template>
+        </template>
+    </article>
+</template>

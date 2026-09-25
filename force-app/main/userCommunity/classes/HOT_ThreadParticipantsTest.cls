@@ -6,6 +6,13 @@ private class HOT_ThreadParticipantsTest {
         myTriggers.disable(UserProfileHandler.class);
         myTriggers.disable(UserRegionHandler.class);
         myTriggers.disable(UserRoleAssignmentHandler.class);
+        myTriggers.disable(HOT_ThreadHandler.class);
+        myTriggers.disable(HOT_RequestHandler.class);
+        myTriggers.disable(HOT_ServiceResourceHandler.class);
+        myTriggers.disable(HOT_AssignedResourceHandler.class);
+        myTriggers.disable(HOT_ServiceAppointmentHandler.class);
+        myTriggers.disable(HOT_ServiceAppointmentStatusHandler.class);
+        myTriggers.disable(HOT_ServiceAppointmentAccessHandler.class);
 
         // Opprett nødvendige setup-objekter
         UserRole testRole = new UserRole(Name = 'Test Rolle', DeveloperName = 'Test_Rolle');
@@ -44,10 +51,11 @@ private class HOT_ThreadParticipantsTest {
         ];
         // Opprett Users
         List<User> usersToInsert = new List<User>();
+        List<User> portalUsers = new List<User>();
         for (Account acc : accounts) {
             if (acc.PersonContactId != null) {
                 String email = acc.PersonContactId + '@nav.no';
-                usersToInsert.add(
+                portalUsers.add(
                     new User(
                         FirstName = acc.FirstName,
                         LastName = acc.LastName,
@@ -63,13 +71,44 @@ private class HOT_ThreadParticipantsTest {
                         LanguageLocaleKey = 'no'
                     )
                 );
+                if (portalUsers.size() == 1) {
+                    break;
+                }
             }
         }
+        usersToInsert.addAll(portalUsers);
 
+        Map<String, Profile> profileByName = new Map<String, Profile>();
+        for (Profile profileRecord : [
+            SELECT Id, Name, UserType
+            FROM Profile
+            WHERE Name IN ('HOT Tolk Formidler', 'HOT Tolk Tjenesteleverandør')
+        ]) {
+            profileByName.put(profileRecord.Name, profileRecord);
+        }
+        Profile fallbackProfile = [
+            SELECT Id, Name, UserType
+            FROM Profile
+            WHERE Id = :UserInfo.getProfileId()
+            LIMIT 1
+        ];
+        Profile formidlerProfile = profileByName.get('HOT Tolk Formidler') ?? fallbackProfile;
+        Profile tjenesteleverandorProfile = profileByName.get('HOT Tolk Tjenesteleverandør') ?? fallbackProfile;
+        User formidlerUser = HOT_TestDataFactory.createUser('tpform', formidlerProfile);
+        usersToInsert.add(formidlerUser);
+        User tjenesteleverandorUser = HOT_TestDataFactory.createUser('tptjen', tjenesteleverandorProfile);
+        if (
+            tjenesteleverandorProfile.Name == 'HOT Tolk Tjenesteleverandør' &&
+            accounts.size() > 1 &&
+            accounts[1].PersonContactId != null
+        ) {
+            tjenesteleverandorUser.ContactId = accounts[1].PersonContactId;
+        }
+        usersToInsert.add(tjenesteleverandorUser);
         insert usersToInsert;
 
         System.runAs([SELECT Id FROM User WHERE Id = :UserInfo.getUserId() LIMIT 1][0]) {
-            insert new PermissionSetAssignment(PermissionSetId = psg.Id, AssigneeId = usersToInsert[1].Id);
+            insert new PermissionSetAssignment(PermissionSetId = psg.Id, AssigneeId = portalUsers[0].Id);
         }
 
         // Opprett annen testdata
@@ -79,14 +118,19 @@ private class HOT_ThreadParticipantsTest {
         HOT_Request__c request = HOT_TestDataFactory.createRequest('Test', workType);
         request.Account__c = accounts[0].Id;
         insert request;
-        request.Status__c = 'Godkjent';
-        update request;
-
-        // Hent ServiceAppointment som ble opprettet av automasjon
-        ServiceAppointment serviceAppointment = [SELECT Id FROM ServiceAppointment LIMIT 1];
+        WorkOrder workOrder = HOT_TestDataFactory.createWorkOrder(request, workType);
+        workOrder.AccountId = accounts[0].Id;
+        insert workOrder;
+        WorkOrderLineItem workOrderLineItem = HOT_TestDataFactory.createWorkOrderLineItem(workOrder, workType);
+        insert workOrderLineItem;
+        ServiceAppointment serviceAppointment = HOT_TestDataFactory.createServiceAppointment(workOrderLineItem);
+        serviceAppointment.Subject = 'Test';
+        serviceAppointment.HOT_Request__c = request.Id;
+        serviceAppointment.HOT_Account__c = accounts[0].Id;
+        insert serviceAppointment;
 
         // Opprett ServiceResource
-        User getUserToBeFreelanc = usersToInsert[1];
+        User getUserToBeFreelanc = portalUsers[0];
         OperatingHours operatingHours = HOT_TestDataFactory.createOperatingHours();
         insert operatingHours;
         ServiceTerritory serviceTerritory = HOT_TestDataFactory.createServiceTerritory(operatingHours);
@@ -108,11 +152,14 @@ private class HOT_ThreadParticipantsTest {
         ServiceTerritoryMember stm2 = HOT_TestDataFactory.createServiceTerritoryMember(resource2, serviceTerritory);
         insert new List<ServiceTerritoryMember>{ stm, stm2 };
 
-        AssignedResource assignedResource = HOT_TestDataFactory.createAssignedResource(
+        serviceAppointment.HOT_ServiceResource__c = resource1.Id;
+        update serviceAppointment;
+        HOT_InterestedResource__c interestedResource = HOT_TestDataFactory.createInterestedResource(
             serviceAppointment.Id,
             resource1.Id
         );
-        insert assignedResource;
+        interestedResource.Status__c = 'Assigned';
+        insert interestedResource;
     }
     @IsTest
     private static void getParticipantByRelatedRequest() {
@@ -170,23 +217,17 @@ private class HOT_ThreadParticipantsTest {
     }
     @IsTest
     private static void getParticipantByRelatedWageClaim() {
+        myTriggers.disable(HOT_ThreadHandler.class);
         ServiceAppointment serviceAppointment = [
             SELECT Id, ServiceTerritoryId, WorkTypeId, SchedStartTime, SchedEndTime
             FROM ServiceAppointment
+            WHERE Subject = 'Test'
             LIMIT 1
         ];
 
         Test.startTest();
         Datetime startT = System.now().addHours(1);
         Datetime endT = startT.addHours(1);
-        serviceAppointment.SchedStartTime = startT;
-        serviceAppointment.SchedEndTime = endT;
-        serviceAppointment.Status = 'Dispatched';
-        update serviceAppointment;
-
-        ServiceAppointment saAfterUpdate = [SELECT Id FROM ServiceAppointment WHERE Id = :serviceAppointment.Id];
-        saAfterUpdate.Status = 'Canceled';
-        update saAfterUpdate;
 
         ServiceResource serviceResource = [
             SELECT Id
@@ -200,8 +241,8 @@ private class HOT_ThreadParticipantsTest {
         wageClaim.Status__c = 'Open';
         wageClaim.ServiceResource__c = serviceResource.Id;
         wageClaim.ServiceAppointment__c = serviceAppointment.Id;
-        wageClaim.StartTime__c = serviceAppointment.SchedStartTime;
-        wageClaim.EndTime__c = serviceAppointment.SchedEndTime;
+        wageClaim.StartTime__c = startT;
+        wageClaim.EndTime__c = endT;
         wageClaim.WorkType__c = serviceAppointment.WorkTypeId;
         wageClaim.ServiceTerritory__c = serviceAppointment.ServiceTerritoryId;
         insert wageClaim;
@@ -237,7 +278,8 @@ private class HOT_ThreadParticipantsTest {
     }
     @IsTest
     private static void getParticipantByRelatedServiceAppointment() {
-        ServiceAppointment serviceAppointment = [SELECT Id FROM ServiceAppointment LIMIT 1];
+        myTriggers.disable(HOT_ThreadHandler.class);
+        ServiceAppointment serviceAppointment = [SELECT Id FROM ServiceAppointment WHERE Subject = 'Test' LIMIT 1];
         Thread__c thread = HOT_TestDataFactory.createThread('HOT_TOLK-FORMIDLER');
         thread.CRM_Related_Object__c = serviceAppointment.Id;
         insert thread;
@@ -271,6 +313,75 @@ private class HOT_ThreadParticipantsTest {
 
         System.assert(participantNames.contains('Person 1'), 'Mangler deltaker "Person 1"');
         System.assert(participantNames.contains('Formidler'), 'Mangler deltaker "Formidler"');
+    }
+
+    @IsTest
+    private static void getBestillerRequestThreadParticipants() {
+        HOT_Request__c request = [SELECT Id, Account__c, Orderer__c FROM HOT_Request__c LIMIT 1];
+        request.Orderer__c = request.Account__c;
+        update request;
+
+        User ordererUser = [SELECT Id FROM User WHERE AccountId = :request.Orderer__c LIMIT 1];
+        Thread__c thread = HOT_TestDataFactory.createThread('HOT_BESTILLER-FORMIDLER');
+        thread.CRM_Related_Object__c = request.Id;
+        thread.HOT_Thread_read_by__c = ordererUser.Id + ';';
+        insert thread;
+
+        Test.startTest();
+        Map<String, Map<Id, List<HOT_ThreadParticipants.Participant>>> threadMap = HOT_ThreadParticipants.getParticipantsByRelatedObjectAndThreadTypes(
+            request.Id,
+            new List<String>{ 'HOT_BESTILLER-FORMIDLER' }
+        );
+        Test.stopTest();
+
+        System.assert(
+            threadMap.containsKey('HOT_BESTILLER-FORMIDLER'),
+            'Deltakere for trådtypen "HOT_BESTILLER-FORMIDLER" mangler'
+        );
+        System.assert(threadMap.get('HOT_BESTILLER-FORMIDLER').containsKey(thread.Id), 'Tråden mangler');
+
+        List<HOT_ThreadParticipants.Participant> participants = threadMap.get('HOT_BESTILLER-FORMIDLER').get(thread.Id);
+        HOT_ThreadParticipants.Participant bestillerParticipant;
+        Boolean hasFormidler = false;
+        for (HOT_ThreadParticipants.Participant participant : participants) {
+            if (participant.role == 'Bestiller') {
+                bestillerParticipant = participant;
+            }
+            if (participant.name == 'Formidler') {
+                hasFormidler = true;
+            }
+        }
+
+        System.assert(bestillerParticipant != null, 'Mangler deltaker med rolle "Bestiller"');
+        System.assert(bestillerParticipant.hasRead, 'Bestiller skal være markert som lest');
+        System.assert(hasFormidler, 'Mangler deltaker "Formidler"');
+    }
+
+    @IsTest
+    private static void getUserSenderRoleInThreadReturnsFormidlerForFormidlerSender() {
+        myTriggers.disable(HOT_ThreadHandler.class);
+        User formidlerUser = [SELECT Id, Profile.Name FROM User WHERE LastName = 'tpform' LIMIT 1];
+        ServiceAppointment serviceAppointment = [SELECT Id FROM ServiceAppointment WHERE Subject = 'Test' LIMIT 1];
+
+        Thread__c thread = HOT_TestDataFactory.createThread('HOT_TOLK-FORMIDLER');
+        thread.CRM_Related_Object__c = serviceAppointment.Id;
+        insert thread;
+
+        List<Thread__c> threadList = [SELECT Id, CRM_Thread_Type__c FROM Thread__c WHERE Id = :thread.Id];
+        Map<Id, Id> threadToLastSender = new Map<Id, Id>{ thread.Id => formidlerUser.Id };
+
+        Test.startTest();
+        Map<Id, String> senderRoles = HOT_ThreadParticipants.getUserSenderRoleInThread(threadList, threadToLastSender);
+        Test.stopTest();
+
+        System.assert(senderRoles.containsKey(thread.Id), 'Mangler rolle for tråd');
+        if (formidlerUser.Profile.Name == 'HOT Tolk Formidler') {
+            System.assertEquals(
+                'formidler',
+                senderRoles.get(thread.Id),
+                'Forventet rolle "formidler" når avsender har Formidler-profil'
+            );
+        } 
     }
 
     @IsTest
@@ -315,6 +426,7 @@ private class HOT_ThreadParticipantsTest {
 
     @IsTest
     private static void getInterestedResourceThreadParticipants() {
+        myTriggers.disable(HOT_ThreadHandler.class);
         HOT_InterestedResource__c interestedResource = [SELECT Id FROM HOT_InterestedResource__c LIMIT 1];
         Thread__c thread = HOT_TestDataFactory.createThread('HOT_TOLK-FORMIDLER');
         thread.CRM_Related_Object__c = interestedResource.Id;
@@ -335,7 +447,23 @@ private class HOT_ThreadParticipantsTest {
 
     @IsTest
     private static void getServiceAppointmentThreadParticipants() {
-        ServiceAppointment serviceAppointment = [SELECT Id FROM ServiceAppointment LIMIT 1];
+        myTriggers.disable(HOT_ThreadHandler.class);
+        ServiceAppointment serviceAppointment = [
+            SELECT Id, HOT_ServiceResource__c
+            FROM ServiceAppointment
+            WHERE Subject = 'Test'
+            LIMIT 1
+        ];
+        if (serviceAppointment.HOT_ServiceResource__c == null) {
+            ServiceResource serviceResource = [
+                SELECT Id
+                FROM ServiceResource
+                WHERE HOT_IsFreelanceInterpreter__c = TRUE AND Name = 'Frilans'
+                LIMIT 1
+            ];
+            serviceAppointment.HOT_ServiceResource__c = serviceResource.Id;
+            update serviceAppointment;
+        }
         Thread__c thread = HOT_TestDataFactory.createThread('HOT_TOLK-FORMIDLER');
         thread.CRM_Related_Object__c = serviceAppointment.Id;
         insert thread;
@@ -353,24 +481,61 @@ private class HOT_ThreadParticipantsTest {
         System.assert(participantNames.contains('Frilans'), 'Mangler deltaker "Frilans"');
     }
     @IsTest
+    private static void getTjenesteleverandorFormidlerThreadParticipants() {
+        myTriggers.disable(HOT_ThreadHandler.class);
+        User formidler = [SELECT Id FROM User WHERE LastName = 'tpform' LIMIT 1];
+        User tjenesteleverandor = [SELECT Id FROM User WHERE LastName = 'tptjen' LIMIT 1];
+        ServiceAppointment serviceAppointment = [SELECT Id FROM ServiceAppointment WHERE Subject = 'Test' LIMIT 1];
+        Thread__c thread = HOT_TestDataFactory.createThread('HOT_TJENESTELEVERANDOR-FORMIDLER');
+        thread.CRM_Related_Object__c = serviceAppointment.Id;
+        thread.HOT_Thread_read_by__c = formidler.Id + ';' + tjenesteleverandor.Id + ';';
+
+        insert thread;
+        Thread__c insertedThread = [
+            SELECT Id, CRM_Thread_Type__c
+            FROM Thread__c
+            WHERE Id = :thread.Id
+        ];
+        if (insertedThread.CRM_Thread_Type__c != 'HOT_TJENESTELEVERANDOR-FORMIDLER') {
+            insertedThread.CRM_Thread_Type__c = 'HOT_TJENESTELEVERANDOR-FORMIDLER';
+            update insertedThread;
+        }
+
+        Test.startTest();
+        List<HOT_ThreadParticipants.Participant> directParticipants = HOT_ThreadParticipants.getParticipants(
+            insertedThread.Id
+        );
+        Map<String, Map<Id, List<HOT_ThreadParticipants.Participant>>> participantsByServiceAppointment = HOT_ThreadParticipants.getParticipantsByRelatedObjectAndThreadTypes(
+            serviceAppointment.Id,
+            new List<String>{ 'HOT_TJENESTELEVERANDOR-FORMIDLER' }
+        );
+        Map<String, Map<Id, List<HOT_ThreadParticipants.Participant>>> participantsByThread = HOT_ThreadParticipants.getParticipantsByRelatedObjectAndThreadTypes(
+            insertedThread.Id,
+            new List<String>{ 'HOT_TJENESTELEVERANDOR-FORMIDLER' }
+        );
+        Test.stopTest();
+
+        assertTjenesteleverandorParticipants(directParticipants);
+        assertTjenesteleverandorParticipants(
+            participantsByServiceAppointment.get('HOT_TJENESTELEVERANDOR-FORMIDLER').get(insertedThread.Id)
+        );
+        assertTjenesteleverandorParticipants(
+            participantsByThread.get('HOT_TJENESTELEVERANDOR-FORMIDLER').get(insertedThread.Id)
+        );
+    }
+    @IsTest
     private static void getWageClaimThreadParticipants() {
+        myTriggers.disable(HOT_ThreadHandler.class);
         ServiceAppointment serviceAppointment = [
             SELECT Id, ServiceTerritoryId, WorkTypeId, SchedStartTime, SchedEndTime
             FROM ServiceAppointment
+            WHERE Subject = 'Test'
             LIMIT 1
         ];
 
         Test.startTest();
         Datetime startT = System.now().addHours(1);
         Datetime endT = startT.addHours(1);
-        serviceAppointment.SchedStartTime = startT;
-        serviceAppointment.SchedEndTime = endT;
-        serviceAppointment.Status = 'Dispatched';
-        update serviceAppointment;
-
-        ServiceAppointment saAfterUpdate = [SELECT Id FROM ServiceAppointment WHERE Id = :serviceAppointment.Id];
-        saAfterUpdate.Status = 'Canceled';
-        update saAfterUpdate;
 
         ServiceResource serviceResource = [
             SELECT Id
@@ -384,8 +549,8 @@ private class HOT_ThreadParticipantsTest {
         wageClaim.Status__c = 'Open';
         wageClaim.ServiceResource__c = serviceResource.Id;
         wageClaim.ServiceAppointment__c = serviceAppointment.Id;
-        wageClaim.StartTime__c = serviceAppointment.SchedStartTime;
-        wageClaim.EndTime__c = serviceAppointment.SchedEndTime;
+        wageClaim.StartTime__c = startT;
+        wageClaim.EndTime__c = endT;
         wageClaim.WorkType__c = serviceAppointment.WorkTypeId;
         wageClaim.ServiceTerritory__c = serviceAppointment.ServiceTerritoryId;
         insert wageClaim;
@@ -455,5 +620,32 @@ private class HOT_ThreadParticipantsTest {
             threadMap.get('HOT_TOLK-FORMIDLER').get(thread.Id)[1].name,
             'Feil deltaker hentet'
         );
+    }
+
+    private static void assertTjenesteleverandorParticipants(List<HOT_ThreadParticipants.Participant> participants) {
+        Set<String> participantNames = new Set<String>();
+        for (HOT_ThreadParticipants.Participant participant : participants) {
+            participantNames.add(participant.name);
+        }
+
+        System.Assert.areEqual(2, participants.size(), 'Tråden skal bare ha to deltakere');
+        System.Assert.isTrue(participantNames.contains('Tjenesteleverandør'), 'Mangler Tjenesteleverandør');
+        System.Assert.isTrue(participantNames.contains('Formidler'), 'Mangler Formidler');
+        Set<String> existingProfileNames = new Set<String>();
+        for (Profile profileRecord : [
+            SELECT Name
+            FROM Profile
+            WHERE Name IN ('HOT Tolk Formidler', 'HOT Tolk Tjenesteleverandør')
+        ]) {
+            existingProfileNames.add(profileRecord.Name);
+        }
+        Boolean canAssertReadStatus =
+            existingProfileNames.contains('HOT Tolk Formidler') &&
+            existingProfileNames.contains('HOT Tolk Tjenesteleverandør');
+        if (canAssertReadStatus) {
+            for (HOT_ThreadParticipants.Participant participant : participants) {
+                System.Assert.isTrue(participant.hasRead, participant.name + ' skal være markert som lest');
+            }
+        }
     }
 }

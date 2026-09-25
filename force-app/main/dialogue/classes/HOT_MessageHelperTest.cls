@@ -199,6 +199,71 @@ private class HOT_MessageHelperTest {
         Test.stopTest();
         System.assertEquals(t.size(), 2);
     }
+
+    @IsTest
+    static void getThreadTypesOfInterestAlwaysIncludesInterpreterDispatcherThread() {
+        ServiceAppointment serviceAppointment = [SELECT Id FROM ServiceAppointment WHERE Subject = 'TEST' LIMIT 1];
+
+        Test.startTest();
+        List<String> threadTypes = HOT_MessageHelper.getThreadTypesOfInterest(serviceAppointment.Id);
+        Test.stopTest();
+
+        System.assert(
+            threadTypes.contains('HOT_TOLK-FORMIDLER'),
+            'Interpreter dispatcher thread should always be shown.'
+        );
+        System.assert(
+            !threadTypes.contains('HOT_TJENESTELEVERANDOR-FORMIDLER'),
+            'Service provider thread should not be shown before transfer or acceptance.'
+        );
+    }
+
+    @IsTest
+    static void getThreadTypesOfInterestIncludesServiceProviderThreadWhenTransferredOrAccepted() {
+        ServiceAppointment serviceAppointment = [SELECT Id FROM ServiceAppointment WHERE Subject = 'TEST' LIMIT 1];
+        myTriggers.disable(HOT_ServiceAppointmentHandler.class);
+        myTriggers.disable(HOT_ServiceAppointmentStatusHandler.class);
+        myTriggers.disable(HOT_ServiceAppointmentAccessHandler.class);
+
+        List<String> transferredThreadTypes;
+        List<String> acceptedThreadTypes;
+
+        Test.startTest();
+        update new ServiceAppointment(Id = serviceAppointment.Id, HOT_TjenesteleverandorStatus__c = 'Transferred');
+        transferredThreadTypes = HOT_MessageHelper.getThreadTypesOfInterest(serviceAppointment.Id);
+
+        update new ServiceAppointment(Id = serviceAppointment.Id, HOT_TjenesteleverandorStatus__c = 'Accepted');
+        acceptedThreadTypes = HOT_MessageHelper.getThreadTypesOfInterest(serviceAppointment.Id);
+        Test.stopTest();
+
+        System.assert(
+            transferredThreadTypes.contains('HOT_TJENESTELEVERANDOR-FORMIDLER'),
+            'Service provider thread should be shown after transfer.'
+        );
+
+        System.assert(
+            acceptedThreadTypes.contains('HOT_TJENESTELEVERANDOR-FORMIDLER'),
+            'Service provider thread should be shown after acceptance.'
+        );
+    }
+
+    @IsTest
+    static void getThreadTypesOfInterestPreservesExistingThreadTypes() {
+        ServiceAppointment serviceAppointment = [SELECT Id FROM ServiceAppointment WHERE Subject = 'TEST' LIMIT 1];
+        Thread__c existingThread = HOT_TestDataFactory.createThread();
+        existingThread.CRM_Related_Object__c = serviceAppointment.Id;
+        existingThread.CRM_Thread_Type__c = 'HOT_BRUKER-TOLK';
+        insert existingThread;
+
+        Test.startTest();
+        List<String> threadTypes = HOT_MessageHelper.getThreadTypesOfInterest(serviceAppointment.Id);
+        Test.stopTest();
+
+        System.assertEquals(2, threadTypes.size(), 'Existing and mandatory thread types should be returned.');
+        System.assert(threadTypes.contains('HOT_BRUKER-TOLK'), 'Existing thread type should be preserved.');
+        System.assert(threadTypes.contains('HOT_TOLK-FORMIDLER'), 'Mandatory thread type should be included.');
+    }
+
     @IsTest
     static void createThread() {
         HOT_Request__c request = [SELECT Id, Account__c FROM HOT_Request__c WHERE Subject__c = 'TEST' LIMIT 1];
@@ -472,6 +537,32 @@ private class HOT_MessageHelperTest {
         List<Thread__c> tList2 = [SELECT Id, HOT_Thread_read_by__c FROM Thread__c WHERE Id = :tList.get(0).Id];
         System.assertEquals(tList2[0].HOT_Thread_read_by__c, account.Id + ';');
     }
+
+    @IsTest
+    static void setLastMessageFromResetsReadByTjenesteleverandor() {
+        Account relatedAccount = HOT_TestDataFactory.createAccount(true);
+        insert relatedAccount;
+
+        Thread__c thread = HOT_TestDataFactory.createThread('HOT_TJENESTELEVERANDOR-FORMIDLER');
+        thread.CRM_Type__c = 'HOT_TJENESTELEVERANDOR-FORMIDLER';
+        thread.CRM_Related_Object__c = relatedAccount.Id;
+        thread.CRM_isActive__c = true;
+        thread.HOT_ReadByTjenesteleverandor__c = true;
+        insert thread;
+
+        System.Test.startTest();
+        HOT_MessageHelper.setLastMessageFrom(thread.Id, relatedAccount.Id);
+        System.Test.stopTest();
+
+        Thread__c updatedThread = [
+            SELECT HOT_ReadByTjenesteleverandor__c
+            FROM Thread__c
+            WHERE Id = :thread.Id
+            LIMIT 1
+        ];
+        System.assertEquals(false, updatedThread.HOT_ReadByTjenesteleverandor__c);
+    }
+
     @IsTest
     static void markAsReadByNavTest() {
         Profile stdProf = [SELECT Id FROM Profile WHERE Name IN ('Standardbruker', 'Standard User') LIMIT 1];
@@ -749,7 +840,7 @@ private class HOT_MessageHelperTest {
         System.assertEquals('HOT_TOLK-FORMIDLER', created.CRM_Type__c, 'Wrong thread type.');
         System.assert(
             created.CRM_Related_Object__c == sa.Id ||
-            created.CRM_Related_Object__c == sa.HOT_WorkOrderLineItem__r.WorkOrderId,
+                created.CRM_Related_Object__c == sa.HOT_WorkOrderLineItem__r.WorkOrderId,
             'Helper may relate to SA or normalize to WO.'
         );
         if (created.CRM_Account__c != null) {
@@ -760,6 +851,7 @@ private class HOT_MessageHelperTest {
             );
         }
     }
+
     @IsTest
     static void createThreadInterpreterDispatcher() {
         ServiceAppointment sa = [
@@ -793,7 +885,7 @@ private class HOT_MessageHelperTest {
         System.assertEquals('HOT_TOLK-FORMIDLER', created.CRM_Type__c, 'Wrong thread type.');
         System.assert(
             created.CRM_Related_Object__c == sa.Id ||
-            created.CRM_Related_Object__c == sa.HOT_WorkOrderLineItem__r.WorkOrderId,
+                created.CRM_Related_Object__c == sa.HOT_WorkOrderLineItem__r.WorkOrderId,
             'Helper may relate to SA directly or normalize to WO.'
         );
         System.assertEquals(sr.AccountId, created.CRM_Account__c, 'If stamped, account must match.');
