@@ -250,17 +250,24 @@ private class HOT_MessageHelperTest {
     @IsTest
     static void getThreadTypesOfInterestPreservesExistingThreadTypes() {
         ServiceAppointment serviceAppointment = [SELECT Id FROM ServiceAppointment WHERE Subject = 'TEST' LIMIT 1];
-        Thread__c existingThread = HOT_TestDataFactory.createThread();
+        myTriggers.disable(HOT_ServiceAppointmentHandler.class);
+        myTriggers.disable(HOT_ServiceAppointmentStatusHandler.class);
+        myTriggers.disable(HOT_ServiceAppointmentAccessHandler.class);
+        update new ServiceAppointment(Id = serviceAppointment.Id, HOT_TjenesteleverandorStatus__c = 'Declined');
+
+        Thread__c existingThread = HOT_TestDataFactory.createThread('HOT_TJENESTELEVERANDOR-FORMIDLER');
         existingThread.CRM_Related_Object__c = serviceAppointment.Id;
-        existingThread.CRM_Thread_Type__c = 'HOT_BRUKER-TOLK';
         insert existingThread;
 
         Test.startTest();
         List<String> threadTypes = HOT_MessageHelper.getThreadTypesOfInterest(serviceAppointment.Id);
         Test.stopTest();
 
-        System.assertEquals(1, threadTypes.size(), 'Existing and mandatory thread types should be returned.');
-        System.assert(threadTypes.contains('HOT_BRUKER-TOLK'), 'Existing thread type should be preserved.');
+        System.assertEquals(2, threadTypes.size(), 'Existing provider and mandatory interpreter thread types should be returned.');
+        System.assert(
+            threadTypes.contains('HOT_TJENESTELEVERANDOR-FORMIDLER'),
+            'The provider thread should remain visible after the transfer is declined.'
+        );
         System.assert(threadTypes.contains('HOT_TOLK-FORMIDLER'), 'Mandatory thread type should be included.');
     }
 
