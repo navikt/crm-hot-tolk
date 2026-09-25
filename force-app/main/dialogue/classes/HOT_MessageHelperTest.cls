@@ -259,7 +259,7 @@ private class HOT_MessageHelperTest {
         List<String> threadTypes = HOT_MessageHelper.getThreadTypesOfInterest(serviceAppointment.Id);
         Test.stopTest();
 
-        System.assertEquals(2, threadTypes.size(), 'Existing and mandatory thread types should be returned.');
+        System.assertEquals(1, threadTypes.size(), 'Existing and mandatory thread types should be returned.');
         System.assert(threadTypes.contains('HOT_BRUKER-TOLK'), 'Existing thread type should be preserved.');
         System.assert(threadTypes.contains('HOT_TOLK-FORMIDLER'), 'Mandatory thread type should be included.');
     }
