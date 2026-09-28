@@ -11,6 +11,10 @@ export default class Hot_flowFooterButtons extends LightningElement {
     @api showBack = false;
     @api showNext = false;
     @api showFinish = false;
+    @api size; // medium, small, xsmall
+    @api backLabel = 'Forrige';
+    @api nextLabel = 'Neste';
+    @api finishLabel = 'Fullfør';
 
     handleBack() {
         this.dispatchEvent(new FlowNavigationBackEvent());
