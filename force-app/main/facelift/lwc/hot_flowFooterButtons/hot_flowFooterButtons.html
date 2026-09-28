@@ -1,39 +1,42 @@
 <template>
     <div class="button-container">
         <template lwc:if={showBack}>
-            <c-button
+            <c-hot_button
                 type="Button"
                 onbuttonclick={handleBack}
-                button-label="Forrige"
+                button-label={backLabel}
                 button-styling="Secondary"
-                aria-label="Forrige"
+                aria-label={backLabel}
                 desktop-style="width: 5rem; justify-content: center; margin-right: 0.5rem;"
                 mobile-style="justify-content: center; margin-right: 0.5rem;"
-            ></c-button>
+                size={size}
+            ></c-hot_button>
         </template>
 
         <template lwc:if={showNext}>
-            <c-button
+            <c-hot_button
                 type="Button"
                 onbuttonclick={handleNext}
-                button-label="Neste"
+                button-label={nextLabel}
                 button-styling="Primary"
-                aria-label="Neste"
+                aria-label={nextLabel}
                 desktop-style="width: 5rem; justify-content: center;  margin-right: 0.5rem;"
                 mobile-style="justify-content: center;  margin-right: 0.5rem;"
-            ></c-button>
+                size={size}
+            ></c-hot_button>
         </template>
 
         <template lwc:if={showFinish}>
-            <c-button
+            <c-hot_button
                 type="Button"
                 onbuttonclick={handleFinish}
-                button-label="Fullfør"
+                button-label={finishLabel}
                 button-styling="Primary"
-                aria-label="Fullfør"
+                aria-label={finishLabel}
                 desktop-style="width: 5rem; justify-content: center; "
                 mobile-style="justify-content: center;"
-            ></c-button>
+                size={size}
+            ></c-hot_button>
         </template>
     </div>
 </template>
