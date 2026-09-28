@@ -119,7 +119,7 @@ public without sharing class HOT_InterestedResourcesListController {
     @AuraEnabled
     public static Thread__c buildThread(HOT_InterestedResource__c ir, Id userContactId) {
         Thread__c thread = new Thread__c();
-        thread.CRM_Thread_Type__c = 'HOT_TOLK-FORMIDLER';
+        thread.CRM_Thread_Type__c = 'HOT_TJENESTELEVERANDOR-TOLK';
         thread.CRM_Related_Object__c = ir.Id;
         thread.HOT_Title__c = ir.ServiceAppointment__r.Subject;
         thread.CRM_Account__c = ir.ServiceResource__r.AccountId;

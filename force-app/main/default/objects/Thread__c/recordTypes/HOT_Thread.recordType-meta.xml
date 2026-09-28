@@ -46,6 +46,10 @@
             <default>false</default>
         </values>
         <values>
+            <fullName>HOT_TJENESTELEVERANDOR-HONORAR</fullName>
+            <default>false</default>
+        </values>
+        <values>
             <fullName>HOT_TJENESTELEVERANDOR-TOLK</fullName>
             <default>false</default>
         </values>
