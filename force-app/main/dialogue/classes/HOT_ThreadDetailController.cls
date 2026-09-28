@@ -63,7 +63,8 @@ public without sharing class HOT_ThreadDetailController {
                 CRM_Related_Object__c,
                 CRM_Related_Object_Type__c,
                 CRM_Thread_Type__c,
-                HOT_ServiceResource__r.RelatedRecordId
+                HOT_ServiceResource__r.RelatedRecordId,
+                CRM_Account__c
             FROM Thread__c
             WHERE Id = :threadId
         ];
@@ -167,7 +168,11 @@ public without sharing class HOT_ThreadDetailController {
                     WHERE Id = :thread.CRM_Related_Object__c
                 ];
                 if (user.AccountId != null) {
-                    if (request.Account__c == user.AccountId || request.Orderer__c == user.AccountId) {
+                    if (
+                        request.Account__c == user.AccountId ||
+                        request.Orderer__c == user.AccountId ||
+                        thread.CRM_Account__c == user.AccountId
+                    ) {
                         return true;
                     }
                 }
