@@ -38,7 +38,7 @@ private class HOT_ThreadReplyPolicyTest {
             WHERE HOT_Request__c = :context.request.Id OR ParentRecordId = :context.workOrderLineItem.Id
         ];
         for (ServiceAppointment serviceAppointment : serviceAppointments) {
-            serviceAppointment.Status = 'Annul';
+            serviceAppointment.Status = 'Canceled';
         }
         update serviceAppointments;
     }
@@ -504,6 +504,11 @@ private class HOT_ThreadReplyPolicyTest {
 
         ServiceResource serviceResource = HOT_TestDataFactory.createServiceResource(UserInfo.getUserId());
         insert serviceResource;
+        OperatingHours operatingHours = HOT_TestDataFactory.createOperatingHours();
+        insert operatingHours;
+        ServiceTerritory serviceTerritory = HOT_TestDataFactory.createServiceTerritory(operatingHours);
+        insert serviceTerritory;
+        insert HOT_TestDataFactory.createServiceTerritoryMember(serviceResource, serviceTerritory);
         insert HOT_TestDataFactory.createAssignedResource(serviceAppointment.Id, serviceResource.Id);
 
         HOT_InterestedResource__c interestedResource = HOT_TestDataFactory.createInterestedResource(
@@ -556,8 +561,22 @@ private class HOT_ThreadReplyPolicyTest {
             null,
             HOT_MessageHelper.getInterestedResourceInformationAndAccessCheck(interestedResource.Id)
         );
-        System.assertNotEquals(null, HOT_MessageHelper.getWageClaimInformationAndAccessCheck(wageClaim.Id));
         System.assertNotEquals(null, HOT_MessageHelper.createMessages(thread, 'Ikke lagret', null));
+
+        User currentUser = new User(Id = UserInfo.getUserId());
+        Group adminGroup = [SELECT Id FROM Group WHERE DeveloperName = 'HOT_Tolk_Admin' AND Type = 'Regular' LIMIT 1];
+        System.runAs(currentUser) {
+            if (
+                [
+                    SELECT COUNT()
+                    FROM GroupMember
+                    WHERE GroupId = :adminGroup.Id AND UserOrGroupId = :currentUser.Id
+                ] == 0
+            ) {
+                insert new GroupMember(GroupId = adminGroup.Id, UserOrGroupId = currentUser.Id);
+            }
+            System.assertNotEquals(null, HOT_MessageHelper.getWageClaimInformationAndAccessCheck(wageClaim.Id));
+        }
         Test.stopTest();
     }
 }
