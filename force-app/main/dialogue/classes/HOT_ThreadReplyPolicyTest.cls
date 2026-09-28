@@ -495,7 +495,21 @@ private class HOT_ThreadReplyPolicyTest {
 
     @IsTest
     static void messageHelperInformationMethodsStillWorkWithReplyPolicy() {
-        TestContext context = createContext();
+        TestContext context = new TestContext();
+        context.workType = HOT_TestDataFactory.createWorkType('Reply policy work type');
+        insert context.workType;
+        Account account = HOT_TestDataFactory.createAccount(true);
+        insert account;
+        context.request = HOT_TestDataFactory.createRequest('Reply policy request', context.workType);
+        context.request.Account__c = account.Id;
+        context.request.Orderer__c = account.Id;
+        insert context.request;
+        context.workOrder = HOT_TestDataFactory.createWorkOrder(context.request, context.workType);
+        context.workOrder.AccountId = account.Id;
+        insert context.workOrder;
+        context.workOrderLineItem = HOT_TestDataFactory.createWorkOrderLineItem(context.workOrder, context.workType);
+        insert context.workOrderLineItem;
+
         ServiceAppointment serviceAppointment = createServiceAppointment(
             context,
             System.now().addHours(2),
@@ -504,6 +518,11 @@ private class HOT_ThreadReplyPolicyTest {
 
         ServiceResource serviceResource = HOT_TestDataFactory.createServiceResource(UserInfo.getUserId());
         insert serviceResource;
+        OperatingHours operatingHours = HOT_TestDataFactory.createOperatingHours();
+        insert operatingHours;
+        ServiceTerritory serviceTerritory = HOT_TestDataFactory.createServiceTerritory(operatingHours);
+        insert serviceTerritory;
+        insert HOT_TestDataFactory.createServiceTerritoryMember(serviceResource, serviceTerritory);
         insert HOT_TestDataFactory.createAssignedResource(serviceAppointment.Id, serviceResource.Id);
 
         HOT_InterestedResource__c interestedResource = HOT_TestDataFactory.createInterestedResource(
@@ -556,8 +575,22 @@ private class HOT_ThreadReplyPolicyTest {
             null,
             HOT_MessageHelper.getInterestedResourceInformationAndAccessCheck(interestedResource.Id)
         );
-        System.assertNotEquals(null, HOT_MessageHelper.getWageClaimInformationAndAccessCheck(wageClaim.Id));
         System.assertNotEquals(null, HOT_MessageHelper.createMessages(thread, 'Ikke lagret', null));
+
+        User currentUser = new User(Id = UserInfo.getUserId());
+        Group adminGroup = [SELECT Id FROM Group WHERE DeveloperName = 'HOT_Tolk_Admin' AND Type = 'Regular' LIMIT 1];
+        System.runAs(currentUser) {
+            if (
+                [
+                    SELECT COUNT()
+                    FROM GroupMember
+                    WHERE GroupId = :adminGroup.Id AND UserOrGroupId = :currentUser.Id
+                ] == 0
+            ) {
+                insert new GroupMember(GroupId = adminGroup.Id, UserOrGroupId = currentUser.Id);
+            }
+            System.assertNotEquals(null, HOT_MessageHelper.getWageClaimInformationAndAccessCheck(wageClaim.Id));
+        }
         Test.stopTest();
     }
 }
