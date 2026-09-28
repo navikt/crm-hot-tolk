@@ -23,6 +23,11 @@ export let columns = [
         label: 'Region',
         name: 'HOT_ServiceTerritoryName__c',
         type: 'String'
+    },
+    {
+        label: 'Akseptfrist',
+        name: 'HOT_TjenesteleverandorDeadline__c',
+        type: 'Datetime'
     }
 ];
 
@@ -70,5 +75,10 @@ export let mobileColumns = [
         label: 'Region',
         name: 'HOT_ServiceTerritoryName__c',
         type: 'String'
+    },
+    {
+        label: 'Akseptfrist',
+        name: 'HOT_TjenesteleverandorDeadline__c',
+        type: 'Datetime'
     }
 ];
