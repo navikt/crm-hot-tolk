@@ -18,37 +18,41 @@
                         <template lwc:if={card.hasThreadAndAssignedInterpreter}>
                             <div class="thread-participants">
                                 <span class="thread-participants-label">Deltakere:</span>
-                                <template for:each={card.participants} for:item="participant">
-                                    <c-hot_tag
-                                        key={participant.id}
-                                        label={participant.label}
-                                        variant="moderate"
-                                        size="small"
-                                        color="info"
-                                    ></c-hot_tag>
-                                </template>
-                            </div>
-                            <div class="thread-readers">
-                                <span class="thread-readers-label">Lest av:</span>
-                                <template lwc:if={card.hasReadParticipants}>
-                                    <template for:each={card.readParticipants} for:item="participant">
+                                <div class="thread-participant-tags">
+                                    <template for:each={card.participants} for:item="participant">
                                         <c-hot_tag
                                             key={participant.id}
                                             label={participant.label}
                                             variant="moderate"
                                             size="small"
-                                            color="success"
+                                            color="info"
                                         ></c-hot_tag>
                                     </template>
-                                </template>
-                                <template lwc:else>
-                                    <c-hot_tag
-                                        label="Ingen"
-                                        variant="moderate"
-                                        size="small"
-                                        color="warning"
-                                    ></c-hot_tag>
-                                </template>
+                                </div>
+                            </div>
+                            <div class="thread-readers">
+                                <span class="thread-readers-label">Lest av:</span>
+                                <div class="thread-reader-tags">
+                                    <template lwc:if={card.hasReadParticipants}>
+                                        <template for:each={card.readParticipants} for:item="participant">
+                                            <c-hot_tag
+                                                key={participant.id}
+                                                label={participant.label}
+                                                variant="moderate"
+                                                size="small"
+                                                color="success"
+                                            ></c-hot_tag>
+                                        </template>
+                                    </template>
+                                    <template lwc:else>
+                                        <c-hot_tag
+                                            label="Ingen"
+                                            variant="moderate"
+                                            size="small"
+                                            color="warning"
+                                        ></c-hot_tag>
+                                    </template>
+                                </div>
                             </div>
                         </template>
                         <template lwc:else>
