@@ -50,11 +50,11 @@ export default class Hot_tjenesteleverandorSaThreads extends LightningElement {
 
     get threadConfigurations() {
         if (this.serviceAppointmentStatus === 'Transferred') {
-            return [NAV_THREAD_CONFIGURATION, INTERPRETER_THREAD_CONFIGURATION];
+            return [NAV_THREAD_CONFIGURATION];
         }
 
         if (this.serviceAppointmentStatus === 'Accepted') {
-            return [NAV_THREAD_CONFIGURATION];
+            return [NAV_THREAD_CONFIGURATION, INTERPRETER_THREAD_CONFIGURATION];
         }
 
         return [];
