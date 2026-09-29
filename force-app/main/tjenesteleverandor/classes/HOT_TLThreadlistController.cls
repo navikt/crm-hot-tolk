@@ -19,8 +19,11 @@ public with sharing class HOT_TLThreadlistController {
                 HOT_TLDispatcher__c
             FROM Thread__c
             WHERE
-                (CRM_Type__c = 'HOT_TJENESTELEVERANDOR-FORMIDLER'
-                OR CRM_Type__c = 'HOT_TJENESTELEVERANDOR-TOLK')
+                CRM_Thread_Type__c IN (
+                    'HOT_TJENESTELEVERANDOR-FORMIDLER',
+                    'HOT_TJENESTELEVERANDOR-TOLK',
+                    'HOT_TJENESTELEVERANDOR-HONORAR'
+                )
                 AND CRM_Number_of_Messages__c > 0
             ORDER BY CRM_Number_of_unread_Messages__c DESC, CRM_Registered_Datetime_Formula__c DESC
         ];

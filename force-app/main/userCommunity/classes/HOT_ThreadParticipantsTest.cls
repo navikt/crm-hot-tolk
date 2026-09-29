@@ -381,7 +381,7 @@ private class HOT_ThreadParticipantsTest {
                 senderRoles.get(thread.Id),
                 'Forventet rolle "formidler" når avsender har Formidler-profil'
             );
-        } 
+        }
     }
 
     @IsTest
@@ -522,6 +522,39 @@ private class HOT_ThreadParticipantsTest {
         assertTjenesteleverandorParticipants(
             participantsByThread.get('HOT_TJENESTELEVERANDOR-FORMIDLER').get(insertedThread.Id)
         );
+    }
+    @IsTest
+    private static void getTjenesteleverandorTolkThreadParticipants() {
+        myTriggers.disable(HOT_ThreadHandler.class);
+        ServiceAppointment serviceAppointment = [SELECT Id FROM ServiceAppointment WHERE Subject = 'Test' LIMIT 1];
+        HOT_InterestedResource__c interestedResource = [SELECT Id FROM HOT_InterestedResource__c LIMIT 1];
+        User interpreter = [SELECT Id FROM User WHERE ContactId != NULL LIMIT 1];
+        List<Thread__c> threads = new List<Thread__c>();
+        for (Id relatedObjectId : new List<Id>{ serviceAppointment.Id, interestedResource.Id }) {
+            Thread__c thread = HOT_TestDataFactory.createThread('HOT_TJENESTELEVERANDOR-TOLK');
+            thread.CRM_Related_Object__c = relatedObjectId;
+            threads.add(thread);
+        }
+        insert threads;
+
+        Test.startTest();
+        for (Thread__c thread : threads) {
+            List<HOT_ThreadParticipants.Participant> participants = HOT_ThreadParticipants.getParticipants(thread.Id);
+            Boolean foundInterpreter = false;
+            Boolean foundProvider = false;
+            for (HOT_ThreadParticipants.Participant participant : participants) {
+                if (participant.name == 'Frilans') {
+                    System.Assert.areEqual('Tolk', participant.role);
+                    System.Assert.areEqual(interpreter.Id, participant.userId);
+                    foundInterpreter = true;
+                } else if (participant.name == 'Tjenesteleverandør') {
+                    foundProvider = true;
+                }
+            }
+            System.Assert.isTrue(foundInterpreter, 'Mangler tildelt tolk for ' + thread.CRM_Related_Object__c);
+            System.Assert.isTrue(foundProvider, 'Mangler tjenesteleverandør');
+        }
+        Test.stopTest();
     }
     @IsTest
     private static void getWageClaimThreadParticipants() {
