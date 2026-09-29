@@ -160,11 +160,11 @@ public without sharing class HOT_ThreadParticipants {
         if (relatedObjectId.getSobjectType() == Thread__c.SObjectType) {
             this.getParticipansFromThreads();
             if (
-                this.threads[0].CRM_Thread_Type__c == TJENESTELEVERANDOR_HONORAR_THREAD_TYPE &&
-                this.hasObjectTypeRelations('HOT_WageClaim__c')
+                this.threads[0].CRM_Thread_Type__c == TJENESTELEVERANDOR_TOLK_THREAD_TYPE ||
+                this.threads[0].CRM_Thread_Type__c == TJENESTELEVERANDOR_HONORAR_THREAD_TYPE
             ) {
                 this.mapThreadIdsByRelatedObjectIds();
-                this.getParticipantsFromWageClaims();
+                this.getRelatedObjectParticipants();
             }
             this.setTjenesteleverandorParticipants().setReadStatus();
         } else {
