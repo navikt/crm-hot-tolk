@@ -1,6 +1,7 @@
 public without sharing class HOT_ThreadParticipants {
     private static final String TJENESTELEVERANDOR_FORMIDLER_THREAD_TYPE = 'HOT_TJENESTELEVERANDOR-FORMIDLER';
     private static final String TJENESTELEVERANDOR_TOLK_THREAD_TYPE = 'HOT_TJENESTELEVERANDOR-TOLK';
+    private static final String TJENESTELEVERANDOR_HONORAR_THREAD_TYPE = 'HOT_TJENESTELEVERANDOR-HONORAR';
 
     public class Participant {
         @AuraEnabled
@@ -135,7 +136,8 @@ public without sharing class HOT_ThreadParticipants {
         ];
         if (
             thread.CRM_Thread_Type__c == TJENESTELEVERANDOR_FORMIDLER_THREAD_TYPE ||
-            thread.CRM_Thread_Type__c == TJENESTELEVERANDOR_TOLK_THREAD_TYPE
+            thread.CRM_Thread_Type__c == TJENESTELEVERANDOR_TOLK_THREAD_TYPE ||
+            thread.CRM_Thread_Type__c == TJENESTELEVERANDOR_HONORAR_THREAD_TYPE
         ) {
             return new HOT_ThreadParticipants(thread.Id, new List<String>{ thread.CRM_Thread_Type__c })
                 .getParticipantsByRelatedObjectAndThreadId()
@@ -156,7 +158,15 @@ public without sharing class HOT_ThreadParticipants {
     }
     private Map<String, Map<Id, List<Participant>>> getParticipantsByRelatedObjectAndThreadId() {
         if (relatedObjectId.getSobjectType() == Thread__c.SObjectType) {
-            this.getParticipansFromThreads().setTjenesteleverandorParticipants().setReadStatus();
+            this.getParticipansFromThreads();
+            if (
+                this.threads[0].CRM_Thread_Type__c == TJENESTELEVERANDOR_HONORAR_THREAD_TYPE &&
+                this.hasObjectTypeRelations('HOT_WageClaim__c')
+            ) {
+                this.mapThreadIdsByRelatedObjectIds();
+                this.getParticipantsFromWageClaims();
+            }
+            this.setTjenesteleverandorParticipants().setReadStatus();
         } else {
             this.getAssignedServiceResourceParticipants()
                 .getRelatedObjectParticipants()
@@ -192,7 +202,10 @@ public without sharing class HOT_ThreadParticipants {
                     thread.Id,
                     new List<Participant>{ new Participant('Tjenesteleverandør'), new Participant('Formidler') }
                 );
-            } else if (thread.CRM_Thread_Type__c == TJENESTELEVERANDOR_TOLK_THREAD_TYPE) {
+            } else if (
+                thread.CRM_Thread_Type__c == TJENESTELEVERANDOR_TOLK_THREAD_TYPE ||
+                thread.CRM_Thread_Type__c == TJENESTELEVERANDOR_HONORAR_THREAD_TYPE
+            ) {
                 this.participantsByThreadId.get(thread.Id).add(new Participant('Tjenesteleverandør'));
             }
         }
