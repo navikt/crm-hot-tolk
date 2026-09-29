@@ -16,8 +16,8 @@ public without sharing class HOT_ThreadHandler extends MyTriggers implements Cal
                 thread.CRM_Type__c == 'HOT_TOLK-FORMIDLER' ||
                 thread.CRM_Type__c == 'HOT_TJENESTELEVERANDOR-FORMIDLER' ||
                 thread.CRM_Type__c == 'HOT_TJENESTELEVERANDOR-TOLK' ||
-                thread.CRM_Type__c == 'HOT_TOLK-RESSURSKONTOR') &&
-                thread.CRM_Related_Object__c != null
+                thread.CRM_Type__c == 'HOT_TOLK-RESSURSKONTOR' ||
+                thread.CRM_Type__c == 'HOT_TJENESTELEVERANDOR-HONORAR') && thread.CRM_Related_Object__c != null
             ) {
                 threadById.put(thread.CRM_Related_Object__c, thread);
             }
@@ -131,13 +131,12 @@ public without sharing class HOT_ThreadHandler extends MyTriggers implements Cal
                 WHERE Id IN :threadByServiceAppointmentId.keySet()
             ];
             for (ServiceAppointment sa : serviceAppointment) {
-                if(threadByServiceAppointmentId.get(sa.Id).CRM_Type__c == 'HOT_TOLK-FORMIDLER'){
+                if (threadByServiceAppointmentId.get(sa.Id).CRM_Type__c == 'HOT_TOLK-FORMIDLER') {
                     threadByServiceAppointmentId.get(sa.Id).Name = threadSubjectMaker(
                         'SAMTALE MED TOLK: ' + sa.Subject
                     );
                     threadByServiceAppointmentId.get(sa.Id).OwnerId = sa.OwnerId;
-                }
-                else if(threadByServiceAppointmentId.get(sa.Id).CRM_Type__c == 'HOT_TJENESTELEVERANDOR-FORMIDLER'){
+                } else if (threadByServiceAppointmentId.get(sa.Id).CRM_Type__c == 'HOT_TJENESTELEVERANDOR-FORMIDLER') {
                     threadByServiceAppointmentId.get(sa.Id).Name = threadSubjectMaker(
                         'SAMTALE MED TJENESTELEVERANDØR: ' + sa.Subject
                     );
@@ -187,7 +186,7 @@ public without sharing class HOT_ThreadHandler extends MyTriggers implements Cal
                 WHERE Id IN :threadByWageClaimId.keySet()
             ];
             for (HOT_WageClaim__c wc : wageClaim) {
-                threadByWageClaimId.get(wc.Id).Name = threadSubjectMaker('LØNNSKRAV: ' + wc.Name);
+                threadByWageClaimId.get(wc.Id).Name = threadSubjectMaker('HONORAR: ' + wc.Name);
                 threadByWageClaimId.get(wc.Id).OwnerId = wc.ServiceAppointment__r.OwnerId;
             }
         }
@@ -214,7 +213,7 @@ public without sharing class HOT_ThreadHandler extends MyTriggers implements Cal
         List<Thread__c> threads = [
             SELECT Id, CRM_Related_Object__c, HOT_ParticipantIds__c
             FROM Thread__c
-            WHERE CRM_Related_Object__c IN :workOrderIds AND CRM_Thread_Type__c ='HOT_TOLK-FORMIDLER'
+            WHERE CRM_Related_Object__c IN :workOrderIds AND CRM_Thread_Type__c = 'HOT_TOLK-FORMIDLER'
         ];
         setInterpreterThread(threads, serviceAppointmentsByWorkOrderId);
     }

@@ -11,6 +11,17 @@
             <property name="showBack" type="Boolean" label="Show Back Button" default="false" />
             <property name="showNext" type="Boolean" label="Show Next Button" default="false" />
             <property name="showFinish" type="Boolean" label="Show Finish Button" default="false" />
+            <property
+                name="size"
+                type="String"
+                label="Button Size"
+                description="Velg knappestørrelse: medium, small eller xsmall."
+                default="medium"
+            />
+            <property name="backLabel" type="String" label="Back Button Label" default="Forrige" />
+            <property name="nextLabel" type="String" label="Next Button Label" default="Neste" />
+            <property name="finishLabel" type="String" label="Finish Button Label" default="Fullfør" />
+
         </targetConfig>
     </targetConfigs>
 </LightningComponentBundle>
