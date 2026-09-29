@@ -11,7 +11,11 @@ const VIEW_FILTERS = [
     {
         label: 'Alle samtaler',
         value: 'all',
-        threadTypes: ['HOT_TJENESTELEVERANDOR-FORMIDLER', 'HOT_TJENESTELEVERANDOR-TOLK']
+        threadTypes: [
+            'HOT_TJENESTELEVERANDOR-FORMIDLER',
+            'HOT_TJENESTELEVERANDOR-TOLK',
+            'HOT_TJENESTELEVERANDOR-HONORAR'
+        ]
     },
     {
         label: 'Samtaler med Nav',
@@ -22,6 +26,11 @@ const VIEW_FILTERS = [
         label: 'Samtaler med tolk',
         value: 'tolk',
         threadTypes: ['HOT_TJENESTELEVERANDOR-TOLK']
+    },
+    {
+        label: 'Samtaler om honorar',
+        value: 'honorar',
+        threadTypes: ['HOT_TJENESTELEVERANDOR-HONORAR']
     }
 ];
 
