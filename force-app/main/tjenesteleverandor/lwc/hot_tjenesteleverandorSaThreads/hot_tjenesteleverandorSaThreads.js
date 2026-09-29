@@ -3,6 +3,7 @@ import { createRecord } from 'lightning/uiRecordApi';
 import { ShowToastEvent } from 'lightning/platformShowToastEvent';
 import userId from '@salesforce/user/Id';
 import getSARelatedThreads from '@salesforce/apex/HOT_TLThreadlistController.getSARelatedThreads';
+import hasAssignedInterpreter from '@salesforce/apex/HOT_TLThreadlistController.hasAssignedInterpreter';
 import getParticipants from '@salesforce/apex/HOT_ThreadParticipants.getParticipants';
 import createThread from '@salesforce/apex/HOT_MessageHelper.createThreadDispatcher';
 import setLastMessageFrom from '@salesforce/apex/HOT_MessageHelper.setLastMessageFrom';
@@ -46,15 +47,20 @@ export default class Hot_tjenesteleverandorSaThreads extends LightningElement {
         }
 
         try {
-            const threads = await getSARelatedThreads({ serviceAppointmentId });
+            const [threads, assignedInterpreter] = await Promise.all([
+                getSARelatedThreads({ serviceAppointmentId }),
+                configurations.some((configuration) => configuration.requiresAssignedInterpreter)
+                    ? hasAssignedInterpreter({ serviceAppointmentId })
+                    : Promise.resolve(true)
+            ]);
             const cards = await Promise.all(
                 configurations.map(async (configuration) => {
                     const thread = (threads ?? []).find(
-                        (candidate) => (candidate.CRM_Thread_Type__c || candidate.CRM_Type__c) === configuration.type
+                        (candidate) => candidate.CRM_Thread_Type__c === configuration.type
                     );
                     const participants = thread ? await getParticipants({ threadId: thread.Id }) : [];
 
-                    return this.toThreadCard(configuration, thread, participants);
+                    return this.toThreadCard(configuration, thread, participants, assignedInterpreter);
                 })
             );
 
@@ -64,16 +70,19 @@ export default class Hot_tjenesteleverandorSaThreads extends LightningElement {
             }
         } catch (error) {
             if (currentRequestId === this.requestId) {
-                this.threadCards = configurations.map((configuration) => this.toThreadCard(configuration, null, []));
+                this.threadCards = configurations.map((configuration) =>
+                    this.toThreadCard(configuration, null, [], false)
+                );
                 this.isLoading = false;
             }
             console.error('Could not load related threads', JSON.stringify(error), error);
         }
     }
 
-    toThreadCard(configuration, thread, participants) {
+    toThreadCard(configuration, thread, participants, assignedInterpreter = true) {
         const participantLabels = this.toParticipantLabels(participants);
         const readParticipantLabels = this.toReadParticipantLabels(participants);
+        const hasAssignedInterpreter = !configuration.requiresAssignedInterpreter || assignedInterpreter;
 
         return {
             ...configuration,
@@ -81,7 +90,10 @@ export default class Hot_tjenesteleverandorSaThreads extends LightningElement {
             participants: participantLabels,
             readParticipants: readParticipantLabels,
             hasThread: Boolean(thread),
-            hasReadParticipants: readParticipantLabels.length > 0
+            hasReadParticipants: readParticipantLabels.length > 0,
+            hasAssignedInterpreter,
+            hasThreadAndAssignedInterpreter: Boolean(thread) && hasAssignedInterpreter,
+            showMissingInterpreter: !hasAssignedInterpreter
         };
     }
 

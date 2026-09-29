@@ -103,7 +103,8 @@ public with sharing class HOT_TLThreadlistController {
                 CRM_Latest_Message_Datetime__c,
                 HOT_AppointmentStartTime__c,
                 CRM_Thread_Type__c,
-                HOT_ServiceAppointment__r.HOT_TjenesteleverandorStatus__c
+                HOT_ServiceAppointment__r.HOT_TjenesteleverandorStatus__c,
+                CRM_Account__c
             FROM Thread__c
             WHERE
                 (CRM_Thread_Type__c = 'HOT_TJENESTELEVERANDOR-FORMIDLER'
@@ -112,6 +113,22 @@ public with sharing class HOT_TLThreadlistController {
         ];
         return threads;
     }
+
+    @AuraEnabled(cacheable=true)
+    public static Boolean hasAssignedInterpreter(Id serviceAppointmentId) {
+        if (serviceAppointmentId == null) {
+            return false;
+        }
+
+        return [
+                SELECT Id, ServiceResource__r.AccountId
+                FROM HOT_InterestedResource__c
+                WHERE ServiceAppointment__c = :serviceAppointmentId AND Status__c = 'Assigned'
+                LIMIT 1
+            ]
+            .size() > 0;
+    }
+
     @AuraEnabled
     public static Map<String, Integer> getNumberOfUnreadThreads() {
         Id currentUserId = UserInfo.getUserId();

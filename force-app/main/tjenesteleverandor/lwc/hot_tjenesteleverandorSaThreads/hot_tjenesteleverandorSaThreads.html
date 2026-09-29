@@ -15,7 +15,7 @@
                 <c-hot_expansion-card>
                     <span slot="title">{card.title}</span>
                     <div slot="description">
-                        <template lwc:if={card.hasThread}>
+                        <template lwc:if={card.hasThreadAndAssignedInterpreter}>
                             <div class="thread-participants">
                                 <span class="thread-participants-label">Deltakere:</span>
                                 <template for:each={card.participants} for:item="participant">
@@ -52,23 +52,33 @@
                             </div>
                         </template>
                         <template lwc:else>
-                            <c-hot_tag
-                                label="Samtale er ikke opprettet"
-                                variant="moderate"
-                                size="small"
-                                color="warning"
-                            ></c-hot_tag>
+                            <template lwc:if={card.showMissingInterpreter}>
+                                <c-hot_tag
+                                    label="Ingen tolk er tildelt"
+                                    variant="moderate"
+                                    size="small"
+                                    color="warning"
+                                ></c-hot_tag>
+                            </template>
+                            <template lwc:else>
+                                <c-hot_tag
+                                    label="Samtale er ikke opprettet"
+                                    variant="moderate"
+                                    size="small"
+                                    color="warning"
+                                ></c-hot_tag>
+                            </template>
                         </template>
                     </div>
 
-                    <template lwc:if={card.hasThread}>
+                    <template lwc:if={card.hasThreadAndAssignedInterpreter}>
                         <c-hot_messaging-thread-viewer
                             thread={card.thread}
                             set-input-in-focus-on-render
                             is-tjeneste-leverandor-formidler-view
                         ></c-hot_messaging-thread-viewer>
                     </template>
-                    <template lwc:else>
+                    <template lwc:elseif={card.hasAssignedInterpreter}>
                         <c-hot_messaging-thread-viewer-mock
                             data-thread-type={card.type}
                             set-input-in-focus-on-render

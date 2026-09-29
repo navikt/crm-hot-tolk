@@ -22,7 +22,8 @@ const THREAD_CONFIGURATIONS = [
     {
         type: 'HOT_TJENESTELEVERANDOR-TOLK',
         title: 'Samtale med tolk',
-        initialMessage: 'Samtale med tolk er ikke påbegynt enda. Skriv en melding for å starte samtalen.'
+        initialMessage: 'Samtale med tolk er ikke påbegynt enda. Skriv en melding for å starte samtalen.',
+        requiresAssignedInterpreter: true
     }
 ];
 

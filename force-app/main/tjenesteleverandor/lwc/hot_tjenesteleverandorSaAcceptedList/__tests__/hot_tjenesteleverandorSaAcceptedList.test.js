@@ -14,6 +14,10 @@ jest.mock(
     { virtual: true }
 );
 
+jest.mock('@salesforce/apex/HOT_TLThreadlistController.hasAssignedInterpreter', () => ({ default: jest.fn() }), {
+    virtual: true
+});
+
 const APPOINTMENTS = [
     {
         Id: '08p000000000001AAA',
