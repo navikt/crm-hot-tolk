@@ -8,9 +8,22 @@ import getParticipants from '@salesforce/apex/HOT_ThreadParticipants.getParticip
 import createThread from '@salesforce/apex/HOT_MessageHelper.createThreadDispatcher';
 import setLastMessageFrom from '@salesforce/apex/HOT_MessageHelper.setLastMessageFrom';
 
+const NAV_THREAD_CONFIGURATION = {
+    type: 'HOT_TJENESTELEVERANDOR-FORMIDLER',
+    title: 'Samtale med Nav',
+    initialMessage: 'Samtale med Nav er ikke påbegynt enda. Skriv en melding for å starte samtalen.'
+};
+
+const INTERPRETER_THREAD_CONFIGURATION = {
+    type: 'HOT_TJENESTELEVERANDOR-TOLK',
+    title: 'Samtale med tolk',
+    initialMessage: 'Samtale med tolk er ikke påbegynt enda. Skriv en melding for å starte samtalen.',
+    requiresAssignedInterpreter: true
+};
+
 export default class Hot_tjenesteleverandorSaThreads extends LightningElement {
     _serviceAppointmentId;
-    _threadConfigurations = [];
+    _serviceAppointmentStatus;
     requestId = 0;
     threadCards = [];
     isLoading = false;
@@ -26,13 +39,25 @@ export default class Hot_tjenesteleverandorSaThreads extends LightningElement {
     }
 
     @api
-    get threadConfigurations() {
-        return this._threadConfigurations;
+    get serviceAppointmentStatus() {
+        return this._serviceAppointmentStatus;
     }
 
-    set threadConfigurations(value) {
-        this._threadConfigurations = Array.isArray(value) ? value : [];
+    set serviceAppointmentStatus(value) {
+        this._serviceAppointmentStatus = value;
         void this.loadThreads();
+    }
+
+    get threadConfigurations() {
+        if (this.serviceAppointmentStatus === 'Transferred') {
+            return [NAV_THREAD_CONFIGURATION, INTERPRETER_THREAD_CONFIGURATION];
+        }
+
+        if (this.serviceAppointmentStatus === 'Accepted') {
+            return [NAV_THREAD_CONFIGURATION];
+        }
+
+        return [];
     }
 
     async loadThreads() {
