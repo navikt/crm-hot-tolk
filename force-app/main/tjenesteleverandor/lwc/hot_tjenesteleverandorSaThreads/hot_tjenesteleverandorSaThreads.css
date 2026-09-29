@@ -15,6 +15,11 @@
 .thread-card:last-child {
     padding-bottom: 0;
 }
+
+.missing-interpreter-message {
+    margin: 0;
+}
+
 @keyframes loaderAnimation {
     50% {
         opacity: 0.5;

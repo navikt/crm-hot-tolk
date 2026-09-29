@@ -87,6 +87,11 @@
                             oncreatethreadwithmessage={handleCreateThreadWithMessage}
                         ></c-hot_messaging-thread-viewer-mock>
                     </template>
+                    <template lwc:else>
+                        <p class="missing-interpreter-message" role="status">
+                            Samtalen kan ikke opprettes før en tolk er tildelt.
+                        </p>
+                    </template>
                 </c-hot_expansion-card>
             </div>
         </template>
