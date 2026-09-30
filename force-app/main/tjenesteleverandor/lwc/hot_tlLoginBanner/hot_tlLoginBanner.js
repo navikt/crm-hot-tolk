@@ -99,6 +99,10 @@ export default class Hot_tlLoginBanner extends NavigationMixin(LightningElement)
         return this.notifications.length > 0;
     }
 
+    get hasNoNotifications() {
+        return this.notifications.length === 0;
+    }
+
     get hasUnreadNotifications() {
         return this.notifications.some((notification) => !notification.isRead);
     }

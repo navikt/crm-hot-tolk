@@ -55,13 +55,13 @@
                 >
                     <span class="notification-label">Varsler</span>
 
-                    <template if:true={unreadCount}>
+                    <template lwc:if={unreadCount}>
                         <span class="unread-badge" aria-live="polite">{unreadCount}</span>
                     </template>
                 </button>
 
                 <div class={notificationDropdownClass}>
-                    <template if:true={hasNotifications}>
+                    <template lwc:if={hasNotifications}>
                         <template for:each={notifications} for:item="notification">
                             <div key={notification.id}>
                                 <template lwc:if={notification.isThreadNotification}>
@@ -87,7 +87,7 @@
                         </template>
                     </template>
 
-                    <template if:false={hasNotifications}>
+                    <template lwc:if={hasNoNotifications}>
                         <div class="notification-empty">Ingen varsler</div>
                     </template>
                 </div>
