@@ -176,12 +176,21 @@ export default class hot_tjenesteLeverandorThreadList extends LightningElement {
     handleConversationSelect(event) {
         const conversationId = event.currentTarget.dataset.id;
 
+        this.selectConversation(conversationId, true);
+    }
+
+    selectConversation(conversationId, updateUrl) {
+        const conversation = this.conversations.find(({ id }) => id === conversationId);
+        if (!conversation) {
+            return;
+        }
+
         this.selectedConversationId = conversationId;
-        this.updateUrlRecordId(conversationId);
+        if (updateUrl) {
+            this.updateUrlRecordId(conversationId);
+        }
         this.markConversationAsRead(conversationId);
         void this.persistConversationAsRead(conversationId);
-
-        const conversation = this.conversations.find(({ id }) => id === conversationId);
 
         this.relatedRecordId = conversation?.relatedRecordId || null;
         this.serviceAppointment = null;
@@ -247,7 +256,13 @@ export default class hot_tjenesteLeverandorThreadList extends LightningElement {
         try {
             const threads = await getAllThreads();
             this.conversations = (threads ?? []).map(mapThreadToConversation);
-            this.ensureSelectedConversationIsVisible();
+            const urlThreadId = new URL(window.location.href).searchParams.get('recordId');
+
+            if (urlThreadId) {
+                this.selectConversation(urlThreadId, false);
+            } else {
+                this.ensureSelectedConversationIsVisible();
+            }
         } catch (error) {
             this.conversations = [];
             this.loadError = 'Kunne ikke hente samtaler. Feilkode: ' + error;

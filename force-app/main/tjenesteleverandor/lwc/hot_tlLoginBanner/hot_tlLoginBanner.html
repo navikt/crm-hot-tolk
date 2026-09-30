@@ -63,10 +63,26 @@
                 <div class={notificationDropdownClass}>
                     <template if:true={hasNotifications}>
                         <template for:each={notifications} for:item="notification">
-                            <div key={notification.id} class="notification-item">
-                                <span class="notification-title">{notification.title}</span>
-                                <span class="notification-text">{notification.text}</span>
-                                <span class="notification-meta">{notification.createdDate}</span>
+                            <div key={notification.id}>
+                                <template lwc:if={notification.isThreadNotification}>
+                                    <a
+                                        class="notification-item notification-link"
+                                        href={notification.url}
+                                        data-thread-id={notification.relatedObjectId}
+                                        onclick={handleNotificationClick}
+                                    >
+                                        <span class="notification-title">{notification.title}</span>
+                                        <span class="notification-text">{notification.text}</span>
+                                        <span class="notification-meta">{notification.createdDate}</span>
+                                    </a>
+                                </template>
+                                <template lwc:else>
+                                    <div class="notification-item">
+                                        <span class="notification-title">{notification.title}</span>
+                                        <span class="notification-text">{notification.text}</span>
+                                        <span class="notification-meta">{notification.createdDate}</span>
+                                    </div>
+                                </template>
                             </div>
                         </template>
                     </template>

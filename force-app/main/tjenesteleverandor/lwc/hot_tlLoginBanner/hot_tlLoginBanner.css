@@ -338,6 +338,11 @@
     background-color: #214979;
 }
 
+.notification-link {
+    text-decoration: none;
+    cursor: pointer;
+}
+
 .notification-title {
     font-size: 1.125rem;
     font-weight: 600;
