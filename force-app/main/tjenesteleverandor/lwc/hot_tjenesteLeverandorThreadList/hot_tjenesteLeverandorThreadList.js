@@ -177,6 +177,7 @@ export default class hot_tjenesteLeverandorThreadList extends LightningElement {
         const conversationId = event.currentTarget.dataset.id;
 
         this.selectedConversationId = conversationId;
+        this.updateUrlRecordId(conversationId);
         this.markConversationAsRead(conversationId);
         void this.persistConversationAsRead(conversationId);
 
@@ -234,6 +235,7 @@ export default class hot_tjenesteLeverandorThreadList extends LightningElement {
 
     handleRefresh() {
         this.selectedConversationId = undefined;
+        this.updateUrlRecordId(undefined, true);
         this.loadConversations();
     }
 
@@ -260,9 +262,26 @@ export default class hot_tjenesteLeverandorThreadList extends LightningElement {
     }
 
     ensureSelectedConversationIsVisible() {
-        if (!this.filteredConversations.some((conversation) => conversation.id === this.selectedConversationId)) {
+        if (
+            this.selectedConversationId &&
+            !this.filteredConversations.some((conversation) => conversation.id === this.selectedConversationId)
+        ) {
             this.selectedConversationId = undefined;
+            this.updateUrlRecordId(undefined, true);
         }
+    }
+
+    updateUrlRecordId(recordId, replace = false) {
+        const url = new URL(window.location.href);
+
+        if (recordId) {
+            url.searchParams.set('recordId', recordId);
+        } else {
+            url.searchParams.delete('recordId');
+        }
+
+        const historyMethod = replace ? 'replaceState' : 'pushState';
+        window.history[historyMethod](window.history.state, '', `${url.pathname}${url.search}${url.hash}`);
     }
 
     async showServiceAppointmentDetails() {
