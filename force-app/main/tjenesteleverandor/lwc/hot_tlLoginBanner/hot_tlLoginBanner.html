@@ -55,23 +55,39 @@
                 >
                     <span class="notification-label">Varsler</span>
 
-                    <template if:true={unreadCount}>
+                    <template lwc:if={unreadCount}>
                         <span class="unread-badge" aria-live="polite">{unreadCount}</span>
                     </template>
                 </button>
 
                 <div class={notificationDropdownClass}>
-                    <template if:true={hasNotifications}>
+                    <template lwc:if={hasNotifications}>
                         <template for:each={notifications} for:item="notification">
-                            <div key={notification.id} class="notification-item">
-                                <span class="notification-title">{notification.title}</span>
-                                <span class="notification-text">{notification.text}</span>
-                                <span class="notification-meta">{notification.createdDate}</span>
+                            <div key={notification.id}>
+                                <template lwc:if={notification.isThreadNotification}>
+                                    <a
+                                        class="notification-item notification-link"
+                                        href={notification.url}
+                                        data-thread-id={notification.relatedObjectId}
+                                        onclick={handleNotificationClick}
+                                    >
+                                        <span class="notification-title">{notification.title}</span>
+                                        <span class="notification-text">{notification.text}</span>
+                                        <span class="notification-meta">{notification.createdDate}</span>
+                                    </a>
+                                </template>
+                                <template lwc:else>
+                                    <div class="notification-item">
+                                        <span class="notification-title">{notification.title}</span>
+                                        <span class="notification-text">{notification.text}</span>
+                                        <span class="notification-meta">{notification.createdDate}</span>
+                                    </div>
+                                </template>
                             </div>
                         </template>
                     </template>
 
-                    <template if:false={hasNotifications}>
+                    <template lwc:if={hasNoNotifications}>
                         <div class="notification-empty">Ingen varsler</div>
                     </template>
                 </div>
