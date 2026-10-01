@@ -60,11 +60,11 @@ export default class Hot_tjenesteleverandorSaThreads extends LightningElement {
         return [];
     }
 
-    async loadThreads() {
+    async loadThreads(showLoading = true) {
         const serviceAppointmentId = this.serviceAppointmentId;
         const configurations = this.threadConfigurations;
         const currentRequestId = ++this.requestId;
-        this.isLoading = Boolean(serviceAppointmentId && configurations.length > 0);
+        this.isLoading = showLoading && Boolean(serviceAppointmentId && configurations.length > 0);
 
         if (!serviceAppointmentId || configurations.length === 0) {
             this.threadCards = [];
@@ -118,6 +118,7 @@ export default class Hot_tjenesteleverandorSaThreads extends LightningElement {
             hasReadParticipants: readParticipantLabels.length > 0,
             hasAssignedInterpreter,
             hasThreadAndAssignedInterpreter: Boolean(thread) && hasAssignedInterpreter,
+            isSending: false,
             showMissingInterpreter: !hasAssignedInterpreter
         };
     }
@@ -144,6 +145,8 @@ export default class Hot_tjenesteleverandorSaThreads extends LightningElement {
             return;
         }
 
+        this.setCardSending(threadType, true);
+
         try {
             const thread = await createThread({
                 recordId: this.serviceAppointmentId,
@@ -163,7 +166,7 @@ export default class Hot_tjenesteleverandorSaThreads extends LightningElement {
                 console.error('Error setting last message from: ', JSON.stringify(error), error);
             });
 
-            await this.loadThreads();
+            await this.loadThreads(false);
         } catch (error) {
             console.error('Could not create related thread', JSON.stringify(error), error);
             this.dispatchEvent(
@@ -173,6 +176,12 @@ export default class Hot_tjenesteleverandorSaThreads extends LightningElement {
                     variant: 'error'
                 })
             );
+        } finally {
+            this.setCardSending(threadType, false);
         }
+    }
+
+    setCardSending(threadType, isSending) {
+        this.threadCards = this.threadCards.map((card) => (card.type === threadType ? { ...card, isSending } : card));
     }
 }
