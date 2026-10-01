@@ -105,6 +105,7 @@
 
         <template lwc:if={hasRecordData}>
             <div class="detail-layout">
+                <div class="main-column">
                 <section class="detail-card assignment-card" aria-labelledby="assignment-details-heading">
                     <h2 id="assignment-details-heading" class="card-heading">Oppdragsdetaljer</h2>
                     <template lwc:if={hasAppointmentTags}>
@@ -176,6 +177,47 @@
                     </div>
                 </section>
 
+                    <template lwc:if={hasCancellationDetails}>
+                        <section class="detail-card cancellation-card" aria-labelledby="cancellation-heading">
+                            <h2 id="cancellation-heading" class="card-heading">Avlysning</h2>
+                            <div class="detail-columns">
+                                <dl class="data-list">
+                                    <div class="data-row">
+                                        <dt>Kommentar</dt>
+                                        <dd>{cancellationComment}</dd>
+                                    </div>
+                                    <div class="data-row">
+                                        <dt>Avlyst av tolk</dt>
+                                        <dd>{canceledByInterpreter}</dd>
+                                    </div>
+                                </dl>
+                                <dl class="data-list">
+                                    <div class="data-row">
+                                        <dt>Avlyst dato</dt>
+                                        <dd>
+                                            <template lwc:if={canceledDate}>
+                                                <lightning-formatted-date-time
+                                                    value={canceledDate}
+                                                    year="numeric"
+                                                    month="2-digit"
+                                                    day="2-digit"
+                                                    hour="2-digit"
+                                                    minute="2-digit"
+                                                ></lightning-formatted-date-time>
+                                            </template>
+                                            <template lwc:else>—</template>
+                                        </dd>
+                                    </div>
+                                    <div class="data-row">
+                                        <dt>Sen avlysning</dt>
+                                        <dd>{lateCancellation}</dd>
+                                    </div>
+                                </dl>
+                            </div>
+                        </section>
+                    </template>
+                </div>
+
                 <aside class="side-column">
                     <section class="detail-card compact-card" aria-labelledby="ordered-time-heading">
                         <h2 id="ordered-time-heading" class="card-heading">Bestilt tid</h2>
@@ -222,48 +264,16 @@
                             </div>
                         </dl>
                     </section>
-                </aside>
-            </div>
 
-            <template lwc:if={hasCancellationDetails}>
-                <section class="detail-card cancellation-card" aria-labelledby="cancellation-heading">
-                    <h2 id="cancellation-heading" class="card-heading">Avlysning</h2>
-                    <div class="detail-columns">
-                        <dl class="data-list">
-                            <div class="data-row">
-                                <dt>Kommentar</dt>
-                                <dd>{cancellationComment}</dd>
-                            </div>
-                            <div class="data-row">
-                                <dt>Avlyst av tolk</dt>
-                                <dd>{canceledByInterpreter}</dd>
-                            </div>
-                        </dl>
-                        <dl class="data-list">
-                            <div class="data-row">
-                                <dt>Avlyst dato</dt>
-                                <dd>
-                                    <template lwc:if={canceledDate}>
-                                        <lightning-formatted-date-time
-                                            value={canceledDate}
-                                            year="numeric"
-                                            month="2-digit"
-                                            day="2-digit"
-                                            hour="2-digit"
-                                            minute="2-digit"
-                                        ></lightning-formatted-date-time>
-                                    </template>
-                                    <template lwc:else>—</template>
-                                </dd>
-                            </div>
-                            <div class="data-row">
-                                <dt>Sen avlysning</dt>
-                                <dd>{lateCancellation}</dd>
-                            </div>
-                        </dl>
+            <section class="detail-card conversations-card" aria-labelledby="conversations-heading">
+                <h2 id="conversations-heading" class="card-heading">Samtaler</h2>
+                <c-hot_tjenesteleverandor-sa-threads
+                    service-appointment-id={effectiveRecordId}
+                    service-appointment-status={providerStatus}
+                ></c-hot_tjenesteleverandor-sa-threads>
+            </section>
+                </aside>
                     </div>
-                </section>
-            </template>
         </template>
     </article>
 </template>
