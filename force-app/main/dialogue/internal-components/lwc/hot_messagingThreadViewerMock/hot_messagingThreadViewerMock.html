@@ -1,4 +1,10 @@
 <template>
+    <template lwc:if={isBusy}>
+        <div class="spinner-overlay" role="status" aria-live="polite">
+            <lightning-spinner alternative-text="Sender melding" size="medium"></lightning-spinner>
+            <span class="spinner-text">Sender melding...</span>
+        </div>
+    </template>
     <!-- Messages Start-->
     <section role="log" id="scroller" class="slds-box scroller slds-scrollable_y" style="background: #ffffff">
         <c-hot_messaging-Message-Container message={message}></c-hot_messaging-Message-Container>
@@ -27,11 +33,6 @@
                         </lightning-layout-item>
                     </lightning-layout>
                 </div>
-                <template if:true={showspinner}>
-                    <div>
-                        <lightning-spinner alternative-text="Loading" size="medium"></lightning-spinner>
-                    </div>
-                </template>
                 <c-hot_messaging-quick-text> </c-hot_messaging-quick-text>
             </lightning-layout-item>
             <br />
@@ -47,6 +48,7 @@
                                 name="submit"
                                 label="Send"
                                 variant="brand"
+                                disabled={isBusy}
                                 style="min-height: 1rem"
                                 class="slds-float_right"
                                 onclick={handlesubmit}

@@ -6,6 +6,7 @@ import { ShowToastEvent } from 'lightning/platformShowToastEvent';
 export default class hot_messagingThreadViewerMock extends LightningElement {
     showspinner = false;
     hideModal = true;
+    @api processing = false;
     @api setInputInFocusOnRender;
     @api initialMessage;
     @api focusOnInput() {
@@ -18,10 +19,14 @@ export default class hot_messagingThreadViewerMock extends LightningElement {
         this.focusOnInput();
     }
 
+    get isBusy() {
+        return this.showspinner || this.processing;
+    }
+
     //If empty, stop submitting.
     handlesubmit(event) {
         event.preventDefault();
-        if (!this.quickTextCmp.isOpen()) {
+        if (!this.isBusy && !this.quickTextCmp.isOpen()) {
             this.showspinner = true;
             const textInput = {};
             // If messagefield is empty, stop the submit
@@ -62,7 +67,8 @@ export default class hot_messagingThreadViewerMock extends LightningElement {
         return this.quickTextCmp ? this.quickTextCmp.conversationNote : '';
     }
     get message() {
-        const messageText = this.initialMessage || 'Samtale er ikke påbegynt enda. Skriv en melding for å starte samtalen.';
+        const messageText =
+            this.initialMessage || 'Samtale er ikke påbegynt enda. Skriv en melding for å starte samtalen.';
         return {
             CRM_Message_Text__c: messageText,
             CRM_Event_Type__c: 'OTHER',
