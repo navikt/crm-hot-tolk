@@ -236,6 +236,7 @@
     border-radius: 0;
     background: #ffffff;
     font-family: inherit;
+    border-radius: 1rem;
 }
 
 .acceptance-header {
