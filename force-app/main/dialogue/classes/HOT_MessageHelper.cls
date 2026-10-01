@@ -562,6 +562,12 @@ public without sharing class HOT_MessageHelper {
                     WHERE Id = :recordId
                     LIMIT 1
                 ];
+                // this type of thread for SA assumes that a Service Resource (interpreter) is assigned
+                if (serviceAppointment.HOT_ServiceResource__r?.AccountId == null) {
+                    AuraHandledException ex = new AuraHandledException('Ingen tolk er tildelt dette oppdraget.');
+                    ex.setMessage('Ingen tolk er tildelt dette oppdraget.');
+                    throw ex;
+                }
                 thread.CRM_Related_Object__c = recordId;
                 thread.CRM_Thread_Type__c = 'HOT_TJENESTELEVERANDOR-TOLK';
                 thread.HOT_ServiceAppointment__c = recordId;
