@@ -121,12 +121,11 @@ public with sharing class HOT_TLThreadlistController {
         }
 
         return [
-                SELECT Id, ServiceResource__r.AccountId
-                FROM HOT_InterestedResource__c
-                WHERE ServiceAppointment__c = :serviceAppointmentId AND Status__c = 'Assigned'
-                LIMIT 1
-            ]
-            .size() > 0;
+            SELECT Id
+            FROM ServiceAppointment
+            WHERE Id = :serviceAppointmentId AND HOT_ServiceResource__r.AccountId != NULL
+            LIMIT 1
+        ].size() > 0;
     }
 
     @AuraEnabled
