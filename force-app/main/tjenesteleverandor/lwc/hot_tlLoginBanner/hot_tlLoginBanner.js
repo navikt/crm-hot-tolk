@@ -7,6 +7,7 @@ import LAST_NAME_FIELD from '@salesforce/schema/User.LastName';
 import icons from '@salesforce/resourceUrl/aksel_ikoner';
 import getmyNotifications from '@salesforce/apex/HOT_TLNotificationController.getMyNotifications';
 import markAllNotificationsAsRead from '@salesforce/apex/HOT_TLNotificationController.markAllNotificationsAsRead';
+import { refreshApex } from '@salesforce/apex';
 import { formatDatetime } from 'c/datetimeFormatterNorwegianTime';
 
 const USER_FIELDS = [FIRST_NAME_FIELD, LAST_NAME_FIELD];
@@ -20,9 +21,12 @@ export default class Hot_tlLoginBanner extends NavigationMixin(LightningElement)
     MenuIcon = icons + '/Interface/MenuHamburger.svg';
 
     notifications = [];
+    wiredNotificationsResult;
 
     @wire(getmyNotifications)
-    wiredNotifications({ error, data }) {
+    wiredNotifications(result) {
+        this.wiredNotificationsResult = result;
+        const { error, data } = result;
         if (data) {
             this.notifications = data.map((notification) => {
                 const relatedObjectId = notification.HOT_RelatedObject__c;
@@ -46,17 +50,17 @@ export default class Hot_tlLoginBanner extends NavigationMixin(LightningElement)
         }
     }
 
-    markAllAsRead() {
-        markAllNotificationsAsRead()
-            .then(() => {
-                this.notifications = this.notifications.map((notification) => ({
-                    ...notification,
-                    isRead: true
-                }));
-            })
-            .catch((error) => {
-                console.error('Error marking all notifications as read:', error);
-            });
+    async markAllAsRead() {
+        try {
+            await markAllNotificationsAsRead();
+            this.notifications = this.notifications.map((notification) => ({
+                ...notification,
+                isRead: true
+            }));
+            await refreshApex(this.wiredNotificationsResult);
+        } catch (error) {
+            console.error('Error marking all notifications as read:', error);
+        }
     }
 
     // Lenker som vises på venstre side
