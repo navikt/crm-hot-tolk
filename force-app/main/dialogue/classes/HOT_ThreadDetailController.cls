@@ -194,7 +194,8 @@ public without sharing class HOT_ThreadDetailController {
         }
         if (
             (thread.CRM_Thread_Type__c == 'HOT_TJENESTELEVERANDOR-FORMIDLER' ||
-            thread.CRM_Thread_Type__c == 'HOT_TJENESTELEVERANDOR-TOLK') && isTjenesteleverandor(user)
+            thread.CRM_Thread_Type__c == 'HOT_TJENESTELEVERANDOR-TOLK' ||
+            thread.CRM_Thread_Type__c == 'HOT_TJENESTELEVERANDOR-HONORAR') && isTjenesteleverandor(user)
         ) {
             return true;
         }

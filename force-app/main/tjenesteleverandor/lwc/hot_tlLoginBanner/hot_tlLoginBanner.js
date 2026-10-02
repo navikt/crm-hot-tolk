@@ -7,9 +7,11 @@ import LAST_NAME_FIELD from '@salesforce/schema/User.LastName';
 import icons from '@salesforce/resourceUrl/aksel_ikoner';
 import getmyNotifications from '@salesforce/apex/HOT_TLNotificationController.getMyNotifications';
 import markAllNotificationsAsRead from '@salesforce/apex/HOT_TLNotificationController.markAllNotificationsAsRead';
+import { refreshApex } from '@salesforce/apex';
 import { formatDatetime } from 'c/datetimeFormatterNorwegianTime';
 
 const USER_FIELDS = [FIRST_NAME_FIELD, LAST_NAME_FIELD];
+const THREAD_NOTIFICATION_TYPE = 'threadTjenesteleverandor';
 
 export default class Hot_tlLoginBanner extends NavigationMixin(LightningElement) {
     LeaveIcon = icons + '/Law_and_security/Leave.svg';
@@ -19,35 +21,46 @@ export default class Hot_tlLoginBanner extends NavigationMixin(LightningElement)
     MenuIcon = icons + '/Interface/MenuHamburger.svg';
 
     notifications = [];
+    wiredNotificationsResult;
 
     @wire(getmyNotifications)
-    wiredNotifications({ error, data }) {
+    wiredNotifications(result) {
+        this.wiredNotificationsResult = result;
+        const { error, data } = result;
         if (data) {
-            this.notifications = data.map((notification) => ({
-                id: notification.Id,
-                title: notification.HOT_Subject__c,
-                text: notification.HOT_NotificationText__c,
-                relatedObjectId: notification.HOT_RelatedObject__c,
-                relatedObjectType: notification.HOT_RelatedObjectType__c,
-                createdDate: formatDatetime(notification.CreatedDate),
-                isRead: notification.HOT_IsRead__c
-            }));
+            this.notifications = data.map((notification) => {
+                const relatedObjectId = notification.HOT_RelatedObject__c;
+                const isThreadNotification =
+                    notification.HOT_RelatedObjectType__c === THREAD_NOTIFICATION_TYPE && Boolean(relatedObjectId);
+
+                return {
+                    id: notification.Id,
+                    title: notification.HOT_Subject__c,
+                    text: notification.HOT_NotificationText__c,
+                    relatedObjectId,
+                    relatedObjectType: notification.HOT_RelatedObjectType__c,
+                    createdDate: formatDatetime(notification.CreatedDate),
+                    isRead: notification.HOT_IsRead__c,
+                    isThreadNotification,
+                    url: isThreadNotification ? `samtaler?recordId=${encodeURIComponent(relatedObjectId)}` : undefined
+                };
+            });
         } else if (error) {
             console.error('Error fetching notifications:', error);
         }
     }
 
-    markAllAsRead() {
-        markAllNotificationsAsRead()
-            .then(() => {
-                this.notifications = this.notifications.map((notification) => ({
-                    ...notification,
-                    isRead: true
-                }));
-            })
-            .catch((error) => {
-                console.error('Error marking all notifications as read:', error);
-            });
+    async markAllAsRead() {
+        try {
+            await markAllNotificationsAsRead();
+            this.notifications = this.notifications.map((notification) => ({
+                ...notification,
+                isRead: true
+            }));
+            await refreshApex(this.wiredNotificationsResult);
+        } catch (error) {
+            console.error('Error marking all notifications as read:', error);
+        }
     }
 
     // Lenker som vises på venstre side
@@ -88,6 +101,10 @@ export default class Hot_tlLoginBanner extends NavigationMixin(LightningElement)
 
     get hasNotifications() {
         return this.notifications.length > 0;
+    }
+
+    get hasNoNotifications() {
+        return this.notifications.length === 0;
     }
 
     get hasUnreadNotifications() {
@@ -165,6 +182,22 @@ export default class Hot_tlLoginBanner extends NavigationMixin(LightningElement)
             type: 'comm__namedPage',
             attributes: {
                 pageName
+            }
+        });
+    }
+
+    handleNotificationClick(event) {
+        const threadId = event.currentTarget?.dataset?.threadId;
+        if (!threadId) {
+            return;
+        }
+
+        event.preventDefault();
+        this.closeAllDropdowns();
+        this[NavigationMixin.Navigate]({
+            type: 'standard__webPage',
+            attributes: {
+                url: `/samtaler?recordId=${encodeURIComponent(threadId)}`
             }
         });
     }

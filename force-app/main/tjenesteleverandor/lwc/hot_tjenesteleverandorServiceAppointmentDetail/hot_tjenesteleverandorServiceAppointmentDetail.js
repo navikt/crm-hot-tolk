@@ -198,6 +198,10 @@ export default class HotTjenesteleverandorServiceAppointmentDetail extends Navig
         return this.displayValue(this.getFieldValue(HOT_TJENESTELEVERANDOR_STATUS_FIELD));
     }
 
+    get showProviderResourceSections() {
+        return this.providerStatus === 'Accepted';
+    }
+
     get serviceTerritory() {
         return this.displayValue(this.getFieldValue(HOT_SERVICE_TERRITORY_NAME_FIELD));
     }

@@ -381,7 +381,7 @@ private class HOT_ThreadParticipantsTest {
                 senderRoles.get(thread.Id),
                 'Forventet rolle "formidler" når avsender har Formidler-profil'
             );
-        } 
+        }
     }
 
     @IsTest
@@ -523,6 +523,7 @@ private class HOT_ThreadParticipantsTest {
             participantsByThread.get('HOT_TJENESTELEVERANDOR-FORMIDLER').get(insertedThread.Id)
         );
     }
+
     @IsTest
     private static void getWageClaimThreadParticipants() {
         myTriggers.disable(HOT_ThreadHandler.class);

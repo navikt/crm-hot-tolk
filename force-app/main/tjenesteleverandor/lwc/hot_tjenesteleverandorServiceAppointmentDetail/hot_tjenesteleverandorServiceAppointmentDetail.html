@@ -54,13 +54,15 @@
 
         <template lwc:if={showResponseAction}>
             <section class="acceptance-panel slds-m-bottom_large" aria-labelledby="acceptance-heading">
-                <div>
+                <div class="acceptance-header">
                     <h2 id="acceptance-heading" class="slds-text-heading_small">
-                        Oppdraget er overført til tjenesteleverandør
+                        Oppdraget er overført til tjenesteleverandør.
                     </h2>
+                </div>
+                <div class="acceptance-content">
                     <template lwc:if={acceptanceDeadline}>
-                        <p class="slds-text-body_regular slds-text-color_weak">
-                            Svarfrist:
+                        <p class="acceptance-deadline slds-text-body_regular">
+                            <span>Svarfrist:&nbsp;</span>
                             <lightning-formatted-date-time
                                 value={acceptanceDeadline}
                                 year="numeric"
@@ -71,28 +73,28 @@
                             ></lightning-formatted-date-time>
                         </p>
                     </template>
-                </div>
-                <div class="acceptance-actions">
-                    <template lwc:if={showDeclineAction}>
-                        <c-button
-                            data-id="decline-appointment"
-                            button-styling="danger"
-                            button-label="Avslå oppdrag"
-                            aria-label="Avslå oppdraget"
-                            disabled={isResponding}
-                            onbuttonclick={handleDecline}
-                        ></c-button>
-                    </template>
-                    <template lwc:if={showAcceptAction}>
-                        <c-button
-                            data-id="accept-appointment"
-                            button-styling="primary"
-                            button-label="Aksepter oppdrag"
-                            aria-label="Aksepter oppdraget"
-                            disabled={isResponding}
-                            onbuttonclick={handleAccept}
-                        ></c-button>
-                    </template>
+                    <div class="acceptance-actions">
+                        <template lwc:if={showDeclineAction}>
+                            <c-button
+                                data-id="decline-appointment"
+                                button-styling="danger"
+                                button-label="Avslå oppdrag"
+                                aria-label="Avslå oppdraget"
+                                disabled={isResponding}
+                                onbuttonclick={handleDecline}
+                            ></c-button>
+                        </template>
+                        <template lwc:if={showAcceptAction}>
+                            <c-button
+                                data-id="accept-appointment"
+                                button-styling="primary"
+                                button-label="Aksepter oppdrag"
+                                aria-label="Aksepter oppdraget"
+                                disabled={isResponding}
+                                onbuttonclick={handleAccept}
+                            ></c-button>
+                        </template>
+                    </div>
                 </div>
                 <template lwc:if={isResponding}>
                     <div class="acceptance-spinner" role="status" aria-live="polite">
@@ -264,6 +266,20 @@
                             </div>
                         </dl>
                     </section>
+                    <template lwc:if={showProviderResourceSections}>
+                        <section class="detail-card" aria-labelledby="wanted-service-resource-heading">
+                            <h2 id="wanted-service-resource-heading" class="card-heading">Registrer ønsket tolk</h2>
+                            <c-hot_wanted-service-resource></c-hot_wanted-service-resource>
+                        </section>
+                        <section class="detail-card" aria-labelledby="interested-resources-heading">
+                            <h2 id="interested-resources-heading" class="card-heading">Interesserte ressurser</h2>
+                            <c-hot_tjenesteleverandor-interested-resources
+                                record-id={effectiveRecordId}
+                            ></c-hot_tjenesteleverandor-interested-resources>
+                        </section>
+                    </template>
+                </aside>
+            </div>
 
             <section class="detail-card conversations-card" aria-labelledby="conversations-heading">
                 <h2 id="conversations-heading" class="card-heading">Samtaler</h2>

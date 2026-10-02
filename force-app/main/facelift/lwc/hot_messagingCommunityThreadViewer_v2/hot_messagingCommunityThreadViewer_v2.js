@@ -491,7 +491,7 @@ export default class Hot_messagingCommunityThreadViewer_v2 extends NavigationMix
             case 'HOT_TJENESTELEVERANDOR-TOLK':
             case 'HOT_TJENESTELEVERANDOR-HONORAR':
                 this.helptextContent =
-                    'Her kan du sende en melding som er relevant for oppdraget. Det du skriver her kan ansatte ved Nav tolketjeneste se. Meldingen vil bli slettet etter ett år.';
+                    'Her kan du sende en melding som er relevant for oppdraget. Det du skriver her kan ansatte ved leverandør se. Meldingen vil bli slettet etter ett år.';
                 return 'Samtale med leverandør';
             default:
                 return threadTypeValue;

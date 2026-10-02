@@ -38,6 +38,11 @@ public with sharing class HOT_TLThreadListControllerTest {
         inaccessibleThread.HOT_ReadByTjenesteleverandor__c = false;
         insert inaccessibleThread;
 
+        Thread__c honorarThread = HOT_TestDataFactory.createThread('HOT_TJENESTELEVERANDOR-HONORAR');
+        honorarThread.CRM_Related_Object__c = serviceAppointment.Id;
+        honorarThread.HOT_ReadByTjenesteleverandor__c = false;
+        insert honorarThread;
+
         Thread__c excludedThreadType = HOT_TestDataFactory.createThread('HOT_BRUKER-FORMIDLER');
         excludedThreadType.CRM_Type__c = 'HOT_BRUKER-FORMIDLER';
         excludedThreadType.CRM_Related_Object__c = serviceAppointment.Id;
@@ -51,6 +56,7 @@ public with sharing class HOT_TLThreadListControllerTest {
         insert new List<Message__c>{
             new Message__c(CRM_Thread__c = accessibleThread.Id, CRM_Message_Text__c = 'message-accessible'),
             new Message__c(CRM_Thread__c = inaccessibleThread.Id, CRM_Message_Text__c = 'message-inaccessible'),
+            new Message__c(CRM_Thread__c = honorarThread.Id, CRM_Message_Text__c = 'message-honorar'),
             new Message__c(CRM_Thread__c = excludedThreadType.Id, CRM_Message_Text__c = 'message-wrong-type')
         };
     }
@@ -75,6 +81,19 @@ public with sharing class HOT_TLThreadListControllerTest {
             SELECT Id
             FROM Thread__c
             WHERE CRM_Related_Object__c = :serviceAppointmentId AND CRM_Type__c = 'HOT_TJENESTELEVERANDOR-TOLK'
+            LIMIT 1
+        ]
+        .Id;
+    }
+
+    private static Id getHonorarThreadId() {
+        Id serviceAppointmentId = getServiceAppointmentId();
+        return [
+            SELECT Id
+            FROM Thread__c
+            WHERE
+                CRM_Related_Object__c = :serviceAppointmentId
+                AND CRM_Thread_Type__c = 'HOT_TJENESTELEVERANDOR-HONORAR'
             LIMIT 1
         ]
         .Id;
@@ -113,6 +132,7 @@ public with sharing class HOT_TLThreadListControllerTest {
     static void getAllTjenesteleverandorThreadsReturnsOnlyRelevantThreads() {
         Id accessibleThreadId = getAccessibleThreadId();
         Id inaccessibleThreadId = getInaccessibleThreadId();
+        Id honorarThreadId = getHonorarThreadId();
 
         Test.startTest();
         List<Thread__c> threads = HOT_TLThreadlistController.getAllTjenesteleverandorThreads();
@@ -122,14 +142,16 @@ public with sharing class HOT_TLThreadListControllerTest {
         for (Thread__c threadRecord : threads) {
             returnedIds.add(threadRecord.Id);
             System.assert(
-                threadRecord.CRM_Type__c == 'HOT_TJENESTELEVERANDOR-FORMIDLER' ||
-                    threadRecord.CRM_Type__c == 'HOT_TJENESTELEVERANDOR-TOLK',
+                threadRecord.CRM_Thread_Type__c == 'HOT_TJENESTELEVERANDOR-FORMIDLER' ||
+                    threadRecord.CRM_Thread_Type__c == 'HOT_TJENESTELEVERANDOR-TOLK' ||
+                    threadRecord.CRM_Thread_Type__c == 'HOT_TJENESTELEVERANDOR-HONORAR',
                 'Only tjenesteleverandor thread types should be returned.'
             );
         }
 
         System.assert(returnedIds.contains(accessibleThreadId), 'Expected accessible TL thread to be returned.');
         System.assert(returnedIds.contains(inaccessibleThreadId), 'Expected TL thread with message to be returned.');
+        System.assert(returnedIds.contains(honorarThreadId), 'Expected honorar thread with message to be returned.');
     }
 
     @IsTest

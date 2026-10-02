@@ -79,9 +79,9 @@
 
 .detail-card {
     min-width: 0;
-    padding: 1.5rem;
+    padding: 2.5rem;
     border: 0;
-    border-radius: var(--detail-card-radius);
+    border-radius: 0.5rem;
     background: #ffffff;
 }
 
@@ -90,11 +90,30 @@
 }
 
 .compact-card {
-    padding: 1rem;
+    padding: 2.5rem;
 }
 
 .compact-card .card-heading {
     margin-bottom: 1rem;
+}
+
+.wanted-resource-heading-row {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 1rem;
+}
+
+.wanted-resource-heading-row .card-heading {
+    margin-bottom: 0;
+}
+
+.wanted-resource-heading-row c-hot_wanted-service-resource {
+    flex: 0 0 auto;
+}
+
+.wanted-resource-heading-row c-hot_wanted-service-resource lightning-flow {
+    display: block;
 }
 
 .cancellation-card {
@@ -156,6 +175,17 @@
     min-width: 0;
 }
 
+.side-column > .detail-card + .detail-card {
+    margin-top: 1.75rem;
+}
+
+@media (max-width: 576px) {
+    .wanted-resource-heading-row {
+        align-items: flex-start;
+        flex-direction: column;
+    }
+}
+
 .data-list {
     display: flex;
     flex-direction: column;
@@ -208,24 +238,58 @@
 .acceptance-message {
     justify-content: flex-start;
     margin-bottom: 1rem;
+    font-size: 1.125rem;
 }
 
 .acceptance-panel {
     position: relative;
+    overflow: hidden;
+    border: 3px solid #d35400;
+    border-radius: 0;
+    background: #ffffff;
+    font-family: inherit;
+    border-radius: 1rem;
+}
+
+.acceptance-header {
     display: flex;
     align-items: center;
     justify-content: space-between;
-    gap: 1rem;
-    padding: 1rem;
-    border: 1px solid var(--slds-g-color-border-base-1, #c9c9c9);
-    border-radius: 0.5rem;
-    background: var(--slds-g-color-neutral-base-95, #f3f3f3);
+    gap: 1.5rem;
+    padding: 1rem 1.5rem;
+    background: #d35400;
+    color: #ffffff;
+}
+
+.acceptance-header h2 {
+    margin: 0;
+    font-family: inherit;
+    font-size: 1.75rem;
+    line-height: 2.25rem;
+    color: inherit;
+}
+
+.acceptance-content {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 1.5rem;
+    padding: 1rem 1.5rem;
+}
+
+.acceptance-deadline {
+    margin: 0;
+    font-family: inherit;
+    font-size: 1.5rem;
+    line-height: 2.25rem;
+    color: #1f2937;
 }
 
 .acceptance-actions {
     display: flex;
     flex-wrap: wrap;
     gap: 1rem;
+    margin-top: 0;
     flex-shrink: 0;
 }
 
@@ -276,14 +340,28 @@
         font-size: 1.25rem;
     }
 
-    .acceptance-panel {
+    .acceptance-header {
         align-items: stretch;
         flex-direction: column;
+        padding: 1rem;
+    }
+
+    .acceptance-header h2 {
+        font-size: 1.5rem;
+        line-height: 2rem;
+    }
+
+    .acceptance-content {
+        align-items: stretch;
+        flex-direction: column;
+        gap: 1rem;
+        padding: 1rem;
     }
 
     .acceptance-actions {
         align-items: stretch;
         flex-direction: column;
+        width: 100%;
     }
 
     .acceptance-actions,
