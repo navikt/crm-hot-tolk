@@ -120,6 +120,16 @@
     margin-top: 1.75rem;
 }
 
+.conversations-card {
+    margin-top: 1.75rem;
+    padding: 2.5rem 0;
+}
+
+.conversations-card .card-heading {
+    margin-bottom: 1rem;
+    padding: 0 2rem;
+}
+
 .card-heading {
     margin: 0 0 0.5rem;
     color: #1f2937;
@@ -160,6 +170,7 @@
     gap: 1.5rem;
 }
 
+.main-column,
 .side-column {
     min-width: 0;
 }

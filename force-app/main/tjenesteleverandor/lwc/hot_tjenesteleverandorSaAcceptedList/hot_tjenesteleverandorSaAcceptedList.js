@@ -103,7 +103,7 @@ export default class Hot_tjenesteleverandorSaAcceptedList extends NavigationMixi
         }
     }
 
-// Keep both behaviours: refresh when signalled, and allow parent-driven filtering
+    // Keep both behaviours: refresh when signalled, and allow parent-driven filtering
     async refreshIfRequested() {
         const marker = sessionStorage.getItem(LIST_REFRESH_KEY);
         if (!marker || !this.wiredAcceptedAppointments || this.isRefreshPending) {

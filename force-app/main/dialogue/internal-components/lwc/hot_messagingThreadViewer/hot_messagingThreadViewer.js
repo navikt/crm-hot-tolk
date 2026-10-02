@@ -23,6 +23,7 @@ export default class hot_messagingThreadViewer extends LightningElement {
     threadid;
     messages = [];
     showspinner = false;
+    isLoadingMessages = true;
     hideModal = true;
     @api showClose;
     @api englishTextTemplate;
@@ -133,8 +134,10 @@ export default class hot_messagingThreadViewer extends LightningElement {
         this._mySendForSplitting = result;
         if (result.error) {
             this.error = result.error;
+            this.isLoadingMessages = false;
         } else if (result.data) {
             this.messages = result.data;
+            this.isLoadingMessages = false;
             this.showspinner = false;
             console.log('Newest message istjenesteleverandor: ', this.messages[0]?.HOT_IsTjenesteleverandorMessage__c);
         }
@@ -172,6 +175,18 @@ export default class hot_messagingThreadViewer extends LightningElement {
                 }
             });
         }
+    }
+
+    get sendDisabled() {
+        return this.closedThread || this.showOverlay;
+    }
+
+    get showOverlay() {
+        return this.isLoadingMessages || this.showspinner;
+    }
+
+    get spinnerText() {
+        return this.isLoadingMessages ? 'Laster samtale...' : 'Sender melding...';
     }
 
     //Enriching the toolbar event with reference to the thread id

@@ -1,5 +1,11 @@
 <template>
     <template lwc:if={hasAccess}>
+        <template lwc:if={showOverlay}>
+            <div class="spinner-overlay" role="status" aria-live="polite">
+                <lightning-spinner alternative-text={spinnerText} size="medium"></lightning-spinner>
+                <span class="spinner-text">{spinnerText}</span>
+            </div>
+        </template>
         <!-- Messages Start-->
         <section role="log" id="scroller" class="slds-box scroller slds-scrollable_y" style="background: #ffffff">
             <template for:each={messages} for:item="message">
@@ -129,11 +135,6 @@
                                     </template>
                                 </lightning-layout>
                             </div>
-                            <template lwc:if={showspinner}>
-                                <div class="spinnerholder">
-                                    <lightning-spinner alternative-text="Loading" size="medium"></lightning-spinner>
-                                </div>
-                            </template>
                             <template lwc:if={showReplyInput}>
                                 <c-hot_messaging-quick-text conversation-note={textTemplate} onlocklang={lockLangBtn}>
                                 </c-hot_messaging-quick-text>
@@ -163,7 +164,7 @@
                                             type="submit"
                                             name="submit"
                                             label="Send"
-                                            disabled={closedThread}
+                                            disabled={sendDisabled}
                                             variant="brand"
                                             style="min-height: 1rem"
                                             class="slds-float_right"

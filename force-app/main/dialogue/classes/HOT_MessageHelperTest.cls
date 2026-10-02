@@ -438,6 +438,36 @@ private class HOT_MessageHelperTest {
             'Expected the thread to be related to the Interested Resource'
         );
     }
+
+    @IsTest
+    static void createThreadDispatcherTjenesteleverandorTolkRequiresAssignedInterpreter() {
+        WorkOrderLineItem workOrderLineItem = [SELECT Id FROM WorkOrderLineItem LIMIT 1];
+        ServiceAppointment serviceAppointment = HOT_TestDataFactory.createServiceAppointment(workOrderLineItem);
+        serviceAppointment.Subject = 'TL thread without assigned interpreter';
+        insert serviceAppointment;
+
+        Test.startTest();
+        try {
+            HOT_MessageHelper.createThreadDispatcher(serviceAppointment.Id, null, 'HOT_TJENESTELEVERANDOR-TOLK');
+            System.assert(false, 'Expected thread creation to fail without an assigned interpreter.');
+        } catch (AuraHandledException e) {
+            System.assertEquals('Ingen tolk er tildelt dette oppdraget.', e.getMessage());
+        }
+        Test.stopTest();
+
+        System.assertEquals(
+            0,
+            [
+                SELECT COUNT()
+                FROM Thread__c
+                WHERE
+                    HOT_ServiceAppointment__c = :serviceAppointment.Id
+                    AND CRM_Thread_Type__c = 'HOT_TJENESTELEVERANDOR-TOLK'
+            ],
+            'No thread should be created without an assigned interpreter.'
+        );
+    }
+
     @IsTest
     static void createThreadInterpreterInterestedResource() {
         ServiceAppointment sa = [SELECT Id FROM ServiceAppointment WHERE Subject = 'TEST' LIMIT 1];

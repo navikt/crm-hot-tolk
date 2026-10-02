@@ -230,4 +230,31 @@ public with sharing class HOT_TLThreadListControllerTest {
         System.assertEquals(serviceAppointmentId, details.Id, 'Expected the requested service appointment details.');
         System.assertEquals('TL Thread List Appointment', details.Subject, 'Expected selected fields to be populated.');
     }
+
+    @IsTest
+    static void hasAssignedInterpreterReturnsTrueOnlyForAssignedInterestedResource() {
+        Id serviceAppointmentId = getServiceAppointmentId();
+        ServiceResource serviceResource = [SELECT Id FROM ServiceResource LIMIT 1];
+        HOT_InterestedResource__c interestedResource = HOT_TestDataFactory.createInterestedResource(
+            serviceAppointmentId,
+            serviceResource.Id
+        );
+        interestedResource.Status__c = 'Assigned';
+        insert interestedResource;
+
+        Test.startTest();
+        Boolean result = HOT_TLThreadlistController.hasAssignedInterpreter(serviceAppointmentId);
+        Test.stopTest();
+
+        System.assertEquals(true, result, 'Assigned interested resource should enable the interpreter dialog.');
+    }
+
+    @IsTest
+    static void hasAssignedInterpreterReturnsFalseWhenNoAssignedInterestedResourceExists() {
+        Test.startTest();
+        Boolean result = HOT_TLThreadlistController.hasAssignedInterpreter(getServiceAppointmentId());
+        Test.stopTest();
+
+        System.assertEquals(false, result, 'Interpreter dialog should stay disabled without an assignment.');
+    }
 }

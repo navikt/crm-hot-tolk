@@ -89,6 +89,48 @@ public with sharing class HOT_TLThreadlistController {
             return null;
         }
     }
+    @AuraEnabled(cacheable=false)
+    public static List<Thread__c> getSARelatedThreads(String serviceAppointmentId) {
+        if (serviceAppointmentId == null) {
+            return null;
+        }
+        List<Thread__c> threads = [
+            SELECT
+                Id,
+                OwnerId,
+                HOT_Subject__c,
+                CRM_Related_Object__c,
+                CRM_Number_of_unread_Messages__c,
+                HOT_Thread_read_by__c,
+                CRM_Registered_Datetime_Formula__c,
+                CRM_Latest_Message_Datetime__c,
+                HOT_AppointmentStartTime__c,
+                CRM_Thread_Type__c,
+                HOT_ServiceAppointment__r.HOT_TjenesteleverandorStatus__c,
+                CRM_Account__c
+            FROM Thread__c
+            WHERE
+                (CRM_Thread_Type__c = 'HOT_TJENESTELEVERANDOR-FORMIDLER'
+                OR CRM_Thread_Type__c = 'HOT_TJENESTELEVERANDOR-TOLK')
+                AND HOT_ServiceAppointment__c = :serviceAppointmentId
+        ];
+        return threads;
+    }
+
+    @AuraEnabled(cacheable=true)
+    public static Boolean hasAssignedInterpreter(Id serviceAppointmentId) {
+        if (serviceAppointmentId == null) {
+            return false;
+        }
+
+        return [
+            SELECT Id
+            FROM ServiceAppointment
+            WHERE Id = :serviceAppointmentId AND HOT_ServiceResource__r.AccountId != NULL
+            LIMIT 1
+        ].size() > 0;
+    }
+
     @AuraEnabled
     public static Map<String, Integer> getNumberOfUnreadThreads() {
         Id currentUserId = UserInfo.getUserId();

@@ -133,9 +133,13 @@ describe('c-hot-tjenesteleverandor-service-appointment-detail', () => {
         expect(element.shadowRoot.querySelector('lightning-spinner')).toBeNull();
         expect(element.shadowRoot.textContent).toContain('Oppdragsdetaljer');
         expect(element.shadowRoot.textContent).toContain('Bestilt tid');
+        expect(element.shadowRoot.textContent).toContain('Samtaler');
+        const threads = element.shadowRoot.querySelector('c-hot_tjenesteleverandor-sa-threads');
+        expect(threads.serviceAppointmentId).toBe(RECORD_ID);
+        expect(threads.serviceAppointmentStatus).toBe('Transferred');
         expect(element.shadowRoot.textContent).not.toContain('Tildelte ressurser');
         expect(element.shadowRoot.querySelector('.resource-panel')).toBeNull();
-        expect(element.shadowRoot.querySelectorAll('.detail-layout .detail-card')).toHaveLength(2);
+        expect(element.shadowRoot.querySelectorAll('.detail-layout .detail-card')).toHaveLength(3);
         expect(element.shadowRoot.textContent).toContain('Akuttvaktoppdrag');
         expect(element.shadowRoot.textContent).toContain('Bildetolk');
         expect(element.shadowRoot.textContent).toContain('Skjermtolk');
