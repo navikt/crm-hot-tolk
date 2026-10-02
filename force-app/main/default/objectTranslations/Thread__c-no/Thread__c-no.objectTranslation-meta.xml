@@ -1,2 +1,139 @@
-<?xml version="1.0" encoding="UTF-8" ?>
-<CustomObjectTranslation xmlns="http://soap.sforce.com/2006/04/metadata" />
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomObjectTranslation xmlns="http://soap.sforce.com/2006/04/metadata">
+    <caseValues>
+        <article>Definite</article>
+        <plural>false</plural>
+        <value>Samtalen</value>
+    </caseValues>
+    <caseValues>
+        <article>Indefinite</article>
+        <plural>false</plural>
+        <value>Samtale</value>
+    </caseValues>
+    <caseValues>
+        <article>None</article>
+        <plural>false</plural>
+        <value>Samtale</value>
+    </caseValues>
+    <caseValues>
+        <article>Definite</article>
+        <plural>true</plural>
+        <value>Samtalene</value>
+    </caseValues>
+    <caseValues>
+        <article>Indefinite</article>
+        <plural>true</plural>
+        <value>Samtaler</value>
+    </caseValues>
+    <caseValues>
+        <article>None</article>
+        <plural>true</plural>
+        <value>Samtaler</value>
+    </caseValues>
+    <gender>Masculine</gender>
+    <layouts>
+        <layout>HOT Thread Layout</layout>
+        <sections>
+            <label><!-- Custom Links --></label>
+            <section>Custom Links</section>
+        </sections>
+        <sections>
+            <label><!-- Fields --></label>
+            <section>Fields</section>
+        </sections>
+    </layouts>
+    <layouts>
+        <layout>TAG Thread Layout</layout>
+        <sections>
+            <label><!-- Custom Links --></label>
+            <section>Custom Links</section>
+        </sections>
+        <sections>
+            <label><!-- Fields --></label>
+            <section>Fields</section>
+        </sections>
+    </layouts>
+    <layouts>
+        <layout>Thread Layout</layout>
+        <sections>
+            <label><!-- Custom Links --></label>
+            <section>Custom Links</section>
+        </sections>
+    </layouts>
+    <nameFieldLabel>Samtale navn</nameFieldLabel>
+    <quickActions>
+        <label><!-- Trenger ikke å sladdes --></label>
+        <name>Abort_Redaction</name>
+    </quickActions>
+    <quickActions>
+        <aspect>Master</aspect>
+        <label>Fullfør sladding</label>
+        <name>Complete_Redaction</name>
+    </quickActions>
+    <quickActions>
+        <aspect>Master</aspect>
+        <label>Journalfør</label>
+        <name>DIA_Journal</name>
+    </quickActions>
+    <quickActions>
+        <label><!-- Marker som ulest av NAV --></label>
+        <name>HOT_MarkThreadAsUnread</name>
+    </quickActions>
+    <quickActions>
+        <label><!-- Sett til sladding --></label>
+        <name>HOT_Set_to_Redaction</name>
+    </quickActions>
+    <quickActions>
+        <aspect>Master</aspect>
+        <label>Journalfør</label>
+        <name>Journal</name>
+    </quickActions>
+    <quickActions>
+        <aspect>Master</aspect>
+        <label>Fullfør sladding</label>
+        <name>NKS_Complete_Chat_Redaction</name>
+    </quickActions>
+    <quickActions>
+        <aspect>Master</aspect>
+        <label>Sladd Frida samtalen</label>
+        <name>NKS_RedactFridaChat</name>
+    </quickActions>
+    <quickActions>
+        <label><!-- Opprett NAV-oppgave --></label>
+        <name>NKS_Thread_Create_NAV_Task</name>
+    </quickActions>
+    <quickActions>
+        <aspect>Master</aspect>
+        <label>Opprett oppgave</label>
+        <name>Redaction_Create_NAV_Task</name>
+    </quickActions>
+    <quickActions>
+        <aspect>Master</aspect>
+        <label>Overfør</label>
+        <name>STO_Transfer_Case</name>
+    </quickActions>
+    <quickActions>
+        <aspect>Master</aspect>
+        <label>Send til sladding</label>
+        <name>Set_to_Redaction</name>
+    </quickActions>
+    <recordTypes>
+        <description><!-- HOT Tolketjenesten --></description>
+        <label><!-- HOT Thread --></label>
+        <name>HOT_Thread</name>
+    </recordTypes>
+    <recordTypes>
+        <description><!-- Record type used for threads related to Nav Kontaktsenter --></description>
+        <label><!-- NKS Thread --></label>
+        <name>NKS_Thread</name>
+    </recordTypes>
+    <recordTypes>
+        <description><!-- Record type used for threads related to Arbeidsgiver --></description>
+        <label><!-- TAG Thread --></label>
+        <name>TAG_Thread</name>
+    </recordTypes>
+    <webLinks>
+        <label><!-- Back_to_contract --></label>
+        <name>Back_to_contract</name>
+    </webLinks>
+</CustomObjectTranslation>
