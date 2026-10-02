@@ -1,0 +1,10 @@
+<template>
+    <div class="picklist-field">
+        <label class="picklist-label" for="wanted-by-select">{label}</label>
+        <select id="wanted-by-select" class="picklist-select" required={required} onchange={handleChange}>
+            <template for:each={options} for:item="option">
+                <option key={option.value} value={option.value} selected={option.selected}>{option.label}</option>
+            </template>
+        </select>
+    </div>
+</template>

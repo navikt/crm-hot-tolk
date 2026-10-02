@@ -1,0 +1,42 @@
+@import 'c/hot_sharedFonts';
+
+.interested-resources-list {
+    display: grid;
+    gap: 0.5rem;
+    margin: 0;
+    padding: 0;
+    list-style: none;
+}
+
+.interested-resource-card {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 1rem;
+    min-width: 0;
+    padding: 0.75rem 1rem;
+    border: 1px solid #c9cdd2;
+    border-radius: 0.4rem;
+    background: #ffffff;
+}
+
+.interested-resource-actions {
+    display: flex;
+    align-items: center;
+    justify-content: flex-end;
+    gap: 0.75rem;
+    flex-wrap: wrap;
+}
+
+.interested-resource-name {
+    min-width: 0;
+    color: #1e2b3c;
+    font-size: 1.125rem;
+    line-height: 1.5rem;
+    overflow-wrap: anywhere;
+}
+
+.interested-resources-error {
+    margin: 0;
+    color: #b42318;
+}
