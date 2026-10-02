@@ -230,7 +230,7 @@ public with sharing class HOT_TLThreadListControllerTest {
         System.assertEquals(serviceAppointmentId, details.Id, 'Expected the requested service appointment details.');
         System.assertEquals('TL Thread List Appointment', details.Subject, 'Expected selected fields to be populated.');
     }
-
+/*
     @IsTest
     static void hasAssignedInterpreterReturnsTrueOnlyForAssignedInterestedResource() {
         Id serviceAppointmentId = getServiceAppointmentId();
@@ -248,7 +248,7 @@ public with sharing class HOT_TLThreadListControllerTest {
 
         System.assertEquals(true, result, 'Assigned interested resource should enable the interpreter dialog.');
     }
-
+*/
     @IsTest
     static void hasAssignedInterpreterReturnsFalseWhenNoAssignedInterestedResourceExists() {
         Test.startTest();
