@@ -26,6 +26,7 @@ export default class hot_requestForm_request_v2 extends LightningElement {
         IsOrdererWantStatusUpdateOnSMS__c: true,
         IsScreenInterpreter__c: false,
         UserPreferredInterpreter__c: '',
+        UserPreferredGender__c: '',
         AssignmentType__c: '',
         UserInterpretationMethod__c: '',
         InterpretationMethodType__c: '',
@@ -85,6 +86,11 @@ export default class hot_requestForm_request_v2 extends LightningElement {
                 this.fieldValues.UserInterpretationMethod__c,
                 'UserInterpretationMethod__c',
                 'label'
+            );
+            this.setFieldAndElementSelected(
+                this.componentValues.genderChoices,
+                this.fieldValues.UserPreferredGender__c,
+                'UserPreferredGender__c'
             );
             this.setComponentValuesOnEditAndCopy();
         }
@@ -215,6 +221,7 @@ export default class hot_requestForm_request_v2 extends LightningElement {
         this.componentValues.isOptionalFields =
             this.fieldValues.UserInterpretationMethod__c !== '' ||
             this.fieldValues.UserPreferredInterpreter__c !== '' ||
+            this.fieldValues.UserPreferredGender__c !== '' ||
             this.fieldValues.AssignmentType__c !== '';
     }
 
@@ -243,6 +250,11 @@ export default class hot_requestForm_request_v2 extends LightningElement {
             { name: 'TSS', label: 'Tegn som støtte til munnavlesning' },
             { name: 'TT', label: 'Taletolking' },
             { name: 'TTS', label: 'Taktilt tegnspråk' }
+        ],
+        genderChoices: [
+            { name: '', label: 'Velg et alternativ', selected: true },
+            { name: 'Mann', label: 'Mann' },
+            { name: 'Kvinne', label: 'Kvinne' }
         ],
         isOptionalFields: false
     };
@@ -397,6 +409,14 @@ export default class hot_requestForm_request_v2 extends LightningElement {
 
     handleAssignmentPicklist(event) {
         this.setFieldAndElementSelected(this.componentValues.assignmentChoices, event.detail.name, 'AssignmentType__c');
+    }
+
+    handleGenderPicklist(event) {
+        this.setFieldAndElementSelected(
+            this.componentValues.genderChoices,
+            event.detail.name,
+            'UserPreferredGender__c'
+        );
     }
 
     handleSMSSwitch(event) {

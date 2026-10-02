@@ -425,6 +425,11 @@
     </fieldPermissions>
     <fieldPermissions>
         <editable>true</editable>
+        <field>HOT_Request__c.UserPreferredGender__c</field>
+        <readable>true</readable>
+    </fieldPermissions>
+    <fieldPermissions>
+        <editable>true</editable>
         <field>HOT_Request__c.UserPreferredInterpreter__c</field>
         <readable>true</readable>
     </fieldPermissions>
@@ -606,6 +611,11 @@
     <fieldPermissions>
         <editable>false</editable>
         <field>Person__c.INT_SecurityMeasures__c</field>
+        <readable>true</readable>
+    </fieldPermissions>
+    <fieldPermissions>
+        <editable>false</editable>
+        <field>ServiceAppointment.HOT_UserPreferredGender__c</field>
         <readable>true</readable>
     </fieldPermissions>
     <fieldPermissions>
