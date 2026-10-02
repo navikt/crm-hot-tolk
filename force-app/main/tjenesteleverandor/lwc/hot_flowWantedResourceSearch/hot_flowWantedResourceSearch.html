@@ -1,0 +1,75 @@
+<template>
+    <div class="search-field">
+        <label class="search-label" for="search-input">{label}</label>
+        <div class="search-input-wrapper">
+            <lightning-icon
+                class="search-icon"
+                icon-name="utility:search"
+                size="x-small"
+                alternative-text=""
+            ></lightning-icon>
+            <input
+                id="search-input"
+                class="search-input"
+                type="search"
+                value={searchText}
+                placeholder={placeholder}
+                oninput={handleChange}
+                onkeydown={handleKeyDown}
+            />
+            <template lwc:if={showClearButton}>
+                <button
+                    class="clear-button"
+                    type="button"
+                    title="Tøm feltet"
+                    aria-label="Tøm feltet"
+                    onclick={handleClear}
+                >
+                    <lightning-icon icon-name="utility:close" size="x-small" alternative-text=""></lightning-icon>
+                </button>
+            </template>
+        </div>
+        <template lwc:if={showResults}>
+            <ul class="search-results" role="listbox" aria-label="Søkeresultater">
+                <template for:each={matchingResources} for:item="resource">
+                    <li key={resource.Id} role="presentation">
+                        <button
+                            class="search-result"
+                            type="button"
+                            role="option"
+                            aria-selected="false"
+                            data-resource-id={resource.Id}
+                            onclick={handleResourceSelect}
+                        >
+                            {resource.Name}
+                        </button>
+                    </li>
+                </template>
+            </ul>
+        </template>
+        <template lwc:if={isLoadingDetails}>
+            <div class="resource-card" role="status">
+                <lightning-spinner alternative-text="Henter tjenesteressurs" size="small"></lightning-spinner>
+            </div>
+        </template>
+        <template lwc:if={detailsError}>
+            <p class="details-error" role="alert">Kunne ikke hente informasjon om tjenesteressursen.</p>
+        </template>
+        <template lwc:if={selectedResource}>
+            <section class="resource-card" aria-label="Valgt tjenesteressurs">
+                <h2 class="resource-name">{selectedResource.name}</h2>
+                <div class="resource-tags">
+                    <c-hot_tag label={overlapLabel} variant="moderate" size="small" color={overlapColor}></c-hot_tag>
+                    <template lwc:if={hasRegionMismatch}>
+                        <c-hot_tag
+                            label="Har ikke dette tjenesteområdet"
+                            variant="moderate"
+                            size="small"
+                            color="warning"
+                        ></c-hot_tag>
+                    </template>
+                </div>
+            </section>
+        </template>
+    </div>
+</template>

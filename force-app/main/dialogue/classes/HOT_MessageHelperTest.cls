@@ -199,6 +199,54 @@ private class HOT_MessageHelperTest {
         Test.stopTest();
         System.assertEquals(t.size(), 2);
     }
+
+    @IsTest
+    static void getThreadTypesOfInterestAlwaysIncludesInterpreterDispatcherThread() {
+        ServiceAppointment serviceAppointment = [SELECT Id FROM ServiceAppointment WHERE Subject = 'TEST' LIMIT 1];
+
+        Test.startTest();
+        List<String> threadTypes = HOT_MessageHelper.getThreadTypesOfInterest(serviceAppointment.Id);
+        Test.stopTest();
+
+        System.assert(
+            threadTypes.contains('HOT_TOLK-FORMIDLER'),
+            'Interpreter dispatcher thread should always be shown.'
+        );
+        System.assert(
+            !threadTypes.contains('HOT_TJENESTELEVERANDOR-FORMIDLER'),
+            'Service provider thread should not be shown before transfer or acceptance.'
+        );
+    }
+
+    @IsTest
+    static void getThreadTypesOfInterestIncludesServiceProviderThreadWhenTransferredOrAccepted() {
+        ServiceAppointment serviceAppointment = [SELECT Id FROM ServiceAppointment WHERE Subject = 'TEST' LIMIT 1];
+        myTriggers.disable(HOT_ServiceAppointmentHandler.class);
+        myTriggers.disable(HOT_ServiceAppointmentStatusHandler.class);
+        myTriggers.disable(HOT_ServiceAppointmentAccessHandler.class);
+
+        List<String> transferredThreadTypes;
+        List<String> acceptedThreadTypes;
+
+        Test.startTest();
+        update new ServiceAppointment(Id = serviceAppointment.Id, HOT_TjenesteleverandorStatus__c = 'Transferred');
+        transferredThreadTypes = HOT_MessageHelper.getThreadTypesOfInterest(serviceAppointment.Id);
+
+        update new ServiceAppointment(Id = serviceAppointment.Id, HOT_TjenesteleverandorStatus__c = 'Accepted');
+        acceptedThreadTypes = HOT_MessageHelper.getThreadTypesOfInterest(serviceAppointment.Id);
+        Test.stopTest();
+
+        System.assert(
+            transferredThreadTypes.contains('HOT_TJENESTELEVERANDOR-FORMIDLER'),
+            'Service provider thread should be shown after transfer.'
+        );
+
+        System.assert(
+            acceptedThreadTypes.contains('HOT_TJENESTELEVERANDOR-FORMIDLER'),
+            'Service provider thread should be shown after acceptance.'
+        );
+    }
+
     @IsTest
     static void createThread() {
         HOT_Request__c request = [SELECT Id, Account__c FROM HOT_Request__c WHERE Subject__c = 'TEST' LIMIT 1];
@@ -390,6 +438,36 @@ private class HOT_MessageHelperTest {
             'Expected the thread to be related to the Interested Resource'
         );
     }
+
+    @IsTest
+    static void createThreadDispatcherTjenesteleverandorTolkRequiresAssignedInterpreter() {
+        WorkOrderLineItem workOrderLineItem = [SELECT Id FROM WorkOrderLineItem LIMIT 1];
+        ServiceAppointment serviceAppointment = HOT_TestDataFactory.createServiceAppointment(workOrderLineItem);
+        serviceAppointment.Subject = 'TL thread without assigned interpreter';
+        insert serviceAppointment;
+
+        Test.startTest();
+        try {
+            HOT_MessageHelper.createThreadDispatcher(serviceAppointment.Id, null, 'HOT_TJENESTELEVERANDOR-TOLK');
+            System.assert(false, 'Expected thread creation to fail without an assigned interpreter.');
+        } catch (AuraHandledException e) {
+            System.assertEquals('Ingen tolk er tildelt dette oppdraget.', e.getMessage());
+        }
+        Test.stopTest();
+
+        System.assertEquals(
+            0,
+            [
+                SELECT COUNT()
+                FROM Thread__c
+                WHERE
+                    HOT_ServiceAppointment__c = :serviceAppointment.Id
+                    AND CRM_Thread_Type__c = 'HOT_TJENESTELEVERANDOR-TOLK'
+            ],
+            'No thread should be created without an assigned interpreter.'
+        );
+    }
+
     @IsTest
     static void createThreadInterpreterInterestedResource() {
         ServiceAppointment sa = [SELECT Id FROM ServiceAppointment WHERE Subject = 'TEST' LIMIT 1];
@@ -412,6 +490,99 @@ private class HOT_MessageHelperTest {
         ];
         System.assertEquals(ir.id, created.HOT_InterestedResource__c, 'Thread should be stamped with IR id');
         System.assertEquals('HOT_TOLK-FORMIDLER', created.CRM_Type__c, 'Thread should be of type HOT_TOLK-FORMIDLER');
+    }
+    @IsTest
+    static void createThreadForTLIrTest() {
+        ServiceAppointment sa = [SELECT Id FROM ServiceAppointment WHERE Subject = 'TEST' LIMIT 1];
+
+        ServiceResource sr = [SELECT Id, AccountId FROM ServiceResource LIMIT 1];
+
+        HOT_InterestedResource__c ir = HOT_TestDataFactory.createInterestedResource(sa.Id, sr.Id);
+        insert ir;
+
+        System.Test.startTest();
+        System.runAs(new User(Id = UserInfo.getUserId())) {
+            Thread__c t = HOT_MessageHelper.createThreadInterpreterForTL(ir.Id);
+        }
+        System.Test.stopTest();
+
+        Thread__c created = [
+            SELECT Id, CRM_Type__c, CRM_Related_Object__c, HOT_InterestedResource__c
+            FROM Thread__c
+            WHERE CRM_Related_Object__c = :ir.Id
+            LIMIT 1
+        ];
+        System.assertEquals(ir.id, created.HOT_InterestedResource__c, 'Thread should be stamped with IR id');
+        System.assertEquals(
+            'HOT_TJENESTELEVERANDOR-TOLK',
+            created.CRM_Type__c,
+            'Thread should be of type HOT_TJENESTELEVERANDOR-TOLK'
+        );
+    }
+    @IsTest
+    static void createThreadForTLAssignedTest() {
+        ServiceAppointment sa = [SELECT Id FROM ServiceAppointment WHERE Subject = 'TEST' LIMIT 1];
+
+        myTriggers.disable(HOT_ServiceAppointmentHandler.class);
+        myTriggers.disable(HOT_ServiceAppointmentStatusHandler.class);
+        sa.Status = 'Dispatched';
+        update sa;
+
+        ServiceResource sr = [SELECT Id, AccountId FROM ServiceResource LIMIT 1];
+
+        System.Test.startTest();
+        HOT_InterestedResource__c ir = HOT_TestDataFactory.createInterestedResource(sa.Id, sr.Id);
+        ir.Status__c = 'Assigned';
+        insert ir;
+
+        AssignedResource ar = HOT_TestDataFactory.createAssignedResource(sa.Id, sr.Id);
+        insert ar;
+
+        Thread__c thread;
+
+        System.runAs(new User(Id = UserInfo.getUserId())) {
+            thread = HOT_MessageHelper.createThreadInterpreterForTL(sa.Id);
+        }
+        System.Test.stopTest();
+
+        System.assertNotEquals(null, thread, 'Interpreter thread should be created.');
+        System.assertEquals('HOT_TJENESTELEVERANDOR-TOLK', thread.CRM_Thread_Type__c, 'Wrong thread type.');
+    }
+    @IsTest
+    static void createThreadForTLNotAssignedTest() {
+        Account acc = [SELECT Id, FirstName, LastName, PersonContactId FROM Account WHERE Name = 'Test User' LIMIT 1];
+
+        ServiceResource sr = [SELECT Id, AccountId FROM ServiceResource LIMIT 1];
+        sr.AccountId = acc.Id;
+        update sr;
+
+        ServiceAppointment sa = [SELECT Id FROM ServiceAppointment WHERE Subject = 'TEST' LIMIT 1];
+        myTriggers.disable(HOT_ServiceAppointmentHandler.class);
+        myTriggers.disable(HOT_ServiceAppointmentStatusHandler.class);
+        myTriggers.disable(HOT_ServiceAppointmentAccessHandler.class);
+
+        sa.Subject = 'Hello test';
+        sa.HOT_Account__c = sr.AccountId;
+        update sa;
+
+        HOT_InterestedResource__c ir = HOT_TestDataFactory.createInterestedResource(sa.Id, sr.Id);
+        insert ir;
+
+        System.Test.startTest();
+        insert HOT_TestDataFactory.createAssignedResource(sa.Id, sr.Id);
+
+        ir.Status__c = 'Canceled by Interpreter';
+        update ir;
+        Thread__c thread = HOT_MessageHelper.createThreadInterpreterForTL(sa.Id);
+        System.Test.stopTest();
+
+        System.assertNotEquals(null, thread, 'Thread should be created.');
+        System.assertEquals(
+            ir.Id,
+            thread.CRM_Related_Object__c,
+            'Should have created a thread related to the Interested Resource when it is not assigned.'
+        );
+        System.assertEquals('HOT_TJENESTELEVERANDOR-TOLK', thread.CRM_Thread_Type__c);
     }
     @IsTest
     static void getAccountonRequestTest() {
@@ -472,6 +643,32 @@ private class HOT_MessageHelperTest {
         List<Thread__c> tList2 = [SELECT Id, HOT_Thread_read_by__c FROM Thread__c WHERE Id = :tList.get(0).Id];
         System.assertEquals(tList2[0].HOT_Thread_read_by__c, account.Id + ';');
     }
+
+    @IsTest
+    static void setLastMessageFromResetsReadByTjenesteleverandor() {
+        Account relatedAccount = HOT_TestDataFactory.createAccount(true);
+        insert relatedAccount;
+
+        Thread__c thread = HOT_TestDataFactory.createThread('HOT_TJENESTELEVERANDOR-FORMIDLER');
+        thread.CRM_Type__c = 'HOT_TJENESTELEVERANDOR-FORMIDLER';
+        thread.CRM_Related_Object__c = relatedAccount.Id;
+        thread.CRM_isActive__c = true;
+        thread.HOT_ReadByTjenesteleverandor__c = true;
+        insert thread;
+
+        System.Test.startTest();
+        HOT_MessageHelper.setLastMessageFrom(thread.Id, relatedAccount.Id);
+        System.Test.stopTest();
+
+        Thread__c updatedThread = [
+            SELECT HOT_ReadByTjenesteleverandor__c
+            FROM Thread__c
+            WHERE Id = :thread.Id
+            LIMIT 1
+        ];
+        System.assertEquals(false, updatedThread.HOT_ReadByTjenesteleverandor__c);
+    }
+
     @IsTest
     static void markAsReadByNavTest() {
         Profile stdProf = [SELECT Id FROM Profile WHERE Name IN ('Standardbruker', 'Standard User') LIMIT 1];
@@ -638,7 +835,6 @@ private class HOT_MessageHelperTest {
     }
     @IsTest
     static void createThreadWageClaim() {
-        //TODO: OK
         ServiceAppointment sa = [
             SELECT Id, EarliestStartTime, DueDate, HOT_WorkOrderLineItem__r.WorkOrderId
             FROM ServiceAppointment
@@ -657,21 +853,24 @@ private class HOT_MessageHelperTest {
         Thread__c created = HOT_MessageHelper.createThread(wage.Id, sr.AccountId);
 
         Test.stopTest();
+        System.assertNotEquals(null, created.Id, 'The wage-claim thread should be inserted.');
         List<Thread__c> threads = [
-            SELECT Id, CRM_Account__c, CRM_Type__c
+            SELECT Id, CRM_Account__c, CRM_Type__c, HOT_WageClaim__c
             FROM Thread__c
             WHERE CRM_Related_Object__c = :wage.Id
         ];
-        System.assertEquals(1, threads.size(), 'Expected at one thread related to the Wage Claim.');
+        System.assertEquals(1, threads.size(), 'Expected one thread related to the Wage Claim.');
+        System.assertEquals(created.Id, threads[0].Id, 'The helper should return the inserted thread.');
+        System.assertEquals(wage.Id, threads[0].HOT_WageClaim__c, 'The thread should reference the wage claim.');
+        System.assertEquals(sr.AccountId, threads[0].CRM_Account__c, 'The thread should belong to the interpreter.');
         System.assertEquals(
-            'HOT_TOLK-RESSURSKONTOR',
+            'HOT_TJENESTELEVERANDOR-HONORAR',
             threads[0].CRM_Type__c,
-            'Thread type should be HOT_TOLK-RESSURSKONTOR'
+            'Thread type should be HOT_TJENESTELEVERANDOR-HONORAR '
         );
     }
     @IsTest
     static void createThreadWageClaimDispatcher() {
-        //TODO: OK
         ServiceAppointment sa = [
             SELECT Id, EarliestStartTime, DueDate, HOT_WorkOrderLineItem__r.WorkOrderId
             FROM ServiceAppointment
@@ -688,16 +887,20 @@ private class HOT_MessageHelperTest {
         Test.startTest();
         Thread__c created = HOT_MessageHelper.createThreadDispatcher(wageclaim.Id, sr.AccountId, null);
         Test.stopTest();
+        System.assertNotEquals(null, created.Id, 'The dispatcher wage-claim thread should be inserted.');
         List<Thread__c> tList = [
-            SELECT Id, CRM_Account__c, CRM_Type__c
+            SELECT Id, CRM_Account__c, CRM_Type__c, HOT_WageClaim__c
             FROM Thread__c
             WHERE CRM_Related_Object__c = :wageclaim.Id
         ];
-        System.assertEquals(1, tList.size(), 'Expected  one thread related to the Wage Claim.');
+        System.assertEquals(1, tList.size(), 'Expected one thread related to the Wage Claim.');
+        System.assertEquals(created.Id, tList[0].Id, 'The helper should return the inserted thread.');
+        System.assertEquals(wageclaim.Id, tList[0].HOT_WageClaim__c, 'The thread should reference the wage claim.');
+        System.assertEquals(sr.AccountId, tList[0].CRM_Account__c, 'The thread should belong to the interpreter.');
         System.assertEquals(
-            'HOT_TOLK-RESSURSKONTOR',
+            'HOT_TJENESTELEVERANDOR-HONORAR',
             tList[0].CRM_Type__c,
-            'Thread type should be HOT_TOLK-RESSURSKONTOR'
+            'Thread type should be HOT_TJENESTELEVERANDOR-HONORAR '
         );
     }
     @IsTest
@@ -749,7 +952,7 @@ private class HOT_MessageHelperTest {
         System.assertEquals('HOT_TOLK-FORMIDLER', created.CRM_Type__c, 'Wrong thread type.');
         System.assert(
             created.CRM_Related_Object__c == sa.Id ||
-            created.CRM_Related_Object__c == sa.HOT_WorkOrderLineItem__r.WorkOrderId,
+                created.CRM_Related_Object__c == sa.HOT_WorkOrderLineItem__r.WorkOrderId,
             'Helper may relate to SA or normalize to WO.'
         );
         if (created.CRM_Account__c != null) {
@@ -760,6 +963,7 @@ private class HOT_MessageHelperTest {
             );
         }
     }
+
     @IsTest
     static void createThreadInterpreterDispatcher() {
         ServiceAppointment sa = [
@@ -793,7 +997,7 @@ private class HOT_MessageHelperTest {
         System.assertEquals('HOT_TOLK-FORMIDLER', created.CRM_Type__c, 'Wrong thread type.');
         System.assert(
             created.CRM_Related_Object__c == sa.Id ||
-            created.CRM_Related_Object__c == sa.HOT_WorkOrderLineItem__r.WorkOrderId,
+                created.CRM_Related_Object__c == sa.HOT_WorkOrderLineItem__r.WorkOrderId,
             'Helper may relate to SA directly or normalize to WO.'
         );
         System.assertEquals(sr.AccountId, created.CRM_Account__c, 'If stamped, account must match.');
@@ -1476,8 +1680,8 @@ private class HOT_MessageHelperTest {
         System.assertEquals('Du har fått en melding fra formidler', HOT_MessageHelper.buildHeader('formidler', false));
 
         System.assertEquals(
-            'Du har fått en melding fra ressurskontor',
-            HOT_MessageHelper.buildHeader('ressurskontor', false)
+            'Du har fått en melding fra leverandør',
+            HOT_MessageHelper.buildHeader('tjenesteleverandør', false)
         );
 
         System.assertEquals('Du har fått en melding', HOT_MessageHelper.buildHeader('ukjent', false));
@@ -1515,8 +1719,8 @@ private class HOT_MessageHelperTest {
         );
 
         System.assertEquals(
-            'INFO\nDu har fått en melding fra ressurskontor. ' + suffix,
-            HOT_MessageHelper.buildSMSNewMessage('ressurskontor', false)
+            'INFO\nDu har fått en melding fra leverandør. ' + suffix,
+            HOT_MessageHelper.buildSMSNewMessage('tjenesteleverandør', false)
         );
 
         System.assertEquals(

@@ -1,0 +1,55 @@
+{
+    "appPageId": "32056ac8-ab01-4fbe-a9cc-94b1b053ca6d",
+    "componentName": "siteforce:sldsOneColLayout",
+    "dataProviders": [],
+    "id": "30e5de4a-28c4-4a6a-bbc9-9ef5d92ef153",
+    "label": "Oppdragsdetaljer",
+    "regions": [
+        {
+            "id": "1bfb710c-3f93-4d45-869d-a123820d21f1",
+            "regionName": "header",
+            "type": "region"
+        },
+        {
+            "components": [
+                {
+                    "componentAttributes": {},
+                    "componentName": "c:hot_tjenesteleverandorServiceAppointmentDetail",
+                    "id": "b17525f1-5279-410f-bca1-7e2edba55cf3",
+                    "renderPriority": "NEUTRAL",
+                    "renditionMap": {},
+                    "type": "component"
+                }
+            ],
+            "id": "22d8f2c0-b247-466e-9cfe-85242c9187e8",
+            "regionName": "content",
+            "type": "region"
+        },
+        {
+            "id": "0712903f-6b1b-4c41-8194-9580ed3ce19e",
+            "regionName": "footer",
+            "type": "region"
+        },
+        {
+            "components": [
+                {
+                    "componentAttributes": {
+                        "customHeadTags": "",
+                        "description": "",
+                        "title": "Oppdragsdetaljer"
+                    },
+                    "componentName": "forceCommunity:seoAssistant",
+                    "id": "92a1e681-3f87-497b-a23a-8f76a81c3ef6",
+                    "renditionMap": {},
+                    "type": "component"
+                }
+            ],
+            "id": "a712f27d-bef8-404f-a409-29d0728aa799",
+            "regionName": "sfdcHiddenRegion",
+            "type": "region"
+        }
+    ],
+    "themeLayoutType": "Inner",
+    "type": "view",
+    "viewType": "custom-oppdragsdetaljer"
+}

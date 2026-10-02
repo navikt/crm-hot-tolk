@@ -21,6 +21,19 @@
                     <valueList>
                         <valueListItems>
                             <value>Edit</value>
+                            <visibilityRule>
+                                <booleanFilter>1 OR 2</booleanFilter>
+                                <criteria>
+                                    <leftValue>{!Record.HOT_TjenesteleverandorStatus__c}</leftValue>
+                                    <operator>EQUAL</operator>
+                                    <rightValue>Transferred</rightValue>
+                                </criteria>
+                                <criteria>
+                                    <leftValue>{!Record.HOT_TjenesteleverandorStatus__c}</leftValue>
+                                    <operator>EQUAL</operator>
+                                    <rightValue>Accepted</rightValue>
+                                </criteria>
+                            </visibilityRule>
                         </valueListItems>
                         <valueListItems>
                             <value>Clone</value>
@@ -116,9 +129,6 @@
                                 </criteria>
                             </visibilityRule>
                         </valueListItems>
-                        <valueListItems>
-                            <value>ServiceAppointment.HOT_registrerWantedServiceResource</value>
-                        </valueListItems>
                     </valueList>
                 </componentInstanceProperties>
                 <componentInstanceProperties>
@@ -147,12 +157,131 @@
         </itemInstances>
         <itemInstances>
             <componentInstance>
-                <componentName>hot_warningBannerServiceAppointment</componentName>
-                <identifier>hot_warningBannerServiceAppointment</identifier>
+                <componentInstanceProperties>
+                    <name>message</name>
+                    <value>Oppdraget ble avslått av tjenesteleverandør og kan ikke sendes til tjenesteleverandør igjen.</value>
+                </componentInstanceProperties>
+                <componentInstanceProperties>
+                    <name>type</name>
+                    <value>Warning</value>
+                </componentInstanceProperties>
+                <componentName>hot_alertBanner</componentName>
+                <identifier>hot_alertBannerTjenesteleverandorDeclined</identifier>
+                <visibilityRule>
+                    <criteria>
+                        <leftValue>{!Record.HOT_TjenesteleverandorStatus__c}</leftValue>
+                        <operator>EQUAL</operator>
+                        <rightValue>Declined</rightValue>
+                    </criteria>
+                </visibilityRule>
+            </componentInstance>
+        </itemInstances>
+        <itemInstances>
+            <componentInstance>
+                <componentInstanceProperties>
+                    <name>message</name>
+                    <value>Fristen for tjenesteleverandør til å akseptere oppdraget er utløpt.</value>
+                </componentInstanceProperties>
+                <componentInstanceProperties>
+                    <name>type</name>
+                    <value>Warning</value>
+                </componentInstanceProperties>
+                <componentName>hot_alertBanner</componentName>
+                <identifier>hot_alertBannerTjenesteleverandorExpired</identifier>
+                <visibilityRule>
+                    <criteria>
+                        <leftValue>{!Record.HOT_TjenesteleverandorStatus__c}</leftValue>
+                        <operator>EQUAL</operator>
+                        <rightValue>Expired</rightValue>
+                    </criteria>
+                </visibilityRule>
             </componentInstance>
         </itemInstances>
         <name>header</name>
         <type>Region</type>
+    </flexiPageRegions>
+    <flexiPageRegions>
+        <itemInstances>
+            <fieldInstance>
+                <fieldInstanceProperties>
+                    <name>uiBehavior</name>
+                    <value>readonly</value>
+                </fieldInstanceProperties>
+                <fieldItem>Record.CreatedById</fieldItem>
+                <identifier>RecordCreatedByIdField2</identifier>
+                <visibilityRule>
+                    <booleanFilter>1 OR 2</booleanFilter>
+                    <criteria>
+                        <leftValue>{!Record.CreatedBy.Profile.Name}</leftValue>
+                        <operator>CONTAINS</operator>
+                        <rightValue>Formidler</rightValue>
+                    </criteria>
+                    <criteria>
+                        <leftValue>{!Record.CreatedBy.Contact.Account.CRM_Person__r.INT_Confidential__c}</leftValue>
+                        <operator>EQUAL</operator>
+                        <rightValue>UGRADERT</rightValue>
+                    </criteria>
+                </visibilityRule>
+            </fieldInstance>
+        </itemInstances>
+        <name>Facet-9a017f90-3719-4332-9f05-71415f7527f2</name>
+        <type>Facet</type>
+    </flexiPageRegions>
+    <flexiPageRegions>
+        <itemInstances>
+            <fieldInstance>
+                <fieldInstanceProperties>
+                    <name>uiBehavior</name>
+                    <value>readonly</value>
+                </fieldInstanceProperties>
+                <fieldItem>Record.LastModifiedById</fieldItem>
+                <identifier>RecordLastModifiedByIdField2</identifier>
+                <visibilityRule>
+                    <booleanFilter>1 OR 2 OR 3</booleanFilter>
+                    <criteria>
+                        <leftValue>{!Record.LastModifiedBy.Profile.Name}</leftValue>
+                        <operator>CONTAINS</operator>
+                        <rightValue>Formidler</rightValue>
+                    </criteria>
+                    <criteria>
+                        <leftValue>{!Record.Contact.Account.CRM_Person__r.INT_Confidential__c}</leftValue>
+                        <operator>EQUAL</operator>
+                        <rightValue>UGRADERT</rightValue>
+                    </criteria>
+                    <criteria>
+                        <leftValue>{!Record.LastModifiedBy.Profile.Name}</leftValue>
+                        <operator>CONTAINS</operator>
+                        <rightValue>Saksbehandler</rightValue>
+                    </criteria>
+                </visibilityRule>
+            </fieldInstance>
+        </itemInstances>
+        <name>Facet-f3fee4f8-b61a-4cb1-a494-f045cc3c914d</name>
+        <type>Facet</type>
+    </flexiPageRegions>
+    <flexiPageRegions>
+        <itemInstances>
+            <componentInstance>
+                <componentInstanceProperties>
+                    <name>body</name>
+                    <value>Facet-9a017f90-3719-4332-9f05-71415f7527f2</value>
+                </componentInstanceProperties>
+                <componentName>flexipage:column</componentName>
+                <identifier>flexipage_column12</identifier>
+            </componentInstance>
+        </itemInstances>
+        <itemInstances>
+            <componentInstance>
+                <componentInstanceProperties>
+                    <name>body</name>
+                    <value>Facet-f3fee4f8-b61a-4cb1-a494-f045cc3c914d</value>
+                </componentInstanceProperties>
+                <componentName>flexipage:column</componentName>
+                <identifier>flexipage_column13</identifier>
+            </componentInstance>
+        </itemInstances>
+        <name>Facet-4457c95c-b12b-4f9e-bdba-bc2e2ece732b</name>
+        <type>Facet</type>
     </flexiPageRegions>
     <flexiPageRegions>
         <itemInstances>
@@ -377,6 +506,23 @@
                 </fieldInstanceProperties>
                 <fieldItem>Record.Status</fieldItem>
                 <identifier>RecordStatusField</identifier>
+            </fieldInstance>
+        </itemInstances>
+        <itemInstances>
+            <fieldInstance>
+                <fieldInstanceProperties>
+                    <name>uiBehavior</name>
+                    <value>none</value>
+                </fieldInstanceProperties>
+                <fieldItem>Record.HOT_TjenesteleverandorStatus__c</fieldItem>
+                <identifier>RecordHOT_TjenesteleverandorStatus_cField</identifier>
+                <visibilityRule>
+                    <criteria>
+                        <leftValue>{!Record.Status}</leftValue>
+                        <operator>NE</operator>
+                        <rightValue>None</rightValue>
+                    </criteria>
+                </visibilityRule>
             </fieldInstance>
         </itemInstances>
         <itemInstances>
@@ -1171,17 +1317,48 @@
         <itemInstances>
             <componentInstance>
                 <componentName>hot_messagingMessageComponent_v2</componentName>
-                <identifier>c_hot_messagingMessageComponent_v2</identifier>
+                <identifier>c_hot_messagingMessageComponent_v22</identifier>
+                <visibilityRule>
+                    <criteria>
+                        <leftValue>{!$Client.formFactor}</leftValue>
+                        <operator>EQUAL</operator>
+                        <rightValue>Large</rightValue>
+                    </criteria>
+                </visibilityRule>
             </componentInstance>
         </itemInstances>
-        <name>Facet-78213d51-8363-40c6-ab40-3a9ea8295431</name>
-        <type>Facet</type>
-    </flexiPageRegions>
-    <flexiPageRegions>
+        <itemInstances>
+            <componentInstance>
+                <componentInstanceProperties>
+                    <name>decorate</name>
+                    <value>true</value>
+                </componentInstanceProperties>
+                <componentInstanceProperties>
+                    <name>richTextValue</name>
+                    <value>&lt;p style=&quot;text-align: center;&quot;&gt;&lt;strong style=&quot;font-size: 18px;&quot;&gt;Samtaler som tolk:&lt;/strong&gt;&lt;/p&gt;</value>
+                </componentInstanceProperties>
+                <componentName>flexipage:richText</componentName>
+                <identifier>flexipage_richText</identifier>
+                <visibilityRule>
+                    <criteria>
+                        <leftValue>{!$User.Profile.Name}</leftValue>
+                        <operator>CONTAINS</operator>
+                        <rightValue>HOT Tolk Ansatt</rightValue>
+                    </criteria>
+                </visibilityRule>
+            </componentInstance>
+        </itemInstances>
         <itemInstances>
             <componentInstance>
                 <componentName>hot_tindWorkOrderHighlightMobile</componentName>
                 <identifier>c_hot_tindWorkOrderHighlightMobile</identifier>
+                <visibilityRule>
+                    <criteria>
+                        <leftValue>{!$User.Profile.Name}</leftValue>
+                        <operator>CONTAINS</operator>
+                        <rightValue>HOT Tolk Ansatt</rightValue>
+                    </criteria>
+                </visibilityRule>
             </componentInstance>
         </itemInstances>
         <itemInstances>
@@ -1192,6 +1369,13 @@
                 </componentInstanceProperties>
                 <componentName>hot_messagingMessageComponentCustomObject</componentName>
                 <identifier>c_hot_messagingMessageComponentCustomObject</identifier>
+                <visibilityRule>
+                    <criteria>
+                        <leftValue>{!$User.Profile.Name}</leftValue>
+                        <operator>CONTAINS</operator>
+                        <rightValue>HOT Tolk Ansatt</rightValue>
+                    </criteria>
+                </visibilityRule>
             </componentInstance>
         </itemInstances>
         <name>Facet-c964c6d9-7349-48dd-b1a7-5a128cd59568</name>
@@ -1276,41 +1460,14 @@
             <componentInstance>
                 <componentInstanceProperties>
                     <name>body</name>
-                    <value>Facet-78213d51-8363-40c6-ab40-3a9ea8295431</value>
-                </componentInstanceProperties>
-                <componentInstanceProperties>
-                    <name>title</name>
-                    <value>Samtale mellom tolk og formidler</value>
-                </componentInstanceProperties>
-                <componentName>flexipage:tab</componentName>
-                <identifier>flexipage_tab</identifier>
-            </componentInstance>
-        </itemInstances>
-        <itemInstances>
-            <componentInstance>
-                <componentInstanceProperties>
-                    <name>body</name>
                     <value>Facet-c964c6d9-7349-48dd-b1a7-5a128cd59568</value>
                 </componentInstanceProperties>
                 <componentInstanceProperties>
                     <name>title</name>
-                    <value>Samtale med bruker/medtolk</value>
+                    <value>Samtaler</value>
                 </componentInstanceProperties>
                 <componentName>flexipage:tab</componentName>
                 <identifier>flexipage_tab2</identifier>
-                <visibilityRule>
-                    <booleanFilter>1 AND 2</booleanFilter>
-                    <criteria>
-                        <leftValue>{!$Client.formFactor}</leftValue>
-                        <operator>EQUAL</operator>
-                        <rightValue>Small</rightValue>
-                    </criteria>
-                    <criteria>
-                        <leftValue>{!$User.Profile.Name}</leftValue>
-                        <operator>CONTAINS</operator>
-                        <rightValue>HOT Tolk Ansatt</rightValue>
-                    </criteria>
-                </visibilityRule>
             </componentInstance>
         </itemInstances>
         <name>Facet-87d76a61-4535-4189-be09-0e5377b76f56</name>
@@ -1399,6 +1556,56 @@
         </itemInstances>
         <itemInstances>
             <componentInstance>
+                <componentName>hot_tjenesteleverandorReadOnlySA</componentName>
+                <identifier>c_hot_tjenesteleverandorReadOnlySA</identifier>
+                <visibilityRule>
+                    <booleanFilter>1 OR 2</booleanFilter>
+                    <criteria>
+                        <leftValue>{!Record.HOT_TjenesteleverandorStatus__c}</leftValue>
+                        <operator>EQUAL</operator>
+                        <rightValue>Transferred</rightValue>
+                    </criteria>
+                    <criteria>
+                        <leftValue>{!Record.HOT_TjenesteleverandorStatus__c}</leftValue>
+                        <operator>EQUAL</operator>
+                        <rightValue>Accepted</rightValue>
+                    </criteria>
+                </visibilityRule>
+            </componentInstance>
+        </itemInstances>
+        <itemInstances>
+            <componentInstance>
+                <componentInstanceProperties>
+                    <name>columns</name>
+                    <value>Facet-4457c95c-b12b-4f9e-bdba-bc2e2ece732b</value>
+                </componentInstanceProperties>
+                <componentInstanceProperties>
+                    <name>horizontalAlignment</name>
+                    <value>false</value>
+                </componentInstanceProperties>
+                <componentInstanceProperties>
+                    <name>label</name>
+                    <value>Systeminformasjon</value>
+                </componentInstanceProperties>
+                <componentName>flexipage:fieldSection</componentName>
+                <identifier>flexipage_fieldSection7</identifier>
+                <visibilityRule>
+                    <booleanFilter>1 OR 2</booleanFilter>
+                    <criteria>
+                        <leftValue>{!Record.HOT_TjenesteleverandorStatus__c}</leftValue>
+                        <operator>EQUAL</operator>
+                        <rightValue>Transferred</rightValue>
+                    </criteria>
+                    <criteria>
+                        <leftValue>{!Record.HOT_TjenesteleverandorStatus__c}</leftValue>
+                        <operator>EQUAL</operator>
+                        <rightValue>Accepted</rightValue>
+                    </criteria>
+                </visibilityRule>
+            </componentInstance>
+        </itemInstances>
+        <itemInstances>
+            <componentInstance>
                 <componentInstanceProperties>
                     <name>label</name>
                     <value>Tabs</value>
@@ -1439,6 +1646,13 @@
                 </componentInstanceProperties>
                 <componentName>force:relatedListSingleContainer</componentName>
                 <identifier>force_relatedListSingleContainer5</identifier>
+                <visibilityRule>
+                    <criteria>
+                        <leftValue>{!Record.HOT_IsReleasedToFreelance__c}</leftValue>
+                        <operator>EQUAL</operator>
+                        <rightValue>false</rightValue>
+                    </criteria>
+                </visibilityRule>
             </componentInstance>
         </itemInstances>
         <itemInstances>
@@ -1466,7 +1680,7 @@
                 <componentName>force:relatedListSingleContainer</componentName>
                 <identifier>force_relatedListSingleContainer6</identifier>
                 <visibilityRule>
-                    <booleanFilter>1 AND 2</booleanFilter>
+                    <booleanFilter>1 AND 2 AND 3</booleanFilter>
                     <criteria>
                         <leftValue>{!$Permission.CustomPermission.HOT_DeleteFiles}</leftValue>
                         <operator>EQUAL</operator>
@@ -1474,6 +1688,11 @@
                     </criteria>
                     <criteria>
                         <leftValue>{!Record.HOT_DelPol_IsDeleteFiles__c}</leftValue>
+                        <operator>EQUAL</operator>
+                        <rightValue>false</rightValue>
+                    </criteria>
+                    <criteria>
+                        <leftValue>{!Record.HOT_IsReleasedToFreelance__c}</leftValue>
                         <operator>EQUAL</operator>
                         <rightValue>false</rightValue>
                     </criteria>

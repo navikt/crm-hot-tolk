@@ -1,0 +1,26 @@
+<template>
+    <template lwc:if={interestedResources.length}>
+        <ul class="interested-resources-list" aria-label="Interesserte ressurser">
+            <template for:each={interestedResources} for:item="resource">
+                <li class="interested-resource-card" key={resource.Id}>
+                    <span class="interested-resource-name">{resource.ServiceResource__r.Name}</span>
+                    <div class="interested-resource-actions">
+                        <c-hot_tag label={resource.Status__c} variant="moderate" size="small" color="info"></c-hot_tag>
+                        <template lwc:if={resource.isInterested}>
+                            <c-hot_button
+                                button-label="Tildel"
+                                button-styling="secondary"
+                                size="xsmall"
+                                data-service-resource-id={resource.ServiceResource__c}
+                                onbuttonclick={handleAssignClick}
+                            ></c-hot_button>
+                        </template>
+                    </div>
+                </li>
+            </template>
+        </ul>
+    </template>
+    <template lwc:if={interestedResourcesError}>
+        <p class="interested-resources-error" role="alert">Kunne ikke hente interesserte ressurser.</p>
+    </template>
+</template>

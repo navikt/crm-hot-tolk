@@ -57,6 +57,54 @@ public without sharing class HOT_MessagesNotification {
 
         return new MessageContent(title, body);
     }
+    public static void NotifyTjenesteleverandorOnNewMessage(List<Id> threadIds) {
+        List<HOT_Notification__c> notificationsToInsert = new List<HOT_Notification__c>();
+        Set<Id> threadIdsSet = new Set<Id>();
+        for (Id thread : threadIds) {
+            threadIdsSet.add(thread);
+        }
+
+        List<Thread__c> threads = [
+            SELECT
+                Id,
+                Name,
+                OwnerId,
+                HOT_TLDispatcher__c,
+                HOT_Subject__c,
+                CRM_Account__c,
+                CRM_Related_Object__c,
+                CRM_Thread_Type__c,
+                HOT_ParticipantIds__c,
+                HOT_IsEmployeeThread__c,
+                LastModifiedById,
+                HOT_ServiceResource__c,
+                HOT_ServiceResource__r.HOT_MobilePhone__c,
+                CRM_Account__r.INT_KrrMobilePhone__c,
+                CRM_Account__r.CRM_Person__r.HOT_MobilePhone__c,
+                CRM_Account__r.CRM_Person__r.HOT_NotificationChannel__c,
+                CRM_Account__r.CRM_Person__r.HOT_IsReservationAgainstNotifications__c
+            FROM Thread__c
+            WHERE Id IN :threadIdsSet
+        ];
+        //Finner hvem som har sendt siste melding i hver tråd
+        Map<Id, Id> threadToLastSender = getLastMessageSenderPerThread(threadIdsSet);
+        //Finner rollen ifht oppdraget/bestillingen til den som har sendt siste melding i hver tråd
+        Map<Id, String> threadToSenderRole = HOT_ThreadParticipants.getUserSenderRoleInThread(
+            threads,
+            threadToLastSender
+        );
+        for (Thread__c thread : threads) {
+            MessageContent content = getContentForChannel(threadToSenderRole.get(thread.Id), 'push', false);
+            HOT_Notification__c notification = new HOT_Notification__c();
+            notification.HOT_Subject__c = content.title;
+            notification.HOT_NotificationText__c = content.body;
+            notification.HOT_RelatedObject__c = thread.Id;
+            notification.HOT_RelatedObjectType__c = 'threadTjenesteleverandor';
+            notification.Tjenesteleverandor__c = thread.HOT_TLDispatcher__c;
+            notificationsToInsert.add(notification);
+        }
+        insert notificationsToInsert;
+    }
 
     public static void NotifyDispatcher(List<Id> threadIds) {
         List<Thread__c> threads = [
@@ -127,7 +175,8 @@ public without sharing class HOT_MessagesNotification {
                 thread.CRM_Thread_Type__c == 'HOT_TOLK-TOLK' ||
                 thread.CRM_Thread_Type__c == 'HOT_TOLK-FORMIDLER' ||
                 thread.CRM_Thread_Type__c == 'HOT_TOLK-RESSURSKONTOR' ||
-                thread.CRM_Thread_Type__c == 'HOT_BRUKER-TOLK'
+                thread.CRM_Thread_Type__c == 'HOT_BRUKER-TOLK' ||
+                thread.CRM_Thread_Type__c == 'HOT_TJENESTELEVERANDOR-TOLK'
             ) {
                 //Ved disse typene er det varsel til tolk som gjelder, og må dermed bruke varslingskanal til tolk.
                 threadsToNotifyInterpreters.add(thread);
@@ -256,7 +305,8 @@ public without sharing class HOT_MessagesNotification {
 
             if (
                 thread.CRM_Thread_Type__c == 'HOT_TOLK-FORMIDLER' ||
-                thread.CRM_Thread_Type__c == 'HOT_TOLK-RESSURSKONTOR'
+                thread.CRM_Thread_Type__c == 'HOT_TOLK-RESSURSKONTOR' ||
+                thread.CRM_Thread_Type__c == 'HOT_TJENESTELEVERANDOR-TOLK'
             ) {
                 //En til en samtaler
                 if (thread.CRM_Account__c != null) {
