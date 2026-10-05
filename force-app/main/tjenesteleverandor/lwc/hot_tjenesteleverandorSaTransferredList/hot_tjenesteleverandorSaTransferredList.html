@@ -104,6 +104,10 @@
                                 </p>
                             </template>
                             <p><strong>Oppdragstype:</strong> {serviceAppointment.HOT_AssignmentType__c}</p>
+                            <p>
+                                <strong>Brukers foretrukket kjønn:</strong
+                                >&nbsp;{serviceAppointment.HOT_UserPreferredGender__c}
+                            </p>
                             <p><strong>Region:</strong> {serviceAppointment.HOT_ServiceTerritoryName__c}</p>
                             <template lwc:if={serviceAppointment.HOT_TjenesteleverandorTransferDate__c}>
                                 <p>

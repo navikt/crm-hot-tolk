@@ -37,6 +37,7 @@ public with sharing class HOT_TjenesteleverandorListController {
                 HOT_ReleasedBy__c,
                 HOT_ReleaseDate__c,
                 HOT_AssignmentType__c,
+                HOT_UserPreferredGender__c,
                 HOT_Request__c,
                 HOT_IsOtherEconomicProvicer__c
             FROM ServiceAppointment
@@ -69,6 +70,7 @@ public with sharing class HOT_TjenesteleverandorListController {
                 HOT_TjenesteleverandorTransferDate__c,
                 HOT_TjenesteleverandorAcceptDate__c,
                 HOT_AssignmentType__c,
+                HOT_UserPreferredGender__c,
                 HOT_Request__c,
                 HOT_IsOtherEconomicProvicer__c,
                 HOT_ReleasedBy__c,

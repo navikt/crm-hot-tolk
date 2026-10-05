@@ -12,6 +12,7 @@ import HOT_FREELANCE_SUBJECT_FIELD from '@salesforce/schema/ServiceAppointment.H
 import HOT_INFORMATION_FIELD from '@salesforce/schema/ServiceAppointment.HOT_Information__c';
 import HOT_WORK_TYPE_NAME_FIELD from '@salesforce/schema/ServiceAppointment.HOT_WorkTypeName__c';
 import HOT_ASSIGNMENT_TYPE_FIELD from '@salesforce/schema/ServiceAppointment.HOT_AssignmentType__c';
+import HOT_USER_PREFERRED_GENDER_FIELD from '@salesforce/schema/ServiceAppointment.HOT_UserPreferredGender__c';
 import HOT_PREPARATION_TIME_FIELD from '@salesforce/schema/ServiceAppointment.HOT_PreparationTime__c';
 import HOT_TOTAL_NUMBER_OF_INTERPRETERS_FIELD from '@salesforce/schema/ServiceAppointment.HOT_TotalNumberOfInterpreters__c';
 import HOT_NUMBER_OF_INTERESTED_RESOURCES_FIELD from '@salesforce/schema/ServiceAppointment.HOT_NumberOfInterestedResources__c';
@@ -61,6 +62,7 @@ const FIELDS = [
     HOT_INFORMATION_FIELD,
     HOT_WORK_TYPE_NAME_FIELD,
     HOT_ASSIGNMENT_TYPE_FIELD,
+    HOT_USER_PREFERRED_GENDER_FIELD,
     HOT_PREPARATION_TIME_FIELD,
     HOT_TOTAL_NUMBER_OF_INTERPRETERS_FIELD,
     HOT_NUMBER_OF_INTERESTED_RESOURCES_FIELD,
@@ -176,6 +178,10 @@ export default class HotTjenesteleverandorServiceAppointmentDetail extends Navig
 
     get assignmentType() {
         return this.displayValue(this.getFieldValue(HOT_ASSIGNMENT_TYPE_FIELD));
+    }
+
+    get userPreferredGender() {
+        return this.displayValue(this.getFieldValue(HOT_USER_PREFERRED_GENDER_FIELD));
     }
 
     get preparationTime() {
