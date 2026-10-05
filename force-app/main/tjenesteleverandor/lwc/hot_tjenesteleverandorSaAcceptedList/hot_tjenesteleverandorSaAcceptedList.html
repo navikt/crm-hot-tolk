@@ -44,9 +44,12 @@
                             </p>
                         </template>
                         <p><strong>Oppdragstype:</strong> {serviceAppointment.HOT_AssignmentType__c}</p>
-                        <p>
-                            <strong>Brukers foretrukket kjønn:</strong> {serviceAppointment.HOT_UserPreferredGender__c}
-                        </p>
+                        <template lwc:if={serviceAppointment.HOT_Request__r.UserPreferredGender__c}>
+                            <p>
+                                <strong>Ønsket kjønn:</strong
+                                >&nbsp;{serviceAppointment.HOT_Request__r.UserPreferredGender__c}
+                            </p>
+                        </template>
                         <p><strong>Status:</strong> {status}</p>
                         <p><strong>Frigitt av:</strong> {serviceAppointment.HOT_ReleasedBy__c}</p>
                         <p><strong>Frigitt dato:</strong> {serviceAppointment.ReleaseDate}</p>
