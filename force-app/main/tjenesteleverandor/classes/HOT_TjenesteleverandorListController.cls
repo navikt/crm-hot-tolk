@@ -39,7 +39,9 @@ public with sharing class HOT_TjenesteleverandorListController {
                 HOT_AssignmentType__c,
                 HOT_Request__r.UserPreferredGender__c,
                 HOT_Request__c,
-                HOT_IsOtherEconomicProvicer__c
+                HOT_IsOtherEconomicProvicer__c,
+                HOT_Request__r.UserPreferredInterpreter__c,
+                toLabel(HOT_Request__r.UserInterpretationMethod__c)
             FROM ServiceAppointment
             WHERE
                 HOT_TjenesteleverandorStatus__c = 'Transferred'
@@ -76,7 +78,9 @@ public with sharing class HOT_TjenesteleverandorListController {
                 HOT_ReleasedBy__c,
                 HOT_ReleaseDate__c,
                 HOT_DeadlineDate__c,
-                HOT_NumberOfInterestedResources__c
+                HOT_NumberOfInterestedResources__c,
+                HOT_Request__r.UserPreferredInterpreter__c,
+                toLabel(HOT_Request__r.UserInterpretationMethod__c)
             FROM ServiceAppointment
             WHERE HOT_TjenesteleverandorStatus__c = 'Accepted'
             WITH USER_MODE

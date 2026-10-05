@@ -104,10 +104,22 @@
                                 </p>
                             </template>
                             <p><strong>Oppdragstype:</strong> {serviceAppointment.HOT_AssignmentType__c}</p>
+                            <template lwc:if={serviceAppointment.HOT_Request__r.UserPreferredInterpreter__c}>
+                                <p>
+                                    <strong>Ønsket tolk:</strong
+                                    >&nbsp;{serviceAppointment.HOT_Request__r.UserPreferredInterpreter__c}
+                                </p>
+                            </template>
                             <template lwc:if={serviceAppointment.HOT_Request__r.UserPreferredGender__c}>
                                 <p>
                                     <strong>Ønsket kjønn:</strong
                                     >&nbsp;{serviceAppointment.HOT_Request__r.UserPreferredGender__c}
+                                </p>
+                            </template>
+                            <template lwc:if={serviceAppointment.HOT_Request__r.UserInterpretationMethod__c}>
+                                <p>
+                                    <strong>Ønsket tolkemetode:</strong
+                                    >&nbsp;{serviceAppointment.HOT_Request__r.UserInterpretationMethod__c}
                                 </p>
                             </template>
                             <p><strong>Region:</strong> {serviceAppointment.HOT_ServiceTerritoryName__c}</p>
