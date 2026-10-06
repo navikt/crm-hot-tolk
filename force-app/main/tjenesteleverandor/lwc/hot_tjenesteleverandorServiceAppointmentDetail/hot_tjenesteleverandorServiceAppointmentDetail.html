@@ -113,7 +113,7 @@
                     <template lwc:if={hasAppointmentTags}>
                         <ul class="tag-list" aria-label="Oppdragsmerkinger">
                             <template for:each={appointmentTags} for:item="tag">
-                                <li key={tag.id} class="tag-item">{tag.label}</li>
+                                <li key={tag.id} class={tag.backgroundColor}>{tag.label}</li>
                             </template>
                         </ul>
                     </template>

@@ -163,6 +163,30 @@
     overflow-wrap: anywhere;
 }
 
+.tag-item--red {
+    border: 1px solid #ad634a;
+    background: #faece4;
+    color: #602019;
+}
+
+.tag-item--blue {
+    border: 1px solid #3498db;
+    background: #eaf4fc;
+    color: #1b4f72;
+}
+
+.tag-item--green {
+    border: 1px solid #27ae60;
+    background: #e6f4ea;
+    color: #145a32;
+}
+
+.tag-item--yellow {
+    border: 1px solid #f1c40f;
+    background: #fef9e7;
+    color: #7d6608;
+}
+
 .detail-columns {
     display: grid;
     grid-template-columns: repeat(2, minmax(0, 1fr));

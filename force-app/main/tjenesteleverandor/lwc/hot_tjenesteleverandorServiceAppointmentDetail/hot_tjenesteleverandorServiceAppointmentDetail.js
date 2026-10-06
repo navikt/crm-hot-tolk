@@ -140,20 +140,20 @@ export default class HotTjenesteleverandorServiceAppointmentDetail extends Navig
     get appointmentTags() {
         const tags = [];
         if (this.getFieldValue(HOT_IS_ACUTE_FIELD) === true) {
-            tags.push({ id: 'acute', label: 'Akuttvaktoppdrag' });
+            tags.push({ id: 'acute', label: 'Akuttvaktoppdrag', backgroundColor: 'tag-item tag-item--red' });
         }
         if (this.getFieldValue(HOT_IS_IMAGE_INTERPRETER_FIELD) === true) {
-            tags.push({ id: 'image', label: 'Bildetolk' });
+            tags.push({ id: 'image', label: 'Bildetolk', backgroundColor: 'tag-item tag-item--blue' });
         }
         if (this.getFieldValue(HOT_IS_SCREEN_INTERPRETER_NEW_FIELD) === true) {
-            tags.push({ id: 'screen', label: 'Skjermtolk' });
+            tags.push({ id: 'screen', label: 'Skjermtolk', backgroundColor: 'tag-item tag-item--green' });
         }
         if (this.getFieldValue(HOT_IS_SERIEOPPDRAG_FIELD) === true) {
-            tags.push({ id: 'series', label: 'Serieoppdrag' });
+            tags.push({ id: 'series', label: 'Serieoppdrag', backgroundColor: 'tag-item tag-item--yellow' });
         }
         return tags;
     }
-
+    
     get hasAppointmentTags() {
         return this.appointmentTags.length > 0;
     }
