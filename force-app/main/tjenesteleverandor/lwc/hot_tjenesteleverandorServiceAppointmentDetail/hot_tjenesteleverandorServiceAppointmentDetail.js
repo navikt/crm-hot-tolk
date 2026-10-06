@@ -1,5 +1,5 @@
 import { LightningElement, api, wire } from 'lwc';
-import { getRecord, getFieldValue } from 'lightning/uiRecordApi';
+import { getRecord, getFieldValue, getFieldDisplayValue } from 'lightning/uiRecordApi';
 import { NavigationMixin, CurrentPageReference } from 'lightning/navigation';
 import { notifyRecordUpdateAvailable } from 'lightning/uiRecordApi';
 import canAcceptAppointments from '@salesforce/customPermission/HOT_AcceptTjenesteleverandorOppdrag';
@@ -191,11 +191,15 @@ export default class HotTjenesteleverandorServiceAppointmentDetail extends Navig
     }
 
     get status() {
-        return this.displayValue(this.getFieldValue(STATUS_FIELD));
+        return this.displayValue(this.getFieldLabel(STATUS_FIELD));
     }
 
     get providerStatus() {
         return this.displayValue(this.getFieldValue(HOT_TJENESTELEVERANDOR_STATUS_FIELD));
+    }
+
+    get providerStatusLabel() {
+        return this.displayValue(this.getFieldLabel(HOT_TJENESTELEVERANDOR_STATUS_FIELD));
     }
 
     get showProviderResourceSections() {
@@ -291,6 +295,13 @@ export default class HotTjenesteleverandorServiceAppointmentDetail extends Navig
 
     getFieldValue(fieldName) {
         return this.recordData ? getFieldValue(this.recordData, fieldName) : undefined;
+    }
+
+    getFieldLabel(fieldName) {
+        if (!this.recordData) {
+            return undefined;
+        }
+        return getFieldDisplayValue(this.recordData, fieldName) ?? getFieldValue(this.recordData, fieldName);
     }
 
     displayValue(value) {

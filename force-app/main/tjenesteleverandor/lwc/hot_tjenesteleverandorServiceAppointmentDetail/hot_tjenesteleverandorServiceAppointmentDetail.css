@@ -151,7 +151,6 @@
 .tag-item {
     display: inline-flex;
     align-items: center;
-    flex: 0 1 13rem;
     max-width: 100%;
     min-height: 2rem;
     border: 1px solid #ad634a;
