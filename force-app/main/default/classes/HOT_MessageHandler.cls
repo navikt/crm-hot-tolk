@@ -32,7 +32,8 @@ public without sharing class HOT_MessageHandler extends MyTriggers {
 
         Set<String> allTjenesteleverandorThreadTypes = new Set<String>{
             'HOT_TJENESTELEVERANDOR-FORMIDLER',
-            'HOT_TJENESTELEVERANDOR-TOLK'
+            'HOT_TJENESTELEVERANDOR-TOLK',
+            'HOT_TJENESTELEVERANDOR-HONORAR'
         };
 
         Set<String> allHotThreadTypes = new Set<String>{
