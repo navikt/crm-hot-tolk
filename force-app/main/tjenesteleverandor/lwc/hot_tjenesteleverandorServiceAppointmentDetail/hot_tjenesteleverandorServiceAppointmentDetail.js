@@ -43,6 +43,13 @@ const CANCELLATION_FIELDS = [
 const TRANSFERRED_LIST_REFRESH_KEY = 'tjenesteleverandorTransferredListRefresh';
 const ACCEPTED_LIST_REFRESH_KEY = 'tjenesteleverandorAcceptedListRefresh';
 
+const TAG_DEFINITIONS = [
+    { id: 'acute',  field: HOT_IS_ACUTE_FIELD,                label: 'Akuttvaktoppdrag', className: 'tag-item tag-item--red' },
+    { id: 'image',  field: HOT_IS_IMAGE_INTERPRETER_FIELD,    label: 'Bildetolk',        className: 'tag-item tag-item--blue' },
+    { id: 'screen', field: HOT_IS_SCREEN_INTERPRETER_NEW_FIELD, label: 'Skjermtolk',     className: 'tag-item tag-item--green' },
+    { id: 'series', field: HOT_IS_SERIEOPPDRAG_FIELD,         label: 'Serieoppdrag',     className: 'tag-item tag-item--yellow' }
+];
+
 function createFeedback(type, message) {
     const success = type === 'success';
     return {
@@ -138,20 +145,7 @@ export default class HotTjenesteleverandorServiceAppointmentDetail extends Navig
     }
 
     get appointmentTags() {
-        const tags = [];
-        if (this.getFieldValue(HOT_IS_ACUTE_FIELD) === true) {
-            tags.push({ id: 'acute', label: 'Akuttvaktoppdrag', backgroundColor: 'tag-item tag-item--red' });
-        }
-        if (this.getFieldValue(HOT_IS_IMAGE_INTERPRETER_FIELD) === true) {
-            tags.push({ id: 'image', label: 'Bildetolk', backgroundColor: 'tag-item tag-item--blue' });
-        }
-        if (this.getFieldValue(HOT_IS_SCREEN_INTERPRETER_NEW_FIELD) === true) {
-            tags.push({ id: 'screen', label: 'Skjermtolk', backgroundColor: 'tag-item tag-item--green' });
-        }
-        if (this.getFieldValue(HOT_IS_SERIEOPPDRAG_FIELD) === true) {
-            tags.push({ id: 'series', label: 'Serieoppdrag', backgroundColor: 'tag-item tag-item--yellow' });
-        }
-        return tags;
+        return TAG_DEFINITIONS.filter(({ field }) => this.getFieldValue(field) === true);
     }
     
     get hasAppointmentTags() {
