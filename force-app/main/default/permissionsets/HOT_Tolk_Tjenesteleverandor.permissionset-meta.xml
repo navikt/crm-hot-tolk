@@ -472,6 +472,11 @@
     </fieldPermissions>
     <fieldPermissions>
         <editable>false</editable>
+        <field>HOT_Request__c.UserPreferredGender__c</field>
+        <readable>true</readable>
+    </fieldPermissions>
+    <fieldPermissions>
+        <editable>false</editable>
         <field>HOT_Request__c.UserPreferredInterpreter__c</field>
         <readable>true</readable>
     </fieldPermissions>
@@ -823,6 +828,21 @@
     <fieldPermissions>
         <editable>false</editable>
         <field>ServiceAppointment.HOT_TotalNumberOfInterpreters__c</field>
+        <readable>true</readable>
+    </fieldPermissions>
+    <fieldPermissions>
+        <editable>false</editable>
+        <field>ServiceAppointment.HOT_UserInterpretationMethod__c</field>
+        <readable>true</readable>
+    </fieldPermissions>
+    <fieldPermissions>
+        <editable>false</editable>
+        <field>ServiceAppointment.HOT_UserPreferredGender__c</field>
+        <readable>true</readable>
+    </fieldPermissions>
+    <fieldPermissions>
+        <editable>false</editable>
+        <field>ServiceAppointment.HOT_UserPreferredInterpreter__c</field>
         <readable>true</readable>
     </fieldPermissions>
     <fieldPermissions>

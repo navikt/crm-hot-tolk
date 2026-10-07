@@ -37,14 +37,16 @@ public with sharing class HOT_TjenesteleverandorListController {
                 HOT_ReleasedBy__c,
                 HOT_ReleaseDate__c,
                 HOT_AssignmentType__c,
+                HOT_UserPreferredGender__c,
                 HOT_Request__c,
-                HOT_IsOtherEconomicProvicer__c
+                HOT_IsOtherEconomicProvicer__c,
+                HOT_UserPreferredInterpreter__c,
+                HOT_UserInterpretationMethod__c
             FROM ServiceAppointment
             WHERE
                 HOT_TjenesteleverandorStatus__c = 'Transferred'
                 AND Status = 'Released to Freelance'
                 AND HOT_IsReleasedToFreelance__c = TRUE
-            WITH USER_MODE
             ORDER BY EarliestStartTime ASC
         ];
     }
@@ -74,10 +76,12 @@ public with sharing class HOT_TjenesteleverandorListController {
                 HOT_ReleasedBy__c,
                 HOT_ReleaseDate__c,
                 HOT_DeadlineDate__c,
-                HOT_NumberOfInterestedResources__c
+                HOT_NumberOfInterestedResources__c,
+                HOT_UserPreferredGender__c,
+                HOT_UserPreferredInterpreter__c,
+                HOT_UserInterpretationMethod__c
             FROM ServiceAppointment
             WHERE HOT_TjenesteleverandorStatus__c = 'Accepted'
-            WITH USER_MODE
             ORDER BY EarliestStartTime ASC
         ];
     }
