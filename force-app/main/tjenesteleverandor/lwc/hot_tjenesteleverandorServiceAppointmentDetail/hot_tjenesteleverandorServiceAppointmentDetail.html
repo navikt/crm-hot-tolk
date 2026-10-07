@@ -113,7 +113,7 @@
                     <template lwc:if={hasAppointmentTags}>
                         <ul class="tag-list" aria-label="Oppdragsmerkinger">
                             <template for:each={appointmentTags} for:item="tag">
-                                <li key={tag.id} class="tag-item">{tag.label}</li>
+                                <li key={tag.id} class={tag.className}>{tag.label}</li>
                             </template>
                         </ul>
                     </template>
@@ -161,7 +161,7 @@
                             </div>
                             <div class="data-row">
                                 <dt>Tjenesteleverandør status</dt>
-                                <dd>{providerStatus}</dd>
+                                <dd>{providerStatusLabel}</dd>
                             </div>
                             <div class="data-row">
                                 <dt>Region</dt>
@@ -288,8 +288,6 @@
                     service-appointment-status={providerStatus}
                 ></c-hot_tjenesteleverandor-sa-threads>
             </section>
-                </aside>
-                    </div>
         </template>
     </article>
 </template>

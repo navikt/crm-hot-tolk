@@ -151,7 +151,6 @@
 .tag-item {
     display: inline-flex;
     align-items: center;
-    flex: 0 1 13rem;
     max-width: 100%;
     min-height: 2rem;
     border: 1px solid #ad634a;
@@ -162,6 +161,30 @@
     line-height: 1.75rem;
     padding: 0 0.25rem;
     overflow-wrap: anywhere;
+}
+
+.tag-item--red {
+    border: 1px solid #ad634a;
+    background: #faece4;
+    color: #602019;
+}
+
+.tag-item--blue {
+    border: 1px solid #3498db;
+    background: #eaf4fc;
+    color: #1b4f72;
+}
+
+.tag-item--green {
+    border: 1px solid #27ae60;
+    background: #e6f4ea;
+    color: #145a32;
+}
+
+.tag-item--yellow {
+    border: 1px solid #f1c40f;
+    background: #fef9e7;
+    color: #7d6608;
 }
 
 .detail-columns {

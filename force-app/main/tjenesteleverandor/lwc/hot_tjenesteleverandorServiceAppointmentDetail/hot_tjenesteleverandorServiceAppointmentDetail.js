@@ -1,5 +1,5 @@
 import { LightningElement, api, wire } from 'lwc';
-import { getRecord, getFieldValue } from 'lightning/uiRecordApi';
+import { getRecord, getFieldValue, getFieldDisplayValue } from 'lightning/uiRecordApi';
 import { NavigationMixin, CurrentPageReference } from 'lightning/navigation';
 import { notifyRecordUpdateAvailable } from 'lightning/uiRecordApi';
 import canAcceptAppointments from '@salesforce/customPermission/HOT_AcceptTjenesteleverandorOppdrag';
@@ -42,6 +42,13 @@ const CANCELLATION_FIELDS = [
 ];
 const TRANSFERRED_LIST_REFRESH_KEY = 'tjenesteleverandorTransferredListRefresh';
 const ACCEPTED_LIST_REFRESH_KEY = 'tjenesteleverandorAcceptedListRefresh';
+
+const TAG_DEFINITIONS = [
+    { id: 'acute',  field: HOT_IS_ACUTE_FIELD,                label: 'Akuttvaktoppdrag', className: 'tag-item tag-item--red' },
+    { id: 'image',  field: HOT_IS_IMAGE_INTERPRETER_FIELD,    label: 'Bildetolk',        className: 'tag-item tag-item--blue' },
+    { id: 'screen', field: HOT_IS_SCREEN_INTERPRETER_NEW_FIELD, label: 'Skjermtolk',     className: 'tag-item tag-item--green' },
+    { id: 'series', field: HOT_IS_SERIEOPPDRAG_FIELD,         label: 'Serieoppdrag',     className: 'tag-item tag-item--yellow' }
+];
 
 function createFeedback(type, message) {
     const success = type === 'success';
@@ -138,22 +145,9 @@ export default class HotTjenesteleverandorServiceAppointmentDetail extends Navig
     }
 
     get appointmentTags() {
-        const tags = [];
-        if (this.getFieldValue(HOT_IS_ACUTE_FIELD) === true) {
-            tags.push({ id: 'acute', label: 'Akuttvaktoppdrag' });
-        }
-        if (this.getFieldValue(HOT_IS_IMAGE_INTERPRETER_FIELD) === true) {
-            tags.push({ id: 'image', label: 'Bildetolk' });
-        }
-        if (this.getFieldValue(HOT_IS_SCREEN_INTERPRETER_NEW_FIELD) === true) {
-            tags.push({ id: 'screen', label: 'Skjermtolk' });
-        }
-        if (this.getFieldValue(HOT_IS_SERIEOPPDRAG_FIELD) === true) {
-            tags.push({ id: 'series', label: 'Serieoppdrag' });
-        }
-        return tags;
+        return TAG_DEFINITIONS.filter(({ field }) => this.getFieldValue(field) === true);
     }
-
+    
     get hasAppointmentTags() {
         return this.appointmentTags.length > 0;
     }
@@ -191,11 +185,15 @@ export default class HotTjenesteleverandorServiceAppointmentDetail extends Navig
     }
 
     get status() {
-        return this.displayValue(this.getFieldValue(STATUS_FIELD));
+        return this.displayValue(this.getFieldLabel(STATUS_FIELD));
     }
 
     get providerStatus() {
         return this.displayValue(this.getFieldValue(HOT_TJENESTELEVERANDOR_STATUS_FIELD));
+    }
+
+    get providerStatusLabel() {
+        return this.displayValue(this.getFieldLabel(HOT_TJENESTELEVERANDOR_STATUS_FIELD));
     }
 
     get showProviderResourceSections() {
@@ -291,6 +289,13 @@ export default class HotTjenesteleverandorServiceAppointmentDetail extends Navig
 
     getFieldValue(fieldName) {
         return this.recordData ? getFieldValue(this.recordData, fieldName) : undefined;
+    }
+
+    getFieldLabel(fieldName) {
+        if (!this.recordData) {
+            return undefined;
+        }
+        return getFieldDisplayValue(this.recordData, fieldName) ?? getFieldValue(this.recordData, fieldName);
     }
 
     displayValue(value) {
