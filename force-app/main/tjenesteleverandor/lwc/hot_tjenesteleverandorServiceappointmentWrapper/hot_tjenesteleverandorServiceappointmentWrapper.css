@@ -47,6 +47,10 @@
     justify-content: flex-end;
 }
 
+.tab-content {
+    margin: 0.5rem 0;
+}
+
 /*
  * listFilters uses 20% of its nearest positioned ancestor for the desktop drawer.
  * Give only the filter a wider positioning context so the drawer stays usable without

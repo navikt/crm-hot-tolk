@@ -53,18 +53,6 @@ const TAG_DEFINITIONS = [
     { id: 'series', field: HOT_IS_SERIEOPPDRAG_FIELD,         label: 'Serieoppdrag',     className: 'tag-item tag-item--yellow' }
 ];
 
-function createFeedback(type, message) {
-    const success = type === 'success';
-    return {
-        message,
-        className: success
-            ? 'slds-notify slds-notify_alert slds-theme_success acceptance-message'
-            : 'slds-notify slds-notify_alert slds-alert_error acceptance-message',
-        role: success ? 'status' : 'alert',
-        icon: success ? 'utility:success' : 'utility:error'
-    };
-}
-
 const FIELDS = [
     APPOINTMENT_NUMBER_FIELD,
     HOT_FREELANCE_SUBJECT_FIELD,
@@ -360,16 +348,16 @@ export default class HotTjenesteleverandorServiceAppointmentDetail extends Navig
             });
             const result = results?.[0];
             if (!result?.success) {
-                this.responseFeedback = createFeedback('error', result?.message || fallbackErrorMessage);
+                this.responseFeedback = {"type": "error", "message": result?.message || fallbackErrorMessage};
                 return;
             }
 
             this.isAcceptanceEligible = false;
-            this.responseFeedback = createFeedback('success', result.message || fallbackSuccessMessage);
+            this.responseFeedback = {"type": "success", "message": result.message || fallbackSuccessMessage};
             this.markListsForRefresh(action);
             await notifyRecordUpdateAvailable([{ recordId: this.effectiveRecordId }]);
         } catch (error) {
-            this.responseFeedback = createFeedback('error', error?.body?.message || fallbackErrorMessage);
+            this.responseFeedback = {"type": "error", "message": error?.body?.message || fallbackErrorMessage};
         } finally {
             this.isResponding = false;
         }

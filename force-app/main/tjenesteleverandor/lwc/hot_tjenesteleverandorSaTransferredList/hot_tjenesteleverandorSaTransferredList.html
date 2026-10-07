@@ -10,16 +10,11 @@
 
     <template lwc:else>
         <template lwc:if={bulkFeedback}>
-            <div class={bulkFeedback.className} role={bulkFeedback.role} aria-live="polite">
-                <lightning-icon
-                    icon-name={bulkFeedback.icon}
-                    alternative-text=""
-                    size="x-small"
-                    variant="inverse"
-                    class="slds-m-right_x-small"
-                ></lightning-icon>
-                <p>{bulkFeedback.message}</p>
-            </div>
+            <c-hot_local-alert
+                type={bulkFeedback.type}
+                content-view="title-only"
+                title={bulkFeedback.message}
+            ></c-hot_local-alert>
         </template>
 
         <template lwc:if={hasResult}>

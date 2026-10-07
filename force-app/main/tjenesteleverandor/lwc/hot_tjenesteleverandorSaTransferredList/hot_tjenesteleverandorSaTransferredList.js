@@ -16,17 +16,7 @@ const LIST_REFRESH_KEY = 'tjenesteleverandorTransferredListRefresh';
 const ACCEPTED_LIST_REFRESH_KEY = 'tjenesteleverandorAcceptedListRefresh';
 const FILTER_STORAGE_KEY = 'tjenesteleverandorTransferredFilters';
 
-function createFeedback(type, message) {
-    const success = type === 'success';
-    return {
-        message,
-        className: success
-            ? 'slds-notify slds-notify_alert slds-theme_success bulk-feedback'
-            : 'slds-notify slds-notify_alert slds-alert_error bulk-feedback',
-        role: success ? 'status' : 'alert',
-        icon: success ? 'utility:success' : 'utility:error'
-    };
-}
+
 
 export default class Hot_tjenesteleverandorSaTransferredList extends NavigationMixin(LightningElement) {
     @api recordId;
@@ -337,19 +327,19 @@ export default class Hot_tjenesteleverandorSaTransferredList extends NavigationM
         }
 
         if (results.length === 0) {
-            this.bulkFeedback = createFeedback('error', `Ingen av de valgte oppdragene kunne ${failedAction}.`);
+            this.bulkFeedback = { type: 'error', message: `Ingen av de valgte oppdragene kunne ${failedAction}.` };
         } else if (failed.length === 0) {
-            this.bulkFeedback = createFeedback('success', `${succeeded.length} oppdrag ble ${completedAction}.`);
+            this.bulkFeedback = { type: 'success', message: `${succeeded.length} oppdrag ble ${completedAction}.` };
         } else if (succeeded.length > 0) {
-            this.bulkFeedback = createFeedback(
-                'error',
-                `${succeeded.length} oppdrag ble ${completedAction}. ${failed.length} kunne ikke ${failedAction} og er fortsatt valgt.`
-            );
+            this.bulkFeedback = {
+                type: 'error',
+                message: `${succeeded.length} oppdrag ble ${completedAction}. ${failed.length} kunne ikke ${failedAction} og er fortsatt valgt.`
+            };
         } else {
-            this.bulkFeedback = createFeedback(
-                'error',
-                failed[0]?.message || `Ingen av de valgte oppdragene kunne ${failedAction}.`
-            );
+            this.bulkFeedback = {
+                type: 'error',
+                message: failed[0]?.message || `Ingen av de valgte oppdragene kunne ${failedAction}.`
+            };
         }
 
         if (this.wiredTransferredAppointments) {

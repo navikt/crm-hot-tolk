@@ -40,22 +40,17 @@
         </template>
 
         <template lwc:if={responseFeedback}>
-            <div class={responseFeedback.className} role={responseFeedback.role} aria-live="polite">
-                <lightning-icon
-                    icon-name={responseFeedback.icon}
-                    alternative-text=""
-                    size="x-small"
-                    variant="inverse"
-                    class="slds-m-right_x-small"
-                ></lightning-icon>
-                <p>{responseFeedback.message}</p>
-            </div>
+            <c-hot_local-alert
+                type={responseFeedback.type}
+                content-view="title-only"
+                title={responseFeedback.message}
+            ></c-hot_local-alert>
         </template>
 
         <template lwc:if={showResponseAction}>
             <section class="acceptance-panel slds-m-bottom_large" aria-labelledby="acceptance-heading">
                 <div class="acceptance-header">
-                    <h2 id="acceptance-heading" class="slds-text-heading_small">
+                    <h2 id="acceptance-heading" style="font-weight: 600;">
                         Oppdraget er overført til tjenesteleverandør.
                     </h2>
                 </div>
