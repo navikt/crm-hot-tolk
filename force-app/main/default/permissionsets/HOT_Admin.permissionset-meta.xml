@@ -2076,6 +2076,11 @@
     </fieldPermissions>
     <fieldPermissions>
         <editable>true</editable>
+        <field>ServiceResource.HOT_isTjenesteleverandorFormidler__c</field>
+        <readable>true</readable>
+    </fieldPermissions>
+    <fieldPermissions>
+        <editable>true</editable>
         <field>ServiceTerritory.Address</field>
         <readable>true</readable>
     </fieldPermissions>
