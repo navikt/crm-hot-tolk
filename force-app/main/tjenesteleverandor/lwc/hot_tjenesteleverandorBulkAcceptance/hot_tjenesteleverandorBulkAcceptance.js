@@ -41,14 +41,14 @@ export default class HotTjenesteleverandorBulkAcceptance extends LightningElemen
 
     get confirmButtonLabel() {
         if (this.isProcessing) {
-            return this.isDeclineAction ? 'Avslår …' : 'Aksepterer …';
+            return this.isDeclineAction ? 'Avslår …' : 'Bekrefter …';
         }
-        const actionText = this.isDeclineAction ? 'Avslå' : 'Aksepter';
+        const actionText = this.isDeclineAction ? 'Avslå' : 'Bekreft';
         return `${actionText} ${this.appointmentCount} oppdrag`;
     }
 
     get confirmButtonAriaLabel() {
-        const actionText = this.isDeclineAction ? 'Avslå' : 'Aksepter';
+        const actionText = this.isDeclineAction ? 'Avslå' : 'Bekreft';
         return `${actionText} ${this.appointmentCount} valgte oppdrag`;
     }
 
@@ -57,7 +57,7 @@ export default class HotTjenesteleverandorBulkAcceptance extends LightningElemen
     }
 
     get processingText() {
-        return this.isDeclineAction ? 'Avslår valgte oppdrag' : 'Aksepterer valgte oppdrag';
+        return this.isDeclineAction ? 'Avslår valgte oppdrag' : 'Bekrefter valgte oppdrag';
     }
 
     handleCancel() {

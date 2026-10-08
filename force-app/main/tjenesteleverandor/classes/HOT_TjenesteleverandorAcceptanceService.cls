@@ -179,11 +179,11 @@ public without sharing class HOT_TjenesteleverandorAcceptanceService {
             if (saveResults[index].isSuccess()) {
                 result.success = true;
                 result.message = response == SupplierResponse.ACCEPT
-                    ? 'Oppdraget er akseptert.'
+                    ? 'Oppdraget er bekreftet.'
                     : 'Oppdraget er avslått.';
             } else {
                 result.message = response == SupplierResponse.ACCEPT
-                    ? 'Oppdraget kunne ikke aksepteres. Last inn siden og prøv igjen.'
+                    ? 'Oppdraget kunne ikke bekreftes. Last inn siden og prøv igjen.'
                     : 'Oppdraget kunne ikke avslås. Last inn siden og prøv igjen.';
             }
         }

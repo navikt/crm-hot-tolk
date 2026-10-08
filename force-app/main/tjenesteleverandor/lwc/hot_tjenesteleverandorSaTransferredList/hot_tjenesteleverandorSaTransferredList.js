@@ -140,14 +140,14 @@ export default class Hot_tjenesteleverandorSaTransferredList extends NavigationM
 
     get bulkAcceptButtonLabel() {
         return this.selectedAppointmentCount === 0
-            ? 'Aksepter valgte oppdrag'
-            : `Aksepter valgte (${this.selectedAppointmentCount})`;
+            ? 'Bekreft valgte oppdrag'
+            : `Bekreft valgte (${this.selectedAppointmentCount})`;
     }
 
     get bulkAcceptButtonAriaLabel() {
         return this.selectedAppointmentCount === 0
-            ? 'Velg oppdrag før du aksepterer'
-            : `Gå til bekreftelse for ${this.selectedAppointmentCount} valgte oppdrag`;
+            ? 'Velg oppdrag før du bekrefter'
+            : `Gå til bekreftelse for å bekrefte ${this.selectedAppointmentCount} valgte oppdrag`;
     }
 
     // get bulkDeclineButtonLabel() {
