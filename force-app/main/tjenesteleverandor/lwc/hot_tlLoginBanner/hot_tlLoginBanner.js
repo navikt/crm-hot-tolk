@@ -208,6 +208,16 @@ export default class Hot_tlLoginBanner extends NavigationMixin(LightningElement)
         this.isDropdownOpen = !this.isDropdownOpen;
     }
 
+    handleMinSideNavigation() {
+        this.closeAllDropdowns();
+        this[NavigationMixin.Navigate]({
+            type: 'standard__webPage',
+            attributes: {
+                url: '/min-side'
+            }
+        });
+    }
+
     toggleNotificationDropdown() {
         if (!this.isNotificationDropdownOpen && this.hasUnreadNotifications) {
             this.markAllAsRead();
