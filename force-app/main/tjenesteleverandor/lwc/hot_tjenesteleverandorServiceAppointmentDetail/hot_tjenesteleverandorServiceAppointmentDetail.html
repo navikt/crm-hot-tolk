@@ -69,7 +69,7 @@
                         </p>
                     </template>
                     <div class="acceptance-actions">
-                        <template lwc:if={showDeclineAction}>
+                        <!-- <template lwc:if={showDeclineAction}>
                             <c-button
                                 data-id="decline-appointment"
                                 button-styling="danger"
@@ -78,13 +78,13 @@
                                 disabled={isResponding}
                                 onbuttonclick={handleDecline}
                             ></c-button>
-                        </template>
+                        </template> -->
                         <template lwc:if={showAcceptAction}>
                             <c-button
                                 data-id="accept-appointment"
                                 button-styling="primary"
-                                button-label="Aksepter oppdrag"
-                                aria-label="Aksepter oppdraget"
+                                button-label="Bekreft oppdrag"
+                                aria-label="Bekreft oppdraget"
                                 disabled={isResponding}
                                 onbuttonclick={handleAccept}
                             ></c-button>

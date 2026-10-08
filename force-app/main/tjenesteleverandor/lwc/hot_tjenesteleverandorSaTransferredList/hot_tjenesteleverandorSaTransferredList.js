@@ -3,7 +3,7 @@ import { NavigationMixin } from 'lightning/navigation';
 import { refreshApex } from '@salesforce/apex';
 import getTransferredServiceAppointments from '@salesforce/apex/HOT_TjenesteleverandorListController.getTransferredServiceAppointments';
 import canAcceptAppointments from '@salesforce/customPermission/HOT_AcceptTjenesteleverandorOppdrag';
-import canDeclineAppointments from '@salesforce/customPermission/HOT_DeclineTjenesteleverandorOppdrag';
+// import canDeclineAppointments from '@salesforce/customPermission/HOT_DeclineTjenesteleverandorOppdrag';
 import icons from '@salesforce/resourceUrl/ikoner';
 
 import { columns, mobileColumns, inDetailsColumns } from './columns';
@@ -130,9 +130,9 @@ export default class Hot_tjenesteleverandorSaTransferredList extends NavigationM
         return Boolean(canAcceptAppointments);
     }
 
-    get canShowBulkDecline() {
-        return Boolean(canDeclineAppointments);
-    }
+    // get canShowBulkDecline() {
+    //     return Boolean(canDeclineAppointments);
+    // }
 
     get isBulkResponseDisabled() {
         return this.selectedAppointmentCount === 0;
@@ -150,17 +150,17 @@ export default class Hot_tjenesteleverandorSaTransferredList extends NavigationM
             : `Gå til bekreftelse for ${this.selectedAppointmentCount} valgte oppdrag`;
     }
 
-    get bulkDeclineButtonLabel() {
-        return this.selectedAppointmentCount === 0
-            ? 'Avslå valgte oppdrag'
-            : `Avslå valgte (${this.selectedAppointmentCount})`;
-    }
+    // get bulkDeclineButtonLabel() {
+    //     return this.selectedAppointmentCount === 0
+    //         ? 'Avslå valgte oppdrag'
+    //         : `Avslå valgte (${this.selectedAppointmentCount})`;
+    // }
 
-    get bulkDeclineButtonAriaLabel() {
-        return this.selectedAppointmentCount === 0
-            ? 'Velg oppdrag før du avslår'
-            : `Gå til bekreftelse for å avslå ${this.selectedAppointmentCount} valgte oppdrag`;
-    }
+    // get bulkDeclineButtonAriaLabel() {
+    //     return this.selectedAppointmentCount === 0
+    //         ? 'Velg oppdrag før du avslår'
+    //         : `Gå til bekreftelse for å avslå ${this.selectedAppointmentCount} valgte oppdrag`;
+    // }
 
     @wire(getTransferredServiceAppointments)
     wiredTransferredServiceAppointments(result) {
@@ -289,9 +289,9 @@ export default class Hot_tjenesteleverandorSaTransferredList extends NavigationM
         this.startBulkReview('accept');
     }
 
-    handleStartBulkDeclineReview() {
-        this.startBulkReview('decline');
-    }
+    // handleStartBulkDeclineReview() {
+    //     this.startBulkReview('decline');
+    // }
 
     startBulkReview(action) {
         if (this.isBulkResponseDisabled) {

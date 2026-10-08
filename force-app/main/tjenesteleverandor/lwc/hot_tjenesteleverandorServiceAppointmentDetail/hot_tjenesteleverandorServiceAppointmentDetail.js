@@ -3,9 +3,9 @@ import { getRecord, getFieldValue, getFieldDisplayValue } from 'lightning/uiReco
 import { NavigationMixin, CurrentPageReference } from 'lightning/navigation';
 import { notifyRecordUpdateAvailable } from 'lightning/uiRecordApi';
 import canAcceptAppointments from '@salesforce/customPermission/HOT_AcceptTjenesteleverandorOppdrag';
-import canDeclineAppointments from '@salesforce/customPermission/HOT_DeclineTjenesteleverandorOppdrag';
+// import canDeclineAppointments from '@salesforce/customPermission/HOT_DeclineTjenesteleverandorOppdrag';
 import acceptServiceAppointments from '@salesforce/apex/HOT_TjenesteleverandorAcceptanceService.acceptServiceAppointments';
-import declineServiceAppointments from '@salesforce/apex/HOT_TjenesteleverandorAcceptanceService.declineServiceAppointments';
+// import declineServiceAppointments from '@salesforce/apex/HOT_TjenesteleverandorAcceptanceService.declineServiceAppointments';
 
 import APPOINTMENT_NUMBER_FIELD from '@salesforce/schema/ServiceAppointment.AppointmentNumber';
 import HOT_FREELANCE_SUBJECT_FIELD from '@salesforce/schema/ServiceAppointment.HOT_FreelanceSubject__c';
@@ -123,16 +123,16 @@ export default class HotTjenesteleverandorServiceAppointmentDetail extends Navig
     }
 
     get showResponseAction() {
-        return this.showAcceptAction || this.showDeclineAction;
+        return this.showAcceptAction // || this.showDeclineAction;
     }
 
     get showAcceptAction() {
         return Boolean(canAcceptAppointments && this.isAcceptanceEligible);
     }
 
-    get showDeclineAction() {
-        return Boolean(canDeclineAppointments && this.isAcceptanceEligible);
-    }
+    // get showDeclineAction() {
+    //     return Boolean(canDeclineAppointments && this.isAcceptanceEligible);
+    // }
 
     get hasRecordData() {
         return Boolean(this.recordData);
@@ -317,22 +317,22 @@ export default class HotTjenesteleverandorServiceAppointmentDetail extends Navig
         await this.respondToAppointment(
             'accept',
             acceptServiceAppointments,
-            'Oppdraget kunne ikke aksepteres. Last inn siden og prøv igjen.',
-            'Oppdraget er akseptert.'
+            'Oppdraget kunne ikke bekreftes. Last inn siden og prøv igjen.',
+            'Oppdraget er bekreftet.'
         );
     }
 
-    async handleDecline() {
-        if (!this.showDeclineAction) {
-            return;
-        }
-        await this.respondToAppointment(
-            'decline',
-            declineServiceAppointments,
-            'Oppdraget kunne ikke avslås. Last inn siden og prøv igjen.',
-            'Oppdraget er avslått.'
-        );
-    }
+    // async handleDecline() {
+    //     if (!this.showDeclineAction) {
+    //         return;
+    //     }
+    //     await this.respondToAppointment(
+    //         'decline',
+    //         declineServiceAppointments,
+    //         'Oppdraget kunne ikke avslås. Last inn siden og prøv igjen.',
+    //         'Oppdraget er avslått.'
+    //     );
+    // }
 
     async respondToAppointment(action, responseMethod, fallbackErrorMessage, fallbackSuccessMessage) {
         if (!this.showResponseAction || this.isResponding) {

@@ -21,7 +21,7 @@
             <div class="bulk-action-bar">
                 <p aria-live="polite">{selectedAppointmentsLabel}</p>
                 <div class="bulk-action-buttons">
-                    <template lwc:if={canShowBulkDecline}>
+                    <!-- <template lwc:if={canShowBulkDecline}>
                         <c-button
                             data-id="start-bulk-decline"
                             button-styling="danger"
@@ -30,7 +30,7 @@
                             disabled={isBulkResponseDisabled}
                             onbuttonclick={handleStartBulkDeclineReview}
                         ></c-button>
-                    </template>
+                    </template> -->
                     <template lwc:if={canShowBulkAcceptance}>
                         <c-button
                             data-id="start-bulk-acceptance"
