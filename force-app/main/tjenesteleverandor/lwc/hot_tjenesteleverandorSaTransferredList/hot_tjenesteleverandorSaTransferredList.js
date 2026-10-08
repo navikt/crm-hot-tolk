@@ -312,8 +312,8 @@ export default class Hot_tjenesteleverandorSaTransferredList extends NavigationM
     async handleBulkResponseComplete(event) {
         const results = event.detail?.results || [];
         const action = event.detail?.action || this.bulkAction;
-        const completedAction = action === 'decline' ? 'avslått' : 'akseptert';
-        const failedAction = action === 'decline' ? 'avslås' : 'aksepteres';
+        const completedAction = action === 'decline' ? 'avslått' : 'bekreftet';
+        const failedAction = action === 'decline' ? 'avslås' : 'bekreftes';
         const succeeded = results.filter((result) => result.success);
         const failed = results.filter((result) => !result.success);
 
