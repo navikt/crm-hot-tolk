@@ -40,12 +40,13 @@
         </template>
 
         <template lwc:if={responseFeedback}>
-            <c-hot_local-alert
-                type={responseFeedback.type}
-                content-view="title-only"
-                title={responseFeedback.message}
-                style="margin-bottom: 0.5rem;"
-            ></c-hot_local-alert>
+            <div style="margin-bottom: 0.5rem">
+                <c-hot_local-alert
+                    type={responseFeedback.type}
+                    content-view="title-only"
+                    title={responseFeedback.message}
+                ></c-hot_local-alert>
+            </div>
         </template>
 
         <template lwc:if={showResponseAction}>
