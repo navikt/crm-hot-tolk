@@ -7,7 +7,7 @@ import getThreadFreelanceId from '@salesforce/apex/HOT_MyServiceAppointmentListC
 import getThreadServiceAppointmentId from '@salesforce/apex/HOT_MyServiceAppointmentListController.getThreadServiceAppointmentId';
 import getThreadInterpretersId from '@salesforce/apex/HOT_MyServiceAppointmentListController.getThreadInterpretersId';
 import createThread from '@salesforce/apex/HOT_MessageHelper.createThread';
-import createThreadInterpreter from '@salesforce/apex/HOT_MessageHelper.createThreadInterpreter';
+import createThreadInterpreter from '@salesforce/apex/HOT_MessageHelper.createThreadInterpreterForTL';
 import createThreadInterpreters from '@salesforce/apex/HOT_MessageHelper.createThreadInterpreters';
 import getInterestedResourceDetails from '@salesforce/apex/HOT_InterestedResourcesListController.getInterestedResourceDetails';
 import { NavigationMixin } from 'lightning/navigation';

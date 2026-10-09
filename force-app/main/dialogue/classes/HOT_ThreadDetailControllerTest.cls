@@ -1,4 +1,4 @@
-@IsTest(IsParallel=true)
+@IsTest(IsParallel=false)
 public without sharing class HOT_ThreadDetailControllerTest {
     @IsTest
     public static void getThreadDetailsTest() {
@@ -317,6 +317,29 @@ public without sharing class HOT_ThreadDetailControllerTest {
         User u = [SELECT Id FROM User WHERE Id = :UserInfo.getUserId() LIMIT 1];
 
         System.assertEquals(false, HOT_ThreadDetailController.isAdminOrFormidlerAdmin(u));
+    }
+
+    @IsTest
+    private static void isAdminReturnsTrueWhenUserIsInHotTolkAdminGroup() {
+        User u = [SELECT Id FROM User WHERE Id = :UserInfo.getUserId() LIMIT 1];
+        Group adminGroup = [SELECT Id FROM Group WHERE DeveloperName = 'HOT_Tolk_Admin' AND Type = 'Regular' LIMIT 1];
+
+        List<GroupMember> existingMembership = [
+            SELECT Id
+            FROM GroupMember
+            WHERE GroupId = :adminGroup.Id AND UserOrGroupId = :u.Id
+            LIMIT 1
+        ];
+
+        if (existingMembership.isEmpty()) {
+            insert new GroupMember(GroupId = adminGroup.Id, UserOrGroupId = u.Id);
+        }
+
+        Test.startTest();
+        Boolean isAdmin = HOT_ThreadDetailController.isAdmin(u);
+        Test.stopTest();
+
+        System.assertEquals(true, isAdmin);
     }
 
     @IsTest

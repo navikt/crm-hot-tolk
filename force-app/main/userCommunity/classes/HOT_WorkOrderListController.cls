@@ -102,6 +102,7 @@ public without sharing class HOT_WorkOrderListController {
                     HOT_Request__r.UserPersonNumber__c,
                     HOT_Request__r.UserPhone__c,
                     HOT_Request__r.UserPreferredInterpreter__c,
+                    HOT_Request__r.UserPreferredGender__c,
                     toLabel(HOT_Request__r.UserInterpretationMethod__c),
                     HOT_Request__r.CompanyName__c,
                     HOT_Request__r.OwnerName__c,

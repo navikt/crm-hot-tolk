@@ -12,10 +12,19 @@ export default class Hot_freelanceCommonTable extends LightningElement {
 
     statusBadgeMap = {
         'badge-gray': ['Åpen', 'Open'],
-        'badge-blue': ['Reserved', 'Reservert', 'Assigned', 'Tildelt'],
-        'badge-green': ['Dekket', 'Covered'],
-        'badge-yellow': ['Interested', 'Påmeldt', 'Wanted', 'Ønsket til'],
+        'badge-blue': ['Reserved', 'Reservert', 'Scheduled', 'Assigned', 'Tildelt', 'Dispatched'],
+        'badge-green': ['Dekket', 'Completed', 'Covered'],
+        'badge-yellow': [
+            'Interested',
+            'Påmeldt',
+            'Wanted',
+            'Ønsket til',
+            'Frigitt til frilanstolker',
+            'Released to Freelance'
+        ],
         'badge-red': [
+            'Cannot Complete',
+            'Udekket',
             'Not Assigned',
             'Ikke tildelt deg',
             'Withdrawn',
@@ -72,7 +81,10 @@ export default class Hot_freelanceCommonTable extends LightningElement {
 
                 if (column.name === 'Status__c' || column.name === 'statusMobile' || column.name === 'Status') {
                     field.statusBadgeClass = this.getStatusBadgeClass(value);
-                    field.statusBadgeLabel = value;
+                    field.statusBadgeLabel =
+                        value === 'Frigitt til frilanstolker' || value === 'Released to Freelance'
+                            ? 'Frigitt til tolk'
+                            : value;
                 }
 
                 if (column.name === 'HOT_PreparationTime__c' && value) {

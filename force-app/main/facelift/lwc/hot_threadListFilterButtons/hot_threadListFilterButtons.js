@@ -26,10 +26,16 @@ export default class Hot_threadListFilterButtons extends LightningElement {
             value: 'all',
             selected: false
         },
+        // {
+        //     label: 'Med formidler',
+        //     name: 'HOT_TOLK-FORMIDLER',
+        //     value: 'HOT_TOLK-FORMIDLER',
+        //     selected: false
+        // },
         {
-            label: 'Med formidler',
-            name: 'HOT_TOLK-FORMIDLER',
-            value: 'HOT_TOLK-FORMIDLER',
+            label: 'Med leverandør',
+            name: 'HOT_TJENESTELEVERANDOR-TOLK',
+            value: 'HOT_TJENESTELEVERANDOR-TOLK',
             selected: false
         },
         {
@@ -44,10 +50,16 @@ export default class Hot_threadListFilterButtons extends LightningElement {
             value: 'HOT_TOLK-TOLK',
             selected: false
         },
+        // {
+        //     label: 'Med ressurskontor',
+        //     name: 'HOT_TOLK-RESSURSKONTOR',
+        //     value: 'HOT_TOLK-RESSURSKONTOR',
+        //     selected: false
+        // }
         {
-            label: 'Med ressurskontor',
-            name: 'HOT_TOLK-RESSURSKONTOR',
-            value: 'HOT_TOLK-RESSURSKONTOR',
+            label: 'Med leverandør og honorar',
+            name: 'HOT_TJENESTELEVERANDOR-HONORAR',
+            value: 'HOT_TJENESTELEVERANDOR-HONORAR',
             selected: false
         }
     ];

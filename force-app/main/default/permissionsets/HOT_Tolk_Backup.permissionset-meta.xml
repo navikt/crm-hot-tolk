@@ -1180,12 +1180,12 @@
     </fieldPermissions>
     <fieldPermissions>
         <editable>true</editable>
-        <field>ServiceAppointment.HOT_CancelComment__c</field>
+        <field>ServiceAppointment.HOT_CancelCommentExtended__c</field>
         <readable>true</readable>
     </fieldPermissions>
     <fieldPermissions>
         <editable>true</editable>
-        <field>ServiceAppointment.HOT_CancelCommentExtended__c</field>
+        <field>ServiceAppointment.HOT_CancelComment__c</field>
         <readable>true</readable>
     </fieldPermissions>
     <fieldPermissions>
@@ -1515,6 +1515,21 @@
     </fieldPermissions>
     <fieldPermissions>
         <editable>false</editable>
+        <field>ServiceAppointment.HOT_UserInterpretationMethod__c</field>
+        <readable>true</readable>
+    </fieldPermissions>
+    <fieldPermissions>
+        <editable>false</editable>
+        <field>ServiceAppointment.HOT_UserPreferredGender__c</field>
+        <readable>true</readable>
+    </fieldPermissions>
+    <fieldPermissions>
+        <editable>false</editable>
+        <field>ServiceAppointment.HOT_UserPreferredInterpreter__c</field>
+        <readable>true</readable>
+    </fieldPermissions>
+    <fieldPermissions>
+        <editable>false</editable>
         <field>ServiceAppointment.HOT_WOLIDatetimeOOS__c</field>
         <readable>true</readable>
     </fieldPermissions>
@@ -1681,6 +1696,11 @@
     <fieldPermissions>
         <editable>true</editable>
         <field>ServiceResource.HOT_IsFreelanceInterpreter__c</field>
+        <readable>true</readable>
+    </fieldPermissions>
+    <fieldPermissions>
+        <editable>false</editable>
+        <field>ServiceResource.HOT_IsTjenesteleverandorDispatcher__c</field>
         <readable>true</readable>
     </fieldPermissions>
     <fieldPermissions>

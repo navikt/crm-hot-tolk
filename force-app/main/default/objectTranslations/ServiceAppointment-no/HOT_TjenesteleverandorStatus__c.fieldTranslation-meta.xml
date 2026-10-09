@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomFieldTranslation xmlns="http://soap.sforce.com/2006/04/metadata">
+    <label>Tjenesteleverandør status</label>
+    <name>HOT_TjenesteleverandorStatus__c</name>
+    <picklistValues>
+        <masterLabel>Accepted</masterLabel>
+        <translation>Akseptert av tjenesteleverandør</translation>
+    </picklistValues>
+    <picklistValues>
+        <masterLabel>Declined</masterLabel>
+        <translation>Avslått av tjenesteleverandør</translation>
+    </picklistValues>
+    <picklistValues>
+        <masterLabel>Expired</masterLabel>
+        <translation>Utløpt svarfrist</translation>
+    </picklistValues>
+    <picklistValues>
+        <masterLabel>Transferred</masterLabel>
+        <translation>Overført til tjenesteleverandør</translation>
+    </picklistValues>
+</CustomFieldTranslation>

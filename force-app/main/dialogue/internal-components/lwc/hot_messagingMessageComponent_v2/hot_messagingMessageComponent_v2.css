@@ -185,6 +185,19 @@
     --tab-accent-color: #ffb00099;
 }
 
+.tabColor--tjenesteleverandorFormidler {
+    .tabColor--tjenesteleverandorInterpreter {
+        --tab-bg-color: #00bfa914;
+        --tab-bg-opaque-color: #f0fdfa;
+        --tab-border-color: #00bfa961;
+        --tab-accent-color: #00bfa999;
+    }
+    --tab-bg-color: #00bfa914;
+    --tab-bg-opaque-color: #f0fdfa;
+    --tab-border-color: #00bfa961;
+    --tab-accent-color: #00bfa999;
+}
+
 .customTabButton[class*='tabColor--'],
 .customTabPanel[class*='tabColor--'] {
     background-color: var(--tab-bg-color);
