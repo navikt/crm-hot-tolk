@@ -267,7 +267,7 @@
 .acceptance-panel {
     position: relative;
     overflow: hidden;
-    border: 3px solid #d35400;
+    border: 1px solid #0b4c78;
     border-radius: 0;
     background: #ffffff;
     font-family: inherit;
@@ -280,8 +280,8 @@
     justify-content: space-between;
     gap: 1.5rem;
     padding: 1rem 1.5rem;
-    background: #d35400;
-    color: #ffffff;
+    background:#e3eff7;
+    color: #002942;
 }
 
 .acceptance-header h2 {
