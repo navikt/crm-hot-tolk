@@ -79,6 +79,23 @@ export default class Hot_tjenesteleverandorUserInfo extends LightningElement {
         this.showSaveSuccess = false;
     }
 
+    handleCancel() {
+        if (this.buttonLoading) {
+            return;
+        }
+
+        const savedValues = new Set(this.savedRegionValues.split(';').filter(Boolean));
+        this.regionOptions = this.regionOptions.map((region) => ({
+            ...region,
+            selected: savedValues.has(region.value)
+        }));
+        this.template.querySelectorAll('c-checkbox').forEach((checkbox) => {
+            checkbox.setCheckboxValue(savedValues.has(checkbox.dataset.value));
+        });
+        this.saveError = undefined;
+        this.showSaveSuccess = false;
+    }
+
     async handleSave() {
         if (!this.hasUnsavedChanges || this.buttonLoading) {
             return;

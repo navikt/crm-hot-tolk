@@ -2,7 +2,7 @@
     <div class="page-background">
         <div class="profile-layout">
             <div class="header-content">
-                <h1 class="header-title">Min Side</h1>
+                <h1 class="header-title">Min side</h1>
             </div>
 
             <div class="profile-content">
@@ -58,11 +58,23 @@
                         <template lwc:if={hasUnsavedChanges}>
                             <div class="save-button-container">
                                 <c-hot_button
+                                    type="Submit"
                                     button-label="Lagre"
                                     button-styling="Primary"
                                     onbuttonclick={handleSave}
                                     is-loading={buttonLoading}
                                     aria-label="Lagre regionvalg"
+                                    desktop-style="width: 8rem; justify-content: center"
+                                    mobile-style="width: 8rem; justify-content: center"
+                                ></c-hot_button>
+                                <c-hot_button
+                                    type="Reset"
+                                    button-label="Avbryt"
+                                    button-styling="Secondary"
+                                    onbuttonclick={handleCancel}
+                                    aria-label="Avbryt regionendringer"
+                                    desktop-style="width: 8rem; justify-content: center"
+                                    mobile-style="width: 8rem; justify-content: center"
                                 ></c-hot_button>
                             </div>
                         </template>
