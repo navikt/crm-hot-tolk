@@ -2,7 +2,6 @@
     <template lwc:if={showBulkReview}>
         <c-hot_tjenesteleverandor-bulk-acceptance
             appointments={bulkReviewRecords}
-            action={bulkAction}
             oncancel={handleCancelBulkReview}
             onresponsecomplete={handleBulkResponseComplete}
         ></c-hot_tjenesteleverandor-bulk-acceptance>
@@ -17,20 +16,18 @@
             ></c-hot_local-alert>
         </template>
 
-        <template lwc:if={hasResult}>
+        <template lwc:if={error}>
+            <c-hot_local-alert
+                type="error"
+                content-view="title-only"
+                title="Kunne ikke hente oppdragslisten. Prøv å laste siden på nytt."
+            ></c-hot_local-alert>
+        </template>
+
+        <template lwc:elseif={hasResult}>
             <div class="bulk-action-bar">
                 <p aria-live="polite">{selectedAppointmentsLabel}</p>
                 <div class="bulk-action-buttons">
-                    <!-- <template lwc:if={canShowBulkDecline}>
-                        <c-button
-                            data-id="start-bulk-decline"
-                            button-styling="danger"
-                            button-label={bulkDeclineButtonLabel}
-                            aria-label={bulkDeclineButtonAriaLabel}
-                            disabled={isBulkResponseDisabled}
-                            onbuttonclick={handleStartBulkDeclineReview}
-                        ></c-button>
-                    </template> -->
                     <template lwc:if={canShowBulkAcceptance}>
                         <c-button
                             data-id="start-bulk-acceptance"
@@ -125,7 +122,7 @@
                             </template>
                             <template lwc:if={serviceAppointment.HOT_TjenesteleverandorDeadline__c}>
                                 <p>
-                                    <strong>Tjenesteleverandør frist:</strong>
+                                    <strong>Bekreftelsesfrist:</strong>
                                     &nbsp;{serviceAppointment.HOT_TjenesteleverandorDeadline__c}
                                 </p>
                             </template>

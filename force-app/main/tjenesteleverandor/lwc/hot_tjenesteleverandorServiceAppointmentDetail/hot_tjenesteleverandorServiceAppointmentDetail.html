@@ -47,7 +47,7 @@
             ></c-hot_local-alert>
         </template>
 
-        <template lwc:if={showResponseAction}>
+        <template lwc:if={showAcceptAction}>
             <section class="acceptance-panel slds-m-bottom_large" aria-labelledby="acceptance-heading">
                 <div class="acceptance-header">
                     <h2 id="acceptance-heading" style="font-weight: 600;">
@@ -57,7 +57,7 @@
                 <div class="acceptance-content">
                     <template lwc:if={acceptanceDeadline}>
                         <p class="acceptance-deadline slds-text-body_regular">
-                            <span>Svarfrist:&nbsp;</span>
+                            <span>Bekreftelsesfrist:&nbsp;</span>
                             <lightning-formatted-date-time
                                 value={acceptanceDeadline}
                                 year="numeric"
@@ -69,26 +69,14 @@
                         </p>
                     </template>
                     <div class="acceptance-actions">
-                        <!-- <template lwc:if={showDeclineAction}>
-                            <c-button
-                                data-id="decline-appointment"
-                                button-styling="danger"
-                                button-label="Avslå oppdrag"
-                                aria-label="Avslå oppdraget"
-                                disabled={isResponding}
-                                onbuttonclick={handleDecline}
-                            ></c-button>
-                        </template> -->
-                        <template lwc:if={showAcceptAction}>
-                            <c-button
-                                data-id="accept-appointment"
-                                button-styling="primary"
-                                button-label="Bekreft oppdrag"
-                                aria-label="Bekreft oppdraget"
-                                disabled={isResponding}
-                                onbuttonclick={handleAccept}
-                            ></c-button>
-                        </template>
+                        <c-button
+                            data-id="accept-appointment"
+                            button-styling="primary"
+                            button-label="Bekreft oppdrag"
+                            aria-label="Bekreft oppdraget"
+                            disabled={isResponding}
+                            onbuttonclick={handleAccept}
+                        ></c-button>
                     </div>
                 </div>
                 <template lwc:if={isResponding}>
