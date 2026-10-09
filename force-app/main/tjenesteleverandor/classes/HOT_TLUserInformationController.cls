@@ -48,7 +48,7 @@ public without sharing class HOT_TLUserInformationController {
         ];
 
         if (!resources.isEmpty() && resources[0].HOT_IsTjenesteleverandorDispatcher__c != true) {
-            throw new AuraHandledException('Du er ikke tjenesteleverandør.');
+            throw new AuraHandledException('Oida, du er ikke tjenesteleverandør.');
         }
 
         return resources;
