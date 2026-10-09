@@ -1,3 +1,94 @@
 <template>
-    <p>....</p>
+    <div class="page-background">
+        <div class="profile-layout">
+            <div class="header-content">
+                <h1 class="header-title">Min Side</h1>
+            </div>
+
+            <div class="profile-content">
+                <template lwc:if={isLoading}>
+                    <section class="regions-section regions-section-loading" aria-busy="true">
+                        <c-hot_loader size="3xlarge"></c-hot_loader>
+                    </section>
+                </template>
+                <template lwc:elseif={hasServiceResource}>
+                    <section class="regions-section" aria-labelledby="preferred-regions-heading">
+                        <h2 id="preferred-regions-heading" class="section-title">Foretrukne regioner:</h2>
+                        <div class="regions-grid">
+                            <div class="regions-column">
+                                <template for:each={leftRegionOptions} for:item="region">
+                                    <div key={region.value} class="region-option">
+                                        <c-checkbox
+                                            default-val={region.selected}
+                                            data-value={region.value}
+                                            oncheckboxclick={handleRegionSelectionChange}
+                                            label={region.label}
+                                        ></c-checkbox>
+                                    </div>
+                                </template>
+                            </div>
+                            <div class="regions-column">
+                                <template for:each={rightRegionOptions} for:item="region">
+                                    <div key={region.value} class="region-option">
+                                        <c-checkbox
+                                            default-val={region.selected}
+                                            data-value={region.value}
+                                            oncheckboxclick={handleRegionSelectionChange}
+                                            label={region.label}
+                                        ></c-checkbox>
+                                    </div>
+                                </template>
+                            </div>
+                        </div>
+
+                        <template lwc:if={showSaveSuccess}>
+                            <div class="success-alert-container">
+                                <c-hot_local-alert
+                                    type="success"
+                                    title="Endringene er lagret"
+                                    content="Dine foretrukne regioner er oppdatert."
+                                    size="medium"
+                                ></c-hot_local-alert>
+                            </div>
+                        </template>
+
+                        <template lwc:if={saveError}>
+                            <p class="save-error" role="alert">{saveError}</p>
+                        </template>
+                        <template lwc:if={hasUnsavedChanges}>
+                            <div class="save-button-container">
+                                <c-hot_button
+                                    button-label="Lagre"
+                                    button-styling="Primary"
+                                    onbuttonclick={handleSave}
+                                    is-loading={buttonLoading}
+                                    aria-label="Lagre regionvalg"
+                                ></c-hot_button>
+                            </div>
+                        </template>
+                    </section>
+                </template>
+                <template lwc:elseif={loadError}>
+                    <div class="alert-container">
+                        <c-hot_local-alert
+                            type="error"
+                            title="Kunne ikke vise profilen"
+                            content={loadError}
+                            size="small"
+                        ></c-hot_local-alert>
+                    </div>
+                </template>
+                <template lwc:else>
+                    <div class="alert-container">
+                        <c-hot_local-alert
+                            type="error"
+                            title="Ingen profil funnet"
+                            content="Fant ingen tjenesteleverandør profil."
+                            size="small"
+                        ></c-hot_local-alert>
+                    </div>
+                </template>
+            </div>
+        </div>
+    </div>
 </template>
