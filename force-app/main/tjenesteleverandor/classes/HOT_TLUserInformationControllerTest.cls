@@ -12,9 +12,9 @@ private class HOT_TLUserInformationControllerTest {
 
     @IsTest
     static void getCurrentUserServiceResourceReturnsOwnResource() {
-        Test.startTest();
+        System.Test.startTest();
         ServiceResource serviceResource = HOT_TLUserInformationController.getCurrentUserServiceResource();
-        Test.stopTest();
+        System.Test.stopTest();
 
         System.assertNotEquals(null, serviceResource);
         System.assertEquals('Oslo', serviceResource.HOT_PreferredRegions__c);
@@ -45,9 +45,9 @@ private class HOT_TLUserInformationControllerTest {
     static void updatePreferredRegionsChangesOnlyRegions() {
         ServiceResource originalResource = HOT_TLUserInformationController.getCurrentUserServiceResource();
 
-        Test.startTest();
+        System.Test.startTest();
         HOT_TLUserInformationController.updatePreferredRegions(new List<String>{ 'Agder', 'Vestland' });
-        Test.stopTest();
+        System.Test.stopTest();
 
         ServiceResource updatedResource = [
             SELECT Name, HOT_PreferredRegions__c
