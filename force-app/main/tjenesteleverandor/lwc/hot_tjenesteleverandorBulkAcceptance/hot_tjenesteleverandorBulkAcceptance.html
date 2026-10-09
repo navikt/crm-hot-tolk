@@ -1,7 +1,7 @@
 <template>
     <section class="bulk-page" aria-labelledby="bulk-response-heading">
         <header class="slds-m-bottom_large">
-            <h2 id="bulk-response-heading" class="slds-text-heading_large">{heading}</h2>
+            <h2 id="bulk-response-heading" class="slds-text-heading_large">Bekreft valgte oppdrag</h2>
             <p class="slds-text-body_regular slds-text-color_weak" style="font-size:large; margin-top:0.25rem">{instructionText}</p>
         </header>
 
@@ -19,7 +19,7 @@
             </div>
         </template>
 
-        <div class="review-table-container" role="region" aria-label={reviewTableAriaLabel} tabindex="0">
+        <div class="review-table-container" role="region" aria-label="Valgte oppdrag som skal bekreftes" tabindex="0">
             <table class="slds-table slds-table_cell-buffer slds-table_bordered review-table">
                 <thead>
                     <tr>
@@ -28,7 +28,7 @@
                         <th scope="col">Tema</th>
                         <th scope="col">Tolkemetode</th>
                         <th scope="col">Region</th>
-                        <th scope="col">Svarfrist</th>
+                        <th scope="col">Bekreftelsesfrist</th>
                     </tr>
                 </thead>
                 <tbody>
@@ -39,7 +39,7 @@
                             <td data-label="Tema">{appointment.HOT_FreelanceSubject__c}</td>
                             <td data-label="Tolkemetode">{appointment.HOT_WorkTypeName__c}</td>
                             <td data-label="Region">{appointment.HOT_ServiceTerritoryName__c}</td>
-                            <td data-label="Svarfrist">{appointment.TjenesteleverandorDeadline}</td>
+                            <td data-label="Bekreftelsesfrist">{appointment.HOT_TjenesteleverandorDeadline__c}</td>
                         </tr>
                     </template>
                 </tbody>
@@ -56,7 +56,7 @@
             ></c-button>
             <c-button
                 data-id="confirm-bulk-response"
-                button-styling={confirmButtonStyling}
+                button-styling="primary"
                 button-label={confirmButtonLabel}
                 aria-label={confirmButtonAriaLabel}
                 disabled={isConfirmDisabled}
@@ -66,8 +66,8 @@
 
         <template lwc:if={isProcessing}>
             <div class="processing-overlay" role="status" aria-live="polite">
-                <lightning-spinner alternative-text={processingText} size="medium"></lightning-spinner>
-                <span class="slds-assistive-text">{processingText}</span>
+                <lightning-spinner alternative-text="Bekrefter valgte oppdrag" size="medium"></lightning-spinner>
+                <span class="slds-assistive-text">Bekrefter valgte oppdrag</span>
             </div>
         </template>
     </section>

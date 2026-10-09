@@ -10,7 +10,7 @@ export default class Hot_tjenesteleverandorStatistics extends LightningElement {
             id: 'assignments',
             value: 0,
             displayValue: 0,
-            label: 'Oppdrag som venter på å bli akseptert eller avslått'
+            label: 'Oppdrag som venter på bekreftelse'
         },
         {
             id: 'unreadMessages',

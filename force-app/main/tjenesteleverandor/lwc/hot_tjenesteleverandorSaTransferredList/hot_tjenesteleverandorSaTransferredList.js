@@ -3,7 +3,6 @@ import { NavigationMixin } from 'lightning/navigation';
 import { refreshApex } from '@salesforce/apex';
 import getTransferredServiceAppointments from '@salesforce/apex/HOT_TjenesteleverandorListController.getTransferredServiceAppointments';
 import canAcceptAppointments from '@salesforce/customPermission/HOT_AcceptTjenesteleverandorOppdrag';
-import canDeclineAppointments from '@salesforce/customPermission/HOT_DeclineTjenesteleverandorOppdrag';
 import icons from '@salesforce/resourceUrl/ikoner';
 
 import { columns, mobileColumns, inDetailsColumns } from './columns';
@@ -31,7 +30,6 @@ export default class Hot_tjenesteleverandorSaTransferredList extends NavigationM
     checkedServiceAppointments = [];
     showBulkReview = false;
     bulkReviewRecords = [];
-    bulkAction = 'accept';
     bulkFeedback;
     error;
 
@@ -130,36 +128,20 @@ export default class Hot_tjenesteleverandorSaTransferredList extends NavigationM
         return Boolean(canAcceptAppointments);
     }
 
-    get canShowBulkDecline() {
-        return Boolean(canDeclineAppointments);
-    }
-
     get isBulkResponseDisabled() {
-        return this.selectedAppointmentCount === 0;
+        return !canAcceptAppointments || this.selectedAppointmentCount === 0;
     }
 
     get bulkAcceptButtonLabel() {
         return this.selectedAppointmentCount === 0
-            ? 'Aksepter valgte oppdrag'
-            : `Aksepter valgte (${this.selectedAppointmentCount})`;
+            ? 'Bekreft valgte oppdrag'
+            : `Bekreft valgte (${this.selectedAppointmentCount})`;
     }
 
     get bulkAcceptButtonAriaLabel() {
         return this.selectedAppointmentCount === 0
-            ? 'Velg oppdrag før du aksepterer'
-            : `Gå til bekreftelse for ${this.selectedAppointmentCount} valgte oppdrag`;
-    }
-
-    get bulkDeclineButtonLabel() {
-        return this.selectedAppointmentCount === 0
-            ? 'Avslå valgte oppdrag'
-            : `Avslå valgte (${this.selectedAppointmentCount})`;
-    }
-
-    get bulkDeclineButtonAriaLabel() {
-        return this.selectedAppointmentCount === 0
-            ? 'Velg oppdrag før du avslår'
-            : `Gå til bekreftelse for å avslå ${this.selectedAppointmentCount} valgte oppdrag`;
+            ? 'Velg oppdrag før du bekrefter'
+            : `Gå til bekreftelse for å bekrefte ${this.selectedAppointmentCount} valgte oppdrag`;
     }
 
     @wire(getTransferredServiceAppointments)
@@ -200,12 +182,12 @@ export default class Hot_tjenesteleverandorSaTransferredList extends NavigationM
         this.dataLoader = true;
         try {
             await refreshApex(this.wiredTransferredAppointments);
+            this.error = undefined;
             if (sessionStorage.getItem(LIST_REFRESH_KEY) === marker) {
                 sessionStorage.removeItem(LIST_REFRESH_KEY);
             }
         } catch (error) {
             this.error = error;
-            this.records = [];
         } finally {
             this.isRefreshPending = false;
             this.dataLoader = false;
@@ -286,19 +268,10 @@ export default class Hot_tjenesteleverandorSaTransferredList extends NavigationM
     }
 
     handleStartBulkAcceptReview() {
-        this.startBulkReview('accept');
-    }
-
-    handleStartBulkDeclineReview() {
-        this.startBulkReview('decline');
-    }
-
-    startBulkReview(action) {
         if (this.isBulkResponseDisabled) {
             return;
         }
 
-        this.bulkAction = action;
         const checkedIds = new Set(this.checkedServiceAppointments);
         this.bulkReviewRecords = this.records.filter((record) => checkedIds.has(record.Id));
         this.showBulkReview = this.bulkReviewRecords.length > 0;
@@ -311,39 +284,47 @@ export default class Hot_tjenesteleverandorSaTransferredList extends NavigationM
 
     async handleBulkResponseComplete(event) {
         const results = event.detail?.results || [];
-        const action = event.detail?.action || this.bulkAction;
-        const completedAction = action === 'decline' ? 'avslått' : 'akseptert';
-        const failedAction = action === 'decline' ? 'avslås' : 'aksepteres';
         const succeeded = results.filter((result) => result.success);
         const failed = results.filter((result) => !result.success);
 
         this.showBulkReview = false;
         this.bulkReviewRecords = [];
-        this.checkedServiceAppointments = failed.map((result) => result.recordId);
+        if (results.length > 0) {
+            this.checkedServiceAppointments = failed.map((result) => result.recordId);
+        }
         this.persistCheckedRows();
 
-        if (action === 'accept' && succeeded.length > 0) {
-            sessionStorage.setItem(ACCEPTED_LIST_REFRESH_KEY, String(Date.now()));
+        if (succeeded.length > 0) {
+            const marker = String(Date.now());
+            sessionStorage.setItem(LIST_REFRESH_KEY, marker);
+            sessionStorage.setItem(ACCEPTED_LIST_REFRESH_KEY, marker);
         }
 
         if (results.length === 0) {
-            this.bulkFeedback = { type: 'error', message: `Ingen av de valgte oppdragene kunne ${failedAction}.` };
+            this.bulkFeedback = { type: 'error', message: 'Ingen av de valgte oppdragene kunne bekreftes.' };
         } else if (failed.length === 0) {
-            this.bulkFeedback = { type: 'success', message: `${succeeded.length} oppdrag ble ${completedAction}.` };
+            this.bulkFeedback = { type: 'success', message: `${succeeded.length} oppdrag ble bekreftet.` };
         } else if (succeeded.length > 0) {
             this.bulkFeedback = {
                 type: 'error',
-                message: `${succeeded.length} oppdrag ble ${completedAction}. ${failed.length} kunne ikke ${failedAction} og er fortsatt valgt.`
+                message: `${succeeded.length} oppdrag ble bekreftet. ${failed.length} kunne ikke bekreftes og er fortsatt valgt.`
             };
         } else {
             this.bulkFeedback = {
                 type: 'error',
-                message: failed[0]?.message || `Ingen av de valgte oppdragene kunne ${failedAction}.`
+                message: failed[0]?.message || 'Ingen av de valgte oppdragene kunne bekreftes.'
             };
         }
 
-        if (this.wiredTransferredAppointments) {
-            await refreshApex(this.wiredTransferredAppointments);
+        if (succeeded.length > 0) {
+            await this.refreshIfRequested();
+        } else if (this.wiredTransferredAppointments) {
+            try {
+                await refreshApex(this.wiredTransferredAppointments);
+                this.error = undefined;
+            } catch (error) {
+                this.error = error;
+            }
         }
     }
 
