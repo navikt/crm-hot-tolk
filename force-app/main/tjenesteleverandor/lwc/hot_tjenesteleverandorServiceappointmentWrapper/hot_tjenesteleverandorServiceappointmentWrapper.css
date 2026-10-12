@@ -82,9 +82,10 @@
 .tabset.desktop-only {
     display: flex;
     width: 100%;
-    max-width: 33rem;
     min-height: 3.25rem;
+    max-width: 60rem;
     margin: 0;
+    margin-bottom: 1rem;
     overflow: hidden;
     border: 1px solid #687386;
     border-radius: 0.625rem;
@@ -105,7 +106,9 @@
     align-items: center;
     justify-content: center;
     cursor: pointer;
-    transition: background-color 0.2s ease, color 0.2s ease;
+    transition:
+        background-color 0.2s ease,
+        color 0.2s ease;
 }
 
 .tab-button + .tab-button::before {
