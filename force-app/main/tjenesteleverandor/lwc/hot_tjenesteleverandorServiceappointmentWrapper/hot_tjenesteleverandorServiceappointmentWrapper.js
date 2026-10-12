@@ -11,7 +11,7 @@ export default class Hot_tjenesteleverandorServiceappointmentWrapper extends Nav
 
     tabs = [
         { name: 'transferred', label: 'Overførte oppdrag' },
-        { name: 'accepted', label: 'Aksepterte oppdrag' }
+        { name: 'accepted', label: 'Bekreftede oppdrag' }
     ];
 
     get tabMap() {

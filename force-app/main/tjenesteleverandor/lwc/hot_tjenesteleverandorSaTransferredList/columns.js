@@ -25,7 +25,7 @@ export let columns = [
         type: 'String'
     },
     {
-        label: 'Akseptfrist',
+        label: 'Bekreftelsesfrist',
         name: 'HOT_TjenesteleverandorDeadline__c',
         type: 'Datetime'
     }
@@ -77,7 +77,7 @@ export let mobileColumns = [
         type: 'String'
     },
     {
-        label: 'Akseptfrist',
+        label: 'Bekreftelsesfrist',
         name: 'HOT_TjenesteleverandorDeadline__c',
         type: 'Datetime'
     }
