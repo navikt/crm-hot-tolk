@@ -1,0 +1,16 @@
+<template>
+    <div class="page-background">
+        <div class="list">
+            <div class="header-row">
+                <h1 class="header-title">Tolker</h1>
+            </div>
+            <div class="tab-content">
+                <c-hot_freelance-common-table
+                    records={tolkerList}
+                    columns={columns}
+                    onrowclick={goToRecordDetails}
+                ></c-hot_freelance-common-table>
+            </div>
+        </div>
+    </div>
+</template>
