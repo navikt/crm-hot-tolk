@@ -3,9 +3,7 @@ import { getRecord, getFieldValue, getFieldDisplayValue } from 'lightning/uiReco
 import { NavigationMixin, CurrentPageReference } from 'lightning/navigation';
 import { notifyRecordUpdateAvailable } from 'lightning/uiRecordApi';
 import canAcceptAppointments from '@salesforce/customPermission/HOT_AcceptTjenesteleverandorOppdrag';
-import canDeclineAppointments from '@salesforce/customPermission/HOT_DeclineTjenesteleverandorOppdrag';
 import acceptServiceAppointments from '@salesforce/apex/HOT_TjenesteleverandorAcceptanceService.acceptServiceAppointments';
-import declineServiceAppointments from '@salesforce/apex/HOT_TjenesteleverandorAcceptanceService.declineServiceAppointments';
 
 import APPOINTMENT_NUMBER_FIELD from '@salesforce/schema/ServiceAppointment.AppointmentNumber';
 import HOT_FREELANCE_SUBJECT_FIELD from '@salesforce/schema/ServiceAppointment.HOT_FreelanceSubject__c';
@@ -122,16 +120,8 @@ export default class HotTjenesteleverandorServiceAppointmentDetail extends Navig
         return this.recordId || this.routeRecordId;
     }
 
-    get showResponseAction() {
-        return this.showAcceptAction || this.showDeclineAction;
-    }
-
     get showAcceptAction() {
         return Boolean(canAcceptAppointments && this.isAcceptanceEligible);
-    }
-
-    get showDeclineAction() {
-        return Boolean(canDeclineAppointments && this.isAcceptanceEligible);
     }
 
     get hasRecordData() {
@@ -311,64 +301,39 @@ export default class HotTjenesteleverandorServiceAppointmentDetail extends Navig
     }
 
     async handleAccept() {
-        if (!this.showAcceptAction) {
-            return;
-        }
-        await this.respondToAppointment(
-            'accept',
-            acceptServiceAppointments,
-            'Oppdraget kunne ikke aksepteres. Last inn siden og prøv igjen.',
-            'Oppdraget er akseptert.'
-        );
-    }
-
-    async handleDecline() {
-        if (!this.showDeclineAction) {
-            return;
-        }
-        await this.respondToAppointment(
-            'decline',
-            declineServiceAppointments,
-            'Oppdraget kunne ikke avslås. Last inn siden og prøv igjen.',
-            'Oppdraget er avslått.'
-        );
-    }
-
-    async respondToAppointment(action, responseMethod, fallbackErrorMessage, fallbackSuccessMessage) {
-        if (!this.showResponseAction || this.isResponding) {
+        if (!this.showAcceptAction || this.isResponding) {
             return;
         }
 
         this.isResponding = true;
         this.responseFeedback = undefined;
+        const fallbackErrorMessage = 'Oppdraget kunne ikke bekreftes. Last inn siden og prøv igjen.';
 
         try {
-            const results = await responseMethod({
+            const results = await acceptServiceAppointments({
                 serviceAppointmentIds: [this.effectiveRecordId]
             });
             const result = results?.[0];
             if (!result?.success) {
-                this.responseFeedback = {"type": "error", "message": result?.message || fallbackErrorMessage};
+                this.responseFeedback = { type: 'error', message: result?.message || fallbackErrorMessage };
                 return;
             }
 
             this.isAcceptanceEligible = false;
-            this.responseFeedback = {"type": "success", "message": result.message || fallbackSuccessMessage};
-            this.markListsForRefresh(action);
+            this.responseFeedback = { type: 'success', message: result.message || 'Oppdraget er bekreftet.' };
+            this.markListsForRefresh();
             await notifyRecordUpdateAvailable([{ recordId: this.effectiveRecordId }]);
         } catch (error) {
-            this.responseFeedback = {"type": "error", "message": error?.body?.message || fallbackErrorMessage};
+            this.responseFeedback = { type: 'error', message: error?.body?.message || fallbackErrorMessage };
         } finally {
             this.isResponding = false;
         }
     }
 
-    markListsForRefresh(action) {
+    markListsForRefresh() {
         const marker = JSON.stringify({ recordId: this.effectiveRecordId, timestamp: Date.now() });
         sessionStorage.setItem(TRANSFERRED_LIST_REFRESH_KEY, marker);
-        if (action === 'accept') {
-            sessionStorage.setItem(ACCEPTED_LIST_REFRESH_KEY, marker);
-        }
+        sessionStorage.setItem(ACCEPTED_LIST_REFRESH_KEY, marker);
     }
 
     handleBack() {

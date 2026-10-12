@@ -1,16 +1,9 @@
 public without sharing class HOT_TjenesteleverandorAcceptanceService {
     private static final String ACCEPT_PERMISSION = 'HOT_AcceptTjenesteleverandorOppdrag';
-    private static final String DECLINE_PERMISSION = 'HOT_DeclineTjenesteleverandorOppdrag';
     private static final Integer MAX_APPOINTMENTS_PER_REQUEST = 200;
     private static final String STATUS_ACCEPTED = 'Accepted';
-    private static final String STATUS_DECLINED = 'Declined';
     private static final String STATUS_TRANSFERRED = 'Transferred';
     private static final String SALESFORCE_STATUS_RELEASED = 'Released to Freelance';
-
-    private enum SupplierResponse {
-        ACCEPT,
-        DECLINE
-    }
 
     @TestVisible
     private static CustomPermissionHelper permissionHelper = new CustomPermissionHelper();
@@ -33,27 +26,13 @@ public without sharing class HOT_TjenesteleverandorAcceptanceService {
 
     @AuraEnabled
     public static List<AcceptanceResult> acceptServiceAppointments(List<Id> serviceAppointmentIds) {
-        assertPermission(SupplierResponse.ACCEPT);
-        return respondToServiceAppointments(serviceAppointmentIds, SupplierResponse.ACCEPT);
-    }
-
-    @AuraEnabled
-    public static List<AcceptanceResult> declineServiceAppointments(List<Id> serviceAppointmentIds) {
-        assertPermission(SupplierResponse.DECLINE);
-        return respondToServiceAppointments(serviceAppointmentIds, SupplierResponse.DECLINE);
-    }
-
-    private static List<AcceptanceResult> respondToServiceAppointments(
-        List<Id> serviceAppointmentIds,
-        SupplierResponse response
-    ) {
-        List<Id> requestedIds = normalizeIds(serviceAppointmentIds, response);
+        assertPermission();
+        List<Id> requestedIds = normalizeIds(serviceAppointmentIds);
         Map<Id, ServiceAppointment> appointmentById = lockAppointments(new Set<Id>(requestedIds));
         List<AcceptanceResult> results = new List<AcceptanceResult>();
         List<ServiceAppointment> appointmentsToUpdate = new List<ServiceAppointment>();
         List<AcceptanceResult> updateResults = new List<AcceptanceResult>();
         Datetime currentTime = System.now();
-        String targetStatus = response == SupplierResponse.ACCEPT ? STATUS_ACCEPTED : STATUS_DECLINED;
 
         for (Id requestedId : requestedIds) {
             AcceptanceResult result = new AcceptanceResult(requestedId);
@@ -64,49 +43,42 @@ public without sharing class HOT_TjenesteleverandorAcceptanceService {
                 result.message = 'Du har ikke tilgang til oppdraget, eller oppdraget finnes ikke.';
                 continue;
             }
-            if (appointment.HOT_TjenesteleverandorStatus__c == targetStatus) {
+            if (appointment.HOT_TjenesteleverandorStatus__c == STATUS_ACCEPTED) {
                 result.success = true;
-                result.message = response == SupplierResponse.ACCEPT
-                    ? 'Oppdraget er allerede akseptert.'
-                    : 'Oppdraget er allerede avslått.';
+                result.message = 'Oppdraget er allerede bekreftet.';
                 continue;
             }
 
-            String responseError = getResponseError(appointment, currentTime, response);
-            if (responseError != null) {
-                result.message = responseError;
+            String confirmationError = getConfirmationError(appointment, currentTime);
+            if (confirmationError != null) {
+                result.message = confirmationError;
                 continue;
             }
 
-            appointment.HOT_TjenesteleverandorStatus__c = targetStatus;
+            appointment.HOT_TjenesteleverandorStatus__c = STATUS_ACCEPTED;
             appointment.HOT_TLDispatcher__c = UserInfo.getUserId();
             appointmentsToUpdate.add(appointment);
             updateResults.add(result);
         }
 
         if (!appointmentsToUpdate.isEmpty()) {
-            // The external user remains read-only. This narrowly scoped system-mode DML can only set the supplier status.
+            // The external user remains read-only. Only confirmation and its dispatcher stamp use elevated DML.
             Database.SaveResult[] saveResults = Database.update(appointmentsToUpdate, false, AccessLevel.SYSTEM_MODE);
-            applySaveResults(saveResults, updateResults, response);
+            applySaveResults(saveResults, updateResults);
         }
 
         return results;
     }
 
-    private static void assertPermission(SupplierResponse response) {
-        String permissionName = response == SupplierResponse.ACCEPT ? ACCEPT_PERMISSION : DECLINE_PERMISSION;
-        if (!permissionHelper.hasCustomPermission(permissionName)) {
-            String message = response == SupplierResponse.ACCEPT
-                ? 'Du har ikke tilgang til å akseptere oppdrag.'
-                : 'Du har ikke tilgang til å avslå oppdrag.';
-            throw new AuraHandledException(message);
+    private static void assertPermission() {
+        if (!permissionHelper.hasCustomPermission(ACCEPT_PERMISSION)) {
+            throw new AuraHandledException('Du har ikke tilgang til å bekrefte oppdrag.');
         }
     }
 
-    private static List<Id> normalizeIds(List<Id> serviceAppointmentIds, SupplierResponse response) {
-        String action = response == SupplierResponse.ACCEPT ? 'aksepteres' : 'avslås';
+    private static List<Id> normalizeIds(List<Id> serviceAppointmentIds) {
         if (serviceAppointmentIds == null || serviceAppointmentIds.isEmpty()) {
-            throw new AuraHandledException('Velg minst ett oppdrag som skal ' + action + '.');
+            throw new AuraHandledException('Velg minst ett oppdrag som skal bekreftes.');
         }
 
         List<Id> normalizedIds = new List<Id>();
@@ -118,11 +90,10 @@ public without sharing class HOT_TjenesteleverandorAcceptanceService {
         }
 
         if (normalizedIds.isEmpty()) {
-            throw new AuraHandledException('Velg minst ett oppdrag som skal ' + action + '.');
+            throw new AuraHandledException('Velg minst ett oppdrag som skal bekreftes.');
         }
         if (normalizedIds.size() > MAX_APPOINTMENTS_PER_REQUEST) {
-            String infinitive = response == SupplierResponse.ACCEPT ? 'akseptere' : 'avslå';
-            throw new AuraHandledException('Du kan ' + infinitive + ' maksimalt 200 oppdrag om gangen.');
+            throw new AuraHandledException('Du kan bekrefte maksimalt 200 oppdrag om gangen.');
         }
         return normalizedIds;
     }
@@ -144,11 +115,7 @@ public without sharing class HOT_TjenesteleverandorAcceptanceService {
         );
     }
 
-    private static String getResponseError(
-        ServiceAppointment appointment,
-        Datetime currentTime,
-        SupplierResponse response
-    ) {
+    private static String getConfirmationError(ServiceAppointment appointment, Datetime currentTime) {
         Boolean isEligible =
             appointment.HOT_TjenesteleverandorStatus__c == STATUS_TRANSFERRED &&
             appointment.Status == SALESFORCE_STATUS_RELEASED &&
@@ -162,29 +129,19 @@ public without sharing class HOT_TjenesteleverandorAcceptanceService {
             appointment.HOT_TjenesteleverandorDeadline__c != null &&
             appointment.HOT_TjenesteleverandorDeadline__c <= currentTime
         ) {
-            return 'Svarfristen for oppdraget har utløpt.';
+            return 'Bekreftelsesfristen for oppdraget har utløpt.';
         }
-        return response == SupplierResponse.ACCEPT
-            ? 'Oppdraget kan ikke aksepteres lenger. Last inn siden på nytt.'
-            : 'Oppdraget kan ikke avslås lenger. Last inn siden på nytt.';
+        return 'Oppdraget kan ikke bekreftes lenger. Last inn siden på nytt.';
     }
 
-    private static void applySaveResults(
-        Database.SaveResult[] saveResults,
-        List<AcceptanceResult> acceptanceResults,
-        SupplierResponse response
-    ) {
+    private static void applySaveResults(Database.SaveResult[] saveResults, List<AcceptanceResult> acceptanceResults) {
         for (Integer index = 0; index < saveResults.size(); index++) {
             AcceptanceResult result = acceptanceResults[index];
             if (saveResults[index].isSuccess()) {
                 result.success = true;
-                result.message = response == SupplierResponse.ACCEPT
-                    ? 'Oppdraget er akseptert.'
-                    : 'Oppdraget er avslått.';
+                result.message = 'Oppdraget er bekreftet.';
             } else {
-                result.message = response == SupplierResponse.ACCEPT
-                    ? 'Oppdraget kunne ikke aksepteres. Last inn siden og prøv igjen.'
-                    : 'Oppdraget kunne ikke avslås. Last inn siden og prøv igjen.';
+                result.message = 'Oppdraget kunne ikke bekreftes. Last inn siden og prøv igjen.';
             }
         }
     }

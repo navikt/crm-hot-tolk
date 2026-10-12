@@ -46,16 +46,6 @@ private class HOT_TjenesteleverandorAcceptServiceTest {
         return results;
     }
 
-    private static List<HOT_TjenesteleverandorAcceptanceService.AcceptanceResult> declineAsTestUser(
-        List<Id> serviceAppointmentIds
-    ) {
-        List<HOT_TjenesteleverandorAcceptanceService.AcceptanceResult> results;
-        System.runAs(getTestUser()) {
-            results = HOT_TjenesteleverandorAcceptanceService.declineServiceAppointments(serviceAppointmentIds);
-        }
-        return results;
-    }
-
     @IsTest
     static void acceptsSingleTransferredAppointment() {
         ServiceAppointment appointment = getTransferredAppointments(1)[0];
@@ -73,26 +63,31 @@ private class HOT_TjenesteleverandorAcceptServiceTest {
         Assert.areEqual('Accepted', actual.HOT_TjenesteleverandorStatus__c, 'Supplier status should be accepted');
         Assert.isNotNull(actual.HOT_TjenesteleverandorAcceptDate__c, 'Acceptance time should be stamped by Flow');
         Assert.isNull(actual.HOT_TjenesteleverandorDeadline__c, 'Acceptance should clear the supplier deadline');
+        Assert.areEqual(getTestUser().Id, actual.HOT_TLDispatcher__c, 'Confirmation should stamp the dispatcher');
     }
 
     @IsTest
-    static void declinesSingleTransferredAppointment() {
+    static void rejectsAppointmentWithoutDeadline() {
         ServiceAppointment appointment = getTransferredAppointments(1)[0];
+        appointment.HOT_TjenesteleverandorDeadline__c = null;
+        update appointment;
         setAcceptancePermission(true);
 
         Test.startTest();
-        List<HOT_TjenesteleverandorAcceptanceService.AcceptanceResult> results = declineAsTestUser(
+        List<HOT_TjenesteleverandorAcceptanceService.AcceptanceResult> results = acceptAsTestUser(
             new List<Id>{ appointment.Id }
         );
         Test.stopTest();
 
         ServiceAppointment actual = getAppointment(appointment.Id);
         Assert.areEqual(1, results.size(), 'The service should return one result');
-        Assert.isTrue(results[0].success, 'The transferred appointment should be declined');
-        Assert.areEqual('Declined', actual.HOT_TjenesteleverandorStatus__c, 'Supplier status should be declined');
-        Assert.areEqual('None', actual.Status, 'The decline flow should reopen the appointment');
-        Assert.isFalse(actual.HOT_IsReleasedToFreelance__c, 'The decline flow should retract the appointment');
-        Assert.isNull(actual.HOT_TjenesteleverandorDeadline__c, 'Decline should clear the supplier deadline');
+        Assert.isFalse(results[0].success, 'Confirmation requires a deadline');
+        Assert.areEqual('Transferred', actual.HOT_TjenesteleverandorStatus__c, 'The status must not change');
+        Assert.areEqual(
+            'Oppdraget kan ikke bekreftes lenger. Last inn siden på nytt.',
+            results[0].message,
+            'The response should explain that confirmation is unavailable'
+        );
     }
 
     @IsTest
@@ -102,13 +97,15 @@ private class HOT_TjenesteleverandorAcceptServiceTest {
         for (ServiceAppointment appointment : appointments) {
             appointmentIds.add(appointment.Id);
         }
+        appointmentIds.add(null);
+        appointmentIds.add(appointments[0].Id);
         setAcceptancePermission(true);
 
         Test.startTest();
         List<HOT_TjenesteleverandorAcceptanceService.AcceptanceResult> results = acceptAsTestUser(appointmentIds);
         Test.stopTest();
 
-        Assert.areEqual(200, results.size(), 'Every selected appointment should have a result');
+        Assert.areEqual(200, results.size(), 'The cap applies to unique, non-null IDs, not raw input length');
         for (HOT_TjenesteleverandorAcceptanceService.AcceptanceResult result : results) {
             Assert.isTrue(result.success, 'Every eligible bulk appointment should be accepted');
         }
@@ -124,8 +121,8 @@ private class HOT_TjenesteleverandorAcceptServiceTest {
     }
 
     @IsTest
-    static void declinesBulkRequest() {
-        List<ServiceAppointment> appointments = getTransferredAppointments(5);
+    static void rejectsMoreThanTwoHundredUniqueIds() {
+        List<ServiceAppointment> appointments = createTransferredAppointments(201, 'over confirmation limit');
         List<Id> appointmentIds = new List<Id>();
         for (ServiceAppointment appointment : appointments) {
             appointmentIds.add(appointment.Id);
@@ -133,21 +130,22 @@ private class HOT_TjenesteleverandorAcceptServiceTest {
         setAcceptancePermission(true);
 
         Test.startTest();
-        List<HOT_TjenesteleverandorAcceptanceService.AcceptanceResult> results = declineAsTestUser(appointmentIds);
+        try {
+            acceptAsTestUser(appointmentIds);
+            Assert.fail('More than 200 unique IDs should be rejected');
+        } catch (AuraHandledException expected) {
+            Assert.isNotNull(expected, 'The request limit should return a handled exception');
+        }
         Test.stopTest();
 
-        Assert.areEqual(5, results.size(), 'Every selected appointment should have a result');
-        for (HOT_TjenesteleverandorAcceptanceService.AcceptanceResult result : results) {
-            Assert.isTrue(result.success, 'Every eligible bulk appointment should be declined');
-        }
         Assert.areEqual(
-            5,
+            0,
             [
                 SELECT COUNT()
                 FROM ServiceAppointment
-                WHERE Id IN :appointmentIds AND HOT_TjenesteleverandorStatus__c = 'Declined' AND Status = 'None'
+                WHERE Id IN :appointmentIds AND HOT_TjenesteleverandorStatus__c = 'Accepted'
             ],
-            'All selected appointments should be declined and reopened'
+            'An oversized request must not confirm any appointments'
         );
     }
 
@@ -169,7 +167,7 @@ private class HOT_TjenesteleverandorAcceptServiceTest {
         Assert.areEqual(1, results.size(), 'Duplicate IDs should be processed once');
         Assert.isTrue(results[0].success, 'An already accepted appointment should be an idempotent success');
         Assert.areEqual(
-            'Oppdraget er allerede akseptert.',
+            'Oppdraget er allerede bekreftet.',
             results[0].message,
             'The result should explain the idempotent case'
         );
@@ -181,25 +179,17 @@ private class HOT_TjenesteleverandorAcceptServiceTest {
     }
 
     @IsTest
-    static void repeatedDeclineIsIdempotent() {
-        ServiceAppointment appointment = getTransferredAppointments(1)[0];
-        appointment.HOT_TjenesteleverandorStatus__c = 'Declined';
-        update appointment;
+    static void rejectsNullSelection() {
         setAcceptancePermission(true);
 
         Test.startTest();
-        List<HOT_TjenesteleverandorAcceptanceService.AcceptanceResult> results = declineAsTestUser(
-            new List<Id>{ appointment.Id, appointment.Id }
-        );
+        try {
+            acceptAsTestUser(null);
+            Assert.fail('A null selection should be rejected');
+        } catch (AuraHandledException expected) {
+            Assert.isNotNull(expected, 'Null input should return a handled exception');
+        }
         Test.stopTest();
-
-        Assert.areEqual(1, results.size(), 'Duplicate IDs should be processed once');
-        Assert.isTrue(results[0].success, 'An already declined appointment should be an idempotent success');
-        Assert.areEqual(
-            'Oppdraget er allerede avslått.',
-            results[0].message,
-            'The result should explain the idempotent case'
-        );
     }
 
     @IsTest
@@ -217,7 +207,7 @@ private class HOT_TjenesteleverandorAcceptServiceTest {
 
         Assert.isFalse(results[0].success, 'An appointment after its deadline must not be accepted');
         Assert.isTrue(
-            results[0].message.contains('Svarfristen'),
+            results[0].message.contains('Bekreftelsesfristen'),
             'The response should explain that the deadline has passed'
         );
         Assert.areNotEqual(
@@ -270,24 +260,17 @@ private class HOT_TjenesteleverandorAcceptServiceTest {
     }
 
     @IsTest
-    static void rejectsUserWithoutDeclinePermission() {
-        ServiceAppointment appointment = getTransferredAppointments(1)[0];
-        setAcceptancePermission(false);
+    static void rejectsSelectionContainingOnlyNulls() {
+        setAcceptancePermission(true);
 
         Test.startTest();
         try {
-            declineAsTestUser(new List<Id>{ appointment.Id });
-            Assert.fail('A user without the custom permission should be rejected');
+            acceptAsTestUser(new List<Id>{ null, null });
+            Assert.fail('A selection containing only nulls should be rejected');
         } catch (AuraHandledException expected) {
-            Assert.isNotNull(expected, 'The permission failure should be returned as a handled exception');
+            Assert.isNotNull(expected, 'Normalization must not produce an empty request');
         }
         Test.stopTest();
-
-        Assert.areEqual(
-            'Transferred',
-            getAppointment(appointment.Id).HOT_TjenesteleverandorStatus__c,
-            'Permission failure must not change the appointment'
-        );
     }
 
     @IsTest
@@ -332,6 +315,7 @@ private class HOT_TjenesteleverandorAcceptServiceTest {
                 HOT_IsReleasedToFreelance__c,
                 HOT_TjenesteleverandorStatus__c,
                 HOT_TjenesteleverandorAcceptDate__c,
+                HOT_TLDispatcher__c,
                 HOT_TjenesteleverandorDeadline__c
             FROM ServiceAppointment
             WHERE Id = :appointmentId
