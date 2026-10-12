@@ -73,6 +73,15 @@
                         ></c-hot_tjenesteleverandor-sa-dispatched-list>
                     </div>
                 </template>
+                <template lwc:if={isFinishedTab}>
+                    <div class="tab-content">
+                        <c-hot_tjenesteleverandor-sa-finished-list
+                            record-id={recordId}
+                            data-name="finished"
+                            onsendfilters={handleFilters}
+                        ></c-hot_tjenesteleverandor-sa-finished-list>
+                    </div>
+                </template>
             </div>
         </div>
     </div>
