@@ -134,4 +134,23 @@ private class HOT_TjenesteleverandorListControllerTest {
             'The list should use the standard appointment number instead of its duplicate formula'
         );
     }
+
+    @IsTest
+    static void returnsSAWithReleasedStatus() {
+        List<ServiceAppointment> appointments;
+        System.runAs(getTestUser()) {
+            Test.startTest();
+            appointments = HOT_TjenesteleverandorListController.getReleasedServiceAppointments();
+            Test.stopTest();
+        }
+
+        Assert.areEqual(2, appointments.size(), 'Both SA status with released to freelance should be returned');
+        for (ServiceAppointment appointment : appointments) {
+            Assert.areEqual(
+                'Released to Freelance',
+                appointment.Status,
+                'The released list should contain only SA status Released to Freelance'
+            );
+        }
+    }
 }
