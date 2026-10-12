@@ -172,6 +172,7 @@ private class HOT_TjenesteleverandorListControllerTest {
             ServiceAppointment appointment = HOT_TestDataFactory.createServiceAppointment(workOrderLineItem);
             appointment.Status = appointmentStatus;
             appointment.HOT_TjenesteleverandorStatus__c = 'Accepted';
+            appointment.HOT_IsReleasedToFreelance__c = true;
             finishedAppointments.add(appointment);
         }
         insert finishedAppointments;
@@ -179,6 +180,7 @@ private class HOT_TjenesteleverandorListControllerTest {
         ServiceAppointment transferredAppointment = HOT_TestDataFactory.createServiceAppointment(workOrderLineItem);
         transferredAppointment.Status = 'Completed';
         transferredAppointment.HOT_TjenesteleverandorStatus__c = 'Transferred';
+        transferredAppointment.HOT_IsReleasedToFreelance__c = true;
         insert transferredAppointment;
 
         Set<Id> expectedIds = new Map<Id, ServiceAppointment>(finishedAppointments).keySet();
