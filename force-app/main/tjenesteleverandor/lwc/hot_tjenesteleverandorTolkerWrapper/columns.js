@@ -6,17 +6,17 @@ export let columns = [
     },
     {
         label: 'Ressurstype',
-        name: 'ResourceType',
+        name: 'HOT_InterpreterType__c',
         type: 'String'
     },
     {
         label: 'Aktiv',
-        name: 'IsActive',
-        type: 'Boolean'
+        name: 'IsActiveLabel',
+        type: 'String'
     },
     {
         label: 'Region',
-        name: 'HOT_Address__c',
+        name: 'Region',
         type: 'String'
     }    
 ];

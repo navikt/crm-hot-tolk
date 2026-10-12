@@ -206,10 +206,11 @@ public with sharing class HOT_TjenesteleverandorListController {
             SELECT
                 Id,
                 Name,
-                ResourceType,
+                HOT_InterpreterType__c,
                 IsActive,
-                HOT_Address__c
+                HOT_ServiceTerritory__r.Name
             FROM ServiceResource
+            LIMIT 10
         ];
     }
 }
