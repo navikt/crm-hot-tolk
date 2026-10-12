@@ -1,16 +1,37 @@
 <template>
-    <div class="page-background">
-        <div class="list">
-            <div class="header-row">
-                <h1 class="header-title">Tolker</h1>
-            </div>
-            <div class="tab-content">
-                <c-hot_freelance-common-table
-                    records={tolkerList}
-                    columns={columns}
-                    onrowclick={goToRecordDetails}
-                ></c-hot_freelance-common-table>
+    <template lwc:if={hasResult}>
+        <div class="page-background">
+            <div class="list">
+                <div class="header-row">
+                    <h1 class="header-title">Tolker</h1>
+                </div>
+                <div class="search-bar">
+                    <!-- code for search bar that allows searching for interpreters -->
+                </div>
+                <div class="tab-content">
+                    <c-hot_freelance-common-table
+                        records={tolkerList}
+                        columns={columns}
+                        onrowclick={goToRecordDetails}
+                    ></c-hot_freelance-common-table>
+                </div>
             </div>
         </div>
-    </div>
+    </template>
+    <template lwc:if={hasError}>
+        <div class="error-message">
+            <p>{errorMessage}</p>
+        </div>
+    </template>
+    <template lwc:if={hasNoResult}>
+        <div class="no-results">
+            <p>Ingen tolker funnet.</p>
+        </div>
+    </template>
+
+    <template lwc:if={dataLoader}>
+        <div class="loader-container">
+            <c-hot_loader size="3xlarge"></c-hot_loader>
+        </div>
+    </template>
 </template>
