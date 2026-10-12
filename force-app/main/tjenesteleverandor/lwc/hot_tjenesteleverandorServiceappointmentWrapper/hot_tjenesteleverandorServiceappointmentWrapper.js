@@ -11,7 +11,9 @@ export default class Hot_tjenesteleverandorServiceappointmentWrapper extends Nav
 
     tabs = [
         { name: 'transferred', label: 'Overførte oppdrag' },
-        { name: 'accepted', label: 'Aksepterte oppdrag' }
+        { name: 'accepted', label: 'Aksepterte oppdrag' },
+        { name: 'released', label: 'Frigitt oppdrag' },
+        { name: 'dispatched', label: 'Tildelt oppdrag' }
     ];
 
     get tabMap() {
@@ -84,5 +86,13 @@ export default class Hot_tjenesteleverandorServiceappointmentWrapper extends Nav
 
     get isAcceptedTab() {
         return this.activeTab === 'accepted';
+    }
+
+    get isReleasedTab() {
+        return this.activeTab === 'released';
+    }
+
+    get isDispatchedTab() {
+        return this.activeTab === 'dispatched';
     }
 }

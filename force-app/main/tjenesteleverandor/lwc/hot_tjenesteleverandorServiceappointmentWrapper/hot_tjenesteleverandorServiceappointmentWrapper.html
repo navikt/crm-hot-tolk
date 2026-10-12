@@ -55,6 +55,24 @@
                         ></c-hot_tjenesteleverandor-sa-accepted-list>
                     </div>
                 </template>
+                <template lwc:if={isReleasedTab}>
+                    <div class="tab-content">
+                        <c-hot_tjenesteleverandor-sa-released-list
+                            record-id={recordId}
+                            data-name="released"
+                            onsendfilters={handleFilters}
+                        ></c-hot_tjenesteleverandor-sa-released-list>
+                    </div>
+                </template>
+                <template lwc:if={isDispatchedTab}>
+                    <div class="tab-content">
+                        <c-hot_tjenesteleverandor-sa-dispatched-list
+                            record-id={recordId}
+                            data-name="dispatched"
+                            onsendfilters={handleFilters}
+                        ></c-hot_tjenesteleverandor-sa-dispatched-list>
+                    </div>
+                </template>
             </div>
         </div>
     </div>
