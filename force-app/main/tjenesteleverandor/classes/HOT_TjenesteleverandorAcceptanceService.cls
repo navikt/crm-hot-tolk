@@ -101,12 +101,7 @@ public without sharing class HOT_TjenesteleverandorAcceptanceService {
     private static Map<Id, ServiceAppointment> lockAppointments(Set<Id> requestedIds) {
         return new Map<Id, ServiceAppointment>(
             [
-                SELECT
-                    Id,
-                    Status,
-                    HOT_IsReleasedToFreelance__c,
-                    HOT_TjenesteleverandorStatus__c,
-                    HOT_TjenesteleverandorDeadline__c
+                SELECT Id, Status, HOT_TjenesteleverandorStatus__c, HOT_TjenesteleverandorDeadline__c
                 FROM ServiceAppointment
                 WHERE Id IN :requestedIds
                 WITH USER_MODE
@@ -119,7 +114,6 @@ public without sharing class HOT_TjenesteleverandorAcceptanceService {
         Boolean isEligible =
             appointment.HOT_TjenesteleverandorStatus__c == STATUS_TRANSFERRED &&
             appointment.Status == SALESFORCE_STATUS_RELEASED &&
-            appointment.HOT_IsReleasedToFreelance__c == true &&
             appointment.HOT_TjenesteleverandorDeadline__c != null &&
             appointment.HOT_TjenesteleverandorDeadline__c > currentTime;
         if (isEligible) {

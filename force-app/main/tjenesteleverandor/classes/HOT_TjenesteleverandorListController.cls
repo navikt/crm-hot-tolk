@@ -44,9 +44,9 @@ public with sharing class HOT_TjenesteleverandorListController {
                 HOT_UserInterpretationMethod__c
             FROM ServiceAppointment
             WHERE
-                HOT_TjenesteleverandorStatus__c = 'Transferred'
-                AND Status = 'Released to Freelance'
-                AND HOT_IsReleasedToFreelance__c = TRUE
+                HOT_IsReleasedToTjenesteleverandor__c = TRUE
+                AND HOT_TjenesteleverandorStatus__c = 'Transferred'
+                AND Status = 'None'
             ORDER BY EarliestStartTime ASC
         ];
     }
@@ -81,7 +81,10 @@ public with sharing class HOT_TjenesteleverandorListController {
                 HOT_UserPreferredInterpreter__c,
                 HOT_UserInterpretationMethod__c
             FROM ServiceAppointment
-            WHERE HOT_TjenesteleverandorStatus__c = 'Accepted' AND Status = 'Released to Freelance'
+            WHERE
+                HOT_IsReleasedToTjenesteleverandor__c = TRUE
+                AND HOT_TjenesteleverandorStatus__c = 'Accepted'
+                AND Status = 'None'
             ORDER BY EarliestStartTime ASC
         ];
     }
@@ -117,7 +120,8 @@ public with sharing class HOT_TjenesteleverandorListController {
                 HOT_UserInterpretationMethod__c
             FROM ServiceAppointment
             WHERE
-                HOT_TjenesteleverandorStatus__c = 'Accepted'
+                HOT_IsReleasedToTjenesteleverandor__c = TRUE
+                AND HOT_TjenesteleverandorStatus__c = 'Accepted'
                 AND Status = 'Released to Freelance'
                 AND HOT_IsReleasedToFreelance__c = TRUE
             ORDER BY EarliestStartTime ASC
@@ -155,7 +159,8 @@ public with sharing class HOT_TjenesteleverandorListController {
                 HOT_UserInterpretationMethod__c
             FROM ServiceAppointment
             WHERE
-                HOT_TjenesteleverandorStatus__c = 'Accepted'
+                HOT_IsReleasedToTjenesteleverandor__c = TRUE
+                AND HOT_TjenesteleverandorStatus__c = 'Accepted'
                 AND Status = 'Dispatched'
                 AND HOT_IsReleasedToFreelance__c = TRUE
             ORDER BY EarliestStartTime ASC
@@ -193,9 +198,10 @@ public with sharing class HOT_TjenesteleverandorListController {
                 HOT_UserInterpretationMethod__c
             FROM ServiceAppointment
             WHERE
-                HOT_TjenesteleverandorStatus__c = 'Accepted'
-                AND Status IN ('Completed', 'Cannot Complete', 'Canceled', 'Annul')
+                HOT_IsReleasedToTjenesteleverandor__c = TRUE
+                AND HOT_TjenesteleverandorStatus__c = 'Accepted'
                 AND HOT_IsReleasedToFreelance__c = TRUE
+                AND Status IN ('Completed', 'Cannot Complete', 'Canceled', 'Annul')
             ORDER BY EarliestStartTime ASC
         ];
     }
