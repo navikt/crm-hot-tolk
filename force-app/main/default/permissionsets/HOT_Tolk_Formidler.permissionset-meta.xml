@@ -1455,7 +1455,7 @@
         <readable>true</readable>
     </fieldPermissions>
     <fieldPermissions>
-        <editable>false</editable>
+        <editable>true</editable>
         <field>ServiceAppointment.HOT_IsReleasedToTjenesteleverandor__c</field>
         <readable>true</readable>
     </fieldPermissions>
