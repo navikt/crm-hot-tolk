@@ -109,10 +109,10 @@ private class HOT_TjenesteleverandorListControllerTest {
     }
 
     @IsTest
-    static void returnsOnlyAcceptedAppointments() {
-        Test.startTest();
+    static void returnsOnlyAcceptedSA() {
+        System.Test.startTest();
         List<ServiceAppointment> appointments = getAcceptedAppointmentsAsTestUser();
-        Test.stopTest();
+        System.Test.stopTest();
 
         Assert.areEqual(1, appointments.size(), 'Only the accepted appointment should be returned');
         Assert.areEqual(
@@ -133,5 +133,73 @@ private class HOT_TjenesteleverandorListControllerTest {
             appointments[0].AppointmentNumber,
             'The list should use the standard appointment number instead of its duplicate formula'
         );
+    }
+
+    @IsTest
+    static void returnsSAWithReleasedStatus() {
+        List<ServiceAppointment> appointments;
+        System.runAs(getTestUser()) {
+            System.Test.startTest();
+            appointments = HOT_TjenesteleverandorListController.getReleasedServiceAppointments();
+            System.Test.stopTest();
+        }
+
+        Assert.areEqual(1, appointments.size(), 'Only accepted appointments released to freelance should be returned');
+        for (ServiceAppointment appointment : appointments) {
+            Assert.areEqual(
+                'Accepted',
+                appointment.HOT_TjenesteleverandorStatus__c,
+                'The released list should exclude transferred appointments'
+            );
+            Assert.areEqual(
+                'Released to Freelance',
+                appointment.Status,
+                'The released list should contain only SA status Released to Freelance'
+            );
+        }
+    }
+
+    @IsTest
+    static void returnsOnlyFinishedAcceptedSA() {
+        myTriggers.disable(HOT_ServiceAppointmentHandler.class);
+        myTriggers.disable(HOT_ServiceAppointmentStatusHandler.class);
+        myTriggers.disable(HOT_ServiceAppointmentAccessHandler.class);
+
+        WorkOrderLineItem workOrderLineItem = [SELECT Id FROM WorkOrderLineItem LIMIT 1];
+        List<ServiceAppointment> finishedAppointments = new List<ServiceAppointment>();
+        Set<String> finishedStatuses = new Set<String>{ 'Completed', 'Cannot Complete', 'Canceled', 'Annul' };
+        for (String appointmentStatus : finishedStatuses) {
+            ServiceAppointment appointment = HOT_TestDataFactory.createServiceAppointment(workOrderLineItem);
+            appointment.Status = appointmentStatus;
+            appointment.HOT_TjenesteleverandorStatus__c = 'Accepted';
+            appointment.HOT_IsReleasedToFreelance__c = true;
+            finishedAppointments.add(appointment);
+        }
+        insert finishedAppointments;
+
+        ServiceAppointment transferredAppointment = HOT_TestDataFactory.createServiceAppointment(workOrderLineItem);
+        transferredAppointment.Status = 'Completed';
+        transferredAppointment.HOT_TjenesteleverandorStatus__c = 'Transferred';
+        transferredAppointment.HOT_IsReleasedToFreelance__c = true;
+        insert transferredAppointment;
+
+        Set<Id> expectedIds = new Map<Id, ServiceAppointment>(finishedAppointments).keySet();
+        List<ServiceAppointment> appointments;
+        System.runAs(getTestUser()) {
+            System.Test.startTest();
+            appointments = HOT_TjenesteleverandorListController.getFinishedServiceAppointments();
+            System.Test.stopTest();
+        }
+
+        Assert.areEqual(4, appointments.size(), 'All four finished statuses should be returned');
+        Assert.areEqual(
+            expectedIds,
+            new Map<Id, ServiceAppointment>(appointments).keySet(),
+            'Exclude transferred appointments and accepted appointments that are still active'
+        );
+        for (ServiceAppointment appointment : appointments) {
+            Assert.areEqual('Accepted', appointment.HOT_TjenesteleverandorStatus__c);
+            Assert.isNotNull(appointment.AppointmentNumber);
+        }
     }
 }
