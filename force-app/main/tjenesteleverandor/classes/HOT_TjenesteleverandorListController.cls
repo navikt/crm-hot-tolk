@@ -81,7 +81,7 @@ public with sharing class HOT_TjenesteleverandorListController {
                 HOT_UserPreferredInterpreter__c,
                 HOT_UserInterpretationMethod__c
             FROM ServiceAppointment
-            WHERE HOT_TjenesteleverandorStatus__c = 'Accepted'
+            WHERE HOT_TjenesteleverandorStatus__c = 'Accepted' AND Status = 'Released to Freelance'
             ORDER BY EarliestStartTime ASC
         ];
     }

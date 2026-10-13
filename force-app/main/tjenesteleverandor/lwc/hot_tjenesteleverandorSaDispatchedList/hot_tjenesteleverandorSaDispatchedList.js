@@ -1,5 +1,6 @@
 import { LightningElement, wire, api } from 'lwc';
 import { NavigationMixin } from 'lightning/navigation';
+import { refreshApex } from '@salesforce/apex';
 import getDispatchedServiceAppointments from '@salesforce/apex/HOT_TjenesteleverandorListController.getDispatchedServiceAppointments';
 import icons from '@salesforce/resourceUrl/ikoner';
 
@@ -20,6 +21,9 @@ export default class Hot_tjenesteleverandorSaDispatchedList extends NavigationMi
     filters = [];
     columns = [];
     error;
+    hasRefreshedEmptyResult = false;
+    hasVerifiedEmptyResult = false;
+    isEmptyResultRefreshPending = false;
 
     showServiceAppointmentDetailsModal = false;
     serviceAppointment;
@@ -42,7 +46,7 @@ export default class Hot_tjenesteleverandorSaDispatchedList extends NavigationMi
     }
 
     get noServiceAppointmentsResult() {
-        return !this.dataLoader && this.allRecords.length === 0;
+        return !this.dataLoader && this.hasVerifiedEmptyResult && this.allRecords.length === 0;
     }
 
     get noFilteredRecordsResult() {
@@ -64,12 +68,38 @@ export default class Hot_tjenesteleverandorSaDispatchedList extends NavigationMi
             });
             this.records = filterRecords(this.allRecords, this.filters);
             this.error = undefined;
-            this.dataLoader = false;
             this.sendFilters();
+
+            if (this.allRecords.length === 0 && !this.hasRefreshedEmptyResult) {
+                this.hasRefreshedEmptyResult = true;
+                this.isEmptyResultRefreshPending = true;
+                void this.refreshEmptyResult(result);
+                return;
+            }
+
+            if (this.allRecords.length > 0) {
+                this.hasVerifiedEmptyResult = false;
+                this.dataLoader = false;
+            } else if (!this.isEmptyResultRefreshPending) {
+                this.hasVerifiedEmptyResult = true;
+                this.dataLoader = false;
+            }
         } else if (result.error) {
             this.error = result.error;
             this.allRecords = [];
             this.records = [];
+            this.dataLoader = false;
+        }
+    }
+
+    async refreshEmptyResult(result) {
+        try {
+            await refreshApex(result);
+            this.hasVerifiedEmptyResult = this.allRecords.length === 0;
+        } catch (error) {
+            this.error = error;
+        } finally {
+            this.isEmptyResultRefreshPending = false;
             this.dataLoader = false;
         }
     }
