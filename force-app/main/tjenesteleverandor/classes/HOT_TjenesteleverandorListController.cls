@@ -154,7 +154,10 @@ public with sharing class HOT_TjenesteleverandorListController {
                 HOT_UserPreferredInterpreter__c,
                 HOT_UserInterpretationMethod__c
             FROM ServiceAppointment
-            WHERE HOT_TjenesteleverandorStatus__c = 'Accepted' AND Status = 'Dispatched'
+            WHERE
+                HOT_TjenesteleverandorStatus__c = 'Accepted'
+                AND Status = 'Dispatched'
+                AND HOT_IsReleasedToFreelance__c = TRUE
             ORDER BY EarliestStartTime ASC
         ];
     }

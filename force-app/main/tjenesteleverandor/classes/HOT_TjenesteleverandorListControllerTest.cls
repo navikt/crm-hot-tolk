@@ -110,9 +110,9 @@ private class HOT_TjenesteleverandorListControllerTest {
 
     @IsTest
     static void returnsOnlyAcceptedSA() {
-        Test.startTest();
+        System.Test.startTest();
         List<ServiceAppointment> appointments = getAcceptedAppointmentsAsTestUser();
-        Test.stopTest();
+        System.Test.stopTest();
 
         Assert.areEqual(1, appointments.size(), 'Only the accepted appointment should be returned');
         Assert.areEqual(
@@ -139,9 +139,9 @@ private class HOT_TjenesteleverandorListControllerTest {
     static void returnsSAWithReleasedStatus() {
         List<ServiceAppointment> appointments;
         System.runAs(getTestUser()) {
-            Test.startTest();
+            System.Test.startTest();
             appointments = HOT_TjenesteleverandorListController.getReleasedServiceAppointments();
-            Test.stopTest();
+            System.Test.stopTest();
         }
 
         Assert.areEqual(1, appointments.size(), 'Only accepted appointments released to freelance should be returned');
@@ -186,9 +186,9 @@ private class HOT_TjenesteleverandorListControllerTest {
         Set<Id> expectedIds = new Map<Id, ServiceAppointment>(finishedAppointments).keySet();
         List<ServiceAppointment> appointments;
         System.runAs(getTestUser()) {
-            Test.startTest();
+            System.Test.startTest();
             appointments = HOT_TjenesteleverandorListController.getFinishedServiceAppointments();
-            Test.stopTest();
+            System.Test.stopTest();
         }
 
         Assert.areEqual(4, appointments.size(), 'All four finished statuses should be returned');
