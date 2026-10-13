@@ -1,6 +1,5 @@
 import { LightningElement, wire, api } from 'lwc';
 import { NavigationMixin } from 'lightning/navigation';
-import { refreshApex } from '@salesforce/apex';
 import getReleasedServiceAppointments from '@salesforce/apex/HOT_TjenesteleverandorListController.getReleasedServiceAppointments';
 import icons from '@salesforce/resourceUrl/ikoner';
 
@@ -10,7 +9,6 @@ import { getDayOfWeek } from 'c/hot_commonUtils';
 import { filterRecords, restoreFilters } from 'c/hot_tjenesteleverandorFilters';
 
 const FILTER_STORAGE_KEY = 'tjenesteleverandorReleasedFilters';
-const LIST_REFRESH_KEY = 'tjenesteleverandorReleasedListRefresh';
 
 export default class Hot_tjenesteleverandorSaReleasedList extends NavigationMixin(LightningElement) {
     @api recordId;
@@ -26,18 +24,6 @@ export default class Hot_tjenesteleverandorSaReleasedList extends NavigationMixi
     showServiceAppointmentDetailsModal = false;
     serviceAppointment;
     selectedRecordId;
-    wiredReleasedAppointments;
-    isRefreshPending = false;
-
-    handlePageActivation = () => {
-        void this.refreshIfRequested();
-    };
-
-    handleVisibilityChange = () => {
-        if (document.visibilityState === 'visible') {
-            void this.refreshIfRequested();
-        }
-    };
 
     datetimeFields = [
         { name: 'StartAndEndDate', type: 'datetimeinterval', start: 'EarliestStartTime', end: 'DueDate' },
@@ -48,17 +34,7 @@ export default class Hot_tjenesteleverandorSaReleasedList extends NavigationMixi
     connectedCallback() {
         this.filters = restoreFilters(FILTER_STORAGE_KEY);
         this.columns = window.screen.width > 576 ? columns : mobileColumns;
-        window.addEventListener('popstate', this.handlePageActivation);
-        window.addEventListener('pageshow', this.handlePageActivation);
-        document.addEventListener('visibilitychange', this.handleVisibilityChange);
         this.sendFilters();
-        void this.refreshIfRequested();
-    }
-
-    disconnectedCallback() {
-        window.removeEventListener('popstate', this.handlePageActivation);
-        window.removeEventListener('pageshow', this.handlePageActivation);
-        document.removeEventListener('visibilitychange', this.handleVisibilityChange);
     }
 
     get hasResult() {
@@ -75,8 +51,6 @@ export default class Hot_tjenesteleverandorSaReleasedList extends NavigationMixi
 
     @wire(getReleasedServiceAppointments)
     wiredReleasedServiceAppointments(result) {
-        this.wiredReleasedAppointments = result;
-
         if (result.data) {
             this.allRecords = result.data.map((record) => {
                 const formattedRecord = formatRecord({ ...record }, this.datetimeFields);
@@ -92,33 +66,10 @@ export default class Hot_tjenesteleverandorSaReleasedList extends NavigationMixi
             this.error = undefined;
             this.dataLoader = false;
             this.sendFilters();
-            void this.refreshIfRequested();
         } else if (result.error) {
             this.error = result.error;
             this.allRecords = [];
             this.records = [];
-            this.dataLoader = false;
-        }
-    }
-
-    async refreshIfRequested() {
-        const marker = sessionStorage.getItem(LIST_REFRESH_KEY);
-        if (!marker || !this.wiredReleasedAppointments || this.isRefreshPending) {
-            return;
-        }
-
-        this.isRefreshPending = true;
-        this.dataLoader = true;
-        try {
-            await refreshApex(this.wiredReleasedAppointments);
-            if (sessionStorage.getItem(LIST_REFRESH_KEY) === marker) {
-                sessionStorage.removeItem(LIST_REFRESH_KEY);
-            }
-        } catch (error) {
-            this.error = error;
-            this.records = [];
-        } finally {
-            this.isRefreshPending = false;
             this.dataLoader = false;
         }
     }
