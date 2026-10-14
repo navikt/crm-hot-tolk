@@ -22,10 +22,17 @@
             </value>
         </assignmentItems>
         <assignmentItems>
-            <assignToReference>CurrentServiceAppointment.Status</assignToReference>
+            <assignToReference>CurrentServiceAppointment.HOT_IsReleasedToTjenesteleverandor__c</assignToReference>
             <operator>Assign</operator>
             <value>
-                <stringValue>Released to Freelance</stringValue>
+                <booleanValue>true</booleanValue>
+            </value>
+        </assignmentItems>
+        <assignmentItems>
+            <assignToReference>CurrentServiceAppointment.HOT_TjenesteleverandorStatus__c</assignToReference>
+            <operator>Assign</operator>
+            <value>
+                <stringValue>Transferred</stringValue>
             </value>
         </assignmentItems>
         <connector>
@@ -406,7 +413,7 @@
         </connector>
         <fields>
             <name>InformationField</name>
-            <fieldText>&lt;p&gt;&lt;b&gt;Følgende informasjon vil bli vist til frilanstolker.&lt;/b&gt;&lt;/p&gt;&lt;p&gt;{!CurrentServiceAppointment.HOT_Information__c}&lt;/p&gt;</fieldText>
+            <fieldText>&lt;p&gt;&lt;strong&gt;Følgende informasjon vil bli vist til ekstern tolker.&lt;/strong&gt;&lt;/p&gt;&lt;p&gt;{!CurrentServiceAppointment.HOT_Information__c}&lt;/p&gt;</fieldText>
             <fieldType>DisplayText</fieldType>
             <styleProperties>
                 <verticalAlignment>
@@ -469,7 +476,7 @@
         <allowPause>false</allowPause>
         <fields>
             <name>Success</name>
-            <fieldText>&lt;p&gt;Oppdraget ble frigitt til frilanstolker.&lt;/p&gt;</fieldText>
+            <fieldText>&lt;p&gt;Oppdraget ble frigitt til tjenesteleverandør.&lt;/p&gt;</fieldText>
             <fieldType>DisplayText</fieldType>
             <styleProperties>
                 <verticalAlignment>
