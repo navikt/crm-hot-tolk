@@ -295,12 +295,7 @@ private class HOT_TjenesteleverandorAcceptServiceTest {
 
     private static List<ServiceAppointment> getTransferredAppointments(Integer count) {
         return [
-            SELECT
-                Id,
-                Status,
-                HOT_IsReleasedToFreelance__c,
-                HOT_TjenesteleverandorStatus__c,
-                HOT_TjenesteleverandorDeadline__c
+            SELECT Id, Status, HOT_TjenesteleverandorStatus__c, HOT_TjenesteleverandorDeadline__c
             FROM ServiceAppointment
             WHERE HOT_TjenesteleverandorStatus__c = 'Transferred'
             ORDER BY CreatedDate
@@ -312,7 +307,6 @@ private class HOT_TjenesteleverandorAcceptServiceTest {
         return [
             SELECT
                 Status,
-                HOT_IsReleasedToFreelance__c,
                 HOT_TjenesteleverandorStatus__c,
                 HOT_TjenesteleverandorAcceptDate__c,
                 HOT_TLDispatcher__c,
