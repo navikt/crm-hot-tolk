@@ -259,7 +259,7 @@
     </decisions>
     <environments>Default</environments>
     <interviewLabel>Release to Tjenesteleverandor {!$Flow.CurrentDateTime}</interviewLabel>
-    <label>Release to Tjenesteleverandor</label>
+    <label>HOT Release to Tjenesteleverandor</label>
     <processMetadataValues>
         <name>BuilderType</name>
         <value>
