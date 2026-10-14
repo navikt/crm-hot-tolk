@@ -9,7 +9,7 @@
 
 tr.row {
     height: 60px;
-    border-top: 1px solid #2c2c2c8e;
+    border-top: 1px solid #d5d8dc;
     transition: transform 0.1s;
 }
 
@@ -24,9 +24,19 @@ th {
     font-family: 'Source Sans 3', 'Source Sans Pro', Arial, sans-serif;
 }
 
+@media (min-width: 769px) {
+    tr.row {
+        background-color: #ffffff;
+    }
+
+    tr.row:nth-child(even) {
+        background-color: #f6f7f8;
+    }
+}
+
 tr.row:hover {
     cursor: pointer;
-    background-color: #f1f1f1;
+    background-color: #e5e7e9;
 }
 
 tr.row.selected-row,
