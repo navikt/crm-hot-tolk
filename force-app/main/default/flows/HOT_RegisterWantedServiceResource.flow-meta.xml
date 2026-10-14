@@ -1,45 +1,24 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <Flow xmlns="http://soap.sforce.com/2006/04/metadata">
-    <actionCalls>
-        <name>check_for_overlap_and_interested_ir</name>
-        <label>check for overlap and interested ir</label>
-        <locationX>380</locationX>
-        <locationY>674</locationY>
-        <actionName>HOT_wantedSRListController</actionName>
-        <actionType>apex</actionType>
-        <connector>
-            <targetReference>overlapDecision</targetReference>
-        </connector>
-        <flowTransactionModel>Automatic</flowTransactionModel>
-        <inputParameters>
-            <name>saID</name>
-            <value>
-                <elementReference>recordId</elementReference>
-            </value>
-        </inputParameters>
-        <inputParameters>
-            <name>srID</name>
-            <value>
-                <elementReference>check_if_freelance.Id</elementReference>
-            </value>
-        </inputParameters>
-        <nameSegment>HOT_wantedSRListController</nameSegment>
-        <outputParameters>
-            <assignToReference>overlappingSA</assignToReference>
-            <name>output</name>
-        </outputParameters>
-    </actionCalls>
     <apiVersion>58.0</apiVersion>
+    <areMetricsLoggedToDataCloud>false</areMetricsLoggedToDataCloud>
     <assignments>
         <name>change_status</name>
         <label>change status</label>
-        <locationX>578</locationX>
-        <locationY>1106</locationY>
+        <locationX>50</locationX>
+        <locationY>890</locationY>
         <assignmentItems>
             <assignToReference>get_IR.Status__c</assignToReference>
             <operator>Assign</operator>
             <value>
                 <stringValue>Wanted</stringValue>
+            </value>
+        </assignmentItems>
+        <assignmentItems>
+            <assignToReference>get_IR.HOT_Wanted_by__c</assignToReference>
+            <operator>Assign</operator>
+            <value>
+                <elementReference>onsketAv2.value</elementReference>
             </value>
         </assignmentItems>
         <connector>
@@ -65,7 +44,7 @@
     <decisions>
         <name>check_if_sr_is_freelance</name>
         <label>check if sr is freelance</label>
-        <locationX>743</locationX>
+        <locationX>380</locationX>
         <locationY>566</locationY>
         <defaultConnector>
             <targetReference>Is_not_freelance_message</targetReference>
@@ -89,41 +68,41 @@
                 </rightValue>
             </conditions>
             <connector>
-                <targetReference>check_for_overlap_and_interested_ir</targetReference>
+                <targetReference>get_IR</targetReference>
             </connector>
             <label>Is freelance</label>
         </rules>
     </decisions>
     <decisions>
-        <name>checkSAReleasedToFreelance</name>
-        <label>checkSAReleasedToFreelance</label>
-        <locationX>1056</locationX>
+        <name>checkSAAcceptedByTjenesteleverandor</name>
+        <label>checkSAAcceptedByTjenesteleverandor</label>
+        <locationX>611</locationX>
         <locationY>242</locationY>
         <defaultConnector>
-            <targetReference>notReleasedScreen</targetReference>
+            <targetReference>notTjenesteleverandorOwned</targetReference>
         </defaultConnector>
-        <defaultConnectorLabel>Not released to freelance</defaultConnectorLabel>
+        <defaultConnectorLabel>Not accepted by tjenesteleverandor</defaultConnectorLabel>
         <rules>
-            <name>Is_released_to_freelance</name>
+            <name>Is_accepted_by_tjenestleverandor</name>
             <conditionLogic>and</conditionLogic>
             <conditions>
-                <leftValueReference>getSA.Status</leftValueReference>
+                <leftValueReference>getSA.HOT_TjenesteleverandorStatus__c</leftValueReference>
                 <operator>EqualTo</operator>
                 <rightValue>
-                    <stringValue>Released to Freelance</stringValue>
+                    <stringValue>Accepted</stringValue>
                 </rightValue>
             </conditions>
             <connector>
                 <targetReference>registerWanterSr</targetReference>
             </connector>
-            <label>Is released to freelance</label>
+            <label>Is accepted by tjenestleverandor</label>
         </rules>
     </decisions>
     <decisions>
         <name>if_IR_not_exist</name>
         <label>if IR not exist</label>
-        <locationX>710</locationX>
-        <locationY>998</locationY>
+        <locationX>182</locationX>
+        <locationY>782</locationY>
         <defaultConnector>
             <targetReference>New_wanted_interested_resource</targetReference>
         </defaultConnector>
@@ -135,53 +114,13 @@
                 <leftValueReference>get_IR.ServiceResource__r.Id</leftValueReference>
                 <operator>Contains</operator>
                 <rightValue>
-                    <elementReference>wantedSR.recordId</elementReference>
+                    <elementReference>wantedServiceResourceSearch.value</elementReference>
                 </rightValue>
             </conditions>
             <connector>
                 <targetReference>change_status</targetReference>
             </connector>
             <label>Change status on IR</label>
-        </rules>
-    </decisions>
-    <decisions>
-        <name>overlapDecision</name>
-        <label>overlapDecision</label>
-        <locationX>380</locationX>
-        <locationY>782</locationY>
-        <defaultConnector>
-            <targetReference>get_IR</targetReference>
-        </defaultConnector>
-        <defaultConnectorLabel>no overlap</defaultConnectorLabel>
-        <rules>
-            <name>Overlap</name>
-            <conditionLogic>and</conditionLogic>
-            <conditions>
-                <leftValueReference>overlappingSA</leftValueReference>
-                <operator>EqualTo</operator>
-                <rightValue>
-                    <stringValue>overlap</stringValue>
-                </rightValue>
-            </conditions>
-            <connector>
-                <targetReference>overlapScreen</targetReference>
-            </connector>
-            <label>Overlap or existing ir on WO</label>
-        </rules>
-        <rules>
-            <name>existing_IR</name>
-            <conditionLogic>and</conditionLogic>
-            <conditions>
-                <leftValueReference>overlappingSA</leftValueReference>
-                <operator>EqualTo</operator>
-                <rightValue>
-                    <stringValue>existing</stringValue>
-                </rightValue>
-            </conditions>
-            <connector>
-                <targetReference>existing</targetReference>
-            </connector>
-            <label>existing IR</label>
         </rules>
     </decisions>
     <environments>Default</environments>
@@ -209,12 +148,15 @@
     <recordCreates>
         <name>New_wanted_interested_resource</name>
         <label>New wanted interested resource</label>
-        <locationX>842</locationX>
-        <locationY>1106</locationY>
+        <locationX>314</locationX>
+        <locationY>890</locationY>
+        <connector>
+            <targetReference>successScreen</targetReference>
+        </connector>
         <inputAssignments>
             <field>HOT_Wanted_by__c</field>
             <value>
-                <elementReference>Onsket_av</elementReference>
+                <elementReference>onsketAv2.value</elementReference>
             </value>
         </inputAssignments>
         <inputAssignments>
@@ -226,7 +168,7 @@
         <inputAssignments>
             <field>ServiceResource__c</field>
             <value>
-                <elementReference>wantedSR.recordId</elementReference>
+                <elementReference>wantedServiceResourceSearch.value</elementReference>
             </value>
         </inputAssignments>
         <inputAssignments>
@@ -241,7 +183,7 @@
     <recordLookups>
         <name>check_if_freelance</name>
         <label>check if freelance</label>
-        <locationX>743</locationX>
+        <locationX>380</locationX>
         <locationY>458</locationY>
         <assignNullValuesIfNoRecordsFound>false</assignNullValuesIfNoRecordsFound>
         <connector>
@@ -252,7 +194,7 @@
             <field>Id</field>
             <operator>EqualTo</operator>
             <value>
-                <elementReference>wantedSR.recordId</elementReference>
+                <elementReference>wantedServiceResourceSearch.value</elementReference>
             </value>
         </filters>
         <getFirstRecordOnly>true</getFirstRecordOnly>
@@ -262,8 +204,8 @@
     <recordLookups>
         <name>get_IR</name>
         <label>get IR</label>
-        <locationX>710</locationX>
-        <locationY>890</locationY>
+        <locationX>182</locationX>
+        <locationY>674</locationY>
         <assignNullValuesIfNoRecordsFound>false</assignNullValuesIfNoRecordsFound>
         <connector>
             <targetReference>if_IR_not_exist</targetReference>
@@ -280,7 +222,7 @@
             <field>ServiceResource__c</field>
             <operator>EqualTo</operator>
             <value>
-                <elementReference>wantedSR.recordId</elementReference>
+                <elementReference>wantedServiceResourceSearch.value</elementReference>
             </value>
         </filters>
         <getFirstRecordOnly>true</getFirstRecordOnly>
@@ -290,11 +232,11 @@
     <recordLookups>
         <name>getSA</name>
         <label>getSA</label>
-        <locationX>1056</locationX>
+        <locationX>611</locationX>
         <locationY>134</locationY>
         <assignNullValuesIfNoRecordsFound>false</assignNullValuesIfNoRecordsFound>
         <connector>
-            <targetReference>checkSAReleasedToFreelance</targetReference>
+            <targetReference>checkSAAcceptedByTjenesteleverandor</targetReference>
         </connector>
         <filterLogic>and</filterLogic>
         <filters>
@@ -311,78 +253,112 @@
     <recordUpdates>
         <name>update_IR</name>
         <label>update IR</label>
-        <locationX>578</locationX>
-        <locationY>1214</locationY>
+        <locationX>50</locationX>
+        <locationY>998</locationY>
+        <connector>
+            <targetReference>successScreen</targetReference>
+        </connector>
         <inputReference>get_IR</inputReference>
     </recordUpdates>
     <screens>
-        <name>existing</name>
-        <label>existing</label>
-        <locationX>314</locationX>
-        <locationY>890</locationY>
-        <allowBack>false</allowBack>
-        <allowFinish>true</allowFinish>
-        <allowPause>false</allowPause>
-        <fields>
-            <name>existingText</name>
-            <fieldText>&lt;p&gt;Tolken har allerede en interessert ressurs på oppdrag som tilhører samme arbeidsordre.&lt;/p&gt;</fieldText>
-            <fieldType>DisplayText</fieldType>
-        </fields>
-        <showFooter>true</showFooter>
-        <showHeader>false</showHeader>
-    </screens>
-    <screens>
         <name>Is_not_freelance_message</name>
         <label>Is not freelance message</label>
-        <locationX>1106</locationX>
+        <locationX>578</locationX>
         <locationY>674</locationY>
         <allowBack>true</allowBack>
         <allowFinish>false</allowFinish>
         <allowPause>false</allowPause>
+        <backButtonLabel>Tilbake</backButtonLabel>
         <fields>
-            <name>NoFreelanceMessage</name>
-            <fieldText>&lt;p&gt;Ønsket tolk &lt;strong&gt;må&lt;/strong&gt; være en frilanstolk og ha en aktiv tjenesteressurs. Trykk på tilbake og velg en annen&lt;/p&gt;</fieldText>
-            <fieldType>DisplayText</fieldType>
+            <name>error2</name>
+            <extensionName>c:hot_infoParagraphFlow</extensionName>
+            <fieldType>ComponentInstance</fieldType>
+            <inputParameters>
+                <name>text</name>
+                <value>
+                    <stringValue>Ønsket tolk må være en aktiv tjenesteressurs. Trykk på tilbake og velg en annen</stringValue>
+                </value>
+            </inputParameters>
+            <inputsOnNextNavToAssocScrn>UseStoredValues</inputsOnNextNavToAssocScrn>
+            <isRequired>true</isRequired>
+            <storeOutputAutomatically>true</storeOutputAutomatically>
+            <styleProperties>
+                <verticalAlignment>
+                    <stringValue>top</stringValue>
+                </verticalAlignment>
+                <width>
+                    <stringValue>12</stringValue>
+                </width>
+            </styleProperties>
         </fields>
-        <showFooter>true</showFooter>
+        <fields>
+            <name>buttonBottom5</name>
+            <extensionName>c:hot_flowFooterButtons</extensionName>
+            <fieldType>ComponentInstance</fieldType>
+            <inputParameters>
+                <name>size</name>
+                <value>
+                    <stringValue>small</stringValue>
+                </value>
+            </inputParameters>
+            <inputParameters>
+                <name>showBack</name>
+                <value>
+                    <booleanValue>true</booleanValue>
+                </value>
+            </inputParameters>
+            <inputsOnNextNavToAssocScrn>UseStoredValues</inputsOnNextNavToAssocScrn>
+            <isRequired>true</isRequired>
+            <storeOutputAutomatically>true</storeOutputAutomatically>
+            <styleProperties>
+                <verticalAlignment>
+                    <stringValue>top</stringValue>
+                </verticalAlignment>
+                <width>
+                    <stringValue>12</stringValue>
+                </width>
+            </styleProperties>
+        </fields>
+        <showFooter>false</showFooter>
         <showHeader>false</showHeader>
     </screens>
     <screens>
-        <name>notReleasedScreen</name>
-        <label>notReleasedScreen</label>
-        <locationX>1370</locationX>
+        <name>notTjenesteleverandorOwned</name>
+        <label>notTjenesteleverandorOwned</label>
+        <locationX>842</locationX>
         <locationY>350</locationY>
         <allowBack>false</allowBack>
         <allowFinish>true</allowFinish>
         <allowPause>false</allowPause>
         <fields>
-            <name>notReleasedText</name>
-            <fieldText>&lt;p&gt;Oppdraget må være frigitt til frilans før du kan registrere ønsket frilanstolk.&lt;/p&gt;</fieldText>
-            <fieldType>DisplayText</fieldType>
+            <name>error1</name>
+            <extensionName>c:hot_infoParagraphFlow</extensionName>
+            <fieldType>ComponentInstance</fieldType>
+            <inputParameters>
+                <name>text</name>
+                <value>
+                    <stringValue>Oppdraget er ikke akseptert av tjenesteleverandør.</stringValue>
+                </value>
+            </inputParameters>
+            <inputsOnNextNavToAssocScrn>UseStoredValues</inputsOnNextNavToAssocScrn>
+            <isRequired>true</isRequired>
+            <storeOutputAutomatically>true</storeOutputAutomatically>
+            <styleProperties>
+                <verticalAlignment>
+                    <stringValue>top</stringValue>
+                </verticalAlignment>
+                <width>
+                    <stringValue>12</stringValue>
+                </width>
+            </styleProperties>
         </fields>
-        <showFooter>true</showFooter>
-        <showHeader>false</showHeader>
-    </screens>
-    <screens>
-        <name>overlapScreen</name>
-        <label>overlapScreen</label>
-        <locationX>50</locationX>
-        <locationY>890</locationY>
-        <allowBack>false</allowBack>
-        <allowFinish>true</allowFinish>
-        <allowPause>false</allowPause>
-        <fields>
-            <name>textoverlap</name>
-            <fieldText>&lt;p&gt;Tolken har overlappende oppdrag og kan derfor ikke registreres som ønsket på dette oppdraget.&lt;/p&gt;</fieldText>
-            <fieldType>DisplayText</fieldType>
-        </fields>
-        <showFooter>true</showFooter>
+        <showFooter>false</showFooter>
         <showHeader>false</showHeader>
     </screens>
     <screens>
         <name>registerWanterSr</name>
         <label>Register Wanter ServiceResource</label>
-        <locationX>743</locationX>
+        <locationX>380</locationX>
         <locationY>350</locationY>
         <allowBack>false</allowBack>
         <allowFinish>true</allowFinish>
@@ -391,30 +367,81 @@
             <targetReference>check_if_freelance</targetReference>
         </connector>
         <fields>
-            <name>infotext</name>
-            <fieldText>&lt;p&gt;Når en ønsket tolk er registrert vil tolken få mulighet til å avslå eller melde interesse for oppdraget.&lt;/p&gt;</fieldText>
-            <fieldType>DisplayText</fieldType>
-        </fields>
-        <fields>
-            <name>wantedSR</name>
-            <extensionName>flowruntime:lookup</extensionName>
+            <name>infotext1</name>
+            <extensionName>c:hot_infoParagraphFlow</extensionName>
             <fieldType>ComponentInstance</fieldType>
             <inputParameters>
-                <name>fieldApiName</name>
+                <name>text</name>
                 <value>
-                    <stringValue>ServiceResource__c</stringValue>
+                    <stringValue>Når en ønsket tolk er registrert vil tolken få mulighet til å avslå eller melde interesse for oppdraget.</stringValue>
                 </value>
             </inputParameters>
+            <inputsOnNextNavToAssocScrn>UseStoredValues</inputsOnNextNavToAssocScrn>
+            <isRequired>true</isRequired>
+            <storeOutputAutomatically>true</storeOutputAutomatically>
+            <styleProperties>
+                <verticalAlignment>
+                    <stringValue>top</stringValue>
+                </verticalAlignment>
+                <width>
+                    <stringValue>12</stringValue>
+                </width>
+            </styleProperties>
+        </fields>
+        <fields>
+            <name>wantedServiceResourceSearch</name>
+            <extensionName>c:hot_flowWantedResourceSearch</extensionName>
+            <fieldType>ComponentInstance</fieldType>
             <inputParameters>
                 <name>label</name>
                 <value>
-                    <stringValue>Frilanstolk</stringValue>
+                    <stringValue>Ekstern tolk</stringValue>
                 </value>
             </inputParameters>
             <inputParameters>
-                <name>objectApiName</name>
+                <name>placeholder</name>
                 <value>
-                    <stringValue>HOT_InterestedResource__c</stringValue>
+                    <stringValue>Søk etter tolk</stringValue>
+                </value>
+            </inputParameters>
+            <inputParameters>
+                <name>recordId</name>
+                <value>
+                    <elementReference>recordId</elementReference>
+                </value>
+            </inputParameters>
+            <inputsOnNextNavToAssocScrn>UseStoredValues</inputsOnNextNavToAssocScrn>
+            <isRequired>true</isRequired>
+            <storeOutputAutomatically>true</storeOutputAutomatically>
+            <styleProperties>
+                <verticalAlignment>
+                    <stringValue>top</stringValue>
+                </verticalAlignment>
+                <width>
+                    <stringValue>12</stringValue>
+                </width>
+            </styleProperties>
+        </fields>
+        <fields>
+            <name>onsketAv2</name>
+            <extensionName>c:hot_flowWantedByPicklist</extensionName>
+            <fieldType>ComponentInstance</fieldType>
+            <inputParameters>
+                <name>label</name>
+                <value>
+                    <stringValue>Ønsket av:</stringValue>
+                </value>
+            </inputParameters>
+            <inputParameters>
+                <name>option1</name>
+                <value>
+                    <elementReference>Formidler</elementReference>
+                </value>
+            </inputParameters>
+            <inputParameters>
+                <name>option2</name>
+                <value>
+                    <elementReference>Tolkebruker</elementReference>
                 </value>
             </inputParameters>
             <inputParameters>
@@ -423,26 +450,132 @@
                     <booleanValue>true</booleanValue>
                 </value>
             </inputParameters>
-            <inputsOnNextNavToAssocScrn>ResetValues</inputsOnNextNavToAssocScrn>
+            <inputParameters>
+                <name>value</name>
+                <value>
+                    <elementReference>Formidler</elementReference>
+                </value>
+            </inputParameters>
+            <inputsOnNextNavToAssocScrn>UseStoredValues</inputsOnNextNavToAssocScrn>
             <isRequired>true</isRequired>
             <storeOutputAutomatically>true</storeOutputAutomatically>
+            <styleProperties>
+                <verticalAlignment>
+                    <stringValue>top</stringValue>
+                </verticalAlignment>
+                <width>
+                    <stringValue>12</stringValue>
+                </width>
+            </styleProperties>
         </fields>
         <fields>
-            <name>Onsket_av</name>
-            <choiceReferences>Tolkebruker</choiceReferences>
-            <choiceReferences>Formidler</choiceReferences>
-            <dataType>String</dataType>
-            <defaultSelectedChoiceReference>Tolkebruker</defaultSelectedChoiceReference>
-            <fieldText>Ønsket av</fieldText>
-            <fieldType>DropdownBox</fieldType>
+            <name>buttonBottom</name>
+            <extensionName>c:hot_flowFooterButtons</extensionName>
+            <fieldType>ComponentInstance</fieldType>
+            <inputParameters>
+                <name>showNext</name>
+                <value>
+                    <booleanValue>true</booleanValue>
+                </value>
+            </inputParameters>
+            <inputParameters>
+                <name>nextLabel</name>
+                <value>
+                    <stringValue>Registrer</stringValue>
+                </value>
+            </inputParameters>
+            <inputParameters>
+                <name>size</name>
+                <value>
+                    <stringValue>small</stringValue>
+                </value>
+            </inputParameters>
             <inputsOnNextNavToAssocScrn>UseStoredValues</inputsOnNextNavToAssocScrn>
-            <isRequired>false</isRequired>
+            <isRequired>true</isRequired>
+            <storeOutputAutomatically>true</storeOutputAutomatically>
+            <styleProperties>
+                <verticalAlignment>
+                    <stringValue>top</stringValue>
+                </verticalAlignment>
+                <width>
+                    <stringValue>12</stringValue>
+                </width>
+            </styleProperties>
         </fields>
-        <showFooter>true</showFooter>
+        <nextOrFinishButtonLabel>Registrer</nextOrFinishButtonLabel>
+        <showFooter>false</showFooter>
+        <showHeader>false</showHeader>
+    </screens>
+    <screens>
+        <name>successScreen</name>
+        <label>successScreen</label>
+        <locationX>182</locationX>
+        <locationY>1190</locationY>
+        <allowBack>false</allowBack>
+        <allowFinish>true</allowFinish>
+        <allowPause>false</allowPause>
+        <fields>
+            <name>successText2</name>
+            <extensionName>c:hot_infoParagraphFlow</extensionName>
+            <fieldType>ComponentInstance</fieldType>
+            <inputParameters>
+                <name>text</name>
+                <value>
+                    <stringValue>Supert! Tolken får nå varsel om at den er ønsket til dette oppdraget.</stringValue>
+                </value>
+            </inputParameters>
+            <inputsOnNextNavToAssocScrn>UseStoredValues</inputsOnNextNavToAssocScrn>
+            <isRequired>true</isRequired>
+            <storeOutputAutomatically>true</storeOutputAutomatically>
+            <styleProperties>
+                <verticalAlignment>
+                    <stringValue>top</stringValue>
+                </verticalAlignment>
+                <width>
+                    <stringValue>12</stringValue>
+                </width>
+            </styleProperties>
+        </fields>
+        <fields>
+            <name>buttonBottom4</name>
+            <extensionName>c:hot_flowFooterButtons</extensionName>
+            <fieldType>ComponentInstance</fieldType>
+            <inputParameters>
+                <name>finishLabel</name>
+                <value>
+                    <stringValue>Registrer flere</stringValue>
+                </value>
+            </inputParameters>
+            <inputParameters>
+                <name>showFinish</name>
+                <value>
+                    <booleanValue>true</booleanValue>
+                </value>
+            </inputParameters>
+            <inputParameters>
+                <name>size</name>
+                <value>
+                    <stringValue>small</stringValue>
+                </value>
+            </inputParameters>
+            <inputsOnNextNavToAssocScrn>UseStoredValues</inputsOnNextNavToAssocScrn>
+            <isRequired>true</isRequired>
+            <storeOutputAutomatically>true</storeOutputAutomatically>
+            <styleProperties>
+                <verticalAlignment>
+                    <stringValue>top</stringValue>
+                </verticalAlignment>
+                <width>
+                    <stringValue>12</stringValue>
+                </width>
+            </styleProperties>
+        </fields>
+        <nextOrFinishButtonLabel>Ønsk flere tolker</nextOrFinishButtonLabel>
+        <showFooter>false</showFooter>
         <showHeader>false</showHeader>
     </screens>
     <start>
-        <locationX>930</locationX>
+        <locationX>485</locationX>
         <locationY>0</locationY>
         <connector>
             <targetReference>getSA</targetReference>

@@ -1,0 +1,59 @@
+{
+    "appPageId": "32056ac8-ab01-4fbe-a9cc-94b1b053ca6d",
+    "componentName": "siteforce:sldsOneColLayout",
+    "dataProviders": [],
+    "id": "d176d789-8472-481e-8594-4c75c1945a7f",
+    "label": "Search",
+    "regions": [
+        {
+            "id": "b03b9bc9-0e7c-4ebe-a6c9-535c81865b25",
+            "regionName": "header",
+            "type": "region"
+        },
+        {
+            "components": [
+                {
+                    "componentAttributes": {
+                        "scopes": [
+                            {
+                                "isPublic": true,
+                                "name": "FeedPost"
+                            },
+                            {
+                                "isPublic": true,
+                                "name": "KnowledgeArticleVersion"
+                            },
+                            {
+                                "isPublic": false,
+                                "name": "Case"
+                            },
+                            {
+                                "isPublic": true,
+                                "name": "CollaborationGroup"
+                            }
+                        ],
+                        "searchResultFiltering": true,
+                        "searchTerm": "{!term}",
+                        "showTopResults": true
+                    },
+                    "componentName": "forceCommunity:search",
+                    "id": "d9d9cf47-7e0f-473f-a4b4-075fd47a91f7",
+                    "renderPriority": "NEUTRAL",
+                    "renditionMap": {},
+                    "type": "component"
+                }
+            ],
+            "id": "f9ba794a-afa1-4a99-99fd-673760d09e2c",
+            "regionName": "content",
+            "type": "region"
+        },
+        {
+            "id": "f52f7efa-5588-4ec7-9dfd-bb10e1c50ceb",
+            "regionName": "footer",
+            "type": "region"
+        }
+    ],
+    "themeLayoutType": "Inner",
+    "type": "view",
+    "viewType": "global-search"
+}

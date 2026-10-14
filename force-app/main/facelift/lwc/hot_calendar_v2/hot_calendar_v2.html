@@ -221,7 +221,7 @@
                                                     button-styling="Primary"
                                                     type="Submit"
                                                     onbuttonclick={goToThreadServiceAppointment}
-                                                    button-label="Formidler"
+                                                    button-label="Leverandør"
                                                     disabled={isGoToThreadServiceAppointmentButtonDisabled}
                                                 ></c-button>
                                             </div>
@@ -310,14 +310,14 @@
                                         </p>
 
                                         <label for="open-service-appointment-interest-comment"
-                                            >Start samtale med formidler</label
+                                            >Start samtale med leverandør</label
                                         >
                                         <lightning-input-field
                                             id="open-service-appointment-interest-comment"
                                             class="ikke-sensitive-opplysninger comment-field"
                                             field-name="Comments__c"
                                             variant="label-hidden"
-                                            aria-label="Start samtale med formidler"
+                                            aria-label="Start samtale med leverandør"
                                             value={openServiceAppointmentInterestComment}
                                             onchange={handleOpenServiceAppointmentInterestCommentChange}
                                         ></lightning-input-field>
@@ -421,16 +421,16 @@
                                         </p>
                                         <p>Status: <span>{wageClaim.Status__c}</span></p>
                                     </div>
-                                    <div style="display: inline-block; padding-bottom: 1vw">
+                                    <!-- <div style="display: inline-block; padding-bottom: 1vw">
                                         <c-button
                                             disabled={wcIsDisabledGoToThread}
                                             button-styling="primary"
-                                            button-label="Samtale med ressurskontor"
-                                            aria-label="Samtale med ressurskontor"
+                                            button-label="Samtale med leverandør"
+                                            aria-label="Samtale med leverandør"
                                             onbuttonclick={goToWageClaimThread}
                                         >
                                         </c-button>
-                                    </div>
+                                    </div> -->
                                 </div>
                             </section>
 
@@ -463,8 +463,8 @@
                                     <c-button
                                         disabled={wcNewTypeIsDisabledGoToThread}
                                         button-styling="primary"
-                                        button-label="Samtale med ressurskontor"
-                                        aria-label="Samtale med ressurskontor"
+                                        button-label="Samtale med leverandør"
+                                        aria-label="Samtale med leverandør"
                                         onbuttonclick={goToWageClaimNewTypeThread}
                                     >
                                     </c-button>

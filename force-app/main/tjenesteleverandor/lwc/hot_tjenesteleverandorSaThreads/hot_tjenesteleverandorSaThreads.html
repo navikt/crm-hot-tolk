@@ -1,0 +1,104 @@
+<template>
+    <template lwc:if={isLoading}>
+        <div class="thread-card">
+            <c-hot_expansion-card open="false">
+                <span slot="title"
+                    ><c-hot_loader size="xlarge"></c-hot_loader
+                    ><span class="card-loader-title">Laster samtaler...</span></span
+                >
+            </c-hot_expansion-card>
+        </div>
+    </template>
+    <template lwc:else>
+        <template for:each={threadCards} for:item="card">
+            <div class="thread-card" key={card.type}>
+                <c-hot_expansion-card>
+                    <span slot="title">{card.title}</span>
+                    <div slot="description">
+                        <template lwc:if={card.hasThreadAndAssignedInterpreter}>
+                            <div class="thread-participants">
+                                <span class="thread-participants-label">Deltakere:</span>
+                                <div class="thread-participant-tags">
+                                    <template for:each={card.participants} for:item="participant">
+                                        <c-hot_tag
+                                            key={participant.id}
+                                            label={participant.label}
+                                            variant="moderate"
+                                            size="small"
+                                            color="info"
+                                        ></c-hot_tag>
+                                    </template>
+                                </div>
+                            </div>
+                            <div class="thread-readers">
+                                <span class="thread-readers-label">Lest av:</span>
+                                <div class="thread-reader-tags">
+                                    <template lwc:if={card.hasReadParticipants}>
+                                        <template for:each={card.readParticipants} for:item="participant">
+                                            <c-hot_tag
+                                                key={participant.id}
+                                                label={participant.label}
+                                                variant="moderate"
+                                                size="small"
+                                                color="success"
+                                            ></c-hot_tag>
+                                        </template>
+                                    </template>
+                                    <template lwc:else>
+                                        <c-hot_tag
+                                            label="Ingen"
+                                            variant="moderate"
+                                            size="small"
+                                            color="warning"
+                                        ></c-hot_tag>
+                                    </template>
+                                </div>
+                            </div>
+                        </template>
+                        <template lwc:else>
+                            <template lwc:if={card.showMissingInterpreter}>
+                                <c-hot_tag
+                                    label="Ingen tolk er tildelt"
+                                    variant="moderate"
+                                    size="small"
+                                    color="warning"
+                                ></c-hot_tag>
+                            </template>
+                            <template lwc:else>
+                                <c-hot_tag
+                                    label="Samtale er ikke opprettet"
+                                    variant="moderate"
+                                    size="small"
+                                    color="warning"
+                                ></c-hot_tag>
+                            </template>
+                        </template>
+                    </div>
+
+                    <template lwc:if={card.hasThreadAndAssignedInterpreter}>
+                        <c-hot_messaging-thread-viewer
+                            thread={card.thread}
+                            set-input-in-focus-on-render
+                            is-tjeneste-leverandor-formidler-view
+                        ></c-hot_messaging-thread-viewer>
+                    </template>
+                    <template lwc:elseif={card.hasAssignedInterpreter}>
+                        <c-hot_messaging-thread-viewer-mock
+                            data-thread-type={card.type}
+                            set-input-in-focus-on-render
+                            initial-message={card.initialMessage}
+                            processing={card.isSending}
+                            data-user-thread-mock
+                            oncreatethreadwithmessage={handleCreateThreadWithMessage}
+                        ></c-hot_messaging-thread-viewer-mock>
+                    </template>
+                    <template lwc:else>
+                        <p class="missing-interpreter-message" role="status">
+                            Samtalen kan ikke opprettes før en tolk er tildelt.
+                        </p>
+                    </template>
+                </c-hot_expansion-card>
+            </div>
+        </template>
+    </template>
+</template>
