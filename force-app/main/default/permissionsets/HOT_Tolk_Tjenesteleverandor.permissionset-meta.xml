@@ -716,12 +716,12 @@
         <readable>true</readable>
     </fieldPermissions>
     <fieldPermissions>
-        <editable>false</editable>
+        <editable>true</editable>
         <field>ServiceAppointment.HOT_DeadlineDate__c</field>
         <readable>true</readable>
     </fieldPermissions>
     <fieldPermissions>
-        <editable>false</editable>
+        <editable>true</editable>
         <field>ServiceAppointment.HOT_FreelanceSubject__c</field>
         <readable>true</readable>
     </fieldPermissions>
@@ -736,6 +736,11 @@
         <readable>true</readable>
     </fieldPermissions>
     <fieldPermissions>
+        <editable>true</editable>
+        <field>ServiceAppointment.HOT_IsEmployedInterpreter__c</field>
+        <readable>true</readable>
+    </fieldPermissions>
+    <fieldPermissions>
         <editable>false</editable>
         <field>ServiceAppointment.HOT_IsImageInterpreter__c</field>
         <readable>true</readable>
@@ -746,7 +751,7 @@
         <readable>true</readable>
     </fieldPermissions>
     <fieldPermissions>
-        <editable>false</editable>
+        <editable>true</editable>
         <field>ServiceAppointment.HOT_IsReleasedToFreelance__c</field>
         <readable>true</readable>
     </fieldPermissions>
@@ -781,7 +786,7 @@
         <readable>true</readable>
     </fieldPermissions>
     <fieldPermissions>
-        <editable>false</editable>
+        <editable>true</editable>
         <field>ServiceAppointment.HOT_ReleaseDate__c</field>
         <readable>true</readable>
     </fieldPermissions>
@@ -816,7 +821,7 @@
         <readable>true</readable>
     </fieldPermissions>
     <fieldPermissions>
-        <editable>false</editable>
+        <editable>true</editable>
         <field>ServiceAppointment.HOT_TjenesteleverandorDeadline__c</field>
         <readable>true</readable>
     </fieldPermissions>
@@ -868,6 +873,11 @@
     <fieldPermissions>
         <editable>false</editable>
         <field>ServiceAppointment.RelatedBundleId</field>
+        <readable>true</readable>
+    </fieldPermissions>
+    <fieldPermissions>
+        <editable>true</editable>
+        <field>ServiceAppointment.Subject</field>
         <readable>true</readable>
     </fieldPermissions>
     <fieldPermissions>
