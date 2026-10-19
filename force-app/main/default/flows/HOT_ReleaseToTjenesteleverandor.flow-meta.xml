@@ -6,21 +6,7 @@
         <name>AssignFieldValues</name>
         <label>AssignFieldValues</label>
         <locationX>314</locationX>
-        <locationY>1274</locationY>
-        <assignmentItems>
-            <assignToReference>CurrentServiceAppointment.HOT_DeadlineDate__c</assignToReference>
-            <operator>Assign</operator>
-            <value>
-                <elementReference>Frist_dato</elementReference>
-            </value>
-        </assignmentItems>
-        <assignmentItems>
-            <assignToReference>CurrentServiceAppointment.HOT_FreelanceSubject__c</assignToReference>
-            <operator>Assign</operator>
-            <value>
-                <elementReference>Frilanstema</elementReference>
-            </value>
-        </assignmentItems>
+        <locationY>1166</locationY>
         <assignmentItems>
             <assignToReference>CurrentServiceAppointment.HOT_IsReleasedToTjenesteleverandor__c</assignToReference>
             <operator>Assign</operator>
@@ -33,6 +19,13 @@
             <operator>Assign</operator>
             <value>
                 <stringValue>Transferred</stringValue>
+            </value>
+        </assignmentItems>
+        <assignmentItems>
+            <assignToReference>CurrentServiceAppointment.HOT_FreelanceSubject__c</assignToReference>
+            <operator>Assign</operator>
+            <value>
+                <elementReference>freelanceSubject_Old</elementReference>
             </value>
         </assignmentItems>
         <connector>
@@ -185,15 +178,8 @@
                     <stringValue>None</stringValue>
                 </rightValue>
             </conditions>
-            <conditions>
-                <leftValueReference>CurrentServiceAppointment.Status</leftValueReference>
-                <operator>EqualTo</operator>
-                <rightValue>
-                    <stringValue>Released to Freelance</stringValue>
-                </rightValue>
-            </conditions>
             <connector>
-                <targetReference>Sett_frist_for_pamelding</targetReference>
+                <targetReference>AssignFieldValues</targetReference>
             </connector>
             <label>Match Filter</label>
         </rules>
@@ -322,7 +308,7 @@
         <name>UpdateServiceAppointment</name>
         <label>UpdateServiceAppointment</label>
         <locationX>314</locationX>
-        <locationY>1382</locationY>
+        <locationY>1274</locationY>
         <connector>
             <targetReference>SuccessScreen</targetReference>
         </connector>
@@ -401,76 +387,10 @@
         <showHeader>false</showHeader>
     </screens>
     <screens>
-        <name>Sett_frist_for_pamelding</name>
-        <label>Sett frist for påmelding</label>
-        <locationX>314</locationX>
-        <locationY>1166</locationY>
-        <allowBack>true</allowBack>
-        <allowFinish>true</allowFinish>
-        <allowPause>true</allowPause>
-        <connector>
-            <targetReference>AssignFieldValues</targetReference>
-        </connector>
-        <fields>
-            <name>InformationField</name>
-            <fieldText>&lt;p&gt;&lt;strong&gt;Følgende informasjon vil bli vist til ekstern tolker.&lt;/strong&gt;&lt;/p&gt;&lt;p&gt;{!CurrentServiceAppointment.HOT_Information__c}&lt;/p&gt;</fieldText>
-            <fieldType>DisplayText</fieldType>
-            <styleProperties>
-                <verticalAlignment>
-                    <stringValue>top</stringValue>
-                </verticalAlignment>
-                <width>
-                    <stringValue>12</stringValue>
-                </width>
-            </styleProperties>
-        </fields>
-        <fields>
-            <name>Frist_dato</name>
-            <dataType>Date</dataType>
-            <defaultValue>
-                <elementReference>deadlineDate_Old</elementReference>
-            </defaultValue>
-            <fieldText>Frist dato</fieldText>
-            <fieldType>InputField</fieldType>
-            <inputsOnNextNavToAssocScrn>UseStoredValues</inputsOnNextNavToAssocScrn>
-            <isRequired>true</isRequired>
-            <styleProperties>
-                <verticalAlignment>
-                    <stringValue>top</stringValue>
-                </verticalAlignment>
-                <width>
-                    <stringValue>12</stringValue>
-                </width>
-            </styleProperties>
-        </fields>
-        <fields>
-            <name>Frilanstema</name>
-            <dataType>String</dataType>
-            <defaultValue>
-                <elementReference>freelanceSubject_Old</elementReference>
-            </defaultValue>
-            <fieldText>Opplysninger (ingen sensitive)</fieldText>
-            <fieldType>InputField</fieldType>
-            <helpText>&lt;p&gt;Feltet skal benyttes til relevante opplysninger om oppdragets art, til bruk for frilanstolk når de skal vurdere sin interesse for oppdraget. Dette kan være f.eks. tolking fra engelsk, krav til antrekk, antall deltakere etc.&lt;/p&gt;</helpText>
-            <inputsOnNextNavToAssocScrn>UseStoredValues</inputsOnNextNavToAssocScrn>
-            <isRequired>true</isRequired>
-            <styleProperties>
-                <verticalAlignment>
-                    <stringValue>top</stringValue>
-                </verticalAlignment>
-                <width>
-                    <stringValue>12</stringValue>
-                </width>
-            </styleProperties>
-        </fields>
-        <showFooter>true</showFooter>
-        <showHeader>true</showHeader>
-    </screens>
-    <screens>
         <name>SuccessScreen</name>
         <label>SuccessScreen</label>
         <locationX>314</locationX>
-        <locationY>1490</locationY>
+        <locationY>1382</locationY>
         <allowBack>false</allowBack>
         <allowFinish>true</allowFinish>
         <allowPause>false</allowPause>
