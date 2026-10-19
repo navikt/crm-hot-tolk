@@ -67,6 +67,28 @@ private class HOT_TjenesteleverandorAcceptServiceTest {
     }
 
     @IsTest
+    static void rejectsSANotReleasedToTjenesteleverandor() {
+        ServiceAppointment appointment = getTransferredAppointments(1)[0];
+        appointment.HOT_IsReleasedToTjenesteleverandor__c = false;
+        update appointment;
+        setAcceptancePermission(true);
+
+        System.Test.startTest();
+        List<HOT_TjenesteleverandorAcceptanceService.AcceptanceResult> results = acceptAsTestUser(
+            new List<Id>{ appointment.Id }
+        );
+        System.Test.stopTest();
+
+        Assert.areEqual(1, results.size(), 'The service should return one result');
+        Assert.isFalse(results[0].success, 'An appointment must be released to the supplier before acceptance');
+        Assert.areNotEqual(
+            'Accepted',
+            getAppointment(appointment.Id).HOT_TjenesteleverandorStatus__c,
+            'An unreleased appointment must not be accepted'
+        );
+    }
+
+    @IsTest
     static void rejectsAppointmentWithoutDeadline() {
         ServiceAppointment appointment = getTransferredAppointments(1)[0];
         appointment.HOT_TjenesteleverandorDeadline__c = null;
@@ -333,7 +355,10 @@ private class HOT_TjenesteleverandorAcceptServiceTest {
         }
         insert appointments;
         for (ServiceAppointment appointment : appointments) {
-            appointment.Status = 'Released to Freelance';
+            appointment.Status = 'None';
+            appointment.HOT_IsReleasedToTjenesteleverandor__c = true;
+            appointment.HOT_TjenesteleverandorStatus__c = 'Transferred';
+            appointment.HOT_TjenesteleverandorDeadline__c = System.now().addHours(1);
         }
         update appointments;
         return appointments;

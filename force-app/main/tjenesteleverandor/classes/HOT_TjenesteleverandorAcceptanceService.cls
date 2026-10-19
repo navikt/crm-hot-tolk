@@ -3,7 +3,8 @@ public without sharing class HOT_TjenesteleverandorAcceptanceService {
     private static final Integer MAX_APPOINTMENTS_PER_REQUEST = 200;
     private static final String STATUS_ACCEPTED = 'Accepted';
     private static final String STATUS_TRANSFERRED = 'Transferred';
-    private static final String SALESFORCE_STATUS_RELEASED = 'Released to Freelance';
+    private static final String SALESFORCE_STATUS_NONE = 'None';
+    private static final Boolean IS_RELEASED_TO_TJENESTELEVERANDOR = true;
 
     @TestVisible
     private static CustomPermissionHelper permissionHelper = new CustomPermissionHelper();
@@ -101,7 +102,12 @@ public without sharing class HOT_TjenesteleverandorAcceptanceService {
     private static Map<Id, ServiceAppointment> lockAppointments(Set<Id> requestedIds) {
         return new Map<Id, ServiceAppointment>(
             [
-                SELECT Id, Status, HOT_TjenesteleverandorStatus__c, HOT_TjenesteleverandorDeadline__c
+                SELECT
+                    Id,
+                    Status,
+                    HOT_IsReleasedToTjenesteleverandor__c,
+                    HOT_TjenesteleverandorStatus__c,
+                    HOT_TjenesteleverandorDeadline__c
                 FROM ServiceAppointment
                 WHERE Id IN :requestedIds
                 WITH USER_MODE
@@ -113,12 +119,27 @@ public without sharing class HOT_TjenesteleverandorAcceptanceService {
     private static String getConfirmationError(ServiceAppointment appointment, Datetime currentTime) {
         Boolean isEligible =
             appointment.HOT_TjenesteleverandorStatus__c == STATUS_TRANSFERRED &&
-            appointment.Status == SALESFORCE_STATUS_RELEASED &&
+            appointment.HOT_IsReleasedToTjenesteleverandor__c == IS_RELEASED_TO_TJENESTELEVERANDOR &&
+            appointment.Status == SALESFORCE_STATUS_NONE &&
             appointment.HOT_TjenesteleverandorDeadline__c != null &&
             appointment.HOT_TjenesteleverandorDeadline__c > currentTime;
         if (isEligible) {
             return null;
         }
+        System.debug(
+            LoggingLevel.WARN,
+            'TL acceptance rejected: ' +
+            JSON.serialize(
+                new Map<String, Object>{
+                    'recordId' => appointment.Id,
+                    'status' => appointment.Status,
+                    'supplierStatus' => appointment.HOT_TjenesteleverandorStatus__c,
+                    'releasedToSupplier' => appointment.HOT_IsReleasedToTjenesteleverandor__c,
+                    'supplierDeadline' => appointment.HOT_TjenesteleverandorDeadline__c,
+                    'currentTime' => currentTime
+                }
+            )
+        );
         if (
             appointment.HOT_TjenesteleverandorDeadline__c != null &&
             appointment.HOT_TjenesteleverandorDeadline__c <= currentTime
