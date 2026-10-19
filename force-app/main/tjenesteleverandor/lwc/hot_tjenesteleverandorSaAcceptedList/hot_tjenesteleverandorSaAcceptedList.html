@@ -1,7 +1,12 @@
 <template>
     <template lwc:if={hasResult}>
         <div class="main-content">
-            <c-hot_freelance-common-table records={records} columns={columns} onrowclick={goToRecordDetails}>
+            <c-hot_freelance-common-table
+                checkbox="true"
+                records={records}
+                columns={columns}
+                onrowclick={goToRecordDetails}
+            >
             </c-hot_freelance-common-table>
         </div>
     </template>
