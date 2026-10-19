@@ -44,16 +44,10 @@
                         <valueListItems>
                             <value>ServiceAppointment.HOT_ReleaseToTjenesteleverandor</value>
                             <visibilityRule>
-                                <booleanFilter>1 AND 2</booleanFilter>
                                 <criteria>
-                                    <leftValue>{!Record.HOT_TjenesteleverandorStatus__c}</leftValue>
+                                    <leftValue>{!Record.HOT_IsReleasedToTjenesteleverandor__c}</leftValue>
                                     <operator>EQUAL</operator>
-                                    <rightValue>Transferred</rightValue>
-                                </criteria>
-                                <criteria>
-                                    <leftValue>{!$Permission.CustomPermission.HOT_ReleaseToFreelance}</leftValue>
-                                    <operator>EQUAL</operator>
-                                    <rightValue>true</rightValue>
+                                    <rightValue>false</rightValue>
                                 </criteria>
                             </visibilityRule>
                         </valueListItems>
@@ -145,6 +139,10 @@
                 </componentInstanceProperties>
                 <componentInstanceProperties>
                     <name>hideChatterActions</name>
+                    <value>false</value>
+                </componentInstanceProperties>
+                <componentInstanceProperties>
+                    <name>hideSlackAction</name>
                     <value>false</value>
                 </componentInstanceProperties>
                 <componentInstanceProperties>
