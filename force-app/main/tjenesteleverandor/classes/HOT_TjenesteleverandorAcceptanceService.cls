@@ -63,7 +63,6 @@ public without sharing class HOT_TjenesteleverandorAcceptanceService {
         }
 
         if (!appointmentsToUpdate.isEmpty()) {
-            // The external user remains read-only. Only confirmation and its dispatcher stamp use elevated DML.
             Database.SaveResult[] saveResults = Database.update(appointmentsToUpdate, false, AccessLevel.SYSTEM_MODE);
             applySaveResults(saveResults, updateResults);
         }
