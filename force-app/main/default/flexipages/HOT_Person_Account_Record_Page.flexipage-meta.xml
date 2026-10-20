@@ -46,9 +46,15 @@
                 <componentName>force:highlightsPanel</componentName>
                 <identifier>force_highlightsPanel</identifier>
                 <visibilityRule>
+                    <booleanFilter>1 OR 2</booleanFilter>
                     <criteria>
                         <leftValue>{!$User.Profile.Name}</leftValue>
-                        <operator>EQUAL</operator>
+                        <operator>CONTAINS</operator>
+                        <rightValue>Systemadministrator</rightValue>
+                    </criteria>
+                    <criteria>
+                        <leftValue>{!$User.Profile.Name}</leftValue>
+                        <operator>CONTAINS</operator>
                         <rightValue>System Administrator</rightValue>
                     </criteria>
                 </visibilityRule>
