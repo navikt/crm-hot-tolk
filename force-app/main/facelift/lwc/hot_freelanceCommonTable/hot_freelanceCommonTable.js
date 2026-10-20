@@ -185,17 +185,13 @@ export default class Hot_freelanceCommonTable extends LightningElement {
     }
 
     handleSingleCheckboxClick() {
-        let recordIdArray = this.resetRecordIdArray();
-        this.template.querySelectorAll('c-checkbox').forEach((element, index) => {
-            if (element.getValue()) {
-                recordIdArray[index - 1].checked = true;
-            }
-        });
-        recordIdArray.forEach((element) => {
-            if (element.checked) {
-                this.checkedRows.push(element.id);
-            }
-        });
+        const rows = [...this.template.querySelectorAll('tbody tr')];
+        this.checkedRows = rows
+            .filter((row) => row.querySelector('c-checkbox').getValue())
+            .map((row) => row.dataset.id);
+
+        const allChecked = rows.length > 0 && this.checkedRows.length === rows.length;
+        this.template.querySelector('thead c-checkbox').setCheckboxValue(allChecked);
         this.sendCheckedRows();
     }
 
