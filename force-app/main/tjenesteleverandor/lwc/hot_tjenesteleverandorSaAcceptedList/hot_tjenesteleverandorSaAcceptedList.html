@@ -1,11 +1,37 @@
 <template>
-    <template lwc:if={hasResult}>
+    <template lwc:if={releaseFeedback}>
+        <c-hot_local-alert
+            type={releaseFeedback.type}
+            content-view="title-only"
+            title={releaseFeedback.message}
+        ></c-hot_local-alert>
+    </template>
+    <template lwc:if={error}>
+        <c-hot_local-alert
+            type="error"
+            content-view="title-only"
+            title="Kunne ikke hente oppdragslisten. Prøv å laste siden på nytt."
+        ></c-hot_local-alert>
+    </template>
+    <template lwc:elseif={hasResult}>
+        <div class="bulk-action-bar">
+            <p aria-live="polite">{selectedAppointmentsLabel}</p>
+            <c-button
+                data-id="release"
+                button-styling="primary"
+                button-label="Frigi til tolker"
+                disabled={isReleaseDisabled}
+                onbuttonclick={handleRelease}
+            ></c-button>
+        </div>
         <div class="main-content">
             <c-hot_freelance-common-table
                 checkbox="true"
                 records={records}
                 columns={columns}
                 onrowclick={goToRecordDetails}
+                checked-rows={checkedServiceAppointments}
+                oncheckedrows={handleRowChecked}
             >
             </c-hot_freelance-common-table>
         </div>
@@ -24,6 +50,37 @@
             <p>Det finnes ingen oppdrag med denne filtreringen. Du kan endre filteret for å se andre oppdrag.</p>
         </div>
     </template>
+
+    <dialog
+        data-id="release-dialog"
+        class="modal-container"
+        aria-label="Frigi til tolker"
+        aria-modal="true"
+        onclose={closeReleaseModal}
+    >
+        <template lwc:if={showReleaseModal}>
+            <div class="modal-header">
+                <h2>{releaseHeading}</h2>
+                <button class="close-btn" onclick={closeReleaseModal}>
+                    <img src={exitCrossIcon} alt="" aria-hidden="true" />
+                </button>
+            </div>
+            <div class="modal-body">
+                <template for:each={activeReleaseFlow} for:item="appointment">
+                    <div key={appointment.id}>
+                        <p>Oppdragsnummer: {appointment.appointmentNumber}</p>
+                        <lightning-flow
+                            data-record-id={appointment.id}
+                            flow-api-name="HOT_ReleaseToFreelance"
+                            flow-input-variables={appointment.inputVariables}
+                            flow-finish-behavior="NONE"
+                            onstatuschange={handleReleaseStatusChange}
+                        ></lightning-flow>
+                    </div>
+                </template>
+            </div>
+        </template>
+    </dialog>
 
     <!-- MODAL -->
     <dialog class="modal-container" aria-label="Informasjon om oppdrag" aria-modal="true" onclose={closeModal}>

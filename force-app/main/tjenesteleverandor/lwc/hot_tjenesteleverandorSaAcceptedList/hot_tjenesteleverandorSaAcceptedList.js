@@ -23,6 +23,12 @@ export default class Hot_tjenesteleverandorSaAcceptedList extends NavigationMixi
     filters = [];
     columns = [];
     error;
+    checkedServiceAppointments = [];
+    releaseQueue = [];
+    releaseTotal = 0;
+    releasedCount = 0;
+    showReleaseModal = false;
+    releaseFeedback;
 
     showServiceAppointmentDetailsModal = false;
     serviceAppointment;
@@ -63,6 +69,114 @@ export default class Hot_tjenesteleverandorSaAcceptedList extends NavigationMixi
         document.removeEventListener('visibilitychange', this.handleVisibilityChange);
     }
 
+    renderedCallback() {
+        const dialog = this.template.querySelector('[data-id="release-dialog"]');
+        if (this.showReleaseModal && dialog && !dialog.open) {
+            dialog.showModal();
+        }
+    }
+
+    get isReleaseDisabled() {
+        return this.checkedServiceAppointments.length === 0 || this.showReleaseModal;
+    }
+
+    get selectedAppointmentsLabel() {
+        return `${this.checkedServiceAppointments.length} oppdrag valgt`;
+    }
+
+    get activeReleaseFlow() {
+        return this.releaseQueue.slice(0, 1);
+    }
+
+    get releaseHeading() {
+        return `Frigi til tolker (${this.releaseTotal - this.releaseQueue.length + 1} av ${this.releaseTotal})`;
+    }
+
+    handleRowChecked(event) {
+        this.checkedServiceAppointments = [...event.detail.checkedRows];
+        this.releaseFeedback = undefined;
+    }
+
+    reconcileCheckedRows() {
+        const visibleIds = new Set(this.records.map((record) => record.Id));
+        this.checkedServiceAppointments = this.checkedServiceAppointments.filter((id) => visibleIds.has(id));
+    }
+
+    handleRelease() {
+        if (this.isReleaseDisabled) {
+            return;
+        }
+        const selectedIds = new Set(this.checkedServiceAppointments);
+        this.releaseQueue = this.records
+            .filter((record) => selectedIds.has(record.Id))
+            .map((record) => ({
+                id: record.Id,
+                appointmentNumber: record.AppointmentNumber,
+                inputVariables: [
+                    { name: 'recordId', type: 'String', value: record.Id },
+                    { name: 'isEmbedded', type: 'Boolean', value: true }
+                ]
+            }));
+        this.releaseTotal = this.releaseQueue.length;
+        this.releasedCount = 0;
+        this.releaseFeedback = undefined;
+        this.showReleaseModal = true;
+    }
+
+    handleReleaseStatusChange(event) {
+        const currentId = this.releaseQueue[0]?.id;
+        if (!this.showReleaseModal || event.target.dataset.recordId !== currentId) {
+            return;
+        }
+        const { status, outputVariables } = event.detail;
+        if (status === 'ERROR') {
+            this.closeReleaseModal();
+            this.releaseFeedback = {
+                type: 'error',
+                message: `Det oppstod en feil under frigivelsen. ${this.releaseFeedback.message}`
+            };
+            return;
+        }
+        if (status === 'PAUSED') {
+            this.closeReleaseModal();
+            return;
+        }
+        if (status !== 'FINISHED' && status !== 'FINISHED_SCREEN') {
+            return;
+        }
+        if (outputVariables?.some((variable) => variable.name === 'wasReleased' && variable.value === true)) {
+            this.releasedCount += 1;
+            this.checkedServiceAppointments = this.checkedServiceAppointments.filter((id) => id !== currentId);
+        }
+        this.releaseQueue = this.releaseQueue.slice(1);
+        if (this.releaseQueue.length === 0) {
+            this.closeReleaseModal();
+        }
+    }
+
+    closeReleaseModal() {
+        if (!this.showReleaseModal) {
+            return;
+        }
+        this.showReleaseModal = false;
+        const dialog = this.template.querySelector('[data-id="release-dialog"]');
+        if (dialog?.open) {
+            dialog.close();
+        }
+        const incompleteCount = this.releaseTotal - this.releasedCount;
+        this.releaseFeedback = {
+            type: incompleteCount > 0 ? 'warning' : 'success',
+            message:
+                `${this.releasedCount} oppdrag frigitt til frilanstolker.` +
+                (incompleteCount > 0
+                    ? ` ${incompleteCount} oppdrag ble ikke fullført. Kontroller oppdragene før du prøver igjen.`
+                    : '')
+        };
+        this.releaseQueue = [];
+        sessionStorage.setItem(LIST_REFRESH_KEY, String(Date.now()));
+        void this.refreshIfRequested();
+    }
+
     get hasResult() {
         return !this.dataLoader && this.records.length > 0;
     }
@@ -91,6 +205,7 @@ export default class Hot_tjenesteleverandorSaAcceptedList extends NavigationMixi
                 };
             });
             this.records = filterRecords(this.allRecords, this.filters);
+            this.reconcileCheckedRows();
             this.error = undefined;
             this.dataLoader = false;
             this.sendFilters();
@@ -99,6 +214,7 @@ export default class Hot_tjenesteleverandorSaAcceptedList extends NavigationMixi
             this.error = result.error;
             this.allRecords = [];
             this.records = [];
+            this.reconcileCheckedRows();
             this.dataLoader = false;
         }
     }
@@ -114,6 +230,7 @@ export default class Hot_tjenesteleverandorSaAcceptedList extends NavigationMixi
         this.dataLoader = true;
         try {
             await refreshApex(this.wiredAcceptedAppointments);
+            this.error = undefined;
             if (sessionStorage.getItem(LIST_REFRESH_KEY) === marker) {
                 sessionStorage.removeItem(LIST_REFRESH_KEY);
             }
@@ -140,6 +257,7 @@ export default class Hot_tjenesteleverandorSaAcceptedList extends NavigationMixi
         const filteredRecords = filterRecords(this.allRecords, this.filters);
         if (event.detail?.setRecords) {
             this.records = filteredRecords;
+            this.reconcileCheckedRows();
         }
         return filteredRecords.length;
     }
@@ -161,7 +279,7 @@ export default class Hot_tjenesteleverandorSaAcceptedList extends NavigationMixi
     showServiceAppointmentDetails() {
         this.showServiceAppointmentDetailsModal = true;
         setTimeout(() => {
-            const dialog = this.template.querySelector('dialog');
+            const dialog = this.template.querySelector('dialog[aria-label="Informasjon om oppdrag"]');
             if (dialog) {
                 dialog.showModal();
                 dialog.focus();
@@ -188,7 +306,7 @@ export default class Hot_tjenesteleverandorSaAcceptedList extends NavigationMixi
     }
 
     closeModal() {
-        const dialog = this.template.querySelector('dialog');
+        const dialog = this.template.querySelector('dialog[aria-label="Informasjon om oppdrag"]');
         if (dialog?.open) {
             dialog.close();
         }
