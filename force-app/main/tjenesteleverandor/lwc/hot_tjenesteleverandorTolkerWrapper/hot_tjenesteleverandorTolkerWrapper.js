@@ -16,7 +16,7 @@ export default class Hot_tjenesteleverandorTolkerWrapper extends LightningElemen
             this.tolkerList = data.map(item => ({ 
                 ...item,
                 Region: item.HOT_ServiceTerritory__r?.Name ?? "Ikke tilgjengelig",
-                IsActiveLabel: item.IsActive ? 'Ja' : 'Nei'
+                IsActiveLabel: item.IsActive ? 'Aktiv' : 'Inaktiv'
             }));
             this.error = null;
             this.dataLoader = false;

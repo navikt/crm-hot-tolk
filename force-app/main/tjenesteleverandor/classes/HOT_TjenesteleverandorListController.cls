@@ -210,7 +210,8 @@ public with sharing class HOT_TjenesteleverandorListController {
                 IsActive,
                 HOT_ServiceTerritory__r.Name
             FROM ServiceResource
-            LIMIT 10
+            WHERE HOT_IsFreelanceInterpreter__c = TRUE
+            ORDER BY IsActive DESC
         ];
     }
 }
