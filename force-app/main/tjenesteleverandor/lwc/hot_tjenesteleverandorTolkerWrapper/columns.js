@@ -10,13 +10,13 @@ export let columns = [
         type: 'String'
     },
     {
-        label: 'Aktiv',
-        name: 'IsActiveLabel',
-        type: 'String'
-    },
-    {
         label: 'Region',
         name: 'Region',
         type: 'String'
-    }    
+    },
+    {
+        label: '',
+        name: 'IsActiveLabel',
+        type: 'String'
+    },
 ];
