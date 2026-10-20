@@ -102,7 +102,12 @@
                                                 Telefonnummer til bruker:&nbsp;
                                                 <span>{accountPhoneNumber}</span>
                                             </p>
-                                            <p>Tolkemetode: <span>{serviceAppointment.HOT_WorkTypeName__c}</span></p>
+                                            <p>
+                                                Tolkemetode: <span>{serviceAppointment.HOT_WorkTypeName__c}</span>
+                                                <span lwc:if={serviceAppointment.HOT_IsScreenInterpreterNew__c}>
+                                                    &nbsp;(Skjermtolk)
+                                                </span>
+                                            </p>
                                             <p lwc:if={serviceAppointment.HOT_PreparationTime__c}>
                                                 Kompensert forberedelse:
                                                 <span>{serviceAppointment.HOT_PreparationTime__c}</span>
@@ -285,6 +290,9 @@
                                         <p>
                                             Tolkemetode:
                                             <span>&nbsp;{openServiceAppointment.HOT_WorkTypeName__c}</span>
+                                            <span lwc:if={openServiceAppointment.HOT_IsScreenInterpreterNew__c}>
+                                                &nbsp;(Skjermtolk)
+                                            </span>
                                         </p>
                                         <p lwc:if={openServiceAppointment.HOT_PreparationTime__c}>
                                             Kompensert forberedelse:
@@ -358,6 +366,9 @@
                                         <p>Adresse: <span>{openServiceAppointment.HOT_AddressFormated__c}</span></p>
                                         <p>
                                             Tolkemetode:<span>&nbsp;{openServiceAppointment.HOT_WorkTypeName__c}</span>
+                                            <span lwc:if={openServiceAppointment.HOT_IsScreenInterpreterNew__c}>
+                                                &nbsp;(Skjermtolk)
+                                            </span>
                                         </p>
                                         <p lwc:if={openServiceAppointment.HOT_PreparationTime__c}>
                                             <strong>Kompensert forberedelse:</strong
@@ -410,7 +421,14 @@
                                         <p>Oppdragsnummer: <span>{wageClaim.ServiceAppointmentName__c}</span></p>
                                         <p>Tid: <span>{wageClaim.weekday} {wageClaim.StartAndEndDate}</span></p>
                                         <p>Poststed: <span>{wageClaim.ServiceAppointmentCity__c}</span></p>
-                                        <p>Tolkemetode: <span>{wageClaim.WorkTypeName__c}</span></p>
+                                        <p>
+                                            Tolkemetode: <span>{wageClaim.WorkTypeName__c}</span>
+                                            <span
+                                                lwc:if={wageClaim.ServiceAppointment__r.HOT_IsScreenInterpreterNew__c}
+                                            >
+                                                &nbsp;(Skjermtolk)
+                                            </span>
+                                        </p>
                                         <p>Oppdragstype: <span>{wageClaim.AssignmentType__c}</span></p>
                                         <p>
                                             Eier:
@@ -446,7 +464,14 @@
                                     </p>
                                     <p lwc:if={showCancelledDate}>Avlyst dato: <span>{cancelledDate}</span></p>
                                     <p>Poststed: <span>{wageClaimNewType.ServiceAppointmentCity__c}</span></p>
-                                    <p>Tolkemetode: <span>{wageClaimNewType.WorkTypeName__c}</span></p>
+                                    <p>
+                                        Tolkemetode: <span>{wageClaimNewType.WorkTypeName__c}</span>
+                                        <span
+                                            lwc:if={wageClaimNewType.ServiceAppointment__r.HOT_IsScreenInterpreterNew__c}
+                                        >
+                                            &nbsp;(Skjermtolk)
+                                        </span>
+                                    </p>
                                     <p>Oppdragstype: <span>{wageClaimNewType.AssignmentType__c}</span></p>
                                     <p>
                                         Eier:&nbsp;

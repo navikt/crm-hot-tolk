@@ -71,7 +71,10 @@
                             <p><strong>Tema:</strong> {it.value.HOT_FreelanceSubject__c}</p>
                             <p><strong>Tid:</strong> {it.value.StartAndEndDate}</p>
                             <p><strong>Adresse:</strong> {it.value.HOT_AddressFormated__c}</p>
-                            <p><strong>Tolkemetode:</strong> {it.value.HOT_WorkTypeName__c}</p>
+                            <p>
+                                <strong>Tolkemetode:</strong> {it.value.HOT_WorkTypeName__c}
+                                <span lwc:if={it.value.HOT_IsScreenInterpreterNew__c}> (Skjermtolk)</span>
+                            </p>
                             <p lwc:if={it.value.HOT_PreparationTime__c}>
                                 <strong>Kompensert forberedelse:</strong> {it.value.HOT_PreparationTime__c}
                             </p>
@@ -180,7 +183,10 @@
                 <p><strong>Tema:</strong> {serviceAppointment.HOT_FreelanceSubject__c}</p>
                 <p><strong>Tid:</strong> {serviceAppointment.weekday} {serviceAppointment.StartAndEndDate}</p>
                 <p><strong>Adresse:</strong> {serviceAppointment.HOT_AddressFormated__c}</p>
-                <p><strong>Tolkemetode:</strong> {serviceAppointment.HOT_WorkTypeName__c}</p>
+                <p>
+                    <strong>Tolkemetode:</strong> {serviceAppointment.HOT_WorkTypeName__c}
+                    <span lwc:if={serviceAppointment.HOT_IsScreenInterpreterNew__c}> (Skjermtolk)</span>
+                </p>
                 <p lwc:if={serviceAppointment.HOT_PreparationTime__c}>
                     <strong>Kompensert forberedelse:</strong> {serviceAppointment.HOT_PreparationTime__c}
                 </p>
