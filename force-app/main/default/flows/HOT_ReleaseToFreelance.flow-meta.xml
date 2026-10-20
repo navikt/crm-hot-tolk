@@ -1,7 +1,23 @@
-<?xml version="1.0" encoding="UTF-8"?>
+<?xml version="1.0" encoding="UTF-8" ?>
 <Flow xmlns="http://soap.sforce.com/2006/04/metadata">
     <apiVersion>49.0</apiVersion>
     <areMetricsLoggedToDataCloud>false</areMetricsLoggedToDataCloud>
+    <assignments>
+        <name>MarkReleased</name>
+        <label>Mark Released</label>
+        <locationX>314</locationX>
+        <locationY>1450</locationY>
+        <assignmentItems>
+            <assignToReference>wasReleased</assignToReference>
+            <operator>Assign</operator>
+            <value>
+                <booleanValue>true</booleanValue>
+            </value>
+        </assignmentItems>
+        <connector>
+            <targetReference>CheckEmbeddedMode</targetReference>
+        </connector>
+    </assignments>
     <assignments>
         <name>AssignFieldValues</name>
         <label>AssignFieldValues</label>
@@ -112,6 +128,31 @@
             <stringValue>true</stringValue>
         </value>
     </choices>
+    <decisions>
+        <name>CheckEmbeddedMode</name>
+        <label>Check Embedded Mode</label>
+        <locationX>314</locationX>
+        <locationY>1460</locationY>
+        <defaultConnector>
+            <targetReference>SuccessScreen</targetReference>
+        </defaultConnector>
+        <defaultConnectorLabel>Standard</defaultConnectorLabel>
+        <rules>
+            <name>Embedded</name>
+            <conditionLogic>and</conditionLogic>
+            <conditions>
+                <leftValueReference>isEmbedded</leftValueReference>
+                <operator>EqualTo</operator>
+                <rightValue>
+                    <booleanValue>true</booleanValue>
+                </rightValue>
+            </conditions>
+            <connector>
+                <targetReference>EmbeddedSuccessScreen</targetReference>
+            </connector>
+            <label>Embedded</label>
+        </rules>
+    </decisions>
     <decisions>
         <description>Checking if Dispatcher should be allowed to release</description>
         <name>Check_Allowence_To_Release</name>
@@ -317,10 +358,27 @@
         <locationX>314</locationX>
         <locationY>1382</locationY>
         <connector>
-            <targetReference>SuccessScreen</targetReference>
+            <targetReference>MarkReleased</targetReference>
         </connector>
         <inputReference>CurrentServiceAppointment</inputReference>
     </recordUpdates>
+    <screens>
+        <name>EmbeddedSuccessScreen</name>
+        <label>Embedded Success Screen</label>
+        <locationX>550</locationX>
+        <locationY>1490</locationY>
+        <allowBack>false</allowBack>
+        <allowFinish>true</allowFinish>
+        <allowPause>false</allowPause>
+        <fields>
+            <name>EmbeddedSuccess</name>
+            <fieldText
+            >&lt;p&gt;Oppdraget ble frigitt til tolker. Trykk Fullfør for å fortsette til neste valgte oppdrag.&lt;/p&gt;</fieldText>
+            <fieldType>DisplayText</fieldType>
+        </fields>
+        <showFooter>true</showFooter>
+        <showHeader>false</showHeader>
+    </screens>
     <screens>
         <name>AlreadyScheduled</name>
         <label>AlreadyScheduled</label>
@@ -379,7 +437,8 @@
         <allowPause>false</allowPause>
         <fields>
             <name>CloseWindowText</name>
-            <fieldText>&lt;p&gt;&lt;span style=&quot;color: rgb(23, 43, 77); font-family: &amp;quot;Segoe UI&amp;quot;, sans-serif; font-size: 11pt;&quot;&gt;Oppdatert, lukk vinduet&lt;/span&gt;&lt;/p&gt;</fieldText>
+            <fieldText
+            >&lt;p&gt;&lt;span style=&quot;color: rgb(23, 43, 77); font-family: &amp;quot;Segoe UI&amp;quot;, sans-serif; font-size: 11pt;&quot;&gt;Oppdatert, lukk vinduet&lt;/span&gt;&lt;/p&gt;</fieldText>
             <fieldType>DisplayText</fieldType>
             <styleProperties>
                 <verticalAlignment>
@@ -406,7 +465,8 @@
         </connector>
         <fields>
             <name>InformationField</name>
-            <fieldText>&lt;p&gt;&lt;strong&gt;Følgende informasjon vil bli vist til tolker.&lt;/strong&gt;&lt;/p&gt;&lt;p&gt;{!CurrentServiceAppointment.HOT_Information__c}&lt;/p&gt;</fieldText>
+            <fieldText
+            >&lt;p&gt;&lt;strong&gt;Følgende informasjon vil bli vist til tolker.&lt;/strong&gt;&lt;/p&gt;&lt;p&gt;{!CurrentServiceAppointment.HOT_Information__c}&lt;/p&gt;</fieldText>
             <fieldType>DisplayText</fieldType>
             <styleProperties>
                 <verticalAlignment>
@@ -444,7 +504,8 @@
             </defaultValue>
             <fieldText>Opplysninger (ingen sensitive)</fieldText>
             <fieldType>InputField</fieldType>
-            <helpText>&lt;p&gt;Feltet skal benyttes til relevante opplysninger om oppdragets art, til bruk for frilanstolk når de skal vurdere sin interesse for oppdraget. Dette kan være f.eks. tolking fra engelsk, krav til antrekk, antall deltakere etc.&lt;/p&gt;</helpText>
+            <helpText
+            >&lt;p&gt;Feltet skal benyttes til relevante opplysninger om oppdragets art, til bruk for frilanstolk når de skal vurdere sin interesse for oppdraget. Dette kan være f.eks. tolking fra engelsk, krav til antrekk, antall deltakere etc.&lt;/p&gt;</helpText>
             <inputsOnNextNavToAssocScrn>UseStoredValues</inputsOnNextNavToAssocScrn>
             <isRequired>true</isRequired>
             <styleProperties>
@@ -519,6 +580,26 @@
         </connector>
     </start>
     <status>Active</status>
+    <variables>
+        <name>isEmbedded</name>
+        <dataType>Boolean</dataType>
+        <isCollection>false</isCollection>
+        <isInput>true</isInput>
+        <isOutput>false</isOutput>
+        <value>
+            <booleanValue>false</booleanValue>
+        </value>
+    </variables>
+    <variables>
+        <name>wasReleased</name>
+        <dataType>Boolean</dataType>
+        <isCollection>false</isCollection>
+        <isInput>false</isInput>
+        <isOutput>true</isOutput>
+        <value>
+            <booleanValue>false</booleanValue>
+        </value>
+    </variables>
     <variables>
         <name>AssignedResourceId</name>
         <dataType>String</dataType>
