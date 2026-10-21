@@ -144,7 +144,12 @@
                                             </p>
                                         </template>
 
-                                        <p>Tolkemetode: <span>{serviceAppointment.HOT_WorkTypeName__c}</span></p>
+                                        <p>
+                                            Tolkemetode: <span>{serviceAppointment.HOT_WorkTypeName__c}&nbsp;</span>
+                                            <span lwc:if={serviceAppointment.HOT_IsScreenInterpreterNew__c}>
+                                                (Skjermtolk)
+                                            </span>
+                                        </p>
                                         <template lwc:if={hasServiceAppointmentPreparationTime}>
                                             <p>
                                                 Kompensert forberedelse:
@@ -216,7 +221,14 @@
                                         </p>
                                         <p>Tid: <span>{interestedResource.StartAndEndDate}</span></p>
                                         <p>Adresse: <span>{interestedResource.ServiceAppointmentAddress__c}</span></p>
-                                        <p>Tolkemetode: <span>{interestedResource.WorkTypeName__c}</span></p>
+                                        <p>
+                                            Tolkemetode: <span>{interestedResource.WorkTypeName__c}</span>
+                                            <span
+                                                lwc:if={interestedResource.ServiceAppointment__r.HOT_IsScreenInterpreterNew__c}
+                                            >
+                                                &nbsp;(Skjermtolk)
+                                            </span>
+                                        </p>
                                         <template lwc:if={hasInterestedResourcePreparationTime}>
                                             <p>
                                                 Kompensert forberedelse:&nbsp;
@@ -291,7 +303,14 @@
                                             Avlyst dato:&nbsp;<span>{wageClaim.cancelledDate}</span>
                                         </p>
                                         <p>Poststed: <span>{wageClaim.ServiceAppointmentCity__c}</span></p>
-                                        <p>Tolkemetode: <span>{wageClaim.WorkTypeName__c}</span></p>
+                                        <p>
+                                            Tolkemetode: <span>{wageClaim.WorkTypeName__c}</span>
+                                            <span
+                                                lwc:if={wageClaim.ServiceAppointment__r.HOT_IsScreenInterpreterNew__c}
+                                            >
+                                                (Skjermtolk)
+                                            </span>
+                                        </p>
                                         <p>Oppdragstype: <span>{wageClaim.AssignmentType__c}</span></p>
                                         <p>
                                             Eier:&nbsp;

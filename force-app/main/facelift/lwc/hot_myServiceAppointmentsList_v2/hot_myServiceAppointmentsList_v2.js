@@ -281,7 +281,8 @@ export default class Hot_myServiceAppointmentsList_v2 extends NavigationMixin(Li
         return this.serviceAppointment?.HOT_Request__r?.Orderer__r?.CRM_Person__r?.HOT_MobilePhone__c ?? '';
     }
     get workType() {
-        return this.serviceAppointment?.HOT_WorkTypeName__c ?? '';
+        const workType = this.serviceAppointment?.HOT_WorkTypeName__c ?? '';
+        return this.serviceAppointment?.HOT_IsScreenInterpreterNew__c ? `${workType} (Skjermtolk)` : workType;
     }
 
     get preparationTime() {

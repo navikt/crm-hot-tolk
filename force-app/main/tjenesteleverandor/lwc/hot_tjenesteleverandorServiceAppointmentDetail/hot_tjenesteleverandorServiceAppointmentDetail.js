@@ -45,10 +45,10 @@ const TRANSFERRED_LIST_REFRESH_KEY = 'tjenesteleverandorTransferredListRefresh';
 const ACCEPTED_LIST_REFRESH_KEY = 'tjenesteleverandorAcceptedListRefresh';
 
 const TAG_DEFINITIONS = [
-    { id: 'acute',  field: HOT_IS_ACUTE_FIELD,                label: 'Akuttvaktoppdrag', className: 'tag-item tag-item--red' },
-    { id: 'image',  field: HOT_IS_IMAGE_INTERPRETER_FIELD,    label: 'Bildetolk',        className: 'tag-item tag-item--blue' },
-    { id: 'screen', field: HOT_IS_SCREEN_INTERPRETER_NEW_FIELD, label: 'Skjermtolk',     className: 'tag-item tag-item--green' },
-    { id: 'series', field: HOT_IS_SERIEOPPDRAG_FIELD,         label: 'Serieoppdrag',     className: 'tag-item tag-item--yellow' }
+    { id: 'acute',  field: HOT_IS_ACUTE_FIELD,                label: 'Akuttvaktoppdrag', color: 'danger' },
+    { id: 'image',  field: HOT_IS_IMAGE_INTERPRETER_FIELD,    label: 'Bildetolk',        color: 'info' },
+    { id: 'screen', field: HOT_IS_SCREEN_INTERPRETER_NEW_FIELD, label: 'Skjermtolk',     color: 'success' },
+    { id: 'series', field: HOT_IS_SERIEOPPDRAG_FIELD,         label: 'Serieoppdrag',     color: 'warning' }
 ];
 
 const FIELDS = [

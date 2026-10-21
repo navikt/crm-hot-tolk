@@ -326,7 +326,10 @@ export default class Hot_wageClaimList_v2 extends NavigationMixin(LightningEleme
     }
 
     get workType() {
-        return this.wageClaim?.WorkTypeName__c || '';
+        const workType = this.wageClaim?.WorkTypeName__c || '';
+        return this.wageClaim?.ServiceAppointment__r?.HOT_IsScreenInterpreterNew__c
+            ? `${workType} (Skjermtolk)`
+            : workType;
     }
 
     get assignmentType() {
