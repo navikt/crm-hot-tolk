@@ -56,6 +56,7 @@ public with sharing class HOT_TjenesteleverandorListController {
         return [
             SELECT
                 Id,
+                Subject,
                 EarliestStartTime,
                 toLabel(Status),
                 DueDate,

@@ -2,6 +2,7 @@ import { LightningElement, wire, api } from 'lwc';
 import { NavigationMixin } from 'lightning/navigation';
 import { refreshApex } from '@salesforce/apex';
 import getAcceptedServiceAppointments from '@salesforce/apex/HOT_TjenesteleverandorListController.getAcceptedServiceAppointments';
+import releaseServiceAppointments from '@salesforce/apex/HOT_TjenesteleverandorReleaseService.releaseServiceAppointments';
 import icons from '@salesforce/resourceUrl/ikoner';
 
 import { columns, mobileColumns } from './columns';
@@ -29,6 +30,8 @@ export default class Hot_tjenesteleverandorSaAcceptedList extends NavigationMixi
     releasedCount = 0;
     showReleaseModal = false;
     releaseFeedback;
+    releaseError;
+    isReleasing = false;
 
     showServiceAppointmentDetailsModal = false;
     serviceAppointment;
@@ -85,7 +88,7 @@ export default class Hot_tjenesteleverandorSaAcceptedList extends NavigationMixi
     }
 
     get releaseHeading() {
-        return `Frigi til tolker (${this.releasedCount} av ${this.releaseTotal} frigitt)`;
+        return `Frigi til tolker (${this.releaseTotal} oppdrag)`;
     }
 
     handleRowChecked(event) {
@@ -108,58 +111,61 @@ export default class Hot_tjenesteleverandorSaAcceptedList extends NavigationMixi
             .map((record) => ({
                 id: record.Id,
                 appointmentNumber: record.AppointmentNumber,
-                isComplete: false,
-                inputVariables: [
-                    { name: 'recordId', type: 'String', value: record.Id },
-                    { name: 'isEmbedded', type: 'Boolean', value: true }
-                ]
+                time: record.StartAndEndDate,
+                information: record.HOT_Information__c,
+                deadline: record.releaseDeadline,
+                subject: record.HOT_FreelanceSubject__c || record.Subject
             }));
         this.releaseTotal = this.releaseAppointments.length;
         this.releasedCount = 0;
         this.releaseFeedback = undefined;
+        this.releaseError = undefined;
         this.showReleaseModal = true;
     }
 
-    handleReleaseStatusChange(event) {
-        const currentId = event.target.dataset.recordId;
-        const appointment = this.releaseAppointments.find((record) => record.id === currentId);
-        if (!this.showReleaseModal || !appointment || appointment.isComplete) {
-            return;
-        }
-        const { status, outputVariables } = event.detail;
-        if (status === 'ERROR') {
-            this.closeReleaseModal();
-            this.releaseFeedback = {
-                type: 'error',
-                message: `Det oppstod en feil under frigivelsen. ${this.releaseFeedback.message}`
-            };
-            return;
-        }
-        if (status === 'PAUSED') {
-            this.closeReleaseModal();
-            return;
-        }
-        if (status !== 'FINISHED' && status !== 'FINISHED_SCREEN') {
-            return;
-        }
-        const wasReleased = outputVariables?.some(
-            (variable) => variable.name === 'wasReleased' && variable.value === true
+    handleReleaseFieldChange(event) {
+        const { recordId, field } = event.target.dataset;
+        this.releaseAppointments = this.releaseAppointments.map((appointment) =>
+            appointment.id === recordId ? { ...appointment, [field]: event.target.value } : appointment
         );
-        if (wasReleased) {
-            this.releasedCount += 1;
-            this.checkedServiceAppointments = this.checkedServiceAppointments.filter((id) => id !== currentId);
+    }
+
+    async handleSubmitRelease() {
+        if (this.isReleasing) {
+            return;
         }
-        this.releaseAppointments = this.releaseAppointments.map((record) =>
-            record.id === currentId
-                ? {
-                      ...record,
-                      isComplete: true,
-                      completionMessage: wasReleased ? 'Oppdraget er frigitt.' : 'Oppdraget ble ikke frigitt.'
-                  }
-                : record
-        );
-        if (this.releaseAppointments.every((record) => record.isComplete)) {
+        const fields = [...this.template.querySelectorAll('[data-release-field]')];
+        const invalidFields = fields.filter((field) => !field.reportValidity());
+        if (invalidFields.length > 0) {
+            invalidFields[0].focus();
+            return;
+        }
+        this.isReleasing = true;
+        this.releaseError = undefined;
+        try {
+            await releaseServiceAppointments({
+                appointments: this.releaseAppointments.map((appointment) => ({
+                    Id: appointment.id,
+                    HOT_DeadlineDate__c: appointment.deadline,
+                    HOT_FreelanceSubject__c: appointment.subject
+                }))
+            });
+            this.releasedCount = this.releaseAppointments.length;
+            const releasedIds = new Set(this.releaseAppointments.map((appointment) => appointment.id));
+            this.checkedServiceAppointments = this.checkedServiceAppointments.filter((id) => !releasedIds.has(id));
+        } catch (error) {
+            this.releaseError = error?.body?.message || 'Oppdragene kunne ikke frigis. Prøv igjen.';
+        } finally {
+            this.isReleasing = false;
+        }
+        if (!this.releaseError) {
             this.closeReleaseModal();
+        }
+    }
+
+    handleReleaseCancel(event) {
+        if (this.isReleasing) {
+            event.preventDefault();
         }
     }
 
@@ -168,7 +174,7 @@ export default class Hot_tjenesteleverandorSaAcceptedList extends NavigationMixi
     }
 
     closeReleaseModal(showFeedback = true) {
-        if (!this.showReleaseModal) {
+        if (!this.showReleaseModal || this.isReleasing) {
             return;
         }
         this.showReleaseModal = false;
@@ -215,6 +221,16 @@ export default class Hot_tjenesteleverandorSaAcceptedList extends NavigationMixi
                 const formattedRecord = formatRecord({ ...record }, this.datetimeFields);
                 return {
                     ...formattedRecord,
+                    releaseDeadline:
+                        record.HOT_DeadlineDate__c ||
+                        (record.EarliestStartTime
+                            ? new Intl.DateTimeFormat('sv-SE', {
+                                  timeZone: 'Europe/Oslo',
+                                  year: 'numeric',
+                                  month: '2-digit',
+                                  day: '2-digit'
+                              }).format(new Date(record.EarliestStartTime))
+                            : ''),
                     HOT_ServiceAppointmentNumber__c: record.AppointmentNumber,
                     startAndEndDateWeekday: formattedRecord.StartAndEndDate,
                     weekday: getDayOfWeek(record.EarliestStartTime),

@@ -77,6 +77,29 @@ dialog[open].modal-container {
     display: flex;
 }
 
+dialog.release-modal {
+    overflow: hidden;
+}
+
+dialog.release-modal .modal-header,
+dialog.release-modal .release-footer {
+    flex-shrink: 0;
+}
+
+dialog.release-modal .modal-body {
+    min-height: 0;
+    overflow-y: auto;
+}
+
+dialog.release-modal .release-footer {
+    border-top: 1px solid #e1e3e6;
+    background-color: #ffffff;
+}
+
+dialog.release-modal .release-footer c-hot_local-alert {
+    width: 100%;
+}
+
 dialog.modal-container .modal-header {
     display: flex;
     justify-content: space-between;
@@ -94,11 +117,11 @@ dialog.modal-container .modal-body strong {
 }
 
 dialog.modal-container .modal-footer {
-    padding: 1.5rem 2rem;
+    padding: 1rem 1rem;
     display: flex;
     flex-wrap: wrap;
     gap: 1rem;
-    justify-content: flex-start;
+    justify-content: flex-end;
 }
 
 dialog.modal-container .close-btn {

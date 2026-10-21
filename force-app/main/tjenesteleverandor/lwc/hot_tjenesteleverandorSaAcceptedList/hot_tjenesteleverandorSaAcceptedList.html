@@ -53,15 +53,16 @@
 
     <dialog
         data-id="release-dialog"
-        class="modal-container"
+        class="modal-container release-modal"
         aria-label="Frigi til tolker"
         aria-modal="true"
         onclose={dismissReleaseModal}
+        oncancel={handleReleaseCancel}
     >
         <template lwc:if={showReleaseModal}>
             <div class="modal-header">
                 <h2>{releaseHeading}</h2>
-                <button class="close-btn" onclick={dismissReleaseModal} aria-label="Lukk">
+                <button class="close-btn" onclick={dismissReleaseModal} aria-label="Lukk" disabled={isReleasing}>
                     <img src={exitCrossIcon} alt="" aria-hidden="true" />
                 </button>
             </div>
@@ -69,20 +70,49 @@
                 <template for:each={releaseAppointments} for:item="appointment">
                     <section key={appointment.id} class="release-appointment">
                         <h3>Oppdragsnummer: {appointment.appointmentNumber}</h3>
-                        <template lwc:if={appointment.isComplete}>
-                            <p role="status">{appointment.completionMessage}</p>
-                        </template>
-                        <template lwc:else>
-                            <lightning-flow
-                                data-record-id={appointment.id}
-                                flow-api-name="HOT_ReleaseToFreelance"
-                                flow-input-variables={appointment.inputVariables}
-                                flow-finish-behavior="NONE"
-                                onstatuschange={handleReleaseStatusChange}
-                            ></lightning-flow>
-                        </template>
+                        <br />
+                        <p><strong>Bestilt tid for oppdraget:</strong> {appointment.time}</p>
+                        <p><strong>Følgende informasjon vil bli vist til tolker:</strong></p>
+                        <lightning-formatted-rich-text value={appointment.information}></lightning-formatted-rich-text>
+                        <lightning-input
+                            data-release-field
+                            data-record-id={appointment.id}
+                            data-field="deadline"
+                            type="date"
+                            label="Frist dato"
+                            value={appointment.deadline}
+                            required
+                            disabled={isReleasing}
+                            onchange={handleReleaseFieldChange}
+                        ></lightning-input>
+                        <lightning-textarea
+                            data-release-field
+                            data-record-id={appointment.id}
+                            data-field="subject"
+                            label="Tema til tolker (ingen sensitive)"
+                            field-level-help="Relevante opplysninger om oppdragets art, for eksempel tolking fra engelsk, krav til antrekk eller antall deltakere."
+                            value={appointment.subject}
+                            maxlength="255"
+                            required
+                            disabled={isReleasing}
+                            onchange={handleReleaseFieldChange}
+                        ></lightning-textarea>
                     </section>
                 </template>
+            </div>
+            <div class="modal-footer release-footer">
+                <template lwc:if={releaseError}>
+                    <c-hot_local-alert type="error" content-view="title-only" title={releaseError}></c-hot_local-alert>
+                </template>
+                <template lwc:if={isReleasing}>
+                    <p role="status">Frigir oppdragene...</p>
+                </template>
+                <c-button
+                    button-styling="primary"
+                    button-label="Frigi valgte oppdrag"
+                    disabled={isReleasing}
+                    onbuttonclick={handleSubmitRelease}
+                ></c-button>
             </div>
         </template>
     </dialog>

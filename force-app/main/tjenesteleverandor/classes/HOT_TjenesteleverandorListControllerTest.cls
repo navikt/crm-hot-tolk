@@ -159,6 +159,78 @@ private class HOT_TjenesteleverandorListControllerTest {
         }
     }
 
+    private static List<ServiceAppointment> prepareReleaseAppointments() {
+        myTriggers.disable(HOT_ServiceAppointmentHandler.class);
+        myTriggers.disable(HOT_ServiceAppointmentStatusHandler.class);
+        myTriggers.disable(HOT_ServiceAppointmentAccessHandler.class);
+        List<ServiceAppointment> appointments = [SELECT Id FROM ServiceAppointment LIMIT 2];
+        for (ServiceAppointment appointment : appointments) {
+            appointment.Status = 'None';
+            appointment.HOT_TjenesteleverandorStatus__c = 'Accepted';
+            appointment.HOT_IsReleasedToTjenesteleverandor__c = true;
+            appointment.HOT_DeadlineDate__c = Date.today().addDays(1);
+            appointment.HOT_FreelanceSubject__c = 'Release test';
+        }
+        update appointments;
+        return appointments;
+    }
+
+    @IsTest
+    static void releasesSelectedAppointmentsTogether() {
+        List<ServiceAppointment> appointments = prepareReleaseAppointments();
+        for (ServiceAppointment appointment : appointments) {
+            appointment.HOT_FreelanceSubject__c = 'Updated release subject';
+            appointment.HOT_DeadlineDate__c = Date.today().addDays(2);
+        }
+        System.runAs(getTestUser()) {
+            Test.startTest();
+            HOT_TjenesteleverandorReleaseService.releaseServiceAppointments(appointments);
+            Test.stopTest();
+        }
+        for (ServiceAppointment appointment : [
+            SELECT Status, HOT_DeadlineDate__c, HOT_FreelanceSubject__c
+            FROM ServiceAppointment
+        ]) {
+            Assert.areEqual('Released to Freelance', appointment.Status);
+            Assert.areEqual(Date.today().addDays(2), appointment.HOT_DeadlineDate__c);
+            Assert.areEqual('Updated release subject', appointment.HOT_FreelanceSubject__c);
+        }
+    }
+
+    @IsTest
+    static void rejectsEntireReleaseWhenAnAppointmentIsNoLongerEligible() {
+        List<ServiceAppointment> appointments = prepareReleaseAppointments();
+        update new ServiceAppointment(Id = appointments[1].Id, Status = 'Scheduled');
+        System.runAs(getTestUser()) {
+            Test.startTest();
+            try {
+                HOT_TjenesteleverandorReleaseService.releaseServiceAppointments(appointments);
+                Assert.fail('A changed appointment must prevent the entire release');
+            } catch (AuraHandledException expected) {
+                Assert.isNotNull(expected);
+            }
+            Test.stopTest();
+        }
+        Assert.areEqual(0, [SELECT COUNT() FROM ServiceAppointment WHERE Status = 'Released to Freelance']);
+    }
+
+    @IsTest
+    static void rejectsReleaseWithMissingRequiredFields() {
+        List<ServiceAppointment> appointments = prepareReleaseAppointments();
+        appointments[1].HOT_DeadlineDate__c = null;
+        System.runAs(getTestUser()) {
+            Test.startTest();
+            try {
+                HOT_TjenesteleverandorReleaseService.releaseServiceAppointments(appointments);
+                Assert.fail('Every appointment must have a deadline');
+            } catch (AuraHandledException expected) {
+                Assert.isNotNull(expected);
+            }
+            Test.stopTest();
+        }
+        Assert.areEqual(0, [SELECT COUNT() FROM ServiceAppointment WHERE Status = 'Released to Freelance']);
+    }
+
     @IsTest
     static void returnsOnlyFinishedAcceptedSA() {
         myTriggers.disable(HOT_ServiceAppointmentHandler.class);
