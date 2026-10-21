@@ -20,8 +20,6 @@ function pageLabel(name) {
 }
 
 export default class Hot_backButton extends NavigationMixin(LightningElement) {
-    homeIcon = icons + '/Home/Home.svg';
-    leftArrowIcon = icons + '/Left/Left.svg';
     @api ariaLabel;
     @api destinationLabel;
     @api fallbackUrl;
