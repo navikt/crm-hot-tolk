@@ -1,27 +1,11 @@
-<?xml version="1.0" encoding="UTF-8" ?>
+<?xml version="1.0" encoding="UTF-8"?>
 <Flow xmlns="http://soap.sforce.com/2006/04/metadata">
     <apiVersion>49.0</apiVersion>
     <areMetricsLoggedToDataCloud>false</areMetricsLoggedToDataCloud>
     <assignments>
-        <name>MarkReleased</name>
-        <label>Mark Released</label>
-        <locationX>314</locationX>
-        <locationY>1450</locationY>
-        <assignmentItems>
-            <assignToReference>wasReleased</assignToReference>
-            <operator>Assign</operator>
-            <value>
-                <booleanValue>true</booleanValue>
-            </value>
-        </assignmentItems>
-        <connector>
-            <targetReference>CheckEmbeddedMode</targetReference>
-        </connector>
-    </assignments>
-    <assignments>
         <name>AssignFieldValues</name>
         <label>AssignFieldValues</label>
-        <locationX>314</locationX>
+        <locationX>446</locationX>
         <locationY>1274</locationY>
         <assignmentItems>
             <assignToReference>CurrentServiceAppointment.HOT_DeadlineDate__c</assignToReference>
@@ -49,9 +33,25 @@
         </connector>
     </assignments>
     <assignments>
+        <name>MarkReleased</name>
+        <label>Mark Released</label>
+        <locationX>446</locationX>
+        <locationY>1490</locationY>
+        <assignmentItems>
+            <assignToReference>wasReleased</assignToReference>
+            <operator>Assign</operator>
+            <value>
+                <booleanValue>true</booleanValue>
+            </value>
+        </assignmentItems>
+        <connector>
+            <targetReference>CheckEmbeddedMode</targetReference>
+        </connector>
+    </assignments>
+    <assignments>
         <name>Set_Deadline_Date_to_Start_Date</name>
         <label>Set Deadline Date to Start Date</label>
-        <locationX>776</locationX>
+        <locationX>1007</locationX>
         <locationY>758</locationY>
         <assignmentItems>
             <assignToReference>deadlineDate_Old</assignToReference>
@@ -67,7 +67,7 @@
     <assignments>
         <name>Set_Freelance_Subject_to_Subject</name>
         <label>Set Freelance Subject to Subject</label>
-        <locationX>776</locationX>
+        <locationX>1007</locationX>
         <locationY>458</locationY>
         <assignmentItems>
             <assignToReference>freelanceSubject_Old</assignToReference>
@@ -83,7 +83,7 @@
     <assignments>
         <name>Set_Old_Deadline_Date</name>
         <label>Set Old Deadline Date</label>
-        <locationX>512</locationX>
+        <locationX>743</locationX>
         <locationY>758</locationY>
         <assignmentItems>
             <assignToReference>deadlineDate_Old</assignToReference>
@@ -99,7 +99,7 @@
     <assignments>
         <name>Set_Old_Freelance_Subject</name>
         <label>Set Old Freelance Subject</label>
-        <locationX>512</locationX>
+        <locationX>743</locationX>
         <locationY>458</locationY>
         <assignmentItems>
             <assignToReference>freelanceSubject_Old</assignToReference>
@@ -129,35 +129,10 @@
         </value>
     </choices>
     <decisions>
-        <name>CheckEmbeddedMode</name>
-        <label>Check Embedded Mode</label>
-        <locationX>314</locationX>
-        <locationY>1460</locationY>
-        <defaultConnector>
-            <targetReference>SuccessScreen</targetReference>
-        </defaultConnector>
-        <defaultConnectorLabel>Standard</defaultConnectorLabel>
-        <rules>
-            <name>Embedded</name>
-            <conditionLogic>and</conditionLogic>
-            <conditions>
-                <leftValueReference>isEmbedded</leftValueReference>
-                <operator>EqualTo</operator>
-                <rightValue>
-                    <booleanValue>true</booleanValue>
-                </rightValue>
-            </conditions>
-            <connector>
-                <targetReference>EmbeddedSuccessScreen</targetReference>
-            </connector>
-            <label>Embedded</label>
-        </rules>
-    </decisions>
-    <decisions>
         <description>Checking if Dispatcher should be allowed to release</description>
         <name>Check_Allowence_To_Release</name>
         <label>Check_Allowence_To_Release</label>
-        <locationX>644</locationX>
+        <locationX>875</locationX>
         <locationY>950</locationY>
         <defaultConnector>
             <targetReference>Not_allowed_to_release</targetReference>
@@ -203,7 +178,7 @@
     <decisions>
         <name>Check_Status</name>
         <label>Check Status</label>
-        <locationX>446</locationX>
+        <locationX>644</locationX>
         <locationY>1058</locationY>
         <defaultConnector>
             <targetReference>AlreadyScheduled</targetReference>
@@ -233,9 +208,34 @@
         </rules>
     </decisions>
     <decisions>
+        <name>CheckEmbeddedMode</name>
+        <label>Check Embedded Mode</label>
+        <locationX>446</locationX>
+        <locationY>1598</locationY>
+        <defaultConnector>
+            <targetReference>SuccessScreen</targetReference>
+        </defaultConnector>
+        <defaultConnectorLabel>Standard</defaultConnectorLabel>
+        <rules>
+            <name>Embedded</name>
+            <conditionLogic>and</conditionLogic>
+            <conditions>
+                <leftValueReference>isEmbedded</leftValueReference>
+                <operator>EqualTo</operator>
+                <rightValue>
+                    <booleanValue>true</booleanValue>
+                </rightValue>
+            </conditions>
+            <connector>
+                <targetReference>EmbeddedSuccessScreen</targetReference>
+            </connector>
+            <label>Embedded</label>
+        </rules>
+    </decisions>
+    <decisions>
         <name>checkIfFoundRecord</name>
         <label>checkIfFoundRecord</label>
-        <locationX>347</locationX>
+        <locationX>462</locationX>
         <locationY>242</locationY>
         <defaultConnector>
             <targetReference>Freelance_Subject_hasValue</targetReference>
@@ -257,7 +257,7 @@
     <decisions>
         <name>Deadline_Date_has_value</name>
         <label>Deadline Date has value?</label>
-        <locationX>644</locationX>
+        <locationX>875</locationX>
         <locationY>650</locationY>
         <defaultConnector>
             <targetReference>Set_Deadline_Date_to_Start_Date</targetReference>
@@ -279,7 +279,7 @@
     <decisions>
         <name>Freelance_Subject_hasValue</name>
         <label>Freelance Subject has Value?</label>
-        <locationX>644</locationX>
+        <locationX>875</locationX>
         <locationY>350</locationY>
         <defaultConnector>
             <targetReference>Set_Freelance_Subject_to_Subject</targetReference>
@@ -323,7 +323,7 @@
     <recordLookups>
         <name>GetCurrentServiceAppointment</name>
         <label>GetCurrentServiceAppointment</label>
-        <locationX>347</locationX>
+        <locationX>462</locationX>
         <locationY>134</locationY>
         <assignNullValuesIfNoRecordsFound>true</assignNullValuesIfNoRecordsFound>
         <connector>
@@ -355,7 +355,7 @@
     <recordUpdates>
         <name>UpdateServiceAppointment</name>
         <label>UpdateServiceAppointment</label>
-        <locationX>314</locationX>
+        <locationX>446</locationX>
         <locationY>1382</locationY>
         <connector>
             <targetReference>MarkReleased</targetReference>
@@ -363,26 +363,9 @@
         <inputReference>CurrentServiceAppointment</inputReference>
     </recordUpdates>
     <screens>
-        <name>EmbeddedSuccessScreen</name>
-        <label>Embedded Success Screen</label>
-        <locationX>550</locationX>
-        <locationY>1490</locationY>
-        <allowBack>false</allowBack>
-        <allowFinish>true</allowFinish>
-        <allowPause>false</allowPause>
-        <fields>
-            <name>EmbeddedSuccess</name>
-            <fieldText
-            >&lt;p&gt;Oppdraget ble frigitt til tolker. Trykk Fullfør for å fortsette til neste valgte oppdrag.&lt;/p&gt;</fieldText>
-            <fieldType>DisplayText</fieldType>
-        </fields>
-        <showFooter>true</showFooter>
-        <showHeader>false</showHeader>
-    </screens>
-    <screens>
         <name>AlreadyScheduled</name>
         <label>AlreadyScheduled</label>
-        <locationX>578</locationX>
+        <locationX>842</locationX>
         <locationY>1166</locationY>
         <allowBack>false</allowBack>
         <allowFinish>true</allowFinish>
@@ -404,9 +387,33 @@
         <showHeader>false</showHeader>
     </screens>
     <screens>
+        <name>EmbeddedSuccessScreen</name>
+        <label>Embedded Success Screen</label>
+        <locationX>314</locationX>
+        <locationY>1706</locationY>
+        <allowBack>false</allowBack>
+        <allowFinish>true</allowFinish>
+        <allowPause>false</allowPause>
+        <fields>
+            <name>EmbeddedSuccess</name>
+            <fieldText>&lt;p&gt;Oppdraget ble frigitt til tolker. Trykk Fullfør for å fortsette til neste valgte oppdrag.&lt;/p&gt;</fieldText>
+            <fieldType>DisplayText</fieldType>
+            <styleProperties>
+                <verticalAlignment>
+                    <stringValue>top</stringValue>
+                </verticalAlignment>
+                <width>
+                    <stringValue>12</stringValue>
+                </width>
+            </styleProperties>
+        </fields>
+        <showFooter>true</showFooter>
+        <showHeader>false</showHeader>
+    </screens>
+    <screens>
         <name>Not_allowed_to_release</name>
         <label>Not allowed to release</label>
-        <locationX>842</locationX>
+        <locationX>1106</locationX>
         <locationY>1058</locationY>
         <allowBack>false</allowBack>
         <allowFinish>true</allowFinish>
@@ -437,8 +444,7 @@
         <allowPause>false</allowPause>
         <fields>
             <name>CloseWindowText</name>
-            <fieldText
-            >&lt;p&gt;&lt;span style=&quot;color: rgb(23, 43, 77); font-family: &amp;quot;Segoe UI&amp;quot;, sans-serif; font-size: 11pt;&quot;&gt;Oppdatert, lukk vinduet&lt;/span&gt;&lt;/p&gt;</fieldText>
+            <fieldText>&lt;p&gt;&lt;span style=&quot;color: rgb(23, 43, 77); font-family: &amp;quot;Segoe UI&amp;quot;, sans-serif; font-size: 11pt;&quot;&gt;Oppdatert, lukk vinduet&lt;/span&gt;&lt;/p&gt;</fieldText>
             <fieldType>DisplayText</fieldType>
             <styleProperties>
                 <verticalAlignment>
@@ -455,7 +461,7 @@
     <screens>
         <name>Sett_frist_for_pamelding</name>
         <label>Sett frist for påmelding</label>
-        <locationX>314</locationX>
+        <locationX>446</locationX>
         <locationY>1166</locationY>
         <allowBack>true</allowBack>
         <allowFinish>true</allowFinish>
@@ -465,8 +471,7 @@
         </connector>
         <fields>
             <name>InformationField</name>
-            <fieldText
-            >&lt;p&gt;&lt;strong&gt;Følgende informasjon vil bli vist til tolker.&lt;/strong&gt;&lt;/p&gt;&lt;p&gt;{!CurrentServiceAppointment.HOT_Information__c}&lt;/p&gt;</fieldText>
+            <fieldText>&lt;p&gt;&lt;strong&gt;Følgende informasjon vil bli vist til tolker:&lt;/strong&gt;&lt;/p&gt;&lt;p&gt;&lt;br&gt;&lt;/p&gt;&lt;p&gt;&lt;strong&gt;Informasjon&lt;/strong&gt;&lt;/p&gt;&lt;p&gt;{!CurrentServiceAppointment.HOT_Information__c}&lt;/p&gt;</fieldText>
             <fieldType>DisplayText</fieldType>
             <styleProperties>
                 <verticalAlignment>
@@ -502,10 +507,9 @@
             <defaultValue>
                 <elementReference>freelanceSubject_Old</elementReference>
             </defaultValue>
-            <fieldText>Opplysninger (ingen sensitive)</fieldText>
+            <fieldText>Tema til tolker (ingen sensitive)</fieldText>
             <fieldType>InputField</fieldType>
-            <helpText
-            >&lt;p&gt;Feltet skal benyttes til relevante opplysninger om oppdragets art, til bruk for frilanstolk når de skal vurdere sin interesse for oppdraget. Dette kan være f.eks. tolking fra engelsk, krav til antrekk, antall deltakere etc.&lt;/p&gt;</helpText>
+            <helpText>&lt;p&gt;Feltet skal benyttes til relevante opplysninger om oppdragets art, til bruk for frilanstolk når de skal vurdere sin interesse for oppdraget. Dette kan være f.eks. tolking fra engelsk, krav til antrekk, antall deltakere etc.&lt;/p&gt;</helpText>
             <inputsOnNextNavToAssocScrn>UseStoredValues</inputsOnNextNavToAssocScrn>
             <isRequired>true</isRequired>
             <styleProperties>
@@ -523,8 +527,8 @@
     <screens>
         <name>SuccessScreen</name>
         <label>SuccessScreen</label>
-        <locationX>314</locationX>
-        <locationY>1490</locationY>
+        <locationX>578</locationX>
+        <locationY>1706</locationY>
         <allowBack>false</allowBack>
         <allowFinish>true</allowFinish>
         <allowPause>false</allowPause>
@@ -573,33 +577,13 @@
         <showHeader>false</showHeader>
     </screens>
     <start>
-        <locationX>221</locationX>
+        <locationX>336</locationX>
         <locationY>0</locationY>
         <connector>
             <targetReference>GetCurrentServiceAppointment</targetReference>
         </connector>
     </start>
     <status>Active</status>
-    <variables>
-        <name>isEmbedded</name>
-        <dataType>Boolean</dataType>
-        <isCollection>false</isCollection>
-        <isInput>true</isInput>
-        <isOutput>false</isOutput>
-        <value>
-            <booleanValue>false</booleanValue>
-        </value>
-    </variables>
-    <variables>
-        <name>wasReleased</name>
-        <dataType>Boolean</dataType>
-        <isCollection>false</isCollection>
-        <isInput>false</isInput>
-        <isOutput>true</isOutput>
-        <value>
-            <booleanValue>false</booleanValue>
-        </value>
-    </variables>
     <variables>
         <name>AssignedResourceId</name>
         <dataType>String</dataType>
@@ -648,6 +632,16 @@
         <objectType>HOT_InterestedResource__c</objectType>
     </variables>
     <variables>
+        <name>isEmbedded</name>
+        <dataType>Boolean</dataType>
+        <isCollection>false</isCollection>
+        <isInput>true</isInput>
+        <isOutput>false</isOutput>
+        <value>
+            <booleanValue>false</booleanValue>
+        </value>
+    </variables>
+    <variables>
         <name>recordId</name>
         <dataType>String</dataType>
         <isCollection>false</isCollection>
@@ -661,5 +655,15 @@
         <isInput>false</isInput>
         <isOutput>false</isOutput>
         <objectType>HOT_InterestedResource__c</objectType>
+    </variables>
+    <variables>
+        <name>wasReleased</name>
+        <dataType>Boolean</dataType>
+        <isCollection>false</isCollection>
+        <isInput>false</isInput>
+        <isOutput>true</isOutput>
+        <value>
+            <booleanValue>false</booleanValue>
+        </value>
     </variables>
 </Flow>
