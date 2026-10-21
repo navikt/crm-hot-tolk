@@ -21,6 +21,12 @@
     max-width: 70%;
 }
 
+.logo {
+    display: block;
+    width: 250px;
+    height: auto;
+}
+
 .banner-right {
     margin-left: auto;
     white-space: nowrap;
