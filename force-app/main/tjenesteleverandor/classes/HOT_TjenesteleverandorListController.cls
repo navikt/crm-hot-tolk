@@ -121,9 +121,9 @@ public with sharing class HOT_TjenesteleverandorListController {
             FROM ServiceAppointment
             WHERE
                 HOT_IsReleasedToTjenesteleverandor__c = TRUE
+                AND HOT_IsReleasedToFreelance__c = TRUE
                 AND HOT_TjenesteleverandorStatus__c = 'Accepted'
                 AND Status = 'Released to Freelance'
-                AND HOT_IsReleasedToFreelance__c = TRUE
             ORDER BY EarliestStartTime ASC
         ];
     }
@@ -160,9 +160,9 @@ public with sharing class HOT_TjenesteleverandorListController {
             FROM ServiceAppointment
             WHERE
                 HOT_IsReleasedToTjenesteleverandor__c = TRUE
+                AND HOT_IsReleasedToFreelance__c = TRUE
                 AND HOT_TjenesteleverandorStatus__c = 'Accepted'
                 AND Status = 'Dispatched'
-                AND HOT_IsReleasedToFreelance__c = TRUE
             ORDER BY EarliestStartTime ASC
         ];
     }
