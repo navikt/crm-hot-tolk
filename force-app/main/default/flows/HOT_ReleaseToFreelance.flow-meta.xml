@@ -349,6 +349,7 @@
         <queriedFields>Subject</queriedFields>
         <queriedFields>HOT_ReleaseDate__c</queriedFields>
         <queriedFields>HOT_Information__c</queriedFields>
+        <queriedFields>DueDate</queriedFields>
         <sortField>Id</sortField>
         <sortOrder>Asc</sortOrder>
     </recordLookups>
@@ -471,7 +472,7 @@
         </connector>
         <fields>
             <name>InformationField</name>
-            <fieldText>&lt;p&gt;&lt;strong&gt;Følgende informasjon vil bli vist til tolker:&lt;/strong&gt;&lt;/p&gt;&lt;p&gt;&lt;br&gt;&lt;/p&gt;&lt;p&gt;&lt;strong&gt;Informasjon&lt;/strong&gt;&lt;/p&gt;&lt;p&gt;{!CurrentServiceAppointment.HOT_Information__c}&lt;/p&gt;</fieldText>
+            <fieldText>&lt;p&gt;&lt;strong&gt;Bestilt tid for oppdraget&lt;/strong&gt;:&lt;/p&gt;&lt;p&gt;&lt;br&gt;&lt;/p&gt;&lt;p&gt;&lt;strong&gt;Tidligste tillate start: &lt;/strong&gt;{!CurrentServiceAppointment.EarliestStartTime}&lt;/p&gt;&lt;p&gt;&lt;strong&gt;Forfallsdato: &lt;/strong&gt;{!CurrentServiceAppointment.DueDate}&lt;/p&gt;&lt;p&gt;&lt;br&gt;&lt;/p&gt;&lt;p&gt;&lt;strong&gt;Følgende informasjon vil bli vist til tolker:&lt;/strong&gt;&lt;/p&gt;&lt;p&gt;&lt;br&gt;&lt;/p&gt;&lt;p&gt;&lt;strong&gt;Informasjon&lt;/strong&gt;&lt;/p&gt;&lt;p&gt;{!CurrentServiceAppointment.HOT_Information__c}&lt;/p&gt;</fieldText>
             <fieldType>DisplayText</fieldType>
             <styleProperties>
                 <verticalAlignment>
@@ -522,7 +523,7 @@
             </styleProperties>
         </fields>
         <showFooter>true</showFooter>
-        <showHeader>true</showHeader>
+        <showHeader>false</showHeader>
     </screens>
     <screens>
         <name>SuccessScreen</name>
