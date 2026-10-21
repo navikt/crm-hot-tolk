@@ -56,27 +56,32 @@
         class="modal-container"
         aria-label="Frigi til tolker"
         aria-modal="true"
-        onclose={closeReleaseModal}
+        onclose={dismissReleaseModal}
     >
         <template lwc:if={showReleaseModal}>
             <div class="modal-header">
                 <h2>{releaseHeading}</h2>
-                <button class="close-btn" onclick={closeReleaseModal}>
+                <button class="close-btn" onclick={dismissReleaseModal} aria-label="Lukk">
                     <img src={exitCrossIcon} alt="" aria-hidden="true" />
                 </button>
             </div>
             <div class="modal-body">
-                <template for:each={activeReleaseFlow} for:item="appointment">
-                    <div key={appointment.id}>
-                        <p>Oppdragsnummer: {appointment.appointmentNumber}</p>
-                        <lightning-flow
-                            data-record-id={appointment.id}
-                            flow-api-name="HOT_ReleaseToFreelance"
-                            flow-input-variables={appointment.inputVariables}
-                            flow-finish-behavior="NONE"
-                            onstatuschange={handleReleaseStatusChange}
-                        ></lightning-flow>
-                    </div>
+                <template for:each={releaseAppointments} for:item="appointment">
+                    <section key={appointment.id} class="release-appointment">
+                        <h3>Oppdragsnummer: {appointment.appointmentNumber}</h3>
+                        <template lwc:if={appointment.isComplete}>
+                            <p role="status">{appointment.completionMessage}</p>
+                        </template>
+                        <template lwc:else>
+                            <lightning-flow
+                                data-record-id={appointment.id}
+                                flow-api-name="HOT_ReleaseToFreelance"
+                                flow-input-variables={appointment.inputVariables}
+                                flow-finish-behavior="NONE"
+                                onstatuschange={handleReleaseStatusChange}
+                            ></lightning-flow>
+                        </template>
+                    </section>
                 </template>
             </div>
         </template>

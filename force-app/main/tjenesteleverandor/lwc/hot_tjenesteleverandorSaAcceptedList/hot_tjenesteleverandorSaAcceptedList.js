@@ -24,7 +24,7 @@ export default class Hot_tjenesteleverandorSaAcceptedList extends NavigationMixi
     columns = [];
     error;
     checkedServiceAppointments = [];
-    releaseQueue = [];
+    releaseAppointments = [];
     releaseTotal = 0;
     releasedCount = 0;
     showReleaseModal = false;
@@ -84,12 +84,8 @@ export default class Hot_tjenesteleverandorSaAcceptedList extends NavigationMixi
         return `${this.checkedServiceAppointments.length} oppdrag valgt`;
     }
 
-    get activeReleaseFlow() {
-        return this.releaseQueue.slice(0, 1);
-    }
-
     get releaseHeading() {
-        return `Frigi til tolker (${this.releaseTotal - this.releaseQueue.length + 1} av ${this.releaseTotal})`;
+        return `Frigi til tolker (${this.releasedCount} av ${this.releaseTotal} frigitt)`;
     }
 
     handleRowChecked(event) {
@@ -107,25 +103,27 @@ export default class Hot_tjenesteleverandorSaAcceptedList extends NavigationMixi
             return;
         }
         const selectedIds = new Set(this.checkedServiceAppointments);
-        this.releaseQueue = this.records
+        this.releaseAppointments = this.records
             .filter((record) => selectedIds.has(record.Id))
             .map((record) => ({
                 id: record.Id,
                 appointmentNumber: record.AppointmentNumber,
+                isComplete: false,
                 inputVariables: [
                     { name: 'recordId', type: 'String', value: record.Id },
                     { name: 'isEmbedded', type: 'Boolean', value: true }
                 ]
             }));
-        this.releaseTotal = this.releaseQueue.length;
+        this.releaseTotal = this.releaseAppointments.length;
         this.releasedCount = 0;
         this.releaseFeedback = undefined;
         this.showReleaseModal = true;
     }
 
     handleReleaseStatusChange(event) {
-        const currentId = this.releaseQueue[0]?.id;
-        if (!this.showReleaseModal || event.target.dataset.recordId !== currentId) {
+        const currentId = event.target.dataset.recordId;
+        const appointment = this.releaseAppointments.find((record) => record.id === currentId);
+        if (!this.showReleaseModal || !appointment || appointment.isComplete) {
             return;
         }
         const { status, outputVariables } = event.detail;
@@ -144,17 +142,32 @@ export default class Hot_tjenesteleverandorSaAcceptedList extends NavigationMixi
         if (status !== 'FINISHED' && status !== 'FINISHED_SCREEN') {
             return;
         }
-        if (outputVariables?.some((variable) => variable.name === 'wasReleased' && variable.value === true)) {
+        const wasReleased = outputVariables?.some(
+            (variable) => variable.name === 'wasReleased' && variable.value === true
+        );
+        if (wasReleased) {
             this.releasedCount += 1;
             this.checkedServiceAppointments = this.checkedServiceAppointments.filter((id) => id !== currentId);
         }
-        this.releaseQueue = this.releaseQueue.slice(1);
-        if (this.releaseQueue.length === 0) {
+        this.releaseAppointments = this.releaseAppointments.map((record) =>
+            record.id === currentId
+                ? {
+                      ...record,
+                      isComplete: true,
+                      completionMessage: wasReleased ? 'Oppdraget er frigitt.' : 'Oppdraget ble ikke frigitt.'
+                  }
+                : record
+        );
+        if (this.releaseAppointments.every((record) => record.isComplete)) {
             this.closeReleaseModal();
         }
     }
 
-    closeReleaseModal() {
+    dismissReleaseModal() {
+        this.closeReleaseModal(false);
+    }
+
+    closeReleaseModal(showFeedback = true) {
         if (!this.showReleaseModal) {
             return;
         }
@@ -164,17 +177,21 @@ export default class Hot_tjenesteleverandorSaAcceptedList extends NavigationMixi
             dialog.close();
         }
         const incompleteCount = this.releaseTotal - this.releasedCount;
-        this.releaseFeedback = {
-            type: incompleteCount > 0 ? 'warning' : 'success',
-            message:
-                `${this.releasedCount} oppdrag frigitt til frilanstolker.` +
-                (incompleteCount > 0
-                    ? ` ${incompleteCount} oppdrag ble ikke fullført. Kontroller oppdragene før du prøver igjen.`
-                    : '')
-        };
-        this.releaseQueue = [];
-        sessionStorage.setItem(LIST_REFRESH_KEY, String(Date.now()));
-        void this.refreshIfRequested();
+        this.releaseFeedback = showFeedback
+            ? {
+                  type: incompleteCount > 0 ? 'warning' : 'success',
+                  message:
+                      `${this.releasedCount} oppdrag frigitt til frilanstolker.` +
+                      (incompleteCount > 0
+                          ? ` ${incompleteCount} oppdrag ble ikke fullført. Kontroller oppdragene før du prøver igjen.`
+                          : '')
+              }
+            : undefined;
+        this.releaseAppointments = [];
+        if (this.releasedCount > 0 || showFeedback) {
+            sessionStorage.setItem(LIST_REFRESH_KEY, String(Date.now()));
+            void this.refreshIfRequested();
+        }
     }
 
     get hasResult() {
