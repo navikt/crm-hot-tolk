@@ -1,7 +1,10 @@
 <template>
     <div class="banner">
         <div class="banner-left">
-            <template lwc:if={isNotMobilePublisher}>
+            <template lwc:if={isChristmasSeason}>
+                <img class="logo" src={logoUrl} alt="Tolketjenesten" />
+            </template>
+            <template lwc:elseif={isNotMobilePublisher}>
                 <h1>Tolketjenesten</h1>
             </template>
             <template lwc:else>
