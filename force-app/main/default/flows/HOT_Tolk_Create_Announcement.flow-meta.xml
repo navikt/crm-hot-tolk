@@ -575,8 +575,8 @@
                         </width>
                     </styleProperties>
                     <validationRule>
-                        <errorMessage>&lt;p&gt;Feltet &quot;Synlig til og med&quot; må fylles ut og være samme dato som eller senere enn &quot;Synlig fra og med&quot;&lt;/p&gt;</errorMessage>
-                        <formulaExpression>IF(ISBLANK({!ValidFromNews}), TRUE, IF(ISBLANK({!Synlig_til_News}), FALSE, {!Synlig_til_News} &gt;= {!ValidFromNews}))</formulaExpression>
+                        <errorMessage>&lt;p&gt;Feltet &quot;Synlig fra og med&quot; må fylles ut og være samme dato som eller tidligere enn &quot;Synlig til og med&quot;&lt;/p&gt;</errorMessage>
+                        <formulaExpression>IF(ISBLANK({!Synlig_til_News}), TRUE, IF(ISBLANK({!ValidFromNews}), FALSE, {!Synlig_til_News} &gt;= {!ValidFromNews}))</formulaExpression>
                     </validationRule>
                     <visibilityRule>
                         <conditionLogic>or</conditionLogic>
