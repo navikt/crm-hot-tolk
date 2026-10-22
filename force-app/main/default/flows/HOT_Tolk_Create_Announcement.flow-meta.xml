@@ -544,8 +544,8 @@
                         </width>
                     </styleProperties>
                     <validationRule>
-                        <errorMessage>&lt;p&gt;Feltet &quot;Synlig fra og med&quot; må også fylles ut&lt;/p&gt;</errorMessage>
-                        <formulaExpression>OR(NOT(ISBLANK({!ValidFromNews})), ISBLANK({!Synlig_til_News}))</formulaExpression>
+                        <errorMessage>&lt;p&gt;Feltet &quot;Synlig til og med&quot; må også fylles ut&lt;/p&gt;</errorMessage>
+                        <formulaExpression>OR(ISBLANK({!ValidFromNews}), NOT(ISBLANK({!Synlig_til_News})))</formulaExpression>
                     </validationRule>
                     <visibilityRule>
                         <conditionLogic>or</conditionLogic>
