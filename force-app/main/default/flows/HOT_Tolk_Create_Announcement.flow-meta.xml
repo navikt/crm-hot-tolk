@@ -43,20 +43,6 @@
             </value>
         </assignmentItems>
         <assignmentItems>
-            <assignToReference>newAnnouncement.ValidFrom__c</assignToReference>
-            <operator>Assign</operator>
-            <value>
-                <elementReference>announcementValidFrom</elementReference>
-            </value>
-        </assignmentItems>
-        <assignmentItems>
-            <assignToReference>newAnnouncement.ValidTo__c</assignToReference>
-            <operator>Assign</operator>
-            <value>
-                <elementReference>announcementValidTo</elementReference>
-            </value>
-        </assignmentItems>
-        <assignmentItems>
             <assignToReference>newAnnouncement.TargetSite__c</assignToReference>
             <operator>Assign</operator>
             <value>
@@ -82,6 +68,52 @@
             <operator>Assign</operator>
             <value>
                 <elementReference>getRecordType.Id</elementReference>
+            </value>
+        </assignmentItems>
+        <connector>
+            <targetReference>selectAnnouncementDates</targetReference>
+        </connector>
+    </assignments>
+    <assignments>
+        <name>assignNewsDates</name>
+        <label>Sett datoer for nyhet</label>
+        <locationX>0</locationX>
+        <locationY>0</locationY>
+        <assignmentItems>
+            <assignToReference>newAnnouncement.ValidFrom__c</assignToReference>
+            <operator>Assign</operator>
+            <value>
+                <elementReference>ValidFromNews</elementReference>
+            </value>
+        </assignmentItems>
+        <assignmentItems>
+            <assignToReference>newAnnouncement.ValidTo__c</assignToReference>
+            <operator>Assign</operator>
+            <value>
+                <elementReference>Synlig_til_News</elementReference>
+            </value>
+        </assignmentItems>
+        <connector>
+            <targetReference>Create_Announcement</targetReference>
+        </connector>
+    </assignments>
+    <assignments>
+        <name>assignRequiredDates</name>
+        <label>Sett datoer for driftsmelding og varsel</label>
+        <locationX>0</locationX>
+        <locationY>0</locationY>
+        <assignmentItems>
+            <assignToReference>newAnnouncement.ValidFrom__c</assignToReference>
+            <operator>Assign</operator>
+            <value>
+                <elementReference>ValidFrom</elementReference>
+            </value>
+        </assignmentItems>
+        <assignmentItems>
+            <assignToReference>newAnnouncement.ValidTo__c</assignToReference>
+            <operator>Assign</operator>
+            <value>
+                <elementReference>Synlig_til</elementReference>
             </value>
         </assignmentItems>
         <connector>
@@ -160,6 +192,31 @@
         <dataType>String</dataType>
     </choices>
     <decisions>
+        <name>selectAnnouncementDates</name>
+        <label>Velg datofelt for meldingstype</label>
+        <locationX>0</locationX>
+        <locationY>0</locationY>
+        <defaultConnector>
+            <targetReference>assignRequiredDates</targetReference>
+        </defaultConnector>
+        <defaultConnectorLabel>Driftsmelding eller varsel</defaultConnectorLabel>
+        <rules>
+            <name>isNews</name>
+            <conditionLogic>and</conditionLogic>
+            <conditions>
+                <leftValueReference>Velg_type_melding</leftValueReference>
+                <operator>EqualTo</operator>
+                <rightValue>
+                    <stringValue>News</stringValue>
+                </rightValue>
+            </conditions>
+            <connector>
+                <targetReference>assignNewsDates</targetReference>
+            </connector>
+            <label>Nyhet</label>
+        </rules>
+    </decisions>
+    <decisions>
         <name>setAudienceRegion</name>
         <label>setAudienceRegion</label>
         <locationX>0</locationX>
@@ -209,16 +266,6 @@
         <picklistObject>HOT_Announcement__c</picklistObject>
     </dynamicChoiceSets>
     <environments>Default</environments>
-    <formulas>
-        <name>announcementValidFrom</name>
-        <dataType>Date</dataType>
-        <expression>IF({!Velg_type_melding} = &quot;News&quot;, {!ValidFromNews}, {!ValidFrom})</expression>
-    </formulas>
-    <formulas>
-        <name>announcementValidTo</name>
-        <dataType>Date</dataType>
-        <expression>IF({!Velg_type_melding} = &quot;News&quot;, {!Synlig_til_News}, {!Synlig_til})</expression>
-    </formulas>
     <formulas>
         <name>checkIfFromDateExist</name>
         <dataType>Boolean</dataType>
