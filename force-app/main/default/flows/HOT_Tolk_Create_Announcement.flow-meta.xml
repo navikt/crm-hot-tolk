@@ -46,14 +46,14 @@
             <assignToReference>newAnnouncement.ValidFrom__c</assignToReference>
             <operator>Assign</operator>
             <value>
-                <elementReference>ValidFrom</elementReference>
+                <elementReference>announcementValidFrom</elementReference>
             </value>
         </assignmentItems>
         <assignmentItems>
             <assignToReference>newAnnouncement.ValidTo__c</assignToReference>
             <operator>Assign</operator>
             <value>
-                <elementReference>Synlig_til</elementReference>
+                <elementReference>announcementValidTo</elementReference>
             </value>
         </assignmentItems>
         <assignmentItems>
@@ -210,6 +210,16 @@
     </dynamicChoiceSets>
     <environments>Default</environments>
     <formulas>
+        <name>announcementValidFrom</name>
+        <dataType>Date</dataType>
+        <expression>IF({!Velg_type_melding} = &quot;News&quot;, {!ValidFromNews}, {!ValidFrom})</expression>
+    </formulas>
+    <formulas>
+        <name>announcementValidTo</name>
+        <dataType>Date</dataType>
+        <expression>IF({!Velg_type_melding} = &quot;News&quot;, {!Synlig_til_News}, {!Synlig_til})</expression>
+    </formulas>
+    <formulas>
         <name>checkIfFromDateExist</name>
         <dataType>Boolean</dataType>
         <expression>AND(
@@ -240,11 +250,6 @@
         <name>Tomorrowsdate</name>
         <dataType>Date</dataType>
         <expression>TODAY() + 1</expression>
-    </formulas>
-    <formulas>
-        <name>typeOfAnnouncement</name>
-        <dataType>String</dataType>
-        <expression>{!Velg_type_melding}</expression>
     </formulas>
     <interviewLabel>HOT Tolk Create Announcement {!$Flow.CurrentDateTime}</interviewLabel>
     <label>HOT Tolk Create Announcement</label>
@@ -341,19 +346,6 @@
             <fields>
                 <name>Opprettnymelding_Column1</name>
                 <fieldType>Region</fieldType>
-                <fields>
-                    <name>typee</name>
-                    <fieldText>&lt;p&gt;Type: {!typeOfAnnouncement}&lt;/p&gt;</fieldText>
-                    <fieldType>DisplayText</fieldType>
-                    <styleProperties>
-                        <verticalAlignment>
-                            <stringValue>top</stringValue>
-                        </verticalAlignment>
-                        <width>
-                            <stringValue>12</stringValue>
-                        </width>
-                    </styleProperties>
-                </fields>
                 <fields>
                     <name>Velg_type_melding</name>
                     <choiceReferences>Type</choiceReferences>
@@ -490,6 +482,10 @@
                             <stringValue>12</stringValue>
                         </width>
                     </styleProperties>
+                    <validationRule>
+                        <errorMessage>&lt;p&gt;Feltet &quot;Synlig til og med&quot; må være samme dato som eller senere enn &quot;Synlig fra og med&quot;&lt;/p&gt;</errorMessage>
+                        <formulaExpression>OR(ISBLANK({!ValidFrom}), ISBLANK({!Synlig_til}), {!Synlig_til} &gt;= {!ValidFrom})</formulaExpression>
+                    </validationRule>
                     <visibilityRule>
                         <conditionLogic>or</conditionLogic>
                         <conditions>
@@ -548,8 +544,8 @@
                         </width>
                     </styleProperties>
                     <validationRule>
-                        <errorMessage>&lt;p&gt;&lt;span style=&quot;background-color: rgb(255, 255, 255);&quot;&gt;Feltet &quot;Synlig til og med&quot; må også fylles ut&lt;/span&gt;&lt;/p&gt;</errorMessage>
-                        <formulaExpression>{!ValidFromNews} != null &amp;&amp; {!Synlig_til_News} != null</formulaExpression>
+                        <errorMessage>&lt;p&gt;Feltet &quot;Synlig fra og med&quot; må også fylles ut&lt;/p&gt;</errorMessage>
+                        <formulaExpression>OR(NOT(ISBLANK({!ValidFromNews})), ISBLANK({!Synlig_til_News}))</formulaExpression>
                     </validationRule>
                     <visibilityRule>
                         <conditionLogic>or</conditionLogic>
@@ -579,8 +575,8 @@
                         </width>
                     </styleProperties>
                     <validationRule>
-                        <errorMessage>&lt;p&gt;Feltet &quot;Synlig fra og med&quot; må også fylles ut&lt;/p&gt;</errorMessage>
-                        <formulaExpression>{!ValidFromNews} != null &amp;&amp; {!Synlig_til_News} != null</formulaExpression>
+                        <errorMessage>&lt;p&gt;Feltet &quot;Synlig til og med&quot; må fylles ut og være samme dato som eller senere enn &quot;Synlig fra og med&quot;&lt;/p&gt;</errorMessage>
+                        <formulaExpression>IF(ISBLANK({!ValidFromNews}), TRUE, IF(ISBLANK({!Synlig_til_News}), FALSE, {!Synlig_til_News} &gt;= {!ValidFromNews}))</formulaExpression>
                     </validationRule>
                     <visibilityRule>
                         <conditionLogic>or</conditionLogic>
