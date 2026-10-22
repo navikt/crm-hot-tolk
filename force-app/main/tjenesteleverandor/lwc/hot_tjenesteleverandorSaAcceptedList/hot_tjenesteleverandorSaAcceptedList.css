@@ -24,7 +24,7 @@
 }
 
 .release-appointment + .release-appointment {
-    border-top: 1px solid #e1e3e6;
+    border-top: 2px solid #bbbcbe;
     margin-top: 1.5rem;
     padding-top: 1.5rem;
 }

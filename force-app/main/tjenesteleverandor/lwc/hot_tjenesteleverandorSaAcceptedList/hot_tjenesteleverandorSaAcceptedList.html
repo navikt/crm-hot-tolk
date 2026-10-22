@@ -69,8 +69,10 @@
             <div class="modal-body">
                 <template for:each={releaseAppointments} for:item="appointment">
                     <section key={appointment.id} class="release-appointment">
-                        <h3>Oppdragsnummer: {appointment.appointmentNumber}</h3>
-                        <br />
+                        <h3>
+                            Oppdragsnummer:
+                            <span style="font-weight: 400">&nbsp;{appointment.appointmentNumber}</span>
+                        </h3>
                         <p><strong>Bestilt starttid:</strong> {appointment.startTime}</p>
                         <p><strong>Bestilt sluttid:</strong> {appointment.endTime}</p>
                         <p><strong>Følgende informasjon vil bli vist til tolker:</strong></p>
