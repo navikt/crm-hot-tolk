@@ -115,7 +115,8 @@ export default class Hot_tjenesteleverandorSaAcceptedList extends NavigationMixi
                 endTime: record.DueDate ? formatDatetime(record.DueDate) : '',
                 information: record.HOT_Information__c,
                 deadline: record.releaseDeadline,
-                subject: record.HOT_FreelanceSubject__c || record.Subject
+                subject: record.HOT_FreelanceSubject__c || record.Subject,
+                subjectError: ''
             }));
         this.releaseTotal = this.releaseAppointments.length;
         this.releasedCount = 0;
@@ -126,8 +127,15 @@ export default class Hot_tjenesteleverandorSaAcceptedList extends NavigationMixi
 
     handleReleaseFieldChange(event) {
         const { recordId, field } = event.target.dataset;
+        const value = field === 'subject' ? event.detail : event.target.value;
         this.releaseAppointments = this.releaseAppointments.map((appointment) =>
-            appointment.id === recordId ? { ...appointment, [field]: event.target.value } : appointment
+            appointment.id === recordId
+                ? {
+                      ...appointment,
+                      [field]: value,
+                      ...(field === 'subject' && value.trim() ? { subjectError: '' } : {})
+                  }
+                : appointment
         );
     }
 
@@ -135,10 +143,19 @@ export default class Hot_tjenesteleverandorSaAcceptedList extends NavigationMixi
         if (this.isReleasing) {
             return;
         }
-        const fields = [...this.template.querySelectorAll('[data-release-field]')];
+        const fields = [...this.template.querySelectorAll('[data-release-field="deadline"]')];
         const invalidFields = fields.filter((field) => !field.reportValidity());
-        if (invalidFields.length > 0) {
-            invalidFields[0].focus();
+        const invalidSubjects = this.releaseAppointments.filter((appointment) => !appointment.subject?.trim());
+        if (invalidSubjects.length > 0) {
+            const invalidSubjectIds = new Set(invalidSubjects.map((appointment) => appointment.id));
+            this.releaseAppointments = this.releaseAppointments.map((appointment) =>
+                invalidSubjectIds.has(appointment.id)
+                    ? { ...appointment, subjectError: 'Feltet må fylles ut.' }
+                    : appointment
+            );
+        }
+        if (invalidFields.length > 0 || invalidSubjects.length > 0) {
+            invalidFields[0]?.focus();
             return;
         }
         this.isReleasing = true;

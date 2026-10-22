@@ -33,6 +33,18 @@
     font-weight: 600;
 }
 
+.required-textarea-label {
+    display: block;
+    font-size: 1.125rem;
+    margin-top: 1rem;
+    margin-bottom: -0.25rem;
+}
+
+.required-field-indicator {
+    color: #ea001e;
+    margin-right: 0.25rem;
+}
+
 .loader-container {
     display: flex;
     justify-content: center;

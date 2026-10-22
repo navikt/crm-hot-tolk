@@ -76,7 +76,7 @@
                         <p><strong>Følgende informasjon vil bli vist til tolker:</strong></p>
                         <lightning-formatted-rich-text value={appointment.information}></lightning-formatted-rich-text>
                         <lightning-input
-                            data-release-field
+                            data-release-field="deadline"
                             data-record-id={appointment.id}
                             data-field="deadline"
                             type="date"
@@ -86,18 +86,25 @@
                             disabled={isReleasing}
                             onchange={handleReleaseFieldChange}
                         ></lightning-input>
-                        <lightning-textarea
-                            data-release-field
-                            data-record-id={appointment.id}
-                            data-field="subject"
-                            label="Tema til tolker (ingen sensitive)"
-                            field-level-help="Relevante opplysninger om oppdragets art, for eksempel tolking fra engelsk, krav til antrekk eller antall deltakere."
-                            value={appointment.subject}
-                            maxlength="255"
-                            required
-                            disabled={isReleasing}
-                            onchange={handleReleaseFieldChange}
-                        ></lightning-textarea>
+                        <div class="required-textarea">
+                            <label class="required-textarea-label">
+                                <span class="required-field-indicator" aria-hidden="true">*</span>
+                                <strong>Tema til tolker (ingen sensitive)</strong>
+                            </label>
+                            <c-textarea
+                                data-release-field="subject"
+                                data-record-id={appointment.id}
+                                data-field="subject"
+                                label=""
+                                aria-label="Tema til tolker (ingen sensitive)"
+                                value={appointment.subject}
+                                maxlength="255"
+                                error-text={appointment.subjectError}
+                                disabled={isReleasing}
+                                desktop-style="width: 75%;"
+                                ongetvalueontextareachange={handleReleaseFieldChange}
+                            ></c-textarea>
+                        </div>
                     </section>
                 </template>
             </div>
