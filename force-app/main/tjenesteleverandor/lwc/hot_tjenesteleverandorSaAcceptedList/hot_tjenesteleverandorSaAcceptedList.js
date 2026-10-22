@@ -6,7 +6,7 @@ import releaseServiceAppointments from '@salesforce/apex/HOT_TjenesteleverandorR
 import icons from '@salesforce/resourceUrl/ikoner';
 
 import { columns, mobileColumns } from './columns';
-import { formatRecord } from 'c/datetimeFormatterNorwegianTime';
+import { formatRecord, formatDatetime } from 'c/datetimeFormatterNorwegianTime';
 import { getDayOfWeek } from 'c/hot_commonUtils';
 import { filterRecords, restoreFilters } from 'c/hot_tjenesteleverandorFilters';
 
@@ -111,7 +111,8 @@ export default class Hot_tjenesteleverandorSaAcceptedList extends NavigationMixi
             .map((record) => ({
                 id: record.Id,
                 appointmentNumber: record.AppointmentNumber,
-                time: record.StartAndEndDate,
+                startTime: record.EarliestStartTime ? formatDatetime(record.EarliestStartTime) : '',
+                endTime: record.DueDate ? formatDatetime(record.DueDate) : '',
                 information: record.HOT_Information__c,
                 deadline: record.releaseDeadline,
                 subject: record.HOT_FreelanceSubject__c || record.Subject

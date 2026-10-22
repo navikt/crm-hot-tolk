@@ -71,7 +71,8 @@
                     <section key={appointment.id} class="release-appointment">
                         <h3>Oppdragsnummer: {appointment.appointmentNumber}</h3>
                         <br />
-                        <p><strong>Bestilt tid for oppdraget:</strong> {appointment.time}</p>
+                        <p><strong>Bestilt starttid:</strong> {appointment.startTime}</p>
+                        <p><strong>Bestilt sluttid:</strong> {appointment.endTime}</p>
                         <p><strong>Følgende informasjon vil bli vist til tolker:</strong></p>
                         <lightning-formatted-rich-text value={appointment.information}></lightning-formatted-rich-text>
                         <lightning-input
