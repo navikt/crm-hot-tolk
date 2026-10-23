@@ -1,5 +1,14 @@
 @import 'c/hot_sharedFonts';
 
+.bulk-action-bar {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: space-between;
+    gap: 1rem;
+    margin-bottom: 1rem;
+}
+
 .main-content {
     background-color: #ffffff;
     border-radius: 0.5rem;
@@ -12,6 +21,28 @@
 .empty-state {
     padding: 1.5rem 0;
     text-align: center;
+}
+
+.release-appointment + .release-appointment {
+    border-top: 2px solid #bbbcbe;
+    margin-top: 1.5rem;
+    padding-top: 1.5rem;
+}
+
+.release-appointment h3 {
+    font-weight: 600;
+}
+
+.required-textarea-label {
+    display: block;
+    font-size: 1.125rem;
+    margin-top: 1rem;
+    margin-bottom: -0.5rem;
+}
+
+.required-field-indicator {
+    color: #ea001e;
+    margin-right: 0.25rem;
 }
 
 .loader-container {
@@ -38,6 +69,7 @@ dialog.modal-container {
     width: 90%;
     max-height: 95vh;
     overflow-y: auto;
+    overscroll-behavior-y: contain;
     box-shadow: 0 2px 10px rgba(0, 0, 0, 0.3);
 
     padding: 0;
@@ -58,6 +90,30 @@ dialog[open].modal-container {
     display: flex;
 }
 
+dialog.release-modal {
+    overflow: hidden;
+}
+
+dialog.release-modal .modal-header,
+dialog.release-modal .release-footer {
+    flex-shrink: 0;
+}
+
+dialog.release-modal .modal-body {
+    min-height: 0;
+    overflow-y: auto;
+    overscroll-behavior-y: contain;
+}
+
+dialog.release-modal .release-footer {
+    border-top: 1px solid #e1e3e6;
+    background-color: #ffffff;
+}
+
+dialog.release-modal .release-footer c-hot_local-alert {
+    width: 100%;
+}
+
 dialog.modal-container .modal-header {
     display: flex;
     justify-content: space-between;
@@ -75,11 +131,11 @@ dialog.modal-container .modal-body strong {
 }
 
 dialog.modal-container .modal-footer {
-    padding: 1.5rem 2rem;
+    padding: 1rem 1rem;
     display: flex;
     flex-wrap: wrap;
     gap: 1rem;
-    justify-content: flex-start;
+    justify-content: flex-end;
 }
 
 dialog.modal-container .close-btn {

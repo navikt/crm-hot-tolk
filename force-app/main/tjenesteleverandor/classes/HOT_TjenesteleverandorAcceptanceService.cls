@@ -3,7 +3,8 @@ public without sharing class HOT_TjenesteleverandorAcceptanceService {
     private static final Integer MAX_APPOINTMENTS_PER_REQUEST = 200;
     private static final String STATUS_ACCEPTED = 'Accepted';
     private static final String STATUS_TRANSFERRED = 'Transferred';
-    private static final String SALESFORCE_STATUS_RELEASED = 'Released to Freelance';
+    private static final String SALESFORCE_STATUS_NONE = 'None';
+    private static final Boolean IS_RELEASED_TO_TJENESTELEVERANDOR = true;
 
     @TestVisible
     private static CustomPermissionHelper permissionHelper = new CustomPermissionHelper();
@@ -62,7 +63,6 @@ public without sharing class HOT_TjenesteleverandorAcceptanceService {
         }
 
         if (!appointmentsToUpdate.isEmpty()) {
-            // The external user remains read-only. Only confirmation and its dispatcher stamp use elevated DML.
             Database.SaveResult[] saveResults = Database.update(appointmentsToUpdate, false, AccessLevel.SYSTEM_MODE);
             applySaveResults(saveResults, updateResults);
         }
@@ -104,7 +104,7 @@ public without sharing class HOT_TjenesteleverandorAcceptanceService {
                 SELECT
                     Id,
                     Status,
-                    HOT_IsReleasedToFreelance__c,
+                    HOT_IsReleasedToTjenesteleverandor__c,
                     HOT_TjenesteleverandorStatus__c,
                     HOT_TjenesteleverandorDeadline__c
                 FROM ServiceAppointment
@@ -118,8 +118,8 @@ public without sharing class HOT_TjenesteleverandorAcceptanceService {
     private static String getConfirmationError(ServiceAppointment appointment, Datetime currentTime) {
         Boolean isEligible =
             appointment.HOT_TjenesteleverandorStatus__c == STATUS_TRANSFERRED &&
-            appointment.Status == SALESFORCE_STATUS_RELEASED &&
-            appointment.HOT_IsReleasedToFreelance__c == true &&
+            appointment.HOT_IsReleasedToTjenesteleverandor__c == IS_RELEASED_TO_TJENESTELEVERANDOR &&
+            appointment.Status == SALESFORCE_STATUS_NONE &&
             appointment.HOT_TjenesteleverandorDeadline__c != null &&
             appointment.HOT_TjenesteleverandorDeadline__c > currentTime;
         if (isEligible) {

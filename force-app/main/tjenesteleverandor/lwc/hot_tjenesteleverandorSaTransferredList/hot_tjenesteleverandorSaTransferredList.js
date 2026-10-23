@@ -15,8 +15,6 @@ const LIST_REFRESH_KEY = 'tjenesteleverandorTransferredListRefresh';
 const ACCEPTED_LIST_REFRESH_KEY = 'tjenesteleverandorAcceptedListRefresh';
 const FILTER_STORAGE_KEY = 'tjenesteleverandorTransferredFilters';
 
-
-
 export default class Hot_tjenesteleverandorSaTransferredList extends NavigationMixin(LightningElement) {
     @api recordId;
 
@@ -38,6 +36,7 @@ export default class Hot_tjenesteleverandorSaTransferredList extends NavigationM
     selectedRecordId;
     isSeries = false;
     seriesRecords = [];
+    pageScrollLock;
 
     wiredTransferredAppointments;
     isRefreshPending = false;
@@ -74,10 +73,39 @@ export default class Hot_tjenesteleverandorSaTransferredList extends NavigationM
     }
 
     disconnectedCallback() {
+        this.unlockPageScroll();
         this.persistCheckedRows();
         window.removeEventListener('popstate', this.handlePageActivation);
         window.removeEventListener('pageshow', this.handlePageActivation);
         document.removeEventListener('visibilitychange', this.handleVisibilityChange);
+    }
+
+    renderedCallback() {
+        if (this.showServiceAppointmentDetailsModal) {
+            if (!this.pageScrollLock) {
+                const element = document.scrollingElement;
+                this.pageScrollLock = {
+                    element,
+                    overflow: element.style.getPropertyValue('overflow'),
+                    priority: element.style.getPropertyPriority('overflow')
+                };
+                element.style.setProperty('overflow', 'hidden', 'important');
+            }
+        } else {
+            this.unlockPageScroll();
+        }
+    }
+
+    unlockPageScroll() {
+        if (this.pageScrollLock) {
+            const { element, overflow, priority } = this.pageScrollLock;
+            if (overflow) {
+                element.style.setProperty('overflow', overflow, priority);
+            } else {
+                element.style.removeProperty('overflow');
+            }
+            this.pageScrollLock = undefined;
+        }
     }
 
     setColumns() {
