@@ -69,6 +69,7 @@ dialog.modal-container {
     width: 90%;
     max-height: 95vh;
     overflow-y: auto;
+    overscroll-behavior-y: contain;
     box-shadow: 0 2px 10px rgba(0, 0, 0, 0.3);
 
     padding: 0;
@@ -101,6 +102,7 @@ dialog.release-modal .release-footer {
 dialog.release-modal .modal-body {
     min-height: 0;
     overflow-y: auto;
+    overscroll-behavior-y: contain;
 }
 
 dialog.release-modal .release-footer {

@@ -32,6 +32,7 @@ export default class Hot_tjenesteleverandorSaAcceptedList extends NavigationMixi
     releaseFeedback;
     releaseError;
     isReleasing = false;
+    pageScrollLock;
 
     showServiceAppointmentDetailsModal = false;
     serviceAppointment;
@@ -67,15 +68,41 @@ export default class Hot_tjenesteleverandorSaAcceptedList extends NavigationMixi
     }
 
     disconnectedCallback() {
+        this.unlockPageScroll();
         window.removeEventListener('popstate', this.handlePageActivation);
         window.removeEventListener('pageshow', this.handlePageActivation);
         document.removeEventListener('visibilitychange', this.handleVisibilityChange);
     }
 
     renderedCallback() {
+        if (this.showReleaseModal || this.showServiceAppointmentDetailsModal) {
+            if (!this.pageScrollLock) {
+                const element = document.scrollingElement;
+                this.pageScrollLock = {
+                    element,
+                    overflow: element.style.getPropertyValue('overflow'),
+                    priority: element.style.getPropertyPriority('overflow')
+                };
+                element.style.setProperty('overflow', 'hidden', 'important');
+            }
+        } else {
+            this.unlockPageScroll();
+        }
         const dialog = this.template.querySelector('[data-id="release-dialog"]');
         if (this.showReleaseModal && dialog && !dialog.open) {
             dialog.showModal();
+        }
+    }
+
+    unlockPageScroll() {
+        if (this.pageScrollLock) {
+            const { element, overflow, priority } = this.pageScrollLock;
+            if (overflow) {
+                element.style.setProperty('overflow', overflow, priority);
+            } else {
+                element.style.removeProperty('overflow');
+            }
+            this.pageScrollLock = undefined;
         }
     }
 
