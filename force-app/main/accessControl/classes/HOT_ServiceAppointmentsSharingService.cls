@@ -1,4 +1,6 @@
 public without sharing class HOT_ServiceAppointmentsSharingService {
+    private static final String TJENESTELEVERANDOR_GROUP_DEVELOPER_NAME = 'HOT_Tolk_Tjenesteleverandor';
+
     private static void handleException(Exception e) {
         LoggerUtility logger = new LoggerUtility();
         logger.exception(e, CRM_ApplicationDomain.Domain.HOT);
@@ -99,6 +101,90 @@ public without sharing class HOT_ServiceAppointmentsSharingService {
         } catch (Exception e) {
             handleException(e);
         }
+    }
+
+    public static void grantAccessToTjenesteleverandorGroup(Set<Id> serviceAppointmentIds) {
+        if (serviceAppointmentIds == null || serviceAppointmentIds.isEmpty()) {
+            return;
+        }
+
+        Id groupId = getTjenesteleverandorGroupId();
+        if (groupId == null) {
+            return;
+        }
+
+        Map<Id, ServiceAppointmentShare> sharesByAppointmentId = new Map<Id, ServiceAppointmentShare>();
+        for (ServiceAppointmentShare share : [
+            SELECT Id, ParentId, AccessLevel
+            FROM ServiceAppointmentShare
+            WHERE ParentId IN :serviceAppointmentIds AND UserOrGroupId = :groupId AND RowCause = 'Manual'
+        ]) {
+            sharesByAppointmentId.put(share.ParentId, share);
+        }
+
+        List<ServiceAppointmentShare> sharesToInsert = new List<ServiceAppointmentShare>();
+        List<ServiceAppointmentShare> sharesToUpdate = new List<ServiceAppointmentShare>();
+        for (ServiceAppointment appointment : [
+            SELECT Id, HOT_TjenesteleverandorStatus__c
+            FROM ServiceAppointment
+            WHERE Id IN :serviceAppointmentIds
+        ]) {
+            String accessLevel = appointment.HOT_TjenesteleverandorStatus__c == 'Accepted' ? 'Edit' : 'Read';
+            ServiceAppointmentShare existingShare = sharesByAppointmentId.get(appointment.Id);
+            if (existingShare == null) {
+                sharesToInsert.add(
+                    new ServiceAppointmentShare(
+                        ParentId = appointment.Id,
+                        AccessLevel = accessLevel,
+                        RowCause = 'Manual',
+                        UserOrGroupId = groupId
+                    )
+                );
+            } else if (existingShare.AccessLevel != accessLevel) {
+                existingShare.AccessLevel = accessLevel;
+                sharesToUpdate.add(existingShare);
+            }
+        }
+
+        if (!sharesToInsert.isEmpty()) {
+            insert sharesToInsert;
+        }
+        if (!sharesToUpdate.isEmpty()) {
+            update sharesToUpdate;
+        }
+    }
+
+    public static void removeAccessFromTjenesteleverandorGroup(Set<Id> serviceAppointmentIds) {
+        if (serviceAppointmentIds == null || serviceAppointmentIds.isEmpty()) {
+            return;
+        }
+
+        Id groupId = getTjenesteleverandorGroupId();
+        if (groupId == null) {
+            return;
+        }
+
+        List<ServiceAppointmentShare> serviceAppointmentShares = [
+            SELECT Id
+            FROM ServiceAppointmentShare
+            WHERE ParentId IN :serviceAppointmentIds AND UserOrGroupId = :groupId AND RowCause = 'Manual'
+        ];
+
+        try {
+            delete serviceAppointmentShares;
+        } catch (Exception e) {
+            handleException(e);
+        }
+    }
+
+    private static Id getTjenesteleverandorGroupId() {
+        List<Group> groups = [
+            SELECT Id
+            FROM Group
+            WHERE DeveloperName = :TJENESTELEVERANDOR_GROUP_DEVELOPER_NAME AND Type = 'Regular'
+            LIMIT 1
+        ];
+        return groups.isEmpty() ? null : groups[0].Id;
     }
 
     private static Map<Id, Id> getUserIdyResourceId(List<Id> resourceIds) {

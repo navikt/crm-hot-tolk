@@ -11,6 +11,13 @@
             <!-- Label shown above the combobox -->
             <property name="label" type="String" label="Combobox Label" />
             <property name="value" type="String" label="Selected Value" />
+            <property
+                name="selectedValue"
+                type="String"
+                label="Selected Value Output"
+                role="outputOnly"
+                description="Den valgte verdien som sendes tilbake til Flow."
+            />
 
             <!-- Configurable picklist options -->
             <property name="option1" type="String" label="Option 1" />
@@ -19,6 +26,8 @@
 
             <!-- If true, user must select a value to continue -->
             <property name="required" type="Boolean" label="Require a selection before continuing"
+                default="false" />
+            <property name="showNavButtons" type="Boolean" label="Show Navigation Buttons"
                 default="false" />
         </targetConfig>
     </targetConfigs>

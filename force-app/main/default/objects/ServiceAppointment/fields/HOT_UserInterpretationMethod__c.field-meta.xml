@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>HOT_UserInterpretationMethod__c</fullName>
+    <externalId>false</externalId>
+    <formula>CASE(
+    TEXT( HOT_Request__r.UserInterpretationMethod__c ),
+    &quot;SK&quot;, &quot;Skrivetolking&quot;,
+    &quot;TS&quot;, &quot;Tegnspråk&quot;,
+    &quot;TSBS&quot;, &quot;Tegnspråk i begrenset synsfelt&quot;,
+    &quot;TSS&quot;, &quot;Tegn som støtte til munnavlesning&quot;,
+    &quot;TT&quot;, &quot;Taletolking&quot;,
+    &quot;TTS&quot;, &quot;Taktilt tegnspråk&quot;,
+    &quot;&quot;
+)</formula>
+    <formulaTreatBlanksAs>BlankAsZero</formulaTreatBlanksAs>
+    <label>User Interpretation Method</label>
+    <required>false</required>
+    <trackHistory>false</trackHistory>
+    <type>Text</type>
+    <unique>false</unique>
+</CustomField>

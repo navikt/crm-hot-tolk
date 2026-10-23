@@ -1,5 +1,17 @@
+@import 'c/hot_sharedFonts';
+
 .main-content {
     font-family: 'Source Sans Pro', Arial, sans-serif;
+    margin-bottom: 0.75rem;
+}
+
+.picklist-label {
+    display: block;
+    margin-bottom: 0.25rem;
+    color: #1e2b3c;
+    font-size: 1rem;
+    font-weight: 600;
+    line-height: 1.5rem;
 }
 
 .button-container {

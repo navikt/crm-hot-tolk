@@ -241,6 +241,7 @@ public without sharing class HOT_ServiceAppointmentHandler extends MyTriggers {
         Map<Id, ServiceAppointment> newServiceAppointmentsSchedTimeChanged = new Map<Id, ServiceAppointment>();
         Map<Id, ServiceAppointment> serviceAppointmentWithNewAssignedResource = new Map<Id, ServiceAppointment>();
         List<ServiceAppointment> serviceAppointmentsWithUpdatedOwnerOrDispatcher = new List<ServiceAppointment>();
+        List<ServiceAppointment> serviceAppointmentsWithChangedTjenesteleverandor = new List<ServiceAppointment>();
         Set<Id> serviceAppointmentsWithStatusCannotComplete = new Set<Id>();
 
         for (ServiceAppointment serviceAppointment : (List<ServiceAppointment>) records) {
@@ -336,6 +337,12 @@ public without sharing class HOT_ServiceAppointmentHandler extends MyTriggers {
             ) {
                 serviceAppointmentsWithUpdatedOwnerOrDispatcher.add(serviceAppointment);
             }
+            if (
+                triggerOldMap.get(serviceAppointment.Id).get('HOT_TLDispatcher__c') !=
+                serviceAppointment.HOT_TLDispatcher__c
+            ) {
+                serviceAppointmentsWithChangedTjenesteleverandor.add(serviceAppointment);
+            }
         }
         HOT_ServiceAppointmentNotification.resourceServiceAppointmentChanged(
             (List<ServiceAppointment>) records,
@@ -399,12 +406,41 @@ public without sharing class HOT_ServiceAppointmentHandler extends MyTriggers {
         if (serviceAppointmentsWithUpdatedOwnerOrDispatcher.size() > 0) {
             updateOwnerOrDispatcherOnThread(serviceAppointmentsWithUpdatedOwnerOrDispatcher);
         }
+        if (serviceAppointmentsWithChangedTjenesteleverandor.size() > 0) {
+            updateTjenesteleverandorOnThread(serviceAppointmentsWithChangedTjenesteleverandor);
+        }
 
         if (serviceAppointmentsWithStatusCannotComplete.size() > 0) {
             HOT_InterpreterOnWorkOrderService.setInterpreterOnWorkOrderFromServiceAppointment(
                 serviceAppointmentsWithStatusCannotComplete
             );
         }
+    }
+    public static void updateTjenesteleverandorOnThread(List<ServiceAppointment> records) {
+        Map<Id, Id> serviceAppointmentWithTjenesteleverandor = new Map<Id, Id>();
+        Set<Id> saIds = new Set<Id>();
+
+        for (ServiceAppointment sa : records) {
+            saIds.add(sa.Id);
+            serviceAppointmentWithTjenesteleverandor.put(sa.Id, sa.HOT_TLDispatcher__c);
+        }
+        List<Thread__c> threadList = [
+            SELECT Id, CRM_Related_Object__c
+            FROM Thread__c
+            WHERE
+                CRM_Related_Object__c IN :saIds
+                AND (CRM_Thread_Type__c = 'HOT_TJENESTELEVERANDOR-FORMIDLER'
+                OR CRM_Thread_Type__c = 'HOT_TJENESTELEVERANDOR-TOLK')
+        ];
+
+        for (Thread__c thread : threadList) {
+            Id relatedId = thread.CRM_Related_Object__c;
+
+            if (serviceAppointmentWithTjenesteleverandor.containsKey(relatedId)) {
+                thread.HOT_TLDispatcher__c = serviceAppointmentWithTjenesteleverandor.get(relatedId);
+            }
+        }
+        update threadList;
     }
 
     public static void updateOwnerOrDispatcherOnThread(List<ServiceAppointment> records) {

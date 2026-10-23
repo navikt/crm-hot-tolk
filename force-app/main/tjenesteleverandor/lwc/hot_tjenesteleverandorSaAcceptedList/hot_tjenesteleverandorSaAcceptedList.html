@@ -1,0 +1,205 @@
+<template>
+    <template lwc:if={releaseFeedback}>
+        <c-hot_local-alert
+            type={releaseFeedback.type}
+            content-view="title-only"
+            title={releaseFeedback.message}
+        ></c-hot_local-alert>
+    </template>
+    <template lwc:if={error}>
+        <c-hot_local-alert
+            type="error"
+            content-view="title-only"
+            title="Kunne ikke hente oppdragslisten. Prøv å laste siden på nytt."
+        ></c-hot_local-alert>
+    </template>
+    <template lwc:elseif={hasResult}>
+        <div class="bulk-action-bar">
+            <p aria-live="polite">{selectedAppointmentsLabel}</p>
+            <c-button
+                data-id="release"
+                button-styling="primary"
+                button-label="Frigi til tolker"
+                disabled={isReleaseDisabled}
+                onbuttonclick={handleRelease}
+            ></c-button>
+        </div>
+        <div class="main-content">
+            <c-hot_freelance-common-table
+                checkbox="true"
+                records={records}
+                columns={columns}
+                onrowclick={goToRecordDetails}
+                checked-rows={checkedServiceAppointments}
+                oncheckedrows={handleRowChecked}
+            >
+            </c-hot_freelance-common-table>
+        </div>
+    </template>
+
+    <template lwc:elseif={noServiceAppointmentsResult}>
+        <div style="text-align: center" aria-live="polite">
+            <br />
+            <p>Det finnes ingen bekreftede oppdrag til tjenesteleverandør.</p>
+            <br />
+        </div>
+    </template>
+
+    <template lwc:elseif={noFilteredRecordsResult}>
+        <div class="empty-state" aria-live="polite">
+            <p>Det finnes ingen oppdrag med denne filtreringen. Du kan endre filteret for å se andre oppdrag.</p>
+        </div>
+    </template>
+
+    <dialog
+        data-id="release-dialog"
+        class="modal-container release-modal"
+        aria-label="Frigi til tolker"
+        aria-modal="true"
+        onclose={dismissReleaseModal}
+        oncancel={handleReleaseCancel}
+    >
+        <template lwc:if={showReleaseModal}>
+            <div class="modal-header">
+                <h2>{releaseHeading}</h2>
+                <button class="close-btn" onclick={dismissReleaseModal} aria-label="Lukk" disabled={isReleasing}>
+                    <img src={exitCrossIcon} alt="" aria-hidden="true" />
+                </button>
+            </div>
+            <div class="modal-body">
+                <template for:each={releaseAppointments} for:item="appointment">
+                    <section key={appointment.id} class="release-appointment">
+                        <h3>
+                            Oppdragsnummer:
+                            <span style="font-weight: 400">&nbsp;{appointment.appointmentNumber}</span>
+                        </h3>
+                        <p><strong>Bestilt starttid:</strong> {appointment.startTime}</p>
+                        <p><strong>Bestilt sluttid:</strong> {appointment.endTime}</p>
+                        <p><strong>Følgende informasjon vil bli vist til tolker:</strong></p>
+                        <lightning-formatted-rich-text value={appointment.information}></lightning-formatted-rich-text>
+                        <label class="required-textarea-label">
+                            <span class="required-field-indicator" aria-hidden="true">*</span>
+                            <strong>Frist dato</strong>
+                        </label>
+                        <c-input
+                            data-release-field="deadline"
+                            data-record-id={appointment.id}
+                            data-field="deadline"
+                            type="date"
+                            label=""
+                            aria-label="Frist dato"
+                            value={appointment.deadline}
+                            error-text="Feltet må fylles ut."
+                            required
+                            tabindex="-1"
+                            disabled={isReleasing}
+                            ongetvalueonchange={handleReleaseFieldChange}
+                        ></c-input>
+                        <div class="required-textarea">
+                            <label class="required-textarea-label">
+                                <span class="required-field-indicator" aria-hidden="true">*</span>
+                                <strong>Tema til tolker (ingen sensitive)</strong>
+                            </label>
+                            <c-input
+                                data-release-field="subject"
+                                data-record-id={appointment.id}
+                                data-field="subject"
+                                label=""
+                                aria-label="Tema til tolker (ingen sensitive)"
+                                value={appointment.subject}
+                                max-length="255"
+                                error-text={appointment.subjectError}
+                                disabled={isReleasing}
+                                ongetvalueonchange={handleReleaseFieldChange}
+                            ></c-input>
+                        </div>
+                    </section>
+                </template>
+            </div>
+            <div class="modal-footer release-footer">
+                <template lwc:if={releaseError}>
+                    <c-hot_local-alert type="error" content-view="title-only" title={releaseError}></c-hot_local-alert>
+                </template>
+                <c-hot_button
+                    button-styling="primary"
+                    button-label="Frigi valgte oppdrag"
+                    disabled={isReleasing}
+                    is-loading={isReleasing}
+                    onbuttonclick={handleSubmitRelease}
+                ></c-hot_button>
+            </div>
+        </template>
+    </dialog>
+
+    <!-- MODAL -->
+    <dialog class="modal-container" aria-label="Informasjon om oppdrag" aria-modal="true" onclose={closeModal}>
+        <template lwc:if={showServiceAppointmentDetailsModal}>
+            <div>
+                <div class="modal-header">
+                    <h2>Informasjon om oppdraget:</h2>
+                    <button class="close-btn" onclick={closeModal} aria-label="Lukk">
+                        <img src={exitCrossIcon} alt="" aria-hidden="true" />
+                    </button>
+                </div>
+                <template lwc:if={serviceAppointment}>
+                    <div class="modal-body">
+                        <p><strong>Oppdragsnummer:</strong> {serviceAppointment.HOT_ServiceAppointmentNumber__c}</p>
+                        <p><strong>Tema:</strong> {serviceAppointment.HOT_FreelanceSubject__c}</p>
+                        <p><strong>Tid:</strong> {serviceAppointment.weekday} {serviceAppointment.StartAndEndDate}</p>
+                        <p><strong>Adresse:</strong> {serviceAppointment.HOT_AddressFormated__c}</p>
+                        <p><strong>Tolkemetode:</strong> {serviceAppointment.HOT_WorkTypeName__c}</p>
+                        <template lwc:if={serviceAppointment.HOT_PreparationTime__c}>
+                            <p>
+                                <strong>Kompensert forberedelse:</strong>
+                                {serviceAppointment.HOT_PreparationTime__c}
+                            </p>
+                        </template>
+                        <p><strong>Oppdragstype:</strong> {serviceAppointment.HOT_AssignmentType__c}</p>
+                        <template lwc:if={serviceAppointment.HOT_UserPreferredInterpreter__c}>
+                            <p>
+                                <strong>Ønsket tolk:</strong>&nbsp;{serviceAppointment.HOT_UserPreferredInterpreter__c}
+                            </p>
+                        </template>
+                        <template lwc:if={serviceAppointment.HOT_UserPreferredGender__c}>
+                            <p><strong>Ønsket kjønn:</strong>&nbsp;{serviceAppointment.HOT_UserPreferredGender__c}</p>
+                        </template>
+                        <template lwc:if={serviceAppointment.HOT_UserInterpretationMethod__c}>
+                            <p>
+                                <strong>Ønsket tolkemetode:</strong
+                                >&nbsp;{serviceAppointment.HOT_UserInterpretationMethod__c}
+                            </p>
+                        </template>
+                        <p><strong>Status:</strong> {status}</p>
+                        <p>
+                            <strong>Antall påmeldte:&nbsp;</strong>
+                            {serviceAppointment.HOT_NumberOfInterestedResources__c}
+                        </p>
+                        <p><strong>Annen betaler:</strong> {serviceAppointment.isOtherProvider}</p>
+                        <p><strong>Region:</strong> {serviceAppointment.HOT_ServiceTerritoryName__c}</p>
+                    </div>
+
+                    <c-hot_tjenesteleverandor-sa-threads
+                        service-appointment-id={selectedRecordId}
+                        service-appointment-status={serviceAppointment.HOT_TjenesteleverandorStatus__c}
+                    ></c-hot_tjenesteleverandor-sa-threads>
+
+                    <div class="modal-footer">
+                        <c-button
+                            button-styling="primary"
+                            button-label="Vis mer info"
+                            aria-label="Vis mer informasjon om oppdraget"
+                            title="Vis mer info om oppdraget"
+                            onbuttonclick={handleViewMoreInfo}
+                        ></c-button>
+                    </div>
+                </template>
+            </div>
+        </template>
+    </dialog>
+
+    <template lwc:if={dataLoader}>
+        <div class="loader-container">
+            <c-hot_loader size="3xlarge"></c-hot_loader>
+        </div>
+    </template>
+</template>

@@ -241,6 +241,12 @@ public without sharing class HOT_ThreadListController {
                 OR (CRM_Account__c = :user.AccountId
                 AND CRM_Type__c = 'HOT_TOLK-RESSURSKONTOR'
                 AND CRM_Number_of_Messages__c > 0)
+                OR (CRM_Account__c = :user.AccountId
+                AND CRM_Type__c = 'HOT_TJENESTELEVERANDOR-TOLK'
+                AND CRM_Number_of_Messages__c > 0)
+                OR (CRM_Account__c = :user.AccountId
+                AND CRM_Type__c = 'HOT_TJENESTELEVERANDOR-HONORAR'
+                AND CRM_Number_of_Messages__c > 0)
             ORDER BY CRM_Number_of_unread_Messages__c DESC, CRM_Registered_Datetime_Formula__c DESC
         ];
 
