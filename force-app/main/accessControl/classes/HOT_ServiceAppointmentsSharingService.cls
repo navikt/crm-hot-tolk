@@ -113,37 +113,44 @@ public without sharing class HOT_ServiceAppointmentsSharingService {
             return;
         }
 
-        Set<Id> alreadySharedServiceAppointmentIds = new Set<Id>();
+        Map<Id, ServiceAppointmentShare> sharesByAppointmentId = new Map<Id, ServiceAppointmentShare>();
         for (ServiceAppointmentShare share : [
-            SELECT ParentId
+            SELECT Id, ParentId, AccessLevel
             FROM ServiceAppointmentShare
             WHERE ParentId IN :serviceAppointmentIds AND UserOrGroupId = :groupId AND RowCause = 'Manual'
         ]) {
-            alreadySharedServiceAppointmentIds.add(share.ParentId);
+            sharesByAppointmentId.put(share.ParentId, share);
         }
 
-        List<ServiceAppointmentShare> serviceAppointmentShares = new List<ServiceAppointmentShare>();
-        for (Id serviceAppointmentId : serviceAppointmentIds) {
-            if (!alreadySharedServiceAppointmentIds.contains(serviceAppointmentId)) {
-                serviceAppointmentShares.add(
+        List<ServiceAppointmentShare> sharesToInsert = new List<ServiceAppointmentShare>();
+        List<ServiceAppointmentShare> sharesToUpdate = new List<ServiceAppointmentShare>();
+        for (ServiceAppointment appointment : [
+            SELECT Id, HOT_TjenesteleverandorStatus__c
+            FROM ServiceAppointment
+            WHERE Id IN :serviceAppointmentIds
+        ]) {
+            String accessLevel = appointment.HOT_TjenesteleverandorStatus__c == 'Accepted' ? 'Edit' : 'Read';
+            ServiceAppointmentShare existingShare = sharesByAppointmentId.get(appointment.Id);
+            if (existingShare == null) {
+                sharesToInsert.add(
                     new ServiceAppointmentShare(
-                        ParentId = serviceAppointmentId,
-                        AccessLevel = 'Read',
+                        ParentId = appointment.Id,
+                        AccessLevel = accessLevel,
                         RowCause = 'Manual',
                         UserOrGroupId = groupId
                     )
                 );
+            } else if (existingShare.AccessLevel != accessLevel) {
+                existingShare.AccessLevel = accessLevel;
+                sharesToUpdate.add(existingShare);
             }
         }
 
-        if (serviceAppointmentShares.isEmpty()) {
-            return;
+        if (!sharesToInsert.isEmpty()) {
+            insert sharesToInsert;
         }
-
-        try {
-            Database.insert(serviceAppointmentShares, false);
-        } catch (Exception e) {
-            handleException(e);
+        if (!sharesToUpdate.isEmpty()) {
+            update sharesToUpdate;
         }
     }
 

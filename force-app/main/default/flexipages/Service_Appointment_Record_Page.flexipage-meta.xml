@@ -42,18 +42,18 @@
                             <value>Delete</value>
                         </valueListItems>
                         <valueListItems>
-                            <value>ServiceAppointment.HOT_ReleaseToFreelance</value>
+                            <value>ServiceAppointment.HOT_ReleaseToTjenesteleverandor</value>
                             <visibilityRule>
                                 <booleanFilter>1 AND 2</booleanFilter>
                                 <criteria>
-                                    <leftValue>{!Record.Status}</leftValue>
-                                    <operator>NE</operator>
-                                    <rightValue>Released to Freelance</rightValue>
+                                    <leftValue>{!Record.HOT_IsReleasedToTjenesteleverandor__c}</leftValue>
+                                    <operator>EQUAL</operator>
+                                    <rightValue>false</rightValue>
                                 </criteria>
                                 <criteria>
-                                    <leftValue>{!$Permission.CustomPermission.HOT_ReleaseToFreelance}</leftValue>
+                                    <leftValue>{!Record.Status}</leftValue>
                                     <operator>EQUAL</operator>
-                                    <rightValue>true</rightValue>
+                                    <rightValue>None</rightValue>
                                 </criteria>
                             </visibilityRule>
                         </valueListItems>
@@ -145,6 +145,10 @@
                 </componentInstanceProperties>
                 <componentInstanceProperties>
                     <name>hideChatterActions</name>
+                    <value>false</value>
+                </componentInstanceProperties>
+                <componentInstanceProperties>
+                    <name>hideSlackAction</name>
                     <value>false</value>
                 </componentInstanceProperties>
                 <componentInstanceProperties>

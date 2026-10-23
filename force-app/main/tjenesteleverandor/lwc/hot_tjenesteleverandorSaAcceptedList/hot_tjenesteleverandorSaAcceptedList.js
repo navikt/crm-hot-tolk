@@ -2,10 +2,11 @@ import { LightningElement, wire, api } from 'lwc';
 import { NavigationMixin } from 'lightning/navigation';
 import { refreshApex } from '@salesforce/apex';
 import getAcceptedServiceAppointments from '@salesforce/apex/HOT_TjenesteleverandorListController.getAcceptedServiceAppointments';
+import releaseServiceAppointments from '@salesforce/apex/HOT_TjenesteleverandorReleaseService.releaseServiceAppointments';
 import icons from '@salesforce/resourceUrl/ikoner';
 
 import { columns, mobileColumns } from './columns';
-import { formatRecord } from 'c/datetimeFormatterNorwegianTime';
+import { formatRecord, formatDatetime } from 'c/datetimeFormatterNorwegianTime';
 import { getDayOfWeek } from 'c/hot_commonUtils';
 import { filterRecords, restoreFilters } from 'c/hot_tjenesteleverandorFilters';
 
@@ -23,6 +24,15 @@ export default class Hot_tjenesteleverandorSaAcceptedList extends NavigationMixi
     filters = [];
     columns = [];
     error;
+    checkedServiceAppointments = [];
+    releaseAppointments = [];
+    releaseTotal = 0;
+    releasedCount = 0;
+    showReleaseModal = false;
+    releaseFeedback;
+    releaseError;
+    isReleasing = false;
+    pageScrollLock;
 
     showServiceAppointmentDetailsModal = false;
     serviceAppointment;
@@ -58,9 +68,188 @@ export default class Hot_tjenesteleverandorSaAcceptedList extends NavigationMixi
     }
 
     disconnectedCallback() {
+        this.unlockPageScroll();
         window.removeEventListener('popstate', this.handlePageActivation);
         window.removeEventListener('pageshow', this.handlePageActivation);
         document.removeEventListener('visibilitychange', this.handleVisibilityChange);
+    }
+
+    renderedCallback() {
+        if (this.showReleaseModal || this.showServiceAppointmentDetailsModal) {
+            if (!this.pageScrollLock) {
+                const element = document.scrollingElement;
+                this.pageScrollLock = {
+                    element,
+                    overflow: element.style.getPropertyValue('overflow'),
+                    priority: element.style.getPropertyPriority('overflow')
+                };
+                element.style.setProperty('overflow', 'hidden', 'important');
+            }
+        } else {
+            this.unlockPageScroll();
+        }
+        const dialog = this.template.querySelector('[data-id="release-dialog"]');
+        if (this.showReleaseModal && dialog && !dialog.open) {
+            dialog.showModal();
+        }
+    }
+
+    unlockPageScroll() {
+        if (this.pageScrollLock) {
+            const { element, overflow, priority } = this.pageScrollLock;
+            if (overflow) {
+                element.style.setProperty('overflow', overflow, priority);
+            } else {
+                element.style.removeProperty('overflow');
+            }
+            this.pageScrollLock = undefined;
+        }
+    }
+
+    get isReleaseDisabled() {
+        return this.checkedServiceAppointments.length === 0 || this.showReleaseModal;
+    }
+
+    get selectedAppointmentsLabel() {
+        return `${this.checkedServiceAppointments.length} oppdrag valgt`;
+    }
+
+    get releaseHeading() {
+        return `Frigi til tolker (${this.releaseTotal} oppdrag)`;
+    }
+
+    handleRowChecked(event) {
+        this.checkedServiceAppointments = [...event.detail.checkedRows];
+        this.releaseFeedback = undefined;
+    }
+
+    reconcileCheckedRows() {
+        const visibleIds = new Set(this.records.map((record) => record.Id));
+        this.checkedServiceAppointments = this.checkedServiceAppointments.filter((id) => visibleIds.has(id));
+    }
+
+    handleRelease() {
+        if (this.isReleaseDisabled) {
+            return;
+        }
+        const selectedIds = new Set(this.checkedServiceAppointments);
+        this.releaseAppointments = this.records
+            .filter((record) => selectedIds.has(record.Id))
+            .map((record) => ({
+                id: record.Id,
+                appointmentNumber: record.AppointmentNumber,
+                startTime: record.EarliestStartTime ? formatDatetime(record.EarliestStartTime) : '',
+                endTime: record.DueDate ? formatDatetime(record.DueDate) : '',
+                information: record.HOT_Information__c,
+                deadline: record.releaseDeadline,
+                subject: record.HOT_FreelanceSubject__c || record.Subject,
+                subjectError: ''
+            }));
+        this.releaseTotal = this.releaseAppointments.length;
+        this.releasedCount = 0;
+        this.releaseFeedback = undefined;
+        this.releaseError = undefined;
+        this.showReleaseModal = true;
+    }
+
+    handleReleaseFieldChange(event) {
+        const { recordId, field } = event.target.dataset;
+        const value = event.detail;
+        if (field === 'deadline') {
+            event.target.sendErrorMessage(value ? '' : 'Feltet må fylles ut.');
+        }
+        this.releaseAppointments = this.releaseAppointments.map((appointment) =>
+            appointment.id === recordId
+                ? {
+                      ...appointment,
+                      [field]: value,
+                      ...(field === 'subject' && value.trim() ? { subjectError: '' } : {})
+                  }
+                : appointment
+        );
+    }
+
+    async handleSubmitRelease() {
+        if (this.isReleasing) {
+            return;
+        }
+        const fields = [...this.template.querySelectorAll('[data-release-field="deadline"]')];
+        const invalidFields = fields.filter((field) => {
+            const errorMessage = field.value ? '' : 'Feltet må fylles ut.';
+            field.sendErrorMessage(errorMessage);
+            return errorMessage !== '';
+        });
+        const invalidSubjects = this.releaseAppointments.filter((appointment) => !appointment.subject?.trim());
+        if (invalidSubjects.length > 0) {
+            const invalidSubjectIds = new Set(invalidSubjects.map((appointment) => appointment.id));
+            this.releaseAppointments = this.releaseAppointments.map((appointment) =>
+                invalidSubjectIds.has(appointment.id)
+                    ? { ...appointment, subjectError: 'Feltet må fylles ut.' }
+                    : appointment
+            );
+        }
+        if (invalidFields.length > 0 || invalidSubjects.length > 0) {
+            invalidFields[0]?.focus();
+            return;
+        }
+        this.isReleasing = true;
+        this.releaseError = undefined;
+        try {
+            await releaseServiceAppointments({
+                appointments: this.releaseAppointments.map((appointment) => ({
+                    Id: appointment.id,
+                    HOT_DeadlineDate__c: appointment.deadline,
+                    HOT_FreelanceSubject__c: appointment.subject
+                }))
+            });
+            this.releasedCount = this.releaseAppointments.length;
+            const releasedIds = new Set(this.releaseAppointments.map((appointment) => appointment.id));
+            this.checkedServiceAppointments = this.checkedServiceAppointments.filter((id) => !releasedIds.has(id));
+        } catch (error) {
+            this.releaseError = error?.body?.message || 'Oppdragene kunne ikke frigis. Prøv igjen.';
+        } finally {
+            this.isReleasing = false;
+        }
+        if (!this.releaseError) {
+            this.closeReleaseModal();
+        }
+    }
+
+    handleReleaseCancel(event) {
+        if (this.isReleasing) {
+            event.preventDefault();
+        }
+    }
+
+    dismissReleaseModal() {
+        this.closeReleaseModal(false);
+    }
+
+    closeReleaseModal(showFeedback = true) {
+        if (!this.showReleaseModal || this.isReleasing) {
+            return;
+        }
+        this.showReleaseModal = false;
+        const dialog = this.template.querySelector('[data-id="release-dialog"]');
+        if (dialog?.open) {
+            dialog.close();
+        }
+        const incompleteCount = this.releaseTotal - this.releasedCount;
+        this.releaseFeedback = showFeedback
+            ? {
+                  type: incompleteCount > 0 ? 'warning' : 'success',
+                  message:
+                      `${this.releasedCount} oppdrag frigitt til frilanstolker.` +
+                      (incompleteCount > 0
+                          ? ` ${incompleteCount} oppdrag ble ikke fullført. Kontroller oppdragene før du prøver igjen.`
+                          : '')
+              }
+            : undefined;
+        this.releaseAppointments = [];
+        if (this.releasedCount > 0 || showFeedback) {
+            sessionStorage.setItem(LIST_REFRESH_KEY, String(Date.now()));
+            void this.refreshIfRequested();
+        }
     }
 
     get hasResult() {
@@ -84,6 +273,16 @@ export default class Hot_tjenesteleverandorSaAcceptedList extends NavigationMixi
                 const formattedRecord = formatRecord({ ...record }, this.datetimeFields);
                 return {
                     ...formattedRecord,
+                    releaseDeadline:
+                        record.HOT_DeadlineDate__c ||
+                        (record.EarliestStartTime
+                            ? new Intl.DateTimeFormat('sv-SE', {
+                                  timeZone: 'Europe/Oslo',
+                                  year: 'numeric',
+                                  month: '2-digit',
+                                  day: '2-digit'
+                              }).format(new Date(record.EarliestStartTime))
+                            : ''),
                     HOT_ServiceAppointmentNumber__c: record.AppointmentNumber,
                     startAndEndDateWeekday: formattedRecord.StartAndEndDate,
                     weekday: getDayOfWeek(record.EarliestStartTime),
@@ -91,6 +290,7 @@ export default class Hot_tjenesteleverandorSaAcceptedList extends NavigationMixi
                 };
             });
             this.records = filterRecords(this.allRecords, this.filters);
+            this.reconcileCheckedRows();
             this.error = undefined;
             this.dataLoader = false;
             this.sendFilters();
@@ -99,6 +299,7 @@ export default class Hot_tjenesteleverandorSaAcceptedList extends NavigationMixi
             this.error = result.error;
             this.allRecords = [];
             this.records = [];
+            this.reconcileCheckedRows();
             this.dataLoader = false;
         }
     }
@@ -114,6 +315,7 @@ export default class Hot_tjenesteleverandorSaAcceptedList extends NavigationMixi
         this.dataLoader = true;
         try {
             await refreshApex(this.wiredAcceptedAppointments);
+            this.error = undefined;
             if (sessionStorage.getItem(LIST_REFRESH_KEY) === marker) {
                 sessionStorage.removeItem(LIST_REFRESH_KEY);
             }
@@ -140,6 +342,7 @@ export default class Hot_tjenesteleverandorSaAcceptedList extends NavigationMixi
         const filteredRecords = filterRecords(this.allRecords, this.filters);
         if (event.detail?.setRecords) {
             this.records = filteredRecords;
+            this.reconcileCheckedRows();
         }
         return filteredRecords.length;
     }
@@ -161,7 +364,7 @@ export default class Hot_tjenesteleverandorSaAcceptedList extends NavigationMixi
     showServiceAppointmentDetails() {
         this.showServiceAppointmentDetailsModal = true;
         setTimeout(() => {
-            const dialog = this.template.querySelector('dialog');
+            const dialog = this.template.querySelector('dialog[aria-label="Informasjon om oppdrag"]');
             if (dialog) {
                 dialog.showModal();
                 dialog.focus();
@@ -188,7 +391,7 @@ export default class Hot_tjenesteleverandorSaAcceptedList extends NavigationMixi
     }
 
     closeModal() {
-        const dialog = this.template.querySelector('dialog');
+        const dialog = this.template.querySelector('dialog[aria-label="Informasjon om oppdrag"]');
         if (dialog?.open) {
             dialog.close();
         }

@@ -67,6 +67,28 @@ private class HOT_TjenesteleverandorAcceptServiceTest {
     }
 
     @IsTest
+    static void rejectsSANotReleasedToTjenesteleverandor() {
+        ServiceAppointment appointment = getTransferredAppointments(1)[0];
+        appointment.HOT_IsReleasedToTjenesteleverandor__c = false;
+        update appointment;
+        setAcceptancePermission(true);
+
+        System.Test.startTest();
+        List<HOT_TjenesteleverandorAcceptanceService.AcceptanceResult> results = acceptAsTestUser(
+            new List<Id>{ appointment.Id }
+        );
+        System.Test.stopTest();
+
+        Assert.areEqual(1, results.size(), 'The service should return one result');
+        Assert.isFalse(results[0].success, 'An appointment must be released to the supplier before acceptance');
+        Assert.areNotEqual(
+            'Accepted',
+            getAppointment(appointment.Id).HOT_TjenesteleverandorStatus__c,
+            'An unreleased appointment must not be accepted'
+        );
+    }
+
+    @IsTest
     static void rejectsAppointmentWithoutDeadline() {
         ServiceAppointment appointment = getTransferredAppointments(1)[0];
         appointment.HOT_TjenesteleverandorDeadline__c = null;
@@ -295,12 +317,7 @@ private class HOT_TjenesteleverandorAcceptServiceTest {
 
     private static List<ServiceAppointment> getTransferredAppointments(Integer count) {
         return [
-            SELECT
-                Id,
-                Status,
-                HOT_IsReleasedToFreelance__c,
-                HOT_TjenesteleverandorStatus__c,
-                HOT_TjenesteleverandorDeadline__c
+            SELECT Id, Status, HOT_TjenesteleverandorStatus__c, HOT_TjenesteleverandorDeadline__c
             FROM ServiceAppointment
             WHERE HOT_TjenesteleverandorStatus__c = 'Transferred'
             ORDER BY CreatedDate
@@ -312,7 +329,6 @@ private class HOT_TjenesteleverandorAcceptServiceTest {
         return [
             SELECT
                 Status,
-                HOT_IsReleasedToFreelance__c,
                 HOT_TjenesteleverandorStatus__c,
                 HOT_TjenesteleverandorAcceptDate__c,
                 HOT_TLDispatcher__c,
@@ -339,7 +355,10 @@ private class HOT_TjenesteleverandorAcceptServiceTest {
         }
         insert appointments;
         for (ServiceAppointment appointment : appointments) {
-            appointment.Status = 'Released to Freelance';
+            appointment.Status = 'None';
+            appointment.HOT_IsReleasedToTjenesteleverandor__c = true;
+            appointment.HOT_TjenesteleverandorStatus__c = 'Transferred';
+            appointment.HOT_TjenesteleverandorDeadline__c = System.now().addHours(1);
         }
         update appointments;
         return appointments;
