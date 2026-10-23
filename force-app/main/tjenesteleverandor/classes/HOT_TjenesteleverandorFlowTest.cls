@@ -1,12 +1,29 @@
 @IsTest
 private class HOT_TjenesteleverandorFlowTest {
+    @TestSetup
+    static void configureStatusTransitions() {
+        Type stubType = Type.forName('FSL_TestStub');
+        if (stubType != null) {
+            Callable stub = (Callable) stubType.newInstance();
+            stub.call(
+                'addStatusTransition',
+                new Map<String, Object>{ 'fromStatus' => 'None', 'toStatus' => 'Released to Freelance' }
+            );
+            stub.call(
+                'addStatusTransition',
+                new Map<String, Object>{ 'fromStatus' => 'Released to Freelance', 'toStatus' => 'None' }
+            );
+        }
+    }
+
     @IsTest
     static void transferredSetsTransferDateAndDeadline() {
         ServiceAppointment serviceAppointment = createServiceAppointment();
-        serviceAppointment.Status = 'Released to Freelance';
+        insert serviceAppointment;
+        serviceAppointment.HOT_IsReleasedToTjenesteleverandor__c = true;
 
         Test.startTest();
-        insert serviceAppointment;
+        update serviceAppointment;
         Test.stopTest();
 
         ServiceAppointment actual = getServiceAppointment(serviceAppointment.Id);
@@ -19,8 +36,9 @@ private class HOT_TjenesteleverandorFlowTest {
     @IsTest
     static void acceptedSetsAcceptanceDateAndClearsDeadline() {
         ServiceAppointment serviceAppointment = createServiceAppointment();
-        serviceAppointment.Status = 'Released to Freelance';
         insert serviceAppointment;
+        serviceAppointment.HOT_IsReleasedToTjenesteleverandor__c = true;
+        update serviceAppointment;
 
         System.assertNotEquals(null, getServiceAppointment(serviceAppointment.Id).HOT_TjenesteleverandorDeadline__c);
 
@@ -41,9 +59,12 @@ private class HOT_TjenesteleverandorFlowTest {
 
         for (ServiceAppointment serviceAppointment : serviceAppointments) {
             serviceAppointment.OwnerId = queue.Id;
-            serviceAppointment.Status = 'Released to Freelance';
         }
         insert serviceAppointments;
+        for (ServiceAppointment serviceAppointment : serviceAppointments) {
+            serviceAppointment.Status = 'Released to Freelance';
+        }
+        update serviceAppointments;
 
         Test.startTest();
         List<ServiceAppointment> declinedAppointments = new List<ServiceAppointment>();
@@ -77,8 +98,9 @@ private class HOT_TjenesteleverandorFlowTest {
         Group queue = createOwnerQueueAndFormidlerGroup('999011');
         ServiceAppointment serviceAppointment = createServiceAppointment();
         serviceAppointment.OwnerId = queue.Id;
-        serviceAppointment.Status = 'Released to Freelance';
         insert serviceAppointment;
+        serviceAppointment.Status = 'Released to Freelance';
+        update serviceAppointment;
 
         Test.startTest();
         update new ServiceAppointment(Id = serviceAppointment.Id, HOT_TjenesteleverandorStatus__c = 'Declined');
