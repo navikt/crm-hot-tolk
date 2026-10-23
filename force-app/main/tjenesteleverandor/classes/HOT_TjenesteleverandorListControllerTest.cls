@@ -25,7 +25,9 @@ private class HOT_TjenesteleverandorListControllerTest {
         }
         insert appointments;
         for (ServiceAppointment appointment : appointments) {
-            appointment.Status = 'Released to Freelance';
+            appointment.Status = 'None';
+            appointment.HOT_IsReleasedToTjenesteleverandor__c = true;
+            appointment.HOT_TjenesteleverandorStatus__c = 'Transferred';
         }
         update appointments;
 
@@ -40,6 +42,7 @@ private class HOT_TjenesteleverandorListControllerTest {
         testUser.Username = TEST_USERNAME;
         testUser.Alias = 'tllist';
         testUser.CommunityNickname = 'tllist' + UserInfo.getOrganizationId();
+        testUser.LanguageLocaleKey = 'en_US';
         PermissionSet permissionSet = [SELECT Id FROM PermissionSet WHERE Name = 'HOT_Admin' LIMIT 1];
 
         myTriggers.disable(UserPermissionSetAssignmentHandler.class);
@@ -73,19 +76,40 @@ private class HOT_TjenesteleverandorListControllerTest {
     static void returnsTransferredAppointmentsCount() {
         Integer count;
         System.runAs(getTestUser()) {
-            Test.startTest();
+            System.Test.startTest();
             count = HOT_TjenesteleverandorListController.getTransferredServiceAppointmentsCount();
-            Test.stopTest();
+            System.Test.stopTest();
         }
 
         Assert.areEqual(1, count, 'Only the transferred appointment should be counted');
     }
 
     @IsTest
+    static void excludesReleasedAppointmentsFromTransferredListAndCount() {
+        myTriggers.disable(HOT_ServiceAppointmentHandler.class);
+        myTriggers.disable(HOT_ServiceAppointmentStatusHandler.class);
+        myTriggers.disable(HOT_ServiceAppointmentAccessHandler.class);
+        WorkOrderLineItem workOrderLineItem = [SELECT Id FROM WorkOrderLineItem LIMIT 1];
+        ServiceAppointment transferredAppointment = HOT_TestDataFactory.createServiceAppointment(workOrderLineItem);
+        transferredAppointment.Status = 'Released to Freelance';
+        transferredAppointment.HOT_TjenesteleverandorStatus__c = 'Transferred';
+        transferredAppointment.HOT_IsReleasedToTjenesteleverandor__c = true;
+        transferredAppointment.HOT_IsReleasedToFreelance__c = true;
+        insert transferredAppointment;
+
+        System.runAs(getTestUser()) {
+            System.Test.startTest();
+            Assert.areEqual(1, HOT_TjenesteleverandorListController.getTransferredServiceAppointmentsCount());
+            Assert.areEqual(1, HOT_TjenesteleverandorListController.getTransferredServiceAppointments().size());
+            System.Test.stopTest();
+        }
+    }
+
+    @IsTest
     static void returnsOnlyTransferredAppointments() {
-        Test.startTest();
+        System.Test.startTest();
         List<ServiceAppointment> appointments = getTransferredAppointmentsAsTestUser();
-        Test.stopTest();
+        System.Test.stopTest();
 
         Assert.areEqual(1, appointments.size(), 'Only the transferred appointment should be returned');
         Assert.areEqual(
@@ -137,6 +161,17 @@ private class HOT_TjenesteleverandorListControllerTest {
 
     @IsTest
     static void returnsSAWithReleasedStatus() {
+        myTriggers.disable(HOT_ServiceAppointmentHandler.class);
+        myTriggers.disable(HOT_ServiceAppointmentStatusHandler.class);
+        myTriggers.disable(HOT_ServiceAppointmentAccessHandler.class);
+        WorkOrderLineItem workOrderLineItem = [SELECT Id FROM WorkOrderLineItem LIMIT 1];
+        ServiceAppointment acceptedAppointment = HOT_TestDataFactory.createServiceAppointment(workOrderLineItem);
+        acceptedAppointment.Status = 'Released to Freelance';
+        acceptedAppointment.HOT_TjenesteleverandorStatus__c = 'Accepted';
+        acceptedAppointment.HOT_IsReleasedToTjenesteleverandor__c = true;
+        acceptedAppointment.HOT_IsReleasedToFreelance__c = true;
+        insert acceptedAppointment;
+
         List<ServiceAppointment> appointments;
         System.runAs(getTestUser()) {
             System.Test.startTest();
@@ -166,32 +201,56 @@ private class HOT_TjenesteleverandorListControllerTest {
         List<ServiceAppointment> appointments = [SELECT Id FROM ServiceAppointment LIMIT 2];
         for (ServiceAppointment appointment : appointments) {
             appointment.Status = 'None';
-            appointment.HOT_TjenesteleverandorStatus__c = 'Accepted';
             appointment.HOT_IsReleasedToTjenesteleverandor__c = true;
             appointment.HOT_DeadlineDate__c = Date.today().addDays(1);
             appointment.HOT_FreelanceSubject__c = 'Release test';
         }
         update appointments;
+        List<ServiceAppointment> acceptedAppointments = new List<ServiceAppointment>();
+        for (ServiceAppointment appointment : appointments) {
+            acceptedAppointments.add(
+                new ServiceAppointment(Id = appointment.Id, HOT_TjenesteleverandorStatus__c = 'Accepted')
+            );
+        }
+        update acceptedAppointments;
+        for (ServiceAppointment appointment : [
+            SELECT Status, HOT_TjenesteleverandorStatus__c, HOT_IsReleasedToTjenesteleverandor__c
+            FROM ServiceAppointment
+        ]) {
+            Assert.areEqual('None', appointment.Status);
+            Assert.areEqual('Accepted', appointment.HOT_TjenesteleverandorStatus__c);
+            Assert.isTrue(appointment.HOT_IsReleasedToTjenesteleverandor__c);
+        }
         return appointments;
     }
 
     @IsTest
     static void releasesSelectedAppointmentsTogether() {
         List<ServiceAppointment> appointments = prepareReleaseAppointments();
+        myTriggers.enable(HOT_ServiceAppointmentHandler.class);
         for (ServiceAppointment appointment : appointments) {
             appointment.HOT_FreelanceSubject__c = 'Updated release subject';
             appointment.HOT_DeadlineDate__c = Date.today().addDays(2);
         }
         System.runAs(getTestUser()) {
-            Test.startTest();
+            Type testStubType = Type.forName('FSL_TestStub');
+            if (testStubType != null) {
+                Callable testStub = (Callable) testStubType.newInstance();
+                testStub.call(
+                    'addStatusTransition',
+                    new Map<String, Object>{ 'fromStatus' => 'None', 'toStatus' => 'Released to Freelance' }
+                );
+            }
+            System.Test.startTest();
             HOT_TjenesteleverandorReleaseService.releaseServiceAppointments(appointments);
-            Test.stopTest();
+            System.Test.stopTest();
         }
         for (ServiceAppointment appointment : [
-            SELECT Status, HOT_DeadlineDate__c, HOT_FreelanceSubject__c
+            SELECT Id, Status, HOT_DeadlineDate__c, HOT_FreelanceSubject__c
             FROM ServiceAppointment
+            WHERE Id IN :appointments
         ]) {
-            Assert.areEqual('Released to Freelance', appointment.Status);
+            Assert.areEqual('Released to Freelance', appointment.Status, 'Selected appointment: ' + appointment.Id);
             Assert.areEqual(Date.today().addDays(2), appointment.HOT_DeadlineDate__c);
             Assert.areEqual('Updated release subject', appointment.HOT_FreelanceSubject__c);
         }
@@ -202,14 +261,14 @@ private class HOT_TjenesteleverandorListControllerTest {
         List<ServiceAppointment> appointments = prepareReleaseAppointments();
         update new ServiceAppointment(Id = appointments[1].Id, Status = 'Scheduled');
         System.runAs(getTestUser()) {
-            Test.startTest();
+            System.Test.startTest();
             try {
                 HOT_TjenesteleverandorReleaseService.releaseServiceAppointments(appointments);
                 Assert.fail('A changed appointment must prevent the entire release');
             } catch (AuraHandledException expected) {
                 Assert.isNotNull(expected);
             }
-            Test.stopTest();
+            System.Test.stopTest();
         }
         Assert.areEqual(0, [SELECT COUNT() FROM ServiceAppointment WHERE Status = 'Released to Freelance']);
     }
@@ -219,14 +278,14 @@ private class HOT_TjenesteleverandorListControllerTest {
         List<ServiceAppointment> appointments = prepareReleaseAppointments();
         appointments[1].HOT_DeadlineDate__c = null;
         System.runAs(getTestUser()) {
-            Test.startTest();
+            System.Test.startTest();
             try {
                 HOT_TjenesteleverandorReleaseService.releaseServiceAppointments(appointments);
                 Assert.fail('Every appointment must have a deadline');
             } catch (AuraHandledException expected) {
                 Assert.isNotNull(expected);
             }
-            Test.stopTest();
+            System.Test.stopTest();
         }
         Assert.areEqual(0, [SELECT COUNT() FROM ServiceAppointment WHERE Status = 'Released to Freelance']);
     }
@@ -244,6 +303,7 @@ private class HOT_TjenesteleverandorListControllerTest {
             ServiceAppointment appointment = HOT_TestDataFactory.createServiceAppointment(workOrderLineItem);
             appointment.Status = appointmentStatus;
             appointment.HOT_TjenesteleverandorStatus__c = 'Accepted';
+            appointment.HOT_IsReleasedToTjenesteleverandor__c = true;
             appointment.HOT_IsReleasedToFreelance__c = true;
             finishedAppointments.add(appointment);
         }
@@ -252,6 +312,7 @@ private class HOT_TjenesteleverandorListControllerTest {
         ServiceAppointment transferredAppointment = HOT_TestDataFactory.createServiceAppointment(workOrderLineItem);
         transferredAppointment.Status = 'Completed';
         transferredAppointment.HOT_TjenesteleverandorStatus__c = 'Transferred';
+        transferredAppointment.HOT_IsReleasedToTjenesteleverandor__c = true;
         transferredAppointment.HOT_IsReleasedToFreelance__c = true;
         insert transferredAppointment;
 

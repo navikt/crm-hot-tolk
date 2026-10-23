@@ -5,9 +5,9 @@ public with sharing class HOT_TjenesteleverandorListController {
             SELECT COUNT()
             FROM ServiceAppointment
             WHERE
-                HOT_TjenesteleverandorStatus__c = 'Transferred'
-                AND Status = 'Released to Freelance'
-                AND HOT_IsReleasedToFreelance__c = TRUE
+                HOT_IsReleasedToTjenesteleverandor__c = TRUE
+                AND HOT_TjenesteleverandorStatus__c = 'Transferred'
+                AND Status = 'None'
             WITH USER_MODE
         ];
     }
