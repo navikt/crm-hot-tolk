@@ -60,10 +60,10 @@ private class HOT_ServiceAppointmentAccessHandlerTest {
         serviceAppointment.HOT_TjenesteleverandorStatus__c = 'Accepted';
         update serviceAppointment;
 
-        Test.startTest();
+        System.Test.startTest();
         serviceAppointment.HOT_TjenesteleverandorStatus__c = 'Transferred';
         update serviceAppointment;
-        Test.stopTest();
+        System.Test.stopTest();
 
         List<ServiceAppointmentShare> shares = [
             SELECT AccessLevel
@@ -115,10 +115,10 @@ private class HOT_ServiceAppointmentAccessHandlerTest {
         existingShare.AccessLevel = 'Read';
         update existingShare;
 
-        Test.startTest();
+        System.Test.startTest();
         HOT_ServiceAppointmentsSharingService.grantAccessToTjenesteleverandorGroup(new Set<Id>{ appointment.Id });
         HOT_ServiceAppointmentsSharingService.grantAccessToTjenesteleverandorGroup(new Set<Id>{ appointment.Id });
-        Test.stopTest();
+        System.Test.stopTest();
 
         List<ServiceAppointmentShare> shares = [
             SELECT Id, AccessLevel

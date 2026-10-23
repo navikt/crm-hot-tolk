@@ -125,20 +125,6 @@ public without sharing class HOT_TjenesteleverandorAcceptanceService {
         if (isEligible) {
             return null;
         }
-        System.debug(
-            LoggingLevel.WARN,
-            'TL acceptance rejected: ' +
-            JSON.serialize(
-                new Map<String, Object>{
-                    'recordId' => appointment.Id,
-                    'status' => appointment.Status,
-                    'supplierStatus' => appointment.HOT_TjenesteleverandorStatus__c,
-                    'releasedToSupplier' => appointment.HOT_IsReleasedToTjenesteleverandor__c,
-                    'supplierDeadline' => appointment.HOT_TjenesteleverandorDeadline__c,
-                    'currentTime' => currentTime
-                }
-            )
-        );
         if (
             appointment.HOT_TjenesteleverandorDeadline__c != null &&
             appointment.HOT_TjenesteleverandorDeadline__c <= currentTime
