@@ -11,8 +11,8 @@ export default class Hot_freelanceCommonTable extends LightningElement {
     selectedRowId;
 
     statusBadgeMap = {
-        'badge-gray': ['Åpen', 'Open'],
-        'badge-blue': ['Reserved', 'Reservert', 'Scheduled', 'Assigned', 'Tildelt', 'Dispatched'],
+        'badge-gray': ['Åpen', 'Open', 'Inaktiv'],
+        'badge-blue': ['Reserved', 'Reservert', 'Scheduled', 'Assigned', 'Tildelt', 'Dispatched', 'Aktiv'],
         'badge-green': ['Dekket', 'Completed', 'Covered'],
         'badge-yellow': [
             'Interested',
@@ -90,6 +90,11 @@ export default class Hot_freelanceCommonTable extends LightningElement {
                 if (column.name === 'HOT_PreparationTime__c' && value) {
                     field.statusBadgeClass = 'badge-blue';
                     field.statusBadgeLabel = 'Kompensert forberedelse';
+                }
+
+                if (column.name === 'IsActiveLabel') {
+                    field.statusBadgeClass = this.getStatusBadgeClass(value);
+                    field.statusBadgeLabel = field.value
                 }
 
                 // Apply bold font weight and size to date columns

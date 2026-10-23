@@ -206,4 +206,19 @@ public with sharing class HOT_TjenesteleverandorListController {
             ORDER BY EarliestStartTime ASC
         ];
     }
+
+    @AuraEnabled(cacheable=true)
+    public static List<ServiceResource> getServiceResources() {
+        return [
+            SELECT
+                Id,
+                Name,
+                HOT_InterpreterType__c,
+                IsActive,
+                HOT_ServiceTerritory__r.Name
+            FROM ServiceResource
+            WHERE HOT_IsFreelanceInterpreter__c = TRUE
+            ORDER BY IsActive DESC
+        ];
+    }
 }
