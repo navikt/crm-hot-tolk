@@ -77,17 +77,24 @@
                         <p><strong>Bestilt sluttid:</strong> {appointment.endTime}</p>
                         <p><strong>Følgende informasjon vil bli vist til tolker:</strong></p>
                         <lightning-formatted-rich-text value={appointment.information}></lightning-formatted-rich-text>
-                        <lightning-input
+                        <label class="required-textarea-label">
+                            <span class="required-field-indicator" aria-hidden="true">*</span>
+                            <strong>Frist dato</strong>
+                        </label>
+                        <c-input
                             data-release-field="deadline"
                             data-record-id={appointment.id}
                             data-field="deadline"
                             type="date"
-                            label="Frist dato"
+                            label=""
+                            aria-label="Frist dato"
                             value={appointment.deadline}
+                            error-text="Feltet må fylles ut."
                             required
+                            tabindex="-1"
                             disabled={isReleasing}
-                            onchange={handleReleaseFieldChange}
-                        ></lightning-input>
+                            ongetvalueonchange={handleReleaseFieldChange}
+                        ></c-input>
                         <div class="required-textarea">
                             <label class="required-textarea-label">
                                 <span class="required-field-indicator" aria-hidden="true">*</span>

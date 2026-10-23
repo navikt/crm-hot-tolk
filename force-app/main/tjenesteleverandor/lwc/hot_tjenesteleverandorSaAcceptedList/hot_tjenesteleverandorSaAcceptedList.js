@@ -154,7 +154,10 @@ export default class Hot_tjenesteleverandorSaAcceptedList extends NavigationMixi
 
     handleReleaseFieldChange(event) {
         const { recordId, field } = event.target.dataset;
-        const value = field === 'subject' ? event.detail : event.target.value;
+        const value = event.detail;
+        if (field === 'deadline') {
+            event.target.sendErrorMessage(value ? '' : 'Feltet må fylles ut.');
+        }
         this.releaseAppointments = this.releaseAppointments.map((appointment) =>
             appointment.id === recordId
                 ? {
@@ -171,7 +174,11 @@ export default class Hot_tjenesteleverandorSaAcceptedList extends NavigationMixi
             return;
         }
         const fields = [...this.template.querySelectorAll('[data-release-field="deadline"]')];
-        const invalidFields = fields.filter((field) => !field.reportValidity());
+        const invalidFields = fields.filter((field) => {
+            const errorMessage = field.value ? '' : 'Feltet må fylles ut.';
+            field.sendErrorMessage(errorMessage);
+            return errorMessage !== '';
+        });
         const invalidSubjects = this.releaseAppointments.filter((appointment) => !appointment.subject?.trim());
         if (invalidSubjects.length > 0) {
             const invalidSubjectIds = new Set(invalidSubjects.map((appointment) => appointment.id));
