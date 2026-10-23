@@ -93,19 +93,18 @@
                                 <span class="required-field-indicator" aria-hidden="true">*</span>
                                 <strong>Tema til tolker (ingen sensitive)</strong>
                             </label>
-                            <c-textarea
+                            <c-input
                                 data-release-field="subject"
                                 data-record-id={appointment.id}
                                 data-field="subject"
                                 label=""
                                 aria-label="Tema til tolker (ingen sensitive)"
                                 value={appointment.subject}
-                                maxlength="255"
+                                max-length="255"
                                 error-text={appointment.subjectError}
                                 disabled={isReleasing}
-                                desktop-style="width: 75%;"
-                                ongetvalueontextareachange={handleReleaseFieldChange}
-                            ></c-textarea>
+                                ongetvalueonchange={handleReleaseFieldChange}
+                            ></c-input>
                         </div>
                     </section>
                 </template>
@@ -114,15 +113,13 @@
                 <template lwc:if={releaseError}>
                     <c-hot_local-alert type="error" content-view="title-only" title={releaseError}></c-hot_local-alert>
                 </template>
-                <template lwc:if={isReleasing}>
-                    <p role="status">Frigir oppdragene...</p>
-                </template>
-                <c-button
+                <c-hot_button
                     button-styling="primary"
                     button-label="Frigi valgte oppdrag"
                     disabled={isReleasing}
+                    is-loading={isReleasing}
                     onbuttonclick={handleSubmitRelease}
-                ></c-button>
+                ></c-hot_button>
             </div>
         </template>
     </dialog>
