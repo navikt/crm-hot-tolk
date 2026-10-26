@@ -1,6 +1,6 @@
 import { LightningElement, api, wire } from 'lwc';
 import { CurrentPageReference } from 'lightning/navigation';
-import interestedResourcesOfServiceAppointment from '@salesforce/apex/HOT_TLServiceResourceController.interestedResourcesOfServiceAppointment';
+import interestedResourcesOfServiceAppointment from '@salesforce/apex/HOT_ServiceResourceController.interestedResourcesOfServiceAppointment';
 
 export default class Hot_tjenesteleverandorInterestedResources extends LightningElement {
     @api recordId;
