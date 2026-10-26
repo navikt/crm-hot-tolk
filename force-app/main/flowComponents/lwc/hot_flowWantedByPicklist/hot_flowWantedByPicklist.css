@@ -1,0 +1,36 @@
+@import 'c/hot_sharedFonts';
+
+.picklist-field {
+    width: 100%;
+    margin-bottom: 0.75rem;
+    font-family: 'Source Sans Pro', Arial, sans-serif;
+}
+
+.picklist-label {
+    display: block;
+    margin-bottom: 0.25rem;
+    color: #1e2b3c;
+    font-size: 1rem;
+    font-weight: 600;
+    line-height: 1.5rem;
+}
+
+.picklist-select {
+    display: block;
+    width: 100%;
+    min-height: 3rem;
+    padding: 0.5rem 2.5rem 0.5rem 0.75rem;
+    border: 1px solid #767676;
+    border-radius: 0.25rem;
+    background-color: #ffffff;
+    color: #252525;
+    font: inherit;
+    font-size: 1rem;
+    line-height: 1.5rem;
+}
+
+.picklist-select:focus {
+    border-color: #0062ba;
+    outline: 3px solid #8cc5ff;
+    outline-offset: 0;
+}
