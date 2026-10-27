@@ -313,15 +313,27 @@ public without sharing class HOT_UserNotificationService {
         Set<String> recipients,
         String appointmentNumber
     ) {
+        newWantedSRNotification(notificationType, recipients, appointmentNumber, null);
+    }
+
+    public static void newWantedSRNotification(
+        CustomNotificationType notificationType,
+        Set<String> recipients,
+        String appointmentNumber,
+        Id serviceAppointmentId
+    ) {
         String title = 'Du er ønsket til et oppdrag. ' + appointmentNumber;
         String body = 'Du kan melde interesse for oppdraget eller avslå.';
 
         Id notificationTypeId = notificationType.Id;
-        String targetPageRef = getTargetPageRefWanted();
         Messaging.CustomNotification notification = new Messaging.CustomNotification();
         notification.setTitle(title);
         notification.setBody(body);
-        notification.setTargetPageRef(targetPageRef);
+        if (serviceAppointmentId != null) {
+            notification.setTargetId(serviceAppointmentId);
+        } else {
+            notification.setTargetPageRef(getTargetPageRefWanted());
+        }
         notification.setNotificationTypeId(notificationTypeId);
 
         try {
@@ -380,11 +392,14 @@ public without sharing class HOT_UserNotificationService {
             return pageRef;
         }
     }
+    @TestVisible
     private static String getTargetPageRefWanted() {
-        String pageRef =
-            '{type: "comm__namedPage",attributes: {pageName: "mine-oppdrag"}, state: {list: "' +
-            'wanted' +
-            '"}}';
-        return pageRef;
+        return JSON.serialize(
+            new Map<String, Object>{
+                'type' => 'comm__namedPage',
+                'attributes' => new Map<String, String>{ 'name' => 'Mine_Oppdrag__c' },
+                'state' => new Map<String, String>{ 'list' => 'wanted' }
+            }
+        );
     }
 }
