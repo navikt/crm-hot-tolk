@@ -8,6 +8,7 @@ public without sharing class HOT_InterestedResourceHandler extends MyTriggers {
     public override void onAfterUpdate(Map<Id, sObject> triggerOldMap) {
         updateInterestedResourceNamesOnServiceAppointments(records, triggerOldMap, true);
         updateThreads(records, triggerOldMap, true);
+        notifyOnWantedSR(records);
     }
     public void updateThreads(List<SObject> records, Map<Id, sObject> triggerOldMap, Boolean isUpdate) {
         List<HOT_InterestedResource__c> interestedResources = new List<HOT_InterestedResource__c>();
