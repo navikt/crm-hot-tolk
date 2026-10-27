@@ -886,6 +886,11 @@
     </fieldPermissions>
     <fieldPermissions>
         <editable>false</editable>
+        <field>ServiceResource.CRM_Domain__c</field>
+        <readable>true</readable>
+    </fieldPermissions>
+    <fieldPermissions>
+        <editable>false</editable>
         <field>ServiceResource.HOT_IsTjenesteleverandorDispatcher__c</field>
         <readable>true</readable>
     </fieldPermissions>
@@ -1039,6 +1044,10 @@
         <field>WorkOrder.HOT_IsNotifyDispatcher__c</field>
         <readable>true</readable>
     </fieldPermissions>
+    <flowAccesses>
+        <enabled>true</enabled>
+        <flow>HOT_ServiceProviderTransferSADispatcher</flow>
+    </flowAccesses>
     <hasActivationRequired>false</hasActivationRequired>
     <label>HOT Tolk Tjenesteleverandør</label>
     <license>Customer Community Plus</license>
