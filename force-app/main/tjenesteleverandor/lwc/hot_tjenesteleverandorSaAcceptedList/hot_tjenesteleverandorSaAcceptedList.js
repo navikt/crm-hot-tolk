@@ -29,6 +29,10 @@ export default class Hot_tjenesteleverandorSaAcceptedList extends NavigationMixi
     releaseTotal = 0;
     releasedCount = 0;
     showReleaseModal = false;
+    showTransferModal = false;
+    transferRecordIds = [];
+    transferInputVariables = [];
+    transferError;
     releaseFeedback;
     releaseError;
     isReleasing = false;
@@ -75,7 +79,7 @@ export default class Hot_tjenesteleverandorSaAcceptedList extends NavigationMixi
     }
 
     renderedCallback() {
-        if (this.showReleaseModal || this.showServiceAppointmentDetailsModal) {
+        if (this.showReleaseModal || this.showTransferModal || this.showServiceAppointmentDetailsModal) {
             if (!this.pageScrollLock) {
                 const element = document.scrollingElement;
                 this.pageScrollLock = {
@@ -92,6 +96,10 @@ export default class Hot_tjenesteleverandorSaAcceptedList extends NavigationMixi
         if (this.showReleaseModal && dialog && !dialog.open) {
             dialog.showModal();
         }
+        const transferDialog = this.template.querySelector('[data-id="transfer-dialog"]');
+        if (this.showTransferModal && transferDialog && !transferDialog.open) {
+            transferDialog.showModal();
+        }
     }
 
     unlockPageScroll() {
@@ -107,7 +115,7 @@ export default class Hot_tjenesteleverandorSaAcceptedList extends NavigationMixi
     }
 
     get isReleaseDisabled() {
-        return this.checkedServiceAppointments.length === 0 || this.showReleaseModal;
+        return this.checkedServiceAppointments.length === 0 || this.showReleaseModal || this.showTransferModal;
     }
 
     get selectedAppointmentsLabel() {
@@ -121,6 +129,49 @@ export default class Hot_tjenesteleverandorSaAcceptedList extends NavigationMixi
     handleRowChecked(event) {
         this.checkedServiceAppointments = [...event.detail.checkedRows];
         this.releaseFeedback = undefined;
+    }
+
+    handleTransfer() {
+        if (this.isReleaseDisabled) {
+            return;
+        }
+        this.transferRecordIds = [...this.checkedServiceAppointments];
+        this.transferInputVariables = [{ name: 'recordIds', type: 'String', value: this.transferRecordIds }];
+        this.transferError = undefined;
+        this.releaseFeedback = undefined;
+        this.showTransferModal = true;
+    }
+
+    closeTransferModal() {
+        this.showTransferModal = false;
+        const dialog = this.template.querySelector('[data-id="transfer-dialog"]');
+        if (dialog?.open) {
+            dialog.close();
+        }
+    }
+
+    handleTransferStatusChange(event) {
+        const { status, outputVariables } = event.detail;
+        if (status === 'ERROR') {
+            this.transferError = 'Overføringen kunne ikke fullføres. Lukk vinduet og prøv igjen.';
+            return;
+        }
+        if (status !== 'FINISHED' && status !== 'FINISHED_SCREEN') {
+            return;
+        }
+        const transferred = outputVariables?.find((variable) => variable.name === 'transferred')?.value === true;
+        this.closeTransferModal();
+        if (!transferred) {
+            return;
+        }
+        const transferredIds = new Set(this.transferRecordIds);
+        this.checkedServiceAppointments = this.checkedServiceAppointments.filter((id) => !transferredIds.has(id));
+        this.releaseFeedback = {
+            type: 'success',
+            message: `${this.transferRecordIds.length} oppdrag overført til annen formidler.`
+        };
+        sessionStorage.setItem(LIST_REFRESH_KEY, String(Date.now()));
+        void this.refreshIfRequested();
     }
 
     reconcileCheckedRows() {
