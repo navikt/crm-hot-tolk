@@ -164,8 +164,8 @@ export default class Hot_tjenesteleverandorSaAcceptedList extends NavigationMixi
         if (!transferred) {
             return;
         }
-        const transferredIds = new Set(this.transferRecordIds);
-        this.checkedServiceAppointments = this.checkedServiceAppointments.filter((id) => !transferredIds.has(id));
+        this.checkedServiceAppointments = [];
+        this.template.querySelector('c-hot_freelance-common-table')?.unsetCheckboxes();
         this.releaseFeedback = {
             type: 'success',
             message: `${this.transferRecordIds.length} oppdrag overført til annen formidler.`

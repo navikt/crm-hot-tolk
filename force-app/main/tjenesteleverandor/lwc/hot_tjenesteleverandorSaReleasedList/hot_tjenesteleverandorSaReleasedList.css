@@ -1,5 +1,25 @@
 @import 'c/hot_sharedFonts';
 
+.transfer-feedback {
+    display: block;
+    margin-bottom: 0.5rem;
+}
+
+.bulk-action-bar {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: space-between;
+    gap: 1rem;
+    margin-bottom: 1rem;
+}
+
+.bulk-action-buttons {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 1rem;
+}
+
 .main-content {
     background-color: #ffffff;
     border-radius: 0.5rem;
