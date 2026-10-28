@@ -1,7 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <Flow xmlns="http://soap.sforce.com/2006/04/metadata">
-    <apiVersion>66.0</apiVersion>
-    <areMetricsLoggedToDataCloud>false</areMetricsLoggedToDataCloud>
     <actionCalls>
         <name>Transfer_Dispatcher</name>
         <label>Transfer Dispatcher</label>
@@ -25,11 +23,14 @@
         <inputParameters>
             <name>dispatcherId</name>
             <value>
-                <elementReference>Get_Dispatcher.RelatedRecordId</elementReference>
+                <elementReference>targetDispatcherId</elementReference>
             </value>
         </inputParameters>
         <nameSegment>HOT_ServiceProviderTransferSADispatcher</nameSegment>
+        <offset>0</offset>
     </actionCalls>
+    <apiVersion>66.0</apiVersion>
+    <areMetricsLoggedToDataCloud>false</areMetricsLoggedToDataCloud>
     <assignments>
         <name>Count_Eligible</name>
         <label>Count Eligible</label>
@@ -59,7 +60,23 @@
             </value>
         </assignmentItems>
         <connector>
-            <targetReference>Select_Dispatcher</targetReference>
+            <targetReference>Select_Transfer_Target</targetReference>
+        </connector>
+    </assignments>
+    <assignments>
+        <name>Set_Current_Dispatcher</name>
+        <label>Use Current User</label>
+        <locationX>0</locationX>
+        <locationY>0</locationY>
+        <assignmentItems>
+            <assignToReference>targetDispatcherId</assignToReference>
+            <operator>Assign</operator>
+            <value>
+                <elementReference>$User.Id</elementReference>
+            </value>
+        </assignmentItems>
+        <connector>
+            <targetReference>Get_Appointments</targetReference>
         </connector>
     </assignments>
     <assignments>
@@ -80,6 +97,22 @@
         </connector>
     </assignments>
     <assignments>
+        <name>Set_Selected_Dispatcher</name>
+        <label>Use Selected Dispatcher</label>
+        <locationX>0</locationX>
+        <locationY>0</locationY>
+        <assignmentItems>
+            <assignToReference>targetDispatcherId</assignToReference>
+            <operator>Assign</operator>
+            <value>
+                <elementReference>Get_Dispatcher.RelatedRecordId</elementReference>
+            </value>
+        </assignmentItems>
+        <connector>
+            <targetReference>Get_Appointments</targetReference>
+        </connector>
+    </assignments>
+    <assignments>
         <name>Set_Transferred</name>
         <label>Set Transferred</label>
         <locationX>0</locationX>
@@ -92,6 +125,47 @@
             </value>
         </assignmentItems>
     </assignments>
+    <decisions>
+        <name>Determine_Transfer_Target</name>
+        <label>Transfer to Yourself or Someone Else</label>
+        <locationX>0</locationX>
+        <locationY>0</locationY>
+        <defaultConnector>
+            <isGoTo>true</isGoTo>
+            <targetReference>Select_Transfer_Target</targetReference>
+        </defaultConnector>
+        <defaultConnectorLabel>No Selection</defaultConnectorLabel>
+        <rules>
+            <name>Transfer_To_Self</name>
+            <conditionLogic>and</conditionLogic>
+            <conditions>
+                <leftValueReference>Transfer_Target.value</leftValueReference>
+                <operator>EqualTo</operator>
+                <rightValue>
+                    <stringValue>Self</stringValue>
+                </rightValue>
+            </conditions>
+            <connector>
+                <targetReference>Set_Current_Dispatcher</targetReference>
+            </connector>
+            <label>Myself</label>
+        </rules>
+        <rules>
+            <name>Transfer_To_Other</name>
+            <conditionLogic>and</conditionLogic>
+            <conditions>
+                <leftValueReference>Transfer_Target.value</leftValueReference>
+                <operator>EqualTo</operator>
+                <rightValue>
+                    <stringValue>Other</stringValue>
+                </rightValue>
+            </conditions>
+            <connector>
+                <targetReference>Select_Dispatcher</targetReference>
+            </connector>
+            <label>Someone Else</label>
+        </rules>
+    </decisions>
     <decisions>
         <name>Validate_Dispatcher</name>
         <label>Validate Dispatcher</label>
@@ -112,7 +186,7 @@
                 </rightValue>
             </conditions>
             <connector>
-                <targetReference>Get_Appointments</targetReference>
+                <targetReference>Set_Selected_Dispatcher</targetReference>
             </connector>
             <label>Dispatcher Found</label>
         </rules>
@@ -401,8 +475,147 @@
                 </width>
             </styleProperties>
         </fields>
-        <nextOrFinishButtonLabel>Overfør oppdrag</nextOrFinishButtonLabel>
-        <showFooter>true</showFooter>
+        <fields>
+            <name>transferButton</name>
+            <extensionName>c:hot_flowFooterButtons</extensionName>
+            <fieldType>ComponentInstance</fieldType>
+            <inputParameters>
+                <name>showNext</name>
+                <value>
+                    <booleanValue>true</booleanValue>
+                </value>
+            </inputParameters>
+            <inputParameters>
+                <name>nextLabel</name>
+                <value>
+                    <stringValue>Overfør oppdrag</stringValue>
+                </value>
+            </inputParameters>
+            <inputParameters>
+                <name>showFinish</name>
+                <value>
+                    <booleanValue>false</booleanValue>
+                </value>
+            </inputParameters>
+            <inputParameters>
+                <name>size</name>
+                <value>
+                    <stringValue>small</stringValue>
+                </value>
+            </inputParameters>
+            <inputsOnNextNavToAssocScrn>UseStoredValues</inputsOnNextNavToAssocScrn>
+            <isRequired>true</isRequired>
+            <storeOutputAutomatically>true</storeOutputAutomatically>
+            <styleProperties>
+                <verticalAlignment>
+                    <stringValue>top</stringValue>
+                </verticalAlignment>
+                <width>
+                    <stringValue>12</stringValue>
+                </width>
+            </styleProperties>
+        </fields>
+        <showFooter>false</showFooter>
+        <showHeader>false</showHeader>
+    </screens>
+    <screens>
+        <name>Select_Transfer_Target</name>
+        <label>Velg hvem som skal overta oppdragene</label>
+        <locationX>0</locationX>
+        <locationY>0</locationY>
+        <allowBack>false</allowBack>
+        <allowFinish>true</allowFinish>
+        <allowPause>false</allowPause>
+        <connector>
+            <targetReference>Determine_Transfer_Target</targetReference>
+        </connector>
+        <fields>
+            <name>Transfer_Target</name>
+            <extensionName>c:hot_flowRadioButton</extensionName>
+            <fieldType>ComponentInstance</fieldType>
+            <inputParameters>
+                <name>groupLabel</name>
+                <value>
+                    <stringValue>Hvem vil du overføre oppdragene til?</stringValue>
+                </value>
+            </inputParameters>
+            <inputParameters>
+                <name>rbOneLabel</name>
+                <value>
+                    <stringValue>Meg selv</stringValue>
+                </value>
+            </inputParameters>
+            <inputParameters>
+                <name>rbOneValue</name>
+                <value>
+                    <stringValue>Self</stringValue>
+                </value>
+            </inputParameters>
+            <inputParameters>
+                <name>rbTwoLabel</name>
+                <value>
+                    <stringValue>En annen formidler</stringValue>
+                </value>
+            </inputParameters>
+            <inputParameters>
+                <name>rbTwoValue</name>
+                <value>
+                    <stringValue>Other</stringValue>
+                </value>
+            </inputParameters>
+            <inputParameters>
+                <name>value</name>
+                <value>
+                    <stringValue>Other</stringValue>
+                </value>
+            </inputParameters>
+            <inputsOnNextNavToAssocScrn>UseStoredValues</inputsOnNextNavToAssocScrn>
+            <isRequired>true</isRequired>
+            <storeOutputAutomatically>true</storeOutputAutomatically>
+            <styleProperties>
+                <verticalAlignment>
+                    <stringValue>top</stringValue>
+                </verticalAlignment>
+                <width>
+                    <stringValue>12</stringValue>
+                </width>
+            </styleProperties>
+        </fields>
+        <fields>
+            <name>nextButton</name>
+            <extensionName>c:hot_flowFooterButtons</extensionName>
+            <fieldType>ComponentInstance</fieldType>
+            <inputParameters>
+                <name>showNext</name>
+                <value>
+                    <booleanValue>true</booleanValue>
+                </value>
+            </inputParameters>
+            <inputParameters>
+                <name>showFinish</name>
+                <value>
+                    <booleanValue>false</booleanValue>
+                </value>
+            </inputParameters>
+            <inputParameters>
+                <name>size</name>
+                <value>
+                    <stringValue>small</stringValue>
+                </value>
+            </inputParameters>
+            <inputsOnNextNavToAssocScrn>UseStoredValues</inputsOnNextNavToAssocScrn>
+            <isRequired>true</isRequired>
+            <storeOutputAutomatically>true</storeOutputAutomatically>
+            <styleProperties>
+                <verticalAlignment>
+                    <stringValue>top</stringValue>
+                </verticalAlignment>
+                <width>
+                    <stringValue>12</stringValue>
+                </width>
+            </styleProperties>
+        </fields>
+        <showFooter>false</showFooter>
         <showHeader>false</showHeader>
     </screens>
     <screens>
@@ -470,6 +683,13 @@
         <isInput>false</isInput>
         <isOutput>false</isOutput>
         <scale>0</scale>
+    </variables>
+    <variables>
+        <name>targetDispatcherId</name>
+        <dataType>String</dataType>
+        <isCollection>false</isCollection>
+        <isInput>false</isInput>
+        <isOutput>false</isOutput>
     </variables>
     <variables>
         <name>transferred</name>

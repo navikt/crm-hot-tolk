@@ -30,10 +30,9 @@ public without sharing class HOT_ServiceProviderTransferSADispatcher {
                 request.recordIds == null ||
                 request.recordIds.isEmpty() ||
                 request.dispatcherId == null ||
-                request.dispatcherId.getSObjectType() != User.SObjectType ||
-                request.dispatcherId == UserInfo.getUserId()
+                request.dispatcherId.getSObjectType() != User.SObjectType
             ) {
-                throw new TransferException('Velg oppdrag og en annen gyldig formidler.');
+                throw new TransferException('Oppdrag eller formidler mangler eller er ugyldig.');
             }
             dispatcherIds.add(request.dispatcherId);
             for (Id appointmentId : request.recordIds) {
@@ -42,7 +41,7 @@ public without sharing class HOT_ServiceProviderTransferSADispatcher {
                     appointmentId.getSObjectType() != ServiceAppointment.SObjectType ||
                     dispatcherByAppointment.containsKey(appointmentId)
                 ) {
-                    throw new TransferException('Oppdragslisten inneholder ugyldige eller dupliserte ID-er.');
+                    throw new TransferException('Et oppdrag er ugyldig eller valgt flere ganger.');
                 }
                 dispatcherByAppointment.put(appointmentId, request.dispatcherId);
             }

@@ -97,6 +97,32 @@ private class HOT_SPTransferSADispatcherTest {
     }
 
     @IsTest
+    static void transfersToRunningUser() {
+        prepareAppointments();
+        myTriggers.disable(HOT_ServiceResourceAccessHandler.class);
+        ServiceResource resource = HOT_TestDataFactory.createServiceResource(UserInfo.getUserId());
+        resource.HOT_IsTjenesteleverandorDispatcher__c = true;
+        resource.CRM_Domain__c = 'HOT';
+        insert resource;
+        List<ServiceAppointment> appointments = [SELECT Id, HOT_TLDispatcher__c FROM ServiceAppointment ORDER BY Id];
+        HOT_ServiceProviderTransferSADispatcher.Request input = request(new List<Id>{ appointments[0].Id });
+        input.dispatcherId = UserInfo.getUserId();
+        Test.startTest();
+        HOT_ServiceProviderTransferSADispatcher.transfer(
+            new List<HOT_ServiceProviderTransferSADispatcher.Request>{ input }
+        );
+        Test.stopTest();
+        Assert.areEqual(
+            UserInfo.getUserId(),
+            [SELECT HOT_TLDispatcher__c FROM ServiceAppointment WHERE Id = :appointments[0].Id].HOT_TLDispatcher__c
+        );
+        Assert.areEqual(
+            appointments[1].HOT_TLDispatcher__c,
+            [SELECT HOT_TLDispatcher__c FROM ServiceAppointment WHERE Id = :appointments[1].Id].HOT_TLDispatcher__c
+        );
+    }
+
+    @IsTest
     static void rejectsInvalidSelectionsAndDispatcher() {
         ServiceAppointment appointment = [SELECT Id FROM ServiceAppointment LIMIT 1];
         Test.startTest();
