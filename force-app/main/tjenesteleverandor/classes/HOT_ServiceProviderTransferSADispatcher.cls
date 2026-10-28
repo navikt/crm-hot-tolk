@@ -70,7 +70,6 @@ public without sharing class HOT_ServiceProviderTransferSADispatcher {
             SELECT Id, Status, HOT_TjenesteleverandorStatus__c, HOT_IsReleasedToTjenesteleverandor__c
             FROM ServiceAppointment
             WHERE Id IN :appointmentIds
-            WITH USER_MODE
             FOR UPDATE
         ];
         if (appointments.size() != appointmentIds.size()) {
