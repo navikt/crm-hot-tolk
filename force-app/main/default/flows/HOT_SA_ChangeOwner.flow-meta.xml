@@ -1,0 +1,327 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<Flow xmlns="http://soap.sforce.com/2006/04/metadata">
+    <actionCalls>
+        <name>ChangeAppointmentOwner</name>
+        <label>Endre eier på markerte oppdrag</label>
+        <locationX>0</locationX>
+        <locationY>0</locationY>
+        <actionName>HOT_ChangeAppointmentOwner</actionName>
+        <actionType>apex</actionType>
+        <connector>
+            <targetReference>OwnerChanged</targetReference>
+        </connector>
+        <faultConnector>
+            <targetReference>OwnerChangeFailed</targetReference>
+        </faultConnector>
+        <flowTransactionModel>CurrentTransaction</flowTransactionModel>
+        <inputParameters>
+            <name>ownerQueueName</name>
+            <value>
+                <elementReference>newOwner</elementReference>
+            </value>
+        </inputParameters>
+        <inputParameters>
+            <name>serviceAppointmentIds</name>
+            <value>
+                <elementReference>ids</elementReference>
+            </value>
+        </inputParameters>
+        <nameSegment>HOT_ChangeAppointmentOwner</nameSegment>
+    </actionCalls>
+    <apiVersion>68.0</apiVersion>
+    <areMetricsLoggedToDataCloud>false</areMetricsLoggedToDataCloud>
+    <assignments>
+        <name>CountSelectedAppointments</name>
+        <label>Tell valgte oppdrag</label>
+        <locationX>0</locationX>
+        <locationY>0</locationY>
+        <assignmentItems>
+            <assignToReference>selectedAppointmentCount</assignToReference>
+            <operator>AssignCount</operator>
+            <value>
+                <elementReference>ids</elementReference>
+            </value>
+        </assignmentItems>
+        <connector>
+            <targetReference>CheckSelection</targetReference>
+        </connector>
+    </assignments>
+    <choices>
+        <name>Agder</name>
+        <choiceText
+        >&lt;span style=&quot;background-color: rgb(255, 255, 255);&quot;&gt;Nav Tolketjeneste Agder&lt;/span&gt;</choiceText>
+        <dataType>String</dataType>
+        <value><stringValue>Nav Tolketjeneste Agder</stringValue></value>
+    </choices>
+    <choices>
+        <name>AkuttvaktTolk</name>
+        <choiceText
+        >&lt;span style=&quot;background-color: rgb(255, 255, 255);&quot;&gt;NAV Akuttvakt Tolk&lt;/span&gt;</choiceText>
+        <dataType>String</dataType>
+        <value><stringValue>NAV Akuttvakt Tolk</stringValue></value>
+    </choices>
+    <choices>
+        <name>FellsoppdragVestViken</name>
+        <choiceText
+        >&lt;span style=&quot;background-color: rgb(255, 255, 255);&quot;&gt;Fellesoppdrag Vest-Viken&lt;/span&gt;</choiceText>
+        <dataType>String</dataType>
+        <value><stringValue>Fellesoppdrag Vest-Viken</stringValue></value>
+    </choices>
+    <choices>
+        <name>Innlandet</name>
+        <choiceText
+        >&lt;span style=&quot;background-color: rgb(255, 255, 255);&quot;&gt;Nav Tolketjeneste &lt;/span&gt;Innlandet</choiceText>
+        <dataType>String</dataType>
+        <value><stringValue>Nav Tolketjeneste Innlandet</stringValue></value>
+    </choices>
+    <choices>
+        <name>MoreOgRomsdal</name>
+        <choiceText
+        >&lt;span style=&quot;background-color: rgb(255, 255, 255);&quot;&gt;Nav Tolketjeneste Møre og Romsdal&lt;/span&gt;</choiceText>
+        <dataType>String</dataType>
+        <value><stringValue>Nav Tolketjeneste Møre og Romsdal</stringValue></value>
+    </choices>
+    <choices>
+        <name>Nordland</name>
+        <choiceText
+        >&lt;span style=&quot;background-color: rgb(255, 255, 255);&quot;&gt;Nav Tolketjeneste Nordland&lt;/span&gt;</choiceText>
+        <dataType>String</dataType>
+        <value><stringValue>Nav Tolketjeneste Nordland</stringValue></value>
+    </choices>
+    <choices>
+        <name>Oslo</name>
+        <choiceText
+        >&lt;span style=&quot;background-color: rgb(255, 255, 255);&quot;&gt;Nav Tolketjeneste Oslo&lt;/span&gt;</choiceText>
+        <dataType>String</dataType>
+        <value><stringValue>Nav Tolketjeneste Oslo</stringValue></value>
+    </choices>
+    <choices>
+        <name>OstViken</name>
+        <choiceText
+        >&lt;span style=&quot;background-color: rgb(255, 255, 255);&quot;&gt;Nav Tolketjeneste Øst-Viken&lt;/span&gt;</choiceText>
+        <dataType>String</dataType>
+        <value><stringValue>Nav Tolketjeneste Øst-Viken</stringValue></value>
+    </choices>
+    <choices>
+        <name>Rogaland</name>
+        <choiceText
+        >&lt;span style=&quot;background-color: rgb(255, 255, 255);&quot;&gt;Nav Tolketjeneste Rogaland&lt;/span&gt;</choiceText>
+        <dataType>String</dataType>
+        <value><stringValue>Nav Tolketjeneste Rogaland</stringValue></value>
+    </choices>
+    <choices>
+        <name>TromsOgFinnmark</name>
+        <choiceText
+        >&lt;span style=&quot;background-color: rgb(255, 255, 255);&quot;&gt;Nav Tolketjeneste Troms og Finnmark&lt;/span&gt;</choiceText>
+        <dataType>String</dataType>
+        <value><stringValue>Nav Tolketjeneste Troms og Finnmark</stringValue></value>
+    </choices>
+    <choices>
+        <name>Trondelag</name>
+        <choiceText
+        >&lt;span style=&quot;background-color: rgb(255, 255, 255);&quot;&gt;Nav Tolketjeneste Trøndelag&lt;/span&gt;</choiceText>
+        <dataType>String</dataType>
+        <value><stringValue>Nav Tolketjeneste Trøndelag</stringValue></value>
+    </choices>
+    <choices>
+        <name>VestfoldOgTelemark</name>
+        <choiceText
+        >&lt;span style=&quot;background-color: rgb(255, 255, 255);&quot;&gt;Nav Tolketjeneste Vestfold og Telemark&lt;/span&gt;</choiceText>
+        <dataType>String</dataType>
+        <value><stringValue>Nav Tolketjeneste Vestfold og Telemark</stringValue></value>
+    </choices>
+    <choices>
+        <name>Vestland</name>
+        <choiceText
+        >&lt;span style=&quot;background-color: rgb(255, 255, 255);&quot;&gt;Nav Tolketjeneste Vestland&lt;/span&gt;</choiceText>
+        <dataType>String</dataType>
+        <value><stringValue>Nav Tolketjeneste Vestland</stringValue></value>
+    </choices>
+    <choices>
+        <name>VestViken</name>
+        <choiceText
+        >&lt;span style=&quot;background-color: rgb(255, 255, 255);&quot;&gt;Nav Tolketjeneste Vest-Viken&lt;/span&gt;</choiceText>
+        <dataType>String</dataType>
+        <value><stringValue>Nav Tolketjeneste Vest-Viken</stringValue></value>
+    </choices>
+    <customProperties>
+        <name>ScreenProgressIndicator</name>
+        <value>
+            <stringValue>{&quot;location&quot;:&quot;top&quot;,&quot;type&quot;:&quot;simple&quot;}</stringValue>
+        </value>
+    </customProperties>
+    <decisions>
+        <name>CheckSelection</name>
+        <label>Er oppdrag valgt?</label>
+        <locationX>0</locationX>
+        <locationY>0</locationY>
+        <defaultConnector>
+            <targetReference>Endre_eier</targetReference>
+        </defaultConnector>
+        <defaultConnectorLabel>Oppdrag er valgt</defaultConnectorLabel>
+        <rules>
+            <name>NoAppointmentsSelected</name>
+            <conditionLogic>and</conditionLogic>
+            <conditions>
+                <leftValueReference>selectedAppointmentCount</leftValueReference>
+                <operator>EqualTo</operator>
+                <rightValue>
+                    <numberValue>0.0</numberValue>
+                </rightValue>
+            </conditions>
+            <connector>
+                <targetReference>NoSelection</targetReference>
+            </connector>
+            <label>Ingen oppdrag er valgt</label>
+        </rules>
+    </decisions>
+    <environments>Default</environments>
+    <interviewLabel>Endre eier på valgte oppdrag {!$Flow.CurrentDateTime}</interviewLabel>
+    <label>Endre eier på valgte oppdrag</label>
+    <processMetadataValues>
+        <name>BuilderType</name>
+        <value>
+            <stringValue>LightningFlowBuilder</stringValue>
+        </value>
+    </processMetadataValues>
+    <processMetadataValues>
+        <name>CanvasMode</name>
+        <value>
+            <stringValue>AUTO_LAYOUT_CANVAS</stringValue>
+        </value>
+    </processMetadataValues>
+    <processMetadataValues>
+        <name>OriginBuilderType</name>
+        <value>
+            <stringValue>LightningFlowBuilder</stringValue>
+        </value>
+    </processMetadataValues>
+    <processType>Flow</processType>
+    <screens>
+        <name>Endre_eier</name>
+        <label>Endre eier</label>
+        <locationX>0</locationX>
+        <locationY>0</locationY>
+        <allowBack>true</allowBack>
+        <allowFinish>true</allowFinish>
+        <allowPause>true</allowPause>
+        <connector>
+            <targetReference>ChangeAppointmentOwner</targetReference>
+        </connector>
+        <fields>
+            <name>OwnerChangeInformation</name>
+            <fieldText>&lt;p&gt;Ny eier endres på alle valgte oppdrag&lt;/p&gt;</fieldText>
+            <fieldType>DisplayText</fieldType>
+        </fields>
+        <fields>
+            <name>newOwner</name>
+            <choiceReferences>Agder</choiceReferences>
+            <choiceReferences>Innlandet</choiceReferences>
+            <choiceReferences>MoreOgRomsdal</choiceReferences>
+            <choiceReferences>Nordland</choiceReferences>
+            <choiceReferences>Oslo</choiceReferences>
+            <choiceReferences>Rogaland</choiceReferences>
+            <choiceReferences>TromsOgFinnmark</choiceReferences>
+            <choiceReferences>Trondelag</choiceReferences>
+            <choiceReferences>VestViken</choiceReferences>
+            <choiceReferences>VestfoldOgTelemark</choiceReferences>
+            <choiceReferences>Vestland</choiceReferences>
+            <choiceReferences>OstViken</choiceReferences>
+            <choiceReferences>FellsoppdragVestViken</choiceReferences>
+            <choiceReferences>AkuttvaktTolk</choiceReferences>
+            <dataType>String</dataType>
+            <fieldText>Ny eier</fieldText>
+            <fieldType>DropdownBox</fieldType>
+            <inputsOnNextNavToAssocScrn>UseStoredValues</inputsOnNextNavToAssocScrn>
+            <isRequired>true</isRequired>
+            <styleProperties>
+                <verticalAlignment>
+                    <stringValue>top</stringValue>
+                </verticalAlignment>
+                <width>
+                    <stringValue>12</stringValue>
+                </width>
+            </styleProperties>
+        </fields>
+        <showFooter>true</showFooter>
+        <showHeader>true</showHeader>
+    </screens>
+    <screens>
+        <name>NoSelection</name>
+        <label>Ingen oppdrag er valgt</label>
+        <locationX>0</locationX>
+        <locationY>0</locationY>
+        <allowBack>false</allowBack>
+        <allowFinish>true</allowFinish>
+        <allowPause>false</allowPause>
+        <fields>
+            <name>NoSelectionText</name>
+            <fieldText>&lt;p&gt;Ingen oppdrag er valgt&lt;/p&gt;</fieldText>
+            <fieldType>DisplayText</fieldType>
+        </fields>
+        <nextOrFinishButtonLabel>Lukk</nextOrFinishButtonLabel>
+        <showFooter>true</showFooter>
+        <showHeader>true</showHeader>
+    </screens>
+    <screens>
+        <name>OwnerChanged</name>
+        <label>Eier er endret</label>
+        <locationX>0</locationX>
+        <locationY>0</locationY>
+        <allowBack>false</allowBack>
+        <allowFinish>true</allowFinish>
+        <allowPause>false</allowPause>
+        <fields>
+            <name>SuccessText</name>
+            <fieldText>&lt;p&gt;Eier er oppdatert på de markerte oppdragene.&lt;/p&gt;</fieldText>
+            <fieldType>DisplayText</fieldType>
+        </fields>
+        <nextOrFinishButtonLabel>Lukk</nextOrFinishButtonLabel>
+        <showFooter>true</showFooter>
+        <showHeader>true</showHeader>
+    </screens>
+    <screens>
+        <name>OwnerChangeFailed</name>
+        <label>Kunne ikke endre eier</label>
+        <locationX>0</locationX>
+        <locationY>0</locationY>
+        <allowBack>false</allowBack>
+        <allowFinish>true</allowFinish>
+        <allowPause>false</allowPause>
+        <fields>
+            <name>ErrorText</name>
+            <fieldText
+            >&lt;p&gt;Ingen endringer ble lagret.&lt;/p&gt;&lt;p&gt;{!$Flow.FaultMessage}&lt;/p&gt;</fieldText>
+            <fieldType>DisplayText</fieldType>
+        </fields>
+        <nextOrFinishButtonLabel>Lukk</nextOrFinishButtonLabel>
+        <showFooter>true</showFooter>
+        <showHeader>true</showHeader>
+    </screens>
+    <start>
+        <locationX>0</locationX>
+        <locationY>0</locationY>
+        <connector>
+            <targetReference>CountSelectedAppointments</targetReference>
+        </connector>
+    </start>
+    <status>Active</status>
+    <variables>
+        <name>selectedAppointmentCount</name>
+        <dataType>Number</dataType>
+        <isCollection>false</isCollection>
+        <isInput>false</isInput>
+        <isOutput>false</isOutput>
+        <scale>0</scale>
+        <value>
+            <numberValue>0.0</numberValue>
+        </value>
+    </variables>
+    <variables>
+        <name>ids</name>
+        <dataType>String</dataType>
+        <isCollection>true</isCollection>
+        <isInput>true</isInput>
+        <isOutput>false</isOutput>
+    </variables>
+</Flow>
