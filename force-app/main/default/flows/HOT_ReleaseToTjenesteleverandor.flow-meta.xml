@@ -6,7 +6,7 @@
         <name>AssignFieldValues</name>
         <label>AssignFieldValues</label>
         <locationX>314</locationX>
-        <locationY>1166</locationY>
+        <locationY>1274</locationY>
         <assignmentItems>
             <assignToReference>CurrentServiceAppointment.HOT_IsReleasedToTjenesteleverandor__c</assignToReference>
             <operator>Assign</operator>
@@ -26,6 +26,13 @@
             <operator>Assign</operator>
             <value>
                 <elementReference>freelanceSubject_Old</elementReference>
+            </value>
+        </assignmentItems>
+        <assignmentItems>
+            <assignToReference>CurrentServiceAppointment.HOT_MessageToServiceProvider__c</assignToReference>
+            <operator>Assign</operator>
+            <value>
+                <elementReference>MessageToServiceProvider</elementReference>
             </value>
         </assignmentItems>
         <connector>
@@ -179,7 +186,7 @@
                 </rightValue>
             </conditions>
             <connector>
-                <targetReference>AssignFieldValues</targetReference>
+                <targetReference>AddMessageToServiceProvider</targetReference>
             </connector>
             <label>Match Filter</label>
         </rules>
@@ -301,6 +308,7 @@
         <queriedFields>Subject</queriedFields>
         <queriedFields>HOT_ReleaseDate__c</queriedFields>
         <queriedFields>HOT_Information__c</queriedFields>
+        <queriedFields>HOT_MessageToServiceProvider__c</queriedFields>
         <sortField>Id</sortField>
         <sortOrder>Asc</sortOrder>
     </recordLookups>
@@ -308,12 +316,45 @@
         <name>UpdateServiceAppointment</name>
         <label>UpdateServiceAppointment</label>
         <locationX>314</locationX>
-        <locationY>1274</locationY>
+        <locationY>1382</locationY>
         <connector>
             <targetReference>SuccessScreen</targetReference>
         </connector>
         <inputReference>CurrentServiceAppointment</inputReference>
     </recordUpdates>
+    <screens>
+        <name>AddMessageToServiceProvider</name>
+        <label>Add Message To Service Provider</label>
+        <locationX>314</locationX>
+        <locationY>1166</locationY>
+        <allowBack>false</allowBack>
+        <allowFinish>true</allowFinish>
+        <allowPause>false</allowPause>
+        <connector>
+            <targetReference>AssignFieldValues</targetReference>
+        </connector>
+        <fields>
+            <name>MessageToServiceProvider</name>
+            <defaultValue>
+                <elementReference>CurrentServiceAppointment.HOT_MessageToServiceProvider__c</elementReference>
+            </defaultValue>
+            <fieldText>Beskjed til tjenesteleverandør</fieldText>
+            <fieldType>LargeTextArea</fieldType>
+            <inputsOnNextNavToAssocScrn>UseStoredValues</inputsOnNextNavToAssocScrn>
+            <isRequired>false</isRequired>
+            <styleProperties>
+                <verticalAlignment>
+                    <stringValue>top</stringValue>
+                </verticalAlignment>
+                <width>
+                    <stringValue>12</stringValue>
+                </width>
+            </styleProperties>
+        </fields>
+        <nextOrFinishButtonLabel>Frigi til tjenesteleverandør</nextOrFinishButtonLabel>
+        <showFooter>true</showFooter>
+        <showHeader>false</showHeader>
+    </screens>
     <screens>
         <name>AlreadyScheduled</name>
         <label>AlreadyScheduled</label>
@@ -390,7 +431,7 @@
         <name>SuccessScreen</name>
         <label>SuccessScreen</label>
         <locationX>314</locationX>
-        <locationY>1382</locationY>
+        <locationY>1490</locationY>
         <allowBack>false</allowBack>
         <allowFinish>true</allowFinish>
         <allowPause>false</allowPause>
