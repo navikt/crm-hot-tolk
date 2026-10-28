@@ -289,7 +289,7 @@
             <isGoTo>true</isGoTo>
             <targetReference>Transfer_Error</targetReference>
         </faultConnector>
-        <filterLogic>and</filterLogic>
+        <filterLogic>1 AND (2 OR 3 OR 4 OR 5 OR 6) AND 7 AND 8</filterLogic>
         <filters>
             <field>Id</field>
             <operator>In</operator>
@@ -302,6 +302,34 @@
             <operator>EqualTo</operator>
             <value>
                 <stringValue>None</stringValue>
+            </value>
+        </filters>
+        <filters>
+            <field>Status</field>
+            <operator>EqualTo</operator>
+            <value>
+                <stringValue>Released to Freelance</stringValue>
+            </value>
+        </filters>
+        <filters>
+            <field>Status</field>
+            <operator>EqualTo</operator>
+            <value>
+                <stringValue>Scheduled</stringValue>
+            </value>
+        </filters>
+        <filters>
+            <field>Status</field>
+            <operator>EqualTo</operator>
+            <value>
+                <stringValue>Dispatched</stringValue>
+            </value>
+        </filters>
+        <filters>
+            <field>Status</field>
+            <operator>EqualTo</operator>
+            <value>
+                <stringValue>In Progress</stringValue>
             </value>
         </filters>
         <filters>

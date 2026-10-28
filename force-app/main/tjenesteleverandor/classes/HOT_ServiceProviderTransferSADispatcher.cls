@@ -1,4 +1,12 @@
 public without sharing class HOT_ServiceProviderTransferSADispatcher {
+    private static final Set<String> TRANSFERABLE_STATUSES = new Set<String>{
+        'None',
+        'Released to Freelance',
+        'Scheduled',
+        'Dispatched',
+        'In Progress'
+    };
+
     public class Request {
         @InvocableVariable(required=true label='Service Appointment IDs')
         public List<Id> recordIds;
@@ -103,7 +111,7 @@ public without sharing class HOT_ServiceProviderTransferSADispatcher {
         for (ServiceAppointment appointment : appointments) {
             if (
                 !editableIds.contains(appointment.Id) ||
-                appointment.Status != 'None' ||
+                !TRANSFERABLE_STATUSES.contains(appointment.Status) ||
                 appointment.HOT_TjenesteleverandorStatus__c == 'Transferred' ||
                 !appointment.HOT_IsReleasedToTjenesteleverandor__c
             ) {

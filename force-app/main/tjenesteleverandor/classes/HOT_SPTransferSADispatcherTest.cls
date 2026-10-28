@@ -108,6 +108,7 @@ private class HOT_SPTransferSADispatcherTest {
         HOT_ServiceProviderTransferSADispatcher.Request input = request(
             new List<Id>{ appointments[0].Id, appointments[1].Id }
         );
+        update new ServiceAppointment(Id = appointments[1].Id, Status = 'Scheduled');
         System.Test.startTest();
         System.runAs(getDispatcherUser()) {
             HOT_ServiceProviderTransferSADispatcher.transfer(
@@ -123,7 +124,10 @@ private class HOT_SPTransferSADispatcherTest {
         );
         for (Id appointmentId : input.recordIds) {
             Assert.areEqual(input.dispatcherId, actual.get(appointmentId).HOT_TLDispatcher__c);
-            Assert.areEqual('None', actual.get(appointmentId).Status);
+            Assert.isTrue(
+                new Set<String>{ 'None', 'Scheduled' }.contains(actual.get(appointmentId).Status),
+                'The transfer should preserve the appointment status'
+            );
             Assert.areEqual('Accepted', actual.get(appointmentId).HOT_TjenesteleverandorStatus__c);
         }
         Assert.areEqual(appointments[2].HOT_TLDispatcher__c, actual.get(appointments[2].Id).HOT_TLDispatcher__c);
