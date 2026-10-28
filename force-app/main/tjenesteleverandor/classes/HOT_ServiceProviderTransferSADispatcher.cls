@@ -8,6 +8,7 @@ public without sharing class HOT_ServiceProviderTransferSADispatcher {
     }
 
     public class TransferException extends Exception {
+        // Marks expected validation errors while transferring service appointments.
     }
 
     @InvocableMethod(label='Transfer Service Appointment Dispatcher')
