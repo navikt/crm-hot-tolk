@@ -389,7 +389,7 @@
         <allowPause>false</allowPause>
         <fields>
             <name>Invalid_Message</name>
-            <fieldText>&lt;p&gt;Ingen oppdrag ble overført. Valgt formidler eller ett av oppdragene er ikke lenger tilgjengelig for overføring. Lukk vinduet, last inn listen på nytt og prøv igjen.&lt;/p&gt;</fieldText>
+            <fieldText>&lt;p&gt;Ingen oppdrag ble overført. Valgt formidler eller ett av oppdragene er ikke lenger tilgjengelig for overføring. &lt;/p&gt;</fieldText>
             <fieldType>DisplayText</fieldType>
             <styleProperties>
                 <verticalAlignment>
@@ -417,7 +417,7 @@
         </connector>
         <fields>
             <name>Selection_Info</name>
-            <fieldText>&lt;p&gt;{!selectedCount} oppdrag valgt. Velg tjenesteleverandør-formidleren som skal overta oppdragene.&lt;/p&gt;</fieldText>
+            <fieldText>&lt;p&gt;{!selectedCount} oppdrag valgt. Velg en annen formidler som skal overta oppdragene.&lt;/p&gt;</fieldText>
             <fieldType>DisplayText</fieldType>
             <styleProperties>
                 <verticalAlignment>
@@ -628,7 +628,7 @@
         <allowPause>false</allowPause>
         <fields>
             <name>Error_Message</name>
-            <fieldText>&lt;p&gt;Oppdragene kunne ikke overføres. Lukk vinduet og prøv igjen.&lt;/p&gt;&lt;p&gt;{!$Flow.FaultMessage}&lt;/p&gt;</fieldText>
+            <fieldText>&lt;p&gt;Oppdragene kunne ikke overføres.&lt;/p&gt;&lt;p&gt;{!$Flow.FaultMessage}&lt;/p&gt;</fieldText>
             <fieldType>DisplayText</fieldType>
             <styleProperties>
                 <verticalAlignment>

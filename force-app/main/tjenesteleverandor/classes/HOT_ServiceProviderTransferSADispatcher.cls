@@ -79,10 +79,14 @@ public without sharing class HOT_ServiceProviderTransferSADispatcher {
 
         List<Id> idsToCheck = new List<Id>(appointmentIds);
         Set<Id> editableIds = new Set<Id>();
-        for (Integer offset = 0; offset < idsToCheck.size(); offset += 200) {
+        Integer offset = 0;
+        while (offset < idsToCheck.size()) {
             Set<Id> batchIds = new Set<Id>();
-            for (Integer index = offset; index < Math.min(offset + 200, idsToCheck.size()); index++) {
-                batchIds.add(idsToCheck[index]);
+            Integer batchSize = 0;
+            while (batchSize < 200 && offset < idsToCheck.size()) {
+                batchIds.add(idsToCheck[offset]);
+                offset++;
+                batchSize++;
             }
             for (UserRecordAccess access : [
                 SELECT RecordId, HasEditAccess
