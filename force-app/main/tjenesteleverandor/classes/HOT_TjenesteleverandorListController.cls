@@ -80,7 +80,8 @@ public with sharing class HOT_TjenesteleverandorListController {
                 HOT_NumberOfInterestedResources__c,
                 HOT_UserPreferredGender__c,
                 HOT_UserPreferredInterpreter__c,
-                HOT_UserInterpretationMethod__c
+                HOT_UserInterpretationMethod__c,
+                HOT_TLDispatcher__r.Name
             FROM ServiceAppointment
             WHERE
                 HOT_IsReleasedToTjenesteleverandor__c = TRUE
@@ -118,7 +119,8 @@ public with sharing class HOT_TjenesteleverandorListController {
                 HOT_NumberOfInterestedResources__c,
                 HOT_UserPreferredGender__c,
                 HOT_UserPreferredInterpreter__c,
-                HOT_UserInterpretationMethod__c
+                HOT_UserInterpretationMethod__c,
+                HOT_TLDispatcher__r.Name
             FROM ServiceAppointment
             WHERE
                 HOT_IsReleasedToTjenesteleverandor__c = TRUE
@@ -157,7 +159,8 @@ public with sharing class HOT_TjenesteleverandorListController {
                 HOT_NumberOfInterestedResources__c,
                 HOT_UserPreferredGender__c,
                 HOT_UserPreferredInterpreter__c,
-                HOT_UserInterpretationMethod__c
+                HOT_UserInterpretationMethod__c,
+                HOT_TLDispatcher__r.Name
             FROM ServiceAppointment
             WHERE
                 HOT_IsReleasedToTjenesteleverandor__c = TRUE
@@ -196,7 +199,8 @@ public with sharing class HOT_TjenesteleverandorListController {
                 HOT_NumberOfInterestedResources__c,
                 HOT_UserPreferredGender__c,
                 HOT_UserPreferredInterpreter__c,
-                HOT_UserInterpretationMethod__c
+                HOT_UserInterpretationMethod__c,
+                HOT_TLDispatcher__r.Name
             FROM ServiceAppointment
             WHERE
                 HOT_IsReleasedToTjenesteleverandor__c = TRUE
