@@ -26,6 +26,7 @@ import HOT_IS_OTHER_ECONOMIC_PROVICER_FIELD from '@salesforce/schema/ServiceAppo
 import HOT_IS_IMAGE_INTERPRETER_FIELD from '@salesforce/schema/ServiceAppointment.HOT_IsImageInterpreter__c';
 import HOT_DAY_OF_WEEK_FIELD from '@salesforce/schema/ServiceAppointment.HOT_DayOfWeek__c';
 import HOT_ADDRESS_FORMATED_FIELD from '@salesforce/schema/ServiceAppointment.HOT_AddressFormated__c';
+import HOT_TL_DISPATCHER_NAME_FIELD from '@salesforce/schema/ServiceAppointment.HOT_TLDispatcher__r.Name';
 import HOT_IS_RELEASED_TO_FREELANCE_FIELD from '@salesforce/schema/ServiceAppointment.HOT_IsReleasedToFreelance__c';
 import HOT_TJENESTELEVERANDOR_DEADLINE_FIELD from '@salesforce/schema/ServiceAppointment.HOT_TjenesteleverandorDeadline__c';
 import EARLIEST_START_TIME_FIELD from '@salesforce/schema/ServiceAppointment.EarliestStartTime';
@@ -73,6 +74,7 @@ const FIELDS = [
     HOT_IS_IMAGE_INTERPRETER_FIELD,
     HOT_DAY_OF_WEEK_FIELD,
     HOT_ADDRESS_FORMATED_FIELD,
+    HOT_TL_DISPATCHER_NAME_FIELD,
     HOT_IS_RELEASED_TO_FREELANCE_FIELD,
     HOT_TJENESTELEVERANDOR_DEADLINE_FIELD,
     EARLIEST_START_TIME_FIELD,
@@ -233,6 +235,10 @@ export default class HotTjenesteleverandorServiceAppointmentDetail extends Navig
 
     get addressFormatted() {
         return this.displayValue(this.getFieldValue(HOT_ADDRESS_FORMATED_FIELD));
+    }
+
+    get providerDispatcherName() {
+        return this.displayValue(this.getFieldValue(HOT_TL_DISPATCHER_NAME_FIELD));
     }
 
     get cancellationComment() {
