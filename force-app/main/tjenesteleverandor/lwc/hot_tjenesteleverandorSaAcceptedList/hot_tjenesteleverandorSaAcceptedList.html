@@ -1,10 +1,12 @@
 <template>
     <template lwc:if={releaseFeedback}>
-        <c-hot_local-alert
-            type={releaseFeedback.type}
-            content-view="title-only"
-            title={releaseFeedback.message}
-        ></c-hot_local-alert>
+        <div class="release-feedback">
+            <c-hot_local-alert
+                type={releaseFeedback.type}
+                content-view="title-only"
+                title={releaseFeedback.message}
+            ></c-hot_local-alert>
+        </div>
     </template>
     <template lwc:if={error}>
         <c-hot_local-alert
@@ -16,13 +18,22 @@
     <template lwc:elseif={hasResult}>
         <div class="bulk-action-bar">
             <p aria-live="polite">{selectedAppointmentsLabel}</p>
-            <c-button
-                data-id="release"
-                button-styling="primary"
-                button-label="Frigi til tolker"
-                disabled={isReleaseDisabled}
-                onbuttonclick={handleRelease}
-            ></c-button>
+            <div class="bulk-action-buttons">
+                <c-button
+                    data-id="transfer"
+                    button-styling="secondary"
+                    button-label="Overfør"
+                    disabled={isReleaseDisabled}
+                    onbuttonclick={handleTransfer}
+                ></c-button>
+                <c-button
+                    data-id="release"
+                    button-styling="primary"
+                    button-label="Frigi til tolker"
+                    disabled={isReleaseDisabled}
+                    onbuttonclick={handleRelease}
+                ></c-button>
+            </div>
         </div>
         <div class="main-content">
             <c-hot_freelance-common-table
@@ -50,6 +61,34 @@
             <p>Det finnes ingen oppdrag med denne filtreringen. Du kan endre filteret for å se andre oppdrag.</p>
         </div>
     </template>
+
+    <dialog
+        data-id="transfer-dialog"
+        class="modal-container"
+        aria-label="Overfør oppdrag til annen formidler"
+        aria-modal="true"
+        onclose={closeTransferModal}
+    >
+        <template lwc:if={showTransferModal}>
+            <div class="modal-header">
+                <h2>Overfør oppdrag til annen formidler</h2>
+                <button class="close-btn" onclick={closeTransferModal} aria-label="Lukk">
+                    <img src={exitCrossIcon} alt="" aria-hidden="true" />
+                </button>
+            </div>
+            <div class="modal-body">
+                <template lwc:if={transferError}>
+                    <c-hot_local-alert type="error" content-view="title-only" title={transferError}></c-hot_local-alert>
+                </template>
+                <lightning-flow
+                    flow-api-name="HOT_ServiceProviderTransferSADispatcher"
+                    flow-input-variables={transferInputVariables}
+                    flow-finish-behavior="NONE"
+                    onstatuschange={handleTransferStatusChange}
+                ></lightning-flow>
+            </div>
+        </template>
+    </dialog>
 
     <dialog
         data-id="release-dialog"

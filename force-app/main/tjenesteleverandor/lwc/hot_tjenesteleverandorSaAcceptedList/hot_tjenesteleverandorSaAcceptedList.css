@@ -1,5 +1,10 @@
 @import 'c/hot_sharedFonts';
 
+.release-feedback {
+    display: block;
+    margin-bottom: 0.5rem;
+}
+
 .bulk-action-bar {
     display: flex;
     flex-wrap: wrap;
@@ -16,6 +21,12 @@
     align-items: center;
     padding-top: 0.5rem;
     text-align: end;
+}
+
+.bulk-action-buttons {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 1rem;
 }
 
 .empty-state {
