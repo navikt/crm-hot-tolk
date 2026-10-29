@@ -554,4 +554,155 @@ private class HOT_CreateWorkOrderServiceTest {
         System.assertEquals(0, workOrders.size(), 'Det ble feilaktig opprettet arbeidsordre');
         System.assertEquals(1, errors.size(), 'Kan ikke opprette mere en 200 arbeidsordre av gangen');
     }
+
+    @IsTest
+    private static void createRecurringWorkOrdersFromEditMovesExistingToFirstWeeklyOccurrence() {
+        WorkType workType = HOT_TestDataFactory.createWorkType();
+        insert workType;
+        HOT_Request__c request = HOT_TestDataFactory.createRequest('Weekly edit', workType);
+        insert request;
+
+        Date tuesday = Date.newInstance(2026, 10, 27);
+        Datetime startTime = Datetime.newInstance(tuesday, Time.newInstance(9, 0, 0, 0));
+        Datetime endTime = startTime.addHours(1);
+        WorkOrder existingWorkOrder = HOT_TestDataFactory.createWorkOrder(request, workType);
+        existingWorkOrder.StartDate = startTime;
+        existingWorkOrder.EndDate = endTime;
+        insert existingWorkOrder;
+
+        Test.startTest();
+        HOT_CreateWorkOrderService.createRecurringWorkOrdersFromEdit(
+            request.Id,
+            existingWorkOrder.Id,
+            startTime.getTime(),
+            endTime.getTime(),
+            'Weekly',
+            new List<String>{ 'wednesday', 'friday' },
+            Datetime.newInstanceGmt(Date.newInstance(2026, 11, 2), Time.newInstance(0, 0, 0, 0)).getTime()
+        );
+        Test.stopTest();
+
+        List<WorkOrder> workOrders = [
+            SELECT Id, StartDate, EndDate
+            FROM WorkOrder
+            WHERE HOT_Request__c = :request.Id
+            ORDER BY StartDate
+        ];
+        System.assertEquals(2, workOrders.size(), 'Weekly recurrence should create selected weekdays only');
+        System.assertEquals(existingWorkOrder.Id, workOrders[0].Id, 'Existing Work Order must be first occurrence');
+        System.assertEquals(
+            Datetime.newInstance(Date.newInstance(2026, 10, 28), Time.newInstance(9, 0, 0, 0)),
+            workOrders[0].StartDate,
+            'Existing Work Order should move to the first selected weekday'
+        );
+        System.assertEquals(
+            Datetime.newInstance(Date.newInstance(2026, 10, 30), Time.newInstance(9, 0, 0, 0)),
+            workOrders[1].StartDate,
+            'Additional Work Order should be created for the next selected weekday'
+        );
+        HOT_Request__c updatedRequest = [
+            SELECT StartTime__c, EndTime__c
+            FROM HOT_Request__c
+            WHERE Id = :request.Id
+        ];
+        System.assertEquals(workOrders[0].StartDate, updatedRequest.StartTime__c);
+        System.assertEquals(workOrders[0].EndDate, updatedRequest.EndTime__c);
+    }
+
+    @IsTest
+    private static void createRecurringWorkOrdersFromEditSupportsAllFormRecurrenceTypes() {
+        WorkType workType = HOT_TestDataFactory.createWorkType();
+        insert workType;
+        Date startDate = Date.newInstance(2026, 10, 26);
+        Datetime startTime = Datetime.newInstance(startDate, Time.newInstance(9, 0, 0, 0));
+        Datetime endTime = startTime.addHours(1);
+        Date recurrenceEndDate = startDate.addDays(28);
+        Map<String, Integer> expectedCounts = new Map<String, Integer>{
+            'Daily' => 29,
+            'Weekly' => 5,
+            'Biweekly' => 3,
+            'Every4Weeks' => 2
+        };
+
+        for (String recurrenceType : expectedCounts.keySet()) {
+            HOT_Request__c request = HOT_TestDataFactory.createRequest(recurrenceType + ' edit', workType);
+            insert request;
+            WorkOrder existingWorkOrder = HOT_TestDataFactory.createWorkOrder(request, workType);
+            existingWorkOrder.StartDate = startTime;
+            existingWorkOrder.EndDate = endTime;
+            insert existingWorkOrder;
+
+            HOT_CreateWorkOrderService.createRecurringWorkOrdersFromEdit(
+                request.Id,
+                existingWorkOrder.Id,
+                startTime.getTime(),
+                endTime.getTime(),
+                recurrenceType,
+                new List<String>{ 'monday' },
+                Datetime.newInstanceGmt(recurrenceEndDate, Time.newInstance(0, 0, 0, 0)).getTime()
+            );
+
+            System.assertEquals(
+                expectedCounts.get(recurrenceType),
+                [SELECT COUNT() FROM WorkOrder WHERE HOT_Request__c = :request.Id],
+                'Unexpected occurrence count for ' + recurrenceType
+            );
+            WorkOrder updatedExisting = [
+                SELECT StartDate
+                FROM WorkOrder
+                WHERE Id = :existingWorkOrder.Id
+            ];
+            System.assertEquals(
+                startTime,
+                updatedExisting.StartDate,
+                'First matching Monday remains the first occurrence'
+            );
+        }
+    }
+
+    @IsTest
+    private static void createRecurringWorkOrdersFromEditRejectsIneligibleWorkOrderWithoutChangingIt() {
+        WorkType workType = HOT_TestDataFactory.createWorkType();
+        insert workType;
+        HOT_Request__c request = HOT_TestDataFactory.createRequest('Ineligible edit', workType);
+        insert request;
+        WorkOrder existingWorkOrder = HOT_TestDataFactory.createWorkOrder(request, workType);
+        insert existingWorkOrder;
+        existingWorkOrder.Status = 'Completed';
+        update existingWorkOrder;
+        Datetime originalStart = [SELECT StartDate FROM WorkOrder WHERE Id = :existingWorkOrder.Id].StartDate;
+        Datetime originalRequestStart = [
+            SELECT StartTime__c
+            FROM HOT_Request__c
+            WHERE Id = :request.Id
+        ]
+        .StartTime__c;
+
+        Boolean threwException = false;
+        try {
+            HOT_CreateWorkOrderService.createRecurringWorkOrdersFromEdit(
+                request.Id,
+                existingWorkOrder.Id,
+                Datetime.now().addDays(1).getTime(),
+                Datetime.now().addDays(1).addHours(1).getTime(),
+                'Daily',
+                new List<String>(),
+                Datetime.now().addDays(10).getTime()
+            );
+        } catch (AuraHandledException e) {
+            threwException = true;
+        }
+
+        System.assertEquals(true, threwException, 'A non-open Work Order must not be changed into a series');
+        System.assertEquals(
+            originalStart,
+            [SELECT StartDate FROM WorkOrder WHERE Id = :existingWorkOrder.Id].StartDate,
+            'Rejected recurrence must preserve the existing interval'
+        );
+        System.assertEquals(
+            originalRequestStart,
+            [SELECT StartTime__c FROM HOT_Request__c WHERE Id = :request.Id].StartTime__c,
+            'Rejected recurrence must preserve the request interval'
+        );
+    }
 }

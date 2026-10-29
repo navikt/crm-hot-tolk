@@ -48,6 +48,172 @@ public without sharing class HOT_CreateWorkOrderService {
         createWorkOrders(new List<HOT_CreateWorkOrderService>{ createWorkOrderService });
     }
 
+    /**
+     * Converts the only open Work Order on an open request into the first occurrence of a recurring series.
+     */
+    @AuraEnabled
+    public static void createRecurringWorkOrdersFromEdit(
+        Id requestId,
+        Id workOrderId,
+        Long startTime,
+        Long endTime,
+        String recurringType,
+        List<String> recurringDays,
+        Long recurringEndDate
+    ) {
+        if (
+            requestId == null ||
+            workOrderId == null ||
+            startTime == null ||
+            endTime == null ||
+            recurringEndDate == null
+        ) {
+            throw new AuraHandledException('Bestillingen kunne ikke gjentas. Kontroller dato og tid.');
+        }
+
+        Datetime requestedStart = Datetime.newInstance(startTime);
+        Datetime requestedEnd = Datetime.newInstance(endTime);
+        Date recurrenceEndDate = Datetime.newInstance(recurringEndDate).dateGmt();
+
+        if (requestedEnd <= requestedStart) {
+            throw new AuraHandledException('Slutt tid må være etter start tid.');
+        }
+        if (recurrenceEndDate <= requestedStart.date()) {
+            throw new AuraHandledException('Sluttdato må være etter startdato.');
+        }
+
+        Set<String> selectedDays = new Set<String>();
+        if (recurringDays != null) {
+            selectedDays.addAll(recurringDays);
+        }
+        if (
+            recurringType != 'Daily' &&
+            recurringType != 'Weekly' &&
+            recurringType != 'Biweekly' &&
+            recurringType != 'Every4Weeks'
+        ) {
+            throw new AuraHandledException('Ugyldig gjentagelsestype.');
+        }
+        if (recurringType != 'Daily' && selectedDays.isEmpty()) {
+            throw new AuraHandledException('Må velge minst en dag.');
+        }
+
+        HOT_Request__c request;
+        List<WorkOrder> workOrders;
+        try {
+            request = [
+                SELECT Id, Status__c
+                FROM HOT_Request__c
+                WHERE Id = :requestId
+                FOR UPDATE
+            ];
+            workOrders = [
+                SELECT Id, StartDate, EndDate, HOT_ExternalWorkOrderStatus__c
+                FROM WorkOrder
+                WHERE HOT_Request__c = :requestId
+                FOR UPDATE
+            ];
+        } catch (QueryException e) {
+            throw new AuraHandledException('Bestillingen kunne ikke gjentas. Oppdater siden og prøv igjen.');
+        }
+
+        if (
+            request.Status__c != 'Åpen' ||
+            workOrders.size() != 1 ||
+            workOrders[0].Id != workOrderId ||
+            workOrders[0].HOT_ExternalWorkOrderStatus__c != 'Åpen'
+        ) {
+            throw new AuraHandledException(
+                'Bestillingen kan ikke gjentas fordi status eller tidspunkt har blitt endret. Oppdater siden og prøv igjen.'
+            );
+        }
+
+        List<Integer> occurrenceOffsets = getRecurringDayOffsets(
+            requestedStart.date(),
+            recurrenceEndDate,
+            recurringType,
+            selectedDays
+        );
+        if (occurrenceOffsets.isEmpty()) {
+            throw new AuraHandledException('Valgte gjentagelsesdager finnes ikke i perioden.');
+        }
+        if (occurrenceOffsets.size() > 200) {
+            throw new AuraHandledException('Kan ikke opprette mer enn 200 arbeidsordre av gangen.');
+        }
+
+        TimeZone tz = UserInfo.getTimeZone();
+        List<WorkOrder> additionalWorkOrders = new List<WorkOrder>();
+        for (Integer i = 0; i < occurrenceOffsets.size(); i++) {
+            Integer offset = occurrenceOffsets[i];
+            Datetime occurrenceStart = requestedStart.addDays(offset);
+            Datetime occurrenceEnd = requestedEnd.addDays(offset);
+            Integer timezoneOffset = tz.getOffset(occurrenceStart) - tz.getOffset(requestedStart);
+            occurrenceStart = occurrenceStart.addHours(-timezoneOffset / 3600000);
+            occurrenceEnd = occurrenceEnd.addHours(-timezoneOffset / 3600000);
+
+            if (i == 0) {
+                workOrders[0].StartDate = occurrenceStart;
+                workOrders[0].EndDate = occurrenceEnd;
+            } else {
+                additionalWorkOrders.add(
+                    new WorkOrder(HOT_Request__c = requestId, StartDate = occurrenceStart, EndDate = occurrenceEnd)
+                );
+            }
+        }
+
+        Savepoint savepoint = Database.setSavepoint();
+        try {
+            update workOrders[0];
+            if (!additionalWorkOrders.isEmpty()) {
+                insert additionalWorkOrders;
+            }
+        } catch (Exception e) {
+            Database.rollback(savepoint);
+            LoggerUtility logger = new LoggerUtility();
+            logger.exception(e, request, CRM_ApplicationDomain.Domain.HOT);
+            logger.publishSynch();
+            throw new AuraHandledException('Opprettelsen av gjentagende arbeidsordre feilet. Prøv igjen.');
+        }
+    }
+
+    /**
+     * Returns offsets for recurrence dates using the same week-skipping rules as community series creation.
+     */
+    private static List<Integer> getRecurringDayOffsets(
+        Date startDate,
+        Date endDate,
+        String recurringType,
+        Set<String> selectedDays
+    ) {
+        List<Integer> occurrenceOffsets = new List<Integer>();
+        Integer numberOfDays = startDate.daysBetween(endDate);
+        List<String> dayNames = new List<String>{
+            'sunday',
+            'monday',
+            'tuesday',
+            'wednesday',
+            'thursday',
+            'friday',
+            'saturday'
+        };
+        for (Integer offset = 0; offset <= numberOfDays; offset++) {
+            Date occurrenceDate = startDate.addDays(offset);
+            Integer dayIndex = Math.mod(Date.newInstance(1900, 1, 7).daysBetween(occurrenceDate), 7);
+            String dayName = dayNames[dayIndex];
+
+            if (recurringType == 'Daily' || selectedDays.contains(dayName)) {
+                occurrenceOffsets.add(offset);
+            }
+
+            if (recurringType == 'Biweekly' && dayIndex == 0) {
+                offset += 7;
+            } else if (recurringType == 'Every4Weeks' && dayIndex == 0) {
+                offset += 21;
+            }
+        }
+        return occurrenceOffsets;
+    }
+
     @InvocableMethod
     public static List<String> createWorkOrders(List<HOT_CreateWorkOrderService> inputVariables) {
         HOT_CreateWorkOrderService input = inputVariables[0];
