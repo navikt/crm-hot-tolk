@@ -48,8 +48,24 @@ export default class hot_recurringTimeInput_v2 extends LightningElement {
         return this.hideAdvancedTimesInEditMode === true;
     }
 
+    /**
+     * Shows date ordering errors as soon as both recurrence dates are selected.
+     */
+    get recurringDateError() {
+        if (!this.isAdvancedTimes || !this.times[0]?.date || !this.repeatingEndDateString) {
+            return '';
+        }
+        return startDateBeforeRecurringEndDate(this.repeatingEndDate, this.times[0].startTime);
+    }
+
     get recurringBoundaryWarning() {
-        if (!this.isAdvancedTimes || !this.showWeekDays || !this.times[0]?.date || !this.repeatingEndDateString) {
+        if (
+            !this.isAdvancedTimes ||
+            !this.showWeekDays ||
+            !this.times[0]?.date ||
+            !this.repeatingEndDateString ||
+            this.recurringDateError
+        ) {
             return '';
         }
 
@@ -77,7 +93,6 @@ export default class hot_recurringTimeInput_v2 extends LightningElement {
         this.times[index].date = event.detail;
         this.times[index].dateMilliseconds = new Date(event.detail).getTime();
         this.setStartTime(index);
-        this.validateRecurringDatesOnChange();
     }
     handleStartTimeChange(event) {
         const index = this.getTimesIndex(event.target.name);
@@ -240,25 +255,6 @@ export default class hot_recurringTimeInput_v2 extends LightningElement {
     setRepeatingEndDateDate(event) {
         this.repeatingEndDateString = event.detail;
         this.repeatingEndDate = new Date(event.detail).getTime();
-        this.validateRecurringDatesOnChange();
-    }
-
-    /**
-     * Checks date ordering on either date change without requiring unfinished fields.
-     */
-    validateRecurringDatesOnChange() {
-        if (!this.isAdvancedTimes) {
-            return;
-        }
-
-        const endDateInput = this.template.querySelector('[data-id="recurringEndDate"]');
-        if (endDateInput) {
-            const errorMessage =
-                this.times[0]?.date && this.repeatingEndDateString
-                    ? startDateBeforeRecurringEndDate(this.repeatingEndDate, this.times[0].startTime)
-                    : '';
-            endDateInput.sendErrorMessage(errorMessage);
-        }
     }
 
     @api

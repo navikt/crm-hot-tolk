@@ -105,6 +105,7 @@
                         desktop-style="width: 30%"
                     ></c-input>
                 </div>
+                <div lwc:if={recurringDateError} class="recurring-date-error" role="alert">{recurringDateError}</div>
                 <div
                     lwc:if={recurringBoundaryWarning}
                     class="recurring-boundary-warning"
