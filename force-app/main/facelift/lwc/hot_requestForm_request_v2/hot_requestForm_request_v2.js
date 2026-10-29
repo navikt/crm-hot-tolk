@@ -44,6 +44,16 @@ export default class hot_requestForm_request_v2 extends LightningElement {
     @api isEditMode = false;
     @api refreshToken;
 
+    get hideRecurringInEditMode() {
+        return (
+            this.isEditMode &&
+            !(
+                this.parentFieldValues?.Status__c === 'Åpen' &&
+                this.parentFieldValues?.IsSerieoppdrag__c === false
+            )
+        );
+    }
+
     // Dont want to use this because focus will move to top on re-rendrering which happens on "Additional information"
     // renderedCallback() {
     //     this.template.querySelector('h2').focus();

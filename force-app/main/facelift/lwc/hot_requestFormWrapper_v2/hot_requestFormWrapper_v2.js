@@ -4,12 +4,14 @@ import createAndUpdateWorkOrders from '@salesforce/apex/HOT_RequestHandler.creat
 import isErrorOnRequestCreate from '@salesforce/apex/HOT_RequestHandler.isErrorOnRequestCreate';
 import getRequestStatus from '@salesforce/apex/HOT_RequestListController.getRequestStatus';
 import createWorkOrders from '@salesforce/apex/HOT_CreateWorkOrderService.createWorkOrdersFromCommunity';
+import createRecurringWorkOrdersFromEdit from '@salesforce/apex/HOT_CreateWorkOrderService.createRecurringWorkOrdersFromEdit';
 import checkDuplicates from '@salesforce/apex/HOT_DuplicateHandler.checkDuplicates';
 import getPersonAccount from '@salesforce/apex/HOT_Utility.getPersonAccount';
 import { getParametersFromURL } from 'c/hot_URIDecoder';
 
 export default class hot_requestFormWrapper_v2 extends NavigationMixin(LightningElement) {
     submitted = false;
+    submitErrorMessage = '';
     recordId = null;
     spin = false;
     requestTypeChosen = false;
@@ -52,6 +54,7 @@ export default class hot_requestFormWrapper_v2 extends NavigationMixin(Lightning
             event.preventDefault();
         }
 
+        this.submitErrorMessage = '';
         if (this.submitted) {
             return;
         }
@@ -67,6 +70,24 @@ export default class hot_requestFormWrapper_v2 extends NavigationMixin(Lightning
         try {
             this.setAccountLookupFieldsBasedOnRequestType();
             this.getFieldValuesFromSubForms();
+            const timeInput = this.template.querySelector('c-hot_request-form_request_v2')?.getTimeInput();
+            if (this.isEditMode && timeInput?.isAdvancedTimes) {
+                const existingWorkOrderId = Object.keys(timeInput.times || {})[0];
+                if (!existingWorkOrderId || existingWorkOrderId === '0') {
+                    this.submitErrorMessage = 'Bestillingen kan ikke gjentas uten en eksisterende arbeidsordre.';
+                    this.hideFormAndShowError();
+                    this.spin = false;
+                    this.submitted = false;
+                    if (saveBtn) saveBtn.disabled = false;
+                    return;
+                }
+
+                const existingTime = Object.values(timeInput.times || {})[0];
+                if (existingTime?.startTime && existingTime?.endTime) {
+                    this.fieldValues.StartTime__c = new Date(existingTime.startTime).toISOString();
+                    this.fieldValues.EndTime__c = new Date(existingTime.endTime).toISOString();
+                }
+            }
 
             let status = 'Åpen';
 
@@ -294,6 +315,41 @@ export default class hot_requestFormWrapper_v2 extends NavigationMixin(Lightning
             this.submitted = false;
             const saveBtn = this.template.querySelector('[data-id="saveButton"]');
             if (saveBtn) saveBtn.disabled = false;
+            return;
+        }
+
+        if (this.isEditMode && timeInput.isAdvancedTimes) {
+            const [workOrderId, time] = Object.entries(timeInput.times)[0] || [];
+            if (!workOrderId || workOrderId === '0' || !time?.startTime || !time?.endTime) {
+                this.submitErrorMessage = 'Bestillingen kunne ikke gjentas. Kontroller dato og tid.';
+                this.hideFormAndShowError();
+                this.spin = false;
+                this.submitted = false;
+                return;
+            }
+
+            createRecurringWorkOrdersFromEdit({
+                requestId: this.recordId,
+                workOrderId,
+                startTime: time.startTime,
+                endTime: time.endTime,
+                recurringType: timeInput.repeatingOptionChosen,
+                recurringDays: timeInput.chosenDays,
+                recurringEndDate: new Date(timeInput.repeatingEndDate).getTime()
+            })
+                .then(() => {
+                    this.hideFormAndShowSuccess();
+                })
+                .catch((error) => {
+                    console.error('createRecurringWorkOrdersFromEdit error', error);
+                    this.submitErrorMessage =
+                        error?.body?.message || 'Opprettelsen av gjentagende arbeidsordre feilet. Prøv igjen.';
+                    this.hideFormAndShowError();
+                })
+                .finally(() => {
+                    this.spin = false;
+                    this.submitted = false;
+                });
             return;
         }
 
