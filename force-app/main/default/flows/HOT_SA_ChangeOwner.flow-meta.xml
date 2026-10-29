@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="UTF-8" ?>
+<?xml version="1.0" encoding="UTF-8"?>
 <Flow xmlns="http://soap.sforce.com/2006/04/metadata">
     <actionCalls>
         <name>ChangeAppointmentOwner</name>
@@ -27,6 +27,7 @@
             </value>
         </inputParameters>
         <nameSegment>HOT_ChangeAppointmentOwner</nameSegment>
+        <offset>0</offset>
     </actionCalls>
     <apiVersion>68.0</apiVersion>
     <areMetricsLoggedToDataCloud>false</areMetricsLoggedToDataCloud>
@@ -48,101 +49,115 @@
     </assignments>
     <choices>
         <name>Agder</name>
-        <choiceText
-        >&lt;span style=&quot;background-color: rgb(255, 255, 255);&quot;&gt;Nav Tolketjeneste Agder&lt;/span&gt;</choiceText>
+        <choiceText>&lt;span style=&quot;background-color: rgb(255, 255, 255);&quot;&gt;Nav Tolketjeneste Agder&lt;/span&gt;</choiceText>
         <dataType>String</dataType>
-        <value><stringValue>Nav Tolketjeneste Agder</stringValue></value>
+        <value>
+            <stringValue>Nav Tolketjeneste Agder</stringValue>
+        </value>
     </choices>
     <choices>
         <name>AkuttvaktTolk</name>
-        <choiceText
-        >&lt;span style=&quot;background-color: rgb(255, 255, 255);&quot;&gt;NAV Akuttvakt Tolk&lt;/span&gt;</choiceText>
+        <choiceText>&lt;span style=&quot;background-color: rgb(255, 255, 255);&quot;&gt;NAV Akuttvakt Tolk&lt;/span&gt;</choiceText>
         <dataType>String</dataType>
-        <value><stringValue>NAV Akuttvakt Tolk</stringValue></value>
+        <value>
+            <stringValue>NAV Akuttvakt Tolk</stringValue>
+        </value>
     </choices>
     <choices>
         <name>FellsoppdragVestViken</name>
-        <choiceText
-        >&lt;span style=&quot;background-color: rgb(255, 255, 255);&quot;&gt;Fellesoppdrag Vest-Viken&lt;/span&gt;</choiceText>
+        <choiceText>&lt;span style=&quot;background-color: rgb(255, 255, 255);&quot;&gt;Fellesoppdrag Vest-Viken&lt;/span&gt;</choiceText>
         <dataType>String</dataType>
-        <value><stringValue>Fellesoppdrag Vest-Viken</stringValue></value>
+        <value>
+            <stringValue>Fellesoppdrag Vest-Viken</stringValue>
+        </value>
     </choices>
     <choices>
         <name>Innlandet</name>
-        <choiceText
-        >&lt;span style=&quot;background-color: rgb(255, 255, 255);&quot;&gt;Nav Tolketjeneste &lt;/span&gt;Innlandet</choiceText>
+        <choiceText>&lt;span style=&quot;background-color: rgb(255, 255, 255);&quot;&gt;Nav Tolketjeneste &lt;/span&gt;Innlandet</choiceText>
         <dataType>String</dataType>
-        <value><stringValue>Nav Tolketjeneste Innlandet</stringValue></value>
+        <value>
+            <stringValue>Nav Tolketjeneste Innlandet</stringValue>
+        </value>
     </choices>
     <choices>
         <name>MoreOgRomsdal</name>
-        <choiceText
-        >&lt;span style=&quot;background-color: rgb(255, 255, 255);&quot;&gt;Nav Tolketjeneste Møre og Romsdal&lt;/span&gt;</choiceText>
+        <choiceText>&lt;span style=&quot;background-color: rgb(255, 255, 255);&quot;&gt;Nav Tolketjeneste Møre og Romsdal&lt;/span&gt;</choiceText>
         <dataType>String</dataType>
-        <value><stringValue>Nav Tolketjeneste Møre og Romsdal</stringValue></value>
+        <value>
+            <stringValue>Nav Tolketjeneste Møre og Romsdal</stringValue>
+        </value>
     </choices>
     <choices>
         <name>Nordland</name>
-        <choiceText
-        >&lt;span style=&quot;background-color: rgb(255, 255, 255);&quot;&gt;Nav Tolketjeneste Nordland&lt;/span&gt;</choiceText>
+        <choiceText>&lt;span style=&quot;background-color: rgb(255, 255, 255);&quot;&gt;Nav Tolketjeneste Nordland&lt;/span&gt;</choiceText>
         <dataType>String</dataType>
-        <value><stringValue>Nav Tolketjeneste Nordland</stringValue></value>
+        <value>
+            <stringValue>Nav Tolketjeneste Nordland</stringValue>
+        </value>
     </choices>
     <choices>
         <name>Oslo</name>
-        <choiceText
-        >&lt;span style=&quot;background-color: rgb(255, 255, 255);&quot;&gt;Nav Tolketjeneste Oslo&lt;/span&gt;</choiceText>
+        <choiceText>&lt;span style=&quot;background-color: rgb(255, 255, 255);&quot;&gt;Nav Tolketjeneste Oslo&lt;/span&gt;</choiceText>
         <dataType>String</dataType>
-        <value><stringValue>Nav Tolketjeneste Oslo</stringValue></value>
+        <value>
+            <stringValue>Nav Tolketjeneste Oslo</stringValue>
+        </value>
     </choices>
     <choices>
         <name>OstViken</name>
-        <choiceText
-        >&lt;span style=&quot;background-color: rgb(255, 255, 255);&quot;&gt;Nav Tolketjeneste Øst-Viken&lt;/span&gt;</choiceText>
+        <choiceText>&lt;span style=&quot;background-color: rgb(255, 255, 255);&quot;&gt;Nav Tolketjeneste Øst-Viken&lt;/span&gt;</choiceText>
         <dataType>String</dataType>
-        <value><stringValue>Nav Tolketjeneste Øst-Viken</stringValue></value>
+        <value>
+            <stringValue>Nav Tolketjeneste Øst-Viken</stringValue>
+        </value>
     </choices>
     <choices>
         <name>Rogaland</name>
-        <choiceText
-        >&lt;span style=&quot;background-color: rgb(255, 255, 255);&quot;&gt;Nav Tolketjeneste Rogaland&lt;/span&gt;</choiceText>
+        <choiceText>&lt;span style=&quot;background-color: rgb(255, 255, 255);&quot;&gt;Nav Tolketjeneste Rogaland&lt;/span&gt;</choiceText>
         <dataType>String</dataType>
-        <value><stringValue>Nav Tolketjeneste Rogaland</stringValue></value>
+        <value>
+            <stringValue>Nav Tolketjeneste Rogaland</stringValue>
+        </value>
     </choices>
     <choices>
         <name>TromsOgFinnmark</name>
-        <choiceText
-        >&lt;span style=&quot;background-color: rgb(255, 255, 255);&quot;&gt;Nav Tolketjeneste Troms og Finnmark&lt;/span&gt;</choiceText>
+        <choiceText>&lt;span style=&quot;background-color: rgb(255, 255, 255);&quot;&gt;Nav Tolketjeneste Troms og Finnmark&lt;/span&gt;</choiceText>
         <dataType>String</dataType>
-        <value><stringValue>Nav Tolketjeneste Troms og Finnmark</stringValue></value>
+        <value>
+            <stringValue>Nav Tolketjeneste Troms og Finnmark</stringValue>
+        </value>
     </choices>
     <choices>
         <name>Trondelag</name>
-        <choiceText
-        >&lt;span style=&quot;background-color: rgb(255, 255, 255);&quot;&gt;Nav Tolketjeneste Trøndelag&lt;/span&gt;</choiceText>
+        <choiceText>&lt;span style=&quot;background-color: rgb(255, 255, 255);&quot;&gt;Nav Tolketjeneste Trøndelag&lt;/span&gt;</choiceText>
         <dataType>String</dataType>
-        <value><stringValue>Nav Tolketjeneste Trøndelag</stringValue></value>
+        <value>
+            <stringValue>Nav Tolketjeneste Trøndelag</stringValue>
+        </value>
     </choices>
     <choices>
         <name>VestfoldOgTelemark</name>
-        <choiceText
-        >&lt;span style=&quot;background-color: rgb(255, 255, 255);&quot;&gt;Nav Tolketjeneste Vestfold og Telemark&lt;/span&gt;</choiceText>
+        <choiceText>&lt;span style=&quot;background-color: rgb(255, 255, 255);&quot;&gt;Nav Tolketjeneste Vestfold og Telemark&lt;/span&gt;</choiceText>
         <dataType>String</dataType>
-        <value><stringValue>Nav Tolketjeneste Vestfold og Telemark</stringValue></value>
+        <value>
+            <stringValue>Nav Tolketjeneste Vestfold og Telemark</stringValue>
+        </value>
     </choices>
     <choices>
         <name>Vestland</name>
-        <choiceText
-        >&lt;span style=&quot;background-color: rgb(255, 255, 255);&quot;&gt;Nav Tolketjeneste Vestland&lt;/span&gt;</choiceText>
+        <choiceText>&lt;span style=&quot;background-color: rgb(255, 255, 255);&quot;&gt;Nav Tolketjeneste Vestland&lt;/span&gt;</choiceText>
         <dataType>String</dataType>
-        <value><stringValue>Nav Tolketjeneste Vestland</stringValue></value>
+        <value>
+            <stringValue>Nav Tolketjeneste Vestland</stringValue>
+        </value>
     </choices>
     <choices>
         <name>VestViken</name>
-        <choiceText
-        >&lt;span style=&quot;background-color: rgb(255, 255, 255);&quot;&gt;Nav Tolketjeneste Vest-Viken&lt;/span&gt;</choiceText>
+        <choiceText>&lt;span style=&quot;background-color: rgb(255, 255, 255);&quot;&gt;Nav Tolketjeneste Vest-Viken&lt;/span&gt;</choiceText>
         <dataType>String</dataType>
-        <value><stringValue>Nav Tolketjeneste Vest-Viken</stringValue></value>
+        <value>
+            <stringValue>Nav Tolketjeneste Vest-Viken</stringValue>
+        </value>
     </choices>
     <customProperties>
         <name>ScreenProgressIndicator</name>
@@ -212,6 +227,14 @@
             <name>OwnerChangeInformation</name>
             <fieldText>&lt;p&gt;Ny eier endres på alle valgte oppdrag&lt;/p&gt;</fieldText>
             <fieldType>DisplayText</fieldType>
+            <styleProperties>
+                <verticalAlignment>
+                    <stringValue>top</stringValue>
+                </verticalAlignment>
+                <width>
+                    <stringValue>12</stringValue>
+                </width>
+            </styleProperties>
         </fields>
         <fields>
             <name>newOwner</name>
@@ -258,6 +281,14 @@
             <name>NoSelectionText</name>
             <fieldText>&lt;p&gt;Ingen oppdrag er valgt&lt;/p&gt;</fieldText>
             <fieldType>DisplayText</fieldType>
+            <styleProperties>
+                <verticalAlignment>
+                    <stringValue>top</stringValue>
+                </verticalAlignment>
+                <width>
+                    <stringValue>12</stringValue>
+                </width>
+            </styleProperties>
         </fields>
         <nextOrFinishButtonLabel>Lukk</nextOrFinishButtonLabel>
         <showFooter>true</showFooter>
@@ -273,8 +304,16 @@
         <allowPause>false</allowPause>
         <fields>
             <name>SuccessText</name>
-            <fieldText>&lt;p&gt;Eier er oppdatert på de markerte oppdragene.&lt;/p&gt;</fieldText>
+            <fieldText>&lt;p&gt;Eier ble oppdatert på de markerte oppdragene.&lt;/p&gt;</fieldText>
             <fieldType>DisplayText</fieldType>
+            <styleProperties>
+                <verticalAlignment>
+                    <stringValue>top</stringValue>
+                </verticalAlignment>
+                <width>
+                    <stringValue>12</stringValue>
+                </width>
+            </styleProperties>
         </fields>
         <nextOrFinishButtonLabel>Lukk</nextOrFinishButtonLabel>
         <showFooter>true</showFooter>
@@ -290,9 +329,16 @@
         <allowPause>false</allowPause>
         <fields>
             <name>ErrorText</name>
-            <fieldText
-            >&lt;p&gt;Ingen endringer ble lagret.&lt;/p&gt;&lt;p&gt;{!$Flow.FaultMessage}&lt;/p&gt;</fieldText>
+            <fieldText>&lt;p&gt;Ingen endringer ble lagret. Kontakt utviklere og ta med følgende feilmelding:&lt;/p&gt;&lt;p&gt;{!$Flow.FaultMessage}&lt;/p&gt;</fieldText>
             <fieldType>DisplayText</fieldType>
+            <styleProperties>
+                <verticalAlignment>
+                    <stringValue>top</stringValue>
+                </verticalAlignment>
+                <width>
+                    <stringValue>12</stringValue>
+                </width>
+            </styleProperties>
         </fields>
         <nextOrFinishButtonLabel>Lukk</nextOrFinishButtonLabel>
         <showFooter>true</showFooter>
@@ -307,6 +353,13 @@
     </start>
     <status>Active</status>
     <variables>
+        <name>ids</name>
+        <dataType>String</dataType>
+        <isCollection>true</isCollection>
+        <isInput>true</isInput>
+        <isOutput>false</isOutput>
+    </variables>
+    <variables>
         <name>selectedAppointmentCount</name>
         <dataType>Number</dataType>
         <isCollection>false</isCollection>
@@ -316,12 +369,5 @@
         <value>
             <numberValue>0.0</numberValue>
         </value>
-    </variables>
-    <variables>
-        <name>ids</name>
-        <dataType>String</dataType>
-        <isCollection>true</isCollection>
-        <isInput>true</isInput>
-        <isOutput>false</isOutput>
     </variables>
 </Flow>
