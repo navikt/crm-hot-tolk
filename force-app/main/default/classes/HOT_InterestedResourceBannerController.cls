@@ -36,18 +36,22 @@ public with sharing class HOT_InterestedResourceBannerController {
         }
 
         Set<Id> serviceResourceIds = new Map<Id, ServiceResource>(
-            [SELECT Id FROM ServiceResource WHERE RelatedRecordId = :UserInfo.getUserId()]
-        ).keySet();
+                [SELECT Id FROM ServiceResource WHERE RelatedRecordId = :UserInfo.getUserId()]
+            )
+            .keySet();
 
         if (serviceResourceIds.isEmpty()) {
             return false;
         }
 
         return [
-            SELECT COUNT()
-            FROM HOT_InterestedResource__c
-            WHERE ServiceAppointment__c = :serviceAppointmentId
-            AND ServiceResource__c IN :serviceResourceIds
-        ] > 0;
+                SELECT COUNT()
+                FROM HOT_InterestedResource__c
+                WHERE
+                    ServiceAppointment__c = :serviceAppointmentId
+                    AND ServiceResource__c IN :serviceResourceIds
+                    AND Status__c != 'Wanted'
+                    AND Status__c != 'Declined'
+            ] > 0;
     }
 }
