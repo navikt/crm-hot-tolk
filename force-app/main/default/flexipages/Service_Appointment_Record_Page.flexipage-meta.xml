@@ -86,7 +86,7 @@
                         <valueListItems>
                             <value>ServiceAppointment.HOT_AssignOrReserve</value>
                             <visibilityRule>
-                                <booleanFilter>1 AND 2 AND 3 AND 4 AND 5 AND 6</booleanFilter>
+                                <booleanFilter>1 AND 2 AND 3 AND 4 AND 5 AND 6 AND 7 AND 8 AND 9</booleanFilter>
                                 <criteria>
                                     <leftValue>{!$Permission.CustomPermission.HOT_AccessToFormidlerActions}</leftValue>
                                     <operator>EQUAL</operator>
@@ -116,6 +116,21 @@
                                     <leftValue>{!Record.Status}</leftValue>
                                     <operator>NE</operator>
                                     <rightValue>Cannot Complete</rightValue>
+                                </criteria>
+                                <criteria>
+                                    <leftValue>{!Record.HOT_IsReleasedToTjenesteleverandor__c}</leftValue>
+                                    <operator>EQUAL</operator>
+                                    <rightValue>false</rightValue>
+                                </criteria>
+                                <criteria>
+                                    <leftValue>{!Record.HOT_TjenesteleverandorStatus__c}</leftValue>
+                                    <operator>NE</operator>
+                                    <rightValue>Transferred</rightValue>
+                                </criteria>
+                                <criteria>
+                                    <leftValue>{!Record.HOT_TjenesteleverandorStatus__c}</leftValue>
+                                    <operator>NE</operator>
+                                    <rightValue>Accepted</rightValue>
                                 </criteria>
                             </visibilityRule>
                         </valueListItems>
