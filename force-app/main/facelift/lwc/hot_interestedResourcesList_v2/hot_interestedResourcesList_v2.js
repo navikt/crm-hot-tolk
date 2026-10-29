@@ -449,7 +449,10 @@ export default class Hot_interestedResourcesList_v2 extends NavigationMixin(Ligh
     }
 
     get workType() {
-        return this.interestedResource?.WorkTypeName__c || '';
+        const workType = this.interestedResource?.WorkTypeName__c || '';
+        return this.interestedResource?.ServiceAppointment__r?.HOT_IsScreenInterpreterNew__c
+            ? `${workType} (Skjermtolk)`
+            : workType;
     }
 
     get assignmentType() {
