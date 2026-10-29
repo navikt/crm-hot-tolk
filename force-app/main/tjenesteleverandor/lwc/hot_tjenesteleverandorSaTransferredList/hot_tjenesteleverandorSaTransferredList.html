@@ -125,6 +125,17 @@
                                     <strong>Bekreftelsesfrist:</strong>
                                     &nbsp;{serviceAppointment.HOT_TjenesteleverandorDeadline__c}
                                 </p>
+
+                                <div class="person-info-box">
+                                    <p lwc:if={personReservations}>
+                                        <strong>Reservasjon:</strong>&nbsp;
+                                        {personReservations}
+                                    </p>
+                                    <p lwc:if={personLanguageAndCommunicationMethods}>
+                                        <strong>Språk og kommunikasjonsmetoder:</strong>&nbsp;
+                                        {personLanguageAndCommunicationMethods}
+                                    </p>
+                                </div>
                             </template>
 
                             <!-- Serviceappointment series -->
