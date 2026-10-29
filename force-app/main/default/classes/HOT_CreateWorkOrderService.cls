@@ -98,15 +98,26 @@ public without sharing class HOT_CreateWorkOrderService {
             throw new AuraHandledException('Må velge minst en dag.');
         }
 
+        Id callerAccountId = [SELECT AccountId FROM User WHERE Id = :UserInfo.getUserId()].AccountId;
+        if (callerAccountId == null) {
+            logRecurringEditAccessDenied(requestId);
+            throw new AuraHandledException('Du har ikke tilgang til å redigere denne bestillingen.');
+        }
+
         HOT_Request__c request;
         List<WorkOrder> workOrders;
         try {
-            request = [
+            List<HOT_Request__c> authorizedRequests = [
                 SELECT Id, Status__c
                 FROM HOT_Request__c
-                WHERE Id = :requestId
+                WHERE Id = :requestId AND Orderer__c = :callerAccountId
                 FOR UPDATE
             ];
+            if (authorizedRequests.isEmpty()) {
+                logRecurringEditAccessDenied(requestId);
+                throw new AuraHandledException('Bestillingen kunne ikke gjentas. Oppdater siden og prøv igjen.');
+            }
+            request = authorizedRequests[0];
             workOrders = [
                 SELECT Id, StartDate, EndDate, HOT_ExternalWorkOrderStatus__c
                 FROM WorkOrder
@@ -174,6 +185,19 @@ public without sharing class HOT_CreateWorkOrderService {
             logger.publishSynch();
             throw new AuraHandledException('Opprettelsen av gjentagende arbeidsordre feilet. Prøv igjen.');
         }
+    }
+
+    /**
+     * Publishes an access denial event without reading the requested record.
+     */
+    private static void logRecurringEditAccessDenied(Id requestId) {
+        LoggerUtility logger = new LoggerUtility('Authorization');
+        logger.warning(
+            'Request edit authorization failed: createRecurringWorkOrdersFromEdit',
+            new HOT_Request__c(Id = requestId),
+            CRM_ApplicationDomain.Domain.HOT
+        );
+        logger.publish();
     }
 
     /**

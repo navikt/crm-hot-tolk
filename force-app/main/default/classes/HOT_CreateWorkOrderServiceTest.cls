@@ -557,9 +557,11 @@ private class HOT_CreateWorkOrderServiceTest {
 
     @IsTest
     private static void createRecurringWorkOrdersFromEditMovesExistingToFirstWeeklyOccurrence() {
+        User caller = createRecurringEditCaller();
         WorkType workType = HOT_TestDataFactory.createWorkType();
         insert workType;
         HOT_Request__c request = HOT_TestDataFactory.createRequest('Weekly edit', workType);
+        request.Orderer__c = caller.AccountId;
         insert request;
 
         Date tuesday = Date.newInstance(2026, 10, 27);
@@ -571,15 +573,17 @@ private class HOT_CreateWorkOrderServiceTest {
         insert existingWorkOrder;
 
         Test.startTest();
-        HOT_CreateWorkOrderService.createRecurringWorkOrdersFromEdit(
-            request.Id,
-            existingWorkOrder.Id,
-            startTime.getTime(),
-            endTime.getTime(),
-            'Weekly',
-            new List<String>{ 'wednesday', 'friday' },
-            Datetime.newInstanceGmt(Date.newInstance(2026, 11, 2), Time.newInstance(0, 0, 0, 0)).getTime()
-        );
+        System.runAs(caller) {
+            HOT_CreateWorkOrderService.createRecurringWorkOrdersFromEdit(
+                request.Id,
+                existingWorkOrder.Id,
+                startTime.getTime(),
+                endTime.getTime(),
+                'Weekly',
+                new List<String>{ 'wednesday', 'friday' },
+                Datetime.newInstanceGmt(Date.newInstance(2026, 11, 2), Time.newInstance(0, 0, 0, 0)).getTime()
+            );
+        }
         Test.stopTest();
 
         List<WorkOrder> workOrders = [
@@ -611,6 +615,7 @@ private class HOT_CreateWorkOrderServiceTest {
 
     @IsTest
     private static void createRecurringWorkOrdersFromEditSupportsAllFormRecurrenceTypes() {
+        User caller = createRecurringEditCaller();
         WorkType workType = HOT_TestDataFactory.createWorkType();
         insert workType;
         Date startDate = Date.newInstance(2026, 10, 26);
@@ -626,21 +631,24 @@ private class HOT_CreateWorkOrderServiceTest {
 
         for (String recurrenceType : expectedCounts.keySet()) {
             HOT_Request__c request = HOT_TestDataFactory.createRequest(recurrenceType + ' edit', workType);
+            request.Orderer__c = caller.AccountId;
             insert request;
             WorkOrder existingWorkOrder = HOT_TestDataFactory.createWorkOrder(request, workType);
             existingWorkOrder.StartDate = startTime;
             existingWorkOrder.EndDate = endTime;
             insert existingWorkOrder;
 
-            HOT_CreateWorkOrderService.createRecurringWorkOrdersFromEdit(
-                request.Id,
-                existingWorkOrder.Id,
-                startTime.getTime(),
-                endTime.getTime(),
-                recurrenceType,
-                new List<String>{ 'monday' },
-                Datetime.newInstanceGmt(recurrenceEndDate, Time.newInstance(0, 0, 0, 0)).getTime()
-            );
+            System.runAs(caller) {
+                HOT_CreateWorkOrderService.createRecurringWorkOrdersFromEdit(
+                    request.Id,
+                    existingWorkOrder.Id,
+                    startTime.getTime(),
+                    endTime.getTime(),
+                    recurrenceType,
+                    new List<String>{ 'monday' },
+                    Datetime.newInstanceGmt(recurrenceEndDate, Time.newInstance(0, 0, 0, 0)).getTime()
+                );
+            }
 
             System.assertEquals(
                 expectedCounts.get(recurrenceType),
@@ -662,9 +670,11 @@ private class HOT_CreateWorkOrderServiceTest {
 
     @IsTest
     private static void createRecurringWorkOrdersFromEditRejectsIneligibleWorkOrderWithoutChangingIt() {
+        User caller = createRecurringEditCaller();
         WorkType workType = HOT_TestDataFactory.createWorkType();
         insert workType;
         HOT_Request__c request = HOT_TestDataFactory.createRequest('Ineligible edit', workType);
+        request.Orderer__c = caller.AccountId;
         insert request;
         WorkOrder existingWorkOrder = HOT_TestDataFactory.createWorkOrder(request, workType);
         insert existingWorkOrder;
@@ -679,18 +689,20 @@ private class HOT_CreateWorkOrderServiceTest {
         .StartTime__c;
 
         Boolean threwException = false;
-        try {
-            HOT_CreateWorkOrderService.createRecurringWorkOrdersFromEdit(
-                request.Id,
-                existingWorkOrder.Id,
-                Datetime.now().addDays(1).getTime(),
-                Datetime.now().addDays(1).addHours(1).getTime(),
-                'Daily',
-                new List<String>(),
-                Datetime.now().addDays(10).getTime()
-            );
-        } catch (AuraHandledException e) {
-            threwException = true;
+        System.runAs(caller) {
+            try {
+                HOT_CreateWorkOrderService.createRecurringWorkOrdersFromEdit(
+                    request.Id,
+                    existingWorkOrder.Id,
+                    Datetime.now().addDays(1).getTime(),
+                    Datetime.now().addDays(1).addHours(1).getTime(),
+                    'Daily',
+                    new List<String>(),
+                    Datetime.now().addDays(10).getTime()
+                );
+            } catch (AuraHandledException e) {
+                threwException = true;
+            }
         }
 
         System.assertEquals(true, threwException, 'A non-open Work Order must not be changed into a series');
@@ -704,5 +716,78 @@ private class HOT_CreateWorkOrderServiceTest {
             [SELECT StartTime__c FROM HOT_Request__c WHERE Id = :request.Id].StartTime__c,
             'Rejected recurrence must preserve the request interval'
         );
+    }
+
+    /**
+     * Creates a community caller with a person account for recurrence authorization tests.
+     */
+    private static User createRecurringEditCaller() {
+        User admin = HOT_TestDataFactory.getUsers(1, 'System Administrator', true, true)[0];
+        List<User> callers;
+        System.runAs(admin) {
+            Set<Id> accountIds = new Map<Id, Account>(HOT_TestDataFactory.getPersonAccounts(2)).keySet();
+            callers = HOT_TestDataFactory.getEmployerCommunityUser(accountIds, 'Customer Community Plus User', true);
+        }
+        return [SELECT Id, AccountId FROM User WHERE Id = :callers[0].Id];
+    }
+
+    /**
+     * Verifies that knowing request and Work Order IDs does not grant edit permission.
+     */
+    @IsTest
+    private static void recurringEditRejectsUnauthorizedCallers() {
+        User caller = createRecurringEditCaller();
+        Account otherAccount = [
+            SELECT Id
+            FROM Account
+            WHERE IsPersonAccount = TRUE AND Id != :caller.AccountId
+            LIMIT 1
+        ];
+        WorkType workType = HOT_TestDataFactory.createWorkType();
+        insert workType;
+        HOT_Request__c request = HOT_TestDataFactory.createRequest('Unauthorized edit', workType);
+        request.Orderer__c = otherAccount.Id;
+        request.Account__c = caller.AccountId;
+        insert request;
+        WorkOrder workOrder = HOT_TestDataFactory.createWorkOrder(request, workType);
+        insert workOrder;
+        HOT_Request__c originalRequest = [SELECT StartTime__c, EndTime__c FROM HOT_Request__c WHERE Id = :request.Id];
+        User internalCaller = [SELECT Id FROM User WHERE Id = :UserInfo.getUserId()];
+
+        for (Integer scenario = 0; scenario < 3; scenario++) {
+            if (scenario == 1) {
+                request.Account__c = otherAccount.Id;
+                update request;
+            } else if (scenario == 2) {
+                request.Orderer__c = null;
+                update request;
+            }
+            for (User unauthorizedCaller : new List<User>{ caller, internalCaller }) {
+                System.runAs(unauthorizedCaller) {
+                    Boolean rejected = false;
+                    try {
+                        HOT_CreateWorkOrderService.createRecurringWorkOrdersFromEdit(
+                            request.Id,
+                            workOrder.Id,
+                            Datetime.now().addDays(1).getTime(),
+                            Datetime.now().addDays(1).addHours(1).getTime(),
+                            'Daily',
+                            new List<String>(),
+                            Datetime.now().addDays(3).getTime()
+                        );
+                    } catch (AuraHandledException e) {
+                        rejected = true;
+                    }
+                    System.assert(rejected, 'Only the orderer account may create a recurring series');
+                }
+            }
+        }
+        WorkOrder unchanged = [SELECT StartDate, EndDate FROM WorkOrder WHERE Id = :workOrder.Id];
+        System.assertEquals(workOrder.StartDate, unchanged.StartDate);
+        System.assertEquals(workOrder.EndDate, unchanged.EndDate);
+        System.assertEquals(1, [SELECT COUNT() FROM WorkOrder WHERE HOT_Request__c = :request.Id]);
+        HOT_Request__c unchangedRequest = [SELECT StartTime__c, EndTime__c FROM HOT_Request__c WHERE Id = :request.Id];
+        System.assertEquals(originalRequest.StartTime__c, unchangedRequest.StartTime__c);
+        System.assertEquals(originalRequest.EndTime__c, unchangedRequest.EndTime__c);
     }
 }
