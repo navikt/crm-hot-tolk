@@ -595,6 +595,11 @@
     </fieldPermissions>
     <fieldPermissions>
         <editable>false</editable>
+        <field>Person__c.HOT_LanguageAndCommunicationMethods__c</field>
+        <readable>true</readable>
+    </fieldPermissions>
+    <fieldPermissions>
+        <editable>false</editable>
         <field>Person__c.HOT_MobilePhoneOverrideReason__c</field>
         <readable>true</readable>
     </fieldPermissions>
@@ -616,6 +621,11 @@
     <fieldPermissions>
         <editable>false</editable>
         <field>Person__c.HOT_RemoteInterpreter__c</field>
+        <readable>true</readable>
+    </fieldPermissions>
+    <fieldPermissions>
+        <editable>false</editable>
+        <field>Person__c.HOT_Reservations__c</field>
         <readable>true</readable>
     </fieldPermissions>
     <fieldPermissions>
