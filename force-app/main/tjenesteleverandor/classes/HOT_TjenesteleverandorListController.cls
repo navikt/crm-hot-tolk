@@ -208,7 +208,8 @@ public with sharing class HOT_TjenesteleverandorListController {
                 Name,
                 HOT_InterpreterType__c,
                 IsActive,
-                HOT_ServiceTerritory__r.Name
+                HOT_ServiceTerritory__r.Name,
+                HOT_ServiceTerritory__r.HOT_DeveloperName__c
             FROM ServiceResource
             WHERE HOT_IsFreelanceInterpreter__c = TRUE
             ORDER BY IsActive DESC
