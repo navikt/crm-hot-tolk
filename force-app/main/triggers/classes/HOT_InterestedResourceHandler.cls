@@ -2,13 +2,13 @@ public without sharing class HOT_InterestedResourceHandler extends MyTriggers {
     public override void onAfterInsert() {
         updateInterestedResourceNamesOnServiceAppointments(records, null, false);
         updateInterestedResourceStatus(records);
-        notifyOnWantedSR(records);
+        notifyOnWantedSR(records, null);
     }
 
     public override void onAfterUpdate(Map<Id, sObject> triggerOldMap) {
         updateInterestedResourceNamesOnServiceAppointments(records, triggerOldMap, true);
         updateThreads(records, triggerOldMap, true);
-        notifyOnWantedSR(records);
+        notifyOnWantedSR(records, triggerOldMap);
     }
     public void updateThreads(List<SObject> records, Map<Id, sObject> triggerOldMap, Boolean isUpdate) {
         List<HOT_InterestedResource__c> interestedResources = new List<HOT_InterestedResource__c>();
@@ -165,10 +165,14 @@ public without sharing class HOT_InterestedResourceHandler extends MyTriggers {
             update recordsToUpdate;
         }
     }
-    public void notifyOnWantedSR(List<SObject> records) {
+    public void notifyOnWantedSR(List<SObject> records, Map<Id, SObject> triggerOldMap) {
         List<Id> wantedInterestedResourceIds = new List<Id>();
         for (HOT_InterestedResource__c interestedResource : (List<HOT_InterestedResource__c>) records) {
-            if (interestedResource.Status__c == 'Wanted') {
+            if (
+                interestedResource.Status__c == 'Wanted' &&
+                (triggerOldMap == null ||
+                triggerOldMap.get(interestedResource.Id).get('Status__c') != 'Wanted')
+            ) {
                 wantedInterestedResourceIds.add(interestedResource.Id);
             }
         }
