@@ -9,6 +9,15 @@ private class HOT_InterpreterWantedChoiceTest {
             insert otherUser;
             PermissionSet permissions = [SELECT Id FROM PermissionSet WHERE Name = 'HOT_Tolk_Formidler'];
             insert new PermissionSetAssignment(AssigneeId = otherUser.Id, PermissionSetId = permissions.Id);
+            if (
+                [
+                    SELECT COUNT()
+                    FROM PermissionSetAssignment
+                    WHERE AssigneeId = :UserInfo.getUserId() AND PermissionSetId = :permissions.Id
+                ] == 0
+            ) {
+                insert new PermissionSetAssignment(AssigneeId = UserInfo.getUserId(), PermissionSetId = permissions.Id);
+            }
         }
         ServiceResource resource = HOT_TestDataFactory.createServiceResource(UserInfo.getUserId());
         insert resource;
