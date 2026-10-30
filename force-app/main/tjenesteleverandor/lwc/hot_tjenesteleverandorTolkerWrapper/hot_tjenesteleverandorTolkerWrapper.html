@@ -1,0 +1,56 @@
+<template>
+    <template lwc:if={hasResult}>
+        <div class="page-background">
+            <div class="list">
+                <div class="header-row">
+                    <h1 class="header-title">Tolker</h1>
+                </div>
+                <div class="search-bar">
+                    <div class="search-field">
+                        <svg class="search-icon" viewBox="3.25 3.25 18.52 18.52" focusable="false" aria-hidden="true">
+                            <image href={searchIcon} width="24" height="24"></image>
+                        </svg>
+                        <input class="search-input" oninput={handleSearch} type="search" aria-label="Søk på navn" />
+                    </div>
+                    <div class="filter-anchor">
+                        <c-list-filters-button
+                            header="Filtrer søket"
+                            filters={filters}
+                            onapplyfilter={applyFilter}
+                            ongetfilteredrecordslength={sendFilteredRecordsLength}
+                        ></c-list-filters-button>
+                    </div>
+                </div>
+                <div class="tab-content">
+                    <template lwc:if={hasNoSearchResult}>
+                        <p style="font-size: 20px; margin-left: 0.25rem">
+                            Ingen resultater for søket og valgte filtre.
+                        </p>
+                    </template>
+                    <template lwc:else>
+                        <c-hot_freelance-common-table
+                            records={tolkerList}
+                            columns={columns}
+                            onrowclick={goToRecordDetails}
+                        ></c-hot_freelance-common-table>
+                    </template>
+                </div>
+            </div>
+        </div>
+    </template>
+    <template lwc:if={hasError}>
+        <div class="error-message">
+            <p>{errorMessage}</p>
+        </div>
+    </template>
+    <template lwc:if={hasNoResult}>
+        <div class="no-results">
+            <p>Ingen tolker funnet.</p>
+        </div>
+    </template>
+    <template lwc:if={dataLoader}>
+        <div class="loader-container">
+            <c-hot_loader size="3xlarge"></c-hot_loader>
+        </div>
+    </template>
+</template>
