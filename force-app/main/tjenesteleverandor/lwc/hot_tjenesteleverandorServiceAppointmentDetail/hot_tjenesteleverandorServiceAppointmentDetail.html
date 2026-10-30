@@ -272,6 +272,19 @@
                             </div>
                         </dl>
                     </section>
+                    <section class="detail-card compact-card" aria-labelledby="person-information-heading">
+                        <h2 id="person-information-heading" class="card-heading">Informasjon</h2>
+                        <dl class="data-list">
+                            <div class="data-row">
+                                <dt>Reservasjon</dt>
+                                <dd class="multiline-value">{personReservations}</dd>
+                            </div>
+                            <div class="data-row">
+                                <dt>Språk og kommunikasjonsmetoder</dt>
+                                <dd class="multiline-value">{personLanguageAndCommunicationMethods}</dd>
+                            </div>
+                        </dl>
+                    </section>
                     <template lwc:if={showProviderResourceSections}>
                         <section class="detail-card" aria-labelledby="wanted-service-resource-heading">
                             <h2 id="wanted-service-resource-heading" class="card-heading">Registrer ønsket tolk</h2>
