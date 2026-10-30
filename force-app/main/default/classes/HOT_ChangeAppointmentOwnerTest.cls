@@ -9,6 +9,19 @@ private class HOT_ChangeAppointmentOwnerTest {
                 WHERE DeveloperName = 'HOT_group_47000_formidler' AND Type = 'Regular'
             ];
             insert new GroupMember(GroupId = formidlerGroup.Id, UserOrGroupId = UserInfo.getUserId());
+            List<Group> queues = new List<Group>{
+                new Group(Name = 'Owner Change Test Queue', DeveloperName = 'OwnerChangeTestQueue', Type = 'Queue'),
+                new Group(
+                    Name = 'Owner Change Test No Request',
+                    DeveloperName = 'OwnerChangeTestNoRequest',
+                    Type = 'Queue'
+                )
+            };
+            insert queues;
+            insert new List<QueueSobject>{
+                new QueueSobject(QueueId = queues[0].Id, SobjectType = 'ServiceAppointment'),
+                new QueueSobject(QueueId = queues[1].Id, SobjectType = 'ServiceAppointment')
+            };
         }
         OperatingHours hours = HOT_TestDataFactory.createOperatingHours();
         insert hours;
@@ -109,7 +122,7 @@ private class HOT_ChangeAppointmentOwnerTest {
         List<WorkOrderLineItem> beforeLines = [SELECT Id, ServiceTerritoryId FROM WorkOrderLineItem ORDER BY Id];
         Set<Id> selectedIds = new Set<Id>{ beforeAppointments[0].Id, beforeAppointments[1].Id };
         HOT_ChangeAppointmentOwner.Input input = new HOT_ChangeAppointmentOwner.Input();
-        input.ownerQueueName = 'nav tolketjeneste oslo';
+        input.ownerQueueName = 'owner change test queue';
         input.serviceAppointmentIds = new List<Id>{
             beforeAppointments[0].Id,
             beforeAppointments[0].Id,
@@ -120,7 +133,7 @@ private class HOT_ChangeAppointmentOwnerTest {
         HOT_ChangeAppointmentOwner.changeOwner(new List<HOT_ChangeAppointmentOwner.Input>{ input });
         Test.stopTest();
 
-        Id ownerId = [SELECT Id FROM Group WHERE Type = 'Queue' AND DeveloperName = 'queue_4703'].Id;
+        Id ownerId = [SELECT Id FROM Group WHERE Type = 'Queue' AND DeveloperName = 'OwnerChangeTestQueue'].Id;
         Map<Id, ServiceAppointment> afterAppointments = new Map<Id, ServiceAppointment>(
             [SELECT Id, OwnerId, ServiceTerritoryId FROM ServiceAppointment]
         );
@@ -148,14 +161,14 @@ private class HOT_ChangeAppointmentOwnerTest {
         );
         HOT_ChangeAppointmentOwner.Input input = new HOT_ChangeAppointmentOwner.Input();
         input.serviceAppointmentIds = new List<Id>{ appointment.Id };
-        input.ownerQueueName = 'NAV Akuttvakt Tolk';
+        input.ownerQueueName = 'Owner Change Test No Request';
 
         Test.startTest();
         HOT_ChangeAppointmentOwner.changeOwner(new List<HOT_ChangeAppointmentOwner.Input>{ input });
         Test.stopTest();
 
         System.assertEquals(
-            [SELECT Id FROM Group WHERE Type = 'Queue' AND DeveloperName = 'HOT_Tolk_Akuttvakt'].Id,
+            [SELECT Id FROM Group WHERE Type = 'Queue' AND DeveloperName = 'OwnerChangeTestNoRequest'].Id,
             [SELECT OwnerId FROM ServiceAppointment WHERE Id = :appointment.Id].OwnerId
         );
     }
@@ -164,7 +177,7 @@ private class HOT_ChangeAppointmentOwnerTest {
     static void rejectsEmptySelection() {
         HOT_ChangeAppointmentOwner.Input input = new HOT_ChangeAppointmentOwner.Input();
         input.serviceAppointmentIds = new List<Id>();
-        input.ownerQueueName = 'NAV Akuttvakt Tolk';
+        input.ownerQueueName = 'Owner Change Test Queue';
         Test.startTest();
         try {
             HOT_ChangeAppointmentOwner.changeOwner(new List<HOT_ChangeAppointmentOwner.Input>{ input });
