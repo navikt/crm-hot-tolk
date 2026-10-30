@@ -9,6 +9,7 @@ import {
     restrictTheNumberOfDays,
     chosenDaysWithinPeriod
 } from './hot_recurringTimeInput_validationRules';
+import getRecurringDateRange from './recurringDateRange';
 
 export default class hot_recurringTimeInput_v2 extends LightningElement {
     @track times = [];
@@ -45,6 +46,46 @@ export default class hot_recurringTimeInput_v2 extends LightningElement {
     // If there are more than 1 time entries in edit mode, hide the advanced time options
     get hideGjentagende() {
         return this.hideAdvancedTimesInEditMode === true;
+    }
+
+    /**
+     * Shows date ordering errors as soon as both recurrence dates are selected.
+     */
+    get recurringDateError() {
+        if (!this.isAdvancedTimes || !this.times[0]?.date || !this.repeatingEndDateString) {
+            return '';
+        }
+        return startDateBeforeRecurringEndDate(this.repeatingEndDate, this.times[0].startTime);
+    }
+
+    get recurringBoundaryWarning() {
+        if (
+            !this.isAdvancedTimes ||
+            !this.showWeekDays ||
+            !this.times[0]?.date ||
+            !this.repeatingEndDateString ||
+            this.recurringDateError
+        ) {
+            return '';
+        }
+
+        const { firstDate, lastDate } = getRecurringDateRange(
+            this.times[0].date,
+            this.repeatingEndDateString,
+            this.repeatingOptionChosen,
+            this.chosenDays
+        );
+        if (!firstDate || !lastDate) {
+            return '';
+        }
+
+        if (firstDate === this.times[0].date && lastDate === this.repeatingEndDateString) {
+            return '';
+        }
+
+        const formattedFirstDate = firstDate.split('-').reverse().join('.');
+        const formattedLastDate = lastDate.split('-').reverse().join('.');
+        return `Basert på ukedagene du har valgt, blir første dato i serien ${formattedFirstDate} og siste dato ${formattedLastDate}.`;
     }
 
     handleDateChange(event) {
@@ -323,6 +364,19 @@ export default class hot_recurringTimeInput_v2 extends LightningElement {
                 this.chosenDays
             );
             hasErrors += errorMessage !== '';
+        }
+        if (
+            errorMessage === '' &&
+            this.showWeekDays &&
+            !getRecurringDateRange(
+                this.times[0]?.date,
+                this.repeatingEndDateString,
+                this.repeatingOptionChosen,
+                this.chosenDays
+            ).firstDate
+        ) {
+            errorMessage = 'Valgte gjentagelsesdager finnes ikke i perioden.';
+            hasErrors += 1;
         }
         recurringEndDateElement.sendErrorMessage(errorMessage);
         return hasErrors;

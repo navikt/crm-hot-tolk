@@ -48,6 +48,263 @@ public without sharing class HOT_CreateWorkOrderService {
         createWorkOrders(new List<HOT_CreateWorkOrderService>{ createWorkOrderService });
     }
 
+    /**
+     * Converts the only open Work Order on an open request into the first occurrence of a recurring series.
+     */
+    @AuraEnabled
+    public static void createRecurringWorkOrdersFromEdit(
+        Id requestId,
+        Id workOrderId,
+        Long startTime,
+        Long endTime,
+        String recurringType,
+        List<String> recurringDays,
+        Long recurringEndDate,
+        Map<String, Object> requestChanges
+    ) {
+        if (
+            requestId == null ||
+            workOrderId == null ||
+            startTime == null ||
+            endTime == null ||
+            recurringEndDate == null
+        ) {
+            throw new AuraHandledException('Bestillingen kunne ikke gjentas. Kontroller dato og tid.');
+        }
+
+        Datetime requestedStart = Datetime.newInstance(startTime);
+        Datetime requestedEnd = Datetime.newInstance(endTime);
+        Date recurrenceEndDate = Datetime.newInstance(recurringEndDate).dateGmt();
+
+        if (requestedEnd <= requestedStart) {
+            throw new AuraHandledException('Slutt tid må være etter start tid.');
+        }
+        if (recurrenceEndDate <= requestedStart.date()) {
+            throw new AuraHandledException('Sluttdato må være etter startdato.');
+        }
+
+        Set<String> selectedDays = new Set<String>();
+        if (recurringDays != null) {
+            selectedDays.addAll(recurringDays);
+        }
+        if (
+            recurringType != 'Daily' &&
+            recurringType != 'Weekly' &&
+            recurringType != 'Biweekly' &&
+            recurringType != 'Every4Weeks'
+        ) {
+            throw new AuraHandledException('Ugyldig gjentagelsestype.');
+        }
+        if (recurringType != 'Daily' && selectedDays.isEmpty()) {
+            throw new AuraHandledException('Må velge minst en dag.');
+        }
+
+        Id callerAccountId = [SELECT AccountId FROM User WHERE Id = :UserInfo.getUserId()].AccountId;
+        if (callerAccountId == null) {
+            logRecurringEditAccessDenied(requestId);
+            throw new AuraHandledException('Du har ikke tilgang til å redigere denne bestillingen.');
+        }
+
+        HOT_Request__c request;
+        List<WorkOrder> workOrders;
+        try {
+            List<HOT_Request__c> authorizedRequests = [
+                SELECT Id, Status__c
+                FROM HOT_Request__c
+                WHERE Id = :requestId AND Orderer__c = :callerAccountId
+                FOR UPDATE
+            ];
+            if (authorizedRequests.isEmpty()) {
+                logRecurringEditAccessDenied(requestId);
+                throw new AuraHandledException('Bestillingen kunne ikke gjentas. Oppdater siden og prøv igjen.');
+            }
+            request = authorizedRequests[0];
+            workOrders = [
+                SELECT Id, StartDate, EndDate, HOT_ExternalWorkOrderStatus__c
+                FROM WorkOrder
+                WHERE HOT_Request__c = :requestId
+                FOR UPDATE
+            ];
+        } catch (QueryException e) {
+            throw new AuraHandledException('Bestillingen kunne ikke gjentas. Oppdater siden og prøv igjen.');
+        }
+
+        if (
+            request.Status__c != 'Åpen' ||
+            workOrders.size() != 1 ||
+            workOrders[0].Id != workOrderId ||
+            workOrders[0].HOT_ExternalWorkOrderStatus__c != 'Åpen'
+        ) {
+            throw new AuraHandledException(
+                'Bestillingen kan ikke gjentas fordi status eller tidspunkt har blitt endret. Oppdater siden og prøv igjen.'
+            );
+        }
+
+        List<Integer> occurrenceOffsets = getRecurringDayOffsets(
+            requestedStart.date(),
+            recurrenceEndDate,
+            recurringType,
+            selectedDays
+        );
+        if (occurrenceOffsets.isEmpty()) {
+            throw new AuraHandledException('Valgte gjentagelsesdager finnes ikke i perioden.');
+        }
+        if (occurrenceOffsets.size() > 200) {
+            throw new AuraHandledException('Kan ikke opprette mer enn 200 arbeidsordre av gangen.');
+        }
+
+        TimeZone tz = UserInfo.getTimeZone();
+        List<WorkOrder> additionalWorkOrders = new List<WorkOrder>();
+        for (Integer i = 0; i < occurrenceOffsets.size(); i++) {
+            Integer offset = occurrenceOffsets[i];
+            Datetime occurrenceStart = requestedStart.addDays(offset);
+            Datetime occurrenceEnd = requestedEnd.addDays(offset);
+            Integer timezoneOffset = tz.getOffset(occurrenceStart) - tz.getOffset(requestedStart);
+            occurrenceStart = occurrenceStart.addHours(-timezoneOffset / 3600000);
+            occurrenceEnd = occurrenceEnd.addHours(-timezoneOffset / 3600000);
+
+            if (i == 0) {
+                workOrders[0].StartDate = occurrenceStart;
+                workOrders[0].EndDate = occurrenceEnd;
+            } else {
+                additionalWorkOrders.add(
+                    new WorkOrder(HOT_Request__c = requestId, StartDate = occurrenceStart, EndDate = occurrenceEnd)
+                );
+            }
+        }
+
+        Savepoint savepoint = Database.setSavepoint();
+        try {
+            if (requestChanges != null) {
+                HOT_Request__c editedRequest = getRecurringRequestChanges(requestId, requestChanges);
+                update editedRequest;
+            }
+            update workOrders[0];
+            if (!additionalWorkOrders.isEmpty()) {
+                insert additionalWorkOrders;
+            }
+            HOT_Request__c savedRequest = [
+                SELECT StartTime__c, EndTime__c, NumberOfWorkOrders__c
+                FROM HOT_Request__c
+                WHERE Id = :requestId
+            ];
+            if (
+                savedRequest.StartTime__c != workOrders[0].StartDate ||
+                savedRequest.EndTime__c != workOrders[0].EndDate ||
+                savedRequest.NumberOfWorkOrders__c != occurrenceOffsets.size()
+            ) {
+                throw new AuraHandledException('Bestillingen ble ikke oppdatert med alle tidspunktene.');
+            }
+        } catch (Exception e) {
+            Database.rollback(savepoint);
+            LoggerUtility logger = new LoggerUtility();
+            logger.exception(e, request, CRM_ApplicationDomain.Domain.HOT);
+            logger.publishSynch();
+            throw new AuraHandledException('Opprettelsen av gjentagende arbeidsordre feilet. Prøv igjen.');
+        }
+    }
+
+    /**
+     * Limits request edits to form fields and enforces the caller's object and field permissions.
+     */
+    private static HOT_Request__c getRecurringRequestChanges(Id requestId, Map<String, Object> changes) {
+        if (changes.get('Id') != null && String.valueOf(changes.get('Id')) != String.valueOf(requestId)) {
+            throw new AuraHandledException('Ugyldig bestilling.');
+        }
+        if (!Schema.sObjectType.HOT_Request__c.isUpdateable()) {
+            throw new AuraHandledException('Du har ikke tilgang til å redigere denne bestillingen.');
+        }
+        Set<String> editableFields = new Set<String>{
+            'Subject__c',
+            'MeetingStreet__c',
+            'MeetingPostalCity__c',
+            'MeetingPostalCode__c',
+            'InterpretationStreet__c',
+            'InterpretationPostalCode__c',
+            'InterpretationPostalCity__c',
+            'Description__c',
+            'IsFileConsent__c',
+            'IsOrdererWantStatusUpdateOnSMS__c',
+            'IsScreenInterpreter__c',
+            'UserPreferredInterpreter__c',
+            'AssignmentType__c',
+            'UserInterpretationMethod__c',
+            'InterpretationMethodType__c',
+            'OrdererEmail__c',
+            'OrdererPhone__c',
+            'IsNotNotifyAccount__c',
+            'UserName__c',
+            'UserPersonNumber__c',
+            'UserPhone__c',
+            'OrganizationNumber__c',
+            'InvoiceReference__c',
+            'IsOtherEconomicProvicer__c',
+            'AdditionalInvoiceText__c'
+        };
+        Map<String, Schema.SObjectField> fields = Schema.sObjectType.HOT_Request__c.fields.getMap();
+        HOT_Request__c updateRecord = new HOT_Request__c(Id = requestId);
+        for (String fieldName : changes.keySet()) {
+            if (editableFields.contains(fieldName)) {
+                if (!fields.get(fieldName).getDescribe().isUpdateable()) {
+                    throw new AuraHandledException('Du har ikke tilgang til å endre feltet ' + fieldName + '.');
+                }
+                updateRecord.put(fieldName, changes.get(fieldName));
+            }
+        }
+        return updateRecord;
+    }
+
+    /**
+     * Publishes an access denial event without reading the requested record.
+     */
+    private static void logRecurringEditAccessDenied(Id requestId) {
+        LoggerUtility logger = new LoggerUtility('Authorization');
+        logger.warning(
+            'Request edit authorization failed: createRecurringWorkOrdersFromEdit',
+            new HOT_Request__c(Id = requestId),
+            CRM_ApplicationDomain.Domain.HOT
+        );
+        logger.publish();
+    }
+
+    /**
+     * Returns offsets for recurrence dates using the same week-skipping rules as community series creation.
+     */
+    private static List<Integer> getRecurringDayOffsets(
+        Date startDate,
+        Date endDate,
+        String recurringType,
+        Set<String> selectedDays
+    ) {
+        List<Integer> occurrenceOffsets = new List<Integer>();
+        Integer numberOfDays = startDate.daysBetween(endDate);
+        List<String> dayNames = new List<String>{
+            'sunday',
+            'monday',
+            'tuesday',
+            'wednesday',
+            'thursday',
+            'friday',
+            'saturday'
+        };
+        for (Integer offset = 0; offset <= numberOfDays; offset++) {
+            Date occurrenceDate = startDate.addDays(offset);
+            Integer dayIndex = Math.mod(Date.newInstance(1900, 1, 7).daysBetween(occurrenceDate), 7);
+            String dayName = dayNames[dayIndex];
+
+            if (recurringType == 'Daily' || selectedDays.contains(dayName)) {
+                occurrenceOffsets.add(offset);
+            }
+
+            if (recurringType == 'Biweekly' && dayIndex == 0) {
+                offset += 7;
+            } else if (recurringType == 'Every4Weeks' && dayIndex == 0) {
+                offset += 21;
+            }
+        }
+        return occurrenceOffsets;
+    }
+
     @InvocableMethod
     public static List<String> createWorkOrders(List<HOT_CreateWorkOrderService> inputVariables) {
         HOT_CreateWorkOrderService input = inputVariables[0];

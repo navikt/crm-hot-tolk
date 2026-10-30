@@ -1,10 +1,5 @@
 <template>
-    <section
-        class="bestilling-info-skjema"
-        aria-labelledby="header"
-        ondrop={uploadFilesDropHandler}
-        ondragover={dragOverHandler}
-    >
+    <section class="bestilling-info-skjema" aria-labelledby="header">
         <h2 id="header" class="header">Informasjon om behov for tolk</h2>
         <br />
         <c-input
@@ -20,7 +15,7 @@
         <c-hot_recurring-time-input_v2
             request-ids={requestIds}
             refresh-token={refreshToken}
-            hide-advanced-times-in-edit-mode={isEditMode}
+            hide-advanced-times-in-edit-mode={hideRecurringInEditMode}
         ></c-hot_recurring-time-input_v2>
         <br />
         <c-radiobuttons

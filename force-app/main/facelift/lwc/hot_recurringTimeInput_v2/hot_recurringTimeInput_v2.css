@@ -4,6 +4,25 @@
     flex-direction: row;
 }
 
+.recurring-boundary-warning,
+.recurring-date-error {
+    margin-top: 1rem;
+    padding: 0.75rem 1rem;
+    border: 1px solid #c9ddba;
+    border-radius: 0.25rem;
+    background-color: #f1f7eb;
+    color: #3e3832;
+    font-size: 1.125rem;
+    font-weight: 400;
+    line-height: 1.5;
+}
+
+.recurring-date-error {
+    border-color: #e3b8bd;
+    background-color: #fbeef0;
+    color: #8b2433;
+}
+
 @media only screen and (max-device-width: 480px) {
     .listClass {
         align-items: start;
