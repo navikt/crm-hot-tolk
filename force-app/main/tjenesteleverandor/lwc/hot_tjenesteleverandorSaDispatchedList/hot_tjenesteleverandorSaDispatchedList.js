@@ -35,11 +35,45 @@ export default class Hot_tjenesteleverandorSaDispatchedList extends NavigationMi
     showServiceAppointmentDetailsModal = false;
     serviceAppointment;
     selectedRecordId;
+    pageScrollLock;
 
     renderedCallback() {
+        this.syncModalState();
+    }
+
+    syncModalState() {
+        if (this.showTransferModal || this.showServiceAppointmentDetailsModal) {
+            if (!this.pageScrollLock) {
+                const element = document.scrollingElement;
+                this.pageScrollLock = {
+                    element,
+                    overflow: element.style.getPropertyValue('overflow'),
+                    priority: element.style.getPropertyPriority('overflow')
+                };
+                element.style.setProperty('overflow', 'hidden', 'important');
+            }
+        } else {
+            this.unlockPageScroll();
+        }
         const transferDialog = this.template.querySelector('[data-id="transfer-dialog"]');
         if (this.showTransferModal && transferDialog && !transferDialog.open) {
             transferDialog.showModal();
+        }
+    }
+
+    disconnectedCallback() {
+        this.unlockPageScroll();
+    }
+
+    unlockPageScroll() {
+        if (this.pageScrollLock) {
+            const { element, overflow, priority } = this.pageScrollLock;
+            if (overflow) {
+                element.style.setProperty('overflow', overflow, priority);
+            } else {
+                element.style.removeProperty('overflow');
+            }
+            this.pageScrollLock = undefined;
         }
     }
 

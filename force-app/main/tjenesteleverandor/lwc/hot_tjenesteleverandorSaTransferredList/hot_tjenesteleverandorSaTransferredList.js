@@ -81,6 +81,10 @@ export default class Hot_tjenesteleverandorSaTransferredList extends NavigationM
     }
 
     renderedCallback() {
+        this.syncModalState();
+    }
+
+    syncModalState() {
         if (this.showServiceAppointmentDetailsModal) {
             if (!this.pageScrollLock) {
                 const element = document.scrollingElement;

@@ -26,6 +26,43 @@ export default class Hot_tjenesteleverandorSaFinishedList extends NavigationMixi
     showServiceAppointmentDetailsModal = false;
     serviceAppointment;
     selectedRecordId;
+    pageScrollLock;
+
+    renderedCallback() {
+        this.syncModalState();
+    }
+
+    syncModalState() {
+        if (this.showServiceAppointmentDetailsModal) {
+            if (!this.pageScrollLock) {
+                const element = document.scrollingElement;
+                this.pageScrollLock = {
+                    element,
+                    overflow: element.style.getPropertyValue('overflow'),
+                    priority: element.style.getPropertyPriority('overflow')
+                };
+                element.style.setProperty('overflow', 'hidden', 'important');
+            }
+        } else {
+            this.unlockPageScroll();
+        }
+    }
+
+    disconnectedCallback() {
+        this.unlockPageScroll();
+    }
+
+    unlockPageScroll() {
+        if (this.pageScrollLock) {
+            const { element, overflow, priority } = this.pageScrollLock;
+            if (overflow) {
+                element.style.setProperty('overflow', overflow, priority);
+            } else {
+                element.style.removeProperty('overflow');
+            }
+            this.pageScrollLock = undefined;
+        }
+    }
 
     datetimeFields = [
         { name: 'StartAndEndDate', type: 'datetimeinterval', start: 'EarliestStartTime', end: 'DueDate' },

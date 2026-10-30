@@ -79,6 +79,10 @@ export default class Hot_tjenesteleverandorSaAcceptedList extends NavigationMixi
     }
 
     renderedCallback() {
+        this.syncModalState();
+    }
+
+    syncModalState() {
         if (this.showReleaseModal || this.showTransferModal || this.showServiceAppointmentDetailsModal) {
             if (!this.pageScrollLock) {
                 const element = document.scrollingElement;
