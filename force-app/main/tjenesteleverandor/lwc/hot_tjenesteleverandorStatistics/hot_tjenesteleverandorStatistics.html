@@ -1,0 +1,10 @@
+<template>
+    <div class="statistics">
+        <template for:each={statistics} for:item="statistic">
+            <div key={statistic.id} class="statistic-card">
+                <div class="statistic-value">{statistic.displayValue}</div>
+                <div class="statistic-label">{statistic.label}</div>
+            </div>
+        </template>
+    </div>
+</template>
