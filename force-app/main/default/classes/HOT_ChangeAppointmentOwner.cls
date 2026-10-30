@@ -1,16 +1,40 @@
 public with sharing class HOT_ChangeAppointmentOwner {
     public class Input {
-        @InvocableVariable(required=true)
+        @InvocableVariable
         public List<Id> serviceAppointmentIds;
-        @InvocableVariable(required=true)
+        @InvocableVariable
         public String ownerQueueName;
+        @InvocableVariable
+        public Boolean checkAccessOnly;
+    }
+
+    public class Result {
+        @InvocableVariable
+        public Boolean hasAccess;
     }
 
     @InvocableMethod(label='Endre eier på markerte oppdrag')
-    public static void changeOwner(List<Input> inputs) {
+    public static List<Result> changeOwner(List<Input> inputs) {
+        Boolean hasAccess = isFormidler();
+        List<Result> results = new List<Result>();
+        List<Input> updates = new List<Input>();
+        for (Input input : inputs) {
+            Result result = new Result();
+            result.hasAccess = hasAccess;
+            results.add(result);
+            if (input.checkAccessOnly != true) {
+                updates.add(input);
+            }
+        }
+        if (updates.isEmpty()) {
+            return results;
+        }
         Savepoint savepoint = Database.setSavepoint();
         try {
-            updateAppointments(inputs);
+            if (!hasAccess) {
+                throw new OwnerChangeException('Dette er kun en formidler funksjon!');
+            }
+            updateAppointments(updates);
         } catch (Exception error) {
             Database.rollback(savepoint);
             LoggerUtility logger = new LoggerUtility();
@@ -18,6 +42,35 @@ public with sharing class HOT_ChangeAppointmentOwner {
             logger.publishSynch();
             throw error;
         }
+        return results;
+    }
+
+    private static Boolean isFormidler() {
+        List<Group> groups = [
+            SELECT Id
+            FROM Group
+            WHERE DeveloperName = 'HOT_group_47000_formidler' AND Type = 'Regular'
+        ];
+        if (groups.isEmpty()) {
+            return false;
+        }
+        Id targetGroupId = groups[0].Id;
+        Set<Id> pendingIds = new Set<Id>{ UserInfo.getUserId() };
+        Set<Id> visitedIds = new Set<Id>();
+        while (!pendingIds.isEmpty()) {
+            visitedIds.addAll(pendingIds);
+            Set<Id> parentIds = new Set<Id>();
+            for (GroupMember membership : [SELECT GroupId FROM GroupMember WHERE UserOrGroupId IN :pendingIds]) {
+                if (membership.GroupId == targetGroupId) {
+                    return true;
+                }
+                if (!visitedIds.contains(membership.GroupId)) {
+                    parentIds.add(membership.GroupId);
+                }
+            }
+            pendingIds = parentIds;
+        }
+        return false;
     }
 
     private static void updateAppointments(List<Input> inputs) {

@@ -3,8 +3,12 @@ private class HOT_ChangeAppointmentOwnerTest {
     @TestSetup
     static void setup() {
         System.runAs(new User(Id = UserInfo.getUserId())) {
-            Group osloQueue = TestDataFactory.getQueue('Nav Tolketjeneste Oslo', 'queue_4703', 'Thread__c');
-            insert new QueueSobject(QueueId = osloQueue.Id, SobjectType = 'ServiceAppointment');
+            Group formidlerGroup = [
+                SELECT Id
+                FROM Group
+                WHERE DeveloperName = 'HOT_group_47000_formidler' AND Type = 'Regular'
+            ];
+            insert new GroupMember(GroupId = formidlerGroup.Id, UserOrGroupId = UserInfo.getUserId());
         }
         OperatingHours hours = HOT_TestDataFactory.createOperatingHours();
         insert hours;
@@ -18,6 +22,78 @@ private class HOT_ChangeAppointmentOwnerTest {
         insert request;
         request.Status__c = 'Godkjent';
         update request;
+    }
+
+    @IsTest
+    static void checksAccessWithoutSelection() {
+        HOT_ChangeAppointmentOwner.Input input = new HOT_ChangeAppointmentOwner.Input();
+        input.checkAccessOnly = true;
+        Test.startTest();
+        List<HOT_ChangeAppointmentOwner.Result> results = HOT_ChangeAppointmentOwner.changeOwner(
+            new List<HOT_ChangeAppointmentOwner.Input>{ input, input }
+        );
+        Test.stopTest();
+        System.assertEquals(2, results.size());
+        System.assertEquals(true, results[0].hasAccess);
+        System.assertEquals(true, results[1].hasAccess);
+    }
+
+    @IsTest
+    static void acceptsNestedMembership() {
+        System.runAs(new User(Id = UserInfo.getUserId())) {
+            Group formidlerGroup = [
+                SELECT Id
+                FROM Group
+                WHERE DeveloperName = 'HOT_group_47000_formidler' AND Type = 'Regular'
+            ];
+            delete [
+                SELECT Id
+                FROM GroupMember
+                WHERE GroupId = :formidlerGroup.Id AND UserOrGroupId = :UserInfo.getUserId()
+            ];
+            Group child = new Group(Name = 'Owner access child', DeveloperName = 'OwnerAccessChild', Type = 'Regular');
+            Group middle = new Group(
+                Name = 'Owner access middle',
+                DeveloperName = 'OwnerAccessMiddle',
+                Type = 'Regular'
+            );
+            insert new List<Group>{ child, middle };
+            insert new List<GroupMember>{
+                new GroupMember(GroupId = child.Id, UserOrGroupId = UserInfo.getUserId()),
+                new GroupMember(GroupId = middle.Id, UserOrGroupId = child.Id),
+                new GroupMember(GroupId = formidlerGroup.Id, UserOrGroupId = middle.Id)
+            };
+        }
+        HOT_ChangeAppointmentOwner.Input input = new HOT_ChangeAppointmentOwner.Input();
+        input.checkAccessOnly = true;
+        Test.startTest();
+        System.assertEquals(
+            true,
+            HOT_ChangeAppointmentOwner.changeOwner(new List<HOT_ChangeAppointmentOwner.Input>{ input })[0].hasAccess
+        );
+        Test.stopTest();
+    }
+
+    @IsTest
+    static void rejectsNonMemberBeforeSelection() {
+        System.runAs(new User(Id = UserInfo.getUserId())) {
+            delete [SELECT Id FROM GroupMember WHERE UserOrGroupId = :UserInfo.getUserId()];
+        }
+        HOT_ChangeAppointmentOwner.Input input = new HOT_ChangeAppointmentOwner.Input();
+        input.checkAccessOnly = true;
+        Test.startTest();
+        System.assertEquals(
+            false,
+            HOT_ChangeAppointmentOwner.changeOwner(new List<HOT_ChangeAppointmentOwner.Input>{ input })[0].hasAccess
+        );
+        input.checkAccessOnly = false;
+        try {
+            HOT_ChangeAppointmentOwner.changeOwner(new List<HOT_ChangeAppointmentOwner.Input>{ input });
+            System.assert(false, 'Nonmembers must not change owners');
+        } catch (Exception error) {
+            System.assertEquals('Dette er kun en formidler funksjon!', error.getMessage());
+        }
+        Test.stopTest();
     }
 
     @IsTest

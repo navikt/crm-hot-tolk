@@ -1,6 +1,26 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <Flow xmlns="http://soap.sforce.com/2006/04/metadata">
     <actionCalls>
+        <name>CheckFormidlerAccess</name>
+        <label>Sjekk formidlertilgang</label>
+        <locationX>0</locationX>
+        <locationY>0</locationY>
+        <actionName>HOT_ChangeAppointmentOwner</actionName>
+        <actionType>apex</actionType>
+        <connector><targetReference>CheckAccess</targetReference></connector>
+        <faultConnector><targetReference>OwnerChangeFailed</targetReference></faultConnector>
+        <flowTransactionModel>CurrentTransaction</flowTransactionModel>
+        <inputParameters>
+            <name>checkAccessOnly</name>
+            <value><booleanValue>true</booleanValue></value>
+        </inputParameters>
+        <nameSegment>HOT_ChangeAppointmentOwner</nameSegment>
+        <outputParameters>
+            <assignToReference>hasFormidlerAccess</assignToReference>
+            <name>hasAccess</name>
+        </outputParameters>
+    </actionCalls>
+    <actionCalls>
         <name>ChangeAppointmentOwner</name>
         <label>Endre eier på markerte oppdrag</label>
         <locationX>0</locationX>
@@ -166,6 +186,31 @@
         </value>
     </customProperties>
     <decisions>
+        <name>CheckAccess</name>
+        <label>Har brukeren formidlertilgang?</label>
+        <locationX>0</locationX>
+        <locationY>0</locationY>
+        <defaultConnector>
+            <targetReference>AccessDenied</targetReference>
+        </defaultConnector>
+        <defaultConnectorLabel>Ingen tilgang</defaultConnectorLabel>
+        <rules>
+            <name>TargetGroupFound</name>
+            <conditionLogic>and</conditionLogic>
+            <conditions>
+                <leftValueReference>hasFormidlerAccess</leftValueReference>
+                <operator>EqualTo</operator>
+                <rightValue>
+                    <booleanValue>true</booleanValue>
+                </rightValue>
+            </conditions>
+            <connector>
+                <targetReference>CountSelectedAppointments</targetReference>
+            </connector>
+            <label>Har tilgang</label>
+        </rules>
+    </decisions>
+    <decisions>
         <name>CheckSelection</name>
         <label>Er oppdrag valgt?</label>
         <locationX>0</locationX>
@@ -212,6 +257,23 @@
         </value>
     </processMetadataValues>
     <processType>Flow</processType>
+    <screens>
+        <name>AccessDenied</name>
+        <label>Kun for formidlere</label>
+        <locationX>0</locationX>
+        <locationY>0</locationY>
+        <allowBack>false</allowBack>
+        <allowFinish>true</allowFinish>
+        <allowPause>false</allowPause>
+        <fields>
+            <name>AccessDeniedText</name>
+            <fieldText>&lt;p&gt;Dette er kun en formidler funksjon!&lt;/p&gt;</fieldText>
+            <fieldType>DisplayText</fieldType>
+        </fields>
+        <nextOrFinishButtonLabel>Lukk</nextOrFinishButtonLabel>
+        <showFooter>true</showFooter>
+        <showHeader>true</showHeader>
+    </screens>
     <screens>
         <name>Endre_eier</name>
         <label>Endre eier</label>
@@ -348,10 +410,17 @@
         <locationX>0</locationX>
         <locationY>0</locationY>
         <connector>
-            <targetReference>CountSelectedAppointments</targetReference>
+            <targetReference>CheckFormidlerAccess</targetReference>
         </connector>
     </start>
     <status>Active</status>
+    <variables>
+        <name>hasFormidlerAccess</name>
+        <dataType>Boolean</dataType>
+        <isCollection>false</isCollection>
+        <isInput>false</isInput>
+        <isOutput>false</isOutput>
+    </variables>
     <variables>
         <name>ids</name>
         <dataType>String</dataType>
