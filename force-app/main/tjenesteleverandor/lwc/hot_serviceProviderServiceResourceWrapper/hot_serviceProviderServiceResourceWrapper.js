@@ -1,10 +1,11 @@
 import { LightningElement, wire } from 'lwc';
+import { NavigationMixin } from 'lightning/navigation';
 import { columns } from './columns';
 import getServiceResources from '@salesforce/apex/HOT_TjenesteleverandorListController.getServiceResources';
 import searchIcon from '@salesforce/resourceUrl/MagnifyingGlass';
 import { createDefaultFilters, filterRecords } from 'c/hot_tjenesteleverandorFilters';
 
-export default class Hot_tjenesteleverandorTolkerWrapper extends LightningElement {
+export default class Hot_tjenesteleverandorTolkerWrapper extends NavigationMixin(LightningElement) {
     allTolkerList = [];
     tolkerList = [];
     columns = columns;
@@ -39,8 +40,18 @@ export default class Hot_tjenesteleverandorTolkerWrapper extends LightningElemen
     }
 
     goToRecordDetails(event) {
-        const record = this.tolkerList.find((tolk) => tolk.Id === event.detail.Id);
-        console.log('Navigating to record details for record:', record);
+        console.log("Pressed: ")
+        const recordId = this.tolkerList.find((tolk) => tolk.Id === event.detail.Id)?.Id;
+        this[NavigationMixin.Navigate]({
+            type: 'comm__namedPage',
+            attributes: {
+                name: 'Tjenesteressursdetaljer__c'
+            },
+            state: {
+                c__recordId: recordId
+            }
+        });
+        
     }
 
     handleSearch(event) {

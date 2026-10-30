@@ -85,9 +85,9 @@ export default class Hot_tlLoginBanner extends NavigationMixin(LightningElement)
         },
         {
             id: '5',
-            label: 'Tolker',
-            url: '/s/tolker',
-            pageName: 'tolker'
+            label: 'Tjenesteressurser',
+            url: '/s/tjenesteressurser',
+            pageName: 'tjenesteressurser'
         }
     ];
 
