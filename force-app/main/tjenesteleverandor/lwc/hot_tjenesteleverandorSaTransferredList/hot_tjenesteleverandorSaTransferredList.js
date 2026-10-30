@@ -144,6 +144,10 @@ export default class Hot_tjenesteleverandorSaTransferredList extends NavigationM
         return this.serviceAppointment?.HOT_Request__r?.Person__r?.HOT_LanguageAndCommunicationMethods__c ?? undefined;
     }
 
+    get hasPersonInfo() {
+        return Boolean(this.personReservations || this.personLanguageAndCommunicationMethods);
+    }
+
     get noServiceAppointmentsResult() {
         return !this.dataLoader && this.allRecords.length === 0;
     }

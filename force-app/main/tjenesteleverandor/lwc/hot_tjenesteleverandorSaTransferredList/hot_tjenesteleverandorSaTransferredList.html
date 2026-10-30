@@ -126,7 +126,7 @@
                                     &nbsp;{serviceAppointment.HOT_TjenesteleverandorDeadline__c}
                                 </p>
 
-                                <div class="person-info-box">
+                                <div class="person-info-box" lwc:if={hasPersonInfo}>
                                     <p lwc:if={personReservations}>
                                         <strong>Reservasjon:</strong>&nbsp;
                                         {personReservations}

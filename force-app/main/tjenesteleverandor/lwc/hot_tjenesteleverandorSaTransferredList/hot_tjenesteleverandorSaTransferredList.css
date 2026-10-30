@@ -98,8 +98,8 @@ dialog.modal-container .modal-body strong {
 }
 
 .person-info-box {
-    background-color: var(--ax-bg-info-soft, #ecf6fe);
-    color: var(--ax-text-neutral, #232a35);
+    background-color: #ecf6fe;
+    color: #232a35;
     margin-top: 1rem;
     padding: 1rem;
     overflow-wrap: anywhere;

@@ -114,6 +114,18 @@ export default class Hot_tjenesteleverandorSaAcceptedList extends NavigationMixi
         }
     }
 
+    get personReservations() {
+        return this.serviceAppointment?.HOT_Request__r?.Person__r?.HOT_Reservations__c ?? undefined;
+    }
+
+    get personLanguageAndCommunicationMethods() {
+        return this.serviceAppointment?.HOT_Request__r?.Person__r?.HOT_LanguageAndCommunicationMethods__c ?? undefined;
+    }
+
+    get hasPersonInfo() {
+        return Boolean(this.personReservations || this.personLanguageAndCommunicationMethods);
+    }
+
     get isReleaseDisabled() {
         return this.checkedServiceAppointments.length === 0 || this.showReleaseModal || this.showTransferModal;
     }

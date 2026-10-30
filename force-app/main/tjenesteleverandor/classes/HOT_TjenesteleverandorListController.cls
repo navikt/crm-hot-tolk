@@ -84,7 +84,9 @@ public with sharing class HOT_TjenesteleverandorListController {
                 HOT_UserPreferredGender__c,
                 HOT_UserPreferredInterpreter__c,
                 HOT_UserInterpretationMethod__c,
-                HOT_TLDispatcher__r.Name
+                HOT_TLDispatcher__r.Name,
+                HOT_Request__r.Person__r.HOT_Reservations__c,
+                HOT_Request__r.Person__r.HOT_LanguageAndCommunicationMethods__c
             FROM ServiceAppointment
             WHERE
                 HOT_IsReleasedToTjenesteleverandor__c = TRUE
@@ -123,7 +125,9 @@ public with sharing class HOT_TjenesteleverandorListController {
                 HOT_UserPreferredGender__c,
                 HOT_UserPreferredInterpreter__c,
                 HOT_UserInterpretationMethod__c,
-                HOT_TLDispatcher__r.Name
+                HOT_TLDispatcher__r.Name,
+                HOT_Request__r.Person__r.HOT_Reservations__c,
+                HOT_Request__r.Person__r.HOT_LanguageAndCommunicationMethods__c
             FROM ServiceAppointment
             WHERE
                 HOT_IsReleasedToTjenesteleverandor__c = TRUE
@@ -163,7 +167,9 @@ public with sharing class HOT_TjenesteleverandorListController {
                 HOT_UserPreferredGender__c,
                 HOT_UserPreferredInterpreter__c,
                 HOT_UserInterpretationMethod__c,
-                HOT_TLDispatcher__r.Name
+                HOT_TLDispatcher__r.Name,
+                HOT_Request__r.Person__r.HOT_Reservations__c,
+                HOT_Request__r.Person__r.HOT_LanguageAndCommunicationMethods__c
             FROM ServiceAppointment
             WHERE
                 HOT_IsReleasedToTjenesteleverandor__c = TRUE
@@ -203,7 +209,9 @@ public with sharing class HOT_TjenesteleverandorListController {
                 HOT_UserPreferredGender__c,
                 HOT_UserPreferredInterpreter__c,
                 HOT_UserInterpretationMethod__c,
-                HOT_TLDispatcher__r.Name
+                HOT_TLDispatcher__r.Name,
+                HOT_Request__r.Person__r.HOT_Reservations__c,
+                HOT_Request__r.Person__r.HOT_LanguageAndCommunicationMethods__c
             FROM ServiceAppointment
             WHERE
                 HOT_IsReleasedToTjenesteleverandor__c = TRUE

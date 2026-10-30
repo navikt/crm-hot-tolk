@@ -71,6 +71,18 @@ dialog.modal-container .modal-body strong {
     font-weight: 600;
 }
 
+.person-info-box {
+    background-color: #ecf6fe;
+    color: #232a35;
+    margin-top: 1rem;
+    padding: 1rem;
+    overflow-wrap: anywhere;
+}
+
+.person-info-box p + p {
+    margin-top: 0.5rem;
+}
+
 dialog.modal-container .modal-footer {
     padding: 1.5rem 2rem;
     display: flex;
