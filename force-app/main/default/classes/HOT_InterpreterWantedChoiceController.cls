@@ -32,6 +32,6 @@ public with sharing class HOT_InterpreterWantedChoiceController {
             throw new AuraHandledException('Du er ikke lenger ønsket til dette oppdraget, eller mangler tilgang.');
         }
 
-        update as user new HOT_InterestedResource__c(Id = resources[0].Id, Status__c = status);
+        update new HOT_InterestedResource__c(Id = resources[0].Id, Status__c = status);
     }
 }
