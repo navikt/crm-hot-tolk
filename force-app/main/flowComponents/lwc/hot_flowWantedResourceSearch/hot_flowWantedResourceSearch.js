@@ -100,26 +100,8 @@ export default class Hot_flowWantedResourceSearch extends LightningElement {
         return this.searchText.trim().length >= 2 && !this.value && this.matchingResources.length > 0;
     }
 
-    get hasPreferredRegions() {
-        return this.selectedResource?.preferredRegions?.length > 0;
-    }
-
     get hasRegionMismatch() {
         return Boolean(this.selectedResource?.serviceTerritoryName && !this.selectedResource.regionMatches);
-    }
-
-    get regionMatchLabel() {
-        if (!this.selectedResource?.serviceTerritoryName) {
-            return 'Oppdrag uten region';
-        }
-        return this.selectedResource.regionMatches ? 'Region matcher' : 'Region matcher ikke';
-    }
-
-    get regionMatchColor() {
-        if (!this.selectedResource?.serviceTerritoryName) {
-            return 'warning';
-        }
-        return this.selectedResource.regionMatches ? 'success' : 'danger';
     }
 
     get overlapLabel() {
