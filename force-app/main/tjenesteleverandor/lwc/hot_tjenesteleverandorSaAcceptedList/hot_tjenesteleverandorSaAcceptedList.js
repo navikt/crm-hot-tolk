@@ -79,6 +79,10 @@ export default class Hot_tjenesteleverandorSaAcceptedList extends NavigationMixi
     }
 
     renderedCallback() {
+        this.syncModalState();
+    }
+
+    syncModalState() {
         if (this.showReleaseModal || this.showTransferModal || this.showServiceAppointmentDetailsModal) {
             if (!this.pageScrollLock) {
                 const element = document.scrollingElement;
@@ -112,6 +116,18 @@ export default class Hot_tjenesteleverandorSaAcceptedList extends NavigationMixi
             }
             this.pageScrollLock = undefined;
         }
+    }
+
+    get personReservations() {
+        return this.serviceAppointment?.HOT_Request__r?.Person__r?.HOT_Reservations__c ?? undefined;
+    }
+
+    get personLanguageAndCommunicationMethods() {
+        return this.serviceAppointment?.HOT_Request__r?.Person__r?.HOT_LanguageAndCommunicationMethods__c ?? undefined;
+    }
+
+    get hasPersonInfo() {
+        return Boolean(this.personReservations || this.personLanguageAndCommunicationMethods);
     }
 
     get isReleaseDisabled() {

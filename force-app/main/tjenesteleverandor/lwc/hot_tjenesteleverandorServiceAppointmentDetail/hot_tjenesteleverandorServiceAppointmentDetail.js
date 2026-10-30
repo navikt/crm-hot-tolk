@@ -27,6 +27,8 @@ import HOT_IS_IMAGE_INTERPRETER_FIELD from '@salesforce/schema/ServiceAppointmen
 import HOT_DAY_OF_WEEK_FIELD from '@salesforce/schema/ServiceAppointment.HOT_DayOfWeek__c';
 import HOT_ADDRESS_FORMATED_FIELD from '@salesforce/schema/ServiceAppointment.HOT_AddressFormated__c';
 import HOT_TL_DISPATCHER_NAME_FIELD from '@salesforce/schema/ServiceAppointment.HOT_TLDispatcher__r.Name';
+import HOT_PERSON_RESERVATIONS_FIELD from '@salesforce/schema/ServiceAppointment.HOT_Request__r.Person__r.HOT_Reservations__c';
+import HOT_PERSON_LANGUAGE_AND_COMMUNICATION_METHODS_FIELD from '@salesforce/schema/ServiceAppointment.HOT_Request__r.Person__r.HOT_LanguageAndCommunicationMethods__c';
 import HOT_IS_RELEASED_TO_FREELANCE_FIELD from '@salesforce/schema/ServiceAppointment.HOT_IsReleasedToFreelance__c';
 import HOT_TJENESTELEVERANDOR_DEADLINE_FIELD from '@salesforce/schema/ServiceAppointment.HOT_TjenesteleverandorDeadline__c';
 import EARLIEST_START_TIME_FIELD from '@salesforce/schema/ServiceAppointment.EarliestStartTime';
@@ -44,6 +46,7 @@ const CANCELLATION_FIELDS = [
 ];
 const TRANSFERRED_LIST_REFRESH_KEY = 'tjenesteleverandorTransferredListRefresh';
 const ACCEPTED_LIST_REFRESH_KEY = 'tjenesteleverandorAcceptedListRefresh';
+const PERSON_INFORMATION_FIELDS = [HOT_PERSON_RESERVATIONS_FIELD, HOT_PERSON_LANGUAGE_AND_COMMUNICATION_METHODS_FIELD];
 
 const TAG_DEFINITIONS = [
     { id: 'acute',  field: HOT_IS_ACUTE_FIELD,                label: 'Akuttvaktoppdrag', color: 'danger' },
@@ -103,7 +106,7 @@ export default class HotTjenesteleverandorServiceAppointmentDetail extends Navig
         this.routeRecordId = pageReference?.state?.c__recordId;
     }
 
-    @wire(getRecord, { recordId: '$effectiveRecordId', fields: FIELDS })
+    @wire(getRecord, { recordId: '$effectiveRecordId', fields: FIELDS, optionalFields: PERSON_INFORMATION_FIELDS })
     wiredRecord({ data, error }) {
         if (data) {
             this.recordData = data;
@@ -239,6 +242,14 @@ export default class HotTjenesteleverandorServiceAppointmentDetail extends Navig
 
     get providerDispatcherName() {
         return this.displayValue(this.getFieldValue(HOT_TL_DISPATCHER_NAME_FIELD));
+    }
+
+    get personReservations() {
+        return this.displayValue(this.getFieldValue(HOT_PERSON_RESERVATIONS_FIELD));
+    }
+
+    get personLanguageAndCommunicationMethods() {
+        return this.displayValue(this.getFieldValue(HOT_PERSON_LANGUAGE_AND_COMMUNICATION_METHODS_FIELD));
     }
 
     get cancellationComment() {

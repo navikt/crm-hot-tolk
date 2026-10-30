@@ -81,6 +81,10 @@ export default class Hot_tjenesteleverandorSaTransferredList extends NavigationM
     }
 
     renderedCallback() {
+        this.syncModalState();
+    }
+
+    syncModalState() {
         if (this.showServiceAppointmentDetailsModal) {
             if (!this.pageScrollLock) {
                 const element = document.scrollingElement;
@@ -134,6 +138,18 @@ export default class Hot_tjenesteleverandorSaTransferredList extends NavigationM
 
     get hasResult() {
         return !this.dataLoader && this.records.length > 0;
+    }
+
+    get personReservations() {
+        return this.serviceAppointment?.HOT_Request__r?.Person__r?.HOT_Reservations__c ?? undefined;
+    }
+
+    get personLanguageAndCommunicationMethods() {
+        return this.serviceAppointment?.HOT_Request__r?.Person__r?.HOT_LanguageAndCommunicationMethods__c ?? undefined;
+    }
+
+    get hasPersonInfo() {
+        return Boolean(this.personReservations || this.personLanguageAndCommunicationMethods);
     }
 
     get noServiceAppointmentsResult() {

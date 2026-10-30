@@ -35,11 +35,45 @@ export default class Hot_tjenesteleverandorSaReleasedList extends NavigationMixi
     showServiceAppointmentDetailsModal = false;
     serviceAppointment;
     selectedRecordId;
+    pageScrollLock;
 
     renderedCallback() {
+        this.syncModalState();
+    }
+
+    syncModalState() {
+        if (this.showTransferModal || this.showServiceAppointmentDetailsModal) {
+            if (!this.pageScrollLock) {
+                const element = document.scrollingElement;
+                this.pageScrollLock = {
+                    element,
+                    overflow: element.style.getPropertyValue('overflow'),
+                    priority: element.style.getPropertyPriority('overflow')
+                };
+                element.style.setProperty('overflow', 'hidden', 'important');
+            }
+        } else {
+            this.unlockPageScroll();
+        }
         const transferDialog = this.template.querySelector('[data-id="transfer-dialog"]');
         if (this.showTransferModal && transferDialog && !transferDialog.open) {
             transferDialog.showModal();
+        }
+    }
+
+    disconnectedCallback() {
+        this.unlockPageScroll();
+    }
+
+    unlockPageScroll() {
+        if (this.pageScrollLock) {
+            const { element, overflow, priority } = this.pageScrollLock;
+            if (overflow) {
+                element.style.setProperty('overflow', overflow, priority);
+            } else {
+                element.style.removeProperty('overflow');
+            }
+            this.pageScrollLock = undefined;
         }
     }
 
@@ -57,6 +91,18 @@ export default class Hot_tjenesteleverandorSaReleasedList extends NavigationMixi
 
     get hasResult() {
         return !this.dataLoader && this.records.length > 0;
+    }
+
+    get personReservations() {
+        return this.serviceAppointment?.HOT_Request__r?.Person__r?.HOT_Reservations__c ?? undefined;
+    }
+
+    get personLanguageAndCommunicationMethods() {
+        return this.serviceAppointment?.HOT_Request__r?.Person__r?.HOT_LanguageAndCommunicationMethods__c ?? undefined;
+    }
+
+    get hasPersonInfo() {
+        return Boolean(this.personReservations || this.personLanguageAndCommunicationMethods);
     }
 
     get noServiceAppointmentsResult() {
