@@ -88,7 +88,7 @@ public with sharing class HOT_ChangeAppointmentOwner {
         }
 
         Map<String, Id> queueIdsByName = new Map<String, Id>();
-        for (Group queue : [SELECT Id, Name FROM Group WHERE Type = 'Queue' AND Name IN :queueNames]) {
+        for (Group queue : [SELECT Id, Name FROM Group WHERE Type = 'Queue']) {
             queueIdsByName.put(queue.Name.toLowerCase(), queue.Id);
         }
         Map<Id, ServiceAppointment> selectedAppointments = new Map<Id, ServiceAppointment>(
