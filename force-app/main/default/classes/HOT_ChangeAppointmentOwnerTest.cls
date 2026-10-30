@@ -2,6 +2,10 @@
 private class HOT_ChangeAppointmentOwnerTest {
     @TestSetup
     static void setup() {
+        System.runAs(new User(Id = UserInfo.getUserId())) {
+            Group osloQueue = TestDataFactory.getQueue('Nav Tolketjeneste Oslo', 'queue_4703', 'Thread__c');
+            insert new QueueSobject(QueueId = osloQueue.Id, SobjectType = 'ServiceAppointment');
+        }
         OperatingHours hours = HOT_TestDataFactory.createOperatingHours();
         insert hours;
         ServiceTerritory territory = HOT_TestDataFactory.createServiceTerritory(hours);
