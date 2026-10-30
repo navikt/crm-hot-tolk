@@ -41,10 +41,6 @@ export default class hot_requestFormWrapper_v2 extends NavigationMixin(Lightning
         this.setCurrentForm();
     }
 
-    deleteMarkedFiles() {
-        this.template.querySelector('c-hot_request-form_request_v2').deleteMarkedFiles();
-    }
-
     handleSubmitClick() {
         this.handleSubmit();
     }
@@ -81,18 +77,11 @@ export default class hot_requestFormWrapper_v2 extends NavigationMixin(Lightning
                     if (saveBtn) saveBtn.disabled = false;
                     return;
                 }
-
-                const existingTime = Object.values(timeInput.times || {})[0];
-                if (existingTime?.startTime && existingTime?.endTime) {
-                    this.fieldValues.StartTime__c = new Date(existingTime.startTime).toISOString();
-                    this.fieldValues.EndTime__c = new Date(existingTime.endTime).toISOString();
-                }
             }
 
             let status = 'Åpen';
 
             if (this.isEditOrCopyMode) {
-                this.deleteMarkedFiles();
                 status = await getRequestStatus({ recordId: this.recordId });
 
                 if (status !== null && status !== 'Åpen') {
@@ -233,6 +222,11 @@ export default class hot_requestFormWrapper_v2 extends NavigationMixin(Lightning
     }
 
     submitForm() {
+        const timeInput = this.template.querySelector('c-hot_request-form_request_v2')?.getTimeInput();
+        if (this.isEditMode && timeInput?.isAdvancedTimes) {
+            this.createWorkOrders();
+            return;
+        }
         this.template.querySelector('lightning-record-edit-form').submit(this.fieldValues);
     }
 
@@ -265,7 +259,6 @@ export default class hot_requestFormWrapper_v2 extends NavigationMixin(Lightning
         }
 
         this.recordId = event.detail.id;
-        this.uploadFiles();
         this.createWorkOrders();
         window.scrollTo(0, 0);
     }
@@ -302,10 +295,6 @@ export default class hot_requestFormWrapper_v2 extends NavigationMixin(Lightning
         this.template.querySelector('c-alertdialog').showModal();
     }
 
-    uploadFiles() {
-        this.template.querySelector('c-hot_request-form_request_v2').handleFileUpload(this.recordId);
-    }
-
     createWorkOrders() {
         const timeInput = this.template.querySelector('c-hot_request-form_request_v2').getTimeInput();
 
@@ -330,6 +319,7 @@ export default class hot_requestFormWrapper_v2 extends NavigationMixin(Lightning
 
             createRecurringWorkOrdersFromEdit({
                 requestId: this.recordId,
+                requestChanges: this.fieldValues,
                 workOrderId,
                 startTime: time.startTime,
                 endTime: time.endTime,

@@ -59,7 +59,8 @@ public without sharing class HOT_CreateWorkOrderService {
         Long endTime,
         String recurringType,
         List<String> recurringDays,
-        Long recurringEndDate
+        Long recurringEndDate,
+        Map<String, Object> requestChanges
     ) {
         if (
             requestId == null ||
@@ -174,9 +175,25 @@ public without sharing class HOT_CreateWorkOrderService {
 
         Savepoint savepoint = Database.setSavepoint();
         try {
+            if (requestChanges != null) {
+                HOT_Request__c editedRequest = getRecurringRequestChanges(requestId, requestChanges);
+                update editedRequest;
+            }
             update workOrders[0];
             if (!additionalWorkOrders.isEmpty()) {
                 insert additionalWorkOrders;
+            }
+            HOT_Request__c savedRequest = [
+                SELECT StartTime__c, EndTime__c, NumberOfWorkOrders__c
+                FROM HOT_Request__c
+                WHERE Id = :requestId
+            ];
+            if (
+                savedRequest.StartTime__c != workOrders[0].StartDate ||
+                savedRequest.EndTime__c != workOrders[0].EndDate ||
+                savedRequest.NumberOfWorkOrders__c != occurrenceOffsets.size()
+            ) {
+                throw new AuraHandledException('Bestillingen ble ikke oppdatert med alle tidspunktene.');
             }
         } catch (Exception e) {
             Database.rollback(savepoint);
@@ -185,6 +202,56 @@ public without sharing class HOT_CreateWorkOrderService {
             logger.publishSynch();
             throw new AuraHandledException('Opprettelsen av gjentagende arbeidsordre feilet. Prøv igjen.');
         }
+    }
+
+    /**
+     * Limits request edits to form fields and enforces the caller's object and field permissions.
+     */
+    private static HOT_Request__c getRecurringRequestChanges(Id requestId, Map<String, Object> changes) {
+        if (changes.get('Id') != null && String.valueOf(changes.get('Id')) != String.valueOf(requestId)) {
+            throw new AuraHandledException('Ugyldig bestilling.');
+        }
+        if (!Schema.sObjectType.HOT_Request__c.isUpdateable()) {
+            throw new AuraHandledException('Du har ikke tilgang til å redigere denne bestillingen.');
+        }
+        Set<String> editableFields = new Set<String>{
+            'Subject__c',
+            'MeetingStreet__c',
+            'MeetingPostalCity__c',
+            'MeetingPostalCode__c',
+            'InterpretationStreet__c',
+            'InterpretationPostalCode__c',
+            'InterpretationPostalCity__c',
+            'Description__c',
+            'IsFileConsent__c',
+            'IsOrdererWantStatusUpdateOnSMS__c',
+            'IsScreenInterpreter__c',
+            'UserPreferredInterpreter__c',
+            'AssignmentType__c',
+            'UserInterpretationMethod__c',
+            'InterpretationMethodType__c',
+            'OrdererEmail__c',
+            'OrdererPhone__c',
+            'IsNotNotifyAccount__c',
+            'UserName__c',
+            'UserPersonNumber__c',
+            'UserPhone__c',
+            'OrganizationNumber__c',
+            'InvoiceReference__c',
+            'IsOtherEconomicProvicer__c',
+            'AdditionalInvoiceText__c'
+        };
+        Map<String, Schema.SObjectField> fields = Schema.sObjectType.HOT_Request__c.fields.getMap();
+        HOT_Request__c updateRecord = new HOT_Request__c(Id = requestId);
+        for (String fieldName : changes.keySet()) {
+            if (editableFields.contains(fieldName)) {
+                if (!fields.get(fieldName).getDescribe().isUpdateable()) {
+                    throw new AuraHandledException('Du har ikke tilgang til å endre feltet ' + fieldName + '.');
+                }
+                updateRecord.put(fieldName, changes.get(fieldName));
+            }
+        }
+        return updateRecord;
     }
 
     /**
