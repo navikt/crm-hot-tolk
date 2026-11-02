@@ -122,7 +122,7 @@ public without sharing class HOT_CreateWorkOrderService {
             workOrders = [
                 SELECT Id, StartDate, EndDate, HOT_ExternalWorkOrderStatus__c
                 FROM WorkOrder
-                WHERE HOT_Request__c = :requestId
+                WHERE HOT_Request__c = :requestId AND Status != 'Annul'
                 FOR UPDATE
             ];
         } catch (QueryException e) {
