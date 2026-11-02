@@ -237,4 +237,27 @@ public with sharing class HOT_TjenesteleverandorListController {
             ORDER BY IsActive DESC
         ];
     }
+
+    @AuraEnabled(cacheable=true)
+    public static ServiceResource getSRDetails(Id recordId) {
+        return [
+            SELECT
+                Id,
+                HOT_Address__c,
+                HOT_Email__c,
+                HOT_MobilePhone__c,
+                HOT_MobileDevice__c,
+                HOT_NotificationChannel__c,
+                Name,
+                IsActive,
+                HOT_PreferredRegions__c,
+                HOT_Skilled__c,
+                HOT_ServiceTerritory__c,
+                HOT_MoreInformation__c,
+                Description
+            FROM ServiceResource
+            WHERE Id = :recordId
+            LIMIT 1
+        ];
+    }
 }
