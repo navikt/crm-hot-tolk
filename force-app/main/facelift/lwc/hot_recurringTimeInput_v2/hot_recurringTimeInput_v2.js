@@ -17,6 +17,8 @@ export default class hot_recurringTimeInput_v2 extends LightningElement {
     @track isAdvancedTimes;
     @api refreshToken;
     @api hideAdvancedTimesInEditMode = false;
+    @api isEditMode = false;
+    singleExistingWorkOrderId;
     uniqueIdCounter = 0;
 
     setTimesValue(timeObject) {
@@ -181,6 +183,14 @@ export default class hot_recurringTimeInput_v2 extends LightningElement {
         if (this.times.length > 1) {
             const index = this.getTimesIndex(event.target.name);
             if (index !== -1) {
+                if (this.isEditMode && this.times[index].id === this.singleExistingWorkOrderId) {
+                    const replacementIndex = index === 0 ? 1 : 0;
+                    this.times[replacementIndex] = {
+                        ...this.times[replacementIndex],
+                        id: this.times[index].id,
+                        isNew: 0
+                    };
+                }
                 this.times.splice(index, 1);
             }
         }
@@ -394,6 +404,7 @@ export default class hot_recurringTimeInput_v2 extends LightningElement {
     @api requestIds = [];
     @wire(getTimes, { requestIds: '$requestIds', refreshToken: '$refreshToken' })
     wiredTimes(result) {
+        this.singleExistingWorkOrderId = result.data?.length === 1 ? result.data[0].id : undefined;
         if (result.data) {
             if (result.data.length === 0) {
                 this.times = [this.setTimesValue(null)];
