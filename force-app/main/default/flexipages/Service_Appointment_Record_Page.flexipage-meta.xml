@@ -1768,29 +1768,6 @@
                 </componentInstanceProperties>
                 <componentName>flexipage:tabset</componentName>
                 <identifier>flexipage_tabset</identifier>
-                <visibilityRule>
-                    <booleanFilter>(1 OR 2) AND (3 OR 4)</booleanFilter>
-                    <criteria>
-                        <leftValue>{!Record.HOT_TjenesteleverandorStatus__c}</leftValue>
-                        <operator>NE</operator>
-                        <rightValue>Transferred</rightValue>
-                    </criteria>
-                    <criteria>
-                        <leftValue>{!Record.HOT_TjenesteleverandorStatus__c}</leftValue>
-                        <operator>NE</operator>
-                        <rightValue>Accepted</rightValue>
-                    </criteria>
-                    <criteria>
-                        <leftValue>{!$User.Profile.Name}</leftValue>
-                        <operator>EQUAL</operator>
-                        <rightValue>System Administrator</rightValue>
-                    </criteria>
-                    <criteria>
-                        <leftValue>{!$User.Profile.Name}</leftValue>
-                        <operator>EQUAL</operator>
-                        <rightValue>Systemadministrator</rightValue>
-                    </criteria>
-                </visibilityRule>
             </componentInstance>
         </itemInstances>
         <name>main</name>
