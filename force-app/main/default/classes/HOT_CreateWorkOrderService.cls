@@ -74,7 +74,7 @@ public without sharing class HOT_CreateWorkOrderService {
 
         Datetime requestedStart = Datetime.newInstance(startTime);
         Datetime requestedEnd = Datetime.newInstance(endTime);
-        Date recurrenceEndDate = Datetime.newInstance(recurringEndDate).dateGmt();
+        Date recurrenceEndDate = Datetime.newInstance(recurringEndDate).date();
 
         if (requestedEnd <= requestedStart) {
             throw new AuraHandledException('Slutt tid må være etter start tid.');
@@ -141,7 +141,7 @@ public without sharing class HOT_CreateWorkOrderService {
         }
 
         List<Integer> occurrenceOffsets = getRecurringDayOffsets(
-            requestedStart.date(),
+            requestedStart,
             recurrenceEndDate,
             recurringType,
             selectedDays
@@ -268,37 +268,26 @@ public without sharing class HOT_CreateWorkOrderService {
     }
 
     /**
-     * Returns offsets for recurrence dates using the same week-skipping rules as community series creation.
+     * Preserves creation's weekday selection before DST correction, including its week-skipping rules.
      */
     private static List<Integer> getRecurringDayOffsets(
-        Date startDate,
+        Datetime startDate,
         Date endDate,
         String recurringType,
         Set<String> selectedDays
     ) {
         List<Integer> occurrenceOffsets = new List<Integer>();
-        Integer numberOfDays = startDate.daysBetween(endDate);
-        List<String> dayNames = new List<String>{
-            'sunday',
-            'monday',
-            'tuesday',
-            'wednesday',
-            'thursday',
-            'friday',
-            'saturday'
-        };
+        Integer numberOfDays = startDate.date().daysBetween(endDate);
         for (Integer offset = 0; offset <= numberOfDays; offset++) {
-            Date occurrenceDate = startDate.addDays(offset);
-            Integer dayIndex = Math.mod(Date.newInstance(1900, 1, 7).daysBetween(occurrenceDate), 7);
-            String dayName = dayNames[dayIndex];
+            String dayName = startDate.addDays(offset).format('EEEE').toLowerCase();
 
             if (recurringType == 'Daily' || selectedDays.contains(dayName)) {
                 occurrenceOffsets.add(offset);
             }
 
-            if (recurringType == 'Biweekly' && dayIndex == 0) {
+            if (recurringType == 'Biweekly' && dayName == 'sunday') {
                 offset += 7;
-            } else if (recurringType == 'Every4Weeks' && dayIndex == 0) {
+            } else if (recurringType == 'Every4Weeks' && dayName == 'sunday') {
                 offset += 21;
             }
         }

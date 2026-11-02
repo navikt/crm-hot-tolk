@@ -639,13 +639,44 @@ private class HOT_CreateWorkOrderServiceTest {
      * Checks each recurrence type with a separate governor limit budget from test data setup.
      */
     private static void assertRecurringEditCount(String recurrenceType, Integer expectedCount) {
+        Date startDate = Date.newInstance(2026, 10, 26);
+        Datetime startTime = Datetime.newInstance(startDate, Time.newInstance(9, 0, 0, 0));
+        assertRecurringEditMatchesCreation(
+            recurrenceType,
+            expectedCount,
+            startTime,
+            startTime.addHours(1),
+            startDate.addDays(28),
+            new List<String>{ 'monday' }
+        );
+    }
+
+    /**
+     * Compares every interval against the existing community creation path in the same timezone.
+     */
+    private static void assertRecurringEditMatchesCreation(
+        String recurrenceType,
+        Integer expectedCount,
+        Datetime startTime,
+        Datetime endTime,
+        Date recurrenceEndDate,
+        List<String> selectedDays
+    ) {
         User caller = createRecurringEditCaller();
         WorkType workType = HOT_TestDataFactory.createWorkType();
         insert workType;
-        Date startDate = Date.newInstance(2026, 10, 26);
-        Datetime startTime = Datetime.newInstance(startDate, Time.newInstance(9, 0, 0, 0));
-        Datetime endTime = startTime.addHours(1);
-        Date recurrenceEndDate = startDate.addDays(28);
+        HOT_Request__c newRequest = HOT_TestDataFactory.createRequest(recurrenceType + ' creation', workType);
+        insert newRequest;
+        Long recurringEndDate = Datetime.newInstanceGmt(recurrenceEndDate, Time.newInstance(0, 0, 0, 0)).getTime();
+        System.runAs(caller) {
+            HOT_CreateWorkOrderService.createWorkOrdersFromCommunity(
+                newRequest.Id,
+                new Map<String, Long>{ 'startTime' => startTime.getTime(), 'endTime' => endTime.getTime() },
+                recurrenceType,
+                selectedDays,
+                recurringEndDate
+            );
+        }
         HOT_Request__c request = HOT_TestDataFactory.createRequest(recurrenceType + ' edit', workType);
         request.Orderer__c = caller.AccountId;
         insert request;
@@ -662,8 +693,8 @@ private class HOT_CreateWorkOrderServiceTest {
                 startTime.getTime(),
                 endTime.getTime(),
                 recurrenceType,
-                new List<String>{ 'monday' },
-                Datetime.newInstanceGmt(recurrenceEndDate, Time.newInstance(0, 0, 0, 0)).getTime(),
+                selectedDays,
+                recurringEndDate,
                 null
             );
         }
@@ -674,12 +705,60 @@ private class HOT_CreateWorkOrderServiceTest {
             [SELECT COUNT() FROM WorkOrder WHERE HOT_Request__c = :request.Id],
             'Unexpected occurrence count for ' + recurrenceType
         );
-        WorkOrder updatedExisting = [
-            SELECT StartDate
+        List<WorkOrder> created = [
+            SELECT StartDate, EndDate
             FROM WorkOrder
-            WHERE Id = :existingWorkOrder.Id
+            WHERE HOT_Request__c = :newRequest.Id
+            ORDER BY StartDate, EndDate
         ];
-        System.assertEquals(startTime, updatedExisting.StartDate, 'First matching Monday remains the first occurrence');
+        List<WorkOrder> converted = [
+            SELECT Id, StartDate, EndDate
+            FROM WorkOrder
+            WHERE HOT_Request__c = :request.Id
+            ORDER BY StartDate, EndDate
+        ];
+        System.assertEquals(expectedCount, created.size(), 'Creation must produce the expected interval count');
+        System.assertEquals(existingWorkOrder.Id, converted[0].Id, 'Existing Work Order must remain first');
+        for (Integer i = 0; i < created.size(); i++) {
+            System.assertEquals(created[i].StartDate, converted[i].StartDate, 'Start must match creation at ' + i);
+            System.assertEquals(created[i].EndDate, converted[i].EndDate, 'End must match creation at ' + i);
+        }
+    }
+
+    @IsTest
+    private static void recurringEditMatchesCreationAcrossAutumnDst() {
+        assertRecurringEditMatchesCreation(
+            'Daily',
+            3,
+            Datetime.newInstanceGmt(2027, 10, 29, 21, 0, 0),
+            Datetime.newInstanceGmt(2027, 10, 30, 1, 0, 0),
+            Date.newInstance(2027, 10, 31),
+            new List<String>()
+        );
+    }
+
+    @IsTest
+    private static void recurringEditMatchesCreationAcrossSpringDst() {
+        assertRecurringEditMatchesCreation(
+            'Daily',
+            3,
+            Datetime.newInstanceGmt(2027, 3, 26, 22, 0, 0),
+            Datetime.newInstanceGmt(2027, 3, 27, 2, 0, 0),
+            Date.newInstance(2027, 3, 28),
+            new List<String>()
+        );
+    }
+
+    @IsTest
+    private static void recurringEditMatchesCreationWeekdaysAcrossDst() {
+        assertRecurringEditMatchesCreation(
+            'Weekly',
+            2,
+            Datetime.newInstanceGmt(2027, 10, 29, 22, 30, 0),
+            Datetime.newInstanceGmt(2027, 10, 29, 23, 30, 0),
+            Date.newInstance(2027, 11, 2),
+            new List<String>{ 'sunday' }
+        );
     }
 
     @IsTest
