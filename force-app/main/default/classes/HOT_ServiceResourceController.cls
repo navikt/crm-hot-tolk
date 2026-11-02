@@ -3,7 +3,7 @@ public with sharing class HOT_ServiceResourceController {
     public static List<ServiceResource> getAllServiceResources(Boolean searchFreelances, Boolean searchEmployees) {
         if (searchFreelances == true && searchEmployees == true) {
             return [
-                SELECT Id, Name
+                SELECT Id, Name, HOT_IsEmployedInterpreter__c, HOT_IsFreelanceInterpreter__c
                 FROM ServiceResource
                 WHERE
                     IsActive = TRUE
@@ -16,7 +16,7 @@ public with sharing class HOT_ServiceResourceController {
         }
         if (searchFreelances == true) {
             return [
-                SELECT Id, Name
+                SELECT Id, Name, HOT_IsEmployedInterpreter__c, HOT_IsFreelanceInterpreter__c
                 FROM ServiceResource
                 WHERE
                     IsActive = TRUE
@@ -28,7 +28,7 @@ public with sharing class HOT_ServiceResourceController {
         }
         if (searchEmployees == true) {
             return [
-                SELECT Id, Name
+                SELECT Id, Name, HOT_IsEmployedInterpreter__c, HOT_IsFreelanceInterpreter__c
                 FROM ServiceResource
                 WHERE
                     IsActive = TRUE
@@ -44,14 +44,14 @@ public with sharing class HOT_ServiceResourceController {
     @AuraEnabled
     public static ResourceDetails getResourceDetails(Id resourceId, Id serviceAppointmentId) {
         ServiceResource resource = [
-            SELECT Id, Name, HOT_PreferredRegions__c
+            SELECT Id, Name, HOT_PreferredRegions__c, HOT_IsEmployedInterpreter__c, HOT_IsFreelanceInterpreter__c
             FROM ServiceResource
             WHERE Id = :resourceId
             WITH USER_MODE
             LIMIT 1
         ];
         ServiceAppointment appointment = [
-            SELECT EarliestStartTime, DueDate, HOT_Request__r.ServiceTerritory__r.Name
+            SELECT EarliestStartTime, DueDate, ServiceTerritory.Name
             FROM ServiceAppointment
             WHERE Id = :serviceAppointmentId
             WITH USER_MODE
@@ -61,8 +61,10 @@ public with sharing class HOT_ServiceResourceController {
         ResourceDetails details = new ResourceDetails();
         details.id = resource.Id;
         details.name = resource.Name;
+        details.isEmployedInterpreter = resource.HOT_IsEmployedInterpreter__c;
+        details.isFreelanceInterpreter = resource.HOT_IsFreelanceInterpreter__c;
         details.preferredRegions = new List<String>();
-        details.serviceTerritoryName = appointment.HOT_Request__r?.ServiceTerritory__r?.Name;
+        details.serviceTerritoryName = appointment.ServiceTerritory?.Name;
 
         Set<String> preferredRegionValues = new Set<String>();
         if (String.isNotBlank(resource.HOT_PreferredRegions__c)) {
@@ -79,6 +81,18 @@ public with sharing class HOT_ServiceResourceController {
 
         details.regionMatches =
             details.serviceTerritoryName != null && details.preferredRegions.contains(details.serviceTerritoryName);
+        if (details.serviceTerritoryName != null && !details.regionMatches) {
+            List<ServiceTerritoryMember> matchingTerritoryMembers = [
+                SELECT Id
+                FROM ServiceTerritoryMember
+                WHERE
+                    ServiceResourceId = :resourceId
+                    AND ServiceTerritory.Name = :details.serviceTerritoryName
+                    AND EffectiveEndDate = NULL
+                LIMIT 1
+            ];
+            details.regionMatches = !matchingTerritoryMembers.isEmpty();
+        }
         details.hasOverlap = false;
 
         if (appointment.EarliestStartTime != null && appointment.DueDate != null) {
@@ -89,7 +103,6 @@ public with sharing class HOT_ServiceResourceController {
                     ServiceResource__c = :resourceId
                     AND ServiceAppointment__c != :serviceAppointmentId
                     AND Status__c = 'Assigned'
-                WITH USER_MODE
             ]) {
                 if (
                     assignedResource.ServiceAppointmentStartTime__c != null &&
@@ -123,6 +136,10 @@ public with sharing class HOT_ServiceResourceController {
         @AuraEnabled
         public String name;
         @AuraEnabled
+        public Boolean isEmployedInterpreter;
+        @AuraEnabled
+        public Boolean isFreelanceInterpreter;
+        @AuraEnabled
         public List<String> preferredRegions;
         @AuraEnabled
         public String serviceTerritoryName;
@@ -130,5 +147,7 @@ public with sharing class HOT_ServiceResourceController {
         public Boolean regionMatches;
         @AuraEnabled
         public Boolean hasOverlap;
+        @AuraEnabled
+        public Boolean hasRegionMismatch;
     }
 }

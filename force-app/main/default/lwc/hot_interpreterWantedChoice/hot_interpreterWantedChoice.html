@@ -1,0 +1,23 @@
+<template>
+    <template lwc:if={wantedResource}>
+        <section class="slds-box slds-theme_default">
+            <p class="slds-m-bottom_medium">{wantedMessage}</p>
+            <div class="slds-grid slds-wrap slds-gutters_x-small">
+                <div class="slds-col slds-grow-none">
+                    <lightning-button
+                        label="Meld interesse"
+                        variant="brand"
+                        onclick={handleInterested}
+                        disabled={isSaving}
+                    ></lightning-button>
+                </div>
+                <div class="slds-col slds-grow-none">
+                    <lightning-button label="Avslå" onclick={handleDeclined} disabled={isSaving}></lightning-button>
+                </div>
+            </div>
+        </section>
+    </template>
+    <template lwc:if={errorMessage}>
+        <p role="alert" class="slds-text-color_error slds-m-top_small">{errorMessage}</p>
+    </template>
+</template>
