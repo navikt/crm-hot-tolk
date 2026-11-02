@@ -41,7 +41,13 @@
                             data-resource-id={resource.Id}
                             onclick={handleResourceSelect}
                         >
-                            {resource.Name}
+                            <span>{resource.Name}</span>
+                            <template lwc:if={resource.HOT_IsEmployedInterpreter__c}>
+                                <c-hot_tag label="Ansatt" variant="moderate" size="small" color="info"></c-hot_tag>
+                            </template>
+                            <template lwc:if={resource.HOT_IsFreelanceInterpreter__c}>
+                                <c-hot_tag label="Frilanstolk" variant="moderate" size="small" color="info"></c-hot_tag>
+                            </template>
                         </button>
                     </li>
                 </template>
@@ -59,10 +65,16 @@
             <section class="resource-card" aria-label="Valgt tjenesteressurs">
                 <h2 class="resource-name">{selectedResource.name}</h2>
                 <div class="resource-tags">
+                    <template lwc:if={selectedResource.isEmployedInterpreter}>
+                        <c-hot_tag label="Ansatt" variant="moderate" size="small" color="info"></c-hot_tag>
+                    </template>
+                    <template lwc:if={selectedResource.isFreelanceInterpreter}>
+                        <c-hot_tag label="Frilanstolk" variant="moderate" size="small" color="info"></c-hot_tag>
+                    </template>
                     <c-hot_tag label={overlapLabel} variant="moderate" size="small" color={overlapColor}></c-hot_tag>
                     <template lwc:if={hasRegionMismatch}>
                         <c-hot_tag
-                            label="Har ikke dette tjenesteområdet"
+                            label="Ikke preferert tjenesteområde"
                             variant="moderate"
                             size="small"
                             color="warning"
