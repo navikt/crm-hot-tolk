@@ -1,15 +1,14 @@
 import { LightningElement, track, wire, api } from 'lwc';
 import getTimes from '@salesforce/apex/HOT_RequestListController.getTimesNew';
+import previewRecurringWorkOrders from '@salesforce/apex/HOT_CreateWorkOrderService.previewRecurringWorkOrders';
 import {
     requireInput,
     dateInPast,
     startBeforeEnd,
     requireRecurringDays,
     startDateBeforeRecurringEndDate,
-    restrictTheNumberOfDays,
-    chosenDaysWithinPeriod
+    restrictTheNumberOfDays
 } from './hot_recurringTimeInput_validationRules';
-import getRecurringDateRange from './recurringDateRange';
 
 export default class hot_recurringTimeInput_v2 extends LightningElement {
     @track times = [];
@@ -20,6 +19,106 @@ export default class hot_recurringTimeInput_v2 extends LightningElement {
     @api isEditMode = false;
     singleExistingWorkOrderId;
     uniqueIdCounter = 0;
+    recurringPreview;
+    previewLoading = false;
+    previewError = '';
+    previewTimer;
+    previewVersion = 0;
+    previewExpanded = false;
+    previewValidationRequested = false;
+
+    get previewParameters() {
+        const time = this.times[0];
+        if (
+            !this.isAdvancedTimes ||
+            !time?.date ||
+            !time.startTimeString ||
+            !time.endTimeString ||
+            !this.repeatingEndDateString ||
+            time.endTime <= time.startTime ||
+            (this.showWeekDays && !this.chosenDays.length) ||
+            this.recurringDateError ||
+            restrictTheNumberOfDays(this.repeatingEndDate, time.startTime)
+        ) {
+            return null;
+        }
+        return {
+            startTime: time.startTime,
+            endTime: time.endTime,
+            recurringEndDate: this.repeatingEndDate,
+            recurringType: this.repeatingOptionChosen,
+            recurringDays: [...this.chosenDays]
+        };
+    }
+
+    refreshRecurringPreview() {
+        clearTimeout(this.previewTimer);
+        if (this.previewValidationRequested) {
+            this.template.querySelector('[data-id="recurringEndDate"]')?.sendErrorMessage('');
+            this.previewValidationRequested = false;
+        }
+        const version = ++this.previewVersion;
+        this.recurringPreview = undefined;
+        this.previewError = '';
+        this.previewExpanded = false;
+        const parameters = this.previewParameters;
+        this.previewLoading = !!parameters;
+        if (!parameters) {
+            return;
+        }
+        this.previewTimer = setTimeout(async () => {
+            try {
+                const result = await previewRecurringWorkOrders(parameters);
+                if (version === this.previewVersion) {
+                    this.recurringPreview = result;
+                }
+            } catch (error) {
+                if (version === this.previewVersion) {
+                    console.error('previewRecurringWorkOrders error', error);
+                    this.previewError = error?.body?.message || 'Forhåndsvisningen kunne ikke hentes. Prøv igjen.';
+                }
+            } finally {
+                if (version === this.previewVersion) {
+                    this.previewLoading = false;
+                    if (this.previewValidationRequested) {
+                        this.template
+                            .querySelector('[data-id="recurringEndDate"]')
+                            ?.sendErrorMessage(this.previewValidationError);
+                    }
+                }
+            }
+        }, 300);
+    }
+
+    disconnectedCallback() {
+        clearTimeout(this.previewTimer);
+        this.previewVersion += 1;
+    }
+
+    get previewValidationError() {
+        if (this.previewError) {
+            return this.previewError;
+        }
+        if (this.previewLoading) {
+            return 'Vent til forhåndsvisningen er klar.';
+        }
+        if (this.recurringPreview?.count === 0) {
+            return 'Valgte gjentagelsesdager finnes ikke i perioden.';
+        }
+        return '';
+    }
+
+    get hasPreviewIntervals() {
+        return this.recurringPreview?.count > 0;
+    }
+
+    get previewToggleLabel() {
+        return this.previewExpanded ? 'Skjul tidspunkter' : 'Vis alle tidspunkter';
+    }
+
+    handlePreviewToggle(event) {
+        this.previewExpanded = event.currentTarget.open;
+    }
 
     setTimesValue(timeObject) {
         return {
@@ -71,12 +170,7 @@ export default class hot_recurringTimeInput_v2 extends LightningElement {
             return '';
         }
 
-        const { firstDate, lastDate } = getRecurringDateRange(
-            this.times[0].date,
-            this.repeatingEndDateString,
-            this.repeatingOptionChosen,
-            this.chosenDays
-        );
+        const { firstDate, lastDate } = this.recurringPreview || {};
         if (!firstDate || !lastDate) {
             return '';
         }
@@ -95,6 +189,7 @@ export default class hot_recurringTimeInput_v2 extends LightningElement {
         this.times[index].date = event.detail;
         this.times[index].dateMilliseconds = new Date(event.detail).getTime();
         this.setStartTime(index);
+        this.refreshRecurringPreview();
     }
     handleStartTimeChange(event) {
         const index = this.getTimesIndex(event.target.name);
@@ -104,6 +199,7 @@ export default class hot_recurringTimeInput_v2 extends LightningElement {
             event.detail
         ).getTime();
         this.setEndTimeBasedOnStartTime(index);
+        this.refreshRecurringPreview();
     }
     handleEndTimeChange(event) {
         const index = this.getTimesIndex(event.target.name);
@@ -113,6 +209,7 @@ export default class hot_recurringTimeInput_v2 extends LightningElement {
                 (this.times[index].endTimeString < this.times[index].startTimeString ? 86400000 : 0),
             event.detail
         ).getTime();
+        this.refreshRecurringPreview();
     }
     setStartTime(index) {
         let dateTime = new Date();
@@ -195,6 +292,7 @@ export default class hot_recurringTimeInput_v2 extends LightningElement {
             }
         }
         this.updateIsOnlyOneTime();
+        this.refreshRecurringPreview();
     }
     addTime() {
         this.uniqueIdCounter += 1;
@@ -217,6 +315,7 @@ export default class hot_recurringTimeInput_v2 extends LightningElement {
             this.times = this.timesBackup;
         }
         this.updateIsOnlyOneTime();
+        this.refreshRecurringPreview();
     }
 
     repeatingOptions = [
@@ -239,6 +338,7 @@ export default class hot_recurringTimeInput_v2 extends LightningElement {
                 element.selected = false;
             }
         });
+        this.refreshRecurringPreview();
     }
 
     chosenDays = [];
@@ -259,12 +359,14 @@ export default class hot_recurringTimeInput_v2 extends LightningElement {
                 this.chosenDays.push(element.name);
             }
         });
+        this.refreshRecurringPreview();
     }
     @track repeatingEndDate;
     @track repeatingEndDateString;
     setRepeatingEndDateDate(event) {
         this.repeatingEndDateString = event.detail;
         this.repeatingEndDate = new Date(event.detail).getTime();
+        this.refreshRecurringPreview();
     }
 
     @api
@@ -366,27 +468,13 @@ export default class hot_recurringTimeInput_v2 extends LightningElement {
             errorMessage = restrictTheNumberOfDays(this.repeatingEndDate, this.times[0].startTime);
             hasErrors += errorMessage !== '';
         }
-        if (errorMessage === '') {
-            errorMessage = chosenDaysWithinPeriod(
-                this.repeatingOptionChosen,
-                this.chosenDays,
-                this.repeatingOptionChosen,
-                this.chosenDays
-            );
+        if (errorMessage === '' && this.previewParameters) {
+            if (!this.recurringPreview && !this.previewLoading && !this.previewError) {
+                this.refreshRecurringPreview();
+            }
+            errorMessage = this.previewValidationError;
+            this.previewValidationRequested = true;
             hasErrors += errorMessage !== '';
-        }
-        if (
-            errorMessage === '' &&
-            this.showWeekDays &&
-            !getRecurringDateRange(
-                this.times[0]?.date,
-                this.repeatingEndDateString,
-                this.repeatingOptionChosen,
-                this.chosenDays
-            ).firstDate
-        ) {
-            errorMessage = 'Valgte gjentagelsesdager finnes ikke i perioden.';
-            hasErrors += 1;
         }
         recurringEndDateElement.sendErrorMessage(errorMessage);
         return hasErrors;
@@ -429,6 +517,7 @@ export default class hot_recurringTimeInput_v2 extends LightningElement {
                 this.validateSimpleTimes();
             }
             this.isOnlyOneTime = this.times.length === 1;
+            this.refreshRecurringPreview();
         } else {
             this.times = [this.setTimesValue(null)];
         }

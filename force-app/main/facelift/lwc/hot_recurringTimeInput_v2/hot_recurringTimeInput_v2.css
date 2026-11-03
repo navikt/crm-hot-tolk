@@ -17,6 +17,26 @@
     line-height: 1.5;
 }
 
+.recurring-preview-list {
+    max-height: 24rem;
+    overflow: auto;
+}
+
+.recurring-preview-list table {
+    width: 100%;
+    border-collapse: collapse;
+}
+
+.recurring-preview-list th,
+.recurring-preview-list td {
+    padding: 0.5rem;
+    text-align: left;
+}
+
+summary {
+    cursor: pointer;
+}
+
 .recurring-date-error {
     border-color: #e3b8bd;
     background-color: #fbeef0;

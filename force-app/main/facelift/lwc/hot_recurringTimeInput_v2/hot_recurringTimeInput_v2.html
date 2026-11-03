@@ -114,6 +114,45 @@
                 >
                     {recurringBoundaryWarning}
                 </div>
+                <p lwc:if={previewLoading} role="status">Henter forhåndsvisning...</p>
+                <template lwc:elseif={previewValidationError}>
+                    <div class="recurring-date-error" role="alert">{previewValidationError}</div>
+                    <c-button
+                        lwc:if={previewError}
+                        type="button"
+                        button-styling="secondary"
+                        button-label="Prøv igjen"
+                        onbuttonclick={refreshRecurringPreview}
+                    ></c-button>
+                </template>
+                <template lwc:if={hasPreviewIntervals}>
+                    <p role="status">Antall tidspunkter: {recurringPreview.count}</p>
+                    <details ontoggle={handlePreviewToggle}>
+                        <summary>{previewToggleLabel}</summary>
+                        <p>Tidssone: {recurringPreview.timeZone}</p>
+                        <div class="recurring-preview-list">
+                            <table>
+                                <caption class="sr-only">
+                                    Tidspunkter i serien
+                                </caption>
+                                <thead>
+                                    <tr>
+                                        <th scope="col">Start</th>
+                                        <th scope="col">Slutt</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <template for:each={recurringPreview.intervals} for:item="interval">
+                                        <tr key={interval.startTime}>
+                                            <td>{interval.startLabel}</td>
+                                            <td>{interval.endLabel}</td>
+                                        </tr>
+                                    </template>
+                                </tbody>
+                            </table>
+                        </div>
+                    </details>
+                </template>
             </div>
         </template>
         <c-button
