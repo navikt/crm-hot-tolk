@@ -14,6 +14,7 @@ export default class Hot_interpreterWantedChoice extends LightningElement {
     wantedResource;
     errorMessage;
     isSaving = false;
+    interestRegisteredAppointmentId;
 
     @wire(MessageContext)
     messageContext;
@@ -36,6 +37,10 @@ export default class Hot_interpreterWantedChoice extends LightningElement {
             : 'Du er ønsket til dette oppdraget';
     }
 
+    get showInterestConfirmation() {
+        return this.interestRegisteredAppointmentId === this.recordId && !!this.recordId;
+    }
+
     handleInterested() {
         return this.saveResponse('Interested');
     }
@@ -54,6 +59,7 @@ export default class Hot_interpreterWantedChoice extends LightningElement {
         const serviceAppointmentId = this.recordId;
         try {
             await respond({ interestedResourceId, status });
+            this.interestRegisteredAppointmentId = status === 'Interested' ? serviceAppointmentId : undefined;
             this.wantedResource = undefined;
             await notifyRecordUpdateAvailable([{ recordId: interestedResourceId }, { recordId: serviceAppointmentId }]);
             if (status === 'Interested') {
