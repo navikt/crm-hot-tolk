@@ -140,36 +140,28 @@ public without sharing class HOT_CreateWorkOrderService {
             );
         }
 
-        List<Integer> occurrenceOffsets = getRecurringDayOffsets(
+        List<WorkOrder> occurrences = getRecurringWorkOrders(
+            requestId,
             requestedStart,
+            requestedEnd,
             recurrenceEndDate,
             recurringType,
             selectedDays
         );
-        if (occurrenceOffsets.isEmpty()) {
+        if (occurrences.isEmpty()) {
             throw new AuraHandledException('Valgte gjentagelsesdager finnes ikke i perioden.');
         }
-        if (occurrenceOffsets.size() > 200) {
+        if (occurrences.size() > 200) {
             throw new AuraHandledException('Kan ikke opprette mer enn 200 arbeidsordre av gangen.');
         }
 
-        TimeZone tz = UserInfo.getTimeZone();
         List<WorkOrder> additionalWorkOrders = new List<WorkOrder>();
-        for (Integer i = 0; i < occurrenceOffsets.size(); i++) {
-            Integer offset = occurrenceOffsets[i];
-            Datetime occurrenceStart = requestedStart.addDays(offset);
-            Datetime occurrenceEnd = requestedEnd.addDays(offset);
-            Integer timezoneOffset = tz.getOffset(occurrenceStart) - tz.getOffset(requestedStart);
-            occurrenceStart = occurrenceStart.addHours(-timezoneOffset / 3600000);
-            occurrenceEnd = occurrenceEnd.addHours(-timezoneOffset / 3600000);
-
+        for (Integer i = 0; i < occurrences.size(); i++) {
             if (i == 0) {
-                workOrders[0].StartDate = occurrenceStart;
-                workOrders[0].EndDate = occurrenceEnd;
+                workOrders[0].StartDate = occurrences[i].StartDate;
+                workOrders[0].EndDate = occurrences[i].EndDate;
             } else {
-                additionalWorkOrders.add(
-                    new WorkOrder(HOT_Request__c = requestId, StartDate = occurrenceStart, EndDate = occurrenceEnd)
-                );
+                additionalWorkOrders.add(occurrences[i]);
             }
         }
 
@@ -191,7 +183,7 @@ public without sharing class HOT_CreateWorkOrderService {
             if (
                 savedRequest.StartTime__c != workOrders[0].StartDate ||
                 savedRequest.EndTime__c != workOrders[0].EndDate ||
-                savedRequest.NumberOfWorkOrders__c != occurrenceOffsets.size()
+                savedRequest.NumberOfWorkOrders__c != occurrences.size()
             ) {
                 throw new AuraHandledException('Bestillingen ble ikke oppdatert med alle tidspunktene.');
             }
@@ -294,6 +286,138 @@ public without sharing class HOT_CreateWorkOrderService {
         return occurrenceOffsets;
     }
 
+    /**
+     * Calculates intervals without DML, preserving creation's start-based DST correction for both endpoints.
+     */
+    private static List<WorkOrder> getRecurringWorkOrders(
+        Id requestId,
+        Datetime startDate,
+        Datetime endDate,
+        Date recurringEndDate,
+        String recurringType,
+        Set<String> selectedDays
+    ) {
+        TimeZone tz = UserInfo.getTimeZone();
+        List<WorkOrder> occurrences = new List<WorkOrder>();
+        for (Integer offset : getRecurringDayOffsets(startDate, recurringEndDate, recurringType, selectedDays)) {
+            Datetime occurrenceStart = startDate.addDays(offset);
+            Datetime occurrenceEnd = endDate.addDays(offset);
+            Integer os = tz.getOffset(occurrenceStart) - tz.getOffset(startDate);
+            occurrences.add(
+                new WorkOrder(
+                    HOT_Request__c = requestId,
+                    StartDate = occurrenceStart.addHours(-os / 3600000),
+                    EndDate = occurrenceEnd.addHours(-os / 3600000)
+                )
+            );
+        }
+        return occurrences;
+    }
+
+    /**
+     * Converts the creation service's weekday flags to the shared generator's selection.
+     */
+    private static Set<String> getSelectedDays(HOT_CreateWorkOrderService input) {
+        Map<String, Boolean> flags = new Map<String, Boolean>{
+            'monday' => input.monday,
+            'tuesday' => input.tuesday,
+            'wednesday' => input.wednesday,
+            'thursday' => input.thursday,
+            'friday' => input.friday,
+            'saturday' => input.saturday,
+            'sunday' => input.sunday
+        };
+        Set<String> selectedDays = new Set<String>();
+        for (String dayName : flags.keySet()) {
+            if (flags.get(dayName) == true) {
+                selectedDays.add(dayName);
+            }
+        }
+        return selectedDays;
+    }
+
+    /**
+     * Previews the form's series in the caller's timezone without reading or changing any records.
+     */
+    @AuraEnabled(cacheable=true)
+    public static Map<String, Object> previewRecurringWorkOrders(
+        Long startTime,
+        Long endTime,
+        Long recurringEndDate,
+        String recurringType,
+        List<String> recurringDays
+    ) {
+        if (startTime == null || endTime == null || recurringEndDate == null) {
+            throw new AuraHandledException('Kontroller dato og tid.');
+        }
+        Datetime startDate = Datetime.newInstance(startTime);
+        Datetime endDate = Datetime.newInstance(endTime);
+        Date seriesEndDate = Datetime.newInstance(recurringEndDate).date();
+        if (endDate <= startDate) {
+            throw new AuraHandledException('Slutt tid må være etter start tid.');
+        }
+        if (seriesEndDate <= startDate.date()) {
+            throw new AuraHandledException('Sluttdato må være etter startdato.');
+        }
+        // Matches the form's duration limit and bounds work for this publicly callable calculation.
+        if (recurringEndDate - startTime > 199L * 86400000) {
+            throw new AuraHandledException(
+                'Du kan ikke legge inn gjentagende bestilling med en varighet på over 6 måneder'
+            );
+        }
+        if (!new Set<String>{ 'Daily', 'Weekly', 'Biweekly', 'Every4Weeks' }.contains(recurringType)) {
+            throw new AuraHandledException('Ugyldig gjentagelsestype.');
+        }
+        Set<String> selectedDays = new Set<String>();
+        if (recurringDays != null) {
+            selectedDays.addAll(recurringDays);
+        }
+        Set<String> validDays = new Set<String>{
+            'monday',
+            'tuesday',
+            'wednesday',
+            'thursday',
+            'friday',
+            'saturday',
+            'sunday'
+        };
+        if (!validDays.containsAll(selectedDays)) {
+            throw new AuraHandledException('Ugyldig gjentagelsesdag.');
+        }
+        if (recurringType != 'Daily' && selectedDays.isEmpty()) {
+            throw new AuraHandledException('Må velge minst en dag.');
+        }
+        List<WorkOrder> occurrences = getRecurringWorkOrders(
+            null,
+            startDate,
+            endDate,
+            seriesEndDate,
+            recurringType,
+            selectedDays
+        );
+        String timeZoneId = UserInfo.getTimeZone().getID();
+        List<Map<String, Object>> intervals = new List<Map<String, Object>>();
+        for (WorkOrder occurrence : occurrences) {
+            intervals.add(
+                new Map<String, Object>{
+                    'startTime' => occurrence.StartDate.getTime(),
+                    'endTime' => occurrence.EndDate.getTime(),
+                    'startLabel' => occurrence.StartDate.format('dd.MM.yyyy HH:mm', timeZoneId),
+                    'endLabel' => occurrence.EndDate.format('dd.MM.yyyy HH:mm', timeZoneId)
+                }
+            );
+        }
+        return new Map<String, Object>{
+            'firstDate' => occurrences.isEmpty() ? null : occurrences[0].StartDate.format('yyyy-MM-dd', timeZoneId),
+            'lastDate' => occurrences.isEmpty()
+                ? null
+                : occurrences[occurrences.size() - 1].StartDate.format('yyyy-MM-dd', timeZoneId),
+            'count' => occurrences.size(),
+            'timeZone' => timeZoneId,
+            'intervals' => intervals
+        };
+    }
+
     @InvocableMethod
     public static List<String> createWorkOrders(List<HOT_CreateWorkOrderService> inputVariables) {
         HOT_CreateWorkOrderService input = inputVariables[0];
@@ -355,19 +479,14 @@ public without sharing class HOT_CreateWorkOrderService {
                 return errors;
             }
 
-            for (Integer i = 0; i <= numberOfRecurrences; i++) {
-                Datetime startDate = input.startDate.addDays(i);
-                Datetime endDate = input.endDate.addDays(i);
-                Integer os = tz.getOffset(startDate) - tz.getOffset(oldStartDate);
-                startDate = startDate.addHours(-os / 3600000);
-                endDate = endDate.addHours(-os / 3600000);
-                WorkOrder workOrder = new workOrder(
-                    HOT_Request__c = input.requestId,
-                    StartDate = startDate,
-                    EndDate = endDate
-                );
-                workOrders.add(workOrder);
-            }
+            workOrders = getRecurringWorkOrders(
+                input.requestId,
+                input.startDate,
+                input.endDate,
+                input.recurringEndDate,
+                input.recurringType,
+                new Set<String>()
+            );
 
             try {
                 insert workOrders;
@@ -380,34 +499,15 @@ public without sharing class HOT_CreateWorkOrderService {
             return errors;
         } else if (input.recurringType == 'Weekly') {
             List<WorkOrder> workOrders = new List<WorkOrder>();
-            Integer numberOfRecurrences = input.startDate.date().daysBetween(input.recurringEndDate);
 
-            for (Integer i = 0; i <= numberOfRecurrences; i++) {
-                Datetime startDate = input.startDate.addDays(i);
-                Datetime endDate = input.endDate.addDays(i);
-                String dayOfWeek = startDate.format('EEEE');
-                Integer os = tz.getOffset(startDate) - tz.getOffset(oldStartDate);
-                startDate = startDate.addHours(-os / 3600000);
-                endDate = endDate.addHours(-os / 3600000);
-
-                System.debug('dayOfWeek: ' + dayOfWeek);
-                if (
-                    input.monday && dayOfWeek == 'Monday' ||
-                    input.tuesday && dayOfWeek == 'Tuesday' ||
-                    input.wednesday && dayOfWeek == 'Wednesday' ||
-                    input.thursday && dayOfWeek == 'Thursday' ||
-                    input.friday && dayOfWeek == 'Friday' ||
-                    input.saturday && dayOfWeek == 'Saturday' ||
-                    input.sunday && dayOfWeek == 'Sunday'
-                ) {
-                    WorkOrder workOrder = new workOrder(
-                        HOT_Request__c = input.requestId,
-                        StartDate = startDate,
-                        EndDate = endDate
-                    );
-                    workOrders.add(workOrder);
-                }
-            }
+            workOrders = getRecurringWorkOrders(
+                input.requestId,
+                input.startDate,
+                input.endDate,
+                input.recurringEndDate,
+                input.recurringType,
+                getSelectedDays(input)
+            );
 
             if (workOrders.size() > maxNumberOfRecurrences) {
                 errors.add('Kan ikke opprette mer enn 200 arbeidsordre av gangen');
@@ -425,36 +525,15 @@ public without sharing class HOT_CreateWorkOrderService {
             return errors;
         } else if (input.recurringType == 'Biweekly') {
             List<WorkOrder> workOrders = new List<WorkOrder>();
-            Integer numberOfRecurrences = input.startDate.date().daysBetween(input.recurringEndDate);
 
-            for (Integer i = 0; i <= numberOfRecurrences; i++) {
-                Datetime startDate = input.startDate.addDays(i);
-                Datetime endDate = input.endDate.addDays(i);
-                String dayOfWeek = startDate.format('EEEE');
-                Integer os = tz.getOffset(startDate) - tz.getOffset(oldStartDate);
-                startDate = startDate.addHours(-os / 3600000);
-                endDate = endDate.addHours(-os / 3600000);
-                System.debug('dayOfWeek: ' + dayOfWeek);
-                if (
-                    input.monday && dayOfWeek == 'Monday' ||
-                    input.tuesday && dayOfWeek == 'Tuesday' ||
-                    input.wednesday && dayOfWeek == 'Wednesday' ||
-                    input.thursday && dayOfWeek == 'Thursday' ||
-                    input.friday && dayOfWeek == 'Friday' ||
-                    input.saturday && dayOfWeek == 'Saturday' ||
-                    input.sunday && dayOfWeek == 'Sunday'
-                ) {
-                    WorkOrder workOrder = new workOrder(
-                        HOT_Request__c = input.requestId,
-                        StartDate = startDate,
-                        EndDate = endDate
-                    );
-                    workOrders.add(workOrder);
-                }
-                if (dayOfWeek == 'Sunday') {
-                    i = i + 7;
-                }
-            }
+            workOrders = getRecurringWorkOrders(
+                input.requestId,
+                input.startDate,
+                input.endDate,
+                input.recurringEndDate,
+                input.recurringType,
+                getSelectedDays(input)
+            );
 
             if (workOrders.size() > maxNumberOfRecurrences) {
                 errors.add('Kan ikke opprette mer enn 200 arbeidsordre av gangen');
@@ -472,36 +551,15 @@ public without sharing class HOT_CreateWorkOrderService {
             return errors;
         } else if (input.recurringType == 'Every4Weeks') {
             List<WorkOrder> workOrders = new List<WorkOrder>();
-            Integer numberOfRecurrences = input.startDate.date().daysBetween(input.recurringEndDate);
 
-            for (Integer i = 0; i <= numberOfRecurrences; i++) {
-                Datetime startDate = input.startDate.addDays(i);
-                Datetime endDate = input.endDate.addDays(i);
-                String dayOfWeek = startDate.format('EEEE');
-                Integer os = tz.getOffset(startDate) - tz.getOffset(oldStartDate);
-                startDate = startDate.addHours(-os / 3600000);
-                endDate = endDate.addHours(-os / 3600000);
-                System.debug('dayOfWeek: ' + dayOfWeek);
-                if (
-                    input.monday && dayOfWeek == 'Monday' ||
-                    input.tuesday && dayOfWeek == 'Tuesday' ||
-                    input.wednesday && dayOfWeek == 'Wednesday' ||
-                    input.thursday && dayOfWeek == 'Thursday' ||
-                    input.friday && dayOfWeek == 'Friday' ||
-                    input.saturday && dayOfWeek == 'Saturday' ||
-                    input.sunday && dayOfWeek == 'Sunday'
-                ) {
-                    WorkOrder workOrder = new workOrder(
-                        HOT_Request__c = input.requestId,
-                        StartDate = startDate,
-                        EndDate = endDate
-                    );
-                    workOrders.add(workOrder);
-                }
-                if (dayOfWeek == 'Sunday') {
-                    i = i + 21;
-                }
-            }
+            workOrders = getRecurringWorkOrders(
+                input.requestId,
+                input.startDate,
+                input.endDate,
+                input.recurringEndDate,
+                input.recurringType,
+                getSelectedDays(input)
+            );
 
             if (workOrders.size() > maxNumberOfRecurrences) {
                 errors.add('Kan ikke opprette mer enn 200 arbeidsordre av gangen');

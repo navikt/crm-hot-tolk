@@ -668,7 +668,19 @@ private class HOT_CreateWorkOrderServiceTest {
         HOT_Request__c newRequest = HOT_TestDataFactory.createRequest(recurrenceType + ' creation', workType);
         insert newRequest;
         Long recurringEndDate = Datetime.newInstanceGmt(recurrenceEndDate, Time.newInstance(0, 0, 0, 0)).getTime();
+        Map<String, Object> preview;
         System.runAs(caller) {
+            Integer dmlBefore = Limits.getDmlStatements();
+            Integer queriesBefore = Limits.getQueries();
+            preview = HOT_CreateWorkOrderService.previewRecurringWorkOrders(
+                startTime.getTime(),
+                endTime.getTime(),
+                recurringEndDate,
+                recurrenceType,
+                selectedDays
+            );
+            System.assertEquals(dmlBefore, Limits.getDmlStatements(), 'Preview must not change records');
+            System.assertEquals(queriesBefore, Limits.getQueries(), 'Preview must not read records');
             HOT_CreateWorkOrderService.createWorkOrdersFromCommunity(
                 newRequest.Id,
                 new Map<String, Long>{ 'startTime' => startTime.getTime(), 'endTime' => endTime.getTime() },
@@ -718,11 +730,151 @@ private class HOT_CreateWorkOrderServiceTest {
             ORDER BY StartDate, EndDate
         ];
         System.assertEquals(expectedCount, created.size(), 'Creation must produce the expected interval count');
+        System.assertEquals(expectedCount, preview.get('count'), 'Preview count must match creation');
+        List<Map<String, Object>> intervals = (List<Map<String, Object>>) preview.get('intervals');
         System.assertEquals(existingWorkOrder.Id, converted[0].Id, 'Existing Work Order must remain first');
         for (Integer i = 0; i < created.size(); i++) {
+            System.assertEquals(created[i].StartDate.getTime(), intervals[i].get('startTime'), 'Preview start at ' + i);
+            System.assertEquals(created[i].EndDate.getTime(), intervals[i].get('endTime'), 'Preview end at ' + i);
             System.assertEquals(created[i].StartDate, converted[i].StartDate, 'Start must match creation at ' + i);
             System.assertEquals(created[i].EndDate, converted[i].EndDate, 'End must match creation at ' + i);
         }
+    }
+
+    @IsTest
+    private static void previewPreservesAutumnWeekdaySelection() {
+        System.runAs(previewCaller('Europe/Paris')) {
+            Map<String, Object> preview = HOT_CreateWorkOrderService.previewRecurringWorkOrders(
+                Datetime.newInstanceGmt(2027, 10, 29, 22, 30, 0).getTime(),
+                Datetime.newInstanceGmt(2027, 10, 29, 23, 30, 0).getTime(),
+                Datetime.newInstanceGmt(2027, 11, 2, 0, 0, 0).getTime(),
+                'Weekly',
+                new List<String>{ 'sunday' }
+            );
+            System.assertEquals(2, preview.get('count'));
+            System.assertEquals('2027-10-31', preview.get('firstDate'));
+            System.assertEquals('2027-11-01', preview.get('lastDate'));
+            System.assertEquals('Europe/Paris', preview.get('timeZone'));
+            List<Map<String, Object>> intervals = (List<Map<String, Object>>) preview.get('intervals');
+            System.assertEquals('01.11.2027 00:30', intervals[1].get('startLabel'));
+        }
+    }
+
+    @IsTest
+    private static void previewPreservesSpringWeekdaySelection() {
+        System.runAs(previewCaller('Europe/Paris')) {
+            Map<String, Object> preview = HOT_CreateWorkOrderService.previewRecurringWorkOrders(
+                Datetime.newInstanceGmt(2027, 3, 26, 22, 30, 0).getTime(),
+                Datetime.newInstanceGmt(2027, 3, 26, 23, 30, 0).getTime(),
+                Datetime.newInstanceGmt(2027, 3, 30, 0, 0, 0).getTime(),
+                'Weekly',
+                new List<String>{ 'monday' }
+            );
+            System.assertEquals(1, preview.get('count'));
+            System.assertEquals('2027-03-28', preview.get('firstDate'));
+            List<Map<String, Object>> intervals = (List<Map<String, Object>>) preview.get('intervals');
+            System.assertEquals('28.03.2027 23:30', intervals[0].get('startLabel'));
+            System.assertEquals('29.03.2027 00:30', intervals[0].get('endLabel'));
+        }
+    }
+
+    @IsTest
+    private static void previewPreservesOvernightEndCorrection() {
+        System.runAs(previewCaller('Europe/Paris')) {
+            Map<String, Object> preview = HOT_CreateWorkOrderService.previewRecurringWorkOrders(
+                Datetime.newInstanceGmt(2027, 10, 29, 21, 0, 0).getTime(),
+                Datetime.newInstanceGmt(2027, 10, 30, 1, 0, 0).getTime(),
+                Datetime.newInstanceGmt(2027, 10, 31, 0, 0, 0).getTime(),
+                'Daily',
+                new List<String>()
+            );
+            List<Map<String, Object>> intervals = (List<Map<String, Object>>) preview.get('intervals');
+            System.assertEquals('30.10.2027 23:00', intervals[1].get('startLabel'));
+            System.assertEquals('31.10.2027 02:00', intervals[1].get('endLabel'));
+        }
+    }
+
+    @IsTest
+    private static void previewUsesCallerTimezoneForEndBoundary() {
+        System.runAs(previewCaller('America/New_York')) {
+            Map<String, Object> preview = HOT_CreateWorkOrderService.previewRecurringWorkOrders(
+                Datetime.newInstanceGmt(2027, 10, 30, 14, 0, 0).getTime(),
+                Datetime.newInstanceGmt(2027, 10, 30, 15, 0, 0).getTime(),
+                Datetime.newInstanceGmt(2027, 11, 2, 0, 0, 0).getTime(),
+                'Daily',
+                new List<String>()
+            );
+            System.assertEquals(3, preview.get('count'));
+            System.assertEquals('2027-11-01', preview.get('lastDate'));
+            List<Map<String, Object>> intervals = (List<Map<String, Object>>) preview.get('intervals');
+            System.assertEquals('30.10.2027 10:00', intervals[0].get('startLabel'));
+        }
+    }
+
+    @IsTest
+    private static void previewReturnsEmptySeriesWithoutDml() {
+        System.runAs(previewCaller('Europe/Paris')) {
+            Integer dmlBefore = Limits.getDmlStatements();
+            Map<String, Object> preview = HOT_CreateWorkOrderService.previewRecurringWorkOrders(
+                Datetime.newInstanceGmt(2027, 10, 26, 8, 0, 0).getTime(),
+                Datetime.newInstanceGmt(2027, 10, 26, 9, 0, 0).getTime(),
+                Datetime.newInstanceGmt(2027, 10, 27, 0, 0, 0).getTime(),
+                'Weekly',
+                new List<String>{ 'monday' }
+            );
+            System.assertEquals(0, preview.get('count'));
+            System.assertEquals(null, preview.get('firstDate'));
+            System.assertEquals(null, preview.get('lastDate'));
+            System.assertEquals(dmlBefore, Limits.getDmlStatements());
+        }
+    }
+
+    @IsTest
+    private static void previewRejectsInvalidParameters() {
+        Long startTime = Datetime.newInstanceGmt(2027, 10, 26, 8, 0, 0).getTime();
+        Long endTime = startTime + 3600000;
+        Long seriesEnd = startTime + 86400000;
+        List<List<Object>> invalidInputs = new List<List<Object>>{
+            new List<Object>{ null, endTime, seriesEnd, 'Daily', new List<String>() },
+            new List<Object>{ startTime, startTime, seriesEnd, 'Daily', new List<String>() },
+            new List<Object>{ startTime, endTime, startTime, 'Daily', new List<String>() },
+            new List<Object>{ startTime, endTime, startTime + 200L * 86400000, 'Daily', new List<String>() },
+            new List<Object>{ startTime, endTime, seriesEnd, 'Monthly', new List<String>() },
+            new List<Object>{ startTime, endTime, seriesEnd, 'Weekly', new List<String>() },
+            new List<Object>{ startTime, endTime, seriesEnd, 'Weekly', new List<String>{ 'invalid' } }
+        };
+        for (List<Object> input : invalidInputs) {
+            Boolean rejected = false;
+            try {
+                HOT_CreateWorkOrderService.previewRecurringWorkOrders(
+                    (Long) input[0],
+                    (Long) input[1],
+                    (Long) input[2],
+                    (String) input[3],
+                    (List<String>) input[4]
+                );
+            } catch (AuraHandledException e) {
+                rejected = true;
+            }
+            System.assert(rejected, 'Invalid preview input must fail explicitly');
+        }
+    }
+
+    /**
+     * Runs timezone calculations with an internal user and no request/account setup.
+     */
+    private static User previewCaller(String timeZoneId) {
+        return new User(
+            Alias = 'preview',
+            Email = 'preview' + timeZoneId.replace('/', '.') + '@nav.no',
+            EmailEncodingKey = 'UTF-8',
+            LastName = 'Preview',
+            LanguageLocaleKey = 'en_US',
+            LocaleSidKey = 'en_GB',
+            ProfileId = UserInfo.getProfileId(),
+            TimeZoneSidKey = timeZoneId,
+            Username = 'preview.' + timeZoneId.replace('/', '.') + '.' + UserInfo.getOrganizationId() + '@example.com'
+        );
     }
 
     @IsTest
