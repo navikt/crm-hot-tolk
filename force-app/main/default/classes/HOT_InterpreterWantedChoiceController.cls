@@ -1,4 +1,4 @@
-public with sharing class HOT_InterpreterWantedChoiceController {
+public without sharing class HOT_InterpreterWantedChoiceController {
     @AuraEnabled(cacheable=true)
     public static List<HOT_InterestedResource__c> getWantedResource(Id serviceAppointmentId) {
         return [
