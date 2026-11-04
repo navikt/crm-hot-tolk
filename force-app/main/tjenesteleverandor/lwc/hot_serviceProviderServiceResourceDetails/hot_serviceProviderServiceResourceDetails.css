@@ -126,10 +126,6 @@
     white-space: pre-line;
 }
 
-.preferred-regions {
-    grid-column: 1 / -1;
-}
-
 .tag-list {
     display: flex;
     flex-wrap: wrap;

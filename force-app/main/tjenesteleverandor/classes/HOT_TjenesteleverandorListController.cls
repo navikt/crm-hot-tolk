@@ -260,4 +260,14 @@ public with sharing class HOT_TjenesteleverandorListController {
             LIMIT 1
         ];
     }
+
+    @AuraEnabled(cacheable=true)
+    public static List<ServiceResourceSkill> getServiceResourceSkills(Id resourceId) {
+        return [
+            SELECT EffectiveStartDate, SkillId, EffectiveEndDate, ServiceResourceId, Id, Skill.MasterLabel
+            FROM ServiceResourceSkill
+            WHERE ServiceResourceId = :resourceId
+            WITH SECURITY_ENFORCED
+        ];
+    }
 }

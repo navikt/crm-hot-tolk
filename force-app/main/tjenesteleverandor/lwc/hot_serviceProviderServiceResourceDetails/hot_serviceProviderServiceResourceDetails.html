@@ -9,7 +9,7 @@
                     alternative-text=""
                     aria-hidden="true"
                 ></lightning-icon>
-                <span>Tilbake til tolker</span>
+                <span>Tilbake til tjenesteressurser</span>
             </button>
         </nav>
 
@@ -83,6 +83,23 @@
                         </template>
                     </dl>
                 </section>
+                <template lwc:if={hasSkills}>
+                    <section class="detail-card" aria-labelledby="resource-skills-heading">
+                        <h2 id="resource-skills-heading" class="card-heading">Kvalifikasjoner</h2>
+                        <ul class="tag-list">
+                            <template for:each={skills} for:item="skill">
+                                <li key={skill.Id}>
+                                    <c-hot_tag
+                                        label={skill.Skill.MasterLabel}
+                                        variant="moderate"
+                                        size="large"
+                                        color="success"
+                                    ></c-hot_tag>
+                                </li>
+                            </template>
+                        </ul>
+                    </section>
+                </template>
             </div>
         </template>
     </article>

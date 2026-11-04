@@ -1,5 +1,6 @@
 import { LightningElement, wire } from 'lwc';
 import getSRDetails from '@salesforce/apex/HOT_TjenesteleverandorListController.getSRDetails';
+import getServiceResourceSkills from '@salesforce/apex/HOT_TjenesteleverandorListController.getServiceResourceSkills';
 import { NavigationMixin, CurrentPageReference } from 'lightning/navigation';
 
 const RESOURCE_FIELDS = [
@@ -37,6 +38,7 @@ const TAG_DEFINITIONS = [
 export default class Hot_serviceProviderServiceResourceDetails extends NavigationMixin(LightningElement) {
     routeRecordId;
     recordData;
+    qualifications;
 
     isLoading = true;
     hasError = false;
@@ -71,8 +73,23 @@ export default class Hot_serviceProviderServiceResourceDetails extends Navigatio
             this.recordData = data;
             this.hasError = false;
             this.isLoading = false;
-        } else if (error || data === null) {
+        } else if (error) {
             this.recordData = undefined;
+            this.hasError = true;
+            this.isLoading = false;
+        }
+    }
+
+    @wire(getServiceResourceSkills, { resourceId: '$recordId' })
+    wiredSkills({ data, error }) {
+        console.log("fetched:", data, error);
+        if (data){
+            this.qualifications = data;
+            this.hasError = false;
+            this.isLoading = false;
+        }
+        else if (error) {
+            this.qualifications = undefined;
             this.hasError = true;
             this.isLoading = false;
         }
@@ -92,6 +109,10 @@ export default class Hot_serviceProviderServiceResourceDetails extends Navigatio
 
     get contactFields() {
         return this.formatFields(CONTACT_FIELDS);
+    }
+
+    get hasQualifications() {
+        return Boolean(this.qualifications);
     }
 
     get preferredRegionTags() {
