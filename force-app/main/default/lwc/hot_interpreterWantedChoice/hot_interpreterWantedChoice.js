@@ -14,6 +14,8 @@ export default class Hot_interpreterWantedChoice extends LightningElement {
     wantedResource;
     errorMessage;
     isSaving = false;
+    interestRegisteredAppointmentId;
+    declinedAppointmentId;
 
     @wire(MessageContext)
     messageContext;
@@ -22,10 +24,15 @@ export default class Hot_interpreterWantedChoice extends LightningElement {
     wiredWantedResource(result) {
         this.wantedState = result;
         if (result.data) {
-            this.wantedResource = result.data[0];
+            const resource = result.data[0];
+            this.wantedResource = resource?.Status__c === 'Wanted' ? resource : undefined;
+            this.interestRegisteredAppointmentId = resource?.Status__c === 'Interested' ? this.recordId : undefined;
+            this.declinedAppointmentId = resource?.Status__c === 'Declined' ? this.recordId : undefined;
             this.errorMessage = undefined;
         } else if (result.error) {
             this.wantedResource = undefined;
+            this.interestRegisteredAppointmentId = undefined;
+            this.declinedAppointmentId = undefined;
             this.showError(result.error);
         }
     }
@@ -34,6 +41,14 @@ export default class Hot_interpreterWantedChoice extends LightningElement {
         return this.wantedResource?.HOT_Wanted_by__c
             ? `Du er ønsket til dette oppdraget av ${this.wantedResource.HOT_Wanted_by__c}`
             : 'Du er ønsket til dette oppdraget';
+    }
+
+    get showInterestConfirmation() {
+        return this.interestRegisteredAppointmentId === this.recordId && !!this.recordId;
+    }
+
+    get showDeclinedConfirmation() {
+        return this.declinedAppointmentId === this.recordId && !!this.recordId;
     }
 
     handleInterested() {
@@ -54,6 +69,8 @@ export default class Hot_interpreterWantedChoice extends LightningElement {
         const serviceAppointmentId = this.recordId;
         try {
             await respond({ interestedResourceId, status });
+            this.interestRegisteredAppointmentId = status === 'Interested' ? serviceAppointmentId : undefined;
+            this.declinedAppointmentId = status === 'Declined' ? serviceAppointmentId : undefined;
             this.wantedResource = undefined;
             await notifyRecordUpdateAvailable([{ recordId: interestedResourceId }, { recordId: serviceAppointmentId }]);
             if (status === 'Interested') {
