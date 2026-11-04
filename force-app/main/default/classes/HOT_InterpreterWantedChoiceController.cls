@@ -2,13 +2,13 @@ public without sharing class HOT_InterpreterWantedChoiceController {
     @AuraEnabled(cacheable=true)
     public static List<HOT_InterestedResource__c> getWantedResource(Id serviceAppointmentId) {
         return [
-            SELECT Id, HOT_Wanted_by__c
+            SELECT Id, HOT_Wanted_by__c, Status__c
             FROM HOT_InterestedResource__c
             WHERE
                 ServiceAppointment__c = :serviceAppointmentId
                 AND ServiceAppointment__c != NULL
                 AND ServiceResource__r.RelatedRecordId = :UserInfo.getUserId()
-                AND Status__c = 'Wanted'
+                AND Status__c IN ('Wanted', 'Interested', 'Declined')
             LIMIT 1
         ];
     }
