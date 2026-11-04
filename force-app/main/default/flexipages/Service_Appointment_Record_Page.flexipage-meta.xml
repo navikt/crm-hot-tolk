@@ -16,6 +16,19 @@
         </itemInstances>
         <itemInstances>
             <componentInstance>
+                <componentName>hot_interpreterWantedChoice</componentName>
+                <identifier>c_hot_interpreterWantedChoice</identifier>
+                <visibilityRule>
+                    <criteria>
+                        <leftValue>{!$Client.formFactor}</leftValue>
+                        <operator>EQUAL</operator>
+                        <rightValue>Small</rightValue>
+                    </criteria>
+                </visibilityRule>
+            </componentInstance>
+        </itemInstances>
+        <itemInstances>
+            <componentInstance>
                 <componentInstanceProperties>
                     <name>actionNames</name>
                     <valueList>
@@ -207,6 +220,19 @@
                         <leftValue>{!Record.HOT_TjenesteleverandorStatus__c}</leftValue>
                         <operator>EQUAL</operator>
                         <rightValue>Expired</rightValue>
+                    </criteria>
+                </visibilityRule>
+            </componentInstance>
+        </itemInstances>
+        <itemInstances>
+            <componentInstance>
+                <componentName>hot_interpreterWantedChoice</componentName>
+                <identifier>c_hot_interpreterWantedChoice2</identifier>
+                <visibilityRule>
+                    <criteria>
+                        <leftValue>{!$Client.formFactor}</leftValue>
+                        <operator>EQUAL</operator>
+                        <rightValue>Large</rightValue>
                     </criteria>
                 </visibilityRule>
             </componentInstance>
