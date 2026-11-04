@@ -616,6 +616,111 @@ private class HOT_CreateWorkOrderServiceTest {
     }
 
     @IsTest
+    private static void recurringEditCopiesRequestFilesToNewOccurrences() {
+        User caller = createRecurringEditCaller();
+        WorkType workType = HOT_TestDataFactory.createWorkType();
+        insert workType;
+        HOT_Request__c request = HOT_TestDataFactory.createRequest('Edit with attachments', workType);
+        request.Orderer__c = caller.AccountId;
+        insert request;
+        WorkOrder existingWorkOrder = HOT_TestDataFactory.createWorkOrder(request, workType);
+        existingWorkOrder.StartDate = Datetime.newInstance(Date.today().addDays(1), Time.newInstance(9, 0, 0, 0));
+        existingWorkOrder.EndDate = existingWorkOrder.StartDate.addHours(1);
+        insert existingWorkOrder;
+
+        List<ContentVersion> files = new List<ContentVersion>();
+        for (Integer i = 0; i < 3; i++) {
+            files.add(
+                new ContentVersion(
+                    Title = 'Attachment ' + i,
+                    PathOnClient = 'attachment' + i + '.txt',
+                    VersionData = Blob.valueOf('Test attachment'),
+                    FirstPublishLocationId = i < 2 ? request.Id : existingWorkOrder.Id
+                )
+            );
+        }
+        insert files;
+        Set<Id> requestDocumentIds = new Set<Id>();
+        for (ContentDocumentLink link : [
+            SELECT ContentDocumentId
+            FROM ContentDocumentLink
+            WHERE LinkedEntityId = :request.Id
+        ]) {
+            requestDocumentIds.add(link.ContentDocumentId);
+        }
+        System.assertEquals(2, requestDocumentIds.size(), 'Request must have two existing attachments');
+        Set<Id> originalLinkIds = new Map<Id, ContentDocumentLink>(
+                [SELECT Id FROM ContentDocumentLink WHERE LinkedEntityId = :existingWorkOrder.Id]
+            )
+            .keySet();
+        System.assertEquals(3, originalLinkIds.size(), 'Original Work Order must also have its own attachment');
+
+        Datetime startTime = existingWorkOrder.StartDate;
+        Test.startTest();
+        System.runAs(caller) {
+            HOT_CreateWorkOrderService.createRecurringWorkOrdersFromEdit(
+                request.Id,
+                existingWorkOrder.Id,
+                startTime.getTime(),
+                existingWorkOrder.EndDate.getTime(),
+                'Daily',
+                new List<String>(),
+                Datetime.newInstanceGmt(startTime.date().addDays(2), Time.newInstance(0, 0, 0, 0)).getTime(),
+                null
+            );
+        }
+        Test.stopTest();
+
+        List<WorkOrder> additionalWorkOrders = [
+            SELECT Id, (SELECT ContentDocumentId, Visibility, ShareType FROM ContentDocumentLinks)
+            FROM WorkOrder
+            WHERE HOT_Request__c = :request.Id AND Id != :existingWorkOrder.Id
+        ];
+        System.assertEquals(2, additionalWorkOrders.size(), 'Must create two additional occurrences');
+        Set<Id> additionalWorkOrderIds = new Map<Id, WorkOrder>(additionalWorkOrders).keySet();
+        for (WorkOrder workOrder : additionalWorkOrders) {
+            System.assertEquals(2, workOrder.ContentDocumentLinks.size(), 'Copy request attachments only');
+            Set<Id> copiedDocumentIds = new Set<Id>();
+            for (ContentDocumentLink link : workOrder.ContentDocumentLinks) {
+                copiedDocumentIds.add(link.ContentDocumentId);
+                System.assertEquals('AllUsers', link.Visibility, 'Attachments must be visible to interpreters');
+                System.assertEquals('V', link.ShareType, 'Attachments must grant viewer access');
+            }
+            System.assertEquals(requestDocumentIds, copiedDocumentIds, 'Every occurrence must receive every file');
+        }
+        System.assertEquals(
+            originalLinkIds,
+            new Map<Id, ContentDocumentLink>(
+                    [SELECT Id FROM ContentDocumentLink WHERE LinkedEntityId = :existingWorkOrder.Id]
+                )
+                .keySet(),
+            'Existing Work Order links must remain unchanged'
+        );
+        System.assertEquals(
+            2,
+            [SELECT COUNT() FROM ContentDocumentLink WHERE LinkedEntityId = :request.Id],
+            'Request links must remain unchanged'
+        );
+
+        request.Status__c = 'Godkjent';
+        update request;
+        List<ServiceAppointment> serviceAppointments = [
+            SELECT Id, (SELECT ContentDocumentId FROM ContentDocumentLinks)
+            FROM ServiceAppointment
+            WHERE HOT_WorkOrderID__c IN :additionalWorkOrderIds
+        ];
+        System.assertEquals(2, serviceAppointments.size(), 'New occurrences must receive Service Appointments');
+        for (ServiceAppointment appointment : serviceAppointments) {
+            System.assertEquals(2, appointment.ContentDocumentLinks.size(), 'Appointments must inherit all files');
+            Set<Id> appointmentDocumentIds = new Set<Id>();
+            for (ContentDocumentLink link : appointment.ContentDocumentLinks) {
+                appointmentDocumentIds.add(link.ContentDocumentId);
+            }
+            System.assertEquals(requestDocumentIds, appointmentDocumentIds, 'Interpreters must receive request files');
+        }
+    }
+
+    @IsTest
     private static void recurringEditSupportsDaily() {
         assertRecurringEditCount('Daily', 29);
     }

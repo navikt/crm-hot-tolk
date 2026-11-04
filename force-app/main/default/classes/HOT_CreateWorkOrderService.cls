@@ -178,6 +178,27 @@ public without sharing class HOT_CreateWorkOrderService {
             update workOrders[0];
             if (!additionalWorkOrders.isEmpty()) {
                 insert additionalWorkOrders;
+                List<ContentDocumentLink> requestDocumentLinks = [
+                    SELECT ContentDocumentId
+                    FROM ContentDocumentLink
+                    WHERE LinkedEntityId = :requestId
+                ];
+                List<ContentDocumentLink> workOrderDocumentLinks = new List<ContentDocumentLink>();
+                for (WorkOrder workOrder : additionalWorkOrders) {
+                    for (ContentDocumentLink requestDocumentLink : requestDocumentLinks) {
+                        workOrderDocumentLinks.add(
+                            new ContentDocumentLink(
+                                ContentDocumentId = requestDocumentLink.ContentDocumentId,
+                                LinkedEntityId = workOrder.Id,
+                                Visibility = 'AllUsers',
+                                ShareType = 'V'
+                            )
+                        );
+                    }
+                }
+                if (!workOrderDocumentLinks.isEmpty()) {
+                    insert workOrderDocumentLinks;
+                }
             }
             HOT_Request__c savedRequest = [
                 SELECT StartTime__c, EndTime__c, NumberOfWorkOrders__c
