@@ -106,14 +106,6 @@
                     ></c-input>
                 </div>
                 <div lwc:if={recurringDateError} class="recurring-date-error" role="alert">{recurringDateError}</div>
-                <div
-                    lwc:if={recurringBoundaryWarning}
-                    class="recurring-boundary-warning"
-                    role="status"
-                    aria-live="polite"
-                >
-                    {recurringBoundaryWarning}
-                </div>
                 <p lwc:if={previewLoading} role="status">Henter forhåndsvisning...</p>
                 <template lwc:elseif={previewValidationError}>
                     <div class="recurring-date-error" role="alert">{previewValidationError}</div>
@@ -125,11 +117,27 @@
                         onbuttonclick={refreshRecurringPreview}
                     ></c-button>
                 </template>
-                <template lwc:if={hasPreviewIntervals}>
-                    <p role="status">Antall tidspunkter: {recurringPreview.count}</p>
+                <div lwc:if={hasPreviewIntervals} class="recurring-preview">
+                    <h3 class="recurring-preview-heading">Forhåndsvisning av tidspunkter</h3>
+                    <p class="recurring-preview-count" role="status">{previewCountLabel}</p>
+                    <dl class="recurring-preview-dates">
+                        <div>
+                            <dt>Første tidspunkt:</dt>
+                            <dd>{previewFirstDate}</dd>
+                        </div>
+                        <div>
+                            <dt>Siste tidspunkt:</dt>
+                            <dd>{previewLastDate}</dd>
+                        </div>
+                    </dl>
+                    <p lwc:if={recurringBoundaryWarning} class="recurring-boundary-warning">
+                        {recurringBoundaryWarning}
+                    </p>
                     <details ontoggle={handlePreviewToggle}>
-                        <summary>{previewToggleLabel}</summary>
-                        <p>Tidssone: {recurringPreview.timeZone}</p>
+                        <summary>
+                            <span class="recurring-preview-chevron" aria-hidden="true"></span>
+                            <span>{previewToggleLabel}</span>
+                        </summary>
                         <div class="recurring-preview-list">
                             <table>
                                 <caption class="sr-only">
@@ -137,13 +145,15 @@
                                 </caption>
                                 <thead>
                                     <tr>
-                                        <th scope="col">Start</th>
-                                        <th scope="col">Slutt</th>
+                                        <th scope="col">Dato</th>
+                                        <th scope="col">Fra</th>
+                                        <th scope="col">Til</th>
                                     </tr>
                                 </thead>
                                 <tbody>
-                                    <template for:each={recurringPreview.intervals} for:item="interval">
+                                    <template for:each={previewIntervals} for:item="interval">
                                         <tr key={interval.startTime}>
+                                            <td>{interval.dateLabel}</td>
                                             <td>{interval.startLabel}</td>
                                             <td>{interval.endLabel}</td>
                                         </tr>
@@ -152,7 +162,11 @@
                             </table>
                         </div>
                     </details>
-                </template>
+                    <p lwc:if={showPreviewTimeZoneNotice} class="recurring-preview-timezone">
+                        Alle datoer og klokkeslett i forhåndsvisningen er oppgitt i norsk tid.
+                    </p>
+                    <p class="recurring-preview-hint">Kontroller datoene og klokkeslettene før du sender inn.</p>
+                </div>
             </div>
         </template>
         <c-button

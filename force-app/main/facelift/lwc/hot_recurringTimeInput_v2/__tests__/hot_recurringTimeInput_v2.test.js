@@ -95,6 +95,7 @@ describe('server recurrence preview', () => {
         jest.clearAllTimers();
         jest.useRealTimers();
         jest.clearAllMocks();
+        jest.restoreAllMocks();
     });
 
     it.each([false, true])('uses the saved timestamps and server boundaries in edit mode %s', async (editMode) => {
@@ -111,13 +112,35 @@ describe('server recurrence preview', () => {
             recurringDays: ['sunday']
         });
         expect(element.shadowRoot.querySelector('.recurring-boundary-warning').textContent).toContain(
-            'første dato i serien 31.10.2027 og siste dato 01.11.2027'
+            'Datoene i serien er tilpasset ukedagene du har valgt.'
         );
-        const details = element.shadowRoot.querySelector('details');
+        const previewContainer = element.shadowRoot.querySelector('.recurring-preview');
+        expect(previewContainer.querySelector('h3').textContent).toBe('Forhåndsvisning av tidspunkter');
+        expect(previewContainer.querySelector('[role="status"]').textContent).toBe('2 tidspunkter');
+        expect([...previewContainer.querySelectorAll('dd')].map((cell) => cell.textContent)).toEqual([
+            '31.10.2027',
+            '01.11.2027'
+        ]);
+        expect(previewContainer.querySelector('.recurring-boundary-warning')).not.toBeNull();
+        const details = previewContainer.querySelector('details');
+        expect(details).not.toBeNull();
         expect(details.open).toBe(false);
-        expect(details.textContent).toContain('Europe/Paris');
+        expect(details.querySelector('.recurring-preview-chevron').getAttribute('aria-hidden')).toBe('true');
+        expect(details.querySelector('summary').textContent).toBe('Vis alle 2 tidspunkter');
+        expect(previewContainer.textContent).not.toContain('Tidssone:');
+        expect(previewContainer.lastElementChild.className).toBe('recurring-preview-hint');
+        expect(previewContainer.lastElementChild.textContent).toBe(
+            'Kontroller datoene og klokkeslettene før du sender inn.'
+        );
         expect(details.querySelectorAll('tbody tr')).toHaveLength(2);
-        expect(details.querySelector('tbody').textContent).toContain('01.11.2027 00:30');
+        expect([...details.querySelectorAll('thead th')].map((cell) => cell.textContent)).toEqual([
+            'Dato',
+            'Fra',
+            'Til'
+        ]);
+        expect(
+            [...details.querySelectorAll('tbody tr')[1].querySelectorAll('td')].map((cell) => cell.textContent)
+        ).toEqual(['mandag 01.11.2027', '00:30', '01:30']);
         details.open = true;
         details.dispatchEvent(new Event('toggle'));
         await flushPromises();
@@ -131,6 +154,7 @@ describe('server recurrence preview', () => {
         change(element, '[data-id="recurringEndDate"]', '2027-11-03');
         await flushPromises();
         expect(element.shadowRoot.querySelector('details')).toBeNull();
+        expect(element.shadowRoot.querySelector('.recurring-preview')).toBeNull();
         jest.advanceTimersByTime(200);
         change(element, '[data-id="recurringEndDate"]', '2027-11-04');
         jest.advanceTimersByTime(299);
@@ -265,10 +289,14 @@ describe('server recurrence preview', () => {
     it('preserves both dates and the server-calculated overnight end time', async () => {
         previewRecurringWorkOrders.mockResolvedValue({
             ...preview,
+            firstDate: '2027-10-30',
+            lastDate: '2027-10-30',
             count: 1,
             intervals: [
                 {
                     ...preview.intervals[0],
+                    startTime: Date.parse('2027-10-30T21:00:00Z'),
+                    endTime: Date.parse('2027-10-31T01:00:00Z'),
                     startLabel: '30.10.2027 23:00',
                     endLabel: '31.10.2027 02:00'
                 }
@@ -278,8 +306,121 @@ describe('server recurrence preview', () => {
         jest.advanceTimersByTime(300);
         await flushPromises();
         const cells = element.shadowRoot.querySelectorAll('tbody td');
-        expect(cells[0].textContent).toBe('30.10.2027 23:00');
-        expect(cells[1].textContent).toBe('31.10.2027 02:00');
+        expect(cells[0].textContent).toBe('lørdag 30.10.2027');
+        expect(cells[1].textContent).toBe('23:00');
+        expect(cells[2].textContent).toBe('31.10.2027 02:00');
+        expect(element.shadowRoot.querySelector('.recurring-preview-count').textContent).toBe('1 tidspunkt');
+        expect(element.shadowRoot.querySelector('summary').textContent).toBe('Vis tidspunktet');
+    });
+
+    it('uses Norwegian time for weekdays when the UTC date is different', async () => {
+        previewRecurringWorkOrders.mockResolvedValue({
+            ...preview,
+            timeZone: 'Europe/Oslo',
+            firstDate: '2027-11-01',
+            lastDate: '2027-11-01',
+            count: 1,
+            intervals: [
+                {
+                    startTime: Date.parse('2027-10-31T23:30:00Z'),
+                    endTime: Date.parse('2027-11-01T00:30:00Z'),
+                    startLabel: '01.11.2027 00:30',
+                    endLabel: '01.11.2027 01:30'
+                }
+            ]
+        });
+        const element = await setup();
+        jest.advanceTimersByTime(300);
+        await flushPromises();
+        expect(element.shadowRoot.querySelector('tbody td').textContent).toBe('mandag 01.11.2027');
+    });
+
+    it.each([
+        ['Europe/Oslo', false],
+        ['Europe/Paris', false],
+        ['Europe/Berlin', false],
+        ['UTC', true],
+        ['America/New_York', true],
+        ['Asia/Kolkata', true]
+    ])('shows the Norwegian time notice only when browser time differs in %s', async (timeZone, showNotice) => {
+        jest.spyOn(Intl.DateTimeFormat.prototype, 'resolvedOptions').mockReturnValue({ timeZone });
+        previewRecurringWorkOrders.mockResolvedValue({ ...preview, timeZone: 'Europe/Oslo' });
+        const element = await setup();
+        jest.advanceTimersByTime(300);
+        await flushPromises();
+        const notice = element.shadowRoot.querySelector('.recurring-preview-timezone');
+        expect(notice !== null).toBe(showNotice);
+        expect(element.shadowRoot.querySelector('details').open).toBe(false);
+        if (showNotice) {
+            expect(notice.textContent).toBe('Alle datoer og klokkeslett i forhåndsvisningen er oppgitt i norsk tid.');
+            expect(notice.closest('details')).toBeNull();
+        }
+    });
+
+    it('checks both endpoints for time differences across a daylight-saving transition', async () => {
+        jest.spyOn(Intl.DateTimeFormat.prototype, 'resolvedOptions').mockReturnValue({ timeZone: 'Africa/Tunis' });
+        previewRecurringWorkOrders.mockResolvedValue({
+            ...preview,
+            timeZone: 'Europe/Oslo',
+            firstDate: '2027-03-28',
+            lastDate: '2027-03-28',
+            count: 1,
+            intervals: [
+                {
+                    startTime: Date.parse('2027-03-28T00:30:00Z'),
+                    endTime: Date.parse('2027-03-28T01:30:00Z'),
+                    startLabel: '28.03.2027 01:30',
+                    endLabel: '28.03.2027 03:30'
+                }
+            ]
+        });
+        const element = await setup();
+        jest.advanceTimersByTime(300);
+        await flushPromises();
+        expect(element.shadowRoot.querySelector('.recurring-preview-timezone')).not.toBeNull();
+    });
+
+    it('checks every interval rather than only the current time or first occurrence', async () => {
+        jest.spyOn(Intl.DateTimeFormat.prototype, 'resolvedOptions').mockReturnValue({ timeZone: 'Africa/Tunis' });
+        previewRecurringWorkOrders.mockResolvedValue({
+            ...preview,
+            timeZone: 'Europe/Oslo',
+            firstDate: '2027-03-27',
+            lastDate: '2027-03-28',
+            intervals: [
+                {
+                    startTime: Date.parse('2027-03-27T10:00:00Z'),
+                    endTime: Date.parse('2027-03-27T11:00:00Z'),
+                    startLabel: '27.03.2027 11:00',
+                    endLabel: '27.03.2027 12:00'
+                },
+                {
+                    startTime: Date.parse('2027-03-28T09:00:00Z'),
+                    endTime: Date.parse('2027-03-28T10:00:00Z'),
+                    startLabel: '28.03.2027 11:00',
+                    endLabel: '28.03.2027 12:00'
+                }
+            ]
+        });
+        const element = await setup();
+        jest.advanceTimersByTime(300);
+        await flushPromises();
+        expect(element.shadowRoot.querySelector('.recurring-preview-timezone')).not.toBeNull();
+    });
+
+    it('keeps the date summary without a boundary explanation when selected boundaries match', async () => {
+        previewRecurringWorkOrders.mockResolvedValue({
+            ...preview,
+            firstDate: '2027-10-30',
+            lastDate: '2027-11-02'
+        });
+        const element = await setup();
+        jest.advanceTimersByTime(300);
+        await flushPromises();
+        expect(element.shadowRoot.querySelector('.recurring-boundary-warning')).toBeNull();
+        expect(
+            [...element.shadowRoot.querySelectorAll('.recurring-preview-dates dd')].map((cell) => cell.textContent)
+        ).toEqual(['30.10.2027', '02.11.2027']);
     });
 
     it('refreshes after changing each timestamp, recurrence type and weekday selection', async () => {

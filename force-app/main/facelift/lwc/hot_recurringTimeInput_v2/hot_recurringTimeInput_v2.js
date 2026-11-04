@@ -112,8 +112,69 @@ export default class hot_recurringTimeInput_v2 extends LightningElement {
         return this.recurringPreview?.count > 0;
     }
 
+    get showPreviewTimeZoneNotice() {
+        if (!this.hasPreviewIntervals) {
+            return false;
+        }
+        const browserTimeZone = new Intl.DateTimeFormat().resolvedOptions().timeZone;
+        const options = {
+            year: 'numeric',
+            month: '2-digit',
+            day: '2-digit',
+            hour: '2-digit',
+            minute: '2-digit',
+            hourCycle: 'h23'
+        };
+        const browserFormatter = new Intl.DateTimeFormat('en-GB', { ...options, timeZone: browserTimeZone });
+        const previewFormatter = new Intl.DateTimeFormat('en-GB', {
+            ...options,
+            timeZone: this.recurringPreview.timeZone
+        });
+        return this.recurringPreview.intervals.some((interval) =>
+            [interval.startTime, interval.endTime].some(
+                (time) => browserFormatter.format(new Date(time)) !== previewFormatter.format(new Date(time))
+            )
+        );
+    }
+
     get previewToggleLabel() {
-        return this.previewExpanded ? 'Skjul tidspunkter' : 'Vis alle tidspunkter';
+        if (this.recurringPreview?.count === 1) {
+            return this.previewExpanded ? 'Skjul tidspunktet' : 'Vis tidspunktet';
+        }
+        return this.previewExpanded ? 'Skjul tidspunkter' : `Vis alle ${this.previewCountLabel}`;
+    }
+
+    get previewCountLabel() {
+        const count = this.recurringPreview?.count;
+        return `${count} ${count === 1 ? 'tidspunkt' : 'tidspunkter'}`;
+    }
+
+    get previewFirstDate() {
+        return this.recurringPreview?.firstDate.split('-').reverse().join('.');
+    }
+
+    get previewLastDate() {
+        return this.recurringPreview?.lastDate.split('-').reverse().join('.');
+    }
+
+    get previewIntervals() {
+        if (!this.hasPreviewIntervals) {
+            return [];
+        }
+        const weekdayFormatter = new Intl.DateTimeFormat('nb-NO', {
+            weekday: 'long',
+            timeZone: this.recurringPreview.timeZone
+        });
+        return this.recurringPreview.intervals.map((interval) => {
+            const [startDate, startTime] = interval.startLabel.split(' ');
+            const [endDate, endTime] = interval.endLabel.split(' ');
+            return {
+                startTime: interval.startTime,
+                dateLabel: `${weekdayFormatter.format(new Date(interval.startTime))} ${startDate}`,
+                startLabel: startTime,
+                endLabel: startDate === endDate ? endTime : interval.endLabel
+            };
+        });
     }
 
     handlePreviewToggle(event) {
@@ -182,9 +243,7 @@ export default class hot_recurringTimeInput_v2 extends LightningElement {
             return '';
         }
 
-        const formattedFirstDate = firstDate.split('-').reverse().join('.');
-        const formattedLastDate = lastDate.split('-').reverse().join('.');
-        return `Basert på ukedagene du har valgt, blir første dato i serien ${formattedFirstDate} og siste dato ${formattedLastDate}.`;
+        return 'Datoene i serien er tilpasset ukedagene du har valgt.';
     }
 
     handleDateChange(event) {
