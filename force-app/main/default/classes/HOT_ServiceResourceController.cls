@@ -96,24 +96,17 @@ public with sharing class HOT_ServiceResourceController {
         details.hasOverlap = false;
 
         if (appointment.EarliestStartTime != null && appointment.DueDate != null) {
-            for (HOT_InterestedResource__c assignedResource : [
-                SELECT ServiceAppointmentStartTime__c, ServiceAppointmentEndTime__c
-                FROM HOT_InterestedResource__c
+            List<ServiceAppointment> overlappingAppointments = [
+                SELECT Id
+                FROM ServiceAppointment
                 WHERE
-                    ServiceResource__c = :resourceId
-                    AND ServiceAppointment__c != :serviceAppointmentId
-                    AND Status__c = 'Assigned'
-            ]) {
-                if (
-                    assignedResource.ServiceAppointmentStartTime__c != null &&
-                    assignedResource.ServiceAppointmentEndTime__c != null &&
-                    appointment.EarliestStartTime < assignedResource.ServiceAppointmentEndTime__c &&
-                    appointment.DueDate > assignedResource.ServiceAppointmentStartTime__c
-                ) {
-                    details.hasOverlap = true;
-                    break;
-                }
-            }
+                    Id IN (SELECT ServiceAppointmentId FROM AssignedResource WHERE ServiceResourceId = :resourceId)
+                    AND Id != :serviceAppointmentId
+                    AND EarliestStartTime < :appointment.DueDate
+                    AND DueDate > :appointment.EarliestStartTime
+                LIMIT 1
+            ];
+            details.hasOverlap = !overlappingAppointments.isEmpty();
         }
 
         return details;
