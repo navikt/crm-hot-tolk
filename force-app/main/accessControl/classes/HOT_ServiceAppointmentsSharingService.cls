@@ -1,4 +1,83 @@
 public without sharing class HOT_ServiceAppointmentsSharingService {
+    public class SharingRequest {
+        @InvocableVariable(required=true label='Service Resource Id')
+        public Id serviceResourceId;
+
+        @InvocableVariable(required=true label='Service Appointment Id')
+        public Id serviceAppointmentId;
+    }
+
+    public class SharingException extends Exception {
+    }
+
+    public static void shareServiceAppointment(Id serviceResourceId, Id serviceAppointmentId) {
+        SharingRequest request = new SharingRequest();
+        request.serviceResourceId = serviceResourceId;
+        request.serviceAppointmentId = serviceAppointmentId;
+        shareServiceAppointments(new List<SharingRequest>{ request });
+    }
+
+    @InvocableMethod(
+        label='Share Service Appointment with Service Resource'
+        description='Grants the service resource user read/write access to the service appointment.'
+    )
+    public static void shareServiceAppointments(List<SharingRequest> requests) {
+        if (requests == null) {
+            throw new SharingException('Sharing requests are required.');
+        }
+        Set<Id> resourceIds = new Set<Id>();
+        Set<Id> appointmentIds = new Set<Id>();
+        for (SharingRequest request : requests) {
+            if (
+                request == null ||
+                request.serviceResourceId == null ||
+                request.serviceAppointmentId == null ||
+                request.serviceResourceId.getSObjectType() != ServiceResource.SObjectType ||
+                request.serviceAppointmentId.getSObjectType() != ServiceAppointment.SObjectType
+            ) {
+                throw new SharingException('A service resource Id and service appointment Id are required.');
+            }
+            resourceIds.add(request.serviceResourceId);
+            appointmentIds.add(request.serviceAppointmentId);
+        }
+        Map<Id, Id> userByResource = getUserIdyResourceId(new List<Id>(resourceIds));
+        Set<Id> userIds = new Set<Id>();
+        Map<String, ServiceAppointmentShare> sharesByPair = new Map<String, ServiceAppointmentShare>();
+        for (SharingRequest request : requests) {
+            Id userId = userByResource.get(request.serviceResourceId);
+            if (userId == null || userId.getSObjectType() != User.SObjectType) {
+                throw new SharingException('The service resource must be linked to a user.');
+            }
+            userIds.add(userId);
+            sharesByPair.put(
+                request.serviceAppointmentId + ':' + userId,
+                new ServiceAppointmentShare(
+                    ParentId = request.serviceAppointmentId,
+                    UserOrGroupId = userId,
+                    AccessLevel = 'Edit',
+                    RowCause = 'Manual'
+                )
+            );
+        }
+        List<ServiceAppointmentShare> sharesToUpdate = new List<ServiceAppointmentShare>();
+        for (ServiceAppointmentShare share : [
+            SELECT Id, ParentId, UserOrGroupId, AccessLevel
+            FROM ServiceAppointmentShare
+            WHERE ParentId IN :appointmentIds AND UserOrGroupId IN :userIds AND RowCause = 'Manual'
+        ]) {
+            String pairKey = share.ParentId + ':' + share.UserOrGroupId;
+            if (sharesByPair.containsKey(pairKey)) {
+                sharesByPair.remove(pairKey);
+                if (share.AccessLevel == 'Read') {
+                    share.AccessLevel = 'Edit';
+                    sharesToUpdate.add(share);
+                }
+            }
+        }
+        insert sharesByPair.values();
+        update sharesToUpdate;
+    }
+
     private static void handleException(Exception e) {
         LoggerUtility logger = new LoggerUtility();
         logger.exception(e, CRM_ApplicationDomain.Domain.HOT);

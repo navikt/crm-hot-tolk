@@ -48,7 +48,41 @@ private class HOT_InterpreterWantedChoiceTest {
         );
         System.assertEquals(1, results.size());
         System.assertEquals('Formidler', results[0].HOT_Wanted_by__c);
+        System.assertEquals('Wanted', results[0].Status__c);
         System.assertEquals(0, HOT_InterpreterWantedChoiceController.getWantedResource(null).size());
+        Test.stopTest();
+    }
+
+    @IsTest
+    static void findsSavedInterestForCurrentUser() {
+        assertSavedResponse('Interested');
+    }
+
+    @IsTest
+    static void findsSavedDeclineForCurrentUser() {
+        assertSavedResponse('Declined');
+    }
+
+    private static void assertSavedResponse(String status) {
+        HOT_InterestedResource__c resource = getResource();
+        resource.Status__c = status;
+        update resource;
+
+        Test.startTest();
+        List<HOT_InterestedResource__c> results = HOT_InterpreterWantedChoiceController.getWantedResource(
+            resource.ServiceAppointment__c
+        );
+        System.assertEquals(1, results.size());
+        System.assertEquals(resource.Id, results[0].Id);
+        System.assertEquals(status, results[0].Status__c);
+
+        User otherUser = [SELECT Id FROM User WHERE Id != :UserInfo.getUserId() AND Alias = 'wantedch' LIMIT 1];
+        System.runAs(otherUser) {
+            System.assertEquals(
+                0,
+                HOT_InterpreterWantedChoiceController.getWantedResource(resource.ServiceAppointment__c).size()
+            );
+        }
         Test.stopTest();
     }
 
@@ -68,10 +102,11 @@ private class HOT_InterpreterWantedChoiceTest {
         HOT_InterpreterWantedChoiceController.respond(resource.Id, status);
         Test.stopTest();
         System.assertEquals(status, getResource().Status__c);
-        System.assertEquals(
-            0,
-            HOT_InterpreterWantedChoiceController.getWantedResource(resource.ServiceAppointment__c).size()
+        List<HOT_InterestedResource__c> results = HOT_InterpreterWantedChoiceController.getWantedResource(
+            resource.ServiceAppointment__c
         );
+        System.assertEquals(1, results.size());
+        System.assertEquals(status, results[0].Status__c);
     }
 
     @IsTest

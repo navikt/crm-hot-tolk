@@ -16,6 +16,19 @@
         </itemInstances>
         <itemInstances>
             <componentInstance>
+                <componentName>hot_interpreterWantedChoice</componentName>
+                <identifier>c_hot_interpreterWantedChoice</identifier>
+                <visibilityRule>
+                    <criteria>
+                        <leftValue>{!$Client.formFactor}</leftValue>
+                        <operator>EQUAL</operator>
+                        <rightValue>Small</rightValue>
+                    </criteria>
+                </visibilityRule>
+            </componentInstance>
+        </itemInstances>
+        <itemInstances>
+            <componentInstance>
                 <componentInstanceProperties>
                     <name>actionNames</name>
                     <valueList>
@@ -160,6 +173,19 @@
             <componentInstance>
                 <componentName>hot_warningBannerServiceAppointment</componentName>
                 <identifier>hot_warningBannerServiceAppointment</identifier>
+            </componentInstance>
+        </itemInstances>
+        <itemInstances>
+            <componentInstance>
+                <componentName>hot_interpreterWantedChoice</componentName>
+                <identifier>c_hot_interpreterWantedChoice2</identifier>
+                <visibilityRule>
+                    <criteria>
+                        <leftValue>{!$Client.formFactor}</leftValue>
+                        <operator>EQUAL</operator>
+                        <rightValue>Large</rightValue>
+                    </criteria>
+                </visibilityRule>
             </componentInstance>
         </itemInstances>
         <name>header</name>
