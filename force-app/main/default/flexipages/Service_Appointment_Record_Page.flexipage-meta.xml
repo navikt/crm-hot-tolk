@@ -22,12 +22,6 @@
         </itemInstances>
         <itemInstances>
             <componentInstance>
-                <componentName>hot_interpreterWantedChoice</componentName>
-                <identifier>c_hot_interpreterWantedChoice2</identifier>
-            </componentInstance>
-        </itemInstances>
-        <itemInstances>
-            <componentInstance>
                 <componentInstanceProperties>
                     <name>actionNames</name>
                     <valueList>
@@ -177,19 +171,7 @@
         <itemInstances>
             <componentInstance>
                 <componentName>hot_interpreterWantedChoice</componentName>
-                <identifier>c_hot_interpreterWantedChoice3</identifier>
-            </componentInstance>
-        </itemInstances>
-        <itemInstances>
-            <componentInstance>
-                <componentName>hot_interpreterWantedChoice</componentName>
                 <identifier>c_hot_interpreterWantedChoice4</identifier>
-            </componentInstance>
-        </itemInstances>
-        <itemInstances>
-            <componentInstance>
-                <componentName>hot_interpreterWantedChoice</componentName>
-                <identifier>c_hot_interpreterWantedChoice5</identifier>
             </componentInstance>
         </itemInstances>
         <name>header</name>
