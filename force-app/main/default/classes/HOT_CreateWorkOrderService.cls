@@ -32,6 +32,9 @@ public without sharing class HOT_CreateWorkOrderService {
         List<String> recurringDays,
         Long recurringEndDate
     ) {
+        if (recurringType != 'Never' && times != null && times.get('startTime') != null && recurringEndDate != null) {
+            validateRecurringDuration(times.get('startTime'), recurringEndDate);
+        }
         HOT_CreateWorkOrderService createWorkOrderService = new HOT_CreateWorkOrderService();
         createWorkOrderService.requestId = requestId;
         createWorkOrderService.startDate = DateTime.newInstance(times.get('startTime'));
@@ -82,6 +85,7 @@ public without sharing class HOT_CreateWorkOrderService {
         if (recurrenceEndDate <= requestedStart.date()) {
             throw new AuraHandledException('Sluttdato må være etter startdato.');
         }
+        validateRecurringDuration(startTime, recurringEndDate);
 
         Set<String> selectedDays = new Set<String>();
         if (recurringDays != null) {
@@ -97,6 +101,21 @@ public without sharing class HOT_CreateWorkOrderService {
         }
         if (recurringType != 'Daily' && selectedDays.isEmpty()) {
             throw new AuraHandledException('Må velge minst en dag.');
+        }
+
+        List<WorkOrder> occurrences = getRecurringWorkOrders(
+            requestId,
+            requestedStart,
+            requestedEnd,
+            recurrenceEndDate,
+            recurringType,
+            selectedDays
+        );
+        if (occurrences.isEmpty()) {
+            throw new AuraHandledException('Valgte gjentagelsesdager finnes ikke i perioden.');
+        }
+        if (occurrences.size() > 200) {
+            throw new AuraHandledException('Kan ikke opprette mer enn 200 arbeidsordre av gangen.');
         }
 
         Id callerAccountId = [SELECT AccountId FROM User WHERE Id = :UserInfo.getUserId()].AccountId;
@@ -138,21 +157,6 @@ public without sharing class HOT_CreateWorkOrderService {
             throw new AuraHandledException(
                 'Bestillingen kan ikke gjentas fordi status eller tidspunkt har blitt endret. Oppdater siden og prøv igjen.'
             );
-        }
-
-        List<WorkOrder> occurrences = getRecurringWorkOrders(
-            requestId,
-            requestedStart,
-            requestedEnd,
-            recurrenceEndDate,
-            recurringType,
-            selectedDays
-        );
-        if (occurrences.isEmpty()) {
-            throw new AuraHandledException('Valgte gjentagelsesdager finnes ikke i perioden.');
-        }
-        if (occurrences.size() > 200) {
-            throw new AuraHandledException('Kan ikke opprette mer enn 200 arbeidsordre av gangen.');
         }
 
         List<WorkOrder> additionalWorkOrders = new List<WorkOrder>();
@@ -268,13 +272,31 @@ public without sharing class HOT_CreateWorkOrderService {
         String recurringType,
         Set<String> selectedDays
     ) {
+        Set<String> validDays = new Set<String>{
+            'monday',
+            'tuesday',
+            'wednesday',
+            'thursday',
+            'friday',
+            'saturday',
+            'sunday'
+        };
+        if (!validDays.containsAll(selectedDays)) {
+            throw new AuraHandledException('Ugyldig gjentagelsesdag.');
+        }
         List<Integer> occurrenceOffsets = new List<Integer>();
+        if (recurringType != 'Daily' && selectedDays.isEmpty()) {
+            return occurrenceOffsets;
+        }
         Integer numberOfDays = startDate.date().daysBetween(endDate);
         for (Integer offset = 0; offset <= numberOfDays; offset++) {
             String dayName = startDate.addDays(offset).format('EEEE').toLowerCase();
 
             if (recurringType == 'Daily' || selectedDays.contains(dayName)) {
                 occurrenceOffsets.add(offset);
+                if (occurrenceOffsets.size() > 200) {
+                    return occurrenceOffsets;
+                }
             }
 
             if (recurringType == 'Biweekly' && dayName == 'sunday') {
@@ -359,30 +381,13 @@ public without sharing class HOT_CreateWorkOrderService {
         if (seriesEndDate <= startDate.date()) {
             throw new AuraHandledException('Sluttdato må være etter startdato.');
         }
-        // Matches the form's duration limit and bounds work for this publicly callable calculation.
-        if (recurringEndDate - startTime > 199L * 86400000) {
-            throw new AuraHandledException(
-                'Du kan ikke legge inn gjentagende bestilling med en varighet på over 6 måneder'
-            );
-        }
+        validateRecurringDuration(startTime, recurringEndDate);
         if (!new Set<String>{ 'Daily', 'Weekly', 'Biweekly', 'Every4Weeks' }.contains(recurringType)) {
             throw new AuraHandledException('Ugyldig gjentagelsestype.');
         }
         Set<String> selectedDays = new Set<String>();
         if (recurringDays != null) {
             selectedDays.addAll(recurringDays);
-        }
-        Set<String> validDays = new Set<String>{
-            'monday',
-            'tuesday',
-            'wednesday',
-            'thursday',
-            'friday',
-            'saturday',
-            'sunday'
-        };
-        if (!validDays.containsAll(selectedDays)) {
-            throw new AuraHandledException('Ugyldig gjentagelsesdag.');
         }
         if (recurringType != 'Daily' && selectedDays.isEmpty()) {
             throw new AuraHandledException('Må velge minst en dag.');
@@ -395,6 +400,9 @@ public without sharing class HOT_CreateWorkOrderService {
             recurringType,
             selectedDays
         );
+        if (occurrences.size() > 200) {
+            throw new AuraHandledException('Kan ikke opprette mer enn 200 arbeidsordre av gangen.');
+        }
         String timeZoneId = UserInfo.getTimeZone().getID();
         List<Map<String, Object>> intervals = new List<Map<String, Object>>();
         for (WorkOrder occurrence : occurrences) {
@@ -418,6 +426,14 @@ public without sharing class HOT_CreateWorkOrderService {
         };
     }
 
+    private static void validateRecurringDuration(Long startTime, Long recurringEndDate) {
+        if (recurringEndDate - startTime > 199L * 86400000) {
+            throw new AuraHandledException(
+                'Du kan ikke legge inn gjentagende bestilling med en varighet på over 6 måneder'
+            );
+        }
+    }
+
     @InvocableMethod
     public static List<String> createWorkOrders(List<HOT_CreateWorkOrderService> inputVariables) {
         HOT_CreateWorkOrderService input = inputVariables[0];
@@ -435,6 +451,14 @@ public without sharing class HOT_CreateWorkOrderService {
 
         if (input.recurringType != 'Never' && input.recurringEndDate <= input.startDate.date()) {
             errors.add('Sluttdato må være etter startdato.');
+            return errors;
+        }
+        if (
+            input.recurringType != 'Never' &&
+            input.recurringEndDate != null &&
+            input.startDate.date().daysBetween(input.recurringEndDate) > 199
+        ) {
+            errors.add('Du kan ikke legge inn gjentagende bestilling med en varighet på over 6 måneder');
             return errors;
         }
 
@@ -474,7 +498,7 @@ public without sharing class HOT_CreateWorkOrderService {
             List<WorkOrder> workOrders = new List<WorkOrder>();
             Integer numberOfRecurrences = input.startDate.date().daysBetween(input.recurringEndDate);
 
-            if (numberOfRecurrences > maxNumberOfRecurrences) {
+            if (numberOfRecurrences >= maxNumberOfRecurrences) {
                 errors.add('Kan ikke opprette flere enn 200 arbeidsordre av gangen');
                 return errors;
             }

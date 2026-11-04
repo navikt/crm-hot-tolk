@@ -156,7 +156,10 @@ export default class hot_recurringTimeInput_v2 extends LightningElement {
         if (!this.isAdvancedTimes || !this.times[0]?.date || !this.repeatingEndDateString) {
             return '';
         }
-        return startDateBeforeRecurringEndDate(this.repeatingEndDate, this.times[0].startTime);
+        return (
+            startDateBeforeRecurringEndDate(this.repeatingEndDate, this.times[0].startTime) ||
+            restrictTheNumberOfDays(this.repeatingEndDate, this.times[0].startTime)
+        );
     }
 
     get recurringBoundaryWarning() {

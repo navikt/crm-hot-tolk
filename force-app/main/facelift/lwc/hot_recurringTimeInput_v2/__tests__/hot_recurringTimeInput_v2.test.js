@@ -2,6 +2,7 @@ import { createElement } from 'lwc';
 import RecurringTimeInput from 'c/hot_recurringTimeInput_v2';
 import getTimes from '@salesforce/apex/HOT_RequestListController.getTimesNew';
 import previewRecurringWorkOrders from '@salesforce/apex/HOT_CreateWorkOrderService.previewRecurringWorkOrders';
+import { restrictTheNumberOfDays } from '../hot_recurringTimeInput_validationRules';
 
 jest.mock('c/input', () => require('../../../../../test/jest-mocks/c/input/input'), { virtual: true });
 jest.mock('c/picklist', () => require('../../../../../test/jest-mocks/c/input/input'), { virtual: true });
@@ -192,6 +193,44 @@ describe('server recurrence preview', () => {
         document.body.removeChild(element);
         jest.advanceTimersByTime(300);
         expect(previewRecurringWorkOrders).not.toHaveBeenCalled();
+    });
+
+    it.each([false, true])('blocks a series longer than 199 days in edit mode %s', async (editMode) => {
+        const element = await setup(editMode);
+        change(element, '[data-id="recurringType"]', { name: 'Every4Weeks' }, 'picklistvaluechange');
+        change(element, '[data-id="recurringEndDate"]', '2035-11-02');
+        jest.advanceTimersByTime(300);
+        await flushPromises();
+        expect(previewRecurringWorkOrders).not.toHaveBeenCalled();
+        expect(element.validateFields()).toBeGreaterThan(0);
+        expect(element.shadowRoot.querySelector('details')).toBeNull();
+        expect(element.shadowRoot.querySelector('[role="alert"]').textContent).toBe(
+            'Du kan ikke legge inn gjentagende bestilling med en varighet på over 6 måneder'
+        );
+    });
+
+    it('blocks saving and displays the server interval-count limit for a long series', async () => {
+        const log = jest.spyOn(console, 'error').mockImplementation(() => {});
+        previewRecurringWorkOrders.mockRejectedValue({
+            body: { message: 'Kan ikke opprette mer enn 200 arbeidsordre av gangen.' }
+        });
+        const element = await setup();
+        jest.advanceTimersByTime(300);
+        await flushPromises();
+        expect(element.validateFields()).toBeGreaterThan(0);
+        expect(element.shadowRoot.querySelector('[role="alert"]').textContent).toBe(
+            'Kan ikke opprette mer enn 200 arbeidsordre av gangen.'
+        );
+        log.mockRestore();
+    });
+
+    it('allows exactly 199 days and rejects one millisecond beyond the legacy boundary', () => {
+        const start = Date.parse('2027-10-30T09:00:00Z');
+        const limit = start + 199 * 86400000;
+        expect(restrictTheNumberOfDays(limit, start)).toBe('');
+        expect(restrictTheNumberOfDays(limit + 1, start)).toBe(
+            'Du kan ikke legge inn gjentagende bestilling med en varighet på over 6 måneder'
+        );
     });
 
     it('blocks submission while pending and clears the pending field error once ready', async () => {

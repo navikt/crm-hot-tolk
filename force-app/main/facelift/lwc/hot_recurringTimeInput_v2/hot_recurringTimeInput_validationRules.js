@@ -37,6 +37,7 @@ export function restrictTheNumberOfDays(recurringEndDate, startDate) {
         ? 'Du kan ikke legge inn gjentagende bestilling med en varighet på over 6 måneder'
         : '';
 }
+
 export function chosenDaysWithinPeriod(type, days, recurringEndDate, startDate) {
     if (type === 'Daily') {
         return '';

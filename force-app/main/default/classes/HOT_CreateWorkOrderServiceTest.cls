@@ -163,7 +163,7 @@ private class HOT_CreateWorkOrderServiceTest {
         inputVariable.startDate = Datetime.now();
         inputVariable.endDate = Datetime.now().addHours(1);
         inputVariable.recurringType = 'Monthly';
-        inputVariable.recurringEndDate = Date.today().addMonths(10);
+        inputVariable.recurringEndDate = Date.today().addMonths(5);
 
         List<HOT_CreateWorkOrderService> inputVariables = new List<HOT_CreateWorkOrderService>();
         inputVariables.add(inputVariable);
@@ -173,7 +173,7 @@ private class HOT_CreateWorkOrderServiceTest {
         Test.stopTest();
 
         List<WorkOrder> workOrders = [SELECT Id, HOT_Request__c, StartDate, EndDate FROM WorkOrder];
-        System.assertEquals(11, workOrders.size(), 'Det ble ikke opprettet korrekt antall arbeidsordre');
+        System.assertEquals(6, workOrders.size(), 'Det ble ikke opprettet korrekt antall arbeidsordre');
     }
 
     @IsTest
@@ -188,7 +188,7 @@ private class HOT_CreateWorkOrderServiceTest {
         inputVariable.startDate = Datetime.now();
         inputVariable.endDate = Datetime.now().addHours(1);
         inputVariable.recurringType = 'Monthly';
-        inputVariable.recurringEndDate = Date.today().addMonths(10).addDays(10);
+        inputVariable.recurringEndDate = Date.today().addMonths(5).addDays(10);
 
         List<HOT_CreateWorkOrderService> inputVariables = new List<HOT_CreateWorkOrderService>();
         inputVariables.add(inputVariable);
@@ -198,7 +198,7 @@ private class HOT_CreateWorkOrderServiceTest {
         Test.stopTest();
 
         List<WorkOrder> workOrders = [SELECT Id, HOT_Request__c, StartDate, EndDate FROM WorkOrder];
-        System.assertEquals(11, workOrders.size(), 'Det ble ikke opprettet korrekt antall arbeidsordre');
+        System.assertEquals(6, workOrders.size(), 'Det ble ikke opprettet korrekt antall arbeidsordre');
     }
 
     @IsTest
@@ -858,6 +858,186 @@ private class HOT_CreateWorkOrderServiceTest {
             }
             System.assert(rejected, 'Invalid preview input must fail explicitly');
         }
+    }
+
+    @IsTest
+    private static void dailySeriesCountBoundary() {
+        assertSeriesCountBoundary('Daily', 1);
+    }
+
+    @IsTest
+    private static void weeklySeriesCountBoundary() {
+        assertSeriesCountBoundary('Weekly', 7);
+    }
+
+    @IsTest
+    private static void biweeklySeriesCountBoundary() {
+        assertSeriesCountBoundary('Biweekly', 14);
+    }
+
+    @IsTest
+    private static void fourWeeklySeriesCountBoundary() {
+        assertSeriesCountBoundary('Every4Weeks', 28);
+    }
+
+    private static void assertSeriesCountBoundary(String recurringType, Integer periodDays) {
+        System.runAs(previewCaller('GMT')) {
+            Datetime startTime = Datetime.newInstanceGmt(2027, 10, 25, 9, 0, 0);
+            Integer expectedCount = 199 / periodDays + 1;
+            Datetime lastStart = startTime.addDays((expectedCount - 1) * periodDays);
+            List<String> days = new List<String>{ 'monday' };
+            Map<String, Object> preview = HOT_CreateWorkOrderService.previewRecurringWorkOrders(
+                startTime.getTime(),
+                startTime.addHours(1).getTime(),
+                startTime.addDays(199).getTime(),
+                recurringType,
+                days
+            );
+            System.assertEquals(expectedCount, preview.get('count'), 'A 199-day series must be allowed');
+            List<Map<String, Object>> intervals = (List<Map<String, Object>>) preview.get('intervals');
+            System.assertEquals(lastStart.getTime(), intervals[expectedCount - 1].get('startTime'));
+            System.assertEquals(lastStart.addHours(1).getTime(), intervals[expectedCount - 1].get('endTime'));
+
+            for (
+                Datetime endDate : new List<Datetime>{
+                    startTime.addDays(199).addSeconds(1),
+                    Datetime.newInstanceGmt(9000, 1, 1, 0, 0, 0)
+                }
+            ) {
+                Boolean rejected = false;
+                try {
+                    HOT_CreateWorkOrderService.previewRecurringWorkOrders(
+                        startTime.getTime(),
+                        startTime.addHours(1).getTime(),
+                        endDate.getTime(),
+                        recurringType,
+                        days
+                    );
+                } catch (AuraHandledException e) {
+                    rejected = true;
+                }
+                System.assert(rejected, 'More than 199 days must fail even with fewer than 200 intervals');
+            }
+        }
+    }
+
+    @IsTest
+    private static void recurringEditRejectsExcessiveDurationBeforeQueries() {
+        Datetime startTime = Datetime.newInstanceGmt(2027, 10, 25, 9, 0, 0);
+        Id requestId = HOT_Request__c.SObjectType.getDescribe().getKeyPrefix() + '000000000001';
+        Integer queriesBefore = Limits.getQueries();
+        Boolean rejected = false;
+        try {
+            HOT_CreateWorkOrderService.createRecurringWorkOrdersFromEdit(
+                requestId,
+                '0WO000000000001',
+                startTime.getTime(),
+                startTime.addHours(1).getTime(),
+                'Every4Weeks',
+                new List<String>{ 'monday' },
+                startTime.addDays(199).addSeconds(1).getTime(),
+                null
+            );
+        } catch (AuraHandledException e) {
+            rejected = true;
+        }
+        System.assert(rejected);
+        System.assertEquals(queriesBefore, Limits.getQueries(), 'Reject excessive series before locking records');
+        System.assertEquals(0, Limits.getDmlStatements());
+    }
+
+    @IsTest
+    private static void recurringEditRejectsInvalidWeekdayBeforeQueries() {
+        Datetime startTime = Datetime.newInstanceGmt(2027, 10, 25, 9, 0, 0);
+        Id requestId = HOT_Request__c.SObjectType.getDescribe().getKeyPrefix() + '000000000001';
+        Integer queriesBefore = Limits.getQueries();
+        Boolean rejected = false;
+        try {
+            HOT_CreateWorkOrderService.createRecurringWorkOrdersFromEdit(
+                requestId,
+                '0WO000000000001',
+                startTime.getTime(),
+                startTime.addHours(1).getTime(),
+                'Weekly',
+                new List<String>{ 'invalid' },
+                startTime.addDays(10).getTime(),
+                null
+            );
+        } catch (AuraHandledException e) {
+            rejected = true;
+        }
+        System.assert(rejected, 'Invalid weekdays must not cause an unbounded scan');
+        System.assertEquals(queriesBefore, Limits.getQueries());
+    }
+
+    @IsTest
+    private static void dailyCreationRejects201Intervals() {
+        HOT_CreateWorkOrderService input = new HOT_CreateWorkOrderService();
+        input.startDate = Datetime.newInstance(2027, 10, 25, 9, 0, 0);
+        input.endDate = input.startDate.addHours(1);
+        input.recurringEndDate = input.startDate.date().addDays(200);
+        input.recurringType = 'Daily';
+        List<String> errors = HOT_CreateWorkOrderService.createWorkOrders(
+            new List<HOT_CreateWorkOrderService>{ input }
+        );
+        System.assertEquals(1, errors.size(), 'Inclusive daily range must not allow 201 Work Orders');
+        System.assertEquals(0, Limits.getDmlStatements());
+    }
+
+    @IsTest
+    private static void sixMonthSeriesMatchesCreationAndEdit() {
+        Datetime startTime = Datetime.newInstance(2027, 10, 25, 9, 0, 0);
+        assertRecurringEditMatchesCreation(
+            'Every4Weeks',
+            8,
+            startTime,
+            startTime.addHours(1),
+            startTime.date().addDays(199),
+            new List<String>{ 'monday' }
+        );
+    }
+
+    @IsTest
+    private static void creationRejectsExcessiveDurationForAllRecurringTypes() {
+        for (String recurringType : new List<String>{ 'Daily', 'Weekly', 'Biweekly', 'Every4Weeks', 'Monthly' }) {
+            HOT_CreateWorkOrderService input = new HOT_CreateWorkOrderService();
+            input.startDate = Datetime.newInstance(2027, 10, 25, 9, 0, 0);
+            input.endDate = input.startDate.addHours(1);
+            input.recurringEndDate = input.startDate.date().addDays(200);
+            input.recurringType = recurringType;
+            input.monday = true;
+            List<String> errors = HOT_CreateWorkOrderService.createWorkOrders(
+                new List<HOT_CreateWorkOrderService>{ input }
+            );
+            System.assertEquals(
+                new List<String>{ 'Du kan ikke legge inn gjentagende bestilling med en varighet på over 6 måneder' },
+                errors
+            );
+        }
+        System.assertEquals(0, Limits.getDmlStatements());
+    }
+
+    @IsTest
+    private static void communityCreationRejectsExcessiveDurationBeforeDml() {
+        Datetime startTime = Datetime.newInstanceGmt(2027, 10, 25, 9, 0, 0);
+        Boolean rejected = false;
+        try {
+            HOT_CreateWorkOrderService.createWorkOrdersFromCommunity(
+                null,
+                new Map<String, Long>{
+                    'startTime' => startTime.getTime(),
+                    'endTime' => startTime.addHours(1).getTime()
+                },
+                'Every4Weeks',
+                new List<String>{ 'monday' },
+                startTime.addDays(199).addSeconds(1).getTime()
+            );
+        } catch (AuraHandledException e) {
+            rejected = true;
+        }
+        System.assert(rejected, 'Creation must validate the original timestamps just like preview');
+        System.assertEquals(0, Limits.getDmlStatements());
+        System.assertEquals(0, Limits.getQueries());
     }
 
     /**
