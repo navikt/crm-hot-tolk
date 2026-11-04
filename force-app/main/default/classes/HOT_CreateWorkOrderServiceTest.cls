@@ -721,6 +721,108 @@ private class HOT_CreateWorkOrderServiceTest {
     }
 
     @IsTest
+    private static void recurringEditRowBudgetBoundaries() {
+        Test.startTest();
+        Integer remainingRows = Limits.getLimitDmlRows() - Limits.getDmlRows();
+        System.assert(
+            HOT_CreateWorkOrderService.hasRecurringEditRowBudget(remainingRows - 203, 203),
+            'Combined writes may exactly fill the remaining row budget'
+        );
+        System.assert(
+            !HOT_CreateWorkOrderService.hasRecurringEditRowBudget(remainingRows - 202, 203),
+            'Combined writes must not exceed the budget by even one row'
+        );
+        System.assert(
+            !HOT_CreateWorkOrderService.hasRecurringEditRowBudget(199 * 51, 202),
+            '200 occurrences with 51 attachments must be rejected'
+        );
+        System.assert(
+            !HOT_CreateWorkOrderService.hasRecurringEditRowBudget(199 * 50, 202),
+            'Work Order and request writes must also count toward the limit'
+        );
+        insert HOT_TestDataFactory.createWorkType();
+        System.assert(
+            !HOT_CreateWorkOrderService.hasRecurringEditRowBudget(remainingRows - 203, 203),
+            'Rows already written in this transaction must reduce the available budget'
+        );
+        Test.stopTest();
+    }
+
+    @IsTest
+    private static void recurringEditRejectsAttachmentLimitBeforeWrites() {
+        User caller = createRecurringEditCaller();
+        WorkType workType = HOT_TestDataFactory.createWorkType();
+        insert workType;
+        HOT_Request__c request = HOT_TestDataFactory.createRequest('Original subject', workType);
+        request.Orderer__c = caller.AccountId;
+        insert request;
+        WorkOrder workOrder = HOT_TestDataFactory.createWorkOrder(request, workType);
+        workOrder.StartDate = Datetime.newInstance(Date.today().addDays(1), Time.newInstance(9, 0, 0, 0));
+        workOrder.EndDate = workOrder.StartDate.addHours(1);
+        insert workOrder;
+        List<ContentVersion> files = new List<ContentVersion>();
+        for (Integer i = 0; i < 51; i++) {
+            files.add(
+                new ContentVersion(
+                    Title = 'Attachment ' + i,
+                    PathOnClient = 'attachment' + i + '.txt',
+                    VersionData = Blob.valueOf('Test attachment')
+                )
+            );
+        }
+        MyTriggers.disable(HOT_ContentDocumentLinkHandler.class, System.TriggerOperation.AFTER_INSERT);
+        try {
+            insert files;
+        } finally {
+            MyTriggers.enable(HOT_ContentDocumentLinkHandler.class);
+        }
+        Set<Id> versionIds = new Map<Id, ContentVersion>(files).keySet();
+        List<ContentDocumentLink> links = new List<ContentDocumentLink>();
+        for (ContentVersion file : [SELECT ContentDocumentId FROM ContentVersion WHERE Id IN :versionIds]) {
+            links.add(new ContentDocumentLink(ContentDocumentId = file.ContentDocumentId, LinkedEntityId = request.Id));
+        }
+        insert links;
+
+        Test.startTest();
+        System.runAs(caller) {
+            Integer dmlBefore = Limits.getDmlStatements();
+            Boolean rejected = false;
+            try {
+                HOT_CreateWorkOrderService.createRecurringWorkOrdersFromEdit(
+                    request.Id,
+                    workOrder.Id,
+                    workOrder.StartDate.getTime(),
+                    workOrder.EndDate.getTime(),
+                    'Daily',
+                    new List<String>(),
+                    Datetime.newInstanceGmt(workOrder.StartDate.date().addDays(199), Time.newInstance(0, 0, 0, 0))
+                        .getTime(),
+                    new Map<String, Object>{ 'Subject__c' => 'Must not be saved' }
+                );
+            } catch (AuraHandledException e) {
+                rejected = true;
+                System.assert(
+                    e.getMessage().contains('kortere periode'),
+                    'Error must explain how to reduce the series'
+                );
+                System.assert(e.getMessage().contains('vedlegg'), 'Error must identify attachments as the cause');
+            }
+            System.assert(rejected, 'Oversized attachment copies must fail before DML');
+            System.assertEquals(dmlBefore, Limits.getDmlStatements(), 'Rejection must precede even the savepoint');
+        }
+        Test.stopTest();
+        System.assertEquals(1, [SELECT COUNT() FROM WorkOrder WHERE HOT_Request__c = :request.Id]);
+        System.assertEquals(
+            'Original subject',
+            [SELECT Subject__c FROM HOT_Request__c WHERE Id = :request.Id].Subject__c
+        );
+        WorkOrder unchanged = [SELECT StartDate, EndDate FROM WorkOrder WHERE Id = :workOrder.Id];
+        System.assertEquals(workOrder.StartDate, unchanged.StartDate);
+        System.assertEquals(workOrder.EndDate, unchanged.EndDate);
+        System.assertEquals(51, [SELECT COUNT() FROM ContentDocumentLink WHERE LinkedEntityId = :request.Id]);
+    }
+
+    @IsTest
     private static void recurringEditSupportsDaily() {
         assertRecurringEditCount('Daily', 29);
     }

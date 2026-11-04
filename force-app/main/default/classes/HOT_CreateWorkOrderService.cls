@@ -1,4 +1,9 @@
 public without sharing class HOT_CreateWorkOrderService {
+    private static final String ATTACHMENT_LIMIT_MESSAGE = 'Bestillingen har for mange vedlegg for den valgte serien. Velg en kortere periode eller reduser antall vedlegg og prøv igjen.';
+
+    private class AttachmentLimitException extends Exception {
+    }
+
     @InvocableVariable
     public String requestId;
     @InvocableVariable
@@ -169,6 +174,23 @@ public without sharing class HOT_CreateWorkOrderService {
             }
         }
 
+        List<ContentDocumentLink> requestDocumentLinks = new List<ContentDocumentLink>();
+        if (!additionalWorkOrders.isEmpty()) {
+            requestDocumentLinks = [
+                SELECT ContentDocumentId
+                FROM ContentDocumentLink
+                WHERE LinkedEntityId = :requestId
+            ];
+        }
+        Integer attachmentRows = additionalWorkOrders.size() * requestDocumentLinks.size();
+        Integer plannedRows = occurrences.size() + 1 + (additionalWorkOrders.isEmpty() ? 0 : 1);
+        if (requestChanges != null) {
+            plannedRows++;
+        }
+        if (!hasRecurringEditRowBudget(attachmentRows, plannedRows)) {
+            throw attachmentLimitError();
+        }
+
         Savepoint savepoint = Database.setSavepoint();
         try {
             if (requestChanges != null) {
@@ -178,11 +200,9 @@ public without sharing class HOT_CreateWorkOrderService {
             update workOrders[0];
             if (!additionalWorkOrders.isEmpty()) {
                 insert additionalWorkOrders;
-                List<ContentDocumentLink> requestDocumentLinks = [
-                    SELECT ContentDocumentId
-                    FROM ContentDocumentLink
-                    WHERE LinkedEntityId = :requestId
-                ];
+                if (!hasRecurringEditRowBudget(attachmentRows, 0)) {
+                    throw new AttachmentLimitException(ATTACHMENT_LIMIT_MESSAGE);
+                }
                 List<ContentDocumentLink> workOrderDocumentLinks = new List<ContentDocumentLink>();
                 for (WorkOrder workOrder : additionalWorkOrders) {
                     for (ContentDocumentLink requestDocumentLink : requestDocumentLinks) {
@@ -217,8 +237,22 @@ public without sharing class HOT_CreateWorkOrderService {
             LoggerUtility logger = new LoggerUtility();
             logger.exception(e, request, CRM_ApplicationDomain.Domain.HOT);
             logger.publishSynch();
+            if (e instanceof AttachmentLimitException) {
+                throw attachmentLimitError();
+            }
             throw new AuraHandledException('Opprettelsen av gjentagende arbeidsordre feilet. Prøv igjen.');
         }
+    }
+
+    @TestVisible
+    private static Boolean hasRecurringEditRowBudget(Integer attachmentRows, Integer plannedRows) {
+        return attachmentRows + plannedRows <= Limits.getLimitDmlRows() - Limits.getDmlRows();
+    }
+
+    private static AuraHandledException attachmentLimitError() {
+        AuraHandledException error = new AuraHandledException(ATTACHMENT_LIMIT_MESSAGE);
+        error.setMessage(ATTACHMENT_LIMIT_MESSAGE);
+        return error;
     }
 
     /**
