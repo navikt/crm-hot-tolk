@@ -11,6 +11,7 @@ public without sharing class HOT_NotificationHandler {
                 notification.send(recipients);
             } catch (Exception e) {
                 logger.exception(e, record, CRM_ApplicationDomain.Domain.HOT);
+                logger.setCategory('HOT_NotificationHandler');
                 logger.publishSynch();
             }
         }
