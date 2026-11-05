@@ -823,6 +823,76 @@ private class HOT_CreateWorkOrderServiceTest {
     }
 
     @IsTest
+    private static void recurringEditCopies49AttachmentsTo200Occurrences() {
+        User caller = createRecurringEditCaller();
+        WorkType workType = HOT_TestDataFactory.createWorkType();
+        insert workType;
+        HOT_Request__c request = HOT_TestDataFactory.createRequest('Large series with attachments', workType);
+        request.Orderer__c = caller.AccountId;
+        insert request;
+        WorkOrder existingWorkOrder = HOT_TestDataFactory.createWorkOrder(request, workType);
+        existingWorkOrder.StartDate = Datetime.newInstance(Date.today().addDays(1), Time.newInstance(9, 0, 0, 0));
+        existingWorkOrder.EndDate = existingWorkOrder.StartDate.addHours(1);
+        insert existingWorkOrder;
+        List<ContentVersion> files = new List<ContentVersion>();
+        for (Integer i = 0; i < 49; i++) {
+            files.add(
+                new ContentVersion(
+                    Title = 'Attachment ' + i,
+                    PathOnClient = 'attachment' + i + '.txt',
+                    VersionData = Blob.valueOf('Test attachment')
+                )
+            );
+        }
+        insert files;
+        Set<Id> versionIds = new Map<Id, ContentVersion>(files).keySet();
+        Set<Id> documentIds = new Set<Id>();
+        List<ContentDocumentLink> requestLinks = new List<ContentDocumentLink>();
+        for (ContentVersion file : [SELECT ContentDocumentId FROM ContentVersion WHERE Id IN :versionIds]) {
+            documentIds.add(file.ContentDocumentId);
+            requestLinks.add(
+                new ContentDocumentLink(ContentDocumentId = file.ContentDocumentId, LinkedEntityId = request.Id)
+            );
+        }
+        insert requestLinks;
+
+        Test.startTest();
+        System.runAs(caller) {
+            HOT_CreateWorkOrderService.createRecurringWorkOrdersFromEdit(
+                request.Id,
+                existingWorkOrder.Id,
+                existingWorkOrder.StartDate.getTime(),
+                existingWorkOrder.EndDate.getTime(),
+                'Daily',
+                new List<String>(),
+                Datetime.newInstanceGmt(existingWorkOrder.StartDate.date().addDays(199), Time.newInstance(0, 0, 0, 0))
+                    .getTime(),
+                null
+            );
+            System.assert(
+                Limits.getQueries() < Limits.getLimitQueries(),
+                'Large attachment copies must leave SOQL budget for the rest of the transaction'
+            );
+        }
+        Test.stopTest();
+
+        List<WorkOrder> workOrders = [
+            SELECT Id, (SELECT ContentDocumentId FROM ContentDocumentLinks)
+            FROM WorkOrder
+            WHERE HOT_Request__c = :request.Id
+        ];
+        System.assertEquals(200, workOrders.size(), 'Must save all 200 occurrences');
+        for (WorkOrder workOrder : workOrders) {
+            System.assertEquals(49, workOrder.ContentDocumentLinks.size(), 'Every occurrence must receive all files');
+            Set<Id> copiedDocumentIds = new Set<Id>();
+            for (ContentDocumentLink link : workOrder.ContentDocumentLinks) {
+                copiedDocumentIds.add(link.ContentDocumentId);
+            }
+            System.assertEquals(documentIds, copiedDocumentIds, 'Every occurrence must receive the request files');
+        }
+    }
+
+    @IsTest
     private static void recurringEditSupportsDaily() {
         assertRecurringEditCount('Daily', 29);
     }
