@@ -189,7 +189,7 @@
             <label>Change status on IR</label>
         </rules>
     </decisions>
-    <description>For bruk av Nav formidler</description>
+    <description>For bruk av Nav-formidler</description>
     <environments>Default</environments>
     <interviewLabel>HOT_Register wanted service resource Internal {!$Flow.CurrentDateTime}</interviewLabel>
     <label>HOT_Register wanted service resource Internal</label>
@@ -531,7 +531,7 @@
             <inputParameters>
                 <name>value</name>
                 <value>
-                    <elementReference>Formidler</elementReference>
+                    <elementReference>Tolkebruker</elementReference>
                 </value>
             </inputParameters>
             <inputsOnNextNavToAssocScrn>UseStoredValues</inputsOnNextNavToAssocScrn>
@@ -599,7 +599,7 @@
             <inputParameters>
                 <name>text</name>
                 <value>
-                    <stringValue>Supert! Tolken fikk nå et varsel om at den er ønsket til dette oppdraget.</stringValue>
+                    <stringValue>Varsel til ønsket tolk sendt.</stringValue>
                 </value>
             </inputParameters>
             <inputsOnNextNavToAssocScrn>UseStoredValues</inputsOnNextNavToAssocScrn>
@@ -768,7 +768,7 @@
             <inputParameters>
                 <name>value</name>
                 <value>
-                    <elementReference>Formidler</elementReference>
+                    <elementReference>Tolkebruker</elementReference>
                 </value>
             </inputParameters>
             <inputsOnNextNavToAssocScrn>UseStoredValues</inputsOnNextNavToAssocScrn>
@@ -836,7 +836,7 @@
             <inputParameters>
                 <name>text</name>
                 <value>
-                    <stringValue>Supert! Tolken fikk nå et varsel om at den er ønsket til dette oppdraget.</stringValue>
+                    <stringValue>Varsel til ønsket tolk sendt.</stringValue>
                 </value>
             </inputParameters>
             <inputsOnNextNavToAssocScrn>UseStoredValues</inputsOnNextNavToAssocScrn>
