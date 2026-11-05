@@ -599,7 +599,7 @@
             <inputParameters>
                 <name>text</name>
                 <value>
-                    <stringValue>Varsel til ønsket tolk sendt.</stringValue>
+                    <stringValue>Tolken er registrert som ønsket til oppdraget.</stringValue>
                 </value>
             </inputParameters>
             <inputsOnNextNavToAssocScrn>UseStoredValues</inputsOnNextNavToAssocScrn>
@@ -676,7 +676,7 @@
             <inputParameters>
                 <name>text</name>
                 <value>
-                    <stringValue>Når du ønsker en tolk vil tolken få varsel om dette. Tolken kan da avslå eller melde interesse for oppdraget</stringValue>
+                    <stringValue>Når du registrerer en tolk som ønsket, får tolken et varsel. Tolken kan deretter avslå eller melde interesse for oppdraget.</stringValue>
                 </value>
             </inputParameters>
             <inputsOnNextNavToAssocScrn>UseStoredValues</inputsOnNextNavToAssocScrn>
@@ -836,7 +836,7 @@
             <inputParameters>
                 <name>text</name>
                 <value>
-                    <stringValue>Varsel til ønsket tolk sendt.</stringValue>
+                    <stringValue>Tolken er registrert som ønsket til oppdraget.</stringValue>
                 </value>
             </inputParameters>
             <inputsOnNextNavToAssocScrn>UseStoredValues</inputsOnNextNavToAssocScrn>
