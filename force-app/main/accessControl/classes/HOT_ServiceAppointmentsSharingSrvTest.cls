@@ -5,8 +5,149 @@ private class HOT_ServiceAppointmentsSharingSrvTest {
         Profile profile = [SELECT Id FROM Profile WHERE Name = 'Standard User' OR Name = 'Standardbruker' LIMIT 1];
         User user = HOT_TestDataFactory.createUser('user', profile);
         insert user;
+        PermissionSetLicense fieldServiceLicense = [
+            SELECT Id
+            FROM PermissionSetLicense
+            WHERE DeveloperName = 'FieldServiceStandardPsl'
+        ];
+        insert new PermissionSetLicenseAssign(AssigneeId = user.Id, PermissionSetLicenseId = fieldServiceLicense.Id);
+        PermissionSet resourcePermissions = new PermissionSet(
+            Name = 'SharingTestFieldServiceAccess',
+            Label = 'Sharing Test Field Service Access',
+            PermissionsFieldServiceAccess = true
+        );
+        insert resourcePermissions;
+        insert new PermissionSetAssignment(AssigneeId = user.Id, PermissionSetId = resourcePermissions.Id);
         ServiceResource resource = HOT_TestDataFactory.createServiceResource(user.Id);
-        insert resource;
+        System.runAs(new User(Id = UserInfo.getUserId())) {
+            insert resource;
+        }
+    }
+
+    @IsTest
+    private static void testShareServiceAppointment() {
+        ServiceResource resource = [SELECT Id, RelatedRecordId FROM ServiceResource LIMIT 1];
+        ServiceAppointment appointment = createAppointmentsForSharing(1)[0];
+        Integer workOrderSharesBefore = [SELECT COUNT() FROM WorkOrderShare WHERE RowCause = 'Manual'];
+        Integer accountSharesBefore = [SELECT COUNT() FROM AccountShare WHERE RowCause = 'Manual'];
+        Integer threadSharesBefore = [SELECT COUNT() FROM Thread__Share WHERE RowCause = 'Manual'];
+
+        Test.startTest();
+        HOT_ServiceAppointmentsSharingService.shareServiceAppointment(resource.Id, appointment.Id);
+        HOT_ServiceAppointmentsSharingService.shareServiceAppointment(resource.Id, appointment.Id);
+        System.assertEquals(workOrderSharesBefore, [SELECT COUNT() FROM WorkOrderShare WHERE RowCause = 'Manual']);
+        System.assertEquals(accountSharesBefore, [SELECT COUNT() FROM AccountShare WHERE RowCause = 'Manual']);
+        System.assertEquals(threadSharesBefore, [SELECT COUNT() FROM Thread__Share WHERE RowCause = 'Manual']);
+        Test.stopTest();
+
+        List<ServiceAppointmentShare> shares = [
+            SELECT AccessLevel
+            FROM ServiceAppointmentShare
+            WHERE ParentId = :appointment.Id AND UserOrGroupId = :resource.RelatedRecordId AND RowCause = 'Manual'
+        ];
+        System.assertEquals(1, shares.size());
+        System.assertEquals('Edit', shares[0].AccessLevel);
+    }
+
+    @IsTest
+    private static void testShareServiceAppointmentsInBulk() {
+        ServiceResource resource = [SELECT Id, RelatedRecordId FROM ServiceResource LIMIT 1];
+        List<ServiceAppointment> appointments = createAppointmentsForSharing(2);
+        ServiceAppointmentShare readShare = new ServiceAppointmentShare(
+            ParentId = appointments[0].Id,
+            UserOrGroupId = resource.RelatedRecordId,
+            AccessLevel = 'Read',
+            RowCause = 'Manual'
+        );
+        insert readShare;
+        List<HOT_ServiceAppointmentsSharingService.SharingRequest> requests = new List<HOT_ServiceAppointmentsSharingService.SharingRequest>();
+        for (Integer i = 0; i < 200; i++) {
+            HOT_ServiceAppointmentsSharingService.SharingRequest request = new HOT_ServiceAppointmentsSharingService.SharingRequest();
+            request.serviceResourceId = resource.Id;
+            request.serviceAppointmentId = appointments[Math.mod(i, 2)].Id;
+            requests.add(request);
+        }
+
+        Test.startTest();
+        HOT_ServiceAppointmentsSharingService.shareServiceAppointments(requests);
+        System.assertEquals(2, Limits.getQueries());
+        Test.stopTest();
+
+        List<ServiceAppointmentShare> shares = [
+            SELECT Id, AccessLevel
+            FROM ServiceAppointmentShare
+            WHERE ParentId IN :appointments AND UserOrGroupId = :resource.RelatedRecordId AND RowCause = 'Manual'
+        ];
+        System.assertEquals(2, shares.size());
+        for (ServiceAppointmentShare share : shares) {
+            System.assertEquals('Edit', share.AccessLevel);
+        }
+        System.assertEquals(
+            'Edit',
+            [SELECT AccessLevel FROM ServiceAppointmentShare WHERE Id = :readShare.Id].AccessLevel
+        );
+    }
+
+    @IsTest
+    private static void testShareServiceAppointmentRejectsInvalidInput() {
+        ServiceResource resource = [SELECT Id FROM ServiceResource LIMIT 1];
+        Test.startTest();
+        try {
+            HOT_ServiceAppointmentsSharingService.shareServiceAppointment(resource.Id, null);
+            System.assert(false, 'A missing appointment must fail.');
+        } catch (HOT_ServiceAppointmentsSharingService.SharingException e) {
+            System.assertEquals('A service resource Id and service appointment Id are required.', e.getMessage());
+        }
+        try {
+            HOT_ServiceAppointmentsSharingService.shareServiceAppointments(null);
+            System.assert(false, 'Missing requests must fail.');
+        } catch (HOT_ServiceAppointmentsSharingService.SharingException e) {
+            System.assertEquals('Sharing requests are required.', e.getMessage());
+        }
+        Test.stopTest();
+    }
+
+    @IsTest
+    private static void testShareServiceAppointmentRejectsMissingResource() {
+        Id missingResourceId = ServiceResource.SObjectType.getDescribe().getKeyPrefix() + '000000000001';
+        ServiceAppointment appointment = createAppointmentsForSharing(1)[0];
+        Integer sharesBefore = [
+            SELECT COUNT()
+            FROM ServiceAppointmentShare
+            WHERE ParentId = :appointment.Id AND RowCause = 'Manual'
+        ];
+
+        Test.startTest();
+        try {
+            HOT_ServiceAppointmentsSharingService.shareServiceAppointment(missingResourceId, appointment.Id);
+            System.assert(false, 'A missing service resource must fail.');
+        } catch (HOT_ServiceAppointmentsSharingService.SharingException e) {
+            System.assertEquals('The service resource must be linked to a user.', e.getMessage());
+        }
+        System.assertEquals(
+            sharesBefore,
+            [SELECT COUNT() FROM ServiceAppointmentShare WHERE ParentId = :appointment.Id AND RowCause = 'Manual']
+        );
+        Test.stopTest();
+    }
+
+    private static List<ServiceAppointment> createAppointmentsForSharing(Integer count) {
+        WorkType workType = HOT_TestDataFactory.createWorkType();
+        insert workType;
+        HOT_Request__c request = HOT_TestDataFactory.createRequest('TEST', workType);
+        insert request;
+        WorkOrder workOrder = HOT_TestDataFactory.createWorkOrder(request, workType);
+        insert workOrder;
+        WorkOrderLineItem lineItem = HOT_TestDataFactory.createWorkOrderLineItem(workOrder, workType);
+        insert lineItem;
+        List<ServiceAppointment> appointments = new List<ServiceAppointment>();
+        for (Integer i = 0; i < count; i++) {
+            ServiceAppointment appointment = HOT_TestDataFactory.createServiceAppointment(lineItem);
+            appointment.HOT_Request__c = request.Id;
+            appointments.add(appointment);
+        }
+        insert appointments;
+        return appointments;
     }
 
     @IsTest

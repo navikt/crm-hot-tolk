@@ -52,7 +52,7 @@
         <template lwc:if={showAcceptAction}>
             <section class="acceptance-panel slds-m-bottom_large" aria-labelledby="acceptance-heading">
                 <div class="acceptance-header">
-                    <h2 id="acceptance-heading" style="font-weight: 600;">
+                    <h2 id="acceptance-heading" style="font-weight: 600">
                         Oppdraget er overført til tjenesteleverandør.
                     </h2>
                 </div>
@@ -93,97 +93,97 @@
         <template lwc:if={hasRecordData}>
             <div class="detail-layout">
                 <div class="main-column">
-                <section class="detail-card assignment-card" aria-labelledby="assignment-details-heading">
-                    <h2 id="assignment-details-heading" class="card-heading">Oppdragsdetaljer</h2>
-                    <template lwc:if={hasAppointmentTags}>
-                        <ul class="tag-list" aria-label="Oppdragsmerkinger">
-                            <template for:each={appointmentTags} for:item="tag">
-                                <c-hot_tag 
-                                    key={tag.id}
-                                    color={tag.color} 
-                                    label={tag.label}
-                                    variant="moderate"
-                                ></c-hot_tag>
-                            </template>
-                        </ul>
-                    </template>
+                    <section class="detail-card assignment-card" aria-labelledby="assignment-details-heading">
+                        <h2 id="assignment-details-heading" class="card-heading">Oppdragsdetaljer</h2>
+                        <template lwc:if={hasAppointmentTags}>
+                            <ul class="tag-list" aria-label="Oppdragsmerkinger">
+                                <template for:each={appointmentTags} for:item="tag">
+                                    <c-hot_tag
+                                        key={tag.id}
+                                        color={tag.color}
+                                        label={tag.label}
+                                        variant="moderate"
+                                    ></c-hot_tag>
+                                </template>
+                            </ul>
+                        </template>
 
-                    <div class="detail-columns">
-                        <dl class="data-list">
-                            <div class="data-row">
-                                <dt>Oppdragsnummer</dt>
-                                <dd>{appointmentNumber}</dd>
-                            </div>
-                            <div class="data-row">
-                                <dt>Tema for frilanstolker</dt>
-                                <dd>{freelanceSubject}</dd>
-                            </div>
-                            <div class="data-row">
-                                <dt>Informasjon</dt>
-                                <dd class="multiline-value">{information}</dd>
-                            </div>
-                            <div class="data-row">
-                                <dt>Arbeidstype</dt>
-                                <dd>{workTypeName}</dd>
-                            </div>
-                            <div class="data-row">
-                                <dt>Oppdragstype</dt>
-                                <dd>{assignmentType}</dd>
-                            </div>
-                            <div class="data-row">
-                                <dt>Kompensert forberedelse</dt>
-                                <dd>{preparationTime}</dd>
-                            </div>
-                            <div class="data-row">
-                                <dt>Totalt antall tolker</dt>
-                                <dd>{totalInterpreters}</dd>
-                            </div>
-                            <div class="data-row">
-                                <dt>Adresse</dt>
-                                <dd class="multiline-value">{addressFormatted}</dd>
-                            </div>
-                            <div class="data-row">
-                                <dt>Leverandør formidler</dt>
-                                <dd>{providerDispatcherName}</dd>
-                            </div>
-                        </dl>
+                        <div class="detail-columns">
+                            <dl class="data-list">
+                                <div class="data-row">
+                                    <dt>Oppdragsnummer</dt>
+                                    <dd>{appointmentNumber}</dd>
+                                </div>
+                                <div class="data-row">
+                                    <dt>Tema for frilanstolker</dt>
+                                    <dd>{freelanceSubject}</dd>
+                                </div>
+                                <div class="data-row">
+                                    <dt>Informasjon</dt>
+                                    <dd class="multiline-value">{information}</dd>
+                                </div>
+                                <div class="data-row">
+                                    <dt>Arbeidstype</dt>
+                                    <dd>{workTypeName}</dd>
+                                </div>
+                                <div class="data-row">
+                                    <dt>Oppdragstype</dt>
+                                    <dd>{assignmentType}</dd>
+                                </div>
+                                <div class="data-row">
+                                    <dt>Kompensert forberedelse</dt>
+                                    <dd>{preparationTime}</dd>
+                                </div>
+                                <div class="data-row">
+                                    <dt>Totalt antall tolker</dt>
+                                    <dd>{totalInterpreters}</dd>
+                                </div>
+                                <div class="data-row">
+                                    <dt>Adresse</dt>
+                                    <dd class="multiline-value">{addressFormatted}</dd>
+                                </div>
+                                <div class="data-row">
+                                    <dt>Leverandør formidler</dt>
+                                    <dd>{providerDispatcherName}</dd>
+                                </div>
+                            </dl>
 
-                        <dl class="data-list">
-                            <div class="data-row">
-                                <dt>Status</dt>
-                                <dd>{status}</dd>
-                            </div>
-                            <div class="data-row">
-                                <dt>Tjenesteleverandør status</dt>
-                                <dd>{providerStatusLabel}</dd>
-                            </div>
-                            <div class="data-row">
-                                <dt>Region</dt>
-                                <dd>{serviceTerritory}</dd>
-                            </div>
-                            <div class="data-row">
-                                <dt>Annen økonomisk leverandør</dt>
-                                <dd>{isOtherEconomicProvider}</dd>
-                            </div>
-                            <div class="data-row">
-                                <dt>Antall interesserte ressurser</dt>
-                                <dd>{interestedResources}</dd>
-                            </div>
-                            <div class="data-row">
-                                <dt>Ønsket tolk</dt>
-                                <dd>{userPreferredInterpreter}</dd>
-                            </div>
-                            <div class="data-row">
-                                <dt>Ønsket kjønn</dt>
-                                <dd>{userPreferredGender}</dd>
-                            </div>
-                            <div class="data-row">
-                                <dt>Ønsket tolkemetode</dt>
-                                <dd>{userInterpretationMethod}</dd>
-                            </div>
-                        </dl>
-                    </div>
-                </section>
+                            <dl class="data-list">
+                                <div class="data-row">
+                                    <dt>Status</dt>
+                                    <dd>{status}</dd>
+                                </div>
+                                <div class="data-row">
+                                    <dt>Tjenesteleverandørstatus</dt>
+                                    <dd>{providerStatusLabel}</dd>
+                                </div>
+                                <div class="data-row">
+                                    <dt>Region</dt>
+                                    <dd>{serviceTerritory}</dd>
+                                </div>
+                                <div class="data-row">
+                                    <dt>Annen økonomisk leverandør</dt>
+                                    <dd>{isOtherEconomicProvider}</dd>
+                                </div>
+                                <div class="data-row">
+                                    <dt>Antall interesserte ressurser</dt>
+                                    <dd>{interestedResources}</dd>
+                                </div>
+                                <div class="data-row">
+                                    <dt>Ønsket tolk</dt>
+                                    <dd>{userPreferredInterpreter}</dd>
+                                </div>
+                                <div class="data-row">
+                                    <dt>Ønsket kjønn</dt>
+                                    <dd>{userPreferredGender}</dd>
+                                </div>
+                                <div class="data-row">
+                                    <dt>Ønsket tolkemetode</dt>
+                                    <dd>{userInterpretationMethod}</dd>
+                                </div>
+                            </dl>
+                        </div>
+                    </section>
 
                     <template lwc:if={hasCancellationDetails}>
                         <section class="detail-card cancellation-card" aria-labelledby="cancellation-heading">
