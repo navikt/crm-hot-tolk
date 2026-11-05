@@ -103,7 +103,8 @@
     text-underline-offset: 0.2em;
 }
 
-.recurring-preview summary:focus-visible {
+.recurring-preview summary:focus-visible,
+.recurring-preview-list:focus-visible {
     outline: 2px solid currentColor;
     outline-offset: 4px;
     border-radius: 0.25rem;

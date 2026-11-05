@@ -246,6 +246,27 @@ describe('server recurrence preview', () => {
         expect(details.querySelector('summary').textContent).toBe('Skjul tidspunkter');
     });
 
+    it('exposes the preview scroll area as a named keyboard-focusable region', async () => {
+        const element = await setup();
+        jest.advanceTimersByTime(300);
+        await flushPromises();
+        const details = element.shadowRoot.querySelector('details');
+        details.open = true;
+        details.dispatchEvent(new Event('toggle'));
+        await flushPromises();
+        const scrollArea = details.querySelector('.recurring-preview-list');
+        expect(scrollArea.tabIndex).toBe(0);
+        expect(scrollArea.getAttribute('role')).toBe('region');
+        expect(scrollArea.getAttribute('aria-label')).toBe('Tidspunkter i serien');
+        scrollArea.focus();
+        expect(element.shadowRoot.activeElement).toBe(scrollArea);
+        expect(scrollArea.querySelectorAll('tbody tr')).toHaveLength(preview.count);
+
+        const summary = details.querySelector('summary');
+        summary.focus();
+        expect(element.shadowRoot.activeElement).toBe(summary);
+    });
+
     it('debounces changes and clears a previous preview immediately', async () => {
         const element = await setup();
         jest.advanceTimersByTime(300);
