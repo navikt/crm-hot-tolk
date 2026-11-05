@@ -82,6 +82,35 @@
                                 <lightning-output-field field-name="ServiceTerritoryId"></lightning-output-field>
                                 <lightning-output-field field-name="HOT_DispatcherNew__c"></lightning-output-field>
                                 <lightning-output-field field-name="Status"></lightning-output-field>
+                                <div
+                                    class="slds-form-element slds-form-element_readonly readonly-field-style"
+                                    data-id="assigned-resources"
+                                >
+                                    <span class="slds-form-element__label">Tildelte ressurser</span>
+                                    <div class="slds-form-element__control">
+                                        <div class="slds-form-element__static">
+                                            <template lwc:if={assignedResourcesError}>
+                                                <span role="alert">Kunne ikke laste tildelte ressurser.</span>
+                                            </template>
+                                            <template lwc:elseif={isLoadingAssignedResources}>
+                                                <span role="status">Laster tildelte ressurser...</span>
+                                            </template>
+                                            <template lwc:elseif={hasAssignedResources}>
+                                                <ul>
+                                                    <template for:each={assignedResources} for:item="resource">
+                                                        <li key={resource.id}>{resource.name}</li>
+                                                    </template>
+                                                </ul>
+                                                <template lwc:if={hasMoreAssignedResources}>
+                                                    <span role="status">
+                                                        Listen viser kun de første 1999 tildelte ressursene.
+                                                    </span>
+                                                </template>
+                                            </template>
+                                            <template lwc:else>Ingen tildelte ressurser ennå</template>
+                                        </div>
+                                    </div>
+                                </div>
                                 <lightning-output-field
                                     field-name="HOT_TjenesteleverandorStatus__c"
                                 ></lightning-output-field>
