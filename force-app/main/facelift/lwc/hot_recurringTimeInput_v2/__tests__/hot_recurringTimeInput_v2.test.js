@@ -134,6 +134,69 @@ describe('server recurrence preview', () => {
         expect(secondDeleteButton.buttonLabel).toBe('Slett');
     });
 
+    it.each([
+        [false, 0],
+        [false, 1],
+        [false, 2],
+        [true, 0],
+        [true, 1],
+        [true, 2]
+    ])('focuses the neighboring delete button in edit mode %s after removing row %s', async (editMode, index) => {
+        const element = await setup(editMode);
+        change(element, 'c-checkbox', false, 'checkboxclick');
+        await flushPromises();
+        const addButton = element.shadowRoot.querySelector('[data-id="addTime"]');
+        for (let i = 0; i < 2; i++) {
+            addButton.shadowRoot.querySelector('button').click();
+            await flushPromises();
+        }
+        const deletedButton = element.shadowRoot.querySelectorAll('[data-id="removeTime"]')[index];
+        const nativeButton = deletedButton.shadowRoot.querySelector('button');
+        nativeButton.focus();
+        nativeButton.click();
+        await flushPromises();
+        const remainingButtons = element.shadowRoot.querySelectorAll('[data-id="removeTime"]');
+        expect(remainingButtons).toHaveLength(2);
+        const focusedButton = remainingButtons[Math.min(index, 1)];
+        expect(element.shadowRoot.activeElement).toBe(focusedButton);
+        expect(focusedButton.shadowRoot.activeElement).toBe(focusedButton.shadowRoot.querySelector('button'));
+        if (editMode) {
+            expect(element.getTimeInput().times['existing-work-order']).toBeDefined();
+        }
+
+        addButton.shadowRoot.querySelector('button').focus();
+        change(element, '[data-id="endTime"]', '12:00');
+        await flushPromises();
+        expect(element.shadowRoot.activeElement).toBe(addButton);
+    });
+
+    it.each([
+        [false, 0],
+        [false, 1],
+        [true, 0],
+        [true, 1]
+    ])('focuses the add button when one row remains in edit mode %s after removing row %s', async (editMode, index) => {
+        const element = await setup(editMode);
+        change(element, 'c-checkbox', false, 'checkboxclick');
+        await flushPromises();
+        element.shadowRoot.querySelector('[data-id="addTime"]').shadowRoot.querySelector('button').click();
+        await flushPromises();
+        const nativeButton = element.shadowRoot
+            .querySelectorAll('[data-id="removeTime"]')
+            [index].shadowRoot.querySelector('button');
+        nativeButton.focus();
+        nativeButton.click();
+        await flushPromises();
+        expect(element.shadowRoot.querySelectorAll('.listClass')).toHaveLength(1);
+        expect(element.shadowRoot.querySelectorAll('[data-id="removeTime"]')).toHaveLength(0);
+        const addButton = element.shadowRoot.querySelector('[data-id="addTime"]');
+        expect(element.shadowRoot.activeElement).toBe(addButton);
+        expect(addButton.shadowRoot.activeElement).toBe(addButton.shadowRoot.querySelector('button'));
+        if (editMode) {
+            expect(element.getTimeInput().times['existing-work-order']).toBeDefined();
+        }
+    });
+
     it.each([false, true])('uses the saved timestamps and server boundaries in edit mode %s', async (editMode) => {
         const element = await setup(editMode);
         expect(previewRecurringWorkOrders).not.toHaveBeenCalled();

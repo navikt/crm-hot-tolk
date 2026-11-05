@@ -26,6 +26,19 @@ export default class hot_recurringTimeInput_v2 extends LightningElement {
     previewVersion = 0;
     previewExpanded = false;
     previewValidationRequested = false;
+    pendingRemovalFocusIndex;
+
+    renderedCallback() {
+        if (this.pendingRemovalFocusIndex === undefined) {
+            return;
+        }
+        const index = this.pendingRemovalFocusIndex;
+        this.pendingRemovalFocusIndex = undefined;
+        const button = this.isOnlyOneTime
+            ? this.template.querySelector('[data-id="addTime"]')
+            : this.template.querySelectorAll('[data-id="removeTime"]')[index];
+        button.focusButton();
+    }
 
     get timesWithDeleteLabels() {
         return this.times.map((time, index) => {
@@ -367,6 +380,7 @@ export default class hot_recurringTimeInput_v2 extends LightningElement {
                     };
                 }
                 this.times.splice(index, 1);
+                this.pendingRemovalFocusIndex = Math.min(index, this.times.length - 1);
             }
         }
         this.updateIsOnlyOneTime();

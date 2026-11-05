@@ -44,6 +44,7 @@
                 <div style="padding-top: 4.5%; padding-left: 1vw">
                     <c-button
                         if:false={isOnlyOneTime}
+                        data-id="removeTime"
                         type="button"
                         button-styling="danger"
                         onbuttonclick={removeTime}
@@ -171,6 +172,7 @@
         </template>
         <c-button
             if:false={isAdvancedTimes}
+            data-id="addTime"
             type="button"
             button-styling="secondary"
             onbuttonclick={addTime}

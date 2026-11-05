@@ -12,6 +12,10 @@ export default class Button extends LightningElement {
     @api title;
     @api type;
 
+    @api focusButton() {
+        this.template.querySelector('button').focus();
+    }
+
     handleClick() {
         if (!this.disabled) {
             this.dispatchEvent(new CustomEvent('buttonclick'));

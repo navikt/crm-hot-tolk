@@ -6,6 +6,9 @@ Child component of requestForm_request
 
 Delete buttons retain the visible label "Slett". Their accessible names include the
 interval number and any entered date, start time and end time, updating as fields change.
+After deletion, focus moves to the next interval's delete button, or the previous one
+when the last interval is deleted. If only one interval remains, focus moves to the add
+button instead.
 
 Recurring intervals are previewed in a single panel with the total count, first and last
 occurrence dates, and any explanation of adjusted date boundaries. The expandable table
