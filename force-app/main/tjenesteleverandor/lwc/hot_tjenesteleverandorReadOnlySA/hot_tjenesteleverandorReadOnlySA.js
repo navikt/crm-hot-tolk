@@ -27,6 +27,26 @@ export default class HOT_TjenesteleverandorSAReadOnly extends LightningElement {
     })
     assignedResourceResult;
 
+    @wire(getRelatedListRecords, {
+        parentRecordId: '$recordId',
+        relatedListId: 'InterestedResources__r',
+        fields: ['HOT_InterestedResource__c.Id', 'HOT_InterestedResource__c.ServiceResource__r.Name'],
+        where: '{ and: [{ Status__c: { eq: "Wanted" } }, { HOT_Wanted_by__c: { eq: "Formidler" } }] }'
+    })
+    wantedResourceResult;
+
+    get wantedResourceNames() {
+        return this.wantedResourceResult?.data?.records
+            .map((record) =>
+                this.formatResourceName(getFieldValue(record, 'HOT_InterestedResource__c.ServiceResource__r.Name'))
+            )
+            .join(', ');
+    }
+
+    get wantedResourceError() {
+        return this.wantedResourceResult?.error;
+    }
+
     get assignedResourceName() {
         const record = this.assignedResourceResult?.data?.records[0];
         return this.formatResourceName(getFieldValue(record, 'AssignedResource.ServiceResource.Name'));
