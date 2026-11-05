@@ -23,16 +23,13 @@ export default class HOT_TjenesteleverandorSAReadOnly extends LightningElement {
         parentRecordId: '$recordId',
         relatedListId: 'ServiceResources',
         fields: ['AssignedResource.Id', 'AssignedResource.ServiceResource.Name'],
-        pageSize: 1999,
-        sortBy: ['AssignedResource.ServiceResource.Name']
+        pageSize: 1
     })
-    assignedResourcesResult;
+    assignedResourceResult;
 
-    get assignedResources() {
-        return this.assignedResourcesResult?.data?.records.map((record) => ({
-            id: record.id,
-            name: this.formatResourceName(getFieldValue(record, 'AssignedResource.ServiceResource.Name'))
-        }));
+    get assignedResourceName() {
+        const record = this.assignedResourceResult?.data?.records[0];
+        return this.formatResourceName(getFieldValue(record, 'AssignedResource.ServiceResource.Name'));
     }
 
     formatResourceName(name) {
@@ -41,20 +38,12 @@ export default class HOT_TjenesteleverandorSAReadOnly extends LightningElement {
             .replace(/(^|[\s'\u2019-])\p{L}/gu, (value) => value.toLocaleUpperCase(this.lang));
     }
 
-    get hasAssignedResources() {
-        return this.assignedResources?.length > 0;
+    get assignedResourceError() {
+        return this.assignedResourceResult?.error;
     }
 
-    get assignedResourcesError() {
-        return this.assignedResourcesResult?.error;
-    }
-
-    get hasMoreAssignedResources() {
-        return Boolean(this.assignedResourcesResult?.data?.nextPageToken);
-    }
-
-    get isLoadingAssignedResources() {
-        return !this.assignedResources && !this.assignedResourcesError;
+    get hasLoadedAssignedResource() {
+        return Boolean(this.assignedResourceResult?.data);
     }
 
     get subjectValue() {
