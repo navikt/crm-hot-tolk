@@ -1,6 +1,6 @@
 <template>
     <div style="margin-bottom: 0.5rem">
-        <template iterator:it={times}>
+        <template iterator:it={timesWithDeleteLabels}>
             <div key={it.value.id} class="listClass">
                 <h2 class="sr-only">
                     Dato: {it.value.date}. Tid: {it.value.startTimeString} - {it.value.endTimeString}
@@ -47,7 +47,7 @@
                         type="button"
                         button-styling="danger"
                         onbuttonclick={removeTime}
-                        aria-label="Fjern tid"
+                        aria-label={it.value.deleteLabel}
                         name={it.value.id}
                         button-label="Slett"
                     >

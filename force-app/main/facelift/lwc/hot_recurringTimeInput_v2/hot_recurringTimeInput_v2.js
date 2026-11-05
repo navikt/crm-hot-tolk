@@ -27,6 +27,22 @@ export default class hot_recurringTimeInput_v2 extends LightningElement {
     previewExpanded = false;
     previewValidationRequested = false;
 
+    get timesWithDeleteLabels() {
+        return this.times.map((time, index) => {
+            const labelParts = [`Slett tidspunkt ${index + 1}`];
+            if (time.date) {
+                labelParts.push(`dato ${time.date.split('-').reverse().join('.')}`);
+            }
+            if (time.startTimeString) {
+                labelParts.push(`starttid ${time.startTimeString}`);
+            }
+            if (time.endTimeString) {
+                labelParts.push(`sluttid ${time.endTimeString}`);
+            }
+            return { ...time, deleteLabel: labelParts.join(', ') };
+        });
+    }
+
     get previewParameters() {
         const time = this.times[0];
         if (

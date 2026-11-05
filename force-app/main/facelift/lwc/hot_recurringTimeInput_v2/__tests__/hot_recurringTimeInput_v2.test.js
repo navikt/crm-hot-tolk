@@ -98,6 +98,42 @@ describe('server recurrence preview', () => {
         jest.restoreAllMocks();
     });
 
+    it('includes the visible delete label and interval context in each accessible name', async () => {
+        const element = await setup();
+        change(element, 'c-checkbox', false, 'checkboxclick');
+        await flushPromises();
+        const addButton = [...element.shadowRoot.querySelectorAll('c-button')].find(
+            (button) => button.buttonLabel === '+ Legg til flere tider'
+        );
+        addButton.dispatchEvent(new CustomEvent('buttonclick'));
+        await flushPromises();
+        const deleteButtons = [...element.shadowRoot.querySelectorAll('.listClass c-button')];
+        expect(deleteButtons.map((button) => button.buttonLabel)).toEqual(['Slett', 'Slett']);
+        expect(deleteButtons[0].shadowRoot.querySelector('button').getAttribute('aria-label')).toBe(
+            'Slett tidspunkt 1, dato 30.10.2027, starttid 00:30, sluttid 01:30'
+        );
+        expect(deleteButtons[1].shadowRoot.querySelector('button').getAttribute('aria-label')).toBe(
+            'Slett tidspunkt 2'
+        );
+
+        const secondRow = element.shadowRoot.querySelectorAll('.listClass')[1];
+        for (const [field, value] of [
+            ['date', '2027-11-03'],
+            ['startTime', '09:00'],
+            ['endTime', '10:00']
+        ]) {
+            secondRow
+                .querySelector(`[data-id="${field}"]`)
+                .dispatchEvent(new CustomEvent('getvalueonchange', { detail: value }));
+            await flushPromises();
+        }
+        const secondDeleteButton = element.shadowRoot.querySelectorAll('.listClass c-button')[1];
+        expect(secondDeleteButton.shadowRoot.querySelector('button').getAttribute('aria-label')).toBe(
+            'Slett tidspunkt 2, dato 03.11.2027, starttid 09:00, sluttid 10:00'
+        );
+        expect(secondDeleteButton.buttonLabel).toBe('Slett');
+    });
+
     it.each([false, true])('uses the saved timestamps and server boundaries in edit mode %s', async (editMode) => {
         const element = await setup(editMode);
         expect(previewRecurringWorkOrders).not.toHaveBeenCalled();

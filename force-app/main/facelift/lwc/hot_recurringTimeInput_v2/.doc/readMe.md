@@ -4,6 +4,9 @@ LWC to allow user to create single, multiple and recurring time intervals
 
 Child component of requestForm_request
 
+Delete buttons retain the visible label "Slett". Their accessible names include the
+interval number and any entered date, start time and end time, updating as fields change.
+
 Recurring intervals are previewed in a single panel with the total count, first and last
 occurrence dates, and any explanation of adjusted date boundaries. The expandable table
 shows weekdays, dates and times in the server-provided time zone. Intervals ending on a
