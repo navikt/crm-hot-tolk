@@ -264,16 +264,6 @@
                 </visibilityRule>
             </fieldInstance>
         </itemInstances>
-        <itemInstances>
-            <fieldInstance>
-                <fieldInstanceProperties>
-                    <name>uiBehavior</name>
-                    <value>none</value>
-                </fieldInstanceProperties>
-                <fieldItem>Record.HOT_UserPreferredGender__c</fieldItem>
-                <identifier>RecordHOT_UserPreferredGender__cField</identifier>
-            </fieldInstance>
-        </itemInstances>
         <name>Facet-9a017f90-3719-4332-9f05-71415f7527f2</name>
         <type>Facet</type>
     </flexiPageRegions>
@@ -1683,11 +1673,6 @@
             <componentInstance>
                 <componentInstanceProperties>
                     <name>actionNames</name>
-                    <valueList>
-                        <valueListItems>
-                            <value>New</value>
-                        </valueListItems>
-                    </valueList>
                 </componentInstanceProperties>
                 <componentInstanceProperties>
                     <name>adminFilters</name>
@@ -1711,9 +1696,6 @@
                 <componentInstanceProperties>
                     <name>relatedListFieldAliases</name>
                     <valueList>
-                        <valueListItems>
-                            <value>NAME</value>
-                        </valueListItems>
                         <valueListItems>
                             <value>HOT_ServiceResourceName__c</value>
                         </valueListItems>
