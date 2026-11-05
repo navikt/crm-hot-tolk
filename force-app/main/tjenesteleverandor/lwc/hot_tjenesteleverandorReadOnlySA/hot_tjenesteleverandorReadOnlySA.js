@@ -1,5 +1,6 @@
 import { LightningElement, api, wire } from 'lwc';
 import { getRecord, getFieldValue } from 'lightning/uiRecordApi';
+import { getRelatedListRecords } from 'lightning/uiRelatedListApi';
 import LANG from '@salesforce/i18n/lang';
 
 import SUBJECT_FIELD from '@salesforce/schema/ServiceAppointment.Subject';
@@ -17,6 +18,53 @@ export default class HOT_TjenesteleverandorSAReadOnly extends LightningElement {
 
     @wire(getRecord, { recordId: '$recordId', fields: FIELDS })
     record;
+
+    @wire(getRelatedListRecords, {
+        parentRecordId: '$recordId',
+        relatedListId: 'ServiceResources',
+        fields: ['AssignedResource.Id', 'AssignedResource.ServiceResource.Name'],
+        pageSize: 1
+    })
+    assignedResourceResult;
+
+    @wire(getRelatedListRecords, {
+        parentRecordId: '$recordId',
+        relatedListId: 'InterestedResources__r',
+        fields: ['HOT_InterestedResource__c.Id', 'HOT_InterestedResource__c.ServiceResource__r.Name'],
+        where: '{ and: [{ Status__c: { eq: "Wanted" } }, { HOT_Wanted_by__c: { eq: "Formidler" } }] }'
+    })
+    wantedResourceResult;
+
+    get wantedResourceNames() {
+        return this.wantedResourceResult?.data?.records
+            .map((record) =>
+                this.formatResourceName(getFieldValue(record, 'HOT_InterestedResource__c.ServiceResource__r.Name'))
+            )
+            .join(', ');
+    }
+
+    get wantedResourceError() {
+        return this.wantedResourceResult?.error;
+    }
+
+    get assignedResourceName() {
+        const record = this.assignedResourceResult?.data?.records[0];
+        return this.formatResourceName(getFieldValue(record, 'AssignedResource.ServiceResource.Name'));
+    }
+
+    formatResourceName(name) {
+        return name
+            ?.toLocaleLowerCase(this.lang)
+            .replace(/(^|[\s'\u2019-])\p{L}/gu, (value) => value.toLocaleUpperCase(this.lang));
+    }
+
+    get assignedResourceError() {
+        return this.assignedResourceResult?.error;
+    }
+
+    get hasLoadedAssignedResource() {
+        return Boolean(this.assignedResourceResult?.data);
+    }
 
     get subjectValue() {
         return getFieldValue(this.record.data, SUBJECT_FIELD);
