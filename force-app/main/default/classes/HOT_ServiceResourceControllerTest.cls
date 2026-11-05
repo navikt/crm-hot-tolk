@@ -1,5 +1,16 @@
 @IsTest
 private class HOT_ServiceResourceControllerTest {
+    @TestSetup
+    static void setupUser() {
+        Profile profile = [SELECT Id FROM Profile WHERE Name = 'Minimum Access - Salesforce' LIMIT 1];
+        User formidler = HOT_TestDataFactory.createUser('overlap', profile);
+        formidler.Username = 'overlap.' + System.now().getTime() + '@example.invalid';
+        insert formidler;
+
+        PermissionSet permissions = [SELECT Id FROM PermissionSet WHERE Name = 'HOT_Tolk_Formidler' LIMIT 1];
+        insert new PermissionSetAssignment(AssigneeId = formidler.Id, PermissionSetId = permissions.Id);
+    }
+
     @IsTest
     static void detectsOverlappingAssignedAppointment() {
         verifyOverlap(1, true, true);
@@ -38,7 +49,9 @@ private class HOT_ServiceResourceControllerTest {
         Boolean assignOtherAppointment,
         Boolean expectedOverlap
     ) {
-        ServiceResource resource = HOT_TestDataFactory.createServiceResource(UserInfo.getUserId());
+        User formidler = [SELECT Id FROM User WHERE Alias = 'overlap' AND LastName = 'overlap' LIMIT 1];
+        ServiceResource resource = HOT_TestDataFactory.createServiceResource(formidler.Id);
+        resource.OwnerId = formidler.Id;
         insert resource;
         OperatingHours operatingHours = HOT_TestDataFactory.createOperatingHours();
         insert operatingHours;
@@ -51,6 +64,7 @@ private class HOT_ServiceResourceControllerTest {
         HOT_Request__c request = HOT_TestDataFactory.createRequest('TEST', workType);
         insert request;
         WorkOrder workOrder = HOT_TestDataFactory.createWorkOrder(request, workType);
+        workOrder.OwnerId = formidler.Id;
         insert workOrder;
         WorkOrderLineItem currentLineItem = HOT_TestDataFactory.createWorkOrderLineItem(workOrder, workType);
         WorkOrderLineItem otherLineItem = HOT_TestDataFactory.createWorkOrderLineItem(workOrder, workType);
@@ -58,12 +72,14 @@ private class HOT_ServiceResourceControllerTest {
 
         Datetime startTime = Datetime.now().addDays(50);
         ServiceAppointment currentAppointment = HOT_TestDataFactory.createServiceAppointment(currentLineItem);
+        currentAppointment.OwnerId = formidler.Id;
         currentAppointment.ServiceTerritoryId = territory.Id;
         currentAppointment.EarliestStartTime = startTime;
         currentAppointment.DueDate = startTime.addHours(2);
         currentAppointment.SchedStartTime = currentAppointment.EarliestStartTime;
         currentAppointment.SchedEndTime = currentAppointment.DueDate;
         ServiceAppointment otherAppointment = HOT_TestDataFactory.createServiceAppointment(otherLineItem);
+        otherAppointment.OwnerId = formidler.Id;
         otherAppointment.ServiceTerritoryId = territory.Id;
         otherAppointment.EarliestStartTime = startTime.addHours(startOffsetHours);
         otherAppointment.DueDate = otherAppointment.EarliestStartTime.addHours(2);
@@ -77,13 +93,24 @@ private class HOT_ServiceResourceControllerTest {
             insert HOT_TestDataFactory.createAssignedResource(currentAppointment.Id, resource.Id);
         }
 
-        Test.startTest();
-        HOT_ServiceResourceController.ResourceDetails details = HOT_ServiceResourceController.getResourceDetails(
-            resource.Id,
-            currentAppointment.Id
-        );
-        Test.stopTest();
+        System.runAs(formidler) {
+            System.assertEquals(
+                true,
+                ServiceResource.HOT_PreferredRegions__c.getDescribe().isAccessible(),
+                'The formidler permission set must grant access to preferred regions.'
+            );
+            Test.startTest();
+            HOT_ServiceResourceController.ResourceDetails details = HOT_ServiceResourceController.getResourceDetails(
+                resource.Id,
+                currentAppointment.Id
+            );
+            Test.stopTest();
 
-        System.assertEquals(expectedOverlap, details.hasOverlap, 'Overlap must use other assigned appointment times.');
+            System.assertEquals(
+                expectedOverlap,
+                details.hasOverlap,
+                'Overlap must use other assigned appointment times.'
+            );
+        }
     }
 }
