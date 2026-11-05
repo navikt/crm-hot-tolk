@@ -215,7 +215,10 @@ describe('server recurrence preview', () => {
         );
         const previewContainer = element.shadowRoot.querySelector('.recurring-preview');
         expect(previewContainer.querySelector('h3').textContent).toBe('Forhåndsvisning av tidspunkter');
-        expect(previewContainer.querySelector('[role="status"]').textContent).toBe('2 tidspunkter');
+        expect(previewContainer.querySelector('.recurring-preview-count').textContent).toBe('2 tidspunkter');
+        expect(element.shadowRoot.querySelector('[role="status"]').textContent).toBe(
+            'Forhåndsvisning klar. 2 tidspunkter.'
+        );
         expect([...previewContainer.querySelectorAll('dd')].map((cell) => cell.textContent)).toEqual([
             '31.10.2027',
             '01.11.2027'
@@ -244,6 +247,44 @@ describe('server recurrence preview', () => {
         details.dispatchEvent(new Event('toggle'));
         await flushPromises();
         expect(details.querySelector('summary').textContent).toBe('Skjul tidspunkter');
+    });
+
+    it('keeps one stable status region through loading, preview refresh and disabling recurrence', async () => {
+        const element = createElement('c-hot-recurring-time-input-v2', { is: RecurringTimeInput });
+        document.body.appendChild(element);
+        await flushPromises();
+        const initialStatus = element.shadowRoot.querySelector('[role="status"]');
+        expect(initialStatus.textContent).toBe('');
+        expect(initialStatus.getAttribute('aria-atomic')).toBe('true');
+        document.body.removeChild(element);
+
+        const configuredElement = await setup();
+        const status = configuredElement.shadowRoot.querySelector('[role="status"]');
+        expect(status.textContent).toBe('Henter forhåndsvisning...');
+        expect(configuredElement.shadowRoot.querySelectorAll('[role="status"]')).toHaveLength(1);
+        expect(configuredElement.shadowRoot.querySelector('[aria-live]')).toBeNull();
+        jest.advanceTimersByTime(300);
+        await flushPromises();
+        expect(configuredElement.shadowRoot.querySelector('[role="status"]')).toBe(status);
+        expect(status.textContent).toBe('Forhåndsvisning klar. 2 tidspunkter.');
+
+        const details = configuredElement.shadowRoot.querySelector('details');
+        details.open = true;
+        details.dispatchEvent(new Event('toggle'));
+        await flushPromises();
+        expect(status.textContent).toBe('Forhåndsvisning klar. 2 tidspunkter.');
+
+        change(configuredElement, '[data-id="recurringEndDate"]', '2027-11-03');
+        await flushPromises();
+        expect(configuredElement.shadowRoot.querySelector('[role="status"]')).toBe(status);
+        expect(status.textContent).toBe('Henter forhåndsvisning...');
+        jest.advanceTimersByTime(300);
+        await flushPromises();
+        expect(status.textContent).toBe('Forhåndsvisning klar. 2 tidspunkter.');
+        change(configuredElement, 'c-checkbox', false, 'checkboxclick');
+        await flushPromises();
+        expect(configuredElement.shadowRoot.querySelector('[role="status"]')).toBe(status);
+        expect(status.textContent).toBe('');
     });
 
     it('exposes the preview scroll area as a named keyboard-focusable region', async () => {
@@ -305,6 +346,14 @@ describe('server recurrence preview', () => {
         jest.advanceTimersByTime(300);
         await flushPromises();
         expect(element.shadowRoot.querySelector('[role="alert"]').textContent).toBe('Serverfeil');
+        expect(element.shadowRoot.querySelector('[role="status"]').textContent).toBe('');
+        expect(element.validateFields()).toBeGreaterThan(0);
+        await flushPromises();
+        expect(element.shadowRoot.querySelector('[role="alert"]')).toBeNull();
+        expect(element.shadowRoot.querySelector('.recurring-date-error').textContent).toBe('Serverfeil');
+        expect(
+            element.shadowRoot.querySelector('[data-id="recurringEndDate"]').sendErrorMessage
+        ).toHaveBeenLastCalledWith('Serverfeil');
         change(element, 'c-button', null, 'buttonclick');
         jest.advanceTimersByTime(300);
         await flushPromises();
@@ -362,7 +411,7 @@ describe('server recurrence preview', () => {
         jest.advanceTimersByTime(300);
         await flushPromises();
         expect(element.validateFields()).toBeGreaterThan(0);
-        expect(element.shadowRoot.querySelector('[role="alert"]').textContent).toBe(
+        expect(element.shadowRoot.querySelector('.recurring-date-error').textContent).toBe(
             'Kan ikke opprette mer enn 200 arbeidsordre av gangen.'
         );
         log.mockRestore();
@@ -431,6 +480,9 @@ describe('server recurrence preview', () => {
         expect(cells[2].textContent).toBe('31.10.2027 02:00');
         expect(element.shadowRoot.querySelector('.recurring-preview-count').textContent).toBe('1 tidspunkt');
         expect(element.shadowRoot.querySelector('summary').textContent).toBe('Vis tidspunktet');
+        expect(element.shadowRoot.querySelector('[role="status"]').textContent).toBe(
+            'Forhåndsvisning klar. 1 tidspunkt.'
+        );
     });
 
     it('uses Norwegian time for weekdays when the UTC date is different', async () => {

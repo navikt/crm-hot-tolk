@@ -21,6 +21,11 @@ The preview scroll area is a keyboard-focusable region named "Tidspunkter i seri
 with a visible focus indicator. Native browser scrolling is used without custom key
 handlers.
 
+A persistent screen-reader status announces preview loading and a short result count.
+The recurrence controls and preview table are not live regions. Preview errors use a
+separate alert until submission validation delegates their announcement to the end-date
+field.
+
 The Salesforce user's time zone is expected to be Europe/Oslo. Preview and creation
 continue to use that user's time zone. A Norwegian-time notice is shown outside the
 expandable list only when browser-local dates or times differ from the preview at any

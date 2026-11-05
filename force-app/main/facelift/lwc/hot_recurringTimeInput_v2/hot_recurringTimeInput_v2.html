@@ -58,6 +58,7 @@
             </div>
         </template>
 
+        <p class="sr-only" role="status" aria-atomic="true">{previewStatusMessage}</p>
         <template lwc:if={hideGjentagende}>
             <!-- Show nothing -->
         </template>
@@ -68,12 +69,7 @@
                 name="Gjentagende"
                 aria-label="Gjentagende bestilling?"
             ></c-checkbox>
-            <div
-                if:true={isAdvancedTimes}
-                class="time-inputs-container"
-                style="margin-bottom: 0.5rem"
-                aria-live="polite"
-            >
+            <div if:true={isAdvancedTimes} class="time-inputs-container" style="margin-bottom: 0.5rem">
                 <c-picklist
                     name="Gjenta"
                     choices={repeatingOptions}
@@ -85,7 +81,7 @@
                 >
                 </c-picklist>
                 <br />
-                <div lwc:if={showWeekDays} aria-live="polite">
+                <div lwc:if={showWeekDays}>
                     <c-checkboxgroup
                         data-id="recurringDays"
                         checkboxes={days}
@@ -94,7 +90,7 @@
                         error-text="Du må velge minst én dag tolkebehovet gjentas."
                     ></c-checkboxgroup>
                 </div>
-                <div aria-live="polite" if:true={isRepeating}>
+                <div if:true={isRepeating}>
                     <c-input
                         label="Sluttdato"
                         data-id="recurringEndDate"
@@ -107,9 +103,9 @@
                     ></c-input>
                 </div>
                 <div lwc:if={recurringDateError} class="recurring-date-error" role="alert">{recurringDateError}</div>
-                <p lwc:if={previewLoading} role="status">Henter forhåndsvisning...</p>
+                <p lwc:if={previewLoading}>Henter forhåndsvisning...</p>
                 <template lwc:elseif={previewValidationError}>
-                    <div class="recurring-date-error" role="alert">{previewValidationError}</div>
+                    <div class="recurring-date-error" role={previewErrorRole}>{previewValidationError}</div>
                     <c-button
                         lwc:if={previewError}
                         type="button"
@@ -120,7 +116,7 @@
                 </template>
                 <div lwc:if={hasPreviewIntervals} class="recurring-preview">
                     <h3 class="recurring-preview-heading">Forhåndsvisning av tidspunkter</h3>
-                    <p class="recurring-preview-count" role="status">{previewCountLabel}</p>
+                    <p class="recurring-preview-count">{previewCountLabel}</p>
                     <dl class="recurring-preview-dates">
                         <div>
                             <dt>Første tidspunkt:</dt>

@@ -141,6 +141,20 @@ export default class hot_recurringTimeInput_v2 extends LightningElement {
         return this.recurringPreview?.count > 0;
     }
 
+    get previewStatusMessage() {
+        if (!this.isAdvancedTimes) {
+            return '';
+        }
+        if (this.previewLoading) {
+            return 'Henter forhåndsvisning...';
+        }
+        return this.hasPreviewIntervals ? `Forhåndsvisning klar. ${this.previewCountLabel}.` : '';
+    }
+
+    get previewErrorRole() {
+        return this.previewValidationRequested ? undefined : 'alert';
+    }
+
     get showPreviewTimeZoneNotice() {
         if (!this.hasPreviewIntervals) {
             return false;
