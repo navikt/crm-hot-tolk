@@ -61,6 +61,10 @@
         <enabled>true</enabled>
     </classAccesses>
     <classAccesses>
+        <apexClass>HOT_InterpreterWantedChoiceController</apexClass>
+        <enabled>true</enabled>
+    </classAccesses>
+    <classAccesses>
         <apexClass>HOT_ServiceAppointmentsSharingService</apexClass>
         <enabled>true</enabled>
     </classAccesses>
