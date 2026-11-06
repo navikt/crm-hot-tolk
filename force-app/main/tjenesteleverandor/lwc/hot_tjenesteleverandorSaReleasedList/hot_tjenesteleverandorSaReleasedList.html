@@ -1,0 +1,163 @@
+<template>
+    <template lwc:if={transferFeedback}>
+        <div class="transfer-feedback">
+            <c-hot_local-alert type="success" content-view="title-only" title={transferFeedback}></c-hot_local-alert>
+        </div>
+    </template>
+    <template lwc:if={error}>
+        <c-hot_local-alert
+            type="error"
+            content-view="title-only"
+            title="Kunne ikke hente oppdragslisten. Prøv å laste siden på nytt."
+        ></c-hot_local-alert>
+    </template>
+    <template lwc:if={hasResult}>
+        <div class="bulk-action-bar">
+            <p aria-live="polite">{selectedAppointmentsLabel}</p>
+            <div class="bulk-action-buttons">
+                <c-button
+                    data-id="transfer"
+                    button-styling="secondary"
+                    button-label="Overfør"
+                    disabled={isTransferDisabled}
+                    onbuttonclick={handleTransfer}
+                ></c-button>
+            </div>
+        </div>
+        <div class="main-content">
+            <c-hot_freelance-common-table
+                checkbox="true"
+                records={records}
+                columns={columns}
+                onrowclick={goToRecordDetails}
+                checked-rows={checkedServiceAppointments}
+                oncheckedrows={handleRowChecked}
+            >
+            </c-hot_freelance-common-table>
+        </div>
+    </template>
+
+    <template lwc:elseif={noServiceAppointmentsResult}>
+        <div style="text-align: center" aria-live="polite">
+            <br />
+            <p>Det finnes ingen frigitt oppdrag til tjenesteleverandør.</p>
+            <br />
+        </div>
+    </template>
+
+    <template lwc:elseif={noFilteredRecordsResult}>
+        <div class="empty-state" aria-live="polite">
+            <p>Det finnes ingen oppdrag med denne filtreringen. Du kan endre filteret for å se andre oppdrag.</p>
+        </div>
+    </template>
+
+    <dialog
+        data-id="transfer-dialog"
+        class="modal-container"
+        aria-label="Overfør oppdrag til annen formidler"
+        aria-modal="true"
+        onclose={closeTransferModal}
+    >
+        <template lwc:if={showTransferModal}>
+            <div class="modal-header">
+                <h2>Overfør oppdrag til annen formidler</h2>
+                <button class="close-btn" onclick={closeTransferModal} aria-label="Lukk">
+                    <img src={exitCrossIcon} alt="" aria-hidden="true" />
+                </button>
+            </div>
+            <div class="modal-body">
+                <template lwc:if={transferError}>
+                    <c-hot_local-alert type="error" content-view="title-only" title={transferError}></c-hot_local-alert>
+                </template>
+                <lightning-flow
+                    flow-api-name="HOT_ServiceProviderTransferSADispatcher"
+                    flow-input-variables={transferInputVariables}
+                    flow-finish-behavior="NONE"
+                    onstatuschange={handleTransferStatusChange}
+                ></lightning-flow>
+            </div>
+        </template>
+    </dialog>
+
+    <dialog class="modal-container" aria-label="Informasjon om oppdrag" aria-modal="true" onclose={closeModal}>
+        <template lwc:if={showServiceAppointmentDetailsModal}>
+            <div>
+                <div class="modal-header">
+                    <h2>Informasjon om oppdraget:</h2>
+                    <button class="close-btn" onclick={closeModal} aria-label="Lukk">
+                        <img src={exitCrossIcon} alt="" aria-hidden="true" />
+                    </button>
+                </div>
+                <template lwc:if={serviceAppointment}>
+                    <div class="modal-body">
+                        <p><strong>Oppdragsnummer:</strong> {serviceAppointment.HOT_ServiceAppointmentNumber__c}</p>
+                        <p><strong>Tema:</strong> {serviceAppointment.HOT_FreelanceSubject__c}</p>
+                        <p><strong>Tid:</strong> {serviceAppointment.weekday} {serviceAppointment.StartAndEndDate}</p>
+                        <p><strong>Adresse:</strong> {serviceAppointment.HOT_AddressFormated__c}</p>
+                        <p><strong>Tolkemetode:</strong> {serviceAppointment.HOT_WorkTypeName__c}</p>
+                        <template lwc:if={serviceAppointment.HOT_PreparationTime__c}>
+                            <p>
+                                <strong>Kompensert forberedelse:</strong>
+                                {serviceAppointment.HOT_PreparationTime__c}
+                            </p>
+                        </template>
+                        <p><strong>Oppdragstype:</strong> {serviceAppointment.HOT_AssignmentType__c}</p>
+                        <template lwc:if={serviceAppointment.HOT_UserPreferredInterpreter__c}>
+                            <p>
+                                <strong>Ønsket tolk:</strong>&nbsp;{serviceAppointment.HOT_UserPreferredInterpreter__c}
+                            </p>
+                        </template>
+                        <template lwc:if={serviceAppointment.HOT_UserPreferredGender__c}>
+                            <p><strong>Ønsket kjønn:</strong>&nbsp;{serviceAppointment.HOT_UserPreferredGender__c}</p>
+                        </template>
+                        <template lwc:if={serviceAppointment.HOT_UserInterpretationMethod__c}>
+                            <p>
+                                <strong>Ønsket tolkemetode:</strong
+                                >&nbsp;{serviceAppointment.HOT_UserInterpretationMethod__c}
+                            </p>
+                        </template>
+                        <p><strong>Status:</strong> {status}</p>
+                        <p><strong>Frigitt av:</strong> {serviceAppointment.HOT_ReleasedBy__c}</p>
+                        <p><strong>Frigitt dato:</strong> {serviceAppointment.ReleaseDate}</p>
+                        <p><strong>Frist dato:</strong> {serviceAppointment.HOT_DeadlineDate__c}</p>
+                        <p>
+                            <strong>Antall påmeldte:&nbsp;</strong>
+                            {serviceAppointment.HOT_NumberOfInterestedResources__c}
+                        </p>
+                        <p><strong>Annen betaler:</strong> {serviceAppointment.isOtherProvider}</p>
+                        <p><strong>Region:</strong> {serviceAppointment.HOT_ServiceTerritoryName__c}</p>
+                        <p><strong>Leverandør formidler:</strong> {serviceAppointment.HOT_TLDispatcher__r.Name}</p>
+                        <div class="person-info-box" lwc:if={hasPersonInfo}>
+                            <p lwc:if={personReservations}><strong>Reservasjon:</strong>&nbsp; {personReservations}</p>
+                            <p lwc:if={personLanguageAndCommunicationMethods}>
+                                <strong>Språk og kommunikasjonsmetoder:</strong>&nbsp;
+                                {personLanguageAndCommunicationMethods}
+                            </p>
+                        </div>
+                    </div>
+
+                    <c-hot_tjenesteleverandor-sa-threads
+                        service-appointment-id={selectedRecordId}
+                        service-appointment-status={serviceAppointment.HOT_TjenesteleverandorStatus__c}
+                    ></c-hot_tjenesteleverandor-sa-threads>
+
+                    <div class="modal-footer">
+                        <c-button
+                            button-styling="primary"
+                            button-label="Vis mer info"
+                            aria-label="Vis mer informasjon om oppdraget"
+                            title="Vis mer info om oppdraget"
+                            onbuttonclick={handleViewMoreInfo}
+                        ></c-button>
+                    </div>
+                </template>
+            </div>
+        </template>
+    </dialog>
+
+    <template lwc:if={dataLoader}>
+        <div class="loader-container">
+            <c-hot_loader size="3xlarge"></c-hot_loader>
+        </div>
+    </template>
+</template>
