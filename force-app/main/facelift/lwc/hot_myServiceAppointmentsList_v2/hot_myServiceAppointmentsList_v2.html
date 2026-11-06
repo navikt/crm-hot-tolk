@@ -40,6 +40,8 @@
         <template lwc:if={hasAccess}>
             <div class="modal-body">
                 <div lwc:if={isDetails}>
+                    <c-hot_service-appointment-message record-id={recordId}></c-hot_service-appointment-message>
+
                     <p><strong>Oppdragsnummer:</strong> {appointmentNumber}</p>
                     <p><strong>Tema:</strong> {subject}</p>
                     <p><strong>Tid:</strong> {startAndEndTime}</p>
@@ -52,22 +54,22 @@
                     >
                         <p aria-hidden="true"><strong>Søk på adressen i en karttjeneste:</strong></p>
                         <div style="display: inline-block; padding-right: 1vw; padding-bottom: 1vw; padding-top: 1vw">
-                            <c-button
+                            <c-hot_button
                                 button-styling="secondary"
                                 button-label="Google maps"
                                 onbuttonclick={openGoogleMaps}
                                 aria-label="Åpne adressen i Google maps"
                                 mobile-style="margin-top: 0.5rem; margin-bottom: 0.5rem"
-                            ></c-button>
+                            ></c-hot_button>
                         </div>
                         <div style="display: inline-block; padding-right: 1vw; padding-bottom: 1vw; padding-top: 1vw">
-                            <c-button
+                            <c-hot_button
                                 button-styling="secondary"
                                 button-label="Apple maps"
                                 onbuttonclick={openAppleMaps}
                                 aria-label="Åpne adressen i Apple maps"
                                 mobile-style="margin-top: 0.5rem; margin-bottom: 0.5rem"
-                            ></c-button>
+                            ></c-hot_button>
                         </div>
                     </div>
 
@@ -118,7 +120,7 @@
                         ></c-record-files-without-sharing>
                     </div>
                     <div class="button-container">
-                        <c-button
+                        <c-hot_button
                             disabled={isEditButtonDisabled}
                             hidden={isEditButtonHidden}
                             onbuttonclick={changeStatus}
@@ -128,9 +130,9 @@
                             aria-label="Endre status på oppdraget"
                             mobile-style="margin-top: 1rem; margin-bottom: 1rem"
                         >
-                        </c-button>
+                        </c-hot_button>
 
-                        <c-button
+                        <c-hot_button
                             hidden={isCancelButtonHidden}
                             onbuttonclick={cancelStatusFlow}
                             button-styling="Secondary"
@@ -139,7 +141,7 @@
                             aria-label="Avbryt endring av status"
                             mobile-style="margin-top: 1rem; margin-bottom: 1rem"
                         >
-                        </c-button>
+                        </c-hot_button>
                     </div>
                     <div lwc:if={isflow} class="flow-container">
                         <lightning-flow
@@ -150,7 +152,7 @@
                     </div>
                     <p aria-hidden="true">Samtale med:</p>
                     <div class="button-container">
-                        <c-button
+                        <c-hot_button
                             button-styling="Primary"
                             type="Submit"
                             onbuttonclick={goToThreadFreelance}
@@ -159,10 +161,10 @@
                             disabled={isGoToThreadButtonDisabled}
                             mobile-style="margin-top: 1rem"
                         >
-                        </c-button>
+                        </c-hot_button>
                     </div>
                     <div class="button-container">
-                        <c-button
+                        <c-hot_button
                             button-styling="Primary"
                             type="Submit"
                             onbuttonclick={goToThreadInterpreters}
@@ -171,10 +173,10 @@
                             button-label="Medtolker"
                             mobile-style="margin-top: 1rem"
                         >
-                        </c-button>
+                        </c-hot_button>
                     </div>
                     <div class="button-container">
-                        <c-button
+                        <c-hot_button
                             button-styling="Primary"
                             type="Submit"
                             onbuttonclick={goToThreadServiceAppointment}
@@ -183,7 +185,7 @@
                             disabled={isGoToThreadServiceAppointmentButtonDisabled}
                             mobile-style="margin-top: 1rem"
                         >
-                        </c-button>
+                        </c-hot_button>
                     </div>
                 </div>
             </div>
