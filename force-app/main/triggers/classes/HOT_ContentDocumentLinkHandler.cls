@@ -12,6 +12,9 @@ public without sharing class HOT_ContentDocumentLinkHandler extends MyTriggers {
 
     public static void createContentDocumentLinksToWO(List<ContentDocumentLink> contentDocumentLinks) {
         Map<Id, List<ContentDocumentLink>> linkedEntityMap = getContentDocumentLinksByRequest(contentDocumentLinks);
+        if (linkedEntityMap.isEmpty()) {
+            return;
+        }
         List<WorkOrder> workOrder = [
             SELECT Id, HOT_Request__c
             FROM WorkOrder
@@ -28,6 +31,9 @@ public without sharing class HOT_ContentDocumentLinkHandler extends MyTriggers {
 
     public static void createContentDocumentLinksToSA(List<ContentDocumentLink> contentDocumentLinks) {
         Map<Id, List<ContentDocumentLink>> linkedEntityMap = getContentDocumentLinksByRequest(contentDocumentLinks);
+        if (linkedEntityMap.isEmpty()) {
+            return;
+        }
         List<ServiceAppointment> serviceAppointments = [
             SELECT Id, HOT_Request__c
             FROM ServiceAppointment
@@ -67,6 +73,9 @@ public without sharing class HOT_ContentDocumentLinkHandler extends MyTriggers {
     }
     public static void createContentDocumentLinksFromWOToSA(List<ContentDocumentLink> contentDocumentLinks) {
         Map<Id, List<ContentDocumentLink>> linkedEntityMap = getContentDocumentLinksByWorkOrder(contentDocumentLinks);
+        if (linkedEntityMap.isEmpty()) {
+            return;
+        }
 
         List<ServiceAppointment> serviceAppointments = [
             SELECT Id, HOT_WorkOrderLineItem__r.WorkOrderId
@@ -93,6 +102,9 @@ public without sharing class HOT_ContentDocumentLinkHandler extends MyTriggers {
 
     public static void createContentDocumentLinksToAccount(List<ContentDocumentLink> contentDocumentLinks) {
         Map<Id, List<ContentDocumentLink>> linkedEntityMap = getContentDocumentLinksByRequest(contentDocumentLinks);
+        if (linkedEntityMap.isEmpty()) {
+            return;
+        }
         List<HOT_Request__c> requests = [
             SELECT Id, Account__c
             FROM HOT_Request__c

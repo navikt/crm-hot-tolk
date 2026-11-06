@@ -1,5 +1,39 @@
 @IsTest(IsParallel=true)
 private class HOT_ContentDocumentLinkHandlerTest {
+    @IsTest
+    private static void skipsQueriesForUnrelatedLinks() {
+        List<ContentDocumentLink> links = new List<ContentDocumentLink>{
+            new ContentDocumentLink(LinkedEntityId = UserInfo.getUserId())
+        };
+        Test.startTest();
+        HOT_ContentDocumentLinkHandler.createContentDocumentLinksToWO(links);
+        HOT_ContentDocumentLinkHandler.createContentDocumentLinksToSA(links);
+        HOT_ContentDocumentLinkHandler.createContentDocumentLinksToAccount(links);
+        HOT_ContentDocumentLinkHandler.createContentDocumentLinksFromWOToSA(links);
+        System.assertEquals(0, Limits.getQueries(), 'Unrelated links must not consume SOQL queries');
+        Test.stopTest();
+    }
+
+    @IsTest
+    private static void workOrderLinksUseOnlyOneQueryWithoutAppointments() {
+        WorkType workType = HOT_TestDataFactory.createWorkType();
+        insert workType;
+        HOT_Request__c request = HOT_TestDataFactory.createRequest('Work Order query budget', workType);
+        insert request;
+        WorkOrder workOrder = HOT_TestDataFactory.createWorkOrder(request, workType);
+        insert workOrder;
+        List<ContentDocumentLink> links = new List<ContentDocumentLink>{
+            new ContentDocumentLink(LinkedEntityId = workOrder.Id)
+        };
+        Test.startTest();
+        HOT_ContentDocumentLinkHandler.createContentDocumentLinksToWO(links);
+        HOT_ContentDocumentLinkHandler.createContentDocumentLinksToSA(links);
+        HOT_ContentDocumentLinkHandler.createContentDocumentLinksToAccount(links);
+        HOT_ContentDocumentLinkHandler.createContentDocumentLinksFromWOToSA(links);
+        System.assertEquals(1, Limits.getQueries(), 'Work Order links must only query related appointments');
+        Test.stopTest();
+    }
+
     @testSetup
     static void setup() {
     }

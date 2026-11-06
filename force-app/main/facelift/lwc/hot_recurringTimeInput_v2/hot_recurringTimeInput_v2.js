@@ -1,13 +1,13 @@
 import { LightningElement, track, wire, api } from 'lwc';
 import getTimes from '@salesforce/apex/HOT_RequestListController.getTimesNew';
+import previewRecurringWorkOrders from '@salesforce/apex/HOT_CreateWorkOrderService.previewRecurringWorkOrders';
 import {
     requireInput,
     dateInPast,
     startBeforeEnd,
     requireRecurringDays,
     startDateBeforeRecurringEndDate,
-    restrictTheNumberOfDays,
-    chosenDaysWithinPeriod
+    restrictTheNumberOfDays
 } from './hot_recurringTimeInput_validationRules';
 
 export default class hot_recurringTimeInput_v2 extends LightningElement {
@@ -16,7 +16,213 @@ export default class hot_recurringTimeInput_v2 extends LightningElement {
     @track isAdvancedTimes;
     @api refreshToken;
     @api hideAdvancedTimesInEditMode = false;
+    @api isEditMode = false;
+    singleExistingWorkOrderId;
     uniqueIdCounter = 0;
+    recurringPreview;
+    previewLoading = false;
+    previewError = '';
+    previewTimer;
+    previewVersion = 0;
+    previewExpanded = false;
+    previewValidationRequested = false;
+    pendingRemovalFocusIndex;
+
+    renderedCallback() {
+        if (this.pendingRemovalFocusIndex === undefined) {
+            return;
+        }
+        const index = this.pendingRemovalFocusIndex;
+        this.pendingRemovalFocusIndex = undefined;
+        const button = this.isOnlyOneTime
+            ? this.template.querySelector('[data-id="addTime"]')
+            : this.template.querySelectorAll('[data-id="removeTime"]')[index];
+        button.focusButton();
+    }
+
+    get timesWithDeleteLabels() {
+        return this.times.map((time, index) => {
+            const labelParts = [`Slett tidspunkt ${index + 1}`];
+            if (time.date) {
+                labelParts.push(`dato ${time.date.split('-').reverse().join('.')}`);
+            }
+            if (time.startTimeString) {
+                labelParts.push(`starttid ${time.startTimeString}`);
+            }
+            if (time.endTimeString) {
+                labelParts.push(`sluttid ${time.endTimeString}`);
+            }
+            return { ...time, deleteLabel: labelParts.join(', ') };
+        });
+    }
+
+    get previewParameters() {
+        const time = this.times[0];
+        if (
+            !this.isAdvancedTimes ||
+            !time?.date ||
+            !time.startTimeString ||
+            !time.endTimeString ||
+            !this.repeatingEndDateString ||
+            time.endTime <= time.startTime ||
+            (this.showWeekDays && !this.chosenDays.length) ||
+            this.recurringDateError ||
+            restrictTheNumberOfDays(this.repeatingEndDate, time.startTime)
+        ) {
+            return null;
+        }
+        return {
+            startTime: time.startTime,
+            endTime: time.endTime,
+            recurringEndDate: this.repeatingEndDate,
+            recurringType: this.repeatingOptionChosen,
+            recurringDays: [...this.chosenDays]
+        };
+    }
+
+    refreshRecurringPreview() {
+        clearTimeout(this.previewTimer);
+        if (this.previewValidationRequested) {
+            this.template.querySelector('[data-id="recurringEndDate"]')?.sendErrorMessage('');
+            this.previewValidationRequested = false;
+        }
+        const version = ++this.previewVersion;
+        this.recurringPreview = undefined;
+        this.previewError = '';
+        this.previewExpanded = false;
+        const parameters = this.previewParameters;
+        this.previewLoading = !!parameters;
+        if (!parameters) {
+            return;
+        }
+        this.previewTimer = setTimeout(async () => {
+            try {
+                const result = await previewRecurringWorkOrders(parameters);
+                if (version === this.previewVersion) {
+                    this.recurringPreview = result;
+                }
+            } catch (error) {
+                if (version === this.previewVersion) {
+                    console.error('previewRecurringWorkOrders error', error);
+                    this.previewError = error?.body?.message || 'Forhåndsvisningen kunne ikke hentes. Prøv igjen.';
+                }
+            } finally {
+                if (version === this.previewVersion) {
+                    this.previewLoading = false;
+                    if (this.previewValidationRequested) {
+                        this.template
+                            .querySelector('[data-id="recurringEndDate"]')
+                            ?.sendErrorMessage(this.previewValidationError);
+                    }
+                }
+            }
+        }, 300);
+    }
+
+    disconnectedCallback() {
+        clearTimeout(this.previewTimer);
+        this.previewVersion += 1;
+    }
+
+    get previewValidationError() {
+        if (this.previewError) {
+            return this.previewError;
+        }
+        if (this.previewLoading) {
+            return 'Vent til forhåndsvisningen er klar.';
+        }
+        if (this.recurringPreview?.count === 0) {
+            return 'Valgte gjentagelsesdager finnes ikke i perioden.';
+        }
+        return '';
+    }
+
+    get hasPreviewIntervals() {
+        return this.recurringPreview?.count > 0;
+    }
+
+    get previewStatusMessage() {
+        if (!this.isAdvancedTimes) {
+            return '';
+        }
+        if (this.previewLoading) {
+            return 'Henter forhåndsvisning...';
+        }
+        return this.hasPreviewIntervals ? `Forhåndsvisning klar. ${this.previewCountLabel}.` : '';
+    }
+
+    get previewErrorRole() {
+        return this.previewValidationRequested ? undefined : 'alert';
+    }
+
+    get showPreviewTimeZoneNotice() {
+        if (!this.hasPreviewIntervals) {
+            return false;
+        }
+        const browserTimeZone = new Intl.DateTimeFormat().resolvedOptions().timeZone;
+        const options = {
+            year: 'numeric',
+            month: '2-digit',
+            day: '2-digit',
+            hour: '2-digit',
+            minute: '2-digit',
+            hourCycle: 'h23'
+        };
+        const browserFormatter = new Intl.DateTimeFormat('en-GB', { ...options, timeZone: browserTimeZone });
+        const previewFormatter = new Intl.DateTimeFormat('en-GB', {
+            ...options,
+            timeZone: this.recurringPreview.timeZone
+        });
+        return this.recurringPreview.intervals.some((interval) =>
+            [interval.startTime, interval.endTime].some(
+                (time) => browserFormatter.format(new Date(time)) !== previewFormatter.format(new Date(time))
+            )
+        );
+    }
+
+    get previewToggleLabel() {
+        if (this.recurringPreview?.count === 1) {
+            return this.previewExpanded ? 'Skjul tidspunktet' : 'Vis tidspunktet';
+        }
+        return this.previewExpanded ? 'Skjul tidspunkter' : `Vis alle ${this.previewCountLabel}`;
+    }
+
+    get previewCountLabel() {
+        const count = this.recurringPreview?.count;
+        return `${count} ${count === 1 ? 'tidspunkt' : 'tidspunkter'}`;
+    }
+
+    get previewFirstDate() {
+        return this.recurringPreview?.firstDate.split('-').reverse().join('.');
+    }
+
+    get previewLastDate() {
+        return this.recurringPreview?.lastDate.split('-').reverse().join('.');
+    }
+
+    get previewIntervals() {
+        if (!this.hasPreviewIntervals) {
+            return [];
+        }
+        const weekdayFormatter = new Intl.DateTimeFormat('nb-NO', {
+            weekday: 'long',
+            timeZone: this.recurringPreview.timeZone
+        });
+        return this.recurringPreview.intervals.map((interval) => {
+            const [startDate, startTime] = interval.startLabel.split(' ');
+            const [endDate, endTime] = interval.endLabel.split(' ');
+            return {
+                startTime: interval.startTime,
+                dateLabel: `${weekdayFormatter.format(new Date(interval.startTime))} ${startDate}`,
+                startLabel: startTime,
+                endLabel: startDate === endDate ? endTime : interval.endLabel
+            };
+        });
+    }
+
+    handlePreviewToggle(event) {
+        this.previewExpanded = event.currentTarget.open;
+    }
 
     setTimesValue(timeObject) {
         return {
@@ -47,11 +253,48 @@ export default class hot_recurringTimeInput_v2 extends LightningElement {
         return this.hideAdvancedTimesInEditMode === true;
     }
 
+    /**
+     * Shows date ordering errors as soon as both recurrence dates are selected.
+     */
+    get recurringDateError() {
+        if (!this.isAdvancedTimes || !this.times[0]?.date || !this.repeatingEndDateString) {
+            return '';
+        }
+        return (
+            startDateBeforeRecurringEndDate(this.repeatingEndDate, this.times[0].startTime) ||
+            restrictTheNumberOfDays(this.repeatingEndDate, this.times[0].startTime)
+        );
+    }
+
+    get recurringBoundaryWarning() {
+        if (
+            !this.isAdvancedTimes ||
+            !this.showWeekDays ||
+            !this.times[0]?.date ||
+            !this.repeatingEndDateString ||
+            this.recurringDateError
+        ) {
+            return '';
+        }
+
+        const { firstDate, lastDate } = this.recurringPreview || {};
+        if (!firstDate || !lastDate) {
+            return '';
+        }
+
+        if (firstDate === this.times[0].date && lastDate === this.repeatingEndDateString) {
+            return '';
+        }
+
+        return 'Datoene i serien er tilpasset ukedagene du har valgt.';
+    }
+
     handleDateChange(event) {
         const index = this.getTimesIndex(event.target.name);
         this.times[index].date = event.detail;
         this.times[index].dateMilliseconds = new Date(event.detail).getTime();
         this.setStartTime(index);
+        this.refreshRecurringPreview();
     }
     handleStartTimeChange(event) {
         const index = this.getTimesIndex(event.target.name);
@@ -61,6 +304,7 @@ export default class hot_recurringTimeInput_v2 extends LightningElement {
             event.detail
         ).getTime();
         this.setEndTimeBasedOnStartTime(index);
+        this.refreshRecurringPreview();
     }
     handleEndTimeChange(event) {
         const index = this.getTimesIndex(event.target.name);
@@ -70,6 +314,7 @@ export default class hot_recurringTimeInput_v2 extends LightningElement {
                 (this.times[index].endTimeString < this.times[index].startTimeString ? 86400000 : 0),
             event.detail
         ).getTime();
+        this.refreshRecurringPreview();
     }
     setStartTime(index) {
         let dateTime = new Date();
@@ -140,10 +385,20 @@ export default class hot_recurringTimeInput_v2 extends LightningElement {
         if (this.times.length > 1) {
             const index = this.getTimesIndex(event.target.name);
             if (index !== -1) {
+                if (this.isEditMode && this.times[index].id === this.singleExistingWorkOrderId) {
+                    const replacementIndex = index === 0 ? 1 : 0;
+                    this.times[replacementIndex] = {
+                        ...this.times[replacementIndex],
+                        id: this.times[index].id,
+                        isNew: 0
+                    };
+                }
                 this.times.splice(index, 1);
+                this.pendingRemovalFocusIndex = Math.min(index, this.times.length - 1);
             }
         }
         this.updateIsOnlyOneTime();
+        this.refreshRecurringPreview();
     }
     addTime() {
         this.uniqueIdCounter += 1;
@@ -166,6 +421,7 @@ export default class hot_recurringTimeInput_v2 extends LightningElement {
             this.times = this.timesBackup;
         }
         this.updateIsOnlyOneTime();
+        this.refreshRecurringPreview();
     }
 
     repeatingOptions = [
@@ -188,6 +444,7 @@ export default class hot_recurringTimeInput_v2 extends LightningElement {
                 element.selected = false;
             }
         });
+        this.refreshRecurringPreview();
     }
 
     chosenDays = [];
@@ -208,12 +465,14 @@ export default class hot_recurringTimeInput_v2 extends LightningElement {
                 this.chosenDays.push(element.name);
             }
         });
+        this.refreshRecurringPreview();
     }
     @track repeatingEndDate;
     @track repeatingEndDateString;
     setRepeatingEndDateDate(event) {
         this.repeatingEndDateString = event.detail;
         this.repeatingEndDate = new Date(event.detail).getTime();
+        this.refreshRecurringPreview();
     }
 
     @api
@@ -315,13 +574,12 @@ export default class hot_recurringTimeInput_v2 extends LightningElement {
             errorMessage = restrictTheNumberOfDays(this.repeatingEndDate, this.times[0].startTime);
             hasErrors += errorMessage !== '';
         }
-        if (errorMessage === '') {
-            errorMessage = chosenDaysWithinPeriod(
-                this.repeatingOptionChosen,
-                this.chosenDays,
-                this.repeatingOptionChosen,
-                this.chosenDays
-            );
+        if (errorMessage === '' && this.previewParameters) {
+            if (!this.recurringPreview && !this.previewLoading && !this.previewError) {
+                this.refreshRecurringPreview();
+            }
+            errorMessage = this.previewValidationError;
+            this.previewValidationRequested = true;
             hasErrors += errorMessage !== '';
         }
         recurringEndDateElement.sendErrorMessage(errorMessage);
@@ -340,6 +598,7 @@ export default class hot_recurringTimeInput_v2 extends LightningElement {
     @api requestIds = [];
     @wire(getTimes, { requestIds: '$requestIds', refreshToken: '$refreshToken' })
     wiredTimes(result) {
+        this.singleExistingWorkOrderId = result.data?.length === 1 ? result.data[0].id : undefined;
         if (result.data) {
             if (result.data.length === 0) {
                 this.times = [this.setTimesValue(null)];
@@ -364,6 +623,7 @@ export default class hot_recurringTimeInput_v2 extends LightningElement {
                 this.validateSimpleTimes();
             }
             this.isOnlyOneTime = this.times.length === 1;
+            this.refreshRecurringPreview();
         } else {
             this.times = [this.setTimesValue(null)];
         }
