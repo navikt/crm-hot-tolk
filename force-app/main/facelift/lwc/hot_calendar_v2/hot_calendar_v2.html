@@ -40,6 +40,9 @@
                             <section lwc:if={isSADetails}>
                                 <template lwc:if={hasAccess}>
                                     <template lwc:if={serviceAppointment}>
+                                        <c-hot_service-appointment-message
+                                            record-id={serviceAppointment.Id}
+                                        ></c-hot_service-appointment-message>
                                         <div>
                                             <p>Oppdragsnummer: <span>{serviceAppointment.AppointmentNumber}</span></p>
                                             <p>Tema: <span>{serviceAppointment.Subject}</span></p>
@@ -66,11 +69,11 @@
                                                         padding-top: 1vw;
                                                     "
                                                 >
-                                                    <c-button
+                                                    <c-hot_button
                                                         button-styling="secondary"
                                                         button-label="Google maps"
                                                         onbuttonclick={openGoogleMaps}
-                                                    ></c-button>
+                                                    ></c-hot_button>
                                                 </div>
                                                 <div
                                                     style="
@@ -80,11 +83,11 @@
                                                         padding-top: 1vw;
                                                     "
                                                 >
-                                                    <c-button
+                                                    <c-hot_button
                                                         button-styling="secondary"
                                                         button-label="Apple maps"
                                                         onbuttonclick={openAppleMaps}
-                                                    ></c-button>
+                                                    ></c-hot_button>
                                                 </div>
                                             </div>
 
@@ -174,7 +177,7 @@
                                                 padding-top: 1vw;
                                             "
                                         >
-                                            <c-button
+                                            <c-hot_button
                                                 disabled={saIsEditButtonDisabled}
                                                 hidden={saIsEditButtonHidden}
                                                 onbuttonclick={changeStatus}
@@ -182,15 +185,15 @@
                                                 type="Submit"
                                                 button-label="Endre status"
                                             >
-                                            </c-button>
-                                            <c-button
+                                            </c-hot_button>
+                                            <c-hot_button
                                                 hidden={saIsCancelButtonHidden}
                                                 onbuttonclick={cancelStatusFlow}
                                                 button-styling="Secondary"
                                                 type="Submit"
                                                 button-label="Avbryt"
                                             >
-                                            </c-button>
+                                            </c-hot_button>
                                         </div>
                                         <template lwc:if={saIsflow}>
                                             <div class="flow-container">
@@ -204,31 +207,31 @@
                                         <p>Samtale med:</p>
                                         <div class="button-container">
                                             <div class="button-wrapper">
-                                                <c-button
+                                                <c-hot_button
                                                     button-styling="Primary"
                                                     type="Submit"
                                                     onbuttonclick={goToThreadFreelance}
                                                     button-label="Bruker"
                                                     disabled={isGoToThreadButtonDisabled}
-                                                ></c-button>
+                                                ></c-hot_button>
                                             </div>
                                             <div class="button-wrapper">
-                                                <c-button
+                                                <c-hot_button
                                                     button-styling="Primary"
                                                     type="Submit"
                                                     onbuttonclick={goToThreadInterpreters}
                                                     disabled={isGoToThreadInterpretersButtonDisabled}
                                                     button-label="Medtolker"
-                                                ></c-button>
+                                                ></c-hot_button>
                                             </div>
                                             <div class="button-wrapper">
-                                                <c-button
+                                                <c-hot_button
                                                     button-styling="Primary"
                                                     type="Submit"
                                                     onbuttonclick={goToThreadServiceAppointment}
                                                     button-label="Formidler"
                                                     disabled={isGoToThreadServiceAppointmentButtonDisabled}
-                                                ></c-button>
+                                                ></c-hot_button>
                                             </div>
                                         </div>
                                     </template>
@@ -251,13 +254,13 @@
                                             size="large"
                                         ></lightning-icon>
                                         <h2 class="typo-undertittel" tabindex="-1">Interesse er meldt.</h2>
-                                        <c-button
+                                        <c-hot_button
                                             button-styling="primary"
                                             button-label="OK"
                                             onbuttonclick={closeModal}
                                             desktop-style="width: 8rem; justify-content: center"
                                             mobile-style="width: 8rem; justify-content: center"
-                                        ></c-button>
+                                        ></c-hot_button>
                                     </div>
                                 </template>
                                 <template lwc:elseif={isSubmittingOpenServiceAppointmentInterest}>
@@ -339,14 +342,14 @@
                                     </template>
 
                                     <div class="slds-m-top_medium">
-                                        <c-button
+                                        <c-hot_button
                                             button-styling="primary"
                                             button-label="Send inn"
                                             type="submit"
                                             onbuttonclick={registerOpenServiceAppointmentInterest}
                                             desktop-style="width: 8rem; justify-content: center"
                                             mobile-style="width: 8rem; justify-content: center"
-                                        ></c-button>
+                                        ></c-hot_button>
                                     </div>
                                 </template>
                                 <template lwc:elseif={openServiceAppointment}>
@@ -402,14 +405,14 @@
                                         </p>
                                     </div>
                                     <div class="slds-m-top_medium">
-                                        <c-button
+                                        <c-hot_button
                                             button-styling="primary"
                                             button-label="Meld interesse"
                                             aria-label="Meld interesse"
                                             onbuttonclick={showOpenServiceAppointmentInterest}
                                             desktop-style="width: 10rem; justify-content: center"
                                             mobile-style="width: 10rem; justify-content: center"
-                                        ></c-button>
+                                        ></c-hot_button>
                                     </div>
                                 </template>
                             </section>
@@ -440,14 +443,14 @@
                                         <p>Status: <span>{wageClaim.Status__c}</span></p>
                                     </div>
                                     <div style="display: inline-block; padding-bottom: 1vw">
-                                        <c-button
+                                        <c-hot_button
                                             disabled={wcIsDisabledGoToThread}
                                             button-styling="primary"
                                             button-label="Samtale med ressurskontor"
                                             aria-label="Samtale med ressurskontor"
                                             onbuttonclick={goToWageClaimThread}
                                         >
-                                        </c-button>
+                                        </c-hot_button>
                                     </div>
                                 </div>
                             </section>
@@ -485,14 +488,14 @@
                                     </p>
                                 </div>
                                 <div style="display: inline-block; padding-bottom: 1vw">
-                                    <c-button
+                                    <c-hot_button
                                         disabled={wcNewTypeIsDisabledGoToThread}
                                         button-styling="primary"
                                         button-label="Samtale med ressurskontor"
                                         aria-label="Samtale med ressurskontor"
                                         onbuttonclick={goToWageClaimNewTypeThread}
                                     >
-                                    </c-button>
+                                    </c-hot_button>
                                 </div>
                             </section>
                         </template>
@@ -569,71 +572,71 @@
                                     <div class="typo-normal alertstripe__tekst">{alertAbsenceBannerText}</div>
                                     <div class="alertstripe__knapper">
                                         <template lwc:if={isNotRetractableDelete}>
-                                            <c-button
+                                            <c-hot_button
                                                 button-label="Slett"
                                                 button-styling="Danger"
                                                 desktop-style="width: 6rem; justify-content: center; margin-right: 0.25rem"
                                                 mobile-style="width: 5rem; justify-content: center;"
                                                 onbuttonclick={handleDeleteAbsence}
-                                            ></c-button>
+                                            ></c-hot_button>
 
-                                            <c-button
+                                            <c-hot_button
                                                 button-label="Avbryt"
                                                 button-styling="Secondary"
                                                 desktop-style="width: 6rem; justify-content: center;"
                                                 mobile-style="width: 5rem; justify-content: center;"
                                                 onbuttonclick={retractAbsenseCancel}
-                                            ></c-button>
+                                            ></c-hot_button>
                                         </template>
 
                                         <template lwc:if={isNotRetractableEdit}>
-                                            <c-button
+                                            <c-hot_button
                                                 button-label={registerButtonText}
                                                 button-styling="primary"
                                                 desktop-style="width: 6rem; justify-content: center; margin-right: 0.25rem"
                                                 mobile-style="width: 5rem; justify-content: center;"
                                                 onbuttonclick={handleOkay}
-                                            ></c-button>
+                                            ></c-hot_button>
 
-                                            <c-button
+                                            <c-hot_button
                                                 button-label="Avbryt"
                                                 button-styling="Secondary"
                                                 desktop-style="width: 6rem; justify-content: center;"
                                                 mobile-style="width: 5rem; justify-content: center;"
                                                 onbuttonclick={retractAbsenseCancel}
-                                            ></c-button>
+                                            ></c-hot_button>
                                         </template>
                                     </div>
                                 </div>
                             </div>
                         </template>
                         <template lwc:else>
-                            <c-button
+                            <c-hot_button
                                 button-label="Slett"
                                 button-styling="Danger"
                                 desktop-style="width: 6rem; justify-content: center; margin-right: 0.25rem;"
                                 mobile-style="width: 5rem; justify-content: center; margin-right: 0.25rem;"
                                 onbuttonclick={retractDeleteAbsense}
-                            ></c-button>
+                            ></c-hot_button>
 
-                            <c-button
+                            <c-hot_button
                                 button-styling="primary"
                                 button-label="Endre"
                                 desktop-style="width: 6rem; justify-content: center;"
                                 mobile-style="width: 5rem; justify-content: center;"
                                 onbuttonclick={retractEditAbsense}
-                            ></c-button>
+                            ></c-hot_button>
                         </template>
                     </template>
                     <template lwc:else>
                         <!-- Register absence button -->
-                        <c-button
+                        <c-hot_button
                             button-label={registerButtonText}
                             button-styling="primary"
                             desktop-style="width: 6rem; justify-content: center;"
                             mobile-style="justify-content: center;"
                             onbuttonclick={handleOkay}
-                        ></c-button>
+                        ></c-hot_button>
                     </template>
                 </div>
             </div>
