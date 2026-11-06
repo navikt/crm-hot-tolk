@@ -37,7 +37,7 @@
 
     <div lwc:if={showSendInterest} class="meld-interesse-overlay">
         <div class="meld-interesse-content">
-            <c-button
+            <c-hot_button
                 button-styling="primary"
                 button-label={sendInterestButtonLabel}
                 aria-label="Meld interesse"
@@ -46,7 +46,7 @@
                 mobile-style="justify-content: center; border-radius: 0.25rem;"
                 title="Merk sjekkboks i listen for å melde interesse"
             >
-            </c-button>
+            </c-hot_button>
         </div>
     </div>
     <!-- MODALER -->
@@ -116,13 +116,13 @@
                             Interesse er meldt.
                         </h2>
                         <br />
-                        <c-button
+                        <c-hot_button
                             button-styling="primary"
                             button-label="OK"
                             onbuttonclick={closeModal}
                             desktop-style="width: 8rem; justify-content: center"
                             mobile-style="width: 8rem; justify-content: center"
-                        ></c-button>
+                        ></c-hot_button>
                     </div>
 
                     <div lwc:if={showSubmittedLoading} class="submitted-loading">
@@ -158,7 +158,7 @@
                     </div>
                 </div>
 
-                <c-button
+                <c-hot_button
                     lwc:if={showSendInnBtn}
                     class="send-inn-button"
                     button-styling="primary"
@@ -167,7 +167,7 @@
                     onbuttonclick={registerInterest}
                     desktop-style="width: 8rem; justify-content: center"
                     mobile-style="width: 8rem; justify-content: center"
-                ></c-button>
+                ></c-hot_button>
             </div>
         </div>
         <!-- MODAL SOM VISES NÅR MAN TRYKKER PÅ OPPDRAG (IKKE NÅR MAN TRYKKER "MELD INTERESSE..")-->
@@ -200,7 +200,7 @@
 
                 <br />
                 <div lwc:if={isSeries}>
-                    <c-button
+                    <c-hot_button
                         button-styling="primary"
                         button-label="Meld interesse til alle oppdrag i serien"
                         aria-label="Meld interesse til alle oppdrag i serien"
@@ -209,7 +209,7 @@
                         mobile-style="width: 100%; justify-content: center; margin-bottom:2rem;"
                         title="Meld interesse til alle oppdrag i serien"
                     >
-                    </c-button>
+                    </c-hot_button>
                     <c-hot_freelance-common-table
                         records={seriesRecords}
                         columns={inDetailsColumns}

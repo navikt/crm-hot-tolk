@@ -52,7 +52,7 @@
             <p>{wantedMessage}</p>
 
             <div style="display: inline-block; padding-bottom: 1vw; padding-top: 1vw">
-                <c-button
+                <c-hot_button
                     button-styling="primary"
                     button-label="Meld interesse"
                     aria-label="Meld interesse"
@@ -60,8 +60,8 @@
                     style="margin-right: 1vw"
                     onbuttonclick={acceptInterest}
                 >
-                </c-button>
-                <c-button
+                </c-hot_button>
+                <c-hot_button
                     button-styling="danger"
                     button-label="Avslå interesse"
                     aria-label="Avslå interesse"
@@ -69,7 +69,7 @@
                     style="margin-right: 1vw"
                     onbuttonclick={declineInterest}
                 >
-                </c-button>
+                </c-hot_button>
             </div>
         </div>
         <div class="submit">
@@ -92,13 +92,13 @@
                     {processMessageResult}
                 </h2>
                 <br />
-                <c-button
+                <c-hot_button
                     button-styling="primary"
                     button-label="OK"
                     onbuttonclick={closeModal}
                     desktop-style="width: 8rem; justify-content: center"
                     mobile-style="width: 8rem; justify-content: center"
-                ></c-button>
+                ></c-hot_button>
             </div>
 
             <div lwc:if={showSubmittedLoading} class="submitted-loading">
@@ -136,7 +136,7 @@
     </dialog>
     <div lwc:if={showSendInterestOrDecline} class="meld-interesse-eller-avlsaa--overlay">
         <div class="meld-interesse-eller-avslaa-content">
-            <c-button
+            <c-hot_button
                 button-styling="primary"
                 button-label={sendInterestButtonLabel}
                 aria-label="Meld interesse for oppdrag"
@@ -145,8 +145,8 @@
                 mobile-style="justify-content: center; margin: 1vw"
                 title="Merk sjekkboks i listen for å melde interesse"
             >
-            </c-button>
-            <c-button
+            </c-hot_button>
+            <c-hot_button
                 button-styling="danger"
                 button-label={declineInterestButtonLabel}
                 aria-label="Avslå interesse for oppdrag"
@@ -155,7 +155,7 @@
                 mobile-style="justify-content: center;"
                 title="Merk sjekkboks i listen for å melde interesse"
             >
-            </c-button>
+            </c-hot_button>
         </div>
     </div>
 </template>
