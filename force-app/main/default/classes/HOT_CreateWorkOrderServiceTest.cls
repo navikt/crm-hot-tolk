@@ -725,12 +725,20 @@ private class HOT_CreateWorkOrderServiceTest {
         Test.startTest();
         Integer remainingRows = Limits.getLimitDmlRows() - Limits.getDmlRows();
         System.assert(
-            HOT_CreateWorkOrderService.hasRecurringEditRowBudget(remainingRows - 203, 203),
+            HOT_CreateWorkOrderService.hasRecurringEditRowBudget(4000, remainingRows - 4000),
             'Combined writes may exactly fill the remaining row budget'
         );
         System.assert(
-            !HOT_CreateWorkOrderService.hasRecurringEditRowBudget(remainingRows - 202, 203),
+            !HOT_CreateWorkOrderService.hasRecurringEditRowBudget(4000, remainingRows - 3999),
             'Combined writes must not exceed the budget by even one row'
+        );
+        System.assert(
+            HOT_CreateWorkOrderService.hasRecurringEditRowBudget(4000, 202),
+            'Exactly 4000 new attachment links must be allowed when DML budget permits'
+        );
+        System.assert(
+            !HOT_CreateWorkOrderService.hasRecurringEditRowBudget(4001, 202),
+            'More than 4000 new attachment links must be rejected even with sufficient DML budget'
         );
         System.assert(
             !HOT_CreateWorkOrderService.hasRecurringEditRowBudget(199 * 51, 202),
@@ -738,18 +746,18 @@ private class HOT_CreateWorkOrderServiceTest {
         );
         System.assert(
             !HOT_CreateWorkOrderService.hasRecurringEditRowBudget(199 * 50, 202),
-            'Work Order and request writes must also count toward the limit'
+            '200 occurrences with 50 attachments must be rejected'
         );
         insert HOT_TestDataFactory.createWorkType();
         System.assert(
-            !HOT_CreateWorkOrderService.hasRecurringEditRowBudget(remainingRows - 203, 203),
+            !HOT_CreateWorkOrderService.hasRecurringEditRowBudget(4000, remainingRows - 4000),
             'Rows already written in this transaction must reduce the available budget'
         );
         Test.stopTest();
     }
 
     @IsTest
-    private static void recurringEditRejectsAttachmentLimitBeforeWrites() {
+    private static void recurringEditRejects49AttachmentsFor200OccurrencesBeforeWrites() {
         User caller = createRecurringEditCaller();
         WorkType workType = HOT_TestDataFactory.createWorkType();
         insert workType;
@@ -761,7 +769,7 @@ private class HOT_CreateWorkOrderServiceTest {
         workOrder.EndDate = workOrder.StartDate.addHours(1);
         insert workOrder;
         List<ContentVersion> files = new List<ContentVersion>();
-        for (Integer i = 0; i < 51; i++) {
+        for (Integer i = 0; i < 49; i++) {
             files.add(
                 new ContentVersion(
                     Title = 'Attachment ' + i,
@@ -819,11 +827,11 @@ private class HOT_CreateWorkOrderServiceTest {
         WorkOrder unchanged = [SELECT StartDate, EndDate FROM WorkOrder WHERE Id = :workOrder.Id];
         System.assertEquals(workOrder.StartDate, unchanged.StartDate);
         System.assertEquals(workOrder.EndDate, unchanged.EndDate);
-        System.assertEquals(51, [SELECT COUNT() FROM ContentDocumentLink WHERE LinkedEntityId = :request.Id]);
+        System.assertEquals(49, [SELECT COUNT() FROM ContentDocumentLink WHERE LinkedEntityId = :request.Id]);
     }
 
     @IsTest
-    private static void recurringEditCopies49AttachmentsTo200Occurrences() {
+    private static void recurringEditCopies20AttachmentsTo200Occurrences() {
         User caller = createRecurringEditCaller();
         WorkType workType = HOT_TestDataFactory.createWorkType();
         insert workType;
@@ -835,7 +843,7 @@ private class HOT_CreateWorkOrderServiceTest {
         existingWorkOrder.EndDate = existingWorkOrder.StartDate.addHours(1);
         insert existingWorkOrder;
         List<ContentVersion> files = new List<ContentVersion>();
-        for (Integer i = 0; i < 49; i++) {
+        for (Integer i = 0; i < 20; i++) {
             files.add(
                 new ContentVersion(
                     Title = 'Attachment ' + i,
@@ -883,7 +891,7 @@ private class HOT_CreateWorkOrderServiceTest {
         ];
         System.assertEquals(200, workOrders.size(), 'Must save all 200 occurrences');
         for (WorkOrder workOrder : workOrders) {
-            System.assertEquals(49, workOrder.ContentDocumentLinks.size(), 'Every occurrence must receive all files');
+            System.assertEquals(20, workOrder.ContentDocumentLinks.size(), 'Every occurrence must receive all files');
             Set<Id> copiedDocumentIds = new Set<Id>();
             for (ContentDocumentLink link : workOrder.ContentDocumentLinks) {
                 copiedDocumentIds.add(link.ContentDocumentId);

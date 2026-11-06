@@ -1,4 +1,5 @@
 public without sharing class HOT_CreateWorkOrderService {
+    private static final Integer MAX_RECURRING_ATTACHMENT_LINKS = 4000;
     private static final String ATTACHMENT_LIMIT_MESSAGE = 'Bestillingen har for mange vedlegg for den valgte serien. Velg en kortere periode eller reduser antall vedlegg og prøv igjen.';
 
     private class AttachmentLimitException extends Exception {
@@ -246,7 +247,9 @@ public without sharing class HOT_CreateWorkOrderService {
 
     @TestVisible
     private static Boolean hasRecurringEditRowBudget(Integer attachmentRows, Integer plannedRows) {
-        return attachmentRows + plannedRows <= Limits.getLimitDmlRows() - Limits.getDmlRows();
+        return attachmentRows <= MAX_RECURRING_ATTACHMENT_LINKS &&
+            attachmentRows + plannedRows <=
+            Limits.getLimitDmlRows() - Limits.getDmlRows();
     }
 
     private static AuraHandledException attachmentLimitError() {
