@@ -53,7 +53,7 @@ private class HOT_TjenesteleverandorFlowTest {
     }
 
     @IsTest
-    static void massDeclineOpensAndRetractsAppointments() {
+    static void massDeclinePreservesStatusAndClearsSupplierRelease() {
         Group queue = createOwnerQueueAndFormidlerGroup('999010');
         List<ServiceAppointment> serviceAppointments = createServiceAppointments(10);
 
@@ -63,6 +63,7 @@ private class HOT_TjenesteleverandorFlowTest {
         insert serviceAppointments;
         for (ServiceAppointment serviceAppointment : serviceAppointments) {
             serviceAppointment.Status = 'Released to Freelance';
+            serviceAppointment.HOT_IsReleasedToTjenesteleverandor__c = true;
         }
         update serviceAppointments;
 
@@ -81,13 +82,15 @@ private class HOT_TjenesteleverandorFlowTest {
             SELECT
                 Status,
                 HOT_IsReleasedToFreelance__c,
+                HOT_IsReleasedToTjenesteleverandor__c,
                 HOT_TjenesteleverandorStatus__c,
                 HOT_TjenesteleverandorDeadline__c
             FROM ServiceAppointment
             WHERE Id IN :serviceAppointmentIds
         ]) {
-            System.assertEquals('None', actual.Status);
-            System.assertEquals(false, actual.HOT_IsReleasedToFreelance__c);
+            System.assertEquals('Released to Freelance', actual.Status);
+            System.assertEquals(true, actual.HOT_IsReleasedToFreelance__c);
+            System.assertEquals(false, actual.HOT_IsReleasedToTjenesteleverandor__c);
             System.assertEquals('Declined', actual.HOT_TjenesteleverandorStatus__c);
             System.assertEquals(null, actual.HOT_TjenesteleverandorDeadline__c);
         }
@@ -100,16 +103,18 @@ private class HOT_TjenesteleverandorFlowTest {
         serviceAppointment.OwnerId = queue.Id;
         insert serviceAppointment;
         serviceAppointment.Status = 'Released to Freelance';
+        serviceAppointment.HOT_IsReleasedToTjenesteleverandor__c = true;
         update serviceAppointment;
 
         Test.startTest();
         update new ServiceAppointment(Id = serviceAppointment.Id, HOT_TjenesteleverandorStatus__c = 'Declined');
 
         ServiceAppointment declinedAppointment = getServiceAppointment(serviceAppointment.Id);
-        System.assertEquals('None', declinedAppointment.Status);
-        System.assertEquals(false, declinedAppointment.HOT_IsReleasedToFreelance__c);
+        System.assertEquals('Released to Freelance', declinedAppointment.Status);
+        System.assertEquals(true, declinedAppointment.HOT_IsReleasedToFreelance__c);
+        System.assertEquals(false, declinedAppointment.HOT_IsReleasedToTjenesteleverandor__c);
 
-        declinedAppointment.Status = 'Released to Freelance';
+        declinedAppointment.Subject = 'Updated after decline';
         update declinedAppointment;
         Test.stopTest();
 
@@ -125,6 +130,7 @@ private class HOT_TjenesteleverandorFlowTest {
             SELECT
                 Status,
                 HOT_IsReleasedToFreelance__c,
+                HOT_IsReleasedToTjenesteleverandor__c,
                 HOT_TjenesteleverandorStatus__c,
                 HOT_TjenesteleverandorTransferDate__c,
                 HOT_TjenesteleverandorAcceptDate__c,
