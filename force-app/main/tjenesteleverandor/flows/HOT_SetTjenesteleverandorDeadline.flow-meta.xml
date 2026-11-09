@@ -1,6 +1,5 @@
-<?xml version="1.0" encoding="UTF-8" ?>
+<?xml version="1.0" encoding="UTF-8"?>
 <Flow xmlns="http://soap.sforce.com/2006/04/metadata">
-    <apiVersion>66.0</apiVersion>
     <actionCalls>
         <name>Calculate_Deadline</name>
         <label>Calculate Deadline</label>
@@ -30,8 +29,9 @@
             <name>deadline</name>
         </outputParameters>
     </actionCalls>
-    <description
-    >Calculates and stores the supplier acceptance deadline when an appointment is transferred to a supplier.</description>
+    <apiVersion>66.0</apiVersion>
+    <areMetricsLoggedToDataCloud>false</areMetricsLoggedToDataCloud>
+    <description>Calculates and stores the supplier acceptance deadline when an appointment is transferred to a supplier.</description>
     <environments>Default</environments>
     <interviewLabel>HOT_SetTjenesteleverandorDeadline {!$Flow.CurrentDateTime}</interviewLabel>
     <label>HOT_SetTjenesteleverandorDeadline</label>
@@ -102,6 +102,13 @@
             <operator>IsNull</operator>
             <value>
                 <booleanValue>false</booleanValue>
+            </value>
+        </filters>
+        <filters>
+            <field>HOT_IsReleasedToTjenesteleverandor__c</field>
+            <operator>EqualTo</operator>
+            <value>
+                <booleanValue>true</booleanValue>
             </value>
         </filters>
         <object>ServiceAppointment</object>
