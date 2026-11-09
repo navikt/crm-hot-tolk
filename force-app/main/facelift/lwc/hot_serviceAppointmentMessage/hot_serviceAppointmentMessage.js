@@ -2,6 +2,8 @@ import { LightningElement, api, wire } from 'lwc';
 import getMessages from '@salesforce/apex/HOT_ServiceAppointmentMessageController.getMessages';
 
 export default class Hot_serviceAppointmentMessage extends LightningElement {
+    @api header = 'Beskjed fra formidler';
+
     _recordId;
     messages = [];
     errorMessage;

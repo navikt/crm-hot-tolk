@@ -10,8 +10,8 @@
         </div>
     </template>
     <template lwc:elseif={hasMessages}>
-        <section class="messages-panel" aria-label="Beskjed fra formidler">
-            <h2 class="heading">Beskjed fra formidler</h2>
+        <section class="messages-panel" aria-label={header}>
+            <h2 class="heading">{header}</h2>
             <ul class="message-list">
                 <template for:each={messages} for:item="message">
                     <li key={message.id} class="message-card">
