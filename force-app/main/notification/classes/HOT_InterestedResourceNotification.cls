@@ -30,6 +30,9 @@ public without sharing class HOT_InterestedResourceNotification {
 
         for (HOT_InterestedResource__c interestedResource : interestedResources) {
             ServiceResource resource = interestedResource.ServiceResource__r;
+            if (resource == null) {
+                continue;
+            }
             Boolean isEmployee = resource.HOT_IsEmployedInterpreter__c == true;
             Id recipientId = resource.RelatedRecordId;
             Boolean usesPush =
