@@ -21,28 +21,28 @@
                     record-id={recordId}
                 >
                     <c-hot_request-form_type_v2
-                        if:false={requestTypeChosen}
+                        lwc:if={showRequestTypeSelection}
                         onrequestformtyperesult={handleRequestType}
                         previous-page={previousPage}
                     ></c-hot_request-form_type_v2>
-                    <div if:true={requestTypeChosen} class="actual-form">
+                    <div lwc:else class="actual-form">
                         <c-hot_request-form_orderer_v2
                             parent-field-values={fieldValues}
                             class="subform"
-                            if:true={requestTypeResult.ordererForm}
+                            lwc:if={requestTypeResult.ordererForm}
                         ></c-hot_request-form_orderer_v2>
                         <c-hot_request-form_company_v2
                             parent-field-values={fieldValues}
                             parent-company-component-values={componentValues}
                             class="subform"
                             onusercheckboxclicked={handleUserCheckbox}
-                            if:true={requestTypeResult.companyForm}
+                            lwc:if={requestTypeResult.companyForm}
                             is-edit-or-copy-mode={isEditOrCopyMode}
                         ></c-hot_request-form_company_v2>
                         <c-hot_request-form_user_v2
                             parent-field-values={fieldValues}
                             class="subform"
-                            if:true={requestTypeResult.userForm}
+                            lwc:if={requestTypeResult.userForm}
                             is-edit-or-copy-mode={isEditOrCopyMode}
                         ></c-hot_request-form_user_v2>
                         <c-hot_request-form_request_v2
@@ -52,15 +52,15 @@
                             request-ids={requestIds}
                             record-id={recordId}
                             class="subform"
-                            if:true={requestTypeResult.requestForm}
+                            lwc:if={requestTypeResult.requestForm}
                             is-edit-or-copy-mode={isEditOrCopyMode}
                             refresh-token={refreshToken}
                             is-edit-mode={isEditMode}
                         ></c-hot_request-form_request_v2>
                         <div class="button-container">
-                            <c-button
+                            <c-hot_button
                                 data-id="saveButton"
-                                if:true={requestTypeResult.requestForm}
+                                lwc:if={requestTypeResult.requestForm}
                                 button-label={submitButtonLabel}
                                 name="Send inn bestilling"
                                 button-styling="primary"
@@ -69,33 +69,33 @@
                                 style="padding-bottom: 1em"
                                 desktop-style="width: 8rem; justify-content: center"
                                 mobile-style="width: 8rem; justify-content: center"
-                            ></c-button>
-                            <c-button
-                                if:false={requestTypeResult.requestForm}
+                            ></c-hot_button>
+                            <c-hot_button
+                                lwc:else
                                 button-label="Neste"
                                 button-styling="primary"
                                 onbuttonclick={handleNextButtonClicked}
                                 style="padding-bottom: 1em"
                                 desktop-style="width: 8rem; justify-content: center"
                                 mobile-style="width: 8rem; justify-content: center"
-                            ></c-button>
-                            <c-button
-                                if:false={isEditModeAndTypeMe}
+                            ></c-hot_button>
+                            <c-hot_button
+                                lwc:if={showBackButton}
                                 button-label="Forrige"
                                 button-styling="secondary"
                                 onbuttonclick={handleBackButtonClicked}
                                 style="padding-bottom: 1em"
                                 desktop-style="width: 8rem; justify-content: center"
                                 mobile-style="width: 8rem; justify-content: center"
-                            ></c-button>
-                            <c-button
-                                if:true={requestTypeResult.requestForm}
+                            ></c-hot_button>
+                            <c-hot_button
+                                lwc:if={requestTypeResult.requestForm}
                                 button-label="Avbryt"
                                 button-styling="secondary"
                                 onbuttonclick={goToPreviousPage}
                                 desktop-style="width: 8rem; justify-content: center"
                                 mobile-style="width: 8rem; justify-content: center"
-                            ></c-button>
+                            ></c-hot_button>
                         </div>
                     </div>
                 </lightning-record-edit-form>
@@ -123,7 +123,7 @@
                     {submitSuccessMessage}
                 </h2>
                 <br />
-                <div if:true={showUploadFileModule}>
+                <div lwc:if={showUploadFileModule}>
                     <div class="fileUploader">
                         <h2 class="typo-undertittel">Legg ved filer til denne bestillingen.</h2>
                         <label class="slds-form-element__label" id="uploadLabel">
@@ -152,13 +152,13 @@
                     </div>
                 </div>
                 <br />
-                <c-button
+                <c-hot_button
                     button-label="Gå til mine bestillinger"
                     button-styling="primary"
                     onbuttonclick={goToMyRequests}
                     desktop-style="width: 16rem; justify-content: center"
                     mobile-style="width: 16rem; justify-content: center"
-                ></c-button>
+                ></c-hot_button>
             </div>
         </div>
         <div class="main-content hidden submitted-loading">
@@ -173,7 +173,7 @@
                     Sender bestilling...
                 </h2>
                 <br />
-                <div if:true={spin} style="display: flex; justify-content: center">
+                <div lwc:if={spin} style="display: flex; justify-content: center">
                     <c-hot_loader size="3xlarge" variant="interaction"></c-hot_loader>
                 </div>
                 <br />
@@ -200,15 +200,15 @@
                     Noe gikk galt under innsending av din bestilling. Vennligst prøv igjen, eller kontakt tolketjenesten
                     om problemet vedvarer.
                 </h2>
-                <p if:true={submitErrorMessage}>{submitErrorMessage}</p>
+                <p lwc:if={submitErrorMessage}>{submitErrorMessage}</p>
                 <br />
-                <c-button
+                <c-hot_button
                     button-label="Last inn siden på nytt"
                     button-styling="primary"
                     onbuttonclick={reloadPage}
                     desktop-style="width: 16rem; justify-content: center"
                     mobile-style="width: 16rem; justify-content: center"
-                ></c-button>
+                ></c-hot_button>
             </div>
         </div>
     </div>

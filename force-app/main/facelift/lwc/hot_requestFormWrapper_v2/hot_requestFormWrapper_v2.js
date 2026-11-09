@@ -437,6 +437,14 @@ export default class hot_requestFormWrapper_v2 extends NavigationMixin(Lightning
     isEditModeAndTypeMe = false;
     isEditMode = false;
 
+    get showRequestTypeSelection() {
+        return !this.requestTypeChosen;
+    }
+
+    get showBackButton() {
+        return !this.isEditModeAndTypeMe;
+    }
+
     handleEditOrCopyModeRequestType(parsed_params) {
         if (parsed_params.edit != null) {
             this.breadcrumbs.push({ label: 'Rediger bestilling' });
