@@ -233,11 +233,11 @@ public without sharing class HOT_TjenesteleverandorDeadlineService {
             if (holidayDate == null) {
                 continue;
             }
-            if (holiday.RecurrenceType == 'RecursYearly') {
-                if (holidayDate.month() == localDate.month() && holidayDate.day() == localDate.day()) {
-                    return false;
-                }
-            } else if (holidayDate == localDate) {
+            Boolean matchesHoliday = holiday.RecurrenceType == 'RecursYearly'
+                ? holidayDate.month() == localDate.month() && holidayDate.day() == localDate.day()
+                : holidayDate == localDate;
+
+            if (matchesHoliday) {
                 return false;
             }
         }
