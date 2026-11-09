@@ -56,7 +56,7 @@
         <apexClass>HOT_InterestedResourcesListController</apexClass>
         <enabled>true</enabled>
     </classAccesses>
-      <classAccesses>
+    <classAccesses>
         <apexClass>HOT_InterpreterWantedChoiceController</apexClass>
         <enabled>true</enabled>
     </classAccesses>
@@ -98,10 +98,6 @@
     </classAccesses>
     <classAccesses>
         <apexClass>HOT_UpdateShiftsController</apexClass>
-        <enabled>true</enabled>
-    </classAccesses>
-    <classAccesses>
-        <apexClass>HOT_WOInterpreterThreadService</apexClass>
         <enabled>true</enabled>
     </classAccesses>
     <classAccesses>
