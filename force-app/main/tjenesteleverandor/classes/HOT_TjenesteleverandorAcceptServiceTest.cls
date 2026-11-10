@@ -242,7 +242,7 @@ private class HOT_TjenesteleverandorAcceptServiceTest {
     @IsTest
     static void returnsPerRecordResultWhenAppointmentIsNotAcceptable() {
         List<ServiceAppointment> appointments = getTransferredAppointments(2);
-        appointments[0].HOT_TjenesteleverandorStatus__c = 'Declined';
+        appointments[0].HOT_TjenesteleverandorStatus__c = 'Expired';
         update appointments[0];
         Account unrelatedRecord = HOT_TestDataFactory.createAccount(false);
         insert unrelatedRecord;
@@ -255,7 +255,7 @@ private class HOT_TjenesteleverandorAcceptServiceTest {
         Test.stopTest();
 
         Assert.areEqual(3, results.size(), 'Every unique requested ID should have a result');
-        Assert.isFalse(results[0].success, 'A declined appointment cannot be accepted');
+        Assert.isFalse(results[0].success, 'An expired appointment cannot be accepted');
         Assert.isFalse(results[1].success, 'A non-Service-Appointment ID cannot be accepted');
         Assert.isTrue(results[2].success, 'Other eligible records in the same request should still succeed');
     }
