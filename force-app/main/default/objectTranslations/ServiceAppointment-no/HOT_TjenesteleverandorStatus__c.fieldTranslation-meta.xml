@@ -7,10 +7,6 @@
         <translation>Bekreftet av tjenesteleverandør</translation>
     </picklistValues>
     <picklistValues>
-        <masterLabel>Declined</masterLabel>
-        <translation>Avslått av tjenesteleverandør</translation>
-    </picklistValues>
-    <picklistValues>
         <masterLabel>Expired</masterLabel>
         <translation>Utløpt bekreftelsesfrist</translation>
     </picklistValues>

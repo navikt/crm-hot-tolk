@@ -186,27 +186,6 @@
             <componentInstance>
                 <componentInstanceProperties>
                     <name>message</name>
-                    <value>Oppdraget ble avslått av tjenesteleverandør og kan ikke sendes til tjenesteleverandør igjen.</value>
-                </componentInstanceProperties>
-                <componentInstanceProperties>
-                    <name>type</name>
-                    <value>Warning</value>
-                </componentInstanceProperties>
-                <componentName>hot_alertBanner</componentName>
-                <identifier>hot_alertBannerTjenesteleverandorDeclined</identifier>
-                <visibilityRule>
-                    <criteria>
-                        <leftValue>{!Record.HOT_TjenesteleverandorStatus__c}</leftValue>
-                        <operator>EQUAL</operator>
-                        <rightValue>Declined</rightValue>
-                    </criteria>
-                </visibilityRule>
-            </componentInstance>
-        </itemInstances>
-        <itemInstances>
-            <componentInstance>
-                <componentInstanceProperties>
-                    <name>message</name>
                     <value>Fristen for tjenesteleverandør til å akseptere oppdraget er utløpt.</value>
                 </componentInstanceProperties>
                 <componentInstanceProperties>
