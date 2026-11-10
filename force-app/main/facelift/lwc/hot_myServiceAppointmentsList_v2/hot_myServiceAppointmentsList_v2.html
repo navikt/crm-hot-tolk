@@ -40,8 +40,6 @@
         <template lwc:if={hasAccess}>
             <div class="modal-body">
                 <div lwc:if={isDetails}>
-                    <c-hot_service-appointment-message record-id={recordId}></c-hot_service-appointment-message>
-
                     <p><strong>Oppdragsnummer:</strong> {appointmentNumber}</p>
                     <p><strong>Tema:</strong> {subject}</p>
                     <p><strong>Tid:</strong> {startAndEndTime}</p>
@@ -187,6 +185,7 @@
                         >
                         </c-hot_button>
                     </div>
+                    <c-hot_service-appointment-message record-id={recordId}></c-hot_service-appointment-message>
                 </div>
             </div>
         </template>

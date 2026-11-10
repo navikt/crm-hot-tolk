@@ -40,9 +40,6 @@
                             <section lwc:if={isSADetails}>
                                 <template lwc:if={hasAccess}>
                                     <template lwc:if={serviceAppointment}>
-                                        <c-hot_service-appointment-message
-                                            record-id={serviceAppointment.Id}
-                                        ></c-hot_service-appointment-message>
                                         <div>
                                             <p>Oppdragsnummer: <span>{serviceAppointment.AppointmentNumber}</span></p>
                                             <p>Tema: <span>{serviceAppointment.Subject}</span></p>
@@ -234,6 +231,9 @@
                                                 ></c-hot_button>
                                             </div>
                                         </div>
+                                        <c-hot_service-appointment-message
+                                            record-id={serviceAppointment.Id}
+                                        ></c-hot_service-appointment-message>
                                     </template>
                                 </template>
                                 <template lwc:else>
