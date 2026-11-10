@@ -26,6 +26,7 @@ public with sharing class HOT_ServiceResourceController {
                         AND CRM_Domain__c = 'HOT'
                         AND CRM_Subdomain__c = 'Tolketjenesten'
                         AND HOT_IsTjenesteleverandorDispatcher__c = TRUE
+                        AND RelatedRecordId != :UserInfo.getUserId()
                     ORDER BY Name
                 ];
             }

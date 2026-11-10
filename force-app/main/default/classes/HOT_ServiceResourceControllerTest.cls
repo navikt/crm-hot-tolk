@@ -32,10 +32,10 @@ private class HOT_ServiceResourceControllerTest {
 
     @IsTest
     static void dispatcherSearchIsStandaloneAndFiltersResources() {
-        ServiceResource dispatcher = createResource(UserInfo.getUserId(), 'Dispatcher');
+        User dispatcherUser = [SELECT Id FROM User WHERE Alias = 'overlap' LIMIT 1];
+        ServiceResource dispatcher = createResource(dispatcherUser.Id, 'Dispatcher');
         dispatcher.HOT_IsTjenesteleverandorDispatcher__c = true;
-        User interpreterUser = [SELECT Id FROM User WHERE Alias = 'overlap' LIMIT 1];
-        ServiceResource interpreter = createResource(interpreterUser.Id, 'Interpreter');
+        ServiceResource interpreter = createResource(UserInfo.getUserId(), 'Interpreter');
         interpreter.HOT_IsEmployedInterpreter__c = true;
         interpreter.HOT_IsFreelanceInterpreter__c = true;
         myTriggers.disable(HOT_ServiceResourceAccessHandler.class);
@@ -69,6 +69,20 @@ private class HOT_ServiceResourceControllerTest {
         update dispatcher;
         System.assertEquals(0, HOT_ServiceResourceController.getAllServiceResources(false, false, true).size());
         Test.stopTest();
+    }
+
+    @IsTest
+    static void dispatcherSearchExcludesRunningUser() {
+        ServiceResource dispatcher = createResource(UserInfo.getUserId(), 'Current Dispatcher');
+        dispatcher.HOT_IsTjenesteleverandorDispatcher__c = true;
+        myTriggers.disable(HOT_ServiceResourceAccessHandler.class);
+        insert dispatcher;
+
+        Test.startTest();
+        List<ServiceResource> resources = HOT_ServiceResourceController.getAllServiceResources(false, false, true);
+        Test.stopTest();
+
+        System.assertEquals(0, resources.size(), 'Dispatcher search must exclude the running user.');
     }
 
     @IsTest

@@ -10,8 +10,6 @@ export default class Hot_flowWantedResourceSearch extends LightningElement {
     @api searchFreelances = false;
     @api searchEmployees = false;
     @api searchServiceProviderDispatcher = false;
-    @api excludedUserId;
-    @api required = false;
     @api value = '';
     @api recordId;
 
@@ -21,18 +19,6 @@ export default class Hot_flowWantedResourceSearch extends LightningElement {
     selectedResource;
     isLoadingDetails = false;
     detailsError;
-    selectionError;
-
-    @api
-    validate() {
-        const isValid = !this.required || Boolean(this.value);
-        return { isValid, errorMessage: isValid ? '' : 'Velg en tjenesteressurs.' };
-    }
-
-    @api
-    reportValidity() {
-        this.selectionError = this.validate().errorMessage;
-    }
 
     @wire(getAllServiceResources, {
         searchFreelances: '$searchFreelances',
@@ -54,7 +40,6 @@ export default class Hot_flowWantedResourceSearch extends LightningElement {
         this.value = '';
         this.selectedResource = undefined;
         this.detailsError = undefined;
-        this.selectionError = undefined;
         this.dispatchEvent(new FlowAttributeChangeEvent('value', this.value));
     }
 
@@ -63,7 +48,6 @@ export default class Hot_flowWantedResourceSearch extends LightningElement {
         this.value = '';
         this.selectedResource = undefined;
         this.detailsError = undefined;
-        this.selectionError = undefined;
         this.dispatchEvent(new FlowAttributeChangeEvent('value', this.value));
         this.template.querySelector('input')?.focus();
     }
@@ -78,7 +62,7 @@ export default class Hot_flowWantedResourceSearch extends LightningElement {
     async handleResourceSelect(event) {
         const resourceId = event.currentTarget.dataset.resourceId;
         const resource = this.serviceResources.find((item) => item.Id === resourceId);
-        if (!resource || (this.excludedUserId && resource.RelatedRecordId === this.excludedUserId)) {
+        if (!resource) {
             return;
         }
 
@@ -86,7 +70,6 @@ export default class Hot_flowWantedResourceSearch extends LightningElement {
         this.value = resource.Id;
         this.selectedResource = undefined;
         this.detailsError = undefined;
-        this.selectionError = undefined;
         this.dispatchEvent(new FlowAttributeChangeEvent('value', this.value));
 
         if (!this.recordId) {
@@ -114,7 +97,6 @@ export default class Hot_flowWantedResourceSearch extends LightningElement {
 
         const normalizedQuery = query.toLocaleLowerCase('nb-NO');
         return this.serviceResources
-            .filter((resource) => !this.excludedUserId || resource.RelatedRecordId !== this.excludedUserId)
             .filter((resource) => resource.Name?.toLocaleLowerCase('nb-NO').includes(normalizedQuery))
             .sort((left, right) => left.Name.localeCompare(right.Name, 'nb-NO', { sensitivity: 'base' }))
             .slice(0, 5);

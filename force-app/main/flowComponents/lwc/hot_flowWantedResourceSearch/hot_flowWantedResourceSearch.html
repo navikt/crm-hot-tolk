@@ -29,9 +29,6 @@
                 </button>
             </template>
         </div>
-        <template lwc:if={selectionError}>
-            <p class="details-error" role="alert">{selectionError}</p>
-        </template>
         <template lwc:if={showResults}>
             <ul class="search-results" role="listbox" aria-label="Søkeresultater">
                 <template for:each={matchingResources} for:item="resource">
@@ -77,7 +74,9 @@
             </div>
         </template>
         <template lwc:if={detailsError}>
-            <p class="details-error" role="alert">Kunne ikke hente informasjon om tjenesteressursen.</p>
+            <p class="details-error slds-text-heading_small" role="alert">
+                Kunne ikke hente informasjon om tjenesteressursen.
+            </p>
         </template>
         <template lwc:if={selectedResource}>
             <section class="resource-card" aria-label="Valgt tjenesteressurs">

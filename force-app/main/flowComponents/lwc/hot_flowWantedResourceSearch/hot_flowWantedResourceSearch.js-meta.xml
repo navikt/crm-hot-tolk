@@ -22,14 +22,6 @@
             />
             <property name="value" type="String" label="Search value" role="outputOnly" />
             <property name="recordId" type="String" label="Service Appointment Id" role="inputOnly" />
-            <property
-                name="excludedUserId"
-                type="String"
-                label="Excluded User Id"
-                role="inputOnly"
-                description="Exclude resources linked to this user."
-            />
-            <property name="required" type="Boolean" label="Require selection" default="false" role="inputOnly" />
         </targetConfig>
     </targetConfigs>
 </LightningComponentBundle>
