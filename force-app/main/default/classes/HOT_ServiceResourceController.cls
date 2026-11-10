@@ -19,7 +19,7 @@ public with sharing class HOT_ServiceResourceController {
         switch on searchMode {
             when 'DISPATCHER' {
                 return [
-                    SELECT Id, Name, HOT_IsTjenesteleverandorDispatcher__c
+                    SELECT Id, Name, RelatedRecordId, HOT_IsTjenesteleverandorDispatcher__c
                     FROM ServiceResource
                     WHERE
                         IsActive = TRUE

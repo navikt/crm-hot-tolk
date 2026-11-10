@@ -29,6 +29,9 @@
                 </button>
             </template>
         </div>
+        <template lwc:if={selectionError}>
+            <p class="details-error" role="alert">{selectionError}</p>
+        </template>
         <template lwc:if={showResults}>
             <ul class="search-results" role="listbox" aria-label="Søkeresultater">
                 <template for:each={matchingResources} for:item="resource">
@@ -44,7 +47,7 @@
                             <span>{resource.Name}</span>
                             <template lwc:if={searchServiceProviderDispatcher}>
                                 <c-hot_tag
-                                    label="Leverandørformidler"
+                                    label="Leverandør formidler"
                                     variant="moderate"
                                     size="small"
                                     color="info"
