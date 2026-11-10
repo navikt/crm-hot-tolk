@@ -11,8 +11,16 @@
             <property name="label" type="String" label="Label" />
             <property name="placeholder" type="String" label="Placeholder" default="Søk" />
             <property name="clearButton" type="Boolean" label="Show clear button" default="true" />
-            <property name="searchFreelances" type="Boolean" label="Search Freelances" default="false" />
+            <property name="searchFreelances" type="Boolean" label="Search Freelances"
+                default="false" />
             <property name="searchEmployees" type="Boolean" label="Search Employees" default="false" />
+            <property
+                name="searchServiceProviderDispatcher"
+                type="Boolean"
+                label="Search Service Provider Dispatcher"
+                default="false"
+                description="When true, returns only service provider dispatchers. Search Employees and Search Freelances are ignored."
+            />
             <property name="value" type="String" label="Search value" role="outputOnly" />
             <property name="recordId" type="String" label="Service Appointment Id" role="inputOnly" />
         </targetConfig>

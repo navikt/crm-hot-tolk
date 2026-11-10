@@ -1,44 +1,75 @@
 public with sharing class HOT_ServiceResourceController {
     @AuraEnabled(cacheable=true)
-    public static List<ServiceResource> getAllServiceResources(Boolean searchFreelances, Boolean searchEmployees) {
-        if (searchFreelances == true && searchEmployees == true) {
-            return [
-                SELECT Id, Name, HOT_IsEmployedInterpreter__c, HOT_IsFreelanceInterpreter__c
-                FROM ServiceResource
-                WHERE
-                    IsActive = TRUE
-                    AND CRM_Domain__c = 'HOT'
-                    AND CRM_Subdomain__c = 'Tolketjenesten'
-                    AND (HOT_IsFreelanceInterpreter__c = TRUE
-                    OR HOT_IsEmployedInterpreter__c = TRUE)
-                ORDER BY Name
-            ];
+    public static List<ServiceResource> getAllServiceResources(
+        Boolean searchFreelances,
+        Boolean searchEmployees,
+        Boolean searchServiceProviderDispatcher
+    ) {
+        String searchMode = 'NONE';
+        if (searchServiceProviderDispatcher == true) {
+            searchMode = 'DISPATCHER';
+        } else if (searchFreelances == true && searchEmployees == true) {
+            searchMode = 'ALL_INTERNAL_SERVICE_RESOURCES';
+        } else if (searchFreelances == true) {
+            searchMode = 'FREELANCE';
+        } else if (searchEmployees == true) {
+            searchMode = 'EMPLOYEE';
         }
-        if (searchFreelances == true) {
-            return [
-                SELECT Id, Name, HOT_IsEmployedInterpreter__c, HOT_IsFreelanceInterpreter__c
-                FROM ServiceResource
-                WHERE
-                    IsActive = TRUE
-                    AND CRM_Domain__c = 'HOT'
-                    AND CRM_Subdomain__c = 'Tolketjenesten'
-                    AND HOT_IsFreelanceInterpreter__c = TRUE
-                ORDER BY Name
-            ];
+
+        switch on searchMode {
+            when 'DISPATCHER' {
+                return [
+                    SELECT Id, Name, HOT_IsTjenesteleverandorDispatcher__c
+                    FROM ServiceResource
+                    WHERE
+                        IsActive = TRUE
+                        AND CRM_Domain__c = 'HOT'
+                        AND CRM_Subdomain__c = 'Tolketjenesten'
+                        AND HOT_IsTjenesteleverandorDispatcher__c = TRUE
+                    ORDER BY Name
+                ];
+            }
+            when 'ALL_INTERNAL_SERVICE_RESOURCES' {
+                return [
+                    SELECT Id, Name, HOT_IsEmployedInterpreter__c, HOT_IsFreelanceInterpreter__c
+                    FROM ServiceResource
+                    WHERE
+                        IsActive = TRUE
+                        AND CRM_Domain__c = 'HOT'
+                        AND CRM_Subdomain__c = 'Tolketjenesten'
+                        AND (HOT_IsFreelanceInterpreter__c = TRUE
+                        OR HOT_IsEmployedInterpreter__c = TRUE)
+                    ORDER BY Name
+                ];
+            }
+            when 'FREELANCE' {
+                return [
+                    SELECT Id, Name, HOT_IsEmployedInterpreter__c, HOT_IsFreelanceInterpreter__c
+                    FROM ServiceResource
+                    WHERE
+                        IsActive = TRUE
+                        AND CRM_Domain__c = 'HOT'
+                        AND CRM_Subdomain__c = 'Tolketjenesten'
+                        AND HOT_IsFreelanceInterpreter__c = TRUE
+                    ORDER BY Name
+                ];
+            }
+            when 'EMPLOYEE' {
+                return [
+                    SELECT Id, Name, HOT_IsEmployedInterpreter__c, HOT_IsFreelanceInterpreter__c
+                    FROM ServiceResource
+                    WHERE
+                        IsActive = TRUE
+                        AND CRM_Domain__c = 'HOT'
+                        AND CRM_Subdomain__c = 'Tolketjenesten'
+                        AND HOT_IsEmployedInterpreter__c = TRUE
+                    ORDER BY Name
+                ];
+            }
+            when else {
+                return new List<ServiceResource>();
+            }
         }
-        if (searchEmployees == true) {
-            return [
-                SELECT Id, Name, HOT_IsEmployedInterpreter__c, HOT_IsFreelanceInterpreter__c
-                FROM ServiceResource
-                WHERE
-                    IsActive = TRUE
-                    AND CRM_Domain__c = 'HOT'
-                    AND CRM_Subdomain__c = 'Tolketjenesten'
-                    AND HOT_IsEmployedInterpreter__c = TRUE
-                ORDER BY Name
-            ];
-        }
-        return new List<ServiceResource>();
     }
 
     @AuraEnabled

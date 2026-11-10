@@ -9,6 +9,7 @@ export default class Hot_flowWantedResourceSearch extends LightningElement {
     @api clearButton = false;
     @api searchFreelances = false;
     @api searchEmployees = false;
+    @api searchServiceProviderDispatcher = false;
     @api value = '';
     @api recordId;
 
@@ -21,7 +22,8 @@ export default class Hot_flowWantedResourceSearch extends LightningElement {
 
     @wire(getAllServiceResources, {
         searchFreelances: '$searchFreelances',
-        searchEmployees: '$searchEmployees'
+        searchEmployees: '$searchEmployees',
+        searchServiceProviderDispatcher: '$searchServiceProviderDispatcher'
     })
     wiredServiceResources({ data, error }) {
         if (data) {
