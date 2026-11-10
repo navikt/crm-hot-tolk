@@ -15,6 +15,107 @@ public without sharing class HOT_ServiceAppointmentNotification {
         logger.exception(e, CRM_ApplicationDomain.Domain.HOT);
         logger.publishSynch();
     }
+
+    public static void newServiceAppointmentMessageNotification(
+        List<HOT_ServiceAppointmentMessage__c> messages,
+        List<AssignedResource> assignedResources
+    ) {
+        String title = 'Ny beskjed fra formidler';
+        String text = 'Formidler har gitt deg en beskjed angående et oppdrag du er tildelt.';
+        String smsText = text;
+        smsText += '\n\nFor mer informasjon, se tolkebestilling.nav.no. Du kan ikke svare på denne meldingen.';
+        smsText += '\nMvh tolketjenesten i Nav';
+
+        List<HOT_Notification__c> notifications = new List<HOT_Notification__c>();
+        List<HOT_Notification__c> pushNotifications = new List<HOT_Notification__c>();
+        List<HOT_Notification__c> smsNotifications = new List<HOT_Notification__c>();
+        Map<Id, ServiceResource> resourcesById = new Map<Id, ServiceResource>();
+
+        for (HOT_ServiceAppointmentMessage__c message : messages) {
+            Set<Id> notifiedAssignedResources = new Set<Id>();
+            for (AssignedResource assignedResource : assignedResources) {
+                ServiceAppointment serviceAppointment = assignedResource.ServiceAppointment;
+                if (
+                    (message.Request__c == null || message.Request__c != serviceAppointment.HOT_Request__c) &&
+                    (message.WorkOrder__c == null ||
+                    message.WorkOrder__c != serviceAppointment.HOT_WorkOrderID__c)
+                ) {
+                    continue;
+                }
+
+                if (notifiedAssignedResources.contains(assignedResource.ServiceAppointmentId)) {
+                    continue;
+                }
+                notifiedAssignedResources.add(assignedResource.ServiceAppointmentId);
+
+                ServiceResource resource = assignedResource.ServiceResource;
+                resourcesById.put(assignedResource.ServiceResourceId, resource);
+                String channel = resource.HOT_NotificationChannel__c;
+                HOT_Notification__c notification = new HOT_Notification__c();
+                notification.HOT_ServiceResource__c = assignedResource.ServiceResourceId;
+                notification.HOT_NotificationChannel__c = channel;
+                notification.HOT_Subject__c = title;
+                notification.HOT_NotificationText__c = channel == 'SMS' ? smsText : text;
+                notification.HOT_RelatedObject__c = assignedResource.ServiceAppointmentId;
+                notification.HOT_RelatedObjectType__c = 'serviceAppointment';
+                notifications.add(notification);
+
+                if (channel == 'Push-varsel i appen') {
+                    pushNotifications.add(notification);
+                } else if (channel == 'SMS') {
+                    smsNotifications.add(notification);
+                } else {
+                    handleException(
+                        new ServiceAppointmentMessageNotificationException(
+                            'Missing notification channel for ServiceResource ' + assignedResource.ServiceResourceId
+                        )
+                    );
+                }
+            }
+        }
+
+        if (!pushNotifications.isEmpty()) {
+            CustomNotificationType notificationType = getCustomNotificationType('HOT_NotifyInterpreter');
+            for (HOT_Notification__c notificationRecord : pushNotifications) {
+                ServiceResource resource = resourcesById.get(notificationRecord.HOT_ServiceResource__c);
+                if (resource.RelatedRecordId == null) {
+                    handleException(
+                        new ServiceAppointmentMessageNotificationException(
+                            'Missing user for ServiceResource ' + notificationRecord.HOT_ServiceResource__c
+                        )
+                    );
+                    continue;
+                }
+                Id serviceAppointmentId = Id.valueOf(notificationRecord.HOT_RelatedObject__c);
+                Messaging.CustomNotification notification = new Messaging.CustomNotification();
+                notification.setTitle(notificationRecord.HOT_Subject__c);
+                notification.setBody(notificationRecord.HOT_NotificationText__c);
+                if (resource.HOT_IsEmployedInterpreter__c != true) {
+                    notification.setTargetPageRef(getTargetPageRefInterpreter('my', serviceAppointmentId));
+                }
+                notification.setNotificationTypeId(notificationType.Id);
+                notification.setTargetId(serviceAppointmentId);
+                HOT_NotificationHandler.sendNotification(
+                    notification,
+                    new Set<String>{ String.valueOf(resource.RelatedRecordId) },
+                    new ServiceAppointment(Id = serviceAppointmentId)
+                );
+            }
+        }
+        if (!smsNotifications.isEmpty()) {
+            HOT_ReminderSMSService.sendSMSOnServiceAppointmentMessage(smsNotifications);
+        }
+
+        try {
+            HOT_NotificationCentreController.createNotification(notifications);
+        } catch (Exception e) {
+            handleException(e);
+        }
+    }
+
+    private class ServiceAppointmentMessageNotificationException extends Exception {
+    }
+
     public static void resourceServiceAppointmentChanged(
         List<ServiceAppointment> serviceAppointments,
         Map<Id, sObject> triggerOldMap
