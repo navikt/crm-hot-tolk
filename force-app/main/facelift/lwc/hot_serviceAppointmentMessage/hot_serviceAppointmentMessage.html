@@ -1,0 +1,36 @@
+<template>
+    <template lwc:if={errorMessage}>
+        <div class="error-message" role="alert">
+            <c-hot_local-alert
+                type="error"
+                title={errorMessage}
+                content-view="title-only"
+                size="small"
+            ></c-hot_local-alert>
+        </div>
+    </template>
+    <template lwc:elseif={hasMessages}>
+        <section class="messages-panel" aria-label={header}>
+            <h2 class="heading">{header}</h2>
+            <ul class="message-list">
+                <template for:each={messages} for:item="message">
+                    <li key={message.id} class="message-card">
+                        <p class="message-text">{message.message}</p>
+                        <template lwc:if={message.isNewest}>
+                            <c-hot_tag
+                                class="message-tag"
+                                label="Nyeste"
+                                variant="moderate"
+                                size="small"
+                                color="info"
+                            ></c-hot_tag>
+                        </template>
+                        <div class="message-date">
+                            <time datetime={message.createdDate}>{message.created}</time>
+                        </div>
+                    </li>
+                </template>
+            </ul>
+        </section>
+    </template>
+</template>

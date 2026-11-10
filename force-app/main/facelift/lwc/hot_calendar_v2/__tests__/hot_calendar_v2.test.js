@@ -6,6 +6,14 @@ import createInterestedResources from '@salesforce/apex/HOT_OpenServiceAppointme
 import getServiceResource from '@salesforce/apex/HOT_FreelanceUserInformationController.getServiceResource';
 import checkAccessToSA from '@salesforce/apex/HOT_MyServiceAppointmentListController.checkAccessToSA';
 
+jest.mock('c/hot_button', () => require('../../../../../test/jest-mocks/c/button/button'), { virtual: true });
+jest.mock('c/hot_sharedFonts', () => ({ __esModule: true, default: [] }), { virtual: true });
+jest.mock(
+    'c/hot_serviceAppointmentMessage',
+    () => require('../../../../../test/jest-mocks/c/hot_serviceAppointmentMessage/hot_serviceAppointmentMessage'),
+    { virtual: true }
+);
+
 jest.mock('@salesforce/apex/HOT_FullCalendarController.getCalendarEvents', () => ({ default: jest.fn() }), {
     virtual: true
 });
@@ -93,7 +101,7 @@ class CalendarMock {
 }
 
 function getButton(element, label) {
-    return [...element.shadowRoot.querySelectorAll('c-button')].find((button) => button.buttonLabel === label);
+    return [...element.shadowRoot.querySelectorAll('c-hot_button')].find((button) => button.buttonLabel === label);
 }
 
 function dispatchButtonClick(button) {

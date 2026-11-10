@@ -328,6 +328,49 @@ public without sharing class HOT_ReminderSMSService {
         }
     }
 
+    public static void sendSMSOnServiceAppointmentMessage(List<HOT_Notification__c> notifications) {
+        Set<Id> resourceIds = new Set<Id>();
+        for (HOT_Notification__c notification : notifications) {
+            resourceIds.add(notification.HOT_ServiceResource__c);
+        }
+        if (resourceIds.isEmpty()) {
+            return;
+        }
+
+        Map<Id, ServiceResource> resourcesById = new Map<Id, ServiceResource>(
+            [SELECT Id, AccountId, HOT_MobilePhone__c FROM ServiceResource WHERE Id IN :resourceIds]
+        );
+        List<SMS__c> smsList = new List<SMS__c>();
+        for (HOT_Notification__c notification : notifications) {
+            ServiceResource resource = resourcesById.get(notification.HOT_ServiceResource__c);
+            if (resource == null || String.isBlank(resource.HOT_MobilePhone__c)) {
+                handleException(
+                    new ServiceAppointmentMessageSMSException(
+                        'Missing phone number for ServiceResource ' + notification.HOT_ServiceResource__c
+                    )
+                );
+                continue;
+            }
+
+            smsList.add(
+                new SMS__c(
+                    Domain__c = 'HOT',
+                    Type__c = 'Interpreter',
+                    Account__c = resource.AccountId,
+                    ServiceAppointment__c = Id.valueOf(notification.HOT_RelatedObject__c),
+                    Recipient__c = resource.HOT_MobilePhone__c,
+                    Message__c = notification.HOT_NotificationText__c
+                )
+            );
+        }
+        if (!smsList.isEmpty()) {
+            HOT_DatabaseOperations.insertRecords(smsList);
+        }
+    }
+
+    private class ServiceAppointmentMessageSMSException extends Exception {
+    }
+
     @Future
     public static void sendSMSOnNewWantedSR(Set<Id> wantedIRIds) {
         System.debug('SendSMS');
